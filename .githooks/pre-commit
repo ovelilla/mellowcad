@@ -1,0 +1,18 @@
+#!/bin/sh
+# Quality gate before every commit: the same three checks CI runs.
+#
+# Enabled automatically by the `prepare` script (npm sets core.hooksPath here
+# after install). To skip it for one commit: git commit --no-verify
+
+set -e
+
+echo "› typecheck"
+npm run --silent typecheck
+
+echo "› lint"
+npm run --silent lint
+
+echo "› test"
+npm test --silent
+
+echo "✓ ready to commit"

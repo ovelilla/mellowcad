@@ -1,0 +1,241 @@
+import { Vec2 } from "../../geometry/Vec2"
+import { DocumentReader } from "../../domain/Document"
+import { Entity, EntityId } from "../../domain/entities"
+import { Viewport } from "../Viewport"
+import { Selection } from "../Selection"
+import { ConstructionGeometry, SnapResult } from "../snapping/types"
+import { TrackingResult } from "../tracking/types"
+import { DynamicInputController } from "../input/DynamicInput"
+import { Command } from "../commands/Command"
+import { ScenePrimitive } from "../../scene/types"
+
+/** A normalised pointer event delivered to the active tool. */
+export interface PointerInput {
+  /** Cursor position in screen (CSS-pixel) coordinates. */
+  readonly screen: Vec2
+  /** Cursor position in raw world coordinates (no snapping applied). */
+  readonly world: Vec2
+  readonly snap: SnapResult | null
+  /**
+   * The active object-snap-tracking result, if a guide is engaged. Present only
+   * when no direct snap is active (a real snap wins over tracking).
+   */
+  readonly tracking: TrackingResult | null
+  /**
+   * The effective world point a tool should use: the snapped point when a snap
+   * is active, otherwise the raw world position, after any active drawing
+   * constraints (Ortho, ...) have been applied relative to the tool's anchor.
+   */
+  readonly point: Vec2
+  readonly button: number
+  readonly shiftKey: boolean
+  readonly ctrlKey: boolean
+  readonly altKey: boolean
+}
+
+/** A normalised keyboard event delivered to the active tool. */
+export interface KeyInput {
+  readonly key: string
+  readonly shiftKey: boolean
+  readonly ctrlKey: boolean
+  readonly altKey: boolean
+}
+
+/**
+ * A command-line-style option (keyword) a tool currently offers, mirroring
+ * AutoCAD's `[Close/Undo]` prompt. The set is recomputed as the interaction
+ * advances, so options appear and disappear in context (e.g. "Close" only once
+ * enough segments exist). Data-driven on purpose: adding an option is just
+ * pushing another entry — the UI renders whatever the tool exposes.
+ */
+export interface CommandOption {
+  /** Single-character trigger, e.g. "C". Compared case-insensitively. */
+  readonly key: string
+  /** Human label shown in the hint, e.g. "Close". */
+  readonly label: string
+}
+
+/**
+ * The outcome of invoking a command option, telling the runtime what to do:
+ * - `"unhandled"`: the key matched no option;
+ * - `"continue"`: handled, the command keeps running (e.g. Undo one segment);
+ * - `"end"`: handled and the command finished (e.g. Close) — drop to neutral.
+ */
+export type CommandOptionOutcome = "unhandled" | "continue" | "end"
+
+/**
+ * The surface a tool is allowed to touch — the tool's *port* onto the rest of
+ * the system. Crucially:
+ *
+ * - the document is **read-only**; the only way to change the drawing is
+ *   {@link execute}, which routes through the command history (undo/redo);
+ * - selection and dynamic input are transient interaction state and may be
+ *   driven directly;
+ * - there is no rendering technology here: tools describe their preview as
+ *   neutral scene primitives via {@link Tool.buildOverlay}.
+ */
+export interface ToolContext {
+  readonly document: DocumentReader
+  readonly viewport: Viewport
+  readonly selection: Selection
+  readonly dynamicInput: DynamicInputController
+
+  /** Executes a reversible command against the document (the only write-path). */
+  execute(command: Command): void
+
+  /**
+   * Reverts the most recently executed command, returning whether one existed.
+   * During a continuous command the top of the history is always the tool's own
+   * last step, so this backs out a single segment without leaving the command —
+   * AutoCAD's LINE `Undo` (U) option.
+   */
+  undo(): boolean
+
+  /** World-unit tolerance for click hit-testing at the current zoom. */
+  pickTolerance(): number
+
+  /**
+   * The object under `world`, honouring selection cycling: when the user has
+   * cycled (Shift+Space) to another of the objects the pick box covers, that
+   * one is returned instead of the topmost. Always use this rather than
+   * `document.pick`, so every "which object?" prompt cycles alike.
+   */
+  pick(world: Vec2, tolerance?: number): Entity | null
+
+  /** Requests a redraw on the next frame. */
+  requestRender(): void
+
+  /** Sets the cursor shown over the drawing surface (CSS cursor names). */
+  setCursor(cursor: string): void
+
+  /**
+   * Writes a line to the command prompt. AutoCAD commands report what they did
+   * there ("1 was not able to be exploded."), which is the only feedback a user
+   * gets when a command deliberately does nothing.
+   */
+  report(text: string, kind?: "info" | "error"): void
+
+  /**
+   * Ends the current command and drops back to the neutral Select tool. For
+   * single-shot commands (MOVE, COPY, ...) that finish the moment their final
+   * point is placed, rather than looping or waiting for Escape.
+   */
+  endCommand(): void
+}
+
+/**
+ * A tool encapsulates one interactive editing mode (draw line, select, ...) as
+ * an explicit interaction flow: the runtime forwards normalised input to the
+ * active tool, and the tool advances its internal state machine, previews via
+ * {@link buildOverlay} and commits results through commands.
+ */
+export interface Tool {
+  readonly id: string
+  readonly label: string
+
+  /**
+   * Fallback hint shown in the tool rail for tools that have no command-line
+   * alias. Commands are typed at the prompt (see `TOOL_COMMANDS`), so this is
+   * display-only — it no longer dispatches keys.
+   */
+  readonly shortcut?: string
+
+  onActivate?(ctx: ToolContext): void
+  onDeactivate?(ctx: ToolContext): void
+
+  onPointerDown?(input: PointerInput, ctx: ToolContext): void
+  onPointerMove?(input: PointerInput, ctx: ToolContext): void
+  onPointerUp?(input: PointerInput, ctx: ToolContext): void
+  onKeyDown?(input: KeyInput, ctx: ToolContext): void
+
+  /**
+   * Handles Enter as a command confirmation while the canvas holds focus.
+   * Returns `true` when the tool consumes it to advance its own flow (e.g. MOVE
+   * confirming the selection set), keeping the command running; `false` (the
+   * default) lets Enter accept the default and end the command, matching
+   * AutoCAD's repeat-prompt behaviour. Not reached while a dynamic-input box is
+   * focused — there Enter commits the typed value instead.
+   */
+  onEnter?(ctx: ToolContext): boolean
+
+  /**
+   * The command options (keywords) the tool offers right now — AutoCAD's
+   * `[Close/Undo]` prompt. Recomputed on every engine-state rebuild so options
+   * appear and disappear with the interaction. Defaults to none.
+   */
+  commandOptions?(): readonly CommandOption[]
+
+  /**
+   * Invokes a command option by its key (case-insensitive), returning the
+   * outcome so the runtime knows whether the command continues or has ended.
+   * Omit when the tool exposes no options.
+   */
+  invokeOption?(key: string, ctx: ToolContext): CommandOptionOutcome
+
+  /**
+   * The base point that drawing constraints (Ortho, Polar, ...) restrict
+   * against — typically the last confirmed point of an in-progress operation.
+   * Returns `null` when the tool has no anchor yet, disabling constraints.
+   */
+  getConstraintAnchor?(): Vec2 | null
+
+  /**
+   * Provisional geometry the tool is currently drawing (e.g. the rubber-band
+   * segment), in world coordinates, given the raw world `cursor`. The snap
+   * engine crosses this against committed entities so intersection object snaps
+   * engage on the line being drawn, exactly like AutoCAD. Defaults to none.
+   */
+  getSnapGeometry?(cursor: Vec2): readonly ConstructionGeometry[]
+
+  /**
+   * Whether the tool is currently acquiring a point and therefore wants object
+   * snaps (and their markers) and snap-tracking active. Mirrors AutoCAD, where
+   * running object snaps only show while a command is prompting for a point —
+   * not while merely selecting. Defaults to `true` when omitted.
+   */
+  wantsSnap?(): boolean
+
+  /**
+   * Whether the drawing crosshair replaces the OS cursor while this tool is
+   * active. View tools (PAN) return `false` so the cursor they set — a hand —
+   * stays visible, matching AutoCAD, where the crosshair belongs to drawing and
+   * editing commands. Defaults to `true` when omitted.
+   */
+  usesCrosshair?(): boolean
+
+  /**
+   * A tool-provided magnetic attractor for the cursor, in **screen**
+   * coordinates, or `null` when nothing attracts it. Unlike object snaps (which
+   * only run during a point prompt, see {@link wantsSnap}), this lets a tool
+   * pull the crosshair onto its own interactive handles even while merely
+   * selecting — mirroring AutoCAD, where the crosshair clings to any grip it
+   * passes over so the grips are easy to grab. Consulted only when the tool is
+   * not requesting object snaps. Omit for tools with no magnetic handles.
+   */
+  magneticCursor?(screen: Vec2, ctx: ToolContext): Vec2 | null
+
+  /**
+   * Whether the tool wants acquired object-snap-tracking references to survive
+   * the pointer-down that just happened. The runtime normally *consumes*
+   * acquired references on every left-click (the point they helped define has
+   * been placed). A tool returns `true` here when the click merely *began* an
+   * edit that will place its point later — e.g. grabbing a grip to stretch or
+   * move a line — so the acquired tracking points stay available during the
+   * subsequent drag. Defaults to `false` when omitted.
+   */
+  retainsTrackingAfterPointerDown?(): boolean
+
+  /**
+   * Entities the scene must not draw because the tool is showing an edited
+   * version of them in its overlay. Without this an in-place editor paints the
+   * new state on top of the old one. Defaults to none.
+   */
+  hiddenEntityIds?(): readonly EntityId[]
+
+  /**
+   * The tool's transient preview (rubber-band lines, selection boxes, ...) as
+   * renderer-agnostic scene primitives in screen coordinates. World points are
+   * converted via `ctx.viewport.worldToScreen`.
+   */
+  buildOverlay?(ctx: ToolContext): ScenePrimitive[]
+}

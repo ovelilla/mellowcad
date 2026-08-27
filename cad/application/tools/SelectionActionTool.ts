@@ -1,0 +1,199 @@
+import { Vec2 } from "../../geometry/Vec2"
+import { Entity, EntityId } from "../../domain/entities"
+import { ScenePrimitive } from "../../scene/types"
+import { THEME } from "../../scene/theme"
+import { entityScenePrimitive } from "../SceneBuilder"
+import { boxSelect, buildSelectionBoxOverlay } from "./boxSelection"
+import { KeyInput, PointerInput, Tool, ToolContext } from "./Tool"
+
+/** Screen-pixel movement past which a press-drag becomes a box selection. */
+const DRAG_THRESHOLD_PX = 4
+
+/**
+ * A tool that runs a single action on a *set* of selected objects — AutoCAD's
+ * EXPLODE, JOIN, ERASE and friends. It supports both invocation orders:
+ *
+ * - **noun→verb**: with a pre-selection, the action runs immediately on
+ *   activation (picking the tool with objects already selected);
+ * - **verb→noun**: with nothing selected, it enters a "Select objects" prompt
+ *   (click or window/crossing box, shift removes) and runs on Enter/Space.
+ *
+ * Escape cancels (the runtime drops back to Select without running). Subclasses
+ * only implement {@link run}; the selection machinery is shared here and mirrors
+ * the pick/box behaviour of the Select and placement tools.
+ */
+export abstract class SelectionActionTool implements Tool {
+  abstract readonly id: string
+  abstract readonly label: string
+  readonly shortcut?: string
+
+  private state: SelectionActionState = { phase: "selecting", hover: null }
+
+  /** Runs the action on the selected `entities`; may reset the selection. */
+  protected abstract run(entities: readonly Entity[], ctx: ToolContext): void
+
+  onActivate(ctx: ToolContext): void {
+    ctx.setCursor("default")
+    // noun→verb: a pre-selection runs the action at once, matching AutoCAD.
+    if (!ctx.selection.isEmpty()) {
+      this.execute(ctx)
+    } else {
+      this.state = { phase: "selecting", hover: null }
+    }
+  }
+
+  onDeactivate(): void {
+    this.state = { phase: "selecting", hover: null }
+  }
+
+  onPointerDown(input: PointerInput, ctx: ToolContext): void {
+    if (input.button !== 0) return
+    if (this.state.phase !== "selecting") return
+    this.state = {
+      phase: "pressed",
+      startWorld: input.world,
+      startScreen: input.screen,
+      currentWorld: input.world,
+      subtract: input.shiftKey,
+    }
+    ctx.requestRender()
+  }
+
+  onPointerMove(input: PointerInput, ctx: ToolContext): void {
+    switch (this.state.phase) {
+      case "selecting": {
+        const hover = this.rolloverAt(input.world, ctx)
+        if (hover?.id !== this.state.hover?.id) {
+          this.state = { phase: "selecting", hover }
+          ctx.requestRender()
+        }
+        break
+      }
+      case "pressed": {
+        const moved = Math.hypot(
+          input.screen.x - this.state.startScreen.x,
+          input.screen.y - this.state.startScreen.y
+        )
+        if (moved >= DRAG_THRESHOLD_PX) {
+          this.state = {
+            phase: "boxing",
+            startWorld: this.state.startWorld,
+            currentWorld: input.world,
+            subtract: this.state.subtract,
+          }
+        } else {
+          this.state = { ...this.state, currentWorld: input.world }
+        }
+        ctx.requestRender()
+        break
+      }
+      case "boxing":
+        this.state = { ...this.state, currentWorld: input.world }
+        ctx.requestRender()
+        break
+    }
+  }
+
+  onPointerUp(input: PointerInput, ctx: ToolContext): void {
+    if (input.button !== 0) return
+
+    if (this.state.phase === "pressed") {
+      const hit = ctx.pick(input.world)
+      if (hit) this.applyPick([hit.id], this.state.subtract, ctx)
+      this.state = {
+        phase: "selecting",
+        hover: this.rolloverAt(input.world, ctx),
+      }
+      ctx.requestRender()
+      return
+    }
+    if (this.state.phase === "boxing") {
+      const hits = boxSelect(
+        ctx.document,
+        this.state.startWorld,
+        this.state.currentWorld
+      )
+      this.applyPick(hits, this.state.subtract, ctx)
+      this.state = { phase: "selecting", hover: null }
+      ctx.requestRender()
+    }
+  }
+
+  onKeyDown(input: KeyInput, ctx: ToolContext): void {
+    // Space confirms the set (AutoCAD treats Space like Enter); Enter itself is
+    // routed through onEnter by the runtime.
+    if (input.key === " ") this.execute(ctx)
+  }
+
+  onEnter(ctx: ToolContext): boolean {
+    if (this.state.phase !== "selecting" || ctx.selection.isEmpty())
+      return false
+    this.execute(ctx)
+    return true
+  }
+
+  wantsSnap(): boolean {
+    return false // picking objects, not acquiring points
+  }
+
+  buildOverlay(ctx: ToolContext): ScenePrimitive[] {
+    if (this.state.phase === "boxing") {
+      return buildSelectionBoxOverlay(
+        ctx.viewport,
+        this.state.startWorld,
+        this.state.currentWorld
+      )
+    }
+    if (this.state.phase !== "selecting" || !this.state.hover) return []
+    return entityScenePrimitive(ctx.viewport, this.state.hover, {
+      color: THEME.entityHover,
+      width: 2,
+    })
+  }
+
+  /**
+   * The object a click would add to the set — AutoCAD's selection preview.
+   * Already-selected objects are skipped: they are drawn highlighted anyway.
+   */
+  private rolloverAt(world: Vec2, ctx: ToolContext): Entity | null {
+    const hit = ctx.pick(world)
+    return hit && !ctx.selection.has(hit.id) ? hit : null
+  }
+
+  /** Runs the action on the current selection, then ends the command. */
+  private execute(ctx: ToolContext): void {
+    const entities = ctx.selection
+      .toArray()
+      .map((id) => ctx.document.get(id))
+      .filter((entity): entity is Entity => entity !== undefined)
+    if (entities.length > 0) this.run(entities, ctx)
+    ctx.endCommand()
+  }
+
+  private applyPick(
+    ids: readonly EntityId[],
+    subtract: boolean,
+    ctx: ToolContext
+  ): void {
+    for (const id of ids) {
+      if (subtract) ctx.selection.remove(id)
+      else ctx.selection.add(id)
+    }
+  }
+}
+
+type SelectionActionState =
+  | { readonly phase: "selecting"; readonly hover: Entity | null }
+  | {
+      readonly phase: "pressed"
+      readonly startWorld: Vec2
+      readonly startScreen: Vec2
+      readonly currentWorld: Vec2
+      readonly subtract: boolean
+    }
+  | {
+      readonly phase: "boxing"
+      readonly startWorld: Vec2
+      readonly currentWorld: Vec2
+      readonly subtract: boolean
+    }

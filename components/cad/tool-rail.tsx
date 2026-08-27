@@ -1,0 +1,410 @@
+"use client"
+
+import { Fragment, useState } from "react"
+import {
+  ArrowRightToLine,
+  CopyPlus,
+  Eraser,
+  FlipHorizontal2,
+  Grid3x3,
+  CircleDotDashed,
+  Merge,
+  type LucideIcon,
+  MousePointer2,
+  Move,
+  Paintbrush,
+  PenLine,
+  Pentagon,
+  Redo2,
+  RotateCw,
+  Ruler,
+  Scaling,
+  Scan,
+  Scissors,
+  Shapes,
+  Slash,
+  Split,
+  Square,
+  Trash2,
+  Type,
+  Undo2,
+  Waypoints,
+} from "lucide-react"
+
+import { TooltipProvider } from "@/components/ui/tooltip"
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover"
+import { Button } from "@/components/ui/button"
+import { CadEngine, EngineState } from "@/cad"
+
+import { IconAction, Panel } from "./toolbar-primitives"
+import {
+  Circle2PointsIcon,
+  Circle3PointsIcon,
+  CircleDiameterIcon,
+  CircleRadiusIcon,
+  ArcIcon,
+  ArcStartCenterEndIcon,
+  ArcCenterStartEndIcon,
+  BreakIcon,
+  BreakAtPointIcon,
+  ChamferIcon,
+  DimAlignedIcon,
+  DimAngularIcon,
+  DimBaselineIcon,
+  DimContinueIcon,
+  DimDiameterIcon,
+  DimLinearIcon,
+  DimRadiusIcon,
+  DimSpaceIcon,
+  FilletIcon,
+  HatchIcon,
+  OffsetIcon,
+  PolylineIcon,
+  StretchIcon,
+} from "./icons"
+
+/** Maps a tool id to an icon. Unknown/new tools fall back to a generic glyph. */
+const TOOL_ICONS: Record<string, LucideIcon> = {
+  select: MousePointer2,
+  line: Slash,
+  polyline: PolylineIcon,
+  circle: CircleRadiusIcon,
+  circlediameter: CircleDiameterIcon,
+  circle2p: Circle2PointsIcon,
+  circle3p: Circle3PointsIcon,
+  arc: ArcIcon,
+  arcsce: ArcStartCenterEndIcon,
+  arccse: ArcCenterStartEndIcon,
+  rectangle: Square,
+  polygon: Pentagon,
+  hatch: HatchIcon,
+  offset: OffsetIcon,
+  move: Move,
+  copy: CopyPlus,
+  stretch: StretchIcon,
+  rotate: RotateCw,
+  scale: Scaling,
+  mirror: FlipHorizontal2,
+  array: Grid3x3,
+  arraypolar: CircleDotDashed,
+  arraypath: Waypoints,
+  trim: Scissors,
+  extend: ArrowRightToLine,
+  fillet: FilletIcon,
+  chamfer: ChamferIcon,
+  explode: Split,
+  join: Merge,
+  break: BreakIcon,
+  breakatpoint: BreakAtPointIcon,
+  matchprop: Paintbrush,
+  text: Type,
+  textedit: PenLine,
+  dimlinear: DimLinearIcon,
+  dimaligned: DimAlignedIcon,
+  dimangular: DimAngularIcon,
+  dimradius: DimRadiusIcon,
+  dimdiameter: DimDiameterIcon,
+  dimbaseline: DimBaselineIcon,
+  dimcontinue: DimContinueIcon,
+  dimspace: DimSpaceIcon,
+  measure: Ruler,
+  measurearea: Scan,
+}
+
+/**
+ * A family of related tools collapsed behind one rail button — AutoCAD's
+ * flyout. Keeps near-identical variants (the three array modes) as a single
+ * slot so the rail doesn't grow a button per variant as the app scales.
+ */
+interface ToolFlyoutFamily {
+  readonly label: string
+  /** Tool ids shown inside the flyout, in order. */
+  readonly members: readonly string[]
+}
+
+type RailItem = string | ToolFlyoutFamily
+
+/**
+ * A functional cluster of the rail, mirroring AutoCAD's ribbon panels
+ * (Draw / Modify / …). Clustering the tools by what they *do* — rather than a
+ * flat list — is what keeps the rail scannable as more tools land.
+ */
+interface RailGroup {
+  readonly id: string
+  readonly label: string
+  readonly items: readonly RailItem[]
+}
+
+/**
+ * The rail's structure, declared as data so adding a tool is a one-line edit
+ * (or nothing at all — unlisted tools fall into a trailing "More" group).
+ * Grouping lives here, in the UI, keeping the engine visually agnostic.
+ */
+const RAIL_LAYOUT: readonly RailGroup[] = [
+  { id: "select", label: "Select", items: ["select"] },
+  {
+    id: "draw",
+    label: "Draw",
+    items: [
+      "line",
+      "polyline",
+      {
+        label: "Circle",
+        members: ["circle", "circlediameter", "circle2p", "circle3p"],
+      },
+      {
+        label: "Arc",
+        members: ["arc", "arcsce", "arccse"],
+      },
+      {
+        label: "Rectangle",
+        members: ["rectangle", "polygon"],
+      },
+      "hatch",
+    ],
+  },
+  {
+    id: "modify",
+    label: "Modify",
+    items: [
+      "move",
+      "copy",
+      "stretch",
+      "rotate",
+      "scale",
+      "mirror",
+      "offset",
+      "trim",
+      "extend",
+      { label: "Fillet", members: ["fillet", "chamfer"] },
+      { label: "Break", members: ["break", "breakatpoint"] },
+      "explode",
+      "join",
+      "matchprop",
+      { label: "Array", members: ["array", "arraypolar", "arraypath"] },
+    ],
+  },
+  {
+    id: "annotate",
+    label: "Annotate",
+    items: [
+      "text",
+      "textedit",
+      {
+        label: "Dimension",
+        members: [
+          "dimlinear",
+          "dimaligned",
+          "dimangular",
+          "dimradius",
+          "dimdiameter",
+          "dimbaseline",
+          "dimcontinue",
+          "dimspace",
+        ],
+      },
+    ],
+  },
+  {
+    id: "measure",
+    label: "Measure",
+    items: [{ label: "Measure", members: ["measure", "measurearea"] }],
+  },
+]
+
+function isFlyout(item: RailItem): item is ToolFlyoutFamily {
+  return typeof item !== "string"
+}
+
+/**
+ * Tools that live elsewhere in the chrome. View navigation sits with the other
+ * view controls in the command bar, the way AutoCAD keeps it off the Draw and
+ * Modify ribbon panels.
+ */
+const RAIL_EXCLUDED = new Set(["zoom", "pan"])
+
+interface ToolMeta {
+  id: string
+  label: string
+  shortcut?: string
+}
+
+/**
+ * The vertical command rail, modelled on AutoCAD's ribbon: tools are clustered
+ * by function (Select / Draw / Modify) with variant families (the array modes)
+ * tucked into a flyout, so choosing a tool stays quick and the strip scales
+ * without crowding the drawing.
+ */
+export function ToolRail({
+  engine,
+  state,
+}: {
+  engine: CadEngine
+  state: EngineState
+}) {
+  const metaById = new Map<string, ToolMeta>(
+    state.tools.map((tool) => [tool.id, tool])
+  )
+
+  const listed = new Set<string>()
+  for (const group of RAIL_LAYOUT) {
+    for (const item of group.items) {
+      if (isFlyout(item)) item.members.forEach((id) => listed.add(id))
+      else listed.add(item)
+    }
+  }
+
+  // Any registered tool the layout doesn't place still shows up, so a newly
+  // added tool is never silently dropped from the rail.
+  const uncategorized = state.tools
+    .map((tool) => tool.id)
+    .filter((id) => !listed.has(id) && !RAIL_EXCLUDED.has(id))
+  const groups: RailGroup[] = [
+    ...RAIL_LAYOUT,
+    ...(uncategorized.length
+      ? [{ id: "more", label: "More", items: uncategorized }]
+      : []),
+  ]
+
+  const renderTool = (id: string) => {
+    const meta = metaById.get(id)
+    if (!meta) return null
+    return (
+      <IconAction
+        key={id}
+        icon={TOOL_ICONS[id] ?? Shapes}
+        label={meta.label}
+        shortcut={meta.shortcut?.toUpperCase()}
+        active={state.activeToolId === id}
+        onClick={() => engine.setActiveTool(id)}
+      />
+    )
+  }
+
+  return (
+    <TooltipProvider>
+      <Panel className="max-h-[calc(100svh-8rem)] flex-col overflow-y-auto">
+        {groups.map((group) => (
+          <Fragment key={group.id}>
+            {group.items.map((item, i) =>
+              isFlyout(item) ? (
+                <ToolFlyout
+                  key={`${group.id}-flyout-${i}`}
+                  engine={engine}
+                  state={state}
+                  family={item}
+                  metaById={metaById}
+                />
+              ) : (
+                renderTool(item)
+              )
+            )}
+          </Fragment>
+        ))}
+
+        <IconAction
+          icon={Undo2}
+          label="Undo"
+          shortcut="Ctrl+Z"
+          disabled={!state.canUndo}
+          onClick={() => engine.undo()}
+        />
+        <IconAction
+          icon={Redo2}
+          label="Redo"
+          shortcut="Ctrl+Y"
+          disabled={!state.canRedo}
+          onClick={() => engine.redo()}
+        />
+        <IconAction
+          icon={Trash2}
+          label="Delete selection"
+          shortcut="Del"
+          disabled={state.selectionCount === 0}
+          onClick={() => engine.deleteSelection()}
+          className="text-destructive/80 hover:bg-destructive/10 hover:text-destructive"
+        />
+        <IconAction
+          icon={Eraser}
+          label="Clear all"
+          disabled={state.entityCount === 0}
+          onClick={() => engine.clearAll()}
+        />
+      </Panel>
+    </TooltipProvider>
+  )
+}
+
+/**
+ * A single rail slot standing in for a family of related tools. The button
+ * shows the active member (or the last one picked), a corner triangle marks it
+ * as a flyout, and the popover lets you pick a variant — AutoCAD's flyout.
+ */
+function ToolFlyout({
+  engine,
+  state,
+  family,
+  metaById,
+}: {
+  engine: CadEngine
+  state: EngineState
+  family: ToolFlyoutFamily
+  metaById: Map<string, ToolMeta>
+}) {
+  const members = family.members
+    .map((id) => metaById.get(id))
+    .filter((meta): meta is ToolMeta => meta !== undefined)
+
+  const [open, setOpen] = useState(false)
+  const [lastPicked, setLastPicked] = useState(members[0]?.id)
+
+  if (members.length === 0) return null
+
+  const activeMember = members.find((m) => m.id === state.activeToolId)
+  const shownId = activeMember?.id ?? lastPicked ?? members[0].id
+  const ShownIcon = TOOL_ICONS[shownId] ?? Shapes
+
+  return (
+    <Popover open={open} onOpenChange={setOpen}>
+      <PopoverTrigger
+        render={
+          <Button
+            size="icon-sm"
+            variant={activeMember ? "default" : "ghost"}
+            aria-label={family.label}
+            className="relative"
+          >
+            <ShownIcon />
+            <span
+              aria-hidden
+              className="pointer-events-none absolute right-0.75 bottom-0.75 h-0 w-0 border-[3px] border-transparent border-r-current border-b-current opacity-70"
+            />
+          </Button>
+        }
+      />
+      <PopoverContent side="right" align="start" className="w-auto p-1">
+        <div className="flex flex-col gap-1">
+          {members.map((member) => (
+            <IconAction
+              key={member.id}
+              icon={TOOL_ICONS[member.id] ?? Shapes}
+              label={member.label}
+              shortcut={member.shortcut?.toUpperCase()}
+              side="right"
+              active={state.activeToolId === member.id}
+              onClick={() => {
+                engine.setActiveTool(member.id)
+                setLastPicked(member.id)
+                setOpen(false)
+              }}
+            />
+          ))}
+        </div>
+      </PopoverContent>
+    </Popover>
+  )
+}

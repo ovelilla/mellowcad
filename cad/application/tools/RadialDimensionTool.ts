@@ -1,0 +1,368 @@
+import { Vec2, V } from "../../geometry/Vec2"
+import {
+  angleWithinSweep,
+  closestPointOnArc,
+  normalizeAngle,
+} from "../../geometry/primitives"
+import {
+  createDimension,
+  DimensionEntity,
+  Entity,
+  polylineSegmentGeometries,
+} from "../../domain/entities"
+import { AddEntityCommand } from "../commands/entityCommands"
+import { DynamicInputSession } from "../input/DynamicInput"
+import {
+  isCoordinateExpression,
+  parseCoordinate,
+} from "../input/coordinateInput"
+import { entityScenePrimitive } from "../SceneBuilder"
+import { ScenePrimitive } from "../../scene/types"
+import { THEME } from "../../scene/theme"
+import {
+  openDimensionTextAngleInput,
+  openDimensionTextInput,
+} from "./dimensionTextOptions"
+import {
+  CommandOption,
+  CommandOptionOutcome,
+  PointerInput,
+  Tool,
+  ToolContext,
+} from "./Tool"
+
+/** Which measurement a radial dimension reports. */
+export type RadialDimensionKind = "radius" | "diameter"
+
+/**
+ * AutoCAD's DIMRADIUS and DIMDIAMETER, one class parameterised by which of them
+ * it is — they run the identical two prompts and differ only in the number they
+ * report and the symbol in front of it ("R" or "Ø").
+ *
+ * The prompts are AutoCAD's: **Select arc or circle** — "specifies a circle,
+ * arc, or arc segment on a polyline" — then **Dimension line location**, which
+ * "determines the angle of the dimension line and the location of the dimension
+ * text", offering `[Text/Angle]`. The command ends the moment the location is
+ * picked.
+ *
+ * Placing the location inside the circle draws the dimension line across the
+ * object; placing it outside turns it into a leader and marks the centre
+ * (DIMCEN), which is the whole of the difference the two placements make.
+ *
+ * AutoCAD's **Mtext** keyword is deliberately absent: it opens the multiline
+ * text editor and this app has no MTEXT object.
+ *
+ * One deviation, and the two halves of it go together. AutoCAD lets the
+ * dimension line of an arc point past the arc's own sweep and then "draws an
+ * arc extension line" to reach it; that extension line is not implemented here,
+ * so instead the direction is kept inside the sweep. The arrowhead therefore
+ * always lands on geometry that exists, rather than in the empty space where
+ * the arc would have been extended.
+ */
+export class RadialDimensionTool implements Tool {
+  private state: RadialToolState = { phase: "select", hover: null }
+  private text: string | undefined
+  private textAngle: number | undefined
+  private lastScreen: Vec2 | null = null
+
+  constructor(
+    private readonly kind: RadialDimensionKind,
+    readonly id: string,
+    readonly label: string
+  ) {}
+
+  onActivate(ctx: ToolContext): void {
+    ctx.setCursor("crosshair")
+    ctx.selection.clear()
+    this.text = undefined
+    this.textAngle = undefined
+    this.enterSelect(ctx)
+  }
+
+  onDeactivate(ctx: ToolContext): void {
+    this.state = { phase: "select", hover: null }
+    ctx.dynamicInput.close()
+  }
+
+  onPointerMove(input: PointerInput, ctx: ToolContext): void {
+    this.lastScreen = input.screen
+    if (this.state.phase === "select") {
+      const hover = this.pickMeasurable(input.world, ctx)
+      if (hover?.id !== this.state.hover?.id) {
+        this.state = { phase: "select", hover }
+      }
+    } else {
+      this.state = { ...this.state, cursor: input.point }
+    }
+    ctx.dynamicInput.setPosition(input.screen)
+    ctx.requestRender()
+  }
+
+  onPointerDown(input: PointerInput, ctx: ToolContext): void {
+    if (input.button !== 0) return
+    if (this.state.phase === "select") {
+      const hit = this.pickMeasurable(input.world, ctx)
+      const target = hit && measuredCircle(hit, input.world)
+      if (target) this.enterLocation(target, ctx)
+    } else {
+      this.place(input.point, ctx)
+    }
+    ctx.requestRender()
+  }
+
+  commandOptions(): readonly CommandOption[] {
+    if (this.state.phase !== "location" || this.state.prompt !== null) return []
+    return [
+      { key: "T", label: "Text" },
+      { key: "A", label: "Angle" },
+    ]
+  }
+
+  invokeOption(key: string, ctx: ToolContext): CommandOptionOutcome {
+    if (this.state.phase !== "location") return "unhandled"
+    switch (key.toLowerCase()) {
+      case "t":
+        this.state = { ...this.state, prompt: "text" }
+        openDimensionTextInput(
+          ctx,
+          this.lastScreen,
+          this.text,
+          (text, commitCtx) => {
+            this.text = text
+            this.returnToLocation(commitCtx)
+          }
+        )
+        return "continue"
+      case "a":
+        this.state = { ...this.state, prompt: "textAngle" }
+        openDimensionTextAngleInput(
+          ctx,
+          this.lastScreen,
+          this.textAngle,
+          (radians, commitCtx) => {
+            this.textAngle = radians
+            this.returnToLocation(commitCtx)
+          }
+        )
+        return "continue"
+      default:
+        return "unhandled"
+    }
+  }
+
+  getConstraintAnchor(): Vec2 | null {
+    // The centre: Ortho and Polar then lock the direction the leader runs in.
+    return this.state.phase === "location" ? this.state.target.center : null
+  }
+
+  wantsSnap(): boolean {
+    return this.state.phase === "location"
+  }
+
+  buildOverlay(ctx: ToolContext): ScenePrimitive[] {
+    if (this.state.phase === "select") {
+      return this.state.hover
+        ? entityScenePrimitive(ctx.viewport, this.state.hover, {
+            color: THEME.selected,
+            width: 2,
+          })
+        : []
+    }
+    return entityScenePrimitive(
+      ctx.viewport,
+      this.pending(
+        this.state.target,
+        this.state.cursor,
+        ctx,
+        RADIAL_PREVIEW_ID
+      ),
+      { color: THEME.rubberBand, width: 1 },
+      ctx.document.getDimStyle(ctx.document.getCurrentDimStyleId())
+    )
+  }
+
+  /**
+   * The dimension as it stands with the location at `at`. Shared by the live
+   * preview and by both commit paths, so what is drawn is what is created.
+   */
+  private pending(
+    target: MeasuredCircle,
+    at: Vec2,
+    ctx: ToolContext,
+    id?: string
+  ): DimensionEntity {
+    const dir = measuredDirection(target, at)
+    return createDimension(
+      this.kind,
+      target.center,
+      V.add(target.center, V.scale(dir, target.radius)),
+      at,
+      {
+        text: this.text,
+        textAngle: this.textAngle,
+        styleId: ctx.document.getCurrentDimStyleId(),
+        layerId: ctx.document.getCurrentLayerId(),
+        ...(id !== undefined ? { id } : {}),
+      }
+    )
+  }
+
+  private place(at: Vec2, ctx: ToolContext): void {
+    if (this.state.phase !== "location") return
+    ctx.execute(new AddEntityCommand(this.pending(this.state.target, at, ctx)))
+    ctx.endCommand()
+  }
+
+  /** The object under the cursor a radial dimension can be taken from. */
+  private pickMeasurable(world: Vec2, ctx: ToolContext): Entity | null {
+    const hit = ctx.pick(world)
+    return hit && measuredCircle(hit, world) ? hit : null
+  }
+
+  private enterSelect(ctx: ToolContext): void {
+    this.state = { phase: "select", hover: null }
+    // Keyword-only prompt: no field, so the canvas keeps focus and Escape or
+    // Enter reaches the runtime, which ends the command.
+    ctx.dynamicInput.open({ fields: [], commit: () => {} })
+  }
+
+  private enterLocation(target: MeasuredCircle, ctx: ToolContext): void {
+    this.state = {
+      phase: "location",
+      target,
+      cursor: target.center,
+      prompt: null,
+    }
+    this.openLocationInput(ctx)
+  }
+
+  private returnToLocation(ctx: ToolContext): void {
+    if (this.state.phase !== "location") return
+    this.state = { ...this.state, prompt: null }
+    this.openLocationInput(ctx)
+  }
+
+  private openLocationInput(ctx: ToolContext): void {
+    const session: DynamicInputSession = {
+      fields: [
+        {
+          id: "point",
+          label: "Specify dimension line location",
+          kind: "coordinate",
+        },
+      ],
+      commit: () => {},
+      commitRaw: (commitCtx) => {
+        if (this.state.phase !== "location") return false
+        const typed = commitCtx.dynamicInput.getText("point").trim()
+        if (!isCoordinateExpression(typed)) return false
+        const point = parseCoordinate(typed, {
+          lastPoint: this.state.target.center,
+          relativeByDefault: true,
+        })
+        if (!point) return false
+        this.place(point, commitCtx)
+        return true
+      },
+    }
+    ctx.dynamicInput.open(session)
+    ctx.dynamicInput.setPosition(this.lastScreen ?? { x: 0, y: 0 })
+  }
+}
+
+/** Preview frames reuse one id so drawing them never burns entity ids. */
+const RADIAL_PREVIEW_ID = "__radial_dimension_preview__"
+
+/** A circular thing a radial dimension can measure, and how much of it exists. */
+interface MeasuredCircle {
+  readonly center: Vec2
+  readonly radius: number
+  /** The sweep a partial arc covers; null for a whole circle. */
+  readonly startAngle: number | null
+  readonly endAngle: number | null
+}
+
+/**
+ * The circle a radial dimension would measure on `entity`, following AutoCAD's
+ * "a circle, arc, or arc segment on a polyline". Everything else — a line, text,
+ * another dimension, a straight polyline segment — gives nothing.
+ */
+function measuredCircle(entity: Entity, at: Vec2): MeasuredCircle | null {
+  switch (entity.type) {
+    case "circle":
+      return {
+        center: entity.center,
+        radius: entity.radius,
+        startAngle: null,
+        endAngle: null,
+      }
+    case "arc":
+      return {
+        center: entity.center,
+        radius: entity.radius,
+        startAngle: entity.startAngle,
+        endAngle: entity.endAngle,
+      }
+    case "polyline": {
+      let best: MeasuredCircle | null = null
+      let bestDistance = Infinity
+      for (const seg of polylineSegmentGeometries(entity)) {
+        if (seg.kind !== "arc") continue
+        const distance = closestPointOnArc(
+          seg.center,
+          seg.radius,
+          seg.startAngle,
+          seg.endAngle,
+          at
+        ).distance
+        if (distance < bestDistance) {
+          bestDistance = distance
+          best = {
+            center: seg.center,
+            radius: seg.radius,
+            startAngle: seg.startAngle,
+            endAngle: seg.endAngle,
+          }
+        }
+      }
+      return best
+    }
+    default:
+      return null
+  }
+}
+
+/**
+ * The direction the dimension line runs in: from the centre towards where the
+ * user is placing the text, kept within the sweep of a partial arc so the
+ * arrowhead always lands on geometry that exists.
+ */
+function measuredDirection(target: MeasuredCircle, at: Vec2): Vec2 {
+  const offset = V.sub(at, target.center)
+  const raw =
+    V.length(offset) < 1e-9
+      ? (target.startAngle ?? 0)
+      : Math.atan2(offset.y, offset.x)
+  const angle = clampToSweep(target, raw)
+  return { x: Math.cos(angle), y: Math.sin(angle) }
+}
+
+function clampToSweep(target: MeasuredCircle, angle: number): number {
+  const { startAngle, endAngle } = target
+  if (startAngle === null || endAngle === null) return angle
+  if (angleWithinSweep(startAngle, endAngle, angle)) return angle
+  return normalizeAngle(startAngle - angle) <= normalizeAngle(angle - endAngle)
+    ? startAngle
+    : endAngle
+}
+
+type RadialToolState =
+  /** Picking the circle or arc to measure. */
+  | { readonly phase: "select"; readonly hover: Entity | null }
+  | {
+      readonly phase: "location"
+      readonly target: MeasuredCircle
+      readonly cursor: Vec2
+      /** Which sub-prompt is open, so its answer returns here. */
+      readonly prompt: "text" | "textAngle" | null
+    }

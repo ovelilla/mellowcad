@@ -1,0 +1,375 @@
+import { describe, expect, it } from "vitest"
+import type {
+  ArcEntity,
+  CircleEntity,
+  PolylineEntity,
+} from "../../domain/entities"
+import { V } from "../../geometry/Vec2"
+import { createHarness } from "../../../test/harness"
+import { deg, p } from "../../../test/builders"
+
+/**
+ * The draw commands. Each is checked through both of its input routes — picking
+ * with the pointer and typing exact coordinates — because they take different
+ * paths through the tool (`onPointerDown` versus the dynamic-input `commitRaw`)
+ * and only one of them is usually exercised by hand.
+ */
+
+describe("CIRCLE", () => {
+  it("draws from a centre and a radius pick", () => {
+    const cad = createHarness()
+
+    cad.command("CIRCLE").click(p(0, 0)).click(p(50, 0))
+
+    const circle = cad.only<CircleEntity>("circle")
+    expect(circle.center).toBeCloseToPoint(p(0, 0))
+    expect(circle.radius).toBeCloseTo(50)
+  })
+
+  it("draws from typed coordinates and a typed radius", () => {
+    const cad = createHarness()
+
+    cad.command("CIRCLE").type("10,20").enter().type("50").enter()
+
+    const circle = cad.only<CircleEntity>("circle")
+    expect(circle.center).toBeCloseToPoint(p(10, 20))
+    expect(circle.radius).toBeCloseTo(50)
+  })
+
+  it("ends after a single circle, like AutoCAD", () => {
+    const cad = createHarness()
+
+    cad.command("CIRCLE").click(p(0, 0)).click(p(50, 0))
+
+    expect(cad.activeToolId()).toBe("select")
+  })
+
+  it("rejects a zero radius and keeps prompting", () => {
+    const cad = createHarness()
+
+    cad.command("CIRCLE").click(p(0, 0)).type("0").enter()
+
+    expect(cad.entityCount).toBe(0)
+    expect(cad.activeToolId()).toBe("circle")
+  })
+
+  it("halves the typed value in Diameter mode", () => {
+    const cad = createHarness()
+
+    cad.command("CIRCLED").type("0,0").enter().type("200").enter()
+
+    expect(cad.only<CircleEntity>("circle").radius).toBeCloseTo(100)
+  })
+
+  it("2-Point takes the two ends of a diameter", () => {
+    const cad = createHarness()
+
+    cad.command("CIRCLE2P").click(p(-100, 0)).click(p(100, 0))
+
+    const circle = cad.only<CircleEntity>("circle")
+    expect(circle.center).toBeCloseToPoint(p(0, 0))
+    expect(circle.radius).toBeCloseTo(100)
+  })
+
+  it("3-Point circumscribes the three picks", () => {
+    const cad = createHarness()
+
+    cad.command("CIRCLE3P").click(p(100, 0)).click(p(0, 100)).click(p(-100, 0))
+
+    const circle = cad.only<CircleEntity>("circle")
+    expect(circle.center).toBeCloseToPoint(p(0, 0), 5)
+    expect(circle.radius).toBeCloseTo(100, 5)
+  })
+
+  it("3-Point ignores a collinear third pick and keeps prompting", () => {
+    const cad = createHarness()
+
+    cad.command("CIRCLE3P").click(p(0, 0)).click(p(50, 0)).click(p(100, 0)) // collinear: no circle exists
+    expect(cad.entityCount).toBe(0)
+    expect(cad.activeToolId()).toBe("circle3p")
+  })
+})
+
+describe("ARC", () => {
+  it("3-Point sweeps counter-clockwise through the middle pick", () => {
+    const cad = createHarness()
+
+    cad.command("ARC").click(p(100, 0)).click(p(0, 100)).click(p(-100, 0))
+
+    const arc = cad.only<ArcEntity>("arc")
+    expect(arc.center).toBeCloseToPoint(p(0, 0), 5)
+    expect(arc.radius).toBeCloseTo(100, 5)
+    expect(arc.startAngle).toBeCloseToAngle(0, 5)
+    expect(arc.endAngle).toBeCloseToAngle(Math.PI, 5)
+  })
+
+  it("Start-Centre-End builds the quarter arc", () => {
+    const cad = createHarness()
+
+    cad.command("ARCSCE").click(p(100, 0)).click(p(0, 0)).click(p(0, 100))
+
+    const arc = cad.only<ArcEntity>("arc")
+    expect(arc.center).toBeCloseToPoint(p(0, 0))
+    expect(arc.radius).toBeCloseTo(100)
+    expect(arc.startAngle).toBeCloseToAngle(0)
+    expect(arc.endAngle).toBeCloseToAngle(deg(90))
+  })
+
+  it("Centre-Start-End takes the centre first", () => {
+    const cad = createHarness()
+
+    cad.command("ARCCSE").click(p(0, 0)).click(p(100, 0)).click(p(0, 100))
+
+    const arc = cad.only<ArcEntity>("arc")
+    expect(arc.center).toBeCloseToPoint(p(0, 0))
+    expect(arc.startAngle).toBeCloseToAngle(0)
+    expect(arc.endAngle).toBeCloseToAngle(deg(90))
+  })
+})
+
+describe("RECTANG", () => {
+  it("draws a closed polyline from two corners", () => {
+    const cad = createHarness()
+
+    cad.command("RECTANG").click(p(0, 0)).click(p(200, 120))
+
+    const rect = cad.only<PolylineEntity>("polyline")
+    expect(rect.closed).toBe(true)
+    expect(rect.vertices).toBeCloseToPoints([
+      p(0, 0),
+      p(200, 0),
+      p(200, 120),
+      p(0, 120),
+    ])
+  })
+
+  it("accepts relative dimensions for the second corner", () => {
+    const cad = createHarness()
+
+    cad.command("RECTANG").type("0,0").enter().type("@200,120").enter()
+
+    expect(cad.only<PolylineEntity>("polyline").vertices).toBeCloseToPoints([
+      p(0, 0),
+      p(200, 0),
+      p(200, 120),
+      p(0, 120),
+    ])
+  })
+
+  it("ignores a degenerate rectangle", () => {
+    const cad = createHarness()
+
+    cad.command("RECTANG").click(p(0, 0)).click(p(200, 0))
+
+    expect(cad.entityCount).toBe(0)
+  })
+})
+
+describe("POLYGON", () => {
+  it("inscribes the vertices in the radius circle", () => {
+    const cad = createHarness()
+
+    cad
+      .command("POLYGON")
+      .type("6")
+      .enter()
+      .type("0,0")
+      .enter()
+      .type("100")
+      .enter()
+
+    const polygon = cad.only<PolylineEntity>("polyline")
+    expect(polygon.closed).toBe(true)
+    expect(polygon.vertices).toHaveLength(6)
+    for (const vertex of polygon.vertices) {
+      expect(V.length(vertex)).toBeCloseTo(100, 5)
+    }
+  })
+
+  it("puts the radius on the edge midpoints when circumscribed", () => {
+    const cad = createHarness()
+
+    cad
+      .command("POLYGON")
+      .type("5")
+      .enter()
+      .type("0,0")
+      .enter()
+      .option("t") // Type: Inscribed → Circumscribed
+      .type("100")
+      .enter()
+
+    const polygon = cad.only<PolylineEntity>("polyline")
+    expect(polygon.vertices).toHaveLength(5)
+    // Circumscribed: the radius is the apothem, so vertices sit further out.
+    expect(V.length(polygon.vertices[0])).toBeCloseTo(
+      100 / Math.cos(Math.PI / 5),
+      5
+    )
+    const edgeMidpoint = V.midpoint(polygon.vertices[0], polygon.vertices[1])
+    expect(V.length(edgeMidpoint)).toBeCloseTo(100, 5)
+  })
+
+  it("clamps the side count to a drawable range", () => {
+    const cad = createHarness()
+
+    cad
+      .command("POLYGON")
+      .type("2")
+      .enter()
+      .type("0,0")
+      .enter()
+      .type("100")
+      .enter()
+
+    expect(
+      cad.only<PolylineEntity>("polyline").vertices.length
+    ).toBeGreaterThanOrEqual(3)
+  })
+})
+
+describe("PLINE", () => {
+  it("accumulates the picks into a single connected entity", () => {
+    const cad = createHarness()
+
+    cad
+      .command("PLINE")
+      .click(p(0, 0))
+      .click(p(100, 0))
+      .click(p(100, 100))
+      .enter()
+
+    const poly = cad.only<PolylineEntity>("polyline")
+    expect(poly.vertices).toBeCloseToPoints([p(0, 0), p(100, 0), p(100, 100)])
+    expect(poly.closed).toBe(false)
+    expect(cad.entityCount).toBe(1)
+  })
+
+  it("finishes on Enter straight after a pick, with no cursor movement", () => {
+    // Regression: the length/angle prompt has no live heading immediately after
+    // a pick, so Enter could not resolve and was silently swallowed until the
+    // mouse moved.
+    const cad = createHarness()
+
+    cad.command("PLINE").click(p(0, 0)).click(p(100, 0)).enter()
+
+    expect(cad.entityCount).toBe(1)
+    expect(cad.only<PolylineEntity>("polyline").vertices).toBeCloseToPoints([
+      p(0, 0),
+      p(100, 0),
+    ])
+    expect(cad.activeToolId()).toBe("select")
+  })
+
+  it("keeps the polyline when Escape ends the command", () => {
+    // Regression: Escape used to discard the accumulated vertices because the
+    // tool reset its state before the commit-on-deactivate could run. AutoCAD
+    // keeps what you drew, exactly as Enter does.
+    const cad = createHarness()
+
+    cad
+      .command("PLINE")
+      .click(p(0, 0))
+      .click(p(100, 0))
+      .click(p(100, 100))
+      .escape()
+
+    expect(cad.entityCount).toBe(1)
+    expect(cad.only<PolylineEntity>("polyline").vertices).toHaveLength(3)
+  })
+
+  it("discards a chain too short to be geometry", () => {
+    const cad = createHarness()
+
+    cad.command("PLINE").click(p(0, 0)).escape()
+
+    expect(cad.entityCount).toBe(0)
+  })
+
+  it("is a single undo step no matter how many vertices", () => {
+    const cad = createHarness()
+
+    cad
+      .command("PLINE")
+      .click(p(0, 0))
+      .click(p(100, 0))
+      .click(p(100, 100))
+      .click(p(0, 100))
+      .enter()
+    cad.undo()
+
+    expect(cad.entityCount).toBe(0)
+  })
+
+  it("Close joins the last vertex back to the first", () => {
+    const cad = createHarness()
+
+    cad
+      .command("PLINE")
+      .click(p(0, 0))
+      .click(p(100, 0))
+      .click(p(100, 100))
+      .click(p(0, 100))
+      .option("c")
+
+    const poly = cad.only<PolylineEntity>("polyline")
+    expect(poly.closed).toBe(true)
+    expect(poly.vertices).toHaveLength(4)
+  })
+
+  it("Undo steps back one vertex without leaving the command", () => {
+    const cad = createHarness()
+
+    cad
+      .command("PLINE")
+      .click(p(0, 0))
+      .click(p(50, 0))
+      .click(p(50, 50))
+      .option("u")
+      .click(p(0, 80))
+      .enter()
+
+    const poly = cad.only<PolylineEntity>("polyline")
+    expect(poly.vertices).toBeCloseToPoints([p(0, 0), p(50, 0), p(0, 80)])
+  })
+
+  it("Arc mode curves the next segment tangentially", () => {
+    const cad = createHarness()
+
+    cad
+      .command("PLINE")
+      .type("0,0")
+      .enter()
+      .type("@100,0")
+      .enter()
+      .option("a")
+      .type("@0,100")
+      .enter()
+      .enter()
+
+    const poly = cad.only<PolylineEntity>("polyline")
+    expect(poly.vertices).toBeCloseToPoints([p(0, 0), p(100, 0), p(100, 100)])
+    // Tangent to the +X segment, turning through 180°: bulge = tan(180°/4) = 1.
+    expect(poly.bulges?.[1]).toBeCloseTo(1, 5)
+  })
+
+  it("accepts typed relative coordinates", () => {
+    const cad = createHarness()
+
+    cad
+      .command("PLINE")
+      .type("0,0")
+      .enter()
+      .type("@100,0")
+      .enter()
+      .type("@0,100")
+      .enter()
+      .enter()
+
+    expect(cad.only<PolylineEntity>("polyline").vertices).toBeCloseToPoints([
+      p(0, 0),
+      p(100, 0),
+      p(100, 100),
+    ])
+  })
+})

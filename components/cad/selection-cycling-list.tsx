@@ -1,0 +1,86 @@
+"use client"
+
+import * as React from "react"
+import { Menu } from "@base-ui/react/menu"
+import { CheckIcon } from "lucide-react"
+
+import { CadEngine, EngineState } from "@/cad"
+
+import { cn } from "@/lib/utils"
+
+/**
+ * AutoCAD's Selection list box: with selection cycling set to show the list
+ * (SELECTIONCYCLING 2), clicking where objects overlap asks which one was
+ * meant instead of taking the topmost. Hovering a row highlights that object on
+ * the canvas; choosing one replays the click against it.
+ *
+ * Controlled Base UI `Menu` anchored to a virtual element at the click, exactly
+ * like the object-snap override menu — the canvas is engine-owned, so there is
+ * no DOM trigger.
+ */
+export function SelectionCyclingList({
+  engine,
+  state,
+}: {
+  engine: CadEngine
+  state: EngineState
+}) {
+  const { candidates, currentId, listAt } = state.selectionCycling
+
+  const anchor = React.useMemo(
+    () =>
+      listAt
+        ? {
+            getBoundingClientRect: () => new DOMRect(listAt.x, listAt.y, 0, 0),
+          }
+        : null,
+    [listAt]
+  )
+
+  return (
+    <Menu.Root
+      open={!!listAt}
+      onOpenChange={(open) => {
+        if (!open) engine.closeCyclingList()
+      }}
+    >
+      <Menu.Portal>
+        <Menu.Backdrop />
+        <Menu.Positioner
+          anchor={anchor}
+          positionMethod="fixed"
+          side="right"
+          align="start"
+          sideOffset={2}
+          className="z-50"
+        >
+          <Menu.Popup className="min-w-44 origin-(--transform-origin) overflow-hidden rounded-md border bg-popover p-1 text-popover-foreground shadow-md transition-[transform,opacity] outline-none data-ending-style:scale-95 data-ending-style:opacity-0 data-starting-style:scale-95 data-starting-style:opacity-0">
+            <div className="px-2 py-1.5 text-xs text-muted-foreground">
+              Selection
+            </div>
+            {candidates.map((candidate) => (
+              <Menu.Item
+                key={candidate.id}
+                onMouseEnter={() =>
+                  engine.previewCyclingCandidate(candidate.id)
+                }
+                onClick={() => engine.chooseCyclingCandidate(candidate.id)}
+                className={cn(
+                  "relative flex cursor-default items-center rounded-sm py-1.5 pr-8 pl-2 text-sm outline-hidden select-none data-highlighted:bg-accent data-highlighted:text-accent-foreground",
+                  candidate.id === currentId && "font-medium"
+                )}
+              >
+                {candidate.label}
+                {candidate.id === currentId && (
+                  <span className="pointer-events-none absolute right-2 flex size-4 items-center justify-center">
+                    <CheckIcon className="size-4" />
+                  </span>
+                )}
+              </Menu.Item>
+            ))}
+          </Menu.Popup>
+        </Menu.Positioner>
+      </Menu.Portal>
+    </Menu.Root>
+  )
+}
