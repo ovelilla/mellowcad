@@ -42,6 +42,9 @@ Tokens flip between themes, so a colour that reads well in dark can be unusable 
   label instead of the raw value.
 - `onValueChange` can deliver `null` — guard before committing.
 - Do not nest a Tooltip and a Popover on the same trigger; the popover stops opening.
+- `Panel` (from `toolbar-primitives.tsx`) does **not** forward props, so
+  `<PopoverTrigger render={<Panel>…} />` drops the click handler and the popover never opens —
+  silently. Render the `Button` as the trigger and wrap the whole `Popover` in the `Panel`.
 
 ## Where a control belongs
 
@@ -52,6 +55,9 @@ Tokens flip between themes, so a colour that reads well in dark can be unusable 
   Fillet/Chamfer, Rectangle/Polygon, Break) are flyouts; icon-only with `side="right"` tooltips.
   Unlisted tools fall into a trailing "More" group, so a tool that belongs elsewhere in the chrome
   (the view tools, which live in the CommandBar) must be listed in `RAIL_EXCLUDED`.
+- **AboutPanel** (bottom-right) — the only non-CAD chrome: what the app is, that drawings never
+  leave the browser, a three-key quick start and the contact address. Product/meta copy goes here,
+  not into a drafting surface.
 - The dynamic-input box is `pointer-events-none` and keyboard-driven — never make it clickable.
 
 ## Icons

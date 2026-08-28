@@ -1,6 +1,7 @@
 "use client"
 
 import { useCadEngine } from "@/hooks/useCadEngine"
+import { AboutPanel } from "./about-panel"
 import { CommandBar } from "./command-bar"
 import { CommandLine } from "./command-line"
 import { ToolRail } from "./tool-rail"
@@ -63,6 +64,10 @@ export function CadWorkspace() {
 
           <div className="pointer-events-none absolute top-4 right-4 z-10">
             <PropertiesPanel engine={engine} state={state} />
+          </div>
+
+          <div className="pointer-events-none absolute right-4 bottom-4 z-10">
+            <AboutPanel />
           </div>
 
           <SnapOverrideMenu engine={engine} state={state} />
