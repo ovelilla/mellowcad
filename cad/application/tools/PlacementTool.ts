@@ -271,7 +271,8 @@ export abstract class PlacementTool implements Tool {
         ...entityScenePrimitive(
           viewport,
           this.transformEntity(entity, delta),
-          ghost
+          ghost,
+          { blocks: ctx.blocks }
         )
       )
     }

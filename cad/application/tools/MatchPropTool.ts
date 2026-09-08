@@ -134,18 +134,22 @@ export class MatchPropTool implements Tool {
     }
     if (this.state.phase === "destination") {
       out.push(
-        ...entityScenePrimitive(ctx.viewport, this.state.source, {
-          color: THEME.selected,
-          width: 2,
-        })
+        ...entityScenePrimitive(
+          ctx.viewport,
+          this.state.source,
+          { color: THEME.selected, width: 2 },
+          { blocks: ctx.blocks }
+        )
       )
     }
     if (this.state.hover) {
       out.push(
-        ...entityScenePrimitive(ctx.viewport, this.state.hover, {
-          color: THEME.entityHover,
-          width: 2,
-        })
+        ...entityScenePrimitive(
+          ctx.viewport,
+          this.state.hover,
+          { color: THEME.entityHover, width: 2 },
+          { blocks: ctx.blocks }
+        )
       )
     }
     return out

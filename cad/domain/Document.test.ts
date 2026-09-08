@@ -292,7 +292,7 @@ describe("load", () => {
   it("always keeps a base layer, whatever the file supplied", () => {
     const document = new CadDocument()
 
-    document.load([], undefined, [layerOf("only")])
+    document.load([], { layers: [layerOf("only")] })
 
     expect(document.getLayer(DEFAULT_LAYER_ID)).toBeDefined()
   })
@@ -302,8 +302,7 @@ describe("load", () => {
 
     document.load(
       [lineOf(p(0, 0), p(1, 0), { id: "L1", layerId: "vanished" })],
-      undefined,
-      [layerOf("present")]
+      { layers: [layerOf("present")] }
     )
 
     expect(document.get("L1")?.layerId).toBe(DEFAULT_LAYER_ID)
@@ -325,7 +324,10 @@ describe("load", () => {
   it("falls back to the base layer when the named current layer is gone", () => {
     const document = new CadDocument()
 
-    document.load([], undefined, [layerOf("present")], "missing")
+    document.load([], {
+      layers: [layerOf("present")],
+      currentLayerId: "missing",
+    })
 
     expect(document.getCurrentLayerId()).toBe(DEFAULT_LAYER_ID)
   })
@@ -359,9 +361,7 @@ describe("dimension styles", () => {
   it("always keeps the base style, whatever the file supplied", () => {
     const document = new CadDocument()
 
-    document.load([], undefined, undefined, undefined, undefined, undefined, [
-      createDimStyle("Only"),
-    ])
+    document.load([], { dimStyles: [createDimStyle("Only")] })
 
     expect(document.getDimStyle(DEFAULT_DIM_STYLE_ID)).toBeDefined()
   })
@@ -369,15 +369,9 @@ describe("dimension styles", () => {
   it("remaps a dimension whose style did not survive the load", () => {
     const document = new CadDocument()
 
-    document.load(
-      [dim("vanished")],
-      undefined,
-      undefined,
-      undefined,
-      undefined,
-      undefined,
-      [createDimStyle("present")]
-    )
+    document.load([dim("vanished")], {
+      dimStyles: [createDimStyle("present")],
+    })
 
     const loaded = document.get("D1")
     expect(loaded?.type === "dimension" && loaded.styleId).toBe(

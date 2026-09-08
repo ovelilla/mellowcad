@@ -27,6 +27,8 @@
 
 import { normalizeColor } from "../domain/colors"
 import {
+  BlockDefinition,
+  createBlockDefinition,
   Entity,
   nextEntityId,
   DimensionKind,
@@ -78,7 +80,7 @@ import {
 export const DRAWING_FILE_TYPE = "easycad-drawing"
 
 /** Current schema version written by {@link serializeDrawing}. */
-export const DRAWING_FILE_VERSION = 15
+export const DRAWING_FILE_VERSION = 16
 
 /** MIME type a serialised drawing is handed to the host as. */
 export const DRAWING_FILE_MIME_TYPE = "application/json"
@@ -95,6 +97,7 @@ export interface DrawingSnapshot {
   readonly currentTextStyleId: TextStyleId
   readonly dimStyles: readonly DimStyle[]
   readonly currentDimStyleId: DimStyleId
+  readonly blocks: readonly BlockDefinition[]
   readonly entities: readonly Entity[]
 }
 
@@ -110,6 +113,7 @@ export interface DrawingFile {
   readonly currentTextStyleId: TextStyleId
   readonly dimStyles: DimStyle[]
   readonly currentDimStyleId: DimStyleId
+  readonly blocks: BlockDefinition[]
   readonly entities: Entity[]
 }
 
@@ -122,6 +126,7 @@ export interface ParsedDrawing {
   readonly currentTextStyleId: TextStyleId
   readonly dimStyles: DimStyle[]
   readonly currentDimStyleId: DimStyleId
+  readonly blocks: BlockDefinition[]
   readonly entities: Entity[]
 }
 
@@ -137,6 +142,7 @@ export function toDrawingFile(snapshot: DrawingSnapshot): DrawingFile {
     currentTextStyleId: snapshot.currentTextStyleId,
     dimStyles: snapshot.dimStyles.map(cloneDimStyle),
     currentDimStyleId: snapshot.currentDimStyleId,
+    blocks: snapshot.blocks.map(cloneBlock),
     entities: snapshot.entities.map(cloneEntity),
   }
 }
@@ -172,6 +178,10 @@ export function parseDrawingFile(text: string): ParsedDrawing {
     )
   }
 
+  const blocks = parseBlocks(data.blocks)
+  const defined = new Set(blocks.map((block) => block.id))
+  const entities = parseEntities(data.entities)
+
   return {
     settings: parseSettings(data.settings),
     layers: parseLayers(data.layers),
@@ -180,7 +190,12 @@ export function parseDrawingFile(text: string): ParsedDrawing {
     currentTextStyleId: parseId(data.currentTextStyleId, DEFAULT_TEXT_STYLE_ID),
     dimStyles: parseDimStyles(data.dimStyles),
     currentDimStyleId: parseId(data.currentDimStyleId, DEFAULT_DIM_STYLE_ID),
-    entities: parseEntities(data.entities),
+    blocks,
+    // A reference to a block this file does not define draws nothing and can
+    // never be repaired, so it is dropped like any other malformed entity.
+    entities: entities.filter(
+      (entity) => entity.type !== "insert" || defined.has(entity.blockId)
+    ),
   }
 }
 
@@ -278,7 +293,59 @@ function cloneEntity(entity: Entity): Entity {
         patternAngle: entity.patternAngle,
         origin: { x: entity.origin.x, y: entity.origin.y },
       }
+    case "insert":
+      return {
+        id: entity.id,
+        type: "insert",
+        layerId: entity.layerId,
+        ...overrides,
+        blockId: entity.blockId,
+        position: { x: entity.position.x, y: entity.position.y },
+        scale: entity.scale,
+        rotation: entity.rotation,
+        ...(entity.mirrored ? { mirrored: true } : {}),
+      }
   }
+}
+
+function cloneBlock(block: BlockDefinition): BlockDefinition {
+  return {
+    id: block.id,
+    name: block.name,
+    basePoint: { x: block.basePoint.x, y: block.basePoint.y },
+    entities: block.entities.map(cloneEntity),
+  }
+}
+
+/**
+ * The block table. A definition needs a name (which is its identity) and at
+ * least one object; anything else is skipped, like a malformed entity.
+ */
+function parseBlocks(value: unknown): BlockDefinition[] {
+  if (!Array.isArray(value)) return []
+  const blocks: BlockDefinition[] = []
+  const seen = new Set<string>()
+  for (const raw of value) {
+    if (!isRecord(raw)) continue
+    const name =
+      typeof raw.name === "string" && raw.name.length > 0
+        ? raw.name
+        : typeof raw.id === "string" && raw.id.length > 0
+          ? raw.id
+          : null
+    if (!name || seen.has(name)) continue
+    const entities = parseEntities(raw.entities)
+    if (entities.length === 0) continue
+    seen.add(name)
+    blocks.push(
+      createBlockDefinition(
+        name,
+        parseVec2(raw.basePoint) ?? { x: 0, y: 0 },
+        entities
+      )
+    )
+  }
+  return blocks
 }
 
 function cloneDimStyle(style: DimStyle): DimStyle {
@@ -466,6 +533,24 @@ function parseEntity(raw: unknown): Entity | null {
           ? raw.patternAngle
           : DEFAULT_HATCH_ANGLE,
         origin: parseVec2(raw.origin) ?? { x: 0, y: 0 },
+      }
+    }
+    case "insert": {
+      const position = parseVec2(raw.position)
+      if (!position) return null
+      if (typeof raw.blockId !== "string" || raw.blockId.length === 0) {
+        return null
+      }
+      return {
+        id,
+        type: "insert",
+        layerId,
+        ...overrides,
+        blockId: raw.blockId,
+        position,
+        scale: isFiniteNumber(raw.scale) && raw.scale > 0 ? raw.scale : 1,
+        rotation: isFiniteNumber(raw.rotation) ? raw.rotation : 0,
+        ...(raw.mirrored === true ? { mirrored: true } : {}),
       }
     }
     default:

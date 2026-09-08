@@ -364,7 +364,8 @@ export class RotateTool implements Tool {
           viewport,
           this.state.originals,
           this.state.base,
-          rotation
+          rotation,
+          ctx.blocks
         )
         pushArm(out, viewport, this.state.base, this.state.current, arm)
         break
@@ -391,7 +392,8 @@ export class RotateTool implements Tool {
           viewport,
           this.state.originals,
           this.state.base,
-          rotation
+          rotation,
+          ctx.blocks
         )
         pushArm(out, viewport, this.state.base, this.state.current, arm)
         break
@@ -630,13 +632,19 @@ function pushGhost(
   viewport: ToolContext["viewport"],
   originals: readonly Entity[],
   base: Vec2,
-  rotationDeg: number
+  rotationDeg: number,
+  blocks: ToolContext["blocks"]
 ): void {
   const rad = (rotationDeg * Math.PI) / 180
   const ghost: StrokeStyle = { color: THEME.preview, width: 1, dash: [6, 4] }
   for (const entity of originals) {
     out.push(
-      ...entityScenePrimitive(viewport, rotateEntity(entity, base, rad), ghost)
+      ...entityScenePrimitive(
+        viewport,
+        rotateEntity(entity, base, rad),
+        ghost,
+        { blocks }
+      )
     )
   }
 }

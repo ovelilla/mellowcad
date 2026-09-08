@@ -36,6 +36,11 @@ Known harness behaviours worth remembering: grips are hit before click-selection
 meant to toggle must avoid the entity's own grip positions), and the rubber band is construction
 geometry, so anchor-free snaps are best asserted on the _first_ point.
 
+The harness parks the pointer wherever the last gesture left it, and SelectTool draws a **rollover
+preview** of whatever is under it. A test that counts scene primitives must therefore `moveTo` a
+clear spot first, or it counts everything twice. Seed a block table with the `blocks` option, the
+same way `entities` seeds geometry.
+
 ## Helpers
 
 - `test/matchers.ts` — `toBeCloseToPoint`, `toBeCloseToPoints`, `toBeCloseToAngle`.

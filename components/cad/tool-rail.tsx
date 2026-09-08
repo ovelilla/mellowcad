@@ -49,6 +49,7 @@ import {
   ArcIcon,
   ArcStartCenterEndIcon,
   ArcCenterStartEndIcon,
+  BlockIcon,
   BreakIcon,
   BreakAtPointIcon,
   ChamferIcon,
@@ -62,6 +63,7 @@ import {
   DimSpaceIcon,
   FilletIcon,
   HatchIcon,
+  InsertIcon,
   OffsetIcon,
   PolylineIcon,
   StretchIcon,
@@ -82,6 +84,8 @@ const TOOL_ICONS: Record<string, LucideIcon> = {
   rectangle: Square,
   polygon: Pentagon,
   hatch: HatchIcon,
+  block: BlockIcon,
+  insert: InsertIcon,
   offset: OffsetIcon,
   move: Move,
   copy: CopyPlus,
@@ -208,6 +212,12 @@ const RAIL_LAYOUT: readonly RailGroup[] = [
         ],
       },
     ],
+  },
+  {
+    id: "block",
+    label: "Block",
+    // The ribbon's Block panel puts Insert first and Create Block after it.
+    items: ["insert", "block"],
   },
   {
     id: "measure",

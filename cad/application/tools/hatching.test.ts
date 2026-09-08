@@ -6,6 +6,7 @@ import {
   hatchGeometry,
   hatchLoopFromEntity,
   mirrorEntity,
+  pointInsideHatch,
   translateEntity,
 } from "../../domain/entities"
 import {
@@ -36,10 +37,117 @@ function hatchOnly(entities: readonly { type: string }[]): HatchEntity {
   return hatch as unknown as HatchEntity
 }
 
+/** Four separate lines drawn corner to corner: an area nothing encloses alone. */
+function looseSquare(min: number, max: number) {
+  return [
+    lineOf(p(min, min), p(max, min)),
+    lineOf(p(max, min), p(max, max)),
+    lineOf(p(max, max), p(min, max)),
+    lineOf(p(min, max), p(min, min)),
+  ]
+}
+
+describe("HATCH boundary by Pick internal point", () => {
+  it("is the prompt the command opens with", () => {
+    const h = createHarness({ entities: [SQUARE] })
+    h.command("HATCH")
+
+    expect(h.optionKeys()).toEqual(["P", "S"])
+  })
+
+  it("fills an area enclosed by loose lines", () => {
+    const h = createHarness({ entities: looseSquare(0, 100) })
+    h.command("HATCH").click(p(50, 50)).enter()
+
+    const hatch = hatchOnly(h.entities())
+    expect(hatch.loops).toHaveLength(1)
+    expect(hatch.loops[0].vertices).toHaveLength(4)
+    expect(hatchGeometry(hatch).lines.length).toBeGreaterThan(0)
+    expect(h.activeToolId()).toBe("select")
+  })
+
+  it("leaves an enclosed island unfilled", () => {
+    const h = createHarness({
+      entities: [...looseSquare(0, 100), ...looseSquare(40, 60)],
+    })
+    h.command("HATCH").click(p(10, 10)).enter()
+
+    const hatch = hatchOnly(h.entities())
+    expect(hatch.loops).toHaveLength(2)
+    expect(pointInsideHatch(hatch, p(10, 10))).toBe(true)
+    expect(pointInsideHatch(hatch, p(50, 50))).toBe(false)
+  })
+
+  it("makes one hatch out of several internal points", () => {
+    const h = createHarness({
+      entities: [...looseSquare(0, 100), ...looseSquare(200, 300)],
+    })
+    h.command("HATCH").click(p(50, 50)).click(p(250, 250)).enter()
+
+    expect(h.typeCounts().hatch).toBe(1)
+    expect(hatchOnly(h.entities()).loops).toHaveLength(2)
+  })
+
+  it("takes a typed coordinate as the internal point", () => {
+    const h = createHarness({ entities: looseSquare(0, 100) })
+    h.command("HATCH").type("50,50").enter().enter()
+
+    expect(hatchOnly(h.entities()).loops).toHaveLength(1)
+  })
+
+  it("says so when the point is not enclosed, and keeps prompting", () => {
+    const h = createHarness({ entities: looseSquare(0, 100) })
+    h.command("HATCH").click(p(300, 300))
+
+    expect(h.commandLog()).toContain("Valid hatch boundary not found.")
+    expect(h.activeToolId()).toBe("hatch")
+    expect(h.typeCounts().hatch).toBeUndefined()
+  })
+
+  it("only traces what is visible, as AutoCAD's boundary set does", () => {
+    // The default 1000×800 viewport shows x/y within ±500/±400 at scale 1.
+    const h = createHarness({ entities: looseSquare(2000, 2100) })
+    h.command("HATCH").click(p(2050, 2050))
+
+    expect(h.commandLog()).toContain("Valid hatch boundary not found.")
+  })
+
+  it("previews the fill as soon as an area is picked", () => {
+    const h = createHarness({ entities: looseSquare(0, 100) })
+    const previews = () =>
+      h.scene().primitives.filter((prim) => {
+        const stroke = "stroke" in prim ? prim.stroke : undefined
+        return stroke?.color === THEME.preview
+      }).length
+
+    h.command("HATCH")
+    expect(previews()).toBe(0)
+    h.click(p(50, 50))
+    expect(previews()).toBeGreaterThan(0)
+  })
+
+  it("ends without creating anything when nothing was picked", () => {
+    const h = createHarness({ entities: looseSquare(0, 100) })
+    h.command("HATCH").enter()
+
+    expect(h.typeCounts().hatch).toBeUndefined()
+    expect(h.activeToolId()).toBe("select")
+  })
+
+  it("undoes the whole hatch in one step", () => {
+    const h = createHarness({ entities: looseSquare(0, 100) })
+    h.command("HATCH").click(p(50, 50)).enter()
+    h.undo()
+
+    expect(h.typeCounts().hatch).toBeUndefined()
+    expect(h.typeCounts().line).toBe(4)
+  })
+})
+
 describe("HATCH boundary by Select objects", () => {
   it("fills one selected closed polyline with the default pattern", () => {
     const h = createHarness({ entities: [SQUARE] })
-    h.command("HATCH").click(p(50, 0)).enter()
+    h.command("HATCH").option("s").click(p(50, 0)).enter()
 
     const hatch = hatchOnly(h.entities())
     expect(hatch.loops).toHaveLength(1)
@@ -53,7 +161,7 @@ describe("HATCH boundary by Select objects", () => {
 
   it("turns a circle into a two-vertex loop of semicircle bulges", () => {
     const h = createHarness({ entities: [circleOf(p(0, 0), 50, { id: "c" })] })
-    h.command("HATCH").click(p(50, 0)).enter()
+    h.command("HATCH").option("s").click(p(50, 0)).enter()
 
     const hatch = hatchOnly(h.entities())
     expect(hatch.loops[0].vertices).toBeCloseToPoints([p(50, 0), p(-50, 0)])
@@ -69,7 +177,7 @@ describe("HATCH boundary by Select objects", () => {
     const h = createHarness({
       entities: [SQUARE, rectOf(p(200, 0), p(300, 100), { id: "sq2" })],
     })
-    h.command("HATCH").click(p(50, 0)).click(p(250, 0)).enter()
+    h.command("HATCH").option("s").click(p(50, 0)).click(p(250, 0)).enter()
 
     expect(h.typeCounts().hatch).toBe(1)
     expect(hatchOnly(h.entities()).loops).toHaveLength(2)
@@ -79,14 +187,14 @@ describe("HATCH boundary by Select objects", () => {
     const h = createHarness({
       entities: [SQUARE, rectOf(p(200, 0), p(300, 100), { id: "sq2" })],
     })
-    h.command("HATCH").drag(p(400, 50), p(-50, 50)).enter()
+    h.command("HATCH").option("s").drag(p(400, 50), p(-50, 50)).enter()
 
     expect(hatchOnly(h.entities()).loops).toHaveLength(2)
   })
 
   it("ignores objects that do not close an area", () => {
     const h = createHarness({ entities: [lineOf(p(0, 0), p(100, 0))] })
-    h.command("HATCH").click(p(50, 0)).enter()
+    h.command("HATCH").option("s").click(p(50, 0)).enter()
 
     expect(h.typeCounts().hatch).toBeUndefined()
     expect(h.activeToolId()).toBe("select")
@@ -96,7 +204,7 @@ describe("HATCH boundary by Select objects", () => {
     const h = createHarness({
       entities: [SQUARE, lineOf(p(0, 200), p(100, 200), { id: "l" })],
     })
-    h.command("HATCH")
+    h.command("HATCH").option("s")
     const hovers = () =>
       h.scene().primitives.filter((prim) => {
         const stroke = "stroke" in prim ? prim.stroke : undefined
@@ -111,7 +219,7 @@ describe("HATCH boundary by Select objects", () => {
 
   it("previews the fill while the boundary set is being built", () => {
     const h = createHarness({ entities: [SQUARE] })
-    h.command("HATCH")
+    h.command("HATCH").option("s")
     const previews = () =>
       h.scene().primitives.filter((prim) => {
         const stroke = "stroke" in prim ? prim.stroke : undefined
@@ -125,7 +233,7 @@ describe("HATCH boundary by Select objects", () => {
 
   it("stays behind its boundary (HPDRAWORDER 3), for the eye and for the pick", () => {
     const h = createHarness({ entities: [SQUARE] })
-    h.command("HATCH").option("p").type("SOLID").enter()
+    h.command("HATCH").option("s").option("p").type("SOLID").enter()
     h.click(p(50, 0)).enter()
 
     // Painted first, so the fill never covers the outline it was traced from.
@@ -146,7 +254,7 @@ describe("HATCH boundary by Select objects", () => {
 
   it("undoes the whole hatch in one step", () => {
     const h = createHarness({ entities: [SQUARE] })
-    h.command("HATCH").click(p(50, 0)).enter()
+    h.command("HATCH").option("s").click(p(50, 0)).enter()
     expect(h.typeCounts().hatch).toBe(1)
 
     h.undo()
@@ -156,7 +264,7 @@ describe("HATCH boundary by Select objects", () => {
 
   it("creates nothing when Escape ends the command", () => {
     const h = createHarness({ entities: [SQUARE] })
-    h.command("HATCH").click(p(50, 0)).escape()
+    h.command("HATCH").option("s").click(p(50, 0)).escape()
 
     expect(h.typeCounts().hatch).toBeUndefined()
     expect(h.activeToolId()).toBe("select")
@@ -175,7 +283,7 @@ describe("HATCH Properties", () => {
 
   it("skips the scale and angle prompts for a solid fill", () => {
     const h = createHarness({ entities: [SQUARE] })
-    h.command("HATCH").option("p").type("SOLID").enter()
+    h.command("HATCH").option("s").option("p").type("SOLID").enter()
 
     // Back at the keyword-only Select prompt: no field, the Properties chip.
     expect(h.state().dynamicInput?.fields ?? []).toHaveLength(0)
@@ -189,7 +297,7 @@ describe("HATCH Properties", () => {
 
   it("asks for a scale then an angle for a real pattern", () => {
     const h = createHarness({ entities: [SQUARE] })
-    h.command("HATCH").option("p").type("ANSI31").enter()
+    h.command("HATCH").option("s").option("p").type("ANSI31").enter()
     expect(h.state().dynamicInput?.fields[0].label).toBe(
       "Specify a scale for pattern"
     )
@@ -210,6 +318,7 @@ describe("HATCH Properties", () => {
       entities: [SQUARE, rectOf(p(200, 0), p(300, 100), { id: "sq2" })],
     })
     h.command("HATCH")
+      .option("s")
       .option("p")
       .type("ANSI31")
       .enter()
@@ -220,7 +329,7 @@ describe("HATCH Properties", () => {
       .click(p(50, 0))
       .enter()
 
-    h.command("HATCH").click(p(250, 0)).enter()
+    h.command("HATCH").option("s").click(p(250, 0)).enter()
     const hatches = h.entities().filter((e) => e.type === "hatch")
     expect(hatches).toHaveLength(2)
     expect((hatches[1] as HatchEntity).patternScale).toBe(20)
@@ -331,6 +440,7 @@ describe("hatch pattern geometry", () => {
   it("refuses to create a hatch that is too dense, and says so", () => {
     const h = createHarness({ entities: [SQUARE] })
     h.command("HATCH")
+      .option("s")
       .option("p")
       .type("ANSI31")
       .enter()
@@ -349,7 +459,7 @@ describe("hatch pattern geometry", () => {
 describe("hatch as an object", () => {
   it("picks anywhere inside the area, not just on its boundary", () => {
     const h = createHarness({ entities: [SQUARE] })
-    h.command("HATCH").click(p(50, 0)).enter()
+    h.command("HATCH").option("s").click(p(50, 0)).enter()
     const hatch = hatchOnly(h.entities())
 
     // The command has already dropped back to Select.
@@ -374,6 +484,7 @@ describe("hatch as an object", () => {
   it("survives a save and reload", () => {
     const h = createHarness({ entities: [SQUARE] })
     h.command("HATCH")
+      .option("s")
       .option("p")
       .type("ANSI31")
       .enter()
@@ -393,6 +504,7 @@ describe("hatch as an object", () => {
         currentTextStyleId: h.runtime.document.getCurrentTextStyleId(),
         dimStyles: h.runtime.document.getDimStyles(),
         currentDimStyleId: h.runtime.document.getCurrentDimStyleId(),
+        blocks: h.runtime.document.getBlocks(),
         entities: h.entities(),
       })
     )
@@ -404,7 +516,7 @@ describe("hatch as an object", () => {
 
   it("shows its pattern in the Properties palette, scale and angle editable", () => {
     const h = createHarness({ entities: [SQUARE] })
-    h.command("HATCH").click(p(50, 0)).enter()
+    h.command("HATCH").option("s").click(p(50, 0)).enter()
     h.click(p(50, 50))
 
     const rows = h.state().selectionInfo?.groups[0].rows ?? []
@@ -431,6 +543,9 @@ describe("hatch in the scene", () => {
         ),
       ],
     })
+    // Away from the fill: hovering it would add a rollover preview of the very
+    // path being counted.
+    h.moveTo(p(400, 400))
     const paths = h
       .scene()
       .primitives.filter((prim) => prim.kind === "path" && prim.fill)

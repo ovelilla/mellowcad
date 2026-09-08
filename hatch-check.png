@@ -1,0 +1,13 @@
+{
+  "entities": [
+    "line",
+    "line",
+    "line",
+    "line",
+    "circle",
+    "hatch"
+  ],
+  "scale": 20,
+  "loops": 2,
+  "prompt": "0\nStyles\nx:\n69.816\ny:\n0.123\n4.08×\nCommand: HATCH\nCommand: HATCH\nCommand:\nmm"
+}

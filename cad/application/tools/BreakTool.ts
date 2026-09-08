@@ -293,6 +293,7 @@ function computeBreak(
     case "text":
     case "dimension":
     case "hatch":
+    case "insert":
       return null
   }
 }

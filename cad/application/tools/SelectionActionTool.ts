@@ -145,10 +145,12 @@ export abstract class SelectionActionTool implements Tool {
       )
     }
     if (this.state.phase !== "selecting" || !this.state.hover) return []
-    return entityScenePrimitive(ctx.viewport, this.state.hover, {
-      color: THEME.entityHover,
-      width: 2,
-    })
+    return entityScenePrimitive(
+      ctx.viewport,
+      this.state.hover,
+      { color: THEME.entityHover, width: 2 },
+      { blocks: ctx.blocks }
+    )
   }
 
   /**

@@ -8,6 +8,8 @@ import {
   unitSuffix,
 } from "../domain/units"
 import {
+  BlockDefinition,
+  BlockId,
   Entity,
   EntityId,
   EntityProperty,
@@ -61,6 +63,14 @@ export interface TextStyleInfo extends TextStyle {
 
 export interface DimStyleInfo extends DimStyle {
   readonly entityCount: number
+}
+
+/** A block definition as the Blocks palette lists it. */
+export interface BlockInfo {
+  readonly id: BlockId
+  readonly name: string
+  /** How many references to it the drawing currently holds. */
+  readonly referenceCount: number
 }
 
 /** One dynamic-input field, formatted for display by the UI. */
@@ -253,6 +263,10 @@ export interface EngineState {
   readonly selectionDimStyleId: DimStyleId | null
   /** Which style table the manager is showing, or null while it is closed. */
   readonly stylesPanel: StylesPanelTab | null
+  /** Every block defined in the drawing (the Blocks palette's Current tab). */
+  readonly blocks: ReadonlyArray<BlockInfo>
+  /** Whether the Blocks palette is showing. */
+  readonly blocksPanel: boolean
   /**
    * Command options (keywords) the active tool currently offers — AutoCAD's
    * `[Close/Undo]` prompt. The UI renders these as hint chips near the dynamic
@@ -313,6 +327,23 @@ export function buildDimStyleInfos(
   return styles.map((style) => ({
     ...style,
     entityCount: counts.get(style.id) ?? 0,
+  }))
+}
+
+/** The block catalogue, each entry with how many references the drawing holds. */
+export function buildBlockInfos(
+  blocks: ReadonlyArray<BlockDefinition>,
+  entities: ReadonlyArray<Entity>
+): BlockInfo[] {
+  const counts = new Map<BlockId, number>()
+  for (const entity of entities) {
+    if (entity.type !== "insert") continue
+    counts.set(entity.blockId, (counts.get(entity.blockId) ?? 0) + 1)
+  }
+  return blocks.map((block) => ({
+    id: block.id,
+    name: block.name,
+    referenceCount: counts.get(block.id) ?? 0,
   }))
 }
 
@@ -727,6 +758,35 @@ function singleEntityInfo(
         ],
       }
     }
+    case "insert": {
+      return {
+        title: "Block reference",
+        count: 1,
+        groups: [
+          {
+            title: "Block",
+            // The block is chosen when the reference is inserted; swapping one
+            // for another is BREPLACE, not a palette row.
+            rows: [
+              { label: "Name", value: entity.blockId },
+              coordRow("Scale", "insertScale", entity.scale),
+              angleRow(
+                "Rotation",
+                "rotation",
+                normalizeDegrees((entity.rotation * 180) / Math.PI)
+              ),
+            ],
+          },
+          {
+            title: "Position",
+            rows: [
+              coordRow("X", "positionX", entity.position.x),
+              coordRow("Y", "positionY", entity.position.y),
+            ],
+          },
+        ],
+      }
+    }
   }
 }
 
@@ -764,6 +824,7 @@ const TYPE_LABELS: Record<EntityType, { one: string; many: string }> = {
   text: { one: "Text", many: "Texts" },
   dimension: { one: "Dimension", many: "Dimensions" },
   hatch: { one: "Hatch", many: "Hatches" },
+  insert: { one: "Block reference", many: "Block references" },
 }
 
 function multiEntityInfo(entities: ReadonlyArray<Entity>): SelectionInfo {

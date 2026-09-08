@@ -93,7 +93,7 @@ export class ZoomTool implements Tool {
     if (this.state.phase === "object") {
       const hit = ctx.pick(input.world)
       if (!hit) return
-      this.frame(entityBounds(hit), ctx)
+      this.frame(entityBounds(hit, ctx.blocks), ctx)
       ctx.endCommand()
     }
   }
@@ -146,7 +146,7 @@ export class ZoomTool implements Tool {
           .toArray()
           .map((id) => ctx.document.get(id))
           .filter((entity): entity is Entity => entity !== undefined)
-        const bounds = entitiesBounds(selected)
+        const bounds = entitiesBounds(selected, ctx.blocks)
         if (bounds) {
           this.frame(bounds, ctx)
           return "end"
@@ -162,10 +162,12 @@ export class ZoomTool implements Tool {
 
   buildOverlay(ctx: ToolContext): ScenePrimitive[] {
     if (this.state.phase === "object" && this.state.hover) {
-      return entityScenePrimitive(ctx.viewport, this.state.hover, {
-        color: THEME.selected,
-        width: 2.5,
-      })
+      return entityScenePrimitive(
+        ctx.viewport,
+        this.state.hover,
+        { color: THEME.selected, width: 2.5 },
+        { blocks: ctx.blocks }
+      )
     }
     if (this.state.phase !== "window") return []
     const a = ctx.viewport.worldToScreen(this.state.first)
@@ -222,7 +224,7 @@ export class ZoomTool implements Tool {
   }
 
   private zoomExtents(ctx: ToolContext): void {
-    const bounds = entitiesBounds(ctx.document.getEntities())
+    const bounds = entitiesBounds(ctx.document.getEntities(), ctx.blocks)
     if (!bounds) return
     this.frame(bounds, ctx)
   }

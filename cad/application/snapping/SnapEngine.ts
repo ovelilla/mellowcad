@@ -1,7 +1,7 @@
 import { Observable } from "../../shared/Observable"
 import { Vec2, V } from "../../geometry/Vec2"
 import { DocumentReader } from "../../domain/Document"
-import { EntityId } from "../../domain/entities"
+import { Entity, EntityId, insertFlatGeometry } from "../../domain/entities"
 import { Viewport } from "../Viewport"
 import { defaultSnapProviders } from "./providers"
 import {
@@ -13,6 +13,24 @@ import {
 
 /** World distance under which two candidates are considered the same point. */
 const STICKY_EPSILON = 1e-6
+
+/**
+ * What the providers snap to: the drawing, with every block reference replaced
+ * by the geometry it draws. Built once per resolve so the expansion is not
+ * repeated by each of the ten providers.
+ */
+function snapEntities(document: DocumentReader): Entity[] {
+  const blocks = document.blockLookup()
+  const entities: Entity[] = []
+  for (const entity of document.getEntities()) {
+    if (entity.type === "insert") {
+      entities.push(...insertFlatGeometry(entity, blocks))
+    } else {
+      entities.push(entity)
+    }
+  }
+  return entities
+}
 
 /**
  * Coordinates the snap providers. Given a screen cursor position it asks every
@@ -147,6 +165,7 @@ export class SnapEngine extends Observable {
     const worldTolerance = viewport.screenToWorldDistance(this.releaseTolerance)
     const context = {
       document,
+      entities: snapEntities(document),
       worldCursor,
       worldTolerance,
       construction,

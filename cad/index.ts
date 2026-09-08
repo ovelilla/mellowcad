@@ -15,6 +15,7 @@
 
 export { CadEngine } from "./adapters/CadEngine"
 export { CanvasScenePresenter } from "./adapters/CanvasScenePresenter"
+export { matchesWildcard } from "./shared/wildcard"
 export { createBrowserFileTransport } from "./adapters/browserFileTransport"
 export { createLocalStorageDrawingStore } from "./adapters/localStorageDrawingStore"
 
@@ -32,6 +33,7 @@ export type {
   LayerInfo,
   TextStyleInfo,
   DimStyleInfo,
+  BlockInfo,
   StylesPanelTab,
   SelectionInfo,
   PropertyGroup,
@@ -68,6 +70,7 @@ export {
   RemoveEntitiesCommand,
   ClearDocumentCommand,
 } from "./application/commands/entityCommands"
+export { CreateBlockCommand } from "./application/commands/blockCommands"
 
 export { DynamicInputController } from "./application/input/DynamicInput"
 export type {
@@ -125,6 +128,8 @@ export type { ArcMode } from "./application/tools/ArcTool"
 export { RectangleTool } from "./application/tools/RectangleTool"
 export { PolygonTool } from "./application/tools/PolygonTool"
 export { HatchTool } from "./application/tools/HatchTool"
+export { BlockTool } from "./application/tools/BlockTool"
+export { InsertTool } from "./application/tools/InsertTool"
 export { TextTool } from "./application/tools/TextTool"
 export { TextEditTool } from "./application/tools/TextEditTool"
 export { DimensionTool } from "./application/tools/DimensionTool"
@@ -178,7 +183,7 @@ export { buildScene } from "./application/SceneBuilder"
 export type { SceneInput } from "./application/SceneBuilder"
 
 export { CadDocument } from "./domain/Document"
-export type { DocumentReader } from "./domain/Document"
+export type { DocumentReader, DocumentTables } from "./domain/Document"
 export * from "./domain/entities"
 export {
   DEFAULT_LAYER_ID,

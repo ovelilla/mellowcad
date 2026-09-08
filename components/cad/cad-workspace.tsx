@@ -11,6 +11,7 @@ import { DynamicInput } from "./dynamic-input"
 import { PropertiesPanel } from "./properties-panel"
 import { LayersControl } from "./layers-control"
 import { StylesControl } from "./styles-control"
+import { BlocksControl } from "./blocks-control"
 import { SnapOverrideMenu } from "./snap-override-menu"
 import { SelectionCyclingList } from "./selection-cycling-list"
 
@@ -46,6 +47,10 @@ export function CadWorkspace() {
 
           <div className="pointer-events-none absolute top-4 left-72 z-10">
             <StylesControl engine={engine} state={state} />
+          </div>
+
+          <div className="pointer-events-none absolute top-4 left-[26rem] z-10">
+            <BlocksControl engine={engine} state={state} />
           </div>
 
           <div className="pointer-events-none absolute bottom-4 left-4 z-10">

@@ -1,10 +1,13 @@
 import { Vec2 } from "../../geometry/Vec2"
+import { traceBoundaryLoops } from "../../domain/boundary"
 import {
+  Bounds,
   Entity,
   EntityId,
   HatchEntity,
   HatchLoop,
   createHatch,
+  entityBounds,
   hatchGeometry,
   hatchLoopFromEntity,
 } from "../../domain/entities"
@@ -20,6 +23,7 @@ import {
 import { parseNumber } from "../../domain/units"
 import { AddEntityCommand } from "../commands/entityCommands"
 import { DynamicInputSession } from "../input/DynamicInput"
+import { parseCoordinate } from "../input/coordinateInput"
 import { entityScenePrimitive } from "../SceneBuilder"
 import { ScenePrimitive } from "../../scene/types"
 import { THEME } from "../../scene/theme"
@@ -45,21 +49,25 @@ const PREVIEW_ID: EntityId = "__hatch_preview__"
  */
 const TOO_DENSE = "Hatch spacing too dense, or dash size too small."
 
+/** What AutoCAD answers when an internal point is not enclosed by anything. */
+const NO_BOUNDARY = "Valid hatch boundary not found."
+
 /**
- * AutoCAD's HATCH, by the **Select objects** boundary: "Determines a boundary
- * from selected objects that form an enclosed area."
+ * AutoCAD's HATCH. Its two boundary routes are the two the prompt offers, in
+ * the same order:
  *
- * Only objects that close on their own qualify here — a circle or a closed
- * polyline — so a shape drawn as loose lines cannot be hatched yet. AutoCAD's
- * other boundary route, "Pick internal point", traces a boundary by casting
- * against every visible object; that is its own piece of work and is the known
- * gap of this command.
+ * - **Pick internal point** (the default): "Determines a boundary from existing
+ *   objects that form an enclosed area around the specified point" — so an area
+ *   drawn as loose crossing lines can be filled. The trace lives in
+ *   {@link traceBoundaryLoops}; picking the boundary set is this tool's job.
+ * - **Select objects**: "Determines a boundary from selected objects that form
+ *   an enclosed area", i.e. objects that close on their own.
  *
- * The prompt's other option is **Properties**, which sets the pattern name and
- * then, for a real pattern, its scale and angle — the HPNAME / HPSCALE / HPANG
- * system variables. All three are "Not-saved" in AutoCAD, i.e. they last for
- * the session, which is exactly what an instance field on a tool the runtime
- * owns gives us.
+ * The other option is **Properties**, which sets the pattern name and then, for
+ * a real pattern, its scale and angle — the HPNAME / HPSCALE / HPANG system
+ * variables. All three are "Not-saved" in AutoCAD, i.e. they last for the
+ * session, which is exactly what an instance field on a tool the runtime owns
+ * gives us.
  *
  * Several boundaries make **one** hatch (HPSEPARATE's initial value is 0) and
  * the fill is **not associative** (a documented deviation from HPASSOC 1 — see
@@ -69,9 +77,13 @@ export class HatchTool implements Tool {
   readonly id = "hatch"
   readonly label = "Hatch"
 
-  private state: HatchState = { phase: "select", hover: null }
+  private state: HatchState = { phase: "point" }
   private lastScreen: Vec2 | null = null
   private preview: HatchEntity | null = null
+  /** Boundaries traced from internal points, one prompt at a time. */
+  private picked: HatchLoop[] = []
+  /** Which boundary prompt Properties returns to. */
+  private route: "point" | "select" = "point"
 
   // HPNAME / HPSCALE / HPANG: session defaults, so the next hatch starts from
   // the settings of the last one.
@@ -84,12 +96,14 @@ export class HatchTool implements Tool {
     // "Each time you click Select Objects, HATCH clears the previous selection
     // set" — the boundary set starts empty every time.
     ctx.selection.clear()
-    this.enterSelect(ctx)
+    this.picked = []
+    this.enterPoint(ctx)
   }
 
   onDeactivate(ctx: ToolContext): void {
-    this.state = { phase: "select", hover: null }
+    this.state = { phase: "point" }
     this.preview = null
+    this.picked = []
     ctx.dynamicInput.close()
   }
 
@@ -128,7 +142,14 @@ export class HatchTool implements Tool {
   }
 
   onPointerDown(input: PointerInput, ctx: ToolContext): void {
-    if (input.button !== 0 || this.state.phase !== "select") return
+    if (input.button !== 0) return
+    if (this.state.phase === "point") {
+      // The raw world point, not the snapped one: this asks which *area* the
+      // fill goes in, and a point pulled onto an endpoint is on the boundary.
+      this.addInternalPoint(input.world, ctx)
+      return
+    }
+    if (this.state.phase !== "select") return
     this.state = {
       phase: "pressed",
       startWorld: input.world,
@@ -165,23 +186,39 @@ export class HatchTool implements Tool {
 
   onEnter(ctx: ToolContext): boolean {
     if (this.state.phase !== "select") return false
-    if (this.loopsFromSelection(ctx).length === 0) return false
+    if (this.allLoops(ctx).length === 0) return false
     this.commit(ctx)
     return true
   }
 
   commandOptions(): readonly CommandOption[] {
+    if (this.state.phase === "point") {
+      return [
+        { key: "P", label: "Properties" },
+        { key: "S", label: "Select objects" },
+      ]
+    }
     return this.state.phase === "select"
       ? [{ key: "P", label: "Properties" }]
       : []
   }
 
   invokeOption(key: string, ctx: ToolContext): CommandOptionOutcome {
-    if (this.state.phase !== "select" || key.toLowerCase() !== "p") {
+    if (this.state.phase !== "point" && this.state.phase !== "select") {
       return "unhandled"
     }
-    this.enterPattern(ctx)
-    return "continue"
+    switch (key.toLowerCase()) {
+      case "p":
+        this.enterPattern(ctx)
+        return "continue"
+      case "s":
+        if (this.state.phase !== "point") return "unhandled"
+        this.route = "select"
+        this.enterSelect(ctx)
+        return "continue"
+      default:
+        return "unhandled"
+    }
   }
 
   wantsSnap(): boolean {
@@ -239,14 +276,57 @@ export class HatchTool implements Tool {
     }
   }
 
-  private loopsFromSelection(ctx: ToolContext): HatchLoop[] {
+  /**
+   * Traces the area around an internal point and adds it to the boundary set.
+   * Reported rather than ignored: unlike an object that simply never highlights,
+   * a point that looks enclosed but is not needs an answer.
+   */
+  private addInternalPoint(point: Vec2, ctx: ToolContext): void {
+    const loops = traceBoundaryLoops(point, this.boundarySet(ctx))
+    if (!loops) {
+      ctx.report(NO_BOUNDARY, "error")
+    } else {
+      this.picked.push(...loops)
+    }
+    this.enterPoint(ctx)
+    ctx.requestRender()
+  }
+
+  /**
+   * The geometry a trace is allowed to see: what is visible on screen. That is
+   * AutoCAD's own rule — "all objects being used to define the boundary of a
+   * hatch object must be visible in the current drawing view", the Everything
+   * boundary set being "everything visible in the current viewport" — and it is
+   * what keeps the quadratic part of the trace to the area being worked on.
+   */
+  private boundarySet(ctx: ToolContext): Entity[] {
+    const entities = ctx.document
+      .getEntities()
+      .filter((entity) => ctx.document.isEntityVisible(entity))
+    const view = this.visibleBounds(ctx)
+    if (!view) return entities
+    return entities.filter((entity) =>
+      overlaps(entityBounds(entity, ctx.blocks), view)
+    )
+  }
+
+  private visibleBounds(ctx: ToolContext): Bounds | null {
+    const { viewport } = ctx
+    if (viewport.width <= 0 || viewport.height <= 0) return null
+    const min = viewport.screenToWorld({ x: 0, y: viewport.height })
+    const max = viewport.screenToWorld({ x: viewport.width, y: 0 })
+    return { min, max }
+  }
+
+  /** Every boundary the command has gathered, by either route. */
+  private allLoops(ctx: ToolContext): HatchLoop[] {
     const loops: HatchLoop[] = []
     for (const id of ctx.selection.toArray()) {
       const entity = ctx.document.get(id)
       const loop = entity ? hatchLoopFromEntity(entity) : null
       if (loop) loops.push(loop)
     }
-    return loops
+    return [...loops, ...this.picked]
   }
 
   /** The hatch the current boundary set and settings would produce. */
@@ -265,7 +345,7 @@ export class HatchTool implements Tool {
   }
 
   private commit(ctx: ToolContext): void {
-    const hatch = this.build(this.loopsFromSelection(ctx), ctx)
+    const hatch = this.build(this.allLoops(ctx), ctx)
     if (hatchGeometry(hatch).truncated) {
       ctx.report(TOO_DENSE, "error")
       ctx.endCommand()
@@ -284,8 +364,42 @@ export class HatchTool implements Tool {
    * depends on the camera.
    */
   private refreshPreview(ctx: ToolContext): void {
-    const loops = this.loopsFromSelection(ctx)
+    const loops = this.allLoops(ctx)
     this.preview = loops.length > 0 ? this.build(loops, ctx, PREVIEW_ID) : null
+  }
+
+  /** Back to whichever boundary prompt Properties was invoked from. */
+  private enterRoute(ctx: ToolContext): void {
+    if (this.route === "select") this.enterSelect(ctx)
+    else this.enterPoint(ctx)
+  }
+
+  private enterPoint(ctx: ToolContext): void {
+    this.state = { phase: "point" }
+    this.route = "point"
+    this.refreshPreview(ctx)
+    ctx.dynamicInput.open({
+      fields: [
+        { id: "point", label: "Pick internal point", kind: "coordinate" },
+      ],
+      commit: () => {},
+      commitRaw: (commitCtx) => {
+        const typed = commitCtx.dynamicInput.getText("point").trim()
+        // Enter with nothing typed accepts the boundaries gathered so far.
+        if (typed.length === 0) {
+          if (this.allLoops(commitCtx).length > 0) this.commit(commitCtx)
+          else commitCtx.endCommand()
+          return true
+        }
+        const point = parseCoordinate(typed, {
+          lastPoint: null,
+          relativeByDefault: false,
+        })
+        if (point) this.addInternalPoint(point, commitCtx)
+        return true
+      },
+    })
+    ctx.dynamicInput.setPosition(this.lastScreen ?? { x: 0, y: 0 })
   }
 
   private enterSelect(ctx: ToolContext): void {
@@ -293,6 +407,7 @@ export class HatchTool implements Tool {
       phase: "select",
       hover: this.state.phase === "select" ? this.state.hover : null,
     }
+    this.route = "select"
     this.refreshPreview(ctx)
     // A keyword-only prompt: no field means the canvas keeps focus, so Enter
     // reaches `onEnter` to close the boundary set.
@@ -323,7 +438,7 @@ export class HatchTool implements Tool {
         }
         this.patternId = resolved
         // A solid fill has no spacing or direction to ask about.
-        if (isSolidHatchPattern(resolved)) this.enterSelect(commitCtx)
+        if (isSolidHatchPattern(resolved)) this.enterRoute(commitCtx)
         else this.enterScale(commitCtx)
         return true
       },
@@ -366,12 +481,12 @@ export class HatchTool implements Tool {
       ],
       commit: (values, commitCtx) => {
         this.patternAngle = (values.angle * Math.PI) / 180
-        this.enterSelect(commitCtx)
+        this.enterRoute(commitCtx)
       },
       commitRaw: (commitCtx) => {
         const typed = parseNumber(commitCtx.dynamicInput.getText("angle"))
         if (typed !== null) this.patternAngle = (typed * Math.PI) / 180
-        this.enterSelect(commitCtx)
+        this.enterRoute(commitCtx)
         return true
       },
     }
@@ -382,7 +497,18 @@ export class HatchTool implements Tool {
   }
 }
 
+/** Overlap test in world coordinates, for the visible boundary set. */
+function overlaps(a: Bounds, b: Bounds): boolean {
+  return (
+    a.min.x <= b.max.x &&
+    b.min.x <= a.max.x &&
+    a.min.y <= b.max.y &&
+    b.min.y <= a.max.y
+  )
+}
+
 type HatchState =
+  | { readonly phase: "point" }
   | { readonly phase: "select"; readonly hover: Entity | null }
   | {
       readonly phase: "pressed"

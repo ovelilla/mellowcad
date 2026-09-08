@@ -1,11 +1,13 @@
 import fc from "fast-check"
 import {
+  createBlockDefinition,
   TEXT_JUSTIFICATIONS,
   type ArcEntity,
   type CircleEntity,
   type DimensionEntity,
   type Entity,
   type HatchEntity,
+  type InsertEntity,
   type LineEntity,
   type PolylineEntity,
   type TextEntity,
@@ -236,6 +238,25 @@ export const hatchEntity: fc.Arbitrary<HatchEntity> = fc
     )
   )
 
+export const insertEntity: fc.Arbitrary<InsertEntity> = fc
+  .tuple(point, positiveLength, angle, fc.boolean())
+  .map(([position, scale, rotation, mirrored]) =>
+    withId<InsertEntity>(
+      {
+        type: "insert",
+        layerId: DEFAULT_LAYER_ID,
+        blockId: "BLOCK",
+        position,
+        scale,
+        rotation,
+        // Reflection is stored only when it applies, so the round-trip has to
+        // survive the field being absent as well as present.
+        ...(mirrored ? { mirrored: true } : {}),
+      },
+      "insert"
+    )
+  )
+
 export const entity: fc.Arbitrary<Entity> = fc.oneof(
   lineEntity,
   circleEntity,
@@ -243,7 +264,8 @@ export const entity: fc.Arbitrary<Entity> = fc.oneof(
   polylineEntity,
   textEntity,
   dimensionEntity,
-  hatchEntity
+  hatchEntity,
+  insertEntity
 )
 
 /** A whole drawing, with ids made unique so it can populate a document. */
@@ -258,6 +280,19 @@ export const drawingSnapshot: fc.Arbitrary<DrawingSnapshot> = fc
       entities.map((item, index) => ({ ...item, id: `e${index}` })),
       {
         settings: { unit, precision, ltScale: 1, lwDisplay: true },
+        // The block every generated reference points at: a reader drops a
+        // reference whose definition the file does not carry.
+        blocks: [
+          createBlockDefinition("BLOCK", { x: 0, y: 0 }, [
+            {
+              id: "b0",
+              type: "line",
+              layerId: DEFAULT_LAYER_ID,
+              start: { x: 0, y: 0 },
+              end: { x: 10, y: 0 },
+            },
+          ]),
+        ],
       }
     )
   )

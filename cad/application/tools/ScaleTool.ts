@@ -361,7 +361,14 @@ export class ScaleTool implements Tool {
           this.state.current,
           ctx
         )
-        pushGhost(out, viewport, this.state.originals, this.state.base, factor)
+        pushGhost(
+          out,
+          viewport,
+          this.state.originals,
+          this.state.base,
+          factor,
+          ctx.blocks
+        )
         pushArm(out, viewport, this.state.base, this.state.current, arm)
         break
       }
@@ -382,7 +389,14 @@ export class ScaleTool implements Tool {
           this.state.reference,
           ctx
         )
-        pushGhost(out, viewport, this.state.originals, this.state.base, factor)
+        pushGhost(
+          out,
+          viewport,
+          this.state.originals,
+          this.state.base,
+          factor,
+          ctx.blocks
+        )
         pushArm(out, viewport, this.state.base, this.state.current, arm)
         break
       }
@@ -634,13 +648,19 @@ function pushGhost(
   viewport: ToolContext["viewport"],
   originals: readonly Entity[],
   base: Vec2,
-  factor: number
+  factor: number,
+  blocks: ToolContext["blocks"]
 ): void {
   const safe = Number.isFinite(factor) && factor > 0 ? factor : 1
   const ghost: StrokeStyle = { color: THEME.preview, width: 1, dash: [6, 4] }
   for (const entity of originals) {
     out.push(
-      ...entityScenePrimitive(viewport, scaleEntity(entity, base, safe), ghost)
+      ...entityScenePrimitive(
+        viewport,
+        scaleEntity(entity, base, safe),
+        ghost,
+        { blocks }
+      )
     )
   }
 }

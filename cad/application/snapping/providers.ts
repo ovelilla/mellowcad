@@ -44,9 +44,9 @@ import {
 /** Endpoint is the primary snap (highest priority). */
 export const endpointProvider: SnapProvider = {
   type: SnapType.Endpoint,
-  collect({ document }: SnapContext): SnapCandidate[] {
+  collect({ document, entities }: SnapContext): SnapCandidate[] {
     const candidates: SnapCandidate[] = []
-    for (const entity of document.getEntities()) {
+    for (const entity of entities) {
       if (!document.isEntityVisible(entity)) continue
       if (entity.type === "line") {
         candidates.push({
@@ -104,9 +104,9 @@ export const endpointProvider: SnapProvider = {
 
 export const midpointProvider: SnapProvider = {
   type: SnapType.Midpoint,
-  collect({ document }: SnapContext): SnapCandidate[] {
+  collect({ document, entities }: SnapContext): SnapCandidate[] {
     const candidates: SnapCandidate[] = []
-    for (const entity of document.getEntities()) {
+    for (const entity of entities) {
       if (!document.isEntityVisible(entity)) continue
       if (entity.type === "line") {
         candidates.push({
@@ -144,9 +144,9 @@ export const midpointProvider: SnapProvider = {
 
 export const centerProvider: SnapProvider = {
   type: SnapType.Center,
-  collect({ document }: SnapContext): SnapCandidate[] {
+  collect({ document, entities }: SnapContext): SnapCandidate[] {
     const candidates: SnapCandidate[] = []
-    for (const entity of document.getEntities()) {
+    for (const entity of entities) {
       if (!document.isEntityVisible(entity)) continue
       if (entity.type === "circle") {
         candidates.push({
@@ -166,19 +166,30 @@ export const centerProvider: SnapProvider = {
   },
 }
 
-/** Snaps to the point a text object hangs off — AutoCAD's Insertion osnap. */
+/**
+ * Snaps to the point a text object or a block reference hangs off — AutoCAD's
+ * Insertion osnap. A reference offers only its own insertion point here; the
+ * geometry it draws is snapped to by every other provider.
+ */
 export const insertionProvider: SnapProvider = {
   type: SnapType.Insertion,
   collect({ document }: SnapContext): SnapCandidate[] {
     const candidates: SnapCandidate[] = []
     for (const entity of document.getEntities()) {
       if (!document.isEntityVisible(entity)) continue
-      if (entity.type !== "text") continue
-      candidates.push({
-        type: SnapType.Insertion,
-        point: entity.position,
-        sourceIds: [entity.id],
-      })
+      if (entity.type === "text") {
+        candidates.push({
+          type: SnapType.Insertion,
+          point: entity.position,
+          sourceIds: [entity.id],
+        })
+      } else if (entity.type === "insert") {
+        candidates.push({
+          type: SnapType.Insertion,
+          point: entity.position,
+          sourceIds: [entity.id],
+        })
+      }
     }
     return candidates
   },
@@ -187,9 +198,9 @@ export const insertionProvider: SnapProvider = {
 /** Snaps to the 0°/90°/180°/270° cardinal points of a circle. */
 export const quadrantProvider: SnapProvider = {
   type: SnapType.Quadrant,
-  collect({ document }: SnapContext): SnapCandidate[] {
+  collect({ document, entities }: SnapContext): SnapCandidate[] {
     const candidates: SnapCandidate[] = []
-    for (const entity of document.getEntities()) {
+    for (const entity of entities) {
       if (!document.isEntityVisible(entity)) continue
       if (entity.type === "circle") {
         const { center: c, radius: r } = entity
@@ -234,10 +245,15 @@ export const quadrantProvider: SnapProvider = {
  */
 export const perpendicularProvider: SnapProvider = {
   type: SnapType.Perpendicular,
-  collect({ document, anchor, worldCursor }: SnapContext): SnapCandidate[] {
+  collect({
+    document,
+    entities,
+    anchor,
+    worldCursor,
+  }: SnapContext): SnapCandidate[] {
     if (!anchor) return []
     const candidates: SnapCandidate[] = []
-    for (const entity of document.getEntities()) {
+    for (const entity of entities) {
       if (!document.isEntityVisible(entity)) continue
       if (entity.type === "line") {
         candidates.push({
@@ -281,10 +297,15 @@ export const perpendicularProvider: SnapProvider = {
  */
 export const tangentProvider: SnapProvider = {
   type: SnapType.Tangent,
-  collect({ document, anchor, worldCursor }: SnapContext): SnapCandidate[] {
+  collect({
+    document,
+    entities,
+    anchor,
+    worldCursor,
+  }: SnapContext): SnapCandidate[] {
     if (!anchor) return []
     const candidates: SnapCandidate[] = []
-    for (const entity of document.getEntities()) {
+    for (const entity of entities) {
       if (!document.isEntityVisible(entity)) continue
       if (entity.type !== "circle") continue
       const toOutline = Math.abs(
@@ -317,9 +338,9 @@ export const tangentProvider: SnapProvider = {
  */
 export const extensionProvider: SnapProvider = {
   type: SnapType.Extension,
-  collect({ document, worldCursor }: SnapContext): SnapCandidate[] {
+  collect({ document, entities, worldCursor }: SnapContext): SnapCandidate[] {
     const candidates: SnapCandidate[] = []
-    for (const entity of document.getEntities()) {
+    for (const entity of entities) {
       if (!document.isEntityVisible(entity)) continue
       if (entity.type !== "line") continue
       const proj = closestPointOnInfiniteLine(
@@ -351,6 +372,7 @@ export const parallelProvider: SnapProvider = {
   type: SnapType.Parallel,
   collect({
     document,
+    entities,
     anchor,
     worldCursor,
     parallelSourceIds,
@@ -359,7 +381,7 @@ export const parallelProvider: SnapProvider = {
     const offset = V.sub(worldCursor, anchor)
     if (V.length(offset) < 1e-6) return []
     const candidates: SnapCandidate[] = []
-    for (const entity of document.getEntities()) {
+    for (const entity of entities) {
       if (!document.isEntityVisible(entity)) continue
       if (entity.type !== "line") continue
       // Only lines the user has acquired (hovered) are offered as parallels.
@@ -392,11 +414,12 @@ export const nearestProvider: SnapProvider = {
   type: SnapType.Nearest,
   collect({
     document,
+    entities,
     worldCursor,
     worldTolerance,
   }: SnapContext): SnapCandidate[] {
     const candidates: SnapCandidate[] = []
-    for (const entity of document.getEntities()) {
+    for (const entity of entities) {
       if (!document.isEntityVisible(entity)) continue
       const closest =
         entity.type === "line"
@@ -439,11 +462,12 @@ export const intersectionProvider: SnapProvider = {
   type: SnapType.Intersection,
   collect({
     document,
+    entities,
     worldCursor,
     worldTolerance,
     construction,
   }: SnapContext): SnapCandidate[] {
-    const shapes = collectShapes(document, construction)
+    const shapes = collectShapes(document, entities, construction)
     const candidates: SnapCandidate[] = []
     const near = worldTolerance * 8 // coarse pre-filter around the cursor
 
@@ -477,11 +501,12 @@ export const apparentIntersectionProvider: SnapProvider = {
   type: SnapType.ApparentIntersection,
   collect({
     document,
+    entities,
     worldCursor,
     worldTolerance,
     construction,
   }: SnapContext): SnapCandidate[] {
-    const segments = collectShapes(document, construction).filter(
+    const segments = collectShapes(document, entities, construction).filter(
       (s): s is SegmentShape => s.kind === "segment"
     )
     const candidates: SnapCandidate[] = []
@@ -547,10 +572,11 @@ type SnapShape = SegmentShape | CircleShape | ArcShape
  */
 function collectShapes(
   document: SnapContext["document"],
+  entities: SnapContext["entities"],
   construction: readonly ConstructionGeometry[]
 ): SnapShape[] {
   const shapes: SnapShape[] = []
-  for (const entity of document.getEntities()) {
+  for (const entity of entities) {
     if (!document.isEntityVisible(entity)) continue
     if (entity.type === "line") {
       shapes.push({

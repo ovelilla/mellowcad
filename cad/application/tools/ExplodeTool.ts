@@ -1,8 +1,10 @@
 import {
   Entity,
   EntityId,
+  copyEntity,
   createArc,
   createLine,
+  insertGeometry,
   polylineSegmentGeometries,
 } from "../../domain/entities"
 import { ReplaceEntitiesCommand } from "../commands/entityCommands"
@@ -10,11 +12,16 @@ import { SelectionActionTool } from "./SelectionActionTool"
 import { ToolContext } from "./Tool"
 
 /**
- * AutoCAD's EXPLODE for polylines: each selected polyline is replaced by an
- * independent object per segment — a line for a straight segment, an arc for a
- * bulged one (the closing segment included when closed). Only polylines are
- * composite here, so other entity types are left untouched. One undo step
- * reverts the whole explode.
+ * AutoCAD's EXPLODE. A polyline is replaced by an independent object per
+ * segment — a line for a straight one, an arc for a bulged one (the closing
+ * segment included when closed). A block reference is replaced by copies of the
+ * objects that compose the block, removing **one grouping level at a time**: a
+ * nested block comes back as a nested block, to be exploded again, and the
+ * objects "revert to their original properties" rather than keeping the ones
+ * the reference lent them.
+ *
+ * Everything else is left untouched and reported, and one undo step reverts the
+ * whole explode.
  */
 export class ExplodeTool extends SelectionActionTool {
   readonly id = "explode"
@@ -22,10 +29,12 @@ export class ExplodeTool extends SelectionActionTool {
   readonly shortcut = "x"
 
   protected run(entities: readonly Entity[], ctx: ToolContext): void {
-    const polylines = entities.filter((e) => e.type === "polyline")
+    const composite = entities.filter(
+      (e) => e.type === "polyline" || e.type === "insert"
+    )
     // AutoCAD accepts any object at the prompt and then says what it could not
     // do, rather than silently ignoring the picks.
-    const rejected = entities.length - polylines.length
+    const rejected = entities.length - composite.length
     if (rejected > 0) {
       ctx.report(
         rejected === 1
@@ -33,16 +42,29 @@ export class ExplodeTool extends SelectionActionTool {
           : `${rejected} were not able to be exploded.`
       )
     }
-    if (polylines.length === 0) return
+    if (composite.length === 0) return
 
     const removedIds: EntityId[] = []
     const pieces: Entity[] = []
-    for (const poly of polylines) {
-      if (poly.type !== "polyline") continue
-      removedIds.push(poly.id)
-      for (const seg of polylineSegmentGeometries(poly)) {
+    for (const entity of composite) {
+      if (entity.type === "insert") {
+        // The objects "revert to their original properties", so the layer a
+        // layer-0 object was merely *displayed* on does not come with it.
+        const parts = insertGeometry(entity, ctx.blocks(entity.blockId), {
+          inheritLayer: false,
+        })
+        if (parts.length === 0) continue
+        removedIds.push(entity.id)
+        // The definition's objects keep their ids inside the block, so each
+        // piece is copied to mint one of its own.
+        for (const part of parts) pieces.push(copyEntity(part, { x: 0, y: 0 }))
+        continue
+      }
+      if (entity.type !== "polyline") continue
+      removedIds.push(entity.id)
+      for (const seg of polylineSegmentGeometries(entity)) {
         if (seg.kind === "line") {
-          pieces.push(createLine(seg.a, seg.b, poly.layerId))
+          pieces.push(createLine(seg.a, seg.b, entity.layerId))
         } else {
           pieces.push(
             createArc(
@@ -50,7 +72,7 @@ export class ExplodeTool extends SelectionActionTool {
               seg.radius,
               seg.startAngle,
               seg.endAngle,
-              poly.layerId
+              entity.layerId
             )
           )
         }

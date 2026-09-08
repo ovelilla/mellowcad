@@ -215,7 +215,7 @@ export class DimensionTool implements Tool {
           viewport,
           this.pending(this.state, this.state.cursor, ctx),
           rubber,
-          this.style(ctx)
+          { dimStyle: this.style(ctx) }
         )
       case "rotated":
         return [
@@ -505,6 +505,7 @@ function measurableOrigins(entity: Entity, at: Vec2): [Vec2, Vec2] | null {
     case "text":
     case "dimension":
     case "hatch":
+    case "insert":
       return null
   }
 }

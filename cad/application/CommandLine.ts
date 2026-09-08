@@ -136,6 +136,8 @@ export const TOOL_COMMANDS: Readonly<Record<string, readonly string[]>> = {
   rectangle: ["RECTANG", "REC"],
   polygon: ["POLYGON", "POL"],
   hatch: ["HATCH", "H", "BH"],
+  block: ["BLOCK", "B"],
+  insert: ["INSERT", "I"],
   text: ["TEXT", "DT", "DTEXT"],
   textedit: ["TEXTEDIT", "DDEDIT", "ED"],
   dimlinear: ["DIMLINEAR", "DIMLIN", "DLI"],

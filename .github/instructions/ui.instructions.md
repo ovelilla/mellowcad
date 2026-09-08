@@ -60,6 +60,21 @@ Tokens flip between themes, so a colour that reads well in dark can be unusable 
   not into a drafting surface.
 - The dynamic-input box is `pointer-events-none` and keyboard-driven — never make it clickable.
 
+## Palettes that show drawing content
+
+A palette a command can open (the style managers, the Blocks palette) is a **controlled** popover
+driven by `EngineState`, never by local `useState` — otherwise typing `DIMSTYLE` cannot open it.
+Its trigger sits with the others along the top-left.
+
+Anything that has to **draw drawing content** — a block thumbnail, a future layout preview — asks
+the engine for a `Scene` (`engine.buildBlockPreview(...)`) and paints it with
+`CanvasScenePresenter`. Never walk entities and draw them in a component: a preview built a second
+way is a preview that can disagree with the drawing.
+
+Placing a point on the canvas dismisses an open popover, and the canvas handler runs _before_ the
+dismiss — so a guard on "is the command still running?" already reads false. Don't fight it; note
+it where AutoCAD's own answer is a separate feature (the palette's Repeat Placement option).
+
 ## Icons
 
 Custom CAD glyphs go in `components/cad/icons.tsx` via `createLucideIcon`, matching lucide's

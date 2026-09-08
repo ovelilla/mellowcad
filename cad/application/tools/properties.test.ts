@@ -22,8 +22,7 @@ describe("MATCHPROP", () => {
         lineOf(p(0, 0), p(100, 0), { id: "src", layerId: "red" }),
         lineOf(p(0, 100), p(100, 100), { id: "dst" }),
       ],
-      undefined,
-      [layerOf("0"), layerOf("red", { color: "#ff0000" })]
+      { layers: [layerOf("0"), layerOf("red", { color: "#ff0000" })] }
     )
 
     paint(cad).click(p(50, 0)).click(p(50, 100))

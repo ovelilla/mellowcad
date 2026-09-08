@@ -864,40 +864,14 @@ export class SelectTool implements Tool {
     entity: Entity,
     ctx: ToolContext
   ): void {
-    const stroke: StrokeStyle = { color: THEME.entityHover, width: 2 }
-    switch (entity.type) {
-      case "line":
-        out.push({
-          kind: "segment",
-          a: ctx.viewport.worldToScreen(entity.start),
-          b: ctx.viewport.worldToScreen(entity.end),
-          stroke,
-        })
-        break
-      case "circle":
-        out.push({
-          kind: "circle",
-          center: ctx.viewport.worldToScreen(entity.center),
-          radius: Math.max(
-            ctx.viewport.worldToScreenDistance(entity.radius),
-            0.01
-          ),
-          stroke,
-        })
-        break
-      case "arc":
-        out.push(
-          arcScenePrimitive(
-            ctx.viewport,
-            entity.center,
-            entity.radius,
-            entity.startAngle,
-            entity.endAngle,
-            stroke
-          )
-        )
-        break
-    }
+    out.push(
+      ...entityScenePrimitive(
+        ctx.viewport,
+        entity,
+        { color: THEME.entityHover, width: 2 },
+        { blocks: ctx.blocks }
+      )
+    )
   }
 
   /** The rubber-band preview and hot grip while lengthening a line. */
@@ -928,7 +902,11 @@ export class SelectTool implements Tool {
     const stroke: StrokeStyle = { color: THEME.preview, width: 1, dash: [6, 4] }
     for (const entity of this.state.originals) {
       const moved = translateEntity(entity, delta)
-      out.push(...entityScenePrimitive(viewport, moved, stroke))
+      out.push(
+        ...entityScenePrimitive(viewport, moved, stroke, {
+          blocks: ctx.blocks,
+        })
+      )
       if (moved.type === "line") {
         out.push(...gripPrimitives(viewport.worldToScreen(moved.start), false))
         out.push(...gripPrimitives(viewport.worldToScreen(moved.end), false))
@@ -1196,7 +1174,7 @@ export class SelectTool implements Tool {
           // AutoCAD gives a hatch one grip in the middle of its area, which
           // moves the whole fill; the boundary is edited on the objects it was
           // traced from.
-          const b = entityBounds(entity)
+          const b = entityBounds(entity, ctx.blocks)
           grips.push({
             entityId: id,
             role: { kind: "move" },
@@ -1204,6 +1182,15 @@ export class SelectTool implements Tool {
           })
           break
         }
+        case "insert":
+          // A block reference gets one grip, on its insertion point, exactly as
+          // AutoCAD does: what is inside the block is edited in the definition.
+          grips.push({
+            entityId: id,
+            role: { kind: "move" },
+            world: entity.position,
+          })
+          break
       }
     }
     return grips

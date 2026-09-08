@@ -63,7 +63,6 @@ TypeScript exhaustiveness will point at most of it, but the full list is: `assig
 `TYPE_LABELS`, and `SelectTool.selectedGrips`. The editing tools switch on the type too
 (`EdgeEditTool`, `BreakTool`, `OffsetTool`, `DimensionTool`, `lastDrawnPoint`): a type they cannot
 act on returns `null` explicitly rather than falling through.
-
 Two of those are decisions, not chores. **Snapping is opt-in**: a hatch is in no provider at all
 because OSOPTIONS ships at 7, whose first bit reads "Object snaps ignore hatch objects" — look up
 what AutoCAD snaps to before wiring a type in. And the fast-check `entity` arbitrary in
@@ -78,13 +77,45 @@ for picking exactly as it is for painting.
 **Store what was picked, derive what is shown.** A dimension keeps only its definition points; its
 length and its label come out of `dimensionGeometry` / `dimensionText` every time they are needed.
 A hatch keeps only its boundary loops and pattern settings; its line work comes out of
-`hatchGeometry`. A stored copy of a derived value is a copy that can disagree with the geometry.
+`hatchGeometry`. A block reference keeps only the block's name and its placement; the geometry it
+draws comes out of `insertGeometry`. A stored copy of a derived value is a copy that can disagree
+with the geometry.
+
+An entity whose shape lives in a **table** rather than in itself (today only `insert`) makes the
+pure helpers need that table, so `closestOnEntity`, `entityBounds`, `entityCrossesRect`,
+`entityWithinRect`, `entitiesBounds` and `entityScenePrimitive` all take an optional `BlockLookup`.
+Optional means a forgotten call site compiles, so the degraded answer is deliberately _visible_ —
+a reference with no lookup collapses to its insertion point rather than silently vanishing. Pass
+`document.blockLookup()` (tools have it as `ctx.blocks`) anywhere a real object is being measured,
+picked or drawn. Expansion is capped by `MAX_BLOCK_NESTING`: a hand-edited file can nest a block
+inside itself, and nothing else stops the recursion.
+
+AutoCAD resolves a block's appearance in three modes, and the two that are real behaviour are
+implemented in `insertGeometry`: objects drawn on **layer 0 inherit the reference's layer**, and
+anything on another layer or carrying its own override keeps what it had. The third, **ByBlock**
+("inherit individual properties first, then layer properties"), is not modelled — `resolveEntityX`
+knows only ByObject and ByLayer, and adding a third mode touches all three of them.
 
 Derived geometry is computed in **world** coordinates, never at paint time in screen ones. That is
 what lets `SceneBuilder` cache a hatch's clipped pattern in a `WeakMap` keyed on the immutable
 entity: the result cannot depend on the camera, so panning and zooming stay free without the scene
 builder ceasing to be a pure function of its input. Anything expensive and camera-independent
 belongs on the same side of that line.
+
+## Algorithms over a set of entities
+
+An algorithm whose input is _several_ entities rather than one — `boundary.ts`'s
+`traceBoundaryLoops`, which cuts every object at its crossings and walks the faces of the resulting
+graph — is still `domain/`, in **its own module** rather than another thousand lines of
+`entities.ts`. Keeping it a pure `(point, entities) => result` is what lets a second command reuse
+it (BOUNDARY is the same trace as HATCH's internal pick) and lets it be tested without the harness.
+
+**Which entities it sees is the caller's decision, not the algorithm's.** AutoCAD's boundary set is
+"everything visible in the current viewport", and the viewport lives in `application/` — so the
+_tool_ filters and hands in a list. That keeps a view-dependent rule (which is real AutoCAD
+behaviour, not an accident) out of a layer that must not know a camera exists. Give such a function
+a cap on how much it will chew through, too: pairwise work is quadratic and a boundary is a local
+question, so declining is better than freezing.
 
 ## Adding a dimension kind
 
@@ -141,10 +172,16 @@ that extra height put a baseline chain's number across its neighbour's dimension
 `textStyles.ts` and `dimStyles.ts` are twins — a named record of defaults that entities reference
 by id, exactly as AutoCAD's STYLE and DIMSTYLE tables do. Add one the same way: a `createDefaultX`
 base that always exists, a table on `CadDocument` (`getXs` / `getX` / `getCurrentXId` /
-`setCurrentX` / `addX`), two more trailing optional parameters on `load()`, a `reconcile` branch
-remapping a dangling id onto the base, and a tolerant parser that fills missing settings from the
-base. **Persist the table from the first release of the feature it serves**, even without a manager
-UI, so adding the manager later never changes the file format.
+`setCurrentX` / `addX`), a field on `DocumentTables` (`load()`'s options bag — it takes tables by
+name, not by position, because eight trailing optionals was already one too many), a `reconcile`
+branch remapping a dangling id onto the base, and a tolerant parser that fills missing settings
+from the base. **Persist the table from the first release of the feature it serves**, even without
+a manager UI, so adding the manager later never changes the file format.
+
+The block table is the same shape with two differences: its entries hold **entities**, so it lives
+beside them in `entities.ts` rather than in a leaf module, and there is no current-block or base
+entry — a name that is not defined is not reconciled but **dropped at parse time**, since a
+reference to nothing can draw nothing and can never be repaired.
 
 Defaults come from AutoCAD's _metric_ initial values (the acadiso / ISO-25 template), which is what
 this app's millimetre units match — look each one up rather than recalling it.
@@ -166,7 +203,7 @@ cannot be deleted**.
 
 ## Definition registries
 
-A style *table* is per drawing; a *registry* is per build. `linetypes.ts` and `hatchPatterns.ts`
+A style _table_ is per drawing; a _registry_ is per build. `linetypes.ts` and `hatchPatterns.ts`
 are the registries: AutoCAD keeps their definitions in files shipped with the product (`acad.lin`,
 `acad.pat`), so an entity stores only the **name** plus whatever it scales that definition by, and
 an unknown name degrades to nothing drawn rather than a failed load — which is what lets a drawing

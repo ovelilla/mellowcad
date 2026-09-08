@@ -10,6 +10,7 @@ import {
   assignEntityLinetype,
   assignEntityLineweight,
   assignTextStyle,
+  BlockId,
   Entity,
   EntityId,
   EntityProperty,
@@ -71,6 +72,7 @@ import {
   toolCommandAlias,
 } from "./CommandLine"
 import { CommandHistory } from "./commands/Command"
+import { PurgeBlocksCommand } from "./commands/blockCommands"
 import {
   ClearDocumentCommand,
   RemoveEntitiesCommand,
@@ -85,6 +87,8 @@ import { ArcTool } from "./tools/ArcTool"
 import { RectangleTool } from "./tools/RectangleTool"
 import { PolygonTool } from "./tools/PolygonTool"
 import { HatchTool } from "./tools/HatchTool"
+import { BlockTool } from "./tools/BlockTool"
+import { InsertTool } from "./tools/InsertTool"
 import { TextTool } from "./tools/TextTool"
 import { TextEditTool } from "./tools/TextEditTool"
 import { DimensionTool } from "./tools/DimensionTool"
@@ -117,6 +121,7 @@ import { PointResolver } from "./PointResolver"
 import { AutosaveService } from "./Autosave"
 import { buildScene, PolarGuideInput } from "./SceneBuilder"
 import {
+  buildBlockInfos,
   buildDimStyleInfos,
   buildDynamicInputUi,
   buildLayerInfos,
@@ -154,6 +159,11 @@ const WHEEL_BURST_MS = 400
 
 /** Movement past this (screen px) makes a press a drag rather than a click. */
 const DRAG_THRESHOLD_PX = 4
+
+/** Breathing room around a block thumbnail, in screen pixels. */
+const PREVIEW_PADDING_PX = 6
+
+const EMPTY_IDS: ReadonlySet<EntityId> = new Set()
 
 /**
  * The application core of the CAD system — the imperative shell around the
@@ -208,6 +218,8 @@ export class CadRuntime extends Observable {
   private gridVisible = true
   // Which style table the manager is showing, or null while it is closed.
   private stylesPanel: StylesPanelTab | null = null
+  // Whether the Blocks palette is showing.
+  private blocksPanel = false
   // Whether the command prompt is shown. Hiding it is purely visual: typing
   // still feeds the prompt, which reappears while there is text to show.
   private commandLineVisible = true
@@ -242,6 +254,8 @@ export class CadRuntime extends Observable {
 
   // Held as a field so a double-click can hand it the object directly.
   private readonly textEdit = new TextEditTool()
+  // Held as a field so the Blocks palette can name the block for it.
+  private readonly insert = new InsertTool()
 
   private readonly files: FileTransport | null
 
@@ -268,6 +282,7 @@ export class CadRuntime extends Observable {
       viewport: this.viewport,
       selection: this.selection,
       dynamicInput: this.dynamicInput,
+      blocks: this.document.blockLookup(),
       execute: (command) => this.history.execute(command),
       undo: () => this.history.undo(),
       pickTolerance: () =>
@@ -303,6 +318,8 @@ export class CadRuntime extends Observable {
     this.registerTool(new RectangleTool())
     this.registerTool(new PolygonTool())
     this.registerTool(new HatchTool())
+    this.registerTool(new BlockTool())
+    this.registerTool(this.insert)
     this.registerTool(new TextTool())
     this.registerTool(this.textEdit)
     this.registerTool(new DimensionTool("linear", "dimlinear", "Linear"))
@@ -568,6 +585,30 @@ export class CadRuntime extends Observable {
       description: "Create and modify text styles",
       run: () => this.setStylesPanel("text"),
     })
+    // No alias: Autodesk's shortcut guide lists none for BLOCKSPALETTE, and B
+    // and I are already BLOCK and INSERT.
+    this.registerCommand({
+      name: "BLOCKSPALETTE",
+      aliases: [],
+      description: "Show the blocks palette",
+      run: () => this.setBlocksPanel(true),
+    })
+    // Only block definitions so far: layers and styles are purged from their
+    // own managers, which already refuse a base, current or in-use entry.
+    this.registerCommand({
+      name: "PURGE",
+      aliases: ["PU"],
+      description: "Remove unused block definitions",
+      run: () => {
+        const purged = this.purgeBlocks()
+        this.commandLine.write(
+          "info",
+          purged === 0
+            ? "No unused blocks."
+            : `${purged} block${purged === 1 ? "" : "s"} purged.`
+        )
+      },
+    })
   }
 
   private registerCommand(definition: CommandDefinition): void {
@@ -702,7 +743,10 @@ export class CadRuntime extends Observable {
 
   zoomToFit(padding = 40): void {
     this.viewport.pushHistory()
-    const bounds = entitiesBounds(this.document.getEntities())
+    const bounds = entitiesBounds(
+      this.document.getEntities(),
+      this.document.blockLookup()
+    )
     if (!bounds) {
       this.viewport.reset()
       return
@@ -1380,6 +1424,86 @@ export class CadRuntime extends Observable {
     this.setStylesPanel(this.stylesPanel === tab ? null : tab)
   }
 
+  /** Shows or hides the Blocks palette (AutoCAD's BLOCKSPALETTE). */
+  setBlocksPanel(open: boolean): void {
+    if (this.blocksPanel === open) return
+    this.blocksPanel = open
+    this.invalidateState()
+    this.host.requestRender()
+  }
+
+  toggleBlocksPanel(): void {
+    this.setBlocksPanel(!this.blocksPanel)
+  }
+
+  /**
+   * Removes block definitions the drawing no longer references — AutoCAD's
+   * PURGE, which "removes unused items… from the drawing" and lists a
+   * referenced block under the items you *cannot* purge. With no ids given,
+   * every unused block goes. Returns how many were removed.
+   */
+  purgeBlocks(ids?: readonly BlockId[]): number {
+    const unused = (ids ?? this.document.getBlocks().map((b) => b.id)).filter(
+      (id) => this.document.getBlock(id) && !this.document.blockInUse(id)
+    )
+    if (unused.length === 0) return 0
+    this.history.execute(new PurgeBlocksCommand(unused))
+    return unused.length
+  }
+
+  /**
+   * Starts INSERT with the block already chosen — the palette's "clicking and
+   * placing them", which skips only the name prompt so the insertion point,
+   * scale and rotation are answered exactly as they are when typed.
+   */
+  insertBlock(id: BlockId): void {
+    if (!this.document.getBlock(id)) return
+    this.startTool("insert")
+    this.insert.beginInsert(id, this.toolContext)
+    this.invalidateState()
+    this.host.requestRender()
+  }
+
+  /**
+   * A thumbnail of a block, framed in a `width`×`height` box: the same neutral
+   * scene the drawing is built from, so a preview can never disagree with what
+   * the block actually looks like. Null when the block is unknown or empty.
+   */
+  buildBlockPreview(id: BlockId, width: number, height: number): Scene | null {
+    const block = this.document.getBlock(id)
+    if (!block || block.entities.length === 0) return null
+    const bounds = entitiesBounds(block.entities, this.document.blockLookup())
+    if (!bounds) return null
+
+    const camera = new Viewport()
+    camera.setSize(width, height)
+    camera.zoomToBounds(bounds.min, bounds.max, PREVIEW_PADDING_PX)
+    return buildScene({
+      camera,
+      entities: block.entities,
+      layers: this.document.getLayers(),
+      dimStyles: this.document.getDimStyles(),
+      blocks: this.document.blockLookup(),
+      selectedIds: EMPTY_IDS,
+      hiddenIds: EMPTY_IDS,
+      gridVisible: false,
+      gridSpacing: null,
+      ltScale: this.document.getSettings().ltScale,
+      // A thumbnail is a shape, not a plot: real lineweights would blot it out.
+      lwDisplay: false,
+      snap: null,
+      acquiredTrackingPoints: [],
+      tracking: null,
+      parallelReferenceIds: EMPTY_IDS,
+      toolOverlay: [],
+      cursor: null,
+      polar: null,
+      fromBase: null,
+      cyclingBadge: null,
+      cyclingHighlight: null,
+    })
+  }
+
   /**
    * Sets the current dimension style's overall scale (AutoCAD's DIMSCALE) — how
    * much bigger than their plotted size dimensions are drawn, so annotation
@@ -1404,6 +1528,7 @@ export class CadRuntime extends Observable {
       currentTextStyleId: this.document.getCurrentTextStyleId(),
       dimStyles: this.document.getDimStyles(),
       currentDimStyleId: this.document.getCurrentDimStyleId(),
+      blocks: this.document.getBlocks(),
       entities: this.document.getEntities(),
     })
   }
@@ -1464,16 +1589,16 @@ export class CadRuntime extends Observable {
     const parsed = parseDrawingFile(text)
     this.selection.clear()
     this.resetTracking()
-    this.document.load(
-      parsed.entities,
-      parsed.settings,
-      parsed.layers,
-      parsed.currentLayerId,
-      parsed.textStyles,
-      parsed.currentTextStyleId,
-      parsed.dimStyles,
-      parsed.currentDimStyleId
-    )
+    this.document.load(parsed.entities, {
+      settings: parsed.settings,
+      layers: parsed.layers,
+      currentLayerId: parsed.currentLayerId,
+      textStyles: parsed.textStyles,
+      currentTextStyleId: parsed.currentTextStyleId,
+      dimStyles: parsed.dimStyles,
+      currentDimStyleId: parsed.currentDimStyleId,
+      blocks: parsed.blocks,
+    })
     this.history.clear() // a loaded file is a fresh undo baseline
     this.zoomToFit()
     this.autosave.saveNow() // mirror the opened file into this device's store
@@ -1487,16 +1612,16 @@ export class CadRuntime extends Observable {
       const parsed = parseDrawingFile(text)
       // Nothing worth restoring: no geometry and only the base layer.
       if (parsed.entities.length === 0 && parsed.layers.length <= 1) return
-      this.document.load(
-        parsed.entities,
-        parsed.settings,
-        parsed.layers,
-        parsed.currentLayerId,
-        parsed.textStyles,
-        parsed.currentTextStyleId,
-        parsed.dimStyles,
-        parsed.currentDimStyleId
-      )
+      this.document.load(parsed.entities, {
+        settings: parsed.settings,
+        layers: parsed.layers,
+        currentLayerId: parsed.currentLayerId,
+        textStyles: parsed.textStyles,
+        currentTextStyleId: parsed.currentTextStyleId,
+        dimStyles: parsed.dimStyles,
+        currentDimStyleId: parsed.currentDimStyleId,
+        blocks: parsed.blocks,
+      })
       this.autosave.markRestored()
       this.pendingFit = true
       this.invalidateState()
@@ -1515,6 +1640,7 @@ export class CadRuntime extends Observable {
       entities: this.document.getEntities(),
       layers: this.document.getLayers(),
       dimStyles: this.document.getDimStyles(),
+      blocks: this.document.blockLookup(),
       selectedIds: new Set(this.selection.toArray()),
       hiddenIds: new Set(this.activeTool.hiddenEntityIds?.() ?? []),
       gridVisible: this.gridVisible,
@@ -2338,6 +2464,11 @@ export class CadRuntime extends Observable {
       currentDimStyleId: this.document.getCurrentDimStyleId(),
       selectionDimStyleId: commonStyleId(selectedEntities, "dimension"),
       stylesPanel: this.stylesPanel,
+      blocks: buildBlockInfos(
+        this.document.getBlocks(),
+        this.document.getEntities()
+      ),
+      blocksPanel: this.blocksPanel,
       commandOptions: this.activeTool.commandOptions?.() ?? [],
       commandLine: {
         visible: this.commandLineVisible,

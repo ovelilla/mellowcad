@@ -1,5 +1,6 @@
 import { Vec2, V } from "../geometry/Vec2"
 import {
+  BlockLookup,
   DimensionEntity,
   Entity,
   EntityId,
@@ -9,6 +10,7 @@ import {
   dimensionGeometry,
   entityDrawOrder,
   hatchGeometry,
+  insertFlatGeometry,
   polylineSegmentGeometries,
   TextJustify,
 } from "../domain/entities"
@@ -70,6 +72,8 @@ export interface SceneInput {
   readonly layers: readonly Layer[]
   /** Dimension styles, used to size a dimension's text, arrows and offsets. */
   readonly dimStyles: readonly DimStyle[]
+  /** Block table, used to expand every block reference into its geometry. */
+  readonly blocks: BlockLookup
   readonly selectedIds: ReadonlySet<EntityId>
   /** Entities the active tool is editing in place and draws itself. */
   readonly hiddenIds: ReadonlySet<EntityId>
@@ -122,6 +126,7 @@ export function buildScene(input: SceneInput): Scene {
     input.entities,
     input.layers,
     input.dimStyles,
+    input.blocks,
     input.selectedIds,
     input.hiddenIds,
     input.ltScale,
@@ -141,10 +146,12 @@ export function buildScene(input: SceneInput): Scene {
   primitives.push(...input.toolOverlay)
   if (input.cyclingHighlight) {
     primitives.push(
-      ...entityScenePrimitive(camera, input.cyclingHighlight, {
-        color: THEME.selected,
-        width: 2.5,
-      })
+      ...entityScenePrimitive(
+        camera,
+        input.cyclingHighlight,
+        { color: THEME.selected, width: 2.5 },
+        { blocks: input.blocks }
+      )
     )
   }
   if (input.cursor) {
@@ -335,11 +342,21 @@ export function arcScenePrimitive(
  * "group" primitive would hide a dimension's parts from everything that reads
  * the scene back, the tests included.
  */
+/**
+ * The extra context an entity may need to draw itself: a dimension's style, and
+ * the block table a reference is expanded through. Grouped so a call site that
+ * only has one of them does not have to name the other.
+ */
+export interface EntityDrawOptions {
+  readonly dimStyle?: DimStyle
+  readonly blocks?: BlockLookup
+}
+
 export function entityScenePrimitive(
   camera: CameraTransform,
   entity: Entity,
   stroke: StrokeStyle,
-  dimStyle: DimStyle = DEFAULT_DIM_STYLE
+  options: EntityDrawOptions = {}
 ): ScenePrimitive[] {
   switch (entity.type) {
     case "line":
@@ -405,9 +422,22 @@ export function entityScenePrimitive(
         },
       ]
     case "dimension":
-      return dimensionPrimitives(camera, entity, stroke, dimStyle)
+      return dimensionPrimitives(
+        camera,
+        entity,
+        stroke,
+        options.dimStyle ?? DEFAULT_DIM_STYLE
+      )
     case "hatch":
       return hatchPrimitives(camera, entity, stroke)
+    case "insert":
+      // A ghost or rollover draws the whole reference in one colour; the real
+      // scene resolves each nested object's own appearance (see pushEntities).
+      return options.blocks
+        ? insertFlatGeometry(entity, options.blocks).flatMap((nested) =>
+            entityScenePrimitive(camera, nested, stroke, options)
+          )
+        : []
   }
 }
 
@@ -607,6 +637,7 @@ function pushEntities(
   entities: readonly Entity[],
   layers: readonly Layer[],
   dimStyles: readonly DimStyle[],
+  blocks: BlockLookup,
   selectedIds: ReadonlySet<EntityId>,
   hiddenIds: ReadonlySet<EntityId>,
   ltScale: number,
@@ -623,13 +654,11 @@ function pushEntities(
     (a, b) => entityDrawOrder(a) - entityDrawOrder(b)
   )
 
-  for (const entity of ordered) {
-    if (hiddenIds.has(entity.id)) continue
+  const draw = (entity: Entity, isSelected: boolean) => {
     const layer = layerById.get(entity.layerId)
     // Entities on a hidden (Off) layer are not drawn at all.
-    if (layer && !layer.visible) continue
+    if (layer && !layer.visible) return
 
-    const isSelected = selectedIds.has(entity.id)
     // Resolve the linetype ByObject → ByLayer, then turn its world-unit pattern
     // into a screen-pixel dash (scaled by LTSCALE and the current zoom).
     const linetypeId = entity.linetype ?? layer?.linetype ?? DEFAULT_LINETYPE_ID
@@ -643,18 +672,31 @@ function pushEntities(
       width: widthFor(lineweight, lwDisplay, isSelected),
       ...(dash ? { dash } : {}),
     }
+    if (entity.type === "insert") {
+      // Each object inside the block keeps its own colour, linetype and
+      // lineweight, so a reference is not painted flat: the reference's layer
+      // only reaches the ones drawn on layer 0, which `insertFlatGeometry`
+      // has already resolved.
+      for (const nested of insertFlatGeometry(entity, blocks)) {
+        draw(nested, isSelected)
+      }
+      return
+    }
     out.push(
-      ...entityScenePrimitive(
-        camera,
-        entity,
-        stroke,
-        entity.type === "dimension"
-          ? (dimStyleById.get(entity.styleId) ??
+      ...entityScenePrimitive(camera, entity, stroke, {
+        dimStyle:
+          entity.type === "dimension"
+            ? (dimStyleById.get(entity.styleId) ??
               dimStyleById.get(DEFAULT_DIM_STYLE_ID) ??
               DEFAULT_DIM_STYLE)
-          : DEFAULT_DIM_STYLE
-      )
+            : undefined,
+      })
     )
+  }
+
+  for (const entity of ordered) {
+    if (hiddenIds.has(entity.id)) continue
+    draw(entity, selectedIds.has(entity.id))
   }
 }
 

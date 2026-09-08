@@ -702,3 +702,70 @@ describe("hatches", () => {
     expect(parsed.entities).toHaveLength(1)
   })
 })
+
+describe("blocks", () => {
+  const file = (extra: Record<string, unknown>) =>
+    parseDrawingFile(
+      JSON.stringify({
+        type: DRAWING_FILE_TYPE,
+        version: DRAWING_FILE_VERSION,
+        ...extra,
+      })
+    )
+
+  const bar = [
+    { id: "b1", type: "line", start: { x: 0, y: 0 }, end: { x: 10, y: 0 } },
+  ]
+
+  it("names a definition after its id when the name is missing", () => {
+    const parsed = file({ blocks: [{ id: "BAR", entities: bar }] })
+    expect(parsed.blocks[0].name).toBe("BAR")
+    expect(parsed.blocks[0].basePoint).toEqual({ x: 0, y: 0 })
+  })
+
+  it("skips definitions that are unusable or repeated", () => {
+    const parsed = file({
+      blocks: [
+        "nonsense",
+        { name: "EMPTY", entities: [] },
+        { entities: bar },
+        { name: "BAR", entities: bar },
+        { name: "BAR", entities: bar },
+      ],
+    })
+    expect(parsed.blocks.map((block) => block.name)).toEqual(["BAR"])
+  })
+
+  it("fills a reference's missing scale and rotation", () => {
+    const parsed = file({
+      blocks: [{ name: "BAR", entities: bar }],
+      entities: [
+        {
+          id: "i1",
+          type: "insert",
+          blockId: "BAR",
+          position: { x: 5, y: 6 },
+          scale: -2,
+          rotation: "sideways",
+        },
+      ],
+    })
+    const entity = parsed.entities[0]
+    expect(entity.type).toBe("insert")
+    if (entity.type !== "insert") return
+    expect(entity.scale).toBe(1)
+    expect(entity.rotation).toBe(0)
+    expect(entity.mirrored).toBeUndefined()
+  })
+
+  it("drops a reference with no position or no block name", () => {
+    const parsed = file({
+      blocks: [{ name: "BAR", entities: bar }],
+      entities: [
+        { id: "i1", type: "insert", blockId: "BAR" },
+        { id: "i2", type: "insert", position: { x: 0, y: 0 } },
+      ],
+    })
+    expect(parsed.entities).toHaveLength(0)
+  })
+})

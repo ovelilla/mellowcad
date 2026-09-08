@@ -3,6 +3,7 @@ import { Vec2 } from "../geometry/Vec2"
 import { Layer } from "../domain/layers"
 import { EntityId, EntityProperty } from "../domain/entities"
 import { LengthUnit } from "../domain/units"
+import { Scene } from "../scene/types"
 import { DimStyle } from "../domain/dimStyles"
 import { TextStyle } from "../domain/textStyles"
 import {
@@ -365,6 +366,26 @@ export class CadEngine {
 
   toggleStylesPanel(tab: StylesPanelTab): void {
     this.runtime.toggleStylesPanel(tab)
+  }
+
+  setBlocksPanel(open: boolean): void {
+    this.runtime.setBlocksPanel(open)
+  }
+
+  toggleBlocksPanel(): void {
+    this.runtime.toggleBlocksPanel()
+  }
+
+  insertBlock(id: string): void {
+    this.runtime.insertBlock(id)
+  }
+
+  purgeBlocks(ids?: readonly string[]): number {
+    return this.runtime.purgeBlocks(ids)
+  }
+
+  buildBlockPreview(id: string, width: number, height: number): Scene | null {
+    return this.runtime.buildBlockPreview(id, width, height)
   }
 
   toggleLineweightDisplay(): void {

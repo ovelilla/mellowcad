@@ -281,6 +281,7 @@ function planTrim(
       return null // annotation, not an outline to cut
     case "dimension":
     case "hatch":
+    case "insert":
       return null
   }
 }
@@ -302,6 +303,7 @@ function planExtend(
     case "text":
     case "dimension":
     case "hatch":
+    case "insert":
       return null
   }
 }
@@ -546,6 +548,7 @@ function circleEdgeCrossPoints(
     case "text":
     case "dimension":
     case "hatch":
+    case "insert":
       return []
   }
 }

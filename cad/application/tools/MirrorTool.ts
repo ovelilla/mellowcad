@@ -277,7 +277,7 @@ export class MirrorTool implements Tool {
         b: viewport.worldToScreen(current),
         stroke: { color: THEME.selected, width: 1, dash: [6, 4] },
       })
-      pushGhost(out, viewport, originals, first, current)
+      pushGhost(out, viewport, originals, first, current, ctx.blocks)
     }
     return out
   }
@@ -429,12 +429,15 @@ function pushGhost(
   viewport: ToolContext["viewport"],
   originals: readonly Entity[],
   a: Vec2,
-  b: Vec2
+  b: Vec2,
+  blocks: ToolContext["blocks"]
 ): void {
   const ghost: StrokeStyle = { color: THEME.preview, width: 1, dash: [6, 4] }
   for (const entity of originals) {
     out.push(
-      ...entityScenePrimitive(viewport, mirrorEntity(entity, a, b), ghost)
+      ...entityScenePrimitive(viewport, mirrorEntity(entity, a, b), ghost, {
+        blocks,
+      })
     )
   }
 }

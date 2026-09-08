@@ -81,6 +81,11 @@ box drag started on a stack still works. Choosing a candidate replays press and 
   but are **never acquired** by OTRACK — AutoCAD never tracks a moving point.
 - The one-shot `override` runs a single provider, ignoring the enabled running set, then is
   cleared once the pick is consumed.
+- Providers read `SnapContext.entities`, **not** `document.getEntities()`: that list is the drawing
+  with every block reference already expanded into the geometry it draws (AutoCAD snaps inside a
+  block), built once per resolve rather than ten times. `document` is still there for the
+  visibility check, since the layers are real. `insertionProvider` is the exception — it offers the
+  reference's own insertion point, so it reads the document.
 
 Adding a snap type touches: `SnapType`, a provider, `defaultSnapProviders` (position = priority),
 the `TRACKABLE` set, a `SceneBuilder` marker + `SNAP_LABEL`, `drawing-aids.tsx`

@@ -197,6 +197,30 @@ export const HatchIcon = createLucideIcon("Hatch", [
   ["path", { d: "M10 20 L20 10", strokeWidth: "1.25", key: "l3" }],
 ])
 
+/**
+ * Create block: loose pieces gathered into one named object, with a bead on the
+ * insertion base point.
+ */
+export const BlockIcon = createLucideIcon("Block", [
+  [
+    "rect",
+    { x: "3", y: "3", width: "18", height: "18", rx: "2", key: "frame" },
+  ],
+  ["path", { d: "M7 8 H12 V13 H7 Z", strokeWidth: "1.25", key: "piece1" }],
+  ["path", { d: "M13 12 H17 V16 H13 Z", strokeWidth: "1.25", key: "piece2" }],
+  ["circle", { cx: "7", cy: "17", ...DOT, key: "base" }],
+])
+
+/** Insert block: a named object dropped onto its insertion point. */
+export const InsertIcon = createLucideIcon("Insert", [
+  [
+    "rect",
+    { x: "8", y: "3", width: "13", height: "13", rx: "2", key: "block" },
+  ],
+  ["path", { d: "M3 21 L8 16", strokeWidth: "1.25", key: "leader" }],
+  ["circle", { cx: "3", cy: "21", ...DOT, key: "point" }],
+])
+
 /** Break: one object cut into two, with the removed gap between the pieces. */
 export const BreakIcon = createLucideIcon("Break", [
   ["path", { d: "M3 12 H9", key: "left" }],

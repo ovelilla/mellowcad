@@ -6,7 +6,7 @@ import type {
   EngineHost,
   FileTransport,
 } from "../cad/application/ports"
-import type { Entity, EntityId } from "../cad/domain/entities"
+import type { BlockDefinition, Entity, EntityId } from "../cad/domain/entities"
 import type { Scene } from "../cad/scene/types"
 import type { Vec2 } from "../cad/geometry/Vec2"
 
@@ -115,6 +115,8 @@ export interface HarnessOptions {
   readonly height?: number
   /** Geometry present before the test starts (loaded outside the undo stack). */
   readonly entities?: readonly Entity[]
+  /** Block definitions present before the test starts. */
+  readonly blocks?: readonly BlockDefinition[]
   /**
    * Running object snaps. Off by default so a click lands exactly where the
    * test asked; turn it on in tests that are *about* snapping.
@@ -145,8 +147,10 @@ export class CadHarness {
     )
     this.runtime.setViewSize(options.width ?? 1000, options.height ?? 800)
     this.runtime.snapping.setActive(options.snap ?? false)
-    if (options.entities?.length) {
-      this.runtime.document.load(options.entities)
+    if (options.entities?.length || options.blocks?.length) {
+      this.runtime.document.load(options.entities ?? [], {
+        blocks: options.blocks,
+      })
     }
     // Park the pointer at the view centre. Real users always have the mouse
     // *somewhere*, and the runtime replays that position when a command starts

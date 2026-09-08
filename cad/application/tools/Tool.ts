@@ -1,6 +1,6 @@
 import { Vec2 } from "../../geometry/Vec2"
 import { DocumentReader } from "../../domain/Document"
-import { Entity, EntityId } from "../../domain/entities"
+import { Entity, EntityId, BlockLookup } from "../../domain/entities"
 import { Viewport } from "../Viewport"
 import { Selection } from "../Selection"
 import { ConstructionGeometry, SnapResult } from "../snapping/types"
@@ -79,6 +79,12 @@ export interface ToolContext {
   readonly viewport: Viewport
   readonly selection: Selection
   readonly dynamicInput: DynamicInputController
+  /**
+   * The block table, to hand to `entityScenePrimitive` and the domain helpers
+   * that have to look inside a block reference. A ghost drawn without it is an
+   * empty ghost.
+   */
+  readonly blocks: BlockLookup
 
   /** Executes a reversible command against the document (the only write-path). */
   execute(command: Command): void

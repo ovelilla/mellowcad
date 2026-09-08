@@ -177,7 +177,9 @@ export class RadialDimensionTool implements Tool {
         RADIAL_PREVIEW_ID
       ),
       { color: THEME.rubberBand, width: 1 },
-      ctx.document.getDimStyle(ctx.document.getCurrentDimStyleId())
+      {
+        dimStyle: ctx.document.getDimStyle(ctx.document.getCurrentDimStyleId()),
+      }
     )
   }
 

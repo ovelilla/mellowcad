@@ -250,7 +250,8 @@ export class ArrayPolarTool implements Tool {
           ...entityScenePrimitive(
             viewport,
             placeItem(entity, config, angle),
-            ghost
+            ghost,
+            { blocks: ctx.blocks }
           )
         )
       }
@@ -319,7 +320,7 @@ export class ArrayPolarTool implements Tool {
       config: {
         originals,
         center,
-        basePoint: centroid(originals),
+        basePoint: centroid(originals, ctx.blocks),
         rotate: true,
       },
     }
@@ -428,13 +429,16 @@ function pushCenterMarker(out: ScenePrimitive[], at: Vec2): void {
 }
 
 /** Centroid of the selection's combined bounding box. */
-function centroid(originals: readonly Entity[]): Vec2 {
+function centroid(
+  originals: readonly Entity[],
+  blocks: ToolContext["blocks"]
+): Vec2 {
   let minX = Infinity
   let minY = Infinity
   let maxX = -Infinity
   let maxY = -Infinity
   for (const entity of originals) {
-    const b = entityBounds(entity)
+    const b = entityBounds(entity, blocks)
     minX = Math.min(minX, b.min.x)
     minY = Math.min(minY, b.min.y)
     maxX = Math.max(maxX, b.max.x)

@@ -200,7 +200,8 @@ export class ArrayTool implements Tool {
             ...entityScenePrimitive(
               viewport,
               translateEntity(entity, delta),
-              ghost
+              ghost,
+              { blocks: ctx.blocks }
             )
           )
         }
@@ -239,7 +240,10 @@ export class ArrayTool implements Tool {
       return
     }
 
-    const { colSpacingDefault, rowSpacingDefault } = defaultSpacing(originals)
+    const { colSpacingDefault, rowSpacingDefault } = defaultSpacing(
+      originals,
+      ctx.blocks
+    )
     this.state = {
       phase: "config",
       config: { originals, colSpacingDefault, rowSpacingDefault },
@@ -296,7 +300,10 @@ export class ArrayTool implements Tool {
 }
 
 /** Default spacing = one and a half bounding-box extents, so copies sit apart. */
-function defaultSpacing(originals: readonly Entity[]): {
+function defaultSpacing(
+  originals: readonly Entity[],
+  blocks: ToolContext["blocks"]
+): {
   colSpacingDefault: number
   rowSpacingDefault: number
 } {
@@ -305,7 +312,7 @@ function defaultSpacing(originals: readonly Entity[]): {
   let maxX = -Infinity
   let maxY = -Infinity
   for (const entity of originals) {
-    const b = entityBounds(entity)
+    const b = entityBounds(entity, blocks)
     minX = Math.min(minX, b.min.x)
     minY = Math.min(minY, b.min.y)
     maxX = Math.max(maxX, b.max.x)

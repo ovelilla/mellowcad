@@ -150,7 +150,7 @@ export class DimensionChainTool implements Tool {
             ctx.viewport,
             this.state.hover,
             { color: THEME.selected, width: 2 },
-            this.styleOf(this.state.hover, ctx)
+            { dimStyle: this.styleOf(this.state.hover, ctx) }
           )
         : []
     }
@@ -165,7 +165,7 @@ export class DimensionChainTool implements Tool {
       ctx.viewport,
       pending,
       { color: THEME.rubberBand, width: 1 },
-      this.styleOf(pending, ctx)
+      { dimStyle: this.styleOf(pending, ctx) }
     )
   }
 

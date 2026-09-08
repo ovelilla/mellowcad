@@ -4,6 +4,9 @@ import {
   assignEntityLayer,
   assignTextStyle,
   assignDimStyle,
+  BlockDefinition,
+  BlockId,
+  BlockLookup,
   distanceToEntity,
   entityDrawOrder,
   Entity,
@@ -59,6 +62,14 @@ export interface DocumentReader {
   getDimStyle(id: DimStyleId): DimStyle | undefined
   /** The style new dimensions are created with. */
   getCurrentDimStyleId(): DimStyleId
+  /** All block definitions, in creation order. */
+  getBlocks(): BlockDefinition[]
+  getBlock(id: BlockId): BlockDefinition | undefined
+  /**
+   * The block table as a plain function, for the pure helpers that have to look
+   * inside a block reference (bounds, hit-testing, the scene builder).
+   */
+  blockLookup(): BlockLookup
   /** Resolves an entity's effective colour: its own override, else ByLayer. */
   resolveEntityColor(entity: Entity): string
   /** Resolves an entity's effective linetype: its own override, else ByLayer. */
@@ -69,6 +80,22 @@ export interface DocumentReader {
   isEntityVisible(entity: Entity): boolean
   /** True when the entity can be selected/edited (visible and not locked). */
   isEntitySelectable(entity: Entity): boolean
+}
+
+/**
+ * The named tables a drawing carries alongside its geometry. Grouped rather
+ * than passed positionally: {@link CadDocument.load} had grown eight trailing
+ * optionals, and every new table would have added another two.
+ */
+export interface DocumentTables {
+  readonly settings?: DocumentSettings
+  readonly layers?: Iterable<Layer>
+  readonly currentLayerId?: LayerId
+  readonly textStyles?: Iterable<TextStyle>
+  readonly currentTextStyleId?: TextStyleId
+  readonly dimStyles?: Iterable<DimStyle>
+  readonly currentDimStyleId?: DimStyleId
+  readonly blocks?: Iterable<BlockDefinition>
 }
 
 /**
@@ -86,6 +113,8 @@ export class CadDocument extends Observable implements DocumentReader {
   private currentTextStyleId: TextStyleId = DEFAULT_TEXT_STYLE_ID
   private dimStyles = new Map<DimStyleId, DimStyle>()
   private currentDimStyleId: DimStyleId = DEFAULT_DIM_STYLE_ID
+  private blocks = new Map<BlockId, BlockDefinition>()
+  private readonly lookup: BlockLookup = (id) => this.blocks.get(id)
 
   constructor() {
     super()
@@ -141,37 +170,67 @@ export class CadDocument extends Observable implements DocumentReader {
    * base layer `0` is always guaranteed); every entity's `layerId` is then
    * reconciled against the table so a dangling reference falls back to `0`.
    */
-  load(
-    entities: Iterable<Entity>,
-    settings?: DocumentSettings,
-    layers?: Iterable<Layer>,
-    currentLayerId?: LayerId,
-    textStyles?: Iterable<TextStyle>,
-    currentTextStyleId?: TextStyleId,
-    dimStyles?: Iterable<DimStyle>,
-    currentDimStyleId?: DimStyleId
-  ): void {
-    if (layers) this.replaceLayers(layers)
-    if (textStyles) this.replaceTextStyles(textStyles)
-    if (dimStyles) this.replaceDimStyles(dimStyles)
+  load(entities: Iterable<Entity>, tables: DocumentTables = {}): void {
+    if (tables.layers) this.replaceLayers(tables.layers)
+    if (tables.textStyles) this.replaceTextStyles(tables.textStyles)
+    if (tables.dimStyles) this.replaceDimStyles(tables.dimStyles)
+    if (tables.blocks) {
+      this.blocks.clear()
+      for (const block of tables.blocks) this.blocks.set(block.id, block)
+    }
     // Keep the existing current layer when none is supplied (e.g. undoing a
     // "clear"); only fall back to the base layer if it no longer exists.
     this.currentLayerId = this.resolveLayerId(
-      currentLayerId ?? this.currentLayerId
+      tables.currentLayerId ?? this.currentLayerId
     )
     this.currentTextStyleId = this.resolveTextStyleId(
-      currentTextStyleId ?? this.currentTextStyleId
+      tables.currentTextStyleId ?? this.currentTextStyleId
     )
     this.currentDimStyleId = this.resolveDimStyleId(
-      currentDimStyleId ?? this.currentDimStyleId
+      tables.currentDimStyleId ?? this.currentDimStyleId
     )
 
     this.entities.clear()
     for (const entity of entities) {
       this.entities.set(entity.id, this.reconcile(entity))
     }
-    if (settings) this.settings = settings
+    if (tables.settings) this.settings = tables.settings
     this.emit()
+  }
+
+  getBlocks(): BlockDefinition[] {
+    return Array.from(this.blocks.values())
+  }
+
+  getBlock(id: BlockId): BlockDefinition | undefined {
+    return this.blocks.get(id)
+  }
+
+  blockLookup(): BlockLookup {
+    return this.lookup
+  }
+
+  /** Defines a block, or redefines the one of the same name. */
+  addBlock(block: BlockDefinition): BlockDefinition {
+    this.blocks.set(block.id, block)
+    this.emit()
+    return block
+  }
+
+  /** Whether any reference in the drawing still places this block. */
+  blockInUse(id: BlockId): boolean {
+    for (const entity of this.entities.values()) {
+      if (entity.type === "insert" && entity.blockId === id) return true
+    }
+    return false
+  }
+
+  /** Removes a block definition. A block still referenced stays (PURGE's rule). */
+  removeBlock(id: BlockId): boolean {
+    if (!this.blocks.has(id) || this.blockInUse(id)) return false
+    this.blocks.delete(id)
+    this.emit()
+    return true
   }
 
   getTextStyles(): TextStyle[] {
@@ -510,7 +569,7 @@ export class CadDocument extends Observable implements DocumentReader {
     for (const entity of this.entities.values()) {
       order += 1
       if (!this.isEntitySelectable(entity)) continue
-      const distance = distanceToEntity(entity, point)
+      const distance = distanceToEntity(entity, point, this.lookup)
       if (distance <= tolerance) hits.push({ entity, distance, order })
     }
     hits.sort(

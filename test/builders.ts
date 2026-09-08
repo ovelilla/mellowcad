@@ -167,12 +167,13 @@ export function documentWith(
   } = {}
 ): CadDocument {
   const document = new CadDocument()
-  document.load(
-    entities,
-    options.settings,
-    options.layers ? [createDefaultLayer(), ...options.layers] : undefined,
-    options.currentLayerId
-  )
+  document.load(entities, {
+    settings: options.settings,
+    layers: options.layers
+      ? [createDefaultLayer(), ...options.layers]
+      : undefined,
+    currentLayerId: options.currentLayerId,
+  })
   return document
 }
 
@@ -188,6 +189,7 @@ export function snapshotOf(
     currentTextStyleId: DEFAULT_TEXT_STYLE_ID,
     dimStyles: [createDefaultDimStyle()],
     currentDimStyleId: DEFAULT_DIM_STYLE_ID,
+    blocks: [],
     entities,
     ...overrides,
   }

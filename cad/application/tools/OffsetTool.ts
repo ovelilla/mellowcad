@@ -554,6 +554,7 @@ function entityAsGeom(entity: Entity): OffsetGeom | null {
       return null // text has no parallel copy
     case "dimension":
     case "hatch":
+    case "insert":
       return null
   }
 }
@@ -605,6 +606,7 @@ function computeOffset(
     case "text":
     case "dimension":
     case "hatch":
+    case "insert":
       return null
   }
 }
@@ -673,6 +675,7 @@ function computeThrough(source: Entity, point: Vec2): OffsetGeom | null {
     case "text":
     case "dimension":
     case "hatch":
+    case "insert":
       return null
   }
 }

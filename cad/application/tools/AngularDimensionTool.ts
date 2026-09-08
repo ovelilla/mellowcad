@@ -250,12 +250,11 @@ export class AngularDimensionTool implements Tool {
           ANGULAR_PREVIEW_ID
         )
         return pending
-          ? entityScenePrimitive(
-              viewport,
-              pending,
-              rubber,
-              ctx.document.getDimStyle(ctx.document.getCurrentDimStyleId())
-            )
+          ? entityScenePrimitive(viewport, pending, rubber, {
+              dimStyle: ctx.document.getDimStyle(
+                ctx.document.getCurrentDimStyleId()
+              ),
+            })
           : []
       }
       default:

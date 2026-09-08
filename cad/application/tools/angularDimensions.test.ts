@@ -364,6 +364,9 @@ describe("DIMANGULAR keywords", () => {
 describe("angular dimensions elsewhere in the app", () => {
   it("draws its dimension line as an arc primitive", () => {
     const cad = quarter(p(100, 0))
+    // Away from the dimension: hovering it would add a rollover preview of the
+    // very primitives being counted.
+    cad.moveTo(p(600, 600))
     const arcs = cad
       .scene()
       .primitives.filter((primitive) => primitive.kind === "arc")

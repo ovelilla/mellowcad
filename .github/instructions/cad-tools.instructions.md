@@ -32,7 +32,9 @@ A tool is an explicit state machine for one AutoCAD command. It owns a discrimin
   each of them asks with the same words. When two commands offer the same AutoCAD keyword, the
   prompt belongs in a shared helper: identical wording is part of the fidelity, not a nicety.
 - `SceneBuilder.entityScenePrimitive` — always use it to draw ghosts, so new entity types render
-  correctly everywhere for free. It returns a **list**, so spread it.
+  correctly everywhere for free. It returns a **list**, so spread it. Its fourth argument is an
+  options bag: pass `{ blocks: ctx.blocks }` wherever the entity can be one the _user_ selected,
+  or a block reference ghosts as nothing.
 
 ## Pick feedback
 
@@ -131,7 +133,10 @@ instead, or the command-line buffer will swallow them.
 ## Points, snapping, constraints
 
 - `wantsSnap()` — true only while prompting for a point; false while picking objects or
-  box-selecting (otherwise markers and lattice snapping make objects hard to hit).
+  box-selecting (otherwise markers and lattice snapping make objects hard to hit). False too for a
+  prompt that asks for an **area** rather than a point — HATCH's internal pick — and read
+  `input.world` there, not `input.point`: a point pulled onto an endpoint has landed on the very
+  boundary it was meant to be inside.
 - `getConstraintAnchor()` — the base point Ortho/Polar restrict against. Return it in every phase
   where a direction is being defined.
 - `getSnapGeometry(cursor)` — expose in-progress geometry (rubber band, ghost) so intersection

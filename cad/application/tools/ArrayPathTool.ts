@@ -289,7 +289,8 @@ export class ArrayPathTool implements Tool {
           out,
           viewport,
           itemEntity(entity, config.basePoint, dth, pl.point),
-          ghost
+          ghost,
+          ctx.blocks
         )
       }
     }
@@ -333,7 +334,7 @@ export class ArrayPathTool implements Tool {
         originals,
         pathEntity,
         path,
-        basePoint: centroid(originals),
+        basePoint: centroid(originals, ctx.blocks),
         method: "divide",
         align: true,
         spacingDefault,
@@ -420,9 +421,10 @@ function pushEntityOutline(
   out: ScenePrimitive[],
   viewport: ToolContext["viewport"],
   entity: Entity,
-  stroke: StrokeStyle
+  stroke: StrokeStyle,
+  blocks?: ToolContext["blocks"]
 ): void {
-  out.push(...entityScenePrimitive(viewport, entity, stroke))
+  out.push(...entityScenePrimitive(viewport, entity, stroke, { blocks }))
 }
 
 /** Builds a path curve from a line (open) or circle (closed). */
@@ -513,13 +515,16 @@ function itemCopy(
   })
 }
 
-function centroid(originals: readonly Entity[]): Vec2 {
+function centroid(
+  originals: readonly Entity[],
+  blocks: ToolContext["blocks"]
+): Vec2 {
   let minX = Infinity
   let minY = Infinity
   let maxX = -Infinity
   let maxY = -Infinity
   for (const entity of originals) {
-    const b = entityBounds(entity)
+    const b = entityBounds(entity, blocks)
     minX = Math.min(minX, b.min.x)
     minY = Math.min(minY, b.min.y)
     maxX = Math.max(maxX, b.max.x)

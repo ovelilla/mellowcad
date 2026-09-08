@@ -1,6 +1,6 @@
 import { Vec2 } from "../../geometry/Vec2"
 import { DocumentReader } from "../../domain/Document"
-import { EntityId } from "../../domain/entities"
+import { Entity, EntityId } from "../../domain/entities"
 
 /**
  * The kinds of snap the engine understands. Only a subset is implemented today,
@@ -89,6 +89,13 @@ export interface SnapResult extends SnapCandidate {
  */
 export interface SnapContext {
   readonly document: DocumentReader
+  /**
+   * The geometry object snaps see: every entity in the drawing, with each block
+   * reference replaced by the objects it draws (AutoCAD snaps to the geometry
+   * inside a block). Built once per resolve, so providers share the work.
+   * Visibility is still each provider's own check, as the layers are real.
+   */
+  readonly entities: readonly Entity[]
   readonly worldCursor: Vec2
   readonly worldTolerance: number
   /**

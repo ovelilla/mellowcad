@@ -39,6 +39,7 @@ export function boxSelect(
     y: Math.max(start.y, current.y),
   }
   const crossing = isCrossingBox(start, current)
+  const blocks = document.blockLookup()
 
   const hits: EntityId[] = []
   for (const entity of document.getEntities()) {
@@ -46,9 +47,9 @@ export function boxSelect(
     // the same filter single-click picking applies in Document.pick.
     if (!document.isEntitySelectable(entity)) continue
     const matches = crossing
-      ? entityWithinRect(entity, min, max) ||
-        entityCrossesRect(entity, min, max)
-      : entityWithinRect(entity, min, max)
+      ? entityWithinRect(entity, min, max, blocks) ||
+        entityCrossesRect(entity, min, max, blocks)
+      : entityWithinRect(entity, min, max, blocks)
     if (matches) hits.push(entity.id)
   }
   return hits

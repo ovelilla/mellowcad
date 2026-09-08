@@ -49,7 +49,14 @@ import {
 export type EntityId = string
 
 export type EntityType =
-  "line" | "circle" | "arc" | "polyline" | "text" | "dimension" | "hatch"
+  | "line"
+  | "circle"
+  | "arc"
+  | "polyline"
+  | "text"
+  | "dimension"
+  | "hatch"
+  | "insert"
 
 interface BaseEntity {
   readonly id: EntityId
@@ -279,6 +286,56 @@ export interface HatchEntity extends BaseEntity {
   readonly origin: Vec2
 }
 
+/** A block definition's name, which is also its identity, as in AutoCAD. */
+export type BlockId = string
+
+/**
+ * A block definition: named geometry that can be placed any number of times by
+ * an {@link InsertEntity}. Its {@link entities} are stored in the definition's
+ * own coordinates and {@link basePoint} is the insertion base point — "the
+ * point specified as the base point is used for subsequent insertions of the
+ * block", and the point a reference rotates about.
+ *
+ * The name is the identity (there is no separate id), so redefining a block is
+ * replacing the entry under the same name and every reference follows.
+ */
+export interface BlockDefinition {
+  readonly id: BlockId
+  readonly name: string
+  readonly basePoint: Vec2
+  readonly entities: readonly Entity[]
+}
+
+/**
+ * How a pure function reaches the block table, which lives on the document.
+ * Every helper that has to look inside a block reference takes one; without it
+ * an insert degrades to its insertion point rather than pretending to be empty.
+ */
+export type BlockLookup = (id: BlockId) => BlockDefinition | undefined
+
+/**
+ * A block reference (AutoCAD's INSERT object): one placement of a
+ * {@link BlockDefinition}, positioned, scaled and rotated as a whole.
+ *
+ * **Uniform scale only.** AutoCAD stores an X, Y and Z scale; unequal ones turn
+ * a circle into an ellipse and an arc into an elliptical arc — objects this
+ * engine does not have, and which AutoCAD itself warns "might explode into
+ * unexpected objects". {@link mirrored} carries the one non-uniform case that
+ * matters, a negative X scale, which is how MIRROR reflects a reference.
+ */
+export interface InsertEntity extends BaseEntity {
+  readonly type: "insert"
+  readonly blockId: BlockId
+  /** Where the definition's base point lands. */
+  readonly position: Vec2
+  /** Uniform scale factor; always positive. */
+  readonly scale: number
+  /** Rotation about the insertion point, radians CCW from +X. */
+  readonly rotation: number
+  /** Reflected across its own Y axis before rotating (a negative X scale). */
+  readonly mirrored?: boolean
+}
+
 export type Entity =
   | LineEntity
   | CircleEntity
@@ -287,6 +344,7 @@ export type Entity =
   | TextEntity
   | DimensionEntity
   | HatchEntity
+  | InsertEntity
 
 export interface Bounds {
   readonly min: Vec2
@@ -380,6 +438,116 @@ function cloneHatchLoop(loop: HatchLoop): HatchLoop {
   }
 }
 
+/** The optional settings of a block reference. */
+export interface InsertOptions {
+  readonly scale?: number
+  readonly rotation?: number
+  readonly mirrored?: boolean
+  readonly layerId?: LayerId
+  readonly id?: EntityId
+}
+
+export function createInsert(
+  blockId: BlockId,
+  position: Vec2,
+  options: InsertOptions = {}
+): InsertEntity {
+  const scale = options.scale
+  return {
+    id: options.id ?? nextEntityId(),
+    type: "insert",
+    layerId: options.layerId ?? DEFAULT_LAYER_ID,
+    blockId,
+    position: { x: position.x, y: position.y },
+    scale:
+      Number.isFinite(scale) && (scale as number) > 0 ? (scale as number) : 1,
+    rotation: Number.isFinite(options.rotation) ? options.rotation! : 0,
+    ...(options.mirrored ? { mirrored: true } : {}),
+  }
+}
+
+export function createBlockDefinition(
+  name: string,
+  basePoint: Vec2,
+  entities: readonly Entity[]
+): BlockDefinition {
+  return {
+    id: name,
+    name,
+    basePoint: { x: basePoint.x, y: basePoint.y },
+    entities: entities.slice(),
+  }
+}
+
+/**
+ * How deep block references may nest before the expansion gives up. AutoCAD
+ * forbids a block from referencing itself; a hand-edited file can still say so,
+ * and this is what keeps that from hanging the renderer.
+ */
+export const MAX_BLOCK_NESTING = 8
+
+const BLOCK_ORIGIN: Vec2 = { x: 0, y: 0 }
+/** The +Y axis through the origin: reflecting across it negates X. */
+const BLOCK_MIRROR_AXIS: Vec2 = { x: 0, y: 1 }
+
+/**
+ * The definition's entities placed in the drawing by one reference — a single
+ * grouping level, which is what EXPLODE removes ("Removes one grouping level at
+ * a time"), so a nested block comes back as a nested block.
+ *
+ * Objects drawn **on layer 0 inherit the reference's layer**: "if you want
+ * objects in a block to inherit properties from the current layer, create them
+ * on layer 0 with ByLayer properties". Anything on another layer, or carrying
+ * its own override, keeps what it had. That inheritance is how a reference is
+ * *displayed*, so EXPLODE turns it off (`inheritLayer: false`): the objects
+ * "revert to their original properties", back onto layer 0.
+ */
+export function insertGeometry(
+  insert: InsertEntity,
+  block: BlockDefinition | undefined,
+  options: { readonly inheritLayer?: boolean } = {}
+): Entity[] {
+  if (!block) return []
+  const inheritLayer = options.inheritLayer ?? true
+  return block.entities.map((entity) => {
+    let placed = translateEntity(entity, V.scale(block.basePoint, -1))
+    if (insert.mirrored) {
+      placed = mirrorEntity(placed, BLOCK_ORIGIN, BLOCK_MIRROR_AXIS)
+    }
+    if (insert.scale !== 1) {
+      placed = scaleEntity(placed, BLOCK_ORIGIN, insert.scale)
+    }
+    if (insert.rotation !== 0) {
+      placed = rotateEntity(placed, BLOCK_ORIGIN, insert.rotation)
+    }
+    placed = translateEntity(placed, insert.position)
+    return inheritLayer && placed.layerId === DEFAULT_LAYER_ID
+      ? assignEntityLayer(placed, insert.layerId)
+      : placed
+  })
+}
+
+/**
+ * Everything a reference draws, with nested references expanded away — the list
+ * rendering, hit-testing and bounds all work from.
+ */
+export function insertFlatGeometry(
+  insert: InsertEntity,
+  blocks: BlockLookup,
+  depth = 0
+): Entity[] {
+  if (depth >= MAX_BLOCK_NESTING) return []
+  const out: Entity[] = []
+  for (const entity of insertGeometry(insert, blocks(insert.blockId))) {
+    if (entity.type === "insert") {
+      out.push(...insertFlatGeometry(entity, blocks, depth + 1))
+    } else {
+      out.push(entity)
+    }
+  }
+  return out
+}
+
 /**
  * A *new* hatch (fresh id) with the same pattern settings as `hatch` over other
  * loops — the building block of every `*Copy` transform.
@@ -395,6 +563,24 @@ function hatchLike(
     patternAngle: overrides.patternAngle ?? hatch.patternAngle,
     origin: overrides.origin ?? hatch.origin,
     layerId: hatch.layerId,
+  })
+}
+
+/**
+ * A *new* block reference (fresh id) of the same block, with the same scale,
+ * rotation and reflection, placed somewhere else — the building block of every
+ * `*Copy` transform.
+ */
+function insertLike(
+  insert: InsertEntity,
+  position: Vec2,
+  overrides: Pick<InsertOptions, "scale" | "rotation" | "mirrored"> = {}
+): InsertEntity {
+  return createInsert(insert.blockId, position, {
+    scale: overrides.scale ?? insert.scale,
+    rotation: overrides.rotation ?? insert.rotation,
+    mirrored: overrides.mirrored ?? insert.mirrored,
+    layerId: insert.layerId,
   })
 }
 
@@ -1665,6 +1851,8 @@ export function assignEntityLayer(entity: Entity, layerId: LayerId): Entity {
       return { ...entity, layerId }
     case "hatch":
       return { ...entity, layerId }
+    case "insert":
+      return { ...entity, layerId }
   }
 }
 
@@ -1692,6 +1880,8 @@ export function assignEntityColor(
       return { ...entity, color }
     case "hatch":
       return { ...entity, color }
+    case "insert":
+      return { ...entity, color }
   }
 }
 
@@ -1718,6 +1908,8 @@ export function assignEntityLinetype(
       return { ...entity, linetype }
     case "hatch":
       return { ...entity, linetype }
+    case "insert":
+      return { ...entity, linetype }
   }
 }
 
@@ -1743,6 +1935,8 @@ export function assignEntityLineweight(
     case "dimension":
       return { ...entity, lineweight }
     case "hatch":
+      return { ...entity, lineweight }
+    case "insert":
       return { ...entity, lineweight }
   }
 }
@@ -1780,6 +1974,8 @@ export function translateEntity(entity: Entity, delta: Vec2): Entity {
         loops: mapHatchLoops(entity, (p) => V.add(p, delta)),
         origin: V.add(entity.origin, delta),
       }
+    case "insert":
+      return { ...entity, position: V.add(entity.position, delta) }
   }
 }
 
@@ -1840,6 +2036,12 @@ export function stretchEntity(
       // was traced from are being stretched by the same gesture, so following
       // the frame keeps the fill on the area the user is dragging.
       return { ...entity, loops: mapHatchLoops(entity, shift) }
+    case "insert":
+      // A reference has no free vertices to bend: it rides along whole when the
+      // frame catches its insertion point, as a circle does with its centre.
+      return inFrame(entity.position)
+        ? { ...entity, position: V.add(entity.position, delta) }
+        : entity
   }
 }
 
@@ -1914,6 +2116,8 @@ export function copyEntity(entity: Entity, delta: Vec2): Entity {
           mapHatchLoops(entity, (p) => V.add(p, delta)),
           { origin: V.add(entity.origin, delta) }
         )
+      case "insert":
+        return insertLike(entity, V.add(entity.position, delta))
     }
   })()
   return carryOverrides(entity, copy)
@@ -1984,6 +2188,12 @@ export function rotateEntity(
         patternAngle: entity.patternAngle + radians,
         origin: rotatePoint(entity.origin, pivot, radians),
       }
+    case "insert":
+      return {
+        ...entity,
+        position: rotatePoint(entity.position, pivot, radians),
+        rotation: entity.rotation + radians,
+      }
   }
 }
 
@@ -2047,6 +2257,14 @@ export function rotateEntityCopy(
           {
             patternAngle: entity.patternAngle + radians,
             origin: rotatePoint(entity.origin, pivot, radians),
+          }
+        )
+      case "insert":
+        return insertLike(
+          entity,
+          rotatePoint(entity.position, pivot, radians),
+          {
+            rotation: entity.rotation + radians,
           }
         )
     }
@@ -2118,6 +2336,12 @@ export function scaleEntity(
         patternScale: entity.patternScale * factor,
         origin: scalePoint(entity.origin, base, factor),
       }
+    case "insert":
+      return {
+        ...entity,
+        position: scalePoint(entity.position, base, factor),
+        scale: entity.scale * factor,
+      }
   }
 }
 
@@ -2177,6 +2401,10 @@ export function scaleEntityCopy(
             origin: scalePoint(entity.origin, base, factor),
           }
         )
+      case "insert":
+        return insertLike(entity, scalePoint(entity.position, base, factor), {
+          scale: entity.scale * factor,
+        })
     }
   })()
   return carryOverrides(entity, copy)
@@ -2253,6 +2481,27 @@ export function mirrorEntity(entity: Entity, a: Vec2, b: Vec2): Entity {
         patternAngle: mirrorAngle(entity.patternAngle, a, b),
         origin: mirrorPoint(entity.origin, a, b),
       }
+    case "insert":
+      return { ...entity, ...mirroredInsert(entity, a, b) }
+  }
+}
+
+/**
+ * How a block reference reflects. AutoCAD mirrors a reference by negating its X
+ * scale, which is what {@link InsertEntity.mirrored} carries here. Composing the
+ * reflection with the reference's own transform gives, for either starting
+ * value of `mirrored`, the same pair: the rotation reflects and turns a further
+ * half turn, and the reflection flag flips — so mirroring twice is the identity.
+ */
+function mirroredInsert(
+  insert: InsertEntity,
+  a: Vec2,
+  b: Vec2
+): Pick<InsertEntity, "position" | "rotation" | "mirrored"> {
+  return {
+    position: mirrorPoint(insert.position, a, b),
+    rotation: mirrorAngle(insert.rotation, a, b) + Math.PI,
+    mirrored: !insert.mirrored,
   }
 }
 
@@ -2319,6 +2568,13 @@ export function mirrorEntityCopy(entity: Entity, a: Vec2, b: Vec2): Entity {
             origin: mirrorPoint(entity.origin, a, b),
           }
         )
+      case "insert": {
+        const reflected = mirroredInsert(entity, a, b)
+        return insertLike(entity, reflected.position, {
+          rotation: reflected.rotation,
+          mirrored: reflected.mirrored,
+        })
+      }
     }
   })()
   return carryOverrides(entity, copy)
@@ -2346,11 +2602,25 @@ function mirrorArcAngles(
  * Shortest distance (world units) from a point to an entity's outline.
  * Used for click hit-testing.
  */
-export function distanceToEntity(entity: Entity, point: Vec2): number {
-  return closestOnEntity(entity, point).distance
+export function distanceToEntity(
+  entity: Entity,
+  point: Vec2,
+  blocks?: BlockLookup
+): number {
+  return closestOnEntity(entity, point, blocks).distance
 }
 
-export function closestOnEntity(entity: Entity, point: Vec2): ClosestResult {
+/**
+ * The point on an entity's outline nearest `point`. A block reference is
+ * measured against the geometry it draws, which is why `blocks` is needed to
+ * reach inside one; without it a reference answers with its insertion point,
+ * the one thing about it that is knowable on its own.
+ */
+export function closestOnEntity(
+  entity: Entity,
+  point: Vec2,
+  blocks?: BlockLookup
+): ClosestResult {
   switch (entity.type) {
     case "line":
       return closestPointOnSegment(entity.start, entity.end, point)
@@ -2438,10 +2708,23 @@ export function closestOnEntity(entity: Entity, point: Vec2): ClosestResult {
       }
       return pointInsideHatch(entity, point) ? { ...best, distance: 0 } : best
     }
+    case "insert": {
+      let best: ClosestResult = {
+        point: entity.position,
+        distance: V.distance(entity.position, point),
+        t: 0,
+      }
+      if (!blocks) return best
+      for (const nested of insertFlatGeometry(entity, blocks)) {
+        const candidate = closestOnEntity(nested, point, blocks)
+        if (candidate.distance < best.distance) best = candidate
+      }
+      return best
+    }
   }
 }
 
-export function entityBounds(entity: Entity): Bounds {
+export function entityBounds(entity: Entity, blocks?: BlockLookup): Bounds {
   switch (entity.type) {
     case "line":
       return {
@@ -2564,6 +2847,15 @@ export function entityBounds(entity: Entity): Bounds {
       }
       return { min: { x: minX, y: minY }, max: { x: maxX, y: maxY } }
     }
+    case "insert": {
+      const nested = blocks ? insertFlatGeometry(entity, blocks) : []
+      return (
+        entitiesBounds(nested, blocks) ?? {
+          min: entity.position,
+          max: entity.position,
+        }
+      )
+    }
   }
 }
 
@@ -2580,13 +2872,16 @@ export function entityDrawOrder(entity: Entity): number {
 }
 
 /** The combined extent of several entities, or `null` when there are none. */
-export function entitiesBounds(entities: Iterable<Entity>): Bounds | null {
+export function entitiesBounds(
+  entities: Iterable<Entity>,
+  blocks?: BlockLookup
+): Bounds | null {
   let minX = Infinity
   let minY = Infinity
   let maxX = -Infinity
   let maxY = -Infinity
   for (const entity of entities) {
-    const bounds = entityBounds(entity)
+    const bounds = entityBounds(entity, blocks)
     minX = Math.min(minX, bounds.min.x)
     minY = Math.min(minY, bounds.min.y)
     maxX = Math.max(maxX, bounds.max.x)
@@ -2675,6 +2970,7 @@ export type EntityProperty =
   | "dimensionRotation"
   | "patternScale"
   | "patternAngle"
+  | "insertScale"
 
 /**
  * Rebuilds an entity with one geometry value replaced, following AutoCAD's
@@ -2717,6 +3013,8 @@ export function applyEntityProperty(
       return null
     case "polyline":
       return null
+    case "insert":
+      return applyInsertProperty(entity, property, value)
   }
 }
 
@@ -2827,6 +3125,25 @@ function applyTextProperty(
   }
 }
 
+function applyInsertProperty(
+  insert: InsertEntity,
+  property: EntityProperty,
+  value: number
+): InsertEntity | null {
+  switch (property) {
+    case "positionX":
+      return { ...insert, position: { x: value, y: insert.position.y } }
+    case "positionY":
+      return { ...insert, position: { x: insert.position.x, y: value } }
+    case "insertScale":
+      return value > 0 ? { ...insert, scale: value } : null
+    case "rotation":
+      return { ...insert, rotation: toRadians(value) }
+    default:
+      return null
+  }
+}
+
 function pointInRect(p: Vec2, min: Vec2, max: Vec2): boolean {
   return p.x >= min.x && p.x <= max.x && p.y >= min.y && p.y <= max.y
 }
@@ -2852,9 +3169,10 @@ function rectEdges(min: Vec2, max: Vec2): [Vec2, Vec2][] {
 export function entityWithinRect(
   entity: Entity,
   min: Vec2,
-  max: Vec2
+  max: Vec2,
+  blocks?: BlockLookup
 ): boolean {
-  const b = entityBounds(entity)
+  const b = entityBounds(entity, blocks)
   return (
     b.min.x >= min.x && b.min.y >= min.y && b.max.x <= max.x && b.max.y <= max.y
   )
@@ -2869,7 +3187,8 @@ export function entityWithinRect(
 export function entityCrossesRect(
   entity: Entity,
   min: Vec2,
-  max: Vec2
+  max: Vec2,
+  blocks?: BlockLookup
 ): boolean {
   const edges = rectEdges(min, max)
   switch (entity.type) {
@@ -2971,6 +3290,14 @@ export function entityCrossesRect(
             if (segmentSegmentIntersection(a, b, e1, e2)) return true
           }
         }
+      }
+      return false
+    }
+    case "insert": {
+      if (pointInRect(entity.position, min, max)) return true
+      if (!blocks) return false
+      for (const nested of insertFlatGeometry(entity, blocks)) {
+        if (entityCrossesRect(nested, min, max, blocks)) return true
       }
       return false
     }

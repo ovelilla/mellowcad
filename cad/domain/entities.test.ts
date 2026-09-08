@@ -319,6 +319,14 @@ function expectSameShape(actual: Entity, expected: Entity, precision = 6) {
       expected.patternAngle,
       precision
     )
+  } else if (actual.type === "insert" && expected.type === "insert") {
+    expect(actual.blockId).toBe(expected.blockId)
+    expect(actual.position).toBeCloseToPoint(expected.position, precision)
+    expect(actual.scale).toBeCloseTo(expected.scale, precision)
+    expect(actual.rotation).toBeCloseToAngle(expected.rotation, precision)
+    // Reflection is what MIRROR toggles, so a lost flag means a reference that
+    // silently came back the wrong way round.
+    expect(actual.mirrored ?? false).toBe(expected.mirrored ?? false)
   }
 }
 
@@ -341,6 +349,8 @@ function characteristicPoints(entity: Entity): Vec2[] {
       return [entity.first, entity.second]
     case "hatch":
       return entity.loops.flatMap((loop) => [...loop.vertices])
+    case "insert":
+      return [entity.position]
   }
 }
 

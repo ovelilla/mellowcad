@@ -205,7 +205,7 @@ export class DimSpaceTool implements Tool {
               ctx.viewport,
               this.state.hover,
               { color: THEME.entityHover, width: 2 },
-              this.styleOf(this.state.hover, ctx)
+              { dimStyle: this.styleOf(this.state.hover, ctx) }
             )
           )
         }
@@ -230,7 +230,7 @@ export class DimSpaceTool implements Tool {
               ctx.viewport,
               dim,
               { color: THEME.preview, width: 1, dash: [6, 4] },
-              this.styleOf(dim, ctx)
+              { dimStyle: this.styleOf(dim, ctx) }
             )
           )
         }
@@ -337,7 +337,7 @@ export class DimSpaceTool implements Tool {
       ctx.viewport,
       dim,
       { color: THEME.selected, width: 2.5 },
-      this.styleOf(dim, ctx)
+      { dimStyle: this.styleOf(dim, ctx) }
     )
   }
 

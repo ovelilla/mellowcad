@@ -281,6 +281,9 @@ describe("dimension geometry", () => {
 
   it("draws extension lines, the dimension line, two filled arrows and the text", () => {
     const cad = dimension("DIMLINEAR", p(0, 0), p(100, 0), p(50, 50))
+    // Away from the dimension: hovering it would add a rollover preview of the
+    // very primitives being counted.
+    cad.moveTo(p(400, 400))
     const arrows = cad
       .scene()
       .primitives.filter(

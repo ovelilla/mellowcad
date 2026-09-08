@@ -41,10 +41,10 @@ export default defineConfig({
       thresholds: {
         // A ratchet, set just under what the suite achieves today: raise these
         // as coverage grows, never lower them to make a red build green.
-        statements: 72.4,
-        branches: 63.4,
-        functions: 82.7,
-        lines: 76.3,
+        statements: 73.8,
+        branches: 64.5,
+        functions: 83.4,
+        lines: 77.5,
         // The pure layers are where a silent regression is most expensive and
         // where tests are cheapest, so they are held much higher.
         "cad/geometry/**": {

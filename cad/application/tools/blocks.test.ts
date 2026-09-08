@@ -1,0 +1,604 @@
+import { describe, expect, it } from "vitest"
+import { createHarness } from "../../../test/harness"
+import { layerOf, lineOf, p } from "../../../test/builders"
+import {
+  createBlockDefinition,
+  createInsert,
+  insertGeometry,
+  entityBounds,
+  InsertEntity,
+  LineEntity,
+} from "../../domain/entities"
+import {
+  parseDrawingFile,
+  serializeDrawing,
+} from "../../serialization/drawingFile"
+import { THEME } from "../../scene/theme"
+import { DEFAULT_LAYER_COLOR } from "../../domain/layers"
+
+/** A one-line block: a 100-unit run along +X from its base point. */
+const barBlock = (name = "BAR") =>
+  createBlockDefinition(name, p(0, 0), [
+    lineOf(p(0, 0), p(100, 0), { id: "bar-line" }),
+  ])
+
+/** Runs BLOCK up to the "Select objects" prompt. */
+function startBlock(
+  cad: ReturnType<typeof createHarness>,
+  name: string,
+  base = p(0, 0)
+) {
+  return cad.command("BLOCK").type(name).enter().click(base)
+}
+
+describe("BLOCK", () => {
+  it("files the selected objects under the name and leaves a reference", () => {
+    const cad = createHarness({
+      entities: [lineOf(p(0, 0), p(100, 0), { id: "L1" })],
+    })
+    startBlock(cad, "BAR").click(p(50, 0)).enter()
+
+    const block = cad.runtime.document.getBlock("BAR")
+    expect(block?.name).toBe("BAR")
+    expect(block?.basePoint).toBeCloseToPoint(p(0, 0))
+    expect(block?.entities).toHaveLength(1)
+
+    // Convert to Block: the geometry is gone from the drawing and one
+    // reference stands in its place, so the drawing looks unchanged.
+    expect(cad.runtime.document.get("L1")).toBeUndefined()
+    const insert = cad.only<InsertEntity>("insert")
+    expect(insert.blockId).toBe("BAR")
+    expect(insert.position).toBeCloseToPoint(p(0, 0))
+    expect(insert.scale).toBeCloseTo(1)
+    expect(insert.rotation).toBeCloseTo(0)
+  })
+
+  it("pins the geometry to the base point it was given", () => {
+    const cad = createHarness({
+      entities: [lineOf(p(100, 0), p(200, 0), { id: "L1" })],
+    })
+    startBlock(cad, "BAR", p(100, 0)).click(p(150, 0)).enter()
+
+    const insert = cad.only<InsertEntity>("insert")
+    const drawn = insertGeometry(insert, cad.runtime.document.getBlock("BAR"))
+    // The reference redraws the line exactly where it was.
+    expect((drawn[0] as LineEntity).start).toBeCloseToPoint(p(100, 0))
+    expect((drawn[0] as LineEntity).end).toBeCloseToPoint(p(200, 0))
+  })
+
+  it("reverts the definition and the geometry in one undo step", () => {
+    const cad = createHarness({
+      entities: [lineOf(p(0, 0), p(100, 0), { id: "L1" })],
+    })
+    startBlock(cad, "BAR").click(p(50, 0)).enter()
+    cad.undo()
+
+    expect(cad.runtime.document.getBlock("BAR")).toBeUndefined()
+    expect(cad.byId<LineEntity>("L1").end).toBeCloseToPoint(p(100, 0))
+    expect(cad.typeCounts().insert).toBeUndefined()
+  })
+
+  it("lists what is already defined at the ? prompt", () => {
+    const cad = createHarness({ blocks: [barBlock()] })
+    cad.command("BLOCK").type("?").enter()
+
+    expect(cad.commandLog().join("\n")).toContain("BAR")
+    // Still asking for a name.
+    expect(cad.activeToolId()).toBe("block")
+  })
+
+  it("previews the object a click would add to the set", () => {
+    const cad = createHarness({
+      entities: [lineOf(p(0, 0), p(100, 0), { id: "L1" })],
+    })
+    startBlock(cad, "BAR")
+    const hovering = () =>
+      cad
+        .scene()
+        .primitives.filter(
+          (prim) => "stroke" in prim && prim.stroke?.color === THEME.entityHover
+        ).length
+
+    cad.moveTo(p(400, 400))
+    expect(hovering()).toBe(0)
+    cad.moveTo(p(50, 0))
+    expect(hovering()).toBeGreaterThan(0)
+  })
+
+  it("leaves the drawing alone when cancelled", () => {
+    const cad = createHarness({
+      entities: [lineOf(p(0, 0), p(100, 0), { id: "L1" })],
+    })
+    startBlock(cad, "BAR").click(p(50, 0)).escape()
+
+    expect(cad.runtime.document.getBlock("BAR")).toBeUndefined()
+    expect(cad.byId<LineEntity>("L1")).toBeDefined()
+  })
+
+  it("redefining a block updates every reference to it", () => {
+    const cad = createHarness({
+      blocks: [barBlock()],
+      entities: [
+        createInsert("BAR", p(0, 200), { id: "I1" }),
+        lineOf(p(0, 0), p(40, 0), { id: "L1" }),
+      ],
+    })
+    startBlock(cad, "BAR").click(p(20, 0)).enter()
+
+    const drawn = insertGeometry(
+      cad.byId<InsertEntity>("I1"),
+      cad.runtime.document.getBlock("BAR")
+    )
+    expect((drawn[0] as LineEntity).end).toBeCloseToPoint(p(40, 200))
+  })
+})
+
+describe("INSERT", () => {
+  const withBar = () => createHarness({ blocks: [barBlock()] })
+
+  it("places a reference at the picked point", () => {
+    const cad = withBar()
+    cad.command("INSERT").type("BAR").enter().click(p(300, 50))
+
+    const insert = cad.only<InsertEntity>("insert")
+    expect(insert.blockId).toBe("BAR")
+    expect(insert.position).toBeCloseToPoint(p(300, 50))
+    expect(cad.activeToolId()).toBe("select")
+  })
+
+  it("takes a scale factor from the Scale keyword", () => {
+    const cad = withBar()
+    cad
+      .command("INSERT")
+      .type("BAR")
+      .enter()
+      .option("s")
+      .type("2")
+      .enter()
+      .click(p(0, 0))
+
+    const insert = cad.only<InsertEntity>("insert")
+    expect(insert.scale).toBeCloseTo(2)
+    const drawn = insertGeometry(insert, cad.runtime.document.getBlock("BAR"))
+    expect((drawn[0] as LineEntity).end).toBeCloseToPoint(p(200, 0))
+  })
+
+  it("takes an angle from the Rotate keyword", () => {
+    const cad = withBar()
+    cad
+      .command("INSERT")
+      .type("BAR")
+      .enter()
+      .option("r")
+      .type("90")
+      .enter()
+      .click(p(0, 0))
+
+    const insert = cad.only<InsertEntity>("insert")
+    expect(insert.rotation).toBeCloseTo(Math.PI / 2)
+    const drawn = insertGeometry(insert, cad.runtime.document.getBlock("BAR"))
+    expect((drawn[0] as LineEntity).end).toBeCloseToPoint(p(0, 100))
+  })
+
+  it("keeps the scale and angle for the next insertion", () => {
+    const cad = withBar()
+    cad
+      .command("INSERT")
+      .type("BAR")
+      .enter()
+      .option("s")
+      .type("3")
+      .enter()
+      .click(p(0, 0))
+    // Enter at the name prompt takes the last block, as its <default>.
+    cad.command("INSERT").enter().click(p(0, 300))
+
+    expect((cad.latest() as InsertEntity).scale).toBeCloseTo(3)
+  })
+
+  it("reports a name that is not defined and asks again", () => {
+    const cad = withBar()
+    cad.command("INSERT").type("NOPE").enter()
+
+    expect(cad.commandLog().join("\n")).toContain(
+      'Block "NOPE" is not defined.'
+    )
+    expect(cad.activeToolId()).toBe("insert")
+    expect(cad.entityCount).toBe(0)
+  })
+
+  it("previews exactly what it commits", () => {
+    const cad = withBar()
+    cad.command("INSERT").type("BAR").enter().moveTo(p(120, 60))
+    const preview = cad
+      .scene()
+      .primitives.filter(
+        (prim) => "stroke" in prim && prim.stroke?.color === THEME.rubberBand
+      )
+    expect(preview).toHaveLength(1)
+
+    cad.click(p(120, 60))
+    expect(cad.only<InsertEntity>("insert").position).toBeCloseToPoint(
+      p(120, 60)
+    )
+  })
+
+  it("is one undo step", () => {
+    const cad = withBar()
+    cad.command("INSERT").type("BAR").enter().click(p(0, 0))
+    cad.undo()
+
+    expect(cad.entityCount).toBe(0)
+  })
+})
+
+describe("a block reference in the drawing", () => {
+  const placed = (options: Parameters<typeof createInsert>[2] = {}) =>
+    createHarness({
+      blocks: [barBlock()],
+      entities: [createInsert("BAR", p(0, 0), { id: "I1", ...options })],
+    })
+
+  it("draws the block's geometry, transformed", () => {
+    const cad = placed({ scale: 2, rotation: Math.PI / 2 })
+    cad.moveTo(p(500, 500))
+    const segments = cad
+      .scene()
+      .primitives.filter(
+        (prim) =>
+          prim.kind === "segment" && prim.stroke.color === DEFAULT_LAYER_COLOR
+      )
+
+    expect(segments).toHaveLength(1)
+    const drawn = insertGeometry(
+      cad.byId<InsertEntity>("I1"),
+      cad.runtime.document.getBlock("BAR")
+    )
+    expect((drawn[0] as LineEntity).end).toBeCloseToPoint(p(0, 200))
+  })
+
+  it("gives layer-0 objects the reference's layer and leaves the rest alone", () => {
+    const cad = createHarness()
+    cad.runtime.document.load(
+      [createInsert("MIX", p(0, 0), { id: "I1", layerId: "walls" })],
+      {
+        layers: [layerOf("0"), layerOf("walls"), layerOf("pinned")],
+        blocks: [
+          createBlockDefinition("MIX", p(0, 0), [
+            lineOf(p(0, 0), p(10, 0), { id: "a" }),
+            lineOf(p(0, 10), p(10, 10), { id: "b", layerId: "pinned" }),
+          ]),
+        ],
+      }
+    )
+
+    const drawn = insertGeometry(
+      cad.byId<InsertEntity>("I1"),
+      cad.runtime.document.getBlock("MIX")
+    )
+    expect(drawn[0].layerId).toBe("walls")
+    expect(drawn[1].layerId).toBe("pinned")
+  })
+
+  it("is picked by the geometry it draws", () => {
+    const cad = placed()
+    cad.click(p(50, 0))
+
+    expect(cad.selectedIds()).toEqual(["I1"])
+  })
+
+  it("is measured by the geometry it draws", () => {
+    const cad = placed({ scale: 2 })
+    const bounds = entityBounds(
+      cad.byId<InsertEntity>("I1"),
+      cad.runtime.document.blockLookup()
+    )
+
+    expect(bounds.max.x).toBeCloseTo(200)
+  })
+
+  it("is caught by a crossing box", () => {
+    const cad = placed()
+    cad.drag(p(300, 40), p(40, -40))
+
+    expect(cad.selectedIds()).toEqual(["I1"])
+  })
+
+  it("has one grip, on its insertion point, that moves the whole reference", () => {
+    const cad = placed()
+    cad.select("I1")
+    cad.drag(p(0, 0), p(0, 150))
+
+    expect(cad.byId<InsertEntity>("I1").position).toBeCloseToPoint(p(0, 150))
+  })
+
+  it("moves, rotates and scales as one object", () => {
+    const cad = placed()
+    cad.select("I1").command("MOVE").click(p(0, 0)).click(p(0, 40))
+    expect(cad.byId<InsertEntity>("I1").position).toBeCloseToPoint(p(0, 40))
+
+    cad.select("I1").command("ROTATE").click(p(0, 40)).type("90").enter()
+    expect(cad.byId<InsertEntity>("I1").rotation).toBeCloseTo(Math.PI / 2)
+
+    cad.select("I1").command("SCALE").click(p(0, 40)).type("2").enter()
+    expect(cad.byId<InsertEntity>("I1").scale).toBeCloseTo(2)
+  })
+
+  it("mirrors by reflecting the reference, not just its insertion point", () => {
+    const cad = placed()
+    cad
+      .select("I1")
+      .command("MIRROR")
+      .click(p(0, 0))
+      .click(p(0, 100))
+      .option("y")
+
+    const insert = cad.only<InsertEntity>("insert")
+    const drawn = insertGeometry(insert, cad.runtime.document.getBlock("BAR"))
+    // The bar ran to +X; reflected across the Y axis it runs to −X.
+    expect((drawn[0] as LineEntity).end).toBeCloseToPoint(p(-100, 0))
+  })
+
+  it("snaps to the geometry inside the block", () => {
+    const cad = createHarness({
+      snap: true,
+      blocks: [barBlock()],
+      entities: [createInsert("BAR", p(0, 0), { id: "I1" })],
+    })
+    // 3 units off the block's far endpoint: only a snap lands it exactly.
+    cad.command("LINE").click(p(97, 3)).click(p(300, 300)).escape()
+
+    expect(cad.only<LineEntity>("line").start).toBeCloseToPoint(p(100, 0))
+  })
+})
+
+describe("EXPLODE of a block reference", () => {
+  it("gives back copies of the objects that compose the block", () => {
+    const cad = createHarness({
+      blocks: [barBlock()],
+      entities: [createInsert("BAR", p(0, 200), { id: "I1", scale: 2 })],
+    })
+    cad.select("I1").command("EXPLODE")
+
+    const line = cad.only<LineEntity>("line")
+    expect(line.id).not.toBe("bar-line")
+    expect(line.start).toBeCloseToPoint(p(0, 200))
+    expect(line.end).toBeCloseToPoint(p(200, 200))
+    expect(cad.typeCounts().insert).toBeUndefined()
+  })
+
+  it("removes one grouping level at a time", () => {
+    const cad = createHarness({
+      blocks: [
+        barBlock(),
+        createBlockDefinition("OUTER", p(0, 0), [
+          createInsert("BAR", p(0, 0), { id: "inner" }),
+        ]),
+      ],
+      entities: [createInsert("OUTER", p(0, 0), { id: "I1" })],
+    })
+    cad.select("I1").command("EXPLODE")
+
+    // The nested reference comes back as a reference, to be exploded again.
+    const insert = cad.only<InsertEntity>("insert")
+    expect(insert.blockId).toBe("BAR")
+    expect(cad.typeCounts().line).toBeUndefined()
+  })
+
+  it("is one undo step", () => {
+    const cad = createHarness({
+      blocks: [barBlock()],
+      entities: [createInsert("BAR", p(0, 0), { id: "I1" })],
+    })
+    cad.select("I1").command("EXPLODE").undo()
+
+    expect(cad.byId<InsertEntity>("I1").blockId).toBe("BAR")
+  })
+
+  it("gives the objects back their own layer, not the one they were shown on", () => {
+    const cad = createHarness()
+    cad.runtime.document.load(
+      [createInsert("MIX", p(0, 0), { id: "I1", layerId: "walls" })],
+      {
+        layers: [layerOf("0"), layerOf("walls"), layerOf("pinned")],
+        blocks: [
+          createBlockDefinition("MIX", p(0, 0), [
+            lineOf(p(0, 0), p(10, 0), { id: "a" }),
+            lineOf(p(0, 10), p(10, 10), { id: "b", layerId: "pinned" }),
+          ]),
+        ],
+      }
+    )
+    cad.select("I1").command("EXPLODE")
+
+    // The layer-0 object was only *displayed* on "walls"; exploded it reverts.
+    const layers = cad.entities().map((entity) => entity.layerId)
+    expect(layers.sort()).toEqual(["0", "pinned"])
+  })
+})
+
+describe("blocks in the drawing file", () => {
+  const snapshot = (cad: ReturnType<typeof createHarness>) => ({
+    settings: cad.runtime.document.getSettings(),
+    layers: cad.runtime.document.getLayers(),
+    currentLayerId: cad.runtime.document.getCurrentLayerId(),
+    textStyles: cad.runtime.document.getTextStyles(),
+    currentTextStyleId: cad.runtime.document.getCurrentTextStyleId(),
+    dimStyles: cad.runtime.document.getDimStyles(),
+    currentDimStyleId: cad.runtime.document.getCurrentDimStyleId(),
+    blocks: cad.runtime.document.getBlocks(),
+    entities: cad.entities(),
+  })
+
+  it("survives a save and reload", () => {
+    const cad = createHarness({
+      blocks: [barBlock()],
+      entities: [
+        createInsert("BAR", p(10, 20), {
+          id: "I1",
+          scale: 3,
+          rotation: 1,
+          mirrored: true,
+        }),
+      ],
+    })
+    const parsed = parseDrawingFile(serializeDrawing(snapshot(cad)))
+
+    expect(parsed.blocks).toHaveLength(1)
+    expect(parsed.blocks[0].entities).toHaveLength(1)
+    const insert = parsed.entities[0] as InsertEntity
+    expect(insert.position).toBeCloseToPoint(p(10, 20))
+    expect(insert.scale).toBeCloseTo(3)
+    expect(insert.rotation).toBeCloseTo(1)
+    expect(insert.mirrored).toBe(true)
+  })
+
+  it("drops a reference whose block the file does not define", () => {
+    const cad = createHarness({
+      entities: [createInsert("GONE", p(0, 0), { id: "I1" })],
+    })
+    const parsed = parseDrawingFile(serializeDrawing(snapshot(cad)))
+
+    expect(parsed.entities).toHaveLength(0)
+  })
+
+  it("opens a file written before blocks existed", () => {
+    const legacy = JSON.stringify({
+      type: "easycad-drawing",
+      version: 15,
+      entities: [
+        { id: "L1", type: "line", start: { x: 0, y: 0 }, end: { x: 1, y: 0 } },
+      ],
+    })
+    const parsed = parseDrawingFile(legacy)
+
+    expect(parsed.blocks).toEqual([])
+    expect(parsed.entities).toHaveLength(1)
+  })
+})
+
+describe("the blocks palette", () => {
+  const withBlocks = () =>
+    createHarness({
+      blocks: [barBlock("DOOR"), barBlock("WINDOW")],
+      entities: [createInsert("DOOR", p(0, 0), { id: "I1" })],
+    })
+
+  it("lists the drawing's blocks with how many references each has", () => {
+    const cad = withBlocks()
+    expect(cad.state().blocks).toEqual([
+      { id: "DOOR", name: "DOOR", referenceCount: 1 },
+      { id: "WINDOW", name: "WINDOW", referenceCount: 0 },
+    ])
+  })
+
+  it("is closed until BLOCKSPALETTE opens it", () => {
+    const cad = withBlocks()
+    expect(cad.state().blocksPanel).toBe(false)
+
+    cad.command("BLOCKSPALETTE")
+    expect(cad.state().blocksPanel).toBe(true)
+
+    cad.runtime.toggleBlocksPanel()
+    expect(cad.state().blocksPanel).toBe(false)
+  })
+
+  it("previews a block through the same scene the drawing is built from", () => {
+    const cad = withBlocks()
+    const scene = cad.runtime.buildBlockPreview("DOOR", 64, 64)
+
+    expect(scene?.width).toBe(64)
+    expect(scene?.primitives.filter((prim) => prim.kind === "segment")).toEqual(
+      // The one line the block is made of, framed inside the thumbnail.
+      [expect.objectContaining({ kind: "segment" })]
+    )
+    expect(cad.runtime.buildBlockPreview("NOPE", 64, 64)).toBeNull()
+  })
+
+  it("clicking a block starts INSERT with it already chosen", () => {
+    const cad = withBlocks()
+    cad.runtime.insertBlock("WINDOW")
+
+    expect(cad.activeToolId()).toBe("insert")
+    // Straight to the insertion point: the name prompt has been answered.
+    expect(cad.state().dynamicInput?.fields[0].label).toBe("X,Y")
+
+    cad.click(p(250, 0))
+    expect(cad.latest()).toMatchObject({ type: "insert", blockId: "WINDOW" })
+  })
+
+  it("ignores a block that is not defined", () => {
+    const cad = withBlocks()
+    cad.runtime.insertBlock("NOPE")
+
+    expect(cad.activeToolId()).toBe("select")
+  })
+
+  it("purges only the blocks nothing references", () => {
+    const cad = withBlocks()
+    // DOOR is placed once, WINDOW is not.
+    cad.command("PURGE")
+
+    expect(cad.runtime.document.getBlocks().map((b) => b.name)).toEqual([
+      "DOOR",
+    ])
+    expect(cad.commandLog()).toContain("1 block purged.")
+  })
+
+  it("refuses to purge a block that is in use", () => {
+    const cad = withBlocks()
+    expect(cad.runtime.purgeBlocks(["DOOR"])).toBe(0)
+    expect(cad.runtime.getState().blocks).toHaveLength(2)
+  })
+
+  it("purges what the drawing stops referencing, and one undo brings it back", () => {
+    const cad = withBlocks()
+    cad.select("I1").press("Delete")
+    cad.command("PURGE")
+
+    expect(cad.runtime.document.getBlocks()).toHaveLength(0)
+    cad.undo()
+    expect(cad.runtime.document.getBlocks().map((b) => b.name)).toEqual([
+      "DOOR",
+      "WINDOW",
+    ])
+  })
+
+  it("says so when there is nothing to purge", () => {
+    const cad = createHarness()
+    cad.command("PU")
+
+    expect(cad.commandLog()).toContain("No unused blocks.")
+  })
+})
+
+describe("the properties palette", () => {
+  it("describes a block reference by name, scale and rotation", () => {
+    const cad = createHarness({
+      blocks: [barBlock()],
+      entities: [
+        createInsert("BAR", p(5, 6), { id: "I1", scale: 2, rotation: 0 }),
+      ],
+    })
+    cad.select("I1")
+
+    const info = cad.state().selectionInfo
+    expect(info?.title).toBe("Block reference")
+    const rows = info?.groups.flatMap((group) => group.rows) ?? []
+    expect(rows.find((row) => row.label === "Name")?.value).toBe("BAR")
+    expect(rows.find((row) => row.label === "Scale")?.edit?.property).toBe(
+      "insertScale"
+    )
+  })
+
+  it("retypes the scale in place", () => {
+    const cad = createHarness({
+      blocks: [barBlock()],
+      entities: [createInsert("BAR", p(0, 0), { id: "I1" })],
+    })
+    cad.select("I1")
+    cad.runtime.setSelectionProperty("insertScale", "4")
+
+    expect(cad.byId<InsertEntity>("I1").scale).toBeCloseTo(4)
+  })
+})
