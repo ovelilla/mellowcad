@@ -3,20 +3,13 @@ import { Vec2, V } from "../geometry/Vec2"
 import { closestPointOnSegment } from "../geometry/primitives"
 import { CadDocument } from "../domain/Document"
 import {
-  applyEntityProperty,
-  assignDimStyle,
-  assignEntityColor,
-  assignEntityLayer,
-  assignEntityLinetype,
-  assignEntityLineweight,
-  assignTextStyle,
   BlockId,
   Entity,
   EntityId,
   EntityProperty,
   entitiesBounds,
 } from "../domain/entities"
-import { COLOR_BYLAYER, EntityColor, normalizeColor } from "../domain/colors"
+import { COLOR_BYLAYER, EntityColor } from "../domain/colors"
 import {
   createLayer,
   DEFAULT_LAYER_COLOR,
@@ -24,29 +17,16 @@ import {
   LayerId,
 } from "../domain/layers"
 import { LINETYPE_BYLAYER, LinetypeId } from "../domain/linetypes"
-import {
-  clampDimStyle,
-  DEFAULT_DIM_STYLE,
-  DimStyle,
-  DimStyleId,
-} from "../domain/dimStyles"
-import {
-  createDefaultTextStyle,
-  TextStyle,
-  TextStyleId,
-} from "../domain/textStyles"
+import { DimStyle, DimStyleId } from "../domain/dimStyles"
+import { TextStyle, TextStyleId } from "../domain/textStyles"
 import { LINEWEIGHT_BYLAYER, Lineweight } from "../domain/lineweights"
 import {
   formatAngle,
   formatLength,
   LengthUnit,
-  parseNumber,
   unitSuffix,
 } from "../domain/units"
-import {
-  parseDrawingFile,
-  serializeDrawing,
-} from "../serialization/drawingFile"
+import { parseDrawingFile } from "../serialization/drawingFile"
 import { Scene } from "../scene/types"
 import { Viewport } from "./Viewport"
 import { Selection } from "./Selection"
@@ -67,56 +47,18 @@ import { parseCoordinate } from "./input/coordinateInput"
 import {
   CommandDefinition,
   CommandLineController,
-  TOOL_COMMANDS,
   matchCommands,
   toolCommandAlias,
 } from "./CommandLine"
 import { CommandHistory } from "./commands/Command"
-import { PurgeBlocksCommand } from "./commands/blockCommands"
 import {
   ClearDocumentCommand,
   RemoveEntitiesCommand,
-  UpdateEntityCommand,
 } from "./commands/entityCommands"
 import { PointerInput, Tool, ToolContext } from "./tools/Tool"
-import { SelectTool } from "./tools/SelectTool"
-import { LineTool } from "./tools/LineTool"
-import { PolylineTool } from "./tools/PolylineTool"
-import { CircleTool } from "./tools/CircleTool"
-import { ArcTool } from "./tools/ArcTool"
-import { RectangleTool } from "./tools/RectangleTool"
-import { PolygonTool } from "./tools/PolygonTool"
-import { HatchTool } from "./tools/HatchTool"
-import { BlockTool } from "./tools/BlockTool"
 import { InsertTool } from "./tools/InsertTool"
-import { TextTool } from "./tools/TextTool"
 import { TextEditTool } from "./tools/TextEditTool"
-import { DimensionTool } from "./tools/DimensionTool"
-import { DimensionChainTool } from "./tools/DimensionChainTool"
-import { RadialDimensionTool } from "./tools/RadialDimensionTool"
-import { AngularDimensionTool } from "./tools/AngularDimensionTool"
-import { DimSpaceTool } from "./tools/DimSpaceTool"
-import { OffsetTool } from "./tools/OffsetTool"
-import { MoveTool } from "./tools/MoveTool"
-import { CopyTool } from "./tools/CopyTool"
-import { StretchTool } from "./tools/StretchTool"
-import { RotateTool } from "./tools/RotateTool"
-import { ScaleTool } from "./tools/ScaleTool"
-import { MirrorTool } from "./tools/MirrorTool"
-import { ArrayTool } from "./tools/ArrayTool"
-import { ArrayPolarTool } from "./tools/ArrayPolarTool"
-import { ArrayPathTool } from "./tools/ArrayPathTool"
-import { TrimTool } from "./tools/TrimTool"
-import { ExtendTool } from "./tools/ExtendTool"
-import { FilletTool } from "./tools/FilletTool"
-import { ChamferTool } from "./tools/ChamferTool"
-import { ExplodeTool } from "./tools/ExplodeTool"
-import { JoinTool } from "./tools/JoinTool"
-import { BreakTool } from "./tools/BreakTool"
-import { MatchPropTool } from "./tools/MatchPropTool"
-import { MeasureTool } from "./tools/MeasureTool"
-import { ZoomTool } from "./tools/ZoomTool"
-import { PanTool } from "./tools/PanTool"
+import { PasteTool } from "./tools/PasteTool"
 import { PointResolver } from "./PointResolver"
 import { AutosaveService } from "./Autosave"
 import { buildScene, PolarGuideInput } from "./SceneBuilder"
@@ -132,7 +74,38 @@ import {
   EngineState,
   StylesPanelTab,
 } from "./EngineState"
-import { DrawingStore, EngineHost, FileTransport } from "./ports"
+import { Clipboard, DrawingStore, EngineHost, FileTransport } from "./ports"
+import { nextLayerName, updateLayer } from "./runtimeLayers"
+import { buildBlockPreview, purgeBlocks } from "./runtimeBlocks"
+import { commandPrompt, registerCommands } from "./runtimeCommands"
+import { defaultTools } from "./runtimeTools"
+import {
+  applyDrawingFile,
+  copyToClipboard,
+  readClipboardFragment,
+  selectAll,
+  serializeDrawing,
+  suggestedFileName,
+} from "./runtimeFiles"
+import {
+  commonSelectionColor,
+  commonSelectionLayer,
+  commonSelectionLinetype,
+  commonSelectionLineweight,
+  setSelectionColor,
+  setSelectionLayer,
+  setSelectionLinetype,
+  setSelectionLineweight,
+  setSelectionProperty,
+} from "./runtimeProperties"
+import {
+  createDimStyle,
+  createTextStyle,
+  setSelectionDimStyle,
+  setSelectionTextStyle,
+  updateDimStyle,
+  updateTextStyle,
+} from "./runtimeStyles"
 
 export interface PointerEventData {
   readonly screen: Vec2
@@ -159,11 +132,6 @@ const WHEEL_BURST_MS = 400
 
 /** Movement past this (screen px) makes a press a drag rather than a click. */
 const DRAG_THRESHOLD_PX = 4
-
-/** Breathing room around a block thumbnail, in screen pixels. */
-const PREVIEW_PADDING_PX = 6
-
-const EMPTY_IDS: ReadonlySet<EntityId> = new Set()
 
 /**
  * The application core of the CAD system — the imperative shell around the
@@ -256,17 +224,29 @@ export class CadRuntime extends Observable {
   private readonly textEdit = new TextEditTool()
   // Held as a field so the Blocks palette can name the block for it.
   private readonly insert = new InsertTool()
+  // Held as a field so the runtime can hand it the fragment it read.
+  private readonly paste = new PasteTool()
 
   private readonly files: FileTransport | null
+  private readonly clipboard: Clipboard | null
+  /**
+   * What this session last copied. The browser clipboard may well refuse to be
+   * read — not every engine exposes reading to a page, and the ones that do ask
+   * the user — so copy-and-paste has to keep working from memory when the host
+   * says no.
+   */
+  private clipboardFallback: string | null = null
 
   constructor(
     host: EngineHost,
     store: DrawingStore | null = null,
-    files: FileTransport | null = null
+    files: FileTransport | null = null,
+    clipboard: Clipboard | null = null
   ) {
     super()
     this.host = host
     this.files = files
+    this.clipboard = clipboard
     this.resolver = new PointResolver(
       this.viewport,
       this.snapping,
@@ -291,76 +271,17 @@ export class CadRuntime extends Observable {
       requestRender: () => this.host.requestRender(),
       setCursor: (cursor) => this.host.setCursor(cursor),
       report: (text, kind = "info") => this.commandLine.write(kind, text),
+      copyToClipboard: (entities, basePoint) =>
+        this.copyToClipboard(entities, basePoint),
       endCommand: () => {
         this.resetTracking()
         this.returnToNeutralTool()
       },
     }
 
-    this.registerTool(new SelectTool())
-    this.registerTool(new LineTool())
-    this.registerTool(new PolylineTool())
-    this.registerTool(new CircleTool("center", "circle", "Circle", "c"))
-    this.registerTool(
-      new CircleTool("centerDiameter", "circlediameter", "Diameter circle")
-    )
-    this.registerTool(new CircleTool("twoPoint", "circle2p", "2-Point circle"))
-    this.registerTool(
-      new CircleTool("threePoint", "circle3p", "3-Point circle")
-    )
-    this.registerTool(new ArcTool("threePoint", "arc", "Arc"))
-    this.registerTool(
-      new ArcTool("startCenterEnd", "arcsce", "Start, Center, End arc")
-    )
-    this.registerTool(
-      new ArcTool("centerStartEnd", "arccse", "Center, Start, End arc")
-    )
-    this.registerTool(new RectangleTool())
-    this.registerTool(new PolygonTool())
-    this.registerTool(new HatchTool())
-    this.registerTool(new BlockTool())
-    this.registerTool(this.insert)
-    this.registerTool(new TextTool())
-    this.registerTool(this.textEdit)
-    this.registerTool(new DimensionTool("linear", "dimlinear", "Linear"))
-    this.registerTool(new DimensionTool("aligned", "dimaligned", "Aligned"))
-    this.registerTool(new RadialDimensionTool("radius", "dimradius", "Radius"))
-    this.registerTool(
-      new RadialDimensionTool("diameter", "dimdiameter", "Diameter")
-    )
-    this.registerTool(new AngularDimensionTool())
-    this.registerTool(
-      new DimensionChainTool("baseline", "dimbaseline", "Baseline")
-    )
-    this.registerTool(
-      new DimensionChainTool("continue", "dimcontinue", "Continue")
-    )
-    this.registerTool(new DimSpaceTool())
-    this.registerTool(new OffsetTool())
-    this.registerTool(new MoveTool())
-    this.registerTool(new CopyTool())
-    this.registerTool(new StretchTool())
-    this.registerTool(new RotateTool())
-    this.registerTool(new ScaleTool())
-    this.registerTool(new MirrorTool())
-    this.registerTool(new ArrayTool())
-    this.registerTool(new ArrayPolarTool())
-    this.registerTool(new ArrayPathTool())
-    this.registerTool(new TrimTool())
-    this.registerTool(new ExtendTool())
-    this.registerTool(new FilletTool())
-    this.registerTool(new ChamferTool())
-    this.registerTool(new ExplodeTool())
-    this.registerTool(new JoinTool())
-    this.registerTool(new BreakTool("gap", "break", "Break"))
-    this.registerTool(
-      new BreakTool("atPoint", "breakatpoint", "Break at point")
-    )
-    this.registerTool(new MatchPropTool())
-    this.registerTool(new MeasureTool("distance", "measure", "Measure", "d"))
-    this.registerTool(new MeasureTool("area", "measurearea", "Area"))
-    this.registerTool(new ZoomTool())
-    this.registerTool(new PanTool())
+    for (const tool of defaultTools(this.textEdit, this.insert, this.paste)) {
+      this.registerTool(tool)
+    }
     this.activeTool = this.tools.get("select")!
 
     this.registerCommands()
@@ -489,126 +410,11 @@ export class CadRuntime extends Observable {
    * aliases) plus the editing/view commands that are not tools.
    */
   private registerCommands(): void {
-    for (const [toolId, names] of Object.entries(TOOL_COMMANDS)) {
-      const tool = this.tools.get(toolId)
-      if (!tool) continue
-      const [name, ...aliases] = names
-      this.registerCommand({
-        name,
-        aliases,
-        description: tool.label,
-        run: () => this.startTool(toolId),
-      })
-    }
-
-    this.registerCommand({
-      name: "ERASE",
-      aliases: ["E"],
-      description: "Delete the selected objects",
-      run: () => {
-        if (this.selection.isEmpty()) {
-          this.commandLine.write("info", "Nothing selected.")
-          return
-        }
-        const count = this.selection.size
-        this.deleteSelection()
-        this.commandLine.write(
-          "info",
-          `${count} object${count === 1 ? "" : "s"} erased.`
-        )
-      },
-    })
-    this.registerCommand({
-      name: "UNDO",
-      aliases: ["U"],
-      description: "Undo the last action",
-      run: () => this.undo(),
-    })
-    this.registerCommand({
-      name: "REDO",
-      aliases: [],
-      description: "Redo the last undone action",
-      run: () => this.redo(),
-    })
-    this.registerCommand({
-      name: "SNAP",
-      aliases: ["SN"],
-      description: "Force the cursor onto the snap increments",
-      run: () => {
-        this.toggleSnapMode()
-        this.commandLine.write(
-          "info",
-          `Snap mode ${this.snapMode.isActive() ? "on" : "off"}.`
-        )
-      },
-    })
-    this.registerCommand({
-      name: "FROM",
-      aliases: ["FRO"],
-      description: "Pick a point offset from a base point",
-      run: () => {
-        if (!this.startFrom()) {
-          this.commandLine.write("error", "FROM needs a point prompt.")
-        }
-      },
-    })
-    // A browser download always names the file, so AutoCAD's QSAVE (save over
-    // the current name) and SAVEAS (prompt for one) cannot be told apart here;
-    // both spellings run the one command we can offer.
-    this.registerCommand({
-      name: "QSAVE",
-      aliases: ["SAVE", "SAVEAS"],
-      description: "Save the drawing to a file",
-      run: () => this.saveDrawingToFile(),
-    })
-    this.registerCommand({
-      name: "OPEN",
-      aliases: [],
-      description: "Open a drawing file",
-      run: () => {
-        void this.openDrawingFromFile()
-      },
-    })
-    // Both open the same manager on their own table, as AutoCAD's Dimension
-    // Style Manager and Text Style dialog do. D and ST are the aliases
-    // Autodesk's own shortcut guide lists; DDIM / DIMSTY / DST are not on it,
-    // so they stay unregistered rather than invented.
-    this.registerCommand({
-      name: "DIMSTYLE",
-      aliases: ["D"],
-      description: "Create and modify dimension styles",
-      run: () => this.setStylesPanel("dimension"),
-    })
-    this.registerCommand({
-      name: "STYLE",
-      aliases: ["ST"],
-      description: "Create and modify text styles",
-      run: () => this.setStylesPanel("text"),
-    })
-    // No alias: Autodesk's shortcut guide lists none for BLOCKSPALETTE, and B
-    // and I are already BLOCK and INSERT.
-    this.registerCommand({
-      name: "BLOCKSPALETTE",
-      aliases: [],
-      description: "Show the blocks palette",
-      run: () => this.setBlocksPanel(true),
-    })
-    // Only block definitions so far: layers and styles are purged from their
-    // own managers, which already refuse a base, current or in-use entry.
-    this.registerCommand({
-      name: "PURGE",
-      aliases: ["PU"],
-      description: "Remove unused block definitions",
-      run: () => {
-        const purged = this.purgeBlocks()
-        this.commandLine.write(
-          "info",
-          purged === 0
-            ? "No unused blocks."
-            : `${purged} block${purged === 1 ? "" : "s"} purged.`
-        )
-      },
-    })
+    registerCommands(
+      this,
+      (id) => this.startTool(id),
+      (definition) => this.registerCommand(definition)
+    )
   }
 
   private registerCommand(definition: CommandDefinition): void {
@@ -1050,18 +856,12 @@ export class CadRuntime extends Observable {
     color: string = DEFAULT_LAYER_COLOR,
     makeCurrent = true
   ): LayerId {
-    const layer = createLayer(name ?? this.nextLayerName(), color)
+    const layer = createLayer(name ?? nextLayerName(this.document), color)
     this.document.addLayer(layer)
     if (makeCurrent) this.document.setCurrentLayer(layer.id)
     return layer.id
   }
 
-  /**
-   * Applies a partial change to a layer (rename, recolour, on/off, lock). Using
-   * a patch keeps this future-proof: new layer properties can be edited through
-   * the same method without a new API. Turning a layer off or locking it drops
-   * any now-unselectable entities from the current selection.
-   */
   updateLayer(
     id: LayerId,
     patch: Partial<
@@ -1071,23 +871,7 @@ export class CadRuntime extends Observable {
       >
     >
   ): void {
-    const layer = this.document.getLayer(id)
-    if (!layer) return
-    this.document.updateLayer({ ...layer, ...patch })
-
-    // Objects that just became hidden or locked can no longer stay selected.
-    if (patch.visible === false || patch.locked === true) {
-      const drop = this.selection
-        .toArray()
-        .map((entityId) => this.document.get(entityId))
-        .filter(
-          (entity): entity is Entity =>
-            entity !== undefined &&
-            entity.layerId === id &&
-            !this.document.isEntitySelectable(entity)
-        )
-      for (const entity of drop) this.selection.remove(entity.id)
-    }
+    updateLayer(this.document, this.selection, id, patch)
   }
 
   setCurrentLayer(id: LayerId): void {
@@ -1102,101 +886,37 @@ export class CadRuntime extends Observable {
     return this.document.removeLayer(id)
   }
 
-  /**
-   * Moves every selected entity onto layer `id`, matching AutoCAD's "change the
-   * objects' layer" (each change is individually undoable).
-   */
   setSelectionLayer(id: LayerId): void {
-    if (this.selection.isEmpty() || !this.document.getLayer(id)) return
-    for (const entityId of this.selection.toArray()) {
-      const entity = this.document.get(entityId)
-      if (!entity || entity.layerId === id) continue
-      this.history.execute(
-        new UpdateEntityCommand(assignEntityLayer(entity, id))
-      )
-    }
+    setSelectionLayer(this.document, this.selection, this.history, id)
   }
 
-  /**
-   * Sets the colour of every selected entity: a hex value is an explicit
-   * ByObject override, `"ByLayer"` clears it so the layer's colour applies
-   * again (each change is individually undoable).
-   */
   setSelectionColor(color: EntityColor | typeof COLOR_BYLAYER): void {
-    if (this.selection.isEmpty()) return
-    const next =
-      color === COLOR_BYLAYER ? undefined : (normalizeColor(color) ?? undefined)
-    // Reject a malformed hex rather than silently clearing the override.
-    if (color !== COLOR_BYLAYER && !next) return
-    for (const entityId of this.selection.toArray()) {
-      const entity = this.document.get(entityId)
-      if (!entity || entity.color === next) continue
-      this.history.execute(
-        new UpdateEntityCommand(assignEntityColor(entity, next))
-      )
-    }
+    setSelectionColor(this.document, this.selection, this.history, color)
   }
 
-  /**
-   * Sets the linetype of every selected entity: a concrete id is an explicit
-   * ByObject override, `"ByLayer"` clears it so the layer's linetype applies
-   * again (each change is individually undoable).
-   */
   setSelectionLinetype(linetype: LinetypeId | typeof LINETYPE_BYLAYER): void {
-    if (this.selection.isEmpty()) return
-    const next = linetype === LINETYPE_BYLAYER ? undefined : linetype
-    for (const entityId of this.selection.toArray()) {
-      const entity = this.document.get(entityId)
-      if (!entity || entity.linetype === next) continue
-      this.history.execute(
-        new UpdateEntityCommand(assignEntityLinetype(entity, next))
-      )
-    }
+    setSelectionLinetype(this.document, this.selection, this.history, linetype)
   }
 
-  /**
-   * Sets the lineweight of every selected entity: a millimetre value is an
-   * explicit ByObject override, `"ByLayer"` clears it so the layer's lineweight
-   * applies again (each change is individually undoable).
-   */
   setSelectionLineweight(
     lineweight: Lineweight | typeof LINEWEIGHT_BYLAYER
   ): void {
-    if (this.selection.isEmpty()) return
-    const next = lineweight === LINEWEIGHT_BYLAYER ? undefined : lineweight
-    for (const entityId of this.selection.toArray()) {
-      const entity = this.document.get(entityId)
-      if (!entity || entity.lineweight === next) continue
-      this.history.execute(
-        new UpdateEntityCommand(assignEntityLineweight(entity, next))
-      )
-    }
+    setSelectionLineweight(
+      this.document,
+      this.selection,
+      this.history,
+      lineweight
+    )
   }
 
-  /**
-   * Retypes one geometry value of the single selected entity (AutoCAD's
-   * editable Properties palette). `text` is parsed with the document's number
-   * rules; the change is a single undo step. Returns whether it applied.
-   */
   setSelectionProperty(property: EntityProperty, text: string): boolean {
-    const ids = this.selection.toArray()
-    if (ids.length !== 1) return false
-    const entity = this.document.get(ids[0])
-    if (!entity) return false
-    const value = parseNumber(text)
-    if (value === null) return false
-    const updated = applyEntityProperty(entity, property, value)
-    if (!updated) return false
-    this.history.execute(new UpdateEntityCommand(updated))
-    return true
-  }
-
-  /** Suggests a fresh, unused layer name (Layer1, Layer2, …). */
-  private nextLayerName(): string {
-    const names = new Set(this.document.getLayers().map((l) => l.name))
-    let n = 1
-    while (names.has(`Layer${n}`)) n += 1
-    return `Layer${n}`
+    return setSelectionProperty(
+      this.document,
+      this.selection,
+      this.history,
+      property,
+      text
+    )
   }
 
   /** Updates the text of a dynamic-input field (defaults to the active one). */
@@ -1297,39 +1017,16 @@ export class CadRuntime extends Observable {
     this.document.setLtScale(ltScale)
   }
 
-  /**
-   * Creates a dimension style copied from `basedOn` — AutoCAD's Create New
-   * Dimension Style dialog, which names the style and "sets a style to use as a
-   * basis for the new one". Returns the new style's id.
-   */
   createDimStyle(
     name?: string,
     basedOn?: DimStyleId,
     makeCurrent = true
   ): DimStyleId {
-    const base =
-      this.document.getDimStyle(
-        basedOn ?? this.document.getCurrentDimStyleId()
-      ) ?? DEFAULT_DIM_STYLE
-    const styleName = uniqueStyleName(
-      name ?? `Copy of ${base.name}`,
-      this.document.getDimStyles()
-    )
-    const style: DimStyle = { ...base, id: styleName, name: styleName }
-    this.document.addDimStyle(style)
-    if (makeCurrent) this.document.setCurrentDimStyle(style.id)
-    return style.id
+    return createDimStyle(this.document, name, basedOn, makeCurrent)
   }
 
-  /**
-   * Applies a partial change to a dimension style — every control of the
-   * Dimension Style Manager goes through this one patch. Like the layer table,
-   * editing a style is not undoable.
-   */
   updateDimStyle(id: DimStyleId, patch: Partial<Omit<DimStyle, "id">>): void {
-    const style = this.document.getDimStyle(id)
-    if (!style) return
-    this.document.updateDimStyle(clampDimStyle({ ...style, ...patch }))
+    updateDimStyle(this.document, id, patch)
   }
 
   setCurrentDimStyle(id: DimStyleId): void {
@@ -1346,51 +1043,22 @@ export class CadRuntime extends Observable {
 
   /** Puts every selected dimension on style `id` (individually undoable). */
   setSelectionDimStyle(id: DimStyleId): void {
-    if (this.selection.isEmpty() || !this.document.getDimStyle(id)) return
-    for (const entityId of this.selection.toArray()) {
-      const entity = this.document.get(entityId)
-      if (entity?.type !== "dimension" || entity.styleId === id) continue
-      this.history.execute(new UpdateEntityCommand(assignDimStyle(entity, id)))
-    }
+    setSelectionDimStyle(this.document, this.selection, this.history, id)
   }
 
-  /** Creates a text style copied from `basedOn`. Returns its id. */
   createTextStyle(
     name?: string,
     basedOn?: TextStyleId,
     makeCurrent = true
   ): TextStyleId {
-    const base =
-      this.document.getTextStyle(
-        basedOn ?? this.document.getCurrentTextStyleId()
-      ) ?? createDefaultTextStyle()
-    const styleName = uniqueStyleName(
-      name ?? `Copy of ${base.name}`,
-      this.document.getTextStyles()
-    )
-    const style: TextStyle = { ...base, id: styleName, name: styleName }
-    this.document.addTextStyle(style)
-    if (makeCurrent) this.document.setCurrentTextStyle(style.id)
-    return style.id
+    return createTextStyle(this.document, name, basedOn, makeCurrent)
   }
 
-  /**
-   * Applies a partial change to a text style. A height of 0 is meaningful:
-   * AutoCAD's "if you enter 0.0, the text height defaults to the last text
-   * height used", which is why TEXT prompts for one.
-   */
   updateTextStyle(
     id: TextStyleId,
     patch: Partial<Omit<TextStyle, "id">>
   ): void {
-    const style = this.document.getTextStyle(id)
-    if (!style) return
-    const height = patch.height ?? style.height
-    this.document.updateTextStyle({
-      ...style,
-      ...patch,
-      height: Number.isFinite(height) && height >= 0 ? height : style.height,
-    })
+    updateTextStyle(this.document, id, patch)
   }
 
   setCurrentTextStyle(id: TextStyleId): void {
@@ -1404,12 +1072,7 @@ export class CadRuntime extends Observable {
 
   /** Puts every selected text object on style `id` (individually undoable). */
   setSelectionTextStyle(id: TextStyleId): void {
-    if (this.selection.isEmpty() || !this.document.getTextStyle(id)) return
-    for (const entityId of this.selection.toArray()) {
-      const entity = this.document.get(entityId)
-      if (entity?.type !== "text" || entity.styleId === id) continue
-      this.history.execute(new UpdateEntityCommand(assignTextStyle(entity, id)))
-    }
+    setSelectionTextStyle(this.document, this.selection, this.history, id)
   }
 
   /** Opens the style manager on one of its two tables, or closes it. */
@@ -1436,19 +1099,8 @@ export class CadRuntime extends Observable {
     this.setBlocksPanel(!this.blocksPanel)
   }
 
-  /**
-   * Removes block definitions the drawing no longer references — AutoCAD's
-   * PURGE, which "removes unused items… from the drawing" and lists a
-   * referenced block under the items you *cannot* purge. With no ids given,
-   * every unused block goes. Returns how many were removed.
-   */
   purgeBlocks(ids?: readonly BlockId[]): number {
-    const unused = (ids ?? this.document.getBlocks().map((b) => b.id)).filter(
-      (id) => this.document.getBlock(id) && !this.document.blockInUse(id)
-    )
-    if (unused.length === 0) return 0
-    this.history.execute(new PurgeBlocksCommand(unused))
-    return unused.length
+    return purgeBlocks(this.document, this.history, ids)
   }
 
   /**
@@ -1464,44 +1116,8 @@ export class CadRuntime extends Observable {
     this.host.requestRender()
   }
 
-  /**
-   * A thumbnail of a block, framed in a `width`×`height` box: the same neutral
-   * scene the drawing is built from, so a preview can never disagree with what
-   * the block actually looks like. Null when the block is unknown or empty.
-   */
   buildBlockPreview(id: BlockId, width: number, height: number): Scene | null {
-    const block = this.document.getBlock(id)
-    if (!block || block.entities.length === 0) return null
-    const bounds = entitiesBounds(block.entities, this.document.blockLookup())
-    if (!bounds) return null
-
-    const camera = new Viewport()
-    camera.setSize(width, height)
-    camera.zoomToBounds(bounds.min, bounds.max, PREVIEW_PADDING_PX)
-    return buildScene({
-      camera,
-      entities: block.entities,
-      layers: this.document.getLayers(),
-      dimStyles: this.document.getDimStyles(),
-      blocks: this.document.blockLookup(),
-      selectedIds: EMPTY_IDS,
-      hiddenIds: EMPTY_IDS,
-      gridVisible: false,
-      gridSpacing: null,
-      ltScale: this.document.getSettings().ltScale,
-      // A thumbnail is a shape, not a plot: real lineweights would blot it out.
-      lwDisplay: false,
-      snap: null,
-      acquiredTrackingPoints: [],
-      tracking: null,
-      parallelReferenceIds: EMPTY_IDS,
-      toolOverlay: [],
-      cursor: null,
-      polar: null,
-      fromBase: null,
-      cyclingBadge: null,
-      cyclingHighlight: null,
-    })
+    return buildBlockPreview(this.document, id, width, height)
   }
 
   /**
@@ -1520,23 +1136,12 @@ export class CadRuntime extends Observable {
 
   /** Serialises the current drawing to a downloadable JSON string. */
   serializeDrawing(): string {
-    return serializeDrawing({
-      settings: this.document.getSettings(),
-      layers: this.document.getLayers(),
-      currentLayerId: this.document.getCurrentLayerId(),
-      textStyles: this.document.getTextStyles(),
-      currentTextStyleId: this.document.getCurrentTextStyleId(),
-      dimStyles: this.document.getDimStyles(),
-      currentDimStyleId: this.document.getCurrentDimStyleId(),
-      blocks: this.document.getBlocks(),
-      entities: this.document.getEntities(),
-    })
+    return serializeDrawing(this.document)
   }
 
   /** A sensible default download name, e.g. `drawing-2026-07-10.ecad.json`. */
   suggestedFileName(): string {
-    const stamp = new Date().toISOString().slice(0, 10)
-    return `drawing-${stamp}.ecad.json`
+    return suggestedFileName()
   }
 
   /** Writes the drawing out through the file transport (AutoCAD's QSAVE). */
@@ -1581,6 +1186,47 @@ export class CadRuntime extends Observable {
   }
 
   /**
+   * Puts a fragment of the drawing on the clipboard, for COPYCLIP / CUTCLIP /
+   * COPYBASE. The system write is best effort: the session copy below is what
+   * makes a paste work regardless of what the host allows.
+   */
+  private copyToClipboard(entities: readonly Entity[], basePoint: Vec2): void {
+    this.clipboardFallback = copyToClipboard(
+      this.clipboard,
+      this.document,
+      entities,
+      basePoint
+    )
+  }
+
+  /**
+   * AutoCAD's PASTECLIP. Reading is asynchronous, so the fragment is fetched
+   * first and the placement tool is started with it already in hand.
+   */
+  async pasteFromClipboard(): Promise<void> {
+    const fragment = await readClipboardFragment(
+      this.clipboard,
+      this.clipboardFallback
+    )
+    if (!fragment) {
+      // Not AutoCAD's wording (it pastes foreign text as an MTEXT object, which
+      // does not exist here); phrased like ERASE's "Nothing selected.".
+      this.commandLine.write("info", "Nothing on the clipboard.")
+      this.commandLineVisible = true
+      this.invalidateState()
+      return
+    }
+    this.startTool("paste")
+    this.paste.begin(fragment, this.toolContext)
+    this.host.requestRender()
+  }
+
+  /** Ctrl+A: selects every object that can be selected. */
+  selectAll(): void {
+    selectAll(this.document, this.selection)
+  }
+
+  /**
    * Loads a drawing from file text, replacing the current document. Throws a
    * user-facing error when the text is not a valid MellowCAD drawing; the UI is
    * expected to surface it. On success the view frames the loaded geometry.
@@ -1589,16 +1235,7 @@ export class CadRuntime extends Observable {
     const parsed = parseDrawingFile(text)
     this.selection.clear()
     this.resetTracking()
-    this.document.load(parsed.entities, {
-      settings: parsed.settings,
-      layers: parsed.layers,
-      currentLayerId: parsed.currentLayerId,
-      textStyles: parsed.textStyles,
-      currentTextStyleId: parsed.currentTextStyleId,
-      dimStyles: parsed.dimStyles,
-      currentDimStyleId: parsed.currentDimStyleId,
-      blocks: parsed.blocks,
-    })
+    applyDrawingFile(this.document, parsed)
     this.history.clear() // a loaded file is a fresh undo baseline
     this.zoomToFit()
     this.autosave.saveNow() // mirror the opened file into this device's store
@@ -1612,16 +1249,7 @@ export class CadRuntime extends Observable {
       const parsed = parseDrawingFile(text)
       // Nothing worth restoring: no geometry and only the base layer.
       if (parsed.entities.length === 0 && parsed.layers.length <= 1) return
-      this.document.load(parsed.entities, {
-        settings: parsed.settings,
-        layers: parsed.layers,
-        currentLayerId: parsed.currentLayerId,
-        textStyles: parsed.textStyles,
-        currentTextStyleId: parsed.currentTextStyleId,
-        dimStyles: parsed.dimStyles,
-        currentDimStyleId: parsed.currentDimStyleId,
-        blocks: parsed.blocks,
-      })
+      applyDrawingFile(this.document, parsed)
       this.autosave.markRestored()
       this.pendingFit = true
       this.invalidateState()
@@ -2035,6 +1663,31 @@ export class CadRuntime extends Observable {
       return true
     }
 
+    // The clipboard shortcuts, all four verified in Autodesk's own guide:
+    // Ctrl+C copy, Ctrl+Shift+C copy with base point, Ctrl+X cut, Ctrl+V paste,
+    // Ctrl+A select all. Consuming them stops the browser acting on the page's
+    // own (empty) selection instead. They are deliberately *not* forwarded from
+    // a focused field — see `CadEngine.onKeyDown`.
+    if (e.ctrlKey && !e.altKey) {
+      switch (e.key.toLowerCase()) {
+        case "c":
+          this.startTool(e.shiftKey ? "copybase" : "copyclip")
+          return true
+        case "x":
+          this.startTool("cutclip")
+          return true
+        case "v":
+          // Ctrl+Shift+V is PASTEBLOCK, which does not exist here; leave it to
+          // the browser rather than quietly doing something else.
+          if (e.shiftKey) break
+          void this.pasteFromClipboard()
+          return true
+        case "a":
+          this.selectAll()
+          return true
+      }
+    }
+
     // A running command's keyword options take precedence over global tool
     // aliases — as in AutoCAD, where a command alias only starts a new command
     // at the neutral "Command:" prompt, while mid-command a matching letter
@@ -2311,75 +1964,9 @@ export class CadRuntime extends Observable {
     return { x: this.viewport.width / 2, y: this.viewport.height / 2 }
   }
 
-  /** The layer shared by all selected entities, or null when mixed/empty. */
-  private commonSelectionLayer(entities: readonly Entity[]): LayerId | null {
-    if (entities.length === 0) return null
-    const first = entities[0].layerId
-    return entities.every((entity) => entity.layerId === first) ? first : null
-  }
-
-  /**
-   * The colour shared by every selected entity for the properties picker:
-   * `"ByLayer"` when they all inherit their layer, a hex value when they all
-   * share the same override, or null when the selection is empty or mixed.
-   */
-  private commonSelectionColor(
-    entities: readonly Entity[]
-  ): EntityColor | typeof COLOR_BYLAYER | null {
-    if (entities.length === 0) return null
-    const first = entities[0].color ?? COLOR_BYLAYER
-    return entities.every((entity) => (entity.color ?? COLOR_BYLAYER) === first)
-      ? first
-      : null
-  }
-
-  /**
-   * The linetype shared by every selected entity for the properties picker:
-   * `"ByLayer"` when they all inherit their layer, a concrete id when they all
-   * share the same override, or null when the selection is empty or mixed.
-   */
-  private commonSelectionLinetype(
-    entities: readonly Entity[]
-  ): LinetypeId | typeof LINETYPE_BYLAYER | null {
-    if (entities.length === 0) return null
-    const first = entities[0].linetype ?? LINETYPE_BYLAYER
-    return entities.every(
-      (entity) => (entity.linetype ?? LINETYPE_BYLAYER) === first
-    )
-      ? first
-      : null
-  }
-
-  /** The lineweight shared by every selected entity, as {@link commonSelectionLinetype}. */
-  private commonSelectionLineweight(
-    entities: readonly Entity[]
-  ): Lineweight | typeof LINEWEIGHT_BYLAYER | null {
-    if (entities.length === 0) return null
-    const first = entities[0].lineweight ?? LINEWEIGHT_BYLAYER
-    return entities.every(
-      (entity) => (entity.lineweight ?? LINEWEIGHT_BYLAYER) === first
-    )
-      ? first
-      : null
-  }
-
   private invalidateState(): void {
     this.stateSnapshot = this.buildState()
     this.emit()
-  }
-
-  /**
-   * The text shown before the input, mirroring AutoCAD's prompt: `Command:` at
-   * rest, and the running command with its current keywords while one is
-   * active, e.g. `PLINE [Close/Undo]:`.
-   */
-  private commandPrompt(): string {
-    if (this.activeTool.id === "select") return "Command:"
-    const names = TOOL_COMMANDS[this.activeTool.id]
-    const name = names?.[0] ?? this.activeTool.label.toUpperCase()
-    const options = this.activeTool.commandOptions?.() ?? []
-    if (options.length === 0) return `${name}:`
-    return `${name} [${options.map((option) => option.label).join("/")}]:`
   }
 
   private buildState(): EngineState {
@@ -2447,10 +2034,10 @@ export class CadRuntime extends Observable {
       saveState: this.autosave.getState(),
       lastSavedAt: this.autosave.getLastSavedAt(),
       selectionInfo: buildSelectionInfo(selectedEntities, settings),
-      selectionLayerId: this.commonSelectionLayer(selectedEntities),
-      selectionColor: this.commonSelectionColor(selectedEntities),
-      selectionLinetype: this.commonSelectionLinetype(selectedEntities),
-      selectionLineweight: this.commonSelectionLineweight(selectedEntities),
+      selectionLayerId: commonSelectionLayer(selectedEntities),
+      selectionColor: commonSelectionColor(selectedEntities),
+      selectionLinetype: commonSelectionLinetype(selectedEntities),
+      selectionLineweight: commonSelectionLineweight(selectedEntities),
       textStyles: buildTextStyleInfos(
         this.document.getTextStyles(),
         this.document.getEntities()
@@ -2472,7 +2059,7 @@ export class CadRuntime extends Observable {
       commandOptions: this.activeTool.commandOptions?.() ?? [],
       commandLine: {
         visible: this.commandLineVisible,
-        prompt: this.commandPrompt(),
+        prompt: commandPrompt(this.activeTool),
         buffer: this.commandLine.getBuffer(),
         lines: this.commandLine.getLines(),
         suggestions: matchCommands(
@@ -2482,20 +2069,4 @@ export class CadRuntime extends Observable {
       },
     }
   }
-}
-
-/**
- * A style name not already taken, so creating one twice does not silently
- * overwrite the first — style names are the id here, as they are in AutoCAD,
- * where they identify the style.
- */
-function uniqueStyleName(
-  name: string,
-  existing: ReadonlyArray<{ readonly id: string }>
-): string {
-  const taken = new Set(existing.map((style) => style.id))
-  if (!taken.has(name)) return name
-  let n = 2
-  while (taken.has(`${name} (${n})`)) n += 1
-  return `${name} (${n})`
 }

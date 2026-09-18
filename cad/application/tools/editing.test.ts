@@ -7,11 +7,13 @@ import type {
   PolylineEntity,
 } from "../../domain/entities"
 import type { Vec2 } from "../../geometry/Vec2"
+import { THEME } from "../../scene/theme"
 import { createHarness } from "../../../test/harness"
 import {
   arcOf,
   circleOf,
   deg,
+  ellipseOf,
   lineOf,
   p,
   polylineOf,
@@ -462,6 +464,27 @@ describe("OFFSET", () => {
       p(80, 20),
       p(80, 100),
     ])
+  })
+
+  it("will not offset an ellipse, and does not even highlight one", () => {
+    // The parallel curve of an ellipse is a spline, which this engine has no
+    // object for — so, like DIMSPACE with non-parallel dimensions, the object
+    // simply never lights up as a candidate.
+    const cad = createHarness({
+      entities: [ellipseOf(p(0, 0), p(100, 0), 0.5, { id: "E1" })],
+    })
+
+    cad.command("OFFSET").type("20").enter().moveTo(p(100, 0))
+    const highlights = cad
+      .scene()
+      .primitives.filter(
+        (primitive) =>
+          "stroke" in primitive && primitive.stroke?.color === THEME.selected
+      )
+    expect(highlights).toHaveLength(0)
+
+    cad.click(p(100, 0)).click(p(200, 0)).escape()
+    expect(cad.entityCount).toBe(1)
   })
 
   it("Through places the copy on a picked point", () => {

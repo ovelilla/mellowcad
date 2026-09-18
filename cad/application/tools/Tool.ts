@@ -122,6 +122,13 @@ export interface ToolContext {
   report(text: string, kind?: "info" | "error"): void
 
   /**
+   * Puts a fragment of the drawing on the clipboard (COPYCLIP, CUTCLIP,
+   * COPYBASE). The table entries the objects reference travel with them, and
+   * `basePoint` is what a later paste lands on the insertion point.
+   */
+  copyToClipboard(entities: readonly Entity[], basePoint: Vec2): void
+
+  /**
    * Ends the current command and drops back to the neutral Select tool. For
    * single-shot commands (MOVE, COPY, ...) that finish the moment their final
    * point is placed, rather than looping or waiting for Escape.

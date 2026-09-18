@@ -1,11 +1,14 @@
 import { describe, expect, it } from "vitest"
 import type { ScenePrimitive } from "../scene/types"
+import type { EllipseEntity } from "../domain/entities"
+import { ellipseEndPoint, ellipseStartPoint } from "../domain/entities"
 import { THEME } from "../scene/theme"
 import { createHarness } from "../../test/harness"
 import {
   arcOf,
   circleOf,
   deg,
+  ellipseOf,
   lineOf,
   p,
   polylineOf,
@@ -42,6 +45,46 @@ describe("entity rendering", () => {
 
     const drawn = strokes(cad.scene().primitives, THEME.entity)
     expect(kinds(drawn)).toEqual(new Set(["segment", "circle", "arc", "path"]))
+  })
+
+  it("draws an elliptical arc's ends where the camera puts them", () => {
+    // The Y flip both turns the major axis's angle round and runs the
+    // parametrisation backwards, so this reconstructs the canvas call and
+    // checks it lands on the projected world endpoints.
+    const cad = createHarness({
+      entities: [
+        ellipseOf(p(0, 0), p(100, 50), 0.5, {
+          id: "E1",
+          startParam: deg(30),
+          endParam: deg(200),
+        }),
+      ],
+    })
+
+    const drawn = strokes(cad.scene().primitives, THEME.entity)[0]
+    expect(drawn.kind).toBe("ellipse")
+    if (drawn.kind !== "ellipse") return
+    const at = (angle: number) => ({
+      x:
+        drawn.center.x +
+        drawn.radiusX * Math.cos(drawn.rotation) * Math.cos(angle) -
+        drawn.radiusY * Math.sin(drawn.rotation) * Math.sin(angle),
+      y:
+        drawn.center.y +
+        drawn.radiusX * Math.sin(drawn.rotation) * Math.cos(angle) +
+        drawn.radiusY * Math.cos(drawn.rotation) * Math.sin(angle),
+    })
+    const ellipse = cad.byId<EllipseEntity>("E1")
+    expect(at(drawn.startAngle)).toBeCloseToPoint(
+      cad.runtime.viewport.worldToScreen(ellipseStartPoint(ellipse)),
+      4
+    )
+    expect(at(drawn.endAngle)).toBeCloseToPoint(
+      cad.runtime.viewport.worldToScreen(ellipseEndPoint(ellipse)),
+      4
+    )
+    // Sweeping the short way round is what the flag has to encode.
+    expect(drawn.counterclockwise).toBe(true)
   })
 
   it("projects world coordinates into screen space", () => {

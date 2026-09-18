@@ -1,4 +1,6 @@
 import { Observable } from "../shared/Observable"
+import { Vec2 } from "../geometry/Vec2"
+import { CadDocument } from "../domain/Document"
 import { Entity, EntityId } from "../domain/entities"
 
 /**
@@ -136,4 +138,40 @@ export class SelectionCycling extends Observable {
 
 function sameStack(a: readonly Entity[], b: readonly Entity[]): boolean {
   return a.length === b.length && a.every((entity, i) => entity.id === b[i].id)
+}
+
+/**
+ * The object a pick at `world` resolves to. Identical to `document.pick`
+ * unless the user cycled to another of the objects the pick box covers.
+ */
+export function pickEntity(
+  document: CadDocument,
+  cycling: SelectionCycling,
+  world: Vec2,
+  worldTolerance: number
+): Entity | null {
+  if (!cycling.isEnabled()) {
+    return document.pick(world, worldTolerance)
+  }
+  return cycling.choose(document.pickAll(world, worldTolerance))
+}
+
+/**
+ * Records what the pick box covers, for the badge and for Shift+Space. Only
+ * while the active tool is choosing *objects* (`picking`): during a point
+ * prompt the badge would be noise, and AutoCAD cycles between objects, not
+ * points.
+ */
+export function refreshCycling(
+  cycling: SelectionCycling,
+  document: CadDocument,
+  cursorWorld: Vec2 | null,
+  worldTolerance: number,
+  picking: boolean
+): void {
+  if (!cycling.isEnabled() || !picking || cursorWorld === null) {
+    cycling.clear()
+    return
+  }
+  cycling.observe(document.pickAll(cursorWorld, worldTolerance))
 }

@@ -34,7 +34,16 @@ export abstract class SelectionActionTool implements Tool {
 
   onActivate(ctx: ToolContext): void {
     ctx.setCursor("default")
-    // noun→verb: a pre-selection runs the action at once, matching AutoCAD.
+    this.begin(ctx)
+  }
+
+  /**
+   * Enters the "Select objects" prompt — or, with a pre-selection, runs the
+   * action at once (noun→verb, as AutoCAD does). A subclass that must ask
+   * something *before* the set, like COPYBASE's base point, overrides
+   * {@link onActivate} and calls this once it has the answer.
+   */
+  protected begin(ctx: ToolContext): void {
     if (!ctx.selection.isEmpty()) {
       this.execute(ctx)
     } else {
@@ -42,8 +51,9 @@ export abstract class SelectionActionTool implements Tool {
     }
   }
 
-  onDeactivate(): void {
+  onDeactivate(ctx: ToolContext): void {
     this.state = { phase: "selecting", hover: null }
+    ctx.dynamicInput.close()
   }
 
   onPointerDown(input: PointerInput, ctx: ToolContext): void {

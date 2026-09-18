@@ -19,11 +19,13 @@ description: "Layering, purity and modelling rules for the DOM-free CAD engine (
 `cad/index.ts` is the public barrel. Anything React needs must be exported there; nothing outside
 `cad/` may import a deep path.
 
-Cross-layer contracts live in `application/ports.ts` (`EngineHost`, `DrawingStore`, `FileTransport`).
-The engine asks the host to render/focus/set the cursor and to save/open a file — it never reaches
-for the browser itself. **A capability the app has belongs to the engine, behind a port; only the
-_mechanism_ (Blob, `<input type=file>`, localStorage) lives in `adapters/`.** Anything a consumer
-would otherwise have to reimplement is not in the package.
+Cross-layer contracts live in `application/ports.ts` (`EngineHost`, `DrawingStore`, `FileTransport`,
+`Clipboard`).
+The engine asks the host to render/focus/set the cursor, to save/open a file and to reach the
+clipboard — it never reaches for the browser itself. **A capability the app has belongs to the
+engine, behind a port; only the _mechanism_ (Blob, `<input type=file>`, `navigator.clipboard`,
+localStorage) lives in `adapters/`.** Anything a consumer would otherwise have to reimplement is not
+in the package.
 
 This file covers layering and modelling. Runtime plumbing (point resolution, key routing,
 snapping, command history, adapters) is in `cad-runtime.instructions.md`; writing a tool is in
@@ -52,17 +54,41 @@ snapping, command history, adapters) is in `cad-runtime.instructions.md`; writin
 - Pure functions do not mutate their inputs; entity helpers return new objects and either
   preserve the id (in-place edit) or mint a fresh one (`*Copy` helpers).
 
+## The entity modules
+
+`domain/entities.ts` is a **barrel of explicit re-exports**; the implementations live in siblings:
+
+| Module                                                                        | Holds                                                                |
+| ----------------------------------------------------------------------------- | -------------------------------------------------------------------- |
+| `entityTypes.ts`                                                              | the interfaces, the `Entity` union, `Bounds`                         |
+| `entityFactories.ts`                                                          | `nextEntityId` and the `create*` that have no geometry of their own  |
+| `text.ts` `dimensions.ts` `polylines.ts` `hatch.ts` `blocks.ts` `ellipses.ts` | one type's own geometry, its factory included                        |
+| `entityOverrides.ts`                                                          | `assign*`, `carryOverrides`, `matchEntityProperties`                 |
+| `entityTransforms.ts`                                                         | translate / stretch / copy / rotate / scale / mirror (+ `*Copy`)     |
+| `entityQueries.ts`                                                            | `closestOnEntity`, `entityBounds`, `entityDrawOrder`, the rect tests |
+| `entityMeasures.ts`                                                           | per-type readouts (`lineLength`, `arcMidpoint`, …)                   |
+| `entityProperties.ts`                                                         | `EntityProperty` + `applyEntityProperty`                             |
+
+Two rules keep that working. The modules **import each other directly, never through the barrel** —
+going through `entities.ts` is a cycle. And the re-export list is **explicit**, not `export *`, so a
+new public symbol is invisible until it is named there; that is what keeps helpers two modules
+happen to share (`hatchLoopRing`, `segmentGeometries`, `horizontalExtent`) out of `domain/index.ts`
+and out of the package's public API. Dependencies run types → per-type modules → overrides →
+transforms → queries, with `blocks.ts` and `hatch.ts` above `entityTransforms.ts` because placing a
+reference and rotating a pattern both transform points.
+
 ## Adding an entity type
 
 TypeScript exhaustiveness will point at most of it, but the full list is: `assignEntityLayer`,
 `assignEntityLinetype`, `assignEntityLineweight`, `assignEntityColor`, `translateEntity`,
 `stretchEntity`, `copyEntity`, `rotateEntity(+Copy)`, `scaleEntity(+Copy)`, `mirrorEntity(+Copy)`,
-`closestOnEntity`, `entityBounds`, `entityCrossesRect`, `applyEntityProperty`, plus
-`serialization/drawingFile.ts` (clone + parse + `VERSION` bump),
+`closestOnEntity`, `entityBounds`, `entityCrossesRect`, `applyEntityProperty` — each in the module
+the table above gives it, and anything new the type exports named in the `entities.ts` barrel —
+plus `serialization/drawingFile.ts` (clone + parse + `VERSION` bump),
 `SceneBuilder.entityScenePrimitive`, `snapping/providers.ts`, `EngineState.singleEntityInfo` +
-`TYPE_LABELS`, and `SelectTool.selectedGrips`. The editing tools switch on the type too
-(`EdgeEditTool`, `BreakTool`, `OffsetTool`, `DimensionTool`, `lastDrawnPoint`): a type they cannot
-act on returns `null` explicitly rather than falling through.
+`TYPE_LABELS`, and `selectedGrips` in `tools/selectToolGrips.ts`. The editing tools switch on the
+type too (`EdgeEditTool`, `BreakTool`, `OffsetTool`, `DimensionTool`, `lastDrawnPoint`): a type they
+cannot act on returns `null` explicitly rather than falling through.
 Two of those are decisions, not chores. **Snapping is opt-in**: a hatch is in no provider at all
 because OSOPTIONS ships at 7, whose first bit reads "Object snaps ignore hatch objects" — look up
 what AutoCAD snaps to before wiring a type in. And the fast-check `entity` arbitrary in
@@ -73,6 +99,30 @@ An entity that is an **area** rather than an outline (text, hatch) must hit-test
 `closestOnEntity` returning the distance to its border means clicking the middle of it selects
 nothing. The same even-odd rule that fills it decides what is inside, so a nested loop is a hole
 for picking exactly as it is for painting.
+
+**Store a direction-and-size as one vector.** An ellipse keeps DXF's centre + _vector to the
+major-axis endpoint_ + ratio, not two lengths and an angle, because a vector translates, rotates,
+scales and mirrors exactly like a point — which is what makes its nine transform cases one-liners.
+Anything the same shape (a future axis, direction or offset) is modelled the same way.
+
+**A pair of optional fields is a trap TypeScript cannot see.** An elliptical arc's `startParam` /
+`endParam` are present together or not at all (absent = the whole ellipse), so the factory is the
+only place that decides — it drops a range that sweeps a full turn, and applies the quarter-turn
+parameter shift when it has to swap a too-short axis for the major one. Never write those fields
+by hand from a transform: spread the factory's result, and assert in `expectSameShape` that
+_presence_ round-trips, or a transform will quietly hand back a whole ellipse.
+
+**A query with no closed form gets a documented cap, not an open loop.** The closest point on an
+ellipse reduces to a quartic, so `closestPointOnEllipse` scans a fixed number of parameters and
+refines the best with a bounded Newton, keeping the refinement only when it beats the sample — the
+same "declare the budget" rule as `MAX_BOUNDARY_CURVES` and `MAX_BLOCK_NESTING`. Name the constants
+and say in a comment why the cheap answer is wrong.
+
+A shape the scene cannot already draw adds a **primitive** (`scene/types.ts` plus a branch in
+`CanvasScenePresenter`), not a tessellation — but everything it carries is **screen** space, and the
+camera's Y flip both reverses an angle and runs a parametrisation backwards. Resolve that once in
+the builder (`arcScenePrimitive`, `ellipseScenePrimitive`) and pin it with a test that rebuilds the
+renderer's own parametric formula and compares it against the projected world endpoints.
 
 **Store what was picked, derive what is shown.** A dimension keeps only its definition points; its
 length and its label come out of `dimensionGeometry` / `dimensionText` every time they are needed.
@@ -106,8 +156,8 @@ belongs on the same side of that line.
 
 An algorithm whose input is _several_ entities rather than one — `boundary.ts`'s
 `traceBoundaryLoops`, which cuts every object at its crossings and walks the faces of the resulting
-graph — is still `domain/`, in **its own module** rather than another thousand lines of
-`entities.ts`. Keeping it a pure `(point, entities) => result` is what lets a second command reuse
+graph — is still `domain/`, in **its own module** rather than another thousand lines piled onto the
+entity modules. Keeping it a pure `(point, entities) => result` is what lets a second command reuse
 it (BOUNDARY is the same trace as HATCH's internal pick) and lets it be tested without the harness.
 
 **Which entities it sees is the caller's decision, not the algorithm's.** AutoCAD's boundary set is
@@ -179,9 +229,20 @@ from the base. **Persist the table from the first release of the feature it serv
 a manager UI, so adding the manager later never changes the file format.
 
 The block table is the same shape with two differences: its entries hold **entities**, so it lives
-beside them in `entities.ts` rather than in a leaf module, and there is no current-block or base
+beside them (`BlockDefinition` in `entityTypes.ts`, `createBlockDefinition` in
+`entityFactories.ts`, expansion in `blocks.ts`) rather than in a leaf module, and there is no
+current-block or base
 entry — a name that is not defined is not reconciled but **dropped at parse time**, since a
 reference to nothing can draw nothing and can never be repaired.
+
+A **fragment** of a drawing — today the clipboard, tomorrow WBLOCK — must carry every table entry
+its objects reference, followed through block definitions, or it lands somewhere pointing at things
+that do not exist. Writing exactly those is what the drawing file already does, so
+`clipboardFile.ts` stores a fragment as a one-off drawing plus a base point rather than as a second
+schema to keep in step; `parseDrawingData` is the tolerant reader split out so a nested drawing is
+read without being re-stringified. Landing it is `planPaste`'s two rules: **a name the target
+already has wins** (joining it never redefines the drawing it lands in) and **layers are the one
+table that needs remapping**, because a layer's id is not its name — for styles and blocks it is.
 
 Defaults come from AutoCAD's _metric_ initial values (the acadiso / ISO-25 template), which is what
 this app's millimetre units match — look each one up rather than recalling it.

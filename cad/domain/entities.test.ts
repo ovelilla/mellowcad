@@ -29,6 +29,11 @@ import {
   dimensionMeasurement,
   dimensionText,
   distanceToEntity,
+  ellipseEndPoint,
+  ellipseQuadrantPoints,
+  ellipseSemiMajor,
+  ellipseSemiMinor,
+  ellipseStartPoint,
   entityBounds,
   entityCrossesRect,
   entityWithinRect,
@@ -74,6 +79,7 @@ import {
   arcOf,
   circleOf,
   deg,
+  ellipseOf,
   lineOf,
   loopOf,
   p,
@@ -283,6 +289,19 @@ function expectSameShape(actual: Entity, expected: Entity, precision = 6) {
     expect(actual.radius).toBeCloseTo(expected.radius, precision)
     expect(actual.startAngle).toBeCloseToAngle(expected.startAngle, precision)
     expect(actual.endAngle).toBeCloseToAngle(expected.endAngle, precision)
+  } else if (actual.type === "ellipse" && expected.type === "ellipse") {
+    expect(actual.center).toBeCloseToPoint(expected.center, precision)
+    expect(actual.majorAxis).toBeCloseToPoint(expected.majorAxis, precision)
+    expect(actual.ratio).toBeCloseTo(expected.ratio, precision)
+    // Both parameters are optional together, so a transform can silently turn
+    // an elliptical arc back into a whole ellipse.
+    expect(actual.startParam !== undefined).toBe(
+      expected.startParam !== undefined
+    )
+    if (actual.startParam !== undefined && expected.startParam !== undefined) {
+      expect(actual.startParam).toBeCloseToAngle(expected.startParam, precision)
+      expect(actual.endParam!).toBeCloseToAngle(expected.endParam!, precision)
+    }
   } else if (actual.type === "polyline" && expected.type === "polyline") {
     expect(actual.vertices).toBeCloseToPoints(expected.vertices, precision)
     expect(actual.closed).toBe(expected.closed)
@@ -339,6 +358,10 @@ function characteristicPoints(entity: Entity): Vec2[] {
       return [entity.center]
     case "arc":
       return [entity.center, arcStartPoint(entity), arcEndPoint(entity)]
+    case "ellipse":
+      // Not the centre: an elliptical arc's extent is its swept curve, which
+      // need not reach the middle of the ellipse it was cut from.
+      return [ellipseStartPoint(entity), ellipseEndPoint(entity)]
     case "polyline":
       return [...entity.vertices]
     case "text":
@@ -537,6 +560,103 @@ describe("arc orientation", () => {
     expect(arcEndPoint(arc)).toBeCloseToPoint(p(-100, 0))
     expect(arcMidpoint(arc)).toBeCloseToPoint(p(0, 100))
     expect(arcLength(arc)).toBeCloseTo(Math.PI * 100)
+  })
+})
+
+describe("ellipse", () => {
+  it("stores the longer axis as the major one, whichever was given", () => {
+    const given = ellipseOf(ORIGIN, p(40, 0), 2.5)
+    expect(ellipseSemiMajor(given)).toBeCloseTo(100)
+    expect(given.ratio).toBeCloseTo(0.4)
+    // The axis swap turns the parameter frame with it.
+    expect(given.majorAxis).toBeCloseToPoint(p(0, 100))
+  })
+
+  it("keeps a swept range pointing at the same two ends after that swap", () => {
+    const swapped = ellipseOf(ORIGIN, p(40, 0), 2.5, {
+      startParam: 0,
+      endParam: deg(90),
+    })
+    // Parameter 0 named the end of the *given* axis, which is now the minor one.
+    expect(ellipseStartPoint(swapped)).toBeCloseToPoint(p(40, 0), 5)
+    expect(ellipseEndPoint(swapped)).toBeCloseToPoint(p(0, 100), 5)
+  })
+
+  it("is picked on the curve, not across its inside", () => {
+    const ellipse = ellipseOf(ORIGIN, p(100, 0), 0.4)
+    // An outline, unlike text and hatches: the middle belongs to nothing.
+    expect(distanceToEntity(ellipse, ORIGIN)).toBeCloseTo(40)
+    expect(distanceToEntity(ellipse, p(100, 0))).toBeCloseTo(0)
+    expect(distanceToEntity(ellipse, p(0, 40))).toBeCloseTo(0)
+  })
+
+  it("finds the closest point on a curve that has no closed form", () => {
+    const ellipse = ellipseOf(ORIGIN, p(100, 0), 0.5)
+    // Off the minor axis of a flat ellipse the nearest point is *not* the one
+    // the radial direction suggests — the naive answer is p(0, 50).
+    const closest = closestOnEntity(ellipse, p(0, 30)).point
+    expect(closest.y).toBeCloseTo(50, 5)
+    expect(V.distance(closest, p(0, 30))).toBeCloseTo(20, 5)
+
+    const oblique = closestOnEntity(ellipse, p(60, 60)).point
+    // Whatever it is, it is on the ellipse and no sample beats it.
+    expect((oblique.x / 100) ** 2 + (oblique.y / 50) ** 2).toBeCloseTo(1, 5)
+  })
+
+  it("bounds a rotated ellipse exactly, not by its axis ends", () => {
+    const ellipse = ellipseOf(ORIGIN, p(100, 0), 0.5)
+    const turned = rotateEntity(ellipse, ORIGIN, deg(45))
+    // √((a·cos45)² + (b·sin45)²) = √(5000 + 1250) ≈ 79.06 in both directions.
+    const bounds = entityBounds(turned)
+    expect(bounds.max.x).toBeCloseTo(Math.hypot(100 * 0.7071, 50 * 0.7071), 2)
+    expect(bounds.max.y).toBeCloseTo(bounds.max.x, 5)
+  })
+
+  it("bounds an elliptical arc by what it actually sweeps", () => {
+    const quarter = ellipseOf(ORIGIN, p(100, 0), 0.5, {
+      startParam: 0,
+      endParam: Math.PI / 2,
+    })
+    const bounds = entityBounds(quarter)
+    expect(bounds.min).toBeCloseToPoint(ORIGIN, 5)
+    expect(bounds.max).toBeCloseToPoint(p(100, 50), 5)
+  })
+
+  it("keeps the counter-clockwise sweep when reflected", () => {
+    const quarter = ellipseOf(ORIGIN, p(100, 0), 0.5, {
+      startParam: 0,
+      endParam: Math.PI / 2,
+    })
+    const mirrored = mirrorEntity(quarter, ORIGIN, p(1, 0))
+    expect(mirrored.type).toBe("ellipse")
+    if (mirrored.type !== "ellipse") return
+    // The reflected arc starts where the original ended.
+    expect(ellipseStartPoint(mirrored)).toBeCloseToPoint(p(0, -50), 5)
+    expect(ellipseEndPoint(mirrored)).toBeCloseToPoint(p(100, 0), 5)
+  })
+
+  it("quadrants are the axis ends the sweep reaches", () => {
+    const full = ellipseOf(ORIGIN, p(100, 0), 0.5)
+    expect(ellipseQuadrantPoints(full)).toHaveLength(4)
+
+    const half = ellipseOf(ORIGIN, p(100, 0), 0.5, {
+      startParam: 0,
+      endParam: Math.PI,
+    })
+    expect(ellipseQuadrantPoints(half)).toHaveLength(3)
+  })
+
+  it("retypes one radius while holding the other", () => {
+    const ellipse = ellipseOf(ORIGIN, p(100, 0), 0.5, { id: "E1" })
+    const wider = applyEntityProperty(ellipse, "majorRadius", 200)
+    expect(wider).toMatchObject({ id: "E1" })
+    expect(ellipseSemiMajor(wider as typeof ellipse)).toBeCloseTo(200)
+    expect(ellipseSemiMinor(wider as typeof ellipse)).toBeCloseTo(50)
+
+    // Growing the minor axis past the major one swaps their roles.
+    const taller = applyEntityProperty(ellipse, "minorRadius", 300)
+    expect(ellipseSemiMajor(taller as typeof ellipse)).toBeCloseTo(300)
+    expect(applyEntityProperty(ellipse, "majorRadius", 0)).toBeNull()
   })
 })
 

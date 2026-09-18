@@ -77,6 +77,23 @@ export class CanvasScenePresenter {
         this.resetDash(ctx, p.stroke.dash)
         break
 
+      case "ellipse":
+        this.applyStroke(ctx, p.stroke)
+        ctx.beginPath()
+        ctx.ellipse(
+          p.center.x,
+          p.center.y,
+          p.radiusX,
+          p.radiusY,
+          p.rotation,
+          p.startAngle,
+          p.endAngle,
+          p.counterclockwise
+        )
+        ctx.stroke()
+        this.resetDash(ctx, p.stroke.dash)
+        break
+
       case "rect":
         if (p.fill) {
           ctx.fillStyle = p.fill

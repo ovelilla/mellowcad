@@ -2,6 +2,7 @@ import { onTestFinished } from "vitest"
 import { CadRuntime } from "../cad/application/CadRuntime"
 import type { EngineState } from "../cad/application/EngineState"
 import type {
+  Clipboard,
   DrawingStore,
   EngineHost,
   FileTransport,
@@ -109,6 +110,35 @@ export class MemoryFileTransport implements FileTransport {
   }
 }
 
+/**
+ * In-memory {@link Clipboard}, for exercising COPYCLIP/PASTECLIP. Set
+ * {@link readError} / {@link writeError} to play a browser that refuses, which
+ * is the case the runtime's session fallback exists for.
+ */
+export class MemoryClipboard implements Clipboard {
+  text: string | null = null
+  readonly writes: string[] = []
+  readCalls = 0
+  readError: Error | null = null
+  writeError: Error | null = null
+  /** Set to never settle, as a browser waiting on a permission prompt does. */
+  readHangs = false
+
+  write(text: string): Promise<void> {
+    if (this.writeError) return Promise.reject(this.writeError)
+    this.text = text
+    this.writes.push(text)
+    return Promise.resolve()
+  }
+
+  read(): Promise<string | null> {
+    this.readCalls += 1
+    if (this.readHangs) return new Promise(() => {})
+    if (this.readError) return Promise.reject(this.readError)
+    return Promise.resolve(this.text)
+  }
+}
+
 export interface HarnessOptions {
   /** Viewport size in CSS pixels. The default keeps world→screen trivial. */
   readonly width?: number
@@ -125,6 +155,8 @@ export interface HarnessOptions {
   readonly store?: DrawingStore | null
   /** File save/open. Absent means the host offers none (SSR, headless). */
   readonly files?: FileTransport | null
+  /** The system clipboard. A fresh {@link MemoryClipboard} by default. */
+  readonly clipboard?: Clipboard | null
 }
 
 export interface PointerModifiers {
@@ -137,13 +169,19 @@ export interface PointerModifiers {
 export class CadHarness {
   readonly runtime: CadRuntime
   readonly host: RecordingHost
+  readonly clipboard: Clipboard | null
 
   constructor(options: HarnessOptions = {}) {
     this.host = createRecordingHost()
+    this.clipboard =
+      options.clipboard === undefined
+        ? new MemoryClipboard()
+        : options.clipboard
     this.runtime = new CadRuntime(
       this.host,
       options.store ?? null,
-      options.files ?? null
+      options.files ?? null,
+      this.clipboard
     )
     this.runtime.setViewSize(options.width ?? 1000, options.height ?? 800)
     this.runtime.snapping.setActive(options.snap ?? false)

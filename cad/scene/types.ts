@@ -46,6 +46,24 @@ export type ScenePrimitive =
       readonly stroke: StrokeStyle
     }
   | {
+      /**
+       * An ellipse or elliptical arc. Like `arc`, everything here is already in
+       * *screen* space: `rotation` and the two parameters are the arguments the
+       * Canvas 2D `ellipse()` call takes, so the builder resolves the camera's
+       * Y flip once instead of every renderer repeating it.
+       */
+      readonly kind: "ellipse"
+      readonly center: Vec2
+      readonly radiusX: number
+      readonly radiusY: number
+      /** Major-axis direction in screen radians (clockwise-positive). */
+      readonly rotation: number
+      readonly startAngle: number
+      readonly endAngle: number
+      readonly counterclockwise: boolean
+      readonly stroke: StrokeStyle
+    }
+  | {
       readonly kind: "rect"
       readonly min: Vec2
       readonly width: number

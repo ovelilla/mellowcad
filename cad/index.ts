@@ -17,6 +17,7 @@ export { CadEngine } from "./adapters/CadEngine"
 export { CanvasScenePresenter } from "./adapters/CanvasScenePresenter"
 export { matchesWildcard } from "./shared/wildcard"
 export { createBrowserFileTransport } from "./adapters/browserFileTransport"
+export { createBrowserClipboard } from "./adapters/browserClipboard"
 export { createLocalStorageDrawingStore } from "./adapters/localStorageDrawingStore"
 
 export { CadRuntime } from "./application/CadRuntime"
@@ -54,7 +55,11 @@ export type {
   EngineHost,
   DrawingStore,
   FileTransport,
+  Clipboard,
 } from "./application/ports"
+
+export { clipboardSnapshot, planPaste } from "./application/clipboard"
+export type { PastePlan } from "./application/clipboard"
 
 export { Viewport } from "./application/Viewport"
 export type { Camera } from "./application/Viewport"
@@ -125,6 +130,8 @@ export { CircleTool } from "./application/tools/CircleTool"
 export type { CircleMode } from "./application/tools/CircleTool"
 export { ArcTool } from "./application/tools/ArcTool"
 export type { ArcMode } from "./application/tools/ArcTool"
+export { EllipseTool } from "./application/tools/EllipseTool"
+export type { EllipseMode } from "./application/tools/EllipseTool"
 export { RectangleTool } from "./application/tools/RectangleTool"
 export { PolygonTool } from "./application/tools/PolygonTool"
 export { HatchTool } from "./application/tools/HatchTool"
@@ -165,6 +172,9 @@ export { JoinTool } from "./application/tools/JoinTool"
 export { BreakTool } from "./application/tools/BreakTool"
 export type { BreakMode } from "./application/tools/BreakTool"
 export { MatchPropTool } from "./application/tools/MatchPropTool"
+export { CopyClipTool } from "./application/tools/CopyClipTool"
+export type { ClipboardCopyMode } from "./application/tools/CopyClipTool"
+export { PasteTool } from "./application/tools/PasteTool"
 export { MeasureTool } from "./application/tools/MeasureTool"
 export type { MeasureMode } from "./application/tools/MeasureTool"
 export { ZoomTool } from "./application/tools/ZoomTool"
@@ -279,3 +289,10 @@ export type {
   DrawingSnapshot,
   ParsedDrawing,
 } from "./serialization/drawingFile"
+export {
+  CLIPBOARD_FILE_TYPE,
+  CLIPBOARD_FILE_VERSION,
+  serializeClipboard,
+  parseClipboard,
+} from "./serialization/clipboardFile"
+export type { ClipboardFragment } from "./serialization/clipboardFile"

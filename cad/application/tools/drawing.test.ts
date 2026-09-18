@@ -2,7 +2,15 @@ import { describe, expect, it } from "vitest"
 import type {
   ArcEntity,
   CircleEntity,
+  EllipseEntity,
   PolylineEntity,
+} from "../../domain/entities"
+import {
+  ellipseEndPoint,
+  ellipseSemiMajor,
+  ellipseSemiMinor,
+  ellipseStartPoint,
+  isFullEllipse,
 } from "../../domain/entities"
 import { V } from "../../geometry/Vec2"
 import { createHarness } from "../../../test/harness"
@@ -124,6 +132,150 @@ describe("ARC", () => {
     expect(arc.center).toBeCloseToPoint(p(0, 0))
     expect(arc.startAngle).toBeCloseToAngle(0)
     expect(arc.endAngle).toBeCloseToAngle(deg(90))
+  })
+})
+
+describe("ELLIPSE", () => {
+  it("takes the two ends of one axis, then the distance to the other", () => {
+    const cad = createHarness()
+
+    cad.command("ELLIPSE").click(p(-100, 0)).click(p(100, 0)).click(p(0, 40))
+
+    const ellipse = cad.only<EllipseEntity>("ellipse")
+    expect(ellipse.center).toBeCloseToPoint(p(0, 0))
+    expect(ellipseSemiMajor(ellipse)).toBeCloseTo(100)
+    expect(ellipseSemiMinor(ellipse)).toBeCloseTo(40)
+    expect(isFullEllipse(ellipse)).toBe(true)
+  })
+
+  it("keeps the longer axis as the major one, whichever was picked first", () => {
+    const cad = createHarness()
+
+    // The first axis is the *shorter* one here, so the stored major axis is
+    // the perpendicular one — the DXF invariant, not the pick order.
+    cad.command("ELLIPSE").click(p(-40, 0)).click(p(40, 0)).click(p(0, 100))
+
+    const ellipse = cad.only<EllipseEntity>("ellipse")
+    expect(ellipseSemiMajor(ellipse)).toBeCloseTo(100)
+    expect(ellipse.ratio).toBeCloseTo(0.4)
+    expect(ellipse.majorAxis.x).toBeCloseTo(0)
+  })
+
+  it("measures the second axis from the centre, not from the axis end", () => {
+    const cad = createHarness()
+
+    cad.command("ELLIPSE").type("-100,0").enter().type("100,0").enter()
+    cad.type("30").enter()
+
+    expect(ellipseSemiMinor(cad.only<EllipseEntity>("ellipse"))).toBeCloseTo(30)
+  })
+
+  it("Center mode takes the centre, then one axis endpoint", () => {
+    const cad = createHarness()
+
+    cad.command("ELLIPSEC").click(p(0, 0)).click(p(100, 0)).click(p(0, 25))
+
+    const ellipse = cad.only<EllipseEntity>("ellipse")
+    expect(ellipse.center).toBeCloseToPoint(p(0, 0))
+    expect(ellipseSemiMajor(ellipse)).toBeCloseTo(100)
+    expect(ellipseSemiMinor(ellipse)).toBeCloseTo(25)
+  })
+
+  it("reaches Center and Arc from the first prompt's keywords", () => {
+    const cad = createHarness()
+
+    cad.command("ELLIPSE")
+    expect(cad.optionKeys()).toEqual(["A", "C"])
+
+    cad.option("C").click(p(0, 0)).click(p(100, 0)).click(p(0, 50))
+
+    expect(cad.only<EllipseEntity>("ellipse").center).toBeCloseToPoint(p(0, 0))
+  })
+
+  it("Rotation foreshortens the other axis by the cosine of the angle", () => {
+    const cad = createHarness()
+
+    cad.command("ELLIPSE").click(p(-100, 0)).click(p(100, 0))
+    cad.option("R").type("60").enter()
+
+    const ellipse = cad.only<EllipseEntity>("ellipse")
+    expect(ellipseSemiMajor(ellipse)).toBeCloseTo(100)
+    expect(ellipseSemiMinor(ellipse)).toBeCloseTo(50)
+  })
+
+  it("refuses a rotation that would draw a straight line", () => {
+    const cad = createHarness()
+
+    cad.command("ELLIPSE").click(p(-100, 0)).click(p(100, 0))
+    cad.option("R").type("90").enter()
+
+    expect(cad.entityCount).toBe(0)
+    expect(cad.activeToolId()).toBe("ellipse")
+  })
+
+  it("draws an elliptical arc between the two angles", () => {
+    const cad = createHarness()
+
+    cad.command("ELLIPSEARC").click(p(-100, 0)).click(p(100, 0)).click(p(0, 50))
+    cad.click(p(100, 0)).click(p(0, 50))
+
+    const ellipse = cad.only<EllipseEntity>("ellipse")
+    expect(isFullEllipse(ellipse)).toBe(false)
+    expect(ellipseStartPoint(ellipse)).toBeCloseToPoint(p(100, 0), 5)
+    expect(ellipseEndPoint(ellipse)).toBeCloseToPoint(p(0, 50), 5)
+  })
+
+  it("takes an arc's angles as directions, not as raw parameters", () => {
+    const cad = createHarness()
+
+    // At ratio 0.5 the point at *parameter* 45° is not the point at 45° from
+    // the centre; the prompt asks for the angle, so the end must be on the ray.
+    cad.command("ELLIPSEARC").click(p(-100, 0)).click(p(100, 0)).click(p(0, 50))
+    cad.type("0").enter().type("45").enter()
+
+    const end = ellipseEndPoint(cad.only<EllipseEntity>("ellipse"))
+    expect(Math.atan2(end.y, end.x)).toBeCloseToAngle(deg(45), 5)
+  })
+
+  it("measures an arc's angles from the major axis, not from world X", () => {
+    const cad = createHarness()
+
+    // The major axis runs vertically here, so angle 0 is the top of the
+    // ellipse — the frame AutoCAD's Parameter equation is written in.
+    cad.command("ELLIPSEARC").click(p(0, -100)).click(p(0, 100)).click(p(50, 0))
+    cad.type("0").enter().type("90").enter()
+
+    const ellipse = cad.only<EllipseEntity>("ellipse")
+    expect(ellipseStartPoint(ellipse)).toBeCloseToPoint(p(0, 100), 5)
+  })
+
+  it("Included angle sweeps on from the start angle", () => {
+    const cad = createHarness()
+
+    cad.command("ELLIPSEARC").click(p(-100, 0)).click(p(100, 0)).click(p(0, 50))
+    cad.type("0").enter()
+    cad.option("I").type("90").enter()
+
+    const ellipse = cad.only<EllipseEntity>("ellipse")
+    expect(ellipseStartPoint(ellipse)).toBeCloseToPoint(p(100, 0), 5)
+    expect(ellipseEndPoint(ellipse)).toBeCloseToPoint(p(0, 50), 5)
+  })
+
+  it("ends after a single ellipse, like AutoCAD", () => {
+    const cad = createHarness()
+
+    cad.command("ELLIPSE").click(p(-100, 0)).click(p(100, 0)).click(p(0, 40))
+
+    expect(cad.activeToolId()).toBe("select")
+  })
+
+  it("rejects a zero second axis and keeps prompting", () => {
+    const cad = createHarness()
+
+    cad.command("ELLIPSE").click(p(-100, 0)).click(p(100, 0)).type("0").enter()
+
+    expect(cad.entityCount).toBe(0)
+    expect(cad.activeToolId()).toBe("ellipse")
   })
 })
 

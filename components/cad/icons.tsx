@@ -71,6 +71,27 @@ export const ArcCenterStartEndIcon = createLucideIcon("ArcCenterStartEnd", [
   ["circle", { cx: "12", cy: "17", ...DOT, key: "center" }],
 ])
 
+/** Axis-End ellipse: the axis being defined, with a bead at each end. */
+export const EllipseIcon = createLucideIcon("Ellipse", [
+  ["ellipse", { cx: "12", cy: "12", rx: "10", ry: "6", key: "ring" }],
+  ["circle", { cx: "2", cy: "12", ...DOT, key: "p1" }],
+  ["circle", { cx: "22", cy: "12", ...DOT, key: "p2" }],
+])
+
+/** Center ellipse: the centre emphasised, with a spoke out to one axis end. */
+export const EllipseCenterIcon = createLucideIcon("EllipseCenter", [
+  ["ellipse", { cx: "12", cy: "12", rx: "10", ry: "6", key: "ring" }],
+  ["line", { x1: "12", y1: "12", x2: "22", y2: "12", key: "spoke" }],
+  ["circle", { cx: "12", cy: "12", ...DOT, key: "hub" }],
+])
+
+/** Elliptical arc: a part-swept ellipse with a bead at each end of the sweep. */
+export const EllipseArcIcon = createLucideIcon("EllipseArc", [
+  ["path", { d: "M2 12 A 10 6 0 0 1 20 8.4", key: "arc" }],
+  ["circle", { cx: "2", cy: "12", ...DOT, key: "start" }],
+  ["circle", { cx: "20", cy: "8.4", ...DOT, key: "end" }],
+])
+
 /** Fillet: two lines meeting at a rounded (arc) corner. */
 export const FilletIcon = createLucideIcon("Fillet", [
   ["path", { d: "M5 21 L5 11 A6 6 0 0 1 11 5 L21 5", key: "corner" }],

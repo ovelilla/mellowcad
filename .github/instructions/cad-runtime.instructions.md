@@ -9,6 +9,31 @@ description: "Runtime and interaction plumbing: the point-resolution pipeline, k
 owns the browser. Everything here is interaction machinery — geometry and modelling rules live in
 the engine instructions, tool authoring in the tools instructions.
 
+## Where a `CadRuntime` method lives
+
+`CadEngine` delegates to `CadRuntime` one method at a time, so **the class's public names and
+signatures are a hard contract**: the adapter and the React layer break if one moves. The class is
+kept small by hollowing methods out, never by renaming them — the method stays and becomes a
+one-line delegation to a free function in a `runtime*.ts` sibling.
+
+| Sibling                | Holds                                                                   |
+| ---------------------- | ----------------------------------------------------------------------- |
+| `runtimeTools.ts`      | `defaultTools` — every tool the constructor registers, in toolbar order |
+| `runtimeCommands.ts`   | the command table (`registerCommands`) and `commandPrompt`              |
+| `runtimeLayers.ts`     | layer table edits (`updateLayer`, `nextLayerName`)                      |
+| `runtimeStyles.ts`     | the dimension and text style tables                                     |
+| `runtimeProperties.ts` | `setSelection*` overrides and the `commonSelection*` readers            |
+| `runtimeBlocks.ts`     | `purgeBlocks`, `buildBlockPreview`                                      |
+| `runtimeFiles.ts`      | serialize/load, the clipboard read-with-timeout, `selectAll`            |
+
+**A sibling takes the collaborators it needs (`document`, `selection`, `history`, …), never the
+runtime.** Wanting many private fields is the signal that the code belongs in the class — which is
+why the pointer pipeline, `keyDown`, `updateSnap`, selection cycling, the FROM modifier and
+`buildState` are still in it. `registerCommands` is the one exception: a command _is_ a call into
+the public API, so it receives the runtime plus the two private entry points it cannot reach
+(`startTool`, `registerCommand`), and imports `CadRuntime` as a **type only** so no import cycle
+exists at runtime.
+
 ## The precision pipeline (`PointResolver`)
 
 ```
@@ -42,7 +67,8 @@ single "frame this rectangle" operation; use it rather than composing `zoomAt` +
    without ending the command.
 2. Function keys: F2 command prompt, F3 osnap, F7 grid, F8 Ortho, F9 snap mode, F10 Polar,
    F11 OTRACK, F4 selection cycling (AutoCAD's Ctrl+W, which browsers keep, is accepted too).
-3. Ctrl combos (undo/redo, Ctrl+9, Ctrl+S save, Ctrl+O open), then Shift+Space (selection
+3. Ctrl combos (undo/redo, Ctrl+9, Ctrl+S save, Ctrl+O open, Ctrl+C/X/V copy-cut-paste,
+   Ctrl+Shift+C copy with base point, Ctrl+A select all), then Shift+Space (selection
    cycling) — a global aid, like the function keys, and it must beat the command prompt, which
    reads a bare space as Enter.
 4. **The active tool's `commandOptions()`** — a keyword beats a global command alias, because in
@@ -97,6 +123,19 @@ call in the `CadRuntime` constructor.
 `history.execute(command)` is the only write path to the document. `loadDrawing` clears the
 history (a loaded file is a fresh baseline). Document _settings_ changes (unit, precision,
 ltScale, layer table edits) are deliberately not undoable; anything touching entities is.
+
+A command that adds **table entries alongside geometry** (BLOCK's definition, PASTECLIP's layers,
+styles and blocks) carries them through the history too, and undoes them in reverse order — those
+tables all refuse to drop an entry still in use, so the geometry has to go first. Work the result
+out **once**, before the command runs, and store it: a redo must re-add the very same ids.
+
+## Waiting on the host
+
+**Bound every wait on an asynchronous port.** A browser may leave `navigator.clipboard.readText()`
+pending indefinitely behind an unanswered permission prompt, which made Ctrl+V do nothing at all —
+not even report. Race the call against a timeout and fall back (`CLIPBOARD_READ_TIMEOUT_MS`), and
+keep a session-local copy of anything the host might refuse to hand back, so the capability
+degrades instead of disappearing.
 
 ## EngineState
 
@@ -157,7 +196,9 @@ Two listeners are deliberately on `canvas.ownerDocument`, not the canvas:
 - `keydown`, so Escape and shortcuts work regardless of which element holds focus. It ignores
   events from `input/textarea/select/[contenteditable]` — **except function keys and Ctrl+S/Ctrl+O**,
   which are global and must also be swallowed so the browser's own dialogs never open. Other Ctrl
-  combos stay unforwarded on purpose: a global undo from a focused field desyncs the running tool.
+  combos stay unforwarded on purpose: a global undo from a focused field desyncs the running tool,
+  and Ctrl+C/X/V/A inside a dynamic-input box or a layer name belong to that **text**. Never widen
+  `isFileShortcut` to the clipboard keys.
 - `contextmenu`, because the event fires on button _release_, by which time a portalled modal
   backdrop may be the target.
 

@@ -81,3 +81,15 @@ Only for what the harness cannot see: canvas rendering, DOM, theming, CSS. If yo
 - Autodesk's help viewer is a SPA that `fetch_webpage` cannot extract; **read it with Playwright**
   (`help.autodesk.com/view/ACD/2026/ENU/?guid=…`, then take `innerText`). Search engines start
   serving captchas after a few queries, so collect the GUIDs early and navigate by GUID after that.
+  The viewer has its own search — `…/view/ACD/2026/ENU/?query=COPYCLIP`, then harvest the `?guid=`
+  links — which beats guessing, and `…/cloudhelp/2026/ENU/AutoCAD-Core/files/<GUID>.htm` opens a
+  page straight from its GUID.
+- **A thin command page is not an undocumented behaviour.** COPYCLIP's reference page has no
+  prompts at all; the rule that decides the whole feature ("the cursor location is based on the
+  lower-left corner of the extents of the objects you selected") is on a _Have You Tried_ page, and
+  the prompt order is on a _To …_ task page. Read `About …`, `To …` and `Have You Tried` before
+  concluding that something cannot be verified.
+- **Some rules only exist outside the harness.** The keys a focused field must keep (Ctrl+C in a
+  dynamic-input box), the browser dialogs a shortcut must suppress, and an async host call that
+  never settles are all invisible to the headless runtime — the clipboard shipped a hang that 31
+  green harness tests could not see. Drive those with real keys on a real page.

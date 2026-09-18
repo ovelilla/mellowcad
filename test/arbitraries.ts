@@ -5,6 +5,7 @@ import {
   type ArcEntity,
   type CircleEntity,
   type DimensionEntity,
+  type EllipseEntity,
   type Entity,
   type HatchEntity,
   type InsertEntity,
@@ -143,6 +144,48 @@ export const arcEntity: fc.Arbitrary<ArcEntity> = fc
     )
   )
 
+/**
+ * Ellipses both whole and swept, with the ratio kept clear of the degenerate
+ * ends: at 1 an ellipse is a circle and its major axis stops being determined,
+ * and near 0 it collapses to a segment — neither says anything about the
+ * algebra the properties are checking.
+ */
+export const ellipseEntity: fc.Arbitrary<EllipseEntity> = fc
+  .tuple(
+    point,
+    positiveLength,
+    angle,
+    fc.integer({ min: 5, max: 95 }).map((n) => n / 100),
+    fc.option(
+      fc.tuple(
+        angle,
+        // A sweep clear of both ends: zero and a whole turn both *are* a full
+        // ellipse, which stores no parameters, so generating one would compare
+        // a swept entity against a whole one after any round trip.
+        fc.integer({ min: 10, max: 618 }).map((n) => n / 100)
+      ),
+      { nil: undefined }
+    )
+  )
+  .map(([center, semiMajor, rotation, ratio, params]) =>
+    withId<EllipseEntity>(
+      {
+        type: "ellipse",
+        layerId: DEFAULT_LAYER_ID,
+        center,
+        majorAxis: {
+          x: Math.cos(rotation) * semiMajor,
+          y: Math.sin(rotation) * semiMajor,
+        },
+        ratio,
+        ...(params
+          ? { startParam: params[0], endParam: params[0] + params[1] }
+          : {}),
+      },
+      "ellipse"
+    )
+  )
+
 export const polylineEntity: fc.Arbitrary<PolylineEntity> = fc
   .tuple(
     fc.array(point, { minLength: 2, maxLength: 8 }),
@@ -261,6 +304,7 @@ export const entity: fc.Arbitrary<Entity> = fc.oneof(
   lineEntity,
   circleEntity,
   arcEntity,
+  ellipseEntity,
   polylineEntity,
   textEntity,
   dimensionEntity,

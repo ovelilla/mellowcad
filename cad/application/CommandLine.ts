@@ -133,6 +133,9 @@ export const TOOL_COMMANDS: Readonly<Record<string, readonly string[]>> = {
   arc: ["ARC", "A"],
   arcsce: ["ARCSCE"],
   arccse: ["ARCCSE"],
+  ellipse: ["ELLIPSE", "EL"],
+  ellipsecenter: ["ELLIPSEC"],
+  ellipsearc: ["ELLIPSEARC"],
   rectangle: ["RECTANG", "REC"],
   polygon: ["POLYGON", "POL"],
   hatch: ["HATCH", "H", "BH"],
@@ -167,6 +170,11 @@ export const TOOL_COMMANDS: Readonly<Record<string, readonly string[]>> = {
   break: ["BREAK", "BR"],
   breakatpoint: ["BREAKATPOINT"],
   matchprop: ["MATCHPROP", "MA", "PAINTER"],
+  // The clipboard copies. Autodesk's shortcut guide lists no alias for any of
+  // them (PASTECLIP is registered separately — it is not a tool).
+  copyclip: ["COPYCLIP"],
+  cutclip: ["CUTCLIP"],
+  copybase: ["COPYBASE"],
   measure: ["DIST", "DI"],
   measurearea: ["AREA", "AA"],
   zoom: ["ZOOM", "Z"],

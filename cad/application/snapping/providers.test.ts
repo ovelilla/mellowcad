@@ -3,7 +3,7 @@ import type { LineEntity } from "../../domain/entities"
 import { V } from "../../geometry/Vec2"
 import { SnapType } from "./types"
 import { createHarness, type CadHarness } from "../../../test/harness"
-import { circleOf, lineOf, p } from "../../../test/builders"
+import { circleOf, ellipseOf, lineOf, p } from "../../../test/builders"
 
 /**
  * The individual snap providers, each forced through the one-shot override so
@@ -56,6 +56,50 @@ describe("quadrant", () => {
     const drawn = firstPointWith(cad, SnapType.Quadrant, p(3, 103))
 
     expect(drawn.start).toBeCloseToPoint(p(0, 100), 5)
+  })
+
+  it("snaps to an ellipse's axis ends, not the world's cardinals", () => {
+    const cad = createHarness({
+      // Major axis at 45°, so no quadrant of this ellipse points along +X.
+      entities: [ellipseOf(p(0, 0), p(70.71, 70.71), 0.5, { id: "REF-E" })],
+      snap: true,
+    })
+
+    const drawn = firstPointWith(cad, SnapType.Quadrant, p(68, 74))
+
+    expect(drawn.start).toBeCloseToPoint(p(70.71, 70.71), 4)
+  })
+})
+
+describe("center", () => {
+  it("snaps to an ellipse's centre", () => {
+    const cad = createHarness({
+      entities: [ellipseOf(p(40, 20), p(100, 0), 0.5, { id: "REF-E" })],
+      snap: true,
+    })
+
+    const drawn = firstPointWith(cad, SnapType.Center, p(44, 23))
+
+    expect(drawn.start).toBeCloseToPoint(p(40, 20), 5)
+  })
+})
+
+describe("endpoint", () => {
+  it("offers an elliptical arc's ends, and a whole ellipse none", () => {
+    const cad = createHarness({
+      entities: [
+        ellipseOf(p(0, 0), p(100, 0), 0.5, {
+          id: "REF-E",
+          startParam: 0,
+          endParam: Math.PI / 2,
+        }),
+      ],
+      snap: true,
+    })
+
+    const drawn = firstPointWith(cad, SnapType.Endpoint, p(3, 47))
+
+    expect(drawn.start).toBeCloseToPoint(p(0, 50), 5)
   })
 })
 

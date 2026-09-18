@@ -61,6 +61,9 @@ import {
   DimLinearIcon,
   DimRadiusIcon,
   DimSpaceIcon,
+  EllipseIcon,
+  EllipseArcIcon,
+  EllipseCenterIcon,
   FilletIcon,
   HatchIcon,
   InsertIcon,
@@ -81,6 +84,9 @@ const TOOL_ICONS: Record<string, LucideIcon> = {
   arc: ArcIcon,
   arcsce: ArcStartCenterEndIcon,
   arccse: ArcCenterStartEndIcon,
+  ellipse: EllipseIcon,
+  ellipsecenter: EllipseCenterIcon,
+  ellipsearc: EllipseArcIcon,
   rectangle: Square,
   polygon: Pentagon,
   hatch: HatchIcon,
@@ -165,6 +171,10 @@ const RAIL_LAYOUT: readonly RailGroup[] = [
         members: ["arc", "arcsce", "arccse"],
       },
       {
+        label: "Ellipse",
+        members: ["ellipse", "ellipsecenter", "ellipsearc"],
+      },
+      {
         label: "Rectangle",
         members: ["rectangle", "polygon"],
       },
@@ -233,9 +243,18 @@ function isFlyout(item: RailItem): item is ToolFlyoutFamily {
 /**
  * Tools that live elsewhere in the chrome. View navigation sits with the other
  * view controls in the command bar, the way AutoCAD keeps it off the Draw and
- * Modify ribbon panels.
+ * Modify ribbon panels. The clipboard commands are reached by Ctrl+C/X/V or by
+ * name; AutoCAD's own Clipboard panel is not built yet, and a Paste button that
+ * only works when something has been copied would be a poor first one.
  */
-const RAIL_EXCLUDED = new Set(["zoom", "pan"])
+const RAIL_EXCLUDED = new Set([
+  "zoom",
+  "pan",
+  "copyclip",
+  "cutclip",
+  "copybase",
+  "paste",
+])
 
 interface ToolMeta {
   id: string

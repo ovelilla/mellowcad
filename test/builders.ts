@@ -2,6 +2,7 @@ import { CadDocument } from "../cad/domain/Document"
 import {
   type ArcEntity,
   type CircleEntity,
+  type EllipseEntity,
   type Entity,
   type EntityId,
   type HatchEntity,
@@ -13,6 +14,7 @@ import {
   type TextOptions,
   createArc,
   createCircle,
+  createEllipse,
   createHatch,
   createLine,
   createPolyline,
@@ -97,6 +99,28 @@ export function arcOf(
     options.layerId ?? DEFAULT_LAYER_ID,
     options.id
   )
+}
+
+/**
+ * An ellipse, or an elliptical arc when both parameters are given. `majorAxis`
+ * is the vector from the centre to the end of the major axis, as the entity
+ * stores it.
+ */
+export function ellipseOf(
+  center: Vec2,
+  majorAxis: Vec2,
+  ratio: number,
+  options: EntityOptions & {
+    readonly startParam?: number
+    readonly endParam?: number
+  } = {}
+): EllipseEntity {
+  return createEllipse(center, majorAxis, ratio, {
+    startParam: options.startParam,
+    endParam: options.endParam,
+    layerId: options.layerId ?? DEFAULT_LAYER_ID,
+    id: options.id,
+  })
 }
 
 export function polylineOf(

@@ -2,17 +2,9 @@ import { Vec2, V } from "../../geometry/Vec2"
 import {
   Entity,
   EntityId,
-  arcEndPoint,
-  arcMidpoint,
-  arcStartPoint,
   createArc,
-  createCircle,
   createLine,
-  DimensionEntity,
-  dimensionGeometry,
-  entityBounds,
   insertPolylineVertex,
-  PolylineSegmentGeometry,
   polylineSegmentGeometries,
   removePolylineVertex,
   replacePolylineVertex,
@@ -26,60 +18,39 @@ import {
 } from "../commands/entityCommands"
 import { DynamicInputSession } from "../input/DynamicInput"
 import { ConstructionGeometry } from "../snapping/types"
-import {
-  bulgeThroughPoint,
-  normalizeAngle,
-  normalizeDegrees,
-  polarPoint,
-} from "../../geometry/primitives"
-import { ScenePrimitive, StrokeStyle } from "../../scene/types"
-import { THEME } from "../../scene/theme"
-import { arcScenePrimitive, entityScenePrimitive } from "../SceneBuilder"
-import { boxSelect, buildSelectionBoxOverlay } from "./boxSelection"
+import { bulgeThroughPoint, normalizeDegrees } from "../../geometry/primitives"
+import { ScenePrimitive } from "../../scene/types"
+import { boxSelect } from "./boxSelection"
 import { KeyInput, PointerInput, Tool, ToolContext } from "./Tool"
+import {
+  DimensionPoint,
+  Grip,
+  LineEnd,
+  SelectToolState,
+} from "./selectToolState"
+import { hitGrip, sameGrip } from "./selectToolGrips"
+import {
+  movedDimension,
+  radiusHandle,
+  toDegrees,
+  withRadius,
+} from "./selectToolEdits"
+import {
+  buildArcAngleEdit,
+  buildBulgeEdit,
+  buildDimPointEdit,
+  buildGripEdit,
+  buildGrips,
+  buildInsertEdit,
+  buildMoveEdit,
+  buildRadiusEdit,
+  buildSelectionBox,
+  buildVertexEdit,
+  pickRolloverEntity,
+} from "./selectToolOverlay"
 
 /** Screen-pixel movement past which a press-drag becomes a box selection. */
 const DRAG_THRESHOLD_PX = 4
-
-/** Half-size (screen pixels) of the small square grips drawn on a selection. */
-const GRIP_HALF_PX = 4
-
-/** Screen-pixel radius within which a click grabs an endpoint grip. */
-const GRIP_PICK_PX = 6
-
-type LineEnd = "start" | "end"
-
-/**
- * What editing a grip does, mirroring AutoCAD's per-object grips:
- * - `lineEnd`  — a line endpoint: lengthen/shorten along the line's own axis.
- * - `move`     — a line midpoint or a circle/arc centre: move the selection.
- * - `radius`   — a circle quadrant or an arc's midpoint: resize the radius.
- * - `arcEnd`   — an arc endpoint: swing it around, changing the sweep.
- * - `vertex`   — a polyline vertex: stretch it, reshaping the chain.
- * - `addVertex`— a straight polyline segment's midpoint: insert a new vertex.
- * - `bulge`    — an arc polyline segment's midpoint: change its curvature.
- * - `dimPoint` — a dimension's definition point: an extension-line origin, an
- *   angular one's vertex, or the dimension line itself, which slides the whole
- *   assembly.
- */
-type GripRole =
-  | { readonly kind: "lineEnd"; readonly end: LineEnd }
-  | { readonly kind: "move" }
-  | { readonly kind: "radius" }
-  | { readonly kind: "arcEnd"; readonly end: LineEnd }
-  | { readonly kind: "vertex"; readonly index: number }
-  | { readonly kind: "addVertex"; readonly segmentIndex: number }
-  | { readonly kind: "bulge"; readonly segmentIndex: number }
-  | { readonly kind: "dimPoint"; readonly point: DimensionPoint }
-
-/** Which of a dimension's definition points a grip drags. */
-type DimensionPoint = "first" | "second" | "line" | "vertex"
-
-interface Grip {
-  readonly entityId: EntityId
-  readonly role: GripRole
-  readonly world: Vec2
-}
 
 /**
  * The select tool's interaction flow as an explicit state machine:
@@ -108,142 +79,6 @@ interface Grip {
  * Deleting the selection goes through {@link RemoveEntitiesCommand}, so it is
  * undoable like any other document change.
  */
-
-type SelectToolState =
-  | {
-      readonly phase: "idle"
-      /** The grip the cursor is currently hovering (drawn hot), if any. */
-      readonly hoverGrip?: Grip | null
-      /** The unselected entity under the cursor to preview-highlight, if any. */
-      readonly hoverEntityId?: EntityId | null
-    }
-  | {
-      readonly phase: "pressed"
-      readonly startWorld: Vec2
-      readonly startScreen: Vec2
-      readonly currentWorld: Vec2
-      /** Whether shift was held at press (adds the box result to selection). */
-      readonly additive: boolean
-      /**
-       * The press landed on an object that was already selected, so dragging
-       * moves the selection instead of opening a selection box.
-       */
-      readonly onSelection: boolean
-    }
-  | {
-      readonly phase: "boxing"
-      readonly startWorld: Vec2
-      readonly currentWorld: Vec2
-      readonly additive: boolean
-    }
-  | {
-      /** An endpoint grip is hot: the line is being lengthened along its axis. */
-      readonly phase: "grip"
-      readonly entityId: EntityId
-      readonly end: LineEnd
-      /** The endpoint that stays put (the far end of the line). */
-      readonly fixed: Vec2
-      /** Unit direction from `fixed` towards the moving endpoint. */
-      readonly dir: Vec2
-      /** Original line length, so typed input is a *delta* lengthening. */
-      readonly origLength: number
-      /** Live position of the moving endpoint (projected onto the axis). */
-      readonly moving: Vec2
-      /** Screen position where the grip was grabbed (drag vs click-click). */
-      readonly pressScreen: Vec2
-    }
-  | {
-      /** The midpoint grip is hot: the whole selection is being translated. */
-      readonly phase: "moveLine"
-      /** Snapshot of every entity being moved (the whole selection). */
-      readonly originals: readonly Entity[]
-      /** The base point (grabbed line's midpoint) that anchors the move. */
-      readonly origMid: Vec2
-      /** Live position of the base point (follows the cursor). */
-      readonly current: Vec2
-      /** Screen position where the grip was grabbed (drag vs click-click). */
-      readonly pressScreen: Vec2
-    }
-  | {
-      /** A radius grip is hot: a circle or arc is being resized about its centre. */
-      readonly phase: "resizeRadius"
-      readonly entityId: EntityId
-      readonly center: Vec2
-      /** Live radius (distance from the centre to the cursor). */
-      readonly radius: number
-      /** Live point on the resized outline nearest the cursor (the hot handle). */
-      readonly handle: Vec2
-      /** Screen position where the grip was grabbed (drag vs click-click). */
-      readonly pressScreen: Vec2
-    }
-  | {
-      /** An arc endpoint grip is hot: it swings around, changing the sweep. */
-      readonly phase: "arcAngle"
-      readonly entityId: EntityId
-      readonly end: LineEnd
-      readonly center: Vec2
-      readonly radius: number
-      /** Live angle (radians) of the grabbed endpoint. */
-      readonly angle: number
-      /** Screen position where the grip was grabbed (drag vs click-click). */
-      readonly pressScreen: Vec2
-    }
-  | {
-      /**
-       * A dimension definition-point grip is hot: dragging an extension-line
-       * origin restates the measurement, dragging the dimension line slides it.
-       */
-      readonly phase: "moveDimPoint"
-      readonly entityId: EntityId
-      readonly point: DimensionPoint
-      readonly origin: Vec2
-      readonly current: Vec2
-      readonly pressScreen: Vec2
-    }
-  | {
-      /** A polyline vertex grip is hot: it stretches, reshaping the chain. */
-      readonly phase: "moveVertex"
-      readonly entityId: EntityId
-      readonly index: number
-      /** The vertex's original position (the move's base / constraint anchor). */
-      readonly origin: Vec2
-      /** Live position of the vertex (follows the cursor). */
-      readonly current: Vec2
-      /** Screen position where the grip was grabbed (drag vs click-click). */
-      readonly pressScreen: Vec2
-    }
-  | {
-      /**
-       * A straight segment's midpoint grip is hot: dragging it inserts a new
-       * vertex there, bending the segment in two (AutoCAD's "add vertex").
-       */
-      readonly phase: "insertVertex"
-      readonly entityId: EntityId
-      readonly segmentIndex: number
-      /** The segment midpoint (the insertion's base / constraint anchor). */
-      readonly origin: Vec2
-      /** Live position of the new vertex (follows the cursor). */
-      readonly current: Vec2
-      readonly pressScreen: Vec2
-    }
-  | {
-      /**
-       * An arc segment's midpoint grip is hot: dragging it changes the segment's
-       * bulge (curvature) so its arc passes through the cursor.
-       */
-      readonly phase: "bulgeEdit"
-      readonly entityId: EntityId
-      readonly segmentIndex: number
-      /** The segment's two chord endpoints (fixed). */
-      readonly a: Vec2
-      readonly b: Vec2
-      /** Live bulge derived from the cursor. */
-      readonly bulge: number
-      /** Live cursor position (the point the arc is dragged through). */
-      readonly current: Vec2
-      readonly pressScreen: Vec2
-    }
-
 export class SelectTool implements Tool {
   readonly id = "select"
   readonly label = "Select"
@@ -302,7 +137,7 @@ export class SelectTool implements Tool {
 
     // Grab a grip of a selected object, if the click lands on one, and begin
     // the edit its role prescribes.
-    const grip = this.hitGrip(input.screen, ctx)
+    const grip = hitGrip(input.screen, ctx)
     if (grip) {
       switch (grip.role.kind) {
         case "lineEnd":
@@ -506,8 +341,8 @@ export class SelectTool implements Tool {
         // AutoCAD's grip highlight. The magnetic crosshair snap is handled
         // separately via magneticCursor(). Also track the unselected entity
         // under the cursor for AutoCAD's selection-preview (rollover) highlight.
-        const hoverGrip = this.hitGrip(input.screen, ctx)
-        const hoverEntityId = this.pickRolloverEntity(input, ctx)
+        const hoverGrip = hitGrip(input.screen, ctx)
+        const hoverEntityId = pickRolloverEntity(input, ctx)
         const gripChanged = !sameGrip(hoverGrip, this.state.hoverGrip ?? null)
         const entityChanged =
           hoverEntityId !== (this.state.hoverEntityId ?? null)
@@ -716,7 +551,7 @@ export class SelectTool implements Tool {
    */
   magneticCursor(screen: Vec2, ctx: ToolContext): Vec2 | null {
     if (this.state.phase !== "idle") return null
-    const grip = this.hitGrip(screen, ctx)
+    const grip = hitGrip(screen, ctx)
     return grip ? ctx.viewport.worldToScreen(grip.world) : null
   }
 
@@ -788,238 +623,29 @@ export class SelectTool implements Tool {
   }
 
   buildOverlay(ctx: ToolContext): ScenePrimitive[] {
-    if (this.state.phase === "boxing") return this.buildSelectionBox(ctx)
-    if (this.state.phase === "grip") return this.buildGripEdit(ctx)
-    if (this.state.phase === "moveLine") return this.buildMoveEdit(ctx)
-    if (this.state.phase === "resizeRadius") return this.buildRadiusEdit(ctx)
-    if (this.state.phase === "arcAngle") return this.buildArcAngleEdit(ctx)
-    if (this.state.phase === "moveVertex") return this.buildVertexEdit(ctx)
-    if (this.state.phase === "insertVertex") return this.buildInsertEdit(ctx)
-    if (this.state.phase === "bulgeEdit") return this.buildBulgeEdit(ctx)
-    if (this.state.phase === "moveDimPoint") return this.buildDimPointEdit(ctx)
-    return this.buildGrips(ctx)
-  }
-
-  /** The in-progress selection rectangle (window or crossing). */
-  private buildSelectionBox(ctx: ToolContext): ScenePrimitive[] {
-    if (this.state.phase !== "boxing") return []
-    return buildSelectionBoxOverlay(
-      ctx.viewport,
-      this.state.startWorld,
-      this.state.currentWorld
-    )
-  }
-
-  /**
-   * Grips shown on every selected line: cold by default, with the hovered grip
-   * drawn hot to signal that the magnetic cursor has grabbed onto it. The
-   * unselected entity under the cursor is preview-highlighted underneath
-   * (AutoCAD's selection preview / rollover highlight).
-   */
-  private buildGrips(ctx: ToolContext): ScenePrimitive[] {
-    const out: ScenePrimitive[] = []
-    if (this.state.phase === "idle" && this.state.hoverEntityId) {
-      const entity = ctx.document.get(this.state.hoverEntityId)
-      if (entity) this.pushRolloverHighlight(out, entity, ctx)
+    const state = this.state
+    switch (state.phase) {
+      case "boxing":
+        return buildSelectionBox(state, ctx)
+      case "grip":
+        return buildGripEdit(state, ctx)
+      case "moveLine":
+        return buildMoveEdit(state, ctx)
+      case "resizeRadius":
+        return buildRadiusEdit(state, ctx)
+      case "arcAngle":
+        return buildArcAngleEdit(state, ctx)
+      case "moveVertex":
+        return buildVertexEdit(state, ctx)
+      case "insertVertex":
+        return buildInsertEdit(state, ctx)
+      case "bulgeEdit":
+        return buildBulgeEdit(state, ctx)
+      case "moveDimPoint":
+        return buildDimPointEdit(state, ctx)
+      default:
+        return buildGrips(state, ctx)
     }
-    const hover =
-      this.state.phase === "idle" ? (this.state.hoverGrip ?? null) : null
-    for (const grip of this.selectedGrips(ctx)) {
-      const at = ctx.viewport.worldToScreen(grip.world)
-      const hot = sameGrip(grip, hover)
-      // Segment-midpoint grips (add-vertex / curvature) read as small circles so
-      // they're distinguishable from the square vertex/endpoint grips.
-      if (grip.role.kind === "addVertex" || grip.role.kind === "bulge") {
-        pushSegmentGrip(out, at, hot)
-      } else {
-        pushGrip(out, at, hot)
-      }
-    }
-    return out
-  }
-
-  /**
-   * The unselected entity under the cursor, if any, whose preview should be
-   * highlighted. Objects already in the selection are skipped: they already
-   * read as selected (and show grips), so previewing them would be redundant —
-   * exactly like AutoCAD, whose selection preview only previews what a click
-   * would *add* to the selection.
-   */
-  private pickRolloverEntity(
-    input: PointerInput,
-    ctx: ToolContext
-  ): EntityId | null {
-    const hit = ctx.pick(input.world)
-    if (!hit) return null
-    return ctx.selection.has(hit.id) ? null : hit.id
-  }
-
-  /**
-   * Draws AutoCAD's selection preview: the entity under the cursor is redrawn
-   * with a thicker, lighter outline so the user sees exactly what a click would
-   * pick before committing to the selection.
-   */
-  private pushRolloverHighlight(
-    out: ScenePrimitive[],
-    entity: Entity,
-    ctx: ToolContext
-  ): void {
-    out.push(
-      ...entityScenePrimitive(
-        ctx.viewport,
-        entity,
-        { color: THEME.entityHover, width: 2 },
-        { blocks: ctx.blocks }
-      )
-    )
-  }
-
-  /** The rubber-band preview and hot grip while lengthening a line. */
-  private buildGripEdit(ctx: ToolContext): ScenePrimitive[] {
-    if (this.state.phase !== "grip") return []
-    const { viewport } = ctx
-    const fixed = viewport.worldToScreen(this.state.fixed)
-    const moving = viewport.worldToScreen(this.state.moving)
-    return [
-      {
-        kind: "segment",
-        a: fixed,
-        b: moving,
-        stroke: { color: THEME.preview, width: 1, dash: [6, 4] },
-      },
-      // Cold grip stays on the fixed end; the dragged end is hot.
-      ...gripPrimitives(fixed, false),
-      ...gripPrimitives(moving, true),
-    ]
-  }
-
-  /** The rubber-band preview and hot grip while moving the selection. */
-  private buildMoveEdit(ctx: ToolContext): ScenePrimitive[] {
-    if (this.state.phase !== "moveLine") return []
-    const { viewport } = ctx
-    const delta = V.sub(this.state.current, this.state.origMid)
-    const out: ScenePrimitive[] = []
-    const stroke: StrokeStyle = { color: THEME.preview, width: 1, dash: [6, 4] }
-    for (const entity of this.state.originals) {
-      const moved = translateEntity(entity, delta)
-      out.push(
-        ...entityScenePrimitive(viewport, moved, stroke, {
-          blocks: ctx.blocks,
-        })
-      )
-      if (moved.type === "line") {
-        out.push(...gripPrimitives(viewport.worldToScreen(moved.start), false))
-        out.push(...gripPrimitives(viewport.worldToScreen(moved.end), false))
-      }
-    }
-    // The grabbed base point (grip midpoint) is the hot grip.
-    out.push(
-      ...gripPrimitives(viewport.worldToScreen(this.state.current), true)
-    )
-    return out
-  }
-
-  /** The rubber-band circle/arc and hot handle while resizing a radius. */
-  private buildRadiusEdit(ctx: ToolContext): ScenePrimitive[] {
-    if (this.state.phase !== "resizeRadius") return []
-    const { viewport } = ctx
-    const entity = ctx.document.get(this.state.entityId)
-    if (!entity) return []
-    const stroke: StrokeStyle = { color: THEME.preview, width: 1, dash: [6, 4] }
-    const preview = withRadius(entity, this.state.radius)
-    const out: ScenePrimitive[] = []
-    if (preview) out.push(...entityScenePrimitive(viewport, preview, stroke))
-    // A thin radial guide from the centre to the hot handle.
-    out.push({
-      kind: "segment",
-      a: viewport.worldToScreen(this.state.center),
-      b: viewport.worldToScreen(this.state.handle),
-      stroke: { color: THEME.preview, width: 1, dash: [2, 3] },
-    })
-    out.push(...gripPrimitives(viewport.worldToScreen(this.state.handle), true))
-    return out
-  }
-
-  /** The rubber-band arc and hot endpoint while swinging an arc endpoint. */
-  private buildArcAngleEdit(ctx: ToolContext): ScenePrimitive[] {
-    if (this.state.phase !== "arcAngle") return []
-    const { viewport } = ctx
-    const arc = ctx.document.get(this.state.entityId)
-    if (arc?.type !== "arc") return []
-    const startAngle =
-      this.state.end === "start" ? this.state.angle : arc.startAngle
-    const endAngle = this.state.end === "end" ? this.state.angle : arc.endAngle
-    const stroke: StrokeStyle = { color: THEME.preview, width: 1, dash: [6, 4] }
-    const endpoint = polarPoint(
-      this.state.center,
-      this.state.radius,
-      this.state.angle
-    )
-    return [
-      arcScenePrimitive(
-        viewport,
-        this.state.center,
-        this.state.radius,
-        startAngle,
-        endAngle,
-        stroke
-      ),
-      ...gripPrimitives(viewport.worldToScreen(endpoint), true),
-    ]
-  }
-
-  /** The reshaped polyline preview and hot grip while stretching a vertex. */
-  private buildVertexEdit(ctx: ToolContext): ScenePrimitive[] {
-    if (this.state.phase !== "moveVertex") return []
-    const { viewport } = ctx
-    const poly = ctx.document.get(this.state.entityId)
-    if (poly?.type !== "polyline") return []
-    const preview = replacePolylineVertex(
-      poly,
-      this.state.index,
-      this.state.current
-    )
-    const stroke: StrokeStyle = { color: THEME.preview, width: 1, dash: [6, 4] }
-    return [
-      ...entityScenePrimitive(viewport, preview, stroke),
-      ...gripPrimitives(viewport.worldToScreen(this.state.current), true),
-    ]
-  }
-
-  /** The reshaped polyline preview and hot grip while inserting a vertex. */
-  private buildInsertEdit(ctx: ToolContext): ScenePrimitive[] {
-    if (this.state.phase !== "insertVertex") return []
-    const { viewport } = ctx
-    const poly = ctx.document.get(this.state.entityId)
-    if (poly?.type !== "polyline") return []
-    const preview = insertPolylineVertex(
-      poly,
-      this.state.segmentIndex,
-      this.state.current
-    )
-    const stroke: StrokeStyle = { color: THEME.preview, width: 1, dash: [6, 4] }
-    return [
-      ...entityScenePrimitive(viewport, preview, stroke),
-      ...gripPrimitives(viewport.worldToScreen(this.state.current), true),
-    ]
-  }
-
-  /** The re-curved polyline preview and hot grip while editing a bulge. */
-  private buildBulgeEdit(ctx: ToolContext): ScenePrimitive[] {
-    if (this.state.phase !== "bulgeEdit") return []
-    const { viewport } = ctx
-    const poly = ctx.document.get(this.state.entityId)
-    if (poly?.type !== "polyline") return []
-    const preview = setPolylineBulge(
-      poly,
-      this.state.segmentIndex,
-      this.state.bulge
-    )
-    const stroke: StrokeStyle = { color: THEME.preview, width: 1, dash: [6, 4] }
-    return [
-      ...entityScenePrimitive(viewport, preview, stroke),
-      ...gripPrimitives(viewport.worldToScreen(this.state.current), true),
-    ]
   }
 
   private commitBoxSelection(
@@ -1049,166 +675,6 @@ export class SelectTool implements Tool {
     } else {
       ctx.selection.set([hit.id])
     }
-  }
-
-  /** Every grip of the current selection (per object type). */
-  private selectedGrips(ctx: ToolContext): Grip[] {
-    const grips: Grip[] = []
-    for (const id of ctx.selection.toArray()) {
-      const entity = ctx.document.get(id)
-      if (!entity) continue
-      switch (entity.type) {
-        case "line":
-          grips.push({
-            entityId: id,
-            role: { kind: "lineEnd", end: "start" },
-            world: entity.start,
-          })
-          grips.push({
-            entityId: id,
-            role: { kind: "lineEnd", end: "end" },
-            world: entity.end,
-          })
-          grips.push({
-            entityId: id,
-            role: { kind: "move" },
-            world: V.midpoint(entity.start, entity.end),
-          })
-          break
-        case "circle":
-          grips.push({
-            entityId: id,
-            role: { kind: "move" },
-            world: entity.center,
-          })
-          for (const angle of [0, Math.PI / 2, Math.PI, (3 * Math.PI) / 2]) {
-            grips.push({
-              entityId: id,
-              role: { kind: "radius" },
-              world: polarPoint(entity.center, entity.radius, angle),
-            })
-          }
-          break
-        case "arc":
-          grips.push({
-            entityId: id,
-            role: { kind: "move" },
-            world: entity.center,
-          })
-          grips.push({
-            entityId: id,
-            role: { kind: "arcEnd", end: "start" },
-            world: arcStartPoint(entity),
-          })
-          grips.push({
-            entityId: id,
-            role: { kind: "arcEnd", end: "end" },
-            world: arcEndPoint(entity),
-          })
-          grips.push({
-            entityId: id,
-            role: { kind: "radius" },
-            world: arcMidpoint(entity),
-          })
-          break
-        case "polyline":
-          entity.vertices.forEach((vertex, index) => {
-            grips.push({
-              entityId: id,
-              role: { kind: "vertex", index },
-              world: vertex,
-            })
-          })
-          // A midpoint grip per segment: on a straight segment it inserts a new
-          // vertex, on an arc segment it edits the curvature (AutoCAD's
-          // multifunction midpoint grip).
-          polylineSegmentGeometries(entity).forEach((seg, segmentIndex) => {
-            grips.push({
-              entityId: id,
-              role:
-                seg.kind === "arc"
-                  ? { kind: "bulge", segmentIndex }
-                  : { kind: "addVertex", segmentIndex },
-              world: segmentGripPoint(seg),
-            })
-          })
-          break
-        case "text":
-          // One grip on the justification point, as AutoCAD gives text.
-          grips.push({
-            entityId: id,
-            role: { kind: "move" },
-            world: entity.position,
-          })
-          break
-        case "dimension": {
-          // AutoCAD's draggable definition points: the two measured origins,
-          // plus the dimension line, grabbed halfway along it. An angular
-          // dimension adds the vertex it turns about.
-          const g = dimensionGeometry(entity)
-          grips.push({
-            entityId: id,
-            role: { kind: "dimPoint", point: "first" },
-            world: entity.first,
-          })
-          grips.push({
-            entityId: id,
-            role: { kind: "dimPoint", point: "second" },
-            world: entity.second,
-          })
-          if (entity.vertex) {
-            grips.push({
-              entityId: id,
-              role: { kind: "dimPoint", point: "vertex" },
-              world: entity.vertex,
-            })
-          }
-          grips.push({
-            entityId: id,
-            role: { kind: "dimPoint", point: "line" },
-            world: g.lineMidpoint,
-          })
-          break
-        }
-        case "hatch": {
-          // AutoCAD gives a hatch one grip in the middle of its area, which
-          // moves the whole fill; the boundary is edited on the objects it was
-          // traced from.
-          const b = entityBounds(entity, ctx.blocks)
-          grips.push({
-            entityId: id,
-            role: { kind: "move" },
-            world: V.midpoint(b.min, b.max),
-          })
-          break
-        }
-        case "insert":
-          // A block reference gets one grip, on its insertion point, exactly as
-          // AutoCAD does: what is inside the block is edited in the definition.
-          grips.push({
-            entityId: id,
-            role: { kind: "move" },
-            world: entity.position,
-          })
-          break
-      }
-    }
-    return grips
-  }
-
-  /** The selected-object grip under `screen`, if any (nearest wins). */
-  private hitGrip(screen: Vec2, ctx: ToolContext): Grip | null {
-    let best: Grip | null = null
-    let bestDist = GRIP_PICK_PX
-    for (const grip of this.selectedGrips(ctx)) {
-      const at = ctx.viewport.worldToScreen(grip.world)
-      const dist = Math.hypot(at.x - screen.x, at.y - screen.y)
-      if (dist <= bestDist) {
-        bestDist = dist
-        best = grip
-      }
-    }
-    return best
   }
 
   /** Makes an endpoint grip hot and opens the lengthen dynamic input. */
@@ -1730,23 +1196,6 @@ export class SelectTool implements Tool {
     ctx.requestRender()
   }
 
-  /** The dashed dimension preview and hot grip while a definition point moves. */
-  private buildDimPointEdit(ctx: ToolContext): ScenePrimitive[] {
-    if (this.state.phase !== "moveDimPoint") return []
-    const { viewport } = ctx
-    const dim = ctx.document.get(this.state.entityId)
-    if (dim?.type !== "dimension") return []
-    const stroke: StrokeStyle = { color: THEME.preview, width: 1, dash: [6, 4] }
-    return [
-      ...entityScenePrimitive(
-        viewport,
-        movedDimension(dim, this.state, this.state.current),
-        stroke
-      ),
-      ...gripPrimitives(viewport.worldToScreen(this.state.current), true),
-    ]
-  }
-
   /**
    * Applies a typed distance along the pointing direction (from the segment
    * midpoint towards the cursor) for the inserted vertex, then commits. Without
@@ -1811,112 +1260,4 @@ export class SelectTool implements Tool {
     this.state = { phase: "idle" }
     ctx.requestRender()
   }
-}
-
-/** Whether two grip references point at the same handle (entity + position). */
-function sameGrip(a: Grip | null, b: Grip | null): boolean {
-  if (a === null || b === null) return a === b
-  return a.entityId === b.entityId && V.equals(a.world, b.world)
-}
-
-/** The midpoint of a polyline segment: the chord midpoint of a straight one, or
- * the arc midpoint of a curved one — where its segment grip sits. */
-function segmentGripPoint(seg: PolylineSegmentGeometry): Vec2 {
-  if (seg.kind === "line") return V.midpoint(seg.a, seg.b)
-  let sweep = normalizeAngle(seg.endAngle - seg.startAngle)
-  if (sweep < 1e-9) sweep = Math.PI * 2
-  return polarPoint(seg.center, seg.radius, seg.startAngle + sweep / 2)
-}
-
-/**
- * The dimension with one definition point dragged to `point`. Moving an
- * extension-line origin restates what is measured; moving the dimension line
- * slides the whole assembly, which is what its midpoint grip is for.
- */
-function movedDimension(
-  dim: DimensionEntity,
-  state: { readonly point: DimensionPoint; readonly origin: Vec2 },
-  point: Vec2
-): DimensionEntity {
-  switch (state.point) {
-    case "first":
-      return { ...dim, first: point }
-    case "second":
-      return { ...dim, second: point }
-    case "vertex":
-      return { ...dim, vertex: point }
-    case "line":
-      // An angular dimension's arc passes through its location, so the grip
-      // sets it outright — which is also how dragging across a ray gives the
-      // reflex angle. Every other kind slides its line by the drag instead,
-      // because only the location's projection is drawn.
-      return dim.kind === "angular"
-        ? { ...dim, linePoint: point }
-        : {
-            ...dim,
-            linePoint: V.add(dim.linePoint, V.sub(point, state.origin)),
-          }
-  }
-}
-
-/** The point on a circle of `radius` about `center` in the direction of `p`. */ function radiusHandle(
-  center: Vec2,
-  p: Vec2,
-  radius: number
-): Vec2 {
-  const dir = V.sub(p, center)
-  const len = V.length(dir)
-  if (len < 1e-9) return { x: center.x + radius, y: center.y }
-  return V.add(center, V.scale(dir, radius / len))
-}
-
-/** A copy of a circle or arc with a new radius (preserving id); else `null`. */
-function withRadius(entity: Entity, radius: number): Entity | null {
-  if (entity.type === "circle") {
-    return createCircle(entity.center, radius, entity.layerId, entity.id)
-  }
-  if (entity.type === "arc") {
-    return createArc(
-      entity.center,
-      radius,
-      entity.startAngle,
-      entity.endAngle,
-      entity.layerId,
-      entity.id
-    )
-  }
-  return null
-}
-
-function toDegrees(radians: number): number {
-  return (radians * 180) / Math.PI
-}
-
-/** Appends a small square grip marker centred at a screen point. */
-function pushGrip(out: ScenePrimitive[], at: Vec2, hot: boolean): void {
-  out.push(...gripPrimitives(at, hot))
-}
-
-/** Appends a small round grip marker (segment midpoint) at a screen point. */
-function pushSegmentGrip(out: ScenePrimitive[], at: Vec2, hot: boolean): void {
-  out.push({
-    kind: "circle",
-    center: at,
-    radius: GRIP_HALF_PX,
-    fill: hot ? THEME.gripHot : THEME.grip,
-    stroke: { color: "#ffffff", width: 1 },
-  })
-} /** The scene primitives for one grip: a filled square in cold/hot colour. */
-function gripPrimitives(at: Vec2, hot: boolean): ScenePrimitive[] {
-  const color = hot ? THEME.gripHot : THEME.grip
-  return [
-    {
-      kind: "rect",
-      min: { x: at.x - GRIP_HALF_PX, y: at.y - GRIP_HALF_PX },
-      width: GRIP_HALF_PX * 2,
-      height: GRIP_HALF_PX * 2,
-      fill: color,
-      stroke: { color: "#ffffff", width: 1 },
-    },
-  ]
 }

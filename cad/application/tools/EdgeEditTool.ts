@@ -279,6 +279,7 @@ function planTrim(
       return planTrimPolyline(target, click, others)
     case "text":
       return null // annotation, not an outline to cut
+    case "ellipse":
     case "dimension":
     case "hatch":
     case "insert":
@@ -300,6 +301,7 @@ function planExtend(
       return null // a closed circle has no endpoint to extend
     case "polyline":
       return planExtendPolyline(target, click, others)
+    case "ellipse":
     case "text":
     case "dimension":
     case "hatch":
@@ -545,6 +547,7 @@ function circleEdgeCrossPoints(
       }
       return points
     }
+    case "ellipse":
     case "text":
     case "dimension":
     case "hatch":

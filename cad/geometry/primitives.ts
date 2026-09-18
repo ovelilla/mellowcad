@@ -485,6 +485,131 @@ export function closestPointOnArc(
 }
 
 /**
+ * A point on the ellipse centred at `center` whose semi-major axis is the
+ * vector `majorAxis` and whose semi-minor axis is `ratio` times as long, at
+ * parameter `t`:
+ *
+ *     p(t) = c + a·cos t + b·sin t,  b = perpendicular(a) · ratio
+ *
+ * This is AutoCAD's own parametrisation (the ELLIPSE entity stores exactly
+ * `c`, `a` and `ratio`, and its start/end *parameters* are this `t`). Note `t`
+ * is **not** the angle the point subtends at the centre unless `ratio` is 1 —
+ * see {@link ellipseParamFromAngle}.
+ */
+export function ellipsePoint(
+  center: Vec2,
+  majorAxis: Vec2,
+  ratio: number,
+  t: number
+): Vec2 {
+  const minor = V.scale(V.perpendicular(majorAxis), ratio)
+  return {
+    x: center.x + majorAxis.x * Math.cos(t) + minor.x * Math.sin(t),
+    y: center.y + majorAxis.y * Math.cos(t) + minor.y * Math.sin(t),
+  }
+}
+
+/**
+ * The parameter of the point where the ray leaving the centre at `angle`
+ * (radians, measured from the major axis) meets the ellipse: `tan t = tan(angle)
+ * / ratio`. This is the conversion AutoCAD's elliptical-arc prompts need — they
+ * ask for an *angle* while the entity stores a parameter.
+ */
+export function ellipseParamFromAngle(ratio: number, angle: number): number {
+  return Math.atan2(Math.sin(angle) / ratio, Math.cos(angle))
+}
+
+/** Inverse of {@link ellipseParamFromAngle}. */
+export function ellipseAngleFromParam(ratio: number, t: number): number {
+  return Math.atan2(Math.sin(t) * ratio, Math.cos(t))
+}
+
+/**
+ * How finely the parameter range is scanned before refining. The closest point
+ * on an ellipse has **no closed form** — it reduces to a quartic — so it is
+ * solved numerically, and an iteration needs a starting point already in the
+ * right basin: the squared distance can have up to four stationary points.
+ */
+const ELLIPSE_CLOSEST_SAMPLES = 48
+
+/** Cap on the Newton steps, so a pathological query cannot spin. */
+const ELLIPSE_CLOSEST_ITERATIONS = 12
+
+/**
+ * Closest point on an ellipse, or on the portion of it sweeping from
+ * `startParam` to `endParam` when both are given (an elliptical arc). `t`
+ * carries the ellipse parameter.
+ *
+ * Solved by scanning {@link ELLIPSE_CLOSEST_SAMPLES} parameters and refining
+ * the best with Newton's method on `d²(t)'`, capped at
+ * {@link ELLIPSE_CLOSEST_ITERATIONS} steps and clamped to the swept range. The
+ * refinement is kept only when it actually improves on the sample, so a step
+ * that escapes towards a maximum cannot make the answer worse than the scan.
+ */
+export function closestPointOnEllipse(
+  center: Vec2,
+  majorAxis: Vec2,
+  ratio: number,
+  p: Vec2,
+  startParam?: number,
+  endParam?: number
+): ClosestResult {
+  const a = V.length(majorAxis)
+  if (a < 1e-12) {
+    return { point: center, distance: V.distance(center, p), t: 0 }
+  }
+  const axis = V.scale(majorAxis, 1 / a)
+  const normal = V.perpendicular(axis)
+  const b = a * ratio
+  const offset = V.sub(p, center)
+  // The query point in the ellipse's own frame, where it is axis-aligned.
+  const x = V.dot(offset, axis)
+  const y = V.dot(offset, normal)
+
+  const bounded = startParam !== undefined && endParam !== undefined
+  const start = bounded ? startParam : 0
+  let sweep = bounded ? normalizeAngle(endParam - startParam) : Math.PI * 2
+  if (sweep < 1e-9) sweep = Math.PI * 2
+
+  const squaredDistance = (t: number): number => {
+    const dx = a * Math.cos(t) - x
+    const dy = b * Math.sin(t) - y
+    return dx * dx + dy * dy
+  }
+
+  let best = start
+  let bestSq = Infinity
+  for (let i = 0; i <= ELLIPSE_CLOSEST_SAMPLES; i++) {
+    const t = start + (sweep * i) / ELLIPSE_CLOSEST_SAMPLES
+    const sq = squaredDistance(t)
+    if (sq < bestSq) {
+      bestSq = sq
+      best = t
+    }
+  }
+
+  let t = best
+  for (let i = 0; i < ELLIPSE_CLOSEST_ITERATIONS; i++) {
+    const sin = Math.sin(t)
+    const cos = Math.cos(t)
+    const slope = (b * b - a * a) * sin * cos + a * x * sin - b * y * cos
+    const curvature =
+      (b * b - a * a) * Math.cos(2 * t) + a * x * cos + b * y * sin
+    if (Math.abs(curvature) < 1e-12) break
+    let next = t - slope / curvature
+    if (!Number.isFinite(next)) break
+    if (bounded) next = Math.min(Math.max(next, start), start + sweep)
+    const converged = Math.abs(next - t) < 1e-12
+    t = next
+    if (converged) break
+  }
+  if (squaredDistance(t) > bestSq) t = best
+
+  const point = ellipsePoint(center, majorAxis, ratio, t)
+  return { point, distance: V.distance(point, p), t }
+}
+
+/**
  * The arc passing through three points, oriented so it runs from `a` through
  * `b` to `c`. Returns the circumscribed circle's centre/radius plus the start
  * and end angles of a CCW sweep (they are swapped when the natural order is

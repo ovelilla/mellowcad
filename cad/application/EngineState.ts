@@ -1,5 +1,5 @@
 import { Vec2 } from "../geometry/Vec2"
-import { normalizeDegrees } from "../geometry/primitives"
+import { ellipseAngleFromParam, normalizeDegrees } from "../geometry/primitives"
 import {
   DocumentSettings,
   LengthUnit,
@@ -18,6 +18,11 @@ import {
   arcSweepAngle,
   circleArea,
   circleCircumference,
+  ellipseArea,
+  ellipseSemiMajor,
+  ellipseSemiMinor,
+  ellipseSweepParams,
+  isFullEllipse,
   lineAngleDegrees,
   lineLength,
   polylineArea,
@@ -29,12 +34,36 @@ import {
   TextJustify,
 } from "../domain/entities"
 import { SnapType } from "./snapping/types"
-import { SnapModeType } from "./SnapMode"
+import { SnapResult } from "./snapping/types"
+import { SnapEngine } from "./snapping/SnapEngine"
+import { SnapModeType, SnapMode } from "./SnapMode"
 import { DynamicFieldKind, DynamicInputController } from "./input/DynamicInput"
 import { isCoordinateExpression } from "./input/coordinateInput"
-import { CommandOption } from "./tools/Tool"
-import { CommandLineEntry, CommandSuggestion } from "./CommandLine"
-import { SaveState } from "./Autosave"
+import { CommandOption, Tool } from "./tools/Tool"
+import {
+  CommandDefinition,
+  CommandLineController,
+  CommandLineEntry,
+  CommandSuggestion,
+  matchCommands,
+  toolCommandAlias,
+} from "./CommandLine"
+import { SaveState, AutosaveService } from "./Autosave"
+import { CadDocument } from "../domain/Document"
+import { Viewport } from "./Viewport"
+import { Selection } from "./Selection"
+import { SelectionCycling } from "./SelectionCycling"
+import { ConstraintManager } from "./constraints/ConstraintManager"
+import { ConstraintType } from "./constraints/types"
+import { ObjectSnapTrackingEngine } from "./tracking/ObjectSnapTrackingEngine"
+import { CommandHistory } from "./commands/Command"
+import { commandPrompt } from "./runtimeCommands"
+import {
+  commonSelectionColor,
+  commonSelectionLayer,
+  commonSelectionLinetype,
+  commonSelectionLineweight,
+} from "./runtimeProperties"
 import { Layer, LayerId } from "../domain/layers"
 import { EntityColor } from "../domain/colors"
 import { LinetypeId } from "../domain/linetypes"
@@ -275,6 +304,129 @@ export interface EngineState {
   readonly commandOptions: ReadonlyArray<CommandOption>
   /** The command prompt: what is typed, what it suggests and what it logged. */
   readonly commandLine: CommandLineUi
+}
+
+/** The runtime state `buildEngineState` reads, passed explicitly. */
+export interface EngineStateInput {
+  readonly document: CadDocument
+  readonly viewport: Viewport
+  readonly selection: Selection
+  readonly snapping: SnapEngine
+  readonly snapMode: SnapMode
+  readonly cycling: SelectionCycling
+  readonly constraints: ConstraintManager
+  readonly tracking: ObjectSnapTrackingEngine
+  readonly dynamicInput: DynamicInputController
+  readonly commandLine: CommandLineController
+  readonly history: CommandHistory
+  readonly autosave: AutosaveService
+  readonly activeTool: Tool
+  readonly tools: ReadonlyArray<Tool>
+  readonly commandList: ReadonlyArray<CommandDefinition>
+  readonly cursorWorld: Vec2 | null
+  readonly snap: SnapResult | null
+  readonly snapOverrideMenu: Vec2 | null
+  /** Screen position of the open Selection list box, or null when closed. */
+  readonly cyclingListAt: Vec2 | null
+  readonly gridVisible: boolean
+  readonly stylesPanel: StylesPanelTab | null
+  readonly blocksPanel: boolean
+  readonly commandLineVisible: boolean
+}
+
+/** Builds the UI snapshot. Cached by the runtime; never rebuilt per frame. */
+export function buildEngineState(input: EngineStateInput): EngineState {
+  const { document, selection, snapping, activeTool } = input
+  const snapEnabled = {} as Record<SnapType, boolean>
+  for (const type of Object.values(SnapType)) {
+    snapEnabled[type] = snapping.isEnabled(type)
+  }
+  const settings = document.getSettings()
+  const selectedEntities = selection
+    .toArray()
+    .map((id) => document.get(id))
+    .filter((entity): entity is Entity => entity !== undefined)
+  return {
+    activeToolId: activeTool.id,
+    tools: input.tools.map((t) => ({
+      id: t.id,
+      label: t.label,
+      // The typed alias is the real shortcut now, so that is what the UI
+      // advertises ("L", "AR", "TR"), falling back to the tool's own hint.
+      shortcut: toolCommandAlias(t.id) ?? t.shortcut,
+    })),
+    entityCount: document.size,
+    selectionCount: selection.size,
+    scale: input.viewport.scale,
+    cursorWorld: input.cursorWorld,
+    snap: input.snap
+      ? { type: input.snap.type, point: input.snap.point }
+      : null,
+    snapActive: snapping.isActive(),
+    snapEnabled,
+    snapOverride: snapping.getOverride(),
+    snapOverrideMenu: input.snapOverrideMenu,
+    orthoActive: input.constraints.isEnabled(ConstraintType.Ortho),
+    polarActive: input.constraints.isEnabled(ConstraintType.Polar),
+    polarAngleStep: input.constraints.getPolarAngleStep(),
+    objectSnapTrackingActive: input.tracking.isActive(),
+    acquiredTrackingPoints: input.tracking.getAcquired().length,
+    selectionCycling: {
+      active: input.cycling.isEnabled(),
+      showList: input.cycling.showsList(),
+      candidates: buildSelectionCandidates(input.cycling.getCandidates()),
+      currentId: input.cycling.getCurrentId(),
+      listAt: input.cyclingListAt,
+    },
+    gridVisible: input.gridVisible,
+    snapModeActive: input.snapMode.isActive(),
+    snapModeType: input.snapMode.getType(),
+    snapSpacing: input.snapMode.getSpacing(),
+    snapPolarDistance: input.snapMode.getPolarDistance(),
+    dynamicInput: buildDynamicInputUi(input.dynamicInput, settings),
+    documentUnit: settings.unit,
+    documentPrecision: settings.precision,
+    ltScale: settings.ltScale,
+    dimScale: document.getDimStyle(document.getCurrentDimStyleId())?.scale ?? 1,
+    lwDisplay: settings.lwDisplay,
+    layers: buildLayerInfos(document.getLayers(), document.getEntities()),
+    currentLayerId: document.getCurrentLayerId(),
+    canUndo: input.history.canUndo(),
+    canRedo: input.history.canRedo(),
+    saveState: input.autosave.getState(),
+    lastSavedAt: input.autosave.getLastSavedAt(),
+    selectionInfo: buildSelectionInfo(selectedEntities, settings),
+    selectionLayerId: commonSelectionLayer(selectedEntities),
+    selectionColor: commonSelectionColor(selectedEntities),
+    selectionLinetype: commonSelectionLinetype(selectedEntities),
+    selectionLineweight: commonSelectionLineweight(selectedEntities),
+    textStyles: buildTextStyleInfos(
+      document.getTextStyles(),
+      document.getEntities()
+    ),
+    currentTextStyleId: document.getCurrentTextStyleId(),
+    selectionTextStyleId: commonStyleId(selectedEntities, "text"),
+    dimStyles: buildDimStyleInfos(
+      document.getDimStyles(),
+      document.getEntities()
+    ),
+    currentDimStyleId: document.getCurrentDimStyleId(),
+    selectionDimStyleId: commonStyleId(selectedEntities, "dimension"),
+    stylesPanel: input.stylesPanel,
+    blocks: buildBlockInfos(document.getBlocks(), document.getEntities()),
+    blocksPanel: input.blocksPanel,
+    commandOptions: activeTool.commandOptions?.() ?? [],
+    commandLine: {
+      visible: input.commandLineVisible,
+      prompt: commandPrompt(activeTool),
+      buffer: input.commandLine.getBuffer(),
+      lines: input.commandLine.getLines(),
+      suggestions: matchCommands(
+        input.commandList,
+        input.commandLine.getBuffer()
+      ),
+    },
+  }
 }
 
 /**
@@ -625,6 +777,65 @@ function singleEntityInfo(
         ],
       }
     }
+    case "ellipse": {
+      const { start, sweep } = ellipseSweepParams(entity)
+      const full = isFullEllipse(entity)
+      const axisAngle = (param: number) =>
+        normalizeDegrees(
+          (ellipseAngleFromParam(entity.ratio, param) * 180) / Math.PI
+        )
+      return {
+        title: full ? "Ellipse" : "Elliptical arc",
+        count: 1,
+        groups: [
+          {
+            title: "Geometry",
+            rows: [
+              lengthRow(
+                "Major radius",
+                "majorRadius",
+                ellipseSemiMajor(entity)
+              ),
+              lengthRow(
+                "Minor radius",
+                "minorRadius",
+                ellipseSemiMinor(entity)
+              ),
+              // Derived from the two radii, so retyping it would be a third way
+              // to say the same thing; AutoCAD's own ratio row is a gap here.
+              {
+                label: "Radius ratio",
+                value: formatLength(entity.ratio, settings),
+              },
+              ...(full
+                ? [{ label: "Area", value: area(ellipseArea(entity)) }]
+                : [
+                    // Measured from the major axis, which is the frame the
+                    // stored parameters live in.
+                    {
+                      label: "Start angle",
+                      value: `${formatAngle(axisAngle(start), settings)}°`,
+                    },
+                    {
+                      label: "End angle",
+                      value: `${formatAngle(
+                        axisAngle(start + sweep),
+                        settings
+                      )}°`,
+                    },
+                  ]),
+            ],
+          },
+          {
+            title: "Center",
+            rows: [
+              coordRow("X", "centerX", entity.center.x),
+              coordRow("Y", "centerY", entity.center.y),
+            ],
+          },
+        ],
+      }
+    }
     case "polyline": {
       const vertexCount = entity.vertices.length
       const segmentCount = polylineSegments(entity).length
@@ -820,6 +1031,7 @@ const TYPE_LABELS: Record<EntityType, { one: string; many: string }> = {
   line: { one: "Line", many: "Lines" },
   circle: { one: "Circle", many: "Circles" },
   arc: { one: "Arc", many: "Arcs" },
+  ellipse: { one: "Ellipse", many: "Ellipses" },
   polyline: { one: "Polyline", many: "Polylines" },
   text: { one: "Text", many: "Texts" },
   dimension: { one: "Dimension", many: "Dimensions" },

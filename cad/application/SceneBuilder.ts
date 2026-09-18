@@ -2,6 +2,7 @@ import { Vec2, V } from "../geometry/Vec2"
 import {
   BlockLookup,
   DimensionEntity,
+  EllipseEntity,
   Entity,
   EntityId,
   HatchEntity,
@@ -11,6 +12,7 @@ import {
   entityDrawOrder,
   hatchGeometry,
   insertFlatGeometry,
+  isFullEllipse,
   polylineSegmentGeometries,
   TextJustify,
 } from "../domain/entities"
@@ -332,6 +334,37 @@ export function arcScenePrimitive(
 }
 
 /**
+ * Builds an `ellipse` scene primitive for a world-space ellipse or elliptical
+ * arc. The camera flips Y, which both reverses the major axis's angle and runs
+ * the parametrisation backwards — the minor axis is a quarter turn CCW from the
+ * major in the world and a quarter turn CW on screen — so the parameters negate
+ * and the Canvas `counterclockwise` flag is set to match, exactly as
+ * {@link arcScenePrimitive} does for a circular arc. A full ellipse is emitted
+ * as a plain 0..2π sweep, where the direction cannot show.
+ */
+export function ellipseScenePrimitive(
+  camera: CameraTransform,
+  ellipse: EllipseEntity,
+  stroke: StrokeStyle
+): ScenePrimitive {
+  const center = camera.worldToScreen(ellipse.center)
+  const tip = camera.worldToScreen(V.add(ellipse.center, ellipse.majorAxis))
+  const radiusX = Math.max(V.distance(center, tip), 0.01)
+  const full = isFullEllipse(ellipse)
+  return {
+    kind: "ellipse",
+    center,
+    radiusX,
+    radiusY: Math.max(radiusX * ellipse.ratio, 0.01),
+    rotation: Math.atan2(tip.y - center.y, tip.x - center.x),
+    startAngle: full ? 0 : -ellipse.startParam!,
+    endAngle: full ? Math.PI * 2 : -ellipse.endParam!,
+    counterclockwise: !full,
+    stroke,
+  }
+}
+
+/**
  * The scene primitives drawing a single entity with the given stroke. Shared by
  * entity rendering and every tool's ghost preview, so a transformed arc is
  * drawn as an arc and a dimension ghost carries its extension lines, arrowheads
@@ -388,6 +421,8 @@ export function entityScenePrimitive(
           stroke
         ),
       ]
+    case "ellipse":
+      return [ellipseScenePrimitive(camera, entity, stroke)]
     case "polyline":
       // A straight polyline is one crisp path (mitred corners). One that
       // carries arc bulges is tessellated finely into the same path, so arcs

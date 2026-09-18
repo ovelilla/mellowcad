@@ -23,6 +23,7 @@ import { drawingSnapshot } from "../../test/arbitraries"
 import {
   arcOf,
   circleOf,
+  ellipseOf,
   layerOf,
   lineOf,
   p,
@@ -74,6 +75,12 @@ describe("round trip", () => {
       lineOf(p(-10.5, 2.25), p(30, -4), { id: "L1" }),
       circleOf(p(5, 5), 12.5, { id: "C1" }),
       arcOf(p(0, 0), 100, 0.25, 2.75, { id: "A1" }),
+      ellipseOf(p(5, -5), p(80, 20), 0.35, { id: "E1" }),
+      ellipseOf(p(0, 0), p(60, 0), 0.5, {
+        id: "E2",
+        startParam: 0.5,
+        endParam: 2.5,
+      }),
       polylineOf([p(0, 0), p(10, 0), p(10, 10)], {
         id: "P1",
         closed: true,
@@ -567,6 +574,64 @@ describe("opens drawings written by every earlier schema", () => {
     const dimension = parsed.entities[0]
     expect(dimension.type).toBe("dimension")
     expect("vertex" in dimension).toBe(false)
+  })
+
+  it("version 16 — a drawing from before ellipses still opens", () => {
+    const parsed = parseDrawingFile(
+      JSON.stringify({
+        type: DRAWING_FILE_TYPE,
+        version: 16,
+        entities: [
+          { id: "c1", type: "circle", center: { x: 0, y: 0 }, radius: 10 },
+        ],
+      })
+    )
+    expect(parsed.entities).toHaveLength(1)
+    expect(parsed.entities[0].type).toBe("circle")
+  })
+
+  it("normalises an ellipse stored with its shorter axis", () => {
+    const parsed = parseDrawingFile(
+      JSON.stringify({
+        type: DRAWING_FILE_TYPE,
+        version: DRAWING_FILE_VERSION,
+        entities: [
+          {
+            id: "e1",
+            type: "ellipse",
+            center: { x: 0, y: 0 },
+            majorAxis: { x: 20, y: 0 },
+            // Above 1, so the stored vector is really the minor axis: a
+            // hand-edited file that DXF would call malformed.
+            ratio: 5,
+          },
+        ],
+      })
+    )
+    const ellipse = parsed.entities[0]
+    expect(ellipse.type).toBe("ellipse")
+    if (ellipse.type !== "ellipse") return
+    expect(ellipse.ratio).toBeCloseTo(0.2)
+    expect(ellipse.majorAxis).toBeCloseToPoint(p(0, 100))
+  })
+
+  it("drops an ellipse with no axis to draw", () => {
+    const parsed = parseDrawingFile(
+      JSON.stringify({
+        type: DRAWING_FILE_TYPE,
+        version: DRAWING_FILE_VERSION,
+        entities: [
+          {
+            id: "e1",
+            type: "ellipse",
+            center: { x: 0, y: 0 },
+            majorAxis: { x: 0, y: 0 },
+            ratio: 0.5,
+          },
+        ],
+      })
+    )
+    expect(parsed.entities).toHaveLength(0)
   })
 })
 

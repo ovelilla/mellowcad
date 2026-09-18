@@ -73,11 +73,12 @@ and what each option does must be the ones they already know.
   is one object at a time; the Center-Diameter guide really does extend past the rim, because its
   length _is_ the diameter cue. Bespoke visuals invented to compensate get rejected.
 - **A partial command is fine; a reinvented one is not.** Implement the core faithfully and record
-  the missing options in the ledger, rather than substituting an easier gesture of our own.
+  the missing options in `docs/autocad-coverage.md`, rather than substituting an easier gesture of
+  our own.
 - **Deviations are allowed only when the platform forces them** or the surrounding feature does
   not exist here — e.g. F2 for the command prompt because browsers reserve Ctrl+9, or LWDISPLAY
   defaulting on because we have no layouts or plotting. Every one gets a `WHY` comment at the
-  code and a note in the ledger.
+  code and a note in `docs/autocad-coverage.md`.
 
 ## How this project works
 
@@ -93,18 +94,19 @@ and what each option does must be the ones they already know.
 ## Where the details live
 
 - `.github/instructions/` — scoped rules that load automatically with the files you touch
-  (engine layering, tool authoring, UI, testing).
-- `/memories/repo/mellowcad.md` — the session ledger: what each feature does, how it was verified,
-  known gotchas, and the remaining gap list vs AutoCAD. **Read the relevant section before
-  extending a feature.**
+  (engine layering, tool authoring, UI, testing). **This is where every durable rule lives.**
+- `docs/autocad-coverage.md` — what each implemented command does and which AutoCAD options it
+  still lacks, plus the roadmap. Not auto-loaded. **Read the row for a command before extending it**
+  — the gaps are deliberate and already researched.
+- `docs/next-*.md` — the brief for the next feature, when one has been agreed; deleted once it ships.
 
 ## Finishing a feature
 
 Alongside green `typecheck` + `lint` + `test`, close the loop on the written knowledge:
 
-1. **Append to the ledger** (`/memories/repo/mellowcad.md`): what the feature does, the AutoCAD
-   behaviour it matches, how it was verified, and what is still missing.
-2. **Promote durable lessons to `.github/instructions/`.** The ledger is per-feature history;
+1. **Update the affected row in `docs/autocad-coverage.md`** — what the command now does and what
+   it still lacks. Edit the row; do not append a narrative of the work. History belongs in git.
+2. **Promote durable lessons to `.github/instructions/`.** The coverage file records capability;
    the instructions files are the rules. If while building it you hit any of these, the matching
    instructions file is now out of date and must be updated in the same change:
    - a new reusable base class, shared helper or extension point other tools should use;

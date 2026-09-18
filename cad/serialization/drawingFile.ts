@@ -29,6 +29,7 @@ import { normalizeColor } from "../domain/colors"
 import {
   BlockDefinition,
   createBlockDefinition,
+  createEllipse,
   Entity,
   nextEntityId,
   DimensionKind,
@@ -80,7 +81,7 @@ import {
 export const DRAWING_FILE_TYPE = "easycad-drawing"
 
 /** Current schema version written by {@link serializeDrawing}. */
-export const DRAWING_FILE_VERSION = 16
+export const DRAWING_FILE_VERSION = 17
 
 /** MIME type a serialised drawing is handed to the host as. */
 export const DRAWING_FILE_MIME_TYPE = "application/json"
@@ -163,7 +164,15 @@ export function parseDrawingFile(text: string): ParsedDrawing {
   } catch {
     throw new Error("The file is not valid JSON.")
   }
+  return parseDrawingData(data)
+}
 
+/**
+ * The half of {@link parseDrawingFile} that works on already-parsed JSON, so a
+ * drawing nested inside another document — a clipboard fragment — is read by
+ * the same tolerant reader instead of being re-stringified to get at it.
+ */
+export function parseDrawingData(data: unknown): ParsedDrawing {
   if (!isRecord(data)) {
     throw new Error("Unrecognised drawing file.")
   }
@@ -234,6 +243,21 @@ function cloneEntity(entity: Entity): Entity {
         radius: entity.radius,
         startAngle: entity.startAngle,
         endAngle: entity.endAngle,
+      }
+    case "ellipse":
+      return {
+        id: entity.id,
+        type: "ellipse",
+        layerId: entity.layerId,
+        ...overrides,
+        center: { x: entity.center.x, y: entity.center.y },
+        majorAxis: { x: entity.majorAxis.x, y: entity.majorAxis.y },
+        ratio: entity.ratio,
+        // Absent on a full ellipse, exactly as DXF omits nothing but means the
+        // same by writing the whole 0..2π range.
+        ...(entity.startParam !== undefined && entity.endParam !== undefined
+          ? { startParam: entity.startParam, endParam: entity.endParam }
+          : {}),
       }
     case "polyline":
       return {
@@ -454,9 +478,31 @@ function parseEntity(raw: unknown): Entity | null {
         endAngle: raw.endAngle,
       }
     }
+    case "ellipse": {
+      const center = parseVec2(raw.center)
+      const majorAxis = parseVec2(raw.majorAxis)
+      if (!center || !majorAxis) return null
+      if (majorAxis.x === 0 && majorAxis.y === 0) return null
+      if (!isFiniteNumber(raw.ratio) || raw.ratio <= 0) return null
+      // A stored range is trusted only when both ends are there; half of one
+      // describes no sweep, so the ellipse loads whole rather than being lost.
+      const swept =
+        isFiniteNumber(raw.startParam) && isFiniteNumber(raw.endParam)
+          ? { startParam: raw.startParam, endParam: raw.endParam }
+          : {}
+      // Built through the factory so a hand-edited file whose stored axis is
+      // the shorter one is normalised instead of loading inside out.
+      return {
+        ...createEllipse(center, majorAxis, raw.ratio, {
+          ...swept,
+          layerId,
+          id,
+        }),
+        ...overrides,
+      }
+    }
     case "polyline": {
       const vertices = parseVertices(raw.vertices)
-      // A polyline needs at least two vertices to describe any geometry.
       if (vertices.length < 2) return null
       const closed = typeof raw.closed === "boolean" ? raw.closed : false
       const bulges = parseBulges(raw.bulges)

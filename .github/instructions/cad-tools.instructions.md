@@ -12,7 +12,9 @@ A tool is an explicit state machine for one AutoCAD command. It owns a discrimin
 ## Checklist for a new command
 
 1. `cad/application/tools/XTool.ts` implementing `Tool` (or extending a base, below).
-2. `registerTool(new XTool())` in the `CadRuntime` constructor, in rail order.
+2. `new XTool()` in the `defaultTools` list in `cad/application/runtimeTools.ts`, in rail order.
+   A tool the runtime must drive directly (it is held as a `CadRuntime` field) is passed into
+   that function instead of built there.
 3. `TOOL_COMMANDS` in `CommandLine.ts` — canonical AutoCAD name first, then aliases.
    Dispatch comes from here; `Tool.shortcut` is display-only.
 4. Export the class from `cad/index.ts`.
@@ -26,8 +28,15 @@ A tool is an explicit state machine for one AutoCAD command. It owns a discrimin
   Override `place()`, `continuesAfterPlace()`, optionally `transformEntity()` / `onSelectionAdded()`.
 - `EdgeEditTool` — hover-preview-click editing against implicit boundaries (Trim, Extend).
 - `SelectionActionTool` — one action over a selection set, supporting both noun-verb and
-  verb-noun invocation (Explode, Join).
+  verb-noun invocation (Explode, Join, COPYCLIP). A command that must ask something **before** the
+  set — COPYBASE's base point — overrides `onActivate` and calls `begin(ctx)` once it has the
+  answer, rather than forking the base class.
 - `boxSelection.ts` — window/crossing box selection. Never re-implement it.
+- `SelectTool` is split so a new entity type rarely needs the tool itself: `selectToolState.ts`
+  holds the state union, `selectToolGrips.ts` enumerates and hit-tests grips (**the file to edit
+  when an entity type gains grips**), `selectToolOverlay.ts` draws each edit's preview, and
+  `selectToolEdits.ts` holds the pure geometry helpers. `SelectTool.ts` keeps only the state
+  machine. Add a grip kind in all four, never by growing the tool class.
 - `dimensionTextOptions.ts` — the Text and Angle keywords shared by every dimension command, so
   each of them asks with the same words. When two commands offer the same AutoCAD keyword, the
   prompt belongs in a shared helper: identical wording is part of the fidelity, not a nicety.
@@ -55,6 +64,9 @@ When a command deliberately does nothing — an object it cannot act on, an empt
 with `ctx.report(text)`, which writes to the command prompt. Silence reads as a bug. Use
 AutoCAD's own wording (`"1 was not able to be exploded."`); if you cannot verify the exact
 string, leave the message out rather than inventing one.
+
+A tool never touches an adapter. Anything outside the document it needs — writing the clipboard
+(`ctx.copyToClipboard`) — is a method on `ToolContext` that the runtime wires to the port.
 
 When the answer is "that object is not eligible at all", **filter the pick instead**: an object
 that never highlights has already answered the question, needs no wording to verify, and is what
@@ -108,6 +120,13 @@ There is a single session at a time. Patterns in use:
 Mirror AutoCAD's prompt: the same sequence of prompts, the same keywords, the same trigger letters
 and the same default shown in `<angle brackets>`. A user's muscle memory is the acceptance
 criterion — inventing a friendlier letter or reordering the prompts breaks it.
+
+A command surfaced as several rail entries (CIRCLE, ARC, ELLIPSE) is **one class parameterised by a
+mode and registered once per mode**. When AutoCAD's own first prompt can switch between those modes
+(`ELLIPSE ... or [Arc/Center]`), keep the constructed mode and the running one apart: a private
+`active` field that `invokeOption` changes and `onActivate` / Escape reset. Dropping the keywords
+because the rail already offers the variants is a fidelity bug — typing `EL` then `C` is how the
+command is actually used.
 
 A bracketed `<Default>` is implemented in the prompt's `commitRaw`: **empty text means Enter, so
 take the default** (DIMLINEAR's `<select object>`, DIMBASELINE's `<Select>`). Never spend a keyword

@@ -19,6 +19,7 @@ import { ConstraintType } from "../application/constraints/types"
 import { Tool } from "../application/tools/Tool"
 import { CanvasScenePresenter } from "./CanvasScenePresenter"
 import { createBrowserFileTransport } from "./browserFileTransport"
+import { createBrowserClipboard } from "./browserClipboard"
 import { createLocalStorageDrawingStore } from "./localStorageDrawingStore"
 
 /**
@@ -60,7 +61,8 @@ export class CadEngine {
     this.runtime = new CadRuntime(
       host,
       createLocalStorageDrawingStore(),
-      createBrowserFileTransport(canvas.ownerDocument)
+      createBrowserFileTransport(canvas.ownerDocument),
+      createBrowserClipboard()
     )
 
     this.attachEvents()
@@ -412,6 +414,14 @@ export class CadEngine {
     return this.runtime.openDrawingFromFile()
   }
 
+  pasteFromClipboard(): Promise<void> {
+    return this.runtime.pasteFromClipboard()
+  }
+
+  selectAll(): void {
+    this.runtime.selectAll()
+  }
+
   dispose(): void {
     this.disposed = true
     this.resizeObserver.disconnect()
@@ -578,6 +588,10 @@ export class CadEngine {
  * Ctrl+S / Ctrl+O. The other Ctrl combos stay unforwarded from editable fields
  * on purpose (a global undo mid-draw desyncs the running tool), but saving and
  * opening are safe from anywhere and the browser must not handle them.
+ *
+ * The clipboard shortcuts must **never** join this list: Ctrl+C / Ctrl+X /
+ * Ctrl+V / Ctrl+A inside a dynamic-input box or a layer name belong to that
+ * text, and taking them would break copying a value out of the drawing's own UI.
  */
 function isFileShortcut(e: KeyboardEvent): boolean {
   if (!e.ctrlKey || e.altKey) return false

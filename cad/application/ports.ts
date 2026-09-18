@@ -45,3 +45,17 @@ export interface FileTransport {
    */
   open(): Promise<string | null>
 }
+
+/**
+ * The system clipboard, behind COPYCLIP / CUTCLIP / PASTECLIP. Both halves are
+ * asynchronous because the browser's is: a write can be refused and a read can
+ * prompt for permission or not exist at all. Neither is an error the user needs
+ * to hear about — the runtime keeps what it last copied, so copy and paste go
+ * on working inside the session whatever the host answers.
+ */
+export interface Clipboard {
+  /** Puts `text` on the clipboard. Rejects when the host refuses. */
+  write(text: string): Promise<void>
+  /** The clipboard's text, or `null` when there is none. */
+  read(): Promise<string | null>
+}

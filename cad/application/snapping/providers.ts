@@ -20,6 +20,10 @@ import {
   arcStartPoint,
   closestOnEntity,
   dimensionGeometry,
+  ellipseEndPoint,
+  ellipseQuadrantPoints,
+  ellipseStartPoint,
+  isFullEllipse,
   lineMidpoint,
   polylineSegmentGeometries,
   EntityId,
@@ -68,6 +72,19 @@ export const endpointProvider: SnapProvider = {
         candidates.push({
           type: SnapType.Endpoint,
           point: arcEndPoint(entity),
+          sourceIds: [entity.id],
+        })
+      } else if (entity.type === "ellipse") {
+        // Only an elliptical arc has ends; a whole ellipse closes on itself.
+        if (isFullEllipse(entity)) continue
+        candidates.push({
+          type: SnapType.Endpoint,
+          point: ellipseStartPoint(entity),
+          sourceIds: [entity.id],
+        })
+        candidates.push({
+          type: SnapType.Endpoint,
+          point: ellipseEndPoint(entity),
           sourceIds: [entity.id],
         })
       } else if (entity.type === "polyline") {
@@ -160,6 +177,12 @@ export const centerProvider: SnapProvider = {
           point: entity.center,
           sourceIds: [entity.id],
         })
+      } else if (entity.type === "ellipse") {
+        candidates.push({
+          type: SnapType.Center,
+          point: entity.center,
+          sourceIds: [entity.id],
+        })
       }
     }
     return candidates
@@ -195,7 +218,8 @@ export const insertionProvider: SnapProvider = {
   },
 }
 
-/** Snaps to the 0°/90°/180°/270° cardinal points of a circle. */
+/** Snaps to the 0°/90°/180°/270° cardinal points of a circle, and to the
+ * endpoints of an ellipse's axes. */
 export const quadrantProvider: SnapProvider = {
   type: SnapType.Quadrant,
   collect({ document, entities }: SnapContext): SnapCandidate[] {
@@ -226,6 +250,16 @@ export const quadrantProvider: SnapProvider = {
           candidates.push({
             type: SnapType.Quadrant,
             point: polarPoint(entity.center, entity.radius, angle),
+            sourceIds: [entity.id],
+          })
+        }
+      } else if (entity.type === "ellipse") {
+        // An ellipse's quadrants are the endpoints of its two axes, not the
+        // cardinal directions of the world.
+        for (const point of ellipseQuadrantPoints(entity)) {
+          candidates.push({
+            type: SnapType.Quadrant,
+            point,
             sourceIds: [entity.id],
           })
         }
