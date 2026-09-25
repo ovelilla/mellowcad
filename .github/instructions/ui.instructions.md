@@ -1,6 +1,6 @@
 ---
-applyTo: "components/**,app/**,hooks/**"
-description: "React/UI conventions for the CAD shell: file layout, theming tokens, Base UI gotchas, icons and where each control belongs."
+applyTo: "components/cad/**,components/ui/**,components/theme-provider.tsx,app/(app)/**,hooks/**"
+description: "React/UI conventions for the CAD editor shell (/draw): file layout, theming tokens, Base UI gotchas, icons and where each control belongs. The landing has its own rules in marketing.instructions.md."
 ---
 
 # UI layer

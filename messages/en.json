@@ -1,0 +1,21 @@
+{
+  "Metadata": {
+    "title": "Online 2D CAD with AutoCAD commands — MellowCAD",
+    "titleTemplate": "%s · MellowCAD",
+    "description": "2D drafting in your browser with the commands, aliases and object snaps AutoCAD users know. No install, no sign-up; drawings stay on your device."
+  },
+  "Placeholder": {
+    "eyebrow": "2D CAD in your browser",
+    "title": "Type L. Press Enter. Draw.",
+    "lead": "The commands, aliases, prompts and object snaps AutoCAD users already know — in a browser tab.",
+    "cta": "Start drawing"
+  },
+  "NotFound": {
+    "metaTitle": "Page not found",
+    "prompt": "Command:",
+    "unknown": "Unknown command \"{command}\".  Press F1 for help.",
+    "fallbackCommand": "PAGE",
+    "home": "Back to the drawing sheet",
+    "cta": "Start drawing"
+  }
+}

@@ -1,0 +1,63 @@
+/*
+ * The landing's own Tailwind entry. Automatic source detection is off so the
+ * editor's utilities never ship here; only the marketing folders are scanned.
+ */
+@import "tailwindcss" source(none);
+@source ".";
+@source "../global-not-found.tsx";
+@source "../../components/marketing";
+
+@custom-variant dark (&:is(.dark *));
+
+/*
+ * Tokens have the editor's shape (`:root` light / `.dark` dark), but v1 only
+ * defines the dark sheet and the layout fixes `<html class="dark">`. The light
+ * values arrive with the editor's light canvas.
+ */
+.dark {
+  --bg: #0b0f14;
+  --bg-raised: #111820;
+  --bg-sunken: #080b0f;
+  --grid-minor: rgb(148 163 184 / 0.06);
+  --grid-major: rgb(148 163 184 / 0.12);
+  --border: rgb(148 163 184 / 0.16);
+  --text: #e2e8f0;
+  --text-muted: #94a3b8;
+  /* The floor for text: ≈ 5.0:1 on --bg. Nothing is set dimmer. */
+  --text-subtle: #74839a;
+  --accent: #f59e0b;
+  --accent-ink: #0b0f14;
+  --precision: #22d3ee;
+  color-scheme: dark;
+}
+
+@theme inline {
+  --font-sans: var(--font-sans);
+  --font-mono: var(--font-mono);
+  --color-bg: var(--bg);
+  --color-bg-raised: var(--bg-raised);
+  --color-bg-sunken: var(--bg-sunken);
+  --color-border: var(--border);
+  --color-fg: var(--text);
+  --color-fg-muted: var(--text-muted);
+  --color-fg-subtle: var(--text-subtle);
+  --color-accent: var(--accent);
+  --color-accent-ink: var(--accent-ink);
+  --color-precision: var(--precision);
+}
+
+@layer base {
+  html {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+}

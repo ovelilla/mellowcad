@@ -8,10 +8,9 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover"
+import { CONTACT_EMAIL } from "@/lib/site"
 
 import { Panel } from "./toolbar-primitives"
-
-const CONTACT_EMAIL = "o.velillaa@gmail.com"
 
 /**
  * The "about" affordance: what this is, that it is unfinished, that nothing

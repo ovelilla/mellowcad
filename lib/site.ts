@@ -1,0 +1,21 @@
+/**
+ * Facts about the site itself, shared by both root layouts, the metadata
+ * routes and the structured data. The canonical host is the apex over https
+ * (`www` already redirects there), whatever deployment happens to render it.
+ */
+export const SITE_URL = "https://mellowcad.com"
+
+export const SITE_NAME = "MellowCAD"
+
+export const EDITOR_PATH = "/draw"
+
+/** The address the About panel publishes; the landing adds no new personal data. */
+export const CONTACT_EMAIL = "o.velillaa@gmail.com"
+
+/**
+ * When the landing's copy last changed materially. It is the sitemap's
+ * `lastModified`, which Google only trusts if it moves with the content, so it
+ * is bumped by hand with the copy — never stamped with the build time.
+ */
+export const CONTENT_UPDATED = "2026-09-25"
+

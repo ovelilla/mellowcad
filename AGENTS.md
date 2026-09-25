@@ -43,6 +43,10 @@ cad/adapters/     the only browser-aware layer: CadEngine (composition root), ca
 
 React imports the public barrel `@/cad` only — never a deep path.
 
+Two root layouts: the editor is `/draw` (`app/(app)/`), the landing is `/` (`app/(marketing)/`,
+`components/marketing/`, copy in `messages/`). The landing's rules are in
+`.github/instructions/marketing.instructions.md`.
+
 ## Non-negotiable invariants
 
 - **`cad/` outside `adapters/` is DOM-free.** No `window`, `document`, `canvas`, `HTMLElement`.

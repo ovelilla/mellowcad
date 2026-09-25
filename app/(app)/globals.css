@@ -2,6 +2,11 @@
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
 
+/* The landing has its own scoped entry (marketing.css); its classes are not the editor's. */
+@source not "../(marketing)";
+@source not "../../components/marketing";
+@source not "../global-not-found.tsx";
+
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
