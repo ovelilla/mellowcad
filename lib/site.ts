@@ -9,6 +9,9 @@ export const SITE_NAME = "MellowCAD"
 
 export const EDITOR_PATH = "/draw"
 
+/** The site-wide share image, `app/opengraph-image.tsx`. */
+export const OG_IMAGE_PATH = "/opengraph-image"
+
 /** The address the About panel publishes; the landing adds no new personal data. */
 export const CONTACT_EMAIL = "o.velillaa@gmail.com"
 
@@ -18,4 +21,3 @@ export const CONTACT_EMAIL = "o.velillaa@gmail.com"
  * is bumped by hand with the copy — never stamped with the build time.
  */
 export const CONTENT_UPDATED = "2026-09-25"
-

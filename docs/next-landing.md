@@ -1034,3 +1034,46 @@ Decisiones tomadas al ejecutar, en los huecos que el brief dejaba abiertos.
   mínima (`UnknownCommand`) la convierte en el nombre del comando; sin JS se lee `PAGE`.
 - Para la fase 4: next-intl 4.14 marca `requestLocale` como obsoleto en favor de `next/root-params`.
   Al activar el español hay que seguir ese patrón en lugar del de `setRequestLocale` de §3.5.
+
+**Fase 1**
+
+- **Todas las figuras son guiones** (`content/demos/*.ts`, registrados en `content/figures.ts`) que el
+  motor reproduce en build; no ha hecho falta ningún `.ecad.json`, así que `content/drawings/` no se
+  crea hasta que una figura necesite dibujarse a mano.
+- La conducción por guiones vive en `cad/application/CadDriver.ts` (el harness de tests la envuelve)
+  y `DemoScript.ts`. La grabación es asíncrona porque OTRACK adquiere puntos por permanencia del cursor
+  (un temporizador real); los guiones ganaron `hover`, `down`/`up`, `press`, `osnap` y `layer`.
+- **La transcripción es la del motor**: la etiqueta del campo de entrada dinámica más las palabras
+  clave de la línea de comandos (`Radius:`, `Offset distance [Through/…]:`), no el texto literal de
+  AutoCAD. Por eso el pie dice "Same order, same option letters as AutoCAD" y no "same prompts".
+- **Un único archivo de comandos** (`content/commands.ts`) con seis grupos, que sirve al tablero de
+  alias y al índice de herramientas: Draw, Modify, Annotate, Organize, Inquiry & view, Files &
+  clipboard. Las variantes con nombre propio de esta app (CIRCLE2P, ARCSCE…) no se muestran ni se
+  cuentan como comandos de AutoCAD: hoy son 58 comandos y 61 alias. El estado completo/parcial por
+  comando no se muestra: su única fuente es la prosa de `autocad-coverage.md`.
+- En el tablero, la descripción de cada comando aparece en un tooltip al pasar el ratón y está en el
+  HTML para lectores de pantalla; las teclas no son enfocables (58 paradas de tabulación sin acción).
+- `CommandTry` no se carga aparte: todas las islas juntas pesan 4 KB gz, así que dividirla no aporta.
+- La imagen OG vive en `app/opengraph-image.tsx` y se cita por ruta: dentro de un grupo de rutas su
+  URL lleva un hash que el JSON-LD no puede conocer, y en la raíz no se hereda. Las fuentes de las OG
+  están en `assets/fonts/` (WOFF, OFL), porque `next/og` no lee WOFF2.
+- **Inter sin el eje `opsz`**: cabía en el presupuesto de fuentes, pero no en el total. Titulares con
+  el tracking más cerrado a cambio.
+- Sin enlace al changelog (fase 2) ni al artículo técnico (no existe todavía).
+- El menú móvil es un `popover` nativo sin JS: tocar un enlace navega pero no cierra el menú (se
+  cierra al tocar fuera o con su botón).
+- Durante los guiones aparecieron dos huecos de fidelidad del editor, anotados en
+  `autocad-coverage.md`: CLose en modo Arco de PLINE cierra en recto, y ANSI31 usa la definición
+  imperial también en dibujos en milímetros.
+- **Mediciones** (build de producción en local, Chrome): Lighthouse móvil 95 / 100 / 96 / 100 y
+  escritorio 100 / 100 / 96 / 100 (Buenas prácticas pierde 4 puntos solo porque los scripts de Vercel
+  Analytics no existen fuera de Vercel). CLS 0,004 · TBT 0 ms · LCP de laboratorio 3,0 s en móvil
+  simulado (lo marca la descarga del CSS; el objetivo de 1,8 s es de campo y se medirá con Speed
+  Insights). JS propio 4,2 KB gz · CSS 8,6 KB gz · fuentes 71 KB (2 ficheros) · HTML 45 KB gz (de
+  ellos ~25 KB son la carga RSC que Next incrusta) · SVG del hero ~55 primitivas. Primera carga:
+  232 KB con Brotli (lo que sirve Vercel), 269 KB con gzip. axe: 0 infracciones en `/`, `/privacy` y
+  el 404, en escritorio y móvil.
+- **Pendiente de quien tiene las cuentas**: dar de alta Search Console y Bing Webmaster Tools (los
+  tokens se leen de `GOOGLE_SITE_VERIFICATION` y `BING_SITE_VERIFICATION`), enviar el sitemap,
+  inspeccionar `/`, pasar el Rich Results Test y comprobar la vista previa en X, LinkedIn, Slack y
+  WhatsApp — todo requiere la URL pública.

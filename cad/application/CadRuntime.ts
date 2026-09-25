@@ -46,6 +46,7 @@ import {
 import { parseCoordinate } from "./input/coordinateInput"
 import {
   CommandDefinition,
+  CommandInfo,
   CommandLineController,
   matchCommands,
   toolCommandAlias,
@@ -349,6 +350,15 @@ export class CadRuntime extends Observable {
   /** Returns a stable snapshot; identity only changes when state changes. */
   getState(): EngineState {
     return this.stateSnapshot
+  }
+
+  /** Every command the prompt accepts, in registration order. */
+  listCommands(): CommandInfo[] {
+    return this.commandList.map(({ name, aliases, description }) => ({
+      name,
+      aliases,
+      description,
+    }))
   }
 
   listTools(): Tool[] {

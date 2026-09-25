@@ -1,0 +1,395 @@
+import { CadDriver } from "./CadDriver"
+import type { CommandLineEntry } from "./CommandLine"
+import type { DynamicFieldKind } from "./input/DynamicInput"
+import { isCoordinateExpression } from "./input/coordinateInput"
+import type { CadDocument } from "../domain/Document"
+import type { Bounds, EntityId } from "../domain/entities"
+import type { LinetypeId } from "../domain/linetypes"
+import type { Lineweight } from "../domain/lineweights"
+import type { Vec2 } from "../geometry/Vec2"
+import type { Scene } from "../scene/types"
+import type { SnapType } from "./snapping/types"
+
+/**
+ * A scripted drafting session, written in the same chained style as the test
+ * harness and replayed through {@link CadDriver}. Replaying it yields every
+ * step's prompt, what the engine printed and which objects appeared — the raw
+ * material for an animated transcript that cannot drift from the product.
+ */
+
+export type DemoAction =
+  | { readonly kind: "command"; readonly text: string }
+  | { readonly kind: "type"; readonly text: string }
+  | { readonly kind: "enter" }
+  | { readonly kind: "escape" }
+  | { readonly kind: "option"; readonly key: string }
+  | { readonly kind: "click"; readonly at: Vec2 }
+  | { readonly kind: "moveTo"; readonly at: Vec2 }
+  | { readonly kind: "hover"; readonly at: Vec2 }
+  | { readonly kind: "down"; readonly at: Vec2 }
+  | { readonly kind: "up"; readonly at: Vec2 }
+  | { readonly kind: "press"; readonly key: string }
+  | { readonly kind: "osnap"; readonly type: SnapType }
+  | { readonly kind: "layer"; readonly name: string }
+
+/** A layer the session starts with, as a drawing template would provide. */
+export interface DemoLayer {
+  readonly name: string
+  readonly color?: string
+  readonly linetype?: LinetypeId
+  readonly lineweight?: Lineweight
+}
+
+export interface DemoOptions {
+  /** View size the session runs at (and the final scene is framed in). */
+  readonly width?: number
+  readonly height?: number
+  /** Running object snaps; off unless the script is about them. */
+  readonly snap?: boolean
+  readonly layers?: readonly DemoLayer[]
+  /** DIMSCALE of the current dimension style, as a template sets it. */
+  readonly dimScale?: number
+  /** POLARANG, the polar tracking increment in degrees. */
+  readonly polarAngle?: number
+  /** Frame this rectangle before the first action (ZOOM Window). */
+  readonly view?: Bounds
+  /** Screen padding around {@link view}. */
+  readonly viewPadding?: number
+}
+
+/** Slack past the tracking dwell, so a hover never races its timer. */
+const DWELL_MARGIN_MS = 40
+
+export class DemoScript {
+  private constructor(
+    readonly options: DemoOptions,
+    readonly actions: readonly DemoAction[]
+  ) {}
+
+  static create(options: DemoOptions = {}): DemoScript {
+    return new DemoScript(options, [])
+  }
+
+  /** Runs a command by name or alias, as typed at the `Command:` prompt. */
+  command(text: string): DemoScript {
+    return this.then({ kind: "command", text })
+  }
+
+  /** Types into the prompt's input; {@link enter} commits it. */
+  type(text: string): DemoScript {
+    return this.then({ kind: "type", text })
+  }
+
+  enter(): DemoScript {
+    return this.then({ kind: "enter" })
+  }
+
+  escape(): DemoScript {
+    return this.then({ kind: "escape" })
+  }
+
+  /** Answers a `[Keyword]` prompt with its letter. */
+  option(key: string): DemoScript {
+    return this.then({ kind: "option", key })
+  }
+
+  click(x: number, y: number): DemoScript {
+    return this.then({ kind: "click", at: { x, y } })
+  }
+
+  moveTo(x: number, y: number): DemoScript {
+    return this.then({ kind: "moveTo", at: { x, y } })
+  }
+
+  /**
+   * Rests the cursor on a point long enough for object snap tracking to
+   * acquire it — the engine's own dwell, waited out in real time.
+   */
+  hover(x: number, y: number): DemoScript {
+    return this.then({ kind: "hover", at: { x, y } })
+  }
+
+  /** Presses the mouse button and holds it, as a selection box starts. */
+  down(x: number, y: number): DemoScript {
+    return this.then({ kind: "down", at: { x, y } })
+  }
+
+  up(x: number, y: number): DemoScript {
+    return this.then({ kind: "up", at: { x, y } })
+  }
+
+  /** A key on the drawing surface, e.g. `F10` for Polar. */
+  press(key: string): DemoScript {
+    return this.then({ kind: "press", key })
+  }
+
+  /** A one-shot object snap, picked from the Shift+right-click menu. */
+  osnap(type: SnapType): DemoScript {
+    return this.then({ kind: "osnap", type })
+  }
+
+  /**
+   * Makes a template layer current, as picking it in the Layer control does —
+   * a click in the UI, so it prints nothing on the command line.
+   */
+  layer(name: string): DemoScript {
+    return this.then({ kind: "layer", name })
+  }
+
+  private then(action: DemoAction): DemoScript {
+    return new DemoScript(this.options, [...this.actions, action])
+  }
+}
+
+/** Starts a script; each call returns a new script, so scripts can share a prefix. */
+export function demo(options: DemoOptions = {}): DemoScript {
+  return DemoScript.create(options)
+}
+
+/** What the engine was asking when an action was taken. */
+export interface DemoPrompt {
+  /** The running command's name, or null at the neutral `Command:` prompt. */
+  readonly command: string | null
+  /** The dynamic-input field being asked for, e.g. `Radius`. */
+  readonly field: string | null
+  readonly fieldKind: DynamicFieldKind | null
+  /** The keywords offered, as the command line lists them. */
+  readonly options: readonly string[]
+}
+
+export interface DemoStep {
+  readonly action: DemoAction
+  readonly prompt: DemoPrompt
+  /** Lines the engine wrote to its scrollback while the action ran. */
+  readonly output: readonly CommandLineEntry[]
+  readonly added: readonly EntityId[]
+  readonly removed: readonly EntityId[]
+}
+
+export interface DemoRecording {
+  readonly steps: readonly DemoStep[]
+  /** The drawing as the session left it. */
+  readonly document: CadDocument
+  /**
+   * The editor's own frame at the end of the session — overlays, markers and
+   * tooltips included, since those are what a precision demo is about.
+   */
+  readonly scene: Scene
+}
+
+/**
+ * Replays `script` on a fresh headless engine. Asynchronous only because a
+ * {@link DemoScript.hover} waits for the engine's real dwell timer.
+ */
+export async function recordDemo(script: DemoScript): Promise<DemoRecording> {
+  const { options } = script
+  const driver = new CadDriver({
+    width: options.width,
+    height: options.height,
+    snap: options.snap ?? false,
+    clipboard: null,
+  })
+  try {
+    const runtime = driver.runtime
+    // A demo is a drawing, not the editor: no grid behind it.
+    runtime.toggleGrid()
+    const layers = new Map<string, string>(
+      runtime.document.getLayers().map((layer) => [layer.name, layer.id])
+    )
+    for (const layer of options.layers ?? []) {
+      const id = runtime.createLayer(layer.name, layer.color, false)
+      runtime.updateLayer(id, {
+        ...(layer.linetype !== undefined && { linetype: layer.linetype }),
+        ...(layer.lineweight !== undefined && { lineweight: layer.lineweight }),
+      })
+      layers.set(layer.name, id)
+    }
+    if (options.dimScale !== undefined) runtime.setDimScale(options.dimScale)
+    if (options.polarAngle !== undefined) {
+      runtime.setPolarAngleStep(options.polarAngle)
+    }
+    if (options.view) {
+      runtime.viewport.zoomToBounds(
+        options.view.min,
+        options.view.max,
+        options.viewPadding ?? 0
+      )
+    }
+
+    const steps: DemoStep[] = []
+    for (const action of script.actions) {
+      const prompt = currentPrompt(driver)
+      const linesBefore = runtime.commandLine.getLines().length
+      const idsBefore = new Set(driver.entities().map((entity) => entity.id))
+
+      await perform(driver, action, layers)
+
+      const idsAfter = driver.entities().map((entity) => entity.id)
+      const after = new Set(idsAfter)
+      steps.push({
+        action,
+        prompt,
+        output: runtime.commandLine.getLines().slice(linesBefore),
+        added: idsAfter.filter((id) => !idsBefore.has(id)),
+        removed: [...idsBefore].filter((id) => !after.has(id)),
+      })
+    }
+
+    return {
+      steps,
+      document: runtime.document,
+      scene: runtime.buildScene(),
+    }
+  } finally {
+    driver.dispose()
+  }
+}
+
+async function perform(
+  driver: CadDriver,
+  action: DemoAction,
+  layers: ReadonlyMap<string, string>
+): Promise<void> {
+  switch (action.kind) {
+    case "command":
+      driver.command(action.text)
+      return
+    case "type":
+      driver.type(action.text)
+      return
+    case "enter":
+      driver.enter()
+      return
+    case "escape":
+      driver.escape()
+      return
+    case "option":
+      driver.option(action.key)
+      return
+    case "click":
+      driver.click(action.at)
+      return
+    case "moveTo":
+      driver.moveTo(action.at)
+      return
+    case "hover":
+      driver.moveTo(action.at)
+      await new Promise((resolve) =>
+        setTimeout(resolve, driver.runtime.tracking.dwellMs + DWELL_MARGIN_MS)
+      )
+      return
+    case "down":
+      driver.mouseDown(action.at)
+      return
+    case "up":
+      driver.mouseUp(action.at)
+      return
+    case "press":
+      driver.press(action.key)
+      return
+    case "osnap":
+      driver.runtime.setSnapOverride(action.type)
+      return
+    case "layer": {
+      const id = layers.get(action.name)
+      if (id === undefined) throw new Error(`No layer "${action.name}".`)
+      driver.runtime.setCurrentLayer(id)
+      return
+    }
+  }
+}
+
+function currentPrompt(driver: CadDriver): DemoPrompt {
+  const state = driver.state()
+  const input = driver.runtime.dynamicInput
+  const session = input.isOpen() ? input.getSession() : null
+  const activeId = input.getActiveFieldId()
+  const field =
+    session?.fields.find((f) => f.id === activeId) ?? session?.fields[0]
+  return {
+    command: state.activeToolId === "select" ? null : promptName(state),
+    field: field?.label ?? null,
+    fieldKind: field?.kind ?? null,
+    options: state.commandOptions.map((option) => option.label),
+  }
+}
+
+/** `OFFSET [Through/…]:` → `OFFSET`: the name the command line shows. */
+function promptName(state: ReturnType<CadDriver["state"]>): string {
+  const prompt = state.commandLine.prompt
+  const end = prompt.search(/[ :]/)
+  return end === -1 ? prompt : prompt.slice(0, end)
+}
+
+/** One line of a session's command-line history, as AutoCAD would scroll it. */
+export interface TranscriptLine {
+  /** `command`: a command started; `input`: a prompt answered; else a report. */
+  readonly kind: "command" | "input" | "info" | "error"
+  /** For an answered prompt, the question; empty otherwise. */
+  readonly prompt: string
+  /** The command's name, what was typed (empty for a pick), or the report. */
+  readonly text: string
+  /** Which step produced the line. */
+  readonly step: number
+}
+
+/**
+ * Folds a recording into command-line history: `Command: NAME` for each command
+ * started, `<prompt>: <answer>` for each prompt answered — a typed value, an
+ * option letter, or nothing for a pick or a bare Enter — and whatever the
+ * engine reported. Moving the cursor, cancelling, switching layers or picking
+ * from a menu answer nothing, so they leave no line.
+ */
+export function transcript(recording: DemoRecording): TranscriptLine[] {
+  const lines: TranscriptLine[] = []
+  let typed = ""
+  recording.steps.forEach((step, index) => {
+    const { action } = step
+    if (action.kind === "type") {
+      typed = action.text
+      return
+    }
+    const answer =
+      action.kind === "enter"
+        ? typed
+        : action.kind === "option"
+          ? action.key
+          : action.kind === "click"
+            ? ""
+            : null
+    typed = ""
+    if (answer !== null) {
+      lines.push({
+        kind: "input",
+        prompt: promptText(step.prompt, answer),
+        text: answer,
+        step: index,
+      })
+    }
+    for (const entry of step.output) {
+      lines.push({
+        kind: entry.kind,
+        prompt: "",
+        text: entry.text,
+        step: index,
+      })
+    }
+  })
+  return lines
+}
+
+/**
+ * `Radius [Diameter]:` — the field asked for, else the command, plus its
+ * keywords. A point typed where the box offered a distance (LINE's Length) is
+ * no answer to that field — the box turns into X,Y — so the command's own
+ * prompt is the question it answered.
+ */
+export function promptText(prompt: DemoPrompt, answer = ""): string {
+  const pointForDistance =
+    prompt.fieldKind !== "coordinate" && isCoordinateExpression(answer)
+  const field = prompt.field && !pointForDistance ? prompt.field : null
+  const head = field ?? prompt.command ?? "Command"
+  const options =
+    prompt.options.length > 0 ? ` [${prompt.options.join("/")}]` : ""
+  return `${head}${options}:`
+}

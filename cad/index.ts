@@ -15,10 +15,24 @@
 
 export { CadEngine } from "./adapters/CadEngine"
 export { CanvasScenePresenter } from "./adapters/CanvasScenePresenter"
+export {
+  SvgScenePresenter,
+  primitiveLength,
+  themeCustomProperties,
+  themePalette,
+} from "./adapters/SvgScenePresenter"
+export type {
+  SvgDecorator,
+  SvgDocumentOptions,
+  SvgScenePresenterOptions,
+} from "./adapters/SvgScenePresenter"
 export { matchesWildcard } from "./shared/wildcard"
 export { createBrowserFileTransport } from "./adapters/browserFileTransport"
 export { createBrowserClipboard } from "./adapters/browserClipboard"
-export { createLocalStorageDrawingStore } from "./adapters/localStorageDrawingStore"
+export {
+  createLocalStorageDrawingStore,
+  readSavedDrawingSummary,
+} from "./adapters/localStorageDrawingStore"
 
 export { CadRuntime } from "./application/CadRuntime"
 export type {
@@ -43,9 +57,15 @@ export type {
   SelectionCandidateUi,
   SelectionCyclingUi,
 } from "./application/EngineState"
-export { TOOL_COMMANDS, toolCommandAlias } from "./application/CommandLine"
+export {
+  TOOL_COMMANDS,
+  matchCommands,
+  toolCommandAlias,
+} from "./application/CommandLine"
+export { commandCatalog } from "./application/commandCatalog"
 export type {
   CommandDefinition,
+  CommandInfo,
   CommandLineEntry,
   CommandLineEntryKind,
   CommandSuggestion,
@@ -57,6 +77,34 @@ export type {
   FileTransport,
   Clipboard,
 } from "./application/ports"
+
+export { CadDriver, createRecordingHost } from "./application/CadDriver"
+export type {
+  CadDriverOptions,
+  PointerModifiers,
+  RecordingHost,
+} from "./application/CadDriver"
+export {
+  DemoScript,
+  demo,
+  promptText,
+  recordDemo,
+  transcript,
+} from "./application/DemoScript"
+export type {
+  DemoAction,
+  DemoLayer,
+  DemoOptions,
+  DemoPrompt,
+  DemoRecording,
+  DemoStep,
+  TranscriptLine,
+} from "./application/DemoScript"
+export {
+  buildDrawingPreview,
+  previewCamera,
+} from "./application/drawingPreview"
+export type { DrawingPreviewOptions } from "./application/drawingPreview"
 
 export { clipboardSnapshot, planPaste } from "./application/clipboard"
 export type { PastePlan } from "./application/clipboard"
@@ -289,6 +337,8 @@ export type {
   DrawingSnapshot,
   ParsedDrawing,
 } from "./serialization/drawingFile"
+export { summarizeDrawing } from "./serialization/drawingSummary"
+export type { DrawingSummary } from "./serialization/drawingSummary"
 export {
   CLIPBOARD_FILE_TYPE,
   CLIPBOARD_FILE_VERSION,

@@ -73,12 +73,9 @@ import {
   LengthUnit,
   LENGTH_UNITS,
 } from "../domain/units"
+import { DRAWING_FILE_TYPE } from "./drawingSummary"
 
-/**
- * Magic `type` value every drawing file carries. FROZEN at the project's
- * original name: changing it would make every already-saved file unreadable.
- */
-export const DRAWING_FILE_TYPE = "easycad-drawing"
+export { DRAWING_FILE_TYPE }
 
 /** Current schema version written by {@link serializeDrawing}. */
 export const DRAWING_FILE_VERSION = 17

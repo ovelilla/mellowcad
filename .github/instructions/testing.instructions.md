@@ -6,7 +6,8 @@ description: "Testing conventions: the headless CadRuntime harness, custom match
 # Testing
 
 Vitest + fast-check, `environment: "node"`, `globals: false` (explicit imports).
-`npm test` runs `cad/**/*.test.ts` and `test/**/*.test.ts`.
+`npm test` runs `cad/**/*.test.ts`, `test/**/*.test.ts` and `content/**/*.test.ts` — the last
+being the landing's scripts and derived facts (see `marketing.instructions.md`).
 
 **A test that needs jsdom means a layering rule was broken** — `cad/` outside `adapters/` is
 DOM-free by design. Fix the layering, do not switch the environment.
@@ -14,7 +15,10 @@ DOM-free by design. Fix the layering, do not switch the environment.
 ## The harness is the default way to verify a tool
 
 `test/harness.ts` builds a headless `CadRuntime` with fake `EngineHost` / `DrawingStore`,
-auto-disposed via `onTestFinished`.
+auto-disposed via `onTestFinished`. It is a thin wrapper over `CadDriver`
+(`cad/application/CadDriver.ts`), the engine's one DOM-free way of being driven — the landing replays
+its demo scripts through the same driver (`DemoScript.ts`). **A new chainable input belongs on
+`CadDriver`**, not on the harness, so tests and scripts can never drive the engine two ways.
 
 ```ts
 const h = createHarness({ entities: [lineOf(p(0, 0), p(100, 0))] })

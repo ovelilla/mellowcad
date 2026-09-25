@@ -23,7 +23,7 @@ one-line delegation to a free function in a `runtime*.ts` sibling.
 | `runtimeLayers.ts`     | layer table edits (`updateLayer`, `nextLayerName`)                      |
 | `runtimeStyles.ts`     | the dimension and text style tables                                     |
 | `runtimeProperties.ts` | `setSelection*` overrides and the `commonSelection*` readers            |
-| `runtimeBlocks.ts`     | `purgeBlocks`, `buildBlockPreview`                                      |
+| `runtimeBlocks.ts`     | `purgeBlocks`, `buildBlockPreview` (on `drawingPreview.ts`)             |
 | `runtimeFiles.ts`      | serialize/load, the clipboard read-with-timeout, `selectAll`            |
 
 **A sibling takes the collaborators it needs (`document`, `selection`, `history`, …), never the
@@ -33,6 +33,12 @@ why the pointer pipeline, `keyDown`, `updateSnap`, selection cycling, the FROM m
 the public API, so it receives the runtime plus the two private entry points it cannot reach
 (`startTool`, `registerCommand`), and imports `CadRuntime` as a **type only** so no import cycle
 exists at runtime.
+
+`drawingPreview.ts` is the one way to draw objects **without** the editor: `buildDrawingPreview`
+frames a drawing (or part of it) with every aid off, and parts of one drawing share a camera by
+default so they overlay to the pixel. Block thumbnails and the landing's figures both use it.
+`commandCatalog()` reads the registered command table off a headless runtime
+(`CadRuntime.listCommands()`), so nothing outside the engine restates it.
 
 ## The precision pipeline (`PointResolver`)
 

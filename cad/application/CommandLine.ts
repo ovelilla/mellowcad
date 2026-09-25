@@ -16,14 +16,18 @@ export interface CommandLineEntry {
   readonly text: string
 }
 
-/** A runnable command: a canonical name, its typed aliases and its action. */
-export interface CommandDefinition {
+/** A command as it is listed: the name, what else can be typed, what it does. */
+export interface CommandInfo {
   /** Canonical uppercase name, e.g. `"LINE"`. */
   readonly name: string
   /** Extra uppercase forms that run it, e.g. `["L"]`. */
   readonly aliases: readonly string[]
   /** One-line description shown in the autocomplete list. */
   readonly description: string
+}
+
+/** A runnable command: a canonical name, its typed aliases and its action. */
+export interface CommandDefinition extends CommandInfo {
   readonly run: () => void
 }
 
@@ -196,14 +200,14 @@ export function toolCommandAlias(toolId: string): string | undefined {
  * suggestion list.
  */
 export function matchCommands(
-  commands: readonly CommandDefinition[],
+  commands: readonly CommandInfo[],
   text: string,
   limit = 8
 ): CommandSuggestion[] {
   const prefix = text.trim().toUpperCase()
   if (prefix === "") return []
 
-  const rank = (command: CommandDefinition): number => {
+  const rank = (command: CommandInfo): number => {
     if (command.name === prefix || command.aliases.includes(prefix)) return 0
     if (command.aliases.some((alias) => alias.startsWith(prefix))) return 1
     return 2

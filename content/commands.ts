@@ -1,0 +1,100 @@
+/**
+ * Where each command the engine registers is filed on the landing — the ribbon
+ * panel an AutoCAD user would look for it on. The list is checked against the
+ * live registry by a test, so a new command fails the build until it is filed
+ * here, and the page can never silently omit or invent one.
+ */
+
+export const COMMAND_GROUPS = [
+  "draw",
+  "modify",
+  "annotate",
+  "organize",
+  "inquiry",
+  "files",
+] as const
+
+export type CommandGroup = (typeof COMMAND_GROUPS)[number]
+
+interface Filing {
+  readonly group: CommandGroup
+  /**
+   * A ribbon option this app registers as a command of its own (CIRCLE's 2P,
+   * ARC's Start-Center-End…): real here, but not a name AutoCAD users type, so
+   * it is neither shown as one nor counted among the AutoCAD commands.
+   */
+  readonly variant?: true
+}
+
+export const COMMAND_FILING: Readonly<Record<string, Filing>> = {
+  LINE: { group: "draw" },
+  PLINE: { group: "draw" },
+  CIRCLE: { group: "draw" },
+  CIRCLED: { group: "draw", variant: true },
+  CIRCLE2P: { group: "draw", variant: true },
+  CIRCLE3P: { group: "draw", variant: true },
+  ARC: { group: "draw" },
+  ARCSCE: { group: "draw", variant: true },
+  ARCCSE: { group: "draw", variant: true },
+  ELLIPSE: { group: "draw" },
+  ELLIPSEC: { group: "draw", variant: true },
+  ELLIPSEARC: { group: "draw", variant: true },
+  RECTANG: { group: "draw" },
+  POLYGON: { group: "draw" },
+  HATCH: { group: "draw" },
+
+  MOVE: { group: "modify" },
+  COPY: { group: "modify" },
+  STRETCH: { group: "modify" },
+  ROTATE: { group: "modify" },
+  SCALE: { group: "modify" },
+  MIRROR: { group: "modify" },
+  OFFSET: { group: "modify" },
+  TRIM: { group: "modify" },
+  EXTEND: { group: "modify" },
+  FILLET: { group: "modify" },
+  CHAMFER: { group: "modify" },
+  ARRAYRECT: { group: "modify" },
+  ARRAYPOLAR: { group: "modify" },
+  ARRAYPATH: { group: "modify" },
+  EXPLODE: { group: "modify" },
+  JOIN: { group: "modify" },
+  BREAK: { group: "modify" },
+  BREAKATPOINT: { group: "modify" },
+  ERASE: { group: "modify" },
+  MATCHPROP: { group: "modify" },
+
+  TEXT: { group: "annotate" },
+  TEXTEDIT: { group: "annotate" },
+  DIMLINEAR: { group: "annotate" },
+  DIMALIGNED: { group: "annotate" },
+  DIMRADIUS: { group: "annotate" },
+  DIMDIAMETER: { group: "annotate" },
+  DIMANGULAR: { group: "annotate" },
+  DIMBASELINE: { group: "annotate" },
+  DIMCONTINUE: { group: "annotate" },
+  DIMSPACE: { group: "annotate" },
+  DIMSTYLE: { group: "annotate" },
+  STYLE: { group: "annotate" },
+
+  BLOCK: { group: "organize" },
+  INSERT: { group: "organize" },
+  BLOCKSPALETTE: { group: "organize" },
+  PURGE: { group: "organize" },
+
+  DIST: { group: "inquiry" },
+  AREA: { group: "inquiry" },
+  ZOOM: { group: "inquiry" },
+  PAN: { group: "inquiry" },
+  UNDO: { group: "inquiry" },
+  REDO: { group: "inquiry" },
+  SNAP: { group: "inquiry" },
+  FROM: { group: "inquiry" },
+
+  QSAVE: { group: "files" },
+  OPEN: { group: "files" },
+  COPYCLIP: { group: "files" },
+  CUTCLIP: { group: "files" },
+  COPYBASE: { group: "files" },
+  PASTECLIP: { group: "files" },
+}

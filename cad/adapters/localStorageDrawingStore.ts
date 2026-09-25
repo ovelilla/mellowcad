@@ -1,4 +1,8 @@
 import { DrawingStore } from "../application/ports"
+import {
+  DrawingSummary,
+  summarizeDrawing,
+} from "../serialization/drawingSummary"
 
 /**
  * Where the transparent auto-save persists the drawing on this device. FROZEN
@@ -31,4 +35,14 @@ export function createLocalStorageDrawingStore(): DrawingStore | null {
       }
     },
   }
+}
+
+/**
+ * What is auto-saved on this device, without loading it — so a page outside the
+ * editor can offer to continue a drawing without knowing where it is kept. Null
+ * when there is none, it is unreadable, or there is no browser storage.
+ */
+export function readSavedDrawingSummary(): DrawingSummary | null {
+  const text = createLocalStorageDrawingStore()?.read() ?? null
+  return text === null ? null : summarizeDrawing(text)
 }

@@ -4,13 +4,13 @@ import Link from "next/link"
 import { getTranslations } from "next-intl/server"
 
 import "./(marketing)/marketing.css"
+import { Logo } from "@/components/marketing/logo"
 import { UnknownCommand } from "@/components/marketing/unknown-command"
 import { THEME } from "@/cad"
 import { EDITOR_PATH, SITE_NAME } from "@/lib/site"
 
 const inter = Inter({
   subsets: ["latin"],
-  axes: ["opsz"],
   variable: "--font-sans",
 })
 
@@ -39,6 +39,9 @@ export default async function GlobalNotFound() {
     <html lang="en" className={`dark ${inter.variable} ${fontMono.variable}`}>
       <body>
         <main className="mx-auto flex min-h-svh max-w-3xl flex-col justify-center gap-8 px-6">
+          <Link href="/" aria-label={t("home")} className="self-start">
+            <Logo />
+          </Link>
           <h1 className="sr-only">{t("metaTitle")}</h1>
           <p className="rounded-md border border-border bg-bg-sunken p-5 font-mono text-sm leading-relaxed">
             <span className="text-fg-subtle">{t("prompt")} </span>

@@ -13,6 +13,8 @@ import {
   closestPointOnCircle,
   closestPointOnInfiniteLine,
   closestPointOnSegment,
+  ellipseAngleFromParam,
+  ellipseParamFromAngle,
   filletLines,
   infiniteLineIntersection,
   intersectRays,
@@ -840,5 +842,30 @@ describe("rays", () => {
         expect(V.dot(ray.dir, V.sub(q, projected))).toBeCloseTo(0, 5)
       })
     )
+  })
+})
+
+describe("ellipse angle and parameter", () => {
+  const ratio = fc.double({ min: 0.05, max: 1, noNaN: true })
+
+  it("converts a parameter to the angle of its point, and back", () => {
+    fc.assert(
+      fc.property(ratio, angle, (r, t) => {
+        const theta = ellipseAngleFromParam(r, t)
+        // The point at parameter t lies on the ray leaving the centre at theta.
+        const x = Math.cos(t)
+        const y = r * Math.sin(t)
+        expect(Math.atan2(y, x)).toBeCloseTo(theta, 9)
+        expect(
+          normalizeAngle(ellipseParamFromAngle(r, theta) - t + Math.PI)
+        ).toBeCloseTo(Math.PI, 6)
+      })
+    )
+  })
+
+  it("agrees with the angle on the axes, where the two coincide", () => {
+    expect(ellipseAngleFromParam(0.5, 0)).toBeCloseTo(0)
+    expect(ellipseAngleFromParam(0.5, deg(90))).toBeCloseTo(deg(90))
+    expect(ellipseAngleFromParam(0.5, deg(45))).toBeCloseTo(Math.atan(0.5))
   })
 })

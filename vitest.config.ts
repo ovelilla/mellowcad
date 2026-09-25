@@ -16,7 +16,13 @@ export default defineConfig({
     environment: "node",
     // Explicit imports over ambient globals: the same code style as the app.
     globals: false,
-    include: ["cad/**/*.test.ts", "test/**/*.test.ts"],
+    include: [
+      "cad/**/*.test.ts",
+      "test/**/*.test.ts",
+      // The landing's scripts and derived facts: the page cannot lie about the
+      // product while these pass.
+      "content/**/*.test.ts",
+    ],
     setupFiles: ["./test/setup.ts"],
     restoreMocks: true,
     unstubEnvs: true,
@@ -41,10 +47,10 @@ export default defineConfig({
       thresholds: {
         // A ratchet, set just under what the suite achieves today: raise these
         // as coverage grows, never lower them to make a red build green.
-        statements: 74.3,
-        branches: 64.9,
-        functions: 83.8,
-        lines: 78.1,
+        statements: 76.5,
+        branches: 67,
+        functions: 85.5,
+        lines: 80.2,
         // The pure layers are where a silent regression is most expensive and
         // where tests are cheapest, so they are held much higher.
         "cad/geometry/**": {

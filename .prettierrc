@@ -7,5 +7,17 @@
   "printWidth": 80,
   "plugins": ["prettier-plugin-tailwindcss"],
   "tailwindStylesheet": "app/(app)/globals.css",
-  "tailwindFunctions": ["cn", "cva"]
+  "tailwindFunctions": ["cn", "cva"],
+  "overrides": [
+    {
+      "files": [
+        "app/(marketing)/**",
+        "app/global-not-found.tsx",
+        "components/marketing/**"
+      ],
+      "options": {
+        "tailwindStylesheet": "app/(marketing)/marketing.css"
+      }
+    }
+  ]
 }

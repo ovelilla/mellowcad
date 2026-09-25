@@ -19,6 +19,12 @@ description: "Layering, purity and modelling rules for the DOM-free CAD engine (
 `cad/index.ts` is the public barrel. Anything React needs must be exported there; nothing outside
 `cad/` may import a deep path.
 
+**No module in `cad/` may have an import-time side effect.** `package.json` declares
+`"sideEffects": ["**/*.css"]`, which is what lets a page import one small helper from the barrel
+(`readSavedDrawingSummary`, `matchCommands`) without the bundler shipping the whole engine — that
+was 90 KB gzipped on the landing before it. A top-level registration, patch or global write would be
+silently dropped from any bundle that does not use the module's exports.
+
 Cross-layer contracts live in `application/ports.ts` (`EngineHost`, `DrawingStore`, `FileTransport`,
 `Clipboard`).
 The engine asks the host to render/focus/set the cursor, to save/open a file and to reach the
@@ -119,10 +125,18 @@ same "declare the budget" rule as `MAX_BOUNDARY_CURVES` and `MAX_BLOCK_NESTING`.
 and say in a comment why the cheap answer is wrong.
 
 A shape the scene cannot already draw adds a **primitive** (`scene/types.ts` plus a branch in
-`CanvasScenePresenter`), not a tessellation — but everything it carries is **screen** space, and the
-camera's Y flip both reverses an angle and runs a parametrisation backwards. Resolve that once in
-the builder (`arcScenePrimitive`, `ellipseScenePrimitive`) and pin it with a test that rebuilds the
-renderer's own parametric formula and compares it against the projected world endpoints.
+**both presenters**: `CanvasScenePresenter`, which the editor paints with, and `SvgScenePresenter`,
+which draws the landing's figures at build time), not a tessellation — but everything it carries is
+**screen** space, and the camera's Y flip both reverses an angle and runs a parametrisation
+backwards. Resolve that once in the builder (`arcScenePrimitive`, `ellipseScenePrimitive`) and pin
+it with a test that rebuilds the renderer's own parametric formula and compares it against the
+projected world endpoints — `SvgScenePresenter.test.ts` does the same for the SVG arc flags.
+
+The SVG presenter differs from the canvas one only where SVG does: it clips segments to the frame
+(a scene draws alignment paths millions of pixels long, which a canvas clips for free but SVG would
+dash end to end), it sizes text from a **fixed** cap-height ratio because it cannot measure a font,
+and it places the canvas's em-box baselines arithmetically rather than with `dominant-baseline`,
+which rasterisers disagree about.
 
 **Store what was picked, derive what is shown.** A dimension keeps only its definition points; its
 length and its label come out of `dimensionGeometry` / `dimensionText` every time they are needed.
