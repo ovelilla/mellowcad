@@ -2,6 +2,7 @@ import { Vec2 } from "../geometry/Vec2"
 import { CadDocument } from "../domain/Document"
 import { Entity } from "../domain/entities"
 import {
+  DrawingSnapshot,
   ParsedDrawing,
   serializeDrawing as serializeDrawingFile,
 } from "../serialization/drawingFile"
@@ -17,9 +18,9 @@ import { Clipboard } from "./ports"
 /** How long PASTECLIP waits for the host's clipboard before giving up on it. */
 const CLIPBOARD_READ_TIMEOUT_MS = 500
 
-/** Serialises the current drawing to a downloadable JSON string. */
-export function serializeDrawing(document: CadDocument): string {
-  return serializeDrawingFile({
+/** Everything a drawing file holds, read off a live document. */
+export function documentSnapshot(document: CadDocument): DrawingSnapshot {
+  return {
     settings: document.getSettings(),
     layers: document.getLayers(),
     currentLayerId: document.getCurrentLayerId(),
@@ -29,7 +30,12 @@ export function serializeDrawing(document: CadDocument): string {
     currentDimStyleId: document.getCurrentDimStyleId(),
     blocks: document.getBlocks(),
     entities: document.getEntities(),
-  })
+  }
+}
+
+/** Serialises the current drawing to a downloadable JSON string. */
+export function serializeDrawing(document: CadDocument): string {
+  return serializeDrawingFile(documentSnapshot(document))
 }
 
 /** A sensible default download name, e.g. `drawing-2026-07-10.ecad.json`. */

@@ -9,7 +9,9 @@ import { THEME, themeCustomProperties } from "@/cad"
 import { SheetFrame } from "@/components/marketing/sheet-frame"
 import { SiteFooter } from "@/components/marketing/site-footer"
 import { SiteHeader } from "@/components/marketing/site-header"
+import { SpeculationRules } from "@/components/marketing/speculation-rules"
 import { SITE_NAME, SITE_URL } from "@/lib/site"
+import { VIEW_TRANSITION_OPT_IN } from "@/lib/view-transition"
 
 // Inter's `opsz` axis (the Display cut at headline sizes) costs ~25 KB more
 // woff2, which the first-load budget cannot spare next to the framework
@@ -59,6 +61,7 @@ export default async function MarketingLayout({
         {/* The drawings' colours, written from the engine's own THEME so the
             figures and the editor can never drift apart. */}
         <style>{`:root{${themeCustomProperties()}}`}</style>
+        <style>{VIEW_TRANSITION_OPT_IN}</style>
       </head>
       <body>
         <a
@@ -73,6 +76,7 @@ export default async function MarketingLayout({
           {children}
         </main>
         <SiteFooter />
+        <SpeculationRules />
         <Analytics />
         <SpeedInsights />
       </body>

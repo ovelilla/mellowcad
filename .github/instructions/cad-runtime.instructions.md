@@ -211,3 +211,30 @@ Two listeners are deliberately on `canvas.ownerDocument`, not the canvas:
 **A shortcut belongs in `CadRuntime.keyDown`, never in a React `useEffect`.** A second
 document-level listener bypasses the routing order above and cannot `preventDefault` in step with
 it.
+
+### Embedding (`CadEngineOptions`)
+
+The editor passes no options, and everything above is its behaviour. Two options let the same
+composition root live inside a page it does not own (the landing's live sketch):
+
+- `store` replaces the autosave's `DrawingStore` — `createMemoryDrawingStore()` for one that lasts
+  as long as the page, `null` for none. **Anything embedding the engine beside the editor must pass
+  one**: the default is this device's store, which holds the user's drawing.
+- `scope` embeds it. The engine is **active** from a press or a focus inside the scope until the
+  next one outside (a capture `pointerdown` and a `focusin`, both on the document). Inactive, it
+  hears no keys, lets the wheel scroll the page and the host's `focusSurface` does nothing — a
+  command ending late must not pull focus back into it. Active, it hears keys aimed at the canvas,
+  the scope or the body (where focus falls when a focused field unmounts, as the dynamic-input box
+  does between OFFSET's distance and its object prompt); fields in the scope keep the editable
+  rule above; any other control there keeps its own keys; and the scroll keys the runtime passes on
+  (Space confirming a selection, arrows) are prevented, because the page around it can scroll.
+- The filter sits in the adapter **before** `runtime.keyDown`, exactly like the editable rule. Never
+  make the runtime scope-aware: its routing order is untouched and must stay so.
+- `mayTakeFocus(from)` is what the dynamic-input box asks before reclaiming focus after a render:
+  yes from anywhere in the editor, only from the canvas, the scope or the active body for an
+  embed. Without it an autosave finishing would yank focus back from wherever the user tabbed.
+
+`CadRuntime.zoomToBounds` is ZOOM Window for a host that knows the rectangle (one history entry,
+then `Viewport.zoomToBounds`). What the editor refuses to restore — no objects and only the base
+layer — is `isBlankDrawing()`, the same rule a page uses to decide it may overwrite an autosave
+without asking; change it there, once.

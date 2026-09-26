@@ -4,7 +4,19 @@ import { useSyncExternalStore } from "react"
 
 import { readSavedDrawingSummary } from "@/cad"
 
-const subscribe = () => () => {}
+/**
+ * The autosave changes behind the page's back: in the editor in another tab
+ * (`storage`), or before the page comes back out of the back/forward cache
+ * after handing a sketch to the editor (`pageshow`).
+ */
+function subscribe(onChange: () => void): () => void {
+  window.addEventListener("storage", onChange)
+  window.addEventListener("pageshow", onChange)
+  return () => {
+    window.removeEventListener("storage", onChange)
+    window.removeEventListener("pageshow", onChange)
+  }
+}
 
 /** Objects in this device's autosave, or 0 when there is none to continue. */
 function savedObjects(): number {

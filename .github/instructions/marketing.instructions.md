@@ -1,6 +1,6 @@
 ---
-applyTo: "app/(marketing)/**,app/global-not-found.tsx,app/opengraph-image.tsx,app/robots.ts,app/sitemap.ts,app/manifest.ts,components/marketing/**,content/**,messages/**,i18n/**,lib/site.ts,lib/plot.ts,lib/facts.ts,lib/og.tsx,lib/metadata.ts,lib/structured-data.ts,lib/brand.ts"
-description: "The landing at / (marketing root layout): static rendering, engine-drawn figures, islands, copy in next-intl, tokens, budgets, claims policy and trademark rules."
+applyTo: "app/(marketing)/**,app/global-not-found.tsx,app/opengraph-image.tsx,app/robots.ts,app/sitemap.ts,app/manifest.ts,components/marketing/**,content/**,messages/**,i18n/**,lib/site.ts,lib/plot.ts,lib/facts.ts,lib/og.tsx,lib/metadata.ts,lib/structured-data.ts,lib/brand.ts,lib/changelog.ts,lib/view-transition.ts,CHANGELOG.md"
+description: "The landing at / (marketing root layout): static rendering, engine-drawn figures, islands, the live sketch, the view transition into the editor, the changelog, copy in next-intl, tokens, budgets, claims policy and trademark rules."
 ---
 
 # Landing (`/`)
@@ -9,21 +9,31 @@ The landing and the editor are two **root layouts** in one project. `app/(market
 owns `<html class="dark">`, `marketing.css`, the header and footer and the metadata base;
 `app/(app)/layout.tsx` owns the editor, next-themes and `globals.css`. Crossing between them is a
 full page load — which is why a link to the editor is a plain `<a href={EDITOR_PATH}>`, never
-`next/link`: it must not prefetch the editor into the landing. Links _within_ the landing use `Link`.
+`next/link`: its router prefetch would pull the editor's payload into the landing (only the
+document is prefetched, on intent — see "Into the editor"). Links _within_ the landing use `Link`.
 
 ## Rendering
 
 - **Every page is static** (`○` in the build output — check it). Nothing here reads `cookies()`,
   `headers()`, `searchParams` or next-intl's `requestLocale`; one such call silently turns the page
-  dynamic. `i18n/request.ts` returns the fixed locale for the same reason.
+  dynamic. `i18n/request.ts` returns the fixed locale for the same reason. A route handler serving
+  build-time data (`sketches/hero.json`) exports `dynamic = "force-static"` — without Cache
+  Components that is still how a `GET` is prerendered.
 - **Server Components by default.** A client island exists only where there is browser state — the
-  autosave to continue (`ContinueDrawing`), the pause button (`HeroControls`), the autocomplete
-  (`CommandTry`), the share sheet (`SendToDesktop`), a URL only the browser knows (`UnknownCommand`).
-  It receives its copy as props — never wrap the tree in `NextIntlClientProvider`.
+  autosave to continue (`ContinueDrawing`), the pause button (`HeroControls`), the live sketch
+  (`LiveSheet`), the autocomplete (`CommandTry`), the share sheet (`SendToDesktop`), a URL only the
+  browser knows (`UnknownCommand`). It receives its copy as props — never wrap the tree in
+  `NextIntlClientProvider`.
 - **An island imports nothing heavy.** `@/cad` is safe _only_ because `package.json` declares the
   code side-effect free (see `cad-engine.instructions.md`); `cn()` is not — it ships
-  `tailwind-merge`. Budget: ≤ 15 KB gz of our own JS on `/` (4 KB today). Measure after touching one:
-  `npm run build`, then gzip the chunks the prerendered `.next/server/app/index.html` references.
+  `tailwind-merge`. Budget: ≤ 15 KB gz of our own JS on `/` (5.6 KB today). Measure after touching
+  one: `npm run build`, then gzip the chunks the prerendered `.next/server/app/index.html`
+  references (skip the `noModule` one — modern browsers never fetch it).
+- **The engine is never in the first load.** `live-canvas.tsx` is reached only through a dynamic
+  `import()` in `LiveSheet` (a `type` import is fine): one static import pulls the whole engine,
+  84 KB gz, into `/`. Check that `.next/server/app/index.html` names no chunk containing
+  `CadRuntime`'s strings. The chunk is shared with `/draw`, so trying the sketch also warms the
+  editor.
 - The 404 is `app/global-not-found.tsx` (flag `experimental.globalNotFound`): with two root
   layouts there is no common layout to compose `not-found` from. It imports `marketing.css` and
   sets `class="dark"` itself, because it bypasses every layout.
@@ -59,6 +69,55 @@ full page load — which is why a link to the editor is a plain `<a href={EDITOR
   are taken from engine frames too (`snapGlyph`, `arrowheadGlyph`). A snap marker is feedback: shown
   on hover or focus only, never as decoration.
 
+## The live sketch (`LiveSheet` → `LiveCanvas`)
+
+- On a computer (`pointer-fine:lg:`), "Try it here" makes the hero's sheet live. The still figure
+  stays in the flow, invisible and `inert`, holding the sheet's size; the canvas lies over it and
+  frames the figure's own `frame` with its padding scaled (`engine.zoomToBounds`), so nothing
+  moves as it wakes. A hover or focus on the button fetches the chunk and the drawing ahead of the
+  click.
+- It is the real engine, embedded: `useCadEngine({ store, scopeRef })`. **The store is
+  `createMemoryDrawingStore()`, never the device's** — the sketch must not write over the drawing
+  the user keeps in the editor. It lives as long as the page, so a closed sketch reopens as left.
+  The scope gives it the keyboard and the wheel only while in use (`cad-runtime.instructions.md`).
+- It opens on `/sketches/hero.json`: the hero's replay as a drawing file, layer 0 current.
+  `content/figures.test.ts` loads it.
+- Behaviour comes from the editor, not from copies: the dynamic-input box _is_
+  `components/cad/dynamic-input.tsx`, which `marketing.css` scans and whose shadcn tokens it maps
+  inside `.live-sketch`. Another editor component brought in needs both. The docked command line
+  only reads `state.commandLine`.
+- What does not fit on the sheet is left to the full editor, never faked: the Shift+right-click
+  menu is closed if it opens (unseen, it would take the next Escape) and Selection cycling keeps
+  the badge without its list box. A new omission goes in `docs/autocad-coverage.md`.
+- No keyboard trap: Esc cancels as in AutoCAD and never closes the sketch; Tab and Shift+Tab leave
+  it; "Close" is always in view and hands focus back to "Try it here". The canvas is
+  `role="application"`, the command line a `role="log"`.
+- **"Open in the full editor" never overwrites unasked.** A blank device autosave
+  (`isBlankDrawing`, the rule the editor restores by) is replaced and the editor opens. Otherwise
+  a native modal `<dialog>` — outside the scope, so its keys stay its own — offers "Download the
+  sketch" (first, so focused: it loses nothing), "Replace my drawing" and "Cancel". If storage
+  refuses the write, the sketch is downloaded rather than lost.
+
+## Into the editor
+
+- A cross-document view transition: the hero's sheet grows into the editor's canvas, both named
+  `SHEET_TRANSITION`. The opt-in is **inline** in both root layouts' `<head>`
+  (`VIEW_TRANSITION_OPT_IN`): in a stylesheet it raced the new page's first style pass and Chrome
+  skipped about one transition in five ("ViewTransition opt-in disabled"). The group's timing
+  stays in both stylesheets, under `prefers-reduced-motion: no-preference`.
+- The sheet is named only in `pageswap` (towards `/draw`) and `pagereveal` (back out of the
+  bfcache), and only while on screen: the spec makes a named element a stacking context at all
+  times, and an off-screen one would fly in. The editor's canvas is named in its own markup.
+- `SpeculationRules` in the layout prefetches `/draw` on hover or press — the document only.
+  Never `prerender`: it would run the editor, and count a visit, for every hover.
+
+## Changelog
+
+`/changelog` is `CHANGELOG.md` (Keep a Changelog 1.1.0) read by `lib/changelog.ts`; `[Unreleased]`
+is not shown, and a heading it cannot read fails the build. `content/changelog.test.ts` requires
+the newest release to be `package.json`'s version, so a release bumps both. Entries follow the
+claims policy: what people can now do, and no count the code should supply.
+
 ## Facts and copy
 
 - **Every number about the product comes from `lib/facts.ts`**, which reads the engine at build time
@@ -91,9 +150,12 @@ full page load — which is why a link to the editor is a plain `<a href={EDITOR
   it is served but not inherited by route groups, and inside a group its URL gets a hash that
   structured data cannot cite. `/draw` keeps its own in `app/(app)/draw/`.
 - Structured data is one `@graph` (`lib/structured-data.ts`), typed with `schema-dts`, rendered by
-  `JsonLd` with `<` escaped. No invented ratings, ever.
+  `JsonLd` with `<` escaped. The replacement is `"\\u003c"` in source: with a single backslash the
+  string _is_ `<`, and the escape silently does nothing (it shipped that way once). No invented
+  ratings, ever.
 - `robots.ts` allows everything, `/draw` included (it must be fetchable for its `noindex` to be
-  read). `sitemap.ts` lists indexable pages only, with `CONTENT_UPDATED` — bump it with the copy.
+  read). `sitemap.ts` lists indexable pages only, with `CONTENT_UPDATED` — bump it with the copy —
+  and `/changelog` with its newest release's date.
 - Search Console / Bing tokens come from `GOOGLE_SITE_VERIFICATION` / `BING_SITE_VERIFICATION`.
 - Icons are generated from `lib/brand.ts` by `node scripts/icons/generate.ts`; the mark and the logo
   component share that geometry.
@@ -102,7 +164,7 @@ full page load — which is why a link to the editor is a plain `<a href={EDITOR
 
 - `marketing.css` is its own Tailwind entry with `source(none)` and explicit `@source` paths; the
   editor's `globals.css` excludes these folders in turn. A new marketing folder must be added to
-  both.
+  both. The one editor file the live sketch embeds (`dynamic-input.tsx`) is scanned too.
 - **Tokens only**: `bg-bg`, `bg-bg-raised`, `bg-bg-sunken`, `border-border`, `text-fg`,
   `text-fg-muted`, `text-fg-subtle`, `bg-accent` / `text-accent-ink`, `text-precision`, and
   `var(--cad-*)` inside drawings. No loose hex in a component (`lib/brand.ts` holds the few that must

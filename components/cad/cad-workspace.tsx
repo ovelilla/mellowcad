@@ -1,6 +1,7 @@
 "use client"
 
 import { useCadEngine } from "@/hooks/useCadEngine"
+import { SHEET_TRANSITION } from "@/lib/view-transition"
 import { AboutPanel } from "./about-panel"
 import { CommandBar } from "./command-bar"
 import { CommandLine } from "./command-line"
@@ -24,7 +25,10 @@ export function CadWorkspace() {
   const { canvasRef, engine, state } = useCadEngine()
 
   return (
-    <div className="relative h-svh w-full overflow-hidden bg-[#0b0f14]">
+    <div
+      className="relative h-svh w-full overflow-hidden bg-[#0b0f14]"
+      style={{ viewTransitionName: SHEET_TRANSITION }}
+    >
       <canvas
         ref={canvasRef}
         className="absolute inset-0 h-full w-full touch-none outline-none"

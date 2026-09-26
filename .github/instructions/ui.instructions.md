@@ -59,6 +59,11 @@ Tokens flip between themes, so a colour that reads well in dark can be unusable 
   leave the browser, a three-key quick start and the contact address. Product/meta copy goes here,
   not into a drafting surface.
 - The dynamic-input box is `pointer-events-none` and keyboard-driven — never make it clickable.
+- It is also the landing's: the live sketch embeds this very component, and `marketing.css` scans
+  the file and maps the tokens it uses (`card`, `foreground`, `muted`, `muted-foreground`,
+  `border`). A new token in it needs that mapping too. It reclaims focus only where
+  `engine.mayTakeFocus` allows, which for the editor is anywhere. `useCadEngine(options)` passes an
+  embed's store and scope through; the editor passes none.
 
 ## Palettes that show drawing content
 

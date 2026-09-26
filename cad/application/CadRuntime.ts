@@ -4,6 +4,7 @@ import { closestPointOnSegment } from "../geometry/primitives"
 import { CadDocument } from "../domain/Document"
 import {
   BlockId,
+  Bounds,
   Entity,
   EntityId,
   EntityProperty,
@@ -27,6 +28,7 @@ import {
   unitSuffix,
 } from "../domain/units"
 import { parseDrawingFile } from "../serialization/drawingFile"
+import { isBlankDrawing } from "../serialization/drawingSummary"
 import { Scene } from "../scene/types"
 import { Viewport } from "./Viewport"
 import { Selection } from "./Selection"
@@ -567,6 +569,12 @@ export class CadRuntime extends Observable {
       this.viewport.reset()
       return
     }
+    this.viewport.zoomToBounds(bounds.min, bounds.max, padding)
+  }
+
+  /** Frames a world rectangle: ZOOM Window, given its corners. */
+  zoomToBounds(bounds: Bounds, padding = 0): void {
+    this.viewport.pushHistory()
     this.viewport.zoomToBounds(bounds.min, bounds.max, padding)
   }
 
@@ -1257,8 +1265,11 @@ export class CadRuntime extends Observable {
     if (!text) return
     try {
       const parsed = parseDrawingFile(text)
-      // Nothing worth restoring: no geometry and only the base layer.
-      if (parsed.entities.length === 0 && parsed.layers.length <= 1) return
+      const summary = {
+        objects: parsed.entities.length,
+        layers: parsed.layers.length,
+      }
+      if (isBlankDrawing(summary)) return
       applyDrawingFile(this.document, parsed)
       this.autosave.markRestored()
       this.pendingFit = true

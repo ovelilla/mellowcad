@@ -9,6 +9,9 @@ export const SITE_NAME = "MellowCAD"
 
 export const EDITOR_PATH = "/draw"
 
+/** The hero's drawing as a drawing file: what the live sketch opens with. */
+export const HERO_SKETCH_PATH = "/sketches/hero.json"
+
 /** The site-wide share image, `app/opengraph-image.tsx`. */
 export const OG_IMAGE_PATH = "/opengraph-image"
 
@@ -20,4 +23,4 @@ export const CONTACT_EMAIL = "o.velillaa@gmail.com"
  * `lastModified`, which Google only trusts if it moves with the content, so it
  * is bumped by hand with the copy — never stamped with the build time.
  */
-export const CONTENT_UPDATED = "2026-09-25"
+export const CONTENT_UPDATED = "2026-09-26"

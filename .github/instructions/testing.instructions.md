@@ -45,6 +45,15 @@ preview** of whatever is under it. A test that counts scene primitives must ther
 clear spot first, or it counts everything twice. Seed a block table with the `blocks` option, the
 same way `entities` seeds geometry.
 
+## The browser adapter
+
+`cad/adapters/CadEngine.test.ts` drives the one browser-aware class in Node through a hand-made
+DOM — `EventTarget` subclasses that know their parent, and stubbed `window`, `Node`,
+`ResizeObserver` and `requestAnimationFrame` — still no jsdom. An event reaches a target by
+defining `target` on it and dispatching on the document, which is where the engine listens. Use it
+for wiring (which keys reach the runtime, what is prevented, which store is written), never for
+tool behaviour: that is the harness's.
+
 ## Helpers
 
 - `test/matchers.ts` — `toBeCloseToPoint`, `toBeCloseToPoints`, `toBeCloseToAngle`.
@@ -74,6 +83,15 @@ Only for what the harness cannot see: canvas rendering, DOM, theming, CSS. If yo
 - Check the dev-server port first (it hops to 3001), and remember `localStorage` is per-origin.
 - Scope dynamic-input typing to `[data-dynamic-input] input`; a bare `querySelector("input")`
   matches the hidden file input.
+- A typed length takes its direction from the cursor, as AutoCAD's direct distance entry does:
+  move the mouse off the last point before typing it, or LINE draws nothing.
+- **Playwright launches Chromium without the back/forward cache.** Anything on `pageshow` or
+  `pagereveal` after Back needs `ignoreDefaultArgs: ["--disable-back-forward-cache"]`, and then
+  `goBack` / `waitForURL` with `waitUntil: "commit"` — a restored page fires no `load`.
+- A cross-document view transition is observed from the new page: an init script runs before its
+  first render, like a head script, so its `pagereveal` listener sees `viewTransition` and, once
+  `ready`, the `::view-transition-*` animations by name. Repeat it a few dozen times — one flaky
+  opt-in skipped a transition in five and a single run passed.
 - Dispatch events in one `page.evaluate` and read the DOM in another — React commits async.
 - **Anything that opens a menu or popover from a canvas gesture must be verified with trusted
   clicks** (`page.locator(…).click()`), never `dispatchEvent`. Synthetic events do not reproduce

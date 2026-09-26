@@ -27,13 +27,16 @@ export function DynamicInput({
   // the engine re-renders frequently while drawing, and the canvas reclaims
   // focus on pointer interactions; a one-shot focus would be lost. We only
   // steal focus back from the canvas/body, never from another dynamic field,
-  // so multi-field sessions (radius, angle, ...) still work.
+  // so multi-field sessions (radius, angle, ...) still work — and only where
+  // the engine says the keyboard is its to take, which an engine embedded in
+  // a page limits to its own canvas.
   useEffect(() => {
     if (!activeFieldId) return
     const el = inputRef.current
     if (!el || el === document.activeElement) return
     const ae = document.activeElement as HTMLElement | null
     if (ae?.closest("[data-dynamic-input]")) return
+    if (!engine.mayTakeFocus(ae)) return
     el.focus()
     el.select()
   })

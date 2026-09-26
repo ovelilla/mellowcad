@@ -484,6 +484,18 @@ describe("viewport", () => {
     }
   })
 
+  it("frames a given rectangle, which ZOOM Previous steps back from", () => {
+    const cad = createHarness({ width: 1000, height: 800 })
+
+    cad.runtime.zoomToBounds({ min: p(0, 0), max: p(100, 50) }, 100)
+
+    // The rectangle's width binds: (1000 − 2 × 100) / 100 = 8 px per unit.
+    expect(cad.state().scale).toBeCloseTo(8)
+    expect(cad.toScreen(p(50, 25))).toBeCloseToPoint(p(500, 400))
+    expect(cad.runtime.zoomPrevious()).toBe(true)
+    expect(cad.state().scale).toBe(1)
+  })
+
   it("returns to the default view on reset", () => {
     const cad = createHarness()
 

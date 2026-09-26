@@ -11,6 +11,8 @@ export const DRAWING_FILE_TYPE = "easycad-drawing"
 export interface DrawingSummary {
   /** Top-level objects in the drawing (block contents are not counted). */
   readonly objects: number
+  /** Entries in its layer table, the base layer included. */
+  readonly layers: number
 }
 
 /**
@@ -26,9 +28,21 @@ export function summarizeDrawing(text: string): DrawingSummary | null {
     return null
   }
   if (typeof data !== "object" || data === null) return null
-  const file = data as { type?: unknown; entities?: unknown }
+  const file = data as { type?: unknown; entities?: unknown; layers?: unknown }
   if (file.type !== DRAWING_FILE_TYPE || !Array.isArray(file.entities)) {
     return null
   }
-  return { objects: file.entities.length }
+  return {
+    objects: file.entities.length,
+    layers: Array.isArray(file.layers) ? file.layers.length : 0,
+  }
+}
+
+/**
+ * Whether a drawing holds nothing worth keeping: no objects and no layer but
+ * the base one. The editor does not restore such an autosave, which is what
+ * makes it safe for anything else to write over it without asking.
+ */
+export function isBlankDrawing(summary: DrawingSummary): boolean {
+  return summary.objects === 0 && summary.layers <= 1
 }

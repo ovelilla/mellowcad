@@ -12,21 +12,45 @@ import {
   PointerEventData,
 } from "../application/CadRuntime"
 import { EngineState, StylesPanelTab } from "../application/EngineState"
-import { EngineHost } from "../application/ports"
+import { DrawingStore, EngineHost } from "../application/ports"
 import { SnapModeType } from "../application/SnapMode"
 import { SnapType } from "../application/snapping/types"
 import { ConstraintType } from "../application/constraints/types"
 import { Tool } from "../application/tools/Tool"
+import { Bounds } from "../domain/entities"
 import { CanvasScenePresenter } from "./CanvasScenePresenter"
 import { createBrowserFileTransport } from "./browserFileTransport"
 import { createBrowserClipboard } from "./browserClipboard"
 import { createLocalStorageDrawingStore } from "./localStorageDrawingStore"
 
+export interface CadEngineOptions {
+  /**
+   * Where the transparent autosave goes: by default this device's store, which
+   * is the editor's drawing. An engine embedded anywhere else passes its own so
+   * it can never write over that drawing; `null` turns autosave off.
+   */
+  readonly store?: DrawingStore | null
+  /**
+   * Embeds the engine in a page it does not own. Without a scope the engine
+   * owns the whole document, as the editor needs: every key reaches it wherever
+   * focus sits, the wheel always zooms and the native context menu never opens.
+   *
+   * With one, the engine is **active** from a press or a focus inside `scope`
+   * until the next one outside it. Inactive, it hears no keys, leaves the wheel
+   * to scroll the page and never takes focus. Active, it hears keys aimed at
+   * the canvas or at the page body, and none of them scrolls the page; fields
+   * inside the scope keep the editor's rule for fields, and any other control
+   * there keeps its own keys.
+   */
+  readonly scope?: HTMLElement
+}
+
 /**
  * The browser adapter and composition root: it owns the `<canvas>`, its DOM
  * event listeners, the `ResizeObserver` and the `requestAnimationFrame` loop,
  * and wires them to a DOM-free {@link CadRuntime} plus a Canvas 2D scene
- * presenter and a localStorage drawing store.
+ * presenter and, unless {@link CadEngineOptions} say otherwise, this device's
+ * drawing store.
  *
  * It exposes the same façade the React layer has always used: construct it
  * with a canvas, subscribe to state, call imperative methods. React never
@@ -38,29 +62,42 @@ export class CadEngine {
   private readonly canvas: HTMLCanvasElement
   private readonly ctx: CanvasRenderingContext2D
   private readonly resizeObserver: ResizeObserver
+  private readonly scope: HTMLElement | null
 
   private dpr = 1
   private framePending = false
   private disposed = false
   private activePointerId: number | null = null
+  /** Always true for an engine that owns the document; see `scope`. */
+  private active: boolean
 
-  constructor(canvas: HTMLCanvasElement) {
+  constructor(canvas: HTMLCanvasElement, options: CadEngineOptions = {}) {
     this.canvas = canvas
     const ctx = canvas.getContext("2d")
     if (!ctx) throw new Error("2D canvas context is not available")
     this.ctx = ctx
+    this.scope = options.scope ?? null
+    this.active =
+      this.scope === null ||
+      this.scope.contains(canvas.ownerDocument.activeElement)
 
     const host: EngineHost = {
       requestRender: () => this.scheduleFrame(),
       setCursor: (cursor) => {
         this.canvas.style.cursor = cursor
       },
-      focusSurface: () => this.canvas.focus(),
+      // A command that ends after the user has clicked away from an embedded
+      // engine (a paste resolving late) must not pull them back into it.
+      focusSurface: () => {
+        if (this.active) this.canvas.focus()
+      },
     }
 
     this.runtime = new CadRuntime(
       host,
-      createLocalStorageDrawingStore(),
+      options.store === undefined
+        ? createLocalStorageDrawingStore()
+        : options.store,
       createBrowserFileTransport(canvas.ownerDocument),
       createBrowserClipboard()
     )
@@ -121,6 +158,10 @@ export class CadEngine {
 
   zoomToFit(padding?: number): void {
     this.runtime.zoomToFit(padding)
+  }
+
+  zoomToBounds(bounds: Bounds, padding?: number): void {
+    this.runtime.zoomToBounds(bounds, padding)
   }
 
   zoomPrevious(): boolean {
@@ -306,6 +347,24 @@ export class CadEngine {
     this.canvas.focus()
   }
 
+  /**
+   * Whether the engine's own UI (the dynamic-input box) may take keyboard
+   * focus away from `from`. The editor owns the page, so from anywhere. An
+   * embedded engine only while active, and only from its canvas, its scope or
+   * the body — never from the rest of the page, nor from a control beside the
+   * canvas that the user tabbed to.
+   */
+  mayTakeFocus(from: Element | null): boolean {
+    if (this.scope === null) return true
+    return (
+      this.active &&
+      (from === null ||
+        from === this.canvas ||
+        from === this.scope ||
+        from === this.canvas.ownerDocument.body)
+    )
+  }
+
   setDocumentUnit(unit: LengthUnit): void {
     this.runtime.setDocumentUnit(unit)
   }
@@ -473,6 +532,12 @@ export class CadEngine {
     // command or clear tracking references. The handler skips keys aimed at the
     // dynamic-input box, which handles its own Enter/Escape.
     c.ownerDocument.addEventListener("keydown", this.onKeyDown)
+    if (this.scope) {
+      // Capture, so a press whose own handler stops it still moves the user's
+      // attention in or out of the embedded engine.
+      c.ownerDocument.addEventListener("pointerdown", this.onPagePress, true)
+      c.ownerDocument.addEventListener("focusin", this.onPageFocus)
+    }
   }
 
   private detachEvents(): void {
@@ -485,6 +550,38 @@ export class CadEngine {
     c.removeEventListener("wheel", this.onWheel)
     c.ownerDocument.removeEventListener("contextmenu", this.onContextMenu)
     c.ownerDocument.removeEventListener("keydown", this.onKeyDown)
+    c.ownerDocument.removeEventListener("pointerdown", this.onPagePress, true)
+    c.ownerDocument.removeEventListener("focusin", this.onPageFocus)
+  }
+
+  private onPagePress = (e: PointerEvent): void => {
+    this.active = this.withinScope(e.target)
+  }
+
+  private onPageFocus = (e: FocusEvent): void => {
+    this.active = this.withinScope(e.target)
+  }
+
+  private withinScope(target: EventTarget | null): boolean {
+    return (
+      this.scope !== null &&
+      target instanceof Node &&
+      this.scope.contains(target)
+    )
+  }
+
+  /**
+   * Which key targets an embedded engine hears while it is active: its canvas,
+   * and the body — where focus falls when a focused field unmounts, as the
+   * dynamic-input box does when OFFSET moves from its distance to picking.
+   * Fields inside the scope are left to the editor's rule in `onKeyDown`; any
+   * other control there (a button beside the canvas) keeps Enter, Space and Tab.
+   */
+  private hearsKeysFrom(target: HTMLElement | null): boolean {
+    if (!this.active || target === null) return false
+    if (target === this.canvas || target === this.scope) return true
+    if (target === this.canvas.ownerDocument.body) return true
+    return this.withinScope(target) && target.closest(EDITABLE) !== null
   }
 
   private screenFromEvent(e: PointerEvent | WheelEvent): Vec2 {
@@ -535,6 +632,10 @@ export class CadEngine {
   }
 
   private onWheel = (e: WheelEvent): void => {
+    // WHY: AutoCAD zooms on every wheel turn over the drawing, but an engine
+    // embedded in a page that scrolls would trap the scroll of anyone passing
+    // over it. Until it is in use the wheel stays the page's.
+    if (!this.active) return
     e.preventDefault()
     this.runtime.wheel({ screen: this.screenFromEvent(e), deltaY: e.deltaY })
   }
@@ -542,24 +643,27 @@ export class CadEngine {
   private onContextMenu = (e: MouseEvent): void => {
     // Right-click pans and Shift+right-click opens the object-snap override
     // menu, so the native menu is never wanted over the drawing surface or the
-    // override menu. Editable fields keep their native menu (e.g. paste).
+    // override menu. Editable fields keep their native menu (e.g. paste), and
+    // so does the rest of a page the engine is only embedded in.
     const target = e.target as HTMLElement | null
-    if (target?.closest('input, textarea, select, [contenteditable="true"]')) {
-      return
-    }
+    if (target?.closest(EDITABLE)) return
+    if (this.scope && !this.withinScope(target)) return
     e.preventDefault()
   }
 
   private onKeyDown = (e: KeyboardEvent): void => {
+    const target = e.target as HTMLElement | null
+    // WHY: AutoCAD takes every key while its window has focus. Embedded in a
+    // page, that would take the page's keyboard, so keys count only while the
+    // engine is in use. The runtime's routing order is untouched: this, like
+    // the field rule below, decides only whether a key reaches it at all.
+    if (this.scope && !this.hearsKeysFrom(target)) return
     // Keys typed into editable UI (the dynamic-input box) belong to that field,
     // which handles its own Enter/Escape/typing — don't hijack them here. Two
     // exceptions are global and must work wherever focus sits, as in AutoCAD:
     // function keys (F8 Ortho, F10 Polar, ...) and the file shortcuts, which
     // also have to be swallowed so the browser's Save/Open dialogs never open.
-    const target = e.target as HTMLElement | null
-    const inEditable = !!target?.closest(
-      'input, textarea, select, [contenteditable="true"]'
-    )
+    const inEditable = !!target?.closest(EDITABLE)
     if (inEditable && !/^F\d+$/.test(e.key) && !isFileShortcut(e)) {
       return
     }
@@ -569,7 +673,11 @@ export class CadEngine {
       ctrlKey: e.ctrlKey,
       altKey: e.altKey,
     }
-    if (this.runtime.keyDown(data)) e.preventDefault()
+    const consumed = this.runtime.keyDown(data)
+    // A key the runtime passes on — Space confirming a selection set, an arrow
+    // mid-command — does nothing in the editor, whose page cannot scroll. A
+    // page an engine is embedded in can, and would, while the user draws.
+    if (consumed || (this.scope && SCROLL_KEYS.has(e.key))) e.preventDefault()
   }
 
   private releasePointer(pointerId: number): void {
@@ -583,6 +691,22 @@ export class CadEngine {
     }
   }
 }
+
+/** Elements whose keys and context menu belong to the text in them. */
+const EDITABLE = 'input, textarea, select, [contenteditable="true"]'
+
+/** Keys whose default action scrolls the page. */
+const SCROLL_KEYS = new Set([
+  " ",
+  "ArrowUp",
+  "ArrowDown",
+  "ArrowLeft",
+  "ArrowRight",
+  "PageUp",
+  "PageDown",
+  "Home",
+  "End",
+])
 
 /**
  * Ctrl+S / Ctrl+O. The other Ctrl combos stay unforwarded from editable fields

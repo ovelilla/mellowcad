@@ -1077,3 +1077,107 @@ Decisiones tomadas al ejecutar, en los huecos que el brief dejaba abiertos.
   tokens se leen de `GOOGLE_SITE_VERIFICATION` y `BING_SITE_VERIFICATION`), enviar el sitemap,
   inspeccionar `/`, pasar el Rich Results Test y comprobar la vista previa en X, LinkedIn, Slack y
   WhatsApp — todo requiere la URL pública.
+
+**Fase 2 — diseño (decidido antes de escribir código)**
+
+- **Opciones de `CadEngine`**: `new CadEngine(canvas, { store, scope })`. Sin opciones, el editor
+  exactamente como hoy.
+  - `store` sustituye al almacén del autosave (por defecto, `localStorage`). El boceto usa
+    `createMemoryDrawingStore()`, un adaptador nuevo. `null` apaga el autosave.
+  - `scope` (un elemento) incrusta el motor. Se **activa** cuando se pulsa o entra el foco dentro
+    de `scope`, y se desactiva cuando ocurre fuera. Mientras está inactivo no oye teclas, la rueda
+    hace scroll de la página y `focusSurface()` no roba el foco. Activo, oye las teclas dirigidas al
+    canvas o al `body` (ahí cae el foco cuando se desmonta un campo de entrada dinámica: OFFSET tras
+    la distancia); los campos del ámbito siguen la regla actual (teclas F y Ctrl+S/O), y los botones
+    y enlaces del ámbito conservan Enter, Espacio y Tab. El menú contextual solo se suprime dentro.
+  - Los oyentes siguen en el documento; solo cambia el filtro, que vive en el adaptador **antes** de
+    `runtime.keyDown`, como el de los campos editables. El orden de enrutado de
+    `cad-runtime.instructions.md` no se toca.
+  - `engine.mayTakeFocus(from)` le dice al `DynamicInput` del editor de dónde puede recuperar el
+    foco: de cualquier sitio en el editor (como hoy), solo del canvas o del `body` activo en un
+    motor incrustado. Si no, al terminar un autosave el cuadro devolvería el foco al boceto aunque
+    se hubiera salido con Tab.
+  - Tests en Node con un DOM falso mínimo sobre `EventTarget` (sin jsdom): comportamiento por
+    defecto, filtro del ámbito, rueda y almacén inyectado sin escrituras en `localStorage`.
+- **Carga del motor**: la isla `LiveSheet` (pequeña, en la carga inicial) importa `live-canvas`
+  solo con un `import()` dinámico al pulsar "Try it here", y lo precalienta al pasar el ratón o
+  enfocar el botón. El boceto inicial es el dibujo del hero: un route handler estático
+  (`/sketches/hero.json`, `force-static`, `noindex`) reproduce el guion en build y lo sirve como
+  fichero de dibujo con la capa 0 como actual. Cero bytes en la carga inicial; se vuelve a medir el
+  JS de `/`.
+- **Sin salto al activarse**: el lienzo vivo se superpone a la figura estática, que sigue en el
+  flujo (invisible e `inert`) reservando su caja, y encuadra el mismo `frame` con el mismo padding
+  escalado. Para eso el motor gana `zoomToBounds` (el gemelo programático de ZOOM Ventana).
+- **UI del boceto**: el cuadro de entrada dinámica es el `DynamicInput` del editor, no una copia
+  (`marketing.css` escanea ese fichero y traduce sus tokens de shadcn a los de la hoja dentro de
+  `.live-sketch`). La línea de comandos es una versión acoplada con el aspecto de la del hero que lee
+  `state.commandLine`. Sin menú de referencias (Mayús+clic derecho) ni lista de ciclo de selección:
+  no caben en la hoja. El boceto cierra el menú si se abre y deja el ciclo en solo distintivo; el
+  editor completo tiene los dos. Se anota en `autocad-coverage.md`.
+- **Salida y foco**: botón visible "Close" en la línea de comandos; Esc cancela como en AutoCAD y no
+  cierra el boceto (Esc Esc es memoria muscular); Tab y Mayús+Tab salen. Al cerrar, el foco vuelve a
+  "Try it here" y el boceto se conserva en memoria hasta recargar. El canvas lleva
+  `role="application"` y la línea de comandos es un `role="log"`.
+- **"Open in the full editor"**: si el autosave del dispositivo está en blanco (el mismo criterio
+  por el que el editor no lo restaura: sin objetos y solo la capa 0, ahora `isBlankDrawing()`), se
+  escribe el boceto y se navega a `/draw`. Si no, un `<dialog>` nativo modal: **Download the
+  sketch** (primaria y con el foco: descarga el boceto como fichero y abre el editor con el dibujo
+  guardado), **Replace my drawing** y **Cancel**. Toda opción que no es cancelar completa la
+  intención de abrir el editor sin perder nada. Si el navegador rechaza la escritura, se descarga el
+  boceto antes de navegar.
+- **View transition**: `@view-transition { navigation: auto }` en las dos hojas, dentro de
+  `prefers-reduced-motion: no-preference`. El contenedor del editor lleva
+  `view-transition-name: drawing-sheet` en CSS. La hoja del hero lo recibe solo en `pageswap` hacia
+  `/draw` (y en `pagereveal` al volver desde bfcache) y solo si está en pantalla: según la
+  especificación, un nombre permanente crea siempre contexto de apilamiento y _backdrop root_, y un
+  marco fuera de pantalla volaría desde arriba. 400 ms con la curva de §4.6.
+- **Speculation Rules**: una regla de documento (`href_matches: "/draw"`, `eagerness: "moderate"`,
+  solo `prefetch`) en el layout de marketing, así que vale para todos los CTA.
+- **Changelog**: `CHANGELOG.md` en la raíz, en formato Keep a Changelog 1.1.0, que `lib/changelog.ts`
+  lee en build. `/changelog` muestra las versiones publicadas (no `Unreleased`) como el cuadro de
+  revisiones de la hoja. Un test exige que la última versión sea la de `package.json`, que pasa a
+  **0.1.0** con esta publicación (fases 0–2; nunca se había subido). Las entradas se reconstruyen
+  del historial de git y no llevan cifras del producto (§2.5). Se enlaza desde Status, el cajetín
+  (REV) y el sitemap.
+- `ContinueDrawing` relee el autosave en `pageshow` y `storage`: al volver del editor por bfcache o
+  con el editor abierto en otra pestaña, el CTA dejaba de estar al día.
+
+**Fase 2 — lo que cambió al construirla**
+
+- **El _opt-in_ de la view transition va en línea**, en el `<head>` de los dos layouts
+  (`lib/view-transition.ts`). Desde la hoja de estilos, Chrome se saltaba 2 de cada 10 transiciones
+  hacia `/draw` ("ViewTransition opt-in disabled", un rechazo sin capturar), con y sin Speculation
+  Rules. En línea: 60 de 60. Las hojas conservan solo la temporización del grupo.
+- **El boceto incrustado impide el _scroll_ con las teclas que oye.** Espacio (confirma una
+  selección) y las flechas llegan al runtime sin que las consuma; en el editor no pasa nada porque
+  su página no se desplaza, pero en la landing la página bajaba mientras se dibujaba.
+- "Open in the full editor" y "Close" pasan a la esquina superior derecha de la hoja: en la línea
+  de comandos recortaban las pistas. Las pistas se acortaron para que quepan enteras desde 1024 px.
+- El diálogo se ensanchó a 36rem para que sus tres botones quepan en una fila.
+- Fallo de la fase 1 corregido de paso: `JsonLd` no escapaba `<` (el reemplazo, con una sola barra
+  invertida, era el propio `<`).
+- La fecha de la versión 0.1.0 en `CHANGELOG.md` es la de este commit; si el despliegue se retrasa,
+  se ajusta con él.
+
+**Fase 2 — mediciones** (build de producción en local, Chrome)
+
+- **JS propio en `/`: 5,6 KB gz / 4,9 KB br** (fase 1: 4,2 KB). El motor (84 KB gz) no se
+  descarga hasta pulsar "Try it here" —o al pasar el ratón por el botón— y es el mismo chunk que usa
+  `/draw`, así que probar el boceto deja el editor en caché.
+- **Primera carga: 229,4 KB br / 266,2 KB gz**; la fase 1, reconstruida hoy con el mismo método,
+  226,4 / 263,0 (+3 KB: textos del boceto en la carga RSC, la isla y el CSS del cuadro de entrada
+  dinámica). CSS 9,4 KB gz. Lighthouse suma además los _prefetch_ ociosos de `<Link>` (`/?_rsc=…`,
+  ya presentes en la fase 1), que no son carga crítica.
+- **Lighthouse, comparado en la misma máquina**: móvil 94–95 en las dos fases (el LCP simulado
+  oscila entre 2,94 y 3,09 s en ambas; TBT ~24 ms en ambas, así que el 0 ms anotado en la fase 1
+  no se reproduce hoy) · escritorio 100 / 100 / 96 / 100 · CLS 0.
+- axe: 0 infracciones en `/` (escritorio y móvil), con el boceto abierto, con el diálogo abierto y
+  en `/changelog`.
+- Comprobado en el navegador: nada del motor en la carga de `/`; foco y teclado (Tab sale del
+  boceto, Esc cancela, las teclas de sus botones son de los botones, fuera de él teclas y rueda son
+  de la página); encuadre idéntico al de la figura estática; el boceto sobrevive a cerrarlo; el
+  autosave no se toca; traspaso sin autosave, con diálogo (Esc, descargar y reemplazar) y de vuelta
+  por bfcache (el CTA pasa a "Continue drawing · 16 objects" y el marco encoge de vuelta); `/draw`
+  igual que antes (teclas desde el `body` y desde botones, entrada dinámica, autosave y
+  restauración, rueda, menú contextual y Ctrl+S). Sin "Try it here" en móvil.
+- Pendiente: los eventos `demo_start` y `demo_handoff` (§10), cuando el plan de Vercel los incluya.

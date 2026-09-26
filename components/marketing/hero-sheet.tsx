@@ -7,6 +7,8 @@ import { IDLE_PROMPT, plotDemo, type PlottedLine } from "@/lib/plot"
 
 import { Drawing } from "./drawing"
 import { HeroControls } from "./hero-controls"
+import { LiveSheet } from "./live-sheet"
+import { UcsIcon } from "./ucs-icon"
 
 const SHEET_ID = "hero-sheet"
 
@@ -72,10 +74,12 @@ function lastCursor(actions: readonly DemoAction[]) {
 /**
  * The hero's drawing sheet: the flange plotted stroke by stroke while the
  * command line below types what drew it — both timed from one replay of the
- * script, at build time, with no JavaScript needed to watch it.
+ * script, at build time, with no JavaScript needed to watch it. On a computer
+ * the sheet can then come alive (`LiveSheet`).
  */
 export async function HeroSheet() {
   const t = await getTranslations("Hero")
+  const live = await getTranslations("LiveSketch")
   const plot = await plotDemo(HERO_FIGURE.script, HERO_FIGURE)
   const settings = plot.recording.document.getSettings()
   const cursor = lastCursor(HERO_FIGURE.script.actions)
@@ -83,60 +87,61 @@ export async function HeroSheet() {
 
   return (
     <figure className="flex flex-col gap-3">
-      <div
+      <LiveSheet
         id={SHEET_ID}
-        className="typing plot overflow-hidden rounded-lg border border-border bg-bg shadow-[0_24px_64px_-32px_rgb(0_0_0/0.8)]"
-      >
-        <div className="relative">
-          <div
-            aria-hidden="true"
-            className="pointer-events-none absolute inset-0 sheet-grid [mask-image:none]"
-          />
-          <Drawing
-            markup={plot.markup}
-            width={plot.width}
-            height={plot.height}
-            title={t("drawingTitle")}
-            description={t("drawingDescription")}
-            className="relative"
-          />
-          <svg
-            viewBox="0 0 40 40"
-            aria-hidden="true"
-            className="absolute bottom-3 left-3 size-10"
-          >
-            <path d="M8 32H33" stroke="var(--cad-axis-x)" strokeWidth="1.5" />
-            <path d="M34 32l-6-2.5v5z" fill="var(--cad-axis-x)" />
-            <path d="M8 32V7" stroke="var(--cad-axis-y)" strokeWidth="1.5" />
-            <path d="M8 6l-2.5 6h5z" fill="var(--cad-axis-y)" />
-            <text
-              x="29"
-              y="27"
-              fill="var(--cad-axis-x)"
-              fontSize="8"
-              fontFamily="var(--font-mono)"
+        view={{
+          frame: HERO_FIGURE.frame,
+          padding: HERO_FIGURE.padding,
+          width: HERO_FIGURE.width,
+        }}
+        labels={{
+          tryIt: live("tryIt"),
+          loading: live("loading"),
+          failed: live("failed"),
+          retry: live("retry"),
+          live: {
+            canvasLabel: live("canvasLabel"),
+            hint: live("hint"),
+            wheelHint: live("wheelHint"),
+            commandLog: live("commandLog"),
+            commandPrompt: IDLE_PROMPT,
+            openEditor: live("openEditor"),
+            close: live("close"),
+            closeLabel: live("closeLabel"),
+            dialogTitle: live("dialogTitle"),
+            savedOne: live.raw("savedOne") as string,
+            savedOther: live.raw("savedOther") as string,
+            dialogBody: live("dialogBody"),
+            download: live("download"),
+            replace: live("replace"),
+            cancel: live("cancel"),
+          },
+        }}
+        drawing={
+          <div className="relative">
+            <div
+              aria-hidden="true"
+              className="pointer-events-none absolute inset-0 sheet-grid [mask-image:none]"
+            />
+            <Drawing
+              markup={plot.markup}
+              width={plot.width}
+              height={plot.height}
+              title={t("drawingTitle")}
+              description={t("drawingDescription")}
+              className="relative"
+            />
+            <UcsIcon />
+            <p
+              className="absolute right-3 bottom-3 data-mono text-xs text-fg-subtle"
+              aria-label={t("cursor")}
             >
-              X
-            </text>
-            <text
-              x="12"
-              y="10"
-              fill="var(--cad-axis-y)"
-              fontSize="8"
-              fontFamily="var(--font-mono)"
-            >
-              Y
-            </text>
-          </svg>
-          <p
-            className="absolute right-3 bottom-3 data-mono text-xs text-fg-subtle"
-            aria-label={t("cursor")}
-          >
-            X {coordinate(cursor.x)}
-            <span className="ml-3">Y {coordinate(cursor.y)}</span>
-          </p>
-        </div>
-        <div className="flex items-end gap-3 border-t border-border bg-bg-sunken px-3 py-2">
+              X {coordinate(cursor.x)}
+              <span className="ml-3">Y {coordinate(cursor.y)}</span>
+            </p>
+          </div>
+        }
+        transcript={
           <div
             aria-hidden="true"
             className="flex h-[6em] min-w-0 flex-1 flex-col justify-end overflow-hidden font-mono text-[0.8125rem]"
@@ -155,14 +160,16 @@ export async function HeroSheet() {
               />
             </div>
           </div>
+        }
+        controls={
           <HeroControls
             targetId={SHEET_ID}
             pauseLabel={t("pause")}
             playLabel={t("play")}
             replayLabel={t("replay")}
           />
-        </div>
-      </div>
+        }
+      />
       <figcaption className="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-2 text-sm text-fg-subtle">
         <span>{t("caption")}</span>
         <details>

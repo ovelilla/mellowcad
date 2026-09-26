@@ -135,3 +135,13 @@
     @apply font-sans;
     }
 }
+
+/* Arriving from the landing, its hero sheet grows into the canvas, which is
+   named `drawing-sheet` (CadWorkspace); timed alike in marketing.css. The
+   opt-in itself is inline in the layout (lib/view-transition.ts). */
+@media (prefers-reduced-motion: no-preference) {
+  ::view-transition-group(drawing-sheet) {
+    animation-duration: 400ms;
+    animation-timing-function: cubic-bezier(0.65, 0, 0.35, 1);
+  }
+}

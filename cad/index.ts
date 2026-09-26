@@ -14,6 +14,7 @@
  */
 
 export { CadEngine } from "./adapters/CadEngine"
+export type { CadEngineOptions } from "./adapters/CadEngine"
 export { CanvasScenePresenter } from "./adapters/CanvasScenePresenter"
 export {
   SvgScenePresenter,
@@ -33,6 +34,7 @@ export {
   createLocalStorageDrawingStore,
   readSavedDrawingSummary,
 } from "./adapters/localStorageDrawingStore"
+export { createMemoryDrawingStore } from "./adapters/memoryDrawingStore"
 
 export { CadRuntime } from "./application/CadRuntime"
 export type {
@@ -107,6 +109,7 @@ export {
 export type { DrawingPreviewOptions } from "./application/drawingPreview"
 
 export { clipboardSnapshot, planPaste } from "./application/clipboard"
+export { documentSnapshot } from "./application/runtimeFiles"
 export type { PastePlan } from "./application/clipboard"
 
 export { Viewport } from "./application/Viewport"
@@ -337,7 +340,10 @@ export type {
   DrawingSnapshot,
   ParsedDrawing,
 } from "./serialization/drawingFile"
-export { summarizeDrawing } from "./serialization/drawingSummary"
+export {
+  isBlankDrawing,
+  summarizeDrawing,
+} from "./serialization/drawingSummary"
 export type { DrawingSummary } from "./serialization/drawingSummary"
 export {
   CLIPBOARD_FILE_TYPE,

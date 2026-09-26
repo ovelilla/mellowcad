@@ -41,6 +41,26 @@
     "replay": "Replay the drawing",
     "cursor": "Cursor position"
   },
+  "LiveSketch": {
+    "tryIt": "Try it here",
+    "loading": "Loading the sketch…",
+    "failed": "The sketch did not load. Check your connection and try again.",
+    "retry": "Try again",
+    "canvasLabel": "Live sketch of the flange",
+    "hint": "Type a command — L for LINE, C for CIRCLE — then Enter. Esc cancels.",
+    "wheelHint": "The wheel zooms while you draw here; click outside to scroll the page.",
+    "commandLog": "Command line",
+    "openEditor": "Open in the full editor",
+    "close": "Close",
+    "closeLabel": "Close the sketch",
+    "dialogTitle": "You already have a drawing in the editor",
+    "savedOne": "It has # object and is autosaved in this browser. The editor keeps one drawing at a time.",
+    "savedOther": "It has # objects and is autosaved in this browser. The editor keeps one drawing at a time.",
+    "dialogBody": "Download this sketch as a file and open your drawing, or replace your drawing with the sketch.",
+    "download": "Download the sketch",
+    "replace": "Replace my drawing",
+    "cancel": "Cancel"
+  },
   "SendToDesktop": {
     "action": "Send to my computer",
     "copied": "Link copied",
@@ -160,6 +180,7 @@
     "next3": "SPLINE",
     "next4": "UCS",
     "updated": "Updated {date}",
+    "changelog": "What changed, release by release",
     "contact": "Missing something you need? Tell me."
   },
   "Faq": {
@@ -191,6 +212,8 @@
     "product": "Product",
     "contact": "Contact",
     "privacy": "Privacy",
+    "changelog": "Changelog",
+    "revisionLink": "Changelog: version {version}",
     "language": "Language",
     "theme": "Theme",
     "soon": "Coming soon",
@@ -226,6 +249,22 @@
     "contactTitle": "Contact",
     "contactBody": "Questions about privacy, or anything else: <email>{address}</email>.",
     "updated": "Last updated {date}"
+  },
+  "Changelog": {
+    "metaTitle": "Changelog",
+    "metaDescription": "Every release of MellowCAD, newest first: what it added, changed and fixed, and when it went live.",
+    "label": "Revision history",
+    "title": "Changelog",
+    "lead": "Every release of MellowCAD, newest first, dated the day it went live.",
+    "revision": "Rev",
+    "version": "Version",
+    "added": "Added",
+    "changed": "Changed",
+    "deprecated": "Deprecated",
+    "removed": "Removed",
+    "fixed": "Fixed",
+    "security": "Security",
+    "contact": "Missing something you need? Tell me."
   },
   "NotFound": {
     "metaTitle": "Page not found",
