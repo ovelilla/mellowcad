@@ -27,9 +27,9 @@
    descartó (D9).
 6. **El rendimiento forma parte del diseño:** página 100 % prerenderizada, Server Components, islas
    mínimas y animaciones solo con CSS. LCP ≤ 1,8 s p75 en móvil; el motor nunca entra en la carga inicial.
-7. **Tema claro e i18n:** los selectores se construyen ya con su UI final pero deshabilitados. Los tokens
-   siguen el patrón de clase de next-themes y los textos viven desde el primer día en next-intl (sin
-   enrutado por idioma todavía), así que activarlos será configuración, no una refactorización.
+7. **Solo oscuro, e i18n preparada:** un único esquema de color, el oscuro, como AutoCAD (D12). Los textos
+   viven desde el primer día en next-intl (sin enrutado por idioma todavía); el plan para activar
+   idiomas está en `docs/next-i18n.md`.
 
 ## 1. Punto de partida
 
@@ -128,9 +128,8 @@ tiene que demostrarlo, no solo decirlo.
 - **Mismo proyecto.** La landing necesita el motor _en el servidor_ para dibujar sus ilustraciones (§3.4).
   Además comparte tokens y fuentes con la app, se despliega una sola vez y usa un único dominio (sin
   repartir señales con un subdominio).
-- **Dos root layouts** (route groups). La landing no carga el `ThemeProvider` ni la tecla D, ni tampoco el
-  CSS del editor, y cada lado configura su `<html>`: la landing con `dark` fijo y el editor con
-  next-themes. Navegar de uno a otro provoca una recarga completa (lo documenta la guía de route groups),
+- **Dos root layouts** (route groups). La landing no carga el CSS del editor y cada lado configura su
+  `<html>`. Navegar de uno a otro provoca una recarga completa (lo documenta la guía de route groups),
   lo cual es aceptable e incluso deseable: el editor arranca limpio.
 - **`/draw` y no `/app`:** es corto, es un verbo, se lee y se dicta bien ("mellowcad.com/draw"), y el CTA
   "Start drawing" dice lo mismo que la URL.
@@ -236,8 +235,8 @@ export const hero = demo()
   (sweep y large-arc a partir de los ángulos en pantalla; el giro completo, en dos medios arcos), `path` →
   `<path fill-rule="evenodd">`, `text` → `<text>` con la altura de mayúsculas calculada con un ratio fijo
   de la fuente, y `dash` → `stroke-dasharray`. Las coordenadas se redondean a 1 decimal. Una opción
-  `palette` traduce los colores de `THEME` a `var(--cad-…)`, de modo que el tema claro no requiere volver a
-  renderizar. Los tests de Vitest corren en Node, sin jsdom, e incluyen el caso de arco y elipse con el
+  `palette` traduce los colores de `THEME` a `var(--cad-…)`, de modo que los dibujos toman sus colores
+  del CSS. Los tests de Vitest corren en Node, sin jsdom, e incluyen el caso de arco y elipse con el
   eje Y invertido, igual que ya se hace para el canvas.
 - **Los prompts no se escriben a mano.** La transcripción animada del hero es la que imprime el motor al
   reproducir el guion. Si un prompt cambia, la landing se actualiza en el siguiente build; si un comando se
@@ -247,22 +246,14 @@ export const hero = demo()
   drawn in MellowCAD."_
 - El mismo SVG alimenta la imagen OG (fase 1) y las páginas de comando (fase 3).
 
-### 3.5 Preparada para tema e i18n, sin activarlos
+### 3.5 Preparada para i18n, sin activarla
 
-**Tema**
+**Tema: solo oscuro (D12).** Se planteó un tema claro para más adelante y se descartó: la landing y el
+editor tienen un solo esquema, el oscuro, sin selector ni next-themes. `viewport`: `themeColor:
+"#0b0f14"` y `colorScheme: "dark"`.
 
-- Los tokens de la landing tienen la misma forma que los del editor (`:root` / `.dark`), pero en v1 solo
-  se definen los oscuros y `<html class="dark">` va fijo en el layout de marketing.
-- `ThemeSelect` tiene su UI final (un control segmentado System / Light / Dark con los iconos
-  `Monitor`/`Sun`/`Moon` de lucide), `aria-disabled="true"`, tooltip "Light theme coming soon" y ningún
-  handler.
-- Para activarlo después: añadir los valores claros, envolver la landing con el `ThemeProvider` de
-  next-themes usando **el mismo `attribute="class"` y la misma clave de almacenamiento que el editor** (así
-  la preferencia viaja entre la landing y la app) y quitar el `aria-disabled`. Los SVG ya usan
-  `var(--cad-*)`.
-- `viewport` en v1: `themeColor: "#0b0f14"` y `colorScheme: "dark"`.
-
-**Idiomas**
+**Idiomas.** Lo que sigue describe la preparación de la v1. El plan completo de internacionalización
+vive en su propio brief, `docs/next-i18n.md`, y sustituye a lo que aquí se dice sobre activar idiomas.
 
 - **next-intl desde la v1**, que es el estándar de facto para i18n en el App Router, en su modo _sin
   enrutado por idioma_: `i18n/request.ts` devuelve el locale fijo `en` y `messages/en.json`, sin leer
@@ -272,8 +263,8 @@ export const hero = demo()
   `Intl`).
 - Las islas cliente reciben sus textos como props desde el servidor, en lugar de envolver el árbol con
   todos los mensajes: así no viajan al navegador textos que no hacen falta.
-- `LanguageSelect` tiene su UI final (un globo con "English" y "Español (soon)") y está deshabilitado
-  igual que el de tema. Cuando se active serán **enlaces reales** a la URL equivalente (el `Link` de
+- `LanguageSelect` tiene su UI final (un globo con "English" y "Español (soon)") y está deshabilitado.
+  Cuando se active serán **enlaces reales** a la URL equivalente (el `Link` de
   next-intl), no un toggle en JS, para que los rastreadores descubran las versiones.
 - **No declarar `hreflang` mientras no exista el segundo idioma.**
 - **Al activar el segundo idioma** (fase 4), se aplica el patrón documentado de next-intl para Next 16:
@@ -315,11 +306,11 @@ cada detalle, y ninguno puede estar mal.
 diferencia frente a las landings SaaS genéricas, es barato (CSS y SVG) y escala a todas las páginas
 futuras, porque cada página es una "hoja" con su cajetín.
 
-### 4.2 Color (oscuro, v1)
+### 4.2 Color (solo oscuro)
 
-**Por qué oscuro primero:** es el espacio modelo en el que trabaja la audiencia, los dibujos de trazo claro
-se leen mejor sobre tinta y el fondo es exactamente el del canvas, así que al pulsar el CTA el editor
-aparece sobre el mismo negro, sin costuras. El tema claro llegará junto con el del editor.
+**Por qué oscuro:** es el espacio modelo en el que trabaja la audiencia, los dibujos de trazo claro se
+leen mejor sobre tinta y el fondo es exactamente el del canvas, así que al pulsar el CTA el editor aparece
+sobre el mismo negro, sin costuras. No habrá tema claro (D12).
 
 | Token                           | Valor                              | Uso                                                                                  | Contraste sobre `--bg` |
 | ------------------------------- | ---------------------------------- | ------------------------------------------------------------------------------------ | ---------------------- |
@@ -573,8 +564,8 @@ es pequeño y ámbar.
 ```text
 ┌──────────────────────┬────────────────────────────────────────┬────────────────────┐
 │ [m] MellowCAD        │ PRODUCT  Start drawing · Commands ·    │ LANGUAGE  [EN ▾]   │
-│ 2D CAD in your       │          Roadmap · FAQ · Privacy       │ THEME     [◐ ▾]    │
-│ browser              │ CONTACT  <email>                       │ (coming soon)      │
+│ 2D CAD in your       │          Roadmap · FAQ · Privacy       │ (coming soon)      │
+│ browser              │ CONTACT  <email>                       │                    │
 ├──────────────────────┼──────────────────┬─────────────────────┼────────────────────┤
 │ DWG NO. MC-001       │ REV 0.0.x · date │ SCALE 1:1           │ SHEET 1 OF 1       │
 └──────────────────────┴──────────────────┴─────────────────────┴────────────────────┘
@@ -936,11 +927,11 @@ El sitio se queda en la landing: ni `/commands` y sus páginas, ni `/shortcuts`,
 
 ### Fase 4 — Alcance
 
-1. Tema claro, junto con el del editor: valores claros de los tokens y selector activado.
-2. Español: selector activado, `hreflang` e investigación de palabras clave en español. Es la misma
-   landing traducida en `/es`, no contenido nuevo.
-3. Campaña de lanzamiento (§7.6).
-4. Evaluar los ejercicios de práctica: si llegan, dentro del editor, no como páginas (D9).
+1. Campaña de lanzamiento (§7.6).
+2. Evaluar los ejercicios de práctica: si llegan, dentro del editor, no como páginas (D9).
+
+El tema claro se descartó (D12). Los idiomas salen de este brief: tienen el suyo, `docs/next-i18n.md`,
+que abarca la landing, el editor y el motor como paquete, con español y árabe.
 
 Las comparativas (`/alternatives/autocad`) se descartaron con la fase 3 (D9).
 
@@ -980,6 +971,7 @@ base está estable, como ya tenías previsto.
 | D9  | Páginas de contenido     | Ninguna: el sitio es la landing, con `/privacy` de apoyo; sin `/commands`, `/shortcuts` ni comparativas                     | Decidido el 26/09/2026. No mejoran la landing: son una apuesta de SEO lenta, con redacción y mantenimiento propios. Se reabre solo si Search Console muestra la demanda                                                                   |
 | D10 | Changelog                | Retirado                                                                                                                    | Todo salió como 0.0.1, sin versiones de verdad entre medias: cualquier historial habría que reconstruirlo, y reconstruirlo es inventarlo. La fecha de actualización de la sección Status basta para mostrar que el proyecto sigue vivo    |
 | D11 | Privacidad               | `/privacy` se mantiene, completa según el art. 13 del RGPD y con el nombre del responsable, único nombre personal de la web | El alojamiento y las dos mediciones de Vercel tratan datos personales, aunque sea brevemente (la IP, un hash del visitante durante 24 h), igual que el email de contacto: informar de ello es obligatorio, y esa página es cómo se cumple |
+| D12 | Tema                     | Solo oscuro, en la landing y en el editor: sin selector, sin next-themes y sin la tecla D                                   | AutoCAD trabaja en oscuro por defecto y la audiencia viene de ahí; el lienzo ya era siempre oscuro, y un solo esquema reduce a la mitad la revisión visual (y la de RTL que viene)                                                        |
 
 ## 14. Reglas a promover al terminar
 
@@ -1196,7 +1188,8 @@ Decisiones tomadas al ejecutar, en los huecos que el brief dejaba abiertos.
   en `next dev`. La vuelta ya funcionaba porque la landing sale de la bfcache ya construida.
 - **Un blanco en tema claro.** El editor sigue el tema del sistema y su `body` es blanco en claro;
   como raíz del fundido aparecía entre dos hojas oscuras, en los dos sentidos. Mientras dura la
-  transición, la página del editor toma el oscuro del canvas (`html:active-view-transition`).
+  transición, la página del editor toma el oscuro del canvas (`html:active-view-transition`). Regla
+  retirada con el tema claro (D12).
 - **Pantalla negra en la segunda visita al editor, solo en `next dev`.** Al volver de la bfcache,
   Chrome sirve la siguiente navegación a `/draw` desde el prefetch hecho antes de la primera (se
   confirma con CDP: `fromPrefetchCache`). Con la página prerenderizada da igual; con el HTML de
@@ -1212,3 +1205,10 @@ Decisiones tomadas al ejecutar, en los huecos que el brief dejaba abiertos.
   de datos. Nombra al responsable (Oscar Velilla Abril), el único sitio de la web con un nombre
   personal: D6 sigue valiendo para el resto. Sin dirección postal, que la guía de la AEPD pide como
   dato de contacto, por decisión propia; el email es el contacto.
+- **Solo oscuro (D12).** Fuera `next-themes`, su proveedor y la tecla D (que en la práctica no llegaba
+  a dispararse: el motor se queda con la D para la línea de comandos), el selector inerte del cajetín
+  y los valores claros. Los tokens del editor son los oscuros en `:root` con `color-scheme: dark`, que
+  antes ponía next-themes, y `@custom-variant dark (&)` deja siempre activas las variantes `dark:` de
+  shadcn. La nota de privacidad deja de mencionar la preferencia de tema, que ya no se guarda.
+- **Los idiomas pasan a su propio brief**, `docs/next-i18n.md`: landing, editor y motor como paquete
+  de npm, con español y árabe (RTL).

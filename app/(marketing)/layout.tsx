@@ -56,7 +56,7 @@ export default async function MarketingLayout({
 }>) {
   const common = await getTranslations("Common")
   return (
-    <html lang="en" className={`dark ${inter.variable} ${fontMono.variable}`}>
+    <html lang="en" className={`${inter.variable} ${fontMono.variable}`}>
       <head>
         {/* The drawings' colours, written from the engine's own THEME so the
             figures and the editor can never drift apart. */}

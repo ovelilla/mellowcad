@@ -6,7 +6,6 @@ import { CONTACT_EMAIL, EDITOR_PATH } from "@/lib/site"
 
 import { LanguageSelect } from "./language-select"
 import { LogoMark } from "./logo"
-import { ThemeSelect } from "./theme-select"
 
 function Cell({
   label,
@@ -27,8 +26,8 @@ function Cell({
 
 /**
  * The footer is the sheet's title block: identity, links and the sheet's own
- * metadata — language and theme among them, since they are properties of the
- * sheet rather than things to do on it.
+ * metadata — its language among them, since that is a property of the sheet
+ * rather than something to do on it.
  */
 export async function SiteFooter() {
   const t = await getTranslations("Footer")
@@ -98,16 +97,6 @@ export async function SiteFooter() {
               current={t("english")}
               upcoming={t("spanish")}
               soon={t("languageSoon")}
-            />
-          </div>
-          <div className="flex items-center justify-between gap-3">
-            <span className="label-mono">{t("theme")}</span>
-            <ThemeSelect
-              label={t("theme")}
-              system={t("themeSystem")}
-              light={t("themeLight")}
-              dark={t("themeDark")}
-              soon={t("themeSoon")}
             />
           </div>
           <span className="label-mono text-[0.625rem]">{t("soon")}</span>

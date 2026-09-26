@@ -1,6 +1,6 @@
 ---
-applyTo: "components/cad/**,components/ui/**,components/theme-provider.tsx,app/(app)/**,hooks/**"
-description: "React/UI conventions for the CAD editor shell (/draw): file layout, theming tokens, Base UI gotchas, icons and where each control belongs. The landing has its own rules in marketing.instructions.md."
+applyTo: "components/cad/**,components/ui/**,app/(app)/**,hooks/**"
+description: "React/UI conventions for the CAD editor shell (/draw): file layout, colour tokens (one scheme, dark), Base UI gotchas, icons and where each control belongs. The landing has its own rules in marketing.instructions.md."
 ---
 
 # UI layer
@@ -22,16 +22,17 @@ Failures are reported at the command prompt, not in a bespoke React banner.
   shadcn-collection style.
 - Shared rail/bar atoms live in `toolbar-primitives.tsx`; custom glyphs in `icons.tsx`.
 
-## Theming — always check light _and_ dark
+## Colour — one scheme, dark
 
-Tokens flip between themes, so a colour that reads well in dark can be unusable in light.
+There is no theme switch, by decision (brief D12): AutoCAD works dark, and so does the whole site.
+The tokens in `:root` are the only values, `color-scheme: dark` keeps native controls dark, and
+`@custom-variant dark (&)` makes every `dark:` utility — shadcn's included — always apply, so a
+component added with the shadcn CLI renders as designed. Don't bring back next-themes, a `.dark`
+class or light values.
 
-- `--primary` is near-black in light and near-white in dark → `bg-primary/N` and
-  `var(--primary)` are **not** theme-safe for highlights or bars.
-- Use `bg-accent` for a selected/current row (that is the token designed for it), and
-  `text-primary` for check marks (visible in both).
+- `--primary` is near-white, so `bg-primary/N` is glare, not a highlight. Use `bg-accent` for a
+  selected/current row (the token designed for it) and `text-primary` for check marks.
 - Panels are `bg-card/90` + `backdrop-blur` (8px). Keep popovers at the same blur so surfaces match.
-- To force a theme in the browser: set `localStorage.theme` and toggle the `dark` class on `<html>`.
 
 ## Base UI gotchas
 

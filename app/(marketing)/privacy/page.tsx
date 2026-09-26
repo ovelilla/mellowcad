@@ -73,7 +73,7 @@ export default async function PrivacyPage() {
       </header>
       <Block
         title={t("storedTitle")}
-        items={[t("stored1"), t("stored2"), t("stored3")]}
+        items={[t("stored1"), t("stored2")]}
         note={t("storedNote")}
       />
       <Block

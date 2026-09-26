@@ -1,10 +1,10 @@
 import { Geist_Mono, Inter } from "next/font/google"
 import { Analytics } from "@vercel/analytics/next"
 import { SpeedInsights } from "@vercel/speed-insights/next"
-import type { Metadata } from "next"
+import type { Metadata, Viewport } from "next"
 
 import "./globals.css"
-import { ThemeProvider } from "@/components/theme-provider"
+import { THEME } from "@/cad"
 import { EDITOR_PATH, SITE_NAME, SITE_URL } from "@/lib/site"
 import { cn } from "@/lib/utils"
 import { EDITOR_SHEET_ID, VIEW_TRANSITION_OPT_IN } from "@/lib/view-transition"
@@ -32,6 +32,11 @@ export const metadata: Metadata = {
   twitter: { card: "summary_large_image" },
 }
 
+export const viewport: Viewport = {
+  themeColor: THEME.background,
+  colorScheme: "dark",
+}
+
 const inter = Inter({ subsets: ["latin"], variable: "--font-sans" })
 
 const fontMono = Geist_Mono({
@@ -47,7 +52,6 @@ export default function AppLayout({
   return (
     <html
       lang="en"
-      suppressHydrationWarning
       className={cn(
         "antialiased",
         fontMono.variable,
@@ -60,7 +64,7 @@ export default function AppLayout({
         <link rel="expect" href={`#${EDITOR_SHEET_ID}`} blocking="render" />
       </head>
       <body>
-        <ThemeProvider>{children}</ThemeProvider>
+        {children}
         <Analytics />
         <SpeedInsights />
       </body>

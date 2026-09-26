@@ -36,7 +36,7 @@ export const viewport: Viewport = {
 export default async function GlobalNotFound() {
   const t = await getTranslations("NotFound")
   return (
-    <html lang="en" className={`dark ${inter.variable} ${fontMono.variable}`}>
+    <html lang="en" className={`${inter.variable} ${fontMono.variable}`}>
       <body>
         <main className="mx-auto flex min-h-svh max-w-3xl flex-col justify-center gap-8 px-6">
           <Link href="/" aria-label={t("home")} className="self-start">

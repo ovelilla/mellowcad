@@ -6,8 +6,8 @@ description: "The landing at / (marketing root layout): static rendering, engine
 # Landing (`/`)
 
 The landing and the editor are two **root layouts** in one project. `app/(marketing)/layout.tsx`
-owns `<html class="dark">`, `marketing.css`, the header and footer and the metadata base;
-`app/(app)/layout.tsx` owns the editor, next-themes and `globals.css`. Crossing between them is a
+owns `<html>`, `marketing.css`, the header and footer and the metadata base;
+`app/(app)/layout.tsx` owns the editor and `globals.css`. Crossing between them is a
 full page load — which is why a link to the editor is a plain `<a href={EDITOR_PATH}>`, never
 `next/link`: its router prefetch would pull the editor's payload into the landing (only the
 document is prefetched, on intent — see "Into the editor"). Links _within_ the landing use `Link`.
@@ -49,8 +49,8 @@ party — updates it in the same change.
   `CadRuntime`'s strings. The chunk is shared with `/draw`, so trying the sketch also warms the
   editor.
 - The 404 is `app/global-not-found.tsx` (flag `experimental.globalNotFound`): with two root
-  layouts there is no common layout to compose `not-found` from. It imports `marketing.css` and
-  sets `class="dark"` itself, because it bypasses every layout.
+  layouts there is no common layout to compose `not-found` from. It imports `marketing.css`
+  itself, because it bypasses every layout.
 - A build-time `fs` read (`lib/facts.ts`) takes `/*turbopackIgnore: true*/`, or Turbopack traces the
   whole repository into the server output.
 
@@ -123,12 +123,10 @@ party — updates it in the same change.
   bfcache), and only while on screen: the spec makes a named element a stacking context at all
   times, and an off-screen one would fly in. The editor's canvas is named in its own markup.
 - **The editor's first frame waits for its named element** (`<link rel="expect"
-  href="#editor-sheet" blocking="render">` in its layout). Without it Chrome painted the editor
-  before the parser reached the element — the theme script ahead of it holds the parser until the
-  stylesheet loads — the pair never formed, and the hero only faded out where it stood.
-- While a transition runs, the page behind the editor's canvas is the canvas's own dark
-  (`html:active-view-transition`), whatever the theme: it is the root of the crossfade, and in a
-  light theme it flashed white.
+  href="#editor-sheet" blocking="render">` in its layout). Chrome may paint a page before the
+  parser reaches an element, and it did: a theme script then ahead of the element held the parser
+  until the stylesheet loaded, the pair never formed, and the hero only faded out where it stood.
+  Nothing else guarantees the order, so the wait stays.
 - `SpeculationRules` in the layout prefetches `/draw` on hover or press — the document only, and
   **only in production**. Back out of the bfcache, Chrome serves the next visit from the prefetch
   made before the first: fine for a prerendered page, but `next dev`'s HTML belongs to the request
@@ -185,9 +183,10 @@ party — updates it in the same change.
   `text-fg-muted`, `text-fg-subtle`, `bg-accent` / `text-accent-ink`, `text-precision`, and
   `var(--cad-*)` inside drawings. No loose hex in a component (`lib/brand.ts` holds the few that must
   be literal, for icons and the OG image). `--text-subtle` is the dimmest text allowed (≈ 5:1).
-- Tokens have the editor's `:root` / `.dark` shape but only dark values exist until the editor has
-  a light canvas. The theme and language selectors are built but inert (`aria-disabled`, focusable,
-  with a tooltip saying why).
+- One scheme, dark, like the editor (brief D12): the tokens sit on `:root` with
+  `color-scheme: dark`, `dark:` always applies, and there is no theme selector. The language
+  selector is built but inert (`aria-disabled`, focusable, with a tooltip saying why) until the
+  internationalisation brief (`docs/next-i18n.md`) lands.
 - One accent per view: amber is the call to action and the focus ring; cyan is reserved for
   precision (snap markers, measurements) and is never a link colour.
 - Use `text-wrap-style`, not the `text-wrap` shorthand, in base styles: the shorthand also resets the

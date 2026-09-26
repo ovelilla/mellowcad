@@ -9,10 +9,9 @@ export const SHEET_TRANSITION = "drawing-sheet"
 
 /**
  * The editor's element with that name, which its layout waits for before the
- * first frame (`<link rel="expect">`). Otherwise Chrome paints the editor
- * before the parser reaches it — the theme script ahead of it holds the parser
- * until the stylesheet loads — the transition finds nothing to grow into, and
- * the hero only fades out where it stood.
+ * first frame (`<link rel="expect">`). Chrome may paint a page before the
+ * parser reaches an element, and did so here: the transition then finds
+ * nothing to grow into, and the hero only fades out where it stood.
  */
 export const EDITOR_SHEET_ID = "editor-sheet"
 

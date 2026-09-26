@@ -9,15 +9,14 @@
 /* The live sketch embeds the editor's own dynamic-input box. */
 @source "../../components/cad/dynamic-input.tsx";
 
-@custom-variant dark (&:is(.dark *));
+/* One scheme, dark, like the editor and AutoCAD: `dark:` always applies. */
+@custom-variant dark (&);
 
 /*
- * Tokens have the editor's shape (`:root` light / `.dark` dark), but v1 only
- * defines the dark sheet and the layout fixes `<html class="dark">`. The light
- * values arrive with the editor's light canvas. The drawings' own colours are
- * the `--cad-*` properties, written from the engine's THEME by the layout.
+ * The sheet's tokens, its only values. The drawings' own colours are the
+ * `--cad-*` properties, written from the engine's THEME by the layout.
  */
-.dark {
+:root {
   --bg: #0b0f14;
   --bg-raised: #111820;
   --bg-sunken: #080b0f;
