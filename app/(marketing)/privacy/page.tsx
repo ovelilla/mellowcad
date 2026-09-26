@@ -3,7 +3,12 @@ import { getFormatter, getTranslations } from "next-intl/server"
 import type { ReactNode } from "react"
 
 import { pageMetadata } from "@/lib/metadata"
-import { CONTACT_EMAIL, CONTENT_UPDATED, SITE_NAME } from "@/lib/site"
+import {
+  CONTACT_EMAIL,
+  CONTENT_UPDATED,
+  DATA_CONTROLLER,
+  SITE_NAME,
+} from "@/lib/site"
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations("Privacy")
@@ -79,6 +84,7 @@ export default async function PrivacyPage() {
         title={t("handledTitle")}
         items={[
           t.rich("handled1", {
+            name: DATA_CONTROLLER,
             address: CONTACT_EMAIL,
             email: (chunks) => (
               <a href={`mailto:${CONTACT_EMAIL}`} className="underline-link">

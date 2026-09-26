@@ -21,9 +21,10 @@ Search Console data behind it.
 **`/privacy` is the notice GDPR requires** (Article 13), not decoration: the host and both Vercel
 measurements process personal data, if briefly (the IP address, a visitor hash kept 24 hours), and so
 does the contact address. It states what is kept and measured, who handles it and on what grounds,
-where it goes and the visitor's rights. Anything that starts handling personal data — another
-analytics tool, a form, an embed, a font or script from a third party — updates it in the same
-change.
+where it goes and the visitor's rights, and it names the person responsible (`DATA_CONTROLLER`) —
+the one place the site names anyone; everything else is signed MellowCAD. Anything that starts
+handling personal data — another analytics tool, a form, an embed, a font or script from a third
+party — updates it in the same change.
 
 ## Rendering
 

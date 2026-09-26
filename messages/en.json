@@ -244,7 +244,7 @@
     "analytics2": "Vercel Speed Insights reports how fast pages load and respond, with the page, your browser, system, type of device, network speed and country — anonymously too.",
     "analytics3": "Neither sees your drawings, and neither is used for advertising, profiling or any automated decision.",
     "handledTitle": "Who handles it, and why",
-    "handled1": "MellowCAD is an independent project. The person behind it is responsible for this data and answers at <email>{address}</email>.",
+    "handled1": "MellowCAD is an independent project by {name}, who is responsible for this data and answers at <email>{address}</email>.",
     "handled2": "Serving the site and measuring its use and speed rest on a legitimate interest in running a free service well, kept to anonymous statistics (Article 6(1)(f) GDPR).",
     "handled3": "Vercel Inc. hosts the site and runs both measurements. Like any host, it processes your IP address to deliver the pages. It is based in the United States and certified under the EU–U.S. Data Privacy Framework.",
     "handled4": "If you write, your message is handled by Google, the email provider, and used only to answer you, for as long as the conversation needs.",
