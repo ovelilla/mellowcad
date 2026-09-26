@@ -1,6 +1,6 @@
 ---
-applyTo: "app/(marketing)/**,app/global-not-found.tsx,app/opengraph-image.tsx,app/robots.ts,app/sitemap.ts,app/manifest.ts,components/marketing/**,content/**,messages/**,i18n/**,lib/site.ts,lib/plot.ts,lib/facts.ts,lib/og.tsx,lib/metadata.ts,lib/structured-data.ts,lib/brand.ts,lib/changelog.ts,lib/view-transition.ts,CHANGELOG.md"
-description: "The landing at / (marketing root layout): static rendering, engine-drawn figures, islands, the live sketch, the view transition into the editor, the changelog, copy in next-intl, tokens, budgets, claims policy and trademark rules."
+applyTo: "app/(marketing)/**,app/global-not-found.tsx,app/opengraph-image.tsx,app/robots.ts,app/sitemap.ts,app/manifest.ts,components/marketing/**,content/**,messages/**,i18n/**,lib/site.ts,lib/plot.ts,lib/facts.ts,lib/og.tsx,lib/metadata.ts,lib/structured-data.ts,lib/brand.ts,lib/view-transition.ts"
+description: "The landing at / (marketing root layout): static rendering, engine-drawn figures, islands, the live sketch, the view transition into the editor, the privacy notice, copy in next-intl, tokens, budgets, claims policy and trademark rules."
 ---
 
 # Landing (`/`)
@@ -11,6 +11,19 @@ owns `<html class="dark">`, `marketing.css`, the header and footer and the metad
 full page load — which is why a link to the editor is a plain `<a href={EDITOR_PATH}>`, never
 `next/link`: its router prefetch would pull the editor's payload into the landing (only the
 document is prefetched, on intent — see "Into the editor"). Links _within_ the landing use `Link`.
+
+**The site is the landing.** Besides it there is the 404 and one support page, `/privacy` — no
+changelog, command hub, cheat sheet or comparison pages. That was weighed and decided (brief, D9 and
+D10): they would not improve the landing, only bet on slow organic search, and a changelog would have
+to reconstruct a history that was never released as versions. Do not propose a new page without
+Search Console data behind it.
+
+**`/privacy` is the notice GDPR requires** (Article 13), not decoration: the host and both Vercel
+measurements process personal data, if briefly (the IP address, a visitor hash kept 24 hours), and so
+does the contact address. It states what is kept and measured, who handles it and on what grounds,
+where it goes and the visitor's rights. Anything that starts handling personal data — another
+analytics tool, a form, an embed, a font or script from a third party — updates it in the same
+change.
 
 ## Rendering
 
@@ -121,13 +134,6 @@ document is prefetched, on intent — see "Into the editor"). Links _within_ the
   it answered, and the editor served twice never hydrated (a blank sheet). Never `prerender`: it
   would run the editor, and count a visit, for every hover.
 
-## Changelog
-
-`/changelog` is `CHANGELOG.md` (Keep a Changelog 1.1.0) read by `lib/changelog.ts`; `[Unreleased]`
-is not shown, and a heading it cannot read fails the build. `content/changelog.test.ts` requires
-the newest release to be `package.json`'s version, so a release bumps both. Entries follow the
-claims policy: what people can now do, and no count the code should supply.
-
 ## Facts and copy
 
 - **Every number about the product comes from `lib/facts.ts`**, which reads the engine at build time
@@ -164,8 +170,7 @@ claims policy: what people can now do, and no count the code should supply.
   string _is_ `<`, and the escape silently does nothing (it shipped that way once). No invented
   ratings, ever.
 - `robots.ts` allows everything, `/draw` included (it must be fetchable for its `noindex` to be
-  read). `sitemap.ts` lists indexable pages only, with `CONTENT_UPDATED` — bump it with the copy —
-  and `/changelog` with its newest release's date.
+  read). `sitemap.ts` lists indexable pages only, with `CONTENT_UPDATED` — bump it with the copy.
 - Search Console / Bing tokens come from `GOOGLE_SITE_VERIFICATION` / `BING_SITE_VERIFICATION`.
 - Icons are generated from `lib/brand.ts` by `node scripts/icons/generate.ts`; the mark and the logo
   component share that geometry.

@@ -22,9 +22,9 @@
 4. **Mensaje:** _Type L. Press Enter. Draw._ La memoria muscular de AutoCAD en una pestaña, sin instalar
    nada, sin cuenta y con los dibujos en tu equipo, siendo explícitos sobre lo que aún falta (DWG/DXF,
    PDF, 3D).
-5. **SEO en tres capas:** técnica completa con las APIs de Next 16.3 (fase 1), un **hub de comandos
-   AutoCAD** que capta la demanda informacional de exactamente nuestra audiencia (fase 3), y preparación
-   para i18n y búsqueda generativa.
+5. **SEO en dos capas:** técnica completa con las APIs de Next 16.3 (fase 1) y preparación para i18n y
+   búsqueda generativa. El sitio es la landing: el hub de comandos que se planteó como tercera capa se
+   descartó (D9).
 6. **El rendimiento forma parte del diseño:** página 100 % prerenderizada, Server Components, islas
    mínimas y animaciones solo con CSS. LCP ≤ 1,8 s p75 en móvil; el motor nunca entra en la carga inicial.
 7. **Tema claro e i18n:** los selectores se construyen ya con su UI final pero deshabilitados. Los tokens
@@ -83,7 +83,7 @@ particulares.
 | **Cero fricción**             | El CTA abre el editor al instante; sin registro ni instalación                                               |
 | **Precisión**                 | Viñetas renderizadas por el motor: osnaps, OTRACK, polar, ventanas de selección                              |
 | **Tus dibujos, en tu equipo** | Autosave local, guardar/abrir fichero, analítica sin cookies (y por tanto sin banner de cookies)             |
-| **Honestidad y evolución**    | Sección "lo que hay / lo que falta / lo siguiente" y changelog                                               |
+| **Honestidad y evolución**    | Sección "lo que hay / lo que falta / lo siguiente", con su fecha de actualización                            |
 
 **Tono:** tranquilo y preciso, con el humor seco de la cultura AutoCAD (prompts, `Unknown command`).
 Frases cortas. Sin hype ("revolutionary", "AI-powered"), sin emojis y sin mayúsculas gritonas.
@@ -169,8 +169,8 @@ content/drawings/           dibujos hechos en MellowCAD (.ecad.json) para viñet
 lib/site.ts                 SITE_URL, nombre, contacto, fecha del contenido
 ```
 
-Más adelante (fases 3 y 4) se añaden `commands/`, `commands/[slug]/` (con `generateStaticParams` a partir
-del registro), `shortcuts/`, `changelog/` y el árbol de idiomas (§3.5).
+Más adelante (fase 4) se añade el árbol de idiomas (§3.5). `commands/`, `shortcuts/` y `changelog/` se
+descartaron (D9, D10).
 
 ### 3.3 Render
 
@@ -558,8 +558,8 @@ es pequeño y ámbar.
 - **H2:** "Honest about what's here — and what isn't yet."
 - Tres columnas: **Works today**, **Not yet** (DWG/DXF, impresión y PDF, presentaciones, MTEXT, splines,
   3D, móvil) y **Next up** (del roadmap: MTEXT, atributos de bloque, SPLINE, SCP).
-- Fecha de actualización, enlace al changelog (fase 2) y "Missing something you need? Tell me" (el mailto
-  actual).
+- Fecha de actualización y "Missing something you need? Tell me" (el mailto actual). Sin changelog
+  (D10).
 
 ### 5.10 FAQ (`#faq`) y CTA final
 
@@ -738,6 +738,9 @@ Los volúmenes y la dificultad se validan con Keyword Planner y con los datos re
 lanzamiento, no a ojo.
 
 ### 7.4 Contenido que posiciona
+
+> **Descartado (D9 y D10).** El sitio se queda en la landing; esta sección queda como análisis por si
+> algún día los datos de Search Console lo justifican.
 
 1. **Hub `/commands` y 15 páginas de comando** (fase 3). Es la mayor demanda informacional de exactamente
    nuestra audiencia, y aquí tenemos una ventaja que no tiene nadie más: como la fidelidad es la
@@ -925,22 +928,21 @@ de la página derivados del código · reglas actualizadas.
    pregunta (reemplazar, descargar el boceto o cancelar).
 4. View transition del hero al editor.
 5. Speculation Rules para `/draw`.
-6. `/changelog`.
+6. `/changelog`: se hizo y se retiró después (D10).
 
-### Fase 3 — Motor de contenido · M, continuo
+### Fase 3 — Motor de contenido · descartada (D9)
 
-1. `/commands` y las 15 primeras páginas, con OG propia.
-2. `/shortcuts` imprimible.
-3. Enlazado interno desde el catálogo de la home.
-4. `llms.txt` (opcional).
+El sitio se queda en la landing: ni `/commands` y sus páginas, ni `/shortcuts`, ni `llms.txt`.
 
 ### Fase 4 — Alcance
 
 1. Tema claro, junto con el del editor: valores claros de los tokens y selector activado.
-2. Español: selector activado, `hreflang` e investigación de palabras clave en español.
-3. Comparativas.
-4. Campaña de lanzamiento (§7.6).
-5. Evaluar los ejercicios de práctica.
+2. Español: selector activado, `hreflang` e investigación de palabras clave en español. Es la misma
+   landing traducida en `/es`, no contenido nuevo.
+3. Campaña de lanzamiento (§7.6).
+4. Evaluar los ejercicios de práctica.
+
+Las comparativas (`/alternatives/autocad`) se descartaron con la fase 3 (D9).
 
 **Por qué este orden:** hoy la raíz no tiene contenido indexable, así que cada semana sin la fase 1 es
 indexación perdida. La demo viva es el mayor efecto "wow", pero exige tocar el motor, así que llega sobre
@@ -965,16 +967,19 @@ base está estable, como ya tenías previsto.
 
 ## 13. Decisiones tomadas
 
-| #   | Decisión                 | Resolución                                                                                                        | Por qué                                                                                        |
-| --- | ------------------------ | ----------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------- |
-| D1  | Ruta del editor          | `/draw`                                                                                                           | Corta, es un verbo y coincide con el CTA; la raíz queda para el contenido indexable            |
-| D2  | ¿Se dice "Free"?         | Sí                                                                                                                | Es cierto hoy; el JSON-LD lleva `price: 0`                                                     |
-| D3  | GitHub y "open source"   | Ni enlace ni afirmación                                                                                           | El repo es privado (verificado: responde 404) y no tiene licencia                              |
-| D4  | Analítica de eventos     | Plan actual y conversión por páginas vistas; eventos cuando el plan los incluya                                   | No se asume un gasto; la analítica actual ya no usa cookies                                    |
-| D5  | Rastreadores de IA       | Todos permitidos, sin reglas por bot                                                                              | Es el `robots.txt` estándar y maximiza la visibilidad de un producto gratuito                  |
-| D6  | Autoría                  | `Organization` "MellowCAD" en el JSON-LD; sin nombre personal; contacto con el email ya público                   | Patrón estándar de sitio de producto; no se publican datos personales nuevos                   |
-| D7  | Tema del dibujo del hero | Pieza mecánica en el hero y viñeta arquitectónica en el catálogo                                                  | Luce lo que ya está implementado y habla a los dos perfiles de estudiante                      |
-| D8  | i18n                     | next-intl desde la v1 sin enrutado; `[locale]` + `proxy.ts` con `localePrefix: "as-needed"` al activar el español | Estándar de facto en el App Router: activar idiomas será configuración, no una refactorización |
+| #   | Decisión                 | Resolución                                                                                                        | Por qué                                                                                                                                                                                                                                   |
+| --- | ------------------------ | ----------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| D1  | Ruta del editor          | `/draw`                                                                                                           | Corta, es un verbo y coincide con el CTA; la raíz queda para el contenido indexable                                                                                                                                                       |
+| D2  | ¿Se dice "Free"?         | Sí                                                                                                                | Es cierto hoy; el JSON-LD lleva `price: 0`                                                                                                                                                                                                |
+| D3  | GitHub y "open source"   | Ni enlace ni afirmación                                                                                           | El repo es privado (verificado: responde 404) y no tiene licencia                                                                                                                                                                         |
+| D4  | Analítica de eventos     | Plan actual y conversión por páginas vistas; eventos cuando el plan los incluya                                   | No se asume un gasto; la analítica actual ya no usa cookies                                                                                                                                                                               |
+| D5  | Rastreadores de IA       | Todos permitidos, sin reglas por bot                                                                              | Es el `robots.txt` estándar y maximiza la visibilidad de un producto gratuito                                                                                                                                                             |
+| D6  | Autoría                  | `Organization` "MellowCAD" en el JSON-LD; sin nombre personal; contacto con el email ya público                   | Patrón estándar de sitio de producto; no se publican datos personales nuevos                                                                                                                                                              |
+| D7  | Tema del dibujo del hero | Pieza mecánica en el hero y viñeta arquitectónica en el catálogo                                                  | Luce lo que ya está implementado y habla a los dos perfiles de estudiante                                                                                                                                                                 |
+| D8  | i18n                     | next-intl desde la v1 sin enrutado; `[locale]` + `proxy.ts` con `localePrefix: "as-needed"` al activar el español | Estándar de facto en el App Router: activar idiomas será configuración, no una refactorización                                                                                                                                            |
+| D9  | Páginas de contenido     | Ninguna: el sitio es la landing, con `/privacy` de apoyo; sin `/commands`, `/shortcuts` ni comparativas           | Decidido el 26/09/2026. No mejoran la landing: son una apuesta de SEO lenta, con redacción y mantenimiento propios. Se reabre solo si Search Console muestra la demanda                                                                   |
+| D10 | Changelog                | Retirado                                                                                                          | Todo salió como 0.0.1, sin versiones de verdad entre medias: cualquier historial habría que reconstruirlo, y reconstruirlo es inventarlo. La fecha de actualización de la sección Status basta para mostrar que el proyecto sigue vivo    |
+| D11 | Privacidad               | `/privacy` se mantiene, completa según el art. 13 del RGPD                                                        | El alojamiento y las dos mediciones de Vercel tratan datos personales, aunque sea brevemente (la IP, un hash del visitante durante 24 h), igual que el email de contacto: informar de ello es obligatorio, y esa página es cómo se cumple |
 
 ## 14. Reglas a promover al terminar
 
@@ -1138,7 +1143,7 @@ Decisiones tomadas al ejecutar, en los huecos que el brief dejaba abiertos.
   revisiones de la hoja. Un test exige que la última versión sea la de `package.json`, que pasa a
   **0.1.0** con esta publicación (fases 0–2; nunca se había subido). Las entradas se reconstruyen
   del historial de git y no llevan cifras del producto (§2.5). Se enlaza desde Status, el cajetín
-  (REV) y el sitemap.
+  (REV) y el sitemap. **Se retiró después (D10)**; la versión se queda en 0.1.0.
 - `ContinueDrawing` relee el autosave en `pageshow` y `storage`: al volver del editor por bfcache o
   con el editor abierto en otra pestaña, el CTA dejaba de estar al día.
 
@@ -1156,8 +1161,6 @@ Decisiones tomadas al ejecutar, en los huecos que el brief dejaba abiertos.
 - El diálogo se ensanchó a 36rem para que sus tres botones quepan en una fila.
 - Fallo de la fase 1 corregido de paso: `JsonLd` no escapaba `<` (el reemplazo, con una sola barra
   invertida, era el propio `<`).
-- La fecha de la versión 0.1.0 en `CHANGELOG.md` es la de este commit; si el despliegue se retrasa,
-  se ajusta con él.
 
 **Fase 2 — mediciones** (build de producción en local, Chrome)
 
@@ -1199,3 +1202,11 @@ Decisiones tomadas al ejecutar, en los huecos que el brief dejaba abiertos.
   confirma con CDP: `fromPrefetchCache`). Con la página prerenderizada da igual; con el HTML de
   `next dev`, que pertenece a su petición, el App Router nunca hidrataba. Las Speculation Rules solo
   se emiten en producción, como el prefetch de `<Link>` de Next.
+- **Changelog retirado (D10).** Contaba una historia de versiones que nunca existió (todo salió como
+  0.0.1) y el repo es privado. Se quitan la página, `CHANGELOG.md`, su lector y su test, los enlaces
+  de Status y del cajetín, la entrada del sitemap y el paso de AGENTS.md.
+- **`/privacy` completa (D11).** Se añaden los puntos del art. 13 del RGPD que faltaban: quién
+  responde de los datos, la base legal (interés legítimo, art. 6.1.f), Vercel como encargado en
+  EE. UU. (certificado en el EU–U.S. Data Privacy Framework), Google para el correo, los plazos (el
+  hash del visitante dura 24 h) y los derechos, con la reclamación ante una autoridad de protección
+  de datos. Falta el nombre del responsable, que D6 dejó fuera y que el art. 13 pide.

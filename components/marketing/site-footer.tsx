@@ -73,11 +73,6 @@ export async function SiteFooter() {
                 </li>
               ))}
               <li>
-                <Link href="/changelog" className="underline-link">
-                  {t("changelog")}
-                </Link>
-              </li>
-              <li>
                 <Link href="/privacy" className="underline-link">
                   {t("privacy")}
                 </Link>
@@ -122,14 +117,8 @@ export async function SiteFooter() {
           <Cell label={t("drawingNumber")}>MC-001</Cell>
           <Cell label={t("revision")}>
             {/* The page is prerendered, so "now" is when this revision was built. */}
-            <Link
-              href="/changelog"
-              aria-label={t("revisionLink", { version: facts.version })}
-              className="underline-link"
-            >
-              {facts.version}
-            </Link>{" "}
-            · {format.dateTime(new Date(), { dateStyle: "medium" })}
+            {facts.version} ·{" "}
+            {format.dateTime(new Date(), { dateStyle: "medium" })}
           </Cell>
           <Cell label={t("scale")}>1:1</Cell>
           <Cell label={t("sheet")}>{t("sheetValue")}</Cell>

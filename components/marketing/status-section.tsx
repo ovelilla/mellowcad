@@ -1,4 +1,3 @@
-import Link from "next/link"
 import { getFormatter, getTranslations } from "next-intl/server"
 
 import { productFacts } from "@/lib/facts"
@@ -75,17 +74,12 @@ export async function StatusSection() {
         ))}
       </div>
       <div className="flex flex-wrap items-baseline justify-between gap-4 text-sm">
-        <p className="flex flex-wrap items-baseline gap-x-4 gap-y-1">
-          <span className="data-mono text-fg-subtle">
-            {t("updated", {
-              date: format.dateTime(new Date(CONTENT_UPDATED), {
-                dateStyle: "long",
-              }),
-            })}
-          </span>
-          <Link href="/changelog" className="underline-link">
-            {t("changelog")}
-          </Link>
+        <p className="data-mono text-fg-subtle">
+          {t("updated", {
+            date: format.dateTime(new Date(CONTENT_UPDATED), {
+              dateStyle: "long",
+            }),
+          })}
         </p>
         <a
           href={`mailto:${CONTACT_EMAIL}?subject=MellowCAD`}

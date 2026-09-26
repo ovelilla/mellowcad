@@ -120,8 +120,5 @@ Alongside green `typecheck` + `lint` + `test`, close the loop on the written kno
    - a convention or invariant future work must respect.
 3. **Correct anything the feature invalidated.** A rule that is now wrong is worse than no rule —
    edit or delete it rather than layering an exception on top.
-4. **If users can see the change, add a line under `[Unreleased]` in `CHANGELOG.md`.** A release
-   moves those lines under its version and bumps `package.json` to match; `/changelog` shows
-   released versions only.
 
 Keep this file short: it is loaded on every request. Detail belongs in the scoped instructions.
