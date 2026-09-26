@@ -1181,3 +1181,21 @@ Decisiones tomadas al ejecutar, en los huecos que el brief dejaba abiertos.
   igual que antes (teclas desde el `body` y desde botones, entrada dinámica, autosave y
   restauración, rueda, menú contextual y Ctrl+S). Sin "Try it here" en móvil.
 - Pendiente: los eventos `demo_start` y `demo_handoff` (§10), cuando el plan de Vercel los incluya.
+
+**Fase 2 — correcciones tras probarla**
+
+- **La ida no crecía.** Grabada fotograma a fotograma (screencast de CDP, Chrome con ventana), el
+  marco del hero no se transformaba en el editor: se desvanecía en su sitio. Chrome pintaba el
+  primer fotograma de `/draw` antes de que el parser llegara al contenedor con nombre (el script de
+  tema de next-themes va antes y retiene al parser hasta que carga la hoja), así que la transición
+  no encontraba pareja. Ahora el layout del editor espera a ese elemento
+  (`<link rel="expect" href="#editor-sheet" blocking="render">`): 20 de 20 en producción y 10 de 10
+  en `next dev`. La vuelta ya funcionaba porque la landing sale de la bfcache ya construida.
+- **Un blanco en tema claro.** El editor sigue el tema del sistema y su `body` es blanco en claro;
+  como raíz del fundido aparecía entre dos hojas oscuras, en los dos sentidos. Mientras dura la
+  transición, la página del editor toma el oscuro del canvas (`html:active-view-transition`).
+- **Pantalla negra en la segunda visita al editor, solo en `next dev`.** Al volver de la bfcache,
+  Chrome sirve la siguiente navegación a `/draw` desde el prefetch hecho antes de la primera (se
+  confirma con CDP: `fromPrefetchCache`). Con la página prerenderizada da igual; con el HTML de
+  `next dev`, que pertenece a su petición, el App Router nunca hidrataba. Las Speculation Rules solo
+  se emiten en producción, como el prefetch de `<Link>` de Next.

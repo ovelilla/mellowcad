@@ -7,7 +7,7 @@ import "./globals.css"
 import { ThemeProvider } from "@/components/theme-provider"
 import { EDITOR_PATH, SITE_NAME, SITE_URL } from "@/lib/site"
 import { cn } from "@/lib/utils"
-import { VIEW_TRANSITION_OPT_IN } from "@/lib/view-transition"
+import { EDITOR_SHEET_ID, VIEW_TRANSITION_OPT_IN } from "@/lib/view-transition"
 
 const description =
   "Precision 2D drafting with the commands, snaps and keyboard flow AutoCAD users already know — in a browser tab, nothing to install."
@@ -57,6 +57,7 @@ export default function AppLayout({
     >
       <head>
         <style>{VIEW_TRANSITION_OPT_IN}</style>
+        <link rel="expect" href={`#${EDITOR_SHEET_ID}`} blocking="render" />
       </head>
       <body>
         <ThemeProvider>{children}</ThemeProvider>

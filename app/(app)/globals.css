@@ -144,4 +144,12 @@
     animation-duration: 400ms;
     animation-timing-function: cubic-bezier(0.65, 0, 0.35, 1);
   }
+
+  /* The page behind the canvas is never seen, except as the root of that
+     crossfade, both ways: keep it the canvas's own dark (THEME.background),
+     or a light theme flashes white between two dark sheets. */
+  html:active-view-transition,
+  html:active-view-transition body {
+    background-color: #0b0f14;
+  }
 }

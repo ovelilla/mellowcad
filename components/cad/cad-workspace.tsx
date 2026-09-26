@@ -1,7 +1,7 @@
 "use client"
 
 import { useCadEngine } from "@/hooks/useCadEngine"
-import { SHEET_TRANSITION } from "@/lib/view-transition"
+import { EDITOR_SHEET_ID, SHEET_TRANSITION } from "@/lib/view-transition"
 import { AboutPanel } from "./about-panel"
 import { CommandBar } from "./command-bar"
 import { CommandLine } from "./command-line"
@@ -26,6 +26,7 @@ export function CadWorkspace() {
 
   return (
     <div
+      id={EDITOR_SHEET_ID}
       className="relative h-svh w-full overflow-hidden bg-[#0b0f14]"
       style={{ viewTransitionName: SHEET_TRANSITION }}
     >

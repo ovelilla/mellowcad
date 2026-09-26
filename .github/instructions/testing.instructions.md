@@ -90,8 +90,15 @@ Only for what the harness cannot see: canvas rendering, DOM, theming, CSS. If yo
   `goBack` / `waitForURL` with `waitUntil: "commit"` — a restored page fires no `load`.
 - A cross-document view transition is observed from the new page: an init script runs before its
   first render, like a head script, so its `pagereveal` listener sees `viewTransition` and, once
-  `ready`, the `::view-transition-*` animations by name. Repeat it a few dozen times — one flaky
-  opt-in skipped a transition in five and a single run passed.
+  `ready`, the `::view-transition-*` animations by name. Check that **both** `old` and `new` of a
+  shared name exist — without its twin an element only fades out in place, and "a transition ran"
+  still reads true — and repeat it a few dozen times, headed as well as headless: one flaky opt-in
+  skipped a transition in five, and a missing twin only showed with a window.
+- To _see_ one, record it: CDP's `Page.startScreencast` on the tab keeps sending frames across the
+  navigation. Record in both colour schemes — Playwright's default is light, and the editor follows
+  the system.
+- Reproduce a user's bug on the server they use: a blank editor only existed under `next dev`,
+  whose HTML belongs to the request it answered, and never on the production build.
 - Dispatch events in one `page.evaluate` and read the DOM in another — React commits async.
 - **Anything that opens a menu or popover from a canvas gesture must be verified with trusted
   clicks** (`page.locator(…).click()`), never `dispatchEvent`. Synthetic events do not reproduce

@@ -108,8 +108,18 @@ document is prefetched, on intent — see "Into the editor"). Links _within_ the
 - The sheet is named only in `pageswap` (towards `/draw`) and `pagereveal` (back out of the
   bfcache), and only while on screen: the spec makes a named element a stacking context at all
   times, and an off-screen one would fly in. The editor's canvas is named in its own markup.
-- `SpeculationRules` in the layout prefetches `/draw` on hover or press — the document only.
-  Never `prerender`: it would run the editor, and count a visit, for every hover.
+- **The editor's first frame waits for its named element** (`<link rel="expect"
+  href="#editor-sheet" blocking="render">` in its layout). Without it Chrome painted the editor
+  before the parser reached the element — the theme script ahead of it holds the parser until the
+  stylesheet loads — the pair never formed, and the hero only faded out where it stood.
+- While a transition runs, the page behind the editor's canvas is the canvas's own dark
+  (`html:active-view-transition`), whatever the theme: it is the root of the crossfade, and in a
+  light theme it flashed white.
+- `SpeculationRules` in the layout prefetches `/draw` on hover or press — the document only, and
+  **only in production**. Back out of the bfcache, Chrome serves the next visit from the prefetch
+  made before the first: fine for a prerendered page, but `next dev`'s HTML belongs to the request
+  it answered, and the editor served twice never hydrated (a blank sheet). Never `prerender`: it
+  would run the editor, and count a visit, for every hover.
 
 ## Changelog
 
