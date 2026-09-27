@@ -8,6 +8,8 @@ import { TrackingResult } from "../tracking/types"
 import { DynamicInputController } from "../input/DynamicInput"
 import { Command } from "../commands/Command"
 import { ScenePrimitive } from "../../scene/types"
+import type { MessageValues } from "../../i18n/types"
+import type { FeedbackId, MessageId } from "../EngineText"
 
 /** A normalised pointer event delivered to the active tool. */
 export interface PointerInput {
@@ -47,12 +49,21 @@ export interface KeyInput {
  * advances, so options appear and disappear in context (e.g. "Close" only once
  * enough segments exist). Data-driven on purpose: adding an option is just
  * pushing another entry — the UI renders whatever the tool exposes.
+ *
+ * A tool names an option by its **global keyword** — AutoCAD's
+ * language-independent word — and never by a letter: the word, its
+ * abbreviation and the key that runs it belong to the command language, which
+ * the runtime resolves from the catalog.
  */
 export interface CommandOption {
-  /** Single-character trigger, e.g. "C". Compared case-insensitively. */
-  readonly key: string
-  /** Human label shown in the hint, e.g. "Close". */
-  readonly label: string
+  /** The global keyword, e.g. `"Close"`; its key in the command's catalog. */
+  readonly id: string
+  /**
+   * The keyword this option is currently set to, when the chip shows a state
+   * (`Erase` + `Yes` reads `Erase: Yes`) — itself a keyword of the command,
+   * as AutoCAD's sub-prompt offers it.
+   */
+  readonly value?: string
 }
 
 /**
@@ -117,9 +128,13 @@ export interface ToolContext {
   /**
    * Writes a line to the command prompt. AutoCAD commands report what they did
    * there ("1 was not able to be exploded."), which is the only feedback a user
-   * gets when a command deliberately does nothing.
+   * gets when a command deliberately does nothing. The text comes from
+   * {@link text}, or is the user's own data (a block name in a `?` listing).
    */
   report(text: string, kind?: "info" | "error"): void
+
+  /** The command language, for what a tool writes or draws itself. */
+  readonly text: ToolText
 
   /**
    * Puts a fragment of the drawing on the clipboard (COPYCLIP, CUTCLIP,
@@ -137,14 +152,36 @@ export interface ToolContext {
 }
 
 /**
+ * The engine's catalog as a tool sees it, bound to the running command's
+ * keywords. Prompts are not here: a dynamic-input field names its prompt by id
+ * and the runtime words it, so a language switch rewords an open prompt too.
+ */
+export interface ToolText {
+  message(id: MessageId, values?: MessageValues): string
+  /** Text drawn on the canvas (a readout, a hint). */
+  feedback(id: FeedbackId, values?: MessageValues): string
+  /** One line of HATCH's `?` listing. */
+  hatchPatternListing(id: string): string
+  /**
+   * The keyword `input` names among `ids`, for a prompt whose keywords the
+   * tool reads from a free-text field itself (TEXT's Justify).
+   */
+  resolveKeyword(input: string, ids: readonly string[]): string | null
+  /** The keywords `ids` in the command language, as a prompt lists them. */
+  keywordList(ids: readonly string[]): string
+  /** A keyword's abbreviation in the command language (`U` for Undo). */
+  abbreviation(id: string): string
+}
+
+/**
  * A tool encapsulates one interactive editing mode (draw line, select, ...) as
  * an explicit interaction flow: the runtime forwards normalised input to the
  * active tool, and the tool advances its internal state machine, previews via
  * {@link buildOverlay} and commits results through commands.
  */
 export interface Tool {
+  /** Also the key of the tool's label in the interface catalog. */
   readonly id: string
-  readonly label: string
 
   /**
    * Fallback hint shown in the tool rail for tools that have no command-line
@@ -179,11 +216,11 @@ export interface Tool {
   commandOptions?(): readonly CommandOption[]
 
   /**
-   * Invokes a command option by its key (case-insensitive), returning the
-   * outcome so the runtime knows whether the command continues or has ended.
-   * Omit when the tool exposes no options.
+   * Invokes a command option by its global keyword (`"Close"`), however the
+   * user typed it, returning the outcome so the runtime knows whether the
+   * command continues or has ended. Omit when the tool exposes no options.
    */
-  invokeOption?(key: string, ctx: ToolContext): CommandOptionOutcome
+  invokeOption?(id: string, ctx: ToolContext): CommandOptionOutcome
 
   /**
    * The base point that drawing constraints (Ortho, Polar, ...) restrict

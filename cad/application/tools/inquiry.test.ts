@@ -98,7 +98,12 @@ describe("AREA", () => {
     expect(cad.optionKeys()).toEqual(["U"])
 
     // Step back over the mistaken vertex and replace it.
-    cad.option("u").click(p(200, 0)).click(p(200, 100)).click(p(0, 100)).enter()
+    cad
+      .option("Undo")
+      .click(p(200, 0))
+      .click(p(200, 100))
+      .click(p(0, 100))
+      .enter()
 
     expect(readout(cad).some((line) => /Area\s+20000\.00 mm²/.test(line))).toBe(
       true
@@ -152,7 +157,7 @@ describe("ARRAYPATH", () => {
       .select("SRC")
       .command("ARRAYPATH")
       .click(p(100, 0))
-      .option("m") // Method: Divide → Measure
+      .option("Method") // Method: Divide → Measure
       .type("40")
       .enter()
 
@@ -201,7 +206,7 @@ describe("ARRAYPATH", () => {
       .select("SRC")
       .command("ARRAYPATH")
       .click(p(150, 0))
-      .option("a") // Align items: Yes → No
+      .option("Align items") // Align items: Yes → No
       .type("3")
       .enter()
 

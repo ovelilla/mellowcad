@@ -40,7 +40,6 @@ const DRAG_THRESHOLD_PX = 4
 
 export class MatchPropTool implements Tool {
   readonly id = "matchprop"
-  readonly label = "Match properties"
 
   private state: MatchState = { phase: "source", hover: null }
 

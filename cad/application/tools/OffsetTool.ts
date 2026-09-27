@@ -120,7 +120,6 @@ type OffsetToolState =
 
 export class OffsetTool implements Tool {
   readonly id = "offset"
-  readonly label = "Offset"
   readonly shortcut = "o"
 
   private state: OffsetToolState = { phase: "distance", basePoint: null }
@@ -246,45 +245,44 @@ export class OffsetTool implements Tool {
     // Each shows its current state, like AutoCAD's [Yes/No] toggles.
     if (this.state.phase === "distance") {
       return [
-        { key: "T", label: "Through" },
-        { key: "E", label: `Erase: ${this.erase ? "Yes" : "No"}` },
+        { id: "Through" },
+        { id: "Erase", value: this.erase ? "Yes" : "No" },
         {
-          key: "L",
-          label: `Layer: ${this.offsetLayer === "current" ? "Current" : "Source"}`,
+          id: "Layer",
+          value: this.offsetLayer === "current" ? "Current" : "Source",
         },
-        { key: "M", label: `Multiple: ${this.multiple ? "On" : "Off"}` },
+        { id: "Multiple", value: this.multiple ? "On" : "Off" },
       ]
     }
     if (this.state.phase === "throughSelect") {
-      return [{ key: "D", label: "Distance" }]
+      return [{ id: "Distance" }]
     }
     return []
   }
 
-  invokeOption(key: string, ctx: ToolContext): CommandOptionOutcome {
-    const k = key.toLowerCase()
+  invokeOption(id: string, ctx: ToolContext): CommandOptionOutcome {
     if (this.state.phase === "distance") {
-      if (k === "t") {
+      if (id === "Through") {
         this.enterThrough(ctx)
         return "continue"
       }
-      if (k === "e") {
+      if (id === "Erase") {
         this.erase = !this.erase
         ctx.requestRender()
         return "continue"
       }
-      if (k === "l") {
+      if (id === "Layer") {
         this.offsetLayer = this.offsetLayer === "source" ? "current" : "source"
         ctx.requestRender()
         return "continue"
       }
-      if (k === "m") {
+      if (id === "Multiple") {
         this.multiple = !this.multiple
         ctx.requestRender()
         return "continue"
       }
     }
-    if (k === "d" && this.state.phase === "throughSelect") {
+    if (id === "Distance" && this.state.phase === "throughSelect") {
       this.state = { phase: "distance", basePoint: null }
       this.openDistanceInput(ctx)
       ctx.requestRender()
@@ -407,7 +405,7 @@ export class OffsetTool implements Tool {
 
   private openDistanceInput(ctx: ToolContext): void {
     const session: DynamicInputSession = {
-      fields: [{ id: "distance", label: "Offset distance", kind: "distance" }],
+      fields: [{ id: "distance", prompt: "offsetDistance", kind: "distance" }],
       commit: (values, commitCtx) =>
         this.setDistance(values.distance, commitCtx),
     }

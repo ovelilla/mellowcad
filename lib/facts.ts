@@ -30,7 +30,7 @@ export interface CatalogCommand extends CommandInfo {
 /** The commands AutoCAD users know by name, filed by ribbon group. */
 export function autocadCommands(): CatalogCommand[] {
   return commandCatalog().flatMap((command) => {
-    const filing = COMMAND_FILING[command.name]
+    const filing = COMMAND_FILING[command.id]
     if (!filing || filing.variant) return []
     const key = [command.name, ...command.aliases].reduce((shortest, name) =>
       name.length < shortest.length ? name : shortest

@@ -79,7 +79,6 @@ type FilletState =
 
 export class FilletTool implements Tool {
   readonly id = "fillet"
-  readonly label = "Fillet"
   readonly shortcut = "f"
 
   private state: FilletState = { phase: "first", hover: null }
@@ -161,11 +160,11 @@ export class FilletTool implements Tool {
   }
 
   commandOptions(): readonly CommandOption[] {
-    return this.awaitingRadius ? [] : [{ key: "R", label: "Radius" }]
+    return this.awaitingRadius ? [] : [{ id: "Radius" }]
   }
 
-  invokeOption(key: string, ctx: ToolContext): CommandOptionOutcome {
-    if (key.toLowerCase() === "r" && !this.awaitingRadius) {
+  invokeOption(id: string, ctx: ToolContext): CommandOptionOutcome {
+    if (id === "Radius" && !this.awaitingRadius) {
       this.openRadiusPrompt(ctx)
       return "continue"
     }
@@ -341,7 +340,7 @@ export class FilletTool implements Tool {
   private openRadiusPrompt(ctx: ToolContext): void {
     this.awaitingRadius = true
     const session: DynamicInputSession = {
-      fields: [{ id: "radius", label: "Fillet radius", kind: "distance" }],
+      fields: [{ id: "radius", prompt: "filletRadius", kind: "distance" }],
       commit: (values, commitCtx) => this.setRadius(values.radius, commitCtx),
     }
     ctx.dynamicInput.open(session)

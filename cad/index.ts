@@ -44,6 +44,7 @@ export type {
 } from "./application/CadRuntime"
 export type {
   EngineState,
+  CommandOptionUi,
   DynamicInputUi,
   DynamicInputFieldUi,
   CommandLineUi,
@@ -59,11 +60,23 @@ export type {
   SelectionCandidateUi,
   SelectionCyclingUi,
 } from "./application/EngineState"
-export {
-  TOOL_COMMANDS,
-  matchCommands,
-  toolCommandAlias,
-} from "./application/CommandLine"
+export { TOOL_COMMANDS, matchCommands } from "./application/CommandLine"
+export { EngineText, engineText } from "./application/EngineText"
+export type {
+  EngineNames,
+  FeedbackId,
+  FileErrorCode,
+  MessageId,
+  PromptSegment,
+} from "./application/EngineText"
+export type {
+  CommandCatalog,
+  CommandName,
+  EngineCatalog,
+  EngineLocale,
+  InterfaceCatalog,
+} from "./locales/types"
+export type { CadRuntimeOptions } from "./application/CadRuntime"
 export { commandCatalog } from "./application/commandCatalog"
 export type {
   CommandDefinition,
@@ -89,6 +102,7 @@ export type {
 export {
   DemoScript,
   demo,
+  promptSegments,
   promptText,
   recordDemo,
   transcript,
@@ -100,6 +114,7 @@ export type {
   DemoPrompt,
   DemoRecording,
   DemoStep,
+  RecordOptions,
   TranscriptLine,
 } from "./application/DemoScript"
 export {
@@ -169,6 +184,7 @@ export type {
 export type {
   Tool,
   ToolContext,
+  ToolText,
   PointerInput,
   KeyInput,
   CommandOption,
@@ -254,19 +270,13 @@ export {
   nextLayerId,
 } from "./domain/layers"
 export type { Layer, LayerId } from "./domain/layers"
-export {
-  STANDARD_COLORS,
-  COLOR_BYLAYER,
-  colorName,
-  normalizeColor,
-} from "./domain/colors"
+export { STANDARD_COLORS, COLOR_BYLAYER, normalizeColor } from "./domain/colors"
 export type { EntityColor, ColorDef } from "./domain/colors"
 export {
   LINETYPES,
   DEFAULT_LINETYPE_ID,
   LINETYPE_BYLAYER,
   linetypePattern,
-  linetypeName,
 } from "./domain/linetypes"
 export type { LinetypeId, LinetypeDef } from "./domain/linetypes"
 export {
@@ -277,7 +287,6 @@ export {
   SOLID_HATCH_PATTERN_ID,
   hatchPattern,
   hatchPatternLines,
-  hatchPatternName,
   isSolidHatchPattern,
   resolveHatchPatternId,
 } from "./domain/hatchPatterns"
@@ -334,8 +343,10 @@ export {
   toDrawingFile,
   serializeDrawing,
   parseDrawingFile,
+  DrawingFileError,
 } from "./serialization/drawingFile"
 export type {
+  DrawingFileErrorCode,
   DrawingFile,
   DrawingSnapshot,
   ParsedDrawing,

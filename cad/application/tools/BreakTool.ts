@@ -75,8 +75,7 @@ const ANGLE_EPS = 1e-6
 export class BreakTool implements Tool {
   constructor(
     private readonly mode: BreakMode,
-    readonly id: string,
-    readonly label: string
+    readonly id: string
   ) {}
 
   private state: BreakState = { phase: "select", hover: null }
@@ -155,11 +154,11 @@ export class BreakTool implements Tool {
 
   commandOptions(): readonly CommandOption[] {
     if (this.mode !== "gap" || this.state.phase !== "second") return []
-    return [{ key: "F", label: "First point" }]
+    return [{ id: "First point" }]
   }
 
-  invokeOption(key: string, ctx: ToolContext): CommandOptionOutcome {
-    if (key.toLowerCase() !== "f" || this.state.phase !== "second") {
+  invokeOption(id: string, ctx: ToolContext): CommandOptionOutcome {
+    if (id !== "First point" || this.state.phase !== "second") {
       return "unhandled"
     }
     this.state = { phase: "first", target: this.state.target }

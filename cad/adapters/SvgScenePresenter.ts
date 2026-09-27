@@ -252,6 +252,7 @@ export class SvgScenePresenter {
           {
             x: this.n(p.at.x),
             y: this.n(p.at.y),
+            "text-anchor": "start",
             fill: this.color(p.color),
             style: `font:${p.font ?? LABEL_FONT}`,
             ...extra,
@@ -274,9 +275,12 @@ export class SvgScenePresenter {
             y: this.n(baselineOffset(p.baseline, p.height, fontSize)),
             "font-family": p.font ?? this.fontFamily,
             "font-size": this.n(fontSize),
-            ...(p.align !== "left" && {
-              "text-anchor": p.align === "center" ? "middle" : "end",
-            }),
+            "text-anchor":
+              p.align === "left"
+                ? "start"
+                : p.align === "center"
+                  ? "middle"
+                  : "end",
             fill: this.color(p.color),
             ...extra,
           },
@@ -351,8 +355,13 @@ export class SvgScenePresenter {
     return `<${name} ${attrs(attributes)}/>`
   }
 
+  // WHY `direction` on every text: the markup lands inside a page's own
+  // <svg>, which inherits the page's direction, and in a right-to-left page a
+  // `start` anchor is the text's right end. The drawing never mirrors.
   private text(attributes: Record<string, string | number>, content: string) {
-    return `<text ${attrs(attributes)}>${escapeText(content)}</text>`
+    return `<text ${attrs({ direction: "ltr", ...attributes })}>${escapeText(
+      content
+    )}</text>`
   }
 
   private color(color: string): string {

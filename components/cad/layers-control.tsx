@@ -24,7 +24,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover"
-import { CadEngine, EngineState, LayerInfo } from "@/cad"
+import { CadEngine, EngineNames, EngineState, LayerInfo } from "@/cad"
 import { LinetypeSelect } from "./linetype-select"
 import { LineweightSelect } from "./lineweight-select"
 
@@ -95,6 +95,7 @@ export function LayersControl({
                 key={layer.id}
                 engine={engine}
                 layer={layer}
+                names={state.names}
                 isCurrent={layer.id === state.currentLayerId}
                 hasSelection={state.selectionCount > 0}
                 canDelete={
@@ -114,12 +115,14 @@ export function LayersControl({
 function LayerRow({
   engine,
   layer,
+  names,
   isCurrent,
   hasSelection,
   canDelete,
 }: {
   engine: CadEngine
   layer: LayerInfo
+  names: EngineNames
   isCurrent: boolean
   hasSelection: boolean
   canDelete: boolean
@@ -189,6 +192,7 @@ function LayerRow({
 
       <LinetypeSelect
         value={layer.linetype}
+        names={names}
         onValueChange={(linetype) => engine.updateLayer(layer.id, { linetype })}
         ariaLabel={`${layer.name} linetype`}
         className="h-8 w-28 shrink-0 border-0 bg-transparent px-1.5 text-xs text-foreground shadow-none hover:bg-accent/40 dark:bg-transparent"
@@ -196,6 +200,7 @@ function LayerRow({
 
       <LineweightSelect
         value={layer.lineweight}
+        names={names}
         onValueChange={(lineweight) => {
           if (lineweight !== "ByLayer") {
             engine.updateLayer(layer.id, { lineweight })

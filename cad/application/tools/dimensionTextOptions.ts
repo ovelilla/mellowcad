@@ -22,7 +22,7 @@ export function openDimensionTextInput(
   apply: (text: string | undefined, ctx: ToolContext) => void
 ): void {
   const session: DynamicInputSession = {
-    fields: [{ id: "value", label: "Enter dimension text", kind: "text" }],
+    fields: [{ id: "value", prompt: "dimensionText", kind: "text" }],
     commit: () => {},
     commitRaw: (commitCtx) => {
       const typed = commitCtx.dynamicInput.getText("value")
@@ -43,9 +43,7 @@ export function openDimensionTextAngleInput(
   apply: (radians: number, ctx: ToolContext) => void
 ): void {
   const session: DynamicInputSession = {
-    fields: [
-      { id: "angle", label: "Specify angle of dimension text", kind: "angle" },
-    ],
+    fields: [{ id: "angle", prompt: "dimensionTextAngle", kind: "angle" }],
     commit: (values, commitCtx) =>
       apply((values.angle * Math.PI) / 180, commitCtx),
   }

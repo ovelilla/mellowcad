@@ -8,7 +8,6 @@ import { EdgeEditTool } from "./EdgeEditTool"
  */
 export class TrimTool extends EdgeEditTool {
   readonly id = "trim"
-  readonly label = "Trim"
   readonly shortcut = "t"
   protected readonly defaultMode = "trim" as const
 }

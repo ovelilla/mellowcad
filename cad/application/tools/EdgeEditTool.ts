@@ -102,7 +102,6 @@ type EdgeEditPlan =
 
 export abstract class EdgeEditTool implements Tool {
   abstract readonly id: string
-  abstract readonly label: string
   abstract readonly shortcut?: string
 
   /** The action performed without Shift; Shift performs the other one. */

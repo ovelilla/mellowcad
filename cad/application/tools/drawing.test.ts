@@ -187,7 +187,7 @@ describe("ELLIPSE", () => {
     cad.command("ELLIPSE")
     expect(cad.optionKeys()).toEqual(["A", "C"])
 
-    cad.option("C").click(p(0, 0)).click(p(100, 0)).click(p(0, 50))
+    cad.option("Center").click(p(0, 0)).click(p(100, 0)).click(p(0, 50))
 
     expect(cad.only<EllipseEntity>("ellipse").center).toBeCloseToPoint(p(0, 0))
   })
@@ -196,7 +196,7 @@ describe("ELLIPSE", () => {
     const cad = createHarness()
 
     cad.command("ELLIPSE").click(p(-100, 0)).click(p(100, 0))
-    cad.option("R").type("60").enter()
+    cad.option("Rotation").type("60").enter()
 
     const ellipse = cad.only<EllipseEntity>("ellipse")
     expect(ellipseSemiMajor(ellipse)).toBeCloseTo(100)
@@ -207,7 +207,7 @@ describe("ELLIPSE", () => {
     const cad = createHarness()
 
     cad.command("ELLIPSE").click(p(-100, 0)).click(p(100, 0))
-    cad.option("R").type("90").enter()
+    cad.option("Rotation").type("90").enter()
 
     expect(cad.entityCount).toBe(0)
     expect(cad.activeToolId()).toBe("ellipse")
@@ -254,7 +254,7 @@ describe("ELLIPSE", () => {
 
     cad.command("ELLIPSEARC").click(p(-100, 0)).click(p(100, 0)).click(p(0, 50))
     cad.type("0").enter()
-    cad.option("I").type("90").enter()
+    cad.option("Included angle").type("90").enter()
 
     const ellipse = cad.only<EllipseEntity>("ellipse")
     expect(ellipseStartPoint(ellipse)).toBeCloseToPoint(p(100, 0), 5)
@@ -347,7 +347,7 @@ describe("POLYGON", () => {
       .enter()
       .type("0,0")
       .enter()
-      .option("t") // Type: Inscribed → Circumscribed
+      .option("Type") // Type: Inscribed → Circumscribed
       .type("100")
       .enter()
 
@@ -462,7 +462,7 @@ describe("PLINE", () => {
       .click(p(100, 0))
       .click(p(100, 100))
       .click(p(0, 100))
-      .option("c")
+      .option("Close")
 
     const poly = cad.only<PolylineEntity>("polyline")
     expect(poly.closed).toBe(true)
@@ -477,7 +477,7 @@ describe("PLINE", () => {
       .click(p(0, 0))
       .click(p(50, 0))
       .click(p(50, 50))
-      .option("u")
+      .option("Undo")
       .click(p(0, 80))
       .enter()
 
@@ -494,7 +494,7 @@ describe("PLINE", () => {
       .enter()
       .type("@100,0")
       .enter()
-      .option("a")
+      .option("Arc")
       .type("@0,100")
       .enter()
       .enter()

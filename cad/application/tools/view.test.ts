@@ -75,7 +75,7 @@ describe("ZOOM", () => {
       entities: [lineOf(p(0, 0), p(400, 0)), lineOf(p(400, 0), p(400, 200))],
     })
 
-    cad.command("ZOOM").option("e")
+    cad.command("ZOOM").option("Extents")
 
     // 400×200 of world, minus a 40px margin on each side: 920/400 < 720/200.
     expect(view(cad).scale).toBeCloseTo(2.3)
@@ -91,8 +91,8 @@ describe("ZOOM", () => {
     const extents = createHarness({ entities })
     const all = createHarness({ entities })
 
-    extents.command("ZOOM").option("e")
-    all.command("ZOOM").option("a")
+    extents.command("ZOOM").option("Extents")
+    all.command("ZOOM").option("All")
 
     expect(view(all).scale).toBeCloseTo(view(extents).scale)
     expect(view(all).center).toBeCloseToPoint(view(extents).center)
@@ -101,7 +101,7 @@ describe("ZOOM", () => {
   it("Scale multiplies the current magnification", () => {
     const cad = createHarness()
 
-    cad.command("ZOOM").option("s").type("2").enter()
+    cad.command("ZOOM").option("Scale").type("2").enter()
 
     expect(view(cad).scale).toBeCloseTo(2)
     expect(cad.activeToolId()).toBe("select")
@@ -110,7 +110,7 @@ describe("ZOOM", () => {
   it("rejects a scale factor of zero or less", () => {
     const cad = createHarness()
 
-    cad.command("ZOOM").option("s").type("-2").enter()
+    cad.command("ZOOM").option("Scale").type("-2").enter()
 
     expect(view(cad).scale).toBeCloseTo(1)
   })
@@ -124,7 +124,7 @@ describe("ZOOM", () => {
     })
     cad.select("l1")
 
-    cad.command("ZOOM").option("o")
+    cad.command("ZOOM").option("Object")
 
     expect(view(cad).center).toBeCloseToPoint(p(200, 0))
     expect(cad.activeToolId()).toBe("select")
@@ -138,7 +138,7 @@ describe("ZOOM", () => {
       ],
     })
 
-    cad.command("ZOOM").option("o").click(p(250, 100))
+    cad.command("ZOOM").option("Object").click(p(250, 100))
 
     expect(view(cad).center).toBeCloseToPoint(p(200, 100))
     expect(cad.activeToolId()).toBe("select")
@@ -160,7 +160,7 @@ describe("ZOOM Previous", () => {
     cad.command("ZOOM").click(p(-100, -100)).click(p(100, 100))
     expect(view(cad).scale).toBeCloseTo(4)
 
-    cad.command("ZOOM").option("p")
+    cad.command("ZOOM").option("Previous")
 
     expect(view(cad).scale).toBeCloseTo(1)
     expect(view(cad).center).toBeCloseToPoint(p(0, 0))

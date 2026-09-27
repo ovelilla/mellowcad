@@ -12,7 +12,6 @@ import { PlacementTool } from "./PlacementTool"
  */
 export class MoveTool extends PlacementTool {
   readonly id = "move"
-  readonly label = "Move"
   readonly shortcut = "m"
 
   protected continuesAfterPlace(): boolean {

@@ -91,6 +91,7 @@ export function previewScene(
     ltScale: document.getSettings().ltScale,
     lwDisplay,
     snap: null,
+    snapLabel: "",
     acquiredTrackingPoints: [],
     tracking: null,
     parallelReferenceIds: EMPTY_IDS,

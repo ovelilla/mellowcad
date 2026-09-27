@@ -1,6 +1,6 @@
 import { getTranslations } from "next-intl/server"
 
-import { transcript } from "@/cad"
+import { engineText, transcript } from "@/cad"
 import { COMMAND_GROUPS } from "@/content/commands"
 import { FIGURES } from "@/content/figures"
 import { autocadCommands, commandsByGroup, productFacts } from "@/lib/facts"
@@ -103,7 +103,9 @@ export async function CommandsSection() {
             placeholder={t("tryPlaceholder")}
             hint={t("tryHint")}
             prompt={IDLE_PROMPT}
-            unknown={t.raw("tryNoMatch") as string}
+            unknown={engineText().message("unknownCommand", {
+              name: "{command}",
+            })}
           />
         </div>
         <figure className="snap-card relative flex min-w-0 flex-col gap-4 rounded-lg border border-border bg-bg-raised p-5 lg:col-span-7">

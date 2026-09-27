@@ -25,7 +25,6 @@ import { ToolContext } from "./Tool"
  */
 export class ExplodeTool extends SelectionActionTool {
   readonly id = "explode"
-  readonly label = "Explode"
   readonly shortcut = "x"
 
   protected run(entities: readonly Entity[], ctx: ToolContext): void {
@@ -36,11 +35,7 @@ export class ExplodeTool extends SelectionActionTool {
     // do, rather than silently ignoring the picks.
     const rejected = entities.length - composite.length
     if (rejected > 0) {
-      ctx.report(
-        rejected === 1
-          ? "1 was not able to be exploded."
-          : `${rejected} were not able to be exploded.`
-      )
+      ctx.report(ctx.text.message("explodeRejected", { count: rejected }))
     }
     if (composite.length === 0) return
 

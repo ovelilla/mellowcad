@@ -3,12 +3,19 @@ import { Entity } from "../domain/entities"
 import { Layer, LayerId } from "../domain/layers"
 import { Selection } from "./Selection"
 
-/** Suggests a fresh, unused layer name (Layer1, Layer2, …). */
-export function nextLayerName(document: CadDocument): string {
+/**
+ * Suggests a fresh, unused layer name (Layer1, Layer2, …), numbered as the
+ * command language names them. The name is fixed when the layer is made, as in
+ * AutoCAD, where it is data from then on.
+ */
+export function nextLayerName(
+  document: CadDocument,
+  layerName: (n: number) => string
+): string {
   const names = new Set(document.getLayers().map((l) => l.name))
   let n = 1
-  while (names.has(`Layer${n}`)) n += 1
-  return `Layer${n}`
+  while (names.has(layerName(n))) n += 1
+  return layerName(n)
 }
 
 /**

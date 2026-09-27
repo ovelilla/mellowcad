@@ -3,6 +3,7 @@ import { Vec2 } from "../../geometry/Vec2"
 import { parseNumber } from "../../domain/units"
 import { isCoordinateExpression } from "./coordinateInput"
 import type { ToolContext } from "../tools/Tool"
+import type { PromptId } from "../../locales/types"
 
 /**
  * Dynamic input is AutoCAD's floating "type a value near the cursor" mechanism.
@@ -32,7 +33,11 @@ export type DynamicFieldKind =
 /** Static description of one input field, provided by the tool. */
 export interface DynamicField {
   readonly id: string
-  readonly label: string
+  /**
+   * What the field asks, by its id in the command catalog. A coordinate box
+   * that asks nothing of its own leaves it out.
+   */
+  readonly prompt?: PromptId
   readonly kind: DynamicFieldKind
 }
 

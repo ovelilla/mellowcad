@@ -1,7 +1,7 @@
 import { getTranslations } from "next-intl/server"
 import type { CSSProperties } from "react"
 
-import { formatLength, type DemoAction } from "@/cad"
+import { formatLength, type DemoAction, type PromptSegment } from "@/cad"
 import { HERO_FIGURE } from "@/content/figures"
 import { IDLE_PROMPT, plotDemo, type PlottedLine } from "@/lib/plot"
 
@@ -15,15 +15,18 @@ const SHEET_ID = "hero-sheet"
 type Timed = CSSProperties & Record<`--${string}`, string | number>
 
 /** A prompt: the question in subtle ink, its bracketed keywords a step up. */
-function Prompt({ text }: { text: string }) {
-  const open = text.indexOf(" [")
-  if (open === -1) return <span className="text-fg-subtle">{text} </span>
-  const close = text.lastIndexOf("]")
+function Prompt({ segments }: { segments: readonly PromptSegment[] }) {
   return (
     <span className="text-fg-subtle">
-      {text.slice(0, open)}{" "}
-      <span className="text-fg-muted">{text.slice(open + 1, close + 1)}</span>
-      {text.slice(close + 1)}{" "}
+      {segments.map((segment, index) =>
+        segment.keywords ? (
+          <span key={index} className="text-fg-muted">
+            {segment.text}
+          </span>
+        ) : (
+          segment.text
+        )
+      )}{" "}
     </span>
   )
 }
@@ -36,7 +39,7 @@ function Line({ line }: { line: PlottedLine }) {
       {line.kind === "command" ? (
         <span className="text-fg-subtle">{IDLE_PROMPT} </span>
       ) : line.kind === "input" ? (
-        <Prompt text={line.prompt} />
+        <Prompt segments={line.segments} />
       ) : (
         <span
           className={line.kind === "error" ? "text-accent" : "text-fg-muted"}

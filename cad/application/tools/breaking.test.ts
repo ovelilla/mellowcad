@@ -103,7 +103,7 @@ describe("BREAK", () => {
     cad.command("BREAK").click(p(-50, 0))
     expect(cad.optionKeys()).toEqual(["F"])
 
-    cad.option("f").click(p(0, 0)).click(p(100, 0))
+    cad.option("First point").click(p(0, 0)).click(p(100, 0))
 
     const lines = cad.entities() as LineEntity[]
     expect(lines[0].end).toBeCloseToPoint(p(0, 0))

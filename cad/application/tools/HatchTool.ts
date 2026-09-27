@@ -43,16 +43,6 @@ const DRAG_THRESHOLD_PX = 4
 const PREVIEW_ID: EntityId = "__hatch_preview__"
 
 /**
- * What AutoCAD says when a pattern generates more line work than it will draw
- * ("the program may reject the hatch and display a message indicating that the
- * hatch scale is too small or its dash length too short").
- */
-const TOO_DENSE = "Hatch spacing too dense, or dash size too small."
-
-/** What AutoCAD answers when an internal point is not enclosed by anything. */
-const NO_BOUNDARY = "Valid hatch boundary not found."
-
-/**
  * AutoCAD's HATCH. Its two boundary routes are the two the prompt offers, in
  * the same order:
  *
@@ -75,7 +65,6 @@ const NO_BOUNDARY = "Valid hatch boundary not found."
  */
 export class HatchTool implements Tool {
   readonly id = "hatch"
-  readonly label = "Hatch"
 
   private state: HatchState = { phase: "point" }
   private lastScreen: Vec2 | null = null
@@ -193,25 +182,20 @@ export class HatchTool implements Tool {
 
   commandOptions(): readonly CommandOption[] {
     if (this.state.phase === "point") {
-      return [
-        { key: "P", label: "Properties" },
-        { key: "S", label: "Select objects" },
-      ]
+      return [{ id: "Properties" }, { id: "Select objects" }]
     }
-    return this.state.phase === "select"
-      ? [{ key: "P", label: "Properties" }]
-      : []
+    return this.state.phase === "select" ? [{ id: "Properties" }] : []
   }
 
-  invokeOption(key: string, ctx: ToolContext): CommandOptionOutcome {
+  invokeOption(id: string, ctx: ToolContext): CommandOptionOutcome {
     if (this.state.phase !== "point" && this.state.phase !== "select") {
       return "unhandled"
     }
-    switch (key.toLowerCase()) {
-      case "p":
+    switch (id) {
+      case "Properties":
         this.enterPattern(ctx)
         return "continue"
-      case "s":
+      case "Select objects":
         if (this.state.phase !== "point") return "unhandled"
         this.route = "select"
         this.enterSelect(ctx)
@@ -284,7 +268,8 @@ export class HatchTool implements Tool {
   private addInternalPoint(point: Vec2, ctx: ToolContext): void {
     const loops = traceBoundaryLoops(point, this.boundarySet(ctx))
     if (!loops) {
-      ctx.report(NO_BOUNDARY, "error")
+      // What AutoCAD answers when an internal point is not enclosed by anything.
+      ctx.report(ctx.text.message("hatchNoBoundary"), "error")
     } else {
       this.picked.push(...loops)
     }
@@ -347,7 +332,11 @@ export class HatchTool implements Tool {
   private commit(ctx: ToolContext): void {
     const hatch = this.build(this.allLoops(ctx), ctx)
     if (hatchGeometry(hatch).truncated) {
-      ctx.report(TOO_DENSE, "error")
+      // What AutoCAD says when a pattern generates more line work than it will
+      // draw ("the program may reject the hatch and display a message
+      // indicating that the hatch scale is too small or its dash length too
+      // short").
+      ctx.report(ctx.text.message("hatchTooDense"), "error")
       ctx.endCommand()
       return
     }
@@ -379,9 +368,7 @@ export class HatchTool implements Tool {
     this.route = "point"
     this.refreshPreview(ctx)
     ctx.dynamicInput.open({
-      fields: [
-        { id: "point", label: "Pick internal point", kind: "coordinate" },
-      ],
+      fields: [{ id: "point", prompt: "internalPoint", kind: "coordinate" }],
       commit: () => {},
       commitRaw: (commitCtx) => {
         const typed = commitCtx.dynamicInput.getText("point").trim()
@@ -418,13 +405,15 @@ export class HatchTool implements Tool {
   private enterPattern(ctx: ToolContext): void {
     this.state = { phase: "pattern" }
     const session: DynamicInputSession = {
-      fields: [{ id: "pattern", label: "Enter a pattern name", kind: "text" }],
+      fields: [{ id: "pattern", prompt: "patternName", kind: "text" }],
       commit: () => {},
       commitRaw: (commitCtx) => {
         const typed = commitCtx.dynamicInput.getText("pattern").trim()
         if (typed === "?") {
           commitCtx.report(
-            HATCH_PATTERNS.map((p) => `${p.id}  ${p.description}`).join("\n")
+            HATCH_PATTERNS.map((p) =>
+              commitCtx.text.hatchPatternListing(p.id)
+            ).join("\n")
           )
           this.enterPattern(commitCtx)
           return true
@@ -432,7 +421,10 @@ export class HatchTool implements Tool {
         const resolved =
           typed.length === 0 ? this.patternId : resolveHatchPatternId(typed)
         if (!resolved) {
-          commitCtx.report(`Unknown hatch pattern "${typed}".`, "error")
+          commitCtx.report(
+            commitCtx.text.message("hatchPatternUnknown", { name: typed }),
+            "error"
+          )
           this.enterPattern(commitCtx)
           return true
         }
@@ -452,9 +444,7 @@ export class HatchTool implements Tool {
   private enterScale(ctx: ToolContext): void {
     this.state = { phase: "scale" }
     const session: DynamicInputSession = {
-      fields: [
-        { id: "scale", label: "Specify a scale for pattern", kind: "number" },
-      ],
+      fields: [{ id: "scale", prompt: "patternScale", kind: "number" }],
       commit: (values, commitCtx) => {
         if (values.scale > 0) this.patternScale = values.scale
         this.enterAngle(commitCtx)
@@ -476,9 +466,7 @@ export class HatchTool implements Tool {
   private enterAngle(ctx: ToolContext): void {
     this.state = { phase: "angle" }
     const session: DynamicInputSession = {
-      fields: [
-        { id: "angle", label: "Specify an angle for pattern", kind: "angle" },
-      ],
+      fields: [{ id: "angle", prompt: "patternAngle", kind: "angle" }],
       commit: (values, commitCtx) => {
         this.patternAngle = (values.angle * Math.PI) / 180
         this.enterRoute(commitCtx)

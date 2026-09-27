@@ -207,7 +207,7 @@ describe("FILLET", () => {
 
     cad
       .command("FILLET")
-      .option("r")
+      .option("Radius")
       .type("50")
       .enter()
       .click(p(100, 0))
@@ -233,7 +233,7 @@ describe("FILLET", () => {
 
     cad
       .command("FILLET")
-      .option("r")
+      .option("Radius")
       .type("0")
       .enter()
       .click(p(100, 0))
@@ -251,7 +251,7 @@ describe("FILLET", () => {
     // not silently reset it to zero.
     const cad = createHarness({ entities: corner })
 
-    cad.command("FILLET").option("r").type("50").enter().escape()
+    cad.command("FILLET").option("Radius").type("50").enter().escape()
     cad.command("FILLET").click(p(100, 0)).click(p(0, 100))
 
     expect(cad.only<ArcEntity>("arc").radius).toBeCloseTo(50)
@@ -262,7 +262,7 @@ describe("FILLET", () => {
 
     cad
       .command("FILLET")
-      .option("r")
+      .option("Radius")
       .type("50")
       .enter()
       .click(p(100, 0))
@@ -286,7 +286,7 @@ describe("FILLET", () => {
       ],
     })
 
-    cad.command("FILLET").option("r").type("30").enter().click(p(0, -60))
+    cad.command("FILLET").option("Radius").type("30").enter().click(p(0, -60))
 
     const poly = cad.byId<PolylineEntity>("P1")
     // Each square corner becomes two vertices joined by a quarter-turn bulge.
@@ -309,7 +309,7 @@ describe("CHAMFER", () => {
 
     cad
       .command("CHAMFER")
-      .option("d")
+      .option("Distance")
       .type("40", "dist1")
       .type("60", "dist2")
       .enter()
@@ -344,7 +344,7 @@ describe("CHAMFER", () => {
 
     cad
       .command("CHAMFER")
-      .option("d")
+      .option("Distance")
       .type("20", "dist1")
       .type("20", "dist2")
       .enter()
@@ -492,7 +492,12 @@ describe("OFFSET", () => {
       entities: [lineOf(p(-80, 0), p(80, 0), { id: "L1" })],
     })
 
-    cad.command("OFFSET").option("t").click(p(0, 0)).click(p(0, -40)).escape()
+    cad
+      .command("OFFSET")
+      .option("Through")
+      .click(p(0, 0))
+      .click(p(0, -40))
+      .escape()
 
     const copy = linesOf(cad.entities()).find((line) => line.id !== "L1")!
     expect(endpoints(copy)).toBeCloseToPoints([p(-80, -40), p(80, -40)])
@@ -505,7 +510,7 @@ describe("OFFSET", () => {
 
     cad
       .command("OFFSET")
-      .option("m")
+      .option("Multiple")
       .type("20")
       .enter()
       .click(p(0, 0))
@@ -527,7 +532,7 @@ describe("OFFSET", () => {
 
     cad
       .command("OFFSET")
-      .option("e")
+      .option("Erase")
       .type("20")
       .enter()
       .click(p(0, 0))

@@ -15,8 +15,11 @@ A tool is an explicit state machine for one AutoCAD command. It owns a discrimin
 2. `new XTool()` in the `defaultTools` list in `cad/application/runtimeTools.ts`, in rail order.
    A tool the runtime must drive directly (it is held as a `CadRuntime` field) is passed into
    that function instead of built there.
-3. `TOOL_COMMANDS` in `CommandLine.ts` — canonical AutoCAD name first, then aliases.
-   Dispatch comes from here; `Tool.shortcut` is display-only.
+3. `TOOL_COMMANDS` in `CommandLine.ts` — the tool id → the command's **global** name. What it is
+   typed as goes in `cad/locales/en.json`: `commands.names.<NAME>` (canonical AutoCAD name first,
+   then aliases), its keywords in `commands.keywords.<NAME>`, its prompts in `commands.prompts`,
+   its label in `interface.tool.<id>` — then `npm run locales`. Dispatch comes from here;
+   `Tool.shortcut` is display-only.
 4. Export the class from `cad/index.ts`.
 5. `TOOL_ICONS` and `RAIL_LAYOUT` in `components/cad/tool-rail.tsx` (unlisted tools fall into
    the trailing "More" group, so nothing silently disappears).
@@ -61,9 +64,15 @@ hovered entity via `entityScenePrimitive` (update the state only when the hovere
   answer "which one?" on its own.
 
 When a command deliberately does nothing — an object it cannot act on, an empty result — say so
-with `ctx.report(text)`, which writes to the command prompt. Silence reads as a bug. Use
-AutoCAD's own wording (`"1 was not able to be exploded."`); if you cannot verify the exact
+with `ctx.report(ctx.text.message(id, values))`, which writes to the command prompt. Silence reads
+as a bug. The words live in `commands.messages`, in AutoCAD's own wording
+(`"{count, plural, one {# was not able to be exploded.} …}"`); if you cannot verify the exact
 string, leave the message out rather than inventing one.
+
+**A tool holds no text.** A dynamic-input field names its prompt by id (`{ id, prompt: "length",
+kind }`), which the runtime words when it builds the state — so switching language rewords an open
+prompt too. Anything the tool writes (`ctx.text.message`) or draws (`ctx.text.feedback`) comes
+from the catalog; user data (a block name in a `?` listing) is the only text a tool passes on as is.
 
 A tool never touches an adapter. Anything outside the document it needs — writing the clipboard
 (`ctx.copyToClipboard`) — is a method on `ToolContext` that the runtime wires to the port.
@@ -109,10 +118,11 @@ There is a single session at a time. Patterns in use:
   and Enter commits them all (Array, Chamfer distances). Tab cycles fields.
 - **Free-text prompt** — one field of kind `"text"` (TEXT's content, its Justify/Style keywords).
   Its content is never a value: `resolveValues` refuses it so `commitRaw` sees the raw string, the
-  coordinate collapse skips it, and **single-key command options are not dispatched while it is
-  focused** — a letter there is content. A prompt whose keywords are longer than one character
-  (`TL`, `MC`) has to be one of these; echo the option list with `ctx.report` so the command line
-  still shows AutoCAD's prompt. Editing an existing value preloads the field with `setText` after
+  coordinate collapse skips it, and **no keyword is dispatched from it** — a letter there is
+  content. A prompt whose keywords the tool reads itself (TEXT's `TL`, `MC`) resolves the typed
+  text with `ctx.text.resolveKeyword(typed, ids)`, which applies the same abbreviation, word and
+  `_` rules as every other prompt, and echoes the list with `ctx.text.keywordList(ids)` so the
+  command line still shows AutoCAD's prompt. Editing an existing value preloads the field with `setText` after
   `open`, and the tool hides the object it is editing (`hiddenEntityIds`).
 
 ## Command options (keywords)
@@ -137,14 +147,25 @@ DIMCONTINUE — reads the drawing through a `lastDrawnPoint`-style helper next t
 through runtime state. AutoCAD scopes those to the current session; document order is the
 deliberate deviation, and it is the one that survives a reload.
 
-Expose keywords from `commandOptions()` and handle them in `invokeOption()`, returning
-`"continue"` or `"end"`. Key routing has two paths, and the difference matters:
+**Options are named by their global keyword, never by a letter.** `commandOptions()` returns
+`{ id: "Close" }` — the id is AutoCAD's language-independent word — plus `value` when the chip
+shows a state (`{ id: "Erase", value: "Yes" }` reads `Erase: Yes`; the value is a keyword of the
+same command, as AutoCAD's sub-prompt offers it). `invokeOption(id)` switches on ids and returns
+`"continue"` or `"end"`. The word, its abbreviation (its capitals: `Close` → `C`, `desHacer` →
+`H`) and the key that runs it belong to the command language and are resolved by the runtime
+from `commands.keywords.<NAME>`; comparing `key.toLowerCase()` with a letter would break the day
+the language changes. Every keyword a tool offers must be in its command's table.
 
-- **A DYN field is focused** → `dynamic-input.tsx` intercepts single characters that match a
-  command option. Safe even when the letter equals a command alias.
-- **The canvas has focus** → `CadRuntime.keyDown` checks the active tool's `commandOptions()`
-  _before_ the command-line buffer, mirroring AutoCAD (an alias only starts a command at the
-  neutral prompt).
+A keyword is answered by its abbreviation or its whole word, or by `_` and the global one, typed
+and confirmed — at the prompt or in a value box. A single key runs it at once only when its
+abbreviation is that one letter, no other keyword on offer starts with it, and nothing has been
+typed yet. Key routing has two paths, and the difference matters:
+
+- **A DYN field is focused** → `dynamic-input.tsx` intercepts that key while the field is empty;
+  anything else typed there and confirmed with Enter is resolved as a keyword before a value.
+- **The canvas has focus** → `CadRuntime.keyDown` runs the keyword on its key _before_ the
+  command-line buffer, mirroring AutoCAD (an alias only starts a command at the neutral prompt);
+  a submitted prompt is read as a keyword before a command name.
 
 Any tool that used to read raw letters in `onKeyDown` must expose them as command options
 instead, or the command-line buffer will swallow them.

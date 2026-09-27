@@ -91,6 +91,11 @@ export interface SceneInput {
   /** Whether lineweights are drawn thick (LWDISPLAY) or everything hairline. */
   readonly lwDisplay: boolean
   readonly snap: SnapResult | null
+  /**
+   * The object snap's name for the tooltip beside its marker, in the command
+   * language — the scene describes what to draw, not which language it speaks.
+   */
+  readonly snapLabel: string
   readonly acquiredTrackingPoints: readonly TrackingPoint[]
   readonly tracking: TrackingResult | null
   /** Ids of lines acquired as Parallel references, marked with a `//` badge. */
@@ -176,7 +181,8 @@ export function buildScene(input: SceneInput): Scene {
     pushSnapMarker(
       primitives,
       camera.worldToScreen(input.snap.point),
-      input.snap
+      input.snap,
+      input.snapLabel
     )
   }
 
@@ -1011,26 +1017,11 @@ function pushCyclingBadge(out: ScenePrimitive[], at: Vec2): void {
   })
 }
 
-/** Human-readable name shown in the OSNAP tooltip beside each marker. */
-const SNAP_LABEL: Record<SnapType, string> = {
-  [SnapType.Endpoint]: "Endpoint",
-  [SnapType.Midpoint]: "Midpoint",
-  [SnapType.Center]: "Center",
-  [SnapType.Intersection]: "Intersection",
-  [SnapType.ApparentIntersection]: "Apparent Intersection",
-  [SnapType.Perpendicular]: "Perpendicular",
-  [SnapType.Tangent]: "Tangent",
-  [SnapType.Insertion]: "Insertion",
-  [SnapType.Extension]: "Extension",
-  [SnapType.Parallel]: "Parallel",
-  [SnapType.Quadrant]: "Quadrant",
-  [SnapType.Nearest]: "Nearest",
-}
-
 function pushSnapMarker(
   out: ScenePrimitive[],
   at: Vec2,
-  snap: SnapResult
+  snap: SnapResult,
+  label: string
 ): void {
   const s = 6
   // Pixel-snap the centre so the thin marker strokes render hairline-crisp
@@ -1098,7 +1089,7 @@ function pushSnapMarker(
       out.push({ kind: "circle", center: c, radius: s, stroke })
   }
 
-  pushSnapTooltip(out, c, s, SNAP_LABEL[snap.type] ?? snap.type)
+  pushSnapTooltip(out, c, s, label)
 }
 
 /** Two offset squares — the insertion-point marker. */

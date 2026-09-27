@@ -18,6 +18,7 @@ import { SnapType } from "../application/snapping/types"
 import { ConstraintType } from "../application/constraints/types"
 import { Tool } from "../application/tools/Tool"
 import { Bounds } from "../domain/entities"
+import type { EngineLocale } from "../locales/types"
 import { CanvasScenePresenter } from "./CanvasScenePresenter"
 import { createBrowserFileTransport } from "./browserFileTransport"
 import { createBrowserClipboard } from "./browserClipboard"
@@ -43,6 +44,11 @@ export interface CadEngineOptions {
    * there keeps its own keys.
    */
   readonly scope?: HTMLElement
+  /**
+   * The language the engine speaks — its prompts, keywords, palettes and what
+   * it draws on the canvas. English, built in, when left out.
+   */
+  readonly locale?: EngineLocale
 }
 
 /**
@@ -99,7 +105,8 @@ export class CadEngine {
         ? createLocalStorageDrawingStore()
         : options.store,
       createBrowserFileTransport(canvas.ownerDocument),
-      createBrowserClipboard()
+      createBrowserClipboard(),
+      { locale: options.locale }
     )
 
     this.attachEvents()
@@ -114,6 +121,11 @@ export class CadEngine {
 
   getState(): EngineState {
     return this.runtime.getState()
+  }
+
+  /** Switches the language; what the command line already shows stays. */
+  setLocale(locale: EngineLocale): void {
+    this.runtime.setLocale(locale)
   }
 
   listTools(): Tool[] {
@@ -310,8 +322,8 @@ export class CadEngine {
     this.runtime.commitDynamicInput()
   }
 
-  invokeToolOption(key: string): boolean {
-    return this.runtime.invokeToolOption(key)
+  invokeToolOption(input: string): boolean {
+    return this.runtime.invokeToolOption(input)
   }
 
   cancelDynamicInput(): void {

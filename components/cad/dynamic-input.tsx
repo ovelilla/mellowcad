@@ -91,14 +91,16 @@ export function DynamicInput({
                 } else if (
                   e.key.length === 1 &&
                   field.kind !== "text" &&
+                  field.value === "" &&
                   state.commandOptions.some(
-                    (o) => o.key.toLowerCase() === e.key.toLowerCase()
+                    (o) => o.key === e.key.toUpperCase()
                   )
                 ) {
-                  // A command-option keyword (AutoCAD's [Close/Undo] prompt).
-                  // The fields are numeric, so a letter is never valid input,
-                  // and invokeToolOption is a no-op unless the option applies.
-                  // A free-text field is exempt: there a letter *is* content.
+                  // A command-option keyword (AutoCAD's [Close/Undo] prompt)
+                  // whose key runs it at once. Only in an empty field, so a
+                  // keyword can still be typed out and confirmed with Enter
+                  // (`_C`, a word, an abbreviation of several letters). A
+                  // free-text field is exempt: there a letter *is* content.
                   e.preventDefault()
                   engine.invokeToolOption(e.key)
                 } else if (e.key === "Tab" && di.fields.length > 1) {
@@ -147,11 +149,11 @@ export function DynamicInput({
         <div className="flex basis-full flex-wrap gap-1">
           {state.commandOptions.map((option) => (
             <span
-              key={option.key}
+              key={option.id}
               className="flex items-center gap-1 rounded-md border border-border/60 bg-card/95 px-1.5 py-0.5 font-mono text-[10px] text-muted-foreground shadow-lg backdrop-blur"
             >
               <kbd className="rounded bg-muted px-1 font-semibold text-foreground">
-                {option.key}
+                {option.key ?? option.abbreviation}
               </kbd>
               {option.label}
             </span>

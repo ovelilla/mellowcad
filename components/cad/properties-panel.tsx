@@ -50,6 +50,7 @@ export function PropertiesPanel({
             <span className="text-muted-foreground">Color</span>
             <ColorSelect
               value={state.selectionColor}
+              names={state.names}
               onValueChange={(value) => engine.setSelectionColor(value)}
               ariaLabel="Colour of the selected objects"
               className="w-30"
@@ -89,6 +90,7 @@ export function PropertiesPanel({
             <span className="text-muted-foreground">Linetype</span>
             <LinetypeSelect
               value={state.selectionLinetype}
+              names={state.names}
               onValueChange={(value) => engine.setSelectionLinetype(value)}
               includeByLayer
               ariaLabel="Linetype of the selected objects"
@@ -100,6 +102,7 @@ export function PropertiesPanel({
             <span className="text-muted-foreground">Lineweight</span>
             <LineweightSelect
               value={state.selectionLineweight}
+              names={state.names}
               onValueChange={(value) => engine.setSelectionLineweight(value)}
               includeByLayer
               ariaLabel="Lineweight of the selected objects"
@@ -127,14 +130,14 @@ export function PropertiesPanel({
         </div>
 
         {info.groups.map((group) => (
-          <div key={group.title} className="px-3 py-2">
+          <div key={group.id} className="px-3 py-2">
             <div className="mb-1 text-[10px] font-semibold tracking-wide text-muted-foreground/70 uppercase">
               {group.title}
             </div>
             <dl className="flex flex-col gap-0.5 font-mono">
               {group.rows.map((row) => (
                 <div
-                  key={row.label}
+                  key={row.id}
                   className="flex items-center justify-between gap-2"
                 >
                   <dt className="text-muted-foreground">{row.label}</dt>

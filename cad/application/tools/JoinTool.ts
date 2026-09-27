@@ -26,7 +26,6 @@ const JOIN_EPS = 1e-6
  */
 export class JoinTool extends SelectionActionTool {
   readonly id = "join"
-  readonly label = "Join"
   readonly shortcut = "j"
 
   protected run(entities: readonly Entity[], ctx: ToolContext): void {

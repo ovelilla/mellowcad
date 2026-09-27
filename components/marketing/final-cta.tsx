@@ -1,5 +1,6 @@
 import { getTranslations } from "next-intl/server"
 
+import { engineText } from "@/cad"
 import { EDITOR_PATH } from "@/lib/site"
 
 export async function FinalCta() {
@@ -15,7 +16,7 @@ export async function FinalCta() {
         {t("title")}
       </h2>
       <p aria-hidden="true" className="font-mono text-sm text-fg-subtle">
-        {t("prompt")} <span className="caret caret-blink" />
+        {engineText().idlePrompt()} <span className="caret caret-blink" />
       </p>
       <a
         href={EDITOR_PATH}

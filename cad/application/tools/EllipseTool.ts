@@ -11,6 +11,7 @@ import {
 import { parseNumber } from "../../domain/units"
 import { AddEntityCommand } from "../commands/entityCommands"
 import { DynamicInputSession } from "../input/DynamicInput"
+import type { PromptId } from "../../locales/types"
 import {
   isCoordinateExpression,
   parseCoordinate,
@@ -92,7 +93,6 @@ const ROTATION_LIMIT_DEGREES = 89.4
  */
 export class EllipseTool implements Tool {
   readonly id: string
-  readonly label: string
   readonly shortcut?: string
 
   private readonly mode: EllipseMode
@@ -101,11 +101,10 @@ export class EllipseTool implements Tool {
   private state: EllipseToolState = { phase: "first" }
   private lastScreen: Vec2 | null = null
 
-  constructor(mode: EllipseMode, id: string, label: string, shortcut?: string) {
+  constructor(mode: EllipseMode, id: string, shortcut?: string) {
     this.mode = mode
     this.active = mode
     this.id = id
-    this.label = label
     this.shortcut = shortcut
   }
 
@@ -122,8 +121,8 @@ export class EllipseTool implements Tool {
     ctx.dynamicInput.close()
   }
 
-  private firstPrompt(): string {
-    return this.active === "center" ? "Center" : "Axis endpoint"
+  private firstPrompt(): PromptId {
+    return this.active === "center" ? "center" : "axisEndpoint"
   }
 
   onPointerMove(input: PointerInput, ctx: ToolContext): void {
@@ -243,33 +242,32 @@ export class EllipseTool implements Tool {
         return this.active === "center"
           ? []
           : [
-              ...(this.active === "arc" ? [] : [{ key: "A", label: "Arc" }]),
-              { key: "C", label: "Center" },
+              ...(this.active === "arc" ? [] : [{ id: "Arc" }]),
+              { id: "Center" },
             ]
       case "distance":
-        return [{ key: "R", label: "Rotation" }]
+        return [{ id: "Rotation" }]
       case "endAngle":
-        return [{ key: "I", label: "Included angle" }]
+        return [{ id: "Included angle" }]
       default:
         return []
     }
   }
 
-  invokeOption(key: string, ctx: ToolContext): CommandOptionOutcome {
-    const option = key.toLowerCase()
-    if (this.state.phase === "first" && (option === "a" || option === "c")) {
-      this.active = option === "a" ? "arc" : "center"
+  invokeOption(id: string, ctx: ToolContext): CommandOptionOutcome {
+    if (this.state.phase === "first" && (id === "Arc" || id === "Center")) {
+      this.active = id === "Arc" ? "arc" : "center"
       this.openPointInput(ctx, this.firstPrompt())
       ctx.requestRender()
       return "continue"
     }
-    if (this.state.phase === "distance" && option === "r") {
+    if (this.state.phase === "distance" && id === "Rotation") {
       this.state = { ...this.state, phase: "rotation" }
       this.openRotationInput(ctx)
       ctx.requestRender()
       return "continue"
     }
-    if (this.state.phase === "endAngle" && option === "i") {
+    if (this.state.phase === "endAngle" && id === "Included angle") {
       this.openIncludedAngleInput(ctx)
       ctx.requestRender()
       return "continue"
@@ -475,7 +473,7 @@ export class EllipseTool implements Tool {
       return
     }
     this.state = { phase: "startAngle", ellipse, cursor: ellipse.center }
-    this.openAngleInput(ctx, "startAngle", "Start angle", screen)
+    this.openAngleInput(ctx, "startAngle", screen)
     ctx.requestRender()
   }
 
@@ -488,7 +486,7 @@ export class EllipseTool implements Tool {
       startAngle: angle,
       cursor: this.state.cursor,
     }
-    this.openAngleInput(ctx, "endAngle", "End angle", screen)
+    this.openAngleInput(ctx, "endAngle", screen)
     ctx.requestRender()
   }
 
@@ -513,10 +511,8 @@ export class EllipseTool implements Tool {
     ctx.endCommand()
   }
 
-  private secondPrompt(): string {
-    return this.active === "center"
-      ? "Endpoint of axis"
-      : "Other endpoint of axis"
+  private secondPrompt(): PromptId {
+    return this.active === "center" ? "endpointOfAxis" : "otherAxisEndpoint"
   }
 
   /**
@@ -524,9 +520,13 @@ export class EllipseTool implements Tool {
    * typing an AutoCAD coordinate (e.g. `50,20`, `@30,0`, `100<45`) and pressing
    * Enter places it precisely.
    */
-  private openPointInput(ctx: ToolContext, label: string, screen?: Vec2): void {
+  private openPointInput(
+    ctx: ToolContext,
+    prompt: PromptId,
+    screen?: Vec2
+  ): void {
     const session: DynamicInputSession = {
-      fields: [{ id: "point", label, kind: "coordinate" }],
+      fields: [{ id: "point", prompt, kind: "coordinate" }],
       commit: () => {},
       commitRaw: (commitCtx) => this.commitTypedPoint(commitCtx),
     }
@@ -550,7 +550,7 @@ export class EllipseTool implements Tool {
   private openDistanceInput(ctx: ToolContext, screen: Vec2): void {
     const session: DynamicInputSession = {
       fields: [
-        { id: "distance", label: "Distance to other axis", kind: "distance" },
+        { id: "distance", prompt: "distanceToOtherAxis", kind: "distance" },
       ],
       commit: (values, commitCtx) => {
         if (this.state.phase !== "distance") return
@@ -572,7 +572,11 @@ export class EllipseTool implements Tool {
     const screen = this.lastScreen ?? { x: 0, y: 0 }
     const session: DynamicInputSession = {
       fields: [
-        { id: "rotation", label: "Rotation around major axis", kind: "angle" },
+        {
+          id: "rotation",
+          prompt: "rotationAroundMajorAxis",
+          kind: "angle",
+        },
       ],
       commit: (values, commitCtx) =>
         this.commitRotation(values.rotation, commitCtx, screen),
@@ -585,11 +589,11 @@ export class EllipseTool implements Tool {
   private openAngleInput(
     ctx: ToolContext,
     id: "startAngle" | "endAngle",
-    label: string,
     screen: Vec2
   ): void {
     const session: DynamicInputSession = {
-      fields: [{ id, label, kind: "angle" }],
+      // The field and its prompt share the id: startAngle, endAngle.
+      fields: [{ id, prompt: id, kind: "angle" }],
       commit: (values, commitCtx) => {
         const angle = toRadians(values[id])
         if (id === "startAngle") this.beginEndAngle(angle, commitCtx, screen)
@@ -605,7 +609,7 @@ export class EllipseTool implements Tool {
   private openIncludedAngleInput(ctx: ToolContext): void {
     const screen = this.lastScreen ?? { x: 0, y: 0 }
     const session: DynamicInputSession = {
-      fields: [{ id: "included", label: "Included angle", kind: "angle" }],
+      fields: [{ id: "included", prompt: "includedAngle", kind: "angle" }],
       commit: (values, commitCtx) => {
         if (this.state.phase !== "endAngle") return
         this.commitArc(

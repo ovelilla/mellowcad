@@ -25,20 +25,20 @@ import { cn } from "@/lib/utils"
 type Choice = SnapType | "none"
 
 /** The osnaps offered as overrides, in AutoCAD's menu order, plus "None". */
-const CHOICES: ReadonlyArray<{ value: Choice; label: string }> = [
-  { value: SnapType.Endpoint, label: "Endpoint" },
-  { value: SnapType.Midpoint, label: "Midpoint" },
-  { value: SnapType.Center, label: "Center" },
-  { value: SnapType.Quadrant, label: "Quadrant" },
-  { value: SnapType.Intersection, label: "Intersection" },
-  { value: SnapType.ApparentIntersection, label: "Apparent Intersection" },
-  { value: SnapType.Perpendicular, label: "Perpendicular" },
-  { value: SnapType.Tangent, label: "Tangent" },
-  { value: SnapType.Extension, label: "Extension" },
-  { value: SnapType.Insertion, label: "Insertion" },
-  { value: SnapType.Parallel, label: "Parallel" },
-  { value: SnapType.Nearest, label: "Nearest" },
-  { value: "none", label: "None" },
+const CHOICES: readonly Choice[] = [
+  SnapType.Endpoint,
+  SnapType.Midpoint,
+  SnapType.Center,
+  SnapType.Quadrant,
+  SnapType.Intersection,
+  SnapType.ApparentIntersection,
+  SnapType.Perpendicular,
+  SnapType.Tangent,
+  SnapType.Extension,
+  SnapType.Insertion,
+  SnapType.Parallel,
+  SnapType.Nearest,
+  "none",
 ]
 
 export function SnapOverrideMenu({
@@ -90,7 +90,7 @@ export function SnapOverrideMenu({
             <div className="px-2 py-1.5 text-xs text-muted-foreground">
               Object snap
             </div>
-            {CHOICES.map(({ value, label }) => (
+            {CHOICES.map((value) => (
               <Menu.Item
                 key={value}
                 onClick={() => engine.setSnapOverride(value)}
@@ -99,7 +99,7 @@ export function SnapOverrideMenu({
                   state.snapOverride === value && "font-medium"
                 )}
               >
-                {label}
+                {value === "none" ? "None" : state.names.snaps[value]}
                 {state.snapOverride === value && (
                   <span className="pointer-events-none absolute right-2 flex size-4 items-center justify-center">
                     <CheckIcon className="size-4" />

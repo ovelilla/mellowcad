@@ -2,6 +2,7 @@ import { Vec2 } from "../../geometry/Vec2"
 import { createPolyline } from "../../domain/entities"
 import { AddEntityCommand } from "../commands/entityCommands"
 import { DynamicInputSession } from "../input/DynamicInput"
+import type { PromptId } from "../../locales/types"
 import {
   isCoordinateExpression,
   parseCoordinate,
@@ -24,7 +25,6 @@ type RectangleToolState =
 
 export class RectangleTool implements Tool {
   readonly id = "rectangle"
-  readonly label = "Rectangle"
 
   private state: RectangleToolState = { phase: "first" }
   private lastScreen: Vec2 | null = null
@@ -33,7 +33,7 @@ export class RectangleTool implements Tool {
     ctx.setCursor("crosshair")
     ctx.selection.clear()
     this.state = { phase: "first" }
-    this.openPointInput(ctx, "First corner")
+    this.openPointInput(ctx, "firstCorner")
   }
 
   onDeactivate(ctx: ToolContext): void {
@@ -88,7 +88,7 @@ export class RectangleTool implements Tool {
     const at = screen ?? this.lastScreen ?? ctx.viewport.worldToScreen(point)
     if (this.state.phase === "first") {
       this.state = { phase: "second", first: point, cursor: point }
-      this.openPointInput(ctx, "Other corner", at)
+      this.openPointInput(ctx, "otherCorner", at)
       ctx.requestRender()
       return
     }
@@ -116,9 +116,13 @@ export class RectangleTool implements Tool {
     ctx.endCommand()
   }
 
-  private openPointInput(ctx: ToolContext, label: string, screen?: Vec2): void {
+  private openPointInput(
+    ctx: ToolContext,
+    prompt: PromptId,
+    screen?: Vec2
+  ): void {
     const session: DynamicInputSession = {
-      fields: [{ id: "point", label, kind: "coordinate" }],
+      fields: [{ id: "point", prompt, kind: "coordinate" }],
       commit: () => {},
       commitRaw: (commitCtx) => this.commitTypedPoint(commitCtx),
     }

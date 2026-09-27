@@ -92,7 +92,6 @@ type ArrayPathState =
 
 export class ArrayPathTool implements Tool {
   readonly id = "arraypath"
-  readonly label = "Path array"
 
   private state: ArrayPathState = { phase: "selecting" }
   private lastScreen: Vec2 | null = null
@@ -209,18 +208,14 @@ export class ArrayPathTool implements Tool {
     if (this.state.phase !== "config") return []
     const { method, align } = this.state.config
     return [
-      {
-        key: "M",
-        label: `Method: ${method === "divide" ? "Divide" : "Measure"}`,
-      },
-      { key: "A", label: `Align items: ${align ? "Yes" : "No"}` },
+      { id: "Method", value: method === "divide" ? "Divide" : "Measure" },
+      { id: "Align items", value: align ? "Yes" : "No" },
     ]
   }
 
-  invokeOption(key: string, ctx: ToolContext): CommandOptionOutcome {
+  invokeOption(id: string, ctx: ToolContext): CommandOptionOutcome {
     if (this.state.phase !== "config") return "unhandled"
-    const k = key.toLowerCase()
-    if (k === "m") {
+    if (id === "Method") {
       const method =
         this.state.config.method === "divide" ? "measure" : "divide"
       this.state = { phase: "config", config: { ...this.state.config, method } }
@@ -228,7 +223,7 @@ export class ArrayPathTool implements Tool {
       ctx.requestRender()
       return "continue"
     }
-    if (k === "a") {
+    if (id === "Align items") {
       this.state = {
         phase: "config",
         config: { ...this.state.config, align: !this.state.config.align },
@@ -349,11 +344,11 @@ export class ArrayPathTool implements Tool {
     const session: DynamicInputSession =
       method === "divide"
         ? {
-            fields: [{ id: "count", label: "Items", kind: "number" }],
+            fields: [{ id: "count", prompt: "items", kind: "number" }],
             commit: (_v, c) => this.commit(c),
           }
         : {
-            fields: [{ id: "spacing", label: "Spacing", kind: "distance" }],
+            fields: [{ id: "spacing", prompt: "spacing", kind: "distance" }],
             commit: (_v, c) => this.commit(c),
           }
     ctx.dynamicInput.open(session)

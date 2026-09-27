@@ -149,17 +149,40 @@ export function serializeDrawing(snapshot: DrawingSnapshot): string {
   return JSON.stringify(toDrawingFile(snapshot), null, 2)
 }
 
+/** Why a drawing could not be read. */
+export type DrawingFileErrorCode =
+  "invalidJson" | "unrecognised" | "notADrawing" | "newerVersion"
+
+const DRAWING_FILE_ERRORS: Readonly<Record<DrawingFileErrorCode, string>> = {
+  invalidJson: "The file is not valid JSON.",
+  unrecognised: "Unrecognised drawing file.",
+  notADrawing: "This file is not a MellowCAD drawing.",
+  newerVersion:
+    "This drawing was created with a newer version of MellowCAD. Please update to open it.",
+}
+
 /**
- * Parses and validates a drawing file's text. Throws a user-facing `Error` when
- * the text is not JSON, is not a MellowCAD drawing, or was written by a newer
- * schema version. Individual malformed entities are skipped, not fatal.
+ * A drawing that cannot be read. `code` is what a user is told, worded by the
+ * engine's catalog in their language; `message` stays English, for logs.
+ */
+export class DrawingFileError extends Error {
+  constructor(readonly code: DrawingFileErrorCode) {
+    super(DRAWING_FILE_ERRORS[code])
+    this.name = "DrawingFileError"
+  }
+}
+
+/**
+ * Parses and validates a drawing file's text. Throws a {@link DrawingFileError}
+ * when the text is not JSON, is not a MellowCAD drawing, or was written by a
+ * newer schema version. Individual malformed entities are skipped, not fatal.
  */
 export function parseDrawingFile(text: string): ParsedDrawing {
   let data: unknown
   try {
     data = JSON.parse(text)
   } catch {
-    throw new Error("The file is not valid JSON.")
+    throw new DrawingFileError("invalidJson")
   }
   return parseDrawingData(data)
 }
@@ -170,18 +193,14 @@ export function parseDrawingFile(text: string): ParsedDrawing {
  * the same tolerant reader instead of being re-stringified to get at it.
  */
 export function parseDrawingData(data: unknown): ParsedDrawing {
-  if (!isRecord(data)) {
-    throw new Error("Unrecognised drawing file.")
-  }
+  if (!isRecord(data)) throw new DrawingFileError("unrecognised")
   if (data.type !== DRAWING_FILE_TYPE) {
-    throw new Error("This file is not a MellowCAD drawing.")
+    throw new DrawingFileError("notADrawing")
   }
 
   const version = isFiniteNumber(data.version) ? data.version : 0
   if (version > DRAWING_FILE_VERSION) {
-    throw new Error(
-      "This drawing was created with a newer version of MellowCAD. Please update to open it."
-    )
+    throw new DrawingFileError("newerVersion")
   }
 
   const blocks = parseBlocks(data.blocks)

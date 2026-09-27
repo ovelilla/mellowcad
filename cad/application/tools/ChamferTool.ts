@@ -65,7 +65,6 @@ type ChamferState =
 
 export class ChamferTool implements Tool {
   readonly id = "chamfer"
-  readonly label = "Chamfer"
 
   private state: ChamferState = { phase: "first", hover: null }
   /** Cut distances along the first/second line, kept across the session. */
@@ -147,11 +146,11 @@ export class ChamferTool implements Tool {
   }
 
   commandOptions(): readonly CommandOption[] {
-    return this.awaitingDistances ? [] : [{ key: "D", label: "Distance" }]
+    return this.awaitingDistances ? [] : [{ id: "Distance" }]
   }
 
-  invokeOption(key: string, ctx: ToolContext): CommandOptionOutcome {
-    if (key.toLowerCase() === "d" && !this.awaitingDistances) {
+  invokeOption(id: string, ctx: ToolContext): CommandOptionOutcome {
+    if (id === "Distance" && !this.awaitingDistances) {
       this.openDistancePrompt(ctx)
       return "continue"
     }
@@ -318,8 +317,8 @@ export class ChamferTool implements Tool {
     this.awaitingDistances = true
     const session: DynamicInputSession = {
       fields: [
-        { id: "dist1", label: "First distance", kind: "distance" },
-        { id: "dist2", label: "Second distance", kind: "distance" },
+        { id: "dist1", prompt: "firstDistance", kind: "distance" },
+        { id: "dist2", prompt: "secondDistance", kind: "distance" },
       ],
       commit: (values, commitCtx) =>
         this.setDistances(values.dist1, values.dist2, commitCtx),

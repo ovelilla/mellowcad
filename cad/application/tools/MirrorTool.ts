@@ -6,6 +6,7 @@ import {
   mirrorEntityCopy,
 } from "../../domain/entities"
 import { DynamicInputSession } from "../input/DynamicInput"
+import type { PromptId } from "../../locales/types"
 import {
   isCoordinateExpression,
   parseCoordinate,
@@ -85,7 +86,6 @@ type MirrorState =
 
 export class MirrorTool implements Tool {
   readonly id = "mirror"
-  readonly label = "Mirror"
 
   private state: MirrorState = { phase: "selecting" }
   private lastScreen: Vec2 | null = null
@@ -98,7 +98,7 @@ export class MirrorTool implements Tool {
       this.state = { phase: "selecting" }
     } else {
       this.state = { phase: "first" }
-      this.openPointInput(ctx, "First point of mirror line")
+      this.openPointInput(ctx, "mirrorFirstPoint")
     }
   }
 
@@ -223,22 +223,18 @@ export class MirrorTool implements Tool {
   commandOptions(): readonly CommandOption[] {
     if (this.state.phase === "erase") {
       // "Erase source objects? [Yes/No] <N>" — Enter takes the default No.
-      return [
-        { key: "Y", label: "Yes" },
-        { key: "N", label: "No" },
-      ]
+      return [{ id: "Yes" }, { id: "No" }]
     }
     return []
   }
 
-  invokeOption(key: string, ctx: ToolContext): CommandOptionOutcome {
+  invokeOption(id: string, ctx: ToolContext): CommandOptionOutcome {
     if (this.state.phase !== "erase") return "unhandled"
-    const k = key.toLowerCase()
-    if (k === "y") {
+    if (id === "Yes") {
       this.commit(this.state, true, ctx)
       return "end"
     }
-    if (k === "n") {
+    if (id === "No") {
       this.commit(this.state, false, ctx)
       return "end"
     }
@@ -297,15 +293,15 @@ export class MirrorTool implements Tool {
     if (this.state.phase !== "selecting") return false
     if (ctx.selection.isEmpty()) return false // nothing selected: let Enter exit
     this.state = { phase: "first" }
-    this.openPointInput(ctx, "First point of mirror line")
+    this.openPointInput(ctx, "mirrorFirstPoint")
     ctx.requestRender()
     return true
   }
 
-  private openPointInput(ctx: ToolContext, label: string): void {
+  private openPointInput(ctx: ToolContext, prompt: PromptId): void {
     const fieldId = this.state.phase === "first" ? "first" : "second"
     const session: DynamicInputSession = {
-      fields: [{ id: fieldId, label, kind: "coordinate" }],
+      fields: [{ id: fieldId, prompt, kind: "coordinate" }],
       commit: () => {},
       commitRaw: (commitCtx) => this.commitPointCoordinate(fieldId, commitCtx),
     }
@@ -346,7 +342,7 @@ export class MirrorTool implements Tool {
       return
     }
     this.state = { phase: "second", first, originals, current: first }
-    this.openPointInput(ctx, "Second point of mirror line")
+    this.openPointInput(ctx, "mirrorSecondPoint")
   }
 
   private enterErase(first: Vec2, second: Vec2, ctx: ToolContext): void {

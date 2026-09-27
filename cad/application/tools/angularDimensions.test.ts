@@ -348,14 +348,14 @@ describe("DIMANGULAR keywords", () => {
 
   it("substitutes the measurement into a Text override", () => {
     const cad = start()
-    cad.option("t").type("<> TYP").enter().click(p(60, 60))
+    cad.option("Text").type("<> TYP").enter().click(p(60, 60))
 
     expect(dimensionText(dim(cad))).toBe("90° TYP")
   })
 
   it("sets the text angle with Angle", () => {
     const cad = start()
-    cad.option("a").type("30").enter().click(p(60, 60))
+    cad.option("Angle").type("30").enter().click(p(60, 60))
 
     expect(dimensionGeometry(dim(cad)).textAngle).toBeCloseToAngle(deg(30))
   })

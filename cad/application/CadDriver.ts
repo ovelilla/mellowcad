@@ -1,4 +1,8 @@
 import { CadRuntime } from "./CadRuntime"
+import { TOOL_COMMANDS } from "./CommandLine"
+import { abbreviationOf } from "../i18n/keywords"
+import source from "../locales/en.json"
+import type { EngineLocale } from "../locales/types"
 import type { EngineState } from "./EngineState"
 import type {
   Clipboard,
@@ -71,6 +75,8 @@ export interface CadDriverOptions {
    */
   readonly snap?: boolean
   readonly store?: DrawingStore | null
+  /** The language the engine speaks; English when left out. */
+  readonly locale?: EngineLocale
   /** File save/open. Absent means the host offers none (SSR, headless). */
   readonly files?: FileTransport | null
   readonly clipboard?: Clipboard | null
@@ -95,7 +101,8 @@ export class CadDriver {
       this.host,
       options.store ?? null,
       options.files ?? null,
-      this.clipboard
+      this.clipboard,
+      { locale: options.locale }
     )
     this.runtime.setViewSize(options.width ?? 1000, options.height ?? 800)
     this.runtime.snapping.setActive(options.snap ?? false)
@@ -248,17 +255,54 @@ export class CadDriver {
   }
 
   /**
-   * Presses a command-option keyword (AutoCAD's `[Close/Undo]`). Routed like
-   * the UI does: through the focused input when there is one, else as a plain
-   * key press, which the runtime resolves against the tool's options first.
+   * Answers a keyword prompt (AutoCAD's `[Close/Undo]`) with the keyword whose
+   * global id is `id` — `option("Close")` in every language — typed as a
+   * user of the command language would: its key when it has one, otherwise its
+   * abbreviation and Enter. Routed like the UI does: through the focused input
+   * when there is one, else on the drawing surface, which resolves keywords
+   * before anything else. An id the running command does not have is a
+   * mistake in the script, and throws.
    */
-  option(key: string): this {
-    if (this.hasFocusedField()) {
-      this.runtime.invokeToolOption(key)
+  option(id: string): this {
+    const typed = this.optionAnswer(id)
+    const offered = this.state().commandOptions.find(
+      (option) => option.id === id
+    )
+    // A keyword not on offer is typed like any other letter — the prompt
+    // ignores it exactly as it ignores a stray key.
+    const immediate = offered ? offered.key !== null : typed.length === 1
+    if (immediate) {
+      if (this.hasFocusedField()) this.runtime.invokeToolOption(typed)
+      else this.press(typed)
+    } else if (this.hasFocusedField()) {
+      this.type(typed).enter()
     } else {
-      this.press(key)
+      for (const char of typed) this.press(char)
+      this.press("Enter")
     }
     return this
+  }
+
+  /**
+   * What a user types to answer with keyword `id` at the current prompt: the
+   * key that runs it, or else its abbreviation in the command language.
+   */
+  optionAnswer(id: string): string {
+    const toolId = this.activeToolId()
+    const command = TOOL_COMMANDS[toolId] ?? null
+    const text = this.runtime.text
+    const inventory: Readonly<Record<string, object>> = source.commands.keywords
+    if (command === null || !(id in (inventory[command] ?? {}))) {
+      throw new Error(`"${id}" is not a keyword of ${command ?? toolId}.`)
+    }
+    const offered = this.state().commandOptions.find(
+      (option) => option.id === id
+    )
+    return (
+      offered?.key ??
+      offered?.abbreviation ??
+      abbreviationOf(text.keyword(command, id))
+    )
   }
 
   /** Runs a command by name or alias, as typing it at the prompt would. */
@@ -357,9 +401,14 @@ export class CadDriver {
     return this.runtime.buildScene()
   }
 
-  /** The keyword chips the active tool currently offers. */
-  optionKeys(): string[] {
+  /** The keys of the keyword chips the active tool currently offers. */
+  optionKeys(): (string | null)[] {
     return this.state().commandOptions.map((option) => option.key)
+  }
+
+  /** The global ids of the keywords the active tool currently offers. */
+  optionIds(): string[] {
+    return this.state().commandOptions.map((option) => option.id)
   }
 
   /** Everything written to the command prompt, in order. */

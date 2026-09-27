@@ -6,7 +6,7 @@ import { getTranslations } from "next-intl/server"
 import "./(marketing)/marketing.css"
 import { Logo } from "@/components/marketing/logo"
 import { UnknownCommand } from "@/components/marketing/unknown-command"
-import { THEME } from "@/cad"
+import { THEME, engineText } from "@/cad"
 import { EDITOR_PATH, SITE_NAME } from "@/lib/site"
 
 const inter = Inter({
@@ -35,6 +35,10 @@ export const viewport: Viewport = {
  */
 export default async function GlobalNotFound() {
   const t = await getTranslations("NotFound")
+  // The engine's own words, as the command line would print them, then
+  // AutoCAD's pointer to its help.
+  const text = engineText()
+  const unknown = text.message("unknownCommand", { name: "{command}" })
   return (
     <html lang="en" className={`${inter.variable} ${fontMono.variable}`}>
       <body>
@@ -44,10 +48,10 @@ export default async function GlobalNotFound() {
           </Link>
           <h1 className="sr-only">{t("metaTitle")}</h1>
           <p className="rounded-md border border-border bg-bg-sunken p-5 font-mono text-sm leading-relaxed">
-            <span className="text-fg-subtle">{t("prompt")} </span>
+            <span className="text-fg-subtle">{text.idlePrompt()} </span>
             <UnknownCommand
               fallback={t("fallbackCommand")}
-              template={t.raw("unknown") as string}
+              template={`${unknown}  ${t("help")}`}
             />
           </p>
           <p className="flex flex-wrap gap-3">

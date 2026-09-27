@@ -35,7 +35,6 @@ interface Frame {
  */
 export class StretchTool extends PlacementTool {
   readonly id = "stretch"
-  readonly label = "Stretch"
 
   /** The dragged selection boxes; a point inside any of them is stretched. */
   private frames: Frame[] = []

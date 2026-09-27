@@ -18,7 +18,8 @@ export function CommandLine({
   engine: CadEngine
   state: EngineState
 }) {
-  const { visible, prompt, buffer, lines, suggestions } = state.commandLine
+  const { visible, prompt, idlePrompt, buffer, lines, suggestions } =
+    state.commandLine
   const logRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
@@ -74,7 +75,9 @@ export function CommandLine({
                     : "text-muted-foreground"
               }
             >
-              {line.kind === "command" ? `Command: ${line.text}` : line.text}
+              {line.kind === "command"
+                ? `${idlePrompt} ${line.text}`
+                : line.text}
             </div>
           ))}
         </div>

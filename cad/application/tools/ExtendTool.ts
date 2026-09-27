@@ -8,7 +8,6 @@ import { EdgeEditTool } from "./EdgeEditTool"
  */
 export class ExtendTool extends EdgeEditTool {
   readonly id = "extend"
-  readonly label = "Extend"
   readonly shortcut = "e"
   protected readonly defaultMode = "extend" as const
 }

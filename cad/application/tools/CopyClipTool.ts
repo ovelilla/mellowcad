@@ -33,8 +33,7 @@ export class CopyClipTool extends SelectionActionTool {
 
   constructor(
     private readonly mode: ClipboardCopyMode,
-    readonly id: string,
-    readonly label: string
+    readonly id: string
   ) {
     super()
   }
@@ -48,7 +47,9 @@ export class CopyClipTool extends SelectionActionTool {
     }
     ctx.setCursor("crosshair")
     ctx.dynamicInput.open({
-      fields: [{ id: "base", label: "Specify base point", kind: "coordinate" }],
+      fields: [
+        { id: "base", prompt: "clipboardBasePoint", kind: "coordinate" },
+      ],
       commit: () => {},
       commitRaw: (commitCtx) => {
         const point = parseCoordinate(

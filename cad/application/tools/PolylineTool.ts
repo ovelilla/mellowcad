@@ -52,7 +52,6 @@ type PolylineToolState =
 
 export class PolylineTool implements Tool {
   readonly id = "polyline"
-  readonly label = "Polyline"
   readonly shortcut = "p"
 
   private state: PolylineToolState = { phase: "idle" }
@@ -123,27 +122,21 @@ export class PolylineTool implements Tool {
   commandOptions(): readonly CommandOption[] {
     if (this.state.phase !== "drawing") return []
     const options: CommandOption[] = []
-    options.push(
-      this.state.arcMode
-        ? { key: "L", label: "Line" }
-        : { key: "A", label: "Arc" }
-    )
-    if (this.state.vertices.length >= 3)
-      options.push({ key: "C", label: "Close" })
-    if (this.state.vertices.length >= 2)
-      options.push({ key: "U", label: "Undo" })
+    options.push({ id: this.state.arcMode ? "Line" : "Arc" })
+    if (this.state.vertices.length >= 3) options.push({ id: "Close" })
+    if (this.state.vertices.length >= 2) options.push({ id: "Undo" })
     return options
   }
 
-  invokeOption(key: string, ctx: ToolContext): CommandOptionOutcome {
-    switch (key.toLowerCase()) {
-      case "a":
+  invokeOption(id: string, ctx: ToolContext): CommandOptionOutcome {
+    switch (id) {
+      case "Arc":
         return this.setArcMode(true, ctx)
-      case "l":
+      case "Line":
         return this.setArcMode(false, ctx)
-      case "c":
+      case "Close":
         return this.markClosed() ? "end" : "unhandled"
-      case "u":
+      case "Undo":
         return this.undoLastVertex(ctx) ? "continue" : "unhandled"
       default:
         return "unhandled"
@@ -364,7 +357,7 @@ export class PolylineTool implements Tool {
 
   private openFirstPointInput(ctx: ToolContext, screen: Vec2): void {
     const session: DynamicInputSession = {
-      fields: [{ id: "point", label: "", kind: "coordinate" }],
+      fields: [{ id: "point", kind: "coordinate" }],
       commit: () => {},
       commitRaw: (commitCtx) => this.commitFirstPoint(commitCtx),
     }
@@ -395,8 +388,8 @@ export class PolylineTool implements Tool {
   private openLengthInput(ctx: ToolContext, screen: Vec2): void {
     const session: DynamicInputSession = {
       fields: [
-        { id: "distance", label: "Length", kind: "distance" },
-        { id: "angle", label: "Angle", kind: "angle" },
+        { id: "distance", prompt: "length", kind: "distance" },
+        { id: "angle", prompt: "angle", kind: "angle" },
       ],
       commit: (values, commitCtx) => this.commitSegment(values, commitCtx),
       commitRaw: (commitCtx) => this.commitRawEntry(commitCtx),

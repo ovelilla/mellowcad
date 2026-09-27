@@ -1,6 +1,11 @@
 "use client"
 
-import { LINEWEIGHTS, LINEWEIGHT_BYLAYER, lineweightLabel } from "@/cad"
+import {
+  LINEWEIGHTS,
+  LINEWEIGHT_BYLAYER,
+  lineweightLabel,
+  type EngineNames,
+} from "@/cad"
 import {
   Select,
   SelectContent,
@@ -20,12 +25,15 @@ import {
  */
 export function LineweightSelect({
   value,
+  names,
   onValueChange,
   includeByLayer = false,
   ariaLabel,
   className,
 }: {
   value: number | "ByLayer" | null
+  /** The engine's name for ByLayer. */
+  names: EngineNames
   onValueChange: (value: number | "ByLayer") => void
   includeByLayer?: boolean
   ariaLabel: string
@@ -48,7 +56,7 @@ export function LineweightSelect({
         {includeByLayer && (
           <SelectItem value={LINEWEIGHT_BYLAYER} className="text-[11px]">
             <LineweightPreview millimetres={0} />
-            ByLayer
+            {names.byLayer}
           </SelectItem>
         )}
         {LINEWEIGHTS.map((lineweight) => (

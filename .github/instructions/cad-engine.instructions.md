@@ -7,17 +7,51 @@ description: "Layering, purity and modelling rules for the DOM-free CAD engine (
 
 ## Allowed dependencies
 
-| Layer            | May import from                                               |
-| ---------------- | ------------------------------------------------------------- |
-| `geometry/`      | nothing                                                       |
-| `domain/`        | `geometry/`                                                   |
-| `scene/`         | `geometry/`                                                   |
-| `serialization/` | `geometry/`, `domain/`                                        |
-| `application/`   | `geometry/`, `domain/`, `scene/`, `serialization/`, `shared/` |
-| `adapters/`      | everything (this is the only browser-aware layer)             |
+| Layer            | May import from                                                                          |
+| ---------------- | ---------------------------------------------------------------------------------------- |
+| `geometry/`      | nothing                                                                                  |
+| `domain/`        | `geometry/`                                                                              |
+| `scene/`         | `geometry/`                                                                              |
+| `serialization/` | `geometry/`, `domain/`                                                                   |
+| `i18n/`          | nothing but `icu-minify/format` (formatter, keyword and name rules; no catalog shape)    |
+| `locales/`       | `i18n/` (the catalogs: `en.json`, the generated `en.ts`, `EngineLocale`)                 |
+| `application/`   | `geometry/`, `domain/`, `scene/`, `serialization/`, `shared/`, `i18n/`, `locales/`       |
+| `adapters/`      | everything (this is the only browser-aware layer)                                        |
 
-`cad/index.ts` is the public barrel. Anything React needs must be exported there; nothing outside
-`cad/` may import a deep path.
+`cad/index.ts` is the public barrel, and `cad/locales/*` are the other public entry points (one
+module per language, tomorrow the package's `exports` subpaths). Anything React needs must be exported
+from one of those; nothing outside `cad/` may import another deep path.
+
+## Text lives in the catalogs
+
+**Every word the engine shows is in `cad/locales/en.json`**, and nowhere else in `cad/`: prompts,
+keywords, command names, command-line messages, what is drawn on the canvas, the Properties palette.
+English is built in, gives the type every other language is checked against, and is the fallback key
+by key. `application/EngineText.ts` is the one place that reads it; a tool reaches it through
+`ctx.text` and names a dynamic-input prompt by id.
+
+- **`domain/` exposes ids, never display names.** Colours (`STANDARD_COLORS[].id`), linetypes, hatch
+  patterns and `ByLayer` are ids; their names are `interface.*` entries, read by a host from
+  `EngineState.names`. Data names stay data: layer, style and block names, `Standard`, `ISO-25`,
+  `Continuous`, `ANSI31`. A default name is fixed when the object is made, in the command language
+  of that moment (`Layer{n}`, `Copy of {name}`), as AutoCAD's are.
+- **Two languages, one boundary.** `interface` is the palettes' and menus' language; `commands` is
+  the command language — names, prompts, keywords, messages and everything drawn on the canvas.
+  A locale may leave `commands` out, and then the command language is the global one.
+- **No global language state.** The locale is passed explicitly — `CadEngineOptions`, `CadRuntime`'s
+  fifth argument, `CadDriverOptions` (so `createHarness`), `recordDemo(…, { locale })`,
+  `commandCatalog(locale)` — and `setLocale` switches one engine. A module-level registry would be
+  an import-time side effect, and one process renders several languages (the landing's build).
+- **Messages are ICU MessageFormat** (next-intl's syntax): `{count, plural, …}`, never a hand-made
+  plural. A `<` followed by a letter is written `'<'`, or ICU reads it as a tag. `names` and
+  `keywords` are words, not messages, and are not compiled.
+- **After editing `en.json`, run `npm run locales`** and commit both files: the engine imports the
+  compiled `en.ts` (no parser ships to the browser), and `locales.test.ts` fails on any drift.
+- **Technical values never go through `Intl`.** Lengths and angles are `formatLength` /
+  `formatAngle` (`toFixed`, a point, latin digits) and enter a message already formatted. Counts do
+  go through the formatter, which pins latin digits and no grouping.
+- **A failure a user reads is a code.** `DrawingFileError.code` is worded by the catalog; its
+  `message` stays English, for logs.
 
 **No module in `cad/` may have an import-time side effect.** `package.json` declares
 `"sideEffects": ["**/*.css"]`, which is what lets a page import one small helper from the barrel
@@ -91,8 +125,9 @@ TypeScript exhaustiveness will point at most of it, but the full list is: `assig
 `closestOnEntity`, `entityBounds`, `entityCrossesRect`, `applyEntityProperty` — each in the module
 the table above gives it, and anything new the type exports named in the `entities.ts` barrel —
 plus `serialization/drawingFile.ts` (clone + parse + `VERSION` bump),
-`SceneBuilder.entityScenePrimitive`, `snapping/providers.ts`, `EngineState.singleEntityInfo` +
-`TYPE_LABELS`, and `selectedGrips` in `tools/selectToolGrips.ts`. The editing tools switch on the
+`SceneBuilder.entityScenePrimitive`, `snapping/providers.ts`, `EngineState.singleEntityInfo` + the
+type's name in `interface.entity` (and its rows in `interface.property`), and `selectedGrips` in
+`tools/selectToolGrips.ts`. The editing tools switch on the
 type too (`EdgeEditTool`, `BreakTool`, `OffsetTool`, `DimensionTool`, `lastDrawnPoint`): a type they
 cannot act on returns `null` explicitly rather than falling through.
 Two of those are decisions, not chores. **Snapping is opt-in**: a hatch is in no provider at all
@@ -187,7 +222,7 @@ A `DimensionKind` is not a new entity type: every kind is a `DimensionEntity` sh
 definition points, so transforms, grips, snapping and the file format come for free. What each new
 kind owes is: a branch in `dimensionAxisAngle`, `dimensionMeasurement` and (if it carries a symbol
 or a different unit) `dimensionText`; a body in `dimensionGeometry`; `parseDimensionKind` in
-`drawingFile.ts`; `DIMENSION_TYPE_LABELS` for the palette.
+`drawingFile.ts`; its name in `interface.property.dimensionKind` for the palette.
 
 **Every transform maps the points through `mapDimensionPoints`.** The `dimension` cases of
 translate / rotate / scale / mirror / stretch and the four `*Copy` helpers all spread its result
@@ -286,7 +321,9 @@ travel between builds that ship different patterns.
 
 Transcribe a definition from AutoCAD's documented one, quoted verbatim in a comment beside the
 data, converting only what this layer's conventions require (degrees → radians). Adding a pattern
-must be adding data and nothing else; if it needs code, the model is wrong.
+must be adding data and nothing else; if it needs code, the model is wrong. Its display name and its
+`?` description are catalog entries (`interface.linetype`, `interface.hatchPattern`,
+`commands.listing.hatchPatternDescription`), keyed by the id.
 
 ## Editable geometry (the Properties palette)
 

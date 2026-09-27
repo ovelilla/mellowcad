@@ -30,47 +30,20 @@ import {
   polylineSegments,
   dimensionMeasurement,
   dimensionMeasurementUnit,
-  DimensionKind,
-  TextJustify,
 } from "../domain/entities"
 import { SnapType } from "./snapping/types"
-import { SnapResult } from "./snapping/types"
-import { SnapEngine } from "./snapping/SnapEngine"
-import { SnapModeType, SnapMode } from "./SnapMode"
+import { SnapModeType } from "./SnapMode"
 import { DynamicFieldKind, DynamicInputController } from "./input/DynamicInput"
 import { isCoordinateExpression } from "./input/coordinateInput"
-import { CommandOption, Tool } from "./tools/Tool"
-import {
-  CommandDefinition,
-  CommandLineController,
-  CommandLineEntry,
-  CommandSuggestion,
-  matchCommands,
-  toolCommandAlias,
-} from "./CommandLine"
-import { SaveState, AutosaveService } from "./Autosave"
-import { CadDocument } from "../domain/Document"
-import { Viewport } from "./Viewport"
-import { Selection } from "./Selection"
-import { SelectionCycling } from "./SelectionCycling"
-import { ConstraintManager } from "./constraints/ConstraintManager"
-import { ConstraintType } from "./constraints/types"
-import { ObjectSnapTrackingEngine } from "./tracking/ObjectSnapTrackingEngine"
-import { CommandHistory } from "./commands/Command"
-import { commandPrompt } from "./runtimeCommands"
-import {
-  commonSelectionColor,
-  commonSelectionLayer,
-  commonSelectionLinetype,
-  commonSelectionLineweight,
-} from "./runtimeProperties"
+import { CommandLineEntry, CommandSuggestion } from "./CommandLine"
+import { SaveState } from "./Autosave"
+import { EngineNames, EngineText, PromptSegment } from "./EngineText"
 import { Layer, LayerId } from "../domain/layers"
 import { EntityColor } from "../domain/colors"
 import { LinetypeId } from "../domain/linetypes"
 import { Lineweight } from "../domain/lineweights"
 import { TextStyle, TextStyleId } from "../domain/textStyles"
 import { DimStyle, DimStyleId } from "../domain/dimStyles"
-import { hatchPatternName } from "../domain/hatchPatterns"
 
 /** Which of the two style tables the manager is showing. */
 export type StylesPanelTab = "dimension" | "text"
@@ -134,6 +107,8 @@ export interface PropertyEdit {
 
 /** A single label/value line shown in the properties panel. */
 export interface PropertyRow {
+  /** Stable across languages, unlike the label: a React key. */
+  readonly id: string
   readonly label: string
   readonly value: string
   /** Present when the value can be retyped to change the geometry. */
@@ -142,6 +117,7 @@ export interface PropertyRow {
 
 /** A titled group of related properties (e.g. "Geometry"). */
 export interface PropertyGroup {
+  readonly id: string
   readonly title: string
   readonly rows: ReadonlyArray<PropertyRow>
 }
@@ -157,12 +133,40 @@ export interface SelectionInfo {
   readonly groups: ReadonlyArray<PropertyGroup>
 }
 
+/**
+ * A keyword the running command offers, resolved into the command language:
+ * AutoCAD's `[Close/Undo]`, one entry per word.
+ */
+export interface CommandOptionUi {
+  /** The global keyword the tool receives, whatever was typed. */
+  readonly id: string
+  /** The word in the command language, its abbreviation in capitals. */
+  readonly keyword: string
+  readonly abbreviation: string
+  /**
+   * The key that runs it at once, or null when it must be typed and confirmed
+   * (an abbreviation of several letters, or one another keyword starts with).
+   */
+  readonly key: string | null
+  /** What the chip and the prompt show, e.g. `Close` or `Erase: Yes`. */
+  readonly label: string
+}
+
 /** Snapshot of the command line (AutoCAD's `Command:` prompt) for the UI. */
 export interface CommandLineUi {
   /** Whether the prompt is shown (AutoCAD's Ctrl+9 / our F2 toggle). */
   readonly visible: boolean
   /** Text before the input, e.g. `Command:` or `PLINE [Close/Undo]:`. */
   readonly prompt: string
+  /**
+   * The same prompt in spans, the keyword list set apart, so a host can style
+   * it without taking the text apart.
+   */
+  readonly promptSegments: ReadonlyArray<PromptSegment>
+  /** The running command's name as the prompt shows it; null at rest. */
+  readonly command: string | null
+  /** The neutral prompt, `Command:`, which also heads each echoed command. */
+  readonly idlePrompt: string
   /** What the user has typed so far, whether on the canvas or in the box. */
   readonly buffer: string
   /** Scrollback: commands echoed, results and errors. */
@@ -301,132 +305,15 @@ export interface EngineState {
    * `[Close/Undo]` prompt. The UI renders these as hint chips near the dynamic
    * input; empty when the tool exposes none.
    */
-  readonly commandOptions: ReadonlyArray<CommandOption>
+  readonly commandOptions: ReadonlyArray<CommandOptionUi>
   /** The command prompt: what is typed, what it suggests and what it logged. */
   readonly commandLine: CommandLineUi
-}
-
-/** The runtime state `buildEngineState` reads, passed explicitly. */
-export interface EngineStateInput {
-  readonly document: CadDocument
-  readonly viewport: Viewport
-  readonly selection: Selection
-  readonly snapping: SnapEngine
-  readonly snapMode: SnapMode
-  readonly cycling: SelectionCycling
-  readonly constraints: ConstraintManager
-  readonly tracking: ObjectSnapTrackingEngine
-  readonly dynamicInput: DynamicInputController
-  readonly commandLine: CommandLineController
-  readonly history: CommandHistory
-  readonly autosave: AutosaveService
-  readonly activeTool: Tool
-  readonly tools: ReadonlyArray<Tool>
-  readonly commandList: ReadonlyArray<CommandDefinition>
-  readonly cursorWorld: Vec2 | null
-  readonly snap: SnapResult | null
-  readonly snapOverrideMenu: Vec2 | null
-  /** Screen position of the open Selection list box, or null when closed. */
-  readonly cyclingListAt: Vec2 | null
-  readonly gridVisible: boolean
-  readonly stylesPanel: StylesPanelTab | null
-  readonly blocksPanel: boolean
-  readonly commandLineVisible: boolean
-}
-
-/** Builds the UI snapshot. Cached by the runtime; never rebuilt per frame. */
-export function buildEngineState(input: EngineStateInput): EngineState {
-  const { document, selection, snapping, activeTool } = input
-  const snapEnabled = {} as Record<SnapType, boolean>
-  for (const type of Object.values(SnapType)) {
-    snapEnabled[type] = snapping.isEnabled(type)
-  }
-  const settings = document.getSettings()
-  const selectedEntities = selection
-    .toArray()
-    .map((id) => document.get(id))
-    .filter((entity): entity is Entity => entity !== undefined)
-  return {
-    activeToolId: activeTool.id,
-    tools: input.tools.map((t) => ({
-      id: t.id,
-      label: t.label,
-      // The typed alias is the real shortcut now, so that is what the UI
-      // advertises ("L", "AR", "TR"), falling back to the tool's own hint.
-      shortcut: toolCommandAlias(t.id) ?? t.shortcut,
-    })),
-    entityCount: document.size,
-    selectionCount: selection.size,
-    scale: input.viewport.scale,
-    cursorWorld: input.cursorWorld,
-    snap: input.snap
-      ? { type: input.snap.type, point: input.snap.point }
-      : null,
-    snapActive: snapping.isActive(),
-    snapEnabled,
-    snapOverride: snapping.getOverride(),
-    snapOverrideMenu: input.snapOverrideMenu,
-    orthoActive: input.constraints.isEnabled(ConstraintType.Ortho),
-    polarActive: input.constraints.isEnabled(ConstraintType.Polar),
-    polarAngleStep: input.constraints.getPolarAngleStep(),
-    objectSnapTrackingActive: input.tracking.isActive(),
-    acquiredTrackingPoints: input.tracking.getAcquired().length,
-    selectionCycling: {
-      active: input.cycling.isEnabled(),
-      showList: input.cycling.showsList(),
-      candidates: buildSelectionCandidates(input.cycling.getCandidates()),
-      currentId: input.cycling.getCurrentId(),
-      listAt: input.cyclingListAt,
-    },
-    gridVisible: input.gridVisible,
-    snapModeActive: input.snapMode.isActive(),
-    snapModeType: input.snapMode.getType(),
-    snapSpacing: input.snapMode.getSpacing(),
-    snapPolarDistance: input.snapMode.getPolarDistance(),
-    dynamicInput: buildDynamicInputUi(input.dynamicInput, settings),
-    documentUnit: settings.unit,
-    documentPrecision: settings.precision,
-    ltScale: settings.ltScale,
-    dimScale: document.getDimStyle(document.getCurrentDimStyleId())?.scale ?? 1,
-    lwDisplay: settings.lwDisplay,
-    layers: buildLayerInfos(document.getLayers(), document.getEntities()),
-    currentLayerId: document.getCurrentLayerId(),
-    canUndo: input.history.canUndo(),
-    canRedo: input.history.canRedo(),
-    saveState: input.autosave.getState(),
-    lastSavedAt: input.autosave.getLastSavedAt(),
-    selectionInfo: buildSelectionInfo(selectedEntities, settings),
-    selectionLayerId: commonSelectionLayer(selectedEntities),
-    selectionColor: commonSelectionColor(selectedEntities),
-    selectionLinetype: commonSelectionLinetype(selectedEntities),
-    selectionLineweight: commonSelectionLineweight(selectedEntities),
-    textStyles: buildTextStyleInfos(
-      document.getTextStyles(),
-      document.getEntities()
-    ),
-    currentTextStyleId: document.getCurrentTextStyleId(),
-    selectionTextStyleId: commonStyleId(selectedEntities, "text"),
-    dimStyles: buildDimStyleInfos(
-      document.getDimStyles(),
-      document.getEntities()
-    ),
-    currentDimStyleId: document.getCurrentDimStyleId(),
-    selectionDimStyleId: commonStyleId(selectedEntities, "dimension"),
-    stylesPanel: input.stylesPanel,
-    blocks: buildBlockInfos(document.getBlocks(), document.getEntities()),
-    blocksPanel: input.blocksPanel,
-    commandOptions: activeTool.commandOptions?.() ?? [],
-    commandLine: {
-      visible: input.commandLineVisible,
-      prompt: commandPrompt(activeTool),
-      buffer: input.commandLine.getBuffer(),
-      lines: input.commandLine.getLines(),
-      suggestions: matchCommands(
-        input.commandList,
-        input.commandLine.getBuffer()
-      ),
-    },
-  }
+  /**
+   * The engine's vocabulary for a host's menus and pickers — object snaps,
+   * colours, ByLayer, linetypes — in the interface language. The same object
+   * until the language changes.
+   */
+  readonly names: EngineNames
 }
 
 /**
@@ -522,11 +409,12 @@ export function commonStyleId(
  * AutoCAD lists them: by object type, in pick order (topmost first).
  */
 export function buildSelectionCandidates(
-  entities: ReadonlyArray<Entity>
+  entities: ReadonlyArray<Entity>,
+  text: EngineText
 ): SelectionCandidateUi[] {
   return entities.map((entity) => ({
     id: entity.id,
-    label: TYPE_LABELS[entity.type].one,
+    label: text.entity(entity.type, 1),
   }))
 }
 
@@ -537,7 +425,8 @@ export function buildSelectionCandidates(
  */
 export function buildDynamicInputUi(
   controller: DynamicInputController,
-  settings: DocumentSettings
+  settings: DocumentSettings,
+  text: EngineText
 ): DynamicInputUi | null {
   const session = controller.getSession()
   const screen = controller.getScreen()
@@ -547,7 +436,7 @@ export function buildDynamicInputUi(
     const live = controller.getLive(field.id)
     return {
       id: field.id,
-      label: field.label,
+      label: field.prompt === undefined ? "" : text.prompt(field.prompt),
       kind: field.kind,
       value: controller.getText(field.id),
       placeholder:
@@ -577,7 +466,9 @@ export function buildDynamicInputUi(
       fields: [
         {
           ...coordinate,
-          label: coordinateLabel(coordinate.value),
+          // The box says what it currently accepts: a cartesian point (`X,Y`)
+          // or a polar one (`Dist<Ang`).
+          label: text.coordinateLabel(coordinate.value.includes("<")),
           unitSuffix: "",
           // The "X,Y" / "Dist<Ang" label is the affordance; a placeholder
           // repeating it would only add visual noise.
@@ -589,15 +480,6 @@ export function buildDynamicInputUi(
   }
 
   return { screen, fields }
-}
-
-/**
- * Label for the unified coordinate box, reflecting whether the user is typing a
- * cartesian point (`X,Y`) or a polar one (`Dist<Ang`), so the box always says
- * what it currently accepts.
- */
-function coordinateLabel(text: string): string {
-  return text.includes("<") ? "Dist<Ang" : "X,Y"
 }
 
 function formatFieldValue(
@@ -643,30 +525,46 @@ function fieldUnitSuffix(
  */
 export function buildSelectionInfo(
   entities: ReadonlyArray<Entity>,
-  settings: DocumentSettings
+  settings: DocumentSettings,
+  text: EngineText
 ): SelectionInfo | null {
   if (entities.length === 0) return null
-  if (entities.length === 1) return singleEntityInfo(entities[0], settings)
-  return multiEntityInfo(entities)
+  if (entities.length === 1)
+    return singleEntityInfo(entities[0], settings, text)
+  return multiEntityInfo(entities, text)
 }
+
+type RowId = Parameters<EngineText["propertyRow"]>[0]
+type GroupId = Parameters<EngineText["propertyGroup"]>[0]
 
 function singleEntityInfo(
   entity: Entity,
-  settings: DocumentSettings
+  settings: DocumentSettings,
+  text: EngineText
 ): SelectionInfo {
   const length = (value: number) =>
     `${formatLength(value, settings)} ${unitSuffix(settings.unit)}`
   const area = (value: number) =>
     `${formatLength(value, settings)} ${unitSuffix(settings.unit)}²`
   const coord = (value: number) => formatLength(value, settings)
+  const degrees = (value: number) => `${formatAngle(value, settings)}°`
 
+  const group = (id: GroupId, rows: PropertyRow[]): PropertyGroup => ({
+    id,
+    title: text.propertyGroup(id),
+    rows,
+  })
+  const row = (id: RowId, value: string): PropertyRow => ({
+    id,
+    label: text.propertyRow(id),
+    value,
+  })
   const lengthRow = (
-    label: string,
+    id: RowId,
     property: EntityProperty,
     value: number
   ): PropertyRow => ({
-    label,
-    value: length(value),
+    ...row(id, length(value)),
     edit: {
       property,
       text: formatLength(value, settings),
@@ -674,75 +572,59 @@ function singleEntityInfo(
     },
   })
   const coordRow = (
-    label: string,
+    id: RowId,
     property: EntityProperty,
     value: number
   ): PropertyRow => ({
-    label,
-    value: coord(value),
+    ...row(id, coord(value)),
     edit: { property, text: formatLength(value, settings), unit: "" },
   })
   const angleRow = (
-    label: string,
+    id: RowId,
     property: EntityProperty,
-    degrees: number
+    value: number
   ): PropertyRow => ({
-    label,
-    value: `${formatAngle(degrees, settings)}°`,
-    edit: { property, text: formatAngle(degrees, settings), unit: "°" },
+    ...row(id, degrees(value)),
+    edit: { property, text: formatAngle(value, settings), unit: "°" },
   })
+  const title = (type: EntityType) => text.entity(type, 1)
 
   switch (entity.type) {
     case "line": {
       return {
-        title: "Line",
+        title: title("line"),
         count: 1,
         groups: [
-          {
-            title: "Geometry",
-            rows: [
-              lengthRow("Length", "length", lineLength(entity)),
-              angleRow("Angle", "angle", lineAngleDegrees(entity)),
-              { label: "Δ X", value: length(entity.end.x - entity.start.x) },
-              { label: "Δ Y", value: length(entity.end.y - entity.start.y) },
-            ],
-          },
-          {
-            title: "Endpoints",
-            rows: [
-              coordRow("Start X", "startX", entity.start.x),
-              coordRow("Start Y", "startY", entity.start.y),
-              coordRow("End X", "endX", entity.end.x),
-              coordRow("End Y", "endY", entity.end.y),
-            ],
-          },
+          group("geometry", [
+            lengthRow("length", "length", lineLength(entity)),
+            angleRow("angle", "angle", lineAngleDegrees(entity)),
+            row("deltaX", length(entity.end.x - entity.start.x)),
+            row("deltaY", length(entity.end.y - entity.start.y)),
+          ]),
+          group("endpoints", [
+            coordRow("startX", "startX", entity.start.x),
+            coordRow("startY", "startY", entity.start.y),
+            coordRow("endX", "endX", entity.end.x),
+            coordRow("endY", "endY", entity.end.y),
+          ]),
         ],
       }
     }
     case "circle": {
       return {
-        title: "Circle",
+        title: title("circle"),
         count: 1,
         groups: [
-          {
-            title: "Geometry",
-            rows: [
-              lengthRow("Radius", "radius", entity.radius),
-              lengthRow("Diameter", "diameter", entity.radius * 2),
-              {
-                label: "Circumference",
-                value: length(circleCircumference(entity)),
-              },
-              { label: "Area", value: area(circleArea(entity)) },
-            ],
-          },
-          {
-            title: "Center",
-            rows: [
-              coordRow("X", "centerX", entity.center.x),
-              coordRow("Y", "centerY", entity.center.y),
-            ],
-          },
+          group("geometry", [
+            lengthRow("radius", "radius", entity.radius),
+            lengthRow("diameter", "diameter", entity.radius * 2),
+            row("circumference", length(circleCircumference(entity))),
+            row("area", area(circleArea(entity))),
+          ]),
+          group("center", [
+            coordRow("x", "centerX", entity.center.x),
+            coordRow("y", "centerY", entity.center.y),
+          ]),
         ],
       }
     }
@@ -750,30 +632,24 @@ function singleEntityInfo(
       const deg = (radians: number) =>
         normalizeDegrees((radians * 180) / Math.PI)
       return {
-        title: "Arc",
+        title: title("arc"),
         count: 1,
         groups: [
-          {
-            title: "Geometry",
-            rows: [
-              lengthRow("Radius", "radius", entity.radius),
-              { label: "Length", value: length(arcLength(entity)) },
-              angleRow(
-                "Angle",
-                "totalAngle",
-                (arcSweepAngle(entity) * 180) / Math.PI
-              ),
-              angleRow("Start angle", "startAngle", deg(entity.startAngle)),
-              angleRow("End angle", "endAngle", deg(entity.endAngle)),
-            ],
-          },
-          {
-            title: "Center",
-            rows: [
-              coordRow("X", "centerX", entity.center.x),
-              coordRow("Y", "centerY", entity.center.y),
-            ],
-          },
+          group("geometry", [
+            lengthRow("radius", "radius", entity.radius),
+            row("length", length(arcLength(entity))),
+            angleRow(
+              "angle",
+              "totalAngle",
+              (arcSweepAngle(entity) * 180) / Math.PI
+            ),
+            angleRow("startAngle", "startAngle", deg(entity.startAngle)),
+            angleRow("endAngle", "endAngle", deg(entity.endAngle)),
+          ]),
+          group("center", [
+            coordRow("x", "centerX", entity.center.x),
+            coordRow("y", "centerY", entity.center.y),
+          ]),
         ],
       }
     }
@@ -785,261 +661,162 @@ function singleEntityInfo(
           (ellipseAngleFromParam(entity.ratio, param) * 180) / Math.PI
         )
       return {
-        title: full ? "Ellipse" : "Elliptical arc",
+        title: full ? title("ellipse") : text.propertyTitle("ellipticalArc"),
         count: 1,
         groups: [
-          {
-            title: "Geometry",
-            rows: [
-              lengthRow(
-                "Major radius",
-                "majorRadius",
-                ellipseSemiMajor(entity)
-              ),
-              lengthRow(
-                "Minor radius",
-                "minorRadius",
-                ellipseSemiMinor(entity)
-              ),
-              // Derived from the two radii, so retyping it would be a third way
-              // to say the same thing; AutoCAD's own ratio row is a gap here.
-              {
-                label: "Radius ratio",
-                value: formatLength(entity.ratio, settings),
-              },
-              ...(full
-                ? [{ label: "Area", value: area(ellipseArea(entity)) }]
-                : [
-                    // Measured from the major axis, which is the frame the
-                    // stored parameters live in.
-                    {
-                      label: "Start angle",
-                      value: `${formatAngle(axisAngle(start), settings)}°`,
-                    },
-                    {
-                      label: "End angle",
-                      value: `${formatAngle(
-                        axisAngle(start + sweep),
-                        settings
-                      )}°`,
-                    },
-                  ]),
-            ],
-          },
-          {
-            title: "Center",
-            rows: [
-              coordRow("X", "centerX", entity.center.x),
-              coordRow("Y", "centerY", entity.center.y),
-            ],
-          },
+          group("geometry", [
+            lengthRow("majorRadius", "majorRadius", ellipseSemiMajor(entity)),
+            lengthRow("minorRadius", "minorRadius", ellipseSemiMinor(entity)),
+            // Derived from the two radii, so retyping it would be a third way
+            // to say the same thing; AutoCAD's own ratio row is a gap here.
+            row("radiusRatio", formatLength(entity.ratio, settings)),
+            ...(full
+              ? [row("area", area(ellipseArea(entity)))]
+              : [
+                  // Measured from the major axis, which is the frame the
+                  // stored parameters live in.
+                  row("startAngle", degrees(axisAngle(start))),
+                  row("endAngle", degrees(axisAngle(start + sweep))),
+                ]),
+          ]),
+          group("center", [
+            coordRow("x", "centerX", entity.center.x),
+            coordRow("y", "centerY", entity.center.y),
+          ]),
         ],
       }
     }
     case "polyline": {
-      const vertexCount = entity.vertices.length
-      const segmentCount = polylineSegments(entity).length
       return {
-        title: "Polyline",
+        title: title("polyline"),
         count: 1,
         groups: [
-          {
-            title: "Geometry",
-            rows: [
-              { label: "Length", value: length(polylineLength(entity)) },
-              ...(entity.closed
-                ? [{ label: "Area", value: area(polylineArea(entity)) }]
-                : []),
-              { label: "Vertices", value: String(vertexCount) },
-              { label: "Segments", value: String(segmentCount) },
-              { label: "Closed", value: entity.closed ? "Yes" : "No" },
-            ],
-          },
+          group("geometry", [
+            row("length", length(polylineLength(entity))),
+            ...(entity.closed ? [row("area", area(polylineArea(entity)))] : []),
+            row("vertices", String(entity.vertices.length)),
+            row("segments", String(polylineSegments(entity).length)),
+            row("closed", text.propertyValue(entity.closed ? "yes" : "no")),
+          ]),
         ],
       }
     }
     case "text": {
       return {
-        title: "Text",
+        title: title("text"),
         count: 1,
         groups: [
-          {
-            title: "Text",
-            rows: [
-              // Editing the contents belongs to an in-place editor, not a
-              // numeric field, so it stays read-only here. The style is a
-              // picker in the palette's General section, not a row.
-              { label: "Contents", value: entity.value },
-              { label: "Justify", value: JUSTIFY_LABELS[entity.justify] },
-              lengthRow("Height", "textHeight", entity.height),
-              angleRow(
-                "Rotation",
-                "rotation",
-                normalizeDegrees((entity.rotation * 180) / Math.PI)
-              ),
-            ],
-          },
-          {
-            title: "Position",
-            rows: [
-              coordRow("X", "positionX", entity.position.x),
-              coordRow("Y", "positionY", entity.position.y),
-            ],
-          },
+          group("text", [
+            // Editing the contents belongs to an in-place editor, not a
+            // numeric field, so it stays read-only here. The style is a
+            // picker in the palette's General section, not a row.
+            row("contents", entity.value),
+            row("justify", text.justify(entity.justify)),
+            lengthRow("height", "textHeight", entity.height),
+            angleRow(
+              "rotation",
+              "rotation",
+              normalizeDegrees((entity.rotation * 180) / Math.PI)
+            ),
+          ]),
+          group("position", [
+            coordRow("x", "positionX", entity.position.x),
+            coordRow("y", "positionY", entity.position.y),
+          ]),
         ],
       }
     }
     case "dimension": {
       return {
-        title: "Dimension",
+        title: title("dimension"),
         count: 1,
         groups: [
-          {
-            title: "Dimension",
-            rows: [
-              // The measurement is derived from the definition points, so it is
-              // read-only here exactly as it is in AutoCAD's palette.
-              {
-                label: "Measurement",
-                value:
-                  dimensionMeasurementUnit(entity.kind) === "angle"
-                    ? `${formatAngle(
-                        (dimensionMeasurement(entity) * 180) / Math.PI,
-                        settings
-                      )}°`
-                    : length(dimensionMeasurement(entity)),
-              },
-              {
-                label: "Text override",
-                value: entity.text ?? "\u2014",
-              },
-              { label: "Type", value: DIMENSION_TYPE_LABELS[entity.kind] },
-              ...(entity.kind === "linear"
-                ? [
-                    angleRow(
-                      "Rotation",
-                      "dimensionRotation",
-                      normalizeDegrees((entity.rotation * 180) / Math.PI)
-                    ),
-                  ]
-                : []),
-            ],
-          },
-          {
-            title: "Definition points",
-            rows: [
-              ...(entity.vertex
-                ? [
-                    { label: "Vertex X", value: coord(entity.vertex.x) },
-                    { label: "Vertex Y", value: coord(entity.vertex.y) },
-                  ]
-                : []),
-              { label: "First X", value: coord(entity.first.x) },
-              { label: "First Y", value: coord(entity.first.y) },
-              { label: "Second X", value: coord(entity.second.x) },
-              { label: "Second Y", value: coord(entity.second.y) },
-            ],
-          },
+          group("dimension", [
+            // The measurement is derived from the definition points, so it is
+            // read-only here exactly as it is in AutoCAD's palette.
+            row(
+              "measurement",
+              dimensionMeasurementUnit(entity.kind) === "angle"
+                ? degrees((dimensionMeasurement(entity) * 180) / Math.PI)
+                : length(dimensionMeasurement(entity))
+            ),
+            row("textOverride", entity.text ?? text.propertyValue("none")),
+            row("type", text.dimensionKind(entity.kind)),
+            ...(entity.kind === "linear"
+              ? [
+                  angleRow(
+                    "rotation",
+                    "dimensionRotation",
+                    normalizeDegrees((entity.rotation * 180) / Math.PI)
+                  ),
+                ]
+              : []),
+          ]),
+          group("definitionPoints", [
+            ...(entity.vertex
+              ? [
+                  row("vertexX", coord(entity.vertex.x)),
+                  row("vertexY", coord(entity.vertex.y)),
+                ]
+              : []),
+            row("firstX", coord(entity.first.x)),
+            row("firstY", coord(entity.first.y)),
+            row("secondX", coord(entity.second.x)),
+            row("secondY", coord(entity.second.y)),
+          ]),
         ],
       }
     }
     case "hatch": {
       return {
-        title: "Hatch",
+        title: title("hatch"),
         count: 1,
         groups: [
-          {
-            title: "Pattern",
-            rows: [
-              // The pattern name is a picker in AutoCAD's palette, not a number,
-              // so it stays read-only until there is one here.
-              { label: "Pattern", value: hatchPatternName(entity.patternId) },
-              coordRow("Scale", "patternScale", entity.patternScale),
-              angleRow(
-                "Angle",
-                "patternAngle",
-                normalizeDegrees((entity.patternAngle * 180) / Math.PI)
-              ),
-              {
-                label: "Boundaries",
-                value: String(entity.loops.length),
-              },
-            ],
-          },
+          group("pattern", [
+            // The pattern name is a picker in AutoCAD's palette, not a number,
+            // so it stays read-only until there is one here.
+            row("pattern", text.hatchPattern(entity.patternId)),
+            coordRow("scale", "patternScale", entity.patternScale),
+            angleRow(
+              "angle",
+              "patternAngle",
+              normalizeDegrees((entity.patternAngle * 180) / Math.PI)
+            ),
+            row("boundaries", String(entity.loops.length)),
+          ]),
         ],
       }
     }
     case "insert": {
       return {
-        title: "Block reference",
+        title: title("insert"),
         count: 1,
         groups: [
-          {
-            title: "Block",
-            // The block is chosen when the reference is inserted; swapping one
-            // for another is BREPLACE, not a palette row.
-            rows: [
-              { label: "Name", value: entity.blockId },
-              coordRow("Scale", "insertScale", entity.scale),
-              angleRow(
-                "Rotation",
-                "rotation",
-                normalizeDegrees((entity.rotation * 180) / Math.PI)
-              ),
-            ],
-          },
-          {
-            title: "Position",
-            rows: [
-              coordRow("X", "positionX", entity.position.x),
-              coordRow("Y", "positionY", entity.position.y),
-            ],
-          },
+          // The block is chosen when the reference is inserted; swapping one
+          // for another is BREPLACE, not a palette row.
+          group("block", [
+            row("name", entity.blockId),
+            coordRow("scale", "insertScale", entity.scale),
+            angleRow(
+              "rotation",
+              "rotation",
+              normalizeDegrees((entity.rotation * 180) / Math.PI)
+            ),
+          ]),
+          group("position", [
+            coordRow("x", "positionX", entity.position.x),
+            coordRow("y", "positionY", entity.position.y),
+          ]),
         ],
       }
     }
   }
 }
 
-/** Justification names, as AutoCAD's Properties palette shows them. */
-const JUSTIFY_LABELS: Record<TextJustify, string> = {
-  left: "Left",
-  center: "Center",
-  right: "Right",
-  middle: "Middle",
-  tl: "Top left",
-  tc: "Top center",
-  tr: "Top right",
-  ml: "Middle left",
-  mc: "Middle center",
-  mr: "Middle right",
-  bl: "Bottom left",
-  bc: "Bottom center",
-  br: "Bottom right",
-}
-
-/** What the palette calls each dimension kind, as AutoCAD's Type row does. */
-const DIMENSION_TYPE_LABELS: Record<DimensionKind, string> = {
-  linear: "Linear",
-  aligned: "Aligned",
-  angular: "Angular",
-  radius: "Radius",
-  diameter: "Diameter",
-}
-
-const TYPE_LABELS: Record<EntityType, { one: string; many: string }> = {
-  line: { one: "Line", many: "Lines" },
-  circle: { one: "Circle", many: "Circles" },
-  arc: { one: "Arc", many: "Arcs" },
-  ellipse: { one: "Ellipse", many: "Ellipses" },
-  polyline: { one: "Polyline", many: "Polylines" },
-  text: { one: "Text", many: "Texts" },
-  dimension: { one: "Dimension", many: "Dimensions" },
-  hatch: { one: "Hatch", many: "Hatches" },
-  insert: { one: "Block reference", many: "Block references" },
-}
-
-function multiEntityInfo(entities: ReadonlyArray<Entity>): SelectionInfo {
+function multiEntityInfo(
+  entities: ReadonlyArray<Entity>,
+  text: EngineText
+): SelectionInfo {
   const counts = new Map<EntityType, number>()
   for (const entity of entities) {
     counts.set(entity.type, (counts.get(entity.type) ?? 0) + 1)
@@ -1047,16 +824,16 @@ function multiEntityInfo(entities: ReadonlyArray<Entity>): SelectionInfo {
 
   const rows: PropertyRow[] = []
   for (const [type, count] of counts) {
-    const labels = TYPE_LABELS[type]
     rows.push({
-      label: count === 1 ? labels.one : labels.many,
+      id: type,
+      label: text.entity(type, count),
       value: String(count),
     })
   }
 
   return {
-    title: `${entities.length} objects`,
+    title: text.propertyTitle("objects", entities.length),
     count: entities.length,
-    groups: [{ title: "Selection", rows }],
+    groups: [{ id: "selection", title: text.propertyGroup("selection"), rows }],
   }
 }

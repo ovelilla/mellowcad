@@ -183,7 +183,7 @@ describe("transcript", () => {
           .click(25, 10)
           .escape()
           .command("FILLET")
-          .option("R")
+          .option("Radius")
       )
     )
 

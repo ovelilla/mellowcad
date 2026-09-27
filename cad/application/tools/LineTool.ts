@@ -61,7 +61,6 @@ type LineToolState =
 
 export class LineTool implements Tool {
   readonly id = "line"
-  readonly label = "Line"
   readonly shortcut = "l"
 
   private state: LineToolState = { phase: "idle" }
@@ -173,20 +172,20 @@ export class LineTool implements Tool {
   commandOptions(): readonly CommandOption[] {
     if (this.state.phase !== "drawing" || this.state.segments < 1) return []
     const options: CommandOption[] = []
-    if (this.state.segments >= 2) options.push({ key: "C", label: "Close" })
-    options.push({ key: "U", label: "Undo" })
+    if (this.state.segments >= 2) options.push({ id: "Close" })
+    options.push({ id: "Undo" })
     return options
   }
 
   /**
-   * Runs a keyword. "C" closes the chain and ends the command; "U" undoes the
-   * last segment and keeps drawing.
+   * Runs a keyword. Close closes the chain and ends the command; Undo undoes
+   * the last segment and keeps drawing.
    */
-  invokeOption(key: string, ctx: ToolContext): CommandOptionOutcome {
-    switch (key.toLowerCase()) {
-      case "c":
+  invokeOption(id: string, ctx: ToolContext): CommandOptionOutcome {
+    switch (id) {
+      case "Close":
         return this.close(ctx) ? "end" : "unhandled"
-      case "u":
+      case "Undo":
         return this.undoLastSegment(ctx) ? "continue" : "unhandled"
       default:
         return "unhandled"
@@ -397,7 +396,7 @@ export class LineTool implements Tool {
    */
   private openFirstPointInput(ctx: ToolContext, screen: Vec2): void {
     const session: DynamicInputSession = {
-      fields: [{ id: "point", label: "", kind: "coordinate" }],
+      fields: [{ id: "point", kind: "coordinate" }],
       // Coordinate-only: there is no numeric field to resolve.
       commit: () => {},
       commitRaw: (commitCtx) => this.commitFirstPoint(commitCtx),
@@ -438,8 +437,8 @@ export class LineTool implements Tool {
   private openLengthInput(ctx: ToolContext, screen: Vec2): void {
     const session: DynamicInputSession = {
       fields: [
-        { id: "distance", label: "Length", kind: "distance" },
-        { id: "angle", label: "Angle", kind: "angle" },
+        { id: "distance", prompt: "length", kind: "distance" },
+        { id: "angle", prompt: "angle", kind: "angle" },
       ],
       commit: (values, commitCtx) => this.commitSegment(values, commitCtx),
       // Enter with a coordinate expression in the length field commits a whole
@@ -455,7 +454,7 @@ export class LineTool implements Tool {
   /** Opens the pre-start "offset from tracking reference" session. */
   private openOffsetInput(ctx: ToolContext, screen: Vec2): void {
     const session: DynamicInputSession = {
-      fields: [{ id: "distance", label: "Offset", kind: "distance" }],
+      fields: [{ id: "distance", prompt: "trackingOffset", kind: "distance" }],
       commit: (values, commitCtx) =>
         this.commitOffsetStart(values.distance, commitCtx),
     }

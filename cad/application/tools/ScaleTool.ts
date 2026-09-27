@@ -112,7 +112,6 @@ type ScaleState =
 
 export class ScaleTool implements Tool {
   readonly id = "scale"
-  readonly label = "Scale"
 
   private state: ScaleState = { phase: "selecting" }
   private lastScreen: Vec2 | null = null
@@ -279,27 +278,26 @@ export class ScaleTool implements Tool {
   commandOptions(): readonly CommandOption[] {
     if (this.state.phase === "factor") {
       const options: CommandOption[] = []
-      if (!this.state.copy) options.push({ key: "C", label: "Copy" })
-      options.push({ key: "R", label: "Reference" })
+      if (!this.state.copy) options.push({ id: "Copy" })
+      options.push({ id: "Reference" })
       return options
     }
     if (this.state.phase === "newLength" && !this.state.copy) {
-      return [{ key: "C", label: "Copy" }]
+      return [{ id: "Copy" }]
     }
     return []
   }
 
-  invokeOption(key: string, ctx: ToolContext): CommandOptionOutcome {
-    const k = key.toLowerCase()
+  invokeOption(id: string, ctx: ToolContext): CommandOptionOutcome {
     if (
-      k === "c" &&
+      id === "Copy" &&
       (this.state.phase === "factor" || this.state.phase === "newLength")
     ) {
       this.state = { ...this.state, copy: true }
       ctx.requestRender()
       return "continue"
     }
-    if (k === "r" && this.state.phase === "factor") {
+    if (id === "Reference" && this.state.phase === "factor") {
       this.state = {
         phase: "refP1",
         base: this.state.base,
@@ -426,7 +424,7 @@ export class ScaleTool implements Tool {
 
   private openBaseInput(ctx: ToolContext): void {
     const session: DynamicInputSession = {
-      fields: [{ id: "base", label: "Base point", kind: "coordinate" }],
+      fields: [{ id: "base", prompt: "basePoint", kind: "coordinate" }],
       commit: () => {},
       commitRaw: (commitCtx) => this.commitBaseCoordinate(commitCtx),
     }
@@ -467,7 +465,7 @@ export class ScaleTool implements Tool {
 
   private openFactorInput(ctx: ToolContext): void {
     const session: DynamicInputSession = {
-      fields: [{ id: "factor", label: "Scale factor", kind: "number" }],
+      fields: [{ id: "factor", prompt: "scaleFactor", kind: "number" }],
       commit: (_values, commitCtx) => this.commitFactor(commitCtx),
       commitRaw: (commitCtx) => this.commitFactor(commitCtx),
     }
@@ -503,7 +501,7 @@ export class ScaleTool implements Tool {
   private openReferenceInput(ctx: ToolContext): void {
     const session: DynamicInputSession = {
       fields: [
-        { id: "reference", label: "Reference length", kind: "distance" },
+        { id: "reference", prompt: "referenceLength", kind: "distance" },
       ],
       commit: (_values, commitCtx) => this.commitReference(commitCtx),
       commitRaw: (commitCtx) => this.commitReference(commitCtx),
@@ -524,7 +522,7 @@ export class ScaleTool implements Tool {
 
   private openReferenceSecondInput(ctx: ToolContext): void {
     const session: DynamicInputSession = {
-      fields: [{ id: "second", label: "Second point", kind: "coordinate" }],
+      fields: [{ id: "second", prompt: "secondPoint", kind: "coordinate" }],
       commit: () => {},
       commitRaw: (commitCtx) => this.commitReferenceSecond(commitCtx),
     }
@@ -557,7 +555,7 @@ export class ScaleTool implements Tool {
       current: this.state.current,
     }
     const session: DynamicInputSession = {
-      fields: [{ id: "newLength", label: "New length", kind: "distance" }],
+      fields: [{ id: "newLength", prompt: "newLength", kind: "distance" }],
       commit: (_values, commitCtx) => this.commitFactor(commitCtx),
       commitRaw: (commitCtx) => this.commitFactor(commitCtx),
     }

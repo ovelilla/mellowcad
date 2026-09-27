@@ -69,7 +69,7 @@ export const hero = demo({
   .enter()
   .layer("HATCH")
   .command("HATCH")
-  .option("P")
+  .option("Properties")
   .enter()
   .type("20")
   .enter()

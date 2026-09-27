@@ -18,7 +18,9 @@ export interface CommandLineEntry {
 
 /** A command as it is listed: the name, what else can be typed, what it does. */
 export interface CommandInfo {
-  /** Canonical uppercase name, e.g. `"LINE"`. */
+  /** The global name, the same in every language, e.g. `"LINE"`. */
+  readonly id: string
+  /** The name in the command language, e.g. `"LINE"`. */
   readonly name: string
   /** Extra uppercase forms that run it, e.g. `["L"]`. */
   readonly aliases: readonly string[]
@@ -26,8 +28,15 @@ export interface CommandInfo {
   readonly description: string
 }
 
-/** A runnable command: a canonical name, its typed aliases and its action. */
-export interface CommandDefinition extends CommandInfo {
+/**
+ * A runnable command, registered under its global name. What it is called in
+ * the command language, and what the autocomplete says it does, come from the
+ * catalog.
+ */
+export interface CommandDefinition {
+  readonly id: string
+  /** The tool it starts, whose label then describes it. */
+  readonly tool?: string
   readonly run: () => void
 }
 
@@ -119,76 +128,75 @@ export class CommandLineController extends Observable {
 }
 
 /**
- * Command names and aliases per tool id, following AutoCAD's own vocabulary.
- * Multi-character aliases are what make the classic pairs possible: `A` is Arc
- * while `AR` is the rectangular array, `C` is Circle while `CO` is Copy.
+ * The command each tool runs, by its global name. What it is typed as — AutoCAD's
+ * names and aliases in the command language, `L` for LINE, `AR` for ARRAYRECT —
+ * is in the catalog (`commands.names`), so a language can rename it and keep
+ * its keywords.
  *
  * Variants that AutoCAD exposes as ribbon options rather than commands (the
  * circle/arc construction modes) get descriptive names of our own so every tool
- * is reachable by typing.
+ * is reachable by typing. The clipboard copies have no alias in Autodesk's
+ * shortcut guide, and PASTECLIP is registered separately — it is not a tool.
  */
-export const TOOL_COMMANDS: Readonly<Record<string, readonly string[]>> = {
-  line: ["LINE", "L"],
-  polyline: ["PLINE", "PL"],
-  circle: ["CIRCLE", "C"],
-  circlediameter: ["CIRCLED"],
-  circle2p: ["CIRCLE2P"],
-  circle3p: ["CIRCLE3P"],
-  arc: ["ARC", "A"],
-  arcsce: ["ARCSCE"],
-  arccse: ["ARCCSE"],
-  ellipse: ["ELLIPSE", "EL"],
-  ellipsecenter: ["ELLIPSEC"],
-  ellipsearc: ["ELLIPSEARC"],
-  rectangle: ["RECTANG", "REC"],
-  polygon: ["POLYGON", "POL"],
-  hatch: ["HATCH", "H", "BH"],
-  block: ["BLOCK", "B"],
-  insert: ["INSERT", "I"],
-  text: ["TEXT", "DT", "DTEXT"],
-  textedit: ["TEXTEDIT", "DDEDIT", "ED"],
-  dimlinear: ["DIMLINEAR", "DIMLIN", "DLI"],
-  dimaligned: ["DIMALIGNED", "DIMALI", "DAL"],
-  dimradius: ["DIMRADIUS", "DIMRAD", "DRA"],
-  dimdiameter: ["DIMDIAMETER", "DIMDIA", "DDI"],
-  dimangular: ["DIMANGULAR", "DIMANG", "DAN"],
-  dimbaseline: ["DIMBASELINE", "DBA"],
-  dimcontinue: ["DIMCONTINUE", "DCO"],
-  dimspace: ["DIMSPACE"],
-  offset: ["OFFSET", "O"],
-  move: ["MOVE", "M"],
-  copy: ["COPY", "CO", "CP"],
-  stretch: ["STRETCH", "S"],
-  rotate: ["ROTATE", "RO"],
-  scale: ["SCALE", "SC"],
-  mirror: ["MIRROR", "MI"],
-  array: ["ARRAYRECT", "AR", "ARRAY"],
-  arraypolar: ["ARRAYPOLAR", "ARPOLAR"],
-  arraypath: ["ARRAYPATH", "ARPATH"],
-  trim: ["TRIM", "TR"],
-  extend: ["EXTEND", "EX"],
-  fillet: ["FILLET", "F"],
-  chamfer: ["CHAMFER", "CHA"],
-  explode: ["EXPLODE", "X"],
-  join: ["JOIN", "J"],
-  break: ["BREAK", "BR"],
-  breakatpoint: ["BREAKATPOINT"],
-  matchprop: ["MATCHPROP", "MA", "PAINTER"],
-  // The clipboard copies. Autodesk's shortcut guide lists no alias for any of
-  // them (PASTECLIP is registered separately — it is not a tool).
-  copyclip: ["COPYCLIP"],
-  cutclip: ["CUTCLIP"],
-  copybase: ["COPYBASE"],
-  measure: ["DIST", "DI"],
-  measurearea: ["AREA", "AA"],
-  zoom: ["ZOOM", "Z"],
-  pan: ["PAN", "P"],
+export const TOOL_COMMANDS: Readonly<Record<string, string>> = {
+  line: "LINE",
+  polyline: "PLINE",
+  circle: "CIRCLE",
+  circlediameter: "CIRCLED",
+  circle2p: "CIRCLE2P",
+  circle3p: "CIRCLE3P",
+  arc: "ARC",
+  arcsce: "ARCSCE",
+  arccse: "ARCCSE",
+  ellipse: "ELLIPSE",
+  ellipsecenter: "ELLIPSEC",
+  ellipsearc: "ELLIPSEARC",
+  rectangle: "RECTANG",
+  polygon: "POLYGON",
+  hatch: "HATCH",
+  block: "BLOCK",
+  insert: "INSERT",
+  text: "TEXT",
+  textedit: "TEXTEDIT",
+  dimlinear: "DIMLINEAR",
+  dimaligned: "DIMALIGNED",
+  dimradius: "DIMRADIUS",
+  dimdiameter: "DIMDIAMETER",
+  dimangular: "DIMANGULAR",
+  dimbaseline: "DIMBASELINE",
+  dimcontinue: "DIMCONTINUE",
+  dimspace: "DIMSPACE",
+  offset: "OFFSET",
+  move: "MOVE",
+  copy: "COPY",
+  stretch: "STRETCH",
+  rotate: "ROTATE",
+  scale: "SCALE",
+  mirror: "MIRROR",
+  array: "ARRAYRECT",
+  arraypolar: "ARRAYPOLAR",
+  arraypath: "ARRAYPATH",
+  trim: "TRIM",
+  extend: "EXTEND",
+  fillet: "FILLET",
+  chamfer: "CHAMFER",
+  explode: "EXPLODE",
+  join: "JOIN",
+  break: "BREAK",
+  breakatpoint: "BREAKATPOINT",
+  matchprop: "MATCHPROP",
+  copyclip: "COPYCLIP",
+  cutclip: "CUTCLIP",
+  copybase: "COPYBASE",
+  measure: "DIST",
+  measurearea: "AREA",
+  zoom: "ZOOM",
+  pan: "PAN",
 }
 
-/** The shortest way to type a tool's command, e.g. `"L"` — shown in tooltips. */
-export function toolCommandAlias(toolId: string): string | undefined {
-  const names = TOOL_COMMANDS[toolId]
-  if (!names || names.length === 0) return undefined
+/** The shortest way to type a command, e.g. `"L"` — shown in tooltips. */
+export function shortestName(names: readonly string[]): string | undefined {
+  if (names.length === 0) return undefined
   return names.reduce((shortest, name) =>
     name.length < shortest.length ? name : shortest
   )
@@ -200,14 +208,14 @@ export function toolCommandAlias(toolId: string): string | undefined {
  * suggestion list.
  */
 export function matchCommands(
-  commands: readonly CommandInfo[],
+  commands: readonly Pick<CommandInfo, "name" | "aliases" | "description">[],
   text: string,
   limit = 8
 ): CommandSuggestion[] {
   const prefix = text.trim().toUpperCase()
   if (prefix === "") return []
 
-  const rank = (command: CommandInfo): number => {
+  const rank = (command: Pick<CommandInfo, "name" | "aliases">): number => {
     if (command.name === prefix || command.aliases.includes(prefix)) return 0
     if (command.aliases.some((alias) => alias.startsWith(prefix))) return 1
     return 2

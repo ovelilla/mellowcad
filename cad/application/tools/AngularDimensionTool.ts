@@ -14,6 +14,7 @@ import {
 } from "../../domain/entities"
 import { AddEntityCommand } from "../commands/entityCommands"
 import { DynamicInputSession } from "../input/DynamicInput"
+import type { PromptId } from "../../locales/types"
 import {
   isCoordinateExpression,
   parseCoordinate,
@@ -65,7 +66,6 @@ import {
  */
 export class AngularDimensionTool implements Tool {
   readonly id = "dimangular"
-  readonly label = "Angular"
 
   private state: AngularToolState = { phase: "select", hover: null }
   private text: string | undefined
@@ -152,7 +152,7 @@ export class AngularDimensionTool implements Tool {
   onEnter(ctx: ToolContext): boolean {
     if (this.state.phase !== "select") return false
     this.state = { phase: "vertex" }
-    this.openCoordinate(ctx, "Specify angle vertex", (commitCtx) => {
+    this.openCoordinate(ctx, "angleVertex", (commitCtx) => {
       const point = this.parsePoint(commitCtx, null)
       if (!point) return false
       this.enterFirstEndpoint(point, commitCtx)
@@ -163,16 +163,13 @@ export class AngularDimensionTool implements Tool {
 
   commandOptions(): readonly CommandOption[] {
     if (this.state.phase !== "location" || this.state.prompt !== null) return []
-    return [
-      { key: "T", label: "Text" },
-      { key: "A", label: "Angle" },
-    ]
+    return [{ id: "Text" }, { id: "Angle" }]
   }
 
-  invokeOption(key: string, ctx: ToolContext): CommandOptionOutcome {
+  invokeOption(id: string, ctx: ToolContext): CommandOptionOutcome {
     if (this.state.phase !== "location") return "unhandled"
-    switch (key.toLowerCase()) {
-      case "t":
+    switch (id) {
+      case "Text":
         this.state = { ...this.state, prompt: "text" }
         openDimensionTextInput(
           ctx,
@@ -184,7 +181,7 @@ export class AngularDimensionTool implements Tool {
           }
         )
         return "continue"
-      case "a":
+      case "Angle":
         this.state = { ...this.state, prompt: "textAngle" }
         openDimensionTextAngleInput(
           ctx,
@@ -358,7 +355,7 @@ export class AngularDimensionTool implements Tool {
 
   private enterFirstEndpoint(vertex: Vec2, ctx: ToolContext): void {
     this.state = { phase: "firstEndpoint", vertex, cursor: vertex }
-    this.openCoordinate(ctx, "Specify first angle endpoint", (commitCtx) => {
+    this.openCoordinate(ctx, "firstAngleEndpoint", (commitCtx) => {
       if (this.state.phase !== "firstEndpoint") return false
       const point = this.parsePoint(commitCtx, this.state.vertex)
       if (!point) return false
@@ -373,7 +370,7 @@ export class AngularDimensionTool implements Tool {
     ctx: ToolContext
   ): void {
     this.state = { phase: "secondEndpoint", vertex, first, cursor: first }
-    this.openCoordinate(ctx, "Specify second angle endpoint", (commitCtx) => {
+    this.openCoordinate(ctx, "secondAngleEndpoint", (commitCtx) => {
       if (this.state.phase !== "secondEndpoint") return false
       const point = this.parsePoint(commitCtx, this.state.first)
       if (!point) return false
@@ -407,26 +404,22 @@ export class AngularDimensionTool implements Tool {
   }
 
   private openLocationInput(ctx: ToolContext): void {
-    this.openCoordinate(
-      ctx,
-      "Specify dimension arc line location",
-      (commitCtx) => {
-        if (this.state.phase !== "location") return false
-        const point = this.parsePoint(commitCtx, this.state.target.vertex)
-        if (!point) return false
-        this.place(point, commitCtx)
-        return true
-      }
-    )
+    this.openCoordinate(ctx, "dimensionArcLocation", (commitCtx) => {
+      if (this.state.phase !== "location") return false
+      const point = this.parsePoint(commitCtx, this.state.target.vertex)
+      if (!point) return false
+      this.place(point, commitCtx)
+      return true
+    })
   }
 
   private openCoordinate(
     ctx: ToolContext,
-    label: string,
+    prompt: PromptId,
     commitRaw: (ctx: ToolContext) => boolean
   ): void {
     const session: DynamicInputSession = {
-      fields: [{ id: "point", label, kind: "coordinate" }],
+      fields: [{ id: "point", prompt, kind: "coordinate" }],
       commit: () => {},
       commitRaw,
     }

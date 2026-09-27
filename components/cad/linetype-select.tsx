@@ -1,6 +1,6 @@
 "use client"
 
-import { LINETYPES, LINETYPE_BYLAYER } from "@/cad"
+import { LINETYPES, LINETYPE_BYLAYER, type EngineNames } from "@/cad"
 import {
   Select,
   SelectContent,
@@ -17,12 +17,15 @@ import {
  */
 export function LinetypeSelect({
   value,
+  names,
   onValueChange,
   includeByLayer = false,
   ariaLabel,
   className,
 }: {
   value: string | null
+  /** The engine's names for the linetypes and for ByLayer. */
+  names: EngineNames
   onValueChange: (value: string) => void
   includeByLayer?: boolean
   ariaLabel: string
@@ -42,7 +45,7 @@ export function LinetypeSelect({
         {includeByLayer && (
           <SelectItem value={LINETYPE_BYLAYER} className="text-[11px]">
             <LinetypePreview pattern={[]} />
-            ByLayer
+            {names.byLayer}
           </SelectItem>
         )}
         {LINETYPES.map((linetype) => (
@@ -52,7 +55,7 @@ export function LinetypeSelect({
             className="text-[11px]"
           >
             <LinetypePreview pattern={linetype.pattern} />
-            {linetype.name}
+            {names.linetypes[linetype.id] ?? linetype.id}
           </SelectItem>
         ))}
       </SelectContent>

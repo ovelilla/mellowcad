@@ -32,21 +32,6 @@ import {
 import { IconAction, Panel } from "./toolbar-primitives"
 import { LineweightIcon, SelectionCyclingIcon, SnapModeIcon } from "./icons"
 
-const SNAP_LABELS: Record<SnapType, string> = {
-  [SnapType.Endpoint]: "Endpoint",
-  [SnapType.Midpoint]: "Midpoint",
-  [SnapType.Center]: "Center",
-  [SnapType.Intersection]: "Intersection",
-  [SnapType.ApparentIntersection]: "Apparent Intersection",
-  [SnapType.Perpendicular]: "Perpendicular",
-  [SnapType.Tangent]: "Tangent",
-  [SnapType.Insertion]: "Insertion",
-  [SnapType.Extension]: "Extension",
-  [SnapType.Parallel]: "Parallel",
-  [SnapType.Quadrant]: "Quadrant",
-  [SnapType.Nearest]: "Nearest",
-}
-
 /** Snap types wired to a working provider today. The rest are shown disabled. */
 const IMPLEMENTED_SNAPS = new Set<SnapType>([
   SnapType.Endpoint,
@@ -163,11 +148,11 @@ export function DrawingAids({
                       )}
                       title={
                         implemented
-                          ? SNAP_LABELS[type]
-                          : `${SNAP_LABELS[type]} (coming soon)`
+                          ? state.names.snaps[type]
+                          : `${state.names.snaps[type]} (coming soon)`
                       }
                     >
-                      {SNAP_LABELS[type]}
+                      {state.names.snaps[type]}
                     </button>
                   )
                 })}

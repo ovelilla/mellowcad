@@ -77,7 +77,6 @@
     "tryLabel": "Try it",
     "tryPlaceholder": "Type a command, e.g. OF",
     "tryHint": "Enter opens the editor.",
-    "tryNoMatch": "Unknown command \"{command}\".",
     "transcriptTitle": "One OFFSET, start to finish",
     "transcriptCaption": "Replayed by the engine when this page was built. Same order, same option letters as AutoCAD."
   },
@@ -203,8 +202,7 @@
     "a8": "{commands} commands, including LINE, PLINE, CIRCLE, ARC, ELLIPSE, HATCH, OFFSET, TRIM, FILLET, ARRAY, dimensions, blocks and layers. The full list, with aliases, is above."
   },
   "FinalCta": {
-    "title": "Your drafting table is one keystroke away.",
-    "prompt": "Command:"
+    "title": "Your drafting table is one keystroke away."
   },
   "Footer": {
     "tagline": "2D CAD in your browser",
@@ -249,8 +247,7 @@
   },
   "NotFound": {
     "metaTitle": "Page not found",
-    "prompt": "Command:",
-    "unknown": "Unknown command \"{command}\".  Press F1 for help.",
+    "help": "Press F1 for help.",
     "fallbackCommand": "PAGE",
     "home": "Back to the drawing sheet",
     "cta": "Start drawing"

@@ -9,7 +9,6 @@ import { PointerInput, Tool, ToolContext } from "./Tool"
  */
 export class PanTool implements Tool {
   readonly id = "pan"
-  readonly label = "Pan"
 
   private lastScreen: Vec2 | null = null
 

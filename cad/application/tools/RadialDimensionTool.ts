@@ -67,8 +67,7 @@ export class RadialDimensionTool implements Tool {
 
   constructor(
     private readonly kind: RadialDimensionKind,
-    readonly id: string,
-    readonly label: string
+    readonly id: string
   ) {}
 
   onActivate(ctx: ToolContext): void {
@@ -112,16 +111,13 @@ export class RadialDimensionTool implements Tool {
 
   commandOptions(): readonly CommandOption[] {
     if (this.state.phase !== "location" || this.state.prompt !== null) return []
-    return [
-      { key: "T", label: "Text" },
-      { key: "A", label: "Angle" },
-    ]
+    return [{ id: "Text" }, { id: "Angle" }]
   }
 
-  invokeOption(key: string, ctx: ToolContext): CommandOptionOutcome {
+  invokeOption(id: string, ctx: ToolContext): CommandOptionOutcome {
     if (this.state.phase !== "location") return "unhandled"
-    switch (key.toLowerCase()) {
-      case "t":
+    switch (id) {
+      case "Text":
         this.state = { ...this.state, prompt: "text" }
         openDimensionTextInput(
           ctx,
@@ -133,7 +129,7 @@ export class RadialDimensionTool implements Tool {
           }
         )
         return "continue"
-      case "a":
+      case "Angle":
         this.state = { ...this.state, prompt: "textAngle" }
         openDimensionTextAngleInput(
           ctx,
@@ -249,7 +245,7 @@ export class RadialDimensionTool implements Tool {
       fields: [
         {
           id: "point",
-          label: "Specify dimension line location",
+          prompt: "dimensionLineLocation",
           kind: "coordinate",
         },
       ],

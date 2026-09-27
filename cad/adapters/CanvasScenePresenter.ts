@@ -25,6 +25,10 @@ export class CanvasScenePresenter {
   draw(ctx: CanvasRenderingContext2D, scene: Scene, dpr: number): void {
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0)
     ctx.clearRect(0, 0, scene.width, scene.height)
+    // WHY: the drawing is geometry and never mirrors. A canvas inherits its
+    // element's direction, and in a right-to-left page `start` would anchor
+    // every label and text at its right end.
+    ctx.direction = "ltr"
 
     ctx.fillStyle = scene.background
     ctx.fillRect(0, 0, scene.width, scene.height)
@@ -135,6 +139,7 @@ export class CanvasScenePresenter {
       case "label":
         ctx.fillStyle = p.color
         ctx.font = p.font ?? "11px ui-monospace, monospace"
+        ctx.textAlign = "left"
         ctx.fillText(p.text, p.at.x, p.at.y)
         break
 

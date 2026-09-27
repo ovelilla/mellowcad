@@ -65,8 +65,7 @@ export class DimensionChainTool implements Tool {
 
   constructor(
     private readonly mode: DimensionChainMode,
-    readonly id: string,
-    readonly label: string
+    readonly id: string
   ) {}
 
   onActivate(ctx: ToolContext): void {
@@ -114,18 +113,18 @@ export class DimensionChainTool implements Tool {
   commandOptions(): readonly CommandOption[] {
     if (this.state.phase !== "second") return []
     const options: CommandOption[] = []
-    if (this.history.length > 0) options.push({ key: "U", label: "Undo" })
-    options.push({ key: "S", label: "Select" })
+    if (this.history.length > 0) options.push({ id: "Undo" })
+    options.push({ id: "Select" })
     return options
   }
 
-  invokeOption(key: string, ctx: ToolContext): CommandOptionOutcome {
+  invokeOption(id: string, ctx: ToolContext): CommandOptionOutcome {
     if (this.state.phase !== "second") return "unhandled"
-    switch (key.toLowerCase()) {
-      case "u":
+    switch (id) {
+      case "Undo":
         this.undoLast(ctx)
         return "continue"
-      case "s":
+      case "Select":
         this.enterSelect(ctx)
         return "continue"
       default:
@@ -271,7 +270,7 @@ export class DimensionChainTool implements Tool {
       fields: [
         {
           id: "point",
-          label: "Specify a second extension line origin",
+          prompt: "nextExtensionOrigin",
           kind: "coordinate",
         },
       ],

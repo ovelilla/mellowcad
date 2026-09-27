@@ -9,6 +9,8 @@ import type { Lineweight } from "../domain/lineweights"
 import type { Vec2 } from "../geometry/Vec2"
 import type { Scene } from "../scene/types"
 import type { SnapType } from "./snapping/types"
+import type { EngineLocale } from "../locales/types"
+import { engineText, promptString, type PromptSegment } from "./EngineText"
 
 /**
  * A scripted drafting session, written in the same chained style as the test
@@ -22,7 +24,7 @@ export type DemoAction =
   | { readonly kind: "type"; readonly text: string }
   | { readonly kind: "enter" }
   | { readonly kind: "escape" }
-  | { readonly kind: "option"; readonly key: string }
+  | { readonly kind: "option"; readonly id: string }
   | { readonly kind: "click"; readonly at: Vec2 }
   | { readonly kind: "moveTo"; readonly at: Vec2 }
   | { readonly kind: "hover"; readonly at: Vec2 }
@@ -88,9 +90,12 @@ export class DemoScript {
     return this.then({ kind: "escape" })
   }
 
-  /** Answers a `[Keyword]` prompt with its letter. */
-  option(key: string): DemoScript {
-    return this.then({ kind: "option", key })
+  /**
+   * Answers a `[Keyword]` prompt with the keyword whose global id is `id`
+   * (`"Close"`), typed as the recording's command language spells it.
+   */
+  option(id: string): DemoScript {
+    return this.then({ kind: "option", id })
   }
 
   click(x: number, y: number): DemoScript {
@@ -160,6 +165,8 @@ export interface DemoPrompt {
 export interface DemoStep {
   readonly action: DemoAction
   readonly prompt: DemoPrompt
+  /** For an option, what was typed to answer it (its key, or abbreviation). */
+  readonly answer?: string
   /** Lines the engine wrote to its scrollback while the action ran. */
   readonly output: readonly CommandLineEntry[]
   readonly added: readonly EntityId[]
@@ -167,6 +174,8 @@ export interface DemoStep {
 }
 
 export interface DemoRecording {
+  /** The language it was recorded in; English when left out. */
+  readonly locale?: EngineLocale
   readonly steps: readonly DemoStep[]
   /** The drawing as the session left it. */
   readonly document: CadDocument
@@ -177,17 +186,29 @@ export interface DemoRecording {
   readonly scene: Scene
 }
 
+export interface RecordOptions {
+  /**
+   * The language to record in, so a build can record the same script in every
+   * language it publishes without any state shared between them.
+   */
+  readonly locale?: EngineLocale
+}
+
 /**
  * Replays `script` on a fresh headless engine. Asynchronous only because a
  * {@link DemoScript.hover} waits for the engine's real dwell timer.
  */
-export async function recordDemo(script: DemoScript): Promise<DemoRecording> {
+export async function recordDemo(
+  script: DemoScript,
+  { locale }: RecordOptions = {}
+): Promise<DemoRecording> {
   const { options } = script
   const driver = new CadDriver({
     width: options.width,
     height: options.height,
     snap: options.snap ?? false,
     clipboard: null,
+    locale,
   })
   try {
     const runtime = driver.runtime
@@ -221,6 +242,8 @@ export async function recordDemo(script: DemoScript): Promise<DemoRecording> {
       const prompt = currentPrompt(driver)
       const linesBefore = runtime.commandLine.getLines().length
       const idsBefore = new Set(driver.entities().map((entity) => entity.id))
+      const answer =
+        action.kind === "option" ? driver.optionAnswer(action.id) : undefined
 
       await perform(driver, action, layers)
 
@@ -229,6 +252,7 @@ export async function recordDemo(script: DemoScript): Promise<DemoRecording> {
       steps.push({
         action,
         prompt,
+        ...(answer !== undefined && { answer }),
         output: runtime.commandLine.getLines().slice(linesBefore),
         added: idsAfter.filter((id) => !idsBefore.has(id)),
         removed: [...idsBefore].filter((id) => !after.has(id)),
@@ -236,6 +260,7 @@ export async function recordDemo(script: DemoScript): Promise<DemoRecording> {
     }
 
     return {
+      ...(locale && { locale }),
       steps,
       document: runtime.document,
       scene: runtime.buildScene(),
@@ -264,7 +289,7 @@ async function perform(
       driver.escape()
       return
     case "option":
-      driver.option(action.key)
+      driver.option(action.id)
       return
     case "click":
       driver.click(action.at)
@@ -307,18 +332,14 @@ function currentPrompt(driver: CadDriver): DemoPrompt {
   const field =
     session?.fields.find((f) => f.id === activeId) ?? session?.fields[0]
   return {
-    command: state.activeToolId === "select" ? null : promptName(state),
-    field: field?.label ?? null,
+    command: state.commandLine.command,
+    field:
+      field?.prompt === undefined
+        ? null
+        : driver.runtime.text.prompt(field.prompt),
     fieldKind: field?.kind ?? null,
     options: state.commandOptions.map((option) => option.label),
   }
-}
-
-/** `OFFSET [Through/…]:` → `OFFSET`: the name the command line shows. */
-function promptName(state: ReturnType<CadDriver["state"]>): string {
-  const prompt = state.commandLine.prompt
-  const end = prompt.search(/[ :]/)
-  return end === -1 ? prompt : prompt.slice(0, end)
 }
 
 /** One line of a session's command-line history, as AutoCAD would scroll it. */
@@ -327,6 +348,8 @@ export interface TranscriptLine {
   readonly kind: "command" | "input" | "info" | "error"
   /** For an answered prompt, the question; empty otherwise. */
   readonly prompt: string
+  /** The same question in spans, its keyword list set apart. */
+  readonly segments: readonly PromptSegment[]
   /** The command's name, what was typed (empty for a pick), or the report. */
   readonly text: string
   /** Which step produced the line. */
@@ -353,15 +376,17 @@ export function transcript(recording: DemoRecording): TranscriptLine[] {
       action.kind === "enter"
         ? typed
         : action.kind === "option"
-          ? action.key
+          ? (step.answer ?? action.id)
           : action.kind === "click"
             ? ""
             : null
     typed = ""
     if (answer !== null) {
+      const segments = promptSegments(step.prompt, answer, recording.locale)
       lines.push({
         kind: "input",
-        prompt: promptText(step.prompt, answer),
+        prompt: promptString(segments),
+        segments,
         text: answer,
         step: index,
       })
@@ -370,6 +395,7 @@ export function transcript(recording: DemoRecording): TranscriptLine[] {
       lines.push({
         kind: entry.kind,
         prompt: "",
+        segments: [],
         text: entry.text,
         step: index,
       })
@@ -380,16 +406,28 @@ export function transcript(recording: DemoRecording): TranscriptLine[] {
 
 /**
  * `Radius [Diameter]:` — the field asked for, else the command, plus its
- * keywords. A point typed where the box offered a distance (LINE's Length) is
- * no answer to that field — the box turns into X,Y — so the command's own
- * prompt is the question it answered.
+ * keywords, in spans. A point typed where the box offered a distance (LINE's
+ * Length) is no answer to that field — the box turns into X,Y — so the
+ * command's own prompt is the question it answered.
  */
-export function promptText(prompt: DemoPrompt, answer = ""): string {
+export function promptSegments(
+  prompt: DemoPrompt,
+  answer = "",
+  locale?: EngineLocale
+): PromptSegment[] {
+  const text = engineText(locale)
   const pointForDistance =
     prompt.fieldKind !== "coordinate" && isCoordinateExpression(answer)
   const field = prompt.field && !pointForDistance ? prompt.field : null
-  const head = field ?? prompt.command ?? "Command"
-  const options =
-    prompt.options.length > 0 ? ` [${prompt.options.join("/")}]` : ""
-  return `${head}${options}:`
+  const head = field ?? prompt.command ?? text.idleHead()
+  return text.composePrompt(head, prompt.options)
+}
+
+/** {@link promptSegments} as one string. */
+export function promptText(
+  prompt: DemoPrompt,
+  answer = "",
+  locale?: EngineLocale
+): string {
+  return promptString(promptSegments(prompt, answer, locale))
 }

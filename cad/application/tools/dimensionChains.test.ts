@@ -150,7 +150,11 @@ describe("dimension chain prompts", () => {
 
   it("starts the chain from a dimension picked at the Select prompt", () => {
     const cad = createHarness({ entities: [base()] })
-    cad.command("DIMCONTINUE").option("s").click(p(95, -30)).click(p(180, 0))
+    cad
+      .command("DIMCONTINUE")
+      .option("Select")
+      .click(p(95, -30))
+      .click(p(180, 0))
 
     expect(added(cad)).toHaveLength(1)
     expect(added(cad)[0].first).toBeCloseToPoint(p(100, 0))
@@ -158,7 +162,7 @@ describe("dimension chain prompts", () => {
 
   it("highlights the dimension under the cursor while selecting a base", () => {
     const cad = createHarness({ entities: [base()] })
-    cad.command("DIMBASELINE").option("s")
+    cad.command("DIMBASELINE").option("Select")
 
     const amber = () =>
       cad
@@ -177,7 +181,11 @@ describe("dimension chain prompts", () => {
     const cad = createHarness({ entities: [base()] })
     // DIMBASELINE defaults to the first origin; picking near the far end of the
     // base overrides it, which is what AutoCAD's explicit selection is for.
-    cad.command("DIMBASELINE").option("s").click(p(95, -30)).click(p(180, 0))
+    cad
+      .command("DIMBASELINE")
+      .option("Select")
+      .click(p(95, -30))
+      .click(p(180, 0))
 
     expect(added(cad)[0].first).toBeCloseToPoint(p(100, 0))
   })
@@ -225,7 +233,7 @@ describe("dimension chain prompts", () => {
 describe("dimension chain Undo keyword", () => {
   it("removes the last link and resumes where it left off", () => {
     const cad = createHarness({ entities: [base()] })
-    cad.command("DIMBASELINE").click(p(180, 0)).click(p(260, 0)).option("u")
+    cad.command("DIMBASELINE").click(p(180, 0)).click(p(260, 0)).option("Undo")
 
     expect(added(cad)).toHaveLength(1)
 
@@ -238,7 +246,7 @@ describe("dimension chain Undo keyword", () => {
 
   it("does nothing when the run has placed nothing", () => {
     const cad = createHarness({ entities: [base()] })
-    cad.command("DIMBASELINE").option("u")
+    cad.command("DIMBASELINE").option("Undo")
 
     expect(cad.typeCounts().dimension).toBe(1)
   })

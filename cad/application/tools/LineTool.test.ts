@@ -162,7 +162,7 @@ describe("LINE", () => {
         .click(p(0, 0))
         .click(p(100, 0))
         .click(p(100, 100))
-        .option("c")
+        .option("Close")
 
       const drawn = lines(cad.entities())
       expect(drawn).toHaveLength(3)
@@ -177,7 +177,7 @@ describe("LINE", () => {
       cad.command("LINE").click(p(0, 0)).click(p(100, 0)).click(p(100, 100))
       expect(cad.entityCount).toBe(2)
 
-      cad.option("u")
+      cad.option("Undo")
       expect(cad.entityCount).toBe(1)
       expect(cad.activeToolId()).toBe("line")
 

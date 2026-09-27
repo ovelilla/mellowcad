@@ -44,7 +44,6 @@ type InsertState =
  */
 export class InsertTool implements Tool {
   readonly id = "insert"
-  readonly label = "Insert block"
 
   private state: InsertState = { phase: "name" }
   private lastScreen: Vec2 | null = null
@@ -89,20 +88,17 @@ export class InsertTool implements Tool {
 
   commandOptions(): readonly CommandOption[] {
     return this.state.phase === "point"
-      ? [
-          { key: "S", label: "Scale" },
-          { key: "R", label: "Rotate" },
-        ]
+      ? [{ id: "Scale" }, { id: "Rotate" }]
       : []
   }
 
-  invokeOption(key: string, ctx: ToolContext): CommandOptionOutcome {
+  invokeOption(id: string, ctx: ToolContext): CommandOptionOutcome {
     if (this.state.phase !== "point") return "unhandled"
-    switch (key.toLowerCase()) {
-      case "s":
+    switch (id) {
+      case "Scale":
         this.enterScale(ctx)
         return "continue"
-      case "r":
+      case "Rotate":
         this.enterRotation(ctx)
         return "continue"
       default:
@@ -142,7 +138,7 @@ export class InsertTool implements Tool {
   private enterName(ctx: ToolContext): void {
     this.state = { phase: "name" }
     ctx.dynamicInput.open({
-      fields: [{ id: "name", label: "Enter block name or [?]", kind: "text" }],
+      fields: [{ id: "name", prompt: "blockName", kind: "text" }],
       commit: () => {},
       commitRaw: (commitCtx) => {
         const typed = commitCtx.dynamicInput.getText("name").trim()
@@ -150,7 +146,7 @@ export class InsertTool implements Tool {
         if (typed === "?") {
           commitCtx.report(
             blocks.length === 0
-              ? "No blocks defined."
+              ? commitCtx.text.message("noBlocks")
               : blocks.map((block) => block.name).join("\n")
           )
           this.enterName(commitCtx)
@@ -159,7 +155,10 @@ export class InsertTool implements Tool {
         // Enter with nothing typed keeps the last block, the `<default>`.
         const name = typed.length === 0 ? this.blockId : typed
         if (!commitCtx.document.getBlock(name)) {
-          commitCtx.report(`Block "${name}" is not defined.`, "error")
+          commitCtx.report(
+            commitCtx.text.message("blockUndefined", { name }),
+            "error"
+          )
           this.enterName(commitCtx)
           return true
         }
@@ -178,9 +177,7 @@ export class InsertTool implements Tool {
       cursor: ctx.viewport.screenToWorld(this.lastScreen ?? { x: 0, y: 0 }),
     }
     ctx.dynamicInput.open({
-      fields: [
-        { id: "point", label: "Specify insertion point", kind: "coordinate" },
-      ],
+      fields: [{ id: "point", prompt: "insertionPoint", kind: "coordinate" }],
       commit: () => {},
       commitRaw: (commitCtx) => {
         const point = parseCoordinate(
@@ -197,7 +194,7 @@ export class InsertTool implements Tool {
   private enterScale(ctx: ToolContext): void {
     this.state = { phase: "scale" }
     ctx.dynamicInput.open({
-      fields: [{ id: "scale", label: "Specify scale factor", kind: "number" }],
+      fields: [{ id: "scale", prompt: "insertScale", kind: "number" }],
       commit: (values, commitCtx) => {
         if (values.scale > 0) this.scale = values.scale
         this.enterPoint(commitCtx)
@@ -218,9 +215,7 @@ export class InsertTool implements Tool {
   private enterRotation(ctx: ToolContext): void {
     this.state = { phase: "rotation" }
     ctx.dynamicInput.open({
-      fields: [
-        { id: "rotation", label: "Specify rotation angle", kind: "angle" },
-      ],
+      fields: [{ id: "rotation", prompt: "insertRotation", kind: "angle" }],
       commit: (values, commitCtx) => {
         this.rotation = (values.rotation * Math.PI) / 180
         this.enterPoint(commitCtx)

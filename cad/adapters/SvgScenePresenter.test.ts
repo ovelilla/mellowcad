@@ -312,6 +312,24 @@ describe("markup", () => {
     // Half the capital height below the anchor puts the anchor mid-capitals.
     expect(attribute(svg, "y")).toBe("3.5")
   })
+
+  it("keeps every text left-to-right, whatever the page around it", () => {
+    const svg = new SvgScenePresenter().elements([
+      { kind: "label", at: p(0, 0), text: "Endpoint", color: "#fff" },
+      {
+        kind: "text",
+        at: p(0, 0),
+        text: "A",
+        height: 5,
+        rotation: 0,
+        align: "left",
+        baseline: "alphabetic",
+        color: "#fff",
+      },
+    ])
+    expect(svg.match(/direction="ltr"/g)).toHaveLength(2)
+    expect(svg.match(/text-anchor="start"/g)).toHaveLength(2)
+  })
 })
 
 describe("dashes and plotting", () => {

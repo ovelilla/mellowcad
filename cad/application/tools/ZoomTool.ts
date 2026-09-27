@@ -41,7 +41,6 @@ const PADDING_PX = 40
 
 export class ZoomTool implements Tool {
   readonly id = "zoom"
-  readonly label = "Zoom"
 
   private state: ZoomState = { phase: "corner" }
 
@@ -110,36 +109,36 @@ export class ZoomTool implements Tool {
   commandOptions(): readonly CommandOption[] {
     if (this.state.phase === "scale") return []
     return [
-      { key: "A", label: "All" },
-      { key: "E", label: "Extents" },
-      { key: "P", label: "Previous" },
-      { key: "S", label: "Scale" },
-      { key: "W", label: "Window" },
-      { key: "O", label: "Object" },
+      { id: "All" },
+      { id: "Extents" },
+      { id: "Previous" },
+      { id: "Scale" },
+      { id: "Window" },
+      { id: "Object" },
     ]
   }
 
-  invokeOption(key: string, ctx: ToolContext): CommandOptionOutcome {
-    switch (key.toLowerCase()) {
-      case "a":
-      case "e":
+  invokeOption(id: string, ctx: ToolContext): CommandOptionOutcome {
+    switch (id) {
+      case "All":
+      case "Extents":
         this.zoomExtents(ctx)
         return "end"
-      case "p":
+      case "Previous":
         ctx.viewport.restorePrevious()
         return "end"
-      case "w":
+      case "Window":
         this.state = { phase: "corner" }
         this.openKeywordPrompt(ctx)
         return "continue"
-      case "s":
+      case "Scale":
         this.state = { phase: "scale" }
         ctx.dynamicInput.open({
-          fields: [{ id: "factor", label: "Scale factor", kind: "number" }],
+          fields: [{ id: "factor", prompt: "scaleFactor", kind: "number" }],
           commit: (values) => this.commitScale(values.factor, ctx),
         })
         return "continue"
-      case "o": {
+      case "Object": {
         // A pre-selected set is what the user already pointed at, so honour it
         // instead of asking again.
         const selected = ctx.selection

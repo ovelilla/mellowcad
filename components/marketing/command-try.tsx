@@ -20,7 +20,7 @@ export function CommandTry({
   prompt,
   unknown,
 }: {
-  commands: readonly CommandInfo[]
+  commands: readonly Pick<CommandInfo, "name" | "aliases" | "description">[]
   editorHref: string
   label: string
   placeholder: string

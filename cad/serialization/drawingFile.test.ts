@@ -2,6 +2,7 @@ import fc from "fast-check"
 import { describe, expect, it } from "vitest"
 import {
   DRAWING_FILE_TYPE,
+  DrawingFileError,
   DRAWING_FILE_VERSION,
   parseDrawingFile,
   serializeDrawing,
@@ -195,6 +196,23 @@ describe("rejects unusable files", () => {
       entities: [],
     })
     expect(() => parseDrawingFile(future)).toThrow(/newer version/i)
+  })
+
+  it("names each failure by a code, which the command line words", () => {
+    const codeOf = (text: string) => {
+      try {
+        parseDrawingFile(text)
+      } catch (error) {
+        return error instanceof DrawingFileError ? error.code : null
+      }
+      return undefined
+    }
+    expect(codeOf("{")).toBe("invalidJson")
+    expect(codeOf("null")).toBe("unrecognised")
+    expect(codeOf('{"type":"x"}')).toBe("notADrawing")
+    expect(
+      codeOf(JSON.stringify({ type: DRAWING_FILE_TYPE, version: 1e9 }))
+    ).toBe("newerVersion")
   })
 })
 

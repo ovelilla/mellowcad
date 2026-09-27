@@ -14,7 +14,6 @@ import { PlacementTool } from "./PlacementTool"
  */
 export class CopyTool extends PlacementTool {
   readonly id = "copy"
-  readonly label = "Copy"
 
   protected continuesAfterPlace(): boolean {
     return true

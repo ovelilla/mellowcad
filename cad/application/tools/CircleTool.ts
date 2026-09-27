@@ -4,6 +4,7 @@ import { createCircle } from "../../domain/entities"
 import { parseNumber } from "../../domain/units"
 import { AddEntityCommand } from "../commands/entityCommands"
 import { DynamicInputSession } from "../input/DynamicInput"
+import type { PromptId } from "../../locales/types"
 import {
   isCoordinateExpression,
   parseCoordinate,
@@ -64,17 +65,15 @@ type CircleToolState =
  */
 export class CircleTool implements Tool {
   readonly id: string
-  readonly label: string
   readonly shortcut?: string
 
   private readonly mode: CircleMode
   private state: CircleToolState
   private lastScreen: Vec2 | null = null
 
-  constructor(mode: CircleMode, id: string, label: string, shortcut?: string) {
+  constructor(mode: CircleMode, id: string, shortcut?: string) {
     this.mode = mode
     this.id = id
-    this.label = label
     this.shortcut = shortcut
     this.state = this.initialState()
   }
@@ -105,8 +104,8 @@ export class CircleTool implements Tool {
     ctx.dynamicInput.close()
   }
 
-  private firstPrompt(): string {
-    return this.isCenterMode() ? "Center" : "First point"
+  private firstPrompt(): PromptId {
+    return this.isCenterMode() ? "center" : "firstPoint"
   }
 
   onPointerMove(input: PointerInput, ctx: ToolContext): void {
@@ -167,7 +166,7 @@ export class CircleTool implements Tool {
         break
       case "p1":
         this.state = { phase: "p2", p1: point, cursor: point }
-        this.openPointInput(ctx, "Second point", at)
+        this.openPointInput(ctx, "secondPoint", at)
         break
       case "p2":
         if (this.mode === "twoPoint") {
@@ -180,7 +179,7 @@ export class CircleTool implements Tool {
           p2: point,
           cursor: point,
         }
-        this.openPointInput(ctx, "Third point", at)
+        this.openPointInput(ctx, "thirdPoint", at)
         break
       case "p3":
         this.commitThreePoint(this.state.p1, this.state.p2, point, ctx)
@@ -355,9 +354,13 @@ export class CircleTool implements Tool {
    * typing an AutoCAD coordinate (e.g. `50,20`, `@30,0`, `100<45`) and pressing
    * Enter places it precisely.
    */
-  private openPointInput(ctx: ToolContext, label: string, screen?: Vec2): void {
+  private openPointInput(
+    ctx: ToolContext,
+    prompt: PromptId,
+    screen?: Vec2
+  ): void {
     const session: DynamicInputSession = {
-      fields: [{ id: "point", label, kind: "coordinate" }],
+      fields: [{ id: "point", prompt, kind: "coordinate" }],
       commit: () => {},
       commitRaw: (commitCtx) => this.commitTypedPoint(commitCtx),
     }
@@ -397,7 +400,7 @@ export class CircleTool implements Tool {
       fields: [
         {
           id: "radius",
-          label: this.currentRadiusLabel(),
+          prompt: this.currentRadiusPrompt(),
           kind: "distance",
         },
       ],
@@ -409,10 +412,10 @@ export class CircleTool implements Tool {
     ctx.dynamicInput.setPosition(screen)
   }
 
-  private currentRadiusLabel(): string {
+  private currentRadiusPrompt(): PromptId {
     return this.state.phase === "radius" && this.state.diameter
-      ? "Diameter"
-      : "Radius"
+      ? "diameter"
+      : "radius"
   }
 }
 

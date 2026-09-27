@@ -8,6 +8,7 @@ import {
 } from "../../domain/entities"
 import { parseNumber } from "../../domain/units"
 import { DynamicInputSession } from "../input/DynamicInput"
+import type { PromptId } from "../../locales/types"
 import {
   isCoordinateExpression,
   parseCoordinate,
@@ -112,7 +113,6 @@ type RotateState =
 
 export class RotateTool implements Tool {
   readonly id = "rotate"
-  readonly label = "Rotate"
   readonly shortcut = "r"
 
   private state: RotateState = { phase: "selecting" }
@@ -277,27 +277,26 @@ export class RotateTool implements Tool {
   commandOptions(): readonly CommandOption[] {
     if (this.state.phase === "angle") {
       const options: CommandOption[] = []
-      if (!this.state.copy) options.push({ key: "C", label: "Copy" })
-      options.push({ key: "R", label: "Reference" })
+      if (!this.state.copy) options.push({ id: "Copy" })
+      options.push({ id: "Reference" })
       return options
     }
     if (this.state.phase === "newAngle" && !this.state.copy) {
-      return [{ key: "C", label: "Copy" }]
+      return [{ id: "Copy" }]
     }
     return []
   }
 
-  invokeOption(key: string, ctx: ToolContext): CommandOptionOutcome {
-    const k = key.toLowerCase()
+  invokeOption(id: string, ctx: ToolContext): CommandOptionOutcome {
     if (
-      k === "c" &&
+      id === "Copy" &&
       (this.state.phase === "angle" || this.state.phase === "newAngle")
     ) {
       this.state = { ...this.state, copy: true }
       ctx.requestRender()
       return "continue"
     }
-    if (k === "r" && this.state.phase === "angle") {
+    if (id === "Reference" && this.state.phase === "angle") {
       this.state = {
         phase: "refP1",
         base: this.state.base,
@@ -424,7 +423,7 @@ export class RotateTool implements Tool {
 
   private openPivotInput(ctx: ToolContext): void {
     const session: DynamicInputSession = {
-      fields: [{ id: "base", label: "Base point", kind: "coordinate" }],
+      fields: [{ id: "base", prompt: "basePoint", kind: "coordinate" }],
       commit: () => {},
       commitRaw: (commitCtx) => this.commitPivotCoordinate(commitCtx),
     }
@@ -454,16 +453,16 @@ export class RotateTool implements Tool {
       return
     }
     this.state = { phase: "angle", base, originals, copy: false, current: base }
-    this.openAngleInput(ctx, "angle", "Rotation angle")
+    this.openAngleInput(ctx, "angle", "rotationAngle")
   }
 
   private openAngleInput(
     ctx: ToolContext,
     fieldId: string,
-    label: string
+    prompt: PromptId
   ): void {
     const session: DynamicInputSession = {
-      fields: [{ id: fieldId, label, kind: "angle" }],
+      fields: [{ id: fieldId, prompt, kind: "angle" }],
       commit: (_values, commitCtx) => this.commitAngle(commitCtx),
       commitRaw: (commitCtx) => this.commitAngle(commitCtx),
     }
@@ -498,7 +497,7 @@ export class RotateTool implements Tool {
 
   private openReferenceInput(ctx: ToolContext): void {
     const session: DynamicInputSession = {
-      fields: [{ id: "reference", label: "Reference angle", kind: "angle" }],
+      fields: [{ id: "reference", prompt: "referenceAngle", kind: "angle" }],
       commit: (_values, commitCtx) => this.commitReference(commitCtx),
       commitRaw: (commitCtx) => this.commitReference(commitCtx),
     }
@@ -517,7 +516,7 @@ export class RotateTool implements Tool {
 
   private openReferenceSecondInput(ctx: ToolContext): void {
     const session: DynamicInputSession = {
-      fields: [{ id: "second", label: "Second point", kind: "coordinate" }],
+      fields: [{ id: "second", prompt: "secondPoint", kind: "coordinate" }],
       commit: () => {},
       commitRaw: (commitCtx) => this.commitReferenceSecond(commitCtx),
     }
@@ -550,7 +549,7 @@ export class RotateTool implements Tool {
       reference,
       current: this.state.current,
     }
-    this.openAngleInput(ctx, "newAngle", "New angle")
+    this.openAngleInput(ctx, "newAngle", "newAngle")
   }
 
   /** Applies the rotation (in place, or as a fresh copy) and ends the command. */

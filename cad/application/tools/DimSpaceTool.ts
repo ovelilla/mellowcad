@@ -58,7 +58,6 @@ const COINCIDENT = 1e-9
  */
 export class DimSpaceTool implements Tool {
   readonly id = "dimspace"
-  readonly label = "Space"
 
   private state: DimSpaceState = { phase: "base", hover: null }
   private lastScreen: Vec2 | null = null
@@ -171,12 +170,11 @@ export class DimSpaceTool implements Tool {
   }
 
   commandOptions(): readonly CommandOption[] {
-    return this.state.phase === "value" ? [{ key: "A", label: "Auto" }] : []
+    return this.state.phase === "value" ? [{ id: "Auto" }] : []
   }
 
-  invokeOption(key: string, ctx: ToolContext): CommandOptionOutcome {
-    if (this.state.phase !== "value" || key.toLowerCase() !== "a")
-      return "unhandled"
+  invokeOption(id: string, ctx: ToolContext): CommandOptionOutcome {
+    if (this.state.phase !== "value" || id !== "Auto") return "unhandled"
     const { base } = this.state
     this.apply(base, autoSpacing(this.styleOf(base, ctx)), ctx)
     return "end"
@@ -358,7 +356,7 @@ export class DimSpaceTool implements Tool {
   private enterValue(base: DimensionEntity, ctx: ToolContext): void {
     this.state = { phase: "value", base }
     const session: DynamicInputSession = {
-      fields: [{ id: "spacing", label: "Enter value", kind: "distance" }],
+      fields: [{ id: "spacing", prompt: "dimensionSpacing", kind: "distance" }],
       commit: (values, commitCtx) => {
         this.apply(base, values.spacing, commitCtx)
         commitCtx.endCommand()

@@ -183,7 +183,7 @@ describe("radial dimensions", () => {
     cad
       .command("DIMRADIUS")
       .click(p(50, 0))
-      .option("t")
+      .option("Text")
       .type("R<> TYP")
       .enter()
       .click(p(30, 0))
@@ -196,7 +196,7 @@ describe("radial dimensions", () => {
     cad
       .command("DIMRADIUS")
       .click(p(50, 0))
-      .option("a")
+      .option("Angle")
       .type("30")
       .enter()
       .click(p(30, 0))

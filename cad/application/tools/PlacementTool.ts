@@ -68,7 +68,6 @@ type PlacementState =
 
 export abstract class PlacementTool implements Tool {
   abstract readonly id: string
-  abstract readonly label: string
 
   private state: PlacementState = { phase: "selecting" }
   private lastScreen: Vec2 | null = null
@@ -312,7 +311,7 @@ export abstract class PlacementTool implements Tool {
 
   private openBaseInput(ctx: ToolContext): void {
     const session: DynamicInputSession = {
-      fields: [{ id: "base", label: "Base point", kind: "coordinate" }],
+      fields: [{ id: "base", prompt: "basePoint", kind: "coordinate" }],
       commit: () => {},
       commitRaw: (commitCtx) => this.commitBaseCoordinate(commitCtx),
     }
@@ -353,8 +352,8 @@ export abstract class PlacementTool implements Tool {
   private openSecondPointInput(ctx: ToolContext, screen: Vec2): void {
     const session: DynamicInputSession = {
       fields: [
-        { id: "distance", label: "Distance", kind: "distance" },
-        { id: "angle", label: "Angle", kind: "angle" },
+        { id: "distance", prompt: "distance", kind: "distance" },
+        { id: "angle", prompt: "angle", kind: "angle" },
       ],
       commit: (_values, commitCtx) => {
         this.commitSecondPoint(commitCtx)

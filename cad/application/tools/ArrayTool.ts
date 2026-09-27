@@ -72,7 +72,6 @@ type ArrayState =
 
 export class ArrayTool implements Tool {
   readonly id = "array"
-  readonly label = "Rectangular array"
   readonly shortcut = "a"
 
   private state: ArrayState = { phase: "selecting" }
@@ -251,10 +250,10 @@ export class ArrayTool implements Tool {
 
     const session: DynamicInputSession = {
       fields: [
-        { id: "columns", label: "Columns", kind: "number" },
-        { id: "rows", label: "Rows", kind: "number" },
-        { id: "colSpacing", label: "Column spacing", kind: "distance" },
-        { id: "rowSpacing", label: "Row spacing", kind: "distance" },
+        { id: "columns", prompt: "columns", kind: "number" },
+        { id: "rows", prompt: "rows", kind: "number" },
+        { id: "colSpacing", prompt: "columnSpacing", kind: "distance" },
+        { id: "rowSpacing", prompt: "rowSpacing", kind: "distance" },
       ],
       commit: (_values, commitCtx) => this.commit(commitCtx),
     }

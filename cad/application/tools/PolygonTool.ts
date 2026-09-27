@@ -3,6 +3,7 @@ import { createPolyline } from "../../domain/entities"
 import { parseNumber } from "../../domain/units"
 import { AddEntityCommand } from "../commands/entityCommands"
 import { DynamicInputSession } from "../input/DynamicInput"
+import type { PromptId } from "../../locales/types"
 import {
   isCoordinateExpression,
   parseCoordinate,
@@ -47,7 +48,6 @@ type PolygonToolState =
 
 export class PolygonTool implements Tool {
   readonly id = "polygon"
-  readonly label = "Polygon"
 
   private state: PolygonToolState = { phase: "sides" }
   private lastScreen: Vec2 | null = null
@@ -112,14 +112,14 @@ export class PolygonTool implements Tool {
     if (this.state.phase !== "radius") return []
     return [
       {
-        key: "T",
-        label: `Type: ${this.state.circumscribed ? "Circumscribed" : "Inscribed"}`,
+        id: "Type",
+        value: this.state.circumscribed ? "Circumscribed" : "Inscribed",
       },
     ]
   }
 
-  invokeOption(key: string, ctx: ToolContext): CommandOptionOutcome {
-    if (this.state.phase === "radius" && key.toLowerCase() === "t") {
+  invokeOption(id: string, ctx: ToolContext): CommandOptionOutcome {
+    if (this.state.phase === "radius" && id === "Type") {
       this.state = { ...this.state, circumscribed: !this.state.circumscribed }
       ctx.requestRender()
       return "continue"
@@ -157,7 +157,7 @@ export class PolygonTool implements Tool {
 
   private openSidesInput(ctx: ToolContext): void {
     const session: DynamicInputSession = {
-      fields: [{ id: "sides", label: "Number of sides", kind: "number" }],
+      fields: [{ id: "sides", prompt: "numberOfSides", kind: "number" }],
       commit: (values, commitCtx) => this.commitSides(values.sides, commitCtx),
     }
     ctx.dynamicInput.open(session)
@@ -169,12 +169,12 @@ export class PolygonTool implements Tool {
     if (this.state.phase !== "sides") return
     const sides = clampSides(value)
     this.state = { phase: "center", sides }
-    this.openPointInput(ctx, "Center")
+    this.openPointInput(ctx, "center")
   }
 
-  private openPointInput(ctx: ToolContext, label: string): void {
+  private openPointInput(ctx: ToolContext, prompt: PromptId): void {
     const session: DynamicInputSession = {
-      fields: [{ id: "point", label, kind: "coordinate" }],
+      fields: [{ id: "point", prompt, kind: "coordinate" }],
       commit: () => {},
       commitRaw: (commitCtx) => this.commitTypedCenter(commitCtx),
     }
@@ -205,7 +205,7 @@ export class PolygonTool implements Tool {
 
   private openRadiusInput(ctx: ToolContext, screen: Vec2): void {
     const session: DynamicInputSession = {
-      fields: [{ id: "radius", label: "Radius", kind: "distance" }],
+      fields: [{ id: "radius", prompt: "radius", kind: "distance" }],
       commit: (values, commitCtx) =>
         this.commitPolygonValue(values.radius, commitCtx),
     }

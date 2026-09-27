@@ -27,7 +27,6 @@ import {
  */
 export class TextEditTool implements Tool {
   readonly id = "textedit"
-  readonly label = "Edit text"
 
   private state: TextEditToolState = { phase: "select", hover: null }
   /** AutoCAD's TEXTEDITMODE: repeat until cancelled, or edit one and stop. */
@@ -89,23 +88,20 @@ export class TextEditTool implements Tool {
   commandOptions(): readonly CommandOption[] {
     if (this.state.phase !== "select") return []
     const options: CommandOption[] = []
-    if (this.edits > 0) options.push({ key: "U", label: "Undo" })
-    options.push({
-      key: "M",
-      label: `Mode: ${this.multiple ? "Multiple" : "Single"}`,
-    })
+    if (this.edits > 0) options.push({ id: "Undo" })
+    options.push({ id: "Mode", value: this.multiple ? "Multiple" : "Single" })
     return options
   }
 
-  invokeOption(key: string, ctx: ToolContext): CommandOptionOutcome {
+  invokeOption(id: string, ctx: ToolContext): CommandOptionOutcome {
     if (this.state.phase !== "select") return "unhandled"
-    switch (key.toLowerCase()) {
-      case "u":
+    switch (id) {
+      case "Undo":
         if (this.edits === 0) return "unhandled"
         this.edits -= 1
         ctx.undo()
         return "continue"
-      case "m":
+      case "Mode":
         this.multiple = !this.multiple
         return "continue"
       default:
@@ -149,7 +145,7 @@ export class TextEditTool implements Tool {
 
   private openEditInput(ctx: ToolContext, value: string): void {
     const session: DynamicInputSession = {
-      fields: [{ id: "value", label: "Text", kind: "text" }],
+      fields: [{ id: "value", prompt: "text", kind: "text" }],
       commit: () => {},
       commitRaw: (commitCtx) => {
         this.commitEdit(commitCtx)

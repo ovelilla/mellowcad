@@ -24,7 +24,6 @@ const DRAG_THRESHOLD_PX = 4
  */
 export abstract class SelectionActionTool implements Tool {
   abstract readonly id: string
-  abstract readonly label: string
   readonly shortcut?: string
 
   private state: SelectionActionState = { phase: "selecting", hover: null }

@@ -69,8 +69,9 @@ DIMCEN (positive/mark branch), DIMADEC.
 **Not modelled**: DIMCEN negative (centrelines), DIMTOFL and DIMATFIT (text-fit logic), DIMASSOC,
 DIMCONTINUEMODE (moot with a single style), DIMAUNIT, DIMTXSTY height override, DIMPOST (kept empty).
 
-Aliases for `DIMSTYLE` and `STYLE` are deliberately absent: `D`, `DDIM`, `DIMSTY`, `DST` and `ST`
-could not be verified against acad.pgp, and an unverified alias is worse than none.
+`DIMSTYLE` and `STYLE` take only `D` and `ST`, the aliases Autodesk's shortcut guide lists;
+`DDIM`, `DIMSTY` and `DST` could not be verified against acad.pgp, and an unverified alias is worse
+than none.
 
 ## View
 
@@ -94,6 +95,14 @@ could not be verified against acad.pgp, and an unverified alias is worse than no
 | Lineweights + `LWDISPLAY` | 24 standard values, ByLayer and ByObject                                                      | polyline width                                                                       |
 | Colour                    | ByLayer and ByObject per-object override                                                      | —                                                                                    |
 | Properties palette        | geometry rows per entity type, editable (retype a value), closed-polyline area                | polyline vertex rows, multi-selection editing, Area/Circumference rows, text content |
+
+## Command line
+
+| Feature        | Implemented                                                                                                                                                                                                                                                                         | Missing                                                                                                                                            |
+| -------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Command names  | names and aliases of the command language (the engine's catalog), case-insensitive; `_` plus the global name in every language, English included (`_LINE`); Enter/Space repeats; autocomplete                                                                                       | the `.` prefix (`._LINE`: nothing can be redefined here), transparent `'` commands, `_` with a global alias (`_` selects global command names; aliases belong to each language's acad.pgp) |
+| Keywords       | the abbreviation (the capitals of the word, anywhere in it) or the whole word, case-insensitive; `_` plus the global abbreviation or word (`_C`); typed at the prompt or into a value box and confirmed; the command always receives the global id                                     | —                                                                                                                                                  |
+| Single-key run | a keyword runs on its key, without Enter, when its abbreviation is that one letter and starts no other on offer, and nothing has been typed yet (so `_C` and multi-letter abbreviations can be typed and confirmed)                                                                     | —                                                                                                                                                  |
 
 ## Drafting aids
 

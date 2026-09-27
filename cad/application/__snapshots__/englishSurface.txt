@@ -1,0 +1,2613 @@
+## commands
+LINE ["L"] "Line"
+PLINE ["PL"] "Polyline"
+CIRCLE ["C"] "Circle"
+CIRCLED [] "Diameter circle"
+CIRCLE2P [] "2-Point circle"
+CIRCLE3P [] "3-Point circle"
+ARC ["A"] "Arc"
+ARCSCE [] "Start, Center, End arc"
+ARCCSE [] "Center, Start, End arc"
+ELLIPSE ["EL"] "Ellipse"
+ELLIPSEC [] "Center ellipse"
+ELLIPSEARC [] "Elliptical arc"
+RECTANG ["REC"] "Rectangle"
+POLYGON ["POL"] "Polygon"
+HATCH ["H","BH"] "Hatch"
+BLOCK ["B"] "Create block"
+INSERT ["I"] "Insert block"
+TEXT ["DT","DTEXT"] "Text"
+TEXTEDIT ["DDEDIT","ED"] "Edit text"
+DIMLINEAR ["DIMLIN","DLI"] "Linear"
+DIMALIGNED ["DIMALI","DAL"] "Aligned"
+DIMRADIUS ["DIMRAD","DRA"] "Radius"
+DIMDIAMETER ["DIMDIA","DDI"] "Diameter"
+DIMANGULAR ["DIMANG","DAN"] "Angular"
+DIMBASELINE ["DBA"] "Baseline"
+DIMCONTINUE ["DCO"] "Continue"
+DIMSPACE [] "Space"
+OFFSET ["O"] "Offset"
+MOVE ["M"] "Move"
+COPY ["CO","CP"] "Copy"
+STRETCH ["S"] "Stretch"
+ROTATE ["RO"] "Rotate"
+SCALE ["SC"] "Scale"
+MIRROR ["MI"] "Mirror"
+ARRAYRECT ["AR","ARRAY"] "Rectangular array"
+ARRAYPOLAR ["ARPOLAR"] "Polar array"
+ARRAYPATH ["ARPATH"] "Path array"
+TRIM ["TR"] "Trim"
+EXTEND ["EX"] "Extend"
+FILLET ["F"] "Fillet"
+CHAMFER ["CHA"] "Chamfer"
+EXPLODE ["X"] "Explode"
+JOIN ["J"] "Join"
+BREAK ["BR"] "Break"
+BREAKATPOINT [] "Break at point"
+MATCHPROP ["MA","PAINTER"] "Match properties"
+COPYCLIP [] "Copy"
+CUTCLIP [] "Cut"
+COPYBASE [] "Copy with base point"
+DIST ["DI"] "Measure"
+AREA ["AA"] "Area"
+ZOOM ["Z"] "Zoom"
+PAN ["P"] "Pan"
+ERASE ["E"] "Delete the selected objects"
+UNDO ["U"] "Undo the last action"
+REDO [] "Redo the last undone action"
+SNAP ["SN"] "Force the cursor onto the snap increments"
+FROM ["FRO"] "Pick a point offset from a base point"
+QSAVE ["SAVE","SAVEAS"] "Save the drawing to a file"
+OPEN [] "Open a drawing file"
+PASTECLIP [] "Paste the clipboard into the drawing"
+DIMSTYLE ["D"] "Create and modify dimension styles"
+STYLE ["ST"] "Create and modify text styles"
+BLOCKSPALETTE [] "Show the blocks palette"
+PURGE ["PU"] "Remove unused block definitions"
+## tools
+select "Select" s
+line "Line" L
+polyline "Polyline" PL
+circle "Circle" C
+circlediameter "Diameter circle" CIRCLED
+circle2p "2-Point circle" CIRCLE2P
+circle3p "3-Point circle" CIRCLE3P
+arc "Arc" A
+arcsce "Start, Center, End arc" ARCSCE
+arccse "Center, Start, End arc" ARCCSE
+ellipse "Ellipse" EL
+ellipsecenter "Center ellipse" ELLIPSEC
+ellipsearc "Elliptical arc" ELLIPSEARC
+rectangle "Rectangle" REC
+polygon "Polygon" POL
+hatch "Hatch" H
+block "Create block" B
+insert "Insert block" I
+text "Text" DT
+textedit "Edit text" ED
+dimlinear "Linear" DLI
+dimaligned "Aligned" DAL
+dimradius "Radius" DRA
+dimdiameter "Diameter" DDI
+dimangular "Angular" DAN
+dimbaseline "Baseline" DBA
+dimcontinue "Continue" DCO
+dimspace "Space" DIMSPACE
+offset "Offset" O
+move "Move" M
+copy "Copy" CO
+stretch "Stretch" S
+rotate "Rotate" RO
+scale "Scale" SC
+mirror "Mirror" MI
+array "Rectangular array" AR
+arraypolar "Polar array" ARPOLAR
+arraypath "Path array" ARPATH
+trim "Trim" TR
+extend "Extend" EX
+fillet "Fillet" F
+chamfer "Chamfer" CHA
+explode "Explode" X
+join "Join" J
+break "Break" BR
+breakatpoint "Break at point" BREAKATPOINT
+matchprop "Match properties" MA
+copyclip "Copy" COPYCLIP
+cutclip "Cut" CUTCLIP
+copybase "Copy with base point" COPYBASE
+paste "Paste" -
+measure "Measure" DI
+measurearea "Area" AA
+zoom "Zoom" Z
+pan "Pan" P
+
+## neutral prompt
+> start
+  prompt: Command:
+  asks: -
+  dyn: -
+  options: -
+  canvas: -
+  properties: -
+  cycling: -
+> type FOO
+  error| Unknown command "FOO".
+> lowercase l runs LINE
+  prompt: LINE:
+  asks: ""
+  dyn: "X,Y"=""||*
+  command| LINE
+> escape
+  prompt: Command:
+  asks: -
+  dyn: -
+> ERASE with nothing selected
+  command| ERASE
+  info| Nothing selected.
+> ERASE one
+  command| ERASE
+  info| 1 object erased.
+> UNDO
+  command| UNDO
+> REDO
+  command| REDO
+> SNAP on
+  command| SNAP
+  info| Snap mode on.
+> SNAP off
+  command| SNAP
+  info| Snap mode off.
+> FROM at Command:
+  command| FROM
+  error| FROM needs a point prompt.
+> QSAVE without files
+  command| QSAVE
+  error| Saving to a file is not available here.
+> OPEN without files
+  command| OPEN
+  error| Opening a file is not available here.
+> DIMSTYLE
+  command| DIMSTYLE
+> STYLE
+  command| STYLE
+> BLOCKSPALETTE
+  command| BLOCKSPALETTE
+> PURGE with nothing
+  command| PURGE
+  info| No unused blocks.
+> Enter repeats
+  command| PURGE
+  info| No unused blocks.
+
+## erase two
+> start
+  prompt: Command:
+  asks: -
+  dyn: -
+  options: -
+  canvas: -
+  properties: -
+  cycling: -
+> ERASE two
+  command| ERASE
+  info| 2 objects erased.
+
+## purge
+> start
+  prompt: Command:
+  asks: -
+  dyn: -
+  options: -
+  canvas: -
+  properties: -
+  cycling: -
+> PURGE two
+  command| PURGE
+  info| 2 blocks purged.
+
+## purge one
+> start
+  prompt: Command:
+  asks: -
+  dyn: -
+  options: -
+  canvas: -
+  properties: -
+  cycling: -
+> PURGE one
+  command| PURGE
+  info| 1 block purged.
+
+## open not JSON
+> start
+  prompt: Command:
+  asks: -
+  dyn: -
+  options: -
+  canvas: -
+  properties: -
+  cycling: -
+  command| OPEN
+  error| The file is not valid JSON.
+> after open
+
+## open not a record
+> start
+  prompt: Command:
+  asks: -
+  dyn: -
+  options: -
+  canvas: -
+  properties: -
+  cycling: -
+  command| OPEN
+  error| Unrecognised drawing file.
+> after open
+
+## open not a drawing
+> start
+  prompt: Command:
+  asks: -
+  dyn: -
+  options: -
+  canvas: -
+  properties: -
+  cycling: -
+  command| OPEN
+  error| This file is not a MellowCAD drawing.
+> after open
+
+## open newer version
+> start
+  prompt: Command:
+  asks: -
+  dyn: -
+  options: -
+  canvas: -
+  properties: -
+  cycling: -
+  command| OPEN
+  error| This drawing was created with a newer version of MellowCAD. Please update to open it.
+> after open
+
+## open failing
+> start
+  prompt: Command:
+  asks: -
+  dyn: -
+  options: -
+  canvas: -
+  properties: -
+  cycling: -
+  command| OPEN
+  error| Disk on fire.
+> after open
+
+## open refused
+> start
+  prompt: Command:
+  asks: -
+  dyn: -
+  options: -
+  canvas: -
+  properties: -
+  cycling: -
+  command| OPEN
+  error| Could not open the file.
+> after open
+
+## paste nothing
+> start
+  prompt: Command:
+  asks: -
+  dyn: -
+  options: -
+  canvas: -
+  properties: -
+  cycling: -
+  info| Nothing on the clipboard.
+> after paste
+
+## paste
+> start
+  prompt: PASTE:
+  asks: "Specify insertion point"
+  dyn: "X,Y"=""||*
+  options: -
+  canvas: -
+  properties: -
+  cycling: -
+> move
+> place
+  prompt: Command:
+  asks: -
+  dyn: -
+  properties: Line (1) [Geometry: Length=100.00 mm~, Angle=0.00°~, Δ X=100.00 mm, Δ Y=0.00 mm] [Endpoints: Start X=50.00~, Start Y=50.00~, End X=150.00~, End Y=50.00~]
+
+## LINE
+> start
+  prompt: Command:
+  asks: -
+  dyn: -
+  options: -
+  canvas: -
+  properties: -
+  cycling: -
+> LINE
+  prompt: LINE:
+  asks: ""
+  dyn: "X,Y"=""||*
+  command| LINE
+> type first point
+  dyn: "X,Y"="0,0"||*
+> enter
+  asks: "Length" "Angle"
+  dyn: "Length"=""|0.00|mm* "Angle"=""||°
+> move
+  dyn: "Length"=""|50.00|mm* "Angle"=""|0.00|°
+> type length
+  dyn: "Length"="100"|50.00|mm* "Angle"=""|0.00|°
+> enter
+  prompt: LINE [Undo]:
+  dyn: "Length"=""|0.00|mm* "Angle"=""|0.00|°
+  options: [U] Undo
+> polar coordinate
+  dyn: "Dist<Ang"="100<90"||*
+> enter
+  prompt: LINE [Close/Undo]:
+  dyn: "Length"=""|0.00|mm* "Angle"=""|90.00|°
+  options: [C] Close, [U] Undo
+> click
+  dyn: "Length"=""|0.00|mm* "Angle"=""||°
+> U
+> click
+> C
+  prompt: Command:
+  asks: -
+  dyn: -
+  options: -
+> LINE again
+  prompt: LINE:
+  asks: ""
+  dyn: "X,Y"=""||*
+  command| LINE
+> Enter continues
+  asks: "Length" "Angle"
+  dyn: "Length"=""|0.00|mm* "Angle"=""||°
+> escape
+  prompt: Command:
+  asks: -
+  dyn: -
+
+## LINE offset from a tracked point
+> start
+  prompt: Command:
+  asks: -
+  dyn: -
+  options: -
+  canvas: -
+  properties: -
+  cycling: -
+> LINE
+  prompt: LINE:
+  asks: ""
+  dyn: "X,Y"=""||*
+  canvas: "Endpoint"
+  command| LINE
+> hover the endpoint
+> move along the guide
+  asks: "Offset"
+  dyn: "Offset"=""|60.00|mm*
+  canvas: -
+> escape
+  prompt: Command:
+  asks: -
+  dyn: -
+
+## PLINE
+> start
+  prompt: Command:
+  asks: -
+  dyn: -
+  options: -
+  canvas: -
+  properties: -
+  cycling: -
+> PLINE
+  prompt: PLINE:
+  asks: ""
+  dyn: "X,Y"=""||*
+  command| PLINE
+> first
+  prompt: PLINE [Arc]:
+  asks: "Length" "Angle"
+  dyn: "Length"=""|0.00|mm* "Angle"=""||°
+  options: [A] Arc
+> second
+  prompt: PLINE [Arc/Undo]:
+  options: [A] Arc, [U] Undo
+> A
+  prompt: PLINE [Line/Undo]:
+  options: [L] Line, [U] Undo
+> arc
+  prompt: PLINE [Line/Close/Undo]:
+  options: [L] Line, [C] Close, [U] Undo
+> L
+  prompt: PLINE [Arc/Close/Undo]:
+  options: [A] Arc, [C] Close, [U] Undo
+> third
+> U
+> C
+  prompt: Command:
+  asks: -
+  dyn: -
+  options: -
+
+## CIRCLE
+> start
+  prompt: Command:
+  asks: -
+  dyn: -
+  options: -
+  canvas: -
+  properties: -
+  cycling: -
+> CIRCLE
+  prompt: CIRCLE:
+  asks: "Center"
+  dyn: "X,Y"=""||*
+  command| CIRCLE
+> centre
+  asks: "Radius"
+  dyn: "Radius"=""|0.00|mm*
+> move
+  dyn: "Radius"=""|30.00|mm*
+> radius
+  dyn: "Radius"="50"|30.00|mm*
+> enter
+  prompt: Command:
+  asks: -
+  dyn: -
+> CIRCLED
+  prompt: CIRCLED:
+  asks: "Center"
+  dyn: "X,Y"=""||*
+  command| CIRCLED
+> centre
+  asks: "Diameter"
+  dyn: "Diameter"=""|0.00|mm*
+> diameter
+  prompt: Command:
+  asks: -
+  dyn: -
+> CIRCLE2P
+  prompt: CIRCLE2P:
+  asks: "First point"
+  dyn: "X,Y"=""||*
+  command| CIRCLE2P
+> first
+  asks: "Second point"
+> second
+  prompt: Command:
+  asks: -
+  dyn: -
+> CIRCLE3P
+  prompt: CIRCLE3P:
+  asks: "First point"
+  dyn: "X,Y"=""||*
+  command| CIRCLE3P
+> first
+  asks: "Second point"
+> second
+  asks: "Third point"
+> third
+  prompt: Command:
+  asks: -
+  dyn: -
+
+## ARC
+> start
+  prompt: Command:
+  asks: -
+  dyn: -
+  options: -
+  canvas: -
+  properties: -
+  cycling: -
+> ARC
+  prompt: ARC:
+  asks: "Start point"
+  dyn: "X,Y"=""||*
+  command| ARC
+> start
+  asks: "Second point"
+> second
+  asks: "End point"
+> end
+  prompt: Command:
+  asks: -
+  dyn: -
+> ARCSCE
+  prompt: ARCSCE:
+  asks: "Start point"
+  dyn: "X,Y"=""||*
+  command| ARCSCE
+> start
+  asks: "Center point"
+> centre
+  asks: "End point"
+> end
+  prompt: Command:
+  asks: -
+  dyn: -
+> ARCCSE
+  prompt: ARCCSE:
+  asks: "Center point"
+  dyn: "X,Y"=""||*
+  command| ARCCSE
+> centre
+  asks: "Start point"
+> start
+  asks: "End point"
+> escape
+  prompt: Command:
+  asks: -
+  dyn: -
+
+## ELLIPSE
+> start
+  prompt: Command:
+  asks: -
+  dyn: -
+  options: -
+  canvas: -
+  properties: -
+  cycling: -
+> ELLIPSE
+  prompt: ELLIPSE [Arc/Center]:
+  asks: "Axis endpoint"
+  dyn: "X,Y"=""||*
+  options: [A] Arc, [C] Center
+  command| ELLIPSE
+> first axis end
+  prompt: ELLIPSE:
+  asks: "Other endpoint of axis"
+  options: -
+> second axis end
+  prompt: ELLIPSE [Rotation]:
+  asks: "Distance to other axis"
+  dyn: "Distance to other axis"=""|0.00|mm*
+  options: [R] Rotation
+> R
+  prompt: ELLIPSE:
+  asks: "Rotation around major axis"
+  dyn: "Rotation around major axis"=""|0.00|°*
+  options: -
+> rotation
+  dyn: "Rotation around major axis"="60"|0.00|°*
+> enter
+  prompt: Command:
+  asks: -
+  dyn: -
+> ELLIPSE C
+  prompt: ELLIPSE [Arc/Center]:
+  asks: "Axis endpoint"
+  dyn: "X,Y"=""||*
+  options: [A] Arc, [C] Center
+  command| ELLIPSE
+> C
+  prompt: ELLIPSE:
+  asks: "Center"
+  options: -
+> centre
+  asks: "Endpoint of axis"
+> axis end
+  prompt: ELLIPSE [Rotation]:
+  asks: "Distance to other axis"
+  dyn: "Distance to other axis"=""|0.00|mm*
+  options: [R] Rotation
+> other axis
+  prompt: Command:
+  asks: -
+  dyn: -
+  options: -
+> ELLIPSE A
+  prompt: ELLIPSE [Arc/Center]:
+  asks: "Axis endpoint"
+  dyn: "X,Y"=""||*
+  options: [A] Arc, [C] Center
+  command| ELLIPSE
+> A
+  prompt: ELLIPSE [Center]:
+  options: [C] Center
+> escape
+  prompt: Command:
+  asks: -
+  dyn: -
+  options: -
+> ELLIPSEC
+  prompt: ELLIPSEC:
+  asks: "Center"
+  dyn: "X,Y"=""||*
+  command| ELLIPSEC
+> escape
+  prompt: Command:
+  asks: -
+  dyn: -
+> ELLIPSEARC
+  prompt: ELLIPSEARC [Center]:
+  asks: "Axis endpoint"
+  dyn: "X,Y"=""||*
+  options: [C] Center
+  command| ELLIPSEARC
+> first
+  prompt: ELLIPSEARC:
+  asks: "Other endpoint of axis"
+  options: -
+> second
+  prompt: ELLIPSEARC [Rotation]:
+  asks: "Distance to other axis"
+  dyn: "Distance to other axis"=""|0.00|mm*
+  options: [R] Rotation
+> other axis
+  prompt: ELLIPSEARC:
+  asks: "Start angle"
+  dyn: "Start angle"=""|0.00|°*
+  options: -
+> start angle
+  dyn: "Start angle"="0"|0.00|°*
+> enter
+  prompt: ELLIPSEARC [Included angle]:
+  asks: "End angle"
+  dyn: "End angle"=""|0.00|°*
+  options: [I] Included angle
+> I
+  asks: "Included angle"
+  dyn: "Included angle"=""|0.00|°*
+> included
+  dyn: "Included angle"="90"|0.00|°*
+> enter
+  prompt: Command:
+  asks: -
+  dyn: -
+  options: -
+
+## RECTANG and POLYGON
+> start
+  prompt: Command:
+  asks: -
+  dyn: -
+  options: -
+  canvas: -
+  properties: -
+  cycling: -
+> RECTANG
+  prompt: RECTANG:
+  asks: "First corner"
+  dyn: "X,Y"=""||*
+  command| RECTANG
+> first corner
+  asks: "Other corner"
+> other corner
+  prompt: Command:
+  asks: -
+  dyn: -
+> POLYGON
+  prompt: POLYGON:
+  asks: "Number of sides"
+  dyn: "Number of sides"=""|4|*
+  command| POLYGON
+> sides
+  dyn: "Number of sides"="6"|4|*
+> enter
+  asks: "Center"
+  dyn: "X,Y"=""||*
+> centre
+  dyn: "X,Y"="0,0"||*
+> enter
+  prompt: POLYGON [Type: Inscribed]:
+  asks: "Radius"
+  dyn: "Radius"=""|0.00|mm*
+  options: [T] Type: Inscribed
+> T
+  prompt: POLYGON [Type: Circumscribed]:
+  options: [T] Type: Circumscribed
+> radius
+  dyn: "Radius"="100"|0.00|mm*
+> enter
+  prompt: Command:
+  asks: -
+  dyn: -
+  options: -
+
+## HATCH
+> start
+  prompt: Command:
+  asks: -
+  dyn: -
+  options: -
+  canvas: -
+  properties: -
+  cycling: -
+> HATCH
+  prompt: HATCH [Properties/Select objects]:
+  asks: "Pick internal point"
+  dyn: "X,Y"=""||*
+  options: [P] Properties, [S] Select objects
+  command| HATCH
+> P
+  prompt: HATCH:
+  asks: "Enter a pattern name"
+  dyn: "Enter a pattern name"="ANSI31"||*
+  options: -
+> ?
+  dyn: "Enter a pattern name"="?"||*
+> enter
+  dyn: "Enter a pattern name"=""||*
+  info| SOLID  Solid fill
+        ANSI31  ANSI Iron, Brick, Stone masonry
+> unknown pattern
+  dyn: "Enter a pattern name"="NOPE"||*
+> enter
+  dyn: "Enter a pattern name"=""||*
+  error| Unknown hatch pattern "NOPE".
+> ANSI31
+  dyn: "Enter a pattern name"="ANSI31"||*
+> enter
+  asks: "Specify a scale for pattern"
+  dyn: "Specify a scale for pattern"=""|1|*
+> scale
+  dyn: "Specify a scale for pattern"="0.0001"|1|*
+> enter
+  asks: "Specify an angle for pattern"
+  dyn: "Specify an angle for pattern"=""|0.00|°*
+> angle
+  dyn: "Specify an angle for pattern"="0"|0.00|°*
+> enter
+  prompt: HATCH [Properties/Select objects]:
+  asks: "Pick internal point"
+  dyn: "X,Y"=""||*
+  options: [P] Properties, [S] Select objects
+> pick inside
+> pick outside
+  error| Valid hatch boundary not found.
+> S
+  prompt: HATCH [Properties]:
+  asks: 
+  dyn: 
+  options: [P] Properties
+> pick object
+> enter
+  prompt: Command:
+  asks: -
+  dyn: -
+  options: -
+  error| Hatch spacing too dense, or dash size too small.
+
+## BLOCK
+> start
+  prompt: Command:
+  asks: -
+  dyn: -
+  options: -
+  canvas: -
+  properties: -
+  cycling: -
+> BLOCK
+  prompt: BLOCK:
+  asks: "Enter block name or [?]"
+  dyn: "Enter block name or [?]"=""||*
+  command| BLOCK
+> ?
+  dyn: "Enter block name or [?]"="?"||*
+> enter
+  dyn: "Enter block name or [?]"=""||*
+  info| No blocks defined.
+> name
+  dyn: "Enter block name or [?]"="BAR"||*
+> enter
+  asks: "Specify insertion base point"
+  dyn: "X,Y"=""||*
+> base
+  asks: 
+  dyn: 
+> pick
+  properties: Line (1) [Geometry: Length=100.00 mm~, Angle=0.00°~, Δ X=100.00 mm, Δ Y=0.00 mm] [Endpoints: Start X=0.00~, Start Y=0.00~, End X=100.00~, End Y=0.00~]
+> enter
+  prompt: Command:
+  asks: -
+  dyn: -
+  properties: Block reference (1) [Block: Name=BAR, Scale=1.00~, Rotation=0.00°~] [Position: X=0.00~, Y=0.00~]
+
+## INSERT
+> start
+  prompt: Command:
+  asks: -
+  dyn: -
+  options: -
+  canvas: -
+  properties: -
+  cycling: -
+> INSERT
+  prompt: INSERT:
+  asks: "Enter block name or [?]"
+  dyn: "Enter block name or [?]"=""||*
+  command| INSERT
+> ?
+  dyn: "Enter block name or [?]"="?"||*
+> enter
+  dyn: "Enter block name or [?]"=""||*
+  info| BAR
+        NUT
+> unknown
+  dyn: "Enter block name or [?]"="NOPE"||*
+> enter
+  dyn: "Enter block name or [?]"=""||*
+  error| Block "NOPE" is not defined.
+> name
+  dyn: "Enter block name or [?]"="BAR"||*
+> enter
+  prompt: INSERT [Scale/Rotate]:
+  asks: "Specify insertion point"
+  dyn: "X,Y"=""||*
+  options: [S] Scale, [R] Rotate
+> S
+  prompt: INSERT:
+  asks: "Specify scale factor"
+  dyn: "Specify scale factor"=""|1|*
+  options: -
+> scale
+  dyn: "Specify scale factor"="2"|1|*
+> enter
+  prompt: INSERT [Scale/Rotate]:
+  asks: "Specify insertion point"
+  dyn: "X,Y"=""||*
+  options: [S] Scale, [R] Rotate
+> R
+  prompt: INSERT:
+  asks: "Specify rotation angle"
+  dyn: "Specify rotation angle"=""|0.00|°*
+  options: -
+> rotation
+  dyn: "Specify rotation angle"="90"|0.00|°*
+> enter
+  prompt: INSERT [Scale/Rotate]:
+  asks: "Specify insertion point"
+  dyn: "X,Y"=""||*
+  options: [S] Scale, [R] Rotate
+> place
+  prompt: Command:
+  asks: -
+  dyn: -
+  options: -
+
+## BLOCK ? with none
+> start
+  prompt: Command:
+  asks: -
+  dyn: -
+  options: -
+  canvas: -
+  properties: -
+  cycling: -
+> BLOCK
+  prompt: BLOCK:
+  asks: "Enter block name or [?]"
+  dyn: "Enter block name or [?]"=""||*
+  command| BLOCK
+> ?
+  dyn: "Enter block name or [?]"="?"||*
+> enter
+  dyn: "Enter block name or [?]"=""||*
+  info| No blocks defined.
+> INSERT
+  prompt: INSERT:
+  command| INSERT
+> ?
+  dyn: "Enter block name or [?]"="?"||*
+> enter
+  dyn: "Enter block name or [?]"=""||*
+  info| No blocks defined.
+
+## TEXT
+> start
+  prompt: Command:
+  asks: -
+  dyn: -
+  options: -
+  canvas: -
+  properties: -
+  cycling: -
+> TEXT
+  prompt: TEXT [Justify/Style]:
+  asks: "Specify start point of text"
+  dyn: "X,Y"=""||*
+  options: [J] Justify, [S] Style
+  command| TEXT
+> J
+  prompt: TEXT:
+  asks: "Justify"
+  dyn: "Justify"=""||*
+  options: -
+  info| Enter an option [Left/Center/Right/Middle/TL/TC/TR/ML/MC/MR/BL/BC/BR]:
+> nope
+  dyn: "Justify"="nope"||*
+> enter
+  info| Enter an option [Left/Center/Right/Middle/TL/TC/TR/ML/MC/MR/BL/BC/BR]:
+> tc
+  dyn: "Justify"="tc"||*
+> enter
+  prompt: TEXT [Justify/Style]:
+  asks: "Specify start point of text"
+  dyn: "X,Y"=""||*
+  options: [J] Justify, [S] Style
+> S
+  prompt: TEXT:
+  asks: "Style name"
+  dyn: "Style name"=""||*
+  options: -
+> missing style
+  dyn: "Style name"="Fancy"||*
+> enter
+  error| Text style "Fancy" is not defined.
+> Standard
+  dyn: "Style name"="Standard"||*
+> enter
+  prompt: TEXT [Justify/Style]:
+  asks: "Specify start point of text"
+  dyn: "X,Y"=""||*
+  options: [J] Justify, [S] Style
+> start
+  prompt: TEXT:
+  asks: "Specify height"
+  dyn: "Specify height"=""|2.50|mm*
+  options: -
+> height
+  dyn: "Specify height"="5"|2.50|mm*
+> enter
+  asks: "Specify rotation angle of text"
+  dyn: "Specify rotation angle of text"=""|0.00|°*
+> rotation
+  dyn: "Specify rotation angle of text"="0"|0.00|°*
+> enter
+  asks: "Text"
+  dyn: "Text"=""||*
+> content
+  dyn: "Text"="HELLO"||*
+> enter
+  dyn: "Text"=""||*
+> escape
+  prompt: Command:
+  asks: -
+  dyn: -
+
+## TEXTEDIT
+> start
+  prompt: Command:
+  asks: -
+  dyn: -
+  options: -
+  canvas: -
+  properties: -
+  cycling: -
+> TEXTEDIT
+  prompt: TEXTEDIT [Mode: Multiple]:
+  asks: 
+  dyn: 
+  options: [M] Mode: Multiple
+  command| TEXTEDIT
+> pick
+  prompt: TEXTEDIT:
+  asks: "Text"
+  dyn: "Text"="WORD"||*
+  options: -
+> retype
+  dyn: "Text"="NEW"||*
+> enter
+  prompt: TEXTEDIT [Undo/Mode: Multiple]:
+  asks: 
+  dyn: 
+  options: [U] Undo, [M] Mode: Multiple
+> U
+  prompt: TEXTEDIT [Mode: Multiple]:
+  options: [M] Mode: Multiple
+> M
+  prompt: TEXTEDIT [Mode: Single]:
+  options: [M] Mode: Single
+> pick
+  prompt: TEXTEDIT:
+  asks: "Text"
+  dyn: "Text"="WORD"||*
+  options: -
+> enter
+  prompt: Command:
+  asks: -
+  dyn: -
+> double-click
+  prompt: TEXTEDIT:
+  asks: "Text"
+  dyn: "Text"="WORD"||*
+> escape
+  prompt: Command:
+  asks: -
+  dyn: -
+
+## DIMLINEAR
+> start
+  prompt: Command:
+  asks: -
+  dyn: -
+  options: -
+  canvas: -
+  properties: -
+  cycling: -
+> DIMLINEAR
+  prompt: DIMLINEAR:
+  asks: "Specify first extension line origin or <select object>"
+  dyn: "X,Y"=""||*
+  command| DIMLINEAR
+> first
+  asks: "Specify second extension line origin"
+> second
+  prompt: DIMLINEAR [Text/Angle/Horizontal/Vertical/Rotated]:
+  asks: "Specify dimension line location"
+  options: [T] Text, [A] Angle, [H] Horizontal, [V] Vertical, [R] Rotated
+> T
+  asks: "Enter dimension text"
+  dyn: "Enter dimension text"=""||*
+> text
+  dyn: "Enter dimension text"="<> TYP"||*
+> enter
+  asks: "Specify dimension line location"
+  dyn: "X,Y"=""||*
+> A
+  asks: "Specify angle of dimension text"
+  dyn: "Specify angle of dimension text"=""|0.00|°*
+> angle
+  dyn: "Specify angle of dimension text"="10"|0.00|°*
+> enter
+  asks: "Specify dimension line location"
+  dyn: "X,Y"=""||*
+> H
+> V
+> R
+  prompt: DIMLINEAR:
+  asks: "Specify angle of dimension line"
+  dyn: "Specify angle of dimension line"=""|90.00|°*
+  options: -
+> rotation
+  dyn: "Specify angle of dimension line"="30"|90.00|°*
+> enter
+  prompt: DIMLINEAR [Text/Angle/Horizontal/Vertical/Rotated]:
+  asks: "Specify dimension line location"
+  dyn: "X,Y"=""||*
+  options: [T] Text, [A] Angle, [H] Horizontal, [V] Vertical, [R] Rotated
+> location
+  prompt: Command:
+  asks: -
+  dyn: -
+  options: -
+> DIMALIGNED
+  prompt: DIMALIGNED:
+  asks: "Specify first extension line origin or <select object>"
+  dyn: "X,Y"=""||*
+  command| DIMALIGNED
+> first
+  asks: "Specify second extension line origin"
+> second
+  prompt: DIMALIGNED [Text/Angle]:
+  asks: "Specify dimension line location"
+  options: [T] Text, [A] Angle
+> location
+  prompt: Command:
+  asks: -
+  dyn: -
+  options: -
+
+## DIMLINEAR select object
+> start
+  prompt: Command:
+  asks: -
+  dyn: -
+  options: -
+  canvas: -
+  properties: -
+  cycling: -
+> DIMLINEAR
+  prompt: DIMLINEAR:
+  asks: "Specify first extension line origin or <select object>"
+  dyn: "X,Y"=""||*
+  command| DIMLINEAR
+> enter
+  asks: 
+  dyn: 
+> pick
+  prompt: DIMLINEAR [Text/Angle/Horizontal/Vertical/Rotated]:
+  asks: "Specify dimension line location"
+  dyn: "X,Y"=""||*
+  options: [T] Text, [A] Angle, [H] Horizontal, [V] Vertical, [R] Rotated
+> location
+  prompt: Command:
+  asks: -
+  dyn: -
+  options: -
+
+## DIMRADIUS and DIMDIAMETER
+> start
+  prompt: Command:
+  asks: -
+  dyn: -
+  options: -
+  canvas: -
+  properties: -
+  cycling: -
+> DIMRADIUS
+  prompt: DIMRADIUS:
+  asks: 
+  dyn: 
+  command| DIMRADIUS
+> pick
+  prompt: DIMRADIUS [Text/Angle]:
+  asks: "Specify dimension line location"
+  dyn: "X,Y"=""||*
+  options: [T] Text, [A] Angle
+> T
+  prompt: DIMRADIUS:
+  asks: "Enter dimension text"
+  dyn: "Enter dimension text"=""||*
+  options: -
+> text
+  dyn: "Enter dimension text"="R<>"||*
+> enter
+  prompt: DIMRADIUS [Text/Angle]:
+  asks: "Specify dimension line location"
+  dyn: "X,Y"=""||*
+  options: [T] Text, [A] Angle
+> A
+  prompt: DIMRADIUS:
+  asks: "Specify angle of dimension text"
+  dyn: "Specify angle of dimension text"=""|0.00|°*
+  options: -
+> angle
+  dyn: "Specify angle of dimension text"="15"|0.00|°*
+> enter
+  prompt: DIMRADIUS [Text/Angle]:
+  asks: "Specify dimension line location"
+  dyn: "X,Y"=""||*
+  options: [T] Text, [A] Angle
+> location
+  prompt: Command:
+  asks: -
+  dyn: -
+  options: -
+> DIMDIAMETER
+  prompt: DIMDIAMETER:
+  asks: 
+  dyn: 
+  command| DIMDIAMETER
+> pick
+  prompt: DIMDIAMETER [Text/Angle]:
+  asks: "Specify dimension line location"
+  dyn: "X,Y"=""||*
+  options: [T] Text, [A] Angle
+> location
+  prompt: Command:
+  asks: -
+  dyn: -
+  options: -
+
+## DIMANGULAR
+> start
+  prompt: Command:
+  asks: -
+  dyn: -
+  options: -
+  canvas: -
+  properties: -
+  cycling: -
+> DIMANGULAR
+  prompt: DIMANGULAR:
+  asks: 
+  dyn: 
+  command| DIMANGULAR
+> enter
+  asks: "Specify angle vertex"
+  dyn: "X,Y"=""||*
+> vertex
+  asks: "Specify first angle endpoint"
+> first endpoint
+  asks: "Specify second angle endpoint"
+> second endpoint
+  prompt: DIMANGULAR [Text/Angle]:
+  asks: "Specify dimension arc line location"
+  options: [T] Text, [A] Angle
+> T
+  prompt: DIMANGULAR:
+  asks: "Enter dimension text"
+  dyn: "Enter dimension text"=""||*
+  options: -
+> text
+  dyn: "Enter dimension text"="<> TYP"||*
+> enter
+  prompt: DIMANGULAR [Text/Angle]:
+  asks: "Specify dimension arc line location"
+  dyn: "X,Y"=""||*
+  options: [T] Text, [A] Angle
+> A
+  prompt: DIMANGULAR:
+  asks: "Specify angle of dimension text"
+  dyn: "Specify angle of dimension text"=""|0.00|°*
+  options: -
+> angle
+  dyn: "Specify angle of dimension text"="30"|0.00|°*
+> enter
+  prompt: DIMANGULAR [Text/Angle]:
+  asks: "Specify dimension arc line location"
+  dyn: "X,Y"=""||*
+  options: [T] Text, [A] Angle
+> arc location
+  prompt: Command:
+  asks: -
+  dyn: -
+  options: -
+
+## DIMANGULAR lines
+> start
+  prompt: Command:
+  asks: -
+  dyn: -
+  options: -
+  canvas: -
+  properties: -
+  cycling: -
+> DIMANGULAR
+  prompt: DIMANGULAR:
+  asks: 
+  dyn: 
+  command| DIMANGULAR
+> first line
+> second line
+  prompt: DIMANGULAR [Text/Angle]:
+  asks: "Specify dimension arc line location"
+  dyn: "X,Y"=""||*
+  options: [T] Text, [A] Angle
+> escape
+  prompt: Command:
+  asks: -
+  dyn: -
+  options: -
+
+## DIMBASELINE and DIMCONTINUE
+> start
+  prompt: Command:
+  asks: -
+  dyn: -
+  options: -
+  canvas: -
+  properties: -
+  cycling: -
+> DIMBASELINE
+  prompt: DIMBASELINE [Select]:
+  asks: "Specify a second extension line origin"
+  dyn: "X,Y"=""||*
+  options: [S] Select
+  command| DIMBASELINE
+> second origin
+  prompt: DIMBASELINE [Undo/Select]:
+  options: [U] Undo, [S] Select
+> U
+  prompt: DIMBASELINE [Select]:
+  options: [S] Select
+> S
+  prompt: DIMBASELINE:
+  asks: 
+  dyn: 
+  options: -
+> pick
+  prompt: DIMBASELINE [Select]:
+  asks: "Specify a second extension line origin"
+  dyn: "X,Y"=""||*
+  options: [S] Select
+> escape
+  prompt: Command:
+  asks: -
+  dyn: -
+  options: -
+> DIMCONTINUE
+  prompt: DIMCONTINUE [Select]:
+  asks: "Specify a second extension line origin"
+  dyn: "X,Y"=""||*
+  options: [S] Select
+  command| DIMCONTINUE
+> second origin
+  prompt: DIMCONTINUE [Undo/Select]:
+  options: [U] Undo, [S] Select
+> escape
+  prompt: Command:
+  asks: -
+  dyn: -
+  options: -
+> DIMBASELINE with none
+  prompt: DIMBASELINE:
+  asks: 
+  dyn: 
+  command| ERASE
+  info| 1 object erased.
+  command| DIMBASELINE
+
+## DIMSPACE
+> start
+  prompt: Command:
+  asks: -
+  dyn: -
+  options: -
+  canvas: -
+  properties: -
+  cycling: -
+> DIMSPACE
+  prompt: DIMSPACE:
+  asks: 
+  dyn: 
+  command| DIMSPACE
+> base
+> pick
+  properties: Dimension (1) [Dimension: Measurement=100.00 mm, Text override=—, Type=Linear, Rotation=0.00°~] [Definition points: First X=0.00, First Y=0.00, Second X=100.00, Second Y=0.00]
+> pick
+  properties: 2 objects (2) [Selection: Dimensions=2]
+> enter
+  prompt: DIMSPACE [Auto]:
+  asks: "Enter value"
+  dyn: "Enter value"=""|5.00|mm*
+  options: [A] Auto
+> A
+  prompt: Command:
+  asks: -
+  dyn: -
+  options: -
+
+## OFFSET
+> start
+  prompt: Command:
+  asks: -
+  dyn: -
+  options: -
+  canvas: -
+  properties: -
+  cycling: -
+> OFFSET
+  prompt: OFFSET [Through/Erase: No/Layer: Source/Multiple: Off]:
+  asks: "Offset distance"
+  dyn: "Offset distance"=""||mm*
+  options: [T] Through, [E] Erase: No, [L] Layer: Source, [M] Multiple: Off
+  command| OFFSET
+> E
+  prompt: OFFSET [Through/Erase: Yes/Layer: Source/Multiple: Off]:
+  options: [T] Through, [E] Erase: Yes, [L] Layer: Source, [M] Multiple: Off
+> L
+  prompt: OFFSET [Through/Erase: Yes/Layer: Current/Multiple: Off]:
+  options: [T] Through, [E] Erase: Yes, [L] Layer: Current, [M] Multiple: Off
+> M
+  prompt: OFFSET [Through/Erase: Yes/Layer: Current/Multiple: On]:
+  options: [T] Through, [E] Erase: Yes, [L] Layer: Current, [M] Multiple: On
+> T
+  prompt: OFFSET [Distance]:
+  asks: -
+  dyn: -
+  options: [D] Distance
+> D
+  prompt: OFFSET [Through/Erase: Yes/Layer: Current/Multiple: On]:
+  asks: "Offset distance"
+  dyn: "Offset distance"=""||mm*
+  options: [T] Through, [E] Erase: Yes, [L] Layer: Current, [M] Multiple: On
+> distance
+  dyn: "Offset distance"="20"||mm*
+> enter
+  prompt: OFFSET:
+  asks: -
+  dyn: -
+  options: -
+> pick
+> side
+> escape
+  prompt: Command:
+
+## MOVE
+> start
+  prompt: Command:
+  asks: -
+  dyn: -
+  options: -
+  canvas: -
+  properties: -
+  cycling: -
+> MOVE
+  prompt: MOVE:
+  command| MOVE
+> pick
+  properties: Line (1) [Geometry: Length=100.00 mm~, Angle=0.00°~, Δ X=100.00 mm, Δ Y=0.00 mm] [Endpoints: Start X=0.00~, Start Y=0.00~, End X=100.00~, End Y=0.00~]
+> enter
+  asks: "Base point"
+  dyn: "X,Y"=""||*
+> base
+  asks: "Distance" "Angle"
+  dyn: "Distance"=""|0.00|mm* "Angle"=""||°
+> move
+  dyn: "Distance"=""|42.43|mm* "Angle"=""|45.00|°
+> second
+  prompt: Command:
+  asks: -
+  dyn: -
+  properties: Line (1) [Geometry: Length=100.00 mm~, Angle=0.00°~, Δ X=100.00 mm, Δ Y=0.00 mm] [Endpoints: Start X=50.00~, Start Y=30.00~, End X=150.00~, End Y=30.00~]
+> escape
+  properties: -
+
+## COPY
+> start
+  prompt: Command:
+  asks: -
+  dyn: -
+  options: -
+  canvas: -
+  properties: -
+  cycling: -
+> COPY
+  prompt: COPY:
+  command| COPY
+> pick
+  properties: Line (1) [Geometry: Length=100.00 mm~, Angle=0.00°~, Δ X=100.00 mm, Δ Y=0.00 mm] [Endpoints: Start X=0.00~, Start Y=0.00~, End X=100.00~, End Y=0.00~]
+> enter
+  asks: "Base point"
+  dyn: "X,Y"=""||*
+> base
+  asks: "Distance" "Angle"
+  dyn: "Distance"=""|0.00|mm* "Angle"=""||°
+> move
+  dyn: "Distance"=""|42.43|mm* "Angle"=""|45.00|°
+> second
+  dyn: "Distance"=""|0.00|mm* "Angle"=""||°
+> escape
+  prompt: Command:
+  asks: -
+  dyn: -
+
+## STRETCH
+> start
+  prompt: Command:
+  asks: -
+  dyn: -
+  options: -
+  canvas: -
+  properties: -
+  cycling: -
+> STRETCH
+  prompt: STRETCH:
+  command| STRETCH
+> pick
+  properties: Line (1) [Geometry: Length=100.00 mm~, Angle=0.00°~, Δ X=100.00 mm, Δ Y=0.00 mm] [Endpoints: Start X=0.00~, Start Y=0.00~, End X=100.00~, End Y=0.00~]
+> enter
+  asks: "Base point"
+  dyn: "X,Y"=""||*
+> base
+  asks: "Distance" "Angle"
+  dyn: "Distance"=""|0.00|mm* "Angle"=""||°
+> move
+  dyn: "Distance"=""|42.43|mm* "Angle"=""|45.00|°
+> second
+  prompt: Command:
+  asks: -
+  dyn: -
+  properties: Line (1) [Geometry: Length=152.97 mm~, Angle=11.31°~, Δ X=150.00 mm, Δ Y=30.00 mm] [Endpoints: Start X=0.00~, Start Y=0.00~, End X=150.00~, End Y=30.00~]
+> escape
+  properties: -
+
+## ROTATE
+> start
+  prompt: Command:
+  asks: -
+  dyn: -
+  options: -
+  canvas: -
+  properties: -
+  cycling: -
+> ROTATE
+  prompt: ROTATE:
+  asks: "Base point"
+  dyn: "X,Y"=""||*
+  properties: Line (1) [Geometry: Length=100.00 mm~, Angle=0.00°~, Δ X=100.00 mm, Δ Y=0.00 mm] [Endpoints: Start X=0.00~, Start Y=0.00~, End X=100.00~, End Y=0.00~]
+  command| ROTATE
+> base
+  prompt: ROTATE [Copy/Reference]:
+  asks: "Rotation angle"
+  dyn: "Rotation angle"=""||°*
+  options: [C] Copy, [R] Reference
+> C
+  prompt: ROTATE [Reference]:
+  options: [R] Reference
+> R
+  prompt: ROTATE:
+  asks: "Reference angle"
+  dyn: "Reference angle"=""||°*
+  options: -
+> reference
+  dyn: "Reference angle"="0"||°*
+> enter
+  asks: "New angle"
+  dyn: "New angle"=""||°*
+> new angle
+  dyn: "New angle"="90"||°*
+> enter
+  prompt: Command:
+  asks: -
+  dyn: -
+> ROTATE by points
+  prompt: ROTATE:
+  asks: "Base point"
+  dyn: "X,Y"=""||*
+  command| ROTATE
+> base
+  prompt: ROTATE [Copy/Reference]:
+  asks: "Rotation angle"
+  dyn: "Rotation angle"=""||°*
+  options: [C] Copy, [R] Reference
+> R
+  prompt: ROTATE:
+  asks: "Reference angle"
+  dyn: "Reference angle"=""||°*
+  options: -
+> first reference point
+  asks: "Second point"
+  dyn: "X,Y"=""||*
+> second reference point
+  prompt: ROTATE [Copy]:
+  asks: "New angle"
+  dyn: "New angle"=""||°*
+  options: [C] Copy
+> escape
+  prompt: Command:
+  asks: -
+  dyn: -
+  options: -
+
+## SCALE
+> start
+  prompt: Command:
+  asks: -
+  dyn: -
+  options: -
+  canvas: -
+  properties: -
+  cycling: -
+> SCALE
+  prompt: SCALE:
+  asks: "Base point"
+  dyn: "X,Y"=""||*
+  properties: Line (1) [Geometry: Length=100.00 mm~, Angle=0.00°~, Δ X=100.00 mm, Δ Y=0.00 mm] [Endpoints: Start X=0.00~, Start Y=0.00~, End X=100.00~, End Y=0.00~]
+  command| SCALE
+> base
+  prompt: SCALE [Copy/Reference]:
+  asks: "Scale factor"
+  dyn: "Scale factor"=""||*
+  options: [C] Copy, [R] Reference
+> C
+  prompt: SCALE [Reference]:
+  options: [R] Reference
+> R
+  prompt: SCALE:
+  asks: "Reference length"
+  dyn: "Reference length"=""||mm*
+  options: -
+> reference
+  dyn: "Reference length"="100"||mm*
+> enter
+  asks: "New length"
+  dyn: "New length"=""||mm*
+> new length
+  dyn: "New length"="50"||mm*
+> enter
+  prompt: Command:
+  asks: -
+  dyn: -
+> SCALE by points
+  prompt: SCALE:
+  asks: "Base point"
+  dyn: "X,Y"=""||*
+  command| SCALE
+> base
+  prompt: SCALE [Copy/Reference]:
+  asks: "Scale factor"
+  dyn: "Scale factor"=""||*
+  options: [C] Copy, [R] Reference
+> R
+  prompt: SCALE:
+  asks: "Reference length"
+  dyn: "Reference length"=""||mm*
+  options: -
+> first reference point
+  asks: "Second point"
+  dyn: "X,Y"=""||*
+> second reference point
+  prompt: SCALE [Copy]:
+  asks: "New length"
+  dyn: "New length"=""||mm*
+  options: [C] Copy
+> escape
+  prompt: Command:
+  asks: -
+  dyn: -
+  options: -
+
+## MIRROR
+> start
+  prompt: Command:
+  asks: -
+  dyn: -
+  options: -
+  canvas: -
+  properties: -
+  cycling: -
+> MIRROR
+  prompt: MIRROR:
+  asks: "First point of mirror line"
+  dyn: "X,Y"=""||*
+  properties: Line (1) [Geometry: Length=100.00 mm~, Angle=0.00°~, Δ X=100.00 mm, Δ Y=0.00 mm] [Endpoints: Start X=0.00~, Start Y=0.00~, End X=100.00~, End Y=0.00~]
+  command| MIRROR
+> first
+  asks: "Second point of mirror line"
+> second
+  prompt: MIRROR [Yes/No]:
+  asks: 
+  dyn: 
+  options: [Y] Yes, [N] No
+> Y
+  prompt: Command:
+  asks: -
+  dyn: -
+  options: -
+  properties: Line (1) [Geometry: Length=100.00 mm~, Angle=0.00°~, Δ X=100.00 mm, Δ Y=0.00 mm] [Endpoints: Start X=0.00~, Start Y=100.00~, End X=100.00~, End Y=100.00~]
+> MIRROR N
+  prompt: MIRROR:
+  asks: "First point of mirror line"
+  dyn: "X,Y"=""||*
+  command| MIRROR
+> first
+  asks: "Second point of mirror line"
+> second
+  prompt: MIRROR [Yes/No]:
+  asks: 
+  dyn: 
+  options: [Y] Yes, [N] No
+> N
+  prompt: Command:
+  asks: -
+  dyn: -
+  options: -
+
+## arrays
+> start
+  prompt: Command:
+  asks: -
+  dyn: -
+  options: -
+  canvas: -
+  properties: -
+  cycling: -
+> ARRAYRECT
+  prompt: ARRAYRECT:
+  asks: "Columns" "Rows" "Column spacing" "Row spacing"
+  dyn: "Columns"=""|4|* "Rows"=""|3| "Column spacing"=""|30.00|mm "Row spacing"=""|30.00|mm
+  properties: Circle (1) [Geometry: Radius=10.00 mm~, Diameter=20.00 mm~, Circumference=62.83 mm, Area=314.16 mm²] [Center: X=0.00~, Y=0.00~]
+  command| ARRAYRECT
+> enter
+  prompt: Command:
+  asks: -
+  dyn: -
+> ARRAYPOLAR
+  prompt: ARRAYPOLAR:
+  asks: "Center point"
+  dyn: "X,Y"=""||*
+  command| ARRAYPOLAR
+> centre
+  prompt: ARRAYPOLAR [Rotate items: Yes]:
+  asks: "Items" "Fill angle"
+  dyn: "Items"=""|6|* "Fill angle"=""|360.00|°
+  options: [R] Rotate items: Yes
+> R
+  prompt: ARRAYPOLAR [Rotate items: No]:
+  options: [R] Rotate items: No
+> enter
+  prompt: Command:
+  asks: -
+  dyn: -
+  options: -
+> ARRAYPATH
+  prompt: ARRAYPATH:
+  command| ARRAYPATH
+> path
+  prompt: ARRAYPATH [Method: Divide/Align items: Yes]:
+  asks: "Items"
+  dyn: "Items"=""|6|*
+  options: [M] Method: Divide, [A] Align items: Yes
+> M
+  prompt: ARRAYPATH [Method: Measure/Align items: Yes]:
+  asks: "Spacing"
+  dyn: "Spacing"=""|60.00|mm*
+  options: [M] Method: Measure, [A] Align items: Yes
+> A
+  prompt: ARRAYPATH [Method: Measure/Align items: No]:
+  options: [M] Method: Measure, [A] Align items: No
+> M back
+  prompt: ARRAYPATH [Method: Divide/Align items: No]:
+  asks: "Items"
+  dyn: "Items"=""|6|*
+  options: [M] Method: Divide, [A] Align items: No
+> enter
+  prompt: Command:
+  asks: -
+  dyn: -
+  options: -
+  properties: -
+
+## TRIM EXTEND FILLET CHAMFER
+> start
+  prompt: Command:
+  asks: -
+  dyn: -
+  options: -
+  canvas: -
+  properties: -
+  cycling: -
+> TRIM
+  prompt: TRIM:
+  command| TRIM
+> escape
+  prompt: Command:
+> EXTEND
+  prompt: EXTEND:
+  command| EXTEND
+> escape
+  prompt: Command:
+> FILLET
+  prompt: FILLET [Radius]:
+  asks: 
+  dyn: 
+  options: [R] Radius
+  command| FILLET
+> R
+  prompt: FILLET:
+  asks: "Fillet radius"
+  dyn: "Fillet radius"=""|0.00|mm*
+  options: -
+> radius
+  dyn: "Fillet radius"="20"|0.00|mm*
+> enter
+  prompt: FILLET [Radius]:
+  asks: 
+  dyn: 
+  options: [R] Radius
+> first
+> second
+  prompt: Command:
+  asks: -
+  dyn: -
+  options: -
+> CHAMFER
+  prompt: CHAMFER [Distance]:
+  asks: 
+  dyn: 
+  options: [D] Distance
+  command| CHAMFER
+> D
+  prompt: CHAMFER:
+  asks: "First distance" "Second distance"
+  dyn: "First distance"=""|0.00|mm* "Second distance"=""|0.00|mm
+  options: -
+> first distance
+  dyn: "First distance"="10"|0.00|mm* "Second distance"=""|0.00|mm
+> enter
+  prompt: CHAMFER [Distance]:
+  asks: 
+  dyn: 
+  options: [D] Distance
+> escape
+  prompt: Command:
+  asks: -
+  dyn: -
+  options: -
+
+## EXPLODE JOIN
+> start
+  prompt: Command:
+  asks: -
+  dyn: -
+  options: -
+  canvas: -
+  properties: -
+  cycling: -
+> EXPLODE one rejected
+  properties: 4 objects (4) [Selection: Lines=4]
+  command| EXPLODE
+  info| 1 was not able to be exploded.
+> EXPLODE two rejected
+  properties: 2 objects (2) [Selection: Line=1, Circle=1]
+  command| EXPLODE
+  info| 2 were not able to be exploded.
+> JOIN
+  command| JOIN
+> escape
+  properties: -
+
+## BREAK
+> start
+  prompt: Command:
+  asks: -
+  dyn: -
+  options: -
+  canvas: -
+  properties: -
+  cycling: -
+> BREAK
+  prompt: BREAK:
+  command| BREAK
+> pick
+  prompt: BREAK [First point]:
+  asks: 
+  options: [F] First point
+> F
+  prompt: BREAK:
+  options: -
+> first
+  prompt: BREAK [First point]:
+  options: [F] First point
+> second
+  prompt: Command:
+  asks: -
+  options: -
+> BREAKATPOINT
+  prompt: BREAKATPOINT:
+  command| BREAKATPOINT
+> pick
+  asks: 
+> point
+  prompt: Command:
+  asks: -
+
+## MATCHPROP
+> start
+  prompt: Command:
+  asks: -
+  dyn: -
+  options: -
+  canvas: -
+  properties: -
+  cycling: -
+> MATCHPROP
+  prompt: MATCHPROP:
+  command| MATCHPROP
+> source
+> escape
+  prompt: Command:
+
+## clipboard copies
+> start
+  prompt: Command:
+  asks: -
+  dyn: -
+  options: -
+  canvas: -
+  properties: -
+  cycling: -
+> COPYCLIP
+  prompt: COPYCLIP:
+  command| COPYCLIP
+> pick
+  properties: Line (1) [Geometry: Length=100.00 mm~, Angle=0.00°~, Δ X=100.00 mm, Δ Y=0.00 mm] [Endpoints: Start X=0.00~, Start Y=0.00~, End X=100.00~, End Y=0.00~]
+> enter
+  prompt: Command:
+> CUTCLIP
+  properties: -
+  command| CUTCLIP
+> undo
+> COPYBASE
+  prompt: COPYBASE:
+  asks: "Specify base point"
+  dyn: "X,Y"=""||*
+  command| COPYBASE
+> escape
+  prompt: Command:
+  asks: -
+  dyn: -
+
+## DIST AREA
+> start
+  prompt: Command:
+  asks: -
+  dyn: -
+  options: -
+  canvas: -
+  properties: -
+  cycling: -
+> DIST
+  prompt: DIST:
+  command| DIST
+> first
+  canvas: "Dist  0.00 mm" "Angle 0.00°" "ΔX    0.00" "ΔY    0.00"
+> move
+  canvas: "Dist  500.00 mm" "Angle 53.13°" "ΔX    300.00" "ΔY    400.00"
+> second
+> AREA
+  prompt: AREA:
+  canvas: -
+  command| AREA
+> first
+  prompt: AREA [Undo]:
+  options: [U] Undo
+  canvas: "Area  0.00 mm²" "Perim 0.00 mm" "[U] undo  [Enter] done"
+> second
+  canvas: "Area  0.00 mm²" "Perim 200.00 mm" "[U] undo  [Enter] done"
+> move
+  canvas: "Area  5000.00 mm²" "Perim 341.42 mm" "[U] undo  [Enter] done"
+> U
+  canvas: "Area  0.00 mm²" "Perim 282.84 mm" "[U] undo  [Enter] done"
+> second
+  canvas: "Area  0.00 mm²" "Perim 200.00 mm" "[U] undo  [Enter] done"
+> third
+  canvas: "Area  5000.00 mm²" "Perim 341.42 mm" "[U] undo  [Enter] done"
+> enter
+  canvas: "Area  5000.00 mm²" "Perim 341.42 mm"
+> escape
+  prompt: Command:
+  options: -
+  canvas: -
+
+## ZOOM PAN
+> start
+  prompt: Command:
+  asks: -
+  dyn: -
+  options: -
+  canvas: -
+  properties: -
+  cycling: -
+> ZOOM
+  prompt: ZOOM [All/Extents/Previous/Scale/Window/Object]:
+  asks: 
+  dyn: 
+  options: [A] All, [E] Extents, [P] Previous, [S] Scale, [W] Window, [O] Object
+  command| ZOOM
+> S
+  prompt: ZOOM:
+  asks: "Scale factor"
+  dyn: "Scale factor"=""||*
+  options: -
+> factor
+  dyn: "Scale factor"="2"||*
+> enter
+  prompt: Command:
+  asks: -
+  dyn: -
+> ZOOM A
+  prompt: ZOOM [All/Extents/Previous/Scale/Window/Object]:
+  asks: 
+  dyn: 
+  options: [A] All, [E] Extents, [P] Previous, [S] Scale, [W] Window, [O] Object
+  command| ZOOM
+> A
+  prompt: Command:
+  asks: -
+  dyn: -
+  options: -
+> ZOOM E
+  prompt: ZOOM [All/Extents/Previous/Scale/Window/Object]:
+  asks: 
+  dyn: 
+  options: [A] All, [E] Extents, [P] Previous, [S] Scale, [W] Window, [O] Object
+  command| ZOOM
+> E
+  prompt: Command:
+  asks: -
+  dyn: -
+  options: -
+> ZOOM P
+  prompt: ZOOM [All/Extents/Previous/Scale/Window/Object]:
+  asks: 
+  dyn: 
+  options: [A] All, [E] Extents, [P] Previous, [S] Scale, [W] Window, [O] Object
+  command| ZOOM
+> P
+  prompt: Command:
+  asks: -
+  dyn: -
+  options: -
+> ZOOM O
+  prompt: ZOOM [All/Extents/Previous/Scale/Window/Object]:
+  asks: 
+  dyn: 
+  options: [A] All, [E] Extents, [P] Previous, [S] Scale, [W] Window, [O] Object
+  command| ZOOM
+> O
+> pick
+  prompt: Command:
+  asks: -
+  dyn: -
+  options: -
+> enter
+  prompt: ZOOM [All/Extents/Previous/Scale/Window/Object]:
+  asks: 
+  dyn: 
+  options: [A] All, [E] Extents, [P] Previous, [S] Scale, [W] Window, [O] Object
+  command| ZOOM
+> ZOOM W
+  command| ZOOM
+> W
+> escape
+  prompt: Command:
+  asks: -
+  dyn: -
+  options: -
+> PAN
+  prompt: PAN:
+  command| PAN
+> escape
+  prompt: Command:
+
+## grips
+> start
+  prompt: Command:
+  asks: -
+  dyn: -
+  options: -
+  canvas: -
+  properties: -
+  cycling: -
+> select line
+  properties: Line (1) [Geometry: Length=100.00 mm~, Angle=0.00°~, Δ X=100.00 mm, Δ Y=0.00 mm] [Endpoints: Start X=0.00~, Start Y=0.00~, End X=100.00~, End Y=0.00~]
+> grab end
+  asks: "Lengthen"
+  dyn: "Lengthen"=""|0.00|mm*
+> drag
+  dyn: "Lengthen"=""|50.00|mm*
+> release
+  asks: -
+  dyn: -
+  properties: Line (1) [Geometry: Length=150.00 mm~, Angle=0.00°~, Δ X=150.00 mm, Δ Y=0.00 mm] [Endpoints: Start X=0.00~, Start Y=0.00~, End X=150.00~, End Y=0.00~]
+> grab middle
+  asks: "Move"
+  dyn: "Move"=""|0.00|mm*
+> drag
+  dyn: "Move"=""|40.00|mm*
+> release
+  asks: -
+  dyn: -
+  properties: Line (1) [Geometry: Length=150.00 mm~, Angle=0.00°~, Δ X=150.00 mm, Δ Y=0.00 mm] [Endpoints: Start X=0.00~, Start Y=40.00~, End X=150.00~, End Y=40.00~]
+> escape
+  properties: -
+> select circle
+  properties: Circle (1) [Geometry: Radius=50.00 mm~, Diameter=100.00 mm~, Circumference=314.16 mm, Area=7853.98 mm²] [Center: X=0.00~, Y=300.00~]
+> grab quadrant
+  asks: "Radius"
+  dyn: "Radius"=""|50.00|mm*
+> drag
+  dyn: "Radius"=""|70.00|mm*
+> release
+  asks: -
+  dyn: -
+  properties: Circle (1) [Geometry: Radius=70.00 mm~, Diameter=140.00 mm~, Circumference=439.82 mm, Area=15393.80 mm²] [Center: X=0.00~, Y=300.00~]
+> escape
+  properties: -
+> select arc
+  properties: Arc (1) [Geometry: Radius=50.00 mm~, Length=78.54 mm, Angle=90.00°~, Start angle=0.00°~, End angle=90.00°~] [Center: X=300.00~, Y=300.00~]
+> grab end
+  asks: "Angle"
+  dyn: "Angle"=""|0.00|°*
+> drag
+  dyn: "Angle"=""|36.87|°*
+> release
+  asks: -
+  dyn: -
+  properties: Arc (1) [Geometry: Radius=50.00 mm~, Length=46.36 mm, Angle=53.13°~, Start angle=36.87°~, End angle=90.00°~] [Center: X=300.00~, Y=300.00~]
+> escape
+  properties: -
+> select polyline
+  properties: Polyline (1) [Geometry: Length=215.91 mm, Vertices=3, Segments=2, Closed=No]
+> grab vertex
+  asks: "Move"
+  dyn: "Move"=""|0.00|mm*
+> drag
+  dyn: "Move"=""|20.00|mm*
+> release
+  asks: -
+  dyn: -
+  properties: Polyline (1) [Geometry: Length=238.21 mm, Vertices=3, Segments=2, Closed=No]
+> grab straight midpoint
+  asks: "Move"
+  dyn: "Move"=""|0.00|mm*
+> drag
+  dyn: "Move"=""|20.00|mm*
+> release
+  asks: -
+  dyn: -
+  properties: Polyline (1) [Geometry: Length=244.70 mm, Vertices=4, Segments=3, Closed=No]
+> escape
+  properties: -
+> select dimension
+  properties: Dimension (1) [Dimension: Measurement=100.00 mm, Text override=—, Type=Linear, Rotation=0.00°~] [Definition points: First X=300.00, First Y=0.00, Second X=400.00, Second Y=0.00]
+> grab definition point
+  asks: "Move"
+  dyn: "Move"=""|0.00|mm*
+> drag
+  dyn: "Move"=""|10.00|mm*
+> release
+  asks: -
+  dyn: -
+  properties: Dimension (1) [Dimension: Measurement=110.00 mm, Text override=—, Type=Linear, Rotation=0.00°~] [Definition points: First X=290.00, First Y=0.00, Second X=400.00, Second Y=0.00]
+> escape
+  properties: -
+
+## arc segment grip
+> start
+  prompt: Command:
+  asks: -
+  dyn: -
+  options: -
+  canvas: -
+  properties: -
+  cycling: -
+> select
+  properties: Polyline (1) [Geometry: Length=157.08 mm, Vertices=2, Segments=1, Closed=No]
+> grab arc middle
+  asks: "Bulge"
+  dyn: "Bulge"=""|1|*
+> drag
+  dyn: "Bulge"=""|1.4|*
+> release
+  asks: -
+  dyn: -
+  properties: Polyline (1) [Geometry: Length=200.97 mm, Vertices=2, Segments=1, Closed=No]
+> escape
+  properties: -
+
+## properties
+> start
+  prompt: Command:
+  asks: -
+  dyn: -
+  options: -
+  canvas: -
+  properties: -
+  cycling: -
+> park the cursor
+> select L1
+  properties: Line (1) [Geometry: Length=100.00 mm~, Angle=0.00°~, Δ X=100.00 mm, Δ Y=0.00 mm] [Endpoints: Start X=0.00~, Start Y=0.00~, End X=100.00~, End Y=0.00~]
+> select C1
+  properties: Circle (1) [Geometry: Radius=50.00 mm~, Diameter=100.00 mm~, Circumference=314.16 mm, Area=7853.98 mm²] [Center: X=0.00~, Y=0.00~]
+> select A1
+  properties: Arc (1) [Geometry: Radius=50.00 mm~, Length=78.54 mm, Angle=90.00°~, Start angle=0.00°~, End angle=90.00°~] [Center: X=0.00~, Y=0.00~]
+> select E1
+  properties: Ellipse (1) [Geometry: Major radius=100.00 mm~, Minor radius=50.00 mm~, Radius ratio=0.50, Area=15707.96 mm²] [Center: X=0.00~, Y=0.00~]
+> select E2
+  properties: Elliptical arc (1) [Geometry: Major radius=100.00 mm~, Minor radius=50.00 mm~, Radius ratio=0.50, Start angle=0.00°, End angle=180.00°] [Center: X=0.00~, Y=0.00~]
+> select P1
+  properties: Polyline (1) [Geometry: Length=200.00 mm, Vertices=3, Segments=2, Closed=No]
+> select P2
+  properties: Polyline (1) [Geometry: Length=400.00 mm, Area=10000.00 mm², Vertices=4, Segments=4, Closed=Yes]
+> select T-left
+  properties: Text (1) [Text: Contents=NOTE, Justify=Left, Height=2.50 mm~, Rotation=0.00°~] [Position: X=0.00~, Y=0.00~]
+> select T-center
+  properties: Text (1) [Text: Contents=NOTE, Justify=Center, Height=2.50 mm~, Rotation=0.00°~] [Position: X=0.00~, Y=0.00~]
+> select T-right
+  properties: Text (1) [Text: Contents=NOTE, Justify=Right, Height=2.50 mm~, Rotation=0.00°~] [Position: X=0.00~, Y=0.00~]
+> select T-middle
+  properties: Text (1) [Text: Contents=NOTE, Justify=Middle, Height=2.50 mm~, Rotation=0.00°~] [Position: X=0.00~, Y=0.00~]
+> select T-tl
+  properties: Text (1) [Text: Contents=NOTE, Justify=Top left, Height=2.50 mm~, Rotation=0.00°~] [Position: X=0.00~, Y=0.00~]
+> select T-tc
+  properties: Text (1) [Text: Contents=NOTE, Justify=Top center, Height=2.50 mm~, Rotation=0.00°~] [Position: X=0.00~, Y=0.00~]
+> select T-tr
+  properties: Text (1) [Text: Contents=NOTE, Justify=Top right, Height=2.50 mm~, Rotation=0.00°~] [Position: X=0.00~, Y=0.00~]
+> select T-ml
+  properties: Text (1) [Text: Contents=NOTE, Justify=Middle left, Height=2.50 mm~, Rotation=0.00°~] [Position: X=0.00~, Y=0.00~]
+> select T-mc
+  properties: Text (1) [Text: Contents=NOTE, Justify=Middle center, Height=2.50 mm~, Rotation=0.00°~] [Position: X=0.00~, Y=0.00~]
+> select T-mr
+  properties: Text (1) [Text: Contents=NOTE, Justify=Middle right, Height=2.50 mm~, Rotation=0.00°~] [Position: X=0.00~, Y=0.00~]
+> select T-bl
+  properties: Text (1) [Text: Contents=NOTE, Justify=Bottom left, Height=2.50 mm~, Rotation=0.00°~] [Position: X=0.00~, Y=0.00~]
+> select T-bc
+  properties: Text (1) [Text: Contents=NOTE, Justify=Bottom center, Height=2.50 mm~, Rotation=0.00°~] [Position: X=0.00~, Y=0.00~]
+> select T-br
+  properties: Text (1) [Text: Contents=NOTE, Justify=Bottom right, Height=2.50 mm~, Rotation=0.00°~] [Position: X=0.00~, Y=0.00~]
+> select D1
+  properties: Dimension (1) [Dimension: Measurement=100.00 mm, Text override=—, Type=Linear, Rotation=0.00°~] [Definition points: First X=0.00, First Y=0.00, Second X=100.00, Second Y=0.00]
+> select D2
+  properties: Dimension (1) [Dimension: Measurement=90.00°, Text override=—, Type=Angular] [Definition points: Vertex X=0.00, Vertex Y=0.00, First X=100.00, First Y=0.00, Second X=0.00, Second Y=100.00]
+> select D3
+  properties: Dimension (1) [Dimension: Measurement=50.00 mm, Text override=R<>, Type=Radius] [Definition points: First X=0.00, First Y=0.00, Second X=50.00, Second Y=0.00]
+> select D4
+  properties: Dimension (1) [Dimension: Measurement=100.00 mm, Text override=—, Type=Aligned] [Definition points: First X=0.00, First Y=0.00, Second X=60.00, Second Y=80.00]
+> select D5
+  properties: Dimension (1) [Dimension: Measurement=100.00 mm, Text override=—, Type=Diameter] [Definition points: First X=0.00, First Y=0.00, Second X=50.00, Second Y=0.00]
+> select H1
+  properties: Hatch (1) [Pattern: Pattern=ANSI31, Scale=1.00~, Angle=0.00°~, Boundaries=1]
+> select H2
+  properties: Hatch (1) [Pattern: Pattern=Solid, Scale=1.00~, Angle=0.00°~, Boundaries=1]
+> select I1
+  properties: Block reference (1) [Block: Name=BAR, Scale=1.00~, Rotation=0.00°~] [Position: X=0.00~, Y=0.00~]
+> select I2
+> select L2
+  properties: Line (1) [Geometry: Length=14.14 mm~, Angle=45.00°~, Δ X=10.00 mm, Δ Y=10.00 mm] [Endpoints: Start X=0.00~, Start Y=0.00~, End X=10.00~, End Y=10.00~]
+> select C2
+  properties: Circle (1) [Geometry: Radius=5.00 mm~, Diameter=10.00 mm~, Circumference=31.42 mm, Area=78.54 mm²] [Center: X=0.00~, Y=0.00~]
+> select A2
+  properties: Arc (1) [Geometry: Radius=5.00 mm~, Length=5.00 mm, Angle=57.30°~, Start angle=0.00°~, End angle=57.30°~] [Center: X=0.00~, Y=0.00~]
+> select everything
+  properties: 32 objects (32) [Selection: Lines=2, Circles=2, Arcs=2, Ellipses=2, Polylines=2, Texts=13, Dimensions=5, Hatches=2, Block references=2]
+> select one of each
+  properties: 9 objects (9) [Selection: Line=1, Circle=1, Arc=1, Ellipse=1, Polyline=1, Text=1, Dimension=1, Hatch=1, Block reference=1]
+> select two of each
+  properties: 18 objects (18) [Selection: Lines=2, Circles=2, Arcs=2, Ellipses=2, Polylines=2, Texts=2, Dimensions=2, Hatches=2, Block references=2]
+
+## selection cycling
+> start
+  prompt: Command:
+  asks: -
+  dyn: -
+  options: -
+  canvas: -
+  properties: -
+  cycling: -
+> turn cycling on
+  cycling: Line
+> hover the stack
+  cycling: Polyline, Circle, Line
+> shift+space
+
+## object snap endpoint
+> start
+  prompt: Command:
+  asks: -
+  dyn: -
+  options: -
+  canvas: -
+  properties: -
+  cycling: -
+> LINE
+  prompt: LINE:
+  asks: ""
+  dyn: "X,Y"=""||*
+  canvas: "Endpoint"
+  command| LINE
+> override endpoint
+> escape
+  prompt: Command:
+  asks: -
+  dyn: -
+  canvas: -
+
+## object snap midpoint
+> start
+  prompt: Command:
+  asks: -
+  dyn: -
+  options: -
+  canvas: -
+  properties: -
+  cycling: -
+> LINE
+  prompt: LINE:
+  asks: ""
+  dyn: "X,Y"=""||*
+  canvas: "Endpoint"
+  command| LINE
+> override midpoint
+  canvas: "Midpoint"
+> escape
+  prompt: Command:
+  asks: -
+  dyn: -
+  canvas: -
+
+## object snap center
+> start
+  prompt: Command:
+  asks: -
+  dyn: -
+  options: -
+  canvas: -
+  properties: -
+  cycling: -
+> LINE
+  prompt: LINE:
+  asks: ""
+  dyn: "X,Y"=""||*
+  command| LINE
+> override center
+  canvas: "Center"
+> escape
+  prompt: Command:
+  asks: -
+  dyn: -
+  canvas: -
+
+## object snap intersection
+> start
+  prompt: Command:
+  asks: -
+  dyn: -
+  options: -
+  canvas: -
+  properties: -
+  cycling: -
+> LINE
+  prompt: LINE:
+  asks: ""
+  dyn: "X,Y"=""||*
+  canvas: "Endpoint"
+  command| LINE
+> override intersection
+  canvas: "Intersection"
+> escape
+  prompt: Command:
+  asks: -
+  dyn: -
+  canvas: -
+
+## object snap apparentIntersection
+> start
+  prompt: Command:
+  asks: -
+  dyn: -
+  options: -
+  canvas: -
+  properties: -
+  cycling: -
+> LINE
+  prompt: LINE:
+  asks: ""
+  dyn: "X,Y"=""||*
+  canvas: "Endpoint"
+  command| LINE
+> override apparentIntersection
+  canvas: "Apparent Intersection"
+> escape
+  prompt: Command:
+  asks: -
+  dyn: -
+  canvas: -
+
+## object snap perpendicular
+> start
+  prompt: Command:
+  asks: -
+  dyn: -
+  options: -
+  canvas: -
+  properties: -
+  cycling: -
+> LINE
+  prompt: LINE:
+  asks: ""
+  dyn: "X,Y"=""||*
+  canvas: "Endpoint"
+  command| LINE
+> first
+  asks: "Length" "Angle"
+  dyn: "Length"=""|0.00|mm* "Angle"=""||°
+  canvas: -
+> override perpendicular
+  dyn: "Length"=""|80.00|mm* "Angle"=""|270.00|°
+  canvas: "Perpendicular"
+> escape
+  prompt: Command:
+  asks: -
+  dyn: -
+  canvas: -
+
+## object snap tangent
+> start
+  prompt: Command:
+  asks: -
+  dyn: -
+  options: -
+  canvas: -
+  properties: -
+  cycling: -
+> LINE
+  prompt: LINE:
+  asks: ""
+  dyn: "X,Y"=""||*
+  canvas: "Center"
+  command| LINE
+> first
+  asks: "Length" "Angle"
+  dyn: "Length"=""|0.00|mm* "Angle"=""||°
+  canvas: -
+> override tangent
+  dyn: "Length"=""|193.65|mm* "Angle"=""|165.52|°
+  canvas: "Tangent"
+> escape
+  prompt: Command:
+  asks: -
+  dyn: -
+  canvas: -
+
+## object snap insertion
+> start
+  prompt: Command:
+  asks: -
+  dyn: -
+  options: -
+  canvas: -
+  properties: -
+  cycling: -
+> LINE
+  prompt: LINE:
+  asks: ""
+  dyn: "X,Y"=""||*
+  command| LINE
+> override insertion
+  canvas: "Insertion"
+> escape
+  prompt: Command:
+  asks: -
+  dyn: -
+  canvas: -
+
+## object snap extension
+> start
+  prompt: Command:
+  asks: -
+  dyn: -
+  options: -
+  canvas: -
+  properties: -
+  cycling: -
+> LINE
+  prompt: LINE:
+  asks: ""
+  dyn: "X,Y"=""||*
+  canvas: "Endpoint"
+  command| LINE
+> override extension
+  canvas: "Extension"
+> escape
+  prompt: Command:
+  asks: -
+  dyn: -
+  canvas: -
+
+## object snap quadrant
+> start
+  prompt: Command:
+  asks: -
+  dyn: -
+  options: -
+  canvas: -
+  properties: -
+  cycling: -
+> LINE
+  prompt: LINE:
+  asks: ""
+  dyn: "X,Y"=""||*
+  canvas: "Center"
+  command| LINE
+> override quadrant
+  canvas: "Quadrant"
+> escape
+  prompt: Command:
+  asks: -
+  dyn: -
+  canvas: -
+
+## object snap nearest
+> start
+  prompt: Command:
+  asks: -
+  dyn: -
+  options: -
+  canvas: -
+  properties: -
+  cycling: -
+> LINE
+  prompt: LINE:
+  asks: ""
+  dyn: "X,Y"=""||*
+  canvas: "Endpoint"
+  command| LINE
+> override nearest
+  canvas: "Nearest"
+> escape
+  prompt: Command:
+  asks: -
+  dyn: -
+  canvas: -
+
+## object snap parallel
+> start
+  prompt: Command:
+  asks: -
+  dyn: -
+  options: -
+  canvas: -
+  properties: -
+  cycling: -
+> LINE
+  prompt: LINE:
+  asks: ""
+  dyn: "X,Y"=""||*
+  command| LINE
+> first
+  asks: "Length" "Angle"
+  dyn: "Length"=""|0.00|mm* "Angle"=""||°
+> override parallel and dwell
+  dyn: "Length"=""|213.60|mm* "Angle"=""|159.44|°
+> aim along it
+  dyn: "Length"=""|250.00|mm* "Angle"=""|36.87|°
+  canvas: "Parallel"
+> escape
+  prompt: Command:
+  asks: -
+  dyn: -
+  canvas: -
+
+## polar
+> start
+  prompt: Command:
+  asks: -
+  dyn: -
+  options: -
+  canvas: -
+  properties: -
+  cycling: -
+> F10
+> LINE
+  prompt: LINE:
+  asks: ""
+  dyn: "X,Y"=""||*
+  command| LINE
+> first
+  asks: "Length" "Angle"
+  dyn: "Length"=""|0.00|mm* "Angle"=""||°
+> near 45
+  dyn: "Length"=""|99.70|mm* "Angle"=""|45.00|°
+  canvas: "Polar: 99.70mm < 45.00°"
+> escape
+  prompt: Command:
+  asks: -
+  dyn: -
+  canvas: -
+
+## FROM
+> start
+  prompt: Command:
+  asks: -
+  dyn: -
+  options: -
+  canvas: -
+  properties: -
+  cycling: -
+> LINE
+  prompt: LINE:
+  asks: ""
+  dyn: "X,Y"=""||*
+  command| LINE
+> FROM
+  command| FROM
+  info| FROM: pick the base point.
+> base
+  info| FROM: offset from the base point.
+> offset
+  dyn: "X,Y"="@10,0"||*
+> enter
+  asks: "Length" "Angle"
+  dyn: "Length"=""|0.00|mm* "Angle"=""||°
+> escape
+  prompt: Command:
+  asks: -
+  dyn: -
+
+## default names
+Layer1
+Layer2
+Copy of ISO-25
+Copy of Standard
+drawing-####-##-##.ecad.json

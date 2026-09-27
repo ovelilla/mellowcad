@@ -1,0 +1,116 @@
+/**
+ * AutoCAD's keyword rules, independent of any one language.
+ *
+ * A keyword is written with its abbreviation in capitals, anywhere in the word
+ * (`Close`, `eXit`, `desHacer`, `SIZ`), exactly as `initget` declares them. Each
+ * keyword also has a global (English) word, and `_` in front of what is typed
+ * selects it in any language, which is what makes a script portable. The
+ * command always receives the global id, however the keyword was typed.
+ */
+
+/** A keyword on offer: its global id, and the word in the command language. */
+export interface Keyword {
+  readonly id: string
+  /** The command language's word, with its abbreviation in capitals. */
+  readonly word: string
+  /** The global word (the English one), which `_` selects. */
+  readonly global: string
+}
+
+/** A keyword resolved for the prompt it is offered in. */
+export interface OfferedKeyword extends Keyword {
+  readonly abbreviation: string
+  /**
+   * The one key that runs it immediately, or null when it has to be typed and
+   * confirmed: its abbreviation is longer than a letter, or another keyword on
+   * offer starts with the same letter.
+   */
+  readonly key: string | null
+}
+
+// WHY plain toUpperCase, never the locale-aware one: under a Turkish locale
+// that maps `i` to `İ`, and a typed keyword or command must match whatever
+// the page's language is.
+function upper(text: string): string {
+  return text.toUpperCase()
+}
+
+function isCapital(char: string): boolean {
+  return char !== char.toLowerCase() && char === char.toUpperCase()
+}
+
+/** The abbreviation of a keyword: its first run of capital letters. */
+export function abbreviationOf(word: string): string {
+  const chars = [...word]
+  const start = chars.findIndex(isCapital)
+  if (start === -1) return ""
+  let end = start
+  while (end < chars.length && isCapital(chars[end])) end += 1
+  return chars.slice(start, end).join("")
+}
+
+/** Works out each keyword's abbreviation and whether a single key runs it. */
+export function offerKeywords(keywords: readonly Keyword[]): OfferedKeyword[] {
+  const abbreviations = keywords.map((keyword) =>
+    upper(abbreviationOf(keyword.word))
+  )
+  return keywords.map((keyword, index) => {
+    const abbreviation = abbreviations[index]
+    const single =
+      [...abbreviation].length === 1 &&
+      abbreviations.every(
+        (other, j) => j === index || !other.startsWith(abbreviation)
+      )
+    return {
+      ...keyword,
+      abbreviation: abbreviationOf(keyword.word),
+      key: single ? abbreviation : null,
+    }
+  })
+}
+
+/**
+ * The id of the keyword `input` names, or null: its abbreviation or its whole
+ * word in the command language, or — after `_` — in the global language. Case
+ * does not matter.
+ */
+export function resolveKeyword(
+  input: string,
+  keywords: readonly Keyword[]
+): string | null {
+  const text = upper(input.trim())
+  if (text === "") return null
+  const global = text.startsWith("_")
+  const typed = global ? text.slice(1) : text
+  if (typed === "") return null
+  const wordOf = (keyword: Keyword) => (global ? keyword.global : keyword.word)
+  const byAbbreviation = keywords.find(
+    (keyword) => upper(abbreviationOf(wordOf(keyword))) === typed
+  )
+  if (byAbbreviation) return byAbbreviation.id
+  const byWord = keywords.find((keyword) => upper(wordOf(keyword)) === typed)
+  return byWord?.id ?? null
+}
+
+/** The keyword a single key runs, if it runs one. */
+export function keywordForKey<T extends { readonly key: string | null }>(
+  key: string,
+  keywords: readonly T[]
+): T | null {
+  const typed = upper(key)
+  return keywords.find((keyword) => keyword.key === typed) ?? null
+}
+
+/**
+ * What was typed at the command prompt, split into the name and whether `_`
+ * asked for the global one. Names are compared in capitals.
+ */
+export function parseCommandInput(text: string): {
+  readonly name: string
+  readonly global: boolean
+} {
+  const typed = upper(text.trim())
+  return typed.startsWith("_")
+    ? { name: typed.slice(1), global: true }
+    : { name: typed, global: false }
+}

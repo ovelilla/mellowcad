@@ -663,6 +663,7 @@ interface EngineLocale {
 | JS propio en la landing         | ≤ 15 KB gz (sin cambios)     | igual                                    |
 | Fuentes                         | 2 ficheros, ≤ 110 KB         | 3 ficheros, ≤ 140 KB                     |
 | Transferencia de la 1.ª carga   | ≤ 250 KB gz                  | ≤ 275 KB gz (la fuente de la escritura)  |
+| Chunk del editor con el motor   | ≤ 90 KB gz (89,8 medidos tras la fase 0) | igual: los otros idiomas van aparte |
 | Catálogo del motor por idioma   | inglés dentro del motor      | ≤ 12 KB gz, cargado con el motor         |
 | Mensajes del editor en cliente  | solo `Editor.*`, a medir en la fase 1 | igual                           |
 | Funciones por visita a página   | ninguna (sin proxy)          | ninguna                                  |
@@ -745,7 +746,8 @@ interface EngineLocale {
 - Unificar o borrar los duplicados (§1).
 - **Aceptación:** el comportamiento en inglés no cambia. Una prueba de instantánea de todas las
   solicitudes y mensajes es idéntica antes y después; los tests solo cambian `.option("C")` por ids;
-  nada visible cambia; el chunk del motor crece ≤ 3 KB gz.
+  nada visible cambia; el chunk del motor crece lo que cuestan el catálogo inglés y su mecanismo,
+  medido en +5,5 KB gz (el objetivo inicial de 3 KB no contaba las claves del catálogo; §15).
 
 ### Fase 1 — Enrutado y catálogos en inglés (app) · M–L
 
@@ -868,7 +870,171 @@ la revisión). La fase 4 puede adelantarse a la 2 si conviene: no depende de nin
 
 ## 15. Notas de implementación
 
-(Vacía hasta la fase 0.)
+### Fase 0 — diseño (27/09/2026)
+
+**Capas.** Dos capas nuevas bajo `cad/`, con su fila en `cad-engine.instructions.md`:
+
+| Capa        | Puede importar | Contiene                                                                                        |
+| ----------- | -------------- | ----------------------------------------------------------------------------------------------- |
+| `i18n/`     | nada (y el runtime de `icu-minify/format`) | el formateador con dígitos `latn`, las reglas de palabras clave y de nombres, `DeepPartial` |
+| `locales/`  | `i18n/`        | `en.json` (fuente), `en.ts` (generado), `types.ts` (`EngineLocale` y los tipos del catálogo)     |
+
+`application/` puede importar además de `i18n/` y `locales/`; `domain/`, `scene/` y `serialization/` no
+conocen ningún idioma. `i18n/` no conoce la forma del catálogo, así que no hay ciclo: los tipos del
+catálogo viven en `locales/types.ts` y salen de `en.json` con `resolveJsonModule`. `EngineText`
+(`application/EngineText.ts`) es el único que junta las dos cosas: mezcla el locale sobre el inglés y
+ofrece los accesores tipados que usan el runtime, las herramientas y `EngineState`.
+
+**`cad/locales/en.json`.** Dos ramas, como en §6.3:
+
+- `interface`: `tool` (etiqueta por id de herramienta), `description` (de los comandos que no son
+  herramienta), `snap`, `color`, `byLayer`, `linetype`, `hatchPattern`, `entity` (`{count, plural}`),
+  `property` (`title`, `group`, `row`, `value`, `justify`, `dimensionKind`).
+- `commands`: `names` (`GLOBAL: [nombre, ...alias]`), `keywords` (`GLOBAL: { id: palabra }`), `prompts`
+  (plano, por id semántico: un texto por significado, compartido entre comandos), `format` (la
+  composición de la solicitud), `messages` (línea de comandos), `feedback` (lienzo), `listing` (los `?`)
+  y `defaults` (`Layer{n}`, `Copy of {name}`, el nombre del fichero).
+
+Las claves son semánticas (`prompts.firstExtensionOrigin`), nunca la frase inglesa. `names` y `keywords`
+son vocabulario y no se compilan. Un `<` seguido de letra se escribe `'<'` (ICU lo leería como etiqueta).
+
+```ts
+interface EngineLocale {
+  readonly tag: string // BCP 47
+  readonly interface: DeepPartial<InterfaceCatalog>
+  readonly commands?: DeepPartial<CommandCatalog> // sin él, el idioma de comandos es el global
+}
+```
+
+**Catálogo compilado.** `scripts/locales/compile.ts` (Node 24 ejecuta el TypeScript sin compilar, como
+`scripts/icons/generate.ts`; `npm run locales`) lee cada `cad/locales/*.json`, compila con
+`icu-minify/compile` todas las hojas salvo `names` y `keywords`, y escribe `cad/locales/<tag>.ts`, que se
+confirma en git y queda fuera de Prettier. `cad/locales/locales.test.ts` genera el módulo en memoria con
+la misma función y lo compara, byte a byte, con el confirmado: la deriva falla la suite. El mismo test
+analiza cada mensaje con `@formatjs/icu-messageformat-parser`.
+
+**Formateador.** `icu-minify/format` con formateadores en caché por locale:
+`NumberFormat(tag, { numberingSystem: "latn", useGrouping: false })`, `PluralRules(tag)` y
+`DateTimeFormat(tag, { numberingSystem: "latn", timeZone: "UTC" })`. `useGrouping: false` porque la
+línea de comandos de AutoCAD escribe los recuentos sin separador de miles, y así lo hacía el motor. Los
+valores técnicos siguen saliendo de `formatLength`/`formatAngle` y entran en los mensajes como texto.
+
+**Opciones por id global.** La herramienta declara `CommandOption { id, value? }`: el id es la palabra
+global (`"Close"`, `"Included angle"`) y `value` el id de otra palabra de la misma tabla cuando la opción
+muestra su estado (`Erase` + `Yes` → `Erase: Yes`; `Yes`, `Current`, `Divide`… son de verdad las
+palabras de las subsolicitudes de AutoCAD). `invokeOption(id)` recibe siempre el id global: los 55
+`key.toLowerCase()` pasan a comparar ids. El runtime resuelve cada opción contra la tabla del comando
+activo y la expone en `EngineState.commandOptions` como `CommandOptionUi { id, keyword, abbreviation,
+key, label }`. Se aparta de la letra del brief (`{ id, keyword }` en la herramienta) para que ninguna
+herramienta tenga texto: el `keyword` lo pone el runtime, que es quien conoce el idioma.
+
+**Resolución de palabras clave** (`i18n/keywords.ts`), entre las opciones ofrecidas en ese momento:
+
+1. La abreviatura es el primer tramo de mayúsculas de la palabra (`Close` → `C`, `desHacer` → `H`,
+   `eXit` → `X`, `SIZ` → `SIZ`). Un test exige que toda palabra tenga una.
+2. Se acepta la abreviatura o la palabra completa, sin distinguir mayúsculas y comparando con
+   `toUpperCase()`, nunca `toLocaleUpperCase()`.
+3. Con `_` delante se compara con la abreviatura o la palabra **global** (la tabla inglesa), en todos los
+   idiomas.
+4. **Tecla única:** una opción tiene `key` solo si su abreviatura es de una letra y ninguna otra
+   abreviatura ofrecida empieza por ella; si no, `key` es `null` y se escribe y se confirma con Intro. La
+   tecla solo actúa con la entrada vacía: sin esa condición no se podría escribir `_C` ni `SIZ`. En inglés
+   todas las abreviaturas son de una letra y únicas, así que nada cambia.
+5. Lo escrito y confirmado (en la línea de comandos o en un campo de la entrada dinámica que no sea de
+   texto libre) se resuelve primero como palabra clave de la solicitud en curso y, si no lo es, como
+   comando, como hasta ahora.
+
+**Nombres de comando.** Registro por nombre global; la búsqueda se construye con los nombres y alias del
+idioma de comandos. `_NOMBRE` busca solo entre los nombres globales (`names[GLOBAL][0]`), como dice §4.3.
+Las variantes propias (`CIRCLE2P`…) llevan su nombre explícito en cada catálogo.
+
+**Solicitud estructurada.** `EngineState.commandLine` añade `command` (el nombre del comando en curso en el
+idioma de comandos, o `null`), `idlePrompt` (`Command:`) y `promptSegments`: el mensaje
+`format.promptWithKeywords` (`"{head} <keywords>[{list}]</keywords>:"`) se formatea con una etiqueta ICU,
+así que el host distingue el tramo de las palabras clave sin analizar texto. `DemoPrompt` guarda lo mismo y
+`TranscriptLine` añade `segments`; `hero-sheet.tsx` y `DemoScript` dejan de trocear cadenas. Cada paso de
+opción registra la abreviatura que se escribió, que es lo que muestra la transcripción.
+
+**Textos en herramientas.** `DynamicField.label` pasa a `prompt` (id de `commands.prompts`), que se
+resuelve al construir el estado: un `setLocale` a mitad de un comando reetiqueta la solicitud abierta.
+`ToolContext.text` da los mensajes y el texto del lienzo; `ctx.report` sigue recibiendo texto.
+`Tool.label` desaparece: la etiqueta sale de `interface.tool[id]`.
+
+**Dominio y errores.** `STANDARD_COLORS` lleva `id` (`red`…), `LINETYPES` y `HATCH_PATTERNS` pierden
+`name`/`description`, y `colorName`, `linetypeName` y `hatchPatternName` salen del dominio: los nombres
+visibles llegan por `EngineState.names` (y por el catálogo en las solicitudes). `lineweightLabel` se queda:
+`0.25 mm` es un valor técnico. `parseDrawingFile` lanza `DrawingFileError` con `code`; la línea de
+comandos traduce el código y `message` sigue en inglés para los registros.
+
+**API.** `CadRuntime` recibe un quinto argumento `{ locale }` y gana `setLocale`; `CadEngineOptions`,
+`CadDriverOptions` (y con él `createHarness`), `commandCatalog(locale?)`, `recordDemo(script, { locale })`
+y `promptText(prompt, answer, locale?)` aceptan el locale. El harness gana `.option(id)`: busca la opción
+ofrecida con ese id y la contesta como un usuario (su tecla, o la abreviatura e Intro); un id que el
+comando no tiene lanza un error.
+
+**Duplicados de §1.** `runtimeFrom.ts`, `runtimeScene.ts` y `buildEngineState` se borran: nadie los
+importa y `cad-runtime.instructions.md` ya dice que FROM, la escena y `buildState` viven en la clase. Los
+nombres de las referencias a objetos (`SceneBuilder`, `drawing-aids.tsx`, `snap-override-menu.tsx`) pasan
+al catálogo (`interface.snap` para los menús, `commands.feedback.snap` para el lienzo) y React los lee de
+`state.names`. `Command:` y `Unknown command` salen del catálogo en la línea de comandos del editor, el
+hero, el CTA final, el 404 y el `Command:` de prueba de la landing.
+
+**Red de seguridad.** `cad/application/englishSurface.test.ts` recorre con el harness todos los comandos,
+sus solicitudes, opciones, mensajes, referencias a objetos, polar, MEASURE, pinzamientos y la paleta de
+propiedades, y `content/transcripts.test.ts` fija las transcripciones de la landing y los tiempos del hero.
+Las dos instantáneas se escribieron antes del cambio y no pueden cambiar.
+
+### Fase 0 — estado (27/09/2026): terminada
+
+**Hecho.** Todo el alcance de §11: opciones por id global (las 55 comparaciones de letras pasan a ids),
+`_` en `runCommand` y en las palabras clave, el catálogo `cad/locales/en.json` con su módulo compilado
+y el test de deriva, `EngineLocale` con `locale` y `setLocale` en `CadEngine`, `CadRuntime`,
+`CadDriver`/`createHarness`, `recordDemo` y `commandCatalog`, la solicitud estructurada, ids en el
+dominio, `DrawingFileError`, lienzo y SVG LTR, y los duplicados de §1 fuera. `icu-minify` es
+dependencia y `@formatjs/icu-messageformat-parser`, devDependency.
+
+**Verificado.** `typecheck`, `lint` y `test` en verde (1 146 tests; la cobertura sigue por encima del
+trinquete). Las dos instantáneas salen byte a byte iguales que antes del cambio. En el navegador, sobre
+los builds de producción de antes y de después servidos a la vez: el mismo recorrido de `/draw` (LINE
+con Undo y Close por tecla, OFFSET y sus conmutadores, un comando desconocido, la paleta de propiedades,
+el menú de referencias a objetos, la lista de la barra de estado y los selectores de color, tipo de línea y
+grosor) y de `/` (las 46 líneas del hero con su tramo de palabras clave, la tarjeta de OFFSET, el CTA, el
+`Command:` de prueba y el 404) da exactamente el mismo texto; la captura de `/draw` es idéntica byte a
+byte. En la hoja del hero difieren 246 píxeles de antialiasing en una línea: la solicitud era dos nodos de
+texto (`location` y un espacio) y ahora es uno, y Chrome redondea distinto la posición subpíxel del tramo
+siguiente. Los glifos no se mueven; no se imita el troceado antiguo.
+
+**Correcciones al brief** (lo que no funcionaba como estaba escrito):
+
+- **Presupuesto del chunk.** Medido con `next build` en dos worktrees: el chunk del editor pasa de
+  84 273 a 89 808 B gz, **+5 535 B**, no ≤ 3 KB. Desglose con esbuild del motor solo: el catálogo inglés
+  cuesta 3 720 B (unos 2,6 KB son las propias frases, que antes estaban en el código, y el resto sus
+  claves semánticas, que ahora aparecen en el catálogo y en quien las cita), el runtime de
+  `icu-minify/format` 595 B y el mecanismo (`EngineText`, reglas de palabras clave, formateador) unos
+  600 B netos, ya descontado el texto que salió del código. Ya se aplica el único recorte con sentido: el
+  módulo inglés no envía las entradas que repiten su clave (sus palabras clave, que son sus ids, y los
+  tipos de línea o patrones que se llaman como su id); siguen en `en.json` como inventario. Bajar de ahí
+  exigiría claves crípticas o renunciar a icu-minify, que el brief fija. §8.3 y la aceptación de §11
+  recogen la cifra medida; los demás idiomas no suman al chunk, porque van en el suyo.
+- **`CommandOption`** es `{ id, value? }` en la herramienta y `CommandOptionUi { id, keyword,
+  abbreviation, key, label }` en el estado (§15, diseño).
+- **La tecla única solo con la entrada vacía**, también en la caja de la entrada dinámica; sin eso `_C`
+  no se podría escribir. En inglés no cambia nada que se pueda hacer con el teclado sobre el lienzo.
+- **Lo que se confirma en la caja de la línea de comandos se lee antes como palabra clave.** Antes, `C` e
+  Intro a mitad de LINE arrancaban CIRCLE; ahora responden Close, como en AutoCAD. Es la regla 5 del
+  diseño; sobre el lienzo la letra ya ejecutaba la opción al pulsarla.
+- **`_` solo con nombres globales** (`_LINE`, no `_L`), como decía §4.3; queda en
+  `docs/autocad-coverage.md`.
+- **Tests existentes.** Además de `.option("C")` → `.option("Close")`, `commandCatalog.test.ts` se adapta
+  a las formas nuevas (`TOOL_COMMANDS` da el nombre global y `CommandInfo` lleva `id`); lo que comprueba
+  es lo mismo.
+- **`messages/en.json`** pierde `Commands.tryNoMatch`, `FinalCta.prompt` y `NotFound.prompt`, y
+  `NotFound.unknown` pasa a ser `NotFound.help` (`Press F1 for help.`): el resto sale del motor.
+- **Las islas `dir="ltr"` de la landing** (§7.3) quedan para la fase 4, con el resto del RTL; aquí solo
+  los presentadores del motor.
+
+**Para la fase 1.** `engineText(locale)` es la puerta para que la landing tome del motor lo que es suyo
+(`idlePrompt()`, `message("unknownCommand", …)`), y `EngineState.names` la de la envoltura del editor.
 
 ## Referencias
 

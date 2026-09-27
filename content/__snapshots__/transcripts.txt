@@ -1,0 +1,285 @@
+idle: Command:
+## hero
+238 +187 command |  | CIRCLE
+425 +127 input | Center: | 0,0
+552 +107 input | Radius: | 50
+993 +187 command |  | OFFSET
+1180 +107 input | Offset distance [Through/Erase: No/Layer: Source/Multiple: Off]: | 30
+1287 +124 input | OFFSET: | 
+1411 +124 input | OFFSET: | 
+1935 +187 command |  | CIRCLE
+2122 +147 input | Center: | 36,0
+2269 +87 input | Radius: | 6
+2552 +267 command |  | ARRAYPOLAR
+2819 +124 input | ARRAYPOLAR: | 
+2943 +67 input | ARRAYPOLAR: | 
+3010 +127 input | Center point: | 0,0
+3137 +87 input | Items [Rotate items: Yes]: | 6
+3525 +207 command |  | RECTANG
+3732 +167 input | First corner: | 80,20
+3899 +187 input | Other corner: | @14,30
+4325 +207 command |  | RECTANG
+4532 +187 input | First corner: | 80,-50
+4719 +187 input | Other corner: | @14,30
+5297 +147 command |  | LINE
+5444 +167 input | LINE: | -58,0
+5610 +187 input | LINE: | @160,0
+6198 +147 command |  | LINE
+6345 +167 input | LINE: | 0,-58
+6512 +187 input | LINE: | @0,116
+7099 +187 command |  | CIRCLE
+7286 +127 input | Center: | 0,0
+7413 +107 input | Radius: | 36
+8006 +167 command |  | HATCH
+8173 +87 input | Pick internal point [Properties/Select objects]: | P
+8260 +67 input | Enter a pattern name: | 
+8327 +107 input | Specify a scale for pattern: | 20
+8433 +67 input | Specify an angle for pattern: | 
+8500 +124 input | Pick internal point [Properties/Select objects]: | 
+8624 +124 input | Pick internal point [Properties/Select objects]: | 
+8748 +67 input | Pick internal point [Properties/Select objects]: | 
+9695 +287 command |  | DIMDIAMETER
+9982 +124 input | DIMDIAMETER: | 
+10106 +124 input | Specify dimension line location [Text/Angle]: | 
+10507 +247 command |  | DIMLINEAR
+10754 +124 input | Specify first extension line origin or <select object>: | 
+10878 +124 input | Specify second extension line origin: | 
+11002 +124 input | Specify dimension line location [Text/Angle/Horizontal/Vertical/Rotated]: | 
+## offset
+command |  | PLINE
+input | PLINE: | 0,0
+input | PLINE [Arc]: | @80,0
+input | Length [Arc/Undo]: | A
+input | PLINE [Line/Undo]: | @0,40
+input | Length [Line/Close/Undo]: | L
+input | PLINE [Arc/Close/Undo]: | @-80,0
+input | Length [Arc/Close/Undo]: | C
+command |  | OFFSET
+input | Offset distance [Through/Erase: No/Layer: Source/Multiple: Off]: | 6
+input | OFFSET: | 
+input | OFFSET: | 
+## osnap
+command |  | CIRCLE
+input | Center: | 10,0
+input | Radius: | 30
+command |  | LINE
+input | LINE: | -65,-40
+## otrack
+command |  | LINE
+input | LINE: | 0,0
+input | LINE: | 60,0
+command |  | LINE
+input | LINE: | 90,20
+input | LINE: | @0,40
+command |  | CIRCLE
+## polar
+command |  | LINE
+input | LINE: | 0,0
+## window
+command |  | RECTANG
+input | First corner: | 0,0
+input | Other corner: | @30,20
+command |  | CIRCLE
+input | Center: | 60,40
+input | Radius: | 14
+command |  | LINE
+input | LINE: | 15,50
+input | LINE: | @80,-45
+## crossing
+command |  | RECTANG
+input | First corner: | 0,0
+input | Other corner: | @30,20
+command |  | CIRCLE
+input | Center: | 60,40
+input | Radius: | 14
+command |  | LINE
+input | LINE: | 15,50
+input | LINE: | @80,-45
+## draw
+command |  | PLINE
+input | PLINE: | 0,0
+input | PLINE [Arc]: | @60,0
+input | Length [Arc/Undo]: | A
+input | PLINE [Line/Undo]: | @0,30
+input | Length [Line/Close/Undo]: | L
+input | PLINE [Arc/Close/Undo]: | @-60,0
+input | Length [Arc/Close/Undo]: | A
+input | PLINE [Line/Close/Undo]: | @0,-30
+input | Length [Line/Close/Undo]: | 
+command |  | CIRCLE
+input | Center: | 0,15
+input | Radius: | 6
+command |  | CIRCLE
+input | Center: | 60,15
+input | Radius: | 6
+## modify
+command |  | PLINE
+input | PLINE: | 0,0
+input | PLINE [Arc]: | @60,0
+input | Length [Arc/Undo]: | A
+input | PLINE [Line/Undo]: | @0,30
+input | Length [Line/Close/Undo]: | L
+input | PLINE [Arc/Close/Undo]: | @-60,0
+input | Length [Arc/Close/Undo]: | A
+input | PLINE [Line/Close/Undo]: | @0,-30
+input | Length [Line/Close/Undo]: | 
+command |  | OFFSET
+input | Offset distance [Through/Erase: No/Layer: Source/Multiple: Off]: | 5
+input | OFFSET: | 
+input | OFFSET: | 
+input | OFFSET: | 
+input | OFFSET: | 
+input | OFFSET: | 
+input | OFFSET: | 
+## annotate
+command |  | PLINE
+input | PLINE: | 0,0
+input | PLINE [Arc]: | @100,0
+input | PLINE [Arc/Undo]: | @0,20
+input | PLINE [Arc/Close/Undo]: | @-35,0
+input | PLINE [Arc/Close/Undo]: | @0,15
+input | PLINE [Arc/Close/Undo]: | @-40,0
+input | PLINE [Arc/Close/Undo]: | @0,10
+input | PLINE [Arc/Close/Undo]: | @-25,0
+input | Length [Arc/Close/Undo]: | C
+command |  | DIMLINEAR
+input | Specify first extension line origin or <select object>: | 
+input | Specify second extension line origin: | 
+input | Specify dimension line location [Text/Angle/Horizontal/Vertical/Rotated]: | 
+command |  | DIMCONTINUE
+input | Specify a second extension line origin [Select]: | 
+input | Specify a second extension line origin [Undo/Select]: | 
+## organize
+command |  | RECTANG
+input | First corner: | 0,0
+input | Other corner: | @90,40
+command |  | RECTANG
+input | First corner: | 35,0
+input | Other corner: | @20,40
+command |  | LINE
+input | LINE: | 45,-8
+input | LINE: | @0,56
+## inquiry
+command |  | RECTANG
+input | First corner: | 0,0
+input | Other corner: | @70,40
+command |  | DIST
+input | DIST: | 
+## files
+command |  | CIRCLE
+input | Center: | 0,0
+input | Radius: | 16
+command |  | HATCH
+input | Pick internal point [Properties/Select objects]: | P
+input | Enter a pattern name: | 
+input | Specify a scale for pattern: | 12
+input | Specify an angle for pattern: | 
+input | Pick internal point [Properties/Select objects]: | 
+input | Pick internal point [Properties/Select objects]: | 
+command |  | COPYBASE
+input | Specify base point: | 0,0
+input | COPYBASE: | 
+input | COPYBASE: | 
+input | COPYBASE: | 
+command |  | PASTECLIP
+## localFirst
+command |  | RECTANG
+input | First corner: | 0,0
+input | Other corner: | @170,70
+command |  | RECTANG
+input | First corner: | 12,8
+input | Other corner: | @40,50
+command |  | RECTANG
+input | First corner: | 118,36
+input | Other corner: | @40,22
+command |  | RECTANG
+input | First corner: | 118,8
+input | Other corner: | @40,22
+command |  | TEXT
+input | Specify start point of text [Justify/Style]: | 21,31
+input | Specify height: | 4
+input | Specify rotation angle of text: | 0
+input | Text: | EDITOR
+input | Text: | 
+command |  | TEXT
+input | Specify start point of text [Justify/Style]: | 122,45
+input | Specify height: | 4
+input | Specify rotation angle of text: | 0
+input | Text: | BROWSER
+input | Text: | 
+command |  | TEXT
+input | Specify start point of text [Justify/Style]: | 131,17
+input | Specify height: | 4
+input | Specify rotation angle of text: | 0
+input | Text: | FILE
+input | Text: | 
+command |  | TEXT
+input | Specify start point of text [Justify/Style]: | 4,64
+input | Specify height: | 3
+input | Specify rotation angle of text: | 0
+input | Text: | YOUR DEVICE
+input | Text: | 
+command |  | DIMLINEAR
+input | Specify first extension line origin or <select object>: | 
+input | Specify second extension line origin: | 
+input | Specify dimension line location [Text/Angle/Horizontal/Vertical/Rotated]: | T
+input | Enter dimension text [Text/Angle/Horizontal/Vertical/Rotated]: | autosave
+input | Specify dimension line location [Text/Angle/Horizontal/Vertical/Rotated]: | 
+command |  | DIMLINEAR
+input | Specify first extension line origin or <select object>: | 
+input | Specify second extension line origin: | 
+input | Specify dimension line location [Text/Angle/Horizontal/Vertical/Rotated]: | T
+input | Enter dimension text [Text/Angle/Horizontal/Vertical/Rotated]: | Ctrl+S / Ctrl+O
+input | Specify dimension line location [Text/Angle/Horizontal/Vertical/Rotated]: | 
+## engineLayers
+command |  | RECTANG
+input | First corner: | 0,64
+input | Other corner: | @90,11
+command |  | TEXT
+input | Specify start point of text [Justify/Style]: | 6,67.5
+input | Specify height: | 4
+input | Specify rotation angle of text: | 0
+input | Text: | adapters
+input | Text: | 
+command |  | RECTANG
+input | First corner: | 0,48
+input | Other corner: | @90,11
+command |  | TEXT
+input | Specify start point of text [Justify/Style]: | 6,51.5
+input | Specify height: | 4
+input | Specify rotation angle of text: | 0
+input | Text: | application
+input | Text: | 
+command |  | RECTANG
+input | First corner: | 0,32
+input | Other corner: | @90,11
+command |  | TEXT
+input | Specify start point of text [Justify/Style]: | 6,35.5
+input | Specify height: | 4
+input | Specify rotation angle of text: | 0
+input | Text: | scene
+input | Text: | 
+command |  | RECTANG
+input | First corner: | 0,16
+input | Other corner: | @90,11
+command |  | TEXT
+input | Specify start point of text [Justify/Style]: | 6,19.5
+input | Specify height: | 4
+input | Specify rotation angle of text: | 0
+input | Text: | domain
+input | Text: | 
+command |  | RECTANG
+input | First corner: | 0,0
+input | Other corner: | @90,11
+command |  | TEXT
+input | Specify start point of text [Justify/Style]: | 6,3.5
+input | Specify height: | 4
+input | Specify rotation angle of text: | 0
+input | Text: | geometry
+input | Text: | 
+command |  | DIMLINEAR
+input | Specify first extension line origin or <select object>: | 
+input | Specify second extension line origin: | 
+input | Specify dimension line location [Text/Angle/Horizontal/Vertical/Rotated]: | T
+input | Enter dimension text [Text/Angle/Horizontal/Vertical/Rotated]: | imports point down
+input | Specify dimension line location [Text/Angle/Horizontal/Vertical/Rotated]: | 

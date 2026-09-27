@@ -91,7 +91,7 @@ describe("DIMLINEAR", () => {
       .click(p(100, 40))
       // Dragged sideways, which would otherwise measure vertically.
       .moveTo(p(180, 20))
-      .option("h")
+      .option("Horizontal")
       .click(p(180, 20))
 
     expect(
@@ -106,7 +106,7 @@ describe("DIMLINEAR", () => {
       .click(p(0, 0))
       .click(p(100, 100))
       .moveTo(p(50, 150))
-      .option("r")
+      .option("Rotated")
       .type("45")
       .enter()
       .click(p(50, 150))
@@ -124,7 +124,7 @@ describe("DIMLINEAR", () => {
       .click(p(0, 0))
       .click(p(100, 0))
       .moveTo(p(50, 40))
-      .option("t")
+      .option("Text")
       .type("approx <>")
       .enter()
       .click(p(50, 40))
@@ -141,7 +141,7 @@ describe("DIMLINEAR", () => {
       .click(p(0, 0))
       .click(p(100, 0))
       .moveTo(p(50, 40))
-      .option("a")
+      .option("Angle")
       .type("30")
       .enter()
       .click(p(50, 40))

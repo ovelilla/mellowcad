@@ -73,7 +73,10 @@ party — updates it in the same change.
   hero to 8–12 s and ≤ 600 primitives. A command that breaks fails here, not on the page.
 - The hero plots with CSS only: each element carries `--t` / `--d`, solid strokes have
   `pathLength="1"`, dashed ones and text fade. The transcript is `transcript(recording)`, timed by
-  `plotDemo` — **the prompts are the engine's, never typed into the copy**. Keep animation selectors
+  `plotDemo` — **the prompts are the engine's, never typed into the copy**, and so are `Command:` and
+  `Unknown command` (`engineText()`); a prompt is drawn from its `segments`, never taken apart.
+  `option(id)` names a keyword by its global id (`"Properties"`) and the transcript shows what its
+  user types (`P`). Keep animation selectors
   scoped (`.plot svg …`): a bare `[style*="--t"]` also caught the command-line rows.
 - Drawing colours are `var(--cad-*)`, written from `THEME` into the layout's `<style>` by
   `themeCustomProperties()`. The OG image cannot read CSS variables, so `lib/og.tsx` renders with

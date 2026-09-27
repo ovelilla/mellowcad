@@ -24,7 +24,6 @@ type PasteState =
  */
 export class PasteTool implements Tool {
   readonly id = "paste"
-  readonly label = "Paste"
 
   private fragment: ClipboardFragment | null = null
   private state: PasteState = { phase: "idle" }
@@ -56,9 +55,7 @@ export class PasteTool implements Tool {
     const screen = this.lastScreen ?? { x: 0, y: 0 }
     this.state = { phase: "point", cursor: ctx.viewport.screenToWorld(screen) }
     ctx.dynamicInput.open({
-      fields: [
-        { id: "point", label: "Specify insertion point", kind: "coordinate" },
-      ],
+      fields: [{ id: "point", prompt: "insertionPoint", kind: "coordinate" }],
       commit: () => {},
       commitRaw: (commitCtx) => {
         const point = parseCoordinate(

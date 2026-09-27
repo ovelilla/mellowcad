@@ -2,7 +2,12 @@
 
 import { Palette } from "lucide-react"
 
-import { COLOR_BYLAYER, normalizeColor, STANDARD_COLORS } from "@/cad"
+import {
+  COLOR_BYLAYER,
+  normalizeColor,
+  STANDARD_COLORS,
+  type EngineNames,
+} from "@/cad"
 import { cn } from "@/lib/utils"
 import {
   Select,
@@ -19,11 +24,14 @@ import {
  */
 export function ColorSelect({
   value,
+  names,
   onValueChange,
   ariaLabel,
   className,
 }: {
   value: string | null
+  /** The engine's names for the colours and for ByLayer. */
+  names: EngineNames
   onValueChange: (value: string) => void
   ariaLabel: string
   className?: string
@@ -32,9 +40,9 @@ export function ColorSelect({
   const custom = value && value !== COLOR_BYLAYER && !isStandard ? value : null
   // Lets the closed trigger show "Red" rather than the raw hex value.
   const labels: Record<string, string> = {
-    [COLOR_BYLAYER]: "ByLayer",
+    [COLOR_BYLAYER]: names.byLayer,
     ...Object.fromEntries(
-      STANDARD_COLORS.map((color) => [color.value, color.name])
+      STANDARD_COLORS.map((color) => [color.value, names.colors[color.id]])
     ),
   }
 
@@ -57,7 +65,7 @@ export function ColorSelect({
         <SelectContent>
           <SelectItem value={COLOR_BYLAYER} className="text-[11px]">
             <Swatch color={null} />
-            ByLayer
+            {names.byLayer}
           </SelectItem>
           {STANDARD_COLORS.map((color) => (
             <SelectItem
@@ -66,7 +74,7 @@ export function ColorSelect({
               className="text-[11px]"
             >
               <Swatch color={color.value} />
-              {color.name}
+              {names.colors[color.id]}
             </SelectItem>
           ))}
           {custom && (

@@ -40,13 +40,14 @@ export function createDimStyle(
   document: CadDocument,
   name: string | undefined,
   basedOn: DimStyleId | undefined,
-  makeCurrent: boolean
+  makeCurrent: boolean,
+  copyName: (base: string) => string
 ): DimStyleId {
   const base =
     document.getDimStyle(basedOn ?? document.getCurrentDimStyleId()) ??
     DEFAULT_DIM_STYLE
   const styleName = uniqueStyleName(
-    name ?? `Copy of ${base.name}`,
+    name ?? copyName(base.name),
     document.getDimStyles()
   )
   const style: DimStyle = { ...base, id: styleName, name: styleName }
@@ -90,13 +91,14 @@ export function createTextStyle(
   document: CadDocument,
   name: string | undefined,
   basedOn: TextStyleId | undefined,
-  makeCurrent: boolean
+  makeCurrent: boolean,
+  copyName: (base: string) => string
 ): TextStyleId {
   const base =
     document.getTextStyle(basedOn ?? document.getCurrentTextStyleId()) ??
     createDefaultTextStyle()
   const styleName = uniqueStyleName(
-    name ?? `Copy of ${base.name}`,
+    name ?? copyName(base.name),
     document.getTextStyles()
   )
   const style: TextStyle = { ...base, id: styleName, name: styleName }

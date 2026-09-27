@@ -9,6 +9,7 @@ import {
 import { DEFAULT_TEXT_HEIGHT, TextStyleId } from "../../domain/textStyles"
 import { AddEntityCommand } from "../commands/entityCommands"
 import { DynamicInputSession } from "../input/DynamicInput"
+import type { PromptId } from "../../locales/types"
 import {
   isCoordinateExpression,
   parseCoordinate,
@@ -43,7 +44,6 @@ import {
  */
 export class TextTool implements Tool {
   readonly id = "text"
-  readonly label = "Text"
 
   private state: TextToolState = { phase: "start" }
 
@@ -124,24 +124,21 @@ export class TextTool implements Tool {
     // Only at the start prompt: while a keyword or the text itself is being
     // typed every letter is content, so nothing may claim it.
     return this.state.phase === "start"
-      ? [
-          { key: "J", label: "Justify" },
-          { key: "S", label: "Style" },
-        ]
+      ? [{ id: "Justify" }, { id: "Style" }]
       : []
   }
 
-  invokeOption(key: string, ctx: ToolContext): CommandOptionOutcome {
+  invokeOption(id: string, ctx: ToolContext): CommandOptionOutcome {
     if (this.state.phase !== "start") return "unhandled"
-    switch (key.toLowerCase()) {
-      case "j":
+    switch (id) {
+      case "Justify":
         this.state = { phase: "justify" }
-        ctx.report(JUSTIFY_PROMPT)
-        this.openKeywordInput(ctx, "Justify")
+        this.reportJustifyOptions(ctx)
+        this.openKeywordInput(ctx, "justify")
         return "continue"
-      case "s":
+      case "Style":
         this.state = { phase: "style" }
-        this.openKeywordInput(ctx, "Style name")
+        this.openKeywordInput(ctx, "styleName")
         return "continue"
       default:
         return "unhandled"
@@ -289,7 +286,7 @@ export class TextTool implements Tool {
       fields: [
         {
           id: "point",
-          label: "Specify start point of text",
+          prompt: "textStartPoint",
           kind: "coordinate",
         },
       ],
@@ -332,7 +329,7 @@ export class TextTool implements Tool {
 
   private openHeightInput(ctx: ToolContext): void {
     const session: DynamicInputSession = {
-      fields: [{ id: "height", label: "Specify height", kind: "distance" }],
+      fields: [{ id: "height", prompt: "textHeight", kind: "distance" }],
       commit: (values, commitCtx) => {
         if (this.state.phase !== "height") return
         if (!(values.height > 0)) return
@@ -351,7 +348,7 @@ export class TextTool implements Tool {
       fields: [
         {
           id: "rotation",
-          label: "Specify rotation angle of text",
+          prompt: "textRotation",
           kind: "angle",
         },
       ],
@@ -375,7 +372,7 @@ export class TextTool implements Tool {
 
   private openEntryInput(ctx: ToolContext): void {
     const session: DynamicInputSession = {
-      fields: [{ id: "value", label: "Text", kind: "text" }],
+      fields: [{ id: "value", prompt: "text", kind: "text" }],
       commit: () => {},
       commitRaw: (commitCtx) => this.commitLine(commitCtx),
     }
@@ -383,10 +380,24 @@ export class TextTool implements Tool {
     ctx.dynamicInput.setPosition(this.lastScreen ?? { x: 0, y: 0 })
   }
 
+  /**
+   * AutoCAD's Justify prompt, minus the two-point Align and Fit options this
+   * command does not implement yet. Its keywords run to two letters (`TL`,
+   * `MC`), so it is read from a free-text field, and echoed here so the
+   * command line still shows the prompt.
+   */
+  private reportJustifyOptions(ctx: ToolContext): void {
+    ctx.report(
+      ctx.text.message("textJustifyOptions", {
+        keywords: ctx.text.keywordList(JUSTIFY_KEYWORDS),
+      })
+    )
+  }
+
   /** A prompt whose answer is a keyword typed in full (Justify, Style). */
-  private openKeywordInput(ctx: ToolContext, label: string): void {
+  private openKeywordInput(ctx: ToolContext, prompt: PromptId): void {
     const session: DynamicInputSession = {
-      fields: [{ id: "keyword", label, kind: "text" }],
+      fields: [{ id: "keyword", prompt, kind: "text" }],
       commit: () => {},
       commitRaw: (commitCtx) => this.commitKeyword(commitCtx),
     }
@@ -397,18 +408,21 @@ export class TextTool implements Tool {
   private commitKeyword(ctx: ToolContext): boolean {
     const typed = ctx.dynamicInput.getText("keyword").trim()
     if (this.state.phase === "justify") {
-      const justify = JUSTIFY_KEYWORDS[typed.toLowerCase()]
-      if (!justify) {
-        ctx.report(JUSTIFY_PROMPT) // re-ask rather than accept a wrong guess
+      const keyword = ctx.text.resolveKeyword(typed, JUSTIFY_KEYWORDS)
+      if (!keyword) {
+        this.reportJustifyOptions(ctx) // re-ask rather than accept a wrong guess
         return false
       }
-      this.justify = justify
+      this.justify = JUSTIFY_BY_KEYWORD[keyword]
     } else if (this.state.phase === "style") {
       const style = ctx.document
         .getTextStyles()
         .find((s) => s.name.toLowerCase() === typed.toLowerCase())
       if (!style) {
-        ctx.report(`Text style "${typed}" is not defined.`, "error")
+        ctx.report(
+          ctx.text.message("textStyleUndefined", { name: typed }),
+          "error"
+        )
         return false
       }
       this.styleId = style.id
@@ -424,33 +438,24 @@ export class TextTool implements Tool {
 /** Preview frames reuse one id so drawing them never burns entity ids. */
 const TEXT_PREVIEW_ID = "__text_preview__"
 
-/**
- * AutoCAD's Justify prompt, minus the two-point Align and Fit options this
- * command does not implement yet.
- */
-const JUSTIFY_PROMPT =
-  "Enter an option [Left/Center/Right/Middle/TL/TC/TR/ML/MC/MR/BL/BC/BR]:"
-
-/** Every keyword the Justify prompt accepts, AutoCAD's abbreviations included. */
-const JUSTIFY_KEYWORDS: Readonly<Record<string, TextJustify>> = {
-  l: "left",
-  left: "left",
-  c: "center",
-  center: "center",
-  r: "right",
-  right: "right",
-  m: "middle",
-  middle: "middle",
-  tl: "tl",
-  tc: "tc",
-  tr: "tr",
-  ml: "ml",
-  mc: "mc",
-  mr: "mr",
-  bl: "bl",
-  bc: "bc",
-  br: "br",
+/** The Justify prompt's global keywords, in AutoCAD's order. */
+const JUSTIFY_BY_KEYWORD: Readonly<Record<string, TextJustify>> = {
+  Left: "left",
+  Center: "center",
+  Right: "right",
+  Middle: "middle",
+  TL: "tl",
+  TC: "tc",
+  TR: "tr",
+  ML: "ml",
+  MC: "mc",
+  MR: "mr",
+  BL: "bl",
+  BC: "bc",
+  BR: "br",
 }
+
+const JUSTIFY_KEYWORDS = Object.keys(JUSTIFY_BY_KEYWORD)
 
 /**
  * Where the next line of text starts: one line below, measured along the text's

@@ -73,15 +73,17 @@ export interface Plot {
   readonly recording: DemoRecording
 }
 
-/** How long an action takes the scripted user before its effect shows. */
-function actionMs(action: DemoRecording["steps"][number]["action"]): number {
+/** How long a step takes the scripted user before its effect shows. */
+function actionMs(step: DemoRecording["steps"][number]): number {
+  const { action } = step
   switch (action.kind) {
     case "command":
       return action.text.length * CHAR_MS + KEY_MS
     case "type":
       return action.text.length * CHAR_MS
     case "option":
-      return CHAR_MS + KEY_MS
+      // Its key, or its abbreviation typed out: whatever the language spells.
+      return (step.answer ?? "").length * CHAR_MS + KEY_MS
     case "enter":
     case "escape":
       return KEY_MS
@@ -134,7 +136,7 @@ export async function plotDemo(
   let clock = LEAD_IN_MS
   recording.steps.forEach((step, index) => {
     starts[index] = clock
-    clock += actionMs(step.action)
+    clock += actionMs(step)
     ends[index] = clock
     let span = 0
     let order = 0

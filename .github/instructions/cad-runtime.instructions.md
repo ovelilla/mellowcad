@@ -19,7 +19,7 @@ one-line delegation to a free function in a `runtime*.ts` sibling.
 | Sibling                | Holds                                                                   |
 | ---------------------- | ----------------------------------------------------------------------- |
 | `runtimeTools.ts`      | `defaultTools` — every tool the constructor registers, in toolbar order |
-| `runtimeCommands.ts`   | the command table (`registerCommands`) and `commandPrompt`              |
+| `runtimeCommands.ts`   | the command table (`registerCommands`), `offerOptions`, `commandPrompt` |
 | `runtimeLayers.ts`     | layer table edits (`updateLayer`, `nextLayerName`)                      |
 | `runtimeStyles.ts`     | the dimension and text style tables                                     |
 | `runtimeProperties.ts` | `setSelection*` overrides and the `commonSelection*` readers            |
@@ -77,10 +77,14 @@ single "frame this rectangle" operation; use it rather than composing `zoomAt` +
    Ctrl+Shift+C copy with base point, Ctrl+A select all), then Shift+Space (selection
    cycling) — a global aid, like the function keys, and it must beat the command prompt, which
    reads a bare space as Enter.
-4. **The active tool's `commandOptions()`** — a keyword beats a global command alias, because in
-   AutoCAD an alias only starts a command at the neutral prompt.
+4. **The active tool's keywords, by their single key** — a keyword beats a global command alias,
+   because in AutoCAD an alias only starts a command at the neutral prompt. Only a one-letter
+   abbreviation no other keyword starts with, and only on an empty prompt, so `_C` and `SIZ` can
+   be typed.
 5. Everything else feeds the **command-line buffer** (this is why multi-character aliases work and
-   why no tool may claim a bare letter in `onKeyDown`).
+   why no tool may claim a bare letter in `onKeyDown`). Submitted, it is read first as a keyword
+   of the running command (abbreviation, word, or `_` and the global one), then as a command name
+   (the command language's names and aliases, or `_` and a global name).
 6. Tail: Escape/Enter → `returnToNeutralTool`, then `activeTool.onKeyDown`.
 
 Inserting anything above step 4 steals keys from running commands; inserting between 4 and 5
@@ -120,8 +124,9 @@ box drag started on a stack still works. Choosing a candidate replays press and 
   reference's own insertion point, so it reads the document.
 
 Adding a snap type touches: `SnapType`, a provider, `defaultSnapProviders` (position = priority),
-the `TRACKABLE` set, a `SceneBuilder` marker + `SNAP_LABEL`, `drawing-aids.tsx`
-(`SNAP_LABELS` / `IMPLEMENTED_SNAPS`), `snap-override-menu.tsx`, and the default enabled/disabled
+the `TRACKABLE` set, a `SceneBuilder` marker, its name in `interface.snap` (menus, read by React
+from `state.names`) and `commands.feedback.snap` (the canvas tooltip), `IMPLEMENTED_SNAPS` in
+`drawing-aids.tsx`, the menu order in `snap-override-menu.tsx`, and the default enabled/disabled
 call in the `CadRuntime` constructor.
 
 ## Commands and history
@@ -147,7 +152,12 @@ degrades instead of disappearing.
 
 The single UI contract, built once in `buildState` and cached — `useSyncExternalStore` needs a
 stable reference, so never rebuild it per pointer move, only on model emits. All user-facing
-formatting (lengths, angles, property rows, dynamic-input labels) belongs here, not in React.
+formatting (lengths, angles, property rows, dynamic-input labels) belongs here, not in React, and
+all its words come from `runtime.text` (`EngineText`, the locale laid over English). React keys
+rows, groups and chips by **id**, never by a label two translations could share. The prompt is
+also given in spans (`commandLine.promptSegments`, the keyword list set apart) with the running
+command's name (`commandLine.command`), so no host takes the text apart. `setLocale` swaps the
+text and rebuilds the state; the scrollback stays as it was written.
 
 ## Scene
 
@@ -192,7 +202,9 @@ for each newly editable type rather than adding another adapter listener.
 ## Adapters
 
 `CadEngine` owns the canvas, DOM listeners, `ResizeObserver`, rAF scheduling and device-pixel
-ratio, and delegates the rest to `CadRuntime`. It is also the **composition root**: it builds the
+ratio, and delegates the rest to `CadRuntime`. Both presenters draw left to right whatever the page
+around them (`ctx.direction`, `direction="ltr"` on every SVG text, anchors spelled out): the
+drawing is geometry and never mirrors. It is also the **composition root**: it builds the
 port implementations (`createLocalStorageDrawingStore`, `createBrowserFileTransport`) and hands
 them to the runtime. Each returns `null` outside the browser, and the runtime reports the missing
 capability rather than crashing.

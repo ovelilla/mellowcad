@@ -45,9 +45,9 @@ export interface HatchPatternLine {
 }
 
 export interface HatchPatternDef {
+  /** The `.pat` name, which a drawing stores; its display name and its `?`
+   * description are the engine catalog's. */
   readonly id: HatchPatternId
-  readonly name: string
-  readonly description: string
   readonly lines: readonly HatchPatternLine[]
 }
 
@@ -71,16 +71,12 @@ export const DEFAULT_HATCH_ANGLE = 0
 export const HATCH_PATTERNS: readonly HatchPatternDef[] = [
   {
     id: SOLID_HATCH_PATTERN_ID,
-    name: "Solid",
-    description: "Solid fill",
     lines: [],
   },
   {
     // *ANSI31, ANSI Iron, Brick, Stone masonry
     // 45, 0,0, 0,.125
     id: "ANSI31",
-    name: "ANSI31",
-    description: "ANSI Iron, Brick, Stone masonry",
     lines: [
       {
         angle: Math.PI / 4,
@@ -110,10 +106,6 @@ export function hatchPatternLines(
   id: HatchPatternId
 ): readonly HatchPatternLine[] {
   return BY_ID.get(id)?.lines ?? []
-}
-
-export function hatchPatternName(id: HatchPatternId): string {
-  return BY_ID.get(id)?.name ?? id
 }
 
 export function isSolidHatchPattern(id: HatchPatternId): boolean {

@@ -27,7 +27,10 @@ import {
   LengthUnit,
   unitSuffix,
 } from "../domain/units"
-import { parseDrawingFile } from "../serialization/drawingFile"
+import {
+  DrawingFileError,
+  parseDrawingFile,
+} from "../serialization/drawingFile"
 import { isBlankDrawing } from "../serialization/drawingSummary"
 import { Scene } from "../scene/types"
 import { Viewport } from "./Viewport"
@@ -50,9 +53,13 @@ import {
   CommandDefinition,
   CommandInfo,
   CommandLineController,
+  TOOL_COMMANDS,
   matchCommands,
-  toolCommandAlias,
+  shortestName,
 } from "./CommandLine"
+import { keywordForKey, resolveKeyword } from "../i18n/keywords"
+import type { EngineLocale } from "../locales/types"
+import { EngineText, engineText, promptString } from "./EngineText"
 import { CommandHistory } from "./commands/Command"
 import {
   ClearDocumentCommand,
@@ -80,7 +87,12 @@ import {
 import { Clipboard, DrawingStore, EngineHost, FileTransport } from "./ports"
 import { nextLayerName, updateLayer } from "./runtimeLayers"
 import { buildBlockPreview, purgeBlocks } from "./runtimeBlocks"
-import { commandPrompt, registerCommands } from "./runtimeCommands"
+import {
+  commandPrompt,
+  offerOptions,
+  registerCommands,
+  toolCommand,
+} from "./runtimeCommands"
 import { defaultTools } from "./runtimeTools"
 import {
   applyDrawingFile,
@@ -130,6 +142,15 @@ export interface KeyEventData {
   readonly altKey: boolean
 }
 
+export interface CadRuntimeOptions {
+  /**
+   * The language the engine speaks; English, built in, when left out. Passed
+   * explicitly rather than read from anywhere global, so one process can run
+   * engines in several languages side by side (the landing's build does).
+   */
+  readonly locale?: EngineLocale
+}
+
 /** Wheel events closer together than this belong to the same zoom gesture. */
 const WHEEL_BURST_MS = 400
 
@@ -164,10 +185,12 @@ export class CadRuntime extends Observable {
   private readonly tools = new Map<string, Tool>()
   private activeTool: Tool
 
-  /** Every command, in registration order (drives autocomplete). */
-  private readonly commandList: CommandDefinition[] = []
-  /** Name *and* alias lookup, e.g. both `"LINE"` and `"L"`. */
+  /** Every command by its global name, in registration order. */
   private readonly commands = new Map<string, CommandDefinition>()
+  /** The commands as the command language lists them (drives autocomplete). */
+  private commandInfos: CommandInfo[] = []
+
+  private language: EngineText
 
   private currentSnap: SnapResult | null = null
   private lastTracking: TrackingResult | null = null
@@ -244,9 +267,11 @@ export class CadRuntime extends Observable {
     host: EngineHost,
     store: DrawingStore | null = null,
     files: FileTransport | null = null,
-    clipboard: Clipboard | null = null
+    clipboard: Clipboard | null = null,
+    options: CadRuntimeOptions = {}
   ) {
     super()
+    this.language = engineText(options.locale)
     this.host = host
     this.files = files
     this.clipboard = clipboard
@@ -274,6 +299,22 @@ export class CadRuntime extends Observable {
       requestRender: () => this.host.requestRender(),
       setCursor: (cursor) => this.host.setCursor(cursor),
       report: (text, kind = "info") => this.commandLine.write(kind, text),
+      text: {
+        message: (id, values) => this.text.message(id, values),
+        feedback: (id, values) => this.text.feedback(id, values),
+        hatchPatternListing: (id) => this.text.hatchPatternListing(id),
+        resolveKeyword: (input, ids) =>
+          resolveKeyword(
+            input,
+            this.text.keywords(toolCommand(this.activeTool), ids)
+          ),
+        keywordList: (ids) =>
+          this.text.keywordList(
+            ids.map((id) => this.text.keyword(toolCommand(this.activeTool), id))
+          ),
+        abbreviation: (id) =>
+          this.text.abbreviation(toolCommand(this.activeTool), id),
+      },
       copyToClipboard: (entities, basePoint) =>
         this.copyToClipboard(entities, basePoint),
       endCommand: () => {
@@ -288,6 +329,7 @@ export class CadRuntime extends Observable {
     this.activeTool = this.tools.get("select")!
 
     this.registerCommands()
+    this.refreshCommandInfos()
 
     // Running-snap defaults mirror AutoCAD's out-of-the-box set: the always-on
     // snaps are the notable "vertex" points — Endpoint, Midpoint, Center and
@@ -354,13 +396,41 @@ export class CadRuntime extends Observable {
     return this.stateSnapshot
   }
 
+  /** The language the engine speaks: its catalog, laid over English. */
+  get text(): EngineText {
+    return this.language
+  }
+
+  /**
+   * Switches the language. The prompt, the keywords, the palettes and what is
+   * drawn on the canvas follow at once; what the command line already shows
+   * stays as it was written, as a scrollback does.
+   */
+  setLocale(locale: EngineLocale): void {
+    this.language = engineText(locale)
+    this.refreshCommandInfos()
+    this.invalidateState()
+    this.host.requestRender()
+  }
+
   /** Every command the prompt accepts, in registration order. */
   listCommands(): CommandInfo[] {
-    return this.commandList.map(({ name, aliases, description }) => ({
-      name,
-      aliases,
-      description,
-    }))
+    return [...this.commandInfos]
+  }
+
+  private refreshCommandInfos(): void {
+    this.commandInfos = [...this.commands.values()].map((command) => {
+      const [name, ...aliases] = this.text.commandNames(command.id)
+      return {
+        id: command.id,
+        name,
+        aliases,
+        description:
+          command.tool !== undefined
+            ? this.text.tool(command.tool)
+            : (this.text.description(command.id) ?? ""),
+      }
+    })
   }
 
   listTools(): Tool[] {
@@ -430,11 +500,7 @@ export class CadRuntime extends Observable {
   }
 
   private registerCommand(definition: CommandDefinition): void {
-    this.commandList.push(definition)
-    this.commands.set(definition.name, definition)
-    for (const alias of definition.aliases) {
-      this.commands.set(alias, definition)
-    }
+    this.commands.set(definition.id, definition)
   }
 
   /**
@@ -455,7 +521,10 @@ export class CadRuntime extends Observable {
 
   /**
    * Runs what has been typed. An empty prompt repeats the last command, which
-   * is how AutoCAD users chain repeated operations with Enter/Space.
+   * is how AutoCAD users chain repeated operations with Enter/Space. While a
+   * command runs, what was typed answers its prompt first: a keyword on offer
+   * — its abbreviation, its word, or `_` and the global one — is taken as such
+   * and only anything else is read as a command name.
    */
   submitCommandLine(): void {
     const text = this.commandLine.getBuffer().trim()
@@ -464,25 +533,32 @@ export class CadRuntime extends Observable {
       this.repeatLastCommand()
       return
     }
+    if (this.invokeToolOption(text)) return
     this.runCommand(text)
   }
 
   /**
-   * Runs a command by name or alias (case-insensitive), reporting whether it
+   * Runs a command by name or alias in the command language, or by `_` and
+   * its global name in any language (case-insensitive), reporting whether it
    * existed. Unknown names are echoed to the prompt rather than thrown, like a
    * real command line.
    */
   runCommand(text: string): boolean {
-    const name = text.trim().toUpperCase()
-    if (name === "") return false
-    const command = this.commands.get(name)
+    const typed = text.trim().toUpperCase()
+    if (typed === "") return false
+    const id = this.text.resolveCommand(typed)
+    const command = id === null ? undefined : this.commands.get(id)
     if (!command) {
-      this.commandLine.write("error", `Unknown command "${name}".`)
+      this.commandLine.write(
+        "error",
+        this.text.message("unknownCommand", { name: typed })
+      )
       this.invalidateState()
       return false
     }
-    this.commandLine.write("command", command.name)
-    this.commandLine.pushHistory(command.name)
+    const [name] = this.text.commandNames(command.id)
+    this.commandLine.write("command", name)
+    this.commandLine.pushHistory(name)
     command.run()
     this.invalidateState()
     this.host.focusSurface()
@@ -499,7 +575,7 @@ export class CadRuntime extends Observable {
   /** Completes the prompt to the best autocomplete match (Tab). */
   completeCommandLine(): void {
     const [best] = matchCommands(
-      this.commandList,
+      this.commandInfos,
       this.commandLine.getBuffer(),
       1
     )
@@ -627,7 +703,7 @@ export class CadRuntime extends Observable {
     this.snapOverrideMenu = null
     this.fromPending = true
     this.fromBase = null
-    this.commandLine.write("info", "FROM: pick the base point.")
+    this.commandLine.write("info", this.text.message("fromBase"))
     this.invalidateState()
     this.host.requestRender()
     this.host.focusSurface()
@@ -639,14 +715,14 @@ export class CadRuntime extends Observable {
     this.fromBase = base
     this.fromParkedSession = this.dynamicInput.getSession()
     this.dynamicInput.open({
-      fields: [{ id: "offset", label: "", kind: "coordinate" }],
+      fields: [{ id: "offset", kind: "coordinate" }],
       commit: () => {},
       commitRaw: () => this.commitFromOffset(),
     })
     if (this.lastPointerScreen) {
       this.dynamicInput.setPosition(this.lastPointerScreen)
     }
-    this.commandLine.write("info", "FROM: offset from the base point.")
+    this.commandLine.write("info", this.text.message("fromOffset"))
   }
 
   private commitFromOffset(): boolean {
@@ -874,7 +950,11 @@ export class CadRuntime extends Observable {
     color: string = DEFAULT_LAYER_COLOR,
     makeCurrent = true
   ): LayerId {
-    const layer = createLayer(name ?? nextLayerName(this.document), color)
+    const layer = createLayer(
+      name ??
+        nextLayerName(this.document, (n) => this.text.defaultLayerName(n)),
+      color
+    )
     this.document.addLayer(layer)
     if (makeCurrent) this.document.setCurrentLayer(layer.id)
     return layer.id
@@ -955,6 +1035,22 @@ export class CadRuntime extends Observable {
   commitDynamicInput(): void {
     const session = this.dynamicInput.getSession()
     if (!session) return
+    // A keyword typed into a value box answers the prompt, exactly as it does
+    // at the command line. A free-text box holds content, never a keyword.
+    const field = session.fields.find(
+      (f) => f.id === this.dynamicInput.getActiveFieldId()
+    )
+    if (field && field.kind !== "text") {
+      const keyword = resolveKeyword(
+        this.dynamicInput.getText(field.id),
+        this.offeredKeywords()
+      )
+      if (keyword !== null) {
+        this.dynamicInput.setText(field.id, "")
+        this.invokeOption(keyword)
+        return
+      }
+    }
     const values = this.dynamicInput.resolveValues()
     if (values) {
       session.commit(values, this.toolContext)
@@ -1001,14 +1097,30 @@ export class CadRuntime extends Observable {
 
   /**
    * Invokes a command option (keyword) the active tool currently offers —
-   * AutoCAD's `[Close/Undo]` prompt. The tool performs the action and reports
-   * whether the command continues or has ended; on end we drop back to the
-   * neutral Select tool, like any other completion. Returns whether the key
-   * matched an option, so callers can decide whether to swallow it.
+   * AutoCAD's `[Close/Undo]` prompt — named as a user types it: its
+   * abbreviation or its word in the command language, or `_` and the global
+   * one. The tool performs the action and reports whether the command continues
+   * or has ended; on end we drop back to the neutral Select tool, like any
+   * other completion. Returns whether it named an option, so callers can decide
+   * whether to swallow it.
    */
-  invokeToolOption(key: string): boolean {
+  invokeToolOption(input: string): boolean {
+    const id = resolveKeyword(input, this.offeredKeywords())
+    return id !== null && this.invokeOption(id)
+  }
+
+  /** The keywords the active tool offers, in both of their languages. */
+  private offeredKeywords() {
+    const options = this.activeTool.commandOptions?.() ?? []
+    return this.text.keywords(
+      toolCommand(this.activeTool),
+      options.map((option) => option.id)
+    )
+  }
+
+  private invokeOption(id: string): boolean {
     const outcome =
-      this.activeTool.invokeOption?.(key, this.toolContext) ?? "unhandled"
+      this.activeTool.invokeOption?.(id, this.toolContext) ?? "unhandled"
     if (outcome === "unhandled") return false
     if (outcome === "end") {
       this.resetTracking()
@@ -1040,7 +1152,9 @@ export class CadRuntime extends Observable {
     basedOn?: DimStyleId,
     makeCurrent = true
   ): DimStyleId {
-    return createDimStyle(this.document, name, basedOn, makeCurrent)
+    return createDimStyle(this.document, name, basedOn, makeCurrent, (base) =>
+      this.text.copyName(base)
+    )
   }
 
   updateDimStyle(id: DimStyleId, patch: Partial<Omit<DimStyle, "id">>): void {
@@ -1069,7 +1183,9 @@ export class CadRuntime extends Observable {
     basedOn?: TextStyleId,
     makeCurrent = true
   ): TextStyleId {
-    return createTextStyle(this.document, name, basedOn, makeCurrent)
+    return createTextStyle(this.document, name, basedOn, makeCurrent, (base) =>
+      this.text.copyName(base)
+    )
   }
 
   updateTextStyle(
@@ -1159,13 +1275,13 @@ export class CadRuntime extends Observable {
 
   /** A sensible default download name, e.g. `drawing-2026-07-10.ecad.json`. */
   suggestedFileName(): string {
-    return suggestedFileName()
+    return suggestedFileName((date) => this.text.fileName(date))
   }
 
   /** Writes the drawing out through the file transport (AutoCAD's QSAVE). */
   saveDrawingToFile(): void {
     if (!this.files) {
-      this.reportFileError("Saving to a file is not available here.")
+      this.reportFileError(this.text.message("saveUnavailable"))
       return
     }
     this.files.save(this.serializeDrawing(), this.suggestedFileName())
@@ -1178,7 +1294,7 @@ export class CadRuntime extends Observable {
    */
   async openDrawingFromFile(): Promise<void> {
     if (!this.files) {
-      this.reportFileError("Opening a file is not available here.")
+      this.reportFileError(this.text.message("openUnavailable"))
       return
     }
     try {
@@ -1186,8 +1302,14 @@ export class CadRuntime extends Observable {
       if (text === null) return
       this.loadDrawing(text)
     } catch (error) {
+      // A file this build cannot read is worded by the catalog; any other
+      // failure is the host's own report, passed on as it came.
       this.reportFileError(
-        error instanceof Error ? error.message : "Could not open the file."
+        error instanceof DrawingFileError
+          ? this.text.fileError(error.code)
+          : error instanceof Error
+            ? error.message
+            : this.text.message("openFailed")
       )
     }
   }
@@ -1229,7 +1351,7 @@ export class CadRuntime extends Observable {
     if (!fragment) {
       // Not AutoCAD's wording (it pastes foreign text as an MTEXT object, which
       // does not exist here); phrased like ERASE's "Nothing selected.".
-      this.commandLine.write("info", "Nothing on the clipboard.")
+      this.commandLine.write("info", this.text.message("clipboardEmpty"))
       this.commandLineVisible = true
       this.invalidateState()
       return
@@ -1297,6 +1419,9 @@ export class CadRuntime extends Observable {
       ltScale: this.document.getSettings().ltScale,
       lwDisplay: this.document.getSettings().lwDisplay,
       snap: this.currentSnap,
+      snapLabel: this.currentSnap
+        ? this.text.snapFeedback(this.currentSnap.type)
+        : "",
       acquiredTrackingPoints: this.tracking.getAcquired(),
       tracking: this.lastTracking,
       parallelReferenceIds: this.parallelRefs.getAcquired(),
@@ -1350,9 +1475,11 @@ export class CadRuntime extends Observable {
     const length = V.length(V.sub(point, anchor))
     let deg = (Math.atan2(ray.dir.y, ray.dir.x) * 180) / Math.PI
     if (deg < 0) deg += 360
-    const label = `Polar: ${formatLength(length, settings)}${unitSuffix(
-      settings.unit
-    )} < ${formatAngle(deg, settings)}°`
+    const label = this.text.feedback("polar", {
+      distance: formatLength(length, settings),
+      unit: unitSuffix(settings.unit),
+      angle: formatAngle(deg, settings),
+    })
     return { origin: anchor, point, label }
   }
 
@@ -1714,14 +1841,21 @@ export class CadRuntime extends Observable {
     // at the neutral "Command:" prompt, while mid-command a matching letter
     // invokes the current prompt's keyword (e.g. R = Radius during FILLET, not
     // the Rotate alias). Checked before the alias loop so the two never fight.
-    if (!e.ctrlKey && !e.altKey && e.key.length === 1) {
-      const options = this.activeTool.commandOptions?.() ?? []
-      if (
-        options.some((o) => o.key.toLowerCase() === e.key.toLowerCase()) &&
-        this.invokeToolOption(e.key)
-      ) {
-        return true
-      }
+    //
+    // Only a keyword whose abbreviation is that one letter, and the start of no
+    // other, runs on its key — and only on an empty prompt, so `_C`, a word or
+    // a longer abbreviation (`SIZ`) can still be typed and confirmed.
+    if (
+      !e.ctrlKey &&
+      !e.altKey &&
+      e.key.length === 1 &&
+      this.commandLine.getBuffer() === ""
+    ) {
+      const option = keywordForKey(
+        e.key,
+        offerOptions(this.activeTool, this.text)
+      )
+      if (option && this.invokeOption(option.id)) return true
     }
 
     // Everything else typed on the drawing surface goes to the command prompt,
@@ -2000,14 +2134,19 @@ export class CadRuntime extends Observable {
       .toArray()
       .map((id) => this.document.get(id))
       .filter((entity): entity is Entity => entity !== undefined)
+    const options = offerOptions(this.activeTool, this.text)
+    const prompt = commandPrompt(this.activeTool, this.text, options)
     return {
       activeToolId: this.activeTool.id,
       tools: this.listTools().map((t) => ({
         id: t.id,
-        label: t.label,
+        label: this.text.tool(t.id),
         // The typed alias is the real shortcut now, so that is what the UI
         // advertises ("L", "AR", "TR"), falling back to the tool's own hint.
-        shortcut: toolCommandAlias(t.id) ?? t.shortcut,
+        shortcut:
+          (TOOL_COMMANDS[t.id] !== undefined
+            ? shortestName(this.text.commandNames(TOOL_COMMANDS[t.id]))
+            : undefined) ?? t.shortcut,
       })),
       entityCount: this.document.size,
       selectionCount: this.selection.size,
@@ -2028,7 +2167,10 @@ export class CadRuntime extends Observable {
       selectionCycling: {
         active: this.cycling.isEnabled(),
         showList: this.cycling.showsList(),
-        candidates: buildSelectionCandidates(this.cycling.getCandidates()),
+        candidates: buildSelectionCandidates(
+          this.cycling.getCandidates(),
+          this.text
+        ),
         currentId: this.cycling.getCurrentId(),
         listAt: this.cyclingList?.screen ?? null,
       },
@@ -2037,7 +2179,7 @@ export class CadRuntime extends Observable {
       snapModeType: this.snapMode.getType(),
       snapSpacing: this.snapMode.getSpacing(),
       snapPolarDistance: this.snapMode.getPolarDistance(),
-      dynamicInput: buildDynamicInputUi(this.dynamicInput, settings),
+      dynamicInput: buildDynamicInputUi(this.dynamicInput, settings, this.text),
       documentUnit: settings.unit,
       documentPrecision: settings.precision,
       ltScale: settings.ltScale,
@@ -2054,7 +2196,7 @@ export class CadRuntime extends Observable {
       canRedo: this.history.canRedo(),
       saveState: this.autosave.getState(),
       lastSavedAt: this.autosave.getLastSavedAt(),
-      selectionInfo: buildSelectionInfo(selectedEntities, settings),
+      selectionInfo: buildSelectionInfo(selectedEntities, settings, this.text),
       selectionLayerId: commonSelectionLayer(selectedEntities),
       selectionColor: commonSelectionColor(selectedEntities),
       selectionLinetype: commonSelectionLinetype(selectedEntities),
@@ -2077,17 +2219,21 @@ export class CadRuntime extends Observable {
         this.document.getEntities()
       ),
       blocksPanel: this.blocksPanel,
-      commandOptions: this.activeTool.commandOptions?.() ?? [],
+      commandOptions: options,
       commandLine: {
         visible: this.commandLineVisible,
-        prompt: commandPrompt(this.activeTool),
+        prompt: promptString(prompt.segments),
+        promptSegments: prompt.segments,
+        command: prompt.command,
+        idlePrompt: this.text.idlePrompt(),
         buffer: this.commandLine.getBuffer(),
         lines: this.commandLine.getLines(),
         suggestions: matchCommands(
-          this.commandList,
+          this.commandInfos,
           this.commandLine.getBuffer()
         ),
       },
+      names: this.text.names(),
     }
   }
 }

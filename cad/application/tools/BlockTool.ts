@@ -47,7 +47,6 @@ type BlockState =
  */
 export class BlockTool implements Tool {
   readonly id = "block"
-  readonly label = "Create block"
 
   private state: BlockState = { phase: "name" }
   private lastScreen: Vec2 | null = null
@@ -182,7 +181,7 @@ export class BlockTool implements Tool {
   private enterName(ctx: ToolContext): void {
     this.state = { phase: "name" }
     ctx.dynamicInput.open({
-      fields: [{ id: "name", label: "Enter block name or [?]", kind: "text" }],
+      fields: [{ id: "name", prompt: "blockName", kind: "text" }],
       commit: () => {},
       commitRaw: (commitCtx) => {
         const typed = commitCtx.dynamicInput.getText("name").trim()
@@ -190,7 +189,7 @@ export class BlockTool implements Tool {
           const blocks = commitCtx.document.getBlocks()
           commitCtx.report(
             blocks.length === 0
-              ? "No blocks defined."
+              ? commitCtx.text.message("noBlocks")
               : blocks.map((block) => block.name).join("\n")
           )
           this.enterName(commitCtx)
@@ -215,7 +214,7 @@ export class BlockTool implements Tool {
       fields: [
         {
           id: "base",
-          label: "Specify insertion base point",
+          prompt: "insertionBasePoint",
           kind: "coordinate",
         },
       ],

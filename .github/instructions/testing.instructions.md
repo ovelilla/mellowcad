@@ -31,10 +31,22 @@ expect(h.latest()).toBeDefined()
 - Snapping is **off by default** for determinism; pass `{ snap: true }` to exercise it.
 - Chainable input: `command / click / drag / moveTo / wheel / type / enter / escape / option /
 press / select / undo / redo`.
+- **`option(id)` names a keyword by its global id** (`.option("Close")`), never by its letter, and
+  answers as a user of the command language would: its key, or its abbreviation and Enter. An id
+  the running command does not have throws. Letters are tested apart, per language
+  (`optionKeys()`, and `locale.test.ts` with a partial test locale).
+- `createHarness({ locale })` runs the engine in another language; the test locale in
+  `locale.test.ts` shows the shape.
 - Readers: `entities() / only<T>(type) / byId / latest / typeCounts / state() / scene() /
-optionKeys() / selectedIds()`.
+optionKeys() / optionIds() / selectedIds()`.
 - Keys route exactly like the real UI: Enter/Escape/option keys go through the dynamic input when
   a field is focused, otherwise through `keyDown`.
+
+**Two snapshots guard what the engine says in English**: `englishSurface.test.ts` walks every
+command through its prompts, keywords, messages, canvas text, grips and the Properties palette, and
+`content/transcripts.test.ts` holds the landing's transcripts and the hero's timing. A change that
+moves or rewords text must leave both untouched; update them (`-u`) only when the English is meant
+to change, and read the diff.
 
 Known harness behaviours worth remembering: grips are hit before click-selection (a shift-click
 meant to toggle must avoid the entity's own grip positions), and the rubber band is construction

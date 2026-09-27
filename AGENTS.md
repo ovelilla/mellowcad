@@ -58,6 +58,8 @@ Two root layouts: the editor is `/draw` (`app/(app)/`), the landing is `/` (`app
 - **One user gesture = one undo step.** Batch with `UpdateEntitiesCommand` / `AddEntitiesCommand` /
   `ReplaceEntitiesCommand` rather than emitting several commands.
 - **`geometry/` and `domain/` are pure**: no I/O, no mutation of inputs, no hidden state.
+- **The engine's words live only in `cad/locales/en.json`** (run `npm run locales` after editing it):
+  tools name prompts and keywords by id, `domain/` exposes ids, never display names.
 
 ## AutoCAD fidelity is the spec
 

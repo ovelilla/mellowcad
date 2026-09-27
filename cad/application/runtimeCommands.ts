@@ -1,5 +1,8 @@
 import type { CadRuntime } from "./CadRuntime"
 import { CommandDefinition, TOOL_COMMANDS } from "./CommandLine"
+import type { CommandOptionUi } from "./EngineState"
+import type { EngineText, PromptSegment } from "./EngineText"
+import { offerKeywords } from "../i18n/keywords"
 import { Tool } from "./tools/Tool"
 
 /**
@@ -15,86 +18,57 @@ export function registerCommands(
   startTool: (id: string) => void,
   register: (definition: CommandDefinition) => void
 ): void {
-  const tools = new Map<string, Tool>(
-    runtime.listTools().map((tool) => [tool.id, tool])
-  )
+  const tools = new Set(runtime.listTools().map((tool) => tool.id))
 
-  for (const [toolId, names] of Object.entries(TOOL_COMMANDS)) {
-    const tool = tools.get(toolId)
-    if (!tool) continue
-    const [name, ...aliases] = names
-    register({
-      name,
-      aliases,
-      description: tool.label,
-      run: () => startTool(toolId),
-    })
+  for (const [toolId, command] of Object.entries(TOOL_COMMANDS)) {
+    if (!tools.has(toolId)) continue
+    register({ id: command, tool: toolId, run: () => startTool(toolId) })
   }
 
+  const say = (text: string) => runtime.commandLine.write("info", text)
+
   register({
-    name: "ERASE",
-    aliases: ["E"],
-    description: "Delete the selected objects",
+    id: "ERASE",
     run: () => {
       if (runtime.selection.isEmpty()) {
-        runtime.commandLine.write("info", "Nothing selected.")
+        say(runtime.text.message("nothingSelected"))
         return
       }
       const count = runtime.selection.size
       runtime.deleteSelection()
-      runtime.commandLine.write(
-        "info",
-        `${count} object${count === 1 ? "" : "s"} erased.`
-      )
+      say(runtime.text.message("erased", { count }))
     },
   })
+  register({ id: "UNDO", run: () => runtime.undo() })
+  register({ id: "REDO", run: () => runtime.redo() })
   register({
-    name: "UNDO",
-    aliases: ["U"],
-    description: "Undo the last action",
-    run: () => runtime.undo(),
-  })
-  register({
-    name: "REDO",
-    aliases: [],
-    description: "Redo the last undone action",
-    run: () => runtime.redo(),
-  })
-  register({
-    name: "SNAP",
-    aliases: ["SN"],
-    description: "Force the cursor onto the snap increments",
+    id: "SNAP",
     run: () => {
       runtime.toggleSnapMode()
-      runtime.commandLine.write(
-        "info",
-        `Snap mode ${runtime.snapMode.isActive() ? "on" : "off"}.`
+      say(
+        runtime.text.message("snapMode", {
+          state: runtime.snapMode.isActive() ? "on" : "off",
+        })
       )
     },
   })
   register({
-    name: "FROM",
-    aliases: ["FRO"],
-    description: "Pick a point offset from a base point",
+    id: "FROM",
     run: () => {
       if (!runtime.startFrom()) {
-        runtime.commandLine.write("error", "FROM needs a point prompt.")
+        runtime.commandLine.write(
+          "error",
+          runtime.text.message("fromNeedsPoint")
+        )
       }
     },
   })
   // A browser download always names the file, so AutoCAD's QSAVE (save over
   // the current name) and SAVEAS (prompt for one) cannot be told apart here;
   // both spellings run the one command we can offer.
+  register({ id: "QSAVE", run: () => runtime.saveDrawingToFile() })
   register({
-    name: "QSAVE",
-    aliases: ["SAVE", "SAVEAS"],
-    description: "Save the drawing to a file",
-    run: () => runtime.saveDrawingToFile(),
-  })
-  register({
-    name: "OPEN",
-    aliases: [],
-    description: "Open a drawing file",
+    id: "OPEN",
     run: () => {
       void runtime.openDrawingFromFile()
     },
@@ -104,9 +78,7 @@ export function registerCommands(
   // tool can only start once there is a fragment to place. Autodesk's
   // shortcut guide lists no alias for any of the four.
   register({
-    name: "PASTECLIP",
-    aliases: [],
-    description: "Paste the clipboard into the drawing",
+    id: "PASTECLIP",
     run: () => {
       void runtime.pasteFromClipboard()
     },
@@ -115,41 +87,56 @@ export function registerCommands(
   // Style Manager and Text Style dialog do. D and ST are the aliases
   // Autodesk's own shortcut guide lists; DDIM / DIMSTY / DST are not on it,
   // so they stay unregistered rather than invented.
-  register({
-    name: "DIMSTYLE",
-    aliases: ["D"],
-    description: "Create and modify dimension styles",
-    run: () => runtime.setStylesPanel("dimension"),
-  })
-  register({
-    name: "STYLE",
-    aliases: ["ST"],
-    description: "Create and modify text styles",
-    run: () => runtime.setStylesPanel("text"),
-  })
+  register({ id: "DIMSTYLE", run: () => runtime.setStylesPanel("dimension") })
+  register({ id: "STYLE", run: () => runtime.setStylesPanel("text") })
   // No alias: Autodesk's shortcut guide lists none for BLOCKSPALETTE, and B
   // and I are already BLOCK and INSERT.
-  register({
-    name: "BLOCKSPALETTE",
-    aliases: [],
-    description: "Show the blocks palette",
-    run: () => runtime.setBlocksPanel(true),
-  })
+  register({ id: "BLOCKSPALETTE", run: () => runtime.setBlocksPanel(true) })
   // Only block definitions so far: layers and styles are purged from their
   // own managers, which already refuse a base, current or in-use entry.
   register({
-    name: "PURGE",
-    aliases: ["PU"],
-    description: "Remove unused block definitions",
+    id: "PURGE",
     run: () => {
       const purged = runtime.purgeBlocks()
-      runtime.commandLine.write(
-        "info",
+      say(
         purged === 0
-          ? "No unused blocks."
-          : `${purged} block${purged === 1 ? "" : "s"} purged.`
+          ? runtime.text.message("noUnusedBlocks")
+          : runtime.text.message("blocksPurged", { count: purged })
       )
     },
+  })
+}
+
+/** The command a tool runs, whose keywords its options are. */
+export function toolCommand(tool: Tool): string | null {
+  return TOOL_COMMANDS[tool.id] ?? null
+}
+
+/**
+ * The keywords the active tool offers right now, in the command language: the
+ * word, its abbreviation, the one key that runs it (if any) and the chip text.
+ */
+export function offerOptions(tool: Tool, text: EngineText): CommandOptionUi[] {
+  const options = tool.commandOptions?.() ?? []
+  const command = toolCommand(tool)
+  const offered = offerKeywords(
+    text.keywords(
+      command,
+      options.map((option) => option.id)
+    )
+  )
+  return offered.map((keyword, index) => {
+    const value = options[index].value
+    return {
+      id: keyword.id,
+      keyword: keyword.word,
+      abbreviation: keyword.abbreviation,
+      key: keyword.key,
+      label:
+        value === undefined
+          ? keyword.word
+          : text.optionValue(keyword.word, text.keyword(command, value)),
+    }
   })
 }
 
@@ -158,11 +145,24 @@ export function registerCommands(
  * rest, and the running command with its current keywords while one is
  * active, e.g. `PLINE [Close/Undo]:`.
  */
-export function commandPrompt(tool: Tool): string {
-  if (tool.id === "select") return "Command:"
-  const names = TOOL_COMMANDS[tool.id]
-  const name = names?.[0] ?? tool.label.toUpperCase()
-  const options = tool.commandOptions?.() ?? []
-  if (options.length === 0) return `${name}:`
-  return `${name} [${options.map((option) => option.label).join("/")}]:`
+export function commandPrompt(
+  tool: Tool,
+  text: EngineText,
+  options: readonly CommandOptionUi[]
+): { readonly command: string | null; readonly segments: PromptSegment[] } {
+  if (tool.id === "select") {
+    return { command: null, segments: text.composePrompt(text.idleHead(), []) }
+  }
+  const command = toolCommand(tool)
+  const name =
+    command !== null
+      ? text.commandNames(command)[0]
+      : text.tool(tool.id).toUpperCase()
+  return {
+    command: name,
+    segments: text.composePrompt(
+      name,
+      options.map((option) => option.label)
+    ),
+  }
 }

@@ -14,6 +14,7 @@ import {
 } from "../../domain/entities"
 import { AddEntityCommand } from "../commands/entityCommands"
 import { DynamicInputSession } from "../input/DynamicInput"
+import type { PromptId } from "../../locales/types"
 import {
   isCoordinateExpression,
   parseCoordinate,
@@ -69,8 +70,7 @@ export class DimensionTool implements Tool {
 
   constructor(
     private readonly kind: DimensionKind,
-    readonly id: string,
-    readonly label: string
+    readonly id: string
   ) {}
 
   onActivate(ctx: ToolContext): void {
@@ -131,40 +131,33 @@ export class DimensionTool implements Tool {
 
   commandOptions(): readonly CommandOption[] {
     if (this.state.phase !== "line") return []
-    const options: CommandOption[] = [
-      { key: "T", label: "Text" },
-      { key: "A", label: "Angle" },
-    ]
+    const options: CommandOption[] = [{ id: "Text" }, { id: "Angle" }]
     if (this.kind === "linear") {
-      options.push(
-        { key: "H", label: "Horizontal" },
-        { key: "V", label: "Vertical" },
-        { key: "R", label: "Rotated" }
-      )
+      options.push({ id: "Horizontal" }, { id: "Vertical" }, { id: "Rotated" })
     }
     return options
   }
 
-  invokeOption(key: string, ctx: ToolContext): CommandOptionOutcome {
+  invokeOption(id: string, ctx: ToolContext): CommandOptionOutcome {
     if (this.state.phase !== "line") return "unhandled"
-    switch (key.toLowerCase()) {
-      case "t":
+    switch (id) {
+      case "Text":
         this.state = { ...this.state, prompt: "text" }
         this.openTextInput(ctx)
         return "continue"
-      case "a":
+      case "Angle":
         this.state = { ...this.state, prompt: "textAngle" }
         this.openTextAngleInput(ctx)
         return "continue"
-      case "h":
+      case "Horizontal":
         if (this.kind !== "linear") return "unhandled"
         this.setRotation(0, ctx)
         return "continue"
-      case "v":
+      case "Vertical":
         if (this.kind !== "linear") return "unhandled"
         this.setRotation(Math.PI / 2, ctx)
         return "continue"
-      case "r": {
+      case "Rotated": {
         if (this.kind !== "linear") return "unhandled"
         const { first, second } = this.state
         this.state = { phase: "rotated", first, second }
@@ -337,11 +330,8 @@ export class DimensionTool implements Tool {
   }
 
   private openFirstInput(ctx: ToolContext): void {
-    this.openCoordinate(
-      ctx,
-      "point",
-      "Specify first extension line origin or <select object>",
-      (commitCtx) => this.commitFirst(commitCtx)
+    this.openCoordinate(ctx, "point", "firstExtensionOrigin", (commitCtx) =>
+      this.commitFirst(commitCtx)
     )
   }
 
@@ -360,35 +350,25 @@ export class DimensionTool implements Tool {
   }
 
   private openSecondInput(ctx: ToolContext): void {
-    this.openCoordinate(
-      ctx,
-      "point",
-      "Specify second extension line origin",
-      (commitCtx) => {
-        if (this.state.phase !== "second") return false
-        const typed = commitCtx.dynamicInput.getText("point").trim()
-        const point = this.parsePoint(typed, this.state.first)
-        if (!point) return false
-        this.enterLine(this.state.first, point, commitCtx)
-        return true
-      }
-    )
+    this.openCoordinate(ctx, "point", "secondExtensionOrigin", (commitCtx) => {
+      if (this.state.phase !== "second") return false
+      const typed = commitCtx.dynamicInput.getText("point").trim()
+      const point = this.parsePoint(typed, this.state.first)
+      if (!point) return false
+      this.enterLine(this.state.first, point, commitCtx)
+      return true
+    })
   }
 
   private openLineInput(ctx: ToolContext): void {
-    this.openCoordinate(
-      ctx,
-      "point",
-      "Specify dimension line location",
-      (commitCtx) => {
-        if (this.state.phase !== "line") return false
-        const typed = commitCtx.dynamicInput.getText("point").trim()
-        const point = this.parsePoint(typed, this.state.second)
-        if (!point) return false
-        this.place(point, commitCtx)
-        return true
-      }
-    )
+    this.openCoordinate(ctx, "point", "dimensionLineLocation", (commitCtx) => {
+      if (this.state.phase !== "line") return false
+      const typed = commitCtx.dynamicInput.getText("point").trim()
+      const point = this.parsePoint(typed, this.state.second)
+      if (!point) return false
+      this.place(point, commitCtx)
+      return true
+    })
   }
 
   private openTextInput(ctx: ToolContext): void {
@@ -427,7 +407,7 @@ export class DimensionTool implements Tool {
       fields: [
         {
           id: "angle",
-          label: "Specify angle of dimension line",
+          prompt: "dimensionLineAngle",
           kind: "angle",
         },
       ],
@@ -445,11 +425,11 @@ export class DimensionTool implements Tool {
   private openCoordinate(
     ctx: ToolContext,
     id: string,
-    label: string,
+    prompt: PromptId,
     commitRaw: (ctx: ToolContext) => boolean
   ): void {
     const session: DynamicInputSession = {
-      fields: [{ id, label, kind: "coordinate" }],
+      fields: [{ id, prompt, kind: "coordinate" }],
       commit: () => {},
       commitRaw,
     }

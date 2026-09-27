@@ -128,7 +128,7 @@ describe("DIMSPACE", () => {
 
   it("applies Auto through its keyword too", () => {
     const cad = spacing(createHarness({ entities: stack() }))
-    cad.option("a")
+    cad.option("Auto")
 
     expect(lineY(cad, "D2")).toBeCloseTo(-40 - AUTO)
     expect(cad.activeToolId()).toBe("select")

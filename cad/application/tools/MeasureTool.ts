@@ -48,7 +48,6 @@ export class MeasureTool implements Tool {
   constructor(
     private readonly mode: MeasureMode,
     readonly id: string,
-    readonly label: string,
     readonly shortcut?: string
   ) {}
 
@@ -123,11 +122,11 @@ export class MeasureTool implements Tool {
 
   commandOptions(): readonly CommandOption[] {
     if (this.state.phase !== "area" || this.state.points.length === 0) return []
-    return [{ key: "U", label: "Undo" }]
+    return [{ id: "Undo" }]
   }
 
-  invokeOption(key: string, ctx: ToolContext): CommandOptionOutcome {
-    if (key.toLowerCase() !== "u") return "unhandled"
+  invokeOption(id: string, ctx: ToolContext): CommandOptionOutcome {
+    if (id !== "Undo") return "unhandled"
     return this.removeLastVertex(ctx) ? "continue" : "unhandled"
   }
 
@@ -217,11 +216,15 @@ export class MeasureTool implements Tool {
     const dy = tip.y - base.y
     const angle = normalizeDegrees((Math.atan2(dy, dx) * 180) / Math.PI)
     const suffix = unitSuffix(settings.unit)
+    const { text } = ctx
     const lines = [
-      `Dist  ${formatLength(distance, settings)} ${suffix}`,
-      `Angle ${formatAngle(angle, settings)}°`,
-      `ΔX    ${formatLength(dx, settings)}`,
-      `ΔY    ${formatLength(dy, settings)}`,
+      text.feedback("measureDistance", {
+        value: formatLength(distance, settings),
+        unit: suffix,
+      }),
+      text.feedback("measureAngle", { value: formatAngle(angle, settings) }),
+      text.feedback("measureDeltaX", { value: formatLength(dx, settings) }),
+      text.feedback("measureDeltaY", { value: formatLength(dy, settings) }),
     ]
     // The readout follows the tip (like AutoCAD's dimensional input), placed
     // above-right of it clear of the object-snap tooltip (which sits below-right
@@ -257,14 +260,23 @@ export class MeasureTool implements Tool {
     const suffix = unitSuffix(settings.unit)
     const area = polygonArea(vertices)
     const perimeter = polygonPerimeter(vertices)
+    const { text } = ctx
     const lines = [
-      `Area  ${formatLength(area, settings)} ${suffix}²`,
-      `Perim ${formatLength(perimeter, settings)} ${suffix}`,
+      text.feedback("measureArea", {
+        value: formatLength(area, settings),
+        unit: suffix,
+      }),
+      text.feedback("measurePerimeter", {
+        value: formatLength(perimeter, settings),
+        unit: suffix,
+      }),
     ]
     // While collecting, hint the point-undo and finish keys (there is no
     // command line to show them otherwise).
     if (cursor && points.length > 0) {
-      lines.push(`[U] undo  [Enter] done`)
+      lines.push(
+        text.feedback("measureHint", { undo: text.abbreviation("Undo") })
+      )
     }
     // Live: anchor by the cursor; completed: by the polygon centroid.
     const anchor = cursor

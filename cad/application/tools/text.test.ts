@@ -107,7 +107,7 @@ describe("TEXT", () => {
 
   it("applies a justification keyword", () => {
     const cad = createHarness()
-    cad.command("TEXT").option("j").type("tc").enter()
+    cad.command("TEXT").option("Justify").type("tc").enter()
     startText(cad, p(0, 0)).type("MID").enter().escape()
 
     expect(cad.only<TextEntity>("text").justify).toBe("tc")
@@ -115,7 +115,7 @@ describe("TEXT", () => {
 
   it("re-asks when the justification keyword is not one of the options", () => {
     const cad = createHarness()
-    cad.command("TEXT").option("j").type("nope").enter()
+    cad.command("TEXT").option("Justify").type("nope").enter()
 
     expect(cad.commandLog().at(-1)).toContain("Enter an option [Left/Center")
     expect(cad.activeToolId()).toBe("text")
@@ -237,7 +237,7 @@ describe("TEXTEDIT", () => {
 
   it("edits a single object and ends in Single mode", () => {
     const cad = withText()
-    cad.command("TEXTEDIT").option("m")
+    cad.command("TEXTEDIT").option("Mode")
     expect(cad.optionKeys()).toEqual(["M"])
 
     cad.click(p(20, 5)).type("ONCE").enter()
@@ -253,7 +253,7 @@ describe("TEXTEDIT", () => {
     cad.click(p(20, 5)).type("CHANGED").enter()
     expect(cad.optionKeys()).toEqual(["U", "M"])
 
-    cad.option("u")
+    cad.option("Undo")
     expect(edited(cad).value).toBe("OLD")
     expect(cad.optionKeys()).toEqual(["M"])
     cad.escape()

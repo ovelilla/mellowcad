@@ -87,7 +87,6 @@ type ArrayPolarState =
 
 export class ArrayPolarTool implements Tool {
   readonly id = "arraypolar"
-  readonly label = "Polar array"
 
   private state: ArrayPolarState = { phase: "selecting" }
   private lastScreen: Vec2 | null = null
@@ -200,17 +199,14 @@ export class ArrayPolarTool implements Tool {
   commandOptions(): readonly CommandOption[] {
     if (this.state.phase === "config") {
       return [
-        {
-          key: "R",
-          label: `Rotate items: ${this.state.config.rotate ? "Yes" : "No"}`,
-        },
+        { id: "Rotate items", value: this.state.config.rotate ? "Yes" : "No" },
       ]
     }
     return []
   }
 
-  invokeOption(key: string, ctx: ToolContext): CommandOptionOutcome {
-    if (this.state.phase === "config" && key.toLowerCase() === "r") {
+  invokeOption(id: string, ctx: ToolContext): CommandOptionOutcome {
+    if (this.state.phase === "config" && id === "Rotate items") {
       this.state = {
         phase: "config",
         config: { ...this.state.config, rotate: !this.state.config.rotate },
@@ -291,7 +287,7 @@ export class ArrayPolarTool implements Tool {
     }
     this.state = { phase: "center", originals }
     const session: DynamicInputSession = {
-      fields: [{ id: "center", label: "Center point", kind: "coordinate" }],
+      fields: [{ id: "center", prompt: "centerPoint", kind: "coordinate" }],
       commit: () => {},
       commitRaw: (commitCtx) => this.commitCenterCoordinate(commitCtx),
     }
@@ -326,8 +322,8 @@ export class ArrayPolarTool implements Tool {
     }
     const session: DynamicInputSession = {
       fields: [
-        { id: "items", label: "Items", kind: "number" },
-        { id: "fill", label: "Fill angle", kind: "angle" },
+        { id: "items", prompt: "items", kind: "number" },
+        { id: "fill", prompt: "fillAngle", kind: "angle" },
       ],
       commit: (_values, commitCtx) => this.commit(commitCtx),
     }

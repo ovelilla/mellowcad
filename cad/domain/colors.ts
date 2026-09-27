@@ -20,28 +20,20 @@ export const COLOR_BYLAYER = "ByLayer"
 
 export interface ColorDef {
   readonly value: EntityColor
-  readonly name: string
+  /** What names it: the key of its display name in the engine's catalog. */
+  readonly id: string
 }
 
 /** AutoCAD's index colours 1-7, the quick choices of its colour picker. */
 export const STANDARD_COLORS: readonly ColorDef[] = [
-  { value: "#ff0000", name: "Red" },
-  { value: "#ffff00", name: "Yellow" },
-  { value: "#00ff00", name: "Green" },
-  { value: "#00ffff", name: "Cyan" },
-  { value: "#0000ff", name: "Blue" },
-  { value: "#ff00ff", name: "Magenta" },
-  { value: "#ffffff", name: "White" },
+  { value: "#ff0000", id: "red" },
+  { value: "#ffff00", id: "yellow" },
+  { value: "#00ff00", id: "green" },
+  { value: "#00ffff", id: "cyan" },
+  { value: "#0000ff", id: "blue" },
+  { value: "#ff00ff", id: "magenta" },
+  { value: "#ffffff", id: "white" },
 ]
-
-const BY_VALUE = new Map<EntityColor, ColorDef>(
-  STANDARD_COLORS.map((color) => [color.value, color])
-)
-
-/** A colour's display name, falling back to its hex value for custom colours. */
-export function colorName(value: EntityColor): string {
-  return BY_VALUE.get(normalizeColor(value) ?? value)?.name ?? value
-}
 
 /**
  * Validates a hex colour and returns it in canonical `#rrggbb` lowercase form

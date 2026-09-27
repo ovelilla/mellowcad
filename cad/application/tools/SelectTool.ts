@@ -81,7 +81,6 @@ const DRAG_THRESHOLD_PX = 4
  */
 export class SelectTool implements Tool {
   readonly id = "select"
-  readonly label = "Select"
   readonly shortcut = "s"
 
   private state: SelectToolState = { phase: "idle" }
@@ -895,7 +894,7 @@ export class SelectTool implements Tool {
   }
   private openLengthenInput(ctx: ToolContext, screen: Vec2): void {
     const session: DynamicInputSession = {
-      fields: [{ id: "lengthen", label: "Lengthen", kind: "length" }],
+      fields: [{ id: "lengthen", prompt: "lengthen", kind: "length" }],
       commit: (values, commitCtx) =>
         this.commitLengthen(values.lengthen, commitCtx),
     }
@@ -907,7 +906,7 @@ export class SelectTool implements Tool {
   /** Opens the dynamic-input session offering the move distance. */
   private openMoveInput(ctx: ToolContext, screen: Vec2): void {
     const session: DynamicInputSession = {
-      fields: [{ id: "distance", label: "Move", kind: "distance" }],
+      fields: [{ id: "distance", prompt: "move", kind: "distance" }],
       commit: (values, commitCtx) =>
         this.commitMove(values.distance, commitCtx),
     }
@@ -919,7 +918,7 @@ export class SelectTool implements Tool {
   /** Opens the dynamic-input session offering the vertex-stretch distance. */
   private openVertexInput(ctx: ToolContext, screen: Vec2): void {
     const session: DynamicInputSession = {
-      fields: [{ id: "distance", label: "Move", kind: "distance" }],
+      fields: [{ id: "distance", prompt: "move", kind: "distance" }],
       commit: (values, commitCtx) =>
         this.commitVertex(values.distance, commitCtx),
     }
@@ -931,7 +930,7 @@ export class SelectTool implements Tool {
   /** Opens the dynamic-input session offering the dimension-point distance. */
   private openDimPointInput(ctx: ToolContext, screen: Vec2): void {
     const session: DynamicInputSession = {
-      fields: [{ id: "distance", label: "Move", kind: "distance" }],
+      fields: [{ id: "distance", prompt: "move", kind: "distance" }],
       commit: (values, commitCtx) =>
         this.commitDimPoint(values.distance, commitCtx),
     }
@@ -943,7 +942,7 @@ export class SelectTool implements Tool {
   /** Opens the dynamic-input session offering the new vertex distance. */
   private openInsertInput(ctx: ToolContext, screen: Vec2): void {
     const session: DynamicInputSession = {
-      fields: [{ id: "distance", label: "Move", kind: "distance" }],
+      fields: [{ id: "distance", prompt: "move", kind: "distance" }],
       commit: (values, commitCtx) =>
         this.commitInsert(values.distance, commitCtx),
     }
@@ -955,7 +954,7 @@ export class SelectTool implements Tool {
   /** Opens the dynamic-input session offering the segment's bulge value. */
   private openBulgeInput(ctx: ToolContext, screen: Vec2, bulge: number): void {
     const session: DynamicInputSession = {
-      fields: [{ id: "bulge", label: "Bulge", kind: "number" }],
+      fields: [{ id: "bulge", prompt: "bulge", kind: "number" }],
       commit: (values, commitCtx) => this.commitBulge(values.bulge, commitCtx),
     }
     ctx.dynamicInput.open(session)
@@ -970,7 +969,7 @@ export class SelectTool implements Tool {
     radius: number
   ): void {
     const session: DynamicInputSession = {
-      fields: [{ id: "radius", label: "Radius", kind: "distance" }],
+      fields: [{ id: "radius", prompt: "radius", kind: "distance" }],
       commit: (values, commitCtx) =>
         this.commitRadius(values.radius, commitCtx),
     }
@@ -986,7 +985,7 @@ export class SelectTool implements Tool {
     degrees: number
   ): void {
     const session: DynamicInputSession = {
-      fields: [{ id: "angle", label: "Angle", kind: "angle" }],
+      fields: [{ id: "angle", prompt: "angle", kind: "angle" }],
       commit: (values, commitCtx) =>
         this.commitArcAngle(values.angle, commitCtx),
     }
