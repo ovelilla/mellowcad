@@ -2,6 +2,7 @@ import Link from "next/link"
 import { getTranslations } from "next-intl/server"
 
 import { engineText } from "@/cad"
+import { loadEngineLocale } from "@/i18n/engine"
 import { localePath } from "@/i18n/navigation"
 import type { AppLocale } from "@/i18n/routing"
 import { EDITOR_PATH } from "@/lib/site"
@@ -17,7 +18,7 @@ export async function NotFoundMessage({ locale }: { locale: AppLocale }) {
   const t = await getTranslations({ locale, namespace: "NotFound" })
   // The engine's own words, as the command line would print them, then
   // AutoCAD's pointer to its help.
-  const text = engineText()
+  const text = engineText(await loadEngineLocale(locale))
   const unknown = text.message("unknownCommand", { name: "{command}" })
   return (
     <>

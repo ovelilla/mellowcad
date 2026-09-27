@@ -77,6 +77,13 @@ function plurals(elements: MessageFormatElement[]): string[][] {
 
 const english = flatten(catalog(routing.defaultLocale))
 
+// A live language must be complete; so must one whose translation is done,
+// even while it waits in draft. Arabic is written in phase 5 of
+// docs/next-i18n.md.
+const TRANSLATED = routing.locales.filter(
+  (locale) => LOCALE_STATUS[locale] === "live" || locale === "es"
+)
+
 describe("the app's message catalogs", () => {
   it("exist for exactly the routed languages", () => {
     const files = readdirSync(MESSAGES_DIR)
@@ -108,9 +115,8 @@ describe("the app's message catalogs", () => {
     }
   })
 
-  it("are complete in every live language", () => {
-    for (const locale of routing.locales) {
-      if (LOCALE_STATUS[locale] !== "live") continue
+  it("are complete in every live or translated language", () => {
+    for (const locale of TRANSLATED) {
       expect([...flatten(catalog(locale)).keys()].sort(), locale).toEqual(
         [...english.keys()].sort()
       )
@@ -141,15 +147,33 @@ describe("mergeMessages", () => {
 })
 
 describe("the editor", () => {
+  const dir = join(__dirname, "..", "components", "cad")
+
   // Only `Editor.*` reaches the browser (app/[locale]/(app)/layout.tsx).
   it("reads only its own namespace", () => {
-    const dir = join(__dirname, "..", "components", "cad")
     for (const file of readdirSync(dir)) {
       const source = readFileSync(join(dir, file), "utf8")
       for (const [, namespace] of source.matchAll(
         /useTranslations\(\s*"([^"]*)"/g
       )) {
         expect(namespace, file).toMatch(/^Editor(\.|$)/)
+      }
+    }
+  })
+
+  // The landing has no message provider: an editor component it embeds that
+  // reached for one would throw the moment the live sketch opened.
+  it("lends the landing only components that take their words as props", () => {
+    const landing = join(__dirname, "..", "components", "marketing")
+    for (const file of readdirSync(landing)) {
+      const source = readFileSync(join(landing, file), "utf8")
+      for (const [, name] of source.matchAll(
+        /from "@\/components\/cad\/([^"]+)"/g
+      )) {
+        const lent = readFileSync(join(dir, `${name}.tsx`), "utf8")
+        expect(lent, `${file} embeds ${name}`).not.toMatch(
+          /use(Translations|Formatter|Locale|Messages)\(/
+        )
       }
     }
   })

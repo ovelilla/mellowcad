@@ -53,7 +53,7 @@ export async function SiteHeader() {
             href={paths.editor}
             className="inline-flex h-9 items-center rounded-md bg-accent px-3.5 text-sm font-medium text-accent-ink transition-[filter] duration-150 hover:brightness-110"
           >
-            {common("startDrawing")}
+            {t("cta")}
             <span aria-hidden="true">&nbsp;→</span>
           </a>
           <button

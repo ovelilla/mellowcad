@@ -2,7 +2,6 @@
 
 import { useEffect, useRef } from "react"
 import { Lock } from "lucide-react"
-import { useTranslations } from "next-intl"
 import { CadEngine, EngineState } from "@/cad"
 
 /**
@@ -11,15 +10,20 @@ import { CadEngine, EngineState } from "@/cad"
  * and forwards every interaction back to the engine. All meaning (units,
  * parsing, what a value does) lives in the engine/tool system, so the same UI
  * works for distances today and radii, angles or coordinates later.
+ *
+ * The landing's live sketch embeds it too, where no message provider exists —
+ * so its one word arrives as a prop rather than from `useTranslations`.
  */
 export function DynamicInput({
   engine,
   state,
+  lockedLabel,
 }: {
   engine: CadEngine
   state: EngineState
+  /** `Editor.DynamicInput.locked`: what the padlock says to a screen reader. */
+  lockedLabel: string
 }) {
-  const t = useTranslations("Editor.DynamicInput")
   const di = state.dynamicInput
   const activeFieldId = di?.fields.find((f) => f.active)?.id ?? null
   const inputRef = useRef<HTMLInputElement>(null)
@@ -137,7 +141,7 @@ export function DynamicInput({
               <Lock
                 className="ml-0.5 size-3 shrink-0 text-amber-400"
                 strokeWidth={2.5}
-                aria-label={t("locked")}
+                aria-label={lockedLabel}
               />
             )}
           </label>

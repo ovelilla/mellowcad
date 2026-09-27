@@ -2,16 +2,25 @@ import { HardDrive, Save, UserX } from "lucide-react"
 import Link from "next/link"
 import { getTranslations } from "next-intl/server"
 
-import { FIGURES } from "@/content/figures"
+import { DIAGRAMS } from "@/content/figures"
 import { sitePaths } from "@/i18n/navigation"
-import { renderFigure } from "@/lib/plot"
+import { pageEngineLocale, renderFigure } from "@/lib/plot"
 
 import { Drawing } from "./drawing"
 import { SectionHeading } from "./section-heading"
 
 export async function LocalFirstSection() {
   const t = await getTranslations("LocalFirst")
-  const figure = await renderFigure(FIGURES.localFirst)
+  const figure = await renderFigure({
+    ...DIAGRAMS.localFirst({
+      editor: t("diagramEditor"),
+      browser: t("diagramBrowser"),
+      file: t("diagramFile"),
+      device: t("diagramDevice"),
+      autosave: t("diagramAutosave"),
+    }),
+    locale: await pageEngineLocale(),
+  })
   const paths = await sitePaths()
 
   const facts = [

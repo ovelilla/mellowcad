@@ -7,13 +7,20 @@ import {
   useState,
   useSyncExternalStore,
 } from "react"
-import { CadEngine, type DrawingStore, type EngineState } from "@/cad"
+import {
+  CadEngine,
+  type DrawingStore,
+  type EngineLocale,
+  type EngineState,
+} from "@/cad"
 
 export interface UseCadEngineOptions {
   /** Passed to the engine as is; see `CadEngineOptions.store`. */
   readonly store?: DrawingStore | null
   /** The element to embed the engine in; see `CadEngineOptions.scope`. */
   readonly scopeRef?: React.RefObject<HTMLElement | null>
+  /** The engine's language; English when absent. */
+  readonly locale?: EngineLocale
 }
 
 /**
@@ -37,10 +44,11 @@ export function useCadEngine(options: UseCadEngineOptions = {}): {
 
   useEffect(() => {
     if (!canvasRef.current) return
-    const { store, scopeRef } = initialOptions.current
+    const { store, scopeRef, locale } = initialOptions.current
     const instance = new CadEngine(canvasRef.current, {
       ...(store !== undefined && { store }),
       ...(scopeRef?.current && { scope: scopeRef.current }),
+      ...(locale && { locale }),
     })
     setEngine(instance)
     return () => instance.dispose()

@@ -1,6 +1,10 @@
 import type { Bounds, DemoScript } from "@/cad"
 
-import { engineLayers, localFirst } from "./demos/diagrams"
+import {
+  engineLayers,
+  localFirst,
+  type LocalFirstLabels,
+} from "./demos/diagrams"
 import { hero } from "./demos/hero"
 import { offsetSession } from "./demos/offset"
 import {
@@ -65,14 +69,23 @@ export const FIGURES = {
   organize: { script: organizeGroup, width: 240, height: 150, padding: 14 },
   inquiry: { script: inquiryGroup, width: 240, height: 150, live: true },
   files: { script: filesGroup, width: 240, height: 150, live: true },
-  localFirst: { script: localFirst, width: 560, height: 250, padding: 8 },
-  engineLayers: {
-    script: engineLayers,
+} satisfies Record<string, FigureSpec>
+
+/** The figures that carry words, built in the page's language. */
+export const DIAGRAMS = {
+  localFirst: (labels: LocalFirstLabels) => ({
+    script: localFirst(labels),
+    width: 560,
+    height: 250,
+    padding: 8,
+  }),
+  engineLayers: (imports: string) => ({
+    script: engineLayers(imports),
     width: 420,
     height: 300,
     padding: 8,
     frame: { min: { x: -28, y: -4 }, max: { x: 92, y: 79 } },
-  },
-} satisfies Record<string, FigureSpec>
+  }),
+} satisfies Record<string, (labels: never) => FigureSpec>
 
 export type FigureId = keyof typeof FIGURES

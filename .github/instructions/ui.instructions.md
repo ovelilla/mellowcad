@@ -22,6 +22,8 @@ Failures are reported at the command prompt, not in a bespoke React banner.
   aliases (`state.tools`), snap, colour and linetype names (`state.names`), property rows. A
   shortcut that is a command alias comes from `state.tools` too; a key combination is
   `Editor.Keys` (keys have local names — `Supr` on a Spanish keyboard); a function key is literal.
+- The engine speaks the page's language: `CadWorkspace` takes the catalog the page loaded
+  (`engineLocale`), and `useCadEngine({ locale })` hands it to the engine.
 - `DirectionProvider` wraps the editor with the locale's direction, for Base UI's keyboard and
   positioning. The rest of RTL is the brief's phase 4. See `i18n.instructions.md`.
 

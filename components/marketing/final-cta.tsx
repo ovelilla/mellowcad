@@ -2,11 +2,13 @@ import { getTranslations } from "next-intl/server"
 
 import { engineText } from "@/cad"
 import { sitePaths } from "@/i18n/navigation"
+import { pageEngineLocale } from "@/lib/plot"
 
 export async function FinalCta() {
   const t = await getTranslations("FinalCta")
   const common = await getTranslations("Common")
   const paths = await sitePaths()
+  const text = engineText(await pageEngineLocale())
 
   return (
     <section
@@ -17,7 +19,7 @@ export async function FinalCta() {
         {t("title")}
       </h2>
       <p aria-hidden="true" className="font-mono text-sm text-fg-subtle">
-        {engineText().idlePrompt()} <span className="caret caret-blink" />
+        {text.idlePrompt()} <span className="caret caret-blink" />
       </p>
       <a
         href={paths.editor}

@@ -64,6 +64,8 @@ party — updates it in the same change.
 
 ## Figures: the engine draws every illustration
 
+- Every figure is drawn in the page's language (`pageEngineLocale()`); the two diagrams carry the
+  page's words as TEXT, from messages (`DIAGRAMS`, `i18n.instructions.md`).
 - A figure is a **`DemoScript`** in `content/demos/` (the harness's chained style: `command`, `type`,
   `enter`, `click`, `option`, plus `hover`, `down`/`up`, `press`, `osnap`, `layer`), registered in
   `content/figures.ts`, rendered at build time by `lib/plot.ts` through `SvgScenePresenter`. Never
@@ -82,7 +84,7 @@ party — updates it in the same change.
 - The hero plots with CSS only: each element carries `--t` / `--d`, solid strokes have
   `pathLength="1"`, dashed ones and text fade. The transcript is `transcript(recording)`, timed by
   `plotDemo` — **the prompts are the engine's, never typed into the copy**, and so are `Command:` and
-  `Unknown command` (`engineText()`); a prompt is drawn from its `segments`, never taken apart.
+  `Unknown command` (`engineText(locale)`); a prompt is drawn from its `segments`, never taken apart.
   `option(id)` names a keyword by its global id (`"Properties"`) and the transcript shows what its
   user types (`P`). Keep animation selectors
   scoped (`.plot svg …`): a bare `[style*="--t"]` also caught the command-line rows.

@@ -1,8 +1,8 @@
 import { getTranslations } from "next-intl/server"
 
-import { FIGURES } from "@/content/figures"
+import { DIAGRAMS } from "@/content/figures"
 import { productFacts } from "@/lib/facts"
-import { renderFigure } from "@/lib/plot"
+import { pageEngineLocale, renderFigure } from "@/lib/plot"
 
 import { Drawing } from "./drawing"
 import { SectionHeading } from "./section-heading"
@@ -11,7 +11,10 @@ import { SnapCorners } from "./snap-corners"
 export async function EngineSection() {
   const t = await getTranslations("Engine")
   const facts = productFacts()
-  const figure = await renderFigure(FIGURES.engineLayers)
+  const figure = await renderFigure({
+    ...DIAGRAMS.engineLayers(t("diagramImports")),
+    locale: await pageEngineLocale(),
+  })
 
   const points = [
     [t("kernelTitle"), t("kernelBody")],

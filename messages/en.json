@@ -23,7 +23,8 @@
     "faq": "FAQ",
     "menu": "Menu",
     "closeMenu": "Close menu",
-    "navLabel": "Main"
+    "navLabel": "Main",
+    "cta": "Start drawing"
   },
   "Hero": {
     "eyebrow": "2D CAD in your browser",
@@ -139,6 +140,11 @@
     "privateBody": "There is nothing to sign up for and your drawings are never sent anywhere. Analytics count page views without cookies.",
     "warning": "Clearing this site's data clears the autosave too. Press Ctrl+S to keep a file.",
     "diagramAlt": "Inside your device, the editor autosaves to the browser and saves to and opens a file; nothing leaves the device.",
+    "diagramEditor": "EDITOR",
+    "diagramBrowser": "BROWSER",
+    "diagramFile": "FILE",
+    "diagramDevice": "YOUR DEVICE",
+    "diagramAutosave": "autosave",
     "privacyLink": "What is stored, exactly"
   },
   "Engine": {
@@ -155,7 +161,8 @@
     "fidelityBody": "Command names, prompt order, keywords and defaults follow current AutoCAD. A partial command is fine; a reinvented one is not.",
     "testsTitle": "{tests, number}+ automated tests",
     "testsBody": "Tools are tested the way you use them — moving, clicking and typing at a headless engine.",
-    "diagramAlt": "The engine's five layers stacked, adapters on top and geometry at the bottom, with a dimension reading: imports point down."
+    "diagramAlt": "The engine's five layers stacked, adapters on top and geometry at the bottom, with a dimension reading: imports point down.",
+    "diagramImports": "imports point down"
   },
   "Status": {
     "label": "06 · Status",
@@ -212,9 +219,8 @@
     "privacy": "Privacy",
     "language": "Language",
     "soon": "Coming soon",
-    "english": "English",
-    "spanish": "Español (soon)",
-    "languageSoon": "More languages coming soon",
+    "languageName": "English",
+    "languageSoon": "Español (soon) · More languages coming soon",
     "drawingNumber": "Dwg no.",
     "revision": "Rev",
     "scale": "Scale",

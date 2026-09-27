@@ -4,7 +4,7 @@ import { COMMAND_GROUPS, type CommandGroup } from "@/content/commands"
 import { FIGURES } from "@/content/figures"
 import { sitePaths } from "@/i18n/navigation"
 import { commandsByGroup, productFacts } from "@/lib/facts"
-import { renderFigure } from "@/lib/plot"
+import { pageEngineLocale, renderFigure } from "@/lib/plot"
 
 import { Drawing } from "./drawing"
 import { SectionHeading } from "./section-heading"
@@ -37,9 +37,10 @@ export async function ToolsetSection() {
   const common = await getTranslations("Common")
   const paths = await sitePaths()
   const facts = productFacts()
-  const byGroup = commandsByGroup()
+  const locale = await pageEngineLocale()
+  const byGroup = commandsByGroup(locale)
   const figures = await Promise.all(
-    COMMAND_GROUPS.map((group) => renderFigure(FIGURES[group]))
+    COMMAND_GROUPS.map((group) => renderFigure({ ...FIGURES[group], locale }))
   )
 
   return (
@@ -73,7 +74,7 @@ export async function ToolsetSection() {
               </div>
               <div className="flex items-baseline justify-between gap-4 border-b border-border pb-2">
                 <h3 className="text-h3">{groups(group)}</h3>
-                <span className="label-mono">
+                <span className="shrink-0 label-mono whitespace-nowrap">
                   {t("sheet", {
                     number: `A-${String(101 + index)}`,
                   })}

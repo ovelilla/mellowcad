@@ -1,3 +1,5 @@
+import { getLocale } from "next-intl/server"
+
 import {
   SvgScenePresenter,
   THEME,
@@ -5,18 +7,19 @@ import {
   demo,
   entityDrawOrder,
   primitiveLength,
-  promptText,
   recordDemo,
   themePalette,
   transcript,
   type Bounds,
   type DemoRecording,
   type DemoScript,
+  type EngineLocale,
   type Entity,
   type EntityId,
   type ScenePrimitive,
   type TranscriptLine,
 } from "@/cad"
+import { loadEngineLocale } from "@/i18n/engine"
 
 /**
  * Turns a recorded session into what the landing shows: the drawing as SVG,
@@ -53,6 +56,13 @@ export interface PlotOptions {
   readonly padding?: number
   /** What to frame; the whole drawing by default. */
   readonly frame?: Bounds
+  /** The engine's language to record in; English by default. */
+  readonly locale?: EngineLocale
+}
+
+/** The engine's language for the page being rendered. */
+export async function pageEngineLocale(): Promise<EngineLocale | undefined> {
+  return loadEngineLocale(await getLocale())
 }
 
 export interface PlottedLine extends TranscriptLine {
@@ -117,7 +127,7 @@ export async function plotDemo(
   script: DemoScript,
   options: PlotOptions
 ): Promise<Plot> {
-  const recording = await recordDemo(script)
+  const recording = await recordDemo(script, { locale: options.locale })
   const { document } = recording
   const scene = (entities: readonly Entity[]) =>
     buildDrawingPreview(document, {
@@ -207,14 +217,6 @@ export async function plotDemo(
   }
 }
 
-/** The idle prompt a finished session returns to, as the engine words it. */
-export const IDLE_PROMPT = promptText({
-  command: null,
-  field: null,
-  fieldKind: null,
-  options: [],
-})
-
 /** A still — a drawing, or the editor's own frame — for the smaller figures. */
 export function drawingMarkup(
   primitives: readonly ScenePrimitive[],
@@ -246,8 +248,9 @@ export async function renderFigure(spec: {
   readonly padding?: number
   readonly frame?: Bounds
   readonly live?: boolean
+  readonly locale?: EngineLocale
 }): Promise<RenderedFigure> {
-  const recording = await recordDemo(spec.script)
+  const recording = await recordDemo(spec.script, { locale: spec.locale })
   const primitives = spec.live
     ? recording.scene.primitives
     : (buildDrawingPreview(recording.document, {

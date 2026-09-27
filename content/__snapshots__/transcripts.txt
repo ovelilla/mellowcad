@@ -196,28 +196,37 @@ command |  | RECTANG
 input | First corner: | 118,8
 input | Other corner: | @40,22
 command |  | TEXT
-input | Specify start point of text [Justify/Style]: | 21,31
+input | Specify start point of text [Justify/Style]: | 4,64
+input | Specify height: | 3
+input | Specify rotation angle of text: | 0
+input | Text: | YOUR DEVICE
+input | Text: | 
+command |  | TEXT
+input | Specify start point of text [Justify/Style]: | J
+info |  | Enter an option [Left/Center/Right/Middle/TL/TC/TR/ML/MC/MR/BL/BC/BR]:
+input | Justify: | MC
+input | Specify start point of text [Justify/Style]: | 32,33
 input | Specify height: | 4
 input | Specify rotation angle of text: | 0
 input | Text: | EDITOR
 input | Text: | 
 command |  | TEXT
-input | Specify start point of text [Justify/Style]: | 122,45
+input | Specify start point of text [Justify/Style]: | J
+info |  | Enter an option [Left/Center/Right/Middle/TL/TC/TR/ML/MC/MR/BL/BC/BR]:
+input | Justify: | MC
+input | Specify start point of text [Justify/Style]: | 138,47
 input | Specify height: | 4
 input | Specify rotation angle of text: | 0
 input | Text: | BROWSER
 input | Text: | 
 command |  | TEXT
-input | Specify start point of text [Justify/Style]: | 131,17
+input | Specify start point of text [Justify/Style]: | J
+info |  | Enter an option [Left/Center/Right/Middle/TL/TC/TR/ML/MC/MR/BL/BC/BR]:
+input | Justify: | MC
+input | Specify start point of text [Justify/Style]: | 138,19
 input | Specify height: | 4
 input | Specify rotation angle of text: | 0
 input | Text: | FILE
-input | Text: | 
-command |  | TEXT
-input | Specify start point of text [Justify/Style]: | 4,64
-input | Specify height: | 3
-input | Specify rotation angle of text: | 0
-input | Text: | YOUR DEVICE
 input | Text: | 
 command |  | DIMLINEAR
 input | Specify first extension line origin or <select object>: | 

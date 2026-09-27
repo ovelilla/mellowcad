@@ -88,6 +88,19 @@ describe("the engine's catalogs", () => {
     }
   })
 
+  // The names of linetypes and hatch patterns are the drawing's data, never
+  // translated; everything else Spanish must say itself.
+  it("leave nothing of the interface to English in Spanish", () => {
+    const spanish = new Set(
+      messages({ interface: (readCatalog("es") as Tree).interface } as Tree)
+    )
+    const paths = new Set([...spanish].map(([path]) => path))
+    for (const [path] of messages({ interface: english.interface } as Tree)) {
+      if (/^interface.(linetype|hatchPattern)./.test(path)) continue
+      expect(paths.has(path), path).toBe(true)
+    }
+  })
+
   it("give plurals an other branch, which every language needs", () => {
     const withoutOther = (elements: MessageFormatElement[]): boolean =>
       elements.some(

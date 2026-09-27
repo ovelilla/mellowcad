@@ -8,6 +8,7 @@ import {
   SnapType,
   commandCatalog,
   type CommandInfo,
+  type EngineLocale,
 } from "@/cad"
 import {
   COMMAND_FILING,
@@ -27,9 +28,12 @@ export interface CatalogCommand extends CommandInfo {
   readonly key: string
 }
 
-/** The commands AutoCAD users know by name, filed by ribbon group. */
-export function autocadCommands(): CatalogCommand[] {
-  return commandCatalog().flatMap((command) => {
+/**
+ * The commands AutoCAD users know by name, filed by ribbon group: named in the
+ * command language of `locale`, described in its interface language.
+ */
+export function autocadCommands(locale?: EngineLocale): CatalogCommand[] {
+  return commandCatalog(locale).flatMap((command) => {
     const filing = COMMAND_FILING[command.id]
     if (!filing || filing.variant) return []
     const key = [command.name, ...command.aliases].reduce((shortest, name) =>
@@ -39,8 +43,10 @@ export function autocadCommands(): CatalogCommand[] {
   })
 }
 
-export function commandsByGroup(): Record<CommandGroup, CatalogCommand[]> {
-  const commands = autocadCommands()
+export function commandsByGroup(
+  locale?: EngineLocale
+): Record<CommandGroup, CatalogCommand[]> {
+  const commands = autocadCommands(locale)
   return Object.fromEntries(
     COMMAND_GROUPS.map((group) => [
       group,
@@ -75,7 +81,7 @@ export function productFacts(): ProductFacts {
   }
 }
 
-const TEST_ROOTS = ["cad", "test", "content"]
+const TEST_ROOTS = ["cad", "test", "content", "i18n", "lib"]
 const TEST_CASE = /^\s*(?:it|test)(?:\.each\([^)]*\))?\(/gm
 
 /**

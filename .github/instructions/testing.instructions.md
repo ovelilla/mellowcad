@@ -10,7 +10,9 @@ Vitest + fast-check, `environment: "node"`, `globals: false` (explicit imports).
 scripts and derived facts (see `marketing.instructions.md`) — and `i18n/**` and `lib/**`: the URL
 scheme, the message catalogs and the helpers that read them (`i18n.instructions.md`). `next-intl`
 is inlined (`server.deps.inline`): it imports `next/navigation` without an extension, which only a
-bundler resolves.
+bundler resolves. `content/figures.test.ts` replays the diagrams in every translated language
+(`content/diagrams.fixture.ts`), and `locale.test.ts` runs the harness with the real Spanish
+catalog.
 
 **A test that needs jsdom means a layering rule was broken** — `cad/` outside `adapters/` is
 DOM-free by design. Fix the layering, do not switch the environment.

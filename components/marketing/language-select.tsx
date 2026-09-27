@@ -9,12 +9,11 @@ import { ChevronDown, Globe } from "lucide-react"
 export function LanguageSelect({
   label,
   current,
-  upcoming,
   soon,
 }: {
   label: string
+  /** The page's language, named in itself. */
   current: string
-  upcoming: string
   soon: string
 }) {
   return (
@@ -33,7 +32,7 @@ export function LanguageSelect({
         <ChevronDown className="size-3.5 text-fg-subtle" aria-hidden="true" />
       </span>
       <span role="tooltip" id="language-soon">
-        {upcoming} · {soon}
+        {soon}
       </span>
     </div>
   )

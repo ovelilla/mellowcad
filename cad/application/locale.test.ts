@@ -3,6 +3,7 @@ import { describe, expect, it } from "vitest"
 
 import { createHarness } from "../../test/harness"
 import { lineOf, p } from "../../test/builders"
+import { es } from "../locales/es"
 import type { EngineLocale } from "../locales/types"
 import { commandCatalog } from "./commandCatalog"
 import { demo, recordDemo, transcript } from "./DemoScript"
@@ -218,5 +219,33 @@ describe("the palettes", () => {
     }).state().names
     expect(other.byLayer).toBe("PorCapa")
     expect(other.colors.red).toBe("Red")
+  })
+})
+
+describe("Spanish, the interface without its command language yet", () => {
+  // Phase 2 of docs/next-i18n.md: the palettes, menus and tooltips speak
+  // Spanish; the command line keeps the global language until phase 3.
+  it("names the interface in Spanish and leaves the drawing's data alone", () => {
+    const cad = createHarness({ locale: es })
+    const { names, tools } = cad.state()
+    expect(names.snaps.endpoint).toBe("Punto final")
+    expect(names.colors.red).toBe("Rojo")
+    expect(names.byLayer).toBe("PorCapa")
+    expect(names.linetypes.DashDot).toBe("Dash dot")
+    expect(tools.find((tool) => tool.id === "line")?.label).toBe("Línea")
+  })
+
+  it("still types and prompts in the global language", () => {
+    const cad = createHarness({ locale: es })
+    cad.command("LINE")
+    expect(cad.state().commandLine.prompt).toBe("LINE:")
+    expect(
+      commandCatalog(es).find((command) => command.id === "ERASE")
+    ).toEqual(
+      expect.objectContaining({
+        name: "ERASE",
+        description: "Borrar los objetos seleccionados",
+      })
+    )
   })
 })

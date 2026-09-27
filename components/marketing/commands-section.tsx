@@ -1,11 +1,11 @@
 import { getFormatter, getTranslations } from "next-intl/server"
 
-import { engineText, transcript } from "@/cad"
+import { type EngineLocale, engineText, transcript } from "@/cad"
 import { COMMAND_GROUPS } from "@/content/commands"
 import { FIGURES } from "@/content/figures"
 import { sitePaths } from "@/i18n/navigation"
 import { autocadCommands, commandsByGroup, productFacts } from "@/lib/facts"
-import { IDLE_PROMPT, renderFigure } from "@/lib/plot"
+import { pageEngineLocale, renderFigure } from "@/lib/plot"
 
 import { CommandTry } from "./command-try"
 import { Drawing } from "./drawing"
@@ -13,8 +13,8 @@ import { SectionHeading } from "./section-heading"
 import { SnapCorners } from "./snap-corners"
 
 /** The OFFSET card's history, from the moment OFFSET is typed. */
-async function offsetTranscript() {
-  const figure = await renderFigure(FIGURES.offset)
+async function offsetTranscript(locale: EngineLocale | undefined) {
+  const figure = await renderFigure({ ...FIGURES.offset, locale })
   const lines = transcript(figure.recording)
   const start = lines.findIndex(
     (line) => line.kind === "command" && line.text === "OFFSET"
@@ -29,8 +29,10 @@ export async function CommandsSection() {
   const format = await getFormatter()
   const paths = await sitePaths()
   const facts = productFacts()
-  const byGroup = commandsByGroup()
-  const { figure, lines } = await offsetTranscript()
+  const engine = await pageEngineLocale()
+  const text = engineText(engine)
+  const byGroup = commandsByGroup(engine)
+  const { figure, lines } = await offsetTranscript(engine)
 
   return (
     <section
@@ -102,7 +104,7 @@ export async function CommandsSection() {
       <div className="grid gap-10 lg:grid-cols-12">
         <div className="min-w-0 lg:col-span-5">
           <CommandTry
-            commands={autocadCommands().map(
+            commands={autocadCommands(engine).map(
               ({ name, aliases, description }) => ({
                 name,
                 aliases,
@@ -113,8 +115,8 @@ export async function CommandsSection() {
             label={t("tryLabel")}
             placeholder={t("tryPlaceholder")}
             hint={t("tryHint")}
-            prompt={IDLE_PROMPT}
-            unknown={engineText().message("unknownCommand", {
+            prompt={text.idlePrompt()}
+            unknown={text.message("unknownCommand", {
               name: "{command}",
             })}
           />
@@ -134,7 +136,9 @@ export async function CommandsSection() {
                 <li key={index}>
                   {line.kind === "command" ? (
                     <>
-                      <span className="text-fg-subtle">{IDLE_PROMPT} </span>
+                      <span className="text-fg-subtle">
+                        {text.idlePrompt()}{" "}
+                      </span>
                       <span className="text-fg">{line.text}</span>
                     </>
                   ) : line.kind === "input" ? (

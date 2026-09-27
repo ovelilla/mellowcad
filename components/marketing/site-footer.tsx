@@ -100,8 +100,7 @@ export async function SiteFooter() {
             <span className="label-mono">{t("language")}</span>
             <LanguageSelect
               label={t("language")}
-              current={t("english")}
-              upcoming={t("spanish")}
+              current={t("languageName")}
               soon={t("languageSoon")}
             />
           </div>

@@ -2,7 +2,7 @@ import { getTranslations } from "next-intl/server"
 
 import { FIGURES, type FigureId } from "@/content/figures"
 import { productFacts } from "@/lib/facts"
-import { renderFigure } from "@/lib/plot"
+import { pageEngineLocale, renderFigure } from "@/lib/plot"
 
 import { Drawing } from "./drawing"
 import { SectionHeading } from "./section-heading"
@@ -24,7 +24,10 @@ function Keys({ keys }: { keys: readonly string[] }) {
 }
 
 async function Figure({ id, alt }: { id: FigureId; alt: string }) {
-  const figure = await renderFigure(FIGURES[id])
+  const figure = await renderFigure({
+    ...FIGURES[id],
+    locale: await pageEngineLocale(),
+  })
   return (
     <div className="overflow-hidden rounded-md border border-border bg-bg">
       <Drawing

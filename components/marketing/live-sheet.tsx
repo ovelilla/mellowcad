@@ -9,6 +9,9 @@ import {
   type ReactNode,
 } from "react"
 
+import type { EngineLocale } from "@/cad"
+import { loadEngineLocale } from "@/i18n/engine"
+import type { AppLocale } from "@/i18n/routing"
 import { HERO_SKETCH_PATH } from "@/lib/site"
 import { SHEET_TRANSITION } from "@/lib/view-transition"
 
@@ -45,9 +48,10 @@ function loadHeroSketch(): Promise<string> {
   return heroSketch
 }
 
-function warm(): void {
+function warm(locale: AppLocale): void {
   loadLiveModule().catch(() => {})
   loadHeroSketch().catch(() => {})
+  loadEngineLocale(locale).catch(() => {})
 }
 
 type Phase = "still" | "loading" | "live" | "failed"
@@ -62,6 +66,7 @@ type Phase = "still" | "loading" | "live" | "failed"
 export function LiveSheet({
   id,
   editor,
+  locale,
   drawing,
   transcript,
   controls,
@@ -70,6 +75,8 @@ export function LiveSheet({
 }: {
   id: string
   editor: LiveCanvasProps["editor"]
+  /** The page's language, for the engine's catalog. */
+  locale: AppLocale
   /** The still figure: the plotted drawing and its overlays. */
   drawing: ReactNode
   /** The still command line, typed in step with the plot. */
@@ -89,17 +96,20 @@ export function LiveSheet({
   const returnFocus = useRef(false)
   const [phase, setPhase] = useState<Phase>("still")
   const [live, setLive] = useState<LiveModule | null>(null)
+  const [engineLocale, setEngineLocale] = useState<EngineLocale>()
   const isLive = phase === "live" && live !== null
 
   const open = async () => {
     if (phase === "loading") return
     setPhase("loading")
     try {
-      const [module, text] = await Promise.all([
+      const [module, text, catalog] = await Promise.all([
         loadLiveModule(),
         loadHeroSketch(),
+        loadEngineLocale(locale),
       ])
       module.seedSketch(text)
+      setEngineLocale(catalog)
       setLive(module)
       setPhase("live")
     } catch {
@@ -168,8 +178,8 @@ export function LiveSheet({
           <button
             ref={tryRef}
             type="button"
-            onPointerEnter={warm}
-            onFocus={warm}
+            onPointerEnter={() => warm(locale)}
+            onFocus={() => warm(locale)}
             onClick={open}
             aria-busy={phase === "loading"}
             className="hidden h-7 shrink-0 items-center gap-1.5 rounded border border-border px-2.5 text-sm text-fg transition-colors duration-150 hover:border-fg-subtle aria-busy:cursor-progress pointer-fine:lg:inline-flex"
@@ -189,6 +199,7 @@ export function LiveSheet({
       {isLive && (
         <live.LiveCanvas
           labels={labels.live}
+          engineLocale={engineLocale}
           editor={editor}
           view={view}
           onClose={close}

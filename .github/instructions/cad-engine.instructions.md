@@ -37,7 +37,10 @@ by key. `application/EngineText.ts` is the one place that reads it; a tool reach
   of that moment (`Layer{n}`, `Copy of {name}`), as AutoCAD's are.
 - **Two languages, one boundary.** `interface` is the palettes' and menus' language; `commands` is
   the command language — names, prompts, keywords, messages and everything drawn on the canvas.
-  A locale may leave `commands` out, and then the command language is the global one.
+  A locale may leave `commands` out, and then the command language is the global one — `es.json`
+  carries only `interface` until Spanish AutoCAD's command vocabulary is in.
+- **A language translates the whole `interface` but for `linetype` and `hatchPattern`**, which are
+  the drawing's data names and fall back to English's. `locales.test.ts` holds Spanish to that.
 - **No global language state.** The locale is passed explicitly — `CadEngineOptions`, `CadRuntime`'s
   fifth argument, `CadDriverOptions` (so `createHarness`), `recordDemo(…, { locale })`,
   `commandCatalog(locale)` — and `setLocale` switches one engine. A module-level registry would be
@@ -45,8 +48,9 @@ by key. `application/EngineText.ts` is the one place that reads it; a tool reach
 - **Messages are ICU MessageFormat** (next-intl's syntax): `{count, plural, …}`, never a hand-made
   plural. A `<` followed by a letter is written `'<'`, or ICU reads it as a tag. `names` and
   `keywords` are words, not messages, and are not compiled.
-- **After editing `en.json`, run `npm run locales`** and commit both files: the engine imports the
-  compiled `en.ts` (no parser ships to the browser), and `locales.test.ts` fails on any drift.
+- **After editing a catalog (`en.json`, `es.json`), run `npm run locales`** and commit both files:
+  the engine imports the compiled module (no parser ships to the browser), and `locales.test.ts`
+  fails on any drift.
 - **Technical values never go through `Intl`.** Lengths and angles are `formatLength` /
   `formatAngle` (`toFixed`, a point, latin digits) and enter a message already formatted. Counts do
   go through the formatter, which pins latin digits and no grouping.

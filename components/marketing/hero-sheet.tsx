@@ -1,10 +1,15 @@
 import { getLocale, getTranslations } from "next-intl/server"
 import type { CSSProperties } from "react"
 
-import { formatLength, type DemoAction, type PromptSegment } from "@/cad"
+import {
+  engineText,
+  formatLength,
+  type DemoAction,
+  type PromptSegment,
+} from "@/cad"
 import { HERO_FIGURE } from "@/content/figures"
 import { sitePaths } from "@/i18n/navigation"
-import { IDLE_PROMPT, plotDemo, type PlottedLine } from "@/lib/plot"
+import { pageEngineLocale, plotDemo, type PlottedLine } from "@/lib/plot"
 import { pluralMessage } from "@/lib/plural"
 
 import { Drawing } from "./drawing"
@@ -33,13 +38,13 @@ function Prompt({ segments }: { segments: readonly PromptSegment[] }) {
   )
 }
 
-function Line({ line }: { line: PlottedLine }) {
+function Line({ line, idle }: { line: PlottedLine; idle: string }) {
   const typed =
     line.kind === "command" || line.kind === "input" ? line.text : ""
   return (
     <div className="cl-line" style={{ "--t": `${line.at}ms` } as Timed}>
       {line.kind === "command" ? (
-        <span className="text-fg-subtle">{IDLE_PROMPT} </span>
+        <span className="text-fg-subtle">{idle} </span>
       ) : line.kind === "input" ? (
         <Prompt segments={line.segments} />
       ) : (
@@ -85,9 +90,15 @@ function lastCursor(actions: readonly DemoAction[]) {
 export async function HeroSheet() {
   const t = await getTranslations("Hero")
   const live = await getTranslations("LiveSketch")
+  const input = await getTranslations("Editor.DynamicInput")
   const locale = await getLocale()
   const { editor } = await sitePaths()
-  const plot = await plotDemo(HERO_FIGURE.script, HERO_FIGURE)
+  const engine = await pageEngineLocale()
+  const idle = engineText(engine).idlePrompt()
+  const plot = await plotDemo(HERO_FIGURE.script, {
+    ...HERO_FIGURE,
+    locale: engine,
+  })
   const settings = plot.recording.document.getSettings()
   const cursor = lastCursor(HERO_FIGURE.script.actions)
   const coordinate = (value: number) => formatLength(value, settings)
@@ -97,6 +108,7 @@ export async function HeroSheet() {
       <LiveSheet
         id={SHEET_ID}
         editor={editor}
+        locale={locale}
         view={{
           frame: HERO_FIGURE.frame,
           padding: HERO_FIGURE.padding,
@@ -112,7 +124,7 @@ export async function HeroSheet() {
             hint: live("hint"),
             wheelHint: live("wheelHint"),
             commandLog: live("commandLog"),
-            commandPrompt: IDLE_PROMPT,
+            commandPrompt: idle,
             openEditor: live("openEditor"),
             close: live("close"),
             closeLabel: live("closeLabel"),
@@ -122,6 +134,7 @@ export async function HeroSheet() {
             download: live("download"),
             replace: live("replace"),
             cancel: live("cancel"),
+            locked: input("locked"),
           },
         }}
         drawing={
@@ -154,13 +167,13 @@ export async function HeroSheet() {
             className="flex h-[6em] min-w-0 flex-1 flex-col justify-end overflow-hidden font-mono text-[0.8125rem]"
           >
             {plot.lines.map((line, index) => (
-              <Line key={index} line={line} />
+              <Line key={index} line={line} idle={idle} />
             ))}
             <div
               className="cl-line"
               style={{ "--t": `${plot.duration}ms` } as Timed}
             >
-              <span className="text-fg-subtle">{IDLE_PROMPT} </span>
+              <span className="text-fg-subtle">{idle} </span>
               <span
                 className="caret"
                 style={{ "--t": `${plot.duration}ms` } as Timed}
@@ -191,7 +204,7 @@ export async function HeroSheet() {
             {plot.lines.map((line, index) => (
               <li key={index}>
                 {line.kind === "command"
-                  ? `${IDLE_PROMPT} ${line.text}`
+                  ? `${idle} ${line.text}`
                   : line.kind === "input"
                     ? `${line.prompt} ${line.text}`
                     : line.text}

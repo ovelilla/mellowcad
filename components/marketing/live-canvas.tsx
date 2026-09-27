@@ -11,6 +11,7 @@ import {
   isBlankDrawing,
   readSavedDrawingSummary,
   type Bounds,
+  type EngineLocale,
   type EngineState,
 } from "@/cad"
 import { DynamicInput } from "@/components/cad/dynamic-input"
@@ -53,10 +54,14 @@ export interface LiveCanvasLabels {
   readonly download: string
   readonly replace: string
   readonly cancel: string
+  /** The editor's own word for the dynamic-input padlock. */
+  readonly locked: string
 }
 
 export interface LiveCanvasProps {
   readonly labels: LiveCanvasLabels
+  /** The engine's language; English when absent. */
+  readonly engineLocale?: EngineLocale
   /** The editor in the page's language. */
   readonly editor: string
   /** What the still figure frames, so the drawing does not move as it wakes. */
@@ -74,12 +79,19 @@ export interface LiveCanvasProps {
  * embedded (`scope`), so it has the keyboard and the wheel only while in use.
  * Loaded on demand — none of this is in the page's first load.
  */
-export function LiveCanvas({ labels, editor, view, onClose }: LiveCanvasProps) {
+export function LiveCanvas({
+  labels,
+  engineLocale,
+  editor,
+  view,
+  onClose,
+}: LiveCanvasProps) {
   const scopeRef = useRef<HTMLDivElement>(null)
   const dialogRef = useRef<HTMLDialogElement>(null)
   const { canvasRef, engine, state } = useCadEngine({
     store: sketch,
     scopeRef,
+    locale: engineLocale,
   })
   const [savedObjects, setSavedObjects] = useState(0)
   const descriptionId = useId()
@@ -157,7 +169,11 @@ export function LiveCanvas({ labels, editor, view, onClose }: LiveCanvasProps) {
           {state && <Readout state={state} />}
           {engine && state && (
             <>
-              <DynamicInput engine={engine} state={state} />
+              <DynamicInput
+                engine={engine}
+                state={state}
+                lockedLabel={labels.locked}
+              />
               <Suggestions
                 state={state}
                 onRun={(name) => engine.runCommand(name)}

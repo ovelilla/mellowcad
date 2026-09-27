@@ -1,8 +1,9 @@
 import { describe, expect, it } from "vitest"
 
-import { recordDemo, transcript } from "@/cad"
-import { IDLE_PROMPT, plotDemo } from "@/lib/plot"
+import { engineText, recordDemo, transcript } from "@/cad"
+import { plotDemo } from "@/lib/plot"
 
+import { englishDiagrams } from "./diagrams.fixture"
 import { FIGURES, HERO_FIGURE } from "./figures"
 
 /**
@@ -12,7 +13,7 @@ import { FIGURES, HERO_FIGURE } from "./figures"
  */
 describe("the landing's transcripts", () => {
   it("read as the engine words them", async () => {
-    const out: string[] = [`idle: ${IDLE_PROMPT}`]
+    const out: string[] = [`idle: ${engineText().idlePrompt()}`]
     const plot = await plotDemo(HERO_FIGURE.script, HERO_FIGURE)
     out.push("## hero")
     for (const line of plot.lines) {
@@ -20,7 +21,10 @@ describe("the landing's transcripts", () => {
         `${line.at} +${line.typing} ${line.kind} | ${line.prompt} | ${line.text}`
       )
     }
-    for (const [name, figure] of Object.entries(FIGURES)) {
+    for (const [name, figure] of Object.entries({
+      ...FIGURES,
+      ...englishDiagrams(),
+    })) {
       out.push(`## ${name}`)
       for (const line of transcript(await recordDemo(figure.script))) {
         out.push(`${line.kind} | ${line.prompt} | ${line.text}`)

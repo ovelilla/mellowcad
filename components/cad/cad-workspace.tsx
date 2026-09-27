@@ -2,6 +2,7 @@
 
 import { useTranslations } from "next-intl"
 
+import type { EngineLocale } from "@/cad"
 import { useCadEngine } from "@/hooks/useCadEngine"
 import { EDITOR_SHEET_ID, SHEET_TRANSITION } from "@/lib/view-transition"
 import { AboutPanel } from "./about-panel"
@@ -23,9 +24,15 @@ import { SelectionCyclingList } from "./selection-cycling-list"
  * UI chrome (toolbar, status bar). The canvas fills the container; the engine
  * handles all pointer/keyboard interaction and drawing on it directly.
  */
-export function CadWorkspace() {
-  const { canvasRef, engine, state } = useCadEngine()
+export function CadWorkspace({
+  engineLocale,
+}: {
+  /** The page language's catalog for the engine; English when absent. */
+  engineLocale?: EngineLocale
+}) {
+  const { canvasRef, engine, state } = useCadEngine({ locale: engineLocale })
   const t = useTranslations("Editor.Workspace")
+  const input = useTranslations("Editor.DynamicInput")
 
   return (
     <div
@@ -73,7 +80,11 @@ export function CadWorkspace() {
             <DrawingAids engine={engine} state={state} />
           </div>
 
-          <DynamicInput engine={engine} state={state} />
+          <DynamicInput
+            engine={engine}
+            state={state}
+            lockedLabel={input("locked")}
+          />
 
           <div className="pointer-events-none absolute top-4 right-4 z-10">
             <PropertiesPanel engine={engine} state={state} />

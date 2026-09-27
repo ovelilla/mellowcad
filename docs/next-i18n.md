@@ -793,6 +793,9 @@ interface EngineLocale {
 
 - La migración a propiedades lógicas (§7.2), `components.json` con `rtl: true` y `shadcn migrate rtl`,
   los lados lógicos en los popups, las islas LTR (§7.3) y los iconos (§7.4).
+- Los cuatro campos `type="number"` de las paletas (forzcursor, escalas, estilos de cota y texto) pasan
+  a texto con `inputmode="decimal"` y su propio paso con las flechas: Chrome los escribe con el idioma
+  del navegador (`3,75`), sea cual sea el `lang`, y un valor técnico va siempre con punto (§15, fase 2).
 - **Aceptación:** con `dir="rtl"` forzado en una prueba, la envoltura se refleja bien y el dibujo no; el
   inglés sale idéntico en capturas antes y después.
 
@@ -1132,6 +1135,82 @@ Los mensajes `Editor.*` viajan en el HTML de `/draw`: +2,1 KB gz.
 de catálogos ya comprueba claves, argumentos y etiquetas. Los nombres de comando dentro de frases
 (`Type a command (LINE, TR, CO…)`, `run BLOCK`, `TEXT asks`) van en el idioma de comandos de ese
 locale. El selector de idioma sigue inerte hasta que `es` pase a `live` (fase 3).
+
+### Fase 2 — estado (27/09/2026): terminada, pendiente de la revisión del autor
+
+**Hecho.** `messages/es.json` completo (landing, privacidad y `Editor.*`: 373 mensajes) y
+`cad/locales/es.json` con toda la `interface` del motor en español; su idioma de comandos sigue siendo
+el global hasta la fase 3. La terminología es la de la ayuda de AutoCAD 2026 en español, verificada
+término a término con su fuente en el nuevo `docs/i18n-glossary.md`. El motor habla el idioma de la
+página en los tres sitios donde dibuja: el editor recibe su catálogo desde la página, el sketch vivo
+lo carga con el motor y el build de la landing lo usa para el catálogo de comandos, las figuras y los
+textos del motor. Los dos diagramas llevan las palabras de la página. Textos de búsqueda en español y
+OG en español. `es` sigue en `draft`.
+
+**Verificado.** `typecheck`, `lint` y `test` en verde (1 186 tests): el español, completo en los dos
+catálogos (clave a clave, con los mismos argumentos y etiquetas), el harness con el catálogo español
+real y los diagramas reproducidos en los dos idiomas. Build de producción en un worktree, todo `○`/`●`.
+En el navegador, frente al build de la fase 1: el recorrido del editor y de la landing en inglés da el
+mismo texto y la captura de `/draw` sale idéntica byte a byte; el HTML inglés solo cambia en las tres
+etiquetas del diagrama, ahora centradas de verdad («BROWSER» quedaba desplazada), y en una clase de la
+etiqueta de hoja. `/es`, `/es/privacy` y `/es/draw`, capturados sección a sección a 1400 y a 390 px,
+sin desbordamiento horizontal a 320, 360 y 390 px; el sketch vivo de `/es` carga el catálogo español y
+dibuja; la OG y el manifest, en español. Presupuestos: la landing crece 0,1 KB gz (el mapa de
+catálogos en la isla del sketch), el chunk del motor queda en 87,8 KB gz y el catálogo español viaja
+en el HTML de `/es/draw` (+2,0 KB gz, frente a los 12 de §8.3).
+
+**Falta:** la revisión del autor de la landing y la privacidad en español (§11), que es quien firma
+como responsable del tratamiento.
+
+**Textos de búsqueda.** De las sugerencias de Google en España, México, Argentina, Colombia y Chile y
+de los títulos que posicionan hoy (sin volúmenes: Trends no se pudo leer): «gratis» acompaña a todas
+las búsquedas («cad online gratis», «cad 2d online gratis»), «CAD online» se dice así y no «en línea»
+(esa búsqueda es de visores de archivos), «sin registro» es la forma de decir *no sign-up*, y
+«comandos de AutoCAD» es común. Título: «CAD 2D online gratis con comandos de AutoCAD — MellowCAD»
+(56); nunca «AutoCAD online gratis», que se leería como si esto fuera AutoCAD. Descripción: «CAD 2D
+gratis en tu navegador con los comandos, alias y referencias a objetos de AutoCAD. Sin instalación ni
+registro; tus dibujos no salen de tu equipo.» (153). El lead lleva los términos que el H1 no tiene.
+
+**Correcciones al brief y a la fase 1:**
+
+- **La fase 1 rompió el sketch vivo de la landing**: incrusta el `DynamicInput` del editor, que pasó a
+  `useTranslations`, y la landing no tiene proveedor de mensajes, así que lanzaba al abrirse. Su
+  verificación no llegó a pulsar «Try it here». El componente recibe ahora su palabra por props, y un
+  test impide que la landing tome prestado un componente del editor que pida mensajes.
+- **Los campos `type="number"` no se arreglan con `lang`.** Chrome los escribe con el idioma del
+  navegador (`3,75`), sea cual sea el `lang` del campo o de la página (probado con los dos): la web
+  inglesa ya los enseñaba así a quien tenga el navegador en español. Pasarlos a texto cambia su
+  comportamiento; queda en el alcance de la fase 4, con el resto de valores técnicos de las paletas.
+- **`Press F1 for help.`** es del idioma de comandos (acompaña a `Unknown command` en la 404), así que
+  en `es` sigue en inglés hasta la fase 3, como seguirá en `ar`.
+
+**Huecos decididos:**
+
+- **Nombres de tipos de línea y de patrones de sombreado:** son datos del dibujo y no se traducen;
+  `es.json` los deja fuera y caen al inglés. Un test exige el resto de la `interface`.
+- **Registro:** tú en la landing; en el editor, el de Autodesk (etiquetas en infinitivo o nombre,
+  frases en usted). «Intro» y «Supr», como en la ayuda de Autodesk, también en el H1.
+- **La cabecera tiene su propia etiqueta** (`Header.cta`): «Empezar a dibujar →» no cabía junto al
+  logo y el menú a 360 px y se partía en dos líneas; en español es «Dibujar», en inglés no cambia.
+- **La etiqueta de hoja de «Herramientas» ya no se parte** cuando el título se alarga.
+- **El selector de idioma** muestra el idioma de la página por su nombre (`Footer.languageName`) y un
+  único texto de «próximamente»; sigue inerte hasta la fase 3.
+- **Etiquetas de los diagramas:** centradas con TEXTO justificado `MC`, que el motor recuerda como
+  TEXTJUSTIFY, así que la etiqueta alineada a la izquierda va primero. Al hacerlo apareció un hueco de
+  fidelidad del motor: tras `MC` la solicitud sigue diciendo *start point* donde AutoCAD dice *middle
+  point*; queda en la fila de TEXT de `docs/autocad-coverage.md`.
+- **Términos sin verificar** (la fuente no los da): varias filas de geometría de la paleta de
+  propiedades; están marcadas en el glosario para comprobarlas con una captura del producto.
+
+**Para la fase 3.** Los mensajes que nombran comandos van hoy con los nombres globales, porque ese es
+el idioma de comandos de `es` en esta fase, y hay que reescribirlos con los de AutoCAD en español:
+`Commands.lead`, `Commands.tryPlaceholder`, `Commands.transcriptTitle`, `LiveSketch.hint`,
+`Toolset.inquiryBody` (FROM), `Status.notYet4` y `next1`/`next3` (MTEXT, SPLINE), `Faq.a8`,
+`Editor.CommandLine.placeholder`, `Editor.DrawingAids.linetypeScaleLabel` (LTSCALE → ESCALATL),
+`Editor.Styles.heightHint` (TEXT), `Editor.Blocks.empty` (BLOCK), `Editor.About.howTo` y
+`NotFound.help`. `Precision.osnapBody` ya dice «Tangente», que es lo que la figura dirá entonces.
+`offsetTranscript` (`commands-section.tsx`) busca la línea por el texto `OFFSET`: con el nombre
+localizado tendrá que buscarla por el comando.
 
 ## Referencias
 

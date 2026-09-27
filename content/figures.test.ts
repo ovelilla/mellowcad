@@ -9,6 +9,7 @@ import {
 } from "@/cad"
 import { plotDemo, renderFigure } from "@/lib/plot"
 
+import { diagramsIn } from "./diagrams.fixture"
 import { FIGURES, HERO_FIGURE } from "./figures"
 
 /**
@@ -17,7 +18,14 @@ import { FIGURES, HERO_FIGURE } from "./figures"
  * prompt that fails or a script that draws nothing fails here, not on the page.
  */
 
-describe.each(Object.entries({ hero: HERO_FIGURE, ...FIGURES }))(
+describe.each(
+  Object.entries({
+    hero: HERO_FIGURE,
+    ...FIGURES,
+    ...diagramsIn("en"),
+    ...diagramsIn("es"),
+  })
+)(
   "the %s figure",
   (_name, figure) => {
     it("replays without the engine reporting an error", async () => {
