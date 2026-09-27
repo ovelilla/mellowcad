@@ -6,8 +6,11 @@ description: "Testing conventions: the headless CadRuntime harness, custom match
 # Testing
 
 Vitest + fast-check, `environment: "node"`, `globals: false` (explicit imports).
-`npm test` runs `cad/**/*.test.ts`, `test/**/*.test.ts` and `content/**/*.test.ts` — the last
-being the landing's scripts and derived facts (see `marketing.instructions.md`).
+`npm test` runs `cad/**/*.test.ts`, `test/**/*.test.ts`, `content/**/*.test.ts` — the landing's
+scripts and derived facts (see `marketing.instructions.md`) — and `i18n/**` and `lib/**`: the URL
+scheme, the message catalogs and the helpers that read them (`i18n.instructions.md`). `next-intl`
+is inlined (`server.deps.inline`): it imports `next/navigation` without an extension, which only a
+bundler resolves.
 
 **A test that needs jsdom means a layering rule was broken** — `cad/` outside `adapters/` is
 DOM-free by design. Fix the layering, do not switch the environment.

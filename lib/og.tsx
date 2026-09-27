@@ -56,9 +56,11 @@ async function font(file: string) {
  * headline. Satori lays out only flexbox, so every box states `display: flex`.
  */
 export async function ogImage({
+  locale,
   eyebrow,
   title,
 }: {
+  locale: string
   eyebrow: string
   title: string
 }) {
@@ -68,7 +70,7 @@ export async function ogImage({
     font("geist-mono-latin-400-normal.woff"),
   ])
   const sentences = [
-    ...new Intl.Segmenter("en", { granularity: "sentence" }).segment(title),
+    ...new Intl.Segmenter(locale, { granularity: "sentence" }).segment(title),
   ].map(({ segment }) => segment.trim())
 
   return new ImageResponse(

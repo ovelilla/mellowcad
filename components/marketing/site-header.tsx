@@ -2,7 +2,7 @@ import { Menu, X } from "lucide-react"
 import Link from "next/link"
 import { getTranslations } from "next-intl/server"
 
-import { EDITOR_PATH } from "@/lib/site"
+import { sitePaths } from "@/i18n/navigation"
 
 import { Logo } from "./logo"
 
@@ -22,11 +22,16 @@ const SECTIONS = [
 export async function SiteHeader() {
   const t = await getTranslations("Header")
   const common = await getTranslations("Common")
+  const paths = await sitePaths()
 
   return (
     <header className="header-surface sticky top-0 z-40 border-b border-border bg-bg-raised/92 backdrop-blur-md">
       <div className="mx-auto flex h-16 w-full max-w-[1200px] items-center gap-6 px-4 sm:px-6">
-        <Link href="/" aria-label={common("home")} className="rounded-sm">
+        <Link
+          href={paths.home}
+          aria-label={common("home")}
+          className="rounded-sm"
+        >
           <Logo />
         </Link>
         <nav aria-label={t("navLabel")} className="hidden flex-1 md:block">
@@ -45,7 +50,7 @@ export async function SiteHeader() {
         </nav>
         <div className="ml-auto flex items-center gap-2 md:ml-0">
           <a
-            href={EDITOR_PATH}
+            href={paths.editor}
             className="inline-flex h-9 items-center rounded-md bg-accent px-3.5 text-sm font-medium text-accent-ink transition-[filter] duration-150 hover:brightness-110"
           >
             {common("startDrawing")}

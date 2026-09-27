@@ -1,11 +1,11 @@
-import { getTranslations } from "next-intl/server"
+import { getFormatter, getTranslations } from "next-intl/server"
 
 import { engineText, transcript } from "@/cad"
 import { COMMAND_GROUPS } from "@/content/commands"
 import { FIGURES } from "@/content/figures"
+import { sitePaths } from "@/i18n/navigation"
 import { autocadCommands, commandsByGroup, productFacts } from "@/lib/facts"
 import { IDLE_PROMPT, renderFigure } from "@/lib/plot"
-import { EDITOR_PATH } from "@/lib/site"
 
 import { CommandTry } from "./command-try"
 import { Drawing } from "./drawing"
@@ -25,6 +25,9 @@ async function offsetTranscript() {
 export async function CommandsSection() {
   const t = await getTranslations("Commands")
   const groups = await getTranslations("Groups")
+  const common = await getTranslations("Common")
+  const format = await getFormatter()
+  const paths = await sitePaths()
   const facts = productFacts()
   const byGroup = commandsByGroup()
   const { figure, lines } = await offsetTranscript()
@@ -61,6 +64,17 @@ export async function CommandsSection() {
                   const also = command.aliases.filter(
                     (alias) => alias !== command.key
                   )
+                  // Joined here, so each stays a single text node.
+                  const described =
+                    common("labelSeparator") + command.description
+                  const aliases =
+                    also.length > 0 &&
+                    ` · ${t("also", {
+                      aliases: format.list(also, {
+                        type: "unit",
+                        style: "short",
+                      }),
+                    })}`
                   return (
                     <li key={command.name} className="tip group">
                       <span className="inline-flex h-8 items-center gap-2 rounded border border-border bg-bg-raised px-2 font-mono text-xs shadow-[0_1px_0_var(--border)] transition-colors duration-150 group-hover:border-fg-subtle">
@@ -71,13 +85,10 @@ export async function CommandsSection() {
                           <span className="text-fg-subtle">{command.name}</span>
                         )}
                       </span>
-                      <span className="sr-only">
-                        {`: ${command.description}`}
-                      </span>
+                      <span className="sr-only">{described}</span>
                       <span role="tooltip" aria-hidden="true">
                         {command.description}
-                        {also.length > 0 &&
-                          ` · ${t("aliasesLabel")} ${also.join(", ")}`}
+                        {aliases}
                       </span>
                     </li>
                   )
@@ -98,7 +109,7 @@ export async function CommandsSection() {
                 description,
               })
             )}
-            editorHref={EDITOR_PATH}
+            editorHref={paths.editor}
             label={t("tryLabel")}
             placeholder={t("tryPlaceholder")}
             hint={t("tryHint")}

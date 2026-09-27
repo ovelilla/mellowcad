@@ -22,8 +22,18 @@ export default defineConfig({
       // The landing's scripts and derived facts: the page cannot lie about the
       // product while these pass.
       "content/**/*.test.ts",
+      // The URL scheme, the message catalogs and the helpers that read them.
+      "i18n/**/*.test.ts",
+      "lib/**/*.test.ts",
     ],
     setupFiles: ["./test/setup.ts"],
+    server: {
+      deps: {
+        // next-intl imports `next/navigation` without an extension, which only
+        // a bundler resolves; inlined, Vite resolves it as Next would.
+        inline: ["next-intl"],
+      },
+    },
     restoreMocks: true,
     unstubEnvs: true,
     unstubGlobals: true,

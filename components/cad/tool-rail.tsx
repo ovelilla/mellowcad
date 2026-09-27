@@ -30,6 +30,7 @@ import {
   Undo2,
   Waypoints,
 } from "lucide-react"
+import { useTranslations } from "next-intl"
 
 import { TooltipProvider } from "@/components/ui/tooltip"
 import {
@@ -131,10 +132,22 @@ const TOOL_ICONS: Record<string, LucideIcon> = {
  * slot so the rail doesn't grow a button per variant as the app scales.
  */
 interface ToolFlyoutFamily {
-  readonly label: string
+  /** Its name in `Editor.ToolRail.flyouts`. */
+  readonly id: FlyoutId
   /** Tool ids shown inside the flyout, in order. */
   readonly members: readonly string[]
 }
+
+type FlyoutId =
+  | "circle"
+  | "arc"
+  | "ellipse"
+  | "rectangle"
+  | "fillet"
+  | "break"
+  | "array"
+  | "dimension"
+  | "measure"
 
 type RailItem = string | ToolFlyoutFamily
 
@@ -145,7 +158,6 @@ type RailItem = string | ToolFlyoutFamily
  */
 interface RailGroup {
   readonly id: string
-  readonly label: string
   readonly items: readonly RailItem[]
 }
 
@@ -155,27 +167,26 @@ interface RailGroup {
  * Grouping lives here, in the UI, keeping the engine visually agnostic.
  */
 const RAIL_LAYOUT: readonly RailGroup[] = [
-  { id: "select", label: "Select", items: ["select"] },
+  { id: "select", items: ["select"] },
   {
     id: "draw",
-    label: "Draw",
     items: [
       "line",
       "polyline",
       {
-        label: "Circle",
+        id: "circle",
         members: ["circle", "circlediameter", "circle2p", "circle3p"],
       },
       {
-        label: "Arc",
+        id: "arc",
         members: ["arc", "arcsce", "arccse"],
       },
       {
-        label: "Ellipse",
+        id: "ellipse",
         members: ["ellipse", "ellipsecenter", "ellipsearc"],
       },
       {
-        label: "Rectangle",
+        id: "rectangle",
         members: ["rectangle", "polygon"],
       },
       "hatch",
@@ -183,7 +194,6 @@ const RAIL_LAYOUT: readonly RailGroup[] = [
   },
   {
     id: "modify",
-    label: "Modify",
     items: [
       "move",
       "copy",
@@ -194,22 +204,21 @@ const RAIL_LAYOUT: readonly RailGroup[] = [
       "offset",
       "trim",
       "extend",
-      { label: "Fillet", members: ["fillet", "chamfer"] },
-      { label: "Break", members: ["break", "breakatpoint"] },
+      { id: "fillet", members: ["fillet", "chamfer"] },
+      { id: "break", members: ["break", "breakatpoint"] },
       "explode",
       "join",
       "matchprop",
-      { label: "Array", members: ["array", "arraypolar", "arraypath"] },
+      { id: "array", members: ["array", "arraypolar", "arraypath"] },
     ],
   },
   {
     id: "annotate",
-    label: "Annotate",
     items: [
       "text",
       "textedit",
       {
-        label: "Dimension",
+        id: "dimension",
         members: [
           "dimlinear",
           "dimaligned",
@@ -225,14 +234,12 @@ const RAIL_LAYOUT: readonly RailGroup[] = [
   },
   {
     id: "block",
-    label: "Block",
     // The ribbon's Block panel puts Insert first and Create Block after it.
     items: ["insert", "block"],
   },
   {
     id: "measure",
-    label: "Measure",
-    items: [{ label: "Measure", members: ["measure", "measurearea"] }],
+    items: [{ id: "measure", members: ["measure", "measurearea"] }],
   },
 ]
 
@@ -275,6 +282,8 @@ export function ToolRail({
   engine: CadEngine
   state: EngineState
 }) {
+  const t = useTranslations("Editor.ToolRail")
+  const keys = useTranslations("Editor.Keys")
   const metaById = new Map<string, ToolMeta>(
     state.tools.map((tool) => [tool.id, tool])
   )
@@ -294,9 +303,7 @@ export function ToolRail({
     .filter((id) => !listed.has(id) && !RAIL_EXCLUDED.has(id))
   const groups: RailGroup[] = [
     ...RAIL_LAYOUT,
-    ...(uncategorized.length
-      ? [{ id: "more", label: "More", items: uncategorized }]
-      : []),
+    ...(uncategorized.length ? [{ id: "more", items: uncategorized }] : []),
   ]
 
   const renderTool = (id: string) => {
@@ -337,29 +344,29 @@ export function ToolRail({
 
         <IconAction
           icon={Undo2}
-          label="Undo"
-          shortcut="Ctrl+Z"
+          label={t("undo")}
+          shortcut={keys("undo")}
           disabled={!state.canUndo}
           onClick={() => engine.undo()}
         />
         <IconAction
           icon={Redo2}
-          label="Redo"
-          shortcut="Ctrl+Y"
+          label={t("redo")}
+          shortcut={keys("redo")}
           disabled={!state.canRedo}
           onClick={() => engine.redo()}
         />
         <IconAction
           icon={Trash2}
-          label="Delete selection"
-          shortcut="Del"
+          label={t("deleteSelection")}
+          shortcut={keys("delete")}
           disabled={state.selectionCount === 0}
           onClick={() => engine.deleteSelection()}
           className="text-destructive/80 hover:bg-destructive/10 hover:text-destructive"
         />
         <IconAction
           icon={Eraser}
-          label="Clear all"
+          label={t("clearAll")}
           disabled={state.entityCount === 0}
           onClick={() => engine.clearAll()}
         />
@@ -384,6 +391,7 @@ function ToolFlyout({
   family: ToolFlyoutFamily
   metaById: Map<string, ToolMeta>
 }) {
+  const t = useTranslations("Editor.ToolRail.flyouts")
   const members = family.members
     .map((id) => metaById.get(id))
     .filter((meta): meta is ToolMeta => meta !== undefined)
@@ -404,7 +412,7 @@ function ToolFlyout({
           <Button
             size="icon-sm"
             variant={activeMember ? "default" : "ghost"}
-            aria-label={family.label}
+            aria-label={t(family.id)}
             className="relative"
           >
             <ShownIcon />

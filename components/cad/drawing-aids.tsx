@@ -11,6 +11,7 @@ import {
   Ruler,
   Target,
 } from "lucide-react"
+import { useTranslations } from "next-intl"
 
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
@@ -52,10 +53,10 @@ const IMPLEMENTED_SNAPS = new Set<SnapType>([
 const POLAR_ANGLES: readonly number[] = [90, 45, 30, 22.5, 18, 15, 10, 5]
 
 /** How snap rounds the cursor: onto the lattice, or along alignment paths. */
-const SNAP_MODE_TYPES: ReadonlyArray<{ type: SnapModeType; label: string }> = [
-  { type: "grid", label: "Grid snap" },
-  { type: "polar", label: "Polar snap" },
-]
+const SNAP_MODE_TYPES = [
+  { type: "grid", label: "gridSnap" },
+  { type: "polar", label: "polarSnap" },
+] as const satisfies ReadonlyArray<{ type: SnapModeType; label: string }>
 
 /** A labelled numeric setting; commits only finite, positive values. */
 function SpacingField({
@@ -100,13 +101,14 @@ export function DrawingAids({
   engine: CadEngine
   state: EngineState
 }) {
+  const t = useTranslations("Editor.DrawingAids")
   return (
     <TooltipProvider>
       <Panel>
         <div className="flex items-center">
           <IconAction
             icon={Magnet}
-            label="Object snap"
+            label={t("objectSnap")}
             shortcut="F3"
             side="top"
             active={state.snapActive}
@@ -118,7 +120,7 @@ export function DrawingAids({
                 <Button
                   size="icon-sm"
                   variant="ghost"
-                  aria-label="Object snap settings"
+                  aria-label={t("objectSnapSettings")}
                 >
                   <ChevronUp />
                 </Button>
@@ -126,7 +128,7 @@ export function DrawingAids({
             />
             <PopoverContent side="top" className="w-56">
               <p className="mb-2 text-[11px] font-semibold tracking-wide text-muted-foreground uppercase">
-                Object snap
+                {t("objectSnap")}
               </p>
               <div className="grid grid-cols-2 gap-1">
                 {(Object.values(SnapType) as SnapType[]).map((type) => {
@@ -149,7 +151,7 @@ export function DrawingAids({
                       title={
                         implemented
                           ? state.names.snaps[type]
-                          : `${state.names.snaps[type]} (coming soon)`
+                          : t("comingSoon", { name: state.names.snaps[type] })
                       }
                     >
                       {state.names.snaps[type]}
@@ -166,7 +168,7 @@ export function DrawingAids({
         <div className="flex items-center">
           <IconAction
             icon={SnapModeIcon}
-            label="Snap mode"
+            label={t("snapMode")}
             shortcut="F9"
             side="top"
             active={state.snapModeActive}
@@ -178,7 +180,7 @@ export function DrawingAids({
                 <Button
                   size="icon-sm"
                   variant="ghost"
-                  aria-label="Snap settings"
+                  aria-label={t("snapSettings")}
                 >
                   <ChevronUp />
                 </Button>
@@ -186,7 +188,7 @@ export function DrawingAids({
             />
             <PopoverContent side="top" className="w-56">
               <p className="mb-2 text-[11px] font-semibold tracking-wide text-muted-foreground uppercase">
-                Snap
+                {t("snap")}
               </p>
               <div className="grid grid-cols-2 gap-1">
                 {SNAP_MODE_TYPES.map(({ type, label }) => (
@@ -198,24 +200,24 @@ export function DrawingAids({
                     }
                     onClick={() => engine.setSnapModeType(type)}
                   >
-                    {label}
+                    {t(label)}
                   </Button>
                 ))}
               </div>
               {state.snapModeType === "grid" ? (
                 <>
                   <SpacingField
-                    label="Snap X"
+                    label={t("snapX")}
                     value={state.snapSpacing.x}
-                    ariaLabel="Snap X spacing"
+                    ariaLabel={t("snapXSpacing")}
                     onCommit={(value) =>
                       engine.setSnapSpacing(value, state.snapSpacing.y)
                     }
                   />
                   <SpacingField
-                    label="Snap Y"
+                    label={t("snapY")}
                     value={state.snapSpacing.y}
-                    ariaLabel="Snap Y spacing"
+                    ariaLabel={t("snapYSpacing")}
                     onCommit={(value) =>
                       engine.setSnapSpacing(state.snapSpacing.x, value)
                     }
@@ -223,9 +225,9 @@ export function DrawingAids({
                 </>
               ) : (
                 <SpacingField
-                  label="Polar distance"
+                  label={t("polarDistance")}
                   value={state.snapPolarDistance}
-                  ariaLabel="Polar snap distance"
+                  ariaLabel={t("polarSnapDistance")}
                   onCommit={(value) => engine.setSnapPolarDistance(value)}
                 />
               )}
@@ -235,7 +237,7 @@ export function DrawingAids({
 
         <IconAction
           icon={Grid3x3}
-          label="Grid"
+          label={t("grid")}
           shortcut="F7"
           side="top"
           active={state.gridVisible}
@@ -243,7 +245,7 @@ export function DrawingAids({
         />
         <IconAction
           icon={Crosshair}
-          label="Ortho"
+          label={t("ortho")}
           shortcut="F8"
           side="top"
           active={state.orthoActive}
@@ -255,7 +257,7 @@ export function DrawingAids({
         <div className="flex items-center">
           <IconAction
             icon={Compass}
-            label="Polar tracking"
+            label={t("polarTracking")}
             shortcut="F10"
             side="top"
             active={state.polarActive}
@@ -267,7 +269,7 @@ export function DrawingAids({
                 <Button
                   size="icon-sm"
                   variant="ghost"
-                  aria-label="Polar tracking angle"
+                  aria-label={t("polarTrackingAngle")}
                 >
                   <ChevronUp />
                 </Button>
@@ -275,7 +277,7 @@ export function DrawingAids({
             />
             <PopoverContent side="top" className="w-48">
               <p className="mb-2 text-[11px] font-semibold tracking-wide text-muted-foreground uppercase">
-                Polar angle
+                {t("polarAngle")}
               </p>
               <div className="grid grid-cols-4 gap-1">
                 {POLAR_ANGLES.map((deg) => (
@@ -301,7 +303,7 @@ export function DrawingAids({
 
         <IconAction
           icon={Target}
-          label="Object snap tracking"
+          label={t("objectSnapTracking")}
           shortcut="F11"
           side="top"
           active={state.objectSnapTrackingActive}
@@ -313,7 +315,7 @@ export function DrawingAids({
         <div className="flex items-center">
           <IconAction
             icon={SelectionCyclingIcon}
-            label="Selection cycling"
+            label={t("selectionCycling")}
             shortcut="F4"
             side="top"
             active={state.selectionCycling.active}
@@ -325,7 +327,7 @@ export function DrawingAids({
                 <Button
                   size="icon-sm"
                   variant="ghost"
-                  aria-label="Selection cycling settings"
+                  aria-label={t("selectionCyclingSettings")}
                 >
                   <ChevronUp />
                 </Button>
@@ -333,7 +335,7 @@ export function DrawingAids({
             />
             <PopoverContent side="top" className="w-56">
               <p className="mb-2 text-[11px] font-semibold tracking-wide text-muted-foreground uppercase">
-                Selection cycling
+                {t("selectionCycling")}
               </p>
               <Button
                 size="xs"
@@ -347,7 +349,7 @@ export function DrawingAids({
                   )
                 }
               >
-                Display selection list box
+                {t("selectionList")}
               </Button>
             </PopoverContent>
           </Popover>
@@ -355,7 +357,7 @@ export function DrawingAids({
 
         <IconAction
           icon={LineweightIcon}
-          label="Show lineweight"
+          label={t("showLineweight")}
           side="top"
           active={state.lwDisplay}
           onClick={() => engine.toggleLineweightDisplay()}
@@ -368,7 +370,7 @@ export function DrawingAids({
                 size="sm"
                 variant="ghost"
                 className="gap-1 font-mono"
-                aria-label="Document units and precision"
+                aria-label={t("unitsSettings")}
               >
                 <Ruler />
                 {state.documentUnit}
@@ -377,7 +379,7 @@ export function DrawingAids({
           />
           <PopoverContent side="top" className="w-56">
             <p className="mb-2 text-[11px] font-semibold tracking-wide text-muted-foreground uppercase">
-              Units
+              {t("units")}
             </p>
             <div className="grid grid-cols-3 gap-1">
               {LENGTH_UNITS.map((unit: LengthUnit) => (
@@ -392,7 +394,9 @@ export function DrawingAids({
               ))}
             </div>
             <div className="mt-3 flex items-center justify-between">
-              <span className="text-xs text-muted-foreground">Precision</span>
+              <span className="text-xs text-muted-foreground">
+                {t("precision")}
+              </span>
               <div className="flex items-center gap-1">
                 <Button
                   size="icon-xs"
@@ -422,14 +426,14 @@ export function DrawingAids({
 
             <div className="mt-3 flex items-center justify-between">
               <span className="text-xs text-muted-foreground">
-                Linetype scale
+                {t("linetypeScale")}
               </span>
               <input
                 type="number"
                 min={0.01}
                 step={0.1}
                 value={state.ltScale}
-                aria-label="Global linetype scale (LTSCALE)"
+                aria-label={t("linetypeScaleLabel")}
                 onChange={(event) => {
                   const value = Number(event.target.value)
                   if (Number.isFinite(value) && value > 0) {
@@ -442,14 +446,14 @@ export function DrawingAids({
 
             <div className="mt-3 flex items-center justify-between">
               <span className="text-xs text-muted-foreground">
-                Dimension scale
+                {t("dimensionScale")}
               </span>
               <input
                 type="number"
                 min={0.01}
                 step={1}
                 value={state.dimScale}
-                aria-label="Overall dimension scale (DIMSCALE)"
+                aria-label={t("dimensionScaleLabel")}
                 onChange={(event) => {
                   const value = Number(event.target.value)
                   if (Number.isFinite(value) && value > 0) {

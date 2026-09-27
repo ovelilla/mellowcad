@@ -11,6 +11,8 @@ import {
   Plus,
   Trash2,
 } from "lucide-react"
+import { useTranslations } from "next-intl"
+
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import {
@@ -41,6 +43,7 @@ export function LayersControl({
   engine: CadEngine
   state: EngineState
 }) {
+  const t = useTranslations("Editor.Layers")
   const current =
     state.layers.find((layer) => layer.id === state.currentLayerId) ??
     state.layers[0]
@@ -53,7 +56,7 @@ export function LayersControl({
             <Button
               size="lg"
               variant="ghost"
-              aria-label="Layers"
+              aria-label={t("title")}
               className="pointer-events-auto max-w-48 gap-4 rounded-lg bg-card/90 backdrop-blur aria-expanded:bg-card/90"
             >
               <LayersIcon className="shrink-0" />
@@ -69,7 +72,7 @@ export function LayersControl({
         >
           <div className="flex items-center justify-between p-2 pl-3">
             <p className="text-[11px] font-semibold tracking-wide text-muted-foreground uppercase">
-              Layers
+              {t("title")}
             </p>
             <Button
               size="sm"
@@ -78,14 +81,13 @@ export function LayersControl({
               onClick={() => engine.createLayer()}
             >
               <Plus className="size-3.5" />
-              New
+              {t("new")}
             </Button>
           </div>
 
           {state.selectionCount > 0 && (
             <div className="px-3 pb-2 text-xs text-muted-foreground">
-              {state.selectionCount} selected → click a layer name to move it
-              there
+              {t("selected", { count: state.selectionCount })}
             </div>
           )}
 
@@ -127,6 +129,7 @@ function LayerRow({
   hasSelection: boolean
   canDelete: boolean
 }) {
+  const t = useTranslations("Editor.Layers")
   const isBaseLayer = layer.id === "0"
 
   return (
@@ -144,7 +147,7 @@ function LayerRow({
             <Button
               size="icon-sm"
               variant="ghost"
-              aria-label={`Set ${layer.name} as current layer`}
+              aria-label={t("setCurrentLabel", { name: layer.name })}
               aria-pressed={isCurrent}
               onClick={() => engine.setCurrentLayer(layer.id)}
             >
@@ -160,14 +163,14 @@ function LayerRow({
           }
         />
         <TooltipContent side="top">
-          {isCurrent ? "Current layer" : "Set as current"}
+          {isCurrent ? t("current") : t("setCurrent")}
         </TooltipContent>
       </Tooltip>
 
       <label
         className="relative inline-flex cursor-pointer"
-        aria-label={`${layer.name} colour`}
-        title="Layer colour"
+        aria-label={t("colorLabel", { name: layer.name })}
+        title={t("color")}
       >
         <ColorSwatch color={layer.color} />
         <input
@@ -194,7 +197,7 @@ function LayerRow({
         value={layer.linetype}
         names={names}
         onValueChange={(linetype) => engine.updateLayer(layer.id, { linetype })}
-        ariaLabel={`${layer.name} linetype`}
+        ariaLabel={t("linetypeLabel", { name: layer.name })}
         className="h-8 w-28 shrink-0 border-0 bg-transparent px-1.5 text-xs text-foreground shadow-none hover:bg-accent/40 dark:bg-transparent"
       />
 
@@ -206,7 +209,7 @@ function LayerRow({
             engine.updateLayer(layer.id, { lineweight })
           }
         }}
-        ariaLabel={`${layer.name} lineweight`}
+        ariaLabel={t("lineweightLabel", { name: layer.name })}
         className="h-8 w-24 shrink-0 border-0 bg-transparent px-1.5 text-xs text-foreground shadow-none hover:bg-accent/40 dark:bg-transparent"
       />
 
@@ -215,8 +218,8 @@ function LayerRow({
       </span>
 
       <IconToggle
-        onLabel="On"
-        offLabel="Off"
+        onLabel={t("on")}
+        offLabel={t("off")}
         on={layer.visible}
         OnIcon={Eye}
         OffIcon={EyeOff}
@@ -226,8 +229,8 @@ function LayerRow({
       />
 
       <IconToggle
-        onLabel="Unlocked"
-        offLabel="Locked"
+        onLabel={t("unlocked")}
+        offLabel={t("locked")}
         on={!layer.locked}
         OnIcon={LockOpen}
         OffIcon={Lock}
@@ -241,7 +244,7 @@ function LayerRow({
               size="icon-sm"
               variant="ghost"
               disabled={!canDelete}
-              aria-label={`Delete layer ${layer.name}`}
+              aria-label={t("deleteLabel", { name: layer.name })}
               onClick={() => engine.removeLayer(layer.id)}
               className="text-muted-foreground hover:bg-destructive/10 hover:text-destructive"
             >
@@ -251,12 +254,12 @@ function LayerRow({
         />
         <TooltipContent side="top">
           {canDelete
-            ? "Delete layer"
+            ? t("delete")
             : isBaseLayer
-              ? "Layer 0 cannot be deleted"
+              ? t("deleteBase")
               : layer.entityCount > 0
-                ? "Layer is in use"
-                : "Cannot delete the current layer"}
+                ? t("deleteInUse")
+                : t("deleteCurrent")}
         </TooltipContent>
       </Tooltip>
     </div>
@@ -320,6 +323,7 @@ function NameField({
   onRename: (name: string) => void
   onAssignSelection?: () => void
 }) {
+  const t = useTranslations("Editor.Layers")
   const [draft, setDraft] = useState(name)
   const [editing, setEditing] = useState(false)
 
@@ -360,11 +364,7 @@ function NameField({
         }
       }}
       title={
-        onAssignSelection
-          ? "Move selected objects to this layer (double-click to rename)"
-          : editable
-            ? "Double-click to rename"
-            : name
+        onAssignSelection ? t("moveSelection") : editable ? t("rename") : name
       }
       className={cn(
         "min-w-0 flex-1 truncate rounded px-1 py-0.5 text-left text-xs",

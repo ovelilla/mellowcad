@@ -1,6 +1,7 @@
 "use client"
 
 import { Palette } from "lucide-react"
+import { useTranslations } from "next-intl"
 
 import {
   COLOR_BYLAYER,
@@ -36,6 +37,7 @@ export function ColorSelect({
   ariaLabel: string
   className?: string
 }) {
+  const t = useTranslations("Editor.Properties")
   const isStandard = STANDARD_COLORS.some((color) => color.value === value)
   const custom = value && value !== COLOR_BYLAYER && !isStandard ? value : null
   // Lets the closed trigger show "Red" rather than the raw hex value.
@@ -60,7 +62,7 @@ export function ColorSelect({
           aria-label={ariaLabel}
           className="min-w-0 flex-1 bg-background text-[11px] dark:bg-background"
         >
-          <SelectValue placeholder="Varies" />
+          <SelectValue placeholder={t("varies")} />
         </SelectTrigger>
         <SelectContent>
           <SelectItem value={COLOR_BYLAYER} className="text-[11px]">
@@ -88,12 +90,12 @@ export function ColorSelect({
 
       <label
         className="relative inline-flex size-8 shrink-0 cursor-pointer items-center justify-center rounded-md border border-border hover:bg-accent"
-        title="Custom colour"
+        title={t("customColor")}
       >
         <Palette className="size-4 text-muted-foreground" />
         <input
           type="color"
-          aria-label="Custom colour"
+          aria-label={t("customColor")}
           value={normalizeColor(custom ?? "") ?? "#ffffff"}
           onChange={(event) => onValueChange(event.target.value)}
           className="absolute inset-0 h-full w-full cursor-pointer opacity-0"

@@ -1,6 +1,8 @@
 import { getLocale, getTranslations } from "next-intl/server"
 
-import { EDITOR_PATH, SITE_URL } from "@/lib/site"
+import { sitePaths } from "@/i18n/navigation"
+import { pluralMessage } from "@/lib/plural"
+import { SITE_URL } from "@/lib/site"
 
 import { ContinueDrawing } from "./continue-drawing"
 import { HeroSheet } from "./hero-sheet"
@@ -10,11 +12,13 @@ export async function Hero() {
   const t = await getTranslations("Hero")
   const common = await getTranslations("Common")
   const share = await getTranslations("SendToDesktop")
+  const locale = await getLocale()
+  const paths = await sitePaths()
   // One sentence per line — "Type L." / "Press Enter." / "Draw." — cut where
   // the language says a sentence ends, not at a hard-coded full stop. Each
   // keeps its trailing space, so the heading still reads as one phrase.
   const sentences = [
-    ...new Intl.Segmenter(await getLocale(), {
+    ...new Intl.Segmenter(locale, {
       granularity: "sentence",
     }).segment(t("title")),
   ].map(({ segment }) => segment)
@@ -27,7 +31,7 @@ export async function Hero() {
       <div className="flex min-w-0 flex-col gap-7 lg:col-span-5">
         <h1 id="hero-title" className="flex flex-col gap-5">
           <span className="label-mono">{t("eyebrow")}</span>
-          <span className="sr-only">: </span>
+          <span className="sr-only">{common("labelSeparator")}</span>
           <span className="text-display">
             {sentences.map((sentence) => (
               <span key={sentence} className="block">
@@ -39,10 +43,9 @@ export async function Hero() {
         <p className="measure text-lead">{t("lead")}</p>
         <div className="flex flex-wrap items-center gap-x-6 gap-y-4">
           <ContinueDrawing
-            href={EDITOR_PATH}
+            href={paths.editor}
             start={common("startDrawing")}
-            continueOne={t.raw("continueOne") as string}
-            continueOther={t.raw("continueOther") as string}
+            resume={pluralMessage(locale, (count) => t("continue", { count }))}
           />
           <a href="#commands" className="font-medium underline-link">
             {t("secondaryCta")}
@@ -52,7 +55,7 @@ export async function Hero() {
         <div className="flex flex-col items-start gap-3 md:hidden">
           <p className="text-sm text-fg-muted">{t("mobileNote")}</p>
           <SendToDesktop
-            url={`${SITE_URL}${EDITOR_PATH}`}
+            url={`${SITE_URL}${paths.editor}`}
             label={share("action")}
             copiedLabel={share("copied")}
             shareTitle={share("shareTitle")}

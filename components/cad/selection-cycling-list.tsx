@@ -3,6 +3,7 @@
 import * as React from "react"
 import { Menu } from "@base-ui/react/menu"
 import { CheckIcon } from "lucide-react"
+import { useTranslations } from "next-intl"
 
 import { CadEngine, EngineState } from "@/cad"
 
@@ -25,6 +26,7 @@ export function SelectionCyclingList({
   engine: CadEngine
   state: EngineState
 }) {
+  const t = useTranslations("Editor.SelectionCycling")
   const { candidates, currentId, listAt } = state.selectionCycling
 
   const anchor = React.useMemo(
@@ -56,7 +58,7 @@ export function SelectionCyclingList({
         >
           <Menu.Popup className="min-w-44 origin-(--transform-origin) overflow-hidden rounded-md border bg-popover p-1 text-popover-foreground shadow-md transition-[transform,opacity] outline-none data-ending-style:scale-95 data-ending-style:opacity-0 data-starting-style:scale-95 data-starting-style:opacity-0">
             <div className="px-2 py-1.5 text-xs text-muted-foreground">
-              Selection
+              {t("title")}
             </div>
             {candidates.map((candidate) => (
               <Menu.Item

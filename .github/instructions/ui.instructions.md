@@ -1,5 +1,5 @@
 ---
-applyTo: "components/cad/**,components/ui/**,app/(app)/**,hooks/**"
+applyTo: "components/cad/**,components/ui/**,app/[locale]/(app)/**,hooks/**"
 description: "React/UI conventions for the CAD editor shell (/draw): file layout, colour tokens (one scheme, dark), Base UI gotchas, icons and where each control belongs. The landing has its own rules in marketing.instructions.md."
 ---
 
@@ -13,6 +13,17 @@ keyboard listener in a component.** If a button needs one, the engine owes it a 
 port, implemented in `cad/adapters/`) — otherwise the behaviour lives in the app rather than in
 the package, and every consumer has to rewrite it. A component may keep purely visual state.
 Failures are reported at the command prompt, not in a bespoke React banner.
+
+## Text
+
+- **Every label comes from a catalog.** The chrome's own words are `Editor.*` in
+  `messages/en.json`, read with `useTranslations("Editor.<Part>")` — the only messages the editor's
+  layout sends to the browser. What the engine names is read from the engine: tool labels and
+  aliases (`state.tools`), snap, colour and linetype names (`state.names`), property rows. A
+  shortcut that is a command alias comes from `state.tools` too; a key combination is
+  `Editor.Keys` (keys have local names — `Supr` on a Spanish keyboard); a function key is literal.
+- `DirectionProvider` wraps the editor with the locale's direction, for Base UI's keyboard and
+  positioning. The rest of RTL is the brief's phase 4. See `i18n.instructions.md`.
 
 ## File layout
 
@@ -53,8 +64,8 @@ class or light values.
 - **DrawingAids** (status bar) — drafting modes only: Snap, Grid, Ortho, Polar, Osnap, OTRACK,
   lineweight display.
 - **ToolRail** (left) — tools, grouped by `RAIL_LAYOUT`. Variant families (Circle, Arc, Array,
-  Fillet/Chamfer, Rectangle/Polygon, Break) are flyouts; icon-only with `side="right"` tooltips.
-  Unlisted tools fall into a trailing "More" group, so a tool that belongs elsewhere in the chrome
+  Fillet/Chamfer, Rectangle/Polygon, Break) are flyouts, named by `Editor.ToolRail.flyouts`;
+  icon-only with `side="right"` tooltips. Unlisted tools fall into a trailing "more" group, so a tool that belongs elsewhere in the chrome
   (the view tools, which live in the CommandBar) must be listed in `RAIL_EXCLUDED`.
 - **AboutPanel** (bottom-right) — the only non-CAD chrome: what the app is, that drawings never
   leave the browser, a three-key quick start and the contact address. Product/meta copy goes here,

@@ -1,5 +1,7 @@
 "use client"
 
+import { useTranslations } from "next-intl"
+
 import { LINETYPES, LINETYPE_BYLAYER, type EngineNames } from "@/cad"
 import {
   Select,
@@ -31,6 +33,7 @@ export function LinetypeSelect({
   ariaLabel: string
   className?: string
 }) {
+  const t = useTranslations("Editor.Properties")
   return (
     <Select
       value={value ?? undefined}
@@ -39,7 +42,7 @@ export function LinetypeSelect({
       }}
     >
       <SelectTrigger size="sm" aria-label={ariaLabel} className={className}>
-        <SelectValue placeholder="Varies" />
+        <SelectValue placeholder={t("varies")} />
       </SelectTrigger>
       <SelectContent>
         {includeByLayer && (

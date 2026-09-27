@@ -2,10 +2,15 @@ import Link from "next/link"
 import { getFormatter, getTranslations } from "next-intl/server"
 
 import { productFacts } from "@/lib/facts"
-import { CONTACT_EMAIL, EDITOR_PATH } from "@/lib/site"
+import { sitePaths } from "@/i18n/navigation"
+import { CONTACT_EMAIL } from "@/lib/site"
 
 import { LanguageSelect } from "./language-select"
 import { LogoMark } from "./logo"
+
+// The title block's own data, not words: the same in every language.
+const DRAWING_NUMBER = "MC-001"
+const SCALE = "1:1"
 
 function Cell({
   label,
@@ -35,12 +40,13 @@ export async function SiteFooter() {
   const header = await getTranslations("Header")
   const format = await getFormatter()
   const facts = productFacts()
+  const paths = await sitePaths()
 
   const links = [
-    [common("startDrawing"), EDITOR_PATH],
-    [header("commands"), "/#commands"],
-    [header("roadmap"), "/#roadmap"],
-    [header("faq"), "/#faq"],
+    [common("startDrawing"), paths.editor],
+    [header("commands"), `${paths.home}#commands`],
+    [header("roadmap"), `${paths.home}#roadmap`],
+    [header("faq"), `${paths.home}#faq`],
   ] as const
 
   return (
@@ -60,7 +66,7 @@ export async function SiteFooter() {
             <ul className="flex flex-wrap gap-x-4 gap-y-1">
               {links.map(([label, href]) => (
                 <li key={href}>
-                  {href === EDITOR_PATH ? (
+                  {href === paths.editor ? (
                     <a href={href} className="underline-link">
                       {label}
                     </a>
@@ -72,7 +78,7 @@ export async function SiteFooter() {
                 </li>
               ))}
               <li>
-                <Link href="/privacy" className="underline-link">
+                <Link href={paths.privacy} className="underline-link">
                   {t("privacy")}
                 </Link>
               </li>
@@ -103,13 +109,13 @@ export async function SiteFooter() {
         </div>
 
         <div className="grid grid-cols-2 gap-px bg-border sm:grid-cols-4 lg:col-span-3">
-          <Cell label={t("drawingNumber")}>MC-001</Cell>
+          <Cell label={t("drawingNumber")}>{DRAWING_NUMBER}</Cell>
           <Cell label={t("revision")}>
             {/* The page is prerendered, so "now" is when this revision was built. */}
             {facts.version} ·{" "}
             {format.dateTime(new Date(), { dateStyle: "medium" })}
           </Cell>
-          <Cell label={t("scale")}>1:1</Cell>
+          <Cell label={t("scale")}>{SCALE}</Cell>
           <Cell label={t("sheet")}>{t("sheetValue")}</Cell>
         </div>
       </div>

@@ -3,6 +3,7 @@
 import * as React from "react"
 import { Menu } from "@base-ui/react/menu"
 import { CheckIcon } from "lucide-react"
+import { useTranslations } from "next-intl"
 
 import { CadEngine, EngineState, SnapType } from "@/cad"
 
@@ -48,6 +49,7 @@ export function SnapOverrideMenu({
   engine: CadEngine
   state: EngineState
 }) {
+  const t = useTranslations("Editor.SnapOverride")
   const at = state.snapOverrideMenu
 
   // A zero-size virtual anchor at the cursor: Base UI positions the popup
@@ -79,16 +81,16 @@ export function SnapOverrideMenu({
         >
           <Menu.Popup className="min-w-44 origin-(--transform-origin) overflow-hidden rounded-md border bg-popover p-1 text-popover-foreground shadow-md transition-[transform,opacity] outline-none data-ending-style:scale-95 data-ending-style:opacity-0 data-starting-style:scale-95 data-starting-style:opacity-0">
             <div className="px-2 py-1.5 text-xs text-muted-foreground">
-              Point
+              {t("point")}
             </div>
             <Menu.Item
               onClick={() => engine.startFrom()}
               className="relative flex cursor-default items-center rounded-sm py-1.5 pr-8 pl-2 text-sm outline-hidden select-none data-highlighted:bg-accent data-highlighted:text-accent-foreground"
             >
-              From
+              {t("from")}
             </Menu.Item>
             <div className="px-2 py-1.5 text-xs text-muted-foreground">
-              Object snap
+              {t("objectSnap")}
             </div>
             {CHOICES.map((value) => (
               <Menu.Item
@@ -99,7 +101,7 @@ export function SnapOverrideMenu({
                   state.snapOverride === value && "font-medium"
                 )}
               >
-                {value === "none" ? "None" : state.names.snaps[value]}
+                {value === "none" ? t("none") : state.names.snaps[value]}
                 {state.snapOverride === value && (
                   <span className="pointer-events-none absolute right-2 flex size-4 items-center justify-center">
                     <CheckIcon className="size-4" />

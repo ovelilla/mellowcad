@@ -1,9 +1,11 @@
-import { getTranslations } from "next-intl/server"
+import { getLocale, getTranslations } from "next-intl/server"
 import type { CSSProperties } from "react"
 
 import { formatLength, type DemoAction, type PromptSegment } from "@/cad"
 import { HERO_FIGURE } from "@/content/figures"
+import { sitePaths } from "@/i18n/navigation"
 import { IDLE_PROMPT, plotDemo, type PlottedLine } from "@/lib/plot"
+import { pluralMessage } from "@/lib/plural"
 
 import { Drawing } from "./drawing"
 import { HeroControls } from "./hero-controls"
@@ -83,6 +85,8 @@ function lastCursor(actions: readonly DemoAction[]) {
 export async function HeroSheet() {
   const t = await getTranslations("Hero")
   const live = await getTranslations("LiveSketch")
+  const locale = await getLocale()
+  const { editor } = await sitePaths()
   const plot = await plotDemo(HERO_FIGURE.script, HERO_FIGURE)
   const settings = plot.recording.document.getSettings()
   const cursor = lastCursor(HERO_FIGURE.script.actions)
@@ -92,6 +96,7 @@ export async function HeroSheet() {
     <figure className="flex flex-col gap-3">
       <LiveSheet
         id={SHEET_ID}
+        editor={editor}
         view={{
           frame: HERO_FIGURE.frame,
           padding: HERO_FIGURE.padding,
@@ -112,8 +117,7 @@ export async function HeroSheet() {
             close: live("close"),
             closeLabel: live("closeLabel"),
             dialogTitle: live("dialogTitle"),
-            savedOne: live.raw("savedOne") as string,
-            savedOther: live.raw("savedOther") as string,
+            saved: pluralMessage(locale, (count) => live("saved", { count })),
             dialogBody: live("dialogBody"),
             download: live("download"),
             replace: live("replace"),

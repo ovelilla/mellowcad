@@ -1,26 +1,43 @@
 import type { Metadata } from "next"
+import { getLocale, getTranslations } from "next-intl/server"
 
-import messages from "@/messages/en.json"
+import { localePath } from "@/i18n/navigation"
+import {
+  type AppLocale,
+  LIVE_LOCALES,
+  OG_LOCALE,
+  routing,
+} from "@/i18n/routing"
 import { OG_IMAGE_PATH, SITE_NAME } from "@/lib/site"
 
 /**
- * A page's canonical URL and share card. Next merges `openGraph` and `twitter`
- * shallowly — a page that sets either replaces the layout's whole object — so
- * every page builds both complete, here.
- *
- * The card image is `app/opengraph-image.tsx`, named explicitly: with two root
- * layouts a metadata image at the app root is served but not inherited, and
- * one inside a route group gets a hashed URL that structured data cannot cite.
+ * The hreflang set of a page: every live language and `x-default`, the English
+ * URL. Each version lists itself and all the others. With a single live
+ * language there is nothing to point at, so nothing is emitted. Metadata takes
+ * paths; the sitemap passes `localeUrl` for full URLs.
  */
-const image = {
-  url: OG_IMAGE_PATH,
-  width: 1200,
-  height: 630,
-  type: "image/png",
-  alt: messages.Metadata.ogAlt,
+export function languageAlternates(
+  path: string,
+  href: (locale: AppLocale, path: string) => string = localePath
+): Record<string, string> | undefined {
+  if (LIVE_LOCALES.length < 2) return undefined
+  return Object.fromEntries([
+    ...LIVE_LOCALES.map((locale) => [locale, href(locale, path)]),
+    ["x-default", href(routing.defaultLocale, path)],
+  ])
 }
 
-export function pageMetadata({
+/**
+ * A page's canonical URL, its language versions and its share card, in the
+ * language being rendered. Next merges `openGraph` and `twitter` shallowly — a
+ * page that sets either replaces the layout's whole object — so every page
+ * builds both complete, here.
+ *
+ * The card is the `/og` route of the page's language, named explicitly: a
+ * metadata image file inside `[locale]` would give English a `/en/…` URL, and
+ * one in a route group gets a hashed URL that structured data cannot cite.
+ */
+export async function pageMetadata({
   path,
   title,
   description,
@@ -28,14 +45,32 @@ export function pageMetadata({
   path: string
   title: string
   description: string
-}): Metadata {
+}): Promise<Metadata> {
+  const locale = await getLocale()
+  const t = await getTranslations("Metadata")
+  const image = {
+    url: localePath(locale, OG_IMAGE_PATH),
+    width: 1200,
+    height: 630,
+    type: "image/png",
+    alt: t("ogAlt"),
+  }
+  const languages = languageAlternates(path)
   return {
-    alternates: { canonical: path },
+    alternates: {
+      canonical: localePath(locale, path),
+      ...(languages && { languages }),
+    },
     openGraph: {
       type: "website",
       siteName: SITE_NAME,
-      locale: "en",
-      url: path,
+      locale: OG_LOCALE[locale],
+      ...(languages && {
+        alternateLocale: LIVE_LOCALES.filter((other) => other !== locale).map(
+          (other) => OG_LOCALE[other]
+        ),
+      }),
+      url: localePath(locale, path),
       title,
       description,
       images: [image],

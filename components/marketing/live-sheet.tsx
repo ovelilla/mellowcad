@@ -9,7 +9,7 @@ import {
   type ReactNode,
 } from "react"
 
-import { EDITOR_PATH, HERO_SKETCH_PATH } from "@/lib/site"
+import { HERO_SKETCH_PATH } from "@/lib/site"
 import { SHEET_TRANSITION } from "@/lib/view-transition"
 
 import type { LiveCanvasLabels, LiveCanvasProps } from "./live-canvas"
@@ -61,6 +61,7 @@ type Phase = "still" | "loading" | "live" | "failed"
  */
 export function LiveSheet({
   id,
+  editor,
   drawing,
   transcript,
   controls,
@@ -68,6 +69,7 @@ export function LiveSheet({
   labels,
 }: {
   id: string
+  editor: LiveCanvasProps["editor"]
   /** The still figure: the plotted drawing and its overlays. */
   drawing: ReactNode
   /** The still command line, typed in step with the plot. */
@@ -133,7 +135,7 @@ export function LiveSheet({
     }
     const onSwap = (event: PageSwapEvent) => {
       const url = event.activation?.entry.url
-      if (url && new URL(url).pathname === EDITOR_PATH) {
+      if (url && new URL(url).pathname === editor) {
         name(event.viewTransition)
       }
     }
@@ -146,7 +148,7 @@ export function LiveSheet({
       window.removeEventListener("pageswap", onSwap)
       window.removeEventListener("pagereveal", onReveal)
     }
-  }, [])
+  }, [editor])
 
   return (
     <div
@@ -185,7 +187,12 @@ export function LiveSheet({
         </div>
       </div>
       {isLive && (
-        <live.LiveCanvas labels={labels.live} view={view} onClose={close} />
+        <live.LiveCanvas
+          labels={labels.live}
+          editor={editor}
+          view={view}
+          onClose={close}
+        />
       )}
       {/* Announced, since the button's own text only changes to "Try again". */}
       <p role="status" className="sr-only">

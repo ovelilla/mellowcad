@@ -3,11 +3,12 @@ import type { Metadata, Viewport } from "next"
 import Link from "next/link"
 import { getTranslations } from "next-intl/server"
 
-import "./(marketing)/marketing.css"
+import "./[locale]/(marketing)/marketing.css"
 import { Logo } from "@/components/marketing/logo"
-import { UnknownCommand } from "@/components/marketing/unknown-command"
-import { THEME, engineText } from "@/cad"
-import { EDITOR_PATH, SITE_NAME } from "@/lib/site"
+import { NotFoundMessage } from "@/components/marketing/not-found-message"
+import { THEME } from "@/cad"
+import { DIRECTION, routing } from "@/i18n/routing"
+import { SITE_NAME } from "@/lib/site"
 
 const inter = Inter({
   subsets: ["latin"],
@@ -19,8 +20,12 @@ const fontMono = Geist_Mono({
   variable: "--font-mono",
 })
 
+// Outside `[locale]` there is no language to read, so it is named: without it
+// the request config would find no root param and answer with notFound().
+const locale = routing.defaultLocale
+
 export async function generateMetadata(): Promise<Metadata> {
-  const t = await getTranslations("NotFound")
+  const t = await getTranslations({ locale, namespace: "NotFound" })
   return { title: `${t("metaTitle")} · ${SITE_NAME}` }
 }
 
@@ -30,44 +35,23 @@ export const viewport: Viewport = {
 }
 
 /**
- * Every unmatched URL, in either root layout's territory. It answers the way
- * AutoCAD answers a mistyped command — the requested path is the command.
+ * The safety net for URLs that never reach a language's own 404
+ * (`[locale]/(marketing)/not-found.tsx`), in the default language.
  */
 export default async function GlobalNotFound() {
-  const t = await getTranslations("NotFound")
-  // The engine's own words, as the command line would print them, then
-  // AutoCAD's pointer to its help.
-  const text = engineText()
-  const unknown = text.message("unknownCommand", { name: "{command}" })
+  const t = await getTranslations({ locale, namespace: "NotFound" })
   return (
-    <html lang="en" className={`${inter.variable} ${fontMono.variable}`}>
+    <html
+      lang={locale}
+      dir={DIRECTION[locale]}
+      className={`${inter.variable} ${fontMono.variable}`}
+    >
       <body>
         <main className="mx-auto flex min-h-svh max-w-3xl flex-col justify-center gap-8 px-6">
           <Link href="/" aria-label={t("home")} className="self-start">
             <Logo />
           </Link>
-          <h1 className="sr-only">{t("metaTitle")}</h1>
-          <p className="rounded-md border border-border bg-bg-sunken p-5 font-mono text-sm leading-relaxed">
-            <span className="text-fg-subtle">{text.idlePrompt()} </span>
-            <UnknownCommand
-              fallback={t("fallbackCommand")}
-              template={`${unknown}  ${t("help")}`}
-            />
-          </p>
-          <p className="flex flex-wrap gap-3">
-            <Link
-              href="/"
-              className="inline-flex h-11 items-center rounded-md border border-border px-5 font-medium"
-            >
-              {t("home")}
-            </Link>
-            <a
-              href={EDITOR_PATH}
-              className="inline-flex h-11 items-center rounded-md bg-accent px-5 font-medium text-accent-ink"
-            >
-              {t("cta")}
-            </a>
-          </p>
+          <NotFoundMessage locale={locale} />
         </main>
       </body>
     </html>

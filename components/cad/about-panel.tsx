@@ -1,6 +1,7 @@
 "use client"
 
 import { Info, Mail } from "lucide-react"
+import { useTranslations } from "next-intl"
 
 import { Button } from "@/components/ui/button"
 import {
@@ -8,7 +9,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover"
-import { CONTACT_EMAIL } from "@/lib/site"
+import { CONTACT_EMAIL, SITE_NAME } from "@/lib/site"
 
 import { Panel } from "./toolbar-primitives"
 
@@ -18,6 +19,7 @@ import { Panel } from "./toolbar-primitives"
  * one region AutoCAD keeps for tray-style chrome rather than drafting state.
  */
 export function AboutPanel() {
+  const t = useTranslations("Editor.About")
   return (
     <Panel>
       <Popover>
@@ -26,37 +28,31 @@ export function AboutPanel() {
             click handler. No tooltip either — it blocks the popover. */}
         <PopoverTrigger
           render={
-            <Button size="icon-sm" variant="ghost" aria-label="About MellowCAD">
+            <Button size="icon-sm" variant="ghost" aria-label={t("label")}>
               <Info />
             </Button>
           }
         />
         <PopoverContent side="top" align="end" className="w-80 space-y-3">
           <div className="flex items-baseline justify-between gap-2">
-            <p className="text-sm font-semibold">MellowCAD</p>
+            <p className="text-sm font-semibold">{SITE_NAME}</p>
             <span className="rounded border border-border/60 px-1.5 py-px text-[10px] tracking-wide text-muted-foreground uppercase">
-              Work in progress
+              {t("status")}
             </span>
           </div>
 
           <p className="text-xs leading-relaxed text-muted-foreground">
-            A 2D drafting app in the browser, built around the commands, snaps
-            and keyboard flow AutoCAD users already know. It is a personal
-            project under active development — commands land one at a time, so
-            expect gaps and rough edges.
+            {t("intro")}
           </p>
 
           <p className="text-xs leading-relaxed text-muted-foreground">
-            Your drawings stay on this device: they are auto-saved in the
-            browser and never uploaded. Clearing site data deletes them, so use
-            Save to keep a copy as a file.
+            {t("storage")}
           </p>
 
           <div className="space-y-1 text-xs text-muted-foreground">
-            <p className="font-medium text-foreground">Getting started</p>
+            <p className="font-medium text-foreground">{t("gettingStarted")}</p>
             <p className="leading-relaxed">
-              Type a command (<Key>LINE</Key>, <Key>CIRCLE</Key>), <Key>F2</Key>{" "}
-              toggles the command line, <Key>Esc</Key> cancels.
+              {t.rich("howTo", { key: (chunks) => <Key>{chunks}</Key> })}
             </p>
           </div>
 

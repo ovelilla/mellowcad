@@ -1,11 +1,12 @@
 import { getTranslations } from "next-intl/server"
 
 import { engineText } from "@/cad"
-import { EDITOR_PATH } from "@/lib/site"
+import { sitePaths } from "@/i18n/navigation"
 
 export async function FinalCta() {
   const t = await getTranslations("FinalCta")
   const common = await getTranslations("Common")
+  const paths = await sitePaths()
 
   return (
     <section
@@ -19,7 +20,7 @@ export async function FinalCta() {
         {engineText().idlePrompt()} <span className="caret caret-blink" />
       </p>
       <a
-        href={EDITOR_PATH}
+        href={paths.editor}
         className="inline-flex h-12 items-center rounded-md bg-accent px-6 font-medium text-accent-ink transition-[filter] duration-150 hover:brightness-110"
       >
         {common("startDrawing")}

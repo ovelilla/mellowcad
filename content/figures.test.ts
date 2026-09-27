@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest"
 
-import { GET } from "@/app/(marketing)/sketches/hero.json/route"
+import { GET } from "@/app/sketches/hero.json/route"
 import {
   DEFAULT_LAYER_ID,
   parseDrawingFile,

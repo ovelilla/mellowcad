@@ -2,6 +2,8 @@
 
 import { useState } from "react"
 import { Check, PencilRuler, Plus, Trash2 } from "lucide-react"
+import { useTranslations } from "next-intl"
+
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import {
@@ -33,6 +35,7 @@ export function StylesControl({
   engine: CadEngine
   state: EngineState
 }) {
+  const t = useTranslations("Editor.Styles")
   const tab = state.stylesPanel
 
   return (
@@ -45,11 +48,11 @@ export function StylesControl({
           <Button
             size="lg"
             variant="ghost"
-            aria-label="Styles"
+            aria-label={t("title")}
             className="pointer-events-auto gap-2 rounded-lg bg-card/90 backdrop-blur aria-expanded:bg-card/90"
           >
             <PencilRuler className="shrink-0" />
-            <span className="truncate text-xs">Styles</span>
+            <span className="truncate text-xs">{t("title")}</span>
           </Button>
         }
       />
@@ -60,12 +63,12 @@ export function StylesControl({
       >
         <div className="flex items-center gap-1 p-2">
           <TabButton
-            label="Dimension"
+            label={t("dimension")}
             active={tab === "dimension"}
             onClick={() => engine.setStylesPanel("dimension")}
           />
           <TabButton
-            label="Text"
+            label={t("text")}
             active={tab === "text"}
             onClick={() => engine.setStylesPanel("text")}
           />
@@ -109,6 +112,7 @@ function DimStyles({
   engine: CadEngine
   state: EngineState
 }) {
+  const t = useTranslations("Editor.Styles")
   const [selectedId, setSelectedId] = useState<string | null>(null)
   const selected =
     state.dimStyles.find((style) => style.id === selectedId) ??
@@ -135,70 +139,70 @@ function DimStyles({
       />
 
       <div className="max-h-[52svh] space-y-3 overflow-y-auto border-t border-border/60 p-3">
-        <Group title="Lines">
+        <Group title={t("lines")}>
           <NumberField
-            label="Baseline spacing"
+            label={t("baselineSpacing")}
             value={selected.baselineSpacing}
             onCommit={(baselineSpacing) => set({ baselineSpacing })}
           />
           <NumberField
-            label="Extend beyond dim lines"
+            label={t("extendBeyond")}
             value={selected.extensionBeyond}
             onCommit={(extensionBeyond) => set({ extensionBeyond })}
           />
           <NumberField
-            label="Offset from origin"
+            label={t("offsetFromOrigin")}
             value={selected.extensionOffset}
             onCommit={(extensionOffset) => set({ extensionOffset })}
           />
         </Group>
 
-        <Group title="Symbols and arrows">
+        <Group title={t("symbolsAndArrows")}>
           <NumberField
-            label="Arrow size"
+            label={t("arrowSize")}
             value={selected.arrowSize}
             onCommit={(arrowSize) => set({ arrowSize })}
           />
           {/* DIMCEN 0 is AutoCAD's "None"; a positive value is a centre mark. */}
           <NumberField
-            label="Center mark size"
+            label={t("centerMark")}
             value={selected.centerMark}
             onCommit={(centerMark) => set({ centerMark })}
           />
         </Group>
 
-        <Group title="Text">
+        <Group title={t("textGroup")}>
           <NumberField
-            label="Text height"
+            label={t("textHeight")}
             value={selected.textHeight}
             onCommit={(textHeight) => set({ textHeight })}
           />
           <NumberField
-            label="Offset from dim line"
+            label={t("offsetFromDimLine")}
             value={selected.textGap}
             onCommit={(textGap) => set({ textGap })}
           />
         </Group>
 
-        <Group title="Fit">
+        <Group title={t("fit")}>
           <NumberField
-            label="Use overall scale of"
+            label={t("overallScale")}
             value={selected.scale}
             step={1}
             onCommit={(scale) => set({ scale })}
           />
         </Group>
 
-        <Group title="Primary units">
+        <Group title={t("primaryUnits")}>
           <NumberField
-            label="Precision"
+            label={t("precision")}
             value={selected.decimals}
             step={1}
             onCommit={(decimals) => set({ decimals })}
           />
           {/* DIMADEC: −1 means "use the linear precision above". */}
           <NumberField
-            label="Angular precision"
+            label={t("angularPrecision")}
             value={selected.angleDecimals}
             step={1}
             onCommit={(angleDecimals) => set({ angleDecimals })}
@@ -216,6 +220,7 @@ function TextStyles({
   engine: CadEngine
   state: EngineState
 }) {
+  const t = useTranslations("Editor.Styles")
   const [selectedId, setSelectedId] = useState<string | null>(null)
   const selected =
     state.textStyles.find((style) => style.id === selectedId) ??
@@ -239,18 +244,16 @@ function TextStyles({
       />
 
       <div className="space-y-3 border-t border-border/60 p-3">
-        <Group title="Size">
+        <Group title={t("size")}>
           <NumberField
-            label="Height"
+            label={t("height")}
             value={selected.height}
             onCommit={(height) =>
               engine.updateTextStyle(selected.id, { height })
             }
           />
         </Group>
-        <p className="text-[11px] text-muted-foreground">
-          A height of 0 leaves it free, so TEXT asks for one each time.
-        </p>
+        <p className="text-[11px] text-muted-foreground">{t("heightHint")}</p>
       </div>
     </>
   )
@@ -277,11 +280,17 @@ function StyleList({
   onDelete: (id: string) => void
   onNew: () => void
 }) {
+  const t = useTranslations("Editor.Styles")
   return (
     <>
       <div className="flex items-center justify-between px-3 pb-2">
         <p className="text-[11px] text-muted-foreground">
-          Current: <span className="text-foreground">{currentId}</span>
+          {t.rich("current", {
+            name: currentId,
+            value: (chunks) => (
+              <span className="text-foreground">{chunks}</span>
+            ),
+          })}
         </p>
         <Button
           size="sm"
@@ -290,7 +299,7 @@ function StyleList({
           onClick={onNew}
         >
           <Plus className="size-3.5" />
-          New
+          {t("new")}
         </Button>
       </div>
 
@@ -337,6 +346,7 @@ function StyleRow({
   onRename: (name: string) => void
   onDelete: () => void
 }) {
+  const t = useTranslations("Editor.Styles")
   const [draft, setDraft] = useState<string | null>(null)
 
   return (
@@ -349,7 +359,7 @@ function StyleRow({
     >
       <button
         type="button"
-        aria-label={`Set ${style.name} current`}
+        aria-label={t("setCurrent", { name: style.name })}
         onClick={onSetCurrent}
         className="shrink-0 text-muted-foreground hover:text-foreground"
       >
@@ -371,7 +381,7 @@ function StyleRow({
       ) : (
         <input
           autoFocus
-          aria-label={`Rename ${style.name}`}
+          aria-label={t("rename", { name: style.name })}
           value={draft}
           onChange={(event) => setDraft(event.target.value)}
           onBlur={() => {
@@ -392,7 +402,7 @@ function StyleRow({
 
       <button
         type="button"
-        aria-label={`Delete ${style.name}`}
+        aria-label={t("delete", { name: style.name })}
         disabled={!canDelete}
         onClick={onDelete}
         className="shrink-0 text-muted-foreground hover:text-foreground disabled:opacity-20 disabled:hover:text-muted-foreground"

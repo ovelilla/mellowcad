@@ -2,9 +2,9 @@ import { getTranslations } from "next-intl/server"
 
 import { COMMAND_GROUPS, type CommandGroup } from "@/content/commands"
 import { FIGURES } from "@/content/figures"
+import { sitePaths } from "@/i18n/navigation"
 import { commandsByGroup, productFacts } from "@/lib/facts"
 import { renderFigure } from "@/lib/plot"
-import { EDITOR_PATH } from "@/lib/site"
 
 import { Drawing } from "./drawing"
 import { SectionHeading } from "./section-heading"
@@ -35,6 +35,7 @@ export async function ToolsetSection() {
   const t = await getTranslations("Toolset")
   const groups = await getTranslations("Groups")
   const common = await getTranslations("Common")
+  const paths = await sitePaths()
   const facts = productFacts()
   const byGroup = commandsByGroup()
   const figures = await Promise.all(
@@ -93,7 +94,7 @@ export async function ToolsetSection() {
       </ol>
       <p>
         <a
-          href={EDITOR_PATH}
+          href={paths.editor}
           className="inline-flex h-12 items-center rounded-md bg-accent px-6 font-medium text-accent-ink transition-[filter] duration-150 hover:brightness-110"
         >
           {common("startDrawing")}

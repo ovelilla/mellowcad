@@ -1,5 +1,7 @@
 "use client"
 
+import { useTranslations } from "next-intl"
+
 import {
   LINEWEIGHTS,
   LINEWEIGHT_BYLAYER,
@@ -39,6 +41,7 @@ export function LineweightSelect({
   ariaLabel: string
   className?: string
 }) {
+  const t = useTranslations("Editor.Properties")
   return (
     <Select
       value={value === null ? undefined : String(value)}
@@ -50,7 +53,7 @@ export function LineweightSelect({
       }}
     >
       <SelectTrigger size="sm" aria-label={ariaLabel} className={className}>
-        <SelectValue placeholder="Varies" />
+        <SelectValue placeholder={t("varies")} />
       </SelectTrigger>
       <SelectContent>
         {includeByLayer && (

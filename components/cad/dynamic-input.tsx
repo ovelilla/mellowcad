@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from "react"
 import { Lock } from "lucide-react"
+import { useTranslations } from "next-intl"
 import { CadEngine, EngineState } from "@/cad"
 
 /**
@@ -18,6 +19,7 @@ export function DynamicInput({
   engine: CadEngine
   state: EngineState
 }) {
+  const t = useTranslations("Editor.DynamicInput")
   const di = state.dynamicInput
   const activeFieldId = di?.fields.find((f) => f.active)?.id ?? null
   const inputRef = useRef<HTMLInputElement>(null)
@@ -135,7 +137,7 @@ export function DynamicInput({
               <Lock
                 className="ml-0.5 size-3 shrink-0 text-amber-400"
                 strokeWidth={2.5}
-                aria-label="locked"
+                aria-label={t("locked")}
               />
             )}
           </label>

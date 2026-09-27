@@ -2,6 +2,7 @@
 
 import { useState } from "react"
 import { Info } from "lucide-react"
+import { useTranslations } from "next-intl"
 
 import { CadEngine, EngineState, PropertyEdit } from "@/cad"
 import {
@@ -30,6 +31,7 @@ export function PropertiesPanel({
   engine: CadEngine
   state: EngineState
 }) {
+  const t = useTranslations("Editor.Properties")
   const info = state.selectionInfo
   if (!info) return null
 
@@ -44,21 +46,21 @@ export function PropertiesPanel({
         {/* General: the layer the selected objects live on (AutoCAD's first row). */}
         <div className="border-b border-border/60 px-3 py-2">
           <div className="mb-1 text-[10px] font-semibold tracking-wide text-muted-foreground/70 uppercase">
-            General
+            {t("general")}
           </div>
           <div className="flex items-center justify-between gap-2">
-            <span className="text-muted-foreground">Color</span>
+            <span className="text-muted-foreground">{t("color")}</span>
             <ColorSelect
               value={state.selectionColor}
               names={state.names}
               onValueChange={(value) => engine.setSelectionColor(value)}
-              ariaLabel="Colour of the selected objects"
+              ariaLabel={t("colorLabel")}
               className="w-30"
             />
           </div>
 
           <div className="mt-1 flex items-center justify-between gap-2">
-            <span className="text-muted-foreground">Layer</span>
+            <span className="text-muted-foreground">{t("layer")}</span>
             <Select
               value={state.selectionLayerId}
               onValueChange={(value) =>
@@ -67,10 +69,10 @@ export function PropertiesPanel({
             >
               <SelectTrigger
                 size="sm"
-                aria-label="Layer of the selected objects"
+                aria-label={t("layerLabel")}
                 className="w-30 bg-background text-[11px] dark:bg-background"
               >
-                <SelectValue placeholder="Varies" />
+                <SelectValue placeholder={t("varies")} />
               </SelectTrigger>
               <SelectContent>
                 {state.layers.map((layer) => (
@@ -87,25 +89,25 @@ export function PropertiesPanel({
           </div>
 
           <div className="mt-1 flex items-center justify-between gap-2">
-            <span className="text-muted-foreground">Linetype</span>
+            <span className="text-muted-foreground">{t("linetype")}</span>
             <LinetypeSelect
               value={state.selectionLinetype}
               names={state.names}
               onValueChange={(value) => engine.setSelectionLinetype(value)}
               includeByLayer
-              ariaLabel="Linetype of the selected objects"
+              ariaLabel={t("linetypeLabel")}
               className="w-30 bg-background text-[11px] dark:bg-background"
             />
           </div>
 
           <div className="mt-1 flex items-center justify-between gap-2">
-            <span className="text-muted-foreground">Lineweight</span>
+            <span className="text-muted-foreground">{t("lineweight")}</span>
             <LineweightSelect
               value={state.selectionLineweight}
               names={state.names}
               onValueChange={(value) => engine.setSelectionLineweight(value)}
               includeByLayer
-              ariaLabel="Lineweight of the selected objects"
+              ariaLabel={t("lineweightLabel")}
               className="w-30 bg-background text-[11px] dark:bg-background"
             />
           </div>
@@ -113,7 +115,8 @@ export function PropertiesPanel({
           {/* Only for the object kinds that wear a style, as AutoCAD shows it. */}
           {state.selectionTextStyleId !== null && (
             <StyleRow
-              label="Text style"
+              label={t("textStyle")}
+              ariaLabel={t("textStyleLabel")}
               value={state.selectionTextStyleId}
               styles={state.textStyles}
               onValueChange={(id) => engine.setSelectionTextStyle(id)}
@@ -121,7 +124,8 @@ export function PropertiesPanel({
           )}
           {state.selectionDimStyleId !== null && (
             <StyleRow
-              label="Dim style"
+              label={t("dimStyle")}
+              ariaLabel={t("dimStyleLabel")}
               value={state.selectionDimStyleId}
               styles={state.dimStyles}
               onValueChange={(id) => engine.setSelectionDimStyle(id)}
@@ -218,15 +222,18 @@ function PropertyInput({
 /** A named-style picker: the palette's Text style / Dim style row. */
 function StyleRow({
   label,
+  ariaLabel,
   value,
   styles,
   onValueChange,
 }: {
   label: string
+  ariaLabel: string
   value: string
   styles: ReadonlyArray<{ id: string; name: string }>
   onValueChange: (id: string) => void
 }) {
+  const t = useTranslations("Editor.Properties")
   return (
     <div className="mt-1 flex items-center justify-between gap-2">
       <span className="text-muted-foreground">{label}</span>
@@ -238,10 +245,10 @@ function StyleRow({
       >
         <SelectTrigger
           size="sm"
-          aria-label={`${label} of the selected objects`}
+          aria-label={ariaLabel}
           className="w-30 bg-background text-[11px] dark:bg-background"
         >
-          <SelectValue placeholder="Varies" />
+          <SelectValue placeholder={t("varies")} />
         </SelectTrigger>
         <SelectContent>
           {styles.map((style) => (

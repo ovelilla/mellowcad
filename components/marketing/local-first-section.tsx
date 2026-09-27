@@ -3,6 +3,7 @@ import Link from "next/link"
 import { getTranslations } from "next-intl/server"
 
 import { FIGURES } from "@/content/figures"
+import { sitePaths } from "@/i18n/navigation"
 import { renderFigure } from "@/lib/plot"
 
 import { Drawing } from "./drawing"
@@ -11,6 +12,7 @@ import { SectionHeading } from "./section-heading"
 export async function LocalFirstSection() {
   const t = await getTranslations("LocalFirst")
   const figure = await renderFigure(FIGURES.localFirst)
+  const paths = await sitePaths()
 
   const facts = [
     { icon: HardDrive, title: t("autosaveTitle"), body: t("autosaveBody") },
@@ -45,7 +47,7 @@ export async function LocalFirstSection() {
           ))}
           <li className="rounded-md border border-border bg-bg-raised p-4 text-sm text-fg-muted">
             {t("warning")}{" "}
-            <Link href="/privacy" className="underline-link">
+            <Link href={paths.privacy} className="underline-link">
               {t("privacyLink")}
             </Link>
           </li>

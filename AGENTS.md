@@ -43,8 +43,10 @@ cad/adapters/     the only browser-aware layer: CadEngine (composition root), ca
 
 React imports the public barrel `@/cad` only — never a deep path.
 
-Two root layouts: the editor is `/draw` (`app/(app)/`), the landing is `/` (`app/(marketing)/`,
-`components/marketing/`, copy in `messages/`). The landing's rules are in
+Two root layouts under the `[locale]` root param: the editor is `/draw` (`app/[locale]/(app)/`),
+the landing is `/` (`app/[locale]/(marketing)/`, `components/marketing/`). Other languages are
+prefixed (`/es/draw`). Texts live in `messages/` (next-intl) and `cad/locales/` (the engine); the
+rules are in `.github/instructions/i18n.instructions.md`. The landing's rules are in
 `.github/instructions/marketing.instructions.md`.
 
 ## Non-negotiable invariants

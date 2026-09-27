@@ -15,11 +15,11 @@ export async function generateMetadata(): Promise<Metadata> {
   return {
     title: t("metaTitle"),
     description: t("metaDescription"),
-    ...pageMetadata({
+    ...(await pageMetadata({
       path: "/privacy",
       title: `${t("metaTitle")} · ${SITE_NAME}`,
       description: t("metaDescription"),
-    }),
+    })),
   }
 }
 

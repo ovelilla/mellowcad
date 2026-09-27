@@ -1,5 +1,7 @@
 "use client"
 
+import { useTranslations } from "next-intl"
+
 import { EngineState } from "@/cad"
 
 /**
@@ -8,17 +10,18 @@ import { EngineState } from "@/cad"
  * why it is deliberately separated from the interactive aid toggles.
  */
 export function CoordinateReadout({ state }: { state: EngineState }) {
+  const t = useTranslations("Editor.Coordinates")
   const cursor = state.cursorWorld
   return (
     <div className="pointer-events-auto flex h-10 items-center gap-3 rounded-lg bg-card/90 px-3 font-mono text-[11px] text-muted-foreground backdrop-blur">
       <span className="flex items-center">
-        <span>x:</span>
+        <span>{t("x")}</span>
         <span className="inline-block min-w-14 text-right text-foreground tabular-nums">
           {cursor ? cursor.x.toFixed(3) : "—"}
         </span>
       </span>
       <span className="flex items-center">
-        <span>y:</span>
+        <span>{t("y")}</span>
         <span className="inline-block min-w-14 text-right text-foreground tabular-nums">
           {cursor ? cursor.y.toFixed(3) : "—"}
         </span>

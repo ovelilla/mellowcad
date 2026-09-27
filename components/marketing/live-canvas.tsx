@@ -15,7 +15,7 @@ import {
 } from "@/cad"
 import { DynamicInput } from "@/components/cad/dynamic-input"
 import { useCadEngine } from "@/hooks/useCadEngine"
-import { EDITOR_PATH } from "@/lib/site"
+import { formatPlural, type PluralMessage } from "@/lib/plural"
 
 import { UcsIcon } from "./ucs-icon"
 
@@ -48,8 +48,7 @@ export interface LiveCanvasLabels {
   readonly closeLabel: string
   readonly dialogTitle: string
   /** `#` is replaced by the count. */
-  readonly savedOne: string
-  readonly savedOther: string
+  readonly saved: PluralMessage
   readonly dialogBody: string
   readonly download: string
   readonly replace: string
@@ -58,6 +57,8 @@ export interface LiveCanvasLabels {
 
 export interface LiveCanvasProps {
   readonly labels: LiveCanvasLabels
+  /** The editor in the page's language. */
+  readonly editor: string
   /** What the still figure frames, so the drawing does not move as it wakes. */
   readonly view: {
     readonly frame: Bounds
@@ -73,7 +74,7 @@ export interface LiveCanvasProps {
  * embedded (`scope`), so it has the keyboard and the wheel only while in use.
  * Loaded on demand — none of this is in the page's first load.
  */
-export function LiveCanvas({ labels, view, onClose }: LiveCanvasProps) {
+export function LiveCanvas({ labels, editor, view, onClose }: LiveCanvasProps) {
   const scopeRef = useRef<HTMLDivElement>(null)
   const dialogRef = useRef<HTMLDialogElement>(null)
   const { canvasRef, engine, state } = useCadEngine({
@@ -102,7 +103,7 @@ export function LiveCanvas({ labels, view, onClose }: LiveCanvasProps) {
     if (menuOpen) engine?.closeSnapOverrideMenu()
   }, [engine, menuOpen])
 
-  const go = () => window.location.assign(EDITOR_PATH)
+  const go = () => window.location.assign(editor)
 
   const download = () => {
     engine?.saveDrawingToFile()
@@ -136,11 +137,7 @@ export function LiveCanvas({ labels, view, onClose }: LiveCanvasProps) {
     onClose()
   }
 
-  const savedText = (
-    new Intl.PluralRules("en").select(savedObjects) === "one"
-      ? labels.savedOne
-      : labels.savedOther
-  ).replace("#", new Intl.NumberFormat("en").format(savedObjects))
+  const savedText = formatPlural(labels.saved, savedObjects)
 
   return (
     <>

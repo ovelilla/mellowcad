@@ -13,6 +13,8 @@ import {
   ZoomIn,
   ZoomOut,
 } from "lucide-react"
+import { useTranslations } from "next-intl"
+
 import { TooltipProvider } from "@/components/ui/tooltip"
 import { CadEngine, EngineState } from "@/cad"
 
@@ -29,7 +31,12 @@ export function CommandBar({
   engine: CadEngine
   state: EngineState
 }) {
+  const t = useTranslations("Editor.CommandBar")
+  const keys = useTranslations("Editor.Keys")
   const saving = state.saveState === "saving"
+  // The navigation tools' aliases are the engine's: they are command names.
+  const alias = (id: string) =>
+    state.tools.find((tool) => tool.id === id)?.shortcut?.toUpperCase()
 
   return (
     <TooltipProvider>
@@ -37,62 +44,62 @@ export function CommandBar({
         <Panel>
           <IconAction
             icon={saving ? Loader2 : Save}
-            label={saving ? "Auto-saving…" : "Save drawing"}
-            shortcut="Ctrl+S"
+            label={saving ? t("saving") : t("save")}
+            shortcut={keys("save")}
             onClick={() => engine.saveDrawingToFile()}
             side="bottom"
             className={saving ? "[&_svg]:animate-spin" : undefined}
           />
           <IconAction
             icon={FolderOpen}
-            label="Open drawing"
-            shortcut="Ctrl+O"
+            label={t("open")}
+            shortcut={keys("open")}
             onClick={() => void engine.openDrawingFromFile()}
             side="bottom"
           />
           <IconAction
             icon={Search}
-            label="Zoom window"
-            shortcut="Z"
+            label={t("zoomWindow")}
+            shortcut={alias("zoom")}
             side="bottom"
             active={state.activeToolId === "zoom"}
             onClick={() => engine.setActiveTool("zoom")}
           />
           <IconAction
             icon={Hand}
-            label="Pan"
-            shortcut="P"
+            label={t("pan")}
+            shortcut={alias("pan")}
             side="bottom"
             active={state.activeToolId === "pan"}
             onClick={() => engine.setActiveTool("pan")}
           />
           <IconAction
             icon={ZoomIn}
-            label="Zoom in"
+            label={t("zoomIn")}
             onClick={() => engine.zoomIn()}
             side="bottom"
           />
           <IconAction
             icon={ZoomOut}
-            label="Zoom out"
+            label={t("zoomOut")}
             onClick={() => engine.zoomOut()}
             side="bottom"
           />
           <IconAction
             icon={Undo2}
-            label="Zoom previous"
+            label={t("zoomPrevious")}
             onClick={() => engine.zoomPrevious()}
             side="bottom"
           />
           <IconAction
             icon={Maximize}
-            label="Zoom to fit"
+            label={t("zoomToFit")}
             onClick={() => engine.zoomToFit()}
             side="bottom"
           />
           <IconAction
             icon={RotateCcw}
-            label="Reset view"
+            label={t("resetView")}
             onClick={() => engine.resetView()}
             side="bottom"
           />
@@ -100,7 +107,7 @@ export function CommandBar({
               the View ribbon (Palettes panel), never on the status bar. */}
           <IconAction
             icon={Terminal}
-            label="Command line"
+            label={t("commandLine")}
             shortcut="F2"
             side="bottom"
             active={state.commandLine.visible}

@@ -3,6 +3,7 @@
 import { useSyncExternalStore } from "react"
 
 import { readSavedDrawingSummary } from "@/cad"
+import { formatPlural, type PluralMessage } from "@/lib/plural"
 
 /**
  * The autosave changes behind the page's back: in the editor in another tab
@@ -32,31 +33,22 @@ function savedObjects(): number {
 export function ContinueDrawing({
   href,
   start,
-  continueOne,
-  continueOther,
+  resume,
 }: {
   href: string
   start: string
-  /** `#` is replaced by the count. */
-  continueOne: string
-  continueOther: string
+  resume: PluralMessage
 }) {
   const objects = useSyncExternalStore(subscribe, savedObjects, () => 0)
-  const plural = new Intl.PluralRules("en").select(objects)
-  const count = new Intl.NumberFormat("en").format(objects)
-  const resume = (plural === "one" ? continueOne : continueOther).replace(
-    "#",
-    count
-  )
   // The widest label the button may ever need, reserved but never shown.
-  const widest = continueOther.replace("#", "999")
+  const widest = formatPlural(resume, 999)
   return (
     <a
       href={href}
       className="inline-grid h-12 items-center rounded-md bg-accent px-6 font-medium text-accent-ink transition-[filter] duration-150 hover:brightness-110"
     >
       <span className="col-start-1 row-start-1 text-center">
-        {objects > 0 ? resume : start}
+        {objects > 0 ? formatPlural(resume, objects) : start}
         <span aria-hidden="true"> →</span>
       </span>
       <span

@@ -4,10 +4,10 @@
  */
 @import "tailwindcss" source(none);
 @source ".";
-@source "../global-not-found.tsx";
-@source "../../components/marketing";
+@source "../../global-not-found.tsx";
+@source "../../../components/marketing";
 /* The live sketch embeds the editor's own dynamic-input box. */
-@source "../../components/cad/dynamic-input.tsx";
+@source "../../../components/cad/dynamic-input.tsx";
 
 /* One scheme, dark, like the editor and AutoCAD: `dark:` always applies. */
 @custom-variant dark (&);
@@ -197,7 +197,11 @@
     24px 24px,
     24px 24px;
   background-position: center top;
-  mask-image: radial-gradient(ellipse 80% 70% at 50% 30%, #000 30%, transparent 100%);
+  mask-image: radial-gradient(
+    ellipse 80% 70% at 50% 30%,
+    #000 30%,
+    transparent 100%
+  );
 }
 
 @utility underline-link {
@@ -205,7 +209,9 @@
   text-decoration-line: underline;
   text-decoration-color: rgb(226 232 240 / 0.35);
   text-underline-offset: 0.2em;
-  transition: color 150ms ease, text-decoration-color 150ms ease;
+  transition:
+    color 150ms ease,
+    text-decoration-color 150ms ease;
   &:hover {
     color: var(--accent);
     text-decoration-color: currentColor;

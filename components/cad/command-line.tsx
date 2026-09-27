@@ -1,5 +1,6 @@
 "use client"
 
+import { useTranslations } from "next-intl"
 import { useEffect, useRef } from "react"
 import { CadEngine, EngineState } from "@/cad"
 
@@ -20,6 +21,7 @@ export function CommandLine({
 }) {
   const { visible, prompt, idlePrompt, buffer, lines, suggestions } =
     state.commandLine
+  const t = useTranslations("Editor.CommandLine")
   const logRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
@@ -109,9 +111,9 @@ export function CommandLine({
           }}
           spellCheck={false}
           autoComplete="off"
-          aria-label="Command line"
+          aria-label={t("label")}
           className="min-w-0 flex-1 bg-transparent text-foreground uppercase outline-none placeholder:text-muted-foreground/60 placeholder:normal-case"
-          placeholder="Type a command (LINE, TR, CO…)"
+          placeholder={t("placeholder")}
         />
       </div>
     </div>

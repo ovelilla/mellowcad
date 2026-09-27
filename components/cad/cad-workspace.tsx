@@ -1,5 +1,7 @@
 "use client"
 
+import { useTranslations } from "next-intl"
+
 import { useCadEngine } from "@/hooks/useCadEngine"
 import { EDITOR_SHEET_ID, SHEET_TRANSITION } from "@/lib/view-transition"
 import { AboutPanel } from "./about-panel"
@@ -23,6 +25,7 @@ import { SelectionCyclingList } from "./selection-cycling-list"
  */
 export function CadWorkspace() {
   const { canvasRef, engine, state } = useCadEngine()
+  const t = useTranslations("Editor.Workspace")
 
   return (
     <div
@@ -33,7 +36,7 @@ export function CadWorkspace() {
       <canvas
         ref={canvasRef}
         className="absolute inset-0 h-full w-full touch-none outline-none"
-        aria-label="CAD drawing canvas"
+        aria-label={t("canvas")}
       />
 
       {engine && state && (

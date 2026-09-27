@@ -3,6 +3,8 @@
     "title": "Online 2D CAD with AutoCAD commands — MellowCAD",
     "titleTemplate": "%s · MellowCAD",
     "description": "2D drafting in your browser with the commands, aliases and object snaps AutoCAD users know. No install, no sign-up; drawings stay on your device.",
+    "drawTitle": "Draw",
+    "drawDescription": "Precision 2D drafting with the commands, snaps and keyboard flow AutoCAD users already know — in a browser tab, nothing to install.",
     "ogAlt": "A flange drawn in MellowCAD, with the words: Type L. Press Enter. Draw.",
     "appDescription": "2D drafting in the browser with AutoCAD commands, aliases and object snaps.",
     "browserRequirements": "Requires JavaScript and a modern desktop browser."
@@ -11,7 +13,8 @@
     "brand": "MellowCAD",
     "startDrawing": "Start drawing",
     "skipToContent": "Skip to content",
-    "home": "MellowCAD home"
+    "home": "MellowCAD home",
+    "labelSeparator": ": "
   },
   "Header": {
     "features": "Features",
@@ -27,8 +30,7 @@
     "title": "Type L. Press Enter. Draw.",
     "lead": "MellowCAD is 2D drafting in your browser that works the way AutoCAD does: the same commands, aliases, prompts and object snaps. Nothing to install, no account — and your drawings never leave your device.",
     "secondaryCta": "See the commands",
-    "continueOne": "Continue drawing · # object",
-    "continueOther": "Continue drawing · # objects",
+    "continue": "{count, plural, one {Continue drawing · # object} other {Continue drawing · # objects}}",
     "proof": "Free · No sign-up · Nothing to install · Local autosave",
     "mobileNote": "Best on a computer with keyboard and mouse.",
     "drawingTitle": "A flange, drawn in MellowCAD",
@@ -54,8 +56,7 @@
     "close": "Close",
     "closeLabel": "Close the sketch",
     "dialogTitle": "You already have a drawing in the editor",
-    "savedOne": "It has # object and is autosaved in this browser. The editor keeps one drawing at a time.",
-    "savedOther": "It has # objects and is autosaved in this browser. The editor keeps one drawing at a time.",
+    "saved": "{count, plural, one {It has # object and is autosaved in this browser.} other {It has # objects and is autosaved in this browser.}} The editor keeps one drawing at a time.",
     "dialogBody": "Download this sketch as a file and open your drawing, or replace your drawing with the sketch.",
     "download": "Download the sketch",
     "replace": "Replace my drawing",
@@ -71,9 +72,9 @@
     "label": "01 · Muscle memory",
     "title": "The commands you know, down to the aliases.",
     "lead": "Type L for LINE, O for OFFSET, TR for TRIM. MellowCAD reads the same aliases, asks the same questions in the same order and takes the same option letters.",
-    "count": "{commands} AutoCAD commands, {aliases} aliases",
+    "count": "{commands, number} AutoCAD commands, {aliases, number} aliases",
     "boardLabel": "Commands and their aliases, grouped as on the ribbon",
-    "aliasesLabel": "Also:",
+    "also": "Also: {aliases}",
     "tryLabel": "Try it",
     "tryPlaceholder": "Type a command, e.g. OF",
     "tryHint": "Enter opens the editor.",
@@ -93,7 +94,7 @@
     "title": "Precision you can feel under the cursor.",
     "lead": "Object snaps, tracking and polar angles behave the way your hands expect. Each figure below is the editor's own frame, drawn by the engine mid-gesture.",
     "osnapTitle": "Object snaps",
-    "osnapBody": "{count} object snaps with AutoCAD's markers and tooltips. Shift+right-click forces one for the next pick — here, Tangent.",
+    "osnapBody": "{count, number} object snaps with AutoCAD's markers and tooltips. Shift+right-click forces one for the next pick — here, Tangent.",
     "otrackTitle": "Object snap tracking",
     "otrackBody": "Rest on two points to acquire them, then follow their alignment paths to where they cross.",
     "polarTitle": "Polar tracking and Ortho",
@@ -112,12 +113,12 @@
   "Toolset": {
     "label": "03 · Toolset",
     "title": "A real 2D drafting toolset — and growing.",
-    "lead": "{commands} commands today, filed the way the ribbon files them. Each asks AutoCAD's questions in AutoCAD's order; the options still missing are tracked on the roadmap.",
+    "lead": "{commands, number} commands today, filed the way the ribbon files them. Each asks AutoCAD's questions in AutoCAD's order; the options still missing are tracked on the roadmap.",
     "sheet": "Sheet {number}",
     "drawBody": "Lines, polylines with arc segments, circles, arcs and ellipses in all their constructions, rectangles, polygons and hatches.",
     "modifyBody": "Move, copy, rotate, scale, mirror, stretch; offset, trim, extend, fillet, chamfer, break and join; rectangular, polar and path arrays.",
     "annotateBody": "Single-line text and a full family of dimensions — linear, aligned, radius, diameter, angular, baseline and continue — with text and dimension styles.",
-    "organizeBody": "Layers, {linetypes} linetypes, {lineweights} lineweights and colours, with ByLayer throughout; blocks you can define, insert and purge.",
+    "organizeBody": "Layers, {linetypes, number} linetypes, {lineweights, number} lineweights and colours, with ByLayer throughout; blocks you can define, insert and purge.",
     "inquiryBody": "Distance and area readouts, zoom and pan, undo and redo, snap mode and FROM.",
     "filesBody": "Autosave, save and open a file, and the clipboard — copy, cut, paste and copy with base point.",
     "drawAlt": "A slotted plate: a polyline with two arc ends and two holes.",
@@ -161,9 +162,9 @@
     "title": "Honest about what's here — and what isn't yet.",
     "lead": "MellowCAD is an independent project in active development. Here is where it stands.",
     "todayTitle": "Works today",
-    "today1": "{commands} AutoCAD commands and {aliases} aliases",
-    "today2": "{snaps} object snaps, OTRACK, polar tracking and Ortho",
-    "today3": "Layers, linetypes, {lineweights} lineweights and colours",
+    "today1": "{commands, number} AutoCAD commands and {aliases, number} aliases",
+    "today2": "{snaps, number} object snaps, OTRACK, polar tracking and Ortho",
+    "today3": "Layers, linetypes, {lineweights, number} lineweights and colours",
     "today4": "Dimensions, text, hatches and blocks",
     "today5": "Autosave, save and open, and the clipboard",
     "notYetTitle": "Not yet",
@@ -199,7 +200,7 @@
     "q7": "Does it work on tablets or phones?",
     "a7": "It opens, but it's built for a keyboard and mouse, like AutoCAD. Use a computer.",
     "q8": "Which commands are supported?",
-    "a8": "{commands} commands, including LINE, PLINE, CIRCLE, ARC, ELLIPSE, HATCH, OFFSET, TRIM, FILLET, ARRAY, dimensions, blocks and layers. The full list, with aliases, is above."
+    "a8": "{commands, number} commands, including LINE, PLINE, CIRCLE, ARC, ELLIPSE, HATCH, OFFSET, TRIM, FILLET, ARRAY, dimensions, blocks and layers. The full list, with aliases, is above."
   },
   "FinalCta": {
     "title": "Your drafting table is one keystroke away."
@@ -255,5 +256,186 @@
   "Og": {
     "tagline": "2D CAD in your browser",
     "drawTitle": "Start drawing"
+  },
+  "Editor": {
+    "Workspace": {
+      "canvas": "CAD drawing canvas"
+    },
+    "Keys": {
+      "save": "Ctrl+S",
+      "open": "Ctrl+O",
+      "undo": "Ctrl+Z",
+      "redo": "Ctrl+Y",
+      "delete": "Del"
+    },
+    "CommandBar": {
+      "saving": "Auto-saving…",
+      "save": "Save drawing",
+      "open": "Open drawing",
+      "zoomWindow": "Zoom window",
+      "pan": "Pan",
+      "zoomIn": "Zoom in",
+      "zoomOut": "Zoom out",
+      "zoomPrevious": "Zoom previous",
+      "zoomToFit": "Zoom to fit",
+      "resetView": "Reset view",
+      "commandLine": "Command line"
+    },
+    "ToolRail": {
+      "flyouts": {
+        "circle": "Circle",
+        "arc": "Arc",
+        "ellipse": "Ellipse",
+        "rectangle": "Rectangle",
+        "fillet": "Fillet",
+        "break": "Break",
+        "array": "Array",
+        "dimension": "Dimension",
+        "measure": "Measure"
+      },
+      "undo": "Undo",
+      "redo": "Redo",
+      "deleteSelection": "Delete selection",
+      "clearAll": "Clear all"
+    },
+    "CommandLine": {
+      "label": "Command line",
+      "placeholder": "Type a command (LINE, TR, CO…)"
+    },
+    "Coordinates": {
+      "x": "x:",
+      "y": "y:"
+    },
+    "DynamicInput": {
+      "locked": "locked"
+    },
+    "DrawingAids": {
+      "objectSnap": "Object snap",
+      "objectSnapSettings": "Object snap settings",
+      "comingSoon": "{name} (coming soon)",
+      "snapMode": "Snap mode",
+      "snapSettings": "Snap settings",
+      "snap": "Snap",
+      "gridSnap": "Grid snap",
+      "polarSnap": "Polar snap",
+      "snapX": "Snap X",
+      "snapXSpacing": "Snap X spacing",
+      "snapY": "Snap Y",
+      "snapYSpacing": "Snap Y spacing",
+      "polarDistance": "Polar distance",
+      "polarSnapDistance": "Polar snap distance",
+      "grid": "Grid",
+      "ortho": "Ortho",
+      "polarTracking": "Polar tracking",
+      "polarTrackingAngle": "Polar tracking angle",
+      "polarAngle": "Polar angle",
+      "objectSnapTracking": "Object snap tracking",
+      "selectionCycling": "Selection cycling",
+      "selectionCyclingSettings": "Selection cycling settings",
+      "selectionList": "Display selection list box",
+      "showLineweight": "Show lineweight",
+      "unitsSettings": "Document units and precision",
+      "units": "Units",
+      "precision": "Precision",
+      "linetypeScale": "Linetype scale",
+      "linetypeScaleLabel": "Global linetype scale (LTSCALE)",
+      "dimensionScale": "Dimension scale",
+      "dimensionScaleLabel": "Overall dimension scale (DIMSCALE)"
+    },
+    "SnapOverride": {
+      "point": "Point",
+      "from": "From",
+      "objectSnap": "Object snap",
+      "none": "None"
+    },
+    "SelectionCycling": {
+      "title": "Selection"
+    },
+    "Layers": {
+      "title": "Layers",
+      "new": "New",
+      "selected": "{count, plural, other {# selected → click a layer name to move it there}}",
+      "setCurrentLabel": "Set {name} as current layer",
+      "current": "Current layer",
+      "setCurrent": "Set as current",
+      "colorLabel": "{name} colour",
+      "color": "Layer colour",
+      "linetypeLabel": "{name} linetype",
+      "lineweightLabel": "{name} lineweight",
+      "on": "On",
+      "off": "Off",
+      "unlocked": "Unlocked",
+      "locked": "Locked",
+      "deleteLabel": "Delete layer {name}",
+      "delete": "Delete layer",
+      "deleteBase": "Layer 0 cannot be deleted",
+      "deleteInUse": "Layer is in use",
+      "deleteCurrent": "Cannot delete the current layer",
+      "moveSelection": "Move selected objects to this layer (double-click to rename)",
+      "rename": "Double-click to rename"
+    },
+    "Styles": {
+      "title": "Styles",
+      "dimension": "Dimension",
+      "text": "Text",
+      "current": "Current: <value>{name}</value>",
+      "new": "New",
+      "setCurrent": "Set {name} current",
+      "rename": "Rename {name}",
+      "delete": "Delete {name}",
+      "lines": "Lines",
+      "baselineSpacing": "Baseline spacing",
+      "extendBeyond": "Extend beyond dim lines",
+      "offsetFromOrigin": "Offset from origin",
+      "symbolsAndArrows": "Symbols and arrows",
+      "arrowSize": "Arrow size",
+      "centerMark": "Center mark size",
+      "textGroup": "Text",
+      "textHeight": "Text height",
+      "offsetFromDimLine": "Offset from dim line",
+      "fit": "Fit",
+      "overallScale": "Use overall scale of",
+      "primaryUnits": "Primary units",
+      "precision": "Precision",
+      "angularPrecision": "Angular precision",
+      "size": "Size",
+      "height": "Height",
+      "heightHint": "A height of 0 leaves it free, so TEXT asks for one each time."
+    },
+    "Blocks": {
+      "title": "Blocks",
+      "filter": "Filter (? and * allowed)",
+      "filterLabel": "Filter blocks",
+      "empty": "No blocks defined. Draw something and run BLOCK.",
+      "noMatch": "No block matches the filter.",
+      "references": "{name} — {count, plural, other {# in drawing}}",
+      "purge": "Purge {name}",
+      "inUse": "In use — erase its references first"
+    },
+    "Properties": {
+      "general": "General",
+      "color": "Color",
+      "colorLabel": "Colour of the selected objects",
+      "layer": "Layer",
+      "layerLabel": "Layer of the selected objects",
+      "linetype": "Linetype",
+      "linetypeLabel": "Linetype of the selected objects",
+      "lineweight": "Lineweight",
+      "lineweightLabel": "Lineweight of the selected objects",
+      "textStyle": "Text style",
+      "textStyleLabel": "Text style of the selected objects",
+      "dimStyle": "Dim style",
+      "dimStyleLabel": "Dim style of the selected objects",
+      "varies": "Varies",
+      "customColor": "Custom colour"
+    },
+    "About": {
+      "label": "About MellowCAD",
+      "status": "Work in progress",
+      "intro": "A 2D drafting app in the browser, built around the commands, snaps and keyboard flow AutoCAD users already know. It is a personal project under active development — commands land one at a time, so expect gaps and rough edges.",
+      "storage": "Your drawings stay on this device: they are auto-saved in the browser and never uploaded. Clearing site data deletes them, so use Save to keep a copy as a file.",
+      "gettingStarted": "Getting started",
+      "howTo": "Type a command (<key>LINE</key>, <key>CIRCLE</key>), <key>F2</key> toggles the command line, <key>Esc</key> cancels."
+    }
   }
 }

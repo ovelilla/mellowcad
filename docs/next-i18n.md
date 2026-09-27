@@ -237,7 +237,7 @@ app/
     (marketing)/page.tsx
     (marketing)/privacy/page.tsx
     (marketing)/not-found.tsx       el "Unknown command" de la 404, localizado
-    (marketing)/[...rest]/page.tsx  notFound() para cualquier otra ruta
+    (marketing)/404/page.tsx        notFound(), prerenderizada; la reescritura fallback trae aquí lo desconocido
     (app)/layout.tsx                root layout del editor
     (app)/draw/page.tsx
     og/route.tsx                    imagen OG de la landing (force-static)
@@ -245,7 +245,7 @@ app/
     manifest.webmanifest/route.ts   manifest por idioma
   sketches/hero.json/route.ts       sin idioma
   sitemap.ts, robots.ts, icon.svg, apple-icon.png, favicon.ico
-  global-not-found.tsx              red de seguridad en inglés para lo que no pase por [locale]
+  global-not-found.tsx              red de seguridad en inglés para lo que no pase por [locale] (/404)
 ```
 
 - **`[locale]` es un parámetro raíz de las dos root layouts** ("cualquier layout sin otra layout por
@@ -316,14 +316,16 @@ async rewrites() {
     // iconos) y antes de las rutas dinámicas, que es donde vive [locale].
     afterFiles: [
       { source: "/", destination: "/en" },
-      { source: "/:first((?!(?:en|es|ar)(?:/|$))[^/]+)/:rest*", destination: "/en/:first/:rest*" },
+      { source: "/:first((?!(?:en|es|ar)(?:/|$)|_)[^/]+)/:rest*", destination: "/en/:first/:rest*" },
     ],
+    // Lo que ninguna ruta sirve va a la 404 prerenderizada de su idioma.
+    fallback: [{ source: "/:locale(en|es|ar)/:path*", destination: "/:locale/404" }],
   }
 },
 ```
 
 Los locales de la expresión se generan a partir de `routing.locales`, y la expresión exacta la fijan los
-tests de §10.
+tests de §10. El primer segmento que empieza por `_` (`/_next`, `/_vercel`) no se reescribe.
 
 **Por qué sin proxy:** la documentación de next-intl usa su middleware, pero con la detección, la cookie
 y la cabecera `Link` desactivadas, lo único que haría es esta reescritura y la redirección de `/en`. En
@@ -346,14 +348,15 @@ algún día hace falta negociar el idioma, se añade `proxy.ts` con el mismo `ro
   comprobar también los argumentos de cada mensaje.
 - **ICU de verdad.** `{count, plural, …}` sustituye a los pares `One`/`Other` (el árabe tiene seis
   categorías: `zero`, `one`, `two`, `few`, `many`, `other`), y `t.rich` sustituye a los seis `t.raw()` con
-  `.replace`.
+  `.replace`. Un número es `{n, number}`: next-intl tipa `{n}` como texto. Las islas reciben los
+  plurales ya partidos por categoría (`pluralMessage`, §15 fase 1).
 - **Las islas de la landing siguen recibiendo sus textos como props.** La regla de la landing no cambia:
   no se envuelve el árbol con todos los mensajes.
 - **El editor sí usa `NextIntlClientProvider`, pero solo con `Editor.*`.** En v4, si no recibe
   `messages`, pasa al cliente todos los mensajes.
-- **Precompilación:** se prueba `experimental.messages` con `precompile: true` (ICU compilado en el
-  build y runtime `icu-minify`). Se adopta si los tests pasan y reduce el JS del editor; es un flag del
-  plugin y se retira sin tocar nada más.
+- **Precompilación:** `experimental.messages` con `precompile: true` (ICU compilado en el build y
+  runtime `icu-minify`). Adoptada en la fase 1: el runtime de next-intl en `/draw` baja de 11,8 a
+  5,4 KB gz. Un mensaje precompilado con argumentos es un array, así que `t.raw` queda fuera.
 - **Formatos:** `getFormatter`/`useFormatter` con el locale activo, y ningún `Intl.*("en")` fijo. Los
   tres de hoy (`continue-drawing`, `live-canvas`, `lib/og.tsx`) pasan a usar el locale.
 - **Valores LTR dentro de un texto RTL:** un nombre de comando, una tecla, un número con unidad, un email
@@ -377,9 +380,11 @@ algún día hace falta negociar el idioma, se añade `proxy.ts` con el mismo `ro
 - **El selector** son enlaces `<a href hrefLang lang>` con el nombre de cada idioma en su propio idioma
   ("English", "Español", "العربية") y sin banderas, que representan países, no idiomas. Vive en el cajetín
   del footer como lista estática (siempre en el HTML, rastreable) y en la cabecera como menú con un globo.
-  Los enlaces se construyen con `getPathname({ locale, href })`, no con el `Link` de next-intl con
-  `locale`: ese fuerza el prefijo `/en` para que un proxy actualice la cookie, y aquí sería una
-  redirección en cada enlace al inglés. La navegación es completa, porque cambiar de idioma cambia `lang`,
+  Los enlaces se construyen con `localePath(locale, href)` (`i18n/navigation.ts`), que da lo mismo que
+  `getPathname({ locale, href })` —un test lo comprueba— sin importar `next-intl/navigation`: su
+  `createNavigation` mete el runtime cliente de next-intl (~12 KB gz) en la landing aunque solo se use
+  en el servidor. Tampoco el `Link` de next-intl con `locale`: fuerza el prefijo `/en` para que un
+  proxy actualice la cookie, y aquí sería una redirección en cada enlace al inglés. La navegación es completa, porque cambiar de idioma cambia `lang`,
   `dir`, las fuentes y los catálogos del motor.
 - **En el editor**, una fila "Idioma" en el panel Acerca de con los mismos enlaces. El dibujo sobrevive en
   el autosave, que no depende del idioma.
@@ -665,7 +670,7 @@ interface EngineLocale {
 | Transferencia de la 1.ª carga   | ≤ 250 KB gz                  | ≤ 275 KB gz (la fuente de la escritura)  |
 | Chunk del editor con el motor   | ≤ 90 KB gz (89,8 medidos tras la fase 0) | igual: los otros idiomas van aparte |
 | Catálogo del motor por idioma   | inglés dentro del motor      | ≤ 12 KB gz, cargado con el motor         |
-| Mensajes del editor en cliente  | solo `Editor.*`, a medir en la fase 1 | igual                           |
+| Mensajes del editor en cliente  | solo `Editor.*`: 2,1 KB gz en el HTML y 5,4 KB gz de runtime (fase 1) | igual       |
 | Funciones por visita a página   | ninguna (sin proxy)          | ninguna                                  |
 
 ## 9. Traducción
@@ -760,8 +765,10 @@ interface EngineLocale {
   precompilación; `react/jsx-no-literals`.
 - `lang` y `dir` desde el locale, y el `DirectionProvider` montado (en `ltr`).
 - Plurales ICU, `t.rich` e `Intl` con el locale activo en la landing.
-- **Aceptación:** `/`, `/draw` y `/privacy` sirven el mismo HTML salvo los hashes; todo sigue estático
-  (○) y sin middleware en la salida del build; se cumplen los presupuestos; lint sin literales.
+- **Aceptación:** `/`, `/draw` y `/privacy` sirven el mismo HTML salvo los hashes y lo que la fase
+  cambia a propósito (`dir`, `og:locale`, la URL de la OG, un chunk; §15); todo sigue prerenderizado
+  (○/●, nunca ƒ) y sin middleware en la salida del build; se cumplen los presupuestos; lint sin
+  literales.
 
 ### Fase 2 — Español: interfaz, landing y SEO · M
 
@@ -1035,6 +1042,96 @@ siguiente. Los glifos no se mueven; no se imita el troceado antiguo.
 
 **Para la fase 1.** `engineText(locale)` es la puerta para que la landing tome del motor lo que es suyo
 (`idlePrompt()`, `message("unknownCommand", …)`), y `EngineState.names` la de la envoltura del editor.
+
+### Fase 1 — estado (27/09/2026): terminada
+
+**Hecho.** El árbol de §5.2 bajo `app/[locale]`, con `generateStaticParams` y `dynamicParams = false` en
+las dos root layouts; `i18n/routing.ts` (con `OG_LOCALE` y `LIVE_LOCALES`), `i18n/request.ts` con
+`next/root-params`, `i18n/messages.ts` (el idioma sobre el inglés, clave a clave) e `i18n/rewrites.ts`
+(redirecciones, `afterFiles` y `fallback`), sin proxy. La OG de la landing y la del editor y el
+manifest son route handlers por idioma; `/sketches/hero.json` queda fuera de `[locale]`. `lang`, `dir`
+y el `DirectionProvider` de shadcn en las dos layouts. `pageMetadata`, el sitemap y el JSON-LD por
+idioma, con el `hreflang` preparado (no se emite con un solo idioma `live`) y `noindex` en los `draft`.
+Todos los enlaces de la landing, las reglas de especulación, el sketch vivo y la transición van al
+editor de su idioma. La 404 de cada idioma dentro de su layout. La envoltura del editor en `Editor.*`
+(147 mensajes en 15 espacios) con `NextIntlClientProvider` solo con ese espacio y la precompilación
+adoptada. Plurales ICU (`Hero.continue`, `LiveSketch.saved`, `Editor.Layers.selected`,
+`Editor.Blocks.references`), `t.rich` y `Intl` con el locale activo. `react/jsx-no-literals`. Reglas
+en el nuevo `.github/instructions/i18n.instructions.md` y en los de la landing, la UI y los tests.
+
+**Verificado.** `typecheck`, `lint` y `test` en verde (1 178 tests; 32 nuevos de enrutado, catálogos,
+enlaces y plurales). Build de producción en un worktree: todo `○`/`●`, ningún `ƒ`, manifest de
+middleware vacío. Servidos a la vez el build de la fase 0 y este: el recorrido de `/draw` y de `/` del
+estado de la fase 0 da el mismo texto y la captura de `/draw` es idéntica byte a byte; solo cambia la
+404 (abajo). Con `curl`: `/en…` → 308 a la URL sin prefijo, `/opengraph-image` → `/og`, `/xx`,
+`/es/xx` y `/ar/a/b` → 404 en su idioma, y la OG, el manifest, el sitemap y el dibujo del hero en su
+sitio. En el navegador: `lang`, `dir`, canonical, `og:locale`, manifest, JSON-LD, enlaces y reglas de
+especulación de `/`, `/es`, `/ar`, `/privacy`, `/es/privacy` y los tres editores; la transición
+`/es` → `/es/draw` y vuelta; y, con claves de prueba en `es.json` (solo en el worktree), que el español
+gana clave a clave y el resto cae al inglés, también precompilado y en el plural de la isla.
+
+**El HTML de `/`, `/draw` y `/privacy`** es el de antes salvo los hashes y lo que la fase cambia a
+propósito: `dir="ltr"`; `og:locale` `en` → `en_US` (el formato de Open Graph); la OG en `/og` y
+`/og/draw` en vez de `/opengraph-image` y la URL con hash del editor; los ids de `useId` (el árbol
+tiene un proveedor más); y un chunk más en cada página.
+
+**Presupuestos** (gzip -9 de los chunks que cita cada página, frente al build de la fase 0):
+
+| Página     | Antes    | Después  | Qué                                                                                           |
+| ---------- | -------- | -------- | --------------------------------------------------------------------------------------------- |
+| `/`        | 180,8 KB | 181,5 KB | las islas 5,5 KB (+0,06); `UnknownCommand` 0,46 KB, que la 404 del idioma trae al layout; `DirectionProvider` +0,15 KB |
+| `/privacy` | 175,4 KB | 176,0 KB | lo mismo sin las islas                                                                        |
+| `/draw`    | 353,1 KB | 356,1 KB | runtime de next-intl precompilado 5,4 KB (11,8 sin precompilar); el chunk del motor 89 928 B (89 808 tras la fase 0) |
+
+Los mensajes `Editor.*` viajan en el HTML de `/draw`: +2,1 KB gz.
+
+**Correcciones al brief:**
+
+- **La 404 no es una ruta comodín.** `(marketing)/[...rest]/page.tsx` sale `ƒ`: una función por cada
+  URL mal escrita en un sitio estático, contra la aceptación de esta fase. En su lugar,
+  `(marketing)/404/page.tsx` llama a `notFound()`, se prerenderiza por idioma y una reescritura
+  `fallback` le manda lo desconocido (con `dynamicParams = false`, las `fallback` se aplican antes de la
+  404). **Next 16.3 envía el `notFound()` de una página como un documento vacío** con el estado 404, el
+  título y `noindex`, y pinta la 404 en el navegador al hidratar; la comodín dinámica hace exactamente
+  lo mismo, así que no se pierde nada. `/404` lo atiende `global-not-found`. Corregidos §5.2 y §5.3.
+- **Los enlaces no usan `getPathname` de next-intl.** `createNavigation` registra su `Link` cliente
+  allí donde se importa y metía el runtime de next-intl (11,8 KB gz) en la landing aunque solo se
+  llamara en el servidor. `localePath` hace lo mismo para este enrutado (solo antepone el prefijo) y un
+  test lo compara con `getPathname`. Corregido §5.5.
+- **La precompilación se adopta** (§5.4): baja el runtime del editor de 11,8 a 5,4 KB gz. Un mensaje
+  precompilado con argumentos es un array, así que `mergeMessages` lo trata como hoja y `t.raw` queda
+  fuera.
+- **Números en ICU.** next-intl tipa `{n}` como texto: los argumentos numéricos pasan a
+  `{n, number}` (misma salida en inglés por debajo de 1 000).
+- **Las reescrituras dejan en paz `_next` y `_vercel`** (§5.3).
+- **Los `t.raw` eran cuatro**, dos pares de plurales; los `{command}` de la 404 y de la caja de prueba
+  vienen del motor y siguen rellenándose en la isla.
+- **La aceptación "el mismo HTML"** admite lo que la fase cambia a propósito (arriba). Corregido §11.
+
+**Huecos decididos:**
+
+- **Islas con plurales:** el servidor parte el mensaje ICU en una forma por categoría del idioma
+  (`pluralMessage`) y la isla elige con `Intl.PluralRules` (`formatPlural`); ni proveedor ni parser en
+  la landing.
+- **Las combinaciones de teclas son mensajes** (`Editor.Keys`: `Supr` en un teclado español); las
+  teclas de función, literales; los atajos que son alias de comando, del motor (`state.tools`).
+- **Lista de signos permitidos** de `jsx-no-literals`: además de `×`, `—` y `·`, `°`, los ejes `X` e
+  `Y` (notación del dibujo) y `→` hasta que los CTA lleven el icono que se refleja (fase 4). La regla no
+  ve los atributos: `aria-label`, `title` y `placeholder` se revisaron a mano.
+- **`tsc` sin caché incremental** en `typecheck`: la caché no ve los cambios de `messages/en.d.json.ts`
+  (generado por `next typegen` e ignorado por git) y arrastra errores viejos. Cuesta unos 2 s.
+- **Vitest incluye `i18n/**` y `lib/**`**, con `next-intl` en `server.deps.inline`.
+- **`es` y `ar` son `draft` y alcanzables.** `/ar` ya sale en RTL con el texto inglés: la puntuación
+  al otro extremo, la línea de comandos reflejada y la caja de coordenadas con los ejes al revés. Es lo
+  esperado hasta las fases 4 y 5, y por eso sigue en `draft`. Además, el HTML de la 404 del idioma no
+  lleva `lang` hasta hidratar (el documento vacío de Next).
+- **Las palabras de dos layouts** (`Common.labelSeparator`, `: `) y los datos del cajetín (`MC-001`,
+  `1:1`), constantes con nombre.
+
+**Para la fase 2.** `messages/es.json` se escribe entero (landing, privacidad y `Editor.*`) y el test
+de catálogos ya comprueba claves, argumentos y etiquetas. Los nombres de comando dentro de frases
+(`Type a command (LINE, TR, CO…)`, `run BLOCK`, `TEXT asks`) van en el idioma de comandos de ese
+locale. El selector de idioma sigue inerte hasta que `es` pase a `live` (fase 3).
 
 ## Referencias
 

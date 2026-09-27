@@ -1,16 +1,18 @@
 ---
-applyTo: "app/(marketing)/**,app/global-not-found.tsx,app/opengraph-image.tsx,app/robots.ts,app/sitemap.ts,app/manifest.ts,components/marketing/**,content/**,messages/**,i18n/**,lib/site.ts,lib/plot.ts,lib/facts.ts,lib/og.tsx,lib/metadata.ts,lib/structured-data.ts,lib/brand.ts,lib/view-transition.ts"
+applyTo: "app/[locale]/(marketing)/**,app/[locale]/og/**,app/[locale]/manifest.webmanifest/**,app/sketches/**,app/global-not-found.tsx,app/robots.ts,app/sitemap.ts,components/marketing/**,content/**,messages/**,i18n/**,lib/site.ts,lib/plot.ts,lib/plural.ts,lib/facts.ts,lib/og.tsx,lib/metadata.ts,lib/structured-data.ts,lib/brand.ts,lib/view-transition.ts"
 description: "The landing at / (marketing root layout): static rendering, engine-drawn figures, islands, the live sketch, the view transition into the editor, the privacy notice, copy in next-intl, tokens, budgets, claims policy and trademark rules."
 ---
 
 # Landing (`/`)
 
-The landing and the editor are two **root layouts** in one project. `app/(marketing)/layout.tsx`
-owns `<html>`, `marketing.css`, the header and footer and the metadata base;
-`app/(app)/layout.tsx` owns the editor and `globals.css`. Crossing between them is a
-full page load — which is why a link to the editor is a plain `<a href={EDITOR_PATH}>`, never
-`next/link`: its router prefetch would pull the editor's payload into the landing (only the
-document is prefetched, on intent — see "Into the editor"). Links _within_ the landing use `Link`.
+The landing and the editor are two **root layouts** in one project, both under the `[locale]` root
+param. `app/[locale]/(marketing)/layout.tsx` owns `<html>`, `marketing.css`, the header and footer
+and the metadata base; `app/[locale]/(app)/layout.tsx` owns the editor and `globals.css`. Crossing
+between them is a full page load — which is why a link to the editor is a plain
+`<a href={paths.editor}>`, never `next/link`: its router prefetch would pull the editor's payload
+into the landing (only the document is prefetched, on intent — see "Into the editor"). Links
+_within_ the landing use `Link`. Every href is the page's language's, from `sitePaths()` or
+`localePath()` (`i18n.instructions.md`); a client island gets it as a prop.
 
 **The site is the landing.** Besides it there is the 404 and one support page, `/privacy` — no
 changelog, command hub, cheat sheet or comparison pages. That was weighed and decided (brief, D9 and
@@ -28,29 +30,35 @@ party — updates it in the same change.
 
 ## Rendering
 
-- **Every page is static** (`○` in the build output — check it). Nothing here reads `cookies()`,
-  `headers()`, `searchParams` or next-intl's `requestLocale`; one such call silently turns the page
-  dynamic. `i18n/request.ts` returns the fixed locale for the same reason. A route handler serving
-  build-time data (`sketches/hero.json`) exports `dynamic = "force-static"` — without Cache
-  Components that is still how a `GET` is prerendered.
+- **Every page is prerendered** (`○`, or `●` for each language of a `[locale]` route, in the build
+  output — check it; never `ƒ`, and no middleware). Nothing here reads `cookies()`, `headers()`,
+  `searchParams` or next-intl's `requestLocale`; one such call silently turns the page dynamic. The
+  locale comes from the root param (`next/root-params`). A route handler serving build-time data
+  (`sketches/hero.json`, the OG images, the manifests) exports `dynamic = "force-static"` — without
+  Cache Components that is still how a `GET` is prerendered.
 - **Server Components by default.** A client island exists only where there is browser state — the
   autosave to continue (`ContinueDrawing`), the pause button (`HeroControls`), the live sketch
   (`LiveSheet`), the autocomplete (`CommandTry`), the share sheet (`SendToDesktop`), a URL only the
   browser knows (`UnknownCommand`). It receives its copy as props — never wrap the tree in
-  `NextIntlClientProvider`.
+  `NextIntlClientProvider`. A count it formats itself arrives as a `pluralMessage()`.
 - **An island imports nothing heavy.** `@/cad` is safe _only_ because `package.json` declares the
   code side-effect free (see `cad-engine.instructions.md`); `cn()` is not — it ships
-  `tailwind-merge`. Budget: ≤ 15 KB gz of our own JS on `/` (5.6 KB today). Measure after touching
-  one: `npm run build`, then gzip the chunks the prerendered `.next/server/app/index.html`
-  references (skip the `noModule` one — modern browsers never fetch it).
+  `tailwind-merge`, and `next-intl/navigation` ships next-intl's client runtime. Budget: ≤ 15 KB gz
+  of our own JS on `/` (the islands' 5.5 KB, plus `UnknownCommand`'s 0.5 KB, which the language's
+  404 boundary brings into the layout). Measure after touching one: a production build, then gzip
+  the chunks the prerendered `.next/server/app/en.html` references (skip the `noModule`
+  one — modern browsers never fetch it).
 - **The engine is never in the first load.** `live-canvas.tsx` is reached only through a dynamic
   `import()` in `LiveSheet` (a `type` import is fine): one static import pulls the whole engine,
-  84 KB gz, into `/`. Check that `.next/server/app/index.html` names no chunk containing
+  88 KB gz, into `/`. Check that `.next/server/app/en.html` names no chunk containing
   `CadRuntime`'s strings. The chunk is shared with `/draw`, so trying the sketch also warms the
   editor.
-- The 404 is `app/global-not-found.tsx` (flag `experimental.globalNotFound`): with two root
-  layouts there is no common layout to compose `not-found` from. It imports `marketing.css`
-  itself, because it bypasses every layout.
+- The 404 of a language is `(marketing)/not-found.tsx`, inside the layout, reached through a
+  prerendered `404/page.tsx` and a `fallback` rewrite (`i18n.instructions.md`). Its body arrives
+  drawn in the browser, not in the HTML — Next 16.3's way with a page's `notFound()`.
+  `app/global-not-found.tsx` (flag `experimental.globalNotFound`) remains for what never reaches a
+  language; it imports `marketing.css` itself, because it bypasses every layout. Both render
+  `NotFoundMessage`.
 - A build-time `fs` read (`lib/facts.ts`) takes `/*turbopackIgnore: true*/`, or Turbopack traces the
   whole repository into the server output.
 
@@ -130,7 +138,8 @@ party — updates it in the same change.
   parser reaches an element, and it did: a theme script then ahead of the element held the parser
   until the stylesheet loaded, the pair never formed, and the hero only faded out where it stood.
   Nothing else guarantees the order, so the wait stays.
-- `SpeculationRules` in the layout prefetches `/draw` on hover or press — the document only, and
+- `SpeculationRules` in the layout prefetches the language's editor on hover or press — the
+  document only, and
   **only in production**. Back out of the bfcache, Chrome serves the next visit from the prefetch
   made before the first: fine for a prerendered page, but `next dev`'s HTML belongs to the request
   it answered, and the editor served twice never hydrated (a blank sheet). Never `prerender`: it
@@ -143,9 +152,9 @@ party — updates it in the same change.
 - `content/commands.ts` files each registered command under a ribbon group and marks the ribbon
   options this app names as commands of its own (`variant`) — those are neither shown nor counted as
   AutoCAD commands. `content/commands.test.ts` fails when a command is registered but not filed.
-- **No literals in components.** Every visible string is in `messages/en.json`, grouped by section,
-  read with `getTranslations()`, keyed by type from the JSON (`i18n/global.d.ts`). A string with a
-  placeholder the server cannot fill is read with `t.raw()`; a link inside a sentence is a rich tag.
+- **No literals in components** (lint-enforced; `i18n.instructions.md`). Every visible string is in
+  `messages/en.json`, grouped by section, read with `getTranslations()`, keyed by type from the
+  JSON (`i18n/global.d.ts`). A count is an ICU plural; a link inside a sentence is a rich tag.
 - Split a headline by sentence with `Intl.Segmenter`, never on a hard-coded full stop.
 - Tone: calm and precise, with AutoCAD's dry humour. Short sentences. No hype words, no emojis, no
   shouting capitals in the sans.
@@ -164,15 +173,18 @@ party — updates it in the same change.
 
 - Pages build their metadata with `pageMetadata()` (`lib/metadata.ts`): Next merges `openGraph` and
   `twitter` shallowly, so a page that sets either must set all of it.
-- The share image is `app/opengraph-image.tsx`, referenced by path (`OG_IMAGE_PATH`): at the app root
-  it is served but not inherited by route groups, and inside a group its URL gets a hash that
-  structured data cannot cite. `/draw` keeps its own in `app/(app)/draw/`.
+- The share image is the language's `/og` (`app/[locale]/og/route.tsx`), and the editor's `/og/draw`,
+  named route handlers referenced by path (`OG_IMAGE_PATH`): a metadata image file inside
+  `[locale]` would give English an `/en/…` URL, and one in a route group gets a hash that structured
+  data cannot cite. `/opengraph-image` redirects to `/og`. The manifest is per language too
+  (`app/[locale]/manifest.webmanifest`), so each installs as its own app.
 - Structured data is one `@graph` (`lib/structured-data.ts`), typed with `schema-dts`, rendered by
   `JsonLd` with `<` escaped. The replacement is `"\\u003c"` in source: with a single backslash the
   string _is_ `<`, and the escape silently does nothing (it shipped that way once). No invented
   ratings, ever.
 - `robots.ts` allows everything, `/draw` included (it must be fetchable for its `noindex` to be
-  read). `sitemap.ts` lists indexable pages only, with `CONTENT_UPDATED` — bump it with the copy.
+  read). `sitemap.ts` lists indexable pages only, once per live language with their `hreflang`,
+  with `CONTENT_UPDATED` — bump it with the copy.
 - Search Console / Bing tokens come from `GOOGLE_SITE_VERIFICATION` / `BING_SITE_VERIFICATION`.
 - Icons are generated from `lib/brand.ts` by `node scripts/icons/generate.ts`; the mark and the logo
   component share that geometry.

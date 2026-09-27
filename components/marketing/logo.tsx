@@ -1,4 +1,5 @@
 import { MARK_MARKER, MARK_PATH, MARK_STROKE, MARK_VIEWBOX } from "@/lib/brand"
+import { SITE_NAME } from "@/lib/site"
 import { cn } from "@/lib/utils"
 
 /**
@@ -45,7 +46,7 @@ export function Logo({ className }: { className?: string }) {
     <span className={cn("inline-flex items-center gap-2", className)}>
       <LogoMark className="size-6" />
       <span className="text-[1.0625rem] font-semibold tracking-[-0.02em]">
-        MellowCAD
+        {SITE_NAME}
       </span>
     </span>
   )

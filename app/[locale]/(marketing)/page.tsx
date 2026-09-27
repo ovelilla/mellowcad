@@ -16,7 +16,7 @@ import { homeStructuredData } from "@/lib/structured-data"
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations("Metadata")
-  return pageMetadata({
+  return await pageMetadata({
     path: "/",
     title: t("title"),
     description: t("description"),

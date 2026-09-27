@@ -6,17 +6,17 @@
   "trailingComma": "es5",
   "printWidth": 80,
   "plugins": ["prettier-plugin-tailwindcss"],
-  "tailwindStylesheet": "app/(app)/globals.css",
+  "tailwindStylesheet": "app/[locale]/(app)/globals.css",
   "tailwindFunctions": ["cn", "cva"],
   "overrides": [
     {
       "files": [
-        "app/(marketing)/**",
+        "app/[locale]/(marketing)/**",
         "app/global-not-found.tsx",
         "components/marketing/**"
       ],
       "options": {
-        "tailwindStylesheet": "app/(marketing)/marketing.css"
+        "tailwindStylesheet": "app/[locale]/(marketing)/marketing.css"
       }
     }
   ]

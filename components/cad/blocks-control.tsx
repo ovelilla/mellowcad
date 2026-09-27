@@ -2,6 +2,8 @@
 
 import { useEffect, useMemo, useRef, useState } from "react"
 import { LibraryBig, Trash2 } from "lucide-react"
+import { useTranslations } from "next-intl"
+
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import {
@@ -34,6 +36,7 @@ export function BlocksControl({
   engine: CadEngine
   state: EngineState
 }) {
+  const t = useTranslations("Editor.Blocks")
   const [filter, setFilter] = useState("")
 
   const shown = useMemo(
@@ -55,11 +58,11 @@ export function BlocksControl({
           <Button
             size="lg"
             variant="ghost"
-            aria-label="Blocks"
+            aria-label={t("title")}
             className="pointer-events-auto gap-2 rounded-lg bg-card/90 backdrop-blur aria-expanded:bg-card/90"
           >
             <LibraryBig className="shrink-0" />
-            <span className="truncate text-xs">Blocks</span>
+            <span className="truncate text-xs">{t("title")}</span>
           </Button>
         }
       />
@@ -67,18 +70,18 @@ export function BlocksControl({
         <input
           value={filter}
           onChange={(event) => setFilter(event.target.value)}
-          placeholder="Filter (? and * allowed)"
-          aria-label="Filter blocks"
+          placeholder={t("filter")}
+          aria-label={t("filterLabel")}
           className="mb-2 w-full rounded-sm border bg-transparent px-2 py-1 text-xs outline-none focus:border-ring"
         />
 
         {state.blocks.length === 0 ? (
           <p className="px-2 py-6 text-center text-xs text-muted-foreground">
-            No blocks defined. Draw something and run BLOCK.
+            {t("empty")}
           </p>
         ) : shown.length === 0 ? (
           <p className="px-2 py-6 text-center text-xs text-muted-foreground">
-            No block matches the filter.
+            {t("noMatch")}
           </p>
         ) : (
           <div className="grid max-h-80 grid-cols-3 gap-1 overflow-y-auto">
@@ -87,7 +90,10 @@ export function BlocksControl({
                 <button
                   type="button"
                   onClick={() => engine.insertBlock(block.id)}
-                  title={`${block.name} — ${block.referenceCount} in drawing`}
+                  title={t("references", {
+                    name: block.name,
+                    count: block.referenceCount,
+                  })}
                   className={cn(
                     "flex w-full flex-col items-center gap-1 rounded-sm p-1",
                     "hover:bg-accent focus-visible:bg-accent focus-visible:outline-none"
@@ -103,11 +109,11 @@ export function BlocksControl({
                   variant="ghost"
                   disabled={block.referenceCount > 0}
                   onClick={() => engine.purgeBlocks([block.id])}
-                  aria-label={`Purge ${block.name}`}
+                  aria-label={t("purge", { name: block.name })}
                   title={
                     block.referenceCount > 0
-                      ? "In use — erase its references first"
-                      : `Purge ${block.name}`
+                      ? t("inUse")
+                      : t("purge", { name: block.name })
                   }
                   className="absolute top-0 right-0 size-6 opacity-0 group-hover:opacity-100 focus-visible:opacity-100 disabled:opacity-0"
                 >
