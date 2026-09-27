@@ -264,14 +264,13 @@ vive en su propio brief, `docs/next-i18n.md`, y sustituye a lo que aquí se dice
 - Las islas cliente reciben sus textos como props desde el servidor, en lugar de envolver el árbol con
   todos los mensajes: así no viajan al navegador textos que no hacen falta.
 - `LanguageSelect` tiene su UI final (un globo con "English" y "Español (soon)") y está deshabilitado.
-  Cuando se active serán **enlaces reales** a la URL equivalente (el `Link` de
-  next-intl), no un toggle en JS, para que los rastreadores descubran las versiones.
+  Cuando se active serán **enlaces reales** a la URL equivalente (construidos con `getPathname` de
+  next-intl; `docs/next-i18n.md` §5.5), no un toggle en JS, para que los rastreadores descubran las
+  versiones.
 - **No declarar `hreflang` mientras no exista el segundo idioma.**
-- **Al activar el segundo idioma** (fase 4), se aplica el patrón documentado de next-intl para Next 16:
-  las rutas de marketing pasan a `app/(marketing)/[locale]/`, `proxy.ts` usa el middleware de next-intl
-  con `localePrefix: "as-needed"` (inglés sin prefijo en `/`, español en `/es/…`) y un `matcher` que
-  excluye `/draw`, `_next`, `api` y los ficheros de metadata, y la renderización estática se mantiene con
-  `generateStaticParams` más `setRequestLocale` en cada layout y página.
+- **Cómo se activan los idiomas** lo decide `docs/next-i18n.md` (§5): `app/[locale]/` por encima de las
+  dos root layouts, `next/root-params`, y `rewrites()` en lugar de `proxy.ts`. El patrón que se describía
+  aquí (proxy y `setRequestLocale`) quedó superado.
 
 ### 3.6 Cambios necesarios en el motor
 
@@ -793,9 +792,9 @@ Secuencia, tras la fase 1 y con la app estable:
 - `alternates.languages` con `x-default` → `/`, y las alternativas también en el sitemap.
 - **Sin redirección automática por `Accept-Language`**, que Google desaconseja (sus rastreadores no envían
   ese idioma). Como mucho, un aviso que se pueda descartar.
-- **Aviso de producto:** AutoCAD en español tiene nombres de comando localizados (LINEA, DESFASE,
-  RECORTA…), mientras que MellowCAD usa los internacionales. El texto en español debe decirlo claramente;
-  aceptar los nombres localizados sería una función del editor, no de la landing.
+- **Comandos en español:** AutoCAD en español tiene nombres de comando localizados (LINEA, DESFASE…), y
+  MellowCAD en español los usará también, con `_` para los globales (`docs/next-i18n.md`, I2). La landing
+  en español los muestra.
 
 ## 8. Rendimiento
 
@@ -951,7 +950,7 @@ base está estable, como ya tenías previsto.
 | Prometer de más                                                           | La política de §2.5, la sección de estado y los números derivados                                                                                                                                          |
 | Marca registrada                                                          | Uso nominativo, descargo y nada de la imagen de marca de Autodesk                                                                                                                                          |
 | Penalización por contenido a escala                                       | 15 páginas excelentes antes que 50 mediocres                                                                                                                                                               |
-| Expectativas en español (comandos localizados)                            | Texto explícito; la decisión de producto va aparte                                                                                                                                                         |
+| Expectativas en español (comandos localizados)                            | Decidido en `docs/next-i18n.md` (I2): el español usa el idioma de comandos del AutoCAD en español                                                                                                          |
 | SVG demasiado pesado (el sombreado genera muchos segmentos)               | Presupuesto de primitivas, redondeo y sombreados solo en zonas pequeñas                                                                                                                                    |
 | Deriva entre la landing y el producto                                     | Datos derivados, tests de los guiones y un test de cobertura del catálogo: cada entrada de `TOOL_COMMANDS` debe tener su ficha, de modo que un comando nuevo rompe el test hasta que la landing lo refleje |
 | El nombre heredado se ve (`.ecad.json`, clave `easycad:`)                 | La clave está congelada a propósito y el editor no cambia. La landing nunca menciona la extensión: habla del "formato propio y versionado"                                                                 |
@@ -967,7 +966,7 @@ base está estable, como ya tenías previsto.
 | D5  | Rastreadores de IA       | Todos permitidos, sin reglas por bot                                                                                        | Es el `robots.txt` estándar y maximiza la visibilidad de un producto gratuito                                                                                                                                                             |
 | D6  | Autoría                  | `Organization` "MellowCAD" en el JSON-LD; sin nombre personal; contacto con el email ya público                             | Patrón estándar de sitio de producto; no se publican datos personales nuevos                                                                                                                                                              |
 | D7  | Tema del dibujo del hero | Pieza mecánica en el hero y viñeta arquitectónica en el catálogo                                                            | Luce lo que ya está implementado y habla a los dos perfiles de estudiante                                                                                                                                                                 |
-| D8  | i18n                     | next-intl desde la v1 sin enrutado; `[locale]` + `proxy.ts` con `localePrefix: "as-needed"` al activar el español           | Estándar de facto en el App Router: activar idiomas será configuración, no una refactorización                                                                                                                                            |
+| D8  | i18n                     | next-intl desde la v1 sin enrutado; cómo se activan los idiomas lo decide `docs/next-i18n.md`                                | Estándar de facto en el App Router: activar idiomas será configuración, no una refactorización                                                                                                                                            |
 | D9  | Páginas de contenido     | Ninguna: el sitio es la landing, con `/privacy` de apoyo; sin `/commands`, `/shortcuts` ni comparativas                     | Decidido el 26/09/2026. No mejoran la landing: son una apuesta de SEO lenta, con redacción y mantenimiento propios. Se reabre solo si Search Console muestra la demanda                                                                   |
 | D10 | Changelog                | Retirado                                                                                                                    | Todo salió como 0.0.1, sin versiones de verdad entre medias: cualquier historial habría que reconstruirlo, y reconstruirlo es inventarlo. La fecha de actualización de la sección Status basta para mostrar que el proyecto sigue vivo    |
 | D11 | Privacidad               | `/privacy` se mantiene, completa según el art. 13 del RGPD y con el nombre del responsable, único nombre personal de la web | El alojamiento y las dos mediciones de Vercel tratan datos personales, aunque sea brevemente (la IP, un hash del visitante durante 24 h), igual que el email de contacto: informar de ello es obligatorio, y esa página es cómo se cumple |

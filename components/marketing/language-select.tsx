@@ -3,7 +3,8 @@ import { ChevronDown, Globe } from "lucide-react"
 /**
  * The language control in its final form, inert until a second language
  * exists. When it does, its options become real links to the equivalent URL
- * (next-intl's `Link`), so crawlers find every version — never a script toggle.
+ * (next-intl's `getPathname`), so crawlers find every version — never a script
+ * toggle.
  */
 export function LanguageSelect({
   label,

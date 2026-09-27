@@ -185,8 +185,8 @@ party — updates it in the same change.
   be literal, for icons and the OG image). `--text-subtle` is the dimmest text allowed (≈ 5:1).
 - One scheme, dark, like the editor (brief D12): the tokens sit on `:root` with
   `color-scheme: dark`, `dark:` always applies, and there is no theme selector. The language
-  selector is built but inert (`aria-disabled`, focusable, with a tooltip saying why) until the
-  internationalisation brief (`docs/next-i18n.md`) lands.
+  selector is built but inert (`aria-disabled`, focusable, with a tooltip saying why) until a second
+  language goes live under `docs/next-i18n.md` (its phase 3).
 - One accent per view: amber is the call to action and the focus ring; cyan is reserved for
   precision (snap markers, measurements) and is never a link colour.
 - Use `text-wrap-style`, not the `text-wrap` shorthand, in base styles: the shorthand also resets the
