@@ -3,7 +3,7 @@ import { getFormatter, getTranslations } from "next-intl/server"
 import { type EngineLocale, engineText, transcript } from "@/cad"
 import { COMMAND_GROUPS } from "@/content/commands"
 import { FIGURES } from "@/content/figures"
-import { sitePaths } from "@/i18n/navigation"
+import { sitePaths } from "@/i18n/site-paths"
 import { autocadCommands, commandsByGroup, productFacts } from "@/lib/facts"
 import { pageEngineLocale, renderFigure } from "@/lib/plot"
 
@@ -16,8 +16,10 @@ import { SnapCorners } from "./snap-corners"
 async function offsetTranscript(locale: EngineLocale | undefined) {
   const figure = await renderFigure({ ...FIGURES.offset, locale })
   const lines = transcript(figure.recording)
+  // OFFSET as the command language names it (DESFASE in Spanish).
+  const [offset] = engineText(locale).commandNames("OFFSET")
   const start = lines.findIndex(
-    (line) => line.kind === "command" && line.text === "OFFSET"
+    (line) => line.kind === "command" && line.text === offset
   )
   return { figure, lines: lines.slice(Math.max(start, 0)) }
 }
@@ -28,8 +30,8 @@ export async function CommandsSection() {
   const common = await getTranslations("Common")
   const format = await getFormatter()
   const paths = await sitePaths()
-  const facts = productFacts()
   const engine = await pageEngineLocale()
+  const facts = productFacts(engine)
   const text = engineText(engine)
   const byGroup = commandsByGroup(engine)
   const { figure, lines } = await offsetTranscript(engine)

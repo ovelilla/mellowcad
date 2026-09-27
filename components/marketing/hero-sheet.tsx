@@ -8,7 +8,7 @@ import {
   type PromptSegment,
 } from "@/cad"
 import { HERO_FIGURE } from "@/content/figures"
-import { sitePaths } from "@/i18n/navigation"
+import { sitePaths } from "@/i18n/site-paths"
 import { pageEngineLocale, plotDemo, type PlottedLine } from "@/lib/plot"
 import { pluralMessage } from "@/lib/plural"
 

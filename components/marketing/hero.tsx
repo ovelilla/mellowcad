@@ -1,6 +1,6 @@
 import { getLocale, getTranslations } from "next-intl/server"
 
-import { sitePaths } from "@/i18n/navigation"
+import { sitePaths } from "@/i18n/site-paths"
 import { pluralMessage } from "@/lib/plural"
 import { SITE_URL } from "@/lib/site"
 

@@ -15,7 +15,7 @@ function label(
   height = LABEL_HEIGHT
 ) {
   return script
-    .command("TEXT")
+    .command("_TEXT")
     .type(at)
     .enter()
     .type(height)
@@ -30,7 +30,7 @@ function label(
 /** A label centred on a point (TEXT justified MC), however long it runs. */
 function centredLabel(script: DemoScript, at: string, text: string) {
   return script
-    .command("TEXT")
+    .command("_TEXT")
     .option("Justify")
     .option("MC")
     .type(at)
@@ -45,7 +45,7 @@ function centredLabel(script: DemoScript, at: string, text: string) {
 }
 
 function box(script: DemoScript, corner: string, size: string) {
-  return script.command("RECTANG").type(corner).enter().type(size).enter()
+  return script.command("_RECTANG").type(corner).enter().type(size).enter()
 }
 
 export interface LocalFirstLabels {
@@ -70,7 +70,7 @@ const localFirstStart = () =>
     view: { min: { x: -6, y: -6 }, max: { x: 176, y: 76 } },
   })
     .layer("BOUNDARY")
-    .command("RECTANG")
+    .command("_RECTANG")
     .type("0,0")
     .enter()
     .type("@170,70")
@@ -90,14 +90,14 @@ export function localFirst(labels: LocalFirstLabels): DemoScript {
     (s: DemoScript) => centredLabel(s, "138,19", labels.file),
   ]
     .reduce((script, step) => step(script), localFirstStart())
-    .command("DIMLINEAR")
+    .command("_DIMLINEAR")
     .click(52, 47)
     .click(118, 47)
     .option("Text")
     .type(labels.autosave)
     .enter()
     .click(85, 47)
-    .command("DIMLINEAR")
+    .command("_DIMLINEAR")
     .click(52, 19)
     .click(118, 19)
     .option("Text")
@@ -125,7 +125,7 @@ export function engineLayers(imports: string): DemoScript {
       view: { min: { x: -26, y: -6 }, max: { x: 96, y: 81 } },
     })
   )
-    .command("DIMLINEAR")
+    .command("_DIMLINEAR")
     .click(0, 75)
     .click(0, 0)
     .option("Text")

@@ -222,28 +222,104 @@ describe("the palettes", () => {
   })
 })
 
-describe("Spanish, the interface without its command language yet", () => {
-  // Phase 2 of docs/next-i18n.md: the palettes, menus and tooltips speak
-  // Spanish; the command line keeps the global language until phase 3.
+describe("Spanish AutoCAD's command language", () => {
+  // The acceptance of phase 3 in docs/next-i18n.md: someone who works in
+  // Spanish AutoCAD types LINEA or L, DESFASE, _LINE and H, and it works.
   it("names the interface in Spanish and leaves the drawing's data alone", () => {
-    const cad = createHarness({ locale: es })
-    const { names, tools } = cad.state()
+    const { names, tools } = createHarness({ locale: es }).state()
     expect(names.snaps.endpoint).toBe("Punto final")
-    expect(names.colors.red).toBe("Rojo")
     expect(names.byLayer).toBe("PorCapa")
     expect(names.linetypes.DashDot).toBe("Dash dot")
     expect(tools.find((tool) => tool.id === "line")?.label).toBe("Línea")
+    expect(tools.find((tool) => tool.id === "line")?.shortcut).toBe("L")
   })
 
-  it("still types and prompts in the global language", () => {
+  it("draws with LINEA, L and _LINE, and undoes a segment with H", () => {
+    const cad = createHarness({ locale: es })
+    cad.command("LINEA").escape().command("_LINE").escape().command("l")
+    expect(cad.commandLog()).toEqual(["LINEA", "LINEA", "LINEA"])
+    cad.click(p(0, 0)).click(p(100, 0)).click(p(100, 100))
+    const state = cad.state()
+    expect(state.commandLine.prompt).toBe("LINEA [Cerrar/desHacer]:")
+    expect(state.commandOptions.map((option) => option.key)).toEqual(["C", "H"])
+    cad.press("h")
+    expect(cad.entityCount).toBe(1)
+    cad.click(p(100, 100)).press("c")
+    expect(cad.entityCount).toBe(3)
+    expect(cad.activeToolId()).toBe("select")
+  })
+
+  it("undoes with H at the Command prompt, and joins with U", () => {
+    const cad = createHarness({ locale: es })
+    cad.command("L").click(p(0, 0)).click(p(100, 0)).escape()
+    expect(cad.entityCount).toBe(1)
+    cad.command("H")
+    expect(cad.entityCount).toBe(0)
+    cad.command("U")
+    expect(cad.commandLog().at(-1)).toBe("UNIR")
+  })
+
+  it("offsets with DESFASE and answers its keywords by their capitals", () => {
+    const cad = createHarness({
+      locale: es,
+      entities: [lineOf(p(0, 0), p(100, 0))],
+    })
+    cad.command("DESFASE")
+    expect(cad.state().commandLine.prompt).toBe(
+      "DESFASE [punto a Atravesar/Borrar: No/Capa: Origen/Múltiple: DES]:"
+    )
+    expect(cad.state().commandOptions.map((option) => option.key)).toEqual([
+      "A",
+      "B",
+      "C",
+      "M",
+    ])
+    expect(cad.state().dynamicInput?.fields[0].label).toBe(
+      "Distancia de desfase"
+    )
+  })
+
+  it("takes ZOOM's EScala typed out, and Extensión as E and Enter", () => {
+    const cad = createHarness({
+      locale: es,
+      entities: [lineOf(p(0, 0), p(100, 0))],
+    })
+    cad.command("Z")
+    expect(cad.state().commandLine.prompt).toBe(
+      "ZOOM [Todo/Extensión/Previo/EScala/Ventana/Objeto]:"
+    )
+    const zoom = cad.state().commandOptions
+    expect(zoom.find((option) => option.id === "Extents")?.key).toBeNull()
+    expect(zoom.find((option) => option.id === "All")?.key).toBe("T")
+    for (const key of ["E", "S", "Enter"]) cad.press(key)
+    expect(cad.state().dynamicInput?.fields[0].label).toBe("Factor de escala")
+  })
+
+  it("justifies TEXTO by SIZ and the other two-letter codes", () => {
+    const cad = createHarness({ locale: es })
+    cad.command("TEXTO").press("u")
+    expect(cad.commandLog().at(-1)).toBe(
+      "Indique una opción [Izquierda/Centro/Derecha/Medio/SIZ/SC/SD/MI/MC/MD/II/IC/ID]:"
+    )
+    cad.type("siz").enter()
+    cad.click(p(0, 0)).type("5").enter().type("0").enter().type("A").enter()
+    cad.escape()
+    expect(cad.only("text")).toMatchObject({ justify: "tl" })
+  })
+
+  it("reports an unknown command in Spanish", () => {
     const cad = createHarness({ locale: es })
     cad.command("LINE")
-    expect(cad.state().commandLine.prompt).toBe("LINE:")
+    expect(cad.commandLog()).toEqual(['Comando "LINE" desconocido.'])
+  })
+
+  it("lists the commands by their Spanish names, described in Spanish", () => {
     expect(
       commandCatalog(es).find((command) => command.id === "ERASE")
     ).toEqual(
       expect.objectContaining({
-        name: "ERASE",
+        name: "BORRA",
+        aliases: ["B"],
         description: "Borrar los objetos seleccionados",
       })
     )

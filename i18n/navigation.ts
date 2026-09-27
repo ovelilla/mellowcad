@@ -1,6 +1,4 @@
-import { getLocale } from "next-intl/server"
-
-import { EDITOR_PATH, SITE_URL } from "@/lib/site"
+import { SITE_URL } from "@/lib/site"
 
 import { type AppLocale, routing } from "./routing"
 
@@ -26,16 +24,18 @@ export function localeUrl(locale: AppLocale, href: string): string {
   return `${SITE_URL}${localePath(locale, href)}`
 }
 
-/** The site's own pages in the language being rendered. */
-export async function sitePaths(): Promise<{
-  readonly home: string
-  readonly editor: string
-  readonly privacy: string
-}> {
-  const locale = await getLocale()
-  return {
-    home: localePath(locale, "/"),
-    editor: localePath(locale, EDITOR_PATH),
-    privacy: localePath(locale, "/privacy"),
+/**
+ * A page's path without its language, from the address bar or from the route
+ * a prerender sees (`/es/privacy`, `/en/privacy` and `/privacy` all give
+ * `/privacy`), so a link to the same page in another language comes out the
+ * same on the server and in the browser.
+ */
+export function unlocalizedPath(pathname: string): string {
+  for (const locale of routing.locales) {
+    if (pathname === `/${locale}`) return "/"
+    if (pathname.startsWith(`/${locale}/`)) {
+      return pathname.slice(locale.length + 1)
+    }
   }
+  return pathname
 }

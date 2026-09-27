@@ -87,8 +87,13 @@ export interface Plot {
 function actionMs(step: DemoRecording["steps"][number]): number {
   const { action } = step
   switch (action.kind) {
-    case "command":
-      return action.text.length * CHAR_MS + KEY_MS
+    case "command": {
+      // The name the command line shows: scripts type the global `_CIRCLE`
+      // so they run in every command language, and a reader sees CIRCLE or
+      // CIRCULO being typed.
+      const shown = step.output.find((line) => line.kind === "command")
+      return (shown?.text ?? action.text).length * CHAR_MS + KEY_MS
+    }
     case "type":
       return action.text.length * CHAR_MS
     case "option":
@@ -281,20 +286,20 @@ export async function snapGlyph(kind: "endpoint" | "center"): Promise<Glyph> {
   const setup =
     kind === "endpoint"
       ? demo({ snap: true })
-          .command("LINE")
+          .command("_LINE")
           .type("0,0")
           .enter()
           .type("@60,0")
           .enter()
           .escape()
       : demo({ snap: true })
-          .command("CIRCLE")
+          .command("_CIRCLE")
           .type("0,0")
           .enter()
           .type("40")
           .enter()
   const recording = await recordDemo(
-    setup.command("LINE").moveTo(kind === "endpoint" ? 60 : 0, 0)
+    setup.command("_LINE").moveTo(kind === "endpoint" ? 60 : 0, 0)
   )
   const marker = recording.scene.primitives.filter(
     (primitive) =>
@@ -319,7 +324,7 @@ export async function snapGlyph(kind: "endpoint" | "center"): Promise<Glyph> {
  */
 export async function arrowheadGlyph(): Promise<Glyph> {
   const recording = await recordDemo(
-    demo().command("DIMLINEAR").click(0, 0).click(100, 0).click(50, 10)
+    demo().command("_DIMLINEAR").click(0, 0).click(100, 0).click(50, 10)
   )
   const arrows = recording.scene.primitives.filter(
     (primitive) => primitive.kind === "path" && primitive.fill !== undefined

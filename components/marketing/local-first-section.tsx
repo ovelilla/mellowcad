@@ -3,7 +3,7 @@ import Link from "next/link"
 import { getTranslations } from "next-intl/server"
 
 import { DIAGRAMS } from "@/content/figures"
-import { sitePaths } from "@/i18n/navigation"
+import { sitePaths } from "@/i18n/site-paths"
 import { pageEngineLocale, renderFigure } from "@/lib/plot"
 
 import { Drawing } from "./drawing"

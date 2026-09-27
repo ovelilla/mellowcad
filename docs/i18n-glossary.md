@@ -6,8 +6,9 @@ someone who works in Spanish AutoCAD must find the words they already know. Arab
 its phase (`docs/next-i18n.md` §11) and reviewed by a native speaker.
 
 This file covers the **interface language** — palettes, menus, tooltips, the landing. The **command
-language** (command names, aliases, prompts, keywords) is Spanish AutoCAD's own and is recorded per
-command in `docs/autocad-coverage.md` when it lands; until then `es` uses the global one.
+language** (command names, aliases, prompts, keywords) is Spanish AutoCAD's own, in
+`cad/locales/es.json`; each command's Spanish name and what is still unverified are in
+`docs/autocad-coverage.md`.
 
 ## Sources
 

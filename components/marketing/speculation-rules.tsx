@@ -1,4 +1,4 @@
-import { sitePaths } from "@/i18n/navigation"
+import { sitePaths } from "@/i18n/site-paths"
 
 /**
  * The editor's page is fetched as soon as a link to it is hovered or pressed,

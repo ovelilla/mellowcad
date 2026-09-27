@@ -6,7 +6,7 @@ import { demo } from "@/cad"
  * from the OFFSET command onwards.
  */
 export const offsetSession = demo({ width: 360, height: 220 })
-  .command("PLINE")
+  .command("_PLINE")
   .type("0,0")
   .enter()
   .type("@80,0")
@@ -18,7 +18,7 @@ export const offsetSession = demo({ width: 360, height: 220 })
   .type("@-80,0")
   .enter()
   .option("Close")
-  .command("OFFSET")
+  .command("_OFFSET")
   .type("6")
   .enter()
   .click(40, 0)

@@ -24,6 +24,7 @@
     "menu": "Menu",
     "closeMenu": "Close menu",
     "navLabel": "Main",
+    "language": "Language",
     "cta": "Start drawing"
   },
   "Hero": {
@@ -218,9 +219,6 @@
     "contact": "Contact",
     "privacy": "Privacy",
     "language": "Language",
-    "soon": "Coming soon",
-    "languageName": "English",
-    "languageSoon": "Español (soon) · More languages coming soon",
     "drawingNumber": "Dwg no.",
     "revision": "Rev",
     "scale": "Scale",
@@ -441,7 +439,8 @@
       "intro": "A 2D drafting app in the browser, built around the commands, snaps and keyboard flow AutoCAD users already know. It is a personal project under active development — commands land one at a time, so expect gaps and rough edges.",
       "storage": "Your drawings stay on this device: they are auto-saved in the browser and never uploaded. Clearing site data deletes them, so use Save to keep a copy as a file.",
       "gettingStarted": "Getting started",
-      "howTo": "Type a command (<key>LINE</key>, <key>CIRCLE</key>), <key>F2</key> toggles the command line, <key>Esc</key> cancels."
+      "howTo": "Type a command (<key>LINE</key>, <key>CIRCLE</key>), <key>F2</key> toggles the command line, <key>Esc</key> cancels.",
+      "language": "Language"
     }
   }
 }

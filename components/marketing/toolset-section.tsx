@@ -2,7 +2,7 @@ import { getTranslations } from "next-intl/server"
 
 import { COMMAND_GROUPS, type CommandGroup } from "@/content/commands"
 import { FIGURES } from "@/content/figures"
-import { sitePaths } from "@/i18n/navigation"
+import { sitePaths } from "@/i18n/site-paths"
 import { commandsByGroup, productFacts } from "@/lib/facts"
 import { pageEngineLocale, renderFigure } from "@/lib/plot"
 

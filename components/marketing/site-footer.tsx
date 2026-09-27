@@ -1,11 +1,12 @@
 import Link from "next/link"
-import { getFormatter, getTranslations } from "next-intl/server"
+import { getFormatter, getLocale, getTranslations } from "next-intl/server"
 
 import { productFacts } from "@/lib/facts"
-import { sitePaths } from "@/i18n/navigation"
+import { sitePaths } from "@/i18n/site-paths"
 import { CONTACT_EMAIL } from "@/lib/site"
 
-import { LanguageSelect } from "./language-select"
+import { LanguageLinks } from "@/components/language-links"
+
 import { LogoMark } from "./logo"
 
 // The title block's own data, not words: the same in every language.
@@ -31,13 +32,14 @@ function Cell({
 
 /**
  * The footer is the sheet's title block: identity, links and the sheet's own
- * metadata — its language among them, since that is a property of the sheet
- * rather than something to do on it.
+ * metadata — its language among them, a plain list of links that is always in
+ * the HTML, so every version of the page is found from every other.
  */
 export async function SiteFooter() {
   const t = await getTranslations("Footer")
   const common = await getTranslations("Common")
   const header = await getTranslations("Header")
+  const locale = await getLocale()
   const format = await getFormatter()
   const facts = productFacts()
   const paths = await sitePaths()
@@ -95,17 +97,17 @@ export async function SiteFooter() {
           </div>
         </div>
 
-        <div className="flex flex-col gap-3 bg-bg-raised p-5 text-sm">
-          <div className="flex items-center justify-between gap-3">
-            <span className="label-mono">{t("language")}</span>
-            <LanguageSelect
-              label={t("language")}
-              current={t("languageName")}
-              soon={t("languageSoon")}
-            />
-          </div>
-          <span className="label-mono text-[0.625rem]">{t("soon")}</span>
-        </div>
+        <nav
+          aria-label={t("language")}
+          className="flex flex-col gap-3 bg-bg-raised p-5 text-sm"
+        >
+          <span className="label-mono">{t("language")}</span>
+          <LanguageLinks
+            current={locale}
+            className="flex flex-wrap gap-x-4 gap-y-1"
+            linkClassName="underline-link aria-[current=true]:text-fg-muted aria-[current=true]:no-underline"
+          />
+        </nav>
 
         <div className="grid grid-cols-2 gap-px bg-border sm:grid-cols-4 lg:col-span-3">
           <Cell label={t("drawingNumber")}>{DRAWING_NUMBER}</Cell>

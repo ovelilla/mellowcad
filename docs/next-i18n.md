@@ -121,7 +121,8 @@ de AutoCAD 2026 en español:
   por eso cada nombre se comprueba en la ayuda actual y no se da nada por sabido.
 - **Alias** (el `acad.pgp` de cada idioma). `L` → LINEA, `C` → CIRCULO, `A` → ARCO, `CP` → COPIA y
   `Z` → ZOOM coinciden con los ingleses, pero `B` → BORRA (en inglés, `E` → ERASE) y `CA` → CAPA (en
-  inglés, `LA`). El fichero apunta a los nombres globales: `A, *ARC` define el alias del comando ARCO.
+  inglés, `LA`). El fichero apunta a los nombres del idioma (`A, *ARCO`), no a los globales. Y `U`
+  no deshace: en español es el alias de UNIR, y el comando que deshace una operación es `H` (§15).
 - **Solicitudes y palabras clave.** `Precise punto siguiente o [Cerrar/desHacer]:`. La parte en
   mayúsculas de cada palabra clave es su abreviatura, y puede ir en cualquier posición (`desHacer` → `H`,
   como `eXit` o `toP` en `initget`). Hay abreviaturas de varias letras: las justificaciones de TEXTO son
@@ -1211,6 +1212,76 @@ el idioma de comandos de `es` en esta fase, y hay que reescribirlos con los de A
 `NotFound.help`. `Precision.osnapBody` ya dice «Tangente», que es lo que la figura dirá entonces.
 `offsetTranscript` (`commands-section.tsx`) busca la línea por el texto `OFFSET`: con el nombre
 localizado tendrá que buscarla por el comando.
+
+### Fase 3 — estado (27/09/2026): terminada; `es` publicado
+
+**Hecho.** `cad/locales/es.json` trae el idioma de comandos completo de AutoCAD 2026 en español:
+65 nombres con sus alias, las palabras clave de 29 comandos con sus mayúsculas, 75 solicitudes, los
+mensajes, los rótulos del lienzo, los listados y los nombres por defecto. Los guiones de las figuras
+escriben los nombres globales con `_` (`_OFFSET`), como un guion de AutoCAD pensado para cualquier
+idioma, así que la landing en español se dibuja y se transcribe en español («Comando: DESFASE»,
+«Designe ubicación de línea de cota [Texto/ángUlo/…]»). Los textos de la landing y del editor que
+nombran comandos usan los nombres españoles (`L` para LINEA, `DF` para DESFASE, `RR` para RECORTA,
+ESCALATL, TEXTOM). Los alias de la landing se cuentan en el idioma de comandos de la página. `es` pasa
+a `live`: `hreflang` recíproco con `x-default`, sitemap con alternativas, `og:locale:alternate` y el
+selector de idioma de §5.5 (enlaces con el nombre de cada idioma en sí mismo, en el pie, en un menú
+con globo en la cabecera, dentro del menú en el móvil y en «Acerca de» del editor). La fila de cada
+comando en `docs/autocad-coverage.md` lleva su nombre español, y una sección nueva recoge las fuentes
+y lo que está sin verificar.
+
+**Verificado.** `typecheck`, `lint` y `test` en verde (1 212 tests). La muestra del harness en
+español de §10: `LINEA`, `L` y `_LINE`; `H` deshace el segmento en LINEA y deshace en `Comando:`;
+`U` abre UNIR; DESFASE ofrece `[punto a Atravesar/Borrar: No/Capa: Origen/Múltiple: DES]`; ZOOM
+toma `EScala` escrito y `Extensión` como `E` más Intro; TEXTO justifica con `SIZ`; un comando inglés
+sin `_` es «Comando "LINE" desconocido.». Tests nuevos: un idioma de comandos es completo o no
+existe; ningún nombre o alias se repite; ninguna palabra clave comparte abreviatura dentro de una
+solicitud (las solicitudes salen de la instantánea inglesa); todas las figuras se reproducen en
+español sin errores. En el navegador, sobre el build de producción y frente al de la fase 2: el
+recorrido inglés del editor y de la landing da el mismo texto y la captura de `/draw` es idéntica
+píxel a píxel; en el HTML inglés solo cambian el `hreflang` y el selector. `/es/draw` escribe y
+responde en español y autocompleta con nombres españoles y descripciones españolas; `/es` dibuja
+«Tangente» en su figura. Presupuestos: el catálogo español compilado pesa 5,7 KB gz y viaja en el
+HTML de `/es/draw` (+3,4 KB gz; §8.3 permite 12); el selector añade 0,3 KB gz de JS a la landing y
+0,5 KB al editor.
+
+**Fuentes.** La investigación se hizo contra la ayuda de Autodesk en español (2026, que comparte los
+GUID con la inglesa; y 2011–2013, que aún imprimía las solicitudes), capturas del producto en español
+(2012–2020) y tres transcripciones del `acad.pgp` español (2012–2021). Los GUID de cada comando están
+en `docs/autocad-coverage.md` y en el glosario; el detalle, en la sección «Spanish command language»
+de la cobertura.
+
+**Correcciones al brief:**
+
+- **§3.2: el `acad.pgp` español apunta a los nombres españoles** (`A, *ARCO`), no a los globales, y
+  un `*_MOVE` no funciona en un pgp. Corregido.
+- **`H` no es un alias de DESHACER: es un comando** (el `U` inglés, «equivale a deshacer 1»), y `U`
+  es el alias de UNIR. Aquí `H` va como alias de nuestro `UNDO`, que ya deshace una operación.
+- **Los alias de 2026 no se pueden verificar del todo.** El `acad.pgp` español solo viene con el
+  paquete de idioma. Los alias salen de tres transcripciones que coinciden entre sí y con la captura
+  del fichero en la ayuda de 2026; la «Guía del autoestopista» de 2026 usa algunas letras inglesas (M,
+  O, TR, EX…) que el pgp asigna a otros comandos, y no se siguen. Van marcados † en la cobertura.
+- **Las mayúsculas:** la ayuda de Autodesk en español reescribe las de las palabras clave como
+  iniciales; donde la ayuda y el producto no coinciden, gana la captura del producto
+  (`punto a Atravesar`, `RAdio`, `jUstificar`, `EScala`), como pedía §9.
+- **ACOANGULO y ACOANGULAR:** la página de 2026 se titula ACOANGULAR y todo lo demás dice ACOANGULO;
+  los dos nombres abren el comando.
+
+**Huecos decididos:**
+
+- **Lo que ninguna fuente muestra** se redacta en el estilo de Autodesk y se marca sin verificar:
+  casi todos los mensajes de la línea de comandos propios (nada designado, recuentos, errores de
+  archivo), algunas solicitudes (patrón de sombreado, subsolicitudes de Ángulo y Girar de las cotas,
+  referencia de GIRA y ESCALA) y las etiquetas de la entrada dinámica, que en AutoCAD no existen: son
+  los nombres de sus solicitudes.
+- **Los comandos propios** toman el nombre base español y las iniciales de su construcción:
+  CIRCULOD, CIRCULO2P, CIRCULO3P, ARCOICF, ARCOCIF, ELIPSEC, ELIPSEARCO.
+- **Los nombres de tipos de línea y patrones** siguen sin traducirse (datos del dibujo).
+- **La FAQ en español** dice que los comandos tienen sus nombres de AutoCAD en español y que los
+  globales funcionan con `_`: ahora es verdad, y es lo que busca quien escribe «comandos de autocad en
+  español e inglés».
+
+**Para cerrar del todo** hace falta una captura de AutoCAD 2026 en español (la prueba de 30 días con
+el paquete de idioma basta) para confirmar los alias † y las solicitudes marcadas.
 
 ## Referencias
 

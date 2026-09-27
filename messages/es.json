@@ -24,6 +24,7 @@
     "menu": "Menú",
     "closeMenu": "Cerrar el menú",
     "navLabel": "Principal",
+    "language": "Idioma",
     "cta": "Dibujar"
   },
   "Hero": {
@@ -50,7 +51,7 @@
     "failed": "El boceto no se ha cargado. Comprueba la conexión y vuelve a intentarlo.",
     "retry": "Volver a intentarlo",
     "canvasLabel": "Boceto en vivo de la brida",
-    "hint": "Escribe un comando —L para LINE, C para CIRCLE— y pulsa Intro. Esc cancela.",
+    "hint": "Escribe un comando —L para LINEA, C para CIRCULO— y pulsa Intro. Esc cancela.",
     "wheelHint": "La rueda hace zoom mientras dibujas aquí; haz clic fuera para desplazar la página.",
     "commandLog": "Línea de comandos",
     "openEditor": "Abrir en el editor completo",
@@ -72,14 +73,14 @@
   "Commands": {
     "label": "01 · Memoria muscular",
     "title": "Los comandos que ya conoces, alias incluidos.",
-    "lead": "Escribe L para LINE, O para OFFSET, TR para TRIM. MellowCAD entiende los mismos alias, hace las mismas preguntas en el mismo orden y acepta las mismas letras de opción.",
+    "lead": "Escribe L para LINEA, DF para DESFASE, RR para RECORTA. MellowCAD entiende los mismos alias que AutoCAD en español, hace las mismas preguntas en el mismo orden y acepta las mismas letras de opción; y los nombres globales, con _ delante (_LINE), también funcionan.",
     "count": "{commands, number} comandos de AutoCAD, {aliases, number} alias",
     "boardLabel": "Comandos y sus alias, agrupados como en la cinta de opciones",
     "also": "También: {aliases}",
     "tryLabel": "Pruébalo",
-    "tryPlaceholder": "Escribe un comando, p. ej., OF",
+    "tryPlaceholder": "Escribe un comando, p. ej., DF",
     "tryHint": "Intro abre el editor.",
-    "transcriptTitle": "Un OFFSET, de principio a fin",
+    "transcriptTitle": "Un DESFASE, de principio a fin",
     "transcriptCaption": "Reproducido por el motor al generar esta página. El mismo orden y las mismas letras de opción que en AutoCAD."
   },
   "Groups": {
@@ -120,7 +121,7 @@
     "modifyBody": "Desplazar, copiar, girar, escalar, crear simetrías y estirar; desfasar, recortar, alargar, empalmar, achaflanar, partir y juntar; matrices rectangulares, polares y de camino.",
     "annotateBody": "Texto de una línea y toda la familia de cotas —lineal, alineada, radio, diámetro, angular, línea base y continua—, con estilos de texto y de cota.",
     "organizeBody": "Capas, {linetypes, number} tipos de línea, {lineweights, number} grosores de línea y colores, con PorCapa en todo; bloques que puedes definir, insertar y limpiar.",
-    "inquiryBody": "Medición de distancias y áreas, zoom y encuadre, deshacer y rehacer, forzcursor y FROM.",
+    "inquiryBody": "Medición de distancias y áreas, zoom y encuadre, deshacer y rehacer, forzcursor y DESDE.",
     "filesBody": "Autoguardado, guardar y abrir un archivo, y el portapapeles: copiar, cortar, pegar y copiar con punto base.",
     "drawAlt": "Una placa ranurada: una polilínea con los dos extremos en arco y dos agujeros.",
     "modifyAlt": "Cuatro contornos concéntricos, cada uno desfasado del anterior.",
@@ -178,11 +179,11 @@
     "notYet1": "Importar o exportar DWG y DXF",
     "notYet2": "Impresión y PDF",
     "notYet3": "Presentaciones y espacio papel",
-    "notYet4": "Texto de líneas múltiples (MTEXT) y splines",
+    "notYet4": "Texto de líneas múltiples (TEXTOM) y splines",
     "notYet5": "3D",
     "notYet6": "Móviles y tabletas",
     "nextTitle": "Lo siguiente",
-    "next1": "MTEXT",
+    "next1": "TEXTOM",
     "next2": "Atributos de bloque",
     "next3": "SPLINE",
     "next4": "SCP",
@@ -197,7 +198,7 @@
     "q2": "¿Tengo que instalar algo?",
     "a2": "No. Funciona en un navegador de escritorio actual: Chrome, Edge, Firefox o Safari. Abre mellowcad.com/es/draw y escribe un comando.",
     "q3": "¿De verdad funciona como AutoCAD?",
-    "a3": "Esa es la especificación: los comandos, los alias, el orden de las solicitudes, las letras de opción y los valores por defecto siguen al AutoCAD actual. Algunos comandos aún están a medias, y la hoja de ruta dice exactamente qué opciones faltan.",
+    "a3": "Esa es la especificación: los comandos, los alias, el orden de las solicitudes, las letras de opción y los valores por defecto siguen al AutoCAD actual en español, con los nombres globales disponibles con _ delante (_LINE). Algunos comandos aún están a medias, y la hoja de ruta dice exactamente qué opciones faltan.",
     "q4": "¿Puedo abrir o guardar archivos DWG o DXF?",
     "a4": "Todavía no. Los dibujos se guardan en el formato de archivo propio y versionado de MellowCAD. Importar y exportar DXF está en la hoja de ruta, aún sin fecha.",
     "q5": "¿Dónde se guardan mis dibujos?",
@@ -207,7 +208,7 @@
     "q7": "¿Funciona en tabletas o móviles?",
     "a7": "Se abre, pero está pensado para teclado y ratón, como AutoCAD. Usa un equipo de escritorio o un portátil.",
     "q8": "¿Qué comandos incluye?",
-    "a8": "{commands, number} comandos, entre ellos LINE, PLINE, CIRCLE, ARC, ELLIPSE, HATCH, OFFSET, TRIM, FILLET, ARRAY, las cotas, los bloques y las capas. La lista completa, con los alias, está más arriba."
+    "a8": "{commands, number} comandos, entre ellos LINEA, POL, CIRCULO, ARCO, ELIPSE, SOMBREA, DESFASE, RECORTA, EMPALME, MATRIZ, las cotas, los bloques y las capas. La lista completa, con los alias, está más arriba."
   },
   "FinalCta": {
     "title": "Tu mesa de dibujo está a una tecla."
@@ -218,9 +219,6 @@
     "contact": "Contacto",
     "privacy": "Privacidad",
     "language": "Idioma",
-    "soon": "Próximamente",
-    "languageName": "Español",
-    "languageSoon": "Más idiomas, próximamente",
     "drawingNumber": "N.º plano",
     "revision": "Rev.",
     "scale": "Escala",
@@ -254,7 +252,7 @@
   },
   "NotFound": {
     "metaTitle": "Página no encontrada",
-    "help": "Press F1 for help.",
+    "help": "Pulse F1 para obtener ayuda.",
     "fallbackCommand": "PAGE",
     "home": "Volver a la hoja de dibujo",
     "cta": "Empezar a dibujar"
@@ -306,7 +304,7 @@
     },
     "CommandLine": {
       "label": "Línea de comandos",
-      "placeholder": "Escriba un comando (LINE, TR, CO…)"
+      "placeholder": "Escriba un comando (LINEA, RR, CP…)"
     },
     "Coordinates": {
       "x": "x:",
@@ -344,7 +342,7 @@
       "units": "Unidades",
       "precision": "Precisión",
       "linetypeScale": "Escala de tipo de línea",
-      "linetypeScaleLabel": "Factor de escala global de tipo de línea (LTSCALE)",
+      "linetypeScaleLabel": "Factor de escala global de tipo de línea (ESCALATL)",
       "dimensionScale": "Escala de cota",
       "dimensionScaleLabel": "Escala global de cota (DIMSCALE)"
     },
@@ -406,13 +404,13 @@
       "angularPrecision": "Precisión angular",
       "size": "Tamaño",
       "height": "Altura",
-      "heightHint": "Una altura de 0 la deja libre, y TEXT la pide cada vez."
+      "heightHint": "Una altura de 0 la deja libre, y TEXTO la pide cada vez."
     },
     "Blocks": {
       "title": "Bloques",
       "filter": "Filtro (se admiten ? y *)",
       "filterLabel": "Filtrar bloques",
-      "empty": "No hay bloques definidos. Dibuje algo y ejecute BLOCK.",
+      "empty": "No hay bloques definidos. Dibuje algo y ejecute BLOQUE.",
       "noMatch": "Ningún bloque coincide con el filtro.",
       "references": "{name} — {count, plural, other {# en el dibujo}}",
       "purge": "Limpiar {name}",
@@ -441,7 +439,8 @@
       "intro": "Una aplicación de dibujo 2D en el navegador, construida en torno a los comandos, las referencias a objetos y el flujo de teclado que ya conocen los usuarios de AutoCAD. Es un proyecto personal en desarrollo activo: los comandos llegan uno a uno, así que encontrará huecos y asperezas.",
       "storage": "Sus dibujos se quedan en este dispositivo: se guardan automáticamente en el navegador y nunca se suben. Borrar los datos del sitio los elimina, así que use Guardar para conservar una copia en un archivo.",
       "gettingStarted": "Primeros pasos",
-      "howTo": "Escriba un comando (<key>LINE</key>, <key>CIRCLE</key>); <key>F2</key> muestra u oculta la línea de comandos y <key>Esc</key> cancela."
+      "howTo": "Escriba un comando (<key>LINEA</key>, <key>CIRCULO</key>); <key>F2</key> muestra u oculta la línea de comandos y <key>Esc</key> cancela.",
+      "language": "Idioma"
     }
   }
 }

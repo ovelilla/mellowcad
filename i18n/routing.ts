@@ -40,13 +40,24 @@ export const DIRECTION: Readonly<Record<AppLocale, "ltr" | "rtl">> = {
  */
 export const LOCALE_STATUS: Readonly<Record<AppLocale, "live" | "draft">> = {
   en: "live",
-  es: "draft",
+  es: "live",
   ar: "draft",
 }
 
 export const LIVE_LOCALES: readonly AppLocale[] = routing.locales.filter(
   (locale) => LOCALE_STATUS[locale] === "live"
 )
+
+/**
+ * Each language named in itself, as the language selector offers it — a
+ * reader looks for their own language's name, and never for a flag, which
+ * stands for a country.
+ */
+export const LANGUAGE_NAMES: Readonly<Record<AppLocale, string>> = {
+  en: "English",
+  es: "Español",
+  ar: "العربية",
+}
 
 /** Open Graph wants language and territory. */
 export const OG_LOCALE: Readonly<Record<AppLocale, string>> = {

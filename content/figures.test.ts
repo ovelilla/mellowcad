@@ -7,6 +7,7 @@ import {
   recordDemo,
   transcript,
 } from "@/cad"
+import { es } from "@/cad/locales/es"
 import { plotDemo, renderFigure } from "@/lib/plot"
 
 import { diagramsIn } from "./diagrams.fixture"
@@ -25,28 +26,33 @@ describe.each(
     ...diagramsIn("en"),
     ...diagramsIn("es"),
   })
-)(
-  "the %s figure",
-  (_name, figure) => {
-    it("replays without the engine reporting an error", async () => {
-      const recording = await recordDemo(figure.script)
+)("the %s figure", (_name, figure) => {
+  // Scripts name commands by their global name with _ (_LINE), as a
+  // portable AutoCAD script does, so they run in every command language.
+  it.each([
+    ["English", undefined],
+    ["Spanish", es],
+  ])(
+    "replays in %s without the engine reporting an error",
+    async (_language, locale) => {
+      const recording = await recordDemo(figure.script, { locale })
       const errors = recording.steps
         .flatMap((step) => step.output)
         .filter((line) => line.kind === "error")
       expect(errors).toEqual([])
-    })
+    }
+  )
 
-    it("draws something", async () => {
-      const rendered = await renderFigure(figure)
-      // A live figure may be all aid and no object yet — polar tracking before
-      // the second point is picked — so it is judged by what it shows.
-      if (!("live" in figure)) {
-        expect(rendered.recording.document.size).toBeGreaterThan(0)
-      }
-      expect(rendered.markup).toMatch(/^<(line|circle|path|rect|text)/)
-    })
-  }
-)
+  it("draws something", async () => {
+    const rendered = await renderFigure(figure)
+    // A live figure may be all aid and no object yet — polar tracking before
+    // the second point is picked — so it is judged by what it shows.
+    if (!("live" in figure)) {
+      expect(rendered.recording.document.size).toBeGreaterThan(0)
+    }
+    expect(rendered.markup).toMatch(/^<(line|circle|path|rect|text)/)
+  })
+})
 
 describe("the hero", () => {
   it("plots in 8 to 12 seconds, as the brief budgets it", async () => {

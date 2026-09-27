@@ -507,6 +507,14 @@
   color: var(--text);
 }
 
+/* The desktop language list: small, under the globe at the bar's end. */
+[popover].menu.language-menu {
+  left: auto;
+  width: max-content;
+  min-width: 10rem;
+  padding: 0.5rem;
+}
+
 details > summary {
   cursor: pointer;
   list-style: none;

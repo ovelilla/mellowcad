@@ -169,3 +169,83 @@ describe("the command vocabulary", () => {
     }
   })
 })
+
+describe("every command language", () => {
+  /**
+   * Which keywords share a prompt, read off the English surface the engine
+   * walks (`LINE [Close/Undo]:`), plus TEXT's justification list, which is
+   * worded as a message. A value shown beside a keyword (`Erase: No`) is not
+   * a keyword of that prompt.
+   */
+  function sharedPrompts(): { command: string; ids: string[] }[] {
+    const surface = readFileSync(
+      resolve(LOCALES_DIR, "../application/__snapshots__/englishSurface.txt"),
+      "utf8"
+    )
+    const prompts = [...surface.matchAll(/^ {2}prompt: (\S+) \[(.+)\]:$/gm)].map(
+      ([, command, list]) => ({
+        command,
+        ids: list.split("/").map((entry) => entry.split(": ")[0]),
+      })
+    )
+    const justify = ["Left", "Center", "Right", "Middle"]
+    const corners = ["TL", "TC", "TR", "ML", "MC", "MR", "BL", "BC", "BR"]
+    return [...prompts, { command: "TEXT", ids: [...justify, ...corners] }]
+  }
+
+  it("gives each keyword an abbreviation of its own in every prompt", () => {
+    const prompts = sharedPrompts()
+    expect(prompts.length).toBeGreaterThan(40)
+    for (const tag of catalogTags()) {
+      const keywords = (
+        (readCatalog(tag) as Tree).commands as Tree | undefined
+      )?.keywords as
+        | Readonly<Record<string, Readonly<Record<string, string>>>>
+        | undefined
+      if (!keywords) continue
+      for (const { command, ids } of prompts) {
+        const words = ids.map((id) => keywords[command]?.[id] ?? id)
+        const abbreviations = words.map((word) =>
+          abbreviationOf(word).toUpperCase()
+        )
+        expect(
+          new Set(abbreviations).size,
+          `${tag} ${command} [${words.join("/")}]`
+        ).toBe(abbreviations.length)
+      }
+    }
+  })
+})
+
+describe("a command language of our own", () => {
+  /** Every path under `commands`, names and keyword tables included. */
+  function paths(tree: Tree, prefix = ""): string[] {
+    return Object.entries(tree).flatMap(([key, value]) =>
+      typeof value === "string" || Array.isArray(value)
+        ? [`${prefix}${key}`]
+        : paths(value as Tree, `${prefix}${key}.`)
+    )
+  }
+
+  // A catalog that brings a command language brings all of it: a gap would
+  // leave one command, keyword or prompt in English in the middle of Spanish.
+  it("is complete or absent", () => {
+    const reference = paths(english.commands as Tree)
+    for (const tag of catalogTags().filter((tag) => tag !== "en")) {
+      const commands = (readCatalog(tag) as Tree).commands as Tree | undefined
+      if (!commands) continue
+      expect(paths(commands).sort(), tag).toEqual(reference.sort())
+    }
+  })
+
+  it("never gives two commands the same name or alias", () => {
+    for (const tag of catalogTags()) {
+      const commands = (readCatalog(tag) as Tree).commands as Tree | undefined
+      if (!commands) continue
+      const typed = Object.values(
+        commands.names as Readonly<Record<string, readonly string[]>>
+      ).flat()
+      expect(new Set(typed).size, tag).toBe(typed.length)
+    }
+  })
+})

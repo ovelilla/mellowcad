@@ -1,6 +1,7 @@
 import { getFormatter, getTranslations } from "next-intl/server"
 
 import { productFacts } from "@/lib/facts"
+import { pageEngineLocale } from "@/lib/plot"
 import { CONTACT_EMAIL, CONTENT_UPDATED } from "@/lib/site"
 
 import { SectionHeading } from "./section-heading"
@@ -8,7 +9,7 @@ import { SectionHeading } from "./section-heading"
 export async function StatusSection() {
   const t = await getTranslations("Status")
   const format = await getFormatter()
-  const facts = productFacts()
+  const facts = productFacts(await pageEngineLocale())
 
   const columns = [
     {

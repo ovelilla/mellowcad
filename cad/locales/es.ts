@@ -292,5 +292,767 @@ export const es: EngineLocale = {
         "diameter": "Diámetro"
       }
     }
+  },
+  "commands": {
+    "names": {
+      "LINE": [
+        "LINEA",
+        "L"
+      ],
+      "PLINE": [
+        "POL",
+        "PL"
+      ],
+      "CIRCLE": [
+        "CIRCULO",
+        "C"
+      ],
+      "CIRCLED": [
+        "CIRCULOD"
+      ],
+      "CIRCLE2P": [
+        "CIRCULO2P"
+      ],
+      "CIRCLE3P": [
+        "CIRCULO3P"
+      ],
+      "ARC": [
+        "ARCO",
+        "A"
+      ],
+      "ARCSCE": [
+        "ARCOICF"
+      ],
+      "ARCCSE": [
+        "ARCOCIF"
+      ],
+      "ELLIPSE": [
+        "ELIPSE",
+        "EL"
+      ],
+      "ELLIPSEC": [
+        "ELIPSEC"
+      ],
+      "ELLIPSEARC": [
+        "ELIPSEARCO"
+      ],
+      "RECTANG": [
+        "RECTANG",
+        "REC"
+      ],
+      "POLYGON": [
+        "POLIGONO",
+        "PG"
+      ],
+      "HATCH": [
+        "SOMBREA",
+        "SB",
+        "SMB"
+      ],
+      "BLOCK": [
+        "BLOQUE",
+        "BQ"
+      ],
+      "INSERT": [
+        "INSERT",
+        "IN"
+      ],
+      "TEXT": [
+        "TEXTO",
+        "T"
+      ],
+      "TEXTEDIT": [
+        "EDITARTEXTO",
+        "ED",
+        "DDEDIC"
+      ],
+      "DIMLINEAR": [
+        "ACOLINEAL",
+        "ACOLIN",
+        "DIMLIN"
+      ],
+      "DIMALIGNED": [
+        "ACOALINEADA",
+        "ACOALI"
+      ],
+      "DIMRADIUS": [
+        "ACORADIO",
+        "ACORAD"
+      ],
+      "DIMDIAMETER": [
+        "ACODIAMETRO",
+        "ACODIA"
+      ],
+      "DIMANGULAR": [
+        "ACOANGULO",
+        "ACOANG",
+        "ACOANGULAR"
+      ],
+      "DIMBASELINE": [
+        "ACOLINEABASE",
+        "ACOLINE"
+      ],
+      "DIMCONTINUE": [
+        "ACOCONTINUA",
+        "ACOCONT"
+      ],
+      "DIMSPACE": [
+        "ACOESPAC"
+      ],
+      "OFFSET": [
+        "DESFASE",
+        "DF",
+        "EQ"
+      ],
+      "MOVE": [
+        "DESPLAZA",
+        "D"
+      ],
+      "COPY": [
+        "COPIA",
+        "CP",
+        "DUP"
+      ],
+      "STRETCH": [
+        "ESTIRA",
+        "EI"
+      ],
+      "ROTATE": [
+        "GIRA",
+        "GI"
+      ],
+      "SCALE": [
+        "ESCALA",
+        "ES"
+      ],
+      "MIRROR": [
+        "SIMETRIA",
+        "SI"
+      ],
+      "ARRAYRECT": [
+        "MATRIZRECTANG",
+        "MA",
+        "MATRIZ"
+      ],
+      "ARRAYPOLAR": [
+        "MATRIZPOLAR"
+      ],
+      "ARRAYPATH": [
+        "MATRIZCAMINO"
+      ],
+      "TRIM": [
+        "RECORTA",
+        "RR"
+      ],
+      "EXTEND": [
+        "ALARGA",
+        "AL"
+      ],
+      "FILLET": [
+        "EMPALME",
+        "MP"
+      ],
+      "CHAMFER": [
+        "CHAFLAN",
+        "CH"
+      ],
+      "EXPLODE": [
+        "DESCOMP",
+        "DP"
+      ],
+      "JOIN": [
+        "UNIR",
+        "U"
+      ],
+      "BREAK": [
+        "PARTE",
+        "P"
+      ],
+      "BREAKATPOINT": [
+        "PARTIRENPUNTO"
+      ],
+      "MATCHPROP": [
+        "IGUALARPROP",
+        "IP",
+        "COPARPROP"
+      ],
+      "COPYCLIP": [
+        "COPIAPP"
+      ],
+      "CUTCLIP": [
+        "CORTAPP"
+      ],
+      "COPYBASE": [
+        "COPIARBASE"
+      ],
+      "DIST": [
+        "DIST",
+        "DI"
+      ],
+      "AREA": [
+        "AREA",
+        "AA"
+      ],
+      "ZOOM": [
+        "ZOOM",
+        "Z"
+      ],
+      "PAN": [
+        "ENCUADRE",
+        "E"
+      ],
+      "ERASE": [
+        "BORRA",
+        "B"
+      ],
+      "UNDO": [
+        "DESHACER",
+        "H"
+      ],
+      "REDO": [
+        "REHACER"
+      ],
+      "SNAP": [
+        "FORZCURSOR",
+        "FC"
+      ],
+      "FROM": [
+        "DESDE"
+      ],
+      "QSAVE": [
+        "GUARDARR",
+        "GUARDAR",
+        "GUARDARCOMO"
+      ],
+      "OPEN": [
+        "ABRE"
+      ],
+      "PASTECLIP": [
+        "PEGAPP"
+      ],
+      "DIMSTYLE": [
+        "ACOESTIL",
+        "ACES",
+        "ACOEST",
+        "AES"
+      ],
+      "STYLE": [
+        "ESTILO",
+        "EST"
+      ],
+      "BLOCKSPALETTE": [
+        "PALETABLOQUES"
+      ],
+      "PURGE": [
+        "LIMPIA",
+        "LI"
+      ]
+    },
+    "keywords": {
+      "LINE": {
+        "Close": "Cerrar",
+        "Undo": "desHacer"
+      },
+      "PLINE": {
+        "Arc": "Arco",
+        "Line": "líNea",
+        "Close": "Cerrar",
+        "Undo": "desHacer"
+      },
+      "ELLIPSE": {
+        "Arc": "Arco",
+        "Center": "Centro",
+        "Rotation": "Rotación",
+        "Included angle": "ángulo Incluido"
+      },
+      "ELLIPSEC": {
+        "Arc": "Arco",
+        "Center": "Centro",
+        "Rotation": "Rotación",
+        "Included angle": "ángulo Incluido"
+      },
+      "ELLIPSEARC": {
+        "Arc": "Arco",
+        "Center": "Centro",
+        "Rotation": "Rotación",
+        "Included angle": "ángulo Incluido"
+      },
+      "POLYGON": {
+        "Type": "Tipo",
+        "Inscribed": "Inscrito en el círculo",
+        "Circumscribed": "Circunscrito alrededor del círculo"
+      },
+      "HATCH": {
+        "Properties": "Propiedades",
+        "Select objects": "Designar objetos"
+      },
+      "INSERT": {
+        "Scale": "Escala",
+        "Rotate": "Girar"
+      },
+      "TEXT": {
+        "Justify": "jUstificar",
+        "Style": "Estilo",
+        "Left": "Izquierda",
+        "Center": "Centro",
+        "Right": "Derecha",
+        "Middle": "Medio",
+        "TL": "SIZ",
+        "TC": "SC",
+        "TR": "SD",
+        "ML": "MI",
+        "MC": "MC",
+        "MR": "MD",
+        "BL": "II",
+        "BC": "IC",
+        "BR": "ID"
+      },
+      "TEXTEDIT": {
+        "Undo": "desHacer",
+        "Mode": "Modo",
+        "Single": "Única",
+        "Multiple": "Múltiple"
+      },
+      "DIMLINEAR": {
+        "Text": "Texto",
+        "Angle": "ángUlo",
+        "Horizontal": "Horizontal",
+        "Vertical": "Vertical",
+        "Rotated": "Girar"
+      },
+      "DIMALIGNED": {
+        "Text": "Texto",
+        "Angle": "ángUlo"
+      },
+      "DIMRADIUS": {
+        "Text": "Texto",
+        "Angle": "ángUlo"
+      },
+      "DIMDIAMETER": {
+        "Text": "Texto",
+        "Angle": "ángUlo"
+      },
+      "DIMANGULAR": {
+        "Text": "Texto",
+        "Angle": "ángUlo"
+      },
+      "DIMBASELINE": {
+        "Undo": "desHacer",
+        "Select": "Designar"
+      },
+      "DIMCONTINUE": {
+        "Undo": "desHacer",
+        "Select": "Designar"
+      },
+      "DIMSPACE": {
+        "Auto": "Auto"
+      },
+      "OFFSET": {
+        "Through": "punto a Atravesar",
+        "Erase": "Borrar",
+        "Layer": "Capa",
+        "Multiple": "Múltiple",
+        "Distance": "Distancia",
+        "Yes": "Sí",
+        "No": "No",
+        "Current": "Actual",
+        "Source": "Origen",
+        "On": "ACT",
+        "Off": "DES"
+      },
+      "ROTATE": {
+        "Copy": "Copiar",
+        "Reference": "Referencia"
+      },
+      "SCALE": {
+        "Copy": "Copiar",
+        "Reference": "Referencia"
+      },
+      "MIRROR": {
+        "Yes": "Sí",
+        "No": "No"
+      },
+      "ARRAYPOLAR": {
+        "Rotate items": "Girar objetos",
+        "Yes": "Sí",
+        "No": "No"
+      },
+      "ARRAYPATH": {
+        "Method": "Método",
+        "Align items": "ALinear elementos",
+        "Divide": "Dividir",
+        "Measure": "Medir",
+        "Yes": "Sí",
+        "No": "No"
+      },
+      "FILLET": {
+        "Radius": "RAdio"
+      },
+      "CHAMFER": {
+        "Distance": "Distancia"
+      },
+      "BREAK": {
+        "First point": "Primer punto"
+      },
+      "AREA": {
+        "Undo": "desHacer"
+      },
+      "ZOOM": {
+        "All": "Todo",
+        "Extents": "Extensión",
+        "Previous": "Previo",
+        "Scale": "EScala",
+        "Window": "Ventana",
+        "Object": "Objeto"
+      }
+    },
+    "prompts": {
+      "length": "Longitud",
+      "angle": "Ángulo",
+      "trackingOffset": "Desfase",
+      "center": "Centro",
+      "radius": "Radio",
+      "diameter": "Diámetro",
+      "firstPoint": "Primer punto",
+      "secondPoint": "Segundo punto",
+      "thirdPoint": "Tercer punto",
+      "startPoint": "Punto inicial",
+      "centerPoint": "Punto central",
+      "endPoint": "Punto final",
+      "axisEndpoint": "Punto final de eje",
+      "otherAxisEndpoint": "Otro punto final de eje",
+      "endpointOfAxis": "Punto final de eje",
+      "distanceToOtherAxis": "Distancia de otro eje",
+      "rotationAroundMajorAxis": "Rotación alrededor del eje mayor",
+      "startAngle": "Ángulo inicial",
+      "endAngle": "Ángulo final",
+      "includedAngle": "Ángulo incluido",
+      "firstCorner": "Primer punto de esquina",
+      "otherCorner": "Esquina opuesta",
+      "numberOfSides": "Número de lados",
+      "internalPoint": "Precise punto interno",
+      "patternName": "Indique nombre de patrón",
+      "patternScale": "Precise escala de patrón",
+      "patternAngle": "Precise ángulo de patrón",
+      "blockName": "Indique nombre de bloque o [?]",
+      "insertionBasePoint": "Precise punto base de inserción",
+      "insertionPoint": "Precise punto de inserción",
+      "insertScale": "Indique factor de escala",
+      "insertRotation": "Precise ángulo de rotación",
+      "textStartPoint": "Precise punto inicial de texto",
+      "textHeight": "Precise altura",
+      "textRotation": "Precise ángulo de rotación de texto",
+      "text": "Texto",
+      "justify": "Justificar",
+      "styleName": "Nombre de estilo",
+      "firstExtensionOrigin": "Designe el origen de la primera línea de referencia o <designar objeto>",
+      "secondExtensionOrigin": "Designe el origen de la segunda línea de referencia",
+      "nextExtensionOrigin": "Designe un origen de la segunda línea de referencia",
+      "dimensionLineLocation": "Designe ubicación de línea de cota",
+      "dimensionLineAngle": "Precise ángulo de línea de cota",
+      "dimensionText": "Indique texto de cota",
+      "dimensionTextAngle": "Precise ángulo de texto de cota",
+      "angleVertex": "Designe vértice del ángulo",
+      "firstAngleEndpoint": "Designe primer extremo",
+      "secondAngleEndpoint": "Designe segundo extremo",
+      "dimensionArcLocation": "Designe ubicación del arco de línea de cota",
+      "dimensionSpacing": "Indique valor",
+      "offsetDistance": "Distancia de desfase",
+      "basePoint": "Punto base",
+      "distance": "Distancia",
+      "rotationAngle": "Ángulo de rotación",
+      "referenceAngle": "Ángulo de referencia",
+      "newAngle": "Nuevo ángulo",
+      "scaleFactor": "Factor de escala",
+      "referenceLength": "Longitud de referencia",
+      "newLength": "Longitud nueva",
+      "mirrorFirstPoint": "Primer punto de línea de simetría",
+      "mirrorSecondPoint": "Segundo punto de línea de simetría",
+      "columns": "Columnas",
+      "rows": "Filas",
+      "columnSpacing": "Distancia entre columnas",
+      "rowSpacing": "Distancia entre filas",
+      "items": "Elementos",
+      "fillAngle": "Ángulo de relleno",
+      "spacing": "Intervalo",
+      "filletRadius": "Radio de empalme",
+      "firstDistance": "Primera distancia de chaflán",
+      "secondDistance": "Segunda distancia de chaflán",
+      "clipboardBasePoint": "Precise punto base",
+      "lengthen": "Alargar",
+      "move": "Desplazar",
+      "bulge": "Curvatura"
+    },
+    "format": {
+      "idle": "Comando",
+      "prompt": [
+        [
+          "head"
+        ],
+        ":"
+      ],
+      "promptWithKeywords": [
+        [
+          "head"
+        ],
+        " ",
+        [
+          "keywords",
+          "[",
+          [
+            "list"
+          ],
+          "]"
+        ],
+        ":"
+      ],
+      "keywordSeparator": "/",
+      "optionValue": [
+        [
+          "keyword"
+        ],
+        ": ",
+        [
+          "value"
+        ]
+      ],
+      "cartesian": "X,Y",
+      "polar": "Dist<Ang"
+    },
+    "messages": {
+      "unknownCommand": [
+        "Comando \"",
+        [
+          "name"
+        ],
+        "\" desconocido."
+      ],
+      "nothingSelected": "No se ha designado nada.",
+      "erased": [
+        [
+          "count",
+          2,
+          {
+            "one": [
+              0,
+              " objeto borrado."
+            ],
+            "other": [
+              0,
+              " objetos borrados."
+            ]
+          }
+        ]
+      ],
+      "snapMode": [
+        [
+          "state",
+          1,
+          {
+            "on": "Modo Forzcursor activado.",
+            "other": "Modo Forzcursor desactivado."
+          }
+        ]
+      ],
+      "fromNeedsPoint": "DESDE necesita una solicitud de punto.",
+      "fromBase": "DESDE: precise el punto base.",
+      "fromOffset": "DESDE: desfase desde el punto base.",
+      "saveUnavailable": "Guardar en un archivo no está disponible aquí.",
+      "openUnavailable": "Abrir un archivo no está disponible aquí.",
+      "openFailed": "No se ha podido abrir el archivo.",
+      "fileError": {
+        "invalidJson": "El archivo no es un JSON válido.",
+        "unrecognised": "Archivo de dibujo no reconocido.",
+        "notADrawing": "Este archivo no es un dibujo de MellowCAD.",
+        "newerVersion": "Este dibujo se creó con una versión más reciente de MellowCAD. Actualice para abrirlo."
+      },
+      "clipboardEmpty": "No hay nada en el portapapeles.",
+      "noUnusedBlocks": "No hay bloques sin usar.",
+      "blocksPurged": [
+        [
+          "count",
+          2,
+          {
+            "one": [
+              0,
+              " bloque limpiado."
+            ],
+            "other": [
+              0,
+              " bloques limpiados."
+            ]
+          }
+        ]
+      ],
+      "noBlocks": "No hay bloques definidos.",
+      "blockUndefined": [
+        "El bloque \"",
+        [
+          "name"
+        ],
+        "\" no está definido."
+      ],
+      "hatchPatternUnknown": [
+        "Patrón de sombreado \"",
+        [
+          "name"
+        ],
+        "\" desconocido."
+      ],
+      "hatchTooDense": "El intervalo de sombreado es demasiado denso o el trazo demasiado pequeño.",
+      "hatchNoBoundary": "No se ha encontrado un contorno de sombreado válido.",
+      "textStyleUndefined": [
+        "El estilo de texto \"",
+        [
+          "name"
+        ],
+        "\" no está definido."
+      ],
+      "textJustifyOptions": [
+        "Indique una opción [",
+        [
+          "keywords"
+        ],
+        "]:"
+      ],
+      "explodeRejected": [
+        [
+          "count",
+          2,
+          {
+            "one": [
+              0,
+              " no se ha podido descomponer."
+            ],
+            "other": [
+              0,
+              " no se han podido descomponer."
+            ]
+          }
+        ]
+      ]
+    },
+    "feedback": {
+      "snap": {
+        "endpoint": "Punto final",
+        "midpoint": "Punto medio",
+        "center": "Centro",
+        "intersection": "Intersección",
+        "apparentIntersection": "Intersección ficticia",
+        "perpendicular": "Perpendicular",
+        "tangent": "Tangente",
+        "insertion": "Inserción",
+        "extension": "Extensión",
+        "parallel": "Paralelo",
+        "quadrant": "Cuadrante",
+        "nearest": "Cercano"
+      },
+      "polar": [
+        "Polar: ",
+        [
+          "distance"
+        ],
+        [
+          "unit"
+        ],
+        " < ",
+        [
+          "angle"
+        ],
+        "°"
+      ],
+      "measureDistance": [
+        "Dist  ",
+        [
+          "value"
+        ],
+        " ",
+        [
+          "unit"
+        ]
+      ],
+      "measureAngle": [
+        "Áng   ",
+        [
+          "value"
+        ],
+        "°"
+      ],
+      "measureDeltaX": [
+        "ΔX    ",
+        [
+          "value"
+        ]
+      ],
+      "measureDeltaY": [
+        "ΔY    ",
+        [
+          "value"
+        ]
+      ],
+      "measureArea": [
+        "Área  ",
+        [
+          "value"
+        ],
+        " ",
+        [
+          "unit"
+        ],
+        "²"
+      ],
+      "measurePerimeter": [
+        "Perím ",
+        [
+          "value"
+        ],
+        " ",
+        [
+          "unit"
+        ]
+      ],
+      "measureHint": [
+        "[",
+        [
+          "undo"
+        ],
+        "] deshacer  [Intro] terminar"
+      ]
+    },
+    "listing": {
+      "hatchPattern": [
+        [
+          "name"
+        ],
+        "  ",
+        [
+          "description"
+        ]
+      ],
+      "hatchPatternDescription": {
+        "SOLID": "Relleno sólido",
+        "ANSI31": "ANSI hierro, ladrillo, mampostería de piedra"
+      }
+    },
+    "defaults": {
+      "layer": [
+        "Capa",
+        [
+          "n"
+        ]
+      ],
+      "copyOf": [
+        "Copia de ",
+        [
+          "name"
+        ]
+      ],
+      "fileName": [
+        "dibujo-",
+        [
+          "date"
+        ]
+      ]
+    }
   }
 }

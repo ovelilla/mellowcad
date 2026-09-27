@@ -66,7 +66,8 @@ party — updates it in the same change.
 
 - Every figure is drawn in the page's language (`pageEngineLocale()`); the two diagrams carry the
   page's words as TEXT, from messages (`DIAGRAMS`, `i18n.instructions.md`).
-- A figure is a **`DemoScript`** in `content/demos/` (the harness's chained style: `command`, `type`,
+- A figure is a **`DemoScript`** in `content/demos/` (the harness's chained style: `command` with a
+  global name and `_`, `type`,
   `enter`, `click`, `option`, plus `hover`, `down`/`up`, `press`, `osnap`, `layer`), registered in
   `content/figures.ts`, rendered at build time by `lib/plot.ts` through `SvgScenePresenter`. Never
   hand-draw an SVG of drawing content, never a screenshot.
@@ -202,8 +203,8 @@ party — updates it in the same change.
   be literal, for icons and the OG image). `--text-subtle` is the dimmest text allowed (≈ 5:1).
 - One scheme, dark, like the editor (brief D12): the tokens sit on `:root` with
   `color-scheme: dark`, `dark:` always applies, and there is no theme selector. The language
-  selector is built but inert (`aria-disabled`, focusable, with a tooltip saying why) until a second
-  language goes live under `docs/next-i18n.md` (its phase 3).
+  selector is `LanguageLinks` (`i18n.instructions.md`): a list in the footer's title block, a globe
+  menu in the bar on a computer and a section of the menu on a phone.
 - One accent per view: amber is the call to action and the focus ring; cyan is reserved for
   precision (snap markers, measurements) and is never a link colour.
 - Use `text-wrap-style`, not the `text-wrap` shorthand, in base styles: the shorthand also resets the

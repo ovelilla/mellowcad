@@ -1,7 +1,7 @@
 "use client"
 
 import { Info, Mail } from "lucide-react"
-import { useTranslations } from "next-intl"
+import { useLocale, useTranslations } from "next-intl"
 
 import { Button } from "@/components/ui/button"
 import {
@@ -9,6 +9,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover"
+import { LanguageLinks } from "@/components/language-links"
 import { CONTACT_EMAIL, SITE_NAME } from "@/lib/site"
 
 import { Panel } from "./toolbar-primitives"
@@ -20,6 +21,7 @@ import { Panel } from "./toolbar-primitives"
  */
 export function AboutPanel() {
   const t = useTranslations("Editor.About")
+  const locale = useLocale()
   return (
     <Panel>
       <Popover>
@@ -55,6 +57,16 @@ export function AboutPanel() {
               {t.rich("howTo", { key: (chunks) => <Key>{chunks}</Key> })}
             </p>
           </div>
+
+          {/* The drawing survives the switch: the autosave has no language. */}
+          <nav aria-label={t("language")} className="space-y-1 text-xs">
+            <p className="font-medium text-foreground">{t("language")}</p>
+            <LanguageLinks
+              current={locale}
+              className="flex gap-3"
+              linkClassName="text-muted-foreground underline-offset-4 hover:text-foreground hover:underline aria-[current=true]:text-foreground"
+            />
+          </nav>
 
           <a
             href={`mailto:${CONTACT_EMAIL}?subject=MellowCAD`}

@@ -1,8 +1,10 @@
-import { Menu, X } from "lucide-react"
+import { Globe, Menu, X } from "lucide-react"
 import Link from "next/link"
-import { getTranslations } from "next-intl/server"
+import { getLocale, getTranslations } from "next-intl/server"
 
-import { sitePaths } from "@/i18n/navigation"
+import { LanguageLinks } from "@/components/language-links"
+
+import { sitePaths } from "@/i18n/site-paths"
 
 import { Logo } from "./logo"
 
@@ -23,6 +25,7 @@ export async function SiteHeader() {
   const t = await getTranslations("Header")
   const common = await getTranslations("Common")
   const paths = await sitePaths()
+  const locale = await getLocale()
 
   return (
     <header className="header-surface sticky top-0 z-40 border-b border-border bg-bg-raised/92 backdrop-blur-md">
@@ -49,6 +52,15 @@ export async function SiteHeader() {
           </ul>
         </nav>
         <div className="ml-auto flex items-center gap-2 md:ml-0">
+          {/* On a phone the languages are in the menu: the bar has no room. */}
+          <button
+            type="button"
+            popoverTarget="language-menu"
+            aria-label={t("language")}
+            className="hidden size-9 place-items-center rounded-md text-fg-muted hover:text-fg md:grid"
+          >
+            <Globe className="size-5" aria-hidden="true" />
+          </button>
           <a
             href={paths.editor}
             className="inline-flex h-9 items-center rounded-md bg-accent px-3.5 text-sm font-medium text-accent-ink transition-[filter] duration-150 hover:brightness-110"
@@ -81,6 +93,16 @@ export async function SiteHeader() {
             ))}
           </ul>
         </nav>
+        <nav
+          aria-label={t("language")}
+          className="mt-2 border-t border-border pt-2"
+        >
+          <LanguageLinks
+            current={locale}
+            className="flex flex-col"
+            linkClassName="block rounded-md px-3 py-2.5 text-fg-muted hover:bg-bg aria-[current=true]:text-fg"
+          />
+        </nav>
         <button
           type="button"
           popoverTarget="site-menu"
@@ -91,6 +113,18 @@ export async function SiteHeader() {
           <X className="size-5" aria-hidden="true" />
         </button>
       </div>
+      <nav
+        id="language-menu"
+        popover="auto"
+        aria-label={t("language")}
+        className="menu language-menu"
+      >
+        <LanguageLinks
+          current={locale}
+          className="flex flex-col"
+          linkClassName="block rounded-md px-3 py-2 text-sm text-fg-muted hover:bg-bg aria-[current=true]:text-fg"
+        />
+      </nav>
     </header>
   )
 }

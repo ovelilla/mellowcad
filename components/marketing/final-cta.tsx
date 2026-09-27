@@ -1,7 +1,7 @@
 import { getTranslations } from "next-intl/server"
 
 import { engineText } from "@/cad"
-import { sitePaths } from "@/i18n/navigation"
+import { sitePaths } from "@/i18n/site-paths"
 import { pageEngineLocale } from "@/lib/plot"
 
 export async function FinalCta() {

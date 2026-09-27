@@ -67,8 +67,9 @@ export interface ProductFacts {
   readonly version: string
 }
 
-export function productFacts(): ProductFacts {
-  const commands = autocadCommands()
+/** The product's numbers; aliases are counted in the command language of `locale`. */
+export function productFacts(locale?: EngineLocale): ProductFacts {
+  const commands = autocadCommands(locale)
   return {
     commands: commands.length,
     aliases: commands.reduce((sum, command) => sum + command.aliases.length, 0),

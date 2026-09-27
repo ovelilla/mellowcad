@@ -37,8 +37,16 @@ by key. `application/EngineText.ts` is the one place that reads it; a tool reach
   of that moment (`Layer{n}`, `Copy of {name}`), as AutoCAD's are.
 - **Two languages, one boundary.** `interface` is the palettes' and menus' language; `commands` is
   the command language — names, prompts, keywords, messages and everything drawn on the canvas.
-  A locale may leave `commands` out, and then the command language is the global one — `es.json`
-  carries only `interface` until Spanish AutoCAD's command vocabulary is in.
+  A locale may leave `commands` out, and then the command language is the global one (Arabic's
+  case). **A command language is complete or absent**: `locales.test.ts` holds every catalog that
+  has one to English's full list of names, keyword tables, prompts, messages and feedback, with no
+  name or alias shared by two commands and no two keywords of one prompt on the same abbreviation
+  (the prompts are read off the English surface snapshot).
+- **Spanish is Spanish AutoCAD 2026's, copied, never translated** — names from the help pages
+  that share the English GUIDs, aliases from its `acad.pgp`, prompts and keyword capitals from
+  product captures (they beat the help when the two differ). What no source shows is worded in
+  Autodesk's style and marked unverified in `docs/autocad-coverage.md`. In Spanish `H` undoes and
+  `U` is UNIR.
 - **A language translates the whole `interface` but for `linetype` and `hatchPattern`**, which are
   the drawing's data names and fall back to English's. `locales.test.ts` holds Spanish to that.
 - **No global language state.** The locale is passed explicitly — `CadEngineOptions`, `CadRuntime`'s

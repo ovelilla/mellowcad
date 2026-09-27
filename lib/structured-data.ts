@@ -3,6 +3,7 @@ import { getLocale, getTranslations } from "next-intl/server"
 
 import { localeUrl } from "@/i18n/navigation"
 import { productFacts } from "@/lib/facts"
+import { pageEngineLocale } from "@/lib/plot"
 import {
   CONTACT_EMAIL,
   EDITOR_PATH,
@@ -21,7 +22,7 @@ import {
 export async function homeStructuredData(): Promise<Graph> {
   const metadata = await getTranslations("Metadata")
   const status = await getTranslations("Status")
-  const facts = productFacts()
+  const facts = productFacts(await pageEngineLocale())
   const locale = await getLocale()
   const home = localeUrl(locale, "/")
   const organization = `${SITE_URL}/#organization`
