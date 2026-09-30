@@ -48,6 +48,11 @@ export interface DocumentReader {
   pick(point: Vec2, tolerance: number): Entity | null
   /** Every pickable entity under the pick box, topmost first. */
   pickAll(point: Vec2, tolerance: number): Entity[]
+  /**
+   * {@link pickAll} with the distance measured by `distanceOf` (a view off
+   * the plan measures on screen) and `tolerance` in the same units.
+   */
+  pickAllBy(distanceOf: (entity: Entity) => number, tolerance: number): Entity[]
   /** All layers in creation order (the base layer `0` first). */
   getLayers(): Layer[]
   getLayer(id: LayerId): Layer | undefined
@@ -601,12 +606,22 @@ export class CadDocument extends Observable implements DocumentReader {
    * recently drawn one. This is the candidate list selection cycling walks.
    */
   pickAll(point: Vec2, tolerance: number): Entity[] {
+    return this.pickAllBy(
+      (entity) => distanceToEntity(entity, point, this.lookup),
+      tolerance
+    )
+  }
+
+  pickAllBy(
+    distanceOf: (entity: Entity) => number,
+    tolerance: number
+  ): Entity[] {
     const hits: { entity: Entity; distance: number; order: number }[] = []
     let order = 0
     for (const entity of this.entities.values()) {
       order += 1
       if (!this.isEntitySelectable(entity)) continue
-      const distance = distanceToEntity(entity, point, this.lookup)
+      const distance = distanceOf(entity)
       if (distance <= tolerance) hits.push({ entity, distance, order })
     }
     hits.sort(

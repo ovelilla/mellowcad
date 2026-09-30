@@ -1,5 +1,6 @@
 import { V, Vec2 } from "../../geometry/Vec2"
-import { Vec3, withZ, withZOf } from "../../geometry/Vec3"
+import { Vec3, length3, sub3, withZ, withZOf, zOf } from "../../geometry/Vec3"
+import { CameraTransform } from "../../scene/types"
 import {
   angleWithinSweep,
   circleCircleIntersection,
@@ -319,7 +320,7 @@ export const perpendicularProvider: SnapProvider = {
     document,
     entities,
     anchor,
-    worldCursor,
+    cursorOn,
   }: SnapContext): SnapCandidate[] {
     if (!anchor) return []
     const candidates: SnapCandidate[] = []
@@ -333,11 +334,11 @@ export const perpendicularProvider: SnapProvider = {
             closestPointOnInfiniteLine(entity.start, entity.end, anchor).point
           ),
           // Engage while hovering over the segment, not only near the foot.
-          pickDistance: closestPointOnSegment(
-            entity.start,
-            entity.end,
-            worldCursor
-          ).distance,
+          pickPoint: on(
+            entity,
+            closestPointOnSegment(entity.start, entity.end, cursorOn(entity))
+              .point
+          ),
           sourceIds: [entity.id],
         })
       } else if (entity.type === "circle") {
@@ -345,8 +346,10 @@ export const perpendicularProvider: SnapProvider = {
         const len = V.length(radial)
         if (len < 1e-9) continue
         const dir = V.scale(radial, 1 / len)
-        const toOutline = Math.abs(
-          V.distance(worldCursor, entity.center) - entity.radius
+        const onOutline = on(
+          entity,
+          closestPointOnCircle(entity.center, entity.radius, cursorOn(entity))
+            .point
         )
         for (const sign of [1, -1]) {
           candidates.push({
@@ -355,7 +358,7 @@ export const perpendicularProvider: SnapProvider = {
               entity,
               V.add(entity.center, V.scale(dir, entity.radius * sign))
             ),
-            pickDistance: toOutline,
+            pickPoint: onOutline,
             sourceIds: [entity.id],
           })
         }
@@ -376,15 +379,17 @@ export const tangentProvider: SnapProvider = {
     document,
     entities,
     anchor,
-    worldCursor,
+    cursorOn,
   }: SnapContext): SnapCandidate[] {
     if (!anchor) return []
     const candidates: SnapCandidate[] = []
     for (const entity of entities) {
       if (!document.isEntityVisible(entity)) continue
       if (entity.type !== "circle") continue
-      const toOutline = Math.abs(
-        V.distance(worldCursor, entity.center) - entity.radius
+      const onOutline = on(
+        entity,
+        closestPointOnCircle(entity.center, entity.radius, cursorOn(entity))
+          .point
       )
       for (const point of tangentPointsFromPoint(
         anchor,
@@ -394,7 +399,7 @@ export const tangentProvider: SnapProvider = {
         candidates.push({
           type: SnapType.Tangent,
           point: on(entity, point),
-          pickDistance: toOutline,
+          pickPoint: onOutline,
           sourceIds: [entity.id],
         })
       }
@@ -407,13 +412,12 @@ export const tangentProvider: SnapProvider = {
  * Snaps to a point on the imaginary prolongation of a line, beyond its
  * endpoints — AutoCAD's Extension. Offers the cursor's projection onto the
  * line's infinite line, but only when that projection lies *outside* the
- * segment (past an endpoint); it engages by proximity to that extension line
- * (pickDistance), so the point slides along the prolongation as the cursor
- * moves near it.
+ * segment (past an endpoint); it engages by proximity to that extension line,
+ * so the point slides along the prolongation as the cursor moves near it.
  */
 export const extensionProvider: SnapProvider = {
   type: SnapType.Extension,
-  collect({ document, entities, worldCursor }: SnapContext): SnapCandidate[] {
+  collect({ document, entities, cursorOn }: SnapContext): SnapCandidate[] {
     const candidates: SnapCandidate[] = []
     for (const entity of entities) {
       if (!document.isEntityVisible(entity)) continue
@@ -421,14 +425,13 @@ export const extensionProvider: SnapProvider = {
       const proj = closestPointOnInfiniteLine(
         entity.start,
         entity.end,
-        worldCursor
+        cursorOn(entity)
       )
       // Only the extension: past an endpoint (t<0 or t>1), never over the segment.
       if (proj.t >= 0 && proj.t <= 1) continue
       candidates.push({
         type: SnapType.Extension,
         point: on(entity, proj.point),
-        pickDistance: proj.distance,
         sourceIds: [entity.id],
       })
     }
@@ -439,9 +442,9 @@ export const extensionProvider: SnapProvider = {
 /**
  * Keeps the segment being drawn *parallel* to an existing line — AutoCAD's
  * Parallel. Projects the cursor onto the ray through the anchor parallel to
- * each line and offers that projection, engaging by proximity to the ray
- * (pickDistance) — so the point locks onto the parallel direction as the
- * rubber-band nears it. Needs the anchor, so it offers nothing without one.
+ * each line and offers that projection, engaging by proximity to the ray — so
+ * the point locks onto the parallel direction as the rubber-band nears it.
+ * Needs the anchor, so it offers nothing without one.
  */
 export const parallelProvider: SnapProvider = {
   type: SnapType.Parallel,
@@ -472,7 +475,6 @@ export const parallelProvider: SnapProvider = {
         type: SnapType.Parallel,
         // The point lies on the new segment, not on the line it parallels.
         point: withZOf(point, anchor),
-        pickDistance: V.distance(point, worldCursor),
         sourceIds: [entity.id],
       })
     }
@@ -491,29 +493,30 @@ export const nearestProvider: SnapProvider = {
   collect({
     document,
     entities,
-    worldCursor,
-    worldTolerance,
+    cursorOn,
+    isNear,
   }: SnapContext): SnapCandidate[] {
     const candidates: SnapCandidate[] = []
     for (const entity of entities) {
       if (!document.isEntityVisible(entity)) continue
+      const cursor = cursorOn(entity)
       const closest =
         entity.type === "line"
-          ? closestPointOnSegment(entity.start, entity.end, worldCursor)
+          ? closestPointOnSegment(entity.start, entity.end, cursor)
           : entity.type === "circle"
-            ? closestPointOnCircle(entity.center, entity.radius, worldCursor)
+            ? closestPointOnCircle(entity.center, entity.radius, cursor)
             : entity.type === "arc"
               ? closestPointOnArc(
                   entity.center,
                   entity.radius,
                   entity.startAngle,
                   entity.endAngle,
-                  worldCursor
+                  cursor
                 )
               : entity.type === "polyline" || entity.type === "spline"
-                ? closestOnEntity(entity, worldCursor)
+                ? closestOnEntity(entity, cursor)
                 : null
-      if (closest && closest.distance <= worldTolerance) {
+      if (closest && isNear(on(entity, closest.point))) {
         candidates.push({
           type: SnapType.Nearest,
           point: on(entity, closest.point),
@@ -539,16 +542,15 @@ export const intersectionProvider: SnapProvider = {
   collect({
     document,
     entities,
-    worldCursor,
-    worldTolerance,
+    cursorOn,
+    isNear,
     construction,
   }: SnapContext): SnapCandidate[] {
     const shapes = collectShapes(document, entities, construction, {
-      cursor: worldCursor,
-      reach: worldTolerance * 8,
+      cursorOn,
+      isNear,
     })
     const candidates: SnapCandidate[] = []
-    const near = worldTolerance * 8 // coarse pre-filter around the cursor
 
     for (let i = 0; i < shapes.length; i++) {
       for (let j = i + 1; j < shapes.length; j++) {
@@ -564,9 +566,10 @@ export const intersectionProvider: SnapProvider = {
           continue
         }
         for (const point of intersectShapes(shapes[i], shapes[j])) {
-          if (V.distance(point, worldCursor) > near) continue
           const z = meetingHeight(a, b, point)
           if (z === null) continue
+          // Coarse pre-filter around the cursor; the engine judges exactly.
+          if (!isNear(withZ(point, z), 8)) continue
           candidates.push({
             type: SnapType.Intersection,
             point: withZ(point, z),
@@ -592,15 +595,15 @@ export const apparentIntersectionProvider: SnapProvider = {
   collect({
     document,
     entities,
-    worldCursor,
-    worldTolerance,
+    isNear,
+    view,
     construction,
   }: SnapContext): SnapCandidate[] {
     const segments = collectShapes(document, entities, construction).filter(
       (s): s is SegmentShape => s.kind === "segment"
     )
+    if (view) return apparentOnScreen(segments, view, isNear)
     const candidates: SnapCandidate[] = []
-    const near = worldTolerance * 8
 
     for (let i = 0; i < segments.length; i++) {
       for (let j = i + 1; j < segments.length; j++) {
@@ -612,14 +615,15 @@ export const apparentIntersectionProvider: SnapProvider = {
         // apparent intersection is precisely the "needs extending" case.
         const withinBoth = x.t >= 0 && x.t <= 1 && x.u >= 0 && x.u <= 1
         if (withinBoth) continue
-        if (V.distance(x.point, worldCursor) <= near) {
+        // The first object's height: the two may pass at different ones.
+        const point = withZ(
+          x.point,
+          heightOn(a, x.point) ?? heightOn(b, x.point) ?? 0
+        )
+        if (isNear(point, 8)) {
           candidates.push({
             type: SnapType.ApparentIntersection,
-            // The first object's height: the two may pass at different ones.
-            point: withZ(
-              x.point,
-              heightOn(a, x.point) ?? heightOn(b, x.point) ?? 0
-            ),
+            point,
             sourceIds: [...a.sourceIds, ...b.sourceIds],
             transient: a.fromConstruction || b.fromConstruction,
           })
@@ -628,6 +632,65 @@ export const apparentIntersectionProvider: SnapProvider = {
     }
     return candidates
   },
+}
+
+/**
+ * Apparent intersection off the plan: where two edges, extended if need be,
+ * cross on the screen without meeting in space. The point is on the first of
+ * them, at its height there.
+ */
+function apparentOnScreen(
+  segments: readonly SegmentShape[],
+  view: CameraTransform,
+  isNear: SnapContext["isNear"]
+): SnapCandidate[] {
+  const ends = segments.map((segment): [Vec3, Vec3] => [
+    segmentEnd(segment, segment.a),
+    segmentEnd(segment, segment.b),
+  ])
+  const screen = ends.map(([a, b]) => [
+    view.worldToScreen(a),
+    view.worldToScreen(b),
+  ])
+  const candidates: SnapCandidate[] = []
+  for (let i = 0; i < segments.length; i++) {
+    for (let j = i + 1; j < segments.length; j++) {
+      const x = infiniteLineIntersection(
+        screen[i][0],
+        screen[i][1],
+        screen[j][0],
+        screen[j][1]
+      )
+      if (!x) continue
+      const onFirst = lerp3(ends[i][0], ends[i][1], x.t)
+      const onSecond = lerp3(ends[j][0], ends[j][1], x.u)
+      const withinBoth = x.t >= 0 && x.t <= 1 && x.u >= 0 && x.u <= 1
+      if (withinBoth && length3(sub3(onFirst, onSecond)) <= MEETING_EPSILON) {
+        continue
+      }
+      if (!isNear(onFirst, 8)) continue
+      candidates.push({
+        type: SnapType.ApparentIntersection,
+        point: onFirst,
+        sourceIds: [...segments[i].sourceIds, ...segments[j].sourceIds],
+        transient: segments[i].fromConstruction || segments[j].fromConstruction,
+      })
+    }
+  }
+  return candidates
+}
+
+/** An end of an edge in space: on its object's height there, or the rubber band's own. */
+function segmentEnd(segment: SegmentShape, point: Vec2): Vec3 {
+  return withZ(point, heightOn(segment, point) ?? zOf(point))
+}
+
+function lerp3(a: Vec3, b: Vec3, t: number): Vec3 {
+  return {
+    x: a.x + (b.x - a.x) * t,
+    y: a.y + (b.y - a.y) * t,
+    z: a.z + (b.z - a.z) * t,
+  }
 }
 
 type SegmentShape = {
@@ -697,7 +760,7 @@ function collectShapes(
   document: SnapContext["document"],
   entities: SnapContext["entities"],
   construction: readonly ConstructionGeometry[],
-  near?: { readonly cursor: Vec2; readonly reach: number }
+  near?: Pick<SnapContext, "cursorOn" | "isNear">
 ): SnapShape[] {
   const shapes: SnapShape[] = []
   for (const entity of entities) {
@@ -705,12 +768,12 @@ function collectShapes(
     if (entity.type === "spline") {
       if (!near) continue
       const points = splinePolyline(entity)
+      const cursor = near.cursorOn(entity)
       for (let i = 1; i < points.length; i++) {
         const a = points[i - 1]
         const b = points[i]
-        if (closestPointOnSegment(a, b, near.cursor).distance > near.reach) {
-          continue
-        }
+        const closest = closestPointOnSegment(a, b, cursor).point
+        if (!near.isNear(on(entity, closest), 8)) continue
         shapes.push({
           kind: "segment",
           a,

@@ -1,10 +1,12 @@
 import { Vec2, V } from "../../geometry/Vec2"
+import { withZ } from "../../geometry/Vec3"
 import {
   arcEndPoint,
   arcMidpoint,
   arcStartPoint,
   dimensionGeometry,
   entityBounds,
+  entityZAt,
   PolylineSegmentGeometry,
   polylineSegmentGeometries,
 } from "../../domain/entities"
@@ -195,7 +197,13 @@ export function selectedGrips(ctx: ToolContext): Grip[] {
         break
     }
   }
-  return grips
+  // A grip sits at its object's height there, where a view off the plan shows it.
+  return grips.map((grip) => {
+    const entity = ctx.document.get(grip.entityId)
+    return entity
+      ? { ...grip, world: withZ(grip.world, entityZAt(entity, grip.world)) }
+      : grip
+  })
 }
 
 /** The selected-object grip under `screen`, if any (nearest wins). */

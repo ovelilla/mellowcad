@@ -67,7 +67,8 @@
       "plan": "Plan view",
       "elev": "Elevation",
       "vpoint": "Viewpoint",
-      "view": "Preset views"
+      "view": "Preset views",
+      "orbit": "3D Orbit"
     },
     "description": {
       "ERASE": "Delete the selected objects",
@@ -333,7 +334,8 @@
       "VPOINT": ["VPOINT", "VP"],
       "-VPOINT": ["-VPOINT", "-VP"],
       "VIEW": ["VIEW", "V"],
-      "-VIEW": ["-VIEW", "-V"]
+      "-VIEW": ["-VIEW", "-V"],
+      "3DORBIT": ["3DORBIT", "3DO", "ORBIT"]
     },
     "keywords": {
       "LINE": { "Close": "Close", "Undo": "Undo" },
@@ -707,7 +709,8 @@
       "linesNonCoplanar": "Lines are non-coplanar.",
       "nothingJoined": "0 objects joined, {count, plural, one {# object} other {# objects}} discarded from the operation",
       "currentViewDirection": "Current view direction: VIEWDIR={x},{y},{z}",
-      "regeneratingModel": "Regenerating model."
+      "regeneratingModel": "Regenerating model.",
+      "pointingEdgeOn": "Pointing in edge-on UCS is prohibited."
     },
     "feedback": {
       "snap": {

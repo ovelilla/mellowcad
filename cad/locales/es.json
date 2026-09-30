@@ -67,7 +67,8 @@
       "plan": "Vista en planta",
       "elev": "Elevación",
       "vpoint": "Punto de vista",
-      "view": "Vistas predefinidas"
+      "view": "Vistas predefinidas",
+      "orbit": "Órbita 3D"
     },
     "description": {
       "ERASE": "Borrar los objetos seleccionados",
@@ -321,7 +322,8 @@
       "VPOINT": ["PTOVISTA"],
       "-VPOINT": ["-PTOVISTA"],
       "VIEW": ["VISTA"],
-      "-VIEW": ["-VISTA"]
+      "-VIEW": ["-VISTA"],
+      "3DORBIT": ["3DORBITA"]
     },
     "keywords": {
       "LINE": {
@@ -745,7 +747,8 @@
       "linesNonCoplanar": "Las líneas no son coplanares.",
       "nothingJoined": "0 objetos unidos, {count, plural, one {# objeto descartado} other {# objetos descartados}} de la operación",
       "currentViewDirection": "Dirección de vista actual: VIEWDIR={x},{y},{z}",
-      "regeneratingModel": "Regenerando modelo."
+      "regeneratingModel": "Regenerando modelo.",
+      "pointingEdgeOn": "No se puede señalar en un SCP visto de canto."
     },
     "feedback": {
       "snap": {

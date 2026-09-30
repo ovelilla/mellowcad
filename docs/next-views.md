@@ -186,7 +186,12 @@ línea de mira; la afinidad por plano (D3), la primitiva de texto con matriz, la
 (D4), la rejilla y el icono (D7), ZOOM Extensión en la vista. Pruebas con el harness sobre las
 primitivas; comprobación en el navegador.
 
-**F3. Trabajar en una vista 3D.** El cursor en el plano de trabajo (D5) y el mensaje de canto;
+**F3. Trabajar en una vista 3D** — hecha (`PointerInput.world` es un `Vec3` del plano de trabajo;
+`viewPick.ts` mide en pantalla por el plano de cada objeto, y de canto sobre su contorno;
+`Document.pickAllBy`; `SnapContext.cursorOn` / `isNear` / `view` sustituyen al cursor y la
+tolerancia en planta, y `pickPoint` a `pickDistance`; la ventana y la captura prueban el contorno;
+los grips van a su Z; `orbit.ts` con `OrbitTool` y Mayús + rueda en el runtime; sin botón en la barra,
+que no tiene sitio junto a Bloques). El cursor en el plano de trabajo (D5) y el mensaje de canto;
 designar, iluminar, ventana y captura, referencias y OTRACK, grips (D6); 3DORBIT y Mayús + rueda. Pruebas: una LINE dibujada
 en SE Isometric da los mismos puntos que en planta; se designa un círculo elevado.
 

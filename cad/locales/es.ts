@@ -71,7 +71,8 @@ export const es: EngineLocale = {
       "plan": "Vista en planta",
       "elev": "Elevación",
       "vpoint": "Punto de vista",
-      "view": "Vistas predefinidas"
+      "view": "Vistas predefinidas",
+      "orbit": "Órbita 3D"
     },
     "description": {
       "ERASE": "Borrar los objetos seleccionados",
@@ -670,6 +671,9 @@ export const es: EngineLocale = {
       ],
       "-VIEW": [
         "-VISTA"
+      ],
+      "3DORBIT": [
+        "3DORBITA"
       ]
     },
     "keywords": {
@@ -1403,7 +1407,8 @@ export const es: EngineLocale = {
           "z"
         ]
       ],
-      "regeneratingModel": "Regenerando modelo."
+      "regeneratingModel": "Regenerando modelo.",
+      "pointingEdgeOn": "No se puede señalar en un SCP visto de canto."
     },
     "feedback": {
       "snap": {

@@ -107,6 +107,7 @@ export const COMMAND_FILING: Readonly<Record<string, Filing>> = {
   "-VPOINT": { group: "inquiry" },
   VIEW: { group: "inquiry" },
   "-VIEW": { group: "inquiry" },
+  "3DORBIT": { group: "inquiry" },
 
   QSAVE: { group: "files" },
   OPEN: { group: "files" },

@@ -17,8 +17,13 @@ import type { FeedbackId, MessageId } from "../EngineText"
 export interface PointerInput {
   /** Cursor position in screen (CSS-pixel) coordinates. */
   readonly screen: Vec2
-  /** Cursor position in raw world coordinates (no snapping applied). */
-  readonly world: Vec2
+  /**
+   * The cursor on the work plane (ELEVATION above the UCS's XY plane), with no
+   * snapping applied: what picking and box selection read. Off the plan it is
+   * where the line of sight meets that plane; seen edge-on, the point of the
+   * plane facing the viewer drawn there. Either way it maps back to `screen`.
+   */
+  readonly world: Vec3
   readonly snap: SnapResult | null
   /**
    * The active object-snap-tracking result, if a guide is engaged. Present only

@@ -1,11 +1,22 @@
 import { Observable } from "../../shared/Observable"
 import { Vec2, V } from "../../geometry/Vec2"
+import { Vec3, length3, planar, sub3 } from "../../geometry/Vec3"
+import { closestPointOnInfiniteLine } from "../../geometry/primitives"
 import { DocumentReader } from "../../domain/Document"
-import { Entity, EntityId, insertFlatGeometry } from "../../domain/entities"
+import {
+  Entity,
+  EntityId,
+  entityElevation,
+  insertFlatGeometry,
+  lineEndZ,
+  lineStartZ,
+} from "../../domain/entities"
 import { Viewport } from "../Viewport"
+import { cursorInPlane } from "../viewPick"
 import { defaultSnapProviders } from "./providers"
 import {
   ConstructionGeometry,
+  SnapContext,
   SnapProvider,
   SnapResult,
   SnapType,
@@ -57,7 +68,7 @@ export class SnapEngine extends Observable {
   private active = true
 
   /** World point the cursor is currently stuck to (drives the hysteresis). */
-  private stickyPoint: Vec2 | null = null
+  private stickyPoint: Vec3 | null = null
 
   /**
    * A one-shot object-snap override for the *next* point — AutoCAD's
@@ -159,19 +170,14 @@ export class SnapEngine extends Observable {
       return null
     }
 
-    const worldCursor = viewport.screenToWorld(screenCursor)
-    // Collect candidates within the *release* radius so an already-stuck point
-    // survives small drifts beyond the (smaller) capture radius.
-    const worldTolerance = viewport.screenToWorldDistance(this.releaseTolerance)
-    const context = {
+    const context = this.context(
+      screenCursor,
       document,
-      entities: snapEntities(document),
-      worldCursor,
-      worldTolerance,
+      viewport,
       construction,
       anchor,
-      parallelSourceIds,
-    }
+      parallelSourceIds
+    )
 
     let captured: SnapResult | null = null
     let capturedPriority = Number.POSITIVE_INFINITY
@@ -193,10 +199,10 @@ export class SnapEngine extends Observable {
         // to the source entity (perpendicular/tangent) rather than to its
         // point, so it engages while hovering over the object, not only near
         // the foot. The marker still sits on `point`.
-        const screenDistance =
-          candidate.pickDistance !== undefined
-            ? viewport.worldToScreenDistance(candidate.pickDistance)
-            : V.distance(viewport.worldToScreen(candidate.point), screenCursor)
+        const screenDistance = V.distance(
+          viewport.worldToScreen(candidate.pickPoint ?? candidate.point),
+          screenCursor
+        )
 
         // Fresh capture: a new point grabbed inside the small aperture.
         if (screenDistance <= this.pixelTolerance) {
@@ -216,7 +222,7 @@ export class SnapEngine extends Observable {
         if (
           this.stickyPoint !== null &&
           screenDistance <= this.releaseTolerance &&
-          V.distance(candidate.point, this.stickyPoint) < STICKY_EPSILON
+          length3(sub3(candidate.point, this.stickyPoint)) < STICKY_EPSILON
         ) {
           if (
             held === null ||
@@ -236,5 +242,77 @@ export class SnapEngine extends Observable {
     const best = captured ?? held
     this.stickyPoint = best ? best.point : null
     return best
+  }
+
+  /**
+   * What the providers see of the cursor. In a plan view that is one world
+   * point and a tolerance in world units, as it always was. Off the plan the
+   * cursor is a line of sight: each object is asked about the point of its own
+   * plane under the cursor, and nearness is measured on screen. Candidates are
+   * gathered within the *release* radius, so a point already stuck to survives
+   * small drifts beyond the (smaller) capture radius.
+   */
+  private context(
+    screenCursor: Vec2,
+    document: DocumentReader,
+    viewport: Viewport,
+    construction: readonly ConstructionGeometry[],
+    anchor: Vec2 | null,
+    parallelSourceIds: ReadonlySet<EntityId>
+  ): SnapContext {
+    const entities = snapEntities(document)
+    const shared = {
+      document,
+      entities,
+      construction,
+      anchor,
+      parallelSourceIds,
+    }
+    if (viewport.isPlan) {
+      const worldCursor = viewport.screenToWorld(screenCursor)
+      const worldTolerance = viewport.screenToWorldDistance(
+        this.releaseTolerance
+      )
+      return {
+        ...shared,
+        worldCursor,
+        cursorOn: () => worldCursor,
+        isNear: (point, reach = 1) =>
+          V.distance(point, worldCursor) <= worldTolerance * reach,
+        view: null,
+      }
+    }
+    const settings = document.getSettings()
+    const workZ = settings.ucs.origin.z + settings.elevation
+    const worldCursor =
+      viewport.screenToPlane(screenCursor, workZ) ??
+      planar(viewport.screenToWorld(screenCursor))
+    const planes = new Map<number, Vec2>()
+    const onPlane = (z: number) => {
+      let cursor = planes.get(z)
+      if (!cursor) {
+        cursor = cursorInPlane(viewport, z, screenCursor)
+        planes.set(z, cursor)
+      }
+      return cursor
+    }
+    return {
+      ...shared,
+      worldCursor,
+      cursorOn: (entity) => {
+        if (entity.type !== "line") return onPlane(entityElevation(entity))
+        // A line, level or sloping, is read along its own image on screen.
+        const { t } = closestPointOnInfiniteLine(
+          viewport.worldToScreen({ ...entity.start, z: lineStartZ(entity) }),
+          viewport.worldToScreen({ ...entity.end, z: lineEndZ(entity) }),
+          screenCursor
+        )
+        return V.lerp(entity.start, entity.end, Number.isFinite(t) ? t : 0)
+      },
+      isNear: (point, reach = 1) =>
+        V.distance(viewport.worldToScreen(point), screenCursor) <=
+        this.releaseTolerance * reach,
+      view: viewport,
+    }
   }
 }

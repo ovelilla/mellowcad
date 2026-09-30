@@ -35,6 +35,8 @@ import {
 import { isBlankDrawing } from "../serialization/drawingSummary"
 import { Scene } from "../scene/types"
 import { Viewport, entitiesViewBounds } from "./Viewport"
+import { screenDistanceToEntity } from "./viewPick"
+import { orbitTarget, orbitView } from "./orbit"
 import { Selection } from "./Selection"
 import { SnapMode, SnapModeType } from "./SnapMode"
 import { SelectionCycling } from "./SelectionCycling"
@@ -230,6 +232,8 @@ export class CadRuntime extends Observable {
 
   private panning = false
   private lastPanScreen: Vec2 | null = null
+  /** A transparent orbit under way (Shift + the wheel button held). */
+  private orbiting: { last: Vec2; target: Vec3 } | null = null
   /** When the last wheel event arrived, to group a scroll burst as one view. */
   private lastWheelAt = 0
 
@@ -931,10 +935,56 @@ export class CadRuntime extends Observable {
     const worldTolerance =
       tolerance ??
       this.viewport.screenToWorldDistance(this.snapping.pixelTolerance)
-    if (!this.cycling.isEnabled()) {
-      return this.document.pick(world, worldTolerance)
-    }
-    return this.cycling.choose(this.document.pickAll(world, worldTolerance))
+    const hits = this.pickAllAt(world, worldTolerance)
+    return this.cycling.isEnabled()
+      ? this.cycling.choose(hits)
+      : (hits[0] ?? null)
+  }
+
+  /**
+   * Every object under the pick box at `world` (a point of the work plane),
+   * topmost first. Off the plan the box is on the screen, where the objects
+   * are drawn at their own heights.
+   */
+  private pickAllAt(world: Vec2 | Vec3, worldTolerance: number): Entity[] {
+    if (this.viewport.isPlan)
+      return this.document.pickAll(world, worldTolerance)
+    const screen = this.viewport.worldToScreen(
+      "z" in world ? world : withZ(world, this.workPlaneZ())
+    )
+    const blocks = this.document.blockLookup()
+    return this.document.pickAllBy(
+      (entity) => screenDistanceToEntity(this.viewport, entity, screen, blocks),
+      this.viewport.worldToScreenDistance(worldTolerance)
+    )
+  }
+
+  /** The Z of the plane a point without one lies on: ELEVATION above the UCS's XY plane. */
+  private workPlaneZ(): number {
+    const settings = this.document.getSettings()
+    return settings.ucs.origin.z + settings.elevation
+  }
+
+  /**
+   * The point of the work plane under a screen point. Off the plan it is where
+   * the line of sight meets the plane; seen edge-on there is none, and the
+   * point of the plane facing the viewer stands in, for picking.
+   */
+  private screenToWork(screen: Vec2): Vec3 {
+    const z = this.workPlaneZ()
+    const onPlane = this.viewport.screenToPlane(screen, z)
+    if (onPlane) return withZ(onPlane, z)
+    return this.viewport.screenToFacing(screen)
+  }
+
+  /** True when the view sees the work plane edge-on, so a point cannot be pointed on it. */
+  private workPlaneEdgeOn(): boolean {
+    return (
+      this.viewport.screenToPlane(
+        this.viewportCenterScreen(),
+        this.workPlaneZ()
+      ) === null
+    )
   }
 
   /**
@@ -951,7 +1001,7 @@ export class CadRuntime extends Observable {
     const tolerance = this.viewport.screenToWorldDistance(
       this.snapping.pixelTolerance
     )
-    this.cycling.observe(this.document.pickAll(this.cursorWorld, tolerance))
+    this.cycling.observe(this.pickAllAt(this.cursorWorld, tolerance))
   }
 
   /** Feeds the cursor's last known position through the active tool again. */
@@ -1574,6 +1624,23 @@ export class CadRuntime extends Observable {
       return
     }
 
+    // Shift and the wheel button held orbit the view from inside any command,
+    // AutoCAD's transparent 3DORBIT; the wheel button alone pans.
+    if (e.button === 1 && e.shiftKey) {
+      this.viewport.pushHistory()
+      this.orbiting = {
+        last: e.screen,
+        target: orbitTarget(
+          this.viewport,
+          this.document.getEntities(),
+          this.document.blockLookup()
+        ),
+      }
+      this.crosshairScreen = null
+      this.host.setCursor("move")
+      return
+    }
+
     // Middle or right button starts a pan.
     if (e.button === 1 || e.button === 2) {
       this.panning = true
@@ -1619,6 +1686,19 @@ export class CadRuntime extends Observable {
     // FROM and let the click through unchanged.
     this.endFrom()
 
+    // Seen edge-on the work plane has no point under the cursor: AutoCAD
+    // refuses the pick unless an object snap supplies the point.
+    if (
+      (this.activeTool.wantsSnap?.() ?? true) &&
+      this.currentSnap === null &&
+      this.workPlaneEdgeOn()
+    ) {
+      this.commandLine.write("error", this.text.message("pointingEdgeOn"))
+      this.invalidateState()
+      this.host.requestRender()
+      return
+    }
+
     this.activeTool.onPointerDown?.(this.buildPointerInput(e), this.toolContext)
     // A one-shot snap override applies to exactly this pick; consume it now that
     // the point has been placed so the next point uses the running snaps again.
@@ -1634,6 +1714,18 @@ export class CadRuntime extends Observable {
   }
 
   pointerMove(e: PointerEventData): void {
+    if (this.orbiting) {
+      orbitView(
+        this.viewport,
+        {
+          x: e.screen.x - this.orbiting.last.x,
+          y: e.screen.y - this.orbiting.last.y,
+        },
+        this.orbiting.target
+      )
+      this.orbiting = { ...this.orbiting, last: e.screen }
+      return
+    }
     if (this.panning && this.lastPanScreen) {
       const delta = {
         x: e.screen.x - this.lastPanScreen.x,
@@ -1670,6 +1762,11 @@ export class CadRuntime extends Observable {
   }
 
   pointerUp(e: PointerEventData): void {
+    if (this.orbiting && e.button === 1) {
+      this.orbiting = null
+      this.activeTool.onActivate?.(this.toolContext) // restore tool cursor
+      return
+    }
     if (this.panning && (e.button === 1 || e.button === 2)) {
       this.panning = false
       this.lastPanScreen = null
@@ -1709,7 +1806,7 @@ export class CadRuntime extends Observable {
    */
   doubleClick(e: PointerEventData): boolean {
     if (this.activeTool.id !== "select") return false
-    const hit = this.pickEntity(this.viewport.screenToWorld(e.screen))
+    const hit = this.pickEntity(this.screenToWork(e.screen))
     if (hit?.type === "insert" && (hit.attributes?.length ?? 0) > 0) {
       this.setActiveTool(this.attEdit.id)
       this.attEdit.beginEdit(hit, this.toolContext)
@@ -2008,7 +2105,7 @@ export class CadRuntime extends Observable {
   }
 
   private buildPointerInput(e: PointerEventData): PointerInput {
-    const world = this.viewport.screenToWorld(e.screen)
+    const world = this.screenToWork(e.screen)
     const snap = this.currentSnap
     const anchor = this.activeTool.getConstraintAnchor?.() ?? null
     const resolved = this.resolver.resolve(
@@ -2040,7 +2137,7 @@ export class CadRuntime extends Observable {
   }
 
   private updateSnap(screen: Vec2): void {
-    this.cursorWorld = this.viewport.screenToWorld(screen)
+    this.cursorWorld = this.screenToWork(screen)
     this.refreshCycling()
 
     // Object snaps and snap-tracking only run while the active tool is actually
@@ -2167,12 +2264,19 @@ export class CadRuntime extends Observable {
 
   /** The nearest visible line within `worldTolerance` of the cursor, or null. */
   private hoveredLineId(cursor: Vec2, worldTolerance: number): EntityId | null {
+    const screen = this.viewport.isPlan
+      ? null
+      : this.viewport.worldToScreen(withZ(cursor, this.workPlaneZ()))
     let bestId: EntityId | null = null
-    let bestDist = worldTolerance
+    let bestDist = screen
+      ? this.viewport.worldToScreenDistance(worldTolerance)
+      : worldTolerance
     for (const entity of this.document.getEntities()) {
       if (entity.type !== "line") continue
       if (!this.document.isEntityVisible(entity)) continue
-      const d = closestPointOnSegment(entity.start, entity.end, cursor).distance
+      const d = screen
+        ? screenDistanceToEntity(this.viewport, entity, screen)
+        : closestPointOnSegment(entity.start, entity.end, cursor).distance
       if (d <= bestDist) {
         bestDist = d
         bestId = entity.id

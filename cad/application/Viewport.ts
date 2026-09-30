@@ -133,6 +133,26 @@ export class Viewport extends Observable {
     }
   }
 
+  /** The point drawn at screen `p` on the plane through the origin facing the viewer. */
+  screenToFacing(p: Vec2): Vec3 {
+    const v = this.viewToWorld(this.screenToView(p))
+    return { x: v.x, y: v.y, z: zOf(v) }
+  }
+
+  /**
+   * The point of the horizontal plane at `z` drawn at screen `p`: where the
+   * line of sight through it meets the plane. Null when the view sees that
+   * plane edge-on, as it does from the front.
+   */
+  screenToPlane(p: Vec2, z: number): Vec2 | null {
+    if (this.isPlan) return this.screenToWorld(p)
+    const d = this.directionValue
+    if (Math.abs(d.z) < EDGE_ON_SINE) return null
+    const onView = this.viewToWorld(this.screenToView(p))
+    const t = (z - zOf(onView)) / d.z
+    return { x: onView.x + t * d.x, y: onView.y + t * d.y }
+  }
+
   /** A world point in the view frame: its `right` and `up` components. */
   worldToView(p: Vec2 | Vec3): Vec2 {
     if (this.isPlan) {
@@ -377,6 +397,9 @@ export function entitiesViewBounds(
 function isWorldZ(v: Vec3): boolean {
   return v.x === 0 && v.y === 0 && v.z > 0
 }
+
+/** Below this sine between the line of sight and a plane, the plane is seen edge-on. */
+const EDGE_ON_SINE = 1e-6
 
 /** Unit `direction` and a unit `right` square to it, or `null` when they are parallel. */
 function viewAxes(

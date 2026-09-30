@@ -2,6 +2,7 @@ import { Vec2 } from "../../geometry/Vec2"
 import { Vec3 } from "../../geometry/Vec3"
 import { DocumentReader } from "../../domain/Document"
 import { Entity, EntityId } from "../../domain/entities"
+import { CameraTransform } from "../../scene/types"
 
 /**
  * The kinds of snap the engine understands. Only a subset is implemented today,
@@ -51,13 +52,13 @@ export interface SnapCandidate {
   /** Entities that produced this snap (for highlighting / debugging). */
   readonly sourceIds?: readonly EntityId[]
   /**
-   * World distance the engine should use to decide whether this snap engages,
-   * instead of the distance from the cursor to {@link point}. Perpendicular and
-   * tangent set it to the distance from the cursor to the *source entity*, so
-   * they engage while hovering anywhere over that line/circle (the snapped
-   * point being the foot/tangent, often far from the cursor) — matching AutoCAD.
+   * The point on the source object nearest the cursor, when the snap engages
+   * by proximity to the object rather than to {@link point}: Perpendicular and
+   * Tangent engage while hovering anywhere over the line or circle (the
+   * snapped point being the foot or the tangent, often far from the cursor),
+   * matching AutoCAD. The engine measures the screen distance to it.
    */
-  readonly pickDistance?: number
+  readonly pickPoint?: Vec3
   /**
    * True when the snap is derived from provisional, moving geometry — the
    * rubber-band being drawn. Such points still attract the cursor, but must not
@@ -86,10 +87,12 @@ export interface SnapResult extends SnapCandidate {
 }
 
 /**
- * Context passed to every provider. Providers get the raw world cursor plus a
- * `worldTolerance` (the screen pixel tolerance already converted to world units
- * at the current zoom) so they can do fast distance comparisons in world space.
- * The document is read-only: providers observe, they never mutate.
+ * Context passed to every provider. A provider asks its 2D questions in each
+ * object's own plane, with the cursor that plane sees ({@link cursorOn}), and
+ * lets {@link isNear} judge a point: in a plan view both are the plain world
+ * cursor and tolerance, off the plan the cursor is the line of sight and
+ * nearness is measured on screen. The document is read-only: providers
+ * observe, they never mutate.
  */
 export interface SnapContext {
   readonly document: DocumentReader
@@ -100,8 +103,14 @@ export interface SnapContext {
    * Visibility is still each provider's own check, as the layers are real.
    */
   readonly entities: readonly Entity[]
+  /** The cursor on the work plane (ELEVATION above the UCS's XY plane). */
   readonly worldCursor: Vec2
-  readonly worldTolerance: number
+  /** The cursor as a point in plan of `entity`'s plane (a line's: along it on screen). */
+  cursorOn(entity: Entity): Vec2
+  /** Whether `point` is within the aperture of the cursor, `reach` times widened. */
+  isNear(point: Vec3, reach?: number): boolean
+  /** The view off the plan, where an apparent intersection is one on screen; null in plan. */
+  readonly view: CameraTransform | null
   /**
    * The point the current operation is measuring *from* — the line tool's
    * confirmed start, or a grip's fixed end. Snaps that are relative to it

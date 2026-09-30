@@ -231,7 +231,7 @@ export interface EngineState {
    * elevation plane (AutoCAD's COORDS shows X, Y and Z).
    */
   readonly cursorUcs: Vec3 | null
-  readonly snap: { type: SnapType; point: Vec2 } | null
+  readonly snap: { type: SnapType; point: Vec3 } | null
   readonly snapActive: boolean
   readonly snapEnabled: Readonly<Record<SnapType, boolean>>
   /**

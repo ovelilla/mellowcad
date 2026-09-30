@@ -280,6 +280,7 @@ function isFlyout(item: RailItem): item is ToolFlyoutFamily {
 const RAIL_EXCLUDED = new Set([
   "zoom",
   "pan",
+  "orbit",
   "copyclip",
   "cutclip",
   "copybase",

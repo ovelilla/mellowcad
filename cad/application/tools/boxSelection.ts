@@ -6,6 +6,7 @@ import {
   entityCrossesRect,
 } from "../../domain/entities"
 import { Viewport, entityInView } from "../Viewport"
+import { entityScreenOutline } from "../viewOutline"
 import { ScenePrimitive } from "../../scene/types"
 import { THEME } from "../../scene/theme"
 
@@ -27,6 +28,8 @@ export function boxSelect(
   current: Vec2,
   viewport: Viewport
 ): EntityId[] {
+  if (!viewport.isPlan)
+    return boxSelectOnScreen(document, start, current, viewport)
   const a = viewport.worldToView(start)
   const b = viewport.worldToView(current)
   const min = { x: Math.min(a.x, b.x), y: Math.min(a.y, b.y) }
@@ -47,6 +50,75 @@ export function boxSelect(
     if (matches) hits.push(entity.id)
   }
   return hits
+}
+
+/**
+ * The box off the plan, where an object is drawn at its own heights: its
+ * outline on screen (what the scene draws) is tested against the rectangle.
+ * The corners are the pointer's points of the work plane, which map back to
+ * where the box was dragged on screen.
+ */
+function boxSelectOnScreen(
+  document: DocumentReader,
+  start: Vec2,
+  current: Vec2,
+  viewport: Viewport
+): EntityId[] {
+  const a = viewport.worldToScreen(start)
+  const b = viewport.worldToScreen(current)
+  const min = { x: Math.min(a.x, b.x), y: Math.min(a.y, b.y) }
+  const max = { x: Math.max(a.x, b.x), y: Math.max(a.y, b.y) }
+  const crossing = b.x < a.x
+  const blocks = document.blockLookup()
+  const inside = (p: Vec2) =>
+    p.x >= min.x && p.x <= max.x && p.y >= min.y && p.y <= max.y
+
+  const hits: EntityId[] = []
+  for (const entity of document.getEntities()) {
+    if (!document.isEntitySelectable(entity)) continue
+    const outline = entityScreenOutline(viewport, entity, blocks)
+    const points = outline.flat()
+    if (points.length === 0) continue
+    const matches = crossing
+      ? points.some(inside) ||
+        outline.some((line) =>
+          line.some(
+            (p, i) => i > 0 && segmentMeetsRect(line[i - 1], p, min, max)
+          )
+        )
+      : points.every(inside)
+    if (matches) hits.push(entity.id)
+  }
+  return hits
+}
+
+/** Whether segment `a`–`b` crosses the rectangle (Liang–Barsky). */
+function segmentMeetsRect(a: Vec2, b: Vec2, min: Vec2, max: Vec2): boolean {
+  const dx = b.x - a.x
+  const dy = b.y - a.y
+  let t0 = 0
+  let t1 = 1
+  const edges: [number, number][] = [
+    [-dx, a.x - min.x],
+    [dx, max.x - a.x],
+    [-dy, a.y - min.y],
+    [dy, max.y - a.y],
+  ]
+  for (const [p, q] of edges) {
+    if (p === 0) {
+      if (q < 0) return false
+      continue
+    }
+    const r = q / p
+    if (p < 0) {
+      if (r > t1) return false
+      if (r > t0) t0 = r
+    } else {
+      if (r < t0) return false
+      if (r < t1) t1 = r
+    }
+  }
+  return t0 <= t1
 }
 
 /** The in-progress selection rectangle: solid blue window / dashed green crossing. */

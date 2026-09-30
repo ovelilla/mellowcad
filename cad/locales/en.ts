@@ -71,7 +71,8 @@ export const en: EngineCatalog = {
       "plan": "Plan view",
       "elev": "Elevation",
       "vpoint": "Viewpoint",
-      "view": "Preset views"
+      "view": "Preset views",
+      "orbit": "3D Orbit"
     },
     "description": {
       "ERASE": "Delete the selected objects",
@@ -688,6 +689,11 @@ export const en: EngineCatalog = {
       "-VIEW": [
         "-VIEW",
         "-V"
+      ],
+      "3DORBIT": [
+        "3DORBIT",
+        "3DO",
+        "ORBIT"
       ]
     },
     "prompts": {
@@ -1159,7 +1165,8 @@ export const en: EngineCatalog = {
           "z"
         ]
       ],
-      "regeneratingModel": "Regenerating model."
+      "regeneratingModel": "Regenerating model.",
+      "pointingEdgeOn": "Pointing in edge-on UCS is prohibited."
     },
     "feedback": {
       "snap": {

@@ -1,5 +1,5 @@
 import { Vec2, V } from "../geometry/Vec2"
-import { zOf } from "../geometry/Vec3"
+import { withZOf, zOf } from "../geometry/Vec3"
 import {
   AttributeDisplay,
   BlockLookup,
@@ -721,7 +721,7 @@ function linePrimitives(
  * The edges joining an extruded object's two faces, in screen coordinates: one
  * at each end of an arc and at each vertex of a polyline. A circle has none.
  */
-function extrusionEdges(
+export function extrusionEdges(
   camera: CameraTransform,
   entity: ThickEntity,
   elevation: number,
@@ -1303,10 +1303,16 @@ function pushTracking(
       out.push({
         kind: "segment",
         a: camera.worldToScreen(
-          V.sub(guide.point.origin, V.scale(guide.dir, big))
+          withZOf(
+            V.sub(guide.point.origin, V.scale(guide.dir, big)),
+            guide.point.origin
+          )
         ),
         b: camera.worldToScreen(
-          V.add(guide.point.origin, V.scale(guide.dir, big))
+          withZOf(
+            V.add(guide.point.origin, V.scale(guide.dir, big)),
+            guide.point.origin
+          )
         ),
         stroke: guideStroke,
       })
@@ -1396,8 +1402,12 @@ function pushPolarGuide(
   const big = 1e6
   out.push({
     kind: "segment",
-    a: camera.worldToScreen(V.sub(polar.origin, V.scale(dir, big))),
-    b: camera.worldToScreen(V.add(polar.origin, V.scale(dir, big))),
+    a: camera.worldToScreen(
+      withZOf(V.sub(polar.origin, V.scale(dir, big)), polar.origin)
+    ),
+    b: camera.worldToScreen(
+      withZOf(V.add(polar.origin, V.scale(dir, big)), polar.origin)
+    ),
     stroke: { color: THEME.polar, width: 1, dash: [6, 6] },
   })
   const at = camera.worldToScreen(polar.point)
@@ -1734,8 +1744,12 @@ function pushAlignmentGuide(
   const big = 1e6
   out.push({
     kind: "segment",
-    a: camera.worldToScreen(V.sub(snap.point, V.scale(dir, big))),
-    b: camera.worldToScreen(V.add(snap.point, V.scale(dir, big))),
+    a: camera.worldToScreen(
+      withZOf(V.sub(snap.point, V.scale(dir, big)), snap.point)
+    ),
+    b: camera.worldToScreen(
+      withZOf(V.add(snap.point, V.scale(dir, big)), snap.point)
+    ),
     stroke: { color: THEME.tracking, width: 1, dash: [7, 5] },
   })
 }

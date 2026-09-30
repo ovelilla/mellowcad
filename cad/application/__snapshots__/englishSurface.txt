@@ -64,6 +64,7 @@ PLAN [] "Plan view"
 ELEV [] "Elevation"
 VPOINT ["VP"] "Viewpoint"
 VIEW ["V"] "Preset views"
+3DORBIT ["3DO","ORBIT"] "3D Orbit"
 ERASE ["E"] "Delete the selected objects"
 UNDO ["U"] "Undo the last action"
 -MTEXT [] "Multiline text"
@@ -149,6 +150,7 @@ plan "Plan view" PLAN
 elev "Elevation" ELEV
 vpoint "Viewpoint" VP
 view "Preset views" V
+orbit "3D Orbit" 3DO
 
 ## neutral prompt
 > start

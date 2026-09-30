@@ -13,6 +13,10 @@ import type {
 import type { BlockDefinition, Entity, EntityId } from "../domain/entities"
 import type { Scene } from "../scene/types"
 import type { Vec2 } from "../geometry/Vec2"
+import type { Vec3 } from "../geometry/Vec3"
+
+/** A point to point at: one with a Z is drawn at that height in a view off the plan. */
+type WorldPoint = Vec2 | Vec3
 
 /**
  * Drives a headless {@link CadRuntime} exactly as a user would — move, click,
@@ -128,7 +132,7 @@ export class CadDriver {
   }
 
   /** World → screen through the live viewport (survives zoom/pan). */
-  toScreen(world: Vec2): Vec2 {
+  toScreen(world: WorldPoint): Vec2 {
     return this.runtime.viewport.worldToScreen(world)
   }
 
@@ -136,13 +140,13 @@ export class CadDriver {
     return this.runtime.viewport.screenToWorld(screen)
   }
 
-  moveTo(world: Vec2, modifiers: PointerModifiers = {}): this {
+  moveTo(world: WorldPoint, modifiers: PointerModifiers = {}): this {
     this.runtime.pointerMove(this.pointerEvent(world, modifiers))
     return this
   }
 
   /** A full press-and-release at one point: the ordinary "pick". */
-  click(world: Vec2, modifiers: PointerModifiers = {}): this {
+  click(world: WorldPoint, modifiers: PointerModifiers = {}): this {
     const event = this.pointerEvent(world, modifiers)
     this.runtime.pointerMove(event)
     this.runtime.pointerDown(event)
@@ -151,14 +155,14 @@ export class CadDriver {
   }
 
   /** The press half of a gesture, left held until {@link mouseUp}. */
-  mouseDown(world: Vec2, modifiers: PointerModifiers = {}): this {
+  mouseDown(world: WorldPoint, modifiers: PointerModifiers = {}): this {
     const event = this.pointerEvent(world, modifiers)
     this.runtime.pointerMove(event)
     this.runtime.pointerDown(event)
     return this
   }
 
-  mouseUp(world: Vec2, modifiers: PointerModifiers = {}): this {
+  mouseUp(world: WorldPoint, modifiers: PointerModifiers = {}): this {
     const event = this.pointerEvent(world, modifiers)
     this.runtime.pointerMove(event)
     this.runtime.pointerUp(event)
@@ -169,7 +173,7 @@ export class CadDriver {
    * Two picks followed by the double-click the browser then fires — the order
    * the real adapter delivers, so the tool sees the selection the clicks made.
    */
-  doubleClick(world: Vec2, modifiers: PointerModifiers = {}): this {
+  doubleClick(world: WorldPoint, modifiers: PointerModifiers = {}): this {
     this.click(world, modifiers)
     this.click(world, modifiers)
     this.runtime.doubleClick(this.pointerEvent(world, modifiers))
@@ -181,24 +185,33 @@ export class CadDriver {
    * only start dragging past a pixel threshold (box selection, grips) see the
    * motion they expect.
    */
-  drag(from: Vec2, to: Vec2, modifiers: PointerModifiers = {}): this {
+  drag(
+    from: WorldPoint,
+    to: WorldPoint,
+    modifiers: PointerModifiers = {}
+  ): this {
     const start = this.pointerEvent(from, modifiers)
     this.runtime.pointerMove(start)
     this.runtime.pointerDown(start)
-    const midpoint = { x: (from.x + to.x) / 2, y: (from.y + to.y) / 2 }
-    this.runtime.pointerMove(this.pointerEvent(midpoint, modifiers))
     const end = this.pointerEvent(to, modifiers)
+    this.runtime.pointerMove({
+      ...start,
+      screen: {
+        x: (start.screen.x + end.screen.x) / 2,
+        y: (start.screen.y + end.screen.y) / 2,
+      },
+    })
     this.runtime.pointerMove(end)
     this.runtime.pointerUp(end)
     return this
   }
 
-  wheel(world: Vec2, deltaY: number): this {
+  wheel(world: WorldPoint, deltaY: number): this {
     this.runtime.wheel({ screen: this.toScreen(world), deltaY })
     return this
   }
 
-  private pointerEvent(world: Vec2, modifiers: PointerModifiers) {
+  private pointerEvent(world: WorldPoint, modifiers: PointerModifiers) {
     return {
       screen: this.toScreen(world),
       button: modifiers.button ?? 0,

@@ -48,11 +48,18 @@ export function planeCamera(
       y: origin.y + b * p.x + d * p.y,
     }),
     screenToWorld: (p) => {
-      if (Math.abs(det) < 1e-12 * stretch * stretch) {
-        return camera.screenToWorld(p)
-      }
       const x = p.x - origin.x
       const y = p.y - origin.y
+      if (Math.abs(det) < 1e-12 * stretch * stretch) {
+        // Seen edge-on the map has rank one: its pseudo-inverse gives the
+        // plane's point nearest the origin among those drawn at `p`.
+        const frobenius = a * a + b * b + c * c + d * d
+        if (!(frobenius > 0)) return { x: 0, y: 0 }
+        return {
+          x: (a * x + b * y) / frobenius,
+          y: (c * x + d * y) / frobenius,
+        }
+      }
       return { x: (d * x - c * y) / det, y: (a * y - b * x) / det }
     },
     worldToScreenDistance: (distance) => distance * stretch,
