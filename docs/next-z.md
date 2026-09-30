@@ -176,7 +176,8 @@ alimenta el `@` de otro comando. Las dos cosas quedan anotadas.
 **F1. Modelo y fichero** — hecha (versión 22; MATCHPROP copia la altura de objeto).
 
 **F2. Canal de puntos** — hecha (el `origin.z` del UCS se lee y escribe sin cambiar la versión 22;
-las cotas y HATCH siguen a Z 0 hasta F5, donde ya estaban; el helper de D5 es `onPlaneOf`).
+las cotas ya van en el plano de su primer origen — el del objeto si se designa, el de la base en
+DIMBASELINE/DIMCONTINUE —; HATCH sigue a Z 0 hasta F5; el helper de D5 es `onPlaneOf`).
 
 - `ResolvedPoint`/`PointerInput` llevan la Z (D4).
 - Las referencias a objeto devuelven la Z del objeto (`snapping/providers.ts`); la Intersection
@@ -227,7 +228,7 @@ no aparece nada, se deja la opción elegida y se marca «unverified» en la cobe
 | V4  | Elevación de una cota entre puntos a distinta Z                                               | Z del primer origen                                                 | F5   |
 | V5  | HATCH con contorno de objetos a distinta Z                                                    | Contorno solo con objetos a la Z del primero hallado; hatch a esa Z | F5   |
 | V6  | Mensajes de FILLET/CHAMFER/JOIN no coplanares                                                 | El de AutoCAD; si no aparece, el más cercano documentado            | F5   |
-| V7  | Z de Apparent Intersection y de un punto de OTRACK                                            | La del primer objeto / la del punto adquirido                       | F2   |
+| V7  | Z de Apparent Intersection y de un punto de OTRACK                                            | La del primer objeto / la del punto adquirido — **unverified**: la ayuda (50383F73, F556F13A) solo dice que la referencia toma la Z del objeto y que Apparent Intersection es la de dos objetos que no se cortan en 3D; los foros no dicen de cuál | F2   |
 | V8  | SCALE escala la altura de objeto                                                              | Sí (escala 3D uniforme)                                             | F1   |
 | V9  | RECTANG Elevation: ¿sustituye la Z del punto?, ¿línea `Current rectangle modes`?, ¿se guarda? | Sustituye; se muestra la línea si ≠ 0; por sesión                   | F3   |
 

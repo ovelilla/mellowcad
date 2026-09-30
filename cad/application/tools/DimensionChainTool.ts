@@ -10,6 +10,8 @@ import {
   DimensionEntity,
   dimensionAxisAngle,
   DimensionKind,
+  entityElevation,
+  withElevation,
 } from "../../domain/entities"
 import { AddEntityCommand } from "../commands/entityCommands"
 import { DynamicInputSession } from "../input/DynamicInput"
@@ -180,12 +182,15 @@ export class DimensionChainTool implements Tool {
     id?: string
   ): DimensionEntity | null {
     if (V.distance(chain.origin, point) < 1e-9) return null
-    return createDimension(chain.kind, chain.origin, point, chain.linePoint, {
-      rotation: chain.rotation,
-      styleId: chain.styleId,
-      layerId: ctx.document.getCurrentLayerId(),
-      ...(id !== undefined ? { id } : {}),
-    })
+    return withElevation(
+      createDimension(chain.kind, chain.origin, point, chain.linePoint, {
+        rotation: chain.rotation,
+        styleId: chain.styleId,
+        layerId: ctx.document.getCurrentLayerId(),
+        ...(id !== undefined ? { id } : {}),
+      }),
+      chain.elevation
+    )
   }
 
   /** Places one link of the chain and re-asks, as AutoCAD's loop does. */
@@ -236,6 +241,7 @@ export class DimensionChainTool implements Tool {
       kind: base.kind,
       rotation: base.rotation,
       styleId: base.styleId,
+      elevation: entityElevation(base),
       origin,
       linePoint:
         this.mode === "baseline" ? V.add(base.linePoint, step) : base.linePoint,
@@ -343,6 +349,8 @@ interface Chain {
   /** Measurement direction inherited from the base (`linear` dimensions only). */
   readonly rotation: number
   readonly styleId: DimStyleId
+  /** The base's plane: its origins are the chain's first ones. */
+  readonly elevation: number
   /** First extension line origin of the next dimension. */
   readonly origin: Vec2
   /** Dimension line location of the next dimension. */

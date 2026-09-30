@@ -1,11 +1,13 @@
 import { describe, expect, it } from "vitest"
 import type {
   CircleEntity,
+  DimensionEntity,
   InsertEntity,
   LineEntity,
   PolylineEntity,
 } from "../../domain/entities"
 import {
+  createDimension,
   entityElevation,
   lineEndZ,
   lineStartZ,
@@ -26,6 +28,15 @@ function drawnLine(cad: CadHarness): LineEntity {
   return cad
     .entities()
     .find((e): e is LineEntity => e.type === "line" && !e.id.startsWith("REF"))!
+}
+
+function drawnDimension(cad: CadHarness): DimensionEntity {
+  return cad
+    .entities()
+    .find(
+      (e): e is DimensionEntity =>
+        e.type === "dimension" && !e.id.startsWith("REF")
+    )!
 }
 
 const RAISED = withElevation(lineOf(p(0, 0), p(100, 0), { id: "REF-L" }), 10)
@@ -259,5 +270,61 @@ describe("BLOCK and INSERT", () => {
 
     cad.select(reference.id).command("EXPLODE")
     expect(lineStartZ(cad.only<LineEntity>("line"))).toBe(10)
+  })
+})
+
+describe("dimensions", () => {
+  it("DIMLINEAR lies in the plane of its first origin", () => {
+    const cad = createHarness({ entities: [RAISED], snap: true })
+
+    cad.command("DIMLINEAR").click(p(0, 0)).click(p(100, 0)).click(p(50, -30))
+
+    expect(entityElevation(drawnDimension(cad))).toBe(10)
+  })
+
+  it("DIMLINEAR on a picked object takes the object's height", () => {
+    const cad = createHarness({ entities: [RAISED] })
+
+    cad.command("DIMLINEAR").enter().click(p(50, 0)).click(p(50, -30))
+
+    expect(entityElevation(drawnDimension(cad))).toBe(10)
+  })
+
+  it("DIMRADIUS lies in the plane of the circle it measures", () => {
+    const cad = createHarness({
+      entities: [withElevation(circleOf(p(0, 0), 20, { id: "REF-C" }), 12)],
+    })
+
+    cad.command("DIMRADIUS").click(p(20, 0)).click(p(40, 40))
+
+    expect(entityElevation(drawnDimension(cad))).toBe(12)
+  })
+
+  it("DIMANGULAR between two lines lies in the plane of the first", () => {
+    const cad = createHarness({
+      entities: [
+        RAISED,
+        withElevation(lineOf(p(0, 0), p(0, 100), { id: "REF-V" }), 10),
+      ],
+    })
+
+    cad.command("DIMANGULAR").click(p(50, 0)).click(p(0, 50)).click(p(30, 30))
+
+    expect(entityElevation(drawnDimension(cad))).toBe(10)
+  })
+
+  it("DIMCONTINUE lies in the plane of the dimension it continues", () => {
+    const base = withElevation(
+      createDimension("linear", p(0, 0), p(100, 0), p(50, -30), {
+        rotation: 0,
+        id: "REF-D",
+      }),
+      6
+    )
+    const cad = createHarness({ entities: [base] })
+
+    cad.command("DIMCONTINUE").click(p(180, 0))
+
+    expect(entityElevation(drawnDimension(cad))).toBe(6)
   })
 })

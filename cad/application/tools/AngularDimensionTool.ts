@@ -1,4 +1,5 @@
 import { Vec2, V } from "../../geometry/Vec2"
+import { Vec3, withZ } from "../../geometry/Vec3"
 import {
   closestPointOnArc,
   closestPointOnSegment,
@@ -10,7 +11,10 @@ import {
   createDimension,
   DimensionEntity,
   Entity,
+  entityElevation,
+  entityZAt,
   polylineSegmentGeometries,
+  withElevation,
 } from "../../domain/entities"
 import { AddEntityCommand } from "../commands/entityCommands"
 import { DynamicInputSession } from "../input/DynamicInput"
@@ -133,6 +137,7 @@ export class AngularDimensionTool implements Tool {
             vertex: this.state.vertex,
             first: this.state.first,
             second: input.point,
+            plane: this.state.vertex.z,
           },
           ctx
         )
@@ -273,14 +278,17 @@ export class AngularDimensionTool implements Tool {
   ): DimensionEntity | null {
     const origins = resolveOrigins(target, at)
     if (!origins) return null
-    return createDimension("angular", origins.first, origins.second, at, {
-      vertex: target.vertex,
-      text: this.text,
-      textAngle: this.textAngle,
-      styleId: ctx.document.getCurrentDimStyleId(),
-      layerId: ctx.document.getCurrentLayerId(),
-      ...(id !== undefined ? { id } : {}),
-    })
+    return withElevation(
+      createDimension("angular", origins.first, origins.second, at, {
+        vertex: target.vertex,
+        text: this.text,
+        textAngle: this.textAngle,
+        styleId: ctx.document.getCurrentDimStyleId(),
+        layerId: ctx.document.getCurrentLayerId(),
+        ...(id !== undefined ? { id } : {}),
+      }),
+      target.plane
+    )
   }
 
   private place(at: Vec2, ctx: ToolContext): void {
@@ -306,7 +314,7 @@ export class AngularDimensionTool implements Tool {
       const offset = V.sub(world, hit.center)
       const dir = V.length(offset) < 1e-9 ? { x: 1, y: 0 } : V.normalize(offset)
       this.enterSecondEndpoint(
-        hit.center,
+        withZ(hit.center, entityElevation(hit)),
         V.add(hit.center, V.scale(dir, hit.radius)),
         ctx
       )
@@ -351,10 +359,19 @@ export class AngularDimensionTool implements Tool {
     const crossing = infiniteLineIntersection(a.a, a.b, b.a, b.b)
     // Parallel lines subtend no angle, so the prompt simply stays open.
     if (!crossing) return
-    this.enterLocation({ kind: "lines", vertex: crossing.point, a, b }, ctx)
+    this.enterLocation(
+      {
+        kind: "lines",
+        vertex: crossing.point,
+        a,
+        b,
+        plane: entityZAt(a.entity, crossing.point),
+      },
+      ctx
+    )
   }
 
-  private enterFirstEndpoint(vertex: Vec2, ctx: ToolContext): void {
+  private enterFirstEndpoint(vertex: Vec3, ctx: ToolContext): void {
     this.state = { phase: "firstEndpoint", vertex, cursor: vertex }
     this.openCoordinate(ctx, "firstAngleEndpoint", (commitCtx) => {
       if (this.state.phase !== "firstEndpoint") return false
@@ -366,7 +383,7 @@ export class AngularDimensionTool implements Tool {
   }
 
   private enterSecondEndpoint(
-    vertex: Vec2,
+    vertex: Vec3,
     first: Vec2,
     ctx: ToolContext
   ): void {
@@ -381,6 +398,7 @@ export class AngularDimensionTool implements Tool {
           vertex: this.state.vertex,
           first: this.state.first,
           second: point,
+          plane: this.state.vertex.z,
         },
         commitCtx
       )
@@ -428,7 +446,10 @@ export class AngularDimensionTool implements Tool {
     ctx.dynamicInput.setPosition(this.lastScreen ?? { x: 0, y: 0 })
   }
 
-  private parsePoint(ctx: ToolContext, lastPoint: Vec2 | null): Vec2 | null {
+  private parsePoint(
+    ctx: ToolContext,
+    lastPoint: Vec2 | Vec3 | null
+  ): Vec3 | null {
     const typed = ctx.dynamicInput.getText("point").trim()
     if (!isCoordinateExpression(typed)) return null
     return parseCoordinate(typed, {
@@ -442,9 +463,10 @@ export class AngularDimensionTool implements Tool {
 /** Preview frames reuse one id so drawing them never burns entity ids. */
 const ANGULAR_PREVIEW_ID = "__angular_dimension_preview__"
 
-/** One line of a line pair, kept with its id so the second pick can exclude it. */
+/** One line of a line pair, kept with its object so the second pick can exclude it. */
 interface PickedLine {
   readonly id: string
+  readonly entity: Entity
   readonly a: Vec2
   readonly b: Vec2
 }
@@ -452,7 +474,8 @@ interface PickedLine {
 /**
  * What the angle is being taken from. A line pair keeps the lines rather than
  * two endpoints, because which end of each counts depends on where the location
- * is dragged — the rule that keeps the measured arc under 180°.
+ * is dragged — the rule that keeps the measured arc under 180°. `plane` is the
+ * Z of what fixed it first: the vertex typed, the arc or circle, the first line.
  */
 type AngularTarget =
   | {
@@ -460,12 +483,14 @@ type AngularTarget =
       readonly vertex: Vec2
       readonly first: Vec2
       readonly second: Vec2
+      readonly plane: number
     }
   | {
       readonly kind: "lines"
       readonly vertex: Vec2
       readonly a: PickedLine
       readonly b: PickedLine
+      readonly plane: number
     }
 
 /** The two angle endpoints, given where the dimension arc is being placed. */
@@ -521,6 +546,7 @@ function pickedSweep(entity: Entity, at: Vec2): AngularTarget | null {
       vertex: entity.center,
       first: arcStartPoint(entity),
       second: arcEndPoint(entity),
+      plane: entityElevation(entity),
     }
   }
   if (entity.type !== "polyline") return null
@@ -542,6 +568,7 @@ function pickedSweep(entity: Entity, at: Vec2): AngularTarget | null {
         vertex: seg.center,
         first: seg.a,
         second: seg.b,
+        plane: entityElevation(entity),
       }
     }
   }
@@ -554,7 +581,7 @@ function pickedSweep(entity: Entity, at: Vec2): AngularTarget | null {
  */
 function pickedLine(entity: Entity, at: Vec2): PickedLine | null {
   if (entity.type === "line") {
-    return { id: entity.id, a: entity.start, b: entity.end }
+    return { id: entity.id, entity, a: entity.start, b: entity.end }
   }
   if (entity.type !== "polyline") return null
   let best: PickedLine | null = null
@@ -564,7 +591,7 @@ function pickedLine(entity: Entity, at: Vec2): PickedLine | null {
     const distance = closestPointOnSegment(seg.a, seg.b, at).distance
     if (distance < bestDistance) {
       bestDistance = distance
-      best = { id: entity.id, a: seg.a, b: seg.b }
+      best = { id: entity.id, entity, a: seg.a, b: seg.b }
     }
   }
   return best
@@ -583,12 +610,12 @@ type AngularToolState =
   | { readonly phase: "vertex" }
   | {
       readonly phase: "firstEndpoint"
-      readonly vertex: Vec2
+      readonly vertex: Vec3
       readonly cursor: Vec2
     }
   | {
       readonly phase: "secondEndpoint"
-      readonly vertex: Vec2
+      readonly vertex: Vec3
       readonly first: Vec2
       readonly cursor: Vec2
     }

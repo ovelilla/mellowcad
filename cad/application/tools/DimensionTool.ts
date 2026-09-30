@@ -1,4 +1,5 @@
 import { Vec2, V } from "../../geometry/Vec2"
+import { Vec3, withZ } from "../../geometry/Vec3"
 import {
   closestPointOnSegment,
   normalizeDegrees,
@@ -10,6 +11,8 @@ import {
   DimensionEntity,
   DimensionKind,
   Entity,
+  entityZAt,
+  onPlaneOf,
   polylineSegmentGeometries,
 } from "../../domain/entities"
 import {
@@ -290,12 +293,12 @@ export class DimensionTool implements Tool {
     return ctx.document.getDimStyle(ctx.document.getCurrentDimStyleId())
   }
 
-  private enterSecond(first: Vec2, ctx: ToolContext): void {
+  private enterSecond(first: Vec3, ctx: ToolContext): void {
     this.state = { phase: "second", first, cursor: first }
     this.openSecondInput(ctx)
   }
 
-  private enterLine(first: Vec2, second: Vec2, ctx: ToolContext): void {
+  private enterLine(first: Vec3, second: Vec2, ctx: ToolContext): void {
     this.state = { phase: "line", first, second, cursor: second, prompt: null }
     this.openLineInput(ctx)
   }
@@ -313,18 +316,21 @@ export class DimensionTool implements Tool {
   /** Creates the dimension and ends the command, as AutoCAD does. */
   private place(linePoint: Vec2, ctx: ToolContext): void {
     if (this.state.phase !== "line") return
-    const dim = createDimension(
-      this.kind,
-      this.state.first,
-      this.state.second,
-      linePoint,
-      {
-        rotation: this.resolveRotation(this.state, linePoint, ctx),
-        text: this.text,
-        textAngle: this.textAngle,
-        styleId: ctx.document.getCurrentDimStyleId(),
-        layerId: ctx.document.getCurrentLayerId(),
-      }
+    const dim = onPlaneOf(
+      createDimension(
+        this.kind,
+        this.state.first,
+        this.state.second,
+        linePoint,
+        {
+          rotation: this.resolveRotation(this.state, linePoint, ctx),
+          text: this.text,
+          textAngle: this.textAngle,
+          styleId: ctx.document.getCurrentDimStyleId(),
+          layerId: ctx.document.getCurrentLayerId(),
+        }
+      ),
+      this.state.first
     )
     ctx.execute(new AddEntityCommand(dim))
     ctx.endCommand()
@@ -339,7 +345,7 @@ export class DimensionTool implements Tool {
   private pickOrigins(
     input: PointerInput,
     ctx: ToolContext
-  ): [Vec2, Vec2] | null {
+  ): [Vec3, Vec3] | null {
     const hit = ctx.pick(input.world)
     return hit ? measurableOrigins(hit, input.world) : null
   }
@@ -454,9 +460,9 @@ export class DimensionTool implements Tool {
 
   private parsePoint(
     text: string,
-    lastPoint: Vec2 | null,
+    lastPoint: Vec2 | Vec3 | null,
     ctx: ToolContext
-  ): Vec2 | null {
+  ): Vec3 | null {
     if (!isCoordinateExpression(text)) return null
     return parseCoordinate(text, {
       lastPoint,
@@ -474,9 +480,20 @@ const DIM_PREVIEW_ID = "__dimension_preview__"
  * object selection: a line or arc gives its endpoints, a circle the endpoints
  * of the diameter through the pick point, and a polyline the endpoints of the
  * segment picked ("only the individual line and arc segments are dimensioned").
- * Objects with no such pair — text, another dimension — give nothing.
+ * Objects with no such pair — text, another dimension — give nothing. Each
+ * origin is at the object's height there.
  */
-function measurableOrigins(entity: Entity, at: Vec2): [Vec2, Vec2] | null {
+function measurableOrigins(entity: Entity, at: Vec2): [Vec3, Vec3] | null {
+  const pair = planOrigins(entity, at)
+  return pair
+    ? [
+        withZ(pair[0], entityZAt(entity, pair[0])),
+        withZ(pair[1], entityZAt(entity, pair[1])),
+      ]
+    : null
+}
+
+function planOrigins(entity: Entity, at: Vec2): [Vec2, Vec2] | null {
   switch (entity.type) {
     case "line":
       return [entity.start, entity.end]
@@ -535,12 +552,13 @@ type DimensionToolState =
   | { readonly phase: "select"; readonly hover: Entity | null }
   | {
       readonly phase: "second"
-      readonly first: Vec2
+      /** The first origin's height is the plane the dimension lies in. */
+      readonly first: Vec3
       readonly cursor: Vec2
     }
   | {
       readonly phase: "line"
-      readonly first: Vec2
+      readonly first: Vec3
       readonly second: Vec2
       readonly cursor: Vec2
       /** Which sub-prompt is open, so its answer returns here. */
@@ -549,6 +567,6 @@ type DimensionToolState =
   /** Specifying the angle of the dimension line (the Rotated option). */
   | {
       readonly phase: "rotated"
-      readonly first: Vec2
+      readonly first: Vec3
       readonly second: Vec2
     }

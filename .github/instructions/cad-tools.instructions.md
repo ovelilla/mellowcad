@@ -209,7 +209,8 @@ instead, or the command-line buffer will swallow them.
   a `Vec3`; ROTATE and MIRROR ignore the Z.
 - **A flat object lies in the plane of the first point that fixed it** (the first vertex of PLINE
   and SPLINE, a CIRCLE's centre or first 2P/3P point, RECTANG's first corner, the insertion point
-  of TEXT, MTEXT, ATTDEF and INSERT, BLOCK's base point): `onPlaneOf(createX(...), first)`, and
+  of TEXT, MTEXT, ATTDEF and INSERT, BLOCK's base point, a dimension's first origin — or, picked
+  from an object, that object's plane; chained, the base dimension's): `onPlaneOf(createX(...), first)`, and
   project the later points (`withZOf(point, first)`) rather than keep their Z. A point computed
   from the first (an ellipse's centre, MTEXT's attachment point) takes its Z the same way.
   `createLine` is the exception: a line has a Z at each end, so it reads its two points' Z itself.

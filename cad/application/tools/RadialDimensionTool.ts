@@ -1,4 +1,5 @@
 import { Vec2, V } from "../../geometry/Vec2"
+import { Vec3, withZ } from "../../geometry/Vec3"
 import {
   angleWithinSweep,
   closestPointOnArc,
@@ -8,6 +9,8 @@ import {
   createDimension,
   DimensionEntity,
   Entity,
+  entityElevation,
+  onPlaneOf,
   polylineSegmentGeometries,
 } from "../../domain/entities"
 import { AddEntityCommand } from "../commands/entityCommands"
@@ -190,18 +193,21 @@ export class RadialDimensionTool implements Tool {
     id?: string
   ): DimensionEntity {
     const dir = measuredDirection(target, at)
-    return createDimension(
-      this.kind,
-      target.center,
-      V.add(target.center, V.scale(dir, target.radius)),
-      at,
-      {
-        text: this.text,
-        textAngle: this.textAngle,
-        styleId: ctx.document.getCurrentDimStyleId(),
-        layerId: ctx.document.getCurrentLayerId(),
-        ...(id !== undefined ? { id } : {}),
-      }
+    return onPlaneOf(
+      createDimension(
+        this.kind,
+        target.center,
+        V.add(target.center, V.scale(dir, target.radius)),
+        at,
+        {
+          text: this.text,
+          textAngle: this.textAngle,
+          styleId: ctx.document.getCurrentDimStyleId(),
+          layerId: ctx.document.getCurrentLayerId(),
+          ...(id !== undefined ? { id } : {}),
+        }
+      ),
+      target.center
     )
   }
 
@@ -274,7 +280,8 @@ const RADIAL_PREVIEW_ID = "__radial_dimension_preview__"
 
 /** A circular thing a radial dimension can measure, and how much of it exists. */
 interface MeasuredCircle {
-  readonly center: Vec2
+  /** At the object's height, the plane the dimension lies in. */
+  readonly center: Vec3
   readonly radius: number
   /** The sweep a partial arc covers; null for a whole circle. */
   readonly startAngle: number | null
@@ -290,14 +297,14 @@ function measuredCircle(entity: Entity, at: Vec2): MeasuredCircle | null {
   switch (entity.type) {
     case "circle":
       return {
-        center: entity.center,
+        center: withZ(entity.center, entityElevation(entity)),
         radius: entity.radius,
         startAngle: null,
         endAngle: null,
       }
     case "arc":
       return {
-        center: entity.center,
+        center: withZ(entity.center, entityElevation(entity)),
         radius: entity.radius,
         startAngle: entity.startAngle,
         endAngle: entity.endAngle,
@@ -317,7 +324,7 @@ function measuredCircle(entity: Entity, at: Vec2): MeasuredCircle | null {
         if (distance < bestDistance) {
           bestDistance = distance
           best = {
-            center: seg.center,
+            center: withZ(seg.center, entityElevation(entity)),
             radius: seg.radius,
             startAngle: seg.startAngle,
             endAngle: seg.endAngle,
