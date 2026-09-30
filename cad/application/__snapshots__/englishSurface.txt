@@ -17,6 +17,7 @@ HATCH ["H","BH"] "Hatch"
 BLOCK ["B"] "Create block"
 INSERT ["I"] "Insert block"
 TEXT ["DT","DTEXT"] "Text"
+MTEXT ["T","MT"] "Multiline text"
 TEXTEDIT ["DDEDIT","ED"] "Edit text"
 DIMLINEAR ["DIMLIN","DLI"] "Linear"
 DIMALIGNED ["DIMALI","DAL"] "Aligned"
@@ -54,6 +55,7 @@ ZOOM ["Z"] "Zoom"
 PAN ["P"] "Pan"
 ERASE ["E"] "Delete the selected objects"
 UNDO ["U"] "Undo the last action"
+-MTEXT [] "Multiline text"
 REDO [] "Redo the last undone action"
 SNAP ["SN"] "Force the cursor onto the snap increments"
 FROM ["FRO"] "Pick a point offset from a base point"
@@ -84,6 +86,7 @@ hatch "Hatch" H
 block "Create block" B
 insert "Insert block" I
 text "Text" DT
+mtext "Multiline text" T
 textedit "Edit text" ED
 dimlinear "Linear" DLI
 dimaligned "Aligned" DAL
@@ -1027,6 +1030,161 @@ pan "Pan" P
   prompt: TEXTEDIT:
   asks: "Text"
   dyn: "Text"="WORD"||*
+> escape
+  prompt: Command:
+  asks: -
+  dyn: -
+
+## MTEXT
+> start
+  prompt: Command:
+  asks: -
+  dyn: -
+  options: -
+  canvas: -
+  properties: -
+  cycling: -
+> MTEXT
+  prompt: MTEXT:
+  asks: "Specify first corner"
+  dyn: "X,Y"=""||*
+  command| MTEXT
+> first corner
+  prompt: MTEXT [Height/Justify/Line spacing/Rotation/Style/Width]:
+  asks: "Specify opposite corner"
+  options: [H] Height, [J] Justify, [L] Line spacing, [R] Rotation, [S] Style, [W] Width
+> H
+  prompt: MTEXT:
+  asks: "Specify height"
+  dyn: "Specify height"=""|2.50|mm*
+  options: -
+> height
+  dyn: "Specify height"="10"|2.50|mm*
+> enter
+  prompt: MTEXT [Height/Justify/Line spacing/Rotation/Style/Width]:
+  asks: "Specify opposite corner"
+  dyn: "X,Y"=""||*
+  options: [H] Height, [J] Justify, [L] Line spacing, [R] Rotation, [S] Style, [W] Width
+> J
+  prompt: MTEXT [TL/TC/TR/ML/MC/MR/BL/BC/BR]:
+  asks: 
+  dyn: 
+  options: [null] TL, [null] TC, [null] TR, [null] ML, [null] MC, [null] MR, [null] BL, [null] BC, [null] BR
+> MC
+  prompt: MTEXT [Height/Justify/Line spacing/Rotation/Style/Width]:
+  asks: "Specify opposite corner"
+  dyn: "X,Y"=""||*
+  options: [H] Height, [J] Justify, [L] Line spacing, [R] Rotation, [S] Style, [W] Width
+> L
+  prompt: MTEXT [At least/Exactly]:
+  asks: 
+  dyn: 
+  options: [A] At least, [E] Exactly
+> E
+  prompt: MTEXT:
+  asks: "Enter line spacing factor or distance"
+  dyn: "Enter line spacing factor or distance"=""||*
+  options: -
+> spacing
+  dyn: "Enter line spacing factor or distance"="1.5x"||*
+> enter
+  prompt: MTEXT [Height/Justify/Line spacing/Rotation/Style/Width]:
+  asks: "Specify opposite corner"
+  dyn: "X,Y"=""||*
+  options: [H] Height, [J] Justify, [L] Line spacing, [R] Rotation, [S] Style, [W] Width
+> R
+  prompt: MTEXT:
+  asks: "Specify rotation angle"
+  dyn: "Specify rotation angle"=""|0.00|°*
+  options: -
+> rotation
+  dyn: "Specify rotation angle"="0"|0.00|°*
+> enter
+  prompt: MTEXT [Height/Justify/Line spacing/Rotation/Style/Width]:
+  asks: "Specify opposite corner"
+  dyn: "X,Y"=""||*
+  options: [H] Height, [J] Justify, [L] Line spacing, [R] Rotation, [S] Style, [W] Width
+> S
+  prompt: MTEXT:
+  asks: "Style name"
+  dyn: "Style name"=""||*
+  options: -
+> missing style
+  dyn: "Style name"="Fancy"||*
+> enter
+  error| Text style "Fancy" is not defined.
+> Standard
+  dyn: "Style name"="Standard"||*
+> enter
+  prompt: MTEXT [Height/Justify/Line spacing/Rotation/Style/Width]:
+  asks: "Specify opposite corner"
+  dyn: "X,Y"=""||*
+  options: [H] Height, [J] Justify, [L] Line spacing, [R] Rotation, [S] Style, [W] Width
+> W
+  prompt: MTEXT:
+  asks: "Specify width"
+  dyn: "Specify width"=""||mm*
+  options: -
+> width
+  dyn: "Specify width"="120"||mm*
+> enter
+  asks: "Text"
+  dyn: "Text"=""||*
+> content
+  dyn: "Text"="FIRST LINE\nSECOND"||*
+> ctrl+enter
+  prompt: Command:
+  asks: -
+  dyn: -
+> select
+  properties: MText (1) [Text: Contents=FIRST LINE
+SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space factor=1.5x~, Line space distance=25.00 mm~, Line space style=Exactly, Defined width=120.00 mm~] [Position: X=0.00~, Y=0.00~]
+
+## -MTEXT
+> start
+  prompt: Command:
+  asks: -
+  dyn: -
+  options: -
+  canvas: -
+  properties: -
+  cycling: -
+> -MTEXT
+  prompt: MTEXT:
+  asks: "Specify first corner"
+  dyn: "X,Y"=""||*
+  command| -MTEXT
+> first corner
+  prompt: MTEXT [Height/Justify/Line spacing/Rotation/Style/Width]:
+  asks: "Specify opposite corner"
+  options: [H] Height, [J] Justify, [L] Line spacing, [R] Rotation, [S] Style, [W] Width
+> opposite corner
+  prompt: MTEXT:
+  asks: "MText"
+  dyn: "MText"=""||*
+  options: -
+> line
+  dyn: "MText"="ONE"||*
+> enter
+  dyn: "MText"=""||*
+> enter
+  prompt: Command:
+  asks: -
+  dyn: -
+
+## MTEXT edit
+> start
+  prompt: Command:
+  asks: -
+  dyn: -
+  options: -
+  canvas: -
+  properties: -
+  cycling: -
+> double-click
+  prompt: TEXTEDIT:
+  asks: "Text"
+  dyn: "Text"="OLD\nLINES"||*
 > escape
   prompt: Command:
   asks: -

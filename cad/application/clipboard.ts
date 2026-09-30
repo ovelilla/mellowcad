@@ -38,7 +38,8 @@ export function clipboardSnapshot(
       const layer = document.getLayer(entity.layerId)
       if (layer) layers.set(layer.id, layer)
       switch (entity.type) {
-        case "text": {
+        case "text":
+        case "mtext": {
           const style = document.getTextStyle(entity.styleId)
           if (style) textStyles.set(style.id, style)
           break

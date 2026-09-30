@@ -22,6 +22,7 @@ export type EntityType =
   | "ellipse"
   | "polyline"
   | "text"
+  | "mtext"
   | "dimension"
   | "hatch"
   | "insert"
@@ -184,6 +185,59 @@ export interface TextEntity extends BaseEntity {
 }
 
 /**
+ * Where a multiline text object's box hangs off its
+ * {@link MTextEntity.position} (DXF 71). The column also aligns every line in
+ * the box, and the row decides which way the box grows as lines are added.
+ */
+export type MTextAttachment =
+  "tl" | "tc" | "tr" | "ml" | "mc" | "mr" | "bl" | "bc" | "br"
+
+/** The nine attachments, in the order of AutoCAD's Justify prompt. */
+export const MTEXT_ATTACHMENTS: readonly MTextAttachment[] = [
+  "tl",
+  "tc",
+  "tr",
+  "ml",
+  "mc",
+  "mr",
+  "bl",
+  "bc",
+  "br",
+]
+
+/**
+ * DXF 73. "At least" grows a line to fit its tallest character, "Exactly" never
+ * does; with no inline height changes the two space lines identically.
+ */
+export type LineSpacingStyle = "atLeast" | "exactly"
+
+/**
+ * A multiline text object (AutoCAD's MTEXT): paragraphs that wrap to a width,
+ * as one object. Only what AutoCAD stores is kept; the lines as wrapped and the
+ * size of the box come out of `mtextLayout`.
+ */
+export interface MTextEntity extends BaseEntity {
+  readonly type: "mtext"
+  readonly position: Vec2
+  /**
+   * AutoCAD's contents string (DXF 1/3): `\P` ends a paragraph and `\\`, `\{`
+   * and `\}` are literal, so inline format codes fit the same field.
+   */
+  readonly contents: string
+  /** Capital-letter height in drawing units. */
+  readonly height: number
+  /** Wrapping width (DXF 41); 0 turns word wrap off. */
+  readonly width: number
+  /** Radians CCW from +X. */
+  readonly rotation: number
+  readonly attachment: MTextAttachment
+  readonly lineSpacingStyle: LineSpacingStyle
+  /** Multiple of single spacing (DXF 44), 0.25 to 4. */
+  readonly lineSpacingFactor: number
+  readonly styleId: TextStyleId
+}
+
+/**
  * What a dimension measures, and therefore how it is drawn:
  *
  * - `linear` measures along its own {@link DimensionEntity.rotation} (AutoCAD's
@@ -342,6 +396,7 @@ export type Entity =
   | EllipseEntity
   | PolylineEntity
   | TextEntity
+  | MTextEntity
   | DimensionEntity
   | HatchEntity
   | InsertEntity

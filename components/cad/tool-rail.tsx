@@ -8,6 +8,7 @@ import {
   FlipHorizontal2,
   Grid3x3,
   CircleDotDashed,
+  LetterText,
   Merge,
   type LucideIcon,
   MousePointer2,
@@ -113,6 +114,7 @@ const TOOL_ICONS: Record<string, LucideIcon> = {
   breakatpoint: BreakAtPointIcon,
   matchprop: Paintbrush,
   text: Type,
+  mtext: LetterText,
   textedit: PenLine,
   dimlinear: DimLinearIcon,
   dimaligned: DimAlignedIcon,
@@ -146,6 +148,7 @@ type FlyoutId =
   | "fillet"
   | "break"
   | "array"
+  | "text"
   | "dimension"
   | "measure"
 
@@ -215,7 +218,8 @@ const RAIL_LAYOUT: readonly RailGroup[] = [
   {
     id: "annotate",
     items: [
-      "text",
+      // The ribbon's Text split button: Multiline Text first, Single Line after.
+      { id: "text", members: ["mtext", "text"] },
       "textedit",
       {
         id: "dimension",

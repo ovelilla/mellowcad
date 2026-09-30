@@ -18,6 +18,7 @@ export type DimensionPoint = "first" | "second" | "line" | "vertex"
  * - `dimPoint` — a dimension's definition point: an extension-line origin, an
  *   angular one's vertex, or the dimension line itself, which slides the whole
  *   assembly.
+ * - `mtextWidth` — a multiline text's width arrow: rewrap it to a new width.
  */
 export type GripRole =
   | { readonly kind: "lineEnd"; readonly end: LineEnd }
@@ -28,6 +29,7 @@ export type GripRole =
   | { readonly kind: "addVertex"; readonly segmentIndex: number }
   | { readonly kind: "bulge"; readonly segmentIndex: number }
   | { readonly kind: "dimPoint"; readonly point: DimensionPoint }
+  | { readonly kind: "mtextWidth" }
 
 export interface Grip {
   readonly entityId: EntityId
@@ -124,6 +126,15 @@ export type SelectToolState =
       readonly point: DimensionPoint
       readonly origin: Vec2
       readonly current: Vec2
+      readonly pressScreen: Vec2
+    }
+  | {
+      /** A multiline text's width grip is hot: the text rewraps as it moves. */
+      readonly phase: "mtextWidth"
+      readonly entityId: EntityId
+      readonly origin: Vec2
+      /** Live width the text wraps to. */
+      readonly width: number
       readonly pressScreen: Vec2
     }
   | {

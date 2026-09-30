@@ -73,6 +73,8 @@ class or light values.
   leave the browser, a three-key quick start and the contact address. Product/meta copy goes here,
   not into a drafting surface.
 - The dynamic-input box is `pointer-events-none` and keyboard-driven — never make it clickable.
+  A `paragraphs` field (MTEXT's editor) is a textarea: Enter stays a line break, Ctrl+Enter
+  commits, and it is never reselected when focus comes back, or the next key would wipe the text.
 - It is also the landing's: the live sketch embeds this very component, and `marketing.css` scans
   the file and maps the tokens it uses (`card`, `foreground`, `muted`, `muted-foreground`,
   `border`). A new token in it needs that mapping too. It reclaims focus only where

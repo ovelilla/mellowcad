@@ -13,6 +13,7 @@ import { ScenePrimitive } from "../../scene/types"
 import { THEME } from "../../scene/theme"
 import { ToolContext } from "./Tool"
 import { Grip } from "./selectToolState"
+import { mtextWidthGrip } from "./selectToolEdits"
 
 /** Half-size (screen pixels) of the small square grips drawn on a selection. */
 export const GRIP_HALF_PX = 4
@@ -117,6 +118,18 @@ export function selectedGrips(ctx: ToolContext): Grip[] {
           entityId: id,
           role: { kind: "move" },
           world: entity.position,
+        })
+        break
+      case "mtext":
+        grips.push({
+          entityId: id,
+          role: { kind: "move" },
+          world: entity.position,
+        })
+        grips.push({
+          entityId: id,
+          role: { kind: "mtextWidth" },
+          world: mtextWidthGrip(entity),
         })
         break
       case "dimension": {

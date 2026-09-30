@@ -291,6 +291,7 @@ function computeBreak(
     case "ellipse":
     case "polyline":
     case "text":
+    case "mtext":
     case "dimension":
     case "hatch":
     case "insert":

@@ -157,6 +157,7 @@ export const TOOL_COMMANDS: Readonly<Record<string, string>> = {
   block: "BLOCK",
   insert: "INSERT",
   text: "TEXT",
+  mtext: "MTEXT",
   textedit: "TEXTEDIT",
   dimlinear: "DIMLINEAR",
   dimaligned: "DIMALIGNED",

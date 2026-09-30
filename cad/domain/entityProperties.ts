@@ -6,11 +6,17 @@ import {
   ArcEntity,
   EllipseEntity,
   TextEntity,
+  MTextEntity,
   InsertEntity,
   Entity,
 } from "./entityTypes"
 import { ellipseSemiMajor, ellipseSemiMinor, ellipseWithAxes } from "./ellipses"
 import { lineLength, lineAngleDegrees } from "./entityMeasures"
+import {
+  MAX_LINE_SPACING_FACTOR,
+  MIN_LINE_SPACING_FACTOR,
+  mtextLinePitch,
+} from "./mtext"
 
 /** A geometry value that can be retyped directly on a selected entity. */
 export type EntityProperty =
@@ -33,6 +39,9 @@ export type EntityProperty =
   | "positionY"
   | "textHeight"
   | "rotation"
+  | "definedWidth"
+  | "lineSpaceFactor"
+  | "lineSpaceDistance"
   | "dimensionRotation"
   | "patternScale"
   | "patternAngle"
@@ -62,6 +71,8 @@ export function applyEntityProperty(
       return applyEllipseProperty(entity, property, value)
     case "text":
       return applyTextProperty(entity, property, value)
+    case "mtext":
+      return applyMTextProperty(entity, property, value)
     case "dimension":
       // Only the measurement direction is a value: the definition points are
       // edited with grips and the measurement itself is derived, so AutoCAD
@@ -225,6 +236,46 @@ function applyTextProperty(
     default:
       return null
   }
+}
+
+function applyMTextProperty(
+  mtext: MTextEntity,
+  property: EntityProperty,
+  value: number
+): MTextEntity | null {
+  switch (property) {
+    case "positionX":
+      return { ...mtext, position: { x: value, y: mtext.position.y } }
+    case "positionY":
+      return { ...mtext, position: { x: mtext.position.x, y: value } }
+    case "textHeight":
+      return value > 0 ? { ...mtext, height: value } : null
+    case "rotation":
+      return { ...mtext, rotation: toRadians(value) }
+    case "definedWidth":
+      return value >= 0 ? { ...mtext, width: value } : null
+    case "lineSpaceFactor":
+      return withLineSpacingFactor(mtext, value)
+    case "lineSpaceDistance":
+      // The two rows are one setting, so a distance is stored as the factor
+      // it amounts to at this height, and both stay in step.
+      return withLineSpacingFactor(
+        mtext,
+        (value / mtextLinePitch(mtext)) * mtext.lineSpacingFactor
+      )
+    default:
+      return null
+  }
+}
+
+function withLineSpacingFactor(
+  mtext: MTextEntity,
+  factor: number
+): MTextEntity | null {
+  return factor >= MIN_LINE_SPACING_FACTOR - 1e-9 &&
+    factor <= MAX_LINE_SPACING_FACTOR + 1e-9
+    ? { ...mtext, lineSpacingFactor: factor }
+    : null
 }
 
 function applyInsertProperty(

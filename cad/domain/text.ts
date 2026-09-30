@@ -48,8 +48,12 @@ export function createText(
  */
 export const TEXT_FONT_CAP_RATIO = TEXT_FONT_CAP_HEIGHT / TEXT_FONT_UNITS_PER_EM
 
-/** Spacing between successive lines of TEXT — AutoCAD's single line spacing. */
-export const TEXT_LINE_SPACING_FACTOR = 1.66
+/**
+ * Single line spacing as a multiple of the text height. The help rounds it to
+ * 1.66; ObjectARX states the rule it comes from, "line spacing is really 5/3 of
+ * the font size".
+ */
+export const TEXT_LINE_SPACING_FACTOR = 5 / 3
 
 /**
  * Width of a string set in the drawing font at a capital height of `height`,

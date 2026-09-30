@@ -59,7 +59,8 @@ import {
  * across a ray gives the reflex angle.
  *
  * Two keywords of AutoCAD's `[Mtext/Text/Angle/Quadrant]` are missing. **Mtext**
- * opens the multiline editor, and this app has no MTEXT object. **Quadrant**
+ * edits the text in the multiline editor, and a dimension's text here is a
+ * single line. **Quadrant**
  * locks the dimension to one quadrant and extends the dimension line past the
  * extension line when the text is pushed outside — a placement mode of its own,
  * left for later.

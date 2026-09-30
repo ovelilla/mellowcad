@@ -1,5 +1,13 @@
 import { Vec2 } from "../../geometry/Vec2"
-import { Entity, EntityId, TextEntity } from "../../domain/entities"
+import {
+  Entity,
+  EntityId,
+  MTextEntity,
+  TextEntity,
+  closestOnEntity,
+  mtextContents,
+  mtextPlainText,
+} from "../../domain/entities"
 import { UpdateEntityCommand } from "../commands/entityCommands"
 import { DynamicInputSession } from "../input/DynamicInput"
 import { entityScenePrimitive } from "../SceneBuilder"
@@ -8,6 +16,7 @@ import { THEME } from "../../scene/theme"
 import {
   CommandOption,
   CommandOptionOutcome,
+  KeyInput,
   PointerInput,
   Tool,
   ToolContext,
@@ -24,6 +33,9 @@ import {
  *
  * Double-clicking a text object starts this command on it, the gesture users
  * actually reach for.
+ *
+ * A multiline text opens in the multi-line editor MTEXT uses, where Escape
+ * discards the edit and a click inside the object stays in the editor.
  */
 export class TextEditTool implements Tool {
   readonly id = "textedit"
@@ -49,10 +61,20 @@ export class TextEditTool implements Tool {
   }
 
   /** Starts editing `text` straight away — the double-click entry point. */
-  beginEdit(text: TextEntity, ctx: ToolContext): void {
+  beginEdit(text: EditableText, ctx: ToolContext): void {
     this.commitEdit(ctx)
     this.state = { phase: "edit", target: text }
-    this.openEditInput(ctx, text.value)
+    this.openEditInput(ctx, text)
+  }
+
+  onKeyDown(input: KeyInput): void {
+    if (
+      input.key === "Escape" &&
+      this.state.phase === "edit" &&
+      this.state.target.type === "mtext"
+    ) {
+      this.state = { phase: "select", hover: null }
+    }
   }
 
   onPointerMove(input: PointerInput, ctx: ToolContext): void {
@@ -70,6 +92,13 @@ export class TextEditTool implements Tool {
     if (this.state.phase === "select") {
       const target = this.pickText(input.world, ctx)
       if (target) this.beginEdit(target, ctx)
+      return
+    }
+    const target = this.state.target
+    if (
+      target.type === "mtext" &&
+      closestOnEntity(this.preview(target, ctx), input.world).distance === 0
+    ) {
       return
     }
     // A click elsewhere accepts the edit and moves on to the next object.
@@ -127,9 +156,17 @@ export class TextEditTool implements Tool {
     if (value.length === 0) return []
     return entityScenePrimitive(
       viewport,
-      { ...this.state.target, value, id: TEXT_EDIT_PREVIEW_ID },
+      this.preview(this.state.target, ctx),
       { color: THEME.rubberBand, width: 1 }
     )
+  }
+
+  /** The object as it reads with what is in the box. */
+  private preview(target: EditableText, ctx: ToolContext): EditableText {
+    const value = ctx.dynamicInput.getText("value")
+    return target.type === "mtext"
+      ? { ...target, contents: mtextContents(value), id: TEXT_EDIT_PREVIEW_ID }
+      : { ...target, value, id: TEXT_EDIT_PREVIEW_ID }
   }
 
   private enterSelect(ctx: ToolContext): void {
@@ -138,14 +175,20 @@ export class TextEditTool implements Tool {
     ctx.dynamicInput.open({ fields: [], commit: () => {} })
   }
 
-  private pickText(world: Vec2, ctx: ToolContext): TextEntity | null {
+  private pickText(world: Vec2, ctx: ToolContext): EditableText | null {
     const hit: Entity | null = ctx.pick(world)
-    return hit?.type === "text" ? hit : null
+    return hit?.type === "text" || hit?.type === "mtext" ? hit : null
   }
 
-  private openEditInput(ctx: ToolContext, value: string): void {
+  private openEditInput(ctx: ToolContext, target: EditableText): void {
     const session: DynamicInputSession = {
-      fields: [{ id: "value", prompt: "text", kind: "text" }],
+      fields: [
+        {
+          id: "value",
+          prompt: "text",
+          kind: target.type === "mtext" ? "paragraphs" : "text",
+        },
+      ],
       commit: () => {},
       commitRaw: (commitCtx) => {
         this.commitEdit(commitCtx)
@@ -155,7 +198,10 @@ export class TextEditTool implements Tool {
       },
     }
     ctx.dynamicInput.open(session)
-    ctx.dynamicInput.setText("value", value)
+    ctx.dynamicInput.setText(
+      "value",
+      target.type === "mtext" ? mtextPlainText(target.contents) : target.value
+    )
   }
 
   /** Writes the edit back, if the wording actually changed. */
@@ -166,7 +212,17 @@ export class TextEditTool implements Tool {
     this.state = { phase: "select", hover: null }
     // Emptying the box is treated as "no change": erasing an object is what
     // ERASE is for, and the wording AutoCAD uses here could not be verified.
-    if (value.trim().length === 0 || value === target.value) return
+    if (value.trim().length === 0) return
+    if (target.type === "mtext") {
+      // Unchanged wording keeps the contents as they were, formatting included.
+      if (value === mtextPlainText(target.contents)) return
+      this.edits += 1
+      ctx.execute(
+        new UpdateEntityCommand({ ...target, contents: mtextContents(value) })
+      )
+      return
+    }
+    if (value === target.value) return
     this.edits += 1
     ctx.execute(new UpdateEntityCommand({ ...target, value }))
   }
@@ -175,7 +231,9 @@ export class TextEditTool implements Tool {
 /** Preview frames reuse one id so drawing them never burns entity ids. */
 const TEXT_EDIT_PREVIEW_ID = "__textedit_preview__"
 
+type EditableText = TextEntity | MTextEntity
+
 type TextEditToolState =
   /** Awaiting an annotation object to edit. */
-  | { readonly phase: "select"; readonly hover: TextEntity | null }
-  | { readonly phase: "edit"; readonly target: TextEntity }
+  | { readonly phase: "select"; readonly hover: EditableText | null }
+  | { readonly phase: "edit"; readonly target: EditableText }

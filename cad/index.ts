@@ -205,6 +205,7 @@ export { HatchTool } from "./application/tools/HatchTool"
 export { BlockTool } from "./application/tools/BlockTool"
 export { InsertTool } from "./application/tools/InsertTool"
 export { TextTool } from "./application/tools/TextTool"
+export { MTextTool } from "./application/tools/MTextTool"
 export { TextEditTool } from "./application/tools/TextEditTool"
 export { DimensionTool } from "./application/tools/DimensionTool"
 export {

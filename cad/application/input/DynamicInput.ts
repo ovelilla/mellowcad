@@ -29,7 +29,13 @@ export type DynamicFieldKind =
    * session using one is committed through {@link DynamicInputSession.commitRaw}.
    */
   | "text"
+  /** Free text over several lines (MTEXT): Enter breaks a line, Ctrl+Enter commits. */
+  | "paragraphs"
 
+/** Whether a field holds content rather than a value or a keyword. */
+export function isContentField(kind: DynamicFieldKind): boolean {
+  return kind === "text" || kind === "paragraphs"
+}
 /** Static description of one input field, provided by the tool. */
 export interface DynamicField {
   readonly id: string
@@ -164,7 +170,7 @@ export class DynamicInputController extends Observable {
       if (!fieldState) return null
       // A free-text field holds content, not a value: even "5" must reach the
       // session's `commitRaw` verbatim rather than being read as a number.
-      if (field.kind === "text") return null
+      if (isContentField(field.kind)) return null
       // A coordinate expression (e.g. `@30,0` or `50,100`) is not a plain
       // number — the comma separates X and Y. Fail the numeric resolution so
       // the session's `commitRaw` handler interprets the whole point instead.

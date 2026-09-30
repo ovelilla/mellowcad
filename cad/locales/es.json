@@ -20,6 +20,7 @@
       "block": "Crear bloque",
       "insert": "Insertar bloque",
       "text": "Texto",
+      "mtext": "Texto de líneas múltiples",
       "textedit": "Editar texto",
       "dimlinear": "Lineal",
       "dimaligned": "Alineada",
@@ -102,6 +103,7 @@
       "ellipse": "{count, plural, one {Elipse} other {Elipses}}",
       "polyline": "{count, plural, one {Polilínea} other {Polilíneas}}",
       "text": "{count, plural, one {Texto} other {Textos}}",
+      "mtext": "{count, plural, one {Texto M} other {Textos M}}",
       "dimension": "{count, plural, one {Cota} other {Cotas}}",
       "hatch": "{count, plural, one {Sombreado} other {Sombreados}}",
       "insert": "{count, plural, one {Referencia a bloque} other {Referencias a bloque}}"
@@ -150,6 +152,10 @@
         "justify": "Justificar",
         "height": "Altura",
         "rotation": "Rotación",
+        "lineSpaceFactor": "Factor de interlineado",
+        "lineSpaceDistance": "Distancia de interlineado",
+        "lineSpaceStyle": "Estilo de interlineado",
+        "definedWidth": "Anchura definida",
         "measurement": "Medidas",
         "textOverride": "Modificar texto",
         "type": "Tipo",
@@ -167,7 +173,9 @@
       "value": {
         "yes": "Sí",
         "no": "No",
-        "none": "—"
+        "none": "—",
+        "atLeast": "Al menos",
+        "exactly": "Exactamente"
       },
       "justify": {
         "left": "Izquierda",
@@ -195,258 +203,73 @@
   },
   "commands": {
     "names": {
-      "LINE": [
-        "LINEA",
-        "L"
-      ],
-      "PLINE": [
-        "POL",
-        "PL"
-      ],
-      "CIRCLE": [
-        "CIRCULO",
-        "C"
-      ],
-      "CIRCLED": [
-        "CIRCULOD"
-      ],
-      "CIRCLE2P": [
-        "CIRCULO2P"
-      ],
-      "CIRCLE3P": [
-        "CIRCULO3P"
-      ],
-      "ARC": [
-        "ARCO",
-        "A"
-      ],
-      "ARCSCE": [
-        "ARCOICF"
-      ],
-      "ARCCSE": [
-        "ARCOCIF"
-      ],
-      "ELLIPSE": [
-        "ELIPSE",
-        "EL"
-      ],
-      "ELLIPSEC": [
-        "ELIPSEC"
-      ],
-      "ELLIPSEARC": [
-        "ELIPSEARCO"
-      ],
-      "RECTANG": [
-        "RECTANG",
-        "REC"
-      ],
-      "POLYGON": [
-        "POLIGONO",
-        "PG"
-      ],
-      "HATCH": [
-        "SOMBREA",
-        "SB",
-        "SMB"
-      ],
-      "BLOCK": [
-        "BLOQUE",
-        "BQ"
-      ],
-      "INSERT": [
-        "INSERT",
-        "IN"
-      ],
-      "TEXT": [
-        "TEXTO",
-        "T"
-      ],
-      "TEXTEDIT": [
-        "EDITARTEXTO",
-        "ED",
-        "DDEDIC"
-      ],
-      "DIMLINEAR": [
-        "ACOLINEAL",
-        "ACOLIN",
-        "DIMLIN"
-      ],
-      "DIMALIGNED": [
-        "ACOALINEADA",
-        "ACOALI"
-      ],
-      "DIMRADIUS": [
-        "ACORADIO",
-        "ACORAD"
-      ],
-      "DIMDIAMETER": [
-        "ACODIAMETRO",
-        "ACODIA"
-      ],
-      "DIMANGULAR": [
-        "ACOANGULO",
-        "ACOANG",
-        "ACOANGULAR"
-      ],
-      "DIMBASELINE": [
-        "ACOLINEABASE",
-        "ACOLINE"
-      ],
-      "DIMCONTINUE": [
-        "ACOCONTINUA",
-        "ACOCONT"
-      ],
-      "DIMSPACE": [
-        "ACOESPAC"
-      ],
-      "OFFSET": [
-        "DESFASE",
-        "DF",
-        "EQ"
-      ],
-      "MOVE": [
-        "DESPLAZA",
-        "D"
-      ],
-      "COPY": [
-        "COPIA",
-        "CP",
-        "DUP"
-      ],
-      "STRETCH": [
-        "ESTIRA",
-        "EI"
-      ],
-      "ROTATE": [
-        "GIRA",
-        "GI"
-      ],
-      "SCALE": [
-        "ESCALA",
-        "ES"
-      ],
-      "MIRROR": [
-        "SIMETRIA",
-        "SI"
-      ],
-      "ARRAYRECT": [
-        "MATRIZRECTANG",
-        "MA",
-        "MATRIZ"
-      ],
-      "ARRAYPOLAR": [
-        "MATRIZPOLAR"
-      ],
-      "ARRAYPATH": [
-        "MATRIZCAMINO"
-      ],
-      "TRIM": [
-        "RECORTA",
-        "RR"
-      ],
-      "EXTEND": [
-        "ALARGA",
-        "AL"
-      ],
-      "FILLET": [
-        "EMPALME",
-        "MP"
-      ],
-      "CHAMFER": [
-        "CHAFLAN",
-        "CH"
-      ],
-      "EXPLODE": [
-        "DESCOMP",
-        "DP"
-      ],
-      "JOIN": [
-        "UNIR",
-        "U"
-      ],
-      "BREAK": [
-        "PARTE",
-        "P"
-      ],
-      "BREAKATPOINT": [
-        "PARTIRENPUNTO"
-      ],
-      "MATCHPROP": [
-        "IGUALARPROP",
-        "IP",
-        "COPARPROP"
-      ],
-      "COPYCLIP": [
-        "COPIAPP"
-      ],
-      "CUTCLIP": [
-        "CORTAPP"
-      ],
-      "COPYBASE": [
-        "COPIARBASE"
-      ],
-      "DIST": [
-        "DIST",
-        "DI"
-      ],
-      "AREA": [
-        "AREA",
-        "AA"
-      ],
-      "ZOOM": [
-        "ZOOM",
-        "Z"
-      ],
-      "PAN": [
-        "ENCUADRE",
-        "E"
-      ],
-      "ERASE": [
-        "BORRA",
-        "B"
-      ],
-      "UNDO": [
-        "DESHACER",
-        "H"
-      ],
-      "REDO": [
-        "REHACER"
-      ],
-      "SNAP": [
-        "FORZCURSOR",
-        "FC"
-      ],
-      "FROM": [
-        "DESDE"
-      ],
-      "QSAVE": [
-        "GUARDARR",
-        "GUARDAR",
-        "GUARDARCOMO"
-      ],
-      "OPEN": [
-        "ABRE"
-      ],
-      "PASTECLIP": [
-        "PEGAPP"
-      ],
-      "DIMSTYLE": [
-        "ACOESTIL",
-        "ACES",
-        "ACOEST",
-        "AES"
-      ],
-      "STYLE": [
-        "ESTILO",
-        "EST"
-      ],
-      "BLOCKSPALETTE": [
-        "PALETABLOQUES"
-      ],
-      "PURGE": [
-        "LIMPIA",
-        "LI"
-      ]
+      "LINE": ["LINEA", "L"],
+      "PLINE": ["POL", "PL"],
+      "CIRCLE": ["CIRCULO", "C"],
+      "CIRCLED": ["CIRCULOD"],
+      "CIRCLE2P": ["CIRCULO2P"],
+      "CIRCLE3P": ["CIRCULO3P"],
+      "ARC": ["ARCO", "A"],
+      "ARCSCE": ["ARCOICF"],
+      "ARCCSE": ["ARCOCIF"],
+      "ELLIPSE": ["ELIPSE", "EL"],
+      "ELLIPSEC": ["ELIPSEC"],
+      "ELLIPSEARC": ["ELIPSEARCO"],
+      "RECTANG": ["RECTANG", "REC"],
+      "POLYGON": ["POLIGONO", "PG"],
+      "HATCH": ["SOMBREA", "SB", "SMB"],
+      "BLOCK": ["BLOQUE", "BQ"],
+      "INSERT": ["INSERT", "IN"],
+      "TEXT": ["TEXTO", "T"],
+      "MTEXT": ["TEXTOM"],
+      "-MTEXT": ["-TEXTOM"],
+      "TEXTEDIT": ["EDITARTEXTO", "ED", "DDEDIC"],
+      "DIMLINEAR": ["ACOLINEAL", "ACOLIN", "DIMLIN"],
+      "DIMALIGNED": ["ACOALINEADA", "ACOALI"],
+      "DIMRADIUS": ["ACORADIO", "ACORAD"],
+      "DIMDIAMETER": ["ACODIAMETRO", "ACODIA"],
+      "DIMANGULAR": ["ACOANGULO", "ACOANG", "ACOANGULAR"],
+      "DIMBASELINE": ["ACOLINEABASE", "ACOLINE"],
+      "DIMCONTINUE": ["ACOCONTINUA", "ACOCONT"],
+      "DIMSPACE": ["ACOESPAC"],
+      "OFFSET": ["DESFASE", "DF", "EQ"],
+      "MOVE": ["DESPLAZA", "D"],
+      "COPY": ["COPIA", "CP", "DUP"],
+      "STRETCH": ["ESTIRA", "EI"],
+      "ROTATE": ["GIRA", "GI"],
+      "SCALE": ["ESCALA", "ES"],
+      "MIRROR": ["SIMETRIA", "SI"],
+      "ARRAYRECT": ["MATRIZRECTANG", "MA", "MATRIZ"],
+      "ARRAYPOLAR": ["MATRIZPOLAR"],
+      "ARRAYPATH": ["MATRIZCAMINO"],
+      "TRIM": ["RECORTA", "RR"],
+      "EXTEND": ["ALARGA", "AL"],
+      "FILLET": ["EMPALME", "MP"],
+      "CHAMFER": ["CHAFLAN", "CH"],
+      "EXPLODE": ["DESCOMP", "DP"],
+      "JOIN": ["UNIR", "U"],
+      "BREAK": ["PARTE", "P"],
+      "BREAKATPOINT": ["PARTIRENPUNTO"],
+      "MATCHPROP": ["IGUALARPROP", "IP", "COPARPROP"],
+      "COPYCLIP": ["COPIAPP"],
+      "CUTCLIP": ["CORTAPP"],
+      "COPYBASE": ["COPIARBASE"],
+      "DIST": ["DIST", "DI"],
+      "AREA": ["AREA", "AA"],
+      "ZOOM": ["ZOOM", "Z"],
+      "PAN": ["ENCUADRE", "E"],
+      "ERASE": ["BORRA", "B"],
+      "UNDO": ["DESHACER", "H"],
+      "REDO": ["REHACER"],
+      "SNAP": ["FORZCURSOR", "FC"],
+      "FROM": ["DESDE"],
+      "QSAVE": ["GUARDARR", "GUARDAR", "GUARDARCOMO"],
+      "OPEN": ["ABRE"],
+      "PASTECLIP": ["PEGAPP"],
+      "DIMSTYLE": ["ACOESTIL", "ACES", "ACOEST", "AES"],
+      "STYLE": ["ESTILO", "EST"],
+      "BLOCKSPALETTE": ["PALETABLOQUES"],
+      "PURGE": ["LIMPIA", "LI"]
     },
     "keywords": {
       "LINE": {
@@ -506,6 +329,25 @@
         "BL": "II",
         "BC": "IC",
         "BR": "ID"
+      },
+      "MTEXT": {
+        "Height": "aLtura",
+        "Justify": "Justificar",
+        "Line spacing": "Interlineado",
+        "Rotation": "Rotación",
+        "Style": "Estilo",
+        "Width": "aNchura",
+        "TL": "SI",
+        "TC": "SC",
+        "TR": "SD",
+        "ML": "MI",
+        "MC": "MC",
+        "MR": "MD",
+        "BL": "II",
+        "BC": "IC",
+        "BR": "ID",
+        "At least": "Mínimo",
+        "Exactly": "Exactamente"
       },
       "TEXTEDIT": {
         "Undo": "desHacer",
@@ -645,6 +487,12 @@
       "text": "Texto",
       "justify": "Justificar",
       "styleName": "Nombre de estilo",
+      "mtextFirstCorner": "Precise primera esquina",
+      "mtextOppositeCorner": "Precise esquina opuesta",
+      "mtextRotation": "Precise ángulo de rotación",
+      "mtextWidth": "Precise anchura",
+      "mtextLineSpacing": "Indique factor o distancia de interlineado",
+      "mtextLine": "TextoM",
       "firstExtensionOrigin": "Designe el origen de la primera línea de referencia o '<'designar objeto>",
       "secondExtensionOrigin": "Designe el origen de la segunda línea de referencia",
       "nextExtensionOrigin": "Designe un origen de la segunda línea de referencia",

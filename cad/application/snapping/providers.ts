@@ -200,13 +200,11 @@ export const insertionProvider: SnapProvider = {
     const candidates: SnapCandidate[] = []
     for (const entity of document.getEntities()) {
       if (!document.isEntityVisible(entity)) continue
-      if (entity.type === "text") {
-        candidates.push({
-          type: SnapType.Insertion,
-          point: entity.position,
-          sourceIds: [entity.id],
-        })
-      } else if (entity.type === "insert") {
+      if (
+        entity.type === "text" ||
+        entity.type === "mtext" ||
+        entity.type === "insert"
+      ) {
         candidates.push({
           type: SnapType.Insertion,
           point: entity.position,

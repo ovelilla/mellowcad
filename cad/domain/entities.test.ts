@@ -327,6 +327,15 @@ function expectSameShape(actual: Entity, expected: Entity, precision = 6) {
     expect(actual.rotation).toBeCloseToAngle(expected.rotation, precision)
     expect(actual.value).toBe(expected.value)
     expect(actual.justify).toBe(expected.justify)
+  } else if (actual.type === "mtext" && expected.type === "mtext") {
+    expect(actual.position).toBeCloseToPoint(expected.position, precision)
+    expect(actual.height).toBeCloseTo(expected.height, precision)
+    expect(actual.width).toBeCloseTo(expected.width, precision)
+    expect(actual.rotation).toBeCloseToAngle(expected.rotation, precision)
+    expect(actual.contents).toBe(expected.contents)
+    expect(actual.attachment).toBe(expected.attachment)
+    expect(actual.lineSpacingStyle).toBe(expected.lineSpacingStyle)
+    expect(actual.lineSpacingFactor).toBe(expected.lineSpacingFactor)
   } else if (actual.type === "dimension" && expected.type === "dimension") {
     expect(actual.first).toBeCloseToPoint(expected.first, precision)
     expect(actual.second).toBeCloseToPoint(expected.second, precision)
@@ -380,6 +389,7 @@ function characteristicPoints(entity: Entity): Vec2[] {
     case "polyline":
       return [...entity.vertices]
     case "text":
+    case "mtext":
       return [entity.position]
     case "dimension":
       // Not `linePoint`: only its *projection* onto the measured axis is drawn,

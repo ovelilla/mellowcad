@@ -3,6 +3,7 @@ import {
   ArcEntity,
   EllipseEntity,
   TextEntity,
+  MTextEntity,
   DimensionEntity,
   HatchLoop,
   HatchEntity,
@@ -21,6 +22,7 @@ import {
 } from "./entityFactories"
 import { createEllipse } from "./ellipses"
 import { TextOptions, createText } from "./text"
+import { MTextOptions, createMText } from "./mtext"
 import {
   DimensionOptions,
   createDimension,
@@ -92,6 +94,24 @@ function textLike(
     justify: text.justify,
     styleId: text.styleId,
     layerId: text.layerId,
+  })
+}
+
+/** {@link textLike} for a multiline text object. */
+function mtextLike(
+  mtext: MTextEntity,
+  position: Vec2,
+  overrides: Pick<MTextOptions, "height" | "width" | "rotation"> = {}
+): MTextEntity {
+  return createMText(position, mtext.contents, {
+    height: overrides.height ?? mtext.height,
+    width: overrides.width ?? mtext.width,
+    rotation: overrides.rotation ?? mtext.rotation,
+    attachment: mtext.attachment,
+    lineSpacingStyle: mtext.lineSpacingStyle,
+    lineSpacingFactor: mtext.lineSpacingFactor,
+    styleId: mtext.styleId,
+    layerId: mtext.layerId,
   })
 }
 
@@ -194,6 +214,7 @@ export function translateEntity(entity: Entity, delta: Vec2): Entity {
         vertices: entity.vertices.map((v) => V.add(v, delta)),
       }
     case "text":
+    case "mtext":
       return { ...entity, position: V.add(entity.position, delta) }
     case "dimension":
       return {
@@ -245,6 +266,7 @@ export function stretchEntity(
     case "polyline":
       return { ...entity, vertices: entity.vertices.map(shift) }
     case "text":
+    case "mtext":
       // Text has no free vertices either: it rides along whole when its
       // insertion point is caught by the frame.
       return inFrame(entity.position)
@@ -322,6 +344,8 @@ export function copyEntity(entity: Entity, delta: Vec2): Entity {
         )
       case "text":
         return textLike(entity, V.add(entity.position, delta))
+      case "mtext":
+        return mtextLike(entity, V.add(entity.position, delta))
       case "dimension":
         return dimensionLike(
           entity,
@@ -392,6 +416,7 @@ export function rotateEntity(
         vertices: entity.vertices.map((v) => rotatePoint(v, pivot, radians)),
       }
     case "text":
+    case "mtext":
       return {
         ...entity,
         position: rotatePoint(entity.position, pivot, radians),
@@ -468,6 +493,10 @@ export function rotateEntityCopy(
         )
       case "text":
         return textLike(entity, rotatePoint(entity.position, pivot, radians), {
+          rotation: entity.rotation + radians,
+        })
+      case "mtext":
+        return mtextLike(entity, rotatePoint(entity.position, pivot, radians), {
           rotation: entity.rotation + radians,
         })
       case "dimension":
@@ -558,6 +587,13 @@ export function scaleEntity(
         position: scalePoint(entity.position, base, factor),
         height: entity.height * factor,
       }
+    case "mtext":
+      return {
+        ...entity,
+        position: scalePoint(entity.position, base, factor),
+        height: entity.height * factor,
+        width: entity.width * factor,
+      }
     case "dimension":
       // Only the definition points scale: the text and arrow sizes come from
       // the style, which AutoCAD scales through DIMSCALE rather than per object.
@@ -630,6 +666,11 @@ export function scaleEntityCopy(
       case "text":
         return textLike(entity, scalePoint(entity.position, base, factor), {
           height: entity.height * factor,
+        })
+      case "mtext":
+        return mtextLike(entity, scalePoint(entity.position, base, factor), {
+          height: entity.height * factor,
+          width: entity.width * factor,
         })
       case "dimension":
         return dimensionLike(
@@ -708,6 +749,7 @@ export function mirrorEntity(entity: Entity, a: Vec2, b: Vec2): Entity {
         ...(entity.bulges ? { bulges: negateBulges(entity.bulges) } : {}),
       }
     case "text":
+    case "mtext":
       // Only the insertion point reflects: AutoCAD's MIRRTEXT defaults to 0,
       // which keeps mirrored text upright and readable.
       return { ...entity, position: mirrorPoint(entity.position, a, b) }
@@ -806,6 +848,8 @@ export function mirrorEntityCopy(entity: Entity, a: Vec2, b: Vec2): Entity {
         )
       case "text":
         return textLike(entity, mirrorPoint(entity.position, a, b))
+      case "mtext":
+        return mtextLike(entity, mirrorPoint(entity.position, a, b))
       case "dimension":
         return dimensionLike(
           entity,

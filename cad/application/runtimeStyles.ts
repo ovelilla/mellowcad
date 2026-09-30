@@ -137,7 +137,12 @@ export function setSelectionTextStyle(
   if (selection.isEmpty() || !document.getTextStyle(id)) return
   for (const entityId of selection.toArray()) {
     const entity = document.get(entityId)
-    if (entity?.type !== "text" || entity.styleId === id) continue
+    if (
+      (entity?.type !== "text" && entity?.type !== "mtext") ||
+      entity.styleId === id
+    ) {
+      continue
+    }
     history.execute(new UpdateEntityCommand(assignTextStyle(entity, id)))
   }
 }

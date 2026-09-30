@@ -549,6 +549,7 @@ function entityAsGeom(entity: Entity): OffsetGeom | null {
         bulges: entity.bulges,
       }
     case "text":
+    case "mtext":
       return null // text has no parallel copy
     case "ellipse":
       // The parallel curve of an ellipse is not an ellipse — AutoCAD offsets
@@ -608,6 +609,7 @@ function computeOffset(
       return offsetPolyline(source, distance, side)
     case "ellipse":
     case "text":
+    case "mtext":
     case "dimension":
     case "hatch":
     case "insert":
@@ -678,6 +680,7 @@ function computeThrough(source: Entity, point: Vec2): OffsetGeom | null {
     }
     case "ellipse":
     case "text":
+    case "mtext":
     case "dimension":
     case "hatch":
     case "insert":

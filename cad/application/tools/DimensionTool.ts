@@ -50,9 +50,9 @@ import {
  * dimension line up or down and it measures horizontally, pull it left or right
  * and it measures vertically. That is the default gesture users rely on.
  *
- * AutoCAD's **Mtext** keyword is deliberately absent: it opens the multiline
- * text editor, and this app has no MTEXT object. The single-line **Text**
- * option covers the same need.
+ * AutoCAD's **Mtext** keyword is absent: it edits the dimension text in the
+ * multiline editor, and a dimension's text here is a single line. The
+ * single-line **Text** option covers the same need.
  */
 export class DimensionTool implements Tool {
   private state: DimensionToolState = { phase: "first" }
@@ -484,6 +484,7 @@ function measurableOrigins(entity: Entity, at: Vec2): [Vec2, Vec2] | null {
     }
     case "ellipse":
     case "text":
+    case "mtext":
     case "dimension":
     case "hatch":
     case "insert":

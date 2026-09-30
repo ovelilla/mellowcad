@@ -17,6 +17,9 @@ export type {
   PolylineEntity,
   TextJustify,
   TextEntity,
+  MTextAttachment,
+  LineSpacingStyle,
+  MTextEntity,
   DimensionKind,
   DimensionEntity,
   HatchLoop,
@@ -28,7 +31,7 @@ export type {
   Entity,
   Bounds,
 } from "./entityTypes"
-export { TEXT_JUSTIFICATIONS } from "./entityTypes"
+export { TEXT_JUSTIFICATIONS, MTEXT_ATTACHMENTS } from "./entityTypes"
 
 export type { HatchOptions, InsertOptions } from "./entityFactories"
 export {
@@ -82,6 +85,23 @@ export {
   textWidth,
   textCorners,
 } from "./text"
+
+export type { MTextOptions, MTextLine, MTextLayout } from "./mtext"
+export {
+  createMText,
+  MIN_LINE_SPACING_FACTOR,
+  MAX_LINE_SPACING_FACTOR,
+  clampLineSpacingFactor,
+  mtextPlainText,
+  mtextContents,
+  mtextLinePitch,
+  mtextLayout,
+  mtextAlign,
+  mtextToWorld,
+  mtextFromWorld,
+  mtextCorners,
+  mtextLineTexts,
+} from "./mtext"
 
 export type {
   DimensionOptions,

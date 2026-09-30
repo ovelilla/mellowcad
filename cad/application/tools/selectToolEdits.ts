@@ -4,8 +4,40 @@ import {
   createCircle,
   DimensionEntity,
   Entity,
+  MTextEntity,
+  mtextAlign,
+  mtextFromWorld,
+  mtextLayout,
+  mtextToWorld,
 } from "../../domain/entities"
 import { DimensionPoint } from "./selectToolState"
+
+/**
+ * Where a multiline text's width grip sits: at the top of the edge that moves
+ * when the width changes — the right one, or the left one for right-aligned
+ * text, whose right edge is pinned to its attachment point.
+ */
+export function mtextWidthGrip(mtext: MTextEntity): Vec2 {
+  const { x0, x1, y1 } = mtextLayout(mtext)
+  return mtextToWorld(
+    mtext,
+    mtextAlign(mtext.attachment) === "right" ? x0 : x1,
+    y1
+  )
+}
+
+/** The width that puts the moving edge of `mtext`'s box through `point`. */
+export function mtextWidthThrough(mtext: MTextEntity, point: Vec2): number {
+  const x = mtextFromWorld(mtext, point).x
+  switch (mtextAlign(mtext.attachment)) {
+    case "left":
+      return Math.max(x, 0)
+    case "right":
+      return Math.max(-x, 0)
+    case "center":
+      return 2 * Math.abs(x)
+  }
+}
 
 /**
  * The dimension with one definition point dragged to `point`. Moving an

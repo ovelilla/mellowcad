@@ -21,7 +21,7 @@ import {
   sameGrip,
   selectedGrips,
 } from "./selectToolGrips"
-import { movedDimension, withRadius } from "./selectToolEdits"
+import { movedDimension, mtextWidthGrip, withRadius } from "./selectToolEdits"
 
 type Phase<P extends SelectToolState["phase"]> = Extract<
   SelectToolState,
@@ -246,6 +246,22 @@ export function buildBulgeEdit(
   return [
     ...entityScenePrimitive(viewport, preview, stroke),
     ...gripPrimitives(viewport.worldToScreen(state.current), true),
+  ]
+}
+
+/** The rewrapped text and its hot width grip while the width is dragged. */
+export function buildMTextWidthEdit(
+  state: Phase<"mtextWidth">,
+  ctx: ToolContext
+): ScenePrimitive[] {
+  const { viewport } = ctx
+  const mtext = ctx.document.get(state.entityId)
+  if (mtext?.type !== "mtext") return []
+  const preview = { ...mtext, width: state.width }
+  const stroke: StrokeStyle = { color: THEME.preview, width: 1, dash: [6, 4] }
+  return [
+    ...entityScenePrimitive(viewport, preview, stroke),
+    ...gripPrimitives(viewport.worldToScreen(mtextWidthGrip(preview)), true),
   ]
 }
 

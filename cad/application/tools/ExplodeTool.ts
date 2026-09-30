@@ -1,10 +1,12 @@
 import {
   Entity,
   EntityId,
+  carryOverrides,
   copyEntity,
   createArc,
   createLine,
   insertGeometry,
+  mtextLineTexts,
   polylineSegmentGeometries,
 } from "../../domain/entities"
 import { ReplaceEntitiesCommand } from "../commands/entityCommands"
@@ -18,7 +20,8 @@ import { ToolContext } from "./Tool"
  * objects that compose the block, removing **one grouping level at a time**: a
  * nested block comes back as a nested block, to be exploded again, and the
  * objects "revert to their original properties" rather than keeping the ones
- * the reference lent them.
+ * the reference lent them. A multiline text becomes one single-line text per
+ * line as drawn ("Multiline Text — Explodes into text objects").
  *
  * Everything else is left untouched and reported, and one undo step reverts the
  * whole explode.
@@ -29,7 +32,7 @@ export class ExplodeTool extends SelectionActionTool {
 
   protected run(entities: readonly Entity[], ctx: ToolContext): void {
     const composite = entities.filter(
-      (e) => e.type === "polyline" || e.type === "insert"
+      (e) => e.type === "polyline" || e.type === "insert" || e.type === "mtext"
     )
     // AutoCAD accepts any object at the prompt and then says what it could not
     // do, rather than silently ignoring the picks.
@@ -53,6 +56,13 @@ export class ExplodeTool extends SelectionActionTool {
         // The definition's objects keep their ids inside the block, so each
         // piece is copied to mint one of its own.
         for (const part of parts) pieces.push(copyEntity(part, { x: 0, y: 0 }))
+        continue
+      }
+      if (entity.type === "mtext") {
+        removedIds.push(entity.id)
+        for (const line of mtextLineTexts(entity)) {
+          pieces.push(carryOverrides(entity, line))
+        }
         continue
       }
       if (entity.type !== "polyline") continue

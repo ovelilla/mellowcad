@@ -282,7 +282,12 @@ export class CadDocument extends Observable implements DocumentReader {
 
   textStyleInUse(id: TextStyleId): boolean {
     for (const entity of this.entities.values()) {
-      if (entity.type === "text" && entity.styleId === id) return true
+      if (
+        (entity.type === "text" || entity.type === "mtext") &&
+        entity.styleId === id
+      ) {
+        return true
+      }
     }
     return false
   }
@@ -470,7 +475,10 @@ export class CadDocument extends Observable implements DocumentReader {
     const onLayer = this.layers.has(entity.layerId)
       ? entity
       : assignEntityLayer(entity, DEFAULT_LAYER_ID)
-    if (onLayer.type === "text" && !this.textStyles.has(onLayer.styleId)) {
+    if (
+      (onLayer.type === "text" || onLayer.type === "mtext") &&
+      !this.textStyles.has(onLayer.styleId)
+    ) {
       return assignTextStyle(onLayer, DEFAULT_TEXT_STYLE_ID)
     }
     if (onLayer.type === "dimension" && !this.dimStyles.has(onLayer.styleId)) {

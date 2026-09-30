@@ -142,6 +142,10 @@ type's name in `interface.entity` (and its rows in `interface.property`), and `s
 `tools/selectToolGrips.ts`. The editing tools switch on the
 type too (`EdgeEditTool`, `BreakTool`, `OffsetTool`, `DimensionTool`, `lastDrawnPoint`): a type they
 cannot act on returns `null` explicitly rather than falling through.
+A type that wears a **text style** (text, mtext) is also named, by hand and without any compiler
+help, in `assignTextStyle`, `CadDocument.textStyleInUse` and `reconcile`, `setSelectionTextStyle`,
+`EngineState`'s `hasStyleOf` (style counts, the picker) and `clipboardSnapshot`; miss one and a style
+in use can be deleted, or a pasted object loses its style.
 Two of those are decisions, not chores. **Snapping is opt-in**: a hatch is in no provider at all
 because OSOPTIONS ships at 7, whose first bit reads "Object snaps ignore hatch objects" — look up
 what AutoCAD snaps to before wiring a type in. And the fast-check `entity` arbitrary in
@@ -275,6 +279,15 @@ shorter capitals, and the widths are what must agree) and **no kerning**, which 
 not model. Change any of the three alone and the box stops fitting the text. A glyph outside the
 table (CJK, Arabic) is drawn by a fallback face and measured as an average one. Dimension text still
 sits _above_ the dimension line (ISO's DIMTAD 1) rather than breaking it.
+
+**MTEXT keeps AutoCAD's contents string**, `\P` and escapes included, never plain text: the
+format codes, DXF and a pasted formatted text then need no change of model. `mtextPlainText` reads
+it (tolerantly: codes it does not draw vanish from the reading, never from the object) and
+`mtextContents` writes what was typed; nothing else parses or builds the string. What an MTEXT
+looks like — the wrapped lines, the box — is `mtextLayout`, derived every time, in the object's own
+frame; its attachment ids are TEXT's two-letter justifications, so `horizontalExtent` /
+`verticalExtent` hang both boxes. Single spacing is `TEXT_LINE_SPACING_FACTOR`, 5/3 of the height
+(ObjectARX's rule; the help rounds it to 1.66), for TEXT and MTEXT alike.
 
 A CAD text height and offset are stated in terms of the **capital letters**, so turning one into
 canvas needs two corrections, not one: the font size is divided by the family's cap-height ratio,

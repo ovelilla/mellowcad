@@ -22,6 +22,7 @@ import {
   createBlockDefinition,
   createDimension,
   createInsert,
+  createMText,
   type Entity,
 } from "../domain/entities"
 import { SnapType } from "./snapping/types"
@@ -509,6 +510,55 @@ describe("the engine's English surface", () => {
           .do("pick", (c) => c.click(at(20, 5)))
           .do("enter", (c) => c.enter())
           .do("double-click", (c) => c.doubleClick(at(20, 5)))
+          .do("escape", (c) => c.escape())
+    )
+    walk("MTEXT", createHarness(), (s) =>
+      s
+        .do("MTEXT", (c) => c.command("T"))
+        .do("first corner", (c) => c.click(at(0, 0)))
+        .do("H", (c) => answer(c, "H"))
+        .do("height", (c) => c.type("10"))
+        .do("enter", (c) => c.enter())
+        .do("J", (c) => answer(c, "J"))
+        .do("MC", (c) => c.option("MC"))
+        .do("L", (c) => answer(c, "L"))
+        .do("E", (c) => answer(c, "E"))
+        .do("spacing", (c) => c.type("1.5x"))
+        .do("enter", (c) => c.enter())
+        .do("R", (c) => answer(c, "R"))
+        .do("rotation", (c) => c.type("0"))
+        .do("enter", (c) => c.enter())
+        .do("S", (c) => answer(c, "S"))
+        .do("missing style", (c) => c.type("Fancy"))
+        .do("enter", (c) => c.enter())
+        .do("Standard", (c) => c.type("Standard"))
+        .do("enter", (c) => c.enter())
+        .do("W", (c) => answer(c, "W"))
+        .do("width", (c) => c.type("120"))
+        .do("enter", (c) => c.enter())
+        .do("content", (c) => c.type("FIRST LINE\nSECOND"))
+        .do("ctrl+enter", (c) => c.enter())
+        .do("select", (c) => c.select(c.latest().id))
+    )
+    walk("-MTEXT", createHarness(), (s) =>
+      s
+        .do("-MTEXT", (c) => c.command("-MTEXT"))
+        .do("first corner", (c) => c.click(at(0, 0)))
+        .do("opposite corner", (c) => c.click(at(200, -100)))
+        .do("line", (c) => c.type("ONE"))
+        .do("enter", (c) => c.enter())
+        .do("enter", (c) => c.enter())
+    )
+    walk(
+      "MTEXT edit",
+      createHarness({
+        entities: [
+          createMText(p(0, 0), "OLD\\PLINES", { height: 10, width: 200 }),
+        ],
+      }),
+      (s) =>
+        s
+          .do("double-click", (c) => c.doubleClick(at(10, -5)))
           .do("escape", (c) => c.escape())
     )
   })

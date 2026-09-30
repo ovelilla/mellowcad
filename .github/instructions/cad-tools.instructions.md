@@ -94,6 +94,8 @@ on the document instead (LTSCALE) or on a style table (DIMSCALE).
   afterwards makes the UI lag by one action.
 - **Never clear accumulated state in `onKeyDown`** when `onDeactivate` is the commit point: the
   runtime calls `onKeyDown` first, so Escape would race the commit and discard the user's work.
+  The one exception is an editor whose Escape _is_ "discard" (MTEXT's, and TEXTEDIT on an MTEXT):
+  it resets its state there on purpose, and `onDeactivate` then finds nothing to keep.
 - One gesture = one command. Splits and multi-entity edits use `ReplaceEntitiesCommand` /
   `UpdateEntitiesCommand` so a single Ctrl+Z undoes the whole operation.
 - A tool offering its own **Undo keyword** must count its own edits and refuse when there are
@@ -124,6 +126,10 @@ There is a single session at a time. Patterns in use:
   `_` rules as every other prompt, and echoes the list with `ctx.text.keywordList(ids)` so the
   command line still shows AutoCAD's prompt. Editing an existing value preloads the field with `setText` after
   `open`, and the tool hides the object it is editing (`hiddenEntityIds`).
+- **Multi-line text** — one field of kind `"paragraphs"` (MTEXT's editor): a content field like
+  `"text"` (`isContentField` is the test; never compare the kind with `"text"` alone), rendered as
+  a textarea where Enter breaks a line and Ctrl+Enter reaches `commitRaw`. In the harness `type`
+  writes the newlines and `enter()` is that Ctrl+Enter.
 
 ## Command options (keywords)
 
@@ -137,6 +143,10 @@ mode and registered once per mode**. When AutoCAD's own first prompt can switch 
 `active` field that `invokeOption` changes and `onActivate` / Escape reset. Dropping the keywords
 because the rail already offers the variants is a fidelity bug — typing `EL` then `C` is how the
 command is actually used.
+
+A **dash command** that only takes its input differently (`-MTEXT`) is not a tool or a rail entry:
+`runtimeCommands` registers it against the tool's id, starts the tool and then switches its entry
+(`MTextTool.useCommandLine()`), so the prompts and keywords stay the plain command's.
 
 A bracketed `<Default>` is implemented in the prompt's `commitRaw`: **empty text means Enter, so
 take the default** (DIMLINEAR's `<select object>`, DIMBASELINE's `<Select>`). Never spend a keyword

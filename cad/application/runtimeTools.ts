@@ -11,6 +11,7 @@ import { HatchTool } from "./tools/HatchTool"
 import { BlockTool } from "./tools/BlockTool"
 import { InsertTool } from "./tools/InsertTool"
 import { TextTool } from "./tools/TextTool"
+import { MTextTool } from "./tools/MTextTool"
 import { TextEditTool } from "./tools/TextEditTool"
 import { DimensionTool } from "./tools/DimensionTool"
 import { DimensionChainTool } from "./tools/DimensionChainTool"
@@ -71,6 +72,7 @@ export function defaultTools(
     new BlockTool(),
     insert,
     new TextTool(),
+    new MTextTool(),
     textEdit,
     new DimensionTool("linear", "dimlinear"),
     new DimensionTool("aligned", "dimaligned"),

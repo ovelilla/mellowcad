@@ -196,7 +196,7 @@ agree about which side of a nested loop is inside.
 ## Double-click
 
 `CadRuntime.doubleClick` is AutoCAD's DBLCLKEDIT: it acts only at the neutral prompt and opens
-whatever object is under the cursor for editing (today, text → TEXTEDIT). Extend that one method
+whatever object is under the cursor for editing (today, text and multiline text → TEXTEDIT). Extend that one method
 for each newly editable type rather than adding another adapter listener.
 
 ## Adapters

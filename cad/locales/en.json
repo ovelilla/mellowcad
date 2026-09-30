@@ -20,6 +20,7 @@
       "block": "Create block",
       "insert": "Insert block",
       "text": "Text",
+      "mtext": "Multiline text",
       "textedit": "Edit text",
       "dimlinear": "Linear",
       "dimaligned": "Aligned",
@@ -114,6 +115,7 @@
       "ellipse": "{count, plural, one {Ellipse} other {Ellipses}}",
       "polyline": "{count, plural, one {Polyline} other {Polylines}}",
       "text": "{count, plural, one {Text} other {Texts}}",
+      "mtext": "{count, plural, one {MText} other {MTexts}}",
       "dimension": "{count, plural, one {Dimension} other {Dimensions}}",
       "hatch": "{count, plural, one {Hatch} other {Hatches}}",
       "insert": "{count, plural, one {Block reference} other {Block references}}"
@@ -162,6 +164,10 @@
         "justify": "Justify",
         "height": "Height",
         "rotation": "Rotation",
+        "lineSpaceFactor": "Line space factor",
+        "lineSpaceDistance": "Line space distance",
+        "lineSpaceStyle": "Line space style",
+        "definedWidth": "Defined width",
         "measurement": "Measurement",
         "textOverride": "Text override",
         "type": "Type",
@@ -179,7 +185,9 @@
       "value": {
         "yes": "Yes",
         "no": "No",
-        "none": "—"
+        "none": "—",
+        "atLeast": "At least",
+        "exactly": "Exactly"
       },
       "justify": {
         "left": "Left",
@@ -225,6 +233,8 @@
       "BLOCK": ["BLOCK", "B"],
       "INSERT": ["INSERT", "I"],
       "TEXT": ["TEXT", "DT", "DTEXT"],
+      "MTEXT": ["MTEXT", "T", "MT"],
+      "-MTEXT": ["-MTEXT"],
       "TEXTEDIT": ["TEXTEDIT", "DDEDIT", "ED"],
       "DIMLINEAR": ["DIMLINEAR", "DIMLIN", "DLI"],
       "DIMALIGNED": ["DIMALIGNED", "DIMALI", "DAL"],
@@ -275,7 +285,12 @@
     },
     "keywords": {
       "LINE": { "Close": "Close", "Undo": "Undo" },
-      "PLINE": { "Arc": "Arc", "Line": "Line", "Close": "Close", "Undo": "Undo" },
+      "PLINE": {
+        "Arc": "Arc",
+        "Line": "Line",
+        "Close": "Close",
+        "Undo": "Undo"
+      },
       "ELLIPSE": {
         "Arc": "Arc",
         "Center": "Center",
@@ -299,7 +314,10 @@
         "Inscribed": "Inscribed",
         "Circumscribed": "Circumscribed"
       },
-      "HATCH": { "Properties": "Properties", "Select objects": "Select objects" },
+      "HATCH": {
+        "Properties": "Properties",
+        "Select objects": "Select objects"
+      },
       "INSERT": { "Scale": "Scale", "Rotate": "Rotate" },
       "TEXT": {
         "Justify": "Justify",
@@ -317,6 +335,25 @@
         "BL": "BL",
         "BC": "BC",
         "BR": "BR"
+      },
+      "MTEXT": {
+        "Height": "Height",
+        "Justify": "Justify",
+        "Line spacing": "Line spacing",
+        "Rotation": "Rotation",
+        "Style": "Style",
+        "Width": "Width",
+        "TL": "TL",
+        "TC": "TC",
+        "TR": "TR",
+        "ML": "ML",
+        "MC": "MC",
+        "MR": "MR",
+        "BL": "BL",
+        "BC": "BC",
+        "BR": "BR",
+        "At least": "At least",
+        "Exactly": "Exactly"
       },
       "TEXTEDIT": {
         "Undo": "Undo",
@@ -354,7 +391,11 @@
       "ROTATE": { "Copy": "Copy", "Reference": "Reference" },
       "SCALE": { "Copy": "Copy", "Reference": "Reference" },
       "MIRROR": { "Yes": "Yes", "No": "No" },
-      "ARRAYPOLAR": { "Rotate items": "Rotate items", "Yes": "Yes", "No": "No" },
+      "ARRAYPOLAR": {
+        "Rotate items": "Rotate items",
+        "Yes": "Yes",
+        "No": "No"
+      },
       "ARRAYPATH": {
         "Method": "Method",
         "Align items": "Align items",
@@ -415,6 +456,12 @@
       "text": "Text",
       "justify": "Justify",
       "styleName": "Style name",
+      "mtextFirstCorner": "Specify first corner",
+      "mtextOppositeCorner": "Specify opposite corner",
+      "mtextRotation": "Specify rotation angle",
+      "mtextWidth": "Specify width",
+      "mtextLineSpacing": "Enter line spacing factor or distance",
+      "mtextLine": "MText",
       "firstExtensionOrigin": "Specify first extension line origin or '<'select object>",
       "secondExtensionOrigin": "Specify second extension line origin",
       "nextExtensionOrigin": "Specify a second extension line origin",

@@ -40,7 +40,7 @@ import {
  * keep working. What is being typed is drawn in place, at its true size and
  * angle, so the drawing still shows the result as it grows.
  *
- * The two-point justifications (Align and Fit) and MTEXT are not implemented.
+ * The two-point justifications (Align and Fit) are not implemented.
  */
 export class TextTool implements Tool {
   readonly id = "text"

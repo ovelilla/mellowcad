@@ -10,10 +10,13 @@ import {
 import {
   BlockDefinition,
   BlockId,
+  DimensionEntity,
   Entity,
   EntityId,
   EntityProperty,
   EntityType,
+  MTextEntity,
+  TextEntity,
   arcLength,
   arcSweepAngle,
   circleArea,
@@ -30,10 +33,16 @@ import {
   polylineSegments,
   dimensionMeasurement,
   dimensionMeasurementUnit,
+  mtextLinePitch,
+  mtextPlainText,
 } from "../domain/entities"
 import { SnapType } from "./snapping/types"
 import { SnapModeType } from "./SnapMode"
-import { DynamicFieldKind, DynamicInputController } from "./input/DynamicInput"
+import {
+  DynamicFieldKind,
+  DynamicInputController,
+  isContentField,
+} from "./input/DynamicInput"
 import { isCoordinateExpression } from "./input/coordinateInput"
 import { CommandLineEntry, CommandSuggestion } from "./CommandLine"
 import { SaveState } from "./Autosave"
@@ -341,10 +350,20 @@ function styleCounts(
 ): Map<string, number> {
   const counts = new Map<string, number>()
   for (const entity of entities) {
-    if (entity.type !== type) continue
+    if (!hasStyleOf(entity, type)) continue
     counts.set(entity.styleId, (counts.get(entity.styleId) ?? 0) + 1)
   }
   return counts
+}
+
+/** Whether `entity` takes a style from the table `type` names. */
+function hasStyleOf(
+  entity: Entity,
+  type: "text" | "dimension"
+): entity is TextEntity | MTextEntity | DimensionEntity {
+  return type === "text"
+    ? entity.type === "text" || entity.type === "mtext"
+    : entity.type === "dimension"
 }
 
 export function buildTextStyleInfos(
@@ -397,7 +416,7 @@ export function commonStyleId(
 ): string | null {
   let shared: string | null = null
   for (const entity of entities) {
-    if (entity.type !== type) continue
+    if (!hasStyleOf(entity, type)) continue
     if (shared === null) shared = entity.styleId
     else if (shared !== entity.styleId) return null
   }
@@ -456,7 +475,7 @@ export function buildDynamicInputUi(
   //
   // A free-text field is exempt: a comma is ordinary content there, not the
   // separator of a point.
-  const typeable = fields.filter((f) => f.kind !== "text")
+  const typeable = fields.filter((f) => !isContentField(f.kind))
   const coordinate =
     typeable.find((f) => isCoordinateExpression(f.value)) ??
     typeable.find((f) => f.kind === "coordinate")
@@ -496,6 +515,7 @@ function formatFieldValue(
     case "number":
     case "coordinate":
     case "text":
+    case "paragraphs":
       return String(value)
   }
 }
@@ -513,6 +533,7 @@ function fieldUnitSuffix(
     case "number":
     case "coordinate":
     case "text":
+    case "paragraphs":
       return ""
   }
 }
@@ -718,6 +739,43 @@ function singleEntityInfo(
               "rotation",
               normalizeDegrees((entity.rotation * 180) / Math.PI)
             ),
+          ]),
+          group("position", [
+            coordRow("x", "positionX", entity.position.x),
+            coordRow("y", "positionY", entity.position.y),
+          ]),
+        ],
+      }
+    }
+    case "mtext": {
+      return {
+        title: title("mtext"),
+        count: 1,
+        groups: [
+          group("text", [
+            row("contents", mtextPlainText(entity.contents)),
+            row("justify", text.justify(entity.attachment)),
+            lengthRow("height", "textHeight", entity.height),
+            angleRow(
+              "rotation",
+              "rotation",
+              normalizeDegrees((entity.rotation * 180) / Math.PI)
+            ),
+            {
+              ...row("lineSpaceFactor", `${entity.lineSpacingFactor}x`),
+              edit: {
+                property: "lineSpaceFactor",
+                text: String(entity.lineSpacingFactor),
+                unit: "x",
+              },
+            },
+            lengthRow(
+              "lineSpaceDistance",
+              "lineSpaceDistance",
+              mtextLinePitch(entity)
+            ),
+            row("lineSpaceStyle", text.propertyValue(entity.lineSpacingStyle)),
+            lengthRow("definedWidth", "definedWidth", entity.width),
           ]),
           group("position", [
             coordRow("x", "positionX", entity.position.x),

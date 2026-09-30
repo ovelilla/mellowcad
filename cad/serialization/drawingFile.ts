@@ -30,10 +30,13 @@ import {
   BlockDefinition,
   createBlockDefinition,
   createEllipse,
+  createMText,
   Entity,
   nextEntityId,
   DimensionKind,
   HatchLoop,
+  MTEXT_ATTACHMENTS,
+  MTextAttachment,
   TEXT_JUSTIFICATIONS,
   TextJustify,
 } from "../domain/entities"
@@ -78,7 +81,7 @@ import { DRAWING_FILE_TYPE } from "./drawingSummary"
 export { DRAWING_FILE_TYPE }
 
 /** Current schema version written by {@link serializeDrawing}. */
-export const DRAWING_FILE_VERSION = 17
+export const DRAWING_FILE_VERSION = 18
 
 /** MIME type a serialised drawing is handed to the host as. */
 export const DRAWING_FILE_MIME_TYPE = "application/json"
@@ -296,6 +299,22 @@ function cloneEntity(entity: Entity): Entity {
         height: entity.height,
         rotation: entity.rotation,
         justify: entity.justify,
+        styleId: entity.styleId,
+      }
+    case "mtext":
+      return {
+        id: entity.id,
+        type: "mtext",
+        layerId: entity.layerId,
+        ...overrides,
+        position: { x: entity.position.x, y: entity.position.y },
+        contents: entity.contents,
+        height: entity.height,
+        width: entity.width,
+        rotation: entity.rotation,
+        attachment: entity.attachment,
+        lineSpacingStyle: entity.lineSpacingStyle,
+        lineSpacingFactor: entity.lineSpacingFactor,
         styleId: entity.styleId,
       }
     case "dimension":
@@ -553,6 +572,34 @@ function parseEntity(raw: unknown): Entity | null {
           ? (raw.justify as TextJustify)
           : "left",
         styleId: parseId(raw.styleId, DEFAULT_TEXT_STYLE_ID),
+      }
+    }
+    case "mtext": {
+      const position = parseVec2(raw.position)
+      if (!position || typeof raw.contents !== "string") return null
+      return {
+        ...createMText(position, raw.contents, {
+          height:
+            isFiniteNumber(raw.height) && raw.height > 0
+              ? raw.height
+              : DEFAULT_TEXT_HEIGHT,
+          width: isFiniteNumber(raw.width) ? raw.width : 0,
+          rotation: isFiniteNumber(raw.rotation) ? raw.rotation : 0,
+          attachment: MTEXT_ATTACHMENTS.includes(
+            raw.attachment as MTextAttachment
+          )
+            ? (raw.attachment as MTextAttachment)
+            : "tl",
+          lineSpacingStyle:
+            raw.lineSpacingStyle === "exactly" ? "exactly" : "atLeast",
+          lineSpacingFactor: isFiniteNumber(raw.lineSpacingFactor)
+            ? raw.lineSpacingFactor
+            : 1,
+          styleId: parseId(raw.styleId, DEFAULT_TEXT_STYLE_ID),
+          layerId,
+          id,
+        }),
+        ...overrides,
       }
     }
     case "dimension": {

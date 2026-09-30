@@ -4,6 +4,7 @@ import type { CommandOptionUi } from "./EngineState"
 import type { EngineText, PromptSegment } from "./EngineText"
 import { offerKeywords } from "../i18n/keywords"
 import { Tool } from "./tools/Tool"
+import { MTextTool } from "./tools/MTextTool"
 
 /**
  * Builds the command table: one command per tool (using AutoCAD's names and
@@ -40,6 +41,17 @@ export function registerCommands(
     },
   })
   register({ id: "UNDO", run: () => runtime.undo() })
+  // -MTEXT is MTEXT with the text typed at the command line, so it runs the
+  // same tool and switches its entry.
+  register({
+    id: "-MTEXT",
+    tool: "mtext",
+    run: () => {
+      startTool("mtext")
+      const tool = runtime.listTools().find((t) => t.id === "mtext")
+      if (tool instanceof MTextTool) tool.useCommandLine()
+    },
+  })
   register({ id: "REDO", run: () => runtime.redo() })
   register({
     id: "SNAP",

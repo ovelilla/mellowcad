@@ -1,6 +1,8 @@
 import fc from "fast-check"
 import {
   createBlockDefinition,
+  MTEXT_ATTACHMENTS,
+  mtextContents,
   TEXT_JUSTIFICATIONS,
   type ArcEntity,
   type CircleEntity,
@@ -10,6 +12,7 @@ import {
   type HatchEntity,
   type InsertEntity,
   type LineEntity,
+  type MTextEntity,
   type PolylineEntity,
   type TextEntity,
 } from "../cad/domain/entities"
@@ -230,6 +233,47 @@ export const textEntity: fc.Arbitrary<TextEntity> = fc
     )
   )
 
+/** Paragraphs of typed text, so the contents carry `\P` and escapes. */
+export const mtextEntity: fc.Arbitrary<MTextEntity> = fc
+  .tuple(
+    point,
+    fc.array(fc.string({ maxLength: 16 }), { minLength: 1, maxLength: 4 }),
+    positiveLength,
+    fc.oneof(fc.constant(0), positiveLength),
+    angle,
+    fc.constantFrom(...MTEXT_ATTACHMENTS),
+    fc.constantFrom("atLeast" as const, "exactly" as const),
+    fc.integer({ min: 1, max: 16 }).map((n) => n / 4)
+  )
+  .map(
+    ([
+      position,
+      paragraphs,
+      height,
+      width,
+      rotation,
+      attachment,
+      lineSpacingStyle,
+      lineSpacingFactor,
+    ]) =>
+      withId<MTextEntity>(
+        {
+          type: "mtext",
+          layerId: DEFAULT_LAYER_ID,
+          position,
+          contents: mtextContents(paragraphs.join("\n")),
+          height,
+          width,
+          rotation,
+          attachment,
+          lineSpacingStyle,
+          lineSpacingFactor,
+          styleId: DEFAULT_TEXT_STYLE_ID,
+        },
+        "mtext"
+      )
+  )
+
 export const dimensionEntity: fc.Arbitrary<DimensionEntity> = fc
   .tuple(
     point,
@@ -307,6 +351,7 @@ export const entity: fc.Arbitrary<Entity> = fc.oneof(
   ellipseEntity,
   polylineEntity,
   textEntity,
+  mtextEntity,
   dimensionEntity,
   hatchEntity,
   insertEntity

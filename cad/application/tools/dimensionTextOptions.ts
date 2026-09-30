@@ -6,8 +6,8 @@ import { ToolContext } from "./Tool"
 /**
  * The Text and Angle keywords every dimension command offers, in one place so
  * each of them asks with the same words. AutoCAD's third keyword, **Mtext**,
- * has no counterpart here: it opens the multiline text editor and this app has
- * no MTEXT object, so Text covers the same need.
+ * has no counterpart here: it edits the text in the multiline editor, and a
+ * dimension's text here is a single line, so Text covers the same need.
  */
 
 /**

@@ -24,6 +24,7 @@ export const en: EngineCatalog = {
       "block": "Create block",
       "insert": "Insert block",
       "text": "Text",
+      "mtext": "Multiline text",
       "textedit": "Edit text",
       "dimlinear": "Linear",
       "dimaligned": "Aligned",
@@ -166,6 +167,16 @@ export const en: EngineCatalog = {
           }
         ]
       ],
+      "mtext": [
+        [
+          "count",
+          2,
+          {
+            "one": "MText",
+            "other": "MTexts"
+          }
+        ]
+      ],
       "dimension": [
         [
           "count",
@@ -256,6 +267,10 @@ export const en: EngineCatalog = {
         "justify": "Justify",
         "height": "Height",
         "rotation": "Rotation",
+        "lineSpaceFactor": "Line space factor",
+        "lineSpaceDistance": "Line space distance",
+        "lineSpaceStyle": "Line space style",
+        "definedWidth": "Defined width",
         "measurement": "Measurement",
         "textOverride": "Text override",
         "type": "Type",
@@ -273,7 +288,9 @@ export const en: EngineCatalog = {
       "value": {
         "yes": "Yes",
         "no": "No",
-        "none": "—"
+        "none": "—",
+        "atLeast": "At least",
+        "exactly": "Exactly"
       },
       "justify": {
         "left": "Left",
@@ -367,6 +384,14 @@ export const en: EngineCatalog = {
         "TEXT",
         "DT",
         "DTEXT"
+      ],
+      "MTEXT": [
+        "MTEXT",
+        "T",
+        "MT"
+      ],
+      "-MTEXT": [
+        "-MTEXT"
       ],
       "TEXTEDIT": [
         "TEXTEDIT",
@@ -597,6 +622,12 @@ export const en: EngineCatalog = {
       "text": "Text",
       "justify": "Justify",
       "styleName": "Style name",
+      "mtextFirstCorner": "Specify first corner",
+      "mtextOppositeCorner": "Specify opposite corner",
+      "mtextRotation": "Specify rotation angle",
+      "mtextWidth": "Specify width",
+      "mtextLineSpacing": "Enter line spacing factor or distance",
+      "mtextLine": "MText",
       "firstExtensionOrigin": "Specify first extension line origin or <select object>",
       "secondExtensionOrigin": "Specify second extension line origin",
       "nextExtensionOrigin": "Specify a second extension line origin",

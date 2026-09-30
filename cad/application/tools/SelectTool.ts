@@ -31,6 +31,7 @@ import {
 import { hitGrip, sameGrip } from "./selectToolGrips"
 import {
   movedDimension,
+  mtextWidthThrough,
   radiusHandle,
   toDegrees,
   withRadius,
@@ -43,6 +44,7 @@ import {
   buildGrips,
   buildInsertEdit,
   buildMoveEdit,
+  buildMTextWidthEdit,
   buildRadiusEdit,
   buildSelectionBox,
   buildVertexEdit,
@@ -133,6 +135,10 @@ export class SelectTool implements Tool {
       this.placeDimPoint(this.state, this.state.current, ctx)
       return
     }
+    if (this.state.phase === "mtextWidth") {
+      this.placeMTextWidth(this.state, this.state.width, ctx)
+      return
+    }
 
     // Grab a grip of a selected object, if the click lands on one, and begin
     // the edit its role prescribes.
@@ -173,6 +179,9 @@ export class SelectTool implements Tool {
           break
         case "dimPoint":
           this.beginDimPointMove(grip, grip.role.point, input.screen, ctx)
+          break
+        case "mtextWidth":
+          this.beginMTextWidth(grip, input.screen, ctx)
           break
       }
       return
@@ -275,6 +284,16 @@ export class SelectTool implements Tool {
           "distance",
           V.distance(this.state.origin, current)
         )
+        ctx.dynamicInput.setPosition(input.screen)
+        ctx.requestRender()
+        break
+      }
+      case "mtextWidth": {
+        const mtext = ctx.document.get(this.state.entityId)
+        if (mtext?.type !== "mtext") break
+        const width = mtextWidthThrough(mtext, input.point)
+        this.state = { ...this.state, width }
+        ctx.dynamicInput.setLive("width", width)
         ctx.dynamicInput.setPosition(input.screen)
         ctx.requestRender()
         break
@@ -417,6 +436,15 @@ export class SelectTool implements Tool {
         if (dragged) this.placeDimPoint(this.state, this.state.current, ctx)
         return
       }
+      case "mtextWidth": {
+        const dragged =
+          Math.hypot(
+            input.screen.x - this.state.pressScreen.x,
+            input.screen.y - this.state.pressScreen.y
+          ) >= DRAG_THRESHOLD_PX
+        if (dragged) this.placeMTextWidth(this.state, this.state.width, ctx)
+        return
+      }
       case "insertVertex": {
         const dragged =
           Math.hypot(
@@ -480,7 +508,10 @@ export class SelectTool implements Tool {
         ctx.requestRender()
         return
       }
-      if (this.state.phase === "moveDimPoint") {
+      if (
+        this.state.phase === "moveDimPoint" ||
+        this.state.phase === "mtextWidth"
+      ) {
         // Abort the definition-point drag, leaving the dimension untouched.
         ctx.dynamicInput.close()
         this.state = { phase: "idle" }
@@ -536,7 +567,8 @@ export class SelectTool implements Tool {
       this.state.phase === "moveVertex" ||
       this.state.phase === "insertVertex" ||
       this.state.phase === "bulgeEdit" ||
-      this.state.phase === "moveDimPoint"
+      this.state.phase === "moveDimPoint" ||
+      this.state.phase === "mtextWidth"
     )
   }
 
@@ -583,6 +615,7 @@ export class SelectTool implements Tool {
     if (this.state.phase === "arcAngle") return this.state.center
     if (this.state.phase === "moveVertex") return this.state.origin
     if (this.state.phase === "moveDimPoint") return this.state.origin
+    if (this.state.phase === "mtextWidth") return this.state.origin
     if (this.state.phase === "insertVertex") return this.state.origin
     if (this.state.phase === "bulgeEdit")
       return V.midpoint(this.state.a, this.state.b)
@@ -642,6 +675,8 @@ export class SelectTool implements Tool {
         return buildBulgeEdit(state, ctx)
       case "moveDimPoint":
         return buildDimPointEdit(state, ctx)
+      case "mtextWidth":
+        return buildMTextWidthEdit(state, ctx)
       default:
         return buildGrips(state, ctx)
     }
@@ -831,6 +866,44 @@ export class SelectTool implements Tool {
       pressScreen: screen,
     }
     this.openDimPointInput(ctx, screen)
+    ctx.requestRender()
+  }
+
+  /** Makes a multiline text's width grip hot and opens the width input. */
+  private beginMTextWidth(grip: Grip, screen: Vec2, ctx: ToolContext): void {
+    const mtext = ctx.document.get(grip.entityId)
+    if (mtext?.type !== "mtext") return
+    this.state = {
+      phase: "mtextWidth",
+      entityId: grip.entityId,
+      origin: grip.world,
+      width: mtext.width,
+      pressScreen: screen,
+    }
+    const session: DynamicInputSession = {
+      fields: [{ id: "width", prompt: "mtextWidth", kind: "distance" }],
+      commit: (values, commitCtx) => {
+        if (this.state.phase !== "mtextWidth" || !(values.width >= 0)) return
+        this.placeMTextWidth(this.state, values.width, commitCtx)
+      },
+    }
+    ctx.dynamicInput.open(session)
+    ctx.dynamicInput.setLive("width", mtext.width)
+    ctx.dynamicInput.setPosition(screen)
+    ctx.requestRender()
+  }
+
+  private placeMTextWidth(
+    state: Extract<SelectToolState, { phase: "mtextWidth" }>,
+    width: number,
+    ctx: ToolContext
+  ): void {
+    const mtext = ctx.document.get(state.entityId)
+    if (mtext?.type === "mtext" && width !== mtext.width) {
+      ctx.execute(new UpdateEntityCommand({ ...mtext, width }))
+    }
+    ctx.dynamicInput.close()
+    this.state = { phase: "idle" }
     ctx.requestRender()
   }
 

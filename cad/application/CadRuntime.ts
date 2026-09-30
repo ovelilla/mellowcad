@@ -47,6 +47,7 @@ import { TrackingResult } from "./tracking/types"
 import {
   DynamicInputController,
   DynamicInputSession,
+  isContentField,
 } from "./input/DynamicInput"
 import { parseCoordinate } from "./input/coordinateInput"
 import {
@@ -1040,7 +1041,7 @@ export class CadRuntime extends Observable {
     const field = session.fields.find(
       (f) => f.id === this.dynamicInput.getActiveFieldId()
     )
-    if (field && field.kind !== "text") {
+    if (field && !isContentField(field.kind)) {
       const keyword = resolveKeyword(
         this.dynamicInput.getText(field.id),
         this.offeredKeywords()
@@ -1350,7 +1351,7 @@ export class CadRuntime extends Observable {
     )
     if (!fragment) {
       // Not AutoCAD's wording (it pastes foreign text as an MTEXT object, which
-      // does not exist here); phrased like ERASE's "Nothing selected.".
+      // this paste does not do yet); phrased like ERASE's "Nothing selected.".
       this.commandLine.write("info", this.text.message("clipboardEmpty"))
       this.commandLineVisible = true
       this.invalidateState()
@@ -1652,12 +1653,13 @@ export class CadRuntime extends Observable {
   /**
    * A double-click on the drawing. Only meaningful at the neutral prompt, where
    * AutoCAD's DBLCLKEDIT opens the object for editing: today that means a text
-   * object opens for retyping. Returns whether the double-click was consumed.
+   * or multiline text object opens for retyping. Returns whether the
+   * double-click was consumed.
    */
   doubleClick(e: PointerEventData): boolean {
     if (this.activeTool.id !== "select") return false
     const hit = this.pickEntity(this.viewport.screenToWorld(e.screen))
-    if (hit?.type !== "text") return false
+    if (hit?.type !== "text" && hit?.type !== "mtext") return false
     this.setActiveTool(this.textEdit.id)
     this.textEdit.beginEdit(hit, this.toolContext)
     this.invalidateState()

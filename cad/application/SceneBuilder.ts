@@ -13,6 +13,8 @@ import {
   hatchGeometry,
   insertFlatGeometry,
   isFullEllipse,
+  mtextLayout,
+  mtextToWorld,
   polylineSegmentGeometries,
   TextJustify,
 } from "../domain/entities"
@@ -462,6 +464,20 @@ export function entityScenePrimitive(
           color: stroke.color,
         },
       ]
+    case "mtext": {
+      const layout = mtextLayout(entity)
+      const height = Math.max(camera.worldToScreenDistance(entity.height), 0.01)
+      return layout.lines.map((line) => ({
+        kind: "text",
+        at: camera.worldToScreen(mtextToWorld(entity, line.x, line.y)),
+        text: line.value,
+        height,
+        rotation: -entity.rotation,
+        align: layout.align,
+        baseline: "alphabetic",
+        color: stroke.color,
+      }))
+    }
     case "dimension":
       return dimensionPrimitives(
         camera,

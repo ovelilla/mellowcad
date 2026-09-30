@@ -307,6 +307,18 @@ describe("Spanish AutoCAD's command language", () => {
     expect(cad.only("text")).toMatchObject({ justify: "tl" })
   })
 
+  it("asks TEXTOM's corner in Spanish and justifies it by MC", () => {
+    const cad = createHarness({ locale: es })
+    cad.command("TEXTOM").click(p(0, 0))
+    expect(cad.state().commandLine.prompt).toBe(
+      "TEXTOM [aLtura/Justificar/Interlineado/Rotación/Estilo/aNchura]:"
+    )
+    cad.press("j")
+    for (const key of ["M", "C", "Enter"]) cad.press(key)
+    cad.click(p(100, -50)).type("A").enter()
+    expect(cad.only("mtext")).toMatchObject({ attachment: "mc" })
+  })
+
   it("reports an unknown command in Spanish", () => {
     const cad = createHarness({ locale: es })
     cad.command("LINE")

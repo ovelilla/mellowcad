@@ -24,6 +24,7 @@ export const es: EngineLocale = {
       "block": "Crear bloque",
       "insert": "Insertar bloque",
       "text": "Texto",
+      "mtext": "Texto de líneas múltiples",
       "textedit": "Editar texto",
       "dimlinear": "Lineal",
       "dimaligned": "Alineada",
@@ -160,6 +161,16 @@ export const es: EngineLocale = {
           }
         ]
       ],
+      "mtext": [
+        [
+          "count",
+          2,
+          {
+            "one": "Texto M",
+            "other": "Textos M"
+          }
+        ]
+      ],
       "dimension": [
         [
           "count",
@@ -250,6 +261,10 @@ export const es: EngineLocale = {
         "justify": "Justificar",
         "height": "Altura",
         "rotation": "Rotación",
+        "lineSpaceFactor": "Factor de interlineado",
+        "lineSpaceDistance": "Distancia de interlineado",
+        "lineSpaceStyle": "Estilo de interlineado",
+        "definedWidth": "Anchura definida",
         "measurement": "Medidas",
         "textOverride": "Modificar texto",
         "type": "Tipo",
@@ -267,7 +282,9 @@ export const es: EngineLocale = {
       "value": {
         "yes": "Sí",
         "no": "No",
-        "none": "—"
+        "none": "—",
+        "atLeast": "Al menos",
+        "exactly": "Exactamente"
       },
       "justify": {
         "left": "Izquierda",
@@ -360,6 +377,12 @@ export const es: EngineLocale = {
       "TEXT": [
         "TEXTO",
         "T"
+      ],
+      "MTEXT": [
+        "TEXTOM"
+      ],
+      "-MTEXT": [
+        "-TEXTOM"
       ],
       "TEXTEDIT": [
         "EDITARTEXTO",
@@ -607,6 +630,25 @@ export const es: EngineLocale = {
         "BC": "IC",
         "BR": "ID"
       },
+      "MTEXT": {
+        "Height": "aLtura",
+        "Justify": "Justificar",
+        "Line spacing": "Interlineado",
+        "Rotation": "Rotación",
+        "Style": "Estilo",
+        "Width": "aNchura",
+        "TL": "SI",
+        "TC": "SC",
+        "TR": "SD",
+        "ML": "MI",
+        "MC": "MC",
+        "MR": "MD",
+        "BL": "II",
+        "BC": "IC",
+        "BR": "ID",
+        "At least": "Mínimo",
+        "Exactly": "Exactamente"
+      },
       "TEXTEDIT": {
         "Undo": "desHacer",
         "Mode": "Modo",
@@ -745,6 +787,12 @@ export const es: EngineLocale = {
       "text": "Texto",
       "justify": "Justificar",
       "styleName": "Nombre de estilo",
+      "mtextFirstCorner": "Precise primera esquina",
+      "mtextOppositeCorner": "Precise esquina opuesta",
+      "mtextRotation": "Precise ángulo de rotación",
+      "mtextWidth": "Precise anchura",
+      "mtextLineSpacing": "Indique factor o distancia de interlineado",
+      "mtextLine": "TextoM",
       "firstExtensionOrigin": "Designe el origen de la primera línea de referencia o <designar objeto>",
       "secondExtensionOrigin": "Designe el origen de la segunda línea de referencia",
       "nextExtensionOrigin": "Designe un origen de la segunda línea de referencia",

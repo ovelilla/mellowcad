@@ -14,6 +14,7 @@ import {
 } from "../geometry/primitives"
 import {
   TextEntity,
+  MTextEntity,
   DimensionEntity,
   BlockLookup,
   Entity,
@@ -27,20 +28,54 @@ import {
   horizontalExtent,
   verticalExtent,
 } from "./text"
+import { mtextCorners, mtextFromWorld, mtextLayout } from "./mtext"
 import { DimensionGeometry, dimensionGeometry } from "./dimensions"
 import { ellipseBounds, ellipseSegments } from "./ellipses"
 import { polylineSegmentGeometries } from "./polylines"
 import { arcStartPoint, arcEndPoint } from "./entityMeasures"
 
-/** The box outline as four segments, for hit-testing and crossing tests. */
-function textEdges(text: TextEntity): [Vec2, Vec2][] {
-  const c = textCorners(text)
+/** A box outline as four segments, for hit-testing and crossing tests. */
+function boxEdges(c: Vec2[]): [Vec2, Vec2][] {
   return [
     [c[0], c[1]],
     [c[1], c[2]],
     [c[2], c[3]],
     [c[3], c[0]],
   ]
+}
+
+/** A filled box is picked anywhere inside it, not only on its outline. */
+function closestOnBox(
+  corners: Vec2[],
+  inside: boolean,
+  fallback: Vec2,
+  point: Vec2
+): ClosestResult {
+  let best: ClosestResult = { point: fallback, distance: Infinity, t: 0 }
+  for (const [a, b] of boxEdges(corners)) {
+    const candidate = closestPointOnSegment(a, b, point)
+    if (candidate.distance < best.distance) best = candidate
+  }
+  return inside ? { ...best, distance: 0 } : best
+}
+
+function pointInsideMText(mtext: MTextEntity, point: Vec2): boolean {
+  const { x0, x1, y0, y1 } = mtextLayout(mtext)
+  const local = mtextFromWorld(mtext, point)
+  return local.x >= x0 && local.x <= x1 && local.y >= y0 && local.y <= y1
+}
+
+function cornersBounds(corners: Vec2[]): Bounds {
+  return {
+    min: {
+      x: Math.min(...corners.map((c) => c.x)),
+      y: Math.min(...corners.map((c) => c.y)),
+    },
+    max: {
+      x: Math.max(...corners.map((c) => c.x)),
+      y: Math.max(...corners.map((c) => c.y)),
+    },
+  }
 }
 
 /** Whether a world point falls within the text's box (its rotation undone). */
@@ -157,20 +192,22 @@ export function closestOnEntity(
       }
       return best
     }
-    case "text": {
+    case "text":
       // Text is picked by its box, filled rather than hollow: clicking on the
       // lettering itself must select it, the way AutoCAD picks an annotation.
-      let best: ClosestResult = {
-        point: entity.position,
-        distance: Infinity,
-        t: 0,
-      }
-      for (const [a, b] of textEdges(entity)) {
-        const candidate = closestPointOnSegment(a, b, point)
-        if (candidate.distance < best.distance) best = candidate
-      }
-      return pointInsideText(entity, point) ? { ...best, distance: 0 } : best
-    }
+      return closestOnBox(
+        textCorners(entity),
+        pointInsideText(entity, point),
+        entity.position,
+        point
+      )
+    case "mtext":
+      return closestOnBox(
+        mtextCorners(entity),
+        pointInsideMText(entity, point),
+        entity.position,
+        point
+      )
     case "dimension": {
       // Picked by its line work, the way you grab a dimension in AutoCAD; the
       // text is not part of the pick target.
@@ -300,19 +337,10 @@ export function entityBounds(entity: Entity, blocks?: BlockLookup): Bounds {
       if (minX === Infinity) for (const v of entity.vertices) include(v)
       return { min: { x: minX, y: minY }, max: { x: maxX, y: maxY } }
     }
-    case "text": {
-      const corners = textCorners(entity)
-      return {
-        min: {
-          x: Math.min(...corners.map((c) => c.x)),
-          y: Math.min(...corners.map((c) => c.y)),
-        },
-        max: {
-          x: Math.max(...corners.map((c) => c.x)),
-          y: Math.max(...corners.map((c) => c.y)),
-        },
-      }
-    }
+    case "text":
+      return cornersBounds(textCorners(entity))
+    case "mtext":
+      return cornersBounds(mtextCorners(entity))
     case "dimension": {
       const g = dimensionGeometry(entity)
       const points = [
@@ -516,8 +544,11 @@ export function entityCrossesRect(
       }
       return false
     }
-    case "text": {
-      for (const [a, b] of textEdges(entity)) {
+    case "text":
+    case "mtext": {
+      const corners =
+        entity.type === "text" ? textCorners(entity) : mtextCorners(entity)
+      for (const [a, b] of boxEdges(corners)) {
         if (pointInRect(a, min, max)) return true
         for (const [e1, e2] of edges) {
           if (segmentSegmentIntersection(a, b, e1, e2)) return true

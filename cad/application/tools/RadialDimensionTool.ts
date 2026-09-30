@@ -49,8 +49,8 @@ export type RadialDimensionKind = "radius" | "diameter"
  * object; placing it outside turns it into a leader and marks the centre
  * (DIMCEN), which is the whole of the difference the two placements make.
  *
- * AutoCAD's **Mtext** keyword is deliberately absent: it opens the multiline
- * text editor and this app has no MTEXT object.
+ * AutoCAD's **Mtext** keyword is absent: it edits the dimension text in the
+ * multiline editor, and a dimension's text here is a single line.
  *
  * One deviation, and the two halves of it go together. AutoCAD lets the
  * dimension line of an arc point past the arc's own sweep and then "draws an
