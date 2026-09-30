@@ -1,4 +1,5 @@
 import { Vec2 } from "../geometry/Vec2"
+import { Vec3 } from "../geometry/Vec3"
 
 /**
  * A renderer-agnostic description of one frame: a flat display list of styled
@@ -154,9 +155,9 @@ export interface CameraTransform {
   readonly width: number
   readonly height: number
   readonly scale: number
-  /** The view's twist: radians CCW from world X to the direction drawn pointing right. */
+  /** A plan view's twist: radians CCW from world X to the direction drawn pointing right. */
   readonly twist: number
-  worldToScreen(p: Vec2): Vec2
+  worldToScreen(p: Vec2 | Vec3): Vec2
   screenToWorld(p: Vec2): Vec2
   worldToScreenDistance(distance: number): number
 }

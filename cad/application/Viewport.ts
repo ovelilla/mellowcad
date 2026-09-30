@@ -1,6 +1,15 @@
 import { Observable } from "../shared/Observable"
 import { Vec2, vec2 } from "../geometry/Vec2"
 import {
+  Vec3,
+  WORLD_X,
+  WORLD_Z,
+  cross3,
+  dot3,
+  normalize3,
+  zOf,
+} from "../geometry/Vec3"
+import {
   BlockLookup,
   Bounds,
   Entity,
@@ -18,9 +27,12 @@ import {
  * - Screen space is Y-down (pixels).
  * - `scale` is pixels per world unit.
  * - `translation` is the screen-pixel position of the world origin (0, 0).
- * - `xAxis` is the world direction that reads as screen-right (VIEWTWIST).
- *   The *view frame* is the world turned so that direction is +X: a screen
- *   rectangle is an axis-aligned one there, not in the world.
+ * - The view is a parallel projection along `direction` (VIEWDIR in the WCS,
+ *   pointing at the viewer), with `right` the world direction drawn pointing
+ *   right and `up` = `direction` × `right`. The plan view of the WCS is
+ *   `direction` +Z and `right` +X. The *view frame* holds a point as its
+ *   `right` and `up` components: a screen rectangle is an axis-aligned one
+ *   there, not in the world.
  *
  * Screen sizes are measured in CSS pixels; device-pixel-ratio is handled by the
  * render adapter, not here. The viewport structurally satisfies the scene
@@ -30,15 +42,16 @@ import {
 export interface Camera {
   readonly scale: number
   readonly translation: Vec2
-  readonly xAxis: Vec2
+  readonly direction: Vec3
+  readonly right: Vec3
 }
-
-const WORLD_X: Vec2 = { x: 1, y: 0 }
 
 export class Viewport extends Observable {
   private scaleValue = 1
   private translationValue: Vec2 = { x: 0, y: 0 }
-  private xAxisValue: Vec2 = WORLD_X
+  private directionValue: Vec3 = WORLD_Z
+  private rightValue: Vec3 = WORLD_X
+  private upValue: Vec3 = { x: 0, y: 1, z: 0 }
 
   /** Canvas size in CSS pixels. */
   private widthValue = 0
@@ -59,14 +72,29 @@ export class Viewport extends Observable {
     return this.translationValue
   }
 
-  /** Unit vector: the world direction drawn pointing right. */
-  get xAxis(): Vec2 {
-    return this.xAxisValue
+  /** Unit vector: the line of sight, from the target towards the viewer. */
+  get direction(): Vec3 {
+    return this.directionValue
   }
 
-  /** The view's twist, radians CCW from the world X axis. */
+  /** Unit vector: the world direction drawn pointing right. */
+  get right(): Vec3 {
+    return this.rightValue
+  }
+
+  /** Unit vector: the world direction drawn pointing up. */
+  get up(): Vec3 {
+    return this.upValue
+  }
+
+  /** True when the view looks straight down the world Z axis. */
+  get isPlan(): boolean {
+    return isWorldZ(this.directionValue)
+  }
+
+  /** A plan view's twist, radians CCW from the world X axis to screen-right. */
   get twist(): number {
-    return Math.atan2(this.xAxisValue.y, this.xAxisValue.x)
+    return Math.atan2(this.rightValue.y, this.rightValue.x)
   }
 
   get width(): number {
@@ -84,7 +112,7 @@ export class Viewport extends Observable {
     this.emit()
   }
 
-  worldToScreen(p: Vec2): Vec2 {
+  worldToScreen(p: Vec2 | Vec3): Vec2 {
     const v = this.worldToView(p)
     return {
       x: v.x * this.scaleValue + this.translationValue.x,
@@ -99,17 +127,32 @@ export class Viewport extends Observable {
     })
   }
 
-  /** A world point in the view frame (the world turned by minus the twist). */
-  worldToView(p: Vec2): Vec2 {
-    const { x: c, y: s } = this.xAxisValue
-    if (s === 0 && c === 1) return p
-    return { x: p.x * c + p.y * s, y: -p.x * s + p.y * c }
+  /** A world point in the view frame: its `right` and `up` components. */
+  worldToView(p: Vec2 | Vec3): Vec2 {
+    if (this.isPlan) {
+      // WHY the 2D formula: a plan view must keep today's arithmetic to the bit.
+      const { x: c, y: s } = this.rightValue
+      if (s === 0 && c === 1) return p
+      return { x: p.x * c + p.y * s, y: -p.x * s + p.y * c }
+    }
+    const point: Vec3 = { x: p.x, y: p.y, z: zOf(p) }
+    return { x: dot3(point, this.rightValue), y: dot3(point, this.upValue) }
   }
 
+  /** The world point of the view frame's `p` on the plane through the origin facing the viewer. */
   viewToWorld(p: Vec2): Vec2 {
-    const { x: c, y: s } = this.xAxisValue
-    if (s === 0 && c === 1) return p
-    return { x: p.x * c - p.y * s, y: p.x * s + p.y * c }
+    if (this.isPlan) {
+      const { x: c, y: s } = this.rightValue
+      if (s === 0 && c === 1) return p
+      return { x: p.x * c - p.y * s, y: p.x * s + p.y * c }
+    }
+    const { rightValue: r, upValue: u } = this
+    const world: Vec3 = {
+      x: r.x * p.x + u.x * p.y,
+      y: r.y * p.x + u.y * p.y,
+      z: r.z * p.x + u.z * p.y,
+    }
+    return world
   }
 
   /** Converts a length in world units to screen pixels. */
@@ -157,7 +200,8 @@ export class Viewport extends Observable {
     return {
       scale: this.scaleValue,
       translation: this.translationValue,
-      xAxis: this.xAxisValue,
+      direction: this.directionValue,
+      right: this.rightValue,
     }
   }
 
@@ -168,20 +212,27 @@ export class Viewport extends Observable {
       Viewport.MAX_SCALE
     )
     this.translationValue = camera.translation
-    this.xAxisValue = camera.xAxis
+    this.directionValue = camera.direction
+    this.rightValue = camera.right
+    this.upValue = cross3(camera.direction, camera.right)
     this.emit()
   }
 
   /**
-   * Turns the view so the world direction `xAxis` reads as screen-right,
-   * keeping the point at the centre of the screen where it is.
+   * Looks along `direction` (towards the viewer) with the world direction
+   * `right` drawn pointing right, keeping the point at the centre of the
+   * screen where it is. `right` is taken square to `direction`; returns false,
+   * changing nothing, when the two are parallel or either is zero.
    */
-  setXAxis(xAxis: Vec2): void {
-    const length = Math.hypot(xAxis.x, xAxis.y)
-    if (!(length > 0) || !Number.isFinite(length)) return
+  setView(direction: Vec3, right: Vec3): boolean {
+    const axes = viewAxes(direction, right)
+    if (!axes) return false
     const center = this.worldCenter()
-    this.xAxisValue = { x: xAxis.x / length, y: xAxis.y / length }
+    this.directionValue = axes.direction
+    this.rightValue = axes.right
+    this.upValue = cross3(axes.direction, axes.right)
     this.centerOn(center)
+    return true
   }
 
   /**
@@ -277,7 +328,7 @@ export class Viewport extends Observable {
  * rectangle (window selection, a zoom's extents) is an axis-aligned one.
  */
 export function entityInView(entity: Entity, viewport: Viewport): Entity {
-  const { x: c, y: s } = viewport.xAxis
+  const { x: c, y: s } = viewport.right
   if (s === 0 && c === 1) return entity
   return rotateEntity(entity, { x: 0, y: 0 }, -viewport.twist)
 }
@@ -292,6 +343,31 @@ export function entitiesViewBounds(
     entities.map((entity) => entityInView(entity, viewport)),
     blocks
   )
+}
+
+function isWorldZ(v: Vec3): boolean {
+  return v.x === 0 && v.y === 0 && v.z > 0
+}
+
+/** Unit `direction` and a unit `right` square to it, or `null` when they are parallel. */
+function viewAxes(
+  direction: Vec3,
+  right: Vec3
+): { direction: Vec3; right: Vec3 } | null {
+  const d = normalize3(direction)
+  if (!d) return null
+  if (isWorldZ(d)) {
+    const length = Math.hypot(right.x, right.y)
+    if (!(length > 0) || !Number.isFinite(length)) return null
+    return {
+      direction: WORLD_Z,
+      right: { x: right.x / length, y: right.y / length, z: 0 },
+    }
+  }
+  const up = normalize3(cross3(d, right))
+  if (!up) return null
+  const r = normalize3(cross3(up, d))
+  return r ? { direction: d, right: r } : null
 }
 
 function clamp(value: number, min: number, max: number): number {

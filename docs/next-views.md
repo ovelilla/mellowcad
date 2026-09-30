@@ -1,6 +1,6 @@
 # Vistas 3D y plano inclinado — brief
 
-> **Estado:** propuesto, pendiente de aprobar (sobre todo D1, D7 y D11). Sigue la convención de
+> **Estado:** aprobado para ejecución (el autor delega D1 y D11 en lo más fiel y mantenible). Sigue la convención de
 > `docs/next-*.md`: se borra cuando la feature esté en main; lo que deba perdurar se promueve a
 > `.github/instructions/` (§8).
 >
@@ -11,11 +11,11 @@
 ## 0. Resumen
 
 1. **Alcance:** ver el modelo desde cualquier dirección en proyección paralela (-VPOINT, -VIEW con
-   las vistas predefinidas, PLAN), dibujar la elevación y la altura de objeto, trabajar en esas
+   las vistas predefinidas, PLAN, 3DORBIT y Mayús + rueda), dibujar la elevación y la altura de objeto, trabajar en esas
    vistas (designar, referencias, dibujar sobre el plano de trabajo), la normal por entidad (DXF 210)
    y el UCS inclinado (X, Y, ZAxis, 3 puntos, View, OBject, UCSORTHO).
-2. **Fuera:** perspectiva, cámaras, 3DORBIT y la navegación en tiempo real, ViewCube, estilos
-   visuales y ocultación (HIDE), vistas guardadas, 3DPOLY, sólidos.
+2. **Fuera:** perspectiva, cámaras, el resto de la navegación 3D (3DFORBIT, 3DCORBIT, 3DWALK…),
+   ViewCube, estilos visuales y ocultación (HIDE), vistas guardadas, 3DPOLY, sólidos.
 3. **Regla dura:** en planta nada cambia. La vista en planta sigue el camino de código de hoy (camino
    rápido) y las figuras de la landing salen idénticas byte a byte.
 4. **Idea central:** una proyección paralela lleva cada plano a la pantalla por una **afinidad**.
@@ -42,6 +42,7 @@ GUID: `help.autodesk.com/cloudhelp/2026/ENU/AutoCAD-Core/files/GUID-….htm` (ES
 | Alambre 3D           | «The XY plane of the current UCS operates as a work plane… also determines the plane of operation for trimming and extending, and offsetting. **The Z axis of the UCS determines the axis direction for rotating objects about a point.**»                                                                              | 84E193D7-A18D-4EE2-B978-19E4AFBCAEEC                                       |
 | Altura de objeto     | «The orientation of the UCS when the object was created determines the Z direction.» La altura va en la dirección de la normal.                                                                                                                                                                                         | 65C72A8C-2B2E-4CCD-B596-5D14B3742035                                       |
 | OCS (DXF)            | Línea y punto en WCS (su 210 es solo la dirección de extrusión); círculo, arco, texto, atributo, inserción, polilínea 2D, LWPOLYLINE, sombreado: puntos en el OCS + elevación; cota, mezcla. El OCS de una normal es único.                                                                                             | AutoCAD-DXF D99F1509-E4E4-47A3-8691-92EA07DC88F5                           |
+| 3DORBIT              | «If you drag the cursor horizontally, the camera moves parallel to the XY plane of the WCS. If you drag the cursor vertically, the camera moves along the Z axis.» No se editan objetos mientras dura. Temporal: Mayús + rueda pulsada y mover. Clic derecho: menú de opciones.                                         | 85CE824C-0AF4-4890-8487-ADBC92BF08F1                                       |
 | Arbitrary Axis (DXF) | Si `abs(Nx) < 1/64` y `abs(Ny) < 1/64`, `Ax = Wy × N`; si no, `Ax = Wz × N`; normalizar. `Ay = N × Ax`.                                                                                                                                                                                                                 | AutoCAD-DXF E19E5B42-0CC7-4EBA-B29F-5E1D595149EE                           |
 
 Capturas: `Current view direction: VIEWDIR=0.0000,0.0000,1.0000` /
@@ -71,9 +72,12 @@ Capturas: `Current view direction: VIEWDIR=0.0000,0.0000,1.0000` /
 - `-VIEW`: solo Orthographic y las isométricas. `?`, Delete, Restore, Save, sEttings y Window
   esperan a las vistas guardadas. `VIEW` (el View Manager) igual que VPOINT: su línea de comandos.
 - PLAN pone la línea de mira en la Z del UCS elegido (hoy solo gira).
-- Fuera: PERSPECTIVE, CAMERA, DVIEW, 3DORBIT y compañía, ViewCube, estilos visuales, HIDE.
-- **A decidir:** 3DORBIT restringido (arrastrar para girar) es cómo se mueve la vista casi todo el
-  mundo; se deja fuera por ser tiempo real y tener cromo propio, pero es el primer candidato después.
+- **3DORBIT** (`3DO`, `ORBIT`) entra: es cómo se mueve la vista a diario, y Mayús + rueda es memoria
+  muscular. Arrastre horizontal: gira alrededor de la Z del WCS; vertical: sube o baja la cámara;
+  la Z sigue vertical en pantalla. El objetivo, el centro de lo visible. Proyección paralela (la
+  perspectiva no entra). Sin el menú contextual ni la limitación a lo designado (anotados).
+- Fuera: PERSPECTIVE, CAMERA, DVIEW, 3DFORBIT, 3DCORBIT y el resto de la navegación, ViewCube,
+  estilos visuales, HIDE.
 
 **D2. La cámara es una base ortonormal**, no un ángulo: `right`, `up` y `dir` (hacia el observador)
 en el WCS, más `scale` y `translation`. `xAxis` pasa a ser `right`. La planta del WCS es
@@ -151,8 +155,12 @@ nada cambia.
 - Los tools con geometría plana (TRIM, EXTEND, BREAK, OFFSET, FILLET, CHAMFER, JOIN, HATCH, cotas,
   grips que no son de mover) filtran los objetos no paralelos al plano del UCS: no se iluminan
   (AutoCAD proyecta algunos con PROJMODE; desviación anotada).
+- **Por qué este marco y no el UCS mismo:** AutoCAD pide los puntos en el UCS y guarda cada objeto
+  en el OCS de su normal (`acdbUcs2Ent`); dibujar en el OCS de la Z del UCS es escribir ya en esas
+  coordenadas. En ese marco el UCS queda horizontal (origen y eje X girados en el plano), que es
+  justo el caso que todo el código de hoy ya resuelve.
 - **Alternativa descartada:** convertir punto a punto dentro de cada tool (~40 tools, y cada uno una
-  ocasión de olvidar la conversión).
+  ocasión de olvidar la conversión; el error solo se ve con el UCS inclinado).
 
 **D12. Las desviaciones 2.5D que se levantan:** CIRCLE 3P y ARC por tres puntos a distinta Z, en el
 plano de los tres puntos (con su normal); CIRCLE 2P, a verificar (V7); FILLET y CHAMFER de dos
@@ -164,7 +172,9 @@ Los anteriores cargan con normal +Z y UCS horizontales.
 
 ## 4. Fases (un commit en main por fase, cada una con typecheck + lint + test en verde)
 
-**F1. Matemática y cámara, sin cambio visible.** `Vec3` (`dot3`, `cross`, `normalize3`…),
+**F1. Matemática y cámara, sin cambio visible** — hecha (`Camera` = `direction` + `right`,
+`Viewport.setView`, `isPlan` guarda la aritmética 2D de hoy; `geometry/ocs.ts` con
+`arbitraryAxis`). `Vec3` (`dot3`, `cross`, `normalize3`…),
 `arbitraryAxis(normal)`, semejanzas 3D; la cámara como base (D2) y `worldToScreen(Vec2 | Vec3)`.
 Aceptación: todo igual, instantáneas incluidas.
 
@@ -174,7 +184,7 @@ línea de mira; la afinidad por plano (D3), la primitiva de texto con matriz, la
 primitivas; comprobación en el navegador.
 
 **F3. Trabajar en una vista 3D.** El cursor en el plano de trabajo (D5) y el mensaje de canto;
-designar, iluminar, ventana y captura, referencias y OTRACK, grips (D6). Pruebas: una LINE dibujada
+designar, iluminar, ventana y captura, referencias y OTRACK, grips (D6); 3DORBIT y Mayús + rueda. Pruebas: una LINE dibujada
 en SE Isometric da los mismos puntos que en planta; se designa un círculo elevado.
 
 **F4. Normal por entidad.** Modelo y fichero (D8, D13), `transformEntity` (D9), arbitrario `entity`
@@ -202,7 +212,8 @@ respecto al UCS, D12. Pruebas: CIRCLE en el UCS Front, TRIM en él, ROTATE alred
 
 ## 6. Fuera de alcance (se anota en la cobertura)
 
-Perspectiva, CAMERA, DVIEW, 3DORBIT y la navegación 3D, ViewCube, estilos visuales, HIDE y la
+Perspectiva, CAMERA, DVIEW, el resto de la navegación 3D (3DFORBIT, 3DCORBIT, 3DWALK…) y el menú
+de 3DORBIT, ViewCube, estilos visuales, HIDE y la
 ocultación; vistas guardadas (VIEW Save / Restore, UCSVIEW); la brújula y el trípode; WORLDVIEW,
 UCSORTHO y UCSBASE como variables; UCS Face y Apply; UCSFOLLOW; varias ventanas gráficas; 3DPOLY y
 SPLINE 3D; ROTATE3D, MIRROR3D, 3DMOVE y los gizmos.

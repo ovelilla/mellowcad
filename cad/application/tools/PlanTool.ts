@@ -1,4 +1,5 @@
 import { Vec2 } from "../../geometry/Vec2"
+import { WORLD_Z, withZ } from "../../geometry/Vec3"
 import { Ucs, WORLD_UCS } from "../../domain/ucs"
 import type { PromptId } from "../../locales/types"
 import { entitiesViewBounds } from "../Viewport"
@@ -116,7 +117,7 @@ export class PlanTool implements Tool {
   private plan(ucs: Ucs, ctx: ToolContext): void {
     const { viewport } = ctx
     viewport.pushHistory()
-    viewport.setXAxis(ucs.xAxis)
+    viewport.setView(WORLD_Z, withZ(ucs.xAxis, 0))
     const bounds = entitiesViewBounds(
       ctx.document.getEntities(),
       viewport,

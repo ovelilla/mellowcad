@@ -1,5 +1,5 @@
 import { Vec2, V } from "../../geometry/Vec2"
-import { Vec3, withZ } from "../../geometry/Vec3"
+import { Vec3, planar, withZ } from "../../geometry/Vec3"
 import { polarPoint } from "../../geometry/primitives"
 import {
   Entity,
@@ -263,7 +263,7 @@ export class UcsTool implements Tool {
       }
       case "View":
         this.apply(
-          { origin: ctx.ucs.origin, xAxis: ctx.viewport.xAxis },
+          { origin: ctx.ucs.origin, xAxis: planar(ctx.viewport.right) },
           null,
           ctx
         )

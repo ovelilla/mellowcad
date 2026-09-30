@@ -368,7 +368,7 @@ describe("Spanish AutoCAD's command language", () => {
     )
     expect(cad.optionKeys()).toEqual(["A", null, "U"])
     cad.press("a")
-    expect(cad.runtime.viewport.xAxis).toBeCloseToPoint(p(0, 1))
+    expect(cad.runtime.viewport.right).toBeCloseToPoint(p(0, 1))
     cad.command("PLANTA").type("scp").enter()
     expect(cad.runtime.text.prompt("planUcsName")).toBe(
       "Indique nombre de SCP o [?]"

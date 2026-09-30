@@ -385,7 +385,7 @@ describe("PLAN", () => {
   it("turns the view so the UCS X axis points right, the UCS untouched", () => {
     const cad = turned(createHarness())
     cad.command("PLAN").enter()
-    expect(view(cad).xAxis).toBeCloseToPoint(p(0, 1))
+    expect(view(cad).right).toBeCloseToPoint(p(0, 1))
     expect(ucsOf(cad).xAxis).toBeCloseToPoint(p(0, 1))
     const origin = cad.toScreen(p(100, 50))
     const onX = cad.toScreen(p(100, 80))
@@ -409,12 +409,12 @@ describe("PLAN", () => {
     cad.command("UCS").option("NAmed").option("Save").type("Site").enter()
     cad.command("UCS").option("World")
     cad.command("PLAN").option("Ucs").type("site").enter()
-    expect(view(cad).xAxis).toBeCloseToPoint(p(0, 1))
+    expect(view(cad).right).toBeCloseToPoint(p(0, 1))
     expect(ucsOf(cad).xAxis).toBeCloseToPoint(p(1, 0))
     cad.command("PLAN").option("World")
-    expect(view(cad).xAxis).toBeCloseToPoint(p(1, 0))
+    expect(view(cad).right).toBeCloseToPoint(p(1, 0))
     cad.command("ZOOM").option("Previous")
-    expect(view(cad).xAxis).toBeCloseToPoint(p(0, 1))
+    expect(view(cad).right).toBeCloseToPoint(p(0, 1))
   })
 
   it("asks again for a name it cannot find, and lists with ?", () => {
