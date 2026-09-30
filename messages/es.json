@@ -294,6 +294,7 @@
         "array": "Matriz",
         "text": "Texto",
         "dimension": "Cota",
+        "attributes": "Atributos",
         "measure": "Medir"
       },
       "undo": "Deshacer",

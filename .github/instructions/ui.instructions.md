@@ -66,7 +66,7 @@ class or light values.
 - **DrawingAids** (status bar) — drafting modes only: Snap, Grid, Ortho, Polar, Osnap, OTRACK,
   lineweight display.
 - **ToolRail** (left) — tools, grouped by `RAIL_LAYOUT`. Variant families (Circle, Arc, Array,
-  Fillet/Chamfer, Rectangle/Polygon, Break) are flyouts, named by `Editor.ToolRail.flyouts`;
+  Fillet/Chamfer, Rectangle/Polygon, Break, the attribute commands) are flyouts, named by `Editor.ToolRail.flyouts`;
   icon-only with `side="right"` tooltips. Unlisted tools fall into a trailing "more" group, so a tool that belongs elsewhere in the chrome
   (the view tools, which live in the CommandBar) must be listed in `RAIL_EXCLUDED`.
 - **AboutPanel** (bottom-right) — the only non-CAD chrome: what the app is, that drawings never

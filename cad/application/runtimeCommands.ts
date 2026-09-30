@@ -179,7 +179,7 @@ export function commandPrompt(
   if (tool.id === "select") {
     return { command: null, segments: text.composePrompt(text.idleHead(), []) }
   }
-  const command = toolCommand(tool)
+  const command = tool.runningCommand?.() ?? toolCommand(tool)
   const name =
     command !== null
       ? text.commandNames(command)[0]

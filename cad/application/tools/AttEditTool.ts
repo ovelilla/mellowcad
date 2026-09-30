@@ -42,6 +42,10 @@ export class AttEditTool implements Tool {
     this.editor = "eattedit"
   }
 
+  runningCommand(): string {
+    return this.editor === "eattedit" ? "EATTEDIT" : "ATTEDIT"
+  }
+
   onActivate(ctx: ToolContext): void {
     ctx.setCursor("crosshair")
     ctx.selection.clear()

@@ -393,6 +393,7 @@ describe("editing attributes", () => {
     cad.command("ATTEDIT").click(p(50, 0))
 
     expect(asking(cad)).toBe("Part number")
+    expect(cad.state().commandLine.prompt).toBe("ATTEDIT:")
     cad.type("P-9").enter()
     expect(cad.byId<InsertEntity>("I1").attributes?.[0].value).toBe("P-9")
     expect(cad.activeToolId()).toBe("select")
@@ -403,6 +404,7 @@ describe("editing attributes", () => {
     cad.command("EATTEDIT").click(p(50, 0))
 
     expect(asking(cad)).toBe("PART")
+    expect(cad.state().commandLine.prompt).toBe("EATTEDIT:")
   })
 
   it("a double-click on a reference opens EATTEDIT", () => {
@@ -411,6 +413,7 @@ describe("editing attributes", () => {
 
     expect(cad.activeToolId()).toBe("attedit")
     expect(asking(cad)).toBe("PART")
+    expect(cad.state().commandLine.prompt).toBe("EATTEDIT:")
     cad.type("P-9").enter().undo()
     expect(cad.byId<InsertEntity>("I1").attributes?.[0].value).toBe("P-7")
   })

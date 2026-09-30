@@ -190,6 +190,9 @@ export interface Tool {
    */
   readonly shortcut?: string
 
+  /** The command the prompt names when one tool runs several (EATTEDIT); else `TOOL_COMMANDS`'. */
+  runningCommand?(): string
+
   onActivate?(ctx: ToolContext): void
   onDeactivate?(ctx: ToolContext): void
 

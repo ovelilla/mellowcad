@@ -294,6 +294,7 @@
         "array": "Array",
         "text": "Text",
         "dimension": "Dimension",
+        "attributes": "Attributes",
         "measure": "Measure"
       },
       "undo": "Undo",

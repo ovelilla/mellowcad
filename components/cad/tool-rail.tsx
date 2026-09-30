@@ -156,6 +156,7 @@ type FlyoutId =
   | "array"
   | "text"
   | "dimension"
+  | "attributes"
   | "measure"
 
 type RailItem = string | ToolFlyoutFamily
@@ -245,8 +246,12 @@ const RAIL_LAYOUT: readonly RailGroup[] = [
   {
     id: "block",
     // The ribbon's Block panel puts Insert first and Create Block after it;
-    // its Block Definition panel holds Define Attributes.
-    items: ["insert", "block", "attdef", "attedit", "attdisp"],
+    // the attribute commands share one slot, as its Edit Attributes split button does.
+    items: [
+      "insert",
+      "block",
+      { id: "attributes", members: ["attdef", "attedit", "attdisp"] },
+    ],
   },
   {
     id: "measure",
