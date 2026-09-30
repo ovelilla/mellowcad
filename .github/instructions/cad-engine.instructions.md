@@ -449,6 +449,8 @@ its own `baseElevation`, and a reference's attributes their `elevation`.
   reason. `onPlaneOf(entity, point)` sets the plane from a point, `createLine` reads its ends' Z,
   and `entityZAt(entity, point)` is the one reader of an object's Z at a point in plan (a line's
   interpolated along it) — the snaps, UCS OBject and any future "Z of the object here" use it.
+- **Nothing drawn or picked reads the Z.** The scene, hit-testing, bounds and box selection are the
+  plan view; a Z there is a bug until the views project it (roadmap item 2).
 
 ## Serialization
 
