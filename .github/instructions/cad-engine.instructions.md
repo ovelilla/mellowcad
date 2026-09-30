@@ -265,11 +265,16 @@ wrong object. Where AutoCAD _does_ support the kind and we do not (both of those
 angular dimensions, by stepping the arc radius rather than offsetting along a normal), say so in a
 comment on the filter rather than leaving it looking like an oversight.
 
-The engine has no glyph metrics and never will (it is DOM-free), so anything text-shaped is
-measured by a **nominal** metric in the domain (`TEXT_WIDTH_FACTOR`) for bounds, picking and box
-selection, while the presenter renders with the real font. Do not try to plumb a measurement back
-in: the approximation is what keeps `domain/` pure. It is also why dimension text sits _above_ the
-dimension line (ISO's DIMTAD 1) rather than breaking it: the gap would have to be measured.
+The engine is DOM-free, so it cannot ask a font for its metrics: it **carries them**. Drawing text is
+set in Arial, AutoCAD's Standard style, and `domain/textFontMetrics.ts` holds Arial's advance widths
+(read from Arimo, which shares them, by `scripts/fonts/metrics.ts`; generated, never hand-edited).
+`measureTextWidth` is the one measure — bounds, picking, box selection and anything that will wrap
+a line. The presenters keep their side of that contract: `DRAWING_FONT` (Arial or a face with its
+widths), **Arial's cap ratio rather than a measured one** (Liberation Sans has Arial's widths but
+shorter capitals, and the widths are what must agree) and **no kerning**, which the measure does
+not model. Change any of the three alone and the box stops fitting the text. A glyph outside the
+table (CJK, Arabic) is drawn by a fallback face and measured as an average one. Dimension text still
+sits _above_ the dimension line (ISO's DIMTAD 1) rather than breaking it.
 
 A CAD text height and offset are stated in terms of the **capital letters**, so turning one into
 canvas needs two corrections, not one: the font size is divided by the family's cap-height ratio,

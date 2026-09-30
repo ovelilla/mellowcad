@@ -4,20 +4,11 @@ import {
   StrokeStyle,
   TextBaseline,
 } from "../scene/types"
-import { THEME } from "../scene/theme"
-
-/** Font drawing entities use when the scene names none — the canvas's own. */
-const DRAWING_TEXT_FONT = "ui-monospace, SFMono-Regular, Menlo, monospace"
+import { DRAWING_FONT, THEME } from "../scene/theme"
+import { TEXT_FONT_CAP_RATIO } from "../domain/text"
 
 /** Chrome labels, as the canvas draws them. */
 const LABEL_FONT = "11px ui-monospace, monospace"
-
-/**
- * Cap height as a fraction of the em, assumed for every face. The canvas
- * measures it per font; an SVG built ahead of time cannot, so a CAD text height
- * (its capitals) becomes a font size through this fixed ratio instead.
- */
-const DEFAULT_CAP_HEIGHT_RATIO = 0.7
 
 /**
  * Where the em box sits around the alphabetic baseline, for the canvas-style
@@ -95,8 +86,8 @@ export class SvgScenePresenter {
   constructor(options: SvgScenePresenterOptions = {}) {
     this.palette = options.palette ?? ((color) => color)
     this.factor = 10 ** (options.precision ?? 1)
-    this.fontFamily = options.fontFamily ?? DRAWING_TEXT_FONT
-    this.capHeightRatio = options.capHeightRatio ?? DEFAULT_CAP_HEIGHT_RATIO
+    this.fontFamily = options.fontFamily ?? DRAWING_FONT
+    this.capHeightRatio = options.capHeightRatio ?? TEXT_FONT_CAP_RATIO
     this.plot = options.plot ?? false
     this.frame = options.frame
   }

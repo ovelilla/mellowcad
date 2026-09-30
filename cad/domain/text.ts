@@ -7,6 +7,12 @@ import {
 } from "./textStyles"
 import { EntityId, TextJustify, TextEntity } from "./entityTypes"
 import { nextEntityId } from "./entityFactories"
+import {
+  TEXT_FONT_ADVANCES,
+  TEXT_FONT_AVERAGE_ADVANCE,
+  TEXT_FONT_CAP_HEIGHT,
+  TEXT_FONT_UNITS_PER_EM,
+} from "./textFontMetrics"
 
 /** The optional settings of a text object; enough of them to want a bag. */
 export interface TextOptions {
@@ -37,21 +43,32 @@ export function createText(
 }
 
 /**
- * Nominal advance width of one character, as a fraction of the text height.
- *
- * The engine is deliberately DOM-free, so it cannot measure glyphs the way the
- * canvas presenter can: bounds, hit-testing and box selection use this nominal
- * metric while rendering uses the real font. Close enough for a pick box, and
- * it keeps the domain pure.
+ * Arial's capital height as a fraction of its em. A CAD text height is the
+ * height of the capitals, so this is what turns one into a font size.
  */
-const TEXT_WIDTH_FACTOR = 0.6
+export const TEXT_FONT_CAP_RATIO = TEXT_FONT_CAP_HEIGHT / TEXT_FONT_UNITS_PER_EM
 
 /** Spacing between successive lines of TEXT — AutoCAD's single line spacing. */
 export const TEXT_LINE_SPACING_FACTOR = 1.66
 
-/** Nominal width of the whole string in drawing units. */
+/**
+ * Width of a string set in the drawing font at a capital height of `height`,
+ * from Arial's advance widths: the presenters draw with Arial (or a face with
+ * its metrics) and no kerning, so this is exactly what is painted. A glyph the
+ * font lacks is drawn by a fallback face and measured as an average one.
+ */
+export function measureTextWidth(value: string, height: number): number {
+  let units = 0
+  for (const char of value) {
+    units +=
+      TEXT_FONT_ADVANCES[char.codePointAt(0) ?? 0] ?? TEXT_FONT_AVERAGE_ADVANCE
+  }
+  return (units / TEXT_FONT_CAP_HEIGHT) * height
+}
+
+/** Width of the whole string in drawing units. */
 export function textWidth(text: TextEntity): number {
-  return text.value.length * text.height * TEXT_WIDTH_FACTOR
+  return measureTextWidth(text.value, text.height)
 }
 
 /**

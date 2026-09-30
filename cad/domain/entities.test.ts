@@ -44,6 +44,7 @@ import {
   lineAngleDegrees,
   lineLength,
   lineMidpoint,
+  measureTextWidth,
   mirrorEntity,
   mirrorEntityCopy,
   mirrorPoint,
@@ -125,6 +126,20 @@ describe("text", () => {
     expect(bounds.min).toBeCloseToPoint(p(0, 0))
     expect(bounds.max).toBeCloseToPoint(p(textWidth(text), 10))
     expect(textCorners(text)).toHaveLength(4)
+  })
+
+  it("measures with Arial's advance widths, scaled by the capital height", () => {
+    // Arial: W 1933, i 455 font units; capitals 1467 units tall.
+    expect(measureTextWidth("W", 1467)).toBeCloseTo(1933)
+    expect(measureTextWidth("i", 1467)).toBeCloseTo(455)
+    expect(measureTextWidth("Wi", 2.5)).toBeCloseTo(((1933 + 455) / 1467) * 2.5)
+  })
+
+  it("measures every printable ASCII and Spanish character from the font", () => {
+    const average = measureTextWidth("\u4e00", 1)
+    for (const char of " !~0AzáéíóúñÑ¿¡°±Ø") {
+      expect(measureTextWidth(char, 1)).not.toBe(average)
+    }
   })
 
   it("retypes its height, rotation and position", () => {

@@ -76,6 +76,8 @@ export {
 export type { TextOptions } from "./text"
 export {
   createText,
+  measureTextWidth,
+  TEXT_FONT_CAP_RATIO,
   TEXT_LINE_SPACING_FACTOR,
   textWidth,
   textCorners,

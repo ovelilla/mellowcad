@@ -40,3 +40,10 @@ export const THEME = {
   selectionCrossingFill: "rgba(74, 222, 128, 0.12)",
   selectionCrossingStroke: "#4ade80",
 } as const
+
+/**
+ * The face drawing text is set in: Arial, AutoCAD's Standard style, or one
+ * with its advance widths — the widths `measureTextWidth` measures with.
+ */
+export const DRAWING_FONT =
+  'Arial, "Liberation Sans", Arimo, Helvetica, sans-serif'

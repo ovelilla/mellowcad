@@ -1,7 +1,6 @@
 import { Scene, ScenePrimitive } from "../scene/types"
-
-/** Font drawing entities use — a plain, even-stroked face, like a CAD font. */
-const DRAWING_TEXT_FONT = "ui-monospace, SFMono-Regular, Menlo, monospace"
+import { DRAWING_FONT } from "../scene/theme"
+import { TEXT_FONT_CAP_RATIO } from "../domain/text"
 
 /** Em size the cap-height probe measures at; big enough to be precise. */
 const CAP_PROBE_SIZE = 100
@@ -145,14 +144,21 @@ export class CanvasScenePresenter {
 
       case "text": {
         if (p.text.length === 0) break
-        const family = p.font ?? DRAWING_TEXT_FONT
+        const family = p.font ?? DRAWING_FONT
         ctx.save()
         ctx.translate(p.at.x, p.at.y)
         if (p.rotation !== 0) ctx.rotate(p.rotation)
-        // A CAD text height is the height of its capital letters, whereas a
-        // font size is the em box, so the font is enlarged by the family's own
-        // cap-height ratio to make the capitals measure what the drawing says.
-        ctx.font = `${p.height / this.capHeightRatio(ctx, family)}px ${family}`
+        // A CAD text height is the height of its capitals, whereas a font
+        // size is the em box, so the font is enlarged by the cap-height ratio.
+        // WHY: the drawing font takes Arial's ratio rather than a measured one,
+        // so a face with Arial's widths but shorter caps (Liberation Sans)
+        // still paints the widths the engine measured.
+        const capRatio =
+          family === DRAWING_FONT
+            ? TEXT_FONT_CAP_RATIO
+            : this.capHeightRatio(ctx, family)
+        ctx.font = `${p.height / capRatio}px ${family}`
+        ctx.fontKerning = "none"
         ctx.textAlign = p.align
         ctx.fillStyle = p.color
         if (p.baseline === "capMiddle") {
