@@ -4,6 +4,7 @@ import {
   EllipseEntity,
   TextEntity,
   MTextEntity,
+  AttributeDefinitionEntity,
   DimensionEntity,
   HatchLoop,
   HatchEntity,
@@ -23,6 +24,7 @@ import {
 import { createEllipse } from "./ellipses"
 import { TextOptions, createText } from "./text"
 import { MTextOptions, createMText } from "./mtext"
+import { createAttributeDefinition } from "./attributes"
 import {
   DimensionOptions,
   createDimension,
@@ -63,6 +65,7 @@ function insertLike(
     scale: overrides.scale ?? insert.scale,
     rotation: overrides.rotation ?? insert.rotation,
     mirrored: overrides.mirrored ?? insert.mirrored,
+    attributes: insert.attributes,
     layerId: insert.layerId,
   })
 }
@@ -112,6 +115,24 @@ function mtextLike(
     lineSpacingFactor: mtext.lineSpacingFactor,
     styleId: mtext.styleId,
     layerId: mtext.layerId,
+  })
+}
+
+/** {@link textLike} for an attribute definition. */
+function attdefLike(
+  definition: AttributeDefinitionEntity,
+  position: Vec2,
+  overrides: Pick<TextOptions, "height" | "rotation"> = {}
+): AttributeDefinitionEntity {
+  return createAttributeDefinition(position, definition.tag, {
+    prompt: definition.prompt,
+    value: definition.value,
+    modes: definition.modes,
+    height: overrides.height ?? definition.height,
+    rotation: overrides.rotation ?? definition.rotation,
+    justify: definition.justify,
+    styleId: definition.styleId,
+    layerId: definition.layerId,
   })
 }
 
@@ -215,6 +236,7 @@ export function translateEntity(entity: Entity, delta: Vec2): Entity {
       }
     case "text":
     case "mtext":
+    case "attdef":
       return { ...entity, position: V.add(entity.position, delta) }
     case "dimension":
       return {
@@ -267,6 +289,7 @@ export function stretchEntity(
       return { ...entity, vertices: entity.vertices.map(shift) }
     case "text":
     case "mtext":
+    case "attdef":
       // Text has no free vertices either: it rides along whole when its
       // insertion point is caught by the frame.
       return inFrame(entity.position)
@@ -346,6 +369,8 @@ export function copyEntity(entity: Entity, delta: Vec2): Entity {
         return textLike(entity, V.add(entity.position, delta))
       case "mtext":
         return mtextLike(entity, V.add(entity.position, delta))
+      case "attdef":
+        return attdefLike(entity, V.add(entity.position, delta))
       case "dimension":
         return dimensionLike(
           entity,
@@ -417,6 +442,7 @@ export function rotateEntity(
       }
     case "text":
     case "mtext":
+    case "attdef":
       return {
         ...entity,
         position: rotatePoint(entity.position, pivot, radians),
@@ -499,6 +525,12 @@ export function rotateEntityCopy(
         return mtextLike(entity, rotatePoint(entity.position, pivot, radians), {
           rotation: entity.rotation + radians,
         })
+      case "attdef":
+        return attdefLike(
+          entity,
+          rotatePoint(entity.position, pivot, radians),
+          { rotation: entity.rotation + radians }
+        )
       case "dimension":
         return dimensionLike(
           entity,
@@ -582,6 +614,7 @@ export function scaleEntity(
         vertices: entity.vertices.map((v) => scalePoint(v, base, factor)),
       }
     case "text":
+    case "attdef":
       return {
         ...entity,
         position: scalePoint(entity.position, base, factor),
@@ -672,6 +705,10 @@ export function scaleEntityCopy(
           height: entity.height * factor,
           width: entity.width * factor,
         })
+      case "attdef":
+        return attdefLike(entity, scalePoint(entity.position, base, factor), {
+          height: entity.height * factor,
+        })
       case "dimension":
         return dimensionLike(
           entity,
@@ -750,6 +787,7 @@ export function mirrorEntity(entity: Entity, a: Vec2, b: Vec2): Entity {
       }
     case "text":
     case "mtext":
+    case "attdef":
       // Only the insertion point reflects: AutoCAD's MIRRTEXT defaults to 0,
       // which keeps mirrored text upright and readable.
       return { ...entity, position: mirrorPoint(entity.position, a, b) }
@@ -850,6 +888,8 @@ export function mirrorEntityCopy(entity: Entity, a: Vec2, b: Vec2): Entity {
         return textLike(entity, mirrorPoint(entity.position, a, b))
       case "mtext":
         return mtextLike(entity, mirrorPoint(entity.position, a, b))
+      case "attdef":
+        return attdefLike(entity, mirrorPoint(entity.position, a, b))
       case "dimension":
         return dimensionLike(
           entity,

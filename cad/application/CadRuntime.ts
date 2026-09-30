@@ -69,6 +69,7 @@ import {
 import { PointerInput, Tool, ToolContext } from "./tools/Tool"
 import { InsertTool } from "./tools/InsertTool"
 import { TextEditTool } from "./tools/TextEditTool"
+import { AttEditTool } from "./tools/AttEditTool"
 import { PasteTool } from "./tools/PasteTool"
 import { PointResolver } from "./PointResolver"
 import { AutosaveService } from "./Autosave"
@@ -249,6 +250,8 @@ export class CadRuntime extends Observable {
 
   // Held as a field so a double-click can hand it the object directly.
   private readonly textEdit = new TextEditTool()
+  // Held as a field so a double-click can hand it the block reference.
+  private readonly attEdit = new AttEditTool()
   // Held as a field so the Blocks palette can name the block for it.
   private readonly insert = new InsertTool()
   // Held as a field so the runtime can hand it the fragment it read.
@@ -324,7 +327,12 @@ export class CadRuntime extends Observable {
       },
     }
 
-    for (const tool of defaultTools(this.textEdit, this.insert, this.paste)) {
+    for (const tool of defaultTools(
+      this.textEdit,
+      this.insert,
+      this.paste,
+      this.attEdit
+    )) {
       this.registerTool(tool)
     }
     this.activeTool = this.tools.get("select")!
@@ -1060,7 +1068,11 @@ export class CadRuntime extends Observable {
       // it rejected the text, e.g. an incomplete coordinate): nothing to do.
       return
     }
-    this.dynamicInput.clearTexts()
+    // A tool that opened its next question in the commit may have filled it
+    // (a default in the box), so only the session just answered is cleared.
+    if (this.dynamicInput.getSession() === session) {
+      this.dynamicInput.clearTexts()
+    }
     // Committing a value places/edits a point, which consumes any acquired
     // object-snap-tracking references — just like a click does.
     this.resetTracking()
@@ -1419,6 +1431,7 @@ export class CadRuntime extends Observable {
       gridSpacing: this.snapMode.displaySpacing(),
       ltScale: this.document.getSettings().ltScale,
       lwDisplay: this.document.getSettings().lwDisplay,
+      attributeDisplay: this.document.getSettings().attributeDisplay,
       snap: this.currentSnap,
       snapLabel: this.currentSnap
         ? this.text.snapFeedback(this.currentSnap.type)
@@ -1652,16 +1665,27 @@ export class CadRuntime extends Observable {
 
   /**
    * A double-click on the drawing. Only meaningful at the neutral prompt, where
-   * AutoCAD's DBLCLKEDIT opens the object for editing: today that means a text
-   * or multiline text object opens for retyping. Returns whether the
-   * double-click was consumed.
+   * AutoCAD's DBLCLKEDIT opens the object for editing: a text, multiline text
+   * or loose attribute definition opens for retyping, and a block reference
+   * with attributes opens EATTEDIT. Returns whether the double-click was
+   * consumed.
    */
   doubleClick(e: PointerEventData): boolean {
     if (this.activeTool.id !== "select") return false
     const hit = this.pickEntity(this.viewport.screenToWorld(e.screen))
-    if (hit?.type !== "text" && hit?.type !== "mtext") return false
-    this.setActiveTool(this.textEdit.id)
-    this.textEdit.beginEdit(hit, this.toolContext)
+    if (hit?.type === "insert" && (hit.attributes?.length ?? 0) > 0) {
+      this.setActiveTool(this.attEdit.id)
+      this.attEdit.beginEdit(hit, this.toolContext)
+    } else if (
+      hit?.type === "text" ||
+      hit?.type === "mtext" ||
+      hit?.type === "attdef"
+    ) {
+      this.setActiveTool(this.textEdit.id)
+      this.textEdit.beginEdit(hit, this.toolContext)
+    } else {
+      return false
+    }
     this.invalidateState()
     this.host.requestRender()
     return true

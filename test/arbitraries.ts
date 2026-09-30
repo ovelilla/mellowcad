@@ -5,6 +5,9 @@ import {
   mtextContents,
   TEXT_JUSTIFICATIONS,
   type ArcEntity,
+  type AttributeDefinitionEntity,
+  type AttributeModes,
+  type BlockAttribute,
   type CircleEntity,
   type DimensionEntity,
   type EllipseEntity,
@@ -274,6 +277,69 @@ export const mtextEntity: fc.Arbitrary<MTextEntity> = fc
       )
   )
 
+/** Tags as ATTDEF keeps them: uppercase, no spaces or `!`. */
+const attributeTag: fc.Arbitrary<string> =
+  fc.stringMatching(/^[A-Z0-9_-]{1,8}$/)
+
+const attributeModes: fc.Arbitrary<AttributeModes> = fc.record({
+  invisible: fc.boolean(),
+  constant: fc.boolean(),
+  verify: fc.boolean(),
+  preset: fc.boolean(),
+  lockPosition: fc.boolean(),
+})
+
+export const attdefEntity: fc.Arbitrary<AttributeDefinitionEntity> = fc
+  .tuple(
+    point,
+    attributeTag,
+    fc.string({ maxLength: 12 }),
+    fc.string({ maxLength: 12 }),
+    positiveLength,
+    angle,
+    fc.constantFrom(...TEXT_JUSTIFICATIONS),
+    attributeModes
+  )
+  .map(([position, tag, prompt, value, height, rotation, justify, modes]) =>
+    withId<AttributeDefinitionEntity>(
+      {
+        type: "attdef",
+        layerId: DEFAULT_LAYER_ID,
+        position,
+        height,
+        rotation,
+        justify,
+        styleId: DEFAULT_TEXT_STYLE_ID,
+        tag,
+        prompt,
+        value,
+        modes,
+      },
+      "attdef"
+    )
+  )
+
+const blockAttribute: fc.Arbitrary<BlockAttribute> = fc
+  .tuple(
+    point,
+    attributeTag,
+    fc.string({ maxLength: 12 }),
+    positiveLength,
+    angle,
+    fc.boolean()
+  )
+  .map(([position, tag, value, height, rotation, invisible]) => ({
+    tag,
+    value,
+    position,
+    height,
+    rotation,
+    justify: "left",
+    styleId: DEFAULT_TEXT_STYLE_ID,
+    invisible,
+    layerId: DEFAULT_LAYER_ID,
+  }))
+
 export const dimensionEntity: fc.Arbitrary<DimensionEntity> = fc
   .tuple(
     point,
@@ -326,8 +392,14 @@ export const hatchEntity: fc.Arbitrary<HatchEntity> = fc
   )
 
 export const insertEntity: fc.Arbitrary<InsertEntity> = fc
-  .tuple(point, positiveLength, angle, fc.boolean())
-  .map(([position, scale, rotation, mirrored]) =>
+  .tuple(
+    point,
+    positiveLength,
+    angle,
+    fc.boolean(),
+    fc.array(blockAttribute, { maxLength: 3 })
+  )
+  .map(([position, scale, rotation, mirrored, attributes]) =>
     withId<InsertEntity>(
       {
         type: "insert",
@@ -339,6 +411,7 @@ export const insertEntity: fc.Arbitrary<InsertEntity> = fc
         // Reflection is stored only when it applies, so the round-trip has to
         // survive the field being absent as well as present.
         ...(mirrored ? { mirrored: true } : {}),
+        ...(attributes.length > 0 ? { attributes } : {}),
       },
       "insert"
     )
@@ -352,6 +425,7 @@ export const entity: fc.Arbitrary<Entity> = fc.oneof(
   polylineEntity,
   textEntity,
   mtextEntity,
+  attdefEntity,
   dimensionEntity,
   hatchEntity,
   insertEntity
@@ -368,7 +442,13 @@ export const drawingSnapshot: fc.Arbitrary<DrawingSnapshot> = fc
     snapshotOf(
       entities.map((item, index) => ({ ...item, id: `e${index}` })),
       {
-        settings: { unit, precision, ltScale: 1, lwDisplay: true },
+        settings: {
+          unit,
+          precision,
+          ltScale: 1,
+          lwDisplay: true,
+          attributeDisplay: "normal",
+        },
         // The block every generated reference points at: a reader drops a
         // reference whose definition the file does not carry.
         blocks: [

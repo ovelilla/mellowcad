@@ -327,6 +327,13 @@ function expectSameShape(actual: Entity, expected: Entity, precision = 6) {
     expect(actual.rotation).toBeCloseToAngle(expected.rotation, precision)
     expect(actual.value).toBe(expected.value)
     expect(actual.justify).toBe(expected.justify)
+  } else if (actual.type === "attdef" && expected.type === "attdef") {
+    expect(actual.position).toBeCloseToPoint(expected.position, precision)
+    expect(actual.height).toBeCloseTo(expected.height, precision)
+    expect(actual.rotation).toBeCloseToAngle(expected.rotation, precision)
+    expect(actual.justify).toBe(expected.justify)
+    expect(actual.tag).toBe(expected.tag)
+    expect(actual.modes).toEqual(expected.modes)
   } else if (actual.type === "mtext" && expected.type === "mtext") {
     expect(actual.position).toBeCloseToPoint(expected.position, precision)
     expect(actual.height).toBeCloseTo(expected.height, precision)
@@ -370,6 +377,8 @@ function expectSameShape(actual: Entity, expected: Entity, precision = 6) {
     // Reflection is what MIRROR toggles, so a lost flag means a reference that
     // silently came back the wrong way round.
     expect(actual.mirrored ?? false).toBe(expected.mirrored ?? false)
+    // Held in the block's frame, so no transform of the reference may touch them.
+    expect(actual.attributes).toEqual(expected.attributes)
   }
 }
 
@@ -390,6 +399,7 @@ function characteristicPoints(entity: Entity): Vec2[] {
       return [...entity.vertices]
     case "text":
     case "mtext":
+    case "attdef":
       return [entity.position]
     case "dimension":
       // Not `linePoint`: only its *projection* onto the measured axis is drawn,

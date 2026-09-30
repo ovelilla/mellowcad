@@ -1,5 +1,6 @@
 import { Vec2 } from "../../geometry/Vec2"
 import {
+  BlockAttribute,
   BlockId,
   EntityId,
   InsertEntity,
@@ -11,6 +12,7 @@ import { parseCoordinate } from "../input/coordinateInput"
 import { entityScenePrimitive } from "../SceneBuilder"
 import { ScenePrimitive } from "../../scene/types"
 import { THEME } from "../../scene/theme"
+import { AttributeValuePrompts } from "./attributeValues"
 import {
   CommandOption,
   CommandOptionOutcome,
@@ -27,6 +29,11 @@ type InsertState =
   | { readonly phase: "point"; readonly cursor: Vec2 }
   | { readonly phase: "scale" }
   | { readonly phase: "rotation" }
+  | {
+      readonly phase: "attributes"
+      readonly at: Vec2
+      readonly prompts: AttributeValuePrompts
+    }
 
 /**
  * AutoCAD's INSERT: places a reference to a block already defined in the
@@ -37,6 +44,10 @@ type InsertState =
  *
  * Scale is uniform (see {@link InsertEntity}) and both values persist for the
  * session, so a run of identical symbols is placed by clicking.
+ *
+ * A block with attributes then asks for their values at the command line
+ * (ATTDIA 0), and the reference is added only once they are all given: one
+ * insertion, one undo step, and Escape part-way cancels the whole of it.
  *
  * Not done: inserting an external drawing file (there is no file to browse to
  * here, which is also what makes INSUNITS moot — a block defined in this
@@ -111,28 +122,47 @@ export class InsertTool implements Tool {
   }
 
   buildOverlay(ctx: ToolContext): ScenePrimitive[] {
-    if (this.state.phase !== "point") return []
+    const state = this.state
+    if (state.phase !== "point" && state.phase !== "attributes") return []
+    const preview =
+      state.phase === "point"
+        ? this.pending(state.cursor, ctx, PREVIEW_ID)
+        : this.pending(state.at, ctx, PREVIEW_ID, state.prompts.attributes())
     return entityScenePrimitive(
       ctx.viewport,
-      this.pending(this.state.cursor, ctx, PREVIEW_ID),
+      preview,
       { color: THEME.rubberBand, width: 1 },
       { blocks: ctx.blocks }
     )
   }
 
   /** The reference as it stands at `at`. Shared by the preview and the commit. */
-  private pending(at: Vec2, ctx: ToolContext, id?: EntityId): InsertEntity {
+  private pending(
+    at: Vec2,
+    ctx: ToolContext,
+    id?: EntityId,
+    attributes?: readonly BlockAttribute[]
+  ): InsertEntity {
     return createInsert(this.blockId, at, {
       scale: this.scale,
       rotation: this.rotation,
       layerId: ctx.document.getCurrentLayerId(),
+      attributes,
       id,
     })
   }
 
   private place(at: Vec2, ctx: ToolContext): void {
-    ctx.execute(new AddEntityCommand(this.pending(at, ctx)))
-    ctx.endCommand()
+    const block = ctx.document.getBlock(this.blockId)
+    if (!block) return
+    const prompts = new AttributeValuePrompts(block, (attributes, doneCtx) => {
+      doneCtx.execute(
+        new AddEntityCommand(this.pending(at, doneCtx, undefined, attributes))
+      )
+      doneCtx.endCommand()
+    })
+    this.state = { phase: "attributes", at, prompts }
+    prompts.start(ctx)
   }
 
   private enterName(ctx: ToolContext): void {

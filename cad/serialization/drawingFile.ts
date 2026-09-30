@@ -27,10 +27,14 @@
 
 import { normalizeColor } from "../domain/colors"
 import {
+  AttributeModes,
+  BlockAttribute,
   BlockDefinition,
+  createAttributeDefinition,
   createBlockDefinition,
   createEllipse,
   createMText,
+  DEFAULT_ATTRIBUTE_MODES,
   Entity,
   nextEntityId,
   DimensionKind,
@@ -81,7 +85,7 @@ import { DRAWING_FILE_TYPE } from "./drawingSummary"
 export { DRAWING_FILE_TYPE }
 
 /** Current schema version written by {@link serializeDrawing}. */
-export const DRAWING_FILE_VERSION = 18
+export const DRAWING_FILE_VERSION = 19
 
 /** MIME type a serialised drawing is handed to the host as. */
 export const DRAWING_FILE_MIME_TYPE = "application/json"
@@ -317,6 +321,22 @@ function cloneEntity(entity: Entity): Entity {
         lineSpacingFactor: entity.lineSpacingFactor,
         styleId: entity.styleId,
       }
+    case "attdef":
+      return {
+        id: entity.id,
+        type: "attdef",
+        layerId: entity.layerId,
+        ...overrides,
+        position: { x: entity.position.x, y: entity.position.y },
+        height: entity.height,
+        rotation: entity.rotation,
+        justify: entity.justify,
+        styleId: entity.styleId,
+        tag: entity.tag,
+        prompt: entity.prompt,
+        value: entity.value,
+        modes: { ...entity.modes },
+      }
     case "dimension":
       return {
         id: entity.id,
@@ -363,7 +383,29 @@ function cloneEntity(entity: Entity): Entity {
         scale: entity.scale,
         rotation: entity.rotation,
         ...(entity.mirrored ? { mirrored: true } : {}),
+        ...(entity.attributes
+          ? { attributes: entity.attributes.map(cloneBlockAttribute) }
+          : {}),
       }
+  }
+}
+
+function cloneBlockAttribute(attribute: BlockAttribute): BlockAttribute {
+  return {
+    tag: attribute.tag,
+    value: attribute.value,
+    position: { x: attribute.position.x, y: attribute.position.y },
+    height: attribute.height,
+    rotation: attribute.rotation,
+    justify: attribute.justify,
+    styleId: attribute.styleId,
+    invisible: attribute.invisible,
+    layerId: attribute.layerId,
+    ...(attribute.color ? { color: attribute.color } : {}),
+    ...(attribute.linetype ? { linetype: attribute.linetype } : {}),
+    ...(attribute.lineweight !== undefined
+      ? { lineweight: attribute.lineweight }
+      : {}),
   }
 }
 
@@ -443,7 +485,11 @@ function parseSettings(value: unknown): DocumentSettings {
     typeof value.lwDisplay === "boolean"
       ? value.lwDisplay
       : DEFAULT_DOCUMENT_SETTINGS.lwDisplay
-  return { unit, precision, ltScale, lwDisplay }
+  const attributeDisplay =
+    value.attributeDisplay === "on" || value.attributeDisplay === "off"
+      ? value.attributeDisplay
+      : "normal"
+  return { unit, precision, ltScale, lwDisplay, attributeDisplay }
 }
 
 function parseEntities(value: unknown): Entity[] {
@@ -602,6 +648,22 @@ function parseEntity(raw: unknown): Entity | null {
         ...overrides,
       }
     }
+    case "attdef": {
+      const position = parseVec2(raw.position)
+      const tag = typeof raw.tag === "string" ? raw.tag.trim() : ""
+      if (!position || tag.length === 0) return null
+      return {
+        ...createAttributeDefinition(position, tag, {
+          prompt: typeof raw.prompt === "string" ? raw.prompt : "",
+          value: typeof raw.value === "string" ? raw.value : "",
+          modes: parseAttributeModes(raw.modes),
+          ...parseTextLayout(raw),
+          layerId,
+          id,
+        }),
+        ...overrides,
+      }
+    }
     case "dimension": {
       const first = parseVec2(raw.first)
       const second = parseVec2(raw.second)
@@ -660,11 +722,83 @@ function parseEntity(raw: unknown): Entity | null {
         scale: isFiniteNumber(raw.scale) && raw.scale > 0 ? raw.scale : 1,
         rotation: isFiniteNumber(raw.rotation) ? raw.rotation : 0,
         ...(raw.mirrored === true ? { mirrored: true } : {}),
+        ...parseBlockAttributes(raw.attributes),
       }
     }
     default:
       return null
   }
+}
+
+/** The height, rotation, justification and style every text-like object carries. */
+function parseTextLayout(raw: Record<string, unknown>): {
+  height: number
+  rotation: number
+  justify: TextJustify
+  styleId: TextStyleId
+} {
+  return {
+    height:
+      isFiniteNumber(raw.height) && raw.height > 0
+        ? raw.height
+        : DEFAULT_TEXT_HEIGHT,
+    rotation: isFiniteNumber(raw.rotation) ? raw.rotation : 0,
+    justify: TEXT_JUSTIFICATIONS.includes(raw.justify as TextJustify)
+      ? (raw.justify as TextJustify)
+      : "left",
+    styleId: parseId(raw.styleId, DEFAULT_TEXT_STYLE_ID),
+  }
+}
+
+function parseAttributeModes(value: unknown): AttributeModes {
+  if (!isRecord(value)) return DEFAULT_ATTRIBUTE_MODES
+  const flag = (key: keyof AttributeModes) =>
+    typeof value[key] === "boolean"
+      ? (value[key] as boolean)
+      : DEFAULT_ATTRIBUTE_MODES[key]
+  return {
+    invisible: flag("invisible"),
+    constant: flag("constant"),
+    verify: flag("verify"),
+    preset: flag("preset"),
+    lockPosition: flag("lockPosition"),
+  }
+}
+
+/** A reference's attributes; one without a position or a tag is skipped. */
+function parseBlockAttributes(value: unknown): {
+  attributes?: BlockAttribute[]
+} {
+  if (!Array.isArray(value)) return {}
+  const attributes: BlockAttribute[] = []
+  for (const raw of value) {
+    if (!isRecord(raw)) continue
+    const position = parseVec2(raw.position)
+    if (!position || typeof raw.tag !== "string" || raw.tag.length === 0) {
+      continue
+    }
+    attributes.push({
+      tag: raw.tag,
+      value: typeof raw.value === "string" ? raw.value : "",
+      position,
+      ...parseTextLayout(raw),
+      invisible: raw.invisible === true,
+      layerId:
+        typeof raw.layerId === "string" && raw.layerId.length > 0
+          ? raw.layerId
+          : DEFAULT_LAYER_ID,
+      ...(typeof raw.color === "string" && normalizeColor(raw.color)
+        ? { color: normalizeColor(raw.color)! }
+        : {}),
+      ...(typeof raw.linetype === "string" && raw.linetype.length > 0
+        ? { linetype: raw.linetype }
+        : {}),
+      ...(isFiniteNumber(raw.lineweight)
+        ? { lineweight: clampLineweight(raw.lineweight) }
+        : {}),
+    })
+  }
+  return attributes.length > 0 ? { attributes } : {}
 }
 
 /** Boundary loops. Two vertices are enough when they carry arc bulges. */

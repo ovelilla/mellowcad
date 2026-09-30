@@ -23,6 +23,7 @@ import {
   ellipseEndPoint,
   ellipseQuadrantPoints,
   ellipseStartPoint,
+  insertAttributePoints,
   isFullEllipse,
   lineMidpoint,
   polylineSegmentGeometries,
@@ -190,19 +191,22 @@ export const centerProvider: SnapProvider = {
 }
 
 /**
- * Snaps to the point a text object or a block reference hangs off — AutoCAD's
- * Insertion osnap. A reference offers only its own insertion point here; the
- * geometry it draws is snapped to by every other provider.
+ * Snaps to the point a text object, an attribute definition or a block
+ * reference hangs off — AutoCAD's Insertion osnap. A reference offers its own
+ * insertion point and those of the attributes it shows; the rest of what it
+ * draws is snapped to by every other provider.
  */
 export const insertionProvider: SnapProvider = {
   type: SnapType.Insertion,
   collect({ document }: SnapContext): SnapCandidate[] {
     const candidates: SnapCandidate[] = []
+    const display = document.getSettings().attributeDisplay
     for (const entity of document.getEntities()) {
       if (!document.isEntityVisible(entity)) continue
       if (
         entity.type === "text" ||
         entity.type === "mtext" ||
+        entity.type === "attdef" ||
         entity.type === "insert"
       ) {
         candidates.push({
@@ -210,6 +214,16 @@ export const insertionProvider: SnapProvider = {
           point: entity.position,
           sourceIds: [entity.id],
         })
+      }
+      if (entity.type === "insert") {
+        const block = document.getBlock(entity.blockId)
+        for (const point of insertAttributePoints(entity, block, display)) {
+          candidates.push({
+            type: SnapType.Insertion,
+            point,
+            sourceIds: [entity.id],
+          })
+        }
       }
     }
     return candidates

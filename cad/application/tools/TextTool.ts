@@ -439,7 +439,7 @@ export class TextTool implements Tool {
 const TEXT_PREVIEW_ID = "__text_preview__"
 
 /** The Justify prompt's global keywords, in AutoCAD's order. */
-const JUSTIFY_BY_KEYWORD: Readonly<Record<string, TextJustify>> = {
+export const JUSTIFY_BY_KEYWORD: Readonly<Record<string, TextJustify>> = {
   Left: "left",
   Center: "center",
   Right: "right",
@@ -455,13 +455,15 @@ const JUSTIFY_BY_KEYWORD: Readonly<Record<string, TextJustify>> = {
   BR: "br",
 }
 
-const JUSTIFY_KEYWORDS = Object.keys(JUSTIFY_BY_KEYWORD)
+export const JUSTIFY_KEYWORDS = Object.keys(JUSTIFY_BY_KEYWORD)
 
 /**
  * Where the next line of text starts: one line below, measured along the text's
  * own down direction so a rotated run stays stacked square to itself.
  */
-function lineBelow(text: TextEntity): Vec2 {
+export function lineBelow(
+  text: Pick<TextEntity, "position" | "height" | "rotation">
+): Vec2 {
   const gap = text.height * TEXT_LINE_SPACING_FACTOR
   return {
     x: text.position.x + gap * Math.sin(text.rotation),

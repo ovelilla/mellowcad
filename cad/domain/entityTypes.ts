@@ -23,6 +23,7 @@ export type EntityType =
   | "polyline"
   | "text"
   | "mtext"
+  | "attdef"
   | "dimension"
   | "hatch"
   | "insert"
@@ -237,6 +238,68 @@ export interface MTextEntity extends BaseEntity {
   readonly styleId: TextStyleId
 }
 
+/** AFLAGS: how an attribute behaves when its block is inserted. */
+export interface AttributeModes {
+  /** Not shown in a reference, unless ATTDISP overrides it. */
+  readonly invisible: boolean
+  /** A fixed value, never asked for; the reference draws the definition's. */
+  readonly constant: boolean
+  /** Asked for a second time before the insertion is accepted. */
+  readonly verify: boolean
+  /** Takes its default without asking. */
+  readonly preset: boolean
+  /** Cannot be moved relative to the rest of the block. */
+  readonly lockPosition: boolean
+}
+
+/**
+ * An attribute definition (AutoCAD's ATTDEF): a single line of text laid out
+ * like a {@link TextEntity}, which a block definition turns into a question
+ * asked at every insertion. Loose in the drawing it shows its {@link tag}.
+ */
+export interface AttributeDefinitionEntity extends BaseEntity {
+  readonly type: "attdef"
+  readonly position: Vec2
+  readonly height: number
+  readonly rotation: number
+  readonly justify: TextJustify
+  readonly styleId: TextStyleId
+  /** Uppercase, with no spaces or `!`; names the attribute in each reference. */
+  readonly tag: string
+  /** What INSERT asks; empty means the tag is asked instead. */
+  readonly prompt: string
+  /** The default value, or the value itself when the attribute is constant. */
+  readonly value: string
+  readonly modes: AttributeModes
+}
+
+/**
+ * One attribute of a block reference (AutoCAD's ATTRIB): a value for one of
+ * the definition's tags, with the text geometry it was given at insertion.
+ *
+ * The geometry is kept in the **block definition's** coordinates, like the
+ * definition's own entities, so the reference's placement carries it and no
+ * transform has to know it exists. It is a copy, not a link: redefining the
+ * block leaves existing attributes as they were, as AutoCAD does.
+ */
+export interface BlockAttribute {
+  readonly tag: string
+  readonly value: string
+  readonly position: Vec2
+  readonly height: number
+  readonly rotation: number
+  readonly justify: TextJustify
+  readonly styleId: TextStyleId
+  readonly invisible: boolean
+  readonly layerId: LayerId
+  readonly color?: EntityColor
+  readonly linetype?: LinetypeId
+  readonly lineweight?: Lineweight
+}
+
+/** ATTMODE: whether references show their attributes. */
+export type AttributeDisplay = "normal" | "on" | "off"
+
 /**
  * What a dimension measures, and therefore how it is drawn:
  *
@@ -364,7 +427,11 @@ export interface BlockDefinition {
  * Every helper that has to look inside a block reference takes one; without it
  * an insert degrades to its insertion point rather than pretending to be empty.
  */
-export type BlockLookup = (id: BlockId) => BlockDefinition | undefined
+export interface BlockLookup {
+  (id: BlockId): BlockDefinition | undefined
+  /** ATTMODE, so every expansion of a reference shows what the drawing does. */
+  readonly attributeDisplay?: AttributeDisplay
+}
 
 /**
  * A block reference (AutoCAD's INSERT object): one placement of a
@@ -387,6 +454,8 @@ export interface InsertEntity extends BaseEntity {
   readonly rotation: number
   /** Reflected across its own Y axis before rotating (a negative X scale). */
   readonly mirrored?: boolean
+  /** The values given to the block's attribute definitions, in prompt order. */
+  readonly attributes?: readonly BlockAttribute[]
 }
 
 export type Entity =
@@ -397,6 +466,7 @@ export type Entity =
   | PolylineEntity
   | TextEntity
   | MTextEntity
+  | AttributeDefinitionEntity
   | DimensionEntity
   | HatchEntity
   | InsertEntity

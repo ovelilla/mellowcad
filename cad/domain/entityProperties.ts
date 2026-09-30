@@ -7,6 +7,7 @@ import {
   EllipseEntity,
   TextEntity,
   MTextEntity,
+  AttributeDefinitionEntity,
   InsertEntity,
   Entity,
 } from "./entityTypes"
@@ -70,6 +71,7 @@ export function applyEntityProperty(
     case "ellipse":
       return applyEllipseProperty(entity, property, value)
     case "text":
+    case "attdef":
       return applyTextProperty(entity, property, value)
     case "mtext":
       return applyMTextProperty(entity, property, value)
@@ -219,11 +221,11 @@ function applyEllipseProperty(
   }
 }
 
-function applyTextProperty(
-  text: TextEntity,
+function applyTextProperty<T extends TextEntity | AttributeDefinitionEntity>(
+  text: T,
   property: EntityProperty,
   value: number
-): TextEntity | null {
+): T | null {
   switch (property) {
     case "positionX":
       return { ...text, position: { x: value, y: text.position.y } }

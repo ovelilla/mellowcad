@@ -1,5 +1,6 @@
 import { Vec2, V } from "../geometry/Vec2"
 import {
+  AttributeDisplay,
   BlockLookup,
   DimensionEntity,
   EllipseEntity,
@@ -8,6 +9,7 @@ import {
   HatchEntity,
   HatchGeometry,
   PolylineEntity,
+  attributeDefinitionText,
   dimensionGeometry,
   entityDrawOrder,
   hatchGeometry,
@@ -92,6 +94,8 @@ export interface SceneInput {
   readonly ltScale: number
   /** Whether lineweights are drawn thick (LWDISPLAY) or everything hairline. */
   readonly lwDisplay: boolean
+  /** ATTMODE: which attributes block references show; Normal when absent. */
+  readonly attributeDisplay?: AttributeDisplay
   readonly snap: SnapResult | null
   /**
    * The object snap's name for the tooltip beside its marker, in the command
@@ -139,7 +143,8 @@ export function buildScene(input: SceneInput): Scene {
     input.selectedIds,
     input.hiddenIds,
     input.ltScale,
-    input.lwDisplay
+    input.lwDisplay,
+    input.attributeDisplay ?? "normal"
   )
   pushTracking(primitives, camera, input.acquiredTrackingPoints, input.tracking)
   pushParallelReferences(
@@ -478,6 +483,13 @@ export function entityScenePrimitive(
         color: stroke.color,
       }))
     }
+    case "attdef":
+      return entityScenePrimitive(
+        camera,
+        attributeDefinitionText(entity),
+        stroke,
+        options
+      )
     case "dimension":
       return dimensionPrimitives(
         camera,
@@ -698,7 +710,8 @@ function pushEntities(
   selectedIds: ReadonlySet<EntityId>,
   hiddenIds: ReadonlySet<EntityId>,
   ltScale: number,
-  lwDisplay: boolean
+  lwDisplay: boolean,
+  attributeDisplay: AttributeDisplay
 ): void {
   const layerById = new Map<LayerId, Layer>()
   for (const layer of layers) layerById.set(layer.id, layer)
@@ -734,7 +747,11 @@ function pushEntities(
       // lineweight, so a reference is not painted flat: the reference's layer
       // only reaches the ones drawn on layer 0, which `insertFlatGeometry`
       // has already resolved.
-      for (const nested of insertFlatGeometry(entity, blocks)) {
+      for (const nested of insertFlatGeometry(
+        entity,
+        blocks,
+        attributeDisplay
+      )) {
         draw(nested, isSelected)
       }
       return

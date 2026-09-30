@@ -16,6 +16,7 @@ import {
   HatchEntity,
   BlockId,
   BlockDefinition,
+  BlockAttribute,
   InsertEntity,
   Entity,
 } from "./entityTypes"
@@ -112,6 +113,7 @@ export interface InsertOptions {
   readonly scale?: number
   readonly rotation?: number
   readonly mirrored?: boolean
+  readonly attributes?: readonly BlockAttribute[]
   readonly layerId?: LayerId
   readonly id?: EntityId
 }
@@ -132,6 +134,9 @@ export function createInsert(
       Number.isFinite(scale) && (scale as number) > 0 ? (scale as number) : 1,
     rotation: Number.isFinite(options.rotation) ? options.rotation! : 0,
     ...(options.mirrored ? { mirrored: true } : {}),
+    ...(options.attributes && options.attributes.length > 0
+      ? { attributes: options.attributes.slice() }
+      : {}),
   }
 }
 

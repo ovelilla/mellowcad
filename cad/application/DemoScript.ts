@@ -334,9 +334,10 @@ function currentPrompt(driver: CadDriver): DemoPrompt {
   return {
     command: state.commandLine.command,
     field:
-      field?.prompt === undefined
+      field?.label ??
+      (field?.prompt === undefined
         ? null
-        : driver.runtime.text.prompt(field.prompt),
+        : driver.runtime.text.prompt(field.prompt)),
     fieldKind: field?.kind ?? null,
     options: state.commandOptions.map((option) => option.label),
   }

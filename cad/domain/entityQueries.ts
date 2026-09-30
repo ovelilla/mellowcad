@@ -21,6 +21,7 @@ import {
   Bounds,
 } from "./entityTypes"
 import { insertFlatGeometry } from "./blocks"
+import { attributeDefinitionText } from "./attributes"
 import { hatchLoopSegments, hatchLoopRing, pointInsideHatch } from "./hatch"
 import {
   textWidth,
@@ -208,6 +209,8 @@ export function closestOnEntity(
         entity.position,
         point
       )
+    case "attdef":
+      return closestOnEntity(attributeDefinitionText(entity), point)
     case "dimension": {
       // Picked by its line work, the way you grab a dimension in AutoCAD; the
       // text is not part of the pick target.
@@ -341,6 +344,8 @@ export function entityBounds(entity: Entity, blocks?: BlockLookup): Bounds {
       return cornersBounds(textCorners(entity))
     case "mtext":
       return cornersBounds(mtextCorners(entity))
+    case "attdef":
+      return cornersBounds(textCorners(attributeDefinitionText(entity)))
     case "dimension": {
       const g = dimensionGeometry(entity)
       const points = [
@@ -545,9 +550,14 @@ export function entityCrossesRect(
       return false
     }
     case "text":
-    case "mtext": {
+    case "mtext":
+    case "attdef": {
       const corners =
-        entity.type === "text" ? textCorners(entity) : mtextCorners(entity)
+        entity.type === "text"
+          ? textCorners(entity)
+          : entity.type === "mtext"
+            ? mtextCorners(entity)
+            : textCorners(attributeDefinitionText(entity))
       for (const [a, b] of boxEdges(corners)) {
         if (pointInRect(a, min, max)) return true
         for (const [e1, e2] of edges) {

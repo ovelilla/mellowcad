@@ -1,5 +1,6 @@
 import { Vec2 } from "../../geometry/Vec2"
 import {
+  BlockAttribute,
   BlockDefinition,
   Entity,
   EntityId,
@@ -12,6 +13,7 @@ import { entityScenePrimitive } from "../SceneBuilder"
 import { ScenePrimitive } from "../../scene/types"
 import { THEME } from "../../scene/theme"
 import { boxSelect, buildSelectionBoxOverlay } from "./boxSelection"
+import { AttributeValuePrompts } from "./attributeValues"
 import { PointerInput, Tool, ToolContext } from "./Tool"
 
 /** Screen-pixel movement past which a press-drag becomes a box selection. */
@@ -34,6 +36,8 @@ type BlockState =
       readonly currentWorld: Vec2
       readonly subtract: boolean
     }
+  /** Converting to a reference: asking the values of its attributes. */
+  | { readonly phase: "attributes" }
 
 /**
  * AutoCAD's BLOCK: names some geometry, pins it to an insertion base point and
@@ -44,6 +48,11 @@ type BlockState =
  * The objects become a reference to the new block ("Convert to Block", the mode
  * AutoCAD's own task page tells you to choose), so the drawing looks unchanged
  * and the geometry is now one object. The whole command is a single undo step.
+ *
+ * Attribute definitions in the selection ask for their values in the order
+ * they were picked, and a window or crossing picks them in reverse order of
+ * creation, as AutoCAD documents; the new reference then asks for its values
+ * as INSERT does, since it is converted with attributes of its own.
  */
 export class BlockTool implements Tool {
   readonly id = "block"
@@ -127,7 +136,7 @@ export class BlockTool implements Tool {
         this.state.startWorld,
         this.state.currentWorld
       )
-      this.applyPick(ids, this.state.subtract, ctx)
+      this.applyPick(ids.slice().reverse(), this.state.subtract, ctx)
     } else {
       return
     }
@@ -264,11 +273,19 @@ export class BlockTool implements Tool {
     )
     // The reference sits on the base point with no scale or rotation, so the
     // drawing looks exactly as it did before the objects became a block.
-    const reference = createInsert(block.id, this.basePoint, {
-      layerId: ctx.document.getCurrentLayerId(),
-    })
-    ctx.execute(new CreateBlockCommand(block, ids, reference))
-    ctx.selection.set([reference.id])
-    ctx.endCommand()
+    const convert = (
+      attributes: readonly BlockAttribute[],
+      doneCtx: ToolContext
+    ) => {
+      const reference = createInsert(block.id, this.basePoint, {
+        layerId: doneCtx.document.getCurrentLayerId(),
+        attributes,
+      })
+      doneCtx.execute(new CreateBlockCommand(block, ids, reference))
+      doneCtx.selection.set([reference.id])
+      doneCtx.endCommand()
+    }
+    this.state = { phase: "attributes" }
+    new AttributeValuePrompts(block, convert).start(ctx)
   }
 }

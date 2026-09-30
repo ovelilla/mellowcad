@@ -1,3 +1,5 @@
+import type { AttributeDisplay } from "./entityTypes"
+
 /**
  * Document-level unit configuration. One *world unit* equals one *document
  * unit*, so geometry is stored unit-agnostically and the unit is used for
@@ -17,6 +19,8 @@ export interface DocumentSettings {
   readonly ltScale: number
   /** Whether lineweights are drawn at their real thickness (AutoCAD's LWDISPLAY). */
   readonly lwDisplay: boolean
+  /** ATTMODE, which AutoCAD saves in the drawing. */
+  readonly attributeDisplay: AttributeDisplay
 }
 
 export const DEFAULT_DOCUMENT_SETTINGS: DocumentSettings = {
@@ -24,6 +28,7 @@ export const DEFAULT_DOCUMENT_SETTINGS: DocumentSettings = {
   precision: 2,
   ltScale: 1,
   lwDisplay: true,
+  attributeDisplay: "normal",
 }
 
 export const LENGTH_UNITS: LengthUnit[] = [

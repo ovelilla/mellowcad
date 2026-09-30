@@ -125,7 +125,10 @@ There is a single session at a time. Patterns in use:
   text with `ctx.text.resolveKeyword(typed, ids)`, which applies the same abbreviation, word and
   `_` rules as every other prompt, and echoes the list with `ctx.text.keywordList(ids)` so the
   command line still shows AutoCAD's prompt. Editing an existing value preloads the field with `setText` after
-  `open`, and the tool hides the object it is editing (`hiddenEntityIds`).
+  `open`, and the tool hides the object it is editing (`hiddenEntityIds`). A question opened from
+  inside a `commitRaw` may preload its default the same way: the runtime clears only the session
+  that was answered. A field the drawing words rather than the catalog (an attribute's own prompt)
+  sets `label` instead of `prompt`.
 - **Multi-line text** — one field of kind `"paragraphs"` (MTEXT's editor): a content field like
   `"text"` (`isContentField` is the test; never compare the kind with `"text"` alone), rendered as
   a textarea where Enter breaks a line and Ctrl+Enter reaches `commitRaw`. In the harness `type`
@@ -147,6 +150,11 @@ command is actually used.
 A **dash command** that only takes its input differently (`-MTEXT`) is not a tool or a rail entry:
 `runtimeCommands` registers it against the tool's id, starts the tool and then switches its entry
 (`MTextTool.useCommandLine()`), so the prompts and keywords stay the plain command's.
+
+A command that **creates a block reference** (INSERT, BLOCK's Convert) asks its attribute values
+through `AttributeValuePrompts` (`tools/attributeValues.ts`) and adds the reference only in its
+`onDone`, so the values, Verify and Preset behave the same everywhere and the whole insertion stays
+one undo step that Escape cancels.
 
 A bracketed `<Default>` is implemented in the prompt's `commitRaw`: **empty text means Enter, so
 take the default** (DIMLINEAR's `<select object>`, DIMBASELINE's `<Select>`). Never spend a keyword

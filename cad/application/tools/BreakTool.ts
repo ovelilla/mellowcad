@@ -292,6 +292,7 @@ function computeBreak(
     case "polyline":
     case "text":
     case "mtext":
+    case "attdef":
     case "dimension":
     case "hatch":
     case "insert":

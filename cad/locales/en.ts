@@ -23,6 +23,9 @@ export const en: EngineCatalog = {
       "hatch": "Hatch",
       "block": "Create block",
       "insert": "Insert block",
+      "attedit": "Edit attributes",
+      "attdef": "Define attributes",
+      "attdisp": "Attribute display",
       "text": "Text",
       "mtext": "Multiline text",
       "textedit": "Edit text",
@@ -177,6 +180,16 @@ export const en: EngineCatalog = {
           }
         ]
       ],
+      "attdef": [
+        [
+          "count",
+          2,
+          {
+            "one": "Attribute Definition",
+            "other": "Attribute Definitions"
+          }
+        ]
+      ],
       "dimension": [
         [
           "count",
@@ -238,6 +251,8 @@ export const en: EngineCatalog = {
         "definitionPoints": "Definition points",
         "pattern": "Pattern",
         "block": "Block",
+        "attributes": "Attributes",
+        "misc": "Misc",
         "selection": "Selection"
       },
       "row": {
@@ -283,7 +298,15 @@ export const en: EngineCatalog = {
         "pattern": "Pattern",
         "scale": "Scale",
         "boundaries": "Boundaries",
-        "name": "Name"
+        "name": "Name",
+        "tag": "Tag",
+        "prompt": "Prompt",
+        "value": "Value",
+        "invisible": "Invisible",
+        "constant": "Constant",
+        "verify": "Verify",
+        "preset": "Preset",
+        "lockPosition": "Lock position"
       },
       "value": {
         "yes": "Yes",
@@ -379,6 +402,23 @@ export const en: EngineCatalog = {
       "INSERT": [
         "INSERT",
         "I"
+      ],
+      "ATTEDIT": [
+        "ATTEDIT",
+        "ATE"
+      ],
+      "EATTEDIT": [
+        "EATTEDIT"
+      ],
+      "ATTDEF": [
+        "ATTDEF",
+        "ATT"
+      ],
+      "-ATTDEF": [
+        "-ATTDEF"
+      ],
+      "ATTDISP": [
+        "ATTDISP"
       ],
       "TEXT": [
         "TEXT",
@@ -616,6 +656,13 @@ export const en: EngineCatalog = {
       "insertionPoint": "Specify insertion point",
       "insertScale": "Specify scale factor",
       "insertRotation": "Specify rotation angle",
+      "attributeTag": "Enter attribute tag name",
+      "attributePrompt": "Enter attribute prompt",
+      "attributeDefault": "Enter default attribute value",
+      "attributeValue": "Enter attribute value",
+      "definitionTag": "Tag",
+      "definitionPrompt": "Prompt",
+      "definitionDefault": "Default",
       "textStartPoint": "Specify start point of text",
       "textHeight": "Specify height",
       "textRotation": "Specify rotation angle of text",
@@ -798,6 +845,55 @@ export const en: EngineCatalog = {
         ],
         "]:"
       ],
+      "attributeModes": [
+        "Current attribute modes: Invisible=",
+        [
+          "invisible",
+          1,
+          {
+            "yes": "Y",
+            "other": "N"
+          }
+        ],
+        " Constant=",
+        [
+          "constant",
+          1,
+          {
+            "yes": "Y",
+            "other": "N"
+          }
+        ],
+        " Verify=",
+        [
+          "verify",
+          1,
+          {
+            "yes": "Y",
+            "other": "N"
+          }
+        ],
+        " Preset=",
+        [
+          "preset",
+          1,
+          {
+            "yes": "Y",
+            "other": "N"
+          }
+        ],
+        " Lock position=",
+        [
+          "lockPosition",
+          1,
+          {
+            "yes": "Y",
+            "other": "N"
+          }
+        ]
+      ],
+      "enterAttributeValues": "Enter attribute values",
+      "verifyAttributeValues": "Verify attribute values",
       "explodeRejected": [
         [
           "count",

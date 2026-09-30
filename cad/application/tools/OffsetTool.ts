@@ -550,6 +550,7 @@ function entityAsGeom(entity: Entity): OffsetGeom | null {
       }
     case "text":
     case "mtext":
+    case "attdef":
       return null // text has no parallel copy
     case "ellipse":
       // The parallel curve of an ellipse is not an ellipse — AutoCAD offsets
@@ -610,6 +611,7 @@ function computeOffset(
     case "ellipse":
     case "text":
     case "mtext":
+    case "attdef":
     case "dimension":
     case "hatch":
     case "insert":
@@ -681,6 +683,7 @@ function computeThrough(source: Entity, point: Vec2): OffsetGeom | null {
     case "ellipse":
     case "text":
     case "mtext":
+    case "attdef":
     case "dimension":
     case "hatch":
     case "insert":

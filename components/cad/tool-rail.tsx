@@ -5,6 +5,7 @@ import {
   ArrowRightToLine,
   CopyPlus,
   Eraser,
+  Eye,
   FlipHorizontal2,
   Grid3x3,
   CircleDotDashed,
@@ -26,6 +27,8 @@ import {
   Slash,
   Split,
   Square,
+  Tag,
+  TextCursorInput,
   Trash2,
   Type,
   Undo2,
@@ -94,6 +97,9 @@ const TOOL_ICONS: Record<string, LucideIcon> = {
   hatch: HatchIcon,
   block: BlockIcon,
   insert: InsertIcon,
+  attdef: Tag,
+  attedit: TextCursorInput,
+  attdisp: Eye,
   offset: OffsetIcon,
   move: Move,
   copy: CopyPlus,
@@ -238,8 +244,9 @@ const RAIL_LAYOUT: readonly RailGroup[] = [
   },
   {
     id: "block",
-    // The ribbon's Block panel puts Insert first and Create Block after it.
-    items: ["insert", "block"],
+    // The ribbon's Block panel puts Insert first and Create Block after it;
+    // its Block Definition panel holds Define Attributes.
+    items: ["insert", "block", "attdef", "attedit", "attdisp"],
   },
   {
     id: "measure",

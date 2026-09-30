@@ -8,6 +8,7 @@ import {
   unitSuffix,
 } from "../domain/units"
 import {
+  AttributeDefinitionEntity,
   BlockDefinition,
   BlockId,
   DimensionEntity,
@@ -360,9 +361,12 @@ function styleCounts(
 function hasStyleOf(
   entity: Entity,
   type: "text" | "dimension"
-): entity is TextEntity | MTextEntity | DimensionEntity {
+): entity is
+  TextEntity | MTextEntity | AttributeDefinitionEntity | DimensionEntity {
   return type === "text"
-    ? entity.type === "text" || entity.type === "mtext"
+    ? entity.type === "text" ||
+        entity.type === "mtext" ||
+        entity.type === "attdef"
     : entity.type === "dimension"
 }
 
@@ -455,7 +459,9 @@ export function buildDynamicInputUi(
     const live = controller.getLive(field.id)
     return {
       id: field.id,
-      label: field.prompt === undefined ? "" : text.prompt(field.prompt),
+      label:
+        field.label ??
+        (field.prompt === undefined ? "" : text.prompt(field.prompt)),
       kind: field.kind,
       value: controller.getText(field.id),
       placeholder:
@@ -784,6 +790,38 @@ function singleEntityInfo(
         ],
       }
     }
+    case "attdef": {
+      const yesNo = (value: boolean) => text.propertyValue(value ? "yes" : "no")
+      return {
+        title: title("attdef"),
+        count: 1,
+        groups: [
+          group("text", [
+            row("tag", entity.tag),
+            row("prompt", entity.prompt),
+            row("value", entity.value),
+            row("justify", text.justify(entity.justify)),
+            lengthRow("height", "textHeight", entity.height),
+            angleRow(
+              "rotation",
+              "rotation",
+              normalizeDegrees((entity.rotation * 180) / Math.PI)
+            ),
+          ]),
+          group("position", [
+            coordRow("x", "positionX", entity.position.x),
+            coordRow("y", "positionY", entity.position.y),
+          ]),
+          group("misc", [
+            row("invisible", yesNo(entity.modes.invisible)),
+            row("constant", yesNo(entity.modes.constant)),
+            row("verify", yesNo(entity.modes.verify)),
+            row("preset", yesNo(entity.modes.preset)),
+            row("lockPosition", yesNo(entity.modes.lockPosition)),
+          ]),
+        ],
+      }
+    }
     case "dimension": {
       return {
         title: title("dimension"),
@@ -865,6 +903,20 @@ function singleEntityInfo(
             coordRow("x", "positionX", entity.position.x),
             coordRow("y", "positionY", entity.position.y),
           ]),
+          ...(entity.attributes
+            ? [
+                // Labelled by tag, which is the drawing's data, as AutoCAD's
+                // Attributes section is.
+                group(
+                  "attributes",
+                  entity.attributes.map((attribute, index) => ({
+                    id: `attribute-${index}`,
+                    label: attribute.tag,
+                    value: attribute.value,
+                  }))
+                ),
+              ]
+            : []),
         ],
       }
     }

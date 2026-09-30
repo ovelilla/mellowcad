@@ -13,6 +13,9 @@ import { InsertTool } from "./tools/InsertTool"
 import { TextTool } from "./tools/TextTool"
 import { MTextTool } from "./tools/MTextTool"
 import { TextEditTool } from "./tools/TextEditTool"
+import { AttDefTool } from "./tools/AttDefTool"
+import { AttEditTool } from "./tools/AttEditTool"
+import { AttDispTool } from "./tools/AttDispTool"
 import { DimensionTool } from "./tools/DimensionTool"
 import { DimensionChainTool } from "./tools/DimensionChainTool"
 import { RadialDimensionTool } from "./tools/RadialDimensionTool"
@@ -44,13 +47,14 @@ import { PanTool } from "./tools/PanTool"
 
 /**
  * Every tool the runtime registers, in registration order — which is the order
- * the toolbar shows them in. The three the runtime holds as fields (it has to
+ * the toolbar shows them in. The ones the runtime holds as fields (it has to
  * drive them directly) are passed in rather than built here.
  */
 export function defaultTools(
   textEdit: TextEditTool,
   insert: InsertTool,
-  paste: PasteTool
+  paste: PasteTool,
+  attEdit: AttEditTool
 ): Tool[] {
   return [
     new SelectTool(),
@@ -71,6 +75,9 @@ export function defaultTools(
     new HatchTool(),
     new BlockTool(),
     insert,
+    attEdit,
+    new AttDefTool(),
+    new AttDispTool(),
     new TextTool(),
     new MTextTool(),
     textEdit,

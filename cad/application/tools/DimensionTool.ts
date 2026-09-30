@@ -485,6 +485,7 @@ function measurableOrigins(entity: Entity, at: Vec2): [Vec2, Vec2] | null {
     case "ellipse":
     case "text":
     case "mtext":
+    case "attdef":
     case "dimension":
     case "hatch":
     case "insert":

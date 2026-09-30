@@ -147,6 +147,7 @@ describe("round trip", () => {
       precision: 5,
       ltScale: 2.5,
       lwDisplay: false,
+      attributeDisplay: "off" as const,
     }
     const parsed = parseDrawingFile(
       serializeDrawing(snapshotOf([], { settings }))

@@ -4,6 +4,7 @@ import {
   assignEntityLayer,
   assignTextStyle,
   assignDimStyle,
+  AttributeDisplay,
   BlockDefinition,
   BlockId,
   BlockLookup,
@@ -114,7 +115,11 @@ export class CadDocument extends Observable implements DocumentReader {
   private dimStyles = new Map<DimStyleId, DimStyle>()
   private currentDimStyleId: DimStyleId = DEFAULT_DIM_STYLE_ID
   private blocks = new Map<BlockId, BlockDefinition>()
-  private readonly lookup: BlockLookup = (id) => this.blocks.get(id)
+  private readonly lookup: BlockLookup = Object.defineProperty(
+    (id: BlockId) => this.blocks.get(id),
+    "attributeDisplay",
+    { get: () => this.settings.attributeDisplay }
+  )
 
   constructor() {
     super()
@@ -155,6 +160,13 @@ export class CadDocument extends Observable implements DocumentReader {
   setLwDisplay(lwDisplay: boolean): void {
     if (this.settings.lwDisplay === lwDisplay) return
     this.settings = { ...this.settings, lwDisplay }
+    this.emit()
+  }
+
+  /** Sets ATTMODE, which ATTDISP changes and AutoCAD saves in the drawing. */
+  setAttributeDisplay(attributeDisplay: AttributeDisplay): void {
+    if (this.settings.attributeDisplay === attributeDisplay) return
+    this.settings = { ...this.settings, attributeDisplay }
     this.emit()
   }
 
@@ -282,10 +294,10 @@ export class CadDocument extends Observable implements DocumentReader {
 
   textStyleInUse(id: TextStyleId): boolean {
     for (const entity of this.entities.values()) {
-      if (
-        (entity.type === "text" || entity.type === "mtext") &&
-        entity.styleId === id
-      ) {
+      if (usesTextStyle(entity, id)) return true
+    }
+    for (const block of this.blocks.values()) {
+      if (block.entities.some((entity) => usesTextStyle(entity, id))) {
         return true
       }
     }
@@ -476,13 +488,25 @@ export class CadDocument extends Observable implements DocumentReader {
       ? entity
       : assignEntityLayer(entity, DEFAULT_LAYER_ID)
     if (
-      (onLayer.type === "text" || onLayer.type === "mtext") &&
+      (onLayer.type === "text" ||
+        onLayer.type === "mtext" ||
+        onLayer.type === "attdef") &&
       !this.textStyles.has(onLayer.styleId)
     ) {
       return assignTextStyle(onLayer, DEFAULT_TEXT_STYLE_ID)
     }
     if (onLayer.type === "dimension" && !this.dimStyles.has(onLayer.styleId)) {
       return assignDimStyle(onLayer, DEFAULT_DIM_STYLE_ID)
+    }
+    if (onLayer.type === "insert" && onLayer.attributes) {
+      return {
+        ...onLayer,
+        attributes: onLayer.attributes.map((attribute) => ({
+          ...attribute,
+          layerId: this.resolveLayerId(attribute.layerId),
+          styleId: this.resolveTextStyleId(attribute.styleId),
+        })),
+      }
     }
     return onLayer
   }
@@ -587,5 +611,19 @@ export class CadDocument extends Observable implements DocumentReader {
         b.order - a.order
     )
     return hits.map((hit) => hit.entity)
+  }
+}
+
+/** Whether `entity`, or an attribute of it, is drawn in text style `id`. */
+function usesTextStyle(entity: Entity, id: TextStyleId): boolean {
+  switch (entity.type) {
+    case "text":
+    case "mtext":
+    case "attdef":
+      return entity.styleId === id
+    case "insert":
+      return (entity.attributes ?? []).some((a) => a.styleId === id)
+    default:
+      return false
   }
 }

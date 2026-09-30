@@ -34,22 +34,30 @@ export function clipboardSnapshot(
   const blocks = new Map<string, BlockDefinition>()
 
   const visit = (list: readonly Entity[], depth: number): void => {
+    const keepTextStyle = (id: string) => {
+      const style = document.getTextStyle(id)
+      if (style) textStyles.set(style.id, style)
+    }
     for (const entity of list) {
       const layer = document.getLayer(entity.layerId)
       if (layer) layers.set(layer.id, layer)
       switch (entity.type) {
         case "text":
-        case "mtext": {
-          const style = document.getTextStyle(entity.styleId)
-          if (style) textStyles.set(style.id, style)
+        case "mtext":
+        case "attdef":
+          keepTextStyle(entity.styleId)
           break
-        }
         case "dimension": {
           const style = document.getDimStyle(entity.styleId)
           if (style) dimStyles.set(style.id, style)
           break
         }
         case "insert": {
+          for (const attribute of entity.attributes ?? []) {
+            const attributeLayer = document.getLayer(attribute.layerId)
+            if (attributeLayer) layers.set(attributeLayer.id, attributeLayer)
+            keepTextStyle(attribute.styleId)
+          }
           const block = document.getBlock(entity.blockId)
           if (!block || blocks.has(block.id) || depth >= MAX_BLOCK_NESTING) {
             break
@@ -105,8 +113,19 @@ export function planPaste(
     fragment.drawing.layers,
     document
   )
-  const onLayer = (entity: Entity): Entity =>
-    assignEntityLayer(entity, layerIds.get(entity.layerId) ?? DEFAULT_LAYER_ID)
+  const layerOf = (id: LayerId) => layerIds.get(id) ?? DEFAULT_LAYER_ID
+  const onLayer = (entity: Entity): Entity => {
+    const placed = assignEntityLayer(entity, layerOf(entity.layerId))
+    return placed.type === "insert" && placed.attributes
+      ? {
+          ...placed,
+          attributes: placed.attributes.map((attribute) => ({
+            ...attribute,
+            layerId: layerOf(attribute.layerId),
+          })),
+        }
+      : placed
+  }
 
   return {
     // Fresh ids, or a paste into the drawing it came from would overwrite the

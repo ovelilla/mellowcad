@@ -5,6 +5,7 @@ import type { EngineText, PromptSegment } from "./EngineText"
 import { offerKeywords } from "../i18n/keywords"
 import { Tool } from "./tools/Tool"
 import { MTextTool } from "./tools/MTextTool"
+import { AttEditTool } from "./tools/AttEditTool"
 
 /**
  * Builds the command table: one command per tool (using AutoCAD's names and
@@ -53,6 +54,19 @@ export function registerCommands(
     },
   })
   register({ id: "REDO", run: () => runtime.redo() })
+  // AutoCAD's ATTDEF opens a dialog; here it asks at the command line, so
+  // -ATTDEF is the same tool under its own name.
+  register({ id: "-ATTDEF", tool: "attdef", run: () => startTool("attdef") })
+  // EATTEDIT and ATTEDIT differ only in their dialog, so one tool runs both.
+  register({
+    id: "EATTEDIT",
+    tool: "attedit",
+    run: () => {
+      startTool("attedit")
+      const tool = runtime.listTools().find((t) => t.id === "attedit")
+      if (tool instanceof AttEditTool) tool.useEnhancedEditor()
+    },
+  })
   register({
     id: "SNAP",
     run: () => {

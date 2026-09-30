@@ -20,6 +20,10 @@ export type {
   MTextAttachment,
   LineSpacingStyle,
   MTextEntity,
+  AttributeModes,
+  AttributeDefinitionEntity,
+  BlockAttribute,
+  AttributeDisplay,
   DimensionKind,
   DimensionEntity,
   HatchLoop,
@@ -45,7 +49,25 @@ export {
   createBlockDefinition,
 } from "./entityFactories"
 
-export { MAX_BLOCK_NESTING, insertGeometry, insertFlatGeometry } from "./blocks"
+export {
+  MAX_BLOCK_NESTING,
+  insertGeometry,
+  insertFlatGeometry,
+  insertAttributePoints,
+} from "./blocks"
+
+export type { AttributeDefinitionOptions } from "./attributes"
+export {
+  DEFAULT_ATTRIBUTE_MODES,
+  createAttributeDefinition,
+  attributeTag,
+  attributeInput,
+  attributePrompt,
+  variableAttributes,
+  blockAttribute,
+  attributeShown,
+  attributeDefinitionText,
+} from "./attributes"
 
 export type { EllipseOptions } from "./ellipses"
 export {

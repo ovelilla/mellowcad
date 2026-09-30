@@ -23,6 +23,9 @@ export const es: EngineLocale = {
       "hatch": "Sombreado",
       "block": "Crear bloque",
       "insert": "Insertar bloque",
+      "attedit": "Editar atributos",
+      "attdef": "Definir atributos",
+      "attdisp": "Visualización de atributos",
       "text": "Texto",
       "mtext": "Texto de líneas múltiples",
       "textedit": "Editar texto",
@@ -171,6 +174,16 @@ export const es: EngineLocale = {
           }
         ]
       ],
+      "attdef": [
+        [
+          "count",
+          2,
+          {
+            "one": "Definición de atributo",
+            "other": "Definiciones de atributo"
+          }
+        ]
+      ],
       "dimension": [
         [
           "count",
@@ -232,6 +245,8 @@ export const es: EngineLocale = {
         "definitionPoints": "Puntos de definición",
         "pattern": "Patrón",
         "block": "Bloque",
+        "attributes": "Atributos",
+        "misc": "Varios",
         "selection": "Selección"
       },
       "row": {
@@ -277,7 +292,15 @@ export const es: EngineLocale = {
         "pattern": "Patrón",
         "scale": "Escala",
         "boundaries": "Contornos",
-        "name": "Nombre"
+        "name": "Nombre",
+        "tag": "Identificador",
+        "prompt": "Solicitud",
+        "value": "Valor",
+        "invisible": "Invisible",
+        "constant": "Constante",
+        "verify": "Verificable",
+        "preset": "Predefinido",
+        "lockPosition": "Bloquear posición"
       },
       "value": {
         "yes": "Sí",
@@ -373,6 +396,21 @@ export const es: EngineLocale = {
       "INSERT": [
         "INSERT",
         "IN"
+      ],
+      "ATTEDIT": [
+        "ATREDIT"
+      ],
+      "EATTEDIT": [
+        "EDITATR"
+      ],
+      "ATTDEF": [
+        "ATRDEF"
+      ],
+      "-ATTDEF": [
+        "-ATRDEF"
+      ],
+      "ATTDISP": [
+        "ATRVIS"
       ],
       "TEXT": [
         "TEXTO",
@@ -613,6 +651,33 @@ export const es: EngineLocale = {
         "Scale": "Escala",
         "Rotate": "Girar"
       },
+      "ATTDEF": {
+        "Invisible": "Invisible",
+        "Constant": "Constante",
+        "Verify": "Verificable",
+        "Preset": "Predefinido",
+        "Lock position": "Bloquear posición",
+        "Justify": "jUstificar",
+        "Style": "Estilo",
+        "Left": "Izquierda",
+        "Center": "Centro",
+        "Right": "Derecha",
+        "Middle": "Medio",
+        "TL": "SIZ",
+        "TC": "SC",
+        "TR": "SD",
+        "ML": "MI",
+        "MC": "MC",
+        "MR": "MD",
+        "BL": "II",
+        "BC": "IC",
+        "BR": "ID"
+      },
+      "ATTDISP": {
+        "Normal": "Normal",
+        "ON": "ACT",
+        "OFF": "DES"
+      },
       "TEXT": {
         "Justify": "jUstificar",
         "Style": "Estilo",
@@ -781,6 +846,13 @@ export const es: EngineLocale = {
       "insertionPoint": "Precise punto de inserción",
       "insertScale": "Indique factor de escala",
       "insertRotation": "Precise ángulo de rotación",
+      "attributeTag": "Indique nombre de identificador de atributo",
+      "attributePrompt": "Indique solicitud de atributo",
+      "attributeDefault": "Indique valor de atributo por defecto",
+      "attributeValue": "Indique valor de atributo",
+      "definitionTag": "Identificador",
+      "definitionPrompt": "Solicitud",
+      "definitionDefault": "Por defecto",
       "textStartPoint": "Precise punto inicial de texto",
       "textHeight": "Precise altura",
       "textRotation": "Precise ángulo de rotación de texto",
@@ -963,6 +1035,55 @@ export const es: EngineLocale = {
         ],
         "]:"
       ],
+      "attributeModes": [
+        "Modos de atributo actuales: Invisible=",
+        [
+          "invisible",
+          1,
+          {
+            "yes": "S",
+            "other": "N"
+          }
+        ],
+        " Constante=",
+        [
+          "constant",
+          1,
+          {
+            "yes": "S",
+            "other": "N"
+          }
+        ],
+        " Verificable=",
+        [
+          "verify",
+          1,
+          {
+            "yes": "S",
+            "other": "N"
+          }
+        ],
+        " Predefinido=",
+        [
+          "preset",
+          1,
+          {
+            "yes": "S",
+            "other": "N"
+          }
+        ],
+        " Bloquear posición=",
+        [
+          "lockPosition",
+          1,
+          {
+            "yes": "S",
+            "other": "N"
+          }
+        ]
+      ],
+      "enterAttributeValues": "Indique los valores de atributo",
+      "verifyAttributeValues": "Verifique los valores de atributo",
       "explodeRejected": [
         [
           "count",

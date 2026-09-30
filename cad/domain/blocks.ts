@@ -1,6 +1,7 @@
 import { Vec2, V } from "../geometry/Vec2"
 import { DEFAULT_LAYER_ID } from "./layers"
 import {
+  AttributeDisplay,
   BlockDefinition,
   BlockLookup,
   InsertEntity,
@@ -13,6 +14,11 @@ import {
   scaleEntity,
   mirrorEntity,
 } from "./entityTransforms"
+import {
+  attributeDefinitionText,
+  attributeShown,
+  blockAttributeText,
+} from "./attributes"
 
 /**
  * How deep block references may nest before the expansion gives up. AutoCAD
@@ -37,6 +43,10 @@ const BLOCK_MIRROR_AXIS: Vec2 = { x: 0, y: 1 }
  * its own override, keeps what it had. That inheritance is how a reference is
  * *displayed*, so EXPLODE turns it off (`inheritLayer: false`): the objects
  * "revert to their original properties", back onto layer 0.
+ *
+ * Attribute definitions come back as definitions and the reference's own
+ * attributes are left out: "Exploding a block that contains attributes deletes
+ * the attribute values and redisplays the attribute definitions."
  */
 export function insertGeometry(
   insert: InsertEntity,
@@ -45,22 +55,96 @@ export function insertGeometry(
 ): Entity[] {
   if (!block) return []
   const inheritLayer = options.inheritLayer ?? true
-  return block.entities.map((entity) => {
-    let placed = translateEntity(entity, V.scale(block.basePoint, -1))
-    if (insert.mirrored) {
-      placed = mirrorEntity(placed, BLOCK_ORIGIN, BLOCK_MIRROR_AXIS)
+  return block.entities.map((entity) =>
+    placeInReference(entity, insert, block, inheritLayer)
+  )
+}
+
+/** One object of `block`'s own coordinates, where `insert` puts it. */
+function placeInReference(
+  entity: Entity,
+  insert: InsertEntity,
+  block: BlockDefinition,
+  inheritLayer: boolean
+): Entity {
+  let placed = translateEntity(entity, V.scale(block.basePoint, -1))
+  if (insert.mirrored) {
+    placed = mirrorEntity(placed, BLOCK_ORIGIN, BLOCK_MIRROR_AXIS)
+  }
+  if (insert.scale !== 1) {
+    placed = scaleEntity(placed, BLOCK_ORIGIN, insert.scale)
+  }
+  if (insert.rotation !== 0) {
+    placed = rotateEntity(placed, BLOCK_ORIGIN, insert.rotation)
+  }
+  placed = translateEntity(placed, insert.position)
+  return inheritLayer && placed.layerId === DEFAULT_LAYER_ID
+    ? assignEntityLayer(placed, insert.layerId)
+    : placed
+}
+
+/**
+ * What a reference shows, one grouping level deep: the block's objects, a
+ * constant attribute as its value, and the reference's own attributes — the
+ * invisible ones as ATTMODE decides. A definition that asks for a value draws
+ * nothing, since the reference's attribute stands in its place.
+ */
+function insertDisplayGeometry(
+  insert: InsertEntity,
+  block: BlockDefinition | undefined,
+  display: AttributeDisplay
+): Entity[] {
+  if (!block) return []
+  const out: Entity[] = []
+  for (const entity of block.entities) {
+    if (entity.type !== "attdef") {
+      out.push(placeInReference(entity, insert, block, true))
+    } else if (
+      entity.modes.constant &&
+      attributeShown(entity.modes.invisible, display)
+    ) {
+      out.push(
+        placeInReference(
+          attributeDefinitionText(entity, entity.value),
+          insert,
+          block,
+          true
+        )
+      )
     }
-    if (insert.scale !== 1) {
-      placed = scaleEntity(placed, BLOCK_ORIGIN, insert.scale)
-    }
-    if (insert.rotation !== 0) {
-      placed = rotateEntity(placed, BLOCK_ORIGIN, insert.rotation)
-    }
-    placed = translateEntity(placed, insert.position)
-    return inheritLayer && placed.layerId === DEFAULT_LAYER_ID
-      ? assignEntityLayer(placed, insert.layerId)
-      : placed
-  })
+  }
+  for (const [index, attribute] of (insert.attributes ?? []).entries()) {
+    if (!attributeShown(attribute.invisible, display)) continue
+    out.push(
+      placeInReference(
+        blockAttributeText(attribute, `${insert.id}:${index}`),
+        insert,
+        block,
+        true
+      )
+    )
+  }
+  return out
+}
+
+/** The point each attribute a reference shows hangs off — its Insertion snap. */
+export function insertAttributePoints(
+  insert: InsertEntity,
+  block: BlockDefinition | undefined,
+  display: AttributeDisplay
+): Vec2[] {
+  if (!block) return []
+  return (insert.attributes ?? [])
+    .filter((attribute) => attributeShown(attribute.invisible, display))
+    .map((attribute) => {
+      const placed = placeInReference(
+        blockAttributeText(attribute, insert.id),
+        insert,
+        block,
+        true
+      )
+      return placed.type === "text" ? placed.position : insert.position
+    })
 }
 
 /**
@@ -70,13 +154,18 @@ export function insertGeometry(
 export function insertFlatGeometry(
   insert: InsertEntity,
   blocks: BlockLookup,
+  display: AttributeDisplay = blocks.attributeDisplay ?? "normal",
   depth = 0
 ): Entity[] {
   if (depth >= MAX_BLOCK_NESTING) return []
   const out: Entity[] = []
-  for (const entity of insertGeometry(insert, blocks(insert.blockId))) {
+  for (const entity of insertDisplayGeometry(
+    insert,
+    blocks(insert.blockId),
+    display
+  )) {
     if (entity.type === "insert") {
-      out.push(...insertFlatGeometry(entity, blocks, depth + 1))
+      out.push(...insertFlatGeometry(entity, blocks, display, depth + 1))
     } else {
       out.push(entity)
     }

@@ -8,7 +8,9 @@ import { Entity } from "./entityTypes"
 
 /** Returns a copy of `entity` using another text style (preserves its id). */
 export function assignTextStyle(entity: Entity, styleId: TextStyleId): Entity {
-  return entity.type === "text" || entity.type === "mtext"
+  return entity.type === "text" ||
+    entity.type === "mtext" ||
+    entity.type === "attdef"
     ? { ...entity, styleId }
     : entity
 }
@@ -34,6 +36,8 @@ export function assignEntityLayer(entity: Entity, layerId: LayerId): Entity {
     case "text":
       return { ...entity, layerId }
     case "mtext":
+      return { ...entity, layerId }
+    case "attdef":
       return { ...entity, layerId }
     case "dimension":
       return { ...entity, layerId }
@@ -68,6 +72,8 @@ export function assignEntityColor(
       return { ...entity, color }
     case "mtext":
       return { ...entity, color }
+    case "attdef":
+      return { ...entity, color }
     case "dimension":
       return { ...entity, color }
     case "hatch":
@@ -100,6 +106,8 @@ export function assignEntityLinetype(
       return { ...entity, linetype }
     case "mtext":
       return { ...entity, linetype }
+    case "attdef":
+      return { ...entity, linetype }
     case "dimension":
       return { ...entity, linetype }
     case "hatch":
@@ -131,6 +139,8 @@ export function assignEntityLineweight(
     case "text":
       return { ...entity, lineweight }
     case "mtext":
+      return { ...entity, lineweight }
+    case "attdef":
       return { ...entity, lineweight }
     case "dimension":
       return { ...entity, lineweight }

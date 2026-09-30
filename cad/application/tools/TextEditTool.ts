@@ -1,9 +1,11 @@
 import { Vec2 } from "../../geometry/Vec2"
 import {
+  AttributeDefinitionEntity,
   Entity,
   EntityId,
   MTextEntity,
   TextEntity,
+  attributeTag,
   closestOnEntity,
   mtextContents,
   mtextPlainText,
@@ -36,6 +38,10 @@ import {
  *
  * A multiline text opens in the multi-line editor MTEXT uses, where Escape
  * discards the edit and a click inside the object stays in the editor.
+ *
+ * An attribute definition that is not yet in a block opens AutoCAD's Edit
+ * Attribute Definition dialog instead — its Tag, Prompt and Default, one field
+ * each — where Escape is Cancel.
  */
 export class TextEditTool implements Tool {
   readonly id = "textedit"
@@ -71,7 +77,7 @@ export class TextEditTool implements Tool {
     if (
       input.key === "Escape" &&
       this.state.phase === "edit" &&
-      this.state.target.type === "mtext"
+      this.state.target.type !== "text"
     ) {
       this.state = { phase: "select", hover: null }
     }
@@ -95,9 +101,11 @@ export class TextEditTool implements Tool {
       return
     }
     const target = this.state.target
+    const preview = this.preview(target, ctx)
     if (
       target.type === "mtext" &&
-      closestOnEntity(this.preview(target, ctx), input.world).distance === 0
+      preview &&
+      closestOnEntity(preview, input.world).distance === 0
     ) {
       return
     }
@@ -152,18 +160,22 @@ export class TextEditTool implements Tool {
           })
         : []
     }
-    const value = ctx.dynamicInput.getText("value")
-    if (value.length === 0) return []
-    return entityScenePrimitive(
-      viewport,
-      this.preview(this.state.target, ctx),
-      { color: THEME.rubberBand, width: 1 }
-    )
+    const preview = this.preview(this.state.target, ctx)
+    if (!preview) return []
+    return entityScenePrimitive(viewport, preview, {
+      color: THEME.rubberBand,
+      width: 1,
+    })
   }
 
-  /** The object as it reads with what is in the box. */
-  private preview(target: EditableText, ctx: ToolContext): EditableText {
+  /** The object as it reads with what is in the box; null when the box is empty. */
+  private preview(target: EditableText, ctx: ToolContext): EditableText | null {
+    if (target.type === "attdef") {
+      const tag = attributeTag(ctx.dynamicInput.getText("tag"))
+      return { ...target, tag: tag ?? target.tag, id: TEXT_EDIT_PREVIEW_ID }
+    }
     const value = ctx.dynamicInput.getText("value")
+    if (value.length === 0) return null
     return target.type === "mtext"
       ? { ...target, contents: mtextContents(value), id: TEXT_EDIT_PREVIEW_ID }
       : { ...target, value, id: TEXT_EDIT_PREVIEW_ID }
@@ -177,10 +189,35 @@ export class TextEditTool implements Tool {
 
   private pickText(world: Vec2, ctx: ToolContext): EditableText | null {
     const hit: Entity | null = ctx.pick(world)
-    return hit?.type === "text" || hit?.type === "mtext" ? hit : null
+    return hit?.type === "text" ||
+      hit?.type === "mtext" ||
+      hit?.type === "attdef"
+      ? hit
+      : null
   }
 
   private openEditInput(ctx: ToolContext, target: EditableText): void {
+    const commitRaw = (commitCtx: ToolContext) => {
+      this.commitEdit(commitCtx)
+      if (this.multiple) this.enterSelect(commitCtx)
+      else commitCtx.endCommand()
+      return true
+    }
+    if (target.type === "attdef") {
+      ctx.dynamicInput.open({
+        fields: [
+          { id: "tag", prompt: "definitionTag", kind: "text" },
+          { id: "prompt", prompt: "definitionPrompt", kind: "text" },
+          { id: "default", prompt: "definitionDefault", kind: "text" },
+        ],
+        commit: () => {},
+        commitRaw,
+      })
+      ctx.dynamicInput.setText("tag", target.tag)
+      ctx.dynamicInput.setText("prompt", target.prompt)
+      ctx.dynamicInput.setText("default", target.value)
+      return
+    }
     const session: DynamicInputSession = {
       fields: [
         {
@@ -190,12 +227,7 @@ export class TextEditTool implements Tool {
         },
       ],
       commit: () => {},
-      commitRaw: (commitCtx) => {
-        this.commitEdit(commitCtx)
-        if (this.multiple) this.enterSelect(commitCtx)
-        else commitCtx.endCommand()
-        return true
-      },
+      commitRaw,
     }
     ctx.dynamicInput.open(session)
     ctx.dynamicInput.setText(
@@ -208,6 +240,26 @@ export class TextEditTool implements Tool {
   private commitEdit(ctx: ToolContext): void {
     if (this.state.phase !== "edit") return
     const target = this.state.target
+    if (target.type === "attdef") {
+      const next: AttributeDefinitionEntity = {
+        ...target,
+        // A tag that could not be one keeps the old tag, as the dialog does.
+        tag: attributeTag(ctx.dynamicInput.getText("tag")) ?? target.tag,
+        prompt: ctx.dynamicInput.getText("prompt"),
+        value: ctx.dynamicInput.getText("default"),
+      }
+      this.state = { phase: "select", hover: null }
+      if (
+        next.tag === target.tag &&
+        next.prompt === target.prompt &&
+        next.value === target.value
+      ) {
+        return
+      }
+      this.edits += 1
+      ctx.execute(new UpdateEntityCommand(next))
+      return
+    }
     const value = ctx.dynamicInput.getText("value")
     this.state = { phase: "select", hover: null }
     // Emptying the box is treated as "no change": erasing an object is what
@@ -231,7 +283,7 @@ export class TextEditTool implements Tool {
 /** Preview frames reuse one id so drawing them never burns entity ids. */
 const TEXT_EDIT_PREVIEW_ID = "__textedit_preview__"
 
-type EditableText = TextEntity | MTextEntity
+type EditableText = TextEntity | MTextEntity | AttributeDefinitionEntity
 
 type TextEditToolState =
   /** Awaiting an annotation object to edit. */

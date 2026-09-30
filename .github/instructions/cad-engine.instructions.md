@@ -7,16 +7,16 @@ description: "Layering, purity and modelling rules for the DOM-free CAD engine (
 
 ## Allowed dependencies
 
-| Layer            | May import from                                                                          |
-| ---------------- | ---------------------------------------------------------------------------------------- |
-| `geometry/`      | nothing                                                                                  |
-| `domain/`        | `geometry/`                                                                              |
-| `scene/`         | `geometry/`                                                                              |
-| `serialization/` | `geometry/`, `domain/`                                                                   |
-| `i18n/`          | nothing but `icu-minify/format` (formatter, keyword and name rules; no catalog shape)    |
-| `locales/`       | `i18n/` (the catalogs: `en.json`, the generated `en.ts`, `EngineLocale`)                 |
-| `application/`   | `geometry/`, `domain/`, `scene/`, `serialization/`, `shared/`, `i18n/`, `locales/`       |
-| `adapters/`      | everything (this is the only browser-aware layer)                                        |
+| Layer            | May import from                                                                       |
+| ---------------- | ------------------------------------------------------------------------------------- |
+| `geometry/`      | nothing                                                                               |
+| `domain/`        | `geometry/`                                                                           |
+| `scene/`         | `geometry/`                                                                           |
+| `serialization/` | `geometry/`, `domain/`                                                                |
+| `i18n/`          | nothing but `icu-minify/format` (formatter, keyword and name rules; no catalog shape) |
+| `locales/`       | `i18n/` (the catalogs: `en.json`, the generated `en.ts`, `EngineLocale`)              |
+| `application/`   | `geometry/`, `domain/`, `scene/`, `serialization/`, `shared/`, `i18n/`, `locales/`    |
+| `adapters/`      | everything (this is the only browser-aware layer)                                     |
 
 `cad/index.ts` is the public barrel, and `cad/locales/*` are the other public entry points (one
 module per language, tomorrow the package's `exports` subpaths). Anything React needs must be exported
@@ -142,7 +142,8 @@ type's name in `interface.entity` (and its rows in `interface.property`), and `s
 `tools/selectToolGrips.ts`. The editing tools switch on the
 type too (`EdgeEditTool`, `BreakTool`, `OffsetTool`, `DimensionTool`, `lastDrawnPoint`): a type they
 cannot act on returns `null` explicitly rather than falling through.
-A type that wears a **text style** (text, mtext) is also named, by hand and without any compiler
+A type that wears a **text style** (text, mtext, attdef, and a reference's attributes) is also
+named, by hand and without any compiler
 help, in `assignTextStyle`, `CadDocument.textStyleInUse` and `reconcile`, `setSelectionTextStyle`,
 `EngineState`'s `hasStyleOf` (style counts, the picker) and `clipboardSnapshot`; miss one and a style
 in use can be deleted, or a pasted object loses its style.
@@ -210,6 +211,16 @@ implemented in `insertGeometry`: objects drawn on **layer 0 inherit the referenc
 anything on another layer or carrying its own override keeps what it had. The third, **ByBlock**
 ("inherit individual properties first, then layer properties"), is not modelled — `resolveEntityX`
 knows only ByObject and ByLayer, and adding a third mode touches all three of them.
+
+`insertGeometry` is the block's own objects placed by the reference — what EXPLODE returns, attribute
+definitions included. What a reference **shows** is `insertFlatGeometry`: the objects,
+a constant definition as its value and the reference's own attributes in place of the other
+definitions, filtered by ATTMODE — which `document.blockLookup()` carries (`attributeDisplay`), so
+rollovers, picking, bounds and snaps see what the scene draws; a hand-made lookup shows Normal.
+Those attributes are stored in the **block's** coordinates, so the reference's
+placement carries them and no transform, grip or serializer path has to know they exist; anything
+that needs one in the drawing (the Insertion snap's `insertAttributePoints`) places it the way
+`insertFlatGeometry` does.
 
 Derived geometry is computed in **world** coordinates, never at paint time in screen ones. That is
 what lets `SceneBuilder` cache a hatch's clipped pattern in a `WeakMap` keyed on the immutable

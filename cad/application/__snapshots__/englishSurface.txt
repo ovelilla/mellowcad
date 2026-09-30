@@ -16,6 +16,9 @@ POLYGON ["POL"] "Polygon"
 HATCH ["H","BH"] "Hatch"
 BLOCK ["B"] "Create block"
 INSERT ["I"] "Insert block"
+ATTEDIT ["ATE"] "Edit attributes"
+ATTDEF ["ATT"] "Define attributes"
+ATTDISP [] "Attribute display"
 TEXT ["DT","DTEXT"] "Text"
 MTEXT ["T","MT"] "Multiline text"
 TEXTEDIT ["DDEDIT","ED"] "Edit text"
@@ -57,6 +60,8 @@ ERASE ["E"] "Delete the selected objects"
 UNDO ["U"] "Undo the last action"
 -MTEXT [] "Multiline text"
 REDO [] "Redo the last undone action"
+-ATTDEF [] "Define attributes"
+EATTEDIT [] "Edit attributes"
 SNAP ["SN"] "Force the cursor onto the snap increments"
 FROM ["FRO"] "Pick a point offset from a base point"
 QSAVE ["SAVE","SAVEAS"] "Save the drawing to a file"
@@ -85,6 +90,9 @@ polygon "Polygon" POL
 hatch "Hatch" H
 block "Create block" B
 insert "Insert block" I
+attedit "Edit attributes" ATE
+attdef "Define attributes" ATT
+attdisp "Attribute display" ATTDISP
 text "Text" DT
 mtext "Multiline text" T
 textedit "Edit text" ED
@@ -746,16 +754,15 @@ pan "Pan" P
 > ?
   dyn: "Enter a pattern name"="?"||*
 > enter
-  dyn: "Enter a pattern name"=""||*
+  dyn: "Enter a pattern name"="ANSI31"||*
   info| SOLID  Solid fill
         ANSI31  ANSI Iron, Brick, Stone masonry
 > unknown pattern
   dyn: "Enter a pattern name"="NOPE"||*
 > enter
-  dyn: "Enter a pattern name"=""||*
+  dyn: "Enter a pattern name"="ANSI31"||*
   error| Unknown hatch pattern "NOPE".
 > ANSI31
-  dyn: "Enter a pattern name"="ANSI31"||*
 > enter
   asks: "Specify a scale for pattern"
   dyn: "Specify a scale for pattern"=""|1|*

@@ -44,6 +44,11 @@ export interface DynamicField {
    * that asks nothing of its own leaves it out.
    */
   readonly prompt?: PromptId
+  /**
+   * What the field asks when the drawing, not the catalog, words it: an
+   * attribute's own prompt at INSERT. Shown as is, in place of `prompt`.
+   */
+  readonly label?: string
   readonly kind: DynamicFieldKind
 }
 

@@ -19,6 +19,9 @@
       "hatch": "Sombreado",
       "block": "Crear bloque",
       "insert": "Insertar bloque",
+      "attedit": "Editar atributos",
+      "attdef": "Definir atributos",
+      "attdisp": "Visualización de atributos",
       "text": "Texto",
       "mtext": "Texto de líneas múltiples",
       "textedit": "Editar texto",
@@ -104,6 +107,7 @@
       "polyline": "{count, plural, one {Polilínea} other {Polilíneas}}",
       "text": "{count, plural, one {Texto} other {Textos}}",
       "mtext": "{count, plural, one {Texto M} other {Textos M}}",
+      "attdef": "{count, plural, one {Definición de atributo} other {Definiciones de atributo}}",
       "dimension": "{count, plural, one {Cota} other {Cotas}}",
       "hatch": "{count, plural, one {Sombreado} other {Sombreados}}",
       "insert": "{count, plural, one {Referencia a bloque} other {Referencias a bloque}}"
@@ -123,6 +127,8 @@
         "definitionPoints": "Puntos de definición",
         "pattern": "Patrón",
         "block": "Bloque",
+        "attributes": "Atributos",
+        "misc": "Varios",
         "selection": "Selección"
       },
       "row": {
@@ -168,7 +174,15 @@
         "pattern": "Patrón",
         "scale": "Escala",
         "boundaries": "Contornos",
-        "name": "Nombre"
+        "name": "Nombre",
+        "tag": "Identificador",
+        "prompt": "Solicitud",
+        "value": "Valor",
+        "invisible": "Invisible",
+        "constant": "Constante",
+        "verify": "Verificable",
+        "preset": "Predefinido",
+        "lockPosition": "Bloquear posición"
       },
       "value": {
         "yes": "Sí",
@@ -220,6 +234,11 @@
       "HATCH": ["SOMBREA", "SB", "SMB"],
       "BLOCK": ["BLOQUE", "BQ"],
       "INSERT": ["INSERT", "IN"],
+      "ATTEDIT": ["ATREDIT"],
+      "EATTEDIT": ["EDITATR"],
+      "ATTDEF": ["ATRDEF"],
+      "-ATTDEF": ["-ATRDEF"],
+      "ATTDISP": ["ATRVIS"],
       "TEXT": ["TEXTO", "T"],
       "MTEXT": ["TEXTOM"],
       "-MTEXT": ["-TEXTOM"],
@@ -312,6 +331,33 @@
       "INSERT": {
         "Scale": "Escala",
         "Rotate": "Girar"
+      },
+      "ATTDEF": {
+        "Invisible": "Invisible",
+        "Constant": "Constante",
+        "Verify": "Verificable",
+        "Preset": "Predefinido",
+        "Lock position": "Bloquear posición",
+        "Justify": "jUstificar",
+        "Style": "Estilo",
+        "Left": "Izquierda",
+        "Center": "Centro",
+        "Right": "Derecha",
+        "Middle": "Medio",
+        "TL": "SIZ",
+        "TC": "SC",
+        "TR": "SD",
+        "ML": "MI",
+        "MC": "MC",
+        "MR": "MD",
+        "BL": "II",
+        "BC": "IC",
+        "BR": "ID"
+      },
+      "ATTDISP": {
+        "Normal": "Normal",
+        "ON": "ACT",
+        "OFF": "DES"
       },
       "TEXT": {
         "Justify": "jUstificar",
@@ -481,6 +527,13 @@
       "insertionPoint": "Precise punto de inserción",
       "insertScale": "Indique factor de escala",
       "insertRotation": "Precise ángulo de rotación",
+      "attributeTag": "Indique nombre de identificador de atributo",
+      "attributePrompt": "Indique solicitud de atributo",
+      "attributeDefault": "Indique valor de atributo por defecto",
+      "attributeValue": "Indique valor de atributo",
+      "definitionTag": "Identificador",
+      "definitionPrompt": "Solicitud",
+      "definitionDefault": "Por defecto",
       "textStartPoint": "Precise punto inicial de texto",
       "textHeight": "Precise altura",
       "textRotation": "Precise ángulo de rotación de texto",
@@ -567,6 +620,9 @@
       "hatchNoBoundary": "No se ha encontrado un contorno de sombreado válido.",
       "textStyleUndefined": "El estilo de texto \"{name}\" no está definido.",
       "textJustifyOptions": "Indique una opción [{keywords}]:",
+      "attributeModes": "Modos de atributo actuales: Invisible={invisible, select, yes {S} other {N}} Constante={constant, select, yes {S} other {N}} Verificable={verify, select, yes {S} other {N}} Predefinido={preset, select, yes {S} other {N}} Bloquear posición={lockPosition, select, yes {S} other {N}}",
+      "enterAttributeValues": "Indique los valores de atributo",
+      "verifyAttributeValues": "Verifique los valores de atributo",
       "explodeRejected": "{count, plural, one {# no se ha podido descomponer.} other {# no se han podido descomponer.}}"
     },
     "feedback": {
