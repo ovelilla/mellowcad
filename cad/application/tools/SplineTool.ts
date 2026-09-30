@@ -457,6 +457,7 @@ export class SplineTool implements Tool {
       lastPoint: base,
       relativeByDefault: base !== null,
       ucs: ctx.ucs,
+      elevation: ctx.elevation,
     })
     if (!point) return false
     this.placePoint(point, ctx)
@@ -511,6 +512,7 @@ export class SplineTool implements Tool {
       lastPoint: lastPoint(state),
       relativeByDefault: true,
       ucs: ctx.ucs,
+      elevation: ctx.elevation,
     })
     if (!point) return false
     this.placePoint(point, ctx)
@@ -538,6 +540,7 @@ export class SplineTool implements Tool {
           lastPoint: start,
           relativeByDefault: true,
           ucs: ctx.ucs,
+          elevation: ctx.elevation,
         }) ?? cursor
       )
     }

@@ -60,6 +60,7 @@ PAN ["P"] "Pan"
 UCS [] "UCS"
 UCSICON [] "UCS icon"
 PLAN [] "Plan view"
+ELEV [] "Elevation"
 ERASE ["E"] "Delete the selected objects"
 UNDO ["U"] "Undo the last action"
 -MTEXT [] "Multiline text"
@@ -139,6 +140,7 @@ pan "Pan" P
 ucs "UCS" UCS
 ucsicon "UCS icon" UCSICON
 plan "Plan view" PLAN
+elev "Elevation" ELEV
 
 ## neutral prompt
 > start
@@ -845,16 +847,55 @@ plan "Plan view" PLAN
   properties: -
   cycling: -
 > RECTANG
-  prompt: RECTANG:
+  prompt: RECTANG [Elevation/Thickness]:
   asks: "First corner"
   dyn: "X,Y"=""||*
+  options: [E] Elevation, [T] Thickness
   command| RECTANG
+> E
+  prompt: RECTANG:
+  asks: "Specify the elevation for rectangles"
+  dyn: "Specify the elevation for rectangles"=""|0.00|mm*
+  options: -
+> elevation
+  dyn: "Specify the elevation for rectangles"="5"|0.00|mm*
+> enter
+  prompt: RECTANG [Elevation/Thickness]:
+  asks: "First corner"
+  dyn: "X,Y"=""||*
+  options: [E] Elevation, [T] Thickness
+> T
+  prompt: RECTANG:
+  asks: "Specify thickness for rectangles"
+  dyn: "Specify thickness for rectangles"=""|0.00|mm*
+  options: -
+> thickness
+  dyn: "Specify thickness for rectangles"="2"|0.00|mm*
+> enter
+  prompt: RECTANG [Elevation/Thickness]:
+  asks: "First corner"
+  dyn: "X,Y"=""||*
+  options: [E] Elevation, [T] Thickness
 > first corner
+  prompt: RECTANG:
   asks: "Other corner"
+  options: -
 > other corner
   prompt: Command:
   asks: -
   dyn: -
+> RECTANG with modes
+  prompt: RECTANG [Elevation/Thickness]:
+  asks: "First corner"
+  dyn: "X,Y"=""||*
+  options: [E] Elevation, [T] Thickness
+  command| RECTANG
+  info| Current rectangle modes: Elevation=5.00 Thickness=2.00
+> escape
+  prompt: Command:
+  asks: -
+  dyn: -
+  options: -
 > POLYGON
   prompt: POLYGON:
   asks: "Number of sides"
@@ -2585,6 +2626,41 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
   asks: -
   dyn: -
   options: -
+
+## ELEV
+> start
+  prompt: Command:
+  asks: -
+  dyn: -
+  options: -
+  canvas: -
+  properties: -
+  cycling: -
+> ELEV
+  prompt: ELEV:
+  asks: "Specify new default elevation"
+  dyn: "Specify new default elevation"=""|0.00|mm*
+  command| ELEV
+> elevation
+  dyn: "Specify new default elevation"="5"|0.00|mm*
+> enter
+  asks: "Specify new default thickness"
+  dyn: "Specify new default thickness"=""|0.00|mm*
+> thickness
+  dyn: "Specify new default thickness"="-2"|0.00|mm*
+> enter
+  prompt: Command:
+  asks: -
+  dyn: -
+> ELEV again
+  prompt: ELEV:
+  asks: "Specify new default elevation"
+  dyn: "Specify new default elevation"=""|5.00|mm*
+  command| ELEV
+> escape
+  prompt: Command:
+  asks: -
+  dyn: -
 
 ## grips
 > start

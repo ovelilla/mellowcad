@@ -236,7 +236,12 @@ export class BlockTool implements Tool {
       commitRaw: (commitCtx) => {
         const point = parseCoordinate(
           commitCtx.dynamicInput.getText("base").trim(),
-          { lastPoint: null, relativeByDefault: false, ucs: commitCtx.ucs }
+          {
+            lastPoint: null,
+            relativeByDefault: false,
+            ucs: commitCtx.ucs,
+            elevation: commitCtx.elevation,
+          }
         )
         if (point) this.setBasePoint(point, commitCtx)
         return true

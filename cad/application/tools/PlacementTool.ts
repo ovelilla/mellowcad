@@ -330,6 +330,7 @@ export abstract class PlacementTool implements Tool {
       lastPoint: null,
       relativeByDefault: false,
       ucs: ctx.ucs,
+      elevation: ctx.elevation,
     })
     if (!base) return false
     this.enterSecondPoint(base, ctx, this.lastScreen ?? undefined)
@@ -427,6 +428,7 @@ export abstract class PlacementTool implements Tool {
         lastPoint: null,
         relativeByDefault: false,
         ucs: ctx.ucs,
+        elevation: ctx.elevation,
       })
       if (point) return point
     }
@@ -447,6 +449,7 @@ export abstract class PlacementTool implements Tool {
         lastPoint: base,
         relativeByDefault: true,
         ucs: ctx.ucs,
+        elevation: ctx.elevation,
       })
       return point ?? rawCursor
     }

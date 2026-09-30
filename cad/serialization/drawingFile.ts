@@ -112,12 +112,16 @@ export interface DrawingSnapshot {
   readonly entities: readonly Entity[]
 }
 
+/** The settings as written: a zero ELEVATION or THICKNESS is left out, as on objects. */
+export type StoredSettings = Omit<DocumentSettings, "elevation" | "thickness"> &
+  Partial<Pick<DocumentSettings, "elevation" | "thickness">>
+
 /** Shape of a serialised drawing on disk. */
 export interface DrawingFile {
   readonly type: typeof DRAWING_FILE_TYPE
   readonly version: number
   readonly generator: string
-  readonly settings: DocumentSettings
+  readonly settings: StoredSettings
   readonly layers: Layer[]
   readonly currentLayerId: LayerId
   readonly textStyles: TextStyle[]
@@ -146,7 +150,7 @@ export function toDrawingFile(snapshot: DrawingSnapshot): DrawingFile {
     type: DRAWING_FILE_TYPE,
     version: DRAWING_FILE_VERSION,
     generator: "mellowcad",
-    settings: snapshot.settings,
+    settings: storedSettings(snapshot.settings),
     layers: snapshot.layers.map(cloneLayer),
     currentLayerId: snapshot.currentLayerId,
     textStyles: snapshot.textStyles.map(cloneTextStyle),
@@ -515,6 +519,15 @@ function cloneLayer(layer: Layer): Layer {
   }
 }
 
+function storedSettings(settings: DocumentSettings): StoredSettings {
+  const { elevation, thickness, ...rest } = settings
+  return {
+    ...rest,
+    ...(elevation ? { elevation } : {}),
+    ...(thickness ? { thickness } : {}),
+  }
+}
+
 function parseSettings(value: unknown): DocumentSettings {
   if (!isRecord(value)) return DEFAULT_DOCUMENT_SETTINGS
   const unit = LENGTH_UNITS.includes(value.unit as LengthUnit)
@@ -563,6 +576,8 @@ function parseSettings(value: unknown): DocumentSettings {
     ucsName,
     namedUcs,
     ucsIcon,
+    elevation: isFiniteNumber(value.elevation) ? value.elevation : 0,
+    thickness: isFiniteNumber(value.thickness) ? value.thickness : 0,
   }
 }
 

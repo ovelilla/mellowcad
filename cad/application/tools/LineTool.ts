@@ -1,6 +1,6 @@
 import { Vec2, V } from "../../geometry/Vec2"
 import { Vec3, withZOf } from "../../geometry/Vec3"
-import { createLine } from "../../domain/entities"
+import { LineEntity, createLine } from "../../domain/entities"
 import { parseNumber } from "../../domain/units"
 import { AddEntityCommand } from "../commands/entityCommands"
 import { DynamicInputSession } from "../input/DynamicInput"
@@ -14,6 +14,7 @@ import { THEME } from "../../scene/theme"
 import { KeyInput, PointerInput, Tool, ToolContext } from "./Tool"
 import { CommandOption, CommandOptionOutcome } from "./Tool"
 import { lastDrawnPoint } from "./lastDrawnPoint"
+import { withCurrentThickness } from "./currentThickness"
 import { directionFromUcsHeading, headingInUcs } from "./ucsHeading"
 
 /**
@@ -144,11 +145,7 @@ export class LineTool implements Tool {
       vertices: draws ? [...this.state.vertices, end] : this.state.vertices,
     }
     if (draws) {
-      ctx.execute(
-        new AddEntityCommand(
-          createLine(start, end, ctx.document.getCurrentLayerId())
-        )
-      )
+      ctx.execute(new AddEntityCommand(newLine(start, end, ctx)))
     }
 
     // Clear the typed values so the next segment starts unlocked (AutoCAD-style).
@@ -207,11 +204,7 @@ export class LineTool implements Tool {
     if (this.state.phase !== "drawing" || this.state.segments < 2) return false
     const { start, first } = this.state
     if (!samePoint(start, first)) {
-      ctx.execute(
-        new AddEntityCommand(
-          createLine(start, first, ctx.document.getCurrentLayerId())
-        )
-      )
+      ctx.execute(new AddEntityCommand(newLine(start, first, ctx)))
     }
     this.state = { phase: "idle" }
     ctx.dynamicInput.close()
@@ -305,6 +298,7 @@ export class LineTool implements Tool {
         lastPoint: start,
         relativeByDefault: true,
         ucs: ctx.ucs,
+        elevation: ctx.elevation,
       })
       // Incomplete/invalid while typing: keep following the cursor.
       return point ?? rawCursor
@@ -375,6 +369,7 @@ export class LineTool implements Tool {
         lastPoint: null,
         relativeByDefault: false,
         ucs: ctx.ucs,
+        elevation: ctx.elevation,
       })
       if (point) return point
     }
@@ -433,6 +428,7 @@ export class LineTool implements Tool {
       lastPoint: null,
       relativeByDefault: false,
       ucs: ctx.ucs,
+      elevation: ctx.elevation,
     })
     if (!start) return false
     this.beginDrawing(start, ctx)
@@ -530,11 +526,7 @@ export class LineTool implements Tool {
       segments: segments + 1,
       vertices: [...this.state.vertices, end],
     }
-    ctx.execute(
-      new AddEntityCommand(
-        createLine(start, end, ctx.document.getCurrentLayerId())
-      )
-    )
+    ctx.execute(new AddEntityCommand(newLine(start, end, ctx)))
 
     ctx.dynamicInput.setLive("distance", 0)
     ctx.dynamicInput.setLive("angle", headingInUcs(ctx.ucs, direction))
@@ -556,6 +548,7 @@ export class LineTool implements Tool {
       lastPoint: this.state.start,
       relativeByDefault: true,
       ucs: ctx.ucs,
+      elevation: ctx.elevation,
     })
     if (!end) return false
 
@@ -577,11 +570,7 @@ export class LineTool implements Tool {
       vertices: draws ? [...this.state.vertices, end] : this.state.vertices,
     }
     if (draws) {
-      ctx.execute(
-        new AddEntityCommand(
-          createLine(start, end, ctx.document.getCurrentLayerId())
-        )
-      )
+      ctx.execute(new AddEntityCommand(newLine(start, end, ctx)))
     }
 
     ctx.dynamicInput.setLive("distance", 0)
@@ -609,4 +598,11 @@ function parseField(ctx: ToolContext, id: string): number | null {
 /** A line straight up in Z is still a line, though it is a point in plan. */
 function samePoint(a: Vec3, b: Vec3): boolean {
   return a.x === b.x && a.y === b.y && a.z === b.z
+}
+
+function newLine(start: Vec3, end: Vec3, ctx: ToolContext): LineEntity {
+  return withCurrentThickness(
+    createLine(start, end, ctx.document.getCurrentLayerId()),
+    ctx
+  )
 }

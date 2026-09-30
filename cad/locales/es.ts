@@ -67,7 +67,8 @@ export const es: EngineLocale = {
       "pan": "Encuadre",
       "ucs": "SCP",
       "ucsicon": "Icono SCP",
-      "plan": "Vista en planta"
+      "plan": "Vista en planta",
+      "elev": "Elevación"
     },
     "description": {
       "ERASE": "Borrar los objetos seleccionados",
@@ -642,6 +643,9 @@ export const es: EngineLocale = {
       ],
       "PLAN": [
         "PLANTA"
+      ],
+      "ELEV": [
+        "ELEV"
       ]
     },
     "keywords": {
@@ -686,6 +690,10 @@ export const es: EngineLocale = {
         "end Tangency": "finalizar Tangencia",
         "Undo": "desHacer",
         "Close": "Cerrar"
+      },
+      "RECTANG": {
+        "Elevation": "Elevación",
+        "Thickness": "Alt-objeto"
       },
       "POLYGON": {
         "Type": "Tipo",
@@ -913,6 +921,8 @@ export const es: EngineLocale = {
       "splineDegree": "Indique grado de spline",
       "firstCorner": "Primer punto de esquina",
       "otherCorner": "Esquina opuesta",
+      "rectangleElevation": "Precise la elevación de los rectángulos",
+      "rectangleThickness": "Precise la altura de objeto de los rectángulos",
       "numberOfSides": "Número de lados",
       "internalPoint": "Precise punto interno",
       "patternName": "Indique nombre de patrón",
@@ -988,7 +998,9 @@ export const es: EngineLocale = {
       "ucsSaveName": "Indique nombre para guardar SCP actual o [?]",
       "ucsDeleteNames": "Indique el nombre del SCP que se suprimirá <ninguno>",
       "ucsListNames": "Indique nombre(s) del SCP que enumerar <*>",
-      "planUcsName": "Indique nombre de SCP o [?]"
+      "planUcsName": "Indique nombre de SCP o [?]",
+      "elevDefaultElevation": "Precise nueva elevación por defecto",
+      "elevDefaultThickness": "Precise nueva altura de objeto por defecto"
     },
     "format": {
       "idle": "Comando",
@@ -1244,6 +1256,35 @@ export const es: EngineLocale = {
           "name"
         ],
         "."
+      ],
+      "rectangleModes": [
+        "Modos de rectángulo actuales:",
+        [
+          "hasElevation",
+          1,
+          {
+            "yes": [
+              " Elevación=",
+              [
+                "elevation"
+              ]
+            ],
+            "other": ""
+          }
+        ],
+        [
+          "hasThickness",
+          1,
+          {
+            "yes": [
+              " Alt-objeto=",
+              [
+                "thickness"
+              ]
+            ],
+            "other": ""
+          }
+        ]
       ]
     },
     "feedback": {

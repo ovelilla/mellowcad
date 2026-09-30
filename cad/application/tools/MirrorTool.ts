@@ -318,6 +318,7 @@ export class MirrorTool implements Tool {
         lastPoint: null,
         relativeByDefault: false,
         ucs: ctx.ucs,
+        elevation: ctx.elevation,
       })
       if (!first) return false
       this.enterSecond(first, ctx)
@@ -328,6 +329,7 @@ export class MirrorTool implements Tool {
         lastPoint: this.state.first,
         relativeByDefault: true,
         ucs: ctx.ucs,
+        elevation: ctx.elevation,
       })
       if (!second) return false
       this.enterErase(this.state.first, second, ctx)
@@ -417,6 +419,7 @@ export class MirrorTool implements Tool {
         lastPoint: relativeTo,
         relativeByDefault: relativeTo !== null,
         ucs: ctx.ucs,
+        elevation: ctx.elevation,
       })
       if (point) return point
     }

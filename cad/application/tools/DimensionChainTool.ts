@@ -294,6 +294,7 @@ export class DimensionChainTool implements Tool {
           lastPoint: this.state.chain.origin,
           relativeByDefault: true,
           ucs: commitCtx.ucs,
+          elevation: commitCtx.elevation,
         })
         if (!point) return false
         this.place(this.state.chain, point, commitCtx)

@@ -189,13 +189,10 @@ DIMBASELINE/DIMCONTINUE —; HATCH sigue a Z 0 hasta F5; el helper de D5 es `onP
 - Pruebas con el harness: LINE de un punto con Z = 10 por referencia a uno escrito sin Z; PLINE que
   proyecta; MOVE `@0,0,5`; UCS Origin `0,0,3` seguido de `1,1`.
 
-**F3. ELEV y variables.**
-
-- ELEV (EN/ES), ELEVATION y THICKNESS en los ajustes del dibujo, con deshacer, y la puesta a 0 al
-  pasar al WCS.
-- THICKNESS aplicada por los tools de D9.
-- RECTANG `Elevation`/`Thickness` (`Alt-objeto`); solo esas dos opciones, en su orden del prompt.
-- Textos en `cad/locales/en.json` y `es.json`, luego `npm run locales`.
+**F3. ELEV y variables** — hecha (ELEV aplica las dos respuestas como un paso de deshacer; Escape
+en la segunda no cambia nada; la puesta a 0 al pasar al WCS va en el mismo `UpdateSettingsCommand`
+que el UCS; los tools usan `withCurrentThickness`; RECTANG con Elevation 0 deja que la primera
+esquina fije el plano).
 
 **F4. Visibilidad.**
 
@@ -220,17 +217,17 @@ DIMBASELINE/DIMCONTINUE —; HATCH sigue a Z 0 hasta F5; el helper de D5 es `onP
 Se investigan en la fase que los usa: ayuda de 2026, foros de Autodesk con Playwright y aCADemia. Si
 no aparece nada, se deja la opción elegida y se marca «unverified» en la cobertura.
 
-| #   | Duda                                                                                          | Opción elegida mientras tanto                                       | Fase |
-| --- | --------------------------------------------------------------------------------------------- | ------------------------------------------------------------------- | ---- |
-| V1  | Texto exacto de ID y DIST (EN/ES), p. ej. `X = … Y = … Z = …`, `Delta Z = …`                  | El formato de AutoCAD que salga de capturas                         | F4   |
-| V2  | Nombres de las filas del palette en ES (`Centro Z`, `Posición Z`, `Elevación`)                | Los de la ayuda ESP / capturas                                      | F4   |
-| V3  | CIRCLE/ARC 2P/3P con puntos a distinta Z                                                      | Plano del primer punto (D5)                                         | F2   |
-| V4  | Elevación de una cota entre puntos a distinta Z                                               | Z del primer origen                                                 | F5   |
-| V5  | HATCH con contorno de objetos a distinta Z                                                    | Contorno solo con objetos a la Z del primero hallado; hatch a esa Z | F5   |
-| V6  | Mensajes de FILLET/CHAMFER/JOIN no coplanares                                                 | El de AutoCAD; si no aparece, el más cercano documentado            | F5   |
+| #   | Duda                                                                                          | Opción elegida mientras tanto                                                                                                                                                                                                                      | Fase |
+| --- | --------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---- |
+| V1  | Texto exacto de ID y DIST (EN/ES), p. ej. `X = … Y = … Z = …`, `Delta Z = …`                  | El formato de AutoCAD que salga de capturas                                                                                                                                                                                                        | F4   |
+| V2  | Nombres de las filas del palette en ES (`Centro Z`, `Posición Z`, `Elevación`)                | Los de la ayuda ESP / capturas                                                                                                                                                                                                                     | F4   |
+| V3  | CIRCLE/ARC 2P/3P con puntos a distinta Z                                                      | Plano del primer punto (D5)                                                                                                                                                                                                                        | F2   |
+| V4  | Elevación de una cota entre puntos a distinta Z                                               | Z del primer origen                                                                                                                                                                                                                                | F5   |
+| V5  | HATCH con contorno de objetos a distinta Z                                                    | Contorno solo con objetos a la Z del primero hallado; hatch a esa Z                                                                                                                                                                                | F5   |
+| V6  | Mensajes de FILLET/CHAMFER/JOIN no coplanares                                                 | El de AutoCAD; si no aparece, el más cercano documentado                                                                                                                                                                                           | F5   |
 | V7  | Z de Apparent Intersection y de un punto de OTRACK                                            | La del primer objeto / la del punto adquirido — **unverified**: la ayuda (50383F73, F556F13A) solo dice que la referencia toma la Z del objeto y que Apparent Intersection es la de dos objetos que no se cortan en 3D; los foros no dicen de cuál | F2   |
-| V8  | SCALE escala la altura de objeto                                                              | Sí (escala 3D uniforme)                                             | F1   |
-| V9  | RECTANG Elevation: ¿sustituye la Z del punto?, ¿línea `Current rectangle modes`?, ¿se guarda? | Sustituye; se muestra la línea si ≠ 0; por sesión                   | F3   |
+| V8  | SCALE escala la altura de objeto                                                              | Sí (escala 3D uniforme)                                                                                                                                                                                                                            | F1   |
+| V9  | RECTANG Elevation: ¿sustituye la Z del punto?, ¿línea `Current rectangle modes`?, ¿se guarda? | Sustituye si ≠ 0 (con 0, D5) — **unverified**: la ayuda solo dice «Specifies the Z-value for the rectangle»; la línea, verificada en capturas (`Current rectangle modes: Elevation=600.000`), lista solo los modos ≠ 0; por sesión                 | F3   |
 
 ## 6. Fuera de alcance (se anota en la cobertura)
 

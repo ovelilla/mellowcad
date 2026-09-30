@@ -468,6 +468,7 @@ export class DimensionTool implements Tool {
       lastPoint,
       relativeByDefault: lastPoint !== null,
       ucs: ctx.ucs,
+      elevation: ctx.elevation,
     })
   }
 }

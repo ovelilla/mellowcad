@@ -95,6 +95,11 @@ export interface ToolContext {
    * defaults AutoCAD aligns with it (text rotation, hatch angle, H/V) follow it.
    */
   readonly ucs: Ucs
+  /**
+   * ELEVATION: a point picked or typed without a Z lies this far above the
+   * UCS's XY plane.
+   */
+  readonly elevation: number
   readonly viewport: Viewport
   readonly selection: Selection
   readonly dynamicInput: DynamicInputController

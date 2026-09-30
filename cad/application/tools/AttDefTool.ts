@@ -313,6 +313,7 @@ export class AttDefTool implements Tool {
       lastPoint: null,
       relativeByDefault: false,
       ucs: ctx.ucs,
+      elevation: ctx.elevation,
     })
     if (!point) return false
     this.beginAt(point, ctx)

@@ -14,8 +14,9 @@ import { Ucs } from "../domain/ucs"
 export interface ResolvedPoint {
   /**
    * The effective world point a tool should act on. Its Z is the snapped
-   * object's, the tracked point's, or else the XY plane of the UCS — Ortho,
-   * Polar and the snap lattice work in the plane and never change it.
+   * object's, the tracked point's, or else the elevation plane (ELEVATION above
+   * the UCS's XY plane) — Ortho, Polar and the snap lattice work in the plane
+   * and never change it.
    */
   readonly point: Vec3
   /** The tracking result that produced it, if tracking engaged. */
@@ -42,7 +43,8 @@ export class PointResolver {
     private readonly constraints: ConstraintManager,
     private readonly tracking: ObjectSnapTrackingEngine,
     private readonly snapMode: SnapMode,
-    private readonly currentUcs: () => Ucs
+    private readonly currentUcs: () => Ucs,
+    private readonly currentElevation: () => number
   ) {}
 
   /**
@@ -100,7 +102,7 @@ export class PointResolver {
         allowSnapMode && !snap
           ? this.applyPolarSnap(context, constrained, forceOrtho)
           : constrained,
-        snap ? snap.point.z : ucs.origin.z
+        snap ? snap.point.z : ucs.origin.z + this.currentElevation()
       ),
       tracking: null,
     }

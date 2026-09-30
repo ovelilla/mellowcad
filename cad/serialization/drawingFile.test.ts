@@ -183,11 +183,22 @@ describe("round trip", () => {
       ucsName: "Plot",
       namedUcs: [{ name: "Plot", ucs }],
       ucsIcon: { visible: true, atOrigin: false },
+      elevation: 3,
+      thickness: -1.5,
     }
     const parsed = parseDrawingFile(
       serializeDrawing(snapshotOf([], { settings }))
     )
     expect(parsed.settings).toEqual(settings)
+  })
+
+  it("writes no zero ELEVATION or THICKNESS", () => {
+    const text = serializeDrawing(snapshotOf([]))
+    expect(text).not.toMatch(/"(elevation|thickness)"/)
+    expect(parseDrawingFile(text).settings).toMatchObject({
+      elevation: 0,
+      thickness: 0,
+    })
   })
 
   it("reads a UCS name that is not in the table as unnamed", () => {

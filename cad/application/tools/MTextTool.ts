@@ -533,6 +533,7 @@ export class MTextTool implements Tool {
       lastPoint: first,
       relativeByDefault: first !== null,
       ucs: ctx.ucs,
+      elevation: ctx.elevation,
     })
     if (!point) return false
     if (state.phase === "corner") this.enterOpposite(point, ctx)

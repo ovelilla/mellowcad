@@ -30,6 +30,10 @@ export interface DocumentSettings {
   readonly namedUcs: readonly NamedUcs[]
   /** UCSICON: bit 1 shows the icon, bit 2 puts it at the origin when in view. */
   readonly ucsIcon: UcsIconSetting
+  /** ELEVATION: the Z above the UCS's XY plane of a point given without one. */
+  readonly elevation: number
+  /** THICKNESS: the extrusion LINE, CIRCLE, ARC, PLINE and POLYGON give what they draw. */
+  readonly thickness: number
 }
 
 export interface UcsIconSetting {
@@ -47,6 +51,8 @@ export const DEFAULT_DOCUMENT_SETTINGS: DocumentSettings = {
   ucsName: null,
   namedUcs: [],
   ucsIcon: { visible: true, atOrigin: true },
+  elevation: 0,
+  thickness: 0,
 }
 
 export const LENGTH_UNITS: LengthUnit[] = [

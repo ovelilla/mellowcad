@@ -289,7 +289,8 @@ export class CadRuntime extends Observable {
       this.constraints,
       this.tracking,
       this.snapMode,
-      () => this.document.getSettings().ucs
+      () => this.document.getSettings().ucs,
+      () => this.document.getSettings().elevation
     )
     this.autosave = new AutosaveService(store, () => this.serializeDrawing())
 
@@ -299,6 +300,9 @@ export class CadRuntime extends Observable {
       document: this.document,
       get ucs() {
         return doc.getSettings().ucs
+      },
+      get elevation() {
+        return doc.getSettings().elevation
       },
       viewport: this.viewport,
       selection: this.selection,
@@ -751,6 +755,7 @@ export class CadRuntime extends Observable {
       lastPoint: base,
       relativeByDefault: true,
       ucs: this.document.getSettings().ucs,
+      elevation: this.document.getSettings().elevation,
     })
     if (!point) return false
     this.endFrom()

@@ -195,13 +195,15 @@ instead, or the command-line buffer will swallow them.
 
 ## Points, snapping, constraints
 
-- **Everything typed is read in the UCS.** `parseCoordinate` requires `ucs: ctx.ucs` (it is not
-  optional, so no call site can forget it); `*` reads the numbers in the WCS instead. An
-  **absolute** angle — a heading field fed from the cursor, a typed direction — goes through
-  `headingInUcs` / `directionFromUcsHeading` (`tools/ucsHeading.ts`); a **relative** one (a
-  rotation, an included angle, a sweep) is the same in every UCS and is left alone.
+- **Everything typed is read in the UCS.** `parseCoordinate` requires `ucs: ctx.ucs` and
+  `elevation: ctx.elevation` (neither is optional, so no call site can forget); `*` reads the
+  numbers in the WCS instead. An **absolute** angle — a heading field fed from the cursor, a typed
+  direction — goes through `headingInUcs` / `directionFromUcsHeading` (`tools/ucsHeading.ts`); a
+  **relative** one (a rotation, an included angle, a sweep) is the same in every UCS and is left
+  alone.
 - **A point has a Z; keep it.** `input.point` and `parseCoordinate` give a `Vec3`: `x,y` absolute
-  lies on the UCS's XY plane, `@x,y` keeps `lastPoint`'s Z. A point a tool _computes_ from another
+  lies ELEVATION above the UCS's XY plane, `@x,y` keeps `lastPoint`'s Z. A point a tool
+  _computes_ from another
   (`V.add(start, dir * length)` for a typed length or angle, a tracking offset) is `@dist<angle`
   and keeps the base's Z: wrap it in `withZOf(point, base)`, because every `V` helper returns a
   `Vec2`. Type a state field that feeds `lastPoint` or a creation as `Vec3`, so a dropped Z fails
@@ -214,6 +216,10 @@ instead, or the command-line buffer will swallow them.
   project the later points (`withZOf(point, first)`) rather than keep their Z. A point computed
   from the first (an ellipse's centre, MTEXT's attachment point) takes its Z the same way.
   `createLine` is the exception: a line has a Z at each end, so it reads its two points' Z itself.
+- **THICKNESS is given by LINE, CIRCLE, ARC, PLINE and POLYGON only**: wrap what they create in
+  `withCurrentThickness(entity, ctx)`. RECTANG has its own Elevation and Thickness, TEXT none, and
+  an object rebuilt from another carries the source's (`carryOverrides` / `carryPlane`), never the
+  variable.
 - **A default AutoCAD aligns with the UCS is kept relative to it**: TEXT, MTEXT, ATTDEF and
   INSERT remember their rotation from the UCS X axis and add the UCS's own on commit
   (`ucsAngleToWorld`); HATCH does the same with its angle and starts at the UCS origin; DIMLINEAR's

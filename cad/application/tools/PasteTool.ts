@@ -56,7 +56,10 @@ export class PasteTool implements Tool {
     const screen = this.lastScreen ?? { x: 0, y: 0 }
     this.state = {
       phase: "point",
-      cursor: { ...ctx.viewport.screenToWorld(screen), z: ctx.ucs.origin.z },
+      cursor: {
+        ...ctx.viewport.screenToWorld(screen),
+        z: ctx.ucs.origin.z + ctx.elevation,
+      },
     }
     ctx.dynamicInput.open({
       fields: [{ id: "point", prompt: "insertionPoint", kind: "coordinate" }],
@@ -64,7 +67,12 @@ export class PasteTool implements Tool {
       commitRaw: (commitCtx) => {
         const point = parseCoordinate(
           commitCtx.dynamicInput.getText("point").trim(),
-          { lastPoint: null, relativeByDefault: false, ucs: commitCtx.ucs }
+          {
+            lastPoint: null,
+            relativeByDefault: false,
+            ucs: commitCtx.ucs,
+            elevation: commitCtx.elevation,
+          }
         )
         if (point) this.place(point, commitCtx)
         return true

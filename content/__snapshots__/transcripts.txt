@@ -16,10 +16,10 @@ idle: Command:
 3010 +127 input | Center point: | 0,0
 3137 +87 input | Items [Rotate items: Yes]: | 6
 3525 +207 command |  | RECTANG
-3732 +167 input | First corner: | 80,20
+3732 +167 input | First corner [Elevation/Thickness]: | 80,20
 3899 +187 input | Other corner: | @14,30
 4325 +207 command |  | RECTANG
-4532 +187 input | First corner: | 80,-50
+4532 +187 input | First corner [Elevation/Thickness]: | 80,-50
 4719 +187 input | Other corner: | @14,30
 5297 +147 command |  | LINE
 5444 +167 input | LINE: | -58,0
@@ -77,7 +77,7 @@ command |  | LINE
 input | LINE: | 0,0
 ## window
 command |  | RECTANG
-input | First corner: | 0,0
+input | First corner [Elevation/Thickness]: | 0,0
 input | Other corner: | @30,20
 command |  | CIRCLE
 input | Center: | 60,40
@@ -87,7 +87,7 @@ input | LINE: | 15,50
 input | LINE: | @80,-45
 ## crossing
 command |  | RECTANG
-input | First corner: | 0,0
+input | First corner [Elevation/Thickness]: | 0,0
 input | Other corner: | @30,20
 command |  | CIRCLE
 input | Center: | 60,40
@@ -151,17 +151,17 @@ input | Specify a second extension line origin [Select]: |
 input | Specify a second extension line origin [Undo/Select]: | 
 ## organize
 command |  | RECTANG
-input | First corner: | 0,0
+input | First corner [Elevation/Thickness]: | 0,0
 input | Other corner: | @90,40
 command |  | RECTANG
-input | First corner: | 35,0
+input | First corner [Elevation/Thickness]: | 35,0
 input | Other corner: | @20,40
 command |  | LINE
 input | LINE: | 45,-8
 input | LINE: | @0,56
 ## inquiry
 command |  | RECTANG
-input | First corner: | 0,0
+input | First corner [Elevation/Thickness]: | 0,0
 input | Other corner: | @70,40
 command |  | DIST
 input | DIST: | 
@@ -184,16 +184,16 @@ input | COPYBASE: |
 command |  | PASTECLIP
 ## localFirst
 command |  | RECTANG
-input | First corner: | 0,0
+input | First corner [Elevation/Thickness]: | 0,0
 input | Other corner: | @170,70
 command |  | RECTANG
-input | First corner: | 12,8
+input | First corner [Elevation/Thickness]: | 12,8
 input | Other corner: | @40,50
 command |  | RECTANG
-input | First corner: | 118,36
+input | First corner [Elevation/Thickness]: | 118,36
 input | Other corner: | @40,22
 command |  | RECTANG
-input | First corner: | 118,8
+input | First corner [Elevation/Thickness]: | 118,8
 input | Other corner: | @40,22
 command |  | TEXT
 input | Specify start point of text [Justify/Style]: | 4,64
@@ -242,7 +242,7 @@ input | Enter dimension text [Text/Angle/Horizontal/Vertical/Rotated]: | Ctrl+S 
 input | Specify dimension line location [Text/Angle/Horizontal/Vertical/Rotated]: | 
 ## engineLayers
 command |  | RECTANG
-input | First corner: | 0,64
+input | First corner [Elevation/Thickness]: | 0,64
 input | Other corner: | @90,11
 command |  | TEXT
 input | Specify start point of text [Justify/Style]: | 6,67.5
@@ -251,7 +251,7 @@ input | Specify rotation angle of text: | 0
 input | Text: | adapters
 input | Text: | 
 command |  | RECTANG
-input | First corner: | 0,48
+input | First corner [Elevation/Thickness]: | 0,48
 input | Other corner: | @90,11
 command |  | TEXT
 input | Specify start point of text [Justify/Style]: | 6,51.5
@@ -260,7 +260,7 @@ input | Specify rotation angle of text: | 0
 input | Text: | application
 input | Text: | 
 command |  | RECTANG
-input | First corner: | 0,32
+input | First corner [Elevation/Thickness]: | 0,32
 input | Other corner: | @90,11
 command |  | TEXT
 input | Specify start point of text [Justify/Style]: | 6,35.5
@@ -269,7 +269,7 @@ input | Specify rotation angle of text: | 0
 input | Text: | scene
 input | Text: | 
 command |  | RECTANG
-input | First corner: | 0,16
+input | First corner [Elevation/Thickness]: | 0,16
 input | Other corner: | @90,11
 command |  | TEXT
 input | Specify start point of text [Justify/Style]: | 6,19.5
@@ -278,7 +278,7 @@ input | Specify rotation angle of text: | 0
 input | Text: | domain
 input | Text: | 
 command |  | RECTANG
-input | First corner: | 0,0
+input | First corner [Elevation/Thickness]: | 0,0
 input | Other corner: | @90,11
 command |  | TEXT
 input | Specify start point of text [Justify/Style]: | 6,3.5

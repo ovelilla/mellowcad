@@ -63,7 +63,8 @@
       "pan": "Pan",
       "ucs": "UCS",
       "ucsicon": "UCS icon",
-      "plan": "Plan view"
+      "plan": "Plan view",
+      "elev": "Elevation"
     },
     "description": {
       "ERASE": "Delete the selected objects",
@@ -317,7 +318,8 @@
       "PURGE": ["PURGE", "PU"],
       "UCS": ["UCS"],
       "UCSICON": ["UCSICON"],
-      "PLAN": ["PLAN"]
+      "PLAN": ["PLAN"],
+      "ELEV": ["ELEV"]
     },
     "keywords": {
       "LINE": { "Close": "Close", "Undo": "Undo" },
@@ -359,6 +361,7 @@
         "Undo": "Undo",
         "Close": "Close"
       },
+      "RECTANG": { "Elevation": "Elevation", "Thickness": "Thickness" },
       "POLYGON": {
         "Type": "Type",
         "Inscribed": "Inscribed",
@@ -541,6 +544,8 @@
       "splineDegree": "Enter spline degree",
       "firstCorner": "First corner",
       "otherCorner": "Other corner",
+      "rectangleElevation": "Specify the elevation for rectangles",
+      "rectangleThickness": "Specify thickness for rectangles",
       "numberOfSides": "Number of sides",
       "internalPoint": "Pick internal point",
       "patternName": "Enter a pattern name",
@@ -616,7 +621,9 @@
       "ucsSaveName": "Enter name to save current UCS or [?]",
       "ucsDeleteNames": "Enter UCS name(s) to delete '<'none>",
       "ucsListNames": "Enter UCS name(s) to list '<'*>",
-      "planUcsName": "Enter name of UCS or [?]"
+      "planUcsName": "Enter name of UCS or [?]",
+      "elevDefaultElevation": "Specify new default elevation",
+      "elevDefaultThickness": "Specify new default thickness"
     },
     "format": {
       "idle": "Command",
@@ -661,7 +668,8 @@
       "currentUcsName": "Current ucs name:  {kind, select, world {*WORLD*} unnamed {*NO NAME*} other {{name}}}",
       "savedUcsHeader": "Saved coordinate systems:",
       "savedUcsEntry": "{name}\nOrigin = '<'{originX},{originY},{originZ}>, X Axis = '<'{xAxisX},{xAxisY},0.0000>\n    Y Axis = '<'{yAxisX},{yAxisY},0.0000>, Z Axis = '<'0.0000,0.0000,1.0000>",
-      "ucsUndefined": "Cannot find UCS {name}."
+      "ucsUndefined": "Cannot find UCS {name}.",
+      "rectangleModes": "Current rectangle modes:{hasElevation, select, yes { Elevation={elevation}} other {}}{hasThickness, select, yes { Thickness={thickness}} other {}}"
     },
     "feedback": {
       "snap": {

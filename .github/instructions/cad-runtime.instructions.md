@@ -66,10 +66,11 @@ drawing blind. `updateSnap` picks `snap.point` → `tracking.point` → raw scre
 **The point carries a Z** (`ResolvedPoint.point` and `PointerInput.point` are `Vec3`), taken in
 the same order: a snap's is the object's there (`SnapCandidate.point` is a `Vec3`; providers build
 it with `on(entity, point)`, which reads `entityZAt`), a tracked point's is the acquired point's,
-and otherwise the XY plane of the UCS (`ucs.origin.z`). Constraints and the lattice work in plan
-and the resolver puts the Z back after them. Intersection is 3D (`meetingHeight`: two objects that
-cross in plan at different heights do not meet; the rubber band meets anything); Apparent
-Intersection takes the first object's. `input.world` stays 2D: it is for picking.
+and otherwise the elevation plane (`ucs.origin.z` + ELEVATION; the resolver reads both through
+getters). Constraints and the lattice work in plan and the resolver puts the Z back after them.
+Intersection is 3D (`meetingHeight`: two objects that cross in plan at different heights do not
+meet; the rubber band meets anything); Apparent Intersection takes the first object's. `input.world`
+stays 2D: it is for picking.
 
 A tool returning `usesCrosshair() === false` (PAN) opts out entirely: no crosshair is drawn and
 `updateSnap` leaves the cursor the tool set, instead of forcing `"none"`.
@@ -157,8 +158,10 @@ call in the `CadRuntime` constructor.
 `history.execute(command)` is the only write path to the document. `loadDrawing` clears the
 history (a loaded file is a fresh baseline). Document _settings_ changes (unit, precision,
 ltScale, layer table edits) are deliberately not undoable; anything touching entities is. The
-exceptions are the settings AutoCAD's U undoes — ATTMODE, the UCS and its table, UCSICON — which
-go through a command (`UpdateSettingsCommand` restores exactly the keys it patched).
+exceptions are the settings AutoCAD's U undoes — ATTMODE, the UCS and its table, UCSICON, ELEVATION
+and THICKNESS — which go through a command (`UpdateSettingsCommand` restores exactly the keys it
+patched). A settings change another one implies belongs in the same patch: changing to the WCS puts
+ELEVATION to 0.
 
 A command that adds **table entries alongside geometry** (BLOCK's definition, PASTECLIP's layers,
 styles and blocks) carries them through the history too, and undoes them in reverse order — those

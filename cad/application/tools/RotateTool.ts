@@ -443,6 +443,7 @@ export class RotateTool implements Tool {
       lastPoint: null,
       relativeByDefault: false,
       ucs: ctx.ucs,
+      elevation: ctx.elevation,
     })
     if (!base) return false
     this.enterAngle(base, ctx)
@@ -538,6 +539,7 @@ export class RotateTool implements Tool {
       lastPoint: this.state.p1,
       relativeByDefault: true,
       ucs: ctx.ucs,
+      elevation: ctx.elevation,
     })
     if (!p2) return false
     const reference = bearing(this.state.p1, p2, ctx) ?? 0
@@ -596,6 +598,7 @@ export class RotateTool implements Tool {
         lastPoint: null,
         relativeByDefault: false,
         ucs: ctx.ucs,
+        elevation: ctx.elevation,
       })
       if (point) return point
     }

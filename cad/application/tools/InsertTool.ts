@@ -218,7 +218,12 @@ export class InsertTool implements Tool {
       commitRaw: (commitCtx) => {
         const point = parseCoordinate(
           commitCtx.dynamicInput.getText("point").trim(),
-          { lastPoint: null, relativeByDefault: false, ucs: commitCtx.ucs }
+          {
+            lastPoint: null,
+            relativeByDefault: false,
+            ucs: commitCtx.ucs,
+            elevation: commitCtx.elevation,
+          }
         )
         if (point) this.place(point, commitCtx)
         return true

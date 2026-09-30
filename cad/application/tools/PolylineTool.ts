@@ -16,6 +16,7 @@ import { arcScenePrimitive, entityScenePrimitive } from "../SceneBuilder"
 import { PointerInput, Tool, ToolContext } from "./Tool"
 import { CommandOption, CommandOptionOutcome } from "./Tool"
 import { lastDrawnPoint } from "./lastDrawnPoint"
+import { withCurrentThickness } from "./currentThickness"
 import { directionFromUcsHeading, headingInUcs } from "./ucsHeading"
 
 /**
@@ -317,14 +318,17 @@ export class PolylineTool implements Tool {
     if (vertices.length < 2) return
     ctx.execute(
       new AddEntityCommand(
-        onPlaneOf(
-          createPolyline(
-            vertices,
-            closed,
-            ctx.document.getCurrentLayerId(),
-            bulges
+        withCurrentThickness(
+          onPlaneOf(
+            createPolyline(
+              vertices,
+              closed,
+              ctx.document.getCurrentLayerId(),
+              bulges
+            ),
+            vertices[0]
           ),
-          vertices[0]
+          ctx
         )
       )
     )
@@ -362,6 +366,7 @@ export class PolylineTool implements Tool {
         lastPoint: null,
         relativeByDefault: false,
         ucs: ctx.ucs,
+        elevation: ctx.elevation,
       })
       if (point) return point
     }
@@ -393,6 +398,7 @@ export class PolylineTool implements Tool {
       lastPoint: null,
       relativeByDefault: false,
       ucs: ctx.ucs,
+      elevation: ctx.elevation,
     })
     if (!start) return false
     this.beginDrawing(start, ctx)
@@ -474,6 +480,7 @@ export class PolylineTool implements Tool {
       lastPoint: this.lastVertex(this.state),
       relativeByDefault: true,
       ucs: ctx.ucs,
+      elevation: ctx.elevation,
     })
     if (!point) return false
     this.appendVertex(point, ctx)
@@ -492,6 +499,7 @@ export class PolylineTool implements Tool {
         lastPoint: start,
         relativeByDefault: true,
         ucs: ctx.ucs,
+        elevation: ctx.elevation,
       })
       return point ?? rawCursor
     }

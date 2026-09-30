@@ -456,6 +456,7 @@ export class AngularDimensionTool implements Tool {
       lastPoint,
       relativeByDefault: lastPoint !== null,
       ucs: ctx.ucs,
+      elevation: ctx.elevation,
     })
   }
 }

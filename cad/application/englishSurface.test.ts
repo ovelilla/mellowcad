@@ -425,8 +425,16 @@ describe("the engine's English surface", () => {
     walk("RECTANG and POLYGON", createHarness(), (s) =>
       s
         .do("RECTANG", (c) => c.command("REC"))
+        .do("E", (c) => answer(c, "E"))
+        .do("elevation", (c) => c.type("5"))
+        .do("enter", (c) => c.enter())
+        .do("T", (c) => answer(c, "T"))
+        .do("thickness", (c) => c.type("2"))
+        .do("enter", (c) => c.enter())
         .do("first corner", (c) => c.click(at(0, 0)))
         .do("other corner", (c) => c.click(at(200, 120)))
+        .do("RECTANG with modes", (c) => c.command("RECTANG"))
+        .do("escape", (c) => c.escape())
         .do("POLYGON", (c) => c.command("POL"))
         .do("sides", (c) => c.type("6"))
         .do("enter", (c) => c.enter())
@@ -993,6 +1001,16 @@ describe("the engine's English surface", () => {
         .do("enter is Current ucs", (c) => c.enter())
         .do("PLAN W", (c) => c.command("PLAN"))
         .do("W", (c) => answer(c, "W"))
+    )
+    walk("ELEV", createHarness(), (s) =>
+      s
+        .do("ELEV", (c) => c.command("ELEV"))
+        .do("elevation", (c) => c.type("5"))
+        .do("enter", (c) => c.enter())
+        .do("thickness", (c) => c.type("-2"))
+        .do("enter", (c) => c.enter())
+        .do("ELEV again", (c) => c.command("ELEV"))
+        .do("escape", (c) => c.escape())
     )
   })
 

@@ -63,7 +63,8 @@
       "pan": "Encuadre",
       "ucs": "SCP",
       "ucsicon": "Icono SCP",
-      "plan": "Vista en planta"
+      "plan": "Vista en planta",
+      "elev": "Elevación"
     },
     "description": {
       "ERASE": "Borrar los objetos seleccionados",
@@ -305,7 +306,8 @@
       "PURGE": ["LIMPIA", "LI"],
       "UCS": ["SCP"],
       "UCSICON": ["SIMBSCP"],
-      "PLAN": ["PLANTA"]
+      "PLAN": ["PLANTA"],
+      "ELEV": ["ELEV"]
     },
     "keywords": {
       "LINE": {
@@ -349,6 +351,10 @@
         "end Tangency": "finalizar Tangencia",
         "Undo": "desHacer",
         "Close": "Cerrar"
+      },
+      "RECTANG": {
+        "Elevation": "Elevación",
+        "Thickness": "Alt-objeto"
       },
       "POLYGON": {
         "Type": "Tipo",
@@ -576,6 +582,8 @@
       "splineDegree": "Indique grado de spline",
       "firstCorner": "Primer punto de esquina",
       "otherCorner": "Esquina opuesta",
+      "rectangleElevation": "Precise la elevación de los rectángulos",
+      "rectangleThickness": "Precise la altura de objeto de los rectángulos",
       "numberOfSides": "Número de lados",
       "internalPoint": "Precise punto interno",
       "patternName": "Indique nombre de patrón",
@@ -651,7 +659,9 @@
       "ucsSaveName": "Indique nombre para guardar SCP actual o [?]",
       "ucsDeleteNames": "Indique el nombre del SCP que se suprimirá '<'ninguno>",
       "ucsListNames": "Indique nombre(s) del SCP que enumerar '<'*>",
-      "planUcsName": "Indique nombre de SCP o [?]"
+      "planUcsName": "Indique nombre de SCP o [?]",
+      "elevDefaultElevation": "Precise nueva elevación por defecto",
+      "elevDefaultThickness": "Precise nueva altura de objeto por defecto"
     },
     "format": {
       "idle": "Comando",
@@ -696,7 +706,8 @@
       "currentUcsName": "Nombre de scp actual: {kind, select, world {*UNIVERSAL*} unnamed {*SIN NOMBRE*} other {{name}}}",
       "savedUcsHeader": "Sistemas de coordenadas guardados:",
       "savedUcsEntry": "{name}\nOrigen = '<'{originX},{originY},{originZ}>, Eje X = '<'{xAxisX},{xAxisY},0.0000>\n    Eje Y = '<'{yAxisX},{yAxisY},0.0000>, Eje Z = '<'0.0000,0.0000,1.0000>",
-      "ucsUndefined": "No se encuentra el SCP {name}."
+      "ucsUndefined": "No se encuentra el SCP {name}.",
+      "rectangleModes": "Modos de rectángulo actuales:{hasElevation, select, yes { Elevación={elevation}} other {}}{hasThickness, select, yes { Alt-objeto={thickness}} other {}}"
     },
     "feedback": {
       "snap": {

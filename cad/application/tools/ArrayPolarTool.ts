@@ -304,6 +304,7 @@ export class ArrayPolarTool implements Tool {
       lastPoint: null,
       relativeByDefault: false,
       ucs: ctx.ucs,
+      elevation: ctx.elevation,
     })
     if (!center) return false
     this.enterConfig(center, ctx)
@@ -373,6 +374,7 @@ export class ArrayPolarTool implements Tool {
         lastPoint: null,
         relativeByDefault: false,
         ucs: ctx.ucs,
+        elevation: ctx.elevation,
       })
       if (point) return point
     }

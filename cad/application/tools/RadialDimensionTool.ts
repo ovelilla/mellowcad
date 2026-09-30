@@ -264,6 +264,7 @@ export class RadialDimensionTool implements Tool {
           lastPoint: this.state.target.center,
           relativeByDefault: true,
           ucs: commitCtx.ucs,
+          elevation: commitCtx.elevation,
         })
         if (!point) return false
         this.place(point, commitCtx)

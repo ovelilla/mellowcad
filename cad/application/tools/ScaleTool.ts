@@ -443,6 +443,7 @@ export class ScaleTool implements Tool {
       lastPoint: null,
       relativeByDefault: false,
       ucs: ctx.ucs,
+      elevation: ctx.elevation,
     })
     if (!base) return false
     this.enterFactor(base, ctx)
@@ -543,6 +544,7 @@ export class ScaleTool implements Tool {
       lastPoint: this.state.p1,
       relativeByDefault: true,
       ucs: ctx.ucs,
+      elevation: ctx.elevation,
     })
     if (!p2) return false
     this.enterNewLength(distanceFrom(this.state.p1, p2), ctx)
@@ -609,6 +611,7 @@ export class ScaleTool implements Tool {
         lastPoint: null,
         relativeByDefault: false,
         ucs: ctx.ucs,
+        elevation: ctx.elevation,
       })
       if (point) return point
     }

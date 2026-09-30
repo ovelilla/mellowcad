@@ -506,7 +506,10 @@ export class UcsTool implements Tool {
     )
   }
 
-  /** Makes `ucs` current, one undo step, remembering the one it replaces. */
+  /**
+   * Makes `ucs` current, one undo step, remembering the one it replaces.
+   * Changing to the WCS puts ELEVATION back to 0, as ELEV documents.
+   */
   private apply(
     ucs: Ucs,
     name: string | null,
@@ -519,7 +522,14 @@ export class UcsTool implements Tool {
       this.previous.push({ ucs: settings.ucs, name: settings.ucsName })
       if (this.previous.length > MAX_PREVIOUS) this.previous.shift()
     }
-    ctx.execute(new UpdateSettingsCommand({ ucs, ucsName: name }))
+    const toWorld = isWorldUcs(ucs) && settings.elevation !== 0
+    ctx.execute(
+      new UpdateSettingsCommand({
+        ucs,
+        ucsName: name,
+        ...(toWorld ? { elevation: 0 } : {}),
+      })
+    )
   }
 
   /** {@link apply} as the command's last answer, from a prompt that ends it itself. */
@@ -538,6 +548,7 @@ export class UcsTool implements Tool {
       lastPoint: from,
       relativeByDefault: from !== null,
       ucs: ctx.ucs,
+      elevation: ctx.elevation,
     })
   }
 

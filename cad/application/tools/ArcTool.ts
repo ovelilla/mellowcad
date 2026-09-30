@@ -13,6 +13,7 @@ import { ScenePrimitive } from "../../scene/types"
 import { THEME } from "../../scene/theme"
 import { arcScenePrimitive } from "../SceneBuilder"
 import { KeyInput, PointerInput, Tool, ToolContext } from "./Tool"
+import { withCurrentThickness } from "./currentThickness"
 
 /**
  * How an arc is defined — the top of AutoCAD's ARC dropdown, each surfaced as
@@ -217,15 +218,18 @@ export class ArcTool implements Tool {
     if (!solved || !(solved.radius > 0)) return // degenerate — keep prompting
     ctx.execute(
       new AddEntityCommand(
-        onPlaneOf(
-          createArc(
-            solved.center,
-            solved.radius,
-            solved.startAngle,
-            solved.endAngle,
-            ctx.document.getCurrentLayerId()
+        withCurrentThickness(
+          onPlaneOf(
+            createArc(
+              solved.center,
+              solved.radius,
+              solved.startAngle,
+              solved.endAngle,
+              ctx.document.getCurrentLayerId()
+            ),
+            p1
           ),
-          p1
+          ctx
         )
       )
     )
@@ -270,6 +274,7 @@ export class ArcTool implements Tool {
       lastPoint: last,
       relativeByDefault: last !== null,
       ucs: ctx.ucs,
+      elevation: ctx.elevation,
     })
     if (!point) return false
     this.advanceWithPoint(point, ctx)

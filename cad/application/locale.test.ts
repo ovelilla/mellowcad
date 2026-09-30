@@ -374,6 +374,26 @@ describe("Spanish AutoCAD's command language", () => {
     )
   })
 
+  it("sets the elevation with ELEV, and RECTANG's Alt-objeto on its A", () => {
+    const cad = createHarness({ locale: es })
+    cad.command("ELEV").type("5").enter().type("2").enter()
+    expect(cad.runtime.document.getSettings()).toMatchObject({
+      elevation: 5,
+      thickness: 2,
+    })
+    cad.command("RECTANG")
+    expect(cad.state().commandLine.prompt).toBe(
+      "RECTANG [Elevación/Alt-objeto]:"
+    )
+    expect(cad.optionKeys()).toEqual(["E", "A"])
+    cad.press("a")
+    cad.type("3").enter().escape()
+    cad.command("RECTANG")
+    expect(cad.commandLog().at(-1)).toBe(
+      "Modos de rectángulo actuales: Alt-objeto=3.00"
+    )
+  })
+
   it("lists the commands by their Spanish names, described in Spanish", () => {
     expect(
       commandCatalog(es).find((command) => command.id === "ERASE")

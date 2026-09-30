@@ -13,6 +13,7 @@ import {
 import { ScenePrimitive } from "../../scene/types"
 import { THEME } from "../../scene/theme"
 import { KeyInput, PointerInput, Tool, ToolContext } from "./Tool"
+import { withCurrentThickness } from "./currentThickness"
 
 /**
  * How a circle is defined — AutoCAD's CIRCLE modes, each surfaced as its own
@@ -354,9 +355,12 @@ export class CircleTool implements Tool {
     if (!(radius > 0)) return
     ctx.execute(
       new AddEntityCommand(
-        onPlaneOf(
-          createCircle(center, radius, ctx.document.getCurrentLayerId()),
-          first
+        withCurrentThickness(
+          onPlaneOf(
+            createCircle(center, radius, ctx.document.getCurrentLayerId()),
+            first
+          ),
+          ctx
         )
       )
     )
@@ -392,6 +396,7 @@ export class CircleTool implements Tool {
       lastPoint: last,
       relativeByDefault: last !== null,
       ucs: ctx.ucs,
+      elevation: ctx.elevation,
     })
     if (!point) return false
     this.advanceWithPoint(point, ctx)

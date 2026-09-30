@@ -557,6 +557,7 @@ export class EllipseTool implements Tool {
       lastPoint: last,
       relativeByDefault: last !== null,
       ucs: ctx.ucs,
+      elevation: ctx.elevation,
     })
     if (!point) return false
     this.advanceWithPoint(point, ctx)

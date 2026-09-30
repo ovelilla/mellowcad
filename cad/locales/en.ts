@@ -67,7 +67,8 @@ export const en: EngineCatalog = {
       "pan": "Pan",
       "ucs": "UCS",
       "ucsicon": "UCS icon",
-      "plan": "Plan view"
+      "plan": "Plan view",
+      "elev": "Elevation"
     },
     "description": {
       "ERASE": "Delete the selected objects",
@@ -656,6 +657,9 @@ export const en: EngineCatalog = {
       ],
       "PLAN": [
         "PLAN"
+      ],
+      "ELEV": [
+        "ELEV"
       ]
     },
     "prompts": {
@@ -685,6 +689,8 @@ export const en: EngineCatalog = {
       "splineDegree": "Enter spline degree",
       "firstCorner": "First corner",
       "otherCorner": "Other corner",
+      "rectangleElevation": "Specify the elevation for rectangles",
+      "rectangleThickness": "Specify thickness for rectangles",
       "numberOfSides": "Number of sides",
       "internalPoint": "Pick internal point",
       "patternName": "Enter a pattern name",
@@ -760,7 +766,9 @@ export const en: EngineCatalog = {
       "ucsSaveName": "Enter name to save current UCS or [?]",
       "ucsDeleteNames": "Enter UCS name(s) to delete <none>",
       "ucsListNames": "Enter UCS name(s) to list <*>",
-      "planUcsName": "Enter name of UCS or [?]"
+      "planUcsName": "Enter name of UCS or [?]",
+      "elevDefaultElevation": "Specify new default elevation",
+      "elevDefaultThickness": "Specify new default thickness"
     },
     "format": {
       "idle": "Command",
@@ -1016,6 +1024,35 @@ export const en: EngineCatalog = {
           "name"
         ],
         "."
+      ],
+      "rectangleModes": [
+        "Current rectangle modes:",
+        [
+          "hasElevation",
+          1,
+          {
+            "yes": [
+              " Elevation=",
+              [
+                "elevation"
+              ]
+            ],
+            "other": ""
+          }
+        ],
+        [
+          "hasThickness",
+          1,
+          {
+            "yes": [
+              " Thickness=",
+              [
+                "thickness"
+              ]
+            ],
+            "other": ""
+          }
+        ]
       ]
     },
     "feedback": {

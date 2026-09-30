@@ -3,7 +3,7 @@ import { AttributeDisplay } from "../../domain/entities"
 import { DocumentSettings } from "../../domain/units"
 import { Command } from "./Command"
 
-/** UCS and UCSICON: settings saved in the drawing, and undone with it. */
+/** UCS, UCSICON and ELEV: settings saved in the drawing, and undone with it. */
 export class UpdateSettingsCommand implements Command {
   readonly label = "update-settings"
   private previous: Partial<DocumentSettings> = {}

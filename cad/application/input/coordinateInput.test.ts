@@ -12,11 +12,17 @@ import { deg, p } from "../../../test/builders"
  * trade-off is pinned explicitly.
  */
 
-const ABSOLUTE = { lastPoint: null, relativeByDefault: false, ucs: WORLD_UCS }
+const ABSOLUTE = {
+  lastPoint: null,
+  relativeByDefault: false,
+  ucs: WORLD_UCS,
+  elevation: 0,
+}
 const FROM_100_100 = {
   lastPoint: p(100, 100),
   relativeByDefault: true,
   ucs: WORLD_UCS,
+  elevation: 0,
 }
 /** Origin at (10, 20), X axis pointing along world +Y. */
 const TURNED = { origin: { x: 10, y: 20, z: 0 }, xAxis: p(0, 1) }
@@ -109,6 +115,7 @@ describe("parseCoordinate", () => {
           lastPoint: p(100, 100),
           relativeByDefault: false,
           ucs: WORLD_UCS,
+          elevation: 0,
         })
       ).toBeCloseToPoint(p(30, 0))
     })
@@ -120,17 +127,24 @@ describe("parseCoordinate", () => {
           lastPoint: null,
           relativeByDefault: true,
           ucs: WORLD_UCS,
+          elevation: 0,
         })
       ).toBeCloseToPoint(p(30, 0))
     })
   })
 
   describe("in a UCS", () => {
-    const inUcs = { lastPoint: null, relativeByDefault: false, ucs: TURNED }
+    const inUcs = {
+      lastPoint: null,
+      relativeByDefault: false,
+      ucs: TURNED,
+      elevation: 0,
+    }
     const fromLast = {
       lastPoint: p(100, 100),
       relativeByDefault: true,
       ucs: TURNED,
+      elevation: 0,
     }
 
     it("reads an absolute point from the UCS origin along its axes", () => {
@@ -159,11 +173,17 @@ describe("parseCoordinate", () => {
   describe("with a Z", () => {
     const RAISED = { origin: { x: 0, y: 0, z: 3 }, xAxis: p(1, 0) }
     const at = (x: number, y: number, z: number) => ({ x, y, z })
-    const onPlane = { lastPoint: null, relativeByDefault: false, ucs: RAISED }
+    const onPlane = {
+      lastPoint: null,
+      relativeByDefault: false,
+      ucs: RAISED,
+      elevation: 0,
+    }
     const fromRaised = {
       lastPoint: at(100, 100, 10),
       relativeByDefault: true,
       ucs: RAISED,
+      elevation: 0,
     }
 
     it("reads x,y,z from the UCS's XY plane", () => {
@@ -175,6 +195,16 @@ describe("parseCoordinate", () => {
       expect(parseCoordinate("1,2", onPlane)).toMatchObject(at(1, 2, 3))
       expect(parseCoordinate("#1,2", fromRaised)).toMatchObject(at(1, 2, 3))
       expect(parseCoordinate("*1,2", onPlane)).toMatchObject(at(1, 2, 3))
+    })
+
+    it("puts an absolute point typed without a Z at the elevation", () => {
+      const elevated = { ...onPlane, elevation: 4 }
+      expect(parseCoordinate("1,2", elevated)).toMatchObject(at(1, 2, 7))
+      expect(parseCoordinate("5<0", elevated)).toMatchObject(at(5, 0, 7))
+      expect(parseCoordinate("1,2,5", elevated)).toMatchObject(at(1, 2, 8))
+      expect(
+        parseCoordinate("@5,0", { ...fromRaised, elevation: 4 })
+      ).toMatchObject(at(105, 100, 10))
     })
 
     it("keeps the last point's Z for a relative point typed without one", () => {
@@ -259,6 +289,7 @@ describe("parseCoordinate", () => {
               lastPoint: last,
               relativeByDefault: false,
               ucs: WORLD_UCS,
+              elevation: 0,
             })
           ).toBeCloseToPoint(p(last.x + dx, last.y + dy), 8)
         })

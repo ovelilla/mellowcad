@@ -61,6 +61,8 @@ export interface CoordinateContext {
   readonly relativeByDefault: boolean
   /** The UCS the numbers are read in; `*` reads them in the WCS instead. */
   readonly ucs: Ucs
+  /** ELEVATION: how far above the UCS's XY plane an absolute point without a Z lies. */
+  readonly elevation: number
 }
 
 /**
@@ -128,7 +130,9 @@ export function parseCoordinate(
   return vec3(
     point.x,
     point.y,
-    offset.z === null ? ctx.ucs.origin.z : ucs.origin.z + offset.z
+    offset.z === null
+      ? ctx.ucs.origin.z + ctx.elevation
+      : ucs.origin.z + offset.z
   )
 }
 

@@ -400,6 +400,7 @@ export class HatchTool implements Tool {
           lastPoint: null,
           relativeByDefault: false,
           ucs: commitCtx.ucs,
+          elevation: commitCtx.elevation,
         })
         if (point) this.addInternalPoint(point, commitCtx)
         return true

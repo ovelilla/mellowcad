@@ -251,6 +251,7 @@ export { PanTool } from "./application/tools/PanTool"
 export { UcsTool } from "./application/tools/UcsTool"
 export { UcsIconTool } from "./application/tools/UcsIconTool"
 export { PlanTool } from "./application/tools/PlanTool"
+export { ElevTool } from "./application/tools/ElevTool"
 
 export type {
   Scene,
