@@ -1,5 +1,5 @@
 import { Vec2, V } from "../../geometry/Vec2"
-import { normalizeDegrees } from "../../geometry/primitives"
+import { headingInUcs } from "./ucsHeading"
 import {
   Entity,
   EntityId,
@@ -164,7 +164,10 @@ export class RotateTool implements Tool {
         break
       case "angle": {
         this.state = { ...this.state, current: input.point }
-        ctx.dynamicInput.setLive("angle", bearing(this.state.base, input.point))
+        ctx.dynamicInput.setLive(
+          "angle",
+          bearing(this.state.base, input.point, ctx)
+        )
         ctx.dynamicInput.setPosition(input.screen)
         break
       }
@@ -180,7 +183,7 @@ export class RotateTool implements Tool {
         this.state = { ...this.state, current: input.point }
         ctx.dynamicInput.setLive(
           "newAngle",
-          bearing(this.state.base, input.point)
+          bearing(this.state.base, input.point, ctx)
         )
         ctx.dynamicInput.setPosition(input.screen)
         break
@@ -224,7 +227,7 @@ export class RotateTool implements Tool {
         return
       }
       case "refP2": {
-        const reference = bearing(this.state.p1, input.point) ?? 0
+        const reference = bearing(this.state.p1, input.point, ctx) ?? 0
         this.enterNewAngle(reference, ctx)
         return
       }
@@ -438,6 +441,7 @@ export class RotateTool implements Tool {
     const base = parseCoordinate(text, {
       lastPoint: null,
       relativeByDefault: false,
+      ucs: ctx.ucs,
     })
     if (!base) return false
     this.enterAngle(base, ctx)
@@ -532,9 +536,10 @@ export class RotateTool implements Tool {
     const p2 = parseCoordinate(text, {
       lastPoint: this.state.p1,
       relativeByDefault: true,
+      ucs: ctx.ucs,
     })
     if (!p2) return false
-    const reference = bearing(this.state.p1, p2) ?? 0
+    const reference = bearing(this.state.p1, p2, ctx) ?? 0
     this.enterNewAngle(reference, ctx)
     return true
   }
@@ -589,6 +594,7 @@ export class RotateTool implements Tool {
       const point = parseCoordinate(text, {
         lastPoint: null,
         relativeByDefault: false,
+        ucs: ctx.ucs,
       })
       if (point) return point
     }
@@ -607,7 +613,7 @@ export class RotateTool implements Tool {
   ): number {
     const typed = parseField(ctx, "angle")
     if (typed !== null) return typed
-    return bearing(base, cursor) ?? 0
+    return bearing(base, cursor, ctx) ?? 0
   }
 
   /**
@@ -621,7 +627,7 @@ export class RotateTool implements Tool {
     ctx: ToolContext
   ): number {
     const typed = parseField(ctx, "newAngle")
-    const newAngle = typed ?? bearing(base, cursor) ?? reference
+    const newAngle = typed ?? bearing(base, cursor, ctx) ?? reference
     return newAngle - reference
   }
 }
@@ -674,11 +680,11 @@ function parseField(ctx: ToolContext, id: string): number | null {
   return value !== null && Number.isFinite(value) ? value : null
 }
 
-/** Bearing of `from → to` in degrees, CCW from +X, or `null` when coincident. */
-function bearing(from: Vec2, to: Vec2): number | null {
+/** Bearing of `from → to` in degrees from the UCS X axis, or `null` when coincident. */
+function bearing(from: Vec2, to: Vec2, ctx: ToolContext): number | null {
   const dir = V.sub(to, from)
   if (V.length(dir) < 1e-9) return null
-  return normalizeDegrees((Math.atan2(dir.y, dir.x) * 180) / Math.PI)
+  return headingInUcs(ctx.ucs, dir)
 }
 
 /** Folds an angle in degrees into the `(-180, 180]` range for near-zero tests. */

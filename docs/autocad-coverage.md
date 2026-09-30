@@ -85,6 +85,26 @@ than none.
 | `ZOOM` / `Z` · es `ZOOM` / `Z`     | Window (click-click or drag), Extents, All, Previous (bounded history), Scale (nX only), Object | Realtime and Dynamic (mitigated by the mouse wheel) |
 | `PAN` / `P` · es `ENCUADRE` / `E`† | left-drag pan, hand cursor, Previous, Escape                                                    | —                                                   |
 
+## Coordinate systems
+
+The UCS is planar: an origin and an X axis in the world's XY plane, Z always the world's (see
+`docs/next-ucs.md` for why). Entities are stored in the WCS.
+
+| Command                  | Implemented                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          | Missing                                                                                                                                                                                                                                                                                                                                                             |
+| ------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `UCS` · es `SCP`         | `Current ucs name` (`*WORLD*` / `*NO NAME*` / the name); origin, then a point on X, then one on the XY plane (Enter accepts at each; a third point on the side that would turn Z down is not taken); NAmed Restore / Save (asks Yes/No before replacing) / Delete (commas and wildcards; deleting the current one leaves it `*NO NAME*`) / `?` (origin and axes relative to the current UCS); OBject (line, circle, arc, ellipse, polyline segment, spline, text, multiline text, attribute definition, block reference, as aCADemia's table gives them); Previous (10, per session, with their names); View (X horizontal: the view has no twist yet); World (Enter's default); Z (UCSAXISANG 90 by default, typed or pointed); one undo step; saved in the drawing | Face, X, Y and ZAxis (they tilt the XY plane: phase 2), Apply, the hidden Origin / Move / 3point / orthoGraphic options, Restore / Save / Delete / `?` typed straight at the first prompt, OBject on a dimension (its UCS at creation is not stored) or a hatch, UCSMAN, the icon's grips (UCSSELECTMODE), UCSFOLLOW, UCSVP, UCSDETECT, `PLAN` (needs a view twist) |
+| `UCSICON` · es `SIMBSCP` | ON / OFF / Noorigin / ORigin (UCSICON, saved in the drawing, undoable, 3 by default); the icon of 2D wireframe — X and Y arms with their letters, a square at the origin when the UCS is the WCS — on the origin while it fits, else in the lower-left corner (lifted clear of the status readout)                                                                                                                                                                                                                                                                                                                                                                                                                                                                   | All, Selectable, Properties (the UCS Icon dialog: style, size, colour)                                                                                                                                                                                                                                                                                              |
+
+**What follows the UCS:** typed coordinates (`x,y`, `d<a`, `@`, `#` from its origin; `*` for the
+WCS, `@*` relative in the WCS), the angle fields of LINE, PLINE, SPLINE, MOVE, COPY and ROTATE, the
+status readout, the Properties palette's X/Y rows and a line's deltas (read and retyped), Ortho,
+polar tracking and its readout, OTRACK guides, the snap lattice and the grid with its tinted axes;
+the rotation TEXT, MTEXT, ATTDEF and INSERT ask for; HATCH's angle and origin (HPORIGIN 0,0);
+DIMLINEAR's horizontal / vertical / Rotated; RECTANG; ARRAYRECT's rows and columns; POLYGON's
+first vertex before the cursor moves; BLOCK, which defines its objects in the UCS. **Not yet:** the
+text angle of a dimension (Angle), DIST's angle readout, the default spacing ARRAYRECT offers (from
+world extents), and palette rotations (they stay in the WCS, as AutoCAD's TEXT and INSERT rows do).
+
 ## Measurement and inquiry
 
 | Command                                                   | Implemented                           | Missing                                                                 |
@@ -93,13 +113,13 @@ than none.
 
 ## Properties and tables
 
-| Feature                   | Implemented                                                                                                                                                                           | Missing                                                                                                        |
-| ------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------- |
-| Layers                    | colour, visibility, lock, current layer, ByLayer resolution, selection respects hidden/locked                                                                                         | —                                                                                                              |
-| Linetypes + `LTSCALE`     | 6 patterns, ByLayer and ByObject                                                                                                                                                      | per-object ltscale                                                                                             |
-| Lineweights + `LWDISPLAY` | 24 standard values, ByLayer and ByObject                                                                                                                                              | polyline width                                                                                                 |
-| Colour                    | ByLayer and ByObject per-object override                                                                                                                                              | —                                                                                                              |
-| Properties palette        | geometry rows per entity type, editable (retype a value), closed-polyline area; an attribute definition's tag, prompt, default and modes, a reference's attributes by tag (read-only) | polyline vertex rows, multi-selection editing, Area/Circumference rows, text content, editing attribute values |
+| Feature                   | Implemented                                                                                                                                                                                                                            | Missing                                                                                                                                                                        |
+| ------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Layers                    | colour, visibility, lock, current layer, ByLayer resolution, selection respects hidden/locked                                                                                                                                          | —                                                                                                                                                                              |
+| Linetypes + `LTSCALE`     | 6 patterns, ByLayer and ByObject                                                                                                                                                                                                       | per-object ltscale                                                                                                                                                             |
+| Lineweights + `LWDISPLAY` | 24 standard values, ByLayer and ByObject                                                                                                                                                                                               | polyline width                                                                                                                                                                 |
+| Colour                    | ByLayer and ByObject per-object override                                                                                                                                                                                               | —                                                                                                                                                                              |
+| Properties palette        | geometry rows per entity type, editable (retype a value), coordinates read and retyped in the current UCS, closed-polyline area; an attribute definition's tag, prompt, default and modes, a reference's attributes by tag (read-only) | polyline vertex rows, multi-selection editing, Area/Circumference rows, text content, editing attribute values, MTEXT's rotation in the UCS (AutoCAD shows that one row there) |
 
 ## Command line
 
@@ -138,6 +158,15 @@ state of each piece (`cad/locales/es.json`; the brief's §15 lists the URLs):
   product. **Unverified:** the capitals of `Cuerda`/`Raíz cuadrada`/`Uniforme` (the help's names),
   `Precise tangente` at the closure and the palette's `Parametrización de nudos`. In English, the
   Fit prompts are a 2019 capture's; `Enter spline degree` and `Specify tangent` are not.
+- **UCS:** `SCP` and `SIMBSCP` from the Spanish pages with the English GUIDs (PLAN is `PLANTA`);
+  the keywords `gUArdado`, `oBjeto`, `PRev`, `Vista`, `Univ`, `Z`, `Rest`, `Guardar`, `Supr`, the
+  prompts `Indique origen de SCP`, `Precise punto en eje X o <Aceptar>`, `Precise punto en plano XY
+o <Aceptar>`, the Named ones and `Nombre de scp actual: *UNIVERSAL*` from aCADemia's 2014 captures
+  of the Spanish product; `ACT/DES/Sin origen/Origen` from the 2026 help and the same captures.
+  **Unverified:** `Precise ángulo de rotación sobre eje Z` (the capture shows Y's), `*SIN NOMBRE*`
+  in the prompt line (the help's word), the `?` listing and the UCS-not-found message, in both
+  languages. `UA` starting with `U` means `Univ` is typed and confirmed in Spanish rather than
+  run on its key. Neither language's `acad.pgp` has an alias for UCS.
 - **Aliases:** verified in Autodesk's 2026 Spanish material: `L`, `C`, `A`, `REC`, `CP`, `DI`, `AA`,
   `Z`, `B`, `H`. **† = unverified for 2026:** the Spanish `acad.pgp` ships only with the language
   pack; these come from three transcriptions of it (2012–2021) that agree with each other and with
@@ -164,17 +193,17 @@ state of each piece (`cad/locales/es.json`; the brief's §15 lists the URLs):
 
 ## Drafting aids
 
-| Feature                   | Implemented                                                                                                                                                         | Missing                                                                                                   |
-| ------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------- |
-| Object snaps              | Endpoint, Midpoint, Center, Node, Quadrant, Intersection, Extension, Perpendicular, Tangent, Nearest, Apparent Intersection, Parallel; AutoCAD's default on/off set | remaining osnaps, per-entity opt-in still required for every new entity type (OSOPTIONS-like, deliberate) |
-| Osnap override menu       | Shift + right-click, one-shot override                                                                                                                              | —                                                                                                         |
-| `OSNAP` tracking (OTRACK) | acquisition by dwell, alignment guides, precedence over constraints                                                                                                 | —                                                                                                         |
-| Polar tracking (F10)      | angle increments, guides, mutually exclusive with Ortho, Shift override                                                                                             | additional angles list, "track using all polar angles"                                                    |
-| Ortho (F8)                | constraint with Shift temporary override                                                                                                                            | —                                                                                                         |
-| Snap mode (F9)            | grid snap, polar snap                                                                                                                                               | isometric snap, SNAPBASE, SNAPANG, persistence in the file                                                |
-| Dynamic input (DYN)       | distance/angle fields, hard-lock on typed values, absolute `#`, relative `@`, `x,y`, `dist<ang`, multi-field forms, keyword prompts                                 | —                                                                                                         |
-| Selection cycling         | badge, Shift+Space, selection list box                                                                                                                              | placement options, subobject filtering, type icons in the list, LEGACYCTRLPICK                            |
-| Grips                     | move, lengthen, radius, arc end, polyline insert/remove vertex, curvature, multi-select move, MTEXT width, magnetism with capture/release hysteresis                | Ortho/tracking-aware radius and angle drag, insert vertex on an arc segment                               |
+| Feature                   | Implemented                                                                                                                                                           | Missing                                                                                                   |
+| ------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------- |
+| Object snaps              | Endpoint, Midpoint, Center, Node, Quadrant, Intersection, Extension, Perpendicular, Tangent, Nearest, Apparent Intersection, Parallel; AutoCAD's default on/off set   | remaining osnaps, per-entity opt-in still required for every new entity type (OSOPTIONS-like, deliberate) |
+| Osnap override menu       | Shift + right-click, one-shot override                                                                                                                                | —                                                                                                         |
+| `OSNAP` tracking (OTRACK) | acquisition by dwell, alignment guides along the UCS's axes and polar angles, precedence over constraints                                                             | —                                                                                                         |
+| Polar tracking (F10)      | angle increments from the UCS X axis, guides, mutually exclusive with Ortho, Shift override                                                                           | additional angles list, "track using all polar angles"                                                    |
+| Ortho (F8)                | constraint to the UCS's axes with Shift temporary override                                                                                                            | —                                                                                                         |
+| Snap mode (F9)            | grid snap on the UCS (from its origin, along its axes), polar snap                                                                                                    | isometric snap, SNAPBASE, SNAPANG, persistence in the file                                                |
+| Dynamic input (DYN)       | distance/angle fields, hard-lock on typed values, absolute `#`, relative `@`, `*` for the WCS, `x,y`, `dist<ang` (all in the UCS), multi-field forms, keyword prompts | —                                                                                                         |
+| Selection cycling         | badge, Shift+Space, selection list box                                                                                                                                | placement options, subobject filtering, type icons in the list, LEGACYCTRLPICK                            |
+| Grips                     | move, lengthen, radius, arc end, polyline insert/remove vertex, curvature, multi-select move, MTEXT width, magnetism with capture/release hysteresis                  | Ortho/tracking-aware radius and angle drag, insert vertex on an arc segment                               |
 
 ## Clipboard and files
 
@@ -216,8 +245,14 @@ Agreed ordering. The rule behind it: **close model gaps before command gaps**, b
 entity type multiplies the "Adding an entity type" checklist that a future Z coordinate would force
 us to walk again, whereas a command costs the same before or after Z.
 
-1. **UCS + ELEVATION/THICKNESS** — the real bridge to 3D. Requires an explicit decision between
-   2.5D (elevation + thickness reusing the current entities) and true 3D solids (a separate kernel).
+1. **PLAN and a view twist** — the last piece of the UCS (phase 1 of `docs/next-ucs.md`):
+   `PLAN [Current ucs/Ucs/World]` turns the view so the UCS X axis is horizontal, which makes the
+   camera a rotation and so touches window/crossing selection and ZOOM; UCS View follows it.
+2. **Z in the model (2.5D)** — ELEVATION / THICKNESS as one elevation and one thickness per
+   entity with the normal fixed at +Z (DXF 38/39, 210 by default), ELEV, `x,y,z`, and the UCS
+   options that tilt the plane. Decided against 3D solids, which are a separate kernel and are off
+   the roadmap (`docs/next-ucs.md` §0).
+3. **Views** (VPOINT, `-VIEW` presets) — what makes elevation and thickness visible.
 
 Editing a spline — OFFSET (which is also what the ellipse's OFFSET and FILLET wait for), TRIM /
 EXTEND / BREAK / JOIN, SPLINEDIT — is a command gap, so it queues behind the model gap above.

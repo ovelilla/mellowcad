@@ -74,6 +74,11 @@ export interface CadDriverOptions {
    * script asked; turn it on for scripts that are *about* snapping.
    */
   readonly snap?: boolean
+  /**
+   * The UCS icon. Off by default so a frame holds only what the script drew;
+   * turn it on for scripts that are *about* the icon.
+   */
+  readonly ucsIcon?: boolean
   readonly store?: DrawingStore | null
   /** The language the engine speaks; English when left out. */
   readonly locale?: EngineLocale
@@ -106,6 +111,7 @@ export class CadDriver {
     )
     this.runtime.setViewSize(options.width ?? 1000, options.height ?? 800)
     this.runtime.snapping.setActive(options.snap ?? false)
+    this.runtime.setUcsIconShown(options.ucsIcon ?? false)
     if (options.entities?.length || options.blocks?.length) {
       this.runtime.document.load(options.entities ?? [], {
         blocks: options.blocks,

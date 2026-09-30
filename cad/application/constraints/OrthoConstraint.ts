@@ -1,5 +1,6 @@
 import { Vec2 } from "../../geometry/Vec2"
 import { Ray } from "../../geometry/primitives"
+import { ucsDirectionToWorld, worldDirectionToUcs } from "../../domain/ucs"
 import { Constraint, ConstraintContext, ConstraintType } from "./types"
 
 /**
@@ -17,26 +18,28 @@ import { Constraint, ConstraintContext, ConstraintType } from "./types"
 export class OrthoConstraint implements Constraint {
   readonly type = ConstraintType.Ortho
 
-  apply({ anchor, world, point }: ConstraintContext): Vec2 {
-    if (!anchor) return point
-
-    const dx = world.x - anchor.x
-    const dy = world.y - anchor.y
-
-    if (Math.abs(dx) >= Math.abs(dy)) {
-      // Horizontal lock: keep the (possibly snapped) X, pin Y to the anchor.
-      return { x: point.x, y: anchor.y }
+  apply(context: ConstraintContext): Vec2 {
+    const ray = this.ray(context)
+    if (!ray) return context.point
+    const { point } = context
+    const along =
+      (point.x - ray.origin.x) * ray.dir.x +
+      (point.y - ray.origin.y) * ray.dir.y
+    return {
+      x: ray.origin.x + ray.dir.x * along,
+      y: ray.origin.y + ray.dir.y * along,
     }
-    // Vertical lock: pin X to the anchor, keep the (possibly snapped) Y.
-    return { x: anchor.x, y: point.y }
   }
 
-  /** The horizontal or vertical line currently locked through the anchor. */
-  ray({ anchor, world }: ConstraintContext): Ray | null {
+  /** The horizontal or vertical line of the UCS currently locked through the anchor. */
+  ray({ anchor, world, ucs }: ConstraintContext): Ray | null {
     if (!anchor) return null
-    const dx = world.x - anchor.x
-    const dy = world.y - anchor.y
-    const dir = Math.abs(dx) >= Math.abs(dy) ? { x: 1, y: 0 } : { x: 0, y: 1 }
-    return { origin: anchor, dir }
+    const local = worldDirectionToUcs(ucs, {
+      x: world.x - anchor.x,
+      y: world.y - anchor.y,
+    })
+    const axis =
+      Math.abs(local.x) >= Math.abs(local.y) ? { x: 1, y: 0 } : { x: 0, y: 1 }
+    return { origin: anchor, dir: ucsDirectionToWorld(ucs, axis) }
   }
 }

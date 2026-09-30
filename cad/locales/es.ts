@@ -64,7 +64,9 @@ export const es: EngineLocale = {
       "measure": "Medir",
       "measurearea": "Área",
       "zoom": "Zoom",
-      "pan": "Encuadre"
+      "pan": "Encuadre",
+      "ucs": "SCP",
+      "ucsicon": "Icono SCP"
     },
     "description": {
       "ERASE": "Borrar los objetos seleccionados",
@@ -630,6 +632,12 @@ export const es: EngineLocale = {
       "PURGE": [
         "LIMPIA",
         "LI"
+      ],
+      "UCS": [
+        "SCP"
+      ],
+      "UCSICON": [
+        "SIMBSCP"
       ]
     },
     "keywords": {
@@ -848,6 +856,25 @@ export const es: EngineLocale = {
         "Scale": "EScala",
         "Window": "Ventana",
         "Object": "Objeto"
+      },
+      "UCS": {
+        "NAmed": "gUArdado",
+        "OBject": "oBjeto",
+        "Previous": "PRev",
+        "View": "Vista",
+        "World": "Univ",
+        "Z": "Z",
+        "Restore": "Rest",
+        "Save": "Guardar",
+        "Delete": "Supr",
+        "Yes": "Sí",
+        "No": "No"
+      },
+      "UCSICON": {
+        "ON": "ACT",
+        "OFF": "DES",
+        "Noorigin": "Sin origen",
+        "ORigin": "Origen"
       }
     },
     "prompts": {
@@ -942,7 +969,16 @@ export const es: EngineLocale = {
       "clipboardBasePoint": "Precise punto base",
       "lengthen": "Alargar",
       "move": "Desplazar",
-      "bulge": "Curvatura"
+      "bulge": "Curvatura",
+      "ucsOrigin": "Indique origen de SCP",
+      "ucsXAxisPoint": "Precise punto en eje X o <Aceptar>",
+      "ucsXYPlanePoint": "Precise punto en plano XY o <Aceptar>",
+      "ucsRotationZ": "Precise ángulo de rotación sobre eje Z",
+      "ucsNamedOption": "Indique una opción [Rest/Guardar/Supr/?]",
+      "ucsRestoreName": "Indique nombre de SCP para restaurarlo o [?]",
+      "ucsSaveName": "Indique nombre para guardar SCP actual o [?]",
+      "ucsDeleteNames": "Indique el nombre del SCP que se suprimirá <ninguno>",
+      "ucsListNames": "Indique nombre(s) del SCP que enumerar <*>"
     },
     "format": {
       "idle": "Comando",
@@ -1140,6 +1176,60 @@ export const es: EngineLocale = {
             ]
           }
         ]
+      ],
+      "currentUcsName": [
+        "Nombre de scp actual: ",
+        [
+          "kind",
+          1,
+          {
+            "world": "*UNIVERSAL*",
+            "unnamed": "*SIN NOMBRE*",
+            "other": [
+              [
+                "name"
+              ]
+            ]
+          }
+        ]
+      ],
+      "savedUcsHeader": "Sistemas de coordenadas guardados:",
+      "savedUcsEntry": [
+        [
+          "name"
+        ],
+        "\nOrigen = <",
+        [
+          "originX"
+        ],
+        ",",
+        [
+          "originY"
+        ],
+        ",0.0000>, Eje X = <",
+        [
+          "xAxisX"
+        ],
+        ",",
+        [
+          "xAxisY"
+        ],
+        ",0.0000>\n    Eje Y = <",
+        [
+          "yAxisX"
+        ],
+        ",",
+        [
+          "yAxisY"
+        ],
+        ",0.0000>, Eje Z = <0.0000,0.0000,1.0000>"
+      ],
+      "ucsUndefined": [
+        "No se encuentra el SCP ",
+        [
+          "name"
+        ],
+        "."
       ]
     },
     "feedback": {
@@ -1171,6 +1261,8 @@ export const es: EngineLocale = {
         ],
         "°"
       ],
+      "ucsIconX": "X",
+      "ucsIconY": "Y",
       "measureDistance": [
         "Dist  ",
         [

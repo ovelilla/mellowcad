@@ -12,6 +12,11 @@ import {
   Entity,
   polylineSegmentGeometries,
 } from "../../domain/entities"
+import {
+  ucsAngleToWorld,
+  worldAngleToUcs,
+  worldPointToUcs,
+} from "../../domain/ucs"
 import { AddEntityCommand } from "../commands/entityCommands"
 import { DynamicInputSession } from "../input/DynamicInput"
 import type { PromptId } from "../../locales/types"
@@ -123,7 +128,10 @@ export class DimensionTool implements Tool {
       case "rotated":
         // Pointing the angle of the dimension line: the bearing from the first
         // origin to the cursor.
-        this.setRotation(bearing(this.state.first, input.point), ctx)
+        this.setRotation(
+          worldAngleToUcs(ctx.ucs, bearing(this.state.first, input.point)),
+          ctx
+        )
         break
     }
     ctx.requestRender()
@@ -231,7 +239,7 @@ export class DimensionTool implements Tool {
     ctx: ToolContext
   ): DimensionEntity {
     return createDimension(this.kind, state.first, state.second, linePoint, {
-      rotation: this.resolveRotation(state, linePoint),
+      rotation: this.resolveRotation(state, linePoint, ctx),
       text: this.text,
       textAngle: this.textAngle,
       styleId: ctx.document.getCurrentDimStyleId(),
@@ -251,24 +259,31 @@ export class DimensionTool implements Tool {
    * width, so any sideways drag immediately means "measure the height"; a
    * midpoint comparison instead kept reading the (zero) width until the drag
    * grew past half the line, leaving nothing to preview.
+   *
+   * Horizontal and vertical are the UCS's, and a Rotated angle is measured
+   * from its X axis; what is returned is the world direction.
    */
   private resolveRotation(
     state: Extract<DimensionToolState, { phase: "line" }>,
-    linePoint: Vec2
+    linePoint: Vec2,
+    ctx: ToolContext
   ): number {
-    if (this.rotation !== null) return this.rotation
-    const { first, second } = state
-    const escapeX = distanceOutside(linePoint.x, first.x, second.x)
-    const escapeY = distanceOutside(linePoint.y, first.y, second.y)
+    if (this.rotation !== null) return ucsAngleToWorld(ctx.ucs, this.rotation)
+    const first = worldPointToUcs(ctx.ucs, state.first)
+    const second = worldPointToUcs(ctx.ucs, state.second)
+    const at = worldPointToUcs(ctx.ucs, linePoint)
+    const escapeX = distanceOutside(at.x, first.x, second.x)
+    const escapeY = distanceOutside(at.y, first.y, second.y)
+    let local: number
     if (escapeX === 0 && escapeY === 0) {
       // Still between the origins: neither axis is indicated yet, so fall back
       // to whichever the cursor leans towards.
       const mid = V.midpoint(first, second)
-      return Math.abs(linePoint.y - mid.y) >= Math.abs(linePoint.x - mid.x)
-        ? 0
-        : Math.PI / 2
+      local = Math.abs(at.y - mid.y) >= Math.abs(at.x - mid.x) ? 0 : Math.PI / 2
+    } else {
+      local = escapeY >= escapeX ? 0 : Math.PI / 2
     }
-    return escapeY >= escapeX ? 0 : Math.PI / 2
+    return ucsAngleToWorld(ctx.ucs, local)
   }
 
   private style(ctx: ToolContext) {
@@ -304,7 +319,7 @@ export class DimensionTool implements Tool {
       this.state.second,
       linePoint,
       {
-        rotation: this.resolveRotation(this.state, linePoint),
+        rotation: this.resolveRotation(this.state, linePoint, ctx),
         text: this.text,
         textAngle: this.textAngle,
         styleId: ctx.document.getCurrentDimStyleId(),
@@ -343,7 +358,7 @@ export class DimensionTool implements Tool {
       ctx.dynamicInput.open({ fields: [], commit: () => {} })
       return true
     }
-    const point = this.parsePoint(typed, null)
+    const point = this.parsePoint(typed, null, ctx)
     if (!point) return false
     this.enterSecond(point, ctx)
     return true
@@ -353,7 +368,7 @@ export class DimensionTool implements Tool {
     this.openCoordinate(ctx, "point", "secondExtensionOrigin", (commitCtx) => {
       if (this.state.phase !== "second") return false
       const typed = commitCtx.dynamicInput.getText("point").trim()
-      const point = this.parsePoint(typed, this.state.first)
+      const point = this.parsePoint(typed, this.state.first, commitCtx)
       if (!point) return false
       this.enterLine(this.state.first, point, commitCtx)
       return true
@@ -364,7 +379,7 @@ export class DimensionTool implements Tool {
     this.openCoordinate(ctx, "point", "dimensionLineLocation", (commitCtx) => {
       if (this.state.phase !== "line") return false
       const typed = commitCtx.dynamicInput.getText("point").trim()
-      const point = this.parsePoint(typed, this.state.second)
+      const point = this.parsePoint(typed, this.state.second, commitCtx)
       if (!point) return false
       this.place(point, commitCtx)
       return true
@@ -437,11 +452,16 @@ export class DimensionTool implements Tool {
     ctx.dynamicInput.setPosition(this.lastScreen ?? { x: 0, y: 0 })
   }
 
-  private parsePoint(text: string, lastPoint: Vec2 | null): Vec2 | null {
+  private parsePoint(
+    text: string,
+    lastPoint: Vec2 | null,
+    ctx: ToolContext
+  ): Vec2 | null {
     if (!isCoordinateExpression(text)) return null
     return parseCoordinate(text, {
       lastPoint,
       relativeByDefault: lastPoint !== null,
+      ucs: ctx.ucs,
     })
   }
 }

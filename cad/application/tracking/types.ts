@@ -1,5 +1,6 @@
 import { Vec2 } from "../../geometry/Vec2"
 import { Ray } from "../../geometry/primitives"
+import { Ucs } from "../../domain/ucs"
 import { SnapType } from "../snapping/types"
 
 /**
@@ -30,9 +31,9 @@ export type TrackingGuideKind = "horizontal" | "vertical" | "polar"
 /** An infinite alignment line emanating from an acquired {@link TrackingPoint}. */
 export interface TrackingGuide {
   readonly point: TrackingPoint
-  /** Unit direction in world space (0°, 90°, 45°, ...). */
+  /** Unit direction in world space (0°, 90°, 45°, ... of the UCS). */
   readonly dir: Vec2
-  /** Angle of {@link dir} in radians, for labels / debugging. */
+  /** Angle of {@link dir} in radians from the UCS X axis, for labels / debugging. */
   readonly angle: number
   readonly kind: TrackingGuideKind
 }
@@ -65,6 +66,8 @@ export interface DrawingAidState {
   readonly polarAngleStep: number
   readonly objectSnapTracking: boolean
   readonly acquiredPoints: readonly TrackingPoint[]
+  /** The UCS whose horizontal, vertical and polar angles the guides follow. */
+  readonly ucs: Ucs
 }
 
 export type { Ray }

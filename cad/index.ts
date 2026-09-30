@@ -248,6 +248,8 @@ export { MeasureTool } from "./application/tools/MeasureTool"
 export type { MeasureMode } from "./application/tools/MeasureTool"
 export { ZoomTool } from "./application/tools/ZoomTool"
 export { PanTool } from "./application/tools/PanTool"
+export { UcsTool } from "./application/tools/UcsTool"
+export { UcsIconTool } from "./application/tools/UcsIconTool"
 
 export type {
   Scene,
@@ -331,7 +333,14 @@ export {
   parseNumber,
   unitSuffix,
 } from "./domain/units"
-export type { DocumentSettings } from "./domain/units"
+export type { DocumentSettings, UcsIconSetting } from "./domain/units"
+export {
+  WORLD_UCS,
+  isWorldUcs,
+  ucsPointToWorld,
+  worldPointToUcs,
+} from "./domain/ucs"
+export type { NamedUcs, Ucs } from "./domain/ucs"
 
 export { V, vec2 } from "./geometry/Vec2"
 export type { Vec2 } from "./geometry/Vec2"

@@ -1,5 +1,6 @@
 import { Vec2 } from "../../geometry/Vec2"
 import { Ray } from "../../geometry/primitives"
+import { Ucs } from "../../domain/ucs"
 
 /**
  * Drawing constraints ("aids") that restrict where a point can land, such as
@@ -33,6 +34,8 @@ export interface ConstraintContext {
   readonly world: Vec2
   readonly snapPoint: Vec2 | null
   readonly point: Vec2
+  /** Horizontal, vertical and the polar angles are the UCS's. */
+  readonly ucs: Ucs
 }
 
 /** A single, composable point constraint. */

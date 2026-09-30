@@ -257,6 +257,7 @@ export class RadialDimensionTool implements Tool {
         const point = parseCoordinate(typed, {
           lastPoint: this.state.target.center,
           relativeByDefault: true,
+          ucs: commitCtx.ucs,
         })
         if (!point) return false
         this.place(point, commitCtx)

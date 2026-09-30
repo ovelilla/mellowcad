@@ -1,5 +1,4 @@
-import { Vec2, V, vec2 } from "../../geometry/Vec2"
-import { normalizeDegrees } from "../../geometry/primitives"
+import { Vec2, V } from "../../geometry/Vec2"
 import { Entity, EntityId, translateEntity } from "../../domain/entities"
 import { parseNumber } from "../../domain/units"
 import { DynamicInputSession } from "../input/DynamicInput"
@@ -12,6 +11,7 @@ import { entityScenePrimitive } from "../SceneBuilder"
 import { THEME } from "../../scene/theme"
 import { boxSelect, buildSelectionBoxOverlay } from "./boxSelection"
 import { KeyInput, PointerInput, Tool, ToolContext } from "./Tool"
+import { directionFromUcsHeading, headingInUcs } from "./ucsHeading"
 
 /**
  * Shared machinery for AutoCAD's displacement-modify commands (MOVE, COPY):
@@ -159,7 +159,7 @@ export abstract class PlacementTool implements Tool {
         ctx.dynamicInput.setLive("distance", length)
         ctx.dynamicInput.setLive(
           "angle",
-          length > 1e-9 ? angleOf(offset) : null
+          length > 1e-9 ? headingInUcs(ctx.ucs, offset) : null
         )
         ctx.dynamicInput.setPosition(input.screen)
         break
@@ -327,6 +327,7 @@ export abstract class PlacementTool implements Tool {
     const base = parseCoordinate(text, {
       lastPoint: null,
       relativeByDefault: false,
+      ucs: ctx.ucs,
     })
     if (!base) return false
     this.enterSecondPoint(base, ctx, this.lastScreen ?? undefined)
@@ -420,6 +421,7 @@ export abstract class PlacementTool implements Tool {
       const point = parseCoordinate(text, {
         lastPoint: null,
         relativeByDefault: false,
+        ucs: ctx.ucs,
       })
       if (point) return point
     }
@@ -439,6 +441,7 @@ export abstract class PlacementTool implements Tool {
       const point = parseCoordinate(coordText, {
         lastPoint: base,
         relativeByDefault: true,
+        ucs: ctx.ucs,
       })
       return point ?? rawCursor
     }
@@ -448,15 +451,17 @@ export abstract class PlacementTool implements Tool {
 
     const offset = V.sub(rawCursor, base)
     const cursorDist = V.length(offset)
-    const cursorAngle = cursorDist > 1e-9 ? angleOf(offset) : null
+    const cursorAngle = cursorDist > 1e-9 ? headingInUcs(ctx.ucs, offset) : null
 
     const distance = typedDist ?? cursorDist
     const angle = typedAngle ?? cursorAngle
     // No heading yet (cursor on the base and nothing typed): no displacement.
     if (angle === null) return rawCursor
 
-    const rad = (angle * Math.PI) / 180
-    return V.add(base, V.scale(vec2(Math.cos(rad), Math.sin(rad)), distance))
+    return V.add(
+      base,
+      V.scale(directionFromUcsHeading(ctx.ucs, angle), distance)
+    )
   }
 }
 
@@ -469,9 +474,4 @@ function parseField(ctx: ToolContext, id: string): number | null {
   if (text === "") return null
   const value = parseNumber(text)
   return value !== null && Number.isFinite(value) ? value : null
-}
-
-/** Direction angle of `dir` in degrees, CCW from +X, normalised to [0, 360). */
-function angleOf(dir: Vec2): number {
-  return normalizeDegrees((Math.atan2(dir.y, dir.x) * 180) / Math.PI)
 }

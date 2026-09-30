@@ -74,6 +74,7 @@ import {
 } from "../domain/layers"
 import { DEFAULT_LINETYPE_ID } from "../domain/linetypes"
 import { clampLineweight, DEFAULT_LINEWEIGHT } from "../domain/lineweights"
+import { createUcs, NamedUcs, Ucs, WORLD_UCS } from "../domain/ucs"
 import { Vec2 } from "../geometry/Vec2"
 import {
   DEFAULT_DOCUMENT_SETTINGS,
@@ -86,7 +87,7 @@ import { DRAWING_FILE_TYPE } from "./drawingSummary"
 export { DRAWING_FILE_TYPE }
 
 /** Current schema version written by {@link serializeDrawing}. */
-export const DRAWING_FILE_VERSION = 20
+export const DRAWING_FILE_VERSION = 21
 
 /** MIME type a serialised drawing is handed to the host as. */
 export const DRAWING_FILE_MIME_TYPE = "application/json"
@@ -506,7 +507,57 @@ function parseSettings(value: unknown): DocumentSettings {
     value.attributeDisplay === "on" || value.attributeDisplay === "off"
       ? value.attributeDisplay
       : "normal"
-  return { unit, precision, ltScale, lwDisplay, attributeDisplay }
+  const ucs = parseUcs(value.ucs) ?? WORLD_UCS
+  const namedUcs = parseNamedUcs(value.namedUcs)
+  const ucsName =
+    typeof value.ucsName === "string" &&
+    namedUcs.some((entry) => entry.name === value.ucsName)
+      ? value.ucsName
+      : null
+  const icon = isRecord(value.ucsIcon) ? value.ucsIcon : {}
+  const ucsIcon = {
+    visible:
+      typeof icon.visible === "boolean"
+        ? icon.visible
+        : DEFAULT_DOCUMENT_SETTINGS.ucsIcon.visible,
+    atOrigin:
+      typeof icon.atOrigin === "boolean"
+        ? icon.atOrigin
+        : DEFAULT_DOCUMENT_SETTINGS.ucsIcon.atOrigin,
+  }
+  return {
+    unit,
+    precision,
+    ltScale,
+    lwDisplay,
+    attributeDisplay,
+    ucs,
+    ucsName,
+    namedUcs,
+    ucsIcon,
+  }
+}
+
+function parseUcs(value: unknown): Ucs | null {
+  if (!isRecord(value)) return null
+  const origin = parseVec2(value.origin)
+  const xAxis = parseVec2(value.xAxis)
+  return origin && xAxis ? createUcs(origin, xAxis) : null
+}
+
+function parseNamedUcs(value: unknown): NamedUcs[] {
+  if (!Array.isArray(value)) return []
+  const table: NamedUcs[] = []
+  for (const raw of value) {
+    if (!isRecord(raw) || typeof raw.name !== "string") continue
+    const name = raw.name.trim()
+    const ucs = parseUcs(raw.ucs)
+    const taken = table.some(
+      (entry) => entry.name.toUpperCase() === name.toUpperCase()
+    )
+    if (name.length > 0 && ucs && !taken) table.push({ name, ucs })
+  }
+  return table
 }
 
 function parseEntities(value: unknown): Entity[] {

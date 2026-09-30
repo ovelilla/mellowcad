@@ -1,6 +1,7 @@
 import { Vec2 } from "../../geometry/Vec2"
 import { DocumentReader } from "../../domain/Document"
 import { Entity, EntityId, BlockLookup } from "../../domain/entities"
+import { Ucs } from "../../domain/ucs"
 import { Viewport } from "../Viewport"
 import { Selection } from "../Selection"
 import { ConstructionGeometry, SnapResult } from "../snapping/types"
@@ -87,6 +88,11 @@ export type CommandOptionOutcome = "unhandled" | "continue" | "end"
  */
 export interface ToolContext {
   readonly document: DocumentReader
+  /**
+   * The current UCS. Typed points and absolute angles are read in it, and the
+   * defaults AutoCAD aligns with it (text rotation, hatch angle, H/V) follow it.
+   */
+  readonly ucs: Ucs
   readonly viewport: Viewport
   readonly selection: Selection
   readonly dynamicInput: DynamicInputController

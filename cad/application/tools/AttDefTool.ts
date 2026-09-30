@@ -10,6 +10,7 @@ import {
   createAttributeDefinition,
 } from "../../domain/entities"
 import { DEFAULT_TEXT_HEIGHT, TextStyleId } from "../../domain/textStyles"
+import { ucsAngleToWorld, ucsRotation, worldAngleToUcs } from "../../domain/ucs"
 import { AddEntityCommand } from "../commands/entityCommands"
 import type { PromptId } from "../../locales/types"
 import {
@@ -118,7 +119,9 @@ export class AttDefTool implements Tool {
       case "rotation": {
         const offset = V.sub(input.point, this.state.position)
         const rotation =
-          V.length(offset) > 1e-9 ? Math.atan2(offset.y, offset.x) : 0
+          V.length(offset) > 1e-9
+            ? Math.atan2(offset.y, offset.x)
+            : ucsRotation(ctx.ucs)
         this.finish(this.state.position, this.state.height, rotation, ctx)
         break
       }
@@ -307,6 +310,7 @@ export class AttDefTool implements Tool {
     const point = parseCoordinate(typed, {
       lastPoint: null,
       relativeByDefault: false,
+      ucs: ctx.ucs,
     })
     if (!point) return false
     this.beginAt(point, ctx)
@@ -350,7 +354,7 @@ export class AttDefTool implements Tool {
         this.finish(
           this.state.position,
           this.state.height,
-          (values.rotation * Math.PI) / 180,
+          ucsAngleToWorld(commitCtx.ucs, (values.rotation * Math.PI) / 180),
           commitCtx
         )
       },
@@ -362,13 +366,14 @@ export class AttDefTool implements Tool {
     ctx.dynamicInput.setPosition(this.lastScreen ?? { x: 0, y: 0 })
   }
 
+  /** `rotation` is the object's own, in the WCS; the next prompt offers it from the UCS X axis. */
   private finish(
     position: Vec2,
     height: number,
     rotation: number,
     ctx: ToolContext
   ): void {
-    this.rotation = rotation
+    this.rotation = worldAngleToUcs(ctx.ucs, rotation)
     const definition = createAttributeDefinition(position, this.tag, {
       prompt: this.prompt,
       value: this.value,

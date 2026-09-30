@@ -204,6 +204,10 @@ export class CadEngine {
     this.runtime.setSelectionCyclingList(showList)
   }
 
+  setUcsIconShown(shown: boolean): void {
+    this.runtime.setUcsIconShown(shown)
+  }
+
   chooseCyclingCandidate(id: EntityId): void {
     this.runtime.chooseCyclingCandidate(id)
   }

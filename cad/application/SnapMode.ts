@@ -1,5 +1,6 @@
 import { Observable } from "../shared/Observable"
 import { Vec2 } from "../geometry/Vec2"
+import { Ucs, ucsPointToWorld, worldPointToUcs } from "../domain/ucs"
 
 /**
  * How the cursor is forced onto an increment: onto a rectangular lattice of
@@ -81,13 +82,14 @@ export class SnapMode extends Observable {
     this.emit()
   }
 
-  /** Rounds a world point onto the lattice; unchanged unless rectangular snap is on. */
-  snapPoint(point: Vec2): Vec2 {
+  /** Rounds a world point onto the UCS's lattice; unchanged unless rectangular snap is on. */
+  snapPoint(point: Vec2, ucs: Ucs): Vec2 {
     if (!this.isRectangular()) return point
-    return {
-      x: roundTo(point.x, this.spacing.x),
-      y: roundTo(point.y, this.spacing.y),
-    }
+    const local = worldPointToUcs(ucs, point)
+    return ucsPointToWorld(ucs, {
+      x: roundTo(local.x, this.spacing.x),
+      y: roundTo(local.y, this.spacing.y),
+    })
   }
 
   /** Rounds a distance to a polar increment; unchanged unless polar snap is on. */

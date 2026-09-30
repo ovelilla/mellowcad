@@ -53,6 +53,12 @@ object snap  →  object-snap tracking  →  snap mode (lattice)  →  constrain
   the cursor would make objects hard to hit.
 - Polar snap only rounds when Ortho/Polar provides an alignment path to measure along.
 
+**Horizontal and vertical are the UCS's.** `ConstraintContext.ucs` and `DrawingAidState.ucs` are
+required, and `SnapMode.snapPoint` takes the UCS: Ortho locks to its axes, polar angles and OTRACK
+guides count from its X axis, and the snap lattice starts at its origin. The resolver reads it
+through a `() => Ucs` so a UCS change needs no rewiring. A new aid that has a direction takes the
+UCS the same way; one that assumes world X is a bug that only shows once the UCS turns.
+
 **Only snapping and tracking may move the crosshair.** Constraints bend the _point_ a tool
 receives, never the cursor: the crosshair must keep following the physical mouse, or the user is
 drawing blind. `updateSnap` picks `snap.point` → `tracking.point` → raw screen, in that order.
@@ -133,7 +139,9 @@ call in the `CadRuntime` constructor.
 
 `history.execute(command)` is the only write path to the document. `loadDrawing` clears the
 history (a loaded file is a fresh baseline). Document _settings_ changes (unit, precision,
-ltScale, layer table edits) are deliberately not undoable; anything touching entities is.
+ltScale, layer table edits) are deliberately not undoable; anything touching entities is. The
+exceptions are the settings AutoCAD's U undoes — ATTMODE, the UCS and its table, UCSICON — which
+go through a command (`UpdateSettingsCommand` restores exactly the keys it patched).
 
 A command that adds **table entries alongside geometry** (BLOCK's definition, PASTECLIP's layers,
 styles and blocks) carries them through the history too, and undoes them in reverse order — those
@@ -159,6 +167,11 @@ also given in spans (`commandLine.promptSegments`, the keyword list set apart) w
 command's name (`commandLine.command`), so no host takes the text apart. `setLocale` swaps the
 text and rebuilds the state; the scrollback stays as it was written.
 
+Coordinates the user reads are **UCS** coordinates: the status readout is `cursorUcs`, and the
+Properties palette's X/Y rows (and a line's deltas) are converted in `singleEntityInfo`. A retyped
+X or Y is read in the UCS too (`runtimeProperties.ts`), which in a turned UCS moves the point along
+that axis and so rewrites both world coordinates. Rotations stay in the WCS, as AutoCAD's do.
+
 ## Scene
 
 `SceneBuilder` emits **screen-space** primitives. `entityScenePrimitive` and `arcScenePrimitive`
@@ -181,6 +194,11 @@ The `label` primitive is chrome: screen-space, fixed size, never rotated. Anythi
 the **drawing** uses the `text` primitive instead, which carries a world-derived size and angle.
 Glyph metrics — alignment, cap height, font size — are the presenter's job: the scene describes
 _what_ to align to, not where the pixels land.
+
+The grid lies on the UCS (`SceneInput.ucs`) and the UCS icon is drawn by the scene
+(`SceneInput.ucsIcon`, its letters from the catalog). A host with chrome of its own hides it with
+`setUcsIconShown(false)` (the landing's sketch), which leaves the drawing's UCSICON alone;
+`CadDriver` hides it unless given `ucsIcon: true`, so a recorded frame holds only what was drawn.
 
 Entities are drawn in `entityDrawOrder()` order, not document order, and `pick`/`pickAll` sort by
 the same function reversed — so what a click takes is what is on top. A type that must sit behind

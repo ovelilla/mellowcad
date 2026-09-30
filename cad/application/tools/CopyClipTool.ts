@@ -54,7 +54,7 @@ export class CopyClipTool extends SelectionActionTool {
       commitRaw: (commitCtx) => {
         const point = parseCoordinate(
           commitCtx.dynamicInput.getText("base").trim(),
-          { lastPoint: null, relativeByDefault: false }
+          { lastPoint: null, relativeByDefault: false, ucs: commitCtx.ucs }
         )
         if (point) this.setBase(point, commitCtx)
         return true

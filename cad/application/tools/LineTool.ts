@@ -1,5 +1,4 @@
-import { Vec2, V, vec2 } from "../../geometry/Vec2"
-import { normalizeDegrees } from "../../geometry/primitives"
+import { Vec2, V } from "../../geometry/Vec2"
 import { createLine } from "../../domain/entities"
 import { parseNumber } from "../../domain/units"
 import { AddEntityCommand } from "../commands/entityCommands"
@@ -14,6 +13,7 @@ import { THEME } from "../../scene/theme"
 import { KeyInput, PointerInput, Tool, ToolContext } from "./Tool"
 import { CommandOption, CommandOptionOutcome } from "./Tool"
 import { lastDrawnPoint } from "./lastDrawnPoint"
+import { directionFromUcsHeading, headingInUcs } from "./ucsHeading"
 
 /**
  * The line tool's interaction flow, modelled as an explicit state machine:
@@ -93,7 +93,10 @@ export class LineTool implements Tool {
         // follow the cursor. The heading already reflects Ortho (input.point is
         // constrained), so a typed length alone still honours the aid.
         ctx.dynamicInput.setLive("distance", length)
-        ctx.dynamicInput.setLive("angle", direction ? angleOf(direction) : null)
+        ctx.dynamicInput.setLive(
+          "angle",
+          direction ? headingInUcs(ctx.ucs, direction) : null
+        )
         ctx.dynamicInput.setPosition(input.screen)
         break
       }
@@ -300,6 +303,7 @@ export class LineTool implements Tool {
       const point = parseCoordinate(coordText, {
         lastPoint: start,
         relativeByDefault: true,
+        ucs: ctx.ucs,
       })
       // Incomplete/invalid while typing: keep following the cursor.
       return point ?? rawCursor
@@ -310,15 +314,17 @@ export class LineTool implements Tool {
 
     const offset = V.sub(rawCursor, start)
     const cursorDist = V.length(offset)
-    const cursorAngle = cursorDist > 1e-9 ? angleOf(offset) : null
+    const cursorAngle = cursorDist > 1e-9 ? headingInUcs(ctx.ucs, offset) : null
 
     const distance = typedDist ?? cursorDist
     const angle = typedAngle ?? cursorAngle
     // No heading yet (cursor still on the start and nothing typed): no point.
     if (angle === null) return rawCursor
 
-    const rad = (angle * Math.PI) / 180
-    return V.add(start, V.scale(vec2(Math.cos(rad), Math.sin(rad)), distance))
+    return V.add(
+      start,
+      V.scale(directionFromUcsHeading(ctx.ucs, angle), distance)
+    )
   }
 
   /**
@@ -365,6 +371,7 @@ export class LineTool implements Tool {
       const point = parseCoordinate(text, {
         lastPoint: null,
         relativeByDefault: false,
+        ucs: ctx.ucs,
       })
       if (point) return point
     }
@@ -422,6 +429,7 @@ export class LineTool implements Tool {
     const start = parseCoordinate(text, {
       lastPoint: null,
       relativeByDefault: false,
+      ucs: ctx.ucs,
     })
     if (!start) return false
     this.beginDrawing(start, ctx)
@@ -502,8 +510,7 @@ export class LineTool implements Tool {
     if (!(distance > 0) || !Number.isFinite(angle)) return
 
     const { start, first, segments } = this.state
-    const rad = (angle * Math.PI) / 180
-    const direction = vec2(Math.cos(rad), Math.sin(rad))
+    const direction = directionFromUcsHeading(ctx.ucs, angle)
     const end = V.add(start, V.scale(direction, distance))
 
     // Advance state before executing so commandOptions ("Close") reflect the
@@ -524,7 +531,7 @@ export class LineTool implements Tool {
     )
 
     ctx.dynamicInput.setLive("distance", 0)
-    ctx.dynamicInput.setLive("angle", angleOf(direction))
+    ctx.dynamicInput.setLive("angle", headingInUcs(ctx.ucs, direction))
     ctx.requestRender()
   }
 
@@ -542,6 +549,7 @@ export class LineTool implements Tool {
     const end = parseCoordinate(coordText, {
       lastPoint: this.state.start,
       relativeByDefault: true,
+      ucs: ctx.ucs,
     })
     if (!end) return false
 
@@ -570,19 +578,13 @@ export class LineTool implements Tool {
     }
 
     ctx.dynamicInput.setLive("distance", 0)
-    ctx.dynamicInput.setLive("angle", direction ? angleOf(direction) : null)
+    ctx.dynamicInput.setLive(
+      "angle",
+      direction ? headingInUcs(ctx.ucs, direction) : null
+    )
     ctx.requestRender()
     return true
   }
-}
-
-/**
- * Heading of a unit (or any) vector in degrees, measured counter-clockwise
- * from the positive X axis and normalised to `[0, 360)` — the same convention
- * the properties panel reports for a line's angle.
- */
-function angleOf(dir: Vec2): number {
-  return normalizeDegrees((Math.atan2(dir.y, dir.x) * 180) / Math.PI)
 }
 
 /**

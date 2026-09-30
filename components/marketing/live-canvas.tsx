@@ -105,6 +105,8 @@ export function LiveCanvas({
     // SELECTIONCYCLING 1, the badge alone: the Selection list box does not
     // fit on the sheet. The full editor has it.
     engine.setSelectionCyclingList(false)
+    // The sheet keeps the still figure's icon in its corner.
+    engine.setUcsIconShown(false)
     engine.focusSurface()
   }, [engine, canvasRef, view])
 
@@ -257,9 +259,9 @@ export function LiveCanvas({
 
 /** The cursor, as the status bar reads it; the last position while it is off. */
 function Readout({ state }: { state: EngineState }) {
-  const [cursor, setCursor] = useState(state.cursorWorld)
-  if (state.cursorWorld && state.cursorWorld !== cursor) {
-    setCursor(state.cursorWorld)
+  const [cursor, setCursor] = useState(state.cursorUcs)
+  if (state.cursorUcs && state.cursorUcs !== cursor) {
+    setCursor(state.cursorUcs)
   }
   if (!cursor) return null
   const settings = {

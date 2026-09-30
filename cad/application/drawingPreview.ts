@@ -1,5 +1,6 @@
 import type { DocumentReader } from "../domain/Document"
 import { Bounds, Entity, EntityId, entitiesBounds } from "../domain/entities"
+import { WORLD_UCS } from "../domain/ucs"
 import { Scene } from "../scene/types"
 import { Viewport } from "./Viewport"
 import { buildScene } from "./SceneBuilder"
@@ -88,6 +89,8 @@ export function previewScene(
     hiddenIds: EMPTY_IDS,
     gridVisible: false,
     gridSpacing: null,
+    ucs: WORLD_UCS,
+    ucsIcon: null,
     ltScale: document.getSettings().ltScale,
     lwDisplay,
     snap: null,

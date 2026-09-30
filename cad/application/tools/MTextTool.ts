@@ -17,6 +17,7 @@ import {
 } from "../../domain/entities"
 import { parseNumber } from "../../domain/units"
 import { DEFAULT_TEXT_HEIGHT, TextStyleId } from "../../domain/textStyles"
+import { ucsRotation } from "../../domain/ucs"
 import { AddEntityCommand } from "../commands/entityCommands"
 import { DynamicInputSession } from "../input/DynamicInput"
 import type { PromptId } from "../../locales/types"
@@ -58,7 +59,10 @@ export class MTextTool implements Tool {
 
   /** TEXTSIZE and the other settings MTEXT carries from one run to the next. */
   private height = DEFAULT_TEXT_HEIGHT
+  /** Radians from the UCS X axis, as the Rotation option asks it. */
   private rotation = 0
+  /** The UCS's own rotation for this run: the box squares up to its axes. */
+  private ucsTurn = 0
   private attachment: MTextAttachment = "tl"
   private lineSpacingStyle: LineSpacingStyle = "atLeast"
   private lineSpacingFactor = 1
@@ -79,6 +83,7 @@ export class MTextTool implements Tool {
     ctx.setCursor("crosshair")
     ctx.selection.clear()
     this.atCommandLine = false
+    this.ucsTurn = ucsRotation(ctx.ucs)
     this.enterCorner(ctx)
   }
 
@@ -144,7 +149,7 @@ export class MTextTool implements Tool {
       case "rotation":
         if (!V.equals(state.first, input.point)) {
           const offset = V.sub(input.point, state.first)
-          this.rotation = Math.atan2(offset.y, offset.x)
+          this.rotation = Math.atan2(offset.y, offset.x) - this.ucsTurn
         }
         this.enterOpposite(state.first, ctx)
         break
@@ -382,7 +387,7 @@ export class MTextTool implements Tool {
   private settings(ctx: ToolContext) {
     return {
       height: this.currentHeight(ctx),
-      rotation: this.rotation,
+      rotation: this.textRotation(),
       attachment: this.attachment,
       lineSpacingStyle: this.lineSpacingStyle,
       lineSpacingFactor: this.lineSpacingFactor,
@@ -410,7 +415,7 @@ export class MTextTool implements Tool {
    * dragged.
    */
   private boxFrom(first: Vec2, second: Vec2): MTextBox {
-    const local = localOffset(first, second, this.rotation)
+    const local = localOffset(first, second, this.textRotation())
     const x0 = Math.min(0, local.x)
     const x1 = Math.max(0, local.x)
     const y0 = Math.min(0, local.y)
@@ -425,12 +430,17 @@ export class MTextTool implements Tool {
   private toWorld(origin: Vec2, x: number, y: number): Vec2 {
     return mtextToWorld(
       createMText(origin, "", {
-        rotation: this.rotation,
+        rotation: this.textRotation(),
         id: MTEXT_PREVIEW_ID,
       }),
       x,
       y
     )
+  }
+
+  /** The rotation the object gets: the one asked for, on top of the UCS's. */
+  private textRotation(): number {
+    return this.rotation + this.ucsTurn
   }
 
   private insideFrame(world: Vec2, ctx: ToolContext): boolean {
@@ -449,7 +459,7 @@ export class MTextTool implements Tool {
     cursor: Vec2,
     ctx: ToolContext
   ): ScenePrimitive[] {
-    const local = localOffset(first, cursor, this.rotation)
+    const local = localOffset(first, cursor, this.textRotation())
     const corners = [
       this.toWorld(first, 0, 0),
       this.toWorld(first, local.x, 0),
@@ -514,6 +524,7 @@ export class MTextTool implements Tool {
     const point = parseCoordinate(text, {
       lastPoint: first,
       relativeByDefault: first !== null,
+      ucs: ctx.ucs,
     })
     if (!point) return false
     if (state.phase === "corner") this.enterOpposite(point, ctx)

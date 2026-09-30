@@ -264,6 +264,7 @@ export class ArcTool implements Tool {
     const point = parseCoordinate(text, {
       lastPoint: last,
       relativeByDefault: last !== null,
+      ucs: ctx.ucs,
     })
     if (!point) return false
     this.advanceWithPoint(point, ctx)

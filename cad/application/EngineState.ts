@@ -1,4 +1,5 @@
-import { Vec2 } from "../geometry/Vec2"
+import { Vec2, V } from "../geometry/Vec2"
+import { worldDirectionToUcs, worldPointToUcs } from "../domain/ucs"
 import { ellipseAngleFromParam, normalizeDegrees } from "../geometry/primitives"
 import {
   DocumentSettings,
@@ -217,7 +218,8 @@ export interface EngineState {
   readonly entityCount: number
   readonly selectionCount: number
   readonly scale: number
-  readonly cursorWorld: Vec2 | null
+  /** The cursor as the status bar reads it: in the current UCS. */
+  readonly cursorUcs: Vec2 | null
   readonly snap: { type: SnapType; point: Vec2 } | null
   readonly snapActive: boolean
   readonly snapEnabled: Readonly<Record<SnapType, boolean>>
@@ -576,6 +578,8 @@ function singleEntityInfo(
     `${formatLength(value, settings)} ${unitSuffix(settings.unit)}²`
   const coord = (value: number) => formatLength(value, settings)
   const degrees = (value: number) => `${formatAngle(value, settings)}°`
+  // Coordinates read in the current UCS, as AutoCAD's palette shows them.
+  const at = (point: Vec2) => worldPointToUcs(settings.ucs, point)
 
   const group = (id: GroupId, rows: PropertyRow[]): PropertyGroup => ({
     id,
@@ -619,6 +623,10 @@ function singleEntityInfo(
 
   switch (entity.type) {
     case "line": {
+      const delta = worldDirectionToUcs(
+        settings.ucs,
+        V.sub(entity.end, entity.start)
+      )
       return {
         title: title("line"),
         count: 1,
@@ -626,14 +634,14 @@ function singleEntityInfo(
           group("geometry", [
             lengthRow("length", "length", lineLength(entity)),
             angleRow("angle", "angle", lineAngleDegrees(entity)),
-            row("deltaX", length(entity.end.x - entity.start.x)),
-            row("deltaY", length(entity.end.y - entity.start.y)),
+            row("deltaX", length(delta.x)),
+            row("deltaY", length(delta.y)),
           ]),
           group("endpoints", [
-            coordRow("startX", "startX", entity.start.x),
-            coordRow("startY", "startY", entity.start.y),
-            coordRow("endX", "endX", entity.end.x),
-            coordRow("endY", "endY", entity.end.y),
+            coordRow("startX", "startX", at(entity.start).x),
+            coordRow("startY", "startY", at(entity.start).y),
+            coordRow("endX", "endX", at(entity.end).x),
+            coordRow("endY", "endY", at(entity.end).y),
           ]),
         ],
       }
@@ -650,8 +658,8 @@ function singleEntityInfo(
             row("area", area(circleArea(entity))),
           ]),
           group("center", [
-            coordRow("x", "centerX", entity.center.x),
-            coordRow("y", "centerY", entity.center.y),
+            coordRow("x", "centerX", at(entity.center).x),
+            coordRow("y", "centerY", at(entity.center).y),
           ]),
         ],
       }
@@ -675,8 +683,8 @@ function singleEntityInfo(
             angleRow("endAngle", "endAngle", deg(entity.endAngle)),
           ]),
           group("center", [
-            coordRow("x", "centerX", entity.center.x),
-            coordRow("y", "centerY", entity.center.y),
+            coordRow("x", "centerX", at(entity.center).x),
+            coordRow("y", "centerY", at(entity.center).y),
           ]),
         ],
       }
@@ -708,8 +716,8 @@ function singleEntityInfo(
                 ]),
           ]),
           group("center", [
-            coordRow("x", "centerX", entity.center.x),
-            coordRow("y", "centerY", entity.center.y),
+            coordRow("x", "centerX", at(entity.center).x),
+            coordRow("y", "centerY", at(entity.center).y),
           ]),
         ],
       }
@@ -772,8 +780,8 @@ function singleEntityInfo(
             ),
           ]),
           group("position", [
-            coordRow("x", "positionX", entity.position.x),
-            coordRow("y", "positionY", entity.position.y),
+            coordRow("x", "positionX", at(entity.position).x),
+            coordRow("y", "positionY", at(entity.position).y),
           ]),
         ],
       }
@@ -809,8 +817,8 @@ function singleEntityInfo(
             lengthRow("definedWidth", "definedWidth", entity.width),
           ]),
           group("position", [
-            coordRow("x", "positionX", entity.position.x),
-            coordRow("y", "positionY", entity.position.y),
+            coordRow("x", "positionX", at(entity.position).x),
+            coordRow("y", "positionY", at(entity.position).y),
           ]),
         ],
       }
@@ -834,8 +842,8 @@ function singleEntityInfo(
             ),
           ]),
           group("position", [
-            coordRow("x", "positionX", entity.position.x),
-            coordRow("y", "positionY", entity.position.y),
+            coordRow("x", "positionX", at(entity.position).x),
+            coordRow("y", "positionY", at(entity.position).y),
           ]),
           group("misc", [
             row("invisible", yesNo(entity.modes.invisible)),
@@ -876,14 +884,14 @@ function singleEntityInfo(
           group("definitionPoints", [
             ...(entity.vertex
               ? [
-                  row("vertexX", coord(entity.vertex.x)),
-                  row("vertexY", coord(entity.vertex.y)),
+                  row("vertexX", coord(at(entity.vertex).x)),
+                  row("vertexY", coord(at(entity.vertex).y)),
                 ]
               : []),
-            row("firstX", coord(entity.first.x)),
-            row("firstY", coord(entity.first.y)),
-            row("secondX", coord(entity.second.x)),
-            row("secondY", coord(entity.second.y)),
+            row("firstX", coord(at(entity.first).x)),
+            row("firstY", coord(at(entity.first).y)),
+            row("secondX", coord(at(entity.second).x)),
+            row("secondY", coord(at(entity.second).y)),
           ]),
         ],
       }
@@ -925,8 +933,8 @@ function singleEntityInfo(
             ),
           ]),
           group("position", [
-            coordRow("x", "positionX", entity.position.x),
-            coordRow("y", "positionY", entity.position.y),
+            coordRow("x", "positionX", at(entity.position).x),
+            coordRow("y", "positionY", at(entity.position).y),
           ]),
           ...(entity.attributes
             ? [

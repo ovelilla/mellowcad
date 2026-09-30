@@ -6,7 +6,9 @@ import {
   EntityId,
   createBlockDefinition,
   createInsert,
+  rotateEntity,
 } from "../../domain/entities"
+import { ucsRotation } from "../../domain/ucs"
 import { CreateBlockCommand } from "../commands/blockCommands"
 import { parseCoordinate } from "../input/coordinateInput"
 import { entityScenePrimitive } from "../SceneBuilder"
@@ -231,7 +233,7 @@ export class BlockTool implements Tool {
       commitRaw: (commitCtx) => {
         const point = parseCoordinate(
           commitCtx.dynamicInput.getText("base").trim(),
-          { lastPoint: null, relativeByDefault: false }
+          { lastPoint: null, relativeByDefault: false, ucs: commitCtx.ucs }
         )
         if (point) this.setBasePoint(point, commitCtx)
         return true
@@ -266,18 +268,23 @@ export class BlockTool implements Tool {
       ctx.endCommand()
       return
     }
+    // A block is defined in the current UCS: its X axis is the UCS's, and the
+    // converted reference turns it back, so the drawing looks exactly as it
+    // did before the objects became a block.
+    const turn = ucsRotation(ctx.ucs)
     const block: BlockDefinition = createBlockDefinition(
       this.name,
       this.basePoint,
-      entities
+      turn === 0
+        ? entities
+        : entities.map((entity) => rotateEntity(entity, this.basePoint, -turn))
     )
-    // The reference sits on the base point with no scale or rotation, so the
-    // drawing looks exactly as it did before the objects became a block.
     const convert = (
       attributes: readonly BlockAttribute[],
       doneCtx: ToolContext
     ) => {
       const reference = createInsert(block.id, this.basePoint, {
+        rotation: turn,
         layerId: doneCtx.document.getCurrentLayerId(),
         attributes,
       })

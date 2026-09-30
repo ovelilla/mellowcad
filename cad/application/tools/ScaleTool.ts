@@ -439,6 +439,7 @@ export class ScaleTool implements Tool {
     const base = parseCoordinate(text, {
       lastPoint: null,
       relativeByDefault: false,
+      ucs: ctx.ucs,
     })
     if (!base) return false
     this.enterFactor(base, ctx)
@@ -538,6 +539,7 @@ export class ScaleTool implements Tool {
     const p2 = parseCoordinate(text, {
       lastPoint: this.state.p1,
       relativeByDefault: true,
+      ucs: ctx.ucs,
     })
     if (!p2) return false
     this.enterNewLength(distanceFrom(this.state.p1, p2), ctx)
@@ -603,6 +605,7 @@ export class ScaleTool implements Tool {
       const point = parseCoordinate(text, {
         lastPoint: null,
         relativeByDefault: false,
+        ucs: ctx.ucs,
       })
       if (point) return point
     }

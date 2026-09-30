@@ -34,7 +34,9 @@ expect(h.latest()).toBeDefined()
 
 - Everything is in **world coordinates**, projected through the live viewport — no calibration,
   survives zoom. Default 1000×800 viewport → scale 1.
-- Snapping is **off by default** for determinism; pass `{ snap: true }` to exercise it.
+- Snapping is **off by default** for determinism; pass `{ snap: true }` to exercise it. So is the
+  UCS icon, which would otherwise add its arms, arrowheads and letters to every scene a test
+  counts; pass `{ ucsIcon: true }` for a test about the icon.
 - Chainable input: `command / click / drag / moveTo / wheel / type / enter / escape / option /
 press / select / undo / redo`.
 - **`option(id)` names a keyword by its global id** (`.option("Close")`), never by its letter, and

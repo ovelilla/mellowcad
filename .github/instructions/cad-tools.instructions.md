@@ -193,6 +193,17 @@ instead, or the command-line buffer will swallow them.
 
 ## Points, snapping, constraints
 
+- **Everything typed is read in the UCS.** `parseCoordinate` requires `ucs: ctx.ucs` (it is not
+  optional, so no call site can forget it); `*` reads the numbers in the WCS instead. An
+  **absolute** angle — a heading field fed from the cursor, a typed direction — goes through
+  `headingInUcs` / `directionFromUcsHeading` (`tools/ucsHeading.ts`); a **relative** one (a
+  rotation, an included angle, a sweep) is the same in every UCS and is left alone.
+- **A default AutoCAD aligns with the UCS is kept relative to it**: TEXT, MTEXT, ATTDEF and
+  INSERT remember their rotation from the UCS X axis and add the UCS's own on commit
+  (`ucsAngleToWorld`); HATCH does the same with its angle and starts at the UCS origin; DIMLINEAR's
+  horizontal and vertical, RECTANG's sides and ARRAYRECT's rows and columns are the UCS's; BLOCK
+  defines its objects in the UCS and turns the converted reference back. A tool that invents a new
+  orientation default starts it at the UCS X axis.
 - `wantsSnap()` — true only while prompting for a point; false while picking objects or
   box-selecting (otherwise markers and lattice snapping make objects hard to hit). False too for a
   prompt that asks for an **area** rather than a point — HATCH's internal pick — and read

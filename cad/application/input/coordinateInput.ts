@@ -1,4 +1,10 @@
 import { Vec2, vec2 } from "../../geometry/Vec2"
+import {
+  Ucs,
+  WORLD_UCS,
+  ucsDirectionToWorld,
+  ucsPointToWorld,
+} from "../../domain/ucs"
 
 /**
  * Parsing of AutoCAD-style coordinate entry — the "classic total precision"
@@ -15,7 +21,8 @@ import { Vec2, vec2 } from "../../geometry/Vec2"
  *
  * ```
  *   @ …   relative to the last point
- *   # …   absolute (from the drawing origin)
+ *   # …   absolute (from the UCS origin)
+ *   * …   in the WCS rather than the UCS (`*x,y`, `@*x,y`)
  * ```
  *
  * When no prefix is given the interpretation depends on the caller: with
@@ -44,6 +51,8 @@ export interface CoordinateContext {
    * last point. Dynamic input sets this `true` for the second point onward.
    */
   readonly relativeByDefault: boolean
+  /** The UCS the numbers are read in; `*` reads them in the WCS instead. */
+  readonly ucs: Ucs
 }
 
 /**
@@ -56,7 +65,11 @@ export function isCoordinateExpression(text: string): boolean {
   const t = text.trim()
   if (t === "") return false
   return (
-    t.startsWith("@") || t.startsWith("#") || t.includes(",") || t.includes("<")
+    t.startsWith("@") ||
+    t.startsWith("#") ||
+    t.startsWith("*") ||
+    t.includes(",") ||
+    t.includes("<")
   )
 }
 
@@ -83,38 +96,44 @@ export function parseCoordinate(
     body = body.slice(1).trim()
   }
   if (body === "") return null
+  let ucs = ctx.ucs
+  if (body.startsWith("*")) {
+    ucs = WORLD_UCS
+    body = body.slice(1).trim()
+  }
+  if (body === "") return null
+
+  let offset: Vec2 | null = null
+  if (body.includes("<")) offset = parsePolar(body)
+  else if (body.includes(",")) offset = parseCartesian(body)
+  if (!offset) return null
 
   // Relative to the last point when requested and available; the first point of
   // a command (no last point) is always absolute.
-  const base = relative ? (ctx.lastPoint ?? ORIGIN) : ORIGIN
-
-  if (body.includes("<")) return parsePolar(body, base)
-  if (body.includes(",")) return parseCartesian(body, base)
-  return null
+  if (relative && ctx.lastPoint) {
+    const step = ucsDirectionToWorld(ucs, offset)
+    return vec2(ctx.lastPoint.x + step.x, ctx.lastPoint.y + step.y)
+  }
+  return ucsPointToWorld(ucs, offset)
 }
 
-const ORIGIN: Vec2 = { x: 0, y: 0 }
-
-function parseCartesian(body: string, base: Vec2): Vec2 | null {
+function parseCartesian(body: string): Vec2 | null {
   const parts = body.split(",")
   if (parts.length !== 2) return null
   const x = parseDecimal(parts[0])
   const y = parseDecimal(parts[1])
   if (x === null || y === null) return null
-  return vec2(base.x + x, base.y + y)
+  return vec2(x, y)
 }
 
-function parsePolar(body: string, base: Vec2): Vec2 | null {
+function parsePolar(body: string): Vec2 | null {
   const parts = body.split("<")
   if (parts.length !== 2) return null
   const distance = parseDecimal(parts[0])
   const angle = parseDecimal(parts[1])
   if (distance === null || angle === null) return null
   const rad = (angle * Math.PI) / 180
-  return vec2(
-    base.x + Math.cos(rad) * distance,
-    base.y + Math.sin(rad) * distance
-  )
+  return vec2(Math.cos(rad) * distance, Math.sin(rad) * distance)
 }
 
 /**

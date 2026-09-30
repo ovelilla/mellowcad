@@ -142,17 +142,41 @@ describe("round trip", () => {
   })
 
   it("preserves the document settings", () => {
+    const ucs = { origin: { x: 10, y: -5 }, xAxis: { x: 0.6, y: 0.8 } }
     const settings = {
       unit: LengthUnit.Meter,
       precision: 5,
       ltScale: 2.5,
       lwDisplay: false,
       attributeDisplay: "off" as const,
+      ucs,
+      ucsName: "Plot",
+      namedUcs: [{ name: "Plot", ucs }],
+      ucsIcon: { visible: true, atOrigin: false },
     }
     const parsed = parseDrawingFile(
       serializeDrawing(snapshotOf([], { settings }))
     )
     expect(parsed.settings).toEqual(settings)
+  })
+
+  it("reads a UCS name that is not in the table as unnamed", () => {
+    const parsed = parseDrawingFile(
+      JSON.stringify({
+        type: DRAWING_FILE_TYPE,
+        version: DRAWING_FILE_VERSION,
+        settings: {
+          ucs: { origin: { x: 1, y: 2 }, xAxis: { x: 0, y: 3 } },
+          ucsName: "Gone",
+        },
+        entities: [],
+      })
+    )
+    expect(parsed.settings.ucs).toEqual({
+      origin: { x: 1, y: 2 },
+      xAxis: { x: 0, y: 1 },
+    })
+    expect(parsed.settings.ucsName).toBeNull()
   })
 
   it("survives any drawing", () => {

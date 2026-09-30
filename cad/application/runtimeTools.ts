@@ -45,6 +45,8 @@ import { PasteTool } from "./tools/PasteTool"
 import { MeasureTool } from "./tools/MeasureTool"
 import { ZoomTool } from "./tools/ZoomTool"
 import { PanTool } from "./tools/PanTool"
+import { UcsTool } from "./tools/UcsTool"
+import { UcsIconTool } from "./tools/UcsIconTool"
 
 /**
  * Every tool the runtime registers, in registration order — which is the order
@@ -118,5 +120,7 @@ export function defaultTools(
     new MeasureTool("area", "measurearea"),
     new ZoomTool(),
     new PanTool(),
+    new UcsTool(),
+    new UcsIconTool(),
   ]
 }

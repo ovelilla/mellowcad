@@ -1,5 +1,11 @@
-import { Vec2 } from "../../geometry/Vec2"
+import { Vec2, V } from "../../geometry/Vec2"
 import { createPolyline } from "../../domain/entities"
+import {
+  Ucs,
+  ucsPointToWorld,
+  worldDirectionToUcs,
+  worldPointToUcs,
+} from "../../domain/ucs"
 import { AddEntityCommand } from "../commands/entityCommands"
 import { DynamicInputSession } from "../input/DynamicInput"
 import type { PromptId } from "../../locales/types"
@@ -12,8 +18,8 @@ import { THEME } from "../../scene/theme"
 import { KeyInput, PointerInput, Tool, ToolContext } from "./Tool"
 
 /**
- * AutoCAD's RECTANG: two opposite corners define an axis-aligned rectangle,
- * created as a single closed four-vertex polyline. Single-shot — the command
+ * AutoCAD's RECTANG: two opposite corners define a rectangle squared to the
+ * UCS, created as a single closed four-vertex polyline. Single-shot — the command
  * ends the moment the second corner is placed. The corner options (Chamfer,
  * Fillet, Width, Rotation, Area, Dimensions) are later work.
  */
@@ -69,7 +75,11 @@ export class RectangleTool implements Tool {
 
   buildOverlay(ctx: ToolContext): ScenePrimitive[] {
     if (this.state.phase !== "second") return []
-    const corners = rectangleCorners(this.state.first, this.state.cursor)
+    const corners = rectangleCorners(
+      this.state.first,
+      this.state.cursor,
+      ctx.ucs
+    )
     return [
       {
         kind: "path",
@@ -98,16 +108,14 @@ export class RectangleTool implements Tool {
   private commitRectangle(first: Vec2, other: Vec2, ctx: ToolContext): void {
     // A degenerate rectangle (zero width or height) has no area — ignore it and
     // keep prompting, mirroring AutoCAD, which rejects a zero-size rectangle.
-    if (
-      Math.abs(other.x - first.x) < 1e-9 ||
-      Math.abs(other.y - first.y) < 1e-9
-    ) {
+    const diagonal = worldDirectionToUcs(ctx.ucs, V.sub(other, first))
+    if (Math.abs(diagonal.x) < 1e-9 || Math.abs(diagonal.y) < 1e-9) {
       return
     }
     ctx.execute(
       new AddEntityCommand(
         createPolyline(
-          rectangleCorners(first, other),
+          rectangleCorners(first, other, ctx.ucs),
           true,
           ctx.document.getCurrentLayerId()
         )
@@ -138,6 +146,7 @@ export class RectangleTool implements Tool {
     const point = parseCoordinate(text, {
       lastPoint: last,
       relativeByDefault: last !== null,
+      ucs: ctx.ucs,
     })
     if (!point) return false
     this.advanceWithPoint(point, ctx)
@@ -145,12 +154,14 @@ export class RectangleTool implements Tool {
   }
 }
 
-/** The four corners (CCW) of the axis-aligned rectangle spanned by two points. */
-function rectangleCorners(a: Vec2, b: Vec2): Vec2[] {
+/** The four corners of the rectangle two points span, its sides along the UCS axes. */
+function rectangleCorners(a: Vec2, b: Vec2, ucs: Ucs): Vec2[] {
+  const la = worldPointToUcs(ucs, a)
+  const lb = worldPointToUcs(ucs, b)
   return [
-    { x: a.x, y: a.y },
-    { x: b.x, y: a.y },
-    { x: b.x, y: b.y },
-    { x: a.x, y: b.y },
-  ]
+    { x: la.x, y: la.y },
+    { x: lb.x, y: la.y },
+    { x: lb.x, y: lb.y },
+    { x: la.x, y: lb.y },
+  ].map((corner) => ucsPointToWorld(ucs, corner))
 }

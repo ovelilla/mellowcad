@@ -1,6 +1,7 @@
 import fc from "fast-check"
 import { describe, expect, it } from "vitest"
 import { isCoordinateExpression, parseCoordinate } from "./coordinateInput"
+import { WORLD_UCS } from "../../domain/ucs"
 import { coordinate, point } from "../../../test/arbitraries"
 import { deg, p } from "../../../test/builders"
 
@@ -11,8 +12,14 @@ import { deg, p } from "../../../test/builders"
  * trade-off is pinned explicitly.
  */
 
-const ABSOLUTE = { lastPoint: null, relativeByDefault: false }
-const FROM_100_100 = { lastPoint: p(100, 100), relativeByDefault: true }
+const ABSOLUTE = { lastPoint: null, relativeByDefault: false, ucs: WORLD_UCS }
+const FROM_100_100 = {
+  lastPoint: p(100, 100),
+  relativeByDefault: true,
+  ucs: WORLD_UCS,
+}
+/** Origin at (10, 20), X axis pointing along world +Y. */
+const TURNED = { origin: p(10, 20), xAxis: p(0, 1) }
 
 describe("isCoordinateExpression", () => {
   it("recognises the coordinate syntaxes", () => {
@@ -20,6 +27,7 @@ describe("isCoordinateExpression", () => {
     expect(isCoordinateExpression("100<45")).toBe(true)
     expect(isCoordinateExpression("@30,0")).toBe(true)
     expect(isCoordinateExpression("#0,0")).toBe(true)
+    expect(isCoordinateExpression("*0,0")).toBe(true)
   })
 
   it("leaves a plain number to direct-distance entry", () => {
@@ -100,6 +108,7 @@ describe("parseCoordinate", () => {
         parseCoordinate("30,0", {
           lastPoint: p(100, 100),
           relativeByDefault: false,
+          ucs: WORLD_UCS,
         })
       ).toBeCloseToPoint(p(30, 0))
     })
@@ -107,8 +116,43 @@ describe("parseCoordinate", () => {
     it("is absolute when there is no last point, whatever the default", () => {
       // The first point of a command has nothing to be relative to.
       expect(
-        parseCoordinate("@30,0", { lastPoint: null, relativeByDefault: true })
+        parseCoordinate("@30,0", {
+          lastPoint: null,
+          relativeByDefault: true,
+          ucs: WORLD_UCS,
+        })
       ).toBeCloseToPoint(p(30, 0))
+    })
+  })
+
+  describe("in a UCS", () => {
+    const inUcs = { lastPoint: null, relativeByDefault: false, ucs: TURNED }
+    const fromLast = {
+      lastPoint: p(100, 100),
+      relativeByDefault: true,
+      ucs: TURNED,
+    }
+
+    it("reads an absolute point from the UCS origin along its axes", () => {
+      expect(parseCoordinate("5,0", inUcs)).toBeCloseToPoint(p(10, 25))
+      expect(parseCoordinate("0,5", inUcs)).toBeCloseToPoint(p(5, 20))
+      expect(parseCoordinate("5<90", inUcs)).toBeCloseToPoint(p(5, 20), 9)
+    })
+
+    it("turns a relative offset by the UCS, but not its base", () => {
+      expect(parseCoordinate("@5,0", fromLast)).toBeCloseToPoint(p(100, 105))
+      expect(parseCoordinate("@5<0", fromLast)).toBeCloseToPoint(p(100, 105))
+    })
+
+    it("# is the UCS origin", () => {
+      expect(parseCoordinate("#0,0", fromLast)).toBeCloseToPoint(p(10, 20))
+    })
+
+    it("* reads the numbers in the WCS", () => {
+      expect(parseCoordinate("*5,0", inUcs)).toBeCloseToPoint(p(5, 0))
+      expect(parseCoordinate("#*5,0", fromLast)).toBeCloseToPoint(p(5, 0))
+      expect(parseCoordinate("@*5,0", fromLast)).toBeCloseToPoint(p(105, 100))
+      expect(parseCoordinate("*", inUcs)).toBeNull()
     })
   })
 
@@ -164,6 +208,7 @@ describe("parseCoordinate", () => {
             parseCoordinate(`@${dx},${dy}`, {
               lastPoint: last,
               relativeByDefault: false,
+              ucs: WORLD_UCS,
             })
           ).toBeCloseToPoint(p(last.x + dx, last.y + dy), 8)
         })

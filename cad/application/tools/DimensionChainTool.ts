@@ -287,6 +287,7 @@ export class DimensionChainTool implements Tool {
         const point = parseCoordinate(typed, {
           lastPoint: this.state.chain.origin,
           relativeByDefault: true,
+          ucs: commitCtx.ucs,
         })
         if (!point) return false
         this.place(this.state.chain, point, commitCtx)

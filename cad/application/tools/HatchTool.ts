@@ -21,6 +21,7 @@ import {
   resolveHatchPatternId,
 } from "../../domain/hatchPatterns"
 import { parseNumber } from "../../domain/units"
+import { ucsAngleToWorld } from "../../domain/ucs"
 import { AddEntityCommand } from "../commands/entityCommands"
 import { DynamicInputSession } from "../input/DynamicInput"
 import { parseCoordinate } from "../input/coordinateInput"
@@ -320,10 +321,13 @@ export class HatchTool implements Tool {
     ctx: ToolContext,
     id?: EntityId
   ): HatchEntity {
+    // HPANG is measured from the UCS X axis and HPORIGIN (0,0) is the UCS
+    // origin, so a pattern lines up with the UCS it was drawn in.
     return createHatch(loops, {
       patternId: this.patternId,
       patternScale: this.patternScale,
-      patternAngle: this.patternAngle,
+      patternAngle: ucsAngleToWorld(ctx.ucs, this.patternAngle),
+      origin: ctx.ucs.origin,
       layerId: ctx.document.getCurrentLayerId(),
       id,
     })
@@ -381,6 +385,7 @@ export class HatchTool implements Tool {
         const point = parseCoordinate(typed, {
           lastPoint: null,
           relativeByDefault: false,
+          ucs: commitCtx.ucs,
         })
         if (point) this.addInternalPoint(point, commitCtx)
         return true

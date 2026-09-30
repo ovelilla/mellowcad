@@ -28,6 +28,12 @@ import {
   DimStyleId,
 } from "../domain/dimStyles"
 import { polarPoint } from "../geometry/primitives"
+import {
+  Ucs,
+  isWorldUcs,
+  ucsPointToWorld,
+  worldPointToUcs,
+} from "../domain/ucs"
 import { DEFAULT_LAYER_COLOR, Layer, LayerId } from "../domain/layers"
 import { DEFAULT_LINETYPE_ID, linetypePattern } from "../domain/linetypes"
 import {
@@ -67,6 +73,13 @@ export interface PolarGuideInput {
   readonly label: string
 }
 
+/** The UCS icon: where UCSICON puts it, and its axis letters in the command language. */
+export interface UcsIconInput {
+  readonly atOrigin: boolean
+  readonly xLabel: string
+  readonly yLabel: string
+}
+
 /**
  * Everything needed to describe one frame. The builder is a pure function of
  * this input: same input, same scene — which makes rendering trivially
@@ -91,6 +104,10 @@ export interface SceneInput {
    * spacing from the zoom level.
    */
   readonly gridSpacing: Vec2 | null
+  /** The grid lies on the UCS: its lines run along the UCS axes from its origin. */
+  readonly ucs: Ucs
+  /** The UCS icon to draw, or `null` when UCSICON is off or a preview shows none. */
+  readonly ucsIcon: UcsIconInput | null
   /** Global linetype scale (LTSCALE): multiplies every dash pattern length. */
   readonly ltScale: number
   /** Whether lineweights are drawn thick (LWDISPLAY) or everything hairline. */
@@ -133,7 +150,9 @@ export function buildScene(input: SceneInput): Scene {
   const { camera } = input
   const primitives: ScenePrimitive[] = []
 
-  if (input.gridVisible) pushGrid(primitives, camera, input.gridSpacing)
+  if (input.gridVisible) {
+    pushGrid(primitives, camera, input.gridSpacing, input.ucs)
+  }
   pushEntities(
     primitives,
     camera,
@@ -147,6 +166,9 @@ export function buildScene(input: SceneInput): Scene {
     input.lwDisplay,
     input.attributeDisplay ?? "normal"
   )
+  if (input.ucsIcon) {
+    pushUcsIcon(primitives, camera, input.ucs, input.ucsIcon)
+  }
   pushTracking(primitives, camera, input.acquiredTrackingPoints, input.tracking)
   pushParallelReferences(
     primitives,
@@ -205,7 +227,8 @@ export function buildScene(input: SceneInput): Scene {
 function pushGrid(
   out: ScenePrimitive[],
   camera: CameraTransform,
-  snapSpacing: Vec2 | null
+  snapSpacing: Vec2 | null,
+  ucs: Ucs
 ): void {
   const { width, height, scale } = camera
 
@@ -216,13 +239,17 @@ function pushGrid(
   // A coarser "major" grid every few subdivisions keeps it readable.
   const majorEvery = 5
 
-  // World coordinates of the screen edges.
-  const topLeft = camera.screenToWorld({ x: 0, y: 0 })
-  const bottomRight = camera.screenToWorld({ x: width, y: height })
-  const minX = Math.min(topLeft.x, bottomRight.x)
-  const maxX = Math.max(topLeft.x, bottomRight.x)
-  const minY = Math.min(topLeft.y, bottomRight.y)
-  const maxY = Math.max(topLeft.y, bottomRight.y)
+  // The screen's corners in UCS coordinates bound the lines worth drawing.
+  const corners = [
+    { x: 0, y: 0 },
+    { x: width, y: 0 },
+    { x: 0, y: height },
+    { x: width, y: height },
+  ].map((corner) => worldPointToUcs(ucs, camera.screenToWorld(corner)))
+  const minX = Math.min(...corners.map((c) => c.x))
+  const maxX = Math.max(...corners.map((c) => c.x))
+  const minY = Math.min(...corners.map((c) => c.y))
+  const maxY = Math.max(...corners.map((c) => c.y))
 
   const startI = Math.floor(minX / minorX)
   const endI = Math.ceil(maxX / minorX)
@@ -231,49 +258,158 @@ function pushGrid(
 
   const minorStroke: StrokeStyle = { color: THEME.gridMinor, width: 1 }
   const majorStroke: StrokeStyle = { color: THEME.gridMajor, width: 1 }
+  const line = (a: Vec2, b: Vec2, stroke: StrokeStyle) =>
+    out.push(gridLine(camera, ucs, a, b, stroke))
 
-  // Vertical lines (crisp: snapped to the pixel grid, +0.5 offset).
   for (let i = startI; i <= endI; i++) {
-    const worldX = i * minorX
-    const sx = Math.round(camera.worldToScreen({ x: worldX, y: 0 }).x) + 0.5
-    out.push({
-      kind: "segment",
-      a: { x: sx, y: 0 },
-      b: { x: sx, y: height },
-      stroke: i % majorEvery === 0 ? majorStroke : minorStroke,
-    })
+    const x = i * minorX
+    line(
+      { x, y: minY },
+      { x, y: maxY },
+      i % majorEvery === 0 ? majorStroke : minorStroke
+    )
   }
-
   for (let j = startJ; j <= endJ; j++) {
-    const worldY = j * minorY
-    const sy = Math.round(camera.worldToScreen({ x: 0, y: worldY }).y) + 0.5
-    out.push({
-      kind: "segment",
-      a: { x: 0, y: sy },
-      b: { x: width, y: sy },
-      stroke: j % majorEvery === 0 ? majorStroke : minorStroke,
-    })
+    const y = j * minorY
+    line(
+      { x: minX, y },
+      { x: maxX, y },
+      j % majorEvery === 0 ? majorStroke : minorStroke
+    )
   }
 
-  // World axes through the origin.
-  const origin = camera.worldToScreen({ x: 0, y: 0 })
-  if (origin.y >= 0 && origin.y <= height) {
-    const y = Math.round(origin.y) + 0.5
+  // The UCS axes through its origin, tinted as AutoCAD's grid tints them.
+  if (minY <= 0 && maxY >= 0) {
+    line({ x: minX, y: 0 }, { x: maxX, y: 0 }, { color: THEME.axisX, width: 1 })
+  }
+  if (minX <= 0 && maxX >= 0) {
+    line({ x: 0, y: minY }, { x: 0, y: maxY }, { color: THEME.axisY, width: 1 })
+  }
+}
+
+/**
+ * A grid line from UCS points `a` to `b`. One that runs straight across the
+ * screen is snapped to the pixel grid (+0.5) so it stays crisp.
+ */
+function gridLine(
+  camera: CameraTransform,
+  ucs: Ucs,
+  a: Vec2,
+  b: Vec2,
+  stroke: StrokeStyle
+): ScenePrimitive {
+  const sa = camera.worldToScreen(ucsPointToWorld(ucs, a))
+  const sb = camera.worldToScreen(ucsPointToWorld(ucs, b))
+  if (Math.abs(sa.x - sb.x) < 1e-6) {
+    const x = Math.round(sa.x) + 0.5
+    return { kind: "segment", a: { x, y: sa.y }, b: { x, y: sb.y }, stroke }
+  }
+  if (Math.abs(sa.y - sb.y) < 1e-6) {
+    const y = Math.round(sa.y) + 0.5
+    return { kind: "segment", a: { x: sa.x, y }, b: { x: sb.x, y }, stroke }
+  }
+  return { kind: "segment", a: sa, b: sb, stroke }
+}
+
+/** Length of each arm of the UCS icon, in pixels. */
+const UCS_ICON_ARM = 48
+/** Clearance kept round the icon, and where it sits when the origin is out of view. */
+const UCS_ICON_MARGIN = 20
+/** Lifts the corner icon clear of the status readout pinned under it. */
+const UCS_ICON_CORNER_LIFT = 64
+
+/**
+ * The UCS icon, 2D wireframe's: the X and Y arms, with a square at the origin
+ * when the UCS is the WCS. With UCSICON at ORigin it sits on the origin while
+ * the whole icon fits in the view, and in the lower-left corner otherwise.
+ */
+function pushUcsIcon(
+  out: ScenePrimitive[],
+  camera: CameraTransform,
+  ucs: Ucs,
+  icon: UcsIconInput
+): void {
+  const origin = camera.worldToScreen(ucs.origin)
+  const tip = camera.worldToScreen(V.add(ucs.origin, ucs.xAxis))
+  const length = V.distance(origin, tip)
+  if (!(length > 0)) return
+  const xDir = V.scale(V.sub(tip, origin), 1 / length)
+  // Y is a quarter turn CCW in the world, which the camera's flip makes CW.
+  const yDir = { x: xDir.y, y: -xDir.x }
+  const extent = (at: Vec2) => [
+    at,
+    V.add(at, V.scale(xDir, UCS_ICON_ARM)),
+    V.add(at, V.scale(yDir, UCS_ICON_ARM)),
+  ]
+  const fits = (at: Vec2) =>
+    extent(at).every(
+      (point) =>
+        point.x >= UCS_ICON_MARGIN &&
+        point.x <= camera.width - UCS_ICON_MARGIN &&
+        point.y >= UCS_ICON_MARGIN &&
+        point.y <= camera.height - UCS_ICON_MARGIN
+    )
+  const at =
+    icon.atOrigin && fits(origin) ? origin : cornerPlacement(camera, xDir, yDir)
+
+  const arm = (dir: Vec2, color: string, letter: string) => {
+    const end = V.add(at, V.scale(dir, UCS_ICON_ARM))
+    const back = V.scale(dir, -7)
+    const side = V.scale({ x: -dir.y, y: dir.x }, 3)
+    out.push(
+      { kind: "segment", a: at, b: end, stroke: { color, width: 1.5 } },
+      {
+        kind: "path",
+        points: [
+          end,
+          V.add(V.add(end, back), side),
+          V.sub(V.add(end, back), side),
+        ],
+        closed: true,
+        fill: color,
+      },
+      {
+        kind: "label",
+        at: V.add(end, V.scale(dir, 6)),
+        text: letter,
+        color,
+      }
+    )
+  }
+  arm(xDir, THEME.ucsIconX, icon.xLabel)
+  arm(yDir, THEME.ucsIconY, icon.yLabel)
+  if (isWorldUcs(ucs)) {
+    const side = 7
     out.push({
-      kind: "segment",
-      a: { x: 0, y },
-      b: { x: width, y },
-      stroke: { color: THEME.axisX, width: 1 },
+      kind: "path",
+      points: [
+        at,
+        V.add(at, V.scale(xDir, side)),
+        V.add(V.add(at, V.scale(xDir, side)), V.scale(yDir, side)),
+        V.add(at, V.scale(yDir, side)),
+      ],
+      closed: true,
+      stroke: { color: THEME.crosshair, width: 1 },
     })
   }
-  if (origin.x >= 0 && origin.x <= width) {
-    const x = Math.round(origin.x) + 0.5
-    out.push({
-      kind: "segment",
-      a: { x, y: 0 },
-      b: { x, y: height },
-      stroke: { color: THEME.axisY, width: 1 },
-    })
+}
+
+/** The lower-left spot for the icon, shifted so a turned icon stays in view. */
+function cornerPlacement(
+  camera: CameraTransform,
+  xDir: Vec2,
+  yDir: Vec2
+): Vec2 {
+  const reach = [
+    { x: 0, y: 0 },
+    V.scale(xDir, UCS_ICON_ARM),
+    V.scale(yDir, UCS_ICON_ARM),
+  ]
+  const minX = Math.min(...reach.map((point) => point.x))
+  const maxY = Math.max(...reach.map((point) => point.y))
+  return {
+    x: UCS_ICON_MARGIN - minX,
+    y: camera.height - UCS_ICON_MARGIN - UCS_ICON_CORNER_LIFT - maxY,
   }
 }
 

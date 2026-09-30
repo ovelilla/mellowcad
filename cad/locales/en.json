@@ -60,7 +60,9 @@
       "measure": "Measure",
       "measurearea": "Area",
       "zoom": "Zoom",
-      "pan": "Pan"
+      "pan": "Pan",
+      "ucs": "UCS",
+      "ucsicon": "UCS icon"
     },
     "description": {
       "ERASE": "Delete the selected objects",
@@ -311,7 +313,9 @@
       "DIMSTYLE": ["DIMSTYLE", "D"],
       "STYLE": ["STYLE", "ST"],
       "BLOCKSPALETTE": ["BLOCKSPALETTE"],
-      "PURGE": ["PURGE", "PU"]
+      "PURGE": ["PURGE", "PU"],
+      "UCS": ["UCS"],
+      "UCSICON": ["UCSICON"]
     },
     "keywords": {
       "LINE": { "Close": "Close", "Undo": "Undo" },
@@ -482,6 +486,25 @@
         "Scale": "Scale",
         "Window": "Window",
         "Object": "Object"
+      },
+      "UCS": {
+        "NAmed": "NAmed",
+        "OBject": "OBject",
+        "Previous": "Previous",
+        "View": "View",
+        "World": "World",
+        "Z": "Z",
+        "Restore": "Restore",
+        "Save": "Save",
+        "Delete": "Delete",
+        "Yes": "Yes",
+        "No": "No"
+      },
+      "UCSICON": {
+        "ON": "ON",
+        "OFF": "OFF",
+        "Noorigin": "Noorigin",
+        "ORigin": "ORigin"
       }
     },
     "prompts": {
@@ -576,7 +599,16 @@
       "clipboardBasePoint": "Specify base point",
       "lengthen": "Lengthen",
       "move": "Move",
-      "bulge": "Bulge"
+      "bulge": "Bulge",
+      "ucsOrigin": "Specify origin of UCS",
+      "ucsXAxisPoint": "Specify point on X-axis or '<'Accept>",
+      "ucsXYPlanePoint": "Specify point on the XY plane or '<'Accept>",
+      "ucsRotationZ": "Specify rotation angle about Z axis",
+      "ucsNamedOption": "Enter an option [Restore/Save/Delete/?]",
+      "ucsRestoreName": "Enter name of UCS to restore or [?]",
+      "ucsSaveName": "Enter name to save current UCS or [?]",
+      "ucsDeleteNames": "Enter UCS name(s) to delete '<'none>",
+      "ucsListNames": "Enter UCS name(s) to list '<'*>"
     },
     "format": {
       "idle": "Command",
@@ -617,7 +649,11 @@
       "attributeModes": "Current attribute modes: Invisible={invisible, select, yes {Y} other {N}} Constant={constant, select, yes {Y} other {N}} Verify={verify, select, yes {Y} other {N}} Preset={preset, select, yes {Y} other {N}} Lock position={lockPosition, select, yes {Y} other {N}}",
       "enterAttributeValues": "Enter attribute values",
       "verifyAttributeValues": "Verify attribute values",
-      "explodeRejected": "{count, plural, one {# was not able to be exploded.} other {# were not able to be exploded.}}"
+      "explodeRejected": "{count, plural, one {# was not able to be exploded.} other {# were not able to be exploded.}}",
+      "currentUcsName": "Current ucs name:  {kind, select, world {*WORLD*} unnamed {*NO NAME*} other {{name}}}",
+      "savedUcsHeader": "Saved coordinate systems:",
+      "savedUcsEntry": "{name}\nOrigin = '<'{originX},{originY},0.0000>, X Axis = '<'{xAxisX},{xAxisY},0.0000>\n    Y Axis = '<'{yAxisX},{yAxisY},0.0000>, Z Axis = '<'0.0000,0.0000,1.0000>",
+      "ucsUndefined": "Cannot find UCS {name}."
     },
     "feedback": {
       "snap": {
@@ -635,6 +671,8 @@
         "nearest": "Nearest"
       },
       "polar": "Polar: {distance}{unit} < {angle}°",
+      "ucsIconX": "X",
+      "ucsIconY": "Y",
       "measureDistance": "Dist  {value} {unit}",
       "measureAngle": "Angle {value}°",
       "measureDeltaX": "ΔX    {value}",

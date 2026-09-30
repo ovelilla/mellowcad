@@ -1,6 +1,7 @@
 import { Vec2, V, vec2 } from "../../geometry/Vec2"
 import { createPolyline } from "../../domain/entities"
 import { parseNumber } from "../../domain/units"
+import { ucsRotation } from "../../domain/ucs"
 import { AddEntityCommand } from "../commands/entityCommands"
 import { DynamicInputSession } from "../input/DynamicInput"
 import type { PromptId } from "../../locales/types"
@@ -189,6 +190,7 @@ export class PolygonTool implements Tool {
     const point = parseCoordinate(text, {
       lastPoint: null,
       relativeByDefault: false,
+      ucs: ctx.ucs,
     })
     if (!point) return false
     this.state = {
@@ -218,13 +220,13 @@ export class PolygonTool implements Tool {
     if (this.state.phase !== "radius") return
     const typed = parseField(ctx, "radius")
     const radius = typed ?? V.distance(this.state.center, point)
-    const angle = orientationAngle(this.state.center, point)
+    const angle = orientationAngle(this.state.center, point, ctx)
     this.commitPolygon(radius, angle, ctx)
   }
 
   private commitPolygonValue(value: number, ctx: ToolContext): void {
     if (this.state.phase !== "radius") return
-    const angle = orientationAngle(this.state.center, this.state.cursor)
+    const angle = orientationAngle(this.state.center, this.state.cursor, ctx)
     this.commitPolygon(value, angle, ctx)
   }
 
@@ -251,7 +253,7 @@ export class PolygonTool implements Tool {
     const typed = parseField(ctx, "radius")
     const radius = typed ?? V.distance(this.state.center, this.state.cursor)
     if (!(radius > 0)) return null
-    const angle = orientationAngle(this.state.center, this.state.cursor)
+    const angle = orientationAngle(this.state.center, this.state.cursor, ctx)
     return polygonVertices(
       this.state.center,
       this.state.sides,
@@ -291,10 +293,15 @@ function polygonVertices(
   return vertices
 }
 
-/** The orientation angle from the centre to the cursor; defaults to up. */
-function orientationAngle(center: Vec2, cursor: Vec2): number {
+/** The orientation angle from the centre to the cursor; defaults to the UCS's up. */
+function orientationAngle(
+  center: Vec2,
+  cursor: Vec2,
+  ctx: ToolContext
+): number {
   const dir = V.sub(cursor, center)
-  if (V.length(dir) < 1e-9) return Math.PI / 2 // no direction yet: a vertex up
+  // No direction yet: a vertex up.
+  if (V.length(dir) < 1e-9) return ucsRotation(ctx.ucs) + Math.PI / 2
   return Math.atan2(dir.y, dir.x)
 }
 

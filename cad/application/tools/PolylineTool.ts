@@ -1,6 +1,6 @@
-import { Vec2, V, vec2 } from "../../geometry/Vec2"
+import { Vec2, V } from "../../geometry/Vec2"
 import { createPolyline } from "../../domain/entities"
-import { bulgeToArc, normalizeDegrees } from "../../geometry/primitives"
+import { bulgeToArc } from "../../geometry/primitives"
 import { parseNumber } from "../../domain/units"
 import { AddEntityCommand } from "../commands/entityCommands"
 import { DynamicInputSession } from "../input/DynamicInput"
@@ -15,6 +15,7 @@ import { arcScenePrimitive, entityScenePrimitive } from "../SceneBuilder"
 import { PointerInput, Tool, ToolContext } from "./Tool"
 import { CommandOption, CommandOptionOutcome } from "./Tool"
 import { lastDrawnPoint } from "./lastDrawnPoint"
+import { directionFromUcsHeading, headingInUcs } from "./ucsHeading"
 
 /**
  * The polyline tool draws a single connected chain of straight segments as one
@@ -82,7 +83,10 @@ export class PolylineTool implements Tool {
       this.state = { ...this.state, cursor: input.point, direction }
 
       ctx.dynamicInput.setLive("distance", length)
-      ctx.dynamicInput.setLive("angle", direction ? angleOf(direction) : null)
+      ctx.dynamicInput.setLive(
+        "angle",
+        direction ? headingInUcs(ctx.ucs, direction) : null
+      )
       ctx.dynamicInput.setPosition(input.screen)
     } else {
       // No first vertex yet: offer a coordinate box to type the point directly.
@@ -349,6 +353,7 @@ export class PolylineTool implements Tool {
       const point = parseCoordinate(text, {
         lastPoint: null,
         relativeByDefault: false,
+        ucs: ctx.ucs,
       })
       if (point) return point
     }
@@ -379,6 +384,7 @@ export class PolylineTool implements Tool {
     const start = parseCoordinate(text, {
       lastPoint: null,
       relativeByDefault: false,
+      ucs: ctx.ucs,
     })
     if (!start) return false
     this.beginDrawing(start, ctx)
@@ -417,8 +423,7 @@ export class PolylineTool implements Tool {
 
     const { distance, angle } = values
     if (!(distance > 0) || !Number.isFinite(angle)) return
-    const rad = (angle * Math.PI) / 180
-    const direction = vec2(Math.cos(rad), Math.sin(rad))
+    const direction = directionFromUcsHeading(ctx.ucs, angle)
     const point = V.add(
       this.lastVertex(this.state),
       V.scale(direction, distance)
@@ -460,6 +465,7 @@ export class PolylineTool implements Tool {
     const point = parseCoordinate(coordText, {
       lastPoint: this.lastVertex(this.state),
       relativeByDefault: true,
+      ucs: ctx.ucs,
     })
     if (!point) return false
     this.appendVertex(point, ctx)
@@ -477,6 +483,7 @@ export class PolylineTool implements Tool {
       const point = parseCoordinate(coordText, {
         lastPoint: start,
         relativeByDefault: true,
+        ucs: ctx.ucs,
       })
       return point ?? rawCursor
     }
@@ -486,23 +493,17 @@ export class PolylineTool implements Tool {
 
     const offset = V.sub(rawCursor, start)
     const cursorDist = V.length(offset)
-    const cursorAngle = cursorDist > 1e-9 ? angleOf(offset) : null
+    const cursorAngle = cursorDist > 1e-9 ? headingInUcs(ctx.ucs, offset) : null
 
     const distance = typedDist ?? cursorDist
     const angle = typedAngle ?? cursorAngle
     if (angle === null) return rawCursor
 
-    const rad = (angle * Math.PI) / 180
-    return V.add(start, V.scale(vec2(Math.cos(rad), Math.sin(rad)), distance))
+    return V.add(
+      start,
+      V.scale(directionFromUcsHeading(ctx.ucs, angle), distance)
+    )
   }
-}
-
-/**
- * Heading of a vector in degrees, counter-clockwise from +X, normalised to
- * `[0, 360)` — the convention the properties panel reports for a line's angle.
- */
-function angleOf(dir: Vec2): number {
-  return normalizeDegrees((Math.atan2(dir.y, dir.x) * 180) / Math.PI)
 }
 
 /**

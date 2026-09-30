@@ -175,6 +175,11 @@ export class CadDocument extends Observable implements DocumentReader {
     this.emit()
   }
 
+  updateSettings(patch: Partial<DocumentSettings>): void {
+    this.settings = { ...this.settings, ...patch }
+    this.emit()
+  }
+
   /**
    * Replaces the entire drawing (entities and, optionally, settings and layers)
    * with a single notification. Used when loading a file so subscribers rebuild

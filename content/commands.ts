@@ -98,6 +98,8 @@ export const COMMAND_FILING: Readonly<Record<string, Filing>> = {
   REDO: { group: "inquiry" },
   SNAP: { group: "inquiry" },
   FROM: { group: "inquiry" },
+  UCS: { group: "inquiry" },
+  UCSICON: { group: "inquiry" },
 
   QSAVE: { group: "files" },
   OPEN: { group: "files" },

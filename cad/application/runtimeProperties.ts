@@ -13,6 +13,13 @@ import { LayerId } from "../domain/layers"
 import { LINETYPE_BYLAYER, LinetypeId } from "../domain/linetypes"
 import { LINEWEIGHT_BYLAYER, Lineweight } from "../domain/lineweights"
 import { parseNumber } from "../domain/units"
+import {
+  Ucs,
+  isWorldUcs,
+  ucsPointToWorld,
+  worldPointToUcs,
+} from "../domain/ucs"
+import { Vec2 } from "../geometry/Vec2"
 import { Selection } from "./Selection"
 import { CommandHistory } from "./commands/Command"
 import { UpdateEntityCommand } from "./commands/entityCommands"
@@ -118,10 +125,81 @@ export function setSelectionProperty(
   if (!entity) return false
   const value = parseNumber(text)
   if (value === null) return false
-  const updated = applyEntityProperty(entity, property, value)
+  const updated = applyInUcs(
+    entity,
+    property,
+    value,
+    document.getSettings().ucs
+  )
   if (!updated) return false
   history.execute(new UpdateEntityCommand(updated))
   return true
+}
+
+/** The point each coordinate row reads, and the rows of its X and Y. */
+const COORDINATE_ROWS: Readonly<
+  Partial<
+    Record<
+      EntityProperty,
+      {
+        readonly point: "start" | "end" | "center" | "position"
+        readonly axis: "x" | "y"
+        readonly x: EntityProperty
+        readonly y: EntityProperty
+      }
+    >
+  >
+> = {
+  startX: { point: "start", axis: "x", x: "startX", y: "startY" },
+  startY: { point: "start", axis: "y", x: "startX", y: "startY" },
+  endX: { point: "end", axis: "x", x: "endX", y: "endY" },
+  endY: { point: "end", axis: "y", x: "endX", y: "endY" },
+  centerX: { point: "center", axis: "x", x: "centerX", y: "centerY" },
+  centerY: { point: "center", axis: "y", x: "centerX", y: "centerY" },
+  positionX: { point: "position", axis: "x", x: "positionX", y: "positionY" },
+  positionY: { point: "position", axis: "y", x: "positionX", y: "positionY" },
+}
+
+/**
+ * The palette shows coordinates in the UCS, so a retyped X or Y is one there:
+ * in a turned UCS it moves the point along that axis, which changes both of
+ * its world coordinates.
+ */
+function applyInUcs(
+  entity: Entity,
+  property: EntityProperty,
+  value: number,
+  ucs: Ucs
+): Entity | null {
+  const row = COORDINATE_ROWS[property]
+  if (!row || isWorldUcs(ucs)) {
+    return applyEntityProperty(entity, property, value)
+  }
+  const point = rowPoint(entity, row.point)
+  if (!point) return null
+  const local = worldPointToUcs(ucs, point)
+  const next = ucsPointToWorld(
+    ucs,
+    row.axis === "x" ? { x: value, y: local.y } : { x: local.x, y: value }
+  )
+  const moved = applyEntityProperty(entity, row.x, next.x)
+  return moved && applyEntityProperty(moved, row.y, next.y)
+}
+
+function rowPoint(
+  entity: Entity,
+  point: "start" | "end" | "center" | "position"
+): Vec2 | null {
+  switch (point) {
+    case "start":
+      return entity.type === "line" ? entity.start : null
+    case "end":
+      return entity.type === "line" ? entity.end : null
+    case "center":
+      return "center" in entity ? entity.center : null
+    case "position":
+      return "position" in entity ? entity.position : null
+  }
 }
 
 /** The layer shared by all selected entities, or null when mixed/empty. */

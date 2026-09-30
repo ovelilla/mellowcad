@@ -21,6 +21,7 @@ import { LINETYPE_BYLAYER, LinetypeId } from "../domain/linetypes"
 import { DimStyle, DimStyleId } from "../domain/dimStyles"
 import { TextStyle, TextStyleId } from "../domain/textStyles"
 import { LINEWEIGHT_BYLAYER, Lineweight } from "../domain/lineweights"
+import { worldPointToUcs } from "../domain/ucs"
 import {
   formatAngle,
   formatLength,
@@ -71,6 +72,7 @@ import { InsertTool } from "./tools/InsertTool"
 import { TextEditTool } from "./tools/TextEditTool"
 import { AttEditTool } from "./tools/AttEditTool"
 import { PasteTool } from "./tools/PasteTool"
+import { headingInUcs } from "./tools/ucsHeading"
 import { PointResolver } from "./PointResolver"
 import { AutosaveService } from "./Autosave"
 import { buildScene, PolarGuideInput } from "./SceneBuilder"
@@ -212,6 +214,8 @@ export class CadRuntime extends Observable {
   private lastPointerScreen: Vec2 | null = null
 
   private gridVisible = true
+  /** Whether this host shows the UCS icon at all; UCSICON decides where. */
+  private ucsIconShown = true
   // Which style table the manager is showing, or null while it is closed.
   private stylesPanel: StylesPanelTab | null = null
   // Whether the Blocks palette is showing.
@@ -284,13 +288,18 @@ export class CadRuntime extends Observable {
       this.snapping,
       this.constraints,
       this.tracking,
-      this.snapMode
+      this.snapMode,
+      () => this.document.getSettings().ucs
     )
     this.autosave = new AutosaveService(store, () => this.serializeDrawing())
 
     // The single surface tools may touch: read-only document + command bus.
+    const doc = this.document
     this.toolContext = {
       document: this.document,
+      get ucs() {
+        return doc.getSettings().ucs
+      },
       viewport: this.viewport,
       selection: this.selection,
       dynamicInput: this.dynamicInput,
@@ -740,6 +749,7 @@ export class CadRuntime extends Observable {
     const point = parseCoordinate(this.dynamicInput.getText("offset").trim(), {
       lastPoint: base,
       relativeByDefault: true,
+      ucs: this.document.getSettings().ucs,
     })
     if (!point) return false
     this.endFrom()
@@ -852,6 +862,15 @@ export class CadRuntime extends Observable {
   /** Whether a click over a stack offers the Selection list box (value 2). */
   setSelectionCyclingList(showList: boolean): void {
     this.cycling.setShowsList(showList)
+  }
+
+  /**
+   * Hides the UCS icon for a host that draws its own chrome (the landing's
+   * sketch) or none (a headless recording), leaving the drawing's UCSICON as is.
+   */
+  setUcsIconShown(shown: boolean): void {
+    this.ucsIconShown = shown
+    this.host.requestRender()
   }
 
   /**
@@ -1429,6 +1448,15 @@ export class CadRuntime extends Observable {
       hiddenIds: new Set(this.activeTool.hiddenEntityIds?.() ?? []),
       gridVisible: this.gridVisible,
       gridSpacing: this.snapMode.displaySpacing(),
+      ucs: this.document.getSettings().ucs,
+      ucsIcon:
+        this.ucsIconShown && this.document.getSettings().ucsIcon.visible
+          ? {
+              atOrigin: this.document.getSettings().ucsIcon.atOrigin,
+              xLabel: this.text.feedback("ucsIconX"),
+              yLabel: this.text.feedback("ucsIconY"),
+            }
+          : null,
       ltScale: this.document.getSettings().ltScale,
       lwDisplay: this.document.getSettings().lwDisplay,
       attributeDisplay: this.document.getSettings().attributeDisplay,
@@ -1475,20 +1503,20 @@ export class CadRuntime extends Observable {
     const anchor = this.activeTool.getConstraintAnchor?.() ?? null
     if (anchor === null) return null
 
+    const settings = this.document.getSettings()
     const context = {
       anchor,
       world: this.cursorWorld,
       snapPoint: null,
       point: this.cursorWorld,
+      ucs: settings.ucs,
     }
     const ray = this.constraints.polarGuideRay(context)
     if (!ray) return null
 
     const point = this.constraints.apply(context)
-    const settings = this.document.getSettings()
     const length = V.length(V.sub(point, anchor))
-    let deg = (Math.atan2(ray.dir.y, ray.dir.x) * 180) / Math.PI
-    if (deg < 0) deg += 360
+    const deg = headingInUcs(settings.ucs, ray.dir)
     const label = this.text.feedback("polar", {
       distance: formatLength(length, settings),
       unit: unitSuffix(settings.unit),
@@ -2081,7 +2109,10 @@ export class CadRuntime extends Observable {
           // Snap mode moves the cursor itself onto the lattice, the way
           // AutoCAD's crosshair visibly jumps from increment to increment.
           this.crosshairScreen = this.viewport.worldToScreen(
-            this.snapMode.snapPoint(this.cursorWorld)
+            this.snapMode.snapPoint(
+              this.cursorWorld,
+              this.document.getSettings().ucs
+            )
           )
         } else {
           this.crosshairScreen = screen
@@ -2177,7 +2208,9 @@ export class CadRuntime extends Observable {
       entityCount: this.document.size,
       selectionCount: this.selection.size,
       scale: this.viewport.scale,
-      cursorWorld: this.cursorWorld,
+      cursorUcs: this.cursorWorld
+        ? worldPointToUcs(this.document.getSettings().ucs, this.cursorWorld)
+        : null,
       snap: this.currentSnap
         ? { type: this.currentSnap.type, point: this.currentSnap.point }
         : null,

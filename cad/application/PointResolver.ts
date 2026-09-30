@@ -4,9 +4,10 @@ import { SnapMode } from "./SnapMode"
 import { SnapEngine } from "./snapping/SnapEngine"
 import { SnapResult } from "./snapping/types"
 import { ConstraintManager } from "./constraints/ConstraintManager"
-import { ConstraintType } from "./constraints/types"
+import { ConstraintContext, ConstraintType } from "./constraints/types"
 import { ObjectSnapTrackingEngine } from "./tracking/ObjectSnapTrackingEngine"
 import { DrawingAidState, TrackingResult } from "./tracking/types"
+import { Ucs } from "../domain/ucs"
 
 /** What the resolver produced for one cursor position. */
 export interface ResolvedPoint {
@@ -35,7 +36,8 @@ export class PointResolver {
     private readonly snapping: SnapEngine,
     private readonly constraints: ConstraintManager,
     private readonly tracking: ObjectSnapTrackingEngine,
-    private readonly snapMode: SnapMode
+    private readonly snapMode: SnapMode,
+    private readonly currentUcs: () => Ucs
   ) {}
 
   /**
@@ -51,6 +53,7 @@ export class PointResolver {
     allowSnapMode = true
   ): ResolvedPoint {
     const snapPoint = snap ? snap.point : null
+    const ucs = this.currentUcs()
 
     // Object snap tracking only when there is no direct snap.
     let tracked: TrackingResult | null = null
@@ -63,6 +66,7 @@ export class PointResolver {
                 world,
                 snapPoint: null,
                 point: world,
+                ucs,
               },
               forceOrtho
             )
@@ -82,9 +86,9 @@ export class PointResolver {
     const candidate = snap
       ? snap.point
       : allowSnapMode
-        ? this.snapMode.snapPoint(world)
+        ? this.snapMode.snapPoint(world, ucs)
         : world
-    const context = { anchor, world, snapPoint, point: candidate }
+    const context = { anchor, world, snapPoint, point: candidate, ucs }
     const constrained = this.constraints.apply(context, forceOrtho)
     return {
       point:
@@ -102,12 +106,7 @@ export class PointResolver {
    * polar snap is only meaningful together with polar tracking.
    */
   private applyPolarSnap(
-    context: {
-      anchor: Vec2 | null
-      world: Vec2
-      snapPoint: Vec2 | null
-      point: Vec2
-    },
+    context: ConstraintContext,
     point: Vec2,
     forceOrtho: boolean
   ): Vec2 {
@@ -136,6 +135,7 @@ export class PointResolver {
       polarAngleStep: this.constraints.getPolarAngleStep(),
       objectSnapTracking: this.tracking.isActive(),
       acquiredPoints: this.tracking.getAcquired(),
+      ucs: this.currentUcs(),
     }
   }
 }

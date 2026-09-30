@@ -316,6 +316,7 @@ export class MirrorTool implements Tool {
       const first = parseCoordinate(text, {
         lastPoint: null,
         relativeByDefault: false,
+        ucs: ctx.ucs,
       })
       if (!first) return false
       this.enterSecond(first, ctx)
@@ -325,6 +326,7 @@ export class MirrorTool implements Tool {
       const second = parseCoordinate(text, {
         lastPoint: this.state.first,
         relativeByDefault: true,
+        ucs: ctx.ucs,
       })
       if (!second) return false
       this.enterErase(this.state.first, second, ctx)
@@ -413,6 +415,7 @@ export class MirrorTool implements Tool {
       const point = parseCoordinate(text, {
         lastPoint: relativeTo,
         relativeByDefault: relativeTo !== null,
+        ucs: ctx.ucs,
       })
       if (point) return point
     }

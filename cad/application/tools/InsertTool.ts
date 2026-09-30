@@ -7,6 +7,7 @@ import {
   createInsert,
 } from "../../domain/entities"
 import { parseNumber } from "../../domain/units"
+import { ucsAngleToWorld } from "../../domain/ucs"
 import { AddEntityCommand } from "../commands/entityCommands"
 import { parseCoordinate } from "../input/coordinateInput"
 import { entityScenePrimitive } from "../SceneBuilder"
@@ -145,7 +146,7 @@ export class InsertTool implements Tool {
   ): InsertEntity {
     return createInsert(this.blockId, at, {
       scale: this.scale,
-      rotation: this.rotation,
+      rotation: ucsAngleToWorld(ctx.ucs, this.rotation),
       layerId: ctx.document.getCurrentLayerId(),
       attributes,
       id,
@@ -212,7 +213,7 @@ export class InsertTool implements Tool {
       commitRaw: (commitCtx) => {
         const point = parseCoordinate(
           commitCtx.dynamicInput.getText("point").trim(),
-          { lastPoint: null, relativeByDefault: false }
+          { lastPoint: null, relativeByDefault: false, ucs: commitCtx.ucs }
         )
         if (point) this.place(point, commitCtx)
         return true

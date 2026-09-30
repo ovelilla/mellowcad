@@ -1,4 +1,5 @@
 import type { AttributeDisplay } from "./entityTypes"
+import { NamedUcs, Ucs, WORLD_UCS } from "./ucs"
 
 /**
  * Document-level unit configuration. One *world unit* equals one *document
@@ -21,6 +22,19 @@ export interface DocumentSettings {
   readonly lwDisplay: boolean
   /** ATTMODE, which AutoCAD saves in the drawing. */
   readonly attributeDisplay: AttributeDisplay
+  /** The current UCS (UCSORG, UCSXDIR), saved in the drawing. */
+  readonly ucs: Ucs
+  /** UCSNAME: the saved UCS the current one was restored from, until it changes. */
+  readonly ucsName: string | null
+  /** The UCS table: every UCS saved by name. */
+  readonly namedUcs: readonly NamedUcs[]
+  /** UCSICON: bit 1 shows the icon, bit 2 puts it at the origin when in view. */
+  readonly ucsIcon: UcsIconSetting
+}
+
+export interface UcsIconSetting {
+  readonly visible: boolean
+  readonly atOrigin: boolean
 }
 
 export const DEFAULT_DOCUMENT_SETTINGS: DocumentSettings = {
@@ -29,6 +43,10 @@ export const DEFAULT_DOCUMENT_SETTINGS: DocumentSettings = {
   ltScale: 1,
   lwDisplay: true,
   attributeDisplay: "normal",
+  ucs: WORLD_UCS,
+  ucsName: null,
+  namedUcs: [],
+  ucsIcon: { visible: true, atOrigin: true },
 }
 
 export const LENGTH_UNITS: LengthUnit[] = [

@@ -1,5 +1,4 @@
-import { Vec2, V, vec2 } from "../../geometry/Vec2"
-import { normalizeDegrees } from "../../geometry/primitives"
+import { Vec2, V } from "../../geometry/Vec2"
 import { KnotParameterization } from "../../geometry/nurbs"
 import {
   DEFAULT_SPLINE_DEGREE,
@@ -27,6 +26,7 @@ import {
   Tool,
   ToolContext,
 } from "./Tool"
+import { directionFromUcsHeading, headingInUcs } from "./ucsHeading"
 
 /** The points picked so far and what has been said about their ends. */
 interface Drawn {
@@ -106,7 +106,10 @@ export class SplineTool implements Tool {
       const offset = V.sub(input.point, lastPoint(state))
       const length = V.length(offset)
       ctx.dynamicInput.setLive("distance", length)
-      ctx.dynamicInput.setLive("angle", length > 1e-9 ? angleOf(offset) : null)
+      ctx.dynamicInput.setLive(
+        "angle",
+        length > 1e-9 ? headingInUcs(ctx.ucs, offset) : null
+      )
     }
     ctx.dynamicInput.setPosition(input.screen)
     ctx.requestRender()
@@ -439,6 +442,7 @@ export class SplineTool implements Tool {
     const point = parseCoordinate(text, {
       lastPoint: base,
       relativeByDefault: base !== null,
+      ucs: ctx.ucs,
     })
     if (!point) return false
     this.placePoint(point, ctx)
@@ -470,11 +474,10 @@ export class SplineTool implements Tool {
     }
     const { distance, angle } = values
     if (!(distance > 0) || !Number.isFinite(angle)) return
-    const rad = (angle * Math.PI) / 180
     this.placePoint(
       V.add(
         lastPoint(state),
-        V.scale(vec2(Math.cos(rad), Math.sin(rad)), distance)
+        V.scale(directionFromUcsHeading(ctx.ucs, angle), distance)
       ),
       ctx
     )
@@ -492,6 +495,7 @@ export class SplineTool implements Tool {
     const point = parseCoordinate(text, {
       lastPoint: lastPoint(state),
       relativeByDefault: true,
+      ucs: ctx.ucs,
     })
     if (!point) return false
     this.placePoint(point, ctx)
@@ -515,8 +519,11 @@ export class SplineTool implements Tool {
     const text = ctx.dynamicInput.getText("distance").trim()
     if (isCoordinateExpression(text)) {
       return (
-        parseCoordinate(text, { lastPoint: start, relativeByDefault: true }) ??
-        cursor
+        parseCoordinate(text, {
+          lastPoint: start,
+          relativeByDefault: true,
+          ucs: ctx.ucs,
+        }) ?? cursor
       )
     }
     const typedDistance = typedNumber(ctx, "distance")
@@ -525,10 +532,13 @@ export class SplineTool implements Tool {
     const offset = V.sub(cursor, start)
     const distance = typedDistance ?? V.length(offset)
     const angle =
-      typedAngle ?? (V.length(offset) > 1e-9 ? angleOf(offset) : null)
+      typedAngle ??
+      (V.length(offset) > 1e-9 ? headingInUcs(ctx.ucs, offset) : null)
     if (angle === null) return cursor
-    const rad = (angle * Math.PI) / 180
-    return V.add(start, V.scale(vec2(Math.cos(rad), Math.sin(rad)), distance))
+    return V.add(
+      start,
+      V.scale(directionFromUcsHeading(ctx.ucs, angle), distance)
+    )
   }
 
   private openDegreeInput(ctx: ToolContext): void {
@@ -566,10 +576,6 @@ export class SplineTool implements Tool {
 
 function lastPoint(state: Drawn): Vec2 {
   return state.points[state.points.length - 1]
-}
-
-function angleOf(v: Vec2): number {
-  return normalizeDegrees((Math.atan2(v.y, v.x) * 180) / Math.PI)
 }
 
 function typedNumber(ctx: ToolContext, id: string): number | null {

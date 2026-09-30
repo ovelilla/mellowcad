@@ -105,6 +105,12 @@ snapping, command history, adapters) is in `cad-runtime.instructions.md`; writin
 - Never compare `Vec2` with `toEqual`/`Object.is`: `-0 !== 0`. Use the custom matchers.
 - Pure functions do not mutate their inputs; entity helpers return new objects and either
   preserve the id (in-place edit) or mint a fresh one (`*Copy` helpers).
+- **Entities are stored in the WCS; the UCS is only how points and angles are read.** A `Ucs`
+  (`domain/ucs.ts`) is an origin and a unit X axis — a direction kept as a vector, like an
+  ellipse's axis — with Y a quarter turn CCW and Z the world's, so it is never tilted or mirrored.
+  It lives in `DocumentSettings` with its name and the named-UCS table (UCSORG, UCSXDIR and the UCS
+  table are saved in the drawing). Convert at the boundary with `ucsPointToWorld` /
+  `worldPointToUcs` and the direction and angle twins; nothing in `domain/` reads the current UCS.
 
 ## The entity modules
 

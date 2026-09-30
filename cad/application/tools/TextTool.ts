@@ -7,6 +7,7 @@ import {
   TEXT_LINE_SPACING_FACTOR,
 } from "../../domain/entities"
 import { DEFAULT_TEXT_HEIGHT, TextStyleId } from "../../domain/textStyles"
+import { ucsAngleToWorld, worldAngleToUcs } from "../../domain/ucs"
 import { AddEntityCommand } from "../commands/entityCommands"
 import { DynamicInputSession } from "../input/DynamicInput"
 import type { PromptId } from "../../locales/types"
@@ -51,6 +52,7 @@ export class TextTool implements Tool {
    * Last height and rotation used, offered as the `<default>` of their prompts.
    * They live on the instance, like FILLET's radius: AutoCAD carries them from
    * one invocation to the next (its TEXTSIZE) rather than resetting each time.
+   * The rotation is kept from the UCS X axis, as it is asked.
    */
   private height = DEFAULT_TEXT_HEIGHT
   private rotation = 0
@@ -105,7 +107,9 @@ export class TextTool implements Tool {
       case "rotation": {
         const offset = V.sub(input.point, this.state.position)
         const rotation =
-          V.length(offset) > 1e-9 ? Math.atan2(offset.y, offset.x) : 0
+          V.length(offset) > 1e-9
+            ? worldAngleToUcs(ctx.ucs, Math.atan2(offset.y, offset.x))
+            : 0
         this.enterEntry(this.state.position, this.state.height, rotation, ctx)
         break
       }
@@ -230,6 +234,7 @@ export class TextTool implements Tool {
     this.openRotationInput(ctx)
   }
 
+  /** `rotation` is the one asked for: radians from the UCS X axis. */
   private enterEntry(
     position: Vec2,
     height: number,
@@ -241,7 +246,7 @@ export class TextTool implements Tool {
       phase: "entry",
       position,
       height,
-      rotation,
+      rotation: ucsAngleToWorld(ctx.ucs, rotation),
       styleId: this.currentStyleId(ctx),
     }
     this.openEntryInput(ctx)
@@ -321,6 +326,7 @@ export class TextTool implements Tool {
     const point = parseCoordinate(text, {
       lastPoint: null,
       relativeByDefault: false,
+      ucs: ctx.ucs,
     })
     if (!point) return false
     this.beginAt(point, ctx)

@@ -302,6 +302,7 @@ export class ArrayPolarTool implements Tool {
     const center = parseCoordinate(text, {
       lastPoint: null,
       relativeByDefault: false,
+      ucs: ctx.ucs,
     })
     if (!center) return false
     this.enterConfig(center, ctx)
@@ -370,6 +371,7 @@ export class ArrayPolarTool implements Tool {
       const point = parseCoordinate(text, {
         lastPoint: null,
         relativeByDefault: false,
+        ucs: ctx.ucs,
       })
       if (point) return point
     }

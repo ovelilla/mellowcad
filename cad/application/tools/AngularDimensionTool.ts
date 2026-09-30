@@ -434,6 +434,7 @@ export class AngularDimensionTool implements Tool {
     return parseCoordinate(typed, {
       lastPoint,
       relativeByDefault: lastPoint !== null,
+      ucs: ctx.ucs,
     })
   }
 }

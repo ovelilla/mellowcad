@@ -197,6 +197,8 @@ export const TOOL_COMMANDS: Readonly<Record<string, string>> = {
   measurearea: "AREA",
   zoom: "ZOOM",
   pan: "PAN",
+  ucs: "UCS",
+  ucsicon: "UCSICON",
 }
 
 /** The shortest way to type a command, e.g. `"L"` — shown in tooltips. */

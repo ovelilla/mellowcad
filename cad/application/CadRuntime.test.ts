@@ -719,7 +719,7 @@ describe("engine state snapshot", () => {
     cad.moveTo(p(37, -12))
 
     expect(cad.state()).not.toBe(before)
-    expect(cad.state().cursorWorld).toBeCloseToPoint(p(37, -12))
+    expect(cad.state().cursorUcs).toBeCloseToPoint(p(37, -12))
   })
 
   it("produces a new identity when the model changes", () => {
@@ -794,7 +794,7 @@ describe("host interaction", () => {
     cad.runtime.pointerLeave()
 
     expect(cad.host.cursors.at(-1)).toBe("default")
-    expect(cad.state().cursorWorld).toBeNull()
+    expect(cad.state().cursorUcs).toBeNull()
   })
 
   it("stops scheduling work once disposed", () => {

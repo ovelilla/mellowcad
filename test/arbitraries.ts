@@ -25,7 +25,7 @@ import { DEFAULT_HATCH_PATTERN_ID } from "../cad/domain/hatchPatterns"
 import { DEFAULT_LAYER_ID } from "../cad/domain/layers"
 import { DEFAULT_TEXT_STYLE_ID } from "../cad/domain/textStyles"
 import { DEFAULT_DIM_STYLE_ID } from "../cad/domain/dimStyles"
-import { LengthUnit } from "../cad/domain/units"
+import { DEFAULT_DOCUMENT_SETTINGS, LengthUnit } from "../cad/domain/units"
 import type { Vec2 } from "../cad/geometry/Vec2"
 import type { DrawingSnapshot } from "../cad/serialization/drawingFile"
 import { snapshotOf } from "./builders"
@@ -471,11 +471,9 @@ export const drawingSnapshot: fc.Arbitrary<DrawingSnapshot> = fc
       entities.map((item, index) => ({ ...item, id: `e${index}` })),
       {
         settings: {
+          ...DEFAULT_DOCUMENT_SETTINGS,
           unit,
           precision,
-          ltScale: 1,
-          lwDisplay: true,
-          attributeDisplay: "normal",
         },
         // The block every generated reference points at: a reader drops a
         // reference whose definition the file does not carry.

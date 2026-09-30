@@ -7,6 +7,7 @@ import {
   translateEntity,
 } from "../../domain/entities"
 import { parseNumber } from "../../domain/units"
+import { ucsDirectionToWorld } from "../../domain/ucs"
 import { DynamicInputSession } from "../input/DynamicInput"
 import { ScenePrimitive, StrokeStyle } from "../../scene/types"
 import { entityScenePrimitive } from "../SceneBuilder"
@@ -28,7 +29,7 @@ import { KeyInput, PointerInput, Tool, ToolContext } from "./Tool"
  * Like AutoCAD's array ribbon, the whole array is described by four parameters
  * — column and row counts and the spacing between them — shown as editable
  * fields with sensible defaults derived from the selection's size. Columns run
- * along +X and rows along +Y; a negative spacing flips that direction. The grid
+ * along the UCS's +X and rows along its +Y; a negative spacing flips that direction. The grid
  * previews live as the values change, and Enter commits every copy as a single
  * undoable step (the source stays as item 1,1). This produces plain geometry
  * (a non-associative array, AutoCAD's ASsociative=No).
@@ -193,7 +194,10 @@ export class ArrayTool implements Tool {
     for (let i = 0; i < grid.columns; i++) {
       for (let j = 0; j < grid.rows; j++) {
         if (i === 0 && j === 0) continue // the source occupies cell (0,0)
-        const delta = { x: i * grid.colSpacing, y: j * grid.rowSpacing }
+        const delta = ucsDirectionToWorld(ctx.ucs, {
+          x: i * grid.colSpacing,
+          y: j * grid.rowSpacing,
+        })
         for (const entity of this.state.config.originals) {
           out.push(
             ...entityScenePrimitive(
@@ -286,7 +290,10 @@ export class ArrayTool implements Tool {
     for (let i = 0; i < grid.columns; i++) {
       for (let j = 0; j < grid.rows; j++) {
         if (i === 0 && j === 0) continue
-        const delta = { x: i * grid.colSpacing, y: j * grid.rowSpacing }
+        const delta = ucsDirectionToWorld(ctx.ucs, {
+          x: i * grid.colSpacing,
+          y: j * grid.rowSpacing,
+        })
         for (const entity of this.state.config.originals) {
           copies.push(copyEntity(entity, delta))
         }

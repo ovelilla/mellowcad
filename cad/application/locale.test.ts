@@ -325,6 +325,39 @@ describe("Spanish AutoCAD's command language", () => {
     expect(cad.commandLog()).toEqual(['Comando "LINE" desconocido.'])
   })
 
+  it("sets the SCP with SCP, Univ typed as U and gUArdado as UA", () => {
+    const cad = createHarness({ locale: es })
+    cad.command("SCP")
+    expect(cad.commandLog()).toEqual([
+      "SCP",
+      "Nombre de scp actual: *UNIVERSAL*",
+    ])
+    expect(cad.state().commandLine.prompt).toBe(
+      "SCP [gUArdado/oBjeto/PRev/Vista/Univ/Z]:"
+    )
+    const asks = () => {
+      const field = cad.runtime.dynamicInput.getSession()?.fields[0]
+      return field?.prompt ? cad.runtime.text.prompt(field.prompt) : null
+    }
+    expect(asks()).toBe("Indique origen de SCP")
+    cad.click(p(10, 0))
+    expect(asks()).toBe("Precise punto en eje X o <Aceptar>")
+    cad.enter()
+    cad.command("SCP").type("ua").enter()
+    expect(cad.state().commandLine.prompt).toBe("SCP [Rest/Guardar/Supr]:")
+    cad.escape().command("SCP")
+    // UA starts with U too, so Univ is typed and confirmed.
+    expect(cad.optionKeys()).toEqual([null, "B", null, "V", null, "Z"])
+    cad.type("u").enter()
+    expect(cad.runtime.document.getSettings().ucs.origin).toBeCloseToPoint(
+      p(0, 0)
+    )
+    cad.command("SIMBSCP")
+    expect(cad.state().commandLine.prompt).toBe(
+      "SIMBSCP [ACT/DES/Sin origen/Origen]:"
+    )
+  })
+
   it("lists the commands by their Spanish names, described in Spanish", () => {
     expect(
       commandCatalog(es).find((command) => command.id === "ERASE")

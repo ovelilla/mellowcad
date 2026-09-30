@@ -64,7 +64,9 @@ export const en: EngineCatalog = {
       "measure": "Measure",
       "measurearea": "Area",
       "zoom": "Zoom",
-      "pan": "Pan"
+      "pan": "Pan",
+      "ucs": "UCS",
+      "ucsicon": "UCS icon"
     },
     "description": {
       "ERASE": "Delete the selected objects",
@@ -644,6 +646,12 @@ export const en: EngineCatalog = {
       "PURGE": [
         "PURGE",
         "PU"
+      ],
+      "UCS": [
+        "UCS"
+      ],
+      "UCSICON": [
+        "UCSICON"
       ]
     },
     "prompts": {
@@ -738,7 +746,16 @@ export const en: EngineCatalog = {
       "clipboardBasePoint": "Specify base point",
       "lengthen": "Lengthen",
       "move": "Move",
-      "bulge": "Bulge"
+      "bulge": "Bulge",
+      "ucsOrigin": "Specify origin of UCS",
+      "ucsXAxisPoint": "Specify point on X-axis or <Accept>",
+      "ucsXYPlanePoint": "Specify point on the XY plane or <Accept>",
+      "ucsRotationZ": "Specify rotation angle about Z axis",
+      "ucsNamedOption": "Enter an option [Restore/Save/Delete/?]",
+      "ucsRestoreName": "Enter name of UCS to restore or [?]",
+      "ucsSaveName": "Enter name to save current UCS or [?]",
+      "ucsDeleteNames": "Enter UCS name(s) to delete <none>",
+      "ucsListNames": "Enter UCS name(s) to list <*>"
     },
     "format": {
       "idle": "Command",
@@ -936,6 +953,60 @@ export const en: EngineCatalog = {
             ]
           }
         ]
+      ],
+      "currentUcsName": [
+        "Current ucs name:  ",
+        [
+          "kind",
+          1,
+          {
+            "world": "*WORLD*",
+            "unnamed": "*NO NAME*",
+            "other": [
+              [
+                "name"
+              ]
+            ]
+          }
+        ]
+      ],
+      "savedUcsHeader": "Saved coordinate systems:",
+      "savedUcsEntry": [
+        [
+          "name"
+        ],
+        "\nOrigin = <",
+        [
+          "originX"
+        ],
+        ",",
+        [
+          "originY"
+        ],
+        ",0.0000>, X Axis = <",
+        [
+          "xAxisX"
+        ],
+        ",",
+        [
+          "xAxisY"
+        ],
+        ",0.0000>\n    Y Axis = <",
+        [
+          "yAxisX"
+        ],
+        ",",
+        [
+          "yAxisY"
+        ],
+        ",0.0000>, Z Axis = <0.0000,0.0000,1.0000>"
+      ],
+      "ucsUndefined": [
+        "Cannot find UCS ",
+        [
+          "name"
+        ],
+        "."
       ]
     },
     "feedback": {
@@ -967,6 +1038,8 @@ export const en: EngineCatalog = {
         ],
         "°"
       ],
+      "ucsIconX": "X",
+      "ucsIconY": "Y",
       "measureDistance": [
         "Dist  ",
         [

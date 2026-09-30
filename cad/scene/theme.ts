@@ -8,6 +8,9 @@ export const THEME = {
   gridMajor: "rgba(148, 163, 184, 0.16)",
   axisX: "rgba(248, 113, 113, 0.55)",
   axisY: "rgba(74, 222, 128, 0.55)",
+  /** The UCS icon's arms: the axis colours, solid, so it reads over the grid. */
+  ucsIconX: "#f87171",
+  ucsIconY: "#4ade80",
   entity: "#e2e8f0",
   entityHover: "#cbd5e1",
   selected: "#f59e0b",

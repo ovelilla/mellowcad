@@ -1,4 +1,5 @@
 import { Ray } from "../../geometry/primitives"
+import { ucsDirectionToWorld } from "../../domain/ucs"
 import { DrawingAidState, TrackingGuide, TrackingPoint } from "./types"
 
 /**
@@ -19,7 +20,10 @@ export function guidesFor(
   // Guides are infinite lines, so half a turn covers every distinct axis.
   for (let deg = 0; deg < 180; deg += step) {
     const angle = (deg * Math.PI) / 180
-    const dir = { x: Math.cos(angle), y: Math.sin(angle) }
+    const dir = ucsDirectionToWorld(aids.ucs, {
+      x: Math.cos(angle),
+      y: Math.sin(angle),
+    })
     const kind: TrackingGuide["kind"] =
       deg % 180 === 0 ? "horizontal" : deg === 90 ? "vertical" : "polar"
     guides.push({ point, dir, angle, kind })

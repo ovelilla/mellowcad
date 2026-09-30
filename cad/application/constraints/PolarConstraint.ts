@@ -1,5 +1,6 @@
 import { Vec2 } from "../../geometry/Vec2"
 import { Ray } from "../../geometry/primitives"
+import { ucsRotation } from "../../domain/ucs"
 import { Viewport } from "../Viewport"
 import { Constraint, ConstraintContext, ConstraintType } from "./types"
 
@@ -65,8 +66,9 @@ export class PolarConstraint implements Constraint {
     if (Math.hypot(dx, dy) < 1e-9) return null
 
     const step = (this.angleStep * Math.PI) / 180
-    const cursorAngle = Math.atan2(dy, dx)
-    const nearest = Math.round(cursorAngle / step) * step
+    const base = ucsRotation(context.ucs)
+    const cursorAngle = Math.atan2(dy, dx) - base
+    const nearest = base + Math.round(cursorAngle / step) * step
     const dir = { x: Math.cos(nearest), y: Math.sin(nearest) }
 
     // Perpendicular distance from the cursor to the candidate ray, in pixels.

@@ -60,7 +60,7 @@ export class PasteTool implements Tool {
       commitRaw: (commitCtx) => {
         const point = parseCoordinate(
           commitCtx.dynamicInput.getText("point").trim(),
-          { lastPoint: null, relativeByDefault: false }
+          { lastPoint: null, relativeByDefault: false, ucs: commitCtx.ucs }
         )
         if (point) this.place(point, commitCtx)
         return true
