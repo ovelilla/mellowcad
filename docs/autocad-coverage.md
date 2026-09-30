@@ -93,7 +93,7 @@ view. The view is not saved in the drawing (no view is yet).
 ## Coordinate systems
 
 The UCS is planar: an origin and an X axis in the world's XY plane, Z always the world's (tilting
-it needs a Z in the model: roadmap item 1). Entities are stored in the WCS.
+it needs a normal per entity and a view off the plan: roadmap item 2). Entities are stored in the WCS.
 
 | Command                  | Implemented                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 | Missing                                                                                                                                                                                                                                                                                                                                                                                                                           |
 | ------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -252,18 +252,17 @@ Agreed ordering. The rule behind it: **close model gaps before command gaps**, b
 entity type multiplies the "Adding an entity type" checklist that a future Z coordinate would force
 us to walk again, whereas a command costs the same before or after Z.
 
-1. **Z in the model (2.5D)** — ELEVATION / THICKNESS as one elevation and one thickness per
-   entity with the normal fixed at +Z (DXF 38/39, 210 by default), ELEV (which resets to 0 on a
-   change to the WCS), `x,y,z`, the Elevation and Thickness palette rows, and the UCS options that
-   tilt the plane (Face, X, Y, ZAxis, a third point turning Z down). Two fields on the base entity
-   cost a new command almost nothing; a LINE with a different Z at each end does not fit and stays
-   a gap. Help pages, `GUID-` plus: ELEV `EE3D7937-2CD7-4F0F-BC8F-0AA0DC306EAE`, ELEVATION
-   `E0FE35FA-841A-40D0-8282-1639F9A47107`, THICKNESS `525A7B6F-414C-4EF7-A208-B79D9524DB66`, About
-   Adding 3D Thickness `65C72A8C-2B2E-4CCD-B596-5D14B3742035`, 3D Cartesian
-   `AABA8FE7-0E86-4046-96D5-CF5464D5FAC6`. 3D solids (ACIS: B-rep, booleans, shading) are off the
-   roadmap: a separate kernel the size of everything built so far, which neither reuses nor
-   cheapens any of this — a product decision, not a debt.
-2. **Views** (VPOINT, `-VIEW` presets) — what makes elevation and thickness visible.
+1. **Z in the model (2.5D)** — Z along the world's Z, with the normal fixed at +Z (DXF 210 by
+   default), stored as DXF stores it: a LINE has a Z at each end, planar objects one elevation, and
+   LINE / CIRCLE / ARC / PLINE a thickness; ELEV, ELEVATION and THICKNESS, `x,y,z` (plus cylindrical
+   and spherical), a UCS origin with a Z, the Z palette rows, ID. The brief, with its sources and
+   decisions, is `docs/next-z.md`. 3D solids (ACIS: B-rep, booleans, shading) are off the roadmap: a
+   separate kernel the size of everything built so far, which neither reuses nor cheapens any of
+   this — a product decision, not a debt.
+2. **Views and the tilted plane** (VPOINT, `-VIEW` presets, a normal per entity, and the UCS options
+   that tilt the XY plane: Face, X, Y, ZAxis, a third point off the plane) — what makes elevation and
+   thickness visible. The tilt waits for the views because an object drawn on a tilted plane needs
+   its own normal, and from the plan that plane is seen edge-on.
 
 Editing a spline — OFFSET (which is also what the ellipse's OFFSET and FILLET wait for), TRIM /
 EXTEND / BREAK / JOIN, SPLINEDIT — is a command gap, so it queues behind the model gap above.
