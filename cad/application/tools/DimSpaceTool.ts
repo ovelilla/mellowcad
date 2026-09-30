@@ -145,12 +145,15 @@ export class DimSpaceTool implements Tool {
       this.enterSelect(this.state.base, ctx)
     } else if (this.state.phase === "boxing") {
       const { base, startWorld, currentWorld, subtract } = this.state
-      const ids = boxSelect(ctx.document, startWorld, currentWorld).filter(
-        (id) => {
-          const entity = ctx.document.get(id)
-          return entity !== undefined && spaceable(entity, base)
-        }
-      )
+      const ids = boxSelect(
+        ctx.document,
+        startWorld,
+        currentWorld,
+        ctx.viewport
+      ).filter((id) => {
+        const entity = ctx.document.get(id)
+        return entity !== undefined && spaceable(entity, base)
+      })
       this.applyPick(ids, subtract, ctx)
       this.enterSelect(base, ctx)
     } else {

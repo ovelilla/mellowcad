@@ -136,7 +136,8 @@ export class BlockTool implements Tool {
       const ids = boxSelect(
         ctx.document,
         this.state.startWorld,
-        this.state.currentWorld
+        this.state.currentWorld,
+        ctx.viewport
       )
       this.applyPick(ids.slice().reverse(), this.state.subtract, ctx)
     } else {

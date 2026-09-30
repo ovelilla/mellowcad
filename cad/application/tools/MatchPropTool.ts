@@ -109,7 +109,12 @@ export class MatchPropTool implements Tool {
   onPointerUp(input: PointerInput, ctx: ToolContext): void {
     if (input.button !== 0) return
     if (this.state.phase === "boxing") {
-      const ids = boxSelect(ctx.document, this.state.startWorld, input.world)
+      const ids = boxSelect(
+        ctx.document,
+        this.state.startWorld,
+        input.world,
+        ctx.viewport
+      )
       this.apply(this.state.source, ids, ctx)
       return
     }

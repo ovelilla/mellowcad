@@ -688,7 +688,7 @@ export class SelectTool implements Tool {
     additive: boolean,
     ctx: ToolContext
   ): void {
-    const hits = boxSelect(ctx.document, start, current)
+    const hits = boxSelect(ctx.document, start, current, ctx.viewport)
     if (additive) {
       for (const id of hits) ctx.selection.add(id)
     } else {

@@ -66,7 +66,8 @@ export const en: EngineCatalog = {
       "zoom": "Zoom",
       "pan": "Pan",
       "ucs": "UCS",
-      "ucsicon": "UCS icon"
+      "ucsicon": "UCS icon",
+      "plan": "Plan view"
     },
     "description": {
       "ERASE": "Delete the selected objects",
@@ -652,6 +653,9 @@ export const en: EngineCatalog = {
       ],
       "UCSICON": [
         "UCSICON"
+      ],
+      "PLAN": [
+        "PLAN"
       ]
     },
     "prompts": {
@@ -755,7 +759,8 @@ export const en: EngineCatalog = {
       "ucsRestoreName": "Enter name of UCS to restore or [?]",
       "ucsSaveName": "Enter name to save current UCS or [?]",
       "ucsDeleteNames": "Enter UCS name(s) to delete <none>",
-      "ucsListNames": "Enter UCS name(s) to list <*>"
+      "ucsListNames": "Enter UCS name(s) to list <*>",
+      "planUcsName": "Enter name of UCS or [?]"
     },
     "format": {
       "idle": "Command",

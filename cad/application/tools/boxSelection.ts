@@ -5,7 +5,7 @@ import {
   entityWithinRect,
   entityCrossesRect,
 } from "../../domain/entities"
-import { Viewport } from "../Viewport"
+import { Viewport, entityInView } from "../Viewport"
 import { ScenePrimitive } from "../../scene/types"
 import { THEME } from "../../scene/theme"
 
@@ -17,28 +17,21 @@ import { THEME } from "../../scene/theme"
  */
 
 /**
- * Crossing when the drag runs right→left. World and screen X share the same
- * ordering (the viewport only flips Y), so comparing world X is sufficient.
+ * The ids of every entity the box from `start` to `current` selects. The box is
+ * upright on screen, so each object is tested in the view frame — whose X also
+ * tells a crossing (dragged right→left) from a window.
  */
-export function isCrossingBox(start: Vec2, current: Vec2): boolean {
-  return current.x < start.x
-}
-
-/** The ids of every entity the box from `start` to `current` selects. */
 export function boxSelect(
   document: DocumentReader,
   start: Vec2,
-  current: Vec2
+  current: Vec2,
+  viewport: Viewport
 ): EntityId[] {
-  const min = {
-    x: Math.min(start.x, current.x),
-    y: Math.min(start.y, current.y),
-  }
-  const max = {
-    x: Math.max(start.x, current.x),
-    y: Math.max(start.y, current.y),
-  }
-  const crossing = isCrossingBox(start, current)
+  const a = viewport.worldToView(start)
+  const b = viewport.worldToView(current)
+  const min = { x: Math.min(a.x, b.x), y: Math.min(a.y, b.y) }
+  const max = { x: Math.max(a.x, b.x), y: Math.max(a.y, b.y) }
+  const crossing = b.x < a.x
   const blocks = document.blockLookup()
 
   const hits: EntityId[] = []
@@ -46,10 +39,11 @@ export function boxSelect(
     // Objects on hidden or locked layers cannot be selected (AutoCAD rule) —
     // the same filter single-click picking applies in Document.pick.
     if (!document.isEntitySelectable(entity)) continue
+    const seen = entityInView(entity, viewport)
     const matches = crossing
-      ? entityWithinRect(entity, min, max, blocks) ||
-        entityCrossesRect(entity, min, max, blocks)
-      : entityWithinRect(entity, min, max, blocks)
+      ? entityWithinRect(seen, min, max, blocks) ||
+        entityCrossesRect(seen, min, max, blocks)
+      : entityWithinRect(seen, min, max, blocks)
     if (matches) hits.push(entity.id)
   }
   return hits
@@ -66,7 +60,7 @@ export function buildSelectionBoxOverlay(
   const min = { x: Math.min(a.x, b.x), y: Math.min(a.y, b.y) }
   const width = Math.abs(a.x - b.x)
   const height = Math.abs(a.y - b.y)
-  const crossing = isCrossingBox(start, current)
+  const crossing = b.x < a.x
 
   return [
     {

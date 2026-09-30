@@ -1,8 +1,9 @@
 import { Vec2, V } from "../../geometry/Vec2"
-import { Entity, entitiesBounds, entityBounds } from "../../domain/entities"
+import { Entity } from "../../domain/entities"
 import { ScenePrimitive } from "../../scene/types"
 import { THEME } from "../../scene/theme"
 import { entityScenePrimitive } from "../SceneBuilder"
+import { entitiesViewBounds } from "../Viewport"
 import {
   CommandOption,
   CommandOptionOutcome,
@@ -92,7 +93,7 @@ export class ZoomTool implements Tool {
     if (this.state.phase === "object") {
       const hit = ctx.pick(input.world)
       if (!hit) return
-      this.frame(entityBounds(hit, ctx.blocks), ctx)
+      this.frame([hit], ctx)
       ctx.endCommand()
     }
   }
@@ -145,11 +146,7 @@ export class ZoomTool implements Tool {
           .toArray()
           .map((id) => ctx.document.get(id))
           .filter((entity): entity is Entity => entity !== undefined)
-        const bounds = entitiesBounds(selected, ctx.blocks)
-        if (bounds) {
-          this.frame(bounds, ctx)
-          return "end"
-        }
+        if (this.frame(selected, ctx)) return "end"
         this.state = { phase: "object", hover: null }
         this.openKeywordPrompt(ctx)
         return "continue"
@@ -191,14 +188,11 @@ export class ZoomTool implements Tool {
   }
 
   private commitWindow(first: Vec2, second: Vec2, ctx: ToolContext): void {
-    const min = {
-      x: Math.min(first.x, second.x),
-      y: Math.min(first.y, second.y),
-    }
-    const max = {
-      x: Math.max(first.x, second.x),
-      y: Math.max(first.y, second.y),
-    }
+    // The window is upright on screen, so its extent is the view frame's.
+    const a = ctx.viewport.worldToView(first)
+    const b = ctx.viewport.worldToView(second)
+    const min = { x: Math.min(a.x, b.x), y: Math.min(a.y, b.y) }
+    const max = { x: Math.max(a.x, b.x), y: Math.max(a.y, b.y) }
     // A stray click (an empty window) would zoom to an absurd scale; keep
     // prompting instead, as AutoCAD does.
     if (max.x - min.x < 1e-9 || max.y - min.y < 1e-9) {
@@ -207,7 +201,7 @@ export class ZoomTool implements Tool {
       return
     }
     ctx.viewport.pushHistory()
-    ctx.viewport.zoomToBounds(min, max)
+    ctx.viewport.zoomToViewBounds(min, max)
     ctx.endCommand()
   }
 
@@ -223,16 +217,15 @@ export class ZoomTool implements Tool {
   }
 
   private zoomExtents(ctx: ToolContext): void {
-    const bounds = entitiesBounds(ctx.document.getEntities(), ctx.blocks)
-    if (!bounds) return
-    this.frame(bounds, ctx)
+    this.frame(ctx.document.getEntities(), ctx)
   }
 
-  private frame(
-    bounds: { readonly min: Vec2; readonly max: Vec2 },
-    ctx: ToolContext
-  ): void {
+  /** Frames `entities` as the view shows them; false when there are none. */
+  private frame(entities: readonly Entity[], ctx: ToolContext): boolean {
+    const bounds = entitiesViewBounds(entities, ctx.viewport, ctx.blocks)
+    if (!bounds) return false
     ctx.viewport.pushHistory()
-    ctx.viewport.zoomToBounds(bounds.min, bounds.max, PADDING_PX)
+    ctx.viewport.zoomToViewBounds(bounds.min, bounds.max, PADDING_PX)
+    return true
   }
 }

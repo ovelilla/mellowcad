@@ -615,8 +615,7 @@ export function entityScenePrimitive(
           at: camera.worldToScreen(entity.position),
           text: entity.value,
           height: Math.max(camera.worldToScreenDistance(entity.height), 0.01),
-          // The camera flips Y, so a world-CCW rotation reads clockwise on screen.
-          rotation: -entity.rotation,
+          rotation: screenRotation(camera, entity.rotation),
           align: textAlignOf(entity.justify),
           baseline: textBaselineOf(entity.justify),
           color: stroke.color,
@@ -630,7 +629,7 @@ export function entityScenePrimitive(
         at: camera.worldToScreen(mtextToWorld(entity, line.x, line.y)),
         text: line.value,
         height,
-        rotation: -entity.rotation,
+        rotation: screenRotation(camera, entity.rotation),
         align: layout.align,
         baseline: "alphabetic",
         color: stroke.color,
@@ -762,7 +761,7 @@ function dimensionPrimitives(
     at: screen(g.textPosition),
     text: g.text,
     height: Math.max(camera.worldToScreenDistance(g.textHeight), 0.01),
-    rotation: -g.textAngle,
+    rotation: screenRotation(camera, g.textAngle),
     align: "center",
     // The measurement sits on top of the dimension line, ISO's DIMTAD 1, with
     // DIMGAP between the two. That gap is measured to the *glyphs*, so the
@@ -774,6 +773,14 @@ function dimensionPrimitives(
     color: stroke.color,
   })
   return primitives
+}
+
+/**
+ * A world angle as a screen rotation: measured from the direction the view
+ * draws pointing right, and clockwise, because the camera flips Y.
+ */
+function screenRotation(camera: CameraTransform, radians: number): number {
+  return -(radians - camera.twist)
 }
 
 /** How a justification places the text horizontally around its point. */

@@ -59,6 +59,7 @@ ZOOM ["Z"] "Zoom"
 PAN ["P"] "Pan"
 UCS [] "UCS"
 UCSICON [] "UCS icon"
+PLAN [] "Plan view"
 ERASE ["E"] "Delete the selected objects"
 UNDO ["U"] "Undo the last action"
 -MTEXT [] "Multiline text"
@@ -137,6 +138,7 @@ zoom "Zoom" Z
 pan "Pan" P
 ucs "UCS" UCS
 ucsicon "UCS icon" UCSICON
+plan "Plan view" PLAN
 
 ## neutral prompt
 > start
@@ -2522,6 +2524,63 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
   options: [null] ON, [null] OFF, [N] Noorigin, [null] ORigin
   command| UCSICON
 > N
+  prompt: Command:
+  asks: -
+  dyn: -
+  options: -
+> PLAN
+  prompt: PLAN [Current ucs/Ucs/World]:
+  asks: 
+  dyn: 
+  options: [C] Current ucs, [U] Ucs, [W] World
+  command| PLAN
+> U
+  prompt: PLAN:
+  asks: "Enter name of UCS or [?]"
+  dyn: "Enter name of UCS or [?]"=""||*
+  options: -
+> ?
+  dyn: "Enter name of UCS or [?]"="?"||*
+> enter
+  asks: "Enter UCS name(s) to list <*>"
+  dyn: "Enter UCS name(s) to list <*>"=""||*
+> all
+  asks: "Enter name of UCS or [?]"
+  dyn: "Enter name of UCS or [?]"=""||*
+  info| Current ucs name:  *NO NAME*
+        Saved coordinate systems:
+        PLOT
+        Origin = <0.0000,0.0000,0.0000>, X Axis = <0.7071,-0.7071,0.0000>
+            Y Axis = <0.7071,0.7071,0.0000>, Z Axis = <0.0000,0.0000,1.0000>
+> unknown
+  dyn: "Enter name of UCS or [?]"="NOPE"||*
+> enter
+  dyn: "Enter name of UCS or [?]"=""||*
+  error| Cannot find UCS NOPE.
+> name
+  dyn: "Enter name of UCS or [?]"="PLOT"||*
+> enter
+  prompt: Command:
+  asks: -
+  dyn: -
+> PLAN enter
+  prompt: PLAN [Current ucs/Ucs/World]:
+  asks: 
+  dyn: 
+  options: [C] Current ucs, [U] Ucs, [W] World
+  command| PLAN
+> enter is Current ucs
+  prompt: Command:
+  asks: -
+  dyn: -
+  options: -
+> PLAN W
+  prompt: PLAN [Current ucs/Ucs/World]:
+  asks: 
+  dyn: 
+  options: [C] Current ucs, [U] Ucs, [W] World
+  command| PLAN
+> W
   prompt: Command:
   asks: -
   dyn: -

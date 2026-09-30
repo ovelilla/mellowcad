@@ -378,3 +378,98 @@ describe("the UCS icon", () => {
     expect(iconLabels(cad)).toHaveLength(2)
   })
 })
+
+describe("PLAN", () => {
+  const view = (cad: Harness) => cad.runtime.viewport
+
+  it("turns the view so the UCS X axis points right, the UCS untouched", () => {
+    const cad = turned(createHarness())
+    cad.command("PLAN").enter()
+    expect(view(cad).xAxis).toBeCloseToPoint(p(0, 1))
+    expect(ucsOf(cad).xAxis).toBeCloseToPoint(p(0, 1))
+    const origin = cad.toScreen(p(100, 50))
+    const onX = cad.toScreen(p(100, 80))
+    expect(onX.y).toBeCloseTo(origin.y)
+    expect(onX.x).toBeGreaterThan(origin.x)
+    expect(cad.activeToolId()).toBe("select")
+  })
+
+  it("fits the extents in the turned view", () => {
+    const cad = createHarness({ entities: [lineOf(p(0, 0), p(0, 500))] })
+    cad.command("UCS").option("Z").enter()
+    cad.command("PLAN").option("Current ucs")
+    const a = cad.toScreen(p(0, 0))
+    const b = cad.toScreen(p(0, 500))
+    expect(a.y).toBeCloseTo(b.y)
+    expect(b.x - a.x).toBeCloseTo(1000 - 80)
+  })
+
+  it("World, a saved UCS by name, and ZOOM Previous back through them", () => {
+    const cad = turned(createHarness())
+    cad.command("UCS").option("NAmed").option("Save").type("Site").enter()
+    cad.command("UCS").option("World")
+    cad.command("PLAN").option("Ucs").type("site").enter()
+    expect(view(cad).xAxis).toBeCloseToPoint(p(0, 1))
+    expect(ucsOf(cad).xAxis).toBeCloseToPoint(p(1, 0))
+    cad.command("PLAN").option("World")
+    expect(view(cad).xAxis).toBeCloseToPoint(p(1, 0))
+    cad.command("ZOOM").option("Previous")
+    expect(view(cad).xAxis).toBeCloseToPoint(p(0, 1))
+  })
+
+  it("asks again for a name it cannot find, and lists with ?", () => {
+    const cad = createHarness()
+    cad.command("PLAN").option("Ucs").type("Nope").enter()
+    expect(cad.commandLog().at(-1)).toBe("Cannot find UCS Nope.")
+    expect(cad.activeToolId()).toBe("plan")
+    cad.type("?").enter().enter()
+    expect(cad.commandLog().join("\n")).toContain("Saved coordinate systems:")
+    expect(cad.activeToolId()).toBe("plan")
+  })
+
+  it("UCS View takes the view's X axis", () => {
+    const cad = turned(createHarness())
+    cad.command("PLAN").enter()
+    cad.command("UCS").option("World")
+    cad.command("UCS").option("View")
+    expect(ucsOf(cad).origin).toBeCloseToPoint(p(0, 0))
+    expect(ucsOf(cad).xAxis).toBeCloseToPoint(p(0, 1))
+  })
+
+  it("draws text turned with the view", () => {
+    const cad = createHarness({ entities: [textOf(p(0, 0), "A")] })
+    cad.command("UCS").option("Z").enter()
+    cad.command("PLAN").enter()
+    const text = cad.scene().primitives.find((prim) => prim.kind === "text")
+    expect(text?.kind === "text" && text.rotation).toBeCloseTo(Math.PI / 2)
+  })
+
+  it("window and crossing selection follow the screen, not world X", () => {
+    const cad = createHarness({
+      entities: [
+        lineOf(p(0, 0), p(0, 10), { id: "along" }),
+        lineOf(p(0, 0), p(20, 0), { id: "across" }),
+      ],
+    })
+    cad.command("UCS").option("Z").enter()
+    cad.command("PLAN").enter()
+    // Screen right is world +Y here, so this runs left to right: a window.
+    cad.drag(p(5, -5), p(-5, 15))
+    expect(cad.selectedIds()).toEqual(["along"])
+    cad.escape().drag(p(-5, 15), p(5, -5))
+    expect(cad.selectedIds().sort()).toEqual(["across", "along"])
+  })
+
+  it("ZOOM Window frames the rectangle drawn on screen", () => {
+    const cad = createHarness()
+    cad.command("UCS").option("Z").type("30").enter()
+    cad.command("PLAN").enter()
+    const first = view(cad).screenToWorld(p(100, 100))
+    const second = view(cad).screenToWorld(p(300, 200))
+    cad.command("ZOOM").click(first).click(second)
+    const a = cad.toScreen(first)
+    const b = cad.toScreen(second)
+    expect(b.x - a.x).toBeCloseTo(1000)
+    expect(b.y - a.y).toBeCloseTo(500)
+  })
+})

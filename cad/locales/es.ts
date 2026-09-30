@@ -66,7 +66,8 @@ export const es: EngineLocale = {
       "zoom": "Zoom",
       "pan": "Encuadre",
       "ucs": "SCP",
-      "ucsicon": "Icono SCP"
+      "ucsicon": "Icono SCP",
+      "plan": "Vista en planta"
     },
     "description": {
       "ERASE": "Borrar los objetos seleccionados",
@@ -638,6 +639,9 @@ export const es: EngineLocale = {
       ],
       "UCSICON": [
         "SIMBSCP"
+      ],
+      "PLAN": [
+        "PLANTA"
       ]
     },
     "keywords": {
@@ -875,6 +879,11 @@ export const es: EngineLocale = {
         "OFF": "DES",
         "Noorigin": "Sin origen",
         "ORigin": "Origen"
+      },
+      "PLAN": {
+        "Current ucs": "scp Actual",
+        "Ucs": "SCP",
+        "World": "Universal"
       }
     },
     "prompts": {
@@ -978,7 +987,8 @@ export const es: EngineLocale = {
       "ucsRestoreName": "Indique nombre de SCP para restaurarlo o [?]",
       "ucsSaveName": "Indique nombre para guardar SCP actual o [?]",
       "ucsDeleteNames": "Indique el nombre del SCP que se suprimirá <ninguno>",
-      "ucsListNames": "Indique nombre(s) del SCP que enumerar <*>"
+      "ucsListNames": "Indique nombre(s) del SCP que enumerar <*>",
+      "planUcsName": "Indique nombre de SCP o [?]"
     },
     "format": {
       "idle": "Comando",

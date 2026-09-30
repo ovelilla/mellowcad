@@ -34,7 +34,9 @@ A tool is an explicit state machine for one AutoCAD command. It owns a discrimin
   verb-noun invocation (Explode, Join, COPYCLIP). A command that must ask something **before** the
   set — COPYBASE's base point — overrides `onActivate` and calls `begin(ctx)` once it has the
   answer, rather than forking the base class.
-- `boxSelection.ts` — window/crossing box selection. Never re-implement it.
+- `boxSelection.ts` — window/crossing box selection. Never re-implement it. `boxSelect` takes
+  `ctx.viewport`, because the box is upright on the screen, which a turned view (PLAN) does not
+  line up with the world.
 - `SelectTool` is split so a new entity type rarely needs the tool itself: `selectToolState.ts`
   holds the state union, `selectToolGrips.ts` enumerates and hit-tests grips (**the file to edit
   when an entity type gains grips**), `selectToolOverlay.ts` draws each edit's preview, and

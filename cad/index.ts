@@ -250,6 +250,7 @@ export { ZoomTool } from "./application/tools/ZoomTool"
 export { PanTool } from "./application/tools/PanTool"
 export { UcsTool } from "./application/tools/UcsTool"
 export { UcsIconTool } from "./application/tools/UcsIconTool"
+export { PlanTool } from "./application/tools/PlanTool"
 
 export type {
   Scene,

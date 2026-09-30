@@ -154,6 +154,8 @@ export interface CameraTransform {
   readonly width: number
   readonly height: number
   readonly scale: number
+  /** The view's twist: radians CCW from world X to the direction drawn pointing right. */
+  readonly twist: number
   worldToScreen(p: Vec2): Vec2
   screenToWorld(p: Vec2): Vec2
   worldToScreenDistance(distance: number): number

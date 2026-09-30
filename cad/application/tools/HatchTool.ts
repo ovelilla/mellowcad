@@ -161,7 +161,8 @@ export class HatchTool implements Tool {
       const ids = boxSelect(
         ctx.document,
         this.state.startWorld,
-        this.state.currentWorld
+        this.state.currentWorld,
+        ctx.viewport
       ).filter((id) => {
         const entity = ctx.document.get(id)
         return entity !== undefined && hatchLoopFromEntity(entity) !== null
@@ -299,9 +300,22 @@ export class HatchTool implements Tool {
   private visibleBounds(ctx: ToolContext): Bounds | null {
     const { viewport } = ctx
     if (viewport.width <= 0 || viewport.height <= 0) return null
-    const min = viewport.screenToWorld({ x: 0, y: viewport.height })
-    const max = viewport.screenToWorld({ x: viewport.width, y: 0 })
-    return { min, max }
+    const corners = [
+      { x: 0, y: 0 },
+      { x: viewport.width, y: 0 },
+      { x: 0, y: viewport.height },
+      { x: viewport.width, y: viewport.height },
+    ].map((corner) => viewport.screenToWorld(corner))
+    return {
+      min: {
+        x: Math.min(...corners.map((c) => c.x)),
+        y: Math.min(...corners.map((c) => c.y)),
+      },
+      max: {
+        x: Math.max(...corners.map((c) => c.x)),
+        y: Math.max(...corners.map((c) => c.y)),
+      },
+    }
   }
 
   /** Every boundary the command has gathered, by either route. */

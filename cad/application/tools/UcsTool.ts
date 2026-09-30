@@ -258,7 +258,11 @@ export class UcsTool implements Tool {
         return "end"
       }
       case "View":
-        this.apply({ origin: ctx.ucs.origin, xAxis: { x: 1, y: 0 } }, null, ctx)
+        this.apply(
+          { origin: ctx.ucs.origin, xAxis: ctx.viewport.xAxis },
+          null,
+          ctx
+        )
         return "end"
       case "Z":
         this.state = { phase: "zAngle" }
@@ -473,7 +477,7 @@ export class UcsTool implements Tool {
         return ctx.endCommand()
       }
       case "list": {
-        this.list(typed === "" ? "*" : typed, ctx)
+        listNamedUcs(typed === "" ? "*" : typed, ctx)
         if (state.back === "named") return this.enterNamed(ctx)
         return this.enterNamePrompt(state.back, ctx)
       }
@@ -483,34 +487,6 @@ export class UcsTool implements Tool {
   private enterList(back: "restore" | "save", ctx: ToolContext): void {
     this.state = { phase: "list", back }
     this.openNameField("ucsListNames", ctx)
-  }
-
-  /** The `?` listing: each saved UCS's origin and axes, relative to the current UCS. */
-  private list(patterns: string, ctx: ToolContext): void {
-    const settings = ctx.document.getSettings()
-    const wanted = patterns.split(",").map((part) => part.trim())
-    const lines = [ctx.text.message("currentUcsName", currentName(settings))]
-    lines.push(ctx.text.message("savedUcsHeader"))
-    const fmt = (value: number) => value.toFixed(4)
-    for (const entry of settings.namedUcs) {
-      if (!wanted.some((pattern) => matchesWildcard(entry.name, pattern))) {
-        continue
-      }
-      const origin = worldPointToUcs(ctx.ucs, entry.ucs.origin)
-      const x = worldDirectionToUcs(ctx.ucs, entry.ucs.xAxis)
-      lines.push(
-        ctx.text.message("savedUcsEntry", {
-          name: entry.name,
-          originX: fmt(origin.x),
-          originY: fmt(origin.y),
-          xAxisX: fmt(x.x),
-          xAxisY: fmt(x.y),
-          yAxisX: fmt(-x.y),
-          yAxisY: fmt(x.x),
-        })
-      )
-    }
-    ctx.report(lines.join("\n"))
   }
 
   private save(name: string, ctx: ToolContext): void {
@@ -577,9 +553,43 @@ export function currentName(settings: DocumentSettings): {
   return { kind: isWorldUcs(settings.ucs) ? "world" : "unnamed", name: "" }
 }
 
-function findNamed(table: readonly NamedUcs[], name: string): NamedUcs | null {
+export function findNamed(
+  table: readonly NamedUcs[],
+  name: string
+): NamedUcs | null {
   const key = name.toUpperCase()
   return table.find((entry) => entry.name.toUpperCase() === key) ?? null
+}
+
+/**
+ * The `?` listing of UCS and PLAN: each saved UCS matching `patterns`, its
+ * origin and axes relative to the current UCS.
+ */
+export function listNamedUcs(patterns: string, ctx: ToolContext): void {
+  const settings = ctx.document.getSettings()
+  const wanted = patterns.split(",").map((part) => part.trim())
+  const lines = [ctx.text.message("currentUcsName", currentName(settings))]
+  lines.push(ctx.text.message("savedUcsHeader"))
+  const fmt = (value: number) => value.toFixed(4)
+  for (const entry of settings.namedUcs) {
+    if (!wanted.some((pattern) => matchesWildcard(entry.name, pattern))) {
+      continue
+    }
+    const origin = worldPointToUcs(ctx.ucs, entry.ucs.origin)
+    const x = worldDirectionToUcs(ctx.ucs, entry.ucs.xAxis)
+    lines.push(
+      ctx.text.message("savedUcsEntry", {
+        name: entry.name,
+        originX: fmt(origin.x),
+        originY: fmt(origin.y),
+        xAxisX: fmt(x.x),
+        xAxisY: fmt(x.y),
+        yAxisX: fmt(-x.y),
+        yAxisY: fmt(x.x),
+      })
+    )
+  }
+  ctx.report(lines.join("\n"))
 }
 
 /** The objects UCS OBject can align to; dimensions and hatches are not among them. */

@@ -73,6 +73,15 @@ A tool returning `usesCrosshair() === false` (PAN) opts out entirely: no crossha
 (`WHEEL_BURST_MS`) and a pan drag are each one entry, not one per event. `zoomToBounds` is the
 single "frame this rectangle" operation; use it rather than composing `zoomAt` + `centerOn`.
 
+**The view can be turned** (PLAN, VIEWTWIST): `xAxis` is the world direction drawn pointing right,
+kept as a unit vector like a UCS axis, and part of the `Camera` ZOOM Previous restores. A screen
+rectangle is therefore upright in the **view frame** (`worldToView`), not in the world. Anything
+that tests or frames one works there: `boxSelect` tests `entityInView`, ZOOM Window / Extents /
+Object and PLAN frame `entitiesViewBounds` with `zoomToViewBounds` (`zoomToBounds` is for a
+_world_ rectangle, which a turned view fits by its bounding box), and a visible-area query maps all
+four screen corners, never two. Two opposite corners through `screenToWorld` only bound the view
+while it is untwisted — the bug stays invisible until someone runs PLAN in a turned UCS.
+
 ## Key routing (`CadRuntime.keyDown`) — order is load-bearing
 
 1. Escape closes an open snap-override menu or Selection list box, or cancels the FROM modifier,
@@ -192,6 +201,9 @@ old one.
 
 The `label` primitive is chrome: screen-space, fixed size, never rotated. Anything that belongs to
 the **drawing** uses the `text` primitive instead, which carries a world-derived size and angle.
+A world angle becomes a screen rotation through `screenRotation(camera, radians)`, which accounts
+for both the Y flip and the view's twist (`CameraTransform.twist`); positions, arcs and ellipses
+are resolved from projected points and need nothing.
 Glyph metrics — alignment, cap height, font size — are the presenter's job: the scene describes
 _what_ to align to, not where the pixels land.
 

@@ -199,6 +199,7 @@ export const TOOL_COMMANDS: Readonly<Record<string, string>> = {
   pan: "PAN",
   ucs: "UCS",
   ucsicon: "UCSICON",
+  plan: "PLAN",
 }
 
 /** The shortest way to type a command, e.g. `"L"` — shown in tooltips. */

@@ -196,7 +196,8 @@ export class MirrorTool implements Tool {
       const hits = boxSelect(
         ctx.document,
         this.state.startWorld,
-        this.state.currentWorld
+        this.state.currentWorld,
+        ctx.viewport
       )
       this.applyPick(hits, this.state.subtract, ctx)
       this.state = { phase: "selecting" }

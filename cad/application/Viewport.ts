@@ -1,5 +1,12 @@
 import { Observable } from "../shared/Observable"
 import { Vec2, vec2 } from "../geometry/Vec2"
+import {
+  BlockLookup,
+  Bounds,
+  Entity,
+  entitiesBounds,
+  rotateEntity,
+} from "../domain/entities"
 
 /**
  * The viewport owns the mapping between *world* coordinates (what entities are
@@ -11,6 +18,9 @@ import { Vec2, vec2 } from "../geometry/Vec2"
  * - Screen space is Y-down (pixels).
  * - `scale` is pixels per world unit.
  * - `translation` is the screen-pixel position of the world origin (0, 0).
+ * - `xAxis` is the world direction that reads as screen-right (VIEWTWIST).
+ *   The *view frame* is the world turned so that direction is +X: a screen
+ *   rectangle is an axis-aligned one there, not in the world.
  *
  * Screen sizes are measured in CSS pixels; device-pixel-ratio is handled by the
  * render adapter, not here. The viewport structurally satisfies the scene
@@ -20,11 +30,15 @@ import { Vec2, vec2 } from "../geometry/Vec2"
 export interface Camera {
   readonly scale: number
   readonly translation: Vec2
+  readonly xAxis: Vec2
 }
+
+const WORLD_X: Vec2 = { x: 1, y: 0 }
 
 export class Viewport extends Observable {
   private scaleValue = 1
   private translationValue: Vec2 = { x: 0, y: 0 }
+  private xAxisValue: Vec2 = WORLD_X
 
   /** Canvas size in CSS pixels. */
   private widthValue = 0
@@ -45,6 +59,16 @@ export class Viewport extends Observable {
     return this.translationValue
   }
 
+  /** Unit vector: the world direction drawn pointing right. */
+  get xAxis(): Vec2 {
+    return this.xAxisValue
+  }
+
+  /** The view's twist, radians CCW from the world X axis. */
+  get twist(): number {
+    return Math.atan2(this.xAxisValue.y, this.xAxisValue.x)
+  }
+
   get width(): number {
     return this.widthValue
   }
@@ -61,17 +85,31 @@ export class Viewport extends Observable {
   }
 
   worldToScreen(p: Vec2): Vec2 {
+    const v = this.worldToView(p)
     return {
-      x: p.x * this.scaleValue + this.translationValue.x,
-      y: -p.y * this.scaleValue + this.translationValue.y,
+      x: v.x * this.scaleValue + this.translationValue.x,
+      y: -v.y * this.scaleValue + this.translationValue.y,
     }
   }
 
   screenToWorld(p: Vec2): Vec2 {
-    return {
+    return this.viewToWorld({
       x: (p.x - this.translationValue.x) / this.scaleValue,
       y: -(p.y - this.translationValue.y) / this.scaleValue,
-    }
+    })
+  }
+
+  /** A world point in the view frame (the world turned by minus the twist). */
+  worldToView(p: Vec2): Vec2 {
+    const { x: c, y: s } = this.xAxisValue
+    if (s === 0 && c === 1) return p
+    return { x: p.x * c + p.y * s, y: -p.x * s + p.y * c }
+  }
+
+  viewToWorld(p: Vec2): Vec2 {
+    const { x: c, y: s } = this.xAxisValue
+    if (s === 0 && c === 1) return p
+    return { x: p.x * c - p.y * s, y: p.x * s + p.y * c }
   }
 
   /** Converts a length in world units to screen pixels. */
@@ -107,15 +145,20 @@ export class Viewport extends Observable {
     )
     this.scaleValue = nextScale
     // Solve translation so worldToScreen(worldBefore) === screenAnchor again.
+    const view = this.worldToView(worldBefore)
     this.translationValue = {
-      x: screenAnchor.x - worldBefore.x * nextScale,
-      y: screenAnchor.y + worldBefore.y * nextScale,
+      x: screenAnchor.x - view.x * nextScale,
+      y: screenAnchor.y + view.y * nextScale,
     }
     this.emit()
   }
 
   getCamera(): Camera {
-    return { scale: this.scaleValue, translation: this.translationValue }
+    return {
+      scale: this.scaleValue,
+      translation: this.translationValue,
+      xAxis: this.xAxisValue,
+    }
   }
 
   setCamera(camera: Camera): void {
@@ -125,7 +168,20 @@ export class Viewport extends Observable {
       Viewport.MAX_SCALE
     )
     this.translationValue = camera.translation
+    this.xAxisValue = camera.xAxis
     this.emit()
+  }
+
+  /**
+   * Turns the view so the world direction `xAxis` reads as screen-right,
+   * keeping the point at the centre of the screen where it is.
+   */
+  setXAxis(xAxis: Vec2): void {
+    const length = Math.hypot(xAxis.x, xAxis.y)
+    if (!(length > 0) || !Number.isFinite(length)) return
+    const center = this.worldCenter()
+    this.xAxisValue = { x: xAxis.x / length, y: xAxis.y / length }
+    this.centerOn(center)
   }
 
   /**
@@ -151,10 +207,34 @@ export class Viewport extends Observable {
   }
 
   /**
-   * Frames a world rectangle, leaving `padding` screen pixels of margin. The
-   * smaller of the two axis scales is used, so the whole rectangle fits.
+   * Frames a world rectangle, leaving `padding` screen pixels of margin. In a
+   * twisted view that is the rectangle's bounding box in the view frame.
    */
   zoomToBounds(min: Vec2, max: Vec2, padding = 0): void {
+    const corners = [
+      min,
+      { x: max.x, y: min.y },
+      max,
+      { x: min.x, y: max.y },
+    ].map((corner) => this.worldToView(corner))
+    this.zoomToViewBounds(
+      {
+        x: Math.min(...corners.map((c) => c.x)),
+        y: Math.min(...corners.map((c) => c.y)),
+      },
+      {
+        x: Math.max(...corners.map((c) => c.x)),
+        y: Math.max(...corners.map((c) => c.y)),
+      },
+      padding
+    )
+  }
+
+  /**
+   * Frames a rectangle of the view frame — what the screen shows as an upright
+   * rectangle. The smaller of the two axis scales is used, so all of it fits.
+   */
+  zoomToViewBounds(min: Vec2, max: Vec2, padding = 0): void {
     const worldWidth = Math.max(max.x - min.x, 1e-6)
     const worldHeight = Math.max(max.y - min.y, 1e-6)
     const scale = Math.min(
@@ -162,7 +242,9 @@ export class Viewport extends Observable {
       (this.heightValue - padding * 2) / worldHeight
     )
     this.scaleValue = clamp(scale, Viewport.MIN_SCALE, Viewport.MAX_SCALE)
-    this.centerOn({ x: (min.x + max.x) / 2, y: (min.y + max.y) / 2 })
+    this.centerOn(
+      this.viewToWorld({ x: (min.x + max.x) / 2, y: (min.y + max.y) / 2 })
+    )
   }
 
   /** Resets pan/zoom so world origin sits at the centre with unit scale. */
@@ -177,9 +259,10 @@ export class Viewport extends Observable {
 
   /** Centres the view on a world point at the current scale. */
   centerOn(worldPoint: Vec2): void {
+    const view = this.worldToView(worldPoint)
     this.translationValue = {
-      x: this.widthValue / 2 - worldPoint.x * this.scaleValue,
-      y: this.heightValue / 2 + worldPoint.y * this.scaleValue,
+      x: this.widthValue / 2 - view.x * this.scaleValue,
+      y: this.heightValue / 2 + view.y * this.scaleValue,
     }
     this.emit()
   }
@@ -187,6 +270,28 @@ export class Viewport extends Observable {
   worldCenter(): Vec2 {
     return this.screenToWorld(vec2(this.widthValue / 2, this.heightValue / 2))
   }
+}
+
+/**
+ * An entity as the view frame holds it, so a question about a screen
+ * rectangle (window selection, a zoom's extents) is an axis-aligned one.
+ */
+export function entityInView(entity: Entity, viewport: Viewport): Entity {
+  const { x: c, y: s } = viewport.xAxis
+  if (s === 0 && c === 1) return entity
+  return rotateEntity(entity, { x: 0, y: 0 }, -viewport.twist)
+}
+
+/** The extents of `entities` in the view frame, for {@link Viewport.zoomToViewBounds}. */
+export function entitiesViewBounds(
+  entities: readonly Entity[],
+  viewport: Viewport,
+  blocks?: BlockLookup
+): Bounds | null {
+  return entitiesBounds(
+    entities.map((entity) => entityInView(entity, viewport)),
+    blocks
+  )
 }
 
 function clamp(value: number, min: number, max: number): number {

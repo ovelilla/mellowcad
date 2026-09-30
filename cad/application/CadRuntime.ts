@@ -8,7 +8,6 @@ import {
   Entity,
   EntityId,
   EntityProperty,
-  entitiesBounds,
 } from "../domain/entities"
 import { COLOR_BYLAYER, EntityColor } from "../domain/colors"
 import {
@@ -34,7 +33,7 @@ import {
 } from "../serialization/drawingFile"
 import { isBlankDrawing } from "../serialization/drawingSummary"
 import { Scene } from "../scene/types"
-import { Viewport } from "./Viewport"
+import { Viewport, entitiesViewBounds } from "./Viewport"
 import { Selection } from "./Selection"
 import { SnapMode, SnapModeType } from "./SnapMode"
 import { SelectionCycling } from "./SelectionCycling"
@@ -655,15 +654,16 @@ export class CadRuntime extends Observable {
 
   zoomToFit(padding = 40): void {
     this.viewport.pushHistory()
-    const bounds = entitiesBounds(
+    const bounds = entitiesViewBounds(
       this.document.getEntities(),
+      this.viewport,
       this.document.blockLookup()
     )
     if (!bounds) {
       this.viewport.reset()
       return
     }
-    this.viewport.zoomToBounds(bounds.min, bounds.max, padding)
+    this.viewport.zoomToViewBounds(bounds.min, bounds.max, padding)
   }
 
   /** Frames a world rectangle: ZOOM Window, given its corners. */

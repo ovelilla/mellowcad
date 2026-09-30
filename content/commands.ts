@@ -100,6 +100,7 @@ export const COMMAND_FILING: Readonly<Record<string, Filing>> = {
   FROM: { group: "inquiry" },
   UCS: { group: "inquiry" },
   UCSICON: { group: "inquiry" },
+  PLAN: { group: "inquiry" },
 
   QSAVE: { group: "files" },
   OPEN: { group: "files" },
