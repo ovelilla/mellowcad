@@ -1,4 +1,5 @@
 import { Vec2, V } from "../../geometry/Vec2"
+import { Vec3, withZ } from "../../geometry/Vec3"
 import { polarPoint } from "../../geometry/primitives"
 import {
   Entity,
@@ -7,6 +8,7 @@ import {
   arcStartPoint,
   ellipseEndPoint,
   ellipseStartPoint,
+  entityZAt,
   isFullEllipse,
   polylineSegmentGeometries,
   splinePolyline,
@@ -44,8 +46,8 @@ import { headingInUcs } from "./ucsHeading"
 
 type UcsState =
   | { readonly phase: "origin" }
-  | { readonly phase: "xAxis"; readonly origin: Vec2 }
-  | { readonly phase: "xyPlane"; readonly origin: Vec2; readonly xAxis: Vec2 }
+  | { readonly phase: "xAxis"; readonly origin: Vec3 }
+  | { readonly phase: "xyPlane"; readonly origin: Vec3; readonly xAxis: Vec2 }
   | { readonly phase: "zAngle" }
   | { readonly phase: "named" }
   | { readonly phase: "restore" }
@@ -63,9 +65,11 @@ const MAX_PREVIOUS = 10
 const INVALID_NAME = /[\\<>/?":;*|,=`]/
 
 /**
- * AutoCAD's UCS, in the plane: the origin and the direction of the X axis.
- * Face, X, Y and ZAxis tilt the XY plane out of the world's and are not
- * offered; a third point that would turn the Z axis down is not taken.
+ * AutoCAD's UCS with its XY plane kept horizontal: the origin (with its Z) and
+ * the direction of the X axis. Face, X, Y and ZAxis tilt the XY plane out of
+ * the world's and are not offered; the points that fix the axes are read in
+ * plan (a Z of theirs would tilt it), and a third point that would turn the Z
+ * axis down is not taken.
  */
 export class UcsTool implements Tool {
   readonly id = "ucs"
@@ -308,7 +312,7 @@ export class UcsTool implements Tool {
     this.place(ctx)
   }
 
-  private enterXAxis(origin: Vec2, ctx: ToolContext): void {
+  private enterXAxis(origin: Vec3, ctx: ToolContext): void {
     this.state = { phase: "xAxis", origin }
     ctx.dynamicInput.open({
       fields: [{ id: "point", prompt: "ucsXAxisPoint", kind: "coordinate" }],
@@ -329,7 +333,7 @@ export class UcsTool implements Tool {
     this.place(ctx)
   }
 
-  private enterXYPlane(origin: Vec2, onXAxis: Vec2, ctx: ToolContext): void {
+  private enterXYPlane(origin: Vec3, onXAxis: Vec2, ctx: ToolContext): void {
     const ucs = createUcs(origin, V.sub(onXAxis, origin))
     if (!ucs) return
     this.state = { phase: "xyPlane", origin, xAxis: ucs.xAxis }
@@ -356,7 +360,7 @@ export class UcsTool implements Tool {
    * would turn the UCS over, which needs a Z the model does not have.
    */
   private acceptPlanePoint(
-    origin: Vec2,
+    origin: Vec3,
     xAxis: Vec2,
     point: Vec2,
     ctx: ToolContext
@@ -526,9 +530,9 @@ export class UcsTool implements Tool {
 
   private parse(
     text: string,
-    from: Vec2 | null,
+    from: Vec3 | null,
     ctx: ToolContext
-  ): Vec2 | null {
+  ): Vec3 | null {
     if (!isCoordinateExpression(text)) return null
     return parseCoordinate(text, {
       lastPoint: from,
@@ -582,6 +586,7 @@ export function listNamedUcs(patterns: string, ctx: ToolContext): void {
         name: entry.name,
         originX: fmt(origin.x),
         originY: fmt(origin.y),
+        originZ: fmt(origin.z),
         xAxisX: fmt(x.x),
         xAxisY: fmt(x.y),
         yAxisX: fmt(-x.y),
@@ -600,11 +605,12 @@ function alignable(entity: Entity | null): Entity | null {
 
 /**
  * AutoCAD's UCS OBject: where the origin goes and which way X points depends
- * on the kind of object and on where it was picked.
+ * on the kind of object and on where it was picked. The origin takes the
+ * object's height there, which puts the XY plane on the object's.
  */
 function ucsFromObject(entity: Entity, pick: Vec2): Ucs | null {
   const toward = (origin: Vec2, target: Vec2) =>
-    createUcs(origin, V.sub(target, origin))
+    createUcs(withZ(origin, entityZAt(entity, origin)), V.sub(target, origin))
   const nearer = (a: Vec2, b: Vec2) =>
     V.distance(pick, a) <= V.distance(pick, b) ? a : b
   switch (entity.type) {
@@ -655,7 +661,7 @@ function ucsFromObject(entity: Entity, pick: Vec2): Ucs | null {
     case "attdef":
     case "insert":
       return createUcs(
-        entity.position,
+        withZ(entity.position, entityZAt(entity, entity.position)),
         polarPoint({ x: 0, y: 0 }, 1, entity.rotation)
       )
     default:

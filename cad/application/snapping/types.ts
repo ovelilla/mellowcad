@@ -1,4 +1,5 @@
 import { Vec2 } from "../../geometry/Vec2"
+import { Vec3 } from "../../geometry/Vec3"
 import { DocumentReader } from "../../domain/Document"
 import { Entity, EntityId } from "../../domain/entities"
 
@@ -42,8 +43,11 @@ export enum SnapType {
 /** A single snap candidate produced by a provider. */
 export interface SnapCandidate {
   readonly type: SnapType
-  /** The snapped point, in world coordinates. */
-  readonly point: Vec2
+  /**
+   * The snapped point, in world coordinates, at the Z of the object there
+   * (AutoCAD's OSNAPZ 0): a snap is where a point takes a height from.
+   */
+  readonly point: Vec3
   /** Entities that produced this snap (for highlighting / debugging). */
   readonly sourceIds?: readonly EntityId[]
   /**

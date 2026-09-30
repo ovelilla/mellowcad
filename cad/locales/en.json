@@ -660,7 +660,7 @@
       "explodeRejected": "{count, plural, one {# was not able to be exploded.} other {# were not able to be exploded.}}",
       "currentUcsName": "Current ucs name:  {kind, select, world {*WORLD*} unnamed {*NO NAME*} other {{name}}}",
       "savedUcsHeader": "Saved coordinate systems:",
-      "savedUcsEntry": "{name}\nOrigin = '<'{originX},{originY},0.0000>, X Axis = '<'{xAxisX},{xAxisY},0.0000>\n    Y Axis = '<'{yAxisX},{yAxisY},0.0000>, Z Axis = '<'0.0000,0.0000,1.0000>",
+      "savedUcsEntry": "{name}\nOrigin = '<'{originX},{originY},{originZ}>, X Axis = '<'{xAxisX},{xAxisY},0.0000>\n    Y Axis = '<'{yAxisX},{yAxisY},0.0000>, Z Axis = '<'0.0000,0.0000,1.0000>",
       "ucsUndefined": "Cannot find UCS {name}."
     },
     "feedback": {

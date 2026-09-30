@@ -175,7 +175,8 @@ alimenta el `@` de otro comando. Las dos cosas quedan anotadas.
 
 **F1. Modelo y fichero** — hecha (versión 22; MATCHPROP copia la altura de objeto).
 
-**F2. Canal de puntos.**
+**F2. Canal de puntos** — hecha (el `origin.z` del UCS se lee y escribe sin cambiar la versión 22;
+las cotas y HATCH siguen a Z 0 hasta F5, donde ya estaban; el helper de D5 es `onPlaneOf`).
 
 - `ResolvedPoint`/`PointerInput` llevan la Z (D4).
 - Las referencias a objeto devuelven la Z del objeto (`snapping/providers.ts`); la Intersection

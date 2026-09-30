@@ -1,4 +1,5 @@
 import { Vec2 } from "../geometry/Vec2"
+import { Vec3, zOf } from "../geometry/Vec3"
 import { DEFAULT_LAYER_ID, LayerId } from "./layers"
 import {
   DEFAULT_HATCH_ANGLE,
@@ -20,6 +21,7 @@ import {
   InsertEntity,
   Entity,
 } from "./entityTypes"
+import { withDeltaZ, withElevation } from "./elevation"
 
 let idCounter = 0
 
@@ -28,13 +30,21 @@ export function nextEntityId(): EntityId {
   return `e${idCounter.toString(36)}-${Date.now().toString(36)}`
 }
 
+/** DXF gives a line a Z per end, so ends that have one set its elevation and rise. */
 export function createLine(
-  start: Vec2,
-  end: Vec2,
+  start: Vec2 | Vec3,
+  end: Vec2 | Vec3,
   layerId: LayerId = DEFAULT_LAYER_ID,
   id: EntityId = nextEntityId()
 ): LineEntity {
-  return { id, type: "line", layerId, start, end }
+  const line: LineEntity = {
+    id,
+    type: "line",
+    layerId,
+    start: { x: start.x, y: start.y },
+    end: { x: end.x, y: end.y },
+  }
+  return withDeltaZ(withElevation(line, zOf(start)), zOf(end) - zOf(start))
 }
 
 export function createCircle(
@@ -43,7 +53,13 @@ export function createCircle(
   layerId: LayerId = DEFAULT_LAYER_ID,
   id: EntityId = nextEntityId()
 ): CircleEntity {
-  return { id, type: "circle", layerId, center, radius }
+  return {
+    id,
+    type: "circle",
+    layerId,
+    center: { x: center.x, y: center.y },
+    radius,
+  }
 }
 
 export function createArc(
@@ -54,7 +70,15 @@ export function createArc(
   layerId: LayerId = DEFAULT_LAYER_ID,
   id: EntityId = nextEntityId()
 ): ArcEntity {
-  return { id, type: "arc", layerId, center, radius, startAngle, endAngle }
+  return {
+    id,
+    type: "arc",
+    layerId,
+    center: { x: center.x, y: center.y },
+    radius,
+    startAngle,
+    endAngle,
+  }
 }
 
 export function createPolyline(

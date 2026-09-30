@@ -13,6 +13,7 @@
  */
 
 import { Vec2 } from "../geometry/Vec2"
+import { Vec3, zOf } from "../geometry/Vec3"
 import {
   DrawingSnapshot,
   ParsedDrawing,
@@ -30,21 +31,22 @@ export interface ClipboardFragment {
   /**
    * The point the objects were copied relative to — COPYCLIP puts it at the
    * lower-left of their extents, COPYBASE wherever the user picked. A paste
-   * lands it on the insertion point.
+   * lands it on the insertion point, Z included.
    */
-  readonly basePoint: Vec2
+  readonly basePoint: Vec3
   readonly drawing: ParsedDrawing
 }
 
 export function serializeClipboard(
-  basePoint: Vec2,
+  basePoint: Vec2 | Vec3,
   snapshot: DrawingSnapshot
 ): string {
+  const z = zOf(basePoint)
   return JSON.stringify({
     type: CLIPBOARD_FILE_TYPE,
     version: CLIPBOARD_FILE_VERSION,
     generator: "mellowcad",
-    basePoint: { x: basePoint.x, y: basePoint.y },
+    basePoint: { x: basePoint.x, y: basePoint.y, ...(z !== 0 ? { z } : {}) },
     drawing: toDrawingFile(snapshot),
   })
 }
@@ -81,9 +83,13 @@ function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null
 }
 
-function parsePoint(value: unknown): Vec2 {
+function parsePoint(value: unknown): Vec3 {
   if (isRecord(value) && Number.isFinite(value.x) && Number.isFinite(value.y)) {
-    return { x: value.x as number, y: value.y as number }
+    return {
+      x: value.x as number,
+      y: value.y as number,
+      z: Number.isFinite(value.z) ? (value.z as number) : 0,
+    }
   }
-  return { x: 0, y: 0 }
+  return { x: 0, y: 0, z: 0 }
 }

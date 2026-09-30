@@ -1,4 +1,4 @@
-import { Vec2 } from "../../geometry/Vec2"
+import { Vec3 } from "../../geometry/Vec3"
 import { Entity, copyEntity } from "../../domain/entities"
 import { AddEntitiesCommand } from "../commands/entityCommands"
 import { ToolContext } from "./Tool"
@@ -21,7 +21,7 @@ export class CopyTool extends PlacementTool {
 
   protected place(
     originals: readonly Entity[],
-    delta: Vec2,
+    delta: Vec3,
     ctx: ToolContext
   ): void {
     ctx.execute(

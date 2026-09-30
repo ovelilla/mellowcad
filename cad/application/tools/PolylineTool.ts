@@ -1,5 +1,6 @@
 import { Vec2, V } from "../../geometry/Vec2"
-import { createPolyline } from "../../domain/entities"
+import { Vec3, withZOf } from "../../geometry/Vec3"
+import { createPolyline, onPlaneOf } from "../../domain/entities"
 import { bulgeToArc } from "../../geometry/primitives"
 import { parseNumber } from "../../domain/units"
 import { AddEntityCommand } from "../commands/entityCommands"
@@ -38,11 +39,14 @@ type PolylineToolState =
   /** First vertex placed; rubber-banding towards the next one. */
   | {
       readonly phase: "drawing"
-      /** Every vertex placed so far (`vertices[0]` is the first). */
-      readonly vertices: readonly Vec2[]
+      /**
+       * Every vertex placed so far (`vertices[0]` is the first), each projected
+       * onto the first one's plane: a polyline is flat, as in AutoCAD.
+       */
+      readonly vertices: readonly Vec3[]
       /** Bulge of each committed segment (entry `i` = vertices[i]→[i+1]). */
       readonly bulges: readonly number[]
-      readonly cursor: Vec2
+      readonly cursor: Vec3
       /** Last non-degenerate unit direction from the last vertex to the cursor. */
       readonly direction: Vec2 | null
       /** Whether the chain is to be closed on commit (set by the Close option). */
@@ -240,21 +244,22 @@ export class PolylineTool implements Tool {
   /** The last (most recent) vertex of the chain being drawn. */
   private lastVertex(
     state: Extract<PolylineToolState, { phase: "drawing" }>
-  ): Vec2 {
+  ): Vec3 {
     return state.vertices[state.vertices.length - 1]
   }
 
   /** Appends `point` as the next vertex and keeps drawing from it. */
-  private appendVertex(point: Vec2, ctx: ToolContext): void {
+  private appendVertex(point: Vec3, ctx: ToolContext): void {
     if (this.state.phase !== "drawing") return
+    const onPlane = withZOf(point, this.state.vertices[0])
     // In arc mode the new segment is a tangent arc; its bulge is derived from
     // the direction leaving the previous segment.
-    const bulge = this.pendingBulge(this.state, point)
+    const bulge = this.pendingBulge(this.state, onPlane)
     this.state = {
       ...this.state,
-      vertices: [...this.state.vertices, point],
+      vertices: [...this.state.vertices, onPlane],
       bulges: [...this.state.bulges, bulge],
-      cursor: point,
+      cursor: onPlane,
       direction: null,
     }
     ctx.dynamicInput.clearTexts()
@@ -312,18 +317,21 @@ export class PolylineTool implements Tool {
     if (vertices.length < 2) return
     ctx.execute(
       new AddEntityCommand(
-        createPolyline(
-          vertices,
-          closed,
-          ctx.document.getCurrentLayerId(),
-          bulges
+        onPlaneOf(
+          createPolyline(
+            vertices,
+            closed,
+            ctx.document.getCurrentLayerId(),
+            bulges
+          ),
+          vertices[0]
         )
       )
     )
   }
 
   /** Enters the drawing phase from the first vertex, opening the length session. */
-  private beginDrawing(start: Vec2, ctx: ToolContext, screen?: Vec2): void {
+  private beginDrawing(start: Vec3, ctx: ToolContext, screen?: Vec2): void {
     this.state = {
       phase: "drawing",
       vertices: [start],
@@ -347,7 +355,7 @@ export class PolylineTool implements Tool {
    * Resolves the first vertex, honouring a coordinate typed into the pre-start
    * box. The first point has no previous point, so a bare `x,y` is absolute.
    */
-  private resolveFirstPoint(rawPoint: Vec2, ctx: ToolContext): Vec2 {
+  private resolveFirstPoint(rawPoint: Vec3, ctx: ToolContext): Vec3 {
     const text = ctx.dynamicInput.getText("point").trim()
     if (isCoordinateExpression(text)) {
       const point = parseCoordinate(text, {
@@ -424,11 +432,11 @@ export class PolylineTool implements Tool {
     const { distance, angle } = values
     if (!(distance > 0) || !Number.isFinite(angle)) return
     const direction = directionFromUcsHeading(ctx.ucs, angle)
-    const point = V.add(
-      this.lastVertex(this.state),
-      V.scale(direction, distance)
+    const last = this.lastVertex(this.state)
+    this.appendVertex(
+      withZOf(V.add(last, V.scale(direction, distance)), last),
+      ctx
     )
-    this.appendVertex(point, ctx)
   }
 
   /** True when neither dimension field holds typed text. */
@@ -477,7 +485,7 @@ export class PolylineTool implements Tool {
    * the line tool: a typed length or angle overrides the corresponding cursor
    * component, an untyped one follows the cursor (already Ortho/snap aware).
    */
-  private resolveEnd(start: Vec2, rawCursor: Vec2, ctx: ToolContext): Vec2 {
+  private resolveEnd(start: Vec3, rawCursor: Vec3, ctx: ToolContext): Vec3 {
     const coordText = ctx.dynamicInput.getText("distance").trim()
     if (isCoordinateExpression(coordText)) {
       const point = parseCoordinate(coordText, {
@@ -499,9 +507,9 @@ export class PolylineTool implements Tool {
     const angle = typedAngle ?? cursorAngle
     if (angle === null) return rawCursor
 
-    return V.add(
-      start,
-      V.scale(directionFromUcsHeading(ctx.ucs, angle), distance)
+    return withZOf(
+      V.add(start, V.scale(directionFromUcsHeading(ctx.ucs, angle), distance)),
+      start
     )
   }
 }

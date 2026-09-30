@@ -1,4 +1,5 @@
 import { Vec2, V } from "../../geometry/Vec2"
+import { Vec3, withZOf } from "../../geometry/Vec3"
 import { KnotParameterization } from "../../geometry/nurbs"
 import {
   DEFAULT_SPLINE_DEGREE,
@@ -6,6 +7,7 @@ import {
   SplineEntity,
   SplineMethod,
   createSpline,
+  onPlaneOf,
 } from "../../domain/entities"
 import { parseNumber } from "../../domain/units"
 import { AddEntityCommand } from "../commands/entityCommands"
@@ -28,9 +30,12 @@ import {
 } from "./Tool"
 import { directionFromUcsHeading, headingInUcs } from "./ucsHeading"
 
-/** The points picked so far and what has been said about their ends. */
+/**
+ * The points picked so far and what has been said about their ends. The points
+ * lie on the first one's plane: a SPLINE is flat until the kernel has 3D NURBS.
+ */
 interface Drawn {
-  readonly points: readonly Vec2[]
+  readonly points: readonly Vec3[]
   readonly startTangent: Vec2 | null
   readonly endTangent: Vec2 | null
   readonly closed: boolean
@@ -75,7 +80,7 @@ export class SplineTool implements Tool {
   private degree = DEFAULT_SPLINE_DEGREE
 
   private state: SplineToolState = { phase: "first" }
-  private cursor: Vec2 | null = null
+  private cursor: Vec3 | null = null
   private lastScreen: Vec2 | null = null
 
   onActivate(ctx: ToolContext): void {
@@ -292,7 +297,7 @@ export class SplineTool implements Tool {
   /** What the spline would be if the cursor were the answer to the current prompt. */
   private previewOf(
     state: DrawingState,
-    cursor: Vec2,
+    cursor: Vec3,
     ctx: ToolContext
   ): SplineEntity {
     switch (state.phase) {
@@ -300,7 +305,10 @@ export class SplineTool implements Tool {
         return this.splineOf(
           {
             ...state,
-            points: [...state.points, this.resolveNext(state, cursor, ctx)],
+            points: [
+              ...state.points,
+              withZOf(this.resolveNext(state, cursor, ctx), state.points[0]),
+            ],
           },
           ctx
         )
@@ -323,18 +331,21 @@ export class SplineTool implements Tool {
   }
 
   private splineOf(drawn: Drawn, ctx: ToolContext): SplineEntity {
-    return createSpline(this.method, drawn.points, {
-      degree: this.degree,
-      knots: this.knots,
-      closed: drawn.closed,
-      startTangent: drawn.startTangent ?? undefined,
-      endTangent: drawn.endTangent ?? undefined,
-      layerId: ctx.document.getCurrentLayerId(),
-    })
+    return onPlaneOf(
+      createSpline(this.method, drawn.points, {
+        degree: this.degree,
+        knots: this.knots,
+        closed: drawn.closed,
+        startTangent: drawn.startTangent ?? undefined,
+        endTangent: drawn.endTangent ?? undefined,
+        layerId: ctx.document.getCurrentLayerId(),
+      }),
+      drawn.points[0]
+    )
   }
 
   /** A pick or a typed point, answering whichever point prompt is open. */
-  private placePoint(point: Vec2, ctx: ToolContext): void {
+  private placePoint(point: Vec3, ctx: ToolContext): void {
     const state = this.state
     switch (state.phase) {
       case "first":
@@ -349,7 +360,10 @@ export class SplineTool implements Tool {
         break
       case "next":
         if (V.equals(point, lastPoint(state))) return
-        this.state = { ...state, points: [...state.points, point] }
+        this.state = {
+          ...state,
+          points: [...state.points, withZOf(point, state.points[0])],
+        }
         this.openNextInput(ctx)
         break
       case "startTangent": {
@@ -474,10 +488,11 @@ export class SplineTool implements Tool {
     }
     const { distance, angle } = values
     if (!(distance > 0) || !Number.isFinite(angle)) return
+    const last = lastPoint(state)
     this.placePoint(
-      V.add(
-        lastPoint(state),
-        V.scale(directionFromUcsHeading(ctx.ucs, angle), distance)
+      withZOf(
+        V.add(last, V.scale(directionFromUcsHeading(ctx.ucs, angle), distance)),
+        last
       ),
       ctx
     )
@@ -512,9 +527,9 @@ export class SplineTool implements Tool {
   /** The next point with a typed length or angle hard-locking the cursor's, as LINE's does. */
   private resolveNext(
     state: DrawingState,
-    cursor: Vec2,
+    cursor: Vec3,
     ctx: ToolContext
-  ): Vec2 {
+  ): Vec3 {
     const start = lastPoint(state)
     const text = ctx.dynamicInput.getText("distance").trim()
     if (isCoordinateExpression(text)) {
@@ -535,9 +550,9 @@ export class SplineTool implements Tool {
       typedAngle ??
       (V.length(offset) > 1e-9 ? headingInUcs(ctx.ucs, offset) : null)
     if (angle === null) return cursor
-    return V.add(
-      start,
-      V.scale(directionFromUcsHeading(ctx.ucs, angle), distance)
+    return withZOf(
+      V.add(start, V.scale(directionFromUcsHeading(ctx.ucs, angle), distance)),
+      start
     )
   }
 
@@ -574,7 +589,7 @@ export class SplineTool implements Tool {
   }
 }
 
-function lastPoint(state: Drawn): Vec2 {
+function lastPoint(state: Drawn): Vec3 {
   return state.points[state.points.length - 1]
 }
 

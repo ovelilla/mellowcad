@@ -1,5 +1,6 @@
 import { Observable } from "../shared/Observable"
 import { Vec2, V } from "../geometry/Vec2"
+import { Vec3 } from "../geometry/Vec3"
 import { closestPointOnSegment } from "../geometry/primitives"
 import { CadDocument } from "../domain/Document"
 import {
@@ -246,7 +247,7 @@ export class CadRuntime extends Observable {
   // the tool actually receives is typed as an offset from it. The tool's own
   // dynamic input is parked while the offset is entered and restored after.
   private fromPending = false
-  private fromBase: Vec2 | null = null
+  private fromBase: Vec3 | null = null
   private fromParkedSession: DynamicInputSession | null = null
 
   private stateSnapshot: EngineState
@@ -728,7 +729,7 @@ export class CadRuntime extends Observable {
     return true
   }
 
-  private beginFromOffset(base: Vec2): void {
+  private beginFromOffset(base: Vec3): void {
     this.fromPending = false
     this.fromBase = base
     this.fromParkedSession = this.dynamicInput.getSession()
@@ -758,7 +759,7 @@ export class CadRuntime extends Observable {
   }
 
   /** Feeds a point to the active tool as if it had been picked there. */
-  private placePoint(point: Vec2): void {
+  private placePoint(point: Vec3): void {
     this.activeTool.onPointerDown?.(
       {
         screen: this.viewport.worldToScreen(point),
@@ -1362,7 +1363,10 @@ export class CadRuntime extends Observable {
    * COPYBASE. The system write is best effort: the session copy below is what
    * makes a paste work regardless of what the host allows.
    */
-  private copyToClipboard(entities: readonly Entity[], basePoint: Vec2): void {
+  private copyToClipboard(
+    entities: readonly Entity[],
+    basePoint: Vec2 | Vec3
+  ): void {
     this.clipboardFallback = copyToClipboard(
       this.clipboard,
       this.document,

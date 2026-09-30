@@ -1,4 +1,6 @@
 import { Vec2 } from "../geometry/Vec2"
+import { Vec3, withZ } from "../geometry/Vec3"
+import { entityElevation } from "./elevation"
 import { DEFAULT_LAYER_ID } from "./layers"
 import {
   AttributeDisplay,
@@ -139,7 +141,7 @@ export function insertAttributePoints(
   insert: InsertEntity,
   block: BlockDefinition | undefined,
   display: AttributeDisplay
-): Vec2[] {
+): Vec3[] {
   if (!block) return []
   return (insert.attributes ?? [])
     .filter((attribute) => attributeShown(attribute.invisible, display))
@@ -150,7 +152,8 @@ export function insertAttributePoints(
         block,
         true
       )
-      return placed.type === "text" ? placed.position : insert.position
+      const at = placed.type === "text" ? placed.position : insert.position
+      return withZ(at, entityElevation(placed))
     })
 }
 

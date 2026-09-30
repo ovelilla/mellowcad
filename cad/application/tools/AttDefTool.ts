@@ -1,4 +1,5 @@
 import { Vec2, V } from "../../geometry/Vec2"
+import { Vec3 } from "../../geometry/Vec3"
 import { normalizeDegrees } from "../../geometry/primitives"
 import {
   AttributeDefinitionEntity,
@@ -8,6 +9,7 @@ import {
   attributeInput,
   attributeTag,
   createAttributeDefinition,
+  onPlaneOf,
 } from "../../domain/entities"
 import { DEFAULT_TEXT_HEIGHT, TextStyleId } from "../../domain/textStyles"
 import { ucsAngleToWorld, ucsRotation, worldAngleToUcs } from "../../domain/ucs"
@@ -45,10 +47,10 @@ type AttDefState =
   | { readonly phase: "start" }
   | { readonly phase: "justify" }
   | { readonly phase: "style" }
-  | { readonly phase: "height"; readonly position: Vec2; readonly cursor: Vec2 }
+  | { readonly phase: "height"; readonly position: Vec3; readonly cursor: Vec2 }
   | {
       readonly phase: "rotation"
-      readonly position: Vec2
+      readonly position: Vec3
       readonly height: number
       readonly cursor: Vec2
     }
@@ -322,7 +324,7 @@ export class AttDefTool implements Tool {
   }
 
   /** The height prompt is skipped when the style fixes one, as TEXT's is. */
-  private beginAt(position: Vec2, ctx: ToolContext): void {
+  private beginAt(position: Vec3, ctx: ToolContext): void {
     const style = ctx.document.getTextStyle(this.currentStyleId(ctx))
     if (style && style.height > 0) {
       this.enterRotation(position, style.height, ctx)
@@ -341,7 +343,7 @@ export class AttDefTool implements Tool {
   }
 
   private enterRotation(
-    position: Vec2,
+    position: Vec3,
     height: number,
     ctx: ToolContext
   ): void {
@@ -368,22 +370,25 @@ export class AttDefTool implements Tool {
 
   /** `rotation` is the object's own, in the WCS; the next prompt offers it from the UCS X axis. */
   private finish(
-    position: Vec2,
+    position: Vec3,
     height: number,
     rotation: number,
     ctx: ToolContext
   ): void {
     this.rotation = worldAngleToUcs(ctx.ucs, rotation)
-    const definition = createAttributeDefinition(position, this.tag, {
-      prompt: this.prompt,
-      value: this.value,
-      modes: this.modes,
-      height,
-      rotation,
-      justify: this.justify,
-      styleId: this.currentStyleId(ctx),
-      layerId: ctx.document.getCurrentLayerId(),
-    })
+    const definition = onPlaneOf(
+      createAttributeDefinition(position, this.tag, {
+        prompt: this.prompt,
+        value: this.value,
+        modes: this.modes,
+        height,
+        rotation,
+        justify: this.justify,
+        styleId: this.currentStyleId(ctx),
+        layerId: ctx.document.getCurrentLayerId(),
+      }),
+      position
+    )
     this.previous = definition
     ctx.execute(new AddEntityCommand(definition))
     ctx.endCommand()

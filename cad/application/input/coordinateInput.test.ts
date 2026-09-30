@@ -19,7 +19,7 @@ const FROM_100_100 = {
   ucs: WORLD_UCS,
 }
 /** Origin at (10, 20), X axis pointing along world +Y. */
-const TURNED = { origin: p(10, 20), xAxis: p(0, 1) }
+const TURNED = { origin: { x: 10, y: 20, z: 0 }, xAxis: p(0, 1) }
 
 describe("isCoordinateExpression", () => {
   it("recognises the coordinate syntaxes", () => {
@@ -156,6 +156,52 @@ describe("parseCoordinate", () => {
     })
   })
 
+  describe("with a Z", () => {
+    const RAISED = { origin: { x: 0, y: 0, z: 3 }, xAxis: p(1, 0) }
+    const at = (x: number, y: number, z: number) => ({ x, y, z })
+    const onPlane = { lastPoint: null, relativeByDefault: false, ucs: RAISED }
+    const fromRaised = {
+      lastPoint: at(100, 100, 10),
+      relativeByDefault: true,
+      ucs: RAISED,
+    }
+
+    it("reads x,y,z from the UCS's XY plane", () => {
+      expect(parseCoordinate("1,2,5", onPlane)).toMatchObject(at(1, 2, 8))
+      expect(parseCoordinate("*1,2,5", onPlane)).toMatchObject(at(1, 2, 5))
+    })
+
+    it("puts an absolute point typed without a Z on the UCS's XY plane", () => {
+      expect(parseCoordinate("1,2", onPlane)).toMatchObject(at(1, 2, 3))
+      expect(parseCoordinate("#1,2", fromRaised)).toMatchObject(at(1, 2, 3))
+      expect(parseCoordinate("*1,2", onPlane)).toMatchObject(at(1, 2, 3))
+    })
+
+    it("keeps the last point's Z for a relative point typed without one", () => {
+      expect(parseCoordinate("@5,0", fromRaised)).toMatchObject(
+        at(105, 100, 10)
+      )
+      expect(parseCoordinate("@0,0,-4", fromRaised)).toMatchObject(
+        at(100, 100, 6)
+      )
+      const polar = parseCoordinate("@5<90", fromRaised)
+      expect(polar).toBeCloseToPoint(p(100, 105), 9)
+      expect(polar?.z).toBe(10)
+    })
+
+    it("reads cylindrical coordinates: polar in the plane, then a Z", () => {
+      const point = parseCoordinate("10<90,4", onPlane)
+      expect(point).toBeCloseToPoint(p(0, 10), 9)
+      expect(point?.z).toBe(7)
+    })
+
+    it("reads spherical coordinates: an angle in the plane, one up from it", () => {
+      const point = parseCoordinate("@10<0<30", fromRaised)
+      expect(point).toBeCloseToPoint(p(100 + 10 * Math.cos(deg(30)), 100), 9)
+      expect(point?.z).toBeCloseTo(15, 9)
+    })
+  })
+
   describe("incomplete and invalid input", () => {
     it("returns null while the value is still being typed", () => {
       // A null keeps the preview following the cursor instead of jumping.
@@ -164,13 +210,17 @@ describe("parseCoordinate", () => {
       expect(parseCoordinate("100<", ABSOLUTE)).toBeNull()
       expect(parseCoordinate("@", ABSOLUTE)).toBeNull()
       expect(parseCoordinate("#", ABSOLUTE)).toBeNull()
+      expect(parseCoordinate("1,2,", ABSOLUTE)).toBeNull()
+      expect(parseCoordinate("10<30,", ABSOLUTE)).toBeNull()
+      expect(parseCoordinate("10<30<", ABSOLUTE)).toBeNull()
     })
 
     it("rejects text that is not a coordinate", () => {
       expect(parseCoordinate("", ABSOLUTE)).toBeNull()
       expect(parseCoordinate("100", ABSOLUTE)).toBeNull()
       expect(parseCoordinate("abc,def", ABSOLUTE)).toBeNull()
-      expect(parseCoordinate("1,2,3", ABSOLUTE)).toBeNull()
+      expect(parseCoordinate("1,2,3,4", ABSOLUTE)).toBeNull()
+      expect(parseCoordinate("10<30<45,5", ABSOLUTE)).toBeNull()
       expect(parseCoordinate("1e5,0", ABSOLUTE)).toBeNull()
       expect(parseCoordinate("Infinity,0", ABSOLUTE)).toBeNull()
     })

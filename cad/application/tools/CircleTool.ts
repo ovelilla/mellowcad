@@ -1,6 +1,7 @@
 import { Vec2, V } from "../../geometry/Vec2"
+import { Vec3 } from "../../geometry/Vec3"
 import { circleFrom3Points } from "../../geometry/primitives"
-import { createCircle } from "../../domain/entities"
+import { createCircle, onPlaneOf } from "../../domain/entities"
 import { parseNumber } from "../../domain/units"
 import { AddEntityCommand } from "../commands/entityCommands"
 import { DynamicInputSession } from "../input/DynamicInput"
@@ -39,7 +40,7 @@ type CircleToolState =
   /** Centre placed; awaiting a radius (or diameter). */
   | {
       readonly phase: "radius"
-      readonly center: Vec2
+      readonly center: Vec3
       readonly cursor: Vec2
       /** When set, the pointed/typed value is the diameter, not the radius. */
       readonly diameter: boolean
@@ -47,12 +48,12 @@ type CircleToolState =
   /** Awaiting the first point (2P first / 3P first). */
   | { readonly phase: "p1" }
   /** First point placed (2P diameter end / 3P second point). */
-  | { readonly phase: "p2"; readonly p1: Vec2; readonly cursor: Vec2 }
+  | { readonly phase: "p2"; readonly p1: Vec3; readonly cursor: Vec2 }
   /** Two points placed; awaiting the third (3P only). */
   | {
       readonly phase: "p3"
-      readonly p1: Vec2
-      readonly p2: Vec2
+      readonly p1: Vec3
+      readonly p2: Vec3
       readonly cursor: Vec2
     }
 
@@ -151,7 +152,7 @@ export class CircleTool implements Tool {
    * world point, shared by the click path and the typed-coordinate path so both
    * behave identically.
    */
-  private advanceWithPoint(point: Vec2, ctx: ToolContext, screen?: Vec2): void {
+  private advanceWithPoint(point: Vec3, ctx: ToolContext, screen?: Vec2): void {
     const at = screen ?? this.lastScreen ?? ctx.viewport.worldToScreen(point)
 
     switch (this.state.phase) {
@@ -312,38 +313,51 @@ export class CircleTool implements Tool {
     // centre is the value. In diameter mode that value is the diameter.
     const value = typed ?? V.distance(this.state.center, point)
     const radius = this.state.diameter ? value / 2 : value
-    this.commitCircle(this.state.center, radius, ctx)
+    this.commitCircle(this.state.center, radius, this.state.center, ctx)
   }
 
   private commitRadiusValue(value: number, ctx: ToolContext): void {
     if (this.state.phase !== "radius") return
     if (!(value > 0)) return
     const radius = this.state.diameter ? value / 2 : value
-    this.commitCircle(this.state.center, radius, ctx)
+    this.commitCircle(this.state.center, radius, this.state.center, ctx)
   }
 
-  private commitTwoPoint(p1: Vec2, p2: Vec2, ctx: ToolContext): void {
+  private commitTwoPoint(p1: Vec3, p2: Vec2, ctx: ToolContext): void {
     const center = V.scale(V.add(p1, p2), 0.5)
     const radius = V.distance(p1, p2) / 2
-    this.commitCircle(center, radius, ctx)
+    this.commitCircle(center, radius, p1, ctx)
   }
 
   private commitThreePoint(
-    p1: Vec2,
+    p1: Vec3,
     p2: Vec2,
     p3: Vec2,
     ctx: ToolContext
   ): void {
     const solved = circleFrom3Points(p1, p2, p3)
     if (!solved) return // collinear — ignore, keep prompting for a valid point
-    this.commitCircle(solved.center, solved.radius, ctx)
+    this.commitCircle(solved.center, solved.radius, p1, ctx)
   }
 
-  private commitCircle(center: Vec2, radius: number, ctx: ToolContext): void {
+  /**
+   * WHY: AutoCAD builds a 2P or 3P circle through points at different heights
+   * in their own tilted plane; without a normal per object it lies in the
+   * plane of the first point instead.
+   */
+  private commitCircle(
+    center: Vec2,
+    radius: number,
+    first: Vec3,
+    ctx: ToolContext
+  ): void {
     if (!(radius > 0)) return
     ctx.execute(
       new AddEntityCommand(
-        createCircle(center, radius, ctx.document.getCurrentLayerId())
+        onPlaneOf(
+          createCircle(center, radius, ctx.document.getCurrentLayerId()),
+          first
+        )
       )
     )
     ctx.endCommand()
@@ -385,7 +399,7 @@ export class CircleTool implements Tool {
   }
 
   /** The point a relative coordinate is measured from, per phase. */
-  private previousPoint(): Vec2 | null {
+  private previousPoint(): Vec3 | null {
     switch (this.state.phase) {
       case "p2":
         return this.state.p1

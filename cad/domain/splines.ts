@@ -1,4 +1,5 @@
 import { Vec2, V } from "../geometry/Vec2"
+import { planar } from "../geometry/Vec3"
 import { ClosestResult, closestPointOnSegment } from "../geometry/primitives"
 import {
   BSplineCurve,
@@ -113,7 +114,7 @@ export function splineWithPoint(
 ): SplineEntity {
   return {
     ...spline,
-    points: spline.points.map((p, i) => (i === index ? point : p)),
+    points: spline.points.map((p, i) => (i === index ? planar(point) : p)),
   }
 }
 

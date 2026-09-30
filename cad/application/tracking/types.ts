@@ -1,4 +1,5 @@
 import { Vec2 } from "../../geometry/Vec2"
+import { Vec3 } from "../../geometry/Vec3"
 import { Ray } from "../../geometry/primitives"
 import { Ucs } from "../../domain/ucs"
 import { SnapType } from "../snapping/types"
@@ -18,8 +19,8 @@ import { SnapType } from "../snapping/types"
 /** A snap point the user has "acquired" by hovering over it long enough. */
 export interface TrackingPoint {
   readonly id: string
-  /** The acquired point, in world coordinates. */
-  readonly origin: Vec2
+  /** The acquired point, in world coordinates, with the Z of its object. */
+  readonly origin: Vec3
   /** Which object snap produced it (endpoint, midpoint, center, intersection). */
   readonly sourceType: SnapType
   /** Timestamp (ms) of acquisition, used for ordering / expiry. */
@@ -46,7 +47,7 @@ export type TrackingHitKind =
 
 /** The point the engine hands back when tracking engages. */
 export interface TrackingResult {
-  readonly point: Vec2
+  readonly point: Vec3
   readonly kind: TrackingHitKind
   /** The guides that produced the point (to draw them as active). */
   readonly guides: readonly TrackingGuide[]

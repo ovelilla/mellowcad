@@ -1,4 +1,5 @@
 import { Vec2, V } from "../../geometry/Vec2"
+import { Vec3, sub3, withZOf } from "../../geometry/Vec3"
 import { Entity, EntityId, translateEntity } from "../../domain/entities"
 import { parseNumber } from "../../domain/units"
 import { DynamicInputSession } from "../input/DynamicInput"
@@ -59,11 +60,11 @@ type PlacementState =
   /** Base placed; the set drags to the second point (cursor-driven). */
   | {
       readonly phase: "secondPoint"
-      readonly base: Vec2
+      readonly base: Vec3
       /** Snapshot of the objects being placed, taken when the base was set. */
       readonly originals: readonly Entity[]
       /** Live resolved cursor point (snap/Ortho applied, before hard-locks). */
-      readonly current: Vec2
+      readonly current: Vec3
     }
 
 export abstract class PlacementTool implements Tool {
@@ -75,7 +76,7 @@ export abstract class PlacementTool implements Tool {
   /** Applies one placement of `originals` displaced by `delta` (undoable). */
   protected abstract place(
     originals: readonly Entity[],
-    delta: Vec2,
+    delta: Vec3,
     ctx: ToolContext
   ): void
 
@@ -90,7 +91,7 @@ export abstract class PlacementTool implements Tool {
    * default; STRETCH overrides it to move only the points caught by its
    * crossing frame. Used for the dashed preview, so what drags is what commits.
    */
-  protected transformEntity(entity: Entity, delta: Vec2): Entity {
+  protected transformEntity(entity: Entity, delta: Vec3): Entity {
     return translateEntity(entity, delta)
   }
 
@@ -262,7 +263,7 @@ export abstract class PlacementTool implements Tool {
     const { viewport } = ctx
     const { base, originals, current } = this.state
     const dest = this.resolveSecond(base, current, ctx)
-    const delta = V.sub(dest, base)
+    const delta = sub3(dest, base)
 
     const ghost: StrokeStyle = { color: THEME.preview, width: 1, dash: [6, 4] }
     const out: ScenePrimitive[] = []
@@ -335,7 +336,7 @@ export abstract class PlacementTool implements Tool {
     return true
   }
 
-  private enterSecondPoint(base: Vec2, ctx: ToolContext, screen?: Vec2): void {
+  private enterSecondPoint(base: Vec3, ctx: ToolContext, screen?: Vec2): void {
     const originals = ctx.selection
       .toArray()
       .map((id) => ctx.document.get(id))
@@ -395,12 +396,15 @@ export abstract class PlacementTool implements Tool {
    * destination (Multiple mode) or ends the command.
    */
   private placeAt(
-    base: Vec2,
-    dest: Vec2,
+    base: Vec3,
+    dest: Vec3,
     originals: readonly Entity[],
     ctx: ToolContext
   ): void {
-    if (!V.equals(dest, base)) this.place(originals, V.sub(dest, base), ctx)
+    const delta = sub3(dest, base)
+    if (delta.x !== 0 || delta.y !== 0 || delta.z !== 0) {
+      this.place(originals, delta, ctx)
+    }
 
     if (this.continuesAfterPlace()) {
       // Keep the base and selection; reset the typed values for the next copy,
@@ -416,7 +420,7 @@ export abstract class PlacementTool implements Tool {
   }
 
   /** Honours a coordinate typed for the base point (always absolute). */
-  private resolveBase(rawPoint: Vec2, ctx: ToolContext): Vec2 {
+  private resolveBase(rawPoint: Vec3, ctx: ToolContext): Vec3 {
     const text = ctx.dynamicInput.getText("base").trim()
     if (isCoordinateExpression(text)) {
       const point = parseCoordinate(text, {
@@ -436,7 +440,7 @@ export abstract class PlacementTool implements Tool {
    * length follows the cursor heading, a typed angle locks the direction).
    * Otherwise the cursor drives it.
    */
-  private resolveSecond(base: Vec2, rawCursor: Vec2, ctx: ToolContext): Vec2 {
+  private resolveSecond(base: Vec3, rawCursor: Vec3, ctx: ToolContext): Vec3 {
     const coordText = ctx.dynamicInput.getText("distance").trim()
     if (isCoordinateExpression(coordText)) {
       const point = parseCoordinate(coordText, {
@@ -449,6 +453,7 @@ export abstract class PlacementTool implements Tool {
 
     const typedDist = parseField(ctx, "distance")
     const typedAngle = parseField(ctx, "angle")
+    if (typedDist === null && typedAngle === null) return rawCursor
 
     const offset = V.sub(rawCursor, base)
     const cursorDist = V.length(offset)
@@ -459,9 +464,9 @@ export abstract class PlacementTool implements Tool {
     // No heading yet (cursor on the base and nothing typed): no displacement.
     if (angle === null) return rawCursor
 
-    return V.add(
-      base,
-      V.scale(directionFromUcsHeading(ctx.ucs, angle), distance)
+    return withZOf(
+      V.add(base, V.scale(directionFromUcsHeading(ctx.ucs, angle), distance)),
+      base
     )
   }
 }

@@ -1,4 +1,5 @@
 import { V, Vec2 } from "../../geometry/Vec2"
+import { Vec3, withZ, withZOf } from "../../geometry/Vec3"
 import {
   angleWithinSweep,
   circleCircleIntersection,
@@ -23,6 +24,7 @@ import {
   ellipseEndPoint,
   ellipseQuadrantPoints,
   ellipseStartPoint,
+  entityZAt,
   insertAttributePoints,
   isFullEllipse,
   lineMidpoint,
@@ -31,6 +33,7 @@ import {
   splineMidpoint,
   splinePolyline,
   splineStartPoint,
+  Entity,
   EntityId,
 } from "../../domain/entities"
 import {
@@ -50,6 +53,11 @@ import {
  * boundary a hatch was traced from is still there to snap to.
  */
 
+/** A point on `entity` in plan, at the object's height there. */
+function on(entity: Entity, point: Vec2): Vec3 {
+  return withZ(point, entityZAt(entity, point))
+}
+
 /** Endpoint is the primary snap (highest priority). */
 export const endpointProvider: SnapProvider = {
   type: SnapType.Endpoint,
@@ -60,23 +68,23 @@ export const endpointProvider: SnapProvider = {
       if (entity.type === "line") {
         candidates.push({
           type: SnapType.Endpoint,
-          point: entity.start,
+          point: on(entity, entity.start),
           sourceIds: [entity.id],
         })
         candidates.push({
           type: SnapType.Endpoint,
-          point: entity.end,
+          point: on(entity, entity.end),
           sourceIds: [entity.id],
         })
       } else if (entity.type === "arc") {
         candidates.push({
           type: SnapType.Endpoint,
-          point: arcStartPoint(entity),
+          point: on(entity, arcStartPoint(entity)),
           sourceIds: [entity.id],
         })
         candidates.push({
           type: SnapType.Endpoint,
-          point: arcEndPoint(entity),
+          point: on(entity, arcEndPoint(entity)),
           sourceIds: [entity.id],
         })
       } else if (entity.type === "ellipse") {
@@ -84,25 +92,25 @@ export const endpointProvider: SnapProvider = {
         if (isFullEllipse(entity)) continue
         candidates.push({
           type: SnapType.Endpoint,
-          point: ellipseStartPoint(entity),
+          point: on(entity, ellipseStartPoint(entity)),
           sourceIds: [entity.id],
         })
         candidates.push({
           type: SnapType.Endpoint,
-          point: ellipseEndPoint(entity),
+          point: on(entity, ellipseEndPoint(entity)),
           sourceIds: [entity.id],
         })
       } else if (entity.type === "spline") {
         // A closed spline's start is where it closes, and AutoCAD snaps there.
         candidates.push({
           type: SnapType.Endpoint,
-          point: splineStartPoint(entity),
+          point: on(entity, splineStartPoint(entity)),
           sourceIds: [entity.id],
         })
         if (!entity.closed) {
           candidates.push({
             type: SnapType.Endpoint,
-            point: splineEndPoint(entity),
+            point: on(entity, splineEndPoint(entity)),
             sourceIds: [entity.id],
           })
         }
@@ -110,7 +118,7 @@ export const endpointProvider: SnapProvider = {
         for (const vertex of entity.vertices) {
           candidates.push({
             type: SnapType.Endpoint,
-            point: vertex,
+            point: on(entity, vertex),
             sourceIds: [entity.id],
           })
         }
@@ -128,7 +136,7 @@ export const endpointProvider: SnapProvider = {
         ]) {
           candidates.push({
             type: SnapType.Endpoint,
-            point,
+            point: on(entity, point),
             sourceIds: [entity.id],
           })
         }
@@ -147,19 +155,19 @@ export const midpointProvider: SnapProvider = {
       if (entity.type === "line") {
         candidates.push({
           type: SnapType.Midpoint,
-          point: lineMidpoint(entity),
+          point: on(entity, lineMidpoint(entity)),
           sourceIds: [entity.id],
         })
       } else if (entity.type === "arc") {
         candidates.push({
           type: SnapType.Midpoint,
-          point: arcMidpoint(entity),
+          point: on(entity, arcMidpoint(entity)),
           sourceIds: [entity.id],
         })
       } else if (entity.type === "spline" && !entity.closed) {
         candidates.push({
           type: SnapType.Midpoint,
-          point: splineMidpoint(entity),
+          point: on(entity, splineMidpoint(entity)),
           sourceIds: [entity.id],
         })
       } else if (entity.type === "polyline") {
@@ -174,7 +182,7 @@ export const midpointProvider: SnapProvider = {
                 )
           candidates.push({
             type: SnapType.Midpoint,
-            point,
+            point: on(entity, point),
             sourceIds: [entity.id],
           })
         }
@@ -190,22 +198,14 @@ export const centerProvider: SnapProvider = {
     const candidates: SnapCandidate[] = []
     for (const entity of entities) {
       if (!document.isEntityVisible(entity)) continue
-      if (entity.type === "circle") {
+      if (
+        entity.type === "circle" ||
+        entity.type === "arc" ||
+        entity.type === "ellipse"
+      ) {
         candidates.push({
           type: SnapType.Center,
-          point: entity.center,
-          sourceIds: [entity.id],
-        })
-      } else if (entity.type === "arc") {
-        candidates.push({
-          type: SnapType.Center,
-          point: entity.center,
-          sourceIds: [entity.id],
-        })
-      } else if (entity.type === "ellipse") {
-        candidates.push({
-          type: SnapType.Center,
-          point: entity.center,
+          point: on(entity, entity.center),
           sourceIds: [entity.id],
         })
       }
@@ -235,7 +235,7 @@ export const insertionProvider: SnapProvider = {
       ) {
         candidates.push({
           type: SnapType.Insertion,
-          point: entity.position,
+          point: on(entity, entity.position),
           sourceIds: [entity.id],
         })
       }
@@ -273,7 +273,7 @@ export const quadrantProvider: SnapProvider = {
         for (const point of points) {
           candidates.push({
             type: SnapType.Quadrant,
-            point,
+            point: on(entity, point),
             sourceIds: [entity.id],
           })
         }
@@ -285,7 +285,7 @@ export const quadrantProvider: SnapProvider = {
           }
           candidates.push({
             type: SnapType.Quadrant,
-            point: polarPoint(entity.center, entity.radius, angle),
+            point: on(entity, polarPoint(entity.center, entity.radius, angle)),
             sourceIds: [entity.id],
           })
         }
@@ -295,7 +295,7 @@ export const quadrantProvider: SnapProvider = {
         for (const point of ellipseQuadrantPoints(entity)) {
           candidates.push({
             type: SnapType.Quadrant,
-            point,
+            point: on(entity, point),
             sourceIds: [entity.id],
           })
         }
@@ -328,8 +328,10 @@ export const perpendicularProvider: SnapProvider = {
       if (entity.type === "line") {
         candidates.push({
           type: SnapType.Perpendicular,
-          point: closestPointOnInfiniteLine(entity.start, entity.end, anchor)
-            .point,
+          point: on(
+            entity,
+            closestPointOnInfiniteLine(entity.start, entity.end, anchor).point
+          ),
           // Engage while hovering over the segment, not only near the foot.
           pickDistance: closestPointOnSegment(
             entity.start,
@@ -349,7 +351,10 @@ export const perpendicularProvider: SnapProvider = {
         for (const sign of [1, -1]) {
           candidates.push({
             type: SnapType.Perpendicular,
-            point: V.add(entity.center, V.scale(dir, entity.radius * sign)),
+            point: on(
+              entity,
+              V.add(entity.center, V.scale(dir, entity.radius * sign))
+            ),
             pickDistance: toOutline,
             sourceIds: [entity.id],
           })
@@ -388,7 +393,7 @@ export const tangentProvider: SnapProvider = {
       )) {
         candidates.push({
           type: SnapType.Tangent,
-          point,
+          point: on(entity, point),
           pickDistance: toOutline,
           sourceIds: [entity.id],
         })
@@ -422,7 +427,7 @@ export const extensionProvider: SnapProvider = {
       if (proj.t >= 0 && proj.t <= 1) continue
       candidates.push({
         type: SnapType.Extension,
-        point: proj.point,
+        point: on(entity, proj.point),
         pickDistance: proj.distance,
         sourceIds: [entity.id],
       })
@@ -465,7 +470,8 @@ export const parallelProvider: SnapProvider = {
       const point = V.add(anchor, V.scale(dir, V.dot(offset, dir)))
       candidates.push({
         type: SnapType.Parallel,
-        point,
+        // The point lies on the new segment, not on the line it parallels.
+        point: withZOf(point, anchor),
         pickDistance: V.distance(point, worldCursor),
         sourceIds: [entity.id],
       })
@@ -510,7 +516,7 @@ export const nearestProvider: SnapProvider = {
       if (closest && closest.distance <= worldTolerance) {
         candidates.push({
           type: SnapType.Nearest,
-          point: closest.point,
+          point: on(entity, closest.point),
           sourceIds: [entity.id],
         })
       }
@@ -558,15 +564,15 @@ export const intersectionProvider: SnapProvider = {
           continue
         }
         for (const point of intersectShapes(shapes[i], shapes[j])) {
-          if (V.distance(point, worldCursor) <= near) {
-            candidates.push({
-              type: SnapType.Intersection,
-              point,
-              sourceIds: [...shapes[i].sourceIds, ...shapes[j].sourceIds],
-              transient:
-                shapes[i].fromConstruction || shapes[j].fromConstruction,
-            })
-          }
+          if (V.distance(point, worldCursor) > near) continue
+          const z = meetingHeight(a, b, point)
+          if (z === null) continue
+          candidates.push({
+            type: SnapType.Intersection,
+            point: withZ(point, z),
+            sourceIds: [...shapes[i].sourceIds, ...shapes[j].sourceIds],
+            transient: shapes[i].fromConstruction || shapes[j].fromConstruction,
+          })
         }
       }
     }
@@ -609,7 +615,11 @@ export const apparentIntersectionProvider: SnapProvider = {
         if (V.distance(x.point, worldCursor) <= near) {
           candidates.push({
             type: SnapType.ApparentIntersection,
-            point: x.point,
+            // The first object's height: the two may pass at different ones.
+            point: withZ(
+              x.point,
+              heightOn(a, x.point) ?? heightOn(b, x.point) ?? 0
+            ),
             sourceIds: [...a.sourceIds, ...b.sourceIds],
             transient: a.fromConstruction || b.fromConstruction,
           })
@@ -626,6 +636,8 @@ type SegmentShape = {
   readonly b: Vec2
   readonly sourceIds: readonly EntityId[]
   readonly fromConstruction: boolean
+  /** The object it is part of; none for the rubber band. */
+  readonly source: Entity | null
   /** The spline this is a chord of. */
   readonly curveId?: EntityId
 }
@@ -636,6 +648,7 @@ type CircleShape = {
   readonly radius: number
   readonly sourceIds: readonly EntityId[]
   readonly fromConstruction: boolean
+  readonly source: Entity | null
 }
 
 type ArcShape = {
@@ -646,10 +659,30 @@ type ArcShape = {
   readonly endAngle: number
   readonly sourceIds: readonly EntityId[]
   readonly fromConstruction: boolean
+  readonly source: Entity | null
 }
 
 /** A geometry primitive the intersection providers can cross with another. */
 type SnapShape = SegmentShape | CircleShape | ArcShape
+
+function heightOn(shape: SnapShape, point: Vec2): number | null {
+  return shape.source ? entityZAt(shape.source, point) : null
+}
+
+/** Tolerance on the heights of two objects crossing in plan. */
+const MEETING_EPSILON = 1e-6
+
+/**
+ * The Z at which two shapes crossing in plan at `point` really meet, or null
+ * when they pass one above the other. The rubber band meets anything.
+ */
+function meetingHeight(a: SnapShape, b: SnapShape, point: Vec2): number | null {
+  const za = heightOn(a, point)
+  const zb = heightOn(b, point)
+  if (za === null) return zb ?? 0
+  if (zb === null) return za
+  return Math.abs(za - zb) <= MEETING_EPSILON ? za : null
+}
 
 /**
  * Normalises committed entities and the provisional rubber-band into one
@@ -684,6 +717,7 @@ function collectShapes(
           b,
           sourceIds: [entity.id],
           fromConstruction: false,
+          source: entity,
           curveId: entity.id,
         })
       }
@@ -694,6 +728,7 @@ function collectShapes(
         b: entity.end,
         sourceIds: [entity.id],
         fromConstruction: false,
+        source: entity,
       })
     } else if (entity.type === "circle") {
       shapes.push({
@@ -702,6 +737,7 @@ function collectShapes(
         radius: entity.radius,
         sourceIds: [entity.id],
         fromConstruction: false,
+        source: entity,
       })
     } else if (entity.type === "arc") {
       shapes.push({
@@ -712,6 +748,7 @@ function collectShapes(
         endAngle: entity.endAngle,
         sourceIds: [entity.id],
         fromConstruction: false,
+        source: entity,
       })
     } else if (entity.type === "polyline") {
       for (const seg of polylineSegmentGeometries(entity)) {
@@ -723,6 +760,7 @@ function collectShapes(
                 b: seg.b,
                 sourceIds: [entity.id],
                 fromConstruction: false,
+                source: entity,
               }
             : {
                 kind: "arc",
@@ -732,6 +770,7 @@ function collectShapes(
                 endAngle: seg.endAngle,
                 sourceIds: [entity.id],
                 fromConstruction: false,
+                source: entity,
               }
         )
       }
@@ -745,6 +784,7 @@ function collectShapes(
         b: geometry.b,
         sourceIds: [],
         fromConstruction: true,
+        source: null,
       })
     }
   }

@@ -695,7 +695,7 @@
       "explodeRejected": "{count, plural, one {# no se ha podido descomponer.} other {# no se han podido descomponer.}}",
       "currentUcsName": "Nombre de scp actual: {kind, select, world {*UNIVERSAL*} unnamed {*SIN NOMBRE*} other {{name}}}",
       "savedUcsHeader": "Sistemas de coordenadas guardados:",
-      "savedUcsEntry": "{name}\nOrigen = '<'{originX},{originY},0.0000>, Eje X = '<'{xAxisX},{xAxisY},0.0000>\n    Eje Y = '<'{yAxisX},{yAxisY},0.0000>, Eje Z = '<'0.0000,0.0000,1.0000>",
+      "savedUcsEntry": "{name}\nOrigen = '<'{originX},{originY},{originZ}>, Eje X = '<'{xAxisX},{xAxisY},0.0000>\n    Eje Y = '<'{yAxisX},{yAxisY},0.0000>, Eje Z = '<'0.0000,0.0000,1.0000>",
       "ucsUndefined": "No se encuentra el SCP {name}."
     },
     "feedback": {

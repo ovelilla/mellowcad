@@ -1216,7 +1216,11 @@ export const es: EngineLocale = {
         [
           "originY"
         ],
-        ",0.0000>, Eje X = <",
+        ",",
+        [
+          "originZ"
+        ],
+        ">, Eje X = <",
         [
           "xAxisX"
         ],

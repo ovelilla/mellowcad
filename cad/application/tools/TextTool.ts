@@ -1,7 +1,9 @@
 import { Vec2, V } from "../../geometry/Vec2"
+import { Vec3, withZ } from "../../geometry/Vec3"
 import { normalizeDegrees } from "../../geometry/primitives"
 import {
   createText,
+  onPlaneOf,
   TextEntity,
   TextJustify,
   TEXT_LINE_SPACING_FACTOR,
@@ -204,7 +206,7 @@ export class TextTool implements Tool {
   }
 
   /** Starts a text object at `position`, asking only for what is still unknown. */
-  private beginAt(position: Vec2, ctx: ToolContext): void {
+  private beginAt(position: Vec3, ctx: ToolContext): void {
     const fixed = this.styleHeight(ctx)
     if (fixed !== null) {
       this.enterRotation(position, fixed, ctx)
@@ -225,7 +227,7 @@ export class TextTool implements Tool {
   }
 
   private enterRotation(
-    position: Vec2,
+    position: Vec3,
     height: number,
     ctx: ToolContext
   ): void {
@@ -236,7 +238,7 @@ export class TextTool implements Tool {
 
   /** `rotation` is the one asked for: radians from the UCS X axis. */
   private enterEntry(
-    position: Vec2,
+    position: Vec3,
     height: number,
     rotation: number,
     ctx: ToolContext
@@ -260,13 +262,16 @@ export class TextTool implements Tool {
     if (this.state.phase !== "entry") return null
     const value = ctx.dynamicInput.getText("value")
     if (value.trim().length === 0) return null
-    const text = createText(this.state.position, value, {
-      height: this.state.height,
-      rotation: this.state.rotation,
-      justify: this.justify,
-      styleId: this.state.styleId,
-      layerId: ctx.document.getCurrentLayerId(),
-    })
+    const text = onPlaneOf(
+      createText(this.state.position, value, {
+        height: this.state.height,
+        rotation: this.state.rotation,
+        justify: this.justify,
+        styleId: this.state.styleId,
+        layerId: ctx.document.getCurrentLayerId(),
+      }),
+      this.state.position
+    )
     this.lastLine = text
     ctx.execute(new AddEntityCommand(text))
     return text
@@ -465,16 +470,20 @@ export const JUSTIFY_KEYWORDS = Object.keys(JUSTIFY_BY_KEYWORD)
 
 /**
  * Where the next line of text starts: one line below, measured along the text's
- * own down direction so a rotated run stays stacked square to itself.
+ * own down direction so a rotated run stays stacked square to itself, and at
+ * the same height.
  */
 export function lineBelow(
-  text: Pick<TextEntity, "position" | "height" | "rotation">
-): Vec2 {
+  text: Pick<TextEntity, "position" | "height" | "rotation" | "elevation">
+): Vec3 {
   const gap = text.height * TEXT_LINE_SPACING_FACTOR
-  return {
-    x: text.position.x + gap * Math.sin(text.rotation),
-    y: text.position.y - gap * Math.cos(text.rotation),
-  }
+  return withZ(
+    {
+      x: text.position.x + gap * Math.sin(text.rotation),
+      y: text.position.y - gap * Math.cos(text.rotation),
+    },
+    text.elevation ?? 0
+  )
 }
 
 type TextToolState =
@@ -486,19 +495,19 @@ type TextToolState =
   | { readonly phase: "style" }
   | {
       readonly phase: "height"
-      readonly position: Vec2
+      readonly position: Vec3
       readonly cursor: Vec2
     }
   | {
       readonly phase: "rotation"
-      readonly position: Vec2
+      readonly position: Vec3
       readonly height: number
       readonly cursor: Vec2
     }
   /** Typing the text itself. */
   | {
       readonly phase: "entry"
-      readonly position: Vec2
+      readonly position: Vec3
       readonly height: number
       readonly rotation: number
       readonly styleId: string

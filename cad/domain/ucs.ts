@@ -1,13 +1,14 @@
 import { Vec2 } from "../geometry/Vec2"
+import { Vec3, zOf } from "../geometry/Vec3"
 
 /**
- * A user coordinate system in the plane: an origin and the direction of its X
- * axis, both in the WCS. Y is X turned a quarter CCW and Z is the world's, so
- * the frame is rigid and never mirrored — tilting or flipping it needs a Z the
- * model does not have yet.
+ * A user coordinate system: an origin and the direction of its X axis, both in
+ * the WCS. Y is X turned a quarter CCW and Z is the world's, so the frame is
+ * rigid and never mirrored — its XY plane is horizontal, at the origin's Z.
+ * Tilting or flipping it needs views the app does not have yet.
  */
 export interface Ucs {
-  readonly origin: Vec2
+  readonly origin: Vec3
   /** Unit vector: kept as a direction, not an angle, so it maps like a point. */
   readonly xAxis: Vec2
 }
@@ -19,17 +20,18 @@ export interface NamedUcs {
 }
 
 export const WORLD_UCS: Ucs = {
-  origin: { x: 0, y: 0 },
+  origin: { x: 0, y: 0, z: 0 },
   xAxis: { x: 1, y: 0 },
 }
 
 const EPSILON = 1e-12
 
-export function createUcs(origin: Vec2, xDirection: Vec2): Ucs | null {
+/** An origin given without a Z lies on Z = 0. */
+export function createUcs(origin: Vec2 | Vec3, xDirection: Vec2): Ucs | null {
   const length = Math.hypot(xDirection.x, xDirection.y)
   if (!(length > EPSILON) || !Number.isFinite(length)) return null
   return {
-    origin,
+    origin: { x: origin.x, y: origin.y, z: zOf(origin) },
     xAxis: { x: xDirection.x / length, y: xDirection.y / length },
   }
 }
@@ -38,6 +40,7 @@ export function isWorldUcs(ucs: Ucs): boolean {
   return (
     Math.abs(ucs.origin.x) < 1e-9 &&
     Math.abs(ucs.origin.y) < 1e-9 &&
+    Math.abs(ucs.origin.z) < 1e-9 &&
     Math.abs(ucs.xAxis.x - 1) < 1e-12 &&
     Math.abs(ucs.xAxis.y) < 1e-12
   )
@@ -47,6 +50,7 @@ export function sameUcs(a: Ucs, b: Ucs): boolean {
   return (
     Math.abs(a.origin.x - b.origin.x) < 1e-9 &&
     Math.abs(a.origin.y - b.origin.y) < 1e-9 &&
+    Math.abs(a.origin.z - b.origin.z) < 1e-9 &&
     Math.abs(a.xAxis.x - b.xAxis.x) < 1e-12 &&
     Math.abs(a.xAxis.y - b.xAxis.y) < 1e-12
   )
@@ -75,16 +79,23 @@ export function worldDirectionToUcs(ucs: Ucs, direction: Vec2): Vec2 {
   }
 }
 
-export function ucsPointToWorld(ucs: Ucs, point: Vec2): Vec2 {
+/** A point given without a Z lies on the UCS's XY plane. */
+export function ucsPointToWorld(ucs: Ucs, point: Vec2 | Vec3): Vec3 {
   const offset = ucsDirectionToWorld(ucs, point)
-  return { x: ucs.origin.x + offset.x, y: ucs.origin.y + offset.y }
+  return {
+    x: ucs.origin.x + offset.x,
+    y: ucs.origin.y + offset.y,
+    z: ucs.origin.z + zOf(point),
+  }
 }
 
-export function worldPointToUcs(ucs: Ucs, point: Vec2): Vec2 {
-  return worldDirectionToUcs(ucs, {
+/** A world point given without a Z lies on the world's XY plane. */
+export function worldPointToUcs(ucs: Ucs, point: Vec2 | Vec3): Vec3 {
+  const inPlane = worldDirectionToUcs(ucs, {
     x: point.x - ucs.origin.x,
     y: point.y - ucs.origin.y,
   })
+  return { ...inPlane, z: zOf(point) - ucs.origin.z }
 }
 
 /** An absolute angle measured from the UCS X axis, as one from the world's. */

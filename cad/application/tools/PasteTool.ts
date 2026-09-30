@@ -1,4 +1,5 @@
-import { V, Vec2 } from "../../geometry/Vec2"
+import { Vec2 } from "../../geometry/Vec2"
+import { Vec3, sub3 } from "../../geometry/Vec3"
 import { BlockLookup, translateEntity } from "../../domain/entities"
 import { ScenePrimitive } from "../../scene/types"
 import { THEME } from "../../scene/theme"
@@ -11,7 +12,7 @@ import { PointerInput, Tool, ToolContext } from "./Tool"
 
 type PasteState =
   | { readonly phase: "idle" }
-  | { readonly phase: "point"; readonly cursor: Vec2 }
+  | { readonly phase: "point"; readonly cursor: Vec3 }
 
 /**
  * AutoCAD's PASTECLIP: drags the clipboard fragment in by its base point and
@@ -53,7 +54,10 @@ export class PasteTool implements Tool {
     this.lookup = (id) => ctx.document.getBlock(id) ?? carried.get(id)
 
     const screen = this.lastScreen ?? { x: 0, y: 0 }
-    this.state = { phase: "point", cursor: ctx.viewport.screenToWorld(screen) }
+    this.state = {
+      phase: "point",
+      cursor: { ...ctx.viewport.screenToWorld(screen), z: ctx.ucs.origin.z },
+    }
     ctx.dynamicInput.open({
       fields: [{ id: "point", prompt: "insertionPoint", kind: "coordinate" }],
       commit: () => {},
@@ -86,7 +90,7 @@ export class PasteTool implements Tool {
 
   buildOverlay(ctx: ToolContext): ScenePrimitive[] {
     if (this.state.phase !== "point" || !this.fragment) return []
-    const delta = V.sub(this.state.cursor, this.fragment.basePoint)
+    const delta = sub3(this.state.cursor, this.fragment.basePoint)
     return this.fragment.drawing.entities.flatMap((entity) =>
       entityScenePrimitive(
         ctx.viewport,
@@ -99,7 +103,7 @@ export class PasteTool implements Tool {
     )
   }
 
-  private place(at: Vec2, ctx: ToolContext): void {
+  private place(at: Vec3, ctx: ToolContext): void {
     if (!this.fragment) return
     const plan = planPaste(this.fragment, ctx.document, at)
     ctx.execute(new PasteCommand(plan))

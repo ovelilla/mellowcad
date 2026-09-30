@@ -1,3 +1,5 @@
+import { Vec2 } from "../geometry/Vec2"
+import { Vec3, zOf } from "../geometry/Vec3"
 import {
   ArcEntity,
   CircleEntity,
@@ -99,4 +101,28 @@ export function carryPlane<T extends Entity>(source: Entity, target: T): T {
     placed = withThickness(placed, entityThickness(source)) as T
   }
   return placed
+}
+
+/**
+ * A flat object drawn through points at different heights lies in the plane of
+ * the first point that fixed it; the others are projected onto that plane.
+ */
+export function onPlaneOf<T extends Entity>(entity: T, first: Vec2 | Vec3): T {
+  return withElevation(entity, zOf(first))
+}
+
+/**
+ * The Z of the object under `point`, a point on it in plan: a line's is read
+ * off the line through its ends (so past them too), any other lies flat.
+ */
+export function entityZAt(entity: Entity, point: Vec2): number {
+  if (entity.type !== "line" || !entity.deltaZ) return entityElevation(entity)
+  const dx = entity.end.x - entity.start.x
+  const dy = entity.end.y - entity.start.y
+  const lengthSq = dx * dx + dy * dy
+  if (lengthSq === 0) return lineStartZ(entity)
+  const t =
+    ((point.x - entity.start.x) * dx + (point.y - entity.start.y) * dy) /
+    lengthSq
+  return lineStartZ(entity) + t * entity.deltaZ
 }

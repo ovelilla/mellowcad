@@ -1,4 +1,5 @@
 import { Vec2 } from "../geometry/Vec2"
+import { Vec3 } from "../geometry/Vec3"
 import { CadDocument } from "../domain/Document"
 import { Entity } from "../domain/entities"
 import {
@@ -73,7 +74,7 @@ export function copyToClipboard(
   clipboard: Clipboard | null,
   document: CadDocument,
   entities: readonly Entity[],
-  basePoint: Vec2
+  basePoint: Vec2 | Vec3
 ): string {
   const text = serializeClipboard(
     basePoint,

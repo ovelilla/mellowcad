@@ -1,4 +1,5 @@
 import { Vec2, vec2 } from "../../geometry/Vec2"
+import { Vec3, vec3, zOf } from "../../geometry/Vec3"
 import {
   Ucs,
   WORLD_UCS,
@@ -8,12 +9,15 @@ import {
 
 /**
  * Parsing of AutoCAD-style coordinate entry — the "classic total precision"
- * method where a point is *typed* instead of picked. Four formats are
+ * method where a point is *typed* instead of picked. These formats are
  * supported, mirroring AutoCAD's command line / dynamic input:
  *
  * ```
- *   x,y        cartesian   (X and Y)
- *   dist<ang   polar       (distance and angle in degrees, CCW from +X)
+ *   x,y          cartesian   (X and Y)
+ *   x,y,z        cartesian with a Z
+ *   dist<ang     polar       (distance and angle in degrees, CCW from +X)
+ *   dist<ang,z   cylindrical (polar in the XY plane, then a Z)
+ *   dist<ang<b   spherical   (b is the angle up from the XY plane)
  * ```
  *
  * each optionally prefixed to override the reference the point is measured
@@ -24,6 +28,10 @@ import {
  *   # …   absolute (from the UCS origin)
  *   * …   in the WCS rather than the UCS (`*x,y`, `@*x,y`)
  * ```
+ *
+ * A point typed without a Z takes the Z of the plane it is read on: an
+ * absolute one the current elevation (ELEV and DIST say so; one conceptual page
+ * says the last Z is kept instead), a relative one the last point's.
  *
  * When no prefix is given the interpretation depends on the caller: with
  * dynamic input on (our case) the default for the second point onward is
@@ -45,7 +53,7 @@ export interface CoordinateContext {
    * the dynamic-input relative default. `null` when there is no previous point
    * (the first point of a command), which forces absolute interpretation.
    */
-  readonly lastPoint: Vec2 | null
+  readonly lastPoint: Vec2 | Vec3 | null
   /**
    * Whether a bare `x,y` / `dist<ang` (no `@`/`#` prefix) is relative to the
    * last point. Dynamic input sets this `true` for the second point onward.
@@ -82,7 +90,7 @@ export function isCoordinateExpression(text: string): boolean {
 export function parseCoordinate(
   text: string,
   ctx: CoordinateContext
-): Vec2 | null {
+): Vec3 | null {
   let body = text.trim()
   if (body === "") return null
 
@@ -103,37 +111,76 @@ export function parseCoordinate(
   }
   if (body === "") return null
 
-  let offset: Vec2 | null = null
-  if (body.includes("<")) offset = parsePolar(body)
-  else if (body.includes(",")) offset = parseCartesian(body)
+  const offset = body.includes("<") ? parsePolar(body) : parseCartesian(body)
   if (!offset) return null
 
   // Relative to the last point when requested and available; the first point of
   // a command (no last point) is always absolute.
   if (relative && ctx.lastPoint) {
-    const step = ucsDirectionToWorld(ucs, offset)
-    return vec2(ctx.lastPoint.x + step.x, ctx.lastPoint.y + step.y)
+    const step = ucsDirectionToWorld(ucs, offset.xy)
+    return vec3(
+      ctx.lastPoint.x + step.x,
+      ctx.lastPoint.y + step.y,
+      zOf(ctx.lastPoint) + (offset.z ?? 0)
+    )
   }
-  return ucsPointToWorld(ucs, offset)
+  const point = ucsPointToWorld(ucs, offset.xy)
+  return vec3(
+    point.x,
+    point.y,
+    offset.z === null ? ctx.ucs.origin.z : ucs.origin.z + offset.z
+  )
 }
 
-function parseCartesian(body: string): Vec2 | null {
+/** The numbers typed, in the UCS they are read in; `z` is null when omitted. */
+interface TypedOffset {
+  readonly xy: Vec2
+  readonly z: number | null
+}
+
+function parseCartesian(body: string): TypedOffset | null {
   const parts = body.split(",")
-  if (parts.length !== 2) return null
+  if (parts.length !== 2 && parts.length !== 3) return null
   const x = parseDecimal(parts[0])
   const y = parseDecimal(parts[1])
+  const z = parts.length === 3 ? parseDecimal(parts[2]) : null
   if (x === null || y === null) return null
-  return vec2(x, y)
+  if (parts.length === 3 && z === null) return null
+  return { xy: vec2(x, y), z }
 }
 
-function parsePolar(body: string): Vec2 | null {
-  const parts = body.split("<")
-  if (parts.length !== 2) return null
+function parsePolar(body: string): TypedOffset | null {
+  const [polar, ...rest] = body.split(",")
+  const parts = polar.split("<")
+  const cylindrical = rest.length === 1 && parts.length === 2
+  const spherical = rest.length === 0 && parts.length === 3
+  if (
+    !cylindrical &&
+    !spherical &&
+    !(rest.length === 0 && parts.length === 2)
+  ) {
+    return null
+  }
   const distance = parseDecimal(parts[0])
   const angle = parseDecimal(parts[1])
   if (distance === null || angle === null) return null
   const rad = (angle * Math.PI) / 180
-  return vec2(Math.cos(rad) * distance, Math.sin(rad) * distance)
+  if (spherical) {
+    const rise = parseDecimal(parts[2])
+    if (rise === null) return null
+    const up = (rise * Math.PI) / 180
+    const inPlane = Math.cos(up) * distance
+    return {
+      xy: vec2(Math.cos(rad) * inPlane, Math.sin(rad) * inPlane),
+      z: Math.sin(up) * distance,
+    }
+  }
+  const z = cylindrical ? parseDecimal(rest[0]) : null
+  if (cylindrical && z === null) return null
+  return {
+    xy: vec2(Math.cos(rad) * distance, Math.sin(rad) * distance),
+    z,
+  }
 }
 
 /**

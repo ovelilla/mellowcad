@@ -1,4 +1,5 @@
 import { Vec2 } from "../../geometry/Vec2"
+import { Vec3 } from "../../geometry/Vec3"
 import {
   BlockAttribute,
   BlockDefinition,
@@ -6,6 +7,7 @@ import {
   EntityId,
   createBlockDefinition,
   createInsert,
+  onPlaneOf,
   rotateEntity,
 } from "../../domain/entities"
 import { ucsRotation } from "../../domain/ucs"
@@ -62,7 +64,7 @@ export class BlockTool implements Tool {
   private state: BlockState = { phase: "name" }
   private lastScreen: Vec2 | null = null
   private name = ""
-  private basePoint: Vec2 = { x: 0, y: 0 }
+  private basePoint: Vec3 = { x: 0, y: 0, z: 0 }
 
   onActivate(ctx: ToolContext): void {
     ctx.setCursor("default")
@@ -243,7 +245,7 @@ export class BlockTool implements Tool {
     ctx.dynamicInput.setPosition(this.lastScreen ?? { x: 0, y: 0 })
   }
 
-  private setBasePoint(point: Vec2, ctx: ToolContext): void {
+  private setBasePoint(point: Vec3, ctx: ToolContext): void {
     this.basePoint = point
     this.enterSelect(ctx)
     ctx.requestRender()
@@ -278,17 +280,21 @@ export class BlockTool implements Tool {
       this.basePoint,
       turn === 0
         ? entities
-        : entities.map((entity) => rotateEntity(entity, this.basePoint, -turn))
+        : entities.map((entity) => rotateEntity(entity, this.basePoint, -turn)),
+      this.basePoint.z
     )
     const convert = (
       attributes: readonly BlockAttribute[],
       doneCtx: ToolContext
     ) => {
-      const reference = createInsert(block.id, this.basePoint, {
-        rotation: turn,
-        layerId: doneCtx.document.getCurrentLayerId(),
-        attributes,
-      })
+      const reference = onPlaneOf(
+        createInsert(block.id, this.basePoint, {
+          rotation: turn,
+          layerId: doneCtx.document.getCurrentLayerId(),
+          attributes,
+        }),
+        this.basePoint
+      )
       doneCtx.execute(new CreateBlockCommand(block, ids, reference))
       doneCtx.selection.set([reference.id])
       doneCtx.endCommand()

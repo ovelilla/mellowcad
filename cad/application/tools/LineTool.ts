@@ -1,4 +1,5 @@
 import { Vec2, V } from "../../geometry/Vec2"
+import { Vec3, withZOf } from "../../geometry/Vec3"
 import { createLine } from "../../domain/entities"
 import { parseNumber } from "../../domain/units"
 import { AddEntityCommand } from "../commands/entityCommands"
@@ -40,14 +41,14 @@ type LineToolState =
   /** Waiting for the first point. */
   | { readonly phase: "idle" }
   /** No start yet, but a tracking guide is engaged: offer a typed offset. */
-  | { readonly phase: "tracking"; readonly origin: Vec2; readonly dir: Vec2 }
+  | { readonly phase: "tracking"; readonly origin: Vec3; readonly dir: Vec2 }
   /** Start placed; rubber-banding towards the next point. */
   | {
       readonly phase: "drawing"
       /** First vertex of the whole chain, used by the Close (C) option. */
-      readonly first: Vec2
-      readonly start: Vec2
-      readonly cursor: Vec2
+      readonly first: Vec3
+      readonly start: Vec3
+      readonly cursor: Vec3
       /** Last non-degenerate unit direction from start to cursor. */
       readonly direction: Vec2 | null
       /** Segments committed in this chain (Close needs at least two). */
@@ -56,7 +57,7 @@ type LineToolState =
        * Every committed vertex of the chain (`vertices[0]` is `first`, the last
        * is `start`). Lets the Undo (U) option step back one segment at a time.
        */
-      readonly vertices: readonly Vec2[]
+      readonly vertices: readonly Vec3[]
     }
 
 export class LineTool implements Tool {
@@ -128,7 +129,7 @@ export class LineTool implements Tool {
     // Enter does, rather than snapping to the raw cursor.
     const end = this.resolveEnd(start, input.point, ctx)
     // Ignore zero-length segments (e.g. a double click on the same snap point).
-    const draws = start.x !== end.x || start.y !== end.y
+    const draws = !samePoint(start, end)
 
     // Advance our own state *before* executing the command: executing emits a
     // document change that rebuilds engine state (and thus our commandOptions),
@@ -205,7 +206,7 @@ export class LineTool implements Tool {
   private close(ctx: ToolContext): boolean {
     if (this.state.phase !== "drawing" || this.state.segments < 2) return false
     const { start, first } = this.state
-    if (start.x !== first.x || start.y !== first.y) {
+    if (!samePoint(start, first)) {
       ctx.execute(
         new AddEntityCommand(
           createLine(start, first, ctx.document.getCurrentLayerId())
@@ -293,7 +294,7 @@ export class LineTool implements Tool {
    * follow the cursor: the distance from the raw point and the angle from the
    * start→cursor heading (which already reflects Ortho/snapping).
    */
-  private resolveEnd(start: Vec2, rawCursor: Vec2, ctx: ToolContext): Vec2 {
+  private resolveEnd(start: Vec3, rawCursor: Vec3, ctx: ToolContext): Vec3 {
     // A full coordinate typed into the length field (e.g. `@30,0` or `100<45`)
     // defines the endpoint directly, overriding the length/angle fields. With
     // dynamic input on, a bare `x,y` is relative to the current start (AutoCAD's
@@ -311,6 +312,7 @@ export class LineTool implements Tool {
 
     const typedDist = parseField(ctx, "distance")
     const typedAngle = parseField(ctx, "angle")
+    if (typedDist === null && typedAngle === null) return rawCursor
 
     const offset = V.sub(rawCursor, start)
     const cursorDist = V.length(offset)
@@ -321,9 +323,10 @@ export class LineTool implements Tool {
     // No heading yet (cursor still on the start and nothing typed): no point.
     if (angle === null) return rawCursor
 
-    return V.add(
-      start,
-      V.scale(directionFromUcsHeading(ctx.ucs, angle), distance)
+    // A typed length or angle is `@dist<angle`: it keeps the start's Z.
+    return withZOf(
+      V.add(start, V.scale(directionFromUcsHeading(ctx.ucs, angle), distance)),
+      start
     )
   }
 
@@ -365,7 +368,7 @@ export class LineTool implements Tool {
    * the pre-start box. The first point of a command has no previous point, so a
    * bare `x,y` is absolute (the DYN relative default does not apply yet).
    */
-  private resolveFirstPoint(rawPoint: Vec2, ctx: ToolContext): Vec2 {
+  private resolveFirstPoint(rawPoint: Vec3, ctx: ToolContext): Vec3 {
     const text = ctx.dynamicInput.getText("point").trim()
     if (isCoordinateExpression(text)) {
       const point = parseCoordinate(text, {
@@ -382,7 +385,7 @@ export class LineTool implements Tool {
    * Enters the drawing phase from `start`, opening the length/angle session so
    * the next segment can be typed or picked.
    */
-  private beginDrawing(start: Vec2, ctx: ToolContext, screen?: Vec2): void {
+  private beginDrawing(start: Vec3, ctx: ToolContext, screen?: Vec2): void {
     this.state = {
       phase: "drawing",
       first: start,
@@ -478,7 +481,10 @@ export class LineTool implements Tool {
   private commitOffsetStart(distance: number, ctx: ToolContext): void {
     if (this.state.phase !== "tracking") return
 
-    const start = V.add(this.state.origin, V.scale(this.state.dir, distance))
+    const start = withZOf(
+      V.add(this.state.origin, V.scale(this.state.dir, distance)),
+      this.state.origin
+    )
     this.state = {
       phase: "drawing",
       first: start,
@@ -511,7 +517,7 @@ export class LineTool implements Tool {
 
     const { start, first, segments } = this.state
     const direction = directionFromUcsHeading(ctx.ucs, angle)
-    const end = V.add(start, V.scale(direction, distance))
+    const end = withZOf(V.add(start, V.scale(direction, distance)), start)
 
     // Advance state before executing so commandOptions ("Close") reflect the
     // new segment count as soon as the document-change rebuilds engine state.
@@ -556,8 +562,9 @@ export class LineTool implements Tool {
     const { start, first, segments } = this.state
     const offset = V.sub(end, start)
     const length = V.length(offset)
-    const draws = length > 0
-    const direction = draws ? V.scale(offset, 1 / length) : this.state.direction
+    const draws = !samePoint(start, end)
+    const direction =
+      length > 0 ? V.scale(offset, 1 / length) : this.state.direction
 
     // Advance state before executing so commandOptions reflect the new count.
     this.state = {
@@ -597,4 +604,9 @@ function parseField(ctx: ToolContext, id: string): number | null {
   if (text === "") return null
   const value = parseNumber(text)
   return value !== null && Number.isFinite(value) ? value : null
+}
+
+/** A line straight up in Z is still a line, though it is a point in plan. */
+function samePoint(a: Vec3, b: Vec3): boolean {
+  return a.x === b.x && a.y === b.y && a.z === b.z
 }

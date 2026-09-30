@@ -1,4 +1,5 @@
 import { Vec2 } from "../../geometry/Vec2"
+import { Vec3 } from "../../geometry/Vec3"
 import { DocumentReader } from "../../domain/Document"
 import { Entity, EntityId, BlockLookup } from "../../domain/entities"
 import { Ucs } from "../../domain/ucs"
@@ -28,8 +29,9 @@ export interface PointerInput {
    * The effective world point a tool should use: the snapped point when a snap
    * is active, otherwise the raw world position, after any active drawing
    * constraints (Ortho, ...) have been applied relative to the tool's anchor.
+   * Its Z is the snapped object's, or the UCS's XY plane (see `ResolvedPoint`).
    */
-  readonly point: Vec2
+  readonly point: Vec3
   readonly button: number
   readonly shiftKey: boolean
   readonly ctrlKey: boolean
@@ -147,7 +149,7 @@ export interface ToolContext {
    * COPYBASE). The table entries the objects reference travel with them, and
    * `basePoint` is what a later paste lands on the insertion point.
    */
-  copyToClipboard(entities: readonly Entity[], basePoint: Vec2): void
+  copyToClipboard(entities: readonly Entity[], basePoint: Vec2 | Vec3): void
 
   /**
    * Ends the current command and drops back to the neutral Select tool. For

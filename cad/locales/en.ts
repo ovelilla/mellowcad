@@ -988,7 +988,11 @@ export const en: EngineCatalog = {
         [
           "originY"
         ],
-        ",0.0000>, X Axis = <",
+        ",",
+        [
+          "originZ"
+        ],
+        ">, X Axis = <",
         [
           "xAxisX"
         ],

@@ -1,10 +1,12 @@
 import { Vec2 } from "../../geometry/Vec2"
+import { Vec3 } from "../../geometry/Vec3"
 import {
   BlockAttribute,
   BlockId,
   EntityId,
   InsertEntity,
   createInsert,
+  onPlaneOf,
 } from "../../domain/entities"
 import { parseNumber } from "../../domain/units"
 import { ucsAngleToWorld } from "../../domain/ucs"
@@ -32,7 +34,7 @@ type InsertState =
   | { readonly phase: "rotation" }
   | {
       readonly phase: "attributes"
-      readonly at: Vec2
+      readonly at: Vec3
       readonly prompts: AttributeValuePrompts
     }
 
@@ -139,21 +141,24 @@ export class InsertTool implements Tool {
 
   /** The reference as it stands at `at`. Shared by the preview and the commit. */
   private pending(
-    at: Vec2,
+    at: Vec2 | Vec3,
     ctx: ToolContext,
     id?: EntityId,
     attributes?: readonly BlockAttribute[]
   ): InsertEntity {
-    return createInsert(this.blockId, at, {
-      scale: this.scale,
-      rotation: ucsAngleToWorld(ctx.ucs, this.rotation),
-      layerId: ctx.document.getCurrentLayerId(),
-      attributes,
-      id,
-    })
+    return onPlaneOf(
+      createInsert(this.blockId, at, {
+        scale: this.scale,
+        rotation: ucsAngleToWorld(ctx.ucs, this.rotation),
+        layerId: ctx.document.getCurrentLayerId(),
+        attributes,
+        id,
+      }),
+      at
+    )
   }
 
-  private place(at: Vec2, ctx: ToolContext): void {
+  private place(at: Vec3, ctx: ToolContext): void {
     const block = ctx.document.getBlock(this.blockId)
     if (!block) return
     const prompts = new AttributeValuePrompts(block, (attributes, doneCtx) => {

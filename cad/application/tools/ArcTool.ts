@@ -1,6 +1,7 @@
 import { Vec2, V } from "../../geometry/Vec2"
+import { Vec3 } from "../../geometry/Vec3"
 import { arcFrom3Points } from "../../geometry/primitives"
-import { createArc } from "../../domain/entities"
+import { createArc, onPlaneOf } from "../../domain/entities"
 import { AddEntityCommand } from "../commands/entityCommands"
 import { DynamicInputSession } from "../input/DynamicInput"
 import type { PromptId } from "../../locales/types"
@@ -28,11 +29,11 @@ export type ArcMode = "threePoint" | "startCenterEnd" | "centerStartEnd"
 
 type ArcToolState =
   | { readonly phase: "p1" }
-  | { readonly phase: "p2"; readonly p1: Vec2; readonly cursor: Vec2 }
+  | { readonly phase: "p2"; readonly p1: Vec3; readonly cursor: Vec2 }
   | {
       readonly phase: "p3"
-      readonly p1: Vec2
-      readonly p2: Vec2
+      readonly p1: Vec3
+      readonly p2: Vec3
       readonly cursor: Vec2
     }
 
@@ -86,7 +87,7 @@ export class ArcTool implements Tool {
    * Advances the point phases with a resolved world point, shared by the click
    * path and the typed-coordinate path so both behave identically.
    */
-  private advanceWithPoint(point: Vec2, ctx: ToolContext, screen?: Vec2): void {
+  private advanceWithPoint(point: Vec3, ctx: ToolContext, screen?: Vec2): void {
     const at = screen ?? this.lastScreen ?? ctx.viewport.worldToScreen(point)
 
     switch (this.state.phase) {
@@ -210,17 +211,21 @@ export class ArcTool implements Tool {
     return arcFromCenterStartEnd(center, start, p3)
   }
 
-  private commit(p1: Vec2, p2: Vec2, p3: Vec2, ctx: ToolContext): void {
+  /** WHY: in the first point's plane, as CIRCLE's 2P and 3P (see `CircleTool`). */
+  private commit(p1: Vec3, p2: Vec2, p3: Vec2, ctx: ToolContext): void {
     const solved = this.solve(p1, p2, p3)
     if (!solved || !(solved.radius > 0)) return // degenerate — keep prompting
     ctx.execute(
       new AddEntityCommand(
-        createArc(
-          solved.center,
-          solved.radius,
-          solved.startAngle,
-          solved.endAngle,
-          ctx.document.getCurrentLayerId()
+        onPlaneOf(
+          createArc(
+            solved.center,
+            solved.radius,
+            solved.startAngle,
+            solved.endAngle,
+            ctx.document.getCurrentLayerId()
+          ),
+          p1
         )
       )
     )
@@ -272,7 +277,7 @@ export class ArcTool implements Tool {
   }
 
   /** The point a relative coordinate is measured from, per phase. */
-  private previousPoint(): Vec2 | null {
+  private previousPoint(): Vec3 | null {
     switch (this.state.phase) {
       case "p2":
         return this.state.p1

@@ -1,4 +1,5 @@
 import { Vec2, V } from "../../geometry/Vec2"
+import { Vec3, withZOf } from "../../geometry/Vec3"
 import { normalizeDegrees } from "../../geometry/primitives"
 import {
   clampLineSpacingFactor,
@@ -13,6 +14,7 @@ import {
   mtextFromWorld,
   mtextLayout,
   mtextToWorld,
+  onPlaneOf,
   TEXT_LINE_SPACING_FACTOR,
 } from "../../domain/entities"
 import { parseNumber } from "../../domain/units"
@@ -294,7 +296,7 @@ export class MTextTool implements Tool {
     this.openPointInput(ctx, "mtextFirstCorner")
   }
 
-  private enterOpposite(first: Vec2, ctx: ToolContext): void {
+  private enterOpposite(first: Vec3, ctx: ToolContext): void {
     this.state = { phase: "opposite", first }
     this.openPointInput(ctx, "mtextOppositeCorner")
   }
@@ -363,11 +365,14 @@ export class MTextTool implements Tool {
   ): MTextEntity {
     if (this.state.phase !== "edit") throw new Error("no text is being edited")
     const { box } = this.state
-    return createMText(box.position, mtextContents(text), {
-      ...this.settings(ctx),
-      width: box.width,
-      ...(layerId ? { layerId } : { id: MTEXT_PREVIEW_ID }),
-    })
+    return onPlaneOf(
+      createMText(box.position, mtextContents(text), {
+        ...this.settings(ctx),
+        width: box.width,
+        ...(layerId ? { layerId } : { id: MTEXT_PREVIEW_ID }),
+      }),
+      box.position
+    )
   }
 
   /** An MTEXT with the current settings, for the jig and the box preview. */
@@ -414,7 +419,7 @@ export class MTextTool implements Tool {
    * box's attachment point, not off the first click, whichever way the box was
    * dragged.
    */
-  private boxFrom(first: Vec2, second: Vec2): MTextBox {
+  private boxFrom(first: Vec3, second: Vec2): MTextBox {
     const local = localOffset(first, second, this.textRotation())
     const x0 = Math.min(0, local.x)
     const x1 = Math.max(0, local.x)
@@ -424,7 +429,10 @@ export class MTextTool implements Tool {
     const row = this.attachment[0]
     const x = column === "l" ? x0 : column === "r" ? x1 : (x0 + x1) / 2
     const y = row === "t" ? y1 : row === "b" ? y0 : (y0 + y1) / 2
-    return { position: this.toWorld(first, x, y), width: x1 - x0 }
+    return {
+      position: withZOf(this.toWorld(first, x, y), first),
+      width: x1 - x0,
+    }
   }
 
   private toWorld(origin: Vec2, x: number, y: number): Vec2 {
@@ -455,7 +463,7 @@ export class MTextTool implements Tool {
    * the text will flow from the attachment point.
    */
   private boxOverlay(
-    first: Vec2,
+    first: Vec3,
     cursor: Vec2,
     ctx: ToolContext
   ): ScenePrimitive[] {
@@ -696,22 +704,22 @@ function frame(
   }
 }
 
-/** Where the text will hang and how wide it wraps. */
+/** Where the text will hang, at the first corner's height, and how wide it wraps. */
 interface MTextBox {
-  readonly position: Vec2
+  readonly position: Vec3
   readonly width: number
 }
 
 type MTextToolState =
   | { readonly phase: "corner" }
-  | { readonly phase: "opposite"; readonly first: Vec2 }
-  | { readonly phase: "height"; readonly first: Vec2 }
-  | { readonly phase: "justify"; readonly first: Vec2 }
-  | { readonly phase: "spacingType"; readonly first: Vec2 }
-  | { readonly phase: "spacingValue"; readonly first: Vec2 }
-  | { readonly phase: "rotation"; readonly first: Vec2 }
-  | { readonly phase: "style"; readonly first: Vec2 }
-  | { readonly phase: "width"; readonly first: Vec2 }
+  | { readonly phase: "opposite"; readonly first: Vec3 }
+  | { readonly phase: "height"; readonly first: Vec3 }
+  | { readonly phase: "justify"; readonly first: Vec3 }
+  | { readonly phase: "spacingType"; readonly first: Vec3 }
+  | { readonly phase: "spacingValue"; readonly first: Vec3 }
+  | { readonly phase: "rotation"; readonly first: Vec3 }
+  | { readonly phase: "style"; readonly first: Vec3 }
+  | { readonly phase: "width"; readonly first: Vec3 }
   | {
       readonly phase: "edit"
       readonly box: MTextBox

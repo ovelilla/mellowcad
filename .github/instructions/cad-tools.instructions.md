@@ -200,6 +200,19 @@ instead, or the command-line buffer will swallow them.
   **absolute** angle — a heading field fed from the cursor, a typed direction — goes through
   `headingInUcs` / `directionFromUcsHeading` (`tools/ucsHeading.ts`); a **relative** one (a
   rotation, an included angle, a sweep) is the same in every UCS and is left alone.
+- **A point has a Z; keep it.** `input.point` and `parseCoordinate` give a `Vec3`: `x,y` absolute
+  lies on the UCS's XY plane, `@x,y` keeps `lastPoint`'s Z. A point a tool _computes_ from another
+  (`V.add(start, dir * length)` for a typed length or angle, a tracking offset) is `@dist<angle`
+  and keeps the base's Z: wrap it in `withZOf(point, base)`, because every `V` helper returns a
+  `Vec2`. Type a state field that feeds `lastPoint` or a creation as `Vec3`, so a dropped Z fails
+  to compile. A displacement is `sub3(to, from)` (MOVE, COPY, STRETCH, PASTECLIP); SCALE's base is
+  a `Vec3`; ROTATE and MIRROR ignore the Z.
+- **A flat object lies in the plane of the first point that fixed it** (the first vertex of PLINE
+  and SPLINE, a CIRCLE's centre or first 2P/3P point, RECTANG's first corner, the insertion point
+  of TEXT, MTEXT, ATTDEF and INSERT, BLOCK's base point): `onPlaneOf(createX(...), first)`, and
+  project the later points (`withZOf(point, first)`) rather than keep their Z. A point computed
+  from the first (an ellipse's centre, MTEXT's attachment point) takes its Z the same way.
+  `createLine` is the exception: a line has a Z at each end, so it reads its two points' Z itself.
 - **A default AutoCAD aligns with the UCS is kept relative to it**: TEXT, MTEXT, ATTDEF and
   INSERT remember their rotation from the UCS X axis and add the UCS's own on commit
   (`ucsAngleToWorld`); HATCH does the same with its angle and starts at the UCS origin; DIMLINEAR's

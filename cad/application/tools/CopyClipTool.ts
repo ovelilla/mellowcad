@@ -1,4 +1,5 @@
 import { V, Vec2 } from "../../geometry/Vec2"
+import { Vec3 } from "../../geometry/Vec3"
 import { Entity, entitiesBounds } from "../../domain/entities"
 import { RemoveEntitiesCommand } from "../commands/entityCommands"
 import { parseCoordinate } from "../input/coordinateInput"
@@ -28,7 +29,7 @@ export type ClipboardCopyMode = "copy" | "cut" | "base"
  *   between drawings.
  */
 export class CopyClipTool extends SelectionActionTool {
-  private base: Vec2 | null = null
+  private base: Vec3 | null = null
   private awaitingBase = false
 
   constructor(
@@ -96,7 +97,7 @@ export class CopyClipTool extends SelectionActionTool {
     ctx.selection.clear()
   }
 
-  private setBase(point: Vec2, ctx: ToolContext): void {
+  private setBase(point: Vec3, ctx: ToolContext): void {
     this.base = point
     this.awaitingBase = false
     ctx.dynamicInput.close()

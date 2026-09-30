@@ -570,7 +570,9 @@ function parseUcs(value: unknown): Ucs | null {
   if (!isRecord(value)) return null
   const origin = parseVec2(value.origin)
   const xAxis = parseVec2(value.xAxis)
-  return origin && xAxis ? createUcs(origin, xAxis) : null
+  if (!origin || !xAxis) return null
+  const z = isRecord(value.origin) ? value.origin.z : undefined
+  return createUcs({ ...origin, z: isFiniteNumber(z) ? z : 0 }, xAxis)
 }
 
 function parseNamedUcs(value: unknown): NamedUcs[] {

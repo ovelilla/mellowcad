@@ -1,4 +1,5 @@
 import { Vec2, V } from "../../geometry/Vec2"
+import { planar } from "../../geometry/Vec3"
 import {
   createArc,
   createCircle,
@@ -69,20 +70,21 @@ export function movedDimension(
   state: { readonly point: DimensionPoint; readonly origin: Vec2 },
   point: Vec2
 ): DimensionEntity {
+  const at = planar(point)
   switch (state.point) {
     case "first":
-      return { ...dim, first: point }
+      return { ...dim, first: at }
     case "second":
-      return { ...dim, second: point }
+      return { ...dim, second: at }
     case "vertex":
-      return { ...dim, vertex: point }
+      return { ...dim, vertex: at }
     case "line":
       // An angular dimension's arc passes through its location, so the grip
       // sets it outright — which is also how dragging across a ray gives the
       // reflex angle. Every other kind slides its line by the drag instead,
       // because only the location's projection is drawn.
       return dim.kind === "angular"
-        ? { ...dim, linePoint: point }
+        ? { ...dim, linePoint: at }
         : {
             ...dim,
             linePoint: V.add(dim.linePoint, V.sub(point, state.origin)),

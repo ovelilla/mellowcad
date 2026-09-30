@@ -1,5 +1,6 @@
 import { Observable } from "../../shared/Observable"
 import { Vec2, V } from "../../geometry/Vec2"
+import { Vec3, withZOf } from "../../geometry/Vec3"
 import {
   Ray,
   intersectRays,
@@ -131,7 +132,7 @@ export class ObjectSnapTrackingEngine extends Observable {
     }, this.dwellMs)
   }
 
-  private toggleAt(point: Vec2, sourceType: SnapType, epsilon: number): void {
+  private toggleAt(point: Vec3, sourceType: SnapType, epsilon: number): void {
     this.hoverPoint = null
     // Remember we just handled this point so the resting cursor won't re-toggle.
     this.settledPoint = point
@@ -229,7 +230,8 @@ export class ObjectSnapTrackingEngine extends Observable {
     const direction =
       V.dot(along, primary.dir) < 0 ? V.scale(primary.dir, -1) : primary.dir
     return {
-      point: chosen.point,
+      // A tracked point lies at the height of the point it was acquired from.
+      point: withZOf(chosen.point, primary.point.origin),
       kind: chosen.kind,
       guides: chosen.guides,
       direction,

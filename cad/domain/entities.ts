@@ -200,6 +200,8 @@ export {
   shiftEntityZ,
   scaleEntityZ,
   carryPlane,
+  onPlaneOf,
+  entityZAt,
 } from "./elevation"
 
 export {

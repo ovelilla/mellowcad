@@ -1,12 +1,15 @@
 import { Vec2, V } from "../../geometry/Vec2"
+import { Vec3, withZOf } from "../../geometry/Vec3"
 import {
   ellipseParamFromAngle,
   normalizeAngle,
 } from "../../geometry/primitives"
 import {
+  carryPlane,
   createEllipse,
   ellipseRotation,
   EllipseEntity,
+  onPlaneOf,
 } from "../../domain/entities"
 import { parseNumber } from "../../domain/units"
 import { AddEntityCommand } from "../commands/entityCommands"
@@ -46,18 +49,21 @@ type EllipseToolState =
   /** Awaiting the first point: an axis endpoint, or the centre. */
   | { readonly phase: "first" }
   /** Awaiting the other end of the first axis (or its only end, from the centre). */
-  | { readonly phase: "second"; readonly first: Vec2; readonly cursor: Vec2 }
-  /** The first axis is fixed; awaiting the half-length of the other one. */
+  | { readonly phase: "second"; readonly first: Vec3; readonly cursor: Vec2 }
+  /**
+   * The first axis is fixed; awaiting the half-length of the other one. The
+   * centre is at the first point's height, the plane the ellipse lies in.
+   */
   | {
       readonly phase: "distance"
-      readonly center: Vec2
+      readonly center: Vec3
       readonly semiAxis: Vec2
       readonly cursor: Vec2
     }
   /** The Rotation option: the angle a circle is turned through about the axis. */
   | {
       readonly phase: "rotation"
-      readonly center: Vec2
+      readonly center: Vec3
       readonly semiAxis: Vec2
       readonly cursor: Vec2
     }
@@ -168,7 +174,7 @@ export class EllipseTool implements Tool {
    * Advances the state machine with a resolved world point, shared by the click
    * path and the typed-coordinate path so both behave identically.
    */
-  private advanceWithPoint(point: Vec2, ctx: ToolContext, screen?: Vec2): void {
+  private advanceWithPoint(point: Vec3, ctx: ToolContext, screen?: Vec2): void {
     const at = screen ?? this.lastScreen ?? ctx.viewport.worldToScreen(point)
 
     switch (this.state.phase) {
@@ -371,10 +377,13 @@ export class EllipseTool implements Tool {
 
   /** The centre and first semi-axis the two picked points define, per mode. */
   private axisFrom(
-    first: Vec2,
+    first: Vec3,
     second: Vec2
-  ): { center: Vec2; semiAxis: Vec2 } | null {
-    const center = this.active === "center" ? first : V.midpoint(first, second)
+  ): { center: Vec3; semiAxis: Vec2 } | null {
+    const center = withZOf(
+      this.active === "center" ? first : V.midpoint(first, second),
+      first
+    )
     const semiAxis = V.sub(second, center)
     return V.length(semiAxis) < 1e-9 ? null : { center, semiAxis }
   }
@@ -385,16 +394,16 @@ export class EllipseTool implements Tool {
    * order of picking produces the same object.
    */
   private solve(
-    center: Vec2,
+    center: Vec3,
     semiAxis: Vec2,
     otherHalfLength: number
   ): EllipseEntity | null {
     if (!(otherHalfLength > 1e-9)) return null
-    return createEllipse(
-      center,
-      semiAxis,
-      otherHalfLength / V.length(semiAxis),
-      { id: PREVIEW_ID }
+    return onPlaneOf(
+      createEllipse(center, semiAxis, otherHalfLength / V.length(semiAxis), {
+        id: PREVIEW_ID,
+      }),
+      center
     )
   }
 
@@ -404,11 +413,14 @@ export class EllipseTool implements Tool {
     startParam: number,
     endAngle: number
   ): EllipseEntity {
-    return createEllipse(ellipse.center, ellipse.majorAxis, ellipse.ratio, {
-      startParam,
-      endParam: ellipseParamFromAngle(ellipse.ratio, endAngle),
-      id: PREVIEW_ID,
-    })
+    return carryPlane(
+      ellipse,
+      createEllipse(ellipse.center, ellipse.majorAxis, ellipse.ratio, {
+        startParam,
+        endParam: ellipseParamFromAngle(ellipse.ratio, endAngle),
+        id: PREVIEW_ID,
+      })
+    )
   }
 
   /**
@@ -435,7 +447,7 @@ export class EllipseTool implements Tool {
   }
 
   private commitEllipse(
-    center: Vec2,
+    center: Vec3,
     semiAxis: Vec2,
     otherHalfLength: number,
     ctx: ToolContext,
@@ -501,11 +513,14 @@ export class EllipseTool implements Tool {
   private add(ellipse: EllipseEntity, ctx: ToolContext): void {
     ctx.execute(
       new AddEntityCommand(
-        createEllipse(ellipse.center, ellipse.majorAxis, ellipse.ratio, {
-          startParam: ellipse.startParam,
-          endParam: ellipse.endParam,
-          layerId: ctx.document.getCurrentLayerId(),
-        })
+        carryPlane(
+          ellipse,
+          createEllipse(ellipse.center, ellipse.majorAxis, ellipse.ratio, {
+            startParam: ellipse.startParam,
+            endParam: ellipse.endParam,
+            layerId: ctx.document.getCurrentLayerId(),
+          })
+        )
       )
     )
     ctx.endCommand()

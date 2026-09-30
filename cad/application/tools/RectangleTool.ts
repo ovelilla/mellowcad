@@ -1,5 +1,6 @@
 import { Vec2, V } from "../../geometry/Vec2"
-import { createPolyline } from "../../domain/entities"
+import { Vec3 } from "../../geometry/Vec3"
+import { createPolyline, onPlaneOf } from "../../domain/entities"
 import {
   Ucs,
   ucsPointToWorld,
@@ -27,7 +28,7 @@ type RectangleToolState =
   /** Awaiting the first corner. */
   | { readonly phase: "first" }
   /** First corner placed; rubber-banding the opposite corner. */
-  | { readonly phase: "second"; readonly first: Vec2; readonly cursor: Vec2 }
+  | { readonly phase: "second"; readonly first: Vec3; readonly cursor: Vec2 }
 
 export class RectangleTool implements Tool {
   readonly id = "rectangle"
@@ -94,7 +95,7 @@ export class RectangleTool implements Tool {
    * Advances the point phases with a resolved world point, shared by the click
    * path and the typed-coordinate path so both behave identically.
    */
-  private advanceWithPoint(point: Vec2, ctx: ToolContext, screen?: Vec2): void {
+  private advanceWithPoint(point: Vec3, ctx: ToolContext, screen?: Vec2): void {
     const at = screen ?? this.lastScreen ?? ctx.viewport.worldToScreen(point)
     if (this.state.phase === "first") {
       this.state = { phase: "second", first: point, cursor: point }
@@ -105,7 +106,7 @@ export class RectangleTool implements Tool {
     this.commitRectangle(this.state.first, point, ctx)
   }
 
-  private commitRectangle(first: Vec2, other: Vec2, ctx: ToolContext): void {
+  private commitRectangle(first: Vec3, other: Vec2, ctx: ToolContext): void {
     // A degenerate rectangle (zero width or height) has no area — ignore it and
     // keep prompting, mirroring AutoCAD, which rejects a zero-size rectangle.
     const diagonal = worldDirectionToUcs(ctx.ucs, V.sub(other, first))
@@ -114,10 +115,13 @@ export class RectangleTool implements Tool {
     }
     ctx.execute(
       new AddEntityCommand(
-        createPolyline(
-          rectangleCorners(first, other, ctx.ucs),
-          true,
-          ctx.document.getCurrentLayerId()
+        onPlaneOf(
+          createPolyline(
+            rectangleCorners(first, other, ctx.ucs),
+            true,
+            ctx.document.getCurrentLayerId()
+          ),
+          first
         )
       )
     )

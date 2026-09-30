@@ -172,7 +172,7 @@ describe("round trip", () => {
   })
 
   it("preserves the document settings", () => {
-    const ucs = { origin: { x: 10, y: -5 }, xAxis: { x: 0.6, y: 0.8 } }
+    const ucs = { origin: { x: 10, y: -5, z: 4 }, xAxis: { x: 0.6, y: 0.8 } }
     const settings = {
       unit: LengthUnit.Meter,
       precision: 5,
@@ -203,7 +203,7 @@ describe("round trip", () => {
       })
     )
     expect(parsed.settings.ucs).toEqual({
-      origin: { x: 1, y: 2 },
+      origin: { x: 1, y: 2, z: 0 },
       xAxis: { x: 0, y: 1 },
     })
     expect(parsed.settings.ucsName).toBeNull()

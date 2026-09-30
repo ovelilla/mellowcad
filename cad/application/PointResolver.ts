@@ -1,4 +1,5 @@
 import { Vec2, V } from "../geometry/Vec2"
+import { Vec3, withZ } from "../geometry/Vec3"
 import { Viewport } from "./Viewport"
 import { SnapMode } from "./SnapMode"
 import { SnapEngine } from "./snapping/SnapEngine"
@@ -11,8 +12,12 @@ import { Ucs } from "../domain/ucs"
 
 /** What the resolver produced for one cursor position. */
 export interface ResolvedPoint {
-  /** The effective world point a tool should act on. */
-  readonly point: Vec2
+  /**
+   * The effective world point a tool should act on. Its Z is the snapped
+   * object's, the tracked point's, or else the XY plane of the UCS — Ortho,
+   * Polar and the snap lattice work in the plane and never change it.
+   */
+  readonly point: Vec3
   /** The tracking result that produced it, if tracking engaged. */
   readonly tracking: TrackingResult | null
 }
@@ -91,10 +96,12 @@ export class PointResolver {
     const context = { anchor, world, snapPoint, point: candidate, ucs }
     const constrained = this.constraints.apply(context, forceOrtho)
     return {
-      point:
+      point: withZ(
         allowSnapMode && !snap
           ? this.applyPolarSnap(context, constrained, forceOrtho)
           : constrained,
+        snap ? snap.point.z : ucs.origin.z
+      ),
       tracking: null,
     }
   }

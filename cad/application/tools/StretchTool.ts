@@ -1,4 +1,5 @@
 import { Vec2 } from "../../geometry/Vec2"
+import { Vec3 } from "../../geometry/Vec3"
 import {
   Entity,
   EntityId,
@@ -77,7 +78,7 @@ export class StretchTool extends PlacementTool {
     })
   }
 
-  protected transformEntity(entity: Entity, delta: Vec2): Entity {
+  protected transformEntity(entity: Entity, delta: Vec3): Entity {
     // No frame was dragged (pre-selected or clicked objects): plain move.
     if (this.frames.length === 0 || this.whole.has(entity.id)) {
       return translateEntity(entity, delta)
@@ -87,7 +88,7 @@ export class StretchTool extends PlacementTool {
 
   protected place(
     originals: readonly Entity[],
-    delta: Vec2,
+    delta: Vec3,
     ctx: ToolContext
   ): void {
     ctx.execute(

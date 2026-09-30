@@ -106,8 +106,9 @@ snapping, command history, adapters) is in `cad-runtime.instructions.md`; writin
 - Pure functions do not mutate their inputs; entity helpers return new objects and either
   preserve the id (in-place edit) or mint a fresh one (`*Copy` helpers).
 - **Entities are stored in the WCS; the UCS is only how points and angles are read.** A `Ucs`
-  (`domain/ucs.ts`) is an origin and a unit X axis — a direction kept as a vector, like an
-  ellipse's axis — with Y a quarter turn CCW and Z the world's, so it is never tilted or mirrored.
+  (`domain/ucs.ts`) is an origin (a `Vec3`: its XY plane sits at the origin's Z) and a unit X
+  axis — a direction kept as a vector, like an ellipse's axis — with Y a quarter turn CCW and Z
+  the world's, so it is never tilted or mirrored.
   It lives in `DocumentSettings` with its name and the named-UCS table (UCSORG, UCSXDIR and the UCS
   table are saved in the drawing). Convert at the boundary with `ucsPointToWorld` /
   `worldPointToUcs` and the direction and angle twins; nothing in `domain/` reads the current UCS.
@@ -433,6 +434,12 @@ its own `baseElevation`, and a reference's attributes their `elevation`.
   spreading the source (`polylines.ts`'s `reshaped`).
 - `expectSameShape` compares the Z and the `entity` arbitrary generates it, so a transform that
   drops it fails every round-trip property.
+- **An entity's points are planar; the Z lives only in its fields.** Factories copy `{ x, y }` out
+  of whatever they are given, so a `Vec3` from the point channel never leaves a stray `z` on a
+  vertex; a spread that writes a picked point (a grip edit) takes `planar(point)` for the same
+  reason. `onPlaneOf(entity, point)` sets the plane from a point, `createLine` reads its ends' Z,
+  and `entityZAt(entity, point)` is the one reader of an object's Z at a point in plan (a line's
+  interpolated along it) — the snaps, UCS OBject and any future "Z of the object here" use it.
 
 ## Serialization
 

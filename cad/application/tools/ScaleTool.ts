@@ -1,4 +1,5 @@
 import { Vec2, V } from "../../geometry/Vec2"
+import { Vec3 } from "../../geometry/Vec3"
 import {
   Entity,
   EntityId,
@@ -76,7 +77,8 @@ type ScaleState =
   /** Base placed; the set scales to the factor (cursor-driven). */
   | {
       readonly phase: "factor"
-      readonly base: Vec2
+      /** Its Z too: the set scales in 3D about it. */
+      readonly base: Vec3
       readonly originals: readonly Entity[]
       /** Reference mode Copy keeps the originals in place. */
       readonly copy: boolean
@@ -85,7 +87,7 @@ type ScaleState =
   /** Reference mode: measuring the first point of the reference length. */
   | {
       readonly phase: "refP1"
-      readonly base: Vec2
+      readonly base: Vec3
       readonly originals: readonly Entity[]
       readonly copy: boolean
       readonly current: Vec2
@@ -93,7 +95,7 @@ type ScaleState =
   /** Reference mode: measuring the second point of the reference length. */
   | {
       readonly phase: "refP2"
-      readonly base: Vec2
+      readonly base: Vec3
       readonly originals: readonly Entity[]
       readonly copy: boolean
       readonly p1: Vec2
@@ -102,7 +104,7 @@ type ScaleState =
   /** Reference mode: the set scales to the new length. */
   | {
       readonly phase: "newLength"
-      readonly base: Vec2
+      readonly base: Vec3
       readonly originals: readonly Entity[]
       readonly copy: boolean
       /** Reference length the new length is divided by for the factor. */
@@ -447,7 +449,7 @@ export class ScaleTool implements Tool {
     return true
   }
 
-  private enterFactor(base: Vec2, ctx: ToolContext): void {
+  private enterFactor(base: Vec3, ctx: ToolContext): void {
     const originals = this.snapshotSelection(ctx)
     if (originals.length === 0) {
       // The selection vanished (e.g. undo elsewhere): fall back to picking.
@@ -600,7 +602,7 @@ export class ScaleTool implements Tool {
       .filter((entity): entity is Entity => entity !== undefined)
   }
 
-  private resolveBase(rawPoint: Vec2, ctx: ToolContext): Vec2 {
+  private resolveBase(rawPoint: Vec3, ctx: ToolContext): Vec3 {
     const text = ctx.dynamicInput.getText("base").trim()
     if (isCoordinateExpression(text)) {
       const point = parseCoordinate(text, {

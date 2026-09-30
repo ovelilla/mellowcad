@@ -1,5 +1,6 @@
 import { Vec2, V, vec2 } from "../../geometry/Vec2"
-import { createPolyline } from "../../domain/entities"
+import { Vec3 } from "../../geometry/Vec3"
+import { createPolyline, onPlaneOf } from "../../domain/entities"
 import { parseNumber } from "../../domain/units"
 import { ucsRotation } from "../../domain/ucs"
 import { AddEntityCommand } from "../commands/entityCommands"
@@ -41,7 +42,7 @@ type PolygonToolState =
   | {
       readonly phase: "radius"
       readonly sides: number
-      readonly center: Vec2
+      readonly center: Vec3
       readonly cursor: Vec2
       /** Radius is the apothem (edge midpoints) when true, else the circumradius. */
       readonly circumscribed: boolean
@@ -241,7 +242,10 @@ export class PolygonTool implements Tool {
     )
     ctx.execute(
       new AddEntityCommand(
-        createPolyline(vertices, true, ctx.document.getCurrentLayerId())
+        onPlaneOf(
+          createPolyline(vertices, true, ctx.document.getCurrentLayerId()),
+          this.state.center
+        )
       )
     )
     ctx.endCommand()

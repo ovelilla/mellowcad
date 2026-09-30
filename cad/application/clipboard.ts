@@ -4,7 +4,7 @@
  * document that may already have tables of its own.
  */
 
-import { V, Vec2 } from "../geometry/Vec2"
+import { Vec3, sub3 } from "../geometry/Vec3"
 import { DocumentReader } from "../domain/Document"
 import {
   assignEntityLayer,
@@ -106,9 +106,9 @@ export interface PastePlan {
 export function planPaste(
   fragment: ClipboardFragment,
   document: DocumentReader,
-  at: Vec2
+  at: Vec3
 ): PastePlan {
-  const delta = V.sub(at, fragment.basePoint)
+  const delta = sub3(at, fragment.basePoint)
   const { layers, layerIds } = reconcileLayers(
     fragment.drawing.layers,
     document
