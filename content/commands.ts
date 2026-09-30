@@ -103,6 +103,10 @@ export const COMMAND_FILING: Readonly<Record<string, Filing>> = {
   UCSICON: { group: "inquiry" },
   PLAN: { group: "inquiry" },
   ELEV: { group: "inquiry" },
+  VPOINT: { group: "inquiry" },
+  "-VPOINT": { group: "inquiry" },
+  VIEW: { group: "inquiry" },
+  "-VIEW": { group: "inquiry" },
 
   QSAVE: { group: "files" },
   OPEN: { group: "files" },

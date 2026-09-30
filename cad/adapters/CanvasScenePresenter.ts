@@ -147,7 +147,8 @@ export class CanvasScenePresenter {
         const family = p.font ?? DRAWING_FONT
         ctx.save()
         ctx.translate(p.at.x, p.at.y)
-        if (p.rotation !== 0) ctx.rotate(p.rotation)
+        if (p.matrix) ctx.transform(...p.matrix, 0, 0)
+        else if (p.rotation !== 0) ctx.rotate(p.rotation)
         // A CAD text height is the height of its capitals, whereas a font
         // size is the em box, so the font is enlarged by the cap-height ratio.
         // WHY: the drawing font takes Arial's ratio rather than a measured one,

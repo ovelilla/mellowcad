@@ -62,11 +62,15 @@ UCS [] "UCS"
 UCSICON [] "UCS icon"
 PLAN [] "Plan view"
 ELEV [] "Elevation"
+VPOINT ["VP"] "Viewpoint"
+VIEW ["V"] "Preset views"
 ERASE ["E"] "Delete the selected objects"
 UNDO ["U"] "Undo the last action"
 -MTEXT [] "Multiline text"
 REDO [] "Redo the last undone action"
 -ATTDEF [] "Define attributes"
+-VPOINT ["-VP"] "Viewpoint"
+-VIEW ["-V"] "Preset views"
 EATTEDIT [] "Edit attributes"
 SNAP ["SN"] "Force the cursor onto the snap increments"
 FROM ["FRO"] "Pick a point offset from a base point"
@@ -143,6 +147,8 @@ ucs "UCS" UCS
 ucsicon "UCS icon" UCSICON
 plan "Plan view" PLAN
 elev "Elevation" ELEV
+vpoint "Viewpoint" VP
+view "Preset views" V
 
 ## neutral prompt
 > start
@@ -2710,6 +2716,88 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
   asks: -
   dyn: -
   info| X = 1.00     Y = 2.00     Z = 3.00
+
+## VPOINT VIEW
+> start
+  prompt: Command:
+  asks: -
+  dyn: -
+  options: -
+  canvas: -
+  properties: -
+  cycling: -
+> VPOINT
+  prompt: VPOINT [Rotate]:
+  asks: "Specify a view point"
+  dyn: "X,Y"=""||*
+  options: [R] Rotate
+  command| VPOINT
+  info| Current view direction: VIEWDIR=0.00,0.00,1.00
+> view point
+  prompt: Command:
+  asks: -
+  dyn: -
+  options: -
+  info| Regenerating model.
+> -VPOINT R
+  prompt: VPOINT [Rotate]:
+  asks: "Specify a view point"
+  dyn: "X,Y"=""||*
+  options: [R] Rotate
+  command| -VPOINT
+  info| Current view direction: VIEWDIR=0.58,-0.58,0.58
+> R
+  prompt: VPOINT:
+  asks: "Enter angle in XY plane from X axis"
+  dyn: "Enter angle in XY plane from X axis"=""|315.00|°*
+  options: -
+> in plane
+  asks: "Enter angle from XY plane"
+  dyn: "Enter angle from XY plane"=""|35.26|°*
+> from plane
+  prompt: Command:
+  asks: -
+  dyn: -
+  info| Regenerating model.
+> -VIEW
+  prompt: VIEW [Orthographic]:
+  asks: 
+  dyn: 
+  options: [O] Orthographic
+  command| -VIEW
+> O
+  prompt: VIEW [Top/Bottom/Front/BAck/Left/Right]:
+  options: [T] Top, [null] Bottom, [F] Front, [null] BAck, [L] Left, [R] Right
+> F
+  prompt: Command:
+  asks: -
+  dyn: -
+  options: -
+> -VIEW _SWISO
+  prompt: VIEW [Orthographic]:
+  asks: 
+  dyn: 
+  options: [O] Orthographic
+  command| -VIEW
+> _SWISO
+  prompt: Command:
+  asks: -
+  dyn: -
+  options: -
+> VIEW O enter
+  prompt: VIEW [Orthographic]:
+  asks: 
+  dyn: 
+  options: [O] Orthographic
+  command| VIEW
+> O
+  prompt: VIEW [Top/Bottom/Front/BAck/Left/Right]:
+  options: [T] Top, [null] Bottom, [F] Front, [null] BAck, [L] Left, [R] Right
+> enter is Top
+  prompt: Command:
+  asks: -
+  dyn: -
+  options: -
 
 ## grips
 > start

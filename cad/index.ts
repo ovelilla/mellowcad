@@ -253,6 +253,8 @@ export { UcsTool } from "./application/tools/UcsTool"
 export { UcsIconTool } from "./application/tools/UcsIconTool"
 export { PlanTool } from "./application/tools/PlanTool"
 export { ElevTool } from "./application/tools/ElevTool"
+export { VPointTool } from "./application/tools/VPointTool"
+export { ViewTool } from "./application/tools/ViewTool"
 
 export type {
   Scene,

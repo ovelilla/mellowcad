@@ -50,6 +50,8 @@ import { UcsTool } from "./tools/UcsTool"
 import { UcsIconTool } from "./tools/UcsIconTool"
 import { PlanTool } from "./tools/PlanTool"
 import { ElevTool } from "./tools/ElevTool"
+import { VPointTool } from "./tools/VPointTool"
+import { ViewTool } from "./tools/ViewTool"
 
 /**
  * Every tool the runtime registers, in registration order — which is the order
@@ -128,5 +130,7 @@ export function defaultTools(
     new UcsIconTool(),
     new PlanTool(),
     new ElevTool(),
+    new VPointTool(),
+    new ViewTool(),
   ]
 }

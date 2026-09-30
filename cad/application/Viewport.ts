@@ -16,6 +16,7 @@ import {
   entitiesBounds,
   rotateEntity,
 } from "../domain/entities"
+import { entityScreenOutline } from "./viewOutline"
 
 /**
  * The viewport owns the mapping between *world* coordinates (what entities are
@@ -121,10 +122,15 @@ export class Viewport extends Observable {
   }
 
   screenToWorld(p: Vec2): Vec2 {
-    return this.viewToWorld({
+    return this.viewToWorld(this.screenToView(p))
+  }
+
+  /** A screen point in the view frame. */
+  screenToView(p: Vec2): Vec2 {
+    return {
       x: (p.x - this.translationValue.x) / this.scaleValue,
       y: -(p.y - this.translationValue.y) / this.scaleValue,
-    })
+    }
   }
 
   /** A world point in the view frame: its `right` and `up` components. */
@@ -339,6 +345,29 @@ export function entitiesViewBounds(
   viewport: Viewport,
   blocks?: BlockLookup
 ): Bounds | null {
+  if (!viewport.isPlan) {
+    let bounds: Bounds | null = null
+    for (const entity of entities) {
+      for (const line of entityScreenOutline(viewport, entity, blocks)) {
+        for (const point of line) {
+          const p = viewport.screenToView(point)
+          bounds = bounds
+            ? {
+                min: {
+                  x: Math.min(bounds.min.x, p.x),
+                  y: Math.min(bounds.min.y, p.y),
+                },
+                max: {
+                  x: Math.max(bounds.max.x, p.x),
+                  y: Math.max(bounds.max.y, p.y),
+                },
+              }
+            : { min: p, max: p }
+        }
+      }
+    }
+    return bounds
+  }
   return entitiesBounds(
     entities.map((entity) => entityInView(entity, viewport)),
     blocks
@@ -356,7 +385,7 @@ function viewAxes(
 ): { direction: Vec3; right: Vec3 } | null {
   const d = normalize3(direction)
   if (!d) return null
-  if (isWorldZ(d)) {
+  if (Math.abs(d.x) < 1e-12 && Math.abs(d.y) < 1e-12 && d.z > 0) {
     const length = Math.hypot(right.x, right.y)
     if (!(length > 0) || !Number.isFinite(length)) return null
     return {

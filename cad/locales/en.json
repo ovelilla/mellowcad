@@ -65,7 +65,9 @@
       "ucs": "UCS",
       "ucsicon": "UCS icon",
       "plan": "Plan view",
-      "elev": "Elevation"
+      "elev": "Elevation",
+      "vpoint": "Viewpoint",
+      "view": "Preset views"
     },
     "description": {
       "ERASE": "Delete the selected objects",
@@ -327,7 +329,11 @@
       "UCS": ["UCS"],
       "UCSICON": ["UCSICON"],
       "PLAN": ["PLAN"],
-      "ELEV": ["ELEV"]
+      "ELEV": ["ELEV"],
+      "VPOINT": ["VPOINT", "VP"],
+      "-VPOINT": ["-VPOINT", "-VP"],
+      "VIEW": ["VIEW", "V"],
+      "-VIEW": ["-VIEW", "-V"]
     },
     "keywords": {
       "LINE": { "Close": "Close", "Undo": "Undo" },
@@ -523,6 +529,20 @@
         "Current ucs": "Current ucs",
         "Ucs": "Ucs",
         "World": "World"
+      },
+      "VPOINT": { "Rotate": "Rotate" },
+      "VIEW": {
+        "Orthographic": "Orthographic",
+        "Top": "Top",
+        "Bottom": "Bottom",
+        "Front": "Front",
+        "BAck": "BAck",
+        "Left": "Left",
+        "Right": "Right",
+        "SWiso": "SWiso",
+        "SEiso": "SEiso",
+        "NEiso": "NEiso",
+        "NWiso": "NWiso"
       }
     },
     "prompts": {
@@ -632,7 +652,10 @@
       "planUcsName": "Enter name of UCS or [?]",
       "elevDefaultElevation": "Specify new default elevation",
       "elevDefaultThickness": "Specify new default thickness",
-      "idPoint": "Specify point"
+      "idPoint": "Specify point",
+      "viewPoint": "Specify a view point",
+      "viewAngleInPlane": "Enter angle in XY plane from X axis",
+      "viewAngleFromPlane": "Enter angle from XY plane"
     },
     "format": {
       "idle": "Command",
@@ -682,7 +705,9 @@
       "distanceReport": "Distance = {distance},  Angle in XY Plane = {angleInPlane},  Angle from XY Plane = {angleFromPlane}\nDelta X = {deltaX},  Delta Y = {deltaY},   Delta Z = {deltaZ}",
       "idReport": "X = {x}     Y = {y}     Z = {z}",
       "linesNonCoplanar": "Lines are non-coplanar.",
-      "nothingJoined": "0 objects joined, {count, plural, one {# object} other {# objects}} discarded from the operation"
+      "nothingJoined": "0 objects joined, {count, plural, one {# object} other {# objects}} discarded from the operation",
+      "currentViewDirection": "Current view direction: VIEWDIR={x},{y},{z}",
+      "regeneratingModel": "Regenerating model."
     },
     "feedback": {
       "snap": {

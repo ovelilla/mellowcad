@@ -1,4 +1,5 @@
 import { Vec2, V } from "../geometry/Vec2"
+import { zOf } from "../geometry/Vec3"
 import {
   AttributeDisplay,
   BlockLookup,
@@ -8,13 +9,20 @@ import {
   EntityId,
   HatchEntity,
   HatchGeometry,
+  LineEntity,
   PolylineEntity,
+  ThickEntity,
   attributeDefinitionText,
   dimensionGeometry,
   entityDrawOrder,
+  entityElevation,
+  entityThickness,
+  hasThickness,
   hatchGeometry,
   insertFlatGeometry,
   isFullEllipse,
+  lineEndZ,
+  lineStartZ,
   mtextLayout,
   mtextToWorld,
   polylineSegmentGeometries,
@@ -50,6 +58,13 @@ import {
   TextBaseline,
 } from "../scene/types"
 import { THEME } from "../scene/theme"
+import {
+  PlaneCamera,
+  affineEllipse,
+  isPlaneCamera,
+  planeCamera,
+  smallestStretch,
+} from "./planeCamera"
 import { SnapResult, SnapType } from "./snapping/types"
 import { TrackingPoint, TrackingResult } from "./tracking/types"
 
@@ -230,7 +245,9 @@ function pushGrid(
   snapSpacing: Vec2 | null,
   ucs: Ucs
 ): void {
-  const { width, height, scale } = camera
+  const { width, height } = camera
+  const plane = camera.isPlan ? camera : planeCamera(camera, ucs.origin.z)
+  const scale = isPlaneCamera(plane) ? smallestStretch(plane) : camera.scale
 
   const minorX = gridStep(snapSpacing?.x ?? null, scale)
   const minorY = gridStep(snapSpacing?.y ?? null, scale)
@@ -245,7 +262,7 @@ function pushGrid(
     { x: width, y: 0 },
     { x: 0, y: height },
     { x: width, y: height },
-  ].map((corner) => worldPointToUcs(ucs, camera.screenToWorld(corner)))
+  ].map((corner) => worldPointToUcs(ucs, plane.screenToWorld(corner)))
   const minX = Math.min(...corners.map((c) => c.x))
   const maxX = Math.max(...corners.map((c) => c.x))
   const minY = Math.min(...corners.map((c) => c.y))
@@ -259,7 +276,7 @@ function pushGrid(
   const minorStroke: StrokeStyle = { color: THEME.gridMinor, width: 1 }
   const majorStroke: StrokeStyle = { color: THEME.gridMajor, width: 1 }
   const line = (a: Vec2, b: Vec2, stroke: StrokeStyle) =>
-    out.push(gridLine(camera, ucs, a, b, stroke))
+    out.push(gridLine(plane, ucs, a, b, stroke))
 
   for (let i = startI; i <= endI; i++) {
     const x = i * minorX
@@ -321,7 +338,9 @@ const UCS_ICON_CORNER_LIFT = 64
 /**
  * The UCS icon, 2D wireframe's: the X and Y arms, with a square at the origin
  * when the UCS is the WCS. With UCSICON at ORigin it sits on the origin while
- * the whole icon fits in the view, and in the lower-left corner otherwise.
+ * the whole icon fits in the view, and in the lower-left corner otherwise. Off
+ * the plan the arms lie in the UCS's XY plane, foreshortened as it is; seen
+ * edge-on the icon becomes AutoCAD's broken pencil.
  */
 function pushUcsIcon(
   out: ScenePrimitive[],
@@ -329,13 +348,9 @@ function pushUcsIcon(
   ucs: Ucs,
   icon: UcsIconInput
 ): void {
-  const origin = camera.worldToScreen(ucs.origin)
-  const tip = camera.worldToScreen(V.add(ucs.origin, ucs.xAxis))
-  const length = V.distance(origin, tip)
-  if (!(length > 0)) return
-  const xDir = V.scale(V.sub(tip, origin), 1 / length)
-  // Y is a quarter turn CCW in the world, which the camera's flip makes CW.
-  const yDir = { x: xDir.y, y: -xDir.x }
+  const axes = ucsIconAxes(camera, ucs)
+  if (!axes) return
+  const { origin, xDir, yDir } = axes
   const extent = (at: Vec2) => [
     at,
     V.add(at, V.scale(xDir, UCS_ICON_ARM)),
@@ -352,10 +367,15 @@ function pushUcsIcon(
   const at =
     icon.atOrigin && fits(origin) ? origin : cornerPlacement(camera, xDir, yDir)
 
+  if (axes.edgeOn) {
+    pushBrokenPencil(out, at)
+    return
+  }
   const arm = (dir: Vec2, color: string, letter: string) => {
     const end = V.add(at, V.scale(dir, UCS_ICON_ARM))
-    const back = V.scale(dir, -7)
-    const side = V.scale({ x: -dir.y, y: dir.x }, 3)
+    const unit = camera.isPlan ? dir : V.scale(dir, 1 / V.length(dir))
+    const back = V.scale(unit, -7)
+    const side = V.scale({ x: -unit.y, y: unit.x }, 3)
     out.push(
       { kind: "segment", a: at, b: end, stroke: { color, width: 1.5 } },
       {
@@ -370,7 +390,7 @@ function pushUcsIcon(
       },
       {
         kind: "label",
-        at: V.add(end, V.scale(dir, 6)),
+        at: V.add(end, V.scale(unit, 6)),
         text: letter,
         color,
       }
@@ -392,6 +412,74 @@ function pushUcsIcon(
       stroke: { color: THEME.crosshair, width: 1 },
     })
   }
+}
+
+/** Below this the angle between the icon's arms on screen reads as edge-on. */
+const EDGE_ON_SINE = 0.02
+
+/**
+ * The icon's origin on screen and its two arms as screen vectors, the longer
+ * one of unit length (the other foreshortened by the view), or `null` when the
+ * UCS cannot be drawn at all.
+ */
+function ucsIconAxes(
+  camera: CameraTransform,
+  ucs: Ucs
+): { origin: Vec2; xDir: Vec2; yDir: Vec2; edgeOn: boolean } | null {
+  const origin = camera.worldToScreen(ucs.origin)
+  if (camera.isPlan) {
+    const tip = camera.worldToScreen(V.add(ucs.origin, ucs.xAxis))
+    const length = V.distance(origin, tip)
+    if (!(length > 0)) return null
+    const xDir = V.scale(V.sub(tip, origin), 1 / length)
+    // Y is a quarter turn CCW in the world, which the camera's flip makes CW.
+    return { origin, xDir, yDir: { x: xDir.y, y: -xDir.x }, edgeOn: false }
+  }
+  const armOf = (direction: Vec2) =>
+    V.sub(camera.worldToScreen(ucsPointToWorld(ucs, direction)), origin)
+  const x = armOf({ x: 1, y: 0 })
+  const y = armOf({ x: 0, y: 1 })
+  const longest = Math.max(V.length(x), V.length(y))
+  if (!(longest > 0)) return null
+  const xDir = V.scale(x, 1 / longest)
+  const yDir = V.scale(y, 1 / longest)
+  const sine = Math.abs(V.cross(xDir, yDir))
+  const edgeOn =
+    sine < EDGE_ON_SINE * Math.max(V.length(xDir) * V.length(yDir), 1e-12)
+  return { origin, xDir, yDir, edgeOn }
+}
+
+/** AutoCAD's broken pencil: the UCS's XY plane is seen edge-on, so pointing on it is refused. */
+function pushBrokenPencil(out: ScenePrimitive[], at: Vec2): void {
+  const stroke: StrokeStyle = { color: THEME.crosshair, width: 1.25 }
+  const point = (x: number, y: number): Vec2 => ({ x: at.x + x, y: at.y + y })
+  out.push(
+    {
+      kind: "path",
+      points: [
+        point(0, -6),
+        point(18, -6),
+        point(22, 0),
+        point(18, 6),
+        point(0, 6),
+      ],
+      closed: true,
+      stroke,
+    },
+    {
+      kind: "path",
+      points: [
+        point(26, 6),
+        point(30, -6),
+        point(44, -6),
+        point(52, 0),
+        point(44, 6),
+      ],
+      closed: true,
+      stroke,
+    },
+    { kind: "segment", a: point(44, -6), b: point(44, 6), stroke }
+  )
 }
 
 /** The lower-left spot for the icon, shifted so a turned icon stays in view. */
@@ -463,6 +551,20 @@ export function arcScenePrimitive(
   endAngle: number,
   stroke: StrokeStyle
 ): ScenePrimitive {
+  if (!camera.isPlan) {
+    const plane = isPlaneCamera(camera)
+      ? camera
+      : planeCamera(camera, zOf(center))
+    const end = endAngle > startAngle ? endAngle : endAngle + Math.PI * 2
+    return affineEllipse(
+      plane,
+      center,
+      { x: radius, y: 0 },
+      { x: 0, y: radius },
+      { start: startAngle, end },
+      stroke
+    )
+  }
   const c = camera.worldToScreen(center)
   const start = camera.worldToScreen({
     x: center.x + Math.cos(startAngle) * radius,
@@ -497,10 +599,26 @@ export function ellipseScenePrimitive(
   ellipse: EllipseEntity,
   stroke: StrokeStyle
 ): ScenePrimitive {
+  const full = isFullEllipse(ellipse)
+  if (!camera.isPlan) {
+    const plane = isPlaneCamera(camera)
+      ? camera
+      : planeCamera(camera, entityElevation(ellipse))
+    const { majorAxis: major, ratio } = ellipse
+    const start = ellipse.startParam ?? 0
+    const end = ellipse.endParam ?? 0
+    return affineEllipse(
+      plane,
+      ellipse.center,
+      major,
+      { x: -major.y * ratio, y: major.x * ratio },
+      full ? null : { start, end: end > start ? end : end + Math.PI * 2 },
+      stroke
+    )
+  }
   const center = camera.worldToScreen(ellipse.center)
   const tip = camera.worldToScreen(V.add(ellipse.center, ellipse.majorAxis))
   const radiusX = Math.max(V.distance(center, tip), 0.01)
-  const full = isFullEllipse(ellipse)
   return {
     kind: "ellipse",
     center,
@@ -541,6 +659,99 @@ export function entityScenePrimitive(
   stroke: StrokeStyle,
   options: EntityDrawOptions = {}
 ): ScenePrimitive[] {
+  if (camera.isPlan || isPlaneCamera(camera) || entity.type === "insert") {
+    return planarPrimitives(camera, entity, stroke, options)
+  }
+  if (entity.type === "line") return linePrimitives(camera, entity, stroke)
+  const elevation = entityElevation(entity)
+  const thickness = entityThickness(entity)
+  const base = planarPrimitives(
+    planeCamera(camera, elevation),
+    entity,
+    stroke,
+    options
+  )
+  if (thickness === 0 || !hasThickness(entity)) return base
+  return [
+    ...base,
+    ...planarPrimitives(
+      planeCamera(camera, elevation + thickness),
+      entity,
+      stroke,
+      options
+    ),
+    ...extrusionEdges(camera, entity, elevation, thickness).map(
+      ([a, b]): ScenePrimitive => ({ kind: "segment", a, b, stroke })
+    ),
+  ]
+}
+
+/** A line off the plan: each end at its own Z, and its thickness as a quadrilateral. */
+function linePrimitives(
+  camera: CameraTransform,
+  line: LineEntity,
+  stroke: StrokeStyle
+): ScenePrimitive[] {
+  const startZ = lineStartZ(line)
+  const endZ = lineEndZ(line)
+  const thickness = entityThickness(line)
+  const at = (point: Vec2, z: number) =>
+    camera.worldToScreen({ x: point.x, y: point.y, z })
+  const segment = (a: Vec2, b: Vec2): ScenePrimitive => ({
+    kind: "segment",
+    a,
+    b,
+    stroke,
+  })
+  const bottomStart = at(line.start, startZ)
+  const bottomEnd = at(line.end, endZ)
+  const bottom = segment(bottomStart, bottomEnd)
+  if (thickness === 0) return [bottom]
+  const topStart = at(line.start, startZ + thickness)
+  const topEnd = at(line.end, endZ + thickness)
+  return [
+    bottom,
+    segment(topStart, topEnd),
+    segment(bottomStart, topStart),
+    segment(bottomEnd, topEnd),
+  ]
+}
+
+/**
+ * The edges joining an extruded object's two faces, in screen coordinates: one
+ * at each end of an arc and at each vertex of a polyline. A circle has none.
+ */
+function extrusionEdges(
+  camera: CameraTransform,
+  entity: ThickEntity,
+  elevation: number,
+  thickness: number
+): [Vec2, Vec2][] {
+  const points: Vec2[] =
+    entity.type === "arc"
+      ? [
+          polarPoint(entity.center, entity.radius, entity.startAngle),
+          polarPoint(entity.center, entity.radius, entity.endAngle),
+        ]
+      : entity.type === "polyline"
+        ? [...entity.vertices]
+        : []
+  return points.map((point) => [
+    camera.worldToScreen({ x: point.x, y: point.y, z: elevation }),
+    camera.worldToScreen({ x: point.x, y: point.y, z: elevation + thickness }),
+  ])
+}
+
+/**
+ * An entity drawn in its own plane: through a plan camera, where every plane
+ * looks the same, or through the camera of the entity's plane.
+ */
+function planarPrimitives(
+  camera: CameraTransform,
+  entity: Entity,
+  stroke: StrokeStyle,
+  options: EntityDrawOptions
+): ScenePrimitive[] {
   switch (entity.type) {
     case "line":
       return [
@@ -552,6 +763,18 @@ export function entityScenePrimitive(
         },
       ]
     case "circle":
+      if (isPlaneCamera(camera)) {
+        return [
+          affineEllipse(
+            camera,
+            entity.center,
+            { x: entity.radius, y: 0 },
+            { x: 0, y: entity.radius },
+            null,
+            stroke
+          ),
+        ]
+      }
       return [
         {
           kind: "circle",
@@ -610,30 +833,30 @@ export function entityScenePrimitive(
       ]
     case "text":
       return [
-        {
-          kind: "text",
-          at: camera.worldToScreen(entity.position),
-          text: entity.value,
-          height: Math.max(camera.worldToScreenDistance(entity.height), 0.01),
-          rotation: screenRotation(camera, entity.rotation),
+        textPrimitive(camera, entity.position, entity.value, {
+          height: entity.height,
+          angle: entity.rotation,
           align: textAlignOf(entity.justify),
           baseline: textBaselineOf(entity.justify),
           color: stroke.color,
-        },
+        }),
       ]
     case "mtext": {
       const layout = mtextLayout(entity)
-      const height = Math.max(camera.worldToScreenDistance(entity.height), 0.01)
-      return layout.lines.map((line) => ({
-        kind: "text",
-        at: camera.worldToScreen(mtextToWorld(entity, line.x, line.y)),
-        text: line.value,
-        height,
-        rotation: screenRotation(camera, entity.rotation),
-        align: layout.align,
-        baseline: "alphabetic",
-        color: stroke.color,
-      }))
+      return layout.lines.map((line) =>
+        textPrimitive(
+          camera,
+          mtextToWorld(entity, line.x, line.y),
+          line.value,
+          {
+            height: entity.height,
+            angle: entity.rotation,
+            align: layout.align,
+            baseline: "alphabetic",
+            color: stroke.color,
+          }
+        )
+      )
     }
     case "attdef":
       return entityScenePrimitive(
@@ -756,23 +979,84 @@ function dimensionPrimitives(
       fill: stroke.color,
     })
   }
-  primitives.push({
-    kind: "text",
-    at: screen(g.textPosition),
-    text: g.text,
-    height: Math.max(camera.worldToScreenDistance(g.textHeight), 0.01),
-    rotation: screenRotation(camera, g.textAngle),
-    align: "center",
-    // The measurement sits on top of the dimension line, ISO's DIMTAD 1, with
-    // DIMGAP between the two. That gap is measured to the *glyphs*, so the
-    // anchor is the alphabetic baseline: canvas's "bottom" is the em box, whose
-    // descender space digits never use, and the resulting extra height pushed
-    // the number across the neighbouring dimension line of a baseline chain
-    // (DIMTXT + DIMGAP is deliberately only just under DIMDLI).
-    baseline: "alphabetic",
-    color: stroke.color,
-  })
+  primitives.push(
+    textPrimitive(camera, g.textPosition, g.text, {
+      height: g.textHeight,
+      angle: g.textAngle,
+      align: "center",
+      // The measurement sits on top of the dimension line, ISO's DIMTAD 1, with
+      // DIMGAP between the two. That gap is measured to the *glyphs*, so the
+      // anchor is the alphabetic baseline: canvas's "bottom" is the em box, whose
+      // descender space digits never use, and the resulting extra height pushed
+      // the number across the neighbouring dimension line of a baseline chain
+      // (DIMTXT + DIMGAP is deliberately only just under DIMDLI).
+      baseline: "alphabetic",
+      color: stroke.color,
+    })
+  )
   return primitives
+}
+
+interface TextLook {
+  readonly height: number
+  readonly angle: number
+  readonly align: TextAlign
+  readonly baseline: TextBaseline
+  readonly color: string
+}
+
+/**
+ * A drawing's text at a world point, `height` tall and turned `angle` in its
+ * plane. Off the plan the plane's camera maps the text's own frame, so it
+ * leans as its plane does.
+ */
+function textPrimitive(
+  camera: CameraTransform,
+  at: Vec2,
+  text: string,
+  look: TextLook
+): ScenePrimitive {
+  const { height, angle, align, baseline, color } = look
+  if (!isPlaneCamera(camera)) {
+    return {
+      kind: "text",
+      at: camera.worldToScreen(at),
+      text,
+      height: Math.max(camera.worldToScreenDistance(height), 0.01),
+      rotation: screenRotation(camera, angle),
+      align,
+      baseline,
+      color,
+    }
+  }
+  const pixels = camera.worldToScreenDistance(1)
+  const along = mapped(camera, { x: Math.cos(angle), y: Math.sin(angle) })
+  const down = mapped(camera, { x: Math.sin(angle), y: -Math.cos(angle) })
+  return {
+    kind: "text",
+    at: camera.worldToScreen(at),
+    text,
+    height: Math.max(height * pixels, 0.01),
+    rotation: 0,
+    matrix: [
+      along.x / pixels,
+      along.y / pixels,
+      down.x / pixels,
+      down.y / pixels,
+    ],
+    align,
+    baseline,
+    color,
+  }
+}
+
+/** A direction of the plane on screen, in pixels per unit. */
+function mapped(camera: PlaneCamera, direction: Vec2): Vec2 {
+  const [a, b, c, d] = camera.linear
+  return {
+    x: a * direction.x + c * direction.y,
+    y: b * direction.x + d * direction.y,
+  }
 }
 
 /**

@@ -178,7 +178,10 @@ Los anteriores cargan con normal +Z y UCS horizontales.
 `arbitraryAxis(normal)`, semejanzas 3D; la cámara como base (D2) y `worldToScreen(Vec2 | Vec3)`.
 Aceptación: todo igual, instantáneas incluidas.
 
-**F2. Ver.** `-VPOINT` / `VPOINT`, `-VIEW` Orthographic e isométricas (sin UCSORTHO aún), PLAN con
+**F2. Ver** — hecha (`VPointTool` y `ViewTool` con `viewPresets.ts`; los nombres de las
+predefinidas son opciones ocultas, `CommandOption.hidden`; `planeCamera.ts` es la afinidad por plano,
+con `affineEllipse`; `viewOutline.ts` da el contorno en pantalla con el que se encuadra fuera de la
+planta; la cruz y el lector de coordenadas siguen en planta hasta F3). `-VPOINT` / `VPOINT`, `-VIEW` Orthographic e isométricas (sin UCSORTHO aún), PLAN con
 línea de mira; la afinidad por plano (D3), la primitiva de texto con matriz, la altura de objeto
 (D4), la rejilla y el icono (D7), ZOOM Extensión en la vista. Pruebas con el harness sobre las
 primitivas; comprobación en el navegador.

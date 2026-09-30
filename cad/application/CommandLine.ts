@@ -202,6 +202,8 @@ export const TOOL_COMMANDS: Readonly<Record<string, string>> = {
   ucsicon: "UCSICON",
   plan: "PLAN",
   elev: "ELEV",
+  vpoint: "VPOINT",
+  view: "VIEW",
 }
 
 /** The shortest way to type a command, e.g. `"L"` — shown in tooltips. */

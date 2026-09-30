@@ -67,6 +67,12 @@ export interface CommandOption {
    * as AutoCAD's sub-prompt offers it.
    */
   readonly value?: string
+  /**
+   * Answered when typed but left out of the prompt, the chips and the single
+   * keys, as AutoCAD's unlisted keywords are (-VIEW's `_SWISO`). List hidden
+   * options after the shown ones: a shown keyword wins a shared abbreviation.
+   */
+  readonly hidden?: true
 }
 
 /**

@@ -275,7 +275,7 @@ function isFlyout(item: RailItem): item is ToolFlyoutFamily {
  * Modify ribbon panels. The clipboard commands are reached by Ctrl+C/X/V or by
  * name; AutoCAD's own Clipboard panel is not built yet, and a Paste button that
  * only works when something has been copied would be a poor first one. UCS,
- * UCSICON, PLAN and ELEV are typed: AutoCAD's Coordinates panel is hidden by default too.
+ * UCSICON, PLAN, ELEV, VPOINT and VIEW are typed: AutoCAD's Coordinates panel is hidden by default too.
  */
 const RAIL_EXCLUDED = new Set([
   "zoom",
@@ -288,6 +288,8 @@ const RAIL_EXCLUDED = new Set([
   "ucsicon",
   "plan",
   "elev",
+  "vpoint",
+  "view",
 ])
 
 interface ToolMeta {

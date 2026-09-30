@@ -119,6 +119,12 @@ export type ScenePrimitive =
       readonly height: number
       /** Baseline rotation in *screen* radians (clockwise-positive). */
       readonly rotation: number
+      /**
+       * In a view off the plan, the text's own frame (X along the baseline, Y
+       * down, the capitals `height` pixels tall) mapped to the screen as the
+       * canvas's `transform(a, b, c, d)` takes it, in place of `rotation`.
+       */
+      readonly matrix?: readonly [number, number, number, number]
       readonly align: TextAlign
       readonly baseline: TextBaseline
       readonly color: string
@@ -157,6 +163,8 @@ export interface CameraTransform {
   readonly scale: number
   /** A plan view's twist: radians CCW from world X to the direction drawn pointing right. */
   readonly twist: number
+  /** True when the view looks straight down the world Z axis, so a point's Z does not show. */
+  readonly isPlan: boolean
   worldToScreen(p: Vec2 | Vec3): Vec2
   screenToWorld(p: Vec2): Vec2
   worldToScreenDistance(distance: number): number

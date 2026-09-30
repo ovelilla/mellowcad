@@ -69,7 +69,9 @@ export const es: EngineLocale = {
       "ucs": "SCP",
       "ucsicon": "Icono SCP",
       "plan": "Vista en planta",
-      "elev": "Elevación"
+      "elev": "Elevación",
+      "vpoint": "Punto de vista",
+      "view": "Vistas predefinidas"
     },
     "description": {
       "ERASE": "Borrar los objetos seleccionados",
@@ -656,6 +658,18 @@ export const es: EngineLocale = {
       ],
       "ELEV": [
         "ELEV"
+      ],
+      "VPOINT": [
+        "PTOVISTA"
+      ],
+      "-VPOINT": [
+        "-PTOVISTA"
+      ],
+      "VIEW": [
+        "VISTA"
+      ],
+      "-VIEW": [
+        "-VISTA"
       ]
     },
     "keywords": {
@@ -902,6 +916,22 @@ export const es: EngineLocale = {
         "Current ucs": "scp Actual",
         "Ucs": "SCP",
         "World": "Universal"
+      },
+      "VPOINT": {
+        "Rotate": "Girar"
+      },
+      "VIEW": {
+        "Orthographic": "Ortogonal",
+        "Top": "Superior",
+        "Bottom": "Inferior",
+        "Front": "Frontal",
+        "BAck": "Posterior",
+        "Left": "IZquierda",
+        "Right": "Derecha",
+        "SWiso": "isoSO",
+        "SEiso": "isoSE",
+        "NEiso": "isoNE",
+        "NWiso": "isoNO"
       }
     },
     "prompts": {
@@ -1011,7 +1041,10 @@ export const es: EngineLocale = {
       "planUcsName": "Indique nombre de SCP o [?]",
       "elevDefaultElevation": "Precise nueva elevación por defecto",
       "elevDefaultThickness": "Precise nueva altura de objeto por defecto",
-      "idPoint": "Precise punto"
+      "idPoint": "Precise punto",
+      "viewPoint": "Precise un punto de vista",
+      "viewAngleInPlane": "Indique ángulo en plano XY a partir de eje X",
+      "viewAngleFromPlane": "Indique ángulo a partir de plano XY"
     },
     "format": {
       "idle": "Comando",
@@ -1355,7 +1388,22 @@ export const es: EngineLocale = {
           }
         ],
         " de la operación"
-      ]
+      ],
+      "currentViewDirection": [
+        "Dirección de vista actual: VIEWDIR=",
+        [
+          "x"
+        ],
+        ",",
+        [
+          "y"
+        ],
+        ",",
+        [
+          "z"
+        ]
+      ],
+      "regeneratingModel": "Regenerando modelo."
     },
     "feedback": {
       "snap": {

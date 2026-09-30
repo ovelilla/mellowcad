@@ -1022,6 +1022,26 @@ describe("the engine's English surface", () => {
         .do("ID typed", (c) => c.command("ID"))
         .do("point", (c) => c.type("1,2,3").enter())
     )
+    walk("VPOINT VIEW", createHarness({ entities: [line()] }), (s) =>
+      s
+        .do("VPOINT", (c) => c.command("VPOINT"))
+        .do("view point", (c) => c.type("1,-1,1").enter())
+        .do("-VPOINT R", (c) => c.command("-VPOINT"))
+        .do("R", (c) => answer(c, "R"))
+        .do("in plane", (c) => c.type("225").enter())
+        .do("from plane", (c) => c.type("35").enter())
+        .do("-VIEW", (c) => c.command("-VIEW"))
+        .do("O", (c) => answer(c, "O"))
+        .do("F", (c) => answer(c, "F"))
+        .do("-VIEW _SWISO", (c) => c.command("-VIEW"))
+        .do("_SWISO", (c) => {
+          for (const char of "_SWISO") c.press(char)
+          c.press("Enter")
+        })
+        .do("VIEW O enter", (c) => c.command("VIEW"))
+        .do("O", (c) => answer(c, "O"))
+        .do("enter is Top", (c) => c.enter())
+    )
   })
 
   it("edits with grips", () => {

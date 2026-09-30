@@ -57,6 +57,10 @@ export function registerCommands(
   // AutoCAD's ATTDEF opens a dialog; here it asks at the command line, so
   // -ATTDEF is the same tool under its own name.
   register({ id: "-ATTDEF", tool: "attdef", run: () => startTool("attdef") })
+  // VPOINT and VIEW open dialogs in AutoCAD; here they ask at the command
+  // line, so their dash forms are the same tools under their own names.
+  register({ id: "-VPOINT", tool: "vpoint", run: () => startTool("vpoint") })
+  register({ id: "-VIEW", tool: "view", run: () => startTool("view") })
   // EATTEDIT and ATTEDIT differ only in their dialog, so one tool runs both.
   register({
     id: "EATTEDIT",
@@ -143,7 +147,9 @@ export function toolCommand(tool: Tool): string | null {
  * word, its abbreviation, the one key that runs it (if any) and the chip text.
  */
 export function offerOptions(tool: Tool, text: EngineText): CommandOptionUi[] {
-  const options = tool.commandOptions?.() ?? []
+  const options = (tool.commandOptions?.() ?? []).filter(
+    (option) => !option.hidden
+  )
   const command = toolCommand(tool)
   const offered = offerKeywords(
     text.keywords(

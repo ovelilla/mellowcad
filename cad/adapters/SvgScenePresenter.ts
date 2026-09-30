@@ -254,8 +254,9 @@ export class SvgScenePresenter {
       case "text": {
         if (p.text.length === 0) return ""
         const fontSize = p.height / this.capHeightRatio
-        const rotation =
-          p.rotation !== 0
+        const rotation = p.matrix
+          ? ` matrix(${p.matrix.map((value) => +value.toFixed(4)).join(" ")} 0 0)`
+          : p.rotation !== 0
             ? ` rotate(${this.n((p.rotation * 180) / Math.PI)})`
             : ""
         return this.text(

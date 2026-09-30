@@ -69,7 +69,9 @@ export const en: EngineCatalog = {
       "ucs": "UCS",
       "ucsicon": "UCS icon",
       "plan": "Plan view",
-      "elev": "Elevation"
+      "elev": "Elevation",
+      "vpoint": "Viewpoint",
+      "view": "Preset views"
     },
     "description": {
       "ERASE": "Delete the selected objects",
@@ -670,6 +672,22 @@ export const en: EngineCatalog = {
       ],
       "ELEV": [
         "ELEV"
+      ],
+      "VPOINT": [
+        "VPOINT",
+        "VP"
+      ],
+      "-VPOINT": [
+        "-VPOINT",
+        "-VP"
+      ],
+      "VIEW": [
+        "VIEW",
+        "V"
+      ],
+      "-VIEW": [
+        "-VIEW",
+        "-V"
       ]
     },
     "prompts": {
@@ -779,7 +797,10 @@ export const en: EngineCatalog = {
       "planUcsName": "Enter name of UCS or [?]",
       "elevDefaultElevation": "Specify new default elevation",
       "elevDefaultThickness": "Specify new default thickness",
-      "idPoint": "Specify point"
+      "idPoint": "Specify point",
+      "viewPoint": "Specify a view point",
+      "viewAngleInPlane": "Enter angle in XY plane from X axis",
+      "viewAngleFromPlane": "Enter angle from XY plane"
     },
     "format": {
       "idle": "Command",
@@ -1123,7 +1144,22 @@ export const en: EngineCatalog = {
           }
         ],
         " discarded from the operation"
-      ]
+      ],
+      "currentViewDirection": [
+        "Current view direction: VIEWDIR=",
+        [
+          "x"
+        ],
+        ",",
+        [
+          "y"
+        ],
+        ",",
+        [
+          "z"
+        ]
+      ],
+      "regeneratingModel": "Regenerating model."
     },
     "feedback": {
       "snap": {
