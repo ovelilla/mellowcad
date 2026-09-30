@@ -297,7 +297,8 @@ us to walk again, whereas a command costs the same before or after it.
    and the UCS options that tilt the XY plane (Face, X, Y, ZAxis, a third point off the plane). They
    go together because an object drawn on a tilted plane needs its own normal, and from the plan that
    plane is seen edge-on. The same work lifts the 2.5D deviations: CIRCLE and ARC through points at
-   different heights, FILLET and CHAMFER of sloping lines in one plane, JOIN's 3D polyline.
+   different heights, FILLET and CHAMFER of sloping lines in one plane (JOIN's 3D polyline waits for
+   3DPOLY). The brief is `docs/next-views.md`.
 
 Left out of the 2.5D model, each a gap of its own: SPLINE 3D (a 3D NURBS kernel) and 3DPOLY, LIST,
 the `.X` / `.XY` point filters, OSNAPZ as a variable, ARRAYRECT's Levels, CHPROP, and POINT's
