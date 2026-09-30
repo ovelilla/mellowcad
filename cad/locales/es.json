@@ -14,6 +14,7 @@
       "ellipse": "Elipse",
       "ellipsecenter": "Elipse por centro",
       "ellipsearc": "Arco elíptico",
+      "spline": "Spline",
       "rectangle": "Rectángulo",
       "polygon": "Polígono",
       "hatch": "Sombreado",
@@ -104,6 +105,7 @@
       "circle": "{count, plural, one {Círculo} other {Círculos}}",
       "arc": "{count, plural, one {Arco} other {Arcos}}",
       "ellipse": "{count, plural, one {Elipse} other {Elipses}}",
+      "spline": "{count, plural, one {Spline} other {Splines}}",
       "polyline": "{count, plural, one {Polilínea} other {Polilíneas}}",
       "text": "{count, plural, one {Texto} other {Textos}}",
       "mtext": "{count, plural, one {Texto M} other {Textos M}}",
@@ -182,14 +184,22 @@
         "constant": "Constante",
         "verify": "Verificable",
         "preset": "Predefinido",
-        "lockPosition": "Bloquear posición"
+        "lockPosition": "Bloquear posición",
+        "method": "Método",
+        "degree": "Grado",
+        "knotParameterization": "Parametrización de nudos"
       },
       "value": {
         "yes": "Sí",
         "no": "No",
         "none": "—",
         "atLeast": "Al menos",
-        "exactly": "Exactamente"
+        "exactly": "Exactamente",
+        "fitPoints": "Ajustar",
+        "controlVertices": "VC",
+        "chord": "Cuerda",
+        "sqrtChord": "Raíz cuadrada",
+        "uniform": "Uniforme"
       },
       "justify": {
         "left": "Izquierda",
@@ -229,6 +239,7 @@
       "ELLIPSE": ["ELIPSE", "EL"],
       "ELLIPSEC": ["ELIPSEC"],
       "ELLIPSEARC": ["ELIPSEARCO"],
+      "SPLINE": ["SPLINE", "SPL"],
       "RECTANG": ["RECTANG", "REC"],
       "POLYGON": ["POLIGONO", "PG"],
       "HATCH": ["SOMBREA", "SB", "SMB"],
@@ -318,6 +329,20 @@
         "Center": "Centro",
         "Rotation": "Rotación",
         "Included angle": "ángulo Incluido"
+      },
+      "SPLINE": {
+        "Method": "Método",
+        "Knots": "Nudos",
+        "Degree": "Grado",
+        "Fit": "Ajustar",
+        "CV": "VC",
+        "Chord": "Cuerda",
+        "Square root": "Raíz cuadrada",
+        "Uniform": "Uniforme",
+        "start Tangency": "iniciar Tangencia",
+        "end Tangency": "finalizar Tangencia",
+        "Undo": "desHacer",
+        "Close": "Cerrar"
       },
       "POLYGON": {
         "Type": "Tipo",
@@ -515,6 +540,10 @@
       "startAngle": "Ángulo inicial",
       "endAngle": "Ángulo final",
       "includedAngle": "Ángulo incluido",
+      "splineStartTangent": "Precise tangente inicial",
+      "splineEndTangent": "Precise tangente final",
+      "splineCloseTangent": "Precise tangente",
+      "splineDegree": "Indique grado de spline",
       "firstCorner": "Primer punto de esquina",
       "otherCorner": "Esquina opuesta",
       "numberOfSides": "Número de lados",

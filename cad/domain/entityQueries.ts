@@ -32,6 +32,7 @@ import {
 import { mtextCorners, mtextFromWorld, mtextLayout } from "./mtext"
 import { DimensionGeometry, dimensionGeometry } from "./dimensions"
 import { ellipseBounds, ellipseSegments } from "./ellipses"
+import { closestPointOnSpline, splineBounds, splinePolyline } from "./splines"
 import { polylineSegmentGeometries } from "./polylines"
 import { arcStartPoint, arcEndPoint } from "./entityMeasures"
 
@@ -172,6 +173,9 @@ export function closestOnEntity(
         entity.startParam,
         entity.endParam
       )
+    case "spline":
+      // An outline like the ellipse, even when closed.
+      return closestPointOnSpline(entity, point)
     case "polyline": {
       let best: ClosestResult = {
         point: entity.vertices[0] ?? point,
@@ -313,6 +317,8 @@ export function entityBounds(entity: Entity, blocks?: BlockLookup): Bounds {
     }
     case "ellipse":
       return ellipseBounds(entity)
+    case "spline":
+      return splineBounds(entity)
     case "polyline": {
       let minX = Infinity
       let minY = Infinity
@@ -521,6 +527,19 @@ export function entityCrossesRect(
         if (pointInRect(a, min, max)) return true
         for (const [e1, e2] of edges) {
           if (segmentSegmentIntersection(a, b, e1, e2)) return true
+        }
+      }
+      return false
+    }
+    case "spline": {
+      const points = splinePolyline(entity)
+      for (let i = 0; i < points.length; i++) {
+        if (pointInRect(points[i], min, max)) return true
+        if (i === 0) continue
+        for (const [e1, e2] of edges) {
+          if (segmentSegmentIntersection(points[i - 1], points[i], e1, e2)) {
+            return true
+          }
         }
       }
       return false

@@ -14,6 +14,8 @@ export type {
   CircleEntity,
   ArcEntity,
   EllipseEntity,
+  SplineMethod,
+  SplineEntity,
   PolylineEntity,
   TextJustify,
   TextEntity,
@@ -88,6 +90,26 @@ export {
   ellipseBounds,
   ellipseArea,
 } from "./ellipses"
+
+export type { SplineOptions } from "./splines"
+export {
+  MAX_SPLINE_DEGREE,
+  DEFAULT_SPLINE_DEGREE,
+  createSpline,
+  mapSplinePoints,
+  splineCopy,
+  splineWithPoint,
+  splineCurve,
+  splineControlFrame,
+  splinePolyline,
+  splineStartPoint,
+  splineEndPoint,
+  splineLength,
+  splineMidpoint,
+  splineArea,
+  splineBounds,
+  closestPointOnSpline,
+} from "./splines"
 
 export type { HatchGeometry } from "./hatch"
 export {

@@ -5,6 +5,7 @@ import { PolylineTool } from "./tools/PolylineTool"
 import { CircleTool } from "./tools/CircleTool"
 import { ArcTool } from "./tools/ArcTool"
 import { EllipseTool } from "./tools/EllipseTool"
+import { SplineTool } from "./tools/SplineTool"
 import { RectangleTool } from "./tools/RectangleTool"
 import { PolygonTool } from "./tools/PolygonTool"
 import { HatchTool } from "./tools/HatchTool"
@@ -70,6 +71,7 @@ export function defaultTools(
     new EllipseTool("axis", "ellipse", "el"),
     new EllipseTool("center", "ellipsecenter"),
     new EllipseTool("arc", "ellipsearc"),
+    new SplineTool(),
     new RectangleTool(),
     new PolygonTool(),
     new HatchTool(),

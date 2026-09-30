@@ -1,6 +1,7 @@
 import fc from "fast-check"
 import {
   createBlockDefinition,
+  createSpline,
   MTEXT_ATTACHMENTS,
   mtextContents,
   TEXT_JUSTIFICATIONS,
@@ -17,6 +18,7 @@ import {
   type LineEntity,
   type MTextEntity,
   type PolylineEntity,
+  type SplineEntity,
   type TextEntity,
 } from "../cad/domain/entities"
 import { DEFAULT_HATCH_PATTERN_ID } from "../cad/domain/hatchPatterns"
@@ -190,6 +192,31 @@ export const ellipseEntity: fc.Arbitrary<EllipseEntity> = fc
       },
       "ellipse"
     )
+  )
+/**
+ * Both methods, open and closed, with and without end tangents. Built through
+ * the factory, which is where a CV spline's degree is lowered to fit its
+ * vertex count — the only shape the rest of the engine ever sees.
+ */
+export const splineEntity: fc.Arbitrary<SplineEntity> = fc
+  .tuple(
+    fc.constantFrom("fit" as const, "cv" as const),
+    fc.array(point, { minLength: 2, maxLength: 6 }),
+    fc.integer({ min: 1, max: 5 }),
+    fc.constantFrom("chord" as const, "sqrtChord" as const, "uniform" as const),
+    fc.boolean(),
+    fc.option(point, { nil: undefined }),
+    fc.option(point, { nil: undefined })
+  )
+  .map(([method, points, degree, knots, closed, startTangent, endTangent]) =>
+    createSpline(method, points, {
+      degree,
+      knots,
+      closed,
+      startTangent,
+      endTangent,
+      id: "spline",
+    })
   )
 
 export const polylineEntity: fc.Arbitrary<PolylineEntity> = fc
@@ -422,6 +449,7 @@ export const entity: fc.Arbitrary<Entity> = fc.oneof(
   circleEntity,
   arcEntity,
   ellipseEntity,
+  splineEntity,
   polylineEntity,
   textEntity,
   mtextEntity,

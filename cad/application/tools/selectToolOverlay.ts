@@ -3,7 +3,6 @@ import {
   Entity,
   EntityId,
   insertPolylineVertex,
-  replacePolylineVertex,
   setPolylineBulge,
   translateEntity,
 } from "../../domain/entities"
@@ -21,7 +20,12 @@ import {
   sameGrip,
   selectedGrips,
 } from "./selectToolGrips"
-import { movedDimension, mtextWidthGrip, withRadius } from "./selectToolEdits"
+import {
+  movedDimension,
+  mtextWidthGrip,
+  withRadius,
+  withVertexAt,
+} from "./selectToolEdits"
 
 type Phase<P extends SelectToolState["phase"]> = Extract<
   SelectToolState,
@@ -56,6 +60,18 @@ export function buildGrips(
     if (entity) pushRolloverHighlight(out, entity, ctx)
   }
   const hover = state.phase === "idle" ? (state.hoverGrip ?? null) : null
+  for (const id of ctx.selection.toArray()) {
+    const entity = ctx.document.get(id)
+    // A CV spline shows its control frame along with the vertex grips.
+    if (entity?.type === "spline" && entity.method === "cv") {
+      out.push({
+        kind: "path",
+        points: entity.points.map((p) => ctx.viewport.worldToScreen(p)),
+        closed: entity.closed,
+        stroke: { color: THEME.crosshair, width: 1 },
+      })
+    }
+  }
   for (const grip of selectedGrips(ctx)) {
     const at = ctx.viewport.worldToScreen(grip.world)
     const hot = sameGrip(grip, hover)
@@ -201,15 +217,15 @@ export function buildArcAngleEdit(
   ]
 }
 
-/** The reshaped polyline preview and hot grip while stretching a vertex. */
+/** The reshaped polyline or spline preview and hot grip while stretching a vertex. */
 export function buildVertexEdit(
   state: Phase<"moveVertex">,
   ctx: ToolContext
 ): ScenePrimitive[] {
   const { viewport } = ctx
-  const poly = ctx.document.get(state.entityId)
-  if (poly?.type !== "polyline") return []
-  const preview = replacePolylineVertex(poly, state.index, state.current)
+  const entity = ctx.document.get(state.entityId)
+  const preview = entity && withVertexAt(entity, state.index, state.current)
+  if (!preview) return []
   const stroke: StrokeStyle = { color: THEME.preview, width: 1, dash: [6, 4] }
   return [
     ...entityScenePrimitive(viewport, preview, stroke),

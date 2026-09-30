@@ -483,6 +483,7 @@ function measurableOrigins(entity: Entity, at: Vec2): [Vec2, Vec2] | null {
       return best
     }
     case "ellipse":
+    case "spline":
     case "text":
     case "mtext":
     case "attdef":

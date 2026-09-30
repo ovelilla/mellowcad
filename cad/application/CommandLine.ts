@@ -151,6 +151,7 @@ export const TOOL_COMMANDS: Readonly<Record<string, string>> = {
   ellipse: "ELLIPSE",
   ellipsecenter: "ELLIPSEC",
   ellipsearc: "ELLIPSEARC",
+  spline: "SPLINE",
   rectangle: "RECTANG",
   polygon: "POLYGON",
   hatch: "HATCH",

@@ -1,5 +1,6 @@
 import { describe, expect, it, vi } from "vitest"
 import type { LineEntity } from "../../domain/entities"
+import { closestOnEntity, createSpline } from "../../domain/entities"
 import { V } from "../../geometry/Vec2"
 import { SnapType } from "./types"
 import { createHarness, type CadHarness } from "../../../test/harness"
@@ -284,5 +285,49 @@ describe("parallel", () => {
     )
 
     expect(drawn.end).toBeCloseToPoint(p(297.6, 53.2), 4)
+  })
+})
+
+describe("on a spline", () => {
+  const spline = () =>
+    createSpline("fit", [p(0, 0), p(100, 80), p(200, 0)], { id: "REF-S" })
+
+  it("snaps to its ends", () => {
+    const cad = createHarness({ entities: [spline()], snap: true })
+
+    const drawn = firstPointWith(cad, SnapType.Endpoint, p(197, 3))
+
+    expect(drawn.start).toBeCloseToPoint(p(200, 0), 5)
+  })
+
+  it("snaps to the point halfway along it", () => {
+    const cad = createHarness({ entities: [spline()], snap: true })
+
+    // Symmetric fit points, so halfway along is the middle one.
+    const drawn = firstPointWith(cad, SnapType.Midpoint, p(100, 76))
+
+    expect(drawn.start).toBeCloseToPoint(p(100, 80), 3)
+  })
+
+  it("snaps to the nearest point on the curve", () => {
+    const cad = createHarness({ entities: [spline()], snap: true })
+
+    const drawn = firstPointWith(cad, SnapType.Nearest, p(100, 82))
+
+    expect(drawn.start.x).toBeCloseTo(100, 3)
+    expect(drawn.start.y).toBeCloseTo(80, 3)
+  })
+
+  it("snaps where a line crosses it, and nowhere along its own chords", () => {
+    const cad = createHarness({
+      entities: [spline(), lineOf(p(50, -50), p(50, 150), { id: "REF-L" })],
+      snap: true,
+    })
+
+    const drawn = firstPointWith(cad, SnapType.Intersection, p(51, 60))
+    const crossing = closestOnEntity(spline(), drawn.start)
+
+    expect(drawn.start.x).toBeCloseTo(50, 5)
+    expect(crossing.distance).toBeLessThan(1e-3)
   })
 })

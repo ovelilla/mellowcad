@@ -117,7 +117,7 @@
     "title": "A real 2D drafting toolset — and growing.",
     "lead": "{commands, number} commands today, filed the way the ribbon files them. Each asks AutoCAD's questions in AutoCAD's order; the options still missing are tracked on the roadmap.",
     "sheet": "Sheet {number}",
-    "drawBody": "Lines, polylines with arc segments, circles, arcs and ellipses in all their constructions, rectangles, polygons and hatches.",
+    "drawBody": "Lines, polylines with arc segments, circles, arcs and ellipses in all their constructions, splines, rectangles, polygons and hatches.",
     "modifyBody": "Move, copy, rotate, scale, mirror, stretch; offset, trim, extend, fillet, chamfer, break and join; rectangular, polar and path arrays.",
     "annotateBody": "Single-line and multiline text, and a full family of dimensions — linear, aligned, radius, diameter, angular, baseline and continue — with text and dimension styles.",
     "organizeBody": "Layers, {linetypes, number} linetypes, {lineweights, number} lineweights and colours, with ByLayer throughout; blocks you can define, insert and purge, with attributes filled in at insertion.",

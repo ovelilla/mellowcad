@@ -14,6 +14,7 @@
       "ellipse": "Ellipse",
       "ellipsecenter": "Center ellipse",
       "ellipsearc": "Elliptical arc",
+      "spline": "Spline",
       "rectangle": "Rectangle",
       "polygon": "Polygon",
       "hatch": "Hatch",
@@ -116,6 +117,7 @@
       "circle": "{count, plural, one {Circle} other {Circles}}",
       "arc": "{count, plural, one {Arc} other {Arcs}}",
       "ellipse": "{count, plural, one {Ellipse} other {Ellipses}}",
+      "spline": "{count, plural, one {Spline} other {Splines}}",
       "polyline": "{count, plural, one {Polyline} other {Polylines}}",
       "text": "{count, plural, one {Text} other {Texts}}",
       "mtext": "{count, plural, one {MText} other {MTexts}}",
@@ -194,14 +196,22 @@
         "constant": "Constant",
         "verify": "Verify",
         "preset": "Preset",
-        "lockPosition": "Lock position"
+        "lockPosition": "Lock position",
+        "method": "Method",
+        "degree": "Degree",
+        "knotParameterization": "Knot parameterization"
       },
       "value": {
         "yes": "Yes",
         "no": "No",
         "none": "—",
         "atLeast": "At least",
-        "exactly": "Exactly"
+        "exactly": "Exactly",
+        "fitPoints": "Fit",
+        "controlVertices": "CV",
+        "chord": "Chord",
+        "sqrtChord": "Square root",
+        "uniform": "Uniform"
       },
       "justify": {
         "left": "Left",
@@ -241,6 +251,7 @@
       "ELLIPSE": ["ELLIPSE", "EL"],
       "ELLIPSEC": ["ELLIPSEC"],
       "ELLIPSEARC": ["ELLIPSEARC"],
+      "SPLINE": ["SPLINE", "SPL"],
       "RECTANG": ["RECTANG", "REC"],
       "POLYGON": ["POLYGON", "POL"],
       "HATCH": ["HATCH", "H", "BH"],
@@ -327,6 +338,20 @@
         "Center": "Center",
         "Rotation": "Rotation",
         "Included angle": "Included angle"
+      },
+      "SPLINE": {
+        "Method": "Method",
+        "Knots": "Knots",
+        "Degree": "Degree",
+        "Fit": "Fit",
+        "CV": "CV",
+        "Chord": "Chord",
+        "Square root": "Square root",
+        "Uniform": "Uniform",
+        "start Tangency": "start Tangency",
+        "end Tangency": "end Tangency",
+        "Undo": "Undo",
+        "Close": "Close"
       },
       "POLYGON": {
         "Type": "Type",
@@ -480,6 +505,10 @@
       "startAngle": "Start angle",
       "endAngle": "End angle",
       "includedAngle": "Included angle",
+      "splineStartTangent": "Specify start tangent",
+      "splineEndTangent": "Specify end tangent",
+      "splineCloseTangent": "Specify tangent",
+      "splineDegree": "Enter spline degree",
       "firstCorner": "First corner",
       "otherCorner": "Other corner",
       "numberOfSides": "Number of sides",

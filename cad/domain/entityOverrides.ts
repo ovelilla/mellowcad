@@ -31,6 +31,8 @@ export function assignEntityLayer(entity: Entity, layerId: LayerId): Entity {
       return { ...entity, layerId }
     case "ellipse":
       return { ...entity, layerId }
+    case "spline":
+      return { ...entity, layerId }
     case "polyline":
       return { ...entity, layerId }
     case "text":
@@ -66,6 +68,8 @@ export function assignEntityColor(
       return { ...entity, color }
     case "ellipse":
       return { ...entity, color }
+    case "spline":
+      return { ...entity, color }
     case "polyline":
       return { ...entity, color }
     case "text":
@@ -100,6 +104,8 @@ export function assignEntityLinetype(
       return { ...entity, linetype }
     case "ellipse":
       return { ...entity, linetype }
+    case "spline":
+      return { ...entity, linetype }
     case "polyline":
       return { ...entity, linetype }
     case "text":
@@ -133,6 +139,8 @@ export function assignEntityLineweight(
     case "arc":
       return { ...entity, lineweight }
     case "ellipse":
+      return { ...entity, lineweight }
+    case "spline":
       return { ...entity, lineweight }
     case "polyline":
       return { ...entity, lineweight }

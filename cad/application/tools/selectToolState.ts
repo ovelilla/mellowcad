@@ -12,7 +12,8 @@ export type DimensionPoint = "first" | "second" | "line" | "vertex"
  * - `move`     — a line midpoint or a circle/arc centre: move the selection.
  * - `radius`   — a circle quadrant or an arc's midpoint: resize the radius.
  * - `arcEnd`   — an arc endpoint: swing it around, changing the sweep.
- * - `vertex`   — a polyline vertex: stretch it, reshaping the chain.
+ * - `vertex`   — a polyline vertex, or a spline's fit point or control
+ *   vertex: stretch it, reshaping the curve.
  * - `addVertex`— a straight polyline segment's midpoint: insert a new vertex.
  * - `bulge`    — an arc polyline segment's midpoint: change its curvature.
  * - `dimPoint` — a dimension's definition point: an extension-line origin, an

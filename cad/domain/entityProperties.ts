@@ -93,6 +93,7 @@ export function applyEntityProperty(
       }
       return null
     case "polyline":
+    case "spline":
       return null
     case "insert":
       return applyInsertProperty(entity, property, value)

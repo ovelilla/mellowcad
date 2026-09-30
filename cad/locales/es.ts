@@ -18,6 +18,7 @@ export const es: EngineLocale = {
       "ellipse": "Elipse",
       "ellipsecenter": "Elipse por centro",
       "ellipsearc": "Arco elíptico",
+      "spline": "Spline",
       "rectangle": "Rectángulo",
       "polygon": "Polígono",
       "hatch": "Sombreado",
@@ -141,6 +142,16 @@ export const es: EngineLocale = {
           {
             "one": "Elipse",
             "other": "Elipses"
+          }
+        ]
+      ],
+      "spline": [
+        [
+          "count",
+          2,
+          {
+            "one": "Spline",
+            "other": "Splines"
           }
         ]
       ],
@@ -300,14 +311,22 @@ export const es: EngineLocale = {
         "constant": "Constante",
         "verify": "Verificable",
         "preset": "Predefinido",
-        "lockPosition": "Bloquear posición"
+        "lockPosition": "Bloquear posición",
+        "method": "Método",
+        "degree": "Grado",
+        "knotParameterization": "Parametrización de nudos"
       },
       "value": {
         "yes": "Sí",
         "no": "No",
         "none": "—",
         "atLeast": "Al menos",
-        "exactly": "Exactamente"
+        "exactly": "Exactamente",
+        "fitPoints": "Ajustar",
+        "controlVertices": "VC",
+        "chord": "Cuerda",
+        "sqrtChord": "Raíz cuadrada",
+        "uniform": "Uniforme"
       },
       "justify": {
         "left": "Izquierda",
@@ -375,6 +394,10 @@ export const es: EngineLocale = {
       ],
       "ELLIPSEARC": [
         "ELIPSEARCO"
+      ],
+      "SPLINE": [
+        "SPLINE",
+        "SPL"
       ],
       "RECTANG": [
         "RECTANG",
@@ -638,6 +661,20 @@ export const es: EngineLocale = {
         "Rotation": "Rotación",
         "Included angle": "ángulo Incluido"
       },
+      "SPLINE": {
+        "Method": "Método",
+        "Knots": "Nudos",
+        "Degree": "Grado",
+        "Fit": "Ajustar",
+        "CV": "VC",
+        "Chord": "Cuerda",
+        "Square root": "Raíz cuadrada",
+        "Uniform": "Uniforme",
+        "start Tangency": "iniciar Tangencia",
+        "end Tangency": "finalizar Tangencia",
+        "Undo": "desHacer",
+        "Close": "Cerrar"
+      },
       "POLYGON": {
         "Type": "Tipo",
         "Inscribed": "Inscrito en el círculo",
@@ -834,6 +871,10 @@ export const es: EngineLocale = {
       "startAngle": "Ángulo inicial",
       "endAngle": "Ángulo final",
       "includedAngle": "Ángulo incluido",
+      "splineStartTangent": "Precise tangente inicial",
+      "splineEndTangent": "Precise tangente final",
+      "splineCloseTangent": "Precise tangente",
+      "splineDegree": "Indique grado de spline",
       "firstCorner": "Primer punto de esquina",
       "otherCorner": "Esquina opuesta",
       "numberOfSides": "Número de lados",

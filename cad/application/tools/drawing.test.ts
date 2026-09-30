@@ -4,13 +4,17 @@ import type {
   CircleEntity,
   EllipseEntity,
   PolylineEntity,
+  SplineEntity,
 } from "../../domain/entities"
 import {
+  closestOnEntity,
   ellipseEndPoint,
   ellipseSemiMajor,
   ellipseSemiMinor,
   ellipseStartPoint,
   isFullEllipse,
+  splineEndPoint,
+  splineStartPoint,
 } from "../../domain/entities"
 import { V } from "../../geometry/Vec2"
 import { createHarness } from "../../../test/harness"
@@ -276,6 +280,161 @@ describe("ELLIPSE", () => {
 
     expect(cad.entityCount).toBe(0)
     expect(cad.activeToolId()).toBe("ellipse")
+  })
+})
+
+describe("SPLINE", () => {
+  it("draws one fit spline through the picks, ended by Enter", () => {
+    const cad = createHarness()
+    const picks = [p(0, 0), p(100, 60), p(200, -20), p(300, 40)]
+
+    cad.command("SPL")
+    for (const pick of picks) cad.click(pick)
+    cad.enter()
+
+    const spline = cad.only<SplineEntity>("spline")
+    expect(spline.method).toBe("fit")
+    expect(spline.degree).toBe(3)
+    expect(spline.points).toBeCloseToPoints(picks)
+    for (const pick of picks) {
+      expect(closestOnEntity(spline, pick).distance).toBeLessThan(1e-6)
+    }
+    expect(cad.activeToolId()).toBe("select")
+  })
+
+  it("takes typed points relative to the last, as LINE does", () => {
+    const cad = createHarness()
+
+    cad.command("SPLINE").type("0,0").enter().type("100,0").enter()
+    cad.type("@0,100").enter().enter()
+
+    expect(cad.only<SplineEntity>("spline").points).toBeCloseToPoints([
+      p(0, 0),
+      p(100, 0),
+      p(100, 100),
+    ])
+  })
+
+  it("leaves along the start tangent and arrives along the end tangent", () => {
+    const cad = createHarness()
+
+    cad.command("SPLINE").click(p(0, 0))
+    cad.option("start Tangency").click(p(0, 10))
+    cad.click(p(100, 0)).click(p(200, 0))
+    cad.option("end Tangency").click(p(200, -10))
+
+    const spline = cad.only<SplineEntity>("spline")
+    expect(V.normalize(spline.startTangent!)).toBeCloseToPoint(p(0, 1))
+    expect(V.normalize(spline.endTangent!)).toBeCloseToPoint(p(0, -1))
+    expect(cad.activeToolId()).toBe("select")
+  })
+
+  it("Undo drops the last point without leaving the command", () => {
+    const cad = createHarness()
+
+    cad.command("SPLINE").click(p(0, 0)).click(p(100, 0)).click(p(200, 50))
+    cad.option("Undo").click(p(200, -50)).enter()
+
+    expect(cad.only<SplineEntity>("spline").points).toBeCloseToPoints([
+      p(0, 0),
+      p(100, 0),
+      p(200, -50),
+    ])
+  })
+
+  it("Escape discards the spline being drawn", () => {
+    const cad = createHarness()
+
+    cad.command("SPLINE").click(p(0, 0)).click(p(100, 0)).click(p(200, 50))
+    cad.escape()
+
+    expect(cad.entityCount).toBe(0)
+  })
+
+  it("is one undo step", () => {
+    const cad = createHarness()
+
+    cad.command("SPLINE").click(p(0, 0)).click(p(100, 0)).click(p(200, 50))
+    cad.enter().undo()
+
+    expect(cad.entityCount).toBe(0)
+  })
+
+  it("closes a fit spline periodically when Enter takes the default tangent", () => {
+    const cad = createHarness()
+
+    cad.command("SPLINE").click(p(0, 0)).click(p(100, 0)).click(p(50, 80))
+    cad.option("Close").enter()
+
+    const spline = cad.only<SplineEntity>("spline")
+    expect(spline.closed).toBe(true)
+    expect(spline.startTangent).toBeUndefined()
+    expect(splineStartPoint(spline)).toBeCloseToPoint(splineEndPoint(spline))
+  })
+
+  it("remembers Knots for the next spline, as SPLKNOTS does for the session", () => {
+    const cad = createHarness()
+
+    cad.command("SPLINE").option("Knots").option("Uniform")
+    cad.click(p(0, 0)).click(p(100, 0)).enter()
+    cad.command("SPLINE").click(p(0, 50)).click(p(100, 50)).enter()
+
+    const splines = cad.entities() as SplineEntity[]
+    expect(splines.map((s) => s.knots)).toEqual(["uniform", "uniform"])
+  })
+
+  it("draws on control vertices at the chosen degree", () => {
+    const cad = createHarness()
+    const cvs = [p(0, 0), p(50, 100), p(150, 100), p(200, 0)]
+
+    cad.command("SPLINE").option("Method").option("CV")
+    cad.option("Degree").type("2").enter()
+    for (const cv of cvs) cad.click(cv)
+    cad.enter()
+
+    const spline = cad.only<SplineEntity>("spline")
+    expect(spline.method).toBe("cv")
+    expect(spline.degree).toBe(2)
+    expect(spline.points).toBeCloseToPoints(cvs)
+    expect(splineStartPoint(spline)).toBeCloseToPoint(cvs[0])
+    expect(splineEndPoint(spline)).toBeCloseToPoint(cvs[3])
+  })
+
+  it("lowers the degree to one less than the vertex count when there are too few", () => {
+    const cad = createHarness()
+
+    cad.command("SPLINE").option("Method").option("CV")
+    cad.click(p(0, 0)).click(p(100, 0)).enter()
+
+    expect(cad.only<SplineEntity>("spline").degree).toBe(1)
+  })
+
+  it("closes a CV spline at once, from the second vertex on", () => {
+    const cad = createHarness()
+
+    cad.command("SPLINE").option("Method").option("CV")
+    cad.click(p(0, 0)).click(p(100, 0)).click(p(50, 80)).option("Close")
+
+    const spline = cad.only<SplineEntity>("spline")
+    expect(spline.closed).toBe(true)
+    expect(spline.degree).toBe(2)
+    expect(cad.activeToolId()).toBe("select")
+  })
+
+  it("shows its method, degree, knots and closure in the palette", () => {
+    const cad = createHarness()
+
+    cad.command("SPLINE").click(p(0, 0)).click(p(100, 0)).click(p(50, 80))
+    cad.option("Close").enter().selectAll()
+
+    const rows = cad.state().selectionInfo!.groups.flatMap((g) => g.rows)
+    expect(rows.map((row) => [row.id, row.value])).toEqual([
+      ["method", "Fit"],
+      ["degree", "3"],
+      ["knotParameterization", "Chord"],
+      ["closed", "Yes"],
+      ["area", expect.stringMatching(/mm²$/)],
+    ])
   })
 })
 

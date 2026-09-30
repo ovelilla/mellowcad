@@ -553,9 +553,10 @@ function entityAsGeom(entity: Entity): OffsetGeom | null {
     case "attdef":
       return null // text has no parallel copy
     case "ellipse":
+    case "spline":
       // The parallel curve of an ellipse is not an ellipse — AutoCAD offsets
-      // one into a spline, an object this engine does not have — so an ellipse
-      // does not even highlight as a source.
+      // one into a spline, and offsetting a spline is not built — so neither
+      // even highlights as a source.
       return null
     case "dimension":
     case "hatch":
@@ -609,6 +610,7 @@ function computeOffset(
     case "polyline":
       return offsetPolyline(source, distance, side)
     case "ellipse":
+    case "spline":
     case "text":
     case "mtext":
     case "attdef":
@@ -681,6 +683,7 @@ function computeThrough(source: Entity, point: Vec2): OffsetGeom | null {
       return best > 1e-9 ? offsetPolyline(source, best, point) : null
     }
     case "ellipse":
+    case "spline":
     case "text":
     case "mtext":
     case "attdef":

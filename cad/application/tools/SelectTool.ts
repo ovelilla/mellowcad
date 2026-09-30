@@ -7,7 +7,6 @@ import {
   insertPolylineVertex,
   polylineSegmentGeometries,
   removePolylineVertex,
-  replacePolylineVertex,
   setPolylineBulge,
   translateEntity,
 } from "../../domain/entities"
@@ -35,6 +34,7 @@ import {
   radiusHandle,
   toDegrees,
   withRadius,
+  withVertexAt,
 } from "./selectToolEdits"
 import {
   buildArcAngleEdit,
@@ -836,7 +836,7 @@ export class SelectTool implements Tool {
     ctx: ToolContext
   ): void {
     const poly = ctx.document.get(grip.entityId)
-    if (poly?.type !== "polyline") return
+    if (poly?.type !== "polyline" && poly?.type !== "spline") return
     this.state = {
       phase: "moveVertex",
       entityId: grip.entityId,
@@ -1228,11 +1228,10 @@ export class SelectTool implements Tool {
     point: Vec2,
     ctx: ToolContext
   ): void {
-    const poly = ctx.document.get(state.entityId)
-    if (poly?.type === "polyline" && !V.equals(point, state.origin)) {
-      ctx.execute(
-        new UpdateEntityCommand(replacePolylineVertex(poly, state.index, point))
-      )
+    const entity = ctx.document.get(state.entityId)
+    const moved = entity && withVertexAt(entity, state.index, point)
+    if (moved && !V.equals(point, state.origin)) {
+      ctx.execute(new UpdateEntityCommand(moved))
     }
     ctx.dynamicInput.close()
     this.state = { phase: "idle" }

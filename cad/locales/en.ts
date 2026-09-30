@@ -18,6 +18,7 @@ export const en: EngineCatalog = {
       "ellipse": "Ellipse",
       "ellipsecenter": "Center ellipse",
       "ellipsearc": "Elliptical arc",
+      "spline": "Spline",
       "rectangle": "Rectangle",
       "polygon": "Polygon",
       "hatch": "Hatch",
@@ -147,6 +148,16 @@ export const en: EngineCatalog = {
           {
             "one": "Ellipse",
             "other": "Ellipses"
+          }
+        ]
+      ],
+      "spline": [
+        [
+          "count",
+          2,
+          {
+            "one": "Spline",
+            "other": "Splines"
           }
         ]
       ],
@@ -306,14 +317,22 @@ export const en: EngineCatalog = {
         "constant": "Constant",
         "verify": "Verify",
         "preset": "Preset",
-        "lockPosition": "Lock position"
+        "lockPosition": "Lock position",
+        "method": "Method",
+        "degree": "Degree",
+        "knotParameterization": "Knot parameterization"
       },
       "value": {
         "yes": "Yes",
         "no": "No",
         "none": "—",
         "atLeast": "At least",
-        "exactly": "Exactly"
+        "exactly": "Exactly",
+        "fitPoints": "Fit",
+        "controlVertices": "CV",
+        "chord": "Chord",
+        "sqrtChord": "Square root",
+        "uniform": "Uniform"
       },
       "justify": {
         "left": "Left",
@@ -381,6 +400,10 @@ export const en: EngineCatalog = {
       ],
       "ELLIPSEARC": [
         "ELLIPSEARC"
+      ],
+      "SPLINE": [
+        "SPLINE",
+        "SPL"
       ],
       "RECTANG": [
         "RECTANG",
@@ -644,6 +667,10 @@ export const en: EngineCatalog = {
       "startAngle": "Start angle",
       "endAngle": "End angle",
       "includedAngle": "Included angle",
+      "splineStartTangent": "Specify start tangent",
+      "splineEndTangent": "Specify end tangent",
+      "splineCloseTangent": "Specify tangent",
+      "splineDegree": "Enter spline degree",
       "firstCorner": "First corner",
       "otherCorner": "Other corner",
       "numberOfSides": "Number of sides",

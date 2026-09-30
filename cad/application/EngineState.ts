@@ -32,6 +32,7 @@ import {
   polylineArea,
   polylineLength,
   polylineSegments,
+  splineArea,
   dimensionMeasurement,
   dimensionMeasurementUnit,
   mtextLinePitch,
@@ -724,6 +725,30 @@ function singleEntityInfo(
             row("vertices", String(entity.vertices.length)),
             row("segments", String(polylineSegments(entity).length)),
             row("closed", text.propertyValue(entity.closed ? "yes" : "no")),
+          ]),
+        ],
+      }
+    }
+    case "spline": {
+      // Read-only: retyping the degree or closing it is SPLINEDIT's work, and
+      // SPLINEDIT is not built.
+      return {
+        title: title("spline"),
+        count: 1,
+        groups: [
+          group("misc", [
+            row(
+              "method",
+              text.propertyValue(
+                entity.method === "fit" ? "fitPoints" : "controlVertices"
+              )
+            ),
+            row("degree", String(entity.degree)),
+            ...(entity.method === "fit"
+              ? [row("knotParameterization", text.propertyValue(entity.knots))]
+              : []),
+            row("closed", text.propertyValue(entity.closed ? "yes" : "no")),
+            ...(entity.closed ? [row("area", area(splineArea(entity)))] : []),
           ]),
         ],
       }

@@ -90,6 +90,17 @@ export function selectedGrips(ctx: ToolContext): Grip[] {
           world: entity.center,
         })
         break
+      case "spline":
+        // Its fit points, or its control vertices, as it was made. AutoCAD's
+        // triangular grip that switches between the two is not built.
+        entity.points.forEach((point, index) => {
+          grips.push({
+            entityId: id,
+            role: { kind: "vertex", index },
+            world: point,
+          })
+        })
+        break
       case "polyline":
         entity.vertices.forEach((vertex, index) => {
           grips.push({

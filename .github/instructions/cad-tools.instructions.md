@@ -39,7 +39,9 @@ A tool is an explicit state machine for one AutoCAD command. It owns a discrimin
   holds the state union, `selectToolGrips.ts` enumerates and hit-tests grips (**the file to edit
   when an entity type gains grips**), `selectToolOverlay.ts` draws each edit's preview, and
   `selectToolEdits.ts` holds the pure geometry helpers. `SelectTool.ts` keeps only the state
-  machine. Add a grip kind in all four, never by growing the tool class.
+  machine. Add a grip kind in all four, never by growing the tool class. A type whose points drag
+  like a polyline's vertices (a spline's fit points or control vertices) reuses the `vertex` role
+  through `withVertexAt` in `selectToolEdits.ts` rather than adding a kind.
 - `dimensionTextOptions.ts` — the Text and Angle keywords shared by every dimension command, so
   each of them asks with the same words. When two commands offer the same AutoCAD keyword, the
   prompt belongs in a shared helper: identical wording is part of the fidelity, not a nicety.
@@ -94,7 +96,8 @@ on the document instead (LTSCALE) or on a style table (DIMSCALE).
   afterwards makes the UI lag by one action.
 - **Never clear accumulated state in `onKeyDown`** when `onDeactivate` is the commit point: the
   runtime calls `onKeyDown` first, so Escape would race the commit and discard the user's work.
-  The one exception is an editor whose Escape _is_ "discard" (MTEXT's, and TEXTEDIT on an MTEXT):
+  The one exception is an editor whose Escape _is_ "discard" (MTEXT's, and TEXTEDIT on an MTEXT),
+  and SPLINE, whose Escape cancels the whole curve as AutoCAD's does:
   it resets its state there on purpose, and `onDeactivate` then finds nothing to keep.
 - One gesture = one command. Splits and multi-entity edits use `ReplaceEntitiesCommand` /
   `UpdateEntitiesCommand` so a single Ctrl+Z undoes the whole operation.

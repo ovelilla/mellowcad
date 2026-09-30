@@ -33,6 +33,7 @@ import {
   createAttributeDefinition,
   createBlockDefinition,
   createEllipse,
+  createSpline,
   createMText,
   DEFAULT_ATTRIBUTE_MODES,
   Entity,
@@ -85,7 +86,7 @@ import { DRAWING_FILE_TYPE } from "./drawingSummary"
 export { DRAWING_FILE_TYPE }
 
 /** Current schema version written by {@link serializeDrawing}. */
-export const DRAWING_FILE_VERSION = 19
+export const DRAWING_FILE_VERSION = 20
 
 /** MIME type a serialised drawing is handed to the host as. */
 export const DRAWING_FILE_MIME_TYPE = "application/json"
@@ -281,6 +282,22 @@ function cloneEntity(entity: Entity): Entity {
         ...(entity.startParam !== undefined && entity.endParam !== undefined
           ? { startParam: entity.startParam, endParam: entity.endParam }
           : {}),
+      }
+    case "spline":
+      return {
+        id: entity.id,
+        type: "spline",
+        layerId: entity.layerId,
+        ...overrides,
+        method: entity.method,
+        points: entity.points.map((p) => ({ x: p.x, y: p.y })),
+        degree: entity.degree,
+        knots: entity.knots,
+        closed: entity.closed,
+        ...(entity.startTangent
+          ? { startTangent: { ...entity.startTangent } }
+          : {}),
+        ...(entity.endTangent ? { endTangent: { ...entity.endTangent } } : {}),
       }
     case "polyline":
       return {
@@ -576,6 +593,29 @@ function parseEntity(raw: unknown): Entity | null {
       return {
         ...createEllipse(center, majorAxis, raw.ratio, {
           ...swept,
+          layerId,
+          id,
+        }),
+        ...overrides,
+      }
+    }
+    case "spline": {
+      const method = raw.method === "cv" ? "cv" : "fit"
+      const points = parseVertices(raw.points)
+      if (points.length < 2) return null
+      const knots =
+        raw.knots === "sqrtChord" || raw.knots === "uniform"
+          ? raw.knots
+          : "chord"
+      // Through the factory, so a hand-edited degree is clamped to 1–10 and
+      // lowered to what the vertex count allows.
+      return {
+        ...createSpline(method, points, {
+          ...(isFiniteNumber(raw.degree) ? { degree: raw.degree } : {}),
+          knots,
+          closed: raw.closed === true,
+          startTangent: parseVec2(raw.startTangent) ?? undefined,
+          endTangent: parseVec2(raw.endTangent) ?? undefined,
           layerId,
           id,
         }),

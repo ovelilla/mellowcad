@@ -4,7 +4,9 @@ import type {
   CircleEntity,
   LineEntity,
   PolylineEntity,
+  SplineEntity,
 } from "../../domain/entities"
+import { closestOnEntity, createSpline } from "../../domain/entities"
 import { polarPoint } from "../../geometry/primitives"
 import { createHarness } from "../../../test/harness"
 import {
@@ -215,6 +217,38 @@ describe("grips", () => {
       p(0, 0),
       p(150, -50),
       p(100, 100),
+    ])
+  })
+
+  it("drags a spline's fit point, and the curve refits through it", () => {
+    const cad = createHarness({
+      entities: [
+        createSpline("fit", [p(0, 0), p(100, 50), p(200, 0)], { id: "S1" }),
+      ],
+    })
+    cad.select("S1")
+
+    cad.drag(p(100, 50), p(100, 90))
+
+    const spline = cad.byId<SplineEntity>("S1")
+    expect(spline.points).toBeCloseToPoints([p(0, 0), p(100, 90), p(200, 0)])
+    expect(closestOnEntity(spline, p(100, 90)).distance).toBeLessThan(1e-6)
+  })
+
+  it("drags a spline's control vertex", () => {
+    const cad = createHarness({
+      entities: [
+        createSpline("cv", [p(0, 0), p(100, 100), p(200, 0)], { id: "S1" }),
+      ],
+    })
+    cad.select("S1")
+
+    cad.drag(p(100, 100), p(100, 40))
+
+    expect(cad.byId<SplineEntity>("S1").points).toBeCloseToPoints([
+      p(0, 0),
+      p(100, 40),
+      p(200, 0),
     ])
   })
 

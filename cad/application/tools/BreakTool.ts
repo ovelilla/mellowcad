@@ -289,6 +289,7 @@ function computeBreak(
     case "circle":
       return breakCircle(entity, first, second)
     case "ellipse":
+    case "spline":
     case "polyline":
     case "text":
     case "mtext":

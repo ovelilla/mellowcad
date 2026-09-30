@@ -117,7 +117,7 @@
     "title": "Herramientas de dibujo 2D de verdad, y cada vez más.",
     "lead": "{commands, number} comandos hoy, ordenados como en la cinta de opciones. Cada uno hace las preguntas de AutoCAD en el orden de AutoCAD; las opciones que aún faltan constan en la hoja de ruta.",
     "sheet": "Hoja {number}",
-    "drawBody": "Líneas, polilíneas con segmentos de arco, círculos, arcos y elipses en todas sus construcciones, rectángulos, polígonos y sombreados.",
+    "drawBody": "Líneas, polilíneas con segmentos de arco, círculos, arcos y elipses en todas sus construcciones, splines, rectángulos, polígonos y sombreados.",
     "modifyBody": "Desplazar, copiar, girar, escalar, crear simetrías y estirar; desfasar, recortar, alargar, empalmar, achaflanar, partir y juntar; matrices rectangulares, polares y de camino.",
     "annotateBody": "Texto de una línea y de líneas múltiples, y toda la familia de cotas —lineal, alineada, radio, diámetro, angular, línea base y continua—, con estilos de texto y de cota.",
     "organizeBody": "Capas, {linetypes, number} tipos de línea, {lineweights, number} grosores de línea y colores, con PorCapa en todo; bloques que puedes definir, insertar y limpiar, con atributos que se rellenan al insertarlos.",

@@ -25,6 +25,7 @@ import {
   Scissors,
   Shapes,
   Slash,
+  Spline,
   Split,
   Square,
   Tag,
@@ -92,6 +93,7 @@ const TOOL_ICONS: Record<string, LucideIcon> = {
   ellipse: EllipseIcon,
   ellipsecenter: EllipseCenterIcon,
   ellipsearc: EllipseArcIcon,
+  spline: Spline,
   rectangle: Square,
   polygon: Pentagon,
   hatch: HatchIcon,
@@ -195,6 +197,7 @@ const RAIL_LAYOUT: readonly RailGroup[] = [
         id: "ellipse",
         members: ["ellipse", "ellipsecenter", "ellipsearc"],
       },
+      "spline",
       {
         id: "rectangle",
         members: ["rectangle", "polygon"],

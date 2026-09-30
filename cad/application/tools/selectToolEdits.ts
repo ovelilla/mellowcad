@@ -9,8 +9,27 @@ import {
   mtextFromWorld,
   mtextLayout,
   mtextToWorld,
+  replacePolylineVertex,
+  splineWithPoint,
 } from "../../domain/entities"
 import { DimensionPoint } from "./selectToolState"
+
+/**
+ * The object with its `index`th vertex grip moved to `point`: a polyline's
+ * vertex, or a spline's fit point or control vertex (whichever it was made
+ * with). `null` for anything else.
+ */
+export function withVertexAt(
+  entity: Entity,
+  index: number,
+  point: Vec2
+): Entity | null {
+  if (entity.type === "polyline") {
+    return replacePolylineVertex(entity, index, point)
+  }
+  if (entity.type === "spline") return splineWithPoint(entity, index, point)
+  return null
+}
 
 /**
  * Where a multiline text's width grip sits: at the top of the edge that moves

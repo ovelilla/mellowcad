@@ -18,6 +18,7 @@ import {
   mtextLayout,
   mtextToWorld,
   polylineSegmentGeometries,
+  splinePolyline,
   TextJustify,
 } from "../domain/entities"
 import {
@@ -436,6 +437,22 @@ export function entityScenePrimitive(
       ]
     case "ellipse":
       return [ellipseScenePrimitive(camera, entity, stroke)]
+    case "spline": {
+      // Canvas and SVG have no NURBS, and a degree above 3 fits no Bézier: the
+      // curve is chopped finely enough that a chord never strays a quarter of
+      // a pixel from it, at whatever zoom.
+      const tolerance = 0.25 / camera.worldToScreenDistance(1)
+      return [
+        {
+          kind: "path",
+          points: splinePolyline(entity, tolerance).map((p) =>
+            camera.worldToScreen(p)
+          ),
+          closed: false,
+          stroke,
+        },
+      ]
+    }
     case "polyline":
       // A straight polyline is one crisp path (mitred corners). One that
       // carries arc bulges is tessellated finely into the same path, so arcs

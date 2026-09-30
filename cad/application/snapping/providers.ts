@@ -27,6 +27,10 @@ import {
   isFullEllipse,
   lineMidpoint,
   polylineSegmentGeometries,
+  splineEndPoint,
+  splineMidpoint,
+  splinePolyline,
+  splineStartPoint,
   EntityId,
 } from "../../domain/entities"
 import {
@@ -88,6 +92,20 @@ export const endpointProvider: SnapProvider = {
           point: ellipseEndPoint(entity),
           sourceIds: [entity.id],
         })
+      } else if (entity.type === "spline") {
+        // A closed spline's start is where it closes, and AutoCAD snaps there.
+        candidates.push({
+          type: SnapType.Endpoint,
+          point: splineStartPoint(entity),
+          sourceIds: [entity.id],
+        })
+        if (!entity.closed) {
+          candidates.push({
+            type: SnapType.Endpoint,
+            point: splineEndPoint(entity),
+            sourceIds: [entity.id],
+          })
+        }
       } else if (entity.type === "polyline") {
         for (const vertex of entity.vertices) {
           candidates.push({
@@ -136,6 +154,12 @@ export const midpointProvider: SnapProvider = {
         candidates.push({
           type: SnapType.Midpoint,
           point: arcMidpoint(entity),
+          sourceIds: [entity.id],
+        })
+      } else if (entity.type === "spline" && !entity.closed) {
+        candidates.push({
+          type: SnapType.Midpoint,
+          point: splineMidpoint(entity),
           sourceIds: [entity.id],
         })
       } else if (entity.type === "polyline") {
@@ -480,7 +504,7 @@ export const nearestProvider: SnapProvider = {
                   entity.endAngle,
                   worldCursor
                 )
-              : entity.type === "polyline"
+              : entity.type === "polyline" || entity.type === "spline"
                 ? closestOnEntity(entity, worldCursor)
                 : null
       if (closest && closest.distance <= worldTolerance) {
@@ -513,12 +537,26 @@ export const intersectionProvider: SnapProvider = {
     worldTolerance,
     construction,
   }: SnapContext): SnapCandidate[] {
-    const shapes = collectShapes(document, entities, construction)
+    const shapes = collectShapes(document, entities, construction, {
+      cursor: worldCursor,
+      reach: worldTolerance * 8,
+    })
     const candidates: SnapCandidate[] = []
     const near = worldTolerance * 8 // coarse pre-filter around the cursor
 
     for (let i = 0; i < shapes.length; i++) {
       for (let j = i + 1; j < shapes.length; j++) {
+        // Neighbouring chords of one spline meet at every tessellation vertex.
+        const a = shapes[i]
+        const b = shapes[j]
+        if (
+          a.kind === "segment" &&
+          b.kind === "segment" &&
+          a.curveId !== undefined &&
+          a.curveId === b.curveId
+        ) {
+          continue
+        }
         for (const point of intersectShapes(shapes[i], shapes[j])) {
           if (V.distance(point, worldCursor) <= near) {
             candidates.push({
@@ -588,6 +626,8 @@ type SegmentShape = {
   readonly b: Vec2
   readonly sourceIds: readonly EntityId[]
   readonly fromConstruction: boolean
+  /** The spline this is a chord of. */
+  readonly curveId?: EntityId
 }
 
 type CircleShape = {
@@ -615,16 +655,39 @@ type SnapShape = SegmentShape | CircleShape | ArcShape
  * Normalises committed entities and the provisional rubber-band into one
  * uniform shape list, tagging construction geometry so downstream candidates
  * can be marked {@link SnapCandidate.transient}.
+ *
+ * A spline enters as the chords of its tessellation (a hundred-thousandth of
+ * its size off the curve), and only those within `near.reach` of the cursor:
+ * a whole tessellation would make the pairwise search quadratic in chords.
  */
 function collectShapes(
   document: SnapContext["document"],
   entities: SnapContext["entities"],
-  construction: readonly ConstructionGeometry[]
+  construction: readonly ConstructionGeometry[],
+  near?: { readonly cursor: Vec2; readonly reach: number }
 ): SnapShape[] {
   const shapes: SnapShape[] = []
   for (const entity of entities) {
     if (!document.isEntityVisible(entity)) continue
-    if (entity.type === "line") {
+    if (entity.type === "spline") {
+      if (!near) continue
+      const points = splinePolyline(entity)
+      for (let i = 1; i < points.length; i++) {
+        const a = points[i - 1]
+        const b = points[i]
+        if (closestPointOnSegment(a, b, near.cursor).distance > near.reach) {
+          continue
+        }
+        shapes.push({
+          kind: "segment",
+          a,
+          b,
+          sourceIds: [entity.id],
+          fromConstruction: false,
+          curveId: entity.id,
+        })
+      }
+    } else if (entity.type === "line") {
       shapes.push({
         kind: "segment",
         a: entity.start,

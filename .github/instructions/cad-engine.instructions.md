@@ -149,7 +149,10 @@ help, in `assignTextStyle`, `CadDocument.textStyleInUse` and `reconcile`, `setSe
 in use can be deleted, or a pasted object loses its style.
 Two of those are decisions, not chores. **Snapping is opt-in**: a hatch is in no provider at all
 because OSOPTIONS ships at 7, whose first bit reads "Object snaps ignore hatch objects" — look up
-what AutoCAD snaps to before wiring a type in. And the fast-check `entity` arbitrary in
+what AutoCAD snaps to before wiring a type in. A curve whose intersections have no closed form
+joins the Intersection provider as the chords of its tessellation near the cursor only
+(`collectShapes`'s `near`), tagged with `curveId` so its own neighbouring chords never meet. And the
+fast-check `entity` arbitrary in
 `test/arbitraries.ts` must generate the new type, or every transform / bounds / round-trip property
 silently stops covering it.
 
@@ -183,6 +186,16 @@ which draws the landing's figures at build time), not a tessellation — but eve
 backwards. Resolve that once in the builder (`arcScenePrimitive`, `ellipseScenePrimitive`) and pin
 it with a test that rebuilds the renderer's own parametric formula and compares it against the
 projected world endpoints — `SvgScenePresenter.test.ts` does the same for the SVG arc flags.
+
+**A curve no renderer has is the exception: a spline.** Canvas and SVG have no NURBS and a degree
+above 3 fits no Bézier, so `SceneBuilder` draws it as a `path`, tessellated in world coordinates to
+a quarter of a pixel at the current zoom (`splinePolyline(spline, 0.25 / scale)`) — never a cached
+world tessellation, which would facet on zooming in. The math is `geometry/nurbs.ts` (de Boor,
+interpolation, adaptive tessellation with a capped depth); the entity keeps only what was picked
+and `splineCurve` derives the control points and knots every time. Queries with no closed form on it
+(bounds, crossing, length, area, the Intersection snap) read `splinePolyline` at its default
+tolerance, a hundred-thousandth of the curve's size; the closest point refines that with a bounded
+Newton. A future curve of the same kind (a helix, an offset spline) follows the same split.
 
 The SVG presenter differs from the canvas one only where SVG does: it clips segments to the frame
 (a scene draws alignment paths millions of pixels long, which a canvas clips for free but SVG would

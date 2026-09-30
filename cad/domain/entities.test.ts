@@ -63,6 +63,8 @@ import {
   scaleEntityCopy,
   scalePoint,
   setPolylineBulge,
+  splineEndPoint,
+  splineStartPoint,
   stretchEntity,
   textCorners,
   textWidth,
@@ -317,6 +319,22 @@ function expectSameShape(actual: Entity, expected: Entity, precision = 6) {
       expect(actual.startParam).toBeCloseToAngle(expected.startParam, precision)
       expect(actual.endParam!).toBeCloseToAngle(expected.endParam!, precision)
     }
+  } else if (actual.type === "spline" && expected.type === "spline") {
+    expect(actual.points).toBeCloseToPoints(expected.points, precision)
+    expect(actual.method).toBe(expected.method)
+    expect(actual.degree).toBe(expected.degree)
+    expect(actual.knots).toBe(expected.knots)
+    expect(actual.closed).toBe(expected.closed)
+    // Optional, so a transform can drop one without TypeScript noticing; only
+    // the direction is meaningful.
+    for (const key of ["startTangent", "endTangent"] as const) {
+      const a = actual[key]
+      const e = expected[key]
+      expect(a !== undefined).toBe(e !== undefined)
+      if (a && e) {
+        expect(V.normalize(a)).toBeCloseToPoint(V.normalize(e), precision)
+      }
+    }
   } else if (actual.type === "polyline" && expected.type === "polyline") {
     expect(actual.vertices).toBeCloseToPoints(expected.vertices, precision)
     expect(actual.closed).toBe(expected.closed)
@@ -395,6 +413,9 @@ function characteristicPoints(entity: Entity): Vec2[] {
       // Not the centre: an elliptical arc's extent is its swept curve, which
       // need not reach the middle of the ellipse it was cut from.
       return [ellipseStartPoint(entity), ellipseEndPoint(entity)]
+    case "spline":
+      // Not the points: a CV spline's vertices lie off the curve.
+      return [splineStartPoint(entity), splineEndPoint(entity)]
     case "polyline":
       return [...entity.vertices]
     case "text":

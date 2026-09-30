@@ -11,6 +11,7 @@ ARCCSE [] "Center, Start, End arc"
 ELLIPSE ["EL"] "Ellipse"
 ELLIPSEC [] "Center ellipse"
 ELLIPSEARC [] "Elliptical arc"
+SPLINE ["SPL"] "Spline"
 RECTANG ["REC"] "Rectangle"
 POLYGON ["POL"] "Polygon"
 HATCH ["H","BH"] "Hatch"
@@ -85,6 +86,7 @@ arccse "Center, Start, End arc" ARCCSE
 ellipse "Ellipse" EL
 ellipsecenter "Center ellipse" ELLIPSEC
 ellipsearc "Elliptical arc" ELLIPSEARC
+spline "Spline" SPL
 rectangle "Rectangle" REC
 polygon "Polygon" POL
 hatch "Hatch" H
@@ -682,6 +684,150 @@ pan "Pan" P
   asks: -
   dyn: -
   options: -
+
+## SPLINE
+> start
+  prompt: Command:
+  asks: -
+  dyn: -
+  options: -
+  canvas: -
+  properties: -
+  cycling: -
+> SPLINE
+  prompt: SPLINE [Method/Knots]:
+  asks: "First point"
+  dyn: "X,Y"=""||*
+  options: [M] Method, [K] Knots
+  command| SPLINE
+> K
+  prompt: SPLINE [Chord/Square root/Uniform]:
+  asks: 
+  dyn: 
+  options: [C] Chord, [S] Square root, [U] Uniform
+> S
+  prompt: SPLINE [Method/Knots]:
+  asks: "First point"
+  dyn: "X,Y"=""||*
+  options: [M] Method, [K] Knots
+> first
+  prompt: SPLINE [start Tangency]:
+  asks: "Length" "Angle"
+  dyn: "Length"=""|0.00|mm* "Angle"=""||°
+  options: [T] start Tangency
+> T
+  prompt: SPLINE:
+  asks: "Specify start tangent"
+  dyn: "X,Y"=""||*
+  options: -
+> start tangent
+  prompt: SPLINE [start Tangency]:
+  asks: "Length" "Angle"
+  dyn: "Length"=""|0.00|mm* "Angle"=""||°
+  options: [T] start Tangency
+> second
+  prompt: SPLINE [end Tangency/Undo]:
+  options: [T] end Tangency, [U] Undo
+> third
+  prompt: SPLINE [end Tangency/Undo/Close]:
+  options: [T] end Tangency, [U] Undo, [C] Close
+> U
+  prompt: SPLINE [end Tangency/Undo]:
+  options: [T] end Tangency, [U] Undo
+> third again
+  prompt: SPLINE [end Tangency/Undo/Close]:
+  options: [T] end Tangency, [U] Undo, [C] Close
+> T
+  prompt: SPLINE:
+  asks: "Specify end tangent"
+  dyn: "X,Y"=""||*
+  options: -
+> end tangent
+  prompt: Command:
+  asks: -
+  dyn: -
+> select it
+  properties: Spline (1) [Misc: Method=Fit, Degree=3, Knot parameterization=Square root, Closed=No]
+> escape
+  properties: -
+> SPLINE CV
+  prompt: SPLINE [Method/Knots]:
+  asks: "First point"
+  dyn: "X,Y"=""||*
+  options: [M] Method, [K] Knots
+  command| SPLINE
+> M
+  prompt: SPLINE [Fit/CV]:
+  asks: 
+  dyn: 
+  options: [F] Fit, [null] CV
+> CV
+  prompt: SPLINE [Method/Degree]:
+  asks: "First point"
+  dyn: "X,Y"=""||*
+  options: [M] Method, [D] Degree
+> D
+  prompt: SPLINE:
+  asks: "Enter spline degree"
+  dyn: "Enter spline degree"=""|3|*
+  options: -
+> degree
+  dyn: "Enter spline degree"="2"|3|*
+> enter
+  prompt: SPLINE [Method/Degree]:
+  asks: "First point"
+  dyn: "X,Y"=""||*
+  options: [M] Method, [D] Degree
+> first
+  prompt: SPLINE:
+  asks: "Length" "Angle"
+  dyn: "Length"=""|0.00|mm* "Angle"=""||°
+  options: -
+> second
+  prompt: SPLINE [Close/Undo]:
+  options: [C] Close, [U] Undo
+> third
+> C
+  prompt: Command:
+  asks: -
+  dyn: -
+  options: -
+> SPLINE closed fit
+  prompt: SPLINE [Method/Degree]:
+  asks: "First point"
+  dyn: "X,Y"=""||*
+  options: [M] Method, [D] Degree
+  command| SPLINE
+> M
+  prompt: SPLINE [Fit/CV]:
+  asks: 
+  dyn: 
+  options: [F] Fit, [null] CV
+> F
+  prompt: SPLINE [Method/Knots]:
+  asks: "First point"
+  dyn: "X,Y"=""||*
+  options: [M] Method, [K] Knots
+> first
+  prompt: SPLINE [start Tangency]:
+  asks: "Length" "Angle"
+  dyn: "Length"=""|0.00|mm* "Angle"=""||°
+  options: [T] start Tangency
+> second
+  prompt: SPLINE [end Tangency/Undo]:
+  options: [T] end Tangency, [U] Undo
+> third
+  prompt: SPLINE [end Tangency/Undo/Close]:
+  options: [T] end Tangency, [U] Undo, [C] Close
+> C
+  prompt: SPLINE:
+  asks: "Specify tangent"
+  dyn: "X,Y"=""||*
+  options: -
+> enter keeps it periodic
+  prompt: Command:
+  asks: -
+  dyn: -
 
 ## RECTANG and POLYGON
 > start

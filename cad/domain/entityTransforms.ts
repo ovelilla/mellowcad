@@ -22,6 +22,7 @@ import {
   createInsert,
 } from "./entityFactories"
 import { createEllipse } from "./ellipses"
+import { mapSplinePoints, splineCopy } from "./splines"
 import { TextOptions, createText } from "./text"
 import { MTextOptions, createMText } from "./mtext"
 import { createAttributeDefinition } from "./attributes"
@@ -229,6 +230,8 @@ export function translateEntity(entity: Entity, delta: Vec2): Entity {
       return { ...entity, center: V.add(entity.center, delta) }
     case "ellipse":
       return { ...entity, center: V.add(entity.center, delta) }
+    case "spline":
+      return mapSplinePoints(entity, (p) => V.add(p, delta))
     case "polyline":
       return {
         ...entity,
@@ -285,6 +288,10 @@ export function stretchEntity(
       return inFrame(entity.center)
         ? { ...entity, center: V.add(entity.center, delta) }
         : entity
+    case "spline":
+      // Its fit points or control vertices are its free vertices, as a
+      // polyline's are; the tangents keep their direction.
+      return { ...entity, points: entity.points.map(shift) }
     case "polyline":
       return { ...entity, vertices: entity.vertices.map(shift) }
     case "text":
@@ -358,6 +365,8 @@ export function copyEntity(entity: Entity, delta: Vec2): Entity {
           V.add(entity.center, delta),
           entity.majorAxis
         )
+      case "spline":
+        return splineCopy(entity, (p) => V.add(p, delta))
       case "polyline":
         return createPolyline(
           entity.vertices.map((v) => V.add(v, delta)),
@@ -435,6 +444,8 @@ export function rotateEntity(
         center: rotatePoint(entity.center, pivot, radians),
         majorAxis: rotatePoint(entity.majorAxis, V.zero(), radians),
       }
+    case "spline":
+      return mapSplinePoints(entity, (p) => rotatePoint(p, pivot, radians))
     case "polyline":
       return {
         ...entity,
@@ -510,6 +521,8 @@ export function rotateEntityCopy(
           rotatePoint(entity.center, pivot, radians),
           rotatePoint(entity.majorAxis, V.zero(), radians)
         )
+      case "spline":
+        return splineCopy(entity, (p) => rotatePoint(p, pivot, radians))
       case "polyline":
         return createPolyline(
           entity.vertices.map((v) => rotatePoint(v, pivot, radians)),
@@ -608,6 +621,8 @@ export function scaleEntity(
         center: scalePoint(entity.center, base, factor),
         majorAxis: V.scale(entity.majorAxis, factor),
       }
+    case "spline":
+      return mapSplinePoints(entity, (p) => scalePoint(p, base, factor))
     case "polyline":
       return {
         ...entity,
@@ -689,6 +704,8 @@ export function scaleEntityCopy(
           scalePoint(entity.center, base, factor),
           V.scale(entity.majorAxis, factor)
         )
+      case "spline":
+        return splineCopy(entity, (p) => scalePoint(p, base, factor))
       case "polyline":
         return createPolyline(
           entity.vertices.map((v) => scalePoint(v, base, factor)),
@@ -778,6 +795,8 @@ export function mirrorEntity(entity: Entity, a: Vec2, b: Vec2): Entity {
         majorAxis: mappedMajorAxis(entity, (p) => mirrorPoint(p, a, b)),
         ...mirrorEllipseParams(entity),
       }
+    case "spline":
+      return mapSplinePoints(entity, (p) => mirrorPoint(p, a, b))
     case "polyline":
       return {
         ...entity,
@@ -877,6 +896,8 @@ export function mirrorEntityCopy(entity: Entity, a: Vec2, b: Vec2): Entity {
           mappedMajorAxis(entity, (p) => mirrorPoint(p, a, b)),
           mirrorEllipseParams(entity)
         )
+      case "spline":
+        return splineCopy(entity, (p) => mirrorPoint(p, a, b))
       case "polyline":
         return createPolyline(
           entity.vertices.map((v) => mirrorPoint(v, a, b)),

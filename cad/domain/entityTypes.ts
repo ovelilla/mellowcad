@@ -1,4 +1,5 @@
 import { Vec2 } from "../geometry/Vec2"
+import { KnotParameterization } from "../geometry/nurbs"
 import { EntityColor } from "./colors"
 import { LayerId } from "./layers"
 import { LinetypeId } from "./linetypes"
@@ -20,6 +21,7 @@ export type EntityType =
   | "circle"
   | "arc"
   | "ellipse"
+  | "spline"
   | "polyline"
   | "text"
   | "mtext"
@@ -105,6 +107,34 @@ export interface EllipseEntity extends BaseEntity {
   readonly startParam?: number
   /** End of the swept parameter range; the sweep runs CCW from `startParam`. */
   readonly endParam?: number
+}
+
+/** How a spline was made (SPLMETHOD): through fit points, or on control vertices. */
+export type SplineMethod = "fit" | "cv"
+
+/**
+ * A spline — AutoCAD's NURBS curve, non-rational. It keeps what was picked:
+ * the fit points or the control vertices (`points`, read by `method`), and the
+ * settings the curve is derived from. A fit spline's control vertices and knots
+ * come out of `splineCurve` every time, as a dimension's measurement does.
+ */
+export interface SplineEntity extends BaseEntity {
+  readonly type: "spline"
+  readonly method: SplineMethod
+  readonly points: readonly Vec2[]
+  /** 3 for a fit spline; for a CV spline, already lowered to `points.length − 1` when fewer. */
+  readonly degree: number
+  /** How a fit spline spaces its knots; ignored by a CV spline. */
+  readonly knots: KnotParameterization
+  /** Closed splines are periodic (SPLPERIODIC 1) unless a fit spline was given a closure tangent. */
+  readonly closed: boolean
+  /**
+   * Direction of a fit spline at its start, absent when AutoCAD computes it. On
+   * a closed fit spline it is the one tangent at the closure.
+   */
+  readonly startTangent?: Vec2
+  /** Direction of an open fit spline at its end, absent when computed. */
+  readonly endTangent?: Vec2
 }
 
 /**
@@ -463,6 +493,7 @@ export type Entity =
   | CircleEntity
   | ArcEntity
   | EllipseEntity
+  | SplineEntity
   | PolylineEntity
   | TextEntity
   | MTextEntity

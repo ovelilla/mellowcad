@@ -281,6 +281,7 @@ function planTrim(
     case "attdef":
       return null // annotation, not an outline to cut
     case "ellipse":
+    case "spline":
     case "dimension":
     case "hatch":
     case "insert":
@@ -303,6 +304,7 @@ function planExtend(
     case "polyline":
       return planExtendPolyline(target, click, others)
     case "ellipse":
+    case "spline":
     case "text":
     case "mtext":
     case "attdef":
@@ -551,6 +553,7 @@ function circleEdgeCrossPoints(
       return points
     }
     case "ellipse":
+    case "spline":
     case "text":
     case "mtext":
     case "attdef":
