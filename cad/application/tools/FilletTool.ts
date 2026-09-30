@@ -13,6 +13,8 @@ import {
 import {
   createArc,
   createLine,
+  carryOverrides,
+  carryPlane,
   createPolyline,
   polylineSegmentGeometries,
   polylineSegments,
@@ -282,12 +284,15 @@ export class FilletTool implements Tool {
           ? line1.layerId
           : ctx.document.getCurrentLayerId()
       added.push(
-        createArc(
-          result.center,
-          result.radius,
-          result.startAngle,
-          result.endAngle,
-          arcLayer
+        carryPlane(
+          line1,
+          createArc(
+            result.center,
+            result.radius,
+            result.startAngle,
+            result.endAngle,
+            arcLayer
+          )
         )
       )
     }
@@ -377,7 +382,10 @@ function trimLine(
       ? line.end
       : line.start
   if (V.equals(keepEnd, tangent)) return null
-  return createLine(keepEnd, tangent, line.layerId, line.id)
+  return carryOverrides(
+    line,
+    createLine(keepEnd, tangent, line.layerId, line.id)
+  )
 }
 
 /** A resolved corner fillet: the two tangent points and the arc bulge between. */
@@ -460,7 +468,10 @@ function filletPolyline(
       if (hasOut) bulges.push(segBulge[i])
     }
   }
-  return createPolyline(pts, poly.closed, poly.layerId, bulges, poly.id)
+  return carryOverrides(
+    poly,
+    createPolyline(pts, poly.closed, poly.layerId, bulges, poly.id)
+  )
 }
 
 /** The fillet for corner `i`, or `null` when it isn't eligible. */

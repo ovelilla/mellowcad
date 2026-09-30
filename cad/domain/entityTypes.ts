@@ -50,15 +50,33 @@ interface BaseEntity {
    * inherits its layer's lineweight (ByLayer), like {@link linetype}.
    */
   readonly lineweight?: Lineweight
+  /**
+   * World Z of the plane the object lies in (its normal is always +Z, so the
+   * OCS is the WCS): DXF's elevation, or the Z of its defining point. Absent
+   * means 0.
+   */
+  readonly elevation?: number
 }
 
-export interface LineEntity extends BaseEntity {
+/**
+ * The objects AutoCAD extrudes by a thickness (DXF 39): "lines, arcs, circles,
+ * polylines" among the ones modelled here. Absent means 0; negative extrudes
+ * down.
+ */
+interface Thick {
+  readonly thickness?: number
+}
+
+/** A 3D segment: it starts at {@link BaseEntity.elevation} and rises by {@link deltaZ}. */
+export interface LineEntity extends BaseEntity, Thick {
   readonly type: "line"
   readonly start: Vec2
   readonly end: Vec2
+  /** End Z minus start Z, kept as a difference so it transforms like a vector. */
+  readonly deltaZ?: number
 }
 
-export interface CircleEntity extends BaseEntity {
+export interface CircleEntity extends BaseEntity, Thick {
   readonly type: "circle"
   readonly center: Vec2
   readonly radius: number
@@ -70,7 +88,7 @@ export interface CircleEntity extends BaseEntity {
  * CCW convention (AutoCAD's) keeps every operation orientation-consistent, so
  * arithmetic never has to worry about which way the arc turns.
  */
-export interface ArcEntity extends BaseEntity {
+export interface ArcEntity extends BaseEntity, Thick {
   readonly type: "arc"
   readonly center: Vec2
   readonly radius: number
@@ -149,7 +167,7 @@ export interface SplineEntity extends BaseEntity {
  * (entry `i` = segment `i`; the closing segment is the last entry). A missing
  * or all-zero array means every segment is straight.
  */
-export interface PolylineEntity extends BaseEntity {
+export interface PolylineEntity extends BaseEntity, Thick {
   readonly type: "polyline"
   readonly vertices: readonly Vec2[]
   readonly closed: boolean
@@ -316,6 +334,7 @@ export interface BlockAttribute {
   readonly tag: string
   readonly value: string
   readonly position: Vec2
+  readonly elevation?: number
   readonly height: number
   readonly rotation: number
   readonly justify: TextJustify
@@ -449,6 +468,8 @@ export interface BlockDefinition {
   readonly id: BlockId
   readonly name: string
   readonly basePoint: Vec2
+  /** The base point's Z; absent means 0. */
+  readonly baseElevation?: number
   readonly entities: readonly Entity[]
 }
 

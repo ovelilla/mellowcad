@@ -2,9 +2,13 @@ import fc from "fast-check"
 import {
   createBlockDefinition,
   createSpline,
+  hasThickness,
   MTEXT_ATTACHMENTS,
   mtextContents,
   TEXT_JUSTIFICATIONS,
+  withDeltaZ,
+  withElevation,
+  withThickness,
   type ArcEntity,
   type AttributeDefinitionEntity,
   type AttributeModes,
@@ -51,6 +55,9 @@ export const wildCoordinate: fc.Arbitrary<number> = fc.double({
   noNaN: true,
   noDefaultInfinity: true,
 })
+
+/** A Z value, zero as often as not: most drawings are flat. */
+export const zValue: fc.Arbitrary<number> = fc.oneof(fc.constant(0), coordinate)
 
 export const point: fc.Arbitrary<Vec2> = fc
   .tuple(coordinate, coordinate)
@@ -353,12 +360,14 @@ const blockAttribute: fc.Arbitrary<BlockAttribute> = fc
     fc.string({ maxLength: 12 }),
     positiveLength,
     angle,
-    fc.boolean()
+    fc.boolean(),
+    zValue
   )
-  .map(([position, tag, value, height, rotation, invisible]) => ({
+  .map(([position, tag, value, height, rotation, invisible, elevation]) => ({
     tag,
     value,
     position,
+    ...(elevation !== 0 ? { elevation } : {}),
     height,
     rotation,
     justify: "left",
@@ -444,20 +453,34 @@ export const insertEntity: fc.Arbitrary<InsertEntity> = fc
     )
   )
 
-export const entity: fc.Arbitrary<Entity> = fc.oneof(
-  lineEntity,
-  circleEntity,
-  arcEntity,
-  ellipseEntity,
-  splineEntity,
-  polylineEntity,
-  textEntity,
-  mtextEntity,
-  attdefEntity,
-  dimensionEntity,
-  hatchEntity,
-  insertEntity
-)
+export const entity: fc.Arbitrary<Entity> = fc
+  .tuple(
+    fc.oneof(
+      lineEntity,
+      circleEntity,
+      arcEntity,
+      ellipseEntity,
+      splineEntity,
+      polylineEntity,
+      textEntity,
+      mtextEntity,
+      attdefEntity,
+      dimensionEntity,
+      hatchEntity,
+      insertEntity
+    ),
+    zValue,
+    zValue,
+    zValue
+  )
+  .map(([flat, elevation, deltaZ, thickness]) => {
+    // Every transform has to carry the Z fields, which TypeScript cannot check
+    // on optional ones; a flat drawing alone would never notice one dropped.
+    let placed: Entity = withElevation(flat, elevation)
+    if (placed.type === "line") placed = withDeltaZ(placed, deltaZ)
+    if (hasThickness(placed)) placed = withThickness(placed, thickness)
+    return placed
+  })
 
 /** A whole drawing, with ids made unique so it can populate a document. */
 export const drawingSnapshot: fc.Arbitrary<DrawingSnapshot> = fc

@@ -5,6 +5,12 @@ import { Lineweight } from "./lineweights"
 import { TextStyleId } from "./textStyles"
 import { DimStyleId } from "./dimStyles"
 import { Entity } from "./entityTypes"
+import {
+  carryPlane,
+  entityThickness,
+  hasThickness,
+  withThickness,
+} from "./elevation"
 
 /** Returns a copy of `entity` using another text style (preserves its id). */
 export function assignTextStyle(entity: Entity, styleId: TextStyleId): Entity {
@@ -159,20 +165,27 @@ export function assignEntityLineweight(
   }
 }
 
-/** Applies `source`'s ByObject overrides (if any) onto a freshly-built entity. */
-export function carryOverrides(source: Entity, copy: Entity): Entity {
+/**
+ * Applies `source`'s ByObject overrides (if any) onto a freshly-built entity,
+ * and puts it in `source`'s plane with its thickness: every object rebuilt from
+ * another goes through here, which is what keeps a rebuild from dropping them.
+ */
+export function carryOverrides<T extends Entity>(source: Entity, copy: T): T {
   const withColor = source.color ? assignEntityColor(copy, source.color) : copy
   const withLinetype = source.linetype
     ? assignEntityLinetype(withColor, source.linetype)
     : withColor
-  return source.lineweight !== undefined
-    ? assignEntityLineweight(withLinetype, source.lineweight)
-    : withLinetype
+  return carryPlane(
+    source,
+    (source.lineweight !== undefined
+      ? assignEntityLineweight(withLinetype, source.lineweight)
+      : withLinetype) as T
+  )
 }
 
 /**
- * Gives `target` the general properties of `source` — layer, colour, linetype
- * and lineweight — keeping its own geometry and identity. This is MATCHPROP:
+ * Gives `target` the general properties of `source` — layer, colour, linetype,
+ * lineweight and thickness — keeping its own geometry and identity. This is MATCHPROP:
  * an override the source does *not* have is cleared on the target, so the two
  * end up drawn the same way rather than merely sharing what was set.
  */
@@ -180,5 +193,8 @@ export function matchEntityProperties(source: Entity, target: Entity): Entity {
   const onLayer = assignEntityLayer(target, source.layerId)
   const withColor = assignEntityColor(onLayer, source.color)
   const withLinetype = assignEntityLinetype(withColor, source.linetype)
-  return assignEntityLineweight(withLinetype, source.lineweight)
+  const matched = assignEntityLineweight(withLinetype, source.lineweight)
+  return hasThickness(source) && hasThickness(matched)
+    ? withThickness(matched, entityThickness(source))
+    : matched
 }

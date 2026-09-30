@@ -158,7 +158,7 @@ export function insertPolylineVertex(
     bulges = poly.bulges.slice()
     bulges.splice(segmentIndex, 1, 0, 0) // both halves are straight
   }
-  return createPolyline(vertices, poly.closed, poly.layerId, bulges, poly.id)
+  return reshaped(poly, vertices, bulges)
 }
 
 /**
@@ -175,7 +175,7 @@ export function removePolylineVertex(
   if (n <= (poly.closed ? 3 : 2)) return null
   const vertices = poly.vertices.filter((_, i) => i !== index)
   const bulges = poly.bulges ? removeBulgeForVertex(poly, index) : undefined
-  return createPolyline(vertices, poly.closed, poly.layerId, bulges, poly.id)
+  return reshaped(poly, vertices, bulges)
 }
 
 /** Rebuilds the bulge array after dropping vertex `index`, straightening the
@@ -221,11 +221,26 @@ export function setPolylineBulge(
     for (let i = 0; i < segCount; i++) bulges[i] = poly.bulges[i] ?? 0
   }
   bulges[segmentIndex] = Math.abs(bulge) < 1e-9 ? 0 : bulge
-  return createPolyline(
-    poly.vertices,
+  return reshaped(poly, poly.vertices, bulges)
+}
+
+/**
+ * `poly` with other vertices and bulges and everything else kept — its
+ * overrides, plane and thickness. The factory still normalises the bulges.
+ */
+function reshaped(
+  poly: PolylineEntity,
+  vertices: readonly Vec2[],
+  bulges: readonly number[] | undefined
+): PolylineEntity {
+  const fresh = createPolyline(
+    vertices,
     poly.closed,
     poly.layerId,
     bulges,
     poly.id
   )
+  const copy: Record<string, unknown> = { ...poly, ...fresh }
+  if (!fresh.bulges) delete copy.bulges
+  return copy as unknown as PolylineEntity
 }

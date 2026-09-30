@@ -1,4 +1,5 @@
 import { Vec2, V } from "../geometry/Vec2"
+import { Vec3, zOf } from "../geometry/Vec3"
 import {
   ArcEntity,
   EllipseEntity,
@@ -33,6 +34,7 @@ import {
   mapDimensionPoints,
 } from "./dimensions"
 import { carryOverrides } from "./entityOverrides"
+import { scaleEntityZ, shiftEntityZ, withDeltaZ } from "./elevation"
 
 /**
  * A *new* hatch (fresh id) with the same pattern settings as `hatch` over other
@@ -215,8 +217,15 @@ function mirrorEllipseParams(
   return { startParam: -ellipse.endParam, endParam: -ellipse.startParam }
 }
 
-/** Returns a copy of `entity` translated by `delta` (preserves its id). */
-export function translateEntity(entity: Entity, delta: Vec2): Entity {
+/**
+ * Returns a copy of `entity` translated by `delta` (preserves its id). A 2D
+ * delta moves it within its plane.
+ */
+export function translateEntity(entity: Entity, delta: Vec2 | Vec3): Entity {
+  return shiftEntityZ(translatePlanar(entity, delta), zOf(delta))
+}
+
+function translatePlanar(entity: Entity, delta: Vec2): Entity {
   switch (entity.type) {
     case "line":
       return {
@@ -270,8 +279,42 @@ export function translateEntity(entity: Entity, delta: Vec2): Entity {
  * move rigidly when their centre is inside the frame, matching how AutoCAD
  * treats circles. Polyline bulges are preserved, so an arc segment whose ends
  * move keeps its curvature ratio.
+ *
+ * A Z in `delta` moves what moves whole, and a line's caught end; an object
+ * with several vertices in one plane cannot tilt, so it ignores the Z.
  */
 export function stretchEntity(
+  entity: Entity,
+  delta: Vec2 | Vec3,
+  inFrame: (point: Vec2) => boolean
+): Entity {
+  const dz = zOf(delta)
+  const planar = stretchPlanar(entity, delta, inFrame)
+  if (dz === 0 || planar === entity) return planar
+  switch (planar.type) {
+    case "line": {
+      if (entity.type !== "line") return planar
+      const startDz = inFrame(entity.start) ? dz : 0
+      const endDz = inFrame(entity.end) ? dz : 0
+      return withDeltaZ(
+        shiftEntityZ(planar, startDz),
+        (entity.deltaZ ?? 0) + endDz - startDz
+      )
+    }
+    case "circle":
+    case "arc":
+    case "ellipse":
+    case "text":
+    case "mtext":
+    case "attdef":
+    case "insert":
+      return shiftEntityZ(planar, dz)
+    default:
+      return planar
+  }
+}
+
+function stretchPlanar(
   entity: Entity,
   delta: Vec2,
   inFrame: (point: Vec2) => boolean
@@ -336,7 +379,7 @@ export function stretchEntity(
  * Returns a *new* entity (fresh id) that duplicates `entity` translated by
  * `delta`, on the same layer — the building block of the COPY command.
  */
-export function copyEntity(entity: Entity, delta: Vec2): Entity {
+export function copyEntity(entity: Entity, delta: Vec2 | Vec3): Entity {
   const copy: Entity = (() => {
     switch (entity.type) {
       case "line":
@@ -395,7 +438,7 @@ export function copyEntity(entity: Entity, delta: Vec2): Entity {
         return insertLike(entity, V.add(entity.position, delta))
     }
   })()
-  return carryOverrides(entity, copy)
+  return shiftEntityZ(carryOverrides(entity, copy), zOf(delta))
 }
 
 /** Rotates `point` about `pivot` by `radians` (counter-clockwise positive). */
@@ -588,13 +631,18 @@ export function scalePoint(point: Vec2, base: Vec2, factor: number): Vec2 {
 /**
  * Returns a copy of `entity` uniformly scaled about `base` by `factor`
  * (preserves its id) — the in-place SCALE command. A circle's radius scales
- * with the factor.
+ * with the factor. The scale is 3D, as AutoCAD's is: the plane moves away from
+ * the base's Z and the rise and thickness grow with the rest.
  */
 export function scaleEntity(
   entity: Entity,
-  base: Vec2,
+  base: Vec2 | Vec3,
   factor: number
 ): Entity {
+  return scaleEntityZ(scalePlanar(entity, base, factor), zOf(base), factor)
+}
+
+function scalePlanar(entity: Entity, base: Vec2, factor: number): Entity {
   switch (entity.type) {
     case "line":
       return {
@@ -673,7 +721,7 @@ export function scaleEntity(
  */
 export function scaleEntityCopy(
   entity: Entity,
-  base: Vec2,
+  base: Vec2 | Vec3,
   factor: number
 ): Entity {
   const copy: Entity = (() => {
@@ -746,7 +794,7 @@ export function scaleEntityCopy(
         })
     }
   })()
-  return carryOverrides(entity, copy)
+  return scaleEntityZ(carryOverrides(entity, copy), zOf(base), factor)
 }
 
 /**

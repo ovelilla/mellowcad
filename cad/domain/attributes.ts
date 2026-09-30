@@ -102,6 +102,7 @@ export function blockAttribute(
     tag: definition.tag,
     value,
     position: { x: definition.position.x, y: definition.position.y },
+    ...(definition.elevation ? { elevation: definition.elevation } : {}),
     height: definition.height,
     rotation: definition.rotation,
     justify: definition.justify,
@@ -145,6 +146,7 @@ export function attributeDefinitionText(
     ...(definition.lineweight !== undefined
       ? { lineweight: definition.lineweight }
       : {}),
+    ...(definition.elevation ? { elevation: definition.elevation } : {}),
     position: definition.position,
     value,
     height: definition.height,
@@ -170,6 +172,7 @@ export function blockAttributeText(
     ...(attribute.lineweight !== undefined
       ? { lineweight: attribute.lineweight }
       : {}),
+    ...(attribute.elevation ? { elevation: attribute.elevation } : {}),
     position: attribute.position,
     value: attribute.value,
     height: attribute.height,

@@ -111,6 +111,36 @@ describe("round trip", () => {
     expect(parsed.entities[0]).toEqual(entities[0])
   })
 
+  it("preserves elevation, rise and thickness, and writes no zeros", () => {
+    const entities = [
+      {
+        ...lineOf(p(0, 0), p(10, 0), { id: "L1" }),
+        elevation: 5,
+        deltaZ: -2,
+        thickness: 3,
+      },
+      { ...textOf(p(0, 0), "A", { id: "T1" }), elevation: -1.5 },
+      circleOf(p(0, 0), 4, { id: "C1" }),
+    ]
+    const text = serializeDrawing(snapshotOf(entities))
+    expect(parseDrawingFile(text).entities).toEqual(entities)
+    expect(text).not.toMatch(/"(elevation|deltaZ|thickness)": 0/)
+  })
+
+  it("reads thickness only on the objects that have one", () => {
+    const parsed = parseDrawingFile(
+      JSON.stringify({
+        type: DRAWING_FILE_TYPE,
+        version: DRAWING_FILE_VERSION,
+        entities: [
+          { ...textOf(p(0, 0), "A", { id: "T1" }), thickness: 3, deltaZ: 1 },
+        ],
+      })
+    )
+    expect(parsed.entities[0]).not.toHaveProperty("thickness")
+    expect(parsed.entities[0]).not.toHaveProperty("deltaZ")
+  })
+
   it("preserves the layer table and the current layer", () => {
     const layers = [
       layerOf("0"),
@@ -617,6 +647,35 @@ describe("opens drawings written by every earlier schema", () => {
     const dimension = parsed.entities[0]
     expect(dimension.type).toBe("dimension")
     expect("vertex" in dimension).toBe(false)
+  })
+
+  it("version 21 — a drawing from before Z lies flat", () => {
+    const parsed = parseDrawingFile(
+      JSON.stringify({
+        type: DRAWING_FILE_TYPE,
+        version: 21,
+        entities: [
+          {
+            id: "l1",
+            type: "line",
+            start: { x: 0, y: 0 },
+            end: { x: 10, y: 0 },
+          },
+        ],
+        blocks: [
+          {
+            name: "B",
+            basePoint: { x: 1, y: 2 },
+            entities: [
+              { id: "c1", type: "circle", center: { x: 0, y: 0 }, radius: 1 },
+            ],
+          },
+        ],
+      })
+    )
+    expect(parsed.entities[0]).not.toHaveProperty("elevation")
+    expect(parsed.entities[0]).not.toHaveProperty("deltaZ")
+    expect(parsed.blocks[0]).not.toHaveProperty("baseElevation")
   })
 
   it("version 16 — a drawing from before ellipses still opens", () => {

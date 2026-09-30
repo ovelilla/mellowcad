@@ -22,8 +22,10 @@ import {
   circleCircumference,
   closestOnEntity,
   copyEntity,
+  createBlockDefinition,
   createDimension,
   createHatch,
+  createInsert,
   createPolyline,
   dimensionAxisAngle,
   dimensionMeasurement,
@@ -36,14 +38,19 @@ import {
   ellipseStartPoint,
   entityBounds,
   entityCrossesRect,
+  entityElevation,
+  entityThickness,
   entityWithinRect,
   hatchGeometry,
   hatchLoopFromEntity,
   hatchLoopSegments,
+  insertGeometry,
   insertPolylineVertex,
   lineAngleDegrees,
+  lineEndZ,
   lineLength,
   lineMidpoint,
+  matchEntityProperties,
   measureTextWidth,
   mirrorEntity,
   mirrorEntityCopy,
@@ -69,6 +76,8 @@ import {
   textCorners,
   textWidth,
   translateEntity,
+  withElevation,
+  withThickness,
 } from "./entities"
 import { DEFAULT_LAYER_ID } from "./layers"
 import {
@@ -77,6 +86,7 @@ import {
   entity as entityArb,
   point,
   positiveLength,
+  zValue,
 } from "../../test/arbitraries"
 import {
   arcOf,
@@ -295,7 +305,17 @@ const ORIGIN = p(0, 0)
 
 function expectSameShape(actual: Entity, expected: Entity, precision = 6) {
   expect(actual.type).toBe(expected.type)
+  // Optional, so a transform that rebuilds an object can drop them silently.
+  expect(entityElevation(actual)).toBeCloseTo(
+    entityElevation(expected),
+    precision
+  )
+  expect(entityThickness(actual)).toBeCloseTo(
+    entityThickness(expected),
+    precision
+  )
   if (actual.type === "line" && expected.type === "line") {
+    expect(lineEndZ(actual)).toBeCloseTo(lineEndZ(expected), precision)
     expect(actual.start).toBeCloseToPoint(expected.start, precision)
     expect(actual.end).toBeCloseToPoint(expected.end, precision)
   } else if (actual.type === "circle" && expected.type === "circle") {
@@ -565,6 +585,100 @@ describe("in-place transforms", () => {
     expect(
       (mirrorEntity(circle, ORIGIN, p(1, 0)) as typeof circle).radius
     ).toBeCloseTo(25)
+  })
+})
+
+describe("Z", () => {
+  const raised = (): LineEntity => ({
+    ...lineOf(p(0, 0), p(10, 0), { id: "L1" }),
+    elevation: 10,
+    deltaZ: 5,
+    thickness: 2,
+  })
+
+  it("translating with a Z and back is the identity", () => {
+    fc.assert(
+      fc.property(entityArb, point, zValue, (entity, delta, dz) => {
+        const there = translateEntity(entity, { ...delta, z: dz })
+        expect(entityElevation(there)).toBeCloseTo(
+          entityElevation(entity) + dz,
+          6
+        )
+        const back = translateEntity(there, { ...V.scale(delta, -1), z: -dz })
+        expectSameShape(back, entity)
+      })
+    )
+  })
+
+  it("a 2D move stays in the object's plane", () => {
+    const moved = translateEntity(raised(), p(3, 4)) as LineEntity
+    expect(moved.elevation).toBe(10)
+    expect(lineEndZ(moved)).toBe(15)
+  })
+
+  it("scales the plane, the rise and the thickness about the base's Z", () => {
+    const scaled = scaleEntity(raised(), { x: 0, y: 0, z: 4 }, 2) as LineEntity
+    expect(scaled.elevation).toBeCloseTo(16)
+    expect(scaled.deltaZ).toBeCloseTo(10)
+    expect(scaled.thickness).toBeCloseTo(4)
+    expectSameShape(scaleEntityCopy(raised(), { x: 0, y: 0, z: 4 }, 2), scaled)
+  })
+
+  it("stretches a caught line end in Z, and moves a caught circle whole", () => {
+    const up = { x: 0, y: 0, z: 5 }
+    const line = stretchEntity(raised(), up, (q) => q.x > 5) as LineEntity
+    expect(line.elevation).toBe(10)
+    expect(lineEndZ(line)).toBe(20)
+    const start = stretchEntity(raised(), up, (q) => q.x < 5) as LineEntity
+    expect(start.elevation).toBe(15)
+    expect(lineEndZ(start)).toBe(15)
+    expect(start.deltaZ).toBeUndefined()
+
+    const circle = stretchEntity(circleOf(p(0, 0), 5), up, () => true)
+    expect(circle.elevation).toBe(5)
+    // A polyline is planar: its vertices cannot rise one by one.
+    const poly = polylineOf([p(0, 0), p(10, 0)])
+    expect(stretchEntity(poly, up, (q) => q.x > 5).elevation).toBeUndefined()
+  })
+
+  it("keeps a polyline's overrides and plane through a grip edit", () => {
+    const poly: PolylineEntity = {
+      ...polylineOf([p(0, 0), p(10, 0), p(10, 10)]),
+      color: "#ff0000",
+      elevation: 7,
+      thickness: 2,
+    }
+    for (const edited of [
+      insertPolylineVertex(poly, 0, p(5, 0)),
+      removePolylineVertex(poly, 1)!,
+      setPolylineBulge(poly, 0, 0.5),
+    ]) {
+      expect(edited.color).toBe("#ff0000")
+      expect(edited.elevation).toBe(7)
+      expect(edited.thickness).toBe(2)
+    }
+  })
+
+  it("places a block's objects by the base's Z and the reference's", () => {
+    const block = createBlockDefinition(
+      "B",
+      p(0, 0),
+      [{ ...circleOf(p(0, 0), 1), elevation: 5 }],
+      2
+    )
+    const insert = createInsert("B", p(100, 0), { scale: 2 })
+    const [placed] = insertGeometry(withElevation(insert, 10), block)
+    expect(placed.elevation).toBeCloseTo(16)
+  })
+
+  it("matches thickness between objects that have one", () => {
+    const source = withThickness(circleOf(p(0, 0), 1), 3)
+    expect(
+      (matchEntityProperties(source, lineOf(p(0, 0), p(1, 0))) as LineEntity)
+        .thickness
+    ).toBe(3)
+    const text = textOf(p(0, 0), "A")
+    expect(matchEntityProperties(source, text)).not.toHaveProperty("thickness")
   })
 })
 

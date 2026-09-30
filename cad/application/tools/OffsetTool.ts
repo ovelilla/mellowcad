@@ -13,6 +13,7 @@ import {
   createArc,
   createCircle,
   createLine,
+  carryOverrides,
   createPolyline,
   polylineSegmentGeometries,
   polylineSegments,
@@ -443,7 +444,10 @@ export class OffsetTool implements Tool {
     )
     if (this.multiple) {
       // Step out from the copy just made, keeping the command in this object.
-      const source = offsetToEntity(offset, this.copyLayer(state.source, ctx))
+      const source = carryOverrides(
+        state.source,
+        offsetToEntity(offset, this.copyLayer(state.source, ctx))
+      )
       this.state = {
         phase: "side",
         distance: state.distance,
@@ -516,7 +520,10 @@ export class OffsetTool implements Tool {
     erasedOriginal: boolean,
     ctx: ToolContext
   ): boolean {
-    const copy = offsetToEntity(geom, this.copyLayer(source, ctx))
+    const copy = carryOverrides(
+      source,
+      offsetToEntity(geom, this.copyLayer(source, ctx))
+    )
     if (this.erase && !erasedOriginal) {
       ctx.execute(new ReplaceEntitiesCommand([original.id], [copy]))
       return true

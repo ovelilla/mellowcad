@@ -1,4 +1,4 @@
-import { Vec2, V } from "../geometry/Vec2"
+import { Vec2 } from "../geometry/Vec2"
 import { DEFAULT_LAYER_ID } from "./layers"
 import {
   AttributeDisplay,
@@ -67,7 +67,11 @@ function placeInReference(
   block: BlockDefinition,
   inheritLayer: boolean
 ): Entity {
-  let placed = translateEntity(entity, V.scale(block.basePoint, -1))
+  let placed = translateEntity(entity, {
+    x: -block.basePoint.x,
+    y: -block.basePoint.y,
+    z: -(block.baseElevation ?? 0),
+  })
   if (insert.mirrored) {
     placed = mirrorEntity(placed, BLOCK_ORIGIN, BLOCK_MIRROR_AXIS)
   }
@@ -77,7 +81,10 @@ function placeInReference(
   if (insert.rotation !== 0) {
     placed = rotateEntity(placed, BLOCK_ORIGIN, insert.rotation)
   }
-  placed = translateEntity(placed, insert.position)
+  placed = translateEntity(placed, {
+    ...insert.position,
+    z: insert.elevation ?? 0,
+  })
   return inheritLayer && placed.layerId === DEFAULT_LAYER_ID
     ? assignEntityLayer(placed, insert.layerId)
     : placed

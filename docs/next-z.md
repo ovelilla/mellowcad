@@ -87,10 +87,17 @@ descarta el tercer punto que daría la vuelta a Z (desviación hasta el punto 2,
 - SPLINE queda plana (una elevación). La SPLINE 3D espera a un núcleo NURBS 3D; se anota como
   pendiente.
 
-**D3. Que el compilador liste el trabajo.** `geometry/` gana un `Vec3` mínimo. Las factorías
-`createX` y `translateEntity` pasan a pedir la Z de forma **obligatoria** (punto 3D o elevación), así
-que cada sitio que crea o mueve una entidad aparece como error de tipos y tiene que decidir. `rotate`
-y `mirror` no cambian de firma (conservan Z). La geometría 2D sigue en `Vec2`.
+**D3. Un solo punto de paso, no firmas obligatorias** (revisada en F1). Con tipado estructural, un
+`Vec3` pasa por `Vec2` y `V.sub` de dos `Vec3` devuelve un `Vec2`: exigir la Z en las firmas no
+protege de perderla y obligaba a tocar ~240 llamadas. Lo que sí protege:
+
+- las transformaciones aceptan `Vec2 | Vec3` (2D = plano, Z = 0);
+- toda reconstrucción de un objeto a partir de otro pasa por `carryOverrides`, que ahora lleva
+  también el plano y la altura de objeto (`carryPlane` para un objeto nuevo en el mismo plano);
+- el arbitrario `entity` genera Z y `expectSameShape` la compara.
+
+De paso se corrigió un fallo previo: TRIM/EXTEND, FILLET/CHAMFER, OFFSET, EXPLODE de polilínea,
+JOIN y varios grips reconstruían con `createX(..., id)` y perdían color, tipo y grosor de línea.
 
 **D4. De dónde sale la Z de un punto** (el canal de puntos la lleva junto al punto 2D):
 
@@ -166,15 +173,7 @@ alimenta el `@` de otro comando. Las dos cosas quedan anotadas.
 
 ## 4. Fases (un commit en main por fase, cada una con typecheck + lint + test en verde)
 
-**F1. Modelo y fichero** (sin cambio visible).
-
-- `Vec3`, los campos de D2, factorías y `translateEntity` con Z obligatoria (D3).
-- `scaleEntity` 3D; `rotate` y `mirror` conservan la Z.
-- Bloques y EXPLODE (D7), `carryOverrides` si procede, portapapeles y `drawingFile` (D11).
-- `test/arbitraries.ts` genera elevaciones, `deltaZ` y alturas de objeto no nulas.
-- `expectSameShape` compara la Z.
-- Propiedades: todas las transformaciones conservan o transforman la Z como dice D6.
-- Mientras F2 no llegue, los tools pasan Z = 0 de forma explícita.
+**F1. Modelo y fichero** — hecha (versión 22; MATCHPROP copia la altura de objeto).
 
 **F2. Canal de puntos.**
 
@@ -184,7 +183,7 @@ alimenta el `@` de otro comando. Las dos cosas quedan anotadas.
 - `parseCoordinate` 3D, con cilíndricas y esféricas.
 - `CoordinateContext.lastPoint` 3D.
 - `Ucs.origin` 3D (UCS Origin, OBject, Named, Previous y `?`).
-- Los tools cambian las Z = 0 de F1 por la Z real, con la regla del primer punto (D5).
+- Los tools pasan la Z real a lo que crean, con la regla del primer punto (D5).
 - Pruebas con el harness: LINE de un punto con Z = 10 por referencia a uno escrito sin Z; PLINE que
   proyecta; MOVE `@0,0,5`; UCS Origin `0,0,3` seguido de `1,1`.
 
@@ -207,6 +206,8 @@ alimenta el `@` de otro comando. Las dos cosas quedan anotadas.
 **F5. Comandos que se topan con la Z.**
 
 - TRIM, EXTEND, BREAK, OFFSET, FILLET, CHAMFER, JOIN, STRETCH, HATCH, cotas y grips (D6, D8).
+- Hoy `carryOverrides` copia el `deltaZ` entero a los trozos de una LINE (TRIM, BREAK, grip de
+  extremo) y al bisel o arco de FILLET/CHAMFER: hay que reescribir la Z interpolada.
 - Arrastrar un grip sin referencia lleva el punto al plano de elevación, igual que un clic (D4).
 - Una prueba de harness por comando con objetos a distinta Z.
 
@@ -237,8 +238,8 @@ variables tecleables; Levels de ARRAYRECT; CHPROP; POINT; ver la altura de objet
 
 ## 7. Riesgos
 
-- **Pérdida silenciosa de Z** en un camino que reconstruye puntos con `Vec2`. Se mitiga con D3 (firmas
-  obligatorias), con las propiedades de fast-check y con `expectSameShape`.
+- **Pérdida silenciosa de Z** en un camino que reconstruye un objeto. Se mitiga con D3
+  (`carryOverrides` como único paso), con las propiedades de fast-check y con `expectSameShape`.
 - **Coste por tool:** unos 25 tools leen coordenadas tecleadas. El cambio es mecánico, pero la regla
   del primer punto (D5) tiene que ser la misma en todos: un helper compartido en lugar de 25
   versiones.
@@ -251,11 +252,7 @@ variables tecleables; Levels de ARRAYRECT; CHPROP; POINT; ver la altura de objet
   TRIM, FILLET, JOIN, HATCH, UCS, DIST, ID (nueva), la entrada dinámica y el palette. Hay que quitar
   «Elevation, Thickness» de lo que le falta a RECTANG y reescribir el roadmap: el punto 1 hecho, y
   las vistas más la inclinación del UCS como siguiente.
-- `cad-engine.instructions.md`:
-  - la lista de «Adding an entity type» gana la Z (elevación en todas las transformaciones; altura de
-    objeto solo si DXF la tiene);
-  - «Adding an entity property» indica que la Z no es un override;
-  - regla de D3.
+- `cad-engine.instructions.md`: hecho en F1 (sección «Z (2.5D)», lista de tipo nuevo).
 - `cad-runtime.instructions.md`: el canal de puntos lleva la Z (D4) y el orden de sus fuentes.
 - `cad-tools.instructions.md`: la regla del primer punto (D5) y el helper compartido.
 - Borrar este documento.

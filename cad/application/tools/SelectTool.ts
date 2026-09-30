@@ -4,6 +4,7 @@ import {
   EntityId,
   createArc,
   createLine,
+  carryOverrides,
   insertPolylineVertex,
   polylineSegmentGeometries,
   removePolylineVertex,
@@ -1095,10 +1096,12 @@ export class SelectTool implements Tool {
   ): void {
     const line = ctx.document.get(state.entityId)
     if (line?.type === "line") {
-      const next =
+      const next = carryOverrides(
+        line,
         state.end === "start"
           ? createLine(point, line.end, line.layerId, line.id)
           : createLine(line.start, point, line.layerId, line.id)
+      )
       if (!V.equals(next.start, next.end)) {
         ctx.execute(new UpdateEntityCommand(next))
       }
@@ -1188,13 +1191,16 @@ export class SelectTool implements Tool {
       const endAngle = state.end === "end" ? angle : arc.endAngle
       ctx.execute(
         new UpdateEntityCommand(
-          createArc(
-            arc.center,
-            arc.radius,
-            startAngle,
-            endAngle,
-            arc.layerId,
-            arc.id
+          carryOverrides(
+            arc,
+            createArc(
+              arc.center,
+              arc.radius,
+              startAngle,
+              endAngle,
+              arc.layerId,
+              arc.id
+            )
           )
         )
       )

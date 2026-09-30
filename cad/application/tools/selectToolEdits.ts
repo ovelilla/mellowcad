@@ -2,6 +2,7 @@ import { Vec2, V } from "../../geometry/Vec2"
 import {
   createArc,
   createCircle,
+  carryOverrides,
   DimensionEntity,
   Entity,
   MTextEntity,
@@ -100,16 +101,22 @@ export function radiusHandle(center: Vec2, p: Vec2, radius: number): Vec2 {
 /** A copy of a circle or arc with a new radius (preserving id); else `null`. */
 export function withRadius(entity: Entity, radius: number): Entity | null {
   if (entity.type === "circle") {
-    return createCircle(entity.center, radius, entity.layerId, entity.id)
+    return carryOverrides(
+      entity,
+      createCircle(entity.center, radius, entity.layerId, entity.id)
+    )
   }
   if (entity.type === "arc") {
-    return createArc(
-      entity.center,
-      radius,
-      entity.startAngle,
-      entity.endAngle,
-      entity.layerId,
-      entity.id
+    return carryOverrides(
+      entity,
+      createArc(
+        entity.center,
+        radius,
+        entity.startAngle,
+        entity.endAngle,
+        entity.layerId,
+        entity.id
+      )
     )
   }
   return null

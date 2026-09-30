@@ -74,6 +74,35 @@ describe("TRIM", () => {
     expect(spans[1]).toBeCloseToPoints([p(50, 0), p(200, 0)])
   })
 
+  it("keeps the trimmed object's colour, plane and thickness", () => {
+    const cad = createHarness({
+      entities: [
+        {
+          ...lineOf(p(-200, 0), p(200, 0), { id: "A" }),
+          color: "#ff0000",
+          elevation: 4,
+          thickness: 1,
+        },
+        lineOf(p(-50, -100), p(-50, 100), { id: "V1" }),
+        lineOf(p(50, -100), p(50, 100), { id: "V2" }),
+      ],
+    })
+
+    cad.command("TRIM").click(p(0, 0))
+
+    const pieces = linesOf(cad.entities()).filter(
+      (line) => line.id !== "V1" && line.id !== "V2"
+    )
+    expect(pieces).toHaveLength(2)
+    for (const piece of pieces) {
+      expect(piece).toMatchObject({
+        color: "#ff0000",
+        elevation: 4,
+        thickness: 1,
+      })
+    }
+  })
+
   it("stays active so successive clicks keep trimming", () => {
     const cad = createHarness({
       entities: [
@@ -257,6 +286,33 @@ describe("FILLET", () => {
     expect(cad.only<ArcEntity>("arc").radius).toBeCloseTo(50)
   })
 
+  it("keeps the lines' colour and puts the arc in their plane", () => {
+    const cad = createHarness({
+      entities: corner.map((line) => ({
+        ...line,
+        color: "#ff0000",
+        elevation: 6,
+        thickness: 2,
+      })),
+    })
+
+    cad
+      .command("FILLET")
+      .option("Radius")
+      .type("50")
+      .enter()
+      .click(p(100, 0))
+      .click(p(0, 100))
+
+    for (const line of linesOf(cad.entities())) {
+      expect(line).toMatchObject({ color: "#ff0000", elevation: 6 })
+    }
+    expect(cad.only<ArcEntity>("arc")).toMatchObject({
+      elevation: 6,
+      thickness: 2,
+    })
+  })
+
   it("reverts the whole fillet in one undo step", () => {
     const cad = createHarness({ entities: corner })
 
@@ -358,6 +414,23 @@ describe("CHAMFER", () => {
 })
 
 describe("OFFSET", () => {
+  it("keeps the source's colour, plane and thickness", () => {
+    const cad = createHarness({
+      entities: [
+        {
+          ...lineOf(p(-100, 0), p(100, 0), { id: "L1" }),
+          color: "#ff0000",
+          elevation: 8,
+          thickness: 2,
+        },
+      ],
+    })
+
+    cad.command("OFFSET").type("20").enter().click(p(0, 0)).click(p(0, 50))
+
+    const copy = linesOf(cad.entities()).find((line) => line.id !== "L1")!
+    expect(copy).toMatchObject({ color: "#ff0000", elevation: 8, thickness: 2 })
+  })
   it("copies a line parallel at the typed distance, on the picked side", () => {
     const cad = createHarness({
       entities: [lineOf(p(-100, 0), p(100, 0), { id: "L1" })],

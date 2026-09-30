@@ -143,12 +143,14 @@ export function createInsert(
 export function createBlockDefinition(
   name: string,
   basePoint: Vec2,
-  entities: readonly Entity[]
+  entities: readonly Entity[],
+  baseElevation = 0
 ): BlockDefinition {
   return {
     id: name,
     name,
     basePoint: { x: basePoint.x, y: basePoint.y },
+    ...(baseElevation !== 0 ? { baseElevation } : {}),
     entities: entities.slice(),
   }
 }

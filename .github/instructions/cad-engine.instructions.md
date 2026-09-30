@@ -122,6 +122,7 @@ snapping, command history, adapters) is in `cad-runtime.instructions.md`; writin
 | `entityFactories.ts`                                                          | `nextEntityId` and the `create*` that have no geometry of their own  |
 | `text.ts` `dimensions.ts` `polylines.ts` `hatch.ts` `blocks.ts` `ellipses.ts` | one type's own geometry, its factory included                        |
 | `entityOverrides.ts`                                                          | `assign*`, `carryOverrides`, `matchEntityProperties`                 |
+| `elevation.ts`                                                                | the Z fields: readers, `with*`, `carryPlane`, the Z of scale/shift   |
 | `entityTransforms.ts`                                                         | translate / stretch / copy / rotate / scale / mirror (+ `*Copy`)     |
 | `entityQueries.ts`                                                            | `closestOnEntity`, `entityBounds`, `entityDrawOrder`, the rect tests |
 | `entityMeasures.ts`                                                           | per-type readouts (`lineLength`, `arcMidpoint`, …)                   |
@@ -142,7 +143,8 @@ TypeScript exhaustiveness will point at most of it, but the full list is: `assig
 `stretchEntity`, `copyEntity`, `rotateEntity(+Copy)`, `scaleEntity(+Copy)`, `mirrorEntity(+Copy)`,
 `closestOnEntity`, `entityBounds`, `entityCrossesRect`, `applyEntityProperty` — each in the module
 the table above gives it, and anything new the type exports named in the `entities.ts` barrel —
-plus `serialization/drawingFile.ts` (clone + parse + `VERSION` bump),
+plus `serialization/drawingFile.ts` (clone + parse + `VERSION` bump; the Z fields come for free
+through `planeOf` / `parsePlane`, thickness only if DXF gives the type one — then `hasThickness`),
 `SceneBuilder.entityScenePrimitive`, `snapping/providers.ts`, `EngineState.singleEntityInfo` + the
 type's name in `interface.entity` (and its rows in `interface.property`), and `selectedGrips` in
 `tools/selectToolGrips.ts`. The editing tools switch on the
@@ -408,6 +410,29 @@ a new shape:
   spread, keep the reader tolerant so older files still load.
 - `CadRuntime.setSelectionX(value | "ByLayer")` = one `UpdateEntityCommand` per entity (undoable),
   plus a `commonSelectionX` for `EngineState`.
+
+## Z (2.5D)
+
+Every object is planar with its normal on +Z, so the OCS is the WCS and the kernel stays `Vec2`:
+the Z is numbers beside the points, stored as DXF stores it (`domain/elevation.ts`). `elevation`
+on every entity is the Z of its plane (a line's start); a line adds `deltaZ` (end − start, a vector
+like an ellipse's axis); `thickness` exists only on line, circle, arc and polyline, the types DXF
+extrudes. All three are optional, absent means 0, and a 0 is never stored — `withElevation` and its
+twins drop it — so a flat drawing and its file look exactly as before. A block's base point has
+its own `baseElevation`, and a reference's attributes their `elevation`.
+
+- **Transforms take `Vec2 | Vec3`.** A 2D delta or base is Z = 0: a planar move, or a scale about
+  the XY plane. `translateEntity` / `copyEntity` shift the plane, `scaleEntity(+Copy)` scales
+  elevation, rise and thickness about the base's Z, rotate and mirror leave the Z alone, and
+  `stretchEntity` moves the Z of what moves whole and of a line's caught end — a polyline cannot
+  tilt, so it ignores it.
+- **Rebuilding an object from another goes through `carryOverrides`**, which carries the overrides
+  _and_ the plane and thickness (`carryPlane` alone for a new object that only shares the plane,
+  like FILLET's arc). `createX(..., source.layerId, source.id)` on its own is the bug: it keeps the
+  id and silently drops colour, linetype, lineweight and Z. A grip edit in `domain/` rebuilds by
+  spreading the source (`polylines.ts`'s `reshaped`).
+- `expectSameShape` compares the Z and the `entity` arbitrary generates it, so a transform that
+  drops it fails every round-trip property.
 
 ## Serialization
 

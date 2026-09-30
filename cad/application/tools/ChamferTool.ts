@@ -2,6 +2,8 @@ import { Vec2, V } from "../../geometry/Vec2"
 import { chamferLines } from "../../geometry/primitives"
 import {
   createLine,
+  carryOverrides,
+  carryPlane,
   createPolyline,
   polylineBulge,
   polylineSegmentGeometries,
@@ -264,7 +266,9 @@ export class ChamferTool implements Tool {
         line1.layerId === line2.layerId
           ? line1.layerId
           : ctx.document.getCurrentLayerId()
-      added.push(createLine(result.point1, result.point2, layer))
+      added.push(
+        carryPlane(line1, createLine(result.point1, result.point2, layer))
+      )
     }
 
     ctx.execute(new ReplaceEntitiesCommand([line1.id, line2.id], added))
@@ -359,7 +363,7 @@ function trimLine(
       ? line.end
       : line.start
   if (V.equals(keepEnd, cut)) return null
-  return createLine(keepEnd, cut, line.layerId, line.id)
+  return carryOverrides(line, createLine(keepEnd, cut, line.layerId, line.id))
 }
 
 /** A resolved corner bevel: the two cut points that replace the vertex. */
@@ -426,7 +430,10 @@ function chamferPolyline(
       if (hasOut) bulges.push(outBulge)
     }
   }
-  return createPolyline(pts, poly.closed, poly.layerId, bulges, poly.id)
+  return carryOverrides(
+    poly,
+    createPolyline(pts, poly.closed, poly.layerId, bulges, poly.id)
+  )
 }
 
 /** The bevel for corner `i`, or `null` when it isn't eligible. */

@@ -5,10 +5,10 @@ import {
   arcEndPoint,
   arcStartPoint,
   arcSweepAngle,
+  carryOverrides,
   createPolyline,
   polylineSegmentGeometries,
 } from "../../domain/entities"
-import { LayerId } from "../../domain/layers"
 import { ReplaceEntitiesCommand } from "../commands/entityCommands"
 import { SelectionActionTool } from "./SelectionActionTool"
 import { ToolContext } from "./Tool"
@@ -32,7 +32,7 @@ export class JoinTool extends SelectionActionTool {
     // Break every joinable source into its segments (arcs carry a bulge), tagged
     // with the source id so a merged chain knows which originals it consumed.
     const segments: JoinSegment[] = []
-    const layerOf = new Map<EntityId, LayerId>()
+    const sourceOf = new Map<EntityId, Entity>()
     for (const entity of entities) {
       if (entity.type === "line") {
         segments.push({
@@ -41,7 +41,7 @@ export class JoinTool extends SelectionActionTool {
           bulge: 0,
           source: entity.id,
         })
-        layerOf.set(entity.id, entity.layerId)
+        sourceOf.set(entity.id, entity)
       } else if (entity.type === "arc") {
         segments.push({
           a: arcStartPoint(entity),
@@ -49,7 +49,7 @@ export class JoinTool extends SelectionActionTool {
           bulge: Math.tan(arcSweepAngle(entity) / 4), // CCW start→end
           source: entity.id,
         })
-        layerOf.set(entity.id, entity.layerId)
+        sourceOf.set(entity.id, entity)
       } else if (entity.type === "polyline") {
         for (const seg of polylineSegmentGeometries(entity)) {
           segments.push({
@@ -59,7 +59,7 @@ export class JoinTool extends SelectionActionTool {
             source: entity.id,
           })
         }
-        layerOf.set(entity.id, entity.layerId)
+        sourceOf.set(entity.id, entity)
       }
     }
     if (segments.length === 0) return
@@ -75,9 +75,18 @@ export class JoinTool extends SelectionActionTool {
       // leave those unmerged for now.
       if (chain.closed && chain.vertices.length < 3) continue
       for (const id of chain.sources) removedIds.push(id)
-      const layer = layerOf.get(chain.firstSource)
+      // The result is the source object grown, so it keeps that one's properties.
+      const source = sourceOf.get(chain.firstSource)!
       added.push(
-        createPolyline(chain.vertices, chain.closed, layer, chain.bulges)
+        carryOverrides(
+          source,
+          createPolyline(
+            chain.vertices,
+            chain.closed,
+            source.layerId,
+            chain.bulges
+          )
+        )
       )
     }
     if (added.length === 0) return

@@ -187,6 +187,21 @@ export {
   matchEntityProperties,
 } from "./entityOverrides"
 
+export type { ThickEntity } from "./elevation"
+export {
+  hasThickness,
+  entityElevation,
+  entityThickness,
+  lineStartZ,
+  lineEndZ,
+  withElevation,
+  withThickness,
+  withDeltaZ,
+  shiftEntityZ,
+  scaleEntityZ,
+  carryPlane,
+} from "./elevation"
+
 export {
   translateEntity,
   stretchEntity,

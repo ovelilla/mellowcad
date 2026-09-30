@@ -556,6 +556,32 @@ describe("EXPLODE and JOIN", () => {
     expect(cad.typeCounts()).toEqual({ line: 2 })
   })
 
+  it("the pieces and the joined polyline keep colour, plane and thickness", () => {
+    const raised: PolylineEntity = {
+      ...rectangle,
+      color: "#ff0000",
+      elevation: 12,
+      thickness: 3,
+    }
+    const cad = createHarness({ entities: [raised] })
+
+    cad.select("P1").command("EXPLODE")
+    for (const piece of linesOf(cad.entities())) {
+      expect(piece).toMatchObject({
+        color: "#ff0000",
+        elevation: 12,
+        thickness: 3,
+      })
+    }
+
+    cad.selectAll().command("JOIN")
+    expect(cad.only<PolylineEntity>("polyline")).toMatchObject({
+      color: "#ff0000",
+      elevation: 12,
+      thickness: 3,
+    })
+  })
+
   it("previews the object under the cursor while selecting", () => {
     const cad = createHarness({ entities: [rectangle] })
     const previews = () =>

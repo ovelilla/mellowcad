@@ -68,19 +68,17 @@ export class ExplodeTool extends SelectionActionTool {
       if (entity.type !== "polyline") continue
       removedIds.push(entity.id)
       for (const seg of polylineSegmentGeometries(entity)) {
-        if (seg.kind === "line") {
-          pieces.push(createLine(seg.a, seg.b, entity.layerId))
-        } else {
-          pieces.push(
-            createArc(
-              seg.center,
-              seg.radius,
-              seg.startAngle,
-              seg.endAngle,
-              entity.layerId
-            )
-          )
-        }
+        const piece =
+          seg.kind === "line"
+            ? createLine(seg.a, seg.b, entity.layerId)
+            : createArc(
+                seg.center,
+                seg.radius,
+                seg.startAngle,
+                seg.endAngle,
+                entity.layerId
+              )
+        pieces.push(carryOverrides(entity, piece))
       }
     }
     if (pieces.length === 0) return

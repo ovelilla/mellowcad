@@ -40,10 +40,14 @@ import {
   nextEntityId,
   DimensionKind,
   HatchLoop,
+  hasThickness,
   MTEXT_ATTACHMENTS,
   MTextAttachment,
   TEXT_JUSTIFICATIONS,
   TextJustify,
+  withDeltaZ,
+  withElevation,
+  withThickness,
 } from "../domain/entities"
 import {
   DEFAULT_HATCH_ANGLE,
@@ -87,7 +91,7 @@ import { DRAWING_FILE_TYPE } from "./drawingSummary"
 export { DRAWING_FILE_TYPE }
 
 /** Current schema version written by {@link serializeDrawing}. */
-export const DRAWING_FILE_VERSION = 21
+export const DRAWING_FILE_VERSION = 22
 
 /** MIME type a serialised drawing is handed to the host as. */
 export const DRAWING_FILE_MIME_TYPE = "application/json"
@@ -234,6 +238,27 @@ export function parseDrawingData(data: unknown): ParsedDrawing {
 }
 
 function cloneEntity(entity: Entity): Entity {
+  return { ...cloneEntityShape(entity), ...planeOf(entity) }
+}
+
+/** The Z fields, written only when they are not 0. */
+function planeOf(entity: Entity): {
+  elevation?: number
+  deltaZ?: number
+  thickness?: number
+} {
+  return {
+    ...(entity.elevation ? { elevation: entity.elevation } : {}),
+    ...(entity.type === "line" && entity.deltaZ
+      ? { deltaZ: entity.deltaZ }
+      : {}),
+    ...(hasThickness(entity) && entity.thickness
+      ? { thickness: entity.thickness }
+      : {}),
+  }
+}
+
+function cloneEntityShape(entity: Entity): Entity {
   const color = entity.color ? { color: entity.color } : {}
   const linetype = entity.linetype ? { linetype: entity.linetype } : {}
   const lineweight =
@@ -413,6 +438,7 @@ function cloneBlockAttribute(attribute: BlockAttribute): BlockAttribute {
     tag: attribute.tag,
     value: attribute.value,
     position: { x: attribute.position.x, y: attribute.position.y },
+    ...(attribute.elevation ? { elevation: attribute.elevation } : {}),
     height: attribute.height,
     rotation: attribute.rotation,
     justify: attribute.justify,
@@ -432,6 +458,7 @@ function cloneBlock(block: BlockDefinition): BlockDefinition {
     id: block.id,
     name: block.name,
     basePoint: { x: block.basePoint.x, y: block.basePoint.y },
+    ...(block.baseElevation ? { baseElevation: block.baseElevation } : {}),
     entities: block.entities.map(cloneEntity),
   }
 }
@@ -460,7 +487,8 @@ function parseBlocks(value: unknown): BlockDefinition[] {
       createBlockDefinition(
         name,
         parseVec2(raw.basePoint) ?? { x: 0, y: 0 },
-        entities
+        entities,
+        isFiniteNumber(raw.baseElevation) ? raw.baseElevation : 0
       )
     )
   }
@@ -571,6 +599,25 @@ function parseEntities(value: unknown): Entity[] {
 }
 
 function parseEntity(raw: unknown): Entity | null {
+  const shape = parseEntityShape(raw)
+  return shape && isRecord(raw) ? parsePlane(raw, shape) : shape
+}
+
+/** A drawing from before version 22 has none of these: everything lies on Z = 0. */
+function parsePlane(raw: Record<string, unknown>, entity: Entity): Entity {
+  let placed = isFiniteNumber(raw.elevation)
+    ? withElevation(entity, raw.elevation)
+    : entity
+  if (placed.type === "line" && isFiniteNumber(raw.deltaZ)) {
+    placed = withDeltaZ(placed, raw.deltaZ)
+  }
+  if (hasThickness(placed) && isFiniteNumber(raw.thickness)) {
+    placed = withThickness(placed, raw.thickness)
+  }
+  return placed
+}
+
+function parseEntityShape(raw: unknown): Entity | null {
   if (!isRecord(raw)) return null
   const id =
     typeof raw.id === "string" && raw.id.length > 0 ? raw.id : nextEntityId()
@@ -872,6 +919,9 @@ function parseBlockAttributes(value: unknown): {
       tag: raw.tag,
       value: typeof raw.value === "string" ? raw.value : "",
       position,
+      ...(isFiniteNumber(raw.elevation) && raw.elevation !== 0
+        ? { elevation: raw.elevation }
+        : {}),
       ...parseTextLayout(raw),
       invisible: raw.invisible === true,
       layerId:
