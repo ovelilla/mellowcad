@@ -1,4 +1,5 @@
 import { Vec2, V } from "../geometry/Vec2"
+import { Vec3 } from "../geometry/Vec3"
 import { worldDirectionToUcs, worldPointToUcs } from "../domain/ucs"
 import { ellipseAngleFromParam, normalizeDegrees } from "../geometry/primitives"
 import {
@@ -29,13 +30,18 @@ import {
   ellipseSweepParams,
   isFullEllipse,
   lineAngleDegrees,
-  lineLength,
   polylineArea,
   polylineLength,
   polylineSegments,
   splineArea,
   dimensionMeasurement,
   dimensionMeasurementUnit,
+  entityElevation,
+  entityThickness,
+  hasThickness,
+  lineEndZ,
+  lineLength3d,
+  lineStartZ,
   mtextLinePitch,
   mtextPlainText,
 } from "../domain/entities"
@@ -142,6 +148,8 @@ export interface SelectionInfo {
   /** Heading, e.g. "Line", "Circle" or "3 objects". */
   readonly title: string
   readonly count: number
+  /** Rows of the palette's General section after its pickers (Thickness). */
+  readonly general: ReadonlyArray<PropertyRow>
   readonly groups: ReadonlyArray<PropertyGroup>
 }
 
@@ -218,8 +226,11 @@ export interface EngineState {
   readonly entityCount: number
   readonly selectionCount: number
   readonly scale: number
-  /** The cursor as the status bar reads it: in the current UCS. */
-  readonly cursorUcs: Vec2 | null
+  /**
+   * The cursor as the status bar reads it: in the current UCS, on the
+   * elevation plane (AutoCAD's COORDS shows X, Y and Z).
+   */
+  readonly cursorUcs: Vec3 | null
   readonly snap: { type: SnapType; point: Vec2 } | null
   readonly snapActive: boolean
   readonly snapEnabled: Readonly<Record<SnapType, boolean>>
@@ -559,19 +570,42 @@ export function buildSelectionInfo(
   text: EngineText
 ): SelectionInfo | null {
   if (entities.length === 0) return null
-  if (entities.length === 1)
-    return singleEntityInfo(entities[0], settings, text)
+  if (entities.length === 1) {
+    return {
+      ...singleEntityInfo(entities[0], settings, text),
+      general: generalRows(entities[0], settings, text),
+    }
+  }
   return multiEntityInfo(entities, text)
 }
 
 type RowId = Parameters<EngineText["propertyRow"]>[0]
 type GroupId = Parameters<EngineText["propertyGroup"]>[0]
 
+/** Thickness, which AutoCAD lists under General for the types that have one. */
+function generalRows(
+  entity: Entity,
+  settings: DocumentSettings,
+  text: EngineText
+): PropertyRow[] {
+  if (!hasThickness(entity)) return []
+  const thickness = formatLength(entityThickness(entity), settings)
+  const unit = unitSuffix(settings.unit)
+  return [
+    {
+      id: "thickness",
+      label: text.propertyRow("thickness"),
+      value: `${thickness} ${unit}`,
+      edit: { property: "thickness", text: thickness, unit },
+    },
+  ]
+}
+
 function singleEntityInfo(
   entity: Entity,
   settings: DocumentSettings,
   text: EngineText
-): SelectionInfo {
+): Omit<SelectionInfo, "general"> {
   const length = (value: number) =>
     `${formatLength(value, settings)} ${unitSuffix(settings.unit)}`
   const area = (value: number) =>
@@ -620,6 +654,11 @@ function singleEntityInfo(
     edit: { property, text: formatAngle(value, settings), unit: "°" },
   })
   const title = (type: EntityType) => text.entity(type, 1)
+  // A Z is read above the UCS's XY plane, like X and Y from its origin.
+  const zRow = (id: RowId, property: EntityProperty, z: number) =>
+    coordRow(id, property, z - settings.ucs.origin.z)
+  const planeRow = (id: RowId, property: EntityProperty) =>
+    zRow(id, property, entityElevation(entity))
 
   switch (entity.type) {
     case "line": {
@@ -632,16 +671,20 @@ function singleEntityInfo(
         count: 1,
         groups: [
           group("geometry", [
-            lengthRow("length", "length", lineLength(entity)),
+            lengthRow("length", "length", lineLength3d(entity)),
             angleRow("angle", "angle", lineAngleDegrees(entity)),
             row("deltaX", length(delta.x)),
             row("deltaY", length(delta.y)),
+            // Read-only, like Delta X and Y: the ends are what is retyped.
+            row("deltaZ", length(entity.deltaZ ?? 0)),
           ]),
           group("endpoints", [
             coordRow("startX", "startX", at(entity.start).x),
             coordRow("startY", "startY", at(entity.start).y),
+            zRow("startZ", "startZ", lineStartZ(entity)),
             coordRow("endX", "endX", at(entity.end).x),
             coordRow("endY", "endY", at(entity.end).y),
+            zRow("endZ", "endZ", lineEndZ(entity)),
           ]),
         ],
       }
@@ -660,6 +703,7 @@ function singleEntityInfo(
           group("center", [
             coordRow("x", "centerX", at(entity.center).x),
             coordRow("y", "centerY", at(entity.center).y),
+            planeRow("z", "centerZ"),
           ]),
         ],
       }
@@ -685,6 +729,7 @@ function singleEntityInfo(
           group("center", [
             coordRow("x", "centerX", at(entity.center).x),
             coordRow("y", "centerY", at(entity.center).y),
+            planeRow("z", "centerZ"),
           ]),
         ],
       }
@@ -718,6 +763,7 @@ function singleEntityInfo(
           group("center", [
             coordRow("x", "centerX", at(entity.center).x),
             coordRow("y", "centerY", at(entity.center).y),
+            planeRow("z", "centerZ"),
           ]),
         ],
       }
@@ -733,6 +779,7 @@ function singleEntityInfo(
             row("vertices", String(entity.vertices.length)),
             row("segments", String(polylineSegments(entity).length)),
             row("closed", text.propertyValue(entity.closed ? "yes" : "no")),
+            planeRow("elevation", "elevation"),
           ]),
         ],
       }
@@ -782,6 +829,7 @@ function singleEntityInfo(
           group("position", [
             coordRow("x", "positionX", at(entity.position).x),
             coordRow("y", "positionY", at(entity.position).y),
+            planeRow("z", "positionZ"),
           ]),
         ],
       }
@@ -819,6 +867,7 @@ function singleEntityInfo(
           group("position", [
             coordRow("x", "positionX", at(entity.position).x),
             coordRow("y", "positionY", at(entity.position).y),
+            planeRow("z", "positionZ"),
           ]),
         ],
       }
@@ -844,6 +893,7 @@ function singleEntityInfo(
           group("position", [
             coordRow("x", "positionX", at(entity.position).x),
             coordRow("y", "positionY", at(entity.position).y),
+            planeRow("z", "positionZ"),
           ]),
           group("misc", [
             row("invisible", yesNo(entity.modes.invisible)),
@@ -913,6 +963,7 @@ function singleEntityInfo(
             ),
             row("boundaries", String(entity.loops.length)),
           ]),
+          group("geometry", [planeRow("elevation", "elevation")]),
         ],
       }
     }
@@ -935,6 +986,7 @@ function singleEntityInfo(
           group("position", [
             coordRow("x", "positionX", at(entity.position).x),
             coordRow("y", "positionY", at(entity.position).y),
+            planeRow("z", "positionZ"),
           ]),
           ...(entity.attributes
             ? [
@@ -977,6 +1029,7 @@ function multiEntityInfo(
   return {
     title: text.propertyTitle("objects", entities.length),
     count: entities.length,
+    general: [],
     groups: [{ id: "selection", title: text.propertyGroup("selection"), rows }],
   }
 }

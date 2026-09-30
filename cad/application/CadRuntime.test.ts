@@ -1,5 +1,14 @@
 import { describe, expect, it } from "vitest"
-import type { LineEntity } from "../domain/entities"
+import type { CircleEntity, Entity, LineEntity } from "../domain/entities"
+import type { PropertyRow } from "./EngineState"
+import {
+  entityElevation,
+  lineEndZ,
+  lineStartZ,
+  withDeltaZ,
+  withElevation,
+  withThickness,
+} from "../domain/entities"
 import { LengthUnit } from "../domain/units"
 import { DEFAULT_LAYER_ID } from "../domain/layers"
 import {
@@ -8,7 +17,16 @@ import {
   MemoryStore,
   createHarness,
 } from "../../test/harness"
-import { circleOf, lineOf, p, snapshotOf } from "../../test/builders"
+import {
+  circleOf,
+  hatchOf,
+  lineOf,
+  loopOf,
+  p,
+  polylineOf,
+  snapshotOf,
+  textOf,
+} from "../../test/builders"
 import { serializeDrawing } from "../serialization/drawingFile"
 
 /**
@@ -393,12 +411,141 @@ describe("property editing", () => {
       "angle",
       "startX",
       "startY",
+      "startZ",
       "endX",
       "endY",
+      "endZ",
     ])
     // The box is seeded with a bare number, the unit is rendered beside it.
     expect(editable[0].edit?.text).toBe("100.00")
     expect(editable[0].edit?.unit).toBe("mm")
+    expect(cad.state().selectionInfo?.general.map((row) => row.id)).toEqual([
+      "thickness",
+    ])
+  })
+})
+
+describe("the palette's Z", () => {
+  function rows(cad: CadHarness): Map<string, PropertyRow> {
+    const info = cad.state().selectionInfo!
+    return new Map(
+      [...info.general, ...info.groups.flatMap((group) => group.rows)].map(
+        (row) => [row.id, row]
+      )
+    )
+  }
+
+  /** Puts the UCS's XY plane at Z = 5. */
+  function raiseUcs(cad: CadHarness): void {
+    cad.command("UCS").type("0,0,5").enter().enter()
+  }
+
+  it("reads a line's ends in the UCS and its rise, and retypes each end alone", () => {
+    const sloped = withDeltaZ(
+      withElevation(lineOf(p(0, 0), p(30, 40), { id: "L" }), 2),
+      10
+    )
+    const cad = createHarness({ entities: [sloped] })
+    raiseUcs(cad)
+    cad.select("L")
+
+    expect(rows(cad).get("startZ")?.value).toBe("-3.00")
+    expect(rows(cad).get("endZ")?.value).toBe("7.00")
+    expect(rows(cad).get("deltaZ")).toMatchObject({ value: "10.00 mm" })
+    expect(rows(cad).get("deltaZ")?.edit).toBeUndefined()
+
+    expect(cad.runtime.setSelectionProperty("endZ", "0")).toBe(true)
+    const line = cad.byId<LineEntity>("L")
+    expect(lineStartZ(line)).toBe(2)
+    expect(lineEndZ(line)).toBe(5)
+    expect(line.end).toBeCloseToPoint(p(30, 40))
+
+    cad.runtime.setSelectionProperty("startZ", "0")
+    expect(cad.byId<LineEntity>("L")).toMatchObject({ elevation: 5 })
+    expect(cad.byId<LineEntity>("L").deltaZ).toBeUndefined()
+
+    cad.undo()
+    expect(lineStartZ(cad.byId<LineEntity>("L"))).toBe(2)
+    expect(lineEndZ(cad.byId<LineEntity>("L"))).toBe(5)
+  })
+
+  it("reads a sloped line's length in 3D and keeps its slope when it is retyped", () => {
+    const sloped = withDeltaZ(lineOf(p(0, 0), p(30, 40), { id: "L" }), 120)
+    const cad = createHarness({ entities: [sloped] })
+    cad.select("L")
+
+    expect(rows(cad).get("length")?.value).toBe("130.00 mm")
+    cad.runtime.setSelectionProperty("length", "260")
+
+    const line = cad.byId<LineEntity>("L")
+    expect(line.end).toBeCloseToPoint(p(60, 80))
+    expect(line.deltaZ).toBeCloseTo(240)
+  })
+
+  it("gives each flat type its plane row, read and written in the UCS", () => {
+    const entities: Entity[] = [
+      withElevation(circleOf(p(0, 0), 10, { id: "C" }), 8),
+      withElevation(textOf(p(0, 0), "A", { id: "T" }), 8),
+      withElevation(polylineOf([p(0, 0), p(10, 0)], { id: "P" }), 8),
+      withElevation(hatchOf([loopOf(p(0, 0), p(10, 10))], { id: "H" }), 8),
+    ]
+    const cad = createHarness({ entities })
+    raiseUcs(cad)
+
+    for (const [id, property, row] of [
+      ["C", "centerZ", "z"],
+      ["T", "positionZ", "z"],
+      ["P", "elevation", "elevation"],
+      ["H", "elevation", "elevation"],
+    ] as const) {
+      cad.select(id)
+      expect(rows(cad).get(row)).toMatchObject({
+        value: "3.00",
+        edit: { property },
+      })
+      cad.runtime.setSelectionProperty(property, "-1")
+      expect(entityElevation(cad.byId(id))).toBe(4)
+    }
+  })
+
+  it("puts Thickness under General only for the types that have one", () => {
+    const cad = createHarness({
+      entities: [
+        withThickness(circleOf(p(0, 0), 10, { id: "C" }), 3),
+        textOf(p(0, 0), "A", { id: "T" }),
+      ],
+    })
+    raiseUcs(cad)
+    cad.select("C")
+
+    expect(cad.state().selectionInfo?.general).toEqual([
+      expect.objectContaining({
+        id: "thickness",
+        label: "Thickness",
+        value: "3.00 mm",
+      }),
+    ])
+    // A thickness is a length along Z: the UCS's origin does not move it.
+    cad.runtime.setSelectionProperty("thickness", "-2")
+    expect(cad.byId<CircleEntity>("C").thickness).toBe(-2)
+
+    cad.select("T")
+    expect(cad.state().selectionInfo?.general).toEqual([])
+    expect(cad.runtime.setSelectionProperty("thickness", "4")).toBe(false)
+  })
+})
+
+describe("the status bar", () => {
+  it("reads the cursor's X, Y and Z in the UCS, on the elevation plane", () => {
+    const cad = createHarness()
+    cad.command("UCS").type("10,20,3").enter().enter()
+    cad.command("ELEV").type("5").enter().type("0").enter()
+
+    cad.moveTo(p(15, 25))
+
+    const cursor = cad.state().cursorUcs!
+    expect(cursor).toBeCloseToPoint(p(5, 5))
+    expect(cursor.z).toBe(5)
   })
 })
 

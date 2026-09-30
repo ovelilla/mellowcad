@@ -1,6 +1,6 @@
 import { Observable } from "../shared/Observable"
 import { Vec2, V } from "../geometry/Vec2"
-import { Vec3 } from "../geometry/Vec3"
+import { Vec3, withZ } from "../geometry/Vec3"
 import { closestPointOnSegment } from "../geometry/primitives"
 import { CadDocument } from "../domain/Document"
 import {
@@ -2218,7 +2218,10 @@ export class CadRuntime extends Observable {
       selectionCount: this.selection.size,
       scale: this.viewport.scale,
       cursorUcs: this.cursorWorld
-        ? worldPointToUcs(this.document.getSettings().ucs, this.cursorWorld)
+        ? worldPointToUcs(
+            settings.ucs,
+            withZ(this.cursorWorld, settings.ucs.origin.z + settings.elevation)
+          )
         : null,
       snap: this.currentSnap
         ? { type: this.currentSnap.type, point: this.currentSnap.point }

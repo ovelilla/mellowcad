@@ -37,6 +37,14 @@ export function lineEndZ(line: LineEntity): number {
   return (line.elevation ?? 0) + (line.deltaZ ?? 0)
 }
 
+export function lineLength3d(line: LineEntity): number {
+  return Math.hypot(
+    line.end.x - line.start.x,
+    line.end.y - line.start.y,
+    line.deltaZ ?? 0
+  )
+}
+
 /** A zero is not stored, so a flat drawing's objects and files stay as they were. */
 function withField<T extends Entity>(
   entity: T,

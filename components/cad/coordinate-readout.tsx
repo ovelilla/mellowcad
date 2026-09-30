@@ -26,6 +26,12 @@ export function CoordinateReadout({ state }: { state: EngineState }) {
           {cursor ? cursor.y.toFixed(3) : "—"}
         </span>
       </span>
+      <span className="flex items-center">
+        <span>{t("z")}</span>
+        <span className="inline-block min-w-14 text-right text-foreground tabular-nums">
+          {cursor ? cursor.z.toFixed(3) : "—"}
+        </span>
+      </span>
       <span className="inline-block min-w-12 text-right text-foreground tabular-nums">
         {state.scale.toFixed(2)}×
       </span>

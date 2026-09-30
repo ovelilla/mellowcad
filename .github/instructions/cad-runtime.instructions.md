@@ -187,10 +187,13 @@ also given in spans (`commandLine.promptSegments`, the keyword list set apart) w
 command's name (`commandLine.command`), so no host takes the text apart. `setLocale` swaps the
 text and rebuilds the state; the scrollback stays as it was written.
 
-Coordinates the user reads are **UCS** coordinates: the status readout is `cursorUcs`, and the
-Properties palette's X/Y rows (and a line's deltas) are converted in `singleEntityInfo`. A retyped
-X or Y is read in the UCS too (`runtimeProperties.ts`), which in a turned UCS moves the point along
-that axis and so rewrites both world coordinates. Rotations stay in the WCS, as AutoCAD's do.
+Coordinates the user reads are **UCS** coordinates: the status readout is `cursorUcs` (a `Vec3`,
+its Z the elevation plane's), and the Properties palette's X/Y/Z rows (and a line's deltas) are
+converted in `singleEntityInfo`. A retyped X or Y is read in the UCS too (`runtimeProperties.ts`),
+which in a turned UCS moves the point along that axis and so rewrites both world coordinates; a
+retyped Z (`isZProperty`) gets `ucs.origin.z` added, except Thickness, which is a length. Rotations
+stay in the WCS, as AutoCAD's do. Rows AutoCAD files under **General** go in
+`SelectionInfo.general` (the palette renders them after its pickers), never in a group.
 
 ## Scene
 

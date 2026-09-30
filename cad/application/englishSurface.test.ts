@@ -27,6 +27,7 @@ import {
 } from "../domain/entities"
 import { SnapType } from "./snapping/types"
 import { commandCatalog } from "./commandCatalog"
+import type { PropertyRow } from "./EngineState"
 import type { Vec2 } from "../geometry/Vec2"
 
 /**
@@ -90,15 +91,15 @@ class Surface {
           .join(" ")
       : "-"
     const info = state.selectionInfo
+    const row = (cell: PropertyRow) =>
+      `${cell.label}=${cell.value}${cell.edit ? "~" : ""}`
     const properties = info
       ? `${info.title} (${info.count}) ` +
+        (info.general.length > 0
+          ? `{${info.general.map(row).join(", ")}} `
+          : "") +
         info.groups
-          .map(
-            (group) =>
-              `[${group.title}: ${group.rows
-                .map((row) => `${row.label}=${row.value}${row.edit ? "~" : ""}`)
-                .join(", ")}]`
-          )
+          .map((group) => `[${group.title}: ${group.rows.map(row).join(", ")}]`)
           .join(" ")
       : "-"
     const canvas = cad
@@ -923,6 +924,8 @@ describe("the engine's English surface", () => {
         .do("first", (c) => c.click(at(0, 0)))
         .do("move", (c) => c.moveTo(at(300, 400)))
         .do("second", (c) => c.click(at(300, 400)))
+        .do("typed first", (c) => c.type("0,0").enter())
+        .do("typed second", (c) => c.type("@30,40,120").enter())
         .do("AREA", (c) => c.command("AA"))
         .do("first", (c) => c.click(at(0, 0)))
         .do("second", (c) => c.click(at(100, 0)))
@@ -1011,6 +1014,13 @@ describe("the engine's English surface", () => {
         .do("enter", (c) => c.enter())
         .do("ELEV again", (c) => c.command("ELEV"))
         .do("escape", (c) => c.escape())
+    )
+    walk("ID", createHarness(), (s) =>
+      s
+        .do("ID", (c) => c.command("ID"))
+        .do("pick", (c) => c.click(at(30, 40)))
+        .do("ID typed", (c) => c.command("ID"))
+        .do("point", (c) => c.type("1,2,3").enter())
     )
   })
 

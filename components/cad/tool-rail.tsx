@@ -10,6 +10,7 @@ import {
   Grid3x3,
   CircleDotDashed,
   LetterText,
+  LocateFixed,
   Merge,
   type LucideIcon,
   MousePointer2,
@@ -134,6 +135,7 @@ const TOOL_ICONS: Record<string, LucideIcon> = {
   dimspace: DimSpaceIcon,
   measure: Ruler,
   measurearea: Scan,
+  id: LocateFixed,
 }
 
 /**
@@ -258,7 +260,8 @@ const RAIL_LAYOUT: readonly RailGroup[] = [
   },
   {
     id: "measure",
-    items: [{ id: "measure", members: ["measure", "measurearea"] }],
+    // The ribbon's Utilities panel keeps ID Point beside the Measure drop-down.
+    items: [{ id: "measure", members: ["measure", "measurearea"] }, "id"],
   },
 ]
 

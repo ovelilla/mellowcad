@@ -63,6 +63,7 @@ export const es: EngineLocale = {
       "paste": "Pegar",
       "measure": "Medir",
       "measurearea": "Área",
+      "id": "Coordenadas punto",
       "zoom": "Zoom",
       "pan": "Encuadre",
       "ucs": "SCP",
@@ -269,16 +270,22 @@ export const es: EngineLocale = {
         "angle": "Ángulo",
         "deltaX": "Delta X",
         "deltaY": "Delta Y",
+        "deltaZ": "Delta Z",
         "startX": "Inicio X",
         "startY": "Inicio Y",
+        "startZ": "Inicio Z",
         "endX": "Fin X",
         "endY": "Fin Y",
+        "endZ": "Fin Z",
         "radius": "Radio",
         "diameter": "Diámetro",
         "circumference": "Circunferencia",
         "area": "Área",
         "x": "X",
         "y": "Y",
+        "z": "Z",
+        "elevation": "Elevación",
+        "thickness": "Altura de objeto",
         "startAngle": "Ángulo inicial",
         "endAngle": "Ángulo final",
         "majorRadius": "Radio mayor",
@@ -580,6 +587,9 @@ export const es: EngineLocale = {
       "AREA": [
         "AREA",
         "AA"
+      ],
+      "ID": [
+        "ID"
       ],
       "ZOOM": [
         "ZOOM",
@@ -1000,7 +1010,8 @@ export const es: EngineLocale = {
       "ucsListNames": "Indique nombre(s) del SCP que enumerar <*>",
       "planUcsName": "Indique nombre de SCP o [?]",
       "elevDefaultElevation": "Precise nueva elevación por defecto",
-      "elevDefaultThickness": "Precise nueva altura de objeto por defecto"
+      "elevDefaultThickness": "Precise nueva altura de objeto por defecto",
+      "idPoint": "Precise punto"
     },
     "format": {
       "idle": "Comando",
@@ -1285,6 +1296,46 @@ export const es: EngineLocale = {
             "other": ""
           }
         ]
+      ],
+      "distanceReport": [
+        "Distancia = ",
+        [
+          "distance"
+        ],
+        ",  Ángulo en plano XY = ",
+        [
+          "angleInPlane"
+        ],
+        ",  Ángulo desde plano XY = ",
+        [
+          "angleFromPlane"
+        ],
+        "\nDelta X = ",
+        [
+          "deltaX"
+        ],
+        ",  Delta Y = ",
+        [
+          "deltaY"
+        ],
+        ",   Delta Z = ",
+        [
+          "deltaZ"
+        ]
+      ],
+      "idReport": [
+        "X = ",
+        [
+          "x"
+        ],
+        "     Y = ",
+        [
+          "y"
+        ],
+        "     Z = ",
+        [
+          "z"
+        ]
       ]
     },
     "feedback": {
@@ -1343,6 +1394,12 @@ export const es: EngineLocale = {
       ],
       "measureDeltaY": [
         "ΔY    ",
+        [
+          "value"
+        ]
+      ],
+      "measureDeltaZ": [
+        "ΔZ    ",
         [
           "value"
         ]

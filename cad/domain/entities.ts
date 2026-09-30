@@ -194,6 +194,7 @@ export {
   entityThickness,
   lineStartZ,
   lineEndZ,
+  lineLength3d,
   withElevation,
   withThickness,
   withDeltaZ,
@@ -243,4 +244,4 @@ export {
 } from "./entityMeasures"
 
 export type { EntityProperty } from "./entityProperties"
-export { applyEntityProperty } from "./entityProperties"
+export { applyEntityProperty, isZProperty } from "./entityProperties"

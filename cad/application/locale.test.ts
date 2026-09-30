@@ -205,6 +205,7 @@ describe("the palettes", () => {
       "angle",
       "deltaX",
       "deltaY",
+      "deltaZ",
     ])
   })
 
@@ -392,6 +393,33 @@ describe("Spanish AutoCAD's command language", () => {
     expect(cad.commandLog().at(-1)).toBe(
       "Modos de rectángulo actuales: Alt-objeto=3.00"
     )
+  })
+
+  it("measures with DIST and identifies a point with ID, in Spanish", () => {
+    const cad = createHarness({ locale: es })
+    cad.command("DI").type("0,0").enter().type("3,4,12").enter()
+    expect(cad.commandLog().at(-1)).toBe(
+      "Distancia = 13.00,  Ángulo en plano XY = 53.13,  Ángulo desde plano XY = 67.38\n" +
+        "Delta X = 3.00,  Delta Y = 4.00,   Delta Z = 12.00"
+    )
+    cad.escape()
+    cad.command("ID")
+    expect(cad.runtime.text.prompt("idPoint")).toBe("Precise punto")
+    cad.type("1,2,3").enter()
+    expect(cad.commandLog().at(-1)).toBe("X = 1.00     Y = 2.00     Z = 3.00")
+  })
+
+  it("names the palette's Z rows as Spanish AutoCAD does", () => {
+    const cad = createHarness({
+      locale: es,
+      entities: [lineOf(p(0, 0), p(100, 0), { id: "L" })],
+    })
+    cad.select("L")
+    const info = cad.state().selectionInfo!
+    expect(info.general.map((row) => row.label)).toEqual(["Altura de objeto"])
+    expect(
+      info.groups.flatMap((group) => group.rows).map((row) => row.label)
+    ).toEqual(expect.arrayContaining(["Delta Z", "Inicio Z", "Fin Z"]))
   })
 
   it("lists the commands by their Spanish names, described in Spanish", () => {

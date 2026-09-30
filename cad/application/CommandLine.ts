@@ -195,6 +195,7 @@ export const TOOL_COMMANDS: Readonly<Record<string, string>> = {
   copybase: "COPYBASE",
   measure: "DIST",
   measurearea: "AREA",
+  id: "ID",
   zoom: "ZOOM",
   pan: "PAN",
   ucs: "UCS",

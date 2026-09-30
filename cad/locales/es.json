@@ -59,6 +59,7 @@
       "paste": "Pegar",
       "measure": "Medir",
       "measurearea": "Área",
+      "id": "Coordenadas punto",
       "zoom": "Zoom",
       "pan": "Encuadre",
       "ucs": "SCP",
@@ -142,16 +143,22 @@
         "angle": "Ángulo",
         "deltaX": "Delta X",
         "deltaY": "Delta Y",
+        "deltaZ": "Delta Z",
         "startX": "Inicio X",
         "startY": "Inicio Y",
+        "startZ": "Inicio Z",
         "endX": "Fin X",
         "endY": "Fin Y",
+        "endZ": "Fin Z",
         "radius": "Radio",
         "diameter": "Diámetro",
         "circumference": "Circunferencia",
         "area": "Área",
         "x": "X",
         "y": "Y",
+        "z": "Z",
+        "elevation": "Elevación",
+        "thickness": "Altura de objeto",
         "startAngle": "Ángulo inicial",
         "endAngle": "Ángulo final",
         "majorRadius": "Radio mayor",
@@ -290,6 +297,7 @@
       "COPYBASE": ["COPIARBASE"],
       "DIST": ["DIST", "DI"],
       "AREA": ["AREA", "AA"],
+      "ID": ["ID"],
       "ZOOM": ["ZOOM", "Z"],
       "PAN": ["ENCUADRE", "E"],
       "ERASE": ["BORRA", "B"],
@@ -661,7 +669,8 @@
       "ucsListNames": "Indique nombre(s) del SCP que enumerar '<'*>",
       "planUcsName": "Indique nombre de SCP o [?]",
       "elevDefaultElevation": "Precise nueva elevación por defecto",
-      "elevDefaultThickness": "Precise nueva altura de objeto por defecto"
+      "elevDefaultThickness": "Precise nueva altura de objeto por defecto",
+      "idPoint": "Precise punto"
     },
     "format": {
       "idle": "Comando",
@@ -707,7 +716,9 @@
       "savedUcsHeader": "Sistemas de coordenadas guardados:",
       "savedUcsEntry": "{name}\nOrigen = '<'{originX},{originY},{originZ}>, Eje X = '<'{xAxisX},{xAxisY},0.0000>\n    Eje Y = '<'{yAxisX},{yAxisY},0.0000>, Eje Z = '<'0.0000,0.0000,1.0000>",
       "ucsUndefined": "No se encuentra el SCP {name}.",
-      "rectangleModes": "Modos de rectángulo actuales:{hasElevation, select, yes { Elevación={elevation}} other {}}{hasThickness, select, yes { Alt-objeto={thickness}} other {}}"
+      "rectangleModes": "Modos de rectángulo actuales:{hasElevation, select, yes { Elevación={elevation}} other {}}{hasThickness, select, yes { Alt-objeto={thickness}} other {}}",
+      "distanceReport": "Distancia = {distance},  Ángulo en plano XY = {angleInPlane},  Ángulo desde plano XY = {angleFromPlane}\nDelta X = {deltaX},  Delta Y = {deltaY},   Delta Z = {deltaZ}",
+      "idReport": "X = {x}     Y = {y}     Z = {z}"
     },
     "feedback": {
       "snap": {
@@ -731,6 +742,7 @@
       "measureAngle": "Áng   {value}°",
       "measureDeltaX": "ΔX    {value}",
       "measureDeltaY": "ΔY    {value}",
+      "measureDeltaZ": "ΔZ    {value}",
       "measureArea": "Área  {value} {unit}²",
       "measurePerimeter": "Perím {value} {unit}",
       "measureHint": "[{undo}] deshacer  [Intro] terminar"

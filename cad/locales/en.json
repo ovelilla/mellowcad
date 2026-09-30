@@ -59,6 +59,7 @@
       "paste": "Paste",
       "measure": "Measure",
       "measurearea": "Area",
+      "id": "ID Point",
       "zoom": "Zoom",
       "pan": "Pan",
       "ucs": "UCS",
@@ -154,16 +155,22 @@
         "angle": "Angle",
         "deltaX": "Δ X",
         "deltaY": "Δ Y",
+        "deltaZ": "Δ Z",
         "startX": "Start X",
         "startY": "Start Y",
+        "startZ": "Start Z",
         "endX": "End X",
         "endY": "End Y",
+        "endZ": "End Z",
         "radius": "Radius",
         "diameter": "Diameter",
         "circumference": "Circumference",
         "area": "Area",
         "x": "X",
         "y": "Y",
+        "z": "Z",
+        "elevation": "Elevation",
+        "thickness": "Thickness",
         "startAngle": "Start angle",
         "endAngle": "End angle",
         "majorRadius": "Major radius",
@@ -302,6 +309,7 @@
       "COPYBASE": ["COPYBASE"],
       "DIST": ["DIST", "DI"],
       "AREA": ["AREA", "AA"],
+      "ID": ["ID"],
       "ZOOM": ["ZOOM", "Z"],
       "PAN": ["PAN", "P"],
       "ERASE": ["ERASE", "E"],
@@ -623,7 +631,8 @@
       "ucsListNames": "Enter UCS name(s) to list '<'*>",
       "planUcsName": "Enter name of UCS or [?]",
       "elevDefaultElevation": "Specify new default elevation",
-      "elevDefaultThickness": "Specify new default thickness"
+      "elevDefaultThickness": "Specify new default thickness",
+      "idPoint": "Specify point"
     },
     "format": {
       "idle": "Command",
@@ -669,7 +678,9 @@
       "savedUcsHeader": "Saved coordinate systems:",
       "savedUcsEntry": "{name}\nOrigin = '<'{originX},{originY},{originZ}>, X Axis = '<'{xAxisX},{xAxisY},0.0000>\n    Y Axis = '<'{yAxisX},{yAxisY},0.0000>, Z Axis = '<'0.0000,0.0000,1.0000>",
       "ucsUndefined": "Cannot find UCS {name}.",
-      "rectangleModes": "Current rectangle modes:{hasElevation, select, yes { Elevation={elevation}} other {}}{hasThickness, select, yes { Thickness={thickness}} other {}}"
+      "rectangleModes": "Current rectangle modes:{hasElevation, select, yes { Elevation={elevation}} other {}}{hasThickness, select, yes { Thickness={thickness}} other {}}",
+      "distanceReport": "Distance = {distance},  Angle in XY Plane = {angleInPlane},  Angle from XY Plane = {angleFromPlane}\nDelta X = {deltaX},  Delta Y = {deltaY},   Delta Z = {deltaZ}",
+      "idReport": "X = {x}     Y = {y}     Z = {z}"
     },
     "feedback": {
       "snap": {
@@ -693,6 +704,7 @@
       "measureAngle": "Angle {value}°",
       "measureDeltaX": "ΔX    {value}",
       "measureDeltaY": "ΔY    {value}",
+      "measureDeltaZ": "ΔZ    {value}",
       "measureArea": "Area  {value} {unit}²",
       "measurePerimeter": "Perim {value} {unit}",
       "measureHint": "[{undo}] undo  [Enter] done"

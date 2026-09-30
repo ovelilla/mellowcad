@@ -64,7 +64,8 @@ export function CommandLine({
       {visibleLines.length > 0 && (
         <div
           ref={logRef}
-          className="max-h-16 overflow-y-auto border-b px-2 py-1 font-mono text-[11px] leading-tight"
+          // AutoCAD lays its reports out in spaces and lines (ID, DIST, UCS ?).
+          className="max-h-16 overflow-y-auto border-b px-2 py-1 font-mono text-[11px] leading-tight whitespace-pre-wrap"
         >
           {visibleLines.map((line, index) => (
             <div

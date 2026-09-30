@@ -63,6 +63,7 @@ export const en: EngineCatalog = {
       "paste": "Paste",
       "measure": "Measure",
       "measurearea": "Area",
+      "id": "ID Point",
       "zoom": "Zoom",
       "pan": "Pan",
       "ucs": "UCS",
@@ -275,16 +276,22 @@ export const en: EngineCatalog = {
         "angle": "Angle",
         "deltaX": "Δ X",
         "deltaY": "Δ Y",
+        "deltaZ": "Δ Z",
         "startX": "Start X",
         "startY": "Start Y",
+        "startZ": "Start Z",
         "endX": "End X",
         "endY": "End Y",
+        "endZ": "End Z",
         "radius": "Radius",
         "diameter": "Diameter",
         "circumference": "Circumference",
         "area": "Area",
         "x": "X",
         "y": "Y",
+        "z": "Z",
+        "elevation": "Elevation",
+        "thickness": "Thickness",
         "startAngle": "Start angle",
         "endAngle": "End angle",
         "majorRadius": "Major radius",
@@ -596,6 +603,9 @@ export const en: EngineCatalog = {
         "AREA",
         "AA"
       ],
+      "ID": [
+        "ID"
+      ],
       "ZOOM": [
         "ZOOM",
         "Z"
@@ -768,7 +778,8 @@ export const en: EngineCatalog = {
       "ucsListNames": "Enter UCS name(s) to list <*>",
       "planUcsName": "Enter name of UCS or [?]",
       "elevDefaultElevation": "Specify new default elevation",
-      "elevDefaultThickness": "Specify new default thickness"
+      "elevDefaultThickness": "Specify new default thickness",
+      "idPoint": "Specify point"
     },
     "format": {
       "idle": "Command",
@@ -1053,6 +1064,46 @@ export const en: EngineCatalog = {
             "other": ""
           }
         ]
+      ],
+      "distanceReport": [
+        "Distance = ",
+        [
+          "distance"
+        ],
+        ",  Angle in XY Plane = ",
+        [
+          "angleInPlane"
+        ],
+        ",  Angle from XY Plane = ",
+        [
+          "angleFromPlane"
+        ],
+        "\nDelta X = ",
+        [
+          "deltaX"
+        ],
+        ",  Delta Y = ",
+        [
+          "deltaY"
+        ],
+        ",   Delta Z = ",
+        [
+          "deltaZ"
+        ]
+      ],
+      "idReport": [
+        "X = ",
+        [
+          "x"
+        ],
+        "     Y = ",
+        [
+          "y"
+        ],
+        "     Z = ",
+        [
+          "z"
+        ]
       ]
     },
     "feedback": {
@@ -1111,6 +1162,12 @@ export const en: EngineCatalog = {
       ],
       "measureDeltaY": [
         "ΔY    ",
+        [
+          "value"
+        ]
+      ],
+      "measureDeltaZ": [
+        "ΔZ    ",
         [
           "value"
         ]

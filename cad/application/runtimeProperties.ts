@@ -7,6 +7,7 @@ import {
   assignEntityLineweight,
   Entity,
   EntityProperty,
+  isZProperty,
 } from "../domain/entities"
 import { COLOR_BYLAYER, EntityColor, normalizeColor } from "../domain/colors"
 import { LayerId } from "../domain/layers"
@@ -171,6 +172,11 @@ function applyInUcs(
   value: number,
   ucs: Ucs
 ): Entity | null {
+  if (isZProperty(property)) {
+    // Thickness is a length along Z, not a position, so the origin does not apply.
+    const z = property === "thickness" ? value : value + ucs.origin.z
+    return applyEntityProperty(entity, property, z)
+  }
   const row = COORDINATE_ROWS[property]
   if (!row || isWorldUcs(ucs)) {
     return applyEntityProperty(entity, property, value)

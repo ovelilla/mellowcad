@@ -1,4 +1,5 @@
 import { Vec2, V } from "../../geometry/Vec2"
+import { Vec3 } from "../../geometry/Vec3"
 import { normalizeDegrees } from "../../geometry/primitives"
 import {
   DocumentSettings,
@@ -6,8 +7,10 @@ import {
   formatLength,
   unitSuffix,
 } from "../../domain/units"
+import { Ucs, worldDirectionToUcs } from "../../domain/ucs"
 import { ScenePrimitive } from "../../scene/types"
 import { THEME } from "../../scene/theme"
+import { parseCoordinate } from "../input/coordinateInput"
 import {
   CommandOption,
   CommandOptionOutcome,
@@ -22,8 +25,9 @@ import {
  * transient overlay (measurement guide + a readout chip that follows the
  * cursor) and disappears with the tool. Two modes:
  *
- * - **Distance**: pick two points → straight-line distance, angle from +X and
- *   the ΔX/ΔY between them. Loops so successive pairs can be measured.
+ * - **Distance**: pick two points → AutoCAD's DIST: the 3D distance, the angle
+ *   in and from the UCS's XY plane and the ΔX/ΔY/ΔZ between them, on the
+ *   command line and on the readout. Loops so successive pairs can be measured.
  * - **Area**: pick a run of points → the enclosed area and perimeter of the
  *   (implicitly closed) polygon, updating live with the cursor as a tentative
  *   vertex. Enter finalises the polygon; the tool then starts a fresh one.
@@ -32,7 +36,7 @@ export type MeasureMode = "distance" | "area"
 
 type MeasureState =
   | { readonly phase: "first" }
-  | { readonly phase: "second"; readonly base: Vec2; readonly cursor: Vec2 }
+  | { readonly phase: "second"; readonly base: Vec3; readonly cursor: Vec3 }
   | {
       readonly phase: "area"
       readonly points: readonly Vec2[]
@@ -40,8 +44,8 @@ type MeasureState =
     }
 
 interface Measurement {
-  readonly base: Vec2
-  readonly tip: Vec2
+  readonly base: Vec3
+  readonly tip: Vec3
 }
 
 export class MeasureTool implements Tool {
@@ -56,15 +60,18 @@ export class MeasureTool implements Tool {
   private last: Measurement | null = null
   /** The last completed area polygon, kept until a new one starts. */
   private lastArea: readonly Vec2[] | null = null
+  private lastScreen: Vec2 | null = null
 
   onActivate(ctx: ToolContext): void {
     ctx.setCursor("crosshair")
     ctx.selection.clear()
     this.reset(ctx.viewport.worldCenter())
+    if (this.mode === "distance") this.askPoint(ctx)
   }
 
-  onDeactivate(): void {
+  onDeactivate(ctx: ToolContext): void {
     this.reset({ x: 0, y: 0 })
+    if (this.mode === "distance") ctx.dynamicInput.close()
   }
 
   private reset(origin: Vec2): void {
@@ -77,7 +84,11 @@ export class MeasureTool implements Tool {
   }
 
   onPointerMove(input: PointerInput, ctx: ToolContext): void {
-    if (this.state.phase === "second" || this.state.phase === "area") {
+    this.lastScreen = input.screen
+    if (this.mode === "distance") ctx.dynamicInput.setPosition(input.screen)
+    if (this.state.phase === "second") {
+      this.state = { ...this.state, cursor: input.point }
+    } else if (this.state.phase === "area") {
       this.state = { ...this.state, cursor: input.point }
     }
     ctx.requestRender()
@@ -92,15 +103,59 @@ export class MeasureTool implements Tool {
         points: [...this.state.points, input.point],
         cursor: input.point,
       }
-    } else if (this.state.phase === "first") {
-      // A fresh measurement clears the previous readout.
-      this.last = null
-      this.state = { phase: "second", base: input.point, cursor: input.point }
     } else {
-      this.last = { base: this.state.base, tip: input.point }
-      this.state = { phase: "first" }
+      this.place(input.point, ctx)
     }
     ctx.requestRender()
+  }
+
+  private place(point: Vec3, ctx: ToolContext): void {
+    if (this.state.phase === "first") {
+      // A fresh measurement clears the previous readout.
+      this.last = null
+      this.state = { phase: "second", base: point, cursor: point }
+    } else if (this.state.phase === "second") {
+      this.last = { base: this.state.base, tip: point }
+      this.state = { phase: "first" }
+      ctx.report(distanceReport(this.last, ctx))
+    }
+    this.askPoint(ctx)
+  }
+
+  /**
+   * A point can be typed too; one given without a Z lies at the current
+   * elevation, as DIST's help says, which is what `parseCoordinate` does.
+   */
+  private askPoint(ctx: ToolContext): void {
+    const first = this.state.phase === "first"
+    ctx.dynamicInput.open({
+      fields: [
+        {
+          id: "point",
+          prompt: first ? "firstPoint" : "secondPoint",
+          kind: "coordinate",
+        },
+      ],
+      commit: () => {},
+      commitRaw: (commitCtx) => {
+        const text = commitCtx.dynamicInput.getText("point").trim()
+        if (text === "" && this.state.phase === "first") {
+          commitCtx.endCommand()
+          return true
+        }
+        const point = parseCoordinate(text, {
+          lastPoint: this.state.phase === "second" ? this.state.base : null,
+          relativeByDefault: false,
+          ucs: commitCtx.ucs,
+          elevation: commitCtx.elevation,
+        })
+        if (!point) return false
+        this.place(point, commitCtx)
+        commitCtx.requestRender()
+        return true
+      },
+    })
+    ctx.dynamicInput.setPosition(this.lastScreen ?? { x: 0, y: 0 })
   }
 
   /** Enter finalises an area polygon (≥3 points); otherwise it ends the tool. */
@@ -190,8 +245,8 @@ export class MeasureTool implements Tool {
   private drawDistance(
     out: ScenePrimitive[],
     ctx: ToolContext,
-    base: Vec2,
-    tip: Vec2,
+    base: Vec3,
+    tip: Vec3,
     settings: DocumentSettings,
     live: boolean
   ): void {
@@ -211,20 +266,26 @@ export class MeasureTool implements Tool {
     pushTick(out, a)
     pushTick(out, b)
 
-    const distance = V.distance(base, tip)
-    const dx = tip.x - base.x
-    const dy = tip.y - base.y
-    const angle = normalizeDegrees((Math.atan2(dy, dx) * 180) / Math.PI)
+    const measured = measure(base, tip, settings.ucs)
     const suffix = unitSuffix(settings.unit)
     const { text } = ctx
     const lines = [
       text.feedback("measureDistance", {
-        value: formatLength(distance, settings),
+        value: formatLength(measured.distance, settings),
         unit: suffix,
       }),
-      text.feedback("measureAngle", { value: formatAngle(angle, settings) }),
-      text.feedback("measureDeltaX", { value: formatLength(dx, settings) }),
-      text.feedback("measureDeltaY", { value: formatLength(dy, settings) }),
+      text.feedback("measureAngle", {
+        value: formatAngle(measured.angleInPlane, settings),
+      }),
+      text.feedback("measureDeltaX", {
+        value: formatLength(measured.deltaX, settings),
+      }),
+      text.feedback("measureDeltaY", {
+        value: formatLength(measured.deltaY, settings),
+      }),
+      text.feedback("measureDeltaZ", {
+        value: formatLength(measured.deltaZ, settings),
+      }),
     ]
     // The readout follows the tip (like AutoCAD's dimensional input), placed
     // above-right of it clear of the object-snap tooltip (which sits below-right
@@ -284,6 +345,47 @@ export class MeasureTool implements Tool {
       : viewport.worldToScreen(centroid(vertices))
     placeAndPushReadout(out, anchor, lines, viewport)
   }
+}
+
+interface DistanceMeasure {
+  readonly distance: number
+  readonly angleInPlane: number
+  readonly angleFromPlane: number
+  readonly deltaX: number
+  readonly deltaY: number
+  readonly deltaZ: number
+}
+
+/** DIST in model space: 3D, its components and angles relative to the UCS. */
+function measure(base: Vec3, tip: Vec3, ucs: Ucs): DistanceMeasure {
+  const delta = worldDirectionToUcs(ucs, V.sub(tip, base))
+  const deltaZ = tip.z - base.z
+  const inPlane = Math.hypot(delta.x, delta.y)
+  const degrees = (radians: number) =>
+    normalizeDegrees((radians * 180) / Math.PI)
+  return {
+    distance: Math.hypot(inPlane, deltaZ),
+    angleInPlane: degrees(Math.atan2(delta.y, delta.x)),
+    angleFromPlane: degrees(Math.atan2(deltaZ, inPlane)),
+    deltaX: delta.x,
+    deltaY: delta.y,
+    deltaZ,
+  }
+}
+
+function distanceReport(measurement: Measurement, ctx: ToolContext): string {
+  const settings = ctx.document.getSettings()
+  const measured = measure(measurement.base, measurement.tip, settings.ucs)
+  const length = (value: number) => formatLength(value, settings)
+  const angle = (value: number) => formatAngle(value, settings)
+  return ctx.text.message("distanceReport", {
+    distance: length(measured.distance),
+    angleInPlane: angle(measured.angleInPlane),
+    angleFromPlane: angle(measured.angleFromPlane),
+    deltaX: length(measured.deltaX),
+    deltaY: length(measured.deltaY),
+    deltaZ: length(measured.deltaZ),
+  })
 }
 
 /** A small filled square marking a measured point. */

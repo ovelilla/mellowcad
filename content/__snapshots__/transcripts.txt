@@ -164,7 +164,7 @@ command |  | RECTANG
 input | First corner [Elevation/Thickness]: | 0,0
 input | Other corner: | @70,40
 command |  | DIST
-input | DIST: | 
+input | First point: | 
 ## files
 command |  | CIRCLE
 input | Center: | 0,0

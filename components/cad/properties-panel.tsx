@@ -4,7 +4,7 @@ import { useState } from "react"
 import { Info } from "lucide-react"
 import { useTranslations } from "next-intl"
 
-import { CadEngine, EngineState, PropertyEdit } from "@/cad"
+import { CadEngine, EngineState, PropertyEdit, PropertyRow } from "@/cad"
 import {
   Select,
   SelectContent,
@@ -112,6 +112,14 @@ export function PropertiesPanel({
             />
           </div>
 
+          {info.general.length > 0 && (
+            <dl className="mt-1 flex flex-col gap-0.5 font-mono">
+              {info.general.map((row) => (
+                <PropertyRowView key={row.id} engine={engine} row={row} />
+              ))}
+            </dl>
+          )}
+
           {/* Only for the object kinds that wear a style, as AutoCAD shows it. */}
           {state.selectionTextStyleId !== null && (
             <StyleRow
@@ -140,35 +148,38 @@ export function PropertiesPanel({
             </div>
             <dl className="flex flex-col gap-0.5 font-mono">
               {group.rows.map((row) => (
-                <div
-                  key={row.id}
-                  className="flex items-center justify-between gap-2"
-                >
-                  <dt className="text-muted-foreground">{row.label}</dt>
-                  {row.edit ? (
-                    <dd className="flex items-center gap-1">
-                      <PropertyInput
-                        engine={engine}
-                        label={row.label}
-                        edit={row.edit}
-                      />
-                      {row.edit.unit && (
-                        <span className="w-4 shrink-0 text-muted-foreground">
-                          {row.edit.unit}
-                        </span>
-                      )}
-                    </dd>
-                  ) : (
-                    <dd className="text-right text-foreground tabular-nums">
-                      {row.value}
-                    </dd>
-                  )}
-                </div>
+                <PropertyRowView key={row.id} engine={engine} row={row} />
               ))}
             </dl>
           </div>
         ))}
       </div>
+    </div>
+  )
+}
+
+function PropertyRowView({
+  engine,
+  row,
+}: {
+  engine: CadEngine
+  row: PropertyRow
+}) {
+  return (
+    <div className="flex items-center justify-between gap-2">
+      <dt className="text-muted-foreground">{row.label}</dt>
+      {row.edit ? (
+        <dd className="flex items-center gap-1">
+          <PropertyInput engine={engine} label={row.label} edit={row.edit} />
+          {row.edit.unit && (
+            <span className="w-4 shrink-0 text-muted-foreground">
+              {row.edit.unit}
+            </span>
+          )}
+        </dd>
+      ) : (
+        <dd className="text-right text-foreground tabular-nums">{row.value}</dd>
+      )}
     </div>
   )
 }

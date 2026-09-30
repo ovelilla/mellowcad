@@ -43,6 +43,7 @@ import { MatchPropTool } from "./tools/MatchPropTool"
 import { CopyClipTool } from "./tools/CopyClipTool"
 import { PasteTool } from "./tools/PasteTool"
 import { MeasureTool } from "./tools/MeasureTool"
+import { IdTool } from "./tools/IdTool"
 import { ZoomTool } from "./tools/ZoomTool"
 import { PanTool } from "./tools/PanTool"
 import { UcsTool } from "./tools/UcsTool"
@@ -120,6 +121,7 @@ export function defaultTools(
     paste,
     new MeasureTool("distance", "measure", "d"),
     new MeasureTool("area", "measurearea"),
+    new IdTool(),
     new ZoomTool(),
     new PanTool(),
     new UcsTool(),

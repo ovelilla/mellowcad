@@ -24,6 +24,8 @@ A tool is an explicit state machine for one AutoCAD command. It owns a discrimin
 5. `TOOL_ICONS` and `RAIL_LAYOUT` in `components/cad/tool-rail.tsx` (unlisted tools fall into
    the trailing "More" group, so nothing silently disappears).
 6. Tests in the matching `cad/application/tools/*.test.ts` file using the harness.
+7. File the command in `content/commands.ts` (`COMMAND_FILING`): the landing's catalogue test
+   fails until every registered command is filed.
 
 ## Reuse before writing
 
@@ -71,7 +73,9 @@ When a command deliberately does nothing — an object it cannot act on, an empt
 with `ctx.report(ctx.text.message(id, values))`, which writes to the command prompt. Silence reads
 as a bug. The words live in `commands.messages`, in AutoCAD's own wording
 (`"{count, plural, one {# was not able to be exploded.} …}"`); if you cannot verify the exact
-string, leave the message out rather than inventing one.
+string, leave the message out rather than inventing one. A report AutoCAD lays out in columns or
+lines (ID, DIST, UCS `?`) is one message with its spaces and `\n` kept: the command line renders
+them as written.
 
 **A tool holds no text.** A dynamic-input field names its prompt by id (`{ id, prompt: "length",
 kind }`), which the runtime words when it builds the state — so switching language rewords an open

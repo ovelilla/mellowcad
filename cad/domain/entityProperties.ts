@@ -18,6 +18,15 @@ import {
   MIN_LINE_SPACING_FACTOR,
   mtextLinePitch,
 } from "./mtext"
+import {
+  hasThickness,
+  lineEndZ,
+  lineLength3d,
+  lineStartZ,
+  withDeltaZ,
+  withElevation,
+  withThickness,
+} from "./elevation"
 
 /** A geometry value that can be retyped directly on a selected entity. */
 export type EntityProperty =
@@ -47,6 +56,33 @@ export type EntityProperty =
   | "patternScale"
   | "patternAngle"
   | "insertScale"
+  | ZProperty
+
+/** The rows that write an object's Z, all in the WCS here. */
+export type ZProperty =
+  "thickness" | "startZ" | "endZ" | "centerZ" | "positionZ" | "elevation"
+
+const Z_PROPERTIES: ReadonlySet<EntityProperty> = new Set<ZProperty>([
+  "thickness",
+  "startZ",
+  "endZ",
+  "centerZ",
+  "positionZ",
+  "elevation",
+])
+
+export function isZProperty(property: EntityProperty): property is ZProperty {
+  return Z_PROPERTIES.has(property)
+}
+
+/** Which types show each plane row, as AutoCAD's palette names it for them. */
+const PLANE_ROWS: Readonly<
+  Record<"centerZ" | "positionZ" | "elevation", readonly Entity["type"][]>
+> = {
+  centerZ: ["circle", "arc", "ellipse"],
+  positionZ: ["text", "mtext", "attdef", "insert"],
+  elevation: ["polyline", "hatch"],
+}
 
 /**
  * Rebuilds an entity with one geometry value replaced, following AutoCAD's
@@ -61,6 +97,7 @@ export function applyEntityProperty(
   value: number
 ): Entity | null {
   if (!Number.isFinite(value)) return null
+  if (isZProperty(property)) return applyZProperty(entity, property, value)
   switch (entity.type) {
     case "line":
       return applyLineProperty(entity, property, value)
@@ -102,6 +139,31 @@ export function applyEntityProperty(
 
 const toRadians = (degrees: number) => (degrees * Math.PI) / 180
 
+function applyZProperty(
+  entity: Entity,
+  property: ZProperty,
+  value: number
+): Entity | null {
+  switch (property) {
+    case "thickness":
+      return hasThickness(entity) ? withThickness(entity, value) : null
+    case "startZ":
+      return entity.type === "line"
+        ? withDeltaZ(withElevation(entity, value), lineEndZ(entity) - value)
+        : null
+    case "endZ":
+      return entity.type === "line"
+        ? withDeltaZ(entity, value - lineStartZ(entity))
+        : null
+    case "centerZ":
+    case "positionZ":
+    case "elevation":
+      return PLANE_ROWS[property].includes(entity.type)
+        ? withElevation(entity, value)
+        : null
+  }
+}
+
 function applyLineProperty(
   line: LineEntity,
   property: EntityProperty,
@@ -111,17 +173,22 @@ function applyLineProperty(
     V.equals(start, end) ? null : { ...line, start, end }
 
   switch (property) {
-    case "length":
-      return value <= 0
-        ? null
-        : {
-            ...line,
-            end: polarPoint(
-              line.start,
-              value,
-              toRadians(lineAngleDegrees(line))
-            ),
-          }
+    case "length": {
+      // AutoCAD's Length is the 3D one, so a sloped line keeps its slope.
+      const factor = value / lineLength3d(line)
+      if (!(value > 0) || !Number.isFinite(factor)) return null
+      return withDeltaZ(
+        {
+          ...line,
+          end: polarPoint(
+            line.start,
+            lineLength(line) * factor,
+            toRadians(lineAngleDegrees(line))
+          ),
+        },
+        (line.deltaZ ?? 0) * factor
+      )
+    }
     case "angle":
       return {
         ...line,

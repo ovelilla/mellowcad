@@ -55,6 +55,7 @@ CUTCLIP [] "Cut"
 COPYBASE [] "Copy with base point"
 DIST ["DI"] "Measure"
 AREA ["AA"] "Area"
+ID [] "ID Point"
 ZOOM ["Z"] "Zoom"
 PAN ["P"] "Pan"
 UCS [] "UCS"
@@ -135,6 +136,7 @@ copybase "Copy with base point" COPYBASE
 paste "Paste" -
 measure "Measure" DI
 measurearea "Area" AA
+id "ID Point" ID
 zoom "Zoom" Z
 pan "Pan" P
 ucs "UCS" UCS
@@ -343,7 +345,7 @@ elev "Elevation" ELEV
   prompt: Command:
   asks: -
   dyn: -
-  properties: Line (1) [Geometry: Length=100.00 mm~, Angle=0.00°~, Δ X=100.00 mm, Δ Y=0.00 mm] [Endpoints: Start X=50.00~, Start Y=50.00~, End X=150.00~, End Y=50.00~]
+  properties: Line (1) {Thickness=0.00 mm~} [Geometry: Length=100.00 mm~, Angle=0.00°~, Δ X=100.00 mm, Δ Y=0.00 mm, Δ Z=0.00 mm] [Endpoints: Start X=50.00~, Start Y=50.00~, Start Z=0.00~, End X=150.00~, End Y=50.00~, End Z=0.00~]
 
 ## LINE
 > start
@@ -1015,12 +1017,12 @@ elev "Elevation" ELEV
   asks: 
   dyn: 
 > pick
-  properties: Line (1) [Geometry: Length=100.00 mm~, Angle=0.00°~, Δ X=100.00 mm, Δ Y=0.00 mm] [Endpoints: Start X=0.00~, Start Y=0.00~, End X=100.00~, End Y=0.00~]
+  properties: Line (1) {Thickness=0.00 mm~} [Geometry: Length=100.00 mm~, Angle=0.00°~, Δ X=100.00 mm, Δ Y=0.00 mm, Δ Z=0.00 mm] [Endpoints: Start X=0.00~, Start Y=0.00~, Start Z=0.00~, End X=100.00~, End Y=0.00~, End Z=0.00~]
 > enter
   prompt: Command:
   asks: -
   dyn: -
-  properties: Block reference (1) [Block: Name=BAR, Scale=1.00~, Rotation=0.00°~] [Position: X=0.00~, Y=0.00~]
+  properties: Block reference (1) [Block: Name=BAR, Scale=1.00~, Rotation=0.00°~] [Position: X=0.00~, Y=0.00~, Z=0.00~]
 
 ## INSERT
 > start
@@ -1338,7 +1340,7 @@ elev "Elevation" ELEV
   dyn: -
 > select
   properties: MText (1) [Text: Contents=FIRST LINE
-SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space factor=1.5x~, Line space distance=25.00 mm~, Line space style=Exactly, Defined width=120.00 mm~] [Position: X=0.00~, Y=0.00~]
+SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space factor=1.5x~, Line space distance=25.00 mm~, Line space style=Exactly, Defined width=120.00 mm~] [Position: X=0.00~, Y=0.00~, Z=0.00~]
 
 ## -MTEXT
 > start
@@ -1782,7 +1784,7 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
   prompt: MOVE:
   command| MOVE
 > pick
-  properties: Line (1) [Geometry: Length=100.00 mm~, Angle=0.00°~, Δ X=100.00 mm, Δ Y=0.00 mm] [Endpoints: Start X=0.00~, Start Y=0.00~, End X=100.00~, End Y=0.00~]
+  properties: Line (1) {Thickness=0.00 mm~} [Geometry: Length=100.00 mm~, Angle=0.00°~, Δ X=100.00 mm, Δ Y=0.00 mm, Δ Z=0.00 mm] [Endpoints: Start X=0.00~, Start Y=0.00~, Start Z=0.00~, End X=100.00~, End Y=0.00~, End Z=0.00~]
 > enter
   asks: "Base point"
   dyn: "X,Y"=""||*
@@ -1795,7 +1797,7 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
   prompt: Command:
   asks: -
   dyn: -
-  properties: Line (1) [Geometry: Length=100.00 mm~, Angle=0.00°~, Δ X=100.00 mm, Δ Y=0.00 mm] [Endpoints: Start X=50.00~, Start Y=30.00~, End X=150.00~, End Y=30.00~]
+  properties: Line (1) {Thickness=0.00 mm~} [Geometry: Length=100.00 mm~, Angle=0.00°~, Δ X=100.00 mm, Δ Y=0.00 mm, Δ Z=0.00 mm] [Endpoints: Start X=50.00~, Start Y=30.00~, Start Z=0.00~, End X=150.00~, End Y=30.00~, End Z=0.00~]
 > escape
   properties: -
 
@@ -1812,7 +1814,7 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
   prompt: COPY:
   command| COPY
 > pick
-  properties: Line (1) [Geometry: Length=100.00 mm~, Angle=0.00°~, Δ X=100.00 mm, Δ Y=0.00 mm] [Endpoints: Start X=0.00~, Start Y=0.00~, End X=100.00~, End Y=0.00~]
+  properties: Line (1) {Thickness=0.00 mm~} [Geometry: Length=100.00 mm~, Angle=0.00°~, Δ X=100.00 mm, Δ Y=0.00 mm, Δ Z=0.00 mm] [Endpoints: Start X=0.00~, Start Y=0.00~, Start Z=0.00~, End X=100.00~, End Y=0.00~, End Z=0.00~]
 > enter
   asks: "Base point"
   dyn: "X,Y"=""||*
@@ -1841,7 +1843,7 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
   prompt: STRETCH:
   command| STRETCH
 > pick
-  properties: Line (1) [Geometry: Length=100.00 mm~, Angle=0.00°~, Δ X=100.00 mm, Δ Y=0.00 mm] [Endpoints: Start X=0.00~, Start Y=0.00~, End X=100.00~, End Y=0.00~]
+  properties: Line (1) {Thickness=0.00 mm~} [Geometry: Length=100.00 mm~, Angle=0.00°~, Δ X=100.00 mm, Δ Y=0.00 mm, Δ Z=0.00 mm] [Endpoints: Start X=0.00~, Start Y=0.00~, Start Z=0.00~, End X=100.00~, End Y=0.00~, End Z=0.00~]
 > enter
   asks: "Base point"
   dyn: "X,Y"=""||*
@@ -1854,7 +1856,7 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
   prompt: Command:
   asks: -
   dyn: -
-  properties: Line (1) [Geometry: Length=152.97 mm~, Angle=11.31°~, Δ X=150.00 mm, Δ Y=30.00 mm] [Endpoints: Start X=0.00~, Start Y=0.00~, End X=150.00~, End Y=30.00~]
+  properties: Line (1) {Thickness=0.00 mm~} [Geometry: Length=152.97 mm~, Angle=11.31°~, Δ X=150.00 mm, Δ Y=30.00 mm, Δ Z=0.00 mm] [Endpoints: Start X=0.00~, Start Y=0.00~, Start Z=0.00~, End X=150.00~, End Y=30.00~, End Z=0.00~]
 > escape
   properties: -
 
@@ -1871,7 +1873,7 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
   prompt: ROTATE:
   asks: "Base point"
   dyn: "X,Y"=""||*
-  properties: Line (1) [Geometry: Length=100.00 mm~, Angle=0.00°~, Δ X=100.00 mm, Δ Y=0.00 mm] [Endpoints: Start X=0.00~, Start Y=0.00~, End X=100.00~, End Y=0.00~]
+  properties: Line (1) {Thickness=0.00 mm~} [Geometry: Length=100.00 mm~, Angle=0.00°~, Δ X=100.00 mm, Δ Y=0.00 mm, Δ Z=0.00 mm] [Endpoints: Start X=0.00~, Start Y=0.00~, Start Z=0.00~, End X=100.00~, End Y=0.00~, End Z=0.00~]
   command| ROTATE
 > base
   prompt: ROTATE [Copy/Reference]:
@@ -1939,7 +1941,7 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
   prompt: SCALE:
   asks: "Base point"
   dyn: "X,Y"=""||*
-  properties: Line (1) [Geometry: Length=100.00 mm~, Angle=0.00°~, Δ X=100.00 mm, Δ Y=0.00 mm] [Endpoints: Start X=0.00~, Start Y=0.00~, End X=100.00~, End Y=0.00~]
+  properties: Line (1) {Thickness=0.00 mm~} [Geometry: Length=100.00 mm~, Angle=0.00°~, Δ X=100.00 mm, Δ Y=0.00 mm, Δ Z=0.00 mm] [Endpoints: Start X=0.00~, Start Y=0.00~, Start Z=0.00~, End X=100.00~, End Y=0.00~, End Z=0.00~]
   command| SCALE
 > base
   prompt: SCALE [Copy/Reference]:
@@ -2007,7 +2009,7 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
   prompt: MIRROR:
   asks: "First point of mirror line"
   dyn: "X,Y"=""||*
-  properties: Line (1) [Geometry: Length=100.00 mm~, Angle=0.00°~, Δ X=100.00 mm, Δ Y=0.00 mm] [Endpoints: Start X=0.00~, Start Y=0.00~, End X=100.00~, End Y=0.00~]
+  properties: Line (1) {Thickness=0.00 mm~} [Geometry: Length=100.00 mm~, Angle=0.00°~, Δ X=100.00 mm, Δ Y=0.00 mm, Δ Z=0.00 mm] [Endpoints: Start X=0.00~, Start Y=0.00~, Start Z=0.00~, End X=100.00~, End Y=0.00~, End Z=0.00~]
   command| MIRROR
 > first
   asks: "Second point of mirror line"
@@ -2021,7 +2023,7 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
   asks: -
   dyn: -
   options: -
-  properties: Line (1) [Geometry: Length=100.00 mm~, Angle=0.00°~, Δ X=100.00 mm, Δ Y=0.00 mm] [Endpoints: Start X=0.00~, Start Y=100.00~, End X=100.00~, End Y=100.00~]
+  properties: Line (1) {Thickness=0.00 mm~} [Geometry: Length=100.00 mm~, Angle=0.00°~, Δ X=100.00 mm, Δ Y=0.00 mm, Δ Z=0.00 mm] [Endpoints: Start X=0.00~, Start Y=100.00~, Start Z=0.00~, End X=100.00~, End Y=100.00~, End Z=0.00~]
 > MIRROR N
   prompt: MIRROR:
   asks: "First point of mirror line"
@@ -2053,7 +2055,7 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
   prompt: ARRAYRECT:
   asks: "Columns" "Rows" "Column spacing" "Row spacing"
   dyn: "Columns"=""|4|* "Rows"=""|3| "Column spacing"=""|30.00|mm "Row spacing"=""|30.00|mm
-  properties: Circle (1) [Geometry: Radius=10.00 mm~, Diameter=20.00 mm~, Circumference=62.83 mm, Area=314.16 mm²] [Center: X=0.00~, Y=0.00~]
+  properties: Circle (1) {Thickness=0.00 mm~} [Geometry: Radius=10.00 mm~, Diameter=20.00 mm~, Circumference=62.83 mm, Area=314.16 mm²] [Center: X=0.00~, Y=0.00~, Z=0.00~]
   command| ARRAYRECT
 > enter
   prompt: Command:
@@ -2258,7 +2260,7 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
   prompt: COPYCLIP:
   command| COPYCLIP
 > pick
-  properties: Line (1) [Geometry: Length=100.00 mm~, Angle=0.00°~, Δ X=100.00 mm, Δ Y=0.00 mm] [Endpoints: Start X=0.00~, Start Y=0.00~, End X=100.00~, End Y=0.00~]
+  properties: Line (1) {Thickness=0.00 mm~} [Geometry: Length=100.00 mm~, Angle=0.00°~, Δ X=100.00 mm, Δ Y=0.00 mm, Δ Z=0.00 mm] [Endpoints: Start X=0.00~, Start Y=0.00~, Start Z=0.00~, End X=100.00~, End Y=0.00~, End Z=0.00~]
 > enter
   prompt: Command:
 > CUTCLIP
@@ -2286,14 +2288,30 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
   cycling: -
 > DIST
   prompt: DIST:
+  asks: "First point"
+  dyn: "X,Y"=""||*
   command| DIST
 > first
-  canvas: "Dist  0.00 mm" "Angle 0.00°" "ΔX    0.00" "ΔY    0.00"
+  asks: "Second point"
+  canvas: "Dist  0.00 mm" "Angle 0.00°" "ΔX    0.00" "ΔY    0.00" "ΔZ    0.00"
 > move
-  canvas: "Dist  500.00 mm" "Angle 53.13°" "ΔX    300.00" "ΔY    400.00"
+  canvas: "Dist  500.00 mm" "Angle 53.13°" "ΔX    300.00" "ΔY    400.00" "ΔZ    0.00"
 > second
+  asks: "First point"
+  info| Distance = 500.00,  Angle in XY Plane = 53.13,  Angle from XY Plane = 0.00
+        Delta X = 300.00,  Delta Y = 400.00,   Delta Z = 0.00
+> typed first
+  asks: "Second point"
+  canvas: "Dist  0.00 mm" "Angle 0.00°" "ΔX    0.00" "ΔY    0.00" "ΔZ    0.00"
+> typed second
+  asks: "First point"
+  canvas: "Dist  130.00 mm" "Angle 53.13°" "ΔX    30.00" "ΔY    40.00" "ΔZ    120.00"
+  info| Distance = 130.00,  Angle in XY Plane = 53.13,  Angle from XY Plane = 67.38
+        Delta X = 30.00,  Delta Y = 40.00,   Delta Z = 120.00
 > AREA
   prompt: AREA:
+  asks: -
+  dyn: -
   canvas: -
   command| AREA
 > first
@@ -2662,6 +2680,36 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
   asks: -
   dyn: -
 
+## ID
+> start
+  prompt: Command:
+  asks: -
+  dyn: -
+  options: -
+  canvas: -
+  properties: -
+  cycling: -
+> ID
+  prompt: ID:
+  asks: "Specify point"
+  dyn: "X,Y"=""||*
+  command| ID
+> pick
+  prompt: Command:
+  asks: -
+  dyn: -
+  info| X = 30.00     Y = 40.00     Z = 0.00
+> ID typed
+  prompt: ID:
+  asks: "Specify point"
+  dyn: "X,Y"=""||*
+  command| ID
+> point
+  prompt: Command:
+  asks: -
+  dyn: -
+  info| X = 1.00     Y = 2.00     Z = 3.00
+
 ## grips
 > start
   prompt: Command:
@@ -2672,7 +2720,7 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
   properties: -
   cycling: -
 > select line
-  properties: Line (1) [Geometry: Length=100.00 mm~, Angle=0.00°~, Δ X=100.00 mm, Δ Y=0.00 mm] [Endpoints: Start X=0.00~, Start Y=0.00~, End X=100.00~, End Y=0.00~]
+  properties: Line (1) {Thickness=0.00 mm~} [Geometry: Length=100.00 mm~, Angle=0.00°~, Δ X=100.00 mm, Δ Y=0.00 mm, Δ Z=0.00 mm] [Endpoints: Start X=0.00~, Start Y=0.00~, Start Z=0.00~, End X=100.00~, End Y=0.00~, End Z=0.00~]
 > grab end
   asks: "Lengthen"
   dyn: "Lengthen"=""|0.00|mm*
@@ -2681,7 +2729,7 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
 > release
   asks: -
   dyn: -
-  properties: Line (1) [Geometry: Length=150.00 mm~, Angle=0.00°~, Δ X=150.00 mm, Δ Y=0.00 mm] [Endpoints: Start X=0.00~, Start Y=0.00~, End X=150.00~, End Y=0.00~]
+  properties: Line (1) {Thickness=0.00 mm~} [Geometry: Length=150.00 mm~, Angle=0.00°~, Δ X=150.00 mm, Δ Y=0.00 mm, Δ Z=0.00 mm] [Endpoints: Start X=0.00~, Start Y=0.00~, Start Z=0.00~, End X=150.00~, End Y=0.00~, End Z=0.00~]
 > grab middle
   asks: "Move"
   dyn: "Move"=""|0.00|mm*
@@ -2690,11 +2738,11 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
 > release
   asks: -
   dyn: -
-  properties: Line (1) [Geometry: Length=150.00 mm~, Angle=0.00°~, Δ X=150.00 mm, Δ Y=0.00 mm] [Endpoints: Start X=0.00~, Start Y=40.00~, End X=150.00~, End Y=40.00~]
+  properties: Line (1) {Thickness=0.00 mm~} [Geometry: Length=150.00 mm~, Angle=0.00°~, Δ X=150.00 mm, Δ Y=0.00 mm, Δ Z=0.00 mm] [Endpoints: Start X=0.00~, Start Y=40.00~, Start Z=0.00~, End X=150.00~, End Y=40.00~, End Z=0.00~]
 > escape
   properties: -
 > select circle
-  properties: Circle (1) [Geometry: Radius=50.00 mm~, Diameter=100.00 mm~, Circumference=314.16 mm, Area=7853.98 mm²] [Center: X=0.00~, Y=300.00~]
+  properties: Circle (1) {Thickness=0.00 mm~} [Geometry: Radius=50.00 mm~, Diameter=100.00 mm~, Circumference=314.16 mm, Area=7853.98 mm²] [Center: X=0.00~, Y=300.00~, Z=0.00~]
 > grab quadrant
   asks: "Radius"
   dyn: "Radius"=""|50.00|mm*
@@ -2703,11 +2751,11 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
 > release
   asks: -
   dyn: -
-  properties: Circle (1) [Geometry: Radius=70.00 mm~, Diameter=140.00 mm~, Circumference=439.82 mm, Area=15393.80 mm²] [Center: X=0.00~, Y=300.00~]
+  properties: Circle (1) {Thickness=0.00 mm~} [Geometry: Radius=70.00 mm~, Diameter=140.00 mm~, Circumference=439.82 mm, Area=15393.80 mm²] [Center: X=0.00~, Y=300.00~, Z=0.00~]
 > escape
   properties: -
 > select arc
-  properties: Arc (1) [Geometry: Radius=50.00 mm~, Length=78.54 mm, Angle=90.00°~, Start angle=0.00°~, End angle=90.00°~] [Center: X=300.00~, Y=300.00~]
+  properties: Arc (1) {Thickness=0.00 mm~} [Geometry: Radius=50.00 mm~, Length=78.54 mm, Angle=90.00°~, Start angle=0.00°~, End angle=90.00°~] [Center: X=300.00~, Y=300.00~, Z=0.00~]
 > grab end
   asks: "Angle"
   dyn: "Angle"=""|0.00|°*
@@ -2716,11 +2764,11 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
 > release
   asks: -
   dyn: -
-  properties: Arc (1) [Geometry: Radius=50.00 mm~, Length=46.36 mm, Angle=53.13°~, Start angle=36.87°~, End angle=90.00°~] [Center: X=300.00~, Y=300.00~]
+  properties: Arc (1) {Thickness=0.00 mm~} [Geometry: Radius=50.00 mm~, Length=46.36 mm, Angle=53.13°~, Start angle=36.87°~, End angle=90.00°~] [Center: X=300.00~, Y=300.00~, Z=0.00~]
 > escape
   properties: -
 > select polyline
-  properties: Polyline (1) [Geometry: Length=215.91 mm, Vertices=3, Segments=2, Closed=No]
+  properties: Polyline (1) {Thickness=0.00 mm~} [Geometry: Length=215.91 mm, Vertices=3, Segments=2, Closed=No, Elevation=0.00~]
 > grab vertex
   asks: "Move"
   dyn: "Move"=""|0.00|mm*
@@ -2729,7 +2777,7 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
 > release
   asks: -
   dyn: -
-  properties: Polyline (1) [Geometry: Length=238.21 mm, Vertices=3, Segments=2, Closed=No]
+  properties: Polyline (1) {Thickness=0.00 mm~} [Geometry: Length=238.21 mm, Vertices=3, Segments=2, Closed=No, Elevation=0.00~]
 > grab straight midpoint
   asks: "Move"
   dyn: "Move"=""|0.00|mm*
@@ -2738,7 +2786,7 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
 > release
   asks: -
   dyn: -
-  properties: Polyline (1) [Geometry: Length=244.70 mm, Vertices=4, Segments=3, Closed=No]
+  properties: Polyline (1) {Thickness=0.00 mm~} [Geometry: Length=244.70 mm, Vertices=4, Segments=3, Closed=No, Elevation=0.00~]
 > escape
   properties: -
 > select dimension
@@ -2765,7 +2813,7 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
   properties: -
   cycling: -
 > select
-  properties: Polyline (1) [Geometry: Length=157.08 mm, Vertices=2, Segments=1, Closed=No]
+  properties: Polyline (1) {Thickness=0.00 mm~} [Geometry: Length=157.08 mm, Vertices=2, Segments=1, Closed=No, Elevation=0.00~]
 > grab arc middle
   asks: "Bulge"
   dyn: "Bulge"=""|1|*
@@ -2774,7 +2822,7 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
 > release
   asks: -
   dyn: -
-  properties: Polyline (1) [Geometry: Length=200.97 mm, Vertices=2, Segments=1, Closed=No]
+  properties: Polyline (1) {Thickness=0.00 mm~} [Geometry: Length=200.97 mm, Vertices=2, Segments=1, Closed=No, Elevation=0.00~]
 > escape
   properties: -
 
@@ -2789,45 +2837,45 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
   cycling: -
 > park the cursor
 > select L1
-  properties: Line (1) [Geometry: Length=100.00 mm~, Angle=0.00°~, Δ X=100.00 mm, Δ Y=0.00 mm] [Endpoints: Start X=0.00~, Start Y=0.00~, End X=100.00~, End Y=0.00~]
+  properties: Line (1) {Thickness=0.00 mm~} [Geometry: Length=100.00 mm~, Angle=0.00°~, Δ X=100.00 mm, Δ Y=0.00 mm, Δ Z=0.00 mm] [Endpoints: Start X=0.00~, Start Y=0.00~, Start Z=0.00~, End X=100.00~, End Y=0.00~, End Z=0.00~]
 > select C1
-  properties: Circle (1) [Geometry: Radius=50.00 mm~, Diameter=100.00 mm~, Circumference=314.16 mm, Area=7853.98 mm²] [Center: X=0.00~, Y=0.00~]
+  properties: Circle (1) {Thickness=0.00 mm~} [Geometry: Radius=50.00 mm~, Diameter=100.00 mm~, Circumference=314.16 mm, Area=7853.98 mm²] [Center: X=0.00~, Y=0.00~, Z=0.00~]
 > select A1
-  properties: Arc (1) [Geometry: Radius=50.00 mm~, Length=78.54 mm, Angle=90.00°~, Start angle=0.00°~, End angle=90.00°~] [Center: X=0.00~, Y=0.00~]
+  properties: Arc (1) {Thickness=0.00 mm~} [Geometry: Radius=50.00 mm~, Length=78.54 mm, Angle=90.00°~, Start angle=0.00°~, End angle=90.00°~] [Center: X=0.00~, Y=0.00~, Z=0.00~]
 > select E1
-  properties: Ellipse (1) [Geometry: Major radius=100.00 mm~, Minor radius=50.00 mm~, Radius ratio=0.50, Area=15707.96 mm²] [Center: X=0.00~, Y=0.00~]
+  properties: Ellipse (1) [Geometry: Major radius=100.00 mm~, Minor radius=50.00 mm~, Radius ratio=0.50, Area=15707.96 mm²] [Center: X=0.00~, Y=0.00~, Z=0.00~]
 > select E2
-  properties: Elliptical arc (1) [Geometry: Major radius=100.00 mm~, Minor radius=50.00 mm~, Radius ratio=0.50, Start angle=0.00°, End angle=180.00°] [Center: X=0.00~, Y=0.00~]
+  properties: Elliptical arc (1) [Geometry: Major radius=100.00 mm~, Minor radius=50.00 mm~, Radius ratio=0.50, Start angle=0.00°, End angle=180.00°] [Center: X=0.00~, Y=0.00~, Z=0.00~]
 > select P1
-  properties: Polyline (1) [Geometry: Length=200.00 mm, Vertices=3, Segments=2, Closed=No]
+  properties: Polyline (1) {Thickness=0.00 mm~} [Geometry: Length=200.00 mm, Vertices=3, Segments=2, Closed=No, Elevation=0.00~]
 > select P2
-  properties: Polyline (1) [Geometry: Length=400.00 mm, Area=10000.00 mm², Vertices=4, Segments=4, Closed=Yes]
+  properties: Polyline (1) {Thickness=0.00 mm~} [Geometry: Length=400.00 mm, Area=10000.00 mm², Vertices=4, Segments=4, Closed=Yes, Elevation=0.00~]
 > select T-left
-  properties: Text (1) [Text: Contents=NOTE, Justify=Left, Height=2.50 mm~, Rotation=0.00°~] [Position: X=0.00~, Y=0.00~]
+  properties: Text (1) [Text: Contents=NOTE, Justify=Left, Height=2.50 mm~, Rotation=0.00°~] [Position: X=0.00~, Y=0.00~, Z=0.00~]
 > select T-center
-  properties: Text (1) [Text: Contents=NOTE, Justify=Center, Height=2.50 mm~, Rotation=0.00°~] [Position: X=0.00~, Y=0.00~]
+  properties: Text (1) [Text: Contents=NOTE, Justify=Center, Height=2.50 mm~, Rotation=0.00°~] [Position: X=0.00~, Y=0.00~, Z=0.00~]
 > select T-right
-  properties: Text (1) [Text: Contents=NOTE, Justify=Right, Height=2.50 mm~, Rotation=0.00°~] [Position: X=0.00~, Y=0.00~]
+  properties: Text (1) [Text: Contents=NOTE, Justify=Right, Height=2.50 mm~, Rotation=0.00°~] [Position: X=0.00~, Y=0.00~, Z=0.00~]
 > select T-middle
-  properties: Text (1) [Text: Contents=NOTE, Justify=Middle, Height=2.50 mm~, Rotation=0.00°~] [Position: X=0.00~, Y=0.00~]
+  properties: Text (1) [Text: Contents=NOTE, Justify=Middle, Height=2.50 mm~, Rotation=0.00°~] [Position: X=0.00~, Y=0.00~, Z=0.00~]
 > select T-tl
-  properties: Text (1) [Text: Contents=NOTE, Justify=Top left, Height=2.50 mm~, Rotation=0.00°~] [Position: X=0.00~, Y=0.00~]
+  properties: Text (1) [Text: Contents=NOTE, Justify=Top left, Height=2.50 mm~, Rotation=0.00°~] [Position: X=0.00~, Y=0.00~, Z=0.00~]
 > select T-tc
-  properties: Text (1) [Text: Contents=NOTE, Justify=Top center, Height=2.50 mm~, Rotation=0.00°~] [Position: X=0.00~, Y=0.00~]
+  properties: Text (1) [Text: Contents=NOTE, Justify=Top center, Height=2.50 mm~, Rotation=0.00°~] [Position: X=0.00~, Y=0.00~, Z=0.00~]
 > select T-tr
-  properties: Text (1) [Text: Contents=NOTE, Justify=Top right, Height=2.50 mm~, Rotation=0.00°~] [Position: X=0.00~, Y=0.00~]
+  properties: Text (1) [Text: Contents=NOTE, Justify=Top right, Height=2.50 mm~, Rotation=0.00°~] [Position: X=0.00~, Y=0.00~, Z=0.00~]
 > select T-ml
-  properties: Text (1) [Text: Contents=NOTE, Justify=Middle left, Height=2.50 mm~, Rotation=0.00°~] [Position: X=0.00~, Y=0.00~]
+  properties: Text (1) [Text: Contents=NOTE, Justify=Middle left, Height=2.50 mm~, Rotation=0.00°~] [Position: X=0.00~, Y=0.00~, Z=0.00~]
 > select T-mc
-  properties: Text (1) [Text: Contents=NOTE, Justify=Middle center, Height=2.50 mm~, Rotation=0.00°~] [Position: X=0.00~, Y=0.00~]
+  properties: Text (1) [Text: Contents=NOTE, Justify=Middle center, Height=2.50 mm~, Rotation=0.00°~] [Position: X=0.00~, Y=0.00~, Z=0.00~]
 > select T-mr
-  properties: Text (1) [Text: Contents=NOTE, Justify=Middle right, Height=2.50 mm~, Rotation=0.00°~] [Position: X=0.00~, Y=0.00~]
+  properties: Text (1) [Text: Contents=NOTE, Justify=Middle right, Height=2.50 mm~, Rotation=0.00°~] [Position: X=0.00~, Y=0.00~, Z=0.00~]
 > select T-bl
-  properties: Text (1) [Text: Contents=NOTE, Justify=Bottom left, Height=2.50 mm~, Rotation=0.00°~] [Position: X=0.00~, Y=0.00~]
+  properties: Text (1) [Text: Contents=NOTE, Justify=Bottom left, Height=2.50 mm~, Rotation=0.00°~] [Position: X=0.00~, Y=0.00~, Z=0.00~]
 > select T-bc
-  properties: Text (1) [Text: Contents=NOTE, Justify=Bottom center, Height=2.50 mm~, Rotation=0.00°~] [Position: X=0.00~, Y=0.00~]
+  properties: Text (1) [Text: Contents=NOTE, Justify=Bottom center, Height=2.50 mm~, Rotation=0.00°~] [Position: X=0.00~, Y=0.00~, Z=0.00~]
 > select T-br
-  properties: Text (1) [Text: Contents=NOTE, Justify=Bottom right, Height=2.50 mm~, Rotation=0.00°~] [Position: X=0.00~, Y=0.00~]
+  properties: Text (1) [Text: Contents=NOTE, Justify=Bottom right, Height=2.50 mm~, Rotation=0.00°~] [Position: X=0.00~, Y=0.00~, Z=0.00~]
 > select D1
   properties: Dimension (1) [Dimension: Measurement=100.00 mm, Text override=—, Type=Linear, Rotation=0.00°~] [Definition points: First X=0.00, First Y=0.00, Second X=100.00, Second Y=0.00]
 > select D2
@@ -2839,18 +2887,18 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
 > select D5
   properties: Dimension (1) [Dimension: Measurement=100.00 mm, Text override=—, Type=Diameter] [Definition points: First X=0.00, First Y=0.00, Second X=50.00, Second Y=0.00]
 > select H1
-  properties: Hatch (1) [Pattern: Pattern=ANSI31, Scale=1.00~, Angle=0.00°~, Boundaries=1]
+  properties: Hatch (1) [Pattern: Pattern=ANSI31, Scale=1.00~, Angle=0.00°~, Boundaries=1] [Geometry: Elevation=0.00~]
 > select H2
-  properties: Hatch (1) [Pattern: Pattern=Solid, Scale=1.00~, Angle=0.00°~, Boundaries=1]
+  properties: Hatch (1) [Pattern: Pattern=Solid, Scale=1.00~, Angle=0.00°~, Boundaries=1] [Geometry: Elevation=0.00~]
 > select I1
-  properties: Block reference (1) [Block: Name=BAR, Scale=1.00~, Rotation=0.00°~] [Position: X=0.00~, Y=0.00~]
+  properties: Block reference (1) [Block: Name=BAR, Scale=1.00~, Rotation=0.00°~] [Position: X=0.00~, Y=0.00~, Z=0.00~]
 > select I2
 > select L2
-  properties: Line (1) [Geometry: Length=14.14 mm~, Angle=45.00°~, Δ X=10.00 mm, Δ Y=10.00 mm] [Endpoints: Start X=0.00~, Start Y=0.00~, End X=10.00~, End Y=10.00~]
+  properties: Line (1) {Thickness=0.00 mm~} [Geometry: Length=14.14 mm~, Angle=45.00°~, Δ X=10.00 mm, Δ Y=10.00 mm, Δ Z=0.00 mm] [Endpoints: Start X=0.00~, Start Y=0.00~, Start Z=0.00~, End X=10.00~, End Y=10.00~, End Z=0.00~]
 > select C2
-  properties: Circle (1) [Geometry: Radius=5.00 mm~, Diameter=10.00 mm~, Circumference=31.42 mm, Area=78.54 mm²] [Center: X=0.00~, Y=0.00~]
+  properties: Circle (1) {Thickness=0.00 mm~} [Geometry: Radius=5.00 mm~, Diameter=10.00 mm~, Circumference=31.42 mm, Area=78.54 mm²] [Center: X=0.00~, Y=0.00~, Z=0.00~]
 > select A2
-  properties: Arc (1) [Geometry: Radius=5.00 mm~, Length=5.00 mm, Angle=57.30°~, Start angle=0.00°~, End angle=57.30°~] [Center: X=0.00~, Y=0.00~]
+  properties: Arc (1) {Thickness=0.00 mm~} [Geometry: Radius=5.00 mm~, Length=5.00 mm, Angle=57.30°~, Start angle=0.00°~, End angle=57.30°~] [Center: X=0.00~, Y=0.00~, Z=0.00~]
 > select everything
   properties: 32 objects (32) [Selection: Lines=2, Circles=2, Arcs=2, Ellipses=2, Polylines=2, Texts=13, Dimensions=5, Hatches=2, Block references=2]
 > select one of each

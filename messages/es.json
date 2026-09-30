@@ -308,7 +308,8 @@
     },
     "Coordinates": {
       "x": "x:",
-      "y": "y:"
+      "y": "y:",
+      "z": "z:"
     },
     "DynamicInput": {
       "locked": "bloqueado"
