@@ -22,7 +22,7 @@ import {
   arcSweepAngle,
   createArc,
   createLine,
-  carryOverrides,
+  carryPiece,
   createPolyline,
   polylineBulge,
   polylineSegmentGeometries,
@@ -220,7 +220,7 @@ export abstract class EdgeEditTool implements Tool {
     if (plan.kind === "extend") {
       ctx.execute(
         new UpdateEntityCommand(
-          carryOverrides(
+          carryPiece(
             target,
             geomToEntity(plan.result, plan.layerId, plan.targetId)
           )
@@ -231,7 +231,7 @@ export abstract class EdgeEditTool implements Tool {
     if (plan.replacements.length === 1) {
       ctx.execute(
         new UpdateEntityCommand(
-          carryOverrides(
+          carryPiece(
             target,
             geomToEntity(plan.replacements[0], plan.layerId, plan.targetId)
           )
@@ -244,7 +244,7 @@ export abstract class EdgeEditTool implements Tool {
       new ReplaceEntitiesCommand(
         [plan.targetId],
         plan.replacements.map((g) =>
-          carryOverrides(target, geomToEntity(g, plan.layerId))
+          carryPiece(target, geomToEntity(g, plan.layerId))
         )
       )
     )

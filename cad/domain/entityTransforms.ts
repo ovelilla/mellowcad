@@ -281,7 +281,8 @@ function translatePlanar(entity: Entity, delta: Vec2): Entity {
  * move keeps its curvature ratio.
  *
  * A Z in `delta` moves what moves whole, and a line's caught end; an object
- * with several vertices in one plane cannot tilt, so it ignores the Z.
+ * with several vertices in one plane cannot tilt, so caught in part it ignores
+ * the Z, as a polyline's vertices all share one elevation.
  */
 export function stretchEntity(
   entity: Entity,
@@ -289,6 +290,10 @@ export function stretchEntity(
   inFrame: (point: Vec2) => boolean
 ): Entity {
   const dz = zOf(delta)
+  const vertices = stretchVertices(entity)
+  if (vertices.length > 0 && vertices.every(inFrame)) {
+    return translateEntity(entity, delta)
+  }
   const planar = stretchPlanar(entity, delta, inFrame)
   if (dz === 0 || planar === entity) return planar
   switch (planar.type) {
@@ -309,8 +314,31 @@ export function stretchEntity(
     case "attdef":
     case "insert":
       return shiftEntityZ(planar, dz)
-    default:
+    case "polyline":
+    case "spline":
+    case "dimension":
+    case "hatch":
       return planar
+  }
+}
+
+/** The points STRETCH moves one by one; all caught, the object moves whole. */
+function stretchVertices(entity: Entity): readonly Vec2[] {
+  switch (entity.type) {
+    case "line":
+      return [entity.start, entity.end]
+    case "polyline":
+      return entity.vertices
+    case "spline":
+      return entity.points
+    case "dimension":
+      return entity.vertex
+        ? [entity.first, entity.second, entity.vertex]
+        : [entity.first, entity.second]
+    case "hatch":
+      return entity.loops.flatMap((loop) => loop.vertices)
+    default:
+      return []
   }
 }
 

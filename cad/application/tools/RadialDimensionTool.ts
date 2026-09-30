@@ -184,11 +184,12 @@ export class RadialDimensionTool implements Tool {
 
   /**
    * The dimension as it stands with the location at `at`. Shared by the live
-   * preview and by both commit paths, so what is drawn is what is created.
+   * preview and by both commit paths, so what is drawn is what is created. It
+   * lies at the location's height, as DIMLINEAR's does.
    */
   private pending(
     target: MeasuredCircle,
-    at: Vec2,
+    at: Vec2 | Vec3,
     ctx: ToolContext,
     id?: string
   ): DimensionEntity {
@@ -207,11 +208,11 @@ export class RadialDimensionTool implements Tool {
           ...(id !== undefined ? { id } : {}),
         }
       ),
-      target.center
+      at
     )
   }
 
-  private place(at: Vec2, ctx: ToolContext): void {
+  private place(at: Vec3, ctx: ToolContext): void {
     if (this.state.phase !== "location") return
     ctx.execute(new AddEntityCommand(this.pending(this.state.target, at, ctx)))
     ctx.endCommand()
@@ -281,7 +282,7 @@ const RADIAL_PREVIEW_ID = "__radial_dimension_preview__"
 
 /** A circular thing a radial dimension can measure, and how much of it exists. */
 interface MeasuredCircle {
-  /** At the object's height, the plane the dimension lies in. */
+  /** At the object's height: a location typed relative to it keeps that Z. */
   readonly center: Vec3
   readonly radius: number
   /** The sweep a partial arc covers; null for a whole circle. */

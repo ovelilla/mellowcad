@@ -1,7 +1,9 @@
 import { describe, expect, it } from "vitest"
 import type {
+  ArcEntity,
   CircleEntity,
   DimensionEntity,
+  HatchEntity,
   InsertEntity,
   LineEntity,
   PolylineEntity,
@@ -13,10 +15,11 @@ import {
   lineStartZ,
   withDeltaZ,
   withElevation,
+  withThickness,
 } from "../../domain/entities"
 import { SnapType } from "../snapping/types"
 import { createHarness, type CadHarness } from "../../../test/harness"
-import { circleOf, lineOf, p } from "../../../test/builders"
+import { circleOf, lineOf, p, polylineOf, rectOf } from "../../../test/builders"
 
 /**
  * The Z a point carries into what a command makes: a snap takes the object's,
@@ -274,33 +277,48 @@ describe("BLOCK and INSERT", () => {
 })
 
 describe("dimensions", () => {
-  it("DIMLINEAR lies in the plane of its first origin", () => {
+  it("DIMLINEAR lies at the height of its dimension line, not of its origins", () => {
     const cad = createHarness({ entities: [RAISED], snap: true })
 
     cad.command("DIMLINEAR").click(p(0, 0)).click(p(100, 0)).click(p(50, -30))
 
-    expect(entityElevation(drawnDimension(cad))).toBe(10)
+    expect(entityElevation(drawnDimension(cad))).toBe(0)
   })
 
-  it("DIMLINEAR on a picked object takes the object's height", () => {
+  it("DIMLINEAR on a picked object lies at the elevation of the location", () => {
     const cad = createHarness({ entities: [RAISED] })
 
+    cad.command("ELEV").type("3").enter().type("0").enter()
     cad.command("DIMLINEAR").enter().click(p(50, 0)).click(p(50, -30))
 
-    expect(entityElevation(drawnDimension(cad))).toBe(10)
+    expect(entityElevation(drawnDimension(cad))).toBe(3)
   })
 
-  it("DIMRADIUS lies in the plane of the circle it measures", () => {
+  it("DIMLINEAR takes the height of a location snapped to an object", () => {
+    const cad = createHarness({
+      entities: [
+        lineOf(p(0, 0), p(100, 0), { id: "REF-A" }),
+        withElevation(lineOf(p(0, -40), p(100, -40), { id: "REF-B" }), 7),
+      ],
+      snap: true,
+    })
+
+    cad.command("DIMLINEAR").click(p(0, 0)).click(p(100, 0)).click(p(0, -40))
+
+    expect(entityElevation(drawnDimension(cad))).toBe(7)
+  })
+
+  it("DIMRADIUS lies at the height of its location, not of the circle", () => {
     const cad = createHarness({
       entities: [withElevation(circleOf(p(0, 0), 20, { id: "REF-C" }), 12)],
     })
 
     cad.command("DIMRADIUS").click(p(20, 0)).click(p(40, 40))
 
-    expect(entityElevation(drawnDimension(cad))).toBe(12)
+    expect(entityElevation(drawnDimension(cad))).toBe(0)
   })
 
-  it("DIMANGULAR between two lines lies in the plane of the first", () => {
+  it("DIMANGULAR lies at the height of its arc's location", () => {
     const cad = createHarness({
       entities: [
         RAISED,
@@ -310,7 +328,7 @@ describe("dimensions", () => {
 
     cad.command("DIMANGULAR").click(p(50, 0)).click(p(0, 50)).click(p(30, 30))
 
-    expect(entityElevation(drawnDimension(cad))).toBe(10)
+    expect(entityElevation(drawnDimension(cad))).toBe(0)
   })
 
   it("DIMCONTINUE lies in the plane of the dimension it continues", () => {
@@ -326,5 +344,358 @@ describe("dimensions", () => {
     cad.command("DIMCONTINUE").click(p(180, 0))
 
     expect(entityElevation(drawnDimension(cad))).toBe(6)
+  })
+})
+
+/** A line that climbs from Z 0 at x = -200 to Z 40 at x = 200. */
+const SLOPING = withDeltaZ(lineOf(p(-200, 0), p(200, 0), { id: "A" }), 40)
+
+function lineZ(line: LineEntity): [number, number] {
+  return line.start.x <= line.end.x
+    ? [lineStartZ(line), lineEndZ(line)]
+    : [lineEndZ(line), lineStartZ(line)]
+}
+
+function pieces(cad: CadHarness, ...edges: string[]): LineEntity[] {
+  return cad
+    .entities()
+    .filter((e): e is LineEntity => e.type === "line" && !edges.includes(e.id))
+    .sort((a, b) => Math.min(a.start.x, a.end.x) - Math.min(b.start.x, b.end.x))
+}
+
+describe("editing commands", () => {
+  it("TRIM gives each piece of a sloping line its Z where it was cut", () => {
+    const cad = createHarness({
+      entities: [
+        SLOPING,
+        lineOf(p(-100, -100), p(-100, 100), { id: "V1" }),
+        lineOf(p(100, -100), p(100, 100), { id: "V2" }),
+      ],
+    })
+
+    cad.command("TRIM").click(p(0, 0))
+
+    const [left, right] = pieces(cad, "V1", "V2")
+    expect(lineZ(left)).toEqual([0, 10])
+    expect(lineZ(right)).toEqual([30, 40])
+  })
+
+  it("EXTEND carries a sloping line on up its own slope", () => {
+    const cad = createHarness({
+      entities: [
+        withDeltaZ(lineOf(p(-200, 0), p(-100, 0), { id: "T" }), 10),
+        lineOf(p(0, -100), p(0, 100), { id: "B" }),
+      ],
+    })
+
+    cad.command("EXTEND").click(p(-110, 0))
+
+    const line = cad.byId<LineEntity>("T")
+    expect(line.end).toBeCloseToPoint(p(0, 0))
+    expect(lineZ(line)[0]).toBe(0)
+    expect(lineZ(line)[1]).toBeCloseTo(20)
+  })
+
+  it("BREAK gives each piece of a sloping line its Z where it was broken", () => {
+    const cad = createHarness({ entities: [SLOPING] })
+
+    cad.command("BREAK").click(p(-100, 0)).click(p(100, 0))
+
+    const [left, right] = pieces(cad)
+    expect(lineZ(left)).toEqual([0, 10])
+    expect(lineZ(right)).toEqual([30, 40])
+  })
+
+  it("OFFSET keeps the elevation, the rise and the thickness", () => {
+    const cad = createHarness({
+      entities: [{ ...SLOPING, elevation: 8, thickness: 2 }],
+    })
+
+    cad.command("OFFSET").type("20").enter().click(p(0, 0)).click(p(0, 50))
+
+    const copy = pieces(cad, "A")[0]
+    expect(copy).toMatchObject({ elevation: 8, deltaZ: 40, thickness: 2 })
+  })
+
+  describe("FILLET and CHAMFER", () => {
+    const corner = (secondElevation: number) => [
+      withThickness(
+        withElevation(lineOf(p(-50, 0), p(200, 0), { id: "L1" }), 6),
+        2
+      ),
+      withThickness(
+        withElevation(
+          lineOf(p(0, -50), p(0, 200), { id: "L2" }),
+          secondElevation
+        ),
+        5
+      ),
+    ]
+
+    it("FILLET refuses two lines at different heights, with AutoCAD's words", () => {
+      const cad = createHarness({ entities: corner(9) })
+
+      cad.command("FILLET").option("Radius").type("50").enter()
+      cad.click(p(100, 0)).click(p(0, 100))
+
+      expect(cad.commandLog()).toContain("Lines are non-coplanar.")
+      expect(cad.typeCounts()).toEqual({ line: 2 })
+      expect(cad.byId<LineEntity>("L1").start).toBeCloseToPoint(p(-50, 0))
+      // Back at the first prompt, as AutoCAD's is.
+      expect(cad.activeToolId()).toBe("fillet")
+      cad.click(p(100, 0))
+      expect(cad.typeCounts()).toEqual({ line: 2 })
+    })
+
+    it("FILLET refuses a rising line", () => {
+      const [first, second] = corner(6)
+      const cad = createHarness({ entities: [first, withDeltaZ(second, 3)] })
+
+      cad.command("FILLET").click(p(100, 0)).click(p(0, 100))
+
+      expect(cad.commandLog()).toContain("Lines are non-coplanar.")
+    })
+
+    it("FILLET puts the arc at the first line's height and thickness", () => {
+      const cad = createHarness({ entities: corner(6) })
+
+      cad.command("FILLET").option("Radius").type("50").enter()
+      cad.click(p(100, 0)).click(p(0, 100))
+
+      expect(cad.only<ArcEntity>("arc")).toMatchObject({
+        elevation: 6,
+        thickness: 2,
+      })
+    })
+
+    it("CHAMFER refuses two lines at different heights", () => {
+      const cad = createHarness({ entities: corner(9) })
+
+      cad
+        .command("CHAMFER")
+        .option("Distance")
+        .type("40", "dist1")
+        .type("60", "dist2")
+        .enter()
+        .click(p(100, 0))
+        .click(p(0, 100))
+
+      expect(cad.commandLog()).toContain("Lines are non-coplanar.")
+      expect(cad.typeCounts()).toEqual({ line: 2 })
+    })
+
+    it("CHAMFER puts the bevel at the first line's height and thickness", () => {
+      const cad = createHarness({ entities: corner(6) })
+
+      cad
+        .command("CHAMFER")
+        .option("Distance")
+        .type("40", "dist1")
+        .type("60", "dist2")
+        .enter()
+        .click(p(100, 0))
+        .click(p(0, 100))
+
+      const bevel = pieces(cad, "L1", "L2")[0]
+      expect(bevel).toMatchObject({ elevation: 6, thickness: 2 })
+      expect(bevel.deltaZ).toBeUndefined()
+    })
+  })
+
+  describe("JOIN", () => {
+    it("joins touching objects in one plane into a polyline at that height", () => {
+      const cad = createHarness({
+        entities: [
+          withElevation(lineOf(p(0, 0), p(100, 0), { id: "J1" }), 7),
+          withElevation(lineOf(p(100, 0), p(100, 100), { id: "J2" }), 7),
+        ],
+      })
+
+      cad.selectAll().command("JOIN")
+
+      expect(entityElevation(cad.only<PolylineEntity>("polyline"))).toBe(7)
+    })
+
+    it("does not join objects that touch in plan at different heights", () => {
+      const cad = createHarness({
+        entities: [
+          withElevation(lineOf(p(0, 0), p(100, 0), { id: "J1" }), 7),
+          lineOf(p(100, 0), p(100, 100), { id: "J2" }),
+        ],
+      })
+
+      cad.selectAll().command("JOIN")
+
+      expect(cad.typeCounts()).toEqual({ line: 2 })
+      expect(cad.commandLog()).toContain(
+        "0 objects joined, 2 objects discarded from the operation"
+      )
+    })
+
+    it("leaves a rising line out", () => {
+      const cad = createHarness({
+        entities: [
+          lineOf(p(0, 0), p(100, 0), { id: "J1" }),
+          withDeltaZ(lineOf(p(100, 0), p(100, 100), { id: "J2" }), 5),
+        ],
+      })
+
+      cad.selectAll().command("JOIN")
+
+      expect(cad.typeCounts()).toEqual({ line: 2 })
+    })
+  })
+
+  describe("STRETCH", () => {
+    it("moves a caught line end in Z and leaves the other where it was", () => {
+      const cad = createHarness({
+        entities: [lineOf(p(0, 0), p(200, 0), { id: "L1" })],
+      })
+
+      cad
+        .command("STRETCH")
+        .drag(p(250, 50), p(150, -50))
+        .enter()
+        .click(p(200, 0))
+        .type("@100,0,5")
+        .enter()
+
+      const line = cad.byId<LineEntity>("L1")
+      expect(line.end).toBeCloseToPoint(p(300, 0))
+      expect([lineStartZ(line), lineEndZ(line)]).toEqual([0, 5])
+    })
+
+    it("moves a polyline wholly inside the window up, but not one caught in part", () => {
+      const cad = createHarness({
+        entities: [
+          polylineOf([p(0, 0), p(50, 0), p(50, 50)], { id: "IN" }),
+          polylineOf([p(0, 200), p(300, 200)], { id: "PART" }),
+        ],
+      })
+
+      cad
+        .command("STRETCH")
+        .drag(p(100, 250), p(-50, -50))
+        .enter()
+        .click(p(0, 0))
+        .type("@10,0,5")
+        .enter()
+
+      const inside = cad.byId<PolylineEntity>("IN")
+      expect(inside.vertices[0]).toBeCloseToPoint(p(10, 0))
+      expect(entityElevation(inside)).toBe(5)
+      const part = cad.byId<PolylineEntity>("PART")
+      expect(part.vertices).toBeCloseToPoints([p(10, 200), p(300, 200)])
+      expect(entityElevation(part)).toBe(0)
+    })
+  })
+
+  describe("HATCH", () => {
+    const square = (z: number) =>
+      [
+        lineOf(p(0, 0), p(100, 0)),
+        lineOf(p(100, 0), p(100, 100)),
+        lineOf(p(100, 100), p(0, 100)),
+        lineOf(p(0, 100), p(0, 0)),
+      ].map((line) => withElevation(line, z))
+
+    it("traces only objects at the height of the nearest, and lies there", () => {
+      const cad = createHarness({
+        entities: [...square(5), lineOf(p(50, -50), p(50, 150))],
+      })
+
+      cad.command("HATCH").click(p(20, 50)).enter()
+
+      const hatch = cad.only<HatchEntity>("hatch")
+      expect(entityElevation(hatch)).toBe(5)
+      // The line at Z 0 crossing the square does not split it.
+      expect(hatch.loops[0].vertices).toHaveLength(4)
+    })
+
+    it("finds no boundary when the nearest object's plane encloses nothing", () => {
+      const cad = createHarness({
+        entities: [...square(5), lineOf(p(50, -50), p(50, 150))],
+      })
+
+      cad.command("HATCH").click(p(45, 50))
+
+      expect(cad.commandLog()).toContain("Valid hatch boundary not found.")
+    })
+
+    it("Select objects takes only objects at the first one's height", () => {
+      const cad = createHarness({
+        entities: [
+          withElevation(rectOf(p(0, 0), p(100, 100), { id: "R1" }), 3),
+          rectOf(p(200, 0), p(300, 100), { id: "R2" }),
+        ],
+      })
+
+      cad
+        .command("HATCH")
+        .option("Select objects")
+        .click(p(50, 0))
+        .click(p(250, 0))
+        .enter()
+
+      const hatch = cad.only<HatchEntity>("hatch")
+      expect(hatch.loops).toHaveLength(1)
+      expect(entityElevation(hatch)).toBe(3)
+    })
+  })
+
+  describe("grips", () => {
+    it("drag a line's end to the elevation plane, the other end kept", () => {
+      const cad = createHarness({ entities: [RAISED] })
+      cad.select("REF-L")
+
+      cad.drag(p(100, 0), p(150, 0))
+
+      const line = cad.byId<LineEntity>("REF-L")
+      expect(line.end).toBeCloseToPoint(p(150, 0))
+      expect([lineStartZ(line), lineEndZ(line)]).toEqual([10, 0])
+    })
+
+    it("take the Z of the object a line's end snaps to", () => {
+      const cad = createHarness({
+        entities: [
+          RAISED,
+          withElevation(lineOf(p(150, 0), p(150, 100), { id: "REF-B" }), 7),
+        ],
+        snap: true,
+      })
+      cad.select("REF-L")
+
+      cad.drag(p(100, 0), p(150, 0))
+
+      expect(lineEndZ(cad.byId<LineEntity>("REF-L"))).toBe(7)
+    })
+
+    it("move an object from its grip down to the elevation plane", () => {
+      const cad = createHarness({
+        entities: [withElevation(circleOf(p(0, 0), 20, { id: "C1" }), 12)],
+      })
+      cad.select("C1")
+
+      cad.drag(p(0, 0), p(50, 50))
+
+      const circle = cad.byId<CircleEntity>("C1")
+      expect(circle.center).toBeCloseToPoint(p(50, 50))
+      expect(entityElevation(circle)).toBe(0)
+    })
+
+    it("keep a polyline in its plane", () => {
+      const cad = createHarness({
+        entities: [
+          withElevation(polylineOf([p(0, 0), p(100, 0)], { id: "P1" }), 4),
+        ],
+      })
+      cad.select("P1")
+
+      cad.drag(p(100, 0), p(100, 50))
+
+      const poly = cad.byId<PolylineEntity>("P1")
+      expect(poly.vertices[1]).toEqual({ x: 100, y: 50 })
+      expect(entityElevation(poly)).toBe(4)
+    })
   })
 })

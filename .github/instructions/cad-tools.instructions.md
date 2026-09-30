@@ -215,11 +215,22 @@ instead, or the command-line buffer will swallow them.
   a `Vec3`; ROTATE and MIRROR ignore the Z.
 - **A flat object lies in the plane of the first point that fixed it** (the first vertex of PLINE
   and SPLINE, a CIRCLE's centre or first 2P/3P point, RECTANG's first corner, the insertion point
-  of TEXT, MTEXT, ATTDEF and INSERT, BLOCK's base point, a dimension's first origin — or, picked
-  from an object, that object's plane; chained, the base dimension's): `onPlaneOf(createX(...), first)`, and
+  of TEXT, MTEXT, ATTDEF and INSERT, BLOCK's base point): `onPlaneOf(createX(...), first)`, and
   project the later points (`withZOf(point, first)`) rather than keep their Z. A point computed
   from the first (an ellipse's centre, MTEXT's attachment point) takes its Z the same way.
   `createLine` is the exception: a line has a Z at each end, so it reads its two points' Z itself.
+  **A dimension is the other exception**: it lies at the height of the point that places its
+  dimension line (DIMBASELINE / DIMCONTINUE: the base dimension's), whatever its origins' —
+  snapped on objects above the plane, AutoCAD's still lands on the current elevation.
+- **A grip drags to a point like any click**: unsnapped, the elevation plane; snapped, the
+  object's Z; typed as a distance, the grip's own Z. The base of a move grip is at its object's
+  Z there (`entityZAt`), so a move is `sub3`. Only a line's end grip writes that Z into the object;
+  every other grip is planar and stores `planar(point)`.
+- **An edit that needs its objects coplanar refuses with AutoCAD's message** (`coplanar`, then
+  `linesNonCoplanar` — FILLET and CHAMFER, which go back to their first prompt). JOIN only chains
+  segments in one plane and leaves a rising line out (AutoCAD would make a 3D polyline); HATCH
+  takes its plane from the first boundary it finds — the nearest object to an internal point,
+  the first selected object — and neither traces nor highlights an object at another height.
 - **THICKNESS is given by LINE, CIRCLE, ARC, PLINE and POLYGON only**: wrap what they create in
   `withCurrentThickness(entity, ctx)`. RECTANG has its own Elevation and Thickness, TEXT none, and
   an object rebuilt from another carries the source's (`carryOverrides` / `carryPlane`), never the

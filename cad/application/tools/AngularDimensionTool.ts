@@ -12,9 +12,8 @@ import {
   DimensionEntity,
   Entity,
   entityElevation,
-  entityZAt,
+  onPlaneOf,
   polylineSegmentGeometries,
-  withElevation,
 } from "../../domain/entities"
 import { AddEntityCommand } from "../commands/entityCommands"
 import { DynamicInputSession } from "../input/DynamicInput"
@@ -137,7 +136,6 @@ export class AngularDimensionTool implements Tool {
             vertex: this.state.vertex,
             first: this.state.first,
             second: input.point,
-            plane: this.state.vertex.z,
           },
           ctx
         )
@@ -268,17 +266,18 @@ export class AngularDimensionTool implements Tool {
   /**
    * The dimension as it stands with the arc through `at`. Shared by the live
    * preview and the commit, so what is drawn is what is created. Null while the
-   * gesture is degenerate — a location on the vertex has no arc to draw.
+   * gesture is degenerate — a location on the vertex has no arc to draw. It
+   * lies at the location's height, as DIMLINEAR's does.
    */
   private pending(
     target: AngularTarget,
-    at: Vec2,
+    at: Vec2 | Vec3,
     ctx: ToolContext,
     id?: string
   ): DimensionEntity | null {
     const origins = resolveOrigins(target, at)
     if (!origins) return null
-    return withElevation(
+    return onPlaneOf(
       createDimension("angular", origins.first, origins.second, at, {
         vertex: target.vertex,
         text: this.text,
@@ -287,11 +286,11 @@ export class AngularDimensionTool implements Tool {
         layerId: ctx.document.getCurrentLayerId(),
         ...(id !== undefined ? { id } : {}),
       }),
-      target.plane
+      at
     )
   }
 
-  private place(at: Vec2, ctx: ToolContext): void {
+  private place(at: Vec3, ctx: ToolContext): void {
     if (this.state.phase !== "location") return
     const dim = this.pending(this.state.target, at, ctx)
     if (!dim) return
@@ -365,7 +364,6 @@ export class AngularDimensionTool implements Tool {
         vertex: crossing.point,
         a,
         b,
-        plane: entityZAt(a.entity, crossing.point),
       },
       ctx
     )
@@ -398,7 +396,6 @@ export class AngularDimensionTool implements Tool {
           vertex: this.state.vertex,
           first: this.state.first,
           second: point,
-          plane: this.state.vertex.z,
         },
         commitCtx
       )
@@ -475,8 +472,7 @@ interface PickedLine {
 /**
  * What the angle is being taken from. A line pair keeps the lines rather than
  * two endpoints, because which end of each counts depends on where the location
- * is dragged — the rule that keeps the measured arc under 180°. `plane` is the
- * Z of what fixed it first: the vertex typed, the arc or circle, the first line.
+ * is dragged — the rule that keeps the measured arc under 180°.
  */
 type AngularTarget =
   | {
@@ -484,14 +480,12 @@ type AngularTarget =
       readonly vertex: Vec2
       readonly first: Vec2
       readonly second: Vec2
-      readonly plane: number
     }
   | {
       readonly kind: "lines"
       readonly vertex: Vec2
       readonly a: PickedLine
       readonly b: PickedLine
-      readonly plane: number
     }
 
 /** The two angle endpoints, given where the dimension arc is being placed. */
@@ -547,7 +541,6 @@ function pickedSweep(entity: Entity, at: Vec2): AngularTarget | null {
       vertex: entity.center,
       first: arcStartPoint(entity),
       second: arcEndPoint(entity),
-      plane: entityElevation(entity),
     }
   }
   if (entity.type !== "polyline") return null
@@ -569,7 +562,6 @@ function pickedSweep(entity: Entity, at: Vec2): AngularTarget | null {
         vertex: seg.center,
         first: seg.a,
         second: seg.b,
-        plane: entityElevation(entity),
       }
     }
   }

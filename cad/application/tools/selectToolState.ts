@@ -1,4 +1,5 @@
 import { Vec2 } from "../../geometry/Vec2"
+import { Vec3 } from "../../geometry/Vec3"
 import { Entity, EntityId } from "../../domain/entities"
 
 export type LineEnd = "start" | "end"
@@ -76,8 +77,8 @@ export type SelectToolState =
       readonly dir: Vec2
       /** Original line length, so typed input is a *delta* lengthening. */
       readonly origLength: number
-      /** Live position of the moving endpoint (projected onto the axis). */
-      readonly moving: Vec2
+      /** Live position of the moving endpoint (projected onto the axis), with the Z it will take. */
+      readonly moving: Vec3
       /** Screen position where the grip was grabbed (drag vs click-click). */
       readonly pressScreen: Vec2
     }
@@ -86,10 +87,10 @@ export type SelectToolState =
       readonly phase: "moveLine"
       /** Snapshot of every entity being moved (the whole selection). */
       readonly originals: readonly Entity[]
-      /** The base point (grabbed line's midpoint) that anchors the move. */
-      readonly origMid: Vec2
+      /** The base point (grabbed line's midpoint) that anchors the move, at its object's Z. */
+      readonly origMid: Vec3
       /** Live position of the base point (follows the cursor). */
-      readonly current: Vec2
+      readonly current: Vec3
       /** Screen position where the grip was grabbed (drag vs click-click). */
       readonly pressScreen: Vec2
     }

@@ -15,6 +15,7 @@ import {
   createLine,
   carryOverrides,
   carryPlane,
+  coplanar,
   createPolyline,
   polylineSegmentGeometries,
   polylineSegments,
@@ -200,15 +201,17 @@ export class FilletTool implements Tool {
     const prims = [line(line1.start, line1.end, selectedStroke)]
     if (!hover) return prims
 
-    const result = filletLines(
-      line1.start,
-      line1.end,
-      hover.start,
-      hover.end,
-      pick1,
-      cursor,
-      this.radius
-    )
+    const result = coplanar(line1, hover)
+      ? filletLines(
+          line1.start,
+          line1.end,
+          hover.start,
+          hover.end,
+          pick1,
+          cursor,
+          this.radius
+        )
+      : null
     if (!result) {
       prims.push(line(hover.start, hover.end, hoverStroke))
       return prims
@@ -250,6 +253,12 @@ export class FilletTool implements Tool {
     pick2: Vec2,
     ctx: ToolContext
   ): void {
+    if (!coplanar(line1, line2)) {
+      ctx.report(ctx.text.message("linesNonCoplanar"), "error")
+      this.state = { phase: "first", hover: null }
+      ctx.requestRender()
+      return
+    }
     const result = filletLines(
       line1.start,
       line1.end,

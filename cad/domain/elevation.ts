@@ -134,3 +134,47 @@ export function entityZAt(entity: Entity, point: Vec2): number {
     lengthSq
   return lineStartZ(entity) + t * entity.deltaZ
 }
+
+export function withLineZ(
+  line: LineEntity,
+  startZ: number,
+  endZ: number
+): LineEntity {
+  return withDeltaZ(withElevation(line, startZ), endZ - startZ)
+}
+
+/**
+ * `piece`, cut from `source` or grown out of it along its own run (TRIM,
+ * EXTEND, BREAK), with a line's ends at the Z the source has there rather than
+ * the source's whole rise.
+ */
+export function alongSource<T extends Entity>(source: Entity, piece: T): T {
+  if (piece.type !== "line" || source.type !== "line") return piece
+  return withLineZ(
+    piece,
+    entityZAt(source, piece.start),
+    entityZAt(source, piece.end)
+  ) as T
+}
+
+const PLANE_TOLERANCE = 1e-9
+
+/** Whether the object lies in one plane parallel to the XY plane: a line must not rise. */
+export function isLevel(entity: Entity): boolean {
+  return (
+    entity.type !== "line" || Math.abs(entity.deltaZ ?? 0) <= PLANE_TOLERANCE
+  )
+}
+
+/**
+ * Whether two objects share a plane parallel to the XY plane — AutoCAD's
+ * "Lines are non-coplanar" test, whose cause it gives as "one or more of the
+ * line vertices is not at the same elevation as the other vertices".
+ */
+export function coplanar(a: Entity, b: Entity): boolean {
+  return (
+    isLevel(a) &&
+    isLevel(b) &&
+    Math.abs(entityElevation(a) - entityElevation(b)) <= PLANE_TOLERANCE
+  )
+}

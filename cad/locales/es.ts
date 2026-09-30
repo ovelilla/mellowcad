@@ -1336,6 +1336,25 @@ export const es: EngineLocale = {
         [
           "z"
         ]
+      ],
+      "linesNonCoplanar": "Las líneas no son coplanares.",
+      "nothingJoined": [
+        "0 objetos unidos, ",
+        [
+          "count",
+          2,
+          {
+            "one": [
+              0,
+              " objeto descartado"
+            ],
+            "other": [
+              0,
+              " objetos descartados"
+            ]
+          }
+        ],
+        " de la operación"
       ]
     },
     "feedback": {

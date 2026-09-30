@@ -718,7 +718,9 @@
       "ucsUndefined": "No se encuentra el SCP {name}.",
       "rectangleModes": "Modos de rectángulo actuales:{hasElevation, select, yes { Elevación={elevation}} other {}}{hasThickness, select, yes { Alt-objeto={thickness}} other {}}",
       "distanceReport": "Distancia = {distance},  Ángulo en plano XY = {angleInPlane},  Ángulo desde plano XY = {angleFromPlane}\nDelta X = {deltaX},  Delta Y = {deltaY},   Delta Z = {deltaZ}",
-      "idReport": "X = {x}     Y = {y}     Z = {z}"
+      "idReport": "X = {x}     Y = {y}     Z = {z}",
+      "linesNonCoplanar": "Las líneas no son coplanares.",
+      "nothingJoined": "0 objetos unidos, {count, plural, one {# objeto descartado} other {# objetos descartados}} de la operación"
     },
     "feedback": {
       "snap": {

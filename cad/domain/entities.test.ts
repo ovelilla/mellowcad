@@ -18,14 +18,17 @@ import {
   assignEntityLayer,
   assignEntityLinetype,
   assignEntityLineweight,
+  carryPiece,
   circleArea,
   circleCircumference,
   closestOnEntity,
+  coplanar,
   copyEntity,
   createBlockDefinition,
   createDimension,
   createHatch,
   createInsert,
+  createLine,
   createPolyline,
   dimensionAxisAngle,
   dimensionMeasurement,
@@ -50,6 +53,7 @@ import {
   lineEndZ,
   lineLength,
   lineMidpoint,
+  lineStartZ,
   matchEntityProperties,
   measureTextWidth,
   mirrorEntity,
@@ -639,6 +643,51 @@ describe("Z", () => {
     // A polyline is planar: its vertices cannot rise one by one.
     const poly = polylineOf([p(0, 0), p(10, 0)])
     expect(stretchEntity(poly, up, (q) => q.x > 5).elevation).toBeUndefined()
+  })
+
+  it("stretching an object with every point caught moves it whole, Z included", () => {
+    fc.assert(
+      fc.property(entityArb, point, zValue, (entity, delta, dz) => {
+        const displacement = { ...delta, z: dz }
+        expectSameShape(
+          stretchEntity(entity, displacement, () => true),
+          translateEntity(entity, displacement)
+        )
+      })
+    )
+  })
+
+  it("gives a piece of a line the Z the line has at each of its ends", () => {
+    const sloping: LineEntity = {
+      ...lineOf(p(0, 0), p(100, 0), { id: "L1" }),
+      elevation: 10,
+      deltaZ: 20,
+      thickness: 2,
+    }
+    const piece = carryPiece(sloping, createLine(p(25, 0), p(150, 0)))
+    expect(lineStartZ(piece)).toBeCloseTo(15)
+    expect(lineEndZ(piece)).toBeCloseTo(40)
+    expect(piece.thickness).toBe(2)
+
+    fc.assert(
+      fc.property(entityArb, (entity) => {
+        fc.pre(entity.type === "line" && !V.equals(entity.start, entity.end))
+        const line = entity as LineEntity
+        expectSameShape(
+          carryPiece(line, createLine(line.start, line.end, line.layerId)),
+          line
+        )
+      })
+    )
+  })
+
+  it("counts as coplanar only objects at one elevation with no line rising", () => {
+    const flat = withElevation(lineOf(p(0, 0), p(10, 0)), 4)
+    expect(coplanar(flat, withElevation(circleOf(p(0, 0), 5), 4))).toBe(true)
+    expect(coplanar(flat, withElevation(lineOf(p(0, 0), p(0, 10)), 5))).toBe(
+      false
+    )
+    expect(coplanar(flat, { ...flat, deltaZ: 3 })).toBe(false)
   })
 
   it("keeps a polyline's overrides and plane through a grip edit", () => {

@@ -4,6 +4,7 @@ import {
   createLine,
   carryOverrides,
   carryPlane,
+  coplanar,
   createPolyline,
   polylineBulge,
   polylineSegmentGeometries,
@@ -185,16 +186,18 @@ export class ChamferTool implements Tool {
     const prims = [line(line1.start, line1.end, selectedStroke)]
     if (!hover) return prims
 
-    const result = chamferLines(
-      line1.start,
-      line1.end,
-      hover.start,
-      hover.end,
-      pick1,
-      cursor,
-      this.distance1,
-      this.distance2
-    )
+    const result = coplanar(line1, hover)
+      ? chamferLines(
+          line1.start,
+          line1.end,
+          hover.start,
+          hover.end,
+          pick1,
+          cursor,
+          this.distance1,
+          this.distance2
+        )
+      : null
     if (!result) {
       prims.push(line(hover.start, hover.end, hoverStroke))
       return prims
@@ -232,6 +235,12 @@ export class ChamferTool implements Tool {
     pick2: Vec2,
     ctx: ToolContext
   ): void {
+    if (!coplanar(line1, line2)) {
+      ctx.report(ctx.text.message("linesNonCoplanar"), "error")
+      this.state = { phase: "first", hover: null }
+      ctx.requestRender()
+      return
+    }
     const result = chamferLines(
       line1.start,
       line1.end,

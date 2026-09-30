@@ -6,6 +6,7 @@ import { TextStyleId } from "./textStyles"
 import { DimStyleId } from "./dimStyles"
 import { Entity } from "./entityTypes"
 import {
+  alongSource,
   carryPlane,
   entityThickness,
   hasThickness,
@@ -181,6 +182,11 @@ export function carryOverrides<T extends Entity>(source: Entity, copy: T): T {
       ? assignEntityLineweight(withLinetype, source.lineweight)
       : withLinetype) as T
   )
+}
+
+/** {@link carryOverrides} for a piece of `source` along its own run: a line's ends keep the Z they had there. */
+export function carryPiece<T extends Entity>(source: Entity, piece: T): T {
+  return alongSource(source, carryOverrides(source, piece))
 }
 
 /**

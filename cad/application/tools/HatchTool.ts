@@ -6,10 +6,14 @@ import {
   EntityId,
   HatchEntity,
   HatchLoop,
+  closestOnEntity,
   createHatch,
   entityBounds,
+  entityElevation,
   hatchGeometry,
   hatchLoopFromEntity,
+  isLevel,
+  withElevation,
 } from "../../domain/entities"
 import {
   DEFAULT_HATCH_ANGLE,
@@ -72,6 +76,8 @@ export class HatchTool implements Tool {
   private preview: HatchEntity | null = null
   /** Boundaries traced from internal points, one prompt at a time. */
   private picked: HatchLoop[] = []
+  /** The plane the traced boundaries lie in, fixed by the first one found. */
+  private pickedPlane: number | null = null
   /** Which boundary prompt Properties returns to. */
   private route: "point" | "select" = "point"
 
@@ -87,6 +93,7 @@ export class HatchTool implements Tool {
     // set" — the boundary set starts empty every time.
     ctx.selection.clear()
     this.picked = []
+    this.pickedPlane = null
     this.enterPoint(ctx)
   }
 
@@ -94,6 +101,7 @@ export class HatchTool implements Tool {
     this.state = { phase: "point" }
     this.preview = null
     this.picked = []
+    this.pickedPlane = null
     ctx.dynamicInput.close()
   }
 
@@ -154,10 +162,11 @@ export class HatchTool implements Tool {
     if (input.button !== 0) return
     if (this.state.phase === "pressed") {
       const hit = ctx.pick(input.world)
-      if (hit && hatchLoopFromEntity(hit)) {
+      if (hit && this.canBound(hit, this.plane(ctx))) {
         this.applyPick([hit.id], this.state.subtract, ctx)
       }
     } else if (this.state.phase === "boxing") {
+      let plane = this.plane(ctx)
       const ids = boxSelect(
         ctx.document,
         this.state.startWorld,
@@ -165,7 +174,9 @@ export class HatchTool implements Tool {
         ctx.viewport
       ).filter((id) => {
         const entity = ctx.document.get(id)
-        return entity !== undefined && hatchLoopFromEntity(entity) !== null
+        if (entity === undefined || !this.canBound(entity, plane)) return false
+        plane ??= entityElevation(entity)
+        return true
       })
       this.applyPick(ids, this.state.subtract, ctx)
     } else {
@@ -248,7 +259,33 @@ export class HatchTool implements Tool {
   private rolloverAt(world: Vec2, ctx: ToolContext): Entity | null {
     const hit = ctx.pick(world)
     if (!hit || ctx.selection.has(hit.id)) return null
-    return hatchLoopFromEntity(hit) ? hit : null
+    return this.canBound(hit, this.plane(ctx)) ? hit : null
+  }
+
+  /**
+   * Whether `entity` closes an area on its own in `plane`: "enclosed areas can
+   * be hatched only if they are in a plane parallel to the XY plane of the
+   * current UCS", so once the hatch has a plane an object at another height is
+   * not taken, and never highlights.
+   */
+  private canBound(entity: Entity, plane: number | null): boolean {
+    return (
+      hatchLoopFromEntity(entity) !== null &&
+      (plane === null || samePlane(entityElevation(entity), plane))
+    )
+  }
+
+  /**
+   * The height of the hatch being built: that of the first boundary found, by
+   * either route.
+   */
+  private plane(ctx: ToolContext): number | null {
+    if (this.pickedPlane !== null) return this.pickedPlane
+    for (const id of ctx.selection.toArray()) {
+      const entity = ctx.document.get(id)
+      if (entity && hatchLoopFromEntity(entity)) return entityElevation(entity)
+    }
+    return null
   }
 
   private applyPick(
@@ -268,12 +305,23 @@ export class HatchTool implements Tool {
    * a point that looks enclosed but is not needs an answer.
    */
   private addInternalPoint(point: Vec2, ctx: ToolContext): void {
-    const loops = traceBoundaryLoops(point, this.boundarySet(ctx))
+    const candidates = this.boundarySet(ctx).filter(
+      (e) => isLevel(e) && BOUNDARY_TYPES.has(e.type)
+    )
+    const plane = this.plane(ctx) ?? nearestPlane(point, candidates)
+    const loops =
+      plane === null
+        ? null
+        : traceBoundaryLoops(
+            point,
+            candidates.filter((e) => samePlane(entityElevation(e), plane))
+          )
     if (!loops) {
       // What AutoCAD answers when an internal point is not enclosed by anything.
       ctx.report(ctx.text.message("hatchNoBoundary"), "error")
     } else {
       this.picked.push(...loops)
+      this.pickedPlane = plane
     }
     this.enterPoint(ctx)
     ctx.requestRender()
@@ -337,14 +385,17 @@ export class HatchTool implements Tool {
   ): HatchEntity {
     // HPANG is measured from the UCS X axis and HPORIGIN (0,0) is the UCS
     // origin, so a pattern lines up with the UCS it was drawn in.
-    return createHatch(loops, {
-      patternId: this.patternId,
-      patternScale: this.patternScale,
-      patternAngle: ucsAngleToWorld(ctx.ucs, this.patternAngle),
-      origin: ctx.ucs.origin,
-      layerId: ctx.document.getCurrentLayerId(),
-      id,
-    })
+    return withElevation(
+      createHatch(loops, {
+        patternId: this.patternId,
+        patternScale: this.patternScale,
+        patternAngle: ucsAngleToWorld(ctx.ucs, this.patternAngle),
+        origin: ctx.ucs.origin,
+        layerId: ctx.document.getCurrentLayerId(),
+        id,
+      }),
+      this.plane(ctx) ?? 0
+    )
   }
 
   private commit(ctx: ToolContext): void {
@@ -513,6 +564,39 @@ function overlaps(a: Bounds, b: Bounds): boolean {
     a.min.y <= b.max.y &&
     b.min.y <= a.max.y
   )
+}
+
+function samePlane(a: number, b: number): boolean {
+  return Math.abs(a - b) <= 1e-9
+}
+
+/** What a trace builds a boundary from (`traceBoundaryLoops` ignores the rest). */
+const BOUNDARY_TYPES = new Set<Entity["type"]>([
+  "line",
+  "circle",
+  "arc",
+  "polyline",
+])
+
+/**
+ * The height of the object nearest `point`: -HATCH's default ray casting "runs
+ * a line from the point you specify to the nearest object and then traces the
+ * boundary", so the first object found fixes the plane the boundary lies in.
+ */
+function nearestPlane(
+  point: Vec2,
+  candidates: readonly Entity[]
+): number | null {
+  let best: Entity | null = null
+  let bestDistance = Infinity
+  for (const entity of candidates) {
+    const distance = closestOnEntity(entity, point).distance
+    if (distance < bestDistance) {
+      bestDistance = distance
+      best = entity
+    }
+  }
+  return best ? entityElevation(best) : null
 }
 
 type HatchState =

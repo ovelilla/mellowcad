@@ -184,6 +184,7 @@ export {
   assignEntityLinetype,
   assignEntityLineweight,
   carryOverrides,
+  carryPiece,
   matchEntityProperties,
 } from "./entityOverrides"
 
@@ -203,6 +204,9 @@ export {
   carryPlane,
   onPlaneOf,
   entityZAt,
+  withLineZ,
+  isLevel,
+  coplanar,
 } from "./elevation"
 
 export {

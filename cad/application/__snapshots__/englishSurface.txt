@@ -2193,6 +2193,7 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
   info| 2 were not able to be exploded.
 > JOIN
   command| JOIN
+  error| 0 objects joined, 2 objects discarded from the operation
 > escape
   properties: -
 

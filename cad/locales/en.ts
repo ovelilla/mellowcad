@@ -1104,6 +1104,25 @@ export const en: EngineCatalog = {
         [
           "z"
         ]
+      ],
+      "linesNonCoplanar": "Lines are non-coplanar.",
+      "nothingJoined": [
+        "0 objects joined, ",
+        [
+          "count",
+          2,
+          {
+            "one": [
+              0,
+              " object"
+            ],
+            "other": [
+              0,
+              " objects"
+            ]
+          }
+        ],
+        " discarded from the operation"
       ]
     },
     "feedback": {

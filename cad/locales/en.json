@@ -680,7 +680,9 @@
       "ucsUndefined": "Cannot find UCS {name}.",
       "rectangleModes": "Current rectangle modes:{hasElevation, select, yes { Elevation={elevation}} other {}}{hasThickness, select, yes { Thickness={thickness}} other {}}",
       "distanceReport": "Distance = {distance},  Angle in XY Plane = {angleInPlane},  Angle from XY Plane = {angleFromPlane}\nDelta X = {deltaX},  Delta Y = {deltaY},   Delta Z = {deltaZ}",
-      "idReport": "X = {x}     Y = {y}     Z = {z}"
+      "idReport": "X = {x}     Y = {y}     Z = {z}",
+      "linesNonCoplanar": "Lines are non-coplanar.",
+      "nothingJoined": "0 objects joined, {count, plural, one {# object} other {# objects}} discarded from the operation"
     },
     "feedback": {
       "snap": {

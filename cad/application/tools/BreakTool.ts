@@ -2,7 +2,7 @@ import { Vec2, V } from "../../geometry/Vec2"
 import {
   arcSweepAngle,
   ArcEntity,
-  carryOverrides,
+  carryPiece,
   CircleEntity,
   createArc,
   createLine,
@@ -249,7 +249,7 @@ function toEntity(source: Entity, geom: BreakGeom, id?: EntityId): Entity {
           source.layerId,
           id
         )
-  return carryOverrides(source, entity)
+  return carryPiece(source, entity)
 }
 
 function geomPrimitive(

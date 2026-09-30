@@ -313,8 +313,13 @@ export class DimensionTool implements Tool {
     }
   }
 
-  /** Creates the dimension and ends the command, as AutoCAD does. */
-  private place(linePoint: Vec2, ctx: ToolContext): void {
+  /**
+   * Creates the dimension and ends the command, as AutoCAD does. It lies at
+   * the height of the point that places its dimension line, not at its
+   * origins': "the dimension is always created at the current elevation" when
+   * the origins are snapped on objects above it.
+   */
+  private place(linePoint: Vec3, ctx: ToolContext): void {
     if (this.state.phase !== "line") return
     const dim = onPlaneOf(
       createDimension(
@@ -330,7 +335,7 @@ export class DimensionTool implements Tool {
           layerId: ctx.document.getCurrentLayerId(),
         }
       ),
-      this.state.first
+      linePoint
     )
     ctx.execute(new AddEntityCommand(dim))
     ctx.endCommand()
@@ -553,7 +558,6 @@ type DimensionToolState =
   | { readonly phase: "select"; readonly hover: Entity | null }
   | {
       readonly phase: "second"
-      /** The first origin's height is the plane the dimension lies in. */
       readonly first: Vec3
       readonly cursor: Vec2
     }

@@ -7,6 +7,8 @@ import {
   arcSweepAngle,
   carryOverrides,
   createPolyline,
+  entityElevation,
+  isLevel,
   polylineSegmentGeometries,
 } from "../../domain/entities"
 import { ReplaceEntitiesCommand } from "../commands/entityCommands"
@@ -18,7 +20,7 @@ const JOIN_EPS = 1e-6
 
 /**
  * AutoCAD's JOIN for lines, arcs and polylines: contiguous objects (sharing
- * endpoints) are merged into a single polyline. Objects are chained end-to-end;
+ * endpoints, in one plane) are merged into a single polyline. Objects are chained end-to-end;
  * a chain that closes back on itself becomes a closed polyline. Objects that do
  * not connect to any other selected object are left untouched. **Arc** segments
  * are preserved as polyline arc bulges, so joining lines and arcs yields a
@@ -34,10 +36,15 @@ export class JoinTool extends SelectionActionTool {
     const segments: JoinSegment[] = []
     const sourceOf = new Map<EntityId, Entity>()
     for (const entity of entities) {
+      // WHY: AutoCAD joins a rising line into a 3D polyline, which does not
+      // exist here, so it is left out as a line that touches nothing would be.
+      if (!isLevel(entity)) continue
+      const z = entityElevation(entity)
       if (entity.type === "line") {
         segments.push({
           a: entity.start,
           b: entity.end,
+          z,
           bulge: 0,
           source: entity.id,
         })
@@ -46,6 +53,7 @@ export class JoinTool extends SelectionActionTool {
         segments.push({
           a: arcStartPoint(entity),
           b: arcEndPoint(entity),
+          z,
           bulge: Math.tan(arcSweepAngle(entity) / 4), // CCW start→end
           source: entity.id,
         })
@@ -55,6 +63,7 @@ export class JoinTool extends SelectionActionTool {
           segments.push({
             a: seg.a,
             b: seg.b,
+            z,
             bulge: seg.kind === "arc" ? seg.bulge : 0,
             source: entity.id,
           })
@@ -62,7 +71,6 @@ export class JoinTool extends SelectionActionTool {
         sourceOf.set(entity.id, entity)
       }
     }
-    if (segments.length === 0) return
 
     const removedIds: EntityId[] = []
     const added: Entity[] = []
@@ -89,7 +97,13 @@ export class JoinTool extends SelectionActionTool {
         )
       )
     }
-    if (added.length === 0) return
+    if (added.length === 0) {
+      ctx.report(
+        ctx.text.message("nothingJoined", { count: entities.length }),
+        "error"
+      )
+      return
+    }
 
     ctx.execute(new ReplaceEntitiesCommand(removedIds, added))
     ctx.selection.set(added.map((polyline) => polyline.id))
@@ -99,6 +113,8 @@ export class JoinTool extends SelectionActionTool {
 interface JoinSegment {
   readonly a: Vec2
   readonly b: Vec2
+  /** The plane it lies in: only segments in one plane are contiguous. */
+  readonly z: number
   /** AutoCAD bulge of the segment from `a` to `b` (0 = straight). */
   readonly bulge: number
   readonly source: EntityId
@@ -116,6 +132,10 @@ interface JoinChain {
 
 function samePoint(p: Vec2, q: Vec2): boolean {
   return Math.abs(p.x - q.x) < JOIN_EPS && Math.abs(p.y - q.y) < JOIN_EPS
+}
+
+function samePlane(s: JoinSegment, t: JoinSegment): boolean {
+  return Math.abs(s.z - t.z) < JOIN_EPS
 }
 
 /**
@@ -143,7 +163,7 @@ function chainSegments(segments: readonly JoinSegment[]): JoinChain[] {
       grew = false
       const tail = vertices[vertices.length - 1]
       for (let j = 0; j < segments.length; j++) {
-        if (used[j]) continue
+        if (used[j] || !samePlane(segments[j], seed)) continue
         const s = segments[j]
         if (samePoint(s.a, tail)) {
           vertices.push(s.b)
@@ -163,7 +183,7 @@ function chainSegments(segments: readonly JoinSegment[]): JoinChain[] {
       grew = false
       const head = vertices[0]
       for (let j = 0; j < segments.length; j++) {
-        if (used[j]) continue
+        if (used[j] || !samePlane(segments[j], seed)) continue
         const s = segments[j]
         if (samePoint(s.b, head)) {
           vertices.unshift(s.a)

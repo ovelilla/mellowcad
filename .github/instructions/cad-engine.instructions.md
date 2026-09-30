@@ -426,13 +426,21 @@ its own `baseElevation`, and a reference's attributes their `elevation`.
 - **Transforms take `Vec2 | Vec3`.** A 2D delta or base is Z = 0: a planar move, or a scale about
   the XY plane. `translateEntity` / `copyEntity` shift the plane, `scaleEntity(+Copy)` scales
   elevation, rise and thickness about the base's Z, rotate and mirror leave the Z alone, and
-  `stretchEntity` moves the Z of what moves whole and of a line's caught end — a polyline cannot
-  tilt, so it ignores it.
+  `stretchEntity` moves whole (Z included) an object whose every point is caught, and otherwise
+  moves the Z of a rigid object that moves and of a line's caught end — a polyline, spline, hatch
+  or dimension caught in part cannot tilt, so it ignores it.
 - **Rebuilding an object from another goes through `carryOverrides`**, which carries the overrides
   _and_ the plane and thickness (`carryPlane` alone for a new object that only shares the plane,
   like FILLET's arc). `createX(..., source.layerId, source.id)` on its own is the bug: it keeps the
   id and silently drops colour, linetype, lineweight and Z. A grip edit in `domain/` rebuilds by
   spreading the source (`polylines.ts`'s `reshaped`).
+- **A piece cut from a line or grown out of it goes through `carryPiece`** (TRIM, EXTEND, BREAK):
+  `carryOverrides` copies the whole rise, which is wrong for a piece, so each end is re-read with
+  `entityZAt` on the source — extrapolated past its ends for EXTEND. A line end moved to a point
+  of its own (a grip) takes that point's Z with `withLineZ`, the other end keeping its own.
+- **Coplanar means `coplanar(a, b)`**: one elevation and no line rising (`isLevel`). It is
+  AutoCAD's own test — "one or more of the line vertices is not at the same elevation" — so
+  FILLET, CHAMFER, JOIN and HATCH's boundary use it rather than comparing elevations by hand.
 - `expectSameShape` compares the Z and the `entity` arbitrary generates it, so a transform that
   drops it fails every round-trip property.
 - **An entity's points are planar; the Z lives only in its fields.** Factories copy `{ x, y }` out

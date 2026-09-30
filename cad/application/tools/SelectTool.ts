@@ -1,15 +1,20 @@
 import { Vec2, V } from "../../geometry/Vec2"
+import { Vec3, sub3, withZ, withZOf } from "../../geometry/Vec3"
 import {
   Entity,
   EntityId,
   createArc,
   createLine,
   carryOverrides,
+  entityZAt,
   insertPolylineVertex,
+  lineEndZ,
+  lineStartZ,
   polylineSegmentGeometries,
   removePolylineVertex,
   setPolylineBulge,
   translateEntity,
+  withLineZ,
 } from "../../domain/entities"
 import {
   RemoveEntitiesCommand,
@@ -209,14 +214,19 @@ export class SelectTool implements Tool {
         // and Ortho combines with tracking (the point lands on the Ortho×guide
         // intersection). Only when nothing has moved the raw cursor do we fall
         // back to sliding along the line's own axis (a plain collinear
-        // lengthen/shorten that keeps the line's direction).
+        // lengthen/shorten that keeps the line's direction). Either way the
+        // point's Z is the resolver's: the object's under a snap, else the
+        // elevation plane, as for a click.
         const moving = V.equals(input.point, input.world)
-          ? V.add(
-              this.state.fixed,
-              V.scale(
-                this.state.dir,
-                V.dot(V.sub(input.world, this.state.fixed), this.state.dir)
-              )
+          ? withZOf(
+              V.add(
+                this.state.fixed,
+                V.scale(
+                  this.state.dir,
+                  V.dot(V.sub(input.world, this.state.fixed), this.state.dir)
+                )
+              ),
+              input.point
             )
           : input.point
         this.state = { ...this.state, moving }
@@ -735,7 +745,10 @@ export class SelectTool implements Tool {
       fixed,
       dir: V.scale(axis, 1 / origLength),
       origLength,
-      moving,
+      moving: withZ(
+        moving,
+        end === "start" ? lineStartZ(line) : lineEndZ(line)
+      ),
       pressScreen: screen,
     }
     this.openLengthenInput(ctx, screen)
@@ -750,7 +763,8 @@ export class SelectTool implements Tool {
   }
 
   /**
-   * Starts moving the whole selection from `base` — the point that was pressed.
+   * Starts moving the whole selection from `base` — the point that was pressed,
+   * on the elevation plane like any unsnapped cursor point.
    * Reuses the move-grip machinery, so the drag gets the same dashed preview,
    * object snap, Ortho lock and typed-distance entry, and commits as one
    * undoable step on release.
@@ -761,11 +775,12 @@ export class SelectTool implements Tool {
       .map((id) => ctx.document.get(id))
       .filter((e): e is Entity => e !== undefined)
     if (originals.length === 0) return
+    const origin = withZ(base, ctx.ucs.origin.z + ctx.elevation)
     this.state = {
       phase: "moveLine",
       originals,
-      origMid: base,
-      current: base,
+      origMid: origin,
+      current: origin,
       pressScreen: screen,
     }
     this.openMoveInput(ctx, screen)
@@ -779,11 +794,13 @@ export class SelectTool implements Tool {
       .map((id) => ctx.document.get(id))
       .filter((e): e is Entity => e !== undefined)
     if (originals.length === 0) return
+    const owner = ctx.document.get(grip.entityId)
+    const base = withZ(grip.world, owner ? entityZAt(owner, grip.world) : 0)
     this.state = {
       phase: "moveLine",
       originals,
-      origMid: grip.world,
-      current: grip.world,
+      origMid: base,
+      current: base,
       pressScreen: screen,
     }
     this.openMoveInput(ctx, screen)
@@ -1080,28 +1097,42 @@ export class SelectTool implements Tool {
     )
     const sign = currentLength < this.state.origLength ? -1 : 1
     const newLength = this.state.origLength + sign * Math.abs(amount)
-    const point = V.add(this.state.fixed, V.scale(this.state.dir, newLength))
+    // A typed length runs from the grip's own place, so it keeps its Z.
+    const line = ctx.document.get(this.state.entityId)
+    const point = withZ(
+      V.add(this.state.fixed, V.scale(this.state.dir, newLength)),
+      line?.type !== "line"
+        ? 0
+        : this.state.end === "start"
+          ? lineStartZ(line)
+          : lineEndZ(line)
+    )
     this.placeGrip(this.state, point, ctx)
   }
 
   /**
    * Writes the moving endpoint to `point` through an undoable command, keeping
    * the line's other end fixed, then returns to idle. Zero-length results are
-   * ignored so a line can never collapse onto a single point.
+   * ignored so a line can never collapse onto a single point. The grabbed end
+   * takes the point's Z and the other keeps its own.
    */
   private placeGrip(
     state: Extract<SelectToolState, { phase: "grip" }>,
-    point: Vec2,
+    point: Vec3,
     ctx: ToolContext
   ): void {
     const line = ctx.document.get(state.entityId)
     if (line?.type === "line") {
-      const next = carryOverrides(
+      const moved = carryOverrides(
         line,
         state.end === "start"
           ? createLine(point, line.end, line.layerId, line.id)
           : createLine(line.start, point, line.layerId, line.id)
       )
+      const next =
+        state.end === "start"
+          ? withLineZ(moved, point.z, lineEndZ(line))
+          : withLineZ(moved, lineStartZ(line), point.z)
       if (!V.equals(next.start, next.end)) {
         ctx.execute(new UpdateEntityCommand(next))
       }
@@ -1122,21 +1153,24 @@ export class SelectTool implements Tool {
     const length = V.length(offset)
     if (length < 1e-9) return // no direction indicated yet
     const dir = V.scale(offset, 1 / length)
-    const newMid = V.add(this.state.origMid, V.scale(dir, distance))
+    const newMid = withZOf(
+      V.add(this.state.origMid, V.scale(dir, distance)),
+      this.state.origMid
+    )
     this.placeMove(this.state, newMid, ctx)
   }
 
   /**
-   * Translates the whole selection so the base point lands on `newMid`, through
-   * a single undoable command, then returns to idle.
+   * Translates the whole selection so the base point lands on `newMid`, Z
+   * included, through a single undoable command, then returns to idle.
    */
   private placeMove(
     state: Extract<SelectToolState, { phase: "moveLine" }>,
-    newMid: Vec2,
+    newMid: Vec3,
     ctx: ToolContext
   ): void {
-    const delta = V.sub(newMid, state.origMid)
-    if (!V.equals(delta, V.zero())) {
+    const delta = sub3(newMid, state.origMid)
+    if (!V.equals(delta, V.zero()) || delta.z !== 0) {
       const moved = state.originals.map((entity) =>
         translateEntity(entity, delta)
       )
