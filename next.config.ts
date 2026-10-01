@@ -21,6 +21,10 @@ const nextConfig: NextConfig = {
         headers: [
           { key: "X-Content-Type-Options", value: "nosniff" },
           { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
+          // Nothing opens or embeds the site from another origin: no popups,
+          // no OAuth, no iframes.
+          { key: "Cross-Origin-Opener-Policy", value: "same-origin" },
+          { key: "X-Frame-Options", value: "DENY" },
           {
             key: "Permissions-Policy",
             value:
