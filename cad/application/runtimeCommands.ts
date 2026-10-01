@@ -119,10 +119,9 @@ export function registerCommands(
   // No alias: Autodesk's shortcut guide lists none for BLOCKSPALETTE, and B
   // and I are already BLOCK and INSERT.
   register({ id: "BLOCKSPALETTE", run: () => runtime.showPalette("blocks") })
-  // WHY typed only: Ctrl+1, AutoCAD's Properties toggle, is the browser's
-  // first tab, so the aliases are the way in (PR, CH and MO, as Autodesk's
-  // shortcut guide lists them). The palettes share one panel, so a CLOSE
-  // command folds it only while its palette is the one shown.
+  // PR, CH and MO, as Autodesk's shortcut guide lists them; Ctrl+1 toggles
+  // it too (`keyDown`). The palettes share one panel, so a CLOSE command
+  // folds it only while its palette is the one shown.
   register({ id: "LAYER", run: () => runtime.showPalette("layers") })
   register({ id: "LAYERCLOSE", run: () => runtime.closePalette("layers") })
   register({ id: "PROPERTIES", run: () => runtime.showPalette("properties") })
@@ -130,6 +129,10 @@ export function registerCommands(
     id: "PROPERTIESCLOSE",
     run: () => runtime.closePalette("properties"),
   })
+  // UNITS opens the Drawing Units dialog, which the host draws.
+  register({ id: "UNITS", run: () => runtime.setUnitsDialog(true) })
+  register({ id: "CLEANSCREENON", run: () => runtime.setCleanScreen(true) })
+  register({ id: "CLEANSCREENOFF", run: () => runtime.setCleanScreen(false) })
   // Only block definitions so far: layers and styles are purged from their
   // own managers, which already refuse a base, current or in-use entry.
   register({

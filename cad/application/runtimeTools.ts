@@ -55,6 +55,7 @@ import { VPointTool } from "./tools/VPointTool"
 import { ViewTool } from "./tools/ViewTool"
 import { OrbitTool } from "./tools/OrbitTool"
 import { NavVCubeTool } from "./tools/NavVCubeTool"
+import { LtScaleTool } from "./tools/LtScaleTool"
 
 /**
  * Every tool the runtime registers, in registration order — which is the order
@@ -138,5 +139,6 @@ export function defaultTools(
     new ViewTool(),
     new OrbitTool(),
     new NavVCubeTool(),
+    new LtScaleTool(),
   ]
 }

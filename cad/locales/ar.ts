@@ -74,7 +74,8 @@ export const ar: EngineLocale = {
       "vpoint": "نقطة النظر",
       "view": "المناظر المعدة مسبقًا",
       "orbit": "مدار ثلاثي الأبعاد",
-      "navvcube": "مكعب العرض"
+      "navvcube": "مكعب العرض",
+      "ltscale": "مقياس نوع الخط"
     },
     "description": {
       "UNDO": "التراجع عن آخر إجراء",
@@ -94,7 +95,10 @@ export const ar: EngineLocale = {
       "LAYER": "إدارة الطبقات وخصائصها",
       "LAYERCLOSE": "إغلاق مدير خصائص الطبقات",
       "PROPERTIES": "عرض خصائص العناصر المحددة",
-      "PROPERTIESCLOSE": "إغلاق لوحة الخصائص"
+      "PROPERTIESCLOSE": "إغلاق لوحة الخصائص",
+      "UNITS": "التحكم في دقة الإحداثيات والمسافات وتنسيق عرضها",
+      "CLEANSCREENON": "إخلاء الشاشة من أشرطة الأدوات واللوحات",
+      "CLEANSCREENOFF": "استعادة الشاشة كما كانت قبل تنظيفها"
     },
     "snap": {
       "endpoint": "نقطة النهاية",

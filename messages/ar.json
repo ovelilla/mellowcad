@@ -246,7 +246,9 @@
       "save": "Ctrl+S",
       "open": "Ctrl+O",
       "undo": "Ctrl+Z",
-      "redo": "Ctrl+Y"
+      "redo": "Ctrl+Y",
+      "commandLine": "Ctrl+9",
+      "cleanScreen": "Ctrl+0"
     },
     "TopBar": {
       "menu": "قائمة التطبيق",
@@ -322,17 +324,17 @@
     },
     "CommandLine": {
       "label": "سطر الأوامر",
-      "placeholder": "اكتب أمرًا (\u2068LINE\u2069، \u2068TR\u2069، \u2068CO\u2069…)"
-    },
-    "Coordinates": {
-      "x": "x:",
-      "y": "y:",
-      "z": "z:"
+      "placeholder": "اكتب أمرًا (\u2068LINE\u2069، \u2068TR\u2069، \u2068CO\u2069…)",
+      "history": "سجل الأوامر"
     },
     "DynamicInput": {
       "locked": "مقفل"
     },
-    "DrawingAids": {
+    "StatusBar": {
+      "coordinates": "الإحداثيات",
+      "model": "النموذج",
+      "modelSpace": "فضاء النموذج",
+      "grid": "الشبكة",
       "objectSnap": "التقاط الكائنات",
       "objectSnapSettings": "إعدادات التقاط الكائنات",
       "comingSoon": "{name} (قريبًا)",
@@ -347,7 +349,6 @@
       "snapYSpacing": "تباعد الالتقاط على \u2068Y\u2069",
       "polarDistance": "المسافة القطبية",
       "polarSnapDistance": "مسافة الالتقاط القطبي",
-      "grid": "الشبكة",
       "ortho": "الوضع المتعامد",
       "polarTracking": "التتبع القطبي",
       "polarTrackingAngle": "زاوية التتبع القطبي",
@@ -357,13 +358,23 @@
       "selectionCyclingSettings": "إعدادات تدوير التحديد",
       "selectionList": "عرض مربع قائمة التحديد",
       "showLineweight": "إظهار وزن الخط",
-      "unitsSettings": "وحدات الرسم ودقتها",
       "units": "الوحدات",
+      "cleanScreen": "تنظيف الشاشة",
+      "customization": "التخصيص"
+    },
+    "Units": {
+      "title": "وحدات الرسم",
+      "length": "الطول",
+      "type": "النوع",
       "precision": "الدقة",
-      "linetypeScale": "مقياس نوع الخط",
-      "linetypeScaleLabel": "المقياس العام لأنواع الخطوط (\u2068LTSCALE\u2069)",
-      "dimensionScale": "مقياس الأبعاد",
-      "dimensionScaleLabel": "المقياس العام للأبعاد (\u2068DIMSCALE\u2069)"
+      "decimal": "عشري",
+      "insertionScale": "مقياس الإدراج",
+      "millimeters": "مليمترات",
+      "centimeters": "سنتيمترات",
+      "meters": "أمتار",
+      "sampleOutput": "نموذج للإخراج",
+      "ok": "موافق",
+      "cancel": "إلغاء"
     },
     "SnapOverride": {
       "point": "نقطة",

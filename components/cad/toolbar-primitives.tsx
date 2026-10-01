@@ -20,6 +20,7 @@ export function IconAction({
   label,
   shortcut,
   onClick,
+  onContextMenu,
   active = false,
   disabled = false,
   mirrored = false,
@@ -31,6 +32,8 @@ export function IconAction({
   label: string
   shortcut?: string
   onClick: () => void
+  /** A right-click: a status-bar mode opens its settings menu with it. */
+  onContextMenu?: (event: React.MouseEvent) => void
   active?: boolean
   disabled?: boolean
   /**
@@ -39,7 +42,7 @@ export function IconAction({
    */
   mirrored?: boolean
   side?: Side
-  size?: "icon-sm" | "icon-tool"
+  size?: "icon-sm" | "icon-tool" | "icon-status"
   className?: string
 }) {
   return (
@@ -51,6 +54,7 @@ export function IconAction({
             variant={active ? "active" : "ghost"}
             disabled={disabled}
             onClick={onClick}
+            onContextMenu={onContextMenu}
             aria-label={label}
             aria-pressed={active}
             className={className}

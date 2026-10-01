@@ -63,11 +63,13 @@ import {
   TOOL_COMMANDS,
   matchCommands,
   shortestName,
+  temporaryPromptLines,
 } from "./CommandLine"
 import { keywordForKey, resolveKeyword } from "../i18n/keywords"
 import type { EngineLocale } from "../locales/types"
 import { EngineText, engineText, promptString } from "./EngineText"
 import { CommandHistory } from "./commands/Command"
+import { UpdateSettingsCommand } from "./commands/settingsCommands"
 import {
   NewDrawingCommand,
   RemoveEntitiesCommand,
@@ -272,11 +274,17 @@ export class CadRuntime extends Observable {
   private paletteTab: PaletteTab = "properties"
   // The Properties palette's object type filter; null is All.
   private propertiesFilter: EntityType | null = null
-  // Whether the drawing's units settings are showing.
-  private unitsPanel = false
+  // Whether the Drawing Units dialog (UNITS) is showing.
+  private unitsDialog = false
   // Whether the command prompt is shown. Hiding it is purely visual: typing
   // still feeds the prompt, which reappears while there is text to show.
   private commandLineVisible = true
+  // Whether the command history is expanded above the prompt (F2).
+  private commandHistoryOpen = false
+  // Clean Screen (CLEANSCREENSTATE, not saved), and whether a palette was
+  // opened while it is on, which shows the palette panel again.
+  private cleanScreen = false
+  private cleanScreenPalette = false
 
   private disposed = false
   private initializedView = false
@@ -860,7 +868,39 @@ export class CadRuntime extends Observable {
   /** Shows or hides the command prompt (AutoCAD's Ctrl+9). */
   toggleCommandLine(): void {
     this.commandLineVisible = !this.commandLineVisible
+    if (!this.commandLineVisible) this.commandHistoryOpen = false
     this.invalidateState()
+  }
+
+  /**
+   * Expands or collapses the command history above the prompt (F2, or the
+   * arrow at the prompt's end). Expanding shows a hidden prompt too.
+   */
+  setCommandHistoryOpen(open: boolean): void {
+    if (this.commandHistoryOpen === open) return
+    this.commandHistoryOpen = open
+    if (open) this.commandLineVisible = true
+    this.invalidateState()
+  }
+
+  toggleCommandHistory(): void {
+    this.setCommandHistoryOpen(!this.commandHistoryOpen)
+  }
+
+  /**
+   * Clean Screen (CLEANSCREENON / CLEANSCREENOFF, Ctrl+0): hides the tool
+   * palette, the palette panel and the ribbon's parts of the top bar, and
+   * keeps the Quick Access Toolbar, the command line and the status bar.
+   */
+  setCleanScreen(on: boolean): void {
+    if (this.cleanScreen === on) return
+    this.cleanScreen = on
+    this.cleanScreenPalette = false
+    this.invalidateState()
+  }
+
+  toggleCleanScreen(): void {
+    this.setCleanScreen(!this.cleanScreen)
   }
 
   deleteSelection(): void {
@@ -1527,6 +1567,22 @@ export class CadRuntime extends Observable {
     this.document.setPrecision(precision)
   }
 
+  /**
+   * The Drawing Units dialog's OK: the insertion scale's unit (INSUNITS) and
+   * the length precision (LUPREC), as one undo step, as AutoCAD's U undoes
+   * what a command set.
+   */
+  applyDrawingUnits(unit: LengthUnit, precision: number): void {
+    const settings = this.document.getSettings()
+    const digits = Math.max(0, Math.min(8, Math.round(precision)))
+    const patch: { unit?: LengthUnit; precision?: number } = {}
+    if (unit !== settings.unit) patch.unit = unit
+    if (digits !== settings.precision) patch.precision = digits
+    if (Object.keys(patch).length > 0) {
+      this.history.execute(new UpdateSettingsCommand(patch))
+    }
+  }
+
   /** Sets the global linetype scale (AutoCAD's LTSCALE). */
   setLtScale(ltScale: number): void {
     this.document.setLtScale(ltScale)
@@ -1623,8 +1679,15 @@ export class CadRuntime extends Observable {
     this.invalidateState()
   }
 
-  /** Opens the palette panel on `tab` (LAYER, PROPERTIES, BLOCKSPALETTE…). */
+  /**
+   * Opens the palette panel on `tab` (LAYER, PROPERTIES, BLOCKSPALETTE…). With
+   * Clean Screen on, the panel shows again, as a palette opened then does.
+   */
   showPalette(tab: PaletteTab): void {
+    if (this.cleanScreen && !this.cleanScreenPalette) {
+      this.cleanScreenPalette = true
+      this.invalidateState()
+    }
     if (this.paletteOpen && this.paletteTab === tab) return
     this.paletteOpen = true
     this.paletteTab = tab
@@ -1640,6 +1703,7 @@ export class CadRuntime extends Observable {
     if (!this.paletteOpen) return
     if (tab !== undefined && tab !== this.paletteTab) return
     this.paletteOpen = false
+    this.cleanScreenPalette = false
     this.invalidateState()
   }
 
@@ -1655,10 +1719,10 @@ export class CadRuntime extends Observable {
     else this.closePalette()
   }
 
-  /** Shows or hides the drawing's units settings (the menu's Drawing Units). */
-  setUnitsPanel(open: boolean): void {
-    if (this.unitsPanel === open) return
-    this.unitsPanel = open
+  /** Shows or hides the Drawing Units dialog (UNITS). */
+  setUnitsDialog(open: boolean): void {
+    if (this.unitsDialog === open) return
+    this.unitsDialog = open
     this.invalidateState()
   }
 
@@ -1988,6 +2052,9 @@ export class CadRuntime extends Observable {
   }
 
   pointerDown(e: PointerEventData): void {
+    // A press on the drawing collapses the expanded command history.
+    if (this.commandHistoryOpen) this.setCommandHistoryOpen(false)
+
     // Shift+right-click during a point prompt opens the object-snap override
     // menu (AutoCAD's temporary single-snap override), instead of panning.
     if (
@@ -2255,11 +2322,16 @@ export class CadRuntime extends Observable {
       return true
     }
 
-    // F2 shows/hides the command prompt. AutoCAD uses Ctrl+9 for this, which is
-    // accepted below too, but browsers reserve Ctrl+<digit> for tab switching,
-    // so a function key is the shortcut we can actually promise.
+    // The expanded command history closes with Escape, which still goes on to
+    // cancel whatever it would have cancelled.
+    if (e.key === "Escape" && this.commandHistoryOpen) {
+      this.setCommandHistoryOpen(false)
+    }
+
+    // F2 expands the command history above the prompt, as AutoCAD's does for
+    // the one-line command window it starts with.
     if (e.key === "F2") {
-      this.toggleCommandLine()
+      this.toggleCommandHistory()
       return true
     }
 
@@ -2328,8 +2400,18 @@ export class CadRuntime extends Observable {
       this.redo()
       return true
     }
-    if (e.ctrlKey && e.key === "9") {
+    // AutoCAD's window shortcuts. Chrome hands Ctrl+<digit> to the page first
+    // and switches tabs or resets the zoom only when it is not prevented.
+    if (e.ctrlKey && !e.altKey && e.key === "9") {
       this.toggleCommandLine()
+      return true
+    }
+    if (e.ctrlKey && !e.altKey && e.key === "0") {
+      this.toggleCleanScreen()
+      return true
+    }
+    if (e.ctrlKey && !e.altKey && e.key === "1") {
+      this.togglePalette("properties")
       return true
     }
 
@@ -2832,10 +2914,16 @@ export class CadRuntime extends Observable {
         this.document.getEntities()
       ),
       palette: { open: this.paletteOpen, tab: this.paletteTab },
-      unitsPanel: this.unitsPanel,
+      unitsDialog: this.unitsDialog,
+      cleanScreen: {
+        active: this.cleanScreen,
+        palette: this.cleanScreenPalette,
+      },
       commandOptions: options,
       commandLine: {
         visible: this.commandLineVisible,
+        historyOpen: this.commandHistoryOpen,
+        recent: temporaryPromptLines(this.commandLine.getLines()),
         prompt: promptString(prompt.segments),
         promptSegments: prompt.segments,
         command: prompt.command,

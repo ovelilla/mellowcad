@@ -146,11 +146,13 @@ identity: the same document, viewport and objects.
 ## Key routing (`CadRuntime.keyDown`) — order is load-bearing
 
 1. Escape closes an open snap-override menu or Selection list box, or cancels the FROM modifier,
-   without ending the command.
-2. Function keys: F2 command prompt, F3 osnap, F7 grid, F8 Ortho, F9 snap mode, F10 Polar,
+   without ending the command. It also collapses the expanded command history, and that one goes
+   on: the same Escape still cancels.
+2. Function keys: F2 command history, F3 osnap, F7 grid, F8 Ortho, F9 snap mode, F10 Polar,
    F11 OTRACK, F4 selection cycling (AutoCAD's Ctrl+W, which browsers keep, is accepted too).
-3. Ctrl combos (undo/redo, Ctrl+9, Ctrl+S save, Ctrl+O open, Ctrl+C/X/V copy-cut-paste,
-   Ctrl+Shift+C copy with base point, Ctrl+A select all), then Shift+Space (selection
+3. Ctrl combos (undo/redo, AutoCAD's window shortcuts Ctrl+9 command line, Ctrl+0 Clean Screen
+   and Ctrl+1 Properties, Ctrl+S save, Ctrl+O open, Ctrl+C/X/V copy-cut-paste, Ctrl+Shift+C copy
+   with base point, Ctrl+A select all), then Shift+Space (selection
    cycling) — a global aid, like the function keys, and it must beat the command prompt, which
    reads a bare space as Enter.
 4. **The active tool's keywords, by their single key** — a keyword beats a global command alias,
@@ -202,18 +204,19 @@ box drag started on a stack still works. Choosing a candidate replays press and 
 Adding a snap type touches: `SnapType`, a provider, `defaultSnapProviders` (position = priority),
 the `TRACKABLE` set, a `SceneBuilder` marker, its name in `interface.snap` (menus, read by React
 from `state.names`) and `commands.feedback.snap` (the canvas tooltip), `IMPLEMENTED_SNAPS` in
-`drawing-aids.tsx`, the menu order in `snap-override-menu.tsx`, and the default enabled/disabled
+`status-bar.tsx`, the menu order in `snap-override-menu.tsx`, and the default enabled/disabled
 call in the `CadRuntime` constructor.
 
 ## Commands and history
 
 `history.execute(command)` is the only write path to the document. `loadDrawing` clears the
-history (a loaded file is a fresh baseline). Document _settings_ changes (unit, precision,
-ltScale, layer table edits) are deliberately not undoable; anything touching entities is. The
-exceptions are the settings AutoCAD's U undoes — ATTMODE, the UCS and its table, UCSICON, ELEVATION
-and THICKNESS — which go through a command (`UpdateSettingsCommand` restores exactly the keys it
-patched). A settings change another one implies belongs in the same patch: changing to the WCS puts
-ELEVATION to 0.
+history (a loaded file is a fresh baseline). Document _settings_ changes made by a host's own
+setters (`setDocumentUnit`, `setDocumentPrecision`, `setLtScale`, layer table edits) are
+deliberately not undoable; anything touching entities is. What a command sets is what AutoCAD's U
+undoes — ATTMODE, the UCS and its table, UCSICON, ELEVATION and THICKNESS, LTSCALE, and UNITS'
+unit and precision (`applyDrawingUnits`) — and goes through a command (`UpdateSettingsCommand`
+restores exactly the keys it patched; one that changes nothing executes nothing). A settings
+change another one implies belongs in the same patch: changing to the WCS puts ELEVATION to 0.
 
 A command that adds **table entries alongside geometry** (BLOCK's definition, PASTECLIP's layers,
 styles and blocks) carries them through the history too, and undoes them in reverse order — those
@@ -334,13 +337,19 @@ capability rather than crashing.
 Two listeners are deliberately on `canvas.ownerDocument`, not the canvas:
 
 - `keydown`, so Escape and shortcuts work regardless of which element holds focus. It ignores
-  events from `input/textarea/select/[contenteditable]` — **except function keys and Ctrl+S/Ctrl+O**,
-  which are global and must also be swallowed so the browser's own dialogs never open. Other Ctrl
-  combos stay unforwarded on purpose: a global undo from a focused field desyncs the running tool,
-  and Ctrl+C/X/V/A inside a dynamic-input box or a layer name belong to that **text**. Never widen
-  `isFileShortcut` to the clipboard keys. **A Ctrl combo is read by its physical key**
-  (`shortcutKey`): an Arabic, Greek or Cyrillic layout sends its own letter in `e.key`, so under
-  Ctrl a key that is not a latin letter or digit is taken from `e.code`. Typed text never is.
+  events from `input/textarea/select/[contenteditable]` — **except function keys and the global
+  Ctrl shortcuts** (`isGlobalShortcut`: Ctrl+S, Ctrl+O, Ctrl+9, Ctrl+0, Ctrl+1), which must also
+  be swallowed so the browser's own action never runs — its Save/Open dialogs, switching to a tab,
+  resetting the zoom. Chrome hands Ctrl+<digit> to the page first and acts only when it is not
+  prevented (measured with real keystrokes, Chrome on Windows, 01/10/2026); Ctrl+N, Ctrl+T and
+  Ctrl+W it keeps. Other Ctrl combos stay unforwarded on purpose: a global undo from a focused field
+  desyncs the running tool, and Ctrl+C/X/V/A inside a dynamic-input box or a layer name belong to
+  that **text**. Never widen `isGlobalShortcut` to the clipboard keys. Nothing inside a modal
+  dialog (`[role="dialog"][aria-modal="true"]`, the Drawing Units dialog) reaches the runtime at
+  all: AutoCAD's dialogs keep their keys, and its lists' arrows and letters must not feed the
+  prompt. **A Ctrl combo is read by its physical key** (`shortcutKey`): an Arabic, Greek or
+  Cyrillic layout sends its own letter in `e.key`, so under Ctrl a key that is not a latin letter
+  or digit is taken from `e.code`. Typed text never is.
 - `contextmenu`, because the event fires on button _release_, by which time a portalled modal
   backdrop may be the target.
 

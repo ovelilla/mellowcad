@@ -238,10 +238,25 @@ export interface CommandOptionUi {
   readonly label: string
 }
 
+/** Clean Screen: what it hides is the host's chrome, so the host hides it. */
+export interface CleanScreenUi {
+  /** CLEANSCREENSTATE: the tool palette, the palette panel and the ribbon hidden. */
+  readonly active: boolean
+  /** A palette was opened while it is on: the palette panel shows again. */
+  readonly palette: boolean
+}
+
 /** Snapshot of the command line (AutoCAD's `Command:` prompt) for the UI. */
 export interface CommandLineUi {
-  /** Whether the prompt is shown (AutoCAD's Ctrl+9 / our F2 toggle). */
+  /** Whether the prompt is shown (AutoCAD's Ctrl+9). */
   readonly visible: boolean
+  /** Whether the command history is expanded above the prompt (F2). */
+  readonly historyOpen: boolean
+  /**
+   * The temporary prompt history: the last lines of the most recent command,
+   * shown above the one-line prompt (CLIPROMPTLINES, 3).
+   */
+  readonly recent: ReadonlyArray<CommandLineEntry>
   /** Text before the input, e.g. `Command:` or `PLINE [Close/Undo]:`. */
   readonly prompt: string
   /**
@@ -407,8 +422,10 @@ export interface EngineState {
   readonly blocks: ReadonlyArray<BlockInfo>
   /** The palette panel: open or folded, and the palette it shows. */
   readonly palette: PaletteUi
-  /** Whether the drawing's units settings are showing. */
-  readonly unitsPanel: boolean
+  /** Whether the Drawing Units dialog (UNITS) is showing. */
+  readonly unitsDialog: boolean
+  /** Clean Screen (CLEANSCREENON / CLEANSCREENOFF, Ctrl+0). */
+  readonly cleanScreen: CleanScreenUi
   /**
    * Command options (keywords) the active tool currently offers — AutoCAD's
    * `[Close/Undo]` prompt. The UI renders these as hint chips near the dynamic

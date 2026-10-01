@@ -84,8 +84,9 @@ and what each option does must be the ones they already know.
   the missing options in `docs/autocad-coverage.md`, rather than substituting an easier gesture of
   our own.
 - **Deviations are allowed only when the platform forces them** or the surrounding feature does
-  not exist here — e.g. F2 for the command prompt because browsers reserve Ctrl+9, or LWDISPLAY
-  defaulting on because we have no layouts or plotting. Every one gets a `WHY` comment at the
+  not exist here — e.g. F4 for selection cycling because browsers keep Ctrl+W, or LWDISPLAY
+  defaulting on because we have no layouts or plotting. Check the platform first: Chrome does
+  let a page take Ctrl+9, Ctrl+0 and Ctrl+1. Every one gets a `WHY` comment at the
   code and a note in `docs/autocad-coverage.md`.
 
 ## How this project works

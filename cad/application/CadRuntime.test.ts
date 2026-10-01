@@ -143,17 +143,17 @@ describe("command line", () => {
     expect(cad.state().commandLine.buffer).toBe("CIRCLE")
   })
 
-  it("hides on F2 but reappears the moment something is typed", () => {
+  it("hides on Ctrl+9 but reappears the moment something is typed", () => {
     const cad = createHarness()
 
-    cad.press("F2")
+    cad.press("9", { ctrlKey: true })
     expect(cad.state().commandLine.visible).toBe(false)
 
     // Hiding is cosmetic: a keystroke must never vanish into nowhere.
     cad.press("c")
     expect(cad.state().commandLine.buffer).toBe("c")
 
-    cad.press("F2")
+    cad.press("9", { ctrlKey: true })
     expect(cad.state().commandLine.visible).toBe(true)
   })
 

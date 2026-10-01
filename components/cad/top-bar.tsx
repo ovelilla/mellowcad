@@ -141,49 +141,56 @@ export function TopBar({
 
       <SaveStatus state={state} />
 
-      <Separator orientation="vertical" className="mx-0.5 h-6!" />
+      {/* Clean Screen keeps the application menu and the Quick Access
+          Toolbar, and hides the ribbon: the Layers and Properties panels and
+          View's palette toggles. */}
+      {!state.cleanScreen.active && (
+        <>
+          <Separator orientation="vertical" className="mx-0.5 h-6!" />
 
-      <Panel className="shrink-0 items-center">
-        <PaletteToggle
-          engine={engine}
-          state={state}
-          tab="layers"
-          icon={Layers}
-          label={layers("title")}
-        />
-        <LayerControl engine={engine} state={state} />
-      </Panel>
+          <Panel className="shrink-0 items-center">
+            <PaletteToggle
+              engine={engine}
+              state={state}
+              tab="layers"
+              icon={Layers}
+              label={layers("title")}
+            />
+            <LayerControl engine={engine} state={state} />
+          </Panel>
 
-      <Separator orientation="vertical" className="mx-0.5 h-6!" />
+          <Separator orientation="vertical" className="mx-0.5 h-6!" />
 
-      <PropertyControls engine={engine} state={state} />
+          <PropertyControls engine={engine} state={state} />
 
-      <Panel className="ms-auto shrink-0 items-center">
-        <PaletteToggle
-          engine={engine}
-          state={state}
-          tab="styles"
-          icon={PencilRuler}
-          label={styles("title")}
-        />
-        <PaletteToggle
-          engine={engine}
-          state={state}
-          tab="blocks"
-          icon={LibraryBig}
-          label={blocks("title")}
-        />
-        {/* Palette visibility, not a drafting mode — AutoCAD keeps this on
+          <Panel className="ms-auto shrink-0 items-center">
+            <PaletteToggle
+              engine={engine}
+              state={state}
+              tab="styles"
+              icon={PencilRuler}
+              label={styles("title")}
+            />
+            <PaletteToggle
+              engine={engine}
+              state={state}
+              tab="blocks"
+              icon={LibraryBig}
+              label={blocks("title")}
+            />
+            {/* Palette visibility, not a drafting mode — AutoCAD keeps this on
             the View ribbon (Palettes panel), never on the status bar. */}
-        <IconAction
-          icon={Terminal}
-          label={t("commandLine")}
-          shortcut="F2"
-          side="bottom"
-          active={state.commandLine.visible}
-          onClick={() => engine.toggleCommandLine()}
-        />
-      </Panel>
+            <IconAction
+              icon={Terminal}
+              label={t("commandLine")}
+              shortcut={keys("commandLine")}
+              side="bottom"
+              active={state.commandLine.visible}
+              onClick={() => engine.toggleCommandLine()}
+            />
+          </Panel>
+        </>
+      )}
     </TooltipProvider>
   )
 }
@@ -234,9 +241,8 @@ function ApplicationMenu({ engine }: { engine: CadEngine }) {
             {item(Save, t("save"), () => engine.runCommand("_QSAVE"))}
             {item(SaveAll, t("saveAs"), () => engine.runCommand("_SAVEAS"))}
             <Menu.Separator className="-mx-1 my-1 h-px bg-border" />
-            {/* WHY the status bar's units: the Drawing Units dialog (UNITS)
-                does not exist yet, and this is where its settings live. */}
-            {item(Ruler, t("units"), () => engine.setUnitsPanel(true))}
+            {/* Drawing Utilities > Units, as the help files it. */}
+            {item(Ruler, t("units"), () => engine.runCommand("_UNITS"))}
             {links.length > 0 && (
               <>
                 <Menu.Separator className="-mx-1 my-1 h-px bg-border" />

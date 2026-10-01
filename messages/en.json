@@ -246,7 +246,9 @@
       "save": "Ctrl+S",
       "open": "Ctrl+O",
       "undo": "Ctrl+Z",
-      "redo": "Ctrl+Y"
+      "redo": "Ctrl+Y",
+      "commandLine": "Ctrl+9",
+      "cleanScreen": "Ctrl+0"
     },
     "TopBar": {
       "menu": "Application menu",
@@ -322,17 +324,17 @@
     },
     "CommandLine": {
       "label": "Command line",
-      "placeholder": "Type a command (LINE, TR, CO…)"
-    },
-    "Coordinates": {
-      "x": "x:",
-      "y": "y:",
-      "z": "z:"
+      "placeholder": "Type a command (LINE, TR, CO…)",
+      "history": "Command history"
     },
     "DynamicInput": {
       "locked": "locked"
     },
-    "DrawingAids": {
+    "StatusBar": {
+      "coordinates": "Coordinates",
+      "model": "MODEL",
+      "modelSpace": "Model space",
+      "grid": "Grid",
       "objectSnap": "Object snap",
       "objectSnapSettings": "Object snap settings",
       "comingSoon": "{name} (coming soon)",
@@ -347,7 +349,6 @@
       "snapYSpacing": "Snap Y spacing",
       "polarDistance": "Polar distance",
       "polarSnapDistance": "Polar snap distance",
-      "grid": "Grid",
       "ortho": "Ortho mode",
       "polarTracking": "Polar tracking",
       "polarTrackingAngle": "Polar tracking angle",
@@ -357,13 +358,23 @@
       "selectionCyclingSettings": "Selection cycling settings",
       "selectionList": "Display selection list box",
       "showLineweight": "Show lineweight",
-      "unitsSettings": "Drawing units and precision",
       "units": "Units",
+      "cleanScreen": "Clean screen",
+      "customization": "Customization"
+    },
+    "Units": {
+      "title": "Drawing Units",
+      "length": "Length",
+      "type": "Type",
       "precision": "Precision",
-      "linetypeScale": "Linetype scale",
-      "linetypeScaleLabel": "Global linetype scale (LTSCALE)",
-      "dimensionScale": "Dimension scale",
-      "dimensionScaleLabel": "Overall dimension scale (DIMSCALE)"
+      "decimal": "Decimal",
+      "insertionScale": "Insertion scale",
+      "millimeters": "Millimeters",
+      "centimeters": "Centimeters",
+      "meters": "Meters",
+      "sampleOutput": "Sample output",
+      "ok": "OK",
+      "cancel": "Cancel"
     },
     "SnapOverride": {
       "point": "Point",

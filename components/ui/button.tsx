@@ -34,6 +34,11 @@ const buttonVariants = cva(
           "size-8 rounded-[min(var(--radius-md),10px)] in-data-[slot=button-group]:rounded-md",
         // The tool palette's: two columns of them fit its 76 px.
         "icon-tool": "h-7 w-7.5 rounded-md",
+        // The status bar's, in its 28 px; a mode's settings arrow is a half
+        // button of 14 px attached to it.
+        "icon-status": "h-6 w-7 rounded-md",
+        "icon-flyout":
+          "h-6 w-3.5 rounded-md [&_svg:not([class*='size-'])]:size-3",
         "icon-lg": "size-10",
       },
     },

@@ -74,7 +74,8 @@ export const es: EngineLocale = {
       "vpoint": "Punto de vista",
       "view": "Vistas predefinidas",
       "orbit": "Órbita 3D",
-      "navvcube": "ViewCube"
+      "navvcube": "ViewCube",
+      "ltscale": "Escala de tipo de línea"
     },
     "description": {
       "UNDO": "Deshacer la última acción",
@@ -94,7 +95,10 @@ export const es: EngineLocale = {
       "LAYER": "Administrar las capas y sus propiedades",
       "LAYERCLOSE": "Cerrar el Administrador de propiedades de capas",
       "PROPERTIES": "Mostrar las propiedades de los objetos designados",
-      "PROPERTIESCLOSE": "Cerrar la paleta Propiedades"
+      "PROPERTIESCLOSE": "Cerrar la paleta Propiedades",
+      "UNITS": "Controlar la precisión y el formato de visualización de las coordenadas y las distancias",
+      "CLEANSCREENON": "Borrar de la pantalla las barras de herramientas y las paletas",
+      "CLEANSCREENOFF": "Restablecer la pantalla como estaba antes de limpiarla"
     },
     "snap": {
       "endpoint": "Punto final",
@@ -759,6 +763,20 @@ export const es: EngineLocale = {
       ],
       "NAVVCUBE": [
         "NAVVCUBE"
+      ],
+      "UNITS": [
+        "UNIDADES",
+        "UNS"
+      ],
+      "LTSCALE": [
+        "ESCALATL",
+        "EC"
+      ],
+      "CLEANSCREENON": [
+        "LIMPIAPANTACT"
+      ],
+      "CLEANSCREENOFF": [
+        "LIMPIAPANTDES"
       ]
     },
     "keywords": {
@@ -1142,6 +1160,7 @@ export const es: EngineLocale = {
       "planUcsName": "Indique nombre de SCP o [?]",
       "elevDefaultElevation": "Precise nueva elevación por defecto",
       "elevDefaultThickness": "Precise nueva altura de objeto por defecto",
+      "ltscaleFactor": "Indique nuevo factor de escala de tipo de línea",
       "idPoint": "Precise punto",
       "viewPoint": "Precise un punto de vista",
       "viewAngleInPlane": "Ángulo a partir del eje X en el plano XY",

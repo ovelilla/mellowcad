@@ -15,8 +15,8 @@ import {
 import { EDITOR_SHEET_ID, SHEET_TRANSITION } from "@/lib/view-transition"
 import { CommandLine } from "./command-line"
 import { ToolRail } from "./tool-rail"
-import { DrawingAids } from "./drawing-aids"
-import { CoordinateReadout } from "./coordinate-readout"
+import { StatusBar } from "./status-bar"
+import { UnitsDialog } from "./units-dialog"
 import { DynamicInput } from "./dynamic-input"
 import { PalettePanel, PaletteResizeHandle } from "./palette-panel"
 import { ViewCube } from "./view-cube"
@@ -47,6 +47,10 @@ export function CadWorkspace({
   const input = useTranslations("Editor.DynamicInput")
   const ready = engine && state
   const paletteOpen = state?.palette.open ?? null
+  // Clean Screen hides the tool palette and the palette panel (a palette
+  // opened meanwhile shows the panel again); it is never on at the first
+  // paint, as AutoCAD does not save it.
+  const clean = state?.cleanScreen
   // The width the head script laid out. Nothing renders it before the engine
   // exists, so the server's default never meets the client's.
   const [paletteWidth, setPaletteWidth] = useState(() =>
@@ -88,7 +92,12 @@ export function CadWorkspace({
         {ready && <TopBar engine={engine} state={state} />}
       </div>
 
-      <div className="flex min-h-0 w-19 flex-col border-e p-1 [grid-area:tools]">
+      <div
+        className={cn(
+          "flex min-h-0 w-19 flex-col border-e p-1 [grid-area:tools]",
+          clean?.active && "hidden"
+        )}
+      >
         {ready && <ToolRail engine={engine} state={state} />}
       </div>
 
@@ -137,7 +146,12 @@ export function CadWorkspace({
       {/* Its width is CSS, read off <html> (lib/palette-layout.ts): the
           head script's answer before the engine exists, the engine's open
           state and the dragged width after — the same box either way. */}
-      <div className="flex min-h-0 w-9 border-s [grid-area:panel] palette-open:w-(--palette-width)">
+      <div
+        className={cn(
+          "flex min-h-0 w-9 border-s [grid-area:panel] palette-open:w-(--palette-width)",
+          clean?.active && !clean.palette && "hidden"
+        )}
+      >
         {ready && (
           <>
             {state.palette.open && (
@@ -152,31 +166,27 @@ export function CadWorkspace({
         )}
       </div>
 
-      {/* Above the canvas in the stacking order: the command line's
-          suggestions open upwards over the drawing. */}
+      {/* One prompt line. Above the canvas in the stacking order: its
+          history and suggestions open upwards over the drawing. */}
       <div
         className={cn(
           "relative z-10 [grid-area:command]",
           (!ready || state.commandLine.visible || state.commandLine.buffer) &&
-            "h-20 border-t"
+            "h-7 border-t"
         )}
       >
         {ready && <CommandLine engine={engine} state={state} />}
       </div>
 
-      <div className="flex h-10 min-w-0 items-center justify-between gap-2 border-t px-1 [grid-area:status]">
-        {ready && (
-          <>
-            <CoordinateReadout state={state} />
-            <DrawingAids engine={engine} state={state} />
-          </>
-        )}
+      <div className="flex h-7 min-w-0 items-center gap-2 border-t px-1 [grid-area:status]">
+        {ready && <StatusBar engine={engine} state={state} />}
       </div>
 
       {ready && (
         <>
           <SnapOverrideMenu engine={engine} state={state} />
           <SelectionCyclingList engine={engine} state={state} />
+          <UnitsDialog engine={engine} state={state} />
         </>
       )}
     </main>

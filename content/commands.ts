@@ -93,6 +93,7 @@ export const COMMAND_FILING: Readonly<Record<string, Filing>> = {
   PROPERTIES: { group: "organize" },
   PROPERTIESCLOSE: { group: "organize" },
   PURGE: { group: "organize" },
+  LTSCALE: { group: "organize" },
 
   DIST: { group: "inquiry" },
   AREA: { group: "inquiry" },
@@ -113,6 +114,9 @@ export const COMMAND_FILING: Readonly<Record<string, Filing>> = {
   "-VIEW": { group: "inquiry" },
   "3DORBIT": { group: "inquiry" },
   NAVVCUBE: { group: "inquiry" },
+  UNITS: { group: "inquiry" },
+  CLEANSCREENON: { group: "inquiry" },
+  CLEANSCREENOFF: { group: "inquiry" },
 
   NEW: { group: "files" },
   QNEW: { group: "files" },

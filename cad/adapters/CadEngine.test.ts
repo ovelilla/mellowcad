@@ -38,13 +38,12 @@ class FakeNode extends EventTarget {
     return lineage(other as FakeNode | null).includes(this)
   }
 
-  /** Only the selector the engine asks with: editable fields. */
-  closest(): FakeNode | null {
-    return (
-      lineage(this).find((node) =>
-        ["INPUT", "TEXTAREA", "SELECT"].includes(node.tagName)
-      ) ?? null
-    )
+  /** Only the selectors the engine asks with: a modal dialog, editable fields. */
+  closest(selector: string): FakeNode | null {
+    const tags = selector.includes("aria-modal")
+      ? ["DIALOG"]
+      : ["INPUT", "TEXTAREA", "SELECT"]
+    return lineage(this).find((node) => tags.includes(node.tagName)) ?? null
   }
 
   focus(): void {
@@ -203,7 +202,7 @@ describe("CadEngine owning the document (the editor)", () => {
     expect(keyAt(page, page.button, " ").defaultPrevented).toBe(false)
   })
 
-  it("leaves a field its keys, except function keys and Ctrl+S/O", () => {
+  it("leaves a field its keys, except function keys and the global Ctrl ones", () => {
     const engine = engineOn()
 
     expect(keyAt(page, page.search, "L").defaultPrevented).toBe(false)
@@ -211,6 +210,29 @@ describe("CadEngine owning the document (the editor)", () => {
 
     keyAt(page, page.search, "F8")
     expect(engine.getState().orthoActive).toBe(true)
+
+    // Taken from anywhere, or the browser switches tabs or resets its zoom.
+    expect(keyAt(page, page.search, "9", true).defaultPrevented).toBe(true)
+    expect(engine.getState().commandLine.visible).toBe(false)
+    expect(keyAt(page, page.search, "0", true).defaultPrevented).toBe(true)
+    expect(engine.getState().cleanScreen.active).toBe(true)
+    expect(keyAt(page, page.search, "1", true).defaultPrevented).toBe(true)
+    expect(engine.getState().palette.tab).toBe("properties")
+    // Copying out of a field stays the field's.
+    expect(keyAt(page, page.search, "c", true).defaultPrevented).toBe(false)
+  })
+
+  it("leaves a modal dialog every key", () => {
+    const engine = engineOn()
+    const dialog = new FakeNode(page.document, "DIALOG")
+    const choice = new FakeNode(page.document, "BUTTON")
+    page.document.body.append(dialog.append(choice))
+
+    expect(keyAt(page, choice, "L").defaultPrevented).toBe(false)
+    expect(keyAt(page, choice, "ArrowUp").defaultPrevented).toBe(false)
+    keyAt(page, choice, "F8")
+    expect(engine.getState().commandLine.buffer).toBe("")
+    expect(engine.getState().orthoActive).toBe(false)
   })
 
   // An Arabic layout sends its own letter with Ctrl; the shortcut is the

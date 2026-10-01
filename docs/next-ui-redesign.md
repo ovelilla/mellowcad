@@ -1,6 +1,16 @@
 # Rediseño del editor — brief
 
-> **Estado:** fases 0 a 4b hechas; sigue la 5. En la 4b, todo texto del editor es uno de dos
+> **Estado:** fases 0 a 5 hechas; sigue la 5b (CECOLOR, CELTYPE y CELWEIGHT) y después la 6. En la
+> 5, la barra de estado (28 px) sigue el orden de AutoCAD 2026, con sus flechas de ajustes de 14 px,
+> el clic derecho que abre el mismo menú y una Personalización que se recuerda en el dispositivo;
+> MODEL es una etiqueta, porque aquí no hay presentaciones. La línea de comandos es de una línea
+> (28 px), con las líneas temporales del comando (CLIPROMPTLINES 3) que se desvanecen y el historial
+> de hasta 12 líneas con F2. Chrome deja a la página Ctrl+9, Ctrl+0 y Ctrl+1 (medido con pulsaciones
+> reales del sistema), así que son los de AutoCAD: línea de comandos, Pantalla limpia y Propiedades,
+> sin desviación. UNITS abre el diálogo Unidades de dibujo (longitud, escala de inserción y muestra
+> de salida) en un paso de deshacer; LTSCALE es un comando; DIMSCALE vive solo en Estilos. Pantalla
+> limpia (CLEANSCREENON/OFF) vive en el motor y oculta las zonas por CSS; no se guarda, como en
+> AutoCAD. En la 4b, todo texto del editor es uno de dos
 > roles de 12 px (`text-ui`, `text-title`), con monoespaciado solo para lo tecleado y las cifras, y
 > uno de tres escalones de color; las reglas están en «Type» de `ui.instructions.md` y
 > `lib/type-scale.test.ts` las hace cumplir. La barra de estado, el diálogo de Unidades, el
@@ -148,8 +158,9 @@ Salen del rail:
   - Personalización elige qué modos se ven y si se ven las coordenadas. AutoCAD las oculta por
     defecto desde 2015; aquí siguen visibles (COORDS 1, ya decidido en `autocad-coverage.md`).
   - Las coordenadas usan la precisión del dibujo.
-  - Unidades, precisión, LTSCALE y DIMSCALE salen del popover de la barra a un diálogo «Unidades del
-    dibujo» (`UNITS`/`UN`).
+  - Unidades y precisión salen del popover de la barra al diálogo «Unidades de dibujo»
+    (`UNITS`/`UN`); LTSCALE pasa a ser comando, y DIMSCALE queda en la paleta Estilos («Usar escala
+    general»), su sitio en AutoCAD.
 - **Propiedades.**
   - Sin selección muestra «Sin selección» y General con las propiedades actuales.
   - Con selección tiene el desplegable de tipo de objeto («Todo (6)», «Línea (5)»…) que filtra lo
@@ -164,8 +175,7 @@ Salen del rail:
   Placement de `blocks-control.tsx` deja de aplicar.
 - **Comandos.** `LAYER`/`LA`, `LAYERCLOSE`, `PROPERTIES`/`PR`/`CH`/`MO`, `PROPERTIESCLOSE`,
   `CLEANSCREENON`/`CLEANSCREENOFF`.
-  - Pantalla limpia también con Ctrl+0, si el navegador deja interceptarlo; hay que comprobarlo. Si
-    no, una tecla de función, con su `WHY`.
+  - Pantalla limpia también con Ctrl+0: Chrome deja interceptarlo (comprobado en la fase 5).
   - Pantalla limpia oculta la paleta de herramientas, el panel y los grupos de capa y propiedades.
     Conserva el menú, Deshacer/Rehacer, la línea de comandos y la barra de estado, igual que AutoCAD.
 - **Teclado.** Cada zona es un `role="toolbar"` con flechas dentro y Tab entre zonas. Tras actuar en
@@ -253,6 +263,24 @@ Verificado en la ayuda de AutoCAD 2026:
   verificar). Definir atributos está en el panel Bloque. Ni `ATTDISP` ni `TEXTEDIT` tienen sitio
   documentado en la cinta; Editar texto es casilla y Visualización entra en Atributos ▾.
 - **Utilidades.** Medir▾ (Distancia y Área citados en 2026) e ID de punto.
+- **Ventana de comandos.** F2 «Expands the Command Line history when the Command Line window is
+  floating, or displays the Text window when the Command Line window is docked»; Ctrl+9 «Toggles
+  the Command Line window». CLIPROMPTLINES vale 3: «A temporary prompt history displays above the
+  command window while a command is in progress». La ayuda no da el número de líneas del historial
+  ampliado ni el tiempo del desvanecido: los 12 y los 6 s son nuestros.
+- **Pantalla limpia.** CLEANSCREENON (LIMPIAPANTACT) y CLEANSCREENOFF (LIMPIAPANTDES); el botón es
+  «Clean Screen» / «Limpiar pantalla»; CLEANSCREENSTATE no se guarda. CLEANSCREENOPTIONS no existe
+  en AutoCAD (es de BricsCAD).
+- **Barra de estado (fase 5).** MODEL, en el espacio modelo, «display[s] the most recently accessed
+  layout»; Unidades muestra el formato (LUNITS) y el clic derecho lo cambia; la flecha y el clic
+  derecho abren el mismo menú; los incrementos de Polar son 90, 60, 45, 30, 22.5, 18, 15, 10 y 5.
+- **Unidades de dibujo.** Grupos Longitud (Tipo, Precisión), Ángulo (Tipo, Precisión, En el sentido
+  horario), Escala de inserción, Muestra de salida, Iluminación y el botón Dirección; UNITS / UN,
+  UNIDADES / UNS† (transcripción del pgp). LTSCALE (ESCALATL, EC†) vale 1.0000 y se guarda en el
+  dibujo; su solicitud exacta no está en la ayuda.
+- **Atajos en Chrome.** Ctrl+9, Ctrl+0 y Ctrl+1 llegan antes a la página y solo cambian de pestaña o
+  restablecen el zoom si no se anulan (pulsaciones reales con SendKeys, Chrome en Windows,
+  01/10/2026).
 
 **Comprobar antes de usarlo:**
 
@@ -262,7 +290,6 @@ Verificado en la ayuda de AutoCAD 2026:
 - Qué muestran los desplegables de la cinta con una selección mixta.
 - El clic derecho por defecto (SHORTCUTMENU, clic derecho temporizado) y el contenido de los menús
   contextuales con y sin comando.
-- Si Chrome deja interceptar Ctrl+0.
 
 Fuentes (todas en `help.autodesk.com/cloudhelp/2026/ENU/`):
 
@@ -281,6 +308,15 @@ Fuentes (todas en `help.autodesk.com/cloudhelp/2026/ENU/`):
   `GUID-7B14AAA4-3208-4384-A444-8A29231C4A02.htm` (DIM en el panel Anotación)
 - `AutoCAD-OnBoarding/files/ACD_FOUNDATIONS_MAIN10.html` y `acd_foundations_main2/ACD_FOUNDATIONS_MAIN2B.html`
   (desplegables Cotas y Continua/Línea base de Anotar)
+- Fase 5: `AutoCAD-Customization/files/GUID-B6A9C126-230D-47F5-8973-464BC80E3736.htm` (F2, Ctrl+9, Ctrl+0),
+  `GUID-06F6A6E9-C355-43F5-8706-49F0E5E552BF.htm` y `GUID-C9DB1661-36D0-4E5B-99A0-43A6ACA46110.htm` (historial),
+  `GUID-8B14D930-2B19-497D-B61E-EFD95296221C.htm` (CLIPROMPTLINES), `GUID-1D51E778-88BF-4614-9711-D7890B4E79F7.htm`,
+  `GUID-7C9CDCC6-8B1E-471D-9F6F-E1160F9AC3A8.htm` y `GUID-ADC0D08A-3E48-404A-B0B1-75E479182FF3.htm` (Pantalla limpia),
+  `GUID-5FD72B72-1FFF-44BF-97B3-938552FD6C51.htm` (MODEL), `GUID-F780BFA4-F711-43CB-A9B9-9D08683FA2CF.htm` (Unidades),
+  `GUID-9B416455-D3C9-4799-9433-AC1384F43138.htm` (Personalización), `GUID-7EC3C63D-EA4E-4E65-A676-C3A3627E3F19.htm`
+  (ángulos polares), `GUID-1DAE2080-84E4-413E-BB4E-F5D2A96CB14A.htm` (UNITS), `GUID-75419F91-18B8-47EE-9272-3196ACC95977.htm`
+  (Unidades de dibujo), `GUID-A58A87BB-482B-4042-A00A-EEF55A2B4FD8.htm` (INSUNITS), `GUID-47B3793A-37BF-45FC-94CB-670433ADD366.htm`
+  y `GUID-88787AE5-957B-483C-9EEF-51564114181F.htm` (LTSCALE), y las páginas ESP con los mismos GUID
 - `GUID-ECF7FC17-…` (Editar atributo único), `GUID-F26C676B-BF70-4538-A31F-4FBA07DC19D6.htm` (Medir ▾ Distancia),
   `GUID-27F11419-81E7-428A-972E-561F5809FBCD.htm` (ID de punto)
 - `AutoCAD-Customization/files/GUID-B6A9C126-230D-47F5-8973-464BC80E3736.htm` (atajos)
@@ -432,12 +468,20 @@ los del motor en `cad/locales/`, con `npm run locales`). Las clases son lógicas
     line» / «Línea de comandos»: `COMMANDLINE` («LINEACOM») dice «Command window» («ventana de
     comandos»), pero es la zona, no un nombre de comando o de paleta.
 
-5. **Barra de estado, línea de comandos y propiedades actuales.**
-   - La barra de estado y el diálogo de Unidades del dibujo.
-   - El historial con F2 y Pantalla limpia.
-   - CECOLOR, CELTYPE y CELWEIGHT en el documento, en el formato de archivo (con su versión) y en
-     cada herramienta que crea entidades. Es la pieza más cara; puede retrasarse sin bloquear lo
-     demás.
+5. **Barra de estado y línea de comandos.** Hecha.
+   - La barra de estado y el diálogo de Unidades de dibujo.
+   - La línea de una línea, el historial con F2 y Pantalla limpia.
+   - LTSCALE como comando.
+
+- **5b. Propiedades actuales.** CECOLOR, CELTYPE y CELWEIGHT, la pieza más cara, en su propia fase
+  entre la 5 y la 6:
+  - en el documento y en el formato de archivo, con su versión;
+  - en cada herramienta que crea entidades;
+  - en los desplegables de color, grosor y tipo de línea de la barra superior y en General de
+    Propiedades, cuando no hay selección.
+  - Hasta entonces sigue la regla de `ui.instructions.md`: sin selección, esos desplegables
+    muestran PorCapa desactivado.
+
 6. **Botón derecho y menú contextual.**
    - Intro o menú según el estado, verificado antes en la ayuda de AutoCAD.
    - Encuadre solo con el botón central y la rueda.
@@ -463,6 +507,31 @@ Objetivos al terminar:
   bajo 4,5:1 (lo desactivado incluido), 0 truncados y 0 partidos en dos líneas a 1280×720. Las
   únicas excepciones son los nombres de las caras del ViewCube, dibujados a la escala de la cara
   (12 px o más en la vista en planta), y los nombres largos de capa, que son datos.
+- Fase 5, medido al cerrarla (Chrome, `/draw`, `/es/draw` y `/ar/draw`):
+  - Zonas en 7 tamaños × 3 idiomas: barra superior 40, `command` 28 y `status` 28; 0 solapes, 0
+    casillas ocultas y nada sobre el lienzo salvo lo permitido. A 1920×1080 el lienzo gana 64 px
+    de alto (984 frente a 920).
+  - Primer pintado con los bundles bloqueados y transición desde la landing: la caja del lienzo es
+    la final en todos los casos, también con el panel recordado al revés y con 400 px de ancho.
+  - ZOOM E sin nada tapado; solo las cuatro notas del ViewCube en `/ar/draw` (es la superposición de
+    AutoCAD).
+  - Interacción, en los tres idiomas:
+    - el ID deja 2 líneas temporales, que a los 6 s están a opacidad 0;
+    - F2 despliega 196 px (12 líneas), al final del desplazamiento, y se pliega con F2, la flecha o
+      Esc;
+    - Ctrl+9 devuelve 28 px al lienzo, también desde la línea de comandos;
+    - Ctrl+0 deja el lienzo a todo el ancho y conserva Deshacer, y LAYER vuelve a mostrar el panel;
+    - Ctrl+1 abre Propiedades;
+    - el clic derecho abre el menú de referencias, que sigue abierto al marcar una;
+    - Polar lista 9 ángulos con 60, y elegir uno lo activa;
+    - la flecha mide 14 × 24 px;
+    - ocultar las coordenadas se recuerda al recargar;
+    - Unidades, el menú y UN abren el diálogo, donde las teclas no llegan a la línea de comandos;
+    - Aceptar aplica 0.0000 y metros, devuelve el foco al lienzo y Ctrl+Z lo deshace.
+  - Tipografía: 10 025 textos en 40 estados, con los menús de la barra, el popover de forzcursor,
+    Personalización, el diálogo y sus dos listas, las líneas temporales, el historial y Pantalla
+    limpia. Los cinco objetivos dan 0. Las líneas temporales captadas a mitad de su desvanecido
+    (54, en otros estados) no se miden contra AA, porque son una transición; a opacidad plena, sí.
 
 La medición es de Playwright, porque el arnés no ve el DOM. Sigue `local-verification-setup`:
 playwright-core en el scratchpad y Chrome del sistema. Por cada tamaño y en `/draw`, `/es/draw` y

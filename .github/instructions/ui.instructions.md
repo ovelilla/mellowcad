@@ -12,9 +12,11 @@ That holds for browser capabilities too: **no `Blob`, file picker, download anch
 keyboard listener in a component.** If a button needs one, the engine owes it a method (behind a
 port, implemented in `cad/adapters/`) — otherwise the behaviour lives in the app rather than in
 the package, and every consumer has to rewrite it. A component may keep purely visual state.
-Failures are reported at the command prompt, not in a bespoke React banner. The one exception is
-the palette panel's remembered width and fold (`lib/palette-layout.ts`): it is the page's layout,
-read by an inline `<head>` script before any bundle or engine exists, so it lives with the page.
+Failures are reported at the command prompt, not in a bespoke React banner. The exceptions are
+the page's own layout, which lives with the page: the palette panel's remembered width and fold
+(`lib/palette-layout.ts`, read by an inline `<head>` script before any bundle or engine exists) and
+what the status bar's Customization shows (`lib/status-bar-layout.ts`, read after mount — the bar's
+height never depends on it). AutoCAD keeps both in the user's profile, not in the drawing.
 
 ## Text
 
@@ -141,6 +143,12 @@ are tokens in `globals.css` (`@theme`), each a single class carrying size, weigh
   label instead of the raw value.
 - `onValueChange` can deliver `null` — guard before committing.
 - Do not nest a Tooltip and a Popover on the same trigger; the popover stops opening.
+- `Menu.RadioItem` and `Menu.CheckboxItem` leave the menu open on a click: a pick that ends the
+  choice passes `closeOnClick` (Polar's angles, the palette's flyouts), a checklist
+  `closeOnClick={false}` (the object snaps, Customization).
+- `Dialog.Popup` sets no `aria-modal`: a modal dialog sets `aria-modal="true"` itself, or the
+  engine hears its keys. While it is open the rest of the page is inert, so a test reaches the
+  command line by a CSS selector, not by its role.
 - `Panel` (from `toolbar-primitives.tsx`) does **not** forward props, so
   `<PopoverTrigger render={<Panel>…} />` drops the click handler and the popover never opens —
   silently. Render the `Button` as the trigger and wrap the whole `Popover` in the `Panel`.
@@ -152,8 +160,8 @@ are tokens in `globals.css` (`@theme`), each a single class carrying size, weigh
   into a zone; never position one absolutely over the drawing. The canvas takes what the zones
   leave, so ZOOM Extents frames only what is visible.
   - **Every zone has its size in CSS** (`h-10`, `w-19`, the panel's `w-9` /
-    `palette-open:w-(--palette-width)`, the command line's `h-20`), not from its content, and is
-    rendered before the engine mounts: the canvas's box at the first paint is then the final one,
+    `palette-open:w-(--palette-width)`, the command line's and the status bar's `h-7`), not from
+    its content, and is rendered before the engine mounts: the canvas's box at the first paint is then the final one,
     which the landing's view transition grows into and the first view is centred in. A zone that
     resizes moves the canvas's edge; one that resizes with the work (the selection, each command)
     makes the drawing jump. A size that depends on what this device remembers is decided by a
@@ -186,7 +194,7 @@ are tokens in `globals.css` (`@theme`), each a single class carrying size, weigh
   - Match Properties, then the object colour, lineweight and linetype drop-downs, which act on the
     selection and read ByLayer, disabled, with nothing selected until CECOLOR, CELTYPE and
     CELWEIGHT exist;
-  - at the end, the palette toggles: Styles, Blocks and the command line (F2), AutoCAD's View →
+  - at the end, the palette toggles: Styles, Blocks and the command line (Ctrl+9), AutoCAD's View →
     Palettes. Layers, Styles and Blocks are `PaletteToggle`s: `engine.togglePalette(tab)` opens the
     palette panel on that tab, or folds it when that tab is showing, and reads `active` then.
   - The buttons run the commands by their global name (`engine.runCommand("_QSAVE")`), as
@@ -234,17 +242,39 @@ are tokens in `globals.css` (`@theme`), each a single class carrying size, weigh
     Name, On, Lock, Color, Linetype, Lineweight, then the object count), scrolled sideways inside
     the panel. A click selects a row; a double-click on it, or Set Current, makes it current. A
     click on the selected row's name renames it after a pause, so a double-click still sets it
-    current (F2, AutoCAD's other rename key, is the command line here). A double-click on a
+    current (F2, AutoCAD's other rename key, is the command history here). A double-click on a
     control of the row is that control's.
   - **After acting in a palette, focus returns to the drawing** (`engine.focusSurface()`) — a
     click on a tab, a strip icon, a toggle, a pick in a drop-down — so the next key types a
     command. The arrow keys on the tabs keep focus there (`event.detail > 0` tells a click).
-- **The command line** (`command`) is docked with AutoCAD's three lines of history above the
-  prompt, kept while empty, so running commands never resizes the drawing; hiding it (F2)
-  collapses the zone, and it comes back while something is typed. Its suggestions open upwards
-  over the drawing, which is why the zone stacks above the canvas cell.
-- **The status bar** (`status`) — the coordinates at its start, then **DrawingAids** at its end:
-  drafting modes only, Snap, Grid, Ortho, Polar, Osnap, OTRACK, lineweight display.
+- **The command line** (`command`, 28 px) is AutoCAD's as it starts: one prompt line. Above it,
+  over the drawing, float the running command's temporary prompt lines (`commandLine.recent`,
+  CLIPROMPTLINES 3; they fade once it ends — `animate-prompt-fade`, our time, AutoCAD documents
+  none — and take no pointer), the whole history expanded up to 12 lines with F2 or the arrow at
+  the line's end (`commandLine.historyOpen`; a press on the drawing or Escape collapses it), and
+  the suggestions, which win over both. That is why the zone stacks above the canvas cell. Nothing
+  of it resizes the zone, so running commands never resizes the drawing; hiding the line (Ctrl+9)
+  collapses the zone, and it comes back while something is typed.
+- **The status bar** (`status`, 28 px; `StatusBar`) in the order of AutoCAD's 2026 reference:
+  the coordinates at its start (`1.5000, 2.0039, 0.0000`, at the drawing's precision, an LTR
+  island), then at its end MODEL, Grid, Snap mode ▾, Ortho, Polar ▾, Object snap tracking, Object
+  snap ▾, Lineweight, Selection cycling ▾, Units, Clean Screen and Customization (≡), right-most.
+  - A mode's buttons are `size="icon-status"` (28 × 24); a mode with settings has its arrow, a
+    half button of 14 px (`size="icon-flyout"`) attached to it, and a right-click on the mode
+    opens the same menu (`IconAction`'s `onContextMenu`). The settings are Base UI menus —
+    checkboxes for the object snaps and the list box, radio items for Polar's angles — except Snap
+    mode's spacing, which is typed and stays a popover.
+  - MODEL is a label, not a button: in model space AutoCAD's shows the last layout, and there are
+    none. Units shows the insertion unit (`mm`) and runs `_UNITS`. Clean Screen is
+    `engine.toggleCleanScreen` (Ctrl+0).
+  - Customization is a menu of checkboxes, one per tool and the coordinates, remembered on this
+    device; everything shows until hidden (the coordinates too, COORDS 1).
+- **Clean Screen** (`state.cleanScreen`, CLEANSCREENON / CLEANSCREENOFF, Ctrl+0) hides the
+  `tools` and `panel` zones (`hidden`, so the grid gives the canvas their room) and the top
+  bar's ribbon parts — the Layers and Properties groups and the palette toggles — and keeps the
+  application menu, the Quick Access Toolbar, the command line and the status bar. A palette opened
+  meanwhile shows the panel again (`cleanScreen.palette`). It is never on at the first paint:
+  AutoCAD does not save it, so it needs no head script.
 - **ToolRail** (`tools`, the inline start, 76 px) — the tool palette: only commands that act on
   the drawing, two to a row, sectioned by `PALETTE` as the ribbon's Home tab panels (Draw, Modify,
   Annotation, Block, Utilities; Continue/Baseline and Adjust Space come from the Annotate tab), a
@@ -273,9 +303,14 @@ are tokens in `globals.css` (`@theme`), each a single class carrying size, weigh
     the selection).
   - Unlisted tools fall into a trailing group, so a tool that belongs elsewhere in the chrome (the
     view tools, Select, Match Properties) must be listed in `RAIL_EXCLUDED`.
-- **The status bar's units popover** is controlled by `state.unitsPanel`
-  (`engine.setUnitsPanel`): the application menu's Drawing Units opens it until the UNITS dialog
-  exists.
+- **A dialog** is AutoCAD's modal one, and only where AutoCAD has one: Drawing Units
+  (`UnitsDialog`, UNITS) is `state.unitsDialog`, opened by the command — the application menu,
+  the status bar's Units and the typed `UN` all run `_UNITS` — and its OK goes through the engine
+  as one undo step (`engine.applyDrawingUnits`). A Base UI `Dialog` with `aria-modal="true"`,
+  which the engine reads to leave the dialog its keys (a letter or an arrow there must not reach
+  the prompt); `finalFocus={false}` and `focusSurface` on `onOpenChangeComplete`, so the next
+  key types a command. Its fields start from the drawing each time it opens; it holds only what
+  AutoCAD's holds and exists here, and `docs/autocad-coverage.md` lists the rest.
 - The editor carries no product or meta copy (an About panel was removed): that belongs to the
   landing.
 - The dynamic-input box is `pointer-events-none` and keyboard-driven — never make it clickable.

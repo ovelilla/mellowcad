@@ -2,15 +2,25 @@
 
 import { useTranslations } from "next-intl"
 import { useEffect, useRef } from "react"
-import { CadEngine, EngineState } from "@/cad"
+import { ChevronUp } from "lucide-react"
 
-/** How many scrollback lines stay visible above the prompt. */
-const VISIBLE_LINES = 3
+import { cn } from "@/lib/utils"
+import { TooltipProvider } from "@/components/ui/tooltip"
+import { CadEngine, EngineState, type CommandLineUi } from "@/cad"
+
+import { IconAction } from "./toolbar-primitives"
+
+/** What floats above the prompt, over the drawing. */
+const ABOVE =
+  "absolute inset-x-0 bottom-full border border-b-0 bg-card/90 px-2 py-0.5 font-mono whitespace-pre-wrap backdrop-blur"
 
 /**
- * AutoCAD's command line. Like the dynamic input box this component is "dumb":
- * the engine owns the prompt text, the scrollback and the autocomplete, so
- * typing on the canvas and typing in this box feed exactly the same buffer.
+ * AutoCAD's command line as it starts: one prompt line, with the temporary
+ * prompt history of the running command above it (CLIPROMPTLINES, 3), and the
+ * whole history expanded upwards over the drawing with F2 or the arrow at its
+ * end. Like the dynamic input box this component is "dumb": the engine owns
+ * the prompt text, the scrollback and the autocomplete, so typing on the
+ * canvas and typing in this box feed exactly the same buffer.
  */
 export function CommandLine({
   engine,
@@ -19,87 +29,52 @@ export function CommandLine({
   engine: CadEngine
   state: EngineState
 }) {
-  const { visible, prompt, idlePrompt, buffer, lines, suggestions, lang } =
+  const { visible, historyOpen, prompt, buffer, suggestions, lang } =
     state.commandLine
   const t = useTranslations("Editor.CommandLine")
-  const logRef = useRef<HTMLDivElement>(null)
-
-  useEffect(() => {
-    const log = logRef.current
-    if (log) log.scrollTop = log.scrollHeight
-  }, [lines])
 
   // Hidden is only *idle* hidden: as soon as something is typed the prompt
   // comes back, so a keystroke never disappears into nowhere. It hides again
   // once the command runs or the text is cleared.
   if (!visible && buffer === "") return null
 
-  const visibleLines = lines.slice(-VISIBLE_LINES)
-
   // WHY dir="ltr": the command line speaks the command language, left to
   // right in every locale (its prompts, typed coordinates and keywords).
   return (
-    <div
-      dir="ltr"
-      className="pointer-events-auto relative flex h-full w-full flex-col"
-    >
-      {/* Autocomplete sits above the prompt so it never covers the drawing
-          below the cursor, matching AutoCAD's suggestion list. */}
-      {suggestions.length > 0 && (
-        <div className="absolute inset-s-1 bottom-full mb-1 w-[min(46rem,calc(100%-0.5rem))] overflow-hidden rounded-lg border bg-popover text-popover-foreground shadow-md">
-          {suggestions.map((suggestion) => (
-            <button
-              key={suggestion.name}
-              type="button"
-              // Keep focus where it is: running a command must not steal it
-              // from the canvas (the engine refocuses the surface itself).
-              onMouseDown={(e) => e.preventDefault()}
-              onClick={() => engine.runCommand(suggestion.name)}
-              className="flex h-7 w-full items-center gap-2 px-2 text-start font-mono hover:bg-accent hover:text-accent-foreground"
-            >
-              <span lang={lang} className="text-title">
-                {suggestion.name}
-              </span>
-              <span className="truncate text-muted-foreground">
-                {suggestion.description}
-              </span>
-            </button>
-          ))}
-        </div>
-      )}
-
-      {/* Docked, the history keeps its lines even while empty, as AutoCAD's
-          docked command window does: the drawing above never resizes as
-          commands run. */}
+    <TooltipProvider>
       <div
-        ref={logRef}
-        lang={lang}
-        // AutoCAD lays its reports out in spaces and lines (ID, DIST, UCS ?).
-        className="flex min-h-0 flex-1 flex-col overflow-y-auto border-b px-2 pt-0.5 font-mono text-ui whitespace-pre-wrap"
+        dir="ltr"
+        className="pointer-events-auto relative flex h-full w-full items-center gap-2 ps-2 pe-0.5 font-mono"
       >
-        {/* Lines sit on the prompt; an auto margin, not justify-end, which
-            would push a long report out of reach above the scroll. */}
-        <div className="mt-auto">
-          {visibleLines.map((line, index) => (
-            <div
-              key={`${index}-${line.text}`}
-              className={
-                line.kind === "error"
-                  ? "text-destructive"
-                  : line.kind === "command"
-                    ? "text-foreground"
-                    : "text-muted-foreground"
-              }
-            >
-              {line.kind === "command"
-                ? `${idlePrompt} ${line.text}`
-                : line.text}
-            </div>
-          ))}
-        </div>
-      </div>
+        {/* Autocomplete sits above the prompt so it never covers the drawing
+            below the cursor, matching AutoCAD's suggestion list. */}
+        {suggestions.length > 0 ? (
+          <div className="absolute inset-s-1 bottom-full z-10 mb-1 w-[min(46rem,calc(100%-0.5rem))] overflow-hidden rounded-lg border bg-popover text-popover-foreground shadow-md">
+            {suggestions.map((suggestion) => (
+              <button
+                key={suggestion.name}
+                type="button"
+                // Keep focus where it is: running a command must not steal it
+                // from the canvas (the engine refocuses the surface itself).
+                onMouseDown={(e) => e.preventDefault()}
+                onClick={() => engine.runCommand(suggestion.name)}
+                className="flex h-7 w-full items-center gap-2 px-2 text-start hover:bg-accent hover:text-accent-foreground"
+              >
+                <span lang={lang} className="text-title">
+                  {suggestion.name}
+                </span>
+                <span className="truncate text-muted-foreground">
+                  {suggestion.description}
+                </span>
+              </button>
+            ))}
+          </div>
+        ) : historyOpen ? (
+          <History commandLine={state.commandLine} label={t("history")} />
+        ) : (
+          <TemporaryLines commandLine={state.commandLine} />
+        )}
 
-      <div className="flex h-7 shrink-0 items-center gap-2 px-2 font-mono">
         <span
           lang={lang}
           className="shrink-0 whitespace-nowrap text-muted-foreground"
@@ -123,6 +98,7 @@ export function CommandLine({
             } else if (e.key === "Escape") {
               e.preventDefault()
               if (buffer !== "") engine.setCommandLineText("")
+              else if (historyOpen) engine.setCommandHistoryOpen(false)
               else engine.focusSurface()
             }
           }}
@@ -133,7 +109,101 @@ export function CommandLine({
           className="min-w-0 flex-1 bg-transparent text-foreground uppercase outline-none placeholder:text-faint-foreground placeholder:normal-case"
           placeholder={t("placeholder")}
         />
+        {/* The arrow at the command window's right end ("Press F2. Click the
+            arrow at the right end of the command window"). */}
+        <IconAction
+          icon={ChevronUp}
+          label={t("history")}
+          shortcut="F2"
+          side="top"
+          size="icon-status"
+          active={historyOpen}
+          onClick={() => engine.toggleCommandHistory()}
+        />
       </div>
+    </TooltipProvider>
+  )
+}
+
+/** One line of the scrollback, as AutoCAD writes it. */
+function Line({
+  line,
+  idlePrompt,
+}: {
+  line: CommandLineUi["lines"][number]
+  idlePrompt: string
+}) {
+  return (
+    <div
+      className={
+        line.kind === "error"
+          ? "text-destructive"
+          : line.kind === "command"
+            ? "text-foreground"
+            : "text-muted-foreground"
+      }
+    >
+      {line.kind === "command" ? `${idlePrompt} ${line.text}` : line.text}
+    </div>
+  )
+}
+
+/**
+ * The temporary prompt history: the last lines of the running command. Once
+ * it ends they fade, so a report (ID, DIST) can still be read; the time is
+ * ours, as AutoCAD documents none.
+ */
+function TemporaryLines({ commandLine }: { commandLine: CommandLineUi }) {
+  const { recent, command, idlePrompt, lang } = commandLine
+  const last = recent.at(-1)
+  if (!last) return null
+  return (
+    <div
+      // A new line starts the fade again.
+      key={`${recent.length}:${last.kind}:${last.text}`}
+      lang={lang}
+      aria-hidden
+      className={cn(
+        ABOVE,
+        "pointer-events-none",
+        command === null && "animate-prompt-fade"
+      )}
+    >
+      {recent.map((line, index) => (
+        <Line key={index} line={line} idlePrompt={idlePrompt} />
+      ))}
+    </div>
+  )
+}
+
+/** The whole history, expanded up to 12 lines and scrolled to its end. */
+function History({
+  commandLine,
+  label,
+}: {
+  commandLine: CommandLineUi
+  label: string
+}) {
+  const { lines, idlePrompt, lang } = commandLine
+  const logRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    const log = logRef.current
+    if (log) log.scrollTop = log.scrollHeight
+  }, [lines])
+
+  return (
+    <div
+      ref={logRef}
+      role="log"
+      aria-label={label}
+      lang={lang}
+      // Twelve lines of 16 px.
+      className={cn(ABOVE, "max-h-49 overflow-y-auto")}
+    >
+      {lines.map((line, index) => (
+        <Line key={index} line={line} idlePrompt={idlePrompt} />
+      ))}
     </div>
   )
 }

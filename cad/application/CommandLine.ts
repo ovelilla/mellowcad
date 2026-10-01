@@ -128,6 +128,27 @@ export class CommandLineController extends Observable {
 }
 
 /**
+ * CLIPROMPTLINES' default: how many temporary prompt lines of a command show
+ * above the one-line command window.
+ */
+export const CLIPROMPTLINES = 3
+
+/**
+ * AutoCAD's temporary prompt history: the last lines of the most recent
+ * command — its echo and what it reported — at most {@link CLIPROMPTLINES}.
+ */
+export function temporaryPromptLines(
+  lines: ReadonlyArray<CommandLineEntry>
+): ReadonlyArray<CommandLineEntry> {
+  let start = lines.length
+  while (start > 0 && lines.length - start < CLIPROMPTLINES) {
+    start--
+    if (lines[start].kind === "command") break
+  }
+  return lines.slice(start)
+}
+
+/**
  * The command each tool runs, by its global name. What it is typed as — AutoCAD's
  * names and aliases in the command language, `L` for LINE, `AR` for ARRAYRECT —
  * is in the catalog (`commands.names`), so a language can rename it and keep
@@ -207,6 +228,7 @@ export const TOOL_COMMANDS: Readonly<Record<string, string>> = {
   view: "VIEW",
   orbit: "3DORBIT",
   navvcube: "NAVVCUBE",
+  ltscale: "LTSCALE",
 }
 
 /** The shortest way to type a command, e.g. `"L"` — shown in tooltips. */

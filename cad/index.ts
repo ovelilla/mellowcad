@@ -63,6 +63,7 @@ export type {
   StylesPanelTab,
   PaletteTab,
   PaletteUi,
+  CleanScreenUi,
   PropertiesUi,
   PropertiesFilterOption,
   SelectionScope,
@@ -275,6 +276,7 @@ export { ViewTool } from "./application/tools/ViewTool"
 export { VIEW_MENU, type ViewPreset } from "./application/tools/viewPresets"
 export { OrbitTool } from "./application/tools/OrbitTool"
 export { NavVCubeTool } from "./application/tools/NavVCubeTool"
+export { LtScaleTool } from "./application/tools/LtScaleTool"
 export {
   VIEW_CUBE_PARTS,
   type CompassLetter,
@@ -366,6 +368,7 @@ export {
   formatAngle,
   parseNumber,
   unitSuffix,
+  unitsSampleOutput,
 } from "./domain/units"
 export type { DocumentSettings, UcsIconSetting } from "./domain/units"
 export {

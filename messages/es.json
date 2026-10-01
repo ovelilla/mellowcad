@@ -246,7 +246,9 @@
       "save": "Ctrl+S",
       "open": "Ctrl+O",
       "undo": "Ctrl+Z",
-      "redo": "Ctrl+Y"
+      "redo": "Ctrl+Y",
+      "commandLine": "Ctrl+9",
+      "cleanScreen": "Ctrl+0"
     },
     "TopBar": {
       "menu": "Menú de la aplicación",
@@ -254,7 +256,7 @@
       "open": "Abrir",
       "save": "Guardar",
       "saveAs": "Guardar como",
-      "units": "Unidades del dibujo…",
+      "units": "Unidades de dibujo…",
       "language": "Idioma",
       "saving": "Guardando…",
       "saved": "Guardado",
@@ -322,17 +324,17 @@
     },
     "CommandLine": {
       "label": "Línea de comandos",
-      "placeholder": "Escriba un comando (LINEA, RR, CP…)"
-    },
-    "Coordinates": {
-      "x": "x:",
-      "y": "y:",
-      "z": "z:"
+      "placeholder": "Escriba un comando (LINEA, RR, CP…)",
+      "history": "Historial de comandos"
     },
     "DynamicInput": {
       "locked": "bloqueado"
     },
-    "DrawingAids": {
+    "StatusBar": {
+      "coordinates": "Coordenadas",
+      "model": "MODELO",
+      "modelSpace": "Espacio modelo",
+      "grid": "Rejilla",
       "objectSnap": "Referencia a objetos",
       "objectSnapSettings": "Parámetros de referencia a objetos",
       "comingSoon": "{name} (próximamente)",
@@ -347,7 +349,6 @@
       "snapYSpacing": "Intervalo Y de forzcursor",
       "polarDistance": "Distancia polar",
       "polarSnapDistance": "Distancia de forzcursor polar",
-      "grid": "Rejilla",
       "ortho": "Modo Orto",
       "polarTracking": "Rastreo polar",
       "polarTrackingAngle": "Ángulo de rastreo polar",
@@ -357,13 +358,23 @@
       "selectionCyclingSettings": "Parámetros del ciclo de selección",
       "selectionList": "Mostrar el cuadro de lista de selección",
       "showLineweight": "Mostrar grosor de línea",
-      "unitsSettings": "Unidades y precisión del dibujo",
       "units": "Unidades",
+      "cleanScreen": "Limpiar pantalla",
+      "customization": "Personalización"
+    },
+    "Units": {
+      "title": "Unidades de dibujo",
+      "length": "Longitud",
+      "type": "Tipo",
       "precision": "Precisión",
-      "linetypeScale": "Escala de tipo de línea",
-      "linetypeScaleLabel": "Factor de escala global de tipo de línea (ESCALATL)",
-      "dimensionScale": "Escala de cota",
-      "dimensionScaleLabel": "Escala global de cota (DIMSCALE)"
+      "decimal": "Decimales",
+      "insertionScale": "Escala de inserción",
+      "millimeters": "Milímetros",
+      "centimeters": "Centímetros",
+      "meters": "Metros",
+      "sampleOutput": "Muestra de salida",
+      "ok": "Aceptar",
+      "cancel": "Cancelar"
     },
     "SnapOverride": {
       "point": "Punto",

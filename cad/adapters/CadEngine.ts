@@ -439,6 +439,22 @@ export class CadEngine {
     this.runtime.toggleCommandLine()
   }
 
+  setCommandHistoryOpen(open: boolean): void {
+    this.runtime.setCommandHistoryOpen(open)
+  }
+
+  toggleCommandHistory(): void {
+    this.runtime.toggleCommandHistory()
+  }
+
+  setCleanScreen(on: boolean): void {
+    this.runtime.setCleanScreen(on)
+  }
+
+  toggleCleanScreen(): void {
+    this.runtime.toggleCleanScreen()
+  }
+
   /**
    * A point of the state's screen space (the canvas's own pixels: the cursor,
    * the snap override menu, the cycling list) in the page's viewport, where a
@@ -479,6 +495,10 @@ export class CadEngine {
 
   setDocumentPrecision(precision: number): void {
     this.runtime.setDocumentPrecision(precision)
+  }
+
+  applyDrawingUnits(unit: LengthUnit, precision: number): void {
+    this.runtime.applyDrawingUnits(unit, precision)
   }
 
   setLtScale(ltScale: number): void {
@@ -552,8 +572,8 @@ export class CadEngine {
     this.runtime.setPaletteOpen(open)
   }
 
-  setUnitsPanel(open: boolean): void {
-    this.runtime.setUnitsPanel(open)
+  setUnitsDialog(open: boolean): void {
+    this.runtime.setUnitsDialog(open)
   }
 
   insertBlock(id: string): void {
@@ -777,13 +797,17 @@ export class CadEngine {
     // engine is in use. The runtime's routing order is untouched: this, like
     // the field rule below, decides only whether a key reaches it at all.
     if (this.scope && !this.hearsKeysFrom(target)) return
+    // A modal dialog (UNITS) takes every key, as AutoCAD's do: its lists'
+    // arrows and letters must not reach the command prompt.
+    if (target?.closest(MODAL)) return
     // Keys typed into editable UI (the dynamic-input box) belong to that field,
     // which handles its own Enter/Escape/typing — don't hijack them here. Two
     // exceptions are global and must work wherever focus sits, as in AutoCAD:
-    // function keys (F8 Ortho, F10 Polar, ...) and the file shortcuts, which
-    // also have to be swallowed so the browser's Save/Open dialogs never open.
+    // function keys (F8 Ortho, F10 Polar, ...) and the global Ctrl shortcuts,
+    // which also have to be swallowed so the browser's own action (its
+    // Save/Open dialogs, switching tabs, resetting the zoom) never runs.
     const inEditable = !!target?.closest(EDITABLE)
-    if (inEditable && !/^F\d+$/.test(e.key) && !isFileShortcut(e)) {
+    if (inEditable && !/^F\d+$/.test(e.key) && !isGlobalShortcut(e)) {
       return
     }
     const data: KeyEventData = {
@@ -814,6 +838,9 @@ export class CadEngine {
 /** Elements whose keys and context menu belong to the text in them. */
 const EDITABLE = 'input, textarea, select, [contenteditable="true"]'
 
+/** A modal dialog, which keeps its keys to itself. */
+const MODAL = '[role="dialog"][aria-modal="true"]'
+
 /** Keys whose default action scrolls the page. */
 const SCROLL_KEYS = new Set([
   " ",
@@ -828,19 +855,22 @@ const SCROLL_KEYS = new Set([
 ])
 
 /**
- * Ctrl+S / Ctrl+O. The other Ctrl combos stay unforwarded from editable fields
- * on purpose (a global undo mid-draw desyncs the running tool), but saving and
- * opening are safe from anywhere and the browser must not handle them.
+ * Ctrl+S / Ctrl+O and the window shortcuts Ctrl+9 (command line), Ctrl+0
+ * (Clean Screen) and Ctrl+1 (Properties). The other Ctrl combos stay
+ * unforwarded from editable fields on purpose (a global undo mid-draw desyncs
+ * the running tool), but these are safe from anywhere and the browser must
+ * not handle them.
  *
  * The clipboard shortcuts must **never** join this list: Ctrl+C / Ctrl+X /
  * Ctrl+V / Ctrl+A inside a dynamic-input box or a layer name belong to that
  * text, and taking them would break copying a value out of the drawing's own UI.
  */
-function isFileShortcut(e: KeyboardEvent): boolean {
+function isGlobalShortcut(e: KeyboardEvent): boolean {
   if (!e.ctrlKey || e.altKey) return false
-  const key = shortcutKey(e).toLowerCase()
-  return key === "s" || key === "o"
+  return GLOBAL_CTRL_KEYS.has(shortcutKey(e).toLowerCase())
 }
+
+const GLOBAL_CTRL_KEYS = new Set(["s", "o", "9", "0", "1"])
 
 /**
  * The key a Ctrl combination names. WHY: with a layout that is not latin —

@@ -74,7 +74,8 @@ export const en: EngineCatalog = {
       "vpoint": "Viewpoint",
       "view": "Preset views",
       "orbit": "3D Orbit",
-      "navvcube": "ViewCube"
+      "navvcube": "ViewCube",
+      "ltscale": "Linetype scale"
     },
     "description": {
       "UNDO": "Undo the last action",
@@ -94,7 +95,10 @@ export const en: EngineCatalog = {
       "LAYER": "Manage layers and layer properties",
       "LAYERCLOSE": "Close the Layer Properties Manager",
       "PROPERTIES": "Show the properties of the selected objects",
-      "PROPERTIESCLOSE": "Close the Properties palette"
+      "PROPERTIESCLOSE": "Close the Properties palette",
+      "UNITS": "Control the precision and display format of coordinates and distances",
+      "CLEANSCREENON": "Clear toolbars and palettes from the screen",
+      "CLEANSCREENOFF": "Restore the display as it was before Clean Screen"
     },
     "snap": {
       "endpoint": "Endpoint",
@@ -779,6 +783,20 @@ export const en: EngineCatalog = {
       "NAVVCUBE": [
         "NAVVCUBE",
         "CUBE"
+      ],
+      "UNITS": [
+        "UNITS",
+        "UN"
+      ],
+      "LTSCALE": [
+        "LTSCALE",
+        "LTS"
+      ],
+      "CLEANSCREENON": [
+        "CLEANSCREENON"
+      ],
+      "CLEANSCREENOFF": [
+        "CLEANSCREENOFF"
       ]
     },
     "prompts": {
@@ -892,6 +910,7 @@ export const en: EngineCatalog = {
       "planUcsName": "Enter name of UCS or [?]",
       "elevDefaultElevation": "Specify new default elevation",
       "elevDefaultThickness": "Specify new default thickness",
+      "ltscaleFactor": "Enter new linetype scale factor",
       "idPoint": "Specify point",
       "viewPoint": "Specify a view point",
       "viewAngleInPlane": "Enter angle in XY plane from X axis",

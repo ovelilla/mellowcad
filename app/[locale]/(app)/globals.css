@@ -47,6 +47,19 @@
   --text-title: 0.75rem;
   --text-title--line-height: 1rem;
   --text-title--font-weight: 600;
+
+  /* The command line's temporary prompt lines, once their command ends: held
+     long enough to read a report, then gone. AutoCAD documents no time. */
+  --animate-prompt-fade: prompt-fade 6s ease-in forwards;
+  @keyframes prompt-fade {
+    0%,
+    70% {
+      opacity: 1;
+    }
+    100% {
+      opacity: 0;
+    }
+  }
 }
 
 @theme inline {

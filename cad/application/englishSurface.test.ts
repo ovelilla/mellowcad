@@ -1051,6 +1051,13 @@ describe("the engine's English surface", () => {
         .do("ELEV again", (c) => c.command("ELEV"))
         .do("escape", (c) => c.escape())
     )
+    walk("LTSCALE", createHarness(), (s) =>
+      s
+        .do("LTSCALE", (c) => c.command("LTSCALE"))
+        .do("zero", (c) => c.type("0").enter())
+        .do("factor", (c) => c.type("2.5").enter())
+        .do("LTS enter", (c) => c.command("LTS").enter())
+    )
     walk("ID", createHarness(), (s) =>
       s
         .do("ID", (c) => c.command("ID"))

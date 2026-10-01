@@ -67,6 +67,7 @@ VPOINT ["VP"] "Viewpoint"
 VIEW ["V"] "Preset views"
 3DORBIT ["3DO","ORBIT"] "3D Orbit"
 NAVVCUBE ["CUBE"] "ViewCube"
+LTSCALE ["LTS"] "Linetype scale"
 UNDO ["U"] "Undo the last action"
 -MTEXT [] "Multiline text"
 REDO [] "Redo the last undone action"
@@ -89,6 +90,9 @@ LAYER ["LA"] "Manage layers and layer properties"
 LAYERCLOSE [] "Close the Layer Properties Manager"
 PROPERTIES ["PR","CH","MO"] "Show the properties of the selected objects"
 PROPERTIESCLOSE [] "Close the Properties palette"
+UNITS ["UN"] "Control the precision and display format of coordinates and distances"
+CLEANSCREENON [] "Clear toolbars and palettes from the screen"
+CLEANSCREENOFF [] "Restore the display as it was before Clean Screen"
 PURGE ["PU"] "Remove unused block definitions"
 ## tools
 select "Select" s
@@ -161,6 +165,7 @@ vpoint "Viewpoint" VP
 view "Preset views" V
 orbit "3D Orbit" 3DO
 navvcube "ViewCube" CUBE
+ltscale "Linetype scale" LTS
 
 ## neutral prompt
 > start
@@ -2861,6 +2866,29 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
   prompt: Command:
   asks: -
   dyn: -
+
+## LTSCALE
+> start
+  prompt: Command:
+  asks: -
+  dyn: -
+  options: -
+  canvas: -
+  properties: -
+  cycling: -
+> LTSCALE
+  prompt: LTSCALE:
+  asks: "Enter new linetype scale factor"
+  dyn: "Enter new linetype scale factor"=""|1|*
+  command| LTSCALE
+> zero
+> factor
+  prompt: Command:
+  asks: -
+  dyn: -
+  info| Regenerating model.
+> LTS enter
+  command| LTSCALE
 
 ## ID
 > start

@@ -296,6 +296,7 @@ const RAIL_EXCLUDED = new Set([
   "vpoint",
   "view",
   "navvcube",
+  "ltscale",
 ])
 
 interface ToolMeta {

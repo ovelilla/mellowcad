@@ -99,6 +99,21 @@ export function formatAngle(
 }
 
 /**
+ * The Drawing Units dialog's Sample Output ("an example of the current
+ * settings for units and angles"): a point typed as X,Y,Z and one as
+ * distance<angle,Z, written as the drawing writes them.
+ */
+export function unitsSampleOutput(
+  settings: Pick<DocumentSettings, "precision">
+): readonly [string, string] {
+  const length = (value: number) => value.toFixed(settings.precision)
+  return [
+    `${length(1.5)},${length(2.0039)},${length(0)}`,
+    `${length(3)}<${(45).toFixed(settings.precision)},${length(0)}`,
+  ]
+}
+
+/**
  * Parses a numeric measurement typed by the user. Accepts an optional leading
  * sign and either a dot or comma as the decimal separator. Returns `null` when
  * the text is empty or not a finite number.
