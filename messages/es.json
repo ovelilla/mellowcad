@@ -246,8 +246,7 @@
       "save": "Ctrl+S",
       "open": "Ctrl+O",
       "undo": "Ctrl+Z",
-      "redo": "Ctrl+Y",
-      "delete": "Supr"
+      "redo": "Ctrl+Y"
     },
     "CommandBar": {
       "saving": "Guardando automáticamente…",
@@ -262,7 +261,9 @@
       "resetView": "Restablecer vista",
       "orbit": "Órbita",
       "commandLine": "Línea de comandos",
-      "clearAll": "Borrar todo"
+      "clearAll": "Borrar todo",
+      "undo": "Deshacer",
+      "redo": "Rehacer"
     },
     "ViewCube": {
       "label": "ViewCube",
@@ -287,17 +288,22 @@
         "arc": "Arco",
         "ellipse": "Elipse",
         "rectangle": "Rectángulo",
+        "trim": "Recortar",
         "fillet": "Empalme",
-        "break": "Partir",
         "array": "Matriz",
         "text": "Texto",
         "dimension": "Cota",
-        "attributes": "Atributos",
+        "dimchain": "Continua",
         "measure": "Medir"
       },
-      "undo": "Deshacer",
-      "redo": "Rehacer",
-      "deleteSelection": "Borrar la selección"
+      "sections": {
+        "draw": "Dibujo",
+        "modify": "Modificar",
+        "annotation": "Anotación",
+        "block": "Bloque",
+        "utilities": "Utilidades"
+      },
+      "more": "{section}: más herramientas"
     },
     "CommandLine": {
       "label": "Línea de comandos",

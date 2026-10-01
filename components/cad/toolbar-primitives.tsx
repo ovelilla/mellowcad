@@ -24,6 +24,7 @@ export function IconAction({
   disabled = false,
   mirrored = false,
   side = "inline-end",
+  size = "icon-sm",
   className,
 }: {
   icon: LucideIcon
@@ -38,6 +39,7 @@ export function IconAction({
    */
   mirrored?: boolean
   side?: Side
+  size?: "icon-sm" | "icon-tool"
   className?: string
 }) {
   return (
@@ -45,7 +47,7 @@ export function IconAction({
       <TooltipTrigger
         render={
           <Button
-            size="icon-sm"
+            size={size}
             variant={active ? "active" : "ghost"}
             disabled={disabled}
             onClick={onClick}

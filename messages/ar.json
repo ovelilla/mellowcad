@@ -246,8 +246,7 @@
       "save": "Ctrl+S",
       "open": "Ctrl+O",
       "undo": "Ctrl+Z",
-      "redo": "Ctrl+Y",
-      "delete": "Del"
+      "redo": "Ctrl+Y"
     },
     "CommandBar": {
       "saving": "جارٍ الحفظ التلقائي…",
@@ -262,7 +261,9 @@
       "resetView": "إعادة ضبط العرض",
       "orbit": "مدار",
       "commandLine": "سطر الأوامر",
-      "clearAll": "مسح الكل"
+      "clearAll": "مسح الكل",
+      "undo": "تراجع",
+      "redo": "إعادة"
     },
     "ViewCube": {
       "label": "مكعب العرض",
@@ -287,17 +288,22 @@
         "arc": "قوس",
         "ellipse": "قطع ناقص",
         "rectangle": "مستطيل",
+        "trim": "تشذيب",
         "fillet": "تقويس",
-        "break": "كسر",
         "array": "مصفوفة",
         "text": "نص",
         "dimension": "بُعد",
-        "attributes": "السمات",
+        "dimchain": "متتابع",
         "measure": "قياس"
       },
-      "undo": "تراجع",
-      "redo": "إعادة",
-      "deleteSelection": "حذف المحدد"
+      "sections": {
+        "draw": "رسم",
+        "modify": "تعديل",
+        "annotation": "التعليقات التوضيحية",
+        "block": "الكتلة",
+        "utilities": "أدوات مساعدة"
+      },
+      "more": "{section}: مزيد من الأدوات"
     },
     "CommandLine": {
       "label": "سطر الأوامر",

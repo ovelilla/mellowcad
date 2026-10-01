@@ -58,7 +58,7 @@ export function CadWorkspace({
         )}
       </div>
 
-      <div className="flex min-h-0 w-11 flex-col items-center border-e py-1 [grid-area:tools]">
+      <div className="flex min-h-0 w-19 flex-col border-e p-1 [grid-area:tools]">
         {ready && <ToolRail engine={engine} state={state} />}
       </div>
 

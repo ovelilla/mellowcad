@@ -48,6 +48,7 @@
       "extend": "Alargar",
       "fillet": "Empalme",
       "chamfer": "Chaflán",
+      "erase": "Borrar",
       "explode": "Descomponer",
       "join": "Juntar",
       "break": "Partir",
@@ -72,7 +73,6 @@
       "navvcube": "ViewCube"
     },
     "description": {
-      "ERASE": "Borrar los objetos seleccionados",
       "UNDO": "Deshacer la última acción",
       "REDO": "Rehacer la última acción deshecha",
       "SNAP": "Restringir el cursor a los intervalos de resolución",
@@ -747,7 +747,6 @@
     },
     "messages": {
       "unknownCommand": "Comando \"{name}\" desconocido.",
-      "nothingSelected": "No se ha designado nada.",
       "erased": "{count, plural, one {# objeto borrado.} other {# objetos borrados.}}",
       "snapMode": "{state, select, on {Modo Forzcursor activado.} other {Modo Forzcursor desactivado.}}",
       "fromNeedsPoint": "DESDE necesita una solicitud de punto.",

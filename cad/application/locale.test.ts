@@ -463,12 +463,12 @@ describe("Spanish AutoCAD's command language", () => {
 
   it("lists the commands by their Spanish names, described in Spanish", () => {
     expect(
-      commandCatalog(es).find((command) => command.id === "ERASE")
+      commandCatalog(es).find((command) => command.id === "PURGE")
     ).toEqual(
       expect.objectContaining({
-        name: "BORRA",
-        aliases: ["B"],
-        description: "Borrar los objetos seleccionados",
+        name: "LIMPIA",
+        aliases: ["LI"],
+        description: "Eliminar las definiciones de bloque no utilizadas",
       })
     )
   })

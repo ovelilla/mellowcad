@@ -29,18 +29,6 @@ export function registerCommands(
 
   const say = (text: string) => runtime.commandLine.write("info", text)
 
-  register({
-    id: "ERASE",
-    run: () => {
-      if (runtime.selection.isEmpty()) {
-        say(runtime.text.message("nothingSelected"))
-        return
-      }
-      const count = runtime.selection.size
-      runtime.deleteSelection()
-      say(runtime.text.message("erased", { count }))
-    },
-  })
   register({ id: "UNDO", run: () => runtime.undo() })
   // -MTEXT is MTEXT with the text typed at the command line, so it runs the
   // same tool and switches its entry.

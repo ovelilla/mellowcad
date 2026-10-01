@@ -32,6 +32,8 @@ const buttonVariants = cva(
           "size-6 rounded-[min(var(--radius-md),8px)] in-data-[slot=button-group]:rounded-md [&_svg:not([class*='size-'])]:size-3",
         "icon-sm":
           "size-8 rounded-[min(var(--radius-md),10px)] in-data-[slot=button-group]:rounded-md",
+        // The tool palette's: two columns of them fit its 76 px.
+        "icon-tool": "h-7 w-7.5 rounded-md",
         "icon-lg": "size-10",
       },
     },

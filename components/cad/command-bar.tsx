@@ -4,16 +4,20 @@ import { Menu } from "@base-ui/react/menu"
 import {
   CheckIcon,
   ChevronDown,
-  Eraser,
   FolderOpen,
   Hand,
   Loader2,
   Maximize,
+  MousePointer2,
+  Paintbrush,
+  Redo2,
   Rotate3d,
   RotateCcw,
   Save,
   Search,
   Terminal,
+  Trash2,
+  Undo2,
   ZoomIn,
   ZoomOut,
 } from "lucide-react"
@@ -28,8 +32,9 @@ import { LanguageMenu } from "./language-menu"
 import { IconAction, Panel } from "./toolbar-primitives"
 
 /**
- * The top command bar: file actions, view navigation and the language. Horizontal and
- * compact so it stays a single short row regardless of viewport width.
+ * The top command bar: file actions, undo, view navigation and the language.
+ * Horizontal and compact so it stays a single short row regardless of
+ * viewport width.
  */
 export function CommandBar({
   engine,
@@ -44,6 +49,8 @@ export function CommandBar({
   // The navigation tools' aliases are the engine's: they are command names.
   const alias = (id: string) =>
     state.tools.find((tool) => tool.id === id)?.shortcut?.toUpperCase()
+  const label = (id: string) =>
+    state.tools.find((tool) => tool.id === id)?.label ?? id
 
   return (
     <TooltipProvider>
@@ -63,14 +70,50 @@ export function CommandBar({
           onClick={() => void engine.openDrawingFromFile()}
           side="bottom"
         />
-        {/* With the file actions, away from Delete selection, until the
-              application menu's New takes its place. */}
+        {/* With the file actions until the application menu's New takes its
+              place. */}
         <IconAction
-          icon={Eraser}
+          icon={Trash2}
           label={t("clearAll")}
           side="bottom"
           disabled={state.entityCount === 0}
           onClick={() => engine.clearAll()}
+        />
+        <IconAction
+          icon={Undo2}
+          mirrored
+          label={t("undo")}
+          shortcut={keys("undo")}
+          side="bottom"
+          disabled={!state.canUndo}
+          onClick={() => engine.undo()}
+        />
+        <IconAction
+          icon={Redo2}
+          mirrored
+          label={t("redo")}
+          shortcut={keys("redo")}
+          side="bottom"
+          disabled={!state.canRedo}
+          onClick={() => engine.redo()}
+        />
+        {/* Out of the tool palette, which holds only commands on the drawing,
+              until the top bar (phase 3 of docs/next-ui-redesign.md) puts
+              Match Properties beside the properties; Select is also Esc. */}
+        <IconAction
+          icon={MousePointer2}
+          label={label("select")}
+          side="bottom"
+          active={state.activeToolId === "select"}
+          onClick={() => engine.setActiveTool("select")}
+        />
+        <IconAction
+          icon={Paintbrush}
+          label={label("matchprop")}
+          shortcut={alias("matchprop")}
+          side="bottom"
+          active={state.activeToolId === "matchprop"}
+          onClick={() => engine.setActiveTool("matchprop")}
         />
         <ViewMenu
           engine={engine}

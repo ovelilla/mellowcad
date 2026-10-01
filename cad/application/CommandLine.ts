@@ -185,6 +185,7 @@ export const TOOL_COMMANDS: Readonly<Record<string, string>> = {
   extend: "EXTEND",
   fillet: "FILLET",
   chamfer: "CHAMFER",
+  erase: "ERASE",
   explode: "EXPLODE",
   join: "JOIN",
   break: "BREAK",

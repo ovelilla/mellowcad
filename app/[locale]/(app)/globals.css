@@ -12,6 +12,11 @@
    designed for it — those added with its CLI later too. */
 @custom-variant dark (&);
 
+/* A window too short for the whole tool palette, which then folds its
+   Annotation, Block and Utilities sections into a drop-down each. In CSS, so
+   the palette has its final height at the first paint. */
+@custom-variant short (@media (height < 700px));
+
 @theme inline {
   --font-heading: var(--font-sans);
   --font-sans: var(--font-sans);

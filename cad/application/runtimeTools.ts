@@ -36,6 +36,7 @@ import { TrimTool } from "./tools/TrimTool"
 import { ExtendTool } from "./tools/ExtendTool"
 import { FilletTool } from "./tools/FilletTool"
 import { ChamferTool } from "./tools/ChamferTool"
+import { EraseTool } from "./tools/EraseTool"
 import { ExplodeTool } from "./tools/ExplodeTool"
 import { JoinTool } from "./tools/JoinTool"
 import { BreakTool } from "./tools/BreakTool"
@@ -114,6 +115,7 @@ export function defaultTools(
     new ExtendTool(),
     new FilletTool(),
     new ChamferTool(),
+    new EraseTool(),
     new ExplodeTool(),
     new JoinTool(),
     new BreakTool("gap", "break"),

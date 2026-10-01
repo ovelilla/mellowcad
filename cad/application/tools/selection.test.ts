@@ -355,13 +355,27 @@ describe("ERASE", () => {
     expect(cad.entityCount).toBe(2)
   })
 
-  it("says so when there is nothing selected", () => {
+  it("asks for objects when nothing is selected and erases them on Enter", () => {
+    const cad = createHarness({ entities: [SHORT, FAR] })
+
+    cad.command("E")
+    expect(cad.activeToolId()).toBe("erase")
+    expect(cad.entityCount).toBe(2)
+
+    cad.click(p(50, 0)).enter()
+
+    expect(cad.entities().map((e) => e.id)).toEqual(["L2"])
+    expect(cad.activeToolId()).toBe("select")
+    expect(cad.commandLog()).toContain("1 object erased.")
+    cad.undo()
+    expect(cad.entityCount).toBe(2)
+  })
+
+  it("erases nothing when Escape ends the prompt", () => {
     const cad = createHarness({ entities: [SHORT] })
 
-    cad.command("ERASE")
+    cad.command("ERASE").click(p(50, 0)).escape()
 
     expect(cad.entityCount).toBe(1)
-    const log = cad.state().commandLine.lines.map((line) => line.text)
-    expect(log).toContain("Nothing selected.")
   })
 })

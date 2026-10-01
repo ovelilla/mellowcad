@@ -40,8 +40,8 @@ logical classes, nothing from a second layout.
   `components/**` or `app/**` outside its list of justified exceptions. `components.json` has
   `rtl: true`, so `shadcn add` writes logical classes; change its `start-*`/`end-*` to
   `inset-s-*`/`inset-e-*` (Tailwind 4.2 deprecated them).
-- **Popups take logical sides**: `side="inline-end"` for the rail's tooltips and flyouts and the
-  menus that open at the cursor; `top`/`bottom` need nothing. `Side` (`toolbar-primitives.tsx`)
+- **Popups take logical sides**: `side="inline-end"` for the tool palette's tooltips and drop-downs and
+  the menus that open at the cursor; `top`/`bottom` need nothing. `Side` (`toolbar-primitives.tsx`)
   and the `ui/` wrappers accept both kinds.
 - **LTR islands** (`dir="ltr"`): the canvas, the ViewCube's box (faces, compass, triangles and the
   order of the roll arrows), the command line, the dynamic input, the coordinate readout, keys
@@ -110,7 +110,7 @@ class or light values.
   window, `tools` · `canvas` · `panel` between them, and `command` above `status`. A control goes
   into a zone; never position one absolutely over the drawing. The canvas takes what the zones
   leave, so ZOOM Extents frames only what is visible.
-  - **Every zone has its size in CSS** (`h-10`, `w-11`, `w-70`, the command line's `h-20`), not
+  - **Every zone has its size in CSS** (`h-10`, `w-19`, `w-70`, the command line's `h-20`), not
     from its content, and is rendered before the engine mounts: the canvas's box at the first
     paint is then the final one, which the landing's view transition grows into and the first
     view is centred in. A zone that resizes moves the canvas's edge; one that resizes with the
@@ -126,8 +126,8 @@ class or light values.
 - **The top bar** is one flex row: the Layers, Styles and Blocks triggers, then the CommandBar.
   Never place one of them at its own fixed offset — a longer layer name or label then slides
   under its neighbour.
-- **CommandBar** — file (Save, Open, and Clear all, kept away from Delete selection until the
-  application menu's New replaces it), view and palette visibility (AutoCAD's ribbon View →
+- **CommandBar** — file (Save, Open, and Clear all until the application menu's New replaces it),
+  Undo / Redo, Select and Match Properties, view and palette visibility (AutoCAD's ribbon View →
   Palettes), and last the language (`LanguageMenu`, a Base UI menu of `useLanguageLinks`):
   the view menu (the viewport controls' `[Top]`: `VIEW_MENU`, labelled by `state.view.preset`, run
   through `engine.applyViewPreset`) and Orbit beside Zoom window and Pan.
@@ -147,14 +147,30 @@ class or light values.
   over the drawing, which is why the zone stacks above the canvas cell.
 - **The status bar** (`status`) — the coordinates at its start, then **DrawingAids** at its end:
   drafting modes only, Snap, Grid, Ortho, Polar, Osnap, OTRACK, lineweight display.
-- **ToolRail** (`tools`, the inline start) — tools, grouped by `RAIL_LAYOUT`, a `Separator` between
-  groups and before the closing Undo / Redo / Delete selection. Variant families (Circle, Arc,
-  Array, Fillet/Chamfer, Rectangle/Polygon, Break, the attribute commands) are flyouts, named by
-  `Editor.ToolRail.flyouts`: a Base UI menu of radio items listing each member's icon, name and
-  alias, as the ribbon's drop-downs do — never a strip of bare glyphs. The rail's own buttons are
-  icon-only with `side="inline-end"` tooltips. Unlisted tools fall into a trailing "more" group,
-  so a tool that belongs elsewhere in the chrome (the view tools, which live in the CommandBar)
-  must be listed in `RAIL_EXCLUDED`.
+- **ToolRail** (`tools`, the inline start, 76 px) — the tool palette: only commands that act on
+  the drawing, two to a row, sectioned by `PALETTE` as the ribbon's Home tab panels (Draw, Modify,
+  Annotation, Block, Utilities; Continue/Baseline and Adjust Space come from the Annotate tab), a
+  `Separator` between sections. Its buttons are `size="icon-tool"` (30 × 28), icon-only with
+  `side="inline-end"` tooltips.
+  - Variant families (Circle, Arc, Rectangle/Polygon, Ellipse, Trim/Extend, Fillet/Chamfer, Array,
+    Text, Dimension, Continue/Baseline, Measure) are flyouts, named by `Editor.ToolRail.flyouts`:
+    a Base UI menu of radio items listing each member's icon, name and alias, as the ribbon's
+    drop-downs do — never a strip of bare glyphs. A section's less used tools sit behind its `▾`
+    (`more(…)`, the ribbon's expanded panel: Break at Point, Join and Break in Modify). Every
+    drop-down opens on the inline end.
+  - **Folding by height**: in a window under 700 px tall (the `short:` variant, a media query in
+    `globals.css`, so the palette has its final height at the first paint) the sections marked
+    `folds` — Annotation, Block, Utilities — become one drop-down each, the ribbon's "Minimize to
+    Panel Buttons": the button carries the section's first icon and its menu lists every tool of
+    the section, a group per drop-down. Unfolded the palette is 16 rows and fits 720 px; folded,
+    14 rows fit 650 px. A new slot must keep both, measured in Chrome (no palette button past the
+    zone).
+  - What is not a command on the drawing lives elsewhere, and what leaves the palette before its
+    zone exists goes to the CommandBar provisionally, never nowhere: Undo, Redo, Select and Match
+    Properties wait there for the top bar. Delete selection became ERASE in Modify (the Delete key
+    still erases the selection).
+  - Unlisted tools fall into a trailing group, so a tool that belongs elsewhere in the chrome (the
+    view tools, Select, Match Properties) must be listed in `RAIL_EXCLUDED`.
 - The editor carries no product or meta copy (an About panel was removed): that belongs to the
   landing.
 - The dynamic-input box is `pointer-events-none` and keyboard-driven — never make it clickable.

@@ -48,6 +48,7 @@
       "extend": "Extend",
       "fillet": "Fillet",
       "chamfer": "Chamfer",
+      "erase": "Erase",
       "explode": "Explode",
       "join": "Join",
       "break": "Break",
@@ -72,7 +73,6 @@
       "navvcube": "ViewCube"
     },
     "description": {
-      "ERASE": "Delete the selected objects",
       "UNDO": "Undo the last action",
       "REDO": "Redo the last undone action",
       "SNAP": "Force the cursor onto the snap increments",
@@ -709,7 +709,6 @@
     },
     "messages": {
       "unknownCommand": "Unknown command \"{name}\".",
-      "nothingSelected": "Nothing selected.",
       "erased": "{count, plural, one {# object erased.} other {# objects erased.}}",
       "snapMode": "{state, select, on {Snap mode on.} other {Snap mode off.}}",
       "fromNeedsPoint": "FROM needs a point prompt.",

@@ -246,8 +246,7 @@
       "save": "Ctrl+S",
       "open": "Ctrl+O",
       "undo": "Ctrl+Z",
-      "redo": "Ctrl+Y",
-      "delete": "Del"
+      "redo": "Ctrl+Y"
     },
     "CommandBar": {
       "saving": "Auto-saving…",
@@ -262,7 +261,9 @@
       "resetView": "Reset view",
       "orbit": "Orbit",
       "commandLine": "Command line",
-      "clearAll": "Clear all"
+      "clearAll": "Clear all",
+      "undo": "Undo",
+      "redo": "Redo"
     },
     "ViewCube": {
       "label": "ViewCube",
@@ -287,17 +288,22 @@
         "arc": "Arc",
         "ellipse": "Ellipse",
         "rectangle": "Rectangle",
+        "trim": "Trim",
         "fillet": "Fillet",
-        "break": "Break",
         "array": "Array",
         "text": "Text",
         "dimension": "Dimension",
-        "attributes": "Attributes",
+        "dimchain": "Continue",
         "measure": "Measure"
       },
-      "undo": "Undo",
-      "redo": "Redo",
-      "deleteSelection": "Delete selection"
+      "sections": {
+        "draw": "Draw",
+        "modify": "Modify",
+        "annotation": "Annotation",
+        "block": "Block",
+        "utilities": "Utilities"
+      },
+      "more": "{section}: more tools"
     },
     "CommandLine": {
       "label": "Command line",

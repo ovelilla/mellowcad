@@ -52,6 +52,7 @@ export const en: EngineCatalog = {
       "extend": "Extend",
       "fillet": "Fillet",
       "chamfer": "Chamfer",
+      "erase": "Erase",
       "explode": "Explode",
       "join": "Join",
       "break": "Break",
@@ -76,7 +77,6 @@ export const en: EngineCatalog = {
       "navvcube": "ViewCube"
     },
     "description": {
-      "ERASE": "Delete the selected objects",
       "UNDO": "Undo the last action",
       "REDO": "Redo the last undone action",
       "SNAP": "Force the cursor onto the snap increments",
@@ -912,7 +912,6 @@ export const en: EngineCatalog = {
         ],
         "\"."
       ],
-      "nothingSelected": "Nothing selected.",
       "erased": [
         [
           "count",

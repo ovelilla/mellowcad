@@ -52,6 +52,7 @@ export const ar: EngineLocale = {
       "extend": "تمديد",
       "fillet": "تقويس",
       "chamfer": "شطف",
+      "erase": "حذف",
       "explode": "تفكيك",
       "join": "ضمّ",
       "break": "كسر",
@@ -76,7 +77,6 @@ export const ar: EngineLocale = {
       "navvcube": "مكعب العرض"
     },
     "description": {
-      "ERASE": "حذف العناصر المحددة",
       "UNDO": "التراجع عن آخر إجراء",
       "REDO": "إعادة آخر إجراء تم التراجع عنه",
       "SNAP": "تقييد المؤشر بخطوات الالتقاط",

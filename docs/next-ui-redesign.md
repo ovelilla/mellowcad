@@ -1,13 +1,19 @@
 # Rediseño del editor — brief
 
-> **Estado:** fases 0 y 1 hechas; sigue la 2. En la 0, la barra de comandos pasó a seguir a los
+> **Estado:** fases 0, 1 y 2 hechas; sigue la 3. En la 0, la barra de comandos pasó a seguir a los
 > disparadores de Capas, Estilos y Bloques en la misma fila (centrada volvía a chocar con ellos) y
 > «Borrar todo», junto a Abrir hasta que Nuevo lo sustituya. En la 1, cada zona tiene su tamaño en
 > CSS antes de que monte el motor, para que el lienzo nazca con su caja final. El panel ocupa ya sus
 > 280 px aunque no se pliegue hasta la fase 4: Propiedades se queda con «Sin selección», porque un
 > panel que aparece al seleccionar haría cambiar de tamaño el lienzo. La línea de comandos acoplada
 > guarda las tres líneas de historial de AutoCAD hasta la fase 5. Los menús en el cursor pasan las
-> coordenadas del lienzo a la ventana con `engine.clientFromScreen`. Sigue la convención de `docs/next-*.md`: se borra cuando la
+> coordenadas del lienzo a la ventana con `engine.clientFromScreen`. En la 2, la paleta mide 76 px y
+> no oculta nada: 16 filas caben a 720 px y, por debajo de 700, Anotación, Bloque y Utilidades se
+> pliegan con una variante CSS (`short:`), sin esperar al motor. Borrar es ahora el comando ERASE,
+> una herramienta con «Designe objetos» como la de AutoCAD, y no el antiguo «Borrar la selección».
+> Seleccionar, Deshacer, Rehacer e Igualar propiedades esperan en la CommandBar a la barra superior.
+> Editar atributos es un botón suelto: de su desplegable (Uno, Varios) solo existe uno. Sigue la
+> convención de `docs/next-*.md`: se borra cuando la
 > última fase esté hecha, y lo que deba durar pasa antes a `.github/instructions/ui.instructions.md`
 > y a `docs/autocad-coverage.md`. Versión visual, con las figuras de antes y después:
 > https://claude.ai/artifact/BddNdia3MSJnwA4AuXi5Bt (privada; se lee con la herramienta Artifact).
@@ -89,7 +95,7 @@ ampliado de la cinta.
 | Dibujo     | Línea · Polilínea · Círculo ▾ · Arco ▾ · Rectángulo/Polígono ▾ · Elipse ▾ · Sombreado · Spline                                                                                                  |
 | Modificar  | Desplazar · Girar · Recortar/Alargar ▾ · Borrar (`ERASE`) · Copiar · Simetría · Empalme/Chaflán ▾ · Descomponer · Estirar · Escala · Matriz ▾ · Desfase · ▾ más (Partir en punto, Unir, Partir) |
 | Anotación  | Texto ▾ (MTEXT, TEXT) · Cota ▾ · Continua/Línea base ▾ · ▾ más (Editar texto, Ajustar espacio)                                                                                                  |
-| Bloque     | Insertar · Crear · Editar atributos ▾ · ▾ más (Definir atributos, Visualización de atributos)                                                                                                   |
+| Bloque     | Insertar · Crear · Editar atributos · ▾ más (Definir atributos, Visualización de atributos)                                                                                                     |
 | Utilidades | Medir ▾ · Localizar punto (`ID`)                                                                                                                                                                |
 
 Salen del rail:
@@ -163,12 +169,25 @@ Verificado en la ayuda de AutoCAD 2026:
 - **Barra de navegación.** Activa por defecto (NAVBARDISPLAY 1), con Encuadre, Zoom y Órbita, junto
   al ViewCube.
 - **Cinta.** Existen los estados de minimizado (a pestañas, a títulos de panel, a botones de panel).
+- **Elipse** es un desplegable de la fila principal del panel Dibujo, junto a Rectángulo y Sombreado.
+  La ayuda cita Eje, Fin y Arco elíptico; Centro solo se deduce de la opción de ELLIPSE, así que el
+  orden de sus miembros no cambia. **Spline** está en el panel Dibujo ampliado; aquí conserva su
+  casilla, porque cabe y un desplegable de uno solo añadiría un clic.
+- **Partir, Partir en punto y Unir** están en el panel Modificar ampliado, como dice §3. La fila
+  principal es Desplazar/Copiar/Estirar, Girar/Simetría/Escala, Recortar▾/Empalme▾/Matriz▾ y
+  Borrar/Descomponer/Desfase.
+- **Cota.** El panel Anotación de Inicio tiene Texto (dividido), Cota (`DIM`, que no existe aquí) y un
+  desplegable «Lineal▾»; ninguna página de 2025 ni 2026 enumera sus miembros. Las rutas de 2026 van
+  todas a la pestaña Anotar: su desplegable Cotas lleva Lineal, Alineada, Angular, Radio y Diámetro,
+  que son los miembros de la casilla; faltan Longitud de arco, Recodo y Por coordenadas, que no
+  existen. Continua/Línea base («Continue/Baseline drop-down») y Ajustar espacio (`DIMSPACE`) son
+  solo de Anotar.
+- **Bloque.** Insertar, Crear, Editar y Editar atributos▾ (Uno es `EATTEDIT`; Varios no se ha podido
+  verificar). Definir atributos está en el panel Bloque. Ni `ATTDISP` ni `TEXTEDIT` tienen sitio
+  documentado en la cinta, así que quedan en «▾ más».
+- **Utilidades.** Medir▾ (Distancia y Área citados en 2026) e ID de punto.
 
 **Comprobar antes de usarlo:**
-
-- El sitio de Elipse y de Partir en la cinta.
-- El contenido del desplegable de Cota de la pestaña Inicio. La ayuda remite los comandos de cota al
-  panel Cotas de la pestaña Anotar.
 - En qué lado acopla AutoCAD la paleta Propiedades por defecto. Aquí va a la derecha, junto al
   ViewCube.
 - El clic derecho por defecto (SHORTCUTMENU, clic derecho temporizado) y el contenido de los menús
@@ -186,6 +205,15 @@ Fuentes (todas en `help.autodesk.com/cloudhelp/2026/ENU/`):
 - `GUID-1803CDBC-C0C9-4AB9-B76B-FF6AB214D97B.htm` (QPMODE)
 - `GUID-17225A0F-7A50-41B9-8404-7D415518DEFB.htm` (Navigation Bar)
 - `GUID-627FCA86-38B1-404B-BB09-9FC3348B54F2.htm` (estados de la cinta)
+- `GUID-A3E54913-3813-407D-9283-19EC6610D4F3.htm` (elipses), `AutoCAD-GettingStarted/files/GUID-6B8B7254-94CD-42DB-8F27-1339CAECE9ED.htm`
+  y `GUID-9810D35D-E975-49E2-88EA-51FE4ACC92DB.htm` (capturas de los paneles Dibujo y Anotación)
+- `AutoCAD-DidYouKnow/files/GUID-73B7DEA8-309E-4823-9F65-DB0A2E1FBC75.htm` (Partir y Partir en punto),
+  `GUID-1823FF63-6952-47DD-89F8-29E4AA5B2582.htm` (Spline en el panel ampliado),
+  `GUID-7B14AAA4-3208-4384-A444-8A29231C4A02.htm` (DIM en el panel Anotación)
+- `AutoCAD-OnBoarding/files/ACD_FOUNDATIONS_MAIN10.html` y `acd_foundations_main2/ACD_FOUNDATIONS_MAIN2B.html`
+  (desplegables Cotas y Continua/Línea base de Anotar)
+- `GUID-ECF7FC17-…` (Editar atributo único), `GUID-F26C676B-BF70-4538-A31F-4FBA07DC19D6.htm` (Medir ▾ Distancia),
+  `GUID-27F11419-81E7-428A-972E-561F5809FBCD.htm` (ID de punto)
 - `AutoCAD-Customization/files/GUID-B6A9C126-230D-47F5-8973-464BC80E3736.htm` (atajos)
 
 ## 6. Fases

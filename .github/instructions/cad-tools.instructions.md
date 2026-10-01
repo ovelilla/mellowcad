@@ -21,8 +21,9 @@ A tool is an explicit state machine for one AutoCAD command. It owns a discrimin
    its label in `interface.tool.<id>` — then `npm run locales`. Dispatch comes from here;
    `Tool.shortcut` is display-only.
 4. Export the class from `cad/index.ts`.
-5. `TOOL_ICONS` and `RAIL_LAYOUT` in `components/cad/tool-rail.tsx` (unlisted tools fall into
-   the trailing "More" group, so nothing silently disappears).
+5. `TOOL_ICONS` and `PALETTE` in `components/cad/tool-rail.tsx`, in the ribbon panel AutoCAD puts
+   it in (unlisted tools fall into a trailing group, so nothing silently disappears; a tool that
+   lives elsewhere in the chrome goes in `RAIL_EXCLUDED`).
 6. Tests in the matching `cad/application/tools/*.test.ts` file using the harness.
 7. File the command in `content/commands.ts` (`COMMAND_FILING`): the landing's catalogue test
    fails until every registered command is filed.
@@ -33,7 +34,7 @@ A tool is an explicit state machine for one AutoCAD command. It owns a discrimin
   Override `place()`, `continuesAfterPlace()`, optionally `transformEntity()` / `onSelectionAdded()`.
 - `EdgeEditTool` — hover-preview-click editing against implicit boundaries (Trim, Extend).
 - `SelectionActionTool` — one action over a selection set, supporting both noun-verb and
-  verb-noun invocation (Explode, Join, COPYCLIP). A command that must ask something **before** the
+  verb-noun invocation (Erase, Explode, Join, COPYCLIP). A command that must ask something **before** the
   set — COPYBASE's base point — overrides `onActivate` and calls `begin(ctx)` once it has the
   answer, rather than forking the base class.
 - `boxSelection.ts` — window/crossing box selection. Never re-implement it. `boxSelect` takes

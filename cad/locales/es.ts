@@ -52,6 +52,7 @@ export const es: EngineLocale = {
       "extend": "Alargar",
       "fillet": "Empalme",
       "chamfer": "Chaflán",
+      "erase": "Borrar",
       "explode": "Descomponer",
       "join": "Juntar",
       "break": "Partir",
@@ -76,7 +77,6 @@ export const es: EngineLocale = {
       "navvcube": "ViewCube"
     },
     "description": {
-      "ERASE": "Borrar los objetos seleccionados",
       "UNDO": "Deshacer la última acción",
       "REDO": "Rehacer la última acción deshecha",
       "SNAP": "Restringir el cursor a los intervalos de resolución",
@@ -1164,7 +1164,6 @@ export const es: EngineLocale = {
         ],
         "\" desconocido."
       ],
-      "nothingSelected": "No se ha designado nada.",
       "erased": [
         [
           "count",
