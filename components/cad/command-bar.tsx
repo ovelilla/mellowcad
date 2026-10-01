@@ -105,6 +105,7 @@ export function CommandBar({
           />
           <IconAction
             icon={Undo2}
+            mirrored
             label={t("zoomPrevious")}
             onClick={() => engine.zoomPrevious()}
             side="bottom"
@@ -173,11 +174,11 @@ function ViewMenu({
               <Menu.Item
                 key={preset}
                 onClick={() => engine.applyViewPreset(preset)}
-                className="relative flex cursor-default items-center rounded-sm py-1.5 pr-8 pl-2 text-sm outline-hidden select-none data-highlighted:bg-accent data-highlighted:text-accent-foreground"
+                className="relative flex cursor-default items-center rounded-sm py-1.5 ps-2 pe-8 text-sm outline-hidden select-none data-highlighted:bg-accent data-highlighted:text-accent-foreground"
               >
                 {names[preset]}
                 {current === preset && (
-                  <span className="pointer-events-none absolute right-2 flex size-4 items-center justify-center text-primary">
+                  <span className="pointer-events-none absolute inset-e-2 flex size-4 items-center justify-center text-primary">
                     <CheckIcon className="size-4" />
                   </span>
                 )}

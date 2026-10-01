@@ -10,7 +10,8 @@ import { Glyph } from "./glyph"
 export async function DimensionDivider({ label }: { label: string }) {
   const arrow = await arrowheadGlyph()
   return (
-    <div aria-hidden="true" className="dim-line label-mono">
+    // A dimension line: its arrowheads point outwards whatever the page.
+    <div aria-hidden="true" dir="ltr" className="dim-line label-mono">
       <Glyph glyph={arrow} className="h-[3.33px] w-[10px]" />
       <span className="rule" />
       <span className="label">{label}</span>

@@ -9,7 +9,8 @@ const COLUMNS = ["1", "2", "3", "4", "5", "6", "7", "8"]
 export function SheetFrame() {
   const zone = "absolute grid font-mono text-[10px] leading-none text-fg-subtle"
   return (
-    <div aria-hidden="true" className="sheet-frame">
+    // The sheet's zones run 1–8 left to right, as on paper, in every language.
+    <div aria-hidden="true" dir="ltr" className="sheet-frame">
       {(["top-0 -translate-y-full", "bottom-0 translate-y-full"] as const).map(
         (edge) => (
           <div
@@ -22,18 +23,18 @@ export function SheetFrame() {
           </div>
         )
       )}
-      {(["left-0 -translate-x-full", "right-0 translate-x-full"] as const).map(
-        (edge) => (
-          <div
-            key={edge}
-            className={`${zone} inset-y-0 ${edge} grid-rows-6 place-items-center px-2`}
-          >
-            {ROWS.map((row) => (
-              <span key={row}>{row}</span>
-            ))}
-          </div>
-        )
-      )}
+      {(
+        ["inset-s-0 -translate-x-full", "inset-e-0 translate-x-full"] as const
+      ).map((edge) => (
+        <div
+          key={edge}
+          className={`${zone} inset-y-0 ${edge} grid-rows-6 place-items-center px-2`}
+        >
+          {ROWS.map((row) => (
+            <span key={row}>{row}</span>
+          ))}
+        </div>
+      ))}
     </div>
   )
 }

@@ -12,27 +12,32 @@ import { EngineState } from "@/cad"
 export function CoordinateReadout({ state }: { state: EngineState }) {
   const t = useTranslations("Editor.Coordinates")
   const cursor = state.cursorUcs
+  // Coordinates are technical values: X, Y and Z read left to right in
+  // every locale, like the command line.
   return (
-    <div className="pointer-events-auto flex h-10 items-center gap-3 rounded-lg bg-card/90 px-3 font-mono text-[11px] text-muted-foreground backdrop-blur">
+    <div
+      dir="ltr"
+      className="pointer-events-auto flex h-10 items-center gap-3 rounded-lg bg-card/90 px-3 font-mono text-[11px] text-muted-foreground backdrop-blur"
+    >
       <span className="flex items-center">
         <span>{t("x")}</span>
-        <span className="inline-block min-w-14 text-right text-foreground tabular-nums">
+        <span className="inline-block min-w-14 text-end text-foreground tabular-nums">
           {cursor ? cursor.x.toFixed(3) : "—"}
         </span>
       </span>
       <span className="flex items-center">
         <span>{t("y")}</span>
-        <span className="inline-block min-w-14 text-right text-foreground tabular-nums">
+        <span className="inline-block min-w-14 text-end text-foreground tabular-nums">
           {cursor ? cursor.y.toFixed(3) : "—"}
         </span>
       </span>
       <span className="flex items-center">
         <span>{t("z")}</span>
-        <span className="inline-block min-w-14 text-right text-foreground tabular-nums">
+        <span className="inline-block min-w-14 text-end text-foreground tabular-nums">
           {cursor ? cursor.z.toFixed(3) : "—"}
         </span>
       </span>
-      <span className="inline-block min-w-12 text-right text-foreground tabular-nums">
+      <span className="inline-block min-w-12 text-end text-foreground tabular-nums">
         {state.scale.toFixed(2)}×
       </span>
     </div>

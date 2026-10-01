@@ -4,6 +4,7 @@ import { useSyncExternalStore } from "react"
 
 import { readSavedDrawingSummary } from "@/cad"
 import { formatPlural, type PluralMessage } from "@/lib/plural"
+import { ForwardArrow } from "./forward-arrow"
 
 /**
  * The autosave changes behind the page's back: in the editor in another tab
@@ -49,7 +50,10 @@ export function ContinueDrawing({
     >
       <span className="col-start-1 row-start-1 text-center">
         {objects > 0 ? formatPlural(resume, objects) : start}
-        <span aria-hidden="true"> →</span>
+        <span aria-hidden="true">
+          {" "}
+          <ForwardArrow />
+        </span>
       </span>
       <span
         aria-hidden="true"

@@ -31,6 +31,7 @@ import {
 } from "@/cad"
 
 import { IconAction, Panel } from "./toolbar-primitives"
+import { DecimalInput } from "./decimal-input"
 import { LineweightIcon, SelectionCyclingIcon, SnapModeIcon } from "./icons"
 
 /** Snap types wired to a working provider today. The rest are shown disabled. */
@@ -73,17 +74,15 @@ function SpacingField({
   return (
     <div className="mt-3 flex items-center justify-between">
       <span className="text-xs text-muted-foreground">{label}</span>
-      <input
-        type="number"
+      <DecimalInput
+        live
         min={0.001}
         step={1}
         value={value}
         aria-label={ariaLabel}
-        onChange={(event) => {
-          const next = Number(event.target.value)
-          if (Number.isFinite(next) && next > 0) onCommit(next)
-        }}
-        className="h-7 w-20 rounded-md border border-input bg-background px-2 text-right font-mono text-xs outline-none focus-visible:border-ring"
+        valid={(next) => next > 0}
+        onCommit={onCommit}
+        className="h-7 w-20 rounded-md border border-input bg-background px-2 font-mono text-xs outline-none focus-visible:border-ring"
       />
     </div>
   )
@@ -141,7 +140,7 @@ export function DrawingAids({
                       disabled={!implemented}
                       onClick={() => engine.setSnapEnabled(type, !enabled)}
                       className={cn(
-                        "rounded-md border px-2 py-1 text-left text-[11px] transition-colors",
+                        "rounded-md border px-2 py-1 text-start text-[11px] transition-colors",
                         implemented
                           ? enabled
                             ? "border-primary/50 bg-primary/15 text-foreground"
@@ -428,19 +427,15 @@ export function DrawingAids({
               <span className="text-xs text-muted-foreground">
                 {t("linetypeScale")}
               </span>
-              <input
-                type="number"
+              <DecimalInput
+                live
                 min={0.01}
                 step={0.1}
                 value={state.ltScale}
                 aria-label={t("linetypeScaleLabel")}
-                onChange={(event) => {
-                  const value = Number(event.target.value)
-                  if (Number.isFinite(value) && value > 0) {
-                    engine.setLtScale(value)
-                  }
-                }}
-                className="h-7 w-20 rounded-md border border-input bg-background px-2 text-right font-mono text-xs outline-none focus-visible:border-ring"
+                valid={(next) => next > 0}
+                onCommit={(value) => engine.setLtScale(value)}
+                className="h-7 w-20 rounded-md border border-input bg-background px-2 font-mono text-xs outline-none focus-visible:border-ring"
               />
             </div>
 
@@ -448,19 +443,15 @@ export function DrawingAids({
               <span className="text-xs text-muted-foreground">
                 {t("dimensionScale")}
               </span>
-              <input
-                type="number"
+              <DecimalInput
+                live
                 min={0.01}
                 step={1}
                 value={state.dimScale}
                 aria-label={t("dimensionScaleLabel")}
-                onChange={(event) => {
-                  const value = Number(event.target.value)
-                  if (Number.isFinite(value) && value > 0) {
-                    engine.setDimScale(value)
-                  }
-                }}
-                className="h-7 w-20 rounded-md border border-input bg-background px-2 text-right font-mono text-xs outline-none focus-visible:border-ring"
+                valid={(next) => next > 0}
+                onCommit={(value) => engine.setDimScale(value)}
+                className="h-7 w-20 rounded-md border border-input bg-background px-2 font-mono text-xs outline-none focus-visible:border-ring"
               />
             </div>
           </PopoverContent>

@@ -159,7 +159,10 @@ export function LiveCanvas({
         ref={scopeRef}
         className="live-sketch absolute inset-0 flex flex-col bg-bg"
       >
-        <div className="relative min-h-0 flex-1">
+        {/* The live sheet is the hero's drawing: it never mirrors, and nor do
+            its coordinates and command suggestions, which are the command
+            language's. */}
+        <div className="relative min-h-0 flex-1" dir="ltr">
           <canvas
             ref={canvasRef}
             role="application"
@@ -183,14 +186,17 @@ export function LiveCanvas({
             </>
           )}
           {/* Always in view: the way out, and the way on to the editor. */}
-          <div className="absolute top-2 right-2 z-10 flex items-center gap-1 rounded-md border border-border bg-bg-raised/90 p-0.5 text-sm backdrop-blur-sm">
+          <div className="absolute inset-e-2 top-2 z-10 flex items-center gap-1 rounded-md border border-border bg-bg-raised/90 p-0.5 text-sm backdrop-blur-sm">
             <button
               type="button"
               onClick={openEditor}
               className="inline-flex h-7 items-center gap-1 rounded px-2 text-fg-muted transition-colors duration-150 hover:text-fg"
             >
               {labels.openEditor}
-              <ArrowUpRight className="size-3.5" aria-hidden="true" />
+              <ArrowUpRight
+                className="size-3.5 rtl:-scale-x-100"
+                aria-hidden="true"
+              />
             </button>
             <button
               type="button"
@@ -204,8 +210,10 @@ export function LiveCanvas({
           </div>
         </div>
         <div className="border-t border-border bg-bg-sunken px-3 py-2">
+          {/* The command line speaks the command language, left to right. */}
           <div
             role="log"
+            dir="ltr"
             aria-label={labels.commandLog}
             className="flex h-[6em] min-w-0 flex-col justify-end overflow-hidden font-mono text-[0.8125rem]"
           >
@@ -272,10 +280,10 @@ function Readout({ state }: { state: EngineState }) {
   return (
     <p
       aria-hidden="true"
-      className="pointer-events-none absolute right-3 bottom-3 data-mono text-xs text-fg-subtle"
+      className="pointer-events-none absolute inset-e-3 bottom-3 data-mono text-xs text-fg-subtle"
     >
       X {formatLength(cursor.x, settings)}
-      <span className="ml-3">Y {formatLength(cursor.y, settings)}</span>
+      <span className="ms-3">Y {formatLength(cursor.y, settings)}</span>
     </p>
   )
 }
@@ -294,14 +302,14 @@ function Suggestions({
   const suggestions = state.commandLine.suggestions.slice(0, SUGGESTIONS)
   if (suggestions.length === 0) return null
   return (
-    <ul className="absolute bottom-2 left-2 z-10 w-72 overflow-hidden rounded-md border border-border bg-bg-raised font-mono text-xs shadow-lg">
+    <ul className="absolute inset-s-2 bottom-2 z-10 w-72 overflow-hidden rounded-md border border-border bg-bg-raised font-mono text-xs shadow-lg">
       {suggestions.map((suggestion) => (
         <li key={suggestion.name}>
           <button
             type="button"
             onMouseDown={(event) => event.preventDefault()}
             onClick={() => onRun(suggestion.name)}
-            className="flex w-full gap-3 px-3 py-1.5 text-left hover:bg-bg"
+            className="flex w-full gap-3 px-3 py-1.5 text-start hover:bg-bg"
           >
             <span className="font-medium text-fg">{suggestion.name}</span>
             <span className="truncate text-fg-subtle">

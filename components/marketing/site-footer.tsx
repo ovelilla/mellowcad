@@ -90,6 +90,7 @@ export async function SiteFooter() {
             <span className="pt-0.5 label-mono">{t("contact")}</span>
             <a
               href={`mailto:${CONTACT_EMAIL}?subject=MellowCAD`}
+              dir="ltr"
               className="break-all underline-link"
             >
               {CONTACT_EMAIL}

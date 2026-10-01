@@ -131,6 +131,7 @@ export async function CommandsSection() {
                 line does — so the list takes focus, for the keyboard. */}
             <ol
               tabIndex={0}
+              dir="ltr"
               aria-label={t("transcriptTitle")}
               className="overflow-x-auto rounded-md bg-bg-sunken p-4 data-mono text-[0.8125rem] whitespace-nowrap"
             >

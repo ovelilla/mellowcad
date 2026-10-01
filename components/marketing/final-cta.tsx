@@ -3,6 +3,7 @@ import { getTranslations } from "next-intl/server"
 import { engineText } from "@/cad"
 import { sitePaths } from "@/i18n/site-paths"
 import { pageEngineLocale } from "@/lib/plot"
+import { ForwardArrow } from "./forward-arrow"
 
 export async function FinalCta() {
   const t = await getTranslations("FinalCta")
@@ -18,7 +19,11 @@ export async function FinalCta() {
       <h2 id="final-cta-title" className="max-w-2xl text-h2">
         {t("title")}
       </h2>
-      <p aria-hidden="true" className="font-mono text-sm text-fg-subtle">
+      <p
+        aria-hidden="true"
+        dir="ltr"
+        className="font-mono text-sm text-fg-subtle"
+      >
         {text.idlePrompt()} <span className="caret caret-blink" />
       </p>
       <a
@@ -26,7 +31,10 @@ export async function FinalCta() {
         className="inline-flex h-12 items-center rounded-md bg-accent px-6 font-medium text-accent-ink transition-[filter] duration-150 hover:brightness-110"
       >
         {common("startDrawing")}
-        <span aria-hidden="true">&nbsp;→</span>
+        <span aria-hidden="true">
+          &nbsp;
+          <ForwardArrow />
+        </span>
       </a>
     </section>
   )

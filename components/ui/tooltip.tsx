@@ -35,12 +35,12 @@ function TooltipTrigger(
 
 function TooltipContent({
   className,
-  side = "right",
+  side = "inline-end",
   sideOffset = 8,
   children,
   ...props
 }: React.ComponentProps<typeof TooltipPrimitive.Popup> & {
-  side?: "top" | "right" | "bottom" | "left"
+  side?: "top" | "bottom" | "inline-start" | "inline-end" | "left" | "right"
   sideOffset?: number
 }) {
   return (

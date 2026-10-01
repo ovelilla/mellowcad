@@ -51,7 +51,7 @@ export function SelectionCyclingList({
         <Menu.Positioner
           anchor={anchor}
           positionMethod="fixed"
-          side="right"
+          side="inline-end"
           align="start"
           sideOffset={2}
           className="z-50"
@@ -68,13 +68,13 @@ export function SelectionCyclingList({
                 }
                 onClick={() => engine.chooseCyclingCandidate(candidate.id)}
                 className={cn(
-                  "relative flex cursor-default items-center rounded-sm py-1.5 pr-8 pl-2 text-sm outline-hidden select-none data-highlighted:bg-accent data-highlighted:text-accent-foreground",
+                  "relative flex cursor-default items-center rounded-sm py-1.5 ps-2 pe-8 text-sm outline-hidden select-none data-highlighted:bg-accent data-highlighted:text-accent-foreground",
                   candidate.id === currentId && "font-medium"
                 )}
               >
                 {candidate.label}
                 {candidate.id === currentId && (
-                  <span className="pointer-events-none absolute right-2 flex size-4 items-center justify-center">
+                  <span className="pointer-events-none absolute inset-e-2 flex size-4 items-center justify-center">
                     <CheckIcon className="size-4" />
                   </span>
                 )}

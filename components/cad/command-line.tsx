@@ -36,12 +36,17 @@ export function CommandLine({
 
   const visibleLines = lines.slice(-VISIBLE_LINES)
 
+  // WHY dir="ltr": the command line speaks the command language, left to
+  // right in every locale (its prompts, typed coordinates and keywords).
   return (
-    <div className="pointer-events-auto relative w-[min(46rem,calc(100vw-2rem))] rounded-lg border bg-card/90 shadow-lg backdrop-blur">
+    <div
+      dir="ltr"
+      className="pointer-events-auto relative w-[min(46rem,calc(100vw-2rem))] rounded-lg border bg-card/90 shadow-lg backdrop-blur"
+    >
       {/* Autocomplete sits above the prompt so it never covers the drawing
           below the cursor, matching AutoCAD's suggestion list. */}
       {suggestions.length > 0 && (
-        <div className="absolute bottom-full left-0 mb-1 w-full overflow-hidden rounded-lg border bg-popover text-popover-foreground shadow-md">
+        <div className="absolute inset-s-0 bottom-full mb-1 w-full overflow-hidden rounded-lg border bg-popover text-popover-foreground shadow-md">
           {suggestions.map((suggestion) => (
             <button
               key={suggestion.name}
@@ -50,7 +55,7 @@ export function CommandLine({
               // from the canvas (the engine refocuses the surface itself).
               onMouseDown={(e) => e.preventDefault()}
               onClick={() => engine.runCommand(suggestion.name)}
-              className="flex w-full items-center gap-2 px-2 py-1 text-left font-mono text-xs hover:bg-accent hover:text-accent-foreground"
+              className="flex w-full items-center gap-2 px-2 py-1 text-start font-mono text-xs hover:bg-accent hover:text-accent-foreground"
             >
               <span className="font-semibold">{suggestion.name}</span>
               <span className="truncate text-muted-foreground">

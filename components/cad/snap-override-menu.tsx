@@ -74,7 +74,7 @@ export function SnapOverrideMenu({
         <Menu.Positioner
           anchor={anchor}
           positionMethod="fixed"
-          side="right"
+          side="inline-end"
           align="start"
           sideOffset={2}
           className="z-50"
@@ -85,7 +85,7 @@ export function SnapOverrideMenu({
             </div>
             <Menu.Item
               onClick={() => engine.startFrom()}
-              className="relative flex cursor-default items-center rounded-sm py-1.5 pr-8 pl-2 text-sm outline-hidden select-none data-highlighted:bg-accent data-highlighted:text-accent-foreground"
+              className="relative flex cursor-default items-center rounded-sm py-1.5 ps-2 pe-8 text-sm outline-hidden select-none data-highlighted:bg-accent data-highlighted:text-accent-foreground"
             >
               {t("from")}
             </Menu.Item>
@@ -97,13 +97,13 @@ export function SnapOverrideMenu({
                 key={value}
                 onClick={() => engine.setSnapOverride(value)}
                 className={cn(
-                  "relative flex cursor-default items-center rounded-sm py-1.5 pr-8 pl-2 text-sm outline-hidden select-none data-highlighted:bg-accent data-highlighted:text-accent-foreground",
+                  "relative flex cursor-default items-center rounded-sm py-1.5 ps-2 pe-8 text-sm outline-hidden select-none data-highlighted:bg-accent data-highlighted:text-accent-foreground",
                   state.snapOverride === value && "font-medium"
                 )}
               >
                 {value === "none" ? t("none") : state.names.snaps[value]}
                 {state.snapOverride === value && (
-                  <span className="pointer-events-none absolute right-2 flex size-4 items-center justify-center">
+                  <span className="pointer-events-none absolute inset-e-2 flex size-4 items-center justify-center">
                     <CheckIcon className="size-4" />
                   </span>
                 )}

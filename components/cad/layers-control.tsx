@@ -70,7 +70,7 @@ export function LayersControl({
           align="start"
           className="w-128 overflow-hidden border-none p-0"
         >
-          <div className="flex items-center justify-between p-2 pl-3">
+          <div className="flex items-center justify-between p-2 ps-3">
             <p className="text-[11px] font-semibold tracking-wide text-muted-foreground uppercase">
               {t("title")}
             </p>
@@ -213,7 +213,7 @@ function LayerRow({
         className="h-8 w-24 shrink-0 border-0 bg-transparent px-1.5 text-xs text-foreground shadow-none hover:bg-accent/40 dark:bg-transparent"
       />
 
-      <span className="w-6 shrink-0 text-right text-xs text-muted-foreground tabular-nums">
+      <span className="w-6 shrink-0 text-end text-xs text-muted-foreground tabular-nums">
         {layer.entityCount}
       </span>
 
@@ -367,7 +367,7 @@ function NameField({
         onAssignSelection ? t("moveSelection") : editable ? t("rename") : name
       }
       className={cn(
-        "min-w-0 flex-1 truncate rounded px-1 py-0.5 text-left text-xs",
+        "min-w-0 flex-1 truncate rounded px-1 py-0.5 text-start text-xs",
         highlightAsTarget
           ? "cursor-pointer hover:bg-primary/15"
           : "cursor-default"

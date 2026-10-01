@@ -48,7 +48,7 @@ export function SendToDesktop({
       onClick={send}
       className="inline-flex h-11 items-center gap-2 rounded-md border border-border px-4 font-medium text-fg transition-colors duration-150 hover:border-fg-subtle"
     >
-      <Send className="size-4" aria-hidden="true" />
+      <Send className="size-4 rtl:-scale-x-100" aria-hidden="true" />
       <span aria-live="polite">{copied ? copiedLabel : label}</span>
     </button>
   )

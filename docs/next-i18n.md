@@ -365,7 +365,7 @@ algún día hace falta negociar el idioma, se añade `proxy.ts` con el mismo `ro
   plano (títulos, OG), con los aislantes Unicode FSI/PDI (U+2068/U+2069).
 - **Sin literales:** `react/jsx-no-literals` en `components/cad/**` y `components/marketing/**`, con una
   lista corta de signos permitidos (`×`, `—`, `·`).
-- Las flechas "→" dejan de estar en los mensajes y pasan a ser un icono que se refleja en RTL (§7.4).
+- Las flechas "→" están fuera de los mensajes, en `ForwardArrow`, que las refleja en RTL (§7.4).
 
 ### 5.5 SEO y selector de idioma
 
@@ -579,14 +579,17 @@ interface EngineLocale {
 ### 7.3 Lo que nunca se refleja
 
 - **El lienzo:** `<canvas dir="ltr">`, `ctx.direction = "ltr"` y un `textAlign` físico explícito en
-  `CanvasScenePresenter`. Hoy usa `start`, que en RTL anclaría las etiquetas a la derecha.
-- **El SVG del motor:** `direction="ltr"` y `text-anchor` explícito en `SvgScenePresenter`; en la landing,
-  las figuras, la hoja del hero, los separadores de cota y las esquinas de referencia van en un contenedor
-  `dir="ltr"`.
+  `CanvasScenePresenter`. Y `ctx.lang` con el idioma de comandos (`Scene.lang`): el lienzo hereda el
+  `lang` de la página, que decide la fuente de una familia genérica, y en `/ar` las letras del icono SCP
+  salían con otra (§15, fase 4).
+- **El SVG del motor:** `direction="ltr"`, `lang` del idioma de comandos y `text-anchor` explícito en
+  `SvgScenePresenter`; en la landing, las figuras (`<svg direction="ltr">`: React no tipa `dir` en
+  SVG), la hoja del hero, la hoja viva, los separadores de cota y el marco de la hoja van en LTR.
 - **El icono SCP, la lectura de coordenadas, la línea de comandos y la entrada dinámica**, porque el
   idioma de comandos es LTR.
-- **Cualquier valor técnico en una paleta:** campos numéricos, ángulos, unidades. Llevan `dir="ltr"` o
-  `<bdi>`, porque en un párrafo RTL `-12.5` se ve `12.5-`.
+- **Cualquier valor técnico en una paleta:** campos numéricos, ángulos, unidades. Llevan `dir="ltr"`
+  y `text-end`, que en la isla es su derecha, porque en un párrafo RTL `-12.5` se ve `12.5-`. No
+  `<bdi>`: un número no tiene carácter fuerte que decida su dirección con `dir=auto`.
 - Los atajos (`<kbd dir="ltr">`), los emails y las URL.
 - **La justificación de TEXTO es física:** izquierda es izquierda, como en AutoCAD.
 
@@ -594,7 +597,9 @@ interface EngineLocale {
 
 - **Se reflejan** (`rtl:-scale-x-100`) los que expresan dirección lineal o de lectura: las flechas de
   avance y retroceso, la flecha de los CTA, enviar, abrir fuera (↗), y deshacer, rehacer y "zoom previo",
-  porque el tiempo lineal se refleja en RTL (Material Design).
+  porque el tiempo lineal se refleja en RTL (Material Design). La flecha de los CTA sigue siendo el
+  glifo `→` del texto, reflejado (`ForwardArrow`): U+2192 no tiene espejo bidi, y un icono SVG habría
+  cambiado los píxeles del inglés.
 - **No se reflejan** los circulares (girar, refrescar: los relojes giran igual en RTL) ni los que dibujan
   geometría CAD (alargar, simetría, desfase, cotas, SCP), porque el plano no se refleja.
 
@@ -1357,6 +1362,89 @@ motor.
 refleja con las paletas; los menús nuevos, con márgenes lógicos; la lectura de coordenadas con Z, isla
 LTR; Órbita y el giro del cubo no se reflejan. En la 5, el árabe de `Editor.ViewCube` y de la
 `interface` nueva, y las letras de la brújula. En la 6, `EngineNames` como fuente de los nombres.
+
+### Fase 4 — estado (01/10/2026): terminada
+
+**Hecho.** Todo el alcance de §11, con lo que añadió el 3D:
+
+- **Propiedades lógicas** en `components/**` y `app/**`, y las ocho declaraciones de `marketing.css`
+  (quedan las simétricas). `components.json` con `rtl: true` y `shadcn migrate rtl` sobre
+  `components/ui` (su `end-2` pasa a `inset-e-2`). `i18n/logical-properties.test.ts` falla con una
+  clase o declaración física fuera de una lista de excepciones justificadas: en el árbol anterior
+  encontraba 76.
+- **Lados lógicos** en los popups: los tooltips y desplegables del riel y los menús que abren en el
+  cursor (referencias a objetos, ciclo de selección) con `side="inline-end"`; `Side` y los envoltorios
+  de `ui/` aceptan los dos tipos de lado.
+- **Islas LTR:** el lienzo, la caja del ViewCube, la línea de comandos, la entrada dinámica, la lectura
+  de coordenadas, los `<kbd>`, el correo de contacto, los valores de la paleta de propiedades y, en la
+  landing, las figuras y glifos, la hoja del hero y la viva, el marco de la hoja, los separadores de
+  cota, las transcripciones, la caja de prueba, la línea de la 404 y el `Comando:` del CTA final.
+- **Iconos:** se reflejan deshacer, rehacer, zoom previo, enviar, abrir fuera y la flecha de los CTA
+  (`ForwardArrow`); no se reflejan Órbita, el giro del cubo, girar ni los iconos CAD.
+- **Los cuatro `type="number"`** pasan a `DecimalInput` (`components/cad/decimal-input.tsx`): texto con
+  `inputMode="decimal"`, `dir="ltr"`, punto (acepta la coma que se teclee), las flechas suben y bajan
+  el paso, y la misma semántica de antes (en vivo en las ayudas al dibujo; con Intro o al salir, y Esc
+  para deshacer, en los estilos).
+- **El idioma de comandos en lo dibujado:** `Scene.lang` (`EngineText.commandTag`) pasa a `ctx.lang` y
+  al `lang` de cada texto SVG (abajo).
+
+**Verificado.** `typecheck`, `lint` y `test` en verde (1 596 tests). Los builds de producción de la
+auditoría (`8703f1e`) y de esta fase, servidos a la vez, capturados en 1 400 × 900 en 20 escenarios en
+inglés (la landing entera por tramos, la privacidad, `/es`, el editor vacío, con dibujo, con selección,
+con la entrada dinámica, el menú de vistas, el tooltip del riel, el panel de capas, el de unidades y
+`/es/draw`): píxel a píxel idénticos salvo dos. El escenario con dibujo varía hasta 76 px entre dos
+pasadas del mismo build (el indicador de autoguardado), y no es de esta fase. El panel de unidades
+cambia a propósito: el campo de texto ya no reserva el hueco de las flechas que Chrome dibuja en un
+`type="number"`, y el valor queda junto al margen. Aceptación RTL, en `/ar` y `/ar/draw` (RTL de verdad,
+con el `DirectionProvider`) y en `/draw` con `dir="rtl"` forzado: el riel pasa al borde derecho y la
+columna del cubo y las paletas al izquierdo; el lienzo es el mismo mapa de bits que en LTR
+(`toDataURL`, 0 px); el cubo, colocado en el mismo sitio, sale idéntico (0 px) y con el mismo marcado; la
+figura del hero y el separador de cota, idénticos (0 px); la flecha del CTA se refleja en RTL y no en
+LTR; LTSCALE es un campo de texto decimal LTR y la flecha arriba lo sube a 1.1; sin desbordamiento
+horizontal en `/ar`.
+
+**Presupuestos** (frente al build de la auditoría): el JS de la landing crece 0,1 KB gz (`ForwardArrow` y
+las clases), el del editor 0,7 KB (`DecimalInput` y la extensión de `cn`); el chunk del motor, 57 B
+(`lang`). Todo sigue `○`/`●`.
+
+**Correcciones al brief:**
+
+- **El lienzo y el SVG también llevan `lang`**, no solo `dir`. Un contexto 2D hereda el `lang` de su
+  elemento, y el `lang` decide la fuente de una familia genérica: en `/ar/draw` las letras X e Y del icono
+  SCP (`monospace`) salían con otra fuente, 28 px distintos del inglés. La `Scene` lleva la etiqueta del
+  idioma de comandos y los dos presentadores la aplican; desde entonces, 0 px. Corregido §7.3.
+- **Un valor técnico lleva `dir="ltr"`, no `<bdi>`:** un número no tiene ningún carácter fuerte que
+  decida su dirección con `dir=auto`, así que se fija; y `text-end`, que en la isla es su derecha.
+  Corregido §7.3.
+- **React no tipa `dir` en `<svg>`:** las figuras llevan `direction="ltr"`, el atributo de presentación.
+- **La flecha de los CTA no pasa a ser un icono:** sigue siendo el glifo `→` del texto, reflejado con
+  `rtl:-scale-x-100` (`ForwardArrow`). Un SVG cambiaba los píxeles del inglés, contra la aceptación, y
+  U+2192 no tiene espejo bidi. Corregidos §5.4 y §7.4.
+- **tailwind-merge 3.6 no sabe que `px` es `padding-inline`:** tras la migración, el `px-1.5` de quien
+  llama ya no anulaba el `ps-2.5 pe-2` del selector, y su texto se movía 4 px. `cn()` empareja `px`,
+  `mx` e `inset-x` con sus lados lógicos (`lib/utils.ts`, con test).
+- **`dir` va en el contenedor de lo que se posiciona:** la especificación resuelve un `inset` lógico
+  contra el bloque contenedor y Chrome contra el propio elemento; por eso la hoja viva entera es la isla
+  LTR, no cada pieza.
+
+**Huecos decididos:**
+
+- **La columna del ViewCube** (el cubo y la paleta de propiedades) se refleja con las paletas: arriba a
+  la izquierda en RTL. NAVVCUBELOCATION nombra una esquina del área de dibujo en un producto que no
+  tiene RTL; aquí es envoltura, y el cubo por dentro no se refleja.
+- **La hoja viva es LTR entera**, con sus dos botones (abrir el editor, cerrar) en su esquina superior
+  derecha: es la hoja del hero, y su sitio no cambia con el idioma.
+- **Los valores técnicos se alinean a su derecha en todos los idiomas** (`text-end` dentro de la
+  isla), como las cifras de una calculadora; los recuentos de la interfaz (objetos por capa o estilo)
+  siguen a la página.
+- **La lista de autocompletado** va dentro de la línea de comandos, LTR, aunque su descripción esté en
+  el idioma de la interfaz.
+- **`rtl:` también casa dentro de una isla LTR** (`[dir=rtl] *`): sirve para los iconos de la
+  envoltura, no para distinguir una isla.
+
+**Para la fase 5.** Con texto árabe de verdad: comprobar que las etiquetas largas caben en las paletas
+y los menús, la descripción del autocompletado dentro de la línea de comandos LTR, las letras de la
+brújula (sin AutoCAD árabe que copiar) y los ajustes `:lang(ar)` de §8.2.
 
 ## Referencias
 

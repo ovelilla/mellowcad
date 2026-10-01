@@ -1741,6 +1741,7 @@ export class CadRuntime extends Observable {
     const { frame } = this
     return buildScene({
       camera: this.viewport,
+      lang: this.text.commandTag,
       aidCamera: frame.viewport,
       entities: this.document.getEntities(),
       layers: this.document.getLayers(),

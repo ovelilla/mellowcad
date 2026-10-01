@@ -138,7 +138,9 @@ export async function HeroSheet() {
           },
         }}
         drawing={
-          <div className="relative">
+          // The sheet is the drawing: its figure, UCS icon and coordinates
+          // never mirror.
+          <div className="relative" dir="ltr">
             <div
               aria-hidden="true"
               className="pointer-events-none absolute inset-0 sheet-grid [mask-image:none]"
@@ -153,17 +155,18 @@ export async function HeroSheet() {
             />
             <UcsIcon />
             <p
-              className="absolute right-3 bottom-3 data-mono text-xs text-fg-subtle"
+              className="absolute inset-e-3 bottom-3 data-mono text-xs text-fg-subtle"
               aria-label={t("cursor")}
             >
               X {coordinate(cursor.x)}
-              <span className="ml-3">Y {coordinate(cursor.y)}</span>
+              <span className="ms-3">Y {coordinate(cursor.y)}</span>
             </p>
           </div>
         }
         transcript={
           <div
             aria-hidden="true"
+            dir="ltr"
             className="flex h-[6em] min-w-0 flex-1 flex-col justify-end overflow-hidden font-mono text-[0.8125rem]"
           >
             {plot.lines.map((line, index) => (
@@ -198,6 +201,7 @@ export async function HeroSheet() {
           </summary>
           <ol
             tabIndex={0}
+            dir="ltr"
             aria-label={t("transcriptLabel")}
             className="mt-3 max-h-64 overflow-y-auto rounded-md border border-border bg-bg-sunken p-3 data-mono text-xs"
           >

@@ -184,7 +184,9 @@ function PropertyRowView({
           )}
         </dd>
       ) : (
-        <dd className="text-right text-foreground tabular-nums">{row.value}</dd>
+        <dd dir="ltr" className="text-end text-foreground tabular-nums">
+          {row.value}
+        </dd>
       )}
     </div>
   )
@@ -231,7 +233,7 @@ function PropertyInput({
           engine.focusSurface()
         }
       }}
-      className="w-20 rounded-sm border border-transparent bg-transparent px-1 py-0.5 text-right text-foreground tabular-nums hover:border-border focus:border-ring focus:bg-background focus:outline-none"
+      className="w-20 rounded-sm border border-transparent bg-transparent px-1 py-0.5 text-end text-foreground tabular-nums hover:border-border focus:border-ring focus:bg-background focus:outline-none"
     />
   )
 }

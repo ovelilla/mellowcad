@@ -10,7 +10,9 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip"
 
-export type Side = "top" | "right" | "bottom" | "left"
+/** A logical side follows the page's direction; a physical one never moves. */
+export type Side =
+  "top" | "bottom" | "inline-start" | "inline-end" | "left" | "right"
 
 /** An icon button with a tooltip — the atom every toolbar region is built from. */
 export function IconAction({
@@ -20,7 +22,8 @@ export function IconAction({
   onClick,
   active = false,
   disabled = false,
-  side = "right",
+  mirrored = false,
+  side = "inline-end",
   className,
 }: {
   icon: LucideIcon
@@ -29,6 +32,11 @@ export function IconAction({
   onClick: () => void
   active?: boolean
   disabled?: boolean
+  /**
+   * An icon of linear direction or of time (undo, redo, zoom previous), which
+   * reverses in a right-to-left page; a rotation or a CAD glyph never does.
+   */
+  mirrored?: boolean
   side?: Side
   className?: string
 }) {
@@ -45,7 +53,7 @@ export function IconAction({
             aria-pressed={active}
             className={className}
           >
-            <Icon />
+            <Icon className={cn(mirrored && "rtl:-scale-x-100")} />
           </Button>
         }
       />
@@ -53,7 +61,10 @@ export function IconAction({
         <span className="flex items-center gap-2">
           {label}
           {shortcut && (
-            <kbd className="rounded border border-border/60 bg-muted px-1 font-mono text-[10px] text-muted-foreground">
+            <kbd
+              dir="ltr"
+              className="rounded border border-border/60 bg-muted px-1 font-mono text-[10px] text-muted-foreground"
+            >
               {shortcut}
             </kbd>
           )}

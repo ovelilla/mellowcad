@@ -324,7 +324,9 @@ for each newly editable type rather than adding another adapter listener.
 `CadEngine` owns the canvas, DOM listeners, `ResizeObserver`, rAF scheduling and device-pixel
 ratio, and delegates the rest to `CadRuntime`. Both presenters draw left to right whatever the page
 around them (`ctx.direction`, `direction="ltr"` on every SVG text, anchors spelled out): the
-drawing is geometry and never mirrors. It is also the **composition root**: it builds the
+drawing is geometry and never mirrors. And in the command language: `Scene.lang`
+(`EngineText.commandTag`, English's for a locale without one) becomes `ctx.lang` and every SVG
+text's `lang`, because the page's language picks the font a generic family resolves to. It is also the **composition root**: it builds the
 port implementations (`createLocalStorageDrawingStore`, `createBrowserFileTransport`) and hands
 them to the runtime. Each returns `null` outside the browser, and the runtime reports the missing
 capability rather than crashing.

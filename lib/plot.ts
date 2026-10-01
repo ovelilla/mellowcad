@@ -179,6 +179,7 @@ export async function plotDemo(
     capHeightRatio: DRAWING_FONT_CAP_RATIO,
     plot: true,
     frame: options,
+    lang: recording.scene.lang,
   })
 
   // Paint in the drawing's own order (hatches behind), each object's strokes
@@ -225,13 +226,16 @@ export async function plotDemo(
 /** A still — a drawing, or the editor's own frame — for the smaller figures. */
 export function drawingMarkup(
   primitives: readonly ScenePrimitive[],
-  frame: { readonly width: number; readonly height: number }
+  frame: { readonly width: number; readonly height: number },
+  /** The command language its labels are in (`Scene.lang`). */
+  lang?: string
 ): string {
   return new SvgScenePresenter({
     palette: themePalette(),
     fontFamily: DRAWING_FONT,
     capHeightRatio: DRAWING_FONT_CAP_RATIO,
     frame,
+    lang,
   }).elements(primitives)
 }
 
@@ -267,7 +271,7 @@ export async function renderFigure(spec: {
   return {
     width: spec.width,
     height: spec.height,
-    markup: drawingMarkup(primitives, spec),
+    markup: drawingMarkup(primitives, spec, recording.scene.lang),
     recording,
   }
 }

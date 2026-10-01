@@ -23,7 +23,7 @@ function PopoverContent({
   children,
   ...props
 }: React.ComponentProps<typeof PopoverPrimitive.Popup> & {
-  side?: "top" | "right" | "bottom" | "left"
+  side?: "top" | "bottom" | "inline-start" | "inline-end" | "left" | "right"
   sideOffset?: number
   align?: "start" | "center" | "end"
 }) {

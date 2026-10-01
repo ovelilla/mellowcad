@@ -87,7 +87,11 @@ export default async function PrivacyPage() {
             name: DATA_CONTROLLER,
             address: CONTACT_EMAIL,
             email: (chunks) => (
-              <a href={`mailto:${CONTACT_EMAIL}`} className="underline-link">
+              <a
+                href={`mailto:${CONTACT_EMAIL}`}
+                dir="ltr"
+                className="underline-link"
+              >
                 {chunks}
               </a>
             ),

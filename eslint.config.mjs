@@ -18,8 +18,8 @@ const eslintConfig = defineConfig([
           noStrings: true,
           ignoreProps: true,
           // Signs and notation, the same in every language: the axis names
-          // and the degree sign belong to the drawing. The arrows go once the
-          // calls to action carry an icon that mirrors in RTL.
+          // and the degree sign belong to the drawing; the arrow is the one
+          // ForwardArrow mirrors in RTL.
           allowedStrings: ["×", "—", "·", "°", "X", "Y", "→"],
         },
       ],

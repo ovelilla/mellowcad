@@ -216,6 +216,12 @@ party — updates it in the same change.
   widen the column past a phone's viewport.
 - Motion is CSS only, inside `prefers-reduced-motion: no-preference`; with reduced motion everything
   is in its final state. Anything that moves for more than five seconds can be paused.
+- **Right to left**: the composition mirrors (logical classes, `ui.instructions.md`) and the
+  drawings do not. `Drawing` and `Glyph` are `direction="ltr"`, their text tagged with the command
+  language (`drawingMarkup(…, lang)` from `recording.scene.lang`); the hero sheet and the live
+  sheet, `SheetFrame` and `DimensionDivider` are `dir="ltr"`, and so is everything in the command
+  language — transcripts, the try-it box, the 404's line, the final call's `Command:`. A call to
+  action's arrow is `ForwardArrow`: the text's own `→`, mirrored, since U+2192 has no bidi mirror.
 - Inter ships without its `opsz` axis: the Display cut cost ~25 KB the first-load budget (≤ 250 KB,
   Brotli) could not spare beside the framework runtime; headlines are tracked tighter instead.
 

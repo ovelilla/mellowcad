@@ -121,6 +121,12 @@ Only for what the harness cannot see: canvas rendering, DOM, theming, CSS. If yo
 - Reproduce a user's bug on the server they use: a blank editor only existed under `next dev`,
   whose HTML belongs to the request it answered, and never on the production build.
 - Dispatch events in one `page.evaluate` and read the DOM in another — React commits async.
+- **RTL (brief §7):** `/ar` and `/ar/draw` are RTL with English words, and `dir="rtl"` forced on
+  an English page must give the same. Compare the canvas by `toDataURL()`, not a screenshot (the
+  chrome lies over it), and an element against its LTR twin pinned at 0,0 over an opaque backdrop
+  with the canvas hidden: the same SVG at another subpixel offset antialiases differently, and the
+  ViewCube is translucent until hovered. The autosave spinner in the command bar varies by tens of
+  pixels run to run.
 - **Anything that opens a menu or popover from a canvas gesture must be verified with trusted
   clicks** (`page.locator(…).click()`), never `dispatchEvent`. Synthetic events do not reproduce
   how a popup reacts to the release that follows the press, nor the `pointerleave` a portalled

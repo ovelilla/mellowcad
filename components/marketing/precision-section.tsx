@@ -14,6 +14,7 @@ function Keys({ keys }: { keys: readonly string[] }) {
       {keys.map((key) => (
         <kbd
           key={key}
+          dir="ltr"
           className="inline-flex h-6 items-center rounded border border-border bg-bg px-1.5 font-mono text-[0.6875rem] text-fg-muted"
         >
           {key}

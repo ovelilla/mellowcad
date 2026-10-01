@@ -58,6 +58,8 @@ function compiledTable(
  */
 export class EngineText {
   readonly tag: string
+  /** The command language's tag: the locale's own, or English's for the global one. */
+  readonly commandTag: string
   private readonly formatter: MessageFormatter
   private readonly ui: InterfaceCatalog
   private readonly commands: CommandCatalog
@@ -70,6 +72,8 @@ export class EngineText {
 
   constructor(readonly locale: EngineLocale = en) {
     this.tag = locale.tag
+    // A locale without a command language speaks the global one, English.
+    this.commandTag = locale.commands ? locale.tag : en.tag
     this.formatter = new MessageFormatter(locale.tag)
     this.ui = mergeCatalog<InterfaceCatalog>(en.interface, locale.interface)
     this.commands = mergeCatalog<CommandCatalog>(en.commands, locale.commands)

@@ -88,7 +88,7 @@ export default async function MarketingLayout({
         <DirectionProvider direction={DIRECTION[locale]}>
           <a
             href="#content"
-            className="text-accent-ink sr-only z-50 rounded-md bg-accent px-4 py-2 font-medium focus:not-sr-only focus:fixed focus:top-3 focus:left-3"
+            className="text-accent-ink sr-only z-50 rounded-md bg-accent px-4 py-2 font-medium focus:not-sr-only focus:fixed focus:inset-s-3 focus:top-3"
           >
             {common("skipToContent")}
           </a>

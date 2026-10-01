@@ -73,7 +73,7 @@ export function AboutPanel() {
             className="flex items-center gap-2 text-xs text-foreground underline-offset-4 hover:underline"
           >
             <Mail className="size-3.5 shrink-0" />
-            {CONTACT_EMAIL}
+            <span dir="ltr">{CONTACT_EMAIL}</span>
           </a>
         </PopoverContent>
       </Popover>
@@ -83,7 +83,10 @@ export function AboutPanel() {
 
 function Key({ children }: { children: React.ReactNode }) {
   return (
-    <kbd className="rounded border border-border/60 bg-muted px-1 font-mono text-[10px] text-foreground">
+    <kbd
+      dir="ltr"
+      className="rounded border border-border/60 bg-muted px-1 font-mono text-[10px] text-foreground"
+    >
       {children}
     </kbd>
   )

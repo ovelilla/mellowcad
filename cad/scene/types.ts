@@ -150,6 +150,13 @@ export interface Scene {
   readonly height: number
   readonly background: string
   readonly primitives: readonly ScenePrimitive[]
+  /**
+   * The BCP 47 tag of the command language its labels are in. A presenter
+   * sets it on its text so that the page's own language — Arabic around an
+   * English command language — never changes the fonts a generic family
+   * (`monospace`) resolves to: the drawing looks the same in every page.
+   */
+  readonly lang?: string
 }
 
 /**

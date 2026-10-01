@@ -34,7 +34,7 @@ const TRIANGLES: readonly { side: ViewCubeSide; points: string }[] = [
 ]
 
 const MENU_ITEM =
-  "relative flex cursor-default items-center rounded-sm py-1.5 pr-8 pl-2 text-sm outline-hidden select-none data-highlighted:bg-accent data-highlighted:text-accent-foreground"
+  "relative flex cursor-default items-center rounded-sm py-1.5 pe-8 ps-2 text-sm outline-hidden select-none data-highlighted:bg-accent data-highlighted:text-accent-foreground"
 
 const MENU_POPUP =
   "min-w-44 origin-(--transform-origin) overflow-hidden rounded-md border bg-card/90 p-1 text-popover-foreground shadow-md backdrop-blur transition-[transform,opacity] outline-none data-ending-style:scale-95 data-ending-style:opacity-0 data-starting-style:scale-95 data-starting-style:opacity-0"
@@ -146,7 +146,9 @@ export function ViewCube({
         <House />
       </Button>
 
-      <div className="relative size-36">
+      {/* The cube is geometry: its faces, labels, compass, triangles and roll
+          arrows are laid out on the screen and never mirror. */}
+      <div className="relative size-36" dir="ltr">
         <svg
           viewBox="0 0 1 1"
           className="size-full touch-none overflow-visible select-none"
@@ -328,7 +330,7 @@ export function ViewCube({
               </Menu.Item>
               <Menu.Item className={MENU_ITEM}>
                 {t("parallel")}
-                <span className="pointer-events-none absolute right-2 flex size-4 items-center justify-center text-primary">
+                <span className="pointer-events-none absolute inset-e-2 flex size-4 items-center justify-center text-primary">
                   <CheckIcon className="size-4" />
                 </span>
               </Menu.Item>
@@ -353,7 +355,7 @@ function UcsMenu({ engine, state }: { engine: CadEngine; state: EngineState }) {
   const { world, name, named } = state.ucsMenu
   const label = world ? t("wcs") : (name ?? t("unnamed"))
   const check = (
-    <span className="pointer-events-none absolute right-2 flex size-4 items-center justify-center text-primary">
+    <span className="pointer-events-none absolute inset-e-2 flex size-4 items-center justify-center text-primary">
       <CheckIcon className="size-4" />
     </span>
   )

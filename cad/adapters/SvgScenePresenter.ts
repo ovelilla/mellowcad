@@ -23,6 +23,11 @@ const FULL_TURN = Math.PI * 2
 
 export interface SvgScenePresenterOptions {
   /**
+   * The command language its labels are in (`Scene.lang`), set on every text
+   * so the page's language never changes the font a generic family picks.
+   */
+  readonly lang?: string
+  /**
    * Maps a scene colour to what the SVG writes — {@link themePalette} turns
    * `THEME`'s into CSS custom properties, so a page can restyle the drawing
    * without rendering it again. Colours it does not know pass through.
@@ -82,6 +87,7 @@ export class SvgScenePresenter {
   private readonly capHeightRatio: number
   private readonly plot: boolean
   private readonly frame: SvgScenePresenterOptions["frame"]
+  private readonly lang: string | undefined
 
   constructor(options: SvgScenePresenterOptions = {}) {
     this.palette = options.palette ?? ((color) => color)
@@ -90,6 +96,7 @@ export class SvgScenePresenter {
     this.capHeightRatio = options.capHeightRatio ?? TEXT_FONT_CAP_RATIO
     this.plot = options.plot ?? false
     this.frame = options.frame
+    this.lang = options.lang
   }
 
   /** A standalone `<svg>` document for the whole scene. */
@@ -113,7 +120,11 @@ export class SvgScenePresenter {
       : ""
     const framed = this.frame
       ? this
-      : new SvgScenePresenter({ ...this.options(), frame: scene })
+      : new SvgScenePresenter({
+          ...this.options(),
+          frame: scene,
+          lang: this.lang ?? scene.lang,
+        })
     return `<svg ${attributes}>${accessible}${background}${framed.elements(
       scene.primitives
     )}</svg>`
@@ -127,6 +138,7 @@ export class SvgScenePresenter {
       capHeightRatio: this.capHeightRatio,
       plot: this.plot,
       frame: this.frame,
+      lang: this.lang,
     }
   }
 
@@ -349,9 +361,13 @@ export class SvgScenePresenter {
 
   // WHY `direction` on every text: the markup lands inside a page's own
   // <svg>, which inherits the page's direction, and in a right-to-left page a
-  // `start` anchor is the text's right end. The drawing never mirrors.
+  // `start` anchor is the text's right end. The drawing never mirrors. And
+  // `lang`, the command language's: the page's would pick another font for a
+  // generic family (an Arabic page's `monospace` is not an English one's).
   private text(attributes: Record<string, string | number>, content: string) {
-    return `<text ${attrs({ direction: "ltr", ...attributes })}>${escapeText(
+    const lang: Record<string, string> =
+      this.lang === undefined ? {} : { lang: this.lang }
+    return `<text ${attrs({ direction: "ltr", ...lang, ...attributes })}>${escapeText(
       content
     )}</text>`
   }

@@ -496,8 +496,7 @@
 [popover].menu {
   inset: auto;
   top: 4rem;
-  right: 1rem;
-  left: 1rem;
+  inset-inline: 1rem;
   width: auto;
   margin: 0;
   padding: 3rem 0.5rem 0.5rem;
@@ -509,7 +508,7 @@
 
 /* The desktop language list: small, under the globe at the bar's end. */
 [popover].menu.language-menu {
-  left: auto;
+  inset-inline-start: auto;
   width: max-content;
   min-width: 10rem;
   padding: 0.5rem;

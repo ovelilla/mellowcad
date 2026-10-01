@@ -26,7 +26,36 @@ Failures are reported at the command prompt, not in a bespoke React banner.
 - The engine speaks the page's language: `CadWorkspace` takes the catalog the page loaded
   (`engineLocale`), and `useCadEngine({ locale })` hands it to the engine.
 - `DirectionProvider` wraps the editor with the locale's direction, for Base UI's keyboard and
-  positioning. The rest of RTL is the brief's phase 4. See `i18n.instructions.md`.
+  positioning. See `i18n.instructions.md`.
+
+## Right to left
+
+The shell mirrors; the drawing never does (brief §7). In an RTL page the rail is on the right, the
+palettes and the ViewCube's column on the left, and the status bar reads the other way — all of it
+from logical classes, nothing from a second layout.
+
+- **Classes are logical**: `ms-`/`me-`, `ps-`/`pe-`, `inset-s-`/`inset-e-`, `text-start`/`text-end`,
+  `border-s`/`border-e`. `i18n/logical-properties.test.ts` fails on a physical side in
+  `components/**` or `app/**` outside its list of justified exceptions. `components.json` has
+  `rtl: true`, so `shadcn add` writes logical classes; change its `start-*`/`end-*` to
+  `inset-s-*`/`inset-e-*` (Tailwind 4.2 deprecated them).
+- **Popups take logical sides**: `side="inline-end"` for the rail's tooltips and flyouts and the
+  menus that open at the cursor; `top`/`bottom` need nothing. `Side` (`toolbar-primitives.tsx`)
+  and the `ui/` wrappers accept both kinds.
+- **LTR islands** (`dir="ltr"`): the canvas, the ViewCube's box (faces, compass, triangles and the
+  order of the roll arrows), the command line, the dynamic input, the coordinate readout, keys
+  (`<kbd dir="ltr">`) and the contact address. Put `dir` on the element whose children are
+  positioned, never on a positioned element alone: the spec resolves a logical inset against the
+  containing block, Chrome against the element.
+- **A technical value in a palette is an island with `text-end`** — its right in every page — so
+  `-12.5` never reads `12.5-`. A numeric field is `DecimalInput` (text, `inputMode="decimal"`, a
+  point, the arrows step it), never `type="number"`: Chrome writes one in the browser's language
+  (`3,75`) whatever the page's `lang`.
+- **Icons**: `mirrored` on `IconAction` (elsewhere `rtl:-scale-x-100`) for linear direction or time
+  — undo, redo, zoom previous, send, open outside. Never a rotation (orbit, the cube's roll) or a
+  CAD glyph (mirror, extend, offset). `rtl:` matches inside an LTR island too (`[dir=rtl] *`).
+- `cn()` pairs `px`, `mx` and `inset-x` with their logical sides, which tailwind-merge 3.6 does not
+  (`lib/utils.ts`): without it a caller's `px-1.5` stops replacing a component's `ps-2.5 pe-2`.
 
 ## File layout
 
@@ -66,7 +95,7 @@ class or light values.
 - **CommandBar** (top) — file, view and palette visibility (AutoCAD's ribbon View → Palettes):
   the view menu (the viewport controls' `[Top]`: `VIEW_MENU`, labelled by `state.view.preset`, run
   through `engine.applyViewPreset`) and Orbit beside Zoom window and Pan.
-- **ViewCube** (top right, NAVVCUBELOCATION 0) — `view-cube.tsx` draws `state.viewCube` in SVG
+- **ViewCube** (top right, NAVVCUBELOCATION 0; top left in RTL, with the palettes) — `view-cube.tsx` draws `state.viewCube` in SVG
   (the engine's 0–1 box), with Home above, the compass round it and the UCS menu below; its
   right-click menu and the UCS menu are Base UI menus. It keeps only the hovered zone and the
   press it is reading as click or drag; every view, outline and label position comes from the
@@ -74,9 +103,9 @@ class or light values.
   `Editor.ViewCube`. The Properties palette sits under it in the same column, its height capped for it.
 - **DrawingAids** (status bar) — drafting modes only: Snap, Grid, Ortho, Polar, Osnap, OTRACK,
   lineweight display.
-- **ToolRail** (left) — tools, grouped by `RAIL_LAYOUT`. Variant families (Circle, Arc, Array,
+- **ToolRail** (left; right in RTL) — tools, grouped by `RAIL_LAYOUT`. Variant families (Circle, Arc, Array,
   Fillet/Chamfer, Rectangle/Polygon, Break, the attribute commands) are flyouts, named by `Editor.ToolRail.flyouts`;
-  icon-only with `side="right"` tooltips. Unlisted tools fall into a trailing "more" group, so a tool that belongs elsewhere in the chrome
+  icon-only with `side="inline-end"` tooltips. Unlisted tools fall into a trailing "more" group, so a tool that belongs elsewhere in the chrome
   (the view tools, which live in the CommandBar) must be listed in `RAIL_EXCLUDED`.
 - **AboutPanel** (bottom-right) — the only non-CAD chrome: what the app is, that drawings never
   leave the browser, a three-key quick start and the contact address. Product/meta copy goes here,

@@ -41,8 +41,10 @@ export function CadWorkspace({
       className="relative h-svh w-full overflow-hidden bg-[#0b0f14]"
       style={{ viewTransitionName: SHEET_TRANSITION }}
     >
+      {/* The drawing is geometry: it never mirrors, whatever the page. */}
       <canvas
         ref={canvasRef}
+        dir="ltr"
         className="absolute inset-0 h-full w-full touch-none outline-none"
         aria-label={t("canvas")}
       />
@@ -53,23 +55,23 @@ export function CadWorkspace({
             <CommandBar engine={engine} state={state} />
           </div>
 
-          <div className="pointer-events-none absolute top-4 left-4 z-10">
+          <div className="pointer-events-none absolute inset-s-4 top-4 z-10">
             <ToolRail engine={engine} state={state} />
           </div>
 
-          <div className="pointer-events-none absolute top-4 left-20 z-10">
+          <div className="pointer-events-none absolute inset-s-20 top-4 z-10">
             <LayersControl engine={engine} state={state} />
           </div>
 
-          <div className="pointer-events-none absolute top-4 left-72 z-10">
+          <div className="pointer-events-none absolute inset-s-72 top-4 z-10">
             <StylesControl engine={engine} state={state} />
           </div>
 
-          <div className="pointer-events-none absolute top-4 left-[26rem] z-10">
+          <div className="pointer-events-none absolute inset-s-[26rem] top-4 z-10">
             <BlocksControl engine={engine} state={state} />
           </div>
 
-          <div className="pointer-events-none absolute bottom-4 left-4 z-10">
+          <div className="pointer-events-none absolute inset-s-4 bottom-4 z-10">
             <CoordinateReadout state={state} />
           </div>
 
@@ -88,13 +90,16 @@ export function CadWorkspace({
           />
 
           {/* The ViewCube keeps AutoCAD's corner (NAVVCUBELOCATION 0); the
-              palette, docked outside the drawing area there, sits under it. */}
-          <div className="pointer-events-none absolute top-4 right-4 z-10 flex flex-col items-end gap-2">
+              palette, docked outside the drawing area there, sits under it.
+              WHY inset-e: no AutoCAD reads right to left, and in a page that
+              does the column mirrors with the other palettes, to the top
+              left; the cube inside it never mirrors. */}
+          <div className="pointer-events-none absolute inset-e-4 top-4 z-10 flex flex-col items-end gap-2">
             <ViewCube engine={engine} state={state} />
             <PropertiesPanel engine={engine} state={state} />
           </div>
 
-          <div className="pointer-events-none absolute right-4 bottom-4 z-10">
+          <div className="pointer-events-none absolute inset-e-4 bottom-4 z-10">
             <AboutPanel />
           </div>
 

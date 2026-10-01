@@ -28,6 +28,11 @@ export class CanvasScenePresenter {
     // element's direction, and in a right-to-left page `start` would anchor
     // every label and text at its right end.
     ctx.direction = "ltr"
+    // And the labels are in the command language, whatever the page's: a
+    // context inherits its element's `lang`, which picks the font a generic
+    // family resolves to (Arabic's `monospace` is not English's).
+    if (scene.lang)
+      (ctx as CanvasRenderingContext2D & { lang?: string }).lang = scene.lang
 
     ctx.fillStyle = scene.background
     ctx.fillRect(0, 0, scene.width, scene.height)

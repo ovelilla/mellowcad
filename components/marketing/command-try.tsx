@@ -46,7 +46,11 @@ export function CommandTry({
       >
         {label}
       </label>
-      <div className="flex items-center gap-2 rounded-md border border-border bg-bg-sunken px-3 font-mono text-sm focus-within:border-fg-subtle">
+      {/* A command line: the command language, left to right in every page. */}
+      <div
+        dir="ltr"
+        className="flex items-center gap-2 rounded-md border border-border bg-bg-sunken px-3 font-mono text-sm focus-within:border-fg-subtle"
+      >
         <span aria-hidden="true" className="text-fg-subtle">
           {prompt}
         </span>
@@ -95,6 +99,7 @@ export function CommandTry({
         <ul
           id={listId}
           role="listbox"
+          dir="ltr"
           className="absolute inset-x-0 top-[5.25rem] z-10 overflow-hidden rounded-md border border-border bg-bg-raised font-mono text-sm shadow-lg"
         >
           {matches.map((match, index) => (

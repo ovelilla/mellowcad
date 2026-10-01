@@ -55,6 +55,7 @@ export function DynamicInput({
   return (
     <div
       data-dynamic-input=""
+      dir="ltr"
       className="pointer-events-none absolute z-[5] flex flex-wrap gap-1"
       style={{ left: di.screen.x + 16, top: di.screen.y + 20 }}
     >
@@ -179,7 +180,7 @@ export function DynamicInput({
             )}
             {locked && (
               <Lock
-                className="ml-0.5 size-3 shrink-0 text-amber-400"
+                className="ms-0.5 size-3 shrink-0 text-amber-400"
                 strokeWidth={2.5}
                 aria-label={lockedLabel}
               />

@@ -8,6 +8,7 @@ import { pageEngineLocale, renderFigure } from "@/lib/plot"
 
 import { Drawing } from "./drawing"
 import { SectionHeading } from "./section-heading"
+import { ForwardArrow } from "./forward-arrow"
 
 const BODY = {
   draw: "drawBody",
@@ -99,7 +100,10 @@ export async function ToolsetSection() {
           className="inline-flex h-12 items-center rounded-md bg-accent px-6 font-medium text-accent-ink transition-[filter] duration-150 hover:brightness-110"
         >
           {common("startDrawing")}
-          <span aria-hidden="true">&nbsp;→</span>
+          <span aria-hidden="true">
+            &nbsp;
+            <ForwardArrow />
+          </span>
         </a>
       </p>
     </section>

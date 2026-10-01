@@ -24,8 +24,10 @@ export function Drawing({
   className?: string
 }) {
   return (
+    // A drawing never mirrors: its text is anchored left to right too.
     <svg
       viewBox={`0 0 ${width} ${height}`}
+      direction="ltr"
       role="img"
       className={cn("block h-auto w-full", className)}
       dangerouslySetInnerHTML={{

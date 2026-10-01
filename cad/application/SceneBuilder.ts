@@ -106,6 +106,8 @@ export interface UcsIconInput {
  */
 export interface SceneInput {
   readonly camera: CameraTransform
+  /** The command language's tag, for {@link Scene.lang}. */
+  readonly lang?: string
   /**
    * The camera the drawing aids are given in — the grid, the UCS icon, the
    * snap, tracking and polar guides, the FROM base: the frame of the UCS's XY
@@ -243,6 +245,7 @@ export function buildScene(input: SceneInput): Scene {
     width: camera.width,
     height: camera.height,
     background: THEME.background,
+    lang: input.lang,
     primitives,
   }
 }

@@ -375,6 +375,7 @@ export function ToolRail({
 
         <IconAction
           icon={Undo2}
+          mirrored
           label={t("undo")}
           shortcut={keys("undo")}
           disabled={!state.canUndo}
@@ -382,6 +383,7 @@ export function ToolRail({
         />
         <IconAction
           icon={Redo2}
+          mirrored
           label={t("redo")}
           shortcut={keys("redo")}
           disabled={!state.canRedo}
@@ -449,12 +451,12 @@ function ToolFlyout({
             <ShownIcon />
             <span
               aria-hidden
-              className="pointer-events-none absolute right-0.75 bottom-0.75 h-0 w-0 border-[3px] border-transparent border-r-current border-b-current opacity-70"
+              className="pointer-events-none absolute inset-e-0.75 bottom-0.75 h-0 w-0 border-[3px] border-transparent border-e-current border-b-current opacity-70"
             />
           </Button>
         }
       />
-      <PopoverContent side="right" align="start" className="w-auto p-1">
+      <PopoverContent side="inline-end" align="start" className="w-auto p-1">
         <div className="flex flex-col gap-1">
           {members.map((member) => (
             <IconAction
@@ -462,7 +464,7 @@ function ToolFlyout({
               icon={TOOL_ICONS[member.id] ?? Shapes}
               label={member.label}
               shortcut={member.shortcut?.toUpperCase()}
-              side="right"
+              side="inline-end"
               active={state.activeToolId === member.id}
               onClick={() => {
                 engine.setActiveTool(member.id)

@@ -13,6 +13,8 @@ import {
 } from "@/components/ui/popover"
 import { CadEngine, DimStyleInfo, EngineState, TextStyleInfo } from "@/cad"
 
+import { DecimalInput } from "./decimal-input"
+
 /**
  * The style managers, modelled on AutoCAD's Dimension Style Manager and Text
  * Style dialog: each lists the styles in the drawing with the current one
@@ -396,7 +398,7 @@ function StyleRow({
         />
       )}
 
-      <span className="w-6 shrink-0 text-right text-muted-foreground tabular-nums">
+      <span className="w-6 shrink-0 text-end text-muted-foreground tabular-nums">
         {style.entityCount}
       </span>
 
@@ -442,37 +444,16 @@ function NumberField({
   step?: number
   onCommit: (value: number) => void
 }) {
-  const [draft, setDraft] = useState<string | null>(null)
-
-  const commit = () => {
-    if (draft !== null) {
-      const parsed = Number(draft.replace(",", "."))
-      if (Number.isFinite(parsed)) onCommit(parsed)
-    }
-    setDraft(null)
-  }
-
   return (
     <label className="flex items-center justify-between gap-2 text-xs">
       <span className="text-muted-foreground">{label}</span>
-      <input
-        type="number"
+      <DecimalInput
         step={step}
         aria-label={label}
-        value={draft ?? String(value)}
-        onChange={(event) => setDraft(event.target.value)}
+        value={value}
+        onCommit={onCommit}
         onFocus={(event) => event.currentTarget.select()}
-        onBlur={commit}
-        onKeyDown={(event) => {
-          if (event.key === "Enter") {
-            event.preventDefault()
-            event.currentTarget.blur()
-          } else if (event.key === "Escape") {
-            event.preventDefault()
-            setDraft(null)
-          }
-        }}
-        className="w-20 rounded-sm border border-border bg-background px-1 py-0.5 text-right tabular-nums focus:border-ring focus:outline-none"
+        className="w-20 rounded-sm border border-border bg-background px-1 py-0.5 tabular-nums focus:border-ring focus:outline-none"
       />
     </label>
   )

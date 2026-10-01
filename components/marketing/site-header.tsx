@@ -7,6 +7,7 @@ import { LanguageLinks } from "@/components/language-links"
 import { sitePaths } from "@/i18n/site-paths"
 
 import { Logo } from "./logo"
+import { ForwardArrow } from "./forward-arrow"
 
 const SECTIONS = [
   ["features", "#features"],
@@ -51,7 +52,7 @@ export async function SiteHeader() {
             ))}
           </ul>
         </nav>
-        <div className="ml-auto flex items-center gap-2 md:ml-0">
+        <div className="ms-auto flex items-center gap-2 md:ms-0">
           {/* On a phone the languages are in the menu: the bar has no room. */}
           <button
             type="button"
@@ -66,7 +67,10 @@ export async function SiteHeader() {
             className="inline-flex h-9 items-center rounded-md bg-accent px-3.5 text-sm font-medium text-accent-ink transition-[filter] duration-150 hover:brightness-110"
           >
             {t("cta")}
-            <span aria-hidden="true">&nbsp;→</span>
+            <span aria-hidden="true">
+              &nbsp;
+              <ForwardArrow />
+            </span>
           </a>
           <button
             type="button"
@@ -108,7 +112,7 @@ export async function SiteHeader() {
           popoverTarget="site-menu"
           popoverTargetAction="hide"
           aria-label={t("closeMenu")}
-          className="absolute top-2 right-2 grid size-9 place-items-center rounded-md text-fg-muted hover:text-fg"
+          className="absolute inset-e-2 top-2 grid size-9 place-items-center rounded-md text-fg-muted hover:text-fg"
         >
           <X className="size-5" aria-hidden="true" />
         </button>
