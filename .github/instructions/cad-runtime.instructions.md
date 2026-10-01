@@ -69,8 +69,9 @@ it with `on(entity, point)`, which reads `entityZAt`), a tracked point's is the 
 and otherwise the elevation plane (`ucs.origin.z` + ELEVATION; the resolver reads both through
 getters). Constraints and the lattice work in plan and the resolver puts the Z back after them.
 Intersection is 3D (`meetingHeight`: two objects that cross in plan at different heights do not
-meet; the rubber band meets anything); Apparent Intersection takes the first object's. `input.world`
-stays 2D: it is for picking.
+meet; the rubber band meets anything); Apparent Intersection is where two edges, extended, cross
+on the screen, on the first one at its height. `input.world` is the unsnapped cursor on the work
+plane: it is for picking.
 
 A tool returning `usesCrosshair() === false` (PAN) opts out entirely: no crosshair is drawn and
 `updateSnap` leaves the cursor the tool set, instead of forcing `"none"`.
@@ -82,14 +83,47 @@ A tool returning `usesCrosshair() === false` (PAN) opts out entirely: no crossha
 (`WHEEL_BURST_MS`) and a pan drag are each one entry, not one per event. `zoomToBounds` is the
 single "frame this rectangle" operation; use it rather than composing `zoomAt` + `centerOn`.
 
-**The view can be turned** (PLAN, VIEWTWIST): `xAxis` is the world direction drawn pointing right,
-kept as a unit vector like a UCS axis, and part of the `Camera` ZOOM Previous restores. A screen
-rectangle is therefore upright in the **view frame** (`worldToView`), not in the world. Anything
+**The camera is an orthonormal base**: `right`, `up` and `direction` (towards the viewer) in the
+WCS, plus scale and translation; `setView(direction, right)` aims it and ZOOM Previous restores the
+whole base. `isPlan` (looking down Z) keeps the 2D arithmetic, so the plan's output does not move
+by a bit — the landing's SVG snapshots guard it. In plan the view can be turned (PLAN,
+VIEWTWIST: `right` is the world direction drawn pointing right). A screen rectangle is therefore
+upright in the **view frame** (`worldToView`), not in the world. Anything
 that tests or frames one works there: `boxSelect` tests `entityInView`, ZOOM Window / Extents /
 Object and PLAN frame `entitiesViewBounds` with `zoomToViewBounds` (`zoomToBounds` is for a
 _world_ rectangle, which a turned view fits by its bounding box), and a visible-area query maps all
 four screen corners, never two. Two opposite corners through `screenToWorld` only bound the view
 while it is untwisted — the bug stays invisible until someone runs PLAN in a turned UCS.
+
+**Off the plan a screen point is a line of sight.** The cursor is where it meets the work plane
+(the UCS's XY plane at ELEVATION, `screenToPlane`); seen edge-on there is none, pointing says
+`pointingEdgeOn` and `screenToFacing` stands in for picking. Picking and snapping measure **on the
+screen**: `viewPick.ts` takes the cursor into each object's plane through the inverse of its
+affinity, asks the 2D query and measures the answer in pixels (an object seen edge-on, on its
+outline); snap providers use `SnapContext.cursorOn(entity)`, `isNear(point, px)` and `view`, never
+a world tolerance. In plan the 2D queries run as before, and a tilted object is measured by its
+outline on the screen (`planDistanceToEntity`, `drawsTilted`).
+
+## The UCS frame (`UcsFrame`)
+
+**Tools and the pointer pipeline work in the frame of the UCS's XY plane** (`ucsFrame.ts`,
+`CadRuntime.frame`, remade when the UCS changes): the world read in the OCS of the UCS's Z, where
+that plane is level and the UCS an ordinary level one. `frame.document` reads every object there
+(cached), `frame.viewport` is `Viewport.inFrame(axes)` — the same camera and history in rotated
+axes — and `frame.ucs` is the UCS as the frame sees it. With an upright UCS the frame is the
+identity: the same document, viewport and objects.
+
+- The resolver, snaps, tracking, picking, the cursor, the polar guide and the scene's aids read
+  `this.frame`; reading `this.viewport`, `this.document` or the UCS directly for anything the
+  cursor touches is a bug that only shows with a tilted UCS. What the user reads leaves the frame
+  on the way out (`cursorUcs`, `snap.point`).
+- `ctx.execute` takes what a tool commits back to the WCS with `Command.mapEntities`, which every
+  command implements (one that carries no entities returns itself). An object the tool did not
+  touch comes back as the very original, so undo is exact.
+- **A tool that sets the WCS or the view declares `inWorld`** (UCS, PLAN, VPOINT, -VIEW, 3DORBIT):
+  it gets the real document, viewport and UCS, and its pointer input converted back (`forTool`).
+- Tracking points acquired in one UCS are dropped when it changes; a snap's `direction`
+  (Extension, Parallel) is a frame direction, drawn with the aid camera.
 
 ## Key routing (`CadRuntime.keyDown`) — order is load-bearing
 
@@ -191,7 +225,9 @@ Coordinates the user reads are **UCS** coordinates: the status readout is `curso
 its Z the elevation plane's), and the Properties palette's X/Y/Z rows (and a line's deltas) are
 converted in `singleEntityInfo`. A retyped X or Y is read in the UCS too (`runtimeProperties.ts`),
 which in a turned UCS moves the point along that axis and so rewrites both world coordinates; a
-retyped Z (`isZProperty`) gets `ucs.origin.z` added, except Thickness, which is a length. Rotations
+retyped Z (`isZProperty`) gets `ucs.origin.z` added, except Thickness, which is a length. With a
+tilted UCS or object the position rows are read and retyped as points in space
+(`applyOffPlane`). Rotations
 stay in the WCS, as AutoCAD's do. Rows AutoCAD files under **General** go in
 `SelectionInfo.general` (the palette renders them after its pickers), never in a group.
 
@@ -218,11 +254,17 @@ the **drawing** uses the `text` primitive instead, which carries a world-derived
 A world angle becomes a screen rotation through `screenRotation(camera, radians)`, which accounts
 for both the Y flip and the view's twist (`CameraTransform.twist`); positions, arcs and ellipses
 are resolved from projected points and need nothing.
+**Each planar object is drawn through its plane's affinity** (`planeCamera(camera, elevation,
+axes)`): a circle becomes an ellipse (`affineEllipse`) and text gets a matrix. When the affinity
+is a similarity (the plan) the old code path runs. Thickness draws the object at both heights along its normal and the edges joining them.
 Glyph metrics — alignment, cap height, font size — are the presenter's job: the scene describes
 _what_ to align to, not where the pixels land.
 
-The grid lies on the UCS (`SceneInput.ucs`) and the UCS icon is drawn by the scene
-(`SceneInput.ucsIcon`, its letters from the catalog). A host with chrome of its own hides it with
+The grid lies on the UCS (`SceneInput.ucs`, the frame's) and the UCS icon is drawn by the scene
+(`SceneInput.ucsIcon`, its letters from the catalog; `world` — the WCS square — is decided on the
+drawing's UCS, since a tilted one reads level in its frame). The grid, the icon, tracking, the
+snap marker and the guides are drawn with `SceneInput.aidCamera` (the frame's viewport), the
+objects with `camera`. A host with chrome of its own hides it with
 `setUcsIconShown(false)` (the landing's sketch), which leaves the drawing's UCSICON alone;
 `CadDriver` hides it unless given `ucsIcon: true`, so a recorded frame holds only what was drawn.
 

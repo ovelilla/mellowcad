@@ -33,7 +33,9 @@ expect(h.latest()).toBeDefined()
 ```
 
 - Everything is in **world coordinates**, projected through the live viewport — no calibration,
-  survives zoom. Default 1000×800 viewport → scale 1.
+  survives zoom. Default 1000×800 viewport → scale 1. Off the plan or in a tilted UCS, click a
+  world `Vec3`; what is typed is still read in the UCS. `-VIEW` Orthographic Front is the quickest
+  tilted UCS (`tiltedUcs.test.ts`'s `front()`).
 - Snapping is **off by default** for determinism; pass `{ snap: true }` to exercise it. So is the
   UCS icon, which would otherwise add its arms, arrowheads and letters to every scene a test
   counts; pass `{ ucsIcon: true }` for a test about the icon.

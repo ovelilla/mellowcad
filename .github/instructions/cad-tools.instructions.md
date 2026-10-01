@@ -199,6 +199,18 @@ instead, or the command-line buffer will swallow them.
 
 ## Points, snapping, constraints
 
+- **A tool works in the frame of the UCS's XY plane** (`cad-runtime.instructions.md`, "The UCS
+  frame"): `ctx.document`, `ctx.viewport`, `ctx.ucs`, `ctx.pick` and every point are given there,
+  where that plane is level, and `ctx.execute` takes the result back to the WCS. Write a tool as
+  if the UCS were level and never convert to the WCS yourself. A tool that sets the WCS or the
+  view declares `readonly inWorld = true` instead; one that sets the UCS builds the settings patch
+  with `ucsChange(settings, ucs, name)` (`UcsTool.ts`, which also puts ELEVATION back to 0 for the
+  WCS) and executes it as one `UpdateSettingsCommand`.
+- **A tool with flat geometry acts only on `readsInPlan` objects** — those level in the frame, and
+  lines: TRIM / EXTEND (edges and objects), BREAK, OFFSET, JOIN, HATCH, ARRAYPATH's path, the
+  dimensions and DIMBASELINE / DIMCONTINUE / DIMSPACE's picks. Filter at the pick, so an object at
+  an angle to the UCS does not highlight (AutoCAD projects some with PROJMODE: a recorded gap).
+  FILLET and CHAMFER of polylines need no filter: they work in the polyline's own OCS.
 - **Everything typed is read in the UCS.** `parseCoordinate` requires `ucs: ctx.ucs` and
   `elevation: ctx.elevation` (neither is optional, so no call site can forget); `*` reads the
   numbers in the WCS instead. An **absolute** angle — a heading field fed from the cursor, a typed
@@ -212,9 +224,10 @@ instead, or the command-line buffer will swallow them.
   and keeps the base's Z: wrap it in `withZOf(point, base)`, because every `V` helper returns a
   `Vec2`. Type a state field that feeds `lastPoint` or a creation as `Vec3`, so a dropped Z fails
   to compile. A displacement is `sub3(to, from)` (MOVE, COPY, STRETCH, PASTECLIP); SCALE's base is
-  a `Vec3`; ROTATE and MIRROR ignore the Z.
+  a `Vec3`; ROTATE turns about the UCS's Z and MIRROR reflects in the plane holding the mirror
+  line and that Z, which in the frame is a plan rotation and reflection.
 - **A flat object lies in the plane of the first point that fixed it** (the first vertex of PLINE
-  and SPLINE, a CIRCLE's centre or first 2P/3P point, RECTANG's first corner, the insertion point
+  and SPLINE, a CIRCLE's centre or first 2P point, RECTANG's first corner, the insertion point
   of TEXT, MTEXT, ATTDEF and INSERT, BLOCK's base point): `onPlaneOf(createX(...), first)`, and
   project the later points (`withZOf(point, first)`) rather than keep their Z. A point computed
   from the first (an ellipse's centre, MTEXT's attachment point) takes its Z the same way.
@@ -222,6 +235,13 @@ instead, or the command-line buffer will swallow them.
   **A dimension is the other exception**: it lies at the height of the point that places its
   dimension line (DIMBASELINE / DIMCONTINUE: the base dimension's), whatever its origins' —
   snapped on objects above the plane, AutoCAD's still lands on the current elevation.
+- **Three points fix their own plane.** CIRCLE 3P and ARC through three points use
+  `planeThrough(p1, p2, p3)` (`threePointPlane.ts`): the normal and the points in its OCS, built
+  with `withNormal`; `null` (level or collinear) falls back to the plane of the first point. FILLET
+  and CHAMFER resolve two lines with `lineCorner` (`lineCorner.ts`): their level plane, the tilted
+  one they share (`linesPlaneNormal`), or `null` for `linesNonCoplanar`. A preview of a result
+  that may be tilted is drawn with `entityScenePrimitive` under a fixed id (`"circle-preview"`),
+  never as a screen-space circle.
 - **A grip drags to a point like any click**: unsnapped, the elevation plane; snapped, the
   object's Z; typed as a distance, the grip's own Z. The base of a move grip is at its object's
   Z there (`entityZAt`), so a move is `sub3`. Only a line's end grip writes that Z into the object;

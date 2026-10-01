@@ -105,13 +105,15 @@ snapping, command history, adapters) is in `cad-runtime.instructions.md`; writin
 - Never compare `Vec2` with `toEqual`/`Object.is`: `-0 !== 0`. Use the custom matchers.
 - Pure functions do not mutate their inputs; entity helpers return new objects and either
   preserve the id (in-place edit) or mint a fresh one (`*Copy` helpers).
-- **Entities are stored in the WCS; the UCS is only how points and angles are read.** A `Ucs`
-  (`domain/ucs.ts`) is an origin (a `Vec3`: its XY plane sits at the origin's Z) and a unit X
-  axis — a direction kept as a vector, like an ellipse's axis — with Y a quarter turn CCW and Z
-  the world's, so it is never tilted or mirrored.
-  It lives in `DocumentSettings` with its name and the named-UCS table (UCSORG, UCSXDIR and the UCS
-  table are saved in the drawing). Convert at the boundary with `ucsPointToWorld` /
-  `worldPointToUcs` and the direction and angle twins; nothing in `domain/` reads the current UCS.
+- **The UCS is only how points and angles are read; it never changes what is stored.** A `Ucs`
+  (`domain/ucs.ts`) is an origin (`Vec3`) and unit `xAxis` / `yAxis` (`Vec3`, Z = X × Y, never
+  mirrored), so it can tilt. `isUpright` (level with Z exactly +Z) guards the 2D formulas, which
+  stay bit-identical for it; `createUcs` builds a level one from a 2D X direction, `ucsFromAxes`
+  any one from an X direction and a point towards Y, `rotateUcs` turns one about an axis. `wcs`
+  on a UCS is the WCS as a frame reads it (what `*` reads). It lives in `DocumentSettings` with
+  its name and the named-UCS table, saved in the drawing (a level UCS as it always was, a tilted
+  one with its `yAxis`). Convert at the boundary with `ucsPointToWorld` / `worldPointToUcs` (3D)
+  and the direction and angle twins; nothing in `domain/` reads the current UCS.
 
 ## The entity modules
 
@@ -413,22 +415,34 @@ a new shape:
 - `CadRuntime.setSelectionX(value | "ByLayer")` = one `UpdateEntityCommand` per entity (undoable),
   plus a `commonSelectionX` for `EngineState`.
 
-## Z (2.5D)
+## Z and the normal
 
-Every object is planar with its normal on +Z, so the OCS is the WCS and the kernel stays `Vec2`:
-the Z is numbers beside the points, stored as DXF stores it (`domain/elevation.ts`). `elevation`
-on every entity is the Z of its plane (a line's start); a line adds `deltaZ` (end − start, a vector
+Every object but a line is planar and keeps its points in the **OCS of its normal**, as DXF does
+(`domain/elevation.ts`): `normal?: Vec3` is DXF 210 (absent = +Z, and +Z is never stored —
+`withNormal`), the OCS its arbitrary axes (`arbitraryAxis`, `geometry/ocs.ts`), so the kernel stays
+`Vec2` and every 2D helper works in the object's own plane. A line's points are world points; its
+normal is only the direction of its thickness. `entityAxes` gives an object's axes and `planeAxes`
+the ones its points are in (`undefined` for +Z and for every line); `entityPointToWorld` /
+`worldToEntity` convert one point, `isTilted` / `sameNormal` / `facesAlong` compare normals, and
+`entityInOcs(entity, normal)` / `entityFromOcs` read a whole object facing `normal` in that OCS and
+back, exactly. `elevation` on every entity is the Z of its plane along its normal (a line's start); a line adds `deltaZ` (end − start, a vector
 like an ellipse's axis); `thickness` exists only on line, circle, arc and polyline, the types DXF
 extrudes. All three are optional, absent means 0, and a 0 is never stored — `withElevation` and its
 twins drop it — so a flat drawing and its file look exactly as before. A block's base point has
 its own `baseElevation`, and a reference's attributes their `elevation`.
 
+- **A 3D transform is `transformEntity(entity, similarity3)`** (`entityTransforms.ts`): the normal
+  turns with it and what happens inside the plane is a 2D similarity applied by the 2D functions;
+  a +Z object under a transform that keeps Z takes the 2D path unchanged. Give a line's ends their
+  Z explicitly (`lineStartZ` / `lineEndZ`): seen in plan, the two ends of a vertical line are one
+  point, so a Z re-read from the plan picks the wrong one.
 - **Transforms take `Vec2 | Vec3`.** A 2D delta or base is Z = 0: a planar move, or a scale about
   the XY plane. `translateEntity` / `copyEntity` shift the plane, `scaleEntity(+Copy)` scales
   elevation, rise and thickness about the base's Z, rotate and mirror leave the Z alone, and
   `stretchEntity` moves whole (Z included) an object whose every point is caught, and otherwise
   moves the Z of a rigid object that moves and of a line's caught end — a polyline, spline, hatch
-  or dimension caught in part cannot tilt, so it ignores it.
+  or dimension caught in part cannot tilt, so it ignores it. Translate, scale, rotate and mirror
+  hand a tilted object to `transformEntity`.
 - **Rebuilding an object from another goes through `carryOverrides`**, which carries the overrides
   _and_ the plane and thickness (`carryPlane` alone for a new object that only shares the plane,
   like FILLET's arc). `createX(..., source.layerId, source.id)` on its own is the bug: it keeps the
@@ -438,19 +452,24 @@ its own `baseElevation`, and a reference's attributes their `elevation`.
   `carryOverrides` copies the whole rise, which is wrong for a piece, so each end is re-read with
   `entityZAt` on the source — extrapolated past its ends for EXTEND. A line end moved to a point
   of its own (a grip) takes that point's Z with `withLineZ`, the other end keeping its own.
-- **Coplanar means `coplanar(a, b)`**: one elevation and no line rising (`isLevel`). It is
-  AutoCAD's own test — "one or more of the line vertices is not at the same elevation" — so
+- **Coplanar means `coplanar(a, b)`**: one normal, one elevation and no line rising (`isLevel`).
+  It is AutoCAD's own test — "one or more of the line vertices is not at the same elevation" — so
   FILLET, CHAMFER, JOIN and HATCH's boundary use it rather than comparing elevations by hand.
-- `expectSameShape` compares the Z and the `entity` arbitrary generates it, so a transform that
-  drops it fails every round-trip property.
+  Two lines that share a tilted plane instead are `linesPlaneNormal(a, b)` (its normal, or `null`).
+- `expectSameShape` compares the Z and the normal and the `entity` arbitrary generates both, so a
+  transform that drops either fails every round-trip property.
 - **An entity's points are planar; the Z lives only in its fields.** Factories copy `{ x, y }` out
   of whatever they are given, so a `Vec3` from the point channel never leaves a stray `z` on a
   vertex; a spread that writes a picked point (a grip edit) takes `planar(point)` for the same
   reason. `onPlaneOf(entity, point)` sets the plane from a point, `createLine` reads its ends' Z,
   and `entityZAt(entity, point)` is the one reader of an object's Z at a point in plan (a line's
   interpolated along it) — the snaps, UCS OBject and any future "Z of the object here" use it.
-- **Nothing drawn or picked reads the Z.** The scene, hit-testing, bounds and box selection are the
-  plan view; a Z there is a bug until the views project it (roadmap item 2).
+- **The domain's 2D queries read one plane; what needs them says so with `readsInPlan`.**
+  `closestOnEntity`, intersections, boundaries and offsets work on the points as stored, which is
+  the plan only of an object whose plane is level (`readsInPlan`; a line always is, its 2.5D rules
+  project it). Drawing, picking, bounds and snapping project every object through its own plane
+  in `application/` (`planeCamera`, `viewPick.ts`); objects in different planes have no
+  intersection yet.
 
 ## Serialization
 
