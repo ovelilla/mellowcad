@@ -1354,9 +1354,9 @@ solo la sesión contestada).
 
 **Corrección al brief:** el límite de 90 KB del chunk del motor (§8.3) medía el motor entero, y lo
 rompen las funciones del 3D, no la i18n, que solo suma su catálogo. §8.3 pasa a medir lo que la i18n
-suma (el catálogo inglés compilado, ≤ 8 KB gz), y el tamaño del motor queda como deuda propia, fuera
-de este brief: con 135 KB gz, partirlo (cargar las herramientas 3D bajo demanda) es una decisión del
-motor.
+suma (el catálogo inglés compilado, ≤ 8 KB gz). El tamaño del editor no es un objetivo (decisión del
+autor): quien abre un CAD espera una aplicación pesada, y sus chunks quedan en caché tras la primera
+visita. Lo que sí tiene presupuesto es la primera carga de la landing, que no lleva el motor.
 
 **Para las fases 4–6** (§11, ya ampliado): el ViewCube es geometría y va en una caja LTR, su columna se
 refleja con las paletas; los menús nuevos, con márgenes lógicos; la lectura de coordenadas con Z, isla
