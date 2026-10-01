@@ -13,6 +13,7 @@ import { DrawingAids } from "./drawing-aids"
 import { CoordinateReadout } from "./coordinate-readout"
 import { DynamicInput } from "./dynamic-input"
 import { PropertiesPanel } from "./properties-panel"
+import { ViewCube } from "./view-cube"
 import { LayersControl } from "./layers-control"
 import { StylesControl } from "./styles-control"
 import { BlocksControl } from "./blocks-control"
@@ -86,7 +87,10 @@ export function CadWorkspace({
             lockedLabel={input("locked")}
           />
 
-          <div className="pointer-events-none absolute top-4 right-4 z-10">
+          {/* The ViewCube keeps AutoCAD's corner (NAVVCUBELOCATION 0); the
+              palette, docked outside the drawing area there, sits under it. */}
+          <div className="pointer-events-none absolute top-4 right-4 z-10 flex flex-col items-end gap-2">
+            <ViewCube engine={engine} state={state} />
             <PropertiesPanel engine={engine} state={state} />
           </div>
 

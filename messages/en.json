@@ -297,6 +297,37 @@
       },
       "commandLine": "Command line"
     },
+    "ViewCube": {
+      "label": "ViewCube",
+      "home": "Home",
+      "parallel": "Parallel",
+      "setHome": "Set Current View as Home",
+      "rollClockwise": "Rotate clockwise",
+      "rollCounterclockwise": "Rotate counterclockwise",
+      "wcs": "WCS",
+      "unnamed": "Unnamed",
+      "newUcs": "New UCS",
+      "faces": {
+        "top": "TOP",
+        "bottom": "BOTTOM",
+        "front": "FRONT",
+        "back": "BACK",
+        "left": "LEFT",
+        "right": "RIGHT"
+      },
+      "compass": {
+        "N": "N",
+        "E": "E",
+        "S": "S",
+        "W": "W"
+      },
+      "adjacent": {
+        "up": "View the face above",
+        "down": "View the face below",
+        "left": "View the face to the left",
+        "right": "View the face to the right"
+      }
+    },
     "ToolRail": {
       "flyouts": {
         "circle": "Circle",

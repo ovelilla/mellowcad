@@ -297,6 +297,37 @@
       },
       "commandLine": "Línea de comandos"
     },
+    "ViewCube": {
+      "label": "ViewCube",
+      "home": "Inicio",
+      "parallel": "Paralelo",
+      "setHome": "Definir vista actual como inicio",
+      "rollClockwise": "Girar en sentido horario",
+      "rollCounterclockwise": "Girar en sentido antihorario",
+      "wcs": "SCU",
+      "unnamed": "Sin nombre",
+      "newUcs": "Nuevo SCP",
+      "faces": {
+        "top": "SUPERIOR",
+        "bottom": "INFERIOR",
+        "front": "FRONTAL",
+        "back": "POSTERIOR",
+        "left": "IZQUIERDA",
+        "right": "DERECHA"
+      },
+      "compass": {
+        "N": "N",
+        "E": "E",
+        "S": "S",
+        "W": "O"
+      },
+      "adjacent": {
+        "up": "Ver la cara de arriba",
+        "down": "Ver la cara de abajo",
+        "left": "Ver la cara de la izquierda",
+        "right": "Ver la cara de la derecha"
+      }
+    },
     "ToolRail": {
       "flyouts": {
         "circle": "Círculo",
