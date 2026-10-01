@@ -7,15 +7,19 @@
 
 ## 1. Requiere las cuentas y la URL pública
 
-1. Dar de alta Search Console y Bing Webmaster Tools. Los tokens se leen de `GOOGLE_SITE_VERIFICATION`
-   y `BING_SITE_VERIFICATION`.
-2. Enviar el sitemap e inspeccionar `/` y sus idiomas (`/es`, `/ar`).
-3. Pasar el Rich Results Test sobre el JSON-LD.
-4. Comprobar la vista previa OG en X, LinkedIn, Slack y WhatsApp, en cada idioma.
+Hecho el 01/10/2026: Search Console (verificada por DNS) y Bing Webmaster Tools (importada desde Search
+Console, así que no usa `BING_SITE_VERIFICATION`), con el sitemap enviado y `/`, `/es` y `/ar`
+inspeccionadas. En producción, el JSON-LD de cada idioma se lee bien (`WebSite`, `WebApplication` y
+`Organization`), y las tarjetas OG responden a 1200 px en los tres idiomas.
+
+- El Rich Results Test no mostrará la ficha de software de Google: exige `aggregateRating` o `review`,
+  y no se inventan valoraciones. Que no sea apta es lo esperado.
+- Pendiente: revisar en unos días el informe **Páginas** de Search Console y, cuando haya tráfico,
+  **Core Web Vitals** (el objetivo de LCP de campo es ≤ 1,8 s).
 
 ## 2. Secuencia de lanzamiento
 
-1. **Lanzamiento suave:** con el punto 1 hecho, 5 usuarios de AutoCAD prueban la landing y el editor en
+1. **Lanzamiento suave:** 5 usuarios de AutoCAD prueban la landing y el editor en
    una sesión moderada (¿entienden qué es? ¿cuánto tardan en dibujar la primera línea?).
 2. **Show HN** con el ángulo técnico: motor hexagonal y la fidelidad como especificación. La página
    está prerenderizada y la sirve el CDN, así que aguanta el pico.
