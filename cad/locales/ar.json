@@ -86,7 +86,11 @@
       "DIMSTYLE": "إنشاء أنماط الأبعاد وتعديلها",
       "STYLE": "إنشاء أنماط النص وتعديلها",
       "BLOCKSPALETTE": "عرض لوحة الكتل",
-      "PURGE": "إزالة تعريفات الكتل غير المستخدمة"
+      "PURGE": "إزالة تعريفات الكتل غير المستخدمة",
+      "LAYER": "إدارة الطبقات وخصائصها",
+      "LAYERCLOSE": "إغلاق مدير خصائص الطبقات",
+      "PROPERTIES": "عرض خصائص العناصر المحددة",
+      "PROPERTIESCLOSE": "إغلاق لوحة الخصائص"
     },
     "snap": {
       "endpoint": "نقطة النهاية",
@@ -158,7 +162,9 @@
     "property": {
       "title": {
         "ellipticalArc": "قوس قطع ناقص",
-        "objects": "{count, plural, zero {لا عناصر} one {عنصر واحد} two {عنصران} few {# عناصر} many {# عنصرًا} other {# عنصر}}"
+        "objects": "{count, plural, zero {لا عناصر} one {عنصر واحد} two {عنصران} few {# عناصر} many {# عنصرًا} other {# عنصر}}",
+        "all": "الكل ({count})",
+        "type": "{type} ({count})"
       },
       "group": {
         "geometry": "الهندسة",

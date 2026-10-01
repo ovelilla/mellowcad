@@ -485,7 +485,8 @@ describe("property editing", () => {
     })
     cad.select("L1")
 
-    const rows = cad.state().selectionInfo?.groups.flatMap((g) => g.rows) ?? []
+    const rows =
+      cad.state().properties.info?.groups.flatMap((g) => g.rows) ?? []
     const editable = rows.filter((row) => row.edit)
     expect(editable.map((row) => row.edit?.property)).toEqual([
       "length",
@@ -500,7 +501,7 @@ describe("property editing", () => {
     // The box is seeded with a bare number, the unit is rendered beside it.
     expect(editable[0].edit?.text).toBe("100.00")
     expect(editable[0].edit?.unit).toBe("mm")
-    expect(cad.state().selectionInfo?.general.map((row) => row.id)).toEqual([
+    expect(cad.state().properties.info?.general.map((row) => row.id)).toEqual([
       "thickness",
     ])
   })
@@ -508,7 +509,7 @@ describe("property editing", () => {
 
 describe("the palette's Z", () => {
   function rows(cad: CadHarness): Map<string, PropertyRow> {
-    const info = cad.state().selectionInfo!
+    const info = cad.state().properties.info!
     return new Map(
       [...info.general, ...info.groups.flatMap((group) => group.rows)].map(
         (row) => [row.id, row]
@@ -599,7 +600,7 @@ describe("the palette's Z", () => {
     raiseUcs(cad)
     cad.select("C")
 
-    expect(cad.state().selectionInfo?.general).toEqual([
+    expect(cad.state().properties.info?.general).toEqual([
       expect.objectContaining({
         id: "thickness",
         label: "Thickness",
@@ -611,7 +612,7 @@ describe("the palette's Z", () => {
     expect(cad.byId<CircleEntity>("C").thickness).toBe(-2)
 
     cad.select("T")
-    expect(cad.state().selectionInfo?.general).toEqual([])
+    expect(cad.state().properties.info?.general).toEqual([])
     expect(cad.runtime.setSelectionProperty("thickness", "4")).toBe(false)
   })
 })
@@ -966,7 +967,7 @@ describe("engine state snapshot", () => {
 
     cad.select("L1")
 
-    const info = cad.state().selectionInfo
+    const info = cad.state().properties.info
     expect(info?.count).toBe(1)
     expect(info?.title).toBe("Line")
     const rows = info?.groups.flatMap((group) => group.rows) ?? []
@@ -983,7 +984,7 @@ describe("engine state snapshot", () => {
 
     cad.selectAll()
 
-    expect(cad.state().selectionInfo?.count).toBe(2)
+    expect(cad.state().properties.info?.count).toBe(2)
     expect(cad.state().selectionLayerId).toBe(DEFAULT_LAYER_ID)
   })
 

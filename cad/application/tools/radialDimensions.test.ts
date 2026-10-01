@@ -250,7 +250,7 @@ describe("radial dimensions", () => {
     const cad = radial("DIMDIAMETER", p(30, 0))
     cad.select(dim(cad).id)
 
-    const rows = cad.state().selectionInfo?.groups[0].rows ?? []
+    const rows = cad.state().properties.info?.groups[0].rows ?? []
     expect(rows.find((row) => row.label === "Type")?.value).toBe("Diameter")
   })
 

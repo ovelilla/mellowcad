@@ -424,7 +424,7 @@ describe("angular dimensions elsewhere in the app", () => {
     cad.select(dim(cad).id)
     const rows = cad
       .state()
-      .selectionInfo!.groups.flatMap((group) => group.rows)
+      .properties.info!.groups.flatMap((group) => group.rows)
 
     expect(rows.find((row) => row.label === "Measurement")?.value).toBe(
       "90.00°"

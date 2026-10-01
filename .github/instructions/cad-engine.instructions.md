@@ -411,7 +411,8 @@ geometry value (AutoCAD's editable Properties rows). It rebuilds the entity with
 via `createX(...)` — so the id and every ByObject override survive, and returns `null` for values
 that don't apply or would degenerate the object. A row becomes typeable by giving it an `edit`
 descriptor in `singleEntityInfo`; the write path is `CadRuntime.setSelectionProperty`, which parses
-the text and executes one `UpdateEntityCommand`. The Z rows are `ZProperty` values handled before
+the text and executes one `UpdateEntityCommand` on the one object the palette edits (the selection
+narrowed by its object type drop-down, `scopeIds("properties")`). The Z rows are `ZProperty` values handled before
 the per-type switch, in world Z; which types show a plane row is the `PLANE_ROWS` table.
 
 ## Adding an entity property
@@ -426,8 +427,10 @@ a new shape:
 - `carryOverrides` must carry it onto copies.
 - `drawingFile.ts`: bump `DRAWING_FILE_VERSION`, persist conditionally via the `overrides`
   spread, keep the reader tolerant so older files still load.
-- `CadRuntime.setSelectionX(value | "ByLayer")` = one `UpdateEntityCommand` per entity (undoable),
-  plus a `commonSelectionX` for `EngineState`.
+- `CadRuntime.setSelectionX(value | "ByLayer", scope)` = one `UpdateEntitiesCommand` over
+  `scopeIds(scope)` — the whole selection for the ribbon's drop-downs, the type-filtered objects for
+  the Properties palette — plus a `commonSelectionX` for `EngineState` (`selectionX`) and for
+  `buildPropertiesUi` (`properties.x`).
 
 ## Z and the normal
 

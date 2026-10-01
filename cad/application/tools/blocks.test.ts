@@ -494,13 +494,31 @@ describe("the blocks palette", () => {
 
   it("is closed until BLOCKSPALETTE opens it", () => {
     const cad = withBlocks()
-    expect(cad.state().blocksPanel).toBe(false)
+    expect(cad.state().palette.open).toBe(false)
 
     cad.command("BLOCKSPALETTE")
-    expect(cad.state().blocksPanel).toBe(true)
+    expect(cad.state().palette).toEqual({ open: true, tab: "blocks" })
 
-    cad.runtime.toggleBlocksPanel()
-    expect(cad.state().blocksPanel).toBe(false)
+    cad.runtime.togglePalette("blocks")
+    expect(cad.state().palette.open).toBe(false)
+  })
+
+  it("stays open through one insertion after another", () => {
+    const cad = withBlocks()
+    cad.command("BLOCKSPALETTE")
+
+    cad.runtime.insertBlock("WINDOW")
+    cad.click(p(250, 0))
+    cad.runtime.insertBlock("DOOR")
+    cad.click(p(500, 0))
+
+    expect(cad.state().palette).toEqual({ open: true, tab: "blocks" })
+    expect(
+      cad
+        .entities()
+        .filter((entity) => entity.type === "insert")
+        .map((entity) => (entity as InsertEntity).blockId)
+    ).toEqual(["DOOR", "WINDOW", "DOOR"])
   })
 
   it("previews a block through the same scene the drawing is built from", () => {
@@ -582,7 +600,7 @@ describe("the properties palette", () => {
     })
     cad.select("I1")
 
-    const info = cad.state().selectionInfo
+    const info = cad.state().properties.info
     expect(info?.title).toBe("Block reference")
     const rows = info?.groups.flatMap((group) => group.rows) ?? []
     expect(rows.find((row) => row.label === "Name")?.value).toBe("BAR")

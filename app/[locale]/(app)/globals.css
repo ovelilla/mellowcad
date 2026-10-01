@@ -17,6 +17,25 @@
    the palette has its final height at the first paint. */
 @custom-variant short (@media (height < 700px));
 
+/* The palette panel open, before the engine exists: what the head script
+   wrote on <html> (lib/palette-layout.ts), else the window's width. In CSS,
+   so the canvas has its final box at the first paint. */
+@custom-variant palette-open {
+  :root[data-palette="open"] & {
+    @slot;
+  }
+  @media (width >= 1600px) {
+    :root:not([data-palette]) & {
+      @slot;
+    }
+  }
+}
+
+/* Its width until one is remembered (PALETTE_WIDTH.initial). */
+:root {
+  --palette-width: 280px;
+}
+
 @theme inline {
   --font-heading: var(--font-sans);
   --font-sans: var(--font-sans);

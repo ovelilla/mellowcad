@@ -7,8 +7,11 @@ import {
   FilePlus,
   FolderOpen,
   Globe,
+  Layers,
+  LibraryBig,
   Loader2,
   Paintbrush,
+  PencilRuler,
   Redo2,
   Ruler,
   Save,
@@ -25,6 +28,7 @@ import {
   LINEWEIGHT_BYLAYER,
   type CadEngine,
   type EngineState,
+  type PaletteTab,
 } from "@/cad"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
@@ -45,12 +49,10 @@ import {
 import { useLanguageLinks } from "@/components/language-links"
 import { LogoMark } from "@/components/marketing/logo"
 
-import { BlocksControl } from "./blocks-control"
 import { ColorSelect } from "./color-select"
-import { LayersControl, LayerSwatch } from "./layers-control"
+import { LayerSwatch } from "./layers-control"
 import { LinetypeSelect } from "./linetype-select"
 import { LineweightSelect } from "./lineweight-select"
-import { StylesControl } from "./styles-control"
 import { IconAction, Panel } from "./toolbar-primitives"
 
 const MENU_POPUP =
@@ -77,6 +79,9 @@ export function TopBar({
 }) {
   const t = useTranslations("Editor.TopBar")
   const keys = useTranslations("Editor.Keys")
+  const layers = useTranslations("Editor.Layers")
+  const styles = useTranslations("Editor.Styles")
+  const blocks = useTranslations("Editor.Blocks")
   // The bar's buttons run the commands, as AutoCAD's macros do (`_qsave`), so
   // they are echoed at the prompt like a typed command.
   const run = (command: string) => engine.runCommand(command)
@@ -139,7 +144,13 @@ export function TopBar({
       <Separator orientation="vertical" className="mx-1 h-6!" />
 
       <Panel className="shrink-0 items-center">
-        <LayersControl engine={engine} state={state} />
+        <PaletteToggle
+          engine={engine}
+          state={state}
+          tab="layers"
+          icon={Layers}
+          label={layers("title")}
+        />
         <LayerControl engine={engine} state={state} />
       </Panel>
 
@@ -148,8 +159,20 @@ export function TopBar({
       <PropertyControls engine={engine} state={state} />
 
       <Panel className="ms-auto shrink-0 items-center">
-        <StylesControl engine={engine} state={state} />
-        <BlocksControl engine={engine} state={state} />
+        <PaletteToggle
+          engine={engine}
+          state={state}
+          tab="styles"
+          icon={PencilRuler}
+          label={styles("title")}
+        />
+        <PaletteToggle
+          engine={engine}
+          state={state}
+          tab="blocks"
+          icon={LibraryBig}
+          label={blocks("title")}
+        />
         {/* Palette visibility, not a drafting mode — AutoCAD keeps this on
             the View ribbon (Palettes panel), never on the status bar. */}
         <IconAction
@@ -408,5 +431,41 @@ function PropertyControls({
         className={cn(BAR_SELECT, "w-32")}
       />
     </Panel>
+  )
+}
+
+/**
+ * A palette's trigger: opens the palette panel on it, or folds the panel when
+ * it is the palette showing — the same panel the commands open (LAYER,
+ * DIMSTYLE, BLOCKSPALETTE).
+ */
+function PaletteToggle({
+  engine,
+  state,
+  tab,
+  icon: Icon,
+  label,
+}: {
+  engine: CadEngine
+  state: EngineState
+  tab: PaletteTab
+  icon: LucideIcon
+  label: string
+}) {
+  const active = state.palette.open && state.palette.tab === tab
+  return (
+    <Button
+      size="sm"
+      variant={active ? "active" : "ghost"}
+      aria-pressed={active}
+      className="gap-2"
+      onClick={() => {
+        engine.togglePalette(tab)
+        engine.focusSurface()
+      }}
+    >
+      <Icon className="shrink-0" />
+      <span className="truncate text-xs">{label}</span>
+    </Button>
   )
 }

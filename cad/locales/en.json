@@ -86,7 +86,11 @@
       "DIMSTYLE": "Create and modify dimension styles",
       "STYLE": "Create and modify text styles",
       "BLOCKSPALETTE": "Show the blocks palette",
-      "PURGE": "Remove unused block definitions"
+      "PURGE": "Remove unused block definitions",
+      "LAYER": "Manage layers and layer properties",
+      "LAYERCLOSE": "Close the Layer Properties Manager",
+      "PROPERTIES": "Show the properties of the selected objects",
+      "PROPERTIESCLOSE": "Close the Properties palette"
     },
     "snap": {
       "endpoint": "Endpoint",
@@ -165,7 +169,9 @@
     "property": {
       "title": {
         "ellipticalArc": "Elliptical arc",
-        "objects": "{count, plural, one {# object} other {# objects}}"
+        "objects": "{count, plural, one {# object} other {# objects}}",
+        "all": "All ({count})",
+        "type": "{type} ({count})"
       },
       "group": {
         "geometry": "Geometry",
@@ -361,6 +367,10 @@
       "STYLE": ["STYLE", "ST"],
       "BLOCKSPALETTE": ["BLOCKSPALETTE"],
       "PURGE": ["PURGE", "PU"],
+      "LAYER": ["LAYER", "LA"],
+      "LAYERCLOSE": ["LAYERCLOSE"],
+      "PROPERTIES": ["PROPERTIES", "PR", "CH", "MO"],
+      "PROPERTIESCLOSE": ["PROPERTIESCLOSE"],
       "UCS": ["UCS"],
       "UCSICON": ["UCSICON"],
       "PLAN": ["PLAN"],

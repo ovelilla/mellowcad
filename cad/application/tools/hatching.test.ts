@@ -538,8 +538,8 @@ describe("hatch as an object", () => {
     h.command("HATCH").option("Select objects").click(p(50, 0)).enter()
     h.click(p(50, 50))
 
-    const rows = h.state().selectionInfo?.groups[0].rows ?? []
-    expect(h.state().selectionInfo?.title).toBe("Hatch")
+    const rows = h.state().properties.info?.groups[0].rows ?? []
+    expect(h.state().properties.info?.title).toBe("Hatch")
     expect(rows.find((row) => row.label === "Pattern")?.value).toBe("ANSI31")
     expect(rows.find((row) => row.label === "Scale")?.edit?.property).toBe(
       "patternScale"

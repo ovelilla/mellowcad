@@ -1,16 +1,11 @@
 "use client"
 
 import { useState } from "react"
-import { Check, PencilRuler, Plus, Trash2 } from "lucide-react"
+import { Check, Plus, Trash2 } from "lucide-react"
 import { useTranslations } from "next-intl"
 
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover"
 import { CadEngine, DimStyleInfo, EngineState, TextStyleInfo } from "@/cad"
 
 import { DecimalInput } from "./decimal-input"
@@ -27,8 +22,9 @@ import { DecimalInput } from "./decimal-input"
  * the manager's tabs (Lines, Symbols and arrows, Text, Fit, Primary units), so
  * a user looks for Baseline spacing where AutoCAD taught them to.
  *
- * Opened by the DIMSTYLE and STYLE commands as well as by its trigger, which is
- * why the popover is controlled from engine state.
+ * A tab of the palette panel, opened by the DIMSTYLE and STYLE commands on
+ * their table as well as by its trigger, which is why the table it shows is
+ * the engine's state.
  */
 export function StylesControl({
   engine,
@@ -38,51 +34,29 @@ export function StylesControl({
   state: EngineState
 }) {
   const t = useTranslations("Editor.Styles")
-  const tab = state.stylesPanel
+  const tab = state.stylesTable
 
   return (
-    <Popover
-      open={tab !== null}
-      onOpenChange={(open) => engine.setStylesPanel(open ? "dimension" : null)}
-    >
-      <PopoverTrigger
-        render={
-          <Button
-            size="sm"
-            variant="ghost"
-            aria-label={t("title")}
-            className="pointer-events-auto gap-2"
-          >
-            <PencilRuler className="shrink-0" />
-            <span className="truncate text-xs">{t("title")}</span>
-          </Button>
-        }
-      />
-      <PopoverContent
-        side="bottom"
-        align="start"
-        className="w-112 overflow-hidden border-none p-0"
-      >
-        <div className="flex items-center gap-1 p-2">
-          <TabButton
-            label={t("dimension")}
-            active={tab === "dimension"}
-            onClick={() => engine.setStylesPanel("dimension")}
-          />
-          <TabButton
-            label={t("text")}
-            active={tab === "text"}
-            onClick={() => engine.setStylesPanel("text")}
-          />
-        </div>
+    <div className="flex min-h-0 flex-1 flex-col overflow-y-auto">
+      <div className="flex items-center gap-1 p-2">
+        <TabButton
+          label={t("dimension")}
+          active={tab === "dimension"}
+          onClick={() => engine.setStylesTable("dimension")}
+        />
+        <TabButton
+          label={t("text")}
+          active={tab === "text"}
+          onClick={() => engine.setStylesTable("text")}
+        />
+      </div>
 
-        {tab === "text" ? (
-          <TextStyles engine={engine} state={state} />
-        ) : (
-          <DimStyles engine={engine} state={state} />
-        )}
-      </PopoverContent>
-    </Popover>
+      {tab === "text" ? (
+        <TextStyles engine={engine} state={state} />
+      ) : (
+        <DimStyles engine={engine} state={state} />
+      )}
+    </div>
   )
 }
 
@@ -132,15 +106,21 @@ function DimStyles({
         selectedId={selected.id}
         baseId="ISO-25"
         onSelect={setSelectedId}
-        onSetCurrent={(id) => engine.setCurrentDimStyle(id)}
+        onSetCurrent={(id) => {
+          engine.setCurrentDimStyle(id)
+          engine.focusSurface()
+        }}
         onRename={(id, name) => engine.updateDimStyle(id, { name })}
-        onDelete={(id) => engine.removeDimStyle(id)}
+        onDelete={(id) => {
+          engine.removeDimStyle(id)
+          engine.focusSurface()
+        }}
         onNew={() =>
           setSelectedId(engine.createDimStyle(undefined, selected.id))
         }
       />
 
-      <div className="max-h-[52svh] space-y-3 overflow-y-auto border-t border-border/60 p-3">
+      <div className="space-y-3 border-t border-border/60 p-3">
         <Group title={t("lines")}>
           <NumberField
             label={t("baselineSpacing")}
@@ -237,9 +217,15 @@ function TextStyles({
         selectedId={selected.id}
         baseId="Standard"
         onSelect={setSelectedId}
-        onSetCurrent={(id) => engine.setCurrentTextStyle(id)}
+        onSetCurrent={(id) => {
+          engine.setCurrentTextStyle(id)
+          engine.focusSurface()
+        }}
         onRename={(id, name) => engine.updateTextStyle(id, { name })}
-        onDelete={(id) => engine.removeTextStyle(id)}
+        onDelete={(id) => {
+          engine.removeTextStyle(id)
+          engine.focusSurface()
+        }}
         onNew={() =>
           setSelectedId(engine.createTextStyle(undefined, selected.id))
         }

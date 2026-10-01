@@ -1,5 +1,5 @@
 import { CadDocument } from "../domain/Document"
-import { assignDimStyle, assignTextStyle } from "../domain/entities"
+import { assignDimStyle, assignTextStyle, EntityId } from "../domain/entities"
 import {
   clampDimStyle,
   DEFAULT_DIM_STYLE,
@@ -11,7 +11,6 @@ import {
   TextStyle,
   TextStyleId,
 } from "../domain/textStyles"
-import { Selection } from "./Selection"
 import { CommandHistory } from "./commands/Command"
 import { UpdateEntityCommand } from "./commands/entityCommands"
 
@@ -74,12 +73,12 @@ export function updateDimStyle(
 /** Puts every selected dimension on style `id` (individually undoable). */
 export function setSelectionDimStyle(
   document: CadDocument,
-  selection: Selection,
+  ids: readonly EntityId[],
   history: CommandHistory,
   id: DimStyleId
 ): void {
-  if (selection.isEmpty() || !document.getDimStyle(id)) return
-  for (const entityId of selection.toArray()) {
+  if (ids.length === 0 || !document.getDimStyle(id)) return
+  for (const entityId of ids) {
     const entity = document.get(entityId)
     if (entity?.type !== "dimension" || entity.styleId === id) continue
     history.execute(new UpdateEntityCommand(assignDimStyle(entity, id)))
@@ -130,12 +129,12 @@ export function updateTextStyle(
 /** Puts every selected text object on style `id` (individually undoable). */
 export function setSelectionTextStyle(
   document: CadDocument,
-  selection: Selection,
+  ids: readonly EntityId[],
   history: CommandHistory,
   id: TextStyleId
 ): void {
-  if (selection.isEmpty() || !document.getTextStyle(id)) return
-  for (const entityId of selection.toArray()) {
+  if (ids.length === 0 || !document.getTextStyle(id)) return
+  for (const entityId of ids) {
     const entity = document.get(entityId)
     if (
       (entity?.type !== "text" && entity?.type !== "mtext") ||

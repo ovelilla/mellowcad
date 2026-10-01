@@ -342,7 +342,7 @@ describe("what follows the UCS", () => {
     })
     turned(cad)
     cad.select("l")
-    const rows = cad.state().selectionInfo!.groups.flatMap((g) => g.rows)
+    const rows = cad.state().properties.info!.groups.flatMap((g) => g.rows)
     const value = (id: string) => rows.find((row) => row.id === id)?.value
     expect(value("startX")).toBe("-50.00")
     expect(value("startY")).toBe("90.00")

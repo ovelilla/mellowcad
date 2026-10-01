@@ -71,6 +71,67 @@ import { DimStyle, DimStyleId } from "../domain/dimStyles"
 /** Which of the two style tables the manager is showing. */
 export type StylesPanelTab = "dimension" | "text"
 
+/** The palette panel's tabs, in their order. */
+export const PALETTE_TABS = [
+  "properties",
+  "layers",
+  "blocks",
+  "styles",
+] as const
+
+export type PaletteTab = (typeof PALETTE_TABS)[number]
+
+/**
+ * The docked palette panel: which palette it shows and whether it is open or
+ * folded to its strip. Modeless, as AutoCAD's palettes are: nothing on the
+ * drawing closes it, only its own button, its tab's trigger or a CLOSE command.
+ */
+export interface PaletteUi {
+  readonly open: boolean
+  readonly tab: PaletteTab
+}
+
+/** One entry of the Properties palette's object type drop-down. */
+export interface PropertiesFilterOption {
+  /** The type it narrows the palette to; null is All. */
+  readonly type: EntityType | null
+  /** `All (6)`, `Line (5)`. */
+  readonly label: string
+}
+
+/**
+ * What the Properties palette shows and edits: the selection, narrowed to one
+ * object type when its drop-down picks one ("modify the properties of a single
+ * object type at a time"). Every value is the narrowed objects'; the ribbon's
+ * drop-downs read the whole selection (`selectionLayerId` and its siblings).
+ */
+export interface PropertiesUi {
+  /**
+   * The drop-down's entry: the type picked, the only type when the selection
+   * has one, or null for All.
+   */
+  readonly filter: EntityType | null
+  /** All first when the selection mixes types, then each type; empty with nothing selected. */
+  readonly filters: ReadonlyArray<PropertiesFilterOption>
+  /** Geometric properties of the objects edited, or null with nothing selected. */
+  readonly info: SelectionInfo | null
+  /** As `selectionLayerId`, over the objects edited. */
+  readonly layerId: LayerId | null
+  readonly color: EntityColor | "ByLayer" | null
+  readonly linetype: LinetypeId | "ByLayer" | null
+  readonly lineweight: Lineweight | "ByLayer" | null
+  /** The style shared by every edited text object, else null. */
+  readonly textStyleId: TextStyleId | null
+  /** The style shared by every edited dimension, else null. */
+  readonly dimStyleId: DimStyleId | null
+}
+
+/**
+ * What a selection edit applies to: the whole selection (the ribbon's
+ * drop-downs) or the objects the Properties palette's type filter leaves.
+ */
+export type SelectionScope = "selection" | "properties"
+
 /** A layer plus its live entity count, ready for the layer manager UI. */
 export interface LayerInfo extends Layer {
   /** How many entities currently live on this layer. */
@@ -308,11 +369,11 @@ export interface EngineState {
   readonly saveState: SaveState
   /** Epoch millis of the last successful auto-save, or null if never saved. */
   readonly lastSavedAt: number | null
-  /** Geometric properties of the current selection, or null when empty. */
-  readonly selectionInfo: SelectionInfo | null
+  /** The Properties palette: its type filter and what it edits. */
+  readonly properties: PropertiesUi
   /**
    * The layer shared by every selected entity, or null when the selection is
-   * empty or spans multiple layers. Drives the properties panel's Layer picker.
+   * empty or spans multiple layers. Drives the ribbon's layer drop-down.
    */
   readonly selectionLayerId: LayerId | null
   /**
@@ -336,20 +397,16 @@ export interface EngineState {
   readonly textStyles: ReadonlyArray<TextStyleInfo>
   /** The style new text is created with. */
   readonly currentTextStyleId: TextStyleId
-  /** The style shared by every selected text object, else null. */
-  readonly selectionTextStyleId: TextStyleId | null
   /** Every dimension style with its usage count (the DIMSTYLE table). */
   readonly dimStyles: ReadonlyArray<DimStyleInfo>
   /** The style new dimensions are created with. */
   readonly currentDimStyleId: DimStyleId
-  /** The style shared by every selected dimension, else null. */
-  readonly selectionDimStyleId: DimStyleId | null
-  /** Which style table the manager is showing, or null while it is closed. */
-  readonly stylesPanel: StylesPanelTab | null
+  /** Which style table the Styles palette shows. */
+  readonly stylesTable: StylesPanelTab
   /** Every block defined in the drawing (the Blocks palette's Current tab). */
   readonly blocks: ReadonlyArray<BlockInfo>
-  /** Whether the Blocks palette is showing. */
-  readonly blocksPanel: boolean
+  /** The palette panel: open or folded, and the palette it shows. */
+  readonly palette: PaletteUi
   /** Whether the drawing's units settings are showing. */
   readonly unitsPanel: boolean
   /**

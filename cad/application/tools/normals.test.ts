@@ -28,7 +28,7 @@ function ellipses(cad: CadHarness) {
 }
 
 function rows(cad: CadHarness) {
-  return (cad.state().selectionInfo?.groups ?? []).flatMap((group) =>
+  return (cad.state().properties.info?.groups ?? []).flatMap((group) =>
     group.rows.map((row) => [row.id, row.value] as const)
   )
 }

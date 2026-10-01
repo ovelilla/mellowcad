@@ -12,7 +12,9 @@ That holds for browser capabilities too: **no `Blob`, file picker, download anch
 keyboard listener in a component.** If a button needs one, the engine owes it a method (behind a
 port, implemented in `cad/adapters/`) — otherwise the behaviour lives in the app rather than in
 the package, and every consumer has to rewrite it. A component may keep purely visual state.
-Failures are reported at the command prompt, not in a bespoke React banner.
+Failures are reported at the command prompt, not in a bespoke React banner. The one exception is
+the palette panel's remembered width and fold (`lib/palette-layout.ts`): it is the page's layout,
+read by an inline `<head>` script before any bundle or engine exists, so it lives with the page.
 
 ## Text
 
@@ -110,11 +112,16 @@ class or light values.
   window, `tools` · `canvas` · `panel` between them, and `command` above `status`. A control goes
   into a zone; never position one absolutely over the drawing. The canvas takes what the zones
   leave, so ZOOM Extents frames only what is visible.
-  - **Every zone has its size in CSS** (`h-10`, `w-19`, `w-70`, the command line's `h-20`), not
-    from its content, and is rendered before the engine mounts: the canvas's box at the first
-    paint is then the final one, which the landing's view transition grows into and the first
-    view is centred in. A zone that resizes moves the canvas's edge; one that resizes with the
-    work (the selection, each command) makes the drawing jump.
+  - **Every zone has its size in CSS** (`h-10`, `w-19`, the panel's `w-9` /
+    `palette-open:w-(--palette-width)`, the command line's `h-20`), not from its content, and is
+    rendered before the engine mounts: the canvas's box at the first paint is then the final one,
+    which the landing's view transition grows into and the first view is centred in. A zone that
+    resizes moves the canvas's edge; one that resizes with the work (the selection, each command)
+    makes the drawing jump. A size that depends on what this device remembers is decided by a
+    `<head>` script on `<html>` (`data-palette`, `--palette-width`), with a CSS fallback for the
+    window's width, and the engine is handed the same answer when it is built
+    (`useCadEngine({ paletteOpen })`) — never decided after mount, or the landing's sheet lands in
+    the wrong box. Measured in Chrome with the bundles blocked against the box after mount.
   - **The canvas cell** (`#editor-sheet`, `relative`, exactly the canvas's box) carries
     `SHEET_TRANSITION` — no other element may — and holds what is placed in the canvas's pixels:
     the dynamic input and its option chips, at `state.dynamicInput.screen`. A popup anchored there
@@ -135,13 +142,14 @@ class or light values.
     language as a submenu of `useLanguageLinks`), then the Quick Access Toolbar in AutoCAD's order
     — New (QNEW), Open, Save, Save As, Undo, Redo;
   - the auto-save state (`role="status"`, the only part that shrinks and truncates);
-  - Layers (the manager's trigger) and the layer drop-down (`engine.applyLayerControl`: with a
+  - Layers (the Layers tab's trigger) and the layer drop-down (`engine.applyLayerControl`: with a
     selection it moves it in one undo step, else it sets the current layer — two clicks);
   - Match Properties, then the object colour, lineweight and linetype drop-downs, which act on the
     selection and read ByLayer, disabled, with nothing selected until CECOLOR, CELTYPE and
     CELWEIGHT exist;
   - at the end, the palette toggles: Styles, Blocks and the command line (F2), AutoCAD's View →
-    Palettes.
+    Palettes. Layers, Styles and Blocks are `PaletteToggle`s: `engine.togglePalette(tab)` opens the
+    palette panel on that tab, or folds it when that tab is showing, and reads `active` then.
   - The buttons run the commands by their global name (`engine.runCommand("_QSAVE")`), as
     AutoCAD's macros do, so they echo at the prompt; Undo and Redo call the engine.
   - Every part has a fixed width (`w-40` for the layer, `w-36`/`w-28`/`w-32` for the properties)
@@ -165,9 +173,33 @@ class or light values.
   press it is reading as click or drag; every view, outline and label position comes from the
   engine, and so do its words (`state.names.viewCubeFaces`, `compass`); its menus' are
   `Editor.ViewCube`.
-- **The palette panel** (`panel`, the inline end) — the Properties palette fills it and stays
-  with nothing selected, saying so (`Editor.Properties.noSelection`), so the drawing never resizes
-  with the selection.
+- **The palette panel** (`panel`, the inline end; `PalettePanel`) — Properties, Layers, Blocks and
+  Styles as tabs of one docked palette, modeless: nothing on the drawing closes it. 280 px open
+  (widened by its inner edge up to 480, `PaletteResizeHandle`; never narrower, or the tabs' names
+  stop fitting in Spanish), folded to a 36 px strip of the
+  tabs' icons. Open from 1600 px of window, folded below; only the width and the fold are
+  remembered, each once the user changes it. Whether it is open and which tab it shows is
+  `state.palette` (`showPalette`, `closePalette(tab)`, `togglePalette`, `setPaletteOpen`), so
+  LAYER, PROPERTIES, DIMSTYLE, STYLE and BLOCKSPALETTE open it and LAYERCLOSE / PROPERTIESCLOSE
+  fold it while their tab shows.
+  - **Properties** never appears or disappears with the selection; only its content changes. At
+    its top the object type drop-down (`state.properties.filters`: `All (6)`, `Line (5)`…, from
+    the engine), `No selection` (`Editor.Properties.noSelection`, disabled) without one. Its
+    values and edits are `state.properties` and the `"properties"` scope
+    (`engine.setSelectionColor(value, "properties")`); the top bar's drop-downs keep the whole
+    selection (`selectionLayerId`…, the default scope). With nothing selected, General shows the
+    current settings: the current layer, changeable there (`setCurrentLayer`), and ByLayer,
+    disabled, for the rest until CECOLOR, CELTYPE and CELWEIGHT exist.
+  - **Layers** is the Layer Properties Manager: a toolbar (New, Delete — disabled with its reason
+    as the label —, Set Current) over a table with column headers in AutoCAD's order (Status,
+    Name, On, Lock, Color, Linetype, Lineweight, then the object count), scrolled sideways inside
+    the panel. A click selects a row; a double-click on it, or Set Current, makes it current. A
+    click on the selected row's name renames it after a pause, so a double-click still sets it
+    current (F2, AutoCAD's other rename key, is the command line here). A double-click on a
+    control of the row is that control's.
+  - **After acting in a palette, focus returns to the drawing** (`engine.focusSurface()`) — a
+    click on a tab, a strip icon, a toggle, a pick in a drop-down — so the next key types a
+    command. The arrow keys on the tabs keep focus there (`event.detail > 0` tells a click).
 - **The command line** (`command`) is docked with AutoCAD's three lines of history above the
   prompt, kept while empty, so running commands never resizes the drawing; hiding it (F2)
   collapses the zone, and it comes back while something is typed. Its suggestions open upwards
@@ -216,20 +248,23 @@ class or light values.
 
 ## Palettes that show drawing content
 
-A palette a command can open (the style managers, the Blocks palette) is a **controlled** popover
-driven by `EngineState`, never by local `useState` — otherwise typing `DIMSTYLE` cannot open it.
-Its trigger sits in the top bar with the others: Layers beside the layer drop-down, Styles and
-Blocks with the palette toggles at the bar's end. The Layer manager no longer moves the selection
-(a click on a name did, a gesture AutoCAD has not): the layer drop-down does.
+A palette is a **tab of the palette panel**, never a popover: AutoCAD's palettes are modeless, and
+a popover closes on the first click on the drawing. Which tab shows, and the Styles palette's
+table (`state.stylesTable`), are `EngineState`, never local `useState` — otherwise typing
+`DIMSTYLE` cannot open it. A new palette is a `PaletteTab` (`PALETTE_TABS`), a command that
+calls `showPalette`, a branch in `PalettePanel` and, if the top bar has its trigger, a
+`PaletteToggle`. Its trigger sits in the top bar with the others: Layers beside the layer
+drop-down, Styles and Blocks with the palette toggles at the bar's end. The Layer manager does not
+move the selection (a gesture AutoCAD has not): the layer drop-down does.
 
 Anything that has to **draw drawing content** — a block thumbnail, a future layout preview — asks
 the engine for a `Scene` (`engine.buildBlockPreview(...)`) and paints it with
 `CanvasScenePresenter`. Never walk entities and draw them in a component: a preview built a second
 way is a preview that can disagree with the drawing.
 
-Placing a point on the canvas dismisses an open popover, and the canvas handler runs _before_ the
-dismiss — so a guard on "is the command still running?" already reads false. Don't fight it; note
-it where AutoCAD's own answer is a separate feature (the palette's Repeat Placement option).
+A popover that remains (a status-bar menu) still closes on a click on the canvas, and the canvas
+handler runs _before_ the dismiss — so a guard on "is the command still running?" already reads
+false. Don't fight it: what must stay up while one draws belongs in the panel.
 
 ## Icons
 

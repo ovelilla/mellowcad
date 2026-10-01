@@ -9,6 +9,7 @@ import {
   Entity,
   EntityId,
   EntityProperty,
+  EntityType,
 } from "../domain/entities"
 import { COLOR_BYLAYER, EntityColor } from "../domain/colors"
 import {
@@ -108,10 +109,10 @@ import {
   buildDynamicInputUi,
   buildLayerInfos,
   buildSelectionCandidates,
-  buildSelectionInfo,
   buildTextStyleInfos,
-  commonStyleId,
   EngineState,
+  PaletteTab,
+  SelectionScope,
   StylesPanelTab,
 } from "./EngineState"
 import { Clipboard, DrawingStore, EngineHost, FileTransport } from "./ports"
@@ -133,10 +134,12 @@ import {
   suggestedFileName,
 } from "./runtimeFiles"
 import {
+  buildPropertiesUi,
   commonSelectionColor,
   commonSelectionLayer,
   commonSelectionLinetype,
   commonSelectionLineweight,
+  filterByType,
   setSelectionColor,
   setSelectionLayer,
   setSelectionLinetype,
@@ -179,6 +182,12 @@ export interface CadRuntimeOptions {
    * engines in several languages side by side (the landing's build does).
    */
   readonly locale?: EngineLocale
+  /**
+   * Whether the palette panel starts open. A host decides it before the
+   * engine exists (from the window's width or what it remembers), so the
+   * engine adopts the host's answer rather than reaching one of its own.
+   */
+  readonly paletteOpen?: boolean
 }
 
 /** Wheel events closer together than this belong to the same zoom gesture. */
@@ -256,10 +265,13 @@ export class CadRuntime extends Observable {
   private gridVisible = true
   /** Whether this host shows the UCS icon at all; UCSICON decides where. */
   private ucsIconShown = true
-  // Which style table the manager is showing, or null while it is closed.
-  private stylesPanel: StylesPanelTab | null = null
-  // Whether the Blocks palette is showing.
-  private blocksPanel = false
+  // Which style table the Styles palette shows.
+  private stylesTable: StylesPanelTab = "dimension"
+  // The palette panel: open or folded, and the palette it shows.
+  private paletteOpen: boolean
+  private paletteTab: PaletteTab = "properties"
+  // The Properties palette's object type filter; null is All.
+  private propertiesFilter: EntityType | null = null
   // Whether the drawing's units settings are showing.
   private unitsPanel = false
   // Whether the command prompt is shown. Hiding it is purely visual: typing
@@ -334,6 +346,7 @@ export class CadRuntime extends Observable {
   ) {
     super()
     this.language = engineText(options.locale)
+    this.paletteOpen = options.paletteOpen ?? false
     this.host = host
     this.files = files
     this.clipboard = clipboard
@@ -485,6 +498,11 @@ export class CadRuntime extends Observable {
       if (next === ucs) return
       ucs = next
       this.resetTracking()
+    })
+    // A new selection shows every object again, as the palette's drop-down
+    // starts at All.
+    this.selection.subscribe(() => {
+      this.propertiesFilter = null
     })
     this.selection.subscribe(onModelChange)
     this.viewport.subscribe(onModelChange)
@@ -1309,8 +1327,23 @@ export class CadRuntime extends Observable {
     return this.document.removeLayer(id)
   }
 
-  setSelectionLayer(id: LayerId): void {
-    setSelectionLayer(this.document, this.selection, this.history, id)
+  /**
+   * The selected objects an edit applies to: all of them for the ribbon's
+   * drop-downs, those the type filter leaves for the Properties palette.
+   */
+  private scopeIds(scope: SelectionScope): EntityId[] {
+    const ids = this.selection.toArray()
+    if (scope === "selection" || this.propertiesFilter === null) return ids
+    const entities = ids
+      .map((id) => this.document.get(id))
+      .filter((entity): entity is Entity => entity !== undefined)
+    return filterByType(entities, this.propertiesFilter).map(
+      (entity) => entity.id
+    )
+  }
+
+  setSelectionLayer(id: LayerId, scope: SelectionScope = "selection"): void {
+    setSelectionLayer(this.document, this.scopeIds(scope), this.history, id)
   }
 
   /**
@@ -1323,29 +1356,42 @@ export class CadRuntime extends Observable {
     else this.setSelectionLayer(id)
   }
 
-  setSelectionColor(color: EntityColor | typeof COLOR_BYLAYER): void {
-    setSelectionColor(this.document, this.selection, this.history, color)
+  setSelectionColor(
+    color: EntityColor | typeof COLOR_BYLAYER,
+    scope: SelectionScope = "selection"
+  ): void {
+    setSelectionColor(this.document, this.scopeIds(scope), this.history, color)
   }
 
-  setSelectionLinetype(linetype: LinetypeId | typeof LINETYPE_BYLAYER): void {
-    setSelectionLinetype(this.document, this.selection, this.history, linetype)
+  setSelectionLinetype(
+    linetype: LinetypeId | typeof LINETYPE_BYLAYER,
+    scope: SelectionScope = "selection"
+  ): void {
+    setSelectionLinetype(
+      this.document,
+      this.scopeIds(scope),
+      this.history,
+      linetype
+    )
   }
 
   setSelectionLineweight(
-    lineweight: Lineweight | typeof LINEWEIGHT_BYLAYER
+    lineweight: Lineweight | typeof LINEWEIGHT_BYLAYER,
+    scope: SelectionScope = "selection"
   ): void {
     setSelectionLineweight(
       this.document,
-      this.selection,
+      this.scopeIds(scope),
       this.history,
       lineweight
     )
   }
 
+  /** Retypes a geometry value of the one object the Properties palette edits. */
   setSelectionProperty(property: EntityProperty, text: string): boolean {
     return setSelectionProperty(
       this.document,
-      this.selection,
+      this.scopeIds("properties"),
       this.history,
       property,
       text
@@ -1513,8 +1559,14 @@ export class CadRuntime extends Observable {
   }
 
   /** Puts every selected dimension on style `id` (individually undoable). */
+  /** Puts the dimensions the Properties palette edits on style `id`. */
   setSelectionDimStyle(id: DimStyleId): void {
-    setSelectionDimStyle(this.document, this.selection, this.history, id)
+    setSelectionDimStyle(
+      this.document,
+      this.scopeIds("properties"),
+      this.history,
+      id
+    )
   }
 
   createTextStyle(
@@ -1543,33 +1595,64 @@ export class CadRuntime extends Observable {
     return this.document.removeTextStyle(id)
   }
 
-  /** Puts every selected text object on style `id` (individually undoable). */
+  /** Puts the text objects the Properties palette edits on style `id`. */
   setSelectionTextStyle(id: TextStyleId): void {
-    setSelectionTextStyle(this.document, this.selection, this.history, id)
+    setSelectionTextStyle(
+      this.document,
+      this.scopeIds("properties"),
+      this.history,
+      id
+    )
   }
 
-  /** Opens the style manager on one of its two tables, or closes it. */
-  setStylesPanel(tab: StylesPanelTab | null): void {
-    if (this.stylesPanel === tab) return
-    this.stylesPanel = tab
+  /**
+   * Narrows the Properties palette to one object type of the selection, or
+   * widens it to all with null ("modify the properties of a single object
+   * type at a time"). The selection itself is kept.
+   */
+  setPropertiesFilter(type: EntityType | null): void {
+    if (this.propertiesFilter === type) return
+    this.propertiesFilter = type
     this.invalidateState()
-    this.host.requestRender()
   }
 
-  toggleStylesPanel(tab: StylesPanelTab): void {
-    this.setStylesPanel(this.stylesPanel === tab ? null : tab)
-  }
-
-  /** Shows or hides the Blocks palette (AutoCAD's BLOCKSPALETTE). */
-  setBlocksPanel(open: boolean): void {
-    if (this.blocksPanel === open) return
-    this.blocksPanel = open
+  /** Which style table the Styles palette shows. */
+  setStylesTable(table: StylesPanelTab): void {
+    if (this.stylesTable === table) return
+    this.stylesTable = table
     this.invalidateState()
-    this.host.requestRender()
   }
 
-  toggleBlocksPanel(): void {
-    this.setBlocksPanel(!this.blocksPanel)
+  /** Opens the palette panel on `tab` (LAYER, PROPERTIES, BLOCKSPALETTE…). */
+  showPalette(tab: PaletteTab): void {
+    if (this.paletteOpen && this.paletteTab === tab) return
+    this.paletteOpen = true
+    this.paletteTab = tab
+    this.invalidateState()
+  }
+
+  /**
+   * Folds the palette panel. With a tab, only while that palette is the one
+   * shown, as LAYERCLOSE closes the layer manager and leaves another palette
+   * where it is.
+   */
+  closePalette(tab?: PaletteTab): void {
+    if (!this.paletteOpen) return
+    if (tab !== undefined && tab !== this.paletteTab) return
+    this.paletteOpen = false
+    this.invalidateState()
+  }
+
+  /** A palette's trigger: opens the panel on it, or folds it if it is showing. */
+  togglePalette(tab: PaletteTab): void {
+    if (this.paletteOpen && this.paletteTab === tab) this.closePalette()
+    else this.showPalette(tab)
+  }
+
+  /** The panel's own fold button: opens it on the palette it last showed. */
+  setPaletteOpen(open: boolean): void {
+    if (open) this.showPalette(this.paletteTab)
+    else this.closePalette()
   }
 
   /** Shows or hides the drawing's units settings (the menu's Drawing Units). */
@@ -2723,7 +2806,12 @@ export class CadRuntime extends Observable {
       canRedo: this.history.canRedo(),
       saveState: this.autosave.getState(),
       lastSavedAt: this.autosave.getLastSavedAt(),
-      selectionInfo: buildSelectionInfo(selectedEntities, settings, this.text),
+      properties: buildPropertiesUi(
+        selectedEntities,
+        this.propertiesFilter,
+        settings,
+        this.text
+      ),
       selectionLayerId: commonSelectionLayer(selectedEntities),
       selectionColor: commonSelectionColor(selectedEntities),
       selectionLinetype: commonSelectionLinetype(selectedEntities),
@@ -2733,19 +2821,17 @@ export class CadRuntime extends Observable {
         this.document.getEntities()
       ),
       currentTextStyleId: this.document.getCurrentTextStyleId(),
-      selectionTextStyleId: commonStyleId(selectedEntities, "text"),
       dimStyles: buildDimStyleInfos(
         this.document.getDimStyles(),
         this.document.getEntities()
       ),
       currentDimStyleId: this.document.getCurrentDimStyleId(),
-      selectionDimStyleId: commonStyleId(selectedEntities, "dimension"),
-      stylesPanel: this.stylesPanel,
+      stylesTable: this.stylesTable,
       blocks: buildBlockInfos(
         this.document.getBlocks(),
         this.document.getEntities()
       ),
-      blocksPanel: this.blocksPanel,
+      palette: { open: this.paletteOpen, tab: this.paletteTab },
       unitsPanel: this.unitsPanel,
       commandOptions: options,
       commandLine: {

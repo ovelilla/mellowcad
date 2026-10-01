@@ -88,6 +88,10 @@ export const COMMAND_FILING: Readonly<Record<string, Filing>> = {
   EATTEDIT: { group: "organize" },
   ATTDISP: { group: "organize" },
   BLOCKSPALETTE: { group: "organize" },
+  LAYER: { group: "organize" },
+  LAYERCLOSE: { group: "organize" },
+  PROPERTIES: { group: "organize" },
+  PROPERTIESCLOSE: { group: "organize" },
   PURGE: { group: "organize" },
 
   DIST: { group: "inquiry" },

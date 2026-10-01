@@ -1,6 +1,6 @@
 import type { CadRuntime } from "./CadRuntime"
 import { CommandDefinition, TOOL_COMMANDS } from "./CommandLine"
-import type { CommandOptionUi } from "./EngineState"
+import type { CommandOptionUi, StylesPanelTab } from "./EngineState"
 import type { EngineText, PromptSegment } from "./EngineText"
 import { offerKeywords } from "../i18n/keywords"
 import { Tool } from "./tools/Tool"
@@ -110,11 +110,26 @@ export function registerCommands(
   // Style Manager and Text Style dialog do. D and ST are the aliases
   // Autodesk's own shortcut guide lists; DDIM / DIMSTY / DST are not on it,
   // so they stay unregistered rather than invented.
-  register({ id: "DIMSTYLE", run: () => runtime.setStylesPanel("dimension") })
-  register({ id: "STYLE", run: () => runtime.setStylesPanel("text") })
+  const showStyles = (table: StylesPanelTab) => {
+    runtime.setStylesTable(table)
+    runtime.showPalette("styles")
+  }
+  register({ id: "DIMSTYLE", run: () => showStyles("dimension") })
+  register({ id: "STYLE", run: () => showStyles("text") })
   // No alias: Autodesk's shortcut guide lists none for BLOCKSPALETTE, and B
   // and I are already BLOCK and INSERT.
-  register({ id: "BLOCKSPALETTE", run: () => runtime.setBlocksPanel(true) })
+  register({ id: "BLOCKSPALETTE", run: () => runtime.showPalette("blocks") })
+  // WHY typed only: Ctrl+1, AutoCAD's Properties toggle, is the browser's
+  // first tab, so the aliases are the way in (PR, CH and MO, as Autodesk's
+  // shortcut guide lists them). The palettes share one panel, so a CLOSE
+  // command folds it only while its palette is the one shown.
+  register({ id: "LAYER", run: () => runtime.showPalette("layers") })
+  register({ id: "LAYERCLOSE", run: () => runtime.closePalette("layers") })
+  register({ id: "PROPERTIES", run: () => runtime.showPalette("properties") })
+  register({
+    id: "PROPERTIESCLOSE",
+    run: () => runtime.closePalette("properties"),
+  })
   // Only block definitions so far: layers and styles are purged from their
   // own managers, which already refuse a base, current or in-use entry.
   register({

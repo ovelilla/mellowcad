@@ -1,6 +1,6 @@
 # Rediseño del editor — brief
 
-> **Estado:** fases 0 a 3 hechas; sigue la 4. En la 0, la barra de comandos pasó a seguir a los
+> **Estado:** fases 0 a 4 hechas; sigue la 5. En la 0, la barra de comandos pasó a seguir a los
 > disparadores de Capas, Estilos y Bloques en la misma fila (centrada volvía a chocar con ellos) y
 > «Borrar todo», junto a Abrir hasta que Nuevo lo sustituya. En la 1, cada zona tiene su tamaño en
 > CSS antes de que monte el motor, para que el lienzo nazca con su caja final. El panel ocupa ya sus
@@ -26,7 +26,19 @@
 > El nombre del dibujo queda pendiente: el puerto de archivos no sabe cómo se llama el archivo
 > abierto. El ViewCube solo atrapa el puntero donde está dibujado, pero en `/ar/draw` su brújula
 > sigue cayendo sobre una esquina del dibujo de prueba tras ZOOM E, como el de AutoCAD tapa la
-> vista: ZOOM E no lo esquiva. Sigue la convención de `docs/next-*.md`: se borra cuando la
+> vista: ZOOM E no lo esquiva. En la 4, Propiedades, Capas, Bloques y Estilos son pestañas de un
+> panel sin modo de 280 px (se ensancha hasta 480 por su borde; más estrecho, los nombres de las
+> pestañas no caben en español) que se pliega a 36 px; su
+> estado vive en el motor (`state.palette`) y lo abren LAYER, PROPERTIES, DIMSTYLE, STYLE y
+> BLOCKSPALETTE. Como el panel es uno, LAYERCLOSE y PROPERTIESCLOSE lo pliegan solo si su pestaña es
+> la visible. Para que el lienzo nazca con su caja final, un script en el `<head>`
+> (`lib/palette-layout.ts`) escribe en `<html>` el plegado y el ancho recordados antes de que se
+> analice el cuerpo, con una media query de 1600 px como respaldo, y el motor recibe la misma
+> respuesta al construirse: medido con los bundles bloqueados frente a la caja tras montar, y con la
+> transición desde la landing, también con el plegado recordado al revés del de por defecto.
+> Propiedades edita lo que deja su filtro de tipo con el ámbito `"properties"`; los desplegables de
+> la barra siguen sobre toda la selección. En el gestor de capas, F2 no renombra (es la línea de
+> comandos): se renombra pulsando otra vez el nombre de la fila designada. Sigue la convención de `docs/next-*.md`: se borra cuando la
 > última fase esté hecha, y lo que deba durar pasa antes a `.github/instructions/ui.instructions.md`
 > y a `docs/autocad-coverage.md`. Versión visual, con las figuras de antes y después:
 > https://claude.ai/artifact/BddNdia3MSJnwA4AuXi5Bt (privada; se lee con la herramienta Artifact).
@@ -74,14 +86,14 @@ Fallos de fondo, por orden de lo que estorban a un usuario diario de AutoCAD:
 Seis zonas acopladas en una rejilla CSS. El lienzo ocupa el hueco y nada flota sobre él, salvo lo
 que AutoCAD pone ahí.
 
-| Zona                   | Tamaño                      | Contenido                                                                                                                                                                                                                                                                                            |
-| ---------------------- | --------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Zona                   | Tamaño                      | Contenido                                                                                                                                                                                                                                                                                                                                                |
+| ---------------------- | --------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Barra superior         | 40 px, ancho completo       | menú de la aplicación (Nuevo, Abrir, Guardar, Guardar como, Unidades del dibujo, Idioma) · barra de acceso rápido (Nuevo, Abrir, Guardar, Guardar como, Deshacer, Rehacer) · estado de guardado · gestor de capas + desplegable de capa actual · Igualar propiedades + color, grosor y tipo de línea · conmutadores de paletas y de la línea de comandos |
-| Paleta de herramientas | 76 px, dos columnas, inicio | solo comandos contra el lienzo, en cinco secciones (§3)                                                                                                                                                                                                                                              |
-| Lienzo                 | el resto                    | encima: la etiqueta de vista «[Superior ▾]» arriba a la izquierda (controles de ventana gráfica), el ViewCube y, debajo, la barra de navegación (Encuadre, Zoom ▾, Órbita); la entrada dinámica, las fichas de opciones y los menús                                                                  |
-| Panel de paletas       | 280 px, fin, plegable a 36  | pestañas Propiedades, Capas, Bloques, Estilos; sin modo                                                                                                                                                                                                                                              |
-| Línea de comandos      | 28 px                       | una línea; el historial se despliega hacia arriba hasta 12 líneas con F2                                                                                                                                                                                                                             |
-| Barra de estado        | 28 px, ancho completo       | coordenadas a la izquierda; modos a la derecha (§4)                                                                                                                                                                                                                                                  |
+| Paleta de herramientas | 76 px, dos columnas, inicio | solo comandos contra el lienzo, en cinco secciones (§3)                                                                                                                                                                                                                                                                                                  |
+| Lienzo                 | el resto                    | encima: la etiqueta de vista «[Superior ▾]» arriba a la izquierda (controles de ventana gráfica), el ViewCube y, debajo, la barra de navegación (Encuadre, Zoom ▾, Órbita); la entrada dinámica, las fichas de opciones y los menús                                                                                                                      |
+| Panel de paletas       | 280 px, fin, plegable a 36  | pestañas Propiedades, Capas, Bloques, Estilos; sin modo                                                                                                                                                                                                                                                                                                  |
+| Línea de comandos      | 28 px                       | una línea; el historial se despliega hacia arriba hasta 12 líneas con F2                                                                                                                                                                                                                                                                                 |
+| Barra de estado        | 28 px, ancho completo       | coordenadas a la izquierda; modos a la derecha (§4)                                                                                                                                                                                                                                                                                                      |
 
 - El ViewCube sigue visible por defecto, pero más pequeño y a media opacidad hasta que el cursor se
   acerca.
@@ -103,13 +115,13 @@ Dos columnas, 17 filas, 540 px con separadores; caben en los 560 px libres a 128
 desplegable abre una lista con icono, nombre y alias, no una tira de glifos, y agrupa solo variantes
 de un comando o comandos sobre un mismo objeto: nada se esconde en un «▾ más» por falta de sitio.
 
-| Sección    | Casillas (▾ = desplegable)                                                                                                                                                                      |
-| ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Dibujo     | Línea · Polilínea · Círculo ▾ · Arco ▾ · Rectángulo/Polígono ▾ · Elipse ▾ · Sombreado · Spline                                                                                                  |
-| Modificar  | Desplazar · Girar · Recortar/Alargar ▾ · Borrar (`ERASE`) · Copiar · Simetría · Empalme/Chaflán ▾ · Descomponer · Estirar · Escala · Matriz ▾ · Desfase · Partir ▾ · Unir                       |
-| Anotación  | Texto ▾ (MTEXT, TEXT) · Cota ▾ · Continua/Línea base ▾ · Editar texto · Ajustar espacio                                                                                                         |
-| Bloque     | Insertar · Crear · Atributos ▾ (Editar, Definir, Visualización)                                                                                                                                 |
-| Utilidades | Medir ▾ · Localizar punto (`ID`)                                                                                                                                                                |
+| Sección    | Casillas (▾ = desplegable)                                                                                                                                                |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Dibujo     | Línea · Polilínea · Círculo ▾ · Arco ▾ · Rectángulo/Polígono ▾ · Elipse ▾ · Sombreado · Spline                                                                            |
+| Modificar  | Desplazar · Girar · Recortar/Alargar ▾ · Borrar (`ERASE`) · Copiar · Simetría · Empalme/Chaflán ▾ · Descomponer · Estirar · Escala · Matriz ▾ · Desfase · Partir ▾ · Unir |
+| Anotación  | Texto ▾ (MTEXT, TEXT) · Cota ▾ · Continua/Línea base ▾ · Editar texto · Ajustar espacio                                                                                   |
+| Bloque     | Insertar · Crear · Atributos ▾ (Editar, Definir, Visualización)                                                                                                           |
+| Utilidades | Medir ▾ · Localizar punto (`ID`)                                                                                                                                          |
 
 Salen del rail:
 
@@ -190,6 +202,27 @@ Verificado en la ayuda de AutoCAD 2026:
   por defecto (−1), así que no hay Propiedades rápidas.
 - **Barra de estado.** El orden de §4. La Personalización es el último botón. Las coordenadas están
   ocultas por defecto.
+- **Lado del panel.** La ayuda de 2026 no documenta un lado por defecto: Propiedades se acopla «to
+  either side of the drawing window» y no se muestra al primer arranque («not displayed by
+  default»); su posición persiste entre sesiones. Aquí va al final (inline-end), junto al ViewCube.
+- **LAYER (CAPA, alias LA / CA)** abre el Administrador de propiedades de capas como paleta sin
+  modo: LAYERDLGMODE vale 1, «It can remain open as you work» («Puede permanecer abierto mientras se
+  trabaja»). **LAYERCLOSE (CERRARCAPA)** «Closes the Layer Properties Manager».
+- **PROPERTIES (PROPIEDADES)** muestra la paleta Propiedades; PR en las dos lenguas y Ctrl+1, que la
+  muestra u oculta. CH y MO están en la guía de atajos de Autodesk, no en la ayuda de 2026; en
+  español CH es CHAFLAN, así que PROPIEDADES solo lleva PR. **PROPERTIESCLOSE (CERPROP)** «Closes
+  the Properties palette».
+- **Filtro de tipo de objeto.** «Use the object type filter drop-down list when you select multiple
+  types of objects, and want to modify the properties of a single object type at a time». Sin
+  selección «only the current settings of general properties are displayed». Los textos «All (n)»,
+  «Line (5)» y «No selection» solo aparecen en capturas, no en el texto de ninguna página.
+- **Columnas del administrador**, en el orden de la página de referencia: Estado, Nombre, Act,
+  Inutilizar, Bloquear, Color, Tipo de línea, Grosor de línea, Transparencia, Estilo de trazado,
+  Trazar, Inutilizar en las ventanas nuevas y Descripción (se pueden reordenar arrastrándolas). La
+  capa actual se fija con «Set Current» («Definir actual» en español, no «Establecer actual»), o con
+  doble clic en el nombre de la capa (guía de iniciación); la marca de verificación señala la actual.
+- **Repetir colocación** de la paleta Bloques sigue pidiendo puntos de inserción hasta Esc; aquí no
+  existe, pero como el panel ya no se cierra, cada bloque es un clic.
 - **Pantalla limpia.** Ctrl+0 conserva la barra de acceso rápido, la ventana de comandos y la barra
   de estado.
 - **Atajos.** Ctrl+0 Pantalla limpia, Ctrl+1 Propiedades, Ctrl+9 línea de comandos.
@@ -217,15 +250,13 @@ Verificado en la ayuda de AutoCAD 2026:
 - **Utilidades.** Medir▾ (Distancia y Área citados en 2026) e ID de punto.
 
 **Comprobar antes de usarlo:**
+
 - El orden completo del menú de la aplicación y de la barra de acceso rápido, los miembros y el orden
   de la lista de Zoom de la barra de navegación y si su botón recuerda el último zoom. Aquí: Extensión,
   Ventana, Previo, Ampliar y Reducir, y el botón muestra el último usado.
 - Qué muestran los desplegables de la cinta con una selección mixta.
-- En qué lado acopla AutoCAD la paleta Propiedades por defecto. Aquí va a la derecha, junto al
-  ViewCube.
 - El clic derecho por defecto (SHORTCUTMENU, clic derecho temporizado) y el contenido de los menús
   contextuales con y sin comando.
-- Que `LAYER` abre el Administrador de propiedades de capas como paleta.
 - Si Chrome deja interceptar Ctrl+0.
 
 Fuentes (todas en `help.autodesk.com/cloudhelp/2026/ENU/`):
@@ -260,6 +291,16 @@ Fuentes (todas en `help.autodesk.com/cloudhelp/2026/ENU/`):
   `GUID-90981580-5028-4E74-A117-21EFA734017F.htm` (NAVBAR), `AutoCAD-OnBoarding/files/ACD_FOUNDATIONS_MAIN1.html`
   (herramientas de la barra de navegación), `AutoCAD-GettingStarted/files/GUID-FA005756-B8F5-4A78-988F-31335A68D77C.htm`
   (capa actual sin selección)
+- Fase 4: `GUID-9123091A-2DCB-4DE8-983C-F7CA38FA67BE.htm` (LAYER / CAPA),
+  `GUID-E3DD4E11-E47D-4ABA-8D6C-F61D2E16532F.htm` (LAYERDLGMODE), `GUID-9D0D75C7-3717-4358-9987-66B90DA1F093.htm`
+  (LAYERCLOSE / CERRARCAPA), `GUID-DC3674C5-A4C7-4CF6-9148-9B124DF29B78.htm` (PROPERTIES / PROPIEDADES),
+  `GUID-6F265AEA-496D-43B6-8643-D1528E8AF0E6.htm` (PROPERTIESCLOSE / CERPROP),
+  `GUID-0AA644F1-1165-492F-A4D1-3EDA8598C644.htm` (paleta Propiedades), `GUID-893A3C0A-C735-49E4-878E-C8641DEAD618.htm`
+  (acoplar), `GUID-B297EBD9-D68C-47E1-87CE-1B3798496599.htm` (Administrador de propiedades de capas),
+  `GUID-28E52FA3-248E-4F65-94DD-7C47BE761D58.htm` (Set Current), `GUID-E3413A03-8EEF-44D5-B5C7-8B345A9257FE.htm`
+  (Repetir colocación), `AutoCAD-DidYouKnow/files/GUID-94C065AB-FF9E-4752-B778-23D2FBB87E18.htm`
+  (filtro de tipo, Ctrl+1), `AutoCAD-GettingStarted/files/GUID-0621F211-3587-4932-BB3D-4D92ECB58042.htm`
+  (PR), la guía de atajos de Autodesk (CH, MO) y las páginas ESP con los mismos GUID
 
 ## 6. Fases
 

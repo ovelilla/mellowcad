@@ -1,17 +1,24 @@
 "use client"
 
+import { useEffect, useLayoutEffect, useRef, useState } from "react"
 import { useTranslations } from "next-intl"
 
 import type { EngineLocale } from "@/cad"
 import { useCadEngine } from "@/hooks/useCadEngine"
 import { cn } from "@/lib/utils"
+import {
+  applyPaletteLayout,
+  paletteLayoutAtLoad,
+  PALETTE_WIDTH,
+  rememberPalette,
+} from "@/lib/palette-layout"
 import { EDITOR_SHEET_ID, SHEET_TRANSITION } from "@/lib/view-transition"
 import { CommandLine } from "./command-line"
 import { ToolRail } from "./tool-rail"
 import { DrawingAids } from "./drawing-aids"
 import { CoordinateReadout } from "./coordinate-readout"
 import { DynamicInput } from "./dynamic-input"
-import { PropertiesPanel } from "./properties-panel"
+import { PalettePanel, PaletteResizeHandle } from "./palette-panel"
 import { ViewCube } from "./view-cube"
 import { NavigationBar } from "./navigation-bar"
 import { ViewportControls } from "./viewport-controls"
@@ -32,10 +39,40 @@ export function CadWorkspace({
   /** The page language's catalog for the engine; English when absent. */
   engineLocale?: EngineLocale
 }) {
-  const { canvasRef, engine, state } = useCadEngine({ locale: engineLocale })
+  const { canvasRef, engine, state } = useCadEngine({
+    locale: engineLocale,
+    paletteOpen: () => paletteLayoutAtLoad().open,
+  })
   const t = useTranslations("Editor.Workspace")
   const input = useTranslations("Editor.DynamicInput")
   const ready = engine && state
+  const paletteOpen = state?.palette.open ?? null
+  // The width the head script laid out. Nothing renders it before the engine
+  // exists, so the server's default never meets the client's.
+  const [paletteWidth, setPaletteWidth] = useState(() =>
+    typeof window === "undefined"
+      ? PALETTE_WIDTH.initial
+      : paletteLayoutAtLoad().width
+  )
+
+  // React's development remount clears what the head script wrote on <html>.
+  useLayoutEffect(() => applyPaletteLayout(paletteLayoutAtLoad()), [])
+
+  // From then on the engine's open state and the dragged width drive the
+  // same CSS, before the frame is painted.
+  useLayoutEffect(() => {
+    if (paletteOpen === null) return
+    applyPaletteLayout({ open: paletteOpen, width: paletteWidth })
+  }, [paletteOpen, paletteWidth])
+
+  // The fold is remembered once it changes, so until the user folds or
+  // opens the panel the window's width decides.
+  const firstOpen = useRef<boolean | null>(null)
+  useEffect(() => {
+    if (paletteOpen === null) return
+    if (firstOpen.current === null) firstOpen.current = paletteOpen
+    else rememberPalette({ open: paletteOpen })
+  }, [paletteOpen])
 
   // Every zone has its size before the engine mounts, so the canvas's box at
   // the first paint is already the final one: the landing's sheet grows into
@@ -97,8 +134,22 @@ export function CadWorkspace({
         )}
       </div>
 
-      <div className="flex min-h-0 w-70 flex-col border-s [grid-area:panel]">
-        {ready && <PropertiesPanel engine={engine} state={state} />}
+      {/* Its width is CSS, read off <html> (lib/palette-layout.ts): the
+          head script's answer before the engine exists, the engine's open
+          state and the dragged width after — the same box either way. */}
+      <div className="flex min-h-0 w-9 border-s [grid-area:panel] palette-open:w-(--palette-width)">
+        {ready && (
+          <>
+            {state.palette.open && (
+              <PaletteResizeHandle
+                width={paletteWidth}
+                onResize={setPaletteWidth}
+                onCommit={(width) => rememberPalette({ width })}
+              />
+            )}
+            <PalettePanel engine={engine} state={state} />
+          </>
+        )}
       </div>
 
       {/* Above the canvas in the stacking order: the command line's

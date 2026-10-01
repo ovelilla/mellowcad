@@ -393,7 +393,19 @@
       "deleteBase": "La capa 0 no se puede suprimir",
       "deleteInUse": "La capa está en uso",
       "deleteCurrent": "No se puede suprimir la capa actual",
-      "rename": "Doble clic para cambiar el nombre"
+      "rename": "Pulse otra vez el nombre de la capa designada para cambiarle el nombre",
+      "renameLabel": "Cambiar el nombre de la capa {name}",
+      "list": "Lista de capas",
+      "columns": {
+        "status": "Estado",
+        "name": "Nombre",
+        "on": "Act",
+        "lock": "Bloquear",
+        "color": "Color",
+        "linetype": "Tipo de línea",
+        "lineweight": "Grosor de línea",
+        "objects": "Objetos"
+      }
     },
     "Styles": {
       "title": "Estilos",
@@ -449,7 +461,19 @@
       "dimStyle": "Estilo de cota",
       "dimStyleLabel": "Estilo de cota de los objetos seleccionados",
       "varies": "Varios",
-      "customColor": "Color personalizado"
+      "customColor": "Color personalizado",
+      "title": "Propiedades",
+      "objectType": "Tipo de objeto",
+      "currentLayerLabel": "Capa actual",
+      "currentColorLabel": "Color actual",
+      "currentLinetypeLabel": "Tipo de línea actual",
+      "currentLineweightLabel": "Grosor de línea actual"
+    },
+    "Palette": {
+      "label": "Paletas",
+      "fold": "Plegar las paletas",
+      "unfold": "Mostrar las paletas",
+      "resize": "Anchura de las paletas"
     }
   }
 }

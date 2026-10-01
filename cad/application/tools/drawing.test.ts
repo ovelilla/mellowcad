@@ -427,7 +427,7 @@ describe("SPLINE", () => {
     cad.command("SPLINE").click(p(0, 0)).click(p(100, 0)).click(p(50, 80))
     cad.option("Close").enter().selectAll()
 
-    const rows = cad.state().selectionInfo!.groups.flatMap((g) => g.rows)
+    const rows = cad.state().properties.info!.groups.flatMap((g) => g.rows)
     expect(rows.map((row) => [row.id, row.value])).toEqual([
       ["method", "Fit"],
       ["degree", "3"],

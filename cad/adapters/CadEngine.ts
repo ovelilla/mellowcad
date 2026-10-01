@@ -1,7 +1,7 @@
 import { Listener } from "../shared/Observable"
 import { Vec2 } from "../geometry/Vec2"
 import { Layer } from "../domain/layers"
-import { EntityId, EntityProperty } from "../domain/entities"
+import { EntityId, EntityProperty, EntityType } from "../domain/entities"
 import { LengthUnit } from "../domain/units"
 import { Scene } from "../scene/types"
 import { DimStyle } from "../domain/dimStyles"
@@ -11,7 +11,12 @@ import {
   KeyEventData,
   PointerEventData,
 } from "../application/CadRuntime"
-import { EngineState, StylesPanelTab } from "../application/EngineState"
+import {
+  EngineState,
+  PaletteTab,
+  SelectionScope,
+  StylesPanelTab,
+} from "../application/EngineState"
 import { DrawingStore, EngineHost } from "../application/ports"
 import { SnapModeType } from "../application/SnapMode"
 import { SnapType } from "../application/snapping/types"
@@ -56,6 +61,11 @@ export interface CadEngineOptions {
    * it draws on the canvas. English, built in, when left out.
    */
   readonly locale?: EngineLocale
+  /**
+   * Whether the palette panel starts open, so the engine agrees with what the
+   * host laid out before it existed. Folded when left out.
+   */
+  readonly paletteOpen?: boolean
 }
 
 /**
@@ -113,7 +123,7 @@ export class CadEngine {
         : options.store,
       createBrowserFileTransport(canvas.ownerDocument),
       createBrowserClipboard(),
-      { locale: options.locale }
+      { locale: options.locale, paletteOpen: options.paletteOpen }
     )
 
     this.attachEvents()
@@ -295,16 +305,21 @@ export class CadEngine {
     return this.runtime.removeLayer(id)
   }
 
-  setSelectionLayer(id: string): void {
-    this.runtime.setSelectionLayer(id)
+  /**
+   * The selection edits take a scope: the whole selection, as the ribbon's
+   * drop-downs edit it, or `"properties"`, the objects the Properties
+   * palette's type filter leaves.
+   */
+  setSelectionLayer(id: string, scope?: SelectionScope): void {
+    this.runtime.setSelectionLayer(id, scope)
   }
 
   applyLayerControl(id: string): void {
     this.runtime.applyLayerControl(id)
   }
 
-  setSelectionColor(color: string): void {
-    this.runtime.setSelectionColor(color)
+  setSelectionColor(color: string, scope?: SelectionScope): void {
+    this.runtime.setSelectionColor(color, scope)
   }
 
   /** Starts the FROM point modifier (pick a base, then type an offset). */
@@ -312,15 +327,23 @@ export class CadEngine {
     return this.runtime.startFrom()
   }
 
-  setSelectionLinetype(linetype: string): void {
-    this.runtime.setSelectionLinetype(linetype)
+  setSelectionLinetype(linetype: string, scope?: SelectionScope): void {
+    this.runtime.setSelectionLinetype(linetype, scope)
   }
 
-  setSelectionLineweight(lineweight: number | "ByLayer"): void {
-    this.runtime.setSelectionLineweight(lineweight)
+  setSelectionLineweight(
+    lineweight: number | "ByLayer",
+    scope?: SelectionScope
+  ): void {
+    this.runtime.setSelectionLineweight(lineweight, scope)
   }
 
-  /** Retypes one geometry value of the single selected object. */
+  /** Narrows the Properties palette to one object type, or to all with null. */
+  setPropertiesFilter(type: EntityType | null): void {
+    this.runtime.setPropertiesFilter(type)
+  }
+
+  /** Retypes one geometry value of the one object the Properties palette edits. */
   setSelectionProperty(property: EntityProperty, text: string): boolean {
     return this.runtime.setSelectionProperty(property, text)
   }
@@ -506,20 +529,27 @@ export class CadEngine {
     this.runtime.setSelectionTextStyle(id)
   }
 
-  setStylesPanel(tab: StylesPanelTab | null): void {
-    this.runtime.setStylesPanel(tab)
+  setStylesTable(table: StylesPanelTab): void {
+    this.runtime.setStylesTable(table)
   }
 
-  toggleStylesPanel(tab: StylesPanelTab): void {
-    this.runtime.toggleStylesPanel(tab)
+  /** Opens the palette panel on one of its palettes. */
+  showPalette(tab: PaletteTab): void {
+    this.runtime.showPalette(tab)
   }
 
-  setBlocksPanel(open: boolean): void {
-    this.runtime.setBlocksPanel(open)
+  /** Folds the palette panel; with a tab, only while that palette shows. */
+  closePalette(tab?: PaletteTab): void {
+    this.runtime.closePalette(tab)
   }
 
-  toggleBlocksPanel(): void {
-    this.runtime.toggleBlocksPanel()
+  /** A palette's trigger: opens the panel on it, or folds it if it shows. */
+  togglePalette(tab: PaletteTab): void {
+    this.runtime.togglePalette(tab)
+  }
+
+  setPaletteOpen(open: boolean): void {
+    this.runtime.setPaletteOpen(open)
   }
 
   setUnitsPanel(open: boolean): void {

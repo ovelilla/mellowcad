@@ -1,16 +1,11 @@
 "use client"
 
 import { useEffect, useMemo, useRef, useState } from "react"
-import { LibraryBig, Trash2 } from "lucide-react"
+import { Trash2 } from "lucide-react"
 import { useTranslations } from "next-intl"
 
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover"
 import {
   CadEngine,
   CanvasScenePresenter,
@@ -21,10 +16,13 @@ import {
 const THUMBNAIL_PX = 64
 
 /**
- * AutoCAD's Blocks palette, Current Drawing tab: the blocks defined in the
- * drawing shown as previews, filtered by name, and inserted by "clicking and
- * placing them" — which starts INSERT with the block already chosen, so the
- * insertion point, scale and rotation are answered exactly as when typed.
+ * AutoCAD's Blocks palette, Current Drawing tab, a tab of the palette panel:
+ * the blocks defined in the drawing shown as previews, filtered by name, and
+ * inserted by "clicking and placing them" — which starts INSERT with the block
+ * already chosen, so the insertion point, scale and rotation are answered
+ * exactly as when typed. The panel is modeless, so one block after another is
+ * a click on each; Repeat Placement, which keeps prompting for points with
+ * the same block, is one of the palette's option checkboxes, not built.
  *
  * Not here: the Recent, Favorites and Libraries tabs, which list blocks from
  * *other* drawings and so need file access and a stored history.
@@ -45,86 +43,70 @@ export function BlocksControl({
   )
 
   return (
-    // Placing the block clicks the canvas, which dismisses the popover, so a
-    // run of symbols means reopening it — AutoCAD's palette is dockable and
-    // stays up. Its own answer to that is the Repeat Placement option, which
-    // belongs with the rest of the palette's option checkboxes.
-    <Popover
-      open={state.blocksPanel}
-      onOpenChange={(open) => engine.setBlocksPanel(open)}
-    >
-      <PopoverTrigger
-        render={
-          <Button
-            size="sm"
-            variant="ghost"
-            aria-label={t("title")}
-            className="pointer-events-auto gap-2"
-          >
-            <LibraryBig className="shrink-0" />
-            <span className="truncate text-xs">{t("title")}</span>
-          </Button>
-        }
+    <div className="flex min-h-0 flex-1 flex-col p-2">
+      <input
+        value={filter}
+        onChange={(event) => setFilter(event.target.value)}
+        placeholder={t("filter")}
+        aria-label={t("filterLabel")}
+        className="mb-2 w-full rounded-sm border bg-transparent px-2 py-1 text-xs outline-none focus:border-ring"
       />
-      <PopoverContent side="bottom" align="start" className="w-80 p-2">
-        <input
-          value={filter}
-          onChange={(event) => setFilter(event.target.value)}
-          placeholder={t("filter")}
-          aria-label={t("filterLabel")}
-          className="mb-2 w-full rounded-sm border bg-transparent px-2 py-1 text-xs outline-none focus:border-ring"
-        />
 
-        {state.blocks.length === 0 ? (
-          <p className="px-2 py-6 text-center text-xs text-muted-foreground">
-            {t("empty")}
-          </p>
-        ) : shown.length === 0 ? (
-          <p className="px-2 py-6 text-center text-xs text-muted-foreground">
-            {t("noMatch")}
-          </p>
-        ) : (
-          <div className="grid max-h-80 grid-cols-3 gap-1 overflow-y-auto">
-            {shown.map((block) => (
-              <div key={block.id} className="group relative">
-                <button
-                  type="button"
-                  onClick={() => engine.insertBlock(block.id)}
-                  title={t("references", {
-                    name: block.name,
-                    count: block.referenceCount,
-                  })}
-                  className={cn(
-                    "flex w-full flex-col items-center gap-1 rounded-sm p-1",
-                    "hover:bg-accent focus-visible:bg-accent focus-visible:outline-none"
-                  )}
-                >
-                  <BlockThumbnail engine={engine} id={block.id} />
-                  <span className="w-full truncate text-center text-[11px]">
-                    {block.name}
-                  </span>
-                </button>
-                <Button
-                  size="icon"
-                  variant="ghost"
-                  disabled={block.referenceCount > 0}
-                  onClick={() => engine.purgeBlocks([block.id])}
-                  aria-label={t("purge", { name: block.name })}
-                  title={
-                    block.referenceCount > 0
-                      ? t("inUse")
-                      : t("purge", { name: block.name })
-                  }
-                  className="absolute inset-e-0 top-0 size-6 opacity-0 group-hover:opacity-100 focus-visible:opacity-100 disabled:opacity-0"
-                >
-                  <Trash2 className="size-3.5" />
-                </Button>
-              </div>
-            ))}
-          </div>
-        )}
-      </PopoverContent>
-    </Popover>
+      {state.blocks.length === 0 ? (
+        <p className="px-2 py-6 text-center text-xs text-muted-foreground">
+          {t("empty")}
+        </p>
+      ) : shown.length === 0 ? (
+        <p className="px-2 py-6 text-center text-xs text-muted-foreground">
+          {t("noMatch")}
+        </p>
+      ) : (
+        <div className="grid min-h-0 grid-cols-3 content-start gap-1 overflow-y-auto">
+          {shown.map((block) => (
+            <div key={block.id} className="group relative">
+              <button
+                type="button"
+                onClick={() => {
+                  engine.insertBlock(block.id)
+                  engine.focusSurface()
+                }}
+                title={t("references", {
+                  name: block.name,
+                  count: block.referenceCount,
+                })}
+                className={cn(
+                  "flex w-full flex-col items-center gap-1 rounded-sm p-1",
+                  "hover:bg-accent focus-visible:bg-accent focus-visible:outline-none"
+                )}
+              >
+                <BlockThumbnail engine={engine} id={block.id} />
+                <span className="w-full truncate text-center text-[11px]">
+                  {block.name}
+                </span>
+              </button>
+              <Button
+                size="icon"
+                variant="ghost"
+                disabled={block.referenceCount > 0}
+                onClick={() => {
+                  engine.purgeBlocks([block.id])
+                  engine.focusSurface()
+                }}
+                aria-label={t("purge", { name: block.name })}
+                title={
+                  block.referenceCount > 0
+                    ? t("inUse")
+                    : t("purge", { name: block.name })
+                }
+                className="absolute inset-e-0 top-0 size-6 opacity-0 group-hover:opacity-100 focus-visible:opacity-100 disabled:opacity-0"
+              >
+                <Trash2 className="size-3.5" />
+              </Button>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
   )
 }
 

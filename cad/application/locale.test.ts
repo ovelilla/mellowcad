@@ -197,7 +197,7 @@ describe("the palettes", () => {
       entities: [lineOf(p(0, 0), p(100, 0), { id: "L" })],
     })
     cad.select("L")
-    const info = cad.state().selectionInfo!
+    const info = cad.state().properties.info!
     expect(info.groups.map((group) => group.id)).toEqual([
       "geometry",
       "endpoints",
@@ -454,7 +454,7 @@ describe("Spanish AutoCAD's command language", () => {
       entities: [lineOf(p(0, 0), p(100, 0), { id: "L" })],
     })
     cad.select("L")
-    const info = cad.state().selectionInfo!
+    const info = cad.state().properties.info!
     expect(info.general.map((row) => row.label)).toEqual(["Altura de objeto"])
     expect(
       info.groups.flatMap((group) => group.rows).map((row) => row.label)

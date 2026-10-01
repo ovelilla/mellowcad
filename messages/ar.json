@@ -393,7 +393,19 @@
       "deleteBase": "لا يمكن حذف الطبقة 0",
       "deleteInUse": "الطبقة قيد الاستخدام",
       "deleteCurrent": "لا يمكن حذف الطبقة الحالية",
-      "rename": "انقر نقرًا مزدوجًا لإعادة التسمية"
+      "rename": "انقر اسم الطبقة المحددة مرة أخرى لإعادة تسميتها",
+      "renameLabel": "إعادة تسمية الطبقة \u2068{name}\u2069",
+      "list": "قائمة الطبقات",
+      "columns": {
+        "status": "الحالة",
+        "name": "الاسم",
+        "on": "ظاهرة",
+        "lock": "قفل",
+        "color": "اللون",
+        "linetype": "نوع الخط",
+        "lineweight": "وزن الخط",
+        "objects": "العناصر"
+      }
     },
     "Styles": {
       "title": "الأنماط",
@@ -449,7 +461,19 @@
       "dimStyle": "نمط البُعد",
       "dimStyleLabel": "نمط بُعد العناصر المحددة",
       "varies": "متنوع",
-      "customColor": "لون مخصص"
+      "customColor": "لون مخصص",
+      "title": "الخصائص",
+      "objectType": "نوع العنصر",
+      "currentLayerLabel": "الطبقة الحالية",
+      "currentColorLabel": "اللون الحالي",
+      "currentLinetypeLabel": "نوع الخط الحالي",
+      "currentLineweightLabel": "وزن الخط الحالي"
+    },
+    "Palette": {
+      "label": "اللوحات",
+      "fold": "طيّ اللوحات",
+      "unfold": "إظهار اللوحات",
+      "resize": "عرض اللوحات"
     }
   }
 }

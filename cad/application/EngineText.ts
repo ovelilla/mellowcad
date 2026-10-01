@@ -33,7 +33,7 @@ export interface PromptSegment {
  * is keyed by the id the engine hands the host elsewhere in its state.
  *
  * Tool labels and aliases are `EngineState.tools`, a command's name and
- * description `commandCatalog()`, property rows `selectionInfo`; everything
+ * description `commandCatalog()`, property rows `properties.info`; everything
  * else the host's own chrome says is the host's.
  */
 export interface EngineNames {
@@ -142,6 +142,14 @@ export class EngineText {
 
   propertyTitle(id: keyof Property["title"], count = 1): string {
     return this.format(this.ui.property.title[id], { count })
+  }
+
+  /** An entry of the Properties palette's object type drop-down: `All (6)`, `Line (5)`. */
+  propertiesFilter(type: EntityType | null, count: number): string {
+    const title = this.ui.property.title
+    return type === null
+      ? this.format(title.all, { count })
+      : this.format(title.type, { type: this.entity(type, 1), count })
   }
 
   propertyGroup(id: keyof Property["group"]): string {

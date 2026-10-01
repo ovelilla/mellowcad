@@ -152,7 +152,7 @@ What the engine names, the host reads from it and never copies: `EngineState.nam
 | `compass`       | `CompassLetter`            | the ViewCube's compass                     |
 
 Tool labels and aliases are `state.tools`; command descriptions are `commandCatalog()`; property
-rows come worded in `state.selectionInfo`. The host's own chrome — its buttons, its menus' other
+rows come worded in `state.properties.info`. The host's own chrome — its buttons, its menus' other
 items — is the host's to translate.
 
 ## Versioning

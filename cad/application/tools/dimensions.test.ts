@@ -411,7 +411,7 @@ describe("dimension properties palette", () => {
 
     const rows = cad
       .state()
-      .selectionInfo!.groups.flatMap((group) => group.rows)
+      .properties.info!.groups.flatMap((group) => group.rows)
     const measurement = rows.find((row) => row.label === "Measurement")!
     expect(measurement.value).toContain("100.00")
     expect(measurement.edit).toBeUndefined()
@@ -426,7 +426,7 @@ describe("dimension properties palette", () => {
 
     const rows = cad
       .state()
-      .selectionInfo!.groups.flatMap((group) => group.rows)
+      .properties.info!.groups.flatMap((group) => group.rows)
     expect(rows.find((row) => row.label === "Rotation")).toBeUndefined()
   })
 })

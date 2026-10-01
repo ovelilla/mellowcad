@@ -166,14 +166,14 @@ describe("dimension style table", () => {
     const cad = annotated()
     cad.runtime.createDimStyle("Plans", undefined, false)
     cad.select("D1")
-    expect(cad.state().selectionDimStyleId).toBe("ISO-25")
+    expect(cad.state().properties.dimStyleId).toBe("ISO-25")
 
     const second = createDimension("linear", p(0, 0), p(50, 0), p(25, -80))
     cad.runtime.document.add(second)
     cad.select("D1", second.id)
     cad.runtime.setSelectionDimStyle("Plans")
     // Both moved, so they agree again.
-    expect(cad.state().selectionDimStyleId).toBe("Plans")
+    expect(cad.state().properties.dimStyleId).toBe("Plans")
   })
 
   it("survives a save and reload", () => {
@@ -242,7 +242,7 @@ describe("text style table", () => {
     cad.runtime.setSelectionTextStyle(id)
 
     expect(cad.byId<TextEntity>("T1").styleId).toBe("Titles")
-    expect(cad.state().selectionTextStyleId).toBe("Titles")
+    expect(cad.state().properties.textStyleId).toBe("Titles")
     cad.undo()
     expect(cad.byId<TextEntity>("T1").styleId).toBe("Standard")
   })
@@ -261,26 +261,25 @@ describe("text style table", () => {
 })
 
 describe("the style managers", () => {
-  it("open from the DIMSTYLE and STYLE commands", () => {
+  it("open from the DIMSTYLE and STYLE commands, each on its table", () => {
     const cad = createHarness()
-    expect(cad.state().stylesPanel).toBeNull()
+    expect(cad.state().palette.open).toBe(false)
 
     cad.command("DIMSTYLE")
-    expect(cad.state().stylesPanel).toBe("dimension")
+    expect(cad.state().palette).toEqual({ open: true, tab: "styles" })
+    expect(cad.state().stylesTable).toBe("dimension")
 
     cad.command("STYLE")
-    expect(cad.state().stylesPanel).toBe("text")
-
-    cad.runtime.setStylesPanel(null)
-    expect(cad.state().stylesPanel).toBeNull()
+    expect(cad.state().palette).toEqual({ open: true, tab: "styles" })
+    expect(cad.state().stylesTable).toBe("text")
   })
 
-  it("toggles a tab shut when it is already showing", () => {
+  it("fold when their trigger is pressed while they show", () => {
     const cad = createHarness()
-    cad.runtime.toggleStylesPanel("text")
-    expect(cad.state().stylesPanel).toBe("text")
-    cad.runtime.toggleStylesPanel("text")
-    expect(cad.state().stylesPanel).toBeNull()
+    cad.runtime.togglePalette("styles")
+    expect(cad.state().palette).toEqual({ open: true, tab: "styles" })
+    cad.runtime.togglePalette("styles")
+    expect(cad.state().palette).toEqual({ open: false, tab: "styles" })
   })
 
   it("DIMSCALE still edits the current style's overall scale", () => {

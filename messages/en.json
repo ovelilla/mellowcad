@@ -393,7 +393,19 @@
       "deleteBase": "Layer 0 cannot be deleted",
       "deleteInUse": "Layer is in use",
       "deleteCurrent": "Cannot delete the current layer",
-      "rename": "Double-click to rename"
+      "rename": "Click the selected layer's name again to rename it",
+      "renameLabel": "Rename layer {name}",
+      "list": "Layer list",
+      "columns": {
+        "status": "Status",
+        "name": "Name",
+        "on": "On",
+        "lock": "Lock",
+        "color": "Color",
+        "linetype": "Linetype",
+        "lineweight": "Lineweight",
+        "objects": "Objects"
+      }
     },
     "Styles": {
       "title": "Styles",
@@ -449,7 +461,19 @@
       "dimStyle": "Dim style",
       "dimStyleLabel": "Dim style of the selected objects",
       "varies": "Varies",
-      "customColor": "Custom colour"
+      "customColor": "Custom colour",
+      "title": "Properties",
+      "objectType": "Object type",
+      "currentLayerLabel": "Current layer",
+      "currentColorLabel": "Current colour",
+      "currentLinetypeLabel": "Current linetype",
+      "currentLineweightLabel": "Current lineweight"
+    },
+    "Palette": {
+      "label": "Palettes",
+      "fold": "Fold the palettes",
+      "unfold": "Show the palettes",
+      "resize": "Palette width"
     }
   }
 }

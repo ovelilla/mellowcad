@@ -21,6 +21,11 @@ export interface UseCadEngineOptions {
   readonly scopeRef?: React.RefObject<HTMLElement | null>
   /** The engine's language; English when absent. */
   readonly locale?: EngineLocale
+  /**
+   * Whether the palette panel starts open, asked when the engine is built:
+   * by then the page knows what it laid out before the engine existed.
+   */
+  readonly paletteOpen?: () => boolean
 }
 
 /**
@@ -44,11 +49,12 @@ export function useCadEngine(options: UseCadEngineOptions = {}): {
 
   useEffect(() => {
     if (!canvasRef.current) return
-    const { store, scopeRef, locale } = initialOptions.current
+    const { store, scopeRef, locale, paletteOpen } = initialOptions.current
     const instance = new CadEngine(canvasRef.current, {
       ...(store !== undefined && { store }),
       ...(scopeRef?.current && { scope: scopeRef.current }),
       ...(locale && { locale }),
+      ...(paletteOpen && { paletteOpen: paletteOpen() }),
     })
     setEngine(instance)
     return () => instance.dispose()

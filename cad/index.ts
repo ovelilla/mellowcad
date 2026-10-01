@@ -61,6 +61,11 @@ export type {
   DimStyleInfo,
   BlockInfo,
   StylesPanelTab,
+  PaletteTab,
+  PaletteUi,
+  PropertiesUi,
+  PropertiesFilterOption,
+  SelectionScope,
   SelectionInfo,
   PropertyGroup,
   PropertyRow,
@@ -68,6 +73,7 @@ export type {
   SelectionCandidateUi,
   SelectionCyclingUi,
 } from "./application/EngineState"
+export { PALETTE_TABS } from "./application/EngineState"
 export { TOOL_COMMANDS, matchCommands } from "./application/CommandLine"
 export { EngineText, engineText } from "./application/EngineText"
 export type {

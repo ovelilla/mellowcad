@@ -86,7 +86,11 @@
       "DIMSTYLE": "Crear y modificar estilos de cota",
       "STYLE": "Crear y modificar estilos de texto",
       "BLOCKSPALETTE": "Mostrar la paleta Bloques",
-      "PURGE": "Eliminar las definiciones de bloque no utilizadas"
+      "PURGE": "Eliminar las definiciones de bloque no utilizadas",
+      "LAYER": "Administrar las capas y sus propiedades",
+      "LAYERCLOSE": "Cerrar el Administrador de propiedades de capas",
+      "PROPERTIES": "Mostrar las propiedades de los objetos designados",
+      "PROPERTIESCLOSE": "Cerrar la paleta Propiedades"
     },
     "snap": {
       "endpoint": "Punto final",
@@ -153,7 +157,9 @@
     "property": {
       "title": {
         "ellipticalArc": "Arco elíptico",
-        "objects": "{count, plural, one {# objeto} other {# objetos}}"
+        "objects": "{count, plural, one {# objeto} other {# objetos}}",
+        "all": "Todo ({count})",
+        "type": "{type} ({count})"
       },
       "group": {
         "geometry": "Geometría",
@@ -349,6 +355,10 @@
       "STYLE": ["ESTILO", "EST"],
       "BLOCKSPALETTE": ["PALETABLOQUES"],
       "PURGE": ["LIMPIA", "LI"],
+      "LAYER": ["CAPA", "CA"],
+      "LAYERCLOSE": ["CERRARCAPA"],
+      "PROPERTIES": ["PROPIEDADES", "PR"],
+      "PROPERTIESCLOSE": ["CERPROP"],
       "UCS": ["SCP"],
       "UCSICON": ["SIMBSCP"],
       "PLAN": ["PLANTA"],

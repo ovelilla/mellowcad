@@ -357,7 +357,7 @@ describe("the tools in a tilted UCS", () => {
     const rows = new Map(
       cad
         .state()
-        .selectionInfo!.groups.flatMap((group) => group.rows)
+        .properties.info!.groups.flatMap((group) => group.rows)
         .map((row) => [row.id, row.value])
     )
     expect(rows.get("endX")).toBe("30.00")

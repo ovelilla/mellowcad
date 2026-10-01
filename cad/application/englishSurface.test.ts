@@ -90,7 +90,7 @@ class Surface {
           )
           .join(" ")
       : "-"
-    const info = state.selectionInfo
+    const info = state.properties.info
     const row = (cell: PropertyRow) =>
       `${cell.label}=${cell.value}${cell.edit ? "~" : ""}`
     const properties = info
@@ -209,6 +209,10 @@ describe("the engine's English surface", () => {
         .do("DIMSTYLE", (c) => c.command("D"))
         .do("STYLE", (c) => c.command("ST"))
         .do("BLOCKSPALETTE", (c) => c.command("BLOCKSPALETTE"))
+        .do("LAYER", (c) => c.command("LA"))
+        .do("LAYERCLOSE", (c) => c.command("LAYERCLOSE"))
+        .do("PROPERTIES", (c) => c.command("PR"))
+        .do("PROPERTIESCLOSE", (c) => c.command("PROPERTIESCLOSE"))
         .do("PURGE with nothing", (c) => c.command("PU"))
         .do("Enter repeats", (c) => c.press("Enter"))
     )

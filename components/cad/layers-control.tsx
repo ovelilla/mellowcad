@@ -1,16 +1,7 @@
 "use client"
 
-import { useState } from "react"
-import {
-  Check,
-  Eye,
-  EyeOff,
-  Layers as LayersIcon,
-  Lock,
-  LockOpen,
-  Plus,
-  Trash2,
-} from "lucide-react"
+import { useEffect, useRef, useState } from "react"
+import { Check, Eye, EyeOff, Lock, LockOpen, Plus, Trash2 } from "lucide-react"
 import { useTranslations } from "next-intl"
 
 import { cn } from "@/lib/utils"
@@ -18,24 +9,23 @@ import { Button } from "@/components/ui/button"
 import {
   Tooltip,
   TooltipContent,
-  TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip"
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover"
 import { CadEngine, EngineNames, EngineState, LayerInfo } from "@/cad"
 import { LinetypeSelect } from "./linetype-select"
 import { LineweightSelect } from "./lineweight-select"
 
+/** How long a second click on a selected name waits for a double-click. */
+const RENAME_DELAY_MS = 400
+
 /**
- * The Layer Properties Manager, modelled on AutoCAD's: a compact panel listing
- * every layer's colour, on/off, lock state and entity count, with the current
- * layer (where new geometry is drawn) highlighted. Its trigger is the Layers
- * panel's Layer Properties button; the layer drop-down beside it reads and
- * sets the current layer.
+ * The Layer Properties Manager, a tab of the palette panel: the layer list
+ * under its column headers in AutoCAD's order (Status, Name, On, Lock, Color,
+ * Linetype, Lineweight; Freeze, Plot and the rest do not exist here), wider
+ * than the panel and scrolled sideways as AutoCAD's docked manager is. A row
+ * is selected with a click; Set Current — or a double-click on the row —
+ * makes it the current layer, and New and Delete act beside it. A click on
+ * the selected layer's name renames it.
  */
 export function LayersControl({
   engine,
@@ -45,44 +35,84 @@ export function LayersControl({
   state: EngineState
 }) {
   const t = useTranslations("Editor.Layers")
+  const [selectedId, setSelectedId] = useState<string | null>(null)
+  const selected =
+    state.layers.find((layer) => layer.id === selectedId) ??
+    state.layers.find((layer) => layer.id === state.currentLayerId) ??
+    state.layers[0]
+  const done = () => engine.focusSurface()
+  const setCurrent = (id: string) => {
+    engine.setCurrentLayer(id)
+    done()
+  }
+
+  const isBase = selected.id === "0"
+  const canDelete =
+    !isBase &&
+    selected.id !== state.currentLayerId &&
+    selected.entityCount === 0
+  const deleteReason = canDelete
+    ? t("delete")
+    : isBase
+      ? t("deleteBase")
+      : selected.entityCount > 0
+        ? t("deleteInUse")
+        : t("deleteCurrent")
 
   return (
-    <TooltipProvider>
-      <Popover>
-        <PopoverTrigger
-          render={
-            <Button
-              size="sm"
-              variant="ghost"
-              aria-label={t("title")}
-              className="pointer-events-auto gap-2"
-            >
-              <LayersIcon className="shrink-0" />
-              <span className="text-xs">{t("title")}</span>
-            </Button>
-          }
-        />
-        <PopoverContent
-          side="bottom"
-          align="start"
-          className="w-128 overflow-hidden border-none p-0"
+    <div className="flex min-h-0 flex-1 flex-col">
+      <div
+        role="toolbar"
+        aria-label={t("title")}
+        className="flex shrink-0 items-center gap-1 border-b border-border/60 p-1"
+      >
+        <ToolbarButton
+          label={t("new")}
+          onClick={() => {
+            setSelectedId(engine.createLayer())
+            done()
+          }}
         >
-          <div className="flex items-center justify-between p-2 ps-3">
-            <p className="text-[11px] font-semibold tracking-wide text-muted-foreground uppercase">
-              {t("title")}
-            </p>
-            <Button
-              size="sm"
-              variant="outline"
-              className="gap-1 text-xs font-normal"
-              onClick={() => engine.createLayer()}
-            >
-              <Plus className="size-3.5" />
-              {t("new")}
-            </Button>
-          </div>
+          <Plus />
+        </ToolbarButton>
+        <ToolbarButton
+          label={deleteReason}
+          disabled={!canDelete}
+          onClick={() => {
+            engine.removeLayer(selected.id)
+            setSelectedId(null)
+            done()
+          }}
+        >
+          <Trash2 />
+        </ToolbarButton>
+        <ToolbarButton
+          label={t("setCurrent")}
+          disabled={selected.id === state.currentLayerId}
+          onClick={() => setCurrent(selected.id)}
+        >
+          <Check />
+        </ToolbarButton>
+      </div>
 
-          <div className="max-h-[60svh] overflow-y-auto">
+      <div className="min-h-0 flex-1 overflow-auto">
+        <table
+          aria-label={t("list")}
+          className="w-max min-w-full border-separate border-spacing-0 text-xs"
+        >
+          <thead className="sticky top-0 z-10 bg-card text-muted-foreground">
+            <tr>
+              <Header className="w-8">{t("columns.status")}</Header>
+              <Header className="w-32">{t("columns.name")}</Header>
+              <Header className="w-9">{t("columns.on")}</Header>
+              <Header className="w-9">{t("columns.lock")}</Header>
+              <Header className="w-12">{t("columns.color")}</Header>
+              <Header className="w-28">{t("columns.linetype")}</Header>
+              <Header className="w-24">{t("columns.lineweight")}</Header>
+              <Header className="w-14 text-end">{t("columns.objects")}</Header>
+            </tr>
+          </thead>
+          <tbody>
             {state.layers.map((layer) => (
               <LayerRow
                 key={layer.id}
@@ -90,17 +120,66 @@ export function LayersControl({
                 layer={layer}
                 names={state.names}
                 isCurrent={layer.id === state.currentLayerId}
-                canDelete={
-                  layer.id !== "0" &&
-                  layer.id !== state.currentLayerId &&
-                  layer.entityCount === 0
-                }
+                isSelected={layer.id === selected.id}
+                onSelect={() => setSelectedId(layer.id)}
+                onSetCurrent={() => setCurrent(layer.id)}
               />
             ))}
-          </div>
-        </PopoverContent>
-      </Popover>
-    </TooltipProvider>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  )
+}
+
+function Header({
+  className,
+  children,
+}: {
+  className?: string
+  children: React.ReactNode
+}) {
+  return (
+    <th
+      scope="col"
+      className={cn(
+        "border-b border-border/60 px-1.5 py-1 text-start font-normal whitespace-nowrap",
+        className
+      )}
+    >
+      {children}
+    </th>
+  )
+}
+
+function ToolbarButton({
+  label,
+  disabled = false,
+  onClick,
+  children,
+}: {
+  label: string
+  disabled?: boolean
+  onClick: () => void
+  children: React.ReactNode
+}) {
+  return (
+    <Tooltip>
+      <TooltipTrigger
+        render={
+          <Button
+            size="icon-sm"
+            variant="ghost"
+            aria-label={label}
+            disabled={disabled}
+            onClick={onClick}
+          >
+            {children}
+          </Button>
+        }
+      />
+      <TooltipContent side="bottom">{label}</TooltipContent>
+    </Tooltip>
   )
 }
 
@@ -109,144 +188,130 @@ function LayerRow({
   layer,
   names,
   isCurrent,
-  canDelete,
+  isSelected,
+  onSelect,
+  onSetCurrent,
 }: {
   engine: CadEngine
   layer: LayerInfo
   names: EngineNames
   isCurrent: boolean
-  canDelete: boolean
+  isSelected: boolean
+  onSelect: () => void
+  onSetCurrent: () => void
 }) {
   const t = useTranslations("Editor.Layers")
-  const isBaseLayer = layer.id === "0"
+  const done = () => engine.focusSurface()
 
   return (
-    <div
-      className={cn(
-        "group/row flex items-center gap-1 p-1",
-        isCurrent && "bg-accent"
-      )}
+    <tr
+      onClick={onSelect}
+      onDoubleClick={(event) => {
+        // A double-click on a control of the row is that control's.
+        if ((event.target as HTMLElement).closest("button, input, label"))
+          return
+        onSetCurrent()
+      }}
+      aria-selected={isSelected}
+      className={cn("h-8", isSelected ? "bg-accent" : "hover:bg-accent/40")}
     >
-      {/* The set-current toggle shows a check only on the current layer; other
-          rows reveal a faint check on hover to hint they are clickable. */}
-      <Tooltip>
-        <TooltipTrigger
-          render={
-            <Button
-              size="icon-sm"
-              variant="ghost"
-              aria-label={t("setCurrentLabel", { name: layer.name })}
-              aria-pressed={isCurrent}
-              onClick={() => engine.setCurrentLayer(layer.id)}
-            >
-              <Check
-                strokeWidth={2}
-                className={cn(
-                  isCurrent
-                    ? "text-primary"
-                    : "text-muted-foreground opacity-0 transition-opacity group-hover/row:opacity-50"
-                )}
-              />
-            </Button>
-          }
+      <td className="px-1.5">
+        {/* AutoCAD's check mark on the current layer, in the one accent. */}
+        <Check
+          aria-label={isCurrent ? t("current") : undefined}
+          aria-hidden={!isCurrent}
+          className={cn("size-4 text-active", !isCurrent && "invisible")}
         />
-        <TooltipContent side="top">
-          {isCurrent ? t("current") : t("setCurrent")}
-        </TooltipContent>
-      </Tooltip>
+      </td>
 
-      <label
-        className="relative inline-flex cursor-pointer"
-        aria-label={t("colorLabel", { name: layer.name })}
-        title={t("color")}
-      >
-        <LayerSwatch color={layer.color} />
-        <input
-          type="color"
-          value={normalizeHex(layer.color)}
-          onChange={(event) =>
-            engine.updateLayer(layer.id, { color: event.target.value })
-          }
-          className="absolute inset-0 h-full w-full cursor-pointer opacity-0"
+      <td className="max-w-32 px-0.5">
+        <NameField
+          name={layer.name}
+          editable={layer.id !== "0"}
+          selected={isSelected}
+          onSetCurrent={onSetCurrent}
+          onRename={(name) => engine.updateLayer(layer.id, { name })}
         />
-      </label>
+      </td>
 
-      <NameField
-        name={layer.name}
-        editable={!isBaseLayer}
-        onRename={(name) => engine.updateLayer(layer.id, { name })}
-      />
+      <td className="px-0.5">
+        <IconToggle
+          onLabel={t("on")}
+          offLabel={t("off")}
+          on={layer.visible}
+          OnIcon={Eye}
+          OffIcon={EyeOff}
+          onToggle={() => {
+            engine.updateLayer(layer.id, { visible: !layer.visible })
+            done()
+          }}
+        />
+      </td>
 
-      <LinetypeSelect
-        value={layer.linetype}
-        names={names}
-        onValueChange={(linetype) => engine.updateLayer(layer.id, { linetype })}
-        ariaLabel={t("linetypeLabel", { name: layer.name })}
-        className="h-8 w-28 shrink-0 border-0 bg-transparent px-1.5 text-xs text-foreground shadow-none hover:bg-accent/40 dark:bg-transparent"
-      />
+      <td className="px-0.5">
+        <IconToggle
+          onLabel={t("unlocked")}
+          offLabel={t("locked")}
+          on={!layer.locked}
+          OnIcon={LockOpen}
+          OffIcon={Lock}
+          onToggle={() => {
+            engine.updateLayer(layer.id, { locked: !layer.locked })
+            done()
+          }}
+        />
+      </td>
 
-      <LineweightSelect
-        value={layer.lineweight}
-        names={names}
-        onValueChange={(lineweight) => {
-          if (lineweight !== "ByLayer") {
-            engine.updateLayer(layer.id, { lineweight })
-          }
-        }}
-        ariaLabel={t("lineweightLabel", { name: layer.name })}
-        className="h-8 w-24 shrink-0 border-0 bg-transparent px-1.5 text-xs text-foreground shadow-none hover:bg-accent/40 dark:bg-transparent"
-      />
+      <td className="px-1.5">
+        <label
+          className="relative inline-flex cursor-pointer align-middle"
+          aria-label={t("colorLabel", { name: layer.name })}
+          title={t("color")}
+        >
+          <LayerSwatch color={layer.color} />
+          <input
+            type="color"
+            value={normalizeHex(layer.color)}
+            onChange={(event) =>
+              engine.updateLayer(layer.id, { color: event.target.value })
+            }
+            className="absolute inset-0 h-full w-full cursor-pointer opacity-0"
+          />
+        </label>
+      </td>
 
-      <span className="w-6 shrink-0 text-end text-xs text-muted-foreground tabular-nums">
+      <td className="px-0.5">
+        <LinetypeSelect
+          value={layer.linetype}
+          names={names}
+          onValueChange={(linetype) => {
+            engine.updateLayer(layer.id, { linetype })
+            done()
+          }}
+          ariaLabel={t("linetypeLabel", { name: layer.name })}
+          className="h-7 w-28 border-0 bg-transparent px-1.5 text-xs text-foreground shadow-none hover:bg-accent/40 dark:bg-transparent"
+        />
+      </td>
+
+      <td className="px-0.5">
+        <LineweightSelect
+          value={layer.lineweight}
+          names={names}
+          onValueChange={(lineweight) => {
+            if (lineweight !== "ByLayer") {
+              engine.updateLayer(layer.id, { lineweight })
+              done()
+            }
+          }}
+          ariaLabel={t("lineweightLabel", { name: layer.name })}
+          className="h-7 w-24 border-0 bg-transparent px-1.5 text-xs text-foreground shadow-none hover:bg-accent/40 dark:bg-transparent"
+        />
+      </td>
+
+      <td className="px-1.5 text-end text-[11px] text-muted-foreground tabular-nums">
         {layer.entityCount}
-      </span>
-
-      <IconToggle
-        onLabel={t("on")}
-        offLabel={t("off")}
-        on={layer.visible}
-        OnIcon={Eye}
-        OffIcon={EyeOff}
-        onToggle={() =>
-          engine.updateLayer(layer.id, { visible: !layer.visible })
-        }
-      />
-
-      <IconToggle
-        onLabel={t("unlocked")}
-        offLabel={t("locked")}
-        on={!layer.locked}
-        OnIcon={LockOpen}
-        OffIcon={Lock}
-        onToggle={() => engine.updateLayer(layer.id, { locked: !layer.locked })}
-      />
-
-      <Tooltip>
-        <TooltipTrigger
-          render={
-            <Button
-              size="icon-sm"
-              variant="ghost"
-              disabled={!canDelete}
-              aria-label={t("deleteLabel", { name: layer.name })}
-              onClick={() => engine.removeLayer(layer.id)}
-              className="text-muted-foreground hover:bg-destructive/10 hover:text-destructive"
-            >
-              <Trash2 strokeWidth={1.75} />
-            </Button>
-          }
-        />
-        <TooltipContent side="top">
-          {canDelete
-            ? t("delete")
-            : isBaseLayer
-              ? t("deleteBase")
-              : layer.entityCount > 0
-                ? t("deleteInUse")
-                : t("deleteCurrent")}
-        </TooltipContent>
-      </Tooltip>
-    </div>
+      </td>
+    </tr>
   )
 }
 
@@ -290,26 +355,44 @@ function IconToggle({
   )
 }
 
-/** Inline-editable layer name. Commits on Enter or blur; Escape reverts. */
+/**
+ * The layer's name. A click on the selected row's name renames it, after a
+ * pause so that a double-click still sets the layer current; Enter or blur
+ * commits, Escape reverts.
+ */
 function NameField({
   name,
   editable,
+  selected,
+  onSetCurrent,
   onRename,
 }: {
   name: string
   editable: boolean
+  selected: boolean
+  onSetCurrent: () => void
   onRename: (name: string) => void
 }) {
   const t = useTranslations("Editor.Layers")
   const [draft, setDraft] = useState(name)
   const [editing, setEditing] = useState(false)
+  const pending = useRef<ReturnType<typeof setTimeout> | null>(null)
+
+  const cancelPending = () => {
+    if (pending.current !== null) clearTimeout(pending.current)
+    pending.current = null
+  }
+  useEffect(() => cancelPending, [])
 
   if (editing) {
     return (
       <input
         autoFocus
+        aria-label={t("renameLabel", { name })}
         value={draft}
         onChange={(event) => setDraft(event.target.value)}
+        onClick={(event) => event.stopPropagation()}
+        onDoubleClick={(event) => event.stopPropagation()}
         onBlur={() => {
           setEditing(false)
           const trimmed = draft.trim()
@@ -323,7 +406,7 @@ function NameField({
             setEditing(false)
           }
         }}
-        className="min-w-0 flex-1 rounded border border-primary/50 bg-background px-1 py-0.5 text-xs outline-none"
+        className="w-full min-w-0 rounded border border-ring bg-background px-1 py-0.5 text-xs outline-none"
       />
     )
   }
@@ -331,14 +414,23 @@ function NameField({
   return (
     <button
       type="button"
-      onDoubleClick={() => {
-        if (editable) {
+      title={editable ? t("rename") : name}
+      onClick={(event) => {
+        // Only a click on a row already selected renames it.
+        if (!editable || !selected || event.detail !== 1) return
+        cancelPending()
+        pending.current = setTimeout(() => {
+          pending.current = null
           setDraft(name)
           setEditing(true)
-        }
+        }, RENAME_DELAY_MS)
       }}
-      title={editable ? t("rename") : name}
-      className="min-w-0 flex-1 cursor-default truncate rounded px-1 py-0.5 text-start text-xs"
+      onDoubleClick={(event) => {
+        event.stopPropagation()
+        cancelPending()
+        onSetCurrent()
+      }}
+      className="block w-full cursor-default truncate rounded px-1 py-0.5 text-start text-xs"
     >
       {name}
     </button>

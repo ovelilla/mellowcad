@@ -6,7 +6,9 @@ import {
   assignEntityLinetype,
   assignEntityLineweight,
   Entity,
+  EntityId,
   EntityProperty,
+  EntityType,
   entityPointToWorld,
   isZProperty,
   lineEndZ,
@@ -19,7 +21,7 @@ import { COLOR_BYLAYER, EntityColor, normalizeColor } from "../domain/colors"
 import { LayerId } from "../domain/layers"
 import { LINETYPE_BYLAYER, LinetypeId } from "../domain/linetypes"
 import { LINEWEIGHT_BYLAYER, Lineweight } from "../domain/lineweights"
-import { parseNumber } from "../domain/units"
+import { DocumentSettings, parseNumber } from "../domain/units"
 import {
   Ucs,
   isUpright,
@@ -29,8 +31,14 @@ import {
 } from "../domain/ucs"
 import { Vec2 } from "../geometry/Vec2"
 import { Vec3, planar, sub3 } from "../geometry/Vec3"
-import { Selection } from "./Selection"
 import { CommandHistory } from "./commands/Command"
+import type { EngineText } from "./EngineText"
+import {
+  buildSelectionInfo,
+  commonStyleId,
+  type PropertiesFilterOption,
+  type PropertiesUi,
+} from "./EngineState"
 import {
   UpdateEntitiesCommand,
   UpdateEntityCommand,
@@ -42,12 +50,12 @@ import {
  */
 function updateSelection(
   document: CadDocument,
-  selection: Selection,
+  ids: readonly EntityId[],
   history: CommandHistory,
   assign: (entity: Entity) => Entity | null
 ): void {
   const changed: Entity[] = []
-  for (const entityId of selection.toArray()) {
+  for (const entityId of ids) {
     const entity = document.get(entityId)
     const next = entity && assign(entity)
     if (next) changed.push(next)
@@ -58,12 +66,12 @@ function updateSelection(
 /** Moves every selected entity onto layer `id` (the ribbon's layer drop-down). */
 export function setSelectionLayer(
   document: CadDocument,
-  selection: Selection,
+  ids: readonly EntityId[],
   history: CommandHistory,
   id: LayerId
 ): void {
   if (!document.getLayer(id)) return
-  updateSelection(document, selection, history, (entity) =>
+  updateSelection(document, ids, history, (entity) =>
     entity.layerId === id ? null : assignEntityLayer(entity, id)
   )
 }
@@ -75,7 +83,7 @@ export function setSelectionLayer(
  */
 export function setSelectionColor(
   document: CadDocument,
-  selection: Selection,
+  ids: readonly EntityId[],
   history: CommandHistory,
   color: EntityColor | typeof COLOR_BYLAYER
 ): void {
@@ -83,7 +91,7 @@ export function setSelectionColor(
     color === COLOR_BYLAYER ? undefined : (normalizeColor(color) ?? undefined)
   // Reject a malformed hex rather than silently clearing the override.
   if (color !== COLOR_BYLAYER && !next) return
-  updateSelection(document, selection, history, (entity) =>
+  updateSelection(document, ids, history, (entity) =>
     entity.color === next ? null : assignEntityColor(entity, next)
   )
 }
@@ -95,12 +103,12 @@ export function setSelectionColor(
  */
 export function setSelectionLinetype(
   document: CadDocument,
-  selection: Selection,
+  ids: readonly EntityId[],
   history: CommandHistory,
   linetype: LinetypeId | typeof LINETYPE_BYLAYER
 ): void {
   const next = linetype === LINETYPE_BYLAYER ? undefined : linetype
-  updateSelection(document, selection, history, (entity) =>
+  updateSelection(document, ids, history, (entity) =>
     entity.linetype === next ? null : assignEntityLinetype(entity, next)
   )
 }
@@ -112,12 +120,12 @@ export function setSelectionLinetype(
  */
 export function setSelectionLineweight(
   document: CadDocument,
-  selection: Selection,
+  ids: readonly EntityId[],
   history: CommandHistory,
   lineweight: Lineweight | typeof LINEWEIGHT_BYLAYER
 ): void {
   const next = lineweight === LINEWEIGHT_BYLAYER ? undefined : lineweight
-  updateSelection(document, selection, history, (entity) =>
+  updateSelection(document, ids, history, (entity) =>
     entity.lineweight === next ? null : assignEntityLineweight(entity, next)
   )
 }
@@ -129,12 +137,11 @@ export function setSelectionLineweight(
  */
 export function setSelectionProperty(
   document: CadDocument,
-  selection: Selection,
+  ids: readonly EntityId[],
   history: CommandHistory,
   property: EntityProperty,
   text: string
 ): boolean {
-  const ids = selection.toArray()
   if (ids.length !== 1) return false
   const entity = document.get(ids[0])
   if (!entity) return false
@@ -342,4 +349,59 @@ export function commonSelectionLineweight(
   )
     ? first
     : null
+}
+
+/**
+ * The selected objects the Properties palette edits: all of them, or those of
+ * the type its drop-down picked. A type no longer in the selection reads All.
+ */
+export function filterByType(
+  entities: readonly Entity[],
+  type: EntityType | null
+): readonly Entity[] {
+  if (type === null) return entities
+  const kept = entities.filter((entity) => entity.type === type)
+  return kept.length === 0 ? entities : kept
+}
+
+/**
+ * The Properties palette's state: the object type drop-down (All first when
+ * the selection mixes types, then each type in the order it was picked) and
+ * every value over the objects that drop-down leaves.
+ */
+export function buildPropertiesUi(
+  entities: readonly Entity[],
+  filter: EntityType | null,
+  settings: DocumentSettings,
+  text: EngineText
+): PropertiesUi {
+  const counts = new Map<EntityType, number>()
+  for (const entity of entities) {
+    counts.set(entity.type, (counts.get(entity.type) ?? 0) + 1)
+  }
+  const types: PropertiesFilterOption[] = [...counts].map(([type, count]) => ({
+    type,
+    label: text.propertiesFilter(type, count),
+  }))
+  const filters: PropertiesFilterOption[] =
+    types.length > 1
+      ? [
+          { type: null, label: text.propertiesFilter(null, entities.length) },
+          ...types,
+        ]
+      : types
+  const shown = filter !== null && counts.has(filter) ? filter : null
+  const edited = filterByType(entities, shown)
+  return {
+    // With one type there is no All entry: the type is the whole selection.
+    filter: shown ?? (types.length === 1 ? types[0].type : null),
+    filters,
+    info: buildSelectionInfo(edited, settings, text),
+    layerId: commonSelectionLayer(edited),
+    color: commonSelectionColor(edited),
+    linetype: commonSelectionLinetype(edited),
+    lineweight: commonSelectionLineweight(edited),
+    textStyleId: commonStyleId(edited, "text"),
+    dimStyleId: commonStyleId(edited, "dimension"),
+  }
 }

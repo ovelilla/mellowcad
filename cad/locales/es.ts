@@ -90,7 +90,11 @@ export const es: EngineLocale = {
       "DIMSTYLE": "Crear y modificar estilos de cota",
       "STYLE": "Crear y modificar estilos de texto",
       "BLOCKSPALETTE": "Mostrar la paleta Bloques",
-      "PURGE": "Eliminar las definiciones de bloque no utilizadas"
+      "PURGE": "Eliminar las definiciones de bloque no utilizadas",
+      "LAYER": "Administrar las capas y sus propiedades",
+      "LAYERCLOSE": "Cerrar el Administrador de propiedades de capas",
+      "PROPERTIES": "Mostrar las propiedades de los objetos designados",
+      "PROPERTIESCLOSE": "Cerrar la paleta Propiedades"
     },
     "snap": {
       "endpoint": "Punto final",
@@ -285,6 +289,23 @@ export const es: EngineLocale = {
               ]
             }
           ]
+        ],
+        "all": [
+          "Todo (",
+          [
+            "count"
+          ],
+          ")"
+        ],
+        "type": [
+          [
+            "type"
+          ],
+          " (",
+          [
+            "count"
+          ],
+          ")"
         ]
       },
       "group": {
@@ -693,6 +714,20 @@ export const es: EngineLocale = {
       "PURGE": [
         "LIMPIA",
         "LI"
+      ],
+      "LAYER": [
+        "CAPA",
+        "CA"
+      ],
+      "LAYERCLOSE": [
+        "CERRARCAPA"
+      ],
+      "PROPERTIES": [
+        "PROPIEDADES",
+        "PR"
+      ],
+      "PROPERTIESCLOSE": [
+        "CERPROP"
       ],
       "UCS": [
         "SCP"

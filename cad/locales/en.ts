@@ -90,7 +90,11 @@ export const en: EngineCatalog = {
       "DIMSTYLE": "Create and modify dimension styles",
       "STYLE": "Create and modify text styles",
       "BLOCKSPALETTE": "Show the blocks palette",
-      "PURGE": "Remove unused block definitions"
+      "PURGE": "Remove unused block definitions",
+      "LAYER": "Manage layers and layer properties",
+      "LAYERCLOSE": "Close the Layer Properties Manager",
+      "PROPERTIES": "Show the properties of the selected objects",
+      "PROPERTIESCLOSE": "Close the Properties palette"
     },
     "snap": {
       "endpoint": "Endpoint",
@@ -291,6 +295,23 @@ export const en: EngineCatalog = {
               ]
             }
           ]
+        ],
+        "all": [
+          "All (",
+          [
+            "count"
+          ],
+          ")"
+        ],
+        "type": [
+          [
+            "type"
+          ],
+          " (",
+          [
+            "count"
+          ],
+          ")"
         ]
       },
       "group": {
@@ -705,6 +726,22 @@ export const en: EngineCatalog = {
       "PURGE": [
         "PURGE",
         "PU"
+      ],
+      "LAYER": [
+        "LAYER",
+        "LA"
+      ],
+      "LAYERCLOSE": [
+        "LAYERCLOSE"
+      ],
+      "PROPERTIES": [
+        "PROPERTIES",
+        "PR",
+        "CH",
+        "MO"
+      ],
+      "PROPERTIESCLOSE": [
+        "PROPERTIESCLOSE"
       ],
       "UCS": [
         "UCS"
