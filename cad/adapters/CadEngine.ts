@@ -738,7 +738,7 @@ export class CadEngine {
       return
     }
     const data: KeyEventData = {
-      key: e.key,
+      key: shortcutKey(e),
       shiftKey: e.shiftKey,
       ctrlKey: e.ctrlKey,
       altKey: e.altKey,
@@ -789,6 +789,23 @@ const SCROLL_KEYS = new Set([
  */
 function isFileShortcut(e: KeyboardEvent): boolean {
   if (!e.ctrlKey || e.altKey) return false
-  const key = e.key.toLowerCase()
+  const key = shortcutKey(e).toLowerCase()
   return key === "s" || key === "o"
+}
+
+/**
+ * The key a Ctrl combination names. WHY: with a layout that is not latin —
+ * Arabic, Greek, Cyrillic — Ctrl+Z arrives with that layout's letter in
+ * `e.key`, and a desktop accelerator, AutoCAD's included, does not depend on
+ * the layout: the physical key (`e.code`) decides, as the platform's own
+ * shortcuts do. Only under Ctrl — typed text is taken exactly as typed, so
+ * LINE typed on an Arabic layout is an unknown command, as in AutoCAD.
+ */
+function shortcutKey(e: KeyboardEvent): string {
+  if (!e.ctrlKey || e.key.length !== 1 || /^[A-Za-z0-9]$/.test(e.key)) {
+    return e.key
+  }
+  const letter = /^Key([A-Z])$/.exec(e.code)?.[1]
+  if (letter) return e.shiftKey ? letter : letter.toLowerCase()
+  return /^Digit([0-9])$/.exec(e.code)?.[1] ?? e.key
 }

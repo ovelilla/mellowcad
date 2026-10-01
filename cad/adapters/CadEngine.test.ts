@@ -211,6 +211,27 @@ describe("CadEngine owning the document (the editor)", () => {
     expect(engine.getState().orthoActive).toBe(true)
   })
 
+  // An Arabic layout sends its own letter with Ctrl; the shortcut is the
+  // physical key's, as every desktop application takes it.
+  it("reads a Ctrl shortcut by its physical key on a non-latin layout", () => {
+    engineOn()
+    const arabic = (target: FakeNode, key: string, code: string) =>
+      dispatch(page.document, "keydown", target, {
+        key,
+        code,
+        ctrlKey: true,
+        shiftKey: false,
+        altKey: false,
+      })
+
+    expect(arabic(page.canvas, "ئ", "KeyZ").defaultPrevented).toBe(true)
+    expect(arabic(page.canvas, "غ", "KeyY").defaultPrevented).toBe(true)
+    // A key no shortcut names stays the browser's.
+    expect(arabic(page.canvas, "ب", "KeyF").defaultPrevented).toBe(false)
+    // Without Ctrl the letter is text: it never becomes Z.
+    expect(keyAt(page, page.search, "ئ").defaultPrevented).toBe(false)
+  })
+
   it("zooms on every wheel turn over the canvas", () => {
     const engine = engineOn()
     const wheel = dispatch(page.canvas, "wheel", page.canvas, {
