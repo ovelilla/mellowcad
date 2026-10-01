@@ -361,8 +361,9 @@ algún día hace falta negociar el idioma, se añade `proxy.ts` con el mismo `ro
 - **Formatos:** `getFormatter`/`useFormatter` con el locale activo, y ningún `Intl.*("en")` fijo. Los
   tres de hoy (`continue-drawing`, `live-canvas`, `lib/og.tsx`) pasan a usar el locale.
 - **Valores LTR dentro de un texto RTL:** un nombre de comando, una tecla, un número con unidad, un email
-  o una URL se aíslan con una etiqueta del mensaje (`<cmd>{name}</cmd>` → `<bdi dir="ltr">`) o, en texto
-  plano (títulos, OG), con los aislantes Unicode FSI/PDI (U+2068/U+2069).
+  o una URL se aíslan con los aislantes Unicode FSI/PDI (U+2068/U+2069), escritos en el catálogo como
+  los escapes `\u2068`/`\u2069`, en el texto, los atributos, los metadatos y la OG. No con una
+  etiqueta `<cmd>`: la paridad de etiquetas obliga a ponerla también en inglés (§15, fase 5).
 - **Sin literales:** `react/jsx-no-literals` en `components/cad/**` y `components/marketing/**`, con una
   lista corta de signos permitidos (`×`, `—`, `·`).
 - Las flechas "→" están fuera de los mensajes, en `ForwardArrow`, que las refleja en RTL (§7.4).
@@ -398,8 +399,10 @@ algún día hace falta negociar el idioma, se añade `proxy.ts` con el mismo `ro
 - **Satori, el motor de `next/og`, da forma a las letras árabes pero no reordena el texto bidireccional:**
   las líneas de varias palabras salen al revés. Los arreglos (vercel/satori#745, vercel/next.js#92111)
   siguen abiertos, y además IBM Plex Sans Arabic hace fallar su parser (Context Substitution Format 3).
-- **La OG árabe usa Readex Pro y el orden visual precalculado:** las líneas las decide el mensaje (el
-  título lleva sus saltos de línea) y `bidi-js` reordena cada una. Todo queda aislado en `lib/og.tsx` con
+- **La OG árabe usa Readex Pro y el orden visual precalculado:** las líneas las decide el mensaje (una
+  frase por línea) y `bidi-js` ordena las palabras de cada una; Satori invierte cada palabra árabe por
+  su cuenta. Hacen falta dos arreglos más (§15, fase 5): el ancho de cada palabra con opentype.js y
+  Readex Pro cargada la última. Todo queda aislado en `lib/og.tsx` con
   su `WHY`, y se retira cuando Satori reordene por su cuenta. Lo primero de la fase 5 es comprobar que
   Satori acepta Readex Pro. Si falla como IBM Plex Sans Arabic, la OG usa otra fuente de la tabla de
   §8.2 que sí funcione, y la web se queda con Readex Pro. Satori necesita woff o ttf, no woff2, así
@@ -644,8 +647,10 @@ interface EngineLocale {
   | Noto Sans Arabic (variable)   | 166                | La que sugiere shadcn; fuera de presupuesto                         |
 
 - **`preload: false`:** una fuente declarada en la layout compartida se precargaría en todos los
-  idiomas. Con `unicode-range`, `/` y `/es` nunca descargan el fichero árabe; en `/ar` se descubre con el
-  CSS, y el fallback con métricas ajustadas de `next/font` contiene el CLS. Si la medición de §10 lo
+  idiomas. Solo la pila de `/ar` la nombra (`scriptFontVariables`), así que `/` y `/es` nunca
+  descargan el fichero árabe; en `/ar` se descubre con el CSS, y el fallback con métricas ajustadas de
+  `next/font` contiene el CLS. Va justo detrás de Inter y antes de los dos fallbacks: el de Inter es un
+  Arial local, que tiene árabe y se quedaría con esas letras. Si la medición de §10 lo
   contradice, se sirve desde `public/` con un preload solo en `/ar`.
 - **`:lang(ar)`:** `letter-spacing: 0` (el tracking rompe las ligaduras de la escritura cursiva), sin
   `uppercase` en las etiquetas, interlineado de 1,8 en el cuerpo y de 1,3 en los titulares (los trazos
@@ -734,8 +739,11 @@ interface EngineLocale {
 
 - En cada idioma: `lang`, `dir`, canonical y `hreflang`; los enlaces del selector; la 404 localizada;
   la transición entre la landing y el editor en los dos sentidos; axe sin violaciones.
-- En `ar`: un recorrido solo con teclado (las flechas en menús van al revés); capturas frente al inglés;
-  las etiquetas del lienzo no se desplazan; los números negativos se ven bien en las paletas.
+- En `ar`: un recorrido solo con teclado (el orden de tabulación empieza a la derecha, los menús se
+  abren y se recorren con el teclado; la envoltura no tiene submenús, pestañas ni barras con flechas
+  horizontales, así que no hay flechas que inviertan: §15, fase 5); los popups en su lado lógico;
+  capturas frente al inglés; las etiquetas del lienzo no se desplazan; los números negativos se ven bien
+  en las paletas.
 - Las fuentes: `/` y `/es` no piden el fichero árabe.
 - Los presupuestos de §8.3 por idioma, y que la salida del build no tenga middleware.
 
@@ -1449,6 +1457,113 @@ las clases), el del editor 0,7 KB (`DecimalInput` y la extensión de `cn`); el c
 **Para la fase 5.** Con texto árabe de verdad: comprobar que las etiquetas largas caben en las paletas
 y los menús, la descripción del autocompletado dentro de la línea de comandos LTR, las letras de la
 brújula (sin AutoCAD árabe que copiar) y los ajustes `:lang(ar)` de §8.2.
+
+### Fase 5 — estado (01/10/2026): terminada en `draft`; pendiente solo la revisión nativa
+
+**Hecho.** `messages/ar.json` completo (landing, privacidad y `Editor.*`) y la `interface` entera del
+motor en `cad/locales/ar.json`, sin `commands`: el idioma de comandos de `ar` es el global (§4.1), con
+su `WHY` en `i18n/engine.ts` y su sección en `docs/autocad-coverage.md`. Árabe estándar moderno con
+la columna árabe del glosario, que dice de cada término cómo se eligió; plurales de seis categorías
+donde el sustantivo concuerda con el número; puntuación árabe, «», dígitos latinos, fechas
+gregorianas en UTC y listas con `Intl.ListFormat`; los tramos LTR aislados con FSI/PDI. Readex Pro
+variable (`subsets: ["arabic"]`, `preload: false`) detrás de Inter y Geist Mono solo en las páginas
+árabes, y los ajustes `:lang(ar)` de §8.2. La OG árabe con Readex Pro y el orden de `bidi-js`. El
+manifest en árabe (`lang`, `dir`, descripción, `start_url` `/ar/draw`). Textos de búsqueda propios.
+`ar` sigue en `draft`.
+
+**Verificado.** `typecheck`, `lint` y `test:coverage` en verde (`ar` en `TRANSLATED`, el harness con
+el catálogo árabe, todas las figuras y los diagramas reproducidos en árabe, la OG ordenada). Sobre el
+build de producción, servido a la vez que el de `6878cf2`:
+
+- **El inglés y el español no cambian:** `/`, `/es`, `/privacy`, `/es/privacy`, `/draw`, `/es/draw`
+  y las 404, capturados a 1 400 px por tramos y a 390 px, píxel a píxel idénticos y con el mismo
+  texto; la OG y el manifest, byte a byte; el editor con una línea dibujada y seleccionada, idéntico
+  en inglés. En español cambian solo, a propósito, los selectores de tipo y grosor de línea, que
+  ahora dicen «PorCapa» (abajo).
+- **RTL (§10):** `lang="ar"` y `dir="rtl"` en `/ar`, `/ar/privacy`, `/ar/draw` y la 404. El mismo
+  dibujo en `/draw` y `/ar/draw` da el mismo mapa de bits del lienzo (`toDataURL`), con sus
+  rótulos. `-12.50` y `-3.00` se leen bien en la paleta. El tooltip del riel se abre hacia el dibujo
+  (`inline-end`: a la izquierda del riel en RTL). Solo con teclado: la tabulación empieza por la
+  derecha (guardar, abrir, vistas…), el menú de vistas se abre con Intro, se recorre con las flechas y
+  Escape devuelve el foco al botón. Sin desbordamiento a 320, 360 y 390 px; axe sin infracciones en
+  `/ar`, `/ar/privacy`, `/ar/draw` y la 404. Capturas sección a sección frente al inglés.
+- **Presupuestos (§8.3)**, primera carga con Brotli (documento, JS, CSS y fuentes): `/` 231,4 →
+  231,9 KB (+0,3 de CSS: el `@font-face` y las reglas `:lang`), `/es` 232,6, **`/ar` 255,8 KB** (≤ 275)
+  y `/ar/privacy` 232,5. Fuentes de `/ar`: 3 ficheros, 93,5 KB (Readex Pro 22,7; ≤ 140); `/` y `/es`
+  piden 2, nunca el árabe. Catálogo árabe del motor: 3,3 KB gz (≤ 12), en el HTML de `/ar/draw`
+  (+3,5 KB gz con los `Editor.*` árabes). El JS de la landing no cambia. Todo `●`/`○`, sin
+  middleware.
+
+**Textos de búsqueda.** De las sugerencias de Google en Arabia Saudí, Egipto, Emiratos, Marruecos,
+Irak y Jordania (01/10/2026): se busca «أوتوكاد» (con o sin hamza), «رسم هندسي» (dibujo técnico),
+«ثنائي الأبعاد», «أون لاين» (no «عبر الإنترنت»), «مجاني/مجانا» y «أوامر الأوتوكاد واختصاراتها»
+(«اختصارات» es la palabra para los alias); «كاد» solo devuelve Cadillac y «بديل أوتوكاد» no se
+usa, porque se leería como si esto fuera AutoCAD. Título: «رسم هندسي ثنائي الأبعاد أون لاين مجانًا
+بأوامر أوتوكاد — MellowCAD»; descripción: «برنامج رسم هندسي ثنائي الأبعاد مجاني في متصفحك، بأوامر
+أوتوكاد واختصاراتها ونقاط الالتقاط التي تعرفها. بلا تثبيت ولا تسجيل، ورسوماتك لا تغادر جهازك.»
+
+**Correcciones al brief:**
+
+- **Satori acepta Readex Pro, pero no su subconjunto árabe:** con el woff de Fontsource falla en
+  cuanto una palabra árabe toca un carácter que el subconjunto no tiene (`اكتب.`). La OG usa el TTF
+  estático 600 entero de Google Fonts (92 KB, solo en el build). Corregido §5.6.
+- **Satori tiene dos fallos más con el árabe**, y `lib/og.tsx` los rodea con su `WHY`: mide cada
+  palabra como la suma de sus letras aisladas, más anchas que la palabra unida que dibuja (un 15–40 %
+  más, cada palabra arrastraba su hueco), así que opentype.js da a cada palabra su ancho real; y a
+  una forma contextual, que no tiene punto de código, le busca otra fuente y le responde la última
+  cargada, de modo que Readex Pro va la última o lanza `codePointAt`. Corregido §5.6.
+- **Aislamiento con FSI/PDI, no con `<cmd>`.** La paridad de etiquetas del test exige la misma
+  etiqueta en inglés y en español, y next-intl no admite argumentos que el mensaje no declare: habría
+  que etiquetar ~30 mensajes ingleses y pasar a nodos las props de texto de una docena de componentes.
+  Los aislantes hacen lo mismo en HTML, atributos, metadatos y OG, y el catálogo los muestra como
+  escapes. Lo que se pega en la línea de comandos pierde los controles bidi
+  (`setCommandLineText`). Corregido §5.4.
+- **Un plural puede ocupar el sitio de un `{n, number}`:** en árabe el sustantivo concuerda con el
+  número (`عنصر واحد`, `عنصران`, `3 عناصر`, `11 عنصرًا`, `100 عنصر`). El test de catálogos toma
+  los dos como el mismo tipo de argumento.
+- **«Las flechas al revés en los menús» no tiene objeto:** la envoltura no tiene submenús, pestañas,
+  barras de menús ni barras con foco itinerante, que es donde Base UI invierte las flechas
+  horizontales. El recorrido comprueba lo que sí depende de la dirección: el orden de tabulación, los
+  lados lógicos de los popups y los menús por teclado. Corregido §10.
+- **Los atajos con Ctrl por `e.code` (§4.3, §10) no estaban hechos;** con la distribución árabe, Ctrl+Z
+  no deshacía. Hechos en `CadEngine` (`shortcutKey`) con su test.
+- **Lo que encontró la comprobación RTL, en todos los idiomas:** los campos editables de la paleta no
+  eran isla LTR (`12.50-`, la unidad delante); los selectores de tipo y grosor de línea no tenían
+  `items` y cerrados mostraban el id `ByLayer` (también en español, que ahora dice «PorCapa»); las
+  teclas del tablero de comandos y las listas de la sección de herramientas no eran islas (`-MTEXT`
+  se leía `MTEXT-`); y axe pedía un landmark en el editor (`region`, también en inglés: ahora es
+  `<main>`, mismos píxeles).
+- **`:dir()` no sirve en el CSS:** Lightning CSS (dentro de Tailwind) lo baja a una lista de
+  `:lang()` que casa también dentro de las islas LTR. Las reglas se escriben con atributos.
+
+**Huecos decididos:**
+
+- **Lo que habla el idioma de comandos lleva su `lang`** (`state.commandLine.lang`, nuevo en el
+  estado del motor): las transcripciones, la línea de comandos, la entrada dinámica, la caja de
+  prueba, la línea de la 404. Así un lector de pantalla lee `Command: LINE` en inglés en una página
+  árabe. No en los contenedores cuyo `aria-label` está en árabe.
+- **Tipografía:** los titulares árabes, a otro tamaño (Readex Pro es más grande que Inter al mismo
+  cuerpo; «اضغط Enter.» cabe en una línea como «Press Enter.»); el árabe de `label-mono` y
+  `data-mono` va con la pila sans, porque Geist Mono le prestaba espacios de 0,6 em; la etiqueta de
+  los separadores de cota, dentro de su isla, con `dir="auto"`.
+- **Términos con alternativa**, marcados † en el glosario: «بالطبقة» por ByLayer (lo habitual es «حسب
+  الطبقة», que no cabía en el selector de color), «تقاطع ظاهري», «التقاط الكائنات», «مكعب العرض» por
+  ViewCube. Las letras de la brújula son las iniciales de los mapas árabes: ش (شمال), ق (شرق), ج
+  (جنوب), غ (غرب).
+- **AutoCAD se escribe «أوتوكاد» en la prosa**, como lo escribe quien lo busca, y `AutoCAD` en el aviso
+  de marca. La FAQ explica que los comandos están en inglés porque no existe AutoCAD en árabe.
+- **El texto de dibujo árabe** (los rótulos de los dos diagramas) se dibuja LTR y se mide como glifo
+  medio: legible, con un espaciado aproximado. Es el hueco de §2, anotado en la cobertura.
+- **El nombre «العربية» del selector**, en las páginas inglesa y española, saldrá con la fuente del
+  sistema cuando `ar` sea `live`: nombrar Readex Pro ahí haría descargar 23 KB por una palabra.
+
+**Hallazgo sin corregir** (no es de esta fase y cambiaría el inglés): el selector de tipo de línea
+cerrado muestra el id `DashDot` donde la lista dice «Dash dot».
+
+**Pendiente para pasar `ar` a `live`:** la revisión de un hablante nativo de todo el árabe —
+`messages/ar.json`, `cad/locales/ar.json` y la columna del glosario, con los † primero— y, con ella,
+`LOCALE_STATUS.ar = "live"` y quitar «الواجهة العربية» (y su gemelo inglés y español) de lo siguiente
+en la sección Status, que entonces ya estará hecho.
 
 ## Referencias
 

@@ -123,12 +123,21 @@ Only for what the harness cannot see: canvas rendering, DOM, theming, CSS. If yo
 - Reproduce a user's bug on the server they use: a blank editor only existed under `next dev`,
   whose HTML belongs to the request it answered, and never on the production build.
 - Dispatch events in one `page.evaluate` and read the DOM in another — React commits async.
-- **RTL (brief §7):** `/ar` and `/ar/draw` are RTL with English words, and `dir="rtl"` forced on
-  an English page must give the same. Compare the canvas by `toDataURL()`, not a screenshot (the
-  chrome lies over it), and an element against its LTR twin pinned at 0,0 over an opaque backdrop
-  with the canvas hidden: the same SVG at another subpixel offset antialiases differently, and the
-  ViewCube is translucent until hovered. The autosave spinner in the command bar varies by tens of
-  pixels run to run.
+- **RTL (brief §7, §10):** `/ar` and `/ar/draw` are Arabic. Compare the canvas by `toDataURL()`,
+  not a screenshot (the chrome lies over it): `/draw` and `/ar/draw` with the same drawing must
+  give the same bitmap, labels included. An element against its LTR twin is pinned at 0,0 over an
+  opaque backdrop with the canvas hidden: the same SVG at another subpixel offset antialiases
+  differently, and the ViewCube is translucent until hovered. The autosave spinner in the command
+  bar varies by tens of pixels run to run. The rest of the check: `lang`/`dir`, the Tab order
+  (it starts on the right), popups on their logical side (a hovered rail button's tooltip opens
+  towards the drawing), a negative value typed in the palette reading `-12.50`, no sideways scroll
+  at 320/360/390 px, axe, that `/` and `/es` fetch two fonts and `/ar` three — and English and
+  Spanish captured from the build before and after, pixel for pixel, the editor in use included
+  (a selection in the palette), not only at rest.
+- **Arabic text needs eyes, not only assertions:** the first Arabic pass had a number reading
+  `12.50-`, `-MTEXT` reading `MTEXT-`, Arabic labels spaced by Geist Mono's spaces and a share
+  card whose words ran backwards — each with every test green. Look at the captures section by
+  section, beside the English ones.
 - **Anything that opens a menu or popover from a canvas gesture must be verified with trusted
   clicks** (`page.locator(…).click()`), never `dispatchEvent`. Synthetic events do not reproduce
   how a popup reacts to the release that follows the press, nor the `pointerleave` a portalled

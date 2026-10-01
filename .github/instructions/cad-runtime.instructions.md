@@ -338,7 +338,9 @@ Two listeners are deliberately on `canvas.ownerDocument`, not the canvas:
   which are global and must also be swallowed so the browser's own dialogs never open. Other Ctrl
   combos stay unforwarded on purpose: a global undo from a focused field desyncs the running tool,
   and Ctrl+C/X/V/A inside a dynamic-input box or a layer name belong to that **text**. Never widen
-  `isFileShortcut` to the clipboard keys.
+  `isFileShortcut` to the clipboard keys. **A Ctrl combo is read by its physical key**
+  (`shortcutKey`): an Arabic, Greek or Cyrillic layout sends its own letter in `e.key`, so under
+  Ctrl a key that is not a latin letter or digit is taken from `e.code`. Typed text never is.
 - `contextmenu`, because the event fires on button _release_, by which time a portalled modal
   backdrop may be the target.
 

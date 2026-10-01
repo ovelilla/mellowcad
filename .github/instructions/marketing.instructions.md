@@ -184,6 +184,14 @@ party — updates it in the same change.
   `[locale]` would give English an `/en/…` URL, and one in a route group gets a hash that structured
   data cannot cite. `/opengraph-image` redirects to `/og`. The manifest is per language too
   (`app/[locale]/manifest.webmanifest`), so each installs as its own app.
+- **A right-to-left card works around three faults of Satori** (`lib/og.tsx`, each with its
+  `WHY`): it sets a line's words left to right, so `visualPieces` (bidi-js) hands them over in
+  visual order, one sentence per line; it sizes an Arabic word as its isolated letters, so
+  opentype.js gives each its shaped width; and it answers a contextual form with the last face
+  loaded, so Readex Pro is loaded last. Readex Pro there is the whole static TTF
+  (`assets/fonts`): the Arabic subset alone makes the shaper throw. Retire the workarounds when
+  Satori reorders on its own, and look at the card before trusting it — a build that passes can
+  still draw the words backwards.
 - Structured data is one `@graph` (`lib/structured-data.ts`), typed with `schema-dts`, rendered by
   `JsonLd` with `<` escaped. The replacement is `"\\u003c"` in source: with a single backslash the
   string _is_ `<`, and the escape silently does nothing (it shipped that way once). No invented
@@ -220,10 +228,17 @@ party — updates it in the same change.
   drawings do not. `Drawing` and `Glyph` are `direction="ltr"`, their text tagged with the command
   language (`drawingMarkup(…, lang)` from `recording.scene.lang`); the hero sheet and the live
   sheet, `SheetFrame` and `DimensionDivider` are `dir="ltr"`, and so is everything in the command
-  language — transcripts, the try-it box, the 404's line, the final call's `Command:`. A call to
-  action's arrow is `ForwardArrow`: the text's own `→`, mirrored, since U+2192 has no bidi mirror.
+  language — transcripts, the try-it box, the 404's line, the final call's `Command:`, the
+  command board's key caps and the toolset's command lists (`-MTEXT` read `MTEXT-` in a
+  right-to-left paragraph); those carry the command language's `lang` too. A label inside an LTR
+  island that is in the page's language (the divider's) reads in its own direction, `dir="auto"`.
+  A call to action's arrow is `ForwardArrow`: the text's own `→`, mirrored, since U+2192 has no
+  bidi mirror.
 - Inter ships without its `opsz` axis: the Display cut cost ~25 KB the first-load budget (≤ 250 KB,
   Brotli) could not spare beside the framework runtime; headlines are tracked tighter instead.
+  Arabic's budget is ≤ 275 KB with its third font (≤ 140 KB of fonts): the document, scripts,
+  stylesheets and fonts of the first load, Brotli — not the `?_rsc` prefetches of the page's
+  links, which a browser tool counts too.
 
 ## Files
 

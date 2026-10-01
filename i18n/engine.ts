@@ -11,6 +11,9 @@ import type { AppLocale } from "./routing"
 const ENGINE_LOCALES: Partial<Record<AppLocale, () => Promise<EngineLocale>>> =
   {
     es: () => import("@/cad/locales/es").then((module) => module.es),
+    // WHY interface only: there is no Arabic AutoCAD, and whoever drafts in
+    // Arabic works in the English one, so Arabic's command language is the
+    // global one (docs/autocad-coverage.md, "Arabic interface").
     ar: () => import("@/cad/locales/ar").then((module) => module.ar),
   }
 

@@ -48,7 +48,8 @@ by key. `application/EngineText.ts` is the one place that reads it; a tool reach
   Autodesk's style and marked unverified in `docs/autocad-coverage.md`. In Spanish `H` undoes and
   `U` is UNIR.
 - **A language translates the whole `interface` but for `linetype` and `hatchPattern`**, which are
-  the drawing's data names and fall back to English's. `locales.test.ts` holds Spanish to that.
+  the drawing's data names and fall back to English's. `locales.test.ts` holds every language to that,
+  and Arabic to having no `commands` (its command language is the global one).
 - **No global language state.** The locale is passed explicitly — `CadEngineOptions`, `CadRuntime`'s
   fifth argument, `CadDriverOptions` (so `createHarness`), `recordDemo(…, { locale })`,
   `commandCatalog(locale)` — and `setLocale` switches one engine. A module-level registry would be
@@ -56,7 +57,7 @@ by key. `application/EngineText.ts` is the one place that reads it; a tool reach
 - **Messages are ICU MessageFormat** (next-intl's syntax): `{count, plural, …}`, never a hand-made
   plural. A `<` followed by a letter is written `'<'`, or ICU reads it as a tag. `names` and
   `keywords` are words, not messages, and are not compiled.
-- **After editing a catalog (`en.json`, `es.json`), run `npm run locales`** and commit both files:
+- **After editing a catalog (`en.json`, `es.json`, `ar.json`), run `npm run locales`** and commit both files:
   the engine imports the compiled module (no parser ships to the browser), and `locales.test.ts`
   fails on any drift.
 - **Technical values never go through `Intl`.** Lengths and angles are `formatLength` /

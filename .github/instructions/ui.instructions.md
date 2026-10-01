@@ -48,12 +48,17 @@ from logical classes, nothing from a second layout.
   positioned, never on a positioned element alone: the spec resolves a logical inset against the
   containing block, Chrome against the element.
 - **A technical value in a palette is an island with `text-end`** — its right in every page — so
-  `-12.5` never reads `12.5-`. A numeric field is `DecimalInput` (text, `inputMode="decimal"`, a
+  `-12.5` never reads `12.5-`. A typeable one is an island with its unit (the `dd` holding the
+  field and the `mm`), or the unit lands before the number. A numeric field is `DecimalInput` (text, `inputMode="decimal"`, a
   point, the arrows step it), never `type="number"`: Chrome writes one in the browser's language
   (`3,75`) whatever the page's `lang`.
 - **Icons**: `mirrored` on `IconAction` (elsewhere `rtl:-scale-x-100`) for linear direction or time
   — undo, redo, zoom previous, send, open outside. Never a rotation (orbit, the cube's roll) or a
   CAD glyph (mirror, extend, offset). `rtl:` matches inside an LTR island too (`[dir=rtl] *`).
+- What speaks the command language carries `lang={state.commandLine.lang}` — the command line's
+  lines, its prompt and input, the dynamic input — so a screen reader reads `Command: LINE` in
+  English on an Arabic page. Not the containers whose `aria-label` is in the page's language.
+- The workspace is the page's `<main>`: every control sits in a landmark (axe's `region`).
 - `cn()` pairs `px`, `mx` and `inset-x` with their logical sides, which tailwind-merge 3.6 does not
   (`lib/utils.ts`): without it a caller's `px-1.5` stops replacing a component's `ps-2.5 pe-2`.
 
