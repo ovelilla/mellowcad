@@ -45,25 +45,6 @@
     "replay": "Replay the drawing",
     "cursor": "Cursor position"
   },
-  "LiveSketch": {
-    "tryIt": "Try it here",
-    "loading": "Loading the sketch…",
-    "failed": "The sketch did not load. Check your connection and try again.",
-    "retry": "Try again",
-    "canvasLabel": "Live sketch of the flange",
-    "hint": "Type a command — L for LINE, C for CIRCLE — then Enter. Esc cancels.",
-    "wheelHint": "The wheel zooms while you draw here; click outside to scroll the page.",
-    "commandLog": "Command line",
-    "openEditor": "Open in the full editor",
-    "close": "Close",
-    "closeLabel": "Close the sketch",
-    "dialogTitle": "You already have a drawing in the editor",
-    "saved": "{count, plural, one {It has # object and is autosaved in this browser.} other {It has # objects and is autosaved in this browser.}} The editor keeps one drawing at a time.",
-    "dialogBody": "Download this sketch as a file and open your drawing, or replace your drawing with the sketch.",
-    "download": "Download the sketch",
-    "replace": "Replace my drawing",
-    "cancel": "Cancel"
-  },
   "SendToDesktop": {
     "action": "Send to my computer",
     "copied": "Link copied",
@@ -450,14 +431,8 @@
       "varies": "Varies",
       "customColor": "Custom colour"
     },
-    "About": {
-      "label": "About MellowCAD",
-      "status": "Work in progress",
-      "intro": "A 2D drafting app in the browser, built around the commands, snaps and keyboard flow AutoCAD users already know. It is a personal project under active development — commands land one at a time, so expect gaps and rough edges.",
-      "storage": "Your drawings stay on this device: they are auto-saved in the browser and never uploaded. Clearing site data deletes them, so use Save to keep a copy as a file.",
-      "gettingStarted": "Getting started",
-      "howTo": "Type a command (<key>LINE</key>, <key>CIRCLE</key>), <key>F2</key> toggles the command line, <key>Esc</key> cancels.",
-      "language": "Language"
+    "Language": {
+      "label": "Language"
     }
   }
 }

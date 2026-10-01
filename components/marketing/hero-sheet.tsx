@@ -1,4 +1,4 @@
-import { getLocale, getTranslations } from "next-intl/server"
+import { getTranslations } from "next-intl/server"
 import type { CSSProperties } from "react"
 
 import {
@@ -10,11 +10,10 @@ import {
 import { HERO_FIGURE } from "@/content/figures"
 import { sitePaths } from "@/i18n/site-paths"
 import { pageEngineLocale, plotDemo, type PlottedLine } from "@/lib/plot"
-import { pluralMessage } from "@/lib/plural"
 
 import { Drawing } from "./drawing"
 import { HeroControls } from "./hero-controls"
-import { LiveSheet } from "./live-sheet"
+import { TransitionSheet } from "./transition-sheet"
 import { UcsIcon } from "./ucs-icon"
 
 const SHEET_ID = "hero-sheet"
@@ -84,14 +83,10 @@ function lastCursor(actions: readonly DemoAction[]) {
 /**
  * The hero's drawing sheet: the flange plotted stroke by stroke while the
  * command line below types what drew it — both timed from one replay of the
- * script, at build time, with no JavaScript needed to watch it. On a computer
- * the sheet can then come alive (`LiveSheet`).
+ * script, at build time, with no JavaScript needed to watch it.
  */
 export async function HeroSheet() {
   const t = await getTranslations("Hero")
-  const live = await getTranslations("LiveSketch")
-  const input = await getTranslations("Editor.DynamicInput")
-  const locale = await getLocale()
   const { editor } = await sitePaths()
   const engine = await pageEngineLocale()
   const text = engineText(engine)
@@ -106,41 +101,10 @@ export async function HeroSheet() {
 
   return (
     <figure className="flex flex-col gap-3">
-      <LiveSheet
-        id={SHEET_ID}
-        editor={editor}
-        locale={locale}
-        view={{
-          frame: HERO_FIGURE.frame,
-          padding: HERO_FIGURE.padding,
-          width: HERO_FIGURE.width,
-        }}
-        labels={{
-          tryIt: live("tryIt"),
-          loading: live("loading"),
-          failed: live("failed"),
-          retry: live("retry"),
-          live: {
-            canvasLabel: live("canvasLabel"),
-            hint: live("hint"),
-            wheelHint: live("wheelHint"),
-            commandLog: live("commandLog"),
-            commandPrompt: idle,
-            openEditor: live("openEditor"),
-            close: live("close"),
-            closeLabel: live("closeLabel"),
-            dialogTitle: live("dialogTitle"),
-            saved: pluralMessage(locale, (count) => live("saved", { count })),
-            dialogBody: live("dialogBody"),
-            download: live("download"),
-            replace: live("replace"),
-            cancel: live("cancel"),
-            locked: input("locked"),
-          },
-        }}
-        drawing={
-          // The sheet is the drawing: its figure, UCS icon and coordinates
-          // never mirror.
+      <TransitionSheet id={SHEET_ID} editor={editor}>
+        <div className="typing plot">
+          {/* The sheet is the drawing: its figure, UCS icon and coordinates
+              never mirror. */}
           <div className="relative" dir="ltr">
             <div
               aria-hidden="true"
@@ -163,38 +127,36 @@ export async function HeroSheet() {
               <span className="ms-3">Y {coordinate(cursor.y)}</span>
             </p>
           </div>
-        }
-        transcript={
-          <div
-            aria-hidden="true"
-            dir="ltr"
-            lang={text.commandTag}
-            className="flex h-[6em] min-w-0 flex-1 flex-col justify-end overflow-hidden font-mono text-[0.8125rem]"
-          >
-            {plot.lines.map((line, index) => (
-              <Line key={index} line={line} idle={idle} />
-            ))}
+          <div className="flex items-end gap-3 border-t border-border bg-bg-sunken px-3 py-2">
             <div
-              className="cl-line"
-              style={{ "--t": `${plot.duration}ms` } as Timed}
+              aria-hidden="true"
+              dir="ltr"
+              lang={text.commandTag}
+              className="flex h-[6em] min-w-0 flex-1 flex-col justify-end overflow-hidden font-mono text-[0.8125rem]"
             >
-              <span className="text-fg-subtle">{idle} </span>
-              <span
-                className="caret"
+              {plot.lines.map((line, index) => (
+                <Line key={index} line={line} idle={idle} />
+              ))}
+              <div
+                className="cl-line"
                 style={{ "--t": `${plot.duration}ms` } as Timed}
-              />
+              >
+                <span className="text-fg-subtle">{idle} </span>
+                <span
+                  className="caret"
+                  style={{ "--t": `${plot.duration}ms` } as Timed}
+                />
+              </div>
             </div>
+            <HeroControls
+              targetId={SHEET_ID}
+              pauseLabel={t("pause")}
+              playLabel={t("play")}
+              replayLabel={t("replay")}
+            />
           </div>
-        }
-        controls={
-          <HeroControls
-            targetId={SHEET_ID}
-            pauseLabel={t("pause")}
-            playLabel={t("play")}
-            replayLabel={t("replay")}
-          />
-        }
-      />
+        </div>
+      </TransitionSheet>
       <figcaption className="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-2 text-sm text-fg-subtle">
         <span>{t("caption")}</span>
         <details>

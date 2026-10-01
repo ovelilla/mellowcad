@@ -23,10 +23,11 @@ import { Button } from "@/components/ui/button"
 import { TooltipProvider } from "@/components/ui/tooltip"
 import { CadEngine, EngineState, VIEW_MENU, type ViewPreset } from "@/cad"
 
+import { LanguageMenu } from "./language-menu"
 import { IconAction, Panel } from "./toolbar-primitives"
 
 /**
- * The top command bar: file actions and view navigation. Horizontal and
+ * The top command bar: file actions, view navigation and the language. Horizontal and
  * compact so it stays a single short row regardless of viewport width.
  */
 export function CommandBar({
@@ -132,6 +133,7 @@ export function CommandBar({
             active={state.commandLine.visible}
             onClick={() => engine.toggleCommandLine()}
           />
+          <LanguageMenu />
         </Panel>
       </div>
     </TooltipProvider>

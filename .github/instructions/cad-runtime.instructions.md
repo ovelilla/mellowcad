@@ -351,7 +351,7 @@ it.
 ### Embedding (`CadEngineOptions`)
 
 The editor passes no options, and everything above is its behaviour. Two options let the same
-composition root live inside a page it does not own (the landing's live sketch):
+composition root live inside a page it does not own:
 
 - `store` replaces the autosave's `DrawingStore` — `createMemoryDrawingStore()` for one that lasts
   as long as the page, `null` for none. **Anything embedding the engine beside the editor must pass

@@ -1,12 +1,6 @@
 import { describe, expect, it } from "vitest"
 
-import { GET } from "@/app/sketches/hero.json/route"
-import {
-  DEFAULT_LAYER_ID,
-  parseDrawingFile,
-  recordDemo,
-  transcript,
-} from "@/cad"
+import { recordDemo, transcript } from "@/cad"
 import { ar } from "@/cad/locales/ar"
 import { es } from "@/cad/locales/es"
 import { plotDemo, renderFigure } from "@/lib/plot"
@@ -94,18 +88,5 @@ describe("the hero", () => {
     const times = plot.lines.map((line) => line.at)
     expect(times).toEqual([...times].sort((a, b) => a - b))
     expect(times.at(-1)).toBeLessThanOrEqual(plot.duration)
-  })
-
-  // The live sketch opens this file; if it stopped loading, "Try it here"
-  // would open an empty sheet over the drawing it promised.
-  it("is served as a drawing the editor opens, on layer 0", async () => {
-    const response = await GET()
-    const drawing = parseDrawingFile(await response.text())
-
-    expect(drawing.entities.length).toBe(
-      (await recordDemo(HERO_FIGURE.script)).document.size
-    )
-    expect(drawing.currentLayerId).toBe(DEFAULT_LAYER_ID)
-    expect(response.headers.get("X-Robots-Tag")).toBe("noindex")
   })
 })

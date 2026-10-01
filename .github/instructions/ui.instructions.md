@@ -97,7 +97,8 @@ class or light values.
 
 ## Where a control belongs
 
-- **CommandBar** (top) — file, view and palette visibility (AutoCAD's ribbon View → Palettes):
+- **CommandBar** (top) — file, view and palette visibility (AutoCAD's ribbon View → Palettes), and
+  last the language (`LanguageMenu`, a Base UI menu of `useLanguageLinks`):
   the view menu (the viewport controls' `[Top]`: `VIEW_MENU`, labelled by `state.view.preset`, run
   through `engine.applyViewPreset`) and Orbit beside Zoom window and Pan.
 - **ViewCube** (top right, NAVVCUBELOCATION 0; top left in RTL, with the palettes) — `view-cube.tsx` draws `state.viewCube` in SVG
@@ -112,15 +113,12 @@ class or light values.
   Fillet/Chamfer, Rectangle/Polygon, Break, the attribute commands) are flyouts, named by `Editor.ToolRail.flyouts`;
   icon-only with `side="inline-end"` tooltips. Unlisted tools fall into a trailing "more" group, so a tool that belongs elsewhere in the chrome
   (the view tools, which live in the CommandBar) must be listed in `RAIL_EXCLUDED`.
-- **AboutPanel** (bottom-right) — the only non-CAD chrome: what the app is, that drawings never
-  leave the browser, a three-key quick start and the contact address. Product/meta copy goes here,
-  not into a drafting surface.
+- The editor carries no product or meta copy (an About panel was removed): that belongs to the
+  landing.
 - The dynamic-input box is `pointer-events-none` and keyboard-driven — never make it clickable.
   A `paragraphs` field (MTEXT's editor) is a textarea: Enter stays a line break, Ctrl+Enter
   commits, and it is never reselected when focus comes back, or the next key would wipe the text.
-- It is also the landing's: the live sketch embeds this very component, and `marketing.css` scans
-  the file and maps the tokens it uses (`card`, `foreground`, `muted`, `muted-foreground`,
-  `border`). A new token in it needs that mapping too. It reclaims focus only where
+- It reclaims focus only where
   `engine.mayTakeFocus` allows, which for the editor is anywhere. `useCadEngine(options)` passes an
   embed's store and scope through; the editor passes none.
 

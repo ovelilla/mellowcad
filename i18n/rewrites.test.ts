@@ -23,7 +23,7 @@ function apply(routes: readonly Route[], path: string): string | null {
 }
 
 // What Next serves before `afterFiles`: the pages outside `[locale]`.
-const FILES = new Set(["/sketches/hero.json", "/sitemap.xml", "/robots.txt"])
+const FILES = new Set(["/sitemap.xml", "/robots.txt"])
 
 /** Where a request ends up, the way Next's router orders it. */
 function resolve(path: string): string {
@@ -52,7 +52,7 @@ describe("the locale URL scheme", () => {
     ["/xx/yy", "route /en/xx/yy"],
     // A word that merely starts like a locale is not one.
     ["/espresso", "route /en/espresso"],
-    ["/sketches/hero.json", "file /sketches/hero.json"],
+    ["/sitemap.xml", "file /sitemap.xml"],
     // The framework's own paths are never given a locale.
     ["/_next/static/chunk.js", "route /_next/static/chunk.js"],
     ["/_vercel/insights/script.js", "route /_vercel/insights/script.js"],

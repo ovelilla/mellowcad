@@ -45,25 +45,6 @@
     "replay": "Repetir el dibujo",
     "cursor": "Posición del cursor"
   },
-  "LiveSketch": {
-    "tryIt": "Pruébalo aquí",
-    "loading": "Cargando el boceto…",
-    "failed": "El boceto no se ha cargado. Comprueba la conexión y vuelve a intentarlo.",
-    "retry": "Volver a intentarlo",
-    "canvasLabel": "Boceto en vivo de la brida",
-    "hint": "Escribe un comando —L para LINEA, C para CIRCULO— y pulsa Intro. Esc cancela.",
-    "wheelHint": "La rueda hace zoom mientras dibujas aquí; haz clic fuera para desplazar la página.",
-    "commandLog": "Línea de comandos",
-    "openEditor": "Abrir en el editor completo",
-    "close": "Cerrar",
-    "closeLabel": "Cerrar el boceto",
-    "dialogTitle": "Ya tienes un dibujo en el editor",
-    "saved": "{count, plural, one {Tiene # objeto y se guarda automáticamente en este navegador.} other {Tiene # objetos y se guarda automáticamente en este navegador.}} El editor guarda un solo dibujo cada vez.",
-    "dialogBody": "Descarga este boceto como archivo y abre tu dibujo, o sustituye tu dibujo por el boceto.",
-    "download": "Descargar el boceto",
-    "replace": "Sustituir mi dibujo",
-    "cancel": "Cancelar"
-  },
   "SendToDesktop": {
     "action": "Enviar a mi equipo",
     "copied": "Enlace copiado",
@@ -450,14 +431,8 @@
       "varies": "Varios",
       "customColor": "Color personalizado"
     },
-    "About": {
-      "label": "Acerca de MellowCAD",
-      "status": "En desarrollo",
-      "intro": "Una aplicación de dibujo 2D en el navegador, construida en torno a los comandos, las referencias a objetos y el flujo de teclado que ya conocen los usuarios de AutoCAD. Es un proyecto personal en desarrollo activo: los comandos llegan uno a uno, así que encontrará huecos y asperezas.",
-      "storage": "Sus dibujos se quedan en este dispositivo: se guardan automáticamente en el navegador y nunca se suben. Borrar los datos del sitio los elimina, así que use Guardar para conservar una copia en un archivo.",
-      "gettingStarted": "Primeros pasos",
-      "howTo": "Escriba un comando (<key>LINEA</key>, <key>CIRCULO</key>); <key>F2</key> muestra u oculta la línea de comandos y <key>Esc</key> cancela.",
-      "language": "Idioma"
+    "Language": {
+      "label": "Idioma"
     }
   }
 }

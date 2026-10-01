@@ -5,7 +5,6 @@ import { useTranslations } from "next-intl"
 import type { EngineLocale } from "@/cad"
 import { useCadEngine } from "@/hooks/useCadEngine"
 import { EDITOR_SHEET_ID, SHEET_TRANSITION } from "@/lib/view-transition"
-import { AboutPanel } from "./about-panel"
 import { CommandBar } from "./command-bar"
 import { CommandLine } from "./command-line"
 import { ToolRail } from "./tool-rail"
@@ -99,10 +98,6 @@ export function CadWorkspace({
           <div className="pointer-events-none absolute inset-e-4 top-4 z-10 flex flex-col items-end gap-2">
             <ViewCube engine={engine} state={state} />
             <PropertiesPanel engine={engine} state={state} />
-          </div>
-
-          <div className="pointer-events-none absolute inset-e-4 bottom-4 z-10">
-            <AboutPanel />
           </div>
 
           <SnapOverrideMenu engine={engine} state={state} />

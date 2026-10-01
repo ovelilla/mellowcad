@@ -1,6 +1,6 @@
 ---
-applyTo: "app/[locale]/(marketing)/**,app/[locale]/og/**,app/[locale]/manifest.webmanifest/**,app/sketches/**,app/global-not-found.tsx,app/robots.ts,app/sitemap.ts,components/marketing/**,content/**,messages/**,i18n/**,lib/site.ts,lib/plot.ts,lib/plural.ts,lib/facts.ts,lib/og.tsx,lib/metadata.ts,lib/structured-data.ts,lib/brand.ts,lib/view-transition.ts"
-description: "The landing at / (marketing root layout): static rendering, engine-drawn figures, islands, the live sketch, the view transition into the editor, the privacy notice, copy in next-intl, tokens, budgets, claims policy and trademark rules."
+applyTo: "app/[locale]/(marketing)/**,app/[locale]/og/**,app/[locale]/manifest.webmanifest/**,app/global-not-found.tsx,app/robots.ts,app/sitemap.ts,components/marketing/**,content/**,messages/**,i18n/**,lib/site.ts,lib/plot.ts,lib/plural.ts,lib/facts.ts,lib/og.tsx,lib/metadata.ts,lib/structured-data.ts,lib/brand.ts,lib/view-transition.ts"
+description: "The landing at / (marketing root layout): static rendering, engine-drawn figures, islands, the view transition into the editor, the privacy notice, copy in next-intl, tokens, budgets, claims policy and trademark rules."
 ---
 
 # Landing (`/`)
@@ -34,25 +34,26 @@ party — updates it in the same change.
   output — check it; never `ƒ`, and no middleware). Nothing here reads `cookies()`, `headers()`,
   `searchParams` or next-intl's `requestLocale`; one such call silently turns the page dynamic. The
   locale comes from the root param (`next/root-params`). A route handler serving build-time data
-  (`sketches/hero.json`, the OG images, the manifests) exports `dynamic = "force-static"` — without
+  (the OG images, the manifests) exports `dynamic = "force-static"` — without
   Cache Components that is still how a `GET` is prerendered.
 - **Server Components by default.** A client island exists only where there is browser state — the
-  autosave to continue (`ContinueDrawing`), the pause button (`HeroControls`), the live sketch
-  (`LiveSheet`), the autocomplete (`CommandTry`), the share sheet (`SendToDesktop`), a URL only the
-  browser knows (`UnknownCommand`). It receives its copy as props — never wrap the tree in
+  autosave to continue (`ContinueDrawing`), the pause button (`HeroControls`), the sheet's name
+  for the trip into the editor (`TransitionSheet`), the autocomplete (`CommandTry`), the share sheet
+  (`SendToDesktop`), a URL only the browser knows (`UnknownCommand`). It receives its copy as props — never wrap the tree in
   `NextIntlClientProvider`. A count it formats itself arrives as a `pluralMessage()`.
 - **An island imports nothing heavy.** `@/cad` is safe _only_ because `package.json` declares the
   code side-effect free (see `cad-engine.instructions.md`); `cn()` is not — it ships
   `tailwind-merge`, and `next-intl/navigation` ships next-intl's client runtime. Budget: ≤ 15 KB gz
-  of our own JS on `/` (the islands' 5.5 KB, plus `UnknownCommand`'s 0.5 KB, which the language's
+  of our own JS on `/` (the islands' 4.7 KB, plus `UnknownCommand`'s 0.5 KB, which the language's
   404 boundary brings into the layout). Measure after touching one: a production build, then gzip
   the chunks the prerendered `.next/server/app/en.html` references (skip the `noModule`
   one — modern browsers never fetch it).
-- **The engine is never in the first load.** `live-canvas.tsx` is reached only through a dynamic
-  `import()` in `LiveSheet` (a `type` import is fine): one static import pulls the whole engine,
-  88 KB gz, into `/`. Check that `.next/server/app/en.html` names no chunk containing
-  `CadRuntime`'s strings. The chunk is shared with `/draw`, so trying the sketch also warms the
-  editor.
+- **The engine never runs on the landing.** An island takes from `@/cad` only small pure helpers
+  and types; anything reaching `CadEngine` pulls the whole engine, 88 KB gz, into `/`. Check that
+  `.next/server/app/en.html` names no chunk containing `CadRuntime`'s strings. Whoever wants to
+  draw goes to the editor: a live, editable sketch in the hero was built and then removed — it
+  added weight and complexity and did nothing the real editor, one click away, does not. Do not
+  bring it back.
 - The 404 of a language is `(marketing)/not-found.tsx`, inside the layout, reached through a
   prerendered `404/page.tsx` and a `fallback` rewrite (`i18n.instructions.md`). Its body arrives
   drawn in the browser, not in the HTML — Next 16.3's way with a page's `notFound()`.
@@ -96,37 +97,6 @@ party — updates it in the same change.
 - CAD glyphs outside a figure — endpoint markers on hover, dimension arrowheads in the separators —
   are taken from engine frames too (`snapGlyph`, `arrowheadGlyph`). A snap marker is feedback: shown
   on hover or focus only, never as decoration.
-
-## The live sketch (`LiveSheet` → `LiveCanvas`)
-
-- On a computer (`pointer-fine:lg:`), "Try it here" makes the hero's sheet live. The still figure
-  stays in the flow, invisible and `inert`, holding the sheet's size; the canvas lies over it and
-  frames the figure's own `frame` with its padding scaled (`engine.zoomToBounds`), so nothing
-  moves as it wakes. A hover or focus on the button fetches the chunk and the drawing ahead of the
-  click.
-- It is the real engine, embedded: `useCadEngine({ store, scopeRef })`. **The store is
-  `createMemoryDrawingStore()`, never the device's** — the sketch must not write over the drawing
-  the user keeps in the editor. It lives as long as the page, so a closed sketch reopens as left.
-  The scope gives it the keyboard and the wheel only while in use (`cad-runtime.instructions.md`).
-- It opens on `/sketches/hero.json`: the hero's replay as a drawing file, layer 0 current.
-  `content/figures.test.ts` loads it.
-- Behaviour comes from the editor, not from copies: the dynamic-input box _is_
-  `components/cad/dynamic-input.tsx`, which `marketing.css` scans and whose shadcn tokens it maps
-  inside `.live-sketch`. Another editor component brought in needs both, and takes its words as
-  props: the landing has no message provider, so one that calls `useTranslations` throws when the
-  sketch opens (it shipped that way once; `i18n/messages.test.ts` now fails on it). The docked
-  command line only reads `state.commandLine`.
-- What does not fit on the sheet is left to the full editor, never faked: the Shift+right-click
-  menu is closed if it opens (unseen, it would take the next Escape) and Selection cycling keeps
-  the badge without its list box. A new omission goes in `docs/autocad-coverage.md`.
-- No keyboard trap: Esc cancels as in AutoCAD and never closes the sketch; Tab and Shift+Tab leave
-  it; "Close" is always in view and hands focus back to "Try it here". The canvas is
-  `role="application"`, the command line a `role="log"`.
-- **"Open in the full editor" never overwrites unasked.** A blank device autosave
-  (`isBlankDrawing`, the rule the editor restores by) is replaced and the editor opens. Otherwise
-  a native modal `<dialog>` — outside the scope, so its keys stay its own — offers "Download the
-  sketch" (first, so focused: it loses nothing), "Replace my drawing" and "Cancel". If storage
-  refuses the write, the sketch is downloaded rather than lost.
 
 ## Into the editor
 
@@ -209,7 +179,7 @@ party — updates it in the same change.
 
 - `marketing.css` is its own Tailwind entry with `source(none)` and explicit `@source` paths; the
   editor's `globals.css` excludes these folders in turn. A new marketing folder must be added to
-  both. The one editor file the live sketch embeds (`dynamic-input.tsx`) is scanned too.
+  both.
 - **Tokens only**: `bg-bg`, `bg-bg-raised`, `bg-bg-sunken`, `border-border`, `text-fg`,
   `text-fg-muted`, `text-fg-subtle`, `bg-accent` / `text-accent-ink`, `text-precision`, and
   `var(--cad-*)` inside drawings. No loose hex in a component (`lib/brand.ts` holds the few that must
@@ -217,7 +187,7 @@ party — updates it in the same change.
 - One scheme, dark, like the editor (brief D12): the tokens sit on `:root` with
   `color-scheme: dark`, `dark:` always applies, and there is no theme selector. The language
   selector is `LanguageLinks` (`i18n.instructions.md`): a list in the footer's title block, a globe
-  menu in the bar on a computer and a section of the menu on a phone.
+  menu in the bar on a computer (hung from its button by CSS anchor positioning) and a section of the menu on a phone.
 - One accent per view: amber is the call to action and the focus ring; cyan is reserved for
   precision (snap markers, measurements) and is never a link colour.
 - Use `text-wrap-style`, not the `text-wrap` shorthand, in base styles: the shorthand also resets the
@@ -228,8 +198,8 @@ party — updates it in the same change.
   is in its final state. Anything that moves for more than five seconds can be paused.
 - **Right to left**: the composition mirrors (logical classes, `ui.instructions.md`) and the
   drawings do not. `Drawing` and `Glyph` are `direction="ltr"`, their text tagged with the command
-  language (`drawingMarkup(…, lang)` from `recording.scene.lang`); the hero sheet and the live
-  sheet, `SheetFrame` and `DimensionDivider` are `dir="ltr"`, and so is everything in the command
+  language (`drawingMarkup(…, lang)` from `recording.scene.lang`); the hero sheet,
+  `SheetFrame` and `DimensionDivider` are `dir="ltr"`, and so is everything in the command
   language — transcripts, the try-it box, the 404's line, the final call's `Command:`, the
   command board's key caps and the toolset's command lists (`-MTEXT` read `MTEXT-` in a
   right-to-left paragraph); those carry the command language's `lang` too. A label inside an LTR

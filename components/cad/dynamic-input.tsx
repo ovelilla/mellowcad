@@ -10,9 +10,6 @@ import { CadEngine, EngineState } from "@/cad"
  * and forwards every interaction back to the engine. All meaning (units,
  * parsing, what a value does) lives in the engine/tool system, so the same UI
  * works for distances today and radii, angles or coordinates later.
- *
- * The landing's live sketch embeds it too, where no message provider exists —
- * so its one word arrives as a prop rather than from `useTranslations`.
  */
 export function DynamicInput({
   engine,

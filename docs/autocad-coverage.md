@@ -297,7 +297,7 @@ interlineado`, `Anchura definida`, `Método`, `Grado`…),
 ## Arabic interface (`ar`)
 
 `/ar/draw` is English AutoCAD with its interface in Arabic: palettes, menus, tooltips, the status bar
-and the About panel speak Arabic and mirror right to left; the drawing, the command line, the
+and the language menu speak Arabic and mirror right to left; the drawing, the command line, the
 dynamic input, the coordinates and every technical value stay left to right.
 
 - **Deviation, forced by what does not exist:** there is no Arabic AutoCAD — Autodesk ships 14
@@ -340,7 +340,7 @@ dynamic input, the coordinates and every technical value stay left to right.
 | Command                                                                                                         | Implemented                                                                                                                                                                                                         | Missing                                                                                                                                                                 |
 | --------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `COPYCLIP` / `CUTCLIP` / `COPYBASE` / `PASTECLIP` / Ctrl+A · es `COPIAPP` / `CORTAPP` / `COPIARBASE` / `PEGAPP` | all four plus select-all, `Clipboard` port with a session fallback, table reconciliation across drawings (destination name wins), single undo on paste, bounded read timeout, editable-field guard for Ctrl+C/X/V/A | PASTEBLOCK, PASTEORIG, CUTBASE, PASTESPEC/OLE, drag and drop between windows, a Clipboard UI panel, foreign text pasted as MTEXT, listening to the native `paste` event |
-| `QSAVE` / `OPEN` (Ctrl+S / Ctrl+O) · es `GUARDARR` / `GUARDAR` / `GUARDARCOMO` · `ABRE`                         | `FileTransport` port, versioned tolerant JSON, transparent autosave behind the `DrawingStore` port (this device's localStorage; memory in the landing's sketch)                                                     | File System Access API handles, drag-and-drop open, unsaved-changes prompt                                                                                              |
+| `QSAVE` / `OPEN` (Ctrl+S / Ctrl+O) · es `GUARDARR` / `GUARDAR` / `GUARDARCOMO` · `ABRE`                         | `FileTransport` port, versioned tolerant JSON, transparent autosave behind the `DrawingStore` port (this device's localStorage)                                                                                     | File System Access API handles, drag-and-drop open, unsaved-changes prompt                                                                                              |
 
 ## Blocks palette
 
@@ -349,25 +349,6 @@ dynamic input, the coordinates and every technical value stay left to right.
 Missing: Recent / Favorites / Libraries tabs, drag and drop, context menu, icon/list toggle, and the
 Insertion Point / Scale / Uniform Scale / Rotation / Auto-Placement / Repeat Placement / Explode
 checkboxes.
-
-## The landing's live sketch
-
-"Try it here" on `/` turns the hero's flange into the editor's own engine, dynamic-input box and
-command line, embedded in the page (`CadEngine` with a `scope` and a memory `store`). Commands,
-prompts, aliases, snaps, tracking and the F-keys behave as in the editor. It deviates only where the
-page is not the engine's or the sheet has no room:
-
-- Keys reach it only while it is in use — after a press or a focus inside it — and the wheel zooms
-  only then; otherwise it scrolls the page (AutoCAD zooms on any wheel turn over the drawing, which
-  in a scrolling page would trap the scroll). Space and the arrows the runtime passes on never
-  scroll the page while it is in use.
-- Esc cancels as in AutoCAD and never leaves the sketch; Tab does, and "Close" is always in view.
-- No toolbar, palettes or status bar: commands are typed. The Shift+right-click osnap menu is not
-  offered (it closes if opened), and Selection cycling shows the badge without the Selection list
-  box.
-- It autosaves to the page's memory, never to this device's store. "Open in the full editor" hands
-  it over, and asks first — download the sketch, replace the drawing or cancel — when there is a
-  drawing the editor would restore.
 
 ## Roadmap
 

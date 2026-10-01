@@ -6,8 +6,6 @@
 @source ".";
 @source "../../global-not-found.tsx";
 @source "../../../components/marketing";
-/* The live sketch embeds the editor's own dynamic-input box. */
-@source "../../../components/cad/dynamic-input.tsx";
 
 /* One scheme, dark, like the editor and AutoCAD: `dark:` always applies. */
 @custom-variant dark (&);
@@ -48,40 +46,6 @@
   --color-precision: var(--precision);
   --color-window: var(--cad-selection-window-stroke);
   --color-window-fill: var(--cad-selection-window-fill);
-  /* The editor's shadcn names, for its dynamic-input box; see .live-sketch. */
-  --color-card: var(--card);
-  --color-foreground: var(--foreground);
-  --color-muted: var(--muted);
-  --color-muted-foreground: var(--muted-foreground);
-}
-
-/* The editor's dynamic-input box speaks shadcn's tokens; inside the sketch they
-   are the sheet's own ink, so the box looks like the page it sits on. */
-.live-sketch {
-  --card: var(--bg-raised);
-  --foreground: var(--text);
-  --muted: var(--bg-sunken);
-  --muted-foreground: var(--text-muted);
-  border-radius: inherit;
-}
-
-/* The sheet shows it has the keyboard: the ring for keyboard focus, and the
-   prompt's caret whenever focus is in it. */
-.live-sketch:has(canvas:focus-visible) {
-  outline: 2px solid var(--accent);
-  outline-offset: -2px;
-}
-
-.live-caret {
-  visibility: hidden;
-}
-
-.live-sketch:focus-within .live-caret {
-  visibility: visible;
-}
-
-.sheet-dialog::backdrop {
-  background: rgb(8 11 15 / 0.72);
 }
 
 @layer base {
@@ -412,14 +376,8 @@ html:lang(ar) body,
     animation: blink 1s steps(1, end) var(--t, 0ms) 6;
   }
 
-  /* Five blinks each time the sketch takes focus, then steady: nothing on
-     the page moves for longer than five seconds unasked. */
-  .live-sketch:focus-within .live-caret {
-    animation: blink 1s steps(1, end) 5;
-  }
-
   /* Into the editor and back, the hero's sheet grows into the canvas (the
-     sheet is named only for the trip; see LiveSheet). The opt-in itself is
+     sheet is named only for the trip; see TransitionSheet). The opt-in itself is
      inline in the layout (lib/view-transition.ts). */
   ::view-transition-group(drawing-sheet) {
     animation-duration: 400ms;
@@ -550,12 +508,27 @@ html:lang(ar) body,
   color: var(--text);
 }
 
-/* The desktop language list: small, under the globe at the bar's end. */
+/* The desktop language list: small, hanging from the globe that opens it,
+   its end edge on the button's. Without anchor positioning it falls back to
+   the screen's end, under the bar. */
+.language-button {
+  anchor-name: --language-button;
+}
+
 [popover].menu.language-menu {
   inset-inline-start: auto;
   width: max-content;
   min-width: 10rem;
   padding: 0.5rem;
+}
+
+@supports (position-area: block-end) {
+  [popover].menu.language-menu {
+    position-anchor: --language-button;
+    position-area: block-end span-inline-start;
+    inset: auto;
+    margin-block-start: 0.5rem;
+  }
 }
 
 details > summary {

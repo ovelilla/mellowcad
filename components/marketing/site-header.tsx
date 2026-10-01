@@ -58,7 +58,7 @@ export async function SiteHeader() {
             type="button"
             popoverTarget="language-menu"
             aria-label={t("language")}
-            className="hidden size-9 place-items-center rounded-md text-fg-muted hover:text-fg md:grid"
+            className="language-button hidden size-9 place-items-center rounded-md text-fg-muted hover:text-fg md:grid"
           >
             <Globe className="size-5" aria-hidden="true" />
           </button>

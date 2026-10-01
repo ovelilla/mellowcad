@@ -163,7 +163,7 @@ describe("the editor", () => {
   })
 
   // The landing has no message provider: an editor component it embeds that
-  // reached for one would throw the moment the live sketch opened.
+  // reached for one would throw the moment it rendered there.
   it("lends the landing only components that take their words as props", () => {
     const landing = join(__dirname, "..", "components", "marketing")
     for (const file of readdirSync(landing)) {
