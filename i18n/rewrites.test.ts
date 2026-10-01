@@ -53,6 +53,16 @@ describe("the locale URL scheme", () => {
     // A word that merely starts like a locale is not one.
     ["/espresso", "route /en/espresso"],
     ["/sitemap.xml", "file /sitemap.xml"],
+    // Router requests, as Vercel rewrites them from the `RSC` header.
+    ["/index.rsc", "route /en.rsc"],
+    [
+      "/index.segments/_tree.segment.rsc",
+      "route /en.segments/_tree.segment.rsc",
+    ],
+    [
+      "/draw.segments/_tree.segment.rsc",
+      "route /en/draw.segments/_tree.segment.rsc",
+    ],
     // The framework's own paths are never given a locale.
     ["/_next/static/chunk.js", "route /_next/static/chunk.js"],
     ["/_vercel/insights/script.js", "route /_vercel/insights/script.js"],

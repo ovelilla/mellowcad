@@ -53,6 +53,17 @@ export function localeRewrites({
   const prefixes = locales.join("|")
   return [
     { source: "/", destination: `/${defaultLocale}` },
+    // WHY: Vercel turns a router request (`RSC` header) into a path before
+    // these rules see it: `/draw` becomes `/draw.rsc` or
+    // `/draw.segments/<segment>.segment.rsc`, which the next rule still sends
+    // under `/en`. The root becomes `/index.…`, but `[locale]` prerendered it
+    // as `/en.…`, so without these the home page's prefetch answers 404 and
+    // its navigations fall back to full page loads.
+    { source: "/index.rsc", destination: `/${defaultLocale}.rsc` },
+    {
+      source: "/index.segments/:path*",
+      destination: `/${defaultLocale}.segments/:path*`,
+    },
     {
       source: `/:first((?!(?:${prefixes})(?:/|$)|_)[^/]+)/:rest*`,
       destination: `/${defaultLocale}/:first/:rest*`,
