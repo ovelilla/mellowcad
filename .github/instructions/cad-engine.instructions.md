@@ -18,9 +18,12 @@ description: "Layering, purity and modelling rules for the DOM-free CAD engine (
 | `application/`   | `geometry/`, `domain/`, `scene/`, `serialization/`, `shared/`, `i18n/`, `locales/`    |
 | `adapters/`      | everything (this is the only browser-aware layer)                                     |
 
-`cad/index.ts` is the public barrel, and `cad/locales/*` are the other public entry points (one
-module per language, tomorrow the package's `exports` subpaths). Anything React needs must be exported
-from one of those; nothing outside `cad/` may import another deep path.
+`cad/index.ts` is the public barrel, and the language modules `cad/locales/<tag>` (one per
+`<tag>.json`) are the other public entry points — tomorrow the package's `exports`
+(`@mellowcad/engine`, `@mellowcad/engine/locales/es`). Anything React or the landing needs must be
+exported from one of those; nothing outside `cad/` may import another deep path, not even
+`cad/locales/types` — `cad/entryPoints.test.ts` fails on one. `test/` is the engine's own kit and
+may. `cad/README.md` is what an integrator reads: keep it true when a public contract changes.
 
 ## Text lives in the catalogs
 
