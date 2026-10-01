@@ -192,7 +192,8 @@ in its boundary's; a grip drags to a point as a click does.
 `/es/draw` speaks Spanish AutoCAD 2026's command language, as its language pack does: Spanish command
 names and aliases, prompts and keywords, with `_` plus the global name or keyword in every language
 (`_LINE`, `_C`). Each command row above carries its Spanish name after `· es`. Sources and the
-state of each piece (`cad/locales/es.json`; the brief's §15 lists the URLs):
+state of each piece (`cad/locales/es.json`; each GUID resolves as `docs/i18n-glossary.md`, "Sources",
+explains):
 
 - **Names:** every one from the title of Autodesk's 2026 Spanish help page with the English page's
   GUID — verified. `DIMANGULAR`'s page says ACOANGULAR while its metadata, the `acad.pgp` and every
@@ -277,6 +278,17 @@ interlineado`, `Anchura definida`, `Método`, `Grado`…),
   the file errors, the clipboard and FROM notes, block, pattern and style not found, `Capa{n}`
   (partial), `Copia de {name}` and JOIN's `0 objetos unidos, n objetos descartados de la operación`
   (a user's quote of AutoCAD 2020).
+- **Sources beyond the help pages:** the Spanish alias guides
+  ([2022 Product Insights](https://help.autodesk.com/cloudhelp/2022/ESP/AutoCAD-Product-Insights/files/GUID-DB0E87C4-2223-49ED-84F9-FBB3B6BA65A9.htm),
+  [Did You Know](https://help.autodesk.com/cloudhelp/2022/ESP/AutoCAD-DidYouKnow/files/GUID-D2B4BF16-B1F7-4EF2-89AF-88ACE85FAD73.htm)),
+  `initget` for local and global keywords and capitals anywhere
+  ([2025](https://help.autodesk.com/view/ACD/2025/ENU/?guid=GUID-9ED8841B-5C1D-4B3F-9F3B-84A4408A6BBF)),
+  the `_` and `.` prefixes ([CADforum](https://www.cadforum.cz/en/qaID.asp?tip=2425),
+  [Autodesk's blog](https://blog.autodesk.io/working-with-non-english-version-of-autocad/)) and
+  the University of Granada's transcript of the Spanish product
+  ([PDF](https://www.ugr.es/~ega3/Unidad%20didactica%2001%20Sintaxis%20vectorial%202D.pdf),
+  «Precise punto siguiente o [Cerrar/desHacer]»). To settle every † and **unverified** below, a
+  capture of AutoCAD 2026 with the Spanish language pack (the 30-day trial is enough).
 - **Z readouts:** `Altura de objeto` (the palette's General row, help 99AFB412), ID's
   `Precise punto` and the ribbon's `Coordenadas punto` from the 2026 Spanish help. **Unverified:**
   DIST's and ID's reports and the palette's `Inicio Z`, `Fin Z`, `Delta Z` and `Elevación` (worded
@@ -300,6 +312,14 @@ dynamic input, the coordinates and every technical value stay left to right.
   as typed: `LINE` typed on the Arabic layout is an unknown command, as in AutoCAD.
 - The interface words are the project's, written in Modern Standard Arabic with the glossary
   (`docs/i18n-glossary.md`); `ar` stays `draft` until a native speaker reviews them.
+- **To go live** (`ar` is `draft`: reachable, `noindex`, outside the language selector, the
+  `hreflang` set and the sitemap): a native speaker reviews all the Arabic — `messages/ar.json`,
+  `cad/locales/ar.json` and the glossary's Arabic column, the † terms and the compass letters
+  first. Then, in one commit: `LOCALE_STATUS.ar = "live"` (`i18n/routing.ts`), «Arabic interface»
+  out of the Status section's «Next up» in the three languages (`Status.next2` in
+  `messages/{en,es,ar}.json`, and `CONTENT_UPDATED` in `lib/site.ts`), and a look at «العربية»
+  in the selector of `/` and `/es`, set in the system's font (naming Readex Pro there would load
+  it for one word).
 - **Missing:** drawing text in a right-to-left script. TEXT and MTEXT draw whatever is typed,
   Arabic included, but with no paragraph direction of their own (always left to right), measured
   as an average glyph (Arial's widths cover latin only), so an Arabic label's box and centring are

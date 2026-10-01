@@ -112,8 +112,10 @@ party — updates it in the same change.
   `content/figures.test.ts` loads it.
 - Behaviour comes from the editor, not from copies: the dynamic-input box _is_
   `components/cad/dynamic-input.tsx`, which `marketing.css` scans and whose shadcn tokens it maps
-  inside `.live-sketch`. Another editor component brought in needs both. The docked command line
-  only reads `state.commandLine`.
+  inside `.live-sketch`. Another editor component brought in needs both, and takes its words as
+  props: the landing has no message provider, so one that calls `useTranslations` throws when the
+  sketch opens (it shipped that way once; `i18n/messages.test.ts` now fails on it). The docked
+  command line only reads `state.commandLine`.
 - What does not fit on the sheet is left to the full editor, never faked: the Shift+right-click
   menu is closed if it opens (unseen, it would take the next Escape) and Selection cycling keeps
   the badge without its list box. A new omission goes in `docs/autocad-coverage.md`.

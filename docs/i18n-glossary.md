@@ -4,7 +4,7 @@ The CAD vocabulary of MellowCAD's interface in each language, and where each ter
 Spanish column is Autodesk's own Spanish localization of AutoCAD 2026, never a translation of ours:
 someone who works in Spanish AutoCAD must find the words they already know. There is no Arabic
 AutoCAD, so the Arabic column is worded by the project and waits for a native speaker's review
-before `ar` goes live (`docs/next-i18n.md` §15).
+before `ar` goes live (`docs/autocad-coverage.md`, "Arabic interface").
 
 This file covers the **interface language** — palettes, menus, tooltips, the landing. The **command
 language** (command names, aliases, prompts, keywords) is Spanish AutoCAD's own, in
@@ -103,7 +103,7 @@ marks a choice between competing terms that the native review settles — for ex
 |                  | TOP, FRONT, LEFT; BOTTOM, BACK, RIGHT (faces); N, E, S, W                                                                  | SUPERIOR, FRONTAL, IZQUIERDA; INFERIOR, POSTERIOR, DERECHA; N, E, S, O                                                                   | أعلى، أمام، يسار؛ أسفل، خلف، يمين؛ ش، ق، ج، غ — the initials Arabic maps use (شمال، شرق، جنوب، غرب) (M) †                                                           | the help's captures of the cube                                                                                 | yes; no (the second three)    |
 |                  | Rotate clockwise / counterclockwise; View the face above…                                                                  | Girar en sentido horario / antihorario; Ver la cara de arriba…                                                                           | تدوير مع عقارب الساعة / عكس عقارب الساعة؛ عرض الوجه العلوي… (M)                                                                                                     | C A90F5F1C-B338-4BDE-9D05-F26BFFE3B3A5 (prose: «en el sentido de las agujas del reloj o en el sentido inverso») | no                            |
 | UCS menu         | WCS; New UCS; Unnamed                                                                                                      | SCU; Nuevo SCP; Sin nombre                                                                                                               | نظام الإحداثيات العام؛ نظام إحداثيات مستخدم جديد؛ بلا اسم (M)                                                                                                       | C 00815EB6-B218-410D-AF53-A5241BB53AA0                                                                          | yes                           |
-| Search           | 2D CAD online, free, no sign-up, AutoCAD commands, aliases                                                                 | CAD 2D online, gratis, sin registro, comandos de AutoCAD, alias                                                                          | رسم هندسي، ثنائي الأبعاد، أون لاين، مجاني، أوامر أوتوكاد، اختصارات — Google's Arabic suggestions in SA, EG, AE, MA, IQ and JO, 01/10/2026 (`docs/next-i18n.md` §15) | Spanish Google autocomplete and ranking titles, 27/09/2026 (`docs/next-i18n.md` §15)                            | yes                           |
+| Search           | 2D CAD online, free, no sign-up, AutoCAD commands, aliases                                                                 | CAD 2D online, gratis, sin registro, comandos de AutoCAD, alias                                                                          | رسم هندسي، ثنائي الأبعاد، أون لاين، مجاني، أوامر أوتوكاد، اختصارات — Google's Arabic suggestions in SA, EG, AE, MA, IQ and JO, 01/10/2026 (see Search texts, below) | Spanish Google autocomplete and ranking titles, 27/09/2026 (see Search texts, below)                            | yes                           |
 
 ## Register
 
@@ -117,3 +117,24 @@ marks a choice between competing terms that the native review settles — for ex
   latin digits. A command name, key, URL or value inside Arabic text is isolated (FSI…PDI).
 - **Neutral Spanish:** no vosotros or voseo; «equipo» or «dispositivo», «archivo», «ratón» (as
   Autodesk's help writes it); «» in prose, em dashes attached to the aside.
+
+## Search texts
+
+A page's title, description and lead are written from what people search in that language, never
+translated from the English ones. Each claim below is what the research found; redo it before
+rewriting the copy.
+
+- **Spanish** (Google's suggestions in Spain, Mexico, Argentina, Colombia and Chile, and the titles
+  ranking there, 27/09/2026; no volumes, Trends could not be read): «gratis» goes with every query
+  («cad online gratis», «cad 2d online gratis»); «CAD online» is said so, not «en línea», which
+  finds file viewers; «sin registro» is how *no sign-up* is said; «comandos de AutoCAD» is common.
+  Never «AutoCAD online gratis», which would read as if this were AutoCAD. Title: «CAD 2D online
+  gratis con comandos de AutoCAD — MellowCAD» (56); description: «CAD 2D gratis en tu navegador con
+  los comandos, alias y referencias a objetos de AutoCAD. Sin instalación ni registro; tus dibujos
+  no salen de tu equipo.» (153). The lead carries the terms the H1 lacks.
+- **Arabic** (Google's suggestions in Saudi Arabia, Egypt, the Emirates, Morocco, Iraq and Jordan,
+  01/10/2026): «أوتوكاد» (with or without hamza), «رسم هندسي» (technical drawing), «ثنائي
+  الأبعاد», «أون لاين» (not «عبر الإنترنت»), «مجاني/مجانا» and «أوامر الأوتوكاد واختصاراتها»
+  («اختصارات» is the word for aliases). «كاد» alone finds Cadillac, and «بديل أوتوكاد» is not
+  searched and would read as if this were AutoCAD. Title: «رسم هندسي ثنائي الأبعاد أون لاين مجانًا
+  بأوامر أوتوكاد — MellowCAD».

@@ -106,6 +106,8 @@ and what each option does must be the ones they already know.
 - `docs/autocad-coverage.md` — what each implemented command does and which AutoCAD options it
   still lacks, plus the roadmap. Not auto-loaded. **Read the row for a command before extending it**
   — the gaps are deliberate and already researched.
+- `cad/README.md` — the engine's public contract for whoever integrates it: entry points,
+  languages, versioning. Keep it true when that contract changes.
 - `docs/next-*.md` — the brief for the next feature, when one has been agreed; deleted once it ships.
 
 ## Finishing a feature
