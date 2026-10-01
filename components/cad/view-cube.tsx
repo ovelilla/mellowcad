@@ -17,6 +17,7 @@ import {
   EngineState,
   ViewCubePart,
   ViewCubeSide,
+  type ViewCubeFace,
 } from "@/cad"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
@@ -124,7 +125,7 @@ export function ViewCube({
     }
   }
 
-  const faceName = (face: string) => t(`faces.${face}` as "faces.top")
+  const faceName = (face: ViewCubeFace) => state.names.viewCubeFaces[face]
   const { compass } = cube
 
   return (
@@ -207,7 +208,7 @@ export function ViewCube({
                 fontSize={0.065}
                 className="pointer-events-none fill-foreground font-semibold"
               >
-                {t(`compass.${letter}` as "compass.N")}
+                {state.names.compass[letter]}
               </text>
             </g>
           ))}

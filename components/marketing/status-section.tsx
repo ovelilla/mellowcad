@@ -32,7 +32,6 @@ export async function StatusSection() {
         t("notYet3"),
         t("notYet4"),
         t("notYet5"),
-        t("notYet6"),
       ],
     },
     {

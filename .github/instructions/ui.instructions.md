@@ -19,7 +19,8 @@ Failures are reported at the command prompt, not in a bespoke React banner.
 - **Every label comes from a catalog.** The chrome's own words are `Editor.*` in
   `messages/en.json`, read with `useTranslations("Editor.<Part>")` — the only messages the editor's
   layout sends to the browser. What the engine names is read from the engine: tool labels and
-  aliases (`state.tools`), snap, colour and linetype names (`state.names`), property rows. A
+  aliases (`state.tools`), snap, colour and linetype names, the preset views and the ViewCube's
+  faces and compass letters (`state.names`), property rows. A
   shortcut that is a command alias comes from `state.tools` too; a key combination is
   `Editor.Keys` (keys have local names — `Supr` on a Spanish keyboard); a function key is literal.
 - The engine speaks the page's language: `CadWorkspace` takes the catalog the page loaded
@@ -69,7 +70,8 @@ class or light values.
   (the engine's 0–1 box), with Home above, the compass round it and the UCS menu below; its
   right-click menu and the UCS menu are Base UI menus. It keeps only the hovered zone and the
   press it is reading as click or drag; every view, outline and label position comes from the
-  engine. The Properties palette sits under it in the same column, its height capped for it.
+  engine, and so do its words (`state.names.viewCubeFaces`, `compass`); its menus' are
+  `Editor.ViewCube`. The Properties palette sits under it in the same column, its height capped for it.
 - **DrawingAids** (status bar) — drafting modes only: Snap, Grid, Ortho, Polar, Osnap, OTRACK,
   lineweight display.
 - **ToolRail** (left) — tools, grouped by `RAIL_LAYOUT`. Variant families (Circle, Arc, Array,

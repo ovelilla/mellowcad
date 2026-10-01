@@ -179,12 +179,11 @@
     "notYet1": "Importar o exportar DWG y DXF",
     "notYet2": "Impresión y PDF",
     "notYet3": "Presentaciones y espacio papel",
-    "notYet4": "Splines",
-    "notYet5": "3D",
-    "notYet6": "Móviles y tabletas",
+    "notYet4": "Sólidos 3D",
+    "notYet5": "Móviles y tabletas",
     "nextTitle": "Lo siguiente",
-    "next1": "SPLINE",
-    "next2": "SCP",
+    "next1": "EDITSPLINE",
+    "next2": "Interfaz en árabe",
     "updated": "Actualizado el {date}",
     "contact": "¿Echas algo en falta? Cuéntamelo."
   },
@@ -282,19 +281,6 @@
       "zoomToFit": "Zoom extensión",
       "resetView": "Restablecer vista",
       "orbit": "Órbita",
-      "views": {
-        "top": "Superior",
-        "bottom": "Inferior",
-        "front": "Frontal",
-        "left": "Izquierda",
-        "right": "Derecha",
-        "back": "Posterior",
-        "swIso": "Isométrica SO",
-        "seIso": "Isométrica SE",
-        "neIso": "Isométrica NE",
-        "nwIso": "Isométrica NO",
-        "custom": "Vista personalizada"
-      },
       "commandLine": "Línea de comandos"
     },
     "ViewCube": {
@@ -307,20 +293,6 @@
       "wcs": "SCU",
       "unnamed": "Sin nombre",
       "newUcs": "Nuevo SCP",
-      "faces": {
-        "top": "SUPERIOR",
-        "bottom": "INFERIOR",
-        "front": "FRONTAL",
-        "back": "POSTERIOR",
-        "left": "IZQUIERDA",
-        "right": "DERECHA"
-      },
-      "compass": {
-        "N": "N",
-        "E": "E",
-        "S": "S",
-        "W": "O"
-      },
       "adjacent": {
         "up": "Ver la cara de arriba",
         "down": "Ver la cara de abajo",

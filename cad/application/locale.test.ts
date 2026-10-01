@@ -312,7 +312,7 @@ describe("Spanish AutoCAD's command language", () => {
     const cad = createHarness({ locale: es })
     cad.command("TEXTOM").click(p(0, 0))
     expect(cad.state().commandLine.prompt).toBe(
-      "TEXTOM [aLtura/Justificar/Interlineado/Rotación/Estilo/aNchura]:"
+      "TEXTOM [Altura/Justificar/Interlineado/Rotación/Estilo/aNchura]:"
     )
     cad.press("j")
     for (const key of ["M", "C", "Enter"]) cad.press(key)
@@ -417,6 +417,33 @@ describe("Spanish AutoCAD's command language", () => {
     expect(cad.runtime.text.prompt("idPoint")).toBe("Precise punto")
     cad.type("1,2,3").enter()
     expect(cad.commandLog().at(-1)).toBe("X = 1.00     Y = 2.00     Z = 3.00")
+  })
+
+  it("sets the views as Spanish AutoCAD's captures show them", () => {
+    const cad = createHarness({ locale: es })
+    cad.command("-VISTA").press("o")
+    expect(cad.state().commandLine.prompt).toBe(
+      "VISTA [SUperior/Inferior/Frontal/Posterior/IZquierda/Derecha]:"
+    )
+    cad.type("su").enter()
+    expect(cad.runtime.viewport.isPlan).toBe(true)
+    cad.command("-PV")
+    expect(cad.commandLog().at(-1)).toBe(
+      "Dirección de vista actual:  VIEWDIR=0.00,0.00,1.00"
+    )
+    expect(cad.state().commandLine.prompt).toBe("PTOVISTA [Rotación]:")
+    cad.press("r")
+    expect(cad.runtime.text.prompt("viewAngleInPlane")).toBe(
+      "Ángulo a partir del eje X en el plano XY"
+    )
+  })
+
+  it("defines an attribute with AT, its modes line as the product prints it", () => {
+    const cad = createHarness({ locale: es })
+    cad.command("AT")
+    expect(cad.commandLog().at(-1)).toBe(
+      "Modos de atributo actuales:  Invisible=N  Constante=N  Verificable=N  Predefinido=N  Bloquear posición=S"
+    )
   })
 
   it("names the palette's Z rows as Spanish AutoCAD does", () => {

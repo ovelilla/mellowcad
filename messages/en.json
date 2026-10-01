@@ -179,12 +179,11 @@
     "notYet1": "DWG and DXF import or export",
     "notYet2": "Printing and PDF",
     "notYet3": "Layouts and paper space",
-    "notYet4": "Splines",
-    "notYet5": "3D",
-    "notYet6": "Phones and tablets",
+    "notYet4": "3D solids",
+    "notYet5": "Phones and tablets",
     "nextTitle": "Next up",
-    "next1": "SPLINE",
-    "next2": "UCS",
+    "next1": "SPLINEDIT",
+    "next2": "Arabic interface",
     "updated": "Updated {date}",
     "contact": "Missing something you need? Tell me."
   },
@@ -282,19 +281,6 @@
       "zoomToFit": "Zoom to fit",
       "resetView": "Reset view",
       "orbit": "Orbit",
-      "views": {
-        "top": "Top",
-        "bottom": "Bottom",
-        "front": "Front",
-        "left": "Left",
-        "right": "Right",
-        "back": "Back",
-        "swIso": "SW Isometric",
-        "seIso": "SE Isometric",
-        "neIso": "NE Isometric",
-        "nwIso": "NW Isometric",
-        "custom": "Custom View"
-      },
       "commandLine": "Command line"
     },
     "ViewCube": {
@@ -307,20 +293,6 @@
       "wcs": "WCS",
       "unnamed": "Unnamed",
       "newUcs": "New UCS",
-      "faces": {
-        "top": "TOP",
-        "bottom": "BOTTOM",
-        "front": "FRONT",
-        "back": "BACK",
-        "left": "LEFT",
-        "right": "RIGHT"
-      },
-      "compass": {
-        "N": "N",
-        "E": "E",
-        "S": "S",
-        "W": "W"
-      },
       "adjacent": {
         "up": "View the face above",
         "down": "View the face below",

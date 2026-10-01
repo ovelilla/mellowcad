@@ -669,7 +669,7 @@ interface EngineLocale {
 | JS propio en la landing         | ≤ 15 KB gz (sin cambios)     | igual                                    |
 | Fuentes                         | 2 ficheros, ≤ 110 KB         | 3 ficheros, ≤ 140 KB                     |
 | Transferencia de la 1.ª carga   | ≤ 250 KB gz                  | ≤ 275 KB gz (la fuente de la escritura)  |
-| Chunk del editor con el motor   | ≤ 90 KB gz (89,8 medidos tras la fase 0) | igual: los otros idiomas van aparte |
+| Lo que la i18n suma al motor    | el catálogo inglés compilado ≤ 8 KB gz (6,7 tras la auditoría; el chunk entero, 135,2 KB gz, lo fijan las funciones del motor: §15) | igual: los otros idiomas van aparte |
 | Catálogo del motor por idioma   | inglés dentro del motor      | ≤ 12 KB gz, cargado con el motor         |
 | Mensajes del editor en cliente  | solo `Editor.*`: 2,1 KB gz en el HTML y 5,4 KB gz de runtime (fase 1) | igual       |
 | Funciones por visita a página   | ninguna (sin proxy)          | ninguna                                  |
@@ -797,6 +797,12 @@ interface EngineLocale {
 - Los cuatro campos `type="number"` de las paletas (forzcursor, escalas, estilos de cota y texto) pasan
   a texto con `inputmode="decimal"` y su propio paso con las flechas: Chrome los escribe con el idioma
   del navegador (`3,75`), sea cual sea el `lang`, y un valor técnico va siempre con punto (§15, fase 2).
+- Lo que añadió el 3D (auditoría, §15): el ViewCube es geometría —caras, rótulos por afinidad, brújula,
+  triángulos atados a los lados de la pantalla y el orden de las flechas de giro— y va en una caja
+  `dir="ltr"`; su columna con la paleta de propiedades es envoltura y pasa al borde izquierdo con las
+  paletas; los menús de vista, del cubo y del SCP, con márgenes y marcas lógicos; la lectura de
+  coordenadas con su Z, isla LTR; Órbita y las flechas de giro del cubo no se reflejan, «Zoom previo»
+  sí. La caja de TEXTOM es la entrada dinámica: isla LTR (el texto de dibujo RTL sigue fuera, §2).
 - **Aceptación:** con `dir="rtl"` forzado en una prueba, la envoltura se refleja bien y el dibujo no; el
   inglés sale idéntico en capturas antes y después.
 
@@ -804,6 +810,9 @@ interface EngineLocale {
 
 - `messages/ar.json` y la `interface` del motor en árabe; Readex Pro y los ajustes `:lang(ar)`; la OG
   árabe; el manifest en árabe; la comprobación RTL de §10.
+- Lo que añadió el 3D: `Editor.ViewCube` y la `interface` nueva del motor (vistas predefinidas, caras
+  y brújula del cubo, herramientas, filas Z, SPLINE, TEXTOM y atributos), con su columna en el
+  glosario. Las letras de la brújula se deciden con la revisión nativa: no hay AutoCAD árabe que copiar.
 - **Publicación:** `ar` sale en `draft` y pasa a `live` tras la revisión nativa.
 - **Aceptación:** paridad, la comprobación RTL completa y los presupuestos de `ar`.
 
@@ -812,6 +821,8 @@ interface EngineLocale {
 - `cad/locales/*` como puntos de entrada públicos (los futuros subpaths), y `EngineLocale`,
   `extendLocale` y el catálogo documentados para quien integre el motor.
 - Un test que hace de host ajeno con un idioma parcial y una sustitución.
+- `EngineNames` crece con cada vocabulario del motor (desde la auditoría, `views`, `viewCubeFaces` y
+  `compass`): documentarlo como la fuente de los nombres que pinta un host.
 - Cambiar la forma de un catálogo es un cambio incompatible: versión mayor.
 
 **Orden y publicación:** 0 → 1 → 2 → 3 (publica `es`) → 4 → 5 (publica `ar` en `draft`, y en `live` tras
@@ -1282,6 +1293,70 @@ de la cobertura.
 
 **Para cerrar del todo** hace falta una captura de AutoCAD 2026 en español (la prueba de 30 días con
 el paquete de idioma basta) para confirmar los alias † y las solicitudes marcadas.
+
+### Auditoría de lo añadido tras la fase 3 (01/10/2026)
+
+**Alcance.** Los 31 commits de `a87cce0..c26da7e`, hechos con otra herramienta: TEXTOM, los atributos
+de bloque, SPLINE, SCP y SIMBSCP, PLANTA, ELEV y la Z (2.5D), PTOVISTA, -VISTA, 3DORBITA, NAVVCUBE, el
+ViewCube con sus menús, el menú de vistas y el botón Órbita.
+
+**Lo que ya cumplía.** Ningún texto visible escrito en el código del motor: solicitudes, mensajes,
+rótulos del lienzo (`+Z`, las letras del icono SCP), `*UNIVERSAL*`/`*SIN NOMBRE*` y `VIEWDIR` salen
+del catálogo, y los campos de la entrada dinámica nombran su solicitud por id. Cada clave nueva está en
+`en.json` y en `es.json`, en su rama (las de la paleta y el riel en `interface`; las del lienzo en
+`commands.feedback`), y los módulos generados no derivan. El chrome nuevo lee `Editor.*` sin
+literales, también en `aria-label` y `title`. Los guiones de las figuras siguen con `_NOMBRE` y
+todas se reproducen en español sin errores. Los 18 nombres de comando nuevos coinciden con el título
+de su página de la ayuda de 2026 en español (mismo GUID; la tabla está en la cobertura).
+
+**Corregido:**
+
+- **El español, contra las capturas del producto** (aCADemia 2011–2014), que ganan a la ayuda cuando
+  difieren (§9): `[Rotación]` en -PTOVISTA (la ayuda dice Girar), `SUperior` en -VISTA (dos letras),
+  `Altura` en TEXTOM (no `aLtura`), `Ángulo a partir del eje X en el plano XY` y `Ángulo a partir
+  del plano XY` (estaban traducidas del inglés), `Precise la primera esquina` / `Indique la esquina
+  opuesta`, y los dos espacios de `Dirección de vista actual:  VIEWDIR=…` y de la línea de modos de
+  atributo. Alias nuevos con †: `AT`/`-AT` (ATRDEF, captura de 2013) y `-PV` (-PTOVISTA). Pasan a
+  verificados los prompts de -ATRDEF, su línea de modos, ATRVIS, VPOINT, PLANTA y los de ELEV e ID;
+  quedan marcados sin verificar los que no se marcaron (subsolicitudes de Elevación y Alt-objeto de
+  RECTANG, el `Sí`/`No` de SCP, las filas de la paleta de TEXTOM y SPLINE, los rótulos de giro del
+  cubo). Un test nuevo de `locale.test.ts` lo fija.
+- **Las caras y la brújula del ViewCube y los nombres de las vistas predefinidas pasan al motor**
+  (`interface.viewCube`, `interface.view`, en `state.names`): son ids del motor (`state.viewCube`,
+  `state.view.preset`) que React traducía con `Editor.*`, y §4.2 dice que lo que nombra el motor lo
+  nombra el motor. Los menús y tooltips del cubo, que son del host, siguen en `Editor.ViewCube`.
+- **La sección Status de la landing** daba SPLINE y SCP como «lo siguiente» y las splines y el «3D»
+  como «todavía no». Ahora: «Sólidos 3D» en lo que falta y, como siguiente, EDITSPLINE (lo que la
+  cobertura pone en cola) y la interfaz en árabe (la fase 5). La regla queda en
+  `marketing.instructions.md`.
+- El glosario recoge los términos nuevos (vistas, ViewCube, menú SCP, órbita) con su fuente.
+
+**El inglés.** Todos los cambios de las instantáneas tienen su commit: RECTANG ofrece
+`[Elevation/Thickness]` (también en las transcripciones de la landing), DIST pregunta `First point`, la
+paleta suma las filas Z y Normal, MEASURE su ΔZ. El único sin explicar, el `-HATCH` que al repetir la
+pregunta conserva `ANSI31` en la caja, es una corrección: la primera pregunta ya lo precargaba, y el
+borrado de todas las sesiones lo perdía al repetirla (lo cambió el commit de los atributos al borrar
+solo la sesión contestada).
+
+**Presupuestos** (build de producción de `main` en un worktree; gzip -9):
+
+| Medida                         | Fase 2   | Ahora     | Qué                                                                    |
+| ------------------------------ | -------- | --------- | ---------------------------------------------------------------------- |
+| Chunk del motor                | 87,8 KB  | 135,2 KB  | +47,4 KB: herramientas nuevas (+125 KB sin comprimir), NURBS, ViewCube, métricas de Arial, Z |
+| Catálogo inglés compilado      | 4,6 KB   | 6,7 KB    | lo único de i18n en ese crecimiento (sus frases son las del 3D)        |
+| Catálogo español (chunk propio) | 5,7 KB  | 7,3 KB    | dentro de los 12 de §8.3                                               |
+| JS de `/`                      | 181,5 KB | 182,0 KB  | la landing sigue sin cargar el motor                                   |
+
+**Corrección al brief:** el límite de 90 KB del chunk del motor (§8.3) medía el motor entero, y lo
+rompen las funciones del 3D, no la i18n, que solo suma su catálogo. §8.3 pasa a medir lo que la i18n
+suma (el catálogo inglés compilado, ≤ 8 KB gz), y el tamaño del motor queda como deuda propia, fuera
+de este brief: con 135 KB gz, partirlo (cargar las herramientas 3D bajo demanda) es una decisión del
+motor.
+
+**Para las fases 4–6** (§11, ya ampliado): el ViewCube es geometría y va en una caja LTR, su columna se
+refleja con las paletas; los menús nuevos, con márgenes lógicos; la lectura de coordenadas con Z, isla
+LTR; Órbita y el giro del cubo no se reflejan. En la 5, el árabe de `Editor.ViewCube` y de la
+`interface` nueva, y las letras de la brújula. En la 6, `EngineNames` como fuente de los nombres.
 
 ## Referencias
 

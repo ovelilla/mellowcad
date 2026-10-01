@@ -113,6 +113,35 @@ export const es: EngineLocale = {
       "white": "Blanco"
     },
     "byLayer": "PorCapa",
+    "view": {
+      "Top": "Superior",
+      "Bottom": "Inferior",
+      "Front": "Frontal",
+      "BAck": "Posterior",
+      "Left": "Izquierda",
+      "Right": "Derecha",
+      "SWiso": "Isométrica SO",
+      "SEiso": "Isométrica SE",
+      "NEiso": "Isométrica NE",
+      "NWiso": "Isométrica NO",
+      "custom": "Vista personalizada"
+    },
+    "viewCube": {
+      "face": {
+        "top": "SUPERIOR",
+        "bottom": "INFERIOR",
+        "front": "FRONTAL",
+        "back": "POSTERIOR",
+        "left": "IZQUIERDA",
+        "right": "DERECHA"
+      },
+      "compass": {
+        "N": "N",
+        "E": "E",
+        "S": "S",
+        "W": "O"
+      }
+    },
     "entity": {
       "line": [
         [
@@ -445,10 +474,12 @@ export const es: EngineLocale = {
         "EDITATR"
       ],
       "ATTDEF": [
-        "ATRDEF"
+        "ATRDEF",
+        "AT"
       ],
       "-ATTDEF": [
-        "-ATRDEF"
+        "-ATRDEF",
+        "-AT"
       ],
       "ATTDISP": [
         "ATRVIS"
@@ -668,7 +699,8 @@ export const es: EngineLocale = {
         "PTOVISTA"
       ],
       "-VPOINT": [
-        "-PTOVISTA"
+        "-PTOVISTA",
+        "-PV"
       ],
       "VIEW": [
         "VISTA"
@@ -788,7 +820,7 @@ export const es: EngineLocale = {
         "BR": "ID"
       },
       "MTEXT": {
-        "Height": "aLtura",
+        "Height": "Altura",
         "Justify": "Justificar",
         "Line spacing": "Interlineado",
         "Rotation": "Rotación",
@@ -933,11 +965,11 @@ export const es: EngineLocale = {
         "World": "Universal"
       },
       "VPOINT": {
-        "Rotate": "Girar"
+        "Rotate": "Rotación"
       },
       "VIEW": {
         "Orthographic": "Ortogonal",
-        "Top": "Superior",
+        "Top": "SUperior",
         "Bottom": "Inferior",
         "Front": "Frontal",
         "BAck": "Posterior",
@@ -1005,8 +1037,8 @@ export const es: EngineLocale = {
       "text": "Texto",
       "justify": "Justificar",
       "styleName": "Nombre de estilo",
-      "mtextFirstCorner": "Precise primera esquina",
-      "mtextOppositeCorner": "Precise esquina opuesta",
+      "mtextFirstCorner": "Precise la primera esquina",
+      "mtextOppositeCorner": "Indique la esquina opuesta",
       "mtextRotation": "Precise ángulo de rotación",
       "mtextWidth": "Precise anchura",
       "mtextLineSpacing": "Indique factor o distancia de interlineado",
@@ -1066,8 +1098,8 @@ export const es: EngineLocale = {
       "elevDefaultThickness": "Precise nueva altura de objeto por defecto",
       "idPoint": "Precise punto",
       "viewPoint": "Precise un punto de vista",
-      "viewAngleInPlane": "Indique ángulo en plano XY a partir de eje X",
-      "viewAngleFromPlane": "Indique ángulo a partir de plano XY"
+      "viewAngleInPlane": "Ángulo a partir del eje X en el plano XY",
+      "viewAngleFromPlane": "Ángulo a partir del plano XY"
     },
     "format": {
       "idle": "Comando",
@@ -1221,7 +1253,7 @@ export const es: EngineLocale = {
         "]:"
       ],
       "attributeModes": [
-        "Modos de atributo actuales: Invisible=",
+        "Modos de atributo actuales:  Invisible=",
         [
           "invisible",
           1,
@@ -1230,7 +1262,7 @@ export const es: EngineLocale = {
             "other": "N"
           }
         ],
-        " Constante=",
+        "  Constante=",
         [
           "constant",
           1,
@@ -1239,7 +1271,7 @@ export const es: EngineLocale = {
             "other": "N"
           }
         ],
-        " Verificable=",
+        "  Verificable=",
         [
           "verify",
           1,
@@ -1248,7 +1280,7 @@ export const es: EngineLocale = {
             "other": "N"
           }
         ],
-        " Predefinido=",
+        "  Predefinido=",
         [
           "preset",
           1,
@@ -1257,7 +1289,7 @@ export const es: EngineLocale = {
             "other": "N"
           }
         ],
-        " Bloquear posición=",
+        "  Bloquear posición=",
         [
           "lockPosition",
           1,
@@ -1452,7 +1484,7 @@ export const es: EngineLocale = {
         " de la operación"
       ],
       "currentViewDirection": [
-        "Dirección de vista actual: VIEWDIR=",
+        "Dirección de vista actual:  VIEWDIR=",
         [
           "x"
         ],

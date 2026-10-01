@@ -25,19 +25,6 @@ import { CadEngine, EngineState, VIEW_MENU, type ViewPreset } from "@/cad"
 
 import { IconAction, Panel } from "./toolbar-primitives"
 
-const VIEW_LABELS = {
-  Top: "top",
-  Bottom: "bottom",
-  Front: "front",
-  Left: "left",
-  Right: "right",
-  BAck: "back",
-  SWiso: "swIso",
-  SEiso: "seIso",
-  NEiso: "neIso",
-  NWiso: "nwIso",
-} as const satisfies Record<ViewPreset, string>
-
 /**
  * The top command bar: file actions and view navigation. Horizontal and
  * compact so it stays a single short row regardless of viewport width.
@@ -75,7 +62,11 @@ export function CommandBar({
             onClick={() => void engine.openDrawingFromFile()}
             side="bottom"
           />
-          <ViewMenu engine={engine} current={state.view.preset} />
+          <ViewMenu
+            engine={engine}
+            current={state.view.preset}
+            names={state.names.views}
+          />
           <IconAction
             icon={Search}
             label={t("zoomWindow")}
@@ -153,17 +144,19 @@ export function CommandBar({
 function ViewMenu({
   engine,
   current,
+  names,
 }: {
   engine: CadEngine
   current: ViewPreset | null
+  /** The views as the engine names them. */
+  names: EngineState["names"]["views"]
 }) {
-  const views = useTranslations("Editor.CommandBar.views")
   return (
     <Menu.Root>
       <Menu.Trigger
         render={
           <Button size="sm" variant="ghost">
-            {views(current === null ? "custom" : VIEW_LABELS[current])}
+            {names[current ?? "custom"]}
             <ChevronDown className="text-muted-foreground" />
           </Button>
         }
@@ -182,7 +175,7 @@ function ViewMenu({
                 onClick={() => engine.applyViewPreset(preset)}
                 className="relative flex cursor-default items-center rounded-sm py-1.5 pr-8 pl-2 text-sm outline-hidden select-none data-highlighted:bg-accent data-highlighted:text-accent-foreground"
               >
-                {views(VIEW_LABELS[preset])}
+                {names[preset]}
                 {current === preset && (
                   <span className="pointer-events-none absolute right-2 flex size-4 items-center justify-center text-primary">
                     <CheckIcon className="size-4" />

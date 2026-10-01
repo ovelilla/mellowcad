@@ -113,6 +113,35 @@ export const en: EngineCatalog = {
       "white": "White"
     },
     "byLayer": "ByLayer",
+    "view": {
+      "Top": "Top",
+      "Bottom": "Bottom",
+      "Front": "Front",
+      "BAck": "Back",
+      "Left": "Left",
+      "Right": "Right",
+      "SWiso": "SW Isometric",
+      "SEiso": "SE Isometric",
+      "NEiso": "NE Isometric",
+      "NWiso": "NW Isometric",
+      "custom": "Custom View"
+    },
+    "viewCube": {
+      "face": {
+        "top": "TOP",
+        "bottom": "BOTTOM",
+        "front": "FRONT",
+        "back": "BACK",
+        "left": "LEFT",
+        "right": "RIGHT"
+      },
+      "compass": {
+        "N": "N",
+        "E": "E",
+        "S": "S",
+        "W": "W"
+      }
+    },
     "linetype": {
       "DashDot": "Dash dot"
     },

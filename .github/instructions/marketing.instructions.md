@@ -150,6 +150,9 @@ party — updates it in the same change.
 
 ## Facts and copy
 
+- **The Status section's «Not yet» and «Next up» are claims too**, written by hand: a change that
+  ships one of them takes it off in the same commit (SPLINE and UCS stayed «next» after
+  they shipped), and bumps `CONTENT_UPDATED`.
 - **Every number about the product comes from `lib/facts.ts`**, which reads the engine at build time
   (`commandCatalog()`, `SnapType`, `LINEWEIGHTS`, the test files). Never type one into the copy.
 - `content/commands.ts` files each registered command under a ribbon group and marks the ribbon

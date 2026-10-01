@@ -15,6 +15,8 @@ import type {
 } from "../locales/types"
 import type { EntityType, DimensionKind, TextJustify } from "../domain/entities"
 import type { SnapType } from "./snapping/types"
+import type { ViewPreset } from "./tools/viewPresets"
+import type { CompassLetter, ViewCubeFace } from "./viewCube"
 
 /** A span of a prompt: text, or the bracketed keyword list. */
 export interface PromptSegment {
@@ -29,6 +31,10 @@ export interface EngineNames {
   readonly colors: Readonly<Record<string, string>>
   readonly byLayer: string
   readonly linetypes: Readonly<Record<string, string>>
+  /** The preset views, and `custom` for a view that is none of them. */
+  readonly views: Readonly<Record<ViewPreset | "custom", string>>
+  readonly viewCubeFaces: Readonly<Record<ViewCubeFace, string>>
+  readonly compass: Readonly<Record<CompassLetter, string>>
 }
 
 type Messages = CommandCatalog["messages"]
@@ -134,6 +140,15 @@ export class EngineText {
       colors: this.table(this.ui.color),
       byLayer: this.format(this.ui.byLayer),
       linetypes: this.table(this.ui.linetype),
+      views: this.table(this.ui.view) as Record<ViewPreset | "custom", string>,
+      viewCubeFaces: this.table(this.ui.viewCube.face) as Record<
+        ViewCubeFace,
+        string
+      >,
+      compass: this.table(this.ui.viewCube.compass) as Record<
+        CompassLetter,
+        string
+      >,
     }
     return this.namesCache
   }

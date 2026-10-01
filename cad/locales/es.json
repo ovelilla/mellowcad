@@ -109,6 +109,30 @@
       "white": "Blanco"
     },
     "byLayer": "PorCapa",
+    "view": {
+      "Top": "Superior",
+      "Bottom": "Inferior",
+      "Front": "Frontal",
+      "BAck": "Posterior",
+      "Left": "Izquierda",
+      "Right": "Derecha",
+      "SWiso": "Isométrica SO",
+      "SEiso": "Isométrica SE",
+      "NEiso": "Isométrica NE",
+      "NWiso": "Isométrica NO",
+      "custom": "Vista personalizada"
+    },
+    "viewCube": {
+      "face": {
+        "top": "SUPERIOR",
+        "bottom": "INFERIOR",
+        "front": "FRONTAL",
+        "back": "POSTERIOR",
+        "left": "IZQUIERDA",
+        "right": "DERECHA"
+      },
+      "compass": { "N": "N", "E": "E", "S": "S", "W": "O" }
+    },
     "entity": {
       "line": "{count, plural, one {Línea} other {Líneas}}",
       "circle": "{count, plural, one {Círculo} other {Círculos}}",
@@ -265,8 +289,8 @@
       "INSERT": ["INSERT", "IN"],
       "ATTEDIT": ["ATREDIT"],
       "EATTEDIT": ["EDITATR"],
-      "ATTDEF": ["ATRDEF"],
-      "-ATTDEF": ["-ATRDEF"],
+      "ATTDEF": ["ATRDEF", "AT"],
+      "-ATTDEF": ["-ATRDEF", "-AT"],
       "ATTDISP": ["ATRVIS"],
       "TEXT": ["TEXTO", "T"],
       "MTEXT": ["TEXTOM"],
@@ -324,7 +348,7 @@
       "PLAN": ["PLANTA"],
       "ELEV": ["ELEV"],
       "VPOINT": ["PTOVISTA"],
-      "-VPOINT": ["-PTOVISTA"],
+      "-VPOINT": ["-PTOVISTA", "-PV"],
       "VIEW": ["VISTA"],
       "-VIEW": ["-VISTA"],
       "3DORBIT": ["3DORBITA"],
@@ -435,7 +459,7 @@
         "BR": "ID"
       },
       "MTEXT": {
-        "Height": "aLtura",
+        "Height": "Altura",
         "Justify": "Justificar",
         "Line spacing": "Interlineado",
         "Rotation": "Rotación",
@@ -579,10 +603,10 @@
         "Ucs": "SCP",
         "World": "Universal"
       },
-      "VPOINT": { "Rotate": "Girar" },
+      "VPOINT": { "Rotate": "Rotación" },
       "VIEW": {
         "Orthographic": "Ortogonal",
-        "Top": "Superior",
+        "Top": "SUperior",
         "Bottom": "Inferior",
         "Front": "Frontal",
         "BAck": "Posterior",
@@ -647,8 +671,8 @@
       "text": "Texto",
       "justify": "Justificar",
       "styleName": "Nombre de estilo",
-      "mtextFirstCorner": "Precise primera esquina",
-      "mtextOppositeCorner": "Precise esquina opuesta",
+      "mtextFirstCorner": "Precise la primera esquina",
+      "mtextOppositeCorner": "Indique la esquina opuesta",
       "mtextRotation": "Precise ángulo de rotación",
       "mtextWidth": "Precise anchura",
       "mtextLineSpacing": "Indique factor o distancia de interlineado",
@@ -708,8 +732,8 @@
       "elevDefaultThickness": "Precise nueva altura de objeto por defecto",
       "idPoint": "Precise punto",
       "viewPoint": "Precise un punto de vista",
-      "viewAngleInPlane": "Indique ángulo en plano XY a partir de eje X",
-      "viewAngleFromPlane": "Indique ángulo a partir de plano XY"
+      "viewAngleInPlane": "Ángulo a partir del eje X en el plano XY",
+      "viewAngleFromPlane": "Ángulo a partir del plano XY"
     },
     "format": {
       "idle": "Comando",
@@ -748,7 +772,7 @@
       "hatchNoBoundary": "No se ha encontrado un contorno de sombreado válido.",
       "textStyleUndefined": "El estilo de texto \"{name}\" no está definido.",
       "textJustifyOptions": "Indique una opción [{keywords}]:",
-      "attributeModes": "Modos de atributo actuales: Invisible={invisible, select, yes {S} other {N}} Constante={constant, select, yes {S} other {N}} Verificable={verify, select, yes {S} other {N}} Predefinido={preset, select, yes {S} other {N}} Bloquear posición={lockPosition, select, yes {S} other {N}}",
+      "attributeModes": "Modos de atributo actuales:  Invisible={invisible, select, yes {S} other {N}}  Constante={constant, select, yes {S} other {N}}  Verificable={verify, select, yes {S} other {N}}  Predefinido={preset, select, yes {S} other {N}}  Bloquear posición={lockPosition, select, yes {S} other {N}}",
       "enterAttributeValues": "Indique los valores de atributo",
       "verifyAttributeValues": "Verifique los valores de atributo",
       "explodeRejected": "{count, plural, one {# no se ha podido descomponer.} other {# no se han podido descomponer.}}",
@@ -761,7 +785,7 @@
       "idReport": "X = {x}     Y = {y}     Z = {z}",
       "linesNonCoplanar": "Las líneas no son coplanares.",
       "nothingJoined": "0 objetos unidos, {count, plural, one {# objeto descartado} other {# objetos descartados}} de la operación",
-      "currentViewDirection": "Dirección de vista actual: VIEWDIR={x},{y},{z}",
+      "currentViewDirection": "Dirección de vista actual:  VIEWDIR={x},{y},{z}",
       "regeneratingModel": "Regenerando modelo.",
       "pointingEdgeOn": "No se puede señalar en un SCP visto de canto."
     },
