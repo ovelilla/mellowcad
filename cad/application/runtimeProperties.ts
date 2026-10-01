@@ -7,7 +7,10 @@ import {
   assignEntityLineweight,
   Entity,
   EntityProperty,
+  entityPointToWorld,
   isZProperty,
+  planeAxes,
+  translateEntity,
 } from "../domain/entities"
 import { COLOR_BYLAYER, EntityColor, normalizeColor } from "../domain/colors"
 import { LayerId } from "../domain/layers"
@@ -21,6 +24,7 @@ import {
   worldPointToUcs,
 } from "../domain/ucs"
 import { Vec2 } from "../geometry/Vec2"
+import { sub3 } from "../geometry/Vec3"
 import { Selection } from "./Selection"
 import { CommandHistory } from "./commands/Command"
 import { UpdateEntityCommand } from "./commands/entityCommands"
@@ -172,6 +176,7 @@ function applyInUcs(
   value: number,
   ucs: Ucs
 ): Entity | null {
+  if (planeAxes(entity)) return applyOffPlane(entity, property, value, ucs)
   if (isZProperty(property)) {
     // Thickness is a length along Z, not a position, so the origin does not apply.
     const z = property === "thickness" ? value : value + ucs.origin.z
@@ -190,6 +195,46 @@ function applyInUcs(
   )
   const moved = applyEntityProperty(entity, row.x, next.x)
   return moved && applyEntityProperty(moved, row.y, next.y)
+}
+
+/** Which point each position row of a planar object reads, and along which UCS axis. */
+const POSITION_ROWS: Readonly<
+  Partial<
+    Record<
+      EntityProperty,
+      { readonly point: "center" | "position"; readonly axis: "x" | "y" | "z" }
+    >
+  >
+> = {
+  centerX: { point: "center", axis: "x" },
+  centerY: { point: "center", axis: "y" },
+  centerZ: { point: "center", axis: "z" },
+  positionX: { point: "position", axis: "x" },
+  positionY: { point: "position", axis: "y" },
+  positionZ: { point: "position", axis: "z" },
+}
+
+/**
+ * A retyped value of an object whose points are in an OCS of its own: a
+ * position row moves the whole object in space to put that point where the
+ * UCS coordinate says; anything else, its elevation included, is its own.
+ */
+function applyOffPlane(
+  entity: Entity,
+  property: EntityProperty,
+  value: number,
+  ucs: Ucs
+): Entity | null {
+  const row = POSITION_ROWS[property]
+  if (!row) return applyEntityProperty(entity, property, value)
+  const point = rowPoint(entity, row.point)
+  if (!point) return null
+  const world = entityPointToWorld(entity, point)
+  const target = ucsPointToWorld(ucs, {
+    ...worldPointToUcs(ucs, world),
+    [row.axis]: value,
+  })
+  return translateEntity(entity, sub3(target, world))
 }
 
 function rowPoint(

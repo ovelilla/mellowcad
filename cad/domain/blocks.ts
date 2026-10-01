@@ -1,6 +1,6 @@
 import { Vec2 } from "../geometry/Vec2"
-import { Vec3, withZ } from "../geometry/Vec3"
-import { entityElevation } from "./elevation"
+import { Vec3 } from "../geometry/Vec3"
+import { entityAxes, entityPointToWorld } from "./elevation"
 import { DEFAULT_LAYER_ID } from "./layers"
 import {
   AttributeDisplay,
@@ -15,6 +15,7 @@ import {
   rotateEntity,
   scaleEntity,
   mirrorEntity,
+  transformEntity,
 } from "./entityTransforms"
 import {
   attributeDefinitionText,
@@ -87,6 +88,15 @@ function placeInReference(
     ...insert.position,
     z: insert.elevation ?? 0,
   })
+  // Placed so far in the reference's own coordinates: its plane turns them
+  // into the world's.
+  if (insert.normal) {
+    placed = transformEntity(placed, {
+      rotation: entityAxes(insert),
+      scale: 1,
+      translation: { x: 0, y: 0, z: 0 },
+    })
+  }
   return inheritLayer && placed.layerId === DEFAULT_LAYER_ID
     ? assignEntityLayer(placed, insert.layerId)
     : placed
@@ -152,8 +162,9 @@ export function insertAttributePoints(
         block,
         true
       )
-      const at = placed.type === "text" ? placed.position : insert.position
-      return withZ(at, entityElevation(placed))
+      return placed.type === "text"
+        ? entityPointToWorld(placed, placed.position)
+        : entityPointToWorld(insert, insert.position)
     })
 }
 

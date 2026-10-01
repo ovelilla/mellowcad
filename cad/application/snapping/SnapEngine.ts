@@ -10,9 +10,10 @@ import {
   insertFlatGeometry,
   lineEndZ,
   lineStartZ,
+  planeAxes,
 } from "../../domain/entities"
 import { Viewport } from "../Viewport"
-import { cursorInPlane } from "../viewPick"
+import { cursorInPlane, cursorOnEntityPlane } from "../viewPick"
 import { defaultSnapProviders } from "./providers"
 import {
   ConstructionGeometry,
@@ -246,11 +247,12 @@ export class SnapEngine extends Observable {
 
   /**
    * What the providers see of the cursor. In a plan view that is one world
-   * point and a tolerance in world units, as it always was. Off the plan the
-   * cursor is a line of sight: each object is asked about the point of its own
-   * plane under the cursor, and nearness is measured on screen. Candidates are
-   * gathered within the *release* radius, so a point already stuck to survives
-   * small drifts beyond the (smaller) capture radius.
+   * point and a tolerance in world units, as it always was, but for an object
+   * in a plane of its own. Off the plan the cursor is a line of sight: each
+   * object is asked about the point of its own plane under the cursor, and
+   * nearness is measured on screen. Candidates are gathered within the
+   * *release* radius, so a point already stuck to survives small drifts beyond
+   * the (smaller) capture radius.
    */
   private context(
     screenCursor: Vec2,
@@ -267,6 +269,7 @@ export class SnapEngine extends Observable {
       construction,
       anchor,
       parallelSourceIds,
+      view: viewport,
     }
     if (viewport.isPlan) {
       const worldCursor = viewport.screenToWorld(screenCursor)
@@ -276,10 +279,12 @@ export class SnapEngine extends Observable {
       return {
         ...shared,
         worldCursor,
-        cursorOn: () => worldCursor,
+        cursorOn: (entity) =>
+          planeAxes(entity)
+            ? cursorOnEntityPlane(viewport, entity, screenCursor)
+            : worldCursor,
         isNear: (point, reach = 1) =>
           V.distance(point, worldCursor) <= worldTolerance * reach,
-        view: null,
       }
     }
     const settings = document.getSettings()
@@ -300,6 +305,9 @@ export class SnapEngine extends Observable {
       ...shared,
       worldCursor,
       cursorOn: (entity) => {
+        if (planeAxes(entity)) {
+          return cursorOnEntityPlane(viewport, entity, screenCursor)
+        }
         if (entity.type !== "line") return onPlane(entityElevation(entity))
         // A line, level or sloping, is read along its own image on screen.
         const { t } = closestPointOnInfiniteLine(
@@ -312,7 +320,6 @@ export class SnapEngine extends Observable {
       isNear: (point, reach = 1) =>
         V.distance(viewport.worldToScreen(point), screenCursor) <=
         this.releaseTolerance * reach,
-      view: viewport,
     }
   }
 }

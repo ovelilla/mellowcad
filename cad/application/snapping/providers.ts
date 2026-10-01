@@ -1,5 +1,14 @@
 import { V, Vec2 } from "../../geometry/Vec2"
-import { Vec3, length3, sub3, withZ, withZOf, zOf } from "../../geometry/Vec3"
+import {
+  Vec3,
+  length3,
+  planar,
+  sub3,
+  withZ,
+  withZOf,
+  zOf,
+} from "../../geometry/Vec3"
+import { axesToWorld } from "../../geometry/ocs"
 import { CameraTransform } from "../../scene/types"
 import {
   angleWithinSweep,
@@ -25,15 +34,19 @@ import {
   ellipseEndPoint,
   ellipseQuadrantPoints,
   ellipseStartPoint,
+  entityPointToWorld,
   entityZAt,
   insertAttributePoints,
   isFullEllipse,
   lineMidpoint,
+  planeAxes,
   polylineSegmentGeometries,
+  sameNormal,
   splineEndPoint,
   splineMidpoint,
   splinePolyline,
   splineStartPoint,
+  worldToEntity,
   Entity,
   EntityId,
 } from "../../domain/entities"
@@ -54,9 +67,17 @@ import {
  * boundary a hatch was traced from is still there to snap to.
  */
 
-/** A point on `entity` in plan, at the object's height there. */
+/** A point on `entity`, given as it stores its points, in the WCS at the object's height there. */
 function on(entity: Entity, point: Vec2): Vec3 {
-  return withZ(point, entityZAt(entity, point))
+  return entityPointToWorld(entity, point)
+}
+
+/**
+ * The anchor in the plan of `entity`'s plane: projected along the plane's
+ * normal, so the perpendicular or tangent found there is the one in space.
+ */
+function anchorIn(entity: Entity, anchor: Vec2): Vec2 {
+  return planeAxes(entity) ? planar(worldToEntity(entity, anchor)) : anchor
 }
 
 /** Endpoint is the primary snap (highest priority). */
@@ -342,7 +363,7 @@ export const perpendicularProvider: SnapProvider = {
           sourceIds: [entity.id],
         })
       } else if (entity.type === "circle") {
-        const radial = V.sub(anchor, entity.center)
+        const radial = V.sub(anchorIn(entity, anchor), entity.center)
         const len = V.length(radial)
         if (len < 1e-9) continue
         const dir = V.scale(radial, 1 / len)
@@ -392,7 +413,7 @@ export const tangentProvider: SnapProvider = {
           .point
       )
       for (const point of tangentPointsFromPoint(
-        anchor,
+        anchorIn(entity, anchor),
         entity.center,
         entity.radius
       )) {
@@ -565,14 +586,15 @@ export const intersectionProvider: SnapProvider = {
         ) {
           continue
         }
+        if (!sameFrame(a, b)) continue
         for (const point of intersectShapes(shapes[i], shapes[j])) {
-          const z = meetingHeight(a, b, point)
-          if (z === null) continue
+          const at = meetingPoint(a, b, point)
+          if (at === null) continue
           // Coarse pre-filter around the cursor; the engine judges exactly.
-          if (!isNear(withZ(point, z), 8)) continue
+          if (!isNear(at, 8)) continue
           candidates.push({
             type: SnapType.Intersection,
-            point: withZ(point, z),
+            point: at,
             sourceIds: [...shapes[i].sourceIds, ...shapes[j].sourceIds],
             transient: shapes[i].fromConstruction || shapes[j].fromConstruction,
           })
@@ -602,7 +624,10 @@ export const apparentIntersectionProvider: SnapProvider = {
     const segments = collectShapes(document, entities, construction).filter(
       (s): s is SegmentShape => s.kind === "segment"
     )
-    if (view) return apparentOnScreen(segments, view, isNear)
+    // Edges in other planes than the world's cross, if at all, on the screen.
+    if (!view.isPlan || segments.some((s) => shapeAxes(s))) {
+      return apparentOnScreen(segments, view, isNear)
+    }
     const candidates: SnapCandidate[] = []
 
     for (let i = 0; i < segments.length; i++) {
@@ -635,8 +660,8 @@ export const apparentIntersectionProvider: SnapProvider = {
 }
 
 /**
- * Apparent intersection off the plan: where two edges, extended if need be,
- * cross on the screen without meeting in space. The point is on the first of
+ * Apparent intersection on the screen: where two edges, extended if need be,
+ * cross in the view without meeting in space. The point is on the first of
  * them, at its height there.
  */
 function apparentOnScreen(
@@ -680,9 +705,11 @@ function apparentOnScreen(
   return candidates
 }
 
-/** An end of an edge in space: on its object's height there, or the rubber band's own. */
+/** An end of an edge in space: on its object there, or the rubber band's own. */
 function segmentEnd(segment: SegmentShape, point: Vec2): Vec3 {
-  return withZ(point, heightOn(segment, point) ?? zOf(point))
+  return segment.source
+    ? entityPointToWorld(segment.source, point)
+    : withZ(point, zOf(point))
 }
 
 function lerp3(a: Vec3, b: Vec3, t: number): Vec3 {
@@ -732,19 +759,39 @@ function heightOn(shape: SnapShape, point: Vec2): number | null {
   return shape.source ? entityZAt(shape.source, point) : null
 }
 
+/** The axes a shape's points are in, when not the WCS's. */
+function shapeAxes(shape: SnapShape) {
+  return shape.source ? planeAxes(shape.source) : undefined
+}
+
+/** Whether two shapes' points are in one coordinate system, so crossing them in 2D means something. */
+function sameFrame(a: SnapShape, b: SnapShape): boolean {
+  const tiltedA = a.source !== null && planeAxes(a.source) !== undefined
+  const tiltedB = b.source !== null && planeAxes(b.source) !== undefined
+  if (!tiltedA || !tiltedB) return !tiltedA && !tiltedB
+  return (
+    a.source !== null && b.source !== null && sameNormal(a.source, b.source)
+  )
+}
+
 /** Tolerance on the heights of two objects crossing in plan. */
 const MEETING_EPSILON = 1e-6
 
 /**
- * The Z at which two shapes crossing in plan at `point` really meet, or null
- * when they pass one above the other. The rubber band meets anything.
+ * Where two shapes of one frame crossing in its plan at `point` really meet,
+ * in the WCS, or null when they pass one above the other. The rubber band
+ * meets anything.
  */
-function meetingHeight(a: SnapShape, b: SnapShape, point: Vec2): number | null {
+function meetingPoint(a: SnapShape, b: SnapShape, point: Vec2): Vec3 | null {
   const za = heightOn(a, point)
   const zb = heightOn(b, point)
-  if (za === null) return zb ?? 0
-  if (zb === null) return za
-  return Math.abs(za - zb) <= MEETING_EPSILON ? za : null
+  let z: number
+  if (za === null) z = zb ?? 0
+  else if (zb === null) z = za
+  else if (Math.abs(za - zb) <= MEETING_EPSILON) z = za
+  else return null
+  const axes = shapeAxes(a)
+  return axes ? axesToWorld(axes, withZ(point, z)) : withZ(point, z)
 }
 
 /**

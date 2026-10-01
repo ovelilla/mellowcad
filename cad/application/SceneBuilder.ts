@@ -1,5 +1,6 @@
 import { Vec2, V } from "../geometry/Vec2"
-import { withZOf, zOf } from "../geometry/Vec3"
+import { scale3, withZOf, zOf } from "../geometry/Vec3"
+import { axesToWorld } from "../geometry/ocs"
 import {
   AttributeDisplay,
   BlockLookup,
@@ -15,9 +16,13 @@ import {
   attributeDefinitionText,
   dimensionGeometry,
   entityDrawOrder,
+  entityAxes,
   entityElevation,
+  entityNormal,
   entityThickness,
   hasThickness,
+  isTilted,
+  planeAxes,
   hatchGeometry,
   insertFlatGeometry,
   isFullEllipse,
@@ -659,14 +664,19 @@ export function entityScenePrimitive(
   stroke: StrokeStyle,
   options: EntityDrawOptions = {}
 ): ScenePrimitive[] {
-  if (camera.isPlan || isPlaneCamera(camera) || entity.type === "insert") {
+  if (
+    (camera.isPlan && !isTilted(entity)) ||
+    isPlaneCamera(camera) ||
+    entity.type === "insert"
+  ) {
     return planarPrimitives(camera, entity, stroke, options)
   }
   if (entity.type === "line") return linePrimitives(camera, entity, stroke)
   const elevation = entityElevation(entity)
   const thickness = entityThickness(entity)
+  const axes = planeAxes(entity)
   const base = planarPrimitives(
-    planeCamera(camera, elevation),
+    planeCamera(camera, elevation, axes),
     entity,
     stroke,
     options
@@ -675,7 +685,7 @@ export function entityScenePrimitive(
   return [
     ...base,
     ...planarPrimitives(
-      planeCamera(camera, elevation + thickness),
+      planeCamera(camera, elevation + thickness, axes),
       entity,
       stroke,
       options
@@ -686,7 +696,10 @@ export function entityScenePrimitive(
   ]
 }
 
-/** A line off the plan: each end at its own Z, and its thickness as a quadrilateral. */
+/**
+ * A line off the plan: each end at its own Z, and its thickness, along its
+ * extrusion direction, as a quadrilateral.
+ */
 function linePrimitives(
   camera: CameraTransform,
   line: LineEntity,
@@ -695,8 +708,13 @@ function linePrimitives(
   const startZ = lineStartZ(line)
   const endZ = lineEndZ(line)
   const thickness = entityThickness(line)
-  const at = (point: Vec2, z: number) =>
-    camera.worldToScreen({ x: point.x, y: point.y, z })
+  const up = scale3(entityNormal(line), thickness)
+  const at = (point: Vec2, z: number, lift = 0) =>
+    camera.worldToScreen({
+      x: point.x + up.x * lift,
+      y: point.y + up.y * lift,
+      z: z + up.z * lift,
+    })
   const segment = (a: Vec2, b: Vec2): ScenePrimitive => ({
     kind: "segment",
     a,
@@ -707,8 +725,8 @@ function linePrimitives(
   const bottomEnd = at(line.end, endZ)
   const bottom = segment(bottomStart, bottomEnd)
   if (thickness === 0) return [bottom]
-  const topStart = at(line.start, startZ + thickness)
-  const topEnd = at(line.end, endZ + thickness)
+  const topStart = at(line.start, startZ, 1)
+  const topEnd = at(line.end, endZ, 1)
   return [
     bottom,
     segment(topStart, topEnd),
@@ -736,9 +754,12 @@ export function extrusionEdges(
       : entity.type === "polyline"
         ? [...entity.vertices]
         : []
+  const axes = entityAxes(entity)
+  const at = (point: Vec2, z: number) =>
+    camera.worldToScreen(axesToWorld(axes, { x: point.x, y: point.y, z }))
   return points.map((point) => [
-    camera.worldToScreen({ x: point.x, y: point.y, z: elevation }),
-    camera.worldToScreen({ x: point.x, y: point.y, z: elevation + thickness }),
+    at(point, elevation),
+    at(point, elevation + thickness),
   ])
 }
 

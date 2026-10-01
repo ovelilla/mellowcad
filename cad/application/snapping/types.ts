@@ -105,12 +105,12 @@ export interface SnapContext {
   readonly entities: readonly Entity[]
   /** The cursor on the work plane (ELEVATION above the UCS's XY plane). */
   readonly worldCursor: Vec2
-  /** The cursor as a point in plan of `entity`'s plane (a line's: along it on screen). */
+  /** The cursor as a point in the plan of `entity`'s plane (a line's: along it on screen). */
   cursorOn(entity: Entity): Vec2
   /** Whether `point` is within the aperture of the cursor, `reach` times widened. */
   isNear(point: Vec3, reach?: number): boolean
-  /** The view off the plan, where an apparent intersection is one on screen; null in plan. */
-  readonly view: CameraTransform | null
+  /** The view, for what is found on the screen rather than in a plane (apparent intersection). */
+  readonly view: CameraTransform
   /**
    * The point the current operation is measuring *from* — the line tool's
    * confirmed start, or a grip's fixed end. Snaps that are relative to it

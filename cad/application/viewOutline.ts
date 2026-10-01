@@ -1,11 +1,31 @@
 import { Vec2 } from "../geometry/Vec2"
-import { BlockLookup, Entity, measureTextWidth } from "../domain/entities"
+import {
+  BlockLookup,
+  Entity,
+  insertFlatGeometry,
+  isTilted,
+  measureTextWidth,
+} from "../domain/entities"
 import { CameraTransform, ScenePrimitive } from "../scene/types"
 import { entityScenePrimitive } from "./SceneBuilder"
 
 /** Chords per full turn when a curve on screen is read as a polyline. */
 const CURVE_STEPS = 64
 const OUTLINE_STROKE = { color: "", width: 0 }
+
+/**
+ * Whether anything `entity` draws has a normal off +Z, so that even a plan
+ * view does not draw it as its points read and only its outline on screen
+ * tells where it is.
+ */
+export function drawsTilted(entity: Entity, blocks?: BlockLookup): boolean {
+  if (isTilted(entity)) return true
+  return (
+    entity.type === "insert" &&
+    !!blocks &&
+    insertFlatGeometry(entity, blocks).some(isTilted)
+  )
+}
 
 /**
  * What an entity looks like on screen, as polylines in screen pixels: the very

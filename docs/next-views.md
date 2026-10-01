@@ -195,7 +195,15 @@ que no tiene sitio junto a Bloques). El cursor en el plano de trabajo (D5) y el 
 designar, iluminar, ventana y captura, referencias y OTRACK, grips (D6); 3DORBIT y Mayús + rueda. Pruebas: una LINE dibujada
 en SE Isometric da los mismos puntos que en planta; se designa un círculo elevado.
 
-**F4. Normal por entidad.** Modelo y fichero (D8, D13), `transformEntity` (D9), arbitrario `entity`
+**F4. Normal por entidad** — hecha (`elevation.ts`: `entityNormal`, `withNormal`, `entityAxes`,
+`planeAxes` —los ejes de los puntos, nunca los de una línea—, `entityPointToWorld`,
+`worldToEntity`, `sameNormal`; `carryPlane` pasa al WCS una línea hecha con puntos OCS y no da la
+normal de una línea a lo que sale de ella; `transformEntity(Similarity3)` en `entityTransforms.ts`;
+fichero v23; `planeCamera(camera, elevation, axes)`; en planta, lo inclinado se designa, se
+encuadra y entra en la ventana por su contorno en pantalla (`planDistanceToEntity`, `drawsTilted`);
+las referencias preguntan a cada objeto en su plano y no cruzan marcos distintos; un objeto
+inclinado solo conserva sus grips de mover; las filas de posición del palette leen el punto en el
+espacio y lo mueven). Modelo y fichero (D8, D13), `transformEntity` (D9), arbitrario `entity`
 con normales y `expectSameShape` que las compara; escena, designación y referencias ya generales
 desde F2–F3. Filas del palette (Normal X/Y/Z, V8).
 
@@ -206,17 +214,17 @@ respecto al UCS, D12. Pruebas: CIRCLE en el UCS Front, TRIM en él, ROTATE alred
 
 ## 5. Pendientes de verificar (con la opción ya elegida)
 
-| #   | Duda                                                                                 | Opción elegida mientras tanto                                                               | Fase  |
-| --- | ------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------- | ----- |
-| V1  | Texto de `-VIEW` Orthographic y cómo se teclean las isométricas (`_SWISO` en macros) | `Enter an option [Top/Bottom/Front/BAck/Left/Right]`; las isométricas como opciones ocultas | F2    |
-| V2  | Valores por defecto de -VPOINT Rotate                                                | Los ángulos de la vista actual entre `< >`                                                  | F2    |
-| V3  | Icono 2D en una vista 3D (lápiz roto de canto, visto desde abajo)                    | Brazos proyectados; lápiz roto de canto                                                     | F2    |
-| V4  | Círculo con altura de objeto: ¿generatrices de contorno?                             | Dos círculos, sin generatrices                                                              | F2    |
-| V5  | Mensaje al señalar con el plano de canto (EN / ES)                                   | `Pointing in edge-on UCS is prohibited.` (de memoria: sin fuente todavía)                   | F3    |
-| V6  | Solicitudes de UCS X / Y / ZAxis                                                     | `Specify rotation angle about X axis <90>`, como la de Z; ZAxis con su Object               | F5    |
-| V7  | CIRCLE 2P con puntos a distinta Z                                                    | En el plano del UCS que pasa por el primer punto                                            | F5    |
-| V8  | Filas del palette para la normal                                                     | `Normal X`, `Normal Y`, `Normal Z` en Geometry de los tipos planos                          | F4    |
-| V9  | Español de todo lo anterior                                                          | Nombres de la ayuda ESP (`-PTOVISTA`, `-VISTA`, `Ortogonal`); solicitudes sin verificar     | F2–F5 |
+| #   | Duda                                                                                 | Opción elegida mientras tanto                                                                                                   | Fase  |
+| --- | ------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------- | ----- |
+| V1  | Texto de `-VIEW` Orthographic y cómo se teclean las isométricas (`_SWISO` en macros) | `Enter an option [Top/Bottom/Front/BAck/Left/Right]`; las isométricas como opciones ocultas                                     | F2    |
+| V2  | Valores por defecto de -VPOINT Rotate                                                | Los ángulos de la vista actual entre `< >`                                                                                      | F2    |
+| V3  | Icono 2D en una vista 3D (lápiz roto de canto, visto desde abajo)                    | Brazos proyectados; lápiz roto de canto                                                                                         | F2    |
+| V4  | Círculo con altura de objeto: ¿generatrices de contorno?                             | Dos círculos, sin generatrices                                                                                                  | F2    |
+| V5  | Mensaje al señalar con el plano de canto (EN / ES)                                   | `Pointing in edge-on UCS is prohibited.` (de memoria: sin fuente todavía)                                                       | F3    |
+| V6  | Solicitudes de UCS X / Y / ZAxis                                                     | `Specify rotation angle about X axis <90>`, como la de Z; ZAxis con su Object                                                   | F5    |
+| V7  | CIRCLE 2P con puntos a distinta Z                                                    | En el plano del UCS que pasa por el primer punto                                                                                | F5    |
+| V8  | Filas del palette para la normal                                                     | `Normal X`, `Normal Y`, `Normal Z`, de solo lectura, en Geometry de CIRCLE y ARC; el resto de tipos sin ellas hasta verificarlo | F4    |
+| V9  | Español de todo lo anterior                                                          | Nombres de la ayuda ESP (`-PTOVISTA`, `-VISTA`, `Ortogonal`); solicitudes sin verificar                                         | F2–F5 |
 
 ## 6. Fuera de alcance (se anota en la cobertura)
 

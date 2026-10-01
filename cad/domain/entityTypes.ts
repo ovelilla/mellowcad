@@ -1,4 +1,5 @@
 import { Vec2 } from "../geometry/Vec2"
+import { Vec3 } from "../geometry/Vec3"
 import { KnotParameterization } from "../geometry/nurbs"
 import { EntityColor } from "./colors"
 import { LayerId } from "./layers"
@@ -51,11 +52,19 @@ interface BaseEntity {
    */
   readonly lineweight?: Lineweight
   /**
-   * World Z of the plane the object lies in (its normal is always +Z, so the
-   * OCS is the WCS): DXF's elevation, or the Z of its defining point. Absent
-   * means 0.
+   * The plane the object lies in, as DXF keeps it: `elevation` is its distance
+   * from the origin along {@link normal}, and the object's own points are in
+   * that plane's object coordinate system (the arbitrary axis algorithm's
+   * axes for the normal). With the normal on +Z that system is the WCS and
+   * the elevation is a world Z. Absent means 0. A line is the exception: its
+   * points are in the WCS, and this is its start's Z.
    */
   readonly elevation?: number
+  /**
+   * DXF 210: the unit normal of the object's plane, or a line's extrusion
+   * direction. Absent means +Z, the only one the plan draws as it is stored.
+   */
+  readonly normal?: Vec3
 }
 
 /**

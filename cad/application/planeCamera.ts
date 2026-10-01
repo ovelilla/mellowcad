@@ -1,4 +1,5 @@
 import { Vec2 } from "../geometry/Vec2"
+import { Axes3, axesToWorld } from "../geometry/ocs"
 import { CameraTransform, ScenePrimitive, StrokeStyle } from "../scene/types"
 
 /**
@@ -22,14 +23,23 @@ export function isPlaneCamera(camera: CameraTransform): camera is PlaneCamera {
   return "linear" in camera
 }
 
-/** The horizontal plane at `elevation`, seen through `camera`. */
+/**
+ * The plane at `elevation` along the Z of `axes` (an object's coordinate
+ * system; the WCS when left out), seen through `camera`: a point of it is
+ * given by its X and Y on those axes.
+ */
 export function planeCamera(
   camera: CameraTransform,
-  elevation: number
+  elevation: number,
+  axes?: Axes3
 ): PlaneCamera {
-  const origin = camera.worldToScreen({ x: 0, y: 0, z: elevation })
-  const onX = camera.worldToScreen({ x: 1, y: 0, z: elevation })
-  const onY = camera.worldToScreen({ x: 0, y: 1, z: elevation })
+  const at = (x: number, y: number) =>
+    camera.worldToScreen(
+      axes ? axesToWorld(axes, { x, y, z: elevation }) : { x, y, z: elevation }
+    )
+  const origin = at(0, 0)
+  const onX = at(1, 0)
+  const onY = at(0, 1)
   const a = onX.x - origin.x
   const b = onX.y - origin.y
   const c = onY.x - origin.x

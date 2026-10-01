@@ -36,7 +36,8 @@ export type GripRole =
 export interface Grip {
   readonly entityId: EntityId
   readonly role: GripRole
-  readonly world: Vec2
+  /** In the WCS, on its object: at its height there and in its plane. */
+  readonly world: Vec3
 }
 
 export type SelectToolState =

@@ -8,6 +8,7 @@ import {
   TEXT_JUSTIFICATIONS,
   withDeltaZ,
   withElevation,
+  withNormal,
   withThickness,
   type ArcEntity,
   type AttributeDefinitionEntity,
@@ -471,14 +472,32 @@ export const entity: fc.Arbitrary<Entity> = fc
     ),
     zValue,
     zValue,
-    zValue
+    zValue,
+    fc.oneof(
+      { weight: 3, arbitrary: fc.constant(null) },
+      {
+        weight: 1,
+        arbitrary: fc
+          .tuple(
+            fc.double({ min: -Math.PI, max: Math.PI, noNaN: true }),
+            fc.double({ min: -Math.PI / 2, max: Math.PI / 2, noNaN: true })
+          )
+          .map(([azimuth, tilt]) => ({
+            x: Math.cos(tilt) * Math.cos(azimuth),
+            y: Math.cos(tilt) * Math.sin(azimuth),
+            z: Math.sin(tilt),
+          })),
+      }
+    )
   )
-  .map(([flat, elevation, deltaZ, thickness]) => {
-    // Every transform has to carry the Z fields, which TypeScript cannot check
-    // on optional ones; a flat drawing alone would never notice one dropped.
+  .map(([flat, elevation, deltaZ, thickness, normal]) => {
+    // Every transform has to carry the Z fields and the normal, which
+    // TypeScript cannot check on optional ones; a flat drawing alone would
+    // never notice one dropped.
     let placed: Entity = withElevation(flat, elevation)
     if (placed.type === "line") placed = withDeltaZ(placed, deltaZ)
     if (hasThickness(placed)) placed = withThickness(placed, thickness)
+    if (normal) placed = withNormal(placed, normal)
     return placed
   })
 

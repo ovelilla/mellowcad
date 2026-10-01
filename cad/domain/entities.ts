@@ -207,8 +207,17 @@ export {
   withLineZ,
   isLevel,
   coplanar,
+  entityNormal,
+  isTilted,
+  withNormal,
+  entityAxes,
+  planeAxes,
+  entityPointToWorld,
+  worldToEntity,
+  sameNormal,
 } from "./elevation"
 
+export type { Similarity3 } from "./entityTransforms"
 export {
   translateEntity,
   stretchEntity,
@@ -222,6 +231,11 @@ export {
   mirrorPoint,
   mirrorEntity,
   mirrorEntityCopy,
+  transformEntity,
+  translation3,
+  scaling3,
+  rotationAboutZ,
+  reflectionAcross,
 } from "./entityTransforms"
 
 export {

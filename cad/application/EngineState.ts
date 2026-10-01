@@ -37,6 +37,8 @@ import {
   dimensionMeasurement,
   dimensionMeasurementUnit,
   entityElevation,
+  entityNormal,
+  entityPointToWorld,
   entityThickness,
   hasThickness,
   lineEndZ,
@@ -44,6 +46,7 @@ import {
   lineStartZ,
   mtextLinePitch,
   mtextPlainText,
+  planeAxes,
 } from "../domain/entities"
 import { SnapType } from "./snapping/types"
 import { SnapModeType } from "./SnapMode"
@@ -612,8 +615,10 @@ function singleEntityInfo(
     `${formatLength(value, settings)} ${unitSuffix(settings.unit)}²`
   const coord = (value: number) => formatLength(value, settings)
   const degrees = (value: number) => `${formatAngle(value, settings)}°`
-  // Coordinates read in the current UCS, as AutoCAD's palette shows them.
-  const at = (point: Vec2) => worldPointToUcs(settings.ucs, point)
+  // Coordinates read in the current UCS, as AutoCAD's palette shows them:
+  // where the point is in space, whatever plane its object lies in.
+  const at = (point: Vec2) =>
+    worldPointToUcs(settings.ucs, entityPointToWorld(entity, point))
 
   const group = (id: GroupId, rows: PropertyRow[]): PropertyGroup => ({
     id,
@@ -657,8 +662,21 @@ function singleEntityInfo(
   // A Z is read above the UCS's XY plane, like X and Y from its origin.
   const zRow = (id: RowId, property: EntityProperty, z: number) =>
     coordRow(id, property, z - settings.ucs.origin.z)
+  // An elevation along a normal of the object's own is its OCS one (DXF 38).
   const planeRow = (id: RowId, property: EntityProperty) =>
-    zRow(id, property, entityElevation(entity))
+    planeAxes(entity)
+      ? coordRow(id, property, entityElevation(entity))
+      : zRow(id, property, entityElevation(entity))
+  const planeRowAt = (property: EntityProperty, point: Vec2) =>
+    coordRow("z", property, at(point).z)
+  const normalRows = (): PropertyRow[] => {
+    const normal = entityNormal(entity)
+    return [
+      row("normalX", coord(normal.x)),
+      row("normalY", coord(normal.y)),
+      row("normalZ", coord(normal.z)),
+    ]
+  }
 
   switch (entity.type) {
     case "line": {
@@ -699,11 +717,12 @@ function singleEntityInfo(
             lengthRow("diameter", "diameter", entity.radius * 2),
             row("circumference", length(circleCircumference(entity))),
             row("area", area(circleArea(entity))),
+            ...normalRows(),
           ]),
           group("center", [
             coordRow("x", "centerX", at(entity.center).x),
             coordRow("y", "centerY", at(entity.center).y),
-            planeRow("z", "centerZ"),
+            coordRow("z", "centerZ", at(entity.center).z),
           ]),
         ],
       }
@@ -725,11 +744,12 @@ function singleEntityInfo(
             ),
             angleRow("startAngle", "startAngle", deg(entity.startAngle)),
             angleRow("endAngle", "endAngle", deg(entity.endAngle)),
+            ...normalRows(),
           ]),
           group("center", [
             coordRow("x", "centerX", at(entity.center).x),
             coordRow("y", "centerY", at(entity.center).y),
-            planeRow("z", "centerZ"),
+            coordRow("z", "centerZ", at(entity.center).z),
           ]),
         ],
       }
@@ -763,7 +783,7 @@ function singleEntityInfo(
           group("center", [
             coordRow("x", "centerX", at(entity.center).x),
             coordRow("y", "centerY", at(entity.center).y),
-            planeRow("z", "centerZ"),
+            coordRow("z", "centerZ", at(entity.center).z),
           ]),
         ],
       }
@@ -829,7 +849,7 @@ function singleEntityInfo(
           group("position", [
             coordRow("x", "positionX", at(entity.position).x),
             coordRow("y", "positionY", at(entity.position).y),
-            planeRow("z", "positionZ"),
+            planeRowAt("positionZ", entity.position),
           ]),
         ],
       }
@@ -867,7 +887,7 @@ function singleEntityInfo(
           group("position", [
             coordRow("x", "positionX", at(entity.position).x),
             coordRow("y", "positionY", at(entity.position).y),
-            planeRow("z", "positionZ"),
+            planeRowAt("positionZ", entity.position),
           ]),
         ],
       }
@@ -893,7 +913,7 @@ function singleEntityInfo(
           group("position", [
             coordRow("x", "positionX", at(entity.position).x),
             coordRow("y", "positionY", at(entity.position).y),
-            planeRow("z", "positionZ"),
+            planeRowAt("positionZ", entity.position),
           ]),
           group("misc", [
             row("invisible", yesNo(entity.modes.invisible)),
@@ -986,7 +1006,7 @@ function singleEntityInfo(
           group("position", [
             coordRow("x", "positionX", at(entity.position).x),
             coordRow("y", "positionY", at(entity.position).y),
-            planeRow("z", "positionZ"),
+            planeRowAt("positionZ", entity.position),
           ]),
           ...(entity.attributes
             ? [

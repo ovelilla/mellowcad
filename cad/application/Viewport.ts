@@ -16,7 +16,7 @@ import {
   entitiesBounds,
   rotateEntity,
 } from "../domain/entities"
-import { entityScreenOutline } from "./viewOutline"
+import { drawsTilted, entityScreenOutline } from "./viewOutline"
 
 /**
  * The viewport owns the mapping between *world* coordinates (what entities are
@@ -365,33 +365,41 @@ export function entitiesViewBounds(
   viewport: Viewport,
   blocks?: BlockLookup
 ): Bounds | null {
-  if (!viewport.isPlan) {
-    let bounds: Bounds | null = null
-    for (const entity of entities) {
-      for (const line of entityScreenOutline(viewport, entity, blocks)) {
-        for (const point of line) {
-          const p = viewport.screenToView(point)
-          bounds = bounds
-            ? {
-                min: {
-                  x: Math.min(bounds.min.x, p.x),
-                  y: Math.min(bounds.min.y, p.y),
-                },
-                max: {
-                  x: Math.max(bounds.max.x, p.x),
-                  y: Math.max(bounds.max.y, p.y),
-                },
-              }
-            : { min: p, max: p }
+  const onScreen = viewport.isPlan
+    ? entities.filter((entity) => drawsTilted(entity, blocks))
+    : entities
+  let bounds: Bounds | null = null
+  const include = (p: Vec2) => {
+    bounds = bounds
+      ? {
+          min: {
+            x: Math.min(bounds.min.x, p.x),
+            y: Math.min(bounds.min.y, p.y),
+          },
+          max: {
+            x: Math.max(bounds.max.x, p.x),
+            y: Math.max(bounds.max.y, p.y),
+          },
         }
-      }
-    }
-    return bounds
+      : { min: p, max: p }
   }
-  return entitiesBounds(
-    entities.map((entity) => entityInView(entity, viewport)),
+  for (const entity of onScreen) {
+    for (const line of entityScreenOutline(viewport, entity, blocks)) {
+      for (const point of line) include(viewport.screenToView(point))
+    }
+  }
+  if (!viewport.isPlan) return bounds
+  const level = entitiesBounds(
+    entities
+      .filter((entity) => !drawsTilted(entity, blocks))
+      .map((entity) => entityInView(entity, viewport)),
     blocks
   )
+  if (level) {
+    include(level.min)
+    include(level.max)
+  }
+  return bounds
 }
 
 function isWorldZ(v: Vec3): boolean {

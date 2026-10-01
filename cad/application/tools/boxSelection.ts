@@ -1,12 +1,14 @@
 import { Vec2 } from "../../geometry/Vec2"
 import { DocumentReader } from "../../domain/Document"
 import {
+  BlockLookup,
+  Entity,
   EntityId,
   entityWithinRect,
   entityCrossesRect,
 } from "../../domain/entities"
 import { Viewport, entityInView } from "../Viewport"
-import { entityScreenOutline } from "../viewOutline"
+import { drawsTilted, entityScreenOutline } from "../viewOutline"
 import { ScenePrimitive } from "../../scene/types"
 import { THEME } from "../../scene/theme"
 
@@ -36,12 +38,17 @@ export function boxSelect(
   const max = { x: Math.max(a.x, b.x), y: Math.max(a.y, b.y) }
   const crossing = b.x < a.x
   const blocks = document.blockLookup()
+  const onScreen = screenBox(viewport, start, current)
 
   const hits: EntityId[] = []
   for (const entity of document.getEntities()) {
     // Objects on hidden or locked layers cannot be selected (AutoCAD rule) —
     // the same filter single-click picking applies in Document.pick.
     if (!document.isEntitySelectable(entity)) continue
+    if (drawsTilted(entity, blocks)) {
+      if (onScreen(entity, blocks)) hits.push(entity.id)
+      continue
+    }
     const seen = entityInView(entity, viewport)
     const matches = crossing
       ? entityWithinRect(seen, min, max, blocks) ||
@@ -64,32 +71,42 @@ function boxSelectOnScreen(
   current: Vec2,
   viewport: Viewport
 ): EntityId[] {
+  const blocks = document.blockLookup()
+  const onScreen = screenBox(viewport, start, current)
+  const hits: EntityId[] = []
+  for (const entity of document.getEntities()) {
+    if (!document.isEntitySelectable(entity)) continue
+    if (onScreen(entity, blocks)) hits.push(entity.id)
+  }
+  return hits
+}
+
+/** Whether the box selects an object by what is drawn of it on screen. */
+function screenBox(
+  viewport: Viewport,
+  start: Vec2,
+  current: Vec2
+): (entity: Entity, blocks: BlockLookup) => boolean {
   const a = viewport.worldToScreen(start)
   const b = viewport.worldToScreen(current)
   const min = { x: Math.min(a.x, b.x), y: Math.min(a.y, b.y) }
   const max = { x: Math.max(a.x, b.x), y: Math.max(a.y, b.y) }
   const crossing = b.x < a.x
-  const blocks = document.blockLookup()
   const inside = (p: Vec2) =>
     p.x >= min.x && p.x <= max.x && p.y >= min.y && p.y <= max.y
-
-  const hits: EntityId[] = []
-  for (const entity of document.getEntities()) {
-    if (!document.isEntitySelectable(entity)) continue
+  return (entity, blocks) => {
     const outline = entityScreenOutline(viewport, entity, blocks)
     const points = outline.flat()
-    if (points.length === 0) continue
-    const matches = crossing
+    if (points.length === 0) return false
+    return crossing
       ? points.some(inside) ||
-        outline.some((line) =>
-          line.some(
-            (p, i) => i > 0 && segmentMeetsRect(line[i - 1], p, min, max)
+          outline.some((line) =>
+            line.some(
+              (p, i) => i > 0 && segmentMeetsRect(line[i - 1], p, min, max)
+            )
           )
-        )
       : points.every(inside)
-    if (matches) hits.push(entity.id)
   }
-  return hits
 }
 
 /** Whether segment `a`–`b` crosses the rectangle (Liang–Barsky). */

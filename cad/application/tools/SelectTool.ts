@@ -6,7 +6,6 @@ import {
   createArc,
   createLine,
   carryOverrides,
-  entityZAt,
   insertPolylineVertex,
   lineEndZ,
   lineStartZ,
@@ -794,8 +793,7 @@ export class SelectTool implements Tool {
       .map((id) => ctx.document.get(id))
       .filter((e): e is Entity => e !== undefined)
     if (originals.length === 0) return
-    const owner = ctx.document.get(grip.entityId)
-    const base = withZ(grip.world, owner ? entityZAt(owner, grip.world) : 0)
+    const base = grip.world
     this.state = {
       phase: "moveLine",
       originals,

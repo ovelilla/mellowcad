@@ -42,6 +42,7 @@ import {
   entityBounds,
   entityCrossesRect,
   entityElevation,
+  entityNormal,
   entityThickness,
   entityWithinRect,
   hatchGeometry,
@@ -318,6 +319,11 @@ function expectSameShape(actual: Entity, expected: Entity, precision = 6) {
     entityThickness(expected),
     precision
   )
+  const normal = entityNormal(actual)
+  const expectedNormal = entityNormal(expected)
+  expect(normal.x).toBeCloseTo(expectedNormal.x, precision)
+  expect(normal.y).toBeCloseTo(expectedNormal.y, precision)
+  expect(normal.z).toBeCloseTo(expectedNormal.z, precision)
   if (actual.type === "line" && expected.type === "line") {
     expect(lineEndZ(actual)).toBeCloseTo(lineEndZ(expected), precision)
     expect(actual.start).toBeCloseToPoint(expected.start, precision)
@@ -604,8 +610,13 @@ describe("Z", () => {
     fc.assert(
       fc.property(entityArb, point, zValue, (entity, delta, dz) => {
         const there = translateEntity(entity, { ...delta, z: dz })
+        // The elevation is measured along the normal (a line's is its start's Z).
+        const normal = entity.type === "line" ? null : entityNormal(entity)
+        const along = normal
+          ? normal.x * delta.x + normal.y * delta.y + normal.z * dz
+          : dz
         expect(entityElevation(there)).toBeCloseTo(
-          entityElevation(entity) + dz,
+          entityElevation(entity) + along,
           6
         )
         const back = translateEntity(there, { ...V.scale(delta, -1), z: -dz })

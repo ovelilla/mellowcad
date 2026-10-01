@@ -35,7 +35,7 @@ import {
 import { isBlankDrawing } from "../serialization/drawingSummary"
 import { Scene } from "../scene/types"
 import { Viewport, entitiesViewBounds } from "./Viewport"
-import { screenDistanceToEntity } from "./viewPick"
+import { planDistanceToEntity, screenDistanceToEntity } from "./viewPick"
 import { orbitTarget, orbitView } from "./orbit"
 import { Selection } from "./Selection"
 import { SnapMode, SnapModeType } from "./SnapMode"
@@ -947,12 +947,16 @@ export class CadRuntime extends Observable {
    * are drawn at their own heights.
    */
   private pickAllAt(world: Vec2 | Vec3, worldTolerance: number): Entity[] {
-    if (this.viewport.isPlan)
-      return this.document.pickAll(world, worldTolerance)
+    const blocks = this.document.blockLookup()
+    if (this.viewport.isPlan) {
+      return this.document.pickAllBy(
+        (entity) => planDistanceToEntity(this.viewport, entity, world, blocks),
+        worldTolerance
+      )
+    }
     const screen = this.viewport.worldToScreen(
       "z" in world ? world : withZ(world, this.workPlaneZ())
     )
-    const blocks = this.document.blockLookup()
     return this.document.pickAllBy(
       (entity) => screenDistanceToEntity(this.viewport, entity, screen, blocks),
       this.viewport.worldToScreenDistance(worldTolerance)

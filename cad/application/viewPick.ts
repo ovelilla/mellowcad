@@ -1,15 +1,17 @@
-import { Vec2 } from "../geometry/Vec2"
+import { V, Vec2 } from "../geometry/Vec2"
+import { Axes3 } from "../geometry/ocs"
 import { closestPointOnSegment } from "../geometry/primitives"
 import {
   BlockLookup,
   Entity,
   closestOnEntity,
   entityElevation,
+  entityPointToWorld,
   entityThickness,
   hasThickness,
   insertFlatGeometry,
-  lineEndZ,
-  lineStartZ,
+  isTilted,
+  planeAxes,
 } from "../domain/entities"
 import { CameraTransform } from "../scene/types"
 import { planeCamera, smallestStretch } from "./planeCamera"
@@ -20,20 +22,66 @@ import { entityScreenOutline } from "./viewOutline"
 const EDGE_ON = 1e-3
 
 /**
- * A screen point as a point of the horizontal plane at `z`, for a 2D question
- * asked in that plane (the closest point on an object, a snap near the
- * cursor). In a plan view every plane reads the same; off the plan it is where
- * the line of sight through the point meets the plane, or — seen edge-on — the
- * plane's nearest point to it.
+ * A screen point as a point of the plane at `z` along the Z of `axes` (the
+ * WCS when left out), for a 2D question asked in that plane (the closest point
+ * on an object, a snap near the cursor). In a plan view every level plane
+ * reads the same; otherwise it is where the line of sight through the point
+ * meets the plane, or — seen edge-on — the plane's nearest point to it.
  */
 export function cursorInPlane(
   camera: CameraTransform,
   z: number,
+  screen: Vec2,
+  axes?: Axes3
+): Vec2 {
+  return camera.isPlan && !axes
+    ? camera.screenToWorld(screen)
+    : planeCamera(camera, z, axes).screenToWorld(screen)
+}
+
+/** {@link cursorInPlane} for the plane `entity` lies in. */
+export function cursorOnEntityPlane(
+  camera: CameraTransform,
+  entity: Entity,
   screen: Vec2
 ): Vec2 {
-  return camera.isPlan
-    ? camera.screenToWorld(screen)
-    : planeCamera(camera, z).screenToWorld(screen)
+  return cursorInPlane(
+    camera,
+    entityElevation(entity),
+    screen,
+    planeAxes(entity)
+  )
+}
+
+/**
+ * How far `world`, a point of a plan view, is from `entity` in world units:
+ * in plan for what lies in a level plane, and on the screen for what does
+ * not, whose plan is not its own outline.
+ */
+export function planDistanceToEntity(
+  camera: CameraTransform,
+  entity: Entity,
+  world: Vec2,
+  blocks: BlockLookup
+): number {
+  if (isTilted(entity)) {
+    return (
+      screenDistanceToEntity(
+        camera,
+        entity,
+        camera.worldToScreen(world),
+        blocks
+      ) / camera.worldToScreenDistance(1)
+    )
+  }
+  if (entity.type !== "insert") {
+    return closestOnEntity(entity, world, blocks).distance
+  }
+  let best = V.distance(entity.position, world)
+  for (const nested of insertFlatGeometry(entity, blocks)) {
+    best = Math.min(best, planDistanceToEntity(camera, nested, world, blocks))
+  }
+  return best
 }
 
 /**
@@ -50,14 +98,9 @@ export function screenDistanceToEntity(
   blocks?: BlockLookup
 ): number {
   if (entity.type === "insert") {
-    if (!blocks)
-      return distanceTo(
-        camera,
-        entity.position,
-        entityElevation(entity),
-        screen
-      )
-    let best = Number.POSITIVE_INFINITY
+    const at = camera.worldToScreen(entityPointToWorld(entity, entity.position))
+    let best = Math.hypot(at.x - screen.x, at.y - screen.y)
+    if (!blocks) return best
     for (const nested of insertFlatGeometry(entity, blocks)) {
       best = Math.min(
         best,
@@ -67,38 +110,23 @@ export function screenDistanceToEntity(
     return best
   }
   const thickness = entityThickness(entity)
-  if (entity.type === "line") {
-    const at = (point: Vec2, z: number) =>
-      camera.worldToScreen({ x: point.x, y: point.y, z })
-    const startZ = lineStartZ(entity)
-    const endZ = lineEndZ(entity)
-    const segments: [Vec2, Vec2][] = [
-      [at(entity.start, startZ), at(entity.end, endZ)],
-    ]
-    if (thickness !== 0) {
-      segments.push(
-        [
-          at(entity.start, startZ + thickness),
-          at(entity.end, endZ + thickness),
-        ],
-        [at(entity.start, startZ), at(entity.start, startZ + thickness)],
-        [at(entity.end, endZ), at(entity.end, endZ + thickness)]
-      )
-    }
-    return segmentsDistance(segments, screen)
-  }
-  const elevation = entityElevation(entity)
-  const base = planeCamera(camera, elevation)
-  if (smallestStretch(base) < EDGE_ON * base.worldToScreenDistance(1)) {
-    // Seen edge-on an object is a line on screen, and its plane cannot say
-    // which of its points lies under the cursor: measure what is drawn.
-    return entityScreenOutline(camera, entity, blocks).reduce(
+  const outlineDistance = () =>
+    entityScreenOutline(camera, entity, blocks).reduce(
       (best, line) => Math.min(best, polylineDistance(line, screen)),
       Number.POSITIVE_INFINITY
     )
+  // A line, its thickness included, is drawn as segments: measure them.
+  if (entity.type === "line") return outlineDistance()
+  const elevation = entityElevation(entity)
+  const axes = planeAxes(entity)
+  const base = planeCamera(camera, elevation, axes)
+  if (smallestStretch(base) < EDGE_ON * base.worldToScreenDistance(1)) {
+    // Seen edge-on an object is a line on screen, and its plane cannot say
+    // which of its points lies under the cursor: measure what is drawn.
+    return outlineDistance()
   }
   const onPlane = (z: number) => {
-    const plane = planeCamera(camera, z)
+    const plane = planeCamera(camera, z, axes)
     const closest = closestOnEntity(entity, plane.screenToWorld(screen), blocks)
     const at = plane.worldToScreen(closest.point)
     return Math.hypot(at.x - screen.x, at.y - screen.y)
@@ -115,16 +143,6 @@ export function screenDistanceToEntity(
     )
   }
   return best
-}
-
-function distanceTo(
-  camera: CameraTransform,
-  point: Vec2,
-  z: number,
-  screen: Vec2
-): number {
-  const at = camera.worldToScreen({ x: point.x, y: point.y, z })
-  return Math.hypot(at.x - screen.x, at.y - screen.y)
 }
 
 function segmentsDistance(

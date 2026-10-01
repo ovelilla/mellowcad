@@ -47,6 +47,7 @@ import {
   TextJustify,
   withDeltaZ,
   withElevation,
+  withNormal,
   withThickness,
 } from "../domain/entities"
 import {
@@ -80,6 +81,7 @@ import { DEFAULT_LINETYPE_ID } from "../domain/linetypes"
 import { clampLineweight, DEFAULT_LINEWEIGHT } from "../domain/lineweights"
 import { createUcs, NamedUcs, Ucs, WORLD_UCS } from "../domain/ucs"
 import { Vec2 } from "../geometry/Vec2"
+import { Vec3 } from "../geometry/Vec3"
 import {
   DEFAULT_DOCUMENT_SETTINGS,
   DocumentSettings,
@@ -91,7 +93,7 @@ import { DRAWING_FILE_TYPE } from "./drawingSummary"
 export { DRAWING_FILE_TYPE }
 
 /** Current schema version written by {@link serializeDrawing}. */
-export const DRAWING_FILE_VERSION = 22
+export const DRAWING_FILE_VERSION = 23
 
 /** MIME type a serialised drawing is handed to the host as. */
 export const DRAWING_FILE_MIME_TYPE = "application/json"
@@ -245,11 +247,12 @@ function cloneEntity(entity: Entity): Entity {
   return { ...cloneEntityShape(entity), ...planeOf(entity) }
 }
 
-/** The Z fields, written only when they are not 0. */
+/** The plane fields, written only when they are not 0 (or, the normal, +Z). */
 function planeOf(entity: Entity): {
   elevation?: number
   deltaZ?: number
   thickness?: number
+  normal?: Vec3
 } {
   return {
     ...(entity.elevation ? { elevation: entity.elevation } : {}),
@@ -259,6 +262,7 @@ function planeOf(entity: Entity): {
     ...(hasThickness(entity) && entity.thickness
       ? { thickness: entity.thickness }
       : {}),
+    ...(entity.normal ? { normal: { ...entity.normal } } : {}),
   }
 }
 
@@ -620,7 +624,10 @@ function parseEntity(raw: unknown): Entity | null {
   return shape && isRecord(raw) ? parsePlane(raw, shape) : shape
 }
 
-/** A drawing from before version 22 has none of these: everything lies on Z = 0. */
+/**
+ * A drawing from before version 22 has none of these: everything lies on
+ * Z = 0; one from before 23 has no normal, so everything faces +Z.
+ */
 function parsePlane(raw: Record<string, unknown>, entity: Entity): Entity {
   let placed = isFiniteNumber(raw.elevation)
     ? withElevation(entity, raw.elevation)
@@ -631,7 +638,17 @@ function parsePlane(raw: Record<string, unknown>, entity: Entity): Entity {
   if (hasThickness(placed) && isFiniteNumber(raw.thickness)) {
     placed = withThickness(placed, raw.thickness)
   }
+  const normal = parseVec3(raw.normal)
+  if (normal) placed = withNormal(placed, normal)
   return placed
+}
+
+function parseVec3(value: unknown): Vec3 | null {
+  if (!isRecord(value)) return null
+  const { x, y, z } = value
+  return isFiniteNumber(x) && isFiniteNumber(y) && isFiniteNumber(z)
+    ? { x, y, z }
+    : null
 }
 
 function parseEntityShape(raw: unknown): Entity | null {

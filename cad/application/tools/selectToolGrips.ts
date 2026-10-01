@@ -1,12 +1,12 @@
 import { Vec2, V } from "../../geometry/Vec2"
-import { withZ } from "../../geometry/Vec3"
 import {
   arcEndPoint,
   arcMidpoint,
   arcStartPoint,
   dimensionGeometry,
   entityBounds,
-  entityZAt,
+  entityPointToWorld,
+  planeAxes,
   PolylineSegmentGeometry,
   polylineSegmentGeometries,
 } from "../../domain/entities"
@@ -25,7 +25,7 @@ export const GRIP_PICK_PX = 6
 
 /** Every grip of the current selection (per object type). */
 export function selectedGrips(ctx: ToolContext): Grip[] {
-  const grips: Grip[] = []
+  const grips: (Omit<Grip, "world"> & { readonly world: Vec2 })[] = []
   for (const id of ctx.selection.toArray()) {
     const entity = ctx.document.get(id)
     if (!entity) continue
@@ -197,13 +197,15 @@ export function selectedGrips(ctx: ToolContext): Grip[] {
         break
     }
   }
-  // A grip sits at its object's height there, where a view off the plan shows it.
-  return grips.map((grip) => {
+  const lifted: Grip[] = []
+  for (const grip of grips) {
     const entity = ctx.document.get(grip.entityId)
-    return entity
-      ? { ...grip, world: withZ(grip.world, entityZAt(entity, grip.world)) }
-      : grip
-  })
+    if (!entity) continue
+    // WHY: edit grips read the work plane, not the object's; such objects only move whole.
+    if (planeAxes(entity) && grip.role.kind !== "move") continue
+    lifted.push({ ...grip, world: entityPointToWorld(entity, grip.world) })
+  }
+  return lifted
 }
 
 /** The selected-object grip under `screen`, if any (nearest wins). */

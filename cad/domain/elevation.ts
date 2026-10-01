@@ -1,5 +1,6 @@
 import { Vec2 } from "../geometry/Vec2"
-import { Vec3, zOf } from "../geometry/Vec3"
+import { Vec3, WORLD_Z, dot3, length3, normalize3, zOf } from "../geometry/Vec3"
+import { Axes3, arbitraryAxis, axesToWorld, worldToAxes } from "../geometry/ocs"
 import {
   ArcEntity,
   CircleEntity,
@@ -11,6 +12,91 @@ import {
 export type ThickEntity = LineEntity | CircleEntity | ArcEntity | PolylineEntity
 
 type ZField = "elevation" | "deltaZ" | "thickness"
+
+/** Below this the components of a normal off Z count as none: it is +Z. */
+const NORMAL_TOLERANCE = 1e-12
+
+const WORLD_AXES: Axes3 = {
+  x: { x: 1, y: 0, z: 0 },
+  y: { x: 0, y: 1, z: 0 },
+  z: WORLD_Z,
+}
+
+/** The object's normal (DXF 210), +Z unless it says otherwise. */
+export function entityNormal(entity: Entity): Vec3 {
+  return entity.normal ?? WORLD_Z
+}
+
+/**
+ * Whether the object's normal is not +Z: its points then are not world X and
+ * Y, and the plan does not draw it as they read.
+ */
+export function isTilted(entity: Entity): boolean {
+  return entity.normal !== undefined
+}
+
+/**
+ * `entity` with `normal` (made unit). +Z is not stored, so a flat drawing's
+ * objects and files stay as they were.
+ */
+export function withNormal<T extends Entity>(entity: T, normal: Vec3): T {
+  // A normal already of unit length is kept to the bit, so saving a loaded
+  // drawing writes the same bytes; `+ 0` turns a -0, which a file cannot
+  // hold, into 0.
+  const unit =
+    Math.abs(length3(normal) - 1) <= NORMAL_TOLERANCE
+      ? { x: normal.x + 0, y: normal.y + 0, z: normal.z + 0 }
+      : normalize3(normal)
+  const upright =
+    !unit ||
+    (Math.abs(unit.x) <= NORMAL_TOLERANCE &&
+      Math.abs(unit.y) <= NORMAL_TOLERANCE &&
+      unit.z > 0)
+  if (!upright) return { ...entity, normal: unit }
+  if (!("normal" in entity)) return entity
+  const copy: Record<string, unknown> = { ...entity }
+  delete copy.normal
+  return copy as T
+}
+
+/** The object coordinate system of the object's plane (the WCS for +Z). */
+export function entityAxes(entity: Entity): Axes3 {
+  return entity.normal
+    ? (arbitraryAxis(entity.normal) ?? WORLD_AXES)
+    : WORLD_AXES
+}
+
+/** The axes the object's points are in, when they are not the WCS's; a line's never are. */
+export function planeAxes(entity: Entity): Axes3 | undefined {
+  return entity.type !== "line" && entity.normal
+    ? entityAxes(entity)
+    : undefined
+}
+
+/**
+ * A point of the object, given as it stores its points, in the WCS: in the
+ * plan of its plane, at its height there (a line's are world points already).
+ */
+export function entityPointToWorld(entity: Entity, point: Vec2): Vec3 {
+  const z = entityZAt(entity, point)
+  if (entity.type === "line" || !entity.normal) {
+    return { x: point.x, y: point.y, z }
+  }
+  return axesToWorld(entityAxes(entity), { x: point.x, y: point.y, z })
+}
+
+/** A world point in the object's own coordinates: the plan of its plane, and the height. */
+export function worldToEntity(entity: Entity, point: Vec2 | Vec3): Vec3 {
+  if (entity.type === "line" || !entity.normal) {
+    return { x: point.x, y: point.y, z: zOf(point) }
+  }
+  return worldToAxes(entityAxes(entity), point)
+}
+
+/** Whether two objects' planes face the same way. */
+export function sameNormal(a: Entity, b: Entity): boolean {
+  return dot3(entityNormal(a), entityNormal(b)) >= 1 - NORMAL_TOLERANCE
+}
 
 export function hasThickness(entity: Entity): entity is ThickEntity {
   return (
@@ -99,11 +185,40 @@ export function scaleEntityZ<T extends Entity>(
   return scaled
 }
 
-/** Puts `target` where `source` lies: its plane, its rise and its extrusion. */
+/**
+ * Puts `target` where `source` lies: its plane, its rise and its extrusion. A
+ * line built out of the points of a planar object with a normal of its own
+ * reads them in that object's OCS, and is laid out in the WCS, as a line's
+ * points always are.
+ */
 export function carryPlane<T extends Entity>(source: Entity, target: T): T {
-  let placed = withElevation(target, entityElevation(source))
+  // A line's normal only extrudes it: what is built off its WCS points lies flat.
+  const normal =
+    source.type === "line" && target.type !== "line"
+      ? WORLD_Z
+      : entityNormal(source)
+  let placed = withNormal(
+    withElevation(target, entityElevation(source)),
+    normal
+  )
   if (placed.type === "line" && source.type === "line") {
     placed = withDeltaZ(placed, source.deltaZ ?? 0) as T
+  } else if (placed.type === "line") {
+    const axes = planeAxes(source)
+    if (axes) {
+      const z = entityElevation(source)
+      const start = axesToWorld(axes, { ...placed.start, z })
+      const end = axesToWorld(axes, { ...placed.end, z })
+      placed = withLineZ(
+        {
+          ...placed,
+          start: { x: start.x, y: start.y },
+          end: { x: end.x, y: end.y },
+        },
+        start.z,
+        end.z
+      ) as T
+    }
   }
   if (hasThickness(placed)) {
     placed = withThickness(placed, entityThickness(source)) as T
@@ -167,14 +282,16 @@ export function isLevel(entity: Entity): boolean {
 }
 
 /**
- * Whether two objects share a plane parallel to the XY plane — AutoCAD's
- * "Lines are non-coplanar" test, whose cause it gives as "one or more of the
- * line vertices is not at the same elevation as the other vertices".
+ * Whether two objects share a plane: AutoCAD's "Lines are non-coplanar" test,
+ * whose cause it gives as "one or more of the line vertices is not at the
+ * same elevation as the other vertices". The same normal and elevation, and
+ * no line rising off it.
  */
 export function coplanar(a: Entity, b: Entity): boolean {
   return (
     isLevel(a) &&
     isLevel(b) &&
+    sameNormal(a, b) &&
     Math.abs(entityElevation(a) - entityElevation(b)) <= PLANE_TOLERANCE
   )
 }

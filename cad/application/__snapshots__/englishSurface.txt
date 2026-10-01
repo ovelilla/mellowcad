@@ -2063,7 +2063,7 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
   prompt: ARRAYRECT:
   asks: "Columns" "Rows" "Column spacing" "Row spacing"
   dyn: "Columns"=""|4|* "Rows"=""|3| "Column spacing"=""|30.00|mm "Row spacing"=""|30.00|mm
-  properties: Circle (1) {Thickness=0.00 mm~} [Geometry: Radius=10.00 mm~, Diameter=20.00 mm~, Circumference=62.83 mm, Area=314.16 mm²] [Center: X=0.00~, Y=0.00~, Z=0.00~]
+  properties: Circle (1) {Thickness=0.00 mm~} [Geometry: Radius=10.00 mm~, Diameter=20.00 mm~, Circumference=62.83 mm, Area=314.16 mm², Normal X=0.00, Normal Y=0.00, Normal Z=1.00] [Center: X=0.00~, Y=0.00~, Z=0.00~]
   command| ARRAYRECT
 > enter
   prompt: Command:
@@ -2833,7 +2833,7 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
 > escape
   properties: -
 > select circle
-  properties: Circle (1) {Thickness=0.00 mm~} [Geometry: Radius=50.00 mm~, Diameter=100.00 mm~, Circumference=314.16 mm, Area=7853.98 mm²] [Center: X=0.00~, Y=300.00~, Z=0.00~]
+  properties: Circle (1) {Thickness=0.00 mm~} [Geometry: Radius=50.00 mm~, Diameter=100.00 mm~, Circumference=314.16 mm, Area=7853.98 mm², Normal X=0.00, Normal Y=0.00, Normal Z=1.00] [Center: X=0.00~, Y=300.00~, Z=0.00~]
 > grab quadrant
   asks: "Radius"
   dyn: "Radius"=""|50.00|mm*
@@ -2842,11 +2842,11 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
 > release
   asks: -
   dyn: -
-  properties: Circle (1) {Thickness=0.00 mm~} [Geometry: Radius=70.00 mm~, Diameter=140.00 mm~, Circumference=439.82 mm, Area=15393.80 mm²] [Center: X=0.00~, Y=300.00~, Z=0.00~]
+  properties: Circle (1) {Thickness=0.00 mm~} [Geometry: Radius=70.00 mm~, Diameter=140.00 mm~, Circumference=439.82 mm, Area=15393.80 mm², Normal X=0.00, Normal Y=0.00, Normal Z=1.00] [Center: X=0.00~, Y=300.00~, Z=0.00~]
 > escape
   properties: -
 > select arc
-  properties: Arc (1) {Thickness=0.00 mm~} [Geometry: Radius=50.00 mm~, Length=78.54 mm, Angle=90.00°~, Start angle=0.00°~, End angle=90.00°~] [Center: X=300.00~, Y=300.00~, Z=0.00~]
+  properties: Arc (1) {Thickness=0.00 mm~} [Geometry: Radius=50.00 mm~, Length=78.54 mm, Angle=90.00°~, Start angle=0.00°~, End angle=90.00°~, Normal X=0.00, Normal Y=0.00, Normal Z=1.00] [Center: X=300.00~, Y=300.00~, Z=0.00~]
 > grab end
   asks: "Angle"
   dyn: "Angle"=""|0.00|°*
@@ -2855,7 +2855,7 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
 > release
   asks: -
   dyn: -
-  properties: Arc (1) {Thickness=0.00 mm~} [Geometry: Radius=50.00 mm~, Length=46.36 mm, Angle=53.13°~, Start angle=36.87°~, End angle=90.00°~] [Center: X=300.00~, Y=300.00~, Z=0.00~]
+  properties: Arc (1) {Thickness=0.00 mm~} [Geometry: Radius=50.00 mm~, Length=46.36 mm, Angle=53.13°~, Start angle=36.87°~, End angle=90.00°~, Normal X=0.00, Normal Y=0.00, Normal Z=1.00] [Center: X=300.00~, Y=300.00~, Z=0.00~]
 > escape
   properties: -
 > select polyline
@@ -2930,9 +2930,9 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
 > select L1
   properties: Line (1) {Thickness=0.00 mm~} [Geometry: Length=100.00 mm~, Angle=0.00°~, Δ X=100.00 mm, Δ Y=0.00 mm, Δ Z=0.00 mm] [Endpoints: Start X=0.00~, Start Y=0.00~, Start Z=0.00~, End X=100.00~, End Y=0.00~, End Z=0.00~]
 > select C1
-  properties: Circle (1) {Thickness=0.00 mm~} [Geometry: Radius=50.00 mm~, Diameter=100.00 mm~, Circumference=314.16 mm, Area=7853.98 mm²] [Center: X=0.00~, Y=0.00~, Z=0.00~]
+  properties: Circle (1) {Thickness=0.00 mm~} [Geometry: Radius=50.00 mm~, Diameter=100.00 mm~, Circumference=314.16 mm, Area=7853.98 mm², Normal X=0.00, Normal Y=0.00, Normal Z=1.00] [Center: X=0.00~, Y=0.00~, Z=0.00~]
 > select A1
-  properties: Arc (1) {Thickness=0.00 mm~} [Geometry: Radius=50.00 mm~, Length=78.54 mm, Angle=90.00°~, Start angle=0.00°~, End angle=90.00°~] [Center: X=0.00~, Y=0.00~, Z=0.00~]
+  properties: Arc (1) {Thickness=0.00 mm~} [Geometry: Radius=50.00 mm~, Length=78.54 mm, Angle=90.00°~, Start angle=0.00°~, End angle=90.00°~, Normal X=0.00, Normal Y=0.00, Normal Z=1.00] [Center: X=0.00~, Y=0.00~, Z=0.00~]
 > select E1
   properties: Ellipse (1) [Geometry: Major radius=100.00 mm~, Minor radius=50.00 mm~, Radius ratio=0.50, Area=15707.96 mm²] [Center: X=0.00~, Y=0.00~, Z=0.00~]
 > select E2
@@ -2987,9 +2987,9 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
 > select L2
   properties: Line (1) {Thickness=0.00 mm~} [Geometry: Length=14.14 mm~, Angle=45.00°~, Δ X=10.00 mm, Δ Y=10.00 mm, Δ Z=0.00 mm] [Endpoints: Start X=0.00~, Start Y=0.00~, Start Z=0.00~, End X=10.00~, End Y=10.00~, End Z=0.00~]
 > select C2
-  properties: Circle (1) {Thickness=0.00 mm~} [Geometry: Radius=5.00 mm~, Diameter=10.00 mm~, Circumference=31.42 mm, Area=78.54 mm²] [Center: X=0.00~, Y=0.00~, Z=0.00~]
+  properties: Circle (1) {Thickness=0.00 mm~} [Geometry: Radius=5.00 mm~, Diameter=10.00 mm~, Circumference=31.42 mm, Area=78.54 mm², Normal X=0.00, Normal Y=0.00, Normal Z=1.00] [Center: X=0.00~, Y=0.00~, Z=0.00~]
 > select A2
-  properties: Arc (1) {Thickness=0.00 mm~} [Geometry: Radius=5.00 mm~, Length=5.00 mm, Angle=57.30°~, Start angle=0.00°~, End angle=57.30°~] [Center: X=0.00~, Y=0.00~, Z=0.00~]
+  properties: Arc (1) {Thickness=0.00 mm~} [Geometry: Radius=5.00 mm~, Length=5.00 mm, Angle=57.30°~, Start angle=0.00°~, End angle=57.30°~, Normal X=0.00, Normal Y=0.00, Normal Z=1.00] [Center: X=0.00~, Y=0.00~, Z=0.00~]
 > select everything
   properties: 32 objects (32) [Selection: Lines=2, Circles=2, Arcs=2, Ellipses=2, Polylines=2, Texts=13, Dimensions=5, Hatches=2, Block references=2]
 > select one of each

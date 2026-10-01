@@ -1,5 +1,6 @@
 import { Vec2, V } from "../geometry/Vec2"
-import { Vec3, zOf } from "../geometry/Vec3"
+import { Vec3, add3, scale3, sub3, withZ, zOf } from "../geometry/Vec3"
+import { Axes3, arbitraryAxis, axesToWorld, worldToAxes } from "../geometry/ocs"
 import {
   ArcEntity,
   EllipseEntity,
@@ -10,6 +11,7 @@ import {
   HatchLoop,
   HatchEntity,
   InsertEntity,
+  LineEntity,
   Entity,
 } from "./entityTypes"
 import {
@@ -21,6 +23,7 @@ import {
   createHatch,
   InsertOptions,
   createInsert,
+  nextEntityId,
 } from "./entityFactories"
 import { createEllipse } from "./ellipses"
 import { mapSplinePoints, splineCopy } from "./splines"
@@ -34,7 +37,17 @@ import {
   mapDimensionPoints,
 } from "./dimensions"
 import { carryOverrides } from "./entityOverrides"
-import { scaleEntityZ, shiftEntityZ, withDeltaZ } from "./elevation"
+import {
+  entityAxes,
+  entityNormal,
+  entityPointToWorld,
+  isTilted,
+  scaleEntityZ,
+  shiftEntityZ,
+  withDeltaZ,
+  withLineZ,
+  withNormal,
+} from "./elevation"
 
 /**
  * A *new* hatch (fresh id) with the same pattern settings as `hatch` over other
@@ -222,6 +235,13 @@ function mirrorEllipseParams(
  * delta moves it within its plane.
  */
 export function translateEntity(entity: Entity, delta: Vec2 | Vec3): Entity {
+  if (isTilted(entity)) {
+    return transformEntity(entity, translation3(withZ(delta, zOf(delta))))
+  }
+  return translateFlat(entity, delta)
+}
+
+function translateFlat(entity: Entity, delta: Vec2 | Vec3): Entity {
   return shiftEntityZ(translatePlanar(entity, delta), zOf(delta))
 }
 
@@ -291,6 +311,16 @@ export function stretchEntity(
 ): Entity {
   const dz = zOf(delta)
   const vertices = stretchVertices(entity)
+  if (entity.type !== "line" && isTilted(entity)) {
+    // Out of the plan the object cannot bend along the frame: it moves whole
+    // when the frame catches all of it, and otherwise stays.
+    const caught = stretchAnchors(entity).map((point) =>
+      entityPointToWorld(entity, point)
+    )
+    return caught.length > 0 && caught.every(inFrame)
+      ? translateEntity(entity, delta)
+      : entity
+  }
   if (vertices.length > 0 && vertices.every(inFrame)) {
     return translateEntity(entity, delta)
   }
@@ -339,6 +369,26 @@ function stretchVertices(entity: Entity): readonly Vec2[] {
       return entity.loops.flatMap((loop) => loop.vertices)
     default:
       return []
+  }
+}
+
+/**
+ * What the frame has to catch for STRETCH to move an object whole: its free
+ * vertices, or the one point a rigid object rides along with.
+ */
+function stretchAnchors(entity: Entity): readonly Vec2[] {
+  switch (entity.type) {
+    case "circle":
+    case "arc":
+    case "ellipse":
+      return [entity.center]
+    case "text":
+    case "mtext":
+    case "attdef":
+    case "insert":
+      return [entity.position]
+    default:
+      return stretchVertices(entity)
   }
 }
 
@@ -408,6 +458,7 @@ function stretchPlanar(
  * `delta`, on the same layer — the building block of the COPY command.
  */
 export function copyEntity(entity: Entity, delta: Vec2 | Vec3): Entity {
+  if (isTilted(entity)) return freshCopy(translateEntity(entity, delta))
   const copy: Entity = (() => {
     switch (entity.type) {
       case "line":
@@ -491,6 +542,13 @@ export function rotateEntity(
   pivot: Vec2,
   radians: number
 ): Entity {
+  if (isTilted(entity)) {
+    return transformEntity(entity, rotationAboutZ(pivot, radians))
+  }
+  return rotateFlat(entity, pivot, radians)
+}
+
+function rotateFlat(entity: Entity, pivot: Vec2, radians: number): Entity {
   switch (entity.type) {
     case "line":
       return {
@@ -564,6 +622,7 @@ export function rotateEntityCopy(
   pivot: Vec2,
   radians: number
 ): Entity {
+  if (isTilted(entity)) return freshCopy(rotateEntity(entity, pivot, radians))
   const copy: Entity = (() => {
     switch (entity.type) {
       case "line":
@@ -667,6 +726,13 @@ export function scaleEntity(
   base: Vec2 | Vec3,
   factor: number
 ): Entity {
+  if (isTilted(entity)) {
+    return transformEntity(entity, scaling3(withZ(base, zOf(base)), factor))
+  }
+  return scaleFlat(entity, base, factor)
+}
+
+function scaleFlat(entity: Entity, base: Vec2 | Vec3, factor: number): Entity {
   return scaleEntityZ(scalePlanar(entity, base, factor), zOf(base), factor)
 }
 
@@ -752,6 +818,7 @@ export function scaleEntityCopy(
   base: Vec2 | Vec3,
   factor: number
 ): Entity {
+  if (isTilted(entity)) return freshCopy(scaleEntity(entity, base, factor))
   const copy: Entity = (() => {
     switch (entity.type) {
       case "line":
@@ -846,6 +913,14 @@ export function mirrorPoint(point: Vec2, a: Vec2, b: Vec2): Vec2 {
  * radius; only its centre reflects.
  */
 export function mirrorEntity(entity: Entity, a: Vec2, b: Vec2): Entity {
+  if (isTilted(entity)) {
+    const reflection = reflectionAcross(a, b)
+    return reflection ? transformEntity(entity, reflection) : entity
+  }
+  return mirrorFlat(entity, a, b)
+}
+
+function mirrorFlat(entity: Entity, a: Vec2, b: Vec2): Entity {
   switch (entity.type) {
     case "line":
       return {
@@ -941,6 +1016,7 @@ function mirrorAngle(angle: number, a: Vec2, b: Vec2): number {
  * through `a`,`b`, on the same layer — MIRROR when the source is kept.
  */
 export function mirrorEntityCopy(entity: Entity, a: Vec2, b: Vec2): Entity {
+  if (isTilted(entity)) return freshCopy(mirrorEntity(entity, a, b))
   const copy: Entity = (() => {
     switch (entity.type) {
       case "line":
@@ -1035,4 +1111,120 @@ function mirrorArcAngles(
     startAngle: 2 * axis - arc.endAngle,
     endAngle: 2 * axis - arc.startAngle,
   }
+}
+
+/**
+ * A map of space `x ↦ scale · rotation(x) + translation`: `rotation` is
+ * orthonormal (a reflection when it turns the axes' handedness), given as the
+ * images of the world's three axes.
+ */
+export interface Similarity3 {
+  readonly rotation: Axes3
+  readonly scale: number
+  readonly translation: Vec3
+}
+
+const IDENTITY: Axes3 = {
+  x: { x: 1, y: 0, z: 0 },
+  y: { x: 0, y: 1, z: 0 },
+  z: { x: 0, y: 0, z: 1 },
+}
+
+export function translation3(delta: Vec3): Similarity3 {
+  return { rotation: IDENTITY, scale: 1, translation: delta }
+}
+
+export function scaling3(base: Vec3, factor: number): Similarity3 {
+  return {
+    rotation: IDENTITY,
+    scale: factor,
+    translation: sub3(base, scale3(base, factor)),
+  }
+}
+
+/** A turn about the vertical axis through `pivot`, counter-clockwise from above. */
+export function rotationAboutZ(pivot: Vec2, radians: number): Similarity3 {
+  const cos = Math.cos(radians)
+  const sin = Math.sin(radians)
+  return fixing(
+    {
+      x: { x: cos, y: sin, z: 0 },
+      y: { x: -sin, y: cos, z: 0 },
+      z: { x: 0, y: 0, z: 1 },
+    },
+    { x: pivot.x, y: pivot.y, z: 0 }
+  )
+}
+
+/** The reflection in the vertical plane through `a` and `b`, or `null` when they coincide. */
+export function reflectionAcross(a: Vec2, b: Vec2): Similarity3 | null {
+  const length = V.distance(a, b)
+  if (!(length > 1e-12)) return null
+  const u = { x: (b.x - a.x) / length, y: (b.y - a.y) / length }
+  return fixing(
+    {
+      x: { x: 2 * u.x * u.x - 1, y: 2 * u.x * u.y, z: 0 },
+      y: { x: 2 * u.x * u.y, y: 2 * u.y * u.y - 1, z: 0 },
+      z: { x: 0, y: 0, z: 1 },
+    },
+    { x: a.x, y: a.y, z: 0 }
+  )
+}
+
+/** The map `rotation` that leaves `point` where it is. */
+function fixing(rotation: Axes3, point: Vec3): Similarity3 {
+  return {
+    rotation,
+    scale: 1,
+    translation: sub3(point, axesToWorld(rotation, point)),
+  }
+}
+
+/**
+ * `entity` carried through `map`, whatever its plane: a line's ends as the
+ * world points they are, any other object in the plane its normal turns to.
+ * Seen from that plane's object coordinates the map is a turn or a reflection
+ * in the plane, a scale and a shift — which the planar transforms already
+ * perform — because both object coordinate systems share the Z the normal
+ * becomes. Keeps the id.
+ */
+export function transformEntity(entity: Entity, map: Similarity3): Entity {
+  const apply = (point: Vec3) =>
+    add3(scale3(axesToWorld(map.rotation, point), map.scale), map.translation)
+  const normal = axesToWorld(map.rotation, entityNormal(entity))
+  if (entity.type === "line") {
+    const start = apply(entityPointToWorld(entity, entity.start))
+    const end = apply(entityPointToWorld(entity, entity.end))
+    let line: LineEntity = {
+      ...entity,
+      start: { x: start.x, y: start.y },
+      end: { x: end.x, y: end.y },
+    }
+    line = withLineZ(line, start.z, end.z)
+    if (entity.thickness)
+      line = { ...line, thickness: entity.thickness * map.scale }
+    return withNormal(line, normal)
+  }
+  const from = entityAxes(entity)
+  const to = arbitraryAxis(normal) ?? from
+  const alongX = worldToAxes(to, axesToWorld(map.rotation, from.x))
+  const alongY = worldToAxes(to, axesToWorld(map.rotation, from.y))
+  const turn = Math.atan2(alongX.y, alongX.x)
+  const origin = { x: 0, y: 0 }
+  let placed =
+    alongX.x * alongY.y - alongX.y * alongY.x >= 0
+      ? rotateFlat(entity, origin, turn)
+      : mirrorFlat(entity, origin, {
+          x: Math.cos(turn / 2),
+          y: Math.sin(turn / 2),
+        })
+  if (map.scale !== 1)
+    placed = scaleFlat(placed, { x: 0, y: 0, z: 0 }, map.scale)
+  placed = translateFlat(placed, worldToAxes(to, map.translation))
+  return withNormal(placed, normal)
+}
+
+/** A transformed object as a new one: a fresh id, everything else kept. */
+function freshCopy(entity: Entity): Entity {
+  return { ...entity, id: nextEntityId() }
 }
