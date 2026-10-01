@@ -281,6 +281,20 @@
       "zoomPrevious": "Zoom previo",
       "zoomToFit": "Zoom extensión",
       "resetView": "Restablecer vista",
+      "orbit": "Órbita",
+      "views": {
+        "top": "Superior",
+        "bottom": "Inferior",
+        "front": "Frontal",
+        "left": "Izquierda",
+        "right": "Derecha",
+        "back": "Posterior",
+        "swIso": "Isométrico SO",
+        "seIso": "Isométrico SE",
+        "neIso": "Isométrico NE",
+        "nwIso": "Isométrico NO",
+        "custom": "Vista personalizada"
+      },
       "commandLine": "Línea de comandos"
     },
     "ToolRail": {

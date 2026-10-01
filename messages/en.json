@@ -281,6 +281,20 @@
       "zoomPrevious": "Zoom previous",
       "zoomToFit": "Zoom to fit",
       "resetView": "Reset view",
+      "orbit": "Orbit",
+      "views": {
+        "top": "Top",
+        "bottom": "Bottom",
+        "front": "Front",
+        "left": "Left",
+        "right": "Right",
+        "back": "Back",
+        "swIso": "SW Isometric",
+        "seIso": "SE Isometric",
+        "neIso": "NE Isometric",
+        "nwIso": "NW Isometric",
+        "custom": "Custom View"
+      },
       "commandLine": "Command line"
     },
     "ToolRail": {

@@ -76,6 +76,7 @@ import { TextEditTool } from "./tools/TextEditTool"
 import { AttEditTool } from "./tools/AttEditTool"
 import { PasteTool } from "./tools/PasteTool"
 import { headingInUcs } from "./tools/ucsHeading"
+import { ViewPreset, currentViewPreset } from "./tools/viewPresets"
 import { PointResolver } from "./PointResolver"
 import { AutosaveService } from "./Autosave"
 import { buildScene, PolarGuideInput } from "./SceneBuilder"
@@ -673,6 +674,15 @@ export class CadRuntime extends Observable {
     const last = this.commandLine.getLastCommand()
     if (!last) return false
     return this.runCommand(last)
+  }
+
+  /**
+   * A preset view chosen from the view menu, run the way AutoCAD's own menus
+   * run it (`_-VIEW _SWISO`): echoed at the prompt, fitting the extents, and an
+   * orthographic one aligning the UCS (UCSORTHO).
+   */
+  applyViewPreset(preset: ViewPreset): boolean {
+    return this.runCommand("_-VIEW") && this.invokeToolOption(`_${preset}`)
   }
 
   /** Completes the prompt to the best autocomplete match (Tab). */
@@ -2490,6 +2500,7 @@ export class CadRuntime extends Observable {
       entityCount: this.document.size,
       selectionCount: this.selection.size,
       scale: this.viewport.scale,
+      view: { preset: currentViewPreset(this.viewport) },
       cursorUcs: this.cursorWorld
         ? worldPointToUcs(
             this.frame.ucs,

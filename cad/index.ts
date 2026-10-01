@@ -255,6 +255,7 @@ export { PlanTool } from "./application/tools/PlanTool"
 export { ElevTool } from "./application/tools/ElevTool"
 export { VPointTool } from "./application/tools/VPointTool"
 export { ViewTool } from "./application/tools/ViewTool"
+export { VIEW_MENU, type ViewPreset } from "./application/tools/viewPresets"
 export { OrbitTool } from "./application/tools/OrbitTool"
 
 export type {

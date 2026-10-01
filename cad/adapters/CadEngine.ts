@@ -17,6 +17,7 @@ import { SnapModeType } from "../application/SnapMode"
 import { SnapType } from "../application/snapping/types"
 import { ConstraintType } from "../application/constraints/types"
 import { Tool } from "../application/tools/Tool"
+import type { ViewPreset } from "../application/tools/viewPresets"
 import { Bounds } from "../domain/entities"
 import type { EngineLocale } from "../locales/types"
 import { CanvasScenePresenter } from "./CanvasScenePresenter"
@@ -344,6 +345,11 @@ export class CadEngine {
 
   runCommand(name: string): boolean {
     return this.runtime.runCommand(name)
+  }
+
+  /** A preset view from the view menu, run as `_-VIEW _<preset>`. */
+  applyViewPreset(preset: ViewPreset): boolean {
+    return this.runtime.applyViewPreset(preset)
   }
 
   completeCommandLine(): void {

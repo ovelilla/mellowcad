@@ -1,10 +1,14 @@
 "use client"
 
+import { Menu } from "@base-ui/react/menu"
 import {
+  CheckIcon,
+  ChevronDown,
   FolderOpen,
   Hand,
   Loader2,
   Maximize,
+  Rotate3d,
   RotateCcw,
   Save,
   Search,
@@ -15,10 +19,24 @@ import {
 } from "lucide-react"
 import { useTranslations } from "next-intl"
 
+import { Button } from "@/components/ui/button"
 import { TooltipProvider } from "@/components/ui/tooltip"
-import { CadEngine, EngineState } from "@/cad"
+import { CadEngine, EngineState, VIEW_MENU, type ViewPreset } from "@/cad"
 
 import { IconAction, Panel } from "./toolbar-primitives"
+
+const VIEW_LABELS = {
+  Top: "top",
+  Bottom: "bottom",
+  Front: "front",
+  Left: "left",
+  Right: "right",
+  BAck: "back",
+  SWiso: "swIso",
+  SEiso: "seIso",
+  NEiso: "neIso",
+  NWiso: "nwIso",
+} as const satisfies Record<ViewPreset, string>
 
 /**
  * The top command bar: file actions and view navigation. Horizontal and
@@ -57,6 +75,7 @@ export function CommandBar({
             onClick={() => void engine.openDrawingFromFile()}
             side="bottom"
           />
+          <ViewMenu engine={engine} current={state.view.preset} />
           <IconAction
             icon={Search}
             label={t("zoomWindow")}
@@ -72,6 +91,14 @@ export function CommandBar({
             side="bottom"
             active={state.activeToolId === "pan"}
             onClick={() => engine.setActiveTool("pan")}
+          />
+          <IconAction
+            icon={Rotate3d}
+            label={t("orbit")}
+            shortcut={alias("orbit")}
+            side="bottom"
+            active={state.activeToolId === "orbit"}
+            onClick={() => engine.setActiveTool("orbit")}
           />
           <IconAction
             icon={ZoomIn}
@@ -116,5 +143,56 @@ export function CommandBar({
         </Panel>
       </div>
     </TooltipProvider>
+  )
+}
+
+/**
+ * The viewport control's view menu (AutoCAD's `[Top]` label): it names the
+ * view the engine says the camera shows and runs the preset chosen.
+ */
+function ViewMenu({
+  engine,
+  current,
+}: {
+  engine: CadEngine
+  current: ViewPreset | null
+}) {
+  const views = useTranslations("Editor.CommandBar.views")
+  return (
+    <Menu.Root>
+      <Menu.Trigger
+        render={
+          <Button size="sm" variant="ghost">
+            {views(current === null ? "custom" : VIEW_LABELS[current])}
+            <ChevronDown className="text-muted-foreground" />
+          </Button>
+        }
+      />
+      <Menu.Portal>
+        <Menu.Positioner
+          side="bottom"
+          align="start"
+          sideOffset={6}
+          className="z-50"
+        >
+          <Menu.Popup className="min-w-44 origin-(--transform-origin) overflow-hidden rounded-md border bg-card/90 p-1 text-popover-foreground shadow-md backdrop-blur transition-[transform,opacity] outline-none data-ending-style:scale-95 data-ending-style:opacity-0 data-starting-style:scale-95 data-starting-style:opacity-0">
+            {VIEW_MENU.map((preset) => (
+              <Menu.Item
+                key={preset}
+                onClick={() => engine.applyViewPreset(preset)}
+                className="relative flex cursor-default items-center rounded-sm py-1.5 pr-8 pl-2 text-sm outline-hidden select-none data-highlighted:bg-accent data-highlighted:text-accent-foreground"
+              >
+                {views(VIEW_LABELS[preset])}
+                {current === preset && (
+                  <span className="pointer-events-none absolute right-2 flex size-4 items-center justify-center text-primary">
+                    <CheckIcon className="size-4" />
+                  </span>
+                )}
+              </Menu.Item>
+            ))}
+          </Menu.Popup>
+        </Menu.Positioner>
+      </Menu.Portal>
+    </Menu.Root>
   )
 }

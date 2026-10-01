@@ -50,6 +50,7 @@ import {
 } from "../domain/entities"
 import { SnapType } from "./snapping/types"
 import { SnapModeType } from "./SnapMode"
+import type { ViewPreset } from "./tools/viewPresets"
 import {
   DynamicFieldKind,
   DynamicInputController,
@@ -229,6 +230,11 @@ export interface EngineState {
   readonly entityCount: number
   readonly selectionCount: number
   readonly scale: number
+  /**
+   * The view the viewport control names: the preset the camera looks along
+   * (in the WCS, as -VIEW sets it), or `null` for a custom view.
+   */
+  readonly view: { readonly preset: ViewPreset | null }
   /**
    * The cursor as the status bar reads it: in the current UCS, on the
    * elevation plane (AutoCAD's COORDS shows X, Y and Z).
