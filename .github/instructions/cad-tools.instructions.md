@@ -219,10 +219,11 @@ instead, or the command-line buffer will swallow them.
   alone.
 - **A point has a Z; keep it.** `input.point` and `parseCoordinate` give a `Vec3`: `x,y` absolute
   lies ELEVATION above the UCS's XY plane, `@x,y` keeps `lastPoint`'s Z. A point a tool
-  _computes_ from another
-  (`V.add(start, dir * length)` for a typed length or angle, a tracking offset) is `@dist<angle`
-  and keeps the base's Z: wrap it in `withZOf(point, base)`, because every `V` helper returns a
-  `Vec2`. Type a state field that feeds `lastPoint` or a creation as `Vec3`, so a dropped Z fails
+  _computes_ from another in the plane (`V.add(start, dir * length)`) is `@dist<angle` and keeps
+  the base's Z: wrap it in `withZOf(point, base)`, because every `V` helper returns a `Vec2`. A
+  typed length along the cursor goes through `pointAlongCursor` (below), and a tracking offset
+  runs along `TrackingResult.direction`, a `Vec3` (`add3`). Type a state field that feeds
+  `lastPoint` or a creation as `Vec3`, so a dropped Z fails
   to compile. A displacement is `sub3(to, from)` (MOVE, COPY, STRETCH, PASTECLIP); SCALE's base is
   a `Vec3`; ROTATE turns about the UCS's Z and MIRROR reflects in the plane holding the mirror
   line and that Z, which in the frame is a plan rotation and reflection.
@@ -266,8 +267,16 @@ instead, or the command-line buffer will swallow them.
   prompt that asks for an **area** rather than a point — HATCH's internal pick — and read
   `input.world` there, not `input.point`: a point pulled onto an endpoint has landed on the very
   boundary it was meant to be inside.
+- **A typed length is direct distance: `pointAlongCursor`** (`tools/directDistance.ts`), "measured
+  along the path from the last point to the current location of the cursor" — the heading in the
+  plane keeping the base's Z, or up or down the UCS's Z when the cursor is straight above or below
+  the base (the `+Z` / `-Z` guide); a typed angle always wins and lies in the plane. Never rebuild
+  it in a tool from `directionFromUcsHeading`. Feed the live fields with `showRise(ctx, base,
+point)` first: on the guide it shows the height and `+Z` / `-Z` (`setLiveText`, a reading that
+  is no number), and `resolveValues` then leaves the angle out, so a commit passes `angle: null`
+  and lets the cursor decide.
 - `getConstraintAnchor()` — the base point Ortho/Polar restrict against. Return it in every phase
-  where a direction is being defined.
+  where a direction is being defined, with its Z: a 3D view's Z guide starts there.
 - `getSnapGeometry(cursor)` — expose in-progress geometry (rubber band, ghost) so intersection
   snaps engage against it.
 - `retainsTrackingAfterPointerDown()` — true when a click _begins_ an edit rather than placing a

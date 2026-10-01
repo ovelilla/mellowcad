@@ -67,11 +67,26 @@ drawing blind. `updateSnap` picks `snap.point` → `tracking.point` → raw scre
 the same order: a snap's is the object's there (`SnapCandidate.point` is a `Vec3`; providers build
 it with `on(entity, point)`, which reads `entityZAt`), a tracked point's is the acquired point's,
 and otherwise the elevation plane (`ucs.origin.z` + ELEVATION; the resolver reads both through
-getters). Constraints and the lattice work in plan and the resolver puts the Z back after them.
+getters). Constraints and the lattice work in plan and the resolver puts the Z back after them,
+but for the `+Z` / `-Z` guide below.
 Intersection is 3D (`meetingHeight`: two objects that cross in plan at different heights do not
 meet; the rubber band meets anything); Apparent Intersection is where two edges, extended, cross
 on the screen, on the first one at its height. `input.world` is the unsnapped cursor on the work
 plane: it is for picking.
+
+**The `+Z` / `-Z` guide** (`constraints/zGuide.ts`) exists only where the UCS's Z shows on the
+screen (`zOnScreen`: never in a plan, nor in the PLAN of a tilted UCS, so the 2D arithmetic there
+is untouched and the landing's snapshots guard it). It is the Z through the anchor, measured on the
+screen: `ConstraintContext.view` is the frame's camera and `world` the work-plane cursor it draws
+where the pointer is. Polar engages it within its aperture and keeps it against a polar angle drawn
+farther from the cursor (the Z on a tie); Ortho locks to whichever of X, Y and Z is drawn nearest.
+Locked to it, a constraint returns a `PointAlongZ` (`isAlongZ`) — the anchor in plan at its own
+height, which the resolver keeps instead of the work plane's (PolarSnap rounds the rise, the
+lattice does not) — `ray()` is `null` and `alongZ()` / `activeAlongZ()` give the point. OTRACK
+adds a `kind: "z"` guide per acquired point (`TrackingGuide.dir` and `TrackingResult.direction`
+are `Vec3`); a crossing with a Z line, a guide's or the anchor's (`anchorUp`), is taken on the
+screen and lifted onto that line. The anchor keeps its Z (`getConstraintAnchor()` may give a
+`Vec3`, `toolAnchor` passes it on): it is where the guide starts.
 
 A tool returning `usesCrosshair() === false` (PAN) opts out entirely: no crosshair is drawn and
 `updateSnap` leaves the cursor the tool set, instead of forcing `"none"`.
@@ -202,6 +217,10 @@ styles and blocks) carries them through the history too, and undoes them in reve
 tables all refuse to drop an entry still in use, so the geometry has to go first. Work the result
 out **once**, before the command runs, and store it: a redo must re-add the very same ids.
 
+A setting AutoCAD saves in the drawing but no U undoes (NAVVCUBE, the ViewCube's Home view) is a
+`CadDocument` setter the runtime calls, and a tool reaches it through a `ToolContext` method
+(`setViewCubeVisible`) rather than a command that would leave an empty undo step.
+
 ## Waiting on the host
 
 **Bound every wait on an asynchronous port.** A browser may leave `navigator.clipboard.readText()`
@@ -230,6 +249,18 @@ tilted UCS or object the position rows are read and retyped as points in space
 (`applyOffPlane`). Rotations
 stay in the WCS, as AutoCAD's do. Rows AutoCAD files under **General** go in
 `SelectionInfo.general` (the palette renders them after its pickers), never in a group.
+
+**The ViewCube is the engine's, drawn by the host.** `viewCube.ts` is its model — the 26 parts and
+the view each shows, roll, adjacent face, compass, nearest part — and `buildViewCubeUi` projects it
+into a 0–1 box for `EngineState.viewCube`: each visible face's nine zones as polygons with their
+part id, its label's affine, the compass ellipse and letters, the current part, whether it is a
+face view. It is oriented to the current UCS (`cubeAxes`, read with `Viewport.inFrame`; not
+`UcsFrame`, whose frame stays the WCS for an upright UCS) and cached on the camera's axes (their
+identity), the UCS and the setting, so zooming or panning never rebuilds it. `runtimeViewCube.ts`
+holds what a click, a drag or a letter does. A host hands back part ids, sides, letters and drag
+phases and computes nothing. Choices that are commands a user types — a preset view
+(`applyViewPreset`), a UCS from the cube's menu (`restoreUcs`) — run as that command's macro,
+echoed and undone like it; never compose the macro in React.
 
 ## Scene
 

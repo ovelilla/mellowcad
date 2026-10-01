@@ -62,7 +62,14 @@ class or light values.
 
 ## Where a control belongs
 
-- **CommandBar** (top) — file, view and palette visibility (AutoCAD's ribbon View → Palettes).
+- **CommandBar** (top) — file, view and palette visibility (AutoCAD's ribbon View → Palettes):
+  the view menu (the viewport controls' `[Top]`: `VIEW_MENU`, labelled by `state.view.preset`, run
+  through `engine.applyViewPreset`) and Orbit beside Zoom window and Pan.
+- **ViewCube** (top right, NAVVCUBELOCATION 0) — `view-cube.tsx` draws `state.viewCube` in SVG
+  (the engine's 0–1 box), with Home above, the compass round it and the UCS menu below; its
+  right-click menu and the UCS menu are Base UI menus. It keeps only the hovered zone and the
+  press it is reading as click or drag; every view, outline and label position comes from the
+  engine. The Properties palette sits under it in the same column, its height capped for it.
 - **DrawingAids** (status bar) — drafting modes only: Snap, Grid, Ortho, Polar, Osnap, OTRACK,
   lineweight display.
 - **ToolRail** (left) — tools, grouped by `RAIL_LAYOUT`. Variant families (Circle, Arc, Array,
