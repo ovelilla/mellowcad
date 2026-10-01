@@ -2,7 +2,7 @@
 
 > **Estado:** fases 0 a 5b hechas; sigue la 5c (CECOLOR, CELTYPE y CELWEIGHT) y después la 6. En la
 > 5b, todo lo que se pulsa mide 28 px (los botones de icono, cuadrados de 28 × 28 con icono de 16), y
-> las barras de controles, 36: la superior y la de estado; la línea de comandos es una fila de 28. Se
+> las tres barras, 36: la superior, la línea de comandos y la de estado. Se
 > eligió 28 frente a 32 por densidad: a 32 la paleta ya no cabe a 720 px, la ganancia de Fitts es de
 > un 5 % y los dos cumplen el 2.5.8 de WCAG 2.2 (24 × 24). `lib/control-size.test.ts` lo hace
 > cumplir, y las reglas están en «Size» de `ui.instructions.md`. En la
@@ -111,7 +111,7 @@ que AutoCAD pone ahí.
 | Paleta de herramientas | 67 px, dos columnas, inicio | solo comandos contra el lienzo, en cinco secciones (§3)                                                                                                                                                                                                                                                                                                  |
 | Lienzo                 | el resto                    | encima: la etiqueta de vista «[Superior ▾]» arriba a la izquierda (controles de ventana gráfica), el ViewCube y, debajo, la barra de navegación (Encuadre, Zoom ▾, Órbita); la entrada dinámica, las fichas de opciones y los menús                                                                                                                      |
 | Panel de paletas       | 280 px, fin, plegable a 36  | pestañas Propiedades, Capas, Bloques, Estilos; sin modo                                                                                                                                                                                                                                                                                                  |
-| Línea de comandos      | una fila de 28 px           | una línea; el historial se despliega hacia arriba hasta 12 líneas con F2                                                                                                                                                                                                                                                                                 |
+| Línea de comandos      | 36 px, como la de estado    | una línea; el historial se despliega hacia arriba hasta 12 líneas con F2                                                                                                                                                                                                                                                                                 |
 | Barra de estado        | 36 px, ancho completo       | coordenadas a la izquierda; modos a la derecha (§4)                                                                                                                                                                                                                                                                                                      |
 
 - El ViewCube sigue visible por defecto, pero más pequeño y a media opacidad hasta que el cursor se
@@ -488,8 +488,12 @@ los del motor en `cad/locales/`, con `npm run locales`). Las clases son lógicas
     perdería margen a 1280 en español;
   - coherencia: 28 ya era la fila de la 4b.
 
-  Resultado: 28 para todo control, 36 para las barras de controles (el control y 4 px a cada lado) y
-  una fila de 28 para la línea de comandos. La paleta pasa de 76 a 67 px: una rejilla de 58 (28 + 2 + 28) con 4 px de relleno y su borde.
+  Resultado: 28 para todo control y 36 para las tres barras (el control y 4 px a cada lado), la
+  línea de comandos incluida, para que mida lo mismo que la barra de estado de debajo. Se propuso
+  después pasar a 32 con barras de 40 e iconos de 20, y se descartó por el alto real: un navegador en
+  el portátil más común (Full HD al 125 %) deja a la página unos 730 px, y a 32 la paleta necesita
+  unos 650 de su espacio, así que se plegaría por debajo de unos 775 px, en ese portátil y en todos
+  los menores. A 28 cabe hasta 700. La paleta pasa de 76 a 67 px: una rejilla de 58 (28 + 2 + 28) con 4 px de relleno y su borde.
   Cada zona mide su contenido y deja el borde fuera; un borde dentro de la caja dejaba los botones
   en medio píxel (la rejilla medía 59 y las columnas 28,5). Las partes de texto de una barra
   (conmutadores, estado del guardado, Unidades) tienen ancho entero. Fuera del sistema: el
@@ -561,9 +565,9 @@ Objetivos al terminar:
     - flechas de 14 × 28 y 28 × 14.
     - Fuera de la escala, solo el ViewCube (24), `[Superior]` (20) y el selector de color nativo
       (26, dentro de su recuadro de 28).
-  - Zonas, por su contenido: barra superior 36, rejilla de la paleta 58, `command` 28 y `status` 36,
-    cada una con su borde fuera. A 1280×720 la paleta usa 576 px de los 609 libres. A 1920×1080 el
-    lienzo mide 1572 × 977.
+  - Zonas, por su contenido: barra superior 36, rejilla de la paleta 58, `command` 36 y `status` 36,
+    cada una con su borde fuera. La paleta usa 576 px: cabe entera a 1280×700 (581 libres) y se
+    pliega a 699. A 1920×1080 el lienzo mide 1572 × 969.
   - Todos los botones de icono de las cinco zonas empiezan en un píxel entero (`/draw`,
     `/es/draw`, `/ar/draw`). Solo queda en fracciones el texto: pestañas, `[Superior]`, el menú SCU
     del cubo y el campo de la línea de comandos.

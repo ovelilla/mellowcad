@@ -85,8 +85,8 @@ export function CadWorkspace({
   // palettes on the left.
   //
   // The sizes are one system (ui.instructions.md, "Size"): every control is
-  // 28 px; a bar of them, 36 — the control and 4 px either side; the command
-  // line, one row of 28; the tool palette, two columns of 28, 2 px apart. Each
+  // 28 px; a bar of them, 36 — the control and 4 px either side —, the command
+  // line among them; the tool palette, two columns of 28, 2 px apart. Each
   // zone sizes its content (`box-content`) and its border lies outside it, or
   // the border eats a pixel and every control lands on a half pixel, which
   // blurs its icon.
@@ -179,7 +179,7 @@ export function CadWorkspace({
         className={cn(
           "relative z-10 [grid-area:command]",
           (!ready || state.commandLine.visible || state.commandLine.buffer) &&
-            "box-content h-7 border-t"
+            "box-content h-9 border-t"
         )}
       >
         {ready && <CommandLine engine={engine} state={state} />}

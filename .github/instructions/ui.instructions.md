@@ -136,10 +136,13 @@ are tokens in `globals.css` (`@theme`), each a single class carrying size, weigh
 ## Size
 
 One size for everything one presses, as the type has one body: **28 px**. Chosen in phase 5b of
-the redesign over 32 for density, not looks — WCAG 2.2's 2.5.8 (AA) asks 24 × 24 and both pass;
-Fitts's law gives 32 about 5 % on a 400 px reach with a mouse, a precise pointer; and at 32 the
-tool palette no longer fits a 720 px window (it needs about 650 of its 619) nor the top bar 1280
-in Spanish. AutoCAD's own are about 24 at 100 %.
+the redesign over 32 (with 40 px bars and 20 px icons) for density, not looks — WCAG 2.2's 2.5.8
+(AA) asks 24 × 24 and both pass; Fitts's law gives 32 about 5 % on a 400 px reach with a mouse, a
+precise pointer. The cost is in height: a browser on the commonest laptop (Full HD at 125 %)
+leaves the page about 730 px, and at 32 the tool palette needs about 650 of its room, so it would
+fold below some 775 px — on that laptop and every smaller one. At 28 it fits down to 700 (581 px
+free for its 576). AutoCAD's own are about 24 at 100 %; at 125 % a 28 px control is 35 physical
+pixels. 16 px icons go with 28 px controls (20 would go with 32).
 
 | What                                                                       | Size                                                                                                                        |
 | -------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------- |
@@ -147,7 +150,7 @@ in Spanish. AutoCAD's own are about 24 at 100 %.
 | A text button, a drop-down's trigger, a field, a tab, a row of a list      | 28 high (`Button`'s default, `SelectTrigger`, `h-7`)                                                                        |
 | A mode's settings arrow (`size="icon-flyout"`), Zoom's under its button    | half of one: 14 × 28, 28 × 14 — attached, so the right-click on the 28 px mode is its equivalent target (2.5.8's exception) |
 | A docked bar of controls: the top bar, the status bar, the panel's tab bar | 36 (`h-9`): the control and 4 px either side; the folded panel is 36 wide for the same reason                               |
-| The command line                                                           | one row of 28 under its border (`box-content h-7`); its field fills the row                                                 |
+| The command line                                                           | a bar of 36 like the others (`h-9`), so the three bars match; its field fills it                                            |
 | The tool palette                                                           | two columns of 28, 2 px apart: a grid of 58 (`w-14.5`) inside `p-1`                                                         |
 
 - **A zone sizes its content** (`box-content`): its border lies outside the numbers above, so
@@ -194,7 +197,7 @@ in Spanish. AutoCAD's own are about 24 at 100 %.
   into a zone; never position one absolutely over the drawing. The canvas takes what the zones
   leave, so ZOOM Extents frames only what is visible.
   - **Every zone has its size in CSS** (the bars' `h-9`, the tool palette's `w-14.5`, the panel's
-    `w-9` / `palette-open:w-(--palette-width)`, the command line's `box-content h-7`), not from
+    `w-9` / `palette-open:w-(--palette-width)`, the command line's `h-9`), not from
     its content, and is rendered before the engine mounts: the canvas's box at the first paint is then the final one,
     which the landing's view transition grows into and the first view is centred in. A zone that
     resizes moves the canvas's edge; one that resizes with the work (the selection, each command)
@@ -283,7 +286,7 @@ in Spanish. AutoCAD's own are about 24 at 100 %.
   - **After acting in a palette, focus returns to the drawing** (`engine.focusSurface()`) — a
     click on a tab, a strip icon, a toggle, a pick in a drop-down — so the next key types a
     command. The arrow keys on the tabs keep focus there (`event.detail > 0` tells a click).
-- **The command line** (`command`, a row of 28 px) is AutoCAD's as it starts: one prompt line. Above it,
+- **The command line** (`command`, a bar of 36 px, as the status bar under it) is AutoCAD's as it starts: one prompt line. Above it,
   over the drawing, float the running command's temporary prompt lines (`commandLine.recent`,
   CLIPROMPTLINES 3; they fade once it ends — `animate-prompt-fade`, our time, AutoCAD documents
   none — and take no pointer), the whole history expanded up to 12 lines with F2 or the arrow at

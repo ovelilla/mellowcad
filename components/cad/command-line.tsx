@@ -44,7 +44,7 @@ export function CommandLine({
     <TooltipProvider>
       <div
         dir="ltr"
-        className="pointer-events-auto relative flex h-full w-full items-center gap-2 ps-2 pe-0.5 font-mono"
+        className="pointer-events-auto relative flex h-full w-full items-center gap-2 ps-2 pe-1 font-mono"
       >
         {/* Autocomplete sits above the prompt so it never covers the drawing
             below the cursor, matching AutoCAD's suggestion list. */}
