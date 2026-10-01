@@ -4,6 +4,7 @@ import { Menu } from "@base-ui/react/menu"
 import {
   CheckIcon,
   ChevronDown,
+  Eraser,
   FolderOpen,
   Hand,
   Loader2,
@@ -13,7 +14,6 @@ import {
   Save,
   Search,
   Terminal,
-  Undo2,
   ZoomIn,
   ZoomOut,
 } from "lucide-react"
@@ -23,6 +23,7 @@ import { Button } from "@/components/ui/button"
 import { TooltipProvider } from "@/components/ui/tooltip"
 import { CadEngine, EngineState, VIEW_MENU, type ViewPreset } from "@/cad"
 
+import { ZoomPreviousIcon } from "./icons"
 import { LanguageMenu } from "./language-menu"
 import { IconAction, Panel } from "./toolbar-primitives"
 
@@ -62,6 +63,15 @@ export function CommandBar({
             shortcut={keys("open")}
             onClick={() => void engine.openDrawingFromFile()}
             side="bottom"
+          />
+          {/* With the file actions, away from Delete selection, until the
+              application menu's New takes its place. */}
+          <IconAction
+            icon={Eraser}
+            label={t("clearAll")}
+            side="bottom"
+            disabled={state.entityCount === 0}
+            onClick={() => engine.clearAll()}
           />
           <ViewMenu
             engine={engine}
@@ -105,7 +115,7 @@ export function CommandBar({
             side="bottom"
           />
           <IconAction
-            icon={Undo2}
+            icon={ZoomPreviousIcon}
             mirrored
             label={t("zoomPrevious")}
             onClick={() => engine.zoomPrevious()}

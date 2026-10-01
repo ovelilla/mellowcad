@@ -46,7 +46,7 @@ export function IconAction({
         render={
           <Button
             size="icon-sm"
-            variant={active ? "default" : "ghost"}
+            variant={active ? "active" : "ghost"}
             disabled={disabled}
             onClick={onClick}
             aria-label={label}

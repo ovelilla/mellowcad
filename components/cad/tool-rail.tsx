@@ -4,7 +4,6 @@ import { Fragment, useState } from "react"
 import {
   ArrowRightToLine,
   CopyPlus,
-  Eraser,
   Eye,
   FlipHorizontal2,
   Grid3x3,
@@ -36,15 +35,12 @@ import {
   Undo2,
   Waypoints,
 } from "lucide-react"
+import { Menu } from "@base-ui/react/menu"
 import { useTranslations } from "next-intl"
 
 import { TooltipProvider } from "@/components/ui/tooltip"
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover"
 import { Button } from "@/components/ui/button"
+import { Separator } from "@/components/ui/separator"
 import { CadEngine, EngineState } from "@/cad"
 
 import { IconAction, Panel } from "./toolbar-primitives"
@@ -355,8 +351,9 @@ export function ToolRail({
   return (
     <TooltipProvider>
       <Panel className="max-h-[calc(100svh-8rem)] flex-col overflow-y-auto">
-        {groups.map((group) => (
+        {groups.map((group, g) => (
           <Fragment key={group.id}>
+            {g > 0 && <Separator className="my-0.5" />}
             {group.items.map((item, i) =>
               isFlyout(item) ? (
                 <ToolFlyout
@@ -373,6 +370,7 @@ export function ToolRail({
           </Fragment>
         ))}
 
+        <Separator className="my-0.5" />
         <IconAction
           icon={Undo2}
           mirrored
@@ -397,12 +395,6 @@ export function ToolRail({
           onClick={() => engine.deleteSelection()}
           className="text-destructive/80 hover:bg-destructive/10 hover:text-destructive"
         />
-        <IconAction
-          icon={Eraser}
-          label={t("clearAll")}
-          disabled={state.entityCount === 0}
-          onClick={() => engine.clearAll()}
-        />
       </Panel>
     </TooltipProvider>
   )
@@ -411,7 +403,8 @@ export function ToolRail({
 /**
  * A single rail slot standing in for a family of related tools. The button
  * shows the active member (or the last one picked), a corner triangle marks it
- * as a flyout, and the popover lets you pick a variant — AutoCAD's flyout.
+ * as a flyout, and its menu lists the variants with icon, name and alias, as
+ * the ribbon's drop-downs do — near-identical glyphs alone don't tell them apart.
  */
 function ToolFlyout({
   engine,
@@ -429,7 +422,6 @@ function ToolFlyout({
     .map((id) => metaById.get(id))
     .filter((meta): meta is ToolMeta => meta !== undefined)
 
-  const [open, setOpen] = useState(false)
   const [lastPicked, setLastPicked] = useState(members[0]?.id)
 
   if (members.length === 0) return null
@@ -439,12 +431,12 @@ function ToolFlyout({
   const ShownIcon = TOOL_ICONS[shownId] ?? Shapes
 
   return (
-    <Popover open={open} onOpenChange={setOpen}>
-      <PopoverTrigger
+    <Menu.Root>
+      <Menu.Trigger
         render={
           <Button
             size="icon-sm"
-            variant={activeMember ? "default" : "ghost"}
+            variant={activeMember ? "active" : "ghost"}
             aria-label={t(family.id)}
             className="relative"
           >
@@ -456,25 +448,45 @@ function ToolFlyout({
           </Button>
         }
       />
-      <PopoverContent side="inline-end" align="start" className="w-auto p-1">
-        <div className="flex flex-col gap-1">
-          {members.map((member) => (
-            <IconAction
-              key={member.id}
-              icon={TOOL_ICONS[member.id] ?? Shapes}
-              label={member.label}
-              shortcut={member.shortcut?.toUpperCase()}
-              side="inline-end"
-              active={state.activeToolId === member.id}
-              onClick={() => {
-                engine.setActiveTool(member.id)
-                setLastPicked(member.id)
-                setOpen(false)
-              }}
-            />
-          ))}
-        </div>
-      </PopoverContent>
-    </Popover>
+      <Menu.Portal>
+        <Menu.Positioner
+          side="inline-end"
+          align="start"
+          sideOffset={6}
+          className="z-50"
+        >
+          <Menu.Popup className="min-w-48 origin-(--transform-origin) overflow-hidden rounded-md border bg-card/90 p-1 text-popover-foreground shadow-md backdrop-blur transition-[transform,opacity] outline-none data-ending-style:scale-95 data-ending-style:opacity-0 data-starting-style:scale-95 data-starting-style:opacity-0">
+            <Menu.RadioGroup value={activeMember?.id ?? null}>
+              {members.map((member) => {
+                const Icon = TOOL_ICONS[member.id] ?? Shapes
+                return (
+                  <Menu.RadioItem
+                    key={member.id}
+                    value={member.id}
+                    closeOnClick
+                    onClick={() => {
+                      engine.setActiveTool(member.id)
+                      setLastPicked(member.id)
+                    }}
+                    className="flex cursor-default items-center gap-2 rounded-sm py-1.5 ps-2 pe-2 text-sm outline-hidden select-none data-highlighted:bg-accent data-highlighted:text-accent-foreground data-checked:bg-active/15 data-checked:text-active"
+                  >
+                    <Icon className="size-4 shrink-0" />
+                    <span className="flex-1">{member.label}</span>
+                    {member.shortcut && (
+                      <kbd
+                        dir="ltr"
+                        className="ms-4 font-mono text-xs text-muted-foreground"
+                      >
+                        {member.shortcut.toUpperCase()}
+                      </kbd>
+                    )}
+                  </Menu.RadioItem>
+                )
+              })}
+            </Menu.RadioGroup>
+          </Menu.Popup>
+        </Menu.Positioner>
+      </Menu.Portal>
+    </Menu.Root>
   )
 }

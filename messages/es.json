@@ -261,7 +261,8 @@
       "zoomToFit": "Zoom extensión",
       "resetView": "Restablecer vista",
       "orbit": "Órbita",
-      "commandLine": "Línea de comandos"
+      "commandLine": "Línea de comandos",
+      "clearAll": "Borrar todo"
     },
     "ViewCube": {
       "label": "ViewCube",
@@ -296,8 +297,7 @@
       },
       "undo": "Deshacer",
       "redo": "Rehacer",
-      "deleteSelection": "Borrar la selección",
-      "clearAll": "Borrar todo"
+      "deleteSelection": "Borrar la selección"
     },
     "CommandLine": {
       "label": "Línea de comandos",

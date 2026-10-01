@@ -261,7 +261,8 @@
       "zoomToFit": "ملاءمة الرسم للعرض",
       "resetView": "إعادة ضبط العرض",
       "orbit": "مدار",
-      "commandLine": "سطر الأوامر"
+      "commandLine": "سطر الأوامر",
+      "clearAll": "مسح الكل"
     },
     "ViewCube": {
       "label": "مكعب العرض",
@@ -296,8 +297,7 @@
       },
       "undo": "تراجع",
       "redo": "إعادة",
-      "deleteSelection": "حذف المحدد",
-      "clearAll": "مسح الكل"
+      "deleteSelection": "حذف المحدد"
     },
     "CommandLine": {
       "label": "سطر الأوامر",

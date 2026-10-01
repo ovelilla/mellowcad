@@ -52,24 +52,17 @@ export function CadWorkspace({
 
       {engine && state && (
         <>
-          <div className="pointer-events-none absolute top-4 left-1/2 z-10 -translate-x-1/2">
-            <CommandBar engine={engine} state={state} />
-          </div>
-
           <div className="pointer-events-none absolute inset-s-4 top-4 z-10">
             <ToolRail engine={engine} state={state} />
           </div>
 
-          <div className="pointer-events-none absolute inset-s-20 top-4 z-10">
+          {/* One row, so a longer layer name or label pushes the rest along
+              instead of sliding under it. */}
+          <div className="pointer-events-none absolute inset-s-20 top-4 z-10 flex items-start gap-2">
             <LayersControl engine={engine} state={state} />
-          </div>
-
-          <div className="pointer-events-none absolute inset-s-72 top-4 z-10">
             <StylesControl engine={engine} state={state} />
-          </div>
-
-          <div className="pointer-events-none absolute inset-s-[26rem] top-4 z-10">
             <BlocksControl engine={engine} state={state} />
+            <CommandBar engine={engine} state={state} />
           </div>
 
           <div className="pointer-events-none absolute inset-s-4 bottom-4 z-10">

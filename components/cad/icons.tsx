@@ -306,3 +306,14 @@ export const SnapModeIcon = createLucideIcon("SnapMode", [
     },
   ],
 ])
+
+/**
+ * Zoom previous: lucide's magnifier with a back arrow in the lens, so it never
+ * reads as Undo's arrow alone.
+ */
+export const ZoomPreviousIcon = createLucideIcon("ZoomPrevious", [
+  ["circle", { cx: "11", cy: "11", r: "8", key: "lens" }],
+  ["path", { d: "m21 21-4.35-4.35", key: "handle" }],
+  ["path", { d: "M7.5 11h7", key: "shaft" }],
+  ["path", { d: "m10.5 8-3 3 3 3", key: "head" }],
+])

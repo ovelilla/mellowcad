@@ -22,19 +22,19 @@ export function CoordinateReadout({ state }: { state: EngineState }) {
       <span className="flex items-center">
         <span>{t("x")}</span>
         <span className="inline-block min-w-14 text-end text-foreground tabular-nums">
-          {cursor ? cursor.x.toFixed(3) : "—"}
+          {cursor ? cursor.x.toFixed(state.documentPrecision) : "—"}
         </span>
       </span>
       <span className="flex items-center">
         <span>{t("y")}</span>
         <span className="inline-block min-w-14 text-end text-foreground tabular-nums">
-          {cursor ? cursor.y.toFixed(3) : "—"}
+          {cursor ? cursor.y.toFixed(state.documentPrecision) : "—"}
         </span>
       </span>
       <span className="flex items-center">
         <span>{t("z")}</span>
         <span className="inline-block min-w-14 text-end text-foreground tabular-nums">
-          {cursor ? cursor.z.toFixed(3) : "—"}
+          {cursor ? cursor.z.toFixed(state.documentPrecision) : "—"}
         </span>
       </span>
       <span className="inline-block min-w-12 text-end text-foreground tabular-nums">

@@ -78,8 +78,12 @@ The tokens in `:root` are the only values, `color-scheme: dark` keeps native con
 component added with the shadcn CLI renders as designed. Don't bring back next-themes, a `.dark`
 class or light values.
 
-- `--primary` is near-white, so `bg-primary/N` is glare, not a highlight. Use `bg-accent` for a
-  selected/current row (the token designed for it) and `text-primary` for check marks.
+- **One accent, `--active`**: the grips' blue (`THEME.grip`). A tool or mode that is on, a flyout
+  whose member is running and the chosen option in a status-bar popover are `Button`'s
+  `variant="active"` (`bg-active/15 text-active`), or those classes where it is not a `Button`.
+  Never `variant="default"` for state: `--primary` is near-white, so `bg-primary/N` is glare, not
+  a highlight. Use `bg-accent` for a selected/current row (the token designed for it) and
+  `text-primary` for check marks.
 - Panels are `bg-card/90` + `backdrop-blur` (8px). Keep popovers at the same blur so surfaces match.
 
 ## Base UI gotchas
@@ -97,8 +101,12 @@ class or light values.
 
 ## Where a control belongs
 
-- **CommandBar** (top) — file, view and palette visibility (AutoCAD's ribbon View → Palettes), and
-  last the language (`LanguageMenu`, a Base UI menu of `useLanguageLinks`):
+- **The top row** is one flex container (`CadWorkspace`): the Layers, Styles and Blocks triggers,
+  then the CommandBar. Never place one of them at its own fixed offset — a longer layer name or
+  label then slides under its neighbour.
+- **CommandBar** — file (Save, Open, and Clear all, kept away from Delete selection until the
+  application menu's New replaces it), view and palette visibility (AutoCAD's ribbon View →
+  Palettes), and last the language (`LanguageMenu`, a Base UI menu of `useLanguageLinks`):
   the view menu (the viewport controls' `[Top]`: `VIEW_MENU`, labelled by `state.view.preset`, run
   through `engine.applyViewPreset`) and Orbit beside Zoom window and Pan.
 - **ViewCube** (top right, NAVVCUBELOCATION 0; top left in RTL, with the palettes) — `view-cube.tsx` draws `state.viewCube` in SVG
@@ -109,10 +117,14 @@ class or light values.
   `Editor.ViewCube`. The Properties palette sits under it in the same column, its height capped for it.
 - **DrawingAids** (status bar) — drafting modes only: Snap, Grid, Ortho, Polar, Osnap, OTRACK,
   lineweight display.
-- **ToolRail** (left; right in RTL) — tools, grouped by `RAIL_LAYOUT`. Variant families (Circle, Arc, Array,
-  Fillet/Chamfer, Rectangle/Polygon, Break, the attribute commands) are flyouts, named by `Editor.ToolRail.flyouts`;
-  icon-only with `side="inline-end"` tooltips. Unlisted tools fall into a trailing "more" group, so a tool that belongs elsewhere in the chrome
-  (the view tools, which live in the CommandBar) must be listed in `RAIL_EXCLUDED`.
+- **ToolRail** (left; right in RTL) — tools, grouped by `RAIL_LAYOUT`, a `Separator` between
+  groups and before the closing Undo / Redo / Delete selection. Variant families (Circle, Arc,
+  Array, Fillet/Chamfer, Rectangle/Polygon, Break, the attribute commands) are flyouts, named by
+  `Editor.ToolRail.flyouts`: a Base UI menu of radio items listing each member's icon, name and
+  alias, as the ribbon's drop-downs do — never a strip of bare glyphs. The rail's own buttons are
+  icon-only with `side="inline-end"` tooltips. Unlisted tools fall into a trailing "more" group,
+  so a tool that belongs elsewhere in the chrome (the view tools, which live in the CommandBar)
+  must be listed in `RAIL_EXCLUDED`.
 - The editor carries no product or meta copy (an About panel was removed): that belongs to the
   landing.
 - The dynamic-input box is `pointer-events-none` and keyboard-driven — never make it clickable.
@@ -126,7 +138,7 @@ class or light values.
 
 A palette a command can open (the style managers, the Blocks palette) is a **controlled** popover
 driven by `EngineState`, never by local `useState` — otherwise typing `DIMSTYLE` cannot open it.
-Its trigger sits with the others along the top-left.
+Its trigger sits in the top row with the others.
 
 Anything that has to **draw drawing content** — a block thumbnail, a future layout preview — asks
 the engine for a `Scene` (`engine.buildBlockPreview(...)`) and paints it with

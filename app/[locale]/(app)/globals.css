@@ -28,6 +28,7 @@
   --color-chart-3: var(--chart-3);
   --color-chart-2: var(--chart-2);
   --color-chart-1: var(--chart-1);
+  --color-active: var(--active);
   --color-ring: var(--ring);
   --color-input: var(--input);
   --color-border: var(--border);
@@ -71,6 +72,9 @@
   --accent: oklch(0.269 0 0);
   --accent-foreground: oklch(0.985 0 0);
   --destructive: oklch(0.704 0.191 22.216);
+  /* The chrome's one accent is the grips' blue (THEME.grip), so a mode that
+     is on reads like the drawing's own highlight rather than as glare. */
+  --active: #3b82f6;
   --border: oklch(1 0 0 / 10%);
   --input: oklch(1 0 0 / 15%);
   --ring: oklch(0.556 0 0);

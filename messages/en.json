@@ -261,7 +261,8 @@
       "zoomToFit": "Zoom to fit",
       "resetView": "Reset view",
       "orbit": "Orbit",
-      "commandLine": "Command line"
+      "commandLine": "Command line",
+      "clearAll": "Clear all"
     },
     "ViewCube": {
       "label": "ViewCube",
@@ -296,8 +297,7 @@
       },
       "undo": "Undo",
       "redo": "Redo",
-      "deleteSelection": "Delete selection",
-      "clearAll": "Clear all"
+      "deleteSelection": "Delete selection"
     },
     "CommandLine": {
       "label": "Command line",

@@ -143,7 +143,7 @@ export function DrawingAids({
                         "rounded-md border px-2 py-1 text-start text-[11px] transition-colors",
                         implemented
                           ? enabled
-                            ? "border-primary/50 bg-primary/15 text-foreground"
+                            ? "border-active/40 bg-active/15 text-active"
                             : "border-border text-muted-foreground hover:bg-muted"
                           : "cursor-not-allowed border-dashed border-border/60 text-muted-foreground/40"
                       )}
@@ -194,9 +194,7 @@ export function DrawingAids({
                   <Button
                     key={type}
                     size="xs"
-                    variant={
-                      state.snapModeType === type ? "default" : "outline"
-                    }
+                    variant={state.snapModeType === type ? "active" : "outline"}
                     onClick={() => engine.setSnapModeType(type)}
                   >
                     {t(label)}
@@ -284,7 +282,7 @@ export function DrawingAids({
                     key={deg}
                     size="xs"
                     variant={
-                      state.polarAngleStep === deg ? "default" : "outline"
+                      state.polarAngleStep === deg ? "active" : "outline"
                     }
                     onClick={() => {
                       engine.setPolarAngleStep(deg)
@@ -338,9 +336,7 @@ export function DrawingAids({
               </p>
               <Button
                 size="xs"
-                variant={
-                  state.selectionCycling.showList ? "default" : "outline"
-                }
+                variant={state.selectionCycling.showList ? "active" : "outline"}
                 className="w-full"
                 onClick={() =>
                   engine.setSelectionCyclingList(
@@ -385,7 +381,7 @@ export function DrawingAids({
                 <Button
                   key={unit}
                   size="xs"
-                  variant={state.documentUnit === unit ? "default" : "outline"}
+                  variant={state.documentUnit === unit ? "active" : "outline"}
                   onClick={() => engine.setDocumentUnit(unit)}
                 >
                   {unit}
