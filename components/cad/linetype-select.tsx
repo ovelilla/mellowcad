@@ -34,11 +34,20 @@ export function LinetypeSelect({
   className?: string
 }) {
   const t = useTranslations("Editor.Properties")
+  // The closed trigger shows what the list shows (`Dash dot`, not the id
+  // `DashDot`), and ByLayer in the page's language.
+  const items = {
+    [LINETYPE_BYLAYER]: names.byLayer,
+    ...Object.fromEntries(
+      LINETYPES.map((linetype) => [
+        linetype.id,
+        linetypeLabel(names, linetype.id),
+      ])
+    ),
+  }
   return (
     <Select
-      // The closed trigger names ByLayer in the page's language, not by its
-      // id; a linetype's name is the drawing's data, shown as it is.
-      items={{ [LINETYPE_BYLAYER]: names.byLayer }}
+      items={items}
       value={value ?? undefined}
       onValueChange={(next) => {
         if (next != null) onValueChange(next)
@@ -61,12 +70,17 @@ export function LinetypeSelect({
             className="text-[11px]"
           >
             <LinetypePreview pattern={linetype.pattern} />
-            {names.linetypes[linetype.id] ?? linetype.id}
+            {linetypeLabel(names, linetype.id)}
           </SelectItem>
         ))}
       </SelectContent>
     </Select>
   )
+}
+
+/** A linetype's display name; one the catalog does not name shows its id. */
+function linetypeLabel(names: EngineNames, id: string): string {
+  return names.linetypes[id] ?? id
 }
 
 /** A tiny horizontal line rendered with the linetype's dash pattern. */
