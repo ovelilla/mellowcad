@@ -2732,6 +2732,7 @@ export class CadRuntime extends Observable {
           this.commandInfos,
           this.commandLine.getBuffer()
         ),
+        lang: this.text.commandTag,
       },
       names: this.text.names(),
     }

@@ -1,4 +1,4 @@
-import { Geist_Mono, Inter } from "next/font/google"
+import { Geist_Mono, Inter, Readex_Pro } from "next/font/google"
 import { Analytics } from "@vercel/analytics/next"
 import { SpeedInsights } from "@vercel/speed-insights/next"
 import type { Metadata, Viewport } from "next"
@@ -10,6 +10,7 @@ import { THEME } from "@/cad"
 import { DirectionProvider } from "@/components/ui/direction"
 import { localePath } from "@/i18n/navigation"
 import { DIRECTION, OG_LOCALE, routing } from "@/i18n/routing"
+import { scriptFontVariables } from "@/lib/fonts"
 import { EDITOR_PATH, SITE_NAME, SITE_URL } from "@/lib/site"
 import { cn } from "@/lib/utils"
 import { EDITOR_SHEET_ID, VIEW_TRANSITION_OPT_IN } from "@/lib/view-transition"
@@ -66,6 +67,11 @@ const fontMono = Geist_Mono({
   variable: "--font-mono",
 })
 
+// Arabic only, behind Inter (lib/fonts.ts). Not preloaded: a preload here
+// would fetch it on every page of every language; its `unicode-range` and the
+// one page whose font stack names it keep it to Arabic.
+const fontArabic = Readex_Pro({ subsets: ["arabic"], preload: false })
+
 export default async function AppLayout({
   children,
 }: Readonly<{
@@ -83,6 +89,11 @@ export default async function AppLayout({
         "font-sans",
         inter.variable
       )}
+      style={scriptFontVariables(locale, {
+        sans: inter,
+        mono: fontMono,
+        arabic: fontArabic,
+      })}
     >
       <head>
         <style>{VIEW_TRANSITION_OPT_IN}</style>

@@ -94,7 +94,7 @@ export const ar: EngineLocale = {
       "midpoint": "نقطة المنتصف",
       "center": "المركز",
       "intersection": "التقاطع",
-      "apparentIntersection": "التقاطع الظاهري",
+      "apparentIntersection": "تقاطع ظاهري",
       "perpendicular": "عمودي",
       "tangent": "مماس",
       "insertion": "الإدراج",
@@ -112,7 +112,7 @@ export const ar: EngineLocale = {
       "magenta": "أرجواني",
       "white": "أبيض"
     },
-    "byLayer": "حسب الطبقة",
+    "byLayer": "بالطبقة",
     "view": {
       "Top": "علوي",
       "Bottom": "سفلي",

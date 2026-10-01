@@ -107,6 +107,15 @@
   }
 }
 
+/* Arabic (brief §8.2), unlayered so it outranks the utilities: tracking
+   breaks the joins of a cursive script, and the script has no capitals and no
+   italics. What speaks the command language carries its own `lang`. */
+:lang(ar) {
+  letter-spacing: 0;
+  text-transform: none;
+  font-style: normal;
+}
+
 /* Arriving from the landing, its hero sheet grows into the canvas, which is
    named `drawing-sheet` (CadWorkspace); timed alike in marketing.css. The
    opt-in itself is inline in the layout (lib/view-transition.ts). */

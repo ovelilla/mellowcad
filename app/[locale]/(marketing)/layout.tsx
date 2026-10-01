@@ -1,4 +1,4 @@
-import { Geist_Mono, Inter } from "next/font/google"
+import { Geist_Mono, Inter, Readex_Pro } from "next/font/google"
 import { Analytics } from "@vercel/analytics/next"
 import { SpeedInsights } from "@vercel/speed-insights/next"
 import type { Metadata, Viewport } from "next"
@@ -13,6 +13,7 @@ import { SpeculationRules } from "@/components/marketing/speculation-rules"
 import { DirectionProvider } from "@/components/ui/direction"
 import { localePath } from "@/i18n/navigation"
 import { DIRECTION, LOCALE_STATUS, routing } from "@/i18n/routing"
+import { scriptFontVariables } from "@/lib/fonts"
 import { SITE_NAME, SITE_URL } from "@/lib/site"
 import { VIEW_TRANSITION_OPT_IN } from "@/lib/view-transition"
 
@@ -35,6 +36,11 @@ const fontMono = Geist_Mono({
   subsets: ["latin"],
   variable: "--font-mono",
 })
+
+// Arabic only, behind Inter (lib/fonts.ts). Not preloaded: a preload here
+// would fetch it on every page of every language; its `unicode-range` and the
+// one page whose font stack names it keep it to Arabic.
+const fontArabic = Readex_Pro({ subsets: ["arabic"], preload: false })
 
 export async function generateMetadata(): Promise<Metadata> {
   const locale = await getLocale()
@@ -77,6 +83,11 @@ export default async function MarketingLayout({
       lang={locale}
       dir={DIRECTION[locale]}
       className={`${inter.variable} ${fontMono.variable}`}
+      style={scriptFontVariables(locale, {
+        sans: inter,
+        mono: fontMono,
+        arabic: fontArabic,
+      })}
     >
       <head>
         {/* The drawings' colours, written from the engine's own THEME so the

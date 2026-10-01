@@ -479,7 +479,7 @@ describe("Arabic: its own interface, the global command language", () => {
   it("names the interface in Arabic and leaves the drawing's data alone", () => {
     const { names, tools } = createHarness({ locale: ar }).state()
     expect(names.snaps.endpoint).toBe("نقطة النهاية")
-    expect(names.byLayer).toBe("حسب الطبقة")
+    expect(names.byLayer).toBe("بالطبقة")
     expect(names.linetypes.DashDot).toBe("Dash dot")
     expect(tools.find((tool) => tool.id === "line")?.label).toBe("خط")
     expect(tools.find((tool) => tool.id === "line")?.shortcut).toBe("L")
@@ -492,6 +492,7 @@ describe("Arabic: its own interface, the global command language", () => {
     cad.click(p(0, 0)).click(p(100, 0)).click(p(100, 100))
     expect(cad.state().commandLine.prompt).toBe("LINE [Close/Undo]:")
     expect(cad.scene().lang).toBe("en")
+    expect(cad.state().commandLine.lang).toBe("en")
   })
 
   it("runs a command pasted from Arabic prose, its bidi isolates dropped", () => {

@@ -14,7 +14,10 @@ export async function DimensionDivider({ label }: { label: string }) {
     <div aria-hidden="true" dir="ltr" className="dim-line label-mono">
       <Glyph glyph={arrow} className="h-[3.33px] w-[10px]" />
       <span className="rule" />
-      <span className="label">{label}</span>
+      {/* Its words read in their own direction; only the line is LTR. */}
+      <span dir="auto" className="label">
+        {label}
+      </span>
       <span className="rule" />
       <Glyph glyph={arrow} className="h-[3.33px] w-[10px] rotate-180" />
     </div>

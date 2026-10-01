@@ -18,6 +18,7 @@ export function CommandTry({
   placeholder,
   hint,
   prompt,
+  lang,
   unknown,
 }: {
   commands: readonly Pick<CommandInfo, "name" | "aliases" | "description">[]
@@ -26,6 +27,8 @@ export function CommandTry({
   placeholder: string
   hint: string
   prompt: string
+  /** The command language's tag, for the names it offers. */
+  lang: string
   /** `{command}` is replaced by what was typed. */
   unknown: string
 }) {
@@ -112,7 +115,9 @@ export function CommandTry({
               onClick={open}
               className="flex cursor-pointer gap-3 px-3 py-2 aria-selected:bg-bg"
             >
-              <span className="font-medium text-fg">{match.name}</span>
+              <span lang={lang} className="font-medium text-fg">
+                {match.name}
+              </span>
               <span className="truncate text-fg-subtle">
                 {match.description}
               </span>

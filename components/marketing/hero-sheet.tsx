@@ -94,7 +94,8 @@ export async function HeroSheet() {
   const locale = await getLocale()
   const { editor } = await sitePaths()
   const engine = await pageEngineLocale()
-  const idle = engineText(engine).idlePrompt()
+  const text = engineText(engine)
+  const idle = text.idlePrompt()
   const plot = await plotDemo(HERO_FIGURE.script, {
     ...HERO_FIGURE,
     locale: engine,
@@ -167,6 +168,7 @@ export async function HeroSheet() {
           <div
             aria-hidden="true"
             dir="ltr"
+            lang={text.commandTag}
             className="flex h-[6em] min-w-0 flex-1 flex-col justify-end overflow-hidden font-mono text-[0.8125rem]"
           >
             {plot.lines.map((line, index) => (
@@ -206,7 +208,7 @@ export async function HeroSheet() {
             className="mt-3 max-h-64 overflow-y-auto rounded-md border border-border bg-bg-sunken p-3 data-mono text-xs"
           >
             {plot.lines.map((line, index) => (
-              <li key={index}>
+              <li key={index} lang={text.commandTag}>
                 {line.kind === "command"
                   ? `${idle} ${line.text}`
                   : line.kind === "input"

@@ -198,6 +198,11 @@ export interface CommandLineUi {
   readonly lines: ReadonlyArray<CommandLineEntry>
   /** Autocomplete matches for the current buffer; empty when nothing typed. */
   readonly suggestions: ReadonlyArray<CommandSuggestion>
+  /**
+   * The command language's BCP 47 tag, for the `lang` of whatever shows the
+   * prompts — English on an Arabic page, whose command language is global.
+   */
+  readonly lang: string
 }
 
 /** One of the overlapping objects offered by selection cycling. */

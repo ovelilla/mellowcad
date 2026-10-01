@@ -81,7 +81,13 @@ export async function CommandsSection() {
                     })}`
                   return (
                     <li key={command.name} className="tip group">
-                      <span className="inline-flex h-8 items-center gap-2 rounded border border-border bg-bg-raised px-2 font-mono text-xs shadow-[0_1px_0_var(--border)] transition-colors duration-150 group-hover:border-fg-subtle">
+                      {/* A key cap of the command language: left to right,
+                          or -MTEXT reads MTEXT- in a right-to-left page. */}
+                      <span
+                        dir="ltr"
+                        lang={text.commandTag}
+                        className="inline-flex h-8 items-center gap-2 rounded border border-border bg-bg-raised px-2 font-mono text-xs shadow-[0_1px_0_var(--border)] transition-colors duration-150 group-hover:border-fg-subtle"
+                      >
                         <span className="font-semibold text-fg">
                           {command.key}
                         </span>
@@ -118,6 +124,7 @@ export async function CommandsSection() {
             placeholder={t("tryPlaceholder")}
             hint={t("tryHint")}
             prompt={text.idlePrompt()}
+            lang={text.commandTag}
             unknown={text.message("unknownCommand", {
               name: "{command}",
             })}
@@ -136,7 +143,7 @@ export async function CommandsSection() {
               className="overflow-x-auto rounded-md bg-bg-sunken p-4 data-mono text-[0.8125rem] whitespace-nowrap"
             >
               {lines.map((line, index) => (
-                <li key={index}>
+                <li key={index} lang={text.commandTag}>
                   {line.kind === "command" ? (
                     <>
                       <span className="text-fg-subtle">

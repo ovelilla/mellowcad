@@ -22,6 +22,7 @@ export async function FinalCta() {
       <p
         aria-hidden="true"
         dir="ltr"
+        lang={text.commandTag}
         className="font-mono text-sm text-fg-subtle"
       >
         {text.idlePrompt()} <span className="caret caret-blink" />

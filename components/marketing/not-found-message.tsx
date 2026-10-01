@@ -26,6 +26,7 @@ export async function NotFoundMessage({ locale }: { locale: AppLocale }) {
       {/* The command line's answer, in the command language: left to right. */}
       <p
         dir="ltr"
+        lang={text.commandTag}
         className="rounded-md border border-border bg-bg-sunken p-5 font-mono text-sm leading-relaxed"
       >
         <span className="text-fg-subtle">{text.idlePrompt()} </span>

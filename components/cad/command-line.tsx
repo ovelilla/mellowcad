@@ -19,7 +19,7 @@ export function CommandLine({
   engine: CadEngine
   state: EngineState
 }) {
-  const { visible, prompt, idlePrompt, buffer, lines, suggestions } =
+  const { visible, prompt, idlePrompt, buffer, lines, suggestions, lang } =
     state.commandLine
   const t = useTranslations("Editor.CommandLine")
   const logRef = useRef<HTMLDivElement>(null)
@@ -57,7 +57,9 @@ export function CommandLine({
               onClick={() => engine.runCommand(suggestion.name)}
               className="flex w-full items-center gap-2 px-2 py-1 text-start font-mono text-xs hover:bg-accent hover:text-accent-foreground"
             >
-              <span className="font-semibold">{suggestion.name}</span>
+              <span lang={lang} className="font-semibold">
+                {suggestion.name}
+              </span>
               <span className="truncate text-muted-foreground">
                 {suggestion.description}
               </span>
@@ -69,6 +71,7 @@ export function CommandLine({
       {visibleLines.length > 0 && (
         <div
           ref={logRef}
+          lang={lang}
           // AutoCAD lays its reports out in spaces and lines (ID, DIST, UCS ?).
           className="max-h-16 overflow-y-auto border-b px-2 py-1 font-mono text-[11px] leading-tight whitespace-pre-wrap"
         >
@@ -92,7 +95,10 @@ export function CommandLine({
       )}
 
       <div className="flex items-center gap-2 px-2 py-1.5 font-mono text-xs">
-        <span className="shrink-0 whitespace-nowrap text-muted-foreground">
+        <span
+          lang={lang}
+          className="shrink-0 whitespace-nowrap text-muted-foreground"
+        >
           {prompt}
         </span>
         <input
@@ -116,6 +122,7 @@ export function CommandLine({
             }
           }}
           spellCheck={false}
+          lang={lang}
           autoComplete="off"
           aria-label={t("label")}
           className="min-w-0 flex-1 bg-transparent text-foreground uppercase outline-none placeholder:text-muted-foreground/60 placeholder:normal-case"

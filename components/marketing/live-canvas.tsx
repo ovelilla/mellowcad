@@ -346,7 +346,11 @@ function CommandLog({
         </>
       ) : (
         lines.slice(-HISTORY_LINES).map((line, index) => (
-          <div key={`${lines.length}-${index}`} className="cl-line">
+          <div
+            key={`${lines.length}-${index}`}
+            lang={state.commandLine.lang}
+            className="cl-line"
+          >
             {line.kind === "command" ? (
               <>
                 <span className="text-fg-subtle">{labels.commandPrompt} </span>

@@ -183,6 +183,50 @@
   max-width: 64ch;
 }
 
+/* Arabic (brief §8.2), unlayered so it outranks the utilities: tracking
+   breaks the joins of a cursive script, and the script has no capitals and no
+   italics. Its marks reach far above and below the line, so running text
+   opens to 1.8 and headlines to 1.3, past the display's 1.0. What speaks the
+   command language carries its own `lang` and keeps its look. */
+:lang(ar) {
+  letter-spacing: 0;
+  text-transform: none;
+  font-style: normal;
+}
+
+html:lang(ar) body,
+.text-lead:lang(ar) {
+  line-height: 1.8;
+}
+
+.text-display:lang(ar),
+.text-h2:lang(ar),
+.text-h3:lang(ar) {
+  line-height: 1.3;
+}
+
+/* Readex Pro sets larger on its body than Inter at one size: calibrated
+   against the English page, so «اضغط Enter.» holds one line of the hero as
+   "Press Enter." does. */
+.text-display:lang(ar) {
+  font-size: clamp(2.5rem, 1.4rem + 3.6vw, 4.75rem);
+}
+
+.text-h2:lang(ar) {
+  font-size: clamp(1.875rem, 1.3rem + 2vw, 3rem);
+}
+
+/* Geist Mono has no Arabic but does have a space, 0.6em wide: an Arabic
+   label in a mono utility took its letters from Readex Pro and its spaces
+   from the mono. Arabic text takes the sans stack; the values of an LTR
+   island stay mono, unless a label in one reads in its own direction
+   (`dir="auto"`). Attributes, not `:dir()`: Lightning CSS lowers `:dir(rtl)`
+   to a list of `:lang()`, which would match inside the islands too. */
+:is(.label-mono, .data-mono):lang(ar):not([dir="ltr"], [dir="ltr"] *),
+:is(.label-mono, .data-mono) [dir="auto"]:lang(ar) {
+  font-family: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
+}
+
 /* The page is a drawing sheet: a minor grid every 24px and a major one every
    five, like AutoCAD's GRIDMAJOR 5, fading out towards the edges. */
 @utility sheet-grid {
