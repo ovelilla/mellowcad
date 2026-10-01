@@ -37,7 +37,7 @@ export async function StatusSection() {
     {
       title: t("nextTitle"),
       marker: "text-accent",
-      items: [t("next1"), t("next2")],
+      items: [t("next1")],
     },
   ]
 

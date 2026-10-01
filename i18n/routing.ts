@@ -41,7 +41,7 @@ export const DIRECTION: Readonly<Record<AppLocale, "ltr" | "rtl">> = {
 export const LOCALE_STATUS: Readonly<Record<AppLocale, "live" | "draft">> = {
   en: "live",
   es: "live",
-  ar: "draft",
+  ar: "live",
 }
 
 export const LIVE_LOCALES: readonly AppLocale[] = routing.locales.filter(

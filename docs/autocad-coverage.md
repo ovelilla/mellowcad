@@ -311,15 +311,10 @@ dynamic input, the coordinates and every technical value stay left to right.
   `ئ`. Desktop accelerators, AutoCAD's included, do not depend on the layout. Typed text is taken
   as typed: `LINE` typed on the Arabic layout is an unknown command, as in AutoCAD.
 - The interface words are the project's, written in Modern Standard Arabic with the glossary
-  (`docs/i18n-glossary.md`); `ar` stays `draft` until a native speaker reviews them.
-- **To go live** (`ar` is `draft`: reachable, `noindex`, outside the language selector, the
-  `hreflang` set and the sitemap): a native speaker reviews all the Arabic — `messages/ar.json`,
-  `cad/locales/ar.json` and the glossary's Arabic column, the † terms and the compass letters
-  first. Then, in one commit: `LOCALE_STATUS.ar = "live"` (`i18n/routing.ts`), «Arabic interface»
-  out of the Status section's «Next up» in the three languages (`Status.next2` in
-  `messages/{en,es,ar}.json`, and `CONTENT_UPDATED` in `lib/site.ts`), and a look at «العربية»
-  in the selector of `/` and `/es`, set in the system's font (naming Readex Pro there would load
-  it for one word).
+  (`docs/i18n-glossary.md`). `ar` is `live` since 01/10/2026 **without a native speaker's
+  review**, by the author's decision: none was available. Where one should look first, if one
+  ever is: the glossary's † terms and the ViewCube's compass letters, then `messages/ar.json` and
+  `cad/locales/ar.json`.
 - **Missing:** drawing text in a right-to-left script. TEXT and MTEXT draw whatever is typed,
   Arabic included, but with no paragraph direction of their own (always left to right), measured
   as an average glyph (Arial's widths cover latin only), so an Arabic label's box and centring are

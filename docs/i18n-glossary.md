@@ -3,8 +3,8 @@
 The CAD vocabulary of MellowCAD's interface in each language, and where each term comes from. The
 Spanish column is Autodesk's own Spanish localization of AutoCAD 2026, never a translation of ours:
 someone who works in Spanish AutoCAD must find the words they already know. There is no Arabic
-AutoCAD, so the Arabic column is worded by the project and waits for a native speaker's review
-before `ar` goes live (`docs/autocad-coverage.md`, "Arabic interface").
+AutoCAD, so the Arabic column is worded by the project. It went live without a native speaker's
+review, which no one was available for (`docs/autocad-coverage.md`, "Arabic interface").
 
 This file covers the **interface language** — palettes, menus, tooltips, the landing. The **command
 language** (command names, aliases, prompts, keywords) is Spanish AutoCAD's own, in
@@ -24,7 +24,7 @@ The Arabic column marks how each term was chosen, since no Autodesk source exist
 Arabic AutoCAD courses and books use (أوتوكاد tutorials name tools this way: تشذيب، تقويس، شطف،
 تهشير، الطبقة); **(M)** the Modern Standard Arabic technical or mathematical term (قطع ناقص، مماس،
 متساوي القياس، المسقط الأفقي); **(L)** worded from the English for want of any precedent. **†**
-marks a choice between competing terms that the native review settles — for example التقاط
+marks a choice between competing terms that a native review should settle first — for example التقاط
 الكائنات against خطف الكائنات for object snap, or مكعب العرض against keeping ViewCube.
 
 ## Never translated
@@ -127,7 +127,7 @@ rewriting the copy.
 - **Spanish** (Google's suggestions in Spain, Mexico, Argentina, Colombia and Chile, and the titles
   ranking there, 27/09/2026; no volumes, Trends could not be read): «gratis» goes with every query
   («cad online gratis», «cad 2d online gratis»); «CAD online» is said so, not «en línea», which
-  finds file viewers; «sin registro» is how *no sign-up* is said; «comandos de AutoCAD» is common.
+  finds file viewers; «sin registro» is how _no sign-up_ is said; «comandos de AutoCAD» is common.
   Never «AutoCAD online gratis», which would read as if this were AutoCAD. Title: «CAD 2D online
   gratis con comandos de AutoCAD — MellowCAD» (56); description: «CAD 2D gratis en tu navegador con
   los comandos, alias y referencias a objetos de AutoCAD. Sin instalación ni registro; tus dibujos

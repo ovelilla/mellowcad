@@ -80,10 +80,9 @@ function plurals(elements: MessageFormatElement[]): string[][] {
 const english = flatten(catalog(routing.defaultLocale))
 
 // A live language must be complete; so must one whose translation is done,
-// even while it waits in draft — Arabic, until its native review.
+// even while it waits in draft: add it here by name until it goes live.
 const TRANSLATED = routing.locales.filter(
-  (locale) =>
-    LOCALE_STATUS[locale] === "live" || locale === "es" || locale === "ar"
+  (locale) => LOCALE_STATUS[locale] === "live"
 )
 
 describe("the app's message catalogs", () => {
