@@ -44,7 +44,11 @@ by key. `application/EngineText.ts` is the one place that reads it; a tool reach
   case). **A command language is complete or absent**: `locales.test.ts` holds every catalog that
   has one to English's full list of names, keyword tables, prompts, messages and feedback, with no
   name or alias shared by two commands and no two keywords of one prompt on the same abbreviation
-  (the prompts are read off the English surface snapshot).
+  (the prompts are read off the English surface snapshot). A host's language cannot be held to
+  that, so `EngineText` degrades it: a command it does not name keeps its **global name alone**
+  (`commandLanguageNames`) — English's aliases are another `acad.pgp`, whose letters a language
+  gives to other commands — a missing keyword is its global word, any other message English's.
+  `cad/locales/foreignHost.test.ts` plays that host, with `extendLocale` over `es`.
 - **Spanish is Spanish AutoCAD 2026's, copied, never translated** — names from the help pages
   that share the English GUIDs, aliases from its `acad.pgp`, prompts and keyword capitals from
   product captures (they beat the help when the two differ). What no source shows is worded in

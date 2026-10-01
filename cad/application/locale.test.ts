@@ -148,7 +148,8 @@ describe("a language laid over English", () => {
       locale: partial,
       entities: [lineOf(p(0, 0), p(1, 0), { id: "A" })],
     })
-    cad.select("A").command("E")
+    // ERASE is not in its names, so it keeps its global name and no alias.
+    cad.select("A").command("ERASE")
     expect(cad.commandLog().at(-1)).toBe("1 objeto borrado.")
   })
 

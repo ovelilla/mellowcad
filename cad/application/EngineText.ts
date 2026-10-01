@@ -9,6 +9,7 @@ import type { CompiledMessage, MessageValues } from "../i18n/types"
 import { en } from "../locales/en"
 import type {
   CommandCatalog,
+  CommandName,
   EngineLocale,
   InterfaceCatalog,
   PromptId,
@@ -76,8 +77,22 @@ export class EngineText {
     this.commandTag = locale.commands ? locale.tag : en.tag
     this.formatter = new MessageFormatter(locale.tag)
     this.ui = mergeCatalog<InterfaceCatalog>(en.interface, locale.interface)
-    this.commands = mergeCatalog<CommandCatalog>(en.commands, locale.commands)
-    for (const [global, names] of Object.entries(this.commands.names)) {
+    const own: Partial<Record<CommandName, readonly string[]>> =
+      locale.commands?.names ?? {}
+    this.commands = {
+      ...mergeCatalog<CommandCatalog>(en.commands, locale.commands),
+      names: commandLanguageNames(locale),
+    }
+    // A language's own names come last, so one equal to a global name it left
+    // out still runs its own command.
+    const entries = Object.entries(this.commands.names) as [
+      CommandName,
+      readonly string[],
+    ][]
+    for (const [global, names] of [
+      ...entries.filter(([global]) => own[global] === undefined),
+      ...entries.filter(([global]) => own[global] !== undefined),
+    ]) {
       for (const name of names) this.byName.set(name.toUpperCase(), global)
     }
     for (const [global, names] of Object.entries(en.commands.names)) {
@@ -314,6 +329,24 @@ export class EngineText {
         typeof part === "string" ? { text: part, keywords: false } : part
       )
   }
+}
+
+/**
+ * Every command's name and aliases in `locale`'s command language. Without one
+ * it is the global language, English's names and aliases. A language of its
+ * own that leaves a command out names it by its global name alone: English's
+ * aliases belong to English's `acad.pgp`, and in another language the same
+ * letters run other commands (`U` is UNIR in Spanish).
+ */
+function commandLanguageNames(locale: EngineLocale): CommandCatalog["names"] {
+  if (locale.commands === undefined) return en.commands.names
+  const own = locale.commands.names
+  return Object.fromEntries(
+    Object.keys(en.commands.names).map((global) => [
+      global,
+      own?.[global as CommandName] ?? [global],
+    ])
+  ) as CommandCatalog["names"]
 }
 
 /** The text of a composed prompt. */

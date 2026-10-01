@@ -76,6 +76,8 @@ export type {
   EngineLocale,
   InterfaceCatalog,
 } from "./locales/types"
+export { extendLocale } from "./locales/extend"
+export type { LocaleOverrides } from "./locales/extend"
 export type { CadRuntimeOptions } from "./application/CadRuntime"
 export { commandCatalog } from "./application/commandCatalog"
 export type {

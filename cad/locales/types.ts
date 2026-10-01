@@ -58,11 +58,19 @@ export interface EngineCatalog {
 
 /**
  * A language the engine is handed explicitly (`new CadEngine(canvas, { locale
- * })`). Whatever it leaves out comes from English; without `commands` the
- * command language is the global one, as in an English AutoCAD.
+ * })`), never registered: one process can draw in several at once.
+ *
+ * `interface` may leave out any key, and that key is English's. `commands` is
+ * the command language and is complete or absent: without it the command
+ * language is the global one, as in an English AutoCAD; with it, every command
+ * it does not name is reached by its global name alone (`ERASE`, never `E`),
+ * while a missing keyword is its global word and any other missing message is
+ * English's. Every message is compiled (`icu-minify/compile`) — `names` and
+ * `keywords` are words, not messages. The shape follows `en.json`: changing
+ * it is a breaking change of the engine.
  */
 export interface EngineLocale {
-  /** BCP 47, what `Intl` receives. */
+  /** BCP 47, what `Intl` receives (plurals, and digits pinned to latin). */
   readonly tag: string
   readonly interface: DeepPartial<InterfaceCatalog>
   readonly commands?: DeepPartial<CommandCatalog>
