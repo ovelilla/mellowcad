@@ -22,14 +22,7 @@ import {
 } from "lucide-react"
 import { useLocale, useTranslations } from "next-intl"
 
-import {
-  COLOR_BYLAYER,
-  LINETYPE_BYLAYER,
-  LINEWEIGHT_BYLAYER,
-  type CadEngine,
-  type EngineState,
-  type PaletteTab,
-} from "@/cad"
+import { type CadEngine, type EngineState, type PaletteTab } from "@/cad"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
@@ -371,9 +364,9 @@ function LayerControl({
 
 /**
  * The Properties panel: Match Properties, then the object colour, lineweight
- * and linetype. WHY only with a selection: there is no current colour,
- * linetype or lineweight yet (CECOLOR, CELTYPE, CELWEIGHT), so with nothing
- * selected they read ByLayer, which is what new objects get.
+ * and linetype. As the layer drop-down, each shows and changes the selection
+ * when there is one, and otherwise the current setting new objects take
+ * (CECOLOR, CELWEIGHT, CELTYPE).
  */
 function PropertyControls({
   engine,
@@ -399,11 +392,10 @@ function PropertyControls({
       />
       <ColorSelect
         below
-        disabled={!selected}
-        value={selected ? state.selectionColor : COLOR_BYLAYER}
+        value={selected ? state.selectionColor : state.currentColor}
         names={state.names}
         onValueChange={(value) => {
-          engine.setSelectionColor(value)
+          engine.applyColorControl(value)
           done()
         }}
         ariaLabel={t("color")}
@@ -413,11 +405,10 @@ function PropertyControls({
       <LineweightSelect
         below
         includeByLayer
-        disabled={!selected}
-        value={selected ? state.selectionLineweight : LINEWEIGHT_BYLAYER}
+        value={selected ? state.selectionLineweight : state.currentLineweight}
         names={state.names}
         onValueChange={(value) => {
-          engine.setSelectionLineweight(value)
+          engine.applyLineweightControl(value)
           done()
         }}
         ariaLabel={t("lineweight")}
@@ -426,11 +417,10 @@ function PropertyControls({
       <LinetypeSelect
         below
         includeByLayer
-        disabled={!selected}
-        value={selected ? state.selectionLinetype : LINETYPE_BYLAYER}
+        value={selected ? state.selectionLinetype : state.currentLinetype}
         names={state.names}
         onValueChange={(value) => {
-          engine.setSelectionLinetype(value)
+          engine.applyLinetypeControl(value)
           done()
         }}
         ariaLabel={t("linetype")}

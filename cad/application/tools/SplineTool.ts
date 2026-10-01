@@ -30,6 +30,7 @@ import {
 } from "./Tool"
 import { headingInUcs } from "./ucsHeading"
 import { pointAlongCursor, showRise } from "./directDistance"
+import { withCurrentProperties } from "./currentProperties"
 
 /**
  * The points picked so far and what has been said about their ends. The points
@@ -429,7 +430,7 @@ export class SplineTool implements Tool {
     if (!("points" in state) || state.points.length < 2) return
     const spline = this.splineOf(state, ctx)
     this.state = { phase: "first" }
-    ctx.execute(new AddEntityCommand(spline))
+    ctx.execute(new AddEntityCommand(withCurrentProperties(spline, ctx)))
   }
 
   private enterFirst(ctx: ToolContext): void {

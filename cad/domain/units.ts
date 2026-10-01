@@ -1,4 +1,7 @@
 import type { AttributeDisplay } from "./entityTypes"
+import { COLOR_BYLAYER, EntityColor } from "./colors"
+import { LINETYPE_BYLAYER, LinetypeId } from "./linetypes"
+import { LINEWEIGHT_BYLAYER, Lineweight } from "./lineweights"
 import { NamedUcs, Ucs, WORLD_UCS } from "./ucs"
 import { Vec3 } from "../geometry/Vec3"
 
@@ -37,6 +40,12 @@ export interface DocumentSettings {
   readonly thickness: number
   /** NAVVCUBEDISPLAY and the ViewCube's Home view, both saved in the drawing. */
   readonly viewCube: ViewCubeSetting
+  /** CECOLOR: the colour new objects take, a hex value or ByLayer. */
+  readonly currentColor: EntityColor | typeof COLOR_BYLAYER
+  /** CELTYPE: the linetype new objects take, a linetype's name or ByLayer. */
+  readonly currentLinetype: LinetypeId | typeof LINETYPE_BYLAYER
+  /** CELWEIGHT: the lineweight new objects take, in millimetres, or ByLayer. */
+  readonly currentLineweight: Lineweight | typeof LINEWEIGHT_BYLAYER
 }
 
 export interface UcsIconSetting {
@@ -72,6 +81,9 @@ export const DEFAULT_DOCUMENT_SETTINGS: DocumentSettings = {
   elevation: 0,
   thickness: 0,
   viewCube: { visible: true, home: null },
+  currentColor: COLOR_BYLAYER,
+  currentLinetype: LINETYPE_BYLAYER,
+  currentLineweight: LINEWEIGHT_BYLAYER,
 }
 
 export const LENGTH_UNITS: LengthUnit[] = [

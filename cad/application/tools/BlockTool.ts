@@ -19,6 +19,7 @@ import { THEME } from "../../scene/theme"
 import { boxSelect, buildSelectionBoxOverlay } from "./boxSelection"
 import { AttributeValuePrompts } from "./attributeValues"
 import { PointerInput, Tool, ToolContext } from "./Tool"
+import { withCurrentProperties } from "./currentProperties"
 
 /** Screen-pixel movement past which a press-drag becomes a box selection. */
 const DRAG_THRESHOLD_PX = 4
@@ -292,13 +293,16 @@ export class BlockTool implements Tool {
       attributes: readonly BlockAttribute[],
       doneCtx: ToolContext
     ) => {
-      const reference = onPlaneOf(
-        createInsert(block.id, this.basePoint, {
-          rotation: turn,
-          layerId: doneCtx.document.getCurrentLayerId(),
-          attributes,
-        }),
-        this.basePoint
+      const reference = withCurrentProperties(
+        onPlaneOf(
+          createInsert(block.id, this.basePoint, {
+            rotation: turn,
+            layerId: doneCtx.document.getCurrentLayerId(),
+            attributes,
+          }),
+          this.basePoint
+        ),
+        doneCtx
       )
       doneCtx.execute(new CreateBlockCommand(block, ids, reference))
       doneCtx.selection.set([reference.id])

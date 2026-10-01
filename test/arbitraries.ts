@@ -31,6 +31,9 @@ import { DEFAULT_LAYER_ID } from "../cad/domain/layers"
 import { DEFAULT_TEXT_STYLE_ID } from "../cad/domain/textStyles"
 import { DEFAULT_DIM_STYLE_ID } from "../cad/domain/dimStyles"
 import { DEFAULT_DOCUMENT_SETTINGS, LengthUnit } from "../cad/domain/units"
+import { COLOR_BYLAYER } from "../cad/domain/colors"
+import { LINETYPES, LINETYPE_BYLAYER } from "../cad/domain/linetypes"
+import { LINEWEIGHTS, LINEWEIGHT_BYLAYER } from "../cad/domain/lineweights"
 import type { Vec2 } from "../cad/geometry/Vec2"
 import type { DrawingSnapshot } from "../cad/serialization/drawingFile"
 import { snapshotOf } from "./builders"
@@ -506,30 +509,47 @@ export const drawingSnapshot: fc.Arbitrary<DrawingSnapshot> = fc
   .tuple(
     fc.array(entity, { maxLength: 12 }),
     fc.constantFrom(...Object.values(LengthUnit)),
-    fc.integer({ min: 0, max: 8 })
-  )
-  .map(([entities, unit, precision]) =>
-    snapshotOf(
-      entities.map((item, index) => ({ ...item, id: `e${index}` })),
-      {
-        settings: {
-          ...DEFAULT_DOCUMENT_SETTINGS,
-          unit,
-          precision,
-        },
-        // The block every generated reference points at: a reader drops a
-        // reference whose definition the file does not carry.
-        blocks: [
-          createBlockDefinition("BLOCK", { x: 0, y: 0 }, [
-            {
-              id: "b0",
-              type: "line",
-              layerId: DEFAULT_LAYER_ID,
-              start: { x: 0, y: 0 },
-              end: { x: 10, y: 0 },
-            },
-          ]),
-        ],
-      }
+    fc.integer({ min: 0, max: 8 }),
+    fc.constantFrom(COLOR_BYLAYER, "#ff0000", "#1a2b3c"),
+    fc.constantFrom(LINETYPE_BYLAYER, ...LINETYPES.map((l) => l.id)),
+    fc.constantFrom<number | typeof LINEWEIGHT_BYLAYER>(
+      LINEWEIGHT_BYLAYER,
+      ...LINEWEIGHTS
     )
+  )
+  .map(
+    ([
+      entities,
+      unit,
+      precision,
+      currentColor,
+      currentLinetype,
+      currentLineweight,
+    ]) =>
+      snapshotOf(
+        entities.map((item, index) => ({ ...item, id: `e${index}` })),
+        {
+          settings: {
+            ...DEFAULT_DOCUMENT_SETTINGS,
+            unit,
+            precision,
+            currentColor,
+            currentLinetype,
+            currentLineweight,
+          },
+          // The block every generated reference points at: a reader drops a
+          // reference whose definition the file does not carry.
+          blocks: [
+            createBlockDefinition("BLOCK", { x: 0, y: 0 }, [
+              {
+                id: "b0",
+                type: "line",
+                layerId: DEFAULT_LAYER_ID,
+                start: { x: 0, y: 0 },
+                end: { x: 10, y: 0 },
+              },
+            ]),
+          ],
+        }
+      )
   )

@@ -75,7 +75,10 @@ export const en: EngineCatalog = {
       "view": "Preset views",
       "orbit": "3D Orbit",
       "navvcube": "ViewCube",
-      "ltscale": "Linetype scale"
+      "ltscale": "Linetype scale",
+      "color": "Color",
+      "linetype": "Linetype",
+      "lweight": "Lineweight"
     },
     "description": {
       "UNDO": "Undo the last action",
@@ -797,6 +800,27 @@ export const en: EngineCatalog = {
       ],
       "CLEANSCREENOFF": [
         "CLEANSCREENOFF"
+      ],
+      "COLOR": [
+        "COLOR",
+        "COL"
+      ],
+      "-COLOR": [
+        "-COLOR"
+      ],
+      "LINETYPE": [
+        "LINETYPE",
+        "LT"
+      ],
+      "-LINETYPE": [
+        "-LINETYPE"
+      ],
+      "LWEIGHT": [
+        "LWEIGHT",
+        "LW"
+      ],
+      "-LWEIGHT": [
+        "-LWEIGHT"
       ]
     },
     "prompts": {
@@ -911,6 +935,11 @@ export const en: EngineCatalog = {
       "elevDefaultElevation": "Specify new default elevation",
       "elevDefaultThickness": "Specify new default thickness",
       "ltscaleFactor": "Enter new linetype scale factor",
+      "defaultObjectColor": "Enter default object color [Truecolor]",
+      "trueColor": "Red, Green, Blue",
+      "linetypeOption": "Enter an option [?/Set]",
+      "linetypeName": "Specify linetype name or [?]",
+      "defaultLineweight": "Enter default lineweight for new objects or [?]",
       "idPoint": "Specify point",
       "viewPoint": "Specify a view point",
       "viewAngleInPlane": "Enter angle in XY plane from X axis",
@@ -1312,6 +1341,12 @@ export const en: EngineCatalog = {
         ]
       ],
       "regeneratingModel": "Regenerating model.",
+      "currentLineweight": [
+        "Current lineweight: ",
+        [
+          "value"
+        ]
+      ],
       "pointingEdgeOn": "Pointing in edge-on UCS is prohibited."
     },
     "feedback": {

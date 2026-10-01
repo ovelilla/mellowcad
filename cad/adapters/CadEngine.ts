@@ -338,6 +338,35 @@ export class CadEngine {
     this.runtime.setSelectionLineweight(lineweight, scope)
   }
 
+  /** CECOLOR, CELTYPE and CELWEIGHT: what new objects take. */
+  setCurrentColor(color: string): void {
+    this.runtime.setCurrentColor(color)
+  }
+
+  setCurrentLinetype(linetype: string): void {
+    this.runtime.setCurrentLinetype(linetype)
+  }
+
+  setCurrentLineweight(lineweight: number | "ByLayer"): void {
+    this.runtime.setCurrentLineweight(lineweight)
+  }
+
+  /**
+   * The top bar's property drop-downs: the selection when there is one, else
+   * the current property, as {@link applyLayerControl} does with the layer.
+   */
+  applyColorControl(color: string): void {
+    this.runtime.applyColorControl(color)
+  }
+
+  applyLinetypeControl(linetype: string): void {
+    this.runtime.applyLinetypeControl(linetype)
+  }
+
+  applyLineweightControl(lineweight: number | "ByLayer"): void {
+    this.runtime.applyLineweightControl(lineweight)
+  }
+
   /** Narrows the Properties palette to one object type, or to all with null. */
   setPropertiesFilter(type: EntityType | null): void {
     this.runtime.setPropertiesFilter(type)

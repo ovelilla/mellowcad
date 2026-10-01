@@ -42,6 +42,7 @@ import {
   Tool,
   ToolContext,
 } from "./Tool"
+import { withCurrentProperties } from "./currentProperties"
 
 /**
  * AutoCAD's DIMLINEAR and DIMALIGNED, one class parameterised by which of them
@@ -338,7 +339,7 @@ export class DimensionTool implements Tool {
       ),
       linePoint
     )
-    ctx.execute(new AddEntityCommand(dim))
+    ctx.execute(new AddEntityCommand(withCurrentProperties(dim, ctx)))
     ctx.endCommand()
   }
 

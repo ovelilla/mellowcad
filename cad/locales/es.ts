@@ -75,7 +75,10 @@ export const es: EngineLocale = {
       "view": "Vistas predefinidas",
       "orbit": "Órbita 3D",
       "navvcube": "ViewCube",
-      "ltscale": "Escala de tipo de línea"
+      "ltscale": "Escala de tipo de línea",
+      "color": "Color",
+      "linetype": "Tipo de línea",
+      "lweight": "Grosor de línea"
     },
     "description": {
       "UNDO": "Deshacer la última acción",
@@ -118,7 +121,7 @@ export const es: EngineLocale = {
       "red": "Rojo",
       "yellow": "Amarillo",
       "green": "Verde",
-      "cyan": "Cian",
+      "cyan": "Cián",
       "blue": "Azul",
       "magenta": "Magenta",
       "white": "Blanco"
@@ -777,6 +780,24 @@ export const es: EngineLocale = {
       ],
       "CLEANSCREENOFF": [
         "LIMPIAPANTDES"
+      ],
+      "COLOR": [
+        "COLOR"
+      ],
+      "-COLOR": [
+        "-COLOR"
+      ],
+      "LINETYPE": [
+        "TIPOLIN"
+      ],
+      "-LINETYPE": [
+        "-TIPOLIN"
+      ],
+      "LWEIGHT": [
+        "GROSORLIN"
+      ],
+      "-LWEIGHT": [
+        "-GROSORLIN"
       ]
     },
     "keywords": {
@@ -1047,6 +1068,24 @@ export const es: EngineLocale = {
       "NAVVCUBE": {
         "ON": "ACT",
         "OFF": "DES"
+      },
+      "COLOR": {
+        "Truecolor": "COlorverdadero",
+        "BYLAYER": "PORCAPA",
+        "RED": "ROJO",
+        "YELLOW": "AMARILLO",
+        "GREEN": "VERDE",
+        "CYAN": "CIÁN",
+        "BLUE": "AZUL",
+        "MAGENTA": "MAGENTA",
+        "WHITE": "BLANCO"
+      },
+      "LINETYPE": {
+        "Set": "Defina",
+        "BYLAYER": "PORCAPA"
+      },
+      "LWEIGHT": {
+        "BYLAYER": "PORCAPA"
       }
     },
     "prompts": {
@@ -1161,6 +1200,11 @@ export const es: EngineLocale = {
       "elevDefaultElevation": "Precise nueva elevación por defecto",
       "elevDefaultThickness": "Precise nueva altura de objeto por defecto",
       "ltscaleFactor": "Indique nuevo factor de escala de tipo de línea",
+      "defaultObjectColor": "Indique color de objeto por defecto [COlorverdadero]",
+      "trueColor": "Rojo, Verde, Azul",
+      "linetypeOption": "Indique una opción [?/Defina]",
+      "linetypeName": "Precise nombre de tipo de línea o [?]",
+      "defaultLineweight": "Indique grosor de línea por defecto para objetos nuevos o [?]",
       "idPoint": "Precise punto",
       "viewPoint": "Precise un punto de vista",
       "viewAngleInPlane": "Ángulo a partir del eje X en el plano XY",
@@ -1562,6 +1606,12 @@ export const es: EngineLocale = {
         ]
       ],
       "regeneratingModel": "Regenerando modelo.",
+      "currentLineweight": [
+        "Grosor de línea actual: ",
+        [
+          "value"
+        ]
+      ],
       "pointingEdgeOn": "No se puede señalar en un SCP visto de canto."
     },
     "feedback": {

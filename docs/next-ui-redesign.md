@@ -1,6 +1,11 @@
 # Rediseño del editor — brief
 
-> **Estado:** fases 0 a 5b hechas; sigue la 5c (CECOLOR, CELTYPE y CELWEIGHT) y después la 6. En la
+> **Estado:** fases 0 a 5c hechas; sigue la 6. En la 5c, el color, el tipo de línea y el grosor
+> actuales (CECOLOR, CELTYPE, CELWEIGHT) viven en el dibujo (formato 25; un archivo antiguo abre
+> PorCapa) y se deshacen con H, como toda variable de sistema; los desplegables de la barra superior
+> y General de Propiedades los muestran y fijan sin selección. Todo objeto dibujado de cero los
+> toma; los hechos de otro conservan los del origen, y el arco de EMPALME y la línea de CHAFLAN son
+> PorCapa. -COLOR, -TIPOLIN (Defina) y -GROSORLIN, que también ejecutan COLOR, TIPOLIN y GROSORLIN. En la
 > 5b, todo lo que se pulsa mide 28 px (los botones de icono, cuadrados de 28 × 28 con icono de 16), y
 > las tres barras, 36: la superior, la línea de comandos y la de estado. Se
 > eligió 28 frente a 32 por densidad: a 32 la paleta ya no cabe a 720 px, la ganancia de Fitts es de
@@ -287,6 +292,23 @@ Verificado en la ayuda de AutoCAD 2026:
 - **Atajos en Chrome.** Ctrl+9, Ctrl+0 y Ctrl+1 llegan antes a la página y solo cambian de pestaña o
   restablecen el zoom si no se anulan (pulsaciones reales con SendKeys, Chrome en Windows,
   01/10/2026).
+- **Propiedades actuales (fase 5c).** CECOLOR y CELTYPE son cadenas, CELWEIGHT un entero (−1
+  PorCapa, −2 PorBloque, −3 Por defecto, o centésimas de mm de la lista de 24); las tres se guardan
+  en el dibujo y empiezan en BYLAYER / −1. «All objects are created using the current color»; lo
+  mismo para tipo y grosor. UNDO «displays the command or system variable name» que deshace, así que
+  cambiarlas es un paso de deshacer. Sin selección, la paleta Propiedades deja «view and change the
+  current properties to be used for all new objects». EMPALME y CHAFLAN crean el arco o la línea
+  en la capa común o en la actual, y «The layer affects object properties including color and
+  linetype». DIMCONTINUEMODE vale 1 (registro): «Use the dimension style and layer of the dimension
+  that is being continued». INSERT inserta «always … on the current layer». HPLAYER, HPCOLOR,
+  DIMLAYER y TEXTLAYER existen y empiezan en «use current». COLOR, TIPOLIN y GROSORLIN abren
+  diálogos; sus formas con guion no dan la solicitud literal en ninguna página (tampoco -COLOR de
+  2016 a 2025), solo las opciones: -COLOR, Color verdadero y Libros de colores; -TIPOLIN, ?, Crear,
+  Cargar y Defina (un nombre que no encuentra «displays a message and returns you to the Command
+  prompt»); -GROSORLIN, «the default is set to the nearest valid value» y ?. Las letras T y CO
+  salen de XPLODE («Enter t for a true color», «Escriba co»). Los alias COL, LT y LW, del Shortcut
+  Guide de Autodesk; COLOUR, LTYPE y LINEWEIGHT no se han podido verificar. La ayuda escribe «Cián»,
+  no «Cian».
 
 **Comprobar antes de usarlo:**
 
@@ -348,6 +370,20 @@ Fuentes (todas en `help.autodesk.com/cloudhelp/2026/ENU/`):
   (Repetir colocación), `AutoCAD-DidYouKnow/files/GUID-94C065AB-FF9E-4752-B778-23D2FBB87E18.htm`
   (filtro de tipo, Ctrl+1), `AutoCAD-GettingStarted/files/GUID-0621F211-3587-4932-BB3D-4D92ECB58042.htm`
   (PR), la guía de atajos de Autodesk (CH, MO) y las páginas ESP con los mismos GUID
+- Fase 5c: `GUID-703858E3-9038-406A-B499-90A0C05BECBF.htm` (CECOLOR), `GUID-28460EAB-7005-4E82-A97C-47A728F420E5.htm`
+  (CELTYPE), `GUID-E1B15CA7-C45D-4845-B1A6-2520F6F911F3.htm` (CELWEIGHT), `GUID-F12EF623-7CD3-4864-8130-A3BF718D730D.htm`
+  y `GUID-94630133-72B7-4EC7-859C-5798F1ADBB8C.htm` (COLOR, -COLOR), `GUID-1D3817A0-C5C7-4D52-99A9-F0922F09D4CD.htm` y
+  `GUID-A6089331-227F-44F1-BA0C-06BC1568C3BB.htm` (LINETYPE, -LINETYPE), `GUID-DFDA9EE3-D303-44AE-973F-1AA57A9BB06E.htm`
+  y `GUID-B67E6B06-D2FE-49FB-8289-96DBD74F8A0C.htm` (LWEIGHT, -LWEIGHT), `GUID-2729A466-B199-4840-B92B-4D8A38A8ADB8.htm`
+  (UNDO), `GUID-81585857-F1B1-44F4-B7D0-B707386CA721.htm` (herramientas de propiedades),
+  `GUID-14BC039D-238D-4D9E-921B-F4015F96CB54.htm`, `GUID-20B4D4B3-1220-426A-847B-5BBE36EC6FDF.htm` y
+  `GUID-4B33ACD3-F6DD-4CB5-8C55-D6D0D7130905.htm` (los objetos nuevos), `GUID-64F8B700-23B3-4BD6-8C03-66121AA13E8F.htm`
+  y `GUID-B1DCF991-90A7-4DB0-96FC-BDA3FB76337C.htm` (FILLET, CHAMFER), `GUID-2424CA1C-B005-449B-A61A-C4F2D38C4E66.htm`
+  (DIMCONTINUEMODE), `GUID-BC0FD3C1-3BFC-4C5D-AB9A-BF480D5084BE.htm` (insertar), `GUID-8B64F625-7DD2-4264-8E59-3936F0992070.htm`,
+  `GUID-C5ACE97D-E19F-4F81-B3DA-0F86A688C414.htm`, `GUID-88E56602-EADC-4C68-93B4-93E7623BEB6B.htm` y
+  `GUID-0D66E6E5-AF29-470C-B530-60FC3312DD06.htm` (HPLAYER, HPCOLOR, DIMLAYER, TEXTLAYER),
+  `GUID-FC4139AB-D527-4743-8E68-F83DA6E5D192.htm` (XPLODE), el Shortcut Guide de Autodesk (COL, LT, LW) y las
+  páginas ESP con los mismos GUID
 
 ## 6. Fases
 
@@ -499,14 +535,20 @@ los del motor en `cad/locales/`, con `npm run locales`). Las clases son lógicas
   (conmutadores, estado del guardado, Unidades) tienen ancho entero. Fuera del sistema: el
   ViewCube (24, a su escala) y la etiqueta `[Superior]`.
 
-- **5c. Propiedades actuales.** CECOLOR, CELTYPE y CELWEIGHT, la pieza más cara, en su propia fase
-  entre la 5b y la 6:
-  - en el documento y en el formato de archivo, con su versión;
-  - en cada herramienta que crea entidades;
-  - en los desplegables de color, grosor y tipo de línea de la barra superior y en General de
-    Propiedades, cuando no hay selección.
-  - Hasta entonces sigue la regla de `ui.instructions.md`: sin selección, esos desplegables
-    muestran PorCapa desactivado.
+- **5c. Propiedades actuales.** Hecha. CECOLOR, CELTYPE y CELWEIGHT:
+  - en `DocumentSettings` (`currentColor`, `currentLinetype`, `currentLineweight`, PorCapa al
+    empezar) y en el archivo, versión 25, escritas solo cuando no son PorCapa;
+  - en cada herramienta que crea de cero (`withCurrentProperties`), con su fila en
+    `currentProperties.test.ts`; DIMBASELINE y DIMCONTINUE pasan además a la capa de la cota base
+    (DIMCONTINUEMODE 1), que antes no tomaban;
+  - en los desplegables de la barra superior (`applyColorControl`…) y en General de Propiedades,
+    activos sin selección;
+  - y en tres comandos de línea de comandos cuyas solicitudes la ayuda no da (sin verificar):
+    -COLOR (índice 1–7 por número o nombre, porcapa, Colorverdadero), -TIPOLIN (? y Defina) y
+    -GROSORLIN (el valor válido más cercano, ?). Alias del Shortcut Guide: COL, LT y LW.
+  - Queda fuera: PorBloque y Por defecto (no se modelan), los colores de índice 8–255, Libros de
+    colores, los diálogos (Seleccionar color, Administrador de tipos de línea, Parámetros de grosor
+    de línea) y HPLAYER, HPCOLOR, DIMLAYER y TEXTLAYER (todas «usar actual» al empezar).
 
 6. **Botón derecho y menú contextual.**
    - Intro o menú según el estado, verificado antes en la ayuda de AutoCAD.
@@ -576,6 +618,17 @@ Objetivos al terminar:
     cuatro notas del ViewCube en `/ar/draw`.
   - Transición, ViewCube, menú de la aplicación y `phase5.mjs` sin fallos.
   - Tipografía: 10 029 textos en 40 estados, 0 en los cinco objetivos.
+- Fase 5c, medido al cerrarla (Chrome, `/draw`, `/es/draw` y `/ar/draw`):
+  - Sin selección, los tres desplegables de la barra superior están activos y leen PorCapa; elegir
+    Rojo, Hidden y 0.50 mm los fija, General los muestra, la tecla siguiente escribe un comando, una
+    línea dibujada después los lleva, el autoguardado escribe la versión 25 con CECOLOR y cuatro
+    Ctrl+Z deshacen la línea y los tres ajustes. El desplegable de grosor mostraba el valor en bruto
+    (`0.5`) en vez de `0.50 mm`, con y sin selección: corregido.
+  - Tipografía: 11 343 textos en 45 estados (los cinco nuevos: las tres listas abiertas sin
+    selección, General con las actuales y su lista de color), 0 en los cinco objetivos.
+  - `phase4.mjs` sin fallos en 7 tamaños × 3 idiomas, salvo las cuatro notas del ViewCube en
+    `/ar/draw`; `phase5.mjs`, transición, ViewCube y menú de la aplicación sin fallos. Tamaños y
+    píxeles enteros, como en la 5b: la barra superior no cambia de ancho.
 
 La medición es de Playwright, porque el arnés no ve el DOM. Sigue `local-verification-setup`:
 playwright-core en el scratchpad y Chrome del sistema. Por cada tamaño y en `/draw`, `/es/draw` y

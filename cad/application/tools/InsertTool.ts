@@ -23,6 +23,7 @@ import {
   Tool,
   ToolContext,
 } from "./Tool"
+import { withCurrentProperties } from "./currentProperties"
 
 /** Reused so preview frames don't burn entity ids. */
 const PREVIEW_ID: EntityId = "__insert_preview__"
@@ -163,7 +164,12 @@ export class InsertTool implements Tool {
     if (!block) return
     const prompts = new AttributeValuePrompts(block, (attributes, doneCtx) => {
       doneCtx.execute(
-        new AddEntityCommand(this.pending(at, doneCtx, undefined, attributes))
+        new AddEntityCommand(
+          withCurrentProperties(
+            this.pending(at, doneCtx, undefined, attributes),
+            doneCtx
+          )
+        )
       )
       doneCtx.endCommand()
     })

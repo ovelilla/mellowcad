@@ -193,11 +193,66 @@ describe("round trip", () => {
           up: { x: 0, y: 0, z: 1 },
         },
       },
+      currentColor: "#00ff00",
+      currentLinetype: "Center",
+      currentLineweight: 0.5,
     }
     const parsed = parseDrawingFile(
       serializeDrawing(snapshotOf([], { settings }))
     )
     expect(parsed.settings).toEqual(settings)
+  })
+
+  it("writes a ByLayer CECOLOR, CELTYPE and CELWEIGHT as before 25", () => {
+    const text = serializeDrawing(snapshotOf([]))
+    expect(text).not.toMatch(/"current(Color|Linetype|Lineweight)"/)
+    expect(parseDrawingFile(text).settings).toMatchObject({
+      currentColor: "ByLayer",
+      currentLinetype: "ByLayer",
+      currentLineweight: "ByLayer",
+    })
+  })
+
+  it("opens a drawing from before 25 with everything new ByLayer", () => {
+    const parsed = parseDrawingFile(
+      JSON.stringify({
+        type: DRAWING_FILE_TYPE,
+        version: 24,
+        settings: { unit: "mm" },
+        entities: [],
+      })
+    )
+    expect(parsed.settings).toMatchObject({
+      currentColor: "ByLayer",
+      currentLinetype: "ByLayer",
+      currentLineweight: "ByLayer",
+    })
+  })
+
+  it("reads a malformed current colour, linetype or lineweight tolerantly", () => {
+    const read = (settings: object) =>
+      parseDrawingFile(
+        JSON.stringify({
+          type: DRAWING_FILE_TYPE,
+          version: DRAWING_FILE_VERSION,
+          settings,
+          entities: [],
+        })
+      ).settings
+    expect(
+      read({ currentColor: "#F00", currentLinetype: "", currentLineweight: 9 })
+    ).toMatchObject({
+      currentColor: "#ff0000",
+      currentLinetype: "ByLayer",
+      currentLineweight: 2.11,
+    })
+    expect(
+      read({ currentColor: "red", currentLinetype: 3, currentLineweight: "x" })
+    ).toMatchObject({
+      currentColor: "ByLayer",
+      currentLinetype: "ByLayer",
+      currentLineweight: "ByLayer",
+    })
   })
 
   it("writes no zero ELEVATION or THICKNESS", () => {
@@ -1204,7 +1259,12 @@ describe("tolerates damaged content in the later types and tables", () => {
   it("skips malformed and repeated style entries, keeping the base ones", () => {
     const parsed = parseDrawingFile(
       file({
-        textStyles: ["bad", { id: "" }, { id: "T" }, { id: "T", name: "Again" }],
+        textStyles: [
+          "bad",
+          { id: "" },
+          { id: "T" },
+          { id: "T", name: "Again" },
+        ],
         dimStyles: ["bad", { id: "" }, { id: "D" }, { id: "D", name: "Again" }],
         layers: ["bad", { id: "" }],
         entities: [
@@ -1214,7 +1274,10 @@ describe("tolerates damaged content in the later types and tables", () => {
               "bad",
               { vertices: [{ x: 0, y: 0 }] },
               {
-                vertices: [{ x: 0, y: 0 }, { x: 10, y: 0 }],
+                vertices: [
+                  { x: 0, y: 0 },
+                  { x: 10, y: 0 },
+                ],
                 bulges: [1, "x"],
               },
             ],
@@ -1223,7 +1286,9 @@ describe("tolerates damaged content in the later types and tables", () => {
       })
     )
     expect(parsed.textStyles.map((style) => style.name)).toContain("T")
-    expect(parsed.textStyles.filter((style) => style.id === "T")).toHaveLength(1)
+    expect(parsed.textStyles.filter((style) => style.id === "T")).toHaveLength(
+      1
+    )
     expect(parsed.dimStyles.filter((style) => style.id === "D")).toEqual([
       expect.objectContaining({ name: "D" }),
     ])

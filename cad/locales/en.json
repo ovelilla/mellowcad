@@ -71,7 +71,10 @@
       "view": "Preset views",
       "orbit": "3D Orbit",
       "navvcube": "ViewCube",
-      "ltscale": "Linetype scale"
+      "ltscale": "Linetype scale",
+      "color": "Color",
+      "linetype": "Linetype",
+      "lweight": "Lineweight"
     },
     "description": {
       "UNDO": "Undo the last action",
@@ -388,7 +391,13 @@
       "UNITS": ["UNITS", "UN"],
       "LTSCALE": ["LTSCALE", "LTS"],
       "CLEANSCREENON": ["CLEANSCREENON"],
-      "CLEANSCREENOFF": ["CLEANSCREENOFF"]
+      "CLEANSCREENOFF": ["CLEANSCREENOFF"],
+      "COLOR": ["COLOR", "COL"],
+      "-COLOR": ["-COLOR"],
+      "LINETYPE": ["LINETYPE", "LT"],
+      "-LINETYPE": ["-LINETYPE"],
+      "LWEIGHT": ["LWEIGHT", "LW"],
+      "-LWEIGHT": ["-LWEIGHT"]
     },
     "keywords": {
       "LINE": { "Close": "Close", "Undo": "Undo" },
@@ -603,7 +612,20 @@
         "NEiso": "NEiso",
         "NWiso": "NWiso"
       },
-      "NAVVCUBE": { "ON": "ON", "OFF": "OFF" }
+      "NAVVCUBE": { "ON": "ON", "OFF": "OFF" },
+      "COLOR": {
+        "Truecolor": "Truecolor",
+        "BYLAYER": "BYLAYER",
+        "RED": "RED",
+        "YELLOW": "YELLOW",
+        "GREEN": "GREEN",
+        "CYAN": "CYAN",
+        "BLUE": "BLUE",
+        "MAGENTA": "MAGENTA",
+        "WHITE": "WHITE"
+      },
+      "LINETYPE": { "Set": "Set", "BYLAYER": "BYLAYER" },
+      "LWEIGHT": { "BYLAYER": "BYLAYER" }
     },
     "prompts": {
       "length": "Length",
@@ -717,6 +739,11 @@
       "elevDefaultElevation": "Specify new default elevation",
       "elevDefaultThickness": "Specify new default thickness",
       "ltscaleFactor": "Enter new linetype scale factor",
+      "defaultObjectColor": "Enter default object color [Truecolor]",
+      "trueColor": "Red, Green, Blue",
+      "linetypeOption": "Enter an option [?/Set]",
+      "linetypeName": "Specify linetype name or [?]",
+      "defaultLineweight": "Enter default lineweight for new objects or [?]",
       "idPoint": "Specify point",
       "viewPoint": "Specify a view point",
       "viewAngleInPlane": "Enter angle in XY plane from X axis",
@@ -773,6 +800,7 @@
       "nothingJoined": "0 objects joined, {count, plural, one {# object} other {# objects}} discarded from the operation",
       "currentViewDirection": "Current view direction: VIEWDIR={x},{y},{z}",
       "regeneratingModel": "Regenerating model.",
+      "currentLineweight": "Current lineweight: {value}",
       "pointingEdgeOn": "Pointing in edge-on UCS is prohibited."
     },
     "feedback": {

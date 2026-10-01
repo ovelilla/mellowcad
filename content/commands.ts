@@ -94,6 +94,12 @@ export const COMMAND_FILING: Readonly<Record<string, Filing>> = {
   PROPERTIESCLOSE: { group: "organize" },
   PURGE: { group: "organize" },
   LTSCALE: { group: "organize" },
+  COLOR: { group: "organize" },
+  "-COLOR": { group: "organize" },
+  LINETYPE: { group: "organize" },
+  "-LINETYPE": { group: "organize" },
+  LWEIGHT: { group: "organize" },
+  "-LWEIGHT": { group: "organize" },
 
   DIST: { group: "inquiry" },
   AREA: { group: "inquiry" },

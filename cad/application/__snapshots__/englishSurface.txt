@@ -68,10 +68,16 @@ VIEW ["V"] "Preset views"
 3DORBIT ["3DO","ORBIT"] "3D Orbit"
 NAVVCUBE ["CUBE"] "ViewCube"
 LTSCALE ["LTS"] "Linetype scale"
+COLOR ["COL"] "Color"
+LINETYPE ["LT"] "Linetype"
+LWEIGHT ["LW"] "Lineweight"
 UNDO ["U"] "Undo the last action"
 -MTEXT [] "Multiline text"
 REDO [] "Redo the last undone action"
 -ATTDEF [] "Define attributes"
+-COLOR [] "Color"
+-LINETYPE [] "Linetype"
+-LWEIGHT [] "Lineweight"
 -VPOINT ["-VP"] "Viewpoint"
 -VIEW ["-V"] "Preset views"
 EATTEDIT [] "Edit attributes"
@@ -166,6 +172,9 @@ view "Preset views" V
 orbit "3D Orbit" 3DO
 navvcube "ViewCube" CUBE
 ltscale "Linetype scale" LTS
+color "Color" COL
+linetype "Linetype" LT
+lweight "Lineweight" LW
 
 ## neutral prompt
 > start
@@ -2889,6 +2898,125 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
   info| Regenerating model.
 > LTS enter
   command| LTSCALE
+
+## -COLOR
+> start
+  prompt: Command:
+  asks: -
+  dyn: -
+  options: -
+  canvas: -
+  properties: -
+  cycling: -
+> -COLOR
+  prompt: COLOR [Truecolor]:
+  asks: "Enter default object color [Truecolor]"
+  dyn: "Enter default object color [Truecolor]"=""|BYLAYER|*
+  options: [T] Truecolor
+  command| -COLOR
+> pink
+> red
+  prompt: Command:
+  asks: -
+  dyn: -
+  options: -
+> COLOR
+  prompt: COLOR [Truecolor]:
+  asks: "Enter default object color [Truecolor]"
+  dyn: "Enter default object color [Truecolor]"=""|RED|*
+  options: [T] Truecolor
+  command| COLOR
+> T
+  prompt: COLOR:
+  asks: "Red, Green, Blue"
+  dyn: "Red, Green, Blue"=""||*
+  options: -
+> rgb
+  prompt: Command:
+  asks: -
+  dyn: -
+
+## -LINETYPE
+> start
+  prompt: Command:
+  asks: -
+  dyn: -
+  options: -
+  canvas: -
+  properties: -
+  cycling: -
+> -LINETYPE
+  prompt: LINETYPE [Set]:
+  asks: "Enter an option [?/Set]"
+  dyn: "Enter an option [?/Set]"=""||*
+  options: [S] Set
+  command| -LINETYPE
+> ?
+  info| Continuous
+        Dashed
+        Hidden
+        Center
+        Phantom
+        DashDot
+> S
+  prompt: LINETYPE:
+  asks: "Specify linetype name or [?]"
+  dyn: "Specify linetype name or [?]"=""|BYLAYER|*
+  options: -
+> ?
+  info| Continuous
+        Dashed
+        Hidden
+        Center
+        Phantom
+        DashDot
+> name
+  prompt: LINETYPE [Set]:
+  asks: "Enter an option [?/Set]"
+  dyn: "Enter an option [?/Set]"=""||*
+  options: [S] Set
+> enter
+  prompt: Command:
+  asks: -
+  dyn: -
+  options: -
+> unknown
+  command| LINETYPE
+
+## -LWEIGHT
+> start
+  prompt: Command:
+  asks: -
+  dyn: -
+  options: -
+  canvas: -
+  properties: -
+  cycling: -
+> -LWEIGHT
+  prompt: LWEIGHT:
+  asks: "Enter default lineweight for new objects or [?]"
+  dyn: "Enter default lineweight for new objects or [?]"=""|BYLAYER|*
+  command| -LWEIGHT
+  info| Current lineweight: BYLAYER
+> ?
+  info| 0.00 mm   0.05 mm   0.09 mm   0.13 mm   0.15 mm   0.18 mm
+        0.20 mm   0.25 mm   0.30 mm   0.35 mm   0.40 mm   0.50 mm
+        0.53 mm   0.60 mm   0.70 mm   0.80 mm   0.90 mm   1.00 mm
+        1.06 mm   1.20 mm   1.40 mm   1.58 mm   2.00 mm   2.11 mm
+> value
+  prompt: Command:
+  asks: -
+  dyn: -
+> LW
+  prompt: LWEIGHT:
+  asks: "Enter default lineweight for new objects or [?]"
+  dyn: "Enter default lineweight for new objects or [?]"=""|0.35 mm|*
+  command| LWEIGHT
+  info| Current lineweight: 0.35 mm
+> enter
+  prompt: Command:
+  asks: -
+  dyn: -
 
 ## ID
 > start

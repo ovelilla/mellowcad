@@ -34,6 +34,7 @@ import {
   Tool,
   ToolContext,
 } from "./Tool"
+import { withCurrentProperties } from "./currentProperties"
 
 /** Which measurement a radial dimension reports. */
 export type RadialDimensionKind = "radius" | "diameter"
@@ -215,7 +216,11 @@ export class RadialDimensionTool implements Tool {
 
   private place(at: Vec3, ctx: ToolContext): void {
     if (this.state.phase !== "location") return
-    ctx.execute(new AddEntityCommand(this.pending(this.state.target, at, ctx)))
+    ctx.execute(
+      new AddEntityCommand(
+        withCurrentProperties(this.pending(this.state.target, at, ctx), ctx)
+      )
+    )
     ctx.endCommand()
   }
 

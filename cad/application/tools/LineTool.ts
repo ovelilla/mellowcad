@@ -14,7 +14,10 @@ import { THEME } from "../../scene/theme"
 import { KeyInput, PointerInput, Tool, ToolContext } from "./Tool"
 import { CommandOption, CommandOptionOutcome } from "./Tool"
 import { lastDrawnPoint } from "./lastDrawnPoint"
-import { withCurrentThickness } from "./currentThickness"
+import {
+  withCurrentProperties,
+  withCurrentThickness,
+} from "./currentProperties"
 import { directionFromUcsHeading, headingInUcs } from "./ucsHeading"
 import { pointAlongCursor, showRise } from "./directDistance"
 
@@ -611,8 +614,11 @@ function samePoint(a: Vec3, b: Vec3): boolean {
 }
 
 function newLine(start: Vec3, end: Vec3, ctx: ToolContext): LineEntity {
-  return withCurrentThickness(
-    createLine(start, end, ctx.document.getCurrentLayerId()),
+  return withCurrentProperties(
+    withCurrentThickness(
+      createLine(start, end, ctx.document.getCurrentLayerId()),
+      ctx
+    ),
     ctx
   )
 }

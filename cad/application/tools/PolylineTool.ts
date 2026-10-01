@@ -16,7 +16,10 @@ import { arcScenePrimitive, entityScenePrimitive } from "../SceneBuilder"
 import { PointerInput, Tool, ToolContext } from "./Tool"
 import { CommandOption, CommandOptionOutcome } from "./Tool"
 import { lastDrawnPoint } from "./lastDrawnPoint"
-import { withCurrentThickness } from "./currentThickness"
+import {
+  withCurrentProperties,
+  withCurrentThickness,
+} from "./currentProperties"
 import { headingInUcs } from "./ucsHeading"
 import { pointAlongCursor, showRise } from "./directDistance"
 
@@ -321,15 +324,18 @@ export class PolylineTool implements Tool {
     if (vertices.length < 2) return
     ctx.execute(
       new AddEntityCommand(
-        withCurrentThickness(
-          onPlaneOf(
-            createPolyline(
-              vertices,
-              closed,
-              ctx.document.getCurrentLayerId(),
-              bulges
+        withCurrentProperties(
+          withCurrentThickness(
+            onPlaneOf(
+              createPolyline(
+                vertices,
+                closed,
+                ctx.document.getCurrentLayerId(),
+                bulges
+              ),
+              vertices[0]
             ),
-            vertices[0]
+            ctx
           ),
           ctx
         )

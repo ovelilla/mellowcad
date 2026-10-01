@@ -19,8 +19,12 @@ import {
 } from "../domain/entities"
 import { COLOR_BYLAYER, EntityColor, normalizeColor } from "../domain/colors"
 import { LayerId } from "../domain/layers"
-import { LINETYPE_BYLAYER, LinetypeId } from "../domain/linetypes"
-import { LINEWEIGHT_BYLAYER, Lineweight } from "../domain/lineweights"
+import { LINETYPE_BYLAYER, LINETYPES, LinetypeId } from "../domain/linetypes"
+import {
+  LINEWEIGHT_BYLAYER,
+  LINEWEIGHTS,
+  Lineweight,
+} from "../domain/lineweights"
 import { DocumentSettings, parseNumber } from "../domain/units"
 import {
   Ucs,
@@ -43,6 +47,7 @@ import {
   UpdateEntitiesCommand,
   UpdateEntityCommand,
 } from "./commands/entityCommands"
+import { UpdateSettingsCommand } from "./commands/settingsCommands"
 
 /**
  * Applies `assign` to every selected entity it changes, as one undo step: a
@@ -128,6 +133,56 @@ export function setSelectionLineweight(
   updateSelection(document, ids, history, (entity) =>
     entity.lineweight === next ? null : assignEntityLineweight(entity, next)
   )
+}
+
+/** The current properties: CECOLOR, CELTYPE and CELWEIGHT. */
+export type CurrentProperties = Pick<
+  DocumentSettings,
+  "currentColor" | "currentLinetype" | "currentLineweight"
+>
+
+/**
+ * Sets what new objects take (CECOLOR, CELTYPE, CELWEIGHT), as the Properties
+ * panel's drop-downs do with nothing selected. A value AutoCAD would not take
+ * — a malformed colour, a linetype or lineweight that is not one of the
+ * standard ones — changes nothing, and so does the value already current.
+ */
+export function setCurrentProperties(
+  document: CadDocument,
+  history: CommandHistory,
+  patch: Partial<CurrentProperties>
+): void {
+  const settings = document.getSettings()
+  const changed: Partial<Record<keyof CurrentProperties, unknown>> = {}
+  if (patch.currentColor !== undefined) {
+    const color =
+      patch.currentColor === COLOR_BYLAYER
+        ? COLOR_BYLAYER
+        : normalizeColor(patch.currentColor)
+    if (color && color !== settings.currentColor) changed.currentColor = color
+  }
+  const linetype = patch.currentLinetype
+  if (
+    linetype !== undefined &&
+    linetype !== settings.currentLinetype &&
+    (linetype === LINETYPE_BYLAYER ||
+      LINETYPES.some((entry) => entry.id === linetype))
+  ) {
+    changed.currentLinetype = linetype
+  }
+  const lineweight = patch.currentLineweight
+  if (
+    lineweight !== undefined &&
+    lineweight !== settings.currentLineweight &&
+    (lineweight === LINEWEIGHT_BYLAYER || LINEWEIGHTS.includes(lineweight))
+  ) {
+    changed.currentLineweight = lineweight
+  }
+  if (Object.keys(changed).length > 0) {
+    history.execute(
+      new UpdateSettingsCommand(changed as Partial<CurrentProperties>)
+    )
+  }
 }
 
 /**

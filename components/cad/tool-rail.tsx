@@ -297,6 +297,10 @@ const RAIL_EXCLUDED = new Set([
   "view",
   "navvcube",
   "ltscale",
+  // CECOLOR, CELTYPE and CELWEIGHT are the top bar's property drop-downs.
+  "color",
+  "linetype",
+  "lweight",
 ])
 
 interface ToolMeta {

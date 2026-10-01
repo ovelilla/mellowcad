@@ -277,6 +277,9 @@ export { VIEW_MENU, type ViewPreset } from "./application/tools/viewPresets"
 export { OrbitTool } from "./application/tools/OrbitTool"
 export { NavVCubeTool } from "./application/tools/NavVCubeTool"
 export { LtScaleTool } from "./application/tools/LtScaleTool"
+export { ColorTool } from "./application/tools/ColorTool"
+export { LinetypeTool } from "./application/tools/LinetypeTool"
+export { LweightTool } from "./application/tools/LweightTool"
 export {
   VIEW_CUBE_PARTS,
   type CompassLetter,

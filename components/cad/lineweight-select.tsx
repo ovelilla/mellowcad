@@ -53,8 +53,17 @@ export function LineweightSelect({
   const t = useTranslations("Editor.Properties")
   return (
     <Select
-      // The closed trigger names ByLayer in the page's language, not by its id.
-      items={{ [LINEWEIGHT_BYLAYER]: names.byLayer }}
+      // The closed trigger shows what the list does — ByLayer in the page's
+      // language, `0.50 mm` — not the raw value.
+      items={{
+        [LINEWEIGHT_BYLAYER]: names.byLayer,
+        ...Object.fromEntries(
+          LINEWEIGHTS.map((lineweight) => [
+            String(lineweight),
+            lineweightLabel(lineweight),
+          ])
+        ),
+      }}
       disabled={disabled}
       value={value === null ? null : String(value)}
       onValueChange={(next) => {

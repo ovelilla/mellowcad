@@ -142,6 +142,7 @@ import {
   commonSelectionLinetype,
   commonSelectionLineweight,
   filterByType,
+  setCurrentProperties,
   setSelectionColor,
   setSelectionLayer,
   setSelectionLinetype,
@@ -1425,6 +1426,52 @@ export class CadRuntime extends Observable {
       this.history,
       lineweight
     )
+  }
+
+  /** Sets CECOLOR, the colour new objects take: a hex value or ByLayer. */
+  setCurrentColor(color: EntityColor | typeof COLOR_BYLAYER): void {
+    setCurrentProperties(this.document, this.history, { currentColor: color })
+  }
+
+  /** Sets CELTYPE, the linetype new objects take: a linetype or ByLayer. */
+  setCurrentLinetype(linetype: LinetypeId | typeof LINETYPE_BYLAYER): void {
+    setCurrentProperties(this.document, this.history, {
+      currentLinetype: linetype,
+    })
+  }
+
+  /** Sets CELWEIGHT, the lineweight new objects take: a standard value or ByLayer. */
+  setCurrentLineweight(
+    lineweight: Lineweight | typeof LINEWEIGHT_BYLAYER
+  ): void {
+    setCurrentProperties(this.document, this.history, {
+      currentLineweight: lineweight,
+    })
+  }
+
+  /**
+   * The ribbon's Object Color drop-down, as its layer drop-down: with objects
+   * selected it changes them, in one undo step; with nothing selected it sets
+   * the current colour ("If no objects are selected, the drop-down lists …
+   * display the current settings").
+   */
+  applyColorControl(color: EntityColor | typeof COLOR_BYLAYER): void {
+    if (this.selection.isEmpty()) this.setCurrentColor(color)
+    else this.setSelectionColor(color)
+  }
+
+  /** The Linetype drop-down: as {@link applyColorControl}, with CELTYPE. */
+  applyLinetypeControl(linetype: LinetypeId | typeof LINETYPE_BYLAYER): void {
+    if (this.selection.isEmpty()) this.setCurrentLinetype(linetype)
+    else this.setSelectionLinetype(linetype)
+  }
+
+  /** The Lineweight drop-down: as {@link applyColorControl}, with CELWEIGHT. */
+  applyLineweightControl(
+    lineweight: Lineweight | typeof LINEWEIGHT_BYLAYER
+  ): void {
+    if (this.selection.isEmpty()) this.setCurrentLineweight(lineweight)
+    else this.setSelectionLineweight(lineweight)
   }
 
   /** Retypes a geometry value of the one object the Properties palette edits. */
@@ -2884,6 +2931,9 @@ export class CadRuntime extends Observable {
         this.document.getEntities()
       ),
       currentLayerId: this.document.getCurrentLayerId(),
+      currentColor: settings.currentColor,
+      currentLinetype: settings.currentLinetype,
+      currentLineweight: settings.currentLineweight,
       canUndo: this.history.canUndo(),
       canRedo: this.history.canRedo(),
       saveState: this.autosave.getState(),

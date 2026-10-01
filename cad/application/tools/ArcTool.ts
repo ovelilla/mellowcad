@@ -21,7 +21,10 @@ import { ScenePrimitive } from "../../scene/types"
 import { THEME } from "../../scene/theme"
 import { entityScenePrimitive } from "../SceneBuilder"
 import { KeyInput, PointerInput, Tool, ToolContext } from "./Tool"
-import { withCurrentThickness } from "./currentThickness"
+import {
+  withCurrentProperties,
+  withCurrentThickness,
+} from "./currentProperties"
 import { planeThrough } from "./threePointPlane"
 
 /** The ghost's id, reused every frame so a preview burns no entity ids. */
@@ -251,7 +254,11 @@ export class ArcTool implements Tool {
   private commit(p1: Vec3, p2: Vec3, p3: Vec3, ctx: ToolContext): void {
     const arc = this.arcFor(p1, p2, p3, ctx.document.getCurrentLayerId())
     if (!arc) return // degenerate — keep prompting
-    ctx.execute(new AddEntityCommand(withCurrentThickness(arc, ctx)))
+    ctx.execute(
+      new AddEntityCommand(
+        withCurrentProperties(withCurrentThickness(arc, ctx), ctx)
+      )
+    )
     ctx.endCommand()
   }
 

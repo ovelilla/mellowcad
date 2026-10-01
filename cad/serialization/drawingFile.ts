@@ -25,7 +25,7 @@
  * whole load, so files produced by other or newer minor tooling still open.
  */
 
-import { normalizeColor } from "../domain/colors"
+import { COLOR_BYLAYER, normalizeColor } from "../domain/colors"
 import {
   AttributeModes,
   BlockAttribute,
@@ -77,8 +77,12 @@ import {
   Layer,
   LayerId,
 } from "../domain/layers"
-import { DEFAULT_LINETYPE_ID } from "../domain/linetypes"
-import { clampLineweight, DEFAULT_LINEWEIGHT } from "../domain/lineweights"
+import { DEFAULT_LINETYPE_ID, LINETYPE_BYLAYER } from "../domain/linetypes"
+import {
+  clampLineweight,
+  DEFAULT_LINEWEIGHT,
+  LINEWEIGHT_BYLAYER,
+} from "../domain/lineweights"
 import {
   createUcs,
   isUpright,
@@ -101,7 +105,7 @@ import { DRAWING_FILE_TYPE } from "./drawingSummary"
 export { DRAWING_FILE_TYPE }
 
 /** Current schema version written by {@link serializeDrawing}. */
-export const DRAWING_FILE_VERSION = 24
+export const DRAWING_FILE_VERSION = 25
 
 /** MIME type a serialised drawing is handed to the host as. */
 export const DRAWING_FILE_MIME_TYPE = "application/json"
@@ -125,13 +129,30 @@ export interface DrawingSnapshot {
 /**
  * The settings as written: a zero ELEVATION or THICKNESS is left out, as on
  * objects, and so are a shown ViewCube (NAVVCUBEDISPLAY 3) and the default
- * Home view, so a drawing that never touched them reads as before 24.
+ * Home view, so a drawing that never touched them reads as before 24, and a
+ * current colour, linetype or lineweight that is ByLayer, as before 25.
  */
 export type StoredSettings = Omit<
   DocumentSettings,
-  "elevation" | "thickness" | "ucs" | "namedUcs" | "viewCube"
+  | "elevation"
+  | "thickness"
+  | "ucs"
+  | "namedUcs"
+  | "viewCube"
+  | "currentColor"
+  | "currentLinetype"
+  | "currentLineweight"
 > &
-  Partial<Pick<DocumentSettings, "elevation" | "thickness">> & {
+  Partial<
+    Pick<
+      DocumentSettings,
+      | "elevation"
+      | "thickness"
+      | "currentColor"
+      | "currentLinetype"
+      | "currentLineweight"
+    >
+  > & {
     readonly ucs: StoredUcs
     readonly namedUcs: readonly { name: string; ucs: StoredUcs }[]
     readonly navVCubeDisplay?: 0
@@ -549,9 +570,22 @@ function cloneLayer(layer: Layer): Layer {
 }
 
 function storedSettings(settings: DocumentSettings): StoredSettings {
-  const { elevation, thickness, ucs, namedUcs, viewCube, ...rest } = settings
+  const {
+    elevation,
+    thickness,
+    ucs,
+    namedUcs,
+    viewCube,
+    currentColor,
+    currentLinetype,
+    currentLineweight,
+    ...rest
+  } = settings
   return {
     ...rest,
+    ...(currentColor !== COLOR_BYLAYER ? { currentColor } : {}),
+    ...(currentLinetype !== LINETYPE_BYLAYER ? { currentLinetype } : {}),
+    ...(currentLineweight !== LINEWEIGHT_BYLAYER ? { currentLineweight } : {}),
     ucs: storedUcs(ucs),
     namedUcs: namedUcs.map((entry) => ({
       name: entry.name,
@@ -632,6 +666,19 @@ function parseSettings(value: unknown): DocumentSettings {
       visible: value.navVCubeDisplay !== 0,
       home: parseSavedView(value.homeView),
     },
+    // A drawing from before 25 has none of them: everything new is ByLayer.
+    currentColor:
+      typeof value.currentColor === "string"
+        ? (normalizeColor(value.currentColor) ?? COLOR_BYLAYER)
+        : COLOR_BYLAYER,
+    currentLinetype:
+      typeof value.currentLinetype === "string" &&
+      value.currentLinetype.length > 0
+        ? value.currentLinetype
+        : LINETYPE_BYLAYER,
+    currentLineweight: isFiniteNumber(value.currentLineweight)
+      ? clampLineweight(value.currentLineweight)
+      : LINEWEIGHT_BYLAYER,
   }
 }
 

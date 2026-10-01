@@ -38,6 +38,7 @@ import {
   Tool,
   ToolContext,
 } from "./Tool"
+import { withCurrentProperties } from "./currentProperties"
 
 /**
  * AutoCAD's MTEXT: a box from two corners, then the text, which wraps to the
@@ -344,7 +345,9 @@ export class MTextTool implements Tool {
         ? this.pendingEntity(ctx, text, ctx.document.getCurrentLayerId())
         : null
     this.state = { phase: "corner" }
-    if (entity) ctx.execute(new AddEntityCommand(entity))
+    if (entity) {
+      ctx.execute(new AddEntityCommand(withCurrentProperties(entity, ctx)))
+    }
   }
 
   private typedText(ctx: ToolContext): string {

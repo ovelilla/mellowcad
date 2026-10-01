@@ -431,6 +431,11 @@ a new shape:
   `scopeIds(scope)` — the whole selection for the ribbon's drop-downs, the type-filtered objects for
   the Properties palette — plus a `commonSelectionX` for `EngineState` (`selectionX`) and for
   `buildPropertiesUi` (`properties.x`).
+- Its current value — what new objects take (CECOLOR, CELTYPE, CELWEIGHT) — is a
+  `DocumentSettings` field (`currentX`, ByLayer by default, written only when it is not),
+  set through `setCurrentProperties` as one `UpdateSettingsCommand`, read by
+  `withCurrentProperties` at every creation from scratch, and shown as `EngineState.currentX`;
+  `applyXControl` is the ribbon's drop-down, the selection or else the current value.
 
 ## Z and the normal
 

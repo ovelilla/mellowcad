@@ -30,6 +30,7 @@ import {
   Tool,
   ToolContext,
 } from "./Tool"
+import { withCurrentProperties } from "./currentProperties"
 
 /**
  * How an ellipse is defined — the three entries of AutoCAD's Ellipse dropdown,
@@ -513,13 +514,16 @@ export class EllipseTool implements Tool {
   private add(ellipse: EllipseEntity, ctx: ToolContext): void {
     ctx.execute(
       new AddEntityCommand(
-        carryPlane(
-          ellipse,
-          createEllipse(ellipse.center, ellipse.majorAxis, ellipse.ratio, {
-            startParam: ellipse.startParam,
-            endParam: ellipse.endParam,
-            layerId: ctx.document.getCurrentLayerId(),
-          })
+        withCurrentProperties(
+          carryPlane(
+            ellipse,
+            createEllipse(ellipse.center, ellipse.majorAxis, ellipse.ratio, {
+              startParam: ellipse.startParam,
+              endParam: ellipse.endParam,
+              layerId: ctx.document.getCurrentLayerId(),
+            })
+          ),
+          ctx
         )
       )
     )

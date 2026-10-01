@@ -20,7 +20,10 @@ import {
   Tool,
   ToolContext,
 } from "./Tool"
-import { withCurrentThickness } from "./currentThickness"
+import {
+  withCurrentProperties,
+  withCurrentThickness,
+} from "./currentProperties"
 
 const DEFAULT_SIDES = 4
 const MIN_SIDES = 3
@@ -244,10 +247,13 @@ export class PolygonTool implements Tool {
     )
     ctx.execute(
       new AddEntityCommand(
-        withCurrentThickness(
-          onPlaneOf(
-            createPolyline(vertices, true, ctx.document.getCurrentLayerId()),
-            this.state.center
+        withCurrentProperties(
+          withCurrentThickness(
+            onPlaneOf(
+              createPolyline(vertices, true, ctx.document.getCurrentLayerId()),
+              this.state.center
+            ),
+            ctx
           ),
           ctx
         )

@@ -31,6 +31,8 @@ import {
   Tool,
   ToolContext,
 } from "./Tool"
+import { withCurrentProperties } from "./currentProperties"
+import { LayerId } from "../../domain/layers"
 
 /** Which end of the base dimension a chain grows from. */
 export type DimensionChainMode = "baseline" | "continue"
@@ -187,7 +189,7 @@ export class DimensionChainTool implements Tool {
       createDimension(chain.kind, chain.origin, point, chain.linePoint, {
         rotation: chain.rotation,
         styleId: chain.styleId,
-        layerId: ctx.document.getCurrentLayerId(),
+        layerId: chain.layerId,
         ...(id !== undefined ? { id } : {}),
       }),
       chain.elevation
@@ -200,7 +202,7 @@ export class DimensionChainTool implements Tool {
     if (!dim) return
     this.history.push(chain)
     this.enterSecond(advance(chain, this.mode, dim), ctx)
-    ctx.execute(new AddEntityCommand(dim))
+    ctx.execute(new AddEntityCommand(withCurrentProperties(dim, ctx)))
   }
 
   /** The Undo keyword: backs out the last dimension *this run* created. */
@@ -242,6 +244,7 @@ export class DimensionChainTool implements Tool {
       kind: base.kind,
       rotation: base.rotation,
       styleId: base.styleId,
+      layerId: base.layerId,
       elevation: entityElevation(base),
       origin,
       linePoint:
@@ -352,6 +355,12 @@ interface Chain {
   /** Measurement direction inherited from the base (`linear` dimensions only). */
   readonly rotation: number
   readonly styleId: DimStyleId
+  /**
+   * The base's layer, with its style: DIMCONTINUEMODE 1 ("Use the dimension
+   * style and layer of the dimension that is being continued or used as a
+   * baseline"). Colour, linetype and lineweight are a new object's, current.
+   */
+  readonly layerId: LayerId
   /** The base's plane: its origins are the chain's first ones. */
   readonly elevation: number
   /** First extension line origin of the next dimension. */

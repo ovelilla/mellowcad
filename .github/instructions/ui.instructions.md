@@ -229,9 +229,12 @@ pixels. 16 px icons go with 28 px controls (20 would go with 32).
     part that shrinks and truncates);
   - Layers (the Layers tab's trigger) and the layer drop-down (`engine.applyLayerControl`: with a
     selection it moves it in one undo step, else it sets the current layer — two clicks);
-  - Match Properties, then the object colour, lineweight and linetype drop-downs, which act on the
-    selection and read ByLayer, disabled, with nothing selected until CECOLOR, CELTYPE and
-    CELWEIGHT exist;
+  - Match Properties, then the object colour, lineweight and linetype drop-downs, which work as
+    the layer's (`engine.applyColorControl`, `applyLineweightControl`, `applyLinetypeControl`):
+    with a selection they show its value (empty when mixed) and change it in one undo step;
+    without one they show the current setting — CECOLOR, CELWEIGHT, CELTYPE (`state.currentColor`…)
+    — and a pick sets it, one undo step as a system variable is ("If no objects are selected, the
+    drop-down lists … display the current settings"). Never disabled for want of a selection;
   - at the end, the palette toggles: Styles, Blocks and the command line (Ctrl+9), AutoCAD's View →
     Palettes. Layers, Styles and Blocks are `PaletteToggle`s: `engine.togglePalette(tab)` opens the
     palette panel on that tab, or folds it when that tab is showing, and reads `active` then.
@@ -274,8 +277,9 @@ pixels. 16 px icons go with 28 px controls (20 would go with 32).
     values and edits are `state.properties` and the `"properties"` scope
     (`engine.setSelectionColor(value, "properties")`); the top bar's drop-downs keep the whole
     selection (`selectionLayerId`…, the default scope). With nothing selected, General shows the
-    current settings: the current layer, changeable there (`setCurrentLayer`), and ByLayer,
-    disabled, for the rest until CECOLOR, CELTYPE and CELWEIGHT exist.
+    current settings, each changeable there: the layer (`setCurrentLayer`), the colour, linetype
+    and lineweight (`setCurrentColor`, `setCurrentLinetype`, `setCurrentLineweight`), labelled
+    as current (`currentColorLabel`…).
   - **Layers** is the Layer Properties Manager: a toolbar (New, Delete — disabled with its reason
     as the label —, Set Current) over a table with column headers in AutoCAD's order (Status,
     Name, On, Lock, Color, Linetype, Lineweight, then the object count), scrolled sideways inside

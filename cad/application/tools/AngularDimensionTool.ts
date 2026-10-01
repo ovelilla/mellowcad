@@ -37,6 +37,7 @@ import {
   Tool,
   ToolContext,
 } from "./Tool"
+import { withCurrentProperties } from "./currentProperties"
 
 /**
  * AutoCAD's DIMANGULAR: "measures the angle between selected geometric objects
@@ -295,7 +296,7 @@ export class AngularDimensionTool implements Tool {
     if (this.state.phase !== "location") return
     const dim = this.pending(this.state.target, at, ctx)
     if (!dim) return
-    ctx.execute(new AddEntityCommand(dim))
+    ctx.execute(new AddEntityCommand(withCurrentProperties(dim, ctx)))
     ctx.endCommand()
   }
 

@@ -1058,6 +1058,35 @@ describe("the engine's English surface", () => {
         .do("factor", (c) => c.type("2.5").enter())
         .do("LTS enter", (c) => c.command("LTS").enter())
     )
+    walk("-COLOR", createHarness(), (s) =>
+      s
+        .do("-COLOR", (c) => c.command("-COLOR"))
+        .do("pink", (c) => c.type("pink").enter())
+        .do("red", (c) => c.type("red").enter())
+        .do("COLOR", (c) => c.command("COLOR"))
+        .do("T", (c) => c.type("T").enter())
+        .do("rgb", (c) => c.type("210,155,95").enter())
+    )
+    walk("-LINETYPE", createHarness(), (s) =>
+      s
+        .do("-LINETYPE", (c) => c.command("-LINETYPE"))
+        .do("?", (c) => c.type("?").enter())
+        .do("S", (c) => answer(c, "S"))
+        .do("?", (c) => c.type("?").enter())
+        .do("name", (c) => c.type("Center").enter())
+        .do("enter", (c) => c.enter())
+        .do("unknown", (c) =>
+          c.command("LT").option("Set").type("NOPE").enter()
+        )
+    )
+    walk("-LWEIGHT", createHarness(), (s) =>
+      s
+        .do("-LWEIGHT", (c) => c.command("-LWEIGHT"))
+        .do("?", (c) => c.type("?").enter())
+        .do("value", (c) => c.type("0.33").enter())
+        .do("LW", (c) => c.command("LW"))
+        .do("enter", (c) => c.enter())
+    )
     walk("ID", createHarness(), (s) =>
       s
         .do("ID", (c) => c.command("ID"))

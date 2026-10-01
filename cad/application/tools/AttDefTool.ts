@@ -29,6 +29,7 @@ import {
   Tool,
   ToolContext,
 } from "./Tool"
+import { withCurrentProperties } from "./currentProperties"
 
 /** The modes a keyword toggles, keyed by AutoCAD's global keyword. */
 const MODE_BY_KEYWORD: Readonly<Record<string, keyof AttributeModes>> = {
@@ -377,18 +378,21 @@ export class AttDefTool implements Tool {
     ctx: ToolContext
   ): void {
     this.rotation = worldAngleToUcs(ctx.ucs, rotation)
-    const definition = onPlaneOf(
-      createAttributeDefinition(position, this.tag, {
-        prompt: this.prompt,
-        value: this.value,
-        modes: this.modes,
-        height,
-        rotation,
-        justify: this.justify,
-        styleId: this.currentStyleId(ctx),
-        layerId: ctx.document.getCurrentLayerId(),
-      }),
-      position
+    const definition = withCurrentProperties(
+      onPlaneOf(
+        createAttributeDefinition(position, this.tag, {
+          prompt: this.prompt,
+          value: this.value,
+          modes: this.modes,
+          height,
+          rotation,
+          justify: this.justify,
+          styleId: this.currentStyleId(ctx),
+          layerId: ctx.document.getCurrentLayerId(),
+        }),
+        position
+      ),
+      ctx
     )
     this.previous = definition
     ctx.execute(new AddEntityCommand(definition))

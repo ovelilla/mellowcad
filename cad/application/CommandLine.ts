@@ -229,6 +229,9 @@ export const TOOL_COMMANDS: Readonly<Record<string, string>> = {
   orbit: "3DORBIT",
   navvcube: "NAVVCUBE",
   ltscale: "LTSCALE",
+  color: "COLOR",
+  linetype: "LINETYPE",
+  lweight: "LWEIGHT",
 }
 
 /** The shortest way to type a command, e.g. `"L"` — shown in tooltips. */

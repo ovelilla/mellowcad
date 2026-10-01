@@ -378,6 +378,12 @@ export interface EngineState {
   readonly layers: ReadonlyArray<LayerInfo>
   /** The layer new geometry is drawn on. */
   readonly currentLayerId: LayerId
+  /** CECOLOR: the colour new objects take, a hex value or `"ByLayer"`. */
+  readonly currentColor: EntityColor | "ByLayer"
+  /** CELTYPE: the linetype new objects take, a linetype's id or `"ByLayer"`. */
+  readonly currentLinetype: LinetypeId | "ByLayer"
+  /** CELWEIGHT: the lineweight new objects take, in millimetres, or `"ByLayer"`. */
+  readonly currentLineweight: Lineweight | "ByLayer"
   readonly canUndo: boolean
   readonly canRedo: boolean
   /** Transparent auto-save lifecycle, drives the save button's spinner. */

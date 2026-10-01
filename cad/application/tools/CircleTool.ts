@@ -22,7 +22,10 @@ import { ScenePrimitive } from "../../scene/types"
 import { THEME } from "../../scene/theme"
 import { entityScenePrimitive } from "../SceneBuilder"
 import { KeyInput, PointerInput, Tool, ToolContext } from "./Tool"
-import { withCurrentThickness } from "./currentThickness"
+import {
+  withCurrentProperties,
+  withCurrentThickness,
+} from "./currentProperties"
 import { planeThrough } from "./threePointPlane"
 
 /** The ghost's id, reused every frame so a preview burns no entity ids. */
@@ -317,7 +320,11 @@ export class CircleTool implements Tool {
 
   private commitCircle(circle: CircleEntity | null, ctx: ToolContext): void {
     if (!circle) return
-    ctx.execute(new AddEntityCommand(withCurrentThickness(circle, ctx)))
+    ctx.execute(
+      new AddEntityCommand(
+        withCurrentProperties(withCurrentThickness(circle, ctx), ctx)
+      )
+    )
     ctx.endCommand()
   }
 

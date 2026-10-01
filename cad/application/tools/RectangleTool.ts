@@ -30,6 +30,7 @@ import {
   Tool,
   ToolContext,
 } from "./Tool"
+import { withCurrentProperties } from "./currentProperties"
 
 /**
  * AutoCAD's RECTANG: two opposite corners define a rectangle squared to the
@@ -210,7 +211,11 @@ export class RectangleTool implements Tool {
       this.elevation !== 0
         ? withElevation(rectangle, ctx.ucs.origin.z + this.elevation)
         : onPlaneOf(rectangle, first)
-    ctx.execute(new AddEntityCommand(withThickness(placed, this.thickness)))
+    ctx.execute(
+      new AddEntityCommand(
+        withCurrentProperties(withThickness(placed, this.thickness), ctx)
+      )
+    )
     ctx.endCommand()
   }
 

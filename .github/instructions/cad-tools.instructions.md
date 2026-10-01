@@ -24,8 +24,10 @@ A tool is an explicit state machine for one AutoCAD command. It owns a discrimin
 5. `TOOL_ICONS` and `PALETTE` in `components/cad/tool-rail.tsx`, in the ribbon panel AutoCAD puts
    it in (unlisted tools fall into a trailing group, so nothing silently disappears; a tool that
    lives elsewhere in the chrome goes in `RAIL_EXCLUDED`).
-6. Tests in the matching `cad/application/tools/*.test.ts` file using the harness.
-7. File the command in `content/commands.ts` (`COMMAND_FILING`): the landing's catalogue test
+6. A command that **creates** objects gives each the properties AutoCAD gives it (below, "What a
+   new object wears"), with its row in `currentProperties.test.ts`.
+7. Tests in the matching `cad/application/tools/*.test.ts` file using the harness.
+8. File the command in `content/commands.ts` (`COMMAND_FILING`): the landing's catalogue test
    fails until every registered command is filed.
 
 ## Reuse before writing
@@ -95,6 +97,29 @@ tool instance**, which the runtime owns for exactly that long: FILLET's radius, 
 distances, HATCH's HPNAME / HPSCALE / HPANG. Do not reset it in `onActivate`; the next run of the
 command starting from the last one's settings is the behaviour. One saved in the drawing belongs
 on the document instead (LTSCALE) or on a style table (DIMSCALE).
+
+## What a new object wears
+
+"All objects are created using the current color" — and linetype and lineweight: CECOLOR,
+CELTYPE and CELWEIGHT (`DocumentSettings.currentColor` / `currentLinetype` /
+`currentLineweight`, ByLayer by default, which stores nothing on the object). Which a creation
+gets decides the call at its commit, and the harness pins each one in
+`currentProperties.test.ts` (a row of `FROM_SCRATCH` or of `DERIVED`):
+
+- **Drawn from scratch** — LINE, PLINE, CIRCLE, ARC, ELLIPSE, SPLINE, RECTANG, POLYGON, TEXT,
+  MTEXT, HATCH (HPCOLOR is "use current"), ATTDEF, every dimension, INSERT and BLOCK's converted
+  reference: wrap it in `withCurrentProperties(entity, ctx)` (`tools/currentProperties.ts`, beside
+  `withCurrentThickness`), on the current layer. DIMBASELINE and DIMCONTINUE are drawn from
+  scratch too, but on the base dimension's layer and style (DIMCONTINUEMODE 1).
+- **Made from another** — COPY, MIRROR, ARRAY, OFFSET, EXPLODE, BREAK, TRIM, EXTEND, JOIN,
+  PASTECLIP: the source's, through `carryOverrides` / `carryPiece` / the copy helpers; never the
+  current ones.
+- **FILLET's arc and CHAMFER's bevel**: on the lines' shared layer or the current one, and ByLayer
+  — "The layer affects object properties including color and linetype" — so `carryPlane` alone.
+
+A ghost is drawn in the rubber band's colour whatever it will wear, so the preview needs nothing.
+The per-type layers (HPLAYER, DIMLAYER, TEXTLAYER) do not exist here: everything new is on the
+current layer.
 
 ## Ordering and undo
 

@@ -27,6 +27,7 @@ import {
   Tool,
   ToolContext,
 } from "./Tool"
+import { withCurrentProperties } from "./currentProperties"
 
 /**
  * AutoCAD's TEXT / DTEXT: single-line text, one object per line.
@@ -273,7 +274,7 @@ export class TextTool implements Tool {
       this.state.position
     )
     this.lastLine = text
-    ctx.execute(new AddEntityCommand(text))
+    ctx.execute(new AddEntityCommand(withCurrentProperties(text, ctx)))
     return text
   }
 

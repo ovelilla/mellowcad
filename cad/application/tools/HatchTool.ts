@@ -41,6 +41,7 @@ import {
   Tool,
   ToolContext,
 } from "./Tool"
+import { withCurrentProperties } from "./currentProperties"
 
 /** Screen-pixel movement past which a press-drag becomes a box selection. */
 const DRAG_THRESHOLD_PX = 4
@@ -411,7 +412,7 @@ export class HatchTool implements Tool {
       ctx.endCommand()
       return
     }
-    ctx.execute(new AddEntityCommand(hatch))
+    ctx.execute(new AddEntityCommand(withCurrentProperties(hatch, ctx)))
     // The boundary objects were only the answer to a prompt: HATCH leaves
     // nothing selected, so the palette does not go on describing them.
     ctx.selection.clear()

@@ -213,8 +213,10 @@ call in the `CadRuntime` constructor.
 history (a loaded file is a fresh baseline). Document _settings_ changes made by a host's own
 setters (`setDocumentUnit`, `setDocumentPrecision`, `setLtScale`, layer table edits) are
 deliberately not undoable; anything touching entities is. What a command sets is what AutoCAD's U
-undoes — ATTMODE, the UCS and its table, UCSICON, ELEVATION and THICKNESS, LTSCALE, and UNITS'
-unit and precision (`applyDrawingUnits`) — and goes through a command (`UpdateSettingsCommand`
+undoes — ATTMODE, the UCS and its table, UCSICON, ELEVATION and THICKNESS, LTSCALE, UNITS'
+unit and precision (`applyDrawingUnits`), and CECOLOR, CELTYPE and CELWEIGHT, whether -COLOR,
+-LINETYPE, -LWEIGHT or the Properties drop-downs set them (`setCurrentProperties`; UNDO "displays
+the command or system variable name" it steps past) — and goes through a command (`UpdateSettingsCommand`
 restores exactly the keys it patched; one that changes nothing executes nothing). A settings
 change another one implies belongs in the same patch: changing to the WCS puts ELEVATION to 0.
 

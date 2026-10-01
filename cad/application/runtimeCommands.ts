@@ -45,6 +45,16 @@ export function registerCommands(
   // AutoCAD's ATTDEF opens a dialog; here it asks at the command line, so
   // -ATTDEF is the same tool under its own name.
   register({ id: "-ATTDEF", tool: "attdef", run: () => startTool("attdef") })
+  // COLOR, LINETYPE and LWEIGHT open dialogs in AutoCAD (Select Color, the
+  // Linetype Manager, Lineweight Settings); here they ask at the command line,
+  // so their dash forms are the same tools under their own names.
+  register({ id: "-COLOR", tool: "color", run: () => startTool("color") })
+  register({
+    id: "-LINETYPE",
+    tool: "linetype",
+    run: () => startTool("linetype"),
+  })
+  register({ id: "-LWEIGHT", tool: "lweight", run: () => startTool("lweight") })
   // VPOINT and VIEW open dialogs in AutoCAD; here they ask at the command
   // line, so their dash forms are the same tools under their own names.
   register({ id: "-VPOINT", tool: "vpoint", run: () => startTool("vpoint") })

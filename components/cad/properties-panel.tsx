@@ -4,9 +4,6 @@ import { useState } from "react"
 import { useTranslations } from "next-intl"
 
 import {
-  COLOR_BYLAYER,
-  LINETYPE_BYLAYER,
-  LINEWEIGHT_BYLAYER,
   type CadEngine,
   type EngineState,
   type EntityType,
@@ -34,9 +31,9 @@ const ALL = "*"
  * colour, layer, linetype, lineweight — and the geometry of the objects
  * edited, retypeable for a single object. With nothing selected General shows
  * the current settings ("When no objects are selected, only the current
- * settings of general properties are displayed"): the current layer, which
- * can be changed there, and ByLayer for the rest until CECOLOR, CELTYPE and
- * CELWEIGHT exist. The palette never appears or disappears with the
+ * settings of general properties are displayed"): the current layer, colour,
+ * linetype and lineweight (CLAYER, CECOLOR, CELTYPE, CELWEIGHT), each set
+ * there. The palette never appears or disappears with the
  * selection; only its content changes, so the drawing does not resize.
  */
 export function PropertiesPanel({
@@ -96,11 +93,11 @@ export function PropertiesPanel({
           <div className="flex items-center justify-between gap-2">
             <span className="text-muted-foreground">{t("color")}</span>
             <ColorSelect
-              disabled={!selected}
-              value={selected ? properties.color : COLOR_BYLAYER}
+              value={selected ? properties.color : state.currentColor}
               names={state.names}
               onValueChange={(value) => {
-                engine.setSelectionColor(value, "properties")
+                if (selected) engine.setSelectionColor(value, "properties")
+                else engine.setCurrentColor(value)
                 done()
               }}
               ariaLabel={selected ? t("colorLabel") : t("currentColorLabel")}
@@ -141,11 +138,11 @@ export function PropertiesPanel({
           <div className="mt-1 flex items-center justify-between gap-2">
             <span className="text-muted-foreground">{t("linetype")}</span>
             <LinetypeSelect
-              disabled={!selected}
-              value={selected ? properties.linetype : LINETYPE_BYLAYER}
+              value={selected ? properties.linetype : state.currentLinetype}
               names={state.names}
               onValueChange={(value) => {
-                engine.setSelectionLinetype(value, "properties")
+                if (selected) engine.setSelectionLinetype(value, "properties")
+                else engine.setCurrentLinetype(value)
                 done()
               }}
               includeByLayer
@@ -159,11 +156,14 @@ export function PropertiesPanel({
           <div className="mt-1 flex items-center justify-between gap-2">
             <span className="text-muted-foreground">{t("lineweight")}</span>
             <LineweightSelect
-              disabled={!selected}
-              value={selected ? properties.lineweight : LINEWEIGHT_BYLAYER}
+              value={selected ? properties.lineweight : state.currentLineweight}
               names={state.names}
               onValueChange={(value) => {
-                engine.setSelectionLineweight(value, "properties")
+                if (selected) {
+                  engine.setSelectionLineweight(value, "properties")
+                } else {
+                  engine.setCurrentLineweight(value)
+                }
                 done()
               }}
               includeByLayer

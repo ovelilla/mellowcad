@@ -75,7 +75,10 @@ export const ar: EngineLocale = {
       "view": "المناظر المعدة مسبقًا",
       "orbit": "مدار ثلاثي الأبعاد",
       "navvcube": "مكعب العرض",
-      "ltscale": "مقياس نوع الخط"
+      "ltscale": "مقياس نوع الخط",
+      "color": "اللون",
+      "linetype": "نوع الخط",
+      "lweight": "وزن الخط"
     },
     "description": {
       "UNDO": "التراجع عن آخر إجراء",
