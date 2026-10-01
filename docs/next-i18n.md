@@ -1176,8 +1176,12 @@ dibuja; la OG y el manifest, en español. Presupuestos: la landing crece 0,1 KB 
 catálogos en la isla del sketch), el chunk del motor queda en 87,8 KB gz y el catálogo español viaja
 en el HTML de `/es/draw` (+2,0 KB gz, frente a los 12 de §8.3).
 
-**Falta:** la revisión del autor de la landing y la privacidad en español (§11), que es quien firma
-como responsable del tratamiento.
+**Revisión (01/10/2026):** las 221 cadenas en español de la landing, la privacidad, la 404 y la OG,
+frente al inglés, a petición del autor: fieles, con los términos de Autodesk y el registro de §8.1.
+Corregidas tres: «responsable del tratamiento» (el término del RGPD) y una frase más natural para el
+contacto, el orden de los derechos («el acceso…, su supresión o la limitación de su uso, oponerte a él
+o recibir una copia») y `PAGINA` en vez de `PAGE` como comando de reserva de la 404. Los hechos de la
+privacidad son los de la versión inglesa, que el autor firma como responsable.
 
 **Textos de búsqueda.** De las sugerencias de Google en España, México, Argentina, Colombia y Chile y
 de los títulos que posicionan hoy (sin volúmenes: Trends no se pudo leer): «gratis» acompaña a todas

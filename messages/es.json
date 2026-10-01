@@ -238,19 +238,19 @@
     "analytics2": "Vercel Speed Insights informa de lo rápido que cargan y responden las páginas, con la página, tu navegador, tu sistema, tu tipo de dispositivo, la velocidad de la red y tu país, también de forma anónima.",
     "analytics3": "Ninguna de las dos ve tus dibujos, y ninguna se usa para publicidad, para elaborar perfiles ni para tomar decisiones automatizadas.",
     "handledTitle": "Quién lo trata y por qué",
-    "handled1": "MellowCAD es un proyecto independiente de {name}, responsable de estos datos, que atiende en <email>{address}</email>.",
+    "handled1": "MellowCAD es un proyecto independiente de {name}, responsable del tratamiento de estos datos, a quien puedes escribir a <email>{address}</email>.",
     "handled2": "Servir el sitio y medir su uso y su velocidad se basan en el interés legítimo en ofrecer bien un servicio gratuito, limitado a estadísticas anónimas (artículo 6.1.f del RGPD).",
     "handled3": "Vercel Inc. aloja el sitio y hace las dos mediciones. Como cualquier proveedor de alojamiento, trata tu dirección IP para servir las páginas. Tiene su sede en Estados Unidos y está certificada en el Marco de Privacidad de Datos UE-EE. UU.",
     "handled4": "Si escribes, tu mensaje lo trata Google, el proveedor del correo, y solo se usa para responderte, durante el tiempo que lo requiera la conversación.",
     "rightsTitle": "Tus derechos",
-    "rights1": "Puedes pedir el acceso a tus datos, su rectificación o su supresión, limitar su uso u oponerte a él, o recibir una copia: escribe a la dirección de arriba.",
+    "rights1": "Puedes pedir el acceso a tus datos, su rectificación, su supresión o la limitación de su uso, oponerte a él o recibir una copia: escribe a la dirección de arriba.",
     "rights2": "También puedes presentar una reclamación ante una autoridad de protección de datos; en la UE, la del país donde vives o trabajas.",
     "updated": "Última actualización: {date}"
   },
   "NotFound": {
     "metaTitle": "Página no encontrada",
     "help": "Pulse F1 para obtener ayuda.",
-    "fallbackCommand": "PAGE",
+    "fallbackCommand": "PAGINA",
     "home": "Volver a la hoja de dibujo",
     "cta": "Empezar a dibujar"
   },
