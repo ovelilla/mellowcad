@@ -7,6 +7,7 @@ import {
   recordDemo,
   transcript,
 } from "@/cad"
+import { ar } from "@/cad/locales/ar"
 import { es } from "@/cad/locales/es"
 import { plotDemo, renderFigure } from "@/lib/plot"
 
@@ -25,6 +26,7 @@ describe.each(
     ...FIGURES,
     ...diagramsIn("en"),
     ...diagramsIn("es"),
+    ...diagramsIn("ar"),
   })
 )("the %s figure", (_name, figure) => {
   // Scripts name commands by their global name with _ (_LINE), as a
@@ -32,6 +34,7 @@ describe.each(
   it.each([
     ["English", undefined],
     ["Spanish", es],
+    ["Arabic", ar],
   ])(
     "replays in %s without the engine reporting an error",
     async (_language, locale) => {

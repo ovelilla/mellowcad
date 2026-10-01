@@ -3,6 +3,7 @@ import { describe, expect, it } from "vitest"
 
 import { createHarness } from "../../test/harness"
 import { lineOf, p } from "../../test/builders"
+import { ar } from "../locales/ar"
 import { es } from "../locales/es"
 import type { EngineLocale } from "../locales/types"
 import { commandCatalog } from "./commandCatalog"
@@ -469,5 +470,51 @@ describe("Spanish AutoCAD's command language", () => {
         description: "Borrar los objetos seleccionados",
       })
     )
+  })
+})
+
+describe("Arabic: its own interface, the global command language", () => {
+  // There is no Arabic AutoCAD, and someone who drafts in Arabic works in the
+  // English one: the palettes speak Arabic, the command line English.
+  it("names the interface in Arabic and leaves the drawing's data alone", () => {
+    const { names, tools } = createHarness({ locale: ar }).state()
+    expect(names.snaps.endpoint).toBe("نقطة النهاية")
+    expect(names.byLayer).toBe("حسب الطبقة")
+    expect(names.linetypes.DashDot).toBe("Dash dot")
+    expect(tools.find((tool) => tool.id === "line")?.label).toBe("خط")
+    expect(tools.find((tool) => tool.id === "line")?.shortcut).toBe("L")
+  })
+
+  it("draws with LINE and L, and asks in English", () => {
+    const cad = createHarness({ locale: ar })
+    cad.command("LINE").escape().command("l")
+    expect(cad.commandLog()).toEqual(["LINE", "LINE"])
+    cad.click(p(0, 0)).click(p(100, 0)).click(p(100, 100))
+    expect(cad.state().commandLine.prompt).toBe("LINE [Close/Undo]:")
+    expect(cad.scene().lang).toBe("en")
+  })
+
+  it("runs a command pasted from Arabic prose, its bidi isolates dropped", () => {
+    const cad = createHarness({ locale: ar })
+    const isolated = (name: string) =>
+      String.fromCodePoint(0x2068) + name + String.fromCodePoint(0x2069)
+    cad.runtime.setCommandLineText(isolated("L"))
+    expect(cad.state().commandLine.buffer).toBe("L")
+    cad.runtime.submitCommandLine()
+    expect(cad.activeToolId()).toBe("line")
+  })
+
+  it("counts in all six of its plural forms, with latin digits", () => {
+    const text = engineText(ar)
+    expect(
+      [0, 1, 2, 3, 11, 100].map((count) => text.propertyTitle("objects", count))
+    ).toEqual([
+      "لا عناصر",
+      "عنصر واحد",
+      "عنصران",
+      "3 عناصر",
+      "11 عنصرًا",
+      "100 عنصر",
+    ])
   })
 })

@@ -89,16 +89,25 @@ describe("the engine's catalogs", () => {
   })
 
   // The names of linetypes and hatch patterns are the drawing's data, never
-  // translated; everything else Spanish must say itself.
-  it("leave nothing of the interface to English in Spanish", () => {
-    const spanish = new Set(
-      messages({ interface: (readCatalog("es") as Tree).interface } as Tree)
-    )
-    const paths = new Set([...spanish].map(([path]) => path))
-    for (const [path] of messages({ interface: english.interface } as Tree)) {
-      if (/^interface.(linetype|hatchPattern)./.test(path)) continue
-      expect(paths.has(path), path).toBe(true)
+  // translated; everything else a language must say itself.
+  it("leave nothing of the interface to English in another language", () => {
+    for (const tag of catalogTags().filter((tag) => tag !== "en")) {
+      const own = messages({
+        interface: (readCatalog(tag) as Tree).interface,
+      } as Tree)
+      const paths = new Set(own.map(([path]) => path))
+      for (const [path] of messages({ interface: english.interface } as Tree)) {
+        if (/^interface.(linetype|hatchPattern)./.test(path)) continue
+        expect(paths.has(path), `${tag}: ${path}`).toBe(true)
+      }
     }
+  })
+
+  // There is no Arabic AutoCAD: someone who drafts in Arabic reads English
+  // AutoCAD's prompts every day, so Arabic's command language is the global
+  // one (docs/autocad-coverage.md, "Command line").
+  it("give Arabic the global command language", () => {
+    expect(readCatalog("ar")).not.toHaveProperty("commands")
   })
 
   it("give plurals an other branch, which every language needs", () => {

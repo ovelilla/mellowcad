@@ -652,7 +652,10 @@ export class CadRuntime extends Observable {
 
   /** Replaces the text at the command prompt (typed on the canvas or the box). */
   setCommandLineText(text: string): void {
-    this.commandLine.setBuffer(text)
+    // WHY: a right-to-left page isolates each command name in its prose with
+    // invisible bidi controls (FSI…PDI); a name copied from there and pasted
+    // here would match nothing. No key types one.
+    this.commandLine.setBuffer(text.replace(/\p{Bidi_Control}/gu, ""))
     this.invalidateState()
   }
 

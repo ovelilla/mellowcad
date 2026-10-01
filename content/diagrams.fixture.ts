@@ -1,3 +1,4 @@
+import ar from "@/messages/ar.json"
 import en from "@/messages/en.json"
 import es from "@/messages/es.json"
 
@@ -6,7 +7,7 @@ import { DIAGRAMS, type FigureSpec } from "./figures"
 type Words = Readonly<Record<string, string>>
 type Catalog = { readonly LocalFirst?: Words; readonly Engine?: Words }
 
-const CATALOGS: Readonly<Record<string, Catalog>> = { en, es }
+const CATALOGS: Readonly<Record<string, Catalog>> = { en, es, ar }
 
 /** The diagrams as a language's messages word them, keyed `name.locale`. */
 export function diagramsIn(locale: string): Record<string, FigureSpec> {

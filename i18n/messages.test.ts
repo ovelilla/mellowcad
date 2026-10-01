@@ -46,7 +46,9 @@ function signature(elements: MessageFormatElement[]): string[] {
       }
       if (isPluralElement(element) || isSelectElement(element)) {
         return [
-          `${element.value}:${isPluralElement(element) ? "plural" : "select"}`,
+          // A plural takes a number, like `{n, number}`: Arabic's six forms
+          // agree with a count that English only prints.
+          `${element.value}:${isPluralElement(element) ? "number" : "select"}`,
           ...Object.values(element.options).flatMap((option) =>
             signature(option.value)
           ),
@@ -78,10 +80,10 @@ function plurals(elements: MessageFormatElement[]): string[][] {
 const english = flatten(catalog(routing.defaultLocale))
 
 // A live language must be complete; so must one whose translation is done,
-// even while it waits in draft. Arabic is written in phase 5 of
-// docs/next-i18n.md.
+// even while it waits in draft — Arabic, until its native review.
 const TRANSLATED = routing.locales.filter(
-  (locale) => LOCALE_STATUS[locale] === "live" || locale === "es"
+  (locale) =>
+    LOCALE_STATUS[locale] === "live" || locale === "es" || locale === "ar"
 )
 
 describe("the app's message catalogs", () => {

@@ -11,6 +11,7 @@ import type { AppLocale } from "./routing"
 const ENGINE_LOCALES: Partial<Record<AppLocale, () => Promise<EngineLocale>>> =
   {
     es: () => import("@/cad/locales/es").then((module) => module.es),
+    ar: () => import("@/cad/locales/ar").then((module) => module.ar),
   }
 
 export async function loadEngineLocale(
