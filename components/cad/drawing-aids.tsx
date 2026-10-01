@@ -358,7 +358,12 @@ export function DrawingAids({
           onClick={() => engine.toggleLineweightDisplay()}
         />
 
-        <Popover>
+        {/* Controlled by the engine: the application menu's Drawing Units
+            opens it too. */}
+        <Popover
+          open={state.unitsPanel}
+          onOpenChange={(open) => engine.setUnitsPanel(open)}
+        >
           <PopoverTrigger
             render={
               <Button

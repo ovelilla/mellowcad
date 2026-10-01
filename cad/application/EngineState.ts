@@ -350,6 +350,8 @@ export interface EngineState {
   readonly blocks: ReadonlyArray<BlockInfo>
   /** Whether the Blocks palette is showing. */
   readonly blocksPanel: boolean
+  /** Whether the drawing's units settings are showing. */
+  readonly unitsPanel: boolean
   /**
    * Command options (keywords) the active tool currently offers — AutoCAD's
    * `[Close/Undo]` prompt. The UI renders these as hint chips near the dynamic

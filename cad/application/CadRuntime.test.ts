@@ -215,15 +215,31 @@ describe("undo and redo", () => {
     expect(cad.state().canRedo).toBe(false)
   })
 
-  it("restores everything after Clear all in one step", () => {
+  it("starts a blank drawing with NEW, and U brings the old one back", () => {
     const cad = createHarness()
     drawTwoLines(cad)
+    const walls = cad.runtime.createLayer("Walls")
+    cad.runtime.setDocumentPrecision(4)
 
-    cad.runtime.clearAll()
+    cad.command("NEW")
     expect(cad.entityCount).toBe(0)
+    expect(cad.state().layers.map((layer) => layer.name)).toEqual(["0"])
+    expect(cad.state().currentLayerId).toBe(DEFAULT_LAYER_ID)
+    expect(cad.state().documentPrecision).not.toBe(4)
 
     cad.undo()
     expect(cad.entityCount).toBe(2)
+    expect(cad.state().currentLayerId).toBe(walls)
+    expect(cad.state().documentPrecision).toBe(4)
+  })
+
+  it("ends the running command before QNEW starts the drawing", () => {
+    const cad = createHarness()
+    cad.command("LINE").click(p(0, 0)).click(p(100, 0))
+
+    cad.command("QNEW")
+    expect(cad.state().activeToolId).toBe("select")
+    expect(cad.entityCount).toBe(0)
   })
 })
 
@@ -293,6 +309,41 @@ describe("layers", () => {
     expect(cad.byId<LineEntity>("L1").layerId).toBe(DEFAULT_LAYER_ID)
   })
 
+  it("moves several selected objects in one undo step from the layer drop-down", () => {
+    const cad = createHarness({
+      entities: [
+        lineOf(p(0, 0), p(100, 0), { id: "L1" }),
+        circleOf(p(0, 0), 5, { id: "C1" }),
+      ],
+    })
+    const walls = cad.runtime.createLayer("Walls")
+    cad.runtime.setCurrentLayer(DEFAULT_LAYER_ID)
+
+    cad.select("L1", "C1")
+    cad.runtime.applyLayerControl(walls)
+    expect(cad.byId<LineEntity>("L1").layerId).toBe(walls)
+    expect(cad.byId<CircleEntity>("C1").layerId).toBe(walls)
+    expect(cad.state().currentLayerId).toBe(DEFAULT_LAYER_ID)
+    expect(cad.selectedIds()).toEqual(["L1", "C1"])
+
+    cad.undo()
+    expect(cad.byId<LineEntity>("L1").layerId).toBe(DEFAULT_LAYER_ID)
+    expect(cad.byId<CircleEntity>("C1").layerId).toBe(DEFAULT_LAYER_ID)
+  })
+
+  it("makes the layer chosen in the drop-down current with nothing selected", () => {
+    const cad = createHarness({
+      entities: [lineOf(p(0, 0), p(100, 0), { id: "L1" })],
+    })
+    const walls = cad.runtime.createLayer("Walls")
+    cad.runtime.setCurrentLayer(DEFAULT_LAYER_ID)
+
+    cad.runtime.applyLayerControl(walls)
+    expect(cad.state().currentLayerId).toBe(walls)
+    expect(cad.byId<LineEntity>("L1").layerId).toBe(DEFAULT_LAYER_ID)
+    expect(cad.state().canUndo).toBe(false)
+  })
+
   it("deselects objects whose layer is turned off or locked", () => {
     const cad = createHarness()
     const walls = cad.runtime.createLayer("Walls")
@@ -316,6 +367,36 @@ describe("layers", () => {
     const before = cad.scene().primitives.length
     cad.runtime.updateLayer(walls, { visible: false })
     expect(cad.scene().primitives.length).toBeLessThan(before)
+  })
+})
+
+describe("selection properties", () => {
+  it.each([
+    ["colour", (cad: CadHarness) => cad.runtime.setSelectionColor("#ff0000")],
+    [
+      "linetype",
+      (cad: CadHarness) => cad.runtime.setSelectionLinetype("Dashed"),
+    ],
+    [
+      "lineweight",
+      (cad: CadHarness) => cad.runtime.setSelectionLineweight(0.5),
+    ],
+  ])("changes the %s of several objects in one undo step", (_, change) => {
+    const cad = createHarness({
+      entities: [
+        lineOf(p(0, 0), p(100, 0), { id: "L1" }),
+        circleOf(p(0, 0), 5, { id: "C1" }),
+      ],
+    })
+    cad.select("L1", "C1")
+
+    change(cad)
+    expect(cad.byId("L1")).not.toEqual(lineOf(p(0, 0), p(100, 0), { id: "L1" }))
+
+    cad.undo()
+    expect(cad.byId("L1")).toEqual(lineOf(p(0, 0), p(100, 0), { id: "L1" }))
+    expect(cad.byId("C1")).toEqual(circleOf(p(0, 0), 5, { id: "C1" }))
+    expect(cad.state().canUndo).toBe(false)
   })
 })
 

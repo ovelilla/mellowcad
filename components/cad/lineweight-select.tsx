@@ -32,6 +32,8 @@ export function LineweightSelect({
   includeByLayer = false,
   ariaLabel,
   className,
+  disabled = false,
+  below = false,
 }: {
   value: number | "ByLayer" | null
   /** The engine's name for ByLayer. */
@@ -40,13 +42,21 @@ export function LineweightSelect({
   includeByLayer?: boolean
   ariaLabel: string
   className?: string
+  /** Unavailable: shown, but nothing to act on. */
+  disabled?: boolean
+  /**
+   * Opens below the trigger, as a bar's drop-down does, instead of over it as
+   * a palette's field does.
+   */
+  below?: boolean
 }) {
   const t = useTranslations("Editor.Properties")
   return (
     <Select
       // The closed trigger names ByLayer in the page's language, not by its id.
       items={{ [LINEWEIGHT_BYLAYER]: names.byLayer }}
-      value={value === null ? undefined : String(value)}
+      disabled={disabled}
+      value={value === null ? null : String(value)}
       onValueChange={(next) => {
         if (next == null) return
         onValueChange(
@@ -57,7 +67,10 @@ export function LineweightSelect({
       <SelectTrigger size="sm" aria-label={ariaLabel} className={className}>
         <SelectValue placeholder={t("varies")} />
       </SelectTrigger>
-      <SelectContent>
+      <SelectContent
+        align={below ? "start" : undefined}
+        alignItemWithTrigger={!below}
+      >
         {includeByLayer && (
           <SelectItem value={LINEWEIGHT_BYLAYER} className="text-[11px]">
             <LineweightPreview millimetres={0} />

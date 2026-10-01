@@ -1,0 +1,412 @@
+"use client"
+
+import { Menu } from "@base-ui/react/menu"
+import {
+  CheckIcon,
+  ChevronRight,
+  FilePlus,
+  FolderOpen,
+  Globe,
+  Loader2,
+  Paintbrush,
+  Redo2,
+  Ruler,
+  Save,
+  SaveAll,
+  Terminal,
+  Undo2,
+  type LucideIcon,
+} from "lucide-react"
+import { useLocale, useTranslations } from "next-intl"
+
+import {
+  COLOR_BYLAYER,
+  LINETYPE_BYLAYER,
+  LINEWEIGHT_BYLAYER,
+  type CadEngine,
+  type EngineState,
+} from "@/cad"
+import { cn } from "@/lib/utils"
+import { Button } from "@/components/ui/button"
+import { Separator } from "@/components/ui/separator"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip"
+import { useLanguageLinks } from "@/components/language-links"
+import { LogoMark } from "@/components/marketing/logo"
+
+import { BlocksControl } from "./blocks-control"
+import { ColorSelect } from "./color-select"
+import { LayersControl, LayerSwatch } from "./layers-control"
+import { LinetypeSelect } from "./linetype-select"
+import { LineweightSelect } from "./lineweight-select"
+import { StylesControl } from "./styles-control"
+import { IconAction, Panel } from "./toolbar-primitives"
+
+const MENU_POPUP =
+  "min-w-48 origin-(--transform-origin) overflow-hidden rounded-md border bg-card/90 p-1 text-popover-foreground shadow-md backdrop-blur transition-[transform,opacity] outline-none data-ending-style:scale-95 data-ending-style:opacity-0 data-starting-style:scale-95 data-starting-style:opacity-0"
+const MENU_ITEM =
+  "relative flex cursor-default items-center gap-2 rounded-sm py-1.5 ps-2 pe-8 text-sm outline-hidden select-none data-highlighted:bg-accent data-highlighted:text-accent-foreground data-popup-open:bg-accent [&_svg]:size-4 [&_svg]:shrink-0"
+/** A drop-down of the bar: bordered, with no surface of its own. */
+const BAR_SELECT =
+  "h-8 border-input bg-transparent text-xs shadow-none dark:bg-transparent"
+
+/**
+ * The top bar, AutoCAD's application frame and the Home tab's Layers and
+ * Properties panels in one row: the application menu and the Quick Access
+ * Toolbar, the save state, the current layer, the object properties, and last
+ * the palette toggles. Every part has a fixed width or truncates, so the row
+ * never grows with a layer's name or the selection.
+ */
+export function TopBar({
+  engine,
+  state,
+}: {
+  engine: CadEngine
+  state: EngineState
+}) {
+  const t = useTranslations("Editor.TopBar")
+  const keys = useTranslations("Editor.Keys")
+  // The bar's buttons run the commands, as AutoCAD's macros do (`_qsave`), so
+  // they are echoed at the prompt like a typed command.
+  const run = (command: string) => engine.runCommand(command)
+
+  return (
+    <TooltipProvider>
+      {/* The Quick Access Toolbar's defaults in their order (New, Open, Save,
+          Save As, …, Undo, Redo); Plot and the Web & Mobile pair do not exist
+          here. */}
+      <Panel className="shrink-0 items-center">
+        <ApplicationMenu engine={engine} />
+        <IconAction
+          icon={FilePlus}
+          label={t("new")}
+          side="bottom"
+          onClick={() => run("_QNEW")}
+        />
+        <IconAction
+          icon={FolderOpen}
+          label={t("open")}
+          shortcut={keys("open")}
+          side="bottom"
+          onClick={() => run("_OPEN")}
+        />
+        <IconAction
+          icon={Save}
+          label={t("save")}
+          shortcut={keys("save")}
+          side="bottom"
+          onClick={() => run("_QSAVE")}
+        />
+        <IconAction
+          icon={SaveAll}
+          label={t("saveAs")}
+          side="bottom"
+          onClick={() => run("_SAVEAS")}
+        />
+        <IconAction
+          icon={Undo2}
+          mirrored
+          label={t("undo")}
+          shortcut={keys("undo")}
+          side="bottom"
+          disabled={!state.canUndo}
+          onClick={() => engine.undo()}
+        />
+        <IconAction
+          icon={Redo2}
+          mirrored
+          label={t("redo")}
+          shortcut={keys("redo")}
+          side="bottom"
+          disabled={!state.canRedo}
+          onClick={() => engine.redo()}
+        />
+      </Panel>
+
+      <SaveStatus state={state} />
+
+      <Separator orientation="vertical" className="mx-1 h-6!" />
+
+      <Panel className="shrink-0 items-center">
+        <LayersControl engine={engine} state={state} />
+        <LayerControl engine={engine} state={state} />
+      </Panel>
+
+      <Separator orientation="vertical" className="mx-1 h-6!" />
+
+      <PropertyControls engine={engine} state={state} />
+
+      <Panel className="ms-auto shrink-0 items-center">
+        <StylesControl engine={engine} state={state} />
+        <BlocksControl engine={engine} state={state} />
+        {/* Palette visibility, not a drafting mode — AutoCAD keeps this on
+            the View ribbon (Palettes panel), never on the status bar. */}
+        <IconAction
+          icon={Terminal}
+          label={t("commandLine")}
+          shortcut="F2"
+          side="bottom"
+          active={state.commandLine.visible}
+          onClick={() => engine.toggleCommandLine()}
+        />
+      </Panel>
+    </TooltipProvider>
+  )
+}
+
+/**
+ * The application menu (AutoCAD's "A" button): the file commands, Drawing
+ * Utilities' Units, and the page's language, which AutoCAD has no menu for.
+ */
+function ApplicationMenu({ engine }: { engine: CadEngine }) {
+  const t = useTranslations("Editor.TopBar")
+  const links = useLanguageLinks(useLocale())
+  const item = (icon: LucideIcon, label: string, onClick: () => void) => {
+    const Icon = icon
+    return (
+      <Menu.Item onClick={onClick} className={MENU_ITEM}>
+        <Icon />
+        {label}
+      </Menu.Item>
+    )
+  }
+
+  return (
+    <Menu.Root>
+      <Tooltip>
+        <TooltipTrigger
+          render={
+            <Menu.Trigger
+              render={
+                <Button size="icon-sm" variant="ghost" aria-label={t("menu")}>
+                  <LogoMark mono className="size-5" />
+                </Button>
+              }
+            />
+          }
+        />
+        <TooltipContent side="bottom">{t("menu")}</TooltipContent>
+      </Tooltip>
+      <Menu.Portal>
+        <Menu.Positioner
+          side="bottom"
+          align="start"
+          sideOffset={6}
+          className="z-50"
+        >
+          <Menu.Popup className={MENU_POPUP}>
+            {item(FilePlus, t("new"), () => engine.runCommand("_NEW"))}
+            {item(FolderOpen, t("open"), () => engine.runCommand("_OPEN"))}
+            {item(Save, t("save"), () => engine.runCommand("_QSAVE"))}
+            {item(SaveAll, t("saveAs"), () => engine.runCommand("_SAVEAS"))}
+            <Menu.Separator className="-mx-1 my-1 h-px bg-border" />
+            {/* WHY the status bar's units: the Drawing Units dialog (UNITS)
+                does not exist yet, and this is where its settings live. */}
+            {item(Ruler, t("units"), () => engine.setUnitsPanel(true))}
+            {links.length > 0 && (
+              <>
+                <Menu.Separator className="-mx-1 my-1 h-px bg-border" />
+                <Menu.SubmenuRoot>
+                  <Menu.SubmenuTrigger className={MENU_ITEM}>
+                    <Globe />
+                    {t("language")}
+                    <ChevronRight className="absolute inset-e-2 rtl:-scale-x-100" />
+                  </Menu.SubmenuTrigger>
+                  <Menu.Portal>
+                    <Menu.Positioner
+                      side="inline-end"
+                      align="start"
+                      sideOffset={6}
+                      className="z-50"
+                    >
+                      <Menu.Popup className={cn(MENU_POPUP, "min-w-40")}>
+                        {links.map((link) => (
+                          <Menu.LinkItem
+                            key={link.locale}
+                            href={link.href}
+                            hrefLang={link.locale}
+                            lang={link.locale}
+                            aria-current={link.current ? "true" : undefined}
+                            className={MENU_ITEM}
+                          >
+                            {link.name}
+                            {link.current && (
+                              <CheckIcon className="absolute inset-e-2 text-primary" />
+                            )}
+                          </Menu.LinkItem>
+                        ))}
+                      </Menu.Popup>
+                    </Menu.Positioner>
+                  </Menu.Portal>
+                </Menu.SubmenuRoot>
+              </>
+            )}
+          </Menu.Popup>
+        </Menu.Positioner>
+      </Menu.Portal>
+    </Menu.Root>
+  )
+}
+
+/**
+ * The auto-save's state, where AutoCAD's title shows the drawing's name: the
+ * drawing is kept on this device as it changes, apart from the files QSAVE
+ * writes.
+ */
+function SaveStatus({ state }: { state: EngineState }) {
+  const t = useTranslations("Editor.TopBar")
+  const saving = state.saveState === "saving"
+  if (!saving && state.lastSavedAt === null) return null
+  return (
+    <span
+      role="status"
+      title={saving ? undefined : t("savedHint")}
+      className="ms-1 flex min-w-0 shrink items-center gap-1.5 text-xs text-muted-foreground"
+    >
+      {saving && <Loader2 className="size-3.5 shrink-0 animate-spin" />}
+      <span className="truncate">{saving ? t("saving") : t("saved")}</span>
+    </span>
+  )
+}
+
+/**
+ * The Layers panel's drop-down: the selection's layer, or the current one
+ * with nothing selected. Choosing moves the selection there, or makes the
+ * layer current — two steps either way.
+ */
+function LayerControl({
+  engine,
+  state,
+}: {
+  engine: CadEngine
+  state: EngineState
+}) {
+  const t = useTranslations("Editor.TopBar")
+  const properties = useTranslations("Editor.Properties")
+  const selected = state.selectionCount > 0
+  const value = selected ? state.selectionLayerId : state.currentLayerId
+  const items = Object.fromEntries(
+    state.layers.map((layer) => [layer.id, layer.name])
+  )
+  const colorOf = (id: string) =>
+    state.layers.find((layer) => layer.id === id)?.color
+
+  return (
+    <Select
+      items={items}
+      value={value}
+      onValueChange={(id) => {
+        if (id == null) return
+        engine.applyLayerControl(id)
+        engine.focusSurface()
+      }}
+    >
+      <SelectTrigger
+        size="sm"
+        aria-label={t("layer")}
+        className={cn(BAR_SELECT, "w-40")}
+      >
+        <SelectValue placeholder={properties("varies")}>
+          {(id: string | null) =>
+            id === null ? null : (
+              <>
+                <LayerSwatch color={colorOf(id) ?? ""} />
+                <span className="truncate">{items[id]}</span>
+              </>
+            )
+          }
+        </SelectValue>
+      </SelectTrigger>
+      <SelectContent align="start" alignItemWithTrigger={false}>
+        {state.layers.map((layer) => (
+          <SelectItem key={layer.id} value={layer.id} className="text-xs">
+            <LayerSwatch color={layer.color} />
+            <span className="truncate">{layer.name}</span>
+          </SelectItem>
+        ))}
+      </SelectContent>
+    </Select>
+  )
+}
+
+/**
+ * The Properties panel: Match Properties, then the object colour, lineweight
+ * and linetype. WHY only with a selection: there is no current colour,
+ * linetype or lineweight yet (CECOLOR, CELTYPE, CELWEIGHT), so with nothing
+ * selected they read ByLayer, which is what new objects get.
+ */
+function PropertyControls({
+  engine,
+  state,
+}: {
+  engine: CadEngine
+  state: EngineState
+}) {
+  const t = useTranslations("Editor.TopBar")
+  const selected = state.selectionCount > 0
+  const matchprop = state.tools.find((entry) => entry.id === "matchprop")
+  const done = () => engine.focusSurface()
+
+  return (
+    <Panel className="shrink-0 items-center">
+      <IconAction
+        icon={Paintbrush}
+        label={matchprop?.label ?? "matchprop"}
+        shortcut={matchprop?.shortcut?.toUpperCase()}
+        side="bottom"
+        active={state.activeToolId === "matchprop"}
+        onClick={() => engine.setActiveTool("matchprop")}
+      />
+      <ColorSelect
+        below
+        disabled={!selected}
+        value={selected ? state.selectionColor : COLOR_BYLAYER}
+        names={state.names}
+        onValueChange={(value) => {
+          engine.setSelectionColor(value)
+          done()
+        }}
+        ariaLabel={t("color")}
+        className="w-36"
+        triggerClassName={BAR_SELECT}
+      />
+      <LineweightSelect
+        below
+        includeByLayer
+        disabled={!selected}
+        value={selected ? state.selectionLineweight : LINEWEIGHT_BYLAYER}
+        names={state.names}
+        onValueChange={(value) => {
+          engine.setSelectionLineweight(value)
+          done()
+        }}
+        ariaLabel={t("lineweight")}
+        className={cn(BAR_SELECT, "w-28")}
+      />
+      <LinetypeSelect
+        below
+        includeByLayer
+        disabled={!selected}
+        value={selected ? state.selectionLinetype : LINETYPE_BYLAYER}
+        names={state.names}
+        onValueChange={(value) => {
+          engine.setSelectionLinetype(value)
+          done()
+        }}
+        ariaLabel={t("linetype")}
+        className={cn(BAR_SELECT, "w-32")}
+      />
+    </Panel>
+  )
+}

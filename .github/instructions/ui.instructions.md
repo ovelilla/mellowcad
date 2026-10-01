@@ -121,16 +121,43 @@ class or light values.
     (the snap override menu, the Selection list box) is portalled and positioned in the viewport,
     so its virtual anchor converts with `engine.clientFromScreen`; the raw state point lands off
     by the zones before the canvas.
-  - On the drawing only what AutoCAD puts there: the ViewCube, the dynamic input, the menus at the
-    cursor.
-- **The top bar** is one flex row: the Layers, Styles and Blocks triggers, then the CommandBar.
-  Never place one of them at its own fixed offset — a longer layer name or label then slides
-  under its neighbour.
-- **CommandBar** — file (Save, Open, and Clear all until the application menu's New replaces it),
-  Undo / Redo, Select and Match Properties, view and palette visibility (AutoCAD's ribbon View →
-  Palettes), and last the language (`LanguageMenu`, a Base UI menu of `useLanguageLinks`):
-  the view menu (the viewport controls' `[Top]`: `VIEW_MENU`, labelled by `state.view.preset`, run
-  through `engine.applyViewPreset`) and Orbit beside Zoom window and Pan.
+  - On the drawing only what AutoCAD puts there, all in the canvas cell: the viewport controls
+    (`ViewportControls`, top left — top right in RTL), the ViewCube with the navigation bar linked
+    under it (top right — top left in RTL), the dynamic input, the menus at the cursor. Nothing
+    else floats there; a new control finds its zone.
+  - What sits on the drawing takes the pointer only where it is drawn: the ViewCube's column and
+    SVG box let it through to the canvas, and only the buttons, the cube's zones, the compass and
+    the triangles set `pointer-events-auto`. ZOOM Extents frames up to 40 px from the edge, so a
+    corner grip can land under the cube's box and must stay pickable there.
+- **The top bar** (`TopBar`) is one flex row, AutoCAD's application frame plus the Home tab's
+  Layers and Properties panels, in this order:
+  - the application menu (the product mark; New, Open, Save, Save As, Drawing Units, then the
+    language as a submenu of `useLanguageLinks`), then the Quick Access Toolbar in AutoCAD's order
+    — New (QNEW), Open, Save, Save As, Undo, Redo;
+  - the auto-save state (`role="status"`, the only part that shrinks and truncates);
+  - Layers (the manager's trigger) and the layer drop-down (`engine.applyLayerControl`: with a
+    selection it moves it in one undo step, else it sets the current layer — two clicks);
+  - Match Properties, then the object colour, lineweight and linetype drop-downs, which act on the
+    selection and read ByLayer, disabled, with nothing selected until CECOLOR, CELTYPE and
+    CELWEIGHT exist;
+  - at the end, the palette toggles: Styles, Blocks and the command line (F2), AutoCAD's View →
+    Palettes.
+  - The buttons run the commands by their global name (`engine.runCommand("_QSAVE")`), as
+    AutoCAD's macros do, so they echo at the prompt; Undo and Redo call the engine.
+  - Every part has a fixed width (`w-40` for the layer, `w-36`/`w-28`/`w-32` for the properties)
+    and `shrink-0`, so the row's length never depends on a layer's name or the selection; measured
+    to fit 1280 px in `/es/draw` with a 50-character layer name. A wider part needs that
+    measurement again. Never place a part at its own fixed offset.
+  - Its drop-downs open downwards: a `Select` in a bar passes `below` (`alignItemWithTrigger`
+    off), or the list covers its trigger, as it does in a palette.
+- **Viewport controls** (`viewport-controls.tsx`, VPCONTROL 1) — only the view control exists:
+  `[Top]` (the brackets are CSS, notation not words), labelled by `state.view.preset`, lists
+  `VIEW_MENU` downwards and runs the choice through `engine.applyViewPreset`.
+- **Navigation bar** (`navigation-bar.tsx`, NAVBARDISPLAY 1) — a vertical `role="toolbar"`
+  linked under the ViewCube: Pan, the Zoom split button and Orbit, named by the engine's tools.
+  The split button runs the member it shows (the last used, Extents first) and its arrow lists
+  Extents, Window, Previous, In and Out. Its menus and tooltips open on the inline start, into the
+  drawing. There is no Reset view: the ViewCube's Home does it.
 - **ViewCube** (the drawing's top right, NAVVCUBELOCATION 0; top left in RTL, beside the palette
   panel) — `view-cube.tsx` draws `state.viewCube` in SVG
   (the engine's 0–1 box), with Home above, the compass round it and the UCS menu below; its
@@ -168,12 +195,16 @@ class or light values.
     the section, a group per drop-down. Unfolded the palette is 17 rows and fits 720 px; folded,
     14 rows fit 650 px. A new slot must keep both, measured in Chrome (no palette button past the
     zone).
-  - What is not a command on the drawing lives elsewhere, and what leaves the palette before its
-    zone exists goes to the CommandBar provisionally, never nowhere: Undo, Redo, Select and Match
-    Properties wait there for the top bar. Delete selection became ERASE in Modify (the Delete key
-    still erases the selection).
+  - What is not a command on the drawing lives elsewhere, never nowhere: Undo and Redo in the
+    Quick Access Toolbar, Match Properties with the object properties, the view tools on the
+    navigation bar and the viewport controls. Select has no button: it is the idle state and
+    Escape returns to it. Delete selection became ERASE in Modify (the Delete key still erases
+    the selection).
   - Unlisted tools fall into a trailing group, so a tool that belongs elsewhere in the chrome (the
     view tools, Select, Match Properties) must be listed in `RAIL_EXCLUDED`.
+- **The status bar's units popover** is controlled by `state.unitsPanel`
+  (`engine.setUnitsPanel`): the application menu's Drawing Units opens it until the UNITS dialog
+  exists.
 - The editor carries no product or meta copy (an About panel was removed): that belongs to the
   landing.
 - The dynamic-input box is `pointer-events-none` and keyboard-driven — never make it clickable.
@@ -187,7 +218,9 @@ class or light values.
 
 A palette a command can open (the style managers, the Blocks palette) is a **controlled** popover
 driven by `EngineState`, never by local `useState` — otherwise typing `DIMSTYLE` cannot open it.
-Its trigger sits in the top bar with the others.
+Its trigger sits in the top bar with the others: Layers beside the layer drop-down, Styles and
+Blocks with the palette toggles at the bar's end. The Layer manager no longer moves the selection
+(a click on a name did, a gesture AutoCAD has not): the layer drop-down does.
 
 Anything that has to **draw drawing content** — a block thumbnail, a future layout preview — asks
 the engine for a `Scene` (`engine.buildBlockPreview(...)`) and paints it with

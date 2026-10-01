@@ -81,10 +81,15 @@ export function registerCommands(
       }
     },
   })
+  // With no templates here, NEW's Select Template dialog has nothing to offer:
+  // both start the blank drawing QNEW starts from the default template.
+  register({ id: "NEW", run: () => runtime.newDrawing() })
+  register({ id: "QNEW", run: () => runtime.newDrawing() })
   // A browser download always names the file, so AutoCAD's QSAVE (save over
   // the current name) and SAVEAS (prompt for one) cannot be told apart here;
-  // both spellings run the one command we can offer.
+  // both run the one save we can offer.
   register({ id: "QSAVE", run: () => runtime.saveDrawingToFile() })
+  register({ id: "SAVEAS", run: () => runtime.saveDrawingToFile() })
   register({
     id: "OPEN",
     run: () => {

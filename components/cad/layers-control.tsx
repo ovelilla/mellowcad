@@ -33,8 +33,9 @@ import { LineweightSelect } from "./lineweight-select"
 /**
  * The Layer Properties Manager, modelled on AutoCAD's: a compact panel listing
  * every layer's colour, on/off, lock state and entity count, with the current
- * layer (where new geometry is drawn) highlighted. Rendered as a popover off a
- * trigger that doubles as the current-layer readout, like AutoCAD's ribbon.
+ * layer (where new geometry is drawn) highlighted. Its trigger is the Layers
+ * panel's Layer Properties button; the layer drop-down beside it reads and
+ * sets the current layer.
  */
 export function LayersControl({
   engine,
@@ -44,9 +45,6 @@ export function LayersControl({
   state: EngineState
 }) {
   const t = useTranslations("Editor.Layers")
-  const current =
-    state.layers.find((layer) => layer.id === state.currentLayerId) ??
-    state.layers[0]
 
   return (
     <TooltipProvider>
@@ -57,11 +55,10 @@ export function LayersControl({
               size="sm"
               variant="ghost"
               aria-label={t("title")}
-              className="pointer-events-auto max-w-48 gap-2"
+              className="pointer-events-auto gap-2"
             >
               <LayersIcon className="shrink-0" />
-              <ColorSwatch color={current.color} />
-              <span className="truncate text-xs">{current.name}</span>
+              <span className="text-xs">{t("title")}</span>
             </Button>
           }
         />
@@ -85,12 +82,6 @@ export function LayersControl({
             </Button>
           </div>
 
-          {state.selectionCount > 0 && (
-            <div className="px-3 pb-2 text-xs text-muted-foreground">
-              {t("selected", { count: state.selectionCount })}
-            </div>
-          )}
-
           <div className="max-h-[60svh] overflow-y-auto">
             {state.layers.map((layer) => (
               <LayerRow
@@ -99,7 +90,6 @@ export function LayersControl({
                 layer={layer}
                 names={state.names}
                 isCurrent={layer.id === state.currentLayerId}
-                hasSelection={state.selectionCount > 0}
                 canDelete={
                   layer.id !== "0" &&
                   layer.id !== state.currentLayerId &&
@@ -119,14 +109,12 @@ function LayerRow({
   layer,
   names,
   isCurrent,
-  hasSelection,
   canDelete,
 }: {
   engine: CadEngine
   layer: LayerInfo
   names: EngineNames
   isCurrent: boolean
-  hasSelection: boolean
   canDelete: boolean
 }) {
   const t = useTranslations("Editor.Layers")
@@ -172,7 +160,7 @@ function LayerRow({
         aria-label={t("colorLabel", { name: layer.name })}
         title={t("color")}
       >
-        <ColorSwatch color={layer.color} />
+        <LayerSwatch color={layer.color} />
         <input
           type="color"
           value={normalizeHex(layer.color)}
@@ -186,11 +174,7 @@ function LayerRow({
       <NameField
         name={layer.name}
         editable={!isBaseLayer}
-        highlightAsTarget={hasSelection}
         onRename={(name) => engine.updateLayer(layer.id, { name })}
-        onAssignSelection={
-          hasSelection ? () => engine.setSelectionLayer(layer.id) : undefined
-        }
       />
 
       <LinetypeSelect
@@ -306,22 +290,15 @@ function IconToggle({
   )
 }
 
-/**
- * Inline-editable layer name. Commits on Enter or blur; Escape reverts. When a
- * selection exists the name doubles as a "move selection to this layer" badge.
- */
+/** Inline-editable layer name. Commits on Enter or blur; Escape reverts. */
 function NameField({
   name,
   editable,
-  highlightAsTarget,
   onRename,
-  onAssignSelection,
 }: {
   name: string
   editable: boolean
-  highlightAsTarget: boolean
   onRename: (name: string) => void
-  onAssignSelection?: () => void
 }) {
   const t = useTranslations("Editor.Layers")
   const [draft, setDraft] = useState(name)
@@ -354,24 +331,14 @@ function NameField({
   return (
     <button
       type="button"
-      onClick={() => {
-        if (onAssignSelection) onAssignSelection()
-      }}
       onDoubleClick={() => {
         if (editable) {
           setDraft(name)
           setEditing(true)
         }
       }}
-      title={
-        onAssignSelection ? t("moveSelection") : editable ? t("rename") : name
-      }
-      className={cn(
-        "min-w-0 flex-1 truncate rounded px-1 py-0.5 text-start text-xs",
-        highlightAsTarget
-          ? "cursor-pointer hover:bg-primary/15"
-          : "cursor-default"
-      )}
+      title={editable ? t("rename") : name}
+      className="min-w-0 flex-1 cursor-default truncate rounded px-1 py-0.5 text-start text-xs"
     >
       {name}
     </button>
@@ -379,7 +346,7 @@ function NameField({
 }
 
 /** A small rounded colour chip with a subtle border for contrast on any bg. */
-function ColorSwatch({ color }: { color: string }) {
+export function LayerSwatch({ color }: { color: string }) {
   return (
     <span
       className="inline-block size-4 shrink-0 rounded-sm border border-white/25 shadow-inner"

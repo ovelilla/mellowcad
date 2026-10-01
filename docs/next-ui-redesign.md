@@ -1,6 +1,6 @@
 # Rediseño del editor — brief
 
-> **Estado:** fases 0, 1 y 2 hechas; sigue la 3. En la 0, la barra de comandos pasó a seguir a los
+> **Estado:** fases 0 a 3 hechas; sigue la 4. En la 0, la barra de comandos pasó a seguir a los
 > disparadores de Capas, Estilos y Bloques en la misma fila (centrada volvía a chocar con ellos) y
 > «Borrar todo», junto a Abrir hasta que Nuevo lo sustituya. En la 1, cada zona tiene su tamaño en
 > CSS antes de que monte el motor, para que el lienzo nazca con su caja final. El panel ocupa ya sus
@@ -15,7 +15,18 @@
 > Las casillas se agrupan solo por semántica (variantes de un comando o comandos sobre un mismo
 > objeto), nunca para ahorrar sitio: el «▾ más» de §3 se descartó, Partir en punto entra en Partir ▾,
 > Unir, Editar texto y Ajustar espacio son casillas, y los tres comandos de atributos forman
-> Atributos ▾. Sigue la convención de `docs/next-*.md`: se borra cuando la
+> Atributos ▾. En la 3, la barra superior (`TopBar`) sustituye a la CommandBar: el menú de la
+> aplicación, la barra de acceso rápido en el orden de AutoCAD, el estado del autoguardado, Capas y
+> el desplegable de capa, Igualar propiedades con color, grosor y tipo de línea, y al final Estilos,
+> Bloques y la línea de comandos. NEW, QNEW y SAVEAS son comandos del motor; Nuevo es un paso de
+> deshacer porque aquí no hay pestaña a la que volver. Cambiar capa o propiedades desde un
+> desplegable es ahora un solo paso de deshacer (antes, uno por objeto). La etiqueta `[Superior]` y
+> la barra de navegación van sobre el lienzo; Restablecer vista desaparece. Seleccionar no tiene
+> casilla. Unidades del dibujo abre el popover de la barra de estado hasta el diálogo de la fase 5.
+> El nombre del dibujo queda pendiente: el puerto de archivos no sabe cómo se llama el archivo
+> abierto. El ViewCube solo atrapa el puntero donde está dibujado, pero en `/ar/draw` su brújula
+> sigue cayendo sobre una esquina del dibujo de prueba tras ZOOM E, como el de AutoCAD tapa la
+> vista: ZOOM E no lo esquiva. Sigue la convención de `docs/next-*.md`: se borra cuando la
 > última fase esté hecha, y lo que deba durar pasa antes a `.github/instructions/ui.instructions.md`
 > y a `docs/autocad-coverage.md`. Versión visual, con las figuras de antes y después:
 > https://claude.ai/artifact/BddNdia3MSJnwA4AuXi5Bt (privada; se lee con la herramienta Artifact).
@@ -65,7 +76,7 @@ que AutoCAD pone ahí.
 
 | Zona                   | Tamaño                      | Contenido                                                                                                                                                                                                                                                                                            |
 | ---------------------- | --------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Barra superior         | 40 px, ancho completo       | menú de la aplicación (Nuevo, Abrir, Guardar, Guardar como, Unidades del dibujo, Idioma) · nombre del dibujo y estado de guardado · Deshacer/Rehacer · desplegable de capa actual + gestor · color, tipo de línea y grosor + Igualar propiedades · conmutadores de paletas y de la línea de comandos |
+| Barra superior         | 40 px, ancho completo       | menú de la aplicación (Nuevo, Abrir, Guardar, Guardar como, Unidades del dibujo, Idioma) · barra de acceso rápido (Nuevo, Abrir, Guardar, Guardar como, Deshacer, Rehacer) · estado de guardado · gestor de capas + desplegable de capa actual · Igualar propiedades + color, grosor y tipo de línea · conmutadores de paletas y de la línea de comandos |
 | Paleta de herramientas | 76 px, dos columnas, inicio | solo comandos contra el lienzo, en cinco secciones (§3)                                                                                                                                                                                                                                              |
 | Lienzo                 | el resto                    | encima: la etiqueta de vista «[Superior ▾]» arriba a la izquierda (controles de ventana gráfica), el ViewCube y, debajo, la barra de navegación (Encuadre, Zoom ▾, Órbita); la entrada dinámica, las fichas de opciones y los menús                                                                  |
 | Panel de paletas       | 280 px, fin, plegable a 36  | pestañas Propiedades, Capas, Bloques, Estilos; sin modo                                                                                                                                                                                                                                              |
@@ -102,8 +113,8 @@ de un comando o comandos sobre un mismo objeto: nada se esconde en un «▾ más
 
 Salen del rail:
 
-- Seleccionar: es el estado de reposo y se vuelve con Esc. Si se echa de menos, vuelve como casilla
-  suelta encima de Dibujo.
+- Seleccionar: sin casilla (decidido en la fase 3). Es el estado de reposo y se vuelve con Esc, como
+  en AutoCAD. `RAIL_EXCLUDED` lo sigue listando.
 - Deshacer y Rehacer: a la barra superior.
 - Igualar propiedades: junto a las propiedades de la barra superior.
 - Borrar todo: se convierte en Nuevo, en el menú de la aplicación.
@@ -160,7 +171,21 @@ Verificado en la ayuda de AutoCAD 2026:
 - **Panel Modificar ampliado.** Partir en punto y Unir.
 - **Panel Propiedades.** Ahí está Igualar propiedades.
 - **Desplegables de capa y propiedades.** Sin selección muestran los valores actuales; con
-  selección, los de los objetos. Elegir una capa con objetos seleccionados los mueve a ella.
+  selección, los de los objetos («If no objects are selected, the drop-down lists … display the
+  current settings for the drawing»). Elegir una capa con objetos seleccionados los mueve a ella; sin
+  selección, la hace actual. Con una selección mixta solo está documentado `*VARIES*` en la paleta
+  Propiedades; aquí el desplegable queda vacío.
+- **Menú de la aplicación.** Crea, abre y guarda; Unidades está en Utilidades de dibujo > Unidades;
+  la página de NEW enlaza con él.
+- **Barra de acceso rápido.** Nuevo, Abrir, Guardar y Guardar como, y Deshacer y Rehacer, que son
+  botones divididos con una lista de lo que deshacen; aquí son botones simples.
+- **NEW, QNEW y SAVEAS.** QNEW usa la plantilla por defecto, que de fábrica es Ninguna, y entonces
+  muestra Seleccionar plantilla como NEW: sin plantillas, los dos hacen lo mismo. El dibujo nuevo
+  («Dibujo1») se abre en otra pestaña y el actual sigue abierto. SAVEAS siempre pide nombre y el
+  nuevo pasa a ser el dibujo actual. En español, NUEVO, RNUEVO y GUARDARCOMO. Un asterisco en la
+  pestaña marca los cambios sin guardar.
+- **Controles de ventana gráfica.** VPCONTROL vale 1: `[+] [Top] [2D Wireframe]`
+  arriba a la izquierda de cada ventana; aquí solo existe el control de vista.
 - **Paleta Propiedades.** Sin selección muestra las propiedades actuales. QPMODE está desactivado
   por defecto (−1), así que no hay Propiedades rápidas.
 - **Barra de estado.** El orden de §4. La Personalización es el último botón. Las coordenadas están
@@ -168,8 +193,10 @@ Verificado en la ayuda de AutoCAD 2026:
 - **Pantalla limpia.** Ctrl+0 conserva la barra de acceso rápido, la ventana de comandos y la barra
   de estado.
 - **Atajos.** Ctrl+0 Pantalla limpia, Ctrl+1 Propiedades, Ctrl+9 línea de comandos.
-- **Barra de navegación.** Activa por defecto (NAVBARDISPLAY 1), con Encuadre, Zoom y Órbita, junto
-  al ViewCube.
+- **Barra de navegación.** Activa por defecto (NAVBARDISPLAY 1; NAVBAR la activa y desactiva).
+  Vinculada al ViewCube, va en vertical encima o debajo de él. Sus herramientas: SteeringWheels,
+  Encuadre, Zoom, Órbita y ShowMotion; aquí, las tres centrales. Los botones divididos abren la lista
+  desde su parte pequeña, y la de Zoom incluye Zoom extensión.
 - **Cinta.** Existen los estados de minimizado (a pestañas, a títulos de panel, a botones de panel).
 - **Elipse** es un desplegable de la fila principal del panel Dibujo, junto a Rectángulo y Sombreado.
   La ayuda cita Eje, Fin y Arco elíptico; Centro solo se deduce de la opción de ELLIPSE, así que el
@@ -190,6 +217,10 @@ Verificado en la ayuda de AutoCAD 2026:
 - **Utilidades.** Medir▾ (Distancia y Área citados en 2026) e ID de punto.
 
 **Comprobar antes de usarlo:**
+- El orden completo del menú de la aplicación y de la barra de acceso rápido, los miembros y el orden
+  de la lista de Zoom de la barra de navegación y si su botón recuerda el último zoom. Aquí: Extensión,
+  Ventana, Previo, Ampliar y Reducir, y el botón muestra el último usado.
+- Qué muestran los desplegables de la cinta con una selección mixta.
 - En qué lado acopla AutoCAD la paleta Propiedades por defecto. Aquí va a la derecha, junto al
   ViewCube.
 - El clic derecho por defecto (SHORTCUTMENU, clic derecho temporizado) y el contenido de los menús
@@ -217,6 +248,18 @@ Fuentes (todas en `help.autodesk.com/cloudhelp/2026/ENU/`):
 - `GUID-ECF7FC17-…` (Editar atributo único), `GUID-F26C676B-BF70-4538-A31F-4FBA07DC19D6.htm` (Medir ▾ Distancia),
   `GUID-27F11419-81E7-428A-972E-561F5809FBCD.htm` (ID de punto)
 - `AutoCAD-Customization/files/GUID-B6A9C126-230D-47F5-8973-464BC80E3736.htm` (atajos)
+- `AutoCAD-Core/files/GUID-D976938F-5EE4-4B63-81C6-51175D8B4C34.htm` (menú de la aplicación),
+  `AutoCAD-OnBoarding/files/ACD_FOUNDATIONS_MAIN3.html` (Unidades, barra de acceso rápido, Zoom
+  extensión), `GUID-BC96A2AA-2AEE-47C0-B1F2-85F8B60663D6.htm` (Deshacer y Rehacer divididos)
+- `GUID-90BE41A2-7FFD-44DB-A927-B7A9277C75C2.htm` (NEW), `GUID-CF3C039B-CF22-4933-928A-93A3AA71C4FA.htm`
+  (QNEW), `GUID-1FF801F9-7FEE-4494-854D-4704A7784232.htm` (SAVEAS), y las páginas ESP con los
+  mismos GUID (NUEVO, RNUEVO, GUARDARCOMO); `AutoCAD-GettingStarted/files/GUID-5B6347C1-B458-4336-AB2A-C16AF161B755.htm`
+  (pestañas de archivo)
+- `GUID-61017FE1-B409-4DCA-948F-4B09903992C7.htm` (VPCONTROL), `GUID-69482C47-5BF4-4AEE-9AB8-3904F4300C20.htm`
+  (controles de ventana gráfica), `GUID-96CA70D4-A86A-4BEE-BBB3-BFF1C28799A2.htm` (NAVBARDISPLAY),
+  `GUID-90981580-5028-4E74-A117-21EFA734017F.htm` (NAVBAR), `AutoCAD-OnBoarding/files/ACD_FOUNDATIONS_MAIN1.html`
+  (herramientas de la barra de navegación), `AutoCAD-GettingStarted/files/GUID-FA005756-B8F5-4A78-988F-31335A68D77C.htm`
+  (capa actual sin selección)
 
 ## 6. Fases
 
@@ -243,7 +286,7 @@ los del motor en `cad/locales/`, con `npm run locales`). Las clases son lógicas
      visible sin tocarlo.
    - La transición de vista desde la landing sigue apuntando al lienzo (`SHEET_TRANSITION`).
 2. **Paleta de herramientas de §3,** con el plegado por alto.
-3. **Barra superior de §2.**
+3. **Barra superior de §2.** Hecha.
    - El desplegable de capa mueve la selección.
    - Los de propiedades actúan sobre la selección hasta la fase 5.
    - La vista pasa a la esquina del lienzo y a la barra de navegación.

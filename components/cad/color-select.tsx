@@ -29,6 +29,9 @@ export function ColorSelect({
   onValueChange,
   ariaLabel,
   className,
+  triggerClassName,
+  disabled = false,
+  below = false,
 }: {
   value: string | null
   /** The engine's names for the colours and for ByLayer. */
@@ -36,6 +39,14 @@ export function ColorSelect({
   onValueChange: (value: string) => void
   ariaLabel: string
   className?: string
+  triggerClassName?: string
+  /** Unavailable: shown, but nothing to act on. */
+  disabled?: boolean
+  /**
+   * Opens below the trigger, as a bar's drop-down does, instead of over it as
+   * a palette's field does.
+   */
+  below?: boolean
 }) {
   const t = useTranslations("Editor.Properties")
   const isStandard = STANDARD_COLORS.some((color) => color.value === value)
@@ -52,7 +63,8 @@ export function ColorSelect({
     <div className={cn("flex items-center gap-1", className)}>
       <Select
         items={labels}
-        value={value ?? undefined}
+        disabled={disabled}
+        value={value}
         onValueChange={(next) => {
           if (next != null) onValueChange(next)
         }}
@@ -60,11 +72,17 @@ export function ColorSelect({
         <SelectTrigger
           size="sm"
           aria-label={ariaLabel}
-          className="min-w-0 flex-1 bg-background text-[11px] dark:bg-background"
+          className={cn(
+            "min-w-0 flex-1 bg-background text-[11px] dark:bg-background",
+            triggerClassName
+          )}
         >
           <SelectValue placeholder={t("varies")} />
         </SelectTrigger>
-        <SelectContent>
+        <SelectContent
+          align={below ? "start" : undefined}
+          alignItemWithTrigger={!below}
+        >
           <SelectItem value={COLOR_BYLAYER} className="text-[11px]">
             <Swatch color={null} />
             {names.byLayer}
@@ -89,12 +107,14 @@ export function ColorSelect({
       </Select>
 
       <label
-        className="relative inline-flex size-8 shrink-0 cursor-pointer items-center justify-center rounded-md border border-border hover:bg-accent"
+        aria-disabled={disabled || undefined}
+        className="relative inline-flex size-8 shrink-0 cursor-pointer items-center justify-center rounded-md border border-border hover:bg-accent aria-disabled:pointer-events-none aria-disabled:opacity-50"
         title={t("customColor")}
       >
         <Palette className="size-4 text-muted-foreground" />
         <input
           type="color"
+          disabled={disabled}
           aria-label={t("customColor")}
           value={normalizeColor(custom ?? "") ?? "#ffffff"}
           onChange={(event) => onValueChange(event.target.value)}

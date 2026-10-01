@@ -110,7 +110,10 @@ export const COMMAND_FILING: Readonly<Record<string, Filing>> = {
   "3DORBIT": { group: "inquiry" },
   NAVVCUBE: { group: "inquiry" },
 
+  NEW: { group: "files" },
+  QNEW: { group: "files" },
   QSAVE: { group: "files" },
+  SAVEAS: { group: "files" },
   OPEN: { group: "files" },
   COPYCLIP: { group: "files" },
   CUTCLIP: { group: "files" },

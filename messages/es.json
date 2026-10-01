@@ -248,22 +248,36 @@
       "undo": "Ctrl+Z",
       "redo": "Ctrl+Y"
     },
-    "CommandBar": {
+    "TopBar": {
+      "menu": "Menú de la aplicación",
+      "new": "Nuevo",
+      "open": "Abrir",
+      "save": "Guardar",
+      "saveAs": "Guardar como",
+      "units": "Unidades del dibujo…",
+      "language": "Idioma",
       "saving": "Guardando automáticamente…",
-      "save": "Guardar dibujo",
-      "open": "Abrir dibujo",
-      "zoomWindow": "Zoom ventana",
-      "pan": "Encuadre",
-      "zoomIn": "Ampliar",
-      "zoomOut": "Reducir",
-      "zoomPrevious": "Zoom previo",
-      "zoomToFit": "Zoom extensión",
-      "resetView": "Restablecer vista",
-      "orbit": "Órbita",
-      "commandLine": "Línea de comandos",
-      "clearAll": "Borrar todo",
+      "saved": "Guardado",
+      "savedHint": "Guardado en este dispositivo",
       "undo": "Deshacer",
-      "redo": "Rehacer"
+      "redo": "Rehacer",
+      "commandLine": "Línea de comandos",
+      "layer": "Capa",
+      "color": "Color del objeto",
+      "lineweight": "Grosor de línea",
+      "linetype": "Tipo de línea"
+    },
+    "NavigationBar": {
+      "label": "Barra de navegación",
+      "zoom": "Zoom",
+      "extents": "Zoom extensión",
+      "window": "Zoom ventana",
+      "previous": "Zoom previo",
+      "in": "Ampliar",
+      "out": "Reducir"
+    },
+    "Viewport": {
+      "view": "Controles de vista: {name}"
     },
     "ViewCube": {
       "label": "ViewCube",
@@ -363,7 +377,6 @@
     "Layers": {
       "title": "Capas",
       "new": "Nueva",
-      "selected": "{count, plural, one {# seleccionado → clic en el nombre de una capa para moverlo a ella} other {# seleccionados → clic en el nombre de una capa para moverlos a ella}}",
       "setCurrentLabel": "Definir {name} como capa actual",
       "current": "Capa actual",
       "setCurrent": "Definir actual",
@@ -380,7 +393,6 @@
       "deleteBase": "La capa 0 no se puede suprimir",
       "deleteInUse": "La capa está en uso",
       "deleteCurrent": "No se puede suprimir la capa actual",
-      "moveSelection": "Mover los objetos seleccionados a esta capa (doble clic para cambiar el nombre)",
       "rename": "Doble clic para cambiar el nombre"
     },
     "Styles": {
@@ -438,9 +450,6 @@
       "dimStyleLabel": "Estilo de cota de los objetos seleccionados",
       "varies": "Varios",
       "customColor": "Color personalizado"
-    },
-    "Language": {
-      "label": "Idioma"
     }
   }
 }

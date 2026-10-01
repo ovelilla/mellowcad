@@ -128,9 +128,12 @@ export function ViewCube({
   const faceName = (face: ViewCubeFace) => state.names.viewCubeFaces[face]
   const { compass } = cube
 
+  // Only what is drawn takes the pointer — the buttons, the cube's zones, the
+  // compass and the triangles — so a grip in the empty corners of the cube's
+  // box can still be picked; ZOOM Extents may frame one there.
   return (
     <div
-      className="pointer-events-auto flex w-36 flex-col items-center gap-1 opacity-50 transition-opacity hover:opacity-100 has-[[data-popup-open]]:opacity-100"
+      className="flex w-36 flex-col items-center gap-1 opacity-50 transition-opacity hover:opacity-100 has-[[data-popup-open]]:opacity-100 [&_button]:pointer-events-auto"
       onContextMenu={(event) => {
         event.preventDefault()
         setMenuAt({ x: event.clientX, y: event.clientY })
@@ -189,7 +192,7 @@ export function ViewCube({
           {compass.letters.map(({ letter, at }) => (
             <g
               key={letter}
-              className="cursor-pointer"
+              className="pointer-events-auto cursor-pointer"
               onPointerDown={(event) =>
                 begin(event, { part: null, letter, ring: true })
               }
@@ -249,7 +252,7 @@ export function ViewCube({
                     data-part={zone.part}
                     points={zone.points.map((p) => `${p.x},${p.y}`).join(" ")}
                     className={cn(
-                      "cursor-pointer fill-transparent",
+                      "pointer-events-auto cursor-pointer fill-transparent",
                       hovered === zone.part && "fill-sky-400/35"
                     )}
                     onPointerEnter={() => setHovered(zone.part)}
@@ -273,7 +276,7 @@ export function ViewCube({
                 points={points}
                 role="button"
                 aria-label={t(`adjacent.${side}` as "adjacent.up")}
-                className="cursor-pointer fill-muted-foreground hover:fill-foreground"
+                className="pointer-events-auto cursor-pointer fill-muted-foreground hover:fill-foreground"
                 onPointerDown={(event) => event.stopPropagation()}
                 onClick={() => engine.viewCubeAdjacent(side)}
               />

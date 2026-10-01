@@ -248,22 +248,36 @@
       "undo": "Ctrl+Z",
       "redo": "Ctrl+Y"
     },
-    "CommandBar": {
+    "TopBar": {
+      "menu": "Application menu",
+      "new": "New",
+      "open": "Open",
+      "save": "Save",
+      "saveAs": "Save As",
+      "units": "Drawing Units…",
+      "language": "Language",
       "saving": "Auto-saving…",
-      "save": "Save drawing",
-      "open": "Open drawing",
-      "zoomWindow": "Zoom window",
-      "pan": "Pan",
-      "zoomIn": "Zoom in",
-      "zoomOut": "Zoom out",
-      "zoomPrevious": "Zoom previous",
-      "zoomToFit": "Zoom to fit",
-      "resetView": "Reset view",
-      "orbit": "Orbit",
-      "commandLine": "Command line",
-      "clearAll": "Clear all",
+      "saved": "Saved",
+      "savedHint": "Saved on this device",
       "undo": "Undo",
-      "redo": "Redo"
+      "redo": "Redo",
+      "commandLine": "Command line",
+      "layer": "Layer",
+      "color": "Object colour",
+      "lineweight": "Lineweight",
+      "linetype": "Linetype"
+    },
+    "NavigationBar": {
+      "label": "Navigation bar",
+      "zoom": "Zoom",
+      "extents": "Zoom Extents",
+      "window": "Zoom Window",
+      "previous": "Zoom Previous",
+      "in": "Zoom In",
+      "out": "Zoom Out"
+    },
+    "Viewport": {
+      "view": "View controls: {name}"
     },
     "ViewCube": {
       "label": "ViewCube",
@@ -363,7 +377,6 @@
     "Layers": {
       "title": "Layers",
       "new": "New",
-      "selected": "{count, plural, other {# selected → click a layer name to move it there}}",
       "setCurrentLabel": "Set {name} as current layer",
       "current": "Current layer",
       "setCurrent": "Set as current",
@@ -380,7 +393,6 @@
       "deleteBase": "Layer 0 cannot be deleted",
       "deleteInUse": "Layer is in use",
       "deleteCurrent": "Cannot delete the current layer",
-      "moveSelection": "Move selected objects to this layer (double-click to rename)",
       "rename": "Double-click to rename"
     },
     "Styles": {
@@ -438,9 +450,6 @@
       "dimStyleLabel": "Dim style of the selected objects",
       "varies": "Varies",
       "customColor": "Custom colour"
-    },
-    "Language": {
-      "label": "Language"
     }
   }
 }

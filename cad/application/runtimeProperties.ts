@@ -31,30 +31,47 @@ import { Vec2 } from "../geometry/Vec2"
 import { Vec3, planar, sub3 } from "../geometry/Vec3"
 import { Selection } from "./Selection"
 import { CommandHistory } from "./commands/Command"
-import { UpdateEntityCommand } from "./commands/entityCommands"
+import {
+  UpdateEntitiesCommand,
+  UpdateEntityCommand,
+} from "./commands/entityCommands"
 
 /**
- * Moves every selected entity onto layer `id`, matching AutoCAD's "change the
- * objects' layer" (each change is individually undoable).
+ * Applies `assign` to every selected entity it changes, as one undo step: a
+ * pick in a drop-down is one gesture, however many objects it touches.
  */
+function updateSelection(
+  document: CadDocument,
+  selection: Selection,
+  history: CommandHistory,
+  assign: (entity: Entity) => Entity | null
+): void {
+  const changed: Entity[] = []
+  for (const entityId of selection.toArray()) {
+    const entity = document.get(entityId)
+    const next = entity && assign(entity)
+    if (next) changed.push(next)
+  }
+  if (changed.length > 0) history.execute(new UpdateEntitiesCommand(changed))
+}
+
+/** Moves every selected entity onto layer `id` (the ribbon's layer drop-down). */
 export function setSelectionLayer(
   document: CadDocument,
   selection: Selection,
   history: CommandHistory,
   id: LayerId
 ): void {
-  if (selection.isEmpty() || !document.getLayer(id)) return
-  for (const entityId of selection.toArray()) {
-    const entity = document.get(entityId)
-    if (!entity || entity.layerId === id) continue
-    history.execute(new UpdateEntityCommand(assignEntityLayer(entity, id)))
-  }
+  if (!document.getLayer(id)) return
+  updateSelection(document, selection, history, (entity) =>
+    entity.layerId === id ? null : assignEntityLayer(entity, id)
+  )
 }
 
 /**
  * Sets the colour of every selected entity: a hex value is an explicit
  * ByObject override, `"ByLayer"` clears it so the layer's colour applies
- * again (each change is individually undoable).
+ * again.
  */
 export function setSelectionColor(
   document: CadDocument,
@@ -62,22 +79,19 @@ export function setSelectionColor(
   history: CommandHistory,
   color: EntityColor | typeof COLOR_BYLAYER
 ): void {
-  if (selection.isEmpty()) return
   const next =
     color === COLOR_BYLAYER ? undefined : (normalizeColor(color) ?? undefined)
   // Reject a malformed hex rather than silently clearing the override.
   if (color !== COLOR_BYLAYER && !next) return
-  for (const entityId of selection.toArray()) {
-    const entity = document.get(entityId)
-    if (!entity || entity.color === next) continue
-    history.execute(new UpdateEntityCommand(assignEntityColor(entity, next)))
-  }
+  updateSelection(document, selection, history, (entity) =>
+    entity.color === next ? null : assignEntityColor(entity, next)
+  )
 }
 
 /**
  * Sets the linetype of every selected entity: a concrete id is an explicit
  * ByObject override, `"ByLayer"` clears it so the layer's linetype applies
- * again (each change is individually undoable).
+ * again.
  */
 export function setSelectionLinetype(
   document: CadDocument,
@@ -85,19 +99,16 @@ export function setSelectionLinetype(
   history: CommandHistory,
   linetype: LinetypeId | typeof LINETYPE_BYLAYER
 ): void {
-  if (selection.isEmpty()) return
   const next = linetype === LINETYPE_BYLAYER ? undefined : linetype
-  for (const entityId of selection.toArray()) {
-    const entity = document.get(entityId)
-    if (!entity || entity.linetype === next) continue
-    history.execute(new UpdateEntityCommand(assignEntityLinetype(entity, next)))
-  }
+  updateSelection(document, selection, history, (entity) =>
+    entity.linetype === next ? null : assignEntityLinetype(entity, next)
+  )
 }
 
 /**
  * Sets the lineweight of every selected entity: a millimetre value is an
  * explicit ByObject override, `"ByLayer"` clears it so the layer's lineweight
- * applies again (each change is individually undoable).
+ * applies again.
  */
 export function setSelectionLineweight(
   document: CadDocument,
@@ -105,15 +116,10 @@ export function setSelectionLineweight(
   history: CommandHistory,
   lineweight: Lineweight | typeof LINEWEIGHT_BYLAYER
 ): void {
-  if (selection.isEmpty()) return
   const next = lineweight === LINEWEIGHT_BYLAYER ? undefined : lineweight
-  for (const entityId of selection.toArray()) {
-    const entity = document.get(entityId)
-    if (!entity || entity.lineweight === next) continue
-    history.execute(
-      new UpdateEntityCommand(assignEntityLineweight(entity, next))
-    )
-  }
+  updateSelection(document, selection, history, (entity) =>
+    entity.lineweight === next ? null : assignEntityLineweight(entity, next)
+  )
 }
 
 /**

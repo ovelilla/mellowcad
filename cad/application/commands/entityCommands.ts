@@ -1,4 +1,4 @@
-import { CadDocument } from "../../domain/Document"
+import { CadDocument, DocumentTables } from "../../domain/Document"
 import { Entity, EntityId } from "../../domain/entities"
 import { Command } from "./Command"
 
@@ -158,7 +158,7 @@ export class RemoveEntitiesCommand implements Command {
   }
 }
 
-/** Clears the whole drawing (the toolbar's "Clear all"). */
+/** Clears every object of the drawing, as one undo step. */
 export class ClearDocumentCommand implements Command {
   readonly label = "clear-document"
   private previous: Entity[] = []
@@ -174,5 +174,42 @@ export class ClearDocumentCommand implements Command {
 
   undo(doc: CadDocument): void {
     doc.load(this.previous)
+  }
+}
+
+/**
+ * NEW: replaces the whole drawing — its objects, tables and settings — with a
+ * blank one, as one undo step. WHY undoable: AutoCAD opens the new drawing in
+ * a tab of its own and the old one stays open there; with a single drawing
+ * here, U is the way back to it.
+ */
+export class NewDrawingCommand implements Command {
+  readonly label = "new-drawing"
+  private previous: { entities: Entity[]; tables: DocumentTables } | null = null
+
+  mapEntities(): Command {
+    return this
+  }
+
+  execute(doc: CadDocument): void {
+    this.previous = { entities: doc.getEntities(), tables: tablesOf(doc) }
+    doc.load([], tablesOf(new CadDocument()))
+  }
+
+  undo(doc: CadDocument): void {
+    if (this.previous) doc.load(this.previous.entities, this.previous.tables)
+  }
+}
+
+function tablesOf(doc: CadDocument): DocumentTables {
+  return {
+    settings: doc.getSettings(),
+    layers: doc.getLayers(),
+    currentLayerId: doc.getCurrentLayerId(),
+    textStyles: doc.getTextStyles(),
+    currentTextStyleId: doc.getCurrentTextStyleId(),
+    dimStyles: doc.getDimStyles(),
+    currentDimStyleId: doc.getCurrentDimStyleId(),
+    blocks: doc.getBlocks(),
   }
 }

@@ -81,7 +81,10 @@ export const es: EngineLocale = {
       "REDO": "Rehacer la última acción deshecha",
       "SNAP": "Restringir el cursor a los intervalos de resolución",
       "FROM": "Designar un punto desfasado de un punto base",
+      "NEW": "Iniciar un dibujo nuevo",
+      "QNEW": "Iniciar un dibujo nuevo",
       "QSAVE": "Guardar el dibujo en un archivo",
+      "SAVEAS": "Guardar el dibujo en un archivo con otro nombre",
       "OPEN": "Abrir un archivo de dibujo",
       "PASTECLIP": "Pegar el portapapeles en el dibujo",
       "DIMSTYLE": "Crear y modificar estilos de cota",
@@ -655,9 +658,17 @@ export const es: EngineLocale = {
       "FROM": [
         "DESDE"
       ],
+      "NEW": [
+        "NUEVO"
+      ],
+      "QNEW": [
+        "RNUEVO"
+      ],
       "QSAVE": [
         "GUARDARR",
-        "GUARDAR",
+        "GUARDAR"
+      ],
+      "SAVEAS": [
         "GUARDARCOMO"
       ],
       "OPEN": [

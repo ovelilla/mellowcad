@@ -151,8 +151,8 @@ export class CadEngine {
     this.runtime.deleteSelection()
   }
 
-  clearAll(): void {
-    this.runtime.clearAll()
+  newDrawing(): void {
+    this.runtime.newDrawing()
   }
 
   undo(): void {
@@ -297,6 +297,10 @@ export class CadEngine {
 
   setSelectionLayer(id: string): void {
     this.runtime.setSelectionLayer(id)
+  }
+
+  applyLayerControl(id: string): void {
+    this.runtime.applyLayerControl(id)
   }
 
   setSelectionColor(color: string): void {
@@ -516,6 +520,10 @@ export class CadEngine {
 
   toggleBlocksPanel(): void {
     this.runtime.toggleBlocksPanel()
+  }
+
+  setUnitsPanel(open: boolean): void {
+    this.runtime.setUnitsPanel(open)
   }
 
   insertBlock(id: string): void {

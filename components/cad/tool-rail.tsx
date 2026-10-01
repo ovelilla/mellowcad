@@ -269,10 +269,11 @@ const PALETTE: readonly PaletteSection[] = [
 ]
 
 /**
- * Tools that live elsewhere in the chrome. View navigation sits with the other
- * view controls in the command bar, the way AutoCAD keeps it off the Draw and
- * Modify ribbon panels. Select and Match Properties wait there for the top bar
- * (docs/next-ui-redesign.md, phase 3). The clipboard commands are reached by
+ * Tools that live elsewhere in the chrome. Zoom, Pan and Orbit are on the
+ * navigation bar under the ViewCube and the preset views on the viewport
+ * controls, the way AutoCAD keeps them off the Draw and Modify ribbon panels.
+ * Match Properties sits with the object properties in the top bar. Select has
+ * no button: it is where Escape leaves every command. The clipboard commands are reached by
  * Ctrl+C/X/V or by name; AutoCAD's own Clipboard panel is not built yet, and a
  * Paste button that only works when something has been copied would be a poor
  * first one. UCS, UCSICON, PLAN, ELEV, VPOINT and VIEW are typed: AutoCAD's

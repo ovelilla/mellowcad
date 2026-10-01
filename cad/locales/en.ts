@@ -81,7 +81,10 @@ export const en: EngineCatalog = {
       "REDO": "Redo the last undone action",
       "SNAP": "Force the cursor onto the snap increments",
       "FROM": "Pick a point offset from a base point",
+      "NEW": "Start a new drawing",
+      "QNEW": "Start a new drawing",
       "QSAVE": "Save the drawing to a file",
+      "SAVEAS": "Save the drawing to a file under a new name",
       "OPEN": "Open a drawing file",
       "PASTECLIP": "Paste the clipboard into the drawing",
       "DIMSTYLE": "Create and modify dimension styles",
@@ -669,9 +672,17 @@ export const en: EngineCatalog = {
         "FROM",
         "FRO"
       ],
+      "NEW": [
+        "NEW"
+      ],
+      "QNEW": [
+        "QNEW"
+      ],
       "QSAVE": [
         "QSAVE",
-        "SAVE",
+        "SAVE"
+      ],
+      "SAVEAS": [
         "SAVEAS"
       ],
       "OPEN": [

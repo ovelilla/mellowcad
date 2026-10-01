@@ -68,7 +68,7 @@ import type { EngineLocale } from "../locales/types"
 import { EngineText, engineText, promptString } from "./EngineText"
 import { CommandHistory } from "./commands/Command"
 import {
-  ClearDocumentCommand,
+  NewDrawingCommand,
   RemoveEntitiesCommand,
 } from "./commands/entityCommands"
 import { PointerInput, Tool, ToolContext } from "./tools/Tool"
@@ -260,6 +260,8 @@ export class CadRuntime extends Observable {
   private stylesPanel: StylesPanelTab | null = null
   // Whether the Blocks palette is showing.
   private blocksPanel = false
+  // Whether the drawing's units settings are showing.
+  private unitsPanel = false
   // Whether the command prompt is shown. Hiding it is purely visual: typing
   // still feeds the prompt, which reappears while there is text to show.
   private commandLineVisible = true
@@ -849,10 +851,18 @@ export class CadRuntime extends Observable {
     this.selection.clear()
   }
 
-  clearAll(): void {
+  /**
+   * NEW and QNEW: a blank drawing in place of this one, as one undo step (see
+   * `NewDrawingCommand`), seen from the default view. A running command ends
+   * first, as a menu's `^C^C` ends it in AutoCAD.
+   */
+  newDrawing(): void {
+    this.returnToNeutralTool()
     this.selection.clear()
-    if (this.document.size === 0) return
-    this.history.execute(new ClearDocumentCommand())
+    this.resetTracking()
+    this.history.execute(new NewDrawingCommand())
+    this.viewport.pushHistory()
+    this.viewport.reset()
   }
 
   undo(): void {
@@ -1303,6 +1313,16 @@ export class CadRuntime extends Observable {
     setSelectionLayer(this.document, this.selection, this.history, id)
   }
 
+  /**
+   * The ribbon's layer drop-down: with objects selected it moves them to the
+   * layer chosen, in one undo step, and the current layer stays; with nothing
+   * selected it makes that layer current.
+   */
+  applyLayerControl(id: LayerId): void {
+    if (this.selection.isEmpty()) this.setCurrentLayer(id)
+    else this.setSelectionLayer(id)
+  }
+
   setSelectionColor(color: EntityColor | typeof COLOR_BYLAYER): void {
     setSelectionColor(this.document, this.selection, this.history, color)
   }
@@ -1550,6 +1570,13 @@ export class CadRuntime extends Observable {
 
   toggleBlocksPanel(): void {
     this.setBlocksPanel(!this.blocksPanel)
+  }
+
+  /** Shows or hides the drawing's units settings (the menu's Drawing Units). */
+  setUnitsPanel(open: boolean): void {
+    if (this.unitsPanel === open) return
+    this.unitsPanel = open
+    this.invalidateState()
   }
 
   purgeBlocks(ids?: readonly BlockId[]): number {
@@ -2719,6 +2746,7 @@ export class CadRuntime extends Observable {
         this.document.getEntities()
       ),
       blocksPanel: this.blocksPanel,
+      unitsPanel: this.unitsPanel,
       commandOptions: options,
       commandLine: {
         visible: this.commandLineVisible,

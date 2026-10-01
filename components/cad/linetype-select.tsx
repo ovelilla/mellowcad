@@ -24,6 +24,8 @@ export function LinetypeSelect({
   includeByLayer = false,
   ariaLabel,
   className,
+  disabled = false,
+  below = false,
 }: {
   value: string | null
   /** The engine's names for the linetypes and for ByLayer. */
@@ -32,6 +34,13 @@ export function LinetypeSelect({
   includeByLayer?: boolean
   ariaLabel: string
   className?: string
+  /** Unavailable: shown, but nothing to act on. */
+  disabled?: boolean
+  /**
+   * Opens below the trigger, as a bar's drop-down does, instead of over it as
+   * a palette's field does.
+   */
+  below?: boolean
 }) {
   const t = useTranslations("Editor.Properties")
   // The closed trigger shows what the list shows (`Dash dot`, not the id
@@ -48,7 +57,8 @@ export function LinetypeSelect({
   return (
     <Select
       items={items}
-      value={value ?? undefined}
+      disabled={disabled}
+      value={value}
       onValueChange={(next) => {
         if (next != null) onValueChange(next)
       }}
@@ -56,7 +66,10 @@ export function LinetypeSelect({
       <SelectTrigger size="sm" aria-label={ariaLabel} className={className}>
         <SelectValue placeholder={t("varies")} />
       </SelectTrigger>
-      <SelectContent>
+      <SelectContent
+        align={below ? "start" : undefined}
+        alignItemWithTrigger={!below}
+      >
         {includeByLayer && (
           <SelectItem value={LINETYPE_BYLAYER} className="text-[11px]">
             <LinetypePreview pattern={[]} />
