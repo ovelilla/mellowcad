@@ -12,7 +12,9 @@ npm run --silent typecheck
 echo "› lint"
 npm run --silent lint
 
+# With coverage: CI fails on vitest.config.ts's thresholds, and a plain
+# `npm test` let nine commits through that CI then rejected.
 echo "› test"
-npm test --silent
+npm run --silent test:coverage
 
 echo "✓ ready to commit"

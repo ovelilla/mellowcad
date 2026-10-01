@@ -24,8 +24,8 @@ Run from the workspace root (`package.json` is at the root).
 | Lint       | `npm run lint`                                                                             |
 | Tests      | `npm test` / `npm run test:watch` / `npm run test:coverage`                                |
 
-`typecheck` + `lint` + `test` must all pass before a change is done — `.githooks/pre-commit`
-and `.github/workflows/ci.yml` run exactly that. `npm run build` is deliberately outside both
+`typecheck` + `lint` + `test:coverage` (the tests and their coverage thresholds) must all pass
+before a change is done — `.githooks/pre-commit` and `.github/workflows/ci.yml` run exactly that. `npm run build` is deliberately outside both
 gates (it fights the dev server over `.next`).
 
 ## Architecture

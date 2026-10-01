@@ -1022,3 +1022,215 @@ describe("blocks", () => {
     expect(parsed.entities).toHaveLength(0)
   })
 })
+
+describe("tolerates damaged content in the later types and tables", () => {
+  const file = (extra: Record<string, unknown>) =>
+    JSON.stringify({
+      type: DRAWING_FILE_TYPE,
+      version: DRAWING_FILE_VERSION,
+      ...extra,
+    })
+  const square = { x: 1, y: 0, z: 0 }
+
+  it("fills a spline's unknown method, knots and degree with the defaults", () => {
+    const parsed = parseDrawingFile(
+      file({
+        entities: [
+          {
+            id: "S",
+            type: "spline",
+            method: "bezier",
+            knots: "centripetal",
+            points: [{ x: 0, y: 0 }, { x: 10, y: 5 }, "bad", { x: 20, y: 0 }],
+          },
+          { id: "S1", type: "spline", points: [{ x: 0, y: 0 }] },
+        ],
+      })
+    )
+    expect(parsed.entities).toHaveLength(1)
+    expect(parsed.entities[0]).toMatchObject({
+      type: "spline",
+      method: "fit",
+      knots: "chord",
+      closed: false,
+    })
+  })
+
+  it("fills a multiline text's malformed settings and drops one with no contents", () => {
+    const parsed = parseDrawingFile(
+      file({
+        entities: [
+          {
+            id: "M",
+            type: "mtext",
+            position: { x: 0, y: 0 },
+            contents: "A\PB",
+            height: -2,
+            width: "wide",
+            rotation: null,
+            attachment: "zz",
+            lineSpacingStyle: "exactly",
+            lineSpacingFactor: "x",
+          },
+          { id: "M2", type: "mtext", position: { x: 0, y: 0 } },
+        ],
+      })
+    )
+    expect(parsed.entities).toHaveLength(1)
+    expect(parsed.entities[0]).toMatchObject({
+      type: "mtext",
+      width: 0,
+      rotation: 0,
+      attachment: "tl",
+      lineSpacingStyle: "exactly",
+      lineSpacingFactor: 1,
+    })
+  })
+
+  it("reads an attribute definition's modes one by one and drops one with no tag", () => {
+    const parsed = parseDrawingFile(
+      file({
+        entities: [
+          {
+            id: "A",
+            type: "attdef",
+            position: { x: 0, y: 0 },
+            tag: " PART ",
+            modes: { invisible: true, constant: "yes" },
+            height: 0,
+            justify: "nowhere",
+          },
+          { id: "A2", type: "attdef", position: { x: 0, y: 0 }, tag: "  " },
+          { id: "A3", type: "attdef", tag: "NO_POSITION" },
+        ],
+      })
+    )
+    expect(parsed.entities).toHaveLength(1)
+    expect(parsed.entities[0]).toMatchObject({
+      type: "attdef",
+      tag: "PART",
+      prompt: "",
+      value: "",
+      justify: "left",
+      modes: { invisible: true, constant: false, lockPosition: true },
+    })
+  })
+
+  it("keeps a reference's usable attributes and skips the rest", () => {
+    const parsed = parseDrawingFile(
+      file({
+        blocks: [
+          {
+            name: "B",
+            entities: [
+              { type: "line", start: { x: 0, y: 0 }, end: { x: 1, y: 0 } },
+            ],
+          },
+          { name: "B", entities: [] },
+          { entities: [] },
+          "not a block",
+        ],
+        entities: [
+          {
+            id: "I",
+            type: "insert",
+            blockId: "B",
+            position: { x: 0, y: 0 },
+            attributes: [
+              "bad",
+              { tag: "NO_POSITION" },
+              { position: { x: 0, y: 0 }, tag: "" },
+              {
+                tag: "PART",
+                position: { x: 1, y: 2 },
+                elevation: 3,
+                color: "#ff0000",
+                linetype: "Dashed",
+                lineweight: 0.5,
+              },
+            ],
+          },
+        ],
+      })
+    )
+    expect(parsed.blocks.map((block) => block.name)).toEqual(["B"])
+    const insert = parsed.entities[0]
+    expect(insert.type === "insert" && insert.attributes).toEqual([
+      expect.objectContaining({
+        tag: "PART",
+        value: "",
+        elevation: 3,
+        color: "#ff0000",
+        linetype: "Dashed",
+        layerId: DEFAULT_LAYER_ID,
+      }),
+    ])
+  })
+
+  it("keeps the named UCSs that are whole, once each, and squares a skewed one", () => {
+    const parsed = parseDrawingFile(
+      file({
+        settings: {
+          ucs: { origin: { x: 1, y: 2 }, xAxis: { x: 0, y: 1 } },
+          namedUcs: [
+            "bad",
+            { name: 7 },
+            { name: "A", ucs: { origin: { x: 0, y: 0 } } },
+            { name: "A", ucs: { origin: { x: 0, y: 0 }, xAxis: square } },
+            { name: "a", ucs: { origin: { x: 5, y: 0 }, xAxis: square } },
+            {
+              name: "Skewed",
+              ucs: {
+                origin: { x: 0, y: 0, z: 4 },
+                xAxis: { x: 2, y: 0, z: 0 },
+                yAxis: { x: 1, y: 1, z: 0 },
+              },
+            },
+          ],
+          homeView: { direction: { x: 0, y: 0, z: 1 } },
+        },
+      })
+    )
+    const { ucs, namedUcs, viewCube } = parsed.settings
+    expect(ucs.origin).toEqual({ x: 1, y: 2, z: 0 })
+    expect(namedUcs.map((entry) => entry.name)).toEqual(["A", "Skewed"])
+    const skewed = namedUcs[1].ucs
+    expect(skewed.origin.z).toBe(4)
+    expect(skewed.xAxis).toEqual({ x: 1, y: 0, z: 0 })
+    expect(skewed.yAxis.x).toBeCloseTo(0)
+    expect(viewCube.home).toBeNull()
+  })
+
+  it("skips malformed and repeated style entries, keeping the base ones", () => {
+    const parsed = parseDrawingFile(
+      file({
+        textStyles: ["bad", { id: "" }, { id: "T" }, { id: "T", name: "Again" }],
+        dimStyles: ["bad", { id: "" }, { id: "D" }, { id: "D", name: "Again" }],
+        layers: ["bad", { id: "" }],
+        entities: [
+          {
+            type: "hatch",
+            loops: [
+              "bad",
+              { vertices: [{ x: 0, y: 0 }] },
+              {
+                vertices: [{ x: 0, y: 0 }, { x: 10, y: 0 }],
+                bulges: [1, "x"],
+              },
+            ],
+          },
+        ],
+      })
+    )
+    expect(parsed.textStyles.map((style) => style.name)).toContain("T")
+    expect(parsed.textStyles.filter((style) => style.id === "T")).toHaveLength(1)
+    expect(parsed.dimStyles.filter((style) => style.id === "D")).toEqual([
+      expect.objectContaining({ name: "D" }),
+    ])
+    expect(parsed.layers.map((layer) => layer.id)).toEqual([DEFAULT_LAYER_ID])
+    const hatch = parsed.entities[0]
+    expect(hatch.type === "hatch" && hatch.loops).toEqual([
+      { vertices: [p(0, 0), p(10, 0)], bulges: [1, 0] },
+    ])
+  })
+})

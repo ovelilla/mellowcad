@@ -91,6 +91,8 @@ tool behaviour: that is the harness's.
 The thresholds in `vitest.config.ts` are a **ratchet** set just under what the suite achieves,
 with `geometry/`, `domain/` and `serialization/` held much higher. Raise them as coverage grows;
 never lower one to make a red build green.
+The pre-commit hook runs `test:coverage`, as CI does: a type that adds a parser branch owes the
+tolerance tests that walk it (`drawingFile.test.ts`, "later types and tables"), or the commit stops.
 
 ## Playwright
 
