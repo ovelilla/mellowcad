@@ -175,7 +175,9 @@ function PropertyRowView({
     <div className="flex items-center justify-between gap-2">
       <dt className="text-muted-foreground">{row.label}</dt>
       {row.edit ? (
-        <dd className="flex items-center gap-1">
+        // A technical value with its unit: one LTR island, so -12.5 never
+        // reads 12.5- and the unit stays after the number.
+        <dd dir="ltr" className="flex items-center gap-1">
           <PropertyInput engine={engine} label={row.label} edit={row.edit} />
           {row.edit.unit && (
             <span className="w-4 shrink-0 text-muted-foreground">

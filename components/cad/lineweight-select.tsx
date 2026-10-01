@@ -44,6 +44,8 @@ export function LineweightSelect({
   const t = useTranslations("Editor.Properties")
   return (
     <Select
+      // The closed trigger names ByLayer in the page's language, not by its id.
+      items={{ [LINEWEIGHT_BYLAYER]: names.byLayer }}
       value={value === null ? undefined : String(value)}
       onValueChange={(next) => {
         if (next == null) return

@@ -36,6 +36,9 @@ export function LinetypeSelect({
   const t = useTranslations("Editor.Properties")
   return (
     <Select
+      // The closed trigger names ByLayer in the page's language, not by its
+      // id; a linetype's name is the drawing's data, shown as it is.
+      items={{ [LINETYPE_BYLAYER]: names.byLayer }}
       value={value ?? undefined}
       onValueChange={(next) => {
         if (next != null) onValueChange(next)

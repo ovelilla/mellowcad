@@ -35,8 +35,10 @@ export function CadWorkspace({
   const t = useTranslations("Editor.Workspace")
   const input = useTranslations("Editor.DynamicInput")
 
+  // The editor is the page's main content: a landmark, so every control on
+  // it sits in one (axe's region rule).
   return (
-    <div
+    <main
       id={EDITOR_SHEET_ID}
       className="relative h-svh w-full overflow-hidden bg-[#0b0f14]"
       style={{ viewTransitionName: SHEET_TRANSITION }}
@@ -107,6 +109,6 @@ export function CadWorkspace({
           <SelectionCyclingList engine={engine} state={state} />
         </>
       )}
-    </div>
+    </main>
   )
 }
