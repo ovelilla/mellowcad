@@ -30,7 +30,7 @@ Failures are reported at the command prompt, not in a bespoke React banner.
 
 ## Right to left
 
-The shell mirrors; the drawing never does (brief §7). In an RTL page the rail is on the right, the
+The shell mirrors; the drawing never does. In an RTL page the rail is on the right, the
 palettes and the ViewCube's column on the left, and the status bar reads the other way — all of it
 from logical classes, nothing from a second layout.
 
@@ -72,7 +72,7 @@ from logical classes, nothing from a second layout.
 
 ## Colour — one scheme, dark
 
-There is no theme switch, by decision (brief D12): AutoCAD works dark, and so does the whole site.
+There is no theme switch, by decision: AutoCAD works dark, and so does the whole site.
 The tokens in `:root` are the only values, `color-scheme: dark` keeps native controls dark, and
 `@custom-variant dark (&)` makes every `dark:` utility — shadcn's included — always apply, so a
 component added with the shadcn CLI renders as designed. Don't bring back next-themes, a `.dark`

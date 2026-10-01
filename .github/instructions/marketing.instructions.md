@@ -15,8 +15,7 @@ _within_ the landing use `Link`. Every href is the page's language's, from `site
 `localePath()` (`i18n.instructions.md`); a client island gets it as a prop.
 
 **The site is the landing.** Besides it there is the 404 and one support page, `/privacy` — no
-changelog, command hub, cheat sheet or comparison pages. That was weighed and decided (brief, D9 and
-D10): they would not improve the landing, only bet on slow organic search, and a changelog would have
+changelog, command hub, cheat sheet or comparison pages. That was weighed and decided: they would not improve the landing, only bet on slow organic search, and a changelog would have
 to reconstruct a history that was never released as versions. Do not propose a new page without
 Search Console data behind it.
 
@@ -184,7 +183,7 @@ party — updates it in the same change.
   `text-fg-muted`, `text-fg-subtle`, `bg-accent` / `text-accent-ink`, `text-precision`, and
   `var(--cad-*)` inside drawings. No loose hex in a component (`lib/brand.ts` holds the few that must
   be literal, for icons and the OG image). `--text-subtle` is the dimmest text allowed (≈ 5:1).
-- One scheme, dark, like the editor (brief D12): the tokens sit on `:root` with
+- One scheme, dark, like the editor and AutoCAD: the tokens sit on `:root` with
   `color-scheme: dark`, `dark:` always applies, and there is no theme selector. The language
   selector is `LanguageLinks` (`i18n.instructions.md`): a list in the footer's title block, a globe
   menu in the bar on a computer (hung from its button by CSS anchor positioning) and a section of the menu on a phone.
