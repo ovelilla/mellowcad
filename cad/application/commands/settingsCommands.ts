@@ -10,6 +10,14 @@ export class UpdateSettingsCommand implements Command {
 
   constructor(private readonly patch: Partial<DocumentSettings>) {}
 
+  /**
+   * Its UCS is the WCS's: only the commands that work in the WCS (UCS, -VIEW)
+   * change the UCS.
+   */
+  mapEntities(): Command {
+    return this
+  }
+
   execute(doc: CadDocument): void {
     const current = doc.getSettings()
     this.previous = Object.fromEntries(
@@ -32,6 +40,10 @@ export class SetAttributeDisplayCommand implements Command {
   private previous: AttributeDisplay = "normal"
 
   constructor(private readonly next: AttributeDisplay) {}
+
+  mapEntities(): Command {
+    return this
+  }
 
   execute(doc: CadDocument): void {
     this.previous = doc.getSettings().attributeDisplay

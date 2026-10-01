@@ -10,6 +10,7 @@ import {
   entityElevation,
   isLevel,
   polylineSegmentGeometries,
+  readsInPlan,
 } from "../../domain/entities"
 import { ReplaceEntitiesCommand } from "../commands/entityCommands"
 import { SelectionActionTool } from "./SelectionActionTool"
@@ -37,8 +38,9 @@ export class JoinTool extends SelectionActionTool {
     const sourceOf = new Map<EntityId, Entity>()
     for (const entity of entities) {
       // WHY: AutoCAD joins a rising line into a 3D polyline, which does not
-      // exist here, so it is left out as a line that touches nothing would be.
-      if (!isLevel(entity)) continue
+      // exist here, so it is left out as a line that touches nothing would be;
+      // so is an object at an angle to the UCS's XY plane, which JOIN works in.
+      if (!isLevel(entity) || !readsInPlan(entity)) continue
       const z = entityElevation(entity)
       if (entity.type === "line") {
         segments.push({

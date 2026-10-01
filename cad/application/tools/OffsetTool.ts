@@ -17,6 +17,7 @@ import {
   createPolyline,
   polylineSegmentGeometries,
   polylineSegments,
+  readsInPlan,
   Entity,
   PolylineEntity,
 } from "../../domain/entities"
@@ -167,19 +168,11 @@ export class OffsetTool implements Tool {
         break
       case "select": {
         // Preview which object a click would offset (AutoCAD rollover highlight).
-        const hit = ctx.pick(input.world)
-        this.state = {
-          ...this.state,
-          hover: hit ?? null,
-        }
+        this.state = { ...this.state, hover: this.pickSource(input, ctx) }
         break
       }
       case "throughSelect": {
-        const hit = ctx.pick(input.world)
-        this.state = {
-          ...this.state,
-          hover: hit ?? null,
-        }
+        this.state = { ...this.state, hover: this.pickSource(input, ctx) }
         break
       }
       case "throughPoint":
@@ -205,7 +198,7 @@ export class OffsetTool implements Tool {
         return
       }
       case "select": {
-        const hit = ctx.pick(input.world)
+        const hit = this.pickSource(input, ctx)
         if (!hit) return
         this.state = {
           phase: "side",
@@ -223,7 +216,7 @@ export class OffsetTool implements Tool {
         return
       }
       case "throughSelect": {
-        const hit = ctx.pick(input.world)
+        const hit = this.pickSource(input, ctx)
         if (!hit) return
         this.state = {
           phase: "throughPoint",
@@ -506,6 +499,15 @@ export class OffsetTool implements Tool {
     return this.offsetLayer === "current"
       ? ctx.document.getCurrentLayerId()
       : source.layerId
+  }
+
+  /**
+   * The object a click would offset: OFFSET works in the UCS's XY plane, so
+   * one at an angle to it never highlights.
+   */
+  private pickSource(input: PointerInput, ctx: ToolContext): Entity | null {
+    const hit = ctx.pick(input.world)
+    return hit && readsInPlan(hit) ? hit : null
   }
 
   /**

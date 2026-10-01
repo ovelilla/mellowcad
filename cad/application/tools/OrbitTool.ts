@@ -8,10 +8,12 @@ import { PointerInput, Tool, ToolContext } from "./Tool"
  * world's Z axis and dragging up and down raises or lowers it, about the
  * middle of the drawing under the centre of the screen. Objects cannot be
  * edited while it runs; Enter or Escape ends it. Each drag is one step of ZOOM
- * Previous. Shift and the wheel button held orbit from any command.
+ * Previous. Shift and the wheel button held orbit from any command. It works
+ * in the WCS, whose Z it turns about.
  */
 export class OrbitTool implements Tool {
   readonly id = "orbit"
+  readonly inWorld = true
 
   private drag: { last: Vec2; target: Vec3 } | null = null
 

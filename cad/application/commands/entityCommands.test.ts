@@ -180,6 +180,9 @@ describe("CommandHistory", () => {
         this.executions += 1
       },
       undo() {},
+      mapEntities() {
+        return this
+      },
     }
   }
 

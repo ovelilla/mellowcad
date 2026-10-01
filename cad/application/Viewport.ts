@@ -9,6 +9,7 @@ import {
   normalize3,
   zOf,
 } from "../geometry/Vec3"
+import { Axes3, axesToWorld, worldToAxes } from "../geometry/ocs"
 import {
   BlockLookup,
   Bounds,
@@ -33,8 +34,8 @@ import { drawsTilted, entityScreenOutline } from "./viewOutline"
  *   right and `up` = `direction` × `right`. The plan view of the WCS is
  *   `direction` +Z and `right` +X. The *view frame* holds a point as its
  *   `right` and `up` components: a screen rectangle is an axis-aligned one
- *   there, not in the world.
- *
+ *   there, not in the world. * - An instance from `inFrame` reads every point and direction in a rotation
+ *   of the WCS instead (the UCS plane's frame) and shares the view itself. *
  * Screen sizes are measured in CSS pixels; device-pixel-ratio is handled by the
  * render adapter, not here. The viewport structurally satisfies the scene
  * layer's `CameraTransform` interface.
@@ -47,77 +48,154 @@ export interface Camera {
   readonly right: Vec3
 }
 
-export class Viewport extends Observable {
-  private scaleValue = 1
-  private translationValue: Vec2 = { x: 0, y: 0 }
-  private directionValue: Vec3 = WORLD_Z
-  private rightValue: Vec3 = WORLD_X
-  private upValue: Vec3 = { x: 0, y: 1, z: 0 }
-
+/** The view itself, which every frame it is read in shares; its camera is in the WCS. */
+interface ViewCore {
+  scale: number
+  translation: Vec2
+  direction: Vec3
+  right: Vec3
+  up: Vec3
   /** Canvas size in CSS pixels. */
-  private widthValue = 0
-  private heightValue = 0
-
+  width: number
+  height: number
   /** Views to step back through, oldest first (AutoCAD keeps 10). */
-  private history: Camera[] = []
+  history: Camera[]
+  /** The instance whose listeners hear a change made through any frame. */
+  readonly owner: Viewport
+}
+
+interface ViewAxes {
+  readonly direction: Vec3
+  readonly right: Vec3
+  readonly up: Vec3
+}
+
+/** Below this a component of a camera axis read in a frame is taken as none. */
+const FRAME_SNAP = 1e-12
+
+export class Viewport extends Observable {
+  private core: ViewCore = {
+    scale: 1,
+    translation: { x: 0, y: 0 },
+    direction: WORLD_Z,
+    right: WORLD_X,
+    up: { x: 0, y: 1, z: 0 },
+    width: 0,
+    height: 0,
+    history: [],
+    owner: this,
+  }
+  /** The rotation of the WCS this instance reads points in, or `null` for the WCS. */
+  private frame: Axes3 | null = null
+  private framed: (ViewAxes & { readonly from: ViewAxes }) | null = null
 
   private static readonly MIN_SCALE = 1e-4
   private static readonly MAX_SCALE = 1e6
   private static readonly MAX_HISTORY = 10
 
+  /**
+   * The same view, with every point and direction it takes or gives in
+   * `axes` (a rotation of the WCS) instead: the frame the tools work in when
+   * the UCS is tilted. Zooming, panning or turning it turns this view.
+   */
+  inFrame(axes: Axes3): Viewport {
+    const view = new Viewport()
+    view.core = this.core
+    view.frame = axes
+    return view
+  }
+
+  /** The camera's axes as this instance reads them. */
+  private get axes(): ViewAxes {
+    const core = this.core
+    if (!this.frame) return core
+    const cached = this.framed
+    if (
+      cached &&
+      cached.from.direction === core.direction &&
+      cached.from.right === core.right
+    ) {
+      return cached
+    }
+    const frame = this.frame
+    const read = (v: Vec3): Vec3 => {
+      const p = worldToAxes(frame, v)
+      const snap = (c: number) => (Math.abs(c) < FRAME_SNAP ? 0 : c)
+      return { x: snap(p.x), y: snap(p.y), z: snap(p.z) }
+    }
+    this.framed = {
+      from: { direction: core.direction, right: core.right, up: core.up },
+      direction: read(core.direction),
+      right: read(core.right),
+      up: read(core.up),
+    }
+    return this.framed
+  }
+
+  /** A direction this instance was given, in the WCS. */
+  private toWorld(v: Vec3): Vec3 {
+    return this.frame ? axesToWorld(this.frame, v) : v
+  }
+
+  private changed(): void {
+    this.core.owner.emit()
+  }
+
   get scale(): number {
-    return this.scaleValue
+    return this.core.scale
   }
 
   get translation(): Vec2 {
-    return this.translationValue
+    return this.core.translation
   }
 
   /** Unit vector: the line of sight, from the target towards the viewer. */
   get direction(): Vec3 {
-    return this.directionValue
+    return this.axes.direction
   }
 
-  /** Unit vector: the world direction drawn pointing right. */
+  /** Unit vector: the direction drawn pointing right. */
   get right(): Vec3 {
-    return this.rightValue
+    return this.axes.right
   }
 
-  /** Unit vector: the world direction drawn pointing up. */
+  /** Unit vector: the direction drawn pointing up. */
   get up(): Vec3 {
-    return this.upValue
+    return this.axes.up
   }
 
-  /** True when the view looks straight down the world Z axis. */
+  /** True when the view looks straight down the Z axis (of the frame, if any). */
   get isPlan(): boolean {
-    return isWorldZ(this.directionValue)
+    return isWorldZ(this.axes.direction)
   }
 
-  /** A plan view's twist, radians CCW from the world X axis to screen-right. */
+  /** A plan view's twist, radians CCW from the X axis to screen-right. */
   get twist(): number {
-    return Math.atan2(this.rightValue.y, this.rightValue.x)
+    const { right } = this.axes
+    return Math.atan2(right.y, right.x)
   }
 
   get width(): number {
-    return this.widthValue
+    return this.core.width
   }
 
   get height(): number {
-    return this.heightValue
+    return this.core.height
   }
 
   setSize(width: number, height: number): void {
-    if (width === this.widthValue && height === this.heightValue) return
-    this.widthValue = width
-    this.heightValue = height
-    this.emit()
+    if (width === this.core.width && height === this.core.height) return
+    this.core.width = width
+    this.core.height = height
+    this.changed()
   }
 
   worldToScreen(p: Vec2 | Vec3): Vec2 {
     const v = this.worldToView(p)
+    const { scale, translation } = this.core
     return {
-      x: v.x * this.scaleValue + this.translationValue.x,
-      y: -v.y * this.scaleValue + this.translationValue.y,
+      x: v.x * scale + translation.x,
+      y: -v.y * scale + translation.y,
     }
   }
 
@@ -127,9 +205,10 @@ export class Viewport extends Observable {
 
   /** A screen point in the view frame. */
   screenToView(p: Vec2): Vec2 {
+    const { scale, translation } = this.core
     return {
-      x: (p.x - this.translationValue.x) / this.scaleValue,
-      y: -(p.y - this.translationValue.y) / this.scaleValue,
+      x: (p.x - translation.x) / scale,
+      y: -(p.y - translation.y) / scale,
     }
   }
 
@@ -146,7 +225,7 @@ export class Viewport extends Observable {
    */
   screenToPlane(p: Vec2, z: number): Vec2 | null {
     if (this.isPlan) return this.screenToWorld(p)
-    const d = this.directionValue
+    const d = this.axes.direction
     if (Math.abs(d.z) < EDGE_ON_SINE) return null
     const onView = this.viewToWorld(this.screenToView(p))
     const t = (z - zOf(onView)) / d.z
@@ -155,24 +234,25 @@ export class Viewport extends Observable {
 
   /** A world point in the view frame: its `right` and `up` components. */
   worldToView(p: Vec2 | Vec3): Vec2 {
+    const { right, up } = this.axes
     if (this.isPlan) {
       // WHY the 2D formula: a plan view must keep today's arithmetic to the bit.
-      const { x: c, y: s } = this.rightValue
+      const { x: c, y: s } = right
       if (s === 0 && c === 1) return p
       return { x: p.x * c + p.y * s, y: -p.x * s + p.y * c }
     }
     const point: Vec3 = { x: p.x, y: p.y, z: zOf(p) }
-    return { x: dot3(point, this.rightValue), y: dot3(point, this.upValue) }
+    return { x: dot3(point, right), y: dot3(point, up) }
   }
 
   /** The world point of the view frame's `p` on the plane through the origin facing the viewer. */
   viewToWorld(p: Vec2): Vec2 {
+    const { right: r, up: u } = this.axes
     if (this.isPlan) {
-      const { x: c, y: s } = this.rightValue
+      const { x: c, y: s } = r
       if (s === 0 && c === 1) return p
       return { x: p.x * c - p.y * s, y: p.x * s + p.y * c }
     }
-    const { rightValue: r, upValue: u } = this
     const world: Vec3 = {
       x: r.x * p.x + u.x * p.y,
       y: r.y * p.x + u.y * p.y,
@@ -183,21 +263,21 @@ export class Viewport extends Observable {
 
   /** Converts a length in world units to screen pixels. */
   worldToScreenDistance(distance: number): number {
-    return distance * this.scaleValue
+    return distance * this.core.scale
   }
 
   /** Converts a length in screen pixels to world units. */
   screenToWorldDistance(distance: number): number {
-    return distance / this.scaleValue
+    return distance / this.core.scale
   }
 
   /** Pans the view by a delta expressed in screen pixels. */
   panByScreen(delta: Vec2): void {
-    this.translationValue = {
-      x: this.translationValue.x + delta.x,
-      y: this.translationValue.y + delta.y,
+    this.core.translation = {
+      x: this.core.translation.x + delta.x,
+      y: this.core.translation.y + delta.y,
     }
-    this.emit()
+    this.changed()
   }
 
   /**
@@ -208,55 +288,51 @@ export class Viewport extends Observable {
   zoomAt(screenAnchor: Vec2, factor: number): void {
     const worldBefore = this.screenToWorld(screenAnchor)
     const nextScale = clamp(
-      this.scaleValue * factor,
+      this.core.scale * factor,
       Viewport.MIN_SCALE,
       Viewport.MAX_SCALE
     )
-    this.scaleValue = nextScale
+    this.core.scale = nextScale
     // Solve translation so worldToScreen(worldBefore) === screenAnchor again.
     const view = this.worldToView(worldBefore)
-    this.translationValue = {
+    this.core.translation = {
       x: screenAnchor.x - view.x * nextScale,
       y: screenAnchor.y + view.y * nextScale,
     }
-    this.emit()
+    this.changed()
   }
 
+  /** The view as ZOOM Previous restores it, its camera in the WCS whatever the frame. */
   getCamera(): Camera {
-    return {
-      scale: this.scaleValue,
-      translation: this.translationValue,
-      direction: this.directionValue,
-      right: this.rightValue,
-    }
+    const { scale, translation, direction, right } = this.core
+    return { scale, translation, direction, right }
   }
 
+  /** Restores a view {@link getCamera} gave. */
   setCamera(camera: Camera): void {
-    this.scaleValue = clamp(
-      camera.scale,
-      Viewport.MIN_SCALE,
-      Viewport.MAX_SCALE
-    )
-    this.translationValue = camera.translation
-    this.directionValue = camera.direction
-    this.rightValue = camera.right
-    this.upValue = cross3(camera.direction, camera.right)
-    this.emit()
+    const core = this.core
+    core.scale = clamp(camera.scale, Viewport.MIN_SCALE, Viewport.MAX_SCALE)
+    core.translation = camera.translation
+    core.direction = camera.direction
+    core.right = camera.right
+    core.up = cross3(camera.direction, camera.right)
+    this.changed()
   }
 
   /**
-   * Looks along `direction` (towards the viewer) with the world direction
-   * `right` drawn pointing right, keeping the point at the centre of the
-   * screen where it is. `right` is taken square to `direction`; returns false,
-   * changing nothing, when the two are parallel or either is zero.
+   * Looks along `direction` (towards the viewer) with `right` drawn pointing
+   * right, keeping the point at the centre of the screen where it is. `right`
+   * is taken square to `direction`; returns false, changing nothing, when the
+   * two are parallel or either is zero.
    */
   setView(direction: Vec3, right: Vec3): boolean {
-    const axes = viewAxes(direction, right)
+    const axes = viewAxes(this.toWorld(direction), this.toWorld(right))
     if (!axes) return false
     const center = this.worldCenter()
-    this.directionValue = axes.direction
-    this.rightValue = axes.right
-    this.upValue = cross3(axes.direction, axes.right)
+    const core = this.core
+    core.direction = axes.direction
+    core.right = axes.right
+    core.up = cross3(axes.direction, axes.right)
     this.centerOn(center)
     return true
   }
@@ -267,20 +343,21 @@ export class Viewport extends Observable {
    * wheel zoom or pan drag is one entry, not one per event.
    */
   pushHistory(): void {
-    this.history.push(this.getCamera())
-    if (this.history.length > Viewport.MAX_HISTORY) this.history.shift()
+    const history = this.core.history
+    history.push(this.getCamera())
+    if (history.length > Viewport.MAX_HISTORY) history.shift()
   }
 
   /** AutoCAD's ZOOM Previous. Returns false when there is nothing to go back to. */
   restorePrevious(): boolean {
-    const previous = this.history.pop()
+    const previous = this.core.history.pop()
     if (!previous) return false
     this.setCamera(previous)
     return true
   }
 
   hasPreviousView(): boolean {
-    return this.history.length > 0
+    return this.core.history.length > 0
   }
 
   /**
@@ -315,10 +392,10 @@ export class Viewport extends Observable {
     const worldWidth = Math.max(max.x - min.x, 1e-6)
     const worldHeight = Math.max(max.y - min.y, 1e-6)
     const scale = Math.min(
-      (this.widthValue - padding * 2) / worldWidth,
-      (this.heightValue - padding * 2) / worldHeight
+      (this.core.width - padding * 2) / worldWidth,
+      (this.core.height - padding * 2) / worldHeight
     )
-    this.scaleValue = clamp(scale, Viewport.MIN_SCALE, Viewport.MAX_SCALE)
+    this.core.scale = clamp(scale, Viewport.MIN_SCALE, Viewport.MAX_SCALE)
     this.centerOn(
       this.viewToWorld({ x: (min.x + max.x) / 2, y: (min.y + max.y) / 2 })
     )
@@ -326,26 +403,27 @@ export class Viewport extends Observable {
 
   /** Resets pan/zoom so world origin sits at the centre with unit scale. */
   reset(): void {
-    this.scaleValue = 1
-    this.translationValue = {
-      x: this.widthValue / 2,
-      y: this.heightValue / 2,
+    this.core.scale = 1
+    this.core.translation = {
+      x: this.core.width / 2,
+      y: this.core.height / 2,
     }
-    this.emit()
+    this.changed()
   }
 
   /** Centres the view on a world point at the current scale. */
   centerOn(worldPoint: Vec2): void {
     const view = this.worldToView(worldPoint)
-    this.translationValue = {
-      x: this.widthValue / 2 - view.x * this.scaleValue,
-      y: this.heightValue / 2 + view.y * this.scaleValue,
+    const { width, height, scale } = this.core
+    this.core.translation = {
+      x: width / 2 - view.x * scale,
+      y: height / 2 + view.y * scale,
     }
-    this.emit()
+    this.changed()
   }
 
   worldCenter(): Vec2 {
-    return this.screenToWorld(vec2(this.widthValue / 2, this.heightValue / 2))
+    return this.screenToWorld(vec2(this.core.width / 2, this.core.height / 2))
   }
 }
 

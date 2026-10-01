@@ -12,6 +12,7 @@ import {
   entityElevation,
   onPlaneOf,
   polylineSegmentGeometries,
+  readsInPlan,
 } from "../../domain/entities"
 import { AddEntityCommand } from "../commands/entityCommands"
 import { DynamicInputSession } from "../input/DynamicInput"
@@ -218,10 +219,10 @@ export class RadialDimensionTool implements Tool {
     ctx.endCommand()
   }
 
-  /** The object under the cursor a radial dimension can be taken from. */
+  /** The object under the cursor a radial dimension can be taken from, in the UCS's plane. */
   private pickMeasurable(world: Vec2, ctx: ToolContext): Entity | null {
     const hit = ctx.pick(world)
-    return hit && measuredCircle(hit, world) ? hit : null
+    return hit && readsInPlan(hit) && measuredCircle(hit, world) ? hit : null
   }
 
   private enterSelect(ctx: ToolContext): void {

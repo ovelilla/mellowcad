@@ -10,6 +10,7 @@ import {
   Entity,
   EntityId,
   dimensionAxisAngle,
+  readsInPlan,
 } from "../../domain/entities"
 import { parseNumber } from "../../domain/units"
 import { UpdateEntitiesCommand } from "../commands/entityCommands"
@@ -426,9 +427,11 @@ function spaceable(
  * KNOWN GAP: DIMSPACE also applies "to angular dimensions that share a common
  * vertex", where equal spacing means stepping the arc radius rather than
  * sliding along a normal. That is a rule of its own and is not implemented.
+ * A dimension in a plane at an angle to the UCS's is not spaced: DIMSPACE
+ * works in the UCS's plane.
  */
 function isSpaceable(dim: DimensionEntity): boolean {
-  return dim.kind === "linear" || dim.kind === "aligned"
+  return (dim.kind === "linear" || dim.kind === "aligned") && readsInPlan(dim)
 }
 
 type DimSpaceState =

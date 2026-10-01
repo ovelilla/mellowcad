@@ -1,26 +1,16 @@
 import { Vec2, V } from "../../geometry/Vec2"
-import { Vec3, planar, withZ } from "../../geometry/Vec3"
-import { polarPoint } from "../../geometry/primitives"
-import {
-  Entity,
-  EntityId,
-  arcEndPoint,
-  arcStartPoint,
-  ellipseEndPoint,
-  ellipseStartPoint,
-  entityZAt,
-  isFullEllipse,
-  polylineSegmentGeometries,
-  splinePolyline,
-} from "../../domain/entities"
+import { Vec3, add3, cross3, length3, scale3, sub3 } from "../../geometry/Vec3"
+import { closestPointOnInfiniteLine } from "../../geometry/primitives"
+import { Entity, EntityId, lineEndZ, lineStartZ } from "../../domain/entities"
 import {
   NamedUcs,
   Ucs,
   WORLD_UCS,
-  createUcs,
   isWorldUcs,
   rotateUcs,
   sameUcs,
+  ucsFromAxes,
+  ucsZAxis,
   worldDirectionToUcs,
   worldPointToUcs,
 } from "../../domain/ucs"
@@ -28,6 +18,8 @@ import { DocumentSettings } from "../../domain/units"
 import { matchesWildcard } from "../../shared/wildcard"
 import { UpdateSettingsCommand } from "../commands/settingsCommands"
 import { entityScenePrimitive } from "../SceneBuilder"
+import { Viewport } from "../Viewport"
+import { cursorOnEntityPlane } from "../viewPick"
 import { THEME } from "../../scene/theme"
 import { ScenePrimitive } from "../../scene/types"
 import type { PromptId } from "../../locales/types"
@@ -43,12 +35,24 @@ import {
   ToolContext,
 } from "./Tool"
 import { headingInUcs } from "./ucsHeading"
+import {
+  alignable,
+  hasEnds,
+  ucsAlongZ,
+  ucsAtEnd,
+  ucsFromObject,
+} from "./ucsObjects"
+
+type Axis = "x" | "y" | "z"
 
 type UcsState =
   | { readonly phase: "origin" }
   | { readonly phase: "xAxis"; readonly origin: Vec3 }
-  | { readonly phase: "xyPlane"; readonly origin: Vec3; readonly xAxis: Vec2 }
-  | { readonly phase: "zAngle" }
+  | { readonly phase: "xyPlane"; readonly origin: Vec3; readonly xAxis: Vec3 }
+  | { readonly phase: "rotate"; readonly axis: Axis }
+  | { readonly phase: "zOrigin" }
+  | { readonly phase: "zPoint"; readonly origin: Vec3 }
+  | { readonly phase: "zObject"; readonly hover: EntityId | null }
   | { readonly phase: "named" }
   | { readonly phase: "restore" }
   | { readonly phase: "save" }
@@ -57,26 +61,32 @@ type UcsState =
   | { readonly phase: "list"; readonly back: "named" | "restore" | "save" }
   | { readonly phase: "object"; readonly hover: EntityId | null }
 
-/** UCSAXISANG's initial value, which the Z option offers as its default. */
+/** UCSAXISANG's initial value, which the X, Y and Z options offer as their default. */
 const DEFAULT_AXIS_ANGLE = 90
 /** UCS Previous steps back through the last 10 of the session. */
 const MAX_PREVIOUS = 10
 /** Characters a symbol-table name may not hold (AutoCAD's naming rule). */
 const INVALID_NAME = /[\\<>/?":;*|,=`]/
 
+const ROTATION_PROMPTS: Readonly<Record<Axis, PromptId>> = {
+  x: "ucsRotationX",
+  y: "ucsRotationY",
+  z: "ucsRotationZ",
+}
+
 /**
- * AutoCAD's UCS with its XY plane kept horizontal: the origin (with its Z) and
- * the direction of the X axis. Face, X, Y and ZAxis tilt the XY plane out of
- * the world's and are not offered; the points that fix the axes are read in
- * plan (a Z of theirs would tilt it), and a third point that would turn the Z
- * axis down is not taken.
+ * AutoCAD's UCS: the origin and the three points, the X, Y and Z turns,
+ * ZAxis (with its Object), OBject, View, World, Previous and the named UCSs.
+ * Face is not offered: there are no solids. It works in the WCS, since it is
+ * what places the UCS the other commands work in.
  */
 export class UcsTool implements Tool {
   readonly id = "ucs"
+  readonly inWorld = true
 
   private state: UcsState = { phase: "origin" }
   private previous: { ucs: Ucs; name: string | null }[] = []
-  private cursor: Vec2 | null = null
+  private cursor: Vec3 | null = null
   private lastScreen: Vec2 | null = null
 
   onActivate(ctx: ToolContext): void {
@@ -99,13 +109,19 @@ export class UcsTool implements Tool {
   onPointerMove(input: PointerInput, ctx: ToolContext): void {
     this.cursor = input.point
     this.lastScreen = input.screen
-    if (this.state.phase === "object") {
+    const state = this.state
+    if (state.phase === "object") {
       const hover = alignable(ctx.pick(input.world))?.id ?? null
-      if (hover !== this.state.hover) this.state = { phase: "object", hover }
+      if (hover !== state.hover) this.state = { phase: "object", hover }
     }
-    if (this.state.phase === "zAngle") {
-      const offset = V.sub(input.point, ctx.ucs.origin)
-      if (V.length(offset) > 1e-9) {
+    if (state.phase === "zObject") {
+      const hit = ctx.pick(input.world)
+      const hover = hasEnds(hit) ? hit.id : null
+      if (hover !== state.hover) this.state = { phase: "zObject", hover }
+    }
+    if (state.phase === "rotate" && state.axis === "z") {
+      const offset = sub3(input.point, ctx.ucs.origin)
+      if (V.length(worldDirectionToUcs(ctx.ucs, offset)) > 1e-9) {
         ctx.dynamicInput.setLive("angle", headingInUcs(ctx.ucs, offset))
       }
     }
@@ -115,31 +131,44 @@ export class UcsTool implements Tool {
 
   onPointerDown(input: PointerInput, ctx: ToolContext): void {
     if (input.button !== 0) return
-    switch (this.state.phase) {
+    const state = this.state
+    switch (state.phase) {
       case "origin":
         this.enterXAxis(input.point, ctx)
         return
       case "xAxis":
-        this.enterXYPlane(this.state.origin, input.point, ctx)
+        this.enterXYPlane(state.origin, input.point, ctx)
         return
       case "xyPlane":
-        this.acceptPlanePoint(
-          this.state.origin,
-          this.state.xAxis,
-          input.point,
-          ctx
-        )
+        this.acceptPlanePoint(state.origin, state.xAxis, input.point, ctx)
         return
-      case "zAngle": {
-        const offset = V.sub(input.point, ctx.ucs.origin)
-        if (V.length(offset) > 1e-9) {
-          this.rotateZ(headingInUcs(ctx.ucs, offset), ctx)
+      case "rotate": {
+        if (state.axis !== "z") return
+        const offset = sub3(input.point, ctx.ucs.origin)
+        if (V.length(worldDirectionToUcs(ctx.ucs, offset)) > 1e-9) {
+          this.rotate("z", headingInUcs(ctx.ucs, offset), ctx)
         }
         return
       }
+      case "zOrigin":
+        this.enterZPoint(input.point, ctx)
+        return
+      case "zPoint":
+        this.acceptZPoint(state.origin, input.point, ctx)
+        return
       case "object": {
         const entity = alignable(ctx.pick(input.world))
-        const ucs = entity ? ucsFromObject(entity, input.world) : null
+        const ucs = entity
+          ? ucsFromObject(entity, pickOn(ctx.viewport, entity, input.screen))
+          : null
+        if (ucs) this.finish(ucs, null, ctx)
+        return
+      }
+      case "zObject": {
+        const entity = ctx.pick(input.world)
+        const ucs = hasEnds(entity)
+          ? ucsAtEnd(entity, pickOn(ctx.viewport, entity, input.screen))
+          : null
         if (ucs) this.finish(ucs, null, ctx)
         return
       }
@@ -163,8 +192,13 @@ export class UcsTool implements Tool {
           { id: "Previous" },
           { id: "View" },
           { id: "World" },
+          { id: "X" },
+          { id: "Y" },
           { id: "Z" },
+          { id: "ZAxis" },
         ]
+      case "zOrigin":
+        return [{ id: "Object" }]
       case "named":
         return [{ id: "Restore" }, { id: "Save" }, { id: "Delete" }]
       case "replace":
@@ -177,6 +211,12 @@ export class UcsTool implements Tool {
   invokeOption(id: string, ctx: ToolContext): CommandOptionOutcome {
     const phase = this.state.phase
     if (phase === "origin") return this.invokeMain(id, ctx)
+    if (phase === "zOrigin" && id === "Object") {
+      this.state = { phase: "zObject", hover: null }
+      ctx.dynamicInput.open({ fields: [], commit: () => {} })
+      this.place(ctx)
+      return "continue"
+    }
     if (phase === "named") {
       switch (id) {
         case "Restore":
@@ -204,23 +244,34 @@ export class UcsTool implements Tool {
   }
 
   getConstraintAnchor(): Vec2 | null {
-    return this.state.phase === "xAxis" || this.state.phase === "xyPlane"
-      ? this.state.origin
-      : null
+    switch (this.state.phase) {
+      case "xAxis":
+      case "xyPlane":
+      case "zPoint":
+        return this.state.origin
+      default:
+        return null
+    }
   }
 
   wantsSnap(): boolean {
-    return (
-      this.state.phase === "origin" ||
-      this.state.phase === "xAxis" ||
-      this.state.phase === "xyPlane" ||
-      this.state.phase === "zAngle"
-    )
+    switch (this.state.phase) {
+      case "origin":
+      case "xAxis":
+      case "xyPlane":
+      case "zOrigin":
+      case "zPoint":
+        return true
+      case "rotate":
+        return this.state.axis === "z"
+      default:
+        return false
+    }
   }
 
   buildOverlay(ctx: ToolContext): ScenePrimitive[] {
     const state = this.state
-    if (state.phase === "object") {
+    if (state.phase === "object" || state.phase === "zObject") {
       const hovered = state.hover ? ctx.document.get(state.hover) : undefined
       return hovered
         ? entityScenePrimitive(
@@ -231,7 +282,12 @@ export class UcsTool implements Tool {
           )
         : []
     }
-    if ((state.phase === "xAxis" || state.phase === "xyPlane") && this.cursor) {
+    if (
+      (state.phase === "xAxis" ||
+        state.phase === "xyPlane" ||
+        state.phase === "zPoint") &&
+      this.cursor
+    ) {
       return [
         {
           kind: "segment",
@@ -261,23 +317,34 @@ export class UcsTool implements Tool {
         }
         return "end"
       }
-      case "View":
-        this.apply(
-          { origin: ctx.ucs.origin, xAxis: planar(ctx.viewport.right) },
-          null,
-          ctx
+      case "View": {
+        const ucs = ucsFromAxes(
+          ctx.ucs.origin,
+          ctx.viewport.right,
+          ctx.viewport.up
         )
+        if (ucs) this.apply(ucs, null, ctx)
         return "end"
-      case "Z":
-        this.state = { phase: "zAngle" }
+      }
+      case "X":
+      case "Y":
+      case "Z": {
+        const axis = id === "X" ? "x" : id === "Y" ? "y" : "z"
+        this.state = { phase: "rotate", axis }
         ctx.dynamicInput.open({
-          fields: [{ id: "angle", prompt: "ucsRotationZ", kind: "angle" }],
+          fields: [
+            { id: "angle", prompt: ROTATION_PROMPTS[axis], kind: "angle" },
+          ],
           commit: (values, commitCtx) => {
-            this.rotateZ(values.angle, commitCtx)
+            this.rotate(axis, values.angle, commitCtx)
           },
         })
         ctx.dynamicInput.setLive("angle", DEFAULT_AXIS_ANGLE)
         this.place(ctx)
+        return "continue"
+      }
+      case "ZAxis":
+        this.enterZOrigin(ctx)
         return "continue"
       case "NAmed":
         this.enterNamed(ctx)
@@ -333,10 +400,10 @@ export class UcsTool implements Tool {
     this.place(ctx)
   }
 
-  private enterXYPlane(origin: Vec3, onXAxis: Vec2, ctx: ToolContext): void {
-    const ucs = createUcs(origin, V.sub(onXAxis, origin))
-    if (!ucs) return
-    this.state = { phase: "xyPlane", origin, xAxis: ucs.xAxis }
+  private enterXYPlane(origin: Vec3, onXAxis: Vec3, ctx: ToolContext): void {
+    const xAxis = sub3(onXAxis, origin)
+    if (!(length3(xAxis) > 1e-9)) return
+    this.state = { phase: "xyPlane", origin, xAxis }
     ctx.dynamicInput.open({
       fields: [{ id: "point", prompt: "ucsXYPlanePoint", kind: "coordinate" }],
       commit: () => {},
@@ -344,35 +411,89 @@ export class UcsTool implements Tool {
         if (this.state.phase !== "xyPlane") return false
         const text = commitCtx.dynamicInput.getText("point").trim()
         if (text === "") {
-          this.finish(ucs, null, commitCtx)
+          // Accepted, the new Y axis lies in the current UCS's XY plane.
+          const z = ucsZAxis(commitCtx.ucs)
+          const towardsY = cross3(z, xAxis)
+          const ucs = ucsFromAxes(
+            origin,
+            xAxis,
+            length3(towardsY) > 1e-9 ? towardsY : commitCtx.ucs.yAxis
+          )
+          if (ucs) this.finish(ucs, null, commitCtx)
           return true
         }
         const point = this.parse(text, origin, commitCtx)
         if (!point) return false
-        return this.acceptPlanePoint(origin, ucs.xAxis, point, commitCtx)
+        return this.acceptPlanePoint(origin, xAxis, point, commitCtx)
+      },
+    })
+    this.place(ctx)
+  }
+
+  /** The third point, on the positive Y side of the new XY plane. */
+  private acceptPlanePoint(
+    origin: Vec3,
+    xAxis: Vec3,
+    point: Vec3,
+    ctx: ToolContext
+  ): boolean {
+    const ucs = ucsFromAxes(origin, xAxis, sub3(point, origin))
+    if (!ucs) return false
+    this.finish(ucs, null, ctx)
+    return true
+  }
+
+  private rotate(axis: Axis, degrees: number, ctx: ToolContext): void {
+    if (!Number.isFinite(degrees)) return
+    this.finish(rotateUcs(ctx.ucs, axis, (degrees * Math.PI) / 180), null, ctx)
+  }
+
+  /** ZAxis: `Specify new origin point or [Object] <0,0,0>`, the current origin by default. */
+  private enterZOrigin(ctx: ToolContext): void {
+    this.state = { phase: "zOrigin" }
+    ctx.dynamicInput.open({
+      fields: [{ id: "point", prompt: "ucsZAxisOrigin", kind: "coordinate" }],
+      commit: () => {},
+      commitRaw: (commitCtx) => {
+        const text = commitCtx.dynamicInput.getText("point").trim()
+        const point =
+          text === "" ? commitCtx.ucs.origin : this.parse(text, null, commitCtx)
+        if (!point) return false
+        this.enterZPoint(point, commitCtx)
+        return true
       },
     })
     this.place(ctx)
   }
 
   /**
-   * A point on the positive-Y side keeps Z pointing up; one on the other side
-   * would turn the UCS over, which needs a Z the model does not have.
+   * The point on the positive Z axis. Its default keeps the current Z, which
+   * only moves the UCS to the new origin.
    */
-  private acceptPlanePoint(
-    origin: Vec3,
-    xAxis: Vec2,
-    point: Vec2,
-    ctx: ToolContext
-  ): boolean {
-    if (V.cross(xAxis, V.sub(point, origin)) < 0) return false
-    this.finish({ origin, xAxis }, null, ctx)
-    return true
+  private enterZPoint(origin: Vec3, ctx: ToolContext): void {
+    this.state = { phase: "zPoint", origin }
+    ctx.dynamicInput.open({
+      fields: [{ id: "point", prompt: "ucsZAxisPoint", kind: "coordinate" }],
+      commit: () => {},
+      commitRaw: (commitCtx) => {
+        const text = commitCtx.dynamicInput.getText("point").trim()
+        if (text === "") {
+          this.finish({ ...commitCtx.ucs, origin }, null, commitCtx)
+          return true
+        }
+        const point = this.parse(text, origin, commitCtx)
+        if (!point) return false
+        return this.acceptZPoint(origin, point, commitCtx)
+      },
+    })
+    this.place(ctx)
   }
 
-  private rotateZ(degrees: number, ctx: ToolContext): void {
-    if (!Number.isFinite(degrees)) return
-    this.finish(rotateUcs(ctx.ucs, (degrees * Math.PI) / 180), null, ctx)
+  private acceptZPoint(origin: Vec3, point: Vec3, ctx: ToolContext): boolean {
+    const ucs = ucsAlongZ(origin, sub3(point, origin))
+    if (!ucs) return false
+    this.finish(ucs, null, ctx)
+    return true
   }
 
   /**
@@ -506,10 +627,7 @@ export class UcsTool implements Tool {
     )
   }
 
-  /**
-   * Makes `ucs` current, one undo step, remembering the one it replaces.
-   * Changing to the WCS puts ELEVATION back to 0, as ELEV documents.
-   */
+  /** Makes `ucs` current, one undo step, remembering the one it replaces. */
   private apply(
     ucs: Ucs,
     name: string | null,
@@ -517,19 +635,13 @@ export class UcsTool implements Tool {
     remember = true
   ): void {
     const settings = ctx.document.getSettings()
-    if (sameUcs(ucs, settings.ucs) && name === settings.ucsName) return
+    const patch = ucsChange(settings, ucs, name)
+    if (!patch) return
     if (remember) {
       this.previous.push({ ucs: settings.ucs, name: settings.ucsName })
       if (this.previous.length > MAX_PREVIOUS) this.previous.shift()
     }
-    const toWorld = isWorldUcs(ucs) && settings.elevation !== 0
-    ctx.execute(
-      new UpdateSettingsCommand({
-        ucs,
-        ucsName: name,
-        ...(toWorld ? { elevation: 0 } : {}),
-      })
-    )
+    ctx.execute(new UpdateSettingsCommand(patch))
   }
 
   /** {@link apply} as the command's last answer, from a prompt that ends it itself. */
@@ -592,6 +704,8 @@ export function listNamedUcs(patterns: string, ctx: ToolContext): void {
     }
     const origin = worldPointToUcs(ctx.ucs, entry.ucs.origin)
     const x = worldDirectionToUcs(ctx.ucs, entry.ucs.xAxis)
+    const y = worldDirectionToUcs(ctx.ucs, entry.ucs.yAxis)
+    const z = worldDirectionToUcs(ctx.ucs, ucsZAxis(entry.ucs))
     lines.push(
       ctx.text.message("savedUcsEntry", {
         name: entry.name,
@@ -600,98 +714,49 @@ export function listNamedUcs(patterns: string, ctx: ToolContext): void {
         originZ: fmt(origin.z),
         xAxisX: fmt(x.x),
         xAxisY: fmt(x.y),
-        yAxisX: fmt(-x.y),
-        yAxisY: fmt(x.x),
+        xAxisZ: fmt(x.z),
+        yAxisX: fmt(y.x),
+        yAxisY: fmt(y.y),
+        yAxisZ: fmt(y.z),
+        zAxisX: fmt(z.x),
+        zAxisY: fmt(z.y),
+        zAxisZ: fmt(z.z),
       })
     )
   }
   ctx.report(lines.join("\n"))
 }
 
-/** The objects UCS OBject can align to; dimensions and hatches are not among them. */
-function alignable(entity: Entity | null): Entity | null {
-  if (!entity) return null
-  return entity.type === "dimension" || entity.type === "hatch" ? null : entity
+/**
+ * The patch that makes `ucs` current under `name`, or `null` when it already
+ * is: UCS, and -VIEW aligning the UCS with an orthographic view. Changing to
+ * the WCS puts ELEVATION back to 0, as ELEV documents.
+ */
+export function ucsChange(
+  settings: DocumentSettings,
+  ucs: Ucs,
+  name: string | null
+): Partial<DocumentSettings> | null {
+  if (sameUcs(ucs, settings.ucs) && name === settings.ucsName) return null
+  const toWorld = isWorldUcs(ucs) && settings.elevation !== 0
+  return { ucs, ucsName: name, ...(toWorld ? { elevation: 0 } : {}) }
 }
 
 /**
- * AutoCAD's UCS OBject: where the origin goes and which way X points depends
- * on the kind of object and on where it was picked. The origin takes the
- * object's height there, which puts the XY plane on the object's.
+ * Where a click at `screen` picks `entity`, in the object's own coordinates:
+ * on its plane, or a point along a line as it is drawn, with its Z.
  */
-function ucsFromObject(entity: Entity, pick: Vec2): Ucs | null {
-  const toward = (origin: Vec2, target: Vec2) =>
-    createUcs(withZ(origin, entityZAt(entity, origin)), V.sub(target, origin))
-  const nearer = (a: Vec2, b: Vec2) =>
-    V.distance(pick, a) <= V.distance(pick, b) ? a : b
-  switch (entity.type) {
-    case "line": {
-      const origin = nearer(entity.start, entity.end)
-      return toward(origin, origin === entity.start ? entity.end : entity.start)
-    }
-    case "circle":
-      return toward(entity.center, pick)
-    case "arc":
-      return toward(
-        entity.center,
-        nearer(arcStartPoint(entity), arcEndPoint(entity))
-      )
-    case "ellipse":
-      return isFullEllipse(entity)
-        ? toward(entity.center, pick)
-        : toward(
-            entity.center,
-            nearer(ellipseStartPoint(entity), ellipseEndPoint(entity))
-          )
-    case "polyline": {
-      const segments = polylineSegmentGeometries(entity)
-      let best = segments[0]
-      let bestDistance = Infinity
-      for (const segment of segments) {
-        const distance = segmentDistance(segment, pick)
-        if (distance < bestDistance) {
-          best = segment
-          bestDistance = distance
-        }
-      }
-      if (!best) return null
-      const end = nearer(best.a, best.b)
-      if (best.kind === "arc") return toward(best.center, end)
-      return toward(end, end === best.a ? best.b : best.a)
-    }
-    case "spline": {
-      const points = splinePolyline(entity)
-      const first = points[0]
-      const last = points[points.length - 1]
-      if (entity.closed) return toward(first, pick)
-      const origin = nearer(first, last)
-      return toward(origin, origin === first ? last : first)
-    }
-    case "text":
-    case "mtext":
-    case "attdef":
-    case "insert":
-      return createUcs(
-        withZ(entity.position, entityZAt(entity, entity.position)),
-        polarPoint({ x: 0, y: 0 }, 1, entity.rotation)
-      )
-    default:
-      return null
+function pickOn(viewport: Viewport, entity: Entity, screen: Vec2): Vec2 | Vec3 {
+  if (entity.type !== "line") {
+    return cursorOnEntityPlane(viewport, entity, screen)
   }
-}
-
-function segmentDistance(
-  segment: ReturnType<typeof polylineSegmentGeometries>[number],
-  point: Vec2
-): number {
-  if (segment.kind === "line") {
-    const ab = V.sub(segment.b, segment.a)
-    const length = V.lengthSq(ab)
-    const t =
-      length > 0
-        ? Math.max(0, Math.min(1, V.dot(V.sub(point, segment.a), ab) / length))
-        : 0
-    return V.distance(point, V.add(segment.a, V.scale(ab, t)))
-  }
-  return Math.abs(V.distance(point, segment.center) - segment.radius)
+  const start = { ...entity.start, z: lineStartZ(entity) }
+  const end = { ...entity.end, z: lineEndZ(entity) }
+  const { t } = closestPointOnInfiniteLine(
+    viewport.worldToScreen(start),
+    viewport.worldToScreen(end),
+    screen
+  )
+  const along = Number.isFinite(t) ? t : 0
+  return add3(start, scale3(sub3(end, start), along))
 }

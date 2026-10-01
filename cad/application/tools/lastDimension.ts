@@ -1,5 +1,5 @@
 import { DocumentReader } from "../../domain/Document"
-import { DimensionEntity } from "../../domain/entities"
+import { DimensionEntity, readsInPlan } from "../../domain/entities"
 
 /**
  * The dimension DIMBASELINE and DIMCONTINUE chain off when you start them
@@ -14,7 +14,9 @@ import { DimensionEntity } from "../../domain/entities"
  * Radial dimensions are skipped rather than treated as a terminator: they have
  * no second extension line origin to chain from, exactly as `lastDrawnPoint`
  * skips a circle instead of giving up at it. Angular ones are skipped for the
- * same reason — see `isChainable` for the gap that leaves.
+ * same reason — see `isChainable` for the gap that leaves. One lying in a
+ * plane at an angle to the UCS's ends the search: a chain is drawn in the
+ * UCS's plane, so the Select prompt asks instead.
  */
 export function lastDimension(
   document: DocumentReader
@@ -26,7 +28,7 @@ export function lastDimension(
       entity.type === "dimension" &&
       (entity.kind === "linear" || entity.kind === "aligned")
     ) {
-      return entity
+      return readsInPlan(entity) ? entity : null
     }
   }
   return null

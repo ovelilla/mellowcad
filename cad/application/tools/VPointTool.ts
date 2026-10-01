@@ -1,7 +1,7 @@
 import { Vec2 } from "../../geometry/Vec2"
 import { Vec3 } from "../../geometry/Vec3"
 import { normalizeDegrees } from "../../geometry/primitives"
-import { WORLD_UCS } from "../../domain/ucs"
+import { WORLD_UCS, worldDirectionToUcs } from "../../domain/ucs"
 import { formatLength } from "../../domain/units"
 import { parseCoordinate } from "../input/coordinateInput"
 import { lookFrom } from "./viewPresets"
@@ -20,13 +20,15 @@ type VPointState =
 
 /**
  * AutoCAD's -VPOINT, which VPOINT runs too (its Viewpoint Presets dialog is
- * not built): the current VIEWDIR, then a view point — the viewer looks from
- * it back at the origin — or Rotate's two angles. Input is in the WCS
- * (WORLDVIEW 1). The view is fitted to the drawing's extents, and ZOOM
- * Previous steps back through it.
+ * not built): the current VIEWDIR (expressed in the UCS, as the variable is),
+ * then a view point — the viewer looks from it back at the origin — or
+ * Rotate's two angles. Input is in the WCS (WORLDVIEW 1), so the tool works
+ * there. The view is fitted to the drawing's extents, and ZOOM Previous steps
+ * back through it.
  */
 export class VPointTool implements Tool {
   readonly id = "vpoint"
+  readonly inWorld = true
 
   private state: VPointState = { phase: "viewPoint" }
   private lastScreen: Vec2 | null = null
@@ -34,7 +36,7 @@ export class VPointTool implements Tool {
   onActivate(ctx: ToolContext): void {
     ctx.setCursor("crosshair")
     const settings = ctx.document.getSettings()
-    const { x, y, z } = ctx.viewport.direction
+    const { x, y, z } = worldDirectionToUcs(ctx.ucs, ctx.viewport.direction)
     const value = (n: number) => formatLength(n, settings)
     ctx.report(
       ctx.text.message("currentViewDirection", {

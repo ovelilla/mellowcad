@@ -1,7 +1,15 @@
 import { Vec2, V } from "../../geometry/Vec2"
 import { Vec3 } from "../../geometry/Vec3"
 import { circleFrom3Points } from "../../geometry/primitives"
-import { createCircle, onPlaneOf } from "../../domain/entities"
+import {
+  CircleEntity,
+  EntityId,
+  createCircle,
+  onPlaneOf,
+  withElevation,
+  withNormal,
+} from "../../domain/entities"
+import { LayerId } from "../../domain/layers"
 import { parseNumber } from "../../domain/units"
 import { AddEntityCommand } from "../commands/entityCommands"
 import { DynamicInputSession } from "../input/DynamicInput"
@@ -12,8 +20,13 @@ import {
 } from "../input/coordinateInput"
 import { ScenePrimitive } from "../../scene/types"
 import { THEME } from "../../scene/theme"
+import { entityScenePrimitive } from "../SceneBuilder"
 import { KeyInput, PointerInput, Tool, ToolContext } from "./Tool"
 import { withCurrentThickness } from "./currentThickness"
+import { planeThrough } from "./threePointPlane"
+
+/** The ghost's id, reused every frame so a preview burns no entity ids. */
+const PREVIEW_ID = "circle-preview"
 
 /**
  * How a circle is defined — AutoCAD's CIRCLE modes, each surfaced as its own
@@ -49,13 +62,13 @@ type CircleToolState =
   /** Awaiting the first point (2P first / 3P first). */
   | { readonly phase: "p1" }
   /** First point placed (2P diameter end / 3P second point). */
-  | { readonly phase: "p2"; readonly p1: Vec3; readonly cursor: Vec2 }
+  | { readonly phase: "p2"; readonly p1: Vec3; readonly cursor: Vec3 }
   /** Two points placed; awaiting the third (3P only). */
   | {
       readonly phase: "p3"
       readonly p1: Vec3
       readonly p2: Vec3
-      readonly cursor: Vec2
+      readonly cursor: Vec3
     }
 
 /**
@@ -214,6 +227,9 @@ export class CircleTool implements Tool {
   buildOverlay(ctx: ToolContext): ScenePrimitive[] {
     const { viewport } = ctx
     const rubber = { color: THEME.rubberBand, width: 1 }
+    const layer = ctx.document.getCurrentLayerId()
+    const ghost = (circle: CircleEntity | null): ScenePrimitive[] =>
+      circle ? entityScenePrimitive(viewport, circle, rubber) : []
 
     switch (this.state.phase) {
       case "radius": {
@@ -223,72 +239,31 @@ export class CircleTool implements Tool {
         // mode the cursor sits at the diameter distance (2× the radius), so the
         // line runs out past the rim — its length is the diameter, which is the
         // visual cue that the diameter (not the radius) is being specified.
-        const out: ScenePrimitive[] = [
+        return [
           {
             kind: "segment",
             a: viewport.worldToScreen(center),
             b: viewport.worldToScreen(cursor),
             stroke: rubber,
           },
+          ...ghost(circleAt(center, radius, center, layer, PREVIEW_ID)),
         ]
-        if (radius > 0) {
-          out.push({
-            kind: "circle",
-            center: viewport.worldToScreen(center),
-            radius: viewport.worldToScreenDistance(radius),
-            stroke: rubber,
-          })
-        }
-        return out
       }
       case "p2": {
-        if (this.mode === "twoPoint") {
-          const { p1, cursor } = this.state
-          const center = V.scale(V.add(p1, cursor), 0.5)
-          const radius = V.distance(p1, cursor) / 2
-          const out: ScenePrimitive[] = [
-            {
-              kind: "segment",
-              a: viewport.worldToScreen(p1),
-              b: viewport.worldToScreen(cursor),
-              stroke: rubber,
-            },
-          ]
-          if (radius > 0) {
-            out.push({
-              kind: "circle",
-              center: viewport.worldToScreen(center),
-              radius: viewport.worldToScreenDistance(radius),
-              stroke: rubber,
-            })
-          }
-          return out
+        const { p1, cursor } = this.state
+        const chord: ScenePrimitive = {
+          kind: "segment",
+          a: viewport.worldToScreen(p1),
+          b: viewport.worldToScreen(cursor),
+          stroke: rubber,
         }
         // Three-point: only two points so far — show the chord.
-        return [
-          {
-            kind: "segment",
-            a: viewport.worldToScreen(this.state.p1),
-            b: viewport.worldToScreen(this.state.cursor),
-            stroke: rubber,
-          },
-        ]
+        if (this.mode !== "twoPoint") return [chord]
+        return [chord, ...ghost(twoPointCircle(p1, cursor, layer, PREVIEW_ID))]
       }
       case "p3": {
-        const solved = circleFrom3Points(
-          this.state.p1,
-          this.state.p2,
-          this.state.cursor
-        )
-        if (!solved || !(solved.radius > 0)) return []
-        return [
-          {
-            kind: "circle",
-            center: viewport.worldToScreen(solved.center),
-            radius: viewport.worldToScreenDistance(solved.radius),
-            stroke: rubber,
-          },
-        ]
+        const { p1, p2, cursor } = this.state
+        return ghost(threePointCircle(p1, p2, cursor, layer, PREVIEW_ID))
       }
       default:
         return []
@@ -314,56 +289,35 @@ export class CircleTool implements Tool {
     // centre is the value. In diameter mode that value is the diameter.
     const value = typed ?? V.distance(this.state.center, point)
     const radius = this.state.diameter ? value / 2 : value
-    this.commitCircle(this.state.center, radius, this.state.center, ctx)
+    const { center } = this.state
+    this.commitCircle(circleAt(center, radius, center, layerOf(ctx)), ctx)
   }
 
   private commitRadiusValue(value: number, ctx: ToolContext): void {
     if (this.state.phase !== "radius") return
     if (!(value > 0)) return
     const radius = this.state.diameter ? value / 2 : value
-    this.commitCircle(this.state.center, radius, this.state.center, ctx)
+    const { center } = this.state
+    this.commitCircle(circleAt(center, radius, center, layerOf(ctx)), ctx)
   }
 
-  private commitTwoPoint(p1: Vec3, p2: Vec2, ctx: ToolContext): void {
-    const center = V.scale(V.add(p1, p2), 0.5)
-    const radius = V.distance(p1, p2) / 2
-    this.commitCircle(center, radius, p1, ctx)
+  private commitTwoPoint(p1: Vec3, p2: Vec3, ctx: ToolContext): void {
+    this.commitCircle(twoPointCircle(p1, p2, layerOf(ctx)), ctx)
   }
 
   private commitThreePoint(
     p1: Vec3,
-    p2: Vec2,
-    p3: Vec2,
+    p2: Vec3,
+    p3: Vec3,
     ctx: ToolContext
   ): void {
-    const solved = circleFrom3Points(p1, p2, p3)
-    if (!solved) return // collinear — ignore, keep prompting for a valid point
-    this.commitCircle(solved.center, solved.radius, p1, ctx)
+    // Collinear: ignored, the third point is asked again.
+    this.commitCircle(threePointCircle(p1, p2, p3, layerOf(ctx)), ctx)
   }
 
-  /**
-   * WHY: AutoCAD builds a 2P or 3P circle through points at different heights
-   * in their own tilted plane; without a normal per object it lies in the
-   * plane of the first point instead.
-   */
-  private commitCircle(
-    center: Vec2,
-    radius: number,
-    first: Vec3,
-    ctx: ToolContext
-  ): void {
-    if (!(radius > 0)) return
-    ctx.execute(
-      new AddEntityCommand(
-        withCurrentThickness(
-          onPlaneOf(
-            createCircle(center, radius, ctx.document.getCurrentLayerId()),
-            first
-          ),
-          ctx
-        )
-      )
-    )
+  private commitCircle(circle: CircleEntity | null, ctx: ToolContext): void {
+    if (!circle) return
+    ctx.execute(new AddEntityCommand(withCurrentThickness(circle, ctx)))
     ctx.endCommand()
   }
 
@@ -445,4 +399,60 @@ function parseField(ctx: ToolContext, fieldId: string): number | null {
   if (text === "") return null
   const value = parseNumber(text)
   return value !== null && Number.isFinite(value) ? value : null
+}
+
+function layerOf(ctx: ToolContext): LayerId {
+  return ctx.document.getCurrentLayerId()
+}
+
+/** A circle in the plane of `first`, or `null` for no size. */
+function circleAt(
+  center: Vec2,
+  radius: number,
+  first: Vec3,
+  layerId: LayerId,
+  id?: EntityId
+): CircleEntity | null {
+  if (!(radius > 0)) return null
+  return onPlaneOf(createCircle(center, radius, layerId, id), first)
+}
+
+/**
+ * The 2P circle, in the UCS plane through its first point.
+ * WHY not in the two points' own plane: two points fix no plane, and what
+ * AutoCAD does with two at different heights is not documented.
+ */
+function twoPointCircle(
+  p1: Vec3,
+  p2: Vec3,
+  layerId: LayerId,
+  id?: EntityId
+): CircleEntity | null {
+  const center = V.scale(V.add(p1, p2), 0.5)
+  return circleAt(center, V.distance(p1, p2) / 2, p1, layerId, id)
+}
+
+/**
+ * The 3P circle: through the three points, in their own plane when they are at
+ * different heights, as AutoCAD's is. `null` when they lie on one line.
+ */
+function threePointCircle(
+  p1: Vec3,
+  p2: Vec3,
+  p3: Vec3,
+  layerId: LayerId,
+  id?: EntityId
+): CircleEntity | null {
+  const plane = planeThrough(p1, p2, p3)
+  if (!plane) {
+    const solved = circleFrom3Points(p1, p2, p3)
+    return solved && circleAt(solved.center, solved.radius, p1, layerId, id)
+  }
+  const [a, b, c] = plane.points
+  const solved = circleFrom3Points(a, b, c)
+  if (!solved || !(solved.radius > 0)) return null
+  return withNormal(
+    withElevation(createCircle(solved.center, solved.radius, layerId, id), a.z),
+    plane.normal
+  )
 }

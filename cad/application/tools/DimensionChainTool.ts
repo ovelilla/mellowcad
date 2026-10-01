@@ -11,6 +11,7 @@ import {
   dimensionAxisAngle,
   DimensionKind,
   entityElevation,
+  readsInPlan,
   withElevation,
 } from "../../domain/entities"
 import { AddEntityCommand } from "../commands/entityCommands"
@@ -338,10 +339,11 @@ function nearerOrigin(base: DimensionEntity, pickPoint: Vec2): Vec2 {
  * dimension". Chaining an angular one steps the *radius* of its arc rather than
  * offsetting a straight line perpendicularly, so it is a different placement
  * rule and separate work; angular dimensions are left out until it exists
- * rather than chained wrongly.
+ * rather than chained wrongly. One in a plane at an angle to the UCS's is not
+ * chained either: the chain is drawn in the UCS's plane.
  */
 function isChainable(dim: DimensionEntity): boolean {
-  return dim.kind === "linear" || dim.kind === "aligned"
+  return (dim.kind === "linear" || dim.kind === "aligned") && readsInPlan(dim)
 }
 
 /** Everything the next link of the chain needs, carried between placements. */

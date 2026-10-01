@@ -4,12 +4,12 @@ import {
   createLine,
   carryOverrides,
   carryPlane,
-  coplanar,
   createPolyline,
   polylineBulge,
   polylineSegmentGeometries,
   polylineSegments,
   Entity,
+  EntityId,
   LineEntity,
   PolylineEntity,
   PolylineSegmentGeometry,
@@ -22,6 +22,7 @@ import { DynamicInputSession } from "../input/DynamicInput"
 import { ScenePrimitive, StrokeStyle } from "../../scene/types"
 import { THEME } from "../../scene/theme"
 import { entityScenePrimitive } from "../SceneBuilder"
+import { LineCorner, LinePick, lineCorner } from "./lineCorner"
 import {
   CommandOption,
   CommandOptionOutcome,
@@ -60,10 +61,10 @@ type ChamferState =
   | {
       readonly phase: "second"
       readonly line1: LineEntity
-      /** The point clicked on the first line — picks which corner to cut. */
-      readonly pick1: Vec2
+      /** Where the first line was clicked — picks which corner to cut. */
+      readonly pick1: LinePick
       readonly hover: LineEntity | null
-      readonly cursor: Vec2
+      readonly cursor: LinePick
     }
 
 export class ChamferTool implements Tool {
@@ -105,7 +106,7 @@ export class ChamferTool implements Tool {
       this.state = {
         ...this.state,
         hover: this.pickLine(input, ctx, this.state.line1.id),
-        cursor: input.world,
+        cursor: { world: input.world, screen: input.screen },
       }
     }
     ctx.requestRender()
@@ -122,12 +123,13 @@ export class ChamferTool implements Tool {
         return
       }
       if (hit.type !== "line") return
+      const pick = { world: input.world, screen: input.screen }
       this.state = {
         phase: "second",
         line1: hit,
-        pick1: input.world,
+        pick1: pick,
         hover: null,
-        cursor: input.world,
+        cursor: pick,
       }
       ctx.requestRender()
       return
@@ -139,7 +141,7 @@ export class ChamferTool implements Tool {
       this.state.line1,
       this.state.pick1,
       line2,
-      input.world,
+      { world: input.world, screen: input.screen },
       ctx
     )
   }
@@ -167,107 +169,72 @@ export class ChamferTool implements Tool {
 
   buildOverlay(ctx: ToolContext): ScenePrimitive[] {
     const { viewport } = ctx
-    const line = (a: Vec2, b: Vec2, stroke: StrokeStyle): ScenePrimitive => ({
-      kind: "segment",
-      a: viewport.worldToScreen(a),
-      b: viewport.worldToScreen(b),
-      stroke,
-    })
+    const draw = (entity: Entity, stroke: StrokeStyle) =>
+      entityScenePrimitive(viewport, entity, stroke)
 
     if (this.state.phase === "first") {
       const h = this.state.hover
-      if (!h) return []
-      return h.type === "line"
-        ? [line(h.start, h.end, hoverStroke)]
-        : entityScenePrimitive(viewport, h, hoverStroke)
+      return h ? draw(h, hoverStroke) : []
     }
 
     const { line1, pick1, hover, cursor } = this.state
-    const prims = [line(line1.start, line1.end, selectedStroke)]
+    const prims = draw(line1, selectedStroke)
     if (!hover) return prims
 
-    const result = coplanar(line1, hover)
-      ? chamferLines(
-          line1.start,
-          line1.end,
-          hover.start,
-          hover.end,
-          pick1,
-          cursor,
-          this.distance1,
-          this.distance2
-        )
-      : null
-    if (!result) {
-      prims.push(line(hover.start, hover.end, hoverStroke))
-      return prims
-    }
-
-    const trimmed1 = trimLine(
-      line1,
-      result.corner,
-      result.direction1,
-      result.point1
-    )
-    const trimmed2 = trimLine(
-      hover,
-      result.corner,
-      result.direction2,
-      result.point2
-    )
-    if (trimmed1) prims.push(line(trimmed1.start, trimmed1.end, hoverStroke))
-    if (trimmed2) prims.push(line(trimmed2.start, trimmed2.end, hoverStroke))
-    if (!V.equals(result.point1, result.point2)) {
+    const corner = lineCorner(line1, pick1, hover, cursor, viewport)
+    const chamfered =
+      corner && this.chamfer(corner, line1, hover, ctx, PREVIEW_ID)
+    if (!chamfered) return [...prims, ...draw(hover, hoverStroke)]
+    for (const entity of chamfered) {
       prims.push(
-        line(result.point1, result.point2, {
-          color: THEME.rubberBand,
-          width: 1,
-        })
+        ...draw(
+          entity,
+          entity.id === PREVIEW_ID
+            ? { color: THEME.rubberBand, width: 1 }
+            : hoverStroke
+        )
       )
     }
     return prims
   }
 
-  private commitChamfer(
+  /**
+   * The two lines cut back to the bevel, and the bevel (none when both
+   * distances are 0), back in the frame; `null` when the lines are parallel
+   * or a cut line would vanish. A preview gives the bevel a fixed `bevelId`.
+   */
+  private chamfer(
+    corner: LineCorner,
     line1: LineEntity,
-    pick1: Vec2,
     line2: LineEntity,
-    pick2: Vec2,
-    ctx: ToolContext
-  ): void {
-    if (!coplanar(line1, line2)) {
-      ctx.report(ctx.text.message("linesNonCoplanar"), "error")
-      this.state = { phase: "first", hover: null }
-      ctx.requestRender()
-      return
-    }
+    ctx: ToolContext,
+    bevelId?: EntityId
+  ): Entity[] | null {
     const result = chamferLines(
-      line1.start,
-      line1.end,
-      line2.start,
-      line2.end,
-      pick1,
-      pick2,
+      corner.line1.start,
+      corner.line1.end,
+      corner.line2.start,
+      corner.line2.end,
+      corner.pick1,
+      corner.pick2,
       this.distance1,
       this.distance2
     )
-    if (!result) return // parallel or collinear — keep prompting
-
+    if (!result) return null
     const trimmed1 = trimLine(
-      line1,
+      corner.line1,
       result.corner,
       result.direction1,
       result.point1
     )
     const trimmed2 = trimLine(
-      line2,
+      corner.line2,
       result.corner,
       result.direction2,
       result.point2
     )
-    if (!trimmed1 || !trimmed2) return
-
-    const added: Entity[] = [trimmed1, trimmed2]
+    if (!trimmed1 || !trimmed2) return null
+    const built: Entity[] = [trimmed1, trimmed2]
     if (!V.equals(result.point1, result.point2)) {
       // AutoCAD puts the bevel on the lines' shared layer, or the current layer
       // when they differ.
@@ -275,12 +242,33 @@ export class ChamferTool implements Tool {
         line1.layerId === line2.layerId
           ? line1.layerId
           : ctx.document.getCurrentLayerId()
-      added.push(
-        carryPlane(line1, createLine(result.point1, result.point2, layer))
+      built.push(
+        carryPlane(
+          corner.line1,
+          createLine(result.point1, result.point2, layer, bevelId)
+        )
       )
     }
+    return built.map((entity) => corner.back(entity))
+  }
 
-    ctx.execute(new ReplaceEntitiesCommand([line1.id, line2.id], added))
+  private commitChamfer(
+    line1: LineEntity,
+    pick1: LinePick,
+    line2: LineEntity,
+    pick2: LinePick,
+    ctx: ToolContext
+  ): void {
+    const corner = lineCorner(line1, pick1, line2, pick2, ctx.viewport)
+    if (!corner) {
+      ctx.report(ctx.text.message("linesNonCoplanar"), "error")
+      this.state = { phase: "first", hover: null }
+      ctx.requestRender()
+      return
+    }
+    const chamfered = this.chamfer(corner, line1, line2, ctx)
+    if (!chamfered) return // parallel or collinear — keep prompting
+    ctx.execute(new ReplaceEntitiesCommand([line1.id, line2.id], chamfered))
     ctx.dynamicInput.close()
     ctx.endCommand()
   }
@@ -354,6 +342,8 @@ export class ChamferTool implements Tool {
 
 const hoverStroke: StrokeStyle = { color: THEME.entityHover, width: 2 }
 const selectedStroke: StrokeStyle = { color: THEME.selected, width: 2 }
+/** The preview bevel's id, reused every frame so a preview burns no entity ids. */
+const PREVIEW_ID = "chamfer-preview"
 
 /**
  * Rebuilds `line` trimmed/extended to end at `cut`: the endpoint on the picked

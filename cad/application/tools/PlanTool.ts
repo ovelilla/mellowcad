@@ -1,6 +1,5 @@
 import { Vec2 } from "../../geometry/Vec2"
-import { WORLD_Z, withZ } from "../../geometry/Vec3"
-import { Ucs, WORLD_UCS } from "../../domain/ucs"
+import { Ucs, WORLD_UCS, ucsZAxis } from "../../domain/ucs"
 import type { PromptId } from "../../locales/types"
 import { entitiesViewBounds } from "../Viewport"
 import {
@@ -21,13 +20,15 @@ type PlanState =
 const PADDING_PX = 40
 
 /**
- * AutoCAD's PLAN: `[Current ucs/Ucs/World] <Current>`. It turns the view so
- * the chosen UCS's X axis points right and fits the drawing's extents; the
- * current UCS stays as it was. ZOOM Previous steps back through it; U does
- * not, as it does not undo ZOOM here either.
+ * AutoCAD's PLAN: `[Current ucs/Ucs/World] <Current>`. It looks down the
+ * chosen UCS's Z axis with its X axis pointing right and fits the drawing's
+ * extents; the current UCS stays as it was. ZOOM Previous steps back through
+ * it; U does not, as it does not undo ZOOM here either. It works in the WCS,
+ * where the UCSs it names are.
  */
 export class PlanTool implements Tool {
   readonly id = "plan"
+  readonly inWorld = true
 
   private state: PlanState = { phase: "option" }
   private lastScreen: Vec2 | null = null
@@ -113,11 +114,11 @@ export class PlanTool implements Tool {
     ctx.endCommand()
   }
 
-  /** A plan view of `ucs`: its X axis to the right, the extents in view. */
+  /** A plan view of `ucs`: down its Z axis, its X axis to the right, the extents in view. */
   private plan(ucs: Ucs, ctx: ToolContext): void {
     const { viewport } = ctx
     viewport.pushHistory()
-    viewport.setView(WORLD_Z, withZ(ucs.xAxis, 0))
+    viewport.setView(ucsZAxis(ucs), ucs.xAxis)
     const bounds = entitiesViewBounds(
       ctx.document.getEntities(),
       viewport,

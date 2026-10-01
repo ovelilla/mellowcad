@@ -41,12 +41,7 @@ import {
   DimStyleId,
 } from "../domain/dimStyles"
 import { polarPoint } from "../geometry/primitives"
-import {
-  Ucs,
-  isWorldUcs,
-  ucsPointToWorld,
-  worldPointToUcs,
-} from "../domain/ucs"
+import { Ucs, ucsPointToWorld, worldPointToUcs } from "../domain/ucs"
 import { DEFAULT_LAYER_COLOR, Layer, LayerId } from "../domain/layers"
 import { DEFAULT_LINETYPE_ID, linetypePattern } from "../domain/linetypes"
 import {
@@ -70,7 +65,7 @@ import {
   planeCamera,
   smallestStretch,
 } from "./planeCamera"
-import { SnapResult, SnapType } from "./snapping/types"
+import { SnapResult } from "./snapping/types"
 import { TrackingPoint, TrackingResult } from "./tracking/types"
 
 /**
@@ -96,6 +91,8 @@ export interface PolarGuideInput {
 /** The UCS icon: where UCSICON puts it, and its axis letters in the command language. */
 export interface UcsIconInput {
   readonly atOrigin: boolean
+  /** Whether the UCS is the WCS, which the icon marks with a square at its origin. */
+  readonly world: boolean
   readonly xLabel: string
   readonly yLabel: string
 }
@@ -107,6 +104,12 @@ export interface UcsIconInput {
  */
 export interface SceneInput {
   readonly camera: CameraTransform
+  /**
+   * The camera the drawing aids are given in — the grid, the UCS icon, the
+   * snap, tracking and polar guides, the FROM base: the frame of the UCS's XY
+   * plane, which the tools work in. {@link camera} when left out.
+   */
+  readonly aidCamera?: CameraTransform
   readonly entities: readonly Entity[]
   /** Layer table, used to resolve each entity's colour and visibility. */
   readonly layers: readonly Layer[]
@@ -124,7 +127,10 @@ export interface SceneInput {
    * spacing from the zoom level.
    */
   readonly gridSpacing: Vec2 | null
-  /** The grid lies on the UCS: its lines run along the UCS axes from its origin. */
+  /**
+   * The grid lies on the UCS: its lines run along the UCS axes from its
+   * origin. Given in the frame of {@link aidCamera}, where it is level.
+   */
   readonly ucs: Ucs
   /** The UCS icon to draw, or `null` when UCSICON is off or a preview shows none. */
   readonly ucsIcon: UcsIconInput | null
@@ -168,10 +174,11 @@ export interface SceneInput {
  */
 export function buildScene(input: SceneInput): Scene {
   const { camera } = input
+  const aid = input.aidCamera ?? camera
   const primitives: ScenePrimitive[] = []
 
   if (input.gridVisible) {
-    pushGrid(primitives, camera, input.gridSpacing, input.ucs)
+    pushGrid(primitives, aid, input.gridSpacing, input.ucs)
   }
   pushEntities(
     primitives,
@@ -187,18 +194,18 @@ export function buildScene(input: SceneInput): Scene {
     input.attributeDisplay ?? "normal"
   )
   if (input.ucsIcon) {
-    pushUcsIcon(primitives, camera, input.ucs, input.ucsIcon)
+    pushUcsIcon(primitives, aid, input.ucs, input.ucsIcon)
   }
-  pushTracking(primitives, camera, input.acquiredTrackingPoints, input.tracking)
+  pushTracking(primitives, aid, input.acquiredTrackingPoints, input.tracking)
   pushParallelReferences(
     primitives,
     camera,
     input.entities,
     input.parallelReferenceIds
   )
-  if (input.polar) pushPolarGuide(primitives, camera, input.polar)
+  if (input.polar) pushPolarGuide(primitives, aid, input.polar)
   if (input.fromBase) {
-    pushFromBase(primitives, camera.worldToScreen(input.fromBase), input.cursor)
+    pushFromBase(primitives, aid.worldToScreen(input.fromBase), input.cursor)
   }
   primitives.push(...input.toolOverlay)
   if (input.cyclingHighlight) {
@@ -216,21 +223,15 @@ export function buildScene(input: SceneInput): Scene {
   }
   if (input.cyclingBadge) pushCyclingBadge(primitives, input.cyclingBadge)
   if (input.tracking) {
-    pushTrackedPointMarker(
-      primitives,
-      camera.worldToScreen(input.tracking.point)
-    )
+    pushTrackedPointMarker(primitives, aid.worldToScreen(input.tracking.point))
   }
   if (input.snap) {
-    if (
-      input.snap.type === SnapType.Extension ||
-      input.snap.type === SnapType.Parallel
-    ) {
-      pushAlignmentGuide(primitives, camera, input.snap, input.entities)
+    if (input.snap.direction) {
+      pushAlignmentGuide(primitives, aid, input.snap, input.snap.direction)
     }
     pushSnapMarker(
       primitives,
-      camera.worldToScreen(input.snap.point),
+      aid.worldToScreen(input.snap.point),
       input.snap,
       input.snapLabel
     )
@@ -403,7 +404,7 @@ function pushUcsIcon(
   }
   arm(xDir, THEME.ucsIconX, icon.xLabel)
   arm(yDir, THEME.ucsIconY, icon.yLabel)
-  if (isWorldUcs(ucs)) {
+  if (icon.world) {
     const side = 7
     out.push({
       kind: "path",
@@ -1359,6 +1360,7 @@ function pushParallelReferences(
     const mid = camera.worldToScreen({
       x: (entity.start.x + entity.end.x) / 2,
       y: (entity.start.y + entity.end.y) / 2,
+      z: (lineStartZ(entity) + lineEndZ(entity)) / 2,
     })
     const c = { x: Math.round(mid.x) + 0.5, y: Math.round(mid.y) + 0.5 }
     const s = 5
@@ -1744,32 +1746,23 @@ function pushBowtie(
 
 /**
  * Draws a dashed alignment line through an Extension/Parallel snap point along
- * its source line's direction — AutoCAD's dashed guide that shows the point is
- * locked onto that line's prolongation (Extension) or a parallel to it
- * (Parallel). The line is looked up from the snap's source id.
+ * `direction` — AutoCAD's dashed guide that shows the point is locked onto a
+ * line's prolongation (Extension) or a parallel to it (Parallel).
  */
 function pushAlignmentGuide(
   out: ScenePrimitive[],
   camera: CameraTransform,
   snap: SnapResult,
-  entities: readonly Entity[]
+  direction: Vec2
 ): void {
-  const id = snap.sourceIds?.[0]
-  if (id === undefined) return
-  const line = entities.find((e) => e.id === id)
-  if (!line || line.type !== "line") return
-  const along = V.sub(line.end, line.start)
-  const len = V.length(along)
-  if (len < 1e-9) return
-  const dir = V.scale(along, 1 / len)
   const big = 1e6
   out.push({
     kind: "segment",
     a: camera.worldToScreen(
-      withZOf(V.sub(snap.point, V.scale(dir, big)), snap.point)
+      withZOf(V.sub(snap.point, V.scale(direction, big)), snap.point)
     ),
     b: camera.worldToScreen(
-      withZOf(V.add(snap.point, V.scale(dir, big)), snap.point)
+      withZOf(V.add(snap.point, V.scale(direction, big)), snap.point)
     ),
     stroke: { color: THEME.tracking, width: 1, dash: [7, 5] },
   })

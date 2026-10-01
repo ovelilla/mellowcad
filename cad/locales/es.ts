@@ -906,7 +906,11 @@ export const es: EngineLocale = {
         "Previous": "PRev",
         "View": "Vista",
         "World": "Univ",
+        "X": "X",
+        "Y": "Y",
         "Z": "Z",
+        "ZAxis": "ejEZ",
+        "Object": "Objeto",
         "Restore": "Rest",
         "Save": "Guardar",
         "Delete": "Supr",
@@ -1039,7 +1043,11 @@ export const es: EngineLocale = {
       "ucsOrigin": "Indique origen de SCP",
       "ucsXAxisPoint": "Precise punto en eje X o <Aceptar>",
       "ucsXYPlanePoint": "Precise punto en plano XY o <Aceptar>",
+      "ucsRotationX": "Precise ángulo de rotación sobre eje X",
+      "ucsRotationY": "Precise ángulo de rotación sobre eje Y",
       "ucsRotationZ": "Precise ángulo de rotación sobre eje Z",
+      "ucsZAxisOrigin": "Precise nuevo punto de origen <0,0,0>",
+      "ucsZAxisPoint": "Precise punto en parte positiva del eje Z",
       "ucsNamedOption": "Indique una opción [Rest/Guardar/Supr/?]",
       "ucsRestoreName": "Indique nombre de SCP para restaurarlo o [?]",
       "ucsSaveName": "Indique nombre para guardar SCP actual o [?]",
@@ -1291,7 +1299,11 @@ export const es: EngineLocale = {
         [
           "xAxisY"
         ],
-        ",0.0000>\n    Eje Y = <",
+        ",",
+        [
+          "xAxisZ"
+        ],
+        ">\n    Eje Y = <",
         [
           "yAxisX"
         ],
@@ -1299,7 +1311,23 @@ export const es: EngineLocale = {
         [
           "yAxisY"
         ],
-        ",0.0000>, Eje Z = <0.0000,0.0000,1.0000>"
+        ",",
+        [
+          "yAxisZ"
+        ],
+        ">, Eje Z = <",
+        [
+          "zAxisX"
+        ],
+        ",",
+        [
+          "zAxisY"
+        ],
+        ",",
+        [
+          "zAxisZ"
+        ],
+        ">"
       ],
       "ucsUndefined": [
         "No se encuentra el SCP ",

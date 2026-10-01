@@ -97,7 +97,11 @@ export type CommandOptionOutcome = "unhandled" | "continue" | "end"
  * - selection and dynamic input are transient interaction state and may be
  *   driven directly;
  * - there is no rendering technology here: tools describe their preview as
- *   neutral scene primitives via {@link Tool.buildOverlay}.
+ *   neutral scene primitives via {@link Tool.buildOverlay};
+ * - the document, the UCS, the view and every point are given in the frame of
+ *   the UCS's XY plane (`UcsFrame`), where that plane is level, and what a
+ *   tool executes is taken back to the WCS — unless the tool works in the WCS
+ *   ({@link Tool.inWorld}).
  */
 export interface ToolContext {
   readonly document: DocumentReader
@@ -216,6 +220,15 @@ export interface Tool {
 
   /** The command the prompt names when one tool runs several (EATTEDIT); else `TOOL_COMMANDS`'. */
   runningCommand?(): string
+
+  /**
+   * Whether the tool works in the WCS rather than in the frame of the UCS's XY
+   * plane, where every other tool works (see `UcsFrame`): the commands that
+   * place the view or the UCS themselves (UCS, PLAN, VPOINT, -VIEW,
+   * 3DORBIT). Everything it is given and gives back — the context, the
+   * points of its input, its anchor — is then in the WCS.
+   */
+  readonly inWorld?: boolean
 
   onActivate?(ctx: ToolContext): void
   onDeactivate?(ctx: ToolContext): void

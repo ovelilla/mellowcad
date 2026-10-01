@@ -3,6 +3,7 @@ import { Vec3, vec3, zOf } from "../../geometry/Vec3"
 import {
   Ucs,
   WORLD_UCS,
+  isUpright,
   ucsDirectionToWorld,
   ucsPointToWorld,
 } from "../../domain/ucs"
@@ -108,7 +109,7 @@ export function parseCoordinate(
   if (body === "") return null
   let ucs = ctx.ucs
   if (body.startsWith("*")) {
-    ucs = WORLD_UCS
+    ucs = ctx.ucs.wcs ?? WORLD_UCS
     body = body.slice(1).trim()
   }
   if (body === "") return null
@@ -119,19 +120,28 @@ export function parseCoordinate(
   // Relative to the last point when requested and available; the first point of
   // a command (no last point) is always absolute.
   if (relative && ctx.lastPoint) {
-    const step = ucsDirectionToWorld(ucs, offset.xy)
+    const step = ucsDirectionToWorld(ucs, { ...offset.xy, z: offset.z ?? 0 })
     return vec3(
       ctx.lastPoint.x + step.x,
       ctx.lastPoint.y + step.y,
-      zOf(ctx.lastPoint) + (offset.z ?? 0)
+      zOf(ctx.lastPoint) + step.z
     )
+  }
+  if (offset.z === null && ucs !== ctx.ucs && !isUpright(ucs)) {
+    // A WCS point without a Z, read in a tilted UCS's frame: on the WCS's XY plane.
+    return ucsPointToWorld(ucs, offset.xy)
+  }
+  if (!isUpright(ucs)) {
+    return ucsPointToWorld(ucs, { ...offset.xy, z: offset.z ?? ctx.elevation })
   }
   const point = ucsPointToWorld(ucs, offset.xy)
   return vec3(
     point.x,
     point.y,
     offset.z === null
-      ? ctx.ucs.origin.z + ctx.elevation
+      ? isUpright(ctx.ucs)
+        ? ctx.ucs.origin.z + ctx.elevation
+        : 0
       : ucs.origin.z + offset.z
   )
 }

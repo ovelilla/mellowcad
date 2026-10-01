@@ -28,6 +28,15 @@ export class CreateBlockCommand implements Command {
     private readonly reference: Entity | null
   ) {}
 
+  /** The definition's objects are in the block's own coordinates, which no frame changes. */
+  mapEntities(map: (entity: Entity) => Entity): Command {
+    return new CreateBlockCommand(
+      this.block,
+      this.removedIds,
+      this.reference && map(this.reference)
+    )
+  }
+
   execute(doc: CadDocument): void {
     this.previousDefinition = doc.getBlock(this.block.id)
     this.removed = this.removedIds
@@ -56,6 +65,10 @@ export class PurgeBlocksCommand implements Command {
   private removed: BlockDefinition[] = []
 
   constructor(private readonly ids: readonly BlockId[]) {}
+
+  mapEntities(): Command {
+    return this
+  }
 
   execute(doc: CadDocument): void {
     this.removed = this.ids

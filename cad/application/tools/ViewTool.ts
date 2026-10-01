@@ -1,5 +1,8 @@
 import { Vec2 } from "../../geometry/Vec2"
+import { ucsFromAxes } from "../../domain/ucs"
+import { UpdateSettingsCommand } from "../commands/settingsCommands"
 import { VIEW_PRESETS, ViewPreset, lookFrom } from "./viewPresets"
+import { ucsChange } from "./UcsTool"
 import {
   CommandOption,
   CommandOptionOutcome,
@@ -27,9 +30,13 @@ const ISOMETRIC: readonly ViewPreset[] = ["SWiso", "SEiso", "NEiso", "NWiso"]
  * AutoCAD's own menus type at the first prompt (`_-VIEW _SWISO`), which it
  * answers without listing them. A preset fits the drawing's extents; named
  * views (`?`, Delete, Restore, Save, sEttings, Window) wait for saved views.
+ * An orthographic view also aligns the UCS's XY plane with the screen, as
+ * UCSORTHO's initial 1 does, from the WCS (UCSBASE's initial value). It works
+ * in the WCS, the presets' reference.
  */
 export class ViewTool implements Tool {
   readonly id = "view"
+  readonly inWorld = true
 
   private state: ViewState = { phase: "option" }
   private lastScreen: Vec2 | null = null
@@ -51,7 +58,7 @@ export class ViewTool implements Tool {
 
   onEnter(ctx: ToolContext): boolean {
     if (this.state.phase === "option") return false
-    if (lookFrom(VIEW_PRESETS.Top, ctx)) ctx.endCommand()
+    if (this.show("Top", ctx)) ctx.endCommand()
     return true
   }
 
@@ -78,7 +85,20 @@ export class ViewTool implements Tool {
       return "continue"
     }
     if (!(id in VIEW_PRESETS)) return "unhandled"
-    return lookFrom(VIEW_PRESETS[id as ViewPreset], ctx) ? "end" : "continue"
+    return this.show(id as ViewPreset, ctx) ? "end" : "continue"
+  }
+
+  private show(preset: ViewPreset, ctx: ToolContext): boolean {
+    if (!lookFrom(VIEW_PRESETS[preset], ctx)) return false
+    if (!ORTHOGRAPHIC.includes(preset)) return true
+    const ucs = ucsFromAxes(
+      { x: 0, y: 0, z: 0 },
+      ctx.viewport.right,
+      ctx.viewport.up
+    )
+    const patch = ucs && ucsChange(ctx.document.getSettings(), ucs, null)
+    if (patch) ctx.execute(new UpdateSettingsCommand(patch))
+    return true
   }
 
   private ask(state: ViewState, ctx: ToolContext): void {

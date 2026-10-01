@@ -334,7 +334,7 @@ describe("Spanish AutoCAD's command language", () => {
       "Nombre de scp actual: *UNIVERSAL*",
     ])
     expect(cad.state().commandLine.prompt).toBe(
-      "SCP [gUArdado/oBjeto/PRev/Vista/Univ/Z]:"
+      "SCP [gUArdado/oBjeto/PRev/Vista/Univ/X/Y/Z/ejEZ]:"
     )
     const asks = () => {
       const field = cad.runtime.dynamicInput.getSession()?.fields[0]
@@ -348,7 +348,17 @@ describe("Spanish AutoCAD's command language", () => {
     expect(cad.state().commandLine.prompt).toBe("SCP [Rest/Guardar/Supr]:")
     cad.escape().command("SCP")
     // UA starts with U too, so Univ is typed and confirmed.
-    expect(cad.optionKeys()).toEqual([null, "B", null, "V", null, "Z"])
+    expect(cad.optionKeys()).toEqual([
+      null,
+      "B",
+      null,
+      "V",
+      null,
+      "X",
+      "Y",
+      "Z",
+      null,
+    ])
     cad.type("u").enter()
     expect(cad.runtime.document.getSettings().ucs.origin).toBeCloseToPoint(
       p(0, 0)

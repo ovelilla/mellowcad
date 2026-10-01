@@ -189,6 +189,7 @@ describe("the scene off the plan", () => {
   it("draws a sloping line from end to end at their heights", () => {
     const line = withDeltaZ(lineOf(p(0, 0), p(100, 0)), 100)
     const cad = createHarness({ entities: [line] })
+    cad.press("F7")
     cad.command("-VIEW").option("Orthographic").option("Front")
 
     const segment = cad

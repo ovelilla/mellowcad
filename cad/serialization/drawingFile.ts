@@ -79,9 +79,16 @@ import {
 } from "../domain/layers"
 import { DEFAULT_LINETYPE_ID } from "../domain/linetypes"
 import { clampLineweight, DEFAULT_LINEWEIGHT } from "../domain/lineweights"
-import { createUcs, NamedUcs, Ucs, WORLD_UCS } from "../domain/ucs"
+import {
+  createUcs,
+  isUpright,
+  NamedUcs,
+  Ucs,
+  ucsFromAxes,
+  WORLD_UCS,
+} from "../domain/ucs"
 import { Vec2 } from "../geometry/Vec2"
-import { Vec3 } from "../geometry/Vec3"
+import { Vec3, dot3, length3 } from "../geometry/Vec3"
 import {
   DEFAULT_DOCUMENT_SETTINGS,
   DocumentSettings,
@@ -115,8 +122,19 @@ export interface DrawingSnapshot {
 }
 
 /** The settings as written: a zero ELEVATION or THICKNESS is left out, as on objects. */
-export type StoredSettings = Omit<DocumentSettings, "elevation" | "thickness"> &
-  Partial<Pick<DocumentSettings, "elevation" | "thickness">>
+export type StoredSettings = Omit<
+  DocumentSettings,
+  "elevation" | "thickness" | "ucs" | "namedUcs"
+> &
+  Partial<Pick<DocumentSettings, "elevation" | "thickness">> & {
+    readonly ucs: StoredUcs
+    readonly namedUcs: readonly { name: string; ucs: StoredUcs }[]
+  }
+
+/** A level UCS is written as before 23, its X axis in plan; a tilted one gives both axes. */
+export type StoredUcs =
+  | { readonly origin: Vec3; readonly xAxis: Vec2 }
+  | { readonly origin: Vec3; readonly xAxis: Vec3; readonly yAxis: Vec3 }
 
 /** Shape of a serialised drawing on disk. */
 export interface DrawingFile {
@@ -524,12 +542,24 @@ function cloneLayer(layer: Layer): Layer {
 }
 
 function storedSettings(settings: DocumentSettings): StoredSettings {
-  const { elevation, thickness, ...rest } = settings
+  const { elevation, thickness, ucs, namedUcs, ...rest } = settings
   return {
     ...rest,
+    ucs: storedUcs(ucs),
+    namedUcs: namedUcs.map((entry) => ({
+      name: entry.name,
+      ucs: storedUcs(entry.ucs),
+    })),
     ...(elevation ? { elevation } : {}),
     ...(thickness ? { thickness } : {}),
   }
+}
+
+function storedUcs(ucs: Ucs): StoredUcs {
+  const origin = { ...ucs.origin }
+  return isUpright(ucs)
+    ? { origin, xAxis: { x: ucs.xAxis.x, y: ucs.xAxis.y } }
+    : { origin, xAxis: { ...ucs.xAxis }, yAxis: { ...ucs.yAxis } }
 }
 
 function parseSettings(value: unknown): DocumentSettings {
@@ -591,7 +621,17 @@ function parseUcs(value: unknown): Ucs | null {
   const xAxis = parseVec2(value.xAxis)
   if (!origin || !xAxis) return null
   const z = isRecord(value.origin) ? value.origin.z : undefined
-  return createUcs({ ...origin, z: isFiniteNumber(z) ? z : 0 }, xAxis)
+  const at = { ...origin, z: isFiniteNumber(z) ? z : 0 }
+  const yAxis = parseVec3(value.yAxis)
+  const x3 = parseVec3(value.xAxis)
+  if (!yAxis || !x3) return createUcs(at, xAxis)
+  // Axes already square and of unit length are kept to the bit, so saving a
+  // loaded drawing writes the same bytes.
+  const square =
+    Math.abs(length3(x3) - 1) < 1e-9 &&
+    Math.abs(length3(yAxis) - 1) < 1e-9 &&
+    Math.abs(dot3(x3, yAxis)) < 1e-9
+  return square ? { origin: at, xAxis: x3, yAxis } : ucsFromAxes(at, x3, yAxis)
 }
 
 function parseNamedUcs(value: unknown): NamedUcs[] {

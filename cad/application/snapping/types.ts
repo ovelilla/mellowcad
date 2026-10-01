@@ -66,6 +66,11 @@ export interface SnapCandidate {
    * reference off a point that is still moving), matching AutoCAD.
    */
   readonly transient?: boolean
+  /**
+   * The direction of the alignment the point lies on (Extension's
+   * prolongation, Parallel's parallel), for the dashed guide drawn through it.
+   */
+  readonly direction?: Vec2
 }
 
 /**

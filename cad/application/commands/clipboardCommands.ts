@@ -1,4 +1,5 @@
 import { CadDocument } from "../../domain/Document"
+import { Entity } from "../../domain/entities"
 import { PastePlan } from "../clipboard"
 import { Command } from "./Command"
 
@@ -14,6 +15,14 @@ export class PasteCommand implements Command {
   readonly label = "paste"
 
   constructor(private readonly plan: PastePlan) {}
+
+  /** Block definitions are in the block's own coordinates, which no frame changes. */
+  mapEntities(map: (entity: Entity) => Entity): Command {
+    return new PasteCommand({
+      ...this.plan,
+      entities: this.plan.entities.map(map),
+    })
+  }
 
   execute(doc: CadDocument): void {
     for (const layer of this.plan.layers) doc.addLayer(layer)

@@ -13,6 +13,10 @@ export class AddEntityCommand implements Command {
 
   constructor(private readonly entity: Entity) {}
 
+  mapEntities(map: (entity: Entity) => Entity): Command {
+    return new AddEntityCommand(map(this.entity))
+  }
+
   execute(doc: CadDocument): void {
     doc.add(this.entity)
   }
@@ -30,6 +34,10 @@ export class AddEntitiesCommand implements Command {
   readonly label = "add-entities"
 
   constructor(private readonly entities: readonly Entity[]) {}
+
+  mapEntities(map: (entity: Entity) => Entity): Command {
+    return new AddEntitiesCommand(this.entities.map(map))
+  }
 
   execute(doc: CadDocument): void {
     doc.addMany(this.entities)
@@ -50,6 +58,10 @@ export class UpdateEntityCommand implements Command {
   private previous: Entity | undefined
 
   constructor(private readonly next: Entity) {}
+
+  mapEntities(map: (entity: Entity) => Entity): Command {
+    return new UpdateEntityCommand(map(this.next))
+  }
 
   execute(doc: CadDocument): void {
     this.previous = doc.get(this.next.id)
@@ -72,6 +84,10 @@ export class UpdateEntitiesCommand implements Command {
   private previous: Entity[] = []
 
   constructor(private readonly next: readonly Entity[]) {}
+
+  mapEntities(map: (entity: Entity) => Entity): Command {
+    return new UpdateEntitiesCommand(this.next.map(map))
+  }
 
   execute(doc: CadDocument): void {
     this.previous = this.next
@@ -101,6 +117,10 @@ export class ReplaceEntitiesCommand implements Command {
     private readonly added: readonly Entity[]
   ) {}
 
+  mapEntities(map: (entity: Entity) => Entity): Command {
+    return new ReplaceEntitiesCommand(this.removedIds, this.added.map(map))
+  }
+
   execute(doc: CadDocument): void {
     this.removed = this.removedIds
       .map((id) => doc.get(id))
@@ -122,6 +142,10 @@ export class RemoveEntitiesCommand implements Command {
 
   constructor(private readonly ids: readonly EntityId[]) {}
 
+  mapEntities(): Command {
+    return this
+  }
+
   execute(doc: CadDocument): void {
     this.removed = this.ids
       .map((id) => doc.get(id))
@@ -138,6 +162,10 @@ export class RemoveEntitiesCommand implements Command {
 export class ClearDocumentCommand implements Command {
   readonly label = "clear-document"
   private previous: Entity[] = []
+
+  mapEntities(): Command {
+    return this
+  }
 
   execute(doc: CadDocument): void {
     this.previous = doc.getEntities()

@@ -27,6 +27,7 @@ import {
   polylineBulge,
   polylineSegmentGeometries,
   polylineSegments,
+  readsInPlan,
 } from "../../domain/entities"
 import { LayerId } from "../../domain/layers"
 import {
@@ -199,8 +200,10 @@ export abstract class EdgeEditTool implements Tool {
   }
 
   private planFor(input: PointerInput, ctx: ToolContext): EdgeEditPlan | null {
+    // TRIM and EXTEND work in the UCS's XY plane: an object at an angle to it
+    // is neither cut nor a boundary (AutoCAD would project some; PROJMODE).
     const hit = ctx.pick(input.world)
-    if (!hit) return null
+    if (!hit || !readsInPlan(hit)) return null
     const mode: EdgeEditMode = input.shiftKey
       ? this.defaultMode === "trim"
         ? "extend"
@@ -208,7 +211,10 @@ export abstract class EdgeEditTool implements Tool {
       : this.defaultMode
     const others = ctx.document
       .getEntities()
-      .filter((e) => e.id !== hit.id && ctx.document.isEntityVisible(e))
+      .filter(
+        (e) =>
+          e.id !== hit.id && ctx.document.isEntityVisible(e) && readsInPlan(e)
+      )
     return mode === "trim"
       ? planTrim(hit, input.world, others)
       : planExtend(hit, input.world, others)

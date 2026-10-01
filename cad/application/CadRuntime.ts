@@ -1,6 +1,6 @@
 import { Observable } from "../shared/Observable"
 import { Vec2, V } from "../geometry/Vec2"
-import { Vec3, withZ } from "../geometry/Vec3"
+import { Vec3, planar, withZ, zOf } from "../geometry/Vec3"
 import { closestPointOnSegment } from "../geometry/primitives"
 import { CadDocument } from "../domain/Document"
 import {
@@ -21,7 +21,7 @@ import { LINETYPE_BYLAYER, LinetypeId } from "../domain/linetypes"
 import { DimStyle, DimStyleId } from "../domain/dimStyles"
 import { TextStyle, TextStyleId } from "../domain/textStyles"
 import { LINEWEIGHT_BYLAYER, Lineweight } from "../domain/lineweights"
-import { worldPointToUcs } from "../domain/ucs"
+import { isWorldUcs, worldPointToUcs } from "../domain/ucs"
 import {
   formatAngle,
   formatLength,
@@ -35,13 +35,14 @@ import {
 import { isBlankDrawing } from "../serialization/drawingSummary"
 import { Scene } from "../scene/types"
 import { Viewport, entitiesViewBounds } from "./Viewport"
+import { UcsFrame } from "./ucsFrame"
 import { planDistanceToEntity, screenDistanceToEntity } from "./viewPick"
 import { orbitTarget, orbitView } from "./orbit"
 import { Selection } from "./Selection"
 import { SnapMode, SnapModeType } from "./SnapMode"
 import { SelectionCycling } from "./SelectionCycling"
 import { SnapEngine } from "./snapping/SnapEngine"
-import { SnapResult, SnapType } from "./snapping/types"
+import { ConstructionGeometry, SnapResult, SnapType } from "./snapping/types"
 import { ParallelReferenceEngine } from "./snapping/ParallelReference"
 import { ConstraintManager } from "./constraints/ConstraintManager"
 import { ConstraintType } from "./constraints/types"
@@ -163,6 +164,16 @@ const WHEEL_BURST_MS = 400
 /** Movement past this (screen px) makes a press a drag rather than a click. */
 const DRAG_THRESHOLD_PX = 4
 
+/** What a tool's context gives in the UCS plane's frame or in the WCS. */
+type FramedPart =
+  | "document"
+  | "ucs"
+  | "elevation"
+  | "viewport"
+  | "execute"
+  | "pick"
+  | "copyToClipboard"
+
 /**
  * The application core of the CAD system — the imperative shell around the
  * functional pieces (geometry kernel, scene builder, commands). It contains no
@@ -186,7 +197,11 @@ export class CadRuntime extends Observable {
   private readonly host: EngineHost
   private readonly resolver: PointResolver
   private readonly autosave: AutosaveService
-  private readonly toolContext: ToolContext
+  /** What a tool working in the UCS plane's frame sees; see {@link toolContext}. */
+  private readonly frameContext: ToolContext
+  /** What a tool working in the WCS sees. */
+  private readonly worldContext: ToolContext
+  private frameCache: UcsFrame | null = null
 
   private readonly tools = new Map<string, Tool>()
   private activeTool: Tool
@@ -293,30 +308,21 @@ export class CadRuntime extends Observable {
       this.constraints,
       this.tracking,
       this.snapMode,
-      () => this.document.getSettings().ucs,
+      () => this.frame.ucs,
       () => this.document.getSettings().elevation
     )
     this.autosave = new AutosaveService(store, () => this.serializeDrawing())
 
     // The single surface tools may touch: read-only document + command bus.
     const doc = this.document
-    this.toolContext = {
-      document: this.document,
-      get ucs() {
-        return doc.getSettings().ucs
-      },
-      get elevation() {
-        return doc.getSettings().elevation
-      },
-      viewport: this.viewport,
+    const frame = () => this.frame
+    const shared: Omit<ToolContext, FramedPart> = {
       selection: this.selection,
       dynamicInput: this.dynamicInput,
       blocks: this.document.blockLookup(),
-      execute: (command) => this.history.execute(command),
       undo: () => this.history.undo(),
       pickTolerance: () =>
         this.viewport.screenToWorldDistance(this.snapping.pixelTolerance),
-      pick: (world, tolerance) => this.pickEntity(world, tolerance),
       requestRender: () => this.host.requestRender(),
       setCursor: (cursor) => this.host.setCursor(cursor),
       report: (text, kind = "info") => this.commandLine.write(kind, text),
@@ -336,12 +342,56 @@ export class CadRuntime extends Observable {
         abbreviation: (id) =>
           this.text.abbreviation(toolCommand(this.activeTool), id),
       },
-      copyToClipboard: (entities, basePoint) =>
-        this.copyToClipboard(entities, basePoint),
       endCommand: () => {
         this.resetTracking()
         this.returnToNeutralTool()
       },
+    }
+    this.frameContext = {
+      ...shared,
+      get document() {
+        return frame().document
+      },
+      get ucs() {
+        return frame().ucs
+      },
+      get elevation() {
+        return doc.getSettings().elevation
+      },
+      get viewport() {
+        return frame().viewport
+      },
+      execute: (command) =>
+        this.history.execute(
+          command.mapEntities((entity) => this.frame.entityToWorld(entity))
+        ),
+      pick: (world, tolerance) => this.pickEntity(world, tolerance),
+      copyToClipboard: (entities, basePoint) =>
+        this.copyToClipboard(
+          entities.map((entity) => this.frame.entityToWorld(entity)),
+          this.frame.pointToWorld(withZ(basePoint, zOf(basePoint)))
+        ),
+    }
+    this.worldContext = {
+      ...shared,
+      document: this.document,
+      get ucs() {
+        return doc.getSettings().ucs
+      },
+      get elevation() {
+        return doc.getSettings().elevation
+      },
+      viewport: this.viewport,
+      execute: (command) => this.history.execute(command),
+      pick: (world, tolerance) => {
+        const hit = this.pickEntity(
+          this.frame.pointToFrame(withZ(world, zOf(world))),
+          tolerance
+        )
+        return hit && this.frame.entityToWorld(hit)
+      },
+      copyToClipboard: (entities, basePoint) =>
+        this.copyToClipboard(entities, basePoint),
     }
 
     for (const tool of defaultTools(
@@ -392,6 +442,14 @@ export class CadRuntime extends Observable {
       this.host.requestRender()
     }
     this.document.subscribe(onModelChange)
+    // Acquired tracking points are in the frame of the UCS they were taken in.
+    let ucs = this.document.getSettings().ucs
+    this.document.subscribe(() => {
+      const next = this.document.getSettings().ucs
+      if (next === ucs) return
+      ucs = next
+      this.resetTracking()
+    })
     this.selection.subscribe(onModelChange)
     this.viewport.subscribe(onModelChange)
     this.snapping.subscribe(onModelChange)
@@ -420,6 +478,25 @@ export class CadRuntime extends Observable {
   /** Returns a stable snapshot; identity only changes when state changes. */
   getState(): EngineState {
     return this.stateSnapshot
+  }
+
+  /**
+   * The frame the pointer pipeline and the tools work in: the UCS plane's,
+   * remade whenever the UCS changes.
+   */
+  private get frame(): UcsFrame {
+    const ucs = this.document.getSettings().ucs
+    let frame = this.frameCache
+    if (!frame || frame.source !== ucs) {
+      frame = new UcsFrame(ucs, this.viewport, this.document)
+      this.frameCache = frame
+    }
+    return frame
+  }
+
+  /** The context the active tool works in: the UCS plane's frame, or the WCS. */
+  private get toolContext(): ToolContext {
+    return this.activeTool.inWorld ? this.worldContext : this.frameContext
   }
 
   /** The language the engine speaks: its catalog, laid over English. */
@@ -758,7 +835,7 @@ export class CadRuntime extends Observable {
     const point = parseCoordinate(this.dynamicInput.getText("offset").trim(), {
       lastPoint: base,
       relativeByDefault: true,
-      ucs: this.document.getSettings().ucs,
+      ucs: this.frame.ucs,
       elevation: this.document.getSettings().elevation,
     })
     if (!point) return false
@@ -770,8 +847,8 @@ export class CadRuntime extends Observable {
   /** Feeds a point to the active tool as if it had been picked there. */
   private placePoint(point: Vec3): void {
     this.activeTool.onPointerDown?.(
-      {
-        screen: this.viewport.worldToScreen(point),
+      this.forTool({
+        screen: this.frame.viewport.worldToScreen(point),
         world: point,
         snap: null,
         tracking: null,
@@ -780,7 +857,7 @@ export class CadRuntime extends Observable {
         shiftKey: false,
         ctrlKey: false,
         altKey: false,
-      },
+      }),
       this.toolContext
     )
     this.snapping.clearOverride()
@@ -928,8 +1005,9 @@ export class CadRuntime extends Observable {
   }
 
   /**
-   * The object a pick at `world` resolves to. Identical to `document.pick`
-   * unless the user cycled to another of the objects the pick box covers.
+   * The object a pick at `world`, a point of the frame, resolves to, as the
+   * frame reads it. The topmost under the pick box unless the user cycled to
+   * another of the objects it covers.
    */
   private pickEntity(world: Vec2, tolerance?: number): Entity | null {
     const worldTolerance =
@@ -942,49 +1020,53 @@ export class CadRuntime extends Observable {
   }
 
   /**
-   * Every object under the pick box at `world` (a point of the work plane),
-   * topmost first. Off the plan the box is on the screen, where the objects
-   * are drawn at their own heights.
+   * Every object under the pick box at `world` (a point of the work plane, in
+   * the frame), topmost first, as the frame reads it. Off the plan the box is
+   * on the screen, where the objects are drawn at their own heights.
    */
   private pickAllAt(world: Vec2 | Vec3, worldTolerance: number): Entity[] {
-    const blocks = this.document.blockLookup()
-    if (this.viewport.isPlan) {
-      return this.document.pickAllBy(
-        (entity) => planDistanceToEntity(this.viewport, entity, world, blocks),
+    const { document, viewport } = this.frame
+    const blocks = document.blockLookup()
+    if (viewport.isPlan) {
+      return document.pickAllBy(
+        (entity) => planDistanceToEntity(viewport, entity, world, blocks),
         worldTolerance
       )
     }
-    const screen = this.viewport.worldToScreen(
+    const screen = viewport.worldToScreen(
       "z" in world ? world : withZ(world, this.workPlaneZ())
     )
-    return this.document.pickAllBy(
-      (entity) => screenDistanceToEntity(this.viewport, entity, screen, blocks),
-      this.viewport.worldToScreenDistance(worldTolerance)
+    return document.pickAllBy(
+      (entity) => screenDistanceToEntity(viewport, entity, screen, blocks),
+      viewport.worldToScreenDistance(worldTolerance)
     )
-  }
-
-  /** The Z of the plane a point without one lies on: ELEVATION above the UCS's XY plane. */
-  private workPlaneZ(): number {
-    const settings = this.document.getSettings()
-    return settings.ucs.origin.z + settings.elevation
   }
 
   /**
-   * The point of the work plane under a screen point. Off the plan it is where
-   * the line of sight meets the plane; seen edge-on there is none, and the
-   * point of the plane facing the viewer stands in, for picking.
+   * The Z of the plane a point without one lies on, in the frame: ELEVATION
+   * above the UCS's XY plane.
+   */
+  private workPlaneZ(): number {
+    return this.frame.ucs.origin.z + this.document.getSettings().elevation
+  }
+
+  /**
+   * The point of the work plane under a screen point, in the frame. Off the
+   * plan it is where the line of sight meets the plane; seen edge-on there is
+   * none, and the point of the plane facing the viewer stands in, for picking.
    */
   private screenToWork(screen: Vec2): Vec3 {
     const z = this.workPlaneZ()
-    const onPlane = this.viewport.screenToPlane(screen, z)
+    const { viewport } = this.frame
+    const onPlane = viewport.screenToPlane(screen, z)
     if (onPlane) return withZ(onPlane, z)
-    return this.viewport.screenToFacing(screen)
+    return viewport.screenToFacing(screen)
   }
 
   /** True when the view sees the work plane edge-on, so a point cannot be pointed on it. */
   private workPlaneEdgeOn(): boolean {
     return (
-      this.viewport.screenToPlane(
+      this.frame.viewport.screenToPlane(
         this.viewportCenterScreen(),
         this.workPlaneZ()
       ) === null
@@ -1452,7 +1534,19 @@ export class CadRuntime extends Observable {
       return
     }
     this.startTool("paste")
-    this.paste.begin(fragment, this.toolContext)
+    const { frame } = this
+    this.paste.begin(
+      {
+        basePoint: frame.pointToFrame(fragment.basePoint),
+        drawing: {
+          ...fragment.drawing,
+          entities: fragment.drawing.entities.map((entity) =>
+            frame.entityToFrame(entity)
+          ),
+        },
+      },
+      this.toolContext
+    )
     this.host.requestRender()
   }
 
@@ -1501,8 +1595,11 @@ export class CadRuntime extends Observable {
    * is ready to draw; the runtime never touches a rendering technology.
    */
   buildScene(): Scene {
+    const settings = this.document.getSettings()
+    const { frame } = this
     return buildScene({
       camera: this.viewport,
+      aidCamera: frame.viewport,
       entities: this.document.getEntities(),
       layers: this.document.getLayers(),
       dimStyles: this.document.getDimStyles(),
@@ -1511,18 +1608,19 @@ export class CadRuntime extends Observable {
       hiddenIds: new Set(this.activeTool.hiddenEntityIds?.() ?? []),
       gridVisible: this.gridVisible,
       gridSpacing: this.snapMode.displaySpacing(),
-      ucs: this.document.getSettings().ucs,
+      ucs: frame.ucs,
       ucsIcon:
-        this.ucsIconShown && this.document.getSettings().ucsIcon.visible
+        this.ucsIconShown && settings.ucsIcon.visible
           ? {
-              atOrigin: this.document.getSettings().ucsIcon.atOrigin,
+              atOrigin: settings.ucsIcon.atOrigin,
+              world: isWorldUcs(settings.ucs),
               xLabel: this.text.feedback("ucsIconX"),
               yLabel: this.text.feedback("ucsIconY"),
             }
           : null,
-      ltScale: this.document.getSettings().ltScale,
-      lwDisplay: this.document.getSettings().lwDisplay,
-      attributeDisplay: this.document.getSettings().attributeDisplay,
+      ltScale: settings.ltScale,
+      lwDisplay: settings.lwDisplay,
+      attributeDisplay: settings.attributeDisplay,
       snap: this.currentSnap,
       snapLabel: this.currentSnap
         ? this.text.snapFeedback(this.currentSnap.type)
@@ -1563,23 +1661,24 @@ export class CadRuntime extends Observable {
     // Shift temporarily forces Ortho, which suppresses polar tracking.
     if (this.pointerShift) return null
     if (this.cursorWorld === null) return null
-    const anchor = this.activeTool.getConstraintAnchor?.() ?? null
+    const anchor = this.toolAnchor()
     if (anchor === null) return null
 
     const settings = this.document.getSettings()
+    const { ucs } = this.frame
     const context = {
       anchor,
       world: this.cursorWorld,
       snapPoint: null,
       point: this.cursorWorld,
-      ucs: settings.ucs,
+      ucs,
     }
     const ray = this.constraints.polarGuideRay(context)
     if (!ray) return null
 
     const point = this.constraints.apply(context)
     const length = V.length(V.sub(point, anchor))
-    const deg = headingInUcs(settings.ucs, ray.dir)
+    const deg = headingInUcs(ucs, ray.dir)
     const label = this.text.feedback("polar", {
       distance: formatLength(length, settings),
       unit: unitSuffix(settings.unit),
@@ -2111,7 +2210,7 @@ export class CadRuntime extends Observable {
   private buildPointerInput(e: PointerEventData): PointerInput {
     const world = this.screenToWork(e.screen)
     const snap = this.currentSnap
-    const anchor = this.activeTool.getConstraintAnchor?.() ?? null
+    const anchor = this.toolAnchor()
     const resolved = this.resolver.resolve(
       world,
       snap,
@@ -2120,7 +2219,7 @@ export class CadRuntime extends Observable {
       this.activeTool.wantsSnap?.() ?? true
     )
     this.lastTracking = resolved.tracking
-    return {
+    return this.forTool({
       screen: e.screen,
       world,
       snap,
@@ -2130,7 +2229,59 @@ export class CadRuntime extends Observable {
       shiftKey: e.shiftKey,
       ctrlKey: e.ctrlKey,
       altKey: e.altKey,
+    })
+  }
+
+  /**
+   * Pointer input of the frame as the active tool reads it: as it is, or with
+   * its points in the WCS for a tool that works there. A tracking guide's
+   * direction stays in the UCS's plane.
+   */
+  private forTool(input: PointerInput): PointerInput {
+    const { frame } = this
+    if (!this.activeTool.inWorld || !frame.axes) return input
+    const toWorld = (point: Vec3) => frame.pointToWorld(point)
+    return {
+      ...input,
+      world: toWorld(input.world),
+      point: toWorld(input.point),
+      snap: input.snap && {
+        ...input.snap,
+        point: toWorld(input.snap.point),
+        ...(input.snap.pickPoint
+          ? { pickPoint: toWorld(input.snap.pickPoint) }
+          : {}),
+      },
+      tracking: input.tracking && {
+        ...input.tracking,
+        point: toWorld(input.tracking.point),
+      },
     }
+  }
+
+  /** The active tool's constraint anchor, in the frame. */
+  private toolAnchor(): Vec2 | null {
+    const anchor = this.activeTool.getConstraintAnchor?.() ?? null
+    if (anchor === null || !this.activeTool.inWorld) return anchor
+    return planar(this.frame.pointToFrame(withZ(anchor, zOf(anchor))))
+  }
+
+  /** The active tool's construction geometry, in the frame. */
+  private toolSnapGeometry(cursor: Vec3): readonly ConstructionGeometry[] {
+    const tool = this.activeTool
+    const { frame } = this
+    if (!tool.inWorld || !frame.axes) {
+      return tool.getSnapGeometry?.(cursor) ?? []
+    }
+    const toFrame = (point: Vec2) =>
+      planar(frame.pointToFrame(withZ(point, zOf(point))))
+    return (tool.getSnapGeometry?.(frame.pointToWorld(cursor)) ?? []).map(
+      (geometry) => ({
+        ...geometry,
+        a: toFrame(geometry.a),
+        b: toFrame(geometry.b),
+      })
+    )
   }
 
   /** Clears acquired references and the cached guide so nothing lingers. */
@@ -2141,26 +2292,27 @@ export class CadRuntime extends Observable {
   }
 
   private updateSnap(screen: Vec2): void {
-    this.cursorWorld = this.screenToWork(screen)
+    const cursor = this.screenToWork(screen)
+    this.cursorWorld = cursor
     this.refreshCycling()
+    const { frame } = this
 
     // Object snaps and snap-tracking only run while the active tool is actually
     // acquiring a point (AutoCAD shows running osnaps only during a point
     // prompt). While merely selecting, no snap is computed, so its marker can
     // never overlap a selection grip.
     if (this.activeTool.wantsSnap?.() ?? true) {
-      const construction =
-        this.activeTool.getSnapGeometry?.(this.cursorWorld) ?? []
+      const construction = this.toolSnapGeometry(cursor)
       // Perpendicular/Tangent snaps measure from the point the tool is drawing
       // from, so hand the current constraint anchor to the snap engine.
-      const anchor = this.activeTool.getConstraintAnchor?.() ?? null
+      const anchor = this.toolAnchor()
       // Parallel osnap: acquire the line under the cursor (by dwell) so only
       // lines the user points at are offered as parallels — AutoCAD's workflow.
       this.updateParallelAcquisition(anchor)
       this.currentSnap = this.snapping.resolve(
         screen,
-        this.document,
-        this.viewport,
+        frame.document,
+        frame.viewport,
         construction,
         anchor,
         this.parallelRefs.getAcquired()
@@ -2174,7 +2326,7 @@ export class CadRuntime extends Observable {
       const maxWorld = this.viewport.screenToWorldDistance(
         Math.hypot(this.viewport.width, this.viewport.height)
       )
-      this.tracking.removeFarFrom(this.cursorWorld, maxWorld)
+      this.tracking.removeFarFrom(cursor, maxWorld)
     } else {
       this.currentSnap = null
       this.tracking.observeHover(null, 0)
@@ -2200,29 +2352,25 @@ export class CadRuntime extends Observable {
     // prompt) it also follows the raw cursor.
     if (this.activeTool.wantsSnap?.() ?? true) {
       if (this.currentSnap) {
-        this.crosshairScreen = this.viewport.worldToScreen(
+        this.crosshairScreen = frame.viewport.worldToScreen(
           this.currentSnap.point
         )
       } else {
-        const anchor = this.activeTool.getConstraintAnchor?.() ?? null
         const resolved = this.resolver.resolve(
-          this.cursorWorld,
+          cursor,
           this.currentSnap,
-          anchor,
+          this.toolAnchor(),
           this.pointerShift
         )
         if (resolved.tracking) {
-          this.crosshairScreen = this.viewport.worldToScreen(
+          this.crosshairScreen = frame.viewport.worldToScreen(
             resolved.tracking.point
           )
         } else if (this.snapMode.isRectangular()) {
           // Snap mode moves the cursor itself onto the lattice, the way
           // AutoCAD's crosshair visibly jumps from increment to increment.
-          this.crosshairScreen = this.viewport.worldToScreen(
-            this.snapMode.snapPoint(
-              this.cursorWorld,
-              this.document.getSettings().ucs
-            )
+          this.crosshairScreen = frame.viewport.worldToScreen(
+            this.snapMode.snapPoint(cursor, frame.ucs)
           )
         } else {
           this.crosshairScreen = screen
@@ -2268,18 +2416,19 @@ export class CadRuntime extends Observable {
 
   /** The nearest visible line within `worldTolerance` of the cursor, or null. */
   private hoveredLineId(cursor: Vec2, worldTolerance: number): EntityId | null {
-    const screen = this.viewport.isPlan
+    const { document, viewport } = this.frame
+    const screen = viewport.isPlan
       ? null
-      : this.viewport.worldToScreen(withZ(cursor, this.workPlaneZ()))
+      : viewport.worldToScreen(withZ(cursor, this.workPlaneZ()))
     let bestId: EntityId | null = null
     let bestDist = screen
-      ? this.viewport.worldToScreenDistance(worldTolerance)
+      ? viewport.worldToScreenDistance(worldTolerance)
       : worldTolerance
-    for (const entity of this.document.getEntities()) {
+    for (const entity of document.getEntities()) {
       if (entity.type !== "line") continue
-      if (!this.document.isEntityVisible(entity)) continue
+      if (!document.isEntityVisible(entity)) continue
       const d = screen
-        ? screenDistanceToEntity(this.viewport, entity, screen)
+        ? screenDistanceToEntity(viewport, entity, screen)
         : closestPointOnSegment(entity.start, entity.end, cursor).distance
       if (d <= bestDist) {
         bestDist = d
@@ -2327,12 +2476,15 @@ export class CadRuntime extends Observable {
       scale: this.viewport.scale,
       cursorUcs: this.cursorWorld
         ? worldPointToUcs(
-            settings.ucs,
-            withZ(this.cursorWorld, settings.ucs.origin.z + settings.elevation)
+            this.frame.ucs,
+            withZ(this.cursorWorld, this.workPlaneZ())
           )
         : null,
       snap: this.currentSnap
-        ? { type: this.currentSnap.type, point: this.currentSnap.point }
+        ? {
+            type: this.currentSnap.type,
+            point: this.frame.pointToWorld(this.currentSnap.point),
+          }
         : null,
       snapActive: this.snapping.isActive(),
       snapEnabled,

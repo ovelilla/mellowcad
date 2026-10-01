@@ -9,8 +9,11 @@ import {
   EntityProperty,
   entityPointToWorld,
   isZProperty,
+  lineEndZ,
+  lineStartZ,
   planeAxes,
   translateEntity,
+  withLineZ,
 } from "../domain/entities"
 import { COLOR_BYLAYER, EntityColor, normalizeColor } from "../domain/colors"
 import { LayerId } from "../domain/layers"
@@ -19,12 +22,13 @@ import { LINEWEIGHT_BYLAYER, Lineweight } from "../domain/lineweights"
 import { parseNumber } from "../domain/units"
 import {
   Ucs,
+  isUpright,
   isWorldUcs,
   ucsPointToWorld,
   worldPointToUcs,
 } from "../domain/ucs"
 import { Vec2 } from "../geometry/Vec2"
-import { sub3 } from "../geometry/Vec3"
+import { Vec3, planar, sub3 } from "../geometry/Vec3"
 import { Selection } from "./Selection"
 import { CommandHistory } from "./commands/Command"
 import { UpdateEntityCommand } from "./commands/entityCommands"
@@ -176,7 +180,9 @@ function applyInUcs(
   value: number,
   ucs: Ucs
 ): Entity | null {
-  if (planeAxes(entity)) return applyOffPlane(entity, property, value, ucs)
+  if (planeAxes(entity) || !isUpright(ucs)) {
+    return applyOffPlane(entity, property, value, ucs)
+  }
   if (isZProperty(property)) {
     // Thickness is a length along Z, not a position, so the origin does not apply.
     const z = property === "thickness" ? value : value + ucs.origin.z
@@ -197,15 +203,24 @@ function applyInUcs(
   return moved && applyEntityProperty(moved, row.y, next.y)
 }
 
-/** Which point each position row of a planar object reads, and along which UCS axis. */
+/** Which point each position row reads, and along which UCS axis. */
 const POSITION_ROWS: Readonly<
   Partial<
     Record<
       EntityProperty,
-      { readonly point: "center" | "position"; readonly axis: "x" | "y" | "z" }
+      {
+        readonly point: "start" | "end" | "center" | "position"
+        readonly axis: "x" | "y" | "z"
+      }
     >
   >
 > = {
+  startX: { point: "start", axis: "x" },
+  startY: { point: "start", axis: "y" },
+  startZ: { point: "start", axis: "z" },
+  endX: { point: "end", axis: "x" },
+  endY: { point: "end", axis: "y" },
+  endZ: { point: "end", axis: "z" },
   centerX: { point: "center", axis: "x" },
   centerY: { point: "center", axis: "y" },
   centerZ: { point: "center", axis: "z" },
@@ -215,9 +230,10 @@ const POSITION_ROWS: Readonly<
 }
 
 /**
- * A retyped value of an object whose points are in an OCS of its own: a
- * position row moves the whole object in space to put that point where the
- * UCS coordinate says; anything else, its elevation included, is its own.
+ * A retyped value read in a UCS the object's points are not level in — its
+ * own OCS, or a tilted UCS: a position row puts that point where the UCS
+ * coordinate says, moving a line's end alone and any other object whole;
+ * anything else, an elevation included, is the object's own.
  */
 function applyOffPlane(
   entity: Entity,
@@ -227,6 +243,21 @@ function applyOffPlane(
 ): Entity | null {
   const row = POSITION_ROWS[property]
   if (!row) return applyEntityProperty(entity, property, value)
+  if (entity.type === "line") {
+    if (row.point !== "start" && row.point !== "end") return null
+    const start: Vec3 = { ...entity.start, z: lineStartZ(entity) }
+    const end: Vec3 = { ...entity.end, z: lineEndZ(entity) }
+    const moved = ucsPointToWorld(ucs, {
+      ...worldPointToUcs(ucs, row.point === "start" ? start : end),
+      [row.axis]: value,
+    })
+    const [from, to] = row.point === "start" ? [moved, end] : [start, moved]
+    return withLineZ(
+      { ...entity, start: planar(from), end: planar(to) },
+      from.z,
+      to.z
+    )
+  }
   const point = rowPoint(entity, row.point)
   if (!point) return null
   const world = entityPointToWorld(entity, point)

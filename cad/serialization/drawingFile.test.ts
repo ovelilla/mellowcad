@@ -12,6 +12,7 @@ import { DEFAULT_LAYER_ID } from "../domain/layers"
 import { DEFAULT_LINETYPE_ID } from "../domain/linetypes"
 import { DEFAULT_LINEWEIGHT } from "../domain/lineweights"
 import { DEFAULT_DOCUMENT_SETTINGS, LengthUnit } from "../domain/units"
+import { Ucs, createUcs } from "../domain/ucs"
 import { createDefaultTextStyle, createTextStyle } from "../domain/textStyles"
 import { DEFAULT_DIM_STYLE, createDefaultDimStyle } from "../domain/dimStyles"
 import {
@@ -172,7 +173,7 @@ describe("round trip", () => {
   })
 
   it("preserves the document settings", () => {
-    const ucs = { origin: { x: 10, y: -5, z: 4 }, xAxis: { x: 0.6, y: 0.8 } }
+    const ucs = createUcs({ x: 10, y: -5, z: 4 }, { x: 0.6, y: 0.8 })!
     const settings = {
       unit: LengthUnit.Meter,
       precision: 5,
@@ -215,9 +216,37 @@ describe("round trip", () => {
     )
     expect(parsed.settings.ucs).toEqual({
       origin: { x: 1, y: 2, z: 0 },
-      xAxis: { x: 0, y: 1 },
+      xAxis: { x: 0, y: 1, z: 0 },
+      yAxis: { x: -1, y: 0, z: 0 },
     })
     expect(parsed.settings.ucsName).toBeNull()
+  })
+
+  it("keeps a level UCS as before and a tilted one with both axes", () => {
+    const front: Ucs = {
+      origin: { x: 1, y: 2, z: 3 },
+      xAxis: { x: 1, y: 0, z: 0 },
+      yAxis: { x: 0, y: 0, z: 1 },
+    }
+    const level = createUcs({ x: 1, y: 2, z: 3 }, { x: 0, y: 1 })!
+    const settings = { ...DEFAULT_DOCUMENT_SETTINGS, ucs: front }
+    const text = serializeDrawing(
+      snapshotOf([], {
+        settings: {
+          ...settings,
+          namedUcs: [{ name: "Level", ucs: level }],
+        },
+      })
+    )
+    const file = JSON.parse(text)
+    expect(file.settings.ucs).toEqual(front)
+    expect(file.settings.namedUcs[0].ucs).toEqual({
+      origin: { x: 1, y: 2, z: 3 },
+      xAxis: { x: 0, y: 1 },
+    })
+    const parsed = parseDrawingFile(text).settings
+    expect(parsed.ucs).toEqual(front)
+    expect(parsed.namedUcs[0].ucs).toEqual(level)
   })
 
   it("survives any drawing", () => {

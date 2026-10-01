@@ -5,6 +5,7 @@ import {
   EntityId,
   copyEntity,
   entityBounds,
+  readsInPlan,
   rotateEntity,
   translateEntity,
 } from "../../domain/entities"
@@ -135,7 +136,7 @@ export class ArrayPathTool implements Tool {
       case "pickPath": {
         // AutoCAD's rollover highlight: preview the curve under the cursor so
         // it is clear what clicking will pick as the path.
-        const hover = ctx.pick(input.world)
+        const hover = this.pickPath(input, ctx)
         if (hover?.id !== this.state.hover?.id) {
           this.state = { phase: "pickPath", hover }
         }
@@ -163,11 +164,20 @@ export class ArrayPathTool implements Tool {
         }
         return
       case "pickPath": {
-        const hit = ctx.pick(input.world)
+        const hit = this.pickPath(input, ctx)
         if (hit) this.enterConfig(hit, ctx)
         return
       }
     }
+  }
+
+  /**
+   * The curve a click would take as the path: one in the UCS's XY plane, where
+   * the array is laid out (a path at an angle to it is not offered).
+   */
+  private pickPath(input: PointerInput, ctx: ToolContext): Entity | null {
+    const hit = ctx.pick(input.world)
+    return hit && readsInPlan(hit) ? hit : null
   }
 
   onPointerUp(input: PointerInput, ctx: ToolContext): void {

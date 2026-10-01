@@ -51,3 +51,13 @@ export function worldToAxes(axes: Axes3, point: Vec2 | Vec3): Vec3 {
   const p: Vec3 = { x: point.x, y: point.y, z: zOf(point) }
   return { x: dot3(p, axes.x), y: dot3(p, axes.y), z: dot3(p, axes.z) }
 }
+
+/** The rotation that undoes `axes`: the world's axes as `axes` read them. */
+export function inverseAxes(axes: Axes3): Axes3 {
+  const { x, y, z } = axes
+  return {
+    x: { x: x.x, y: y.x, z: z.x },
+    y: { x: x.y, y: y.y, z: z.y },
+    z: { x: x.z, y: y.z, z: z.z },
+  }
+}

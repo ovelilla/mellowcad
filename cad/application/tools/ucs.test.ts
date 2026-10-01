@@ -49,13 +49,13 @@ describe("UCS", () => {
     expect(cad.activeToolId()).toBe("select")
   })
 
-  it("takes a third point on the positive Y side, not one that turns Z down", () => {
+  it("turns the UCS over with a third point on the negative Y side", () => {
     const cad = createHarness()
     cad.command("UCS").click(p(0, 0)).click(p(10, 0)).click(p(5, -10))
-    expect(cad.activeToolId()).toBe("ucs")
-    cad.click(p(5, 10))
-    expect(ucsOf(cad).xAxis).toBeCloseToPoint(p(1, 0))
     expect(cad.activeToolId()).toBe("select")
+    expect(ucsOf(cad).xAxis).toBeCloseToPoint(p(1, 0))
+    expect(ucsOf(cad).yAxis).toBeCloseToPoint(p(0, -1))
+    expect(ucsOf(cad).yAxis.z).toBeCloseTo(0, 12)
   })
 
   it("reads the points it asks for in the UCS it is changing", () => {

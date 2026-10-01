@@ -1,7 +1,15 @@
 import { Vec2, V } from "../../geometry/Vec2"
 import { Vec3 } from "../../geometry/Vec3"
 import { arcFrom3Points } from "../../geometry/primitives"
-import { createArc, onPlaneOf } from "../../domain/entities"
+import {
+  ArcEntity,
+  EntityId,
+  createArc,
+  onPlaneOf,
+  withElevation,
+  withNormal,
+} from "../../domain/entities"
+import { LayerId } from "../../domain/layers"
 import { AddEntityCommand } from "../commands/entityCommands"
 import { DynamicInputSession } from "../input/DynamicInput"
 import type { PromptId } from "../../locales/types"
@@ -11,9 +19,13 @@ import {
 } from "../input/coordinateInput"
 import { ScenePrimitive } from "../../scene/types"
 import { THEME } from "../../scene/theme"
-import { arcScenePrimitive } from "../SceneBuilder"
+import { entityScenePrimitive } from "../SceneBuilder"
 import { KeyInput, PointerInput, Tool, ToolContext } from "./Tool"
 import { withCurrentThickness } from "./currentThickness"
+import { planeThrough } from "./threePointPlane"
+
+/** The ghost's id, reused every frame so a preview burns no entity ids. */
+const PREVIEW_ID = "arc-preview"
 
 /**
  * How an arc is defined — the top of AutoCAD's ARC dropdown, each surfaced as
@@ -30,12 +42,12 @@ export type ArcMode = "threePoint" | "startCenterEnd" | "centerStartEnd"
 
 type ArcToolState =
   | { readonly phase: "p1" }
-  | { readonly phase: "p2"; readonly p1: Vec3; readonly cursor: Vec2 }
+  | { readonly phase: "p2"; readonly p1: Vec3; readonly cursor: Vec3 }
   | {
       readonly phase: "p3"
       readonly p1: Vec3
       readonly p2: Vec3
-      readonly cursor: Vec2
+      readonly cursor: Vec3
     }
 
 /**
@@ -150,32 +162,26 @@ export class ArcTool implements Tool {
           },
         ]
       case "p3": {
-        const arc = this.solve(this.state.p1, this.state.p2, this.state.cursor)
+        const { p1, p2, cursor } = this.state
+        const arc = this.arcFor(
+          p1,
+          p2,
+          cursor,
+          ctx.document.getCurrentLayerId(),
+          PREVIEW_ID
+        )
         const out: ScenePrimitive[] = []
         // In the centre modes a spoke from the centre to the cursor shows the
         // end angle being swept.
         if (this.mode !== "threePoint") {
           out.push({
             kind: "segment",
-            a: viewport.worldToScreen(
-              this.centerOf(this.state.p1, this.state.p2)
-            ),
-            b: viewport.worldToScreen(this.state.cursor),
+            a: viewport.worldToScreen(this.centerOf(p1, p2)),
+            b: viewport.worldToScreen(cursor),
             stroke: rubber,
           })
         }
-        if (arc) {
-          out.push(
-            arcScenePrimitive(
-              viewport,
-              arc.center,
-              arc.radius,
-              arc.startAngle,
-              arc.endAngle,
-              rubber
-            )
-          )
-        }
+        if (arc) out.push(...entityScenePrimitive(viewport, arc, rubber))
         return out
       }
       default:
@@ -183,10 +189,10 @@ export class ArcTool implements Tool {
     }
   }
 
-  /** The arc centre implied by the first two points, per mode. */
-  private centerOf(p1: Vec2, p2: Vec2): Vec2 {
+  /** The centre point of a centre mode, in the plane of the first point. */
+  private centerOf(p1: Vec3, p2: Vec3): Vec3 {
     // startCenterEnd: p2 is the centre; centerStartEnd: p1 is the centre.
-    return this.mode === "startCenterEnd" ? p2 : p1
+    return this.mode === "startCenterEnd" ? { ...p2, z: p1.z } : p1
   }
 
   /**
@@ -212,27 +218,40 @@ export class ArcTool implements Tool {
     return arcFromCenterStartEnd(center, start, p3)
   }
 
-  /** WHY: in the first point's plane, as CIRCLE's 2P and 3P (see `CircleTool`). */
-  private commit(p1: Vec3, p2: Vec2, p3: Vec2, ctx: ToolContext): void {
-    const solved = this.solve(p1, p2, p3)
-    if (!solved || !(solved.radius > 0)) return // degenerate — keep prompting
-    ctx.execute(
-      new AddEntityCommand(
-        withCurrentThickness(
-          onPlaneOf(
-            createArc(
-              solved.center,
-              solved.radius,
-              solved.startAngle,
-              solved.endAngle,
-              ctx.document.getCurrentLayerId()
-            ),
-            p1
-          ),
-          ctx
-        )
-      )
+  /**
+   * The arc the three points make: by three points, in their own plane when
+   * they are at different heights, as AutoCAD's is; in a centre mode, in the
+   * UCS plane through the first point. `null` when degenerate.
+   */
+  private arcFor(
+    p1: Vec3,
+    p2: Vec3,
+    p3: Vec3,
+    layerId: LayerId,
+    id?: EntityId
+  ): ArcEntity | null {
+    const plane = this.mode === "threePoint" ? planeThrough(p1, p2, p3) : null
+    const solved = plane
+      ? arcFrom3Points(plane.points[0], plane.points[1], plane.points[2])
+      : this.solve(p1, p2, p3)
+    if (!solved || !(solved.radius > 0)) return null
+    const arc = createArc(
+      solved.center,
+      solved.radius,
+      solved.startAngle,
+      solved.endAngle,
+      layerId,
+      id
     )
+    return plane
+      ? withNormal(withElevation(arc, plane.points[0].z), plane.normal)
+      : onPlaneOf(arc, p1)
+  }
+
+  private commit(p1: Vec3, p2: Vec3, p3: Vec3, ctx: ToolContext): void {
+    const arc = this.arcFor(p1, p2, p3, ctx.document.getCurrentLayerId())
+    if (!arc) return // degenerate — keep prompting
+    ctx.execute(new AddEntityCommand(withCurrentThickness(arc, ctx)))
     ctx.endCommand()
   }
 

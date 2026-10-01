@@ -1,5 +1,14 @@
 import { Vec2 } from "../geometry/Vec2"
-import { Vec3, WORLD_Z, dot3, length3, normalize3, zOf } from "../geometry/Vec3"
+import {
+  Vec3,
+  WORLD_Z,
+  cross3,
+  dot3,
+  length3,
+  normalize3,
+  sub3,
+  zOf,
+} from "../geometry/Vec3"
 import { Axes3, arbitraryAxis, axesToWorld, worldToAxes } from "../geometry/ocs"
 import {
   ArcEntity,
@@ -74,6 +83,16 @@ export function planeAxes(entity: Entity): Axes3 | undefined {
 }
 
 /**
+ * Whether the object reads in plan: a line always does (its points are the
+ * WCS's, and the 2.5D tools project it), anything else when its plane is
+ * level. The tools with flat geometry — TRIM, OFFSET, HATCH, the dimensions —
+ * act on these alone.
+ */
+export function readsInPlan(entity: Entity): boolean {
+  return planeAxes(entity) === undefined
+}
+
+/**
  * A point of the object, given as it stores its points, in the WCS: in the
  * plan of its plane, at its height there (a line's are world points already).
  */
@@ -95,7 +114,12 @@ export function worldToEntity(entity: Entity, point: Vec2 | Vec3): Vec3 {
 
 /** Whether two objects' planes face the same way. */
 export function sameNormal(a: Entity, b: Entity): boolean {
-  return dot3(entityNormal(a), entityNormal(b)) >= 1 - NORMAL_TOLERANCE
+  return facesAlong(a, entityNormal(b))
+}
+
+/** Whether the object's plane faces along the unit vector `normal`. */
+export function facesAlong(entity: Entity, normal: Vec3): boolean {
+  return dot3(entityNormal(entity), normal) >= 1 - NORMAL_TOLERANCE
 }
 
 export function hasThickness(entity: Entity): entity is ThickEntity {
@@ -294,4 +318,31 @@ export function coplanar(a: Entity, b: Entity): boolean {
     sameNormal(a, b) &&
     Math.abs(entityElevation(a) - entityElevation(b)) <= PLANE_TOLERANCE
   )
+}
+
+/**
+ * The plane two lines share when it is not a level one {@link coplanar}
+ * covers: its unit normal, facing up where it can. Two parallel lines share
+ * one too. `null` when they share no plane — AutoCAD's "Lines are
+ * non-coplanar" — or lie on one line.
+ */
+export function linesPlaneNormal(a: LineEntity, b: LineEntity): Vec3 | null {
+  const a0: Vec3 = { ...a.start, z: lineStartZ(a) }
+  const a1: Vec3 = { ...a.end, z: lineEndZ(a) }
+  const b0: Vec3 = { ...b.start, z: lineStartZ(b) }
+  const b1: Vec3 = { ...b.end, z: lineEndZ(b) }
+  const da = sub3(a1, a0)
+  const db = sub3(b1, b0)
+  const across = sub3(b0, a0)
+  const size = Math.max(length3(da), length3(db), length3(across), 1)
+  let normal = cross3(da, db)
+  if (length3(normal) <= 1e-12 * size * size) normal = cross3(da, across)
+  if (length3(normal) <= 1e-12 * size * size) return null
+  const unit = normalize3(normal)
+  if (!unit) return null
+  const off = (point: Vec3) => Math.abs(dot3(sub3(point, a0), unit))
+  if (off(b0) > PLANE_TOLERANCE * size || off(b1) > PLANE_TOLERANCE * size) {
+    return null
+  }
+  return unit.z < 0 ? { x: -unit.x, y: -unit.y, z: -unit.z } : unit
 }

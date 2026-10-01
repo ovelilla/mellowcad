@@ -65,7 +65,7 @@ describe("pointing off the plan", () => {
 
   it("refuses a pick on a work plane seen edge-on, but takes a typed point", () => {
     const cad = createHarness()
-    cad.command("-VIEW").option("Orthographic").option("Front")
+    cad.command("VPOINT").type("0,-1,0").enter()
 
     cad.command("LINE").click({ x: 0, y: 0, z: 0 })
 
@@ -74,6 +74,21 @@ describe("pointing off the plan", () => {
     )
     cad.type("0,0,0").enter().type("@100,0,50").enter().escape()
     expect(lineEndZ(drawnLine(cad))).toBeCloseTo(50, 9)
+  })
+
+  it("points on the front view's plane once -VIEW has aligned the UCS with it", () => {
+    const cad = createHarness()
+    cad.command("-VIEW").option("Orthographic").option("Front")
+
+    cad
+      .command("LINE")
+      .click({ x: 0, y: 0, z: 0 })
+      .click({ x: 100, y: 0, z: 50 })
+    cad.escape()
+
+    const line = drawnLine(cad)
+    expect(line.end).toBeCloseToPoint(p(100, 0), 6)
+    expect(lineEndZ(line)).toBeCloseTo(50, 6)
   })
 })
 

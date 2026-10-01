@@ -9,6 +9,7 @@ import {
   Entity,
   EntityId,
   LineEntity,
+  readsInPlan,
 } from "../../domain/entities"
 import { normalizeAngle } from "../../geometry/primitives"
 import { ScenePrimitive } from "../../scene/types"
@@ -199,9 +200,10 @@ export class BreakTool implements Tool {
     })
   }
 
+  /** A breakable object in the UCS's XY plane, never one at an angle to it. */
   private pick(input: PointerInput, ctx: ToolContext): Entity | null {
     const hit = ctx.pick(input.world)
-    return hit && hit.type !== "polyline" ? hit : null
+    return hit && hit.type !== "polyline" && readsInPlan(hit) ? hit : null
   }
 
   /**

@@ -14,6 +14,7 @@ import {
   entityZAt,
   onPlaneOf,
   polylineSegmentGeometries,
+  readsInPlan,
 } from "../../domain/entities"
 import {
   ucsAngleToWorld,
@@ -341,17 +342,22 @@ export class DimensionTool implements Tool {
     ctx.endCommand()
   }
 
-  /** The object under the cursor whose endpoints a dimension can be taken from. */
+  /**
+   * The object under the cursor whose endpoints a dimension can be taken from:
+   * one in a plane parallel to the UCS's XY plane, where the dimension lies.
+   */
   private pickMeasurable(input: PointerInput, ctx: ToolContext): Entity | null {
     const hit = ctx.pick(input.world)
-    return hit && measurableOrigins(hit, input.world) ? hit : null
+    return hit && readsInPlan(hit) && measurableOrigins(hit, input.world)
+      ? hit
+      : null
   }
 
   private pickOrigins(
     input: PointerInput,
     ctx: ToolContext
   ): [Vec3, Vec3] | null {
-    const hit = ctx.pick(input.world)
+    const hit = this.pickMeasurable(input, ctx)
     return hit ? measurableOrigins(hit, input.world) : null
   }
 

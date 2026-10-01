@@ -15,11 +15,11 @@ import {
   createLine,
   carryOverrides,
   carryPlane,
-  coplanar,
   createPolyline,
   polylineSegmentGeometries,
   polylineSegments,
   Entity,
+  EntityId,
   LineEntity,
   PolylineEntity,
   PolylineSegmentGeometry,
@@ -31,7 +31,8 @@ import {
 import { DynamicInputSession } from "../input/DynamicInput"
 import { ScenePrimitive, StrokeStyle } from "../../scene/types"
 import { THEME } from "../../scene/theme"
-import { arcScenePrimitive, entityScenePrimitive } from "../SceneBuilder"
+import { entityScenePrimitive } from "../SceneBuilder"
+import { LineCorner, LinePick, lineCorner } from "./lineCorner"
 import {
   CommandOption,
   CommandOptionOutcome,
@@ -74,10 +75,10 @@ type FilletState =
   | {
       readonly phase: "second"
       readonly line1: LineEntity
-      /** The point clicked on the first line — picks which corner to round. */
-      readonly pick1: Vec2
+      /** Where the first line was clicked — picks which corner to round. */
+      readonly pick1: LinePick
       readonly hover: LineEntity | null
-      readonly cursor: Vec2
+      readonly cursor: LinePick
     }
 
 export class FilletTool implements Tool {
@@ -119,7 +120,7 @@ export class FilletTool implements Tool {
       this.state = {
         ...this.state,
         hover: this.pickLine(input, ctx, this.state.line1.id),
-        cursor: input.world,
+        cursor: { world: input.world, screen: input.screen },
       }
     }
     ctx.requestRender()
@@ -136,12 +137,13 @@ export class FilletTool implements Tool {
         return
       }
       if (hit.type !== "line") return
+      const pick = { world: input.world, screen: input.screen }
       this.state = {
         phase: "second",
         line1: hit,
-        pick1: input.world,
+        pick1: pick,
         hover: null,
-        cursor: input.world,
+        cursor: pick,
       }
       ctx.requestRender()
       return
@@ -153,7 +155,7 @@ export class FilletTool implements Tool {
       this.state.line1,
       this.state.pick1,
       line2,
-      input.world,
+      { world: input.world, screen: input.screen },
       ctx
     )
   }
@@ -182,109 +184,72 @@ export class FilletTool implements Tool {
 
   buildOverlay(ctx: ToolContext): ScenePrimitive[] {
     const { viewport } = ctx
-    const line = (a: Vec2, b: Vec2, stroke: StrokeStyle): ScenePrimitive => ({
-      kind: "segment",
-      a: viewport.worldToScreen(a),
-      b: viewport.worldToScreen(b),
-      stroke,
-    })
+    const draw = (entity: Entity, stroke: StrokeStyle) =>
+      entityScenePrimitive(viewport, entity, stroke)
 
     if (this.state.phase === "first") {
       const h = this.state.hover
-      if (!h) return []
-      return h.type === "line"
-        ? [line(h.start, h.end, hoverStroke)]
-        : entityScenePrimitive(viewport, h, hoverStroke)
+      return h ? draw(h, hoverStroke) : []
     }
 
     const { line1, pick1, hover, cursor } = this.state
-    const prims = [line(line1.start, line1.end, selectedStroke)]
+    const prims = draw(line1, selectedStroke)
     if (!hover) return prims
 
-    const result = coplanar(line1, hover)
-      ? filletLines(
-          line1.start,
-          line1.end,
-          hover.start,
-          hover.end,
-          pick1,
-          cursor,
-          this.radius
-        )
-      : null
-    if (!result) {
-      prims.push(line(hover.start, hover.end, hoverStroke))
-      return prims
-    }
-
-    const trimmed1 = trimLine(
-      line1,
-      result.corner,
-      result.direction1,
-      result.tangent1
-    )
-    const trimmed2 = trimLine(
-      hover,
-      result.corner,
-      result.direction2,
-      result.tangent2
-    )
-    if (trimmed1) prims.push(line(trimmed1.start, trimmed1.end, hoverStroke))
-    if (trimmed2) prims.push(line(trimmed2.start, trimmed2.end, hoverStroke))
-    if (result.radius > 0) {
+    const corner = lineCorner(line1, pick1, hover, cursor, viewport)
+    const filleted =
+      corner && this.fillet(corner, line1, hover, ctx, PREVIEW_ID)
+    if (!filleted) return [...prims, ...draw(hover, hoverStroke)]
+    for (const entity of filleted) {
       prims.push(
-        arcScenePrimitive(
-          viewport,
-          result.center,
-          result.radius,
-          result.startAngle,
-          result.endAngle,
-          { color: THEME.rubberBand, width: 1 }
+        ...draw(
+          entity,
+          entity.type === "arc"
+            ? { color: THEME.rubberBand, width: 1 }
+            : hoverStroke
         )
       )
     }
     return prims
   }
 
-  private commitFillet(
+  /**
+   * The two lines trimmed or extended to the arc of the current radius, and
+   * the arc (none at radius 0), back in the frame; `null` when the lines are
+   * parallel or a trimmed line would vanish. A preview gives the arc a fixed
+   * `arcId`, so it burns no entity ids.
+   */
+  private fillet(
+    corner: LineCorner,
     line1: LineEntity,
-    pick1: Vec2,
     line2: LineEntity,
-    pick2: Vec2,
-    ctx: ToolContext
-  ): void {
-    if (!coplanar(line1, line2)) {
-      ctx.report(ctx.text.message("linesNonCoplanar"), "error")
-      this.state = { phase: "first", hover: null }
-      ctx.requestRender()
-      return
-    }
+    ctx: ToolContext,
+    arcId?: EntityId
+  ): Entity[] | null {
     const result = filletLines(
-      line1.start,
-      line1.end,
-      line2.start,
-      line2.end,
-      pick1,
-      pick2,
+      corner.line1.start,
+      corner.line1.end,
+      corner.line2.start,
+      corner.line2.end,
+      corner.pick1,
+      corner.pick2,
       this.radius
     )
-    if (!result) return // degenerate (parallel/collinear) — keep prompting
-
+    if (!result) return null
     const trimmed1 = trimLine(
-      line1,
+      corner.line1,
       result.corner,
       result.direction1,
       result.tangent1
     )
     const trimmed2 = trimLine(
-      line2,
+      corner.line2,
       result.corner,
       result.direction2,
       result.tangent2
     )
-    if (!trimmed1 || !trimmed2) return
-
-    const added: Entity[] = [trimmed1, trimmed2]
+    if (!trimmed1 || !trimmed2) return null
+    const built: Entity[] = [trimmed1, trimmed2]
     if (result.radius > 0) {
       // AutoCAD places the arc on the lines' shared layer, or the current layer
       // when they differ.
@@ -292,21 +257,40 @@ export class FilletTool implements Tool {
         line1.layerId === line2.layerId
           ? line1.layerId
           : ctx.document.getCurrentLayerId()
-      added.push(
+      built.push(
         carryPlane(
-          line1,
+          corner.line1,
           createArc(
             result.center,
             result.radius,
             result.startAngle,
             result.endAngle,
-            arcLayer
+            arcLayer,
+            arcId
           )
         )
       )
     }
+    return built.map((entity) => corner.back(entity))
+  }
 
-    ctx.execute(new ReplaceEntitiesCommand([line1.id, line2.id], added))
+  private commitFillet(
+    line1: LineEntity,
+    pick1: LinePick,
+    line2: LineEntity,
+    pick2: LinePick,
+    ctx: ToolContext
+  ): void {
+    const corner = lineCorner(line1, pick1, line2, pick2, ctx.viewport)
+    if (!corner) {
+      ctx.report(ctx.text.message("linesNonCoplanar"), "error")
+      this.state = { phase: "first", hover: null }
+      ctx.requestRender()
+      return
+    }
+    const filleted = this.fillet(corner, line1, line2, ctx)
+    if (!filleted) return // degenerate (parallel/collinear) — keep prompting
+    ctx.execute(new ReplaceEntitiesCommand([line1.id, line2.id], filleted))
     ctx.dynamicInput.close()
     ctx.endCommand()
   }
@@ -373,6 +357,8 @@ export class FilletTool implements Tool {
 
 const hoverStroke: StrokeStyle = { color: THEME.entityHover, width: 2 }
 const selectedStroke: StrokeStyle = { color: THEME.selected, width: 2 }
+/** The preview arc's id, reused every frame so a preview burns no entity ids. */
+const PREVIEW_ID = "fillet-preview"
 
 /**
  * Rebuilds `line` trimmed/extended to end at `tangent`: the endpoint on the

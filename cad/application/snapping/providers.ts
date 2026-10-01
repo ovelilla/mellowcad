@@ -454,6 +454,7 @@ export const extensionProvider: SnapProvider = {
         type: SnapType.Extension,
         point: on(entity, proj.point),
         sourceIds: [entity.id],
+        direction: V.normalize(V.sub(entity.end, entity.start)),
       })
     }
     return candidates
@@ -497,6 +498,7 @@ export const parallelProvider: SnapProvider = {
         // The point lies on the new segment, not on the line it parallels.
         point: withZOf(point, anchor),
         sourceIds: [entity.id],
+        direction: dir,
       })
     }
     return candidates

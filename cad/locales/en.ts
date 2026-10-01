@@ -797,7 +797,11 @@ export const en: EngineCatalog = {
       "ucsOrigin": "Specify origin of UCS",
       "ucsXAxisPoint": "Specify point on X-axis or <Accept>",
       "ucsXYPlanePoint": "Specify point on the XY plane or <Accept>",
+      "ucsRotationX": "Specify rotation angle about X axis",
+      "ucsRotationY": "Specify rotation angle about Y axis",
       "ucsRotationZ": "Specify rotation angle about Z axis",
+      "ucsZAxisOrigin": "Specify new origin point <0,0,0>",
+      "ucsZAxisPoint": "Specify point on positive portion of Z-axis",
       "ucsNamedOption": "Enter an option [Restore/Save/Delete/?]",
       "ucsRestoreName": "Enter name of UCS to restore or [?]",
       "ucsSaveName": "Enter name to save current UCS or [?]",
@@ -1049,7 +1053,11 @@ export const en: EngineCatalog = {
         [
           "xAxisY"
         ],
-        ",0.0000>\n    Y Axis = <",
+        ",",
+        [
+          "xAxisZ"
+        ],
+        ">\n    Y Axis = <",
         [
           "yAxisX"
         ],
@@ -1057,7 +1065,23 @@ export const en: EngineCatalog = {
         [
           "yAxisY"
         ],
-        ",0.0000>, Z Axis = <0.0000,0.0000,1.0000>"
+        ",",
+        [
+          "yAxisZ"
+        ],
+        ">, Z Axis = <",
+        [
+          "zAxisX"
+        ],
+        ",",
+        [
+          "zAxisY"
+        ],
+        ",",
+        [
+          "zAxisZ"
+        ],
+        ">"
       ],
       "ucsUndefined": [
         "Cannot find UCS ",

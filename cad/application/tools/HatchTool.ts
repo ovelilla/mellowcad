@@ -13,6 +13,7 @@ import {
   hatchGeometry,
   hatchLoopFromEntity,
   isLevel,
+  readsInPlan,
   withElevation,
 } from "../../domain/entities"
 import {
@@ -265,11 +266,12 @@ export class HatchTool implements Tool {
   /**
    * Whether `entity` closes an area on its own in `plane`: "enclosed areas can
    * be hatched only if they are in a plane parallel to the XY plane of the
-   * current UCS", so once the hatch has a plane an object at another height is
-   * not taken, and never highlights.
+   * current UCS", so an object at an angle to it never highlights, and once
+   * the hatch has a plane an object at another height is not taken either.
    */
   private canBound(entity: Entity, plane: number | null): boolean {
     return (
+      readsInPlan(entity) &&
       hatchLoopFromEntity(entity) !== null &&
       (plane === null || samePlane(entityElevation(entity), plane))
     )
@@ -306,7 +308,7 @@ export class HatchTool implements Tool {
    */
   private addInternalPoint(point: Vec2, ctx: ToolContext): void {
     const candidates = this.boundarySet(ctx).filter(
-      (e) => isLevel(e) && BOUNDARY_TYPES.has(e.type)
+      (e) => isLevel(e) && readsInPlan(e) && BOUNDARY_TYPES.has(e.type)
     )
     const plane = this.plane(ctx) ?? nearestPlane(point, candidates)
     const loops =

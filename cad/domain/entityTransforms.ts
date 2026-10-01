@@ -1,6 +1,12 @@
 import { Vec2, V } from "../geometry/Vec2"
 import { Vec3, add3, scale3, sub3, withZ, zOf } from "../geometry/Vec3"
-import { Axes3, arbitraryAxis, axesToWorld, worldToAxes } from "../geometry/ocs"
+import {
+  Axes3,
+  arbitraryAxis,
+  axesToWorld,
+  inverseAxes,
+  worldToAxes,
+} from "../geometry/ocs"
 import {
   ArcEntity,
   EllipseEntity,
@@ -41,7 +47,10 @@ import {
   entityAxes,
   entityNormal,
   entityPointToWorld,
+  facesAlong,
   isTilted,
+  lineEndZ,
+  lineStartZ,
   scaleEntityZ,
   shiftEntityZ,
   withDeltaZ,
@@ -1193,8 +1202,9 @@ export function transformEntity(entity: Entity, map: Similarity3): Entity {
     add3(scale3(axesToWorld(map.rotation, point), map.scale), map.translation)
   const normal = axesToWorld(map.rotation, entityNormal(entity))
   if (entity.type === "line") {
-    const start = apply(entityPointToWorld(entity, entity.start))
-    const end = apply(entityPointToWorld(entity, entity.end))
+    // Its ends by their own heights: a vertical line's plan cannot tell them apart.
+    const start = apply({ ...entity.start, z: lineStartZ(entity) })
+    const end = apply({ ...entity.end, z: lineEndZ(entity) })
     let line: LineEntity = {
       ...entity,
       start: { x: start.x, y: start.y },
@@ -1222,6 +1232,41 @@ export function transformEntity(entity: Entity, map: Similarity3): Entity {
     placed = scaleFlat(placed, { x: 0, y: 0, z: 0 }, map.scale)
   placed = translateFlat(placed, worldToAxes(to, map.translation))
   return withNormal(placed, normal)
+}
+
+const NO_SHIFT: Vec3 = { x: 0, y: 0, z: 0 }
+
+/**
+ * `entity` as the object coordinate system of `normal` reads it: in that
+ * frame a plane facing `normal` is level. An object lying in such a plane
+ * keeps its coordinates to the bit — its own OCS is that frame — and only
+ * drops its normal; anything else is turned into the frame. Keeps the id.
+ */
+export function entityInOcs(entity: Entity, normal: Vec3): Entity {
+  const axes = arbitraryAxis(normal)
+  if (!axes) return entity
+  if (entity.type !== "line" && facesAlong(entity, axes.z)) {
+    return withNormal(entity, { x: 0, y: 0, z: 1 })
+  }
+  return transformEntity(entity, {
+    rotation: inverseAxes(axes),
+    scale: 1,
+    translation: NO_SHIFT,
+  })
+}
+
+/** The inverse of {@link entityInOcs}: an object of that frame, back in the WCS. */
+export function entityFromOcs(entity: Entity, normal: Vec3): Entity {
+  const axes = arbitraryAxis(normal)
+  if (!axes) return entity
+  if (entity.type !== "line" && !isTilted(entity)) {
+    return withNormal(entity, axes.z)
+  }
+  return transformEntity(entity, {
+    rotation: axes,
+    scale: 1,
+    translation: NO_SHIFT,
+  })
 }
 
 /** A transformed object as a new one: a fresh id, everything else kept. */

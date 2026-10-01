@@ -14,6 +14,7 @@ import {
   entityElevation,
   onPlaneOf,
   polylineSegmentGeometries,
+  readsInPlan,
 } from "../../domain/entities"
 import { AddEntityCommand } from "../commands/entityCommands"
 import { DynamicInputSession } from "../input/DynamicInput"
@@ -323,10 +324,10 @@ export class AngularDimensionTool implements Tool {
     if (line) this.enterSecondLine(line, ctx)
   }
 
-  /** The object under the cursor DIMANGULAR can take an angle from. */
+  /** The object under the cursor DIMANGULAR can take an angle from, in the UCS's plane. */
   private pickMeasurable(world: Vec2, ctx: ToolContext): Entity | null {
     const hit = ctx.pick(world)
-    if (!hit) return null
+    if (!hit || !readsInPlan(hit)) return null
     if (this.state.phase === "secondLine") {
       // Two lines are needed, and not the same one twice.
       return hit.id !== this.state.line.id && pickedLine(hit, world)

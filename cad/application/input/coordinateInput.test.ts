@@ -1,7 +1,7 @@
 import fc from "fast-check"
 import { describe, expect, it } from "vitest"
 import { isCoordinateExpression, parseCoordinate } from "./coordinateInput"
-import { WORLD_UCS } from "../../domain/ucs"
+import { Ucs, WORLD_UCS, createUcs } from "../../domain/ucs"
 import { coordinate, point } from "../../../test/arbitraries"
 import { deg, p } from "../../../test/builders"
 
@@ -25,7 +25,7 @@ const FROM_100_100 = {
   elevation: 0,
 }
 /** Origin at (10, 20), X axis pointing along world +Y. */
-const TURNED = { origin: { x: 10, y: 20, z: 0 }, xAxis: p(0, 1) }
+const TURNED = createUcs({ x: 10, y: 20, z: 0 }, p(0, 1)) as Ucs
 
 describe("isCoordinateExpression", () => {
   it("recognises the coordinate syntaxes", () => {
@@ -171,7 +171,7 @@ describe("parseCoordinate", () => {
   })
 
   describe("with a Z", () => {
-    const RAISED = { origin: { x: 0, y: 0, z: 3 }, xAxis: p(1, 0) }
+    const RAISED = createUcs({ x: 0, y: 0, z: 3 }, p(1, 0)) as Ucs
     const at = (x: number, y: number, z: number) => ({ x, y, z })
     const onPlane = {
       lastPoint: null,

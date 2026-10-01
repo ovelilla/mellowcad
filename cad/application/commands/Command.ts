@@ -1,5 +1,6 @@
 import { Observable } from "../../shared/Observable"
 import { CadDocument } from "../../domain/Document"
+import { Entity } from "../../domain/entities"
 
 /**
  * Command pattern: every mutation of the persistent document is expressed as a
@@ -16,6 +17,12 @@ export interface Command {
   readonly label: string
   execute(doc: CadDocument): void
   undo(doc: CadDocument): void
+  /**
+   * The same command with every object it brings into the drawing passed
+   * through `map`: how a command a tool built in the frame of a tilted UCS
+   * reaches the WCS. One that brings in none returns itself.
+   */
+  mapEntities(map: (entity: Entity) => Entity): Command
 }
 
 /**

@@ -1,6 +1,6 @@
-import { Vec2, V } from "../geometry/Vec2"
-import { Vec3 } from "../geometry/Vec3"
-import { worldDirectionToUcs, worldPointToUcs } from "../domain/ucs"
+import { Vec2 } from "../geometry/Vec2"
+import { Vec3, sub3 } from "../geometry/Vec3"
+import { isUpright, worldDirectionToUcs, worldPointToUcs } from "../domain/ucs"
 import { ellipseAngleFromParam, normalizeDegrees } from "../geometry/primitives"
 import {
   DocumentSettings,
@@ -659,14 +659,17 @@ function singleEntityInfo(
     edit: { property, text: formatAngle(value, settings), unit: "°" },
   })
   const title = (type: EntityType) => text.entity(type, 1)
-  // A Z is read above the UCS's XY plane, like X and Y from its origin.
-  const zRow = (id: RowId, property: EntityProperty, z: number) =>
-    coordRow(id, property, z - settings.ucs.origin.z)
-  // An elevation along a normal of the object's own is its OCS one (DXF 38).
+  // An elevation along a normal of the object's own is its OCS one (DXF 38);
+  // so is a level object's when the UCS is tilted, its plane then being no
+  // height above the UCS's. Otherwise it is read above the UCS's XY plane.
   const planeRow = (id: RowId, property: EntityProperty) =>
-    planeAxes(entity)
-      ? coordRow(id, property, entityElevation(entity))
-      : zRow(id, property, entityElevation(entity))
+    coordRow(
+      id,
+      property,
+      planeAxes(entity) || !isUpright(settings.ucs)
+        ? entityElevation(entity)
+        : entityElevation(entity) - settings.ucs.origin.z
+    )
   const planeRowAt = (property: EntityProperty, point: Vec2) =>
     coordRow("z", property, at(point).z)
   const normalRows = (): PropertyRow[] => {
@@ -680,10 +683,12 @@ function singleEntityInfo(
 
   switch (entity.type) {
     case "line": {
-      const delta = worldDirectionToUcs(
-        settings.ucs,
-        V.sub(entity.end, entity.start)
-      )
+      // Its ends by their own heights: a vertical line's plan cannot tell them apart.
+      const start: Vec3 = { ...entity.start, z: lineStartZ(entity) }
+      const end: Vec3 = { ...entity.end, z: lineEndZ(entity) }
+      const from = worldPointToUcs(settings.ucs, start)
+      const to = worldPointToUcs(settings.ucs, end)
+      const delta = worldDirectionToUcs(settings.ucs, sub3(end, start))
       return {
         title: title("line"),
         count: 1,
@@ -694,15 +699,15 @@ function singleEntityInfo(
             row("deltaX", length(delta.x)),
             row("deltaY", length(delta.y)),
             // Read-only, like Delta X and Y: the ends are what is retyped.
-            row("deltaZ", length(entity.deltaZ ?? 0)),
+            row("deltaZ", length(delta.z)),
           ]),
           group("endpoints", [
-            coordRow("startX", "startX", at(entity.start).x),
-            coordRow("startY", "startY", at(entity.start).y),
-            zRow("startZ", "startZ", lineStartZ(entity)),
-            coordRow("endX", "endX", at(entity.end).x),
-            coordRow("endY", "endY", at(entity.end).y),
-            zRow("endZ", "endZ", lineEndZ(entity)),
+            coordRow("startX", "startX", from.x),
+            coordRow("startY", "startY", from.y),
+            coordRow("startZ", "startZ", from.z),
+            coordRow("endX", "endX", to.x),
+            coordRow("endY", "endY", to.y),
+            coordRow("endZ", "endZ", to.z),
           ]),
         ],
       }
