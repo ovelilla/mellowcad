@@ -1,5 +1,5 @@
 import { Vec2, V } from "../../geometry/Vec2"
-import { Vec3, withZOf } from "../../geometry/Vec3"
+import { Vec3, add3, scale3 } from "../../geometry/Vec3"
 import { LineEntity, createLine } from "../../domain/entities"
 import { parseNumber } from "../../domain/units"
 import { AddEntityCommand } from "../commands/entityCommands"
@@ -16,6 +16,7 @@ import { CommandOption, CommandOptionOutcome } from "./Tool"
 import { lastDrawnPoint } from "./lastDrawnPoint"
 import { withCurrentThickness } from "./currentThickness"
 import { directionFromUcsHeading, headingInUcs } from "./ucsHeading"
+import { pointAlongCursor, showRise } from "./directDistance"
 
 /**
  * The line tool's interaction flow, modelled as an explicit state machine:
@@ -42,7 +43,7 @@ type LineToolState =
   /** Waiting for the first point. */
   | { readonly phase: "idle" }
   /** No start yet, but a tracking guide is engaged: offer a typed offset. */
-  | { readonly phase: "tracking"; readonly origin: Vec3; readonly dir: Vec2 }
+  | { readonly phase: "tracking"; readonly origin: Vec3; readonly dir: Vec3 }
   /** Start placed; rubber-banding towards the next point. */
   | {
       readonly phase: "drawing"
@@ -94,11 +95,13 @@ export class LineTool implements Tool {
         // Feed the dynamic-input fields the live distance and heading, then
         // follow the cursor. The heading already reflects Ortho (input.point is
         // constrained), so a typed length alone still honours the aid.
-        ctx.dynamicInput.setLive("distance", length)
-        ctx.dynamicInput.setLive(
-          "angle",
-          direction ? headingInUcs(ctx.ucs, direction) : null
-        )
+        if (!showRise(ctx, start, input.point)) {
+          ctx.dynamicInput.setLive("distance", length)
+          ctx.dynamicInput.setLive(
+            "angle",
+            direction ? headingInUcs(ctx.ucs, direction) : null
+          )
+        }
         ctx.dynamicInput.setPosition(input.screen)
         break
       }
@@ -308,19 +311,13 @@ export class LineTool implements Tool {
     const typedAngle = parseField(ctx, "angle")
     if (typedDist === null && typedAngle === null) return rawCursor
 
-    const offset = V.sub(rawCursor, start)
-    const cursorDist = V.length(offset)
-    const cursorAngle = cursorDist > 1e-9 ? headingInUcs(ctx.ucs, offset) : null
-
-    const distance = typedDist ?? cursorDist
-    const angle = typedAngle ?? cursorAngle
-    // No heading yet (cursor still on the start and nothing typed): no point.
-    if (angle === null) return rawCursor
-
-    // A typed length or angle is `@dist<angle`: it keeps the start's Z.
-    return withZOf(
-      V.add(start, V.scale(directionFromUcsHeading(ctx.ucs, angle), distance)),
-      start
+    // A typed length or angle is `@dist<angle`: it keeps the start's Z, or
+    // runs up the Z guide the cursor is on.
+    return (
+      pointAlongCursor(ctx, start, rawCursor, {
+        distance: typedDist,
+        angle: typedAngle,
+      }) ?? rawCursor
     )
   }
 
@@ -339,7 +336,12 @@ export class LineTool implements Tool {
       if (this.currentFieldId(ctx) !== "distance") {
         this.openOffsetInput(ctx, input.screen)
       }
-      ctx.dynamicInput.setLive("distance", V.distance(origin, input.point))
+      ctx.dynamicInput.setLive(
+        "distance",
+        tracking.direction.z !== 0
+          ? Math.abs(input.point.z - origin.z)
+          : V.distance(origin, input.point)
+      )
       ctx.dynamicInput.setPosition(input.screen)
     } else {
       // No guide: drop any offset session and show the first-point coordinate
@@ -477,10 +479,7 @@ export class LineTool implements Tool {
   private commitOffsetStart(distance: number, ctx: ToolContext): void {
     if (this.state.phase !== "tracking") return
 
-    const start = withZOf(
-      V.add(this.state.origin, V.scale(this.state.dir, distance)),
-      this.state.origin
-    )
+    const start = add3(this.state.origin, scale3(this.state.dir, distance))
     this.state = {
       phase: "drawing",
       first: start,
@@ -509,11 +508,19 @@ export class LineTool implements Tool {
   ): void {
     if (this.state.phase !== "drawing") return
     const { distance, angle } = values
-    if (!(distance > 0) || !Number.isFinite(angle)) return
+    if (!(distance > 0)) return
 
-    const { start, first, segments } = this.state
-    const direction = directionFromUcsHeading(ctx.ucs, angle)
-    const end = withZOf(V.add(start, V.scale(direction, distance)), start)
+    const { start, first, segments, cursor } = this.state
+    // No angle at all (the field reads `+Z` / `-Z`): the length runs along the
+    // cursor's path, the Z guide.
+    const heading = Number.isFinite(angle) ? angle : null
+    const end = pointAlongCursor(ctx, start, cursor, {
+      distance,
+      angle: heading,
+    })
+    if (end === null) return
+    const turned =
+      heading === null ? null : directionFromUcsHeading(ctx.ucs, heading)
 
     // Advance state before executing so commandOptions ("Close") reflect the
     // new segment count as soon as the document-change rebuilds engine state.
@@ -522,14 +529,17 @@ export class LineTool implements Tool {
       first,
       start: end,
       cursor: end,
-      direction,
+      direction: turned ?? this.state.direction,
       segments: segments + 1,
       vertices: [...this.state.vertices, end],
     }
     ctx.execute(new AddEntityCommand(newLine(start, end, ctx)))
 
     ctx.dynamicInput.setLive("distance", 0)
-    ctx.dynamicInput.setLive("angle", headingInUcs(ctx.ucs, direction))
+    ctx.dynamicInput.setLive(
+      "angle",
+      turned === null ? null : headingInUcs(ctx.ucs, turned)
+    )
     ctx.requestRender()
   }
 

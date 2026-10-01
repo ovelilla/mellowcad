@@ -17,7 +17,8 @@ import { PointerInput, Tool, ToolContext } from "./Tool"
 import { CommandOption, CommandOptionOutcome } from "./Tool"
 import { lastDrawnPoint } from "./lastDrawnPoint"
 import { withCurrentThickness } from "./currentThickness"
-import { directionFromUcsHeading, headingInUcs } from "./ucsHeading"
+import { headingInUcs } from "./ucsHeading"
+import { pointAlongCursor, showRise } from "./directDistance"
 
 /**
  * The polyline tool draws a single connected chain of straight segments as one
@@ -87,11 +88,13 @@ export class PolylineTool implements Tool {
         length > 1e-9 ? V.scale(offset, 1 / length) : this.state.direction
       this.state = { ...this.state, cursor: input.point, direction }
 
-      ctx.dynamicInput.setLive("distance", length)
-      ctx.dynamicInput.setLive(
-        "angle",
-        direction ? headingInUcs(ctx.ucs, direction) : null
-      )
+      if (!showRise(ctx, start, input.point)) {
+        ctx.dynamicInput.setLive("distance", length)
+        ctx.dynamicInput.setLive(
+          "angle",
+          direction ? headingInUcs(ctx.ucs, direction) : null
+        )
+      }
       ctx.dynamicInput.setPosition(input.screen)
     } else {
       // No first vertex yet: offer a coordinate box to type the point directly.
@@ -436,13 +439,13 @@ export class PolylineTool implements Tool {
     }
 
     const { distance, angle } = values
-    if (!(distance > 0) || !Number.isFinite(angle)) return
-    const direction = directionFromUcsHeading(ctx.ucs, angle)
+    if (!(distance > 0)) return
     const last = this.lastVertex(this.state)
-    this.appendVertex(
-      withZOf(V.add(last, V.scale(direction, distance)), last),
-      ctx
-    )
+    const next = pointAlongCursor(ctx, last, this.state.cursor, {
+      distance,
+      angle: Number.isFinite(angle) ? angle : null,
+    })
+    if (next) this.appendVertex(next, ctx)
   }
 
   /** True when neither dimension field holds typed text. */
@@ -506,18 +509,11 @@ export class PolylineTool implements Tool {
 
     const typedDist = parseField(ctx, "distance")
     const typedAngle = parseField(ctx, "angle")
-
-    const offset = V.sub(rawCursor, start)
-    const cursorDist = V.length(offset)
-    const cursorAngle = cursorDist > 1e-9 ? headingInUcs(ctx.ucs, offset) : null
-
-    const distance = typedDist ?? cursorDist
-    const angle = typedAngle ?? cursorAngle
-    if (angle === null) return rawCursor
-
-    return withZOf(
-      V.add(start, V.scale(directionFromUcsHeading(ctx.ucs, angle), distance)),
-      start
+    return (
+      pointAlongCursor(ctx, start, rawCursor, {
+        distance: typedDist,
+        angle: typedAngle,
+      }) ?? rawCursor
     )
   }
 }

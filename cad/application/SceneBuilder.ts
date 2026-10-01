@@ -1,5 +1,5 @@
 import { Vec2, V } from "../geometry/Vec2"
-import { scale3, withZOf, zOf } from "../geometry/Vec3"
+import { Vec3, scale3, withZOf, zOf } from "../geometry/Vec3"
 import { axesToWorld } from "../geometry/ocs"
 import {
   AttributeDisplay,
@@ -83,9 +83,11 @@ export interface CrosshairInput {
  * "Polar: <dist> < <angle>°" readout ({@link label}) beside the locked point.
  */
 export interface PolarGuideInput {
-  readonly origin: Vec2
-  readonly point: Vec2
+  readonly origin: Vec2 | Vec3
+  readonly point: Vec2 | Vec3
   readonly label: string
+  /** The `+Z` / `-Z` path of a 3D view: the UCS's Z through {@link origin}. */
+  readonly alongZ?: boolean
 }
 
 /** The UCS icon: where UCSICON puts it, and its axis letters in the command language. */
@@ -1322,6 +1324,14 @@ function pushTracking(
       dash: [7, 5],
     }
     for (const guide of tracking.guides) {
+      if (guide.kind === "z") {
+        out.push({
+          kind: "segment",
+          ...alongZOnScreen(camera, guide.point.origin),
+          stroke: guideStroke,
+        })
+        continue
+      }
       out.push({
         kind: "segment",
         a: camera.worldToScreen(
@@ -1419,6 +1429,16 @@ function pushPolarGuide(
   camera: CameraTransform,
   polar: PolarGuideInput
 ): void {
+  const at = camera.worldToScreen(polar.point)
+  if (polar.alongZ) {
+    out.push({
+      kind: "segment",
+      ...alongZOnScreen(camera, polar.origin),
+      stroke: { color: THEME.polar, width: 1, dash: [6, 6] },
+    })
+    pushChip(out, at.x + 12, at.y + 12, polar.label, THEME.polarTooltipBorder)
+    return
+  }
   const d = V.sub(polar.point, polar.origin)
   const len = V.length(d)
   const dir = len > 1e-9 ? V.scale(d, 1 / len) : { x: 1, y: 0 }
@@ -1433,8 +1453,20 @@ function pushPolarGuide(
     ),
     stroke: { color: THEME.polar, width: 1, dash: [6, 6] },
   })
-  const at = camera.worldToScreen(polar.point)
   pushChip(out, at.x + 12, at.y + 12, polar.label, THEME.polarTooltipBorder)
+}
+
+/** The UCS's Z through `origin` (in the frame `camera` reads), as a segment across the view. */
+function alongZOnScreen(
+  camera: CameraTransform,
+  origin: Vec2 | Vec3
+): { a: Vec2; b: Vec2 } {
+  const big = 1e6
+  const z = zOf(origin)
+  return {
+    a: camera.worldToScreen({ x: origin.x, y: origin.y, z: z - big }),
+    b: camera.worldToScreen({ x: origin.x, y: origin.y, z: z + big }),
+  }
 }
 
 /**

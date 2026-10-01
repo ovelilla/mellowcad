@@ -474,6 +474,7 @@ export function buildDynamicInputUi(
 
   const fields = session.fields.map((field) => {
     const live = controller.getLive(field.id)
+    const liveText = controller.getLiveText(field.id)
     return {
       id: field.id,
       label:
@@ -482,8 +483,12 @@ export function buildDynamicInputUi(
       kind: field.kind,
       value: controller.getText(field.id),
       placeholder:
-        live !== null ? formatFieldValue(field.kind, live, settings) : "",
-      unitSuffix: fieldUnitSuffix(field.kind, settings),
+        liveText ??
+        (live !== null ? formatFieldValue(field.kind, live, settings) : ""),
+      unitSuffix:
+        liveText !== null && controller.getText(field.id) === ""
+          ? ""
+          : fieldUnitSuffix(field.kind, settings),
       active: controller.getActiveFieldId() === field.id,
     }
   })

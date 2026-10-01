@@ -74,6 +74,11 @@ interface FieldState {
   text: string
   /** Live value tracked from cursor movement, shown as a placeholder. */
   live: number | null
+  /**
+   * A live reading that is not a number (the angle field's `+Z` on the Z
+   * guide): shown as the placeholder, and the field left out of the values.
+   */
+  liveText: string | null
 }
 
 /**
@@ -111,11 +116,18 @@ export class DynamicInputController extends Observable {
     return this.fieldStates.get(fieldId)?.live ?? null
   }
 
+  getLiveText(fieldId: string): string | null {
+    return this.fieldStates.get(fieldId)?.liveText ?? null
+  }
+
   /** Opens a new session, resetting all field buffers. */
   open(session: DynamicInputSession): void {
     this.session = session
     this.fieldStates = new Map(
-      session.fields.map((f) => [f.id, { text: "", live: null }])
+      session.fields.map((f) => [
+        f.id,
+        { text: "", live: null, liveText: null },
+      ])
     )
     this.activeFieldId = session.fields[0]?.id ?? null
     this.emit()
@@ -140,6 +152,15 @@ export class DynamicInputController extends Observable {
     const fieldState = this.fieldStates.get(fieldId)
     if (!fieldState) return
     fieldState.live = value
+    fieldState.liveText = null
+    this.emit()
+  }
+
+  setLiveText(fieldId: string, text: string): void {
+    const fieldState = this.fieldStates.get(fieldId)
+    if (!fieldState) return
+    fieldState.live = null
+    fieldState.liveText = text
     this.emit()
   }
 
@@ -165,7 +186,8 @@ export class DynamicInputController extends Observable {
   /**
    * Resolves every field to a number: typed text wins, otherwise the live
    * value is used. Returns `null` if any field cannot be resolved, so the
-   * caller can reject an incomplete commit.
+   * caller can reject an incomplete commit. A field showing a live text with
+   * nothing typed is left out: the tool reads it from the cursor.
    */
   resolveValues(): Record<string, number> | null {
     if (!this.session) return null
@@ -180,10 +202,9 @@ export class DynamicInputController extends Observable {
       // number — the comma separates X and Y. Fail the numeric resolution so
       // the session's `commitRaw` handler interprets the whole point instead.
       if (isCoordinateExpression(fieldState.text)) return null
-      const value =
-        fieldState.text.trim() !== ""
-          ? parseNumber(fieldState.text)
-          : fieldState.live
+      const typed = fieldState.text.trim() !== ""
+      if (!typed && fieldState.liveText !== null) continue
+      const value = typed ? parseNumber(fieldState.text) : fieldState.live
       if (value === null || !Number.isFinite(value)) return null
       out[field.id] = value
     }

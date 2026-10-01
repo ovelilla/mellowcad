@@ -1,8 +1,16 @@
 import { Vec2 } from "../../geometry/Vec2"
+import { withZ, zOf } from "../../geometry/Vec3"
 import { Ray } from "../../geometry/primitives"
 import { ucsRotation } from "../../domain/ucs"
 import { Viewport } from "../Viewport"
 import { Constraint, ConstraintContext, ConstraintType } from "./types"
+import {
+  PointAlongZ,
+  alongZ,
+  footOnScreen,
+  lineOnScreen,
+  withSnapHeight,
+} from "./zGuide"
 
 /**
  * Polar tracking, inspired by AutoCAD's POLAR (F10). It complements Ortho:
@@ -35,7 +43,9 @@ export class PolarConstraint implements Constraint {
 
   constructor(private readonly viewport: Viewport) {}
 
-  apply(context: ConstraintContext): Vec2 {
+  apply(context: ConstraintContext): Vec2 | PointAlongZ {
+    const up = this.alongZ(context)
+    if (up) return withSnapHeight(up, context.snapPoint)
     const dir = this.engagedDir(context)
     if (!dir) return context.point
     const anchor = context.anchor!
@@ -49,8 +59,32 @@ export class PolarConstraint implements Constraint {
   /** The polar line currently locked through the anchor, or `null` if free. */
   ray(context: ConstraintContext): Ray | null {
     const dir = this.engagedDir(context)
-    if (!dir) return null
+    if (!dir || this.alongZ(context)) return null
     return { origin: context.anchor!, dir }
+  }
+
+  /**
+   * In a 3D view the UCS's Z through the anchor is one more alignment path
+   * (`+Z` / `-Z`), engaged within the same aperture, measured on the screen.
+   * When a polar angle of the plane engages too, the one drawn nearer the
+   * cursor wins; on a tie, the Z, the path a 3D view is mostly used for.
+   */
+  alongZ(context: ConstraintContext): PointAlongZ | null {
+    const { anchor, view, world } = context
+    if (!anchor) return null
+    const screen = view.worldToScreen(world)
+    const hit = alongZ(view, anchor, screen)
+    if (!hit || hit.pixels > this.aperturePixels) return null
+    if (Math.abs(hit.point.z - zOf(anchor)) < 1e-9) return null
+    const dir = this.engagedDir(context)
+    if (dir) {
+      const plane = footOnScreen(
+        lineOnScreen(view, withZ(anchor, zOf(anchor)), withZ(dir, 0)),
+        screen
+      )
+      if (plane && plane.pixels + 1e-6 < hit.pixels) return null
+    }
+    return hit.point
   }
 
   /**

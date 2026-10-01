@@ -1,5 +1,5 @@
 import { Vec2, V } from "../../geometry/Vec2"
-import { Vec3, sub3, withZOf } from "../../geometry/Vec3"
+import { Vec3, sub3 } from "../../geometry/Vec3"
 import { Entity, EntityId, translateEntity } from "../../domain/entities"
 import { parseNumber } from "../../domain/units"
 import { DynamicInputSession } from "../input/DynamicInput"
@@ -12,7 +12,8 @@ import { entityScenePrimitive } from "../SceneBuilder"
 import { THEME } from "../../scene/theme"
 import { boxSelect, buildSelectionBoxOverlay } from "./boxSelection"
 import { KeyInput, PointerInput, Tool, ToolContext } from "./Tool"
-import { directionFromUcsHeading, headingInUcs } from "./ucsHeading"
+import { headingInUcs } from "./ucsHeading"
+import { pointAlongCursor, showRise } from "./directDistance"
 
 /**
  * Shared machinery for AutoCAD's displacement-modify commands (MOVE, COPY):
@@ -157,11 +158,13 @@ export abstract class PlacementTool implements Tool {
         const length = V.length(offset)
         // Feed the live distance and heading; the cursor angle already reflects
         // Ortho/Polar, so typing a length alone still follows the aid.
-        ctx.dynamicInput.setLive("distance", length)
-        ctx.dynamicInput.setLive(
-          "angle",
-          length > 1e-9 ? headingInUcs(ctx.ucs, offset) : null
-        )
+        if (!showRise(ctx, this.state.base, input.point)) {
+          ctx.dynamicInput.setLive("distance", length)
+          ctx.dynamicInput.setLive(
+            "angle",
+            length > 1e-9 ? headingInUcs(ctx.ucs, offset) : null
+          )
+        }
         ctx.dynamicInput.setPosition(input.screen)
         break
       }
@@ -458,18 +461,12 @@ export abstract class PlacementTool implements Tool {
     const typedAngle = parseField(ctx, "angle")
     if (typedDist === null && typedAngle === null) return rawCursor
 
-    const offset = V.sub(rawCursor, base)
-    const cursorDist = V.length(offset)
-    const cursorAngle = cursorDist > 1e-9 ? headingInUcs(ctx.ucs, offset) : null
-
-    const distance = typedDist ?? cursorDist
-    const angle = typedAngle ?? cursorAngle
     // No heading yet (cursor on the base and nothing typed): no displacement.
-    if (angle === null) return rawCursor
-
-    return withZOf(
-      V.add(base, V.scale(directionFromUcsHeading(ctx.ucs, angle), distance)),
-      base
+    return (
+      pointAlongCursor(ctx, base, rawCursor, {
+        distance: typedDist,
+        angle: typedAngle,
+      }) ?? rawCursor
     )
   }
 }

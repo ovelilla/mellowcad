@@ -777,6 +777,9 @@
         "nearest": "Cercano"
       },
       "polar": "Polar: {distance}{unit} < {angle}°",
+      "polarZ": "Polar: {distance}{unit} < {axis}",
+      "zPositive": "+Z",
+      "zNegative": "-Z",
       "ucsIconX": "X",
       "ucsIconY": "Y",
       "measureDistance": "Dist  {value} {unit}",

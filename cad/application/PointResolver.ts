@@ -1,11 +1,12 @@
 import { Vec2, V } from "../geometry/Vec2"
-import { Vec3, withZ } from "../geometry/Vec3"
+import { Vec3, withZ, zOf } from "../geometry/Vec3"
 import { Viewport } from "./Viewport"
 import { SnapMode } from "./SnapMode"
 import { SnapEngine } from "./snapping/SnapEngine"
 import { SnapResult } from "./snapping/types"
 import { ConstraintManager } from "./constraints/ConstraintManager"
 import { ConstraintContext, ConstraintType } from "./constraints/types"
+import { isAlongZ } from "./constraints/zGuide"
 import { ObjectSnapTrackingEngine } from "./tracking/ObjectSnapTrackingEngine"
 import { DrawingAidState, TrackingResult } from "./tracking/types"
 import { Ucs } from "../domain/ucs"
@@ -16,7 +17,8 @@ export interface ResolvedPoint {
    * The effective world point a tool should act on. Its Z is the snapped
    * object's, the tracked point's, or else the elevation plane (ELEVATION above
    * the UCS's XY plane) — Ortho, Polar and the snap lattice work in the plane
-   * and never change it.
+   * and never change it, except on the `+Z` / `-Z` path of a 3D view, where
+   * the height is what they set.
    */
   readonly point: Vec3
   /** The tracking result that produced it, if tracking engaged. */
@@ -38,7 +40,7 @@ export interface ResolvedPoint {
  */
 export class PointResolver {
   constructor(
-    private readonly viewport: Viewport,
+    private readonly currentView: () => Viewport,
     private readonly snapping: SnapEngine,
     private readonly constraints: ConstraintManager,
     private readonly tracking: ObjectSnapTrackingEngine,
@@ -48,44 +50,47 @@ export class PointResolver {
   ) {}
 
   /**
-   * `allowSnapMode` is false while a tool is merely picking objects: SNAP is a
-   * point-prompt aid, and rounding the cursor would only make objects harder
-   * to hit.
+   * `world` is the cursor on the work plane, `anchor` the tool's base point,
+   * both in the frame `currentView` reads. `allowSnapMode` is false while a
+   * tool is merely picking objects: SNAP is a point-prompt aid, and rounding
+   * the cursor would only make objects harder to hit.
    */
   resolve(
-    world: Vec2,
+    world: Vec3,
     snap: SnapResult | null,
-    anchor: Vec2 | null,
+    anchor: Vec2 | Vec3 | null,
     forceOrtho = false,
     allowSnapMode = true
   ): ResolvedPoint {
     const snapPoint = snap ? snap.point : null
     const ucs = this.currentUcs()
+    const view = this.currentView()
 
     // Object snap tracking only when there is no direct snap.
     let tracked: TrackingResult | null = null
     if (!snap) {
+      const raw = {
+        anchor,
+        world,
+        snapPoint: null,
+        point: world,
+        ucs,
+        view,
+      }
       const anchorLine =
-        anchor !== null
-          ? this.constraints.activeRay(
-              {
-                anchor,
-                world,
-                snapPoint: null,
-                point: world,
-                ucs,
-              },
-              forceOrtho
-            )
+        anchor !== null ? this.constraints.activeRay(raw, forceOrtho) : null
+      const anchorUp =
+        anchor !== null && this.constraints.activeAlongZ(raw, forceOrtho)
+          ? withZ(anchor, zOf(anchor))
           : null
-      const tolerance = this.viewport.screenToWorldDistance(
-        this.snapping.pixelTolerance
-      )
+      const tolerance = view.screenToWorldDistance(this.snapping.pixelTolerance)
       tracked = this.tracking.resolve(
         world,
         tolerance,
         this.aidState(forceOrtho),
-        anchorLine
+        anchorLine,
+        view,
+        anchorUp
       )
     }
     if (tracked) return { point: tracked.point, tracking: tracked }
@@ -95,8 +100,17 @@ export class PointResolver {
       : allowSnapMode
         ? this.snapMode.snapPoint(world, ucs)
         : world
-    const context = { anchor, world, snapPoint, point: candidate, ucs }
+    const context = { anchor, world, snapPoint, point: candidate, ucs, view }
     const constrained = this.constraints.apply(context, forceOrtho)
+    if (isAlongZ(constrained)) {
+      return {
+        point:
+          allowSnapMode && !snap
+            ? this.polarSnapAlongZ(anchor, constrained)
+            : withZ(constrained, constrained.z),
+        tracking: null,
+      }
+    }
     return {
       point: withZ(
         allowSnapMode && !snap
@@ -106,6 +120,21 @@ export class PointResolver {
       ),
       tracking: null,
     }
+  }
+
+  /**
+   * Polar snap on the `+Z` / `-Z` path rounds the height above the base point,
+   * as on any other path; the lattice has no step along Z, so it leaves it be.
+   */
+  private polarSnapAlongZ(anchor: Vec2 | Vec3 | null, point: Vec3): Vec3 {
+    const base = anchor === null ? point.z : zOf(anchor)
+    const rise = point.z - base
+    if (!this.snapMode.isPolar() || Math.abs(rise) < 1e-9) {
+      return withZ(point, point.z)
+    }
+    const snapped = this.snapMode.snapPolarDistance(Math.abs(rise))
+    if (snapped <= 0) return withZ(point, point.z)
+    return withZ(point, base + Math.sign(rise) * snapped)
   }
 
   /**

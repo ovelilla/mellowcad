@@ -1,4 +1,3 @@
-import { Vec2 } from "../../geometry/Vec2"
 import { Vec3 } from "../../geometry/Vec3"
 import { Ray } from "../../geometry/primitives"
 import { Ucs } from "../../domain/ucs"
@@ -27,14 +26,17 @@ export interface TrackingPoint {
   readonly acquiredAt: number
 }
 
-export type TrackingGuideKind = "horizontal" | "vertical" | "polar"
+export type TrackingGuideKind = "horizontal" | "vertical" | "polar" | "z"
 
 /** An infinite alignment line emanating from an acquired {@link TrackingPoint}. */
 export interface TrackingGuide {
   readonly point: TrackingPoint
-  /** Unit direction in world space (0°, 90°, 45°, ... of the UCS). */
-  readonly dir: Vec2
-  /** Angle of {@link dir} in radians from the UCS X axis, for labels / debugging. */
+  /**
+   * Unit direction in the frame: 0°, 90°, 45°, ... of the UCS in its plane, or
+   * its Z for the `+Z` / `-Z` guide a 3D view adds.
+   */
+  readonly dir: Vec3
+  /** Angle of {@link dir} in radians from the UCS X axis (from its XY plane for the Z), for labels / debugging. */
   readonly angle: number
   readonly kind: TrackingGuideKind
 }
@@ -51,8 +53,8 @@ export interface TrackingResult {
   readonly kind: TrackingHitKind
   /** The guides that produced the point (to draw them as active). */
   readonly guides: readonly TrackingGuide[]
-  /** Unit direction along the primary guide (used by dynamic input). */
-  readonly direction: Vec2
+  /** Unit direction along the primary guide, towards the point (used by dynamic input). */
+  readonly direction: Vec3
 }
 
 /**

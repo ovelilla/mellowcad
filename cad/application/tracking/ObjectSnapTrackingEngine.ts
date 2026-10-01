@@ -1,11 +1,26 @@
 import { Observable } from "../../shared/Observable"
 import { Vec2, V } from "../../geometry/Vec2"
-import { Vec3, withZOf } from "../../geometry/Vec3"
+import {
+  Vec3,
+  WORLD_Z,
+  dot3,
+  scale3,
+  sub3,
+  withZ,
+  withZOf,
+} from "../../geometry/Vec3"
 import {
   Ray,
   intersectRays,
   projectPointOntoRay,
 } from "../../geometry/primitives"
+import { Viewport } from "../Viewport"
+import {
+  alongZ,
+  crossingOnScreen,
+  lineOnScreen,
+  zOnScreen,
+} from "../constraints/zGuide"
 import { SnapResult, SnapType } from "../snapping/types"
 import { guideRay, guidesFor } from "./guides"
 import {
@@ -28,7 +43,8 @@ const TRACKABLE: ReadonlySet<SnapType> = new Set([
 ])
 
 interface Candidate {
-  point: Vec2
+  /** A point of the plane, at its guide's height; one with a Z lies on a Z guide. */
+  point: Vec2 | Vec3
   kind: TrackingHitKind
   guides: TrackingGuide[]
   dist: number
@@ -161,27 +177,41 @@ export class ObjectSnapTrackingEngine extends Observable {
    *
    * `anchorLine` is the line the active drawing constraint (Ortho/Polar) imposes
    * from the tool's base point, if any. Intersecting a guide with it is what
-   * produces the classic "align to an existing corner" point.
+   * produces the classic "align to an existing corner" point. `anchorUp` is the
+   * base point instead when that line is the UCS's Z.
+   *
+   * Where `view` shows the UCS's Z, each acquired point offers its `+Z` / `-Z`
+   * guide too, measured on the screen; a crossing with it is where the two are
+   * drawn crossing, on the Z guide, at the height the user sees.
    */
   resolve(
-    worldCursor: Vec2,
+    worldCursor: Vec3,
     worldTolerance: number,
     aids: DrawingAidState,
-    anchorLine: Ray | null
+    anchorLine: Ray | null,
+    view: Viewport,
+    anchorUp: Vec3 | null = null
   ): TrackingResult | null {
     if (!this.active || this.acquired.length === 0) return null
 
-    const guides = this.acquired.flatMap((p) => guidesFor(p, aids))
+    const up = zOnScreen(view) !== null
+    const guides = this.acquired.flatMap((p) => guidesFor(p, aids, up))
     if (guides.length === 0) return null
 
+    const screen = view.worldToScreen(worldCursor)
     let best: Candidate | null = null
     const consider = (
-      point: Vec2,
+      point: Vec2 | Vec3,
       kind: TrackingHitKind,
       gs: TrackingGuide[],
       priority: number
     ): void => {
-      const dist = V.distance(point, worldCursor)
+      const dist =
+        "z" in point
+          ? view.screenToWorldDistance(
+              V.distance(view.worldToScreen(point), screen)
+            )
+          : V.distance(point, worldCursor)
       if (dist > worldTolerance) return
       if (
         best === null ||
@@ -191,11 +221,30 @@ export class ObjectSnapTrackingEngine extends Observable {
         best = { point, kind, guides: gs, dist, priority }
       }
     }
+    const zLine = (g: TrackingGuide) =>
+      lineOnScreen(view, g.point.origin, g.dir)
 
     // Priority 0: guide × active constraint line (Ortho/Polar of the anchor).
     if (anchorLine) {
+      const drawn = up
+        ? lineOnScreen(
+            view,
+            withZOf(anchorLine.origin, anchorLine.origin),
+            withZ(anchorLine.dir, 0)
+          )
+        : null
       for (const g of guides) {
-        const x = intersectRays(guideRay(g), anchorLine)
+        const x =
+          g.kind === "z"
+            ? drawn && crossingOnScreen(view, g.point.origin, g.dir, drawn)
+            : intersectRays(guideRay(g), anchorLine)
+        if (x) consider(x, "guide-constraint", [g], 0)
+      }
+    }
+    if (anchorUp) {
+      for (const g of guides) {
+        if (g.kind === "z") continue
+        const x = crossingOnScreen(view, anchorUp, WORLD_Z, zLine(g))
         if (x) consider(x, "guide-constraint", [g], 0)
       }
     }
@@ -203,14 +252,27 @@ export class ObjectSnapTrackingEngine extends Observable {
     // Priority 1: guide × guide (from different acquired points).
     for (let i = 0; i < guides.length; i++) {
       for (let j = i + 1; j < guides.length; j++) {
-        if (guides[i].point.id === guides[j].point.id) continue
-        const x = intersectRays(guideRay(guides[i]), guideRay(guides[j]))
-        if (x) consider(x, "guide-intersection", [guides[i], guides[j]], 1)
+        const [a, b] =
+          guides[j].kind === "z"
+            ? [guides[j], guides[i]]
+            : [guides[i], guides[j]]
+        if (a.point.id === b.point.id) continue
+        if (b.kind === "z") continue
+        const x =
+          a.kind === "z"
+            ? crossingOnScreen(view, a.point.origin, a.dir, zLine(b))
+            : intersectRays(guideRay(a), guideRay(b))
+        if (x) consider(x, "guide-intersection", [a, b], 1)
       }
     }
 
     // Priority 2: projection onto a single guide.
     for (const g of guides) {
+      if (g.kind === "z") {
+        const hit = alongZ(view, g.point.origin, screen)
+        if (hit) consider(withZ(hit.point, hit.point.z), "projection", [g], 2)
+        continue
+      }
       consider(
         projectPointOntoRay(worldCursor, guideRay(g)),
         "projection",
@@ -226,12 +288,18 @@ export class ObjectSnapTrackingEngine extends Observable {
     // offset follow the user's pointing intent — no manual minus sign — like
     // AutoCAD's tracking.
     const primary = chosen.guides[0]
-    const along = V.sub(chosen.point, primary.point.origin)
+    // A tracked point lies at the height of the point it was acquired from, or
+    // up its Z guide.
+    const point =
+      "z" in chosen.point
+        ? chosen.point
+        : withZOf(chosen.point, primary.point.origin)
     const direction =
-      V.dot(along, primary.dir) < 0 ? V.scale(primary.dir, -1) : primary.dir
+      dot3(sub3(point, primary.point.origin), primary.dir) < 0
+        ? scale3(primary.dir, -1)
+        : primary.dir
     return {
-      // A tracked point lies at the height of the point it was acquired from.
-      point: withZOf(chosen.point, primary.point.origin),
+      point,
       kind: chosen.kind,
       guides: chosen.guides,
       direction,

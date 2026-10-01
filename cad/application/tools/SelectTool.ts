@@ -25,6 +25,7 @@ import { ConstructionGeometry } from "../snapping/types"
 import { bulgeThroughPoint, normalizeDegrees } from "../../geometry/primitives"
 import { ScenePrimitive } from "../../scene/types"
 import { boxSelect } from "./boxSelection"
+import { riseAlongCursor, showRise } from "./directDistance"
 import { KeyInput, PointerInput, Tool, ToolContext } from "./Tool"
 import {
   DimensionPoint,
@@ -244,10 +245,12 @@ export class SelectTool implements Tool {
         // whole line translates with it.
         const current = input.point
         this.state = { ...this.state, current }
-        ctx.dynamicInput.setLive(
-          "distance",
-          V.distance(this.state.origMid, current)
-        )
+        if (!showRise(ctx, this.state.origMid, current)) {
+          ctx.dynamicInput.setLive(
+            "distance",
+            V.distance(this.state.origMid, current)
+          )
+        }
         ctx.dynamicInput.setPosition(input.screen)
         ctx.requestRender()
         break
@@ -1147,6 +1150,12 @@ export class SelectTool implements Tool {
    */
   private commitMove(distance: number, ctx: ToolContext): void {
     if (this.state.phase !== "moveLine") return
+    const rise = riseAlongCursor(
+      this.state.origMid,
+      this.state.current,
+      distance
+    )
+    if (rise) return this.placeMove(this.state, rise, ctx)
     const offset = V.sub(this.state.current, this.state.origMid)
     const length = V.length(offset)
     if (length < 1e-9) return // no direction indicated yet

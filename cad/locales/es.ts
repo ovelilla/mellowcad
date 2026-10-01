@@ -1470,6 +1470,21 @@ export const es: EngineLocale = {
         ],
         "°"
       ],
+      "polarZ": [
+        "Polar: ",
+        [
+          "distance"
+        ],
+        [
+          "unit"
+        ],
+        " < ",
+        [
+          "axis"
+        ]
+      ],
+      "zPositive": "+Z",
+      "zNegative": "-Z",
       "ucsIconX": "X",
       "ucsIconY": "Y",
       "measureDistance": [

@@ -5,6 +5,7 @@ import { Viewport } from "../Viewport"
 import { OrthoConstraint } from "./OrthoConstraint"
 import { PolarConstraint } from "./PolarConstraint"
 import { Constraint, ConstraintContext, ConstraintType } from "./types"
+import { PointAlongZ } from "./zGuide"
 
 /**
  * Owns the set of drawing constraints and applies the enabled ones as a
@@ -80,10 +81,10 @@ export class ConstraintManager extends Observable {
    * `forceOrtho` bypasses the enabled set and applies only Ortho — AutoCAD's
    * temporary override when the user holds Shift while specifying a point.
    */
-  apply(context: ConstraintContext, forceOrtho = false): Vec2 {
+  apply(context: ConstraintContext, forceOrtho = false): Vec2 | PointAlongZ {
     if (forceOrtho) return this.ortho.apply(context)
     if (this.enabled.size === 0) return context.point
-    let point = context.point
+    let point: Vec2 | PointAlongZ = context.point
     for (const constraint of this.constraints) {
       if (!this.enabled.has(constraint.type)) continue
       point = constraint.apply({ ...context, point })
@@ -108,11 +109,34 @@ export class ConstraintManager extends Observable {
   }
 
   /**
+   * The point of the UCS's Z through the anchor when that is the line the
+   * active constraint locks to, else `null`. `forceOrtho` mirrors {@link apply}.
+   */
+  activeAlongZ(
+    context: ConstraintContext,
+    forceOrtho = false
+  ): PointAlongZ | null {
+    if (forceOrtho) return this.ortho.alongZ(context)
+    for (const constraint of this.constraints) {
+      if (!this.enabled.has(constraint.type)) continue
+      const point = constraint.alongZ?.(context)
+      if (point) return point
+    }
+    return null
+  }
+
+  /**
    * The polar ray currently engaged, for drawing the on-screen polar tracking
    * vector. `null` when polar is disabled or the cursor is between angles.
    */
   polarGuideRay(context: ConstraintContext): Ray | null {
     if (!this.enabled.has(ConstraintType.Polar)) return null
     return this.polar.ray(context)
+  }
+
+  /** The point of the polar `+Z` / `-Z` path the cursor is locked to, if it is. */
+  polarAlongZ(context: ConstraintContext): PointAlongZ | null {
+    if (!this.enabled.has(ConstraintType.Polar)) return null
+    return this.polar.alongZ(context)
   }
 }

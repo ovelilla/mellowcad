@@ -28,7 +28,8 @@ import {
   Tool,
   ToolContext,
 } from "./Tool"
-import { directionFromUcsHeading, headingInUcs } from "./ucsHeading"
+import { headingInUcs } from "./ucsHeading"
+import { pointAlongCursor, showRise } from "./directDistance"
 
 /**
  * The points picked so far and what has been said about their ends. The points
@@ -110,11 +111,13 @@ export class SplineTool implements Tool {
     if (state.phase === "next") {
       const offset = V.sub(input.point, lastPoint(state))
       const length = V.length(offset)
-      ctx.dynamicInput.setLive("distance", length)
-      ctx.dynamicInput.setLive(
-        "angle",
-        length > 1e-9 ? headingInUcs(ctx.ucs, offset) : null
-      )
+      if (!showRise(ctx, lastPoint(state), input.point)) {
+        ctx.dynamicInput.setLive("distance", length)
+        ctx.dynamicInput.setLive(
+          "angle",
+          length > 1e-9 ? headingInUcs(ctx.ucs, offset) : null
+        )
+      }
     }
     ctx.dynamicInput.setPosition(input.screen)
     ctx.requestRender()
@@ -488,15 +491,13 @@ export class SplineTool implements Tool {
       return
     }
     const { distance, angle } = values
-    if (!(distance > 0) || !Number.isFinite(angle)) return
+    if (!(distance > 0)) return
     const last = lastPoint(state)
-    this.placePoint(
-      withZOf(
-        V.add(last, V.scale(directionFromUcsHeading(ctx.ucs, angle), distance)),
-        last
-      ),
-      ctx
-    )
+    const next = pointAlongCursor(ctx, last, this.cursor ?? last, {
+      distance,
+      angle: Number.isFinite(angle) ? angle : null,
+    })
+    if (next) this.placePoint(next, ctx)
   }
 
   private commitRawNext(ctx: ToolContext): boolean {
@@ -547,15 +548,11 @@ export class SplineTool implements Tool {
     const typedDistance = typedNumber(ctx, "distance")
     const typedAngle = typedNumber(ctx, "angle")
     if (typedDistance === null && typedAngle === null) return cursor
-    const offset = V.sub(cursor, start)
-    const distance = typedDistance ?? V.length(offset)
-    const angle =
-      typedAngle ??
-      (V.length(offset) > 1e-9 ? headingInUcs(ctx.ucs, offset) : null)
-    if (angle === null) return cursor
-    return withZOf(
-      V.add(start, V.scale(directionFromUcsHeading(ctx.ucs, angle), distance)),
-      start
+    return (
+      pointAlongCursor(ctx, start, cursor, {
+        distance: typedDistance,
+        angle: typedAngle,
+      }) ?? cursor
     )
   }
 

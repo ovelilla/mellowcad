@@ -215,7 +215,7 @@ export class CadRuntime extends Observable {
 
   private currentSnap: SnapResult | null = null
   private lastTracking: TrackingResult | null = null
-  private cursorWorld: Vec2 | null = null
+  private cursorWorld: Vec3 | null = null
 
   // Whether Shift was held on the last pointer event. AutoCAD uses Shift as a
   // temporary Ortho override while specifying a point; this feeds the resolver.
@@ -303,7 +303,7 @@ export class CadRuntime extends Observable {
     this.files = files
     this.clipboard = clipboard
     this.resolver = new PointResolver(
-      this.viewport,
+      () => this.frame.viewport,
       this.snapping,
       this.constraints,
       this.tracking,
@@ -1665,13 +1665,29 @@ export class CadRuntime extends Observable {
     if (anchor === null) return null
 
     const settings = this.document.getSettings()
-    const { ucs } = this.frame
+    const { ucs, viewport: view } = this.frame
     const context = {
       anchor,
       world: this.cursorWorld,
       snapPoint: null,
       point: this.cursorWorld,
       ucs,
+      view,
+    }
+    const up = this.constraints.polarAlongZ(context)
+    if (up) {
+      const rise = up.z - zOf(anchor)
+      const label = this.text.feedback("polarZ", {
+        distance: formatLength(Math.abs(rise), settings),
+        unit: unitSuffix(settings.unit),
+        axis: this.text.feedback(rise > 0 ? "zPositive" : "zNegative"),
+      })
+      return {
+        origin: withZ(anchor, zOf(anchor)),
+        point: withZ(up, up.z),
+        label,
+        alongZ: true,
+      }
     }
     const ray = this.constraints.polarGuideRay(context)
     if (!ray) return null
@@ -2259,11 +2275,11 @@ export class CadRuntime extends Observable {
     }
   }
 
-  /** The active tool's constraint anchor, in the frame. */
-  private toolAnchor(): Vec2 | null {
+  /** The active tool's constraint anchor, in the frame, with its Z when it has one. */
+  private toolAnchor(): Vec2 | Vec3 | null {
     const anchor = this.activeTool.getConstraintAnchor?.() ?? null
     if (anchor === null || !this.activeTool.inWorld) return anchor
-    return planar(this.frame.pointToFrame(withZ(anchor, zOf(anchor))))
+    return this.frame.pointToFrame(withZ(anchor, zOf(anchor)))
   }
 
   /** The active tool's construction geometry, in the frame. */

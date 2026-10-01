@@ -1,6 +1,9 @@
 import { Vec2 } from "../../geometry/Vec2"
+import { Vec3 } from "../../geometry/Vec3"
 import { Ray } from "../../geometry/primitives"
 import { Ucs } from "../../domain/ucs"
+import { Viewport } from "../Viewport"
+import { PointAlongZ } from "./zGuide"
 
 /**
  * Drawing constraints ("aids") that restrict where a point can land, such as
@@ -30,18 +33,23 @@ export enum ConstraintType {
  *              constraint receives the previous constraint's output here.
  */
 export interface ConstraintContext {
-  readonly anchor: Vec2 | null
-  readonly world: Vec2
+  /** Its Z, when it has one, is where the `+Z` / `-Z` guide starts. */
+  readonly anchor: Vec2 | Vec3 | null
+  /** The cursor on the work plane, which `view` draws where the pointer is. */
+  readonly world: Vec3
   readonly snapPoint: Vec2 | null
   readonly point: Vec2
   /** Horizontal, vertical and the polar angles are the UCS's. */
   readonly ucs: Ucs
+  /** The camera, in the same frame: off the plan the guides are measured on the screen. */
+  readonly view: Viewport
 }
 
 /** A single, composable point constraint. */
 export interface Constraint {
   readonly type: ConstraintType
-  apply(context: ConstraintContext): Vec2
+  /** A point on the UCS's Z through the anchor comes back {@link PointAlongZ}, with its height. */
+  apply(context: ConstraintContext): Vec2 | PointAlongZ
 
   /**
    * The infinite line this constraint imposes from the anchor, if any. Object
@@ -50,4 +58,11 @@ export interface Constraint {
    * anchor).
    */
   ray?(context: ConstraintContext): Ray | null
+
+  /**
+   * The point of the UCS's Z through the anchor when that is the line the
+   * constraint locks to (off the plan only), else `null`; {@link ray} is then
+   * `null`.
+   */
+  alongZ?(context: ConstraintContext): PointAlongZ | null
 }

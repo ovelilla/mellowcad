@@ -266,8 +266,9 @@ export interface Tool {
    * The base point that drawing constraints (Ortho, Polar, ...) restrict
    * against — typically the last confirmed point of an in-progress operation.
    * Returns `null` when the tool has no anchor yet, disabling constraints.
+   * Its Z, when it has one, is where a 3D view's `+Z` / `-Z` guide starts.
    */
-  getConstraintAnchor?(): Vec2 | null
+  getConstraintAnchor?(): Vec2 | Vec3 | null
 
   /**
    * Provisional geometry the tool is currently drawing (e.g. the rubber-band
