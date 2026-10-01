@@ -46,7 +46,9 @@ press / select / undo / redo`.
   the running command does not have throws. Letters are tested apart, per language
   (`optionKeys()`, and `locale.test.ts` with a partial test locale).
 - `createHarness({ locale })` runs the engine in another language; the test locale in
-  `locale.test.ts` shows the shape.
+  `locale.test.ts` shows the shape. `cad/locales/foreignHost.test.ts` is a host from outside:
+  `CadDriver` and `extendLocale` from `@/cad`, a language of its own compiled with
+  `icu-minify/compile` — what `cad/README.md` promises an integrator is tested there.
 - Readers: `entities() / only<T>(type) / byId / latest / typeCounts / state() / scene() /
 optionKeys() / optionIds() / selectedIds()`.
 - Keys route exactly like the real UI: Enter/Escape/option keys go through the dynamic input when

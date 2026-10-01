@@ -26,15 +26,33 @@ export interface PromptSegment {
   readonly keywords: boolean
 }
 
-/** The engine's own vocabulary, for a host's menus and pickers. */
+/**
+ * What the engine names, in the interface language (`EngineState.names`): a
+ * host draws these words and never keeps a copy of its own, so a menu and the
+ * engine cannot disagree and a language changes them all at once. Each table
+ * is keyed by the id the engine hands the host elsewhere in its state.
+ *
+ * Tool labels and aliases are `EngineState.tools`, a command's name and
+ * description `commandCatalog()`, property rows `selectionInfo`; everything
+ * else the host's own chrome says is the host's.
+ */
 export interface EngineNames {
+  /** Object snaps, by `SnapType`: the snap menus and the status bar's list. */
   readonly snaps: Readonly<Record<SnapType, string>>
+  /** The standard colours, by `STANDARD_COLORS[].id`. */
   readonly colors: Readonly<Record<string, string>>
+  /** ByLayer, for the colour, linetype and lineweight pickers. */
   readonly byLayer: string
+  /**
+   * Linetypes, by `LINETYPES[].id`. One without an entry shows its id: a
+   * linetype's name is the drawing's data, the same in every language.
+   */
   readonly linetypes: Readonly<Record<string, string>>
-  /** The preset views, and `custom` for a view that is none of them. */
+  /** The preset views (`state.view.preset`), and `custom` for any other. */
   readonly views: Readonly<Record<ViewPreset | "custom", string>>
+  /** The ViewCube's face labels, by the faces of `state.viewCube`. */
   readonly viewCubeFaces: Readonly<Record<ViewCubeFace, string>>
+  /** The ViewCube's compass letters, by `state.viewCube`'s compass. */
   readonly compass: Readonly<Record<CompassLetter, string>>
 }
 

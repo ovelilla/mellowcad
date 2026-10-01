@@ -64,6 +64,12 @@ by key. `application/EngineText.ts` is the one place that reads it; a tool reach
 - **Messages are ICU MessageFormat** (next-intl's syntax): `{count, plural, …}`, never a hand-made
   plural. A `<` followed by a letter is written `'<'`, or ICU reads it as a tag. `names` and
   `keywords` are words, not messages, and are not compiled.
+- **A catalog's shape is public API.** A host's language is typed from `en.json`
+  (`EngineLocale`), so renaming, moving or removing a key, or changing a message's arguments or
+  tags, breaks every host: a major version once the engine is a package, and a line in
+  `cad/README.md` ("Versioning"). Adding a key does not — a host's language falls back to English.
+  What the engine names for a host's menus is `EngineNames` (`EngineState.names`); a new
+  vocabulary goes there, documented on the interface and in the README's table.
 - **After editing a catalog (`en.json`, `es.json`, `ar.json`), run `npm run locales`** and commit both files:
   the engine imports the compiled module (no parser ships to the browser), and `locales.test.ts`
   fails on any drift.
