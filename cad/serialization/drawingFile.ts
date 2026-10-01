@@ -94,13 +94,14 @@ import {
   DocumentSettings,
   LengthUnit,
   LENGTH_UNITS,
+  SavedView,
 } from "../domain/units"
 import { DRAWING_FILE_TYPE } from "./drawingSummary"
 
 export { DRAWING_FILE_TYPE }
 
 /** Current schema version written by {@link serializeDrawing}. */
-export const DRAWING_FILE_VERSION = 23
+export const DRAWING_FILE_VERSION = 24
 
 /** MIME type a serialised drawing is handed to the host as. */
 export const DRAWING_FILE_MIME_TYPE = "application/json"
@@ -121,14 +122,20 @@ export interface DrawingSnapshot {
   readonly entities: readonly Entity[]
 }
 
-/** The settings as written: a zero ELEVATION or THICKNESS is left out, as on objects. */
+/**
+ * The settings as written: a zero ELEVATION or THICKNESS is left out, as on
+ * objects, and so are a shown ViewCube (NAVVCUBEDISPLAY 3) and the default
+ * Home view, so a drawing that never touched them reads as before 24.
+ */
 export type StoredSettings = Omit<
   DocumentSettings,
-  "elevation" | "thickness" | "ucs" | "namedUcs"
+  "elevation" | "thickness" | "ucs" | "namedUcs" | "viewCube"
 > &
   Partial<Pick<DocumentSettings, "elevation" | "thickness">> & {
     readonly ucs: StoredUcs
     readonly namedUcs: readonly { name: string; ucs: StoredUcs }[]
+    readonly navVCubeDisplay?: 0
+    readonly homeView?: SavedView
   }
 
 /** A level UCS is written as before 23, its X axis in plan; a tilted one gives both axes. */
@@ -542,7 +549,7 @@ function cloneLayer(layer: Layer): Layer {
 }
 
 function storedSettings(settings: DocumentSettings): StoredSettings {
-  const { elevation, thickness, ucs, namedUcs, ...rest } = settings
+  const { elevation, thickness, ucs, namedUcs, viewCube, ...rest } = settings
   return {
     ...rest,
     ucs: storedUcs(ucs),
@@ -552,6 +559,15 @@ function storedSettings(settings: DocumentSettings): StoredSettings {
     })),
     ...(elevation ? { elevation } : {}),
     ...(thickness ? { thickness } : {}),
+    ...(viewCube.visible ? {} : { navVCubeDisplay: 0 as const }),
+    ...(viewCube.home
+      ? {
+          homeView: {
+            direction: { ...viewCube.home.direction },
+            up: { ...viewCube.home.up },
+          },
+        }
+      : {}),
   }
 }
 
@@ -612,7 +628,24 @@ function parseSettings(value: unknown): DocumentSettings {
     ucsIcon,
     elevation: isFiniteNumber(value.elevation) ? value.elevation : 0,
     thickness: isFiniteNumber(value.thickness) ? value.thickness : 0,
+    viewCube: {
+      visible: value.navVCubeDisplay !== 0,
+      home: parseSavedView(value.homeView),
+    },
   }
+}
+
+/** A Home view whose two directions are not unit and square is no view, and the default stands. */
+function parseSavedView(value: unknown): SavedView | null {
+  if (!isRecord(value)) return null
+  const direction = parseVec3(value.direction)
+  const up = parseVec3(value.up)
+  if (!direction || !up) return null
+  const square =
+    Math.abs(length3(direction) - 1) < 1e-9 &&
+    Math.abs(length3(up) - 1) < 1e-9 &&
+    Math.abs(dot3(direction, up)) < 1e-9
+  return square ? { direction, up } : null
 }
 
 function parseUcs(value: unknown): Ucs | null {

@@ -72,7 +72,8 @@ export const es: EngineLocale = {
       "elev": "Elevación",
       "vpoint": "Punto de vista",
       "view": "Vistas predefinidas",
-      "orbit": "Órbita 3D"
+      "orbit": "Órbita 3D",
+      "navvcube": "ViewCube"
     },
     "description": {
       "ERASE": "Borrar los objetos seleccionados",
@@ -677,6 +678,9 @@ export const es: EngineLocale = {
       ],
       "3DORBIT": [
         "3DORBITA"
+      ],
+      "NAVVCUBE": [
+        "NAVVCUBE"
       ]
     },
     "keywords": {
@@ -943,6 +947,10 @@ export const es: EngineLocale = {
         "SEiso": "isoSE",
         "NEiso": "isoNE",
         "NWiso": "isoNO"
+      },
+      "NAVVCUBE": {
+        "ON": "ACT",
+        "OFF": "DES"
       }
     },
     "prompts": {

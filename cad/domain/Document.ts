@@ -32,6 +32,7 @@ import {
   DEFAULT_DOCUMENT_SETTINGS,
   DocumentSettings,
   LengthUnit,
+  ViewCubeSetting,
 } from "./units"
 
 /**
@@ -172,6 +173,19 @@ export class CadDocument extends Observable implements DocumentReader {
   setAttributeDisplay(attributeDisplay: AttributeDisplay): void {
     if (this.settings.attributeDisplay === attributeDisplay) return
     this.settings = { ...this.settings, attributeDisplay }
+    this.emit()
+  }
+
+  /** NAVVCUBEDISPLAY and the Home view: presentation, so no command undoes them. */
+  setViewCube(viewCube: ViewCubeSetting): void {
+    const current = this.settings.viewCube
+    if (
+      current.visible === viewCube.visible &&
+      current.home === viewCube.home
+    ) {
+      return
+    }
+    this.settings = { ...this.settings, viewCube }
     this.emit()
   }
 

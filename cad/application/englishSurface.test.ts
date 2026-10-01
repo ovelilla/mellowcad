@@ -1073,6 +1073,10 @@ describe("the engine's English surface", () => {
         .do("VIEW O enter", (c) => c.command("VIEW"))
         .do("O", (c) => answer(c, "O"))
         .do("enter is Top", (c) => c.enter())
+        .do("NAVVCUBE", (c) => c.command("NAVVCUBE"))
+        .do("OFF", (c) => answer(c, "OFF"))
+        .do("CUBE", (c) => c.command("CUBE"))
+        .do("ON", (c) => answer(c, "ON"))
     )
   })
 

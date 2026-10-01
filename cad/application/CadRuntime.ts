@@ -21,12 +21,13 @@ import { LINETYPE_BYLAYER, LinetypeId } from "../domain/linetypes"
 import { DimStyle, DimStyleId } from "../domain/dimStyles"
 import { TextStyle, TextStyleId } from "../domain/textStyles"
 import { LINEWEIGHT_BYLAYER, Lineweight } from "../domain/lineweights"
-import { isWorldUcs, worldPointToUcs } from "../domain/ucs"
+import { Ucs, isWorldUcs, worldPointToUcs } from "../domain/ucs"
 import {
   formatAngle,
   formatLength,
   LengthUnit,
   unitSuffix,
+  ViewCubeSetting,
 } from "../domain/units"
 import {
   DrawingFileError,
@@ -77,6 +78,27 @@ import { AttEditTool } from "./tools/AttEditTool"
 import { PasteTool } from "./tools/PasteTool"
 import { headingInUcs } from "./tools/ucsHeading"
 import { ViewPreset, currentViewPreset } from "./tools/viewPresets"
+import {
+  CompassLetter,
+  ViewCubePart,
+  ViewCubeRoll,
+  ViewCubeSide,
+  ViewCubeUi,
+} from "./viewCube"
+import {
+  CubeContext,
+  CubeDrag,
+  endCubeDrag,
+  goHome,
+  homeFromView,
+  moveCubeDrag,
+  pickCompass,
+  pickPart,
+  rollCube,
+  startCubeDrag,
+  turnToAdjacent,
+  viewCubeUi,
+} from "./runtimeViewCube"
 import { PointResolver } from "./PointResolver"
 import { AutosaveService } from "./Autosave"
 import { buildScene, PolarGuideInput } from "./SceneBuilder"
@@ -250,6 +272,16 @@ export class CadRuntime extends Observable {
   private lastPanScreen: Vec2 | null = null
   /** A transparent orbit under way (Shift + the wheel button held). */
   private orbiting: { last: Vec2; target: Vec3 } | null = null
+  /** A drag on the ViewCube or its compass ring under way. */
+  private cubeDrag: CubeDrag | null = null
+  /** The ViewCube as last projected, kept until the camera's axes or the UCS change. */
+  private viewCubeCache: {
+    readonly direction: Vec3
+    readonly right: Vec3
+    readonly settings: ViewCubeSetting
+    readonly ucs: Ucs
+    readonly ui: ViewCubeUi
+  } | null = null
   /** When the last wheel event arrived, to group a scroll burst as one view. */
   private lastWheelAt = 0
 
@@ -327,6 +359,7 @@ export class CadRuntime extends Observable {
       requestRender: () => this.host.requestRender(),
       setCursor: (cursor) => this.host.setCursor(cursor),
       report: (text, kind = "info") => this.commandLine.write(kind, text),
+      setViewCubeVisible: (visible) => this.setViewCubeVisible(visible),
       text: {
         message: (id, values) => this.text.message(id, values),
         feedback: (id, values) => this.text.feedback(id, values),
@@ -683,6 +716,105 @@ export class CadRuntime extends Observable {
    */
   applyViewPreset(preset: ViewPreset): boolean {
     return this.runCommand("_-VIEW") && this.invokeToolOption(`_${preset}`)
+  }
+
+  /** A click on a face, an edge or a corner of the ViewCube. */
+  viewCubePick(part: ViewCubePart): void {
+    pickPart(this.cubeContext, part)
+  }
+
+  /** A roll arrow of the ViewCube, offered in a face view. */
+  viewCubeRoll(turn: ViewCubeRoll): void {
+    rollCube(this.cubeContext, turn)
+  }
+
+  /** A triangle of the ViewCube: the face next to the one viewed. */
+  viewCubeAdjacent(side: ViewCubeSide): void {
+    turnToAdjacent(this.cubeContext, side)
+  }
+
+  /** The ViewCube's Home button (and its menu's Home). */
+  viewCubeHome(): void {
+    goHome(this.cubeContext)
+  }
+
+  /** The ViewCube menu's Set Current View as Home. */
+  setHomeFromCurrentView(): void {
+    homeFromView(this.cubeContext)
+  }
+
+  /** A letter of the ViewCube's compass. */
+  compassPick(letter: CompassLetter): void {
+    pickCompass(this.cubeContext, letter)
+  }
+
+  /**
+   * A drag on the ViewCube (an orbit, snapping to the nearest of its views
+   * when let go) or, with `ring`, on its compass (the azimuth alone). One
+   * step of ZOOM Previous for the whole drag.
+   */
+  viewCubeDrag(
+    phase: "start" | "move" | "end",
+    screen: Vec2,
+    ring = false
+  ): void {
+    if (phase === "start") {
+      this.cubeDrag = startCubeDrag(this.cubeContext, screen, ring)
+      return
+    }
+    if (!this.cubeDrag) return
+    this.cubeDrag = moveCubeDrag(this.cubeContext, this.cubeDrag, screen)
+    if (phase === "end") {
+      endCubeDrag(this.cubeContext, this.cubeDrag)
+      this.cubeDrag = null
+    }
+  }
+
+  /** NAVVCUBE: shows or hides the ViewCube; saved in the drawing, never undone. */
+  setViewCubeVisible(visible: boolean): void {
+    const viewCube = this.document.getSettings().viewCube
+    this.document.setViewCube({ ...viewCube, visible })
+  }
+
+  /**
+   * The ViewCube's UCS menu: the WCS (`null`) or a saved UCS by name, run as
+   * UCS World or UCS NAmed Restore, echoed and undone like them.
+   */
+  restoreUcs(name: string | null): boolean {
+    if (!this.runCommand("_UCS")) return false
+    if (name === null) return this.invokeToolOption("_World")
+    if (!this.invokeToolOption("_NAmed")) return false
+    if (!this.invokeToolOption("_Restore")) return false
+    this.dynamicInput.setText("name", name)
+    this.commitDynamicInput()
+    return true
+  }
+
+  private get cubeContext(): CubeContext {
+    return {
+      viewport: this.viewport,
+      document: this.document,
+      selection: this.selection,
+    }
+  }
+
+  /** The ViewCube's projection, rebuilt only when the camera's axes or the UCS change. */
+  private viewCubeState(): ViewCubeUi {
+    const { direction, right } = this.viewport
+    const { ucs, viewCube } = this.document.getSettings()
+    const cached = this.viewCubeCache
+    if (
+      cached &&
+      cached.direction === direction &&
+      cached.right === right &&
+      cached.ucs === ucs &&
+      cached.settings === viewCube
+    ) {
+      return cached.ui
+    }
+    const ui = viewCubeUi(this.cubeContext)
+    this.viewCubeCache = { direction, right, ucs, settings: viewCube, ui }
+    return ui
   }
 
   /** Completes the prompt to the best autocomplete match (Tab). */
@@ -2501,6 +2633,12 @@ export class CadRuntime extends Observable {
       selectionCount: this.selection.size,
       scale: this.viewport.scale,
       view: { preset: currentViewPreset(this.viewport) },
+      viewCube: this.viewCubeState(),
+      ucsMenu: {
+        world: isWorldUcs(settings.ucs),
+        name: settings.ucsName,
+        named: settings.namedUcs.map((entry) => entry.name),
+      },
       cursorUcs: this.cursorWorld
         ? worldPointToUcs(
             this.frame.ucs,

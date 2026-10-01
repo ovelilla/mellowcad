@@ -108,6 +108,7 @@ export const COMMAND_FILING: Readonly<Record<string, Filing>> = {
   VIEW: { group: "inquiry" },
   "-VIEW": { group: "inquiry" },
   "3DORBIT": { group: "inquiry" },
+  NAVVCUBE: { group: "inquiry" },
 
   QSAVE: { group: "files" },
   OPEN: { group: "files" },

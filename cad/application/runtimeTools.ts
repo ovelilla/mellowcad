@@ -53,6 +53,7 @@ import { ElevTool } from "./tools/ElevTool"
 import { VPointTool } from "./tools/VPointTool"
 import { ViewTool } from "./tools/ViewTool"
 import { OrbitTool } from "./tools/OrbitTool"
+import { NavVCubeTool } from "./tools/NavVCubeTool"
 
 /**
  * Every tool the runtime registers, in registration order — which is the order
@@ -134,5 +135,6 @@ export function defaultTools(
     new VPointTool(),
     new ViewTool(),
     new OrbitTool(),
+    new NavVCubeTool(),
   ]
 }

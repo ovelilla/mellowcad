@@ -172,6 +172,12 @@ export interface ToolContext {
   copyToClipboard(entities: readonly Entity[], basePoint: Vec2 | Vec3): void
 
   /**
+   * Shows or hides the ViewCube (NAVVCUBE). Saved in the drawing but, being
+   * presentation, not a command: no undo step.
+   */
+  setViewCubeVisible(visible: boolean): void
+
+  /**
    * Ends the current command and drops back to the neutral Select tool. For
    * single-shot commands (MOVE, COPY, ...) that finish the moment their final
    * point is placed, rather than looping or waiting for Escape.

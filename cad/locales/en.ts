@@ -72,7 +72,8 @@ export const en: EngineCatalog = {
       "elev": "Elevation",
       "vpoint": "Viewpoint",
       "view": "Preset views",
-      "orbit": "3D Orbit"
+      "orbit": "3D Orbit",
+      "navvcube": "ViewCube"
     },
     "description": {
       "ERASE": "Delete the selected objects",
@@ -697,6 +698,10 @@ export const en: EngineCatalog = {
         "3DORBIT",
         "3DO",
         "ORBIT"
+      ],
+      "NAVVCUBE": [
+        "NAVVCUBE",
+        "CUBE"
       ]
     },
     "prompts": {

@@ -186,6 +186,13 @@ describe("round trip", () => {
       ucsIcon: { visible: true, atOrigin: false },
       elevation: 3,
       thickness: -1.5,
+      viewCube: {
+        visible: false,
+        home: {
+          direction: { x: 0.6, y: -0.8, z: 0 },
+          up: { x: 0, y: 0, z: 1 },
+        },
+      },
     }
     const parsed = parseDrawingFile(
       serializeDrawing(snapshotOf([], { settings }))
@@ -200,6 +207,45 @@ describe("round trip", () => {
       elevation: 0,
       thickness: 0,
     })
+  })
+
+  it("writes a shown ViewCube and the default Home view as before 24", () => {
+    const text = serializeDrawing(snapshotOf([]))
+    expect(text).not.toMatch(/"(navVCubeDisplay|homeView)"/)
+    expect(parseDrawingFile(text).settings.viewCube).toEqual({
+      visible: true,
+      home: null,
+    })
+  })
+
+  it("opens a drawing from before 24 with the ViewCube shown and the default Home", () => {
+    const parsed = parseDrawingFile(
+      JSON.stringify({
+        type: DRAWING_FILE_TYPE,
+        version: 23,
+        settings: { unit: "mm" },
+        entities: [],
+      })
+    )
+    expect(parsed.settings.viewCube).toEqual({ visible: true, home: null })
+  })
+
+  it("drops a Home view whose directions are not square", () => {
+    const parsed = parseDrawingFile(
+      JSON.stringify({
+        type: DRAWING_FILE_TYPE,
+        version: DRAWING_FILE_VERSION,
+        settings: {
+          navVCubeDisplay: 0,
+          homeView: {
+            direction: { x: 0, y: 0, z: 1 },
+            up: { x: 0, y: 0.5, z: 0.5 },
+          },
+        },
+        entities: [],
+      })
+    )
+    expect(parsed.settings.viewCube).toEqual({ visible: false, home: null })
   })
 
   it("reads a UCS name that is not in the table as unnamed", () => {

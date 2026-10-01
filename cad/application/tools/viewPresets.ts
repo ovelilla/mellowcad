@@ -7,6 +7,7 @@ import {
   normalize3,
 } from "../../geometry/Vec3"
 import { Viewport, entitiesViewBounds } from "../Viewport"
+import { BlockLookup, Entity } from "../../domain/entities"
 import { ToolContext } from "./Tool"
 
 /** Screen margin left round the extents, as ZOOM Extents leaves it. */
@@ -93,11 +94,16 @@ export function lookFrom(viewPoint: Vec3, ctx: ToolContext): boolean {
   const { viewport } = ctx
   viewport.pushHistory()
   if (!viewport.setView(viewPoint, right)) return false
-  const bounds = entitiesViewBounds(
-    ctx.document.getEntities(),
-    viewport,
-    ctx.blocks
-  )
-  if (bounds) viewport.zoomToViewBounds(bounds.min, bounds.max, PADDING_PX)
+  fitExtents(viewport, ctx.document.getEntities(), ctx.blocks)
   return true
+}
+
+/** Frames `entities` as ZOOM Extents does, with its margin; nothing to frame leaves the zoom. */
+export function fitExtents(
+  viewport: Viewport,
+  entities: readonly Entity[],
+  blocks?: BlockLookup
+): void {
+  const bounds = entitiesViewBounds(entities, viewport, blocks)
+  if (bounds) viewport.zoomToViewBounds(bounds.min, bounds.max, PADDING_PX)
 }

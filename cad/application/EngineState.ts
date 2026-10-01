@@ -51,6 +51,7 @@ import {
 import { SnapType } from "./snapping/types"
 import { SnapModeType } from "./SnapMode"
 import type { ViewPreset } from "./tools/viewPresets"
+import type { ViewCubeUi } from "./viewCube"
 import {
   DynamicFieldKind,
   DynamicInputController,
@@ -235,6 +236,17 @@ export interface EngineState {
    * (in the WCS, as -VIEW sets it), or `null` for a custom view.
    */
   readonly view: { readonly preset: ViewPreset | null }
+  /** The ViewCube, already projected for the current camera and UCS. */
+  readonly viewCube: ViewCubeUi
+  /**
+   * The ViewCube's UCS menu: the current UCS (the WCS, a saved one by name, or
+   * neither — `*NO NAME*`) and the saved UCSs it can restore.
+   */
+  readonly ucsMenu: {
+    readonly world: boolean
+    readonly name: string | null
+    readonly named: readonly string[]
+  }
   /**
    * The cursor as the status bar reads it: in the current UCS, on the
    * elevation plane (AutoCAD's COORDS shows X, Y and Z).

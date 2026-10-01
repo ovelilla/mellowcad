@@ -18,6 +18,12 @@ import { SnapType } from "../application/snapping/types"
 import { ConstraintType } from "../application/constraints/types"
 import { Tool } from "../application/tools/Tool"
 import type { ViewPreset } from "../application/tools/viewPresets"
+import type {
+  CompassLetter,
+  ViewCubePart,
+  ViewCubeRoll,
+  ViewCubeSide,
+} from "../application/viewCube"
 import { Bounds } from "../domain/entities"
 import type { EngineLocale } from "../locales/types"
 import { CanvasScenePresenter } from "./CanvasScenePresenter"
@@ -350,6 +356,48 @@ export class CadEngine {
   /** A preset view from the view menu, run as `_-VIEW _<preset>`. */
   applyViewPreset(preset: ViewPreset): boolean {
     return this.runtime.applyViewPreset(preset)
+  }
+
+  viewCubePick(part: ViewCubePart): void {
+    this.runtime.viewCubePick(part)
+  }
+
+  viewCubeRoll(turn: ViewCubeRoll): void {
+    this.runtime.viewCubeRoll(turn)
+  }
+
+  viewCubeAdjacent(side: ViewCubeSide): void {
+    this.runtime.viewCubeAdjacent(side)
+  }
+
+  viewCubeHome(): void {
+    this.runtime.viewCubeHome()
+  }
+
+  setHomeFromCurrentView(): void {
+    this.runtime.setHomeFromCurrentView()
+  }
+
+  compassPick(letter: CompassLetter): void {
+    this.runtime.compassPick(letter)
+  }
+
+  /** `screen` is in the same pixels the drag moves by; only the differences count. */
+  viewCubeDrag(
+    phase: "start" | "move" | "end",
+    screen: Vec2,
+    ring?: boolean
+  ): void {
+    this.runtime.viewCubeDrag(phase, screen, ring)
+  }
+
+  setViewCubeVisible(visible: boolean): void {
+    this.runtime.setViewCubeVisible(visible)
+  }
+
+  /** The WCS (`null`) or a saved UCS, from the ViewCube's UCS menu. */
+  restoreUcs(name: string | null): boolean {
+    return this.runtime.restoreUcs(name)
   }
 
   completeCommandLine(): void {

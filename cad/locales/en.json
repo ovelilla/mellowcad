@@ -68,7 +68,8 @@
       "elev": "Elevation",
       "vpoint": "Viewpoint",
       "view": "Preset views",
-      "orbit": "3D Orbit"
+      "orbit": "3D Orbit",
+      "navvcube": "ViewCube"
     },
     "description": {
       "ERASE": "Delete the selected objects",
@@ -338,7 +339,8 @@
       "-VPOINT": ["-VPOINT", "-VP"],
       "VIEW": ["VIEW", "V"],
       "-VIEW": ["-VIEW", "-V"],
-      "3DORBIT": ["3DORBIT", "3DO", "ORBIT"]
+      "3DORBIT": ["3DORBIT", "3DO", "ORBIT"],
+      "NAVVCUBE": ["NAVVCUBE", "CUBE"]
     },
     "keywords": {
       "LINE": { "Close": "Close", "Undo": "Undo" },
@@ -552,7 +554,8 @@
         "SEiso": "SEiso",
         "NEiso": "NEiso",
         "NWiso": "NWiso"
-      }
+      },
+      "NAVVCUBE": { "ON": "ON", "OFF": "OFF" }
     },
     "prompts": {
       "length": "Length",

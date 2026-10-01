@@ -1,5 +1,6 @@
 import type { AttributeDisplay } from "./entityTypes"
 import { NamedUcs, Ucs, WORLD_UCS } from "./ucs"
+import { Vec3 } from "../geometry/Vec3"
 
 /**
  * Document-level unit configuration. One *world unit* equals one *document
@@ -34,11 +35,28 @@ export interface DocumentSettings {
   readonly elevation: number
   /** THICKNESS: the extrusion LINE, CIRCLE, ARC, PLINE and POLYGON give what they draw. */
   readonly thickness: number
+  /** NAVVCUBEDISPLAY and the ViewCube's Home view, both saved in the drawing. */
+  readonly viewCube: ViewCubeSetting
 }
 
 export interface UcsIconSetting {
   readonly visible: boolean
   readonly atOrigin: boolean
+}
+
+export interface ViewCubeSetting {
+  /** NAVVCUBEDISPLAY 3 (shown) or 0; its 1 and 2 are per visual style, which there are none of. */
+  readonly visible: boolean
+  /** The Home view, in the WCS, or `null` for the default "Top/Left/Front" one. */
+  readonly home: SavedView | null
+}
+
+/** A view's orientation in the WCS: where it looks from and what it draws up. */
+export interface SavedView {
+  /** Unit vector from the target towards the viewer. */
+  readonly direction: Vec3
+  /** Unit vector square to it, drawn pointing up. */
+  readonly up: Vec3
 }
 
 export const DEFAULT_DOCUMENT_SETTINGS: DocumentSettings = {
@@ -53,6 +71,7 @@ export const DEFAULT_DOCUMENT_SETTINGS: DocumentSettings = {
   ucsIcon: { visible: true, atOrigin: true },
   elevation: 0,
   thickness: 0,
+  viewCube: { visible: true, home: null },
 }
 
 export const LENGTH_UNITS: LengthUnit[] = [

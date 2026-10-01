@@ -257,6 +257,16 @@ export { VPointTool } from "./application/tools/VPointTool"
 export { ViewTool } from "./application/tools/ViewTool"
 export { VIEW_MENU, type ViewPreset } from "./application/tools/viewPresets"
 export { OrbitTool } from "./application/tools/OrbitTool"
+export { NavVCubeTool } from "./application/tools/NavVCubeTool"
+export {
+  VIEW_CUBE_PARTS,
+  type CompassLetter,
+  type ViewCubeFace,
+  type ViewCubePart,
+  type ViewCubeRoll,
+  type ViewCubeSide,
+  type ViewCubeUi,
+} from "./application/viewCube"
 
 export type {
   Scene,

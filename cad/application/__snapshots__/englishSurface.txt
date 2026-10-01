@@ -65,6 +65,7 @@ ELEV [] "Elevation"
 VPOINT ["VP"] "Viewpoint"
 VIEW ["V"] "Preset views"
 3DORBIT ["3DO","ORBIT"] "3D Orbit"
+NAVVCUBE ["CUBE"] "ViewCube"
 ERASE ["E"] "Delete the selected objects"
 UNDO ["U"] "Undo the last action"
 -MTEXT [] "Multiline text"
@@ -151,6 +152,7 @@ elev "Elevation" ELEV
 vpoint "Viewpoint" VP
 view "Preset views" V
 orbit "3D Orbit" 3DO
+navvcube "ViewCube" CUBE
 
 ## neutral prompt
 > start
@@ -2954,6 +2956,16 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
   asks: -
   dyn: -
   options: -
+> NAVVCUBE
+  prompt: NAVVCUBE [ON/OFF]:
+  asks: 
+  dyn: 
+  options: [null] ON, [null] OFF
+  command| NAVVCUBE
+> OFF
+> CUBE
+  command| NAVVCUBE
+> ON
 
 ## grips
 > start

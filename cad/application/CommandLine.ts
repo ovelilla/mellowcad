@@ -205,6 +205,7 @@ export const TOOL_COMMANDS: Readonly<Record<string, string>> = {
   vpoint: "VPOINT",
   view: "VIEW",
   orbit: "3DORBIT",
+  navvcube: "NAVVCUBE",
 }
 
 /** The shortest way to type a command, e.g. `"L"` — shown in tooltips. */
