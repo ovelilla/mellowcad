@@ -843,6 +843,25 @@ export const en: EngineCatalog = {
         ],
         ":"
       ],
+      "promptWithDefault": [
+        [
+          "head"
+        ],
+        " ",
+        [
+          "keywords",
+          "[",
+          [
+            "list"
+          ],
+          "]"
+        ],
+        " <",
+        [
+          "value"
+        ],
+        ">:"
+      ],
       "keywordSeparator": "/",
       "optionValue": [
         [

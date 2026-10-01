@@ -60,6 +60,22 @@ export function footOnScreen(line: Ray, screen: Vec2): ScreenFoot | null {
   }
 }
 
+/** The point of a line of the frame drawn nearest `screen`, or `null` for one drawn as a point. */
+export function nearestOnScreen(
+  view: Viewport,
+  origin: Vec3,
+  dir: Vec3,
+  screen: Vec2
+): Vec3 | null {
+  const foot = footOnScreen(lineOnScreen(view, origin, dir), screen)
+  if (foot === null) return null
+  return {
+    x: origin.x + dir.x * foot.t,
+    y: origin.y + dir.y * foot.t,
+    z: origin.z + dir.z * foot.t,
+  }
+}
+
 /** The point of the Z through `base` drawn nearest `screen`, and how far off it the screen point is. */
 export function alongZ(
   view: Viewport,

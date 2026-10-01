@@ -228,6 +228,12 @@ export interface Tool {
   runningCommand?(): string
 
   /**
+   * The keyword a bare Enter keeps, by id, shown after the list as AutoCAD
+   * shows the current value (`[ON/OFF] <ON>:`).
+   */
+  defaultOption?(): string | null
+
+  /**
    * Whether the tool works in the WCS rather than in the frame of the UCS's XY
    * plane, where every other tool works (see `UcsFrame`): the commands that
    * place the view or the UCS themselves (UCS, PLAN, VPOINT, -VIEW,

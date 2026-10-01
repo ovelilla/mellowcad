@@ -24,12 +24,12 @@ import { cn } from "@/lib/utils"
 /** Below this many pixels a press on the cube is a click, beyond it a drag. */
 const DRAG_THRESHOLD_PX = 3
 
-/** The triangles round a face view, in the 0–1 box the engine draws the cube in. */
+/** The triangles round a face view, pointing at the cube, in the 0–1 box the engine draws it in. */
 const TRIANGLES: readonly { side: ViewCubeSide; points: string }[] = [
-  { side: "up", points: "0.5,0.18 0.46,0.235 0.54,0.235" },
-  { side: "down", points: "0.5,0.82 0.46,0.765 0.54,0.765" },
-  { side: "left", points: "0.18,0.5 0.235,0.46 0.235,0.54" },
-  { side: "right", points: "0.82,0.5 0.765,0.46 0.765,0.54" },
+  { side: "up", points: "0.5,0.235 0.46,0.18 0.54,0.18" },
+  { side: "down", points: "0.5,0.765 0.46,0.82 0.54,0.82" },
+  { side: "left", points: "0.235,0.5 0.18,0.46 0.18,0.54" },
+  { side: "right", points: "0.765,0.5 0.82,0.46 0.82,0.54" },
 ]
 
 const MENU_ITEM =

@@ -71,7 +71,7 @@ export function orbitView(viewport: Viewport, drag: Vec2, target: Vec3): void {
 }
 
 /** The middle of what the drawing holds, in space, or `null` for an empty one. */
-function drawingMiddle(
+export function drawingMiddle(
   entities: readonly Entity[],
   blocks?: BlockLookup
 ): Vec3 | null {

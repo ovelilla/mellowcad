@@ -1092,6 +1092,25 @@ export const es: EngineLocale = {
         ],
         ":"
       ],
+      "promptWithDefault": [
+        [
+          "head"
+        ],
+        " ",
+        [
+          "keywords",
+          "[",
+          [
+            "list"
+          ],
+          "]"
+        ],
+        " <",
+        [
+          "value"
+        ],
+        ">:"
+      ],
       "keywordSeparator": "/",
       "optionValue": [
         [

@@ -6,7 +6,7 @@ import { Entity } from "../domain/entities"
 import { SavedView } from "../domain/units"
 import { Selection } from "./Selection"
 import { Viewport } from "./Viewport"
-import { orbitTarget, orbitView } from "./orbit"
+import { drawingMiddle, orbitTarget, orbitView } from "./orbit"
 import { fitExtents } from "./tools/viewPresets"
 import {
   CompassLetter,
@@ -40,6 +40,8 @@ export interface CubeDrag {
   readonly last: Vec2
   /** The pivot, in the cube's frame. */
   readonly target: Vec3
+  /** Where the pivot is drawn, which it keeps. */
+  readonly at: Vec2
   readonly ring: boolean
 }
 
@@ -61,11 +63,15 @@ function cameraOf(view: Viewport): CubeCamera {
 
 /** "The entire model or an object selected in the view" (V13). */
 function framed(ctx: CubeContext): Entity[] {
-  const selected = ctx.selection
+  const selected = selectedEntities(ctx)
+  return selected.length > 0 ? selected : [...ctx.document.getEntities()]
+}
+
+function selectedEntities(ctx: CubeContext): Entity[] {
+  return ctx.selection
     .toArray()
     .map((id) => ctx.document.get(id))
     .filter((entity): entity is Entity => entity !== undefined)
-  return selected.length > 0 ? selected : [...ctx.document.getEntities()]
 }
 
 /** One step of ZOOM Previous, the view, then the extents when the click asks for them. */
@@ -123,20 +129,24 @@ export function homeFromView(ctx: CubeContext): void {
   })
 }
 
+/**
+ * The pivot is the centre of the view, or of the extents of what is selected
+ * ("About Reorienting the View"), and it stays where it is drawn.
+ */
 export function startCubeDrag(
   ctx: CubeContext,
   screen: Vec2,
   ring: boolean
 ): CubeDrag {
   ctx.viewport.pushHistory()
-  const target = orbitTarget(
-    ctx.viewport,
-    framed(ctx),
-    ctx.document.blockLookup()
-  )
+  const blocks = ctx.document.blockLookup()
+  const pivot =
+    drawingMiddle(selectedEntities(ctx), blocks) ??
+    orbitTarget(ctx.viewport, ctx.document.getEntities(), blocks)
   return {
     last: screen,
-    target: worldToAxes(cubeAxes(ctx.document.getSettings().ucs), target),
+    target: worldToAxes(cubeAxes(ctx.document.getSettings().ucs), pivot),
+    at: ctx.viewport.worldToScreen(pivot),
     ring,
   }
 }
@@ -147,12 +157,19 @@ export function moveCubeDrag(
   drag: CubeDrag,
   screen: Vec2
 ): CubeDrag {
+  const view = cubeViewport(ctx)
   orbitView(
-    cubeViewport(ctx),
+    view,
     { x: screen.x - drag.last.x, y: drag.ring ? 0 : screen.y - drag.last.y },
     drag.target
   )
+  keepPivot(view, drag)
   return { ...drag, last: screen }
+}
+
+function keepPivot(view: Viewport, drag: CubeDrag): void {
+  const now = view.worldToScreen(drag.target)
+  view.panByScreen({ x: drag.at.x - now.x, y: drag.at.y - now.y })
 }
 
 /** Letting go of the cube near one of its 26 views lands on it ("Snap to closest view"). */
@@ -162,7 +179,7 @@ export function endCubeDrag(ctx: CubeContext, drag: CubeDrag): void {
   const part = nearestPart(view.direction)
   const snapped = part === null ? null : partView(part)
   if (!snapped || partAt(view.direction) === part) return
-  if (view.setView(snapped.direction, snapped.right)) view.centerOn(drag.target)
+  if (view.setView(snapped.direction, snapped.right)) keepPivot(view, drag)
 }
 
 /** The ViewCube as the current camera and UCS show it. */

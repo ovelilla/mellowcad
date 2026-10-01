@@ -9,7 +9,10 @@ import { CommandOption, CommandOptionOutcome, Tool, ToolContext } from "./Tool"
 export class NavVCubeTool implements Tool {
   readonly id = "navvcube"
 
+  private shown = true
+
   onActivate(ctx: ToolContext): void {
+    this.shown = ctx.document.getSettings().viewCube.visible
     ctx.selection.clear()
     ctx.dynamicInput.open({ fields: [], commit: () => {} })
   }
@@ -20,6 +23,10 @@ export class NavVCubeTool implements Tool {
 
   commandOptions(): readonly CommandOption[] {
     return [{ id: "ON" }, { id: "OFF" }]
+  }
+
+  defaultOption(): string {
+    return this.shown ? "ON" : "OFF"
   }
 
   invokeOption(id: string, ctx: ToolContext): CommandOptionOutcome {

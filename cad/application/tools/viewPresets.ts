@@ -33,13 +33,13 @@ export const VIEW_PRESETS = {
 
 export type ViewPreset = keyof typeof VIEW_PRESETS
 
-/** The preset views as AutoCAD's view menus list them. */
+/** The preset views as the viewport controls' view menu lists them. */
 export const VIEW_MENU: readonly ViewPreset[] = [
   "Top",
   "Bottom",
-  "Front",
   "Left",
   "Right",
+  "Front",
   "BAck",
   "SWiso",
   "SEiso",

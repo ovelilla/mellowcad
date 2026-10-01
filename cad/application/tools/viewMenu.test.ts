@@ -6,6 +6,21 @@ import { lineOf, p } from "../../../test/builders"
 import { es } from "../../locales/es"
 
 describe("the view menu", () => {
+  it("lists the presets in the viewport control's order", () => {
+    expect(VIEW_MENU).toEqual([
+      "Top",
+      "Bottom",
+      "Left",
+      "Right",
+      "Front",
+      "BAck",
+      "SWiso",
+      "SEiso",
+      "NEiso",
+      "NWiso",
+    ])
+  })
+
   it("names the preset each entry runs, as -VIEW", () => {
     const cad = createHarness({ entities: [lineOf(p(0, 0), p(100, 50))] })
 

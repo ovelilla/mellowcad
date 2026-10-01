@@ -2588,7 +2588,7 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
   asks: -
   dyn: -
 > UCSICON
-  prompt: UCSICON [ON/OFF/Noorigin/ORigin]:
+  prompt: UCSICON [ON/OFF/Noorigin/ORigin] <ON>:
   asks: 
   dyn: 
   options: [null] ON, [null] OFF, [N] Noorigin, [null] ORigin
@@ -2957,7 +2957,7 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
   dyn: -
   options: -
 > NAVVCUBE
-  prompt: NAVVCUBE [ON/OFF]:
+  prompt: NAVVCUBE [ON/OFF] <ON>:
   asks: 
   dyn: 
   options: [null] ON, [null] OFF

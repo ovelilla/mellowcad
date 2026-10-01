@@ -715,6 +715,7 @@
       "idle": "Comando",
       "prompt": "{head}:",
       "promptWithKeywords": "{head} <keywords>[{list}]</keywords>:",
+      "promptWithDefault": "{head} <keywords>[{list}]</keywords> '<'{value}>:",
       "keywordSeparator": "/",
       "optionValue": "{keyword}: {value}",
       "cartesian": "X,Y",

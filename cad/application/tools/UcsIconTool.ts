@@ -18,7 +18,10 @@ const CHANGE_BY_KEYWORD: Readonly<Record<string, Partial<UcsIconSetting>>> = {
 export class UcsIconTool implements Tool {
   readonly id = "ucsicon"
 
+  private shown = true
+
   onActivate(ctx: ToolContext): void {
+    this.shown = ctx.document.getSettings().ucsIcon.visible
     ctx.selection.clear()
     ctx.dynamicInput.open({ fields: [], commit: () => {} })
   }
@@ -29,6 +32,10 @@ export class UcsIconTool implements Tool {
 
   commandOptions(): readonly CommandOption[] {
     return Object.keys(CHANGE_BY_KEYWORD).map((id) => ({ id }))
+  }
+
+  defaultOption(): string {
+    return this.shown ? "ON" : "OFF"
   }
 
   invokeOption(id: string, ctx: ToolContext): CommandOptionOutcome {

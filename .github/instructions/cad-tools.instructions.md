@@ -167,7 +167,9 @@ one undo step that Escape cancels.
 
 A bracketed `<Default>` is implemented in the prompt's `commitRaw`: **empty text means Enter, so
 take the default** (DIMLINEAR's `<select object>`, DIMBASELINE's `<Select>`). Never spend a keyword
-letter on something Enter already does.
+letter on something Enter already does. A keyword prompt whose default is a keyword — the current
+value, as UCSICON's and NAVVCUBE's `<ON>` — names it by id in `defaultOption()`, and the prompt
+shows it after the list.
 
 A command that continues from what was drawn before it — LINE's Continue, DIMBASELINE and
 DIMCONTINUE — reads the drawing through a `lastDrawnPoint`-style helper next to the tools, not

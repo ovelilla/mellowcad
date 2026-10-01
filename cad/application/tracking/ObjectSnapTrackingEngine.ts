@@ -16,9 +16,9 @@ import {
 } from "../../geometry/primitives"
 import { Viewport } from "../Viewport"
 import {
-  alongZ,
   crossingOnScreen,
   lineOnScreen,
+  nearestOnScreen,
   zOnScreen,
 } from "../constraints/zGuide"
 import { SnapResult, SnapType } from "../snapping/types"
@@ -223,10 +223,13 @@ export class ObjectSnapTrackingEngine extends Observable {
     }
     const zLine = (g: TrackingGuide) =>
       lineOnScreen(view, g.point.origin, g.dir)
+    // Off the plan a guide is measured where it is drawn, at its point's
+    // height, as picking and snapping are; in plan the 2D arithmetic stays.
+    const onScreen = !view.isPlan
 
     // Priority 0: guide × active constraint line (Ortho/Polar of the anchor).
     if (anchorLine) {
-      const drawn = up
+      const drawn = onScreen
         ? lineOnScreen(
             view,
             withZOf(anchorLine.origin, anchorLine.origin),
@@ -234,10 +237,9 @@ export class ObjectSnapTrackingEngine extends Observable {
           )
         : null
       for (const g of guides) {
-        const x =
-          g.kind === "z"
-            ? drawn && crossingOnScreen(view, g.point.origin, g.dir, drawn)
-            : intersectRays(guideRay(g), anchorLine)
+        const x = drawn
+          ? crossingOnScreen(view, g.point.origin, g.dir, drawn)
+          : intersectRays(guideRay(g), anchorLine)
         if (x) consider(x, "guide-constraint", [g], 0)
       }
     }
@@ -249,7 +251,8 @@ export class ObjectSnapTrackingEngine extends Observable {
       }
     }
 
-    // Priority 1: guide × guide (from different acquired points).
+    // Priority 1: guide × guide (from different acquired points), on the
+    // first one, or on the Z guide when one of them is.
     for (let i = 0; i < guides.length; i++) {
       for (let j = i + 1; j < guides.length; j++) {
         const [a, b] =
@@ -258,27 +261,19 @@ export class ObjectSnapTrackingEngine extends Observable {
             : [guides[i], guides[j]]
         if (a.point.id === b.point.id) continue
         if (b.kind === "z") continue
-        const x =
-          a.kind === "z"
-            ? crossingOnScreen(view, a.point.origin, a.dir, zLine(b))
-            : intersectRays(guideRay(a), guideRay(b))
+        const x = onScreen
+          ? crossingOnScreen(view, a.point.origin, a.dir, zLine(b))
+          : intersectRays(guideRay(a), guideRay(b))
         if (x) consider(x, "guide-intersection", [a, b], 1)
       }
     }
 
     // Priority 2: projection onto a single guide.
     for (const g of guides) {
-      if (g.kind === "z") {
-        const hit = alongZ(view, g.point.origin, screen)
-        if (hit) consider(withZ(hit.point, hit.point.z), "projection", [g], 2)
-        continue
-      }
-      consider(
-        projectPointOntoRay(worldCursor, guideRay(g)),
-        "projection",
-        [g],
-        2
-      )
+      const x = onScreen
+        ? nearestOnScreen(view, g.point.origin, g.dir, screen)
+        : projectPointOntoRay(worldCursor, guideRay(g))
+      if (x) consider(x, "projection", [g], 2)
     }
 
     if (best === null) return null

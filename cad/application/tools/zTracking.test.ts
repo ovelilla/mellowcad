@@ -1,6 +1,11 @@
 import { afterEach, describe, expect, it, vi } from "vitest"
 import type { CircleEntity, LineEntity } from "../../domain/entities"
-import { entityElevation, lineEndZ, lineStartZ } from "../../domain/entities"
+import {
+  entityElevation,
+  lineEndZ,
+  lineStartZ,
+  withElevation,
+} from "../../domain/entities"
 import { createHarness, type CadHarness } from "../../../test/harness"
 import { circleOf, lineOf, p } from "../../../test/builders"
 
@@ -173,6 +178,21 @@ describe("object snap tracking in a 3D view", () => {
     expect(line.start).toBeCloseToPoint(p(100, 0), 9)
     expect(lineStartZ(line)).toBeCloseTo(40, 9)
     expect(lineEndZ(line)).toBeCloseTo(40, 9)
+  })
+
+  it("measures a guide of the plane where it is drawn, at its point's height", () => {
+    vi.useFakeTimers()
+    const raised = withElevation(lineOf(p(0, 0), p(100, 0)), 50)
+    const cad = seIsometric(createHarness({ entities: [raised], snap: true }))
+
+    cad.command("LINE").moveTo({ x: 100, y: 0, z: 50 })
+    vi.advanceTimersByTime(500)
+    cad.moveTo({ x: 170, y: 0.5, z: 50 }).type("40").enter()
+    cad.type("@0,10").enter().escape()
+
+    const line = drawnLine(cad)
+    expect(line.start).toBeCloseToPoint(p(140, 0), 9)
+    expect(lineStartZ(line)).toBeCloseTo(50, 9)
   })
 })
 

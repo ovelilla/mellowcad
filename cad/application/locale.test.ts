@@ -365,7 +365,7 @@ describe("Spanish AutoCAD's command language", () => {
     )
     cad.command("SIMBSCP")
     expect(cad.state().commandLine.prompt).toBe(
-      "SIMBSCP [ACT/DES/Sin origen/Origen]:"
+      "SIMBSCP [ACT/DES/Sin origen/Origen] <ACT>:"
     )
   })
 

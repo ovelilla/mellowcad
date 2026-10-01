@@ -85,8 +85,11 @@ height, which the resolver keeps instead of the work plane's (PolarSnap rounds t
 lattice does not) — `ray()` is `null` and `alongZ()` / `activeAlongZ()` give the point. OTRACK
 adds a `kind: "z"` guide per acquired point (`TrackingGuide.dir` and `TrackingResult.direction`
 are `Vec3`); a crossing with a Z line, a guide's or the anchor's (`anchorUp`), is taken on the
-screen and lifted onto that line. The anchor keeps its Z (`getConstraintAnchor()` may give a
-`Vec3`, `toolAnchor` passes it on): it is where the guide starts.
+screen and lifted onto that line. Off the plan every OTRACK guide is measured where it is drawn, at
+its point's height (`nearestOnScreen`), and two guides of the plane cross where they are drawn
+crossing, on the first — the rule Apparent Intersection follows. The anchor keeps its Z
+(`getConstraintAnchor()` may give a `Vec3`, `toolAnchor` passes it on): it is where the guide
+starts.
 
 A tool returning `usesCrosshair() === false` (PAN) opts out entirely: no crosshair is drawn and
 `updateSnap` leaves the cursor the tool set, instead of forcing `"none"`.

@@ -190,11 +190,13 @@ export function commandPrompt(
     command !== null
       ? text.commandNames(command)[0]
       : text.tool(tool.id).toUpperCase()
+  const fallback = tool.defaultOption?.() ?? null
   return {
     command: name,
     segments: text.composePrompt(
       name,
-      options.map((option) => option.label)
+      options.map((option) => option.label),
+      fallback === null ? null : text.keyword(command, fallback)
     ),
   }
 }

@@ -228,6 +228,25 @@ describe("dragging the ViewCube", () => {
     expect(cad.state().viewCube.current).toBe("front")
   })
 
+  it("keeps the selection's middle where it is drawn while it orbits", () => {
+    const cad = createHarness({
+      entities: [
+        lineOf(p(0, 0), p(1000, 0)),
+        circleOf(p(300, 200), 20, { id: "C" }),
+      ],
+    })
+    cad.runtime.viewCubePick("top-left-front")
+    cad.select("C")
+    const before = cad.runtime.viewport.worldToScreen({ x: 300, y: 200, z: 0 })
+
+    cad.runtime.viewCubeDrag("start", { x: 0, y: 0 })
+    cad.runtime.viewCubeDrag("move", { x: 70, y: 30 })
+    cad.runtime.viewCubeDrag("end", { x: 70, y: 30 })
+
+    const after = cad.runtime.viewport.worldToScreen({ x: 300, y: 200, z: 0 })
+    expect(after).toBeCloseToPoint(before, 6)
+  })
+
   it("turns the azimuth alone on the compass ring", () => {
     const cad = createHarness()
     cad.runtime.viewCubePick("top-left-front")
@@ -332,7 +351,9 @@ describe("NAVVCUBE", () => {
     expect(cad.state().canUndo).toBe(false)
     expect(cad.runtime.serializeDrawing()).toMatch(/"navVCubeDisplay": 0/)
 
-    cad.command("CUBE").option("ON")
+    cad.command("CUBE")
+    expect(cad.state().commandLine.prompt).toBe("NAVVCUBE [ON/OFF] <OFF>:")
+    cad.option("ON")
     expect(cad.state().viewCube.visible).toBe(true)
   })
 
