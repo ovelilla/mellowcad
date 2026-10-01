@@ -350,7 +350,7 @@ export function ToolRail({
 
   return (
     <TooltipProvider>
-      <Panel className="max-h-[calc(100svh-8rem)] flex-col overflow-y-auto">
+      <Panel className="min-h-0 flex-col overflow-y-auto">
         {groups.map((group, g) => (
           <Fragment key={group.id}>
             {g > 0 && <Separator className="my-0.5" />}

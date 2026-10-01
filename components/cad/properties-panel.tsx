@@ -20,9 +20,9 @@ import { LineweightSelect } from "./lineweight-select"
  * A properties palette, modelled on AutoCAD's: when one or more objects are
  * selected it lists their geometry (a line's length and angle, a circle's
  * radius/area, …) plus their colour, layer, linetype and lineweight. With a
- * single object selected the geometry values can be retyped to edit it. It
- * renders nothing when the selection is empty, so it never crowds the drawing
- * while you work.
+ * single object selected the geometry values can be retyped to edit it. It is
+ * docked beside the drawing and stays there with nothing selected, saying so
+ * as AutoCAD's does, so the drawing does not shift as the selection changes.
  */
 export function PropertiesPanel({
   engine,
@@ -33,133 +33,130 @@ export function PropertiesPanel({
 }) {
   const t = useTranslations("Editor.Properties")
   const info = state.selectionInfo
-  if (!info) return null
 
   return (
-    <div className="pointer-events-auto w-56 overflow-hidden rounded-xl border border-border bg-card/90 text-[11px] shadow-lg backdrop-blur">
+    <div className="pointer-events-auto flex min-h-0 flex-1 flex-col text-[11px]">
       <div className="flex items-center gap-2 border-b border-border/60 px-3 py-2">
         <Info className="size-3.5 shrink-0 text-muted-foreground" />
-        <span className="font-medium text-foreground">{info.title}</span>
+        <span className="font-medium text-foreground">
+          {info ? info.title : t("noSelection")}
+        </span>
       </div>
 
-      <div
-        className={
-          state.viewCube.visible
-            ? "max-h-[calc(100svh-23rem)] overflow-y-auto"
-            : "max-h-[calc(100svh-10rem)] overflow-y-auto"
-        }
-      >
-        {/* General: the layer the selected objects live on (AutoCAD's first row). */}
-        <div className="border-b border-border/60 px-3 py-2">
-          <div className="mb-1 text-[10px] font-semibold tracking-wide text-muted-foreground/70 uppercase">
-            {t("general")}
-          </div>
-          <div className="flex items-center justify-between gap-2">
-            <span className="text-muted-foreground">{t("color")}</span>
-            <ColorSelect
-              value={state.selectionColor}
-              names={state.names}
-              onValueChange={(value) => engine.setSelectionColor(value)}
-              ariaLabel={t("colorLabel")}
-              className="w-30"
-            />
-          </div>
-
-          <div className="mt-1 flex items-center justify-between gap-2">
-            <span className="text-muted-foreground">{t("layer")}</span>
-            <Select
-              value={state.selectionLayerId}
-              onValueChange={(value) =>
-                engine.setSelectionLayer(value as string)
-              }
-            >
-              <SelectTrigger
-                size="sm"
-                aria-label={t("layerLabel")}
-                className="w-30 bg-background text-[11px] dark:bg-background"
-              >
-                <SelectValue placeholder={t("varies")} />
-              </SelectTrigger>
-              <SelectContent>
-                {state.layers.map((layer) => (
-                  <SelectItem
-                    key={layer.id}
-                    value={layer.id}
-                    className="text-[11px]"
-                  >
-                    {layer.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-
-          <div className="mt-1 flex items-center justify-between gap-2">
-            <span className="text-muted-foreground">{t("linetype")}</span>
-            <LinetypeSelect
-              value={state.selectionLinetype}
-              names={state.names}
-              onValueChange={(value) => engine.setSelectionLinetype(value)}
-              includeByLayer
-              ariaLabel={t("linetypeLabel")}
-              className="w-30 bg-background text-[11px] dark:bg-background"
-            />
-          </div>
-
-          <div className="mt-1 flex items-center justify-between gap-2">
-            <span className="text-muted-foreground">{t("lineweight")}</span>
-            <LineweightSelect
-              value={state.selectionLineweight}
-              names={state.names}
-              onValueChange={(value) => engine.setSelectionLineweight(value)}
-              includeByLayer
-              ariaLabel={t("lineweightLabel")}
-              className="w-30 bg-background text-[11px] dark:bg-background"
-            />
-          </div>
-
-          {info.general.length > 0 && (
-            <dl className="mt-1 flex flex-col gap-0.5 font-mono">
-              {info.general.map((row) => (
-                <PropertyRowView key={row.id} engine={engine} row={row} />
-              ))}
-            </dl>
-          )}
-
-          {/* Only for the object kinds that wear a style, as AutoCAD shows it. */}
-          {state.selectionTextStyleId !== null && (
-            <StyleRow
-              label={t("textStyle")}
-              ariaLabel={t("textStyleLabel")}
-              value={state.selectionTextStyleId}
-              styles={state.textStyles}
-              onValueChange={(id) => engine.setSelectionTextStyle(id)}
-            />
-          )}
-          {state.selectionDimStyleId !== null && (
-            <StyleRow
-              label={t("dimStyle")}
-              ariaLabel={t("dimStyleLabel")}
-              value={state.selectionDimStyleId}
-              styles={state.dimStyles}
-              onValueChange={(id) => engine.setSelectionDimStyle(id)}
-            />
-          )}
-        </div>
-
-        {info.groups.map((group) => (
-          <div key={group.id} className="px-3 py-2">
+      {info && (
+        <div className="min-h-0 flex-1 overflow-y-auto">
+          {/* General: the layer the selected objects live on (AutoCAD's first row). */}
+          <div className="border-b border-border/60 px-3 py-2">
             <div className="mb-1 text-[10px] font-semibold tracking-wide text-muted-foreground/70 uppercase">
-              {group.title}
+              {t("general")}
             </div>
-            <dl className="flex flex-col gap-0.5 font-mono">
-              {group.rows.map((row) => (
-                <PropertyRowView key={row.id} engine={engine} row={row} />
-              ))}
-            </dl>
+            <div className="flex items-center justify-between gap-2">
+              <span className="text-muted-foreground">{t("color")}</span>
+              <ColorSelect
+                value={state.selectionColor}
+                names={state.names}
+                onValueChange={(value) => engine.setSelectionColor(value)}
+                ariaLabel={t("colorLabel")}
+                className="w-30"
+              />
+            </div>
+
+            <div className="mt-1 flex items-center justify-between gap-2">
+              <span className="text-muted-foreground">{t("layer")}</span>
+              <Select
+                value={state.selectionLayerId}
+                onValueChange={(value) =>
+                  engine.setSelectionLayer(value as string)
+                }
+              >
+                <SelectTrigger
+                  size="sm"
+                  aria-label={t("layerLabel")}
+                  className="w-30 bg-background text-[11px] dark:bg-background"
+                >
+                  <SelectValue placeholder={t("varies")} />
+                </SelectTrigger>
+                <SelectContent>
+                  {state.layers.map((layer) => (
+                    <SelectItem
+                      key={layer.id}
+                      value={layer.id}
+                      className="text-[11px]"
+                    >
+                      {layer.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="mt-1 flex items-center justify-between gap-2">
+              <span className="text-muted-foreground">{t("linetype")}</span>
+              <LinetypeSelect
+                value={state.selectionLinetype}
+                names={state.names}
+                onValueChange={(value) => engine.setSelectionLinetype(value)}
+                includeByLayer
+                ariaLabel={t("linetypeLabel")}
+                className="w-30 bg-background text-[11px] dark:bg-background"
+              />
+            </div>
+
+            <div className="mt-1 flex items-center justify-between gap-2">
+              <span className="text-muted-foreground">{t("lineweight")}</span>
+              <LineweightSelect
+                value={state.selectionLineweight}
+                names={state.names}
+                onValueChange={(value) => engine.setSelectionLineweight(value)}
+                includeByLayer
+                ariaLabel={t("lineweightLabel")}
+                className="w-30 bg-background text-[11px] dark:bg-background"
+              />
+            </div>
+
+            {info.general.length > 0 && (
+              <dl className="mt-1 flex flex-col gap-0.5 font-mono">
+                {info.general.map((row) => (
+                  <PropertyRowView key={row.id} engine={engine} row={row} />
+                ))}
+              </dl>
+            )}
+
+            {/* Only for the object kinds that wear a style, as AutoCAD shows it. */}
+            {state.selectionTextStyleId !== null && (
+              <StyleRow
+                label={t("textStyle")}
+                ariaLabel={t("textStyleLabel")}
+                value={state.selectionTextStyleId}
+                styles={state.textStyles}
+                onValueChange={(id) => engine.setSelectionTextStyle(id)}
+              />
+            )}
+            {state.selectionDimStyleId !== null && (
+              <StyleRow
+                label={t("dimStyle")}
+                ariaLabel={t("dimStyleLabel")}
+                value={state.selectionDimStyleId}
+                styles={state.dimStyles}
+                onValueChange={(id) => engine.setSelectionDimStyle(id)}
+              />
+            )}
           </div>
-        ))}
-      </div>
+
+          {info.groups.map((group) => (
+            <div key={group.id} className="px-3 py-2">
+              <div className="mb-1 text-[10px] font-semibold tracking-wide text-muted-foreground/70 uppercase">
+                {group.title}
+              </div>
+              <dl className="flex flex-col gap-0.5 font-mono">
+                {group.rows.map((row) => (
+                  <PropertyRowView key={row.id} engine={engine} row={row} />
+                ))}
+              </dl>
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   )
 }

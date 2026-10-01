@@ -415,6 +415,7 @@
       "inUse": "In use — erase its references first"
     },
     "Properties": {
+      "noSelection": "No selection",
       "general": "General",
       "color": "Color",
       "colorLabel": "Colour of the selected objects",

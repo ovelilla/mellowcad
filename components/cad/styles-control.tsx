@@ -48,10 +48,10 @@ export function StylesControl({
       <PopoverTrigger
         render={
           <Button
-            size="lg"
+            size="sm"
             variant="ghost"
             aria-label={t("title")}
-            className="pointer-events-auto gap-2 rounded-lg bg-card/90 backdrop-blur aria-expanded:bg-card/90"
+            className="pointer-events-auto gap-2"
           >
             <PencilRuler className="shrink-0" />
             <span className="truncate text-xs">{t("title")}</span>

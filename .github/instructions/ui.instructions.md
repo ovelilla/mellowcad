@@ -30,9 +30,10 @@ Failures are reported at the command prompt, not in a bespoke React banner.
 
 ## Right to left
 
-The shell mirrors; the drawing never does. In an RTL page the rail is on the right, the
-palettes and the ViewCube's column on the left, and the status bar reads the other way — all of it
-from logical classes, nothing from a second layout.
+The shell mirrors; the drawing never does. In an RTL page the workspace's grid runs the other
+way — the tools on the right, the palette panel on the left with the ViewCube in the drawing's
+corner beside it — and the bars read right to left, all of it from the page's direction and
+logical classes, nothing from a second layout.
 
 - **Classes are logical**: `ms-`/`me-`, `ps-`/`pe-`, `inset-s-`/`inset-e-`, `text-start`/`text-end`,
   `border-s`/`border-e`. `i18n/logical-properties.test.ts` fails on a physical side in
@@ -46,7 +47,9 @@ from logical classes, nothing from a second layout.
   order of the roll arrows), the command line, the dynamic input, the coordinate readout, keys
   (`<kbd dir="ltr">`) and the contact address. Put `dir` on the element whose children are
   positioned, never on a positioned element alone: the spec resolves a logical inset against the
-  containing block, Chrome against the element.
+  containing block, Chrome against the element. The canvas cell itself is not an island: the
+  ViewCube's `inset-e` must follow the page there; what is placed in the canvas's pixels uses
+  physical `left`/`top`, which no direction moves.
 - **A technical value in a palette is an island with `text-end`** — its right in every page — so
   `-12.5` never reads `12.5-`. A typeable one is an island with its unit (the `dd` holding the
   field and the `mm`), or the unit lands before the number. A numeric field is `DecimalInput` (text, `inputMode="decimal"`, a
@@ -84,7 +87,9 @@ class or light values.
   Never `variant="default"` for state: `--primary` is near-white, so `bg-primary/N` is glare, not
   a highlight. Use `bg-accent` for a selected/current row (the token designed for it) and
   `text-primary` for check marks.
-- Panels are `bg-card/90` + `backdrop-blur` (8px). Keep popovers at the same blur so surfaces match.
+- Docked zones are `bg-card`, parted by a `border` on the side facing their neighbour, with no
+  radius or shadow; a `Panel` or trigger inside one adds no surface of its own. The radius, the
+  shadow and `bg-card/90` + `backdrop-blur` belong to popups and to what floats on the drawing.
 
 ## Base UI gotchas
 
@@ -101,23 +106,48 @@ class or light values.
 
 ## Where a control belongs
 
-- **The top row** is one flex container (`CadWorkspace`): the Layers, Styles and Blocks triggers,
-  then the CommandBar. Never place one of them at its own fixed offset — a longer layer name or
-  label then slides under its neighbour.
+- **The workspace is a grid of named areas** (`CadWorkspace`): `top` and `status` across the
+  window, `tools` · `canvas` · `panel` between them, and `command` above `status`. A control goes
+  into a zone; never position one absolutely over the drawing. The canvas takes what the zones
+  leave, so ZOOM Extents frames only what is visible.
+  - **Every zone has its size in CSS** (`h-10`, `w-11`, `w-70`, the command line's `h-20`), not
+    from its content, and is rendered before the engine mounts: the canvas's box at the first
+    paint is then the final one, which the landing's view transition grows into and the first
+    view is centred in. A zone that resizes moves the canvas's edge; one that resizes with the
+    work (the selection, each command) makes the drawing jump.
+  - **The canvas cell** (`#editor-sheet`, `relative`, exactly the canvas's box) carries
+    `SHEET_TRANSITION` — no other element may — and holds what is placed in the canvas's pixels:
+    the dynamic input and its option chips, at `state.dynamicInput.screen`. A popup anchored there
+    (the snap override menu, the Selection list box) is portalled and positioned in the viewport,
+    so its virtual anchor converts with `engine.clientFromScreen`; the raw state point lands off
+    by the zones before the canvas.
+  - On the drawing only what AutoCAD puts there: the ViewCube, the dynamic input, the menus at the
+    cursor.
+- **The top bar** is one flex row: the Layers, Styles and Blocks triggers, then the CommandBar.
+  Never place one of them at its own fixed offset — a longer layer name or label then slides
+  under its neighbour.
 - **CommandBar** — file (Save, Open, and Clear all, kept away from Delete selection until the
   application menu's New replaces it), view and palette visibility (AutoCAD's ribbon View →
   Palettes), and last the language (`LanguageMenu`, a Base UI menu of `useLanguageLinks`):
   the view menu (the viewport controls' `[Top]`: `VIEW_MENU`, labelled by `state.view.preset`, run
   through `engine.applyViewPreset`) and Orbit beside Zoom window and Pan.
-- **ViewCube** (top right, NAVVCUBELOCATION 0; top left in RTL, with the palettes) — `view-cube.tsx` draws `state.viewCube` in SVG
+- **ViewCube** (the drawing's top right, NAVVCUBELOCATION 0; top left in RTL, beside the palette
+  panel) — `view-cube.tsx` draws `state.viewCube` in SVG
   (the engine's 0–1 box), with Home above, the compass round it and the UCS menu below; its
   right-click menu and the UCS menu are Base UI menus. It keeps only the hovered zone and the
   press it is reading as click or drag; every view, outline and label position comes from the
   engine, and so do its words (`state.names.viewCubeFaces`, `compass`); its menus' are
-  `Editor.ViewCube`. The Properties palette sits under it in the same column, its height capped for it.
-- **DrawingAids** (status bar) — drafting modes only: Snap, Grid, Ortho, Polar, Osnap, OTRACK,
-  lineweight display.
-- **ToolRail** (left; right in RTL) — tools, grouped by `RAIL_LAYOUT`, a `Separator` between
+  `Editor.ViewCube`.
+- **The palette panel** (`panel`, the inline end) — the Properties palette fills it and stays
+  with nothing selected, saying so (`Editor.Properties.noSelection`), so the drawing never resizes
+  with the selection.
+- **The command line** (`command`) is docked with AutoCAD's three lines of history above the
+  prompt, kept while empty, so running commands never resizes the drawing; hiding it (F2)
+  collapses the zone, and it comes back while something is typed. Its suggestions open upwards
+  over the drawing, which is why the zone stacks above the canvas cell.
+- **The status bar** (`status`) — the coordinates at its start, then **DrawingAids** at its end:
+  drafting modes only, Snap, Grid, Ortho, Polar, Osnap, OTRACK, lineweight display.
+- **ToolRail** (`tools`, the inline start) — tools, grouped by `RAIL_LAYOUT`, a `Separator` between
   groups and before the closing Undo / Redo / Delete selection. Variant families (Circle, Arc,
   Array, Fillet/Chamfer, Rectangle/Polygon, Break, the attribute commands) are flyouts, named by
   `Editor.ToolRail.flyouts`: a Base UI menu of radio items listing each member's icon, name and
@@ -138,7 +168,7 @@ class or light values.
 
 A palette a command can open (the style managers, the Blocks palette) is a **controlled** popover
 driven by `EngineState`, never by local `useState` — otherwise typing `DIMSTYLE` cannot open it.
-Its trigger sits in the top row with the others.
+Its trigger sits in the top bar with the others.
 
 Anything that has to **draw drawing content** — a block thumbnail, a future layout preview — asks
 the engine for a `Scene` (`engine.buildBlockPreview(...)`) and paints it with

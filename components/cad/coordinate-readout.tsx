@@ -17,7 +17,7 @@ export function CoordinateReadout({ state }: { state: EngineState }) {
   return (
     <div
       dir="ltr"
-      className="pointer-events-auto flex h-10 items-center gap-3 rounded-lg bg-card/90 px-3 font-mono text-[11px] text-muted-foreground backdrop-blur"
+      className="pointer-events-auto flex items-center gap-3 px-2 font-mono text-[11px] text-muted-foreground"
     >
       <span className="flex items-center">
         <span>{t("x")}</span>

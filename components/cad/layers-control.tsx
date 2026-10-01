@@ -54,10 +54,10 @@ export function LayersControl({
         <PopoverTrigger
           render={
             <Button
-              size="lg"
+              size="sm"
               variant="ghost"
               aria-label={t("title")}
-              className="pointer-events-auto max-w-48 gap-4 rounded-lg bg-card/90 backdrop-blur aria-expanded:bg-card/90"
+              className="pointer-events-auto max-w-48 gap-2"
             >
               <LayersIcon className="shrink-0" />
               <ColorSwatch color={current.color} />

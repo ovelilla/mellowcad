@@ -33,10 +33,13 @@ export function SelectionCyclingList({
     () =>
       listAt
         ? {
-            getBoundingClientRect: () => new DOMRect(listAt.x, listAt.y, 0, 0),
+            getBoundingClientRect: () => {
+              const { x, y } = engine.clientFromScreen(listAt)
+              return new DOMRect(x, y, 0, 0)
+            },
           }
         : null,
-    [listAt]
+    [engine, listAt]
   )
 
   return (

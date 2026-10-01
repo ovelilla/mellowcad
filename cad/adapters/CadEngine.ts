@@ -412,6 +412,17 @@ export class CadEngine {
     this.runtime.toggleCommandLine()
   }
 
+  /**
+   * A point of the state's screen space (the canvas's own pixels: the cursor,
+   * the snap override menu, the cycling list) in the page's viewport, where a
+   * popup anchored to it is positioned. The canvas does not start at the
+   * page's corner, so the two differ.
+   */
+  clientFromScreen(screen: Vec2): Vec2 {
+    const rect = this.canvas.getBoundingClientRect()
+    return { x: screen.x + rect.left, y: screen.y + rect.top }
+  }
+
   /** Returns keyboard focus to the drawing surface. */
   focusSurface(): void {
     this.canvas.focus()

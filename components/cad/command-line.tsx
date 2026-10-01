@@ -41,12 +41,12 @@ export function CommandLine({
   return (
     <div
       dir="ltr"
-      className="pointer-events-auto relative w-[min(46rem,calc(100vw-2rem))] rounded-lg border bg-card/90 shadow-lg backdrop-blur"
+      className="pointer-events-auto relative flex h-full w-full flex-col"
     >
       {/* Autocomplete sits above the prompt so it never covers the drawing
           below the cursor, matching AutoCAD's suggestion list. */}
       {suggestions.length > 0 && (
-        <div className="absolute inset-s-0 bottom-full mb-1 w-full overflow-hidden rounded-lg border bg-popover text-popover-foreground shadow-md">
+        <div className="absolute inset-s-1 bottom-full mb-1 w-[min(46rem,calc(100%-0.5rem))] overflow-hidden rounded-lg border bg-popover text-popover-foreground shadow-md">
           {suggestions.map((suggestion) => (
             <button
               key={suggestion.name}
@@ -68,13 +68,18 @@ export function CommandLine({
         </div>
       )}
 
-      {visibleLines.length > 0 && (
-        <div
-          ref={logRef}
-          lang={lang}
-          // AutoCAD lays its reports out in spaces and lines (ID, DIST, UCS ?).
-          className="max-h-16 overflow-y-auto border-b px-2 py-1 font-mono text-[11px] leading-tight whitespace-pre-wrap"
-        >
+      {/* Docked, the history keeps its lines even while empty, as AutoCAD's
+          docked command window does: the drawing above never resizes as
+          commands run. */}
+      <div
+        ref={logRef}
+        lang={lang}
+        // AutoCAD lays its reports out in spaces and lines (ID, DIST, UCS ?).
+        className="flex min-h-0 flex-1 flex-col overflow-y-auto border-b px-2 py-1 font-mono text-[11px] leading-tight whitespace-pre-wrap"
+      >
+        {/* Lines sit on the prompt; an auto margin, not justify-end, which
+            would push a long report out of reach above the scroll. */}
+        <div className="mt-auto">
           {visibleLines.map((line, index) => (
             <div
               key={`${index}-${line.text}`}
@@ -92,7 +97,7 @@ export function CommandLine({
             </div>
           ))}
         </div>
-      )}
+      </div>
 
       <div className="flex items-center gap-2 px-2 py-1.5 font-mono text-xs">
         <span

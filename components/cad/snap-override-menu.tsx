@@ -53,13 +53,19 @@ export function SnapOverrideMenu({
   const at = state.snapOverrideMenu
 
   // A zero-size virtual anchor at the cursor: Base UI positions the popup
-  // against it (and flips it to stay on screen near the viewport edges).
+  // against it (and flips it to stay on screen near the viewport edges). The
+  // state speaks the canvas's pixels; the popup is placed in the viewport's.
   const anchor = React.useMemo(
     () =>
       at
-        ? { getBoundingClientRect: () => new DOMRect(at.x, at.y, 0, 0) }
+        ? {
+            getBoundingClientRect: () => {
+              const { x, y } = engine.clientFromScreen(at)
+              return new DOMRect(x, y, 0, 0)
+            },
+          }
         : null,
-    [at]
+    [engine, at]
   )
 
   return (

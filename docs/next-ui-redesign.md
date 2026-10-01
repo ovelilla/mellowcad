@@ -1,8 +1,13 @@
 # Rediseño del editor — brief
 
-> **Estado:** fase 0 hecha; sigue la 1. En la 0, la barra de comandos pasó a seguir a los
+> **Estado:** fases 0 y 1 hechas; sigue la 2. En la 0, la barra de comandos pasó a seguir a los
 > disparadores de Capas, Estilos y Bloques en la misma fila (centrada volvía a chocar con ellos) y
-> «Borrar todo», junto a Abrir hasta que Nuevo lo sustituya. Sigue la convención de `docs/next-*.md`: se borra cuando la
+> «Borrar todo», junto a Abrir hasta que Nuevo lo sustituya. En la 1, cada zona tiene su tamaño en
+> CSS antes de que monte el motor, para que el lienzo nazca con su caja final. El panel ocupa ya sus
+> 280 px aunque no se pliegue hasta la fase 4: Propiedades se queda con «Sin selección», porque un
+> panel que aparece al seleccionar haría cambiar de tamaño el lienzo. La línea de comandos acoplada
+> guarda las tres líneas de historial de AutoCAD hasta la fase 5. Los menús en el cursor pasan las
+> coordenadas del lienzo a la ventana con `engine.clientFromScreen`. Sigue la convención de `docs/next-*.md`: se borra cuando la
 > última fase esté hecha, y lo que deba durar pasa antes a `.github/instructions/ui.instructions.md`
 > y a `docs/autocad-coverage.md`. Versión visual, con las figuras de antes y después:
 > https://claude.ai/artifact/BddNdia3MSJnwA4AuXi5Bt (privada; se lee con la herramienta Artifact).

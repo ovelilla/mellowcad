@@ -74,7 +74,7 @@ export function IconAction({
   )
 }
 
-/** A floating rounded container shared by every toolbar region. */
+/** A group of controls inside a docked zone, which gives it its surface. */
 export function Panel({
   className,
   children,
@@ -83,12 +83,7 @@ export function Panel({
   children: React.ReactNode
 }) {
   return (
-    <div
-      className={cn(
-        "pointer-events-auto flex gap-1 rounded-lg bg-card/90 p-1 backdrop-blur",
-        className
-      )}
-    >
+    <div className={cn("pointer-events-auto flex gap-1", className)}>
       {children}
     </div>
   )

@@ -75,8 +75,10 @@ class FakeCanvas extends FakeNode {
     return {}
   }
 
+  rect = { left: 0, top: 0, width: 400, height: 300 }
+
   getBoundingClientRect() {
-    return { left: 0, top: 0, width: 400, height: 300 }
+    return this.rect
   }
 
   setPointerCapture(): void {}
@@ -272,6 +274,13 @@ describe("CadEngine owning the document (the editor)", () => {
 
     expect(engine.mayTakeFocus(page.button as unknown as Element)).toBe(true)
     expect(engine.mayTakeFocus(page.link as unknown as Element)).toBe(true)
+  })
+
+  it("places a canvas point in the viewport, past the docked chrome", () => {
+    page.canvas.rect = { left: 44, top: 40, width: 400, height: 300 }
+    const engine = engineOn()
+
+    expect(engine.clientFromScreen({ x: 10, y: 20 })).toEqual({ x: 54, y: 60 })
   })
 })
 
