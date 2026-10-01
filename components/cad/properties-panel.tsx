@@ -58,7 +58,7 @@ export function PropertiesPanel({
     : { [ALL]: t("noSelection") }
 
   return (
-    <div className="flex min-h-0 flex-1 flex-col text-[11px]">
+    <div className="flex min-h-0 flex-1 flex-col">
       <div className="border-b border-border/60 px-3 py-2">
         <Select
           items={filterItems}
@@ -73,15 +73,15 @@ export function PropertiesPanel({
           }}
         >
           <SelectTrigger
-            size="sm"
+            size="xs"
             aria-label={t("objectType")}
-            className="w-full bg-background text-xs dark:bg-background"
+            className="w-full bg-background dark:bg-background"
           >
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
             {Object.entries(filterItems).map(([value, label]) => (
-              <SelectItem key={value} value={value} className="text-xs">
+              <SelectItem key={value} value={value}>
                 {label}
               </SelectItem>
             ))}
@@ -91,7 +91,7 @@ export function PropertiesPanel({
 
       <div className="min-h-0 flex-1 overflow-y-auto">
         <div className="border-b border-border/60 px-3 py-2">
-          <div className="mb-1 text-[10px] font-semibold tracking-wide text-muted-foreground/70 uppercase">
+          <div className="mb-1 text-title text-muted-foreground">
             {t("general")}
           </div>
           <div className="flex items-center justify-between gap-2">
@@ -105,7 +105,8 @@ export function PropertiesPanel({
                 done()
               }}
               ariaLabel={selected ? t("colorLabel") : t("currentColorLabel")}
-              className="w-30"
+              size="xs"
+              className="w-36"
             />
           </div>
 
@@ -124,19 +125,15 @@ export function PropertiesPanel({
               }}
             >
               <SelectTrigger
-                size="sm"
+                size="xs"
                 aria-label={selected ? t("layerLabel") : t("currentLayerLabel")}
-                className="w-30 bg-background text-[11px] dark:bg-background"
+                className="w-36 bg-background dark:bg-background"
               >
                 <SelectValue placeholder={t("varies")} />
               </SelectTrigger>
               <SelectContent>
                 {state.layers.map((layer) => (
-                  <SelectItem
-                    key={layer.id}
-                    value={layer.id}
-                    className="text-[11px]"
-                  >
+                  <SelectItem key={layer.id} value={layer.id}>
                     {layer.name}
                   </SelectItem>
                 ))}
@@ -158,7 +155,8 @@ export function PropertiesPanel({
               ariaLabel={
                 selected ? t("linetypeLabel") : t("currentLinetypeLabel")
               }
-              className="w-30 bg-background text-[11px] dark:bg-background"
+              size="xs"
+              className="w-36 bg-background dark:bg-background"
             />
           </div>
 
@@ -176,12 +174,13 @@ export function PropertiesPanel({
               ariaLabel={
                 selected ? t("lineweightLabel") : t("currentLineweightLabel")
               }
-              className="w-30 bg-background text-[11px] dark:bg-background"
+              size="xs"
+              className="w-36 bg-background dark:bg-background"
             />
           </div>
 
           {info && info.general.length > 0 && (
-            <dl className="mt-1 flex flex-col gap-0.5 font-mono">
+            <dl className="mt-1 flex flex-col gap-1">
               {info.general.map((row) => (
                 <PropertyRowView key={row.id} engine={engine} row={row} />
               ))}
@@ -217,10 +216,10 @@ export function PropertiesPanel({
 
         {info?.groups.map((group) => (
           <div key={group.id} className="px-3 py-2">
-            <div className="mb-1 text-[10px] font-semibold tracking-wide text-muted-foreground/70 uppercase">
+            <div className="mb-1 text-title text-muted-foreground">
               {group.title}
             </div>
-            <dl className="flex flex-col gap-0.5 font-mono">
+            <dl className="flex flex-col gap-1">
               {group.rows.map((row) => (
                 <PropertyRowView key={row.id} engine={engine} row={row} />
               ))}
@@ -240,12 +239,12 @@ function PropertyRowView({
   row: PropertyRow
 }) {
   return (
-    <div className="flex items-center justify-between gap-2">
+    <div className="flex min-h-7 items-center justify-between gap-2">
       <dt className="text-muted-foreground">{row.label}</dt>
       {row.edit ? (
         // A technical value with its unit: one LTR island, so -12.5 never
         // reads 12.5- and the unit stays after the number.
-        <dd dir="ltr" className="flex items-center gap-1">
+        <dd dir="ltr" className="flex items-center gap-1 font-mono">
           <PropertyInput engine={engine} label={row.label} edit={row.edit} />
           {row.edit.unit && (
             <span className="w-4 shrink-0 text-muted-foreground">
@@ -254,7 +253,12 @@ function PropertyRowView({
           )}
         </dd>
       ) : (
-        <dd dir="ltr" className="text-end text-foreground tabular-nums">
+        // As wide as a typeable value with its unit, so both end on one
+        // edge in a right-to-left page too.
+        <dd
+          dir="ltr"
+          className="min-w-25 text-end font-mono text-foreground tabular-nums"
+        >
           {row.value}
         </dd>
       )}
@@ -333,15 +337,15 @@ function StyleRow({
         }}
       >
         <SelectTrigger
-          size="sm"
+          size="xs"
           aria-label={ariaLabel}
-          className="w-30 bg-background text-[11px] dark:bg-background"
+          className="w-36 bg-background dark:bg-background"
         >
           <SelectValue placeholder={t("varies")} />
         </SelectTrigger>
         <SelectContent>
           {styles.map((style) => (
-            <SelectItem key={style.id} value={style.id} className="text-[11px]">
+            <SelectItem key={style.id} value={style.id}>
               {style.name}
             </SelectItem>
           ))}

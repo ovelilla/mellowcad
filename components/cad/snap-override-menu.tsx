@@ -86,16 +86,16 @@ export function SnapOverrideMenu({
           className="z-50"
         >
           <Menu.Popup className="min-w-44 origin-(--transform-origin) overflow-hidden rounded-md border bg-popover p-1 text-popover-foreground shadow-md transition-[transform,opacity] outline-none data-ending-style:scale-95 data-ending-style:opacity-0 data-starting-style:scale-95 data-starting-style:opacity-0">
-            <div className="px-2 py-1.5 text-xs text-muted-foreground">
+            <div className="px-2 py-1.5 text-title text-muted-foreground">
               {t("point")}
             </div>
             <Menu.Item
               onClick={() => engine.startFrom()}
-              className="relative flex cursor-default items-center rounded-sm py-1.5 ps-2 pe-8 text-sm outline-hidden select-none data-highlighted:bg-accent data-highlighted:text-accent-foreground"
+              className="relative flex cursor-default items-center rounded-sm py-1.5 ps-2 pe-8 text-ui outline-hidden select-none data-highlighted:bg-accent data-highlighted:text-accent-foreground"
             >
               {t("from")}
             </Menu.Item>
-            <div className="px-2 py-1.5 text-xs text-muted-foreground">
+            <div className="px-2 py-1.5 text-title text-muted-foreground">
               {t("objectSnap")}
             </div>
             {CHOICES.map((value) => (
@@ -103,8 +103,7 @@ export function SnapOverrideMenu({
                 key={value}
                 onClick={() => engine.setSnapOverride(value)}
                 className={cn(
-                  "relative flex cursor-default items-center rounded-sm py-1.5 ps-2 pe-8 text-sm outline-hidden select-none data-highlighted:bg-accent data-highlighted:text-accent-foreground",
-                  state.snapOverride === value && "font-medium"
+                  "relative flex cursor-default items-center rounded-sm py-1.5 ps-2 pe-8 text-ui outline-hidden select-none data-highlighted:bg-accent data-highlighted:text-accent-foreground"
                 )}
               >
                 {value === "none" ? t("none") : state.names.snaps[value]}

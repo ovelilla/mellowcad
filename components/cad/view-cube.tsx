@@ -25,6 +25,19 @@ import { cn } from "@/lib/utils"
 /** Below this many pixels a press on the cube is a click, beyond it a drag. */
 const DRAG_THRESHOLD_PX = 3
 
+/** The cube's box (`size-36`): its SVG draws in a 0–1 box scaled to it. */
+const CUBE_PX = 144
+
+/**
+ * The compass letters at the title role's 12 px, in the box's units, on a
+ * disc wide enough for a W. The faces' names are not: they are drawn on the
+ * cube, sized to fit its face as the drawing's text is to the drawing — a
+ * name of eight letters (`SUPERIOR`) still reaches 12 px on a plan view's face.
+ */
+const COMPASS_LETTER = 12 / CUBE_PX
+const COMPASS_DISC = 9 / CUBE_PX
+const FACE_NAME = 1.35
+
 /** The triangles round a face view, pointing at the cube, in the 0–1 box the engine draws it in. */
 const TRIANGLES: readonly { side: ViewCubeSide; points: string }[] = [
   { side: "up", points: "0.5,0.235 0.46,0.18 0.54,0.18" },
@@ -34,7 +47,7 @@ const TRIANGLES: readonly { side: ViewCubeSide; points: string }[] = [
 ]
 
 const MENU_ITEM =
-  "relative flex cursor-default items-center rounded-sm py-1.5 pe-8 ps-2 text-sm outline-hidden select-none data-highlighted:bg-accent data-highlighted:text-accent-foreground"
+  "relative flex cursor-default items-center rounded-sm py-1.5 pe-8 ps-2 text-ui outline-hidden select-none data-highlighted:bg-accent data-highlighted:text-accent-foreground"
 
 const MENU_POPUP =
   "min-w-44 origin-(--transform-origin) overflow-hidden rounded-md border bg-card/90 p-1 text-popover-foreground shadow-md backdrop-blur transition-[transform,opacity] outline-none data-ending-style:scale-95 data-ending-style:opacity-0 data-starting-style:scale-95 data-starting-style:opacity-0"
@@ -200,7 +213,7 @@ export function ViewCube({
               <circle
                 cx={at.x}
                 cy={at.y}
-                r={0.05}
+                r={COMPASS_DISC}
                 className="fill-card stroke-muted-foreground"
                 strokeWidth={1}
                 vectorEffect="non-scaling-stroke"
@@ -210,8 +223,10 @@ export function ViewCube({
                 y={at.y}
                 textAnchor="middle"
                 dominantBaseline="central"
-                fontSize={0.065}
-                className="pointer-events-none fill-foreground font-semibold"
+                fontSize={COMPASS_LETTER}
+                // The title role's weight: a class would size it too.
+                fontWeight={600}
+                className="pointer-events-none fill-foreground"
               >
                 {state.names.compass[letter]}
               </text>
@@ -241,8 +256,12 @@ export function ViewCube({
                   y={0.5}
                   textAnchor="middle"
                   dominantBaseline="central"
-                  fontSize={Math.min(0.17, 1.25 / faceName(face.face).length)}
-                  className="pointer-events-none fill-foreground font-semibold"
+                  fontSize={Math.min(
+                    0.17,
+                    FACE_NAME / faceName(face.face).length
+                  )}
+                  fontWeight={600}
+                  className="pointer-events-none fill-foreground"
                 >
                   {faceName(face.face)}
                 </text>

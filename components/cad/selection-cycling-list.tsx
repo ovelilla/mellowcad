@@ -60,7 +60,7 @@ export function SelectionCyclingList({
           className="z-50"
         >
           <Menu.Popup className="min-w-44 origin-(--transform-origin) overflow-hidden rounded-md border bg-popover p-1 text-popover-foreground shadow-md transition-[transform,opacity] outline-none data-ending-style:scale-95 data-ending-style:opacity-0 data-starting-style:scale-95 data-starting-style:opacity-0">
-            <div className="px-2 py-1.5 text-xs text-muted-foreground">
+            <div className="px-2 py-1.5 text-title text-muted-foreground">
               {t("title")}
             </div>
             {candidates.map((candidate) => (
@@ -71,8 +71,7 @@ export function SelectionCyclingList({
                 }
                 onClick={() => engine.chooseCyclingCandidate(candidate.id)}
                 className={cn(
-                  "relative flex cursor-default items-center rounded-sm py-1.5 ps-2 pe-8 text-sm outline-hidden select-none data-highlighted:bg-accent data-highlighted:text-accent-foreground",
-                  candidate.id === currentId && "font-medium"
+                  "relative flex cursor-default items-center rounded-sm py-1.5 ps-2 pe-8 text-ui outline-hidden select-none data-highlighted:bg-accent data-highlighted:text-accent-foreground"
                 )}
               >
                 {candidate.label}

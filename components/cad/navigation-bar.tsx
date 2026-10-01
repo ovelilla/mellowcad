@@ -161,10 +161,10 @@ function ZoomSplitButton({
                     key={member.id}
                     onClick={() => use(member)}
                     className={cn(
-                      "flex cursor-default items-center gap-2 rounded-sm py-1.5 ps-2 pe-2 text-sm outline-hidden select-none data-highlighted:bg-accent data-highlighted:text-accent-foreground",
+                      "flex cursor-default items-center gap-2 rounded-sm py-1.5 ps-2 pe-2 text-ui outline-hidden select-none data-highlighted:bg-accent data-highlighted:text-accent-foreground",
                       member.id === "window" &&
                         windowActive &&
-                        "bg-active/15 text-active"
+                        "bg-active/15 text-active-foreground"
                     )}
                   >
                     <Icon
@@ -177,7 +177,7 @@ function ZoomSplitButton({
                     {member.id === "window" && windowAlias && (
                       <kbd
                         dir="ltr"
-                        className="ms-4 font-mono text-xs text-muted-foreground"
+                        className="ms-4 font-mono text-muted-foreground"
                       >
                         {windowAlias}
                       </kbd>

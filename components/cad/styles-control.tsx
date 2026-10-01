@@ -74,7 +74,7 @@ function TabButton({
       size="sm"
       variant="ghost"
       onClick={onClick}
-      className={cn("text-xs font-normal", active && "bg-accent")}
+      className={cn(active && "bg-accent")}
     >
       {label}
     </Button>
@@ -241,7 +241,7 @@ function TextStyles({
             }
           />
         </Group>
-        <p className="text-[11px] text-muted-foreground">{t("heightHint")}</p>
+        <p className="text-muted-foreground">{t("heightHint")}</p>
       </div>
     </>
   )
@@ -272,7 +272,7 @@ function StyleList({
   return (
     <>
       <div className="flex items-center justify-between px-3 pb-2">
-        <p className="text-[11px] text-muted-foreground">
+        <p className="text-muted-foreground">
           {t.rich("current", {
             name: currentId,
             value: (chunks) => (
@@ -280,12 +280,7 @@ function StyleList({
             ),
           })}
         </p>
-        <Button
-          size="sm"
-          variant="outline"
-          className="gap-1 text-xs font-normal"
-          onClick={onNew}
-        >
+        <Button size="sm" variant="outline" className="gap-1" onClick={onNew}>
           <Plus className="size-3.5" />
           {t("new")}
         </Button>
@@ -341,7 +336,7 @@ function StyleRow({
     <div
       onClick={onSelect}
       className={cn(
-        "group flex items-center gap-2 px-3 py-1 text-xs",
+        "group flex h-7 items-center gap-2 px-3",
         isSelected && "bg-accent"
       )}
     >
@@ -384,7 +379,7 @@ function StyleRow({
         />
       )}
 
-      <span className="w-6 shrink-0 text-end text-muted-foreground tabular-nums">
+      <span className="w-6 shrink-0 text-end font-mono text-muted-foreground tabular-nums">
         {style.entityCount}
       </span>
 
@@ -410,9 +405,7 @@ function Group({
 }) {
   return (
     <div>
-      <div className="mb-1 text-[10px] font-semibold tracking-wide text-muted-foreground/70 uppercase">
-        {title}
-      </div>
+      <div className="mb-1 text-title text-muted-foreground">{title}</div>
       <div className="flex flex-col gap-1">{children}</div>
     </div>
   )
@@ -431,7 +424,7 @@ function NumberField({
   onCommit: (value: number) => void
 }) {
   return (
-    <label className="flex items-center justify-between gap-2 text-xs">
+    <label className="flex items-center justify-between gap-2">
       <span className="text-muted-foreground">{label}</span>
       <DecimalInput
         step={step}
@@ -439,7 +432,7 @@ function NumberField({
         value={value}
         onCommit={onCommit}
         onFocus={(event) => event.currentTarget.select()}
-        className="w-20 rounded-sm border border-border bg-background px-1 py-0.5 tabular-nums focus:border-ring focus:outline-none"
+        className="w-20 rounded-sm border border-border bg-background px-1 py-0.5 font-mono tabular-nums focus:border-ring focus:outline-none"
       />
     </label>
   )

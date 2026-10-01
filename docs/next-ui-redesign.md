@@ -1,7 +1,11 @@
 # Rediseño del editor — brief
 
-> **Estado:** fases 0 a 4 hechas; sigue la 5. En la 0, la barra de comandos pasó a seguir a los
-> disparadores de Capas, Estilos y Bloques en la misma fila (centrada volvía a chocar con ellos) y
+> **Estado:** fases 0 a 4b hechas; sigue la 5. En la 4b, todo texto del editor es uno de dos
+> roles de 12 px (`text-ui`, `text-title`), con monoespaciado solo para lo tecleado y las cifras, y
+> uno de tres escalones de color; las reglas están en «Type» de `ui.instructions.md` y
+> `lib/type-scale.test.ts` las hace cumplir. La barra de estado, el diálogo de Unidades, el
+> historial y el menú contextual de las fases 5 y 6 nacen con ellas. En la 0, la barra de comandos pasó a seguir a los disparadores de Capas, Estilos y
+> Bloques en la misma fila (centrada volvía a chocar con ellos) y
 > «Borrar todo», junto a Abrir hasta que Nuevo lo sustituya. En la 1, cada zona tiene su tamaño en
 > CSS antes de que monte el motor, para que el lienzo nazca con su caja final. El panel ocupa ya sus
 > 280 px aunque no se pliegue hasta la fase 4: Propiedades se queda con «Sin selección», porque un
@@ -172,7 +176,8 @@ Salen del rail:
     foco y fila seleccionada. `--primary` deja de ser fondo de estado.
   - Barras acopladas sin radio ni sombra; el radio, solo en menús.
   - Botones de 30 × 28 px con icono de 16 px.
-  - Texto: mínimo 12 px para etiquetas y 11 px solo para cifras tabulares.
+  - Texto: 12 px en todo, con la jerarquía en el peso y el color; la escala es la de la fase 4b
+    («Type» en `ui.instructions.md`).
 
 ## 5. Fidelidad: verificado y pendiente
 
@@ -336,6 +341,97 @@ los del motor en `cad/locales/`, con `npm run locales`). Las clases son lógicas
    - El estado del panel vive en el motor, como hoy `stylesPanel` y `blocksPanel`, para que los
      comandos lo abran.
    - Comandos de §4, con sus filas en `autocad-coverage.md`.
+
+- **4b. Sistema tipográfico y textos.** Hecha. Va antes de la 5 porque las fases 5 y 6 crean interfaz nueva
+  (barra de estado, diálogo de Unidades, historial, menú contextual), que debe nacer con el sistema.
+  Merece una sesión propia: primero se audita y después se decide.
+  - **Punto de partida** (main @ f440332, `components/cad` y `components/ui`): tamaños `text-xs`
+    ×38, `text-[11px]` ×28, `text-sm` ×11, `text-[10px]` ×5, con 10 y 11 px en 12 archivos; pesos
+    `font-semibold` ×12, `font-medium` ×3, `font-normal` ×3; ningún `leading-*`;
+    `muted-foreground` con cinco opacidades (sin opacidad, /40, /50, /60, /70); títulos de sección
+    en `uppercase` + `tracking-wide` a 10 px (Propiedades, Estilos). La regla de §4 (mínimo 12 px
+    salvo cifras) no se cumple.
+  - **Auditoría.** Inventario medido en Chrome, no solo por clases: cada texto visible de las seis
+    zonas, los menús, los tooltips, los popovers y las paletas, con su tamaño, peso, interlineado,
+    color y fondo calculados, en `/draw`, `/es/draw` y `/ar/draw`. Agrupado por papel (título de
+    sección, etiqueta, valor, valor tabular, ayuda, atajo, mensaje de la línea de comandos…) para
+    ver dónde un mismo papel lleva estilos distintos.
+  - **Sistema.**
+    - Una escala corta de roles con nombre, cada uno con tamaño, peso, interlineado y color, como
+      tokens en `globals.css` y reglas en `ui.instructions.md`.
+    - Tres escalones de color de texto (principal, secundario, desactivado) en lugar de opacidades
+      sueltas; contraste WCAG AA sobre cada superficie de §4.
+    - Jerarquía y espaciado: el mismo ritmo vertical y la misma sangría en paletas, barras y menús.
+    - Fuentes: Inter, Geist Mono y Readex Pro siguen salvo que la auditoría lo desaconseje; el
+      monoespaciado, solo para lo que se teclea o se lee como cifra (línea de comandos,
+      coordenadas, valores).
+    - Árabe: el interlineado que necesita Readex Pro; sin mayúsculas ni espaciado de letras (ya
+      resuelto en `globals.css`).
+    - Un test que rechace `text-[Npx]` y las opacidades de texto fuera de los tokens, como el de
+      clases lógicas (`i18n/logical-properties.test.ts`).
+  - **Textos.** Revisión de `messages/en|es|ar.json` (`Editor.*`) y de lo que la interfaz lee de
+    `cad/locales/`: terminología contra `docs/i18n-glossary.md` y los nombres de AutoCAD, uso de
+    mayúsculas (los nombres de comando y de paleta como en AutoCAD; el resto, en frase), tono y
+    puntuación de ayudas y tooltips, y nada truncado en español, el idioma más largo.
+  - **Fidelidad.** Es presentación, así que puede diferir de AutoCAD (Segoe UI a 9 pt); lo que
+    debe coincidir son las palabras: nombres de comandos, paletas, opciones y columnas.
+  - **Resultado de la auditoría** (main @ f440332, Chrome, `getComputedStyle` sobre cada texto
+    visible en 34 estados: las seis zonas, 9 menús, 5 popovers, 7 listas de desplegable, dos
+    tooltips, las cuatro pestañas con y sin selección, la línea de comandos con sugerencias, la
+    entrada dinámica y el menú de referencia en el cursor; `/draw`, `/es/draw` y `/ar/draw` a
+    1280×720 y 1920×1080; 9 897 textos):
+    - **Siete tamaños**: 10, 11, 12 y 14 px más los del ViewCube (sus letras de la brújula, a
+      9,4 px). El 34 % de los textos está por debajo de 12 px sin ser cifra tabular.
+    - **Un mismo papel, varios estilos.** Etiqueta: 11 px Geist Mono (filas de Propiedades,
+      entrada dinámica), 11 px Inter (General) y 12 px Inter (Estilos, popovers). Título de
+      sección: 10 px/600 en mayúsculas al 70 % (paletas), 11 px/600 en mayúsculas (popovers) y
+      12 px/400 (encabezados de menú). Valor de desplegable: 12 px en la barra y el filtro, 11 px
+      en la paleta; sus listas, igual. Elemento de menú: 14 px/20 frente a 11–12 px/16 de las
+      listas. Botón con texto: 12/500, 12/400, 11/400 (referencias a objetos) y 14/500 mono («mm»).
+      Valor editable: 12 px Inter (Estilos), 11 px mono (Propiedades) y 12 px mono (popovers).
+      Atajo: 10 px mono en el tooltip, 12 px mono en los menús; la tecla de opción, 10/600.
+      Historial de la línea de comandos: 11 px/13,75; su solicitud y su entrada, 12/16.
+    - **Pesos** 400, 500 (botones y conmutadores) y 600 (títulos, sugerencias, teclas).
+    - **Colores**: `foreground`, `muted-foreground` y sus fracciones /70 (títulos), /60
+      (marcador de la línea de comandos), /50 (marcador de la entrada dinámica) y /40
+      (referencias no disponibles), además de `active` y `destructive`.
+    - **Contraste**: 738 textos activos bajo AA, de cuatro clases. El azul activo
+      (`text-active` sobre `bg-active/15`) da 4,09–4,15 en pestañas, conmutadores y botones de
+      los popovers; los títulos al 70 %, 4,05; el marcador de la línea de comandos, 3,33; el de la
+      entrada dinámica, 2,69. Lo desactivado (opacidad 50 %) da 5,1.
+    - **Recortes**: «Auto-saving…», «Guardando automáticamente…» y «جارٍ الحفظ التلقائي…»
+      se truncan a 1280 en los tres idiomas; «PorCapa» se corta en el desplegable de color de
+      Propiedades (120 px menos el botón de color). Los nombres largos de capa y las columnas del
+      administrador, que se desplaza de lado, son datos y disposición, no recortes.
+    - **Monoespaciado de más**: los nombres de las filas de Propiedades y las etiquetas de la
+      entrada dinámica van en Geist Mono, y en `/ar/draw` caen en Readex Pro detrás de ella.
+    - **Árabe**: a 12 px, Readex Pro llega a 14 px sobre la línea base y 6 por debajo con
+      ل/ي/ج (unos 20 px de tinta), frente a la caja de 16 px que deja el interlineado actual: un
+      texto que se trunca (`overflow: hidden`) corta los trazos.
+    - **Ritmo**: las filas miden 18, 24, 28, 32 y 36 px según la paleta; la sangría, 8 o 12 px.
+  - **Decisión.** AutoCAD trabaja a un solo cuerpo (9 pt), y la auditoría muestra que los
+    tamaños distintos no marcaban jerarquía sino descuido; la jerarquía la dan el peso y el color.
+    - Dos roles de tamaño: `text-ui` (12/400/16) y `text-title` (12/600/16); el monoespaciado es
+      `text-ui` con `font-mono`, solo para lo que se teclea o se lee como cifra (línea de comandos,
+      entrada dinámica, coordenadas, valores, alias y atajos). Nada a 11 px: ninguna cifra tabular
+      lo necesitaba.
+    - Tres escalones de color: `foreground`, `muted-foreground` (sube a L 0,75) y
+      `faint-foreground` (nuevo, L 0,65); más `active-foreground` (el azul de los pinzamientos
+      aclarado al 30 %) para el texto de lo activo y `destructive`. Todos ≥ 4,5 sobre `card`,
+      `background`, `accent`, el lienzo y el azul activo.
+    - Filas de 28 px en paletas, menús y listas; sangría de 12 px desde el borde de la superficie
+      (`px-3`, o `p-1` + `ps-2` en un menú).
+    - En árabe, 20 px de interlineado para los dos roles.
+  - **Textos revisados** contra el glosario, que ya los tenía verificados en la ayuda de 2026:
+    «New» de Capas es «New layer» / «Nueva capa» / «طبقة جديدة»; «Set as current», «Set current»;
+    «Ortho», «Ortho mode»; «Varies», `*VARIES*` / `*VARIOS*` (en árabe sigue «متنوع»); la
+    herramienta de `DIMSPACE`, «Adjust space» (era «Space»); «Document units», «Drawing units».
+    «Colour» pasa a «Color», la grafía de AutoCAD, que las columnas ya usaban. El estado del
+    autoguardado es «Saving…» / «Guardando…» / «جارٍ الحفظ…», porque la forma larga se truncaba
+    en los tres idiomas. Los títulos de sección van en frase, ya no en mayúsculas. Se queda «Command
+    line» / «Línea de comandos»: `COMMANDLINE` («LINEACOM») dice «Command window» («ventana de
+    comandos»), pero es la zona, no un nombre de comando o de paleta.
+
 5. **Barra de estado, línea de comandos y propiedades actuales.**
    - La barra de estado y el diálogo de Unidades del dibujo.
    - El historial con F2 y Pantalla limpia.
@@ -360,6 +456,13 @@ Objetivos al terminar:
 - Cambiar la capa actual en 2 pasos.
 - 7 de 7 alias de paleta funcionando.
 - 6 zonas de tabulador.
+- Tipografía (fase 4b): ningún texto de interfaz por debajo de 12 px salvo cifras tabulares (11 px),
+  cada texto con un rol de la escala, contraste AA en todas las combinaciones de texto y fondo, y 0
+  textos truncados en los tres idiomas a 1280×720. Medido al cerrar la 4b sobre los mismos 9 897
+  textos de la auditoría: 0 por debajo de 12 px, 0 fuera de un rol y de un escalón de color, 0
+  bajo 4,5:1 (lo desactivado incluido), 0 truncados y 0 partidos en dos líneas a 1280×720. Las
+  únicas excepciones son los nombres de las caras del ViewCube, dibujados a la escala de la cara
+  (12 px o más en la vista en planta), y los nombres largos de capa, que son datos.
 
 La medición es de Playwright, porque el arnés no ve el DOM. Sigue `local-verification-setup`:
 playwright-core en el scratchpad y Chrome del sistema. Por cada tamaño y en `/draw`, `/es/draw` y

@@ -577,14 +577,14 @@ function ToolMenuPopup({
                         engine.setActiveTool(member.id)
                         onPick?.(member.id)
                       }}
-                      className="flex cursor-default items-center gap-2 rounded-sm py-1.5 ps-2 pe-2 text-sm outline-hidden select-none data-highlighted:bg-accent data-highlighted:text-accent-foreground data-checked:bg-active/15 data-checked:text-active"
+                      className="flex cursor-default items-center gap-2 rounded-sm py-1.5 ps-2 pe-2 text-ui outline-hidden select-none data-highlighted:bg-accent data-highlighted:text-accent-foreground data-checked:bg-active/15 data-checked:text-active-foreground"
                     >
                       <Icon className="size-4 shrink-0" />
                       <span className="flex-1">{member.label}</span>
                       {member.shortcut && (
                         <kbd
                           dir="ltr"
-                          className="ms-4 font-mono text-xs text-muted-foreground"
+                          className="ms-4 font-mono text-muted-foreground"
                         >
                           {member.shortcut.toUpperCase()}
                         </kbd>

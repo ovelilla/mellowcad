@@ -73,7 +73,7 @@ function SpacingField({
 }) {
   return (
     <div className="mt-3 flex items-center justify-between">
-      <span className="text-xs text-muted-foreground">{label}</span>
+      <span className="text-muted-foreground">{label}</span>
       <DecimalInput
         live
         min={0.001}
@@ -82,7 +82,7 @@ function SpacingField({
         aria-label={ariaLabel}
         valid={(next) => next > 0}
         onCommit={onCommit}
-        className="h-7 w-20 rounded-md border border-input bg-background px-2 font-mono text-xs outline-none focus-visible:border-ring"
+        className="h-7 w-20 rounded-md border border-input bg-background px-2 font-mono outline-none focus-visible:border-ring"
       />
     </div>
   )
@@ -125,8 +125,10 @@ export function DrawingAids({
                 </Button>
               }
             />
-            <PopoverContent side="top" className="w-56">
-              <p className="mb-2 text-[11px] font-semibold tracking-wide text-muted-foreground uppercase">
+            {/* Two columns of snap names that never wrap: the longest
+                ("Apparent intersection", "Intersección ficticia") need it. */}
+            <PopoverContent side="top" className="w-80">
+              <p className="mb-2 text-title text-muted-foreground">
                 {t("objectSnap")}
               </p>
               <div className="grid grid-cols-2 gap-1">
@@ -140,12 +142,12 @@ export function DrawingAids({
                       disabled={!implemented}
                       onClick={() => engine.setSnapEnabled(type, !enabled)}
                       className={cn(
-                        "rounded-md border px-2 py-1 text-start text-[11px] transition-colors",
+                        "rounded-md border px-2 py-1 text-start transition-colors",
                         implemented
                           ? enabled
-                            ? "border-active/40 bg-active/15 text-active"
+                            ? "border-active/40 bg-active/15 text-active-foreground"
                             : "border-border text-muted-foreground hover:bg-muted"
-                          : "cursor-not-allowed border-dashed border-border/60 text-muted-foreground/40"
+                          : "cursor-not-allowed border-dashed border-border/60 text-faint-foreground"
                       )}
                       title={
                         implemented
@@ -186,7 +188,7 @@ export function DrawingAids({
               }
             />
             <PopoverContent side="top" className="w-56">
-              <p className="mb-2 text-[11px] font-semibold tracking-wide text-muted-foreground uppercase">
+              <p className="mb-2 text-title text-muted-foreground">
                 {t("snap")}
               </p>
               <div className="grid grid-cols-2 gap-1">
@@ -273,7 +275,7 @@ export function DrawingAids({
               }
             />
             <PopoverContent side="top" className="w-48">
-              <p className="mb-2 text-[11px] font-semibold tracking-wide text-muted-foreground uppercase">
+              <p className="mb-2 text-title text-muted-foreground">
                 {t("polarAngle")}
               </p>
               <div className="grid grid-cols-4 gap-1">
@@ -331,7 +333,7 @@ export function DrawingAids({
               }
             />
             <PopoverContent side="top" className="w-56">
-              <p className="mb-2 text-[11px] font-semibold tracking-wide text-muted-foreground uppercase">
+              <p className="mb-2 text-title text-muted-foreground">
                 {t("selectionCycling")}
               </p>
               <Button
@@ -377,8 +379,9 @@ export function DrawingAids({
               </Button>
             }
           />
-          <PopoverContent side="top" className="w-56">
-            <p className="mb-2 text-[11px] font-semibold tracking-wide text-muted-foreground uppercase">
+          {/* Wide enough for «Escala de tipo de línea» beside its field. */}
+          <PopoverContent side="top" className="w-64">
+            <p className="mb-2 text-title text-muted-foreground">
               {t("units")}
             </p>
             <div className="grid grid-cols-3 gap-1">
@@ -394,9 +397,7 @@ export function DrawingAids({
               ))}
             </div>
             <div className="mt-3 flex items-center justify-between">
-              <span className="text-xs text-muted-foreground">
-                {t("precision")}
-              </span>
+              <span className="text-muted-foreground">{t("precision")}</span>
               <div className="flex items-center gap-1">
                 <Button
                   size="icon-xs"
@@ -408,7 +409,7 @@ export function DrawingAids({
                 >
                   <Minus />
                 </Button>
-                <span className="w-5 text-center font-mono text-xs text-foreground">
+                <span className="w-5 text-center font-mono text-foreground">
                   {state.documentPrecision}
                 </span>
                 <Button
@@ -425,7 +426,7 @@ export function DrawingAids({
             </div>
 
             <div className="mt-3 flex items-center justify-between">
-              <span className="text-xs text-muted-foreground">
+              <span className="text-muted-foreground">
                 {t("linetypeScale")}
               </span>
               <DecimalInput
@@ -436,12 +437,12 @@ export function DrawingAids({
                 aria-label={t("linetypeScaleLabel")}
                 valid={(next) => next > 0}
                 onCommit={(value) => engine.setLtScale(value)}
-                className="h-7 w-20 rounded-md border border-input bg-background px-2 font-mono text-xs outline-none focus-visible:border-ring"
+                className="h-7 w-20 rounded-md border border-input bg-background px-2 font-mono outline-none focus-visible:border-ring"
               />
             </div>
 
             <div className="mt-3 flex items-center justify-between">
-              <span className="text-xs text-muted-foreground">
+              <span className="text-muted-foreground">
                 {t("dimensionScale")}
               </span>
               <DecimalInput
@@ -452,7 +453,7 @@ export function DrawingAids({
                 aria-label={t("dimensionScaleLabel")}
                 valid={(next) => next > 0}
                 onCommit={(value) => engine.setDimScale(value)}
-                className="h-7 w-20 rounded-md border border-input bg-background px-2 font-mono text-xs outline-none focus-visible:border-ring"
+                className="h-7 w-20 rounded-md border border-input bg-background px-2 font-mono outline-none focus-visible:border-ring"
               />
             </div>
           </PopoverContent>

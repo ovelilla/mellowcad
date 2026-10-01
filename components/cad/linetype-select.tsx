@@ -26,6 +26,7 @@ export function LinetypeSelect({
   className,
   disabled = false,
   below = false,
+  size = "sm",
 }: {
   value: string | null
   /** The engine's names for the linetypes and for ByLayer. */
@@ -41,6 +42,10 @@ export function LinetypeSelect({
    * a palette's field does.
    */
   below?: boolean
+  /**
+   * `xs` is a palette's row (28 px), `sm` a bar's drop-down (32 px).
+   */
+  size?: "xs" | "sm"
 }) {
   const t = useTranslations("Editor.Properties")
   // The closed trigger shows what the list shows (`Dash dot`, not the id
@@ -63,7 +68,7 @@ export function LinetypeSelect({
         if (next != null) onValueChange(next)
       }}
     >
-      <SelectTrigger size="sm" aria-label={ariaLabel} className={className}>
+      <SelectTrigger size={size} aria-label={ariaLabel} className={className}>
         <SelectValue placeholder={t("varies")} />
       </SelectTrigger>
       <SelectContent
@@ -71,17 +76,13 @@ export function LinetypeSelect({
         alignItemWithTrigger={!below}
       >
         {includeByLayer && (
-          <SelectItem value={LINETYPE_BYLAYER} className="text-[11px]">
+          <SelectItem value={LINETYPE_BYLAYER}>
             <LinetypePreview pattern={[]} />
             {names.byLayer}
           </SelectItem>
         )}
         {LINETYPES.map((linetype) => (
-          <SelectItem
-            key={linetype.id}
-            value={linetype.id}
-            className="text-[11px]"
-          >
+          <SelectItem key={linetype.id} value={linetype.id}>
             <LinetypePreview pattern={linetype.pattern} />
             {linetypeLabel(names, linetype.id)}
           </SelectItem>

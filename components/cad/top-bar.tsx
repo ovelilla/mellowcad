@@ -58,10 +58,10 @@ import { IconAction, Panel } from "./toolbar-primitives"
 const MENU_POPUP =
   "min-w-48 origin-(--transform-origin) overflow-hidden rounded-md border bg-card/90 p-1 text-popover-foreground shadow-md backdrop-blur transition-[transform,opacity] outline-none data-ending-style:scale-95 data-ending-style:opacity-0 data-starting-style:scale-95 data-starting-style:opacity-0"
 const MENU_ITEM =
-  "relative flex cursor-default items-center gap-2 rounded-sm py-1.5 ps-2 pe-8 text-sm outline-hidden select-none data-highlighted:bg-accent data-highlighted:text-accent-foreground data-popup-open:bg-accent [&_svg]:size-4 [&_svg]:shrink-0"
+  "relative flex cursor-default items-center gap-2 rounded-sm py-1.5 ps-2 pe-8 text-ui outline-hidden select-none data-highlighted:bg-accent data-highlighted:text-accent-foreground data-popup-open:bg-accent [&_svg]:size-4 [&_svg]:shrink-0"
 /** A drop-down of the bar: bordered, with no surface of its own. */
 const BAR_SELECT =
-  "h-8 border-input bg-transparent text-xs shadow-none dark:bg-transparent"
+  "h-8 border-input bg-transparent shadow-none dark:bg-transparent"
 
 /**
  * The top bar, AutoCAD's application frame and the Home tab's Layers and
@@ -141,7 +141,7 @@ export function TopBar({
 
       <SaveStatus state={state} />
 
-      <Separator orientation="vertical" className="mx-1 h-6!" />
+      <Separator orientation="vertical" className="mx-0.5 h-6!" />
 
       <Panel className="shrink-0 items-center">
         <PaletteToggle
@@ -154,7 +154,7 @@ export function TopBar({
         <LayerControl engine={engine} state={state} />
       </Panel>
 
-      <Separator orientation="vertical" className="mx-1 h-6!" />
+      <Separator orientation="vertical" className="mx-0.5 h-6!" />
 
       <PropertyControls engine={engine} state={state} />
 
@@ -295,7 +295,7 @@ function SaveStatus({ state }: { state: EngineState }) {
     <span
       role="status"
       title={saving ? undefined : t("savedHint")}
-      className="ms-1 flex min-w-0 shrink items-center gap-1.5 text-xs text-muted-foreground"
+      className="ms-1 flex min-w-0 shrink items-center gap-1 text-muted-foreground"
     >
       {saving && <Loader2 className="size-3.5 shrink-0 animate-spin" />}
       <span className="truncate">{saving ? t("saving") : t("saved")}</span>
@@ -353,7 +353,7 @@ function LayerControl({
       </SelectTrigger>
       <SelectContent align="start" alignItemWithTrigger={false}>
         {state.layers.map((layer) => (
-          <SelectItem key={layer.id} value={layer.id} className="text-xs">
+          <SelectItem key={layer.id} value={layer.id}>
             <LayerSwatch color={layer.color} />
             <span className="truncate">{layer.name}</span>
           </SelectItem>
@@ -465,7 +465,7 @@ function PaletteToggle({
       }}
     >
       <Icon className="shrink-0" />
-      <span className="truncate text-xs">{label}</span>
+      <span className="truncate">{label}</span>
     </Button>
   )
 }

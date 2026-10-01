@@ -98,7 +98,7 @@ export function LayersControl({
       <div className="min-h-0 flex-1 overflow-auto">
         <table
           aria-label={t("list")}
-          className="w-max min-w-full border-separate border-spacing-0 text-xs"
+          className="w-max min-w-full border-separate border-spacing-0"
         >
           <thead className="sticky top-0 z-10 bg-card text-muted-foreground">
             <tr>
@@ -143,7 +143,7 @@ function Header({
     <th
       scope="col"
       className={cn(
-        "border-b border-border/60 px-1.5 py-1 text-start font-normal whitespace-nowrap",
+        "border-b border-border/60 px-1.5 py-1 text-start text-ui whitespace-nowrap",
         className
       )}
     >
@@ -213,7 +213,7 @@ function LayerRow({
         onSetCurrent()
       }}
       aria-selected={isSelected}
-      className={cn("h-8", isSelected ? "bg-accent" : "hover:bg-accent/40")}
+      className={cn("h-7", isSelected ? "bg-accent" : "hover:bg-accent/40")}
     >
       <td className="px-1.5">
         {/* AutoCAD's check mark on the current layer, in the one accent. */}
@@ -289,7 +289,8 @@ function LayerRow({
             done()
           }}
           ariaLabel={t("linetypeLabel", { name: layer.name })}
-          className="h-7 w-28 border-0 bg-transparent px-1.5 text-xs text-foreground shadow-none hover:bg-accent/40 dark:bg-transparent"
+          size="xs"
+          className="w-28 border-0 bg-transparent px-1.5 text-foreground shadow-none hover:bg-accent/40 dark:bg-transparent"
         />
       </td>
 
@@ -304,11 +305,12 @@ function LayerRow({
             }
           }}
           ariaLabel={t("lineweightLabel", { name: layer.name })}
-          className="h-7 w-24 border-0 bg-transparent px-1.5 text-xs text-foreground shadow-none hover:bg-accent/40 dark:bg-transparent"
+          size="xs"
+          className="w-24 border-0 bg-transparent px-1.5 text-foreground shadow-none hover:bg-accent/40 dark:bg-transparent"
         />
       </td>
 
-      <td className="px-1.5 text-end text-[11px] text-muted-foreground tabular-nums">
+      <td className="px-1.5 text-end font-mono text-muted-foreground tabular-nums">
         {layer.entityCount}
       </td>
     </tr>
@@ -342,8 +344,8 @@ function IconToggle({
             aria-label={on ? onLabel : offLabel}
             onClick={onToggle}
             className={cn(
-              "text-muted-foreground hover:text-foreground",
-              !on && "text-muted-foreground/40"
+              "size-7 text-muted-foreground hover:text-foreground",
+              !on && "text-faint-foreground"
             )}
           >
             <Icon strokeWidth={1.75} />
@@ -406,7 +408,7 @@ function NameField({
             setEditing(false)
           }
         }}
-        className="w-full min-w-0 rounded border border-ring bg-background px-1 py-0.5 text-xs outline-none"
+        className="w-full min-w-0 rounded border border-ring bg-background px-1 py-0.5 outline-none"
       />
     )
   }
@@ -430,7 +432,7 @@ function NameField({
         cancelPending()
         onSetCurrent()
       }}
-      className="block w-full cursor-default truncate rounded px-1 py-0.5 text-start text-xs"
+      className="block w-full cursor-default truncate rounded px-1 py-0.5 text-start"
     >
       {name}
     </button>

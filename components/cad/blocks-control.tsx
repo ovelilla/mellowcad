@@ -49,15 +49,15 @@ export function BlocksControl({
         onChange={(event) => setFilter(event.target.value)}
         placeholder={t("filter")}
         aria-label={t("filterLabel")}
-        className="mb-2 w-full rounded-sm border bg-transparent px-2 py-1 text-xs outline-none focus:border-ring"
+        className="mb-2 h-7 w-full rounded-sm border bg-transparent px-2 outline-none placeholder:text-faint-foreground focus:border-ring"
       />
 
       {state.blocks.length === 0 ? (
-        <p className="px-2 py-6 text-center text-xs text-muted-foreground">
+        <p className="px-2 py-6 text-center text-muted-foreground">
           {t("empty")}
         </p>
       ) : shown.length === 0 ? (
-        <p className="px-2 py-6 text-center text-xs text-muted-foreground">
+        <p className="px-2 py-6 text-center text-muted-foreground">
           {t("noMatch")}
         </p>
       ) : (
@@ -80,7 +80,7 @@ export function BlocksControl({
                 )}
               >
                 <BlockThumbnail engine={engine} id={block.id} />
-                <span className="w-full truncate text-center text-[11px]">
+                <span className="w-full truncate text-center">
                   {block.name}
                 </span>
               </button>

@@ -65,7 +65,7 @@ export function IconAction({
           {shortcut && (
             <kbd
               dir="ltr"
-              className="rounded border border-border/60 bg-muted px-1 font-mono text-[10px] text-muted-foreground"
+              className="rounded border border-border/60 bg-muted px-1 font-mono text-muted-foreground"
             >
               {shortcut}
             </kbd>

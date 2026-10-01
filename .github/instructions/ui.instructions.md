@@ -85,13 +85,52 @@ class or light values.
 
 - **One accent, `--active`**: the grips' blue (`THEME.grip`). A tool or mode that is on, a flyout
   whose member is running and the chosen option in a status-bar popover are `Button`'s
-  `variant="active"` (`bg-active/15 text-active`), or those classes where it is not a `Button`.
+  `variant="active"` (`bg-active/15 text-active-foreground`), or those classes where it is not a
+  `Button`. `text-active` is for a glyph alone: as text on its own tint it reads 4.1:1.
   Never `variant="default"` for state: `--primary` is near-white, so `bg-primary/N` is glare, not
   a highlight. Use `bg-accent` for a selected/current row (the token designed for it) and
   `text-primary` for check marks.
 - Docked zones are `bg-card`, parted by a `border` on the side facing their neighbour, with no
   radius or shadow; a `Panel` or trigger inside one adds no surface of its own. The radius, the
   shadow and `bg-card/90` + `backdrop-blur` belong to popups and to what floats on the drawing.
+
+## Type
+
+One body, as AutoCAD's Segoe UI at 9 pt: hierarchy is weight and colour, never size. The roles
+are tokens in `globals.css` (`@theme`), each a single class carrying size, weight and line height;
+`body` starts every text — the portalled popups too — as `text-ui text-foreground`.
+
+| Role  | Classes                            | Size / weight / line | For                                                                                                           |
+| ----- | ---------------------------------- | -------------------- | ------------------------------------------------------------------------------------------------------------- |
+| value | `text-ui` (inherited)              | 12 / 400 / 16        | values, menu items, list options, buttons, tabs, tooltips                                                     |
+| label | `text-ui text-muted-foreground`    | 12 / 400 / 16        | what names a value: field and row labels, column headers, help, the save state                                |
+| title | `text-title text-muted-foreground` | 12 / 600 / 16        | a section of a palette or popover, a menu's heading                                                           |
+| typed | `font-mono` on `text-ui`           | 12 / 400 / 16        | what is typed or read as a figure: the command line, the dynamic input, coordinates, values, aliases and keys |
+
+- **Nothing under 12 px.** §4 of the redesign allowed 11 for tabular figures; none needed it. A
+  new size is a new role, argued here, not a `text-xs` or `text-[Npx]`.
+- **Three steps of colour**: `text-foreground`, `text-muted-foreground` and `text-faint-foreground`
+  (disabled, placeholders, a layer that is off). Never a fraction (`text-muted-foreground/70`):
+  each step keeps WCAG AA (4.5) on `card`, `background`, `accent`, the canvas and the active
+  tint, which a fraction does not. State colours besides: `text-active-foreground` (on),
+  `text-destructive` (errors), `text-primary` for a check mark.
+- **Monospace only for what is typed or read as a figure.** Labels stay sans — the dynamic
+  input's `Length`, a property's name — or an Arabic page draws them in Geist Mono's 0.6 em
+  spaces with Readex Pro behind.
+- **No capitals or tracking for titles**: a title is the title role in sentence case.
+- **Arabic** (`:lang(ar)`, `globals.css`): both roles take a 20 px line. Readex Pro reaches 14 px
+  above the baseline and 6 below at 12 px, and a 16 px line clips it wherever a text truncates.
+  The command language's islands carry `lang="en"` and keep 16.
+- **Rhythm**: rows of palettes, menus and lists are 28 px (`h-7`; a menu item's `py-1.5`; a
+  palette's drop-down is `size="xs"`); a bar's controls are 32 px in its 40. Text starts 12 px
+  from its surface's edge: `px-3` in a palette, `p-3` in a popover, `p-1` + `ps-2` in a menu.
+- `lib/type-scale.test.ts` fails on a size, weight, line height or tracking utility or a text
+  colour with an opacity in `components/cad` or `components/ui`; `cn()` knows the roles as font
+  sizes, so `cn("text-ui", "text-muted-foreground")` keeps both. The ViewCube's SVG sets its
+  weight as an attribute (a class would size it too); its face names are drawn on the cube, sized
+  to the face, the one text outside the scale.
+- Measured by walking every visible text in Chrome with `getComputedStyle` (the audit of phase 4b,
+  `docs/next-ui-redesign.md`); a new zone, palette or menu is checked the same way.
 
 ## Base UI gotchas
 

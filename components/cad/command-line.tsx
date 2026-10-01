@@ -55,9 +55,9 @@ export function CommandLine({
               // from the canvas (the engine refocuses the surface itself).
               onMouseDown={(e) => e.preventDefault()}
               onClick={() => engine.runCommand(suggestion.name)}
-              className="flex w-full items-center gap-2 px-2 py-1 text-start font-mono text-xs hover:bg-accent hover:text-accent-foreground"
+              className="flex h-7 w-full items-center gap-2 px-2 text-start font-mono hover:bg-accent hover:text-accent-foreground"
             >
-              <span lang={lang} className="font-semibold">
+              <span lang={lang} className="text-title">
                 {suggestion.name}
               </span>
               <span className="truncate text-muted-foreground">
@@ -75,7 +75,7 @@ export function CommandLine({
         ref={logRef}
         lang={lang}
         // AutoCAD lays its reports out in spaces and lines (ID, DIST, UCS ?).
-        className="flex min-h-0 flex-1 flex-col overflow-y-auto border-b px-2 py-1 font-mono text-[11px] leading-tight whitespace-pre-wrap"
+        className="flex min-h-0 flex-1 flex-col overflow-y-auto border-b px-2 pt-0.5 font-mono text-ui whitespace-pre-wrap"
       >
         {/* Lines sit on the prompt; an auto margin, not justify-end, which
             would push a long report out of reach above the scroll. */}
@@ -99,7 +99,7 @@ export function CommandLine({
         </div>
       </div>
 
-      <div className="flex items-center gap-2 px-2 py-1.5 font-mono text-xs">
+      <div className="flex h-7 shrink-0 items-center gap-2 px-2 font-mono">
         <span
           lang={lang}
           className="shrink-0 whitespace-nowrap text-muted-foreground"
@@ -130,7 +130,7 @@ export function CommandLine({
           lang={lang}
           autoComplete="off"
           aria-label={t("label")}
-          className="min-w-0 flex-1 bg-transparent text-foreground uppercase outline-none placeholder:text-muted-foreground/60 placeholder:normal-case"
+          className="min-w-0 flex-1 bg-transparent text-foreground uppercase outline-none placeholder:text-faint-foreground placeholder:normal-case"
           placeholder={t("placeholder")}
         />
       </div>

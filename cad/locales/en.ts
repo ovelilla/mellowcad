@@ -37,7 +37,7 @@ export const en: EngineCatalog = {
       "dimangular": "Angular",
       "dimbaseline": "Baseline",
       "dimcontinue": "Continue",
-      "dimspace": "Space",
+      "dimspace": "Adjust space",
       "offset": "Offset",
       "move": "Move",
       "copy": "Copy",

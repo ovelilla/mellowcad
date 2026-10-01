@@ -120,9 +120,9 @@ export function PalettePanel({
                   if (event.detail > 0) engine.focusSurface()
                 }}
                 className={cn(
-                  "h-7 shrink-0 rounded-sm px-1.5 text-xs whitespace-nowrap text-muted-foreground outline-none select-none",
+                  "h-7 shrink-0 rounded-sm px-1.5 whitespace-nowrap text-muted-foreground outline-none select-none",
                   "hover:bg-accent/60 hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring",
-                  "data-active:bg-active/15 data-active:text-active"
+                  "data-active:bg-active/15 data-active:text-active-foreground"
                 )}
               >
                 {title(id)}

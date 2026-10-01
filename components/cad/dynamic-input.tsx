@@ -67,7 +67,7 @@ export function DynamicInput({
         return (
           <label
             key={field.id}
-            className={`flex gap-1 rounded-md border px-2 py-1 font-mono text-[11px] shadow-lg backdrop-blur ${
+            className={`flex gap-1 rounded-md border px-2 py-1 shadow-lg backdrop-blur ${
               field.kind === "paragraphs" ? "items-start" : "items-center"
             } ${
               locked
@@ -106,7 +106,7 @@ export function DynamicInput({
                     engine.cancelDynamicInput()
                   }
                 }}
-                className="field-sizing-content max-h-48 w-72 resize-none bg-transparent text-foreground outline-none"
+                className="field-sizing-content max-h-48 w-72 resize-none bg-transparent font-mono text-foreground outline-none"
               />
             ) : (
               <input
@@ -168,13 +168,15 @@ export function DynamicInput({
                     nextInput?.select()
                   }
                 }}
-                className={`bg-transparent text-foreground outline-none placeholder:text-muted-foreground/50 ${
+                className={`bg-transparent font-mono text-foreground outline-none placeholder:text-faint-foreground ${
                   field.kind === "text" ? "w-48" : "w-16"
                 }`}
               />
             )}
             {field.unitSuffix && (
-              <span className="text-muted-foreground">{field.unitSuffix}</span>
+              <span className="font-mono text-muted-foreground">
+                {field.unitSuffix}
+              </span>
             )}
             {locked && (
               <Lock
@@ -195,9 +197,9 @@ export function DynamicInput({
           {state.commandOptions.map((option) => (
             <span
               key={option.id}
-              className="flex items-center gap-1 rounded-md border border-border/60 bg-card/95 px-1.5 py-0.5 font-mono text-[10px] text-muted-foreground shadow-lg backdrop-blur"
+              className="flex items-center gap-1 rounded-md border border-border/60 bg-card/95 px-1.5 py-0.5 text-muted-foreground shadow-lg backdrop-blur"
             >
-              <kbd className="rounded bg-muted px-1 font-semibold text-foreground">
+              <kbd className="rounded bg-muted px-1 font-mono text-title text-foreground">
                 {option.key ?? option.abbreviation}
               </kbd>
               {option.label}

@@ -30,7 +30,7 @@ DIMDIAMETER ["DIMDIA","DDI"] "Diameter"
 DIMANGULAR ["DIMANG","DAN"] "Angular"
 DIMBASELINE ["DBA"] "Baseline"
 DIMCONTINUE ["DCO"] "Continue"
-DIMSPACE [] "Space"
+DIMSPACE [] "Adjust space"
 OFFSET ["O"] "Offset"
 MOVE ["M"] "Move"
 COPY ["CO","CP"] "Copy"
@@ -123,7 +123,7 @@ dimdiameter "Diameter" DDI
 dimangular "Angular" DAN
 dimbaseline "Baseline" DBA
 dimcontinue "Continue" DCO
-dimspace "Space" DIMSPACE
+dimspace "Adjust space" DIMSPACE
 offset "Offset" O
 move "Move" M
 copy "Copy" CO

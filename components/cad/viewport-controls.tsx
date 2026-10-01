@@ -29,7 +29,7 @@ export function ViewportControls({
           not words. */}
       <Menu.Trigger
         aria-label={t("view", { name })}
-        className="pointer-events-auto rounded-sm px-1 py-0.5 text-xs text-muted-foreground outline-none select-none before:content-['['] after:content-[']'] hover:bg-card/60 hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring data-popup-open:bg-card/60 data-popup-open:text-foreground"
+        className="pointer-events-auto rounded-sm px-1 py-0.5 text-muted-foreground outline-none select-none before:content-['['] after:content-[']'] hover:bg-card/60 hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring data-popup-open:bg-card/60 data-popup-open:text-foreground"
       >
         {name}
       </Menu.Trigger>
@@ -45,7 +45,7 @@ export function ViewportControls({
               <Menu.Item
                 key={preset}
                 onClick={() => engine.applyViewPreset(preset)}
-                className="relative flex cursor-default items-center rounded-sm py-1.5 ps-2 pe-8 text-sm outline-hidden select-none data-highlighted:bg-accent data-highlighted:text-accent-foreground"
+                className="relative flex cursor-default items-center rounded-sm py-1.5 ps-2 pe-8 text-ui outline-hidden select-none data-highlighted:bg-accent data-highlighted:text-accent-foreground"
               >
                 {names[preset]}
                 {current === preset && (
