@@ -106,7 +106,7 @@ export function CommandLine({
           lang={lang}
           autoComplete="off"
           aria-label={t("label")}
-          className="min-w-0 flex-1 bg-transparent text-foreground uppercase outline-none placeholder:text-faint-foreground placeholder:normal-case"
+          className="h-full min-w-0 flex-1 bg-transparent text-foreground uppercase outline-none placeholder:text-faint-foreground placeholder:normal-case"
           placeholder={t("placeholder")}
         />
         {/* The arrow at the command window's right end ("Press F2. Click the
@@ -116,7 +116,6 @@ export function CommandLine({
           label={t("history")}
           shortcut="F2"
           side="top"
-          size="icon-status"
           active={historyOpen}
           onClick={() => engine.toggleCommandHistory()}
         />

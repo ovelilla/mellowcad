@@ -98,9 +98,9 @@ export function BlocksControl({
                     ? t("inUse")
                     : t("purge", { name: block.name })
                 }
-                className="absolute inset-e-0 top-0 size-6 opacity-0 group-hover:opacity-100 focus-visible:opacity-100 disabled:opacity-0"
+                className="absolute inset-e-0 top-0 opacity-0 group-hover:opacity-100 focus-visible:opacity-100 disabled:opacity-0"
               >
-                <Trash2 className="size-3.5" />
+                <Trash2 />
               </Button>
             </div>
           ))}

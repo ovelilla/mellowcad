@@ -153,7 +153,7 @@ export function ViewCube({
       }}
     >
       <Button
-        size="icon-xs"
+        size="icon-cube"
         variant="ghost"
         aria-label={t("home")}
         title={t("home")}
@@ -305,7 +305,7 @@ export function ViewCube({
         {cube.faceView && (
           <div className="absolute top-0 right-0 flex gap-0.5">
             <Button
-              size="icon-xs"
+              size="icon-cube"
               variant="ghost"
               aria-label={t("rollCounterclockwise")}
               title={t("rollCounterclockwise")}
@@ -314,7 +314,7 @@ export function ViewCube({
               <RotateCcw />
             </Button>
             <Button
-              size="icon-xs"
+              size="icon-cube"
               variant="ghost"
               aria-label={t("rollClockwise")}
               title={t("rollClockwise")}
@@ -386,7 +386,7 @@ function UcsMenu({ engine, state }: { engine: CadEngine; state: EngineState }) {
     <Menu.Root>
       <Menu.Trigger
         render={
-          <Button size="xs" variant="ghost">
+          <Button size="cube" variant="ghost">
             {label}
             <ChevronDown className="text-muted-foreground" />
           </Button>

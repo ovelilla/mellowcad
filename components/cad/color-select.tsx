@@ -32,7 +32,6 @@ export function ColorSelect({
   triggerClassName,
   disabled = false,
   below = false,
-  size = "sm",
 }: {
   value: string | null
   /** The engine's names for the colours and for ByLayer. */
@@ -48,10 +47,6 @@ export function ColorSelect({
    * a palette's field does.
    */
   below?: boolean
-  /**
-   * `xs` is a palette's row (28 px), `sm` a bar's drop-down (32 px).
-   */
-  size?: "xs" | "sm"
 }) {
   const t = useTranslations("Editor.Properties")
   const isStandard = STANDARD_COLORS.some((color) => color.value === value)
@@ -75,7 +70,6 @@ export function ColorSelect({
         }}
       >
         <SelectTrigger
-          size={size}
           aria-label={ariaLabel}
           className={cn(
             "min-w-0 flex-1 bg-background dark:bg-background",
@@ -110,8 +104,7 @@ export function ColorSelect({
       <label
         aria-disabled={disabled || undefined}
         className={cn(
-          "relative inline-flex shrink-0 cursor-pointer items-center justify-center rounded-md border border-border hover:bg-accent aria-disabled:pointer-events-none aria-disabled:opacity-50",
-          size === "xs" ? "size-7" : "size-8"
+          "relative inline-flex size-7 shrink-0 cursor-pointer items-center justify-center rounded-md border border-border hover:bg-accent aria-disabled:pointer-events-none aria-disabled:opacity-50"
         )}
         title={t("customColor")}
       >

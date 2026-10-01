@@ -354,7 +354,6 @@ export function ToolRail({
         icon={TOOL_ICONS[item] ?? Shapes}
         label={meta.label}
         shortcut={meta.shortcut?.toUpperCase()}
-        size="icon-tool"
         active={state.activeToolId === item}
         onClick={() => engine.setActiveTool(item)}
       />
@@ -462,7 +461,7 @@ function ToolFlyout({
       <Menu.Trigger
         render={
           <Button
-            size="icon-tool"
+            size="icon"
             variant={activeMember ? "active" : "ghost"}
             aria-label={t(family.id)}
             className="relative"
@@ -518,7 +517,7 @@ function FoldedSection({
       <Menu.Trigger
         render={
           <Button
-            size="icon-tool"
+            size="icon"
             variant={active ? "active" : "ghost"}
             aria-label={t(section.id)}
             className="relative hidden w-full short:inline-flex"

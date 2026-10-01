@@ -21,25 +21,18 @@ const buttonVariants = cva(
           "bg-destructive/10 text-destructive hover:bg-destructive/20 focus-visible:border-destructive/40 focus-visible:ring-destructive/20 dark:bg-destructive/20 dark:hover:bg-destructive/30 dark:focus-visible:ring-destructive/40",
         link: "text-primary underline-offset-4 hover:underline",
       },
+      // The control sizes (ui.instructions.md, "Size"): everything one
+      // presses is 28 px, an icon button a square of 28 with a 16 px icon.
       size: {
         default:
-          "h-9 gap-1.5 px-2.5 in-data-[slot=button-group]:rounded-md has-data-[icon=inline-end]:pe-2 has-data-[icon=inline-start]:ps-2",
-        xs: "h-6 gap-1 rounded-[min(var(--radius-md),8px)] px-2 in-data-[slot=button-group]:rounded-md has-data-[icon=inline-end]:pe-1.5 has-data-[icon=inline-start]:ps-1.5 [&_svg:not([class*='size-'])]:size-3",
-        sm: "h-8 gap-1 rounded-[min(var(--radius-md),10px)] px-2.5 in-data-[slot=button-group]:rounded-md has-data-[icon=inline-end]:pe-1.5 has-data-[icon=inline-start]:ps-1.5",
-        lg: "h-10 gap-1.5 px-2.5 has-data-[icon=inline-end]:pe-2 has-data-[icon=inline-start]:ps-2",
-        icon: "size-9",
-        "icon-xs":
-          "size-6 rounded-[min(var(--radius-md),8px)] in-data-[slot=button-group]:rounded-md [&_svg:not([class*='size-'])]:size-3",
-        "icon-sm":
-          "size-8 rounded-[min(var(--radius-md),10px)] in-data-[slot=button-group]:rounded-md",
-        // The tool palette's: two columns of them fit its 76 px.
-        "icon-tool": "h-7 w-7.5 rounded-md",
-        // The status bar's, in its 28 px; a mode's settings arrow is a half
-        // button of 14 px attached to it.
-        "icon-status": "h-6 w-7 rounded-md",
-        "icon-flyout":
-          "h-6 w-3.5 rounded-md [&_svg:not([class*='size-'])]:size-3",
-        "icon-lg": "size-10",
+          "h-7 gap-1.5 px-2.5 has-data-[icon=inline-end]:pe-2 has-data-[icon=inline-start]:ps-2",
+        icon: "size-7",
+        // A settings arrow: half of a 28 px button, attached to the mode it
+        // belongs to.
+        "icon-flyout": "h-7 w-3.5 [&_svg:not([class*='size-'])]:size-3",
+        // The ViewCube's own, drawn on it at its scale: outside the system.
+        cube: "h-6 gap-1 px-2 [&_svg:not([class*='size-'])]:size-3",
+        "icon-cube": "size-6 [&_svg:not([class*='size-'])]:size-3",
       },
     },
     defaultVariants: {

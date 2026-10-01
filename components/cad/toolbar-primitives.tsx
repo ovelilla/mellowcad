@@ -14,7 +14,10 @@ import {
 export type Side =
   "top" | "bottom" | "inline-start" | "inline-end" | "left" | "right"
 
-/** An icon button with a tooltip — the atom every toolbar region is built from. */
+/**
+ * An icon button with a tooltip — the atom every toolbar region is built from:
+ * a square of 28 px, as every control is (ui.instructions.md, "Size").
+ */
 export function IconAction({
   icon: Icon,
   label,
@@ -25,7 +28,6 @@ export function IconAction({
   disabled = false,
   mirrored = false,
   side = "inline-end",
-  size = "icon-sm",
   className,
 }: {
   icon: LucideIcon
@@ -42,7 +44,6 @@ export function IconAction({
    */
   mirrored?: boolean
   side?: Side
-  size?: "icon-sm" | "icon-tool" | "icon-status"
   className?: string
 }) {
   return (
@@ -50,7 +51,7 @@ export function IconAction({
       <TooltipTrigger
         render={
           <Button
-            size={size}
+            size="icon"
             variant={active ? "active" : "ghost"}
             disabled={disabled}
             onClick={onClick}

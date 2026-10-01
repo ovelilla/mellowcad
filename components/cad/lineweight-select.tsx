@@ -34,7 +34,6 @@ export function LineweightSelect({
   className,
   disabled = false,
   below = false,
-  size = "sm",
 }: {
   value: number | "ByLayer" | null
   /** The engine's name for ByLayer. */
@@ -50,10 +49,6 @@ export function LineweightSelect({
    * a palette's field does.
    */
   below?: boolean
-  /**
-   * `xs` is a palette's row (28 px), `sm` a bar's drop-down (32 px).
-   */
-  size?: "xs" | "sm"
 }) {
   const t = useTranslations("Editor.Properties")
   return (
@@ -69,7 +64,7 @@ export function LineweightSelect({
         )
       }}
     >
-      <SelectTrigger size={size} aria-label={ariaLabel} className={className}>
+      <SelectTrigger aria-label={ariaLabel} className={className}>
         <SelectValue placeholder={t("varies")} />
       </SelectTrigger>
       <SelectContent

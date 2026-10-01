@@ -73,7 +73,6 @@ export function PropertiesPanel({
           }}
         >
           <SelectTrigger
-            size="xs"
             aria-label={t("objectType")}
             className="w-full bg-background dark:bg-background"
           >
@@ -105,7 +104,6 @@ export function PropertiesPanel({
                 done()
               }}
               ariaLabel={selected ? t("colorLabel") : t("currentColorLabel")}
-              size="xs"
               className="w-36"
             />
           </div>
@@ -125,7 +123,6 @@ export function PropertiesPanel({
               }}
             >
               <SelectTrigger
-                size="xs"
                 aria-label={selected ? t("layerLabel") : t("currentLayerLabel")}
                 className="w-36 bg-background dark:bg-background"
               >
@@ -155,7 +152,6 @@ export function PropertiesPanel({
               ariaLabel={
                 selected ? t("linetypeLabel") : t("currentLinetypeLabel")
               }
-              size="xs"
               className="w-36 bg-background dark:bg-background"
             />
           </div>
@@ -174,7 +170,6 @@ export function PropertiesPanel({
               ariaLabel={
                 selected ? t("lineweightLabel") : t("currentLineweightLabel")
               }
-              size="xs"
               className="w-36 bg-background dark:bg-background"
             />
           </div>
@@ -337,7 +332,6 @@ function StyleRow({
         }}
       >
         <SelectTrigger
-          size="xs"
           aria-label={ariaLabel}
           className="w-36 bg-background dark:bg-background"
         >

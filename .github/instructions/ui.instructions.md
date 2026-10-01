@@ -123,9 +123,8 @@ are tokens in `globals.css` (`@theme`), each a single class carrying size, weigh
 - **Arabic** (`:lang(ar)`, `globals.css`): both roles take a 20 px line. Readex Pro reaches 14 px
   above the baseline and 6 below at 12 px, and a 16 px line clips it wherever a text truncates.
   The command language's islands carry `lang="en"` and keep 16.
-- **Rhythm**: rows of palettes, menus and lists are 28 px (`h-7`; a menu item's `py-1.5`; a
-  palette's drop-down is `size="xs"`); a bar's controls are 32 px in its 40. Text starts 12 px
-  from its surface's edge: `px-3` in a palette, `p-3` in a popover, `p-1` + `ps-2` in a menu.
+- **Rhythm**: rows of palettes, menus and lists are 28 px (`h-7`; a menu item's `py-1.5`), the
+  height of every control ("Size", below). Text starts 12 px from its surface's edge: `px-3` in a palette, `p-3` in a popover, `p-1` + `ps-2` in a menu.
 - `lib/type-scale.test.ts` fails on a size, weight, line height or tracking utility or a text
   colour with an opacity in `components/cad` or `components/ui`; `cn()` knows the roles as font
   sizes, so `cn("text-ui", "text-muted-foreground")` keeps both. The ViewCube's SVG sets its
@@ -133,6 +132,33 @@ are tokens in `globals.css` (`@theme`), each a single class carrying size, weigh
   to the face, the one text outside the scale.
 - Measured by walking every visible text in Chrome with `getComputedStyle` (the audit of phase 4b,
   `docs/next-ui-redesign.md`); a new zone, palette or menu is checked the same way.
+
+## Size
+
+One size for everything one presses, as the type has one body: **28 px**. Chosen in phase 5b of
+the redesign over 32 for density, not looks — WCAG 2.2's 2.5.8 (AA) asks 24 × 24 and both pass;
+Fitts's law gives 32 about 5 % on a 400 px reach with a mouse, a precise pointer; and at 32 the
+tool palette no longer fits a 720 px window (it needs about 650 of its 619) nor the top bar 1280
+in Spanish. AutoCAD's own are about 24 at 100 %.
+
+| What                                                                       | Size                                                                                                                        |
+| -------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------- |
+| An icon button (`Button size="icon"`, `IconAction`)                        | 28 × 28, its icon 16                                                                                                        |
+| A text button, a drop-down's trigger, a field, a tab, a row of a list      | 28 high (`Button`'s default, `SelectTrigger`, `h-7`)                                                                        |
+| A mode's settings arrow (`size="icon-flyout"`), Zoom's under its button    | half of one: 14 × 28, 28 × 14 — attached, so the right-click on the 28 px mode is its equivalent target (2.5.8's exception) |
+| A docked bar of controls: the top bar, the status bar, the panel's tab bar | 36 (`h-9`): the control and 4 px either side, its border included; the folded panel is 36 wide for the same reason          |
+| The command line                                                           | one row of 28 under its border (`box-content h-7`); its field fills the row                                                 |
+| The tool palette                                                           | two columns of 28 in 68 px (`w-17`)                                                                                         |
+
+- Outside the system, each for a reason: the ViewCube's Home, roll arrows and UCS menu
+  (`size="icon-cube"`, `"cube"`, 24), drawn on the cube at its scale; the viewport control
+  `[Top]`, a label on the drawing; the separators, the product mark and swatches, which are not
+  targets.
+- `lib/control-size.test.ts` fails on a height or square size off the system (`h-8`, `size-6`,
+  `h-[30px]`…) in `components/cad` or `components/ui` outside its list of justified exceptions,
+  and on a `Button` size the table does not have. A new size is argued here first.
+- Measured in Chrome by listing every button, drop-down, field and tab with its box per zone:
+  one size per kind.
 
 ## Base UI gotchas
 
@@ -159,8 +185,8 @@ are tokens in `globals.css` (`@theme`), each a single class carrying size, weigh
   window, `tools` · `canvas` · `panel` between them, and `command` above `status`. A control goes
   into a zone; never position one absolutely over the drawing. The canvas takes what the zones
   leave, so ZOOM Extents frames only what is visible.
-  - **Every zone has its size in CSS** (`h-10`, `w-19`, the panel's `w-9` /
-    `palette-open:w-(--palette-width)`, the command line's and the status bar's `h-7`), not from
+  - **Every zone has its size in CSS** (the bars' `h-9`, the tool palette's `w-17`, the panel's
+    `w-9` / `palette-open:w-(--palette-width)`, the command line's `box-content h-7`), not from
     its content, and is rendered before the engine mounts: the canvas's box at the first paint is then the final one,
     which the landing's view transition grows into and the first view is centred in. A zone that
     resizes moves the canvas's edge; one that resizes with the work (the selection, each command)
@@ -247,7 +273,7 @@ are tokens in `globals.css` (`@theme`), each a single class carrying size, weigh
   - **After acting in a palette, focus returns to the drawing** (`engine.focusSurface()`) — a
     click on a tab, a strip icon, a toggle, a pick in a drop-down — so the next key types a
     command. The arrow keys on the tabs keep focus there (`event.detail > 0` tells a click).
-- **The command line** (`command`, 28 px) is AutoCAD's as it starts: one prompt line. Above it,
+- **The command line** (`command`, a row of 28 px) is AutoCAD's as it starts: one prompt line. Above it,
   over the drawing, float the running command's temporary prompt lines (`commandLine.recent`,
   CLIPROMPTLINES 3; they fade once it ends — `animate-prompt-fade`, our time, AutoCAD documents
   none — and take no pointer), the whole history expanded up to 12 lines with F2 or the arrow at
@@ -255,12 +281,12 @@ are tokens in `globals.css` (`@theme`), each a single class carrying size, weigh
   the suggestions, which win over both. That is why the zone stacks above the canvas cell. Nothing
   of it resizes the zone, so running commands never resizes the drawing; hiding the line (Ctrl+9)
   collapses the zone, and it comes back while something is typed.
-- **The status bar** (`status`, 28 px; `StatusBar`) in the order of AutoCAD's 2026 reference:
+- **The status bar** (`status`, 36 px; `StatusBar`) in the order of AutoCAD's 2026 reference:
   the coordinates at its start (`1.5000, 2.0039, 0.0000`, at the drawing's precision, an LTR
   island), then at its end MODEL, Grid, Snap mode ▾, Ortho, Polar ▾, Object snap tracking, Object
   snap ▾, Lineweight, Selection cycling ▾, Units, Clean Screen and Customization (≡), right-most.
-  - A mode's buttons are `size="icon-status"` (28 × 24); a mode with settings has its arrow, a
-    half button of 14 px (`size="icon-flyout"`) attached to it, and a right-click on the mode
+  - A mode is an `IconAction` (28 × 28); a mode with settings has its arrow, a half button of
+    14 × 28 (`size="icon-flyout"`) attached to it, and a right-click on the mode
     opens the same menu (`IconAction`'s `onContextMenu`). The settings are Base UI menus —
     checkboxes for the object snaps and the list box, radio items for Polar's angles — except Snap
     mode's spacing, which is typed and stays a popover.
@@ -275,10 +301,10 @@ are tokens in `globals.css` (`@theme`), each a single class carrying size, weigh
   application menu, the Quick Access Toolbar, the command line and the status bar. A palette opened
   meanwhile shows the panel again (`cleanScreen.palette`). It is never on at the first paint:
   AutoCAD does not save it, so it needs no head script.
-- **ToolRail** (`tools`, the inline start, 76 px) — the tool palette: only commands that act on
+- **ToolRail** (`tools`, the inline start, 68 px) — the tool palette: only commands that act on
   the drawing, two to a row, sectioned by `PALETTE` as the ribbon's Home tab panels (Draw, Modify,
   Annotation, Block, Utilities; Continue/Baseline and Adjust Space come from the Annotate tab), a
-  `Separator` between sections. Its buttons are `size="icon-tool"` (30 × 28), icon-only with
+  `Separator` between sections. Its buttons are 28 × 28 `IconAction`s, icon-only with
   `side="inline-end"` tooltips.
   - Variant families (Circle, Arc, Rectangle/Polygon, Ellipse, Trim/Extend, Fillet/Chamfer, Break,
     Array, Text, Dimension, Continue/Baseline, Attributes, Measure) are flyouts, named by

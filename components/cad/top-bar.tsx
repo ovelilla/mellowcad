@@ -60,8 +60,7 @@ const MENU_POPUP =
 const MENU_ITEM =
   "relative flex cursor-default items-center gap-2 rounded-sm py-1.5 ps-2 pe-8 text-ui outline-hidden select-none data-highlighted:bg-accent data-highlighted:text-accent-foreground data-popup-open:bg-accent [&_svg]:size-4 [&_svg]:shrink-0"
 /** A drop-down of the bar: bordered, with no surface of its own. */
-const BAR_SELECT =
-  "h-8 border-input bg-transparent shadow-none dark:bg-transparent"
+const BAR_SELECT = "border-input bg-transparent shadow-none dark:bg-transparent"
 
 /**
  * The top bar, AutoCAD's application frame and the Home tab's Layers and
@@ -219,7 +218,7 @@ function ApplicationMenu({ engine }: { engine: CadEngine }) {
           render={
             <Menu.Trigger
               render={
-                <Button size="icon-sm" variant="ghost" aria-label={t("menu")}>
+                <Button size="icon" variant="ghost" aria-label={t("menu")}>
                   <LogoMark mono className="size-5" />
                 </Button>
               }
@@ -341,11 +340,7 @@ function LayerControl({
         engine.focusSurface()
       }}
     >
-      <SelectTrigger
-        size="sm"
-        aria-label={t("layer")}
-        className={cn(BAR_SELECT, "w-40")}
-      >
+      <SelectTrigger aria-label={t("layer")} className={cn(BAR_SELECT, "w-40")}>
         <SelectValue placeholder={properties("varies")}>
           {(id: string | null) =>
             id === null ? null : (
@@ -461,7 +456,6 @@ function PaletteToggle({
   const active = state.palette.open && state.palette.tab === tab
   return (
     <Button
-      size="sm"
       variant={active ? "active" : "ghost"}
       aria-pressed={active}
       className="gap-2"

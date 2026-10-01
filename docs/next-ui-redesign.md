@@ -1,6 +1,11 @@
 # Rediseño del editor — brief
 
-> **Estado:** fases 0 a 5 hechas; sigue la 5b (CECOLOR, CELTYPE y CELWEIGHT) y después la 6. En la
+> **Estado:** fases 0 a 5b hechas; sigue la 5c (CECOLOR, CELTYPE y CELWEIGHT) y después la 6. En la
+> 5b, todo lo que se pulsa mide 28 px (los botones de icono, cuadrados de 28 × 28 con icono de 16), y
+> las barras de controles, 36: la superior y la de estado; la línea de comandos es una fila de 28. Se
+> eligió 28 frente a 32 por densidad: a 32 la paleta ya no cabe a 720 px, la ganancia de Fitts es de
+> un 5 % y los dos cumplen el 2.5.8 de WCAG 2.2 (24 × 24). `lib/control-size.test.ts` lo hace
+> cumplir, y las reglas están en «Size» de `ui.instructions.md`. En la
 > 5, la barra de estado (28 px) sigue el orden de AutoCAD 2026, con sus flechas de ajustes de 14 px,
 > el clic derecho que abre el mismo menú y una Personalización que se recuerda en el dispositivo;
 > MODEL es una etiqueta, porque aquí no hay presentaciones. La línea de comandos es de una línea
@@ -102,12 +107,12 @@ que AutoCAD pone ahí.
 
 | Zona                   | Tamaño                      | Contenido                                                                                                                                                                                                                                                                                                                                                |
 | ---------------------- | --------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Barra superior         | 40 px, ancho completo       | menú de la aplicación (Nuevo, Abrir, Guardar, Guardar como, Unidades del dibujo, Idioma) · barra de acceso rápido (Nuevo, Abrir, Guardar, Guardar como, Deshacer, Rehacer) · estado de guardado · gestor de capas + desplegable de capa actual · Igualar propiedades + color, grosor y tipo de línea · conmutadores de paletas y de la línea de comandos |
-| Paleta de herramientas | 76 px, dos columnas, inicio | solo comandos contra el lienzo, en cinco secciones (§3)                                                                                                                                                                                                                                                                                                  |
+| Barra superior         | 36 px, ancho completo       | menú de la aplicación (Nuevo, Abrir, Guardar, Guardar como, Unidades del dibujo, Idioma) · barra de acceso rápido (Nuevo, Abrir, Guardar, Guardar como, Deshacer, Rehacer) · estado de guardado · gestor de capas + desplegable de capa actual · Igualar propiedades + color, grosor y tipo de línea · conmutadores de paletas y de la línea de comandos |
+| Paleta de herramientas | 68 px, dos columnas, inicio | solo comandos contra el lienzo, en cinco secciones (§3)                                                                                                                                                                                                                                                                                                  |
 | Lienzo                 | el resto                    | encima: la etiqueta de vista «[Superior ▾]» arriba a la izquierda (controles de ventana gráfica), el ViewCube y, debajo, la barra de navegación (Encuadre, Zoom ▾, Órbita); la entrada dinámica, las fichas de opciones y los menús                                                                                                                      |
 | Panel de paletas       | 280 px, fin, plegable a 36  | pestañas Propiedades, Capas, Bloques, Estilos; sin modo                                                                                                                                                                                                                                                                                                  |
-| Línea de comandos      | 28 px                       | una línea; el historial se despliega hacia arriba hasta 12 líneas con F2                                                                                                                                                                                                                                                                                 |
-| Barra de estado        | 28 px, ancho completo       | coordenadas a la izquierda; modos a la derecha (§4)                                                                                                                                                                                                                                                                                                      |
+| Línea de comandos      | una fila de 28 px           | una línea; el historial se despliega hacia arriba hasta 12 líneas con F2                                                                                                                                                                                                                                                                                 |
+| Barra de estado        | 36 px, ancho completo       | coordenadas a la izquierda; modos a la derecha (§4)                                                                                                                                                                                                                                                                                                      |
 
 - El ViewCube sigue visible por defecto, pero más pequeño y a media opacidad hasta que el cursor se
   acerca.
@@ -125,7 +130,7 @@ que AutoCAD pone ahí.
 
 ## 3. Paleta de herramientas
 
-Dos columnas, 17 filas, 540 px con separadores; caben en los 560 px libres a 1280×720. Un
+Dos columnas, 17 filas, 576 px con separadores; caben en los 619 px libres a 1280×720. Un
 desplegable abre una lista con icono, nombre y alias, no una tira de glifos, y agrupa solo variantes
 de un comando o comandos sobre un mismo objeto: nada se esconde en un «▾ más» por falta de sitio.
 
@@ -185,7 +190,8 @@ Salen del rail:
   - Un solo acento: el azul de los pinzamientos (`THEME.grip`, `#3b82f6`), para activo, actual,
     foco y fila seleccionada. `--primary` deja de ser fondo de estado.
   - Barras acopladas sin radio ni sombra; el radio, solo en menús.
-  - Botones de 30 × 28 px con icono de 16 px.
+  - Todo control mide 28 px: botones de icono de 28 × 28 con icono de 16, y desplegables, campos,
+    pestañas y filas de 28 de alto. Las barras de controles, 36 (fase 5b).
   - Texto: 12 px en todo, con la jerarquía en el peso y el color; la escala es la de la fase 4b
     («Type» en `ui.instructions.md`).
 
@@ -473,8 +479,21 @@ los del motor en `cad/locales/`, con `npm run locales`). Las clases son lógicas
    - La línea de una línea, el historial con F2 y Pantalla limpia.
    - LTSCALE como comando.
 
-- **5b. Propiedades actuales.** CECOLOR, CELTYPE y CELWEIGHT, la pieza más cara, en su propia fase
-  entre la 5 y la 6:
+- **5b. Sistema de tamaños.** Hecha. Antes medían 32 × 32 los botones de la barra superior, 30 × 28
+  los de la paleta y 28 × 24 los de la barra de estado; había siete tamaños de botón de icono y cuatro
+  alturas de control. Criterios:
+  - accesibilidad: WCAG 2.2, 2.5.8 AA (24 × 24);
+  - comodidad: con la ley de Fitts, 32 frente a 28 ahorra un 5 % en un recorrido de 400 px con ratón;
+  - densidad: a 32 la paleta necesitaría unos 650 px de los 619 libres a 720, y la barra superior
+    perdería margen a 1280 en español;
+  - coherencia: 28 ya era la fila de la 4b.
+
+  Resultado: 28 para todo control, 36 para las barras de controles (el control y 4 px a cada lado) y
+  una fila de 28 para la línea de comandos. La paleta pasa de 76 a 68 px. Fuera del sistema: el
+  ViewCube (24, a su escala) y la etiqueta `[Superior]`.
+
+- **5c. Propiedades actuales.** CECOLOR, CELTYPE y CELWEIGHT, la pieza más cara, en su propia fase
+  entre la 5b y la 6:
   - en el documento y en el formato de archivo, con su versión;
   - en cada herramienta que crea entidades;
   - en los desplegables de color, grosor y tipo de línea de la barra superior y en General de
@@ -532,6 +551,20 @@ Objetivos al terminar:
     Personalización, el diálogo y sus dos listas, las líneas temporales, el historial y Pantalla
     limpia. Los cinco objetivos dan 0. Las líneas temporales captadas a mitad de su desvanecido
     (54, en otros estados) no se miden contra AA, porque son una transición; a opacidad plena, sí.
+- Fase 5b, medido al cerrarla:
+  - Inventario de cada botón, desplegable, campo y pestaña por zona, en Chrome:
+    - botones de icono de 28 × 28 en todas las zonas;
+    - controles de texto de 28 de alto;
+    - flechas de 14 × 28 y 28 × 14.
+    - Fuera de la escala, solo el ViewCube (24), `[Superior]` (20) y el selector de color nativo
+      (26, dentro de su recuadro de 28).
+  - Zonas: barra superior 36, paleta 68, `command` 29 (28 y su borde), `status` 36. A 1280×720 la
+    paleta usa 576 de sus 619 px. A 1920×1080 el lienzo mide 1572 × 979.
+  - `phase4.mjs` sin fallos en 7 tamaños × 3 idiomas: 0 solapes, 0 casillas ocultas, barra superior
+    a 1280 en español con la capa de 50 caracteres, primer pintado, plegado y ZOOM E. Solo quedan las
+    cuatro notas del ViewCube en `/ar/draw`.
+  - Transición, ViewCube, menú de la aplicación y `phase5.mjs` sin fallos.
+  - Tipografía: 10 029 textos en 40 estados, 0 en los cinco objetivos.
 
 La medición es de Playwright, porque el arnés no ve el DOM. Sigue `local-verification-setup`:
 playwright-core en el scratchpad y Chrome del sistema. Por cada tamaño y en `/draw`, `/es/draw` y

@@ -84,17 +84,21 @@ export function CadWorkspace({
   // direction: in a right-to-left page the tools are on the right and the
   // palettes on the left.
   //
+  // The sizes are one system (ui.instructions.md, "Size"): every control is
+  // 28 px; a bar of them, 36 — the control and 4 px either side; the command
+  // line, one row of 28 under its border.
+  //
   // The editor is the page's main content: a landmark, so every control on
   // it sits in one (axe's region rule).
   return (
     <main className="grid h-svh w-full grid-cols-[auto_minmax(0,1fr)_auto] grid-rows-[auto_minmax(0,1fr)_auto_auto] overflow-hidden bg-card [grid-template-areas:'top_top_top'_'tools_canvas_panel'_'command_command_command'_'status_status_status']">
-      <div className="flex h-10 min-w-0 items-center gap-1 border-b px-1 [grid-area:top]">
+      <div className="flex h-9 min-w-0 items-center gap-1 border-b px-1 [grid-area:top]">
         {ready && <TopBar engine={engine} state={state} />}
       </div>
 
       <div
         className={cn(
-          "flex min-h-0 w-19 flex-col border-e p-1 [grid-area:tools]",
+          "flex min-h-0 w-17 flex-col border-e p-1 [grid-area:tools]",
           clean?.active && "hidden"
         )}
       >
@@ -172,13 +176,13 @@ export function CadWorkspace({
         className={cn(
           "relative z-10 [grid-area:command]",
           (!ready || state.commandLine.visible || state.commandLine.buffer) &&
-            "h-7 border-t"
+            "box-content h-7 border-t"
         )}
       >
         {ready && <CommandLine engine={engine} state={state} />}
       </div>
 
-      <div className="flex h-7 min-w-0 items-center gap-2 border-t px-1 [grid-area:status]">
+      <div className="flex h-9 min-w-0 items-center gap-2 border-t px-1 [grid-area:status]">
         {ready && <StatusBar engine={engine} state={state} />}
       </div>
 

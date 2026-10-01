@@ -118,7 +118,7 @@ function UnitsForm({
         </legend>
         <Row label={t("type")}>
           <Select items={{ decimal: t("decimal") }} value="decimal" disabled>
-            <SelectTrigger size="xs" aria-label={t("type")} className="w-36">
+            <SelectTrigger aria-label={t("type")} className="w-36">
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
@@ -135,7 +135,6 @@ function UnitsForm({
             }}
           >
             <SelectTrigger
-              size="xs"
               aria-label={t("precision")}
               className="w-36 font-mono"
             >
@@ -167,11 +166,7 @@ function UnitsForm({
             if (value != null) setUnit(value as LengthUnit)
           }}
         >
-          <SelectTrigger
-            size="xs"
-            aria-label={t("insertionScale")}
-            className="w-full"
-          >
+          <SelectTrigger aria-label={t("insertionScale")} className="w-full">
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
@@ -200,12 +195,12 @@ function UnitsForm({
       <div className="mt-4 flex justify-end gap-2">
         {/* Outline, as Cancel: --primary is a near-white glare here. OK is
             the form's default, so Enter answers it. */}
-        <Button type="submit" size="sm" variant="outline">
+        <Button type="submit" variant="outline">
           {t("ok")}
         </Button>
         <Dialog.Close
           render={
-            <Button type="button" size="sm" variant="outline">
+            <Button type="button" variant="outline">
               {t("cancel")}
             </Button>
           }

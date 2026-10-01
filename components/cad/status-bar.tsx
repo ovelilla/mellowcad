@@ -134,7 +134,6 @@ export function StatusBar({
             label={names.grid}
             shortcut="F7"
             side="top"
-            size="icon-status"
             active={state.gridVisible}
             onClick={() => engine.toggleGrid()}
           />
@@ -148,7 +147,6 @@ export function StatusBar({
             label={names.ortho}
             shortcut="F8"
             side="top"
-            size="icon-status"
             active={state.orthoActive}
             onClick={() => engine.toggleOrtho()}
           />
@@ -190,7 +188,6 @@ export function StatusBar({
             label={names.otrack}
             shortcut="F11"
             side="top"
-            size="icon-status"
             active={state.objectSnapTrackingActive}
             onClick={() => engine.toggleObjectSnapTracking()}
           />
@@ -232,7 +229,6 @@ export function StatusBar({
             icon={LineweightIcon}
             label={names.lineweight}
             side="top"
-            size="icon-status"
             active={state.lwDisplay}
             onClick={() => engine.toggleLineweightDisplay()}
           />
@@ -267,7 +263,6 @@ export function StatusBar({
             <TooltipTrigger
               render={
                 <Button
-                  size="xs"
                   variant="ghost"
                   className="font-mono"
                   aria-label={names.units}
@@ -286,7 +281,6 @@ export function StatusBar({
             label={names.cleanScreen}
             shortcut={keys("cleanScreen")}
             side="top"
-            size="icon-status"
             active={state.cleanScreen.active}
             onClick={() => engine.toggleCleanScreen()}
           />
@@ -299,7 +293,7 @@ export function StatusBar({
                 <Menu.Trigger
                   render={
                     <Button
-                      size="icon-status"
+                      size="icon"
                       variant="ghost"
                       aria-label={t("customization")}
                     >
@@ -389,7 +383,6 @@ function MenuMode({
         label={label}
         shortcut={shortcut}
         side="top"
-        size="icon-status"
         className="rounded-e-none"
         active={active}
         onClick={onToggle}
@@ -440,7 +433,6 @@ function SnapMode({
         label={label}
         shortcut="F9"
         side="top"
-        size="icon-status"
         className="rounded-e-none"
         active={state.snapModeActive}
         onClick={() => engine.toggleSnapMode()}
@@ -468,7 +460,6 @@ function SnapMode({
             {SNAP_MODE_TYPES.map(({ type, label }) => (
               <Button
                 key={type}
-                size="xs"
                 variant={state.snapModeType === type ? "active" : "outline"}
                 onClick={() => engine.setSnapModeType(type)}
               >

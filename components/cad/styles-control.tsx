@@ -71,7 +71,6 @@ function TabButton({
 }) {
   return (
     <Button
-      size="sm"
       variant="ghost"
       onClick={onClick}
       className={cn(active && "bg-accent")}
@@ -280,7 +279,7 @@ function StyleList({
             ),
           })}
         </p>
-        <Button size="sm" variant="outline" className="gap-1" onClick={onNew}>
+        <Button variant="outline" className="gap-1" onClick={onNew}>
           <Plus className="size-3.5" />
           {t("new")}
         </Button>

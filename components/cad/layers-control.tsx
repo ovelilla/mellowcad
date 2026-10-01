@@ -168,7 +168,7 @@ function ToolbarButton({
       <TooltipTrigger
         render={
           <Button
-            size="icon-sm"
+            size="icon"
             variant="ghost"
             aria-label={label}
             disabled={disabled}
@@ -289,7 +289,6 @@ function LayerRow({
             done()
           }}
           ariaLabel={t("linetypeLabel", { name: layer.name })}
-          size="xs"
           className="w-28 border-0 bg-transparent px-1.5 text-foreground shadow-none hover:bg-accent/40 dark:bg-transparent"
         />
       </td>
@@ -305,7 +304,6 @@ function LayerRow({
             }
           }}
           ariaLabel={t("lineweightLabel", { name: layer.name })}
-          size="xs"
           className="w-24 border-0 bg-transparent px-1.5 text-foreground shadow-none hover:bg-accent/40 dark:bg-transparent"
         />
       </td>
@@ -339,12 +337,12 @@ function IconToggle({
       <TooltipTrigger
         render={
           <Button
-            size="icon-sm"
+            size="icon"
             variant="ghost"
             aria-label={on ? onLabel : offLabel}
             onClick={onToggle}
             className={cn(
-              "size-7 text-muted-foreground hover:text-foreground",
+              "text-muted-foreground hover:text-foreground",
               !on && "text-faint-foreground"
             )}
           >
