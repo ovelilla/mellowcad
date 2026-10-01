@@ -108,7 +108,7 @@ que AutoCAD pone ahí.
 | Zona                   | Tamaño                      | Contenido                                                                                                                                                                                                                                                                                                                                                |
 | ---------------------- | --------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Barra superior         | 36 px, ancho completo       | menú de la aplicación (Nuevo, Abrir, Guardar, Guardar como, Unidades del dibujo, Idioma) · barra de acceso rápido (Nuevo, Abrir, Guardar, Guardar como, Deshacer, Rehacer) · estado de guardado · gestor de capas + desplegable de capa actual · Igualar propiedades + color, grosor y tipo de línea · conmutadores de paletas y de la línea de comandos |
-| Paleta de herramientas | 68 px, dos columnas, inicio | solo comandos contra el lienzo, en cinco secciones (§3)                                                                                                                                                                                                                                                                                                  |
+| Paleta de herramientas | 67 px, dos columnas, inicio | solo comandos contra el lienzo, en cinco secciones (§3)                                                                                                                                                                                                                                                                                                  |
 | Lienzo                 | el resto                    | encima: la etiqueta de vista «[Superior ▾]» arriba a la izquierda (controles de ventana gráfica), el ViewCube y, debajo, la barra de navegación (Encuadre, Zoom ▾, Órbita); la entrada dinámica, las fichas de opciones y los menús                                                                                                                      |
 | Panel de paletas       | 280 px, fin, plegable a 36  | pestañas Propiedades, Capas, Bloques, Estilos; sin modo                                                                                                                                                                                                                                                                                                  |
 | Línea de comandos      | una fila de 28 px           | una línea; el historial se despliega hacia arriba hasta 12 líneas con F2                                                                                                                                                                                                                                                                                 |
@@ -489,7 +489,10 @@ los del motor en `cad/locales/`, con `npm run locales`). Las clases son lógicas
   - coherencia: 28 ya era la fila de la 4b.
 
   Resultado: 28 para todo control, 36 para las barras de controles (el control y 4 px a cada lado) y
-  una fila de 28 para la línea de comandos. La paleta pasa de 76 a 68 px. Fuera del sistema: el
+  una fila de 28 para la línea de comandos. La paleta pasa de 76 a 67 px: una rejilla de 58 (28 + 2 + 28) con 4 px de relleno y su borde.
+  Cada zona mide su contenido y deja el borde fuera; un borde dentro de la caja dejaba los botones
+  en medio píxel (la rejilla medía 59 y las columnas 28,5). Las partes de texto de una barra
+  (conmutadores, estado del guardado, Unidades) tienen ancho entero. Fuera del sistema: el
   ViewCube (24, a su escala) y la etiqueta `[Superior]`.
 
 - **5c. Propiedades actuales.** CECOLOR, CELTYPE y CELWEIGHT, la pieza más cara, en su propia fase
@@ -558,8 +561,12 @@ Objetivos al terminar:
     - flechas de 14 × 28 y 28 × 14.
     - Fuera de la escala, solo el ViewCube (24), `[Superior]` (20) y el selector de color nativo
       (26, dentro de su recuadro de 28).
-  - Zonas: barra superior 36, paleta 68, `command` 29 (28 y su borde), `status` 36. A 1280×720 la
-    paleta usa 576 de sus 619 px. A 1920×1080 el lienzo mide 1572 × 979.
+  - Zonas, por su contenido: barra superior 36, rejilla de la paleta 58, `command` 28 y `status` 36,
+    cada una con su borde fuera. A 1280×720 la paleta usa 576 px de los 609 libres. A 1920×1080 el
+    lienzo mide 1572 × 977.
+  - Todos los botones de icono de las cinco zonas empiezan en un píxel entero (`/draw`,
+    `/es/draw`, `/ar/draw`). Solo queda en fracciones el texto: pestañas, `[Superior]`, el menú SCU
+    del cubo y el campo de la línea de comandos.
   - `phase4.mjs` sin fallos en 7 tamaños × 3 idiomas: 0 solapes, 0 casillas ocultas, barra superior
     a 1280 en español con la capa de 50 caracteres, primer pintado, plegado y ZOOM E. Solo quedan las
     cuatro notas del ViewCube en `/ar/draw`.

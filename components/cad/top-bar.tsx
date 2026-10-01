@@ -295,15 +295,20 @@ function ApplicationMenu({ engine }: { engine: CadEngine }) {
 function SaveStatus({ state }: { state: EngineState }) {
   const t = useTranslations("Editor.TopBar")
   const saving = state.saveState === "saving"
-  if (!saving && state.lastSavedAt === null) return null
+  const shown = saving || state.lastSavedAt !== null
+  // A slot of a whole width, there before the first save: the groups after it
+  // neither jump when it appears nor land on a fraction of a pixel, which
+  // would blur their icons. The live region exists before it speaks.
   return (
     <span
       role="status"
-      title={saving ? undefined : t("savedHint")}
-      className="ms-1 flex min-w-0 shrink items-center gap-1 text-muted-foreground"
+      title={shown && !saving ? t("savedHint") : undefined}
+      className="ms-1 flex w-24 min-w-0 shrink items-center gap-1 text-muted-foreground"
     >
       {saving && <Loader2 className="size-3.5 shrink-0 animate-spin" />}
-      <span className="truncate">{saving ? t("saving") : t("saved")}</span>
+      {shown && (
+        <span className="truncate">{saving ? t("saving") : t("saved")}</span>
+      )}
     </span>
   )
 }
@@ -458,7 +463,9 @@ function PaletteToggle({
     <Button
       variant={active ? "active" : "ghost"}
       aria-pressed={active}
-      className="gap-2"
+      // A whole width, as every part of the bar: a text one would leave what
+      // follows it on a fraction of a pixel.
+      className="w-24 justify-start gap-2"
       onClick={() => {
         engine.togglePalette(tab)
         engine.focusSurface()

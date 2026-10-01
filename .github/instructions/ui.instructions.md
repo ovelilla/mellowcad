@@ -146,10 +146,18 @@ in Spanish. AutoCAD's own are about 24 at 100 %.
 | An icon button (`Button size="icon"`, `IconAction`)                        | 28 × 28, its icon 16                                                                                                        |
 | A text button, a drop-down's trigger, a field, a tab, a row of a list      | 28 high (`Button`'s default, `SelectTrigger`, `h-7`)                                                                        |
 | A mode's settings arrow (`size="icon-flyout"`), Zoom's under its button    | half of one: 14 × 28, 28 × 14 — attached, so the right-click on the 28 px mode is its equivalent target (2.5.8's exception) |
-| A docked bar of controls: the top bar, the status bar, the panel's tab bar | 36 (`h-9`): the control and 4 px either side, its border included; the folded panel is 36 wide for the same reason          |
+| A docked bar of controls: the top bar, the status bar, the panel's tab bar | 36 (`h-9`): the control and 4 px either side; the folded panel is 36 wide for the same reason                               |
 | The command line                                                           | one row of 28 under its border (`box-content h-7`); its field fills the row                                                 |
-| The tool palette                                                           | two columns of 28 in 68 px (`w-17`)                                                                                         |
+| The tool palette                                                           | two columns of 28, 2 px apart: a grid of 58 (`w-14.5`) inside `p-1`                                                         |
 
+- **A zone sizes its content** (`box-content`): its border lies outside the numbers above, so
+  the top bar is 37 px with it and the tool palette 67. A border inside the box eats a pixel, and
+  every control then lands on a half pixel, which blurs its icon (the palette's grid measured
+  59 px, its columns 28.5).
+- **In a bar every part has a whole width**: a text part — the palette toggles (`w-24`), the
+  save state's slot (`w-24`, there before the first save), Units (`w-9`) — gets a fixed one, or
+  its fraction of a pixel pushes every icon after it off the pixel grid. Measured: every icon
+  button of the five zones starts on a whole pixel.
 - Outside the system, each for a reason: the ViewCube's Home, roll arrows and UCS menu
   (`size="icon-cube"`, `"cube"`, 24), drawn on the cube at its scale; the viewport control
   `[Top]`, a label on the drawing; the separators, the product mark and swatches, which are not
@@ -185,7 +193,7 @@ in Spanish. AutoCAD's own are about 24 at 100 %.
   window, `tools` · `canvas` · `panel` between them, and `command` above `status`. A control goes
   into a zone; never position one absolutely over the drawing. The canvas takes what the zones
   leave, so ZOOM Extents frames only what is visible.
-  - **Every zone has its size in CSS** (the bars' `h-9`, the tool palette's `w-17`, the panel's
+  - **Every zone has its size in CSS** (the bars' `h-9`, the tool palette's `w-14.5`, the panel's
     `w-9` / `palette-open:w-(--palette-width)`, the command line's `box-content h-7`), not from
     its content, and is rendered before the engine mounts: the canvas's box at the first paint is then the final one,
     which the landing's view transition grows into and the first view is centred in. A zone that
@@ -214,7 +222,8 @@ in Spanish. AutoCAD's own are about 24 at 100 %.
   - the application menu (the product mark; New, Open, Save, Save As, Drawing Units, then the
     language as a submenu of `useLanguageLinks`), then the Quick Access Toolbar in AutoCAD's order
     — New (QNEW), Open, Save, Save As, Undo, Redo;
-  - the auto-save state (`role="status"`, the only part that shrinks and truncates);
+  - the auto-save state (`role="status"`, a slot of `w-24` there before the first save, the only
+    part that shrinks and truncates);
   - Layers (the Layers tab's trigger) and the layer drop-down (`engine.applyLayerControl`: with a
     selection it moves it in one undo step, else it sets the current layer — two clicks);
   - Match Properties, then the object colour, lineweight and linetype drop-downs, which act on the
@@ -225,7 +234,8 @@ in Spanish. AutoCAD's own are about 24 at 100 %.
     palette panel on that tab, or folds it when that tab is showing, and reads `active` then.
   - The buttons run the commands by their global name (`engine.runCommand("_QSAVE")`), as
     AutoCAD's macros do, so they echo at the prompt; Undo and Redo call the engine.
-  - Every part has a fixed width (`w-40` for the layer, `w-36`/`w-28`/`w-32` for the properties)
+  - Every part has a fixed width (`w-40` for the layer, `w-36`/`w-28`/`w-32` for the properties,
+    `w-24` for a palette toggle)
     and `shrink-0`, so the row's length never depends on a layer's name or the selection; measured
     to fit 1280 px in `/es/draw` with a 50-character layer name. A wider part needs that
     measurement again. Never place a part at its own fixed offset.
@@ -301,7 +311,7 @@ in Spanish. AutoCAD's own are about 24 at 100 %.
   application menu, the Quick Access Toolbar, the command line and the status bar. A palette opened
   meanwhile shows the panel again (`cleanScreen.palette`). It is never on at the first paint:
   AutoCAD does not save it, so it needs no head script.
-- **ToolRail** (`tools`, the inline start, 68 px) — the tool palette: only commands that act on
+- **ToolRail** (`tools`, the inline start, 67 px with its padding and border) — the tool palette: only commands that act on
   the drawing, two to a row, sectioned by `PALETTE` as the ribbon's Home tab panels (Draw, Modify,
   Annotation, Block, Utilities; Continue/Baseline and Adjust Space come from the Annotate tab), a
   `Separator` between sections. Its buttons are 28 × 28 `IconAction`s, icon-only with

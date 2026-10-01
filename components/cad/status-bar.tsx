@@ -264,7 +264,8 @@ export function StatusBar({
               render={
                 <Button
                   variant="ghost"
-                  className="font-mono"
+                  // A whole width: the modes left of it stay on whole pixels.
+                  className="w-9 font-mono"
                   aria-label={names.units}
                   onClick={() => engine.runCommand("_UNITS")}
                 >

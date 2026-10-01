@@ -108,7 +108,7 @@ export function PalettePanel({
         aria-label={t("label")}
         className="pointer-events-auto flex min-h-0 min-w-0 flex-1 flex-col"
       >
-        <div className="flex h-9 shrink-0 items-center border-b ps-1">
+        <div className="box-content flex h-9 shrink-0 items-center border-b ps-1">
           <Tabs.List className="flex min-w-0 flex-1 items-center overflow-hidden">
             {PALETTE_TABS.map((id) => (
               <Tabs.Tab
