@@ -3,7 +3,6 @@
 import { Fragment, useState } from "react"
 import {
   ArrowRightToLine,
-  ChevronDown,
   CopyPlus,
   Eraser,
   Eye,
@@ -137,19 +136,14 @@ const TOOL_ICONS: Record<string, LucideIcon> = {
 
 /**
  * A family of related tools collapsed behind one slot — the ribbon's
- * drop-down, whose button shows the member last used.
+ * drop-down, whose button shows the member last used. A family is variants of
+ * one command or commands on one kind of object, never tools grouped only to
+ * save room.
  */
 interface ToolFlyoutFamily {
-  readonly kind: "flyout"
   /** Its name in `Editor.ToolRail.flyouts`. */
   readonly id: FlyoutId
   /** Tool ids shown inside the flyout, in order. */
-  readonly members: readonly string[]
-}
-
-/** The section's expanded panel (the ribbon's slide-out): its less used tools. */
-interface ExpandedPanel {
-  readonly kind: "more"
   readonly members: readonly string[]
 }
 
@@ -160,15 +154,17 @@ type FlyoutId =
   | "rectangle"
   | "trim"
   | "fillet"
+  | "break"
   | "array"
   | "text"
   | "dimension"
   | "dimchain"
+  | "attributes"
   | "measure"
 
 type SectionId = "draw" | "modify" | "annotation" | "block" | "utilities"
 
-type PaletteItem = string | ToolFlyoutFamily | ExpandedPanel
+type PaletteItem = string | ToolFlyoutFamily
 
 /**
  * A section of the palette: one of the Home tab's ribbon panels, its slots in
@@ -187,16 +183,7 @@ interface PaletteSection {
 const flyout = (
   id: FlyoutId,
   members: readonly string[]
-): ToolFlyoutFamily => ({
-  kind: "flyout",
-  id,
-  members,
-})
-
-const more = (...members: readonly string[]): ExpandedPanel => ({
-  kind: "more",
-  members,
-})
+): ToolFlyoutFamily => ({ id, members })
 
 /**
  * The palette's structure, declared as data so adding a tool is a one-line
@@ -235,7 +222,10 @@ const PALETTE: readonly PaletteSection[] = [
       "scale",
       flyout("array", ["array", "arraypolar", "arraypath"]),
       "offset",
-      more("breakatpoint", "join", "break"),
+      // The ribbon keeps these three in the expanded Modify panel; here they
+      // are slots, Break at Point as the variant of BREAK it is.
+      flyout("break", ["break", "breakatpoint"]),
+      "join",
     ],
   },
   {
@@ -254,15 +244,21 @@ const PALETTE: readonly PaletteSection[] = [
         "dimdiameter",
       ]),
       flyout("dimchain", ["dimcontinue", "dimbaseline"]),
-      more("textedit", "dimspace"),
+      "textedit",
+      "dimspace",
     ],
   },
   {
     id: "block",
     folds: true,
-    // The ribbon's Edit Attributes drop-down holds Single and Multiple
-    // (-ATTEDIT), which is not built, so one command takes the slot.
-    items: ["insert", "block", "attedit", more("attdef", "attdisp")],
+    // The attribute commands share one slot: the ribbon's Edit Attributes
+    // drop-down (Single; Multiple is -ATTEDIT, not built) with the two it
+    // keeps beside it.
+    items: [
+      "insert",
+      "block",
+      flyout("attributes", ["attedit", "attdef", "attdisp"]),
+    ],
   },
   {
     id: "utilities",
@@ -336,24 +332,15 @@ export function ToolRail({
     .map((tool) => tool.id)
     .filter((id) => !listed.has(id) && !RAIL_EXCLUDED.has(id))
 
-  const slot = (item: PaletteItem, section: SectionId, key: string) => {
+  const slot = (item: PaletteItem, key: string) => {
     if (typeof item !== "string") {
-      return item.kind === "flyout" ? (
+      return (
         <ToolFlyout
           key={key}
           engine={engine}
           state={state}
           family={item}
           metaById={metaById}
-        />
-      ) : (
-        <ToolMenu
-          key={key}
-          engine={engine}
-          state={state}
-          groups={[item.members]}
-          metaById={metaById}
-          trigger={{ kind: "more", section }}
         />
       )
     }
@@ -384,17 +371,14 @@ export function ToolRail({
                 section.folds && "short:hidden"
               )}
             >
-              {section.items.map((item, i) =>
-                slot(item, section.id, `${section.id}-${i}`)
-              )}
+              {section.items.map((item, i) => slot(item, `${section.id}-${i}`))}
             </div>
             {section.folds && (
-              <ToolMenu
+              <FoldedSection
                 engine={engine}
                 state={state}
-                groups={groupsOf(section.items)}
+                section={section}
                 metaById={metaById}
-                trigger={{ kind: "section", id: section.id }}
               />
             )}
           </Fragment>
@@ -403,7 +387,7 @@ export function ToolRail({
           <>
             <Separator className="my-1" />
             <div className="grid grid-cols-2 justify-items-center gap-0.5">
-              {uncategorized.map((id) => slot(id, "utilities", id))}
+              {uncategorized.map((id) => slot(id, id))}
             </div>
           </>
         )}
@@ -497,69 +481,54 @@ function ToolFlyout({
 }
 
 /**
- * A menu of whole tools behind one trigger: a section's expanded panel ("▾"),
- * or a whole section folded by a short window, whose button carries the
- * icon of its first tool, as the ribbon's panel buttons do.
+ * A section folded by a short window: one button, carrying the icon of the
+ * section's first tool as the ribbon's panel buttons do, whose menu lists
+ * every tool of it.
  */
-function ToolMenu({
+function FoldedSection({
   engine,
   state,
-  groups,
+  section,
   metaById,
-  trigger,
 }: {
   engine: CadEngine
   state: EngineState
-  groups: readonly (readonly string[])[]
+  section: PaletteSection
   metaById: Map<string, ToolMeta>
-  trigger:
-    { kind: "more"; section: SectionId } | { kind: "section"; id: SectionId }
 }) {
-  const t = useTranslations("Editor.ToolRail")
-  const metas = groups
+  const t = useTranslations("Editor.ToolRail.sections")
+  const groups = groupsOf(section.items)
     .map((group) =>
       group
         .map((id) => metaById.get(id))
         .filter((meta): meta is ToolMeta => meta !== undefined)
     )
     .filter((group) => group.length > 0)
-  if (metas.length === 0) return null
+  if (groups.length === 0) return null
 
-  const active = metas.some((group) =>
+  const active = groups.some((group) =>
     group.some((meta) => meta.id === state.activeToolId)
   )
-  const FirstIcon = TOOL_ICONS[metas[0][0].id] ?? Shapes
+  const FirstIcon = TOOL_ICONS[groups[0][0].id] ?? Shapes
 
   return (
     <Menu.Root>
       <Menu.Trigger
         render={
-          trigger.kind === "more" ? (
-            <Button
-              size="icon-tool"
-              variant={active ? "active" : "ghost"}
-              aria-label={t("more", {
-                section: t(`sections.${trigger.section}`),
-              })}
-            >
-              <ChevronDown />
-            </Button>
-          ) : (
-            <Button
-              size="icon-tool"
-              variant={active ? "active" : "ghost"}
-              aria-label={t(`sections.${trigger.id}`)}
-              className="relative hidden w-full short:inline-flex"
-            >
-              <FirstIcon />
-              <FlyoutMark />
-            </Button>
-          )
+          <Button
+            size="icon-tool"
+            variant={active ? "active" : "ghost"}
+            aria-label={t(section.id)}
+            className="relative hidden w-full short:inline-flex"
+          >
+            <FirstIcon />
+            <FlyoutMark />
+          </Button>
         }
       />
       <ToolMenuPopup
         engine={engine}
-        groups={metas}
+        groups={groups}
         activeId={state.activeToolId}
       />
     </Menu.Root>

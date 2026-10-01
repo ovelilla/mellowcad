@@ -8,12 +8,14 @@
 > panel que aparece al seleccionar haría cambiar de tamaño el lienzo. La línea de comandos acoplada
 > guarda las tres líneas de historial de AutoCAD hasta la fase 5. Los menús en el cursor pasan las
 > coordenadas del lienzo a la ventana con `engine.clientFromScreen`. En la 2, la paleta mide 76 px y
-> no oculta nada: 16 filas caben a 720 px y, por debajo de 700, Anotación, Bloque y Utilidades se
+> no oculta nada: 17 filas caben a 720 px y, por debajo de 700, Anotación, Bloque y Utilidades se
 > pliegan con una variante CSS (`short:`), sin esperar al motor. Borrar es ahora el comando ERASE,
 > una herramienta con «Designe objetos» como la de AutoCAD, y no el antiguo «Borrar la selección».
 > Seleccionar, Deshacer, Rehacer e Igualar propiedades esperan en la CommandBar a la barra superior.
-> Editar atributos es un botón suelto: de su desplegable (Uno, Varios) solo existe uno. Sigue la
-> convención de `docs/next-*.md`: se borra cuando la
+> Las casillas se agrupan solo por semántica (variantes de un comando o comandos sobre un mismo
+> objeto), nunca para ahorrar sitio: el «▾ más» de §3 se descartó, Partir en punto entra en Partir ▾,
+> Unir, Editar texto y Ajustar espacio son casillas, y los tres comandos de atributos forman
+> Atributos ▾. Sigue la convención de `docs/next-*.md`: se borra cuando la
 > última fase esté hecha, y lo que deba durar pasa antes a `.github/instructions/ui.instructions.md`
 > y a `docs/autocad-coverage.md`. Versión visual, con las figuras de antes y después:
 > https://claude.ai/artifact/BddNdia3MSJnwA4AuXi5Bt (privada; se lee con la herramienta Artifact).
@@ -86,16 +88,16 @@ que AutoCAD pone ahí.
 
 ## 3. Paleta de herramientas
 
-Dos columnas, 16 filas, unos 600 px con separadores; caben en los ~624 px libres a 1280×720. Un
-desplegable abre una lista con icono, nombre y alias, no una tira de glifos. «▾ más» es el panel
-ampliado de la cinta.
+Dos columnas, 17 filas, 540 px con separadores; caben en los 560 px libres a 1280×720. Un
+desplegable abre una lista con icono, nombre y alias, no una tira de glifos, y agrupa solo variantes
+de un comando o comandos sobre un mismo objeto: nada se esconde en un «▾ más» por falta de sitio.
 
 | Sección    | Casillas (▾ = desplegable)                                                                                                                                                                      |
 | ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Dibujo     | Línea · Polilínea · Círculo ▾ · Arco ▾ · Rectángulo/Polígono ▾ · Elipse ▾ · Sombreado · Spline                                                                                                  |
-| Modificar  | Desplazar · Girar · Recortar/Alargar ▾ · Borrar (`ERASE`) · Copiar · Simetría · Empalme/Chaflán ▾ · Descomponer · Estirar · Escala · Matriz ▾ · Desfase · ▾ más (Partir en punto, Unir, Partir) |
-| Anotación  | Texto ▾ (MTEXT, TEXT) · Cota ▾ · Continua/Línea base ▾ · ▾ más (Editar texto, Ajustar espacio)                                                                                                  |
-| Bloque     | Insertar · Crear · Editar atributos · ▾ más (Definir atributos, Visualización de atributos)                                                                                                     |
+| Modificar  | Desplazar · Girar · Recortar/Alargar ▾ · Borrar (`ERASE`) · Copiar · Simetría · Empalme/Chaflán ▾ · Descomponer · Estirar · Escala · Matriz ▾ · Desfase · Partir ▾ · Unir                       |
+| Anotación  | Texto ▾ (MTEXT, TEXT) · Cota ▾ · Continua/Línea base ▾ · Editar texto · Ajustar espacio                                                                                                         |
+| Bloque     | Insertar · Crear · Atributos ▾ (Editar, Definir, Visualización)                                                                                                                                 |
 | Utilidades | Medir ▾ · Localizar punto (`ID`)                                                                                                                                                                |
 
 Salen del rail:
@@ -184,7 +186,7 @@ Verificado en la ayuda de AutoCAD 2026:
   solo de Anotar.
 - **Bloque.** Insertar, Crear, Editar y Editar atributos▾ (Uno es `EATTEDIT`; Varios no se ha podido
   verificar). Definir atributos está en el panel Bloque. Ni `ATTDISP` ni `TEXTEDIT` tienen sitio
-  documentado en la cinta, así que quedan en «▾ más».
+  documentado en la cinta; Editar texto es casilla y Visualización entra en Atributos ▾.
 - **Utilidades.** Medir▾ (Distancia y Área citados en 2026) e ID de punto.
 
 **Comprobar antes de usarlo:**

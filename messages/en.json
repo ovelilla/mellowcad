@@ -290,10 +290,12 @@
         "rectangle": "Rectangle",
         "trim": "Trim",
         "fillet": "Fillet",
+        "break": "Break",
         "array": "Array",
         "text": "Text",
         "dimension": "Dimension",
         "dimchain": "Continue",
+        "attributes": "Attributes",
         "measure": "Measure"
       },
       "sections": {
@@ -302,8 +304,7 @@
         "annotation": "Annotation",
         "block": "Block",
         "utilities": "Utilities"
-      },
-      "more": "{section}: more tools"
+      }
     },
     "CommandLine": {
       "label": "Command line",

@@ -152,17 +152,20 @@ class or light values.
   Annotation, Block, Utilities; Continue/Baseline and Adjust Space come from the Annotate tab), a
   `Separator` between sections. Its buttons are `size="icon-tool"` (30 × 28), icon-only with
   `side="inline-end"` tooltips.
-  - Variant families (Circle, Arc, Rectangle/Polygon, Ellipse, Trim/Extend, Fillet/Chamfer, Array,
-    Text, Dimension, Continue/Baseline, Measure) are flyouts, named by `Editor.ToolRail.flyouts`:
-    a Base UI menu of radio items listing each member's icon, name and alias, as the ribbon's
-    drop-downs do — never a strip of bare glyphs. A section's less used tools sit behind its `▾`
-    (`more(…)`, the ribbon's expanded panel: Break at Point, Join and Break in Modify). Every
-    drop-down opens on the inline end.
+  - Variant families (Circle, Arc, Rectangle/Polygon, Ellipse, Trim/Extend, Fillet/Chamfer, Break,
+    Array, Text, Dimension, Continue/Baseline, Attributes, Measure) are flyouts, named by
+    `Editor.ToolRail.flyouts`: a Base UI menu of radio items listing each member's icon, name and
+    alias, as the ribbon's drop-downs do — never a strip of bare glyphs. Every drop-down opens on
+    the inline end.
+  - **Group by meaning, never to save room.** A flyout holds variants of one command or commands
+    on one kind of object; a tool that merely does not fit is not hidden in an overflow menu
+    (the ribbon's expanded panels are not copied: Join and Break are slots). When the palette
+    outgrows its height, the answer is reconsidered then, not folded into a "more" menu.
   - **Folding by height**: in a window under 700 px tall (the `short:` variant, a media query in
     `globals.css`, so the palette has its final height at the first paint) the sections marked
     `folds` — Annotation, Block, Utilities — become one drop-down each, the ribbon's "Minimize to
     Panel Buttons": the button carries the section's first icon and its menu lists every tool of
-    the section, a group per drop-down. Unfolded the palette is 16 rows and fits 720 px; folded,
+    the section, a group per drop-down. Unfolded the palette is 17 rows and fits 720 px; folded,
     14 rows fit 650 px. A new slot must keep both, measured in Chrome (no palette button past the
     zone).
   - What is not a command on the drawing lives elsewhere, and what leaves the palette before its

@@ -290,10 +290,12 @@
         "rectangle": "Rectángulo",
         "trim": "Recortar",
         "fillet": "Empalme",
+        "break": "Partir",
         "array": "Matriz",
         "text": "Texto",
         "dimension": "Cota",
         "dimchain": "Continua",
+        "attributes": "Atributos",
         "measure": "Medir"
       },
       "sections": {
@@ -302,8 +304,7 @@
         "annotation": "Anotación",
         "block": "Bloque",
         "utilities": "Utilidades"
-      },
-      "more": "{section}: más herramientas"
+      }
     },
     "CommandLine": {
       "label": "Línea de comandos",

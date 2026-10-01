@@ -290,10 +290,12 @@
         "rectangle": "مستطيل",
         "trim": "تشذيب",
         "fillet": "تقويس",
+        "break": "كسر",
         "array": "مصفوفة",
         "text": "نص",
         "dimension": "بُعد",
         "dimchain": "متتابع",
+        "attributes": "السمات",
         "measure": "قياس"
       },
       "sections": {
@@ -302,8 +304,7 @@
         "annotation": "التعليقات التوضيحية",
         "block": "الكتلة",
         "utilities": "أدوات مساعدة"
-      },
-      "more": "{section}: مزيد من الأدوات"
+      }
     },
     "CommandLine": {
       "label": "سطر الأوامر",
