@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest"
+import { afterEach, describe, expect, it, vi } from "vitest"
 import type { CircleEntity, Entity, LineEntity } from "../domain/entities"
 import type { PropertyRow } from "./EngineState"
 import {
@@ -743,6 +743,58 @@ describe("viewport", () => {
 
     expect(cad.toScreen(p(0, 0)).x).toBeCloseTo(before.x + 60)
     expect(cad.entityCount).toBe(0)
+    expect(cad.runtime.zoomPrevious()).toBe(true)
+    expect(cad.toScreen(p(0, 0))).toBeCloseToPoint(before)
+  })
+
+  describe("a double-click of the wheel button", () => {
+    afterEach(() => {
+      vi.useRealTimers()
+    })
+
+    function framed() {
+      const cad = createHarness({
+        entities: [lineOf(p(-2000, 0), p(2000, 0))],
+      })
+      vi.useFakeTimers({ toFake: ["Date"] })
+      return cad
+    }
+
+    it("is ZOOM Extents, one ZOOM Previous step, in a command too", () => {
+      const cad = framed()
+      cad.command("LINE").click(p(0, 0))
+
+      cad.click(p(100, 100), { button: 1 })
+      vi.advanceTimersByTime(200)
+      cad.click(p(100, 100), { button: 1 })
+
+      expect(cad.toScreen(p(-2000, 0)).x).toBeCloseTo(40)
+      expect(cad.toScreen(p(2000, 0)).x).toBeCloseTo(960)
+      expect(cad.activeToolId()).toBe("line")
+      expect(cad.runtime.zoomPrevious()).toBe(true)
+      expect(cad.state().scale).toBe(1)
+      expect(cad.runtime.zoomPrevious()).toBe(false)
+    })
+
+    it("is two clicks when they are too far apart in time", () => {
+      const cad = framed()
+
+      cad.click(p(100, 100), { button: 1 })
+      vi.advanceTimersByTime(600)
+      cad.click(p(100, 100), { button: 1 })
+
+      expect(cad.state().scale).toBe(1)
+      expect(cad.runtime.zoomPrevious()).toBe(false)
+    })
+
+    it("is not a pan's release", () => {
+      const cad = framed()
+
+      cad.click(p(100, 100), { button: 1 })
+      cad.drag(p(100, 100), p(160, 100), { button: 1 })
+
+      expect(cad.state().scale).toBe(1)
+    })
   })
 })
 

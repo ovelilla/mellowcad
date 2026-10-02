@@ -206,6 +206,13 @@ const WHEEL_BURST_MS = 400
 /** Movement past this (screen px) makes a press a drag rather than a click. */
 const DRAG_THRESHOLD_PX = 4
 
+/**
+ * Two clicks of the wheel button closer than this are a double-click. WHY a
+ * time of our own: a browser fires `dblclick` for the primary button only and
+ * does not tell the system's double-click time, so Windows' default stands in.
+ */
+const DOUBLE_CLICK_MS = 500
+
 /** A key pressed with no modifier, as the shortcut menu presses Enter and Esc. */
 const plainKey = (key: string): KeyEventData => ({
   key,
@@ -307,7 +314,12 @@ export class CadRuntime extends Observable {
   private pendingFit = false
 
   private panning = false
+  private panFrom: Vec2 | null = null
   private lastPanScreen: Vec2 | null = null
+  /** Whether this drag of the wheel button has taken its ZOOM Previous step. */
+  private panPushed = false
+  /** The last click of the wheel button, which a second one makes a double. */
+  private lastWheelButtonClick: { at: Vec2; time: number } | null = null
   /** A transparent orbit under way (Shift + the wheel button held). */
   private orbiting: { last: Vec2; target: Vec3 } | null = null
   /** A drag on the ViewCube or its compass ring under way. */
@@ -2257,8 +2269,8 @@ export class CadRuntime extends Observable {
     // the button or wheel").
     if (e.button === 1) {
       this.panning = true
+      this.panFrom = e.screen
       this.lastPanScreen = e.screen
-      this.viewport.pushHistory()
       this.crosshairScreen = null // native grab cursor takes over while panning
       this.host.setCursor("grabbing")
       return
@@ -2351,6 +2363,13 @@ export class CadRuntime extends Observable {
         x: e.screen.x - this.lastPanScreen.x,
         y: e.screen.y - this.lastPanScreen.y,
       }
+      if (delta.x === 0 && delta.y === 0) return
+      // One ZOOM Previous step per drag, taken when the view first moves: a
+      // click of the wheel button that never moved it leaves none.
+      if (!this.panPushed) {
+        this.viewport.pushHistory()
+        this.panPushed = true
+      }
       this.lastPanScreen = e.screen
       this.viewport.panByScreen(delta)
       return
@@ -2362,6 +2381,27 @@ export class CadRuntime extends Observable {
     this.updateSnap(e.screen)
     this.activeTool.onPointerMove?.(this.buildPointerInput(e), this.toolContext)
     this.host.requestRender()
+  }
+
+  /**
+   * A click of the wheel button; a second one close by is ZOOM Extents
+   * ("Double-click the wheel button"), in any command, as AutoCAD's is.
+   */
+  private wheelButtonClick(screen: Vec2): void {
+    const now = Date.now()
+    const last = this.lastWheelButtonClick
+    if (
+      last !== null &&
+      now - last.time <= DOUBLE_CLICK_MS &&
+      Math.hypot(screen.x - last.at.x, screen.y - last.at.y) < DRAG_THRESHOLD_PX
+    ) {
+      this.lastWheelButtonClick = null
+      this.zoomToFit()
+      this.updateSnap(screen)
+      this.host.requestRender()
+      return
+    }
+    this.lastWheelButtonClick = { at: screen, time: now }
   }
 
   /**
@@ -2388,9 +2428,16 @@ export class CadRuntime extends Observable {
       return
     }
     if (this.panning && e.button === 1) {
+      const from = this.panFrom
       this.panning = false
+      this.panFrom = null
       this.lastPanScreen = null
+      this.panPushed = false
       this.activeTool.onActivate?.(this.toolContext) // restore tool cursor
+      const moved = from
+        ? Math.hypot(e.screen.x - from.x, e.screen.y - from.y)
+        : Infinity
+      if (moved < DRAG_THRESHOLD_PX) this.wheelButtonClick(e.screen)
       return
     }
     if (e.button === 2) {

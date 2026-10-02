@@ -176,7 +176,10 @@ steals them from typing. Prefer exposing behaviour as a command option or a comm
 2. Shift+right at a point prompt opens the object-snap override menu, **on the press**, before
    anything else reads the right button; elsewhere it is a plain right-click.
 3. Shift+wheel button orbits (transparent 3DORBIT); the wheel button alone pans (MBUTTONPAN 1).
-   One ZOOM Previous step per drag (`pushHistory` on the press).
+   One ZOOM Previous step per drag, pushed when the view first moves, so a click leaves none; a
+   release within `DRAG_THRESHOLD_PX` of its press is a click, and two within `DOUBLE_CLICK_MS`
+   (500, Windows' default — the browser tells no double-click time and fires `dblclick` for the
+   primary button only) are ZOOM Extents (`zoomToFit`).
 4. The right button is held on the press and answered on the **release** — where Windows opens a
    shortcut menu, and for the reason the Selection list box opens there: a menu opened on the press
    is taken by its own release. `rightClickResponse` (SHORTCUTMENU 11) decides: the Default menu
