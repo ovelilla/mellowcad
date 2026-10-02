@@ -161,8 +161,8 @@ describe("transcript", () => {
     expect(lines.map(({ kind, prompt, text }) => [kind, prompt, text])).toEqual(
       [
         ["command", "", "CIRCLE"],
-        ["input", "Center:", "30,40"],
-        ["input", "Radius:", "12"],
+        ["input", "Center [3P/2P/Ttr]:", "30,40"],
+        ["input", "Radius [Diameter]:", "12"],
       ]
     )
   })

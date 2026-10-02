@@ -9,6 +9,7 @@ import {
   chamferLines,
   circleCircleIntersection,
   circleFrom3Points,
+  circlesTangentToBoth,
   closestPointOnArc,
   closestPointOnCircle,
   closestPointOnInfiniteLine,
@@ -27,6 +28,7 @@ import {
   segmentCircleIntersection,
   segmentSegmentIntersection,
   tangentPointsFromPoint,
+  type TangentTarget,
 } from "./primitives"
 import {
   angle,
@@ -480,6 +482,66 @@ describe("circleCircleIntersection", () => {
           }
         }
       )
+    )
+  })
+})
+
+describe("circlesTangentToBoth", () => {
+  const xAxis: TangentTarget = { kind: "line", a: p(-1, 0), b: p(1, 0) }
+  const yAxis: TangentTarget = { kind: "line", a: p(0, -1), b: p(0, 1) }
+
+  it("finds the four circles in the corners of two crossing lines", () => {
+    const centres = circlesTangentToBoth(xAxis, yAxis, 2).map((c) => c.center)
+    expect(centres).toHaveLength(4)
+    for (const centre of centres) {
+      expect(Math.abs(centre.x)).toBeCloseTo(2)
+      expect(Math.abs(centre.y)).toBeCloseTo(2)
+    }
+  })
+
+  it("touches a circle from outside and from inside", () => {
+    const circle: TangentTarget = { kind: "circle", center: ORIGIN, radius: 5 }
+    const line: TangentTarget = { kind: "line", a: p(-9, 0), b: p(9, 0) }
+    const fits = circlesTangentToBoth(circle, line, 1)
+    const touching = fits.filter((fit) => fit.center.x > 0 && fit.center.y > 0)
+    expect(touching.map((fit) => fit.center.x).sort()).toEqual([
+      expect.closeTo(Math.sqrt(15), 9),
+      expect.closeTo(Math.sqrt(35), 9),
+    ])
+  })
+
+  it("finds none between parallels further apart than the diameter", () => {
+    const above: TangentTarget = { kind: "line", a: p(-1, 10), b: p(1, 10) }
+    expect(circlesTangentToBoth(xAxis, above, 2)).toEqual([])
+  })
+
+  it("returns circles at the radius from both, touching each", () => {
+    const target = fc.oneof(
+      fc
+        .tuple(point, point)
+        .filter(([a, b]) => V.distance(a, b) > 1e-3)
+        .map(([a, b]): TangentTarget => ({ kind: "line", a, b })),
+      fc
+        .tuple(point, positiveLength)
+        .map(([center, radius]): TangentTarget => ({
+          kind: "circle",
+          center,
+          radius,
+        }))
+    )
+    const gap = (t: TangentTarget, q: typeof ORIGIN) =>
+      t.kind === "line"
+        ? closestPointOnInfiniteLine(t.a, t.b, q).distance
+        : closestPointOnCircle(t.center, t.radius, q).distance
+    fc.assert(
+      fc.property(target, target, positiveLength, (first, second, r) => {
+        for (const fit of circlesTangentToBoth(first, second, r)) {
+          expect(V.distance(fit.center, fit.touchFirst)).toBeCloseTo(r, 3)
+          expect(V.distance(fit.center, fit.touchSecond)).toBeCloseTo(r, 3)
+          expect(gap(first, fit.touchFirst)).toBeCloseTo(0, 3)
+          expect(gap(second, fit.touchSecond)).toBeCloseTo(0, 3)
+        }
+      })
     )
   })
 })

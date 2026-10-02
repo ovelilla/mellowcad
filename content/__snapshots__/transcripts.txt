@@ -1,15 +1,15 @@
 idle: Command:
 ## hero
 238 +187 command |  | CIRCLE
-425 +127 input | Center: | 0,0
-552 +107 input | Radius: | 50
+425 +127 input | Center [3P/2P/Ttr]: | 0,0
+552 +107 input | Radius [Diameter]: | 50
 993 +187 command |  | OFFSET
 1180 +107 input | Offset distance [Through/Erase: No/Layer: Source/Multiple: Off]: | 30
 1287 +124 input | OFFSET: | 
 1411 +124 input | OFFSET: | 
 1935 +187 command |  | CIRCLE
-2122 +147 input | Center: | 36,0
-2269 +87 input | Radius: | 6
+2122 +147 input | Center [3P/2P/Ttr]: | 36,0
+2269 +87 input | Radius [Diameter]: | 6
 2552 +267 command |  | ARRAYPOLAR
 2819 +124 input | ARRAYPOLAR: | 
 2943 +67 input | ARRAYPOLAR: | 
@@ -28,8 +28,8 @@ idle: Command:
 6345 +167 input | LINE: | 0,-58
 6512 +187 input | LINE: | @0,116
 7099 +187 command |  | CIRCLE
-7286 +127 input | Center: | 0,0
-7413 +107 input | Radius: | 36
+7286 +127 input | Center [3P/2P/Ttr]: | 0,0
+7413 +107 input | Radius [Diameter]: | 36
 8006 +167 command |  | HATCH
 8173 +87 input | Pick internal point [Properties/Select objects]: | P
 8260 +67 input | Enter a pattern name: | 
@@ -60,8 +60,8 @@ input | OFFSET: |
 input | OFFSET: | 
 ## osnap
 command |  | CIRCLE
-input | Center: | 10,0
-input | Radius: | 30
+input | Center [3P/2P/Ttr]: | 10,0
+input | Radius [Diameter]: | 30
 command |  | LINE
 input | LINE: | -65,-40
 ## otrack
@@ -80,8 +80,8 @@ command |  | RECTANG
 input | First corner [Elevation/Thickness]: | 0,0
 input | Other corner: | @30,20
 command |  | CIRCLE
-input | Center: | 60,40
-input | Radius: | 14
+input | Center [3P/2P/Ttr]: | 60,40
+input | Radius [Diameter]: | 14
 command |  | LINE
 input | LINE: | 15,50
 input | LINE: | @80,-45
@@ -90,8 +90,8 @@ command |  | RECTANG
 input | First corner [Elevation/Thickness]: | 0,0
 input | Other corner: | @30,20
 command |  | CIRCLE
-input | Center: | 60,40
-input | Radius: | 14
+input | Center [3P/2P/Ttr]: | 60,40
+input | Radius [Diameter]: | 14
 command |  | LINE
 input | LINE: | 15,50
 input | LINE: | @80,-45
@@ -107,11 +107,11 @@ input | Length [Arc/Close/Undo]: | A
 input | PLINE [Line/Close/Undo]: | @0,-30
 input | Length [Line/Close/Undo]: | 
 command |  | CIRCLE
-input | Center: | 0,15
-input | Radius: | 6
+input | Center [3P/2P/Ttr]: | 0,15
+input | Radius [Diameter]: | 6
 command |  | CIRCLE
-input | Center: | 60,15
-input | Radius: | 6
+input | Center [3P/2P/Ttr]: | 60,15
+input | Radius [Diameter]: | 6
 ## modify
 command |  | PLINE
 input | PLINE: | 0,0
@@ -167,8 +167,8 @@ command |  | DIST
 input | First point: | 
 ## files
 command |  | CIRCLE
-input | Center: | 0,0
-input | Radius: | 16
+input | Center [3P/2P/Ttr]: | 0,0
+input | Radius [Diameter]: | 16
 command |  | HATCH
 input | Pick internal point [Properties/Select objects]: | P
 input | Enter a pattern name: | 

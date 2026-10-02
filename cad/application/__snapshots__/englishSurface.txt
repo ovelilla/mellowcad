@@ -517,13 +517,16 @@ lweight "Lineweight" LW
   properties: -
   cycling: -
 > CIRCLE
-  prompt: CIRCLE:
+  prompt: CIRCLE [3P/2P/Ttr]:
   asks: "Center"
   dyn: "X,Y"=""||*
+  options: [null] 3P, [null] 2P, [T] Ttr
   command| CIRCLE
 > centre
+  prompt: CIRCLE [Diameter]:
   asks: "Radius"
   dyn: "Radius"=""|0.00|mm*
+  options: [D] Diameter
 > move
   dyn: "Radius"=""|30.00|mm*
 > radius
@@ -532,14 +535,18 @@ lweight "Lineweight" LW
   prompt: Command:
   asks: -
   dyn: -
+  options: -
 > CIRCLED
-  prompt: CIRCLED:
+  prompt: CIRCLED [3P/2P/Ttr]:
   asks: "Center"
   dyn: "X,Y"=""||*
+  options: [null] 3P, [null] 2P, [T] Ttr
   command| CIRCLED
 > centre
+  prompt: CIRCLED:
   asks: "Diameter"
   dyn: "Diameter"=""|0.00|mm*
+  options: -
 > diameter
   prompt: Command:
   asks: -

@@ -1347,7 +1347,8 @@ export const en: EngineCatalog = {
           "value"
         ]
       ],
-      "pointingEdgeOn": "Pointing in edge-on UCS is prohibited."
+      "pointingEdgeOn": "Pointing in edge-on UCS is prohibited.",
+      "circleDoesNotExist": "Circle does not exist."
     },
     "feedback": {
       "snap": {

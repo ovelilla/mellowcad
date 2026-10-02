@@ -1,11 +1,17 @@
 import { Vec2, V } from "../../geometry/Vec2"
 import { Vec3 } from "../../geometry/Vec3"
-import { circleFrom3Points } from "../../geometry/primitives"
+import {
+  circleFrom3Points,
+  circlesTangentToBoth,
+  TangentTarget,
+} from "../../geometry/primitives"
 import {
   CircleEntity,
-  EntityId,
   createCircle,
+  Entity,
+  EntityId,
   onPlaneOf,
+  readsInPlan,
   withElevation,
   withNormal,
 } from "../../domain/entities"
@@ -21,7 +27,14 @@ import {
 import { ScenePrimitive } from "../../scene/types"
 import { THEME } from "../../scene/theme"
 import { entityScenePrimitive } from "../SceneBuilder"
-import { KeyInput, PointerInput, Tool, ToolContext } from "./Tool"
+import {
+  CommandOption,
+  CommandOptionOutcome,
+  KeyInput,
+  PointerInput,
+  Tool,
+  ToolContext,
+} from "./Tool"
 import {
   withCurrentProperties,
   withCurrentThickness,
@@ -46,10 +59,11 @@ const PREVIEW_ID = "circle-preview"
  * respectively. In diameter mode the cursor therefore sits at the diameter
  * distance (2× the radius), so the line extends past the rim — its length being
  * the diameter is the cue that the diameter is being specified.
- *
- * Tan-Tan-Radius is future work (it needs a tangent-solver over two objects).
  */
 export type CircleMode = "center" | "centerDiameter" | "twoPoint" | "threePoint"
+
+/** A mode the first prompt's keywords can switch to: `Ttr` has no rail entry. */
+type ActiveMode = CircleMode | "ttr"
 
 /**
  * AutoCAD's CIRCLERAD, shared by every mode of one runtime: the last circle's
@@ -58,6 +72,14 @@ export type CircleMode = "center" | "centerDiameter" | "twoPoint" | "threePoint"
  */
 export interface CircleRadiusDefault {
   radius: number
+}
+
+/** An object picked for Ttr, and where: the solution touching nearest wins. */
+interface Tangency {
+  readonly target: TangentTarget
+  readonly pick: Vec2
+  /** The pick on the drawing plane, whose height the circle takes. */
+  readonly at: Vec3
 }
 
 type CircleToolState =
@@ -82,19 +104,38 @@ type CircleToolState =
       readonly p2: Vec3
       readonly cursor: Vec3
     }
+  /** Ttr: awaiting the object of the first tangent. */
+  | { readonly phase: "tangentFirst"; readonly hover: Entity | null }
+  /** Ttr: awaiting the object of the second tangent. */
+  | {
+      readonly phase: "tangentSecond"
+      readonly first: Tangency
+      readonly hover: Entity | null
+    }
+  /** Ttr: awaiting the radius, typed or as the distance between two points. */
+  | {
+      readonly phase: "ttrRadius"
+      readonly first: Tangency
+      readonly second: Tangency
+      readonly base: Vec3 | null
+      readonly cursor: Vec3
+    }
 
 /**
  * The circle tool — AutoCAD's CIRCLE. One class parameterised by {@link
- * CircleMode}, registered once per mode. It never mutates the document: the
- * finished circle is submitted as an {@link AddEntityCommand}, so it is
- * undoable, and the command ends the moment the circle is defined (CIRCLE is a
- * single-shot command in AutoCAD).
+ * CircleMode}, registered once per mode; the first prompt's `[3P/2P/Ttr]` and
+ * the radius prompt's `[Diameter]` switch the mode actually running. It never
+ * mutates the document: the finished circle is submitted as an {@link
+ * AddEntityCommand}, so it is undoable, and the command ends the moment the
+ * circle is defined (CIRCLE is a single-shot command in AutoCAD).
  */
 export class CircleTool implements Tool {
   readonly id: string
   readonly shortcut?: string
 
   private readonly mode: CircleMode
+  /** The mode actually running: the first prompt's keywords switch it. */
+  private active: ActiveMode
   private state: CircleToolState
   private lastScreen: Vec2 | null = null
 
@@ -105,39 +146,91 @@ export class CircleTool implements Tool {
     private readonly lastRadius: CircleRadiusDefault = { radius: 0 }
   ) {
     this.mode = mode
+    this.active = mode
     this.id = id
     this.shortcut = shortcut
     this.state = this.initialState()
   }
 
   private initialState(): CircleToolState {
-    return this.isCenterMode() ? { phase: "center" } : { phase: "p1" }
-  }
-
-  /** Whether this instance starts from a centre point (radius or diameter). */
-  private isCenterMode(): boolean {
-    return this.mode === "center" || this.mode === "centerDiameter"
-  }
-
-  /** Whether the size field means the diameter (else the radius). */
-  private get diameterMode(): boolean {
-    return this.mode === "centerDiameter"
+    switch (this.active) {
+      case "center":
+      case "centerDiameter":
+        return { phase: "center" }
+      case "ttr":
+        return { phase: "tangentFirst", hover: null }
+      default:
+        return { phase: "p1" }
+    }
   }
 
   onActivate(ctx: ToolContext): void {
     ctx.setCursor("crosshair")
     ctx.selection.clear()
-    this.state = this.initialState()
-    this.openPointInput(ctx, this.firstPrompt())
+    this.restart(ctx)
   }
 
   onDeactivate(ctx: ToolContext): void {
+    this.active = this.mode
     this.state = this.initialState()
     ctx.dynamicInput.close()
   }
 
+  /** Back to the first prompt of the mode the tool was started in. */
+  private restart(ctx: ToolContext): void {
+    this.active = this.mode
+    this.state = this.initialState()
+    this.openPointInput(ctx, this.firstPrompt())
+  }
+
   private firstPrompt(): PromptId {
-    return this.isCenterMode() ? "center" : "firstPoint"
+    return this.state.phase === "center" ? "center" : "firstPoint"
+  }
+
+  commandOptions(): readonly CommandOption[] {
+    switch (this.state.phase) {
+      case "center":
+        return [{ id: "3P" }, { id: "2P" }, { id: "Ttr" }]
+      case "radius":
+        return this.state.diameter ? [] : [{ id: "Diameter" }]
+      default:
+        return []
+    }
+  }
+
+  invokeOption(id: string, ctx: ToolContext): CommandOptionOutcome {
+    const state = this.state
+    if (state.phase === "center") {
+      if (id === "3P" || id === "2P") {
+        this.active = id === "3P" ? "threePoint" : "twoPoint"
+        this.state = { phase: "p1" }
+        this.openPointInput(ctx, "firstPoint")
+        ctx.requestRender()
+        return "continue"
+      }
+      if (id === "Ttr") {
+        this.active = "ttr"
+        this.state = { phase: "tangentFirst", hover: null }
+        // An object pick: no field, so the drawing keeps focus.
+        ctx.dynamicInput.open({ fields: [], commit: () => {} })
+        ctx.requestRender()
+        return "continue"
+      }
+    }
+    if (state.phase === "radius" && id === "Diameter" && !state.diameter) {
+      this.state = { ...state, diameter: true }
+      this.openRadiusInput(ctx, this.lastScreen ?? { x: 0, y: 0 })
+      ctx.requestRender()
+      return "continue"
+    }
+    return "unhandled"
+  }
+
+  wantsSnap(): boolean {
+    return (
+      this.state.phase !== "tangentFirst" &&
+      this.state.phase !== "tangentSecond"
+    )
   }
 
   onPointerMove(input: PointerInput, ctx: ToolContext): void {
@@ -151,31 +244,77 @@ export class CircleTool implements Tool {
         // the cursor at the diameter distance, i.e. 2× the radius).
         const dist = V.distance(this.state.center, input.point)
         ctx.dynamicInput.setLive("radius", dist)
-        ctx.dynamicInput.setPosition(input.screen)
         break
       }
       case "p2":
       case "p3":
         this.state = { ...this.state, cursor: input.point }
-        ctx.dynamicInput.setPosition(input.screen)
         break
-      case "center":
-      case "p1":
-        ctx.dynamicInput.setPosition(input.screen)
+      case "tangentFirst":
+      case "tangentSecond": {
+        const hover = this.pickTangent(input.world, ctx)?.entity ?? null
+        if (hover?.id !== this.state.hover?.id) {
+          this.state = { ...this.state, hover }
+        }
         break
+      }
+      case "ttrRadius": {
+        const { base } = this.state
+        this.state = { ...this.state, cursor: input.point }
+        if (base) {
+          ctx.dynamicInput.setLive("radius", V.distance(base, input.point))
+        }
+        break
+      }
     }
-
+    ctx.dynamicInput.setPosition(input.screen)
     ctx.requestRender()
   }
 
   onPointerDown(input: PointerInput, ctx: ToolContext): void {
     if (input.button !== 0) return
+    const state = this.state
 
-    if (this.state.phase === "radius") {
-      this.commitRadiusAt(input.point, ctx)
-      return
+    switch (state.phase) {
+      case "radius":
+        this.commitRadiusAt(input.point, ctx)
+        return
+      case "tangentFirst":
+      case "tangentSecond": {
+        const picked = this.pickTangent(input.world, ctx)
+        if (!picked) return
+        const tangency = {
+          target: picked.target,
+          pick: input.world,
+          at: input.point,
+        }
+        if (state.phase === "tangentFirst") {
+          this.state = { phase: "tangentSecond", first: tangency, hover: null }
+        } else {
+          this.state = {
+            phase: "ttrRadius",
+            first: state.first,
+            second: tangency,
+            base: null,
+            cursor: input.point,
+          }
+          this.openTtrRadiusInput(ctx, input.screen)
+        }
+        ctx.requestRender()
+        return
+      }
+      case "ttrRadius":
+        // AutoCAD's distance prompt: a value, or two points whose distance it is.
+        if (state.base) {
+          this.commitTtr(V.distance(state.base, input.point), ctx)
+        } else {
+          this.state = { ...state, base: input.point, cursor: input.point }
+          ctx.requestRender()
+        }
+        return
+      default:
+        this.advanceWithPoint(input.point, ctx, input.screen)
     }
-    this.advanceWithPoint(input.point, ctx, input.screen)
   }
 
   /**
@@ -192,7 +331,7 @@ export class CircleTool implements Tool {
           phase: "radius",
           center: point,
           cursor: point,
-          diameter: this.diameterMode,
+          diameter: this.active === "centerDiameter",
         }
         this.openRadiusInput(ctx, at)
         break
@@ -201,7 +340,7 @@ export class CircleTool implements Tool {
         this.openPointInput(ctx, "secondPoint", at)
         break
       case "p2":
-        if (this.mode === "twoPoint") {
+        if (this.active === "twoPoint") {
           this.commitTwoPoint(this.state.p1, point, ctx)
           return
         }
@@ -222,6 +361,7 @@ export class CircleTool implements Tool {
 
   onKeyDown(input: KeyInput, ctx: ToolContext): void {
     if (input.key === "Escape") {
+      this.active = this.mode
       this.state = this.initialState()
       ctx.dynamicInput.close()
       ctx.requestRender()
@@ -236,6 +376,8 @@ export class CircleTool implements Tool {
         return this.state.p1
       case "p3":
         return this.state.p2
+      case "ttrRadius":
+        return this.state.base
       default:
         return null
     }
@@ -247,6 +389,12 @@ export class CircleTool implements Tool {
     const layer = ctx.document.getCurrentLayerId()
     const ghost = (circle: CircleEntity | null): ScenePrimitive[] =>
       circle ? entityScenePrimitive(viewport, circle, rubber) : []
+    const segment = (a: Vec2, b: Vec2): ScenePrimitive => ({
+      kind: "segment",
+      a: viewport.worldToScreen(a),
+      b: viewport.worldToScreen(b),
+      stroke: rubber,
+    })
 
     switch (this.state.phase) {
       case "radius": {
@@ -257,30 +405,40 @@ export class CircleTool implements Tool {
         // line runs out past the rim — its length is the diameter, which is the
         // visual cue that the diameter (not the radius) is being specified.
         return [
-          {
-            kind: "segment",
-            a: viewport.worldToScreen(center),
-            b: viewport.worldToScreen(cursor),
-            stroke: rubber,
-          },
+          segment(center, cursor),
           ...ghost(circleAt(center, radius, center, layer, PREVIEW_ID)),
         ]
       }
       case "p2": {
         const { p1, cursor } = this.state
-        const chord: ScenePrimitive = {
-          kind: "segment",
-          a: viewport.worldToScreen(p1),
-          b: viewport.worldToScreen(cursor),
-          stroke: rubber,
-        }
+        const chord = segment(p1, cursor)
         // Three-point: only two points so far — show the chord.
-        if (this.mode !== "twoPoint") return [chord]
+        if (this.active !== "twoPoint") return [chord]
         return [chord, ...ghost(twoPointCircle(p1, cursor, layer, PREVIEW_ID))]
       }
       case "p3": {
         const { p1, p2, cursor } = this.state
         return ghost(threePointCircle(p1, p2, cursor, layer, PREVIEW_ID))
+      }
+      case "tangentFirst":
+      case "tangentSecond": {
+        const { hover } = this.state
+        return hover
+          ? entityScenePrimitive(viewport, hover, {
+              color: THEME.selected,
+              width: 2,
+            })
+          : []
+      }
+      case "ttrRadius": {
+        const { base, cursor } = this.state
+        const radius = this.resolveTtrRadius(ctx)
+        return [
+          ...(base ? [segment(base, cursor)] : []),
+          ...ghost(
+            radius === null ? null : this.ttrCircle(radius, layer, PREVIEW_ID)
+          ),
+        ]
       }
       default:
         return []
@@ -330,6 +488,67 @@ export class CircleTool implements Tool {
   ): void {
     // Collinear: ignored, the third point is asked again.
     this.commitCircle(threePointCircle(p1, p2, p3, layerOf(ctx)), ctx)
+  }
+
+  /** Ttr's circle of `radius`, or AutoCAD's "Circle does not exist." and the end. */
+  private commitTtr(radius: number, ctx: ToolContext): void {
+    if (!(radius > 0)) return
+    const circle = this.ttrCircle(radius, layerOf(ctx))
+    if (circle) {
+      this.commitCircle(circle, ctx)
+      return
+    }
+    ctx.report(ctx.text.message("circleDoesNotExist"), "error")
+    ctx.endCommand()
+  }
+
+  /**
+   * The circle of `radius` tangent to both objects. Of the several that may
+   * fit, "the program draws the circle of the specified radius whose tangent
+   * points are closest to the selected points".
+   */
+  private ttrCircle(
+    radius: number,
+    layerId: LayerId,
+    id?: EntityId
+  ): CircleEntity | null {
+    if (this.state.phase !== "ttrRadius") return null
+    const { first, second } = this.state
+    const reach = (fit: { touchFirst: Vec2; touchSecond: Vec2 }): number =>
+      V.distance(fit.touchFirst, first.pick) +
+      V.distance(fit.touchSecond, second.pick)
+    const best = circlesTangentToBoth(first.target, second.target, radius).sort(
+      (a, b) => reach(a) - reach(b)
+    )[0]
+    return best ? circleAt(best.center, radius, first.at, layerId, id) : null
+  }
+
+  /** Ttr's radius as it stands: typed, else the two points' distance. */
+  private resolveTtrRadius(ctx: ToolContext): number | null {
+    if (this.state.phase !== "ttrRadius") return null
+    const typed = parseField(ctx, "radius")
+    if (typed !== null) return typed
+    const { base, cursor } = this.state
+    return base ? V.distance(base, cursor) : null
+  }
+
+  /** A line, circle or arc lying in the plane, as the tangent it offers. */
+  private pickTangent(
+    world: Vec2,
+    ctx: ToolContext
+  ): { entity: Entity; target: TangentTarget } | null {
+    const hit = ctx.pick(world)
+    if (!hit || !readsInPlan(hit)) return null
+    if (hit.type === "line") {
+      return { entity: hit, target: { kind: "line", a: hit.start, b: hit.end } }
+    }
+    if (hit.type === "circle" || hit.type === "arc") {
+      return {
+        entity: hit,
+        target: { kind: "circle", center: hit.center, radius: hit.radius },
+      }
+    }
+    return null
   }
 
   private commitCircle(circle: CircleEntity | null, ctx: ToolContext): void {
@@ -405,14 +624,32 @@ export class CircleTool implements Tool {
       // Enter with nothing typed takes CIRCLERAD; with none, it ends CIRCLE.
       commitRaw: (commitCtx) => {
         const { radius } = this.lastRadius
-        if (commitCtx.dynamicInput.getText("radius").trim() !== "") return false
-        if (!(radius > 0)) return false
+        if (commitCtx.dynamicInput.hasTypedText() || !(radius > 0)) {
+          return false
+        }
         this.commitRadiusValue(this.sizeOf(radius), commitCtx)
         return true
       },
     }
     ctx.dynamicInput.open(session)
     ctx.dynamicInput.setLive("radius", 0)
+    ctx.dynamicInput.setPosition(screen)
+  }
+
+  private openTtrRadiusInput(ctx: ToolContext, screen: Vec2): void {
+    ctx.dynamicInput.open({
+      fields: [{ id: "radius", prompt: "radius", kind: "distance" }],
+      commit: (values, commitCtx) => this.commitTtr(values.radius, commitCtx),
+      // Enter with nothing typed takes CIRCLERAD; with none, it ends CIRCLE.
+      commitRaw: (commitCtx) => {
+        const { radius } = this.lastRadius
+        if (commitCtx.dynamicInput.hasTypedText() || !(radius > 0)) {
+          return false
+        }
+        this.commitTtr(radius, commitCtx)
+        return true
+      },
+    })
     ctx.dynamicInput.setPosition(screen)
   }
 

@@ -21,6 +21,12 @@ describe("a keyword's abbreviation", () => {
     expect(abbreviationOf("Included angle")).toBe("I")
   })
 
+  it("takes digits as capitals, so CIRCLE's 3P and 2P are typed whole", () => {
+    expect(abbreviationOf("3P")).toBe("3P")
+    expect(abbreviationOf("2P")).toBe("2P")
+    expect(abbreviationOf("Ttr")).toBe("T")
+  })
+
   it("is empty when nothing is capitalised", () => {
     expect(abbreviationOf("close")).toBe("")
   })

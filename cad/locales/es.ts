@@ -811,6 +811,17 @@ export const es: EngineLocale = {
         "Close": "Cerrar",
         "Undo": "desHacer"
       },
+      "CIRCLE": {
+        "3P": "3P",
+        "2P": "2P",
+        "Ttr": "Ttr",
+        "Diameter": "Diámetro"
+      },
+      "CIRCLED": {
+        "3P": "3P",
+        "2P": "2P",
+        "Ttr": "Ttr"
+      },
       "ELLIPSE": {
         "Arc": "Arco",
         "Center": "Centro",
@@ -1612,7 +1623,8 @@ export const es: EngineLocale = {
           "value"
         ]
       ],
-      "pointingEdgeOn": "No se puede señalar en un SCP visto de canto."
+      "pointingEdgeOn": "No se puede señalar en un SCP visto de canto.",
+      "circleDoesNotExist": "El círculo no existe."
     },
     "feedback": {
       "snap": {

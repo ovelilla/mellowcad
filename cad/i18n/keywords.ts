@@ -39,14 +39,22 @@ function isCapital(char: string): boolean {
   return char !== char.toLowerCase() && char === char.toUpperCase()
 }
 
-/** The abbreviation of a keyword: its first run of capital letters. */
+/**
+ * The abbreviation of a keyword: its first run of capital letters, digits
+ * counting as capitals — CIRCLE's `3P` and `2P` are typed whole, as in AutoCAD.
+ */
 export function abbreviationOf(word: string): string {
   const chars = [...word]
-  const start = chars.findIndex(isCapital)
+  const required = (char: string) => isCapital(char) || isDigit(char)
+  const start = chars.findIndex(required)
   if (start === -1) return ""
   let end = start
-  while (end < chars.length && isCapital(chars[end])) end += 1
+  while (end < chars.length && required(chars[end])) end += 1
   return chars.slice(start, end).join("")
+}
+
+function isDigit(char: string): boolean {
+  return char >= "0" && char <= "9"
 }
 
 /** Works out each keyword's abbreviation and whether a single key runs it. */

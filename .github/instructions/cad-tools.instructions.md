@@ -219,7 +219,7 @@ deliberate deviation, and it is the one that survives a reload.
 shows a state (`{ id: "Erase", value: "Yes" }` reads `Erase: Yes`; the value is a keyword of the
 same command, as AutoCAD's sub-prompt offers it). `invokeOption(id)` switches on ids and returns
 `"continue"` or `"end"`. The word, its abbreviation (its capitals: `Close` → `C`, `desHacer` →
-`H`) and the key that runs it belong to the command language and are resolved by the runtime
+`H`; digits count as capitals, so CIRCLE's `3P` is typed whole) and the key that runs it belong to the command language and are resolved by the runtime
 from `commands.keywords.<NAME>`; comparing `key.toLowerCase()` with a letter would break the day
 the language changes. Every keyword a tool offers must be in its command's table.
 

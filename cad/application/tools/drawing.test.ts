@@ -18,7 +18,7 @@ import {
 } from "../../domain/entities"
 import { V } from "../../geometry/Vec2"
 import { createHarness } from "../../../test/harness"
-import { deg, p } from "../../../test/builders"
+import { circleOf, deg, lineOf, p } from "../../../test/builders"
 
 /**
  * The draw commands. Each is checked through both of its input routes — picking
@@ -99,6 +99,101 @@ describe("CIRCLE", () => {
     cad.command("CIRCLE3P").click(p(0, 0)).click(p(50, 0)).click(p(100, 0)) // collinear: no circle exists
     expect(cad.entityCount).toBe(0)
     expect(cad.activeToolId()).toBe("circle3p")
+  })
+
+  it("offers [3P/2P/Ttr] at the centre and [Diameter] at the radius", () => {
+    const cad = createHarness()
+
+    cad.command("CIRCLE")
+    expect(cad.state().commandLine.prompt).toBe("CIRCLE [3P/2P/Ttr]:")
+    cad.click(p(0, 0))
+    expect(cad.optionIds()).toEqual(["Diameter"])
+    cad.option("Diameter")
+    expect(cad.optionIds()).toEqual([])
+    cad.click(p(80, 0))
+
+    expect(cad.only<CircleEntity>("circle").radius).toBeCloseTo(40)
+  })
+
+  it("switches to three points or a diameter's two ends from the centre prompt", () => {
+    const cad = createHarness()
+
+    cad.command("CIRCLE").option("3P")
+    cad.click(p(100, 0)).click(p(0, 100)).click(p(-100, 0))
+    cad
+      .command("CIRCLE")
+      .option("2P")
+      .type("#300,0")
+      .enter()
+      .type("@40,0")
+      .enter()
+
+    const [three, two] = cad.entities() as CircleEntity[]
+    expect(three.center).toBeCloseToPoint(p(0, 0), 5)
+    expect(three.radius).toBeCloseTo(100, 5)
+    expect(two.center).toBeCloseToPoint(p(320, 0))
+    expect(two.radius).toBeCloseTo(20)
+  })
+
+  it("Ttr touches two lines, on the side of the picks", () => {
+    const cad = createHarness({
+      entities: [lineOf(p(-100, 0), p(100, 0)), lineOf(p(0, -100), p(0, 100))],
+    })
+
+    cad.command("CIRCLE").option("Ttr").click(p(40, 0)).click(p(0, 40))
+    cad.type("10").enter()
+    cad.command("CIRCLE").option("Ttr").click(p(-40, 0)).click(p(0, -40))
+    cad.type("10").enter()
+
+    const [first, second] = cad.entities().slice(2) as CircleEntity[]
+    expect(first.center).toBeCloseToPoint(p(10, 10))
+    expect(second.center).toBeCloseToPoint(p(-10, -10))
+    expect(second.radius).toBeCloseTo(10)
+  })
+
+  it("Ttr touches a circle and a line", () => {
+    const cad = createHarness({
+      entities: [circleOf(p(0, 0), 50), lineOf(p(-100, 80), p(100, 80))],
+    })
+
+    cad.command("CIRCLE").option("Ttr").click(p(0, 50)).click(p(10, 80))
+    cad.type("15").enter()
+
+    const circle = cad.latest() as CircleEntity
+    expect(circle.center).toBeCloseToPoint(p(0, 65))
+    expect(circle.radius).toBeCloseTo(15)
+  })
+
+  it("Ttr takes the radius as two points, or CIRCLERAD with Enter", () => {
+    const cad = createHarness({
+      entities: [lineOf(p(-100, 0), p(100, 0)), lineOf(p(0, -100), p(0, 100))],
+    })
+
+    cad.command("CIRCLE").option("Ttr").click(p(40, 0)).click(p(0, 40))
+    cad.click(p(300, 300)).click(p(312, 300))
+    cad.command("CIRCLE").option("Ttr").click(p(-40, 0)).click(p(0, 40))
+    cad.moveTo(p(300, 300)).enter()
+
+    const [pointed, entered] = cad.entities().slice(2) as CircleEntity[]
+    expect(pointed.center).toBeCloseToPoint(p(12, 12))
+    expect(entered.center).toBeCloseToPoint(p(-12, 12))
+    expect(entered.radius).toBeCloseTo(12)
+  })
+
+  it("Ttr reports a circle that does not exist and ends", () => {
+    const cad = createHarness({
+      entities: [
+        lineOf(p(-100, 0), p(100, 0)),
+        lineOf(p(-100, 10), p(100, 10)),
+      ],
+    })
+
+    cad.command("CIRCLE").option("Ttr").click(p(0, 0)).click(p(0, 10))
+    cad.type("2").enter()
+
+    expect(cad.entityCount).toBe(2)
+    expect(cad.commandLog().at(-1)).toBe("Circle does not exist.")
+    expect(cad.activeToolId()).toBe("select")
   })
 })
 

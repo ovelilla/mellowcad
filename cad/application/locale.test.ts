@@ -282,6 +282,23 @@ describe("Spanish AutoCAD's command language", () => {
     )
   })
 
+  it("answers CIRCULO's 3P typed whole and Diámetro by its D", () => {
+    const cad = createHarness({ locale: es })
+    cad.command("CIRCULO")
+    expect(cad.state().commandLine.prompt).toBe("CIRCULO [3P/2P/Ttr]:")
+    cad.type("3p").enter()
+    cad.click(p(100, 0)).click(p(0, 100)).click(p(-100, 0))
+    cad.command("CIRCULO").click(p(300, 0))
+    expect(cad.state().commandLine.prompt).toBe("CIRCULO [Diámetro]:")
+    cad.type("D").enter().type("200").enter()
+
+    const radii = cad
+      .entities()
+      .map((e) => (e.type === "circle" ? e.radius : 0))
+    expect(radii[0]).toBeCloseTo(100, 5)
+    expect(radii[1]).toBeCloseTo(100)
+  })
+
   it("takes ZOOM's EScala typed out, and Extensión as E and Enter", () => {
     const cad = createHarness({
       locale: es,

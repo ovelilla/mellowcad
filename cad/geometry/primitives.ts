@@ -746,3 +746,97 @@ export function projectPointOntoRay(p: Vec2, ray: Ray): Vec2 {
   const t = V.dot(V.sub(p, ray.origin), ray.dir)
   return V.add(ray.origin, V.scale(ray.dir, t))
 }
+
+/** A line (infinite, through `a` and `b`) or a circle a circle can touch. */
+export type TangentTarget =
+  | { readonly kind: "line"; readonly a: Vec2; readonly b: Vec2 }
+  | { readonly kind: "circle"; readonly center: Vec2; readonly radius: number }
+
+/** A circle tangent to two targets: its centre and where it touches each. */
+export interface TangentCircle {
+  readonly center: Vec2
+  readonly touchFirst: Vec2
+  readonly touchSecond: Vec2
+}
+
+/**
+ * Every circle of radius `r` tangent to both targets. Its centre lies at `r`
+ * from each — on a line's two parallels, on a circle's concentric circles of
+ * radius `R + r` and `|R − r|` — so the centres are where those loci cross.
+ */
+export function circlesTangentToBoth(
+  first: TangentTarget,
+  second: TangentTarget,
+  r: number
+): TangentCircle[] {
+  if (!(r > 0)) return []
+  const out: TangentCircle[] = []
+  for (const a of centreLoci(first, r)) {
+    for (const b of centreLoci(second, r)) {
+      for (const center of lociCrossings(a, b)) {
+        const touchFirst = touchPoint(first, center, r)
+        const touchSecond = touchPoint(second, center, r)
+        if (touchFirst && touchSecond) {
+          out.push({ center, touchFirst, touchSecond })
+        }
+      }
+    }
+  }
+  return out
+}
+
+function centreLoci(target: TangentTarget, r: number): TangentTarget[] {
+  if (target.kind === "circle") {
+    const inner = Math.abs(target.radius - r)
+    return [
+      { ...target, radius: target.radius + r },
+      ...(inner > 1e-12 ? [{ ...target, radius: inner }] : []),
+    ]
+  }
+  const dir = V.sub(target.b, target.a)
+  const len = V.length(dir)
+  if (len < 1e-12) return []
+  const shift = V.scale(V.perpendicular(dir), r / len)
+  return [-1, 1].map((sign) => ({
+    kind: "line" as const,
+    a: V.add(target.a, V.scale(shift, sign)),
+    b: V.add(target.b, V.scale(shift, sign)),
+  }))
+}
+
+function lociCrossings(a: TangentTarget, b: TangentTarget): Vec2[] {
+  if (a.kind === "line" && b.kind === "line") {
+    const hit = infiniteLineIntersection(a.a, a.b, b.a, b.b)
+    return hit ? [hit.point] : []
+  }
+  if (a.kind === "circle" && b.kind === "circle") {
+    return circleCircleIntersection(a.center, a.radius, b.center, b.radius)
+  }
+  if (a.kind === "circle") return lociCrossings(b, a)
+  if (b.kind !== "circle") return []
+  const d = V.sub(a.b, a.a)
+  return lineCircleIntersectionParams(a.a, a.b, b.center, b.radius).map((t) =>
+    V.add(a.a, V.scale(d, t))
+  )
+}
+
+function touchPoint(
+  target: TangentTarget,
+  center: Vec2,
+  r: number
+): Vec2 | null {
+  if (target.kind === "line") {
+    return closestPointOnInfiniteLine(target.a, target.b, center).point
+  }
+  const away = V.sub(center, target.center)
+  const len = V.length(away)
+  if (len < 1e-12) return null
+  // The near side, unless the target lies inside the new circle (r > R on
+  // the inner locus), which it then touches on its far side.
+  const near = V.add(target.center, V.scale(away, target.radius / len))
+  const far = V.sub(target.center, V.scale(away, target.radius / len))
+  return Math.abs(V.distance(center, near) - r) <=
+    Math.abs(V.distance(center, far) - r)
+    ? near
+    : far
+}

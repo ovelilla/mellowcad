@@ -407,6 +407,13 @@
         "Close": "Close",
         "Undo": "Undo"
       },
+      "CIRCLE": {
+        "3P": "3P",
+        "2P": "2P",
+        "Ttr": "Ttr",
+        "Diameter": "Diameter"
+      },
+      "CIRCLED": { "3P": "3P", "2P": "2P", "Ttr": "Ttr" },
       "ELLIPSE": {
         "Arc": "Arc",
         "Center": "Center",
@@ -801,7 +808,8 @@
       "currentViewDirection": "Current view direction: VIEWDIR={x},{y},{z}",
       "regeneratingModel": "Regenerating model.",
       "currentLineweight": "Current lineweight: {value}",
-      "pointingEdgeOn": "Pointing in edge-on UCS is prohibited."
+      "pointingEdgeOn": "Pointing in edge-on UCS is prohibited.",
+      "circleDoesNotExist": "Circle does not exist."
     },
     "feedback": {
       "snap": {
