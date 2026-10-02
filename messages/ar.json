@@ -248,7 +248,11 @@
       "undo": "Ctrl+Z",
       "redo": "Ctrl+Y",
       "commandLine": "Ctrl+9",
-      "cleanScreen": "Ctrl+0"
+      "cleanScreen": "Ctrl+0",
+      "cut": "Ctrl+X",
+      "copy": "Ctrl+C",
+      "copyBase": "Ctrl+Shift+C",
+      "paste": "Ctrl+V"
     },
     "TopBar": {
       "menu": "قائمة التطبيق",
@@ -384,6 +388,20 @@
     },
     "SelectionCycling": {
       "title": "التحديد"
+    },
+    "ShortcutMenu": {
+      "label": "القائمة المختصرة",
+      "repeat": "تكرار \u2068{command}\u2069",
+      "clipboard": "الحافظة",
+      "paste": "لصق",
+      "undo": "تراجع",
+      "redo": "إعادة",
+      "copySelection": "نسخ التحديد",
+      "deselectAll": "إلغاء تحديد الكل",
+      "properties": "الخصائص",
+      "enter": "Enter",
+      "cancel": "إلغاء",
+      "snapOverrides": "تجاوزات الالتقاط"
     },
     "Layers": {
       "title": "الطبقات",

@@ -15,6 +15,7 @@ import {
   EngineState,
   PaletteTab,
   SelectionScope,
+  ShortcutMenuAction,
   StylesPanelTab,
 } from "../application/EngineState"
 import { DrawingStore, EngineHost } from "../application/ports"
@@ -211,6 +212,18 @@ export class CadEngine {
 
   closeSnapOverrideMenu(): void {
     this.runtime.closeSnapOverrideMenu()
+  }
+
+  closeShortcutMenu(): void {
+    this.runtime.closeShortcutMenu()
+  }
+
+  chooseShortcutMenuAction(action: ShortcutMenuAction): void {
+    this.runtime.chooseShortcutMenuAction(action)
+  }
+
+  chooseShortcutMenuOption(id: string): void {
+    this.runtime.chooseShortcutMenuOption(id)
   }
 
   toggleSelectionCycling(): void {
@@ -502,12 +515,14 @@ export class CadEngine {
 
   /**
    * Whether the engine's own UI (the dynamic-input box) may take keyboard
-   * focus away from `from`. The editor owns the page, so from anywhere. An
-   * embedded engine only while active, and only from its canvas, its scope or
-   * the body — never from the rest of the page, nor from a control beside the
-   * canvas that the user tabbed to.
+   * focus away from `from`. The editor owns the page, so from anywhere but an
+   * open menu or modal dialog, which keep their keys (an Escape there taken by
+   * the box would end the command). An embedded engine only while active, and
+   * only from its canvas, its scope or the body — never from the rest of the
+   * page, nor from a control beside the canvas that the user tabbed to.
    */
   mayTakeFocus(from: Element | null): boolean {
+    if (from?.closest(MENU) || from?.closest(MODAL)) return false
     if (this.scope === null) return true
     return (
       this.active &&
@@ -687,7 +702,8 @@ export class CadEngine {
     c.addEventListener("dblclick", this.onDoubleClick)
     c.addEventListener("wheel", this.onWheel, { passive: false })
     // Suppress the native context menu at the document level, not just on the
-    // canvas: once the object-snap override menu opens (Shift+right-click) its
+    // canvas: once a menu at the cursor opens (the shortcut menu, or the
+    // object-snap override menu on Shift+right-click) its
     // portalled backdrop sits over the canvas, so the OS `contextmenu` event —
     // which fires on right-button *release* on Windows — targets the backdrop,
     // not the canvas. A canvas-only listener would miss it and Windows' menu
@@ -769,7 +785,9 @@ export class CadEngine {
 
   private onPointerDown = (e: PointerEvent): void => {
     this.canvas.focus()
-    if (e.button === 1 || e.button === 2) e.preventDefault() // pan buttons
+    // The wheel button's autoscroll and the right button's own press never
+    // run: they pan and open the shortcut menu.
+    if (e.button === 1 || e.button === 2) e.preventDefault()
     this.activePointerId = e.pointerId
     this.canvas.setPointerCapture(e.pointerId)
     this.runtime.pointerDown(this.pointerData(e))
@@ -809,9 +827,9 @@ export class CadEngine {
   }
 
   private onContextMenu = (e: MouseEvent): void => {
-    // Right-click pans and Shift+right-click opens the object-snap override
-    // menu, so the native menu is never wanted over the drawing surface or the
-    // override menu. Editable fields keep their native menu (e.g. paste), and
+    // Right-click is Enter or AutoCAD's shortcut menu, and Shift+right-click
+    // opens the object-snap override menu, so the native menu is never wanted
+    // over the drawing surface or those menus. Editable fields keep their native menu (e.g. paste), and
     // so does the rest of a page the engine is only embedded in.
     const target = e.target as HTMLElement | null
     if (target?.closest(EDITABLE)) return
@@ -829,6 +847,10 @@ export class CadEngine {
     // A modal dialog (UNITS) takes every key, as AutoCAD's do: its lists'
     // arrows and letters must not reach the command prompt.
     if (target?.closest(MODAL)) return
+    // So does an open menu: its arrows, Enter and letters are its own, or the
+    // arrows would recall commands and the Enter that chose an item would
+    // repeat the last one.
+    if (target?.closest(MENU)) return
     // Keys typed into editable UI (the dynamic-input box) belong to that field,
     // which handles its own Enter/Escape/typing — don't hijack them here. Two
     // exceptions are global and must work wherever focus sits, as in AutoCAD:
@@ -869,6 +891,9 @@ const EDITABLE = 'input, textarea, select, [contenteditable="true"]'
 
 /** A modal dialog, which keeps its keys to itself. */
 const MODAL = '[role="dialog"][aria-modal="true"]'
+
+/** An open menu: the shortcut menu, the status bar's, the application menu. */
+const MENU = '[role="menu"]'
 
 /** Keys whose default action scrolls the page. */
 const SCROLL_KEYS = new Set([

@@ -130,8 +130,10 @@ are tokens in `globals.css` (`@theme`), each a single class carrying size, weigh
   sizes, so `cn("text-ui", "text-muted-foreground")` keeps both. The ViewCube's SVG sets its
   weight as an attribute (a class would size it too); its face names are drawn on the cube, sized
   to the face, the one text outside the scale.
-- Measured by walking every visible text in Chrome with `getComputedStyle` (the audit of phase 4b,
-  `docs/next-ui-redesign.md`); a new zone, palette or menu is checked the same way.
+- Measured by walking every visible text in Chrome with `getComputedStyle` (the audit of the
+  redesign's phase 4b, `git show 423c37c:docs/next-ui-redesign.md`), against five goals: nothing
+  under 12 px, every text on a role and a colour step, AA on every surface, nothing truncated and
+  nothing wrapped at 1280×720 in any language. A new zone, palette or menu is checked the same way.
 
 ## Size
 
@@ -186,12 +188,21 @@ pixels. 16 px icons go with 28 px controls (20 would go with 32).
 - `Dialog.Popup` sets no `aria-modal`: a modal dialog sets `aria-modal="true"` itself, or the
   engine hears its keys. While it is open the rest of the page is inert, so a test reaches the
   command line by a CSS selector, not by its role.
+- **A menu the engine opens has no trigger, and Base UI (1.7) names a menu's node in its floating
+  tree only through its trigger**: a submenu opening then reads as a sibling menu and closes the
+  whole menu (`onOpenChange` reason `sibling-open`). A trigger-less menu with a submenu renders an
+  empty `<Menu.Trigger nativeButton={false} render={<span hidden />} />` and names it on the root
+  (`triggerId`), as `ShortcutMenu` does.
+- **A modal menu leaves the rest of the page inert until it has closed**, so a `focusSurface()`
+  run as an item acts is lost, and Base UI then returns focus to the trigger. Give focus back in
+  the popup's `finalFocus` (`() => { engine.focusSurface(); return false }`).
 - `Panel` (from `toolbar-primitives.tsx`) does **not** forward props, so
   `<PopoverTrigger render={<Panel>…} />` drops the click handler and the popover never opens —
   silently. Render the `Button` as the trigger and wrap the whole `Popover` in the `Panel`.
 
 ## Where a control belongs
 
+- Touch and phones are out of scope for the editor; the landing has its own rules.
 - **The workspace is a grid of named areas** (`CadWorkspace`): `top` and `status` across the
   window, `tools` · `canvas` · `panel` between them, and `command` above `status`. A control goes
   into a zone; never position one absolutely over the drawing. The canvas takes what the zones
@@ -209,9 +220,22 @@ pixels. 16 px icons go with 28 px controls (20 would go with 32).
   - **The canvas cell** (`#editor-sheet`, `relative`, exactly the canvas's box) carries
     `SHEET_TRANSITION` — no other element may — and holds what is placed in the canvas's pixels:
     the dynamic input and its option chips, at `state.dynamicInput.screen`. A popup anchored there
-    (the snap override menu, the Selection list box) is portalled and positioned in the viewport,
-    so its virtual anchor converts with `engine.clientFromScreen`; the raw state point lands off
-    by the zones before the canvas.
+    (the shortcut menu, the snap override menu, the Selection list box) is portalled and positioned
+    in the viewport, so its virtual anchor converts with `engine.clientFromScreen`; the raw state
+    point lands off by the zones before the canvas.
+  - **The shortcut menu** (`ShortcutMenu`, AutoCAD's Default, Edit and Command menus,
+    SHORTCUTMENU 11) is `state.shortcutMenu`: the engine decides on the right button's release
+    whether one opens or the click is Enter, which one, and its entries in AutoCAD's order, in
+    groups a `Menu.Separator` parts. It opens at the cursor on `side="inline-end"` (leftwards in
+    RTL), with `MENU_AT_CURSOR`, the snap override menu's popup, and rows of 28 (`py-1.5`, `p-1` +
+    `ps-2`); a submenu (Clipboard, Snap Overrides — the snap override menu's own entries,
+    `SnapOverrideItems`) opens on the inline end too. Words: an entry that is a tool is named by
+    `state.tools` (Erase, Move, Pan, Cut…); a prompt's option by its `option.label`, with
+    `lang={state.commandLine.lang}`; Repeat's command by `repeat`; the rest is
+    `Editor.ShortcutMenu` (Copy Selection is AutoCAD's own name for COPY there), and the Clipboard
+    entries show their keys (`Editor.Keys`). A choice is `engine.chooseShortcutMenuAction(id)` or
+    `chooseShortcutMenuOption(id)`; the component holds nothing but the menu shown while it fades.
+    Shift+right-click stays the snap override menu.
   - On the drawing only what AutoCAD puts there, all in the canvas cell: the viewport controls
     (`ViewportControls`, top left — top right in RTL), the ViewCube with the navigation bar linked
     under it (top right — top left in RTL), the dynamic input, the menus at the cursor. Nothing
@@ -297,7 +321,8 @@ pixels. 16 px icons go with 28 px controls (20 would go with 32).
   the line's end (`commandLine.historyOpen`; a press on the drawing or Escape collapses it), and
   the suggestions, which win over both. That is why the zone stacks above the canvas cell. Nothing
   of it resizes the zone, so running commands never resizes the drawing; hiding the line (Ctrl+9)
-  collapses the zone, and it comes back while something is typed.
+  collapses the zone, and it comes back while something is typed. There is no command palette
+  (Ctrl+K and the like): the command line is that.
 - **The status bar** (`status`, 36 px; `StatusBar`) in the order of AutoCAD's 2026 reference:
   the coordinates at its start (`1.5000, 2.0039, 0.0000`, at the drawing's precision, an LTR
   island), then at its end MODEL, Grid, Snap mode ▾, Ortho, Polar ▾, Object snap tracking, Object

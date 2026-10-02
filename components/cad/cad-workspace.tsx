@@ -23,6 +23,7 @@ import { ViewCube } from "./view-cube"
 import { NavigationBar } from "./navigation-bar"
 import { ViewportControls } from "./viewport-controls"
 import { TopBar } from "./top-bar"
+import { ShortcutMenu } from "./shortcut-menu"
 import { SnapOverrideMenu } from "./snap-override-menu"
 import { SelectionCyclingList } from "./selection-cycling-list"
 
@@ -191,6 +192,7 @@ export function CadWorkspace({
 
       {ready && (
         <>
+          <ShortcutMenu engine={engine} state={state} />
           <SnapOverrideMenu engine={engine} state={state} />
           <SelectionCyclingList engine={engine} state={state} />
           <UnitsDialog engine={engine} state={state} />

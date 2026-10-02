@@ -73,6 +73,10 @@ export type {
   PropertyEdit,
   SelectionCandidateUi,
   SelectionCyclingUi,
+  ShortcutMenuAction,
+  ShortcutMenuEntry,
+  ShortcutMenuMode,
+  ShortcutMenuUi,
 } from "./application/EngineState"
 export { PALETTE_TABS } from "./application/EngineState"
 export { TOOL_COMMANDS, matchCommands } from "./application/CommandLine"

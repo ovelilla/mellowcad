@@ -154,6 +154,18 @@ export class CadDriver {
     return this
   }
 
+  /**
+   * A press and release of the right button: Enter, or one of AutoCAD's
+   * shortcut menus, as the prompt decides; with Shift at a point prompt, the
+   * object-snap override menu.
+   */
+  rightClick(
+    world: WorldPoint,
+    modifiers: Omit<PointerModifiers, "button"> = {}
+  ): this {
+    return this.click(world, { ...modifiers, button: 2 })
+  }
+
   /** The press half of a gesture, left held until {@link mouseUp}. */
   mouseDown(world: WorldPoint, modifiers: PointerModifiers = {}): this {
     const event = this.pointerEvent(world, modifiers)
@@ -241,6 +253,11 @@ export class CadDriver {
    * canvas. Routing scripted keystrokes the same way keeps them honest.
    */
   hasFocusedField(): boolean {
+    // A menu at the cursor holds focus while it is open.
+    const { shortcutMenu, snapOverrideMenu, selectionCycling } = this.state()
+    if (shortcutMenu || snapOverrideMenu || selectionCycling.listAt) {
+      return false
+    }
     const session = this.runtime.dynamicInput.getSession()
     return (
       this.runtime.dynamicInput.isOpen() && (session?.fields.length ?? 0) > 0

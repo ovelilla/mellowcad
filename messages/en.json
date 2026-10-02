@@ -248,7 +248,11 @@
       "undo": "Ctrl+Z",
       "redo": "Ctrl+Y",
       "commandLine": "Ctrl+9",
-      "cleanScreen": "Ctrl+0"
+      "cleanScreen": "Ctrl+0",
+      "cut": "Ctrl+X",
+      "copy": "Ctrl+C",
+      "copyBase": "Ctrl+Shift+C",
+      "paste": "Ctrl+V"
     },
     "TopBar": {
       "menu": "Application menu",
@@ -384,6 +388,20 @@
     },
     "SelectionCycling": {
       "title": "Selection"
+    },
+    "ShortcutMenu": {
+      "label": "Shortcut menu",
+      "repeat": "Repeat {command}",
+      "clipboard": "Clipboard",
+      "paste": "Paste",
+      "undo": "Undo",
+      "redo": "Redo",
+      "copySelection": "Copy Selection",
+      "deselectAll": "Deselect All",
+      "properties": "Properties",
+      "enter": "Enter",
+      "cancel": "Cancel",
+      "snapOverrides": "Snap Overrides"
     },
     "Layers": {
       "title": "Layers",

@@ -39,8 +39,8 @@ expect(h.latest()).toBeDefined()
 - Snapping is **off by default** for determinism; pass `{ snap: true }` to exercise it. So is the
   UCS icon, which would otherwise add its arms, arrowheads and letters to every scene a test
   counts; pass `{ ucsIcon: true }` for a test about the icon.
-- Chainable input: `command / click / drag / moveTo / wheel / type / enter / escape / option /
-press / select / undo / redo`.
+- Chainable input: `command / click / rightClick / drag / moveTo / wheel / type / enter / escape /
+option / press / select / undo / redo`. `drag(…, { button: 1 })` is the wheel button's pan.
 - **`option(id)` names a keyword by its global id** (`.option("Close")`), never by its letter, and
   answers as a user of the command language would: its key, or its abbreviation and Enter. An id
   the running command does not have throws. Letters are tested apart, per language
@@ -52,7 +52,13 @@ press / select / undo / redo`.
 - Readers: `entities() / only<T>(type) / byId / latest / typeCounts / state() / scene() /
 optionKeys() / optionIds() / selectedIds()`.
 - Keys route exactly like the real UI: Enter/Escape/option keys go through the dynamic input when
-  a field is focused, otherwise through `keyDown`.
+  a field is focused, otherwise through `keyDown`. A menu at the cursor (the shortcut menu, the
+  snap override menu, the Selection list box) holds focus while it is open, so `escape()` then
+  closes it through `keyDown` and the command goes on. A shortcut menu's entry is chosen with
+  `runtime.chooseShortcutMenuAction(id)` / `chooseShortcutMenuOption(id)`, as the menu does.
+- `enter()` with a field focused commits the box as the keyboard's Enter does — its live reading
+  included, so in LINE it draws a segment to the cursor. A right-click's Enter (`pressEnter`) is
+  Enter at the prompt instead; test what a user does, not one for the other.
 
 **Two snapshots guard what the engine says in English**: `englishSurface.test.ts` walks every
 command through its prompts, keywords, messages, canvas text, grips and the Properties palette, and
@@ -144,6 +150,18 @@ Only for what the harness cannot see: canvas rendering, DOM, theming, CSS. If yo
   clicks** (`page.locator(…).click()`), never `dispatchEvent`. Synthetic events do not reproduce
   how a popup reacts to the release that follows the press, nor the `pointerleave` a portalled
   modal backdrop causes on the canvas — both have shipped bugs past a green synthetic check.
+  Check where focus is after an entry acts, and that the next key types a command: a modal menu
+  leaves the page inert while it closes, and the dynamic-input box once took an open menu's
+  Escape. Base UI's arrows skip a disabled entry, so walk a menu by reading `[data-highlighted]`,
+  never by counting presses. A submenu needs a hover and a pause before it is there.
+- **Measuring the workspace** (the redesign's method, `git show 423c37c:docs/next-ui-redesign.md`
+  §7): per window size and in `/draw`, `/es/draw` and `/ar/draw`, the zones by their grid area and
+  their `clientWidth`/`clientHeight` (a zone's own numbers, its border outside), the topmost
+  `.pointer-events-auto` elements of `main`, which must not overlap one another nor cut the canvas
+  but for what AutoCAD puts there, the tool palette's buttons past its zone's bottom, the canvas's
+  box at the first paint with the bundles blocked against its box after mount, and after `ZOOM` `E`
+  every drawn extreme inside the canvas. Every icon button starts on a whole pixel. The type is
+  audited as "Type" in `ui.instructions.md` says.
 - A **React panel input** does not commit on a synthetic `blur`: React delegates `onBlur` from
   `focusout`. Drive those with `fill()` + `press("Enter")`, and give each field an `aria-label` so
   there is something to select it by.

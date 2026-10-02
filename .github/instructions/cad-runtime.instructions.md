@@ -16,15 +16,16 @@ signatures are a hard contract**: the adapter and the React layer break if one m
 kept small by hollowing methods out, never by renaming them — the method stays and becomes a
 one-line delegation to a free function in a `runtime*.ts` sibling.
 
-| Sibling                | Holds                                                                   |
-| ---------------------- | ----------------------------------------------------------------------- |
-| `runtimeTools.ts`      | `defaultTools` — every tool the constructor registers, in toolbar order |
-| `runtimeCommands.ts`   | the command table (`registerCommands`), `offerOptions`, `commandPrompt` |
-| `runtimeLayers.ts`     | layer table edits (`updateLayer`, `nextLayerName`)                      |
-| `runtimeStyles.ts`     | the dimension and text style tables                                     |
-| `runtimeProperties.ts` | `setSelection*` overrides and the `commonSelection*` readers            |
-| `runtimeBlocks.ts`     | `purgeBlocks`, `buildBlockPreview` (on `drawingPreview.ts`)             |
-| `runtimeFiles.ts`      | serialize/load, the clipboard read-with-timeout, `selectAll`            |
+| Sibling                  | Holds                                                                   |
+| ------------------------ | ----------------------------------------------------------------------- |
+| `runtimeTools.ts`        | `defaultTools` — every tool the constructor registers, in toolbar order |
+| `runtimeCommands.ts`     | the command table (`registerCommands`), `offerOptions`, `commandPrompt` |
+| `runtimeLayers.ts`       | layer table edits (`updateLayer`, `nextLayerName`)                      |
+| `runtimeStyles.ts`       | the dimension and text style tables                                     |
+| `runtimeProperties.ts`   | `setSelection*` overrides and the `commonSelection*` readers            |
+| `runtimeBlocks.ts`       | `purgeBlocks`, `buildBlockPreview` (on `drawingPreview.ts`)             |
+| `runtimeFiles.ts`        | serialize/load, the clipboard read-with-timeout, `selectAll`            |
+| `runtimeShortcutMenu.ts` | what a right-click does (`rightClickResponse`), the menus' entries      |
 
 **A sibling takes the collaborators it needs (`document`, `selection`, `history`, …), never the
 runtime.** Wanting many private fields is the signal that the code belongs in the class — which is
@@ -145,9 +146,10 @@ identity: the same document, viewport and objects.
 
 ## Key routing (`CadRuntime.keyDown`) — order is load-bearing
 
-1. Escape closes an open snap-override menu or Selection list box, or cancels the FROM modifier,
-   without ending the command. It also collapses the expanded command history, and that one goes
-   on: the same Escape still cancels.
+1. Escape closes an open snap-override menu, shortcut menu or Selection list box, or cancels the
+   FROM modifier, without ending the command. It also collapses the expanded command history, and
+   that one goes on: the same Escape still cancels. (On the page an open menu keeps its keys —
+   "Adapters" — so this is the harness's and a host's path.)
 2. Function keys: F2 command history, F3 osnap, F7 grid, F8 Ortho, F9 snap mode, F10 Polar,
    F11 OTRACK, F4 selection cycling (AutoCAD's Ctrl+W, which browsers keep, is accepted too).
 3. Ctrl combos (undo/redo, AutoCAD's window shortcuts Ctrl+9 command line, Ctrl+0 Clean Screen
@@ -167,6 +169,33 @@ identity: the same document, viewport and objects.
 
 Inserting anything above step 4 steals keys from running commands; inserting between 4 and 5
 steals them from typing. Prefer exposing behaviour as a command option or a command.
+
+## The pointer's buttons (`pointerDown` / `pointerUp`) — order is load-bearing
+
+1. A press while the shortcut menu is open only closes it, as its backdrop does on the page.
+2. Shift+right at a point prompt opens the object-snap override menu, **on the press**, before
+   anything else reads the right button; elsewhere it is a plain right-click.
+3. Shift+wheel button orbits (transparent 3DORBIT); the wheel button alone pans (MBUTTONPAN 1).
+   One ZOOM Previous step per drag (`pushHistory` on the press).
+4. The right button is held on the press and answered on the **release** — where Windows opens a
+   shortcut menu, and for the reason the Selection list box opens there: a menu opened on the press
+   is taken by its own release. `rightClickResponse` (SHORTCUTMENU 11) decides: the Default menu
+   with no command and nothing selected, the Edit menu with a selection, the Command menu while the
+   prompt offers options (`offerOptions`), otherwise **Enter**. A grip edit counts as a command
+   (Select with `wantsSnap()` true). The right button never reaches a tool.
+5. Only then the left button, with the Selection list box's deferred click (below).
+
+**A right-click's Enter is `pressEnter`, and so is the Command menu's Enter**: what is typed in the
+dynamic-input box is submitted; with nothing typed, the session's `commitRaw` reads the empty text
+as the prompt's default (LINE's Continue), and if it refuses, the drawing's Enter runs
+(`keyDown`, which ends LINE and confirms Select objects). Never `commitDynamicInput` on an empty
+box: it commits the box's live reading, a segment to wherever the cursor is. Cancel is
+`cancelCommand` (AutoCAD's ^C^C: FROM, the typed text and the command go together). Every entry
+runs through `chooseShortcutMenuAction` / `chooseShortcutMenuOption`, which close the menu first;
+a fixed entry that is a command runs it by its global name (`SHORTCUT_MENU_COMMANDS`, `_ERASE`), so
+it echoes, repeats and undoes as typed, and an option goes through `invokeToolOption("_Close")`.
+A new entry is an action there, a case in the host's `ShortcutMenu`, and its row in
+`docs/autocad-coverage.md`; an entry whose command does not exist here is left out, never faked.
 
 ## Selection cycling
 
@@ -349,11 +378,15 @@ Two listeners are deliberately on `canvas.ownerDocument`, not the canvas:
   that **text**. Never widen `isGlobalShortcut` to the clipboard keys. Nothing inside a modal
   dialog (`[role="dialog"][aria-modal="true"]`, the Drawing Units dialog) reaches the runtime at
   all: AutoCAD's dialogs keep their keys, and its lists' arrows and letters must not feed the
-  prompt. **A Ctrl combo is read by its physical key** (`shortcutKey`): an Arabic, Greek or
+  prompt. Nor does anything inside an open menu (`[role="menu"]`): the Enter that chooses an item
+  would also repeat the last command, and the arrows that walk it would recall commands at the
+  neutral prompt. For the same reason `mayTakeFocus` never takes focus from a menu or a modal
+  dialog — the dynamic-input box once took an open menu's Escape and ended the command. **A Ctrl combo is read by its physical key** (`shortcutKey`): an Arabic, Greek or
   Cyrillic layout sends its own letter in `e.key`, so under Ctrl a key that is not a latin letter
   or digit is taken from `e.code`. Typed text never is.
 - `contextmenu`, because the event fires on button _release_, by which time a portalled modal
-  backdrop may be the target.
+  backdrop may be the target. It is always prevented over the editor but in editable fields: the
+  right button is Enter or AutoCAD's shortcut menu there, never the browser's.
 
 **A shortcut belongs in `CadRuntime.keyDown`, never in a React `useEffect`.** A second
 document-level listener bypasses the routing order above and cannot `preventDefault` in step with
@@ -378,8 +411,8 @@ composition root live inside a page it does not own:
 - The filter sits in the adapter **before** `runtime.keyDown`, exactly like the editable rule. Never
   make the runtime scope-aware: its routing order is untouched and must stay so.
 - `mayTakeFocus(from)` is what the dynamic-input box asks before reclaiming focus after a render:
-  yes from anywhere in the editor, only from the canvas, the scope or the active body for an
-  embed. Without it an autosave finishing would yank focus back from wherever the user tabbed.
+  yes from anywhere in the editor but an open menu or modal dialog, only from the canvas, the
+  scope or the active body for an embed. Without it an autosave finishing would yank focus back from wherever the user tabbed.
 
 `CadRuntime.zoomToBounds` is ZOOM Window for a host that knows the rectangle (one history entry,
 then `Viewport.zoomToBounds`). What the editor refuses to restore — no objects and only the base

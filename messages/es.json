@@ -248,7 +248,11 @@
       "undo": "Ctrl+Z",
       "redo": "Ctrl+Y",
       "commandLine": "Ctrl+9",
-      "cleanScreen": "Ctrl+0"
+      "cleanScreen": "Ctrl+0",
+      "cut": "Ctrl+X",
+      "copy": "Ctrl+C",
+      "copyBase": "Ctrl+Mayús+C",
+      "paste": "Ctrl+V"
     },
     "TopBar": {
       "menu": "Menú de la aplicación",
@@ -384,6 +388,20 @@
     },
     "SelectionCycling": {
       "title": "Selección"
+    },
+    "ShortcutMenu": {
+      "label": "Menú contextual",
+      "repeat": "Repetir {command}",
+      "clipboard": "Portapapeles",
+      "paste": "Pegar",
+      "undo": "Deshacer",
+      "redo": "Rehacer",
+      "copySelection": "Copiar selección",
+      "deselectAll": "Deseleccionar todo",
+      "properties": "Propiedades",
+      "enter": "Intro",
+      "cancel": "Cancelar",
+      "snapOverrides": "Modificaciones de referencias"
     },
     "Layers": {
       "title": "Capas",

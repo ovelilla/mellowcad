@@ -301,6 +301,56 @@ export interface SelectionCyclingUi {
   readonly listAt: Vec2 | null
 }
 
+/**
+ * AutoCAD's three shortcut menus of the drawing area (SHORTCUTMENU 11): Default
+ * with no command and nothing selected, Edit with objects selected, Command
+ * while a command offers options.
+ */
+export type ShortcutMenuMode = "default" | "edit" | "command"
+
+/** A fixed entry of a shortcut menu; the host words it by this id. */
+export type ShortcutMenuAction =
+  | "repeat"
+  | "cut"
+  | "copy"
+  | "copyBase"
+  | "paste"
+  | "undo"
+  | "redo"
+  | "pan"
+  | "erase"
+  | "move"
+  | "copySelection"
+  | "scale"
+  | "rotate"
+  | "deselectAll"
+  | "properties"
+  | "enter"
+  | "cancel"
+
+export type ShortcutMenuEntry =
+  | { readonly kind: "action"; readonly action: ShortcutMenuAction }
+  /** A keyword of the prompt, as its brackets show it. */
+  | { readonly kind: "option"; readonly option: CommandOptionUi }
+  | {
+      readonly kind: "submenu"
+      readonly submenu: "clipboard"
+      readonly entries: ReadonlyArray<ShortcutMenuEntry>
+    }
+  /** Snap Overrides: the object-snap menu Shift+right-click opens. */
+  | { readonly kind: "snapOverrides" }
+
+/** The shortcut menu a right-click opened on the drawing. */
+export interface ShortcutMenuUi {
+  readonly mode: ShortcutMenuMode
+  /** Where it opened, in the canvas's pixels. */
+  readonly at: Vec2
+  /** Its entries in AutoCAD's order, in the groups a separator parts. */
+  readonly groups: ReadonlyArray<ReadonlyArray<ShortcutMenuEntry>>
+  /** The command Repeat runs, as the command line names it. */
+  readonly repeat: string | null
+}
+
 /** Immutable snapshot of engine state consumed by the React UI. */
 export interface EngineState {
   readonly activeToolId: string
@@ -347,6 +397,8 @@ export interface EngineState {
    * it is closed.
    */
   readonly snapOverrideMenu: Vec2 | null
+  /** The shortcut menu a right-click opened, or null when it is closed. */
+  readonly shortcutMenu: ShortcutMenuUi | null
   readonly orthoActive: boolean
   /** Polar tracking (AutoCAD's POLAR / F10) on/off. */
   readonly polarActive: boolean

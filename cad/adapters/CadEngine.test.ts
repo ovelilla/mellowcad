@@ -38,11 +38,16 @@ class FakeNode extends EventTarget {
     return lineage(other as FakeNode | null).includes(this)
   }
 
-  /** Only the selectors the engine asks with: a modal dialog, editable fields. */
+  /**
+   * Only the selectors the engine asks with: a modal dialog, a menu, editable
+   * fields.
+   */
   closest(selector: string): FakeNode | null {
     const tags = selector.includes("aria-modal")
       ? ["DIALOG"]
-      : ["INPUT", "TEXTAREA", "SELECT"]
+      : selector.includes('role="menu"')
+        ? ["MENU"]
+        : ["INPUT", "TEXTAREA", "SELECT"]
     return lineage(this).find((node) => tags.includes(node.tagName)) ?? null
   }
 
@@ -235,6 +240,20 @@ describe("CadEngine owning the document (the editor)", () => {
     expect(engine.getState().orthoActive).toBe(false)
   })
 
+  // The Enter that chooses an item would otherwise also repeat the last
+  // command, and the arrows that walk the menu recall commands.
+  it("leaves an open menu its keys", () => {
+    const engine = engineOn()
+    const menu = new FakeNode(page.document, "MENU")
+    const item = new FakeNode(page.document, "DIV")
+    page.document.body.append(menu.append(item))
+
+    expect(keyAt(page, item, "Enter").defaultPrevented).toBe(false)
+    expect(keyAt(page, item, "ArrowDown").defaultPrevented).toBe(false)
+    keyAt(page, item, "L")
+    expect(engine.getState().commandLine.buffer).toBe("")
+  })
+
   // An Arabic layout sends its own letter with Ctrl; the shortcut is the
   // physical key's, as every desktop application takes it.
   it("reads a Ctrl shortcut by its physical key on a non-latin layout", () => {
@@ -291,11 +310,18 @@ describe("CadEngine owning the document (the editor)", () => {
     )
   })
 
-  it("may take focus from anywhere", () => {
+  it("may take focus from anywhere but an open menu or a modal dialog", () => {
     const engine = engineOn()
+    const menu = new FakeNode(page.document, "MENU")
+    const dialog = new FakeNode(page.document, "DIALOG")
+    const item = new FakeNode(page.document, "DIV")
+    const choice = new FakeNode(page.document, "BUTTON")
+    page.document.body.append(menu.append(item), dialog.append(choice))
 
     expect(engine.mayTakeFocus(page.button as unknown as Element)).toBe(true)
     expect(engine.mayTakeFocus(page.link as unknown as Element)).toBe(true)
+    expect(engine.mayTakeFocus(item as unknown as Element)).toBe(false)
+    expect(engine.mayTakeFocus(choice as unknown as Element)).toBe(false)
   })
 
   it("places a canvas point in the viewport, past the docked chrome", () => {

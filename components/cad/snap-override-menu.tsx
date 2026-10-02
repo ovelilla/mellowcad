@@ -7,8 +7,6 @@ import { useTranslations } from "next-intl"
 
 import { CadEngine, EngineState, SnapType } from "@/cad"
 
-import { cn } from "@/lib/utils"
-
 /**
  * The object-snap override menu — AutoCAD's Shift+right-click behaviour. It pops
  * at the cursor during a point prompt and forces a single object snap (or
@@ -24,6 +22,10 @@ import { cn } from "@/lib/utils"
  */
 
 type Choice = SnapType | "none"
+
+/** The popup of a menu at the cursor: this one, the shortcut menu's. */
+export const MENU_AT_CURSOR =
+  "min-w-44 origin-(--transform-origin) overflow-hidden rounded-md border bg-popover p-1 text-popover-foreground shadow-md transition-[transform,opacity] outline-none data-ending-style:scale-95 data-ending-style:opacity-0 data-starting-style:scale-95 data-starting-style:opacity-0"
 
 /** The osnaps offered as overrides, in AutoCAD's menu order, plus "None". */
 const CHOICES: readonly Choice[] = [
@@ -42,7 +44,14 @@ const CHOICES: readonly Choice[] = [
   "none",
 ]
 
-export function SnapOverrideMenu({
+const ITEM =
+  "relative flex cursor-default items-center rounded-sm py-1.5 ps-2 pe-8 text-ui outline-hidden select-none data-highlighted:bg-accent data-highlighted:text-accent-foreground"
+
+/**
+ * The override menu's entries: FROM and the object snaps. The shortcut menu's
+ * Snap Overrides submenu lists the same ones.
+ */
+export function SnapOverrideItems({
   engine,
   state,
 }: {
@@ -50,6 +59,42 @@ export function SnapOverrideMenu({
   state: EngineState
 }) {
   const t = useTranslations("Editor.SnapOverride")
+  return (
+    <>
+      <div className="px-2 py-1.5 text-title text-muted-foreground">
+        {t("point")}
+      </div>
+      <Menu.Item onClick={() => engine.startFrom()} className={ITEM}>
+        {t("from")}
+      </Menu.Item>
+      <div className="px-2 py-1.5 text-title text-muted-foreground">
+        {t("objectSnap")}
+      </div>
+      {CHOICES.map((value) => (
+        <Menu.Item
+          key={value}
+          onClick={() => engine.setSnapOverride(value)}
+          className={ITEM}
+        >
+          {value === "none" ? t("none") : state.names.snaps[value]}
+          {state.snapOverride === value && (
+            <span className="pointer-events-none absolute inset-e-2 flex size-4 items-center justify-center">
+              <CheckIcon className="size-4" />
+            </span>
+          )}
+        </Menu.Item>
+      ))}
+    </>
+  )
+}
+
+export function SnapOverrideMenu({
+  engine,
+  state,
+}: {
+  engine: CadEngine
+  state: EngineState
+}) {
   const at = state.snapOverrideMenu
 
   // A zero-size virtual anchor at the cursor: Base UI positions the popup
@@ -85,35 +130,8 @@ export function SnapOverrideMenu({
           sideOffset={2}
           className="z-50"
         >
-          <Menu.Popup className="min-w-44 origin-(--transform-origin) overflow-hidden rounded-md border bg-popover p-1 text-popover-foreground shadow-md transition-[transform,opacity] outline-none data-ending-style:scale-95 data-ending-style:opacity-0 data-starting-style:scale-95 data-starting-style:opacity-0">
-            <div className="px-2 py-1.5 text-title text-muted-foreground">
-              {t("point")}
-            </div>
-            <Menu.Item
-              onClick={() => engine.startFrom()}
-              className="relative flex cursor-default items-center rounded-sm py-1.5 ps-2 pe-8 text-ui outline-hidden select-none data-highlighted:bg-accent data-highlighted:text-accent-foreground"
-            >
-              {t("from")}
-            </Menu.Item>
-            <div className="px-2 py-1.5 text-title text-muted-foreground">
-              {t("objectSnap")}
-            </div>
-            {CHOICES.map((value) => (
-              <Menu.Item
-                key={value}
-                onClick={() => engine.setSnapOverride(value)}
-                className={cn(
-                  "relative flex cursor-default items-center rounded-sm py-1.5 ps-2 pe-8 text-ui outline-hidden select-none data-highlighted:bg-accent data-highlighted:text-accent-foreground"
-                )}
-              >
-                {value === "none" ? t("none") : state.names.snaps[value]}
-                {state.snapOverride === value && (
-                  <span className="pointer-events-none absolute inset-e-2 flex size-4 items-center justify-center">
-                    <CheckIcon className="size-4" />
-                  </span>
-                )}
-              </Menu.Item>
-            ))}
+          <Menu.Popup className={MENU_AT_CURSOR}>
+            <SnapOverrideItems engine={engine} state={state} />
           </Menu.Popup>
         </Menu.Positioner>
       </Menu.Portal>

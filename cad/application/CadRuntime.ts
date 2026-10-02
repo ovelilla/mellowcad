@@ -115,8 +115,15 @@ import {
   EngineState,
   PaletteTab,
   SelectionScope,
+  ShortcutMenuAction,
+  ShortcutMenuMode,
   StylesPanelTab,
 } from "./EngineState"
+import {
+  buildShortcutMenu,
+  rightClickResponse,
+  SHORTCUT_MENU_COMMANDS,
+} from "./runtimeShortcutMenu"
 import { Clipboard, DrawingStore, EngineHost, FileTransport } from "./ports"
 import { nextLayerName, updateLayer } from "./runtimeLayers"
 import { buildBlockPreview, purgeBlocks } from "./runtimeBlocks"
@@ -198,6 +205,14 @@ const WHEEL_BURST_MS = 400
 
 /** Movement past this (screen px) makes a press a drag rather than a click. */
 const DRAG_THRESHOLD_PX = 4
+
+/** A key pressed with no modifier, as the shortcut menu presses Enter and Esc. */
+const plainKey = (key: string): KeyEventData => ({
+  key,
+  shiftKey: false,
+  ctrlKey: false,
+  altKey: false,
+})
 
 /** What a tool's context gives in the UCS plane's frame or in the WCS. */
 type FramedPart =
@@ -311,6 +326,11 @@ export class CadRuntime extends Observable {
   // Where to pop the object-snap override menu (screen coords), or null when it
   // is closed. Opened with Shift+right-click during a point prompt.
   private snapOverrideMenu: Vec2 | null = null
+
+  // The right button's press, answered on its release (see pointerUp), and the
+  // shortcut menu that answer opened.
+  private rightPress: Vec2 | null = null
+  private shortcutMenu: { mode: ShortcutMenuMode; at: Vec2 } | null = null
 
   // The click deferred while the Selection list box asks which of the
   // overlapping objects was meant; replayed once one is chosen.
@@ -993,9 +1013,10 @@ export class CadRuntime extends Observable {
    * position it was opened so the forced marker shows immediately.
    */
   setSnapOverride(override: SnapType | "none"): void {
-    const at = this.snapOverrideMenu
+    const at = this.snapOverrideMenu ?? this.shortcutMenu?.at ?? null
     this.snapping.setOverride(override)
     this.snapOverrideMenu = null
+    this.shortcutMenu = null
     if (at) this.updateSnap(at)
     else this.invalidateState()
     this.host.requestRender()
@@ -1012,6 +1033,100 @@ export class CadRuntime extends Observable {
   }
 
   /**
+   * A right-click on the drawing, answered as AutoCAD's SHORTCUTMENU 11 does:
+   * the Default or Edit menu with no command running, the Command menu while
+   * the prompt offers options, otherwise Enter.
+   */
+  private rightClick(screen: Vec2): void {
+    const response = rightClickResponse(
+      this.activeTool.id === "select" &&
+        !(this.activeTool.wantsSnap?.() ?? false),
+      !this.selection.isEmpty(),
+      offerOptions(this.activeTool, this.text).length
+    )
+    if (response === "enter") {
+      this.pressEnter()
+      return
+    }
+    this.shortcutMenu = { mode: response, at: screen }
+    this.invalidateState()
+    this.host.requestRender()
+  }
+
+  /** Dismisses the shortcut menu without choosing from it. */
+  closeShortcutMenu(): void {
+    if (this.shortcutMenu === null) return
+    this.shortcutMenu = null
+    this.invalidateState()
+    this.host.requestRender()
+    this.host.focusSurface()
+  }
+
+  /** A fixed entry of the shortcut menu, chosen: what AutoCAD's item runs. */
+  chooseShortcutMenuAction(action: ShortcutMenuAction): void {
+    this.closeShortcutMenu()
+    const command = SHORTCUT_MENU_COMMANDS[action]
+    if (command !== undefined) this.runCommand(command)
+    else if (action === "repeat") this.repeatLastCommand()
+    else if (action === "enter") this.pressEnter()
+    // Cancel is AutoCAD's ^C^C; Deselect All is the same Escape at the
+    // neutral prompt ("Press Esc to deselect all objects").
+    else this.cancelCommand()
+  }
+
+  /** A keyword of the prompt, chosen from the Command menu. */
+  chooseShortcutMenuOption(id: string): void {
+    this.closeShortcutMenu()
+    this.invokeToolOption(`_${id}`)
+  }
+
+  /**
+   * Enter at the prompt — a right-click with no menu to show, or the Command
+   * menu's Enter. What is typed in the dynamic-input box is submitted, as
+   * Enter there would; with nothing typed it takes the prompt's default, which
+   * a session reads from its empty text (LINE's Continue), or else it is the
+   * drawing's Enter, which ends LINE. Never the box's live reading: that only
+   * shows where the cursor is ("similar to those for the Command prompt").
+   */
+  pressEnter(): void {
+    this.shortcutMenu = null
+    const session = this.dynamicInputHasField()
+      ? this.dynamicInput.getSession()
+      : null
+    const typed = session?.fields.some(
+      (field) => this.dynamicInput.getText(field.id).trim() !== ""
+    )
+    if (typed) {
+      this.commitDynamicInput()
+    } else if (session?.commitRaw?.(this.toolContext)) {
+      if (this.dynamicInput.getSession() === session) {
+        this.dynamicInput.clearTexts()
+      }
+      this.resetTracking()
+    } else {
+      this.keyDown(plainKey("Enter"))
+    }
+    this.invalidateState()
+    this.host.requestRender()
+  }
+
+  /** The Command menu's Cancel, AutoCAD's ^C^C: the whole command ends. */
+  cancelCommand(): void {
+    this.shortcutMenu = null
+    this.endFrom()
+    this.commandLine.setBuffer("")
+    if (this.dynamicInputHasField()) this.cancelDynamicInput()
+    else this.keyDown(plainKey("Escape"))
+    this.invalidateState()
+    this.host.requestRender()
+  }
+
+  private dynamicInputHasField(): boolean {
+    const session = this.dynamicInput.getSession()
+    return this.dynamicInput.isOpen() && (session?.fields.length ?? 0) > 0
+  }
+
+  /**
    * Starts AutoCAD's FROM modifier: the next pick sets a base point (normally
    * with an object snap) and the point after it is entered as an offset from
    * that base, e.g. `@20,0`. Only meaningful while a tool is asking for a point.
@@ -1019,6 +1134,7 @@ export class CadRuntime extends Observable {
   startFrom(): boolean {
     if (!(this.activeTool.wantsSnap?.() ?? true)) return false
     this.snapOverrideMenu = null
+    this.shortcutMenu = null
     this.fromPending = true
     this.fromBase = null
     this.commandLine.write("info", this.text.message("fromBase"))
@@ -2102,6 +2218,13 @@ export class CadRuntime extends Observable {
     // A press on the drawing collapses the expanded command history.
     if (this.commandHistoryOpen) this.setCommandHistoryOpen(false)
 
+    // An open shortcut menu takes the press that dismisses it, as its backdrop
+    // does on the page: nothing reaches the drawing.
+    if (this.shortcutMenu !== null) {
+      this.closeShortcutMenu()
+      return
+    }
+
     // Shift+right-click during a point prompt opens the object-snap override
     // menu (AutoCAD's temporary single-snap override), instead of panning.
     if (
@@ -2130,13 +2253,21 @@ export class CadRuntime extends Observable {
       return
     }
 
-    // Middle or right button starts a pan.
-    if (e.button === 1 || e.button === 2) {
+    // The wheel button pans (MBUTTONPAN 1: "panning when you hold and drag
+    // the button or wheel").
+    if (e.button === 1) {
       this.panning = true
       this.lastPanScreen = e.screen
       this.viewport.pushHistory()
       this.crosshairScreen = null // native grab cursor takes over while panning
       this.host.setCursor("grabbing")
+      return
+    }
+
+    // The right button is answered on its release, where Windows opens a
+    // shortcut menu: one opened on the press would take that very release.
+    if (e.button === 2) {
+      this.rightPress = e.screen
       return
     }
 
@@ -2256,10 +2387,17 @@ export class CadRuntime extends Observable {
       this.activeTool.onActivate?.(this.toolContext) // restore tool cursor
       return
     }
-    if (this.panning && (e.button === 1 || e.button === 2)) {
+    if (this.panning && e.button === 1) {
       this.panning = false
       this.lastPanScreen = null
       this.activeTool.onActivate?.(this.toolContext) // restore tool cursor
+      return
+    }
+    if (e.button === 2) {
+      if (this.rightPress !== null) {
+        this.rightPress = null
+        this.rightClick(e.screen)
+      }
       return
     }
 
@@ -2352,6 +2490,10 @@ export class CadRuntime extends Observable {
     // command), so a single Escape closes the menu rather than ending drawing.
     if (e.key === "Escape" && this.snapOverrideMenu !== null) {
       this.closeSnapOverrideMenu()
+      return true
+    }
+    if (e.key === "Escape" && this.shortcutMenu !== null) {
+      this.closeShortcutMenu()
       return true
     }
 
@@ -2898,6 +3040,12 @@ export class CadRuntime extends Observable {
       snapEnabled,
       snapOverride: this.snapping.getOverride(),
       snapOverrideMenu: this.snapOverrideMenu,
+      shortcutMenu:
+        this.shortcutMenu &&
+        buildShortcutMenu(this.shortcutMenu.mode, this.shortcutMenu.at, {
+          repeat: this.commandLine.getLastCommand(),
+          options,
+        }),
       orthoActive: this.constraints.isEnabled(ConstraintType.Ortho),
       polarActive: this.constraints.isEnabled(ConstraintType.Polar),
       polarAngleStep: this.constraints.getPolarAngleStep(),

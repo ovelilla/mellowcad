@@ -735,31 +735,11 @@ describe("viewport", () => {
     expect(cad.toScreen(p(0, 0))).toBeCloseToPoint(p(500, 400))
   })
 
-  it("pans with the right mouse button instead of drawing", () => {
+  it("pans with the wheel button instead of drawing", () => {
     const cad = createHarness()
     const before = cad.toScreen(p(0, 0))
 
-    cad.runtime.pointerDown({
-      screen: p(500, 400),
-      button: 2,
-      shiftKey: false,
-      ctrlKey: false,
-      altKey: false,
-    })
-    cad.runtime.pointerMove({
-      screen: p(560, 400),
-      button: 2,
-      shiftKey: false,
-      ctrlKey: false,
-      altKey: false,
-    })
-    cad.runtime.pointerUp({
-      screen: p(560, 400),
-      button: 2,
-      shiftKey: false,
-      ctrlKey: false,
-      altKey: false,
-    })
+    cad.drag(p(0, 0), p(60, 0), { button: 1 })
 
     expect(cad.toScreen(p(0, 0)).x).toBeCloseTo(before.x + 60)
     expect(cad.entityCount).toBe(0)
