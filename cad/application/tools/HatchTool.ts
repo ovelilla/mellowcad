@@ -532,7 +532,7 @@ export class HatchTool implements Tool {
       },
     }
     ctx.dynamicInput.open(session)
-    ctx.dynamicInput.setLive("scale", this.patternScale)
+    ctx.dynamicInput.setDefault("scale", this.patternScale)
     ctx.dynamicInput.setPosition(this.lastScreen ?? { x: 0, y: 0 })
     ctx.requestRender()
   }
@@ -553,7 +553,7 @@ export class HatchTool implements Tool {
       },
     }
     ctx.dynamicInput.open(session)
-    ctx.dynamicInput.setLive("angle", (this.patternAngle * 180) / Math.PI)
+    ctx.dynamicInput.setDefault("angle", (this.patternAngle * 180) / Math.PI)
     ctx.dynamicInput.setPosition(this.lastScreen ?? { x: 0, y: 0 })
     ctx.requestRender()
   }

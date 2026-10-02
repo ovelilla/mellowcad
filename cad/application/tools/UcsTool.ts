@@ -338,8 +338,14 @@ export class UcsTool implements Tool {
           commit: (values, commitCtx) => {
             this.rotate(axis, values.angle, commitCtx)
           },
+          // About Z the box reads the cursor's heading; Enter is still `<90>`.
+          commitRaw: (commitCtx) => {
+            if (commitCtx.dynamicInput.hasTypedText()) return false
+            this.rotate(axis, DEFAULT_AXIS_ANGLE, commitCtx)
+            return true
+          },
         })
-        ctx.dynamicInput.setLive("angle", DEFAULT_AXIS_ANGLE)
+        ctx.dynamicInput.setDefault("angle", DEFAULT_AXIS_ANGLE)
         this.place(ctx)
         return "continue"
       }

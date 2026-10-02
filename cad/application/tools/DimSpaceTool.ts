@@ -369,7 +369,7 @@ export class DimSpaceTool implements Tool {
     ctx.dynamicInput.open(session)
     // The live value is the Auto spacing, so it shows as the placeholder and an
     // Enter with nothing typed takes it — AutoCAD's `<Auto>` default.
-    ctx.dynamicInput.setLive("spacing", autoSpacing(this.styleOf(base, ctx)))
+    ctx.dynamicInput.setDefault("spacing", autoSpacing(this.styleOf(base, ctx)))
     ctx.dynamicInput.setPosition(this.lastScreen ?? { x: 0, y: 0 })
   }
 

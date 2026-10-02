@@ -51,6 +51,15 @@ const PREVIEW_ID = "circle-preview"
  */
 export type CircleMode = "center" | "centerDiameter" | "twoPoint" | "threePoint"
 
+/**
+ * AutoCAD's CIRCLERAD, shared by every mode of one runtime: the last circle's
+ * radius, the radius prompt's `<default>` ("A zero indicates no default"). Not
+ * saved in the drawing, as CIRCLERAD is not.
+ */
+export interface CircleRadiusDefault {
+  radius: number
+}
+
 type CircleToolState =
   /** Awaiting the centre point (center mode). */
   | { readonly phase: "center" }
@@ -89,7 +98,12 @@ export class CircleTool implements Tool {
   private state: CircleToolState
   private lastScreen: Vec2 | null = null
 
-  constructor(mode: CircleMode, id: string, shortcut?: string) {
+  constructor(
+    mode: CircleMode,
+    id: string,
+    shortcut?: string,
+    private readonly lastRadius: CircleRadiusDefault = { radius: 0 }
+  ) {
     this.mode = mode
     this.id = id
     this.shortcut = shortcut
@@ -320,6 +334,7 @@ export class CircleTool implements Tool {
 
   private commitCircle(circle: CircleEntity | null, ctx: ToolContext): void {
     if (!circle) return
+    this.lastRadius.radius = circle.radius
     ctx.execute(
       new AddEntityCommand(
         withCurrentProperties(withCurrentThickness(circle, ctx), ctx)
@@ -387,10 +402,25 @@ export class CircleTool implements Tool {
       ],
       commit: (values, commitCtx) =>
         this.commitRadiusValue(values.radius, commitCtx),
+      // Enter with nothing typed takes CIRCLERAD; with none, it ends CIRCLE.
+      commitRaw: (commitCtx) => {
+        const { radius } = this.lastRadius
+        if (commitCtx.dynamicInput.getText("radius").trim() !== "") return false
+        if (!(radius > 0)) return false
+        this.commitRadiusValue(this.sizeOf(radius), commitCtx)
+        return true
+      },
     }
     ctx.dynamicInput.open(session)
     ctx.dynamicInput.setLive("radius", 0)
     ctx.dynamicInput.setPosition(screen)
+  }
+
+  /** The value the size field asks for: the radius, or the diameter. */
+  private sizeOf(radius: number): number {
+    return this.state.phase === "radius" && this.state.diameter
+      ? radius * 2
+      : radius
   }
 
   private currentRadiusPrompt(): PromptId {

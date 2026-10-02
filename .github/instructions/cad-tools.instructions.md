@@ -151,8 +151,8 @@ There is a single session at a time. Patterns in use:
   `session.commitRaw`, not `resolveValues`.
 - **Keyword-only prompt** — a session with `fields: []` renders just the option chips and leaves
   focus on the canvas (Mirror's Erase Yes/No, Fillet's radius prompt).
-- **Multi-field form** — several fields with `setLive(default)` so placeholders show the defaults
-  and Enter commits them all (Array, Chamfer distances). Tab cycles fields.
+- **Multi-field form** — several fields with `setDefault(id, value)` so placeholders show the
+  defaults and Enter commits them all (Array, Chamfer distances). Tab cycles fields.
 - **Free-text prompt** — one field of kind `"text"` (TEXT's content, its Justify/Style keywords).
   Its content is never a value: `resolveValues` refuses it so `commitRaw` sees the raw string, the
   coordinate collapse skips it, and **no keyword is dispatched from it** — a letter there is
@@ -168,6 +168,18 @@ There is a single session at a time. Patterns in use:
   `"text"` (`isContentField` is the test; never compare the kind with `"text"` alone), rendered as
   a textarea where Enter breaks a line and Ctrl+Enter reaches `commitRaw`. In the harness `type`
   writes the newlines and `enter()` is that Ctrl+Enter.
+
+**A live value is a reading or a default, and Enter tells them apart.** `setLive` is a reading of
+the cursor (LINE's length, a grip's radius, a 0 / `null` placeholder); `setDefault` is the prompt's
+`<default>` (a form's value, the current height, FILLET's radius). Enter with nothing typed is Enter
+at the Command prompt, on the keyboard and the right button alike (`commitDynamicInput`): the
+defaults if every field holds one, else `commitRaw` on the empty text, else the drawing's Enter
+(`keyDown`: the tool's `onEnter`, or the command ends). A reading never commits on its own; beside a
+typed field it fills the untyped one (a typed length takes the cursor's heading). So a prompt whose
+default is not what the box shows — the cursor overwrites it (MTEXT's height, UCS Z's `<90>`) or the
+tool remembers it (CIRCLERAD, ROTATE's last angle, SCALE's last factor, OFFSETDIST) — takes it in
+`commitRaw` when `!ctx.dynamicInput.hasTypedText()`, and a `commitRaw` that returns `true` on empty
+text swallows Enter.
 
 ## Command options (keywords)
 

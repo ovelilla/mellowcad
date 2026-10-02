@@ -75,6 +75,11 @@ interface FieldState {
   /** Live value tracked from cursor movement, shown as a placeholder. */
   live: number | null
   /**
+   * Whether `live` is the prompt's `<Default>` (a form's value) rather than a
+   * reading of the cursor: only a default is what Enter accepts untyped.
+   */
+  isDefault: boolean
+  /**
    * A live reading that is not a number (the angle field's `+Z` on the Z
    * guide): shown as the placeholder, and the field left out of the values.
    */
@@ -126,7 +131,7 @@ export class DynamicInputController extends Observable {
     this.fieldStates = new Map(
       session.fields.map((f) => [
         f.id,
-        { text: "", live: null, liveText: null },
+        { text: "", live: null, isDefault: false, liveText: null },
       ])
     )
     this.activeFieldId = session.fields[0]?.id ?? null
@@ -148,10 +153,28 @@ export class DynamicInputController extends Observable {
     this.emit()
   }
 
+  /** A reading of the cursor: shown, and used for a field left untyped beside a typed one. */
   setLive(fieldId: string, value: number | null): void {
+    this.setLiveValue(fieldId, value, false)
+  }
+
+  /**
+   * The prompt's `<Default>`, shown like a reading: Enter with nothing typed
+   * commits it (a form's values), where it would never commit a reading.
+   */
+  setDefault(fieldId: string, value: number): void {
+    this.setLiveValue(fieldId, value, true)
+  }
+
+  private setLiveValue(
+    fieldId: string,
+    value: number | null,
+    isDefault: boolean
+  ): void {
     const fieldState = this.fieldStates.get(fieldId)
     if (!fieldState) return
     fieldState.live = value
+    fieldState.isDefault = isDefault
     fieldState.liveText = null
     this.emit()
   }
@@ -160,8 +183,17 @@ export class DynamicInputController extends Observable {
     const fieldState = this.fieldStates.get(fieldId)
     if (!fieldState) return
     fieldState.live = null
+    fieldState.isDefault = false
     fieldState.liveText = text
     this.emit()
+  }
+
+  /** Whether anything is typed in any field: otherwise Enter is the prompt's. */
+  hasTypedText(): boolean {
+    for (const fieldState of this.fieldStates.values()) {
+      if (fieldState.text.trim() !== "") return true
+    }
+    return false
   }
 
   setText(fieldId: string, text: string): void {
@@ -187,10 +219,13 @@ export class DynamicInputController extends Observable {
    * Resolves every field to a number: typed text wins, otherwise the live
    * value is used. Returns `null` if any field cannot be resolved, so the
    * caller can reject an incomplete commit. A field showing a live text with
-   * nothing typed is left out: the tool reads it from the cursor.
+   * nothing typed is left out: the tool reads it from the cursor. With nothing
+   * typed at all only defaults resolve: Enter there is the prompt's, as at the
+   * Command prompt, never a reading of where the cursor happens to be.
    */
   resolveValues(): Record<string, number> | null {
     if (!this.session) return null
+    const anyTyped = this.hasTypedText()
     const out: Record<string, number> = {}
     for (const field of this.session.fields) {
       const fieldState = this.fieldStates.get(field.id)
@@ -203,6 +238,7 @@ export class DynamicInputController extends Observable {
       // the session's `commitRaw` handler interprets the whole point instead.
       if (isCoordinateExpression(fieldState.text)) return null
       const typed = fieldState.text.trim() !== ""
+      if (!anyTyped && !fieldState.isDefault) return null
       if (!typed && fieldState.liveText !== null) continue
       const value = typed ? parseNumber(fieldState.text) : fieldState.live
       if (value === null || !Number.isFinite(value)) return null

@@ -108,7 +108,7 @@ export class VPointTool implements Tool {
       ],
       commit: (values, commitCtx) => this.answer(values.angle, commitCtx),
     })
-    ctx.dynamicInput.setLive(
+    ctx.dynamicInput.setDefault(
       "angle",
       inPlane
         ? normalizeDegrees((Math.atan2(y, x) * 180) / Math.PI)

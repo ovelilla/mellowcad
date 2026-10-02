@@ -273,6 +273,11 @@ export class AttDefTool implements Tool {
       }
       case "style": {
         const name = typed.trim()
+        // Empty is Enter, which keeps the `<current>` style.
+        if (name === "") {
+          this.enterStart(ctx)
+          return true
+        }
         const style = ctx.document
           .getTextStyles()
           .find((s) => s.name.toLowerCase() === name.toLowerCase())
@@ -340,7 +345,7 @@ export class AttDefTool implements Tool {
         this.enterRotation(this.state.position, values.height, commitCtx)
       },
     })
-    ctx.dynamicInput.setLive("height", this.height)
+    ctx.dynamicInput.setDefault("height", this.height)
     ctx.dynamicInput.setPosition(this.lastScreen ?? { x: 0, y: 0 })
   }
 
@@ -363,7 +368,7 @@ export class AttDefTool implements Tool {
         )
       },
     })
-    ctx.dynamicInput.setLive(
+    ctx.dynamicInput.setDefault(
       "rotation",
       normalizeDegrees((this.rotation * 180) / Math.PI)
     )

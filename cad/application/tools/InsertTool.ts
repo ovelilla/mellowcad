@@ -254,7 +254,7 @@ export class InsertTool implements Tool {
         return true
       },
     })
-    ctx.dynamicInput.setLive("scale", this.scale)
+    ctx.dynamicInput.setDefault("scale", this.scale)
     ctx.dynamicInput.setPosition(this.lastScreen ?? { x: 0, y: 0 })
     ctx.requestRender()
   }
@@ -275,7 +275,7 @@ export class InsertTool implements Tool {
         return true
       },
     })
-    ctx.dynamicInput.setLive("rotation", (this.rotation * 180) / Math.PI)
+    ctx.dynamicInput.setDefault("rotation", (this.rotation * 180) / Math.PI)
     ctx.dynamicInput.setPosition(this.lastScreen ?? { x: 0, y: 0 })
     ctx.requestRender()
   }

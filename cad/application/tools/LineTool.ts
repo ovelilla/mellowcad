@@ -422,12 +422,7 @@ export class LineTool implements Tool {
   private commitFirstPoint(ctx: ToolContext): boolean {
     if (this.state.phase !== "idle") return false
     const text = ctx.dynamicInput.getText("point").trim()
-    if (text === "") {
-      const resume = lastDrawnPoint(ctx.document)
-      if (!resume) return false
-      this.beginDrawing(resume, ctx)
-      return true
-    }
+    if (text === "") return this.continueFromLast(ctx)
     if (!isCoordinateExpression(text)) return false
     const start = parseCoordinate(text, {
       lastPoint: null,
@@ -437,6 +432,13 @@ export class LineTool implements Tool {
     })
     if (!start) return false
     this.beginDrawing(start, ctx)
+    return true
+  }
+
+  private continueFromLast(ctx: ToolContext): boolean {
+    const resume = lastDrawnPoint(ctx.document)
+    if (!resume) return false
+    this.beginDrawing(resume, ctx)
     return true
   }
 
@@ -469,6 +471,11 @@ export class LineTool implements Tool {
       fields: [{ id: "distance", prompt: "trackingOffset", kind: "distance" }],
       commit: (values, commitCtx) =>
         this.commitOffsetStart(values.distance, commitCtx),
+      // Still the first-point prompt: Enter is its Continue, guide or not.
+      commitRaw: (commitCtx) =>
+        this.state.phase === "tracking" &&
+        commitCtx.dynamicInput.getText("distance").trim() === "" &&
+        this.continueFromLast(commitCtx),
     }
     ctx.dynamicInput.open(session)
     ctx.dynamicInput.setLive("distance", 0)

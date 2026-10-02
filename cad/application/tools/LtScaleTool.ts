@@ -19,7 +19,7 @@ export class LtScaleTool implements Tool {
       fields: [{ id: "value", prompt: "ltscaleFactor", kind: "number" }],
       commit: (values, commitCtx) => this.answer(values.value, commitCtx),
     })
-    ctx.dynamicInput.setLive("value", ctx.document.getSettings().ltScale)
+    ctx.dynamicInput.setDefault("value", ctx.document.getSettings().ltScale)
     ctx.dynamicInput.setPosition(this.lastScreen ?? { x: 0, y: 0 })
     ctx.requestRender()
   }

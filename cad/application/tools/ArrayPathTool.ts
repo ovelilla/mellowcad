@@ -363,8 +363,8 @@ export class ArrayPathTool implements Tool {
             commit: (_v, c) => this.commit(c),
           }
     ctx.dynamicInput.open(session)
-    if (method === "divide") ctx.dynamicInput.setLive("count", DEFAULT_ITEMS)
-    else ctx.dynamicInput.setLive("spacing", spacingDefault)
+    if (method === "divide") ctx.dynamicInput.setDefault("count", DEFAULT_ITEMS)
+    else ctx.dynamicInput.setDefault("spacing", spacingDefault)
     ctx.dynamicInput.setPosition(this.lastScreen ?? { x: 0, y: 0 })
   }
 

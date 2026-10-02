@@ -50,7 +50,7 @@ export class ElevTool implements Tool {
       ],
       commit: (values, commitCtx) => this.answer(values.value, commitCtx),
     })
-    ctx.dynamicInput.setLive(
+    ctx.dynamicInput.setDefault(
       "value",
       elevation ? settings.elevation : settings.thickness
     )

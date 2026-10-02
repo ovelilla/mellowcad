@@ -264,10 +264,10 @@ export class ArrayTool implements Tool {
     }
     ctx.dynamicInput.open(session)
     // Defaults shown as placeholders; an untouched field uses its default.
-    ctx.dynamicInput.setLive("columns", DEFAULT_COLUMNS)
-    ctx.dynamicInput.setLive("rows", DEFAULT_ROWS)
-    ctx.dynamicInput.setLive("colSpacing", colSpacingDefault)
-    ctx.dynamicInput.setLive("rowSpacing", rowSpacingDefault)
+    ctx.dynamicInput.setDefault("columns", DEFAULT_COLUMNS)
+    ctx.dynamicInput.setDefault("rows", DEFAULT_ROWS)
+    ctx.dynamicInput.setDefault("colSpacing", colSpacingDefault)
+    ctx.dynamicInput.setDefault("rowSpacing", rowSpacingDefault)
     ctx.dynamicInput.setPosition(this.lastScreen ?? { x: 0, y: 0 })
   }
 

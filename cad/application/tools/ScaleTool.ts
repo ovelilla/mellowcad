@@ -117,6 +117,8 @@ export class ScaleTool implements Tool {
 
   private state: ScaleState = { phase: "selecting" }
   private lastScreen: Vec2 | null = null
+  /** The scale factor's `<default>`: the last one used, 1 at first; not saved. */
+  private lastFactor = 1
 
   onActivate(ctx: ToolContext): void {
     ctx.setCursor("crosshair")
@@ -481,16 +483,15 @@ export class ScaleTool implements Tool {
 
   /** Handles the scale factor confirmed from the dynamic input (Enter). */
   private commitFactor(ctx: ToolContext): boolean {
+    const typed = ctx.dynamicInput.hasTypedText()
     if (this.state.phase === "factor") {
-      const factor = this.resolveDirectFactor(
-        this.state.base,
-        this.state.current,
-        ctx
-      )
+      const factor = typed
+        ? this.resolveDirectFactor(this.state.base, this.state.current, ctx)
+        : this.lastFactor
       this.commit(this.state, factor, ctx)
       return true
     }
-    if (this.state.phase === "newLength") {
+    if (this.state.phase === "newLength" && typed) {
       const factor = this.resolveNewFactor(
         this.state.base,
         this.state.current,
@@ -579,6 +580,7 @@ export class ScaleTool implements Tool {
   ): void {
     // AutoCAD rejects a non-positive factor; treat it as a no-op that ends.
     if (Number.isFinite(factor) && factor > 0) {
+      if (state.phase === "factor") this.lastFactor = factor
       if (state.copy) {
         ctx.execute(
           new AddEntitiesCommand(

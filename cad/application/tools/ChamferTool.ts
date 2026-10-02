@@ -325,8 +325,8 @@ export class ChamferTool implements Tool {
         this.setDistances(values.dist1, values.dist2, commitCtx),
     }
     ctx.dynamicInput.open(session)
-    ctx.dynamicInput.setLive("dist1", this.distance1)
-    ctx.dynamicInput.setLive("dist2", this.distance2)
+    ctx.dynamicInput.setDefault("dist1", this.distance1)
+    ctx.dynamicInput.setDefault("dist2", this.distance2)
     ctx.dynamicInput.setPosition(this.lastScreen ?? { x: 0, y: 0 })
     ctx.requestRender()
   }

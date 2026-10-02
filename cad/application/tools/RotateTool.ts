@@ -117,6 +117,11 @@ export class RotateTool implements Tool {
 
   private state: RotateState = { phase: "selecting" }
   private lastScreen: Vec2 | null = null
+  /**
+   * The rotation angle's `<default>`: AutoCAD "knows the last rotation angle
+   * and offers it as default", per document and not saved; 0 at first.
+   */
+  private lastAngle = 0
 
   onActivate(ctx: ToolContext): void {
     ctx.setCursor("crosshair")
@@ -479,16 +484,15 @@ export class RotateTool implements Tool {
 
   /** Handles the rotation angle confirmed from the dynamic input (Enter). */
   private commitAngle(ctx: ToolContext): boolean {
+    const typed = ctx.dynamicInput.hasTypedText()
     if (this.state.phase === "angle") {
-      const rotation = this.resolveDirectRotation(
-        this.state.base,
-        this.state.current,
-        ctx
-      )
+      const rotation = typed
+        ? this.resolveDirectRotation(this.state.base, this.state.current, ctx)
+        : this.lastAngle
       this.commit(this.state, rotation, ctx)
       return true
     }
-    if (this.state.phase === "newAngle") {
+    if (this.state.phase === "newAngle" && typed) {
       const rotation = this.resolveNewRotation(
         this.state.base,
         this.state.current,
@@ -566,6 +570,7 @@ export class RotateTool implements Tool {
     rotationDeg: number,
     ctx: ToolContext
   ): void {
+    if (state.phase === "angle") this.lastAngle = rotationDeg
     const rad = (rotationDeg * Math.PI) / 180
     if (state.copy) {
       ctx.execute(

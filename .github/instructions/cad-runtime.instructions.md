@@ -188,11 +188,11 @@ steals them from typing. Prefer exposing behaviour as a command option or a comm
    (Select with `wantsSnap()` true). The right button never reaches a tool.
 5. Only then the left button, with the Selection list box's deferred click (below).
 
-**A right-click's Enter is `pressEnter`, and so is the Command menu's Enter**: what is typed in the
-dynamic-input box is submitted; with nothing typed, the session's `commitRaw` reads the empty text
-as the prompt's default (LINE's Continue), and if it refuses, the drawing's Enter runs
-(`keyDown`, which ends LINE and confirms Select objects). Never `commitDynamicInput` on an empty
-box: it commits the box's live reading, a segment to wherever the cursor is. Cancel is
+**A right-click's Enter is `pressEnter`, and so is the Command menu's Enter**: the keyboard's
+Enter, `commitDynamicInput` when the box has a field and `keyDown` otherwise — one path, whose
+nothing-typed rule (defaults, then `commitRaw` on the empty text, then `keyDown`) is in
+`cad-tools.instructions.md`, "Dynamic input (DYN)". `keyDown` repeats the last command only with
+no command running and no grip edit hot (`wantsSnap()`), as the right button decides. Cancel is
 `cancelCommand` (AutoCAD's ^C^C: FROM, the typed text and the command go together). Every entry
 runs through `chooseShortcutMenuAction` / `chooseShortcutMenuOption`, which close the menu first;
 a fixed entry that is a command runs it by its global name (`SHORTCUT_MENU_COMMANDS`, `_ERASE`), so

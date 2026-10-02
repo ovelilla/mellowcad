@@ -571,6 +571,15 @@ export class SelectTool implements Tool {
    * osnap markers, so the midpoint snap glyph never fights with the midpoint
    * grip.
    */
+  /**
+   * WHY a grip edit swallows Enter: AutoCAD's Enter there cycles to the next
+   * grip mode (Move, Rotate…), which is not built; ending or committing the
+   * edit would be a different gesture.
+   */
+  onEnter(): boolean {
+    return this.wantsSnap()
+  }
+
   wantsSnap(): boolean {
     return (
       this.state.phase === "moveLine" ||

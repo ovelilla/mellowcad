@@ -1,5 +1,5 @@
 import { Vec2, V } from "../../geometry/Vec2"
-import { Vec3, sub3 } from "../../geometry/Vec3"
+import { Vec3, add3, sub3 } from "../../geometry/Vec3"
 import { Entity, EntityId, translateEntity } from "../../domain/entities"
 import { parseNumber } from "../../domain/units"
 import { DynamicInputSession } from "../input/DynamicInput"
@@ -73,6 +73,8 @@ export abstract class PlacementTool implements Tool {
 
   private state: PlacementState = { phase: "selecting" }
   private lastScreen: Vec2 | null = null
+  /** Copies placed from the current base point: COPY's Enter is `<Exit>` after one. */
+  private placements = 0
 
   /** Applies one placement of `originals` displaced by `delta` (undoable). */
   protected abstract place(
@@ -353,6 +355,7 @@ export abstract class PlacementTool implements Tool {
     }
 
     this.state = { phase: "secondPoint", base, originals, current: base }
+    this.placements = 0
     this.openSecondPointInput(ctx, screen ?? this.lastScreen ?? base)
   }
 
@@ -375,23 +378,24 @@ export abstract class PlacementTool implements Tool {
 
   /**
    * Handles a second point confirmed from the dynamic input (Enter). A typed
-   * value places at that displacement; an empty Enter accepts the default,
-   * which ends the command — for a continuous command (COPY) that means no
-   * further copy, for a single one (MOVE) it places at the live cursor.
+   * value places at that displacement; an empty Enter accepts the default:
+   * `<use first point as displacement>` ("the first point is interpreted as a
+   * relative X,Y,Z displacement"), or `<Exit>` once COPY has placed a copy.
    */
   private commitSecondPoint(ctx: ToolContext): boolean {
     if (this.state.phase !== "secondPoint") return false
-    const hasTyped =
-      ctx.dynamicInput.getText("distance").trim() !== "" ||
-      ctx.dynamicInput.getText("angle").trim() !== ""
-    if (!hasTyped && this.continuesAfterPlace()) {
-      // Empty Enter in Multiple mode (COPY): accept <Exit>.
-      ctx.dynamicInput.close()
-      ctx.endCommand()
+    const { base, originals } = this.state
+    if (!ctx.dynamicInput.hasTypedText()) {
+      if (this.placements > 0) {
+        ctx.dynamicInput.close()
+        ctx.endCommand()
+        return true
+      }
+      this.placeAt(base, add3(base, base), originals, ctx)
       return true
     }
-    const dest = this.resolveSecond(this.state.base, this.state.current, ctx)
-    this.placeAt(this.state.base, dest, this.state.originals, ctx)
+    const dest = this.resolveSecond(base, this.state.current, ctx)
+    this.placeAt(base, dest, originals, ctx)
     return true
   }
 
@@ -406,6 +410,7 @@ export abstract class PlacementTool implements Tool {
     ctx: ToolContext
   ): void {
     const delta = sub3(dest, base)
+    this.placements++
     if (delta.x !== 0 || delta.y !== 0 || delta.z !== 0) {
       this.place(originals, delta, ctx)
     }

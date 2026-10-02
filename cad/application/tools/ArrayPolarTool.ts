@@ -331,8 +331,8 @@ export class ArrayPolarTool implements Tool {
       commit: (_values, commitCtx) => this.commit(commitCtx),
     }
     ctx.dynamicInput.open(session)
-    ctx.dynamicInput.setLive("items", DEFAULT_ITEMS)
-    ctx.dynamicInput.setLive("fill", DEFAULT_FILL)
+    ctx.dynamicInput.setDefault("items", DEFAULT_ITEMS)
+    ctx.dynamicInput.setDefault("fill", DEFAULT_FILL)
     ctx.dynamicInput.setPosition(this.lastScreen ?? { x: 0, y: 0 })
   }
 

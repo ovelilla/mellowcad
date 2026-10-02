@@ -167,7 +167,7 @@ export class PolygonTool implements Tool {
       commit: (values, commitCtx) => this.commitSides(values.sides, commitCtx),
     }
     ctx.dynamicInput.open(session)
-    ctx.dynamicInput.setLive("sides", DEFAULT_SIDES)
+    ctx.dynamicInput.setDefault("sides", DEFAULT_SIDES)
     ctx.dynamicInput.setPosition(this.lastScreen ?? { x: 0, y: 0 })
   }
 

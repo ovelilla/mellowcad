@@ -352,7 +352,7 @@ export class TextTool implements Tool {
     ctx.dynamicInput.open(session)
     // The live value stays on the remembered height so Enter takes AutoCAD's
     // `<default>`; pointing sets it by distance instead.
-    ctx.dynamicInput.setLive("height", this.height)
+    ctx.dynamicInput.setDefault("height", this.height)
     ctx.dynamicInput.setPosition(this.lastScreen ?? { x: 0, y: 0 })
   }
 
@@ -376,7 +376,7 @@ export class TextTool implements Tool {
       },
     }
     ctx.dynamicInput.open(session)
-    ctx.dynamicInput.setLive(
+    ctx.dynamicInput.setDefault(
       "rotation",
       normalizeDegrees((this.rotation * 180) / Math.PI)
     )
@@ -428,17 +428,20 @@ export class TextTool implements Tool {
       }
       this.justify = JUSTIFY_BY_KEYWORD[keyword]
     } else if (this.state.phase === "style") {
-      const style = ctx.document
-        .getTextStyles()
-        .find((s) => s.name.toLowerCase() === typed.toLowerCase())
-      if (!style) {
-        ctx.report(
-          ctx.text.message("textStyleUndefined", { name: typed }),
-          "error"
-        )
-        return false
+      // Empty is Enter, which keeps the `<current>` style.
+      if (typed !== "") {
+        const style = ctx.document
+          .getTextStyles()
+          .find((s) => s.name.toLowerCase() === typed.toLowerCase())
+        if (!style) {
+          ctx.report(
+            ctx.text.message("textStyleUndefined", { name: typed }),
+            "error"
+          )
+          return false
+        }
+        this.styleId = style.id
       }
-      this.styleId = style.id
     } else {
       return false
     }

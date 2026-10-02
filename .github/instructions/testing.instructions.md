@@ -56,9 +56,9 @@ optionKeys() / optionIds() / selectedIds()`.
   snap override menu, the Selection list box) holds focus while it is open, so `escape()` then
   closes it through `keyDown` and the command goes on. A shortcut menu's entry is chosen with
   `runtime.chooseShortcutMenuAction(id)` / `chooseShortcutMenuOption(id)`, as the menu does.
-- `enter()` with a field focused commits the box as the keyboard's Enter does — its live reading
-  included, so in LINE it draws a segment to the cursor. A right-click's Enter (`pressEnter`) is
-  Enter at the prompt instead; test what a user does, not one for the other.
+- `enter()` with a field focused commits the box as the keyboard's Enter does, and a right-click's
+  Enter (`pressEnter`) is the same path: with nothing typed, the prompt's default or the end of the
+  command, never the cursor's reading. `dynamicInputEnter.test.ts` runs each case both ways.
 
 **Two snapshots guard what the engine says in English**: `englishSurface.test.ts` walks every
 command through its prompts, keywords, messages, canvas text, grips and the Properties palette, and

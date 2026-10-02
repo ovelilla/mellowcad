@@ -571,7 +571,7 @@ export class SplineTool implements Tool {
       },
     }
     ctx.dynamicInput.open(session)
-    ctx.dynamicInput.setLive("degree", this.degree)
+    ctx.dynamicInput.setDefault("degree", this.degree)
     ctx.dynamicInput.setPosition(this.lastScreen ?? { x: 0, y: 0 })
   }
 

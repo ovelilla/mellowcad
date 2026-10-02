@@ -448,7 +448,7 @@ export class DimensionTool implements Tool {
         this.setRotation((values.angle * Math.PI) / 180, commitCtx),
     }
     ctx.dynamicInput.open(session)
-    ctx.dynamicInput.setLive(
+    ctx.dynamicInput.setDefault(
       "angle",
       normalizeDegrees(((this.rotation ?? 0) * 180) / Math.PI)
     )

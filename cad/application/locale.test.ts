@@ -269,7 +269,7 @@ describe("Spanish AutoCAD's command language", () => {
     })
     cad.command("DESFASE")
     expect(cad.state().commandLine.prompt).toBe(
-      "DESFASE [punto a Atravesar/Borrar: No/Capa: Origen/Múltiple: DES]:"
+      "DESFASE [punto a Atravesar/Borrar: No/Capa: Origen/Múltiple: DES] <punto a Atravesar>:"
     )
     expect(cad.state().commandOptions.map((option) => option.key)).toEqual([
       "A",

@@ -132,6 +132,11 @@ export class OffsetTool implements Tool {
   private erase = false
   private offsetLayer: "source" | "current" = "source"
   private multiple = false
+  /**
+   * AutoCAD's OFFSETDIST, the distance prompt's `<default>`: the last distance,
+   * or Through while negative (initially -1, and not saved).
+   */
+  private offsetDist = -1
 
   onActivate(ctx: ToolContext): void {
     ctx.setCursor("crosshair")
@@ -402,15 +407,33 @@ export class OffsetTool implements Tool {
       fields: [{ id: "distance", prompt: "offsetDistance", kind: "distance" }],
       commit: (values, commitCtx) =>
         this.setDistance(values.distance, commitCtx),
+      // Enter with nothing typed, even with a two-point base placed: the default.
+      commitRaw: (commitCtx) => {
+        if (this.state.phase !== "distance") return false
+        if (commitCtx.dynamicInput.hasTypedText()) return false
+        if (this.offsetDist < 0) this.enterThrough(commitCtx)
+        else this.setDistance(this.offsetDist, commitCtx)
+        return true
+      },
     }
     ctx.dynamicInput.open(session)
+    if (this.offsetDist >= 0) {
+      ctx.dynamicInput.setDefault("distance", this.offsetDist)
+    }
     if (this.lastScreen) ctx.dynamicInput.setPosition(this.lastScreen)
+  }
+
+  defaultOption(): string | null {
+    return this.state.phase === "distance" && this.offsetDist < 0
+      ? "Through"
+      : null
   }
 
   /** Fixes the offset distance and advances to selecting the object. */
   private setDistance(distance: number, ctx: ToolContext): void {
     if (this.state.phase !== "distance") return
     if (!(distance > 0)) return
+    this.offsetDist = distance
     this.state = { phase: "select", distance, hover: null }
     ctx.dynamicInput.close()
     ctx.requestRender()
@@ -457,6 +480,7 @@ export class OffsetTool implements Tool {
 
   /** Switches to Through mode: pick an object, then a point to pass through. */
   private enterThrough(ctx: ToolContext): void {
+    this.offsetDist = -1
     this.state = { phase: "throughSelect", hover: null }
     ctx.dynamicInput.close()
     ctx.requestRender()

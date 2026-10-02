@@ -1776,19 +1776,19 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
   properties: -
   cycling: -
 > OFFSET
-  prompt: OFFSET [Through/Erase: No/Layer: Source/Multiple: Off]:
+  prompt: OFFSET [Through/Erase: No/Layer: Source/Multiple: Off] <Through>:
   asks: "Offset distance"
   dyn: "Offset distance"=""||mm*
   options: [T] Through, [E] Erase: No, [L] Layer: Source, [M] Multiple: Off
   command| OFFSET
 > E
-  prompt: OFFSET [Through/Erase: Yes/Layer: Source/Multiple: Off]:
+  prompt: OFFSET [Through/Erase: Yes/Layer: Source/Multiple: Off] <Through>:
   options: [T] Through, [E] Erase: Yes, [L] Layer: Source, [M] Multiple: Off
 > L
-  prompt: OFFSET [Through/Erase: Yes/Layer: Current/Multiple: Off]:
+  prompt: OFFSET [Through/Erase: Yes/Layer: Current/Multiple: Off] <Through>:
   options: [T] Through, [E] Erase: Yes, [L] Layer: Current, [M] Multiple: Off
 > M
-  prompt: OFFSET [Through/Erase: Yes/Layer: Current/Multiple: On]:
+  prompt: OFFSET [Through/Erase: Yes/Layer: Current/Multiple: On] <Through>:
   options: [T] Through, [E] Erase: Yes, [L] Layer: Current, [M] Multiple: On
 > T
   prompt: OFFSET [Distance]:
@@ -1796,7 +1796,7 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
   dyn: -
   options: [D] Distance
 > D
-  prompt: OFFSET [Through/Erase: Yes/Layer: Current/Multiple: On]:
+  prompt: OFFSET [Through/Erase: Yes/Layer: Current/Multiple: On] <Through>:
   asks: "Offset distance"
   dyn: "Offset distance"=""||mm*
   options: [T] Through, [E] Erase: Yes, [L] Layer: Current, [M] Multiple: On

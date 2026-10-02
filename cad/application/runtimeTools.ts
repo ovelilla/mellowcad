@@ -71,14 +71,15 @@ export function defaultTools(
   paste: PasteTool,
   attEdit: AttEditTool
 ): Tool[] {
+  const circleRadius = { radius: 0 }
   return [
     new SelectTool(),
     new LineTool(),
     new PolylineTool(),
-    new CircleTool("center", "circle", "c"),
-    new CircleTool("centerDiameter", "circlediameter"),
-    new CircleTool("twoPoint", "circle2p"),
-    new CircleTool("threePoint", "circle3p"),
+    new CircleTool("center", "circle", "c", circleRadius),
+    new CircleTool("centerDiameter", "circlediameter", undefined, circleRadius),
+    new CircleTool("twoPoint", "circle2p", undefined, circleRadius),
+    new CircleTool("threePoint", "circle3p", undefined, circleRadius),
     new ArcTool("threePoint", "arc"),
     new ArcTool("startCenterEnd", "arcsce"),
     new ArcTool("centerStartEnd", "arccse"),

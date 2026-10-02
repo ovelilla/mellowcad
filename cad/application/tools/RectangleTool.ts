@@ -186,7 +186,7 @@ export class RectangleTool implements Tool {
         commitCtx.requestRender()
       },
     })
-    ctx.dynamicInput.setLive("value", this[mode])
+    ctx.dynamicInput.setDefault("value", this[mode])
     ctx.dynamicInput.setPosition(this.lastScreen ?? { x: 0, y: 0 })
   }
 

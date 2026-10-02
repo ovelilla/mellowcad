@@ -1094,30 +1094,13 @@ export class CadRuntime extends Observable {
 
   /**
    * Enter at the prompt — a right-click with no menu to show, or the Command
-   * menu's Enter. What is typed in the dynamic-input box is submitted, as
-   * Enter there would; with nothing typed it takes the prompt's default, which
-   * a session reads from its empty text (LINE's Continue), or else it is the
-   * drawing's Enter, which ends LINE. Never the box's live reading: that only
-   * shows where the cursor is ("similar to those for the Command prompt").
+   * menu's Enter: the same Enter as the keyboard's, in the box when it has a
+   * field and on the drawing otherwise.
    */
   pressEnter(): void {
     this.shortcutMenu = null
-    const session = this.dynamicInputHasField()
-      ? this.dynamicInput.getSession()
-      : null
-    const typed = session?.fields.some(
-      (field) => this.dynamicInput.getText(field.id).trim() !== ""
-    )
-    if (typed) {
-      this.commitDynamicInput()
-    } else if (session?.commitRaw?.(this.toolContext)) {
-      if (this.dynamicInput.getSession() === session) {
-        this.dynamicInput.clearTexts()
-      }
-      this.resetTracking()
-    } else {
-      this.keyDown(plainKey("Enter"))
-    }
+    if (this.dynamicInputHasField()) this.commitDynamicInput()
+    else this.keyDown(plainKey("Enter"))
     this.invalidateState()
     this.host.requestRender()
   }
@@ -1174,12 +1157,19 @@ export class CadRuntime extends Observable {
   private commitFromOffset(): boolean {
     const base = this.fromBase
     if (!base) return false
-    const point = parseCoordinate(this.dynamicInput.getText("offset").trim(), {
-      lastPoint: base,
-      relativeByDefault: true,
-      ucs: this.frame.ucs,
-      elevation: this.document.getSettings().elevation,
-    })
+    const typed = this.dynamicInput.getText("offset").trim()
+    // WHY Enter places the base point itself: the `<Offset>` default is no
+    // offset (unverified — the FROM page says nothing of Enter), and handing
+    // Enter to the command instead would leave FROM half-run under it.
+    const point =
+      typed === ""
+        ? base
+        : parseCoordinate(typed, {
+            lastPoint: base,
+            relativeByDefault: true,
+            ucs: this.frame.ucs,
+            elevation: this.document.getSettings().elevation,
+          })
     if (!point) return false
     this.endFrom()
     this.placePoint(point)
@@ -1627,7 +1617,15 @@ export class CadRuntime extends Observable {
     this.dynamicInput.setActiveField(fieldId)
   }
 
-  /** Commits the typed/live values to the tool that opened the session. */
+  /**
+   * Enter in the dynamic-input box. What is typed is submitted, an untyped
+   * field beside it taking the cursor's reading (direct distance). With nothing
+   * typed it is Enter at the Command prompt ("the actions required to complete
+   * a command … are similar"): a form's defaults, else the default a session
+   * reads from its empty text (LINE's Continue, CIRCLE's last radius), else the
+   * drawing's Enter, which ends LINE. Never the readings alone: they only show
+   * where the cursor is.
+   */
   commitDynamicInput(): void {
     const session = this.dynamicInput.getSession()
     if (!session) return
@@ -1652,7 +1650,9 @@ export class CadRuntime extends Observable {
       session.commit(values, this.toolContext)
     } else if (!session.commitRaw?.(this.toolContext)) {
       // The numeric fields don't resolve and the session has no raw handler (or
-      // it rejected the text, e.g. an incomplete coordinate): nothing to do.
+      // it rejected the text, e.g. an incomplete coordinate): nothing to do,
+      // unless nothing was typed — then the prompt has no default to give.
+      if (!this.dynamicInput.hasTypedText()) this.keyDown(plainKey("Enter"))
       return
     }
     // A tool that opened its next question in the commit may have filled it
@@ -2754,10 +2754,12 @@ export class CadRuntime extends Observable {
       }
 
       // Repeating the last command is only offered when no command is running;
-      // mid-command Enter keeps its meaning (accept/exit).
+      // mid-command Enter keeps its meaning (accept/exit). A grip edit counts
+      // as a command, as it does for the right button.
       if (
         e.key === "Enter" &&
         this.activeTool.id === "select" &&
+        !(this.activeTool.wantsSnap?.() ?? false) &&
         this.repeatLastCommand()
       ) {
         return true
@@ -2790,8 +2792,8 @@ export class CadRuntime extends Observable {
     this.activeTool.onKeyDown?.(e, this.toolContext)
     // Escape and Enter both end the running command and drop back to neutral
     // select — Enter accepts the default "Exit" at a repeat prompt (AutoCAD's
-    // OFFSET and similar continuous commands). Only reached when the canvas has
-    // focus; while a dynamic-input box is focused, Enter commits its value.
+    // OFFSET and similar continuous commands). From a focused dynamic-input box
+    // Enter arrives here only when the box has no default to give.
     if (e.key === "Escape" || e.key === "Enter") this.returnToNeutralTool()
     this.host.requestRender()
     return false

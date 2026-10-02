@@ -342,7 +342,7 @@ export class FilletTool implements Tool {
       commit: (values, commitCtx) => this.setRadius(values.radius, commitCtx),
     }
     ctx.dynamicInput.open(session)
-    ctx.dynamicInput.setLive("radius", this.radius)
+    ctx.dynamicInput.setDefault("radius", this.radius)
     ctx.dynamicInput.setPosition(this.lastScreen ?? { x: 0, y: 0 })
     ctx.requestRender()
   }

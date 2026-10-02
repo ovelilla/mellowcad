@@ -218,7 +218,7 @@ export class MTextTool implements Tool {
       case "Height":
         this.state = { phase: "height", first }
         this.openValueInput(ctx, "height", "textHeight", "distance")
-        ctx.dynamicInput.setLive("height", this.currentHeight(ctx))
+        ctx.dynamicInput.setDefault("height", this.currentHeight(ctx))
         return "continue"
       case "Justify":
         this.state = { phase: "justify", first }
@@ -231,7 +231,7 @@ export class MTextTool implements Tool {
       case "Rotation":
         this.state = { phase: "rotation", first }
         this.openValueInput(ctx, "rotation", "mtextRotation", "angle")
-        ctx.dynamicInput.setLive(
+        ctx.dynamicInput.setDefault(
           "rotation",
           normalizeDegrees((this.rotation * 180) / Math.PI)
         )
@@ -555,6 +555,14 @@ export class MTextTool implements Tool {
     const session: DynamicInputSession = {
       fields: [{ id, prompt, kind }],
       commit: (values, commitCtx) => this.commitValue(values[id], commitCtx),
+      // The height's `<default>` survives the cursor's reading in the box.
+      commitRaw: (commitCtx) => {
+        if (id !== "height" || commitCtx.dynamicInput.hasTypedText()) {
+          return false
+        }
+        this.commitValue(this.currentHeight(commitCtx), commitCtx)
+        return true
+      },
     }
     ctx.dynamicInput.open(session)
     ctx.dynamicInput.setPosition(this.lastScreen ?? { x: 0, y: 0 })
