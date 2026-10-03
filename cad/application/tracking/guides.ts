@@ -18,9 +18,10 @@ export function guidesFor(
   aids: DrawingAidState,
   alongZ = false
 ): TrackingGuide[] {
-  // Polar tracking widens the set of angles; otherwise OTRACK aligns
-  // horizontally/vertically like Ortho.
-  const step = aids.polar && aids.polarAngleStep > 0 ? aids.polarAngleStep : 90
+  // WHY 90° whatever Polar's increment: "By default, object snap tracking is
+  // set to orthogonal" — POLARMODE's "Track using all polar angle settings" is
+  // an option this app does not expose yet.
+  const step = 90
   const guides: TrackingGuide[] = []
   // Guides are infinite lines, so half a turn covers every distinct axis.
   for (let deg = 0; deg < 180; deg += step) {

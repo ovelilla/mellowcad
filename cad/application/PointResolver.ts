@@ -1,14 +1,19 @@
 import { Vec2, V } from "../geometry/Vec2"
-import { Vec3, withZ, zOf } from "../geometry/Vec3"
+import { Vec3, length3, scale3, sub3, withZ, zOf } from "../geometry/Vec3"
 import { Viewport } from "./Viewport"
 import { SnapMode } from "./SnapMode"
 import { SnapEngine } from "./snapping/SnapEngine"
-import { SnapResult } from "./snapping/types"
+import { SnapResult, SnapType } from "./snapping/types"
 import { ConstraintManager } from "./constraints/ConstraintManager"
 import { ConstraintContext, ConstraintType } from "./constraints/types"
 import { isAlongZ } from "./constraints/zGuide"
 import { ObjectSnapTrackingEngine } from "./tracking/ObjectSnapTrackingEngine"
-import { DrawingAidState, TrackingResult } from "./tracking/types"
+import {
+  DrawingAidState,
+  TrackingGuide,
+  TrackingPoint,
+  TrackingResult,
+} from "./tracking/types"
 import { Ucs } from "../domain/ucs"
 
 /** What the resolver produced for one cursor position. */
@@ -34,9 +39,9 @@ export interface ResolvedPoint {
  *       → snap mode (round onto the snap lattice)
  *         → drawing constraints (Ortho, ...)
  *
- * A direct snap wins over tracking and over the lattice — geometry always beats
- * an increment, as in AutoCAD; when tracking engages it already accounts for
- * the active Ortho line, so its point is returned as-is.
+ * A direct snap wins over everything after it — tracking, the lattice, Ortho
+ * and Polar — and is returned as-is; when tracking engages it already accounts
+ * for the active Ortho line, so its point is returned as-is too.
  */
 export class PointResolver {
   constructor(
@@ -46,7 +51,8 @@ export class PointResolver {
     private readonly tracking: ObjectSnapTrackingEngine,
     private readonly snapMode: SnapMode,
     private readonly currentUcs: () => Ucs,
-    private readonly currentElevation: () => number
+    private readonly currentElevation: () => number,
+    private readonly currentExtensions: () => readonly TrackingGuide[] = () => []
   ) {}
 
   /**
@@ -62,64 +68,92 @@ export class PointResolver {
     forceOrtho = false,
     allowSnapMode = true
   ): ResolvedPoint {
-    const snapPoint = snap ? snap.point : null
+    // WHY returned untouched: "Ortho is ignored when you enter coordinates or
+    // specify an object snap" (AutoCAD), and polar tracking yields to a snap
+    // the same way — projecting it onto the ray left the point off the object
+    // the marker was showing.
+    if (snap) return { point: snap.point, tracking: extensionPath(snap) }
+
     const ucs = this.currentUcs()
     const view = this.currentView()
-
-    // Object snap tracking only when there is no direct snap.
-    let tracked: TrackingResult | null = null
-    if (!snap) {
-      const raw = {
-        anchor,
-        world,
-        snapPoint: null,
-        point: world,
-        ucs,
-        view,
-      }
-      const anchorLine =
-        anchor !== null ? this.constraints.activeRay(raw, forceOrtho) : null
-      const anchorUp =
-        anchor !== null && this.constraints.activeAlongZ(raw, forceOrtho)
-          ? withZ(anchor, zOf(anchor))
-          : null
-      const tolerance = view.screenToWorldDistance(this.snapping.pixelTolerance)
-      tracked = this.tracking.resolve(
-        world,
-        tolerance,
-        this.aidState(forceOrtho),
-        anchorLine,
-        view,
-        anchorUp
-      )
-    }
+    const tracked = this.track(world, anchor, forceOrtho)
     if (tracked) return { point: tracked.point, tracking: tracked }
 
-    const candidate = snap
-      ? snap.point
-      : allowSnapMode
-        ? this.snapMode.snapPoint(world, ucs)
-        : world
-    const context = { anchor, world, snapPoint, point: candidate, ucs, view }
+    const candidate = allowSnapMode
+      ? this.snapMode.snapPoint(world, ucs)
+      : world
+    const context = { anchor, world, point: candidate, ucs, view }
     const constrained = this.constraints.apply(context, forceOrtho)
     if (isAlongZ(constrained)) {
       return {
-        point:
-          allowSnapMode && !snap
-            ? this.polarSnapAlongZ(anchor, constrained)
-            : withZ(constrained, constrained.z),
+        point: allowSnapMode
+          ? this.polarSnapAlongZ(anchor, constrained)
+          : withZ(constrained, constrained.z),
         tracking: null,
       }
     }
     return {
       point: withZ(
-        allowSnapMode && !snap
+        allowSnapMode
           ? this.applyPolarSnap(context, constrained, forceOrtho)
           : constrained,
-        snap ? snap.point.z : ucs.origin.z + this.currentElevation()
+        ucs.origin.z + this.currentElevation()
       ),
       tracking: null,
     }
+  }
+
+  /**
+   * Where alignment paths cross under the cursor — two OTRACK guides, a guide
+   * and an Extension, a guide and the Ortho / Polar line — or `null`. Such a
+   * point beats a snap that merely slides along one path (Extension,
+   * Parallel, Nearest): it is the point that path was followed to.
+   */
+  crossing(
+    world: Vec3,
+    anchor: Vec2 | Vec3 | null,
+    forceOrtho = false
+  ): TrackingResult | null {
+    const tracked = this.track(world, anchor, forceOrtho)
+    return tracked && tracked.kind !== "projection" ? tracked : null
+  }
+
+  /**
+   * The tracking guides the cursor is on — one it slides along, or the ones
+   * crossing under it — for Intersection to cross with objects, as it crosses
+   * the polar path.
+   */
+  engagedGuides(
+    world: Vec3,
+    anchor: Vec2 | Vec3 | null,
+    forceOrtho = false
+  ): readonly TrackingGuide[] {
+    const tracked = this.track(world, anchor, forceOrtho)
+    return tracked ? tracked.guides.filter((g) => g.kind !== "z") : []
+  }
+
+  private track(
+    world: Vec3,
+    anchor: Vec2 | Vec3 | null,
+    forceOrtho: boolean
+  ): TrackingResult | null {
+    const view = this.currentView()
+    const raw = { anchor, world, point: world, ucs: this.currentUcs(), view }
+    const anchorLine =
+      anchor !== null ? this.constraints.activeRay(raw, forceOrtho) : null
+    const anchorUp =
+      anchor !== null && this.constraints.activeAlongZ(raw, forceOrtho)
+        ? withZ(anchor, zOf(anchor))
+        : null
+    return this.tracking.resolve(
+      world,
+      view.screenToWorldDistance(this.snapping.pixelTolerance),
+      this.aidState(forceOrtho),
+      anchorLine,
+      view,
+      anchorUp,
+      this.currentExtensions()
+    )
   }
 
   /**
@@ -175,5 +209,35 @@ export class PointResolver {
       acquiredPoints: this.tracking.getAcquired(),
       ucs: this.currentUcs(),
     }
+  }
+}
+
+/**
+ * A line's Extension as the alignment path it is: a typed distance runs along
+ * it from the acquired end ("use direct distance to specify points at precise
+ * distances along alignment paths from the acquired object snap point"),
+ * exactly as along an OTRACK guide. An arc's extension has no such reading.
+ */
+function extensionPath(snap: SnapResult): TrackingResult | null {
+  if (snap.type !== SnapType.Extension || snap.path?.length !== 2) return null
+  const origin = snap.path[0]
+  const along = sub3(snap.point, origin)
+  const length = length3(along)
+  if (length < 1e-9) return null
+  const dir = scale3(along, 1 / length)
+  const point: TrackingPoint = {
+    id: "extension",
+    origin,
+    sourceType: SnapType.Endpoint,
+    sourceIds: snap.sourceIds ?? [],
+    acquiredAt: 0,
+  }
+  return {
+    point: snap.point,
+    kind: "projection",
+    guides: [
+      { point, dir, angle: Math.atan2(dir.y, dir.x), kind: "extension" },
+    ],
+    direction: dir,
   }
 }

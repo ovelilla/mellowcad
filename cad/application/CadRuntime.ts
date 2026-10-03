@@ -46,10 +46,11 @@ import { SelectionCycling } from "./SelectionCycling"
 import { SnapEngine } from "./snapping/SnapEngine"
 import { ConstructionGeometry, SnapResult, SnapType } from "./snapping/types"
 import { ParallelReferenceEngine } from "./snapping/ParallelReference"
+import { OSNAP_MODES, OSNAP_MODE_IDS } from "./snapping/osnapModes"
 import { ConstraintManager } from "./constraints/ConstraintManager"
 import { ConstraintType } from "./constraints/types"
 import { ObjectSnapTrackingEngine } from "./tracking/ObjectSnapTrackingEngine"
-import { TrackingResult } from "./tracking/types"
+import { TrackingGuide, TrackingResult } from "./tracking/types"
 import {
   DynamicInputController,
   DynamicInputSession,
@@ -272,6 +273,8 @@ export class CadRuntime extends Observable {
 
   private currentSnap: SnapResult | null = null
   private lastTracking: TrackingResult | null = null
+  /** The tracking guides and Extensions the cursor was last on, for a snap found on them. */
+  private pathGuides: readonly TrackingGuide[] = []
   private cursorWorld: Vec3 | null = null
 
   // Whether Shift was held on the last pointer event. AutoCAD uses Shift as a
@@ -398,7 +401,8 @@ export class CadRuntime extends Observable {
       this.tracking,
       this.snapMode,
       () => this.frame.ucs,
-      () => this.document.getSettings().elevation
+      () => this.document.getSettings().elevation,
+      () => this.extensionGuides()
     )
     this.autosave = new AutosaveService(store, () => this.serializeDrawing())
 
@@ -416,6 +420,15 @@ export class CadRuntime extends Observable {
       setCursor: (cursor) => this.host.setCursor(cursor),
       report: (text, kind = "info") => this.commandLine.write(kind, text),
       setViewCubeVisible: (visible) => this.setViewCubeVisible(visible),
+      runningSnaps: {
+        enabled: () => this.snapping.enabledTypes(),
+        set: (types) => {
+          for (const type of this.snapping.availableTypes()) {
+            this.snapping.setEnabled(type, types.includes(type))
+          }
+          if (types.length > 0) this.snapping.setActive(true)
+        },
+      },
       text: {
         message: (id, values) => this.text.message(id, values),
         feedback: (id, values) => this.text.feedback(id, values),
@@ -431,6 +444,7 @@ export class CadRuntime extends Observable {
           ),
         abbreviation: (id) =>
           this.text.abbreviation(toolCommand(this.activeTool), id),
+        keyword: (id) => this.text.keyword(toolCommand(this.activeTool), id),
       },
       endCommand: () => {
         this.resetTracking()
@@ -497,34 +511,22 @@ export class CadRuntime extends Observable {
     this.registerCommands()
     this.refreshCommandInfos()
 
-    // Running-snap defaults mirror AutoCAD's out-of-the-box set: the always-on
-    // snaps are the notable "vertex" points — Endpoint, Midpoint, Center and
-    // Intersection. Everything else is off by default and used deliberately
-    // (via the Shift+right-click override or by toggling it on), matching how a
-    // fresh AutoCAD ships (its default OSMODE is Endpoint/Center/Intersection/
-    // Extension; we add Midpoint, which users almost always keep on).
-    //
-    // Apparent (extended) intersection: fires on geometry that only meets when
-    // extended — noisy as a running snap.
-    this.snapping.setEnabled(SnapType.ApparentIntersection, false)
-    // Nearest: matches any point on an outline, so it would constantly override
-    // the notable points.
-    this.snapping.setEnabled(SnapType.Nearest, false)
-    // Perpendicular and Tangent engage over the whole line/circle, so they are
-    // best forced deliberately via the override (which ignores this set) rather
-    // than firing on every line the cursor crosses while drawing.
-    this.snapping.setEnabled(SnapType.Perpendicular, false)
-    this.snapping.setEnabled(SnapType.Tangent, false)
-    // Quadrant is off by default in AutoCAD too (it is not in the default
-    // OSMODE); the four cardinal points of a circle are an occasional need.
-    this.snapping.setEnabled(SnapType.Quadrant, false)
-    // Insertion is likewise absent from AutoCAD's default OSMODE: it is how you
-    // grab a text object's own point when you deliberately need it.
-    this.snapping.setEnabled(SnapType.Insertion, false)
-    // Extension and Parallel are directional alignment snaps — off by default
-    // in AutoCAD as well; they are turned on deliberately when needed.
-    this.snapping.setEnabled(SnapType.Extension, false)
-    this.snapping.setEnabled(SnapType.Parallel, false)
+    // The running snaps of a fresh AutoCAD: OSMODE 4133, Endpoint + Center +
+    // Intersection + Extension. Everything else is turned on deliberately.
+    for (const type of [
+      SnapType.Midpoint,
+      SnapType.Quadrant,
+      SnapType.Insertion,
+      SnapType.Perpendicular,
+      SnapType.Tangent,
+      SnapType.Nearest,
+      SnapType.ApparentIntersection,
+      SnapType.Parallel,
+    ]) {
+      this.snapping.setEnabled(type, false)
+    }
+    // AUTOSNAP 63 turns polar tracking on, at POLARANG's 90.
+    this.constraints.setEnabled(ConstraintType.Polar, true)
 
     // Rebuild the UI snapshot and redraw whenever any sub-model changes.
     const onModelChange = () => {
@@ -735,7 +737,30 @@ export class CadRuntime extends Observable {
       return
     }
     if (this.invokeToolOption(text)) return
+    if (this.pointModifier(text)) return
     this.runCommand(text)
+  }
+
+  /**
+   * An object snap typed at a point prompt — END, MID, NON… or `_END` in any
+   * language — forces that snap for the next point, as the Shift+right-click
+   * menu does; FROM typed into the dynamic-input box starts FROM as it does at
+   * the command line.
+   */
+  private pointModifier(text: string): boolean {
+    if (!(this.activeTool.wantsSnap?.() ?? true)) return false
+    const mode = resolveKeyword(
+      text,
+      this.text.keywords("-OSNAP", OSNAP_MODE_IDS)
+    )
+    if (mode !== null) {
+      this.setSnapOverride(OSNAP_MODES[mode])
+      return true
+    }
+    if (this.text.resolveCommand(text.trim().toUpperCase()) === "FROM") {
+      return this.runCommand(text)
+    }
+    return false
   }
 
   /**
@@ -1025,7 +1050,8 @@ export class CadRuntime extends Observable {
    * position it was opened so the forced marker shows immediately.
    */
   setSnapOverride(override: SnapType | "none"): void {
-    const at = this.snapOverrideMenu ?? this.shortcutMenu?.at ?? null
+    const at =
+      this.snapOverrideMenu ?? this.shortcutMenu?.at ?? this.lastPointerScreen
     this.snapping.setOverride(override)
     this.snapOverrideMenu = null
     this.shortcutMenu = null
@@ -1033,6 +1059,19 @@ export class CadRuntime extends Observable {
     else this.invalidateState()
     this.host.requestRender()
     this.host.focusSurface()
+  }
+
+  /**
+   * Tab at a point prompt: the next snap the objects under the cursor offer.
+   * False when there is none to move to, so Tab keeps its other jobs.
+   */
+  cycleSnap(): boolean {
+    if (!(this.activeTool.wantsSnap?.() ?? true)) return false
+    const at = this.lastPointerScreen
+    if (at === null || !this.snapping.cycleNext()) return false
+    this.updateSnap(at)
+    this.host.requestRender()
+    return true
   }
 
   /** Dismisses the override menu without forcing a snap. */
@@ -1644,6 +1683,10 @@ export class CadRuntime extends Observable {
         this.invokeOption(keyword)
         return
       }
+      if (this.pointModifier(this.dynamicInput.getText(field.id))) {
+        this.dynamicInput.setText(field.id, "")
+        return
+      }
     }
     const values = this.dynamicInput.resolveValues()
     if (values) {
@@ -2121,7 +2164,7 @@ export class CadRuntime extends Observable {
         ? this.text.snapFeedback(this.currentSnap.type)
         : "",
       acquiredTrackingPoints: this.tracking.getAcquired(),
-      tracking: this.lastTracking,
+      tracking: this.sceneTracking(),
       parallelReferenceIds: this.parallelRefs.getAcquired(),
       toolOverlay: this.activeTool.buildOverlay?.(this.toolContext) ?? [],
       cursor: this.crosshairScreen ? { screen: this.crosshairScreen } : null,
@@ -2149,10 +2192,13 @@ export class CadRuntime extends Observable {
    * through the tool's anchor along the engaged polar angle, plus an AutoCAD
    * "Polar: <dist> < <angle>°" readout. `null` unless polar tracking is on, the
    * active tool has a base point, and the cursor is locked to an angle. Object
-   * snap and OTRACK take precedence, so it is hidden while either engages.
+   * snap and OTRACK take precedence, so it is hidden while either engages —
+   * but for a snap found on the path itself (where it crosses an object),
+   * whose path stays drawn up to that point.
    */
   private buildPolarGuide(): PolarGuideInput | null {
-    if (this.currentSnap || this.lastTracking) return null
+    const onPath = this.currentSnap?.transient ? this.currentSnap : null
+    if ((this.currentSnap && !onPath) || this.lastTracking) return null
     // Shift temporarily forces Ortho, which suppresses polar tracking.
     if (this.pointerShift) return null
     if (this.cursorWorld === null) return null
@@ -2164,7 +2210,6 @@ export class CadRuntime extends Observable {
     const context = {
       anchor,
       world: this.cursorWorld,
-      snapPoint: null,
       point: this.cursorWorld,
       ucs,
       view,
@@ -2187,7 +2232,9 @@ export class CadRuntime extends Observable {
     const ray = this.constraints.polarGuideRay(context)
     if (!ray) return null
 
-    const point = this.constraints.apply(context)
+    const point = onPath
+      ? planar(onPath.point)
+      : this.constraints.apply(context)
     const length = V.length(V.sub(point, anchor))
     const deg = headingInUcs(ucs, ray.dir)
     const label = this.text.feedback("polar", {
@@ -2731,6 +2778,8 @@ export class CadRuntime extends Observable {
         return true
       }
 
+      if (e.key === "Tab" && typed === "" && this.cycleSnap()) return true
+
       if (e.key === "Tab" && typed !== "") {
         this.completeCommandLine()
         return true
@@ -2840,9 +2889,7 @@ export class CadRuntime extends Observable {
       snap: input.snap && {
         ...input.snap,
         point: toWorld(input.snap.point),
-        ...(input.snap.pickPoint
-          ? { pickPoint: toWorld(input.snap.pickPoint) }
-          : {}),
+        ...(input.snap.touch ? { touch: toWorld(input.snap.touch) } : {}),
       },
       tracking: input.tracking && {
         ...input.tracking,
@@ -2858,22 +2905,110 @@ export class CadRuntime extends Observable {
     return this.frame.pointToFrame(withZ(anchor, zOf(anchor)))
   }
 
-  /** The active tool's construction geometry, in the frame. */
-  private toolSnapGeometry(cursor: Vec3): readonly ConstructionGeometry[] {
-    const tool = this.activeTool
-    const { frame } = this
-    if (!tool.inWorld || !frame.axes) {
-      return tool.getSnapGeometry?.(cursor) ?? []
-    }
-    const toFrame = (point: Vec2) =>
-      planar(frame.pointToFrame(withZ(point, zOf(point))))
-    return (tool.getSnapGeometry?.(frame.pointToWorld(cursor)) ?? []).map(
-      (geometry) => ({
-        ...geometry,
-        a: toFrame(geometry.a),
-        b: toFrame(geometry.b),
+  /**
+   * The alignment paths the cursor is on, out past the edge of the view, for
+   * Intersection and Apparent Intersection to cross with objects: the engaged
+   * polar path ("use polar tracking with Intersection and Apparent
+   * Intersection object snaps to find where a polar alignment path intersects
+   * another object"), and the OTRACK guides and Extensions it follows — the
+   * same AutoTrack paths (**unverified**: the help names the polar one only).
+   * WHY nothing else: the rubber band is not an object, and crossing it with
+   * the drawing turned every line the cursor passed over into a snap.
+   */
+  private alignmentPaths(
+    cursor: Vec3,
+    anchor: Vec2 | Vec3 | null
+  ): readonly ConstructionGeometry[] {
+    const { ucs, viewport: view } = this.frame
+    const reach = (from: Vec2) =>
+      V.distance(from, cursor) +
+      view.screenToWorldDistance(Math.hypot(view.width, view.height))
+    const paths: ConstructionGeometry[] = []
+    const ray =
+      anchor === null || this.pointerShift
+        ? null
+        : this.constraints.polarGuideRay({
+            anchor,
+            world: cursor,
+            point: cursor,
+            ucs,
+            view,
+          })
+    if (ray) {
+      paths.push({
+        kind: "segment",
+        a: planar(ray.origin),
+        b: V.add(ray.origin, V.scale(ray.dir, reach(ray.origin))),
       })
+    }
+    const guides = [
+      ...this.resolver.engagedGuides(cursor, anchor, this.pointerShift),
+      ...this.extensionsUnder(cursor),
+    ]
+    this.pathGuides = guides
+    for (const guide of guides) {
+      const origin = planar(guide.point.origin)
+      const { dir } = guide
+      const far = reach(origin)
+      paths.push({
+        kind: "segment",
+        a:
+          guide.kind === "extension"
+            ? origin
+            : V.sub(origin, V.scale(dir, far)),
+        b: V.add(origin, V.scale(dir, far)),
+      })
+    }
+    return paths
+  }
+
+  /** The Extensions the cursor lies on, within the aperture, ahead of their end. */
+  private extensionsUnder(cursor: Vec3): TrackingGuide[] {
+    const tolerance = this.frame.viewport.screenToWorldDistance(
+      this.snapping.pixelTolerance
     )
+    return this.extensionGuides().filter((guide) => {
+      const offset = V.sub(cursor, guide.point.origin)
+      return (
+        V.dot(offset, guide.dir) > 0 &&
+        Math.abs(V.cross(guide.dir, offset)) <= tolerance
+      )
+    })
+  }
+
+  /**
+   * The tracking paths to draw: the engaged ones, or with a snap found where
+   * they cross an object, the paths it lies on. An Extension reads as a
+   * tracking path, but draws as the snap it is.
+   */
+  private sceneTracking(): TrackingResult | null {
+    const snap = this.currentSnap
+    if (!snap) return this.lastTracking
+    if (!snap.transient || this.pathGuides.length === 0) return null
+    return {
+      point: snap.point,
+      kind: "projection",
+      guides: this.pathGuides,
+      direction: this.pathGuides[0].dir,
+    }
+  }
+
+  /** Extension's straight paths from the acquired ends, as tracking guides. */
+  private extensionGuides(): TrackingGuide[] {
+    return this.snapping
+      .extensionLines(this.frame.document, this.tracking.getAcquired())
+      .map((line, i) => ({
+        point: {
+          id: `extension-${i}`,
+          origin: line.origin,
+          sourceType: SnapType.Endpoint,
+          sourceIds: line.sourceIds,
+          acquiredAt: 0,
+        },
+        dir: line.dir,
+        angle: Math.atan2(line.dir.y, line.dir.x),
+        kind: "extension",
+      }))
   }
 
   /** Clears acquired references and the cached guide so nothing lingers. */
@@ -2894,27 +3029,52 @@ export class CadRuntime extends Observable {
     // prompt). While merely selecting, no snap is computed, so its marker can
     // never overlap a selection grip.
     if (this.activeTool.wantsSnap?.() ?? true) {
-      const construction = this.toolSnapGeometry(cursor)
       // Perpendicular/Tangent snaps measure from the point the tool is drawing
       // from, so hand the current constraint anchor to the snap engine.
       const anchor = this.toolAnchor()
+      const construction = this.alignmentPaths(cursor, anchor)
       // Parallel osnap: acquire the line under the cursor (by dwell) so only
       // lines the user points at are offered as parallels — AutoCAD's workflow.
       this.updateParallelAcquisition(anchor)
+      const override = this.snapping.getOverride()
+      this.tracking.acquireEndpoints =
+        override === SnapType.Extension ||
+        (override === null &&
+          this.snapping.isActive() &&
+          this.snapping.isEnabled(SnapType.Extension))
       this.currentSnap = this.snapping.resolve(
         screen,
         frame.document,
         frame.viewport,
         construction,
         anchor,
-        this.parallelRefs.getAcquired()
+        this.parallelRefs.getAcquired(),
+        this.tracking.getAcquired()
       )
+      // Followed along one path to where another crosses it, the crossing is
+      // the point, not the snap sliding with the cursor (Extension, Nearest…).
+      if (
+        this.currentSnap &&
+        SnapEngine.slides(this.currentSnap.type) &&
+        this.resolver.crossing(cursor, anchor, this.pointerShift)
+      ) {
+        this.currentSnap = null
+      }
 
       // Feed object snap tracking: acquire by hover, drop stale references.
       const epsilon = this.viewport.screenToWorldDistance(
         this.snapping.pixelTolerance
       )
-      this.tracking.observeHover(this.currentSnap, epsilon)
+      const acquiredFrom =
+        this.tracking.acquireEndpoints &&
+        !this.tracking.canAcquire(this.currentSnap)
+          ? this.snapping.endpointUnder(screen, frame.document, frame.viewport)
+          : this.currentSnap
+      this.tracking.observeHover(
+        acquiredFrom,
+        epsilon,
+        this.snapping.releaseTolerance
+      )
       const maxWorld = this.viewport.screenToWorldDistance(
         Math.hypot(this.viewport.width, this.viewport.height)
       )
@@ -2944,9 +3104,13 @@ export class CadRuntime extends Observable {
     // prompt) it also follows the raw cursor.
     if (this.activeTool.wantsSnap?.() ?? true) {
       if (this.currentSnap) {
-        this.crosshairScreen = frame.viewport.worldToScreen(
-          this.currentSnap.point
-        )
+        // A snap found through its object (the centre from
+        // the rim) leaves the crosshair on the pointer: the magnet only pulls
+        // it onto a point that is already under the aperture.
+        this.crosshairScreen =
+          this.currentSnap.screenDistance <= this.snapping.releaseTolerance
+            ? frame.viewport.worldToScreen(this.currentSnap.point)
+            : screen
       } else {
         const resolved = this.resolver.resolve(
           cursor,

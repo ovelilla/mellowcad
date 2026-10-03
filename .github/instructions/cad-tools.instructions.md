@@ -317,8 +317,9 @@ point)` first: on the guide it shows the height and `+Z` / `-Z` (`setLiveText`, 
   and lets the cursor decide.
 - `getConstraintAnchor()` — the base point Ortho/Polar restrict against. Return it in every phase
   where a direction is being defined, with its Z: a 3D view's Z guide starts there.
-- `getSnapGeometry(cursor)` — expose in-progress geometry (rubber band, ghost) so intersection
-  snaps engage against it.
+- No hook exposes a preview to the snaps: the rubber band and ghosts are not objects (AutoCAD
+  intersects only the polar path with them, which the runtime supplies).
+- `ctx.runningSnaps` reads and sets the running object snaps (OSMODE), for -OSNAP.
 - `retainsTrackingAfterPointerDown()` — true when a click _begins_ an edit rather than placing a
   point, so acquired tracking references survive the drag.
 - `usesCrosshair()` — false only for view tools that own the cursor (PAN's hand).

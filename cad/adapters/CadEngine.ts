@@ -406,6 +406,11 @@ export class CadEngine {
     return this.runtime.invokeToolOption(input)
   }
 
+  /** Tab at a point prompt: the next object snap under the cursor, if any. */
+  cycleSnap(): boolean {
+    return this.runtime.cycleSnap()
+  }
+
   cancelDynamicInput(): void {
     this.runtime.cancelDynamicInput()
   }

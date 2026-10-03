@@ -5,7 +5,7 @@ import { Entity, EntityId, BlockLookup } from "../../domain/entities"
 import { Ucs } from "../../domain/ucs"
 import { Viewport } from "../Viewport"
 import { Selection } from "../Selection"
-import { ConstructionGeometry, SnapResult } from "../snapping/types"
+import { SnapResult, SnapType } from "../snapping/types"
 import { TrackingResult } from "../tracking/types"
 import { DynamicInputController } from "../input/DynamicInput"
 import { Command } from "../commands/Command"
@@ -178,6 +178,15 @@ export interface ToolContext {
   setViewCubeVisible(visible: boolean): void
 
   /**
+   * The running object snaps (OSMODE), which -OSNAP reads and sets. Setting a
+   * list turns object snapping on; an empty one leaves no snap running.
+   */
+  readonly runningSnaps: {
+    enabled(): readonly SnapType[]
+    set(types: readonly SnapType[]): void
+  }
+
+  /**
    * Ends the current command and drops back to the neutral Select tool. For
    * single-shot commands (MOVE, COPY, ...) that finish the moment their final
    * point is placed, rather than looping or waiting for Escape.
@@ -205,6 +214,8 @@ export interface ToolText {
   keywordList(ids: readonly string[]): string
   /** A keyword's abbreviation in the command language (`U` for Undo). */
   abbreviation(id: string): string
+  /** A keyword's whole word in the command language (`NONe` for None). */
+  keyword(id: string): string
 }
 
 /**
@@ -281,14 +292,6 @@ export interface Tool {
    * Its Z, when it has one, is where a 3D view's `+Z` / `-Z` guide starts.
    */
   getConstraintAnchor?(): Vec2 | Vec3 | null
-
-  /**
-   * Provisional geometry the tool is currently drawing (e.g. the rubber-band
-   * segment), in world coordinates, given the raw world `cursor`. The snap
-   * engine crosses this against committed entities so intersection object snaps
-   * engage on the line being drawn, exactly like AutoCAD. Defaults to none.
-   */
-  getSnapGeometry?(cursor: Vec2): readonly ConstructionGeometry[]
 
   /**
    * Whether the tool is currently acquiring a point and therefore wants object

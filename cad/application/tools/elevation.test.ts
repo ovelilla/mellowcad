@@ -103,6 +103,7 @@ describe("object snaps", () => {
   it("read a sloping line's height where they land on it", () => {
     const sloping = withDeltaZ(lineOf(p(0, 0), p(100, 0), { id: "REF-S" }), 20)
     const cad = createHarness({ entities: [sloping], snap: true })
+    cad.runtime.setSnapEnabled(SnapType.Midpoint, true)
 
     cad.command("LINE").click(p(50, 0)).type("@0,50").enter().escape()
 

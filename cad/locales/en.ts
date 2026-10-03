@@ -76,6 +76,7 @@ export const en: EngineCatalog = {
       "orbit": "3D Orbit",
       "navvcube": "ViewCube",
       "ltscale": "Linetype scale",
+      "osnap": "Object snap modes",
       "color": "Color",
       "linetype": "Linetype",
       "lweight": "Lineweight"
@@ -84,6 +85,7 @@ export const en: EngineCatalog = {
       "UNDO": "Undo the last action",
       "REDO": "Redo the last undone action",
       "SNAP": "Force the cursor onto the snap increments",
+      "-OSNAP": "Set the running object snap modes",
       "FROM": "Pick a point offset from a base point",
       "NEW": "Start a new drawing",
       "QNEW": "Start a new drawing",
@@ -696,6 +698,10 @@ export const en: EngineCatalog = {
         "SNAP",
         "SN"
       ],
+      "-OSNAP": [
+        "-OSNAP",
+        "-OS"
+      ],
       "FROM": [
         "FROM",
         "FRO"
@@ -935,6 +941,7 @@ export const en: EngineCatalog = {
       "elevDefaultElevation": "Specify new default elevation",
       "elevDefaultThickness": "Specify new default thickness",
       "ltscaleFactor": "Enter new linetype scale factor",
+      "osnapModes": "Enter list of object snap modes",
       "defaultObjectColor": "Enter default object color [Truecolor]",
       "trueColor": "Red, Green, Blue",
       "linetypeOption": "Enter an option [?/Set]",
@@ -1341,6 +1348,12 @@ export const en: EngineCatalog = {
         ]
       ],
       "regeneratingModel": "Regenerating model.",
+      "currentOsnapModes": [
+        "Current osnap modes: ",
+        [
+          "modes"
+        ]
+      ],
       "currentLineweight": [
         "Current lineweight: ",
         [

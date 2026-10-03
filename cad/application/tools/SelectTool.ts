@@ -21,7 +21,6 @@ import {
   UpdateEntityCommand,
 } from "../commands/entityCommands"
 import { DynamicInputSession } from "../input/DynamicInput"
-import { ConstructionGeometry } from "../snapping/types"
 import { bulgeThroughPoint, normalizeDegrees } from "../../geometry/primitives"
 import { ScenePrimitive } from "../../scene/types"
 import { boxSelect } from "./boxSelection"
@@ -642,38 +641,6 @@ export class SelectTool implements Tool {
     if (this.state.phase === "bulgeEdit")
       return V.midpoint(this.state.a, this.state.b)
     return null
-  }
-
-  /**
-   * Exposes the line being grip-edited as provisional geometry so object snaps —
-   * chiefly intersection — engage on it while it is stretched or moved, exactly
-   * as they do on the rubber-band of the line tool. Stretching keeps the segment
-   * collinear (endpoint projected onto the line axis); moving translates the
-   * whole segment. `cursor` is the raw world cursor.
-   */
-  getSnapGeometry(cursor: Vec2): readonly ConstructionGeometry[] {
-    if (this.state.phase === "grip") {
-      const { fixed, dir } = this.state
-      const moving = V.add(
-        fixed,
-        V.scale(dir, V.dot(V.sub(cursor, fixed), dir))
-      )
-      return [{ kind: "segment", a: fixed, b: moving }]
-    }
-    if (this.state.phase === "moveLine") {
-      const delta = V.sub(cursor, this.state.origMid)
-      const out: ConstructionGeometry[] = []
-      for (const entity of this.state.originals) {
-        if (entity.type !== "line") continue
-        out.push({
-          kind: "segment",
-          a: V.add(entity.start, delta),
-          b: V.add(entity.end, delta),
-        })
-      }
-      return out
-    }
-    return []
   }
 
   buildOverlay(ctx: ToolContext): ScenePrimitive[] {

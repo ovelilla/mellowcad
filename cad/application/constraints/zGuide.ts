@@ -96,18 +96,6 @@ export function alongZ(
   }
 }
 
-/**
- * A snapped point taken onto the Z guide, as a snap is taken onto a polar ray:
- * the guide decided from the raw cursor, the height from the object.
- */
-export function withSnapHeight(
-  point: PointAlongZ,
-  snap: Vec2 | null
-): PointAlongZ {
-  if (snap === null || !("z" in snap)) return point
-  return { ...point, z: zOf(snap) }
-}
-
 /** The point of a line of the frame drawn at the screen point where it crosses another drawn line. */
 export function crossingOnScreen(
   view: Viewport,

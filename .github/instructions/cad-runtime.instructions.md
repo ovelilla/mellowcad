@@ -47,7 +47,10 @@ default so they overlay to the pixel. Block thumbnails and the landing's figures
 object snap  →  object-snap tracking  →  snap mode (lattice)  →  constraints (Ortho/Polar)
 ```
 
-- A direct snap **wins** over tracking and over the lattice: geometry beats an increment.
+- A direct snap **wins** over tracking, the lattice, Ortho and Polar and is returned untouched —
+  "Ortho is ignored when you … specify an object snap"; never feed a snap point to a constraint.
+  A line's Extension comes back with a `TrackingResult` too (`extensionPath`), so a typed
+  distance runs along it from the acquired end as along an OTRACK guide.
 - When tracking engages, its point already accounts for the active Ortho ray, so it is returned
   as-is and constraints are skipped.
 - `allowSnapMode` is false while a tool is merely picking objects (`wantsSnap()` false) — rounding
@@ -62,7 +65,9 @@ UCS the same way; one that assumes world X is a bug that only shows once the UCS
 
 **Only snapping and tracking may move the crosshair.** Constraints bend the _point_ a tool
 receives, never the cursor: the crosshair must keep following the physical mouse, or the user is
-drawing blind. `updateSnap` picks `snap.point` → `tracking.point` → raw screen, in that order.
+drawing blind. `updateSnap` picks `snap.point` → `tracking.point` → raw screen, in that order —
+but a snap found through its object, its point beyond the release radius (the centre from the
+rim, a perpendicular foot), leaves the crosshair on the pointer: only the marker and the rubber band go.
 
 **The point carries a Z** (`ResolvedPoint.point` and `PointerInput.point` are `Vec3`), taken in
 the same order: a snap's is the object's there (`SnapCandidate.point` is a `Vec3`; providers build
@@ -218,13 +223,42 @@ box drag started on a stack still works. Choosing a candidate replays press and 
 
 ## Snapping
 
-- Provider order in `defaultSnapProviders` **is** the priority order.
-- Hysteresis: capture within `pixelTolerance` (8px), hold until the cursor leaves
-  `releaseTolerance` (11px) — that is the "tacky" feel; keep release ≥ capture.
-- `SnapCandidate.pickDistance` overrides the engagement distance, so a snap whose _point_ is far
-  away (perpendicular foot, tangent) can still engage while hovering the object.
-- `transient` candidates come from tool construction geometry (rubber band). They snap and render
-  but are **never acquired** by OTRACK — AutoCAD never tracks a moving point.
+- **The snap nearest the cursor wins**, by tier ("a point closest to the center of the aperture
+  box"): a point inside `pixelTolerance` (8px) → the point already held, within
+  `releaseTolerance` (11px: the magnet; keep release ≥ capture) → Extension / Parallel → Nearest →
+  a notable point of an object the aperture crosses. Provider order in `defaultSnapProviders` only
+  breaks ties (a line's end on another line is an Endpoint).
+- **Some snaps are found from anywhere over their object**: a provider builds a notable point with
+  `notable(type, entity, point, touch)`, which sets `SnapCandidate.touch` from
+  `SnapContext.touch(entity)` (the object's point nearest the cursor, cached per resolve, boxed out
+  in plan), and the engine honours it only for `FOUND_FROM_AFAR` — running Center (from the
+  rim), Perpendicular and Tangent — or for any snap under an override (`_mid of` picks the
+  object). A running Endpoint or Midpoint engages only near its point: offering it from the whole
+  line made every line drawn across another jump to its ends (a magnet AutoCAD does not have).
+- Tab cycles the engaged snaps (`cycleNext`, distinct points, the choice held while the same ones
+  stay engaged); it only takes Tab when there is something to cycle and nothing typed.
+- **The rubber band is not an object.** The only construction geometry is the alignment paths the
+  cursor is on (`alignmentPaths`): the engaged polar path, the OTRACK guides
+  (`PointResolver.engagedGuides`) and the Extensions under the cursor, which Intersection and
+  Apparent Intersection cross with objects — never with one another (that crossing is tracking's).
+  Their candidates are `transient`, **never acquired** by OTRACK, and keep their paths drawn
+  (`sceneTracking`). Never cross a tool's preview.
+- Running Apparent Intersection is the visual crossing of two objects at different heights; an edge
+  is prolonged only to meet the polar path.
+- **Acquired points are one set** (`ObjectSnapTrackingEngine`, up to seven): OTRACK's guides and
+  Extension both read them, and with OTRACK off `acquireEndpoints` still acquires endpoints for
+  Extension — through `SnapEngine.endpointUnder` when Endpoint is not what is engaged (its
+  override, or END off). Only a snap under the aperture is acquired, never one found from afar.
+  OTRACK's guides are orthogonal whatever Polar's increment (POLARMODE's default).
+- **Where paths cross, the crossing wins.** A line's Extension from an acquired end is also a
+  `kind: "extension"` guide (`SnapEngine.extensionLines`, fed to `PointResolver`): it crosses OTRACK
+  guides, the Ortho / Polar line and other extensions (outwards only), OTRACK off too, but sliding
+  along it alone stays the Extension snap's. `updateSnap` drops a sliding snap (`SnapEngine.slides`:
+  Extension, Parallel, Nearest) when `resolver.crossing` finds a crossing under the cursor — else
+  following one acquired point's path to where another's crosses lands on the extension instead.
+- An object snap typed at a point prompt (`pointModifier`, from the dynamic-input box or the
+  command line) is a one-shot override, read with -OSNAP's keyword table (`OSNAP_MODES`); the
+  prompt's own keywords are tried first.
 - The one-shot `override` runs a single provider, ignoring the enabled running set, then is
   cleared once the pick is consumed.
 - Providers read `SnapContext.entities`, **not** `document.getEntities()`: that list is the drawing
@@ -233,7 +267,9 @@ box drag started on a stack still works. Choosing a candidate replays press and 
   visibility check, since the layers are real. `insertionProvider` is the exception — it offers the
   reference's own insertion point, so it reads the document.
 
-Adding a snap type touches: `SnapType`, a provider, `defaultSnapProviders` (position = priority),
+Adding a snap type touches: `SnapType`, a provider (`notable` for a point of an object),
+`defaultSnapProviders` (position = tie-break), its word in `OSNAP_MODES` and
+`commands.keywords.-OSNAP` of every catalog,
 the `TRACKABLE` set, a `SceneBuilder` marker, its name in `interface.snap` (menus, read by React
 from `state.names`) and `commands.feedback.snap` (the canvas tooltip), `IMPLEMENTED_SNAPS` in
 `status-bar.tsx`, the menu order in `snap-override-menu.tsx`, and the default enabled/disabled

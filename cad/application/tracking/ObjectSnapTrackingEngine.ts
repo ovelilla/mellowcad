@@ -21,6 +21,7 @@ import {
   nearestOnScreen,
   zOnScreen,
 } from "../constraints/zGuide"
+import { EntityId } from "../../domain/entities"
 import { SnapResult, SnapType } from "../snapping/types"
 import { guideRay, guidesFor } from "./guides"
 import {
@@ -75,12 +76,20 @@ export class ObjectSnapTrackingEngine extends Observable {
 
   private active = true
 
+  /**
+   * Whether an endpoint is acquired even with OTRACK off: the Extension snap
+   * acquires the end it prolongs the same way ("when you pass the cursor over
+   * the endpoint of objects"), with the same + marker.
+   */
+  acquireEndpoints = false
+
   /** Hover time before a snap is acquired (ms). AutoCAD acquires almost
    * instantly on hover; a short dwell just avoids grabbing points the cursor
    * merely passes over. */
   dwellMs = 120
-  /** Maximum number of live reference points (FIFO beyond this). */
-  maxPoints = 4
+  /** Maximum number of live reference points (FIFO beyond this): "you can
+   * acquire up to seven tracking points at a time". */
+  maxPoints = 7
 
   isActive(): boolean {
     return this.active
@@ -108,18 +117,20 @@ export class ObjectSnapTrackingEngine extends Observable {
   /**
    * Feeds the current snap under the cursor. Called on every pointer move.
    * `epsilon` is the screen tolerance expressed in world units, used to decide
-   * whether the cursor is still hovering the same candidate.
+   * whether the cursor is still hovering the same candidate. Only a snap within
+   * `pixels` of the cursor is acquired: one found through its object, far
+   * away, is the cursor passing over that object, not over the point.
    *
    * Hovering a fresh snap acquires it; hovering an already-acquired point
    * again removes it (toggle), mirroring AutoCAD's OTRACK behaviour so
    * references never get stuck on screen.
    */
-  observeHover(snap: SnapResult | null, epsilon: number): void {
-    // A transient snap (an intersection on the rubber-band being drawn) attracts
-    // the cursor but is a *moving* point, so it must never be picked up as a
-    // tracking reference — acquiring it would drop a stray marker as you draw,
-    // which AutoCAD does not do.
-    if (!this.active || !snap || !TRACKABLE.has(snap.type) || snap.transient) {
+  observeHover(
+    snap: SnapResult | null,
+    epsilon: number,
+    pixels = Number.POSITIVE_INFINITY
+  ): void {
+    if (!this.canAcquire(snap, pixels)) {
       this.cancelDwell()
       this.settledPoint = null
       return
@@ -140,15 +151,38 @@ export class ObjectSnapTrackingEngine extends Observable {
     this.cancelDwell()
     this.settledPoint = null
     this.hoverPoint = snap.point
-    const point = snap.point
-    const sourceType = snap.type
+    const { point, type, sourceIds = [] } = snap
     this.dwellTimer = setTimeout(() => {
       this.dwellTimer = null
-      this.toggleAt(point, sourceType, epsilon)
+      this.toggleAt(point, type, sourceIds, epsilon)
     }, this.dwellMs)
   }
 
-  private toggleAt(point: Vec3, sourceType: SnapType, epsilon: number): void {
+  /**
+   * Whether hovering `snap` would acquire it: a fixed point (never one on the
+   * moving polar path), under the cursor, of a kind OTRACK tracks from — or an
+   * endpoint, for Extension, with OTRACK off.
+   */
+  canAcquire(
+    snap: SnapResult | null,
+    pixels = Number.POSITIVE_INFINITY
+  ): snap is SnapResult {
+    return (
+      snap !== null &&
+      !snap.transient &&
+      snap.screenDistance <= pixels &&
+      (this.active
+        ? TRACKABLE.has(snap.type)
+        : this.acquireEndpoints && snap.type === SnapType.Endpoint)
+    )
+  }
+
+  private toggleAt(
+    point: Vec3,
+    sourceType: SnapType,
+    sourceIds: readonly EntityId[],
+    epsilon: number
+  ): void {
     this.hoverPoint = null
     // Remember we just handled this point so the resting cursor won't re-toggle.
     this.settledPoint = point
@@ -165,6 +199,7 @@ export class ObjectSnapTrackingEngine extends Observable {
       id: String(this.nextId++),
       origin: point,
       sourceType,
+      sourceIds,
       acquiredAt: Date.now(),
     })
     while (this.acquired.length > this.maxPoints) this.acquired.shift()
@@ -183,6 +218,11 @@ export class ObjectSnapTrackingEngine extends Observable {
    * Where `view` shows the UCS's Z, each acquired point offers its `+Z` / `-Z`
    * guide too, measured on the screen; a crossing with it is where the two are
    * drawn crossing, on the Z guide, at the height the user sees.
+   *
+   * `extensions` are Extension's straight paths from acquired ends: they cross
+   * the guides, the constraint line and one another like a guide does ("the
+   * point where their paths cross"), with OTRACK off too, but sliding along one
+   * alone is the Extension snap's, not a tracked point.
    */
   resolve(
     worldCursor: Vec3,
@@ -190,13 +230,19 @@ export class ObjectSnapTrackingEngine extends Observable {
     aids: DrawingAidState,
     anchorLine: Ray | null,
     view: Viewport,
-    anchorUp: Vec3 | null = null
+    anchorUp: Vec3 | null = null,
+    extensions: readonly TrackingGuide[] = []
   ): TrackingResult | null {
-    if (!this.active || this.acquired.length === 0) return null
-
     const up = zOnScreen(view) !== null
-    const guides = this.acquired.flatMap((p) => guidesFor(p, aids, up))
+    const tracking = this.active
+      ? this.acquired.flatMap((p) => guidesFor(p, aids, up))
+      : []
+    const guides = [...tracking, ...extensions]
     if (guides.length === 0) return null
+    // An extension runs outwards from its end only.
+    const ahead = (g: TrackingGuide, x: Vec2 | Vec3) =>
+      g.kind !== "extension" ||
+      dot3(sub3(withZOf(x, g.point.origin), g.point.origin), g.dir) >= -1e-9
 
     const screen = view.worldToScreen(worldCursor)
     let best: Candidate | null = null
@@ -240,7 +286,7 @@ export class ObjectSnapTrackingEngine extends Observable {
         const x = drawn
           ? crossingOnScreen(view, g.point.origin, g.dir, drawn)
           : intersectRays(guideRay(g), anchorLine)
-        if (x) consider(x, "guide-constraint", [g], 0)
+        if (x && ahead(g, x)) consider(x, "guide-constraint", [g], 0)
       }
     }
     if (anchorUp) {
@@ -260,16 +306,19 @@ export class ObjectSnapTrackingEngine extends Observable {
             ? [guides[j], guides[i]]
             : [guides[i], guides[j]]
         if (a.point.id === b.point.id) continue
+        if (V.distance(a.point.origin, b.point.origin) < 1e-9) continue
         if (b.kind === "z") continue
         const x = onScreen
           ? crossingOnScreen(view, a.point.origin, a.dir, zLine(b))
           : intersectRays(guideRay(a), guideRay(b))
-        if (x) consider(x, "guide-intersection", [a, b], 1)
+        if (x && ahead(a, x) && ahead(b, x)) {
+          consider(x, "guide-intersection", [a, b], 1)
+        }
       }
     }
 
     // Priority 2: projection onto a single guide.
-    for (const g of guides) {
+    for (const g of tracking) {
       const x = onScreen
         ? nearestOnScreen(view, g.point.origin, g.dir, screen)
         : projectPointOntoRay(worldCursor, guideRay(g))

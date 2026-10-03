@@ -4,8 +4,12 @@ import { Vec3, length3, planar, sub3 } from "../../geometry/Vec3"
 import { closestPointOnInfiniteLine } from "../../geometry/primitives"
 import { DocumentReader } from "../../domain/Document"
 import {
+  Bounds,
   Entity,
   EntityId,
+  closestOnEntity,
+  entityBounds,
+  entityPointToWorld,
   entityElevation,
   insertFlatGeometry,
   lineEndZ,
@@ -14,8 +18,13 @@ import {
 } from "../../domain/entities"
 import { Viewport } from "../Viewport"
 import { cursorInPlane, cursorOnEntityPlane } from "../viewPick"
-import { defaultSnapProviders } from "./providers"
 import {
+  ExtensionLine,
+  defaultSnapProviders,
+  extensionLines,
+} from "./providers"
+import {
+  AcquiredPoint,
   ConstructionGeometry,
   SnapContext,
   SnapProvider,
@@ -25,6 +34,35 @@ import {
 
 /** World distance under which two candidates are considered the same point. */
 const STICKY_EPSILON = 1e-6
+
+/**
+ * Screen distance under which two candidates count as equally close, so the
+ * provider order decides: a line's end on another line is an Endpoint.
+ */
+const TIE_PIXELS = 0.5
+
+type Tier = "point" | "held" | "path" | "near" | "object"
+
+/**
+ * The running snaps an object offers while merely passing through the
+ * aperture, however far the point: Center, which "the cursor must pass over
+ * the circumference of the circle or arc" to find, and the perpendicular foot
+ * and tangent point. An override offers any of its snap that way — "_mid of"
+ * is answered by picking the object. WHY not a running Endpoint or Midpoint:
+ * those engage near the point itself, or every line drawn across another would
+ * be pulled onto its ends.
+ */
+const FOUND_FROM_AFAR: ReadonlySet<SnapType> = new Set([
+  SnapType.Center,
+  SnapType.Perpendicular,
+  SnapType.Tangent,
+])
+
+function tierOf(type: SnapType): Tier {
+  if (type === SnapType.Extension || type === SnapType.Parallel) return "path"
+  if (type === SnapType.Nearest) return "near"
+  return "point"
+}
 
 /**
  * What the providers snap to: the drawing, with every block reference replaced
@@ -70,6 +108,12 @@ export class SnapEngine extends Observable {
 
   /** World point the cursor is currently stuck to (drives the hysteresis). */
   private stickyPoint: Vec3 | null = null
+
+  /** The distinct snaps the last resolve found, the chosen one first. */
+  private options: SnapResult[] = []
+
+  /** The snaps Tab is cycling through, in the order it started with, and where it is. */
+  private cycle: { points: Vec3[]; index: number } | null = null
 
   /**
    * A one-shot object-snap override for the *next* point — AutoCAD's
@@ -157,17 +201,18 @@ export class SnapEngine extends Observable {
     viewport: Viewport,
     construction: readonly ConstructionGeometry[] = [],
     anchor: Vec2 | null = null,
-    parallelSourceIds: ReadonlySet<EntityId> = new Set()
+    parallelSourceIds: ReadonlySet<EntityId> = new Set(),
+    acquired: readonly AcquiredPoint[] = []
   ): SnapResult | null {
     // A forced "none" override suppresses snapping for this pick entirely.
     if (this.override === "none") {
-      this.stickyPoint = null
+      this.forget()
       return null
     }
     // Snapping is off *unless* the user has forced a specific override, which
     // implies they want that snap regardless of the running-snap master toggle.
     if (!this.active && this.override === null) {
-      this.stickyPoint = null
+      this.forget()
       return null
     }
 
@@ -177,13 +222,44 @@ export class SnapEngine extends Observable {
       viewport,
       construction,
       anchor,
-      parallelSourceIds
+      parallelSourceIds,
+      acquired
     )
 
-    let captured: SnapResult | null = null
-    let capturedPriority = Number.POSITIVE_INFINITY
-    let held: SnapResult | null = null
-    let heldPriority = Number.POSITIVE_INFINITY
+    // WHY tiers and then distance, not a fixed priority: AutoCAD applies the
+    // running snaps "to return a point closest to the center of the aperture
+    // box", so a midpoint under the cursor beats an endpoint a few pixels off.
+    // What may compete at each tier:
+    //   point  — a notable point inside the aperture;
+    //   held   — the point already stuck to, within the release radius (the
+    //            magnet), so it is not stolen by the sliding snaps below;
+    //   path   — Extension and Parallel, points on an alignment path;
+    //   near   — Nearest, which is under the cursor whenever any object is;
+    //   object — a snap its object offers while passing through the
+    //            aperture, however far the point (`FOUND_FROM_AFAR`, or any
+    //            under an override).
+    const best: Record<Tier, SnapResult | null> = {
+      point: null,
+      held: null,
+      path: null,
+      near: null,
+      object: null,
+    }
+    const rank = new Map<SnapResult, number>()
+    const engaged: [Tier, SnapResult][] = []
+    const offer = (tier: Tier, result: SnapResult, priority: number) => {
+      if (tier !== "held") engaged.push([tier, result])
+      const current = best[tier]
+      if (
+        current === null ||
+        result.screenDistance < current.screenDistance - TIE_PIXELS ||
+        (result.screenDistance <= current.screenDistance + TIE_PIXELS &&
+          priority < rank.get(current)!)
+      ) {
+        best[tier] = result
+        rank.set(result, priority)
+      }
+    }
 
     for (let priority = 0; priority < this.providers.length; priority++) {
       const provider = this.providers[priority]
@@ -196,53 +272,134 @@ export class SnapEngine extends Observable {
       }
 
       for (const candidate of provider.collect(context)) {
-        // Engagement distance: a candidate may ask to be judged by its distance
-        // to the source entity (perpendicular/tangent) rather than to its
-        // point, so it engages while hovering over the object, not only near
-        // the foot. The marker still sits on `point`.
         const screenDistance = V.distance(
-          viewport.worldToScreen(candidate.pickPoint ?? candidate.point),
+          viewport.worldToScreen(candidate.point),
           screenCursor
         )
-
-        // Fresh capture: a new point grabbed inside the small aperture.
+        const result = { ...candidate, screenDistance }
         if (screenDistance <= this.pixelTolerance) {
-          if (
-            captured === null ||
-            priority < capturedPriority ||
-            (priority === capturedPriority &&
-              screenDistance < captured.screenDistance)
-          ) {
-            captured = { ...candidate, screenDistance }
-            capturedPriority = priority
-          }
+          offer(tierOf(candidate.type), result, priority)
+        } else if (
+          candidate.touch &&
+          (this.override !== null || FOUND_FROM_AFAR.has(candidate.type)) &&
+          V.distance(viewport.worldToScreen(candidate.touch), screenCursor) <=
+            this.pixelTolerance
+        ) {
+          offer("object", result, priority)
         }
-
-        // Held: the point we were already stuck to, still within the release
-        // radius — this is what makes the cursor cling to it.
         if (
           this.stickyPoint !== null &&
           screenDistance <= this.releaseTolerance &&
           length3(sub3(candidate.point, this.stickyPoint)) < STICKY_EPSILON
         ) {
-          if (
-            held === null ||
-            priority < heldPriority ||
-            (priority === heldPriority && screenDistance < held.screenDistance)
-          ) {
-            held = { ...candidate, screenDistance }
-            heldPriority = priority
-          }
+          offer("held", result, priority)
         }
       }
     }
 
-    // A newly captured point wins (so the cursor can jump between adjacent
-    // points); only when nothing is inside the aperture does the previously
-    // stuck point keep holding.
-    const best = captured ?? held
-    this.stickyPoint = best ? best.point : null
-    return best
+    let chosen =
+      best.point ?? best.held ?? best.path ?? best.near ?? best.object
+    this.options = cycleOrder(chosen, engaged)
+    if (this.cycle && samePoints(this.cycle.points, this.options)) {
+      const wanted = this.cycle.points[this.cycle.index]
+      chosen =
+        this.options.find(
+          (o) => length3(sub3(o.point, wanted)) < STICKY_EPSILON
+        ) ?? chosen
+    } else {
+      this.cycle = null
+    }
+    this.stickyPoint = chosen ? chosen.point : null
+    return chosen
+  }
+
+  private forget(): void {
+    this.stickyPoint = null
+    this.options = []
+    this.cycle = null
+  }
+
+  /**
+   * Moves to the next snap the objects under the cursor offer — AutoCAD's Tab
+   * ("Press TAB to cycle through the options"). False, leaving Tab to its other
+   * jobs, when there is nothing to cycle through. The choice lasts while the
+   * cursor stays over the same snaps; the caller resolves again to show it.
+   */
+  cycleNext(): boolean {
+    if (this.options.length < 2) return false
+    this.cycle = this.cycle
+      ? {
+          points: this.cycle.points,
+          index: (this.cycle.index + 1) % this.cycle.points.length,
+        }
+      : { points: this.options.map((o) => o.point), index: 1 }
+    this.emit()
+    return true
+  }
+
+  /**
+   * Extension's straight paths from the acquired ends, while Extension is
+   * running or forced; none otherwise.
+   */
+  extensionLines(
+    document: DocumentReader,
+    acquired: readonly AcquiredPoint[]
+  ): ExtensionLine[] {
+    const on =
+      this.override === SnapType.Extension ||
+      (this.override === null &&
+        this.active &&
+        this.enabled.has(SnapType.Extension))
+    if (!on || acquired.length === 0) return []
+    return extensionLines({
+      document,
+      entities: snapEntities(document),
+      acquired,
+    })
+  }
+
+  /**
+   * Whether a snap slides with the cursor (Extension, Parallel, Nearest)
+   * rather than being a fixed point, so a crossing of alignment paths under
+   * the cursor is the more precise answer.
+   */
+  static slides(type: SnapType): boolean {
+    return tierOf(type) !== "point"
+  }
+
+  /**
+   * The endpoint under the cursor, whether or not Endpoint is running: the end
+   * Extension acquires "when you pass the cursor over the endpoint of objects",
+   * forced through its override or running without Endpoint.
+   */
+  endpointUnder(
+    screenCursor: Vec2,
+    document: DocumentReader,
+    viewport: Viewport
+  ): SnapResult | null {
+    const provider = this.providers.find((p) => p.type === SnapType.Endpoint)
+    if (!provider) return null
+    const context = this.context(
+      screenCursor,
+      document,
+      viewport,
+      [],
+      null,
+      new Set(),
+      []
+    )
+    let nearest: SnapResult | null = null
+    for (const candidate of provider.collect(context)) {
+      const screenDistance = V.distance(
+        viewport.worldToScreen(candidate.point),
+        screenCursor
+      )
+      if (screenDistance > this.pixelTolerance) continue
+      if (nearest === null || screenDistance < nearest.screenDistance) {
+        nearest = { ...candidate, screenDistance }
+      }
+    }
+    return nearest
   }
 
   /**
@@ -260,15 +417,37 @@ export class SnapEngine extends Observable {
     viewport: Viewport,
     construction: readonly ConstructionGeometry[],
     anchor: Vec2 | null,
-    parallelSourceIds: ReadonlySet<EntityId>
+    parallelSourceIds: ReadonlySet<EntityId>,
+    acquired: readonly AcquiredPoint[]
   ): SnapContext {
     const entities = snapEntities(document)
+    const blocks = document.blockLookup()
+    const touched = new Map<Entity, Vec3 | null>()
+    // `reach` (in plan only, where a world distance means the same everywhere)
+    // skips the closest-point search for objects whose box is out of range.
+    const toucher =
+      (cursorOn: SnapContext["cursorOn"], reach: number | null) =>
+      (entity: Entity): Vec3 | null => {
+        if (touched.has(entity)) return touched.get(entity)!
+        const cursor = cursorOn(entity)
+        let point: Vec3 | null = null
+        if (
+          reach === null ||
+          withinBox(entityBounds(entity, blocks), cursor, reach)
+        ) {
+          const nearest = closestOnEntity(entity, cursor, blocks)
+          point = entityPointToWorld(entity, nearest.point)
+        }
+        touched.set(entity, point)
+        return point
+      }
     const shared = {
       document,
       entities,
       construction,
       anchor,
       parallelSourceIds,
+      acquired,
       view: viewport,
     }
     if (viewport.isPlan) {
@@ -276,13 +455,15 @@ export class SnapEngine extends Observable {
       const worldTolerance = viewport.screenToWorldDistance(
         this.releaseTolerance
       )
+      const cursorOn = (entity: Entity) =>
+        planeAxes(entity)
+          ? cursorOnEntityPlane(viewport, entity, screenCursor)
+          : worldCursor
       return {
         ...shared,
         worldCursor,
-        cursorOn: (entity) =>
-          planeAxes(entity)
-            ? cursorOnEntityPlane(viewport, entity, screenCursor)
-            : worldCursor,
+        cursorOn,
+        touch: toucher(cursorOn, worldTolerance),
         isNear: (point, reach = 1) =>
           V.distance(point, worldCursor) <= worldTolerance * reach,
       }
@@ -301,25 +482,69 @@ export class SnapEngine extends Observable {
       }
       return cursor
     }
+    const cursorOn = (entity: Entity) => {
+      if (planeAxes(entity)) {
+        return cursorOnEntityPlane(viewport, entity, screenCursor)
+      }
+      if (entity.type !== "line") return onPlane(entityElevation(entity))
+      // A line, level or sloping, is read along its own image on screen.
+      const { t } = closestPointOnInfiniteLine(
+        viewport.worldToScreen({ ...entity.start, z: lineStartZ(entity) }),
+        viewport.worldToScreen({ ...entity.end, z: lineEndZ(entity) }),
+        screenCursor
+      )
+      return V.lerp(entity.start, entity.end, Number.isFinite(t) ? t : 0)
+    }
     return {
       ...shared,
       worldCursor,
-      cursorOn: (entity) => {
-        if (planeAxes(entity)) {
-          return cursorOnEntityPlane(viewport, entity, screenCursor)
-        }
-        if (entity.type !== "line") return onPlane(entityElevation(entity))
-        // A line, level or sloping, is read along its own image on screen.
-        const { t } = closestPointOnInfiniteLine(
-          viewport.worldToScreen({ ...entity.start, z: lineStartZ(entity) }),
-          viewport.worldToScreen({ ...entity.end, z: lineEndZ(entity) }),
-          screenCursor
-        )
-        return V.lerp(entity.start, entity.end, Number.isFinite(t) ? t : 0)
-      },
+      cursorOn,
+      touch: toucher(cursorOn, null),
       isNear: (point, reach = 1) =>
         V.distance(viewport.worldToScreen(point), screenCursor) <=
         this.releaseTolerance * reach,
     }
   }
+}
+
+function withinBox(bounds: Bounds, point: Vec2, margin: number): boolean {
+  return (
+    point.x >= bounds.min.x - margin &&
+    point.x <= bounds.max.x + margin &&
+    point.y >= bounds.min.y - margin &&
+    point.y <= bounds.max.y + margin
+  )
+}
+
+const TIER_ORDER: readonly Tier[] = ["point", "path", "near", "object"]
+
+/** The distinct points engaged, `chosen` first, then by tier and distance. */
+function cycleOrder(
+  chosen: SnapResult | null,
+  engaged: readonly [Tier, SnapResult][]
+): SnapResult[] {
+  const sorted = [...engaged].sort(
+    ([ta, a], [tb, b]) =>
+      TIER_ORDER.indexOf(ta) - TIER_ORDER.indexOf(tb) ||
+      a.screenDistance - b.screenDistance
+  )
+  const out: SnapResult[] = chosen ? [chosen] : []
+  for (const [, result] of sorted) {
+    if (
+      out.some((o) => length3(sub3(o.point, result.point)) < STICKY_EPSILON)
+    ) {
+      continue
+    }
+    out.push(result)
+  }
+  return out
+}
+
+function samePoints(points: readonly Vec3[], options: readonly SnapResult[]) {
+  return (
+    points.length === options.length &&
+    points.every((point) =>
+      options.some((o) => length3(sub3(o.point, point)) < STICKY_EPSILON)
+    )
+  )
 }

@@ -297,6 +297,8 @@ const RAIL_EXCLUDED = new Set([
   "view",
   "navvcube",
   "ltscale",
+  // -OSNAP is typed; the status bar's Object snap menu is its chrome.
+  "osnap",
   // CECOLOR, CELTYPE and CELWEIGHT are the top bar's property drop-downs.
   "color",
   "linetype",

@@ -8,7 +8,6 @@ import {
   alongZ,
   footOnScreen,
   lineOnScreen,
-  withSnapHeight,
   zOnScreen,
 } from "./zGuide"
 
@@ -33,7 +32,7 @@ export class OrthoConstraint implements Constraint {
 
   apply(context: ConstraintContext): Vec2 | PointAlongZ {
     const up = this.alongZ(context)
-    if (up) return withSnapHeight(up, context.snapPoint)
+    if (up) return up
     const ray = this.ray(context)
     if (!ray) return context.point
     const { point } = context

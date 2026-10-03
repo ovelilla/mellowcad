@@ -239,17 +239,17 @@ describe("object snaps off the plan", () => {
     expect(snap!.point.z).toBeCloseTo(50, 6)
   })
 
-  it("take an apparent intersection on screen, at the first object's height", () => {
-    const low = lineOf(p(0, 0), p(100, 0))
-    const high = withElevation(lineOf(p(50, -50), p(50, -10)), 60)
+  it("take where two objects cross on screen, at the first object's height", () => {
+    const low = lineOf(p(-300, 0), p(300, 0))
+    const high = withElevation(lineOf(p(50, -150), p(50, 150)), 60)
     const cad = isometric(createHarness({ entities: [low, high], snap: true }))
     cad.command("LINE")
     cad.runtime.setSnapOverride(SnapType.ApparentIntersection)
     const viewport = cad.runtime.viewport
-    const a = viewport.worldToScreen({ x: 0, y: 0, z: 0 })
-    const b = viewport.worldToScreen({ x: 100, y: 0, z: 0 })
-    const c = viewport.worldToScreen({ x: 50, y: -50, z: 60 })
-    const d = viewport.worldToScreen({ x: 50, y: -10, z: 60 })
+    const a = viewport.worldToScreen({ x: -300, y: 0, z: 0 })
+    const b = viewport.worldToScreen({ x: 300, y: 0, z: 0 })
+    const c = viewport.worldToScreen({ x: 50, y: -150, z: 60 })
+    const d = viewport.worldToScreen({ x: 50, y: 150, z: 60 })
     const t =
       ((c.x - a.x) * (d.y - c.y) - (c.y - a.y) * (d.x - c.x)) /
       ((b.x - a.x) * (d.y - c.y) - (b.y - a.y) * (d.x - c.x))

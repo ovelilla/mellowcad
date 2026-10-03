@@ -76,6 +76,7 @@ export const es: EngineLocale = {
       "orbit": "Órbita 3D",
       "navvcube": "ViewCube",
       "ltscale": "Escala de tipo de línea",
+      "osnap": "Modos de referencia a objetos",
       "color": "Color",
       "linetype": "Tipo de línea",
       "lweight": "Grosor de línea"
@@ -84,6 +85,7 @@ export const es: EngineLocale = {
       "UNDO": "Deshacer la última acción",
       "REDO": "Rehacer la última acción deshecha",
       "SNAP": "Restringir el cursor a los intervalos de resolución",
+      "-OSNAP": "Establece los modos de referencia a objetos en ejecución",
       "FROM": "Designar un punto desfasado de un punto base",
       "NEW": "Iniciar un dibujo nuevo",
       "QNEW": "Iniciar un dibujo nuevo",
@@ -683,6 +685,9 @@ export const es: EngineLocale = {
         "FORZCURSOR",
         "FC"
       ],
+      "-OSNAP": [
+        "-REFENT"
+      ],
       "FROM": [
         "DESDE"
       ],
@@ -801,6 +806,22 @@ export const es: EngineLocale = {
       ]
     },
     "keywords": {
+      "-OSNAP": {
+        "ENDpoint": "FINal",
+        "MIDpoint": "MEDio",
+        "CENter": "CENtro",
+        "QUAdrant": "CUAdrante",
+        "INTersection": "INTersección",
+        "EXTension": "EXTensión",
+        "INSertion": "INSerción",
+        "PERpendicular": "PERpendicular",
+        "TANgent": "TANgente",
+        "NEArest": "CERcano",
+        "APParent": "APP",
+        "PARallel": "PARalelo",
+        "NONe": "NINguno",
+        "OFF": "DES"
+      },
       "LINE": {
         "Close": "Cerrar",
         "Undo": "desHacer"
@@ -1211,6 +1232,7 @@ export const es: EngineLocale = {
       "elevDefaultElevation": "Precise nueva elevación por defecto",
       "elevDefaultThickness": "Precise nueva altura de objeto por defecto",
       "ltscaleFactor": "Indique nuevo factor de escala de tipo de línea",
+      "osnapModes": "Indique una lista de modo de referencia a objetos",
       "defaultObjectColor": "Indique color de objeto por defecto [COlorverdadero]",
       "trueColor": "Rojo, Verde, Azul",
       "linetypeOption": "Indique una opción [?/Defina]",
@@ -1617,6 +1639,12 @@ export const es: EngineLocale = {
         ]
       ],
       "regeneratingModel": "Regenerando modelo.",
+      "currentOsnapModes": [
+        "Modos de referencia a objetos actuales: ",
+        [
+          "modes"
+        ]
+      ],
       "currentLineweight": [
         "Grosor de línea actual: ",
         [

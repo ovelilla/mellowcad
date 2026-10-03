@@ -72,6 +72,7 @@
       "orbit": "Órbita 3D",
       "navvcube": "ViewCube",
       "ltscale": "Escala de tipo de línea",
+      "osnap": "Modos de referencia a objetos",
       "color": "Color",
       "linetype": "Tipo de línea",
       "lweight": "Grosor de línea"
@@ -80,6 +81,7 @@
       "UNDO": "Deshacer la última acción",
       "REDO": "Rehacer la última acción deshecha",
       "SNAP": "Restringir el cursor a los intervalos de resolución",
+      "-OSNAP": "Establece los modos de referencia a objetos en ejecución",
       "FROM": "Designar un punto desfasado de un punto base",
       "NEW": "Iniciar un dibujo nuevo",
       "QNEW": "Iniciar un dibujo nuevo",
@@ -351,6 +353,7 @@
       "UNDO": ["DESHACER", "H"],
       "REDO": ["REHACER"],
       "SNAP": ["FORZCURSOR", "FC"],
+      "-OSNAP": ["-REFENT"],
       "FROM": ["DESDE"],
       "NEW": ["NUEVO"],
       "QNEW": ["RNUEVO"],
@@ -388,6 +391,22 @@
       "-LWEIGHT": ["-GROSORLIN"]
     },
     "keywords": {
+      "-OSNAP": {
+        "ENDpoint": "FINal",
+        "MIDpoint": "MEDio",
+        "CENter": "CENtro",
+        "QUAdrant": "CUAdrante",
+        "INTersection": "INTersección",
+        "EXTension": "EXTensión",
+        "INSertion": "INSerción",
+        "PERpendicular": "PERpendicular",
+        "TANgent": "TANgente",
+        "NEArest": "CERcano",
+        "APParent": "APP",
+        "PARallel": "PARalelo",
+        "NONe": "NINguno",
+        "OFF": "DES"
+      },
       "LINE": {
         "Close": "Cerrar",
         "Undo": "desHacer"
@@ -784,6 +803,7 @@
       "elevDefaultElevation": "Precise nueva elevación por defecto",
       "elevDefaultThickness": "Precise nueva altura de objeto por defecto",
       "ltscaleFactor": "Indique nuevo factor de escala de tipo de línea",
+      "osnapModes": "Indique una lista de modo de referencia a objetos",
       "defaultObjectColor": "Indique color de objeto por defecto [COlorverdadero]",
       "trueColor": "Rojo, Verde, Azul",
       "linetypeOption": "Indique una opción [?/Defina]",
@@ -845,6 +865,7 @@
       "nothingJoined": "0 objetos unidos, {count, plural, one {# objeto descartado} other {# objetos descartados}} de la operación",
       "currentViewDirection": "Dirección de vista actual:  VIEWDIR={x},{y},{z}",
       "regeneratingModel": "Regenerando modelo.",
+      "currentOsnapModes": "Modos de referencia a objetos actuales: {modes}",
       "currentLineweight": "Grosor de línea actual: {value}",
       "pointingEdgeOn": "No se puede señalar en un SCP visto de canto.",
       "circleDoesNotExist": "El círculo no existe."

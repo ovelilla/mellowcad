@@ -1,10 +1,22 @@
 import { describe, expect, it, vi } from "vitest"
 import type { LineEntity } from "../../domain/entities"
-import { closestOnEntity, createSpline } from "../../domain/entities"
+import {
+  closestOnEntity,
+  createSpline,
+  withElevation,
+} from "../../domain/entities"
 import { V } from "../../geometry/Vec2"
 import { SnapType } from "./types"
 import { createHarness, type CadHarness } from "../../../test/harness"
-import { circleOf, ellipseOf, lineOf, p } from "../../../test/builders"
+import {
+  arcOf,
+  circleOf,
+  deg,
+  ellipseOf,
+  lineOf,
+  p,
+  polylineOf,
+} from "../../../test/builders"
 
 /**
  * The individual snap providers, each forced through the one-shot override so
@@ -168,6 +180,58 @@ describe("tangent", () => {
   })
 })
 
+describe("perpendicular and tangent on arcs and polylines", () => {
+  it("drops onto the polyline segment under the cursor", () => {
+    const cad = createHarness({
+      entities: [
+        polylineOf([p(200, -400), p(200, 0), p(500, 0)], { id: "REF-P" }),
+      ],
+      snap: true,
+    })
+
+    const drawn = secondPointWith(
+      cad,
+      SnapType.Perpendicular,
+      p(0, -200),
+      p(202, -300)
+    )
+
+    expect(drawn.end).toBeCloseToPoint(p(200, -200), 5)
+  })
+
+  it("runs through an arc's centre", () => {
+    const cad = createHarness({
+      entities: [arcOf(p(0, 0), 100, deg(0), deg(180), { id: "REF-A" })],
+      snap: true,
+    })
+
+    const drawn = secondPointWith(
+      cad,
+      SnapType.Perpendicular,
+      p(0, 300),
+      p(71, 71)
+    )
+
+    expect(drawn.end).toBeCloseToPoint(p(0, 100), 5)
+  })
+
+  it("touches an arc, on the arc itself", () => {
+    const cad = createHarness({
+      entities: [arcOf(p(0, 0), 100, deg(0), deg(180), { id: "REF-A" })],
+      snap: true,
+    })
+    const anchor = p(300, 0)
+
+    const drawn = secondPointWith(cad, SnapType.Tangent, anchor, p(-71, 71))
+
+    expect(V.distance(drawn.end, p(0, 0))).toBeCloseTo(100, 5)
+    expect(drawn.end.y).toBeGreaterThan(0)
+    expect(
+      V.dot(V.sub(anchor, drawn.end), V.sub(drawn.end, p(0, 0)))
+    ).toBeCloseTo(0, 4)
+  })
+})
+
 describe("nearest", () => {
   it("lands on the outline wherever the cursor is", () => {
     const cad = createHarness({
@@ -182,7 +246,35 @@ describe("nearest", () => {
 })
 
 describe("extension", () => {
-  it("continues a line past its endpoint", () => {
+  /** Dwells on `end` so it is acquired, as passing the cursor over it does. */
+  function acquire(cad: CadHarness, end: { x: number; y: number }): void {
+    cad.moveTo(end)
+    vi.advanceTimersByTime(300)
+    cad.moveTo(end)
+  }
+
+  it("continues a line past an endpoint the cursor passed over", () => {
+    vi.useFakeTimers()
+    try {
+      const cad = createHarness({
+        entities: [lineOf(p(0, 0), p(100, 0), { id: "REF-L" })],
+        snap: true,
+      })
+      cad.press("F11")
+      cad.runtime.setSnapEnabled(SnapType.Extension, true)
+
+      cad.command("LINE")
+      acquire(cad, p(100, 0))
+      cad.click(p(150, 3)).click(p(900, 900)).escape()
+
+      expect(drawnLine(cad).start).toBeCloseToPoint(p(150, 0), 5)
+    } finally {
+      vi.useRealTimers()
+    }
+  })
+
+  it("prolongs nothing the cursor has not passed over", () => {
+    // "when you pass the cursor over the endpoint of objects"
     const cad = createHarness({
       entities: [lineOf(p(0, 0), p(100, 0), { id: "REF-L" })],
       snap: true,
@@ -190,25 +282,72 @@ describe("extension", () => {
 
     const drawn = firstPointWith(cad, SnapType.Extension, p(150, 3))
 
-    expect(drawn.start).toBeCloseToPoint(p(150, 0), 5)
+    expect(drawn.start).toBeCloseToPoint(p(150, 3))
   })
 
   it("does not fire over the segment itself", () => {
-    // Extension is about the *prolongation*; over the body the endpoint and
-    // midpoint snaps already do the job.
-    const cad = createHarness({
-      entities: [lineOf(p(0, 0), p(100, 0), { id: "REF-L" })],
-      snap: true,
-    })
+    vi.useFakeTimers()
+    try {
+      const cad = createHarness({
+        entities: [lineOf(p(0, 0), p(100, 0), { id: "REF-L" })],
+        snap: true,
+      })
+      cad.press("F11")
+      cad.runtime.setSnapEnabled(SnapType.Extension, true)
+      cad.runtime.setSnapEnabled(SnapType.Endpoint, false)
+      cad.runtime.setSnapEnabled(SnapType.Midpoint, false)
 
-    const drawn = firstPointWith(cad, SnapType.Extension, p(50, 3))
+      cad.command("LINE")
+      cad.runtime.setSnapOverride(SnapType.Extension)
+      cad.click(p(50, 3)).click(p(900, 900)).escape()
 
-    expect(drawn.start).toBeCloseToPoint(p(50, 3))
+      expect(drawnLine(cad).start).toBeCloseToPoint(p(50, 3))
+    } finally {
+      vi.useRealTimers()
+    }
+  })
+
+  it("continues an arc round its circle past the end", () => {
+    vi.useFakeTimers()
+    try {
+      const cad = createHarness({
+        entities: [arcOf(p(0, 0), 100, deg(0), deg(90), { id: "REF-A" })],
+        snap: true,
+      })
+      cad.press("F11")
+      cad.runtime.setSnapEnabled(SnapType.Extension, true)
+
+      cad.command("LINE")
+      acquire(cad, p(0, 100))
+      cad.moveTo(p(-72, 70))
+
+      const snap = cad.state().snap
+      expect(snap?.type).toBe(SnapType.Extension)
+      expect(V.length(snap!.point)).toBeCloseTo(100, 6)
+    } finally {
+      vi.useRealTimers()
+    }
   })
 })
 
 describe("apparent intersection", () => {
-  it("snaps where two lines would meet if extended", () => {
+  it("snaps where two objects cross in the view at different heights", () => {
+    const cad = createHarness({
+      entities: [
+        lineOf(p(-100, 0), p(100, 0), { id: "REF-A" }),
+        withElevation(lineOf(p(20, -100), p(20, 100), { id: "REF-B" }), 30),
+      ],
+      snap: true,
+    })
+
+    const drawn = firstPointWith(cad, SnapType.ApparentIntersection, p(22, 3))
+
+    expect(drawn.start).toBeCloseToPoint(p(20, 0), 5)
+  })
+
+  it("leaves two lines that would only meet if extended", () => {
+    // Extended intersections are picked object by object as an override in
+    // AutoCAD; the running snap never offers one in empty space.
     const cad = createHarness({
       entities: [
         lineOf(p(-100, 0), p(0, 0), { id: "REF-A" }),
@@ -219,12 +358,29 @@ describe("apparent intersection", () => {
 
     const drawn = firstPointWith(cad, SnapType.ApparentIntersection, p(200, 3))
 
-    expect(drawn.start).toBeCloseToPoint(p(200, 0), 5)
+    expect(drawn.start).toBeCloseToPoint(p(200, 3), 5)
   })
 
-  it("also crosses the live rubber band against existing edges", () => {
-    // The in-progress segment participates as construction geometry, which is
-    // what makes the snap useful while drawing rather than only afterwards.
+  it("crosses an engaged polar alignment path with an edge", () => {
+    // "Use polar tracking with Intersection and Apparent Intersection object
+    // snaps to find where a polar alignment path intersects another object."
+    const cad = createHarness({
+      entities: [lineOf(p(200, -100), p(200, -50), { id: "REF-B" })],
+      snap: true,
+    })
+    cad.press("F10")
+
+    const drawn = secondPointWith(
+      cad,
+      SnapType.ApparentIntersection,
+      p(0, 0),
+      p(198, 4)
+    )
+
+    expect(drawn.end).toBeCloseToPoint(p(200, 0), 5)
+  })
+
+  it("never takes the rubber band for an edge", () => {
     const cad = createHarness({
       entities: [lineOf(p(200, -100), p(200, -50), { id: "REF-B" })],
       snap: true,
@@ -237,7 +393,7 @@ describe("apparent intersection", () => {
       p(198, 40)
     )
 
-    expect(drawn.end.x).toBeCloseTo(200, 4)
+    expect(drawn.end).toBeCloseToPoint(p(198, 40), 5)
   })
 })
 
@@ -329,5 +485,27 @@ describe("on a spline", () => {
 
     expect(drawn.start.x).toBeCloseTo(50, 5)
     expect(crossing.distance).toBeLessThan(1e-3)
+  })
+})
+
+describe("a polyline's arc segment", () => {
+  // A half circle of radius 50 about (50, 0), bulging below the chord.
+  const arched = () =>
+    polylineOf([p(0, 0), p(100, 0)], { id: "REF-P", bulges: [1, 0] })
+
+  it("has a centre", () => {
+    const cad = createHarness({ entities: [arched()], snap: true })
+
+    const drawn = firstPointWith(cad, SnapType.Center, p(52, 2))
+
+    expect(drawn.start).toBeCloseToPoint(p(50, 0), 5)
+  })
+
+  it("has the quadrants its sweep passes through", () => {
+    const cad = createHarness({ entities: [arched()], snap: true })
+
+    const drawn = firstPointWith(cad, SnapType.Quadrant, p(52, -48))
+
+    expect(drawn.start).toBeCloseToPoint(p(50, -50), 5)
   })
 })

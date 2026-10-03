@@ -52,13 +52,14 @@ export interface SnapCandidate {
   /** Entities that produced this snap (for highlighting / debugging). */
   readonly sourceIds?: readonly EntityId[]
   /**
-   * The point on the source object nearest the cursor, when the snap engages
-   * by proximity to the object rather than to {@link point}: Perpendicular and
-   * Tangent engage while hovering anywhere over the line or circle (the
-   * snapped point being the foot or the tangent, often far from the cursor),
-   * matching AutoCAD. The engine measures the screen distance to it.
+   * The point of the source object nearest the cursor, for a snap the object
+   * offers wherever it passes through the aperture: Center is found from the
+   * circle's edge ("the cursor must pass over the circumference"), the
+   * Perpendicular foot and the Tangent point from anywhere over the object.
+   * Absent for the snaps that must themselves be under the cursor (Endpoint,
+   * Midpoint, Intersection, Extension, Nearest…).
    */
-  readonly pickPoint?: Vec3
+  readonly touch?: Vec3
   /**
    * True when the snap is derived from provisional, moving geometry — the
    * rubber-band being drawn. Such points still attract the cursor, but must not
@@ -67,10 +68,22 @@ export interface SnapCandidate {
    */
   readonly transient?: boolean
   /**
-   * The direction of the alignment the point lies on (Extension's
-   * prolongation, Parallel's parallel), for the dashed guide drawn through it.
+   * The direction of the alignment the point lies on (Parallel's parallel),
+   * for the dashed guide drawn through it.
    */
   readonly direction?: Vec2
+  /**
+   * The temporary extension line or arc from the acquired end to the point,
+   * as points along it, for the dashed path drawn from that end (Extension).
+   */
+  readonly path?: readonly Vec3[]
+}
+
+/** A point acquired by hovering it (OTRACK's +), with the objects it is on. */
+export interface AcquiredPoint {
+  readonly origin: Vec3
+  readonly sourceType: SnapType
+  readonly sourceIds: readonly EntityId[]
 }
 
 /**
@@ -90,7 +103,6 @@ export interface SnapResult extends SnapCandidate {
   /** Distance from the cursor to the snap point, in screen pixels. */
   readonly screenDistance: number
 }
-
 /**
  * Context passed to every provider. A provider asks its 2D questions in each
  * object's own plane, with the cursor that plane sees ({@link cursorOn}), and
@@ -114,6 +126,11 @@ export interface SnapContext {
   cursorOn(entity: Entity): Vec2
   /** Whether `point` is within the aperture of the cursor, `reach` times widened. */
   isNear(point: Vec3, reach?: number): boolean
+  /**
+   * The point of `entity` nearest the cursor, in the WCS (see
+   * {@link SnapCandidate.touch}); `null` when the object is nowhere near it.
+   */
+  touch(entity: Entity): Vec3 | null
   /** The view, for what is found on the screen rather than in a plane (apparent intersection). */
   readonly view: CameraTransform
   /**
@@ -136,6 +153,11 @@ export interface SnapContext {
    * a line is acquired.
    */
   readonly parallelSourceIds: ReadonlySet<EntityId>
+  /**
+   * The points acquired so far: Extension only prolongs an object from an
+   * endpoint the cursor has passed over, never every line in the drawing.
+   */
+  readonly acquired: readonly AcquiredPoint[]
 }
 
 /**

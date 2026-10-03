@@ -27,17 +27,16 @@ export enum ConstraintType {
  *              a no-op.
  * - `world`    the raw, unsnapped world cursor. Constraints use this to read
  *              the *direction* of the mouse movement.
- * - `snapPoint` the active snap point, if any.
  * - `point`    the current candidate point flowing through the pipeline (the
- *              snap point when snapped, otherwise the raw world cursor). Each
- *              constraint receives the previous constraint's output here.
+ *              cursor, rounded onto the snap lattice when SNAP is on). Each
+ *              constraint receives the previous constraint's output here. An
+ *              object snap never reaches a constraint: it wins outright.
  */
 export interface ConstraintContext {
   /** Its Z, when it has one, is where the `+Z` / `-Z` guide starts. */
   readonly anchor: Vec2 | Vec3 | null
   /** The cursor on the work plane, which `view` draws where the pointer is. */
   readonly world: Vec3
-  readonly snapPoint: Vec2 | null
   readonly point: Vec2
   /** Horizontal, vertical and the polar angles are the UCS's. */
   readonly ucs: Ucs

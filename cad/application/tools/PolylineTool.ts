@@ -9,7 +9,6 @@ import {
   isCoordinateExpression,
   parseCoordinate,
 } from "../input/coordinateInput"
-import { ConstructionGeometry } from "../snapping/types"
 import { ScenePrimitive } from "../../scene/types"
 import { THEME } from "../../scene/theme"
 import { arcScenePrimitive, entityScenePrimitive } from "../SceneBuilder"
@@ -167,15 +166,6 @@ export class PolylineTool implements Tool {
 
   getConstraintAnchor(): Vec2 | null {
     return this.state.phase === "drawing" ? this.lastVertex(this.state) : null
-  }
-
-  /**
-   * The rubber-band segment (last vertex → raw cursor) so intersection object
-   * snaps engage on the segment being drawn, exactly like the line tool.
-   */
-  getSnapGeometry(cursor: Vec2): readonly ConstructionGeometry[] {
-    if (this.state.phase !== "drawing") return []
-    return [{ kind: "segment", a: this.lastVertex(this.state), b: cursor }]
   }
 
   buildOverlay(ctx: ToolContext): ScenePrimitive[] {

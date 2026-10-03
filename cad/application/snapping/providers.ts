@@ -49,6 +49,8 @@ import {
   worldToEntity,
   Entity,
   EntityId,
+  PolylineEntity,
+  PolylineSegmentGeometry,
 } from "../../domain/entities"
 import {
   ConstructionGeometry,
@@ -80,69 +82,67 @@ function anchorIn(entity: Entity, anchor: Vec2): Vec2 {
   return planeAxes(entity) ? planar(worldToEntity(entity, anchor)) : anchor
 }
 
+/**
+ * A notable point of `entity` (given as it stores its points), with the
+ * object's point nearest the cursor as its `touch`: the engine decides when
+ * passing over the object is enough.
+ */
+function notable(
+  type: SnapType,
+  entity: Entity,
+  point: Vec2,
+  touch: SnapContext["touch"]
+): SnapCandidate {
+  const near = touch(entity)
+  return {
+    type,
+    point: on(entity, point),
+    sourceIds: [entity.id],
+    ...(near ? { touch: near } : {}),
+  }
+}
+
+const QUADRANT_ANGLES = [0, Math.PI / 2, Math.PI, (3 * Math.PI) / 2]
+
 /** Endpoint is the primary snap (highest priority). */
 export const endpointProvider: SnapProvider = {
   type: SnapType.Endpoint,
-  collect({ document, entities }: SnapContext): SnapCandidate[] {
+  collect({ document, entities, touch }: SnapContext): SnapCandidate[] {
     const candidates: SnapCandidate[] = []
     for (const entity of entities) {
       if (!document.isEntityVisible(entity)) continue
       if (entity.type === "line") {
-        candidates.push({
-          type: SnapType.Endpoint,
-          point: on(entity, entity.start),
-          sourceIds: [entity.id],
-        })
-        candidates.push({
-          type: SnapType.Endpoint,
-          point: on(entity, entity.end),
-          sourceIds: [entity.id],
-        })
+        candidates.push(notable(SnapType.Endpoint, entity, entity.start, touch))
+        candidates.push(notable(SnapType.Endpoint, entity, entity.end, touch))
       } else if (entity.type === "arc") {
-        candidates.push({
-          type: SnapType.Endpoint,
-          point: on(entity, arcStartPoint(entity)),
-          sourceIds: [entity.id],
-        })
-        candidates.push({
-          type: SnapType.Endpoint,
-          point: on(entity, arcEndPoint(entity)),
-          sourceIds: [entity.id],
-        })
+        candidates.push(
+          notable(SnapType.Endpoint, entity, arcStartPoint(entity), touch)
+        )
+        candidates.push(
+          notable(SnapType.Endpoint, entity, arcEndPoint(entity), touch)
+        )
       } else if (entity.type === "ellipse") {
         // Only an elliptical arc has ends; a whole ellipse closes on itself.
         if (isFullEllipse(entity)) continue
-        candidates.push({
-          type: SnapType.Endpoint,
-          point: on(entity, ellipseStartPoint(entity)),
-          sourceIds: [entity.id],
-        })
-        candidates.push({
-          type: SnapType.Endpoint,
-          point: on(entity, ellipseEndPoint(entity)),
-          sourceIds: [entity.id],
-        })
+        candidates.push(
+          notable(SnapType.Endpoint, entity, ellipseStartPoint(entity), touch)
+        )
+        candidates.push(
+          notable(SnapType.Endpoint, entity, ellipseEndPoint(entity), touch)
+        )
       } else if (entity.type === "spline") {
         // A closed spline's start is where it closes, and AutoCAD snaps there.
-        candidates.push({
-          type: SnapType.Endpoint,
-          point: on(entity, splineStartPoint(entity)),
-          sourceIds: [entity.id],
-        })
+        candidates.push(
+          notable(SnapType.Endpoint, entity, splineStartPoint(entity), touch)
+        )
         if (!entity.closed) {
-          candidates.push({
-            type: SnapType.Endpoint,
-            point: on(entity, splineEndPoint(entity)),
-            sourceIds: [entity.id],
-          })
+          candidates.push(
+            notable(SnapType.Endpoint, entity, splineEndPoint(entity), touch)
+          )
         }
       } else if (entity.type === "polyline") {
         for (const vertex of entity.vertices) {
-          candidates.push({
-            type: SnapType.Endpoint,
-            point: on(entity, vertex),
-            sourceIds: [entity.id],
-          })
+          candidates.push(notable(SnapType.Endpoint, entity, vertex, touch))
         }
       } else if (entity.type === "dimension") {
         // A dimension has no geometry of its own to snap along, but its
@@ -156,11 +156,7 @@ export const endpointProvider: SnapProvider = {
           g.lineStart,
           g.lineEnd,
         ]) {
-          candidates.push({
-            type: SnapType.Endpoint,
-            point: on(entity, point),
-            sourceIds: [entity.id],
-          })
+          candidates.push(notable(SnapType.Endpoint, entity, point, touch))
         }
       }
     }
@@ -170,28 +166,22 @@ export const endpointProvider: SnapProvider = {
 
 export const midpointProvider: SnapProvider = {
   type: SnapType.Midpoint,
-  collect({ document, entities }: SnapContext): SnapCandidate[] {
+  collect({ document, entities, touch }: SnapContext): SnapCandidate[] {
     const candidates: SnapCandidate[] = []
     for (const entity of entities) {
       if (!document.isEntityVisible(entity)) continue
       if (entity.type === "line") {
-        candidates.push({
-          type: SnapType.Midpoint,
-          point: on(entity, lineMidpoint(entity)),
-          sourceIds: [entity.id],
-        })
+        candidates.push(
+          notable(SnapType.Midpoint, entity, lineMidpoint(entity), touch)
+        )
       } else if (entity.type === "arc") {
-        candidates.push({
-          type: SnapType.Midpoint,
-          point: on(entity, arcMidpoint(entity)),
-          sourceIds: [entity.id],
-        })
+        candidates.push(
+          notable(SnapType.Midpoint, entity, arcMidpoint(entity), touch)
+        )
       } else if (entity.type === "spline" && !entity.closed) {
-        candidates.push({
-          type: SnapType.Midpoint,
-          point: on(entity, splineMidpoint(entity)),
-          sourceIds: [entity.id],
-        })
+        candidates.push(
+          notable(SnapType.Midpoint, entity, splineMidpoint(entity), touch)
+        )
       } else if (entity.type === "polyline") {
         for (const seg of polylineSegmentGeometries(entity)) {
           const point =
@@ -202,11 +192,7 @@ export const midpointProvider: SnapProvider = {
                   seg.radius,
                   seg.startAngle + arcSweep(seg.startAngle, seg.endAngle) / 2
                 )
-          candidates.push({
-            type: SnapType.Midpoint,
-            point: on(entity, point),
-            sourceIds: [entity.id],
-          })
+          candidates.push(notable(SnapType.Midpoint, entity, point, touch))
         }
       }
     }
@@ -216,7 +202,7 @@ export const midpointProvider: SnapProvider = {
 
 export const centerProvider: SnapProvider = {
   type: SnapType.Center,
-  collect({ document, entities }: SnapContext): SnapCandidate[] {
+  collect({ document, entities, touch }: SnapContext): SnapCandidate[] {
     const candidates: SnapCandidate[] = []
     for (const entity of entities) {
       if (!document.isEntityVisible(entity)) continue
@@ -225,11 +211,13 @@ export const centerProvider: SnapProvider = {
         entity.type === "arc" ||
         entity.type === "ellipse"
       ) {
-        candidates.push({
-          type: SnapType.Center,
-          point: on(entity, entity.center),
-          sourceIds: [entity.id],
-        })
+        candidates.push(notable(SnapType.Center, entity, entity.center, touch))
+      } else if (entity.type === "polyline") {
+        // An arc segment is an arc: CENter "snaps to the center of an arc".
+        for (const seg of polylineSegmentGeometries(entity)) {
+          if (seg.kind !== "arc") continue
+          candidates.push(notable(SnapType.Center, entity, seg.center, touch))
+        }
       }
     }
     return candidates
@@ -244,7 +232,7 @@ export const centerProvider: SnapProvider = {
  */
 export const insertionProvider: SnapProvider = {
   type: SnapType.Insertion,
-  collect({ document }: SnapContext): SnapCandidate[] {
+  collect({ document, touch }: SnapContext): SnapCandidate[] {
     const candidates: SnapCandidate[] = []
     const display = document.getSettings().attributeDisplay
     for (const entity of document.getEntities()) {
@@ -255,11 +243,9 @@ export const insertionProvider: SnapProvider = {
         entity.type === "attdef" ||
         entity.type === "insert"
       ) {
-        candidates.push({
-          type: SnapType.Insertion,
-          point: on(entity, entity.position),
-          sourceIds: [entity.id],
-        })
+        candidates.push(
+          notable(SnapType.Insertion, entity, entity.position, touch)
+        )
       }
       if (entity.type === "insert") {
         const block = document.getBlock(entity.blockId)
@@ -280,7 +266,7 @@ export const insertionProvider: SnapProvider = {
  * endpoints of an ellipse's axes. */
 export const quadrantProvider: SnapProvider = {
   type: SnapType.Quadrant,
-  collect({ document, entities }: SnapContext): SnapCandidate[] {
+  collect({ document, entities, touch }: SnapContext): SnapCandidate[] {
     const candidates: SnapCandidate[] = []
     for (const entity of entities) {
       if (!document.isEntityVisible(entity)) continue
@@ -293,33 +279,37 @@ export const quadrantProvider: SnapProvider = {
           { x: c.x, y: c.y - r },
         ]
         for (const point of points) {
-          candidates.push({
-            type: SnapType.Quadrant,
-            point: on(entity, point),
-            sourceIds: [entity.id],
-          })
+          candidates.push(notable(SnapType.Quadrant, entity, point, touch))
         }
       } else if (entity.type === "arc") {
         // Only the cardinal points the sweep actually passes through.
-        for (const angle of [0, Math.PI / 2, Math.PI, (3 * Math.PI) / 2]) {
+        for (const angle of QUADRANT_ANGLES) {
           if (!angleWithinSweep(entity.startAngle, entity.endAngle, angle)) {
             continue
           }
-          candidates.push({
-            type: SnapType.Quadrant,
-            point: on(entity, polarPoint(entity.center, entity.radius, angle)),
-            sourceIds: [entity.id],
-          })
+          candidates.push(
+            notable(
+              SnapType.Quadrant,
+              entity,
+              polarPoint(entity.center, entity.radius, angle),
+              touch
+            )
+          )
         }
       } else if (entity.type === "ellipse") {
         // An ellipse's quadrants are the endpoints of its two axes, not the
         // cardinal directions of the world.
         for (const point of ellipseQuadrantPoints(entity)) {
-          candidates.push({
-            type: SnapType.Quadrant,
-            point: on(entity, point),
-            sourceIds: [entity.id],
-          })
+          candidates.push(notable(SnapType.Quadrant, entity, point, touch))
+        }
+      } else if (entity.type === "polyline") {
+        for (const seg of polylineSegmentGeometries(entity)) {
+          if (seg.kind !== "arc") continue
+          for (const angle of QUADRANT_ANGLES) {
+            if (!angleWithinSweep(seg.startAngle, seg.endAngle, angle)) continue
+            const point = polarPoint(seg.center, seg.radius, angle)
+            candidates.push(notable(SnapType.Quadrant, entity, point, touch))
+          }
         }
       }
     }
@@ -328,12 +318,13 @@ export const quadrantProvider: SnapProvider = {
 }
 
 /**
- * Snaps to the point on an entity that is *perpendicular* from the operation's
+ * Snaps to the point on an object that is *perpendicular* from the operation's
  * anchor (the line being drawn from, or a grip's fixed end) — AutoCAD's
- * Perpendicular osnap. For a line it is the foot of the perpendicular onto the
- * infinite line (so it engages even past the segment's ends, matching AutoCAD's
- * deferred perpendicular); for a circle the perpendicular runs through the
- * centre, giving the two radial points. Offered only while an anchor exists.
+ * Perpendicular osnap, offered from anywhere over the object. For a line it is
+ * the foot on the infinite line (so it engages past the segment's ends, as
+ * AutoCAD's does); for a circle or an arc the perpendicular runs through the
+ * centre, giving the two radial points; a polyline answers with the segment
+ * under the cursor, as a line or an arc. Offered only while an anchor exists.
  */
 export const perpendicularProvider: SnapProvider = {
   type: SnapType.Perpendicular,
@@ -342,57 +333,67 @@ export const perpendicularProvider: SnapProvider = {
     entities,
     anchor,
     cursorOn,
+    touch,
   }: SnapContext): SnapCandidate[] {
     if (!anchor) return []
     const candidates: SnapCandidate[] = []
     for (const entity of entities) {
       if (!document.isEntityVisible(entity)) continue
-      if (entity.type === "line") {
-        candidates.push({
-          type: SnapType.Perpendicular,
-          point: on(
-            entity,
-            closestPointOnInfiniteLine(entity.start, entity.end, anchor).point
-          ),
-          // Engage while hovering over the segment, not only near the foot.
-          pickPoint: on(
-            entity,
-            closestPointOnSegment(entity.start, entity.end, cursorOn(entity))
-              .point
-          ),
-          sourceIds: [entity.id],
-        })
-      } else if (entity.type === "circle") {
-        const radial = V.sub(anchorIn(entity, anchor), entity.center)
+      const shape =
+        entity.type === "line"
+          ? { center: null, a: entity.start, b: entity.end, radius: 0 }
+          : entity.type === "circle" || entity.type === "arc"
+            ? { center: entity.center, a: null, b: null, radius: entity.radius }
+            : entity.type === "polyline"
+              ? asShape(segmentUnder(entity, cursorOn(entity)))
+              : null
+      if (!shape) continue
+      const near = touch(entity)
+      if (!near) continue
+      const from = anchorIn(entity, anchor)
+      const feet: Vec2[] = []
+      if (shape.center === null) {
+        feet.push(closestPointOnInfiniteLine(shape.a, shape.b, from).point)
+      } else {
+        const radial = V.sub(from, shape.center)
         const len = V.length(radial)
         if (len < 1e-9) continue
         const dir = V.scale(radial, 1 / len)
-        const onOutline = on(
-          entity,
-          closestPointOnCircle(entity.center, entity.radius, cursorOn(entity))
-            .point
-        )
         for (const sign of [1, -1]) {
-          candidates.push({
-            type: SnapType.Perpendicular,
-            point: on(
-              entity,
-              V.add(entity.center, V.scale(dir, entity.radius * sign))
-            ),
-            pickPoint: onOutline,
-            sourceIds: [entity.id],
-          })
+          feet.push(V.add(shape.center, V.scale(dir, shape.radius * sign)))
         }
+      }
+      for (const foot of feet) {
+        candidates.push({
+          type: SnapType.Perpendicular,
+          point: on(entity, foot),
+          touch: near,
+          sourceIds: [entity.id],
+        })
       }
     }
     return candidates
   },
 }
 
+type PerpendicularShape =
+  | { center: null; a: Vec2; b: Vec2; radius: number }
+  | { center: Vec2; a: null; b: null; radius: number }
+
+function asShape(
+  seg: PolylineSegmentGeometry | null
+): PerpendicularShape | null {
+  if (!seg) return null
+  return seg.kind === "line"
+    ? { center: null, a: seg.a, b: seg.b, radius: 0 }
+    : { center: seg.center, a: null, b: null, radius: seg.radius }
+}
+
 /**
- * Snaps to a point on a circle where a line from the anchor would be *tangent*
- * — AutoCAD's Tangent osnap. Undefined for an anchor inside the circle, so it
- * offers nothing then. Only applies to circles.
+ * Snaps to a point on a curve where a line from the anchor would be *tangent*
+ * — AutoCAD's Tangent osnap, offered from anywhere over a circle, an arc or a
+ * polyline's arc segment, at a point of the arc itself. Undefined for an
+ * anchor inside the curve, so it offers nothing then.
  */
 export const tangentProvider: SnapProvider = {
   type: SnapType.Tangent,
@@ -401,26 +402,47 @@ export const tangentProvider: SnapProvider = {
     entities,
     anchor,
     cursorOn,
+    touch,
   }: SnapContext): SnapCandidate[] {
     if (!anchor) return []
     const candidates: SnapCandidate[] = []
     for (const entity of entities) {
       if (!document.isEntityVisible(entity)) continue
-      if (entity.type !== "circle") continue
-      const onOutline = on(
-        entity,
-        closestPointOnCircle(entity.center, entity.radius, cursorOn(entity))
-          .point
-      )
+      const segment =
+        entity.type === "polyline"
+          ? segmentUnder(entity, cursorOn(entity))
+          : null
+      const arc =
+        entity.type === "circle"
+          ? { center: entity.center, radius: entity.radius, sweep: null }
+          : entity.type === "arc"
+            ? { center: entity.center, radius: entity.radius, sweep: entity }
+            : segment?.kind === "arc"
+              ? {
+                  center: segment.center,
+                  radius: segment.radius,
+                  sweep: segment,
+                }
+              : null
+      if (!arc) continue
+      const near = touch(entity)
+      if (!near) continue
       for (const point of tangentPointsFromPoint(
         anchorIn(entity, anchor),
-        entity.center,
-        entity.radius
+        arc.center,
+        arc.radius
       )) {
+        const angle = Math.atan2(point.y - arc.center.y, point.x - arc.center.x)
+        if (
+          arc.sweep &&
+          !angleWithinSweep(arc.sweep.startAngle, arc.sweep.endAngle, angle)
+        ) {
+          continue
+        }
         candidates.push({
           type: SnapType.Tangent,
           point: on(entity, point),
-          pickPoint: onOutline,
+          touch: near,
           sourceIds: [entity.id],
         })
       }
@@ -429,37 +451,189 @@ export const tangentProvider: SnapProvider = {
   },
 }
 
+/** The segment of a polyline nearest `cursor`, in its own plane. */
+function segmentUnder(
+  entity: PolylineEntity,
+  cursor: Vec2
+): PolylineSegmentGeometry | null {
+  let best: PolylineSegmentGeometry | null = null
+  let bestDistance = Infinity
+  for (const seg of polylineSegmentGeometries(entity)) {
+    const d =
+      seg.kind === "line"
+        ? closestPointOnSegment(seg.a, seg.b, cursor).distance
+        : closestPointOnArc(
+            seg.center,
+            seg.radius,
+            seg.startAngle,
+            seg.endAngle,
+            cursor
+          ).distance
+    if (d < bestDistance) {
+      bestDistance = d
+      best = seg
+    }
+  }
+  return best
+}
+
 /**
- * Snaps to a point on the imaginary prolongation of a line, beyond its
- * endpoints — AutoCAD's Extension. Offers the cursor's projection onto the
- * line's infinite line, but only when that projection lies *outside* the
- * segment (past an endpoint); it engages by proximity to that extension line,
- * so the point slides along the prolongation as the cursor moves near it.
+ * Snaps to a point on the prolongation of an object past an end the cursor has
+ * passed over — AutoCAD's Extension, which "causes a temporary extension line
+ * or arc to be displayed when you pass the cursor over the endpoint of
+ * objects". Only acquired ends are prolonged (the + marker OTRACK shows), so
+ * merely drawing near a line's continuation does nothing. A line, an open
+ * polyline's end segment and an arc prolong; the point slides along the
+ * extension as the cursor moves near it.
  */
 export const extensionProvider: SnapProvider = {
   type: SnapType.Extension,
-  collect({ document, entities, cursorOn }: SnapContext): SnapCandidate[] {
+  collect({
+    document,
+    entities,
+    cursorOn,
+    acquired,
+  }: SnapContext): SnapCandidate[] {
+    const ends = acquired.filter((a) => a.sourceType === SnapType.Endpoint)
+    if (ends.length === 0) return []
     const candidates: SnapCandidate[] = []
     for (const entity of entities) {
       if (!document.isEntityVisible(entity)) continue
-      if (entity.type !== "line") continue
-      const proj = closestPointOnInfiniteLine(
-        entity.start,
-        entity.end,
-        cursorOn(entity)
-      )
-      // Only the extension: past an endpoint (t<0 or t>1), never over the segment.
-      if (proj.t >= 0 && proj.t <= 1) continue
-      candidates.push({
-        type: SnapType.Extension,
-        point: on(entity, proj.point),
-        sourceIds: [entity.id],
-        direction: V.normalize(V.sub(entity.end, entity.start)),
-      })
+      for (const end of ends) {
+        if (!end.sourceIds.includes(entity.id)) continue
+        const candidate = extensionFrom(entity, end.origin, cursorOn(entity))
+        if (candidate) candidates.push(candidate)
+      }
     }
     return candidates
   },
 }
+
+/** A straight prolongation from an acquired end: Extension's path as a line. */
+export interface ExtensionLine {
+  readonly origin: Vec3
+  /** Unit direction, outwards from the end. */
+  readonly dir: Vec3
+  readonly sourceIds: readonly EntityId[]
+}
+
+/**
+ * The straight prolongations of the acquired ends, for the alignment paths
+ * they cross: an Extension meets another extension or an OTRACK guide at one
+ * point, the way two tracking paths do. An arc's extension is no line.
+ */
+export function extensionLines(
+  context: Pick<SnapContext, "document" | "entities" | "acquired">
+): ExtensionLine[] {
+  const ends = context.acquired.filter(
+    (a) => a.sourceType === SnapType.Endpoint
+  )
+  if (ends.length === 0) return []
+  const out: ExtensionLine[] = []
+  for (const entity of context.entities) {
+    if (!context.document.isEntityVisible(entity)) continue
+    for (const end of ends) {
+      if (!end.sourceIds.includes(entity.id)) continue
+      for (const piece of prolongations(entity)) {
+        if (piece.kind !== "line") continue
+        const tip = on(entity, piece.to)
+        if (length3(sub3(tip, end.origin)) > ACQUIRED_EPSILON) continue
+        const along = sub3(tip, on(entity, piece.from))
+        const length = length3(along)
+        if (length < 1e-9) continue
+        out.push({
+          origin: end.origin,
+          dir: {
+            x: along.x / length,
+            y: along.y / length,
+            z: along.z / length,
+          },
+          sourceIds: [entity.id],
+        })
+      }
+    }
+  }
+  return out
+}
+
+/** The ends an object can be prolonged from: a straight piece or an arc, each going outwards. */
+function prolongations(
+  entity: Entity
+): (
+  | { kind: "line"; from: Vec2; to: Vec2 }
+  | { kind: "arc"; center: Vec2; radius: number; at: number; ccw: boolean }
+)[] {
+  if (entity.type === "line") {
+    return [
+      { kind: "line", from: entity.start, to: entity.end },
+      { kind: "line", from: entity.end, to: entity.start },
+    ]
+  }
+  if (entity.type === "arc") {
+    const { center, radius } = entity
+    return [
+      { kind: "arc", center, radius, at: entity.endAngle, ccw: true },
+      { kind: "arc", center, radius, at: entity.startAngle, ccw: false },
+    ]
+  }
+  if (entity.type === "polyline" && !entity.closed) {
+    const segments = polylineSegmentGeometries(entity)
+    const first = segments[0]
+    const last = segments[segments.length - 1]
+    const out: { kind: "line"; from: Vec2; to: Vec2 }[] = []
+    if (first?.kind === "line") {
+      out.push({ kind: "line", from: first.b, to: first.a })
+    }
+    if (last?.kind === "line") {
+      out.push({ kind: "line", from: last.a, to: last.b })
+    }
+    return out
+  }
+  return []
+}
+
+function extensionFrom(
+  entity: Entity,
+  origin: Vec3,
+  cursor: Vec2
+): SnapCandidate | null {
+  for (const end of prolongations(entity)) {
+    if (end.kind === "line") {
+      if (length3(sub3(on(entity, end.to), origin)) > ACQUIRED_EPSILON) continue
+      const proj = closestPointOnInfiniteLine(end.from, end.to, cursor)
+      if (!(proj.t > 1)) continue
+      return {
+        type: SnapType.Extension,
+        point: on(entity, proj.point),
+        sourceIds: [entity.id],
+        path: [origin, on(entity, proj.point)],
+      }
+    }
+    const tip = polarPoint(end.center, end.radius, end.at)
+    if (length3(sub3(on(entity, tip), origin)) > ACQUIRED_EPSILON) continue
+    if (entity.type !== "arc") continue
+    const gap = Math.PI * 2 - arcSweep(entity.startAngle, entity.endAngle)
+    const angle = Math.atan2(cursor.y - end.center.y, cursor.x - end.center.x)
+    const along = normalizeAngle(end.ccw ? angle - end.at : end.at - angle)
+    if (along <= 0 || along >= gap) continue
+    const path: Vec3[] = []
+    const steps = Math.max(2, Math.ceil(along / (Math.PI / 32)))
+    for (let i = 0; i <= steps; i++) {
+      const a = end.at + ((end.ccw ? 1 : -1) * along * i) / steps
+      path.push(on(entity, polarPoint(end.center, end.radius, a)))
+    }
+    return {
+      type: SnapType.Extension,
+      point: path[path.length - 1],
+      sourceIds: [entity.id],
+      path,
+    }
+  }
+  return null
+}
+
+/** World distance under which an acquired point is taken to be an object's end. */
+const ACQUIRED_EPSILON = 1e-6
 
 /**
  * Keeps the segment being drawn *parallel* to an existing line — AutoCAD's
@@ -588,6 +762,8 @@ export const intersectionProvider: SnapProvider = {
         ) {
           continue
         }
+        // Two alignment paths crossing is tracking's point, not an object's.
+        if (a.fromConstruction && b.fromConstruction) continue
         if (!sameFrame(a, b)) continue
         for (const point of intersectShapes(shapes[i], shapes[j])) {
           const at = meetingPoint(a, b, point)
@@ -608,11 +784,14 @@ export const intersectionProvider: SnapProvider = {
 }
 
 /**
- * Snaps to the point where two straight edges *would* meet if extended — the
- * "Apparent Intersection" of AutoCAD. Computed from the infinite lines through
- * each segment; only offered when the crossing lies on at least one segment's
- * extension (otherwise it is a real intersection, already handled above) and is
- * near the cursor.
+ * Snaps to "the visual intersection of two objects that do not intersect in 3D
+ * space but may appear to intersect in the current view" — AutoCAD's Apparent
+ * Intersection: two edges crossing on screen at different heights. An edge is
+ * prolonged only to meet an engaged polar path ("use polar tracking with …
+ * Apparent Intersection … to find where a polar alignment path intersects
+ * another object"). WHY not two edges prolonged to meet each other: AutoCAD's
+ * extended intersections are picked object by object as an override, not
+ * offered by the running snap, and here they fired in empty space.
  */
 export const apparentIntersectionProvider: SnapProvider = {
   type: SnapType.ApparentIntersection,
@@ -636,17 +815,19 @@ export const apparentIntersectionProvider: SnapProvider = {
       for (let j = i + 1; j < segments.length; j++) {
         const a = segments[i]
         const b = segments[j]
+        if (a.fromConstruction && b.fromConstruction) continue
         const x = infiniteLineIntersection(a.a, a.b, b.a, b.b)
         if (!x) continue
-        // A crossing that lies within *both* segments is a real intersection;
-        // apparent intersection is precisely the "needs extending" case.
         const withinBoth = x.t >= 0 && x.t <= 1 && x.u >= 0 && x.u <= 1
-        if (withinBoth) continue
-        // The first object's height: the two may pass at different ones.
-        const point = withZ(
-          x.point,
-          heightOn(a, x.point) ?? heightOn(b, x.point) ?? 0
-        )
+        if (!withinBoth && !a.fromConstruction && !b.fromConstruction) continue
+        const za = heightOn(a, x.point)
+        const zb = heightOn(b, x.point)
+        // Crossing where they meet is a real intersection, Intersection's.
+        const meet =
+          za === null || zb === null || Math.abs(za - zb) <= MEETING_EPSILON
+        if (withinBoth && meet) continue
+        // The first object's height: the two pass at different ones.
+        const point = withZ(x.point, za ?? zb ?? 0)
         if (isNear(point, 8)) {
           candidates.push({
             type: SnapType.ApparentIntersection,
@@ -662,8 +843,8 @@ export const apparentIntersectionProvider: SnapProvider = {
 }
 
 /**
- * Apparent intersection on the screen: where two edges, extended if need be,
- * cross in the view without meeting in space. The point is on the first of
+ * Apparent intersection on the screen: where two edges cross in the view
+ * without meeting in space (an edge prolonged only to meet a polar path). The point is on the first of
  * them, at its height there.
  */
 function apparentOnScreen(
@@ -682,6 +863,9 @@ function apparentOnScreen(
   const candidates: SnapCandidate[] = []
   for (let i = 0; i < segments.length; i++) {
     for (let j = i + 1; j < segments.length; j++) {
+      if (segments[i].fromConstruction && segments[j].fromConstruction) {
+        continue
+      }
       const x = infiniteLineIntersection(
         screen[i][0],
         screen[i][1],
@@ -692,6 +876,9 @@ function apparentOnScreen(
       const onFirst = lerp3(ends[i][0], ends[i][1], x.t)
       const onSecond = lerp3(ends[j][0], ends[j][1], x.u)
       const withinBoth = x.t >= 0 && x.t <= 1 && x.u >= 0 && x.u <= 1
+      const extended =
+        segments[i].fromConstruction || segments[j].fromConstruction
+      if (!withinBoth && !extended) continue
       if (withinBoth && length3(sub3(onFirst, onSecond)) <= MEETING_EPSILON) {
         continue
       }

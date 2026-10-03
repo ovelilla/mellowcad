@@ -207,7 +207,9 @@ export function buildScene(input: SceneInput): Scene {
     input.entities,
     input.parallelReferenceIds
   )
-  if (input.polar) pushPolarGuide(primitives, aid, input.polar)
+  if (input.polar) {
+    pushPolarGuide(primitives, aid, input.polar, input.snap !== null)
+  }
   if (input.fromBase) {
     pushFromBase(primitives, aid.worldToScreen(input.fromBase), input.cursor)
   }
@@ -226,13 +228,14 @@ export function buildScene(input: SceneInput): Scene {
     pushCrosshair(primitives, camera.width, camera.height, input.cursor.screen)
   }
   if (input.cyclingBadge) pushCyclingBadge(primitives, input.cyclingBadge)
-  if (input.tracking) {
+  if (input.tracking && !input.snap) {
     pushTrackedPointMarker(primitives, aid.worldToScreen(input.tracking.point))
   }
   if (input.snap) {
     if (input.snap.direction) {
       pushAlignmentGuide(primitives, aid, input.snap, input.snap.direction)
     }
+    if (input.snap.path) pushSnapPath(primitives, aid, input.snap.path)
     pushSnapMarker(
       primitives,
       aid.worldToScreen(input.snap.point),
@@ -1425,21 +1428,30 @@ function pushFromBase(
 /**
  * Draws AutoCAD's polar tracking vector: a dashed alignment line through the
  * anchor along the locked polar angle, extended across the viewport, with a
- * "Polar: <dist> < <angle>°" chip beside the resolved point.
+ * "Polar: <dist> < <angle>°" chip beside the resolved point — over the snap's
+ * tooltip when the point is a snap found on the path.
  */
 function pushPolarGuide(
   out: ScenePrimitive[],
   camera: CameraTransform,
-  polar: PolarGuideInput
+  polar: PolarGuideInput,
+  aboveSnapTooltip: boolean
 ): void {
   const at = camera.worldToScreen(polar.point)
+  const chipY = aboveSnapTooltip ? -54 : -30
   if (polar.alongZ) {
     out.push({
       kind: "segment",
       ...alongZOnScreen(camera, polar.origin),
       stroke: { color: THEME.polar, width: 1, dash: [6, 6] },
     })
-    pushChip(out, at.x + 12, at.y + 12, polar.label, THEME.polarTooltipBorder)
+    pushChip(
+      out,
+      at.x + 12,
+      at.y + chipY,
+      polar.label,
+      THEME.polarTooltipBorder
+    )
     return
   }
   const d = V.sub(polar.point, polar.origin)
@@ -1456,7 +1468,7 @@ function pushPolarGuide(
     ),
     stroke: { color: THEME.polar, width: 1, dash: [6, 6] },
   })
-  pushChip(out, at.x + 12, at.y + 12, polar.label, THEME.polarTooltipBorder)
+  pushChip(out, at.x + 12, at.y + chipY, polar.label, THEME.polarTooltipBorder)
 }
 
 /** The UCS's Z through `origin` (in the frame `camera` reads), as a segment across the view. */
@@ -1519,8 +1531,9 @@ function pushCrosshair(
 /**
  * AutoCAD's selection-cycling badge: two small offset rectangles beside the
  * cursor saying "more than one object is under the pick box". Drawn in the grip
- * blue, like AutoCAD's own icon, and offset up-right of the crosshair so it
- * clears the object-snap tooltip (which sits below-right).
+ * blue, like AutoCAD's own icon, and offset up-right of the crosshair. It never
+ * meets the object-snap tooltip there: one is shown while picking objects, the
+ * other at a point prompt.
  */
 function pushCyclingBadge(out: ScenePrimitive[], at: Vec2): void {
   const stroke: StrokeStyle = { color: THEME.grip, width: 1.25 }
@@ -1803,6 +1816,20 @@ function pushAlignmentGuide(
   })
 }
 
+/** Extension's temporary line or arc, dashed from the acquired end to the point. */
+function pushSnapPath(
+  out: ScenePrimitive[],
+  camera: CameraTransform,
+  path: readonly Vec3[]
+): void {
+  out.push({
+    kind: "path",
+    points: path.map((point) => camera.worldToScreen(point)),
+    closed: false,
+    stroke: { color: THEME.tracking, width: 1, dash: [7, 5] },
+  })
+}
+
 /** An axis-aligned plus (+) — the extension snap glyph. */
 function pushPlus(
   out: ScenePrimitive[],
@@ -1852,7 +1879,9 @@ function pushSnapTooltip(
   s: number,
   text: string
 ): void {
-  pushChip(out, c.x + s + 8, c.y + s + 4, text, THEME.snapTooltipBorder)
+  // WHY above, where AutoCAD puts it below: the dynamic-input box sits below
+  // and to the right of the cursor and would cover it.
+  pushChip(out, c.x + s + 8, c.y - s - 24, text, THEME.snapTooltipBorder)
 }
 
 /**

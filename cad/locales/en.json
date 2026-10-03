@@ -72,6 +72,7 @@
       "orbit": "3D Orbit",
       "navvcube": "ViewCube",
       "ltscale": "Linetype scale",
+      "osnap": "Object snap modes",
       "color": "Color",
       "linetype": "Linetype",
       "lweight": "Lineweight"
@@ -80,6 +81,7 @@
       "UNDO": "Undo the last action",
       "REDO": "Redo the last undone action",
       "SNAP": "Force the cursor onto the snap increments",
+      "-OSNAP": "Set the running object snap modes",
       "FROM": "Pick a point offset from a base point",
       "NEW": "Start a new drawing",
       "QNEW": "Start a new drawing",
@@ -363,6 +365,7 @@
       "UNDO": ["UNDO", "U"],
       "REDO": ["REDO"],
       "SNAP": ["SNAP", "SN"],
+      "-OSNAP": ["-OSNAP", "-OS"],
       "FROM": ["FROM", "FRO"],
       "NEW": ["NEW"],
       "QNEW": ["QNEW"],
@@ -400,6 +403,22 @@
       "-LWEIGHT": ["-LWEIGHT"]
     },
     "keywords": {
+      "-OSNAP": {
+        "ENDpoint": "ENDpoint",
+        "MIDpoint": "MIDpoint",
+        "CENter": "CENter",
+        "QUAdrant": "QUAdrant",
+        "INTersection": "INTersection",
+        "EXTension": "EXTension",
+        "INSertion": "INSertion",
+        "PERpendicular": "PERpendicular",
+        "TANgent": "TANgent",
+        "NEArest": "NEArest",
+        "APParent": "APParent",
+        "PARallel": "PARallel",
+        "NONe": "NONe",
+        "OFF": "OFF"
+      },
       "LINE": { "Close": "Close", "Undo": "Undo" },
       "PLINE": {
         "Arc": "Arc",
@@ -746,6 +765,7 @@
       "elevDefaultElevation": "Specify new default elevation",
       "elevDefaultThickness": "Specify new default thickness",
       "ltscaleFactor": "Enter new linetype scale factor",
+      "osnapModes": "Enter list of object snap modes",
       "defaultObjectColor": "Enter default object color [Truecolor]",
       "trueColor": "Red, Green, Blue",
       "linetypeOption": "Enter an option [?/Set]",
@@ -807,6 +827,7 @@
       "nothingJoined": "0 objects joined, {count, plural, one {# object} other {# objects}} discarded from the operation",
       "currentViewDirection": "Current view direction: VIEWDIR={x},{y},{z}",
       "regeneratingModel": "Regenerating model.",
+      "currentOsnapModes": "Current osnap modes: {modes}",
       "currentLineweight": "Current lineweight: {value}",
       "pointingEdgeOn": "Pointing in edge-on UCS is prohibited.",
       "circleDoesNotExist": "Circle does not exist."

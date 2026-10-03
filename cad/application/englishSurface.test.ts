@@ -24,6 +24,7 @@ import {
   createInsert,
   createMText,
   type Entity,
+  withElevation,
 } from "../domain/entities"
 import { SnapType } from "./snapping/types"
 import { commandCatalog } from "./commandCatalog"
@@ -1297,9 +1298,12 @@ describe("the engine's English surface", () => {
       ],
       [
         SnapType.ApparentIntersection,
-        [lineOf(p(-100, 0), p(0, 0)), lineOf(p(200, -100), p(200, -50))],
+        [
+          lineOf(p(-100, 0), p(100, 0)),
+          withElevation(lineOf(p(20, -100), p(20, 100)), 30),
+        ],
         null,
-        p(200, 3),
+        p(22, 3),
       ],
       [
         SnapType.Perpendicular,
@@ -1309,7 +1313,6 @@ describe("the engine's English surface", () => {
       ],
       [SnapType.Tangent, [circleOf(p(0, 0), 50)], p(200, 0), p(33, 40)],
       [SnapType.Insertion, [textOf(p(0, 0), "NOTE")], null, p(1, 1)],
-      [SnapType.Extension, [lineOf(p(0, 0), p(100, 0))], null, p(150, 3)],
       [SnapType.Quadrant, [circleOf(p(0, 0), 100)], null, p(3, 103)],
       [SnapType.Nearest, [lineOf(p(0, 0), p(100, 0))], null, p(37, 4)],
     ]
@@ -1347,9 +1350,40 @@ describe("the engine's English surface", () => {
           .do("escape", (c) => c.escape())
       }
     )
+    walk(
+      "object snap extension",
+      createHarness({ entities: [lineOf(p(0, 0), p(100, 0))], snap: true }),
+      (s) => {
+        vi.useFakeTimers()
+        s.do("LINE", (c) => c.command("LINE"))
+          .do("override extension and pass over the end", (c) => {
+            c.runtime.setSnapOverride(SnapType.Extension)
+            c.moveTo(p(100, 0))
+            vi.advanceTimersByTime(300)
+            c.moveTo(p(100, 0))
+          })
+          .do("aim past it", (c) => c.moveTo(p(150, 3)))
+          .do("escape", (c) => c.escape())
+      }
+    )
+    walk("-OSNAP", createHarness(), (s) =>
+      s
+        .do("-OSNAP", (c) => c.command("-OSNAP"))
+        .do("a mode it does not know", (c) => c.type("END,XYZ").enter())
+        .do("a list", (c) => c.type("mid,per").enter())
+    )
+    walk("an object snap typed at a point prompt", createHarness(), (s) =>
+      s
+        .do("LINE", (c) => c.command("LINE"))
+        .do("MID", (c) => c.type("MID").enter())
+        .do("escape", (c) => c.escape())
+    )
     walk("polar", createHarness(), (s) =>
       s
-        .do("F10", (c) => c.press("F10"))
+        .do("F10", (c) => {
+          c.runtime.setPolarAngleStep(45)
+          c.press("F10")
+        })
         .do("LINE", (c) => c.command("LINE"))
         .do("first", (c) => c.click(at(0, 0)))
         .do("near 45", (c) => c.moveTo(at(70, 71)))

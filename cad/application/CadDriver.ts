@@ -1,5 +1,6 @@
 import { CadRuntime } from "./CadRuntime"
 import { TOOL_COMMANDS } from "./CommandLine"
+import { ConstraintType } from "./constraints/types"
 import { abbreviationOf } from "../i18n/keywords"
 import source from "../locales/en.json"
 import type { EngineLocale } from "../locales/types"
@@ -79,6 +80,11 @@ export interface CadDriverOptions {
    */
   readonly snap?: boolean
   /**
+   * Polar tracking (F10), which a fresh AutoCAD has on. Off by default for the
+   * same reason as {@link snap}: near an angle it would bend a click.
+   */
+  readonly polar?: boolean
+  /**
    * The UCS icon. Off by default so a frame holds only what the script drew;
    * turn it on for scripts that are *about* the icon.
    */
@@ -115,6 +121,10 @@ export class CadDriver {
     )
     this.runtime.setViewSize(options.width ?? 1000, options.height ?? 800)
     this.runtime.snapping.setActive(options.snap ?? false)
+    this.runtime.constraints.setEnabled(
+      ConstraintType.Polar,
+      options.polar ?? false
+    )
     this.runtime.setUcsIconShown(options.ucsIcon ?? false)
     if (options.entities?.length || options.blocks?.length) {
       this.runtime.document.load(options.entities ?? [], {

@@ -4,13 +4,7 @@ import { Ray } from "../../geometry/primitives"
 import { ucsRotation } from "../../domain/ucs"
 import { Viewport } from "../Viewport"
 import { Constraint, ConstraintContext, ConstraintType } from "./types"
-import {
-  PointAlongZ,
-  alongZ,
-  footOnScreen,
-  lineOnScreen,
-  withSnapHeight,
-} from "./zGuide"
+import { PointAlongZ, alongZ, footOnScreen, lineOnScreen } from "./zGuide"
 
 /**
  * Polar tracking, inspired by AutoCAD's POLAR (F10). It complements Ortho:
@@ -35,8 +29,8 @@ import {
 export class PolarConstraint implements Constraint {
   readonly type = ConstraintType.Polar
 
-  /** Angle increment in degrees. AutoCAD's default is 90; 45 is common. */
-  angleStep = 45
+  /** Angle increment in degrees: POLARANG, initially 90. */
+  angleStep = 90
 
   /** How close (in screen pixels) the cursor must be to engage an angle. */
   private readonly aperturePixels = 12
@@ -45,7 +39,7 @@ export class PolarConstraint implements Constraint {
 
   apply(context: ConstraintContext): Vec2 | PointAlongZ {
     const up = this.alongZ(context)
-    if (up) return withSnapHeight(up, context.snapPoint)
+    if (up) return up
     const dir = this.engagedDir(context)
     if (!dir) return context.point
     const anchor = context.anchor!

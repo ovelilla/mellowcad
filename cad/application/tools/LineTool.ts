@@ -8,7 +8,6 @@ import {
   isCoordinateExpression,
   parseCoordinate,
 } from "../input/coordinateInput"
-import { ConstructionGeometry } from "../snapping/types"
 import { ScenePrimitive } from "../../scene/types"
 import { THEME } from "../../scene/theme"
 import { KeyInput, PointerInput, Tool, ToolContext } from "./Tool"
@@ -256,16 +255,6 @@ export class LineTool implements Tool {
 
   getConstraintAnchor(): Vec2 | null {
     return this.state.phase === "drawing" ? this.state.start : null
-  }
-
-  /**
-   * Exposes the rubber-band segment (confirmed start → raw cursor) so the snap
-   * engine can compute intersections between the line being drawn and existing
-   * geometry, making the intersection osnap engage while drawing — like AutoCAD.
-   */
-  getSnapGeometry(cursor: Vec2): readonly ConstructionGeometry[] {
-    if (this.state.phase !== "drawing") return []
-    return [{ kind: "segment", a: this.state.start, b: cursor }]
   }
 
   buildOverlay(ctx: ToolContext): ScenePrimitive[] {

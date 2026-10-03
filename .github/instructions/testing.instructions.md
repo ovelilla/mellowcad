@@ -36,7 +36,8 @@ expect(h.latest()).toBeDefined()
   survives zoom. Default 1000×800 viewport → scale 1. Off the plan or in a tilted UCS, click a
   world `Vec3`; what is typed is still read in the UCS. `-VIEW` Orthographic Front is the quickest
   tilted UCS (`tiltedUcs.test.ts`'s `front()`).
-- Snapping is **off by default** for determinism; pass `{ snap: true }` to exercise it. So is the
+- Snapping is **off by default** for determinism; pass `{ snap: true }` to exercise it. Polar
+  tracking, which a fresh engine has on (AUTOSNAP 63), is off too: `{ polar: true }` or F10. So is the
   UCS icon, which would otherwise add its arms, arrowheads and letters to every scene a test
   counts; pass `{ ucsIcon: true }` for a test about the icon.
 - Chainable input: `command / click / rightClick / drag / moveTo / wheel / type / enter / escape /
@@ -67,8 +68,11 @@ moves or rewords text must leave both untouched; update them (`-u`) only when th
 to change, and read the diff.
 
 Known harness behaviours worth remembering: grips are hit before click-selection (a shift-click
-meant to toggle must avoid the entity's own grip positions), and the rubber band is construction
-geometry, so anchor-free snaps are best asserted on the _first_ point.
+meant to toggle must avoid the entity's own grip positions). A notable point is offered from
+anywhere over its object, so with snapping on a click _on_ a line lands on its nearer endpoint:
+aim off the object, or turn the competing snap off, when the raw point matters. Extension and
+OTRACK need a dwell to acquire: `vi.useFakeTimers()`, `moveTo` the point,
+`vi.advanceTimersByTime(300)`, `moveTo` it again.
 
 The harness parks the pointer wherever the last gesture left it, and SelectTool draws a **rollover
 preview** of whatever is under it. A test that counts scene primitives must therefore `moveTo` a

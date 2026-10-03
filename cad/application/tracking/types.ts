@@ -1,6 +1,7 @@
 import { Vec3 } from "../../geometry/Vec3"
 import { Ray } from "../../geometry/primitives"
 import { Ucs } from "../../domain/ucs"
+import { EntityId } from "../../domain/entities"
 import { SnapType } from "../snapping/types"
 
 /**
@@ -22,11 +23,19 @@ export interface TrackingPoint {
   readonly origin: Vec3
   /** Which object snap produced it (endpoint, midpoint, center, intersection). */
   readonly sourceType: SnapType
+  /** The objects it was acquired on: an endpoint's object is what Extension prolongs. */
+  readonly sourceIds: readonly EntityId[]
   /** Timestamp (ms) of acquisition, used for ordering / expiry. */
   readonly acquiredAt: number
 }
 
-export type TrackingGuideKind = "horizontal" | "vertical" | "polar" | "z"
+export type TrackingGuideKind =
+  | "horizontal"
+  | "vertical"
+  | "polar"
+  | "z"
+  /** A line's prolongation from an end acquired for Extension. */
+  | "extension"
 
 /** An infinite alignment line emanating from an acquired {@link TrackingPoint}. */
 export interface TrackingGuide {

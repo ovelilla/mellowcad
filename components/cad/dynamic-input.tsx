@@ -147,6 +147,15 @@ export function DynamicInput({
                     // free-text field is exempt: there a letter *is* content.
                     e.preventDefault()
                     engine.invokeToolOption(e.key)
+                  } else if (
+                    e.key === "Tab" &&
+                    !e.shiftKey &&
+                    field.value === "" &&
+                    engine.cycleSnap()
+                  ) {
+                    // While an object snap is shown and nothing is typed, Tab
+                    // cycles the snaps under the cursor, as in AutoCAD.
+                    e.preventDefault()
                   } else if (e.key === "Tab" && di.fields.length > 1) {
                     // Cycle between fields (e.g. Length <-> Angle), AutoCAD-style.
                     // Move DOM focus directly so the focus effect's "already on a

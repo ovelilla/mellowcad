@@ -68,6 +68,7 @@ VIEW ["V"] "Preset views"
 3DORBIT ["3DO","ORBIT"] "3D Orbit"
 NAVVCUBE ["CUBE"] "ViewCube"
 LTSCALE ["LTS"] "Linetype scale"
+-OSNAP ["-OS"] "Object snap modes"
 COLOR ["COL"] "Color"
 LINETYPE ["LT"] "Linetype"
 LWEIGHT ["LW"] "Lineweight"
@@ -172,6 +173,7 @@ view "Preset views" V
 orbit "3D Orbit" 3DO
 navvcube "ViewCube" CUBE
 ltscale "Linetype scale" LTS
+osnap "Object snap modes" -OS
 color "Color" COL
 linetype "Linetype" LT
 lweight "Lineweight" LW
@@ -462,11 +464,12 @@ lweight "Lineweight" LW
 > move along the guide
   asks: "Offset"
   dyn: "Offset"=""|60.00|mm*
-  canvas: -
+  canvas: "Extension"
 > escape
   prompt: Command:
   asks: -
   dyn: -
+  canvas: -
 
 ## PLINE
 > start
@@ -3461,7 +3464,6 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
   prompt: LINE:
   asks: ""
   dyn: "X,Y"=""||*
-  canvas: "Endpoint"
   command| LINE
 > override apparentIntersection
   canvas: "Apparent Intersection"
@@ -3549,29 +3551,6 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
   dyn: -
   canvas: -
 
-## object snap extension
-> start
-  prompt: Command:
-  asks: -
-  dyn: -
-  options: -
-  canvas: -
-  properties: -
-  cycling: -
-> LINE
-  prompt: LINE:
-  asks: ""
-  dyn: "X,Y"=""||*
-  canvas: "Endpoint"
-  command| LINE
-> override extension
-  canvas: "Extension"
-> escape
-  prompt: Command:
-  asks: -
-  dyn: -
-  canvas: -
-
 ## object snap quadrant
 > start
   prompt: Command:
@@ -3645,6 +3624,75 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
   asks: -
   dyn: -
   canvas: -
+
+## object snap extension
+> start
+  prompt: Command:
+  asks: -
+  dyn: -
+  options: -
+  canvas: -
+  properties: -
+  cycling: -
+> LINE
+  prompt: LINE:
+  asks: ""
+  dyn: "X,Y"=""||*
+  canvas: "Endpoint"
+  command| LINE
+> override extension and pass over the end
+  asks: "Offset"
+  dyn: "Offset"=""|0.00|mm*
+  canvas: -
+> aim past it
+  dyn: "Offset"=""|50.00|mm*
+  canvas: "Extension"
+> escape
+  prompt: Command:
+  asks: -
+  dyn: -
+  canvas: -
+
+## -OSNAP
+> start
+  prompt: Command:
+  asks: -
+  dyn: -
+  options: -
+  canvas: -
+  properties: -
+  cycling: -
+> -OSNAP
+  prompt: -OSNAP:
+  asks: "Enter list of object snap modes"
+  dyn: "Enter list of object snap modes"=""||*
+  command| -OSNAP
+  info| Current osnap modes: End,Cen,Int,Ext
+> a mode it does not know
+> a list
+  prompt: Command:
+  asks: -
+  dyn: -
+
+## an object snap typed at a point prompt
+> start
+  prompt: Command:
+  asks: -
+  dyn: -
+  options: -
+  canvas: -
+  properties: -
+  cycling: -
+> LINE
+  prompt: LINE:
+  asks: ""
+  dyn: "X,Y"=""||*
+  command| LINE
+> MID
+> escape
+  prompt: Command:
+  asks: -
+  dyn: -
 
 ## polar
 > start
