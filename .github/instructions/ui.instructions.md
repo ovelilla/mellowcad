@@ -327,7 +327,7 @@ pixels. 16 px icons go with 28 px controls (20 would go with 32).
   - **After acting in a palette, focus returns to the drawing** (`engine.focusSurface()`) — a
     click on a tab, a strip icon, a toggle, a pick in a drop-down — so the next key types a
     command. The arrow keys on the tabs keep focus there (`event.detail > 0` tells a click).
-- **The command line** (`command`, a bar of 36 px, as the status bar under it) is AutoCAD's as it starts: one prompt line. Above it,
+- **The command line** (`command`, a bar of 36 px, as the status bar under it) is AutoCAD's as it starts: one prompt line, `commandLine.prompt` as the engine words it (`LINE Specify first point:`); the history's `prompt` lines (a question and its answer) read as plainly as the `Command:` echoes, reports a step down. Above it,
   over the drawing, float the running command's temporary prompt lines (`commandLine.recent`,
   CLIPROMPTLINES 3; they fade once it ends — `animate-prompt-fade`, our time, AutoCAD documents
   none — and take no pointer), the whole history expanded up to 12 lines with F2 or the arrow at
@@ -395,7 +395,8 @@ pixels. 16 px icons go with 28 px controls (20 would go with 32).
 - The editor carries no product or meta copy (an About panel was removed): that belongs to the
   landing.
 - The dynamic-input box is `pointer-events-none` and keyboard-driven — never make it clickable.
-  A `paragraphs` field (MTEXT's editor) is a textarea: Enter stays a line break, Ctrl+Enter
+  Its first row is the dynamic prompt (`dynamicInput.prompt`, the question alone), on a row of its
+  own so the fields stay side by side; the fields follow, the option chips last. A `paragraphs` field (MTEXT's editor) is a textarea: Enter stays a line break, Ctrl+Enter
   commits, and it is never reselected when focus comes back, or the next key would wipe the text.
   Nor is a value field with text in it: keys typed on the drawing before the box had focus went
   into it (the runtime routes them), and the caret goes on after them. A value field takes Space

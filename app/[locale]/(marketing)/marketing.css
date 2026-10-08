@@ -321,17 +321,24 @@ html:lang(ar) body,
 /* The command line: `Command:` subtle, what was typed in full ink. */
 .cl-line {
   /* Lines stack in a bottom-aligned column; they scroll off, never squash. */
+  display: flex;
   flex-shrink: 0;
   height: 1.5em;
   line-height: 1.5em;
   white-space: nowrap;
   overflow: hidden;
+}
+
+/* A prompt too long for a phone gives way, never the answer typed after it. */
+.cl-line > :first-child {
+  min-width: 0;
+  overflow: hidden;
   text-overflow: ellipsis;
+  white-space: pre;
 }
 
 .cl-typed {
-  display: inline-block;
-  vertical-align: bottom;
+  flex-shrink: 0;
   overflow: hidden;
   white-space: pre;
 }

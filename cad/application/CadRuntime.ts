@@ -47,12 +47,17 @@ import { SelectionCycling } from "./SelectionCycling"
 import { SnapEngine } from "./snapping/SnapEngine"
 import { ConstructionGeometry, SnapResult, SnapType } from "./snapping/types"
 import { ParallelReferenceEngine } from "./snapping/ParallelReference"
-import { OSNAP_MODES, OSNAP_MODE_IDS } from "./snapping/osnapModes"
+import {
+  OSNAP_MENU_ANSWERS,
+  OSNAP_MODES,
+  OSNAP_MODE_IDS,
+} from "./snapping/osnapModes"
 import { ConstraintManager } from "./constraints/ConstraintManager"
 import { ConstraintType } from "./constraints/types"
 import { ObjectSnapTrackingEngine } from "./tracking/ObjectSnapTrackingEngine"
 import { TrackingGuide, TrackingResult } from "./tracking/types"
 import {
+  DynamicField,
   DynamicInputController,
   DynamicInputSession,
   isContentField,
@@ -287,6 +292,13 @@ export class CadRuntime extends Observable {
   private pointerShift = false
   /** Set while the box hands an unanswered Enter on to the drawing. */
   private enterFromBox = false
+  /** Set while an answer runs, so the prompt it answers is written once. */
+  private answeringPrompt = false
+  /**
+   * An object snap given at the prompt (`_endp of`), written before the
+   * answer it qualifies, on the same line.
+   */
+  private answerPrefix: string | null = null
 
   // Magnetic crosshair: where to draw it (screen), positioned on the resolved
   // point so it clings to geometry. `null` means the pointer is off-canvas.
@@ -657,6 +669,7 @@ export class CadRuntime extends Observable {
     // what it holds on deactivation.
     this.history.endGroup()
     this.resetTracking()
+    this.answerPrefix = null
     this.activeTool = next
     if (next.id !== "select") this.history.beginGroup()
     next.onActivate?.(this.toolContext)
@@ -752,8 +765,47 @@ export class CadRuntime extends Observable {
     }
     if (this.invokeToolOption(text)) return
     if (this.pointModifier(text)) return
-    if (this.answerPrompt(text)) return
+    if (this.answering(text, () => this.answerPrompt(text))) return
     this.runCommand(text)
+  }
+
+  /**
+   * Runs `run` as the answer to the running command's question and, once it
+   * says the answer was taken, writes that question to the history with
+   * `answer` after it — `Specify next point or [Undo]: 100`, a pick leaving it
+   * bare — ahead of whatever answering it reported. Only the outermost answer
+   * is written: a typed one reaches the box, and the box a keyword or Enter.
+   */
+  private answering(answer: string, run: () => boolean): boolean {
+    if (this.answeringPrompt) return run()
+    const { echo } = commandPrompt(
+      this.activeTool,
+      this.text,
+      offerOptions(this.activeTool, this.text),
+      this.document.getSettings()
+    )
+    const prefix = this.answerPrefix
+    const mark = this.commandLine.mark()
+    this.answeringPrompt = true
+    let took: boolean
+    try {
+      took = run()
+    } finally {
+      this.answeringPrompt = false
+    }
+    if (!took) return false
+    this.answerPrefix = null
+    if (echo !== null) {
+      this.commandLine.writeAt(
+        mark,
+        "prompt",
+        this.text.answered(
+          promptString(echo),
+          [prefix, answer].filter((part) => part).join(" ")
+        )
+      )
+    }
+    return true
   }
 
   /**
@@ -798,19 +850,23 @@ export class CadRuntime extends Observable {
    */
   private pointModifier(text: string): boolean {
     if (!(this.activeTool.wantsSnap?.() ?? true)) return false
-    if (this.angleOverride(text)) return true
     const mode = resolveKeyword(
       text,
       this.text.keywords("-OSNAP", OSNAP_MODE_IDS)
     )
+    // Not an answer: AutoCAD writes it on the line the pick that follows
+    // answers, "Specify first point: _endp of".
     if (mode !== null) {
-      this.setSnapOverride(OSNAP_MODES[mode])
+      this.setSnapOverride(OSNAP_MODES[mode], text.trim())
       return true
     }
-    if (this.text.resolveCommand(text.trim().toUpperCase()) === "FROM") {
-      return this.runCommand(text)
-    }
-    return false
+    return this.answering(
+      text.trim(),
+      () =>
+        this.angleOverride(text) ||
+        (this.text.resolveCommand(text.trim().toUpperCase()) === "FROM" &&
+          this.startFrom())
+    )
   }
 
   /**
@@ -1126,10 +1182,17 @@ export class CadRuntime extends Observable {
    * made in the override menu. Closes the menu and refreshes the snap at the
    * position it was opened so the forced marker shows immediately.
    */
-  setSnapOverride(override: SnapType | "none"): void {
+  setSnapOverride(
+    override: SnapType | "none",
+    typed: string = OSNAP_MENU_ANSWERS[override].macro
+  ): void {
     const at =
       this.snapOverrideMenu ?? this.shortcutMenu?.at ?? this.lastPointerScreen
     this.snapping.setOverride(override)
+    this.answerPrefix = this.text.snapOverride(
+      typed,
+      OSNAP_MENU_ANSWERS[override].to
+    )
     this.snapOverrideMenu = null
     this.shortcutMenu = null
     if (at) this.updateSnap(at)
@@ -1263,9 +1326,14 @@ export class CadRuntime extends Observable {
    * Starts AutoCAD's FROM modifier: the next pick sets a base point (normally
    * with an object snap) and the point after it is entered as an offset from
    * that base, e.g. `@20,0`. Only meaningful while a tool is asking for a point.
+   * It answers that prompt as the menu's macro does, `_from`.
    */
   startFrom(): boolean {
     if (!(this.activeTool.wantsSnap?.() ?? true)) return false
+    return this.answering("_from", () => this.beginFrom())
+  }
+
+  private beginFrom(): boolean {
     this.snapOverrideMenu = null
     this.shortcutMenu = null
     this.fromPending = true
@@ -1331,6 +1399,7 @@ export class CadRuntime extends Observable {
       this.toolContext
     )
     this.snapping.clearOverride()
+    this.answerPrefix = null
     if (!(this.activeTool.retainsTrackingAfterPointerDown?.() ?? false)) {
       this.resetTracking()
     }
@@ -1773,20 +1842,28 @@ export class CadRuntime extends Observable {
       (f) => f.id === this.dynamicInput.getActiveFieldId()
     )
     if (field && !isContentField(field.kind)) {
-      const keyword = resolveKeyword(
-        this.dynamicInput.getText(field.id),
-        this.offeredKeywords()
-      )
+      const typed = this.dynamicInput.getText(field.id)
+      const keyword = resolveKeyword(typed, this.offeredKeywords())
       if (keyword !== null) {
         this.dynamicInput.setText(field.id, "")
-        this.invokeOption(keyword)
+        this.answering(typed.trim(), () => this.invokeOption(keyword))
         return
       }
-      if (this.pointModifier(this.dynamicInput.getText(field.id))) {
+      if (this.pointModifier(typed)) {
         this.dynamicInput.setText(field.id, "")
         return
       }
     }
+    this.answering(this.dynamicInput.typedAnswer(), () =>
+      this.commitBox(session, field)
+    )
+  }
+
+  /** {@link commitDynamicInput}'s value, returning whether the prompt took it. */
+  private commitBox(
+    session: DynamicInputSession,
+    field: DynamicField | undefined
+  ): boolean {
     const values = this.dynamicInput.resolveValues()
     if (values) {
       session.commit(values, this.toolContext)
@@ -1802,14 +1879,16 @@ export class CadRuntime extends Observable {
         } finally {
           this.enterFromBox = false
         }
-      } else if (field && !isContentField(field.kind)) {
+        return true
+      }
+      if (field && !isContentField(field.kind)) {
         // A value the prompt cannot take is dropped and asked again, as
         // AutoCAD's prompt drops it, rather than left for the next keys to
         // run on from ("ndo" after U, then "_u" read as "ndo_u").
         this.dynamicInput.clearTexts()
         this.invalidateState()
       }
-      return
+      return false
     }
     // A tool that opened its next question in the commit may have filled it
     // (a default in the box), so only the session just answered is cleared.
@@ -1828,6 +1907,7 @@ export class CadRuntime extends Observable {
       this.replayPointerMove()
     }
     this.host.requestRender()
+    return true
   }
 
   /**
@@ -1850,11 +1930,11 @@ export class CadRuntime extends Observable {
     }
     this.resetTracking()
     this.snapping.clearOverride()
-    this.activeTool.onKeyDown?.(
-      { key: "Escape", shiftKey: false, ctrlKey: false, altKey: false },
-      this.toolContext
-    )
-    this.returnToNeutralTool()
+    this.answering(this.text.message("cancel"), () => {
+      this.activeTool.onKeyDown?.(plainKey("Escape"), this.toolContext)
+      this.returnToNeutralTool()
+      return true
+    })
     this.host.requestRender()
     this.host.focusSurface()
   }
@@ -1870,7 +1950,7 @@ export class CadRuntime extends Observable {
    */
   invokeToolOption(input: string): boolean {
     const id = resolveKeyword(input, this.offeredKeywords())
-    return id !== null && this.invokeOption(id)
+    return id !== null && this.answering(input.trim(), () => this.invokeOption(id))
   }
 
   /** The keywords the active tool offers, in both of their languages. */
@@ -2478,6 +2558,7 @@ export class CadRuntime extends Observable {
     if (this.fromPending) {
       this.beginFromOffset(this.buildPointerInput(e).point)
       this.snapping.clearOverride()
+      this.answerPrefix = null
       this.invalidateState()
       this.host.requestRender()
       return
@@ -2499,7 +2580,11 @@ export class CadRuntime extends Observable {
       return
     }
 
-    this.activeTool.onPointerDown?.(this.buildPointerInput(e), this.toolContext)
+    const input = this.buildPointerInput(e)
+    this.answering("", () => {
+      this.activeTool.onPointerDown?.(input, this.toolContext)
+      return true
+    })
     // A one-shot snap override applies to exactly this pick; consume it now that
     // the point has been placed so the next point uses the running snaps again.
     this.snapping.clearOverride()
@@ -2959,6 +3044,24 @@ export class CadRuntime extends Observable {
       this.snapping.clearOverride()
     }
 
+    if (e.key === "Enter" || e.key === "Escape") {
+      let consumed = false
+      this.answering(
+        e.key === "Escape" ? this.text.message("cancel") : "",
+        () => {
+          consumed = this.endKey(e)
+          return true
+        }
+      )
+      return consumed
+    }
+    this.activeTool.onKeyDown?.(e, this.toolContext)
+    this.host.requestRender()
+    return false
+  }
+
+  /** Enter or Escape on the drawing, returning whether the tool kept it. */
+  private endKey(e: KeyEventData): boolean {
     // Enter is a command confirmation: a tool may consume it to advance its own
     // flow (e.g. MOVE confirming the selection set) and keep running. Only when
     // unhandled does it accept the default and drop to neutral, ending a
@@ -2973,7 +3076,7 @@ export class CadRuntime extends Observable {
     // select — Enter accepts the default "Exit" at a repeat prompt (AutoCAD's
     // OFFSET and similar continuous commands). From a focused dynamic-input box
     // Enter arrives here only when the box has no default to give.
-    if (e.key === "Escape" || e.key === "Enter") this.returnToNeutralTool()
+    this.returnToNeutralTool()
     this.host.requestRender()
     return false
   }
@@ -3352,7 +3455,7 @@ export class CadRuntime extends Observable {
       .map((id) => this.document.get(id))
       .filter((entity): entity is Entity => entity !== undefined)
     const options = offerOptions(this.activeTool, this.text)
-    const prompt = commandPrompt(this.activeTool, this.text, options)
+    const prompt = commandPrompt(this.activeTool, this.text, options, settings)
     return {
       activeToolId: this.activeTool.id,
       tools: this.listTools().map((t) => ({
@@ -3417,7 +3520,12 @@ export class CadRuntime extends Observable {
       snapModeType: this.snapMode.getType(),
       snapSpacing: this.snapMode.getSpacing(),
       snapPolarDistance: this.snapMode.getPolarDistance(),
-      dynamicInput: buildDynamicInputUi(this.dynamicInput, settings, this.text),
+      dynamicInput: buildDynamicInputUi(
+        this.dynamicInput,
+        settings,
+        this.text,
+        prompt.dynamic
+      ),
       documentUnit: settings.unit,
       documentPrecision: settings.precision,
       ltScale: settings.ltScale,
@@ -3476,6 +3584,7 @@ export class CadRuntime extends Observable {
         prompt: promptString(prompt.segments),
         promptSegments: prompt.segments,
         command: prompt.command,
+        question: prompt.echo,
         idlePrompt: this.text.idlePrompt(),
         buffer: this.commandLine.getBuffer(),
         lines: this.commandLine.getLines(),

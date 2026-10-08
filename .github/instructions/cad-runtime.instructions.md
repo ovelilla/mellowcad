@@ -191,6 +191,20 @@ identity: the same document, viewport and objects.
 Inserting anything above step 4 steals keys from running commands; inserting between 4 and 6
 steals them from typing. Prefer exposing behaviour as a command option or a command.
 
+## Answering a prompt — the history writes it
+
+Every way input answers the running command's question goes through `answering(answer, run)`: a
+pick (`dispatchPointerDown`), the box (`commitDynamicInput`, its keyword and value), a keyword
+(`invokeToolOption`, the menus and Ctrl+Z included), the command line (`answerPrompt`), `<angle`,
+FROM (`startFrom`, `_from` from the menu), Enter and Escape (`keyDown`'s tail, `cancelDynamicInput`
+— `*Cancel*`). It reads the question **before** `run` (`commandPrompt(...).echo`) and, once `run`
+says the answer was taken, writes `question answer` at the mark it took, ahead of whatever answering
+it reported (`CommandLineController.mark` / `writeAt`). Only the outermost call writes: the command
+line's answer reaches the box, the box a keyword or the drawing's Enter. A new way to answer must go
+through it, or the history loses that step. An object snap is not an answer: `setSnapOverride`
+keeps it as `answerPrefix` (`_endp of`, typed `end of`), which the next answer writes on its line —
+a pick, a typed point or `*Cancel*` — and a pick FROM takes as its base, or a tool switch, drops.
+
 ## The pointer's buttons (`pointerDown` / `pointerUp`) — order is load-bearing
 
 1. A press while the shortcut menu is open only closes it, as its backdrop does on the page.
@@ -344,7 +358,9 @@ formatting (lengths, angles, property rows, dynamic-input labels) belongs here, 
 all its words come from `runtime.text` (`EngineText`, the locale laid over English). React keys
 rows, groups and chips by **id**, never by a label two translations could share. The prompt is
 also given in spans (`commandLine.promptSegments`, the keyword list set apart) with the running
-command's name (`commandLine.command`), so no host takes the text apart. `setLocale` swaps the
+command's name (`commandLine.command`), so no host takes the text apart. One `commandPrompt` builds
+the prompt line, the question as the history writes it (`commandLine.question`, which the demo
+transcripts read too) and the dynamic prompt (`dynamicInput.prompt`), so they never disagree. `setLocale` swaps the
 text and rebuilds the state; the scrollback stays as it was written.
 
 Coordinates the user reads are **UCS** coordinates: the status readout is `cursorUcs` (a `Vec3`,

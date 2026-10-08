@@ -20,7 +20,14 @@ import {
 import { ScenePrimitive } from "../../scene/types"
 import { THEME } from "../../scene/theme"
 import { entityScenePrimitive } from "../SceneBuilder"
-import { KeyInput, PointerInput, Tool, ToolContext } from "./Tool"
+import {
+  CommandOption,
+  CommandOptionOutcome,
+  KeyInput,
+  PointerInput,
+  Tool,
+  ToolContext,
+} from "./Tool"
 import {
   withCurrentProperties,
   withCurrentThickness,
@@ -55,20 +62,30 @@ type ArcToolState =
 
 /**
  * The arc tool — AutoCAD's ARC. One class parameterised by {@link ArcMode},
- * registered once per mode. It never mutates the document: the finished arc is
- * submitted as an {@link AddEntityCommand}, so it is undoable, and the command
- * ends the moment the arc is defined (ARC is single-shot in AutoCAD).
+ * registered once per mode; the start point's and the second point's
+ * `[Center]` switch the mode actually running. It never mutates the document:
+ * the finished arc is submitted as an {@link AddEntityCommand}, so it is
+ * undoable, and the command ends the moment the arc is defined (ARC is
+ * single-shot in AutoCAD).
  */
 export class ArcTool implements Tool {
   readonly id: string
   readonly shortcut?: string
 
   private readonly mode: ArcMode
+  /** The mode actually running: `[Center]` switches it. */
+  private active: ArcMode
   private state: ArcToolState = { phase: "p1" }
   private lastScreen: Vec2 | null = null
+  /**
+   * Ctrl held at the end point of a centre mode: the arc runs clockwise,
+   * "hold Ctrl to switch direction".
+   */
+  private reversed = false
 
   constructor(mode: ArcMode, id: string, shortcut?: string) {
     this.mode = mode
+    this.active = mode
     this.id = id
     this.shortcut = shortcut
   }
@@ -76,17 +93,65 @@ export class ArcTool implements Tool {
   onActivate(ctx: ToolContext): void {
     ctx.setCursor("crosshair")
     ctx.selection.clear()
+    this.active = this.mode
     this.state = { phase: "p1" }
     this.openPointInput(ctx, this.promptFor("p1"))
   }
 
   onDeactivate(ctx: ToolContext): void {
+    this.active = this.mode
     this.state = { phase: "p1" }
     ctx.dynamicInput.close()
   }
 
+  /**
+   * The end point's Angle and chord Length, and the second point's End, are
+   * not offered, so those questions go without the `or` that introduces them.
+   */
+  question(): PromptId {
+    switch (this.state.phase) {
+      case "p1":
+        return this.active === "centerStartEnd"
+          ? "specifyCenterPointOfArc"
+          : "specifyStartPointOfArcOr"
+      case "p2":
+        return this.active === "threePoint"
+          ? "specifySecondPointOfArcOr"
+          : this.active === "startCenterEnd"
+            ? "specifyCenterPointOfArc"
+            : "specifyStartPointOfArc"
+      case "p3":
+        return this.active === "threePoint"
+          ? "specifyEndPointOfArc"
+          : "specifyEndPointOfArcCtrl"
+    }
+  }
+
+  commandOptions(): readonly CommandOption[] {
+    const center =
+      (this.state.phase === "p1" && this.active !== "centerStartEnd") ||
+      (this.state.phase === "p2" && this.active === "threePoint")
+    return center ? [{ id: "Center" }] : []
+  }
+
+  /**
+   * `[Center]` at the start point asks for the centre first (Center, Start,
+   * End); after the start point, for the centre next (Start, Center, End).
+   */
+  invokeOption(id: string, ctx: ToolContext): CommandOptionOutcome {
+    if (id !== "Center" || this.commandOptions().length === 0) {
+      return "unhandled"
+    }
+    this.active =
+      this.state.phase === "p1" ? "centerStartEnd" : "startCenterEnd"
+    this.openPointInput(ctx, this.promptFor(this.state.phase))
+    ctx.requestRender()
+    return "continue"
+  }
+
   onPointerMove(input: PointerInput, ctx: ToolContext): void {
     this.lastScreen = input.screen
+    this.reversed = input.ctrlKey
     if (this.state.phase !== "p1") {
       this.state = { ...this.state, cursor: input.point }
     }
@@ -96,6 +161,7 @@ export class ArcTool implements Tool {
 
   onPointerDown(input: PointerInput, ctx: ToolContext): void {
     if (input.button !== 0) return
+    this.reversed = input.ctrlKey
     this.advanceWithPoint(input.point, ctx, input.screen)
   }
 
@@ -142,7 +208,7 @@ export class ArcTool implements Tool {
       case "p3":
         // The end point is measured from the arc's centre in the centre modes,
         // and from the mid point in the three-point mode.
-        return this.mode === "threePoint"
+        return this.active === "threePoint"
           ? this.state.p2
           : this.centerOf(this.state.p1, this.state.p2)
       default:
@@ -176,7 +242,7 @@ export class ArcTool implements Tool {
         const out: ScenePrimitive[] = []
         // In the centre modes a spoke from the centre to the cursor shows the
         // end angle being swept.
-        if (this.mode !== "threePoint") {
+        if (this.active !== "threePoint") {
           out.push({
             kind: "segment",
             a: viewport.worldToScreen(this.centerOf(p1, p2)),
@@ -195,7 +261,7 @@ export class ArcTool implements Tool {
   /** The centre point of a centre mode, in the plane of the first point. */
   private centerOf(p1: Vec3, p2: Vec3): Vec3 {
     // startCenterEnd: p2 is the centre; centerStartEnd: p1 is the centre.
-    return this.mode === "startCenterEnd" ? { ...p2, z: p1.z } : p1
+    return this.active === "startCenterEnd" ? { ...p2, z: p1.z } : p1
   }
 
   /**
@@ -212,13 +278,17 @@ export class ArcTool implements Tool {
     startAngle: number
     endAngle: number
   } | null {
-    if (this.mode === "threePoint") {
+    if (this.active === "threePoint") {
       return arcFrom3Points(p1, p2, p3)
     }
     // Centre modes: (centre, start, end) triplet resolved per mode.
-    const center = this.mode === "startCenterEnd" ? p2 : p1
-    const start = this.mode === "startCenterEnd" ? p1 : p2
-    return arcFromCenterStartEnd(center, start, p3)
+    const center = this.active === "startCenterEnd" ? p2 : p1
+    const start = this.active === "startCenterEnd" ? p1 : p2
+    const arc = arcFromCenterStartEnd(center, start, p3)
+    // Clockwise is counter-clockwise from the end back to the start.
+    return arc && this.reversed
+      ? { ...arc, startAngle: arc.endAngle, endAngle: arc.startAngle }
+      : arc
   }
 
   /**
@@ -233,7 +303,7 @@ export class ArcTool implements Tool {
     layerId: LayerId,
     id?: EntityId
   ): ArcEntity | null {
-    const plane = this.mode === "threePoint" ? planeThrough(p1, p2, p3) : null
+    const plane = this.active === "threePoint" ? planeThrough(p1, p2, p3) : null
     const solved = plane
       ? arcFrom3Points(plane.points[0], plane.points[1], plane.points[2])
       : this.solve(p1, p2, p3)
@@ -269,7 +339,7 @@ export class ArcTool implements Tool {
       centerStartEnd: ["centerPoint", "startPoint", "endPoint"],
     }
     const index = phase === "p1" ? 0 : phase === "p2" ? 1 : 2
-    return prompts[this.mode][index]
+    return prompts[this.active][index]
   }
 
   /**

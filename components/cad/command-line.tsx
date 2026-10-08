@@ -139,7 +139,7 @@ function Line({
       className={
         line.kind === "error"
           ? "text-destructive"
-          : line.kind === "command"
+          : line.kind === "command" || line.kind === "prompt"
             ? "text-foreground"
             : "text-muted-foreground"
       }

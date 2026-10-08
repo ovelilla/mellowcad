@@ -29,6 +29,7 @@ import {
   PointerInput,
   Tool,
   ToolContext,
+  ToolQuestion,
 } from "./Tool"
 import { withCurrentProperties } from "./currentProperties"
 
@@ -101,6 +102,23 @@ export class RectangleTool implements Tool {
       this.state = { phase: "first" }
       ctx.dynamicInput.close()
       ctx.requestRender()
+    }
+  }
+
+  /**
+   * The other corner's Area, Dimensions and Rotation are not offered, so its
+   * question goes without the `or` that introduces them.
+   */
+  question(): PromptId | ToolQuestion {
+    switch (this.state.phase) {
+      case "first":
+        return "specifyFirstCornerPointOr"
+      case "elevation":
+        return { id: "rectangleElevation", length: this.elevation }
+      case "thickness":
+        return { id: "rectangleThickness", length: this.thickness }
+      case "second":
+        return "specifyOtherCornerPoint"
     }
   }
 

@@ -160,6 +160,11 @@ export interface DemoPrompt {
   readonly fieldKind: DynamicFieldKind | null
   /** The keywords offered, as the command line lists them. */
   readonly options: readonly string[]
+  /**
+   * The question the command asks as the history writes it, `Specify next
+   * point or [Undo]:` — null when it names none.
+   */
+  readonly echo: readonly PromptSegment[] | null
 }
 
 export interface DemoStep {
@@ -340,6 +345,7 @@ function currentPrompt(driver: CadDriver): DemoPrompt {
         : driver.runtime.text.prompt(field.prompt)),
     fieldKind: field?.kind ?? null,
     options: state.commandOptions.map((option) => option.label),
+    echo: state.commandLine.question,
   }
 }
 
@@ -392,7 +398,9 @@ export function transcript(recording: DemoRecording): TranscriptLine[] {
         step: index,
       })
     }
+    // The prompts the engine wrote answered are the ones folded in above.
     for (const entry of step.output) {
+      if (entry.kind === "prompt") continue
       lines.push({
         kind: entry.kind,
         prompt: "",
@@ -406,16 +414,18 @@ export function transcript(recording: DemoRecording): TranscriptLine[] {
 }
 
 /**
- * `Radius [Diameter]:` — the field asked for, else the command, plus its
- * keywords, in spans. A point typed where the box offered a distance (LINE's
- * Length) is no answer to that field — the box turns into X,Y — so the
- * command's own prompt is the question it answered.
+ * `Specify next point or [Undo]:` — the question the command asks, as its
+ * history writes it — or, for a command that names none, `Radius [Diameter]:`:
+ * the field asked for, else the command, plus its keywords, in spans. A point
+ * typed where the box offered a distance is no answer to that field — the box
+ * turns into X,Y — so the command's own prompt is the question it answered.
  */
 export function promptSegments(
   prompt: DemoPrompt,
   answer = "",
   locale?: EngineLocale
 ): PromptSegment[] {
+  if (prompt.echo !== null) return [...prompt.echo]
   const text = engineText(locale)
   const pointForDistance =
     prompt.fieldKind !== "coordinate" && isCoordinateExpression(answer)

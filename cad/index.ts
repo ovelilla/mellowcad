@@ -210,6 +210,7 @@ export type {
   KeyInput,
   CommandOption,
   CommandOptionOutcome,
+  ToolQuestion,
 } from "./application/tools/Tool"
 export { SelectTool } from "./application/tools/SelectTool"
 export { LineTool } from "./application/tools/LineTool"

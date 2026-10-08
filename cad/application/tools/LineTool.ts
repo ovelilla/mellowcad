@@ -13,6 +13,7 @@ import { ScenePrimitive } from "../../scene/types"
 import { THEME } from "../../scene/theme"
 import { KeyInput, PointerInput, Tool, ToolContext } from "./Tool"
 import { CommandOption, CommandOptionOutcome } from "./Tool"
+import type { PromptId } from "../../locales/types"
 import { continuePoint } from "./lastDrawnPoint"
 import {
   withCurrentProperties,
@@ -218,6 +219,24 @@ export class LineTool implements Tool {
       this.state = { phase: "idle" }
       ctx.dynamicInput.close()
       ctx.requestRender()
+    }
+  }
+
+  /**
+   * A guide's typed offset still answers the first point (direct distance
+   * along it), and the deferred first point waits on the next one. WHY none
+   * for Continue's length: AutoCAD's wording of it is unverified.
+   */
+  question(): PromptId | null {
+    switch (this.state.phase) {
+      case "idle":
+      case "tracking":
+        return "specifyFirstPoint"
+      case "tangent":
+        return null
+      case "deferred":
+      case "drawing":
+        return "specifyNextPointOr"
     }
   }
 

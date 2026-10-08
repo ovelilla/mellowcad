@@ -12,6 +12,7 @@ import { Command } from "../commands/Command"
 import { ScenePrimitive } from "../../scene/types"
 import type { MessageValues } from "../../i18n/types"
 import type { FeedbackId, MessageId } from "../EngineText"
+import type { PromptId } from "../../locales/types"
 
 /** A normalised pointer event delivered to the active tool. */
 export interface PointerInput {
@@ -78,6 +79,16 @@ export interface CommandOption {
    * options after the shown ones: a shown keyword wins a shared abbreviation.
    */
   readonly hidden?: true
+}
+
+/**
+ * A question with the value a bare Enter keeps, which the prompt shows after
+ * its keywords as AutoCAD does: `Specify radius of circle or [Diameter]
+ * <10.0000>:`. The runtime formats it in the drawing's units.
+ */
+export interface ToolQuestion {
+  readonly id: PromptId
+  readonly length: number
 }
 
 /**
@@ -203,8 +214,9 @@ export interface ToolContext {
 
 /**
  * The engine's catalog as a tool sees it, bound to the running command's
- * keywords. Prompts are not here: a dynamic-input field names its prompt by id
- * and the runtime words it, so a language switch rewords an open prompt too.
+ * keywords. Prompts are not here: a dynamic-input field and {@link Tool.question}
+ * name theirs by id and the runtime words them, so a language switch rewords
+ * an open prompt too.
  */
 export interface ToolText {
   message(id: MessageId, values?: MessageValues): string
@@ -244,6 +256,15 @@ export interface Tool {
 
   /** The command the prompt names when one tool runs several (EATTEDIT); else `TOOL_COMMANDS`'. */
   runningCommand?(): string
+
+  /**
+   * What the command asks right now, by its id in `commands.prompts`
+   * (`Specify next point or`): the runtime words it after the command's name
+   * at the prompt, alone in the dynamic prompt, and writes it to the history
+   * with its answer once answered. Null between questions; a tool without it
+   * is prompted by its command's name and keywords alone.
+   */
+  question?(): PromptId | ToolQuestion | null
 
   /**
    * The keyword a bare Enter keeps, by id, shown after the list as AutoCAD

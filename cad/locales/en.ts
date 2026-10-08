@@ -950,15 +950,81 @@ export const en: EngineCatalog = {
       "idPoint": "Specify point",
       "viewPoint": "Specify a view point",
       "viewAngleInPlane": "Enter angle in XY plane from X axis",
-      "viewAngleFromPlane": "Enter angle from XY plane"
+      "viewAngleFromPlane": "Enter angle from XY plane",
+      "specifyFirstPoint": "Specify first point",
+      "specifyNextPointOr": "Specify next point or",
+      "specifyStartPoint": "Specify start point",
+      "specifyEndpointOfArcOr": "Specify endpoint of arc (hold Ctrl to switch direction) or",
+      "specifyCenterPointForCircleOr": "Specify center point for circle or",
+      "specifyRadiusOfCircleOr": "Specify radius of circle or",
+      "specifyRadiusOfCircle": "Specify radius of circle",
+      "specifyDiameterOfCircle": "Specify diameter of circle",
+      "specifyFirstEndPointOfDiameter": "Specify first end point of circle's diameter",
+      "specifySecondEndPointOfDiameter": "Specify second end point of circle's diameter",
+      "specifyFirstPointOnCircle": "Specify first point on circle",
+      "specifySecondPointOnCircle": "Specify second point on circle",
+      "specifyThirdPointOnCircle": "Specify third point on circle",
+      "specifyFirstTangentOfCircle": "Specify point on object for first tangent of circle",
+      "specifySecondTangentOfCircle": "Specify point on object for second tangent of circle",
+      "specifySecondPoint": "Specify second point",
+      "specifyFirstCornerPointOr": "Specify first corner point or",
+      "specifyOtherCornerPoint": "Specify other corner point",
+      "specifyStartPointOfArcOr": "Specify start point of arc or",
+      "specifySecondPointOfArcOr": "Specify second point of arc or",
+      "specifyEndPointOfArc": "Specify end point of arc",
+      "specifyCenterPointOfArc": "Specify center point of arc",
+      "specifyStartPointOfArc": "Specify start point of arc",
+      "specifyEndPointOfArcCtrl": "Specify end point of arc (hold Ctrl to switch direction)"
     },
     "format": {
       "idle": "Command",
+      "commandPrompt": [
+        [
+          "command"
+        ],
+        " ",
+        [
+          "question"
+        ]
+      ],
+      "answered": [
+        [
+          "prompt"
+        ],
+        " ",
+        [
+          "answer"
+        ]
+      ],
+      "snapOverride": [
+        [
+          "snap"
+        ],
+        [
+          "preposition",
+          1,
+          {
+            "to": " to",
+            "of": " of",
+            "other": ""
+          }
+        ]
+      ],
       "prompt": [
         [
           "head"
         ],
         ":"
+      ],
+      "promptWithValue": [
+        [
+          "head"
+        ],
+        " <",
+        [
+          "value"
+        ],
+        ">:"
       ],
       "promptWithKeywords": [
         [
@@ -1014,6 +1080,13 @@ export const en: EngineCatalog = {
           "name"
         ],
         "\"."
+      ],
+      "cancel": "*Cancel*",
+      "currentLineWidth": [
+        "Current line-width is ",
+        [
+          "width"
+        ]
       ],
       "erased": [
         [
@@ -1478,6 +1551,14 @@ export const en: EngineCatalog = {
         ],
         "] undo  [Enter] done"
       ]
+    },
+    "keywordLabels": {
+      "CIRCLE": {
+        "Ttr": "Ttr (tan tan radius)"
+      },
+      "CIRCLED": {
+        "Ttr": "Ttr (tan tan radius)"
+      }
     },
     "listing": {
       "hatchPattern": [

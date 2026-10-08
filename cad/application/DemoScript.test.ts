@@ -47,6 +47,7 @@ describe("recordDemo", () => {
       field: null,
       fieldKind: null,
       options: [],
+      echo: null,
     })
     expect(centre.prompt.command).toBe("CIRCLE")
     expect(centre.prompt.field).toBe("Center")
@@ -161,8 +162,12 @@ describe("transcript", () => {
     expect(lines.map(({ kind, prompt, text }) => [kind, prompt, text])).toEqual(
       [
         ["command", "", "CIRCLE"],
-        ["input", "Center [3P/2P/Ttr]:", "30,40"],
-        ["input", "Radius [Diameter]:", "12"],
+        [
+          "input",
+          "Specify center point for circle or [3P/2P/Ttr (tan tan radius)]:",
+          "30,40",
+        ],
+        ["input", "Specify radius of circle or [Diameter]:", "12"],
       ]
     )
   })
@@ -208,6 +213,7 @@ describe("promptText", () => {
     field: "Radius",
     fieldKind: "distance" as const,
     options: [],
+    echo: null,
   }
 
   it("puts the keywords after the question, as the command line does", () => {
@@ -217,11 +223,18 @@ describe("promptText", () => {
         field: null,
         fieldKind: null,
         options: ["Radius"],
+        echo: null,
       })
     ).toBe("FILLET [Radius]:")
     expect(promptText(prompt, "12")).toBe("Radius:")
     expect(
-      promptText({ command: null, field: null, fieldKind: null, options: [] })
+      promptText({
+        command: null,
+        field: null,
+        fieldKind: null,
+        options: [],
+        echo: null,
+      })
     ).toBe("Command:")
   })
 
@@ -235,6 +248,17 @@ describe("promptText", () => {
     expect(
       promptText({ ...prompt, field: "Center", fieldKind: "coordinate" }, "0,0")
     ).toBe("Center:")
+  })
+
+  it("is the question the command names, whatever answers it", () => {
+    const echo = [
+      { text: "Specify next point or ", keywords: false },
+      { text: "[Undo]", keywords: true },
+      { text: ":", keywords: false },
+    ]
+    expect(
+      promptText({ ...prompt, command: "LINE", field: "Length", echo }, "@1,0")
+    ).toBe("Specify next point or [Undo]:")
   })
 
   it("never prints an empty question", () => {

@@ -8,9 +8,12 @@ import { Observable } from "../shared/Observable"
  * a command name means is decided by the runtime, which registers a
  * {@link CommandDefinition} per command.
  */
-export type CommandLineEntryKind = "command" | "info" | "error"
+export type CommandLineEntryKind = "command" | "prompt" | "info" | "error"
 
-/** One line of the command-line scrollback. */
+/**
+ * One line of the command-line scrollback: a command started (`command`), a
+ * prompt with its answer (`prompt`), or what a command reported.
+ */
 export interface CommandLineEntry {
   readonly kind: CommandLineEntryKind
   readonly text: string
@@ -55,6 +58,8 @@ export class CommandLineController extends Observable {
   private history: string[] = []
   /** Position within {@link history} while walking it, or null when editing. */
   private recallIndex: number | null = null
+  /** Lines ever written, which {@link mark} counts by: the log drops its oldest. */
+  private written = 0
 
   getBuffer(): string {
     return this.buffer
@@ -81,7 +86,26 @@ export class CommandLineController extends Observable {
   }
 
   write(kind: CommandLineEntryKind, text: string): void {
-    this.lines = [...this.lines, { kind, text }].slice(-MAX_LINES)
+    this.writeAt(this.mark(), kind, text)
+  }
+
+  /** A place in the log, for {@link writeAt}. */
+  mark(): number {
+    return this.written
+  }
+
+  /**
+   * Writes a line where the log stood at `mark`, ahead of the lines written
+   * since: a prompt's answer goes before what answering it reported.
+   */
+  writeAt(mark: number, kind: CommandLineEntryKind, text: string): void {
+    const at = Math.max(0, this.lines.length - (this.written - mark))
+    this.lines = [
+      ...this.lines.slice(0, at),
+      { kind, text },
+      ...this.lines.slice(at),
+    ].slice(-MAX_LINES)
+    this.written++
     this.emit()
   }
 
@@ -135,7 +159,8 @@ export const CLIPROMPTLINES = 3
 
 /**
  * AutoCAD's temporary prompt history: the last lines of the most recent
- * command — its echo and what it reported — at most {@link CLIPROMPTLINES}.
+ * command — its echo, its answered prompts and what it reported — at most
+ * {@link CLIPROMPTLINES}.
  */
 export function temporaryPromptLines(
   lines: ReadonlyArray<CommandLineEntry>

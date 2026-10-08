@@ -28,6 +28,70 @@ import { circleOf, deg, lineOf, p } from "../../../test/builders"
  */
 
 describe("CIRCLE", () => {
+  it("asks each question of its modes, CIRCLERAD as the radius default", () => {
+    const cad = createHarness()
+
+    cad.command("CIRCLE").click(p(0, 0)).type("10").enter()
+    cad.command("CIRCLE").click(p(50, 0))
+    expect(cad.state().commandLine.prompt).toBe(
+      "CIRCLE Specify radius of circle or [Diameter] <10.00>:"
+    )
+    cad.option("Diameter")
+    expect(cad.state().commandLine.prompt).toBe(
+      "CIRCLE Specify diameter of circle <20.00>:"
+    )
+    cad.enter()
+    cad.command("CIRCLE").option("2P")
+    expect(cad.state().dynamicInput?.prompt).toBe(
+      "Specify first end point of circle's diameter:"
+    )
+    cad.click(p(0, 100))
+    expect(cad.state().dynamicInput?.prompt).toBe(
+      "Specify second end point of circle's diameter:"
+    )
+    cad.escape()
+
+    expect(cad.commandLog()).toEqual([
+      "CIRCLE",
+      "Specify center point for circle or [3P/2P/Ttr (tan tan radius)]:",
+      "Specify radius of circle or [Diameter]: 10",
+      "CIRCLE",
+      "Specify center point for circle or [3P/2P/Ttr (tan tan radius)]:",
+      "Specify radius of circle or [Diameter] <10.00>: D",
+      "Specify diameter of circle <20.00>:",
+      "CIRCLE",
+      "Specify center point for circle or [3P/2P/Ttr (tan tan radius)]: 2P",
+      "Specify first end point of circle's diameter:",
+      "Specify second end point of circle's diameter: *Cancel*",
+    ])
+    expect(
+      cad.entities().map((e) => (e.type === "circle" ? e.radius : 0))
+    ).toEqual([10, 10])
+  })
+
+  it("asks the Ttr objects, then the radius or its second point", () => {
+    const cad = createHarness({
+      entities: [lineOf(p(0, 0), p(100, 0)), lineOf(p(0, 0), p(0, 100))],
+    })
+
+    cad.command("CIRCLE").option("Ttr")
+    expect(cad.state().commandLine.prompt).toBe(
+      "CIRCLE Specify point on object for first tangent of circle:"
+    )
+    cad.click(p(50, 0))
+    expect(cad.state().commandLine.prompt).toBe(
+      "CIRCLE Specify point on object for second tangent of circle:"
+    )
+    cad.click(p(0, 50))
+    expect(cad.state().commandLine.prompt).toBe(
+      "CIRCLE Specify radius of circle:"
+    )
+    cad.click(p(0, 0))
+    expect(cad.state().commandLine.prompt).toBe(
+      "CIRCLE Specify second point:"
+    )
+  })
+
   it("draws from a centre and a radius pick", () => {
     const cad = createHarness()
 
@@ -105,7 +169,9 @@ describe("CIRCLE", () => {
     const cad = createHarness()
 
     cad.command("CIRCLE")
-    expect(cad.state().commandLine.prompt).toBe("CIRCLE [3P/2P/Ttr]:")
+    expect(cad.state().commandLine.prompt).toBe(
+      "CIRCLE Specify center point for circle or [3P/2P/Ttr (tan tan radius)]:"
+    )
     cad.click(p(0, 0))
     expect(cad.optionIds()).toEqual(["Diameter"])
     cad.option("Diameter")
@@ -231,6 +297,64 @@ describe("ARC", () => {
     expect(arc.center).toBeCloseToPoint(p(0, 0))
     expect(arc.startAngle).toBeCloseToAngle(0)
     expect(arc.endAngle).toBeCloseToAngle(deg(90))
+  })
+
+  it("asks for the centre first with Center at the start point", () => {
+    const cad = createHarness()
+
+    cad.command("ARC").option("Center")
+    expect(cad.state().commandLine.prompt).toBe(
+      "ARC Specify center point of arc:"
+    )
+    cad.click(p(0, 0))
+    expect(cad.state().commandLine.prompt).toBe(
+      "ARC Specify start point of arc:"
+    )
+    cad.click(p(100, 0))
+    expect(cad.state().commandLine.prompt).toBe(
+      "ARC Specify end point of arc (hold Ctrl to switch direction):"
+    )
+    cad.click(p(0, 100))
+
+    expect(cad.commandLog()).toEqual([
+      "ARC",
+      "Specify start point of arc or [Center]: C",
+      "Specify center point of arc:",
+      "Specify start point of arc:",
+      "Specify end point of arc (hold Ctrl to switch direction):",
+    ])
+    const arc = cad.only<ArcEntity>("arc")
+    expect(arc.center).toBeCloseToPoint(p(0, 0))
+    expect(arc.endAngle).toBeCloseToAngle(deg(90))
+  })
+
+  it("asks for the centre next with Center at the second point", () => {
+    const cad = createHarness()
+
+    cad.command("ARC").click(p(100, 0))
+    expect(cad.state().commandLine.prompt).toBe(
+      "ARC Specify second point of arc or [Center]:"
+    )
+    cad.option("Center").click(p(0, 0)).click(p(0, 100))
+
+    const arc = cad.only<ArcEntity>("arc")
+    expect(arc.center).toBeCloseToPoint(p(0, 0))
+    expect(arc.startAngle).toBeCloseToAngle(0)
+    expect(arc.endAngle).toBeCloseToAngle(deg(90))
+    cad.command("ARC").click(p(0, 0)).click(p(50, 50))
+    expect(cad.state().commandLine.prompt).toBe("ARC Specify end point of arc:")
+  })
+
+  it("runs clockwise while Ctrl is held at the end point", () => {
+    const cad = createHarness()
+
+    cad.command("ARCCSE").click(p(0, 0)).click(p(100, 0))
+    cad.click(p(0, 100), { ctrlKey: true })
+
+    // Clockwise from 0° round to 90°: counter-clockwise from 90° to 0°.
+    const arc = cad.only<ArcEntity>("arc")
+    expect(arc.startAngle).toBeCloseToAngle(deg(90))
+    expect(arc.endAngle).toBeCloseToAngle(0)
   })
 })
 
@@ -534,6 +658,28 @@ describe("SPLINE", () => {
 })
 
 describe("RECTANG", () => {
+  it("asks for the first corner, the option's value and the other corner", () => {
+    const cad = createHarness()
+
+    cad.command("RECTANG").option("Elevation")
+    expect(cad.state().commandLine.prompt).toBe(
+      "RECTANG Specify the elevation for rectangles <0.00>:"
+    )
+    cad.type("5").enter().click(p(0, 0))
+    expect(cad.state().commandLine.prompt).toBe(
+      "RECTANG Specify other corner point:"
+    )
+    cad.click(p(20, 10))
+
+    expect(cad.commandLog()).toEqual([
+      "RECTANG",
+      "Specify first corner point or [Elevation/Thickness]: E",
+      "Specify the elevation for rectangles <0.00>: 5",
+      "Specify first corner point or [Elevation/Thickness]:",
+      "Specify other corner point:",
+    ])
+  })
+
   it("draws a closed polyline from two corners", () => {
     const cad = createHarness()
 
@@ -635,6 +781,42 @@ describe("POLYGON", () => {
 })
 
 describe("PLINE", () => {
+  it("asks for the start point, reports the line-width, then the next points", () => {
+    const cad = createHarness()
+
+    cad.command("PLINE")
+    expect(cad.state().commandLine.prompt).toBe("PLINE Specify start point:")
+    cad.click(p(0, 0)).click(p(100, 0)).option("Arc")
+    expect(cad.state().dynamicInput?.prompt).toBe(
+      "Specify endpoint of arc (hold Ctrl to switch direction) or"
+    )
+    cad.click(p(100, 100)).enter()
+
+    expect(cad.commandLog()).toEqual([
+      "PLINE",
+      "Specify start point:",
+      "Current line-width is 0.00",
+      "Specify next point or [Arc]:",
+      "Specify next point or [Arc/Undo]: A",
+      "Specify endpoint of arc (hold Ctrl to switch direction) or [Line/Undo]:",
+      "Specify endpoint of arc (hold Ctrl to switch direction) or [Line/Close/Undo]:",
+    ])
+  })
+
+  it("leaves an arc the other way while Ctrl is held", () => {
+    const arcTo = (ctrlKey: boolean) => {
+      const cad = createHarness()
+      cad.command("PLINE").click(p(0, 0)).click(p(100, 0)).option("Arc")
+      cad.click(p(100, 100), { ctrlKey }).enter()
+      return cad.only<PolylineEntity>("polyline").bulges?.[1] ?? 0
+    }
+
+    // Tangent to the line, the arc turns left (counter-clockwise); started
+    // the other way, it turns right.
+    expect(arcTo(false)).toBeCloseTo(Math.tan(Math.PI / 4) * 1)
+    expect(arcTo(true)).toBeLessThan(0)
+  })
+
   it("accumulates the picks into a single connected entity", () => {
     const cad = createHarness()
 

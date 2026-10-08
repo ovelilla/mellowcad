@@ -2,6 +2,7 @@ import { describe, expect, it, onTestFinished, vi } from "vitest"
 import type { LineEntity } from "../../domain/entities"
 import { createHarness } from "../../../test/harness"
 import { arcOf, circleOf, deg, lineOf, p } from "../../../test/builders"
+import { SnapType } from "../snapping/types"
 
 /**
  * LINE end-to-end, driven exactly as a user drives it: start the command, move
@@ -444,6 +445,140 @@ describe("LINE", () => {
 
       expect(cad.only<LineEntity>("line").end).toBeCloseToPoint(p(100, 50))
       expect(cad.activeToolId()).toBe("line")
+    })
+  })
+
+  describe("the prompt and its history", () => {
+    it("names the command before each question, and the tooltip only asks", () => {
+      const cad = createHarness()
+      const asked = () => [
+        cad.state().commandLine.prompt,
+        cad.state().dynamicInput?.prompt,
+      ]
+
+      cad.command("LINE")
+      expect(asked()).toEqual(["LINE Specify first point:", "Specify first point:"])
+      cad.click(p(0, 0))
+      expect(asked()).toEqual([
+        "LINE Specify next point or [Undo]:",
+        "Specify next point or",
+      ])
+      cad.click(p(100, 0)).click(p(100, 100))
+      expect(asked()[0]).toBe("LINE Specify next point or [Close/Undo]:")
+    })
+
+    it("writes each prompt with its answer: bare for a pick or Enter", () => {
+      const cad = createHarness()
+
+      cad.command("LINE").click(p(0, 0)).moveTo(p(10, 0))
+      cad.type("100").enter()
+      cad.type("@0,50").enter()
+      cad.click(p(0, 50))
+      cad.option("Undo")
+      cad.press("Enter")
+
+      expect(cad.commandLog()).toEqual([
+        "LINE",
+        "Specify first point:",
+        "Specify next point or [Undo]: 100",
+        "Specify next point or [Undo]: @0,50",
+        "Specify next point or [Close/Undo]:",
+        "Specify next point or [Close/Undo]: U",
+        "Specify next point or [Close/Undo]:",
+      ])
+      expect(cad.state().commandLine.recent.map((line) => line.text)).toEqual([
+        "Specify next point or [Close/Undo]:",
+        "Specify next point or [Close/Undo]: U",
+        "Specify next point or [Close/Undo]:",
+      ])
+    })
+
+    it("writes *Cancel* after the prompt Escape leaves", () => {
+      const cad = createHarness()
+
+      cad.command("LINE").click(p(0, 0)).escape()
+      cad.command("LINE").press("Escape")
+
+      expect(cad.commandLog()).toEqual([
+        "LINE",
+        "Specify first point:",
+        "Specify next point or [Undo]: *Cancel*",
+        "LINE",
+        "Specify first point: *Cancel*",
+      ])
+    })
+
+    it("writes what was typed at the command line, before what it reported", () => {
+      const cad = createHarness()
+
+      cad.command("LINE").click(p(0, 0))
+      cad.runtime.setCommandLineText("<45")
+      cad.runtime.submitCommandLine()
+
+      expect(cad.commandLog().slice(2)).toEqual([
+        "Specify next point or [Undo]: <45",
+        "Angle Override: 45",
+      ])
+    })
+
+    it("names no question for Continue's length, whose wording is unverified", () => {
+      const cad = createHarness({ entities: [arcOf(p(0, 0), 50, 0, deg(90))] })
+
+      cad.command("LINE").enter()
+      expect(cad.state().commandLine.prompt).toBe("LINE:")
+      expect(cad.state().dynamicInput?.prompt).toBeNull()
+      cad.type("40").enter()
+
+      expect(cad.commandLog()).toEqual(["LINE", "Specify first point:"])
+      expect(cad.state().commandLine.prompt).toBe(
+        "LINE Specify next point or [Undo]:"
+      )
+    })
+
+    it("still asks for the first point while a guide offers an offset", () => {
+      vi.useFakeTimers()
+      onTestFinished(() => {
+        vi.useRealTimers()
+      })
+      const cad = createHarness({
+        entities: [lineOf(p(80, 60), p(120, 60))],
+        snap: true,
+      })
+
+      cad.command("LINE").moveTo(p(80, 60))
+      vi.advanceTimersByTime(500)
+      cad.moveTo(p(80.5, 20))
+      expect(cad.state().dynamicInput?.fields[0].label).toBe("Offset")
+      expect(cad.state().commandLine.prompt).toBe("LINE Specify first point:")
+      cad.type("25").enter()
+
+      expect(cad.commandLog().at(-1)).toBe("Specify first point: 25")
+    })
+
+    it("asks for the next point once a deferred tangent is picked", () => {
+      const cad = createHarness({ entities: [circleOf(p(0, 0), 20)] })
+
+      cad.command("LINE").type("tan").enter().click(p(-5, 19))
+
+      expect(cad.state().commandLine.prompt).toBe(
+        "LINE Specify next point or [Undo]:"
+      )
+      expect(cad.commandLog()).toEqual(["LINE", "Specify first point: tan to"])
+    })
+
+    it("writes an object snap on the line its pick answers", () => {
+      const cad = createHarness({ entities: [lineOf(p(0, 0), p(50, 0))] })
+
+      cad.command("LINE").type("end").enter().click(p(49, 1))
+      cad.runtime.setSnapOverride(SnapType.Midpoint)
+      cad.click(p(24, 1)).escape()
+
+      expect(cad.commandLog()).toEqual([
+        "LINE",
+        "Specify first point: end of",
+        "Specify next point or [Undo]: _mid of",
+        "Specify next point or [Undo]: *Cancel*",
+      ])
     })
   })
 

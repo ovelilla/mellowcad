@@ -177,6 +177,11 @@ export interface DynamicInputFieldUi {
 export interface DynamicInputUi {
   /** Screen (CSS-pixel) position to anchor the floating input near. */
   readonly screen: Vec2
+  /**
+   * The dynamic prompt: the running command's question without its name,
+   * `Specify first point:`; null when it names none.
+   */
+  readonly prompt: string | null
   readonly fields: ReadonlyArray<DynamicInputFieldUi>
 }
 
@@ -252,7 +257,11 @@ export interface CommandLineUi {
    * shown above the one-line prompt (CLIPROMPTLINES, 3).
    */
   readonly recent: ReadonlyArray<CommandLineEntry>
-  /** Text before the input, e.g. `Command:` or `PLINE [Close/Undo]:`. */
+  /**
+   * Text before the input: `Command:`, the running command's name and its
+   * question, `LINE Specify next point or [Undo]:`, or its name alone when
+   * it names no question, `PLINE [Close/Undo]:`.
+   */
   readonly prompt: string
   /**
    * The same prompt in spans, the keyword list set apart, so a host can style
@@ -261,6 +270,11 @@ export interface CommandLineUi {
   readonly promptSegments: ReadonlyArray<PromptSegment>
   /** The running command's name as the prompt shows it; null at rest. */
   readonly command: string | null
+  /**
+   * The question alone, as the history writes it once answered —
+   * `Specify next point or [Undo]:` — in spans; null when there is none.
+   */
+  readonly question: ReadonlyArray<PromptSegment> | null
   /** The neutral prompt, `Command:`, which also heads each echoed command. */
   readonly idlePrompt: string
   /** What the user has typed so far, whether on the canvas or in the box. */
@@ -618,7 +632,8 @@ export function buildSelectionCandidates(
 export function buildDynamicInputUi(
   controller: DynamicInputController,
   settings: DocumentSettings,
-  text: EngineText
+  text: EngineText,
+  prompt: string | null = null
 ): DynamicInputUi | null {
   const session = controller.getSession()
   const screen = controller.getScreen()
@@ -662,6 +677,7 @@ export function buildDynamicInputUi(
   if (coordinate) {
     return {
       screen,
+      prompt,
       fields: [
         {
           ...coordinate,
@@ -678,7 +694,7 @@ export function buildDynamicInputUi(
     }
   }
 
-  return { screen, fields }
+  return { screen, prompt, fields }
 }
 
 function formatFieldValue(

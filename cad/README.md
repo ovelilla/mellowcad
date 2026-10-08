@@ -84,6 +84,8 @@ interface EngineLocale {
 - `keywords` gives each command's keywords by their global id, the abbreviation in capitals
   anywhere in the word (`desHacer` → `H`), as AutoCAD's `initget` does. It is typed and
   confirmed with Enter or Space, never run on a letter alone.
+- `keywordLabels` gives a keyword the gloss AutoCAD lists it with (`Ttr (tan tan radius)`),
+  shown in the prompt's list and on its option; the word typed stays the keyword.
 - A linetype's or hatch pattern's name is drawing data and may be left out in every language.
 
 ### Messages are compiled by the host

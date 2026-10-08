@@ -188,6 +188,24 @@ export class DynamicInputController extends Observable {
     this.emit()
   }
 
+  /**
+   * What is typed, as the history writes it after the prompt it answers. A
+   * length and an angle both typed read as the box would take them in one,
+   * `100<45` — WHY: what AutoCAD writes for them is unverified.
+   */
+  typedAnswer(): string {
+    const typed = (this.session?.fields ?? []).filter(
+      (field) => this.getText(field.id).trim() !== ""
+    )
+    const polar =
+      typed.length === 2 &&
+      typed[0].kind !== "angle" &&
+      typed[1].kind === "angle"
+    return typed
+      .map((field) => this.getText(field.id).trim())
+      .join(polar ? "<" : ", ")
+  }
+
   /** Whether anything is typed in any field: otherwise Enter is the prompt's. */
   hasTypedText(): boolean {
     for (const fieldState of this.fieldStates.values()) {

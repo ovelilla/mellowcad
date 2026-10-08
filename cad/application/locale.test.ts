@@ -28,7 +28,10 @@ const partial: EngineLocale = {
       // Two keywords that share their first letter: neither runs on one key.
       ZOOM: { Scale: "Escala", Extents: "EXtensión" },
     },
-    prompts: { length: "Longitud" },
+    prompts: {
+      length: "Longitud",
+      specifyNextPointOr: compile("Precise punto siguiente o"),
+    },
     messages: {
       erased: compile(
         "{count, plural, one {# objeto borrado.} other {# objetos borrados.}}"
@@ -90,7 +93,11 @@ describe("a language laid over English", () => {
     cad.command("LINE")
     expect(cad.commandLog()).toEqual(['Unknown command "LINE".'])
     cad.command("_LINE").escape().command("linea")
-    expect(cad.commandLog().slice(1)).toEqual(["LINEA", "LINEA"])
+    expect(cad.commandLog().slice(1)).toEqual([
+      "LINEA",
+      "Specify first point: *Cancel*",
+      "LINEA",
+    ])
     expect(cad.state().commandLine.command).toBe("LINEA")
   })
 
@@ -98,9 +105,11 @@ describe("a language laid over English", () => {
     const cad = createHarness({ locale: partial })
     cad.command("L").click(p(0, 0)).click(p(100, 0)).click(p(100, 100))
     const state = cad.state()
-    expect(state.commandLine.prompt).toBe("LINEA [Cerrar/desHacer]:")
+    expect(state.commandLine.prompt).toBe(
+      "LINEA Precise punto siguiente o [Cerrar/desHacer]:"
+    )
     expect(state.commandLine.promptSegments).toEqual([
-      { text: "LINEA ", keywords: false },
+      { text: "LINEA Precise punto siguiente o ", keywords: false },
       { text: "[Cerrar/desHacer]", keywords: true },
       { text: ":", keywords: false },
     ])
@@ -161,9 +170,15 @@ describe("a language laid over English", () => {
     const cad = createHarness()
     cad.command("LINE").click(p(0, 0)).click(p(100, 0))
     cad.runtime.setLocale(partial)
-    expect(cad.state().commandLine.prompt).toBe("LINEA [desHacer]:")
+    expect(cad.state().commandLine.prompt).toBe(
+      "LINEA Precise punto siguiente o [desHacer]:"
+    )
     expect(cad.state().dynamicInput?.fields[0].label).toBe("Longitud")
-    expect(cad.commandLog()).toEqual(["LINE"])
+    expect(cad.commandLog()).toEqual([
+      "LINE",
+      "Specify first point:",
+      "Specify next point or [Undo]:",
+    ])
   })
 
   it("lists its command names and describes in it", () => {
@@ -184,7 +199,7 @@ describe("a language laid over English", () => {
     const lines = transcript(recording)
     expect(lines.at(-1)).toMatchObject({
       kind: "input",
-      prompt: "Longitud [desHacer]:",
+      prompt: "Precise punto siguiente o [desHacer]:",
       text: "H",
     })
   })
@@ -244,10 +259,18 @@ describe("Spanish AutoCAD's command language", () => {
   it("draws with LINEA, L and _LINE, and undoes a segment with H", () => {
     const cad = createHarness({ locale: es })
     cad.command("LINEA").escape().command("_LINE").escape().command("l")
-    expect(cad.commandLog()).toEqual(["LINEA", "LINEA", "LINEA"])
+    expect(cad.commandLog()).toEqual([
+      "LINEA",
+      "Precise primer punto: *Cancelar*",
+      "LINEA",
+      "Precise primer punto: *Cancelar*",
+      "LINEA",
+    ])
     cad.click(p(0, 0)).click(p(100, 0)).click(p(100, 100))
     const state = cad.state()
-    expect(state.commandLine.prompt).toBe("LINEA [Cerrar/desHacer]:")
+    expect(state.commandLine.prompt).toBe(
+      "LINEA Precise punto siguiente o [Cerrar/desHacer]:"
+    )
     expect(state.commandOptions.map((option) => option.abbreviation)).toEqual([
       "C",
       "H",
@@ -291,12 +314,23 @@ describe("Spanish AutoCAD's command language", () => {
   it("answers CIRCULO's 3P typed whole and Diámetro by its D", () => {
     const cad = createHarness({ locale: es })
     cad.command("CIRCULO")
-    expect(cad.state().commandLine.prompt).toBe("CIRCULO [3P/2P/Ttr]:")
+    expect(cad.state().commandLine.prompt).toBe(
+      "CIRCULO Precise punto central para círculo o [3P/2P/Ttr (Tangente tangente radio)]:"
+    )
     cad.type("3p").enter()
+    expect(cad.state().dynamicInput?.prompt).toBe(
+      "Precise primer punto del círculo:"
+    )
     cad.click(p(100, 0)).click(p(0, 100)).click(p(-100, 0))
     cad.command("CIRCULO").click(p(300, 0))
-    expect(cad.state().commandLine.prompt).toBe("CIRCULO [Diámetro]:")
-    cad.type("D").enter().type("200").enter()
+    expect(cad.state().commandLine.prompt).toBe(
+      "CIRCULO Precise radio de círculo o [Diámetro] <100.00>:"
+    )
+    cad.type("D").enter()
+    expect(cad.state().commandLine.prompt).toBe(
+      "CIRCULO Precise diámetro de círculo <200.00>:"
+    )
+    cad.type("200").enter()
 
     const radii = cad
       .entities()
@@ -416,12 +450,20 @@ describe("Spanish AutoCAD's command language", () => {
     })
     cad.command("RECTANG")
     expect(cad.state().commandLine.prompt).toBe(
-      "RECTANG [Elevación/Alt-objeto]:"
+      "RECTANG Precise primer punto de esquina o [Elevación/Alt-objeto]:"
     )
     expect(cad.optionAbbreviations()).toEqual(["E", "A"])
     cad.press("a")
     cad.press("Enter")
+    expect(cad.state().commandLine.prompt).toBe(
+      "RECTANG Precise la altura de objeto de los rectángulos <0.00>:"
+    )
     cad.type("3").enter().escape()
+    expect(cad.commandLog().slice(-3)).toEqual([
+      "Precise primer punto de esquina o [Elevación/Alt-objeto]: a",
+      "Precise la altura de objeto de los rectángulos <0.00>: 3",
+      "Precise primer punto de esquina o [Elevación/Alt-objeto]: *Cancelar*",
+    ])
     cad.command("RECTANG")
     expect(cad.commandLog().at(-1)).toBe(
       "Modos de rectángulo actuales: Alt-objeto=3.00"
@@ -512,9 +554,15 @@ describe("Arabic: its own interface, the global command language", () => {
   it("draws with LINE and L, and asks in English", () => {
     const cad = createHarness({ locale: ar })
     cad.command("LINE").escape().command("l")
-    expect(cad.commandLog()).toEqual(["LINE", "LINE"])
+    expect(cad.commandLog()).toEqual([
+      "LINE",
+      "Specify first point: *Cancel*",
+      "LINE",
+    ])
     cad.click(p(0, 0)).click(p(100, 0)).click(p(100, 100))
-    expect(cad.state().commandLine.prompt).toBe("LINE [Close/Undo]:")
+    expect(cad.state().commandLine.prompt).toBe(
+      "LINE Specify next point or [Close/Undo]:"
+    )
     expect(cad.scene().lang).toBe("en")
     expect(cad.state().commandLine.lang).toBe("en")
   })

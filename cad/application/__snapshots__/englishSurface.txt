@@ -182,6 +182,7 @@ lweight "Lineweight" LW
 > start
   prompt: Command:
   asks: -
+  tip: -
   dyn: -
   options: -
   canvas: -
@@ -190,14 +191,17 @@ lweight "Lineweight" LW
 > type FOO
   error| Unknown command "FOO".
 > lowercase l runs LINE
-  prompt: LINE:
+  prompt: LINE Specify first point:
   asks: ""
+  tip: Specify first point:
   dyn: "X,Y"=""||*
   command| LINE
 > escape
   prompt: Command:
   asks: -
+  tip: -
   dyn: -
+  prompt| Specify first point: *Cancel*
 > ERASE with nothing selected
   prompt: ERASE:
   command| ERASE
@@ -249,6 +253,7 @@ lweight "Lineweight" LW
 > start
   prompt: Command:
   asks: -
+  tip: -
   dyn: -
   options: -
   canvas: -
@@ -262,6 +267,7 @@ lweight "Lineweight" LW
 > start
   prompt: Command:
   asks: -
+  tip: -
   dyn: -
   options: -
   canvas: -
@@ -275,6 +281,7 @@ lweight "Lineweight" LW
 > start
   prompt: Command:
   asks: -
+  tip: -
   dyn: -
   options: -
   canvas: -
@@ -288,6 +295,7 @@ lweight "Lineweight" LW
 > start
   prompt: Command:
   asks: -
+  tip: -
   dyn: -
   options: -
   canvas: -
@@ -301,6 +309,7 @@ lweight "Lineweight" LW
 > start
   prompt: Command:
   asks: -
+  tip: -
   dyn: -
   options: -
   canvas: -
@@ -314,6 +323,7 @@ lweight "Lineweight" LW
 > start
   prompt: Command:
   asks: -
+  tip: -
   dyn: -
   options: -
   canvas: -
@@ -327,6 +337,7 @@ lweight "Lineweight" LW
 > start
   prompt: Command:
   asks: -
+  tip: -
   dyn: -
   options: -
   canvas: -
@@ -340,6 +351,7 @@ lweight "Lineweight" LW
 > start
   prompt: Command:
   asks: -
+  tip: -
   dyn: -
   options: -
   canvas: -
@@ -353,6 +365,7 @@ lweight "Lineweight" LW
 > start
   prompt: Command:
   asks: -
+  tip: -
   dyn: -
   options: -
   canvas: -
@@ -366,6 +379,7 @@ lweight "Lineweight" LW
 > start
   prompt: Command:
   asks: -
+  tip: -
   dyn: -
   options: -
   canvas: -
@@ -378,6 +392,7 @@ lweight "Lineweight" LW
 > start
   prompt: PASTE:
   asks: "Specify insertion point"
+  tip: -
   dyn: "X,Y"=""||*
   options: -
   canvas: -
@@ -394,72 +409,90 @@ lweight "Lineweight" LW
 > start
   prompt: Command:
   asks: -
+  tip: -
   dyn: -
   options: -
   canvas: -
   properties: -
   cycling: -
 > LINE
-  prompt: LINE:
+  prompt: LINE Specify first point:
   asks: ""
+  tip: Specify first point:
   dyn: "X,Y"=""||*
   command| LINE
 > type first point
   dyn: "X,Y"="0,0"||*
 > enter
-  prompt: LINE [Undo]:
+  prompt: LINE Specify next point or [Undo]:
   asks: "Length" "Angle"
+  tip: Specify next point or
   dyn: "Length"=""|0.00|mm* "Angle"=""||°
   options: [U] Undo
+  prompt| Specify first point: 0,0
 > move
   dyn: "Length"=""|50.00|mm* "Angle"=""|0.00|°
 > type length
   dyn: "Length"="100"|50.00|mm* "Angle"=""|0.00|°
 > enter
   dyn: "Length"=""|50.00|mm* "Angle"=""|180.00|°
+  prompt| Specify next point or [Undo]: 100
 > polar coordinate
   dyn: "Dist<Ang"="100<90"||*
 > enter
-  prompt: LINE [Close/Undo]:
+  prompt: LINE Specify next point or [Close/Undo]:
   dyn: "Length"=""|111.80|mm* "Angle"=""|116.57|°
   options: [C] Close, [U] Undo
+  prompt| Specify next point or [Undo]: 100<90
 > click
   dyn: "Length"=""|0.00|mm* "Angle"=""||°
+  prompt| Specify next point or [Close/Undo]:
 > U
+  prompt| Specify next point or [Close/Undo]: U
 > click
+  prompt| Specify next point or [Close/Undo]:
 > C
   prompt: Command:
   asks: -
+  tip: -
   dyn: -
   options: -
+  prompt| Specify next point or [Close/Undo]: C
 > LINE again
-  prompt: LINE:
+  prompt: LINE Specify first point:
   asks: ""
+  tip: Specify first point:
   dyn: "X,Y"=""||*
   command| LINE
 > Enter continues
-  prompt: LINE [Undo]:
+  prompt: LINE Specify next point or [Undo]:
   asks: "Length" "Angle"
+  tip: Specify next point or
   dyn: "Length"=""|100.00|mm* "Angle"=""|90.00|°
   options: [U] Undo
+  prompt| Specify first point:
 > escape
   prompt: Command:
   asks: -
+  tip: -
   dyn: -
   options: -
+  prompt| Specify next point or [Undo]: *Cancel*
 
 ## LINE offset from a tracked point
 > start
   prompt: Command:
   asks: -
+  tip: -
   dyn: -
   options: -
   canvas: -
   properties: -
   cycling: -
 > LINE
-  prompt: LINE:
+  prompt: LINE Specify first point:
   asks: ""
+  tip: Specify first point:
   dyn: "X,Y"=""||*
   canvas: "Endpoint"
   command| LINE
@@ -471,68 +504,89 @@ lweight "Lineweight" LW
 > escape
   prompt: Command:
   asks: -
+  tip: -
   dyn: -
   canvas: -
+  prompt| Specify first point: *Cancel*
 
 ## PLINE
 > start
   prompt: Command:
   asks: -
+  tip: -
   dyn: -
   options: -
   canvas: -
   properties: -
   cycling: -
 > PLINE
-  prompt: PLINE:
+  prompt: PLINE Specify start point:
   asks: ""
+  tip: Specify start point:
   dyn: "X,Y"=""||*
   command| PLINE
 > first
-  prompt: PLINE [Arc]:
+  prompt: PLINE Specify next point or [Arc]:
   asks: "Length" "Angle"
+  tip: Specify next point or
   dyn: "Length"=""|0.00|mm* "Angle"=""||°
   options: [A] Arc
+  prompt| Specify start point:
+  info| Current line-width is 0.00
 > second
-  prompt: PLINE [Arc/Undo]:
+  prompt: PLINE Specify next point or [Arc/Undo]:
   options: [A] Arc, [U] Undo
+  prompt| Specify next point or [Arc]:
 > A
-  prompt: PLINE [Line/Undo]:
+  prompt: PLINE Specify endpoint of arc (hold Ctrl to switch direction) or [Line/Undo]:
+  tip: Specify endpoint of arc (hold Ctrl to switch direction) or
   options: [L] Line, [U] Undo
+  prompt| Specify next point or [Arc/Undo]: A
 > arc
-  prompt: PLINE [Line/Close/Undo]:
+  prompt: PLINE Specify endpoint of arc (hold Ctrl to switch direction) or [Line/Close/Undo]:
   options: [L] Line, [C] Close, [U] Undo
+  prompt| Specify endpoint of arc (hold Ctrl to switch direction) or [Line/Undo]:
 > L
-  prompt: PLINE [Arc/Close/Undo]:
+  prompt: PLINE Specify next point or [Arc/Close/Undo]:
+  tip: Specify next point or
   options: [A] Arc, [C] Close, [U] Undo
+  prompt| Specify endpoint of arc (hold Ctrl to switch direction) or [Line/Close/Undo]: L
 > third
+  prompt| Specify next point or [Arc/Close/Undo]:
 > U
+  prompt| Specify next point or [Arc/Close/Undo]: U
 > C
   prompt: Command:
   asks: -
+  tip: -
   dyn: -
   options: -
+  prompt| Specify next point or [Arc/Close/Undo]: C
 
 ## CIRCLE
 > start
   prompt: Command:
   asks: -
+  tip: -
   dyn: -
   options: -
   canvas: -
   properties: -
   cycling: -
 > CIRCLE
-  prompt: CIRCLE [3P/2P/Ttr]:
+  prompt: CIRCLE Specify center point for circle or [3P/2P/Ttr (tan tan radius)]:
   asks: "Center"
+  tip: Specify center point for circle or
   dyn: "X,Y"=""||*
-  options: [3P] 3P, [2P] 2P, [T] Ttr
+  options: [3P] 3P, [2P] 2P, [T] Ttr (tan tan radius)
   command| CIRCLE
 > centre
-  prompt: CIRCLE [Diameter]:
+  prompt: CIRCLE Specify radius of circle or [Diameter]:
   asks: "Radius"
+  tip: Specify radius of circle or
   dyn: "Radius"=""|0.00|mm*
   options: [D] Diameter
+  prompt| Specify center point for circle or [3P/2P/Ttr (tan tan radius)]:
 > move
   dyn: "Radius"=""|30.00|mm*
 > radius
@@ -540,101 +594,156 @@ lweight "Lineweight" LW
 > enter
   prompt: Command:
   asks: -
+  tip: -
   dyn: -
   options: -
+  prompt| Specify radius of circle or [Diameter]: 50
 > CIRCLED
-  prompt: CIRCLED [3P/2P/Ttr]:
+  prompt: CIRCLED Specify center point for circle or [3P/2P/Ttr (tan tan radius)]:
   asks: "Center"
+  tip: Specify center point for circle or
   dyn: "X,Y"=""||*
-  options: [3P] 3P, [2P] 2P, [T] Ttr
+  options: [3P] 3P, [2P] 2P, [T] Ttr (tan tan radius)
   command| CIRCLED
 > centre
-  prompt: CIRCLED:
+  prompt: CIRCLED Specify diameter of circle <100.00>:
   asks: "Diameter"
+  tip: Specify diameter of circle:
   dyn: "Diameter"=""|0.00|mm*
   options: -
+  prompt| Specify center point for circle or [3P/2P/Ttr (tan tan radius)]:
 > diameter
   prompt: Command:
   asks: -
+  tip: -
   dyn: -
+  prompt| Specify diameter of circle <100.00>:
 > CIRCLE2P
-  prompt: CIRCLE2P:
+  prompt: CIRCLE2P Specify first end point of circle's diameter:
   asks: "First point"
+  tip: Specify first end point of circle's diameter:
   dyn: "X,Y"=""||*
   command| CIRCLE2P
 > first
+  prompt: CIRCLE2P Specify second end point of circle's diameter:
   asks: "Second point"
+  tip: Specify second end point of circle's diameter:
+  prompt| Specify first end point of circle's diameter:
 > second
   prompt: Command:
   asks: -
+  tip: -
   dyn: -
+  prompt| Specify second end point of circle's diameter:
 > CIRCLE3P
-  prompt: CIRCLE3P:
+  prompt: CIRCLE3P Specify first point on circle:
   asks: "First point"
+  tip: Specify first point on circle:
   dyn: "X,Y"=""||*
   command| CIRCLE3P
 > first
+  prompt: CIRCLE3P Specify second point on circle:
   asks: "Second point"
+  tip: Specify second point on circle:
+  prompt| Specify first point on circle:
 > second
+  prompt: CIRCLE3P Specify third point on circle:
   asks: "Third point"
+  tip: Specify third point on circle:
+  prompt| Specify second point on circle:
 > third
   prompt: Command:
   asks: -
+  tip: -
   dyn: -
+  prompt| Specify third point on circle:
 
 ## ARC
 > start
   prompt: Command:
   asks: -
+  tip: -
   dyn: -
   options: -
   canvas: -
   properties: -
   cycling: -
 > ARC
-  prompt: ARC:
+  prompt: ARC Specify start point of arc or [Center]:
   asks: "Start point"
+  tip: Specify start point of arc or
   dyn: "X,Y"=""||*
+  options: [C] Center
   command| ARC
 > start
+  prompt: ARC Specify second point of arc or [Center]:
   asks: "Second point"
+  tip: Specify second point of arc or
+  prompt| Specify start point of arc or [Center]:
 > second
+  prompt: ARC Specify end point of arc:
   asks: "End point"
+  tip: Specify end point of arc:
+  options: -
+  prompt| Specify second point of arc or [Center]:
 > end
   prompt: Command:
   asks: -
+  tip: -
   dyn: -
+  prompt| Specify end point of arc:
 > ARCSCE
-  prompt: ARCSCE:
+  prompt: ARCSCE Specify start point of arc or [Center]:
   asks: "Start point"
+  tip: Specify start point of arc or
   dyn: "X,Y"=""||*
+  options: [C] Center
   command| ARCSCE
 > start
+  prompt: ARCSCE Specify center point of arc:
   asks: "Center point"
+  tip: Specify center point of arc:
+  options: -
+  prompt| Specify start point of arc or [Center]:
 > centre
+  prompt: ARCSCE Specify end point of arc (hold Ctrl to switch direction):
   asks: "End point"
+  tip: Specify end point of arc (hold Ctrl to switch direction):
+  prompt| Specify center point of arc:
 > end
   prompt: Command:
   asks: -
+  tip: -
   dyn: -
+  prompt| Specify end point of arc (hold Ctrl to switch direction):
 > ARCCSE
-  prompt: ARCCSE:
+  prompt: ARCCSE Specify center point of arc:
   asks: "Center point"
+  tip: Specify center point of arc:
   dyn: "X,Y"=""||*
   command| ARCCSE
 > centre
+  prompt: ARCCSE Specify start point of arc:
   asks: "Start point"
+  tip: Specify start point of arc:
+  prompt| Specify center point of arc:
 > start
+  prompt: ARCCSE Specify end point of arc (hold Ctrl to switch direction):
   asks: "End point"
+  tip: Specify end point of arc (hold Ctrl to switch direction):
+  prompt| Specify start point of arc:
 > escape
   prompt: Command:
   asks: -
+  tip: -
   dyn: -
+  prompt| Specify end point of arc (hold Ctrl to switch direction): *Cancel*
 
 ## ELLIPSE
 > start
   prompt: Command:
   asks: -
+  tip: -
   dyn: -
   options: -
   canvas: -
@@ -753,6 +862,7 @@ lweight "Lineweight" LW
 > start
   prompt: Command:
   asks: -
+  tip: -
   dyn: -
   options: -
   canvas: -
@@ -897,52 +1007,67 @@ lweight "Lineweight" LW
 > start
   prompt: Command:
   asks: -
+  tip: -
   dyn: -
   options: -
   canvas: -
   properties: -
   cycling: -
 > RECTANG
-  prompt: RECTANG [Elevation/Thickness]:
+  prompt: RECTANG Specify first corner point or [Elevation/Thickness]:
   asks: "First corner"
+  tip: Specify first corner point or
   dyn: "X,Y"=""||*
   options: [E] Elevation, [T] Thickness
   command| RECTANG
 > E
-  prompt: RECTANG:
+  prompt: RECTANG Specify the elevation for rectangles <0.00>:
   asks: "Specify the elevation for rectangles"
+  tip: Specify the elevation for rectangles:
   dyn: "Specify the elevation for rectangles"=""|0.00|mm*
   options: -
+  prompt| Specify first corner point or [Elevation/Thickness]: E
 > elevation
   dyn: "Specify the elevation for rectangles"="5"|0.00|mm*
 > enter
-  prompt: RECTANG [Elevation/Thickness]:
+  prompt: RECTANG Specify first corner point or [Elevation/Thickness]:
   asks: "First corner"
+  tip: Specify first corner point or
   dyn: "X,Y"=""||*
   options: [E] Elevation, [T] Thickness
+  prompt| Specify the elevation for rectangles <0.00>: 5
 > T
-  prompt: RECTANG:
+  prompt: RECTANG Specify thickness for rectangles <0.00>:
   asks: "Specify thickness for rectangles"
+  tip: Specify thickness for rectangles:
   dyn: "Specify thickness for rectangles"=""|0.00|mm*
   options: -
+  prompt| Specify first corner point or [Elevation/Thickness]: T
 > thickness
   dyn: "Specify thickness for rectangles"="2"|0.00|mm*
 > enter
-  prompt: RECTANG [Elevation/Thickness]:
+  prompt: RECTANG Specify first corner point or [Elevation/Thickness]:
   asks: "First corner"
+  tip: Specify first corner point or
   dyn: "X,Y"=""||*
   options: [E] Elevation, [T] Thickness
+  prompt| Specify thickness for rectangles <0.00>: 2
 > first corner
-  prompt: RECTANG:
+  prompt: RECTANG Specify other corner point:
   asks: "Other corner"
+  tip: Specify other corner point:
   options: -
+  prompt| Specify first corner point or [Elevation/Thickness]:
 > other corner
   prompt: Command:
   asks: -
+  tip: -
   dyn: -
+  prompt| Specify other corner point:
 > RECTANG with modes
-  prompt: RECTANG [Elevation/Thickness]:
+  prompt: RECTANG Specify first corner point or [Elevation/Thickness]:
   asks: "First corner"
+  tip: Specify first corner point or
   dyn: "X,Y"=""||*
   options: [E] Elevation, [T] Thickness
   command| RECTANG
@@ -950,8 +1075,10 @@ lweight "Lineweight" LW
 > escape
   prompt: Command:
   asks: -
+  tip: -
   dyn: -
   options: -
+  prompt| Specify first corner point or [Elevation/Thickness]: *Cancel*
 > POLYGON
   prompt: POLYGON:
   asks: "Number of sides"
@@ -984,6 +1111,7 @@ lweight "Lineweight" LW
 > start
   prompt: Command:
   asks: -
+  tip: -
   dyn: -
   options: -
   canvas: -
@@ -1047,6 +1175,7 @@ lweight "Lineweight" LW
 > start
   prompt: Command:
   asks: -
+  tip: -
   dyn: -
   options: -
   canvas: -
@@ -1082,6 +1211,7 @@ lweight "Lineweight" LW
 > start
   prompt: Command:
   asks: -
+  tip: -
   dyn: -
   options: -
   canvas: -
@@ -1144,6 +1274,7 @@ lweight "Lineweight" LW
 > start
   prompt: Command:
   asks: -
+  tip: -
   dyn: -
   options: -
   canvas: -
@@ -1172,6 +1303,7 @@ lweight "Lineweight" LW
 > start
   prompt: Command:
   asks: -
+  tip: -
   dyn: -
   options: -
   canvas: -
@@ -1244,6 +1376,7 @@ lweight "Lineweight" LW
 > start
   prompt: Command:
   asks: -
+  tip: -
   dyn: -
   options: -
   canvas: -
@@ -1295,6 +1428,7 @@ lweight "Lineweight" LW
 > start
   prompt: Command:
   asks: -
+  tip: -
   dyn: -
   options: -
   canvas: -
@@ -1400,6 +1534,7 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
 > start
   prompt: Command:
   asks: -
+  tip: -
   dyn: -
   options: -
   canvas: -
@@ -1432,6 +1567,7 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
 > start
   prompt: Command:
   asks: -
+  tip: -
   dyn: -
   options: -
   canvas: -
@@ -1450,6 +1586,7 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
 > start
   prompt: Command:
   asks: -
+  tip: -
   dyn: -
   options: -
   canvas: -
@@ -1522,6 +1659,7 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
 > start
   prompt: Command:
   asks: -
+  tip: -
   dyn: -
   options: -
   canvas: -
@@ -1550,6 +1688,7 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
 > start
   prompt: Command:
   asks: -
+  tip: -
   dyn: -
   options: -
   canvas: -
@@ -1614,6 +1753,7 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
 > start
   prompt: Command:
   asks: -
+  tip: -
   dyn: -
   options: -
   canvas: -
@@ -1669,6 +1809,7 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
 > start
   prompt: Command:
   asks: -
+  tip: -
   dyn: -
   options: -
   canvas: -
@@ -1695,6 +1836,7 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
 > start
   prompt: Command:
   asks: -
+  tip: -
   dyn: -
   options: -
   canvas: -
@@ -1753,6 +1895,7 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
 > start
   prompt: Command:
   asks: -
+  tip: -
   dyn: -
   options: -
   canvas: -
@@ -1783,6 +1926,7 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
 > start
   prompt: Command:
   asks: -
+  tip: -
   dyn: -
   options: -
   canvas: -
@@ -1829,6 +1973,7 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
 > start
   prompt: Command:
   asks: -
+  tip: -
   dyn: -
   options: -
   canvas: -
@@ -1859,6 +2004,7 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
 > start
   prompt: Command:
   asks: -
+  tip: -
   dyn: -
   options: -
   canvas: -
@@ -1888,6 +2034,7 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
 > start
   prompt: Command:
   asks: -
+  tip: -
   dyn: -
   options: -
   canvas: -
@@ -1918,6 +2065,7 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
 > start
   prompt: Command:
   asks: -
+  tip: -
   dyn: -
   options: -
   canvas: -
@@ -1986,6 +2134,7 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
 > start
   prompt: Command:
   asks: -
+  tip: -
   dyn: -
   options: -
   canvas: -
@@ -2054,6 +2203,7 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
 > start
   prompt: Command:
   asks: -
+  tip: -
   dyn: -
   options: -
   canvas: -
@@ -2100,6 +2250,7 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
 > start
   prompt: Command:
   asks: -
+  tip: -
   dyn: -
   options: -
   canvas: -
@@ -2165,6 +2316,7 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
 > start
   prompt: Command:
   asks: -
+  tip: -
   dyn: -
   options: -
   canvas: -
@@ -2232,6 +2384,7 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
 > start
   prompt: Command:
   asks: -
+  tip: -
   dyn: -
   options: -
   canvas: -
@@ -2255,6 +2408,7 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
 > start
   prompt: Command:
   asks: -
+  tip: -
   dyn: -
   options: -
   canvas: -
@@ -2290,6 +2444,7 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
 > start
   prompt: Command:
   asks: -
+  tip: -
   dyn: -
   options: -
   canvas: -
@@ -2306,6 +2461,7 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
 > start
   prompt: Command:
   asks: -
+  tip: -
   dyn: -
   options: -
   canvas: -
@@ -2336,6 +2492,7 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
 > start
   prompt: Command:
   asks: -
+  tip: -
   dyn: -
   options: -
   canvas: -
@@ -2393,6 +2550,7 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
 > start
   prompt: Command:
   asks: -
+  tip: -
   dyn: -
   options: -
   canvas: -
@@ -2484,6 +2642,7 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
 > start
   prompt: Command:
   asks: -
+  tip: -
   dyn: -
   options: -
   canvas: -
@@ -2703,6 +2862,7 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
 > start
   prompt: Command:
   asks: -
+  tip: -
   dyn: -
   options: -
   canvas: -
@@ -2857,6 +3017,7 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
 > start
   prompt: Command:
   asks: -
+  tip: -
   dyn: -
   options: -
   canvas: -
@@ -2892,6 +3053,7 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
 > start
   prompt: Command:
   asks: -
+  tip: -
   dyn: -
   options: -
   canvas: -
@@ -2915,6 +3077,7 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
 > start
   prompt: Command:
   asks: -
+  tip: -
   dyn: -
   options: -
   canvas: -
@@ -2952,6 +3115,7 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
 > start
   prompt: Command:
   asks: -
+  tip: -
   dyn: -
   options: -
   canvas: -
@@ -2999,6 +3163,7 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
 > start
   prompt: Command:
   asks: -
+  tip: -
   dyn: -
   options: -
   canvas: -
@@ -3034,6 +3199,7 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
 > start
   prompt: Command:
   asks: -
+  tip: -
   dyn: -
   options: -
   canvas: -
@@ -3064,6 +3230,7 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
 > start
   prompt: Command:
   asks: -
+  tip: -
   dyn: -
   options: -
   canvas: -
@@ -3168,6 +3335,7 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
 > start
   prompt: Command:
   asks: -
+  tip: -
   dyn: -
   options: -
   canvas: -
@@ -3261,6 +3429,7 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
 > start
   prompt: Command:
   asks: -
+  tip: -
   dyn: -
   options: -
   canvas: -
@@ -3284,6 +3453,7 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
 > start
   prompt: Command:
   asks: -
+  tip: -
   dyn: -
   options: -
   canvas: -
@@ -3364,6 +3534,7 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
 > start
   prompt: Command:
   asks: -
+  tip: -
   dyn: -
   options: -
   canvas: -
@@ -3379,14 +3550,16 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
 > start
   prompt: Command:
   asks: -
+  tip: -
   dyn: -
   options: -
   canvas: -
   properties: -
   cycling: -
 > LINE
-  prompt: LINE:
+  prompt: LINE Specify first point:
   asks: ""
+  tip: Specify first point:
   dyn: "X,Y"=""||*
   canvas: "Endpoint"
   command| LINE
@@ -3394,21 +3567,25 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
 > escape
   prompt: Command:
   asks: -
+  tip: -
   dyn: -
   canvas: -
+  prompt| Specify first point: _endp of *Cancel*
 
 ## object snap midpoint
 > start
   prompt: Command:
   asks: -
+  tip: -
   dyn: -
   options: -
   canvas: -
   properties: -
   cycling: -
 > LINE
-  prompt: LINE:
+  prompt: LINE Specify first point:
   asks: ""
+  tip: Specify first point:
   dyn: "X,Y"=""||*
   canvas: "Endpoint"
   command| LINE
@@ -3417,21 +3594,25 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
 > escape
   prompt: Command:
   asks: -
+  tip: -
   dyn: -
   canvas: -
+  prompt| Specify first point: _mid of *Cancel*
 
 ## object snap center
 > start
   prompt: Command:
   asks: -
+  tip: -
   dyn: -
   options: -
   canvas: -
   properties: -
   cycling: -
 > LINE
-  prompt: LINE:
+  prompt: LINE Specify first point:
   asks: ""
+  tip: Specify first point:
   dyn: "X,Y"=""||*
   command| LINE
 > override center
@@ -3439,21 +3620,25 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
 > escape
   prompt: Command:
   asks: -
+  tip: -
   dyn: -
   canvas: -
+  prompt| Specify first point: _cen of *Cancel*
 
 ## object snap intersection
 > start
   prompt: Command:
   asks: -
+  tip: -
   dyn: -
   options: -
   canvas: -
   properties: -
   cycling: -
 > LINE
-  prompt: LINE:
+  prompt: LINE Specify first point:
   asks: ""
+  tip: Specify first point:
   dyn: "X,Y"=""||*
   canvas: "Endpoint"
   command| LINE
@@ -3462,21 +3647,25 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
 > escape
   prompt: Command:
   asks: -
+  tip: -
   dyn: -
   canvas: -
+  prompt| Specify first point: _int of *Cancel*
 
 ## object snap apparentIntersection
 > start
   prompt: Command:
   asks: -
+  tip: -
   dyn: -
   options: -
   canvas: -
   properties: -
   cycling: -
 > LINE
-  prompt: LINE:
+  prompt: LINE Specify first point:
   asks: ""
+  tip: Specify first point:
   dyn: "X,Y"=""||*
   command| LINE
 > override apparentIntersection
@@ -3484,83 +3673,99 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
 > escape
   prompt: Command:
   asks: -
+  tip: -
   dyn: -
   canvas: -
+  prompt| Specify first point: _appint of *Cancel*
 
 ## object snap perpendicular
 > start
   prompt: Command:
   asks: -
+  tip: -
   dyn: -
   options: -
   canvas: -
   properties: -
   cycling: -
 > LINE
-  prompt: LINE:
+  prompt: LINE Specify first point:
   asks: ""
+  tip: Specify first point:
   dyn: "X,Y"=""||*
   canvas: "Endpoint"
   command| LINE
 > first
-  prompt: LINE [Undo]:
+  prompt: LINE Specify next point or [Undo]:
   asks: "Length" "Angle"
+  tip: Specify next point or
   dyn: "Length"=""|0.00|mm* "Angle"=""||°
   options: [U] Undo
   canvas: -
+  prompt| Specify first point:
 > override perpendicular
   dyn: "Length"=""|80.00|mm* "Angle"=""|90.00|°
   canvas: "Perpendicular"
 > escape
   prompt: Command:
   asks: -
+  tip: -
   dyn: -
   options: -
   canvas: -
+  prompt| Specify next point or [Undo]: _per to *Cancel*
 
 ## object snap tangent
 > start
   prompt: Command:
   asks: -
+  tip: -
   dyn: -
   options: -
   canvas: -
   properties: -
   cycling: -
 > LINE
-  prompt: LINE:
+  prompt: LINE Specify first point:
   asks: ""
+  tip: Specify first point:
   dyn: "X,Y"=""||*
   canvas: "Center"
   command| LINE
 > first
-  prompt: LINE [Undo]:
+  prompt: LINE Specify next point or [Undo]:
   asks: "Length" "Angle"
+  tip: Specify next point or
   dyn: "Length"=""|0.00|mm* "Angle"=""||°
   options: [U] Undo
   canvas: -
+  prompt| Specify first point:
 > override tangent
   dyn: "Length"=""|193.65|mm* "Angle"=""|165.52|°
   canvas: "Tangent"
 > escape
   prompt: Command:
   asks: -
+  tip: -
   dyn: -
   options: -
   canvas: -
+  prompt| Specify next point or [Undo]: _tan to *Cancel*
 
 ## object snap insertion
 > start
   prompt: Command:
   asks: -
+  tip: -
   dyn: -
   options: -
   canvas: -
   properties: -
   cycling: -
 > LINE
-  prompt: LINE:
+  prompt: LINE Specify first point:
   asks: ""
+  tip: Specify first point:
   dyn: "X,Y"=""||*
   command| LINE
 > override insertion
@@ -3568,21 +3773,25 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
 > escape
   prompt: Command:
   asks: -
+  tip: -
   dyn: -
   canvas: -
+  prompt| Specify first point: _ins of *Cancel*
 
 ## object snap quadrant
 > start
   prompt: Command:
   asks: -
+  tip: -
   dyn: -
   options: -
   canvas: -
   properties: -
   cycling: -
 > LINE
-  prompt: LINE:
+  prompt: LINE Specify first point:
   asks: ""
+  tip: Specify first point:
   dyn: "X,Y"=""||*
   canvas: "Center"
   command| LINE
@@ -3591,21 +3800,25 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
 > escape
   prompt: Command:
   asks: -
+  tip: -
   dyn: -
   canvas: -
+  prompt| Specify first point: _qua of *Cancel*
 
 ## object snap nearest
 > start
   prompt: Command:
   asks: -
+  tip: -
   dyn: -
   options: -
   canvas: -
   properties: -
   cycling: -
 > LINE
-  prompt: LINE:
+  prompt: LINE Specify first point:
   asks: ""
+  tip: Specify first point:
   dyn: "X,Y"=""||*
   canvas: "Endpoint"
   command| LINE
@@ -3614,28 +3827,34 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
 > escape
   prompt: Command:
   asks: -
+  tip: -
   dyn: -
   canvas: -
+  prompt| Specify first point: _nea to *Cancel*
 
 ## object snap parallel
 > start
   prompt: Command:
   asks: -
+  tip: -
   dyn: -
   options: -
   canvas: -
   properties: -
   cycling: -
 > LINE
-  prompt: LINE:
+  prompt: LINE Specify first point:
   asks: ""
+  tip: Specify first point:
   dyn: "X,Y"=""||*
   command| LINE
 > first
-  prompt: LINE [Undo]:
+  prompt: LINE Specify next point or [Undo]:
   asks: "Length" "Angle"
+  tip: Specify next point or
   dyn: "Length"=""|0.00|mm* "Angle"=""||°
   options: [U] Undo
+  prompt| Specify first point:
 > override parallel and dwell
   dyn: "Length"=""|213.60|mm* "Angle"=""|159.44|°
 > aim along it
@@ -3644,22 +3863,26 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
 > escape
   prompt: Command:
   asks: -
+  tip: -
   dyn: -
   options: -
   canvas: -
+  prompt| Specify next point or [Undo]: _par to *Cancel*
 
 ## object snap extension
 > start
   prompt: Command:
   asks: -
+  tip: -
   dyn: -
   options: -
   canvas: -
   properties: -
   cycling: -
 > LINE
-  prompt: LINE:
+  prompt: LINE Specify first point:
   asks: ""
+  tip: Specify first point:
   dyn: "X,Y"=""||*
   canvas: "Endpoint"
   command| LINE
@@ -3673,13 +3896,16 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
 > escape
   prompt: Command:
   asks: -
+  tip: -
   dyn: -
   canvas: -
+  prompt| Specify first point: _ext of *Cancel*
 
 ## -OSNAP
 > start
   prompt: Command:
   asks: -
+  tip: -
   dyn: -
   options: -
   canvas: -
@@ -3701,26 +3927,31 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
 > start
   prompt: Command:
   asks: -
+  tip: -
   dyn: -
   options: -
   canvas: -
   properties: -
   cycling: -
 > LINE
-  prompt: LINE:
+  prompt: LINE Specify first point:
   asks: ""
+  tip: Specify first point:
   dyn: "X,Y"=""||*
   command| LINE
 > MID
 > escape
   prompt: Command:
   asks: -
+  tip: -
   dyn: -
+  prompt| Specify first point: MID of *Cancel*
 
 ## polar
 > start
   prompt: Command:
   asks: -
+  tip: -
   dyn: -
   options: -
   canvas: -
@@ -3728,56 +3959,68 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
   cycling: -
 > F10
 > LINE
-  prompt: LINE:
+  prompt: LINE Specify first point:
   asks: ""
+  tip: Specify first point:
   dyn: "X,Y"=""||*
   command| LINE
 > first
-  prompt: LINE [Undo]:
+  prompt: LINE Specify next point or [Undo]:
   asks: "Length" "Angle"
+  tip: Specify next point or
   dyn: "Length"=""|0.00|mm* "Angle"=""||°
   options: [U] Undo
+  prompt| Specify first point:
 > near 45
   dyn: "Length"=""|99.70|mm* "Angle"=""|45.00|°
   canvas: "Polar: 99.70mm < 45.00°"
 > escape
   prompt: Command:
   asks: -
+  tip: -
   dyn: -
   options: -
   canvas: -
+  prompt| Specify next point or [Undo]: *Cancel*
 
 ## FROM
 > start
   prompt: Command:
   asks: -
+  tip: -
   dyn: -
   options: -
   canvas: -
   properties: -
   cycling: -
 > LINE
-  prompt: LINE:
+  prompt: LINE Specify first point:
   asks: ""
+  tip: Specify first point:
   dyn: "X,Y"=""||*
   command| LINE
 > FROM
   command| FROM
+  prompt| Specify first point: _from
   info| FROM: pick the base point.
 > base
   info| FROM: offset from the base point.
 > offset
   dyn: "X,Y"="@10,0"||*
 > enter
-  prompt: LINE [Undo]:
+  prompt: LINE Specify next point or [Undo]:
   asks: "Length" "Angle"
+  tip: Specify next point or
   dyn: "Length"=""|10.00|mm* "Angle"=""|180.00|°
   options: [U] Undo
+  prompt| Specify first point: @10,0
 > escape
   prompt: Command:
   asks: -
+  tip: -
   dyn: -
   options: -
+  prompt| Specify next point or [Undo]: *Cancel*
 
 ## default names
 Layer1

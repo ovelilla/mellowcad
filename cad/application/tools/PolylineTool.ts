@@ -2,7 +2,7 @@ import { Vec2, V } from "../../geometry/Vec2"
 import { Vec3, withZOf } from "../../geometry/Vec3"
 import { createPolyline, onPlaneOf } from "../../domain/entities"
 import { bulgeToArc } from "../../geometry/primitives"
-import { parseNumber } from "../../domain/units"
+import { formatLength, parseNumber } from "../../domain/units"
 import { AddEntityCommand } from "../commands/entityCommands"
 import { DynamicInputSession } from "../input/DynamicInput"
 import {
@@ -14,6 +14,7 @@ import { THEME } from "../../scene/theme"
 import { arcScenePrimitive, entityScenePrimitive } from "../SceneBuilder"
 import { PointerInput, Tool, ToolContext } from "./Tool"
 import { CommandOption, CommandOptionOutcome } from "./Tool"
+import type { PromptId } from "../../locales/types"
 import { lastDrawnPoint } from "./lastDrawnPoint"
 import {
   withCurrentProperties,
@@ -57,6 +58,11 @@ type PolylineToolState =
       readonly closed: boolean
       /** Arc mode: the next segment is a tangent arc rather than a line. */
       readonly arcMode: boolean
+      /**
+       * Ctrl held: the arc leaves the other way, "hold Ctrl to switch
+       * direction".
+       */
+      readonly reversed: boolean
     }
 
 export class PolylineTool implements Tool {
@@ -88,7 +94,12 @@ export class PolylineTool implements Tool {
       const length = V.length(offset)
       const direction =
         length > 1e-9 ? V.scale(offset, 1 / length) : this.state.direction
-      this.state = { ...this.state, cursor: input.point, direction }
+      this.state = {
+        ...this.state,
+        cursor: input.point,
+        direction,
+        reversed: input.ctrlKey,
+      }
 
       if (!showRise(ctx, start, input.point)) {
         ctx.dynamicInput.setLive("distance", length)
@@ -121,11 +132,17 @@ export class PolylineTool implements Tool {
     // Place the next vertex at the effective endpoint (honouring any hard-locked
     // typed length/angle), then keep chaining. A click on the same point as the
     // last vertex adds nothing.
+    this.state = { ...this.state, reversed: input.ctrlKey }
     const last = this.lastVertex(this.state)
     const point = this.resolveEnd(last, input.point, ctx)
     if (point.x === last.x && point.y === last.y) return
     this.appendVertex(point, ctx)
     ctx.dynamicInput.setPosition(input.screen)
+  }
+
+  question(): PromptId {
+    if (this.state.phase !== "drawing") return "specifyStartPoint"
+    return this.state.arcMode ? "specifyEndpointOfArcOr" : "specifyNextPointOr"
   }
 
   /**
@@ -226,8 +243,9 @@ export class PolylineTool implements Tool {
     endpoint: Vec2
   ): number {
     if (!state.arcMode) return 0
-    const tangent = currentTangent(state)
-    if (!tangent) return 0
+    const exit = currentTangent(state)
+    if (!exit) return 0
+    const tangent = state.reversed ? V.scale(exit, -1) : exit
     const chord = V.sub(endpoint, this.lastVertex(state))
     const length = V.length(chord)
     if (length < 1e-9) return 0
@@ -294,6 +312,7 @@ export class PolylineTool implements Tool {
       direction: null,
       closed: false,
       arcMode: this.state.arcMode,
+      reversed: false,
     }
     ctx.dynamicInput.clearTexts()
     ctx.dynamicInput.setLive("distance", 0)
@@ -333,8 +352,16 @@ export class PolylineTool implements Tool {
     )
   }
 
-  /** Enters the drawing phase from the first vertex, opening the length session. */
+  /**
+   * Enters the drawing phase from the first vertex, opening the length session.
+   * Width is not offered, so the line-width AutoCAD reports is always 0.
+   */
   private beginDrawing(start: Vec3, ctx: ToolContext, screen?: Vec2): void {
+    ctx.report(
+      ctx.text.message("currentLineWidth", {
+        width: formatLength(0, ctx.document.getSettings()),
+      })
+    )
     this.state = {
       phase: "drawing",
       vertices: [start],
@@ -343,6 +370,7 @@ export class PolylineTool implements Tool {
       direction: null,
       closed: false,
       arcMode: false,
+      reversed: false,
     }
     const at = screen ?? this.lastScreen ?? ctx.viewport.worldToScreen(start)
     this.openLengthInput(ctx, at)

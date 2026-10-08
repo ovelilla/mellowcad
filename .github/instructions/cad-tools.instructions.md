@@ -17,7 +17,8 @@ A tool is an explicit state machine for one AutoCAD command. It owns a discrimin
    that function instead of built there.
 3. `TOOL_COMMANDS` in `CommandLine.ts` — the tool id → the command's **global** name. What it is
    typed as goes in `cad/locales/en.json`: `commands.names.<NAME>` (canonical AutoCAD name first,
-   then aliases), its keywords in `commands.keywords.<NAME>`, its prompts in `commands.prompts`,
+   then aliases), its keywords in `commands.keywords.<NAME>`, its prompts in `commands.prompts`
+   (named by `question()` per state, below),
    its label in `interface.tool.<id>` — then `npm run locales`. Dispatch comes from here;
    `Tool.shortcut` is display-only.
 4. Export the class from `cad/index.ts`.
@@ -84,6 +85,22 @@ them as written.
 kind }`), which the runtime words when it builds the state — so switching language rewords an open
 prompt too. Anything the tool writes (`ctx.text.message`) or draws (`ctx.text.feedback`) comes
 from the catalog; user data (a block name in a `?` listing) is the only text a tool passes on as is.
+
+**A tool names the question it is asking** in `question()`, by an id in `commands.prompts` whose
+text is AutoCAD's prompt up to the keyword list — `Specify next point or`, no list, no colon. The
+runtime does the rest from that one answer: `LINE Specify next point or [Undo]:` at the prompt,
+`Specify next point or` in the dynamic prompt, and the line the history writes once it is answered.
+So never write a prompt with `ctx.report`. Return the question of every state, including the ones
+that still answer the same question (LINE's tracking offset, the deferred tangent); return a
+`ToolQuestion` (`{ id, length }`) when the prompt shows a value Enter keeps (`<10.0000>`: CIRCLERAD,
+RECTANG's elevation). The `or` belongs to the text, so a state that offers none of the keywords
+AutoCAD lists there takes an id without it (`specifyOtherCornerPoint`); a wording no source confirms
+is not invented — that state returns `null` and keeps the `NAME [keywords]:` prompt (LINE's
+Continue length). Convert a command whole: one that names no question shows `NAME [keywords]:` and
+writes no prompt lines, so a half-converted one reads inconsistently. A report the answer produces
+(`Current line-width is 0.0000`) is written after the answered prompt by itself. A keyword AutoCAD
+lists with a gloss (`Ttr (tan tan radius)`) has it in `commands.keywordLabels.<NAME>`, for every
+command name that offers it (CIRCLE and CIRCLED).
 
 A tool never touches an adapter. Anything outside the document it needs — writing the clipboard
 (`ctx.copyToClipboard`) — is a method on `ToolContext` that the runtime wires to the port.

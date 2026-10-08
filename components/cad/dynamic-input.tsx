@@ -69,6 +69,14 @@ export function DynamicInput({
       className="pointer-events-none absolute z-[5] flex flex-wrap gap-1"
       style={{ left: di.screen.x + 16, top: di.screen.y + 20 }}
     >
+      {/* The dynamic prompt: the question alone, its keywords in the chips. */}
+      {di.prompt !== null && (
+        <div className="flex basis-full">
+          <span className="rounded-md border border-border/60 bg-card/95 px-2 py-1 text-muted-foreground shadow-lg backdrop-blur">
+            {di.prompt}
+          </span>
+        </div>
+      )}
       {di.fields.map((field) => {
         // A field with typed text is hard-locked: it drives the geometry and
         // the cursor can no longer change it (clear the text to unlock). Show

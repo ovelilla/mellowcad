@@ -832,6 +832,12 @@ export const es: EngineLocale = {
         "Close": "Cerrar",
         "Undo": "desHacer"
       },
+      "ARC": {
+        "Center": "Centro"
+      },
+      "ARCSCE": {
+        "Center": "Centro"
+      },
       "CIRCLE": {
         "3P": "3P",
         "2P": "2P",
@@ -1241,15 +1247,81 @@ export const es: EngineLocale = {
       "idPoint": "Precise punto",
       "viewPoint": "Precise un punto de vista",
       "viewAngleInPlane": "Ángulo a partir del eje X en el plano XY",
-      "viewAngleFromPlane": "Ángulo a partir del plano XY"
+      "viewAngleFromPlane": "Ángulo a partir del plano XY",
+      "specifyFirstPoint": "Precise primer punto",
+      "specifyNextPointOr": "Precise punto siguiente o",
+      "specifyStartPoint": "Precise punto inicial",
+      "specifyEndpointOfArcOr": "Precise punto final de arco (mantenga pulsada Ctrl para cambiar de dirección) o",
+      "specifyCenterPointForCircleOr": "Precise punto central para círculo o",
+      "specifyRadiusOfCircleOr": "Precise radio de círculo o",
+      "specifyRadiusOfCircle": "Precise radio de círculo",
+      "specifyDiameterOfCircle": "Precise diámetro de círculo",
+      "specifyFirstEndPointOfDiameter": "Precise primer punto final del diámetro del círculo",
+      "specifySecondEndPointOfDiameter": "Precise segundo punto final del diámetro del círculo",
+      "specifyFirstPointOnCircle": "Precise primer punto del círculo",
+      "specifySecondPointOnCircle": "Precise segundo punto del círculo",
+      "specifyThirdPointOnCircle": "Precise tercer punto del círculo",
+      "specifyFirstTangentOfCircle": "Precise punto en objeto para la primera tangente del círculo",
+      "specifySecondTangentOfCircle": "Precise punto en objeto para la segunda tangente del círculo",
+      "specifySecondPoint": "Precise segundo punto",
+      "specifyFirstCornerPointOr": "Precise primer punto de esquina o",
+      "specifyOtherCornerPoint": "Precise otro punto de esquina",
+      "specifyStartPointOfArcOr": "Precise punto inicial del arco o",
+      "specifySecondPointOfArcOr": "Precise segundo punto de arco o",
+      "specifyEndPointOfArc": "Precise punto final del arco",
+      "specifyCenterPointOfArc": "Precise punto central del arco",
+      "specifyStartPointOfArc": "Precise punto inicial del arco",
+      "specifyEndPointOfArcCtrl": "Precise punto final del arco (mantenga pulsada Ctrl para cambiar de dirección)"
     },
     "format": {
       "idle": "Comando",
+      "commandPrompt": [
+        [
+          "command"
+        ],
+        " ",
+        [
+          "question"
+        ]
+      ],
+      "answered": [
+        [
+          "prompt"
+        ],
+        " ",
+        [
+          "answer"
+        ]
+      ],
+      "snapOverride": [
+        [
+          "snap"
+        ],
+        [
+          "preposition",
+          1,
+          {
+            "to": " a",
+            "of": " de",
+            "other": ""
+          }
+        ]
+      ],
       "prompt": [
         [
           "head"
         ],
         ":"
+      ],
+      "promptWithValue": [
+        [
+          "head"
+        ],
+        " <",
+        [
+          "value"
+        ],
+        ">:"
       ],
       "promptWithKeywords": [
         [
@@ -1305,6 +1377,13 @@ export const es: EngineLocale = {
           "name"
         ],
         "\" desconocido."
+      ],
+      "cancel": "*Cancelar*",
+      "currentLineWidth": [
+        "El grosor de la línea actual es ",
+        [
+          "width"
+        ]
       ],
       "erased": [
         [
@@ -1769,6 +1848,14 @@ export const es: EngineLocale = {
         ],
         "] deshacer  [Intro] terminar"
       ]
+    },
+    "keywordLabels": {
+      "CIRCLE": {
+        "Ttr": "Ttr (Tangente tangente radio)"
+      },
+      "CIRCLED": {
+        "Ttr": "Ttr (Tangente tangente radio)"
+      }
     },
     "listing": {
       "hatchPattern": [

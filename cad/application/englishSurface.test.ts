@@ -117,6 +117,7 @@ class Surface {
     const sections: [string, string][] = [
       ["prompt", state.commandLine.prompt],
       ["asks", sessionPrompts(cad)],
+      ["tip", state.dynamicInput?.prompt ?? "-"],
       ["dyn", dynamicInput],
       [
         "options",

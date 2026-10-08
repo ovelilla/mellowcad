@@ -1,9 +1,11 @@
 import type { CadRuntime } from "./CadRuntime"
 import { CommandDefinition, TOOL_COMMANDS } from "./CommandLine"
 import type { CommandOptionUi, StylesPanelTab } from "./EngineState"
-import type { EngineText, PromptSegment } from "./EngineText"
+import { promptString, type EngineText, type PromptSegment } from "./EngineText"
 import { offerKeywords } from "../i18n/keywords"
 import { Tool } from "./tools/Tool"
+import { formatLength } from "../domain/units"
+import type { DocumentSettings } from "../domain/units"
 import { MTextTool } from "./tools/MTextTool"
 import { AttEditTool } from "./tools/AttEditTool"
 
@@ -186,24 +188,47 @@ export function offerOptions(tool: Tool, text: EngineText): CommandOptionUi[] {
       abbreviation: keyword.abbreviation,
       label:
         value === undefined
-          ? keyword.word
+          ? (text.keywordLabel(command, keyword.id) ?? keyword.word)
           : text.optionValue(keyword.word, text.keyword(command, value)),
     }
   })
 }
 
+/** A prompt in its two forms: at the prompt line, and as the history writes it. */
+export interface CommandPrompt {
+  /** The running command's name; null at rest. */
+  readonly command: string | null
+  /** `LINE Specify next point or [Undo]:`, or `Command:` at rest. */
+  readonly segments: PromptSegment[]
+  /** `Specify next point or [Undo]:`, the line an answer is written after. */
+  readonly echo: PromptSegment[] | null
+  /**
+   * The dynamic prompt, the question without the command's name and with no
+   * keyword list — the tooltip offers its keywords below it: `Specify first
+   * point:`, `Specify next point or`. Null when the tool names no question.
+   */
+  readonly dynamic: string | null
+}
+
 /**
  * The text shown before the input, mirroring AutoCAD's prompt: `Command:` at
- * rest, and the running command with its current keywords while one is
- * active, e.g. `PLINE [Close/Undo]:`.
+ * rest, and while a command runs its name and the question it asks with the
+ * keywords on offer, e.g. `LINE Specify next point or [Close/Undo]:`. A tool
+ * that names no question shows its command's name in its place.
  */
 export function commandPrompt(
   tool: Tool,
   text: EngineText,
-  options: readonly CommandOptionUi[]
-): { readonly command: string | null; readonly segments: PromptSegment[] } {
+  options: readonly CommandOptionUi[],
+  settings: DocumentSettings
+): CommandPrompt {
   if (tool.id === "select") {
-    return { command: null, segments: text.composePrompt(text.idleHead(), []) }
+    return {
+      command: null,
+      segments: text.composePrompt(text.idleHead(), []),
+      echo: null,
+      dynamic: null,
+    }
   }
   const command = tool.runningCommand?.() ?? toolCommand(tool)
   const name =
@@ -211,12 +236,27 @@ export function commandPrompt(
       ? text.commandNames(command)[0]
       : text.tool(tool.id).toUpperCase()
   const fallback = tool.defaultOption?.() ?? null
+  const labels = options.map((option) => option.label)
+  const asked = tool.question?.() ?? null
+  const id = typeof asked === "string" ? asked : (asked?.id ?? null)
+  const question = id === null ? null : text.prompt(id)
+  const value =
+    typeof asked === "object" && asked !== null
+      ? formatLength(asked.length, settings)
+      : fallback === null
+        ? null
+        : text.keyword(command, fallback)
   return {
     command: name,
     segments: text.composePrompt(
-      name,
-      options.map((option) => option.label),
-      fallback === null ? null : text.keyword(command, fallback)
+      question === null ? name : text.commandQuestion(name, question),
+      labels,
+      value
     ),
+    echo: question === null ? null : text.composePrompt(question, labels, value),
+    dynamic:
+      question === null || labels.length > 0
+        ? question
+        : promptString(text.composePrompt(question, [])),
   }
 }

@@ -53,7 +53,10 @@ describe("a host's own language", () => {
     const cad = driver({ locale: french })
     cad.command("L").click({ x: 0, y: 0 }).click({ x: 100, y: 0 })
     const state = cad.state()
-    expect(state.commandLine.prompt).toBe("LIGNE [annUler]:")
+    // The question it leaves out is English's.
+    expect(state.commandLine.prompt).toBe(
+      "LIGNE Specify next point or [annUler]:"
+    )
     expect(state.dynamicInput?.fields.map((field) => field.label)).toEqual([
       "Longueur",
       "Angle",
@@ -116,7 +119,11 @@ describe("a host's words over a shipped language", () => {
     cad.command("L")
     expect(cad.commandLog()).toEqual(['No existe el comando "L".'])
     cad.command("LN").escape().command("DF")
-    expect(cad.commandLog().slice(1)).toEqual(["LINEA", "DESFASE"])
+    expect(cad.commandLog().slice(1)).toEqual([
+      "LINEA",
+      "Precise primer punto: *Cancelar*",
+      "DESFASE",
+    ])
   })
 
   it("leaves the language it extends untouched", () => {

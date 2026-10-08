@@ -247,6 +247,20 @@ export class EngineText {
     return table?.[id] ?? id
   }
 
+  /**
+   * How a prompt lists a keyword whose word AutoCAD follows with a note —
+   * `Ttr (tan tan radius)` — or null for one listed as its word.
+   */
+  keywordLabel(command: string | null, id: string): string | null {
+    if (command === null) return null
+    const label = (
+      this.commands.keywordLabels as Readonly<
+        Record<string, Readonly<Record<string, CompiledMessage>> | undefined>
+      >
+    )[command]?.[id]
+    return label === undefined ? null : this.format(label)
+  }
+
   /** A keyword's abbreviation in the command language (`U` for Undo). */
   abbreviation(command: string | null, id: string): string {
     return abbreviationOf(this.keyword(command, id))
@@ -324,6 +338,29 @@ export class EngineText {
     return this.idlePromptCache
   }
 
+  /** `LINE Specify first point`: the head of a running command's prompt. */
+  commandQuestion(command: string, question: string): string {
+    return this.format(this.commands.format.commandPrompt, {
+      command,
+      question,
+    })
+  }
+
+  /** An object snap given at a point prompt, as answered: `_endp of`. */
+  snapOverride(snap: string, to: boolean | null): string {
+    return this.format(this.commands.format.snapOverride, {
+      snap,
+      preposition: to === null ? "none" : to ? "to" : "of",
+    })
+  }
+
+  /** A prompt as the history keeps it once answered: `Specify next point or [Undo]: 100`. */
+  answered(prompt: string, answer: string): string {
+    return answer === ""
+      ? prompt
+      : this.format(this.commands.format.answered, { prompt, answer })
+  }
+
   /**
    * A prompt from its parts: what is asked (a command name, a field, or the
    * neutral `Command`), the keywords on offer and the one Enter keeps, e.g.
@@ -336,7 +373,11 @@ export class EngineText {
   ): PromptSegment[] {
     const format = this.commands.format
     if (keywords.length === 0) {
-      return [{ text: this.format(format.prompt, { head }), keywords: false }]
+      const text =
+        fallback === null
+          ? this.format(format.prompt, { head })
+          : this.format(format.promptWithValue, { head, value: fallback })
+      return [{ text, keywords: false }]
     }
     return this.formatter
       .formatParts<PromptSegment>(

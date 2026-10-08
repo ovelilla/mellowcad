@@ -34,6 +34,7 @@ import {
   PointerInput,
   Tool,
   ToolContext,
+  ToolQuestion,
 } from "./Tool"
 import {
   withCurrentProperties,
@@ -185,6 +186,40 @@ export class CircleTool implements Tool {
 
   private firstPrompt(): PromptId {
     return this.state.phase === "center" ? "center" : "firstPoint"
+  }
+
+  /** A radius prompt shows CIRCLERAD as its default, unless it is 0. */
+  question(): PromptId | ToolQuestion {
+    const { radius } = this.lastRadius
+    const sized = (id: PromptId, size: number): PromptId | ToolQuestion =>
+      size > 0 ? { id, length: size } : id
+    const state = this.state
+    switch (state.phase) {
+      case "center":
+        return "specifyCenterPointForCircleOr"
+      case "radius":
+        return state.diameter
+          ? sized("specifyDiameterOfCircle", radius * 2)
+          : sized("specifyRadiusOfCircleOr", radius)
+      case "p1":
+        return this.active === "twoPoint"
+          ? "specifyFirstEndPointOfDiameter"
+          : "specifyFirstPointOnCircle"
+      case "p2":
+        return this.active === "twoPoint"
+          ? "specifySecondEndPointOfDiameter"
+          : "specifySecondPointOnCircle"
+      case "p3":
+        return "specifyThirdPointOnCircle"
+      case "tangentFirst":
+        return "specifyFirstTangentOfCircle"
+      case "tangentSecond":
+        return "specifySecondTangentOfCircle"
+      case "ttrRadius":
+        return state.base
+          ? "specifySecondPoint"
+          : sized("specifyRadiusOfCircle", radius)
+    }
   }
 
   commandOptions(): readonly CommandOption[] {

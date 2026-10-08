@@ -23,6 +23,30 @@ export const OSNAP_MODES: Readonly<Record<string, SnapType | "none">> = {
   NONe: "none",
 }
 
+/**
+ * What the object snap menu sends for each snap, as AutoCAD's own menu macros
+ * do (`_endp`), and whether the override then asks `of` or `to`: the
+ * history reads `Specify first point: _endp of`, `_tan to`. WHY: only
+ * `_endp of` is confirmed; the rest follow it and are unverified.
+ */
+export const OSNAP_MENU_ANSWERS: Readonly<
+  Record<SnapType | "none", { readonly macro: string; readonly to: boolean | null }>
+> = {
+  [SnapType.Endpoint]: { macro: "_endp", to: false },
+  [SnapType.Midpoint]: { macro: "_mid", to: false },
+  [SnapType.Center]: { macro: "_cen", to: false },
+  [SnapType.Quadrant]: { macro: "_qua", to: false },
+  [SnapType.Intersection]: { macro: "_int", to: false },
+  [SnapType.Extension]: { macro: "_ext", to: false },
+  [SnapType.Insertion]: { macro: "_ins", to: false },
+  [SnapType.Perpendicular]: { macro: "_per", to: true },
+  [SnapType.Tangent]: { macro: "_tan", to: true },
+  [SnapType.Nearest]: { macro: "_nea", to: true },
+  [SnapType.ApparentIntersection]: { macro: "_appint", to: false },
+  [SnapType.Parallel]: { macro: "_par", to: true },
+  none: { macro: "_non", to: null },
+}
+
 /** The keyword ids of {@link OSNAP_MODES}. */
 export const OSNAP_MODE_IDS: readonly string[] = Object.keys(OSNAP_MODES)
 
