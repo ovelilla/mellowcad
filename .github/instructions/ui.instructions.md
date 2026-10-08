@@ -8,6 +8,19 @@ description: "React/UI conventions for the CAD editor shell (/draw): file layout
 React is a **dumb presentation shell**. Components read `EngineState` and call `CadEngine`
 methods; they never contain CAD logic, geometry or drawing decisions. Import from `@/cad` only.
 
+**The chrome renders from `EditorState`**, which `useCadEngine` returns: the engine's state less
+what every pointer move changes (`POINTER_KEYS` — `cursorUcs`, `dynamicInput`), so moving the
+cursor re-renders nothing but what shows it. That is read with `useEngineSelector(engine, select)`
+in the smallest component that shows it (`Coordinates`, `DynamicInput`). Passing the whole state
+down again, or reading a pointer field off it, puts back a full-editor render per mouse event
+(~20 ms in development).
+
+**The React Compiler is on** (`reactCompiler` in `next.config.ts`): components and hooks are
+memoized at build time, so `useMemo`, `useCallback` and `memo` are not written for speed — only
+where a stable identity is the contract (a `useSyncExternalStore` subscribe). It needs the Rules of
+React, which `eslint-plugin-react-hooks` (in `npm run lint`) enforces: a component that breaks them
+is skipped silently by the compiler but fails the lint, so fix the code rather than disable the rule.
+
 That holds for browser capabilities too: **no `Blob`, file picker, download anchor or global
 keyboard listener in a component.** If a button needs one, the engine owes it a method (behind a
 port, implemented in `cad/adapters/`) — otherwise the behaviour lives in the app rather than in

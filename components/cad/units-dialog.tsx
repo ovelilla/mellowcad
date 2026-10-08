@@ -9,8 +9,8 @@ import {
   LENGTH_UNITS,
   unitsSampleOutput,
   type CadEngine,
-  type EngineState,
 } from "@/cad"
+import type { EditorState } from "@/hooks/useCadEngine"
 import { Button } from "@/components/ui/button"
 import {
   Select,
@@ -42,7 +42,7 @@ export function UnitsDialog({
   state,
 }: {
   engine: CadEngine
-  state: EngineState
+  state: EditorState
 }) {
   const close = () => engine.setUnitsDialog(false)
   return (

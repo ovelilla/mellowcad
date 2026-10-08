@@ -5,7 +5,8 @@ import { Menu } from "@base-ui/react/menu"
 import { CheckIcon } from "lucide-react"
 import { useTranslations } from "next-intl"
 
-import { CadEngine, EngineState } from "@/cad"
+import { CadEngine } from "@/cad"
+import type { EditorState } from "@/hooks/useCadEngine"
 
 import { cn } from "@/lib/utils"
 
@@ -24,7 +25,7 @@ export function SelectionCyclingList({
   state,
 }: {
   engine: CadEngine
-  state: EngineState
+  state: EditorState
 }) {
   const t = useTranslations("Editor.SelectionCycling")
   const { candidates, currentId, listAt } = state.selectionCycling

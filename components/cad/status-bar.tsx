@@ -28,7 +28,8 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover"
-import { CadEngine, EngineState, SnapModeType, SnapType } from "@/cad"
+import { CadEngine, SnapModeType, SnapType } from "@/cad"
+import { useEngineSelector, type EditorState } from "@/hooks/useCadEngine"
 import {
   readHiddenStatusItems,
   rememberHiddenStatusItems,
@@ -83,7 +84,7 @@ export function StatusBar({
   state,
 }: {
   engine: CadEngine
-  state: EngineState
+  state: EditorState
 }) {
   const t = useTranslations("Editor.StatusBar")
   const keys = useTranslations("Editor.Keys")
@@ -117,7 +118,11 @@ export function StatusBar({
   return (
     <TooltipProvider>
       {shows("coordinates") && (
-        <Coordinates state={state} label={names.coordinates} />
+        <Coordinates
+          engine={engine}
+          precision={state.documentPrecision}
+          label={names.coordinates}
+        />
       )}
 
       <div className="ms-auto flex shrink-0 items-center gap-0.5">
@@ -331,9 +336,17 @@ export function StatusBar({
  * (`1.5000, 2.0039, 0.0000`), at the drawing's precision. A technical value:
  * it reads left to right in every page.
  */
-function Coordinates({ state, label }: { state: EngineState; label: string }) {
-  const cursor = state.cursorUcs
-  const value = (n: number) => n.toFixed(state.documentPrecision)
+function Coordinates({
+  engine,
+  precision,
+  label,
+}: {
+  engine: CadEngine
+  precision: number
+  label: string
+}) {
+  const cursor = useEngineSelector(engine, (state) => state.cursorUcs)
+  const value = (n: number) => n.toFixed(precision)
   return (
     <span
       dir="ltr"
@@ -422,7 +435,7 @@ function SnapMode({
   label,
 }: {
   engine: CadEngine
-  state: EngineState
+  state: EditorState
   label: string
 }) {
   const t = useTranslations("Editor.StatusBar")

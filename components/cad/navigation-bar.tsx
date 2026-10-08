@@ -14,7 +14,8 @@ import {
 } from "lucide-react"
 import { useTranslations } from "next-intl"
 
-import type { CadEngine, EngineState } from "@/cad"
+import type { CadEngine } from "@/cad"
+import type { EditorState } from "@/hooks/useCadEngine"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { TooltipProvider } from "@/components/ui/tooltip"
@@ -62,7 +63,7 @@ export function NavigationBar({
   state,
 }: {
   engine: CadEngine
-  state: EngineState
+  state: EditorState
 }) {
   const t = useTranslations("Editor.NavigationBar")
   const tool = (id: string) => state.tools.find((entry) => entry.id === id)
@@ -109,7 +110,7 @@ function ZoomSplitButton({
   state,
 }: {
   engine: CadEngine
-  state: EngineState
+  state: EditorState
 }) {
   const t = useTranslations("Editor.NavigationBar")
   const [face, setFace] = useState<ZoomId>("extents")

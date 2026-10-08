@@ -14,11 +14,11 @@ import { useTranslations } from "next-intl"
 import {
   CadEngine,
   CompassLetter,
-  EngineState,
   ViewCubePart,
   ViewCubeSide,
   type ViewCubeFace,
 } from "@/cad"
+import type { EditorState } from "@/hooks/useCadEngine"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
 
@@ -71,7 +71,7 @@ export function ViewCube({
   state,
 }: {
   engine: CadEngine
-  state: EngineState
+  state: EditorState
 }) {
   const t = useTranslations("Editor.ViewCube")
   const [hovered, setHovered] = React.useState<ViewCubePart | null>(null)
@@ -372,7 +372,7 @@ export function ViewCube({
 }
 
 /** The UCS menu under the cube: the current UCS, the WCS, the saved ones and New UCS. */
-function UcsMenu({ engine, state }: { engine: CadEngine; state: EngineState }) {
+function UcsMenu({ engine, state }: { engine: CadEngine; state: EditorState }) {
   const t = useTranslations("Editor.ViewCube")
   const { world, name, named } = state.ucsMenu
   const label = world ? t("wcs") : (name ?? t("unnamed"))

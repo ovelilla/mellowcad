@@ -5,11 +5,11 @@ import { useTranslations } from "next-intl"
 
 import {
   type CadEngine,
-  type EngineState,
   type EntityType,
   type PropertyEdit,
   type PropertyRow,
 } from "@/cad"
+import type { EditorState } from "@/hooks/useCadEngine"
 import {
   Select,
   SelectContent,
@@ -41,7 +41,7 @@ export function PropertiesPanel({
   state,
 }: {
   engine: CadEngine
-  state: EngineState
+  state: EditorState
 }) {
   const t = useTranslations("Editor.Properties")
   const { properties } = state

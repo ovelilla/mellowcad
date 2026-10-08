@@ -222,11 +222,14 @@ and `splineCurve` derives the control points and knots every time. Queries with 
 tolerance, a hundred-thousandth of the curve's size; the closest point refines that with a bounded
 Newton. A future curve of the same kind (a helix, an offset spline) follows the same split.
 
-The SVG presenter differs from the canvas one only where SVG does: it clips segments to the frame
-(a scene draws alignment paths millions of pixels long, which a canvas clips for free but SVG would
-dash end to end), it sizes text from a **fixed** cap-height ratio because it cannot measure a font,
-and it places the canvas's em-box baselines arithmetically rather than with `dominant-baseline`,
-which rasterisers disagree about.
+**Both presenters clip segments to the frame** (`adapters/clipSegment.ts`): a scene draws alignment
+paths millions of pixels long. SVG would dash them end to end, and so does Chrome's canvas unless
+the line is exactly horizontal or vertical — Skia culls only those — so an unclipped polar or
+Extension guide off the axis costs ~10 ms a frame, ~75 ms zoomed in. The canvas keeps the dash
+phase across the clip (`lineDashOffset`) so the dashes do not crawl as the guide's far end moves.
+The SVG presenter differs from the canvas one only where SVG does: it sizes text from a **fixed**
+cap-height ratio because it cannot measure a font, and it places the canvas's em-box baselines
+arithmetically rather than with `dominant-baseline`, which rasterisers disagree about.
 
 **Store what was picked, derive what is shown.** A dimension keeps only its definition points; its
 length and its label come out of `dimensionGeometry` / `dimensionText` every time they are needed.
@@ -503,4 +506,7 @@ loadable.
 
 `shared/Observable.ts` is the pub/sub used everywhere. `CadRuntime` caches its `EngineState`
 snapshot (`useSyncExternalStore` depends on referential stability) and rebuilds it on model
-emits — never per pointer-move. Rendering is on-demand via `host.requestRender()`.
+emits, through `shareStructure`: whatever the change left equal keeps its identity, and a rebuild
+that changed nothing is not announced. A pointer move does rebuild it — the cursor's coordinates
+and the dynamic input move with it — so the rest must stay `===` or the whole editor re-renders
+on every event. Rendering is on-demand via `host.requestRender()`.

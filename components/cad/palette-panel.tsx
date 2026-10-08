@@ -13,12 +13,8 @@ import {
 } from "lucide-react"
 import { useTranslations } from "next-intl"
 
-import {
-  PALETTE_TABS,
-  type CadEngine,
-  type EngineState,
-  type PaletteTab,
-} from "@/cad"
+import { PALETTE_TABS, type CadEngine, type PaletteTab } from "@/cad"
+import type { EditorState } from "@/hooks/useCadEngine"
 import { cn } from "@/lib/utils"
 import { useDirection } from "@/components/ui/direction"
 import { TooltipProvider } from "@/components/ui/tooltip"
@@ -57,7 +53,7 @@ export function PalettePanel({
   state,
 }: {
   engine: CadEngine
-  state: EngineState
+  state: EditorState
 }) {
   const t = useTranslations("Editor.Palette")
   const titles = useTranslations("Editor")

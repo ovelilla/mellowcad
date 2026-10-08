@@ -243,7 +243,7 @@ describe("markup", () => {
     expect(svg).toContain('x1="0" y1="1.2" x2="10" y2="0"')
   })
 
-  it("clips a segment to the frame, as a canvas would", () => {
+  it("clips a segment to the frame, as the canvas does", () => {
     const presenter = new SvgScenePresenter({
       frame: { width: 200, height: 100 },
     })

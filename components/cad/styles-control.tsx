@@ -6,7 +6,8 @@ import { useTranslations } from "next-intl"
 
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
-import { CadEngine, DimStyleInfo, EngineState, TextStyleInfo } from "@/cad"
+import { CadEngine, DimStyleInfo, TextStyleInfo } from "@/cad"
+import type { EditorState } from "@/hooks/useCadEngine"
 
 import { DecimalInput } from "./decimal-input"
 
@@ -31,7 +32,7 @@ export function StylesControl({
   state,
 }: {
   engine: CadEngine
-  state: EngineState
+  state: EditorState
 }) {
   const t = useTranslations("Editor.Styles")
   const tab = state.stylesTable
@@ -85,7 +86,7 @@ function DimStyles({
   state,
 }: {
   engine: CadEngine
-  state: EngineState
+  state: EditorState
 }) {
   const t = useTranslations("Editor.Styles")
   const [selectedId, setSelectedId] = useState<string | null>(null)
@@ -199,7 +200,7 @@ function TextStyles({
   state,
 }: {
   engine: CadEngine
-  state: EngineState
+  state: EditorState
 }) {
   const t = useTranslations("Editor.Styles")
   const [selectedId, setSelectedId] = useState<string | null>(null)

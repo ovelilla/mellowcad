@@ -6,12 +6,8 @@ import { useTranslations } from "next-intl"
 
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
-import {
-  CadEngine,
-  CanvasScenePresenter,
-  EngineState,
-  matchesWildcard,
-} from "@/cad"
+import { CadEngine, CanvasScenePresenter, matchesWildcard } from "@/cad"
+import type { EditorState } from "@/hooks/useCadEngine"
 
 const THUMBNAIL_PX = 64
 
@@ -32,7 +28,7 @@ export function BlocksControl({
   state,
 }: {
   engine: CadEngine
-  state: EngineState
+  state: EditorState
 }) {
   const t = useTranslations("Editor.Blocks")
   const [filter, setFilter] = useState("")

@@ -5,7 +5,8 @@ import { Menu } from "@base-ui/react/menu"
 import { CheckIcon } from "lucide-react"
 import { useTranslations } from "next-intl"
 
-import { CadEngine, EngineState, SnapType } from "@/cad"
+import { CadEngine, SnapType } from "@/cad"
+import type { EditorState } from "@/hooks/useCadEngine"
 
 /**
  * The object-snap override menu — AutoCAD's Shift+right-click behaviour. It pops
@@ -56,7 +57,7 @@ export function SnapOverrideItems({
   state,
 }: {
   engine: CadEngine
-  state: EngineState
+  state: EditorState
 }) {
   const t = useTranslations("Editor.SnapOverride")
   return (
@@ -93,7 +94,7 @@ export function SnapOverrideMenu({
   state,
 }: {
   engine: CadEngine
-  state: EngineState
+  state: EditorState
 }) {
   const at = state.snapOverrideMenu
 

@@ -5,12 +5,8 @@ import { Menu } from "@base-ui/react/menu"
 import { ChevronRight } from "lucide-react"
 import { useTranslations } from "next-intl"
 
-import type {
-  CadEngine,
-  EngineState,
-  ShortcutMenuAction,
-  ShortcutMenuEntry,
-} from "@/cad"
+import type { CadEngine, ShortcutMenuAction, ShortcutMenuEntry } from "@/cad"
+import type { EditorState } from "@/hooks/useCadEngine"
 
 import { MENU_AT_CURSOR, SnapOverrideItems } from "./snap-override-menu"
 
@@ -62,7 +58,7 @@ export function ShortcutMenu({
   state,
 }: {
   engine: CadEngine
-  state: EngineState
+  state: EditorState
 }) {
   const t = useTranslations("Editor.ShortcutMenu")
   const keys = useTranslations("Editor.Keys")

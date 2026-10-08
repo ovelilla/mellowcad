@@ -22,7 +22,8 @@ import {
 } from "lucide-react"
 import { useLocale, useTranslations } from "next-intl"
 
-import { type CadEngine, type EngineState, type PaletteTab } from "@/cad"
+import { type CadEngine, type PaletteTab } from "@/cad"
+import type { EditorState } from "@/hooks/useCadEngine"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
@@ -67,7 +68,7 @@ export function TopBar({
   state,
 }: {
   engine: CadEngine
-  state: EngineState
+  state: EditorState
 }) {
   const t = useTranslations("Editor.TopBar")
   const keys = useTranslations("Editor.Keys")
@@ -285,7 +286,7 @@ function ApplicationMenu({ engine }: { engine: CadEngine }) {
  * drawing is kept on this device as it changes, apart from the files QSAVE
  * writes.
  */
-function SaveStatus({ state }: { state: EngineState }) {
+function SaveStatus({ state }: { state: EditorState }) {
   const t = useTranslations("Editor.TopBar")
   const saving = state.saveState === "saving"
   const shown = saving || state.lastSavedAt !== null
@@ -316,7 +317,7 @@ function LayerControl({
   state,
 }: {
   engine: CadEngine
-  state: EngineState
+  state: EditorState
 }) {
   const t = useTranslations("Editor.TopBar")
   const properties = useTranslations("Editor.Properties")
@@ -373,7 +374,7 @@ function PropertyControls({
   state,
 }: {
   engine: CadEngine
-  state: EngineState
+  state: EditorState
 }) {
   const t = useTranslations("Editor.TopBar")
   const selected = state.selectionCount > 0
@@ -443,7 +444,7 @@ function PaletteToggle({
   label,
 }: {
   engine: CadEngine
-  state: EngineState
+  state: EditorState
   tab: PaletteTab
   icon: LucideIcon
   label: string

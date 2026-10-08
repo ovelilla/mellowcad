@@ -6,7 +6,8 @@ import { ChevronUp } from "lucide-react"
 
 import { cn } from "@/lib/utils"
 import { TooltipProvider } from "@/components/ui/tooltip"
-import { CadEngine, EngineState, type CommandLineUi } from "@/cad"
+import { CadEngine, type CommandLineUi } from "@/cad"
+import type { EditorState } from "@/hooks/useCadEngine"
 
 import { IconAction } from "./toolbar-primitives"
 
@@ -27,7 +28,7 @@ export function CommandLine({
   state,
 }: {
   engine: CadEngine
-  state: EngineState
+  state: EditorState
 }) {
   const { visible, historyOpen, prompt, buffer, suggestions, lang } =
     state.commandLine

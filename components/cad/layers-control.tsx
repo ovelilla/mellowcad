@@ -11,7 +11,8 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip"
-import { CadEngine, EngineNames, EngineState, LayerInfo } from "@/cad"
+import { CadEngine, EngineNames, LayerInfo } from "@/cad"
+import type { EditorState } from "@/hooks/useCadEngine"
 import { LinetypeSelect } from "./linetype-select"
 import { LineweightSelect } from "./lineweight-select"
 
@@ -32,7 +33,7 @@ export function LayersControl({
   state,
 }: {
   engine: CadEngine
-  state: EngineState
+  state: EditorState
 }) {
   const t = useTranslations("Editor.Layers")
   const [selectedId, setSelectedId] = useState<string | null>(null)

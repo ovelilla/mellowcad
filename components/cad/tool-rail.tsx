@@ -39,7 +39,8 @@ import { useTranslations } from "next-intl"
 import { TooltipProvider } from "@/components/ui/tooltip"
 import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
-import { CadEngine, EngineState } from "@/cad"
+import { CadEngine } from "@/cad"
+import type { EditorState } from "@/hooks/useCadEngine"
 import { cn } from "@/lib/utils"
 
 import { IconAction, Panel } from "./toolbar-primitives"
@@ -325,7 +326,7 @@ export function ToolRail({
   state,
 }: {
   engine: CadEngine
-  state: EngineState
+  state: EditorState
 }) {
   const metaById = new Map<string, ToolMeta>(
     state.tools.map((tool) => [tool.id, tool])
@@ -445,7 +446,7 @@ function ToolFlyout({
   metaById,
 }: {
   engine: CadEngine
-  state: EngineState
+  state: EditorState
   family: ToolFlyoutFamily
   metaById: Map<string, ToolMeta>
 }) {
@@ -499,7 +500,7 @@ function FoldedSection({
   metaById,
 }: {
   engine: CadEngine
-  state: EngineState
+  state: EditorState
   section: PaletteSection
   metaById: Map<string, ToolMeta>
 }) {

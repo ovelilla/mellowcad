@@ -4,7 +4,8 @@ import { Menu } from "@base-ui/react/menu"
 import { CheckIcon } from "lucide-react"
 import { useTranslations } from "next-intl"
 
-import { VIEW_MENU, type CadEngine, type EngineState } from "@/cad"
+import { VIEW_MENU, type CadEngine } from "@/cad"
+import type { EditorState } from "@/hooks/useCadEngine"
 
 /**
  * The viewport controls at the drawing's top left (VPCONTROL 1), of which
@@ -16,7 +17,7 @@ export function ViewportControls({
   state,
 }: {
   engine: CadEngine
-  state: EngineState
+  state: EditorState
 }) {
   const t = useTranslations("Editor.Viewport")
   const names = state.names.views

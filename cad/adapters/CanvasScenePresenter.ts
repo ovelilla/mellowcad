@@ -1,6 +1,7 @@
 import { Scene, ScenePrimitive } from "../scene/types"
 import { DRAWING_FONT } from "../scene/theme"
 import { TEXT_FONT_CAP_RATIO } from "../domain/text"
+import { clipSegment } from "./clipSegment"
 
 /** Em size the cap-height probe measures at; big enough to be precise. */
 const CAP_PROBE_SIZE = 100
@@ -38,23 +39,37 @@ export class CanvasScenePresenter {
     ctx.fillRect(0, 0, scene.width, scene.height)
 
     for (const primitive of scene.primitives) {
-      this.drawPrimitive(ctx, primitive)
+      this.drawPrimitive(ctx, primitive, scene)
     }
   }
 
   private drawPrimitive(
     ctx: CanvasRenderingContext2D,
-    p: ScenePrimitive
+    p: ScenePrimitive,
+    frame: { readonly width: number; readonly height: number }
   ): void {
     switch (p.kind) {
-      case "segment":
+      case "segment": {
+        const clipped = clipSegment(p.a, p.b, frame)
+        if (!clipped) break
+        const [a, b] = clipped
         this.applyStroke(ctx, p.stroke)
+        // The pattern keeps its phase from the scene's start, or the dashes
+        // of a guide would crawl as the cursor moves its unseen far end.
+        if (a !== p.a && p.stroke.dash && p.stroke.dash.length > 0) {
+          ctx.lineDashOffset = dashPhase(
+            Math.hypot(a.x - p.a.x, a.y - p.a.y),
+            p.stroke.dash
+          )
+        }
         ctx.beginPath()
-        ctx.moveTo(p.a.x, p.a.y)
-        ctx.lineTo(p.b.x, p.b.y)
+        ctx.moveTo(a.x, a.y)
+        ctx.lineTo(b.x, b.y)
         ctx.stroke()
+        ctx.lineDashOffset = 0
         this.resetDash(ctx, p.stroke.dash)
         break
+      }
 
       case "circle":
         ctx.beginPath()
@@ -217,4 +232,12 @@ export class CanvasScenePresenter {
   ): void {
     if (dash && dash.length > 0) ctx.setLineDash([])
   }
+}
+
+/** Where a dash pattern stands `distance` along its stroke, within one period. */
+function dashPhase(distance: number, dash: readonly number[]): number {
+  // An odd-length pattern repeats itself once to alternate dash and gap.
+  const sum = dash.reduce((total, d) => total + d, 0)
+  const period = dash.length % 2 === 0 ? sum : sum * 2
+  return period > 0 ? distance % period : 0
 }

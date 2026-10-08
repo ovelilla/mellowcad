@@ -104,6 +104,7 @@ import {
   viewCubeUi,
 } from "./runtimeViewCube"
 import { PointResolver } from "./PointResolver"
+import { shareStructure } from "./shareStructure"
 import { AutosaveService } from "./Autosave"
 import { buildScene, PolarGuideInput } from "./SceneBuilder"
 import {
@@ -3199,7 +3200,13 @@ export class CadRuntime extends Observable {
   }
 
   private invalidateState(): void {
-    this.stateSnapshot = this.buildState()
+    // WHY shared and skipped: one pointer move invalidates several sub-models,
+    // and a rebuilt snapshot is new from top to bottom. Keeping what did not
+    // change lets the UI re-render only the part that did — the cursor's
+    // coordinates and the dynamic input — rather than the whole editor.
+    const next = shareStructure(this.stateSnapshot, this.buildState())
+    if (next === this.stateSnapshot) return
+    this.stateSnapshot = next
     this.emit()
   }
 

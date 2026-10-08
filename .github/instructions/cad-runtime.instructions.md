@@ -245,6 +245,12 @@ box drag started on a stack still works. Choosing a candidate replays press and 
   (`sceneTracking`). Never cross a tool's preview.
 - Running Apparent Intersection is the visual crossing of two objects at different heights; an edge
   is prolonged only to meet the polar path.
+- **A provider that pairs shapes drops the far ones first.** Intersection keeps only shapes that
+  pass within its reach of the cursor (`mayReachCursor`) before crossing them pairwise — every
+  pair of the drawing on each move was 13 ms at 300 lines. The filter must stay exact: only in
+  plan and for shapes in the world's XY, where `isNear` measures the same distance; an arc is
+  judged by its circle. Apparent Intersection is not filtered: an edge prolonged to the polar path
+  can be far from the cursor.
 - **Acquired points are one set** (`ObjectSnapTrackingEngine`, up to seven): OTRACK's guides and
   Extension both read them, and with OTRACK off `acquireEndpoints` still acquires endpoints for
   Extension — through `SnapEngine.endpointUnder` when Endpoint is not what is engaged (its
@@ -307,8 +313,12 @@ degrades instead of disappearing.
 
 ## EngineState
 
-The single UI contract, built once in `buildState` and cached — `useSyncExternalStore` needs a
-stable reference, so never rebuild it per pointer move, only on model emits. All user-facing
+The single UI contract, built in `buildState` on model emits and cached. `invalidateState` shares
+it with the last snapshot (`shareStructure`), so a part a change left equal keeps its identity; a
+pointer move changes only `cursorUcs` and `dynamicInput` (`shareStructure.test.ts` holds that).
+A new field that moves with the cursor goes in the hook's `POINTER_KEYS` (`ui.instructions.md`);
+anything in `buildState` that is not a plain object or array (a `Map`, a class instance, a fresh
+closure) is new on every rebuild and breaks the sharing. All user-facing
 formatting (lengths, angles, property rows, dynamic-input labels) belongs here, not in React, and
 all its words come from `runtime.text` (`EngineText`, the locale laid over English). React keys
 rows, groups and chips by **id**, never by a label two translations could share. The prompt is

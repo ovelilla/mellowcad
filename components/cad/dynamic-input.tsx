@@ -2,7 +2,8 @@
 
 import { useEffect, useRef } from "react"
 import { Lock } from "lucide-react"
-import { CadEngine, EngineState } from "@/cad"
+import { CadEngine } from "@/cad"
+import { useEngineSelector, type EditorState } from "@/hooks/useCadEngine"
 
 /**
  * Floating dynamic-input box, AutoCAD-style. This component is intentionally
@@ -17,11 +18,11 @@ export function DynamicInput({
   lockedLabel,
 }: {
   engine: CadEngine
-  state: EngineState
+  state: EditorState
   /** `Editor.DynamicInput.locked`: what the padlock says to a screen reader. */
   lockedLabel: string
 }) {
-  const di = state.dynamicInput
+  const di = useEngineSelector(engine, (s) => s.dynamicInput)
   const activeFieldId = di?.fields.find((f) => f.active)?.id ?? null
   const inputRef = useRef<HTMLInputElement>(null)
   const areaRef = useRef<HTMLTextAreaElement>(null)

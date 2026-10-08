@@ -5,6 +5,7 @@ import {
   TextBaseline,
 } from "../scene/types"
 import { DRAWING_FONT, THEME } from "../scene/theme"
+import { clipSegment } from "./clipSegment"
 import { TEXT_FONT_CAP_RATIO } from "../domain/text"
 
 /** Chrome labels, as the canvas draws them. */
@@ -46,10 +47,9 @@ export interface SvgScenePresenterOptions {
    */
   readonly plot?: boolean
   /**
-   * The frame the elements will be shown in. Segments are clipped to it: the
-   * scene draws an alignment path as a line millions of pixels long, which a
-   * canvas clips for free but an SVG would dash along its whole length.
-   * {@link SvgScenePresenter.render} uses the scene's own size.
+   * The frame the elements will be shown in. Segments are clipped to it (see
+   * {@link clipSegment}). {@link SvgScenePresenter.render} uses the scene's
+   * own size.
    */
   readonly frame?: { readonly width: number; readonly height: number }
 }
@@ -64,9 +64,6 @@ export interface SvgDocumentOptions {
   /** Extra attributes for the root `<svg>`. */
   readonly attributes?: Readonly<Record<string, string | number>>
 }
-
-/** How far past the frame a clipped segment still runs, so its cap is off-screen. */
-const CLIP_MARGIN_PX = 8
 
 /** Extra attributes for one element, e.g. the timing of its animation. */
 export type SvgDecorator = (
@@ -381,46 +378,6 @@ export class SvgScenePresenter {
     const rounded = Math.round(value * this.factor) / this.factor
     return rounded === 0 ? 0 : rounded
   }
-}
-
-/**
- * Liang–Barsky: the part of segment `a`–`b` inside the frame (grown by a
- * margin), or null when none of it is. The start point is kept exactly when it
- * is already inside, so a dash pattern still starts where the scene said.
- */
-function clipSegment(
-  a: { x: number; y: number },
-  b: { x: number; y: number },
-  frame: { width: number; height: number }
-): [{ x: number; y: number }, { x: number; y: number }] | null {
-  const dx = b.x - a.x
-  const dy = b.y - a.y
-  let t0 = 0
-  let t1 = 1
-  const edges: [number, number][] = [
-    [-dx, a.x + CLIP_MARGIN_PX],
-    [dx, frame.width + CLIP_MARGIN_PX - a.x],
-    [-dy, a.y + CLIP_MARGIN_PX],
-    [dy, frame.height + CLIP_MARGIN_PX - a.y],
-  ]
-  for (const [p, q] of edges) {
-    if (p === 0) {
-      if (q < 0) return null
-      continue
-    }
-    const r = q / p
-    if (p < 0) {
-      if (r > t1) return null
-      if (r > t0) t0 = r
-    } else {
-      if (r < t0) return null
-      if (r < t1) t1 = r
-    }
-  }
-  return [
-    t0 === 0 ? a : { x: a.x + t0 * dx, y: a.y + t0 * dy },
-    t1 === 1 ? b : { x: a.x + t1 * dx, y: a.y + t1 * dy },
-  ]
 }
 
 /**

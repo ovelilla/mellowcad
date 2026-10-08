@@ -9,6 +9,10 @@ import {
 } from "./i18n/rewrites"
 
 const nextConfig: NextConfig = {
+  // Every change to the engine's state re-renders the editor's chrome: the
+  // compiler's memoization takes that from ~7 ms to ~3 ms, for 1.5 KB more on
+  // the landing. The Babel plugin, not the Rust port, which is experimental.
+  reactCompiler: true,
   experimental: {
     // Two root layouts ((marketing) and (app)) leave no common layout to
     // compose a not-found page from, so URLs outside `[locale]` get this one.

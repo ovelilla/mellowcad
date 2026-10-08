@@ -736,17 +736,16 @@ export const nearestProvider: SnapProvider = {
  */
 export const intersectionProvider: SnapProvider = {
   type: SnapType.Intersection,
-  collect({
-    document,
-    entities,
-    cursorOn,
-    isNear,
-    construction,
-  }: SnapContext): SnapCandidate[] {
+  collect(context: SnapContext): SnapCandidate[] {
+    const { document, entities, cursorOn, isNear, construction } = context
+    // WHY filtered before pairing: crossing every pair of the drawing on
+    // each pointer move is quadratic — 5 ms a move at 300 lines. A point it
+    // keeps lies on both shapes within `INTERSECTION_REACH` of the cursor, so
+    // a shape that never comes that close cannot hold one.
     const shapes = collectShapes(document, entities, construction, {
       cursorOn,
       isNear,
-    })
+    }).filter((shape) => mayReachCursor(shape, context))
     const candidates: SnapCandidate[] = []
 
     for (let i = 0; i < shapes.length; i++) {
@@ -769,7 +768,7 @@ export const intersectionProvider: SnapProvider = {
           const at = meetingPoint(a, b, point)
           if (at === null) continue
           // Coarse pre-filter around the cursor; the engine judges exactly.
-          if (!isNear(at, 8)) continue
+          if (!isNear(at, INTERSECTION_REACH)) continue
           candidates.push({
             type: SnapType.Intersection,
             point: at,
@@ -781,6 +780,38 @@ export const intersectionProvider: SnapProvider = {
     }
     return candidates
   },
+}
+
+/** How far from the cursor, in release tolerances, Intersection looks. */
+const INTERSECTION_REACH = 8
+
+/**
+ * Whether a shape may pass within {@link INTERSECTION_REACH} of the cursor.
+ * Judged only in plan and for a shape in the world's XY — the rubber band, or
+ * an object in no plane of its own — where `isNear` measures in that XY too;
+ * anywhere else the screen distorts it, and the shape is kept. An arc is
+ * judged by its whole circle, which is never farther.
+ */
+function mayReachCursor(
+  shape: SnapShape,
+  { view, worldCursor: cursor, isNear }: SnapContext
+): boolean {
+  if (!view.isPlan) return true
+  if (shape.source !== null && planeAxes(shape.source) !== undefined) {
+    return true
+  }
+  let closest: Vec2
+  if (shape.kind === "segment") {
+    closest = closestPointOnSegment(shape.a, shape.b, cursor).point
+  } else {
+    const radial = V.sub(cursor, shape.center)
+    const length = V.length(radial)
+    closest =
+      length < 1e-9
+        ? V.add(shape.center, { x: shape.radius, y: 0 })
+        : V.add(shape.center, V.scale(radial, shape.radius / length))
+  }
+  return isNear(withZ(closest, 0), INTERSECTION_REACH)
 }
 
 /**
