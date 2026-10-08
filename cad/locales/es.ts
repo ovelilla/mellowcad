@@ -1288,7 +1288,19 @@ export const es: EngineLocale = {
       "specifyDisplacement": "Precise desplazamiento",
       "specifySecondPointOr": "Precise segundo punto o",
       "useFirstPointAsDisplacement": "usar primer punto como desplazamiento",
-      "copySecondPointOr": "Precise el segundo punto o"
+      "copySecondPointOr": "Precise el segundo punto o",
+      "specifyBasePoint": "Precise punto base",
+      "specifyRotationAngleOr": "Precise ángulo de rotación o",
+      "specifyTheReferenceAngle": "Precise ángulo de referencia",
+      "specifyTheNewAngle": "Precise el nuevo ángulo",
+      "specifyScaleFactorOr": "Precise factor de escala o",
+      "specifyReferenceLength": "Precise longitud de referencia",
+      "specifyNewLength": "Precise nueva longitud",
+      "specifyFirstPointOfMirrorLine": "Precise primer punto de línea de simetría",
+      "specifySecondPointOfMirrorLine": "Precise segundo punto de línea de simetría",
+      "eraseSourceObjects": "¿Borrar objetos de origen?",
+      "selectSourceOrMultipleToJoin": "Designe un objeto de origen o varios objetos para unirlos a la vez",
+      "selectObjectsToJoin": "Seleccione objetos para unir"
     },
     "format": {
       "idle": "Comando",
@@ -1396,6 +1408,9 @@ export const es: EngineLocale = {
         "\" desconocido."
       ],
       "cancel": "*Cancelar*",
+      "rotateSettings": "Ángulo actual positivo en SCP:  ANGDIR=en sentido horario inverso  ANGBASE=0",
+      "rotatingCopy": "Girando una copia de los objetos designados.",
+      "scalingCopy": "Ajustando la escala de una copia de los objetos designados.",
       "objectsFound": [
         [
           "box",

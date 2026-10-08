@@ -29,11 +29,14 @@ export abstract class SelectionActionTool implements Tool {
   readonly shortcut?: string
 
   private state: SelectionActionState = { phase: "selecting", hover: null }
+  /** The set being built, read live: JOIN asks differently once it holds one. */
+  private selection: ToolContext["selection"] | null = null
 
   /** Runs the action on the selected `entities`; may reset the selection. */
   protected abstract run(entities: readonly Entity[], ctx: ToolContext): void
 
   onActivate(ctx: ToolContext): void {
+    this.selection = ctx.selection
     ctx.setCursor("default")
     this.begin(ctx)
   }
@@ -46,7 +49,7 @@ export abstract class SelectionActionTool implements Tool {
    */
   protected begin(ctx: ToolContext): void {
     if (!ctx.selection.isEmpty()) {
-      if (this.selectionQuestion() !== null) countPreselection(ctx)
+      if (this.question() !== null) countPreselection(ctx)
       this.execute(ctx)
     } else {
       this.state = { phase: "selecting", hover: null }
@@ -57,16 +60,18 @@ export abstract class SelectionActionTool implements Tool {
    * What the set is asked with, `Select objects`; null for a command whose
    * own wording is not verified yet, which keeps `NAME:`.
    */
-  protected selectionQuestion(): PromptId | null {
+  protected selectionQuestion(picked: boolean): PromptId | null {
+    void picked
     return "selectObjects"
   }
 
   question(): PromptId | null {
-    return this.selectionQuestion()
+    return this.selectionQuestion(!(this.selection?.isEmpty() ?? true))
   }
 
   onDeactivate(ctx: ToolContext): void {
     this.state = { phase: "selecting", hover: null }
+    this.selection = null
     ctx.dynamicInput.close()
   }
 
@@ -197,13 +202,12 @@ export abstract class SelectionActionTool implements Tool {
     ctx: ToolContext,
     box = false
   ): void {
-    if (this.selectionQuestion() !== null) {
-      pickObjects(ids, subtract, box, ctx)
-      return
-    }
-    for (const id of ids) {
-      if (subtract) ctx.selection.remove(id)
-      else ctx.selection.add(id)
+    if (this.question() !== null) pickObjects(ids, subtract, box, ctx)
+    else {
+      for (const id of ids) {
+        if (subtract) ctx.selection.remove(id)
+        else ctx.selection.add(id)
+      }
     }
   }
 }

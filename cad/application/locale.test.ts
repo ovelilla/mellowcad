@@ -288,6 +288,28 @@ describe("Spanish AutoCAD's command language", () => {
     )
   })
 
+  it("asks GIRA's and SIMETRIA's questions in Spanish AutoCAD's words", () => {
+    const cad = createHarness({
+      locale: es,
+      entities: [lineOf(p(0, 0), p(100, 0), { id: "A" })],
+    })
+    cad.select("A").command("GIRA").click(p(0, 0))
+    expect(cad.state().commandLine.prompt).toBe(
+      "GIRA Precise ángulo de rotación o [Copiar/Referencia] <0.00>:"
+    )
+    cad.escape().select("A").command("SIMETRIA").click(p(0, 10))
+    cad.click(p(100, 10))
+    expect(cad.state().commandLine.prompt).toBe(
+      "SIMETRIA ¿Borrar objetos de origen? [Sí/No] <No>:"
+    )
+    expect(cad.commandLog().slice(0, 4)).toEqual([
+      "GIRA",
+      "Ángulo actual positivo en SCP:  ANGDIR=en sentido horario inverso  ANGBASE=0",
+      "1 encontrados",
+      "Precise punto base:",
+    ])
+  })
+
   it("draws with LINEA, L and _LINE, and undoes a segment with H", () => {
     const cad = createHarness({ locale: es })
     cad.command("LINEA").escape().command("_LINE").escape().command("l")

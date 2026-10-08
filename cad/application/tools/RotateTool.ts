@@ -27,7 +27,9 @@ import {
   PointerInput,
   Tool,
   ToolContext,
+  ToolQuestion,
 } from "./Tool"
+import { countPreselection, pickObjects } from "./objectSelection"
 
 /**
  * AutoCAD's ROTATE command: select a set of objects, pick a base point (the
@@ -124,13 +126,42 @@ export class RotateTool implements Tool {
 
   onActivate(ctx: ToolContext): void {
     ctx.setCursor("crosshair")
+    // ANGDIR and ANGBASE are fixed here: counterclockwise from east.
+    ctx.report(ctx.text.message("rotateSettings"))
     // Pre-selected objects (the common path) skip straight to the base point,
     // matching AutoCAD; otherwise prompt to select the objects first.
     if (ctx.selection.isEmpty()) {
       this.state = { phase: "selecting" }
     } else {
+      countPreselection(ctx)
       this.state = { phase: "pivot" }
       this.openPivotInput(ctx)
+    }
+  }
+
+  /**
+   * WHY the new angle names no `[Points]` and no `<default>`: neither is
+   * offered here.
+   */
+  question(): PromptId | ToolQuestion {
+    switch (this.state.phase) {
+      case "selecting":
+      case "pressed":
+      case "boxing":
+        return "selectObjects"
+      case "pivot":
+        return "specifyBasePoint"
+      case "angle":
+        return {
+          id: "specifyRotationAngleOr",
+          enter: { angle: this.lastAngle },
+        }
+      case "refP1":
+        return { id: "specifyTheReferenceAngle", enter: { angle: 0 } }
+      case "refP2":
+        return "specifySecondPoint"
+      case "newAngle":
+        return "specifyTheNewAngle"
     }
   }
 
@@ -266,7 +297,7 @@ export class RotateTool implements Tool {
         this.state.currentWorld,
         ctx.viewport
       )
-      this.applyPick(hits, this.state.subtract, ctx)
+      this.applyPick(hits, this.state.subtract, ctx, true)
       this.state = { phase: "selecting" }
       ctx.requestRender()
     }
@@ -276,24 +307,20 @@ export class RotateTool implements Tool {
     return this.confirmSelection(ctx)
   }
 
+  /**
+   * `[Copy/Reference]` at the rotation angle, as AutoCAD keeps listing them
+   * once Copy is chosen; the new angle offers neither.
+   */
   commandOptions(): readonly CommandOption[] {
-    if (this.state.phase === "angle") {
-      const options: CommandOption[] = []
-      if (!this.state.copy) options.push({ id: "Copy" })
-      options.push({ id: "Reference" })
-      return options
-    }
-    if (this.state.phase === "newAngle" && !this.state.copy) {
-      return [{ id: "Copy" }]
-    }
-    return []
+    return this.state.phase === "angle"
+      ? [{ id: "Copy" }, { id: "Reference" }]
+      : []
   }
 
   invokeOption(id: string, ctx: ToolContext): CommandOptionOutcome {
-    if (
-      id === "Copy" &&
-      (this.state.phase === "angle" || this.state.phase === "newAngle")
-    ) {
+    if (id === "Copy" && this.state.phase === "angle") {
+      // WHY a second Copy does nothing: what AutoCAD says to it is unverified.
+      if (!this.state.copy) ctx.report(ctx.text.message("rotatingCopy"))
       this.state = { ...this.state, copy: true }
       ctx.requestRender()
       return "continue"
@@ -406,12 +433,10 @@ export class RotateTool implements Tool {
   private applyPick(
     ids: readonly EntityId[],
     subtract: boolean,
-    ctx: ToolContext
+    ctx: ToolContext,
+    box = false
   ): void {
-    for (const id of ids) {
-      if (subtract) ctx.selection.remove(id)
-      else ctx.selection.add(id)
-    }
+    pickObjects(ids, subtract, box, ctx)
   }
 
   private confirmSelection(ctx: ToolContext): boolean {

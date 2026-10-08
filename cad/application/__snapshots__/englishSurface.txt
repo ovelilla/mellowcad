@@ -2111,63 +2111,87 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
   properties: -
   cycling: -
 > ROTATE
-  prompt: ROTATE:
+  prompt: ROTATE Specify base point:
   asks: "Base point"
+  tip: Specify base point:
   dyn: "X,Y"=""||*
   properties: Line (1) {Thickness=0.00 mm~} [Geometry: Length=100.00 mm~, Angle=0.00°~, Δ X=100.00 mm, Δ Y=0.00 mm, Δ Z=0.00 mm] [Endpoints: Start X=0.00~, Start Y=0.00~, Start Z=0.00~, End X=100.00~, End Y=0.00~, End Z=0.00~]
   command| RO ROTATE
+  info| Current positive angle in UCS:  ANGDIR=counterclockwise  ANGBASE=0
+  info| 1 found
 > base
-  prompt: ROTATE [Copy/Reference]:
+  prompt: ROTATE Specify rotation angle or [Copy/Reference] <0.00>:
   asks: "Rotation angle"
+  tip: Specify rotation angle or
   dyn: "Rotation angle"=""||°*
   options: [C] Copy, [R] Reference
+  prompt| Specify base point:
 > C
-  prompt: ROTATE [Reference]:
-  options: [R] Reference
+  prompt| Specify rotation angle or [Copy/Reference] <0.00>: C
+  info| Rotating a copy of the selected objects.
 > R
-  prompt: ROTATE:
+  prompt: ROTATE Specify the reference angle <0.00>:
   asks: "Reference angle"
+  tip: Specify the reference angle
   dyn: "Reference angle"=""||°*
   options: -
+  prompt| Specify rotation angle or [Copy/Reference] <0.00>: R
 > reference
   dyn: "Reference angle"="0"||°*
 > enter
+  prompt: ROTATE Specify the new angle:
   asks: "New angle"
+  tip: Specify the new angle:
   dyn: "New angle"=""||°*
+  prompt| Specify the reference angle <0.00>: 0
 > new angle
   dyn: "New angle"="90"||°*
 > enter
   prompt: Command:
   asks: -
+  tip: -
   dyn: -
+  prompt| Specify the new angle: 90
 > ROTATE by points
-  prompt: ROTATE:
+  prompt: ROTATE Specify base point:
   asks: "Base point"
+  tip: Specify base point:
   dyn: "X,Y"=""||*
   command| ROTATE
+  info| Current positive angle in UCS:  ANGDIR=counterclockwise  ANGBASE=0
+  info| 1 found
 > base
-  prompt: ROTATE [Copy/Reference]:
+  prompt: ROTATE Specify rotation angle or [Copy/Reference] <0.00>:
   asks: "Rotation angle"
+  tip: Specify rotation angle or
   dyn: "Rotation angle"=""||°*
   options: [C] Copy, [R] Reference
+  prompt| Specify base point:
 > R
-  prompt: ROTATE:
+  prompt: ROTATE Specify the reference angle <0.00>:
   asks: "Reference angle"
+  tip: Specify the reference angle
   dyn: "Reference angle"=""||°*
   options: -
+  prompt| Specify rotation angle or [Copy/Reference] <0.00>: R
 > first reference point
+  prompt: ROTATE Specify second point:
   asks: "Second point"
+  tip: Specify second point:
   dyn: "X,Y"=""||*
+  prompt| Specify the reference angle <0.00>:
 > second reference point
-  prompt: ROTATE [Copy]:
+  prompt: ROTATE Specify the new angle:
   asks: "New angle"
+  tip: Specify the new angle:
   dyn: "New angle"=""||°*
-  options: [C] Copy
+  prompt| Specify second point:
 > escape
   prompt: Command:
   asks: -
+  tip: -
   dyn: -
-  options: -
+  prompt| Specify the new angle: *Cancel*
 
 ## SCALE
 > start
@@ -2180,63 +2204,83 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
   properties: -
   cycling: -
 > SCALE
-  prompt: SCALE:
+  prompt: SCALE Specify base point:
   asks: "Base point"
+  tip: Specify base point:
   dyn: "X,Y"=""||*
   properties: Line (1) {Thickness=0.00 mm~} [Geometry: Length=100.00 mm~, Angle=0.00°~, Δ X=100.00 mm, Δ Y=0.00 mm, Δ Z=0.00 mm] [Endpoints: Start X=0.00~, Start Y=0.00~, Start Z=0.00~, End X=100.00~, End Y=0.00~, End Z=0.00~]
-  command| SC SCALE
+  command| SC SCALE 1 found
 > base
-  prompt: SCALE [Copy/Reference]:
+  prompt: SCALE Specify scale factor or [Copy/Reference]:
   asks: "Scale factor"
+  tip: Specify scale factor or
   dyn: "Scale factor"=""||*
   options: [C] Copy, [R] Reference
+  prompt| Specify base point:
 > C
-  prompt: SCALE [Reference]:
-  options: [R] Reference
+  prompt| Specify scale factor or [Copy/Reference]: C
+  info| Scaling a copy of the selected objects.
 > R
-  prompt: SCALE:
+  prompt: SCALE Specify reference length <1.00>:
   asks: "Reference length"
+  tip: Specify reference length
   dyn: "Reference length"=""||mm*
   options: -
+  prompt| Specify scale factor or [Copy/Reference]: R
 > reference
   dyn: "Reference length"="100"||mm*
 > enter
+  prompt: SCALE Specify new length:
   asks: "New length"
+  tip: Specify new length:
   dyn: "New length"=""|0.00|mm*
+  prompt| Specify reference length <1.00>: 100
 > new length
   dyn: "New length"="50"|0.00|mm*
 > enter
   prompt: Command:
   asks: -
+  tip: -
   dyn: -
+  prompt| Specify new length: 50
 > SCALE by points
-  prompt: SCALE:
+  prompt: SCALE Specify base point:
   asks: "Base point"
+  tip: Specify base point:
   dyn: "X,Y"=""||*
-  command| SCALE
+  command| SCALE 1 found
 > base
-  prompt: SCALE [Copy/Reference]:
+  prompt: SCALE Specify scale factor or [Copy/Reference]:
   asks: "Scale factor"
+  tip: Specify scale factor or
   dyn: "Scale factor"=""||*
   options: [C] Copy, [R] Reference
+  prompt| Specify base point:
 > R
-  prompt: SCALE:
+  prompt: SCALE Specify reference length <1.00>:
   asks: "Reference length"
+  tip: Specify reference length
   dyn: "Reference length"=""||mm*
   options: -
+  prompt| Specify scale factor or [Copy/Reference]: R
 > first reference point
+  prompt: SCALE Specify second point:
   asks: "Second point"
+  tip: Specify second point:
   dyn: "X,Y"=""||*
+  prompt| Specify reference length <1.00>:
 > second reference point
-  prompt: SCALE [Copy]:
+  prompt: SCALE Specify new length:
   asks: "New length"
+  tip: Specify new length:
   dyn: "New length"=""||mm*
-  options: [C] Copy
+  prompt| Specify second point:
 > escape
   prompt: Command:
   asks: -
+  tip: -
   dyn: -
-  options: -
+  prompt| Specify new length: *Cancel*
 
 ## MIRROR
 > start
@@ -2249,41 +2293,57 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
   properties: -
   cycling: -
 > MIRROR
-  prompt: MIRROR:
+  prompt: MIRROR Specify first point of mirror line:
   asks: "First point of mirror line"
+  tip: Specify first point of mirror line:
   dyn: "X,Y"=""||*
   properties: Line (1) {Thickness=0.00 mm~} [Geometry: Length=100.00 mm~, Angle=0.00°~, Δ X=100.00 mm, Δ Y=0.00 mm, Δ Z=0.00 mm] [Endpoints: Start X=0.00~, Start Y=0.00~, Start Z=0.00~, End X=100.00~, End Y=0.00~, End Z=0.00~]
-  command| MI MIRROR
+  command| MI MIRROR 1 found
 > first
+  prompt: MIRROR Specify second point of mirror line:
   asks: "Second point of mirror line"
+  tip: Specify second point of mirror line:
+  prompt| Specify first point of mirror line:
 > second
-  prompt: MIRROR [Yes/No]:
+  prompt: MIRROR Erase source objects? [Yes/No] <No>:
   asks: 
+  tip: Erase source objects?
   dyn: 
   options: [Y] Yes, [N] No
+  prompt| Specify second point of mirror line:
 > Y
   prompt: Command:
   asks: -
+  tip: -
   dyn: -
   options: -
   properties: Line (1) {Thickness=0.00 mm~} [Geometry: Length=100.00 mm~, Angle=0.00°~, Δ X=100.00 mm, Δ Y=0.00 mm, Δ Z=0.00 mm] [Endpoints: Start X=0.00~, Start Y=100.00~, Start Z=0.00~, End X=100.00~, End Y=100.00~, End Z=0.00~]
+  prompt| Erase source objects? [Yes/No] <No>: Y
 > MIRROR N
-  prompt: MIRROR:
+  prompt: MIRROR Specify first point of mirror line:
   asks: "First point of mirror line"
+  tip: Specify first point of mirror line:
   dyn: "X,Y"=""||*
-  command| MIRROR
+  command| MIRROR 1 found
 > first
+  prompt: MIRROR Specify second point of mirror line:
   asks: "Second point of mirror line"
+  tip: Specify second point of mirror line:
+  prompt| Specify first point of mirror line:
 > second
-  prompt: MIRROR [Yes/No]:
+  prompt: MIRROR Erase source objects? [Yes/No] <No>:
   asks: 
+  tip: Erase source objects?
   dyn: 
   options: [Y] Yes, [N] No
+  prompt| Specify second point of mirror line:
 > N
   prompt: Command:
   asks: -
+  tip: -
   dyn: -
   options: -
+  prompt| Erase source objects? [Yes/No] <No>: N
 
 ## arrays
 > start
@@ -2438,7 +2498,7 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
   command| X EXPLODE 2 found
   info| 2 were not able to be exploded.
 > JOIN
-  command| J JOIN
+  command| J JOIN 2 found
   error| 0 objects joined, 2 objects discarded from the operation
 > escape
   properties: -

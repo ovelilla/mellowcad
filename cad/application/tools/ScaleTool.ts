@@ -26,7 +26,10 @@ import {
   PointerInput,
   Tool,
   ToolContext,
+  ToolQuestion,
 } from "./Tool"
+import { countPreselection, pickObjects } from "./objectSelection"
+import type { PromptId } from "../../locales/types"
 
 /**
  * AutoCAD's SCALE command: select a set of objects, pick a base point, then
@@ -126,8 +129,33 @@ export class ScaleTool implements Tool {
     if (ctx.selection.isEmpty()) {
       this.state = { phase: "selecting" }
     } else {
+      countPreselection(ctx)
       this.state = { phase: "base" }
       this.openBaseInput(ctx)
+    }
+  }
+
+  /**
+   * WHY the factor shows no `<default>` though Enter takes the last one:
+   * AutoCAD's 2026 prompt shows none. The new length names no `[Points]` and
+   * no default: neither is offered here.
+   */
+  question(): PromptId | ToolQuestion {
+    switch (this.state.phase) {
+      case "selecting":
+      case "pressed":
+      case "boxing":
+        return "selectObjects"
+      case "base":
+        return "specifyBasePoint"
+      case "factor":
+        return "specifyScaleFactorOr"
+      case "refP1":
+        return { id: "specifyReferenceLength", enter: 1 }
+      case "refP2":
+        return "specifySecondPoint"
+      case "newLength":
+        return "specifyNewLength"
     }
   }
 
@@ -263,7 +291,7 @@ export class ScaleTool implements Tool {
         this.state.currentWorld,
         ctx.viewport
       )
-      this.applyPick(hits, this.state.subtract, ctx)
+      this.applyPick(hits, this.state.subtract, ctx, true)
       this.state = { phase: "selecting" }
       ctx.requestRender()
     }
@@ -273,24 +301,20 @@ export class ScaleTool implements Tool {
     return this.confirmSelection(ctx)
   }
 
+  /**
+   * `[Copy/Reference]` at the factor, as AutoCAD keeps listing them once
+   * Copy is chosen; the new length offers neither.
+   */
   commandOptions(): readonly CommandOption[] {
-    if (this.state.phase === "factor") {
-      const options: CommandOption[] = []
-      if (!this.state.copy) options.push({ id: "Copy" })
-      options.push({ id: "Reference" })
-      return options
-    }
-    if (this.state.phase === "newLength" && !this.state.copy) {
-      return [{ id: "Copy" }]
-    }
-    return []
+    return this.state.phase === "factor"
+      ? [{ id: "Copy" }, { id: "Reference" }]
+      : []
   }
 
   invokeOption(id: string, ctx: ToolContext): CommandOptionOutcome {
-    if (
-      id === "Copy" &&
-      (this.state.phase === "factor" || this.state.phase === "newLength")
-    ) {
+    if (id === "Copy" && this.state.phase === "factor") {
+      // WHY a second Copy does nothing: what AutoCAD says to it is unverified.
+      if (!this.state.copy) ctx.report(ctx.text.message("scalingCopy"))
       this.state = { ...this.state, copy: true }
       ctx.requestRender()
       return "continue"
@@ -403,12 +427,10 @@ export class ScaleTool implements Tool {
   private applyPick(
     ids: readonly EntityId[],
     subtract: boolean,
-    ctx: ToolContext
+    ctx: ToolContext,
+    box = false
   ): void {
-    for (const id of ids) {
-      if (subtract) ctx.selection.remove(id)
-      else ctx.selection.add(id)
-    }
+    pickObjects(ids, subtract, box, ctx)
   }
 
   private confirmSelection(ctx: ToolContext): boolean {

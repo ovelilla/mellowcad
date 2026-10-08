@@ -980,7 +980,19 @@ export const en: EngineCatalog = {
       "specifyDisplacement": "Specify displacement",
       "specifySecondPointOr": "Specify second point or",
       "useFirstPointAsDisplacement": "use first point as displacement",
-      "copySecondPointOr": "Specify second point or"
+      "copySecondPointOr": "Specify second point or",
+      "specifyBasePoint": "Specify base point",
+      "specifyRotationAngleOr": "Specify rotation angle or",
+      "specifyTheReferenceAngle": "Specify the reference angle",
+      "specifyTheNewAngle": "Specify the new angle",
+      "specifyScaleFactorOr": "Specify scale factor or",
+      "specifyReferenceLength": "Specify reference length",
+      "specifyNewLength": "Specify new length",
+      "specifyFirstPointOfMirrorLine": "Specify first point of mirror line",
+      "specifySecondPointOfMirrorLine": "Specify second point of mirror line",
+      "eraseSourceObjects": "Erase source objects?",
+      "selectSourceOrMultipleToJoin": "Select source object or multiple objects to join at once",
+      "selectObjectsToJoin": "Select objects to join"
     },
     "format": {
       "idle": "Command",
@@ -1088,6 +1100,9 @@ export const en: EngineCatalog = {
         "\"."
       ],
       "cancel": "*Cancel*",
+      "rotateSettings": "Current positive angle in UCS:  ANGDIR=counterclockwise  ANGBASE=0",
+      "rotatingCopy": "Rotating a copy of the selected objects.",
+      "scalingCopy": "Scaling a copy of the selected objects.",
       "objectsFound": [
         [
           "box",

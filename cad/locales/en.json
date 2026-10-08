@@ -809,7 +809,19 @@
       "specifyDisplacement": "Specify displacement",
       "specifySecondPointOr": "Specify second point or",
       "useFirstPointAsDisplacement": "use first point as displacement",
-      "copySecondPointOr": "Specify second point or"
+      "copySecondPointOr": "Specify second point or",
+      "specifyBasePoint": "Specify base point",
+      "specifyRotationAngleOr": "Specify rotation angle or",
+      "specifyTheReferenceAngle": "Specify the reference angle",
+      "specifyTheNewAngle": "Specify the new angle",
+      "specifyScaleFactorOr": "Specify scale factor or",
+      "specifyReferenceLength": "Specify reference length",
+      "specifyNewLength": "Specify new length",
+      "specifyFirstPointOfMirrorLine": "Specify first point of mirror line",
+      "specifySecondPointOfMirrorLine": "Specify second point of mirror line",
+      "eraseSourceObjects": "Erase source objects?",
+      "selectSourceOrMultipleToJoin": "Select source object or multiple objects to join at once",
+      "selectObjectsToJoin": "Select objects to join"
     },
     "format": {
       "idle": "Command",
@@ -828,6 +840,9 @@
     "messages": {
       "unknownCommand": "Unknown command \"{name}\".",
       "cancel": "*Cancel*",
+      "rotateSettings": "Current positive angle in UCS:  ANGDIR=counterclockwise  ANGBASE=0",
+      "rotatingCopy": "Rotating a copy of the selected objects.",
+      "scalingCopy": "Scaling a copy of the selected objects.",
       "objectsFound": "{box, select, yes {Specify opposite corner: } other {}}{found} found{removed, plural, =0 {} other {, # removed}}{hasTotal, select, yes {, {total} total} other {}}",
       "copyModeMultiple": "Current settings:  Copy mode = Multiple",
       "stretchSelection": "Select objects to stretch by crossing-window or crossing-polygon...",

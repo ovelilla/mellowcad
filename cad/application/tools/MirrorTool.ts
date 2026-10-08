@@ -26,6 +26,7 @@ import {
   Tool,
   ToolContext,
 } from "./Tool"
+import { countPreselection, pickObjects } from "./objectSelection"
 
 /**
  * AutoCAD's MIRROR command: select a set of objects, then reflect them across a
@@ -96,9 +97,29 @@ export class MirrorTool implements Tool {
     if (ctx.selection.isEmpty()) {
       this.state = { phase: "selecting" }
     } else {
+      countPreselection(ctx)
       this.state = { phase: "first" }
       this.openPointInput(ctx, "mirrorFirstPoint")
     }
+  }
+
+  question(): PromptId {
+    switch (this.state.phase) {
+      case "selecting":
+      case "pressed":
+      case "boxing":
+        return "selectObjects"
+      case "first":
+        return "specifyFirstPointOfMirrorLine"
+      case "second":
+        return "specifySecondPointOfMirrorLine"
+      case "erase":
+        return "eraseSourceObjects"
+    }
+  }
+
+  defaultOption(): string | null {
+    return this.state.phase === "erase" ? "No" : null
   }
 
   onDeactivate(ctx: ToolContext): void {
@@ -198,7 +219,7 @@ export class MirrorTool implements Tool {
         this.state.currentWorld,
         ctx.viewport
       )
-      this.applyPick(hits, this.state.subtract, ctx)
+      this.applyPick(hits, this.state.subtract, ctx, true)
       this.state = { phase: "selecting" }
       ctx.requestRender()
     }
@@ -275,12 +296,10 @@ export class MirrorTool implements Tool {
   private applyPick(
     ids: readonly EntityId[],
     subtract: boolean,
-    ctx: ToolContext
+    ctx: ToolContext,
+    box = false
   ): void {
-    for (const id of ids) {
-      if (subtract) ctx.selection.remove(id)
-      else ctx.selection.add(id)
-    }
+    pickObjects(ids, subtract, box, ctx)
   }
 
   private confirmSelection(ctx: ToolContext): boolean {

@@ -14,6 +14,7 @@ import {
 } from "../../domain/entities"
 import { ReplaceEntitiesCommand } from "../commands/entityCommands"
 import { SelectionActionTool } from "./SelectionActionTool"
+import type { PromptId } from "../../locales/types"
 import { ToolContext } from "./Tool"
 
 /** World tolerance within which two endpoints count as the same point. */
@@ -31,9 +32,14 @@ export class JoinTool extends SelectionActionTool {
   readonly id = "join"
   readonly shortcut = "j"
 
-  /** WHY none yet: JOIN asks for a source object first, a wording unverified here. */
-  protected selectionQuestion(): null {
-    return null
+  /**
+   * JOIN takes the source and the rest in one set here, so after the first
+   * pick it asks for the objects to join as AutoCAD does once several are
+   * picked at once. WHY: `Select lines to join to source`, its prompt after a
+   * single source, would ask for a step this JOIN does not take.
+   */
+  protected selectionQuestion(picked: boolean): PromptId {
+    return picked ? "selectObjectsToJoin" : "selectSourceOrMultipleToJoin"
   }
 
   protected run(entities: readonly Entity[], ctx: ToolContext): void {

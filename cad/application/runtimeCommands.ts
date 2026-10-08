@@ -4,7 +4,7 @@ import type { CommandOptionUi, StylesPanelTab } from "./EngineState"
 import { promptString, type EngineText, type PromptSegment } from "./EngineText"
 import { offerKeywords } from "../i18n/keywords"
 import { Tool, type ToolQuestion } from "./tools/Tool"
-import { formatLength } from "../domain/units"
+import { formatAngle, formatLength } from "../domain/units"
 import type { DocumentSettings } from "../domain/units"
 import { MTextTool } from "./tools/MTextTool"
 import { AttEditTool } from "./tools/AttEditTool"
@@ -219,6 +219,7 @@ function enterValue(
 ): string {
   if (typeof enter === "number") return formatLength(enter, settings)
   if (typeof enter === "string") return text.prompt(enter)
+  if ("angle" in enter) return formatAngle(enter.angle, settings)
   return [enter.x, enter.y, enter.z]
     .map((value) => formatLength(value, settings))
     .join(", ")

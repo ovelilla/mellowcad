@@ -261,6 +261,47 @@ describe("COPY", () => {
 })
 
 describe("ROTATE", () => {
+  it("reports its angle settings, then asks as AutoCAD does", () => {
+    const cad = createHarness({ entities: [HORIZONTAL] })
+
+    cad.select("L1").command("RO").click(p(0, 0))
+    expect(cad.state().commandLine.prompt).toBe(
+      "ROTATE Specify rotation angle or [Copy/Reference] <0.00>:"
+    )
+    cad.option("Copy")
+    expect(cad.optionIds()).toEqual(["Copy", "Reference"])
+    cad.type("90").enter()
+
+    expect(cad.commandLog()).toEqual([
+      "RO ROTATE",
+      "Current positive angle in UCS:  ANGDIR=counterclockwise  ANGBASE=0",
+      "1 found",
+      "Specify base point:",
+      "Specify rotation angle or [Copy/Reference] <0.00>: C",
+      "Rotating a copy of the selected objects.",
+      "Specify rotation angle or [Copy/Reference] <0.00>: 90",
+    ])
+    expect(cad.entityCount).toBe(2)
+    cad.select("L1").command("ROTATE").click(p(0, 0))
+    expect(cad.state().commandLine.prompt).toBe(
+      "ROTATE Specify rotation angle or [Copy/Reference] <90.00>:"
+    )
+  })
+
+  it("asks the reference and the new angle, which offers no Copy", () => {
+    const cad = createHarness({ entities: [HORIZONTAL] })
+
+    cad.select("L1").command("ROTATE").click(p(0, 0)).option("Reference")
+    expect(cad.state().commandLine.prompt).toBe(
+      "ROTATE Specify the reference angle <0.00>:"
+    )
+    cad.click(p(0, 0))
+    expect(cad.state().commandLine.prompt).toBe("ROTATE Specify second point:")
+    cad.click(p(100, 0))
+    expect(cad.state().commandLine.prompt).toBe("ROTATE Specify the new angle:")
+    expect(cad.optionIds()).toEqual([])
+  })
+
   it("turns the selection about the picked pivot", () => {
     const cad = createHarness({
       entities: [lineOf(p(0, 0), p(100, 0), { id: "L1" })],
@@ -326,6 +367,35 @@ describe("ROTATE", () => {
 })
 
 describe("SCALE", () => {
+  it("asks the base point, the factor and the reference lengths", () => {
+    const cad = createHarness({ entities: [HORIZONTAL] })
+
+    cad.command("SCALE").click(p(100, 0)).enter()
+    expect(cad.state().commandLine.prompt).toBe("SCALE Specify base point:")
+    cad.click(p(0, 0))
+    expect(cad.state().commandLine.prompt).toBe(
+      "SCALE Specify scale factor or [Copy/Reference]:"
+    )
+    cad.option("Reference")
+    expect(cad.state().commandLine.prompt).toBe(
+      "SCALE Specify reference length <1.00>:"
+    )
+    cad.type("100").enter()
+    expect(cad.state().commandLine.prompt).toBe("SCALE Specify new length:")
+    cad.type("50").enter()
+
+    expect(cad.commandLog()).toEqual([
+      "SCALE",
+      "Select objects: 1 found",
+      "Select objects:",
+      "Specify base point:",
+      "Specify scale factor or [Copy/Reference]: R",
+      "Specify reference length <1.00>: 100",
+      "Specify new length: 50",
+    ])
+    expect(cad.byId<LineEntity>("L1").end).toBeCloseToPoint(p(100, 0))
+  })
+
   it("scales about the picked base point", () => {
     const cad = createHarness({
       entities: [lineOf(p(0, 0), p(100, 0), { id: "L1" })],
@@ -379,6 +449,24 @@ describe("SCALE", () => {
 })
 
 describe("MIRROR", () => {
+  it("asks the mirror line, then whether to erase the source, No kept", () => {
+    const cad = createHarness({ entities: [HORIZONTAL] })
+
+    cad.select("L1").command("MIRROR").click(p(0, 10)).click(p(100, 10))
+    expect(cad.state().commandLine.prompt).toBe(
+      "MIRROR Erase source objects? [Yes/No] <No>:"
+    )
+    cad.enter()
+
+    expect(cad.commandLog()).toEqual([
+      "MIRROR 1 found",
+      "Specify first point of mirror line:",
+      "Specify second point of mirror line:",
+      "Erase source objects? [Yes/No] <No>:",
+    ])
+    expect(cad.entityCount).toBe(2)
+  })
+
   it("adds the reflection and keeps the source by default", () => {
     const cad = createHarness({
       entities: [lineOf(p(0, 0), p(100, 50), { id: "L1" })],
@@ -555,6 +643,31 @@ describe("STRETCH", () => {
 })
 
 describe("EXPLODE and JOIN", () => {
+  it("asks JOIN's source or several objects, then the objects to join", () => {
+    const cad = createHarness({
+      entities: [
+        lineOf(p(0, 0), p(50, 0), { id: "A" }),
+        lineOf(p(50, 0), p(100, 0), { id: "B" }),
+      ],
+    })
+
+    cad.command("JOIN")
+    expect(cad.state().commandLine.prompt).toBe(
+      "JOIN Select source object or multiple objects to join at once:"
+    )
+    cad.click(p(25, 0))
+    expect(cad.state().commandLine.prompt).toBe("JOIN Select objects to join:")
+    cad.click(p(75, 0)).enter()
+
+    expect(cad.commandLog().slice(0, 4)).toEqual([
+      "JOIN",
+      "Select source object or multiple objects to join at once: 1 found",
+      "Select objects to join: 1 found, 2 total",
+      "Select objects to join:",
+    ])
+    expect(cad.entityCount).toBe(1)
+  })
+
   const rectangle = polylineOf([p(0, 0), p(200, 0), p(200, 120), p(0, 120)], {
     id: "P1",
     closed: true,
