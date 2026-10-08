@@ -28,6 +28,7 @@ import {
   segmentCircleIntersection,
   segmentSegmentIntersection,
   tangentPointsFromPoint,
+  tangentLinesOfCircles,
   type TangentTarget,
 } from "./primitives"
 import {
@@ -929,5 +930,33 @@ describe("ellipse angle and parameter", () => {
     expect(ellipseAngleFromParam(0.5, 0)).toBeCloseTo(0)
     expect(ellipseAngleFromParam(0.5, deg(90))).toBeCloseTo(deg(90))
     expect(ellipseAngleFromParam(0.5, deg(45))).toBeCloseTo(Math.atan(0.5))
+  })
+})
+
+describe("tangentLinesOfCircles", () => {
+  it("gives the two outer and the two crossing tangents of apart circles", () => {
+    const lines = tangentLinesOfCircles(p(0, 0), 1, p(10, 0), 1)
+    expect(lines).toHaveLength(4)
+    const outer = lines.slice(0, 2).map(([a, b]) => [a.y, b.y].map(Math.round))
+    expect(outer).toEqual(
+      expect.arrayContaining([
+        [1, 1],
+        [-1, -1],
+      ])
+    )
+    for (const [a, b] of lines) {
+      const dir = V.normalize(V.sub(b, a))
+      // Each touches both circles at a right angle to the radius.
+      expect(V.dot(dir, a)).toBeCloseTo(0, 9)
+      expect(V.dot(dir, V.sub(b, p(10, 0)))).toBeCloseTo(0, 9)
+    }
+  })
+
+  it("keeps only the outer ones for overlapping circles", () => {
+    expect(tangentLinesOfCircles(p(0, 0), 2, p(3, 0), 2)).toHaveLength(2)
+  })
+
+  it("gives none when one circle holds the other", () => {
+    expect(tangentLinesOfCircles(p(0, 0), 5, p(1, 0), 1)).toEqual([])
   })
 })

@@ -51,8 +51,14 @@ object snap  →  object-snap tracking  →  snap mode (lattice)  →  constrain
   "Ortho is ignored when you … specify an object snap"; never feed a snap point to a constraint.
   A line's Extension comes back with a `TrackingResult` too (`extensionPath`), so a typed
   distance runs along it from the acquired end as along an OTRACK guide.
+- A typed `<angle` (`setAngleOverride`, set by `pointModifier` while the tool has an anchor)
+  comes right after the snap: the point slides on the line through the anchor at that heading,
+  at the anchor's Z, over tracking, the lattice, Ortho and Polar ("coordinates and object snaps
+  take precedence"). `resetTracking` drops it with the acquired points: it holds for one point.
 - When tracking engages, its point already accounts for the active Ortho ray, so it is returned
   as-is and constraints are skipped.
+- Shift held is `orthoOverride`: it **toggles** Ortho (off when it is on, on when it is off) and
+  Polar yields to it either way; `ConstraintManager` and `aidState` both read it so.
 - `allowSnapMode` is false while a tool is merely picking objects (`wantsSnap()` false) — rounding
   the cursor would make objects hard to hit.
 - Polar snap only rounds when Ortho/Polar provides an alignment path to measure along.
@@ -157,22 +163,32 @@ identity: the same document, viewport and objects.
    "Adapters" — so this is the harness's and a host's path.)
 2. Function keys: F2 command history, F3 osnap, F7 grid, F8 Ortho, F9 snap mode, F10 Polar,
    F11 OTRACK, F4 selection cycling (AutoCAD's Ctrl+W, which browsers keep, is accepted too).
-3. Ctrl combos (undo/redo, AutoCAD's window shortcuts Ctrl+9 command line, Ctrl+0 Clean Screen
-   and Ctrl+1 Properties, Ctrl+S save, Ctrl+O open, Ctrl+C/X/V copy-cut-paste, Ctrl+Shift+C copy
+3. Ctrl combos (undo/redo — Ctrl+Z is the running command's Undo keyword when it offers one,
+   else `undo()`, which ends a running command first so it goes whole —, AutoCAD's window
+   shortcuts Ctrl+9 command line, Ctrl+0 Clean Screen and Ctrl+1 Properties, Ctrl+S save, Ctrl+O open, Ctrl+C/X/V copy-cut-paste, Ctrl+Shift+C copy
    with base point, Ctrl+A select all), then Shift+Space (selection
    cycling) — a global aid, like the function keys, and it must beat the command prompt, which
    reads a bare space as Enter.
-4. **The active tool's keywords, by their single key** — a keyword beats a global command alias,
-   because in AutoCAD an alias only starts a command at the neutral prompt. Only a one-letter
-   abbreviation no other keyword starts with, and only on an empty prompt, so `_C` and `SIZ` can
-   be typed.
-5. Everything else feeds the **command-line buffer** (this is why multi-character aliases work and
+4. **No key runs a keyword on its own**: as at AutoCAD's prompt it is typed and confirmed (step 6).
+   Run on its letter, `C` Enter closed LINE and its Enter then repeated LINE.
+5. **With a value box up** (`typingField`: a session with a field that is not content, nothing at
+   the command line, no menu open) a printable key goes into the box's active field, Backspace
+   edits it and Enter or Space (not Shift+Space) is `pressEnter`. The box takes focus back only
+   after a render, and a first key that reached the command line split `100` into `1` there and
+   `00` in the box. `commitDynamicInput` hands an unanswered Enter on to the drawing under
+   `enterFromBox`, which this step lets through.
+6. Everything else feeds the **command-line buffer** (this is why multi-character aliases work and
    why no tool may claim a bare letter in `onKeyDown`). Submitted, it is read first as a keyword
-   of the running command (abbreviation, word, or `_` and the global one), then as a command name
-   (the command language's names and aliases, or `_` and a global name).
-6. Tail: Escape/Enter → `returnToNeutralTool`, then `activeTool.onKeyDown`.
+   of the running command (abbreviation, word, or `_` and the global one), then as a point
+   modifier (an object snap, FROM, `<angle`), then — with a value box up — as the prompt's answer
+   (`answerPrompt`: put in the box and committed, a coordinate without `@`/`#`/`*` given its
+   `#`, because the relative default is the tooltip's, DYNPICOORDS), never a command; only
+   otherwise as a command name (the command language's names and aliases, or `_` and a global
+   name). Empty, it is the prompt's Enter mid-command and repeats the last command at the neutral
+   prompt, as Enter and Space on the drawing do.
+7. Tail: Escape/Enter → `returnToNeutralTool`, then `activeTool.onKeyDown`.
 
-Inserting anything above step 4 steals keys from running commands; inserting between 4 and 5
+Inserting anything above step 4 steals keys from running commands; inserting between 4 and 6
 steals them from typing. Prefer exposing behaviour as a command option or a command.
 
 ## The pointer's buttons (`pointerDown` / `pointerUp`) — order is load-bearing
@@ -283,8 +299,13 @@ call in the `CadRuntime` constructor.
 
 ## Commands and history
 
-`history.execute(command)` is the only write path to the document. `loadDrawing` clears the
-history (a loaded file is a fresh baseline). Document _settings_ changes made by a host's own
+`history.execute(command)` is the only write path to the document. **A command is one undo step**,
+as AutoCAD's U undoes "the effects of the last command": `setActiveTool` opens a group
+(`history.beginGroup`) for every tool but Select and closes it (`endGroup`) after the old tool's
+`onDeactivate`, which may still commit. Inside the group each command stays its own entry, so a
+tool's Undo keyword (`ctx.undo()`) steps back one; on close they fold into one. What the user sets
+from a palette mid-command joins it, as AutoCAD undoes transparent changes with the command.
+`loadDrawing` clears the history (a loaded file is a fresh baseline). Document _settings_ changes made by a host's own
 setters (`setDocumentUnit`, `setDocumentPrecision`, `setLtScale`, layer table edits) are
 deliberately not undoable; anything touching entities is. What a command sets is what AutoCAD's U
 undoes — ATTMODE, the UCS and its table, UCSICON, ELEVATION and THICKNESS, LTSCALE, UNITS'

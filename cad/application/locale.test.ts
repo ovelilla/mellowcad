@@ -70,7 +70,8 @@ describe("English, the global command language", () => {
     cad.command("LINE").click(p(0, 0)).click(p(100, 0)).click(p(100, 100))
     cad.press("_")
     cad.press("C")
-    expect(cad.state().commandLine.buffer).toBe("_C")
+    // Typed on the drawing, it goes to the box the prompt shows.
+    expect(cad.state().dynamicInput?.fields[0].value).toBe("_C")
     cad.press("Enter")
     expect(cad.entityCount).toBe(3)
   })
@@ -103,7 +104,10 @@ describe("a language laid over English", () => {
       { text: "[Cerrar/desHacer]", keywords: true },
       { text: ":", keywords: false },
     ])
-    expect(state.commandOptions.map((option) => option.key)).toEqual(["C", "H"])
+    expect(state.commandOptions.map((option) => option.abbreviation)).toEqual([
+      "C",
+      "H",
+    ])
     expect(state.dynamicInput?.fields.map((field) => field.label)).toEqual([
       "Longitud",
       "Angle",
@@ -114,10 +118,13 @@ describe("a language laid over English", () => {
     )
   })
 
-  it("runs a keyword on its own key, and on _ with the global one", () => {
+  it("takes a keyword typed and confirmed, and _ with the global one", () => {
     const cad = createHarness({ locale: partial })
     cad.command("L").click(p(0, 0)).click(p(100, 0)).click(p(100, 100))
+    // As at AutoCAD's prompt, a letter alone runs nothing until Enter.
     cad.press("h")
+    expect(cad.entityCount).toBe(2)
+    cad.press("Enter")
     expect(cad.entityCount).toBe(1)
     cad.click(p(100, 100)).option("Undo")
     expect(cad.entityCount).toBe(1)
@@ -132,9 +139,6 @@ describe("a language laid over English", () => {
       entities: [lineOf(p(0, 0), p(100, 0))],
     })
     cad.command("Z")
-    const zoom = cad.state().commandOptions
-    expect(zoom.find((option) => option.id === "Scale")?.key).toBeNull()
-    expect(zoom.find((option) => option.id === "Extents")?.key).toBeNull()
     cad.press("E")
     expect(cad.state().commandLine.buffer).toBe("E")
     cad.press("Enter")
@@ -244,10 +248,15 @@ describe("Spanish AutoCAD's command language", () => {
     cad.click(p(0, 0)).click(p(100, 0)).click(p(100, 100))
     const state = cad.state()
     expect(state.commandLine.prompt).toBe("LINEA [Cerrar/desHacer]:")
-    expect(state.commandOptions.map((option) => option.key)).toEqual(["C", "H"])
+    expect(state.commandOptions.map((option) => option.abbreviation)).toEqual([
+      "C",
+      "H",
+    ])
     cad.press("h")
+    cad.press("Enter")
     expect(cad.entityCount).toBe(1)
     cad.click(p(100, 100)).press("c")
+    cad.press("Enter")
     expect(cad.entityCount).toBe(3)
     expect(cad.activeToolId()).toBe("select")
   })
@@ -271,12 +280,9 @@ describe("Spanish AutoCAD's command language", () => {
     expect(cad.state().commandLine.prompt).toBe(
       "DESFASE [punto a Atravesar/Borrar: No/Capa: Origen/Múltiple: DES] <punto a Atravesar>:"
     )
-    expect(cad.state().commandOptions.map((option) => option.key)).toEqual([
-      "A",
-      "B",
-      "C",
-      "M",
-    ])
+    expect(
+      cad.state().commandOptions.map((option) => option.abbreviation)
+    ).toEqual(["A", "B", "C", "M"])
     expect(cad.state().dynamicInput?.fields[0].label).toBe(
       "Distancia de desfase"
     )
@@ -308,9 +314,6 @@ describe("Spanish AutoCAD's command language", () => {
     expect(cad.state().commandLine.prompt).toBe(
       "ZOOM [Todo/Extensión/Previo/EScala/Ventana/Objeto]:"
     )
-    const zoom = cad.state().commandOptions
-    expect(zoom.find((option) => option.id === "Extents")?.key).toBeNull()
-    expect(zoom.find((option) => option.id === "All")?.key).toBe("T")
     for (const key of ["E", "S", "Enter"]) cad.press(key)
     expect(cad.state().dynamicInput?.fields[0].label).toBe("Factor de escala")
   })
@@ -318,6 +321,7 @@ describe("Spanish AutoCAD's command language", () => {
   it("justifies TEXTO by SIZ and the other two-letter codes", () => {
     const cad = createHarness({ locale: es })
     cad.command("TEXTO").press("u")
+    cad.press("Enter")
     expect(cad.commandLog().at(-1)).toBe(
       "Indique una opción [Izquierda/Centro/Derecha/Medio/SIZ/SC/SD/MI/MC/MD/II/IC/ID]:"
     )
@@ -333,8 +337,7 @@ describe("Spanish AutoCAD's command language", () => {
     expect(cad.state().commandLine.prompt).toBe(
       "TEXTOM [Altura/Justificar/Interlineado/Rotación/Estilo/aNchura]:"
     )
-    cad.press("j")
-    for (const key of ["M", "C", "Enter"]) cad.press(key)
+    for (const key of ["j", "Enter", "M", "C", "Enter"]) cad.press(key)
     cad.click(p(100, -50)).type("A").enter()
     expect(cad.only("mtext")).toMatchObject({ attachment: "mc" })
   })
@@ -366,17 +369,16 @@ describe("Spanish AutoCAD's command language", () => {
     cad.command("SCP").type("ua").enter()
     expect(cad.state().commandLine.prompt).toBe("SCP [Rest/Guardar/Supr]:")
     cad.escape().command("SCP")
-    // UA starts with U too, so Univ is typed and confirmed.
-    expect(cad.optionKeys()).toEqual([
-      null,
+    expect(cad.optionAbbreviations()).toEqual([
+      "UA",
       "B",
-      null,
+      "PR",
       "V",
-      null,
+      "U",
       "X",
       "Y",
       "Z",
-      null,
+      "EZ",
     ])
     cad.type("u").enter()
     expect(cad.runtime.document.getSettings().ucs.origin).toBeCloseToPoint(
@@ -395,8 +397,9 @@ describe("Spanish AutoCAD's command language", () => {
     expect(cad.state().commandLine.prompt).toBe(
       "PLANTA [scp Actual/SCP/Universal]:"
     )
-    expect(cad.optionKeys()).toEqual(["A", null, "U"])
+    expect(cad.optionAbbreviations()).toEqual(["A", "SCP", "U"])
     cad.press("a")
+    cad.press("Enter")
     expect(cad.runtime.viewport.right).toBeCloseToPoint(p(0, 1))
     cad.command("PLANTA").type("scp").enter()
     expect(cad.runtime.text.prompt("planUcsName")).toBe(
@@ -415,8 +418,9 @@ describe("Spanish AutoCAD's command language", () => {
     expect(cad.state().commandLine.prompt).toBe(
       "RECTANG [Elevación/Alt-objeto]:"
     )
-    expect(cad.optionKeys()).toEqual(["E", "A"])
+    expect(cad.optionAbbreviations()).toEqual(["E", "A"])
     cad.press("a")
+    cad.press("Enter")
     cad.type("3").enter().escape()
     cad.command("RECTANG")
     expect(cad.commandLog().at(-1)).toBe(
@@ -441,6 +445,7 @@ describe("Spanish AutoCAD's command language", () => {
   it("sets the views as Spanish AutoCAD's captures show them", () => {
     const cad = createHarness({ locale: es })
     cad.command("-VISTA").press("o")
+    cad.press("Enter")
     expect(cad.state().commandLine.prompt).toBe(
       "VISTA [SUperior/Inferior/Frontal/Posterior/IZquierda/Derecha]:"
     )
@@ -452,6 +457,7 @@ describe("Spanish AutoCAD's command language", () => {
     )
     expect(cad.state().commandLine.prompt).toBe("PTOVISTA [Rotación]:")
     cad.press("r")
+    cad.press("Enter")
     expect(cad.runtime.text.prompt("viewAngleInPlane")).toBe(
       "Ángulo a partir del eje X en el plano XY"
     )

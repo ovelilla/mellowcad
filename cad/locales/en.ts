@@ -1044,6 +1044,12 @@ export const en: EngineCatalog = {
       "fromNeedsPoint": "FROM needs a point prompt.",
       "fromBase": "FROM: pick the base point.",
       "fromOffset": "FROM: offset from the base point.",
+      "angleOverride": [
+        "Angle Override: ",
+        [
+          "angle"
+        ]
+      ],
       "saveUnavailable": "Saving to a file is not available here.",
       "openUnavailable": "Opening a file is not available here.",
       "openFailed": "Could not open the file.",

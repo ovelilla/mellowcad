@@ -43,15 +43,14 @@ expect(h.latest()).toBeDefined()
 - Chainable input: `command / click / rightClick / drag / moveTo / wheel / type / enter / escape /
 option / press / select / undo / redo`. `drag(…, { button: 1 })` is the wheel button's pan.
 - **`option(id)` names a keyword by its global id** (`.option("Close")`), never by its letter, and
-  answers as a user of the command language would: its key, or its abbreviation and Enter. An id
-  the running command does not have throws. Letters are tested apart, per language
-  (`optionKeys()`, and `locale.test.ts` with a partial test locale).
+  answers as a user of the command language would: its abbreviation and Enter. An id the running
+  command does not have throws. Letters are tested apart, per language (`optionAbbreviations()`, and `locale.test.ts` with a partial test locale).
 - `createHarness({ locale })` runs the engine in another language; the test locale in
   `locale.test.ts` shows the shape. `cad/locales/foreignHost.test.ts` is a host from outside:
   `CadDriver` and `extendLocale` from `@/cad`, a language of its own compiled with
   `icu-minify/compile` — what `cad/README.md` promises an integrator is tested there.
 - Readers: `entities() / only<T>(type) / byId / latest / typeCounts / state() / scene() /
-optionKeys() / optionIds() / selectedIds()`.
+optionAbbreviations() / optionIds() / selectedIds()`.
 - Keys route exactly like the real UI: Enter/Escape/option keys go through the dynamic input when
   a field is focused, otherwise through `keyDown`. A menu at the cursor (the shortcut menu, the
   snap override menu, the Selection list box) holds focus while it is open, so `escape()` then

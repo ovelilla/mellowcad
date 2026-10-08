@@ -44,6 +44,9 @@ export interface ResolvedPoint {
  * for the active Ortho line, so its point is returned as-is too.
  */
 export class PointResolver {
+  /** The direction a typed `<angle` locks the next point to, if one was typed. */
+  private angleOverride: Vec2 | null = null
+
   constructor(
     private readonly currentView: () => Viewport,
     private readonly snapping: SnapEngine,
@@ -65,7 +68,7 @@ export class PointResolver {
     world: Vec3,
     snap: SnapResult | null,
     anchor: Vec2 | Vec3 | null,
-    forceOrtho = false,
+    orthoOverride = false,
     allowSnapMode = true
   ): ResolvedPoint {
     // WHY returned untouched: "Ortho is ignored when you enter coordinates or
@@ -74,16 +77,28 @@ export class PointResolver {
     // the marker was showing.
     if (snap) return { point: snap.point, tracking: extensionPath(snap) }
 
+    // "The angle you specify will lock the cursor, overriding Grid Snap, Ortho
+    // mode, and PolarSnap": the point slides along the line through the base
+    // point at that angle, at the base point's height, as `@dist<angle` would.
+    if (this.angleOverride !== null && anchor !== null) {
+      const dir = this.angleOverride
+      const along = V.dot(V.sub(world, anchor), dir)
+      return {
+        point: withZ(V.add(anchor, V.scale(dir, along)), zOf(anchor)),
+        tracking: null,
+      }
+    }
+
     const ucs = this.currentUcs()
     const view = this.currentView()
-    const tracked = this.track(world, anchor, forceOrtho)
+    const tracked = this.track(world, anchor, orthoOverride)
     if (tracked) return { point: tracked.point, tracking: tracked }
 
     const candidate = allowSnapMode
       ? this.snapMode.snapPoint(world, ucs)
       : world
     const context = { anchor, world, point: candidate, ucs, view }
-    const constrained = this.constraints.apply(context, forceOrtho)
+    const constrained = this.constraints.apply(context, orthoOverride)
     if (isAlongZ(constrained)) {
       return {
         point: allowSnapMode
@@ -95,12 +110,25 @@ export class PointResolver {
     return {
       point: withZ(
         allowSnapMode
-          ? this.applyPolarSnap(context, constrained, forceOrtho)
+          ? this.applyPolarSnap(context, constrained, orthoOverride)
           : constrained,
         ucs.origin.z + this.currentElevation()
       ),
       tracking: null,
     }
+  }
+
+  /**
+   * Locks the next point to the line through the base point along `dir` (a
+   * unit direction in the frame), AutoCAD's `<angle` angle override, or
+   * releases it with `null`.
+   */
+  setAngleOverride(dir: Vec2 | null): void {
+    this.angleOverride = dir
+  }
+
+  hasAngleOverride(): boolean {
+    return this.angleOverride !== null
   }
 
   /**
@@ -112,9 +140,9 @@ export class PointResolver {
   crossing(
     world: Vec3,
     anchor: Vec2 | Vec3 | null,
-    forceOrtho = false
+    orthoOverride = false
   ): TrackingResult | null {
-    const tracked = this.track(world, anchor, forceOrtho)
+    const tracked = this.track(world, anchor, orthoOverride)
     return tracked && tracked.kind !== "projection" ? tracked : null
   }
 
@@ -126,29 +154,29 @@ export class PointResolver {
   engagedGuides(
     world: Vec3,
     anchor: Vec2 | Vec3 | null,
-    forceOrtho = false
+    orthoOverride = false
   ): readonly TrackingGuide[] {
-    const tracked = this.track(world, anchor, forceOrtho)
+    const tracked = this.track(world, anchor, orthoOverride)
     return tracked ? tracked.guides.filter((g) => g.kind !== "z") : []
   }
 
   private track(
     world: Vec3,
     anchor: Vec2 | Vec3 | null,
-    forceOrtho: boolean
+    orthoOverride: boolean
   ): TrackingResult | null {
     const view = this.currentView()
     const raw = { anchor, world, point: world, ucs: this.currentUcs(), view }
     const anchorLine =
-      anchor !== null ? this.constraints.activeRay(raw, forceOrtho) : null
+      anchor !== null ? this.constraints.activeRay(raw, orthoOverride) : null
     const anchorUp =
-      anchor !== null && this.constraints.activeAlongZ(raw, forceOrtho)
+      anchor !== null && this.constraints.activeAlongZ(raw, orthoOverride)
         ? withZ(anchor, zOf(anchor))
         : null
     return this.tracking.resolve(
       world,
       view.screenToWorldDistance(this.snapping.pixelTolerance),
-      this.aidState(forceOrtho),
+      this.aidState(orthoOverride),
       anchorLine,
       view,
       anchorUp,
@@ -180,11 +208,11 @@ export class PointResolver {
   private applyPolarSnap(
     context: ConstraintContext,
     point: Vec2,
-    forceOrtho: boolean
+    orthoOverride: boolean
   ): Vec2 {
     const { anchor } = context
     if (!this.snapMode.isPolar() || anchor === null) return point
-    if (!this.constraints.activeRay({ ...context, point }, forceOrtho)) {
+    if (!this.constraints.activeRay({ ...context, point }, orthoOverride)) {
       return point
     }
     const offset = V.sub(point, anchor)
@@ -197,13 +225,13 @@ export class PointResolver {
 
   /**
    * Aggregates the current drawing aids for the tracking pipeline / UI.
-   * `forceOrtho` (Shift held) temporarily forces Ortho and suppresses Polar,
+   * `orthoOverride` (Shift held) temporarily toggles Ortho and suppresses Polar,
    * matching AutoCAD's override.
    */
-  aidState(forceOrtho = false): DrawingAidState {
+  aidState(orthoOverride = false): DrawingAidState {
     return {
-      ortho: forceOrtho || this.constraints.isEnabled(ConstraintType.Ortho),
-      polar: !forceOrtho && this.constraints.isEnabled(ConstraintType.Polar),
+      ortho: orthoOverride !== this.constraints.isEnabled(ConstraintType.Ortho),
+      polar: !orthoOverride && this.constraints.isEnabled(ConstraintType.Polar),
       polarAngleStep: this.constraints.getPolarAngleStep(),
       objectSnapTracking: this.tracking.isActive(),
       acquiredPoints: this.tracking.getAcquired(),

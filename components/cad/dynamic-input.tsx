@@ -26,6 +26,8 @@ export function DynamicInput({
   const activeFieldId = di?.fields.find((f) => f.active)?.id ?? null
   const inputRef = useRef<HTMLInputElement>(null)
   const areaRef = useRef<HTMLTextAreaElement>(null)
+  /** Set while focus is taken back after a render rather than by the user. */
+  const refocusing = useRef(false)
 
   // Keep the active field focused so the user can type immediately after
   // placing a point. This runs after every render (not just on open) because
@@ -42,10 +44,19 @@ export function DynamicInput({
     const ae = document.activeElement as HTMLElement | null
     if (ae?.closest("[data-dynamic-input]")) return
     if (!engine.mayTakeFocus(ae)) return
+    refocusing.current = true
     el.focus()
+    refocusing.current = false
     // Multi-line text is edited in place: reselecting it all on every refocus
-    // would let the next keystroke wipe the paragraphs.
-    if (!(el instanceof HTMLTextAreaElement)) el.select()
+    // would let the next keystroke wipe the paragraphs. A value typed on the
+    // drawing before the box had focus goes on where it stopped.
+    if (el instanceof HTMLTextAreaElement) return
+    const field = di?.fields.find((f) => f.active)
+    if (field && field.kind !== "text" && el.value !== "") {
+      el.setSelectionRange(el.value.length, el.value.length)
+    } else {
+      el.select()
+    }
   })
 
   if (!di) return null
@@ -120,34 +131,33 @@ export function DynamicInput({
                 onFocus={(e) => {
                   engine.setActiveDynamicField(field.id)
                   // Select the contents so a keystroke replaces the value and a
-                  // single Backspace clears (unlocks) it, like AutoCAD.
-                  e.currentTarget.select()
+                  // single Backspace clears (unlocks) it, like AutoCAD. A
+                  // refocus after a render places the caret itself.
+                  if (!refocusing.current) e.currentTarget.select()
                 }}
                 onChange={(e) =>
                   engine.setDynamicInputText(e.target.value, field.id)
                 }
                 onKeyDown={(e) => {
-                  if (e.key === "Enter") {
+                  const value = field.kind !== "text"
+                  if (e.key === "Enter" || (e.key === " " && value)) {
+                    // Space is Enter in a value box, as at AutoCAD's prompt.
                     e.preventDefault()
                     engine.commitDynamicInput()
+                  } else if (
+                    value &&
+                    field.value === "" &&
+                    (e.ctrlKey || e.metaKey) &&
+                    !e.shiftKey &&
+                    e.key.toLowerCase() === "z"
+                  ) {
+                    // Ctrl+Z with nothing typed is the drawing's: the command's
+                    // Undo option, else UNDO, rather than the box's own.
+                    e.preventDefault()
+                    if (!engine.invokeToolOption("_Undo")) engine.undo()
                   } else if (e.key === "Escape") {
                     e.preventDefault()
                     engine.cancelDynamicInput()
-                  } else if (
-                    e.key.length === 1 &&
-                    field.kind !== "text" &&
-                    field.value === "" &&
-                    state.commandOptions.some(
-                      (o) => o.key === e.key.toUpperCase()
-                    )
-                  ) {
-                    // A command-option keyword (AutoCAD's [Close/Undo] prompt)
-                    // whose key runs it at once. Only in an empty field, so a
-                    // keyword can still be typed out and confirmed with Enter
-                    // (`_C`, a word, an abbreviation of several letters). A
-                    // free-text field is exempt: there a letter *is* content.
-                    e.preventDefault()
-                    engine.invokeToolOption(e.key)
                   } else if (
                     e.key === "Tab" &&
                     !e.shiftKey &&
@@ -157,6 +167,17 @@ export function DynamicInput({
                     // While an object snap is shown and nothing is typed, Tab
                     // cycles the snaps under the cursor, as in AutoCAD.
                     e.preventDefault()
+                  } else if (
+                    e.key === "Tab" &&
+                    !e.shiftKey &&
+                    field.kind === "coordinate" &&
+                    field.value.trim() !== "" &&
+                    !/[,<]/.test(field.value)
+                  ) {
+                    // The first point's X, then Tab, then its Y: "Tab can
+                    // replace the comma".
+                    e.preventDefault()
+                    engine.setDynamicInputText(`${field.value},`, field.id)
                   } else if (e.key === "Tab" && di.fields.length > 1) {
                     // Cycle between fields (e.g. Length <-> Angle), AutoCAD-style.
                     // Move DOM focus directly so the focus effect's "already on a
@@ -210,7 +231,7 @@ export function DynamicInput({
               className="flex items-center gap-1 rounded-md border border-border/60 bg-card/95 px-1.5 py-0.5 text-muted-foreground shadow-lg backdrop-blur"
             >
               <kbd className="rounded bg-muted px-1 font-mono text-title text-foreground">
-                {option.key ?? option.abbreviation}
+                {option.abbreviation}
               </kbd>
               {option.label}
             </span>

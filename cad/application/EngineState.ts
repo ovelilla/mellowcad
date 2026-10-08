@@ -229,11 +229,6 @@ export interface CommandOptionUi {
   /** The word in the command language, its abbreviation in capitals. */
   readonly keyword: string
   readonly abbreviation: string
-  /**
-   * The key that runs it at once, or null when it must be typed and confirmed
-   * (an abbreviation of several letters, or one another keyword starts with).
-   */
-  readonly key: string | null
   /** What the chip and the prompt show, e.g. `Close` or `Erase: Yes`. */
   readonly label: string
 }

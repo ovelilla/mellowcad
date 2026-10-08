@@ -40,9 +40,13 @@ import type { Vec2 } from "../geometry/Vec2"
  */
 
 /** Answers a keyword prompt by its letter, routed as the UI routes a key. */
+/** A keyword typed and confirmed, as at AutoCAD's prompt. */
 function answer(cad: CadHarness, letter: string): void {
   if (cad.hasFocusedField()) cad.runtime.invokeToolOption(letter)
-  else cad.press(letter)
+  else {
+    for (const char of letter) cad.press(char)
+    cad.press("Enter")
+  }
 }
 
 /** The text of the prompt each open field asks, before the X,Y collapse. */
@@ -117,7 +121,7 @@ class Surface {
       [
         "options",
         state.commandOptions
-          .map((option) => `[${option.key}] ${option.label}`)
+          .map((option) => `[${option.abbreviation}] ${option.label}`)
           .join(", ") || "-",
       ],
       ["canvas", canvas || "-"],

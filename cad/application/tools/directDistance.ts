@@ -1,7 +1,11 @@
 import { V } from "../../geometry/Vec2"
 import { Vec3, withZOf } from "../../geometry/Vec3"
 import type { ToolContext } from "./Tool"
-import { directionFromUcsHeading, headingInUcs } from "./ucsHeading"
+import {
+  directionFromUcsHeading,
+  headingInUcs,
+  headingOnCursorSide,
+} from "./ucsHeading"
 
 /** Below this a cursor is on the base point in plan, straight above or below it. */
 const PLUMB = 1e-9
@@ -18,7 +22,8 @@ export interface TypedDistance {
  * straight above or below `base` (on the `+Z` / `-Z` guide, or a point snapped
  * there) that path is the UCS's Z; otherwise it is the cursor's heading in the
  * plane, keeping the base's Z (`@dist<angle`). A typed angle always wins, and
- * lies in the plane. `null` when the cursor gives no direction.
+ * lies in the plane, read on the cursor's side as the field shows it acute
+ * (`headingOnCursorSide`). `null` when the cursor gives no direction.
  */
 export function pointAlongCursor(
   ctx: Pick<ToolContext, "ucs">,
@@ -32,8 +37,9 @@ export function pointAlongCursor(
   }
   const offset = V.sub(cursor, base)
   const planDistance = V.length(offset)
+  const heading = planDistance > PLUMB ? headingInUcs(ctx.ucs, offset) : null
   const angle =
-    typed.angle ?? (planDistance > PLUMB ? headingInUcs(ctx.ucs, offset) : null)
+    typed.angle === null ? heading : headingOnCursorSide(typed.angle, heading)
   if (angle === null) return null
   return withZOf(
     V.add(

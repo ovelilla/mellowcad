@@ -23,10 +23,10 @@ idle: Command:
 4719 +187 input | Other corner: | @14,30
 5297 +147 command |  | LINE
 5444 +167 input | LINE: | -58,0
-5610 +187 input | LINE: | @160,0
+5610 +187 input | LINE [Undo]: | @160,0
 6198 +147 command |  | LINE
 6345 +167 input | LINE: | 0,-58
-6512 +187 input | LINE: | @0,116
+6512 +187 input | LINE [Undo]: | @0,116
 7099 +187 command |  | CIRCLE
 7286 +127 input | Center [3P/2P/Ttr]: | 0,0
 7413 +107 input | Radius [Diameter]: | 36
@@ -67,10 +67,10 @@ input | LINE: | -65,-40
 ## otrack
 command |  | LINE
 input | LINE: | 0,0
-input | LINE: | 60,0
+input | LINE [Undo]: | 60,0
 command |  | LINE
 input | LINE: | 90,20
-input | LINE: | @0,40
+input | LINE [Undo]: | @0,40
 command |  | CIRCLE
 ## polar
 command |  | LINE
@@ -84,7 +84,7 @@ input | Center [3P/2P/Ttr]: | 60,40
 input | Radius [Diameter]: | 14
 command |  | LINE
 input | LINE: | 15,50
-input | LINE: | @80,-45
+input | LINE [Undo]: | @80,-45
 ## crossing
 command |  | RECTANG
 input | First corner [Elevation/Thickness]: | 0,0
@@ -94,7 +94,7 @@ input | Center [3P/2P/Ttr]: | 60,40
 input | Radius [Diameter]: | 14
 command |  | LINE
 input | LINE: | 15,50
-input | LINE: | @80,-45
+input | LINE [Undo]: | @80,-45
 ## draw
 command |  | PLINE
 input | PLINE: | 0,0
@@ -158,7 +158,7 @@ input | First corner [Elevation/Thickness]: | 35,0
 input | Other corner: | @20,40
 command |  | LINE
 input | LINE: | 45,-8
-input | LINE: | @0,56
+input | LINE [Undo]: | @0,56
 ## inquiry
 command |  | RECTANG
 input | First corner [Elevation/Thickness]: | 0,0

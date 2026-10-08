@@ -101,7 +101,7 @@ describe("BREAK", () => {
     })
 
     cad.command("BREAK").click(p(-50, 0))
-    expect(cad.optionKeys()).toEqual(["F"])
+    expect(cad.optionAbbreviations()).toEqual(["F"])
 
     cad.option("First point").click(p(0, 0)).click(p(100, 0))
 
@@ -172,7 +172,7 @@ describe("BREAKATPOINT", () => {
 
     cad.command("BREAKATPOINT").click(p(-100, 0))
 
-    expect(cad.optionKeys()).toEqual([])
+    expect(cad.optionAbbreviations()).toEqual([])
   })
 
   it("does nothing when the point falls on an endpoint", () => {

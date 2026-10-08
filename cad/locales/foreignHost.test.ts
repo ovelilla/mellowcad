@@ -59,6 +59,7 @@ describe("a host's own language", () => {
       "Angle",
     ])
     cad.press("u")
+    cad.press("Enter")
     expect(cad.entityCount).toBe(0)
   })
 

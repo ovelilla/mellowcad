@@ -397,9 +397,16 @@ pixels. 16 px icons go with 28 px controls (20 would go with 32).
 - The dynamic-input box is `pointer-events-none` and keyboard-driven — never make it clickable.
   A `paragraphs` field (MTEXT's editor) is a textarea: Enter stays a line break, Ctrl+Enter
   commits, and it is never reselected when focus comes back, or the next key would wipe the text.
-- It reclaims focus only where
-  `engine.mayTakeFocus` allows, which for the editor is anywhere. `useCadEngine(options)` passes an
-  embed's store and scope through; the editor passes none.
+  Nor is a value field with text in it: keys typed on the drawing before the box had focus went
+  into it (the runtime routes them), and the caret goes on after them. A value field takes Space
+  as Enter, Tab after a point's X as its comma, and Ctrl+Z with nothing typed as the command's
+  Undo option (else `engine.undo()`) — the drawing's keys, which never reach the runtime from a
+  field.
+- It reclaims focus only where `engine.mayTakeFocus` allows, which for the editor is anywhere but
+  another field being typed in (the command line, a palette value: the next render took the rest
+  of what was typed there into the box). `useCadEngine(options)` passes an embed's store and
+  scope through; the editor passes none.
+- The command line's Space is Enter whatever is typed, as at AutoCAD's prompt.
 
 ## Palettes that show drawing content
 

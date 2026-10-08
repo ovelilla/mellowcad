@@ -82,8 +82,8 @@ interface EngineLocale {
 - `names` maps a global name to the language's name and then its aliases
   (`"OFFSET": ["DESFASE", "DF", "EQ"]`). No two commands may share one.
 - `keywords` gives each command's keywords by their global id, the abbreviation in capitals
-  anywhere in the word (`desHacer` → `H`), as AutoCAD's `initget` does. A keyword runs on one key
-  only when that letter is its whole abbreviation and starts no other on offer.
+  anywhere in the word (`desHacer` → `H`), as AutoCAD's `initget` does. It is typed and
+  confirmed with Enter or Space, never run on a letter alone.
 - A linetype's or hatch pattern's name is drawing data and may be left out in every language.
 
 ### Messages are compiled by the host

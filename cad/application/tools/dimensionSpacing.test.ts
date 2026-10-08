@@ -117,13 +117,13 @@ describe("DIMSPACE", () => {
   it("offers the Auto keyword only at the value prompt", () => {
     const cad = createHarness({ entities: stack() })
     cad.command("DIMSPACE")
-    expect(cad.optionKeys()).toEqual([])
+    expect(cad.optionAbbreviations()).toEqual([])
 
     cad.click(p(50, -40)).click(p(150, -60))
-    expect(cad.optionKeys()).toEqual([])
+    expect(cad.optionAbbreviations()).toEqual([])
 
     cad.enter()
-    expect(cad.optionKeys()).toEqual(["A"])
+    expect(cad.optionAbbreviations()).toEqual(["A"])
   })
 
   it("applies Auto through its keyword too", () => {

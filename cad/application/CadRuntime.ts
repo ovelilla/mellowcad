@@ -27,6 +27,7 @@ import {
   formatAngle,
   formatLength,
   LengthUnit,
+  parseNumber,
   unitSuffix,
   ViewCubeSetting,
 } from "../domain/units"
@@ -56,7 +57,10 @@ import {
   DynamicInputSession,
   isContentField,
 } from "./input/DynamicInput"
-import { parseCoordinate } from "./input/coordinateInput"
+import {
+  isCoordinateExpression,
+  parseCoordinate,
+} from "./input/coordinateInput"
 import {
   CommandDefinition,
   CommandInfo,
@@ -66,7 +70,7 @@ import {
   shortestName,
   temporaryPromptLines,
 } from "./CommandLine"
-import { keywordForKey, resolveKeyword } from "../i18n/keywords"
+import { resolveKeyword } from "../i18n/keywords"
 import type { EngineLocale } from "../locales/types"
 import { EngineText, engineText, promptString } from "./EngineText"
 import { CommandHistory } from "./commands/Command"
@@ -80,7 +84,7 @@ import { InsertTool } from "./tools/InsertTool"
 import { TextEditTool } from "./tools/TextEditTool"
 import { AttEditTool } from "./tools/AttEditTool"
 import { PasteTool } from "./tools/PasteTool"
-import { headingInUcs } from "./tools/ucsHeading"
+import { directionFromUcsHeading, headingInUcs } from "./tools/ucsHeading"
 import { ViewPreset, currentViewPreset } from "./tools/viewPresets"
 import {
   CompassLetter,
@@ -281,6 +285,8 @@ export class CadRuntime extends Observable {
   // Whether Shift was held on the last pointer event. AutoCAD uses Shift as a
   // temporary Ortho override while specifying a point; this feeds the resolver.
   private pointerShift = false
+  /** Set while the box hands an unanswered Enter on to the drawing. */
+  private enterFromBox = false
 
   // Magnetic crosshair: where to draw it (screen), positioned on the resolved
   // point so it clings to geometry. `null` means the pointer is off-canvas.
@@ -421,6 +427,7 @@ export class CadRuntime extends Observable {
       setCursor: (cursor) => this.host.setCursor(cursor),
       report: (text, kind = "info") => this.commandLine.write(kind, text),
       setViewCubeVisible: (visible) => this.setViewCubeVisible(visible),
+      snapOverride: () => this.snapping.getOverride(),
       runningSnaps: {
         enabled: () => this.snapping.enabledTypes(),
         set: (types) => {
@@ -646,8 +653,12 @@ export class CadRuntime extends Observable {
     const next = this.tools.get(id)
     if (!next || next === this.activeTool) return
     this.activeTool.onDeactivate?.(this.toolContext)
+    // A command is one undo step, closed only once its tool has committed
+    // what it holds on deactivation.
+    this.history.endGroup()
     this.resetTracking()
     this.activeTool = next
+    if (next.id !== "select") this.history.beginGroup()
     next.onActivate?.(this.toolContext)
     // Commands are usually started from the keyboard or a toolbar button, with
     // the mouse standing still. Replay the cursor's last known position through
@@ -734,12 +745,49 @@ export class CadRuntime extends Observable {
     const text = this.commandLine.getBuffer().trim()
     this.commandLine.setBuffer("")
     if (text === "") {
-      this.repeatLastCommand()
+      // Mid-command the command window's Enter is the prompt's Enter.
+      if (this.activeTool.id !== "select") this.pressEnter()
+      else this.repeatLastCommand()
       return
     }
     if (this.invokeToolOption(text)) return
     if (this.pointModifier(text)) return
+    if (this.answerPrompt(text)) return
     this.runCommand(text)
+  }
+
+  /**
+   * A value typed at the command line while a prompt asks for one goes to that
+   * prompt, as in AutoCAD, where a command name there is not a command but a
+   * wrong answer. Coordinates typed in the command window are absolute: the
+   * relative default is the dynamic-input tooltip's (DYNPICOORDS), so they
+   * reach the box with its `#`.
+   */
+  private answerPrompt(text: string): boolean {
+    if (!this.dynamicInputHasField()) return false
+    const id = this.dynamicInput.getActiveFieldId()
+    const field = this.dynamicInput
+      .getSession()
+      ?.fields.find((f) => f.id === id)
+    if (!field) return false
+    const absolute =
+      !isContentField(field.kind) &&
+      isCoordinateExpression(text) &&
+      !/^[@#*]/.test(text)
+    const answer = absolute ? `#${text}` : text
+    const session = this.dynamicInput.getSession()
+    this.dynamicInput.setText(field.id, answer)
+    this.commitDynamicInput()
+    // An answer the prompt did not take is dropped, as the command line drops
+    // it, rather than left behind in the box.
+    if (
+      this.dynamicInput.getSession() === session &&
+      this.dynamicInput.getText(field.id) === answer
+    ) {
+      this.dynamicInput.setText(field.id, "")
+    }
+    this.invalidateState()
+    return true
   }
 
   /**
@@ -750,6 +798,7 @@ export class CadRuntime extends Observable {
    */
   private pointModifier(text: string): boolean {
     if (!(this.activeTool.wantsSnap?.() ?? true)) return false
+    if (this.angleOverride(text)) return true
     const mode = resolveKeyword(
       text,
       this.text.keywords("-OSNAP", OSNAP_MODE_IDS)
@@ -762,6 +811,29 @@ export class CadRuntime extends Observable {
       return this.runCommand(text)
     }
     return false
+  }
+
+  /**
+   * `<angle` typed at a point prompt that has a base point: AutoCAD's angle
+   * override, "Angle Override: 30", locking the next point to that heading
+   * from the base point (in the UCS) until it is given.
+   */
+  private angleOverride(text: string): boolean {
+    const match = /^<\s*(\S+)$/.exec(text.trim())
+    if (!match || this.toolAnchor() === null) return false
+    const degrees = parseNumber(match[1])
+    if (degrees === null || !Number.isFinite(degrees)) return false
+    const dir = directionFromUcsHeading(this.frame.ucs, degrees)
+    this.resolver.setAngleOverride(dir)
+    this.commandLine.write(
+      "info",
+      this.text.message("angleOverride", { angle: match[1] })
+    )
+    if (this.lastPointerScreen) this.updateSnap(this.lastPointerScreen)
+    this.replayPointerMove()
+    this.invalidateState()
+    this.host.requestRender()
+    return true
   }
 
   /**
@@ -983,6 +1055,10 @@ export class CadRuntime extends Observable {
   }
 
   undo(): void {
+    // Undo with a command running ends it first, so what it drew goes as one
+    // step: "Click Undo on the Quick Access toolbar to cancel the entire series
+    // of line segments".
+    if (this.activeTool.id !== "select") this.returnToNeutralTool()
     if (this.history.undo()) this.selection.clear()
   }
 
@@ -1159,6 +1235,28 @@ export class CadRuntime extends Observable {
   private dynamicInputHasField(): boolean {
     const session = this.dynamicInput.getSession()
     return this.dynamicInput.isOpen() && (session?.fields.length ?? 0) > 0
+  }
+
+  /**
+   * The value field keys typed on the drawing go to: the box's active field
+   * while one is up and nothing waits at the command line, or null. A content
+   * field (TEXT's string) is left to the box itself, whose keys are its own.
+   */
+  private typingField(): string | null {
+    if (
+      this.shortcutMenu !== null ||
+      this.snapOverrideMenu !== null ||
+      this.cyclingList !== null ||
+      this.commandLine.getBuffer() !== "" ||
+      !this.dynamicInputHasField()
+    ) {
+      return null
+    }
+    const id = this.dynamicInput.getActiveFieldId()
+    const field = this.dynamicInput
+      .getSession()
+      ?.fields.find((f) => f.id === id)
+    return field && !isContentField(field.kind) ? field.id : null
   }
 
   /**
@@ -1696,7 +1794,21 @@ export class CadRuntime extends Observable {
       // The numeric fields don't resolve and the session has no raw handler (or
       // it rejected the text, e.g. an incomplete coordinate): nothing to do,
       // unless nothing was typed — then the prompt has no default to give.
-      if (!this.dynamicInput.hasTypedText()) this.keyDown(plainKey("Enter"))
+      if (!this.dynamicInput.hasTypedText()) {
+        // The drawing's own Enter, which must not come back to the box.
+        this.enterFromBox = true
+        try {
+          this.keyDown(plainKey("Enter"))
+        } finally {
+          this.enterFromBox = false
+        }
+      } else if (field && !isContentField(field.kind)) {
+        // A value the prompt cannot take is dropped and asked again, as
+        // AutoCAD's prompt drops it, rather than left for the next keys to
+        // run on from ("ndo" after U, then "_u" read as "ndo_u").
+        this.dynamicInput.clearTexts()
+        this.invalidateState()
+      }
       return
     }
     // A tool that opened its next question in the commit may have filled it
@@ -1707,6 +1819,14 @@ export class CadRuntime extends Observable {
     // Committing a value places/edits a point, which consumes any acquired
     // object-snap-tracking references — just like a click does.
     this.resetTracking()
+    // The point given is the next one's base, so the rubber band, Ortho and
+    // Polar measure from it at once, where the cursor still stands: a length
+    // typed next, mouse unmoved, runs towards the cursor, not on along the
+    // last segment.
+    if (this.lastPointerScreen && this.dynamicInput.isOpen()) {
+      this.updateSnap(this.lastPointerScreen)
+      this.replayPointerMove()
+    }
     this.host.requestRender()
   }
 
@@ -2676,8 +2796,11 @@ export class CadRuntime extends Observable {
     if (e.key === " " && e.shiftKey && this.cycleSelection()) return true
 
     if (e.ctrlKey && (e.key === "z" || e.key === "Z")) {
+      // Inside a command that offers Undo, Ctrl+Z is that option: "only the
+      // previous line segment is undone because you are still in the Line
+      // Command".
       if (e.shiftKey) this.redo()
-      else this.undo()
+      else if (!this.invokeToolOption("_Undo")) this.undo()
       return true
     }
     if (e.ctrlKey && (e.key === "y" || e.key === "Y")) {
@@ -2737,26 +2860,31 @@ export class CadRuntime extends Observable {
       }
     }
 
-    // A running command's keyword options take precedence over global tool
-    // aliases — as in AutoCAD, where a command alias only starts a new command
-    // at the neutral "Command:" prompt, while mid-command a matching letter
-    // invokes the current prompt's keyword (e.g. R = Radius during FILLET, not
-    // the Rotate alias). Checked before the alias loop so the two never fight.
-    //
-    // Only a keyword whose abbreviation is that one letter, and the start of no
-    // other, runs on its key — and only on an empty prompt, so `_C`, a word or
-    // a longer abbreviation (`SIZ`) can still be typed and confirmed.
-    if (
-      !e.ctrlKey &&
-      !e.altKey &&
-      e.key.length === 1 &&
-      this.commandLine.getBuffer() === ""
-    ) {
-      const option = keywordForKey(
-        e.key,
-        offerOptions(this.activeTool, this.text)
-      )
-      if (option && this.invokeOption(option.id)) return true
+    // A keyword is typed and confirmed, as at AutoCAD's prompt: no key runs
+    // one on its own. A letter run at once broke the muscle memory of `C`
+    // Enter, whose Enter then repeated LINE after Close had ended it.
+    const box = this.typingField()
+    // WHY: with a value box up, what is typed on the drawing goes into it, as
+    // AutoCAD's dynamic input takes the keyboard wherever the cursor is. The
+    // box takes focus back only after the next render, and a first key that
+    // reached the command line split "100" into "1" there and "00" in the box.
+    // Space and Enter are the box's Enter, which only ends the command when
+    // nothing is typed and the prompt has no default to take.
+    if (box !== null && !e.ctrlKey && !e.altKey) {
+      const typed = this.dynamicInput.getText(box)
+      const space = e.key === " " && !e.shiftKey
+      if ((e.key === "Enter" || space) && !this.enterFromBox) {
+        this.pressEnter()
+        return true
+      }
+      if (e.key === "Backspace" && typed !== "") {
+        this.setDynamicInputText(typed.slice(0, -1), box)
+        return true
+      }
+      if (e.key.length === 1 && e.key !== " ") {
+        this.setDynamicInputText(typed + e.key, box)
+        return true
+      }
     }
 
     // Everything else typed on the drawing surface goes to the command prompt,
@@ -2803,11 +2931,12 @@ export class CadRuntime extends Observable {
         return true
       }
 
-      // Repeating the last command is only offered when no command is running;
-      // mid-command Enter keeps its meaning (accept/exit). A grip edit counts
-      // as a command, as it does for the right button.
+      // Repeating the last command, with Enter or Space, is only offered when
+      // no command is running; mid-command Enter keeps its meaning
+      // (accept/exit). A grip edit counts as a command, as it does for the
+      // right button.
       if (
-        e.key === "Enter" &&
+        (e.key === "Enter" || e.key === " ") &&
         this.activeTool.id === "select" &&
         !(this.activeTool.wantsSnap?.() ?? false) &&
         this.repeatLastCommand()
@@ -3014,6 +3143,8 @@ export class CadRuntime extends Observable {
 
   /** Clears acquired references and the cached guide so nothing lingers. */
   private resetTracking(): void {
+    // A typed `<angle` holds for one point, like the references acquired for it.
+    this.resolver.setAngleOverride(null)
     this.tracking.clear()
     this.parallelRefs.clear()
     this.lastTracking = null

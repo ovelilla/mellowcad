@@ -1,5 +1,5 @@
 import { Vec2, V } from "../../geometry/Vec2"
-import { Vec3, add3, scale3 } from "../../geometry/Vec3"
+import { Vec3, add3, scale3, withZOf } from "../../geometry/Vec3"
 import { LineEntity, createLine } from "../../domain/entities"
 import { parseNumber } from "../../domain/units"
 import { AddEntityCommand } from "../commands/entityCommands"
@@ -8,17 +8,24 @@ import {
   isCoordinateExpression,
   parseCoordinate,
 } from "../input/coordinateInput"
+import { TrackingResult } from "../tracking/types"
 import { ScenePrimitive } from "../../scene/types"
 import { THEME } from "../../scene/theme"
 import { KeyInput, PointerInput, Tool, ToolContext } from "./Tool"
 import { CommandOption, CommandOptionOutcome } from "./Tool"
-import { lastDrawnPoint } from "./lastDrawnPoint"
+import { continuePoint } from "./lastDrawnPoint"
 import {
   withCurrentProperties,
   withCurrentThickness,
 } from "./currentProperties"
-import { directionFromUcsHeading, headingInUcs } from "./ucsHeading"
+import { acuteHeading, headingInUcs } from "./ucsHeading"
 import { pointAlongCursor, showRise } from "./directDistance"
+import {
+  DeferredPick,
+  deferredFrom,
+  deferredPair,
+  deferredPick,
+} from "./deferredSnap"
 
 /**
  * The line tool's interaction flow, modelled as an explicit state machine:
@@ -28,9 +35,11 @@ import { pointAlongCursor, showRise } from "./directDistance"
  *  idle ───────────────────────► tracking ────────────────┐
  *   │                              (offset input)          │
  *   │ click 1st point                 │ commit offset      ▼
- *   └────────────────────────────────┴────────────► drawing ──┐
- *                                                     ▲        │ click / commit
- *                                                     └────────┘   (chains)
+ *   ├────────────────────────────────┴────────────► drawing ──┐
+ *   │ Enter after an arc                              ▲        │ click / commit
+ *   ├──────────────► tangent ── length ───────────────┤────────┘   (chains)
+ *   │ tan / per on an object                          │
+ *   └──────────────► deferred ── next point ──────────┘
  * ```
  *
  * Precision comes from three cooperating systems: snapping places points
@@ -38,7 +47,8 @@ import { pointAlongCursor, showRise } from "./directDistance"
  * input lets the user type an exact length along the current direction.
  *
  * The tool never mutates the document: finished segments are submitted as
- * {@link AddEntityCommand}s, so every line is individually undoable.
+ * {@link AddEntityCommand}s, which the runtime folds into one undo step for
+ * the whole command; the Undo option steps back one segment at a time.
  */
 
 type LineToolState =
@@ -46,6 +56,25 @@ type LineToolState =
   | { readonly phase: "idle" }
   /** No start yet, but a tracking guide is engaged: offer a typed offset. */
   | { readonly phase: "tracking"; readonly origin: Vec3; readonly dir: Vec3 }
+  /**
+   * Continue from an arc: the line leaves its end tangent to it, so only its
+   * length is asked ("You need to specify only the line length").
+   */
+  | {
+      readonly phase: "tangent"
+      readonly start: Vec3
+      readonly dir: Vec2
+      readonly cursor: Vec3
+    }
+  /**
+   * The first point is a Tangent or Perpendicular picked with nothing to
+   * measure from yet: it is worked out once the next point is known.
+   */
+  | {
+      readonly phase: "deferred"
+      readonly deferred: DeferredPick
+      readonly cursor: Vec3
+    }
   /** Start placed; rubber-banding towards the next point. */
   | {
       readonly phase: "drawing"
@@ -55,6 +84,8 @@ type LineToolState =
       readonly cursor: Vec3
       /** Last non-degenerate unit direction from start to cursor. */
       readonly direction: Vec2 | null
+      /** The alignment path the cursor is on, which a typed length runs along. */
+      readonly tracking: TrackingResult | null
       /** Segments committed in this chain (Close needs at least two). */
       readonly segments: number
       /**
@@ -71,6 +102,11 @@ export class LineTool implements Tool {
   private state: LineToolState = { phase: "idle" }
   /** Last known screen position, used to place dynamic input on re-open. */
   private lastScreen: Vec2 | null = null
+  /**
+   * The last point LINE was given (AutoCAD's LASTPOINT, 0,0,0 until one is),
+   * which `@` at the first point is relative to. Kept across runs.
+   */
+  private lastPoint: Vec3 | null = null
 
   onActivate(ctx: ToolContext): void {
     ctx.setCursor("crosshair")
@@ -92,7 +128,12 @@ export class LineTool implements Tool {
         const length = V.length(offset)
         const direction =
           length > 1e-9 ? V.scale(offset, 1 / length) : this.state.direction
-        this.state = { ...this.state, cursor: input.point, direction }
+        this.state = {
+          ...this.state,
+          cursor: input.point,
+          direction,
+          tracking: input.tracking,
+        }
 
         // Feed the dynamic-input fields the live distance and heading, then
         // follow the cursor. The heading already reflects Ortho (input.point is
@@ -101,12 +142,24 @@ export class LineTool implements Tool {
           ctx.dynamicInput.setLive("distance", length)
           ctx.dynamicInput.setLive(
             "angle",
-            direction ? headingInUcs(ctx.ucs, direction) : null
+            direction ? acuteHeading(headingInUcs(ctx.ucs, direction)) : null
           )
         }
         ctx.dynamicInput.setPosition(input.screen)
         break
       }
+      case "deferred":
+        this.state = { ...this.state, cursor: input.point }
+        ctx.dynamicInput.setPosition(input.screen)
+        break
+      case "tangent":
+        this.state = { ...this.state, cursor: input.point }
+        ctx.dynamicInput.setLive(
+          "distance",
+          V.distance(this.state.start, input.point)
+        )
+        ctx.dynamicInput.setPosition(input.screen)
+        break
       case "idle":
       case "tracking":
         // No start yet: object snap tracking can offset the start along a guide.
@@ -120,7 +173,23 @@ export class LineTool implements Tool {
   onPointerDown(input: PointerInput, ctx: ToolContext): void {
     if (input.button !== 0) return
 
+    if (this.state.phase === "tangent") {
+      // A pick at the length prompt gives the length: how far it is.
+      this.commitTangent(this.resolveTangent(input.point, ctx), ctx)
+      return
+    }
+
+    if (this.state.phase === "deferred") {
+      this.completeDeferred(input, ctx)
+      return
+    }
+
     if (this.state.phase !== "drawing") {
+      const deferred = this.deferredAt(input, ctx)
+      if (deferred) {
+        this.beginDeferred(deferred, input, ctx)
+        return
+      }
       // Placing the first point: honour a coordinate typed into the pre-start
       // box (always absolute — there is no previous point), otherwise use the
       // snapped cursor. Then begin the rubber-band chain.
@@ -129,29 +198,12 @@ export class LineTool implements Tool {
       return
     }
 
-    const { start, first, segments } = this.state
+    const { start } = this.state
     // Place the point at the *effective* endpoint, honouring any hard-locked
     // typed length/angle — clicking respects the dynamic input exactly like
     // Enter does, rather than snapping to the raw cursor.
     const end = this.resolveEnd(start, input.point, ctx)
-    // Ignore zero-length segments (e.g. a double click on the same snap point).
-    const draws = !samePoint(start, end)
-
-    // Advance our own state *before* executing the command: executing emits a
-    // document change that rebuilds engine state (and thus our commandOptions),
-    // so `segments` must already be current for "Close" to appear on time.
-    this.state = {
-      phase: "drawing",
-      first,
-      start: end,
-      cursor: end,
-      direction: null,
-      segments: draws ? segments + 1 : segments,
-      vertices: draws ? [...this.state.vertices, end] : this.state.vertices,
-    }
-    if (draws) {
-      ctx.execute(new AddEntityCommand(newLine(start, end, ctx)))
-    }
+    this.addSegment(end, null, ctx)
 
     // Clear the typed values so the next segment starts unlocked (AutoCAD-style).
     ctx.dynamicInput.clearTexts()
@@ -170,13 +222,13 @@ export class LineTool implements Tool {
   }
 
   /**
-   * The keywords offered while drawing, AutoCAD-style. "Undo" appears once a
-   * segment exists (so there is something to step back), and "Close" once at
-   * least two segments exist (three points), so a lone segment isn't retraced.
-   * Growing this list is all it takes to add options.
+   * The keywords offered while drawing, AutoCAD-style: `Specify next point or
+   * [Undo]:` from the first point on — its Undo takes that point back — and
+   * `[Close/Undo]` once two segments exist, so a lone segment isn't retraced.
    */
   commandOptions(): readonly CommandOption[] {
-    if (this.state.phase !== "drawing" || this.state.segments < 1) return []
+    if (this.state.phase === "deferred") return [{ id: "Undo" }]
+    if (this.state.phase !== "drawing") return []
     const options: CommandOption[] = []
     if (this.state.segments >= 2) options.push({ id: "Close" })
     options.push({ id: "Undo" })
@@ -211,6 +263,7 @@ export class LineTool implements Tool {
     if (!samePoint(start, first)) {
       ctx.execute(new AddEntityCommand(newLine(start, first, ctx)))
     }
+    this.lastPoint = first
     this.state = { phase: "idle" }
     ctx.dynamicInput.close()
     ctx.requestRender()
@@ -221,7 +274,8 @@ export class LineTool implements Tool {
    * Undoes the last committed segment while staying in the LINE command —
    * AutoCAD's "Undo" (U) option. The chain's last vertex is dropped and drawing
    * resumes from the previous one, so the user can retrace a mistaken point
-   * without breaking the continuous-draw flow (unlike the global Ctrl+Z).
+   * without breaking the continuous-draw flow. With no segment yet it takes
+   * back the first point, and the prompt asks for it again.
    *
    * State is rolled back *before* reverting the command: `ctx.undo()` emits a
    * document change that synchronously rebuilds engine state (and thus our
@@ -229,17 +283,35 @@ export class LineTool implements Tool {
    * "Close" chips to update on time — mirroring `commitSegment`.
    */
   private undoLastSegment(ctx: ToolContext): boolean {
-    if (this.state.phase !== "drawing" || this.state.segments < 1) return false
+    if (this.state.phase === "deferred") {
+      const at =
+        this.lastScreen ?? ctx.viewport.worldToScreen(this.state.deferred.pick)
+      this.state = { phase: "idle" }
+      this.openFirstPointInput(ctx, at)
+      ctx.requestRender()
+      return true
+    }
+    if (this.state.phase !== "drawing") return false
+
+    if (this.state.segments < 1) {
+      const at = this.lastScreen ?? ctx.viewport.worldToScreen(this.state.start)
+      this.state = { phase: "idle" }
+      this.openFirstPointInput(ctx, at)
+      ctx.requestRender()
+      return true
+    }
 
     const { first } = this.state
     const vertices = this.state.vertices.slice(0, -1)
     const start = vertices[vertices.length - 1]
+    this.lastPoint = start
     this.state = {
       phase: "drawing",
       first,
       start,
       cursor: start,
       direction: null,
+      tracking: null,
       segments: this.state.segments - 1,
       vertices,
     }
@@ -258,17 +330,32 @@ export class LineTool implements Tool {
   }
 
   buildOverlay(ctx: ToolContext): ScenePrimitive[] {
-    if (this.state.phase !== "drawing") return []
     const { viewport } = ctx
-    // Rubber-band segment from the confirmed start to the *effective* endpoint,
-    // so a typed (hard-locked) length/angle is reflected live — the preview
-    // shows exactly where the point will land, matching AutoCAD.
-    const end = this.resolveEnd(this.state.start, this.state.cursor, ctx)
+    let from: Vec3
+    let to: Vec3
+    if (this.state.phase === "drawing") {
+      // Rubber-band segment from the confirmed start to the *effective*
+      // endpoint, so a typed (hard-locked) length/angle is reflected live —
+      // the preview shows exactly where the point will land, matching AutoCAD.
+      from = this.state.start
+      to = this.resolveEnd(this.state.start, this.state.cursor, ctx)
+    } else if (this.state.phase === "tangent") {
+      from = this.state.start
+      to = this.resolveTangent(this.state.cursor, ctx)
+    } else if (this.state.phase === "deferred") {
+      const { deferred, cursor } = this.state
+      const start = deferredFrom(deferred, cursor)
+      if (!start) return []
+      from = start
+      to = cursor
+    } else {
+      return []
+    }
     return [
       {
         kind: "segment",
-        a: viewport.worldToScreen(this.state.start),
-        b: viewport.worldToScreen(end),
+        a: viewport.worldToScreen(from),
+        b: viewport.worldToScreen(to),
         stroke: { color: THEME.rubberBand, width: 1 },
       },
     ]
@@ -302,15 +389,37 @@ export class LineTool implements Tool {
     const typedDist = parseField(ctx, "distance")
     const typedAngle = parseField(ctx, "angle")
     if (typedDist === null && typedAngle === null) return rawCursor
-
-    // A typed length or angle is `@dist<angle`: it keeps the start's Z, or
-    // runs up the Z guide the cursor is on.
     return (
-      pointAlongCursor(ctx, start, rawCursor, {
-        distance: typedDist,
-        angle: typedAngle,
-      }) ?? rawCursor
+      this.pointAt(start, rawCursor, typedDist, typedAngle, ctx) ?? rawCursor
     )
+  }
+
+  /**
+   * The point a typed length and/or angle give from `start`. A length alone on
+   * an alignment path — an OTRACK guide, an Extension — is measured from the
+   * point acquired along that path ("use direct distance to specify points at
+   * precise distances along alignment paths from the acquired object snap
+   * point"); elsewhere it is direct distance, `@dist<angle` keeping the start's
+   * Z or running up the Z guide the cursor is on. A typed angle is read on the
+   * cursor's side, as the field shows it.
+   */
+  private pointAt(
+    start: Vec3,
+    cursor: Vec3,
+    distance: number | null,
+    angle: number | null,
+    ctx: ToolContext
+  ): Vec3 | null {
+    const tracking = this.state.phase === "drawing" ? this.state.tracking : null
+    if (
+      distance !== null &&
+      angle === null &&
+      tracking?.kind === "projection"
+    ) {
+      const origin = tracking.guides[0].point.origin
+      return add3(origin, scale3(tracking.direction, distance))
+    }
+    return pointAlongCursor(ctx, start, cursor, { distance, angle })
   }
 
   /**
@@ -360,7 +469,7 @@ export class LineTool implements Tool {
     const text = ctx.dynamicInput.getText("point").trim()
     if (isCoordinateExpression(text)) {
       const point = parseCoordinate(text, {
-        lastPoint: null,
+        lastPoint: this.lastPoint,
         relativeByDefault: false,
         ucs: ctx.ucs,
         elevation: ctx.elevation,
@@ -375,12 +484,14 @@ export class LineTool implements Tool {
    * the next segment can be typed or picked.
    */
   private beginDrawing(start: Vec3, ctx: ToolContext, screen?: Vec2): void {
+    this.lastPoint = start
     this.state = {
       phase: "drawing",
       first: start,
       start,
       cursor: start,
       direction: null,
+      tracking: null,
       segments: 0,
       vertices: [start],
     }
@@ -414,7 +525,7 @@ export class LineTool implements Tool {
     if (text === "") return this.continueFromLast(ctx)
     if (!isCoordinateExpression(text)) return false
     const start = parseCoordinate(text, {
-      lastPoint: null,
+      lastPoint: this.lastPoint,
       relativeByDefault: false,
       ucs: ctx.ucs,
       elevation: ctx.elevation,
@@ -424,11 +535,144 @@ export class LineTool implements Tool {
     return true
   }
 
-  private continueFromLast(ctx: ToolContext): boolean {
-    const resume = lastDrawnPoint(ctx.document)
-    if (!resume) return false
-    this.beginDrawing(resume, ctx)
+  /**
+   * A pick under a Tangent or Perpendicular override, with no point yet to
+   * measure from: the object it was made on, to work the point out later.
+   */
+  private deferredAt(
+    input: PointerInput,
+    ctx: ToolContext
+  ): DeferredPick | null {
+    // A snap found anyway (an anchor for it after all) is an ordinary point.
+    if (input.snap) return null
+    const entity = ctx.pick(input.world, ctx.pickTolerance())
+    return deferredPick(ctx.snapOverride(), entity, input.world)
+  }
+
+  /** "Deferred Tangent": the first point waits for the next one. */
+  private beginDeferred(
+    deferred: DeferredPick,
+    input: PointerInput,
+    ctx: ToolContext
+  ): void {
+    this.state = { phase: "deferred", deferred, cursor: input.point }
+    const session: DynamicInputSession = {
+      fields: [{ id: "point", kind: "coordinate" }],
+      commit: () => {},
+      commitRaw: (commitCtx) => this.commitDeferredCoordinate(commitCtx),
+    }
+    ctx.dynamicInput.open(session)
+    ctx.dynamicInput.setPosition(input.screen)
+    ctx.requestRender()
+  }
+
+  /**
+   * The next point settles the deferred one: picked plainly, the tangent or
+   * the foot seen from it; under a second Tangent or Perpendicular, the line
+   * that touches both objects.
+   */
+  private completeDeferred(input: PointerInput, ctx: ToolContext): void {
+    if (this.state.phase !== "deferred") return
+    const { deferred } = this.state
+    const second = this.deferredAt(input, ctx)
+    const pair = second && deferredPair(deferred, second)
+    if (pair) {
+      this.drawDeferred(pair[0], pair[1], ctx)
+      return
+    }
+    const start = deferredFrom(deferred, input.point)
+    if (start) this.drawDeferred(start, input.point, ctx)
+  }
+
+  /** A typed next point settles the deferred one as a pick there would. */
+  private commitDeferredCoordinate(ctx: ToolContext): boolean {
+    if (this.state.phase !== "deferred") return false
+    const text = ctx.dynamicInput.getText("point").trim()
+    if (!isCoordinateExpression(text)) return false
+    const end = parseCoordinate(text, {
+      lastPoint: this.lastPoint,
+      relativeByDefault: false,
+      ucs: ctx.ucs,
+      elevation: ctx.elevation,
+    })
+    const start = end && deferredFrom(this.state.deferred, end)
+    if (!end || !start) return false
+    this.drawDeferred(start, end, ctx)
     return true
+  }
+
+  /** Draws the first segment once both its ends are known, and chains on. */
+  private drawDeferred(start: Vec3, end: Vec3, ctx: ToolContext): void {
+    this.beginDrawing(start, ctx)
+    this.addSegment(end, null, ctx)
+  }
+
+  /**
+   * AutoCAD's Continue: "a new line starts from the endpoint of the most
+   * recently created line, polyline, or arc" — and from an arc, tangent to it,
+   * asking only the length.
+   */
+  private continueFromLast(ctx: ToolContext): boolean {
+    const resume = continuePoint(ctx.document)
+    if (!resume) return false
+    if (resume.tangent === null) {
+      this.beginDrawing(resume.point, ctx)
+      return true
+    }
+    this.lastPoint = resume.point
+    this.state = {
+      phase: "tangent",
+      start: resume.point,
+      dir: resume.tangent,
+      cursor: resume.point,
+    }
+    const session: DynamicInputSession = {
+      fields: [{ id: "distance", prompt: "length", kind: "distance" }],
+      commit: (values, commitCtx) =>
+        this.commitTangent(this.tangentPoint(values.distance), commitCtx),
+    }
+    ctx.dynamicInput.open(session)
+    ctx.dynamicInput.setLive("distance", 0)
+    ctx.dynamicInput.setPosition(
+      this.lastScreen ?? ctx.viewport.worldToScreen(resume.point)
+    )
+    ctx.requestRender()
+    return true
+  }
+
+  /** Where the tangent line ends for the length typed, or the cursor's. */
+  private resolveTangent(cursor: Vec3, ctx: ToolContext): Vec3 {
+    if (this.state.phase !== "tangent") return cursor
+    const typed = parseField(ctx, "distance")
+    return this.tangentPoint(typed ?? V.distance(this.state.start, cursor))
+  }
+
+  private tangentPoint(length: number): Vec3 {
+    if (this.state.phase !== "tangent") throw new Error("not continuing")
+    const { start, dir } = this.state
+    return withZOf(V.add(start, V.scale(dir, length)), start)
+  }
+
+  /** Draws the tangent line and goes on to the next point from its end. */
+  private commitTangent(end: Vec3, ctx: ToolContext): void {
+    if (this.state.phase !== "tangent") return
+    const { start, dir } = this.state
+    if (samePoint(start, end)) return
+    this.state = {
+      phase: "drawing",
+      first: start,
+      start,
+      cursor: start,
+      direction: dir,
+      tracking: null,
+      segments: 0,
+      vertices: [start],
+    }
+    this.openLengthInput(
+      ctx,
+      this.lastScreen ?? ctx.viewport.worldToScreen(start)
+    )
+    this.addSegment(end, dir, ctx)
   }
 
   /**
@@ -477,29 +721,17 @@ export class LineTool implements Tool {
    */
   private commitOffsetStart(distance: number, ctx: ToolContext): void {
     if (this.state.phase !== "tracking") return
-
     const start = add3(this.state.origin, scale3(this.state.dir, distance))
-    this.state = {
-      phase: "drawing",
-      first: start,
-      start,
-      cursor: start,
-      direction: null,
-      segments: 0,
-      vertices: [start],
-    }
-
-    const screen = this.lastScreen ?? ctx.viewport.worldToScreen(start)
-    this.openLengthInput(ctx, screen)
-    ctx.requestRender()
+    this.beginDrawing(start, ctx)
   }
 
   /**
-   * Builds a segment of exactly `distance` document units from the current
-   * start at `angle` degrees (counter-clockwise from +X, AutoCAD convention),
-   * then chains from the new endpoint. Either value may come from the live
-   * cursor: a typed length uses the current heading, a typed angle locks the
-   * direction, and typing both places the point precisely without the mouse.
+   * Builds a segment from the typed length and angle (either may come from the
+   * live cursor: a typed length uses the current heading, a typed angle locks
+   * the direction, and typing both places the point precisely without the
+   * mouse), then chains from the new endpoint. A negative length runs the
+   * other way: "If you had typed -6, the vertical line would have been drawn
+   * downward".
    */
   private commitSegment(
     values: Record<string, number>,
@@ -507,39 +739,22 @@ export class LineTool implements Tool {
   ): void {
     if (this.state.phase !== "drawing") return
     const { distance, angle } = values
-    if (!(distance > 0)) return
+    if (!(Math.abs(distance) > 0)) return
 
-    const { start, first, segments, cursor } = this.state
+    const { start, cursor } = this.state
     // No angle at all (the field reads `+Z` / `-Z`): the length runs along the
     // cursor's path, the Z guide.
+    const typedAngle = ctx.dynamicInput.getText("angle").trim() !== ""
     const heading = Number.isFinite(angle) ? angle : null
-    const end = pointAlongCursor(ctx, start, cursor, {
+    const end = this.pointAt(
+      start,
+      cursor,
       distance,
-      angle: heading,
-    })
-    if (end === null) return
-    const turned =
-      heading === null ? null : directionFromUcsHeading(ctx.ucs, heading)
-
-    // Advance state before executing so commandOptions ("Close") reflect the
-    // new segment count as soon as the document-change rebuilds engine state.
-    this.state = {
-      phase: "drawing",
-      first,
-      start: end,
-      cursor: end,
-      direction: turned ?? this.state.direction,
-      segments: segments + 1,
-      vertices: [...this.state.vertices, end],
-    }
-    ctx.execute(new AddEntityCommand(newLine(start, end, ctx)))
-
-    ctx.dynamicInput.setLive("distance", 0)
-    ctx.dynamicInput.setLive(
-      "angle",
-      turned === null ? null : headingInUcs(ctx.ucs, turned)
+      typedAngle ? heading : null,
+      ctx
     )
-    ctx.requestRender()
+    if (end === null) return
+    this.addSegment(end, null, ctx)
   }
 
   /**
@@ -560,35 +775,44 @@ export class LineTool implements Tool {
       elevation: ctx.elevation,
     })
     if (!end) return false
+    this.addSegment(end, null, ctx)
+    return true
+  }
 
-    const { start, first, segments } = this.state
+  /**
+   * Draws the segment from the current start to `end` and chains from `end`.
+   * A zero-length one (a double click on the same snap point) is skipped.
+   * State advances *before* executing: executing emits a document change that
+   * rebuilds engine state (and thus our commandOptions), so `segments` must
+   * already be current for "Close" to appear on time.
+   */
+  private addSegment(end: Vec3, heading: Vec2 | null, ctx: ToolContext): void {
+    if (this.state.phase !== "drawing") return
+    const { start, first, segments, vertices } = this.state
     const offset = V.sub(end, start)
     const length = V.length(offset)
     const draws = !samePoint(start, end)
     const direction =
-      length > 0 ? V.scale(offset, 1 / length) : this.state.direction
-
-    // Advance state before executing so commandOptions reflect the new count.
+      heading ?? (length > 1e-9 ? V.scale(offset, 1 / length) : null)
+    this.lastPoint = end
     this.state = {
       phase: "drawing",
       first,
       start: end,
       cursor: end,
-      direction,
+      direction: direction ?? this.state.direction,
+      tracking: null,
       segments: draws ? segments + 1 : segments,
-      vertices: draws ? [...this.state.vertices, end] : this.state.vertices,
+      vertices: draws ? [...vertices, end] : vertices,
     }
-    if (draws) {
-      ctx.execute(new AddEntityCommand(newLine(start, end, ctx)))
-    }
+    if (draws) ctx.execute(new AddEntityCommand(newLine(start, end, ctx)))
 
     ctx.dynamicInput.setLive("distance", 0)
     ctx.dynamicInput.setLive(
       "angle",
-      direction ? headingInUcs(ctx.ucs, direction) : null
+      direction ? acuteHeading(headingInUcs(ctx.ucs, direction)) : null
     )
     ctx.requestRender()
-    return true
   }
 }
 

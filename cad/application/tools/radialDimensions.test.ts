@@ -172,10 +172,10 @@ describe("radial dimensions", () => {
   it("offers Text and Angle only at the location prompt", () => {
     const cad = createHarness({ entities: [ring()] })
     cad.command("DIMRADIUS")
-    expect(cad.optionKeys()).toEqual([])
+    expect(cad.optionAbbreviations()).toEqual([])
 
     cad.click(p(50, 0))
-    expect(cad.optionKeys()).toEqual(["T", "A"])
+    expect(cad.optionAbbreviations()).toEqual(["T", "A"])
   })
 
   it("Text replaces the measurement, and <> stands in for the bare number", () => {
@@ -272,10 +272,10 @@ describe("radial dimensions", () => {
 
     cad.command("DIMBASELINE").click(location)
     // Still asking for a base: a radius has no second extension line origin.
-    expect(cad.optionKeys()).toEqual([])
+    expect(cad.optionAbbreviations()).toEqual([])
 
     cad.escape()
     cad.command("DIMSPACE").click(location)
-    expect(cad.optionKeys()).toEqual([])
+    expect(cad.optionAbbreviations()).toEqual([])
   })
 })

@@ -20,12 +20,6 @@ export interface Keyword {
 /** A keyword resolved for the prompt it is offered in. */
 export interface OfferedKeyword extends Keyword {
   readonly abbreviation: string
-  /**
-   * The one key that runs it immediately, or null when it has to be typed and
-   * confirmed: its abbreviation is longer than a letter, or another keyword on
-   * offer starts with the same letter.
-   */
-  readonly key: string | null
 }
 
 // WHY plain toUpperCase, never the locale-aware one: under a Turkish locale
@@ -57,24 +51,12 @@ function isDigit(char: string): boolean {
   return char >= "0" && char <= "9"
 }
 
-/** Works out each keyword's abbreviation and whether a single key runs it. */
+/** Works out each keyword's abbreviation. */
 export function offerKeywords(keywords: readonly Keyword[]): OfferedKeyword[] {
-  const abbreviations = keywords.map((keyword) =>
-    upper(abbreviationOf(keyword.word))
-  )
-  return keywords.map((keyword, index) => {
-    const abbreviation = abbreviations[index]
-    const single =
-      [...abbreviation].length === 1 &&
-      abbreviations.every(
-        (other, j) => j === index || !other.startsWith(abbreviation)
-      )
-    return {
-      ...keyword,
-      abbreviation: abbreviationOf(keyword.word),
-      key: single ? abbreviation : null,
-    }
-  })
+  return keywords.map((keyword) => ({
+    ...keyword,
+    abbreviation: abbreviationOf(keyword.word),
+  }))
 }
 
 /**
@@ -98,15 +80,6 @@ export function resolveKeyword(
   if (byAbbreviation) return byAbbreviation.id
   const byWord = keywords.find((keyword) => upper(wordOf(keyword)) === typed)
   return byWord?.id ?? null
-}
-
-/** The keyword a single key runs, if it runs one. */
-export function keywordForKey<T extends { readonly key: string | null }>(
-  key: string,
-  keywords: readonly T[]
-): T | null {
-  const typed = upper(key)
-  return keywords.find((keyword) => keyword.key === typed) ?? null
 }
 
 /**

@@ -227,7 +227,7 @@ describe("FILLET", () => {
 
     cad.command("FILLET")
 
-    expect(cad.optionKeys()).toEqual(["R"])
+    expect(cad.optionAbbreviations()).toEqual(["R"])
     expect(cad.hasFocusedField()).toBe(false)
   })
 

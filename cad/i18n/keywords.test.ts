@@ -2,7 +2,6 @@ import { describe, expect, it } from "vitest"
 import {
   type Keyword,
   abbreviationOf,
-  keywordForKey,
   offerKeywords,
   parseCommandInput,
   resolveKeyword,
@@ -63,29 +62,13 @@ describe("resolving what was typed", () => {
   })
 })
 
-describe("the single key", () => {
-  it("runs a one-letter abbreviation that starts no other", () => {
-    const offered = offerKeywords([english("Close"), english("Undo")])
-    expect(offered.map((keyword) => keyword.key)).toEqual(["C", "U"])
-    expect(keywordForKey("u", offered)?.id).toBe("Undo")
-  })
-
-  it("is withheld when another abbreviation starts with the same letter", () => {
-    const offered = offerKeywords([
-      { id: "Scale", word: "Escala", global: "Scale" },
-      { id: "Extents", word: "EXtensión", global: "Extents" },
-    ])
-    expect(offered.map((keyword) => keyword.key)).toEqual([null, null])
-    expect(keywordForKey("E", offered)).toBeNull()
-  })
-
-  it("is never a longer abbreviation", () => {
+describe("the abbreviation on offer", () => {
+  it("is the capitals of the word, as long as they run", () => {
     const offered = offerKeywords([
       { id: "TL", word: "SIZ", global: "TL" },
-      { id: "Left", word: "Izquierda", global: "Left" },
+      { id: "Undo", word: "desHacer", global: "Undo" },
     ])
-    expect(offered.map((keyword) => keyword.key)).toEqual([null, "I"])
-    expect(offered[0].abbreviation).toBe("SIZ")
+    expect(offered.map((keyword) => keyword.abbreviation)).toEqual(["SIZ", "H"])
   })
 })
 

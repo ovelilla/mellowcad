@@ -49,7 +49,7 @@ describe("MTEXT", () => {
     const cad = createHarness()
     cad.command("MTEXT").click(p(0, 0))
 
-    expect(cad.optionKeys()).toEqual(["H", "J", "L", "R", "S", "W"])
+    expect(cad.optionAbbreviations()).toEqual(["H", "J", "L", "R", "S", "W"])
     cad.escape()
   })
 
@@ -67,7 +67,7 @@ describe("MTEXT", () => {
     const cad = createHarness()
     cad.command("MTEXT").click(p(0, 0)).option("Justify").enter()
 
-    expect(cad.optionKeys()).toEqual(["H", "J", "L", "R", "S", "W"])
+    expect(cad.optionAbbreviations()).toEqual(["H", "J", "L", "R", "S", "W"])
     cad.click(p(100, -50)).type("X").enter()
     expect(cad.only<MTextEntity>("mtext").attachment).toBe("tl")
   })

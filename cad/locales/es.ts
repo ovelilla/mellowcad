@@ -1335,6 +1335,12 @@ export const es: EngineLocale = {
       "fromNeedsPoint": "DESDE necesita una solicitud de punto.",
       "fromBase": "DESDE: precise el punto base.",
       "fromOffset": "DESDE: desfase desde el punto base.",
+      "angleOverride": [
+        "Modo momentáneo de ángulo: ",
+        [
+          "angle"
+        ]
+      ],
       "saveUnavailable": "Guardar en un archivo no está disponible aquí.",
       "openUnavailable": "Abrir un archivo no está disponible aquí.",
       "openFailed": "No se ha podido abrir el archivo.",

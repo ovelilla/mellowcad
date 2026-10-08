@@ -98,10 +98,10 @@ describe("TEXT", () => {
   it("offers Justify and Style only at the start prompt", () => {
     const cad = createHarness()
     cad.command("TEXT")
-    expect(cad.optionKeys()).toEqual(["J", "S"])
+    expect(cad.optionAbbreviations()).toEqual(["J", "S"])
 
     startText(cad)
-    expect(cad.optionKeys()).toEqual([])
+    expect(cad.optionAbbreviations()).toEqual([])
     cad.escape()
   })
 
@@ -238,7 +238,7 @@ describe("TEXTEDIT", () => {
   it("edits a single object and ends in Single mode", () => {
     const cad = withText()
     cad.command("TEXTEDIT").option("Mode")
-    expect(cad.optionKeys()).toEqual(["M"])
+    expect(cad.optionAbbreviations()).toEqual(["M"])
 
     cad.click(p(20, 5)).type("ONCE").enter()
     expect(edited(cad).value).toBe("ONCE")
@@ -248,14 +248,14 @@ describe("TEXTEDIT", () => {
   it("offers Undo only once something has been edited, and backs it out", () => {
     const cad = withText()
     cad.command("TEXTEDIT")
-    expect(cad.optionKeys()).toEqual(["M"])
+    expect(cad.optionAbbreviations()).toEqual(["M"])
 
     cad.click(p(20, 5)).type("CHANGED").enter()
-    expect(cad.optionKeys()).toEqual(["U", "M"])
+    expect(cad.optionAbbreviations()).toEqual(["U", "M"])
 
     cad.option("Undo")
     expect(edited(cad).value).toBe("OLD")
-    expect(cad.optionKeys()).toEqual(["M"])
+    expect(cad.optionAbbreviations()).toEqual(["M"])
     cad.escape()
   })
 

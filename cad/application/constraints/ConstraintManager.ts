@@ -78,11 +78,16 @@ export class ConstraintManager extends Observable {
    * Runs the candidate point through every enabled constraint, in registration
    * order, feeding each constraint the previous one's output.
    *
-   * `forceOrtho` bypasses the enabled set and applies only Ortho — AutoCAD's
-   * temporary override when the user holds Shift while specifying a point.
+   * `orthoOverride` is Shift held while specifying a point, which toggles
+   * Ortho for as long as it is held: "To turn Ortho off temporarily, hold down
+   * the Shift key", and with Ortho off it is on. Polar yields to it either way.
    */
-  apply(context: ConstraintContext, forceOrtho = false): Vec2 | PointAlongZ {
-    if (forceOrtho) return this.ortho.apply(context)
+  apply(context: ConstraintContext, orthoOverride = false): Vec2 | PointAlongZ {
+    if (orthoOverride) {
+      return this.isEnabled(ConstraintType.Ortho)
+        ? context.point
+        : this.ortho.apply(context)
+    }
     if (this.enabled.size === 0) return context.point
     let point: Vec2 | PointAlongZ = context.point
     for (const constraint of this.constraints) {
@@ -95,10 +100,14 @@ export class ConstraintManager extends Observable {
   /**
    * The line the first enabled constraint imposes from the anchor, if any.
    * Object snap tracking uses it to intersect alignment guides with the
-   * current Ortho/Polar direction. `forceOrtho` mirrors {@link apply}.
+   * current Ortho/Polar direction. `orthoOverride` mirrors {@link apply}.
    */
-  activeRay(context: ConstraintContext, forceOrtho = false): Ray | null {
-    if (forceOrtho) return this.ortho.ray?.(context) ?? null
+  activeRay(context: ConstraintContext, orthoOverride = false): Ray | null {
+    if (orthoOverride) {
+      return this.isEnabled(ConstraintType.Ortho)
+        ? null
+        : (this.ortho.ray?.(context) ?? null)
+    }
     if (this.enabled.size === 0) return null
     for (const constraint of this.constraints) {
       if (!this.enabled.has(constraint.type)) continue
@@ -110,13 +119,17 @@ export class ConstraintManager extends Observable {
 
   /**
    * The point of the UCS's Z through the anchor when that is the line the
-   * active constraint locks to, else `null`. `forceOrtho` mirrors {@link apply}.
+   * active constraint locks to, else `null`. `orthoOverride` mirrors {@link apply}.
    */
   activeAlongZ(
     context: ConstraintContext,
-    forceOrtho = false
+    orthoOverride = false
   ): PointAlongZ | null {
-    if (forceOrtho) return this.ortho.alongZ(context)
+    if (orthoOverride) {
+      return this.isEnabled(ConstraintType.Ortho)
+        ? null
+        : this.ortho.alongZ(context)
+    }
     for (const constraint of this.constraints) {
       if (!this.enabled.has(constraint.type)) continue
       const point = constraint.alongZ?.(context)

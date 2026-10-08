@@ -19,7 +19,7 @@ import {
   withCurrentProperties,
   withCurrentThickness,
 } from "./currentProperties"
-import { headingInUcs } from "./ucsHeading"
+import { acuteHeading, headingInUcs } from "./ucsHeading"
 import { pointAlongCursor, showRise } from "./directDistance"
 
 /**
@@ -94,7 +94,7 @@ export class PolylineTool implements Tool {
         ctx.dynamicInput.setLive("distance", length)
         ctx.dynamicInput.setLive(
           "angle",
-          direction ? headingInUcs(ctx.ucs, direction) : null
+          direction ? acuteHeading(headingInUcs(ctx.ucs, direction)) : null
         )
       }
       ctx.dynamicInput.setPosition(input.screen)

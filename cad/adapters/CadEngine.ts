@@ -522,12 +522,15 @@ export class CadEngine {
    * Whether the engine's own UI (the dynamic-input box) may take keyboard
    * focus away from `from`. The editor owns the page, so from anywhere but an
    * open menu or modal dialog, which keep their keys (an Escape there taken by
-   * the box would end the command). An embedded engine only while active, and
+   * the box would end the command), or another field being typed in — the
+   * command line, a palette's value: the next render took the rest of what
+   * was typed there into the box. An embedded engine only while active, and
    * only from its canvas, its scope or the body — never from the rest of the
    * page, nor from a control beside the canvas that the user tabbed to.
    */
   mayTakeFocus(from: Element | null): boolean {
     if (from?.closest(MENU) || from?.closest(MODAL)) return false
+    if (from?.closest(EDITABLE)) return false
     if (this.scope === null) return true
     return (
       this.active &&

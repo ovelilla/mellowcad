@@ -662,6 +662,34 @@ export function tangentPointsFromPoint(
   }))
 }
 
+/**
+ * The lines tangent to two circles, as their pairs of tangent points (on the
+ * first, on the second): the two outer ones, then the two that cross between
+ * the circles. Fewer when the circles overlap or one holds the other.
+ */
+export function tangentLinesOfCircles(
+  c1: Vec2,
+  r1: number,
+  c2: Vec2,
+  r2: number
+): [Vec2, Vec2][] {
+  const d = V.sub(c2, c1)
+  const dist = V.length(d)
+  if (dist < 1e-12) return []
+  const v = V.scale(d, 1 / dist)
+  const out: [Vec2, Vec2][] = []
+  for (const side of [1, -1]) {
+    const c = (r1 - side * r2) / dist
+    if (c * c > 1) continue
+    const h = Math.sqrt(Math.max(0, 1 - c * c))
+    for (const turn of [1, -1]) {
+      const n = { x: v.x * c - turn * h * v.y, y: v.y * c + turn * h * v.x }
+      out.push([V.add(c1, V.scale(n, r1)), V.add(c2, V.scale(n, side * r2))])
+    }
+  }
+  return out
+}
+
 /** Intersection points between a line segment and a circle (0, 1 or 2). */
 export function segmentCircleIntersection(
   a: Vec2,

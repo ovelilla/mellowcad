@@ -144,7 +144,7 @@ describe("COPY", () => {
     expect(xs).toEqual([0, 10, 20])
   })
 
-  it("gives each copy a fresh id and its own undo step", () => {
+  it("gives each copy a fresh id, and one U undoes the whole COPY", () => {
     const cad = createHarness({ entities: [HORIZONTAL] })
 
     cad
@@ -157,9 +157,9 @@ describe("COPY", () => {
 
     expect(new Set(cad.entities().map((e) => e.id)).size).toBe(3)
     cad.undo()
-    expect(cad.entityCount).toBe(2)
-    cad.undo()
     expect(cad.entityCount).toBe(1)
+    cad.redo()
+    expect(cad.entityCount).toBe(3)
   })
 })
 
@@ -323,7 +323,7 @@ describe("MIRROR", () => {
 
     cad.select("L1").command("MIRROR").click(p(0, 0)).click(p(100, 0))
 
-    expect(cad.optionKeys()).toEqual(["Y", "N"])
+    expect(cad.optionAbbreviations()).toEqual(["Y", "N"])
     expect(cad.hasFocusedField()).toBe(false)
   })
 

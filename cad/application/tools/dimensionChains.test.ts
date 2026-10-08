@@ -194,9 +194,9 @@ describe("dimension chain prompts", () => {
     const cad = createHarness({ entities: [base()] })
     cad.command("DIMBASELINE")
 
-    expect(cad.optionKeys()).toEqual(["S"])
+    expect(cad.optionAbbreviations()).toEqual(["S"])
     cad.click(p(180, 0))
-    expect(cad.optionKeys()).toEqual(["U", "S"])
+    expect(cad.optionAbbreviations()).toEqual(["U", "S"])
   })
 
   it("returns to the Select prompt on Enter, the <Select> default", () => {
@@ -251,12 +251,14 @@ describe("dimension chain Undo keyword", () => {
     expect(cad.typeCounts().dimension).toBe(1)
   })
 
-  it("makes each link its own undo step", () => {
-    const cad = chained("DIMCONTINUE", p(180, 0), p(260, 0))
-    expect(added(cad)).toHaveLength(2)
+  it("steps back a link with Ctrl+Z, and U undoes the whole run", () => {
+    const cad = chained("DIMCONTINUE", p(180, 0), p(260, 0), p(340, 0))
+    expect(added(cad)).toHaveLength(3)
 
-    cad.undo()
-    expect(added(cad)).toHaveLength(1)
+    // Inside the command Ctrl+Z is its Undo option.
+    cad.press("z", { ctrlKey: true })
+    expect(added(cad)).toHaveLength(2)
+    cad.escape()
     cad.undo()
     expect(added(cad)).toHaveLength(0)
     expect(cad.typeCounts().dimension).toBe(1)

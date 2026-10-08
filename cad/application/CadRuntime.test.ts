@@ -168,13 +168,10 @@ describe("command line", () => {
 })
 
 describe("undo and redo", () => {
+  // Two commands, so two undo steps: one U undoes a whole command.
   function drawTwoLines(cad: CadHarness) {
-    cad
-      .command("LINE")
-      .click(p(0, 0))
-      .click(p(100, 0))
-      .click(p(100, 100))
-      .escape()
+    cad.command("LINE").click(p(0, 0)).click(p(100, 0)).escape()
+    cad.command("LINE").click(p(100, 0)).click(p(100, 100)).escape()
   }
 
   it("is driven by the keyboard as well as the API", () => {

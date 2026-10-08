@@ -52,7 +52,7 @@ describe("HATCH boundary by Pick internal point", () => {
     const h = createHarness({ entities: [SQUARE] })
     h.command("HATCH")
 
-    expect(h.optionKeys()).toEqual(["P", "S"])
+    expect(h.optionAbbreviations()).toEqual(["P", "S"])
   })
 
   it("fills an area enclosed by loose lines", () => {
@@ -302,7 +302,7 @@ describe("HATCH Properties", () => {
 
     // Back at the keyword-only Select prompt: no field, the Properties chip.
     expect(h.state().dynamicInput?.fields ?? []).toHaveLength(0)
-    expect(h.optionKeys()).toEqual(["P"])
+    expect(h.optionAbbreviations()).toEqual(["P"])
 
     h.click(p(50, 0)).enter()
     const hatch = hatchOnly(h.entities())

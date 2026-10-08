@@ -337,13 +337,13 @@ describe("DIMANGULAR keywords", () => {
   }
 
   it("offers only Text and Angle at the location prompt", () => {
-    expect(start().optionKeys()).toEqual(["T", "A"])
+    expect(start().optionAbbreviations()).toEqual(["T", "A"])
   })
 
   it("offers nothing at the object prompt", () => {
     const cad = createHarness()
     cad.command("DIMANGULAR")
-    expect(cad.optionKeys()).toEqual([])
+    expect(cad.optionAbbreviations()).toEqual([])
   })
 
   it("substitutes the measurement into a Text override", () => {
@@ -444,10 +444,10 @@ describe("angular dimensions elsewhere in the app", () => {
       .click(p(100, 0))
       .click(p(0, -40))
     chainable.command("DIMBASELINE")
-    expect(chainable.optionKeys()).toEqual(["S"])
+    expect(chainable.optionAbbreviations()).toEqual(["S"])
 
     const cad = quarter()
     cad.command("DIMBASELINE")
-    expect(cad.optionKeys()).toEqual([])
+    expect(cad.optionAbbreviations()).toEqual([])
   })
 })

@@ -284,7 +284,7 @@ describe("ELLIPSE", () => {
     const cad = createHarness()
 
     cad.command("ELLIPSE")
-    expect(cad.optionKeys()).toEqual(["A", "C"])
+    expect(cad.optionAbbreviations()).toEqual(["A", "C"])
 
     cad.option("Center").click(p(0, 0)).click(p(100, 0)).click(p(0, 50))
 

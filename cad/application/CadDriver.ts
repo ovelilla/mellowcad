@@ -303,24 +303,14 @@ export class CadDriver {
   /**
    * Answers a keyword prompt (AutoCAD's `[Close/Undo]`) with the keyword whose
    * global id is `id` — `option("Close")` in every language — typed as a
-   * user of the command language would: its key when it has one, otherwise its
-   * abbreviation and Enter. Routed like the UI does: through the focused input
-   * when there is one, else on the drawing surface, which resolves keywords
-   * before anything else. An id the running command does not have is a
-   * mistake in the script, and throws.
+   * user of the command language would: its abbreviation, then Enter. Routed
+   * like the UI does: through the focused input when there is one, else on
+   * the drawing surface. An id the running command does not have is a mistake
+   * in the script, and throws.
    */
   option(id: string): this {
     const typed = this.optionAnswer(id)
-    const offered = this.state().commandOptions.find(
-      (option) => option.id === id
-    )
-    // A keyword not on offer is typed like any other letter — the prompt
-    // ignores it exactly as it ignores a stray key.
-    const immediate = offered ? offered.key !== null : typed.length === 1
-    if (immediate) {
-      if (this.hasFocusedField()) this.runtime.invokeToolOption(typed)
-      else this.press(typed)
-    } else if (this.hasFocusedField()) {
+    if (this.hasFocusedField()) {
       this.type(typed).enter()
     } else {
       for (const char of typed) this.press(char)
@@ -330,8 +320,8 @@ export class CadDriver {
   }
 
   /**
-   * What a user types to answer with keyword `id` at the current prompt: the
-   * key that runs it, or else its abbreviation in the command language.
+   * What a user types to answer with keyword `id` at the current prompt: its
+   * abbreviation in the command language.
    */
   optionAnswer(id: string): string {
     const toolId = this.activeToolId()
@@ -344,11 +334,7 @@ export class CadDriver {
     const offered = this.state().commandOptions.find(
       (option) => option.id === id
     )
-    return (
-      offered?.key ??
-      offered?.abbreviation ??
-      abbreviationOf(text.keyword(command, id))
-    )
+    return offered?.abbreviation ?? abbreviationOf(text.keyword(command, id))
   }
 
   /** Runs a command by name or alias, as typing it at the prompt would. */
@@ -447,9 +433,9 @@ export class CadDriver {
     return this.runtime.buildScene()
   }
 
-  /** The keys of the keyword chips the active tool currently offers. */
-  optionKeys(): (string | null)[] {
-    return this.state().commandOptions.map((option) => option.key)
+  /** The abbreviations the keyword chips the active tool offers show. */
+  optionAbbreviations(): string[] {
+    return this.state().commandOptions.map((option) => option.abbreviation)
   }
 
   /** The global ids of the keywords the active tool currently offers. */

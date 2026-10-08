@@ -67,7 +67,7 @@ describe("ZOOM", () => {
 
     cad.command("ZOOM")
 
-    expect(cad.optionKeys()).toEqual(["A", "E", "P", "S", "W", "O"])
+    expect(cad.optionAbbreviations()).toEqual(["A", "E", "P", "S", "W", "O"])
   })
 
   it("Extents frames the whole drawing", () => {

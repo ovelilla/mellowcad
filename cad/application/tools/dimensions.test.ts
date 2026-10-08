@@ -77,10 +77,10 @@ describe("DIMLINEAR", () => {
   it("offers AutoCAD's keywords only at the location prompt", () => {
     const cad = createHarness()
     cad.command("DIMLINEAR")
-    expect(cad.optionKeys()).toEqual([])
+    expect(cad.optionAbbreviations()).toEqual([])
 
     cad.click(p(0, 0)).click(p(100, 0)).moveTo(p(50, 40))
-    expect(cad.optionKeys()).toEqual(["T", "A", "H", "V", "R"])
+    expect(cad.optionAbbreviations()).toEqual(["T", "A", "H", "V", "R"])
   })
 
   it("Horizontal and Vertical override the direction the drag implies", () => {
@@ -222,7 +222,7 @@ describe("DIMALIGNED", () => {
   it("offers only Text and Angle — it has no Horizontal/Vertical/Rotated", () => {
     const cad = createHarness()
     cad.command("DIMALIGNED").click(p(0, 0)).click(p(60, 80)).moveTo(p(-40, 60))
-    expect(cad.optionKeys()).toEqual(["T", "A"])
+    expect(cad.optionAbbreviations()).toEqual(["T", "A"])
   })
 
   it("keeps measuring the origins even when they are moved", () => {

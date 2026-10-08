@@ -86,8 +86,9 @@ export function CommandLine({
           value={buffer}
           onChange={(e) => engine.setCommandLineText(e.target.value)}
           onKeyDown={(e) => {
-            if (e.key === "Enter" || (e.key === " " && buffer.trim() !== "")) {
-              // Space runs the command too, as it does in AutoCAD.
+            if (e.key === "Enter" || e.key === " ") {
+              // Space is Enter too, as it is in AutoCAD: it runs the command,
+              // answers the prompt, or with nothing typed repeats or ends.
               e.preventDefault()
               engine.submitCommandLine()
             } else if (e.key === "Tab" && buffer !== "") {

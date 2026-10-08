@@ -407,21 +407,21 @@ lweight "Lineweight" LW
 > type first point
   dyn: "X,Y"="0,0"||*
 > enter
+  prompt: LINE [Undo]:
   asks: "Length" "Angle"
   dyn: "Length"=""|0.00|mm* "Angle"=""||°
+  options: [U] Undo
 > move
   dyn: "Length"=""|50.00|mm* "Angle"=""|0.00|°
 > type length
   dyn: "Length"="100"|50.00|mm* "Angle"=""|0.00|°
 > enter
-  prompt: LINE [Undo]:
-  dyn: "Length"=""|0.00|mm* "Angle"=""|0.00|°
-  options: [U] Undo
+  dyn: "Length"=""|50.00|mm* "Angle"=""|180.00|°
 > polar coordinate
   dyn: "Dist<Ang"="100<90"||*
 > enter
   prompt: LINE [Close/Undo]:
-  dyn: "Length"=""|0.00|mm* "Angle"=""|90.00|°
+  dyn: "Length"=""|111.80|mm* "Angle"=""|116.57|°
   options: [C] Close, [U] Undo
 > click
   dyn: "Length"=""|0.00|mm* "Angle"=""||°
@@ -438,12 +438,15 @@ lweight "Lineweight" LW
   dyn: "X,Y"=""||*
   command| LINE
 > Enter continues
+  prompt: LINE [Undo]:
   asks: "Length" "Angle"
-  dyn: "Length"=""|0.00|mm* "Angle"=""||°
+  dyn: "Length"=""|100.00|mm* "Angle"=""|90.00|°
+  options: [U] Undo
 > escape
   prompt: Command:
   asks: -
   dyn: -
+  options: -
 
 ## LINE offset from a tracked point
 > start
@@ -523,7 +526,7 @@ lweight "Lineweight" LW
   prompt: CIRCLE [3P/2P/Ttr]:
   asks: "Center"
   dyn: "X,Y"=""||*
-  options: [null] 3P, [null] 2P, [T] Ttr
+  options: [3P] 3P, [2P] 2P, [T] Ttr
   command| CIRCLE
 > centre
   prompt: CIRCLE [Diameter]:
@@ -543,7 +546,7 @@ lweight "Lineweight" LW
   prompt: CIRCLED [3P/2P/Ttr]:
   asks: "Center"
   dyn: "X,Y"=""||*
-  options: [null] 3P, [null] 2P, [T] Ttr
+  options: [3P] 3P, [2P] 2P, [T] Ttr
   command| CIRCLED
 > centre
   prompt: CIRCLED:
@@ -733,7 +736,7 @@ lweight "Lineweight" LW
 > enter
   prompt: ELLIPSEARC [Included angle]:
   asks: "End angle"
-  dyn: "End angle"=""|0.00|°*
+  dyn: "End angle"=""|90.00|°*
   options: [I] Included angle
 > I
   asks: "Included angle"
@@ -821,7 +824,7 @@ lweight "Lineweight" LW
   prompt: SPLINE [Fit/CV]:
   asks: 
   dyn: 
-  options: [F] Fit, [null] CV
+  options: [F] Fit, [CV] CV
 > CV
   prompt: SPLINE [Method/Degree]:
   asks: "First point"
@@ -863,7 +866,7 @@ lweight "Lineweight" LW
   prompt: SPLINE [Fit/CV]:
   asks: 
   dyn: 
-  options: [F] Fit, [null] CV
+  options: [F] Fit, [CV] CV
 > F
   prompt: SPLINE [Method/Knots]:
   asks: "First point"
@@ -964,13 +967,13 @@ lweight "Lineweight" LW
 > enter
   prompt: POLYGON [Type: Inscribed]:
   asks: "Radius"
-  dyn: "Radius"=""|0.00|mm*
+  dyn: "Radius"=""|233.24|mm*
   options: [T] Type: Inscribed
 > T
   prompt: POLYGON [Type: Circumscribed]:
   options: [T] Type: Circumscribed
 > radius
-  dyn: "Radius"="100"|0.00|mm*
+  dyn: "Radius"="100"|233.24|mm*
 > enter
   prompt: Command:
   asks: -
@@ -1322,7 +1325,7 @@ lweight "Lineweight" LW
   prompt: MTEXT [TL/TC/TR/ML/MC/MR/BL/BC/BR]:
   asks: 
   dyn: 
-  options: [null] TL, [null] TC, [null] TR, [null] ML, [null] MC, [null] MR, [null] BL, [null] BC, [null] BR
+  options: [TL] TL, [TC] TC, [TR] TR, [ML] ML, [MC] MC, [MR] MR, [BL] BL, [BC] BC, [BR] BR
 > MC
   prompt: MTEXT [Height/Justify/Line spacing/Rotation/Style/Width]:
   asks: "Specify opposite corner"
@@ -2011,9 +2014,9 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
   dyn: "Reference length"="100"||mm*
 > enter
   asks: "New length"
-  dyn: "New length"=""||mm*
+  dyn: "New length"=""|0.00|mm*
 > new length
-  dyn: "New length"="50"||mm*
+  dyn: "New length"="50"|0.00|mm*
 > enter
   prompt: Command:
   asks: -
@@ -2354,7 +2357,6 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
         Delta X = 300.00,  Delta Y = 400.00,   Delta Z = 0.00
 > typed first
   asks: "Second point"
-  canvas: "Dist  0.00 mm" "Angle 0.00°" "ΔX    0.00" "ΔY    0.00" "ΔZ    0.00"
 > typed second
   asks: "First point"
   canvas: "Dist  130.00 mm" "Angle 53.13°" "ΔX    30.00" "ΔY    40.00" "ΔZ    120.00"
@@ -2491,7 +2493,7 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
   prompt: UCS [NAmed/OBject/Previous/View/World/X/Y/Z/ZAxis]:
   asks: "Specify origin of UCS"
   dyn: "X,Y"=""||*
-  options: [null] NAmed, [null] OBject, [P] Previous, [V] View, [W] World, [X] X, [Y] Y, [null] Z, [null] ZAxis
+  options: [NA] NAmed, [OB] OBject, [P] Previous, [V] View, [W] World, [X] X, [Y] Y, [Z] Z, [ZA] ZAxis
   command| UCS
   info| Current ucs name:  *WORLD*
 > origin
@@ -2508,7 +2510,7 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
   prompt: UCS [NAmed/OBject/Previous/View/World/X/Y/Z/ZAxis]:
   asks: "Specify origin of UCS"
   dyn: "X,Y"=""||*
-  options: [null] NAmed, [null] OBject, [P] Previous, [V] View, [W] World, [X] X, [Y] Y, [null] Z, [null] ZAxis
+  options: [NA] NAmed, [OB] OBject, [P] Previous, [V] View, [W] World, [X] X, [Y] Y, [Z] Z, [ZA] ZAxis
   command| UCS
   info| Current ucs name:  *NO NAME*
 > Z
@@ -2526,7 +2528,7 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
   prompt: UCS [NAmed/OBject/Previous/View/World/X/Y/Z/ZAxis]:
   asks: "Specify origin of UCS"
   dyn: "X,Y"=""||*
-  options: [null] NAmed, [null] OBject, [P] Previous, [V] View, [W] World, [X] X, [Y] Y, [null] Z, [null] ZAxis
+  options: [NA] NAmed, [OB] OBject, [P] Previous, [V] View, [W] World, [X] X, [Y] Y, [Z] Z, [ZA] ZAxis
   command| UCS
   info| Current ucs name:  *NO NAME*
 > NA
@@ -2549,7 +2551,7 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
   prompt: UCS [NAmed/OBject/Previous/View/World/X/Y/Z/ZAxis]:
   asks: "Specify origin of UCS"
   dyn: "X,Y"=""||*
-  options: [null] NAmed, [null] OBject, [P] Previous, [V] View, [W] World, [X] X, [Y] Y, [null] Z, [null] ZAxis
+  options: [NA] NAmed, [OB] OBject, [P] Previous, [V] View, [W] World, [X] X, [Y] Y, [Z] Z, [ZA] ZAxis
   command| UCS
   info| Current ucs name:  PLOT
 > NA
@@ -2592,7 +2594,7 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
   prompt: UCS [NAmed/OBject/Previous/View/World/X/Y/Z/ZAxis]:
   asks: "Specify origin of UCS"
   dyn: "X,Y"=""||*
-  options: [null] NAmed, [null] OBject, [P] Previous, [V] View, [W] World, [X] X, [Y] Y, [null] Z, [null] ZAxis
+  options: [NA] NAmed, [OB] OBject, [P] Previous, [V] View, [W] World, [X] X, [Y] Y, [Z] Z, [ZA] ZAxis
   command| UCS
   info| Current ucs name:  PLOT
 > W
@@ -2604,7 +2606,7 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
   prompt: UCS [NAmed/OBject/Previous/View/World/X/Y/Z/ZAxis]:
   asks: "Specify origin of UCS"
   dyn: "X,Y"=""||*
-  options: [null] NAmed, [null] OBject, [P] Previous, [V] View, [W] World, [X] X, [Y] Y, [null] Z, [null] ZAxis
+  options: [NA] NAmed, [OB] OBject, [P] Previous, [V] View, [W] World, [X] X, [Y] Y, [Z] Z, [ZA] ZAxis
   command| UCS
   info| Current ucs name:  *WORLD*
 > P
@@ -2616,7 +2618,7 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
   prompt: UCS [NAmed/OBject/Previous/View/World/X/Y/Z/ZAxis]:
   asks: "Specify origin of UCS"
   dyn: "X,Y"=""||*
-  options: [null] NAmed, [null] OBject, [P] Previous, [V] View, [W] World, [X] X, [Y] Y, [null] Z, [null] ZAxis
+  options: [NA] NAmed, [OB] OBject, [P] Previous, [V] View, [W] World, [X] X, [Y] Y, [Z] Z, [ZA] ZAxis
   command| UCS
   info| Current ucs name:  PLOT
 > OB
@@ -2632,7 +2634,7 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
   prompt: UCSICON [ON/OFF/Noorigin/ORigin] <ON>:
   asks: 
   dyn: 
-  options: [null] ON, [null] OFF, [N] Noorigin, [null] ORigin
+  options: [ON] ON, [OFF] OFF, [N] Noorigin, [OR] ORigin
   command| UCSICON
 > N
   prompt: Command:
@@ -2710,7 +2712,7 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
   prompt: UCS [NAmed/OBject/Previous/View/World/X/Y/Z/ZAxis]:
   asks: "Specify origin of UCS"
   dyn: "X,Y"=""||*
-  options: [null] NAmed, [null] OBject, [P] Previous, [V] View, [W] World, [X] X, [Y] Y, [null] Z, [null] ZAxis
+  options: [NA] NAmed, [OB] OBject, [P] Previous, [V] View, [W] World, [X] X, [Y] Y, [Z] Z, [ZA] ZAxis
   command| UCS
   info| Current ucs name:  *WORLD*
 > X
@@ -2728,7 +2730,7 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
   prompt: UCS [NAmed/OBject/Previous/View/World/X/Y/Z/ZAxis]:
   asks: "Specify origin of UCS"
   dyn: "X,Y"=""||*
-  options: [null] NAmed, [null] OBject, [P] Previous, [V] View, [W] World, [X] X, [Y] Y, [null] Z, [null] ZAxis
+  options: [NA] NAmed, [OB] OBject, [P] Previous, [V] View, [W] World, [X] X, [Y] Y, [Z] Z, [ZA] ZAxis
   command| UCS
   info| Current ucs name:  *NO NAME*
 > Y
@@ -2744,7 +2746,7 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
   prompt: UCS [NAmed/OBject/Previous/View/World/X/Y/Z/ZAxis]:
   asks: "Specify origin of UCS"
   dyn: "X,Y"=""||*
-  options: [null] NAmed, [null] OBject, [P] Previous, [V] View, [W] World, [X] X, [Y] Y, [null] Z, [null] ZAxis
+  options: [NA] NAmed, [OB] OBject, [P] Previous, [V] View, [W] World, [X] X, [Y] Y, [Z] Z, [ZA] ZAxis
   command| UCS
   info| Current ucs name:  *NO NAME*
 > ZA
@@ -2765,7 +2767,7 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
   prompt: UCS [NAmed/OBject/Previous/View/World/X/Y/Z/ZAxis]:
   asks: "Specify origin of UCS"
   dyn: "X,Y"=""||*
-  options: [null] NAmed, [null] OBject, [P] Previous, [V] View, [W] World, [X] X, [Y] Y, [null] Z, [null] ZAxis
+  options: [NA] NAmed, [OB] OBject, [P] Previous, [V] View, [W] World, [X] X, [Y] Y, [Z] Z, [ZA] ZAxis
   command| UCS
   info| Current ucs name:  *NO NAME*
 > ZA
@@ -2785,7 +2787,7 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
   prompt: UCS [NAmed/OBject/Previous/View/World/X/Y/Z/ZAxis]:
   asks: "Specify origin of UCS"
   dyn: "X,Y"=""||*
-  options: [null] NAmed, [null] OBject, [P] Previous, [V] View, [W] World, [X] X, [Y] Y, [null] Z, [null] ZAxis
+  options: [NA] NAmed, [OB] OBject, [P] Previous, [V] View, [W] World, [X] X, [Y] Y, [Z] Z, [ZA] ZAxis
   command| UCS
   info| Current ucs name:  *NO NAME*
 > NA
@@ -2808,7 +2810,7 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
   prompt: UCS [NAmed/OBject/Previous/View/World/X/Y/Z/ZAxis]:
   asks: "Specify origin of UCS"
   dyn: "X,Y"=""||*
-  options: [null] NAmed, [null] OBject, [P] Previous, [V] View, [W] World, [X] X, [Y] Y, [null] Z, [null] ZAxis
+  options: [NA] NAmed, [OB] OBject, [P] Previous, [V] View, [W] World, [X] X, [Y] Y, [Z] Z, [ZA] ZAxis
   command| UCS
   info| Current ucs name:  END
 > W
@@ -2820,7 +2822,7 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
   prompt: UCS [NAmed/OBject/Previous/View/World/X/Y/Z/ZAxis]:
   asks: "Specify origin of UCS"
   dyn: "X,Y"=""||*
-  options: [null] NAmed, [null] OBject, [P] Previous, [V] View, [W] World, [X] X, [Y] Y, [null] Z, [null] ZAxis
+  options: [NA] NAmed, [OB] OBject, [P] Previous, [V] View, [W] World, [X] X, [Y] Y, [Z] Z, [ZA] ZAxis
   command| UCS
   info| Current ucs name:  *WORLD*
 > NA
@@ -3108,7 +3110,7 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
   command| -VIEW
 > O
   prompt: VIEW [Top/Bottom/Front/BAck/Left/Right]:
-  options: [T] Top, [null] Bottom, [F] Front, [null] BAck, [L] Left, [R] Right
+  options: [T] Top, [B] Bottom, [F] Front, [BA] BAck, [L] Left, [R] Right
 > F
   prompt: Command:
   asks: -
@@ -3133,7 +3135,7 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
   command| VIEW
 > O
   prompt: VIEW [Top/Bottom/Front/BAck/Left/Right]:
-  options: [T] Top, [null] Bottom, [F] Front, [null] BAck, [L] Left, [R] Right
+  options: [T] Top, [B] Bottom, [F] Front, [BA] BAck, [L] Left, [R] Right
 > enter is Top
   prompt: Command:
   asks: -
@@ -3143,12 +3145,24 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
   prompt: NAVVCUBE [ON/OFF] <ON>:
   asks: 
   dyn: 
-  options: [null] ON, [null] OFF
+  options: [ON] ON, [OFF] OFF
   command| NAVVCUBE
 > OFF
+  prompt: Command:
+  asks: -
+  dyn: -
+  options: -
 > CUBE
+  prompt: NAVVCUBE [ON/OFF] <OFF>:
+  asks: 
+  dyn: 
+  options: [ON] ON, [OFF] OFF
   command| NAVVCUBE
 > ON
+  prompt: Command:
+  asks: -
+  dyn: -
+  options: -
 
 ## grips
 > start
@@ -3489,16 +3503,19 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
   canvas: "Endpoint"
   command| LINE
 > first
+  prompt: LINE [Undo]:
   asks: "Length" "Angle"
   dyn: "Length"=""|0.00|mm* "Angle"=""||°
+  options: [U] Undo
   canvas: -
 > override perpendicular
-  dyn: "Length"=""|80.00|mm* "Angle"=""|270.00|°
+  dyn: "Length"=""|80.00|mm* "Angle"=""|90.00|°
   canvas: "Perpendicular"
 > escape
   prompt: Command:
   asks: -
   dyn: -
+  options: -
   canvas: -
 
 ## object snap tangent
@@ -3517,8 +3534,10 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
   canvas: "Center"
   command| LINE
 > first
+  prompt: LINE [Undo]:
   asks: "Length" "Angle"
   dyn: "Length"=""|0.00|mm* "Angle"=""||°
+  options: [U] Undo
   canvas: -
 > override tangent
   dyn: "Length"=""|193.65|mm* "Angle"=""|165.52|°
@@ -3527,6 +3546,7 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
   prompt: Command:
   asks: -
   dyn: -
+  options: -
   canvas: -
 
 ## object snap insertion
@@ -3612,8 +3632,10 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
   dyn: "X,Y"=""||*
   command| LINE
 > first
+  prompt: LINE [Undo]:
   asks: "Length" "Angle"
   dyn: "Length"=""|0.00|mm* "Angle"=""||°
+  options: [U] Undo
 > override parallel and dwell
   dyn: "Length"=""|213.60|mm* "Angle"=""|159.44|°
 > aim along it
@@ -3623,6 +3645,7 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
   prompt: Command:
   asks: -
   dyn: -
+  options: -
   canvas: -
 
 ## object snap extension
@@ -3710,8 +3733,10 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
   dyn: "X,Y"=""||*
   command| LINE
 > first
+  prompt: LINE [Undo]:
   asks: "Length" "Angle"
   dyn: "Length"=""|0.00|mm* "Angle"=""||°
+  options: [U] Undo
 > near 45
   dyn: "Length"=""|99.70|mm* "Angle"=""|45.00|°
   canvas: "Polar: 99.70mm < 45.00°"
@@ -3719,6 +3744,7 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
   prompt: Command:
   asks: -
   dyn: -
+  options: -
   canvas: -
 
 ## FROM
@@ -3743,12 +3769,15 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
 > offset
   dyn: "X,Y"="@10,0"||*
 > enter
+  prompt: LINE [Undo]:
   asks: "Length" "Angle"
-  dyn: "Length"=""|0.00|mm* "Angle"=""||°
+  dyn: "Length"=""|10.00|mm* "Angle"=""|180.00|°
+  options: [U] Undo
 > escape
   prompt: Command:
   asks: -
   dyn: -
+  options: -
 
 ## default names
 Layer1

@@ -1,7 +1,7 @@
-import { describe, expect, it } from "vitest"
+import { describe, expect, it, onTestFinished, vi } from "vitest"
 import type { LineEntity } from "../../domain/entities"
 import { createHarness } from "../../../test/harness"
-import { deg, p } from "../../../test/builders"
+import { arcOf, circleOf, deg, lineOf, p } from "../../../test/builders"
 
 /**
  * LINE end-to-end, driven exactly as a user drives it: start the command, move
@@ -145,13 +145,13 @@ describe("LINE", () => {
       const cad = createHarness()
 
       cad.command("LINE").click(p(0, 0))
-      expect(cad.optionKeys()).not.toContain("C")
+      expect(cad.optionAbbreviations()).not.toContain("C")
 
       cad.click(p(100, 0))
-      expect(cad.optionKeys()).toEqual(["U"])
+      expect(cad.optionAbbreviations()).toEqual(["U"])
 
       cad.click(p(100, 100))
-      expect(cad.optionKeys()).toEqual(["C", "U"])
+      expect(cad.optionAbbreviations()).toEqual(["C", "U"])
     })
 
     it("Close draws back to the first vertex and ends the command", () => {
@@ -233,7 +233,7 @@ describe("LINE", () => {
   })
 
   describe("undo history", () => {
-    it("makes every segment individually undoable", () => {
+    it("undoes the whole command with one U, as AutoCAD does", () => {
       const cad = createHarness()
 
       cad
@@ -242,14 +242,37 @@ describe("LINE", () => {
         .click(p(100, 0))
         .click(p(100, 100))
         .escape()
-      expect(cad.entityCount).toBe(2)
+      cad.command("LINE").click(p(200, 0)).click(p(300, 0)).escape()
+      expect(cad.entityCount).toBe(3)
 
       cad.undo()
-      expect(cad.entityCount).toBe(1)
+      expect(cad.entityCount).toBe(2)
       cad.undo()
       expect(cad.entityCount).toBe(0)
       cad.redo()
+      expect(cad.entityCount).toBe(2)
+    })
+
+    it("takes Ctrl+Z inside the command as its Undo option", () => {
+      const cad = createHarness()
+
+      cad.command("LINE").click(p(0, 0)).click(p(100, 0)).click(p(100, 100))
+      cad.press("z", { ctrlKey: true })
+
       expect(cad.entityCount).toBe(1)
+      expect(cad.activeToolId()).toBe("line")
+      cad.click(p(0, 100)).escape()
+      expect(lines(cad.entities())[1].start).toBeCloseToPoint(p(100, 0))
+    })
+
+    it("ends the command before UNDO, which takes all it drew", () => {
+      const cad = createHarness()
+
+      cad.command("LINE").click(p(0, 0)).click(p(100, 0)).click(p(100, 100))
+      cad.undo()
+
+      expect(cad.entityCount).toBe(0)
+      expect(cad.activeToolId()).toBe("select")
     })
   })
 
@@ -260,5 +283,248 @@ describe("LINE", () => {
     cad.command("LINE").click(p(0, 0)).click(p(100, 0)).escape()
 
     expect(cad.only<LineEntity>("line").layerId).toBe(layerId)
+  })
+  describe("the next-point prompt", () => {
+    it("offers Undo from the first point on, which takes that point back", () => {
+      // AutoCAD: "Specify next point or [Undo]:" straight after the first point.
+      const cad = createHarness()
+
+      cad.command("LINE").click(p(10, 10))
+      expect(cad.optionIds()).toEqual(["Undo"])
+
+      cad.option("Undo")
+      expect(cad.activeToolId()).toBe("line")
+      expect(cad.optionIds()).toEqual([])
+      expect(cad.state().dynamicInput?.fields[0].id).toBe("point")
+
+      cad.click(p(20, 20)).click(p(60, 20)).escape()
+      const line = cad.only<LineEntity>("line")
+      expect(line.start).toBeCloseToPoint(p(20, 20))
+    })
+
+    it("runs a typed length the other way when it is negative", () => {
+      // "If you had typed -6, the vertical line would have been drawn downward"
+      const cad = createHarness()
+
+      cad.command("LINE").click(p(0, 0)).moveTo(p(50, 0)).type("-30").enter()
+
+      expect(cad.only<LineEntity>("line").end).toBeCloseToPoint(p(-30, 0))
+    })
+
+    it("measures a length typed next from where the cursor still stands", () => {
+      const cad = createHarness()
+
+      cad.command("LINE").click(p(0, 0)).moveTo(p(50, 0))
+      cad.type("100").enter().type("30").enter()
+
+      // The cursor, unmoved at (50, 0), lies back towards the start.
+      expect(lines(cad.entities())[1].end).toBeCloseToPoint(p(70, 0))
+    })
+
+    it("shows only acute angles, and reads a typed one on the cursor's side", () => {
+      // "dimension input displays only acute angles … Angles specified when
+      // creating new objects rely on the cursor location to determine the
+      // positive angle direction."
+      const cad = createHarness()
+
+      cad.command("LINE").click(p(0, 0)).moveTo(p(-30, -40))
+      const angle = cad.state().dynamicInput?.fields[1]
+      expect(Number(angle?.placeholder)).toBeCloseTo(126.87, 2)
+
+      cad.type("100", "distance").type("30", "angle").enter()
+      expect(cad.only<LineEntity>("line").end).toBeCloseToPoint(
+        p(100 * Math.cos(deg(-30)), 100 * Math.sin(deg(-30))),
+        6
+      )
+    })
+
+    it("locks the next point to a typed <angle", () => {
+      const cad = createHarness()
+
+      cad.command("LINE").click(p(0, 0)).type("<45").enter()
+      expect(cad.commandLog()).toContain("Angle Override: 45")
+
+      cad.click(p(80, 20)).escape()
+      const end = cad.only<LineEntity>("line").end
+      expect(end.x).toBeCloseTo(end.y, 9)
+      expect(end.x).toBeCloseTo(50, 9)
+    })
+
+    it("holds the angle override for one point only", () => {
+      const cad = createHarness()
+
+      cad.command("LINE").click(p(0, 0)).type("<90").enter()
+      cad.moveTo(p(10, 100)).type("100").enter()
+      cad.click(p(200, 130)).escape()
+
+      const drawn = lines(cad.entities())
+      expect(drawn[0].end).toBeCloseToPoint(p(0, 100))
+      expect(drawn[1].end).toBeCloseToPoint(p(200, 130))
+    })
+  })
+
+  describe("Continue", () => {
+    it("leaves the last arc tangent to it, asking only the length", () => {
+      const cad = createHarness({ entities: [arcOf(p(0, 0), 50, 0, deg(90))] })
+
+      cad.command("LINE").enter()
+      expect(cad.state().dynamicInput?.fields.map((f) => f.id)).toEqual([
+        "distance",
+      ])
+      cad.type("40").enter()
+
+      const line = cad.only<LineEntity>("line")
+      expect(line.start).toBeCloseToPoint(p(0, 50))
+      expect(line.end).toBeCloseToPoint(p(-40, 50))
+      // …and goes on from its end.
+      cad.click(p(-40, 0)).escape()
+      expect(lines(cad.entities())[1].end).toBeCloseToPoint(p(-40, 0))
+    })
+
+    it("takes a pick at the length prompt as the length", () => {
+      const cad = createHarness({ entities: [arcOf(p(0, 0), 50, 0, deg(90))] })
+
+      cad.command("LINE").enter().click(p(0, 80)).escape()
+
+      expect(cad.only<LineEntity>("line").end).toBeCloseToPoint(p(-30, 50))
+    })
+  })
+
+  describe("typed points", () => {
+    it("reads @ at the first point from the last point given", () => {
+      const cad = createHarness()
+
+      cad.command("LINE").click(p(30, 30)).click(p(80, 30)).escape()
+      cad.command("LINE").type("@10,10").enter().click(p(150, 40)).escape()
+
+      expect(lines(cad.entities())[1].start).toBeCloseToPoint(p(90, 40))
+    })
+
+    it("runs a length typed on an OTRACK guide from the acquired point", () => {
+      vi.useFakeTimers()
+      onTestFinished(() => {
+        vi.useRealTimers()
+      })
+      const cad = createHarness({
+        entities: [lineOf(p(80, 60), p(120, 60))],
+        snap: true,
+      })
+
+      cad.command("LINE").click(p(0, 0)).moveTo(p(80, 60))
+      vi.advanceTimersByTime(500)
+      cad.moveTo(p(80.5, 20)).type("25").enter().escape()
+
+      expect(lines(cad.entities())[1].end).toBeCloseToPoint(p(80, 35))
+    })
+  })
+
+  describe("the keyboard", () => {
+    it("takes keys typed on the drawing into the box, and Space as Enter", () => {
+      const cad = createHarness()
+
+      cad.command("LINE").click(p(0, 0)).moveTo(p(50, 0))
+      for (const key of "100") cad.press(key)
+      cad.press(" ")
+      expect(cad.only<LineEntity>("line").end).toBeCloseToPoint(p(100, 0))
+
+      cad.press(" ")
+      expect(cad.activeToolId()).toBe("select")
+      cad.press(" ")
+      expect(cad.activeToolId()).toBe("line")
+    })
+
+    it("answers the prompt from the command line, coordinates absolute", () => {
+      const cad = createHarness()
+
+      cad.command("LINE").click(p(10, 10))
+      cad.runtime.setCommandLineText("100,50")
+      cad.runtime.submitCommandLine()
+      cad.runtime.setCommandLineText("CIRCLE")
+      cad.runtime.submitCommandLine()
+
+      expect(cad.only<LineEntity>("line").end).toBeCloseToPoint(p(100, 50))
+      expect(cad.activeToolId()).toBe("line")
+    })
+  })
+
+  describe("Shift", () => {
+    it("turns Ortho off while it is held, as it turns it on", () => {
+      const cad = createHarness()
+      cad.runtime.toggleOrtho()
+
+      cad.command("LINE").click(p(0, 0)).click(p(100, 30), { shiftKey: true })
+      cad.click(p(130, 80)).escape()
+
+      const drawn = lines(cad.entities())
+      expect(drawn[0].end).toBeCloseToPoint(p(100, 30))
+      expect(drawn[1].end).toBeCloseToPoint(p(100, 80))
+    })
+  })
+  describe("a Tangent or Perpendicular at the first point", () => {
+    const twoCircles = () =>
+      createHarness({
+        entities: [circleOf(p(0, 0), 20), circleOf(p(100, 0), 20)],
+      })
+
+    it("draws the line tangent to two circles, the one nearest the picks", () => {
+      const cad = twoCircles()
+
+      cad.command("LINE").type("tan").enter().click(p(2, 19.5))
+      expect(cad.entityCount).toBe(2)
+      expect(cad.optionIds()).toEqual(["Undo"])
+      cad.type("tan").enter().click(p(98, 19.5)).escape()
+
+      const line = cad.only<LineEntity>("line")
+      expect(line.start).toBeCloseToPoint(p(0, 20))
+      expect(line.end).toBeCloseToPoint(p(100, 20))
+    })
+
+    it("takes the crossing tangent when the picks are on opposite sides", () => {
+      const cad = twoCircles()
+
+      cad.command("LINE").type("tan").enter().click(p(5, 19))
+      cad.type("tan").enter().click(p(95, -19)).escape()
+
+      const { start, end } = cad.only<LineEntity>("line")
+      // Through the midpoint between the circles, touching each square.
+      expect((start.y + end.y) / 2).toBeCloseTo(0, 9)
+      expect(start.y).toBeGreaterThan(0)
+      expect(end.y).toBeLessThan(0)
+      expect(Math.hypot(start.x, start.y)).toBeCloseTo(20, 9)
+    })
+
+    it("works the tangent point out from a plain next point", () => {
+      const cad = twoCircles()
+
+      cad.command("LINE").type("tan").enter().click(p(-5, 19)).click(p(0, 40))
+      cad.escape()
+
+      // From (0, 40) the tangents touch at 30° above the horizontal.
+      const { start } = cad.only<LineEntity>("line")
+      expect(start).toBeCloseToPoint(
+        p(-20 * Math.cos(deg(30)), 20 * Math.sin(deg(30))),
+        6
+      )
+    })
+
+    it("drops a perpendicular onto a line from the next point", () => {
+      const cad = createHarness({ entities: [lineOf(p(-100, 0), p(100, 0))] })
+
+      cad.command("LINE").type("per").enter().click(p(30, 0.5)).click(p(60, 80))
+      cad.escape()
+
+      const drawn = lines(cad.entities())[1]
+      expect(drawn.start).toBeCloseToPoint(p(60, 0))
+      expect(drawn.end).toBeCloseToPoint(p(60, 80))
+    })
+
+    it("takes the pick back with Undo", () => {
+      const cad = twoCircles()
+
+      cad.command("LINE").type("tan").enter().click(p(2, 19.5)).option("Undo")
+      cad.click(p(200, 200)).click(p(250, 200)).escape()
+
+      expect(cad.only<LineEntity>("line").start).toBeCloseToPoint(p(200, 200))
+    })
   })
 })

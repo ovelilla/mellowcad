@@ -180,7 +180,7 @@ describe("AREA", () => {
     const cad = createHarness()
 
     cad.command("AREA").click(p(0, 0)).click(p(100, 0))
-    expect(cad.optionKeys()).toEqual(["U"])
+    expect(cad.optionAbbreviations()).toEqual(["U"])
 
     // Step back over the mistaken vertex and replace it.
     cad

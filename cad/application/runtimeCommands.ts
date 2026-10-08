@@ -184,7 +184,6 @@ export function offerOptions(tool: Tool, text: EngineText): CommandOptionUi[] {
       id: keyword.id,
       keyword: keyword.word,
       abbreviation: keyword.abbreviation,
-      key: keyword.key,
       label:
         value === undefined
           ? keyword.word

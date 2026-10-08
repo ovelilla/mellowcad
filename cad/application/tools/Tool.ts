@@ -187,6 +187,13 @@ export interface ToolContext {
   }
 
   /**
+   * The one-shot object snap given for the point being asked (`tan`, the
+   * Shift+right-click menu), or null: what LINE reads to defer a Tangent or a
+   * Perpendicular picked before there is a point to measure from.
+   */
+  snapOverride(): SnapType | "none" | null
+
+  /**
    * Ends the current command and drops back to the neutral Select tool. For
    * single-shot commands (MOVE, COPY, ...) that finish the moment their final
    * point is placed, rather than looping or waiting for Escape.

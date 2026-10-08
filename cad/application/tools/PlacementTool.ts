@@ -12,7 +12,7 @@ import { entityScenePrimitive } from "../SceneBuilder"
 import { THEME } from "../../scene/theme"
 import { boxSelect, buildSelectionBoxOverlay } from "./boxSelection"
 import { KeyInput, PointerInput, Tool, ToolContext } from "./Tool"
-import { headingInUcs } from "./ucsHeading"
+import { acuteHeading, headingInUcs } from "./ucsHeading"
 import { pointAlongCursor, showRise } from "./directDistance"
 
 /**
@@ -164,7 +164,7 @@ export abstract class PlacementTool implements Tool {
           ctx.dynamicInput.setLive("distance", length)
           ctx.dynamicInput.setLive(
             "angle",
-            length > 1e-9 ? headingInUcs(ctx.ucs, offset) : null
+            length > 1e-9 ? acuteHeading(headingInUcs(ctx.ucs, offset)) : null
           )
         }
         ctx.dynamicInput.setPosition(input.screen)

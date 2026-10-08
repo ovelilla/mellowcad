@@ -132,9 +132,14 @@ current layer.
   and SPLINE, whose Escape cancels the whole curve as AutoCAD's does:
   it resets its state there on purpose, and `onDeactivate` then finds nothing to keep.
 - One gesture = one command. Splits and multi-entity edits use `ReplaceEntitiesCommand` /
-  `UpdateEntitiesCommand` so a single Ctrl+Z undoes the whole operation.
+  `UpdateEntitiesCommand` so a single Ctrl+Z undoes the whole operation. A whole run of a command
+  (LINE's segments, COPY's copies) is one undo step too, which the runtime makes by grouping:
+  a tool never batches across its own loop for that.
 - A tool offering its own **Undo keyword** must count its own edits and refuse when there are
   none: `ctx.undo()` pops the history, which otherwise backs out an unrelated earlier command.
+  Inside the run each commit is still its own entry, so `ctx.undo()` takes back one; Ctrl+Z runs
+  the keyword. Offer it from the first point a prompt holds (LINE's `[Undo]` after its first
+  point), where it takes that point back.
   For a looping command, push the tool state onto a stack before each commit and restore it on
   Undo — popping the document alone leaves the tool prompting from where the undone step left it.
 - **Preview must equal commit**: share one `resolveX()` between `buildOverlay` and the pointer /
@@ -168,6 +173,21 @@ There is a single session at a time. Patterns in use:
   `"text"` (`isContentField` is the test; never compare the kind with `"text"` alone), rendered as
   a textarea where Enter breaks a line and Ctrl+Enter reaches `commitRaw`. In the harness `type`
   writes the newlines and `enter()` is that Ctrl+Enter.
+
+**After a commit the runtime replays the cursor through the tool** (`updateSnap` +
+`replayPointerMove`), so the rubber band, Ortho and Polar measure from the new base at once and a
+length typed next, mouse unmoved, runs towards the cursor. A reading the commit sets is
+overwritten by the cursor's; a tool must not rely on it.
+
+**A direction prompt's angle field shows it acute** — "all angles are displayed as 180 degrees or
+less" — and reads a typed angle on the cursor's side: feed the field
+`acuteHeading(headingInUcs(...))` and `pointAlongCursor` reads the angle it is handed on the
+cursor's side (`headingOnCursorSide`, `tools/ucsHeading.ts`), the cursor's own acute reading
+included. A tool still feeding 0–360 there would have its readings mirrored below the X axis.
+
+**A length typed on an alignment path runs from the acquired point**: keep `input.tracking` from
+the last move, and when it is a `projection` (an OTRACK guide, an Extension) and only the length is
+typed, the point is `origin + direction × length` (LINE's `pointAt`).
 
 **A live value is a reading or a default, and Enter tells them apart.** `setLive` is a reading of
 the cursor (LINE's length, a grip's radius, a 0 / `null` placeholder); `setDefault` is the prompt's
@@ -219,20 +239,15 @@ deliberate deviation, and it is the one that survives a reload.
 shows a state (`{ id: "Erase", value: "Yes" }` reads `Erase: Yes`; the value is a keyword of the
 same command, as AutoCAD's sub-prompt offers it). `invokeOption(id)` switches on ids and returns
 `"continue"` or `"end"`. The word, its abbreviation (its capitals: `Close` → `C`, `desHacer` →
-`H`; digits count as capitals, so CIRCLE's `3P` is typed whole) and the key that runs it belong to the command language and are resolved by the runtime
+`H`; digits count as capitals, so CIRCLE's `3P` is typed whole) belong to the command language and are resolved by the runtime
 from `commands.keywords.<NAME>`; comparing `key.toLowerCase()` with a letter would break the day
 the language changes. Every keyword a tool offers must be in its command's table.
 
 A keyword is answered by its abbreviation or its whole word, or by `_` and the global one, typed
-and confirmed — at the prompt or in a value box. A single key runs it at once only when its
-abbreviation is that one letter, no other keyword on offer starts with it, and nothing has been
-typed yet. Key routing has two paths, and the difference matters:
-
-- **A DYN field is focused** → `dynamic-input.tsx` intercepts that key while the field is empty;
-  anything else typed there and confirmed with Enter is resolved as a keyword before a value.
-- **The canvas has focus** → `CadRuntime.keyDown` runs the keyword on its key _before_ the
-  command-line buffer, mirroring AutoCAD (an alias only starts a command at the neutral prompt);
-  a submitted prompt is read as a keyword before a command name.
+and confirmed with Enter or Space — at the prompt or in a value box, as in AutoCAD; no key runs one
+on its own. What is typed in a value box (or on the drawing, which feeds the box) is resolved as a
+keyword before a value; a submitted prompt is read as a keyword before anything else, and an alias
+only starts a command at the neutral prompt.
 
 Any tool that used to read raw letters in `onKeyDown` must expose them as command options
 instead, or the command-line buffer will swallow them.
@@ -320,6 +335,11 @@ point)` first: on the guide it shows the height and `+Z` / `-Z` (`setLiveText`, 
 - No hook exposes a preview to the snaps: the rubber band and ghosts are not objects (AutoCAD
   intersects only the polar path with them, which the runtime supplies).
 - `ctx.runningSnaps` reads and sets the running object snaps (OSMODE), for -OSNAP.
+- **A Tangent or Perpendicular given with no point to measure from is deferred**, as AutoCAD
+  defers it: the snap engine offers nothing without an anchor, so the tool reads
+  `ctx.snapOverride()` at the pick and `deferredPick` (`tools/deferredSnap.ts`) takes the object;
+  `deferredFrom` works the point out from the next one and `deferredPair` the line touching two.
+  LINE's first point uses it; a command with a first point of its own reuses it.
 - `retainsTrackingAfterPointerDown()` — true when a click _begins_ an edit rather than placing a
   point, so acquired tracking references survive the drag.
 - `usesCrosshair()` — false only for view tools that own the cursor (PAN's hand).
