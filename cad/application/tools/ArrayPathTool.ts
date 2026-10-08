@@ -19,7 +19,6 @@ import { boxSelect, buildSelectionBoxOverlay } from "./boxSelection"
 import {
   CommandOption,
   CommandOptionOutcome,
-  KeyInput,
   PointerInput,
   Tool,
   ToolContext,
@@ -201,10 +200,6 @@ export class ArrayPathTool implements Tool {
       this.state = { phase: "selecting" }
       ctx.requestRender()
     }
-  }
-
-  onKeyDown(input: KeyInput, ctx: ToolContext): void {
-    if (input.key === " ") this.confirmSelection(ctx)
   }
 
   onEnter(ctx: ToolContext): boolean {

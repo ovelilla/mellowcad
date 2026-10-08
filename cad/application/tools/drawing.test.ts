@@ -87,9 +87,7 @@ describe("CIRCLE", () => {
       "CIRCLE Specify radius of circle:"
     )
     cad.click(p(0, 0))
-    expect(cad.state().commandLine.prompt).toBe(
-      "CIRCLE Specify second point:"
-    )
+    expect(cad.state().commandLine.prompt).toBe("CIRCLE Specify second point:")
   })
 
   it("draws from a centre and a radius pick", () => {

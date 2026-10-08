@@ -292,6 +292,10 @@ export class CadRuntime extends Observable {
   private pointerShift = false
   /** Set while the box hands an unanswered Enter on to the drawing. */
   private enterFromBox = false
+  /** Where the running command's lines start, its echo included. */
+  private commandStart = 0
+  /** The echo's place while `runCommand` starts the command it wrote. */
+  private echoMark: number | null = null
   /** Set while an answer runs, so the prompt it answers is written once. */
   private answeringPrompt = false
   /**
@@ -438,6 +442,19 @@ export class CadRuntime extends Observable {
       requestRender: () => this.host.requestRender(),
       setCursor: (cursor) => this.host.setCursor(cursor),
       report: (text, kind = "info") => this.commandLine.write(kind, text),
+      // A count known once objects are picked goes on the line that asked
+      // for them, or after the command's own echo: `Command: M MOVE 1 found`.
+      answer: (text) => {
+        if (
+          !this.commandLine.amendLast(
+            ["prompt", "command"],
+            this.commandStart,
+            (line) => this.text.answered(line, text)
+          )
+        ) {
+          this.commandLine.write("info", text)
+        }
+      },
       setViewCubeVisible: (visible) => this.setViewCubeVisible(visible),
       snapOverride: () => this.snapping.getOverride(),
       runningSnaps: {
@@ -670,6 +687,7 @@ export class CadRuntime extends Observable {
     this.history.endGroup()
     this.resetTracking()
     this.answerPrefix = null
+    this.commandStart = this.echoMark ?? this.commandLine.mark()
     this.activeTool = next
     if (next.id !== "select") this.history.beginGroup()
     next.onActivate?.(this.toolContext)
@@ -912,9 +930,19 @@ export class CadRuntime extends Observable {
       return false
     }
     const [name] = this.text.commandNames(command.id)
-    this.commandLine.write("command", name)
+    // An alias is echoed as typed with the name it runs, `l LINE`. WHY a
+    // name or `_` and a global one echoes the command language's name, not
+    // what was typed: the landing's scripts type `_CIRCLE` so that a
+    // Spanish reader sees CIRCULO.
+    const alias = !typed.startsWith("_") && typed !== name.toUpperCase()
+    this.echoMark = this.commandLine.mark()
+    this.commandLine.write("command", alias ? `${text.trim()} ${name}` : name)
     this.commandLine.pushHistory(name)
-    command.run()
+    try {
+      command.run()
+    } finally {
+      this.echoMark = null
+    }
     this.invalidateState()
     this.host.focusSurface()
     return true
@@ -1950,7 +1978,9 @@ export class CadRuntime extends Observable {
    */
   invokeToolOption(input: string): boolean {
     const id = resolveKeyword(input, this.offeredKeywords())
-    return id !== null && this.answering(input.trim(), () => this.invokeOption(id))
+    return (
+      id !== null && this.answering(input.trim(), () => this.invokeOption(id))
+    )
   }
 
   /** The keywords the active tool offers, in both of their languages. */
@@ -3044,12 +3074,18 @@ export class CadRuntime extends Observable {
       this.snapping.clearOverride()
     }
 
-    if (e.key === "Enter" || e.key === "Escape") {
+    // Space is Enter mid-command, as at AutoCAD's prompt: it confirms a
+    // selection set, takes a default or ends the command.
+    const key =
+      e.key === " " && !e.shiftKey && this.activeTool.id !== "select"
+        ? "Enter"
+        : e.key
+    if (key === "Enter" || key === "Escape") {
       let consumed = false
       this.answering(
-        e.key === "Escape" ? this.text.message("cancel") : "",
+        key === "Escape" ? this.text.message("cancel") : "",
         () => {
-          consumed = this.endKey(e)
+          consumed = this.endKey({ ...e, key })
           return true
         }
       )

@@ -192,7 +192,7 @@ export class CircleTool implements Tool {
   question(): PromptId | ToolQuestion {
     const { radius } = this.lastRadius
     const sized = (id: PromptId, size: number): PromptId | ToolQuestion =>
-      size > 0 ? { id, length: size } : id
+      size > 0 ? { id, enter: size } : id
     const state = this.state
     switch (state.phase) {
       case "center":

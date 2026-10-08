@@ -92,13 +92,17 @@ runtime does the rest from that one answer: `LINE Specify next point or [Undo]:`
 `Specify next point or` in the dynamic prompt, and the line the history writes once it is answered.
 So never write a prompt with `ctx.report`. Return the question of every state, including the ones
 that still answer the same question (LINE's tracking offset, the deferred tangent); return a
-`ToolQuestion` (`{ id, length }`) when the prompt shows a value Enter keeps (`<10.0000>`: CIRCLERAD,
-RECTANG's elevation). The `or` belongs to the text, so a state that offers none of the keywords
+`ToolQuestion` (`{ id, enter }`) when the prompt shows what Enter keeps — a length (`<10.0000>`:
+CIRCLERAD, RECTANG's elevation), a point or a phrase id (`<use first point as displacement>`); a
+keyword Enter keeps is `defaultOption()`'s. The `or` belongs to the text, so a state that offers none of the keywords
 AutoCAD lists there takes an id without it (`specifyOtherCornerPoint`); a wording no source confirms
 is not invented — that state returns `null` and keeps the `NAME [keywords]:` prompt (LINE's
 Continue length). Convert a command whole: one that names no question shows `NAME [keywords]:` and
 writes no prompt lines, so a half-converted one reads inconsistently. A report the answer produces
-(`Current line-width is 0.0000`) is written after the answered prompt by itself. A keyword AutoCAD
+(`Current line-width is 0.0000`) is written after the answered prompt by itself; what only the
+release of a pick knows — what a `Select objects:` pick found — goes on that prompt's line with
+`ctx.answer(text)` (`PlacementTool.applyPick`; with nothing picked yet it follows the command's
+echo, `Command: M MOVE 1 found`). A keyword AutoCAD
 lists with a gloss (`Ttr (tan tan radius)`) has it in `commands.keywordLabels.<NAME>`, for every
 command name that offers it (CIRCLE and CIRCLED).
 

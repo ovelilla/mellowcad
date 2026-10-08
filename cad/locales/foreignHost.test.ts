@@ -120,9 +120,9 @@ describe("a host's words over a shipped language", () => {
     expect(cad.commandLog()).toEqual(['No existe el comando "L".'])
     cad.command("LN").escape().command("DF")
     expect(cad.commandLog().slice(1)).toEqual([
-      "LINEA",
+      "LN LINEA",
       "Precise primer punto: *Cancelar*",
-      "DESFASE",
+      "DF DESFASE",
     ])
   })
 

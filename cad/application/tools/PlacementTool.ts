@@ -11,7 +11,15 @@ import { ScenePrimitive, StrokeStyle } from "../../scene/types"
 import { entityScenePrimitive } from "../SceneBuilder"
 import { THEME } from "../../scene/theme"
 import { boxSelect, buildSelectionBoxOverlay } from "./boxSelection"
-import { KeyInput, PointerInput, Tool, ToolContext } from "./Tool"
+import {
+  CommandOption,
+  CommandOptionOutcome,
+  PointerInput,
+  Tool,
+  ToolContext,
+  ToolQuestion,
+} from "./Tool"
+import type { PromptId } from "../../locales/types"
 import { acuteHeading, headingInUcs } from "./ucsHeading"
 import { pointAlongCursor, showRise } from "./directDistance"
 
@@ -23,8 +31,9 @@ import { pointAlongCursor, showRise } from "./directDistance"
  * ```
  *   (empty selection)     Enter/Space           click / type       (COPY loops)
  *  selecting ──────────────────────► basePoint ──────────► secondPoint ──► done
- *   click / box-drag adds objects                (dashed ghost drags the set)
- *   └── (skipped when objects are already selected on activation)
+ *   click / box-drag adds objects        │       (dashed ghost drags the set)
+ *   └── (skipped when objects are        │ Displacement, or Enter
+ *        already selected on activation) └──► displacement ──────────────► done
  * ```
  *
  * Works on any selection — lines and circles alike — from an arbitrary base
@@ -33,6 +42,26 @@ import { pointAlongCursor, showRise } from "./directDistance"
  * the command keeps running for more placements ({@link continuesAfterPlace},
  * `true` for COPY's Multiple mode, `false` for MOVE).
  */
+
+/**
+ * The values of the `objectsFound` message for `found` objects: AutoCAD's
+ * `3 found`, and once the set already held some `1 found, 4 total`.
+ */
+function foundValues(
+  found: number,
+  {
+    removed = 0,
+    total = null,
+  }: { removed?: number; total?: number | null } = {}
+) {
+  return {
+    found,
+    removed,
+    total: total ?? 0,
+    hasTotal: total === null ? "no" : "yes",
+    box: "no",
+  }
+}
 
 /** Screen-pixel movement past which a press-drag becomes a box selection. */
 const DRAG_THRESHOLD_PX = 4
@@ -58,6 +87,8 @@ type PlacementState =
     }
   /** Objects chosen; awaiting the base point of the displacement. */
   | { readonly phase: "basePoint" }
+  /** The base point's Displacement: the displacement typed as a point. */
+  | { readonly phase: "displacement" }
   /** Base placed; the set drags to the second point (cursor-driven). */
   | {
       readonly phase: "secondPoint"
@@ -73,8 +104,14 @@ export abstract class PlacementTool implements Tool {
 
   private state: PlacementState = { phase: "selecting" }
   private lastScreen: Vec2 | null = null
-  /** Copies placed from the current base point: COPY's Enter is `<Exit>` after one. */
-  private placements = 0
+  /**
+   * Whether each placement from the current base point added objects (one at
+   * the same point adds none): COPY's Enter is `<Exit>` after one, and its
+   * Undo takes back the last.
+   */
+  private placements: boolean[] = []
+  /** The last Displacement given, the next one's `<default>`, for the session. */
+  private lastDisplacement: Vec3 = { x: 0, y: 0, z: 0 }
 
   /** Applies one placement of `originals` displaced by `delta` (undoable). */
   protected abstract place(
@@ -110,16 +147,113 @@ export abstract class PlacementTool implements Tool {
     void box
   }
 
+  /**
+   * Called as the base point is asked, after the objects: what the command
+   * reports there (COPY's `Current settings`).
+   */
+  protected announceBasePoint(ctx: ToolContext): void {
+    void ctx
+  }
+
+  /**
+   * Called as the objects are asked for with nothing selected: what the
+   * command reports first (STRETCH's crossing-window note).
+   */
+  protected announceSelection(ctx: ToolContext): void {
+    void ctx
+  }
+
   onActivate(ctx: ToolContext): void {
     ctx.setCursor("crosshair")
     // Pre-selected objects (the common path) skip straight to the base point,
-    // matching AutoCAD; otherwise prompt to select the objects first.
+    // matching AutoCAD, which counts them first; otherwise prompt to select
+    // the objects first.
     if (ctx.selection.isEmpty()) {
       this.state = { phase: "selecting" }
+      this.announceSelection(ctx)
     } else {
+      ctx.answer(
+        ctx.text.message("objectsFound", foundValues(ctx.selection.size))
+      )
       this.state = { phase: "basePoint" }
+      this.announceBasePoint(ctx)
       this.openBaseInput(ctx)
     }
+  }
+
+  /** The second point's question, which COPY words apart in Spanish. */
+  protected secondPointQuestion(): PromptId {
+    return "specifySecondPointOr"
+  }
+
+  question(): PromptId | ToolQuestion {
+    switch (this.state.phase) {
+      case "selecting":
+      case "pressed":
+      case "boxing":
+        return "selectObjects"
+      case "basePoint":
+        return "specifyBasePointOr"
+      case "displacement":
+        return { id: "specifyDisplacement", enter: this.lastDisplacement }
+      case "secondPoint":
+        return this.placements.length > 0
+          ? this.secondPointQuestion()
+          : {
+              id: this.secondPointQuestion(),
+              enter: "useFirstPointAsDisplacement",
+            }
+    }
+  }
+
+  /**
+   * `[Displacement] <Displacement>` at the base point, and COPY's
+   * `[Exit/Undo] <Exit>` once a copy is placed. COPY's mOde and Array are
+   * not offered.
+   */
+  commandOptions(): readonly CommandOption[] {
+    if (this.state.phase === "basePoint") return [{ id: "Displacement" }]
+    if (this.state.phase === "secondPoint" && this.placements.length > 0) {
+      return [{ id: "Exit" }, { id: "Undo" }]
+    }
+    return []
+  }
+
+  defaultOption(): string | null {
+    if (this.state.phase === "basePoint") return "Displacement"
+    if (this.state.phase === "secondPoint" && this.placements.length > 0) {
+      return "Exit"
+    }
+    return null
+  }
+
+  invokeOption(id: string, ctx: ToolContext): CommandOptionOutcome {
+    switch (id) {
+      case "Displacement":
+        if (this.state.phase !== "basePoint") return "unhandled"
+        this.askDisplacement(ctx)
+        return "continue"
+      case "Exit":
+        return this.state.phase === "secondPoint" && this.placements.length > 0
+          ? "end"
+          : "unhandled"
+      case "Undo":
+        return this.undoPlacement(ctx) ? "continue" : "unhandled"
+      default:
+        return "unhandled"
+    }
+  }
+
+  /** COPY's Undo: the last copy is taken back, and its prompt asked again. */
+  private undoPlacement(ctx: ToolContext): boolean {
+    if (this.state.phase !== "secondPoint" || this.placements.length === 0) {
+      return false
+    }
+    const added = this.placements.pop()
+    if (added) ctx.undo()
+    ctx.dynamicInput.clearTexts()
+    ctx.requestRender()
+    return true
   }
 
   onDeactivate(ctx: ToolContext): void {
@@ -213,6 +347,10 @@ export abstract class PlacementTool implements Tool {
     if (this.state.phase === "pressed") {
       const hit = ctx.pick(input.world)
       if (hit) this.applyPick([hit.id], this.state.subtract, ctx, null)
+      // WHY nothing written for a miss: AutoCAD starts a window there
+      // ("Specify opposite corner:"), which a click cannot finish here. A pick
+      // on an object already in the set is counted as found: AutoCAD's note
+      // of the duplicate is unverified.
       this.state = { phase: "selecting" }
       ctx.requestRender()
       return
@@ -231,12 +369,6 @@ export abstract class PlacementTool implements Tool {
       this.state = { phase: "selecting" }
       ctx.requestRender()
     }
-  }
-
-  onKeyDown(input: KeyInput, ctx: ToolContext): void {
-    // Space confirms the selection set (AutoCAD treats Space like Enter). Enter
-    // itself is routed through onEnter by the runtime.
-    if (input.key === " ") this.confirmSelection(ctx)
   }
 
   onEnter(ctx: ToolContext): boolean {
@@ -292,18 +424,31 @@ export abstract class PlacementTool implements Tool {
     return out
   }
 
-  /** Adds (or, with shift held, removes) picked ids while building the set. */
+  /**
+   * Adds (or, with shift held, removes) picked ids while building the set, and
+   * says what it found on the prompt's line: `1 found, 2 total`.
+   */
   private applyPick(
     ids: readonly EntityId[],
     subtract: boolean,
     ctx: ToolContext,
     box: { readonly start: Vec2; readonly current: Vec2 } | null
   ): void {
+    const before = ctx.selection.size
     for (const id of ids) {
       if (subtract) ctx.selection.remove(id)
       else ctx.selection.add(id)
     }
     if (!subtract && ids.length > 0) this.onSelectionAdded(ids, box)
+    ctx.answer(
+      ctx.text.message("objectsFound", {
+        ...foundValues(ids.length, {
+          removed: subtract ? before - ctx.selection.size : 0,
+          total: before > 0 || subtract ? ctx.selection.size : null,
+        }),
+        box: box === null ? "no" : "yes",
+      })
+    )
   }
 
   /** Confirms the picked set and advances to the base point; ends if empty. */
@@ -311,6 +456,7 @@ export abstract class PlacementTool implements Tool {
     if (this.state.phase !== "selecting") return false
     if (ctx.selection.isEmpty()) return false // nothing selected: let Enter exit
     this.state = { phase: "basePoint" }
+    this.announceBasePoint(ctx)
     this.openBaseInput(ctx)
     ctx.requestRender()
     return true
@@ -326,10 +472,17 @@ export abstract class PlacementTool implements Tool {
     if (this.lastScreen) ctx.dynamicInput.setPosition(this.lastScreen)
   }
 
-  /** Places the base point from a typed coordinate (absolute). */
+  /**
+   * Places the base point from a typed coordinate (absolute); Enter takes the
+   * `<Displacement>` default.
+   */
   private commitBaseCoordinate(ctx: ToolContext): boolean {
     if (this.state.phase !== "basePoint") return false
     const text = ctx.dynamicInput.getText("base").trim()
+    if (text === "") {
+      this.askDisplacement(ctx)
+      return true
+    }
     if (!isCoordinateExpression(text)) return false
     const base = parseCoordinate(text, {
       lastPoint: null,
@@ -355,7 +508,7 @@ export abstract class PlacementTool implements Tool {
     }
 
     this.state = { phase: "secondPoint", base, originals, current: base }
-    this.placements = 0
+    this.placements = []
     this.openSecondPointInput(ctx, screen ?? this.lastScreen ?? base)
   }
 
@@ -386,7 +539,7 @@ export abstract class PlacementTool implements Tool {
     if (this.state.phase !== "secondPoint") return false
     const { base, originals } = this.state
     if (!ctx.dynamicInput.hasTypedText()) {
-      if (this.placements > 0) {
+      if (this.placements.length > 0) {
         ctx.dynamicInput.close()
         ctx.endCommand()
         return true
@@ -410,10 +563,9 @@ export abstract class PlacementTool implements Tool {
     ctx: ToolContext
   ): void {
     const delta = sub3(dest, base)
-    this.placements++
-    if (delta.x !== 0 || delta.y !== 0 || delta.z !== 0) {
-      this.place(originals, delta, ctx)
-    }
+    const moves = delta.x !== 0 || delta.y !== 0 || delta.z !== 0
+    this.placements.push(moves)
+    if (moves) this.place(originals, delta, ctx)
 
     if (this.continuesAfterPlace()) {
       // Keep the base and selection; reset the typed values for the next copy,
@@ -426,6 +578,53 @@ export abstract class PlacementTool implements Tool {
       ctx.dynamicInput.close()
       ctx.endCommand()
     }
+  }
+
+  /**
+   * The base point's Displacement: "Specify displacement", a point read as
+   * the vector the objects go by, then the command ends, as COPY's does too.
+   */
+  private askDisplacement(ctx: ToolContext): void {
+    this.state = { phase: "displacement" }
+    ctx.dynamicInput.open({
+      fields: [{ id: "displacement", kind: "coordinate" }],
+      commit: () => {},
+      commitRaw: (commitCtx) => this.commitDisplacement(commitCtx),
+    })
+    if (this.lastScreen) ctx.dynamicInput.setPosition(this.lastScreen)
+    ctx.requestRender()
+  }
+
+  private commitDisplacement(ctx: ToolContext): boolean {
+    if (this.state.phase !== "displacement") return false
+    const text = ctx.dynamicInput.getText("displacement").trim()
+    let delta = this.lastDisplacement
+    if (text !== "") {
+      if (!isCoordinateExpression(text)) return false
+      const read = (typed: string) =>
+        parseCoordinate(typed, {
+          lastPoint: null,
+          relativeByDefault: false,
+          ucs: ctx.ucs,
+          elevation: ctx.elevation,
+        })
+      // A vector, not a place: what the point is from the origin, in the UCS.
+      const point = read(text.replace(/^[@#]/, ""))
+      const origin = read("0,0")
+      if (!point || !origin) return false
+      delta = sub3(point, origin)
+    }
+    this.lastDisplacement = delta
+    const originals = ctx.selection
+      .toArray()
+      .map((entityId) => ctx.document.get(entityId))
+      .filter((entity): entity is Entity => entity !== undefined)
+    if (delta.x !== 0 || delta.y !== 0 || delta.z !== 0) {
+      this.place(originals, delta, ctx)
+    }
+    ctx.dynamicInput.close()
+    ctx.endCommand()
+    return true
   }
 
   /** Honours a coordinate typed for the base point (always absolute). */

@@ -3,6 +3,7 @@ import { Entity, copyEntity } from "../../domain/entities"
 import { AddEntitiesCommand } from "../commands/entityCommands"
 import { ToolContext } from "./Tool"
 import { PlacementTool } from "./PlacementTool"
+import type { PromptId } from "../../locales/types"
 
 /**
  * AutoCAD's COPY command: duplicate the selected objects at a base →
@@ -17,6 +18,15 @@ export class CopyTool extends PlacementTool {
 
   protected continuesAfterPlace(): boolean {
     return true
+  }
+
+  protected secondPointQuestion(): PromptId {
+    return "copySecondPointOr"
+  }
+
+  /** COPYMODE is always Multiple here: there is no mOde to change it. */
+  protected announceBasePoint(ctx: ToolContext): void {
+    ctx.report(ctx.text.message("copyModeMultiple"))
   }
 
   protected place(

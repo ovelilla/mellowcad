@@ -82,13 +82,15 @@ export interface CommandOption {
 }
 
 /**
- * A question with the value a bare Enter keeps, which the prompt shows after
- * its keywords as AutoCAD does: `Specify radius of circle or [Diameter]
- * <10.0000>:`. The runtime formats it in the drawing's units.
+ * A question with what a bare Enter keeps, which the prompt shows after its
+ * keywords as AutoCAD does: a length (`Specify radius of circle or [Diameter]
+ * <10.0000>:`) or a point (`<0.0000, 0.0000, 0.0000>`), which the runtime
+ * formats in the drawing's units, or a phrase of `commands.prompts`
+ * (`<use first point as displacement>`).
  */
 export interface ToolQuestion {
   readonly id: PromptId
-  readonly length: number
+  readonly enter: number | Vec3 | PromptId
 }
 
 /**
@@ -171,6 +173,13 @@ export interface ToolContext {
    * {@link text}, or is the user's own data (a block name in a `?` listing).
    */
   report(text: string, kind?: "info" | "error"): void
+
+  /**
+   * Completes the prompt the last input answered with what it found, on the
+   * same line, once only the release knows it: `Select objects: 1 found`.
+   * With no such line it is reported.
+   */
+  answer(text: string): void
 
   /** The command language, for what a tool writes or draws itself. */
   readonly text: ToolText

@@ -256,6 +256,38 @@ describe("Spanish AutoCAD's command language", () => {
     expect(tools.find((tool) => tool.id === "line")?.shortcut).toBe("L")
   })
 
+  it("asks DESPLAZA's and COPIA's questions in Spanish AutoCAD's words", () => {
+    const cad = createHarness({
+      locale: es,
+      entities: [lineOf(p(0, 0), p(100, 0), { id: "A" })],
+    })
+    cad.command("d").click(p(50, 0)).press(" ")
+    expect(cad.state().commandLine.prompt).toBe(
+      "DESPLAZA Precise punto base o [Desplazamiento] <Desplazamiento>:"
+    )
+    cad.click(p(0, 0))
+    expect(cad.state().commandLine.prompt).toBe(
+      "DESPLAZA Precise segundo punto o <usar primer punto como desplazamiento>:"
+    )
+    cad.click(p(0, 10))
+    cad.select("A").command("COPIA").click(p(0, 10)).click(p(0, 20))
+
+    expect(cad.commandLog()).toEqual([
+      "d DESPLAZA",
+      "Designe objetos: 1 encontrados",
+      "Designe objetos:",
+      "Precise punto base o [Desplazamiento] <Desplazamiento>:",
+      "Precise segundo punto o <usar primer punto como desplazamiento>:",
+      "COPIA 1 encontrados",
+      "Parámetros actuales:  modo de copia = Múltiple",
+      "Precise punto base o [Desplazamiento] <Desplazamiento>:",
+      "Precise el segundo punto o <usar primer punto como desplazamiento>:",
+    ])
+    expect(cad.state().commandLine.prompt).toBe(
+      "COPIA Precise el segundo punto o [Salir/desHacer] <Salir>:"
+    )
+  })
+
   it("draws with LINEA, L and _LINE, and undoes a segment with H", () => {
     const cad = createHarness({ locale: es })
     cad.command("LINEA").escape().command("_LINE").escape().command("l")
@@ -264,7 +296,7 @@ describe("Spanish AutoCAD's command language", () => {
       "Precise primer punto: *Cancelar*",
       "LINEA",
       "Precise primer punto: *Cancelar*",
-      "LINEA",
+      "l LINEA",
     ])
     cad.click(p(0, 0)).click(p(100, 0)).click(p(100, 100))
     const state = cad.state()
@@ -291,7 +323,7 @@ describe("Spanish AutoCAD's command language", () => {
     cad.command("H")
     expect(cad.entityCount).toBe(0)
     cad.command("U")
-    expect(cad.commandLog().at(-1)).toBe("UNIR")
+    expect(cad.commandLog().at(-1)).toBe("U UNIR")
   })
 
   it("offsets with DESFASE and answers its keywords by their capitals", () => {
@@ -557,7 +589,7 @@ describe("Arabic: its own interface, the global command language", () => {
     expect(cad.commandLog()).toEqual([
       "LINE",
       "Specify first point: *Cancel*",
-      "LINE",
+      "l LINE",
     ])
     cad.click(p(0, 0)).click(p(100, 0)).click(p(100, 100))
     expect(cad.state().commandLine.prompt).toBe(

@@ -186,7 +186,9 @@ identity: the same document, viewport and objects.
    otherwise as a command name (the command language's names and aliases, or `_` and a global
    name). Empty, it is the prompt's Enter mid-command and repeats the last command at the neutral
    prompt, as Enter and Space on the drawing do.
-7. Tail: Escape/Enter → `returnToNeutralTool`, then `activeTool.onKeyDown`.
+7. Tail: Space (not Shift+Space) is Enter mid-command, as at AutoCAD's prompt — so no tool handles
+   `" "` itself; Escape/Enter → the tool's `onEnter`, else `returnToNeutralTool`; anything else →
+   `activeTool.onKeyDown`.
 
 Inserting anything above step 4 steals keys from running commands; inserting between 4 and 6
 steals them from typing. Prefer exposing behaviour as a command option or a command.
@@ -203,7 +205,9 @@ it reported (`CommandLineController.mark` / `writeAt`). Only the outermost call 
 line's answer reaches the box, the box a keyword or the drawing's Enter. A new way to answer must go
 through it, or the history loses that step. An object snap is not an answer: `setSnapOverride`
 keeps it as `answerPrefix` (`_endp of`, typed `end of`), which the next answer writes on its line —
-a pick, a typed point or `*Cancel*` — and a pick FROM takes as its base, or a tool switch, drops.
+a pick, a typed point or `*Cancel*` — and a pick FROM takes as its base, or a tool switch, drops. `ctx.answer` completes a line after the
+fact (`amendLast`), but only one written since the running command started (`commandStart`, its
+echo included): it never lands on the previous command's last prompt.
 
 ## The pointer's buttons (`pointerDown` / `pointerUp`) — order is load-bearing
 

@@ -835,6 +835,17 @@ export const es: EngineLocale = {
       "ARC": {
         "Center": "Centro"
       },
+      "MOVE": {
+        "Displacement": "Desplazamiento"
+      },
+      "COPY": {
+        "Displacement": "Desplazamiento",
+        "Exit": "Salir",
+        "Undo": "desHacer"
+      },
+      "STRETCH": {
+        "Displacement": "Desplazamiento"
+      },
       "ARCSCE": {
         "Center": "Centro"
       },
@@ -1271,7 +1282,13 @@ export const es: EngineLocale = {
       "specifyEndPointOfArc": "Precise punto final del arco",
       "specifyCenterPointOfArc": "Precise punto central del arco",
       "specifyStartPointOfArc": "Precise punto inicial del arco",
-      "specifyEndPointOfArcCtrl": "Precise punto final del arco (mantenga pulsada Ctrl para cambiar de dirección)"
+      "specifyEndPointOfArcCtrl": "Precise punto final del arco (mantenga pulsada Ctrl para cambiar de dirección)",
+      "selectObjects": "Designe objetos",
+      "specifyBasePointOr": "Precise punto base o",
+      "specifyDisplacement": "Precise desplazamiento",
+      "specifySecondPointOr": "Precise segundo punto o",
+      "useFirstPointAsDisplacement": "usar primer punto como desplazamiento",
+      "copySecondPointOr": "Precise el segundo punto o"
     },
     "format": {
       "idle": "Comando",
@@ -1379,6 +1396,48 @@ export const es: EngineLocale = {
         "\" desconocido."
       ],
       "cancel": "*Cancelar*",
+      "objectsFound": [
+        [
+          "box",
+          1,
+          {
+            "yes": "Designe esquina opuesta: ",
+            "other": ""
+          }
+        ],
+        [
+          "found"
+        ],
+        " encontrados",
+        [
+          "removed",
+          2,
+          {
+            "=0": "",
+            "other": [
+              ", ",
+              0,
+              " eliminados"
+            ]
+          }
+        ],
+        [
+          "hasTotal",
+          1,
+          {
+            "yes": [
+              ", ",
+              [
+                "total"
+              ],
+              " total"
+            ],
+            "other": ""
+          }
+        ]
+      ],
+      "copyModeMultiple": "Parámetros actuales:  modo de copia = Múltiple",
+      "stretchSelection": "Designe objetos que estirar mediante ventana de captura o polígono de captura...",
       "currentLineWidth": [
         "El grosor de la línea actual es ",
         [

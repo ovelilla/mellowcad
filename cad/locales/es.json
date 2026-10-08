@@ -418,6 +418,13 @@
         "Undo": "desHacer"
       },
       "ARC": { "Center": "Centro" },
+      "MOVE": { "Displacement": "Desplazamiento" },
+      "COPY": {
+        "Displacement": "Desplazamiento",
+        "Exit": "Salir",
+        "Undo": "desHacer"
+      },
+      "STRETCH": { "Displacement": "Desplazamiento" },
       "ARCSCE": { "Center": "Centro" },
       "CIRCLE": {
         "3P": "3P",
@@ -838,7 +845,13 @@
       "specifyEndPointOfArc": "Precise punto final del arco",
       "specifyCenterPointOfArc": "Precise punto central del arco",
       "specifyStartPointOfArc": "Precise punto inicial del arco",
-      "specifyEndPointOfArcCtrl": "Precise punto final del arco (mantenga pulsada Ctrl para cambiar de dirección)"
+      "specifyEndPointOfArcCtrl": "Precise punto final del arco (mantenga pulsada Ctrl para cambiar de dirección)",
+      "selectObjects": "Designe objetos",
+      "specifyBasePointOr": "Precise punto base o",
+      "specifyDisplacement": "Precise desplazamiento",
+      "specifySecondPointOr": "Precise segundo punto o",
+      "useFirstPointAsDisplacement": "usar primer punto como desplazamiento",
+      "copySecondPointOr": "Precise el segundo punto o"
     },
     "format": {
       "idle": "Comando",
@@ -857,6 +870,9 @@
     "messages": {
       "unknownCommand": "Comando \"{name}\" desconocido.",
       "cancel": "*Cancelar*",
+      "objectsFound": "{box, select, yes {Designe esquina opuesta: } other {}}{found} encontrados{removed, plural, =0 {} other {, # eliminados}}{hasTotal, select, yes {, {total} total} other {}}",
+      "copyModeMultiple": "Parámetros actuales:  modo de copia = Múltiple",
+      "stretchSelection": "Designe objetos que estirar mediante ventana de captura o polígono de captura...",
       "currentLineWidth": "El grosor de la línea actual es {width}",
       "erased": "{count, plural, one {# objeto borrado.} other {# objetos borrados.}}",
       "snapMode": "{state, select, on {Modo Forzcursor activado.} other {Modo Forzcursor desactivado.}}",

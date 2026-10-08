@@ -58,6 +58,10 @@ export class StretchTool extends PlacementTool {
     return false
   }
 
+  protected announceSelection(ctx: ToolContext): void {
+    ctx.report(ctx.text.message("stretchSelection"))
+  }
+
   protected onSelectionAdded(
     ids: readonly EntityId[],
     box: { readonly start: Vec2; readonly current: Vec2 } | null

@@ -195,7 +195,7 @@ lweight "Lineweight" LW
   asks: ""
   tip: Specify first point:
   dyn: "X,Y"=""||*
-  command| LINE
+  command| l LINE
 > escape
   prompt: Command:
   asks: -
@@ -207,20 +207,20 @@ lweight "Lineweight" LW
   command| ERASE
 > ERASE one
   prompt: Command:
-  command| ERASE
+  command| E ERASE
   info| 1 object erased.
 > UNDO
-  command| UNDO
+  command| U UNDO
 > REDO
   command| REDO
 > SNAP on
-  command| SNAP
+  command| SN SNAP
   info| Snap mode on.
 > SNAP off
   command| SNAP
   info| Snap mode off.
 > FROM at Command:
-  command| FROM
+  command| FRO FROM
   error| FROM needs a point prompt.
 > QSAVE without files
   command| QSAVE
@@ -229,21 +229,21 @@ lweight "Lineweight" LW
   command| OPEN
   error| Opening a file is not available here.
 > DIMSTYLE
-  command| DIMSTYLE
+  command| D DIMSTYLE
 > STYLE
-  command| STYLE
+  command| ST STYLE
 > BLOCKSPALETTE
   command| BLOCKSPALETTE
 > LAYER
-  command| LAYER
+  command| LA LAYER
 > LAYERCLOSE
   command| LAYERCLOSE
 > PROPERTIES
-  command| PROPERTIES
+  command| PR PROPERTIES
 > PROPERTIESCLOSE
   command| PROPERTIESCLOSE
 > PURGE with nothing
-  command| PURGE
+  command| PU PURGE
   info| No unused blocks.
 > Enter repeats
   command| PURGE
@@ -463,7 +463,7 @@ lweight "Lineweight" LW
   asks: ""
   tip: Specify first point:
   dyn: "X,Y"=""||*
-  command| LINE
+  command| L LINE
 > Enter continues
   prompt: LINE Specify next point or [Undo]:
   asks: "Length" "Angle"
@@ -524,7 +524,7 @@ lweight "Lineweight" LW
   asks: ""
   tip: Specify start point:
   dyn: "X,Y"=""||*
-  command| PLINE
+  command| PL PLINE
 > first
   prompt: PLINE Specify next point or [Arc]:
   asks: "Length" "Angle"
@@ -579,7 +579,7 @@ lweight "Lineweight" LW
   tip: Specify center point for circle or
   dyn: "X,Y"=""||*
   options: [3P] 3P, [2P] 2P, [T] Ttr (tan tan radius)
-  command| CIRCLE
+  command| C CIRCLE
 > centre
   prompt: CIRCLE Specify radius of circle or [Diameter]:
   asks: "Radius"
@@ -608,7 +608,7 @@ lweight "Lineweight" LW
 > centre
   prompt: CIRCLED Specify diameter of circle <100.00>:
   asks: "Diameter"
-  tip: Specify diameter of circle:
+  tip: Specify diameter of circle
   dyn: "Diameter"=""|0.00|mm*
   options: -
   prompt| Specify center point for circle or [3P/2P/Ttr (tan tan radius)]:
@@ -674,7 +674,7 @@ lweight "Lineweight" LW
   tip: Specify start point of arc or
   dyn: "X,Y"=""||*
   options: [C] Center
-  command| ARC
+  command| A ARC
 > start
   prompt: ARC Specify second point of arc or [Center]:
   asks: "Second point"
@@ -754,7 +754,7 @@ lweight "Lineweight" LW
   asks: "Axis endpoint"
   dyn: "X,Y"=""||*
   options: [A] Arc, [C] Center
-  command| ELLIPSE
+  command| EL ELLIPSE
 > first axis end
   prompt: ELLIPSE:
   asks: "Other endpoint of axis"
@@ -873,7 +873,7 @@ lweight "Lineweight" LW
   asks: "First point"
   dyn: "X,Y"=""||*
   options: [M] Method, [K] Knots
-  command| SPLINE
+  command| SPL SPLINE
 > K
   prompt: SPLINE [Chord/Square root/Uniform]:
   asks: 
@@ -1019,11 +1019,11 @@ lweight "Lineweight" LW
   tip: Specify first corner point or
   dyn: "X,Y"=""||*
   options: [E] Elevation, [T] Thickness
-  command| RECTANG
+  command| REC RECTANG
 > E
   prompt: RECTANG Specify the elevation for rectangles <0.00>:
   asks: "Specify the elevation for rectangles"
-  tip: Specify the elevation for rectangles:
+  tip: Specify the elevation for rectangles
   dyn: "Specify the elevation for rectangles"=""|0.00|mm*
   options: -
   prompt| Specify first corner point or [Elevation/Thickness]: E
@@ -1039,7 +1039,7 @@ lweight "Lineweight" LW
 > T
   prompt: RECTANG Specify thickness for rectangles <0.00>:
   asks: "Specify thickness for rectangles"
-  tip: Specify thickness for rectangles:
+  tip: Specify thickness for rectangles
   dyn: "Specify thickness for rectangles"=""|0.00|mm*
   options: -
   prompt| Specify first corner point or [Elevation/Thickness]: T
@@ -1083,7 +1083,7 @@ lweight "Lineweight" LW
   prompt: POLYGON:
   asks: "Number of sides"
   dyn: "Number of sides"=""|4|*
-  command| POLYGON
+  command| POL POLYGON
 > sides
   dyn: "Number of sides"="6"|4|*
 > enter
@@ -1122,7 +1122,7 @@ lweight "Lineweight" LW
   asks: "Pick internal point"
   dyn: "X,Y"=""||*
   options: [P] Properties, [S] Select objects
-  command| HATCH
+  command| H HATCH
 > P
   prompt: HATCH:
   asks: "Enter a pattern name"
@@ -1185,7 +1185,7 @@ lweight "Lineweight" LW
   prompt: BLOCK:
   asks: "Enter block name or [?]"
   dyn: "Enter block name or [?]"=""||*
-  command| BLOCK
+  command| B BLOCK
 > ?
   dyn: "Enter block name or [?]"="?"||*
 > enter
@@ -1221,7 +1221,7 @@ lweight "Lineweight" LW
   prompt: INSERT:
   asks: "Enter block name or [?]"
   dyn: "Enter block name or [?]"=""||*
-  command| INSERT
+  command| I INSERT
 > ?
   dyn: "Enter block name or [?]"="?"||*
 > enter
@@ -1314,7 +1314,7 @@ lweight "Lineweight" LW
   asks: "Specify start point of text"
   dyn: "X,Y"=""||*
   options: [J] Justify, [S] Style
-  command| TEXT
+  command| DT TEXT
 > J
   prompt: TEXT:
   asks: "Justify"
@@ -1387,7 +1387,7 @@ lweight "Lineweight" LW
   asks: 
   dyn: 
   options: [M] Mode: Multiple
-  command| TEXTEDIT
+  command| ED TEXTEDIT
 > pick
   prompt: TEXTEDIT:
   asks: "Text"
@@ -1438,7 +1438,7 @@ lweight "Lineweight" LW
   prompt: MTEXT:
   asks: "Specify first corner"
   dyn: "X,Y"=""||*
-  command| MTEXT
+  command| T MTEXT
 > first corner
   prompt: MTEXT [Height/Justify/Line spacing/Rotation/Style/Width]:
   asks: "Specify opposite corner"
@@ -1596,7 +1596,7 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
   prompt: DIMLINEAR:
   asks: "Specify first extension line origin or <select object>"
   dyn: "X,Y"=""||*
-  command| DIMLINEAR
+  command| DLI DIMLINEAR
 > first
   asks: "Specify second extension line origin"
 > second
@@ -1642,7 +1642,7 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
   prompt: DIMALIGNED:
   asks: "Specify first extension line origin or <select object>"
   dyn: "X,Y"=""||*
-  command| DIMALIGNED
+  command| DAL DIMALIGNED
 > first
   asks: "Specify second extension line origin"
 > second
@@ -1698,7 +1698,7 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
   prompt: DIMRADIUS:
   asks: 
   dyn: 
-  command| DIMRADIUS
+  command| DRA DIMRADIUS
 > pick
   prompt: DIMRADIUS [Text/Angle]:
   asks: "Specify dimension line location"
@@ -1737,7 +1737,7 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
   prompt: DIMDIAMETER:
   asks: 
   dyn: 
-  command| DIMDIAMETER
+  command| DDI DIMDIAMETER
 > pick
   prompt: DIMDIAMETER [Text/Angle]:
   asks: "Specify dimension line location"
@@ -1763,7 +1763,7 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
   prompt: DIMANGULAR:
   asks: 
   dyn: 
-  command| DIMANGULAR
+  command| DAN DIMANGULAR
 > enter
   asks: "Specify angle vertex"
   dyn: "X,Y"=""||*
@@ -1847,7 +1847,7 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
   asks: "Specify a second extension line origin"
   dyn: "X,Y"=""||*
   options: [S] Select
-  command| DIMBASELINE
+  command| DBA DIMBASELINE
 > second origin
   prompt: DIMBASELINE [Undo/Select]:
   options: [U] Undo, [S] Select
@@ -1874,7 +1874,7 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
   asks: "Specify a second extension line origin"
   dyn: "X,Y"=""||*
   options: [S] Select
-  command| DIMCONTINUE
+  command| DCO DIMCONTINUE
 > second origin
   prompt: DIMCONTINUE [Undo/Select]:
   options: [U] Undo, [S] Select
@@ -1937,7 +1937,7 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
   asks: "Offset distance"
   dyn: "Offset distance"=""||mm*
   options: [T] Through, [E] Erase: No, [L] Layer: Source, [M] Multiple: Off
-  command| OFFSET
+  command| O OFFSET
 > E
   prompt: OFFSET [Through/Erase: Yes/Layer: Source/Multiple: Off] <Through>:
   options: [T] Through, [E] Erase: Yes, [L] Layer: Source, [M] Multiple: Off
@@ -1980,23 +1980,34 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
   properties: -
   cycling: -
 > MOVE
-  prompt: MOVE:
-  command| MOVE
+  prompt: MOVE Select objects:
+  command| M MOVE
 > pick
   properties: Line (1) {Thickness=0.00 mm~} [Geometry: Length=100.00 mm~, Angle=0.00°~, Δ X=100.00 mm, Δ Y=0.00 mm, Δ Z=0.00 mm] [Endpoints: Start X=0.00~, Start Y=0.00~, Start Z=0.00~, End X=100.00~, End Y=0.00~, End Z=0.00~]
+  prompt| Select objects: 1 found
 > enter
+  prompt: MOVE Specify base point or [Displacement] <Displacement>:
   asks: "Base point"
+  tip: Specify base point or
   dyn: "X,Y"=""||*
+  options: [D] Displacement
+  prompt| Select objects:
 > base
+  prompt: MOVE Specify second point or <use first point as displacement>:
   asks: "Distance" "Angle"
+  tip: Specify second point or
   dyn: "Distance"=""|0.00|mm* "Angle"=""||°
+  options: -
+  prompt| Specify base point or [Displacement] <Displacement>:
 > move
   dyn: "Distance"=""|42.43|mm* "Angle"=""|45.00|°
 > second
   prompt: Command:
   asks: -
+  tip: -
   dyn: -
   properties: Line (1) {Thickness=0.00 mm~} [Geometry: Length=100.00 mm~, Angle=0.00°~, Δ X=100.00 mm, Δ Y=0.00 mm, Δ Z=0.00 mm] [Endpoints: Start X=50.00~, Start Y=30.00~, Start Z=0.00~, End X=150.00~, End Y=30.00~, End Z=0.00~]
+  prompt| Specify second point or <use first point as displacement>:
 > escape
   properties: -
 
@@ -2011,24 +2022,40 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
   properties: -
   cycling: -
 > COPY
-  prompt: COPY:
-  command| COPY
+  prompt: COPY Select objects:
+  command| CO COPY
 > pick
   properties: Line (1) {Thickness=0.00 mm~} [Geometry: Length=100.00 mm~, Angle=0.00°~, Δ X=100.00 mm, Δ Y=0.00 mm, Δ Z=0.00 mm] [Endpoints: Start X=0.00~, Start Y=0.00~, Start Z=0.00~, End X=100.00~, End Y=0.00~, End Z=0.00~]
+  prompt| Select objects: 1 found
 > enter
+  prompt: COPY Specify base point or [Displacement] <Displacement>:
   asks: "Base point"
+  tip: Specify base point or
   dyn: "X,Y"=""||*
+  options: [D] Displacement
+  prompt| Select objects:
+  info| Current settings:  Copy mode = Multiple
 > base
+  prompt: COPY Specify second point or <use first point as displacement>:
   asks: "Distance" "Angle"
+  tip: Specify second point or
   dyn: "Distance"=""|0.00|mm* "Angle"=""||°
+  options: -
+  prompt| Specify base point or [Displacement] <Displacement>:
 > move
   dyn: "Distance"=""|42.43|mm* "Angle"=""|45.00|°
 > second
+  prompt: COPY Specify second point or [Exit/Undo] <Exit>:
   dyn: "Distance"=""|0.00|mm* "Angle"=""||°
+  options: [E] Exit, [U] Undo
+  prompt| Specify second point or <use first point as displacement>:
 > escape
   prompt: Command:
   asks: -
+  tip: -
   dyn: -
+  options: -
+  prompt| Specify second point or [Exit/Undo] <Exit>: *Cancel*
 
 ## STRETCH
 > start
@@ -2041,23 +2068,35 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
   properties: -
   cycling: -
 > STRETCH
-  prompt: STRETCH:
-  command| STRETCH
+  prompt: STRETCH Select objects:
+  command| S STRETCH
+  info| Select objects to stretch by crossing-window or crossing-polygon...
 > pick
   properties: Line (1) {Thickness=0.00 mm~} [Geometry: Length=100.00 mm~, Angle=0.00°~, Δ X=100.00 mm, Δ Y=0.00 mm, Δ Z=0.00 mm] [Endpoints: Start X=0.00~, Start Y=0.00~, Start Z=0.00~, End X=100.00~, End Y=0.00~, End Z=0.00~]
+  prompt| Select objects: Specify opposite corner: 1 found
 > enter
+  prompt: STRETCH Specify base point or [Displacement] <Displacement>:
   asks: "Base point"
+  tip: Specify base point or
   dyn: "X,Y"=""||*
+  options: [D] Displacement
+  prompt| Select objects:
 > base
+  prompt: STRETCH Specify second point or <use first point as displacement>:
   asks: "Distance" "Angle"
+  tip: Specify second point or
   dyn: "Distance"=""|0.00|mm* "Angle"=""||°
+  options: -
+  prompt| Specify base point or [Displacement] <Displacement>:
 > move
   dyn: "Distance"=""|42.43|mm* "Angle"=""|45.00|°
 > second
   prompt: Command:
   asks: -
+  tip: -
   dyn: -
   properties: Line (1) {Thickness=0.00 mm~} [Geometry: Length=152.97 mm~, Angle=11.31°~, Δ X=150.00 mm, Δ Y=30.00 mm, Δ Z=0.00 mm] [Endpoints: Start X=0.00~, Start Y=0.00~, Start Z=0.00~, End X=150.00~, End Y=30.00~, End Z=0.00~]
+  prompt| Specify second point or <use first point as displacement>:
 > escape
   properties: -
 
@@ -2076,7 +2115,7 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
   asks: "Base point"
   dyn: "X,Y"=""||*
   properties: Line (1) {Thickness=0.00 mm~} [Geometry: Length=100.00 mm~, Angle=0.00°~, Δ X=100.00 mm, Δ Y=0.00 mm, Δ Z=0.00 mm] [Endpoints: Start X=0.00~, Start Y=0.00~, Start Z=0.00~, End X=100.00~, End Y=0.00~, End Z=0.00~]
-  command| ROTATE
+  command| RO ROTATE
 > base
   prompt: ROTATE [Copy/Reference]:
   asks: "Rotation angle"
@@ -2145,7 +2184,7 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
   asks: "Base point"
   dyn: "X,Y"=""||*
   properties: Line (1) {Thickness=0.00 mm~} [Geometry: Length=100.00 mm~, Angle=0.00°~, Δ X=100.00 mm, Δ Y=0.00 mm, Δ Z=0.00 mm] [Endpoints: Start X=0.00~, Start Y=0.00~, Start Z=0.00~, End X=100.00~, End Y=0.00~, End Z=0.00~]
-  command| SCALE
+  command| SC SCALE
 > base
   prompt: SCALE [Copy/Reference]:
   asks: "Scale factor"
@@ -2214,7 +2253,7 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
   asks: "First point of mirror line"
   dyn: "X,Y"=""||*
   properties: Line (1) {Thickness=0.00 mm~} [Geometry: Length=100.00 mm~, Angle=0.00°~, Δ X=100.00 mm, Δ Y=0.00 mm, Δ Z=0.00 mm] [Endpoints: Start X=0.00~, Start Y=0.00~, Start Z=0.00~, End X=100.00~, End Y=0.00~, End Z=0.00~]
-  command| MIRROR
+  command| MI MIRROR
 > first
   asks: "Second point of mirror line"
 > second
@@ -2261,7 +2300,7 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
   asks: "Columns" "Rows" "Column spacing" "Row spacing"
   dyn: "Columns"=""|4|* "Rows"=""|3| "Column spacing"=""|30.00|mm "Row spacing"=""|30.00|mm
   properties: Circle (1) {Thickness=0.00 mm~} [Geometry: Radius=10.00 mm~, Diameter=20.00 mm~, Circumference=62.83 mm, Area=314.16 mm², Normal X=0.00, Normal Y=0.00, Normal Z=1.00] [Center: X=0.00~, Y=0.00~, Z=0.00~]
-  command| ARRAYRECT
+  command| AR ARRAYRECT
 > enter
   prompt: Command:
   asks: -
@@ -2270,7 +2309,7 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
   prompt: ARRAYPOLAR:
   asks: "Center point"
   dyn: "X,Y"=""||*
-  command| ARRAYPOLAR
+  command| ARPOLAR ARRAYPOLAR
 > centre
   prompt: ARRAYPOLAR [Rotate items: Yes]:
   asks: "Items" "Fill angle"
@@ -2286,7 +2325,7 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
   options: -
 > ARRAYPATH
   prompt: ARRAYPATH:
-  command| ARRAYPATH
+  command| ARPATH ARRAYPATH
 > path
   prompt: ARRAYPATH [Method: Divide/Align items: Yes]:
   asks: "Items"
@@ -2324,12 +2363,12 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
   cycling: -
 > TRIM
   prompt: TRIM:
-  command| TRIM
+  command| TR TRIM
 > escape
   prompt: Command:
 > EXTEND
   prompt: EXTEND:
-  command| EXTEND
+  command| EX EXTEND
 > escape
   prompt: Command:
 > FILLET
@@ -2337,7 +2376,7 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
   asks: 
   dyn: 
   options: [R] Radius
-  command| FILLET
+  command| F FILLET
 > R
   prompt: FILLET:
   asks: "Fillet radius"
@@ -2361,7 +2400,7 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
   asks: 
   dyn: 
   options: [D] Distance
-  command| CHAMFER
+  command| CHA CHAMFER
 > D
   prompt: CHAMFER:
   asks: "First distance" "Second distance"
@@ -2392,14 +2431,14 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
   cycling: -
 > EXPLODE one rejected
   properties: 4 objects (4) [Selection: Lines=4]
-  command| EXPLODE
+  command| X EXPLODE
   info| 1 was not able to be exploded.
 > EXPLODE two rejected
   properties: 2 objects (2) [Selection: Line=1, Circle=1]
-  command| EXPLODE
+  command| X EXPLODE
   info| 2 were not able to be exploded.
 > JOIN
-  command| JOIN
+  command| J JOIN
   error| 0 objects joined, 2 objects discarded from the operation
 > escape
   properties: -
@@ -2416,7 +2455,7 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
   cycling: -
 > BREAK
   prompt: BREAK:
-  command| BREAK
+  command| BR BREAK
 > pick
   prompt: BREAK [First point]:
   asks: 
@@ -2452,7 +2491,7 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
   cycling: -
 > MATCHPROP
   prompt: MATCHPROP:
-  command| MATCHPROP
+  command| MA MATCHPROP
 > source
 > escape
   prompt: Command:
@@ -2502,7 +2541,7 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
   prompt: DIST:
   asks: "First point"
   dyn: "X,Y"=""||*
-  command| DIST
+  command| DI DIST
 > first
   asks: "Second point"
   canvas: "Dist  0.00 mm" "Angle 0.00°" "ΔX    0.00" "ΔY    0.00" "ΔZ    0.00"
@@ -2524,7 +2563,7 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
   asks: -
   dyn: -
   canvas: -
-  command| AREA
+  command| AA AREA
 > first
   prompt: AREA [Undo]:
   options: [U] Undo
@@ -2561,7 +2600,7 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
   asks: 
   dyn: 
   options: [A] All, [E] Extents, [P] Previous, [S] Scale, [W] Window, [O] Object
-  command| ZOOM
+  command| Z ZOOM
 > S
   prompt: ZOOM:
   asks: "Scale factor"
@@ -2634,7 +2673,7 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
   options: -
 > PAN
   prompt: PAN:
-  command| PAN
+  command| P PAN
 > escape
   prompt: Command:
 
@@ -3071,7 +3110,7 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
   dyn: -
   info| Regenerating model.
 > LTS enter
-  command| LTSCALE
+  command| LTS LTSCALE
 
 ## -COLOR
 > start
@@ -3157,7 +3196,7 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
   dyn: -
   options: -
 > unknown
-  command| LINETYPE
+  command| LT LINETYPE
 
 ## -LWEIGHT
 > start
@@ -3188,7 +3227,7 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
   prompt: LWEIGHT:
   asks: "Enter default lineweight for new objects or [?]"
   dyn: "Enter default lineweight for new objects or [?]"=""|0.35 mm|*
-  command| LWEIGHT
+  command| LW LWEIGHT
   info| Current lineweight: 0.35 mm
 > enter
   prompt: Command:
@@ -3324,7 +3363,7 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
   asks: 
   dyn: 
   options: [ON] ON, [OFF] OFF
-  command| NAVVCUBE
+  command| CUBE NAVVCUBE
 > ON
   prompt: Command:
   asks: -

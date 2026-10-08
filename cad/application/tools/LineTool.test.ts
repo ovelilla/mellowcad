@@ -457,7 +457,10 @@ describe("LINE", () => {
       ]
 
       cad.command("LINE")
-      expect(asked()).toEqual(["LINE Specify first point:", "Specify first point:"])
+      expect(asked()).toEqual([
+        "LINE Specify first point:",
+        "Specify first point:",
+      ])
       cad.click(p(0, 0))
       expect(asked()).toEqual([
         "LINE Specify next point or [Undo]:",

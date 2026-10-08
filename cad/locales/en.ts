@@ -974,7 +974,13 @@ export const en: EngineCatalog = {
       "specifyEndPointOfArc": "Specify end point of arc",
       "specifyCenterPointOfArc": "Specify center point of arc",
       "specifyStartPointOfArc": "Specify start point of arc",
-      "specifyEndPointOfArcCtrl": "Specify end point of arc (hold Ctrl to switch direction)"
+      "specifyEndPointOfArcCtrl": "Specify end point of arc (hold Ctrl to switch direction)",
+      "selectObjects": "Select objects",
+      "specifyBasePointOr": "Specify base point or",
+      "specifyDisplacement": "Specify displacement",
+      "specifySecondPointOr": "Specify second point or",
+      "useFirstPointAsDisplacement": "use first point as displacement",
+      "copySecondPointOr": "Specify second point or"
     },
     "format": {
       "idle": "Command",
@@ -1082,6 +1088,48 @@ export const en: EngineCatalog = {
         "\"."
       ],
       "cancel": "*Cancel*",
+      "objectsFound": [
+        [
+          "box",
+          1,
+          {
+            "yes": "Specify opposite corner: ",
+            "other": ""
+          }
+        ],
+        [
+          "found"
+        ],
+        " found",
+        [
+          "removed",
+          2,
+          {
+            "=0": "",
+            "other": [
+              ", ",
+              0,
+              " removed"
+            ]
+          }
+        ],
+        [
+          "hasTotal",
+          1,
+          {
+            "yes": [
+              ", ",
+              [
+                "total"
+              ],
+              " total"
+            ],
+            "other": ""
+          }
+        ]
+      ],
+      "copyModeMultiple": "Current settings:  Copy mode = Multiple",
+      "stretchSelection": "Select objects to stretch by crossing-window or crossing-polygon...",
       "currentLineWidth": [
         "Current line-width is ",
         [

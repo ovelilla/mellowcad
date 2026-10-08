@@ -14,7 +14,7 @@ import { entityScenePrimitive } from "../SceneBuilder"
 import { THEME } from "../../scene/theme"
 import { AddEntitiesCommand } from "../commands/entityCommands"
 import { boxSelect, buildSelectionBoxOverlay } from "./boxSelection"
-import { KeyInput, PointerInput, Tool, ToolContext } from "./Tool"
+import { PointerInput, Tool, ToolContext } from "./Tool"
 
 /**
  * AutoCAD's ARRAYRECT command (rectangular array): replicate the selected
@@ -160,12 +160,6 @@ export class ArrayTool implements Tool {
       this.state = { phase: "selecting" }
       ctx.requestRender()
     }
-  }
-
-  onKeyDown(input: KeyInput, ctx: ToolContext): void {
-    // Space confirms the selection set (AutoCAD treats Space like Enter). Enter
-    // itself is routed through onEnter by the runtime.
-    if (input.key === " ") this.confirmSelection(ctx)
   }
 
   onEnter(ctx: ToolContext): boolean {

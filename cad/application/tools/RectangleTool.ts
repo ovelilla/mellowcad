@@ -114,9 +114,9 @@ export class RectangleTool implements Tool {
       case "first":
         return "specifyFirstCornerPointOr"
       case "elevation":
-        return { id: "rectangleElevation", length: this.elevation }
+        return { id: "rectangleElevation", enter: this.elevation }
       case "thickness":
-        return { id: "rectangleThickness", length: this.thickness }
+        return { id: "rectangleThickness", enter: this.thickness }
       case "second":
         return "specifyOtherCornerPoint"
     }

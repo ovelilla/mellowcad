@@ -89,6 +89,28 @@ export class CommandLineController extends Observable {
     this.writeAt(this.mark(), kind, text)
   }
 
+  /**
+   * Rewrites the last line when it is of one of `kinds` and was written at
+   * `since` or after, returning whether it was: an answer known only after
+   * its prompt was written goes on its line.
+   */
+  amendLast(
+    kinds: readonly CommandLineEntryKind[],
+    since: number,
+    amend: (text: string) => string
+  ): boolean {
+    const last = this.lines.at(-1)
+    if (!last || !kinds.includes(last.kind) || this.written - 1 < since) {
+      return false
+    }
+    this.lines = [
+      ...this.lines.slice(0, -1),
+      { kind: last.kind, text: amend(last.text) },
+    ]
+    this.emit()
+    return true
+  }
+
   /** A place in the log, for {@link writeAt}. */
   mark(): number {
     return this.written

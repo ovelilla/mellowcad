@@ -37,6 +37,80 @@ function linesOf(entities: readonly Entity[]): LineEntity[] {
 }
 
 describe("MOVE", () => {
+  it("writes what each pick at Select objects found", () => {
+    const cad = createHarness({
+      entities: [HORIZONTAL, lineOf(p(0, 50), p(200, 50), { id: "L2" })],
+    })
+
+    cad.command("MOVE").click(p(100, 0)).click(p(100, 0))
+    cad.mouseDown(p(-10, -10)).moveTo(p(210, 60)).mouseUp(p(210, 60))
+    cad.click(p(100, 50), { shiftKey: true })
+    cad.press(" ")
+    expect(cad.state().commandLine.prompt).toBe(
+      "MOVE Specify base point or [Displacement] <Displacement>:"
+    )
+    cad.click(p(0, 0))
+    expect(cad.state().commandLine.prompt).toBe(
+      "MOVE Specify second point or <use first point as displacement>:"
+    )
+    cad.click(p(0, 30))
+
+    expect(cad.commandLog()).toEqual([
+      "MOVE",
+      "Select objects: 1 found",
+      "Select objects: 1 found, 1 total",
+      "Select objects: Specify opposite corner: 2 found, 2 total",
+      "Select objects: 1 found, 1 removed, 1 total",
+      "Select objects:",
+      "Specify base point or [Displacement] <Displacement>:",
+      "Specify second point or <use first point as displacement>:",
+    ])
+    expect(cad.byId<LineEntity>("L1").start).toBeCloseToPoint(p(0, 30))
+    expect(cad.byId<LineEntity>("L2").start).toBeCloseToPoint(p(0, 50))
+  })
+
+  it("counts the objects selected before it starts", () => {
+    const cad = createHarness({ entities: [HORIZONTAL] })
+
+    cad.select("L1").command("MOVE")
+
+    expect(cad.commandLog()).toEqual(["MOVE 1 found"])
+  })
+
+  it("moves by a Displacement typed, or Enter's last one", () => {
+    const cad = createHarness({ entities: [HORIZONTAL] })
+
+    cad.select("L1").command("MOVE").option("Displacement")
+    expect(cad.state().commandLine.prompt).toBe(
+      "MOVE Specify displacement <0.00, 0.00, 0.00>:"
+    )
+    cad.type("10,5").enter()
+    expect(cad.byId<LineEntity>("L1").start).toBeCloseToPoint(p(10, 5))
+    expect(cad.activeToolId()).toBe("select")
+
+    cad.select("L1").command("MOVE").enter()
+    expect(cad.state().commandLine.prompt).toBe(
+      "MOVE Specify displacement <10.00, 5.00, 0.00>:"
+    )
+    cad.enter()
+
+    expect(cad.byId<LineEntity>("L1").start).toBeCloseToPoint(p(20, 10))
+    expect(cad.commandLog().slice(-3)).toEqual([
+      "MOVE 1 found",
+      "Specify base point or [Displacement] <Displacement>:",
+      "Specify displacement <10.00, 5.00, 0.00>:",
+    ])
+  })
+
+  it("ends at an empty Select objects on Space, as on Enter", () => {
+    const cad = createHarness({ entities: [HORIZONTAL] })
+
+    cad.command("MOVE").press(" ")
+
+    expect(cad.activeToolId()).toBe("select")
+    expect(cad.commandLog()).toEqual(["MOVE", "Select objects:"])
+  })
+
   it("displaces the pre-selected objects and keeps their ids", () => {
     const cad = createHarness({ entities: [HORIZONTAL] })
 
@@ -109,6 +183,29 @@ describe("MOVE", () => {
 })
 
 describe("COPY", () => {
+  it("reports its mode, then offers Exit and Undo once a copy is placed", () => {
+    const cad = createHarness({ entities: [HORIZONTAL] })
+
+    cad.select("L1").command("COPY").click(p(0, 0)).click(p(0, 100))
+    expect(cad.state().commandLine.prompt).toBe(
+      "COPY Specify second point or [Exit/Undo] <Exit>:"
+    )
+    cad.click(p(0, 200)).option("Undo")
+    expect(cad.entityCount).toBe(2)
+    cad.option("Exit")
+
+    expect(cad.activeToolId()).toBe("select")
+    expect(cad.commandLog()).toEqual([
+      "COPY 1 found",
+      "Current settings:  Copy mode = Multiple",
+      "Specify base point or [Displacement] <Displacement>:",
+      "Specify second point or <use first point as displacement>:",
+      "Specify second point or [Exit/Undo] <Exit>:",
+      "Specify second point or [Exit/Undo] <Exit>: U",
+      "Specify second point or [Exit/Undo] <Exit>: E",
+    ])
+  })
+
   it("keeps the original and drops a duplicate at each destination", () => {
     const cad = createHarness({ entities: [HORIZONTAL] })
 

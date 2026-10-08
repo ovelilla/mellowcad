@@ -3,7 +3,7 @@ import { CommandDefinition, TOOL_COMMANDS } from "./CommandLine"
 import type { CommandOptionUi, StylesPanelTab } from "./EngineState"
 import { promptString, type EngineText, type PromptSegment } from "./EngineText"
 import { offerKeywords } from "../i18n/keywords"
-import { Tool } from "./tools/Tool"
+import { Tool, type ToolQuestion } from "./tools/Tool"
 import { formatLength } from "../domain/units"
 import type { DocumentSettings } from "../domain/units"
 import { MTextTool } from "./tools/MTextTool"
@@ -203,11 +203,25 @@ export interface CommandPrompt {
   /** `Specify next point or [Undo]:`, the line an answer is written after. */
   readonly echo: PromptSegment[] | null
   /**
-   * The dynamic prompt, the question without the command's name and with no
-   * keyword list — the tooltip offers its keywords below it: `Specify first
-   * point:`, `Specify next point or`. Null when the tool names no question.
+   * The dynamic prompt, the question without the command's name: with its
+   * colon when nothing follows it (`Specify first point:`), else without
+   * the keywords and the `<default>` the tooltip offers below it (`Specify
+   * next point or`). Null when the tool names no question.
    */
   readonly dynamic: string | null
+}
+
+/** What Enter keeps, as the prompt shows it between its angle brackets. */
+function enterValue(
+  enter: ToolQuestion["enter"],
+  text: EngineText,
+  settings: DocumentSettings
+): string {
+  if (typeof enter === "number") return formatLength(enter, settings)
+  if (typeof enter === "string") return text.prompt(enter)
+  return [enter.x, enter.y, enter.z]
+    .map((value) => formatLength(value, settings))
+    .join(", ")
 }
 
 /**
@@ -242,7 +256,7 @@ export function commandPrompt(
   const question = id === null ? null : text.prompt(id)
   const value =
     typeof asked === "object" && asked !== null
-      ? formatLength(asked.length, settings)
+      ? enterValue(asked.enter, text, settings)
       : fallback === null
         ? null
         : text.keyword(command, fallback)
@@ -255,7 +269,7 @@ export function commandPrompt(
     ),
     echo: question === null ? null : text.composePrompt(question, labels, value),
     dynamic:
-      question === null || labels.length > 0
+      question === null || labels.length > 0 || value !== null
         ? question
         : promptString(text.composePrompt(question, [])),
   }

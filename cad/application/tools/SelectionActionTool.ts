@@ -4,7 +4,7 @@ import { ScenePrimitive } from "../../scene/types"
 import { THEME } from "../../scene/theme"
 import { entityScenePrimitive } from "../SceneBuilder"
 import { boxSelect, buildSelectionBoxOverlay } from "./boxSelection"
-import { KeyInput, PointerInput, Tool, ToolContext } from "./Tool"
+import { PointerInput, Tool, ToolContext } from "./Tool"
 
 /** Screen-pixel movement past which a press-drag becomes a box selection. */
 const DRAG_THRESHOLD_PX = 4
@@ -127,12 +127,6 @@ export abstract class SelectionActionTool implements Tool {
       this.state = { phase: "selecting", hover: null }
       ctx.requestRender()
     }
-  }
-
-  onKeyDown(input: KeyInput, ctx: ToolContext): void {
-    // Space confirms the set (AutoCAD treats Space like Enter); Enter itself is
-    // routed through onEnter by the runtime.
-    if (input.key === " ") this.execute(ctx)
   }
 
   onEnter(ctx: ToolContext): boolean {
