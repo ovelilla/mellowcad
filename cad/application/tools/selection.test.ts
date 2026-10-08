@@ -371,6 +371,24 @@ describe("ERASE", () => {
     expect(cad.entityCount).toBe(2)
   })
 
+  it("asks Select objects and writes what each pick found", () => {
+    const cad = createHarness({ entities: [SHORT, FAR] })
+
+    cad.command("E")
+    expect(cad.state().commandLine.prompt).toBe("ERASE Select objects:")
+    cad.click(p(50, 0)).enter()
+    cad.select("L2").command("ERASE")
+
+    expect(cad.commandLog()).toEqual([
+      "E ERASE",
+      "Select objects: 1 found",
+      "Select objects:",
+      "1 object erased.",
+      "ERASE 1 found",
+      "1 object erased.",
+    ])
+  })
+
   it("erases nothing when Escape ends the prompt", () => {
     const cad = createHarness({ entities: [SHORT] })
 

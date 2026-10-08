@@ -182,9 +182,9 @@ input | Pick internal point [Properties/Select objects]: |
 input | Pick internal point [Properties/Select objects]: | 
 command |  | COPYBASE
 input | Specify base point: | 0,0
-input | COPYBASE: | 
-input | COPYBASE: | 
-input | COPYBASE: | 
+input | Select objects: | 1 found
+input | Select objects: | 1 found, 1 total
+input | Select objects: | 
 command |  | PASTECLIP
 ## localFirst
 command |  | RECTANG

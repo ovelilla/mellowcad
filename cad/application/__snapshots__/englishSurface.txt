@@ -203,11 +203,11 @@ lweight "Lineweight" LW
   dyn: -
   prompt| Specify first point: *Cancel*
 > ERASE with nothing selected
-  prompt: ERASE:
+  prompt: ERASE Select objects:
   command| ERASE
 > ERASE one
   prompt: Command:
-  command| E ERASE
+  command| E ERASE 1 found
   info| 1 object erased.
 > UNDO
   command| U UNDO
@@ -260,7 +260,7 @@ lweight "Lineweight" LW
   properties: -
   cycling: -
 > ERASE two
-  command| ERASE
+  command| ERASE 2 found
   info| 2 objects erased.
 
 ## purge
@@ -1887,7 +1887,7 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
   prompt: DIMBASELINE:
   asks: 
   dyn: 
-  command| ERASE
+  command| ERASE 1 found
   info| 1 object erased.
   command| DIMBASELINE
 
@@ -2431,11 +2431,11 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
   cycling: -
 > EXPLODE one rejected
   properties: 4 objects (4) [Selection: Lines=4]
-  command| X EXPLODE
+  command| X EXPLODE 2 found
   info| 1 was not able to be exploded.
 > EXPLODE two rejected
   properties: 2 objects (2) [Selection: Line=1, Circle=1]
-  command| X EXPLODE
+  command| X EXPLODE 2 found
   info| 2 were not able to be exploded.
 > JOIN
   command| J JOIN
@@ -2507,25 +2507,30 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
   properties: -
   cycling: -
 > COPYCLIP
-  prompt: COPYCLIP:
+  prompt: COPYCLIP Select objects:
   command| COPYCLIP
 > pick
   properties: Line (1) {Thickness=0.00 mm~} [Geometry: Length=100.00 mm~, Angle=0.00°~, Δ X=100.00 mm, Δ Y=0.00 mm, Δ Z=0.00 mm] [Endpoints: Start X=0.00~, Start Y=0.00~, Start Z=0.00~, End X=100.00~, End Y=0.00~, End Z=0.00~]
+  prompt| Select objects: 1 found
 > enter
   prompt: Command:
+  prompt| Select objects:
 > CUTCLIP
   properties: -
-  command| CUTCLIP
+  command| CUTCLIP 1 found
 > undo
 > COPYBASE
-  prompt: COPYBASE:
+  prompt: COPYBASE Specify base point:
   asks: "Specify base point"
+  tip: Specify base point:
   dyn: "X,Y"=""||*
   command| COPYBASE
 > escape
   prompt: Command:
   asks: -
+  tip: -
   dyn: -
+  prompt| Specify base point: *Cancel*
 
 ## DIST AREA
 > start

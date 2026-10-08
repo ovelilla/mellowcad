@@ -21,6 +21,7 @@ import {
 } from "./Tool"
 import type { PromptId } from "../../locales/types"
 import { acuteHeading, headingInUcs } from "./ucsHeading"
+import { countPreselection, pickObjects } from "./objectSelection"
 import { pointAlongCursor, showRise } from "./directDistance"
 
 /**
@@ -42,26 +43,6 @@ import { pointAlongCursor, showRise } from "./directDistance"
  * the command keeps running for more placements ({@link continuesAfterPlace},
  * `true` for COPY's Multiple mode, `false` for MOVE).
  */
-
-/**
- * The values of the `objectsFound` message for `found` objects: AutoCAD's
- * `3 found`, and once the set already held some `1 found, 4 total`.
- */
-function foundValues(
-  found: number,
-  {
-    removed = 0,
-    total = null,
-  }: { removed?: number; total?: number | null } = {}
-) {
-  return {
-    found,
-    removed,
-    total: total ?? 0,
-    hasTotal: total === null ? "no" : "yes",
-    box: "no",
-  }
-}
 
 /** Screen-pixel movement past which a press-drag becomes a box selection. */
 const DRAG_THRESHOLD_PX = 4
@@ -172,9 +153,7 @@ export abstract class PlacementTool implements Tool {
       this.state = { phase: "selecting" }
       this.announceSelection(ctx)
     } else {
-      ctx.answer(
-        ctx.text.message("objectsFound", foundValues(ctx.selection.size))
-      )
+      countPreselection(ctx)
       this.state = { phase: "basePoint" }
       this.announceBasePoint(ctx)
       this.openBaseInput(ctx)
@@ -348,9 +327,7 @@ export abstract class PlacementTool implements Tool {
       const hit = ctx.pick(input.world)
       if (hit) this.applyPick([hit.id], this.state.subtract, ctx, null)
       // WHY nothing written for a miss: AutoCAD starts a window there
-      // ("Specify opposite corner:"), which a click cannot finish here. A pick
-      // on an object already in the set is counted as found: AutoCAD's note
-      // of the duplicate is unverified.
+      // ("Specify opposite corner:"), which a click cannot finish here.
       this.state = { phase: "selecting" }
       ctx.requestRender()
       return
@@ -424,31 +401,15 @@ export abstract class PlacementTool implements Tool {
     return out
   }
 
-  /**
-   * Adds (or, with shift held, removes) picked ids while building the set, and
-   * says what it found on the prompt's line: `1 found, 2 total`.
-   */
+  /** Adds (or, with shift held, removes) picked ids while building the set. */
   private applyPick(
     ids: readonly EntityId[],
     subtract: boolean,
     ctx: ToolContext,
     box: { readonly start: Vec2; readonly current: Vec2 } | null
   ): void {
-    const before = ctx.selection.size
-    for (const id of ids) {
-      if (subtract) ctx.selection.remove(id)
-      else ctx.selection.add(id)
-    }
+    pickObjects(ids, subtract, box !== null, ctx)
     if (!subtract && ids.length > 0) this.onSelectionAdded(ids, box)
-    ctx.answer(
-      ctx.text.message("objectsFound", {
-        ...foundValues(ids.length, {
-          removed: subtract ? before - ctx.selection.size : 0,
-          total: before > 0 || subtract ? ctx.selection.size : null,
-        }),
-        box: box === null ? "no" : "yes",
-      })
-    )
   }
 
   /** Confirms the picked set and advances to the base point; ends if empty. */

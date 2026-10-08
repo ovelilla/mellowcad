@@ -4,6 +4,7 @@ import { Entity, entitiesBounds } from "../../domain/entities"
 import { RemoveEntitiesCommand } from "../commands/entityCommands"
 import { parseCoordinate } from "../input/coordinateInput"
 import { SelectionActionTool } from "./SelectionActionTool"
+import type { PromptId } from "../../locales/types"
 import { PointerInput, ToolContext } from "./Tool"
 
 /**
@@ -88,6 +89,11 @@ export class CopyClipTool extends SelectionActionTool {
       return
     }
     super.onPointerMove(input, ctx)
+  }
+
+  /** COPYBASE asks its base point before the objects. */
+  question(): PromptId | null {
+    return this.awaitingBase ? "clipboardBasePoint" : super.question()
   }
 
   /** Only the base point is a point prompt; the rest is picking objects. */

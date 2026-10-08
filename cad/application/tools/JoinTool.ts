@@ -31,6 +31,11 @@ export class JoinTool extends SelectionActionTool {
   readonly id = "join"
   readonly shortcut = "j"
 
+  /** WHY none yet: JOIN asks for a source object first, a wording unverified here. */
+  protected selectionQuestion(): null {
+    return null
+  }
+
   protected run(entities: readonly Entity[], ctx: ToolContext): void {
     // Break every joinable source into its segments (arcs carry a bulge), tagged
     // with the source id so a merged chain knows which originals it consumed.

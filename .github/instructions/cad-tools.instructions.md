@@ -101,8 +101,9 @@ Continue length). Convert a command whole: one that names no question shows `NAM
 writes no prompt lines, so a half-converted one reads inconsistently. A report the answer produces
 (`Current line-width is 0.0000`) is written after the answered prompt by itself; what only the
 release of a pick knows — what a `Select objects:` pick found — goes on that prompt's line with
-`ctx.answer(text)` (`PlacementTool.applyPick`; with nothing picked yet it follows the command's
-echo, `Command: M MOVE 1 found`). A keyword AutoCAD
+`ctx.answer(text)`, and with nothing picked yet after the command's echo (`Command: M MOVE 1 found`).
+Every `Select objects:` counts through `pickObjects` and `countPreselection`
+(`tools/objectSelection.ts`: `PlacementTool`, `SelectionActionTool`), never on its own. A keyword AutoCAD
 lists with a gloss (`Ttr (tan tan radius)`) has it in `commands.keywordLabels.<NAME>`, for every
 command name that offers it (CIRCLE and CIRCLED).
 

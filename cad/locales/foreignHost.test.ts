@@ -82,7 +82,10 @@ describe("a host's own language", () => {
     cad.command("E")
     expect(cad.commandLog()).toEqual(['Commande "E" inconnue.'])
     cad.select("A").command("ERASE")
-    expect(cad.commandLog().slice(1)).toEqual(["ERASE", "1 object erased."])
+    expect(cad.commandLog().slice(1)).toEqual([
+      "ERASE 1 found",
+      "1 object erased.",
+    ])
     const erase = commandCatalog(french).find((info) => info.id === "ERASE")
     expect(erase).toMatchObject({ name: "ERASE", aliases: [] })
   })

@@ -5,6 +5,8 @@ import { THEME } from "../../scene/theme"
 import { entityScenePrimitive } from "../SceneBuilder"
 import { boxSelect, buildSelectionBoxOverlay } from "./boxSelection"
 import { PointerInput, Tool, ToolContext } from "./Tool"
+import type { PromptId } from "../../locales/types"
+import { countPreselection, pickObjects } from "./objectSelection"
 
 /** Screen-pixel movement past which a press-drag becomes a box selection. */
 const DRAG_THRESHOLD_PX = 4
@@ -44,10 +46,23 @@ export abstract class SelectionActionTool implements Tool {
    */
   protected begin(ctx: ToolContext): void {
     if (!ctx.selection.isEmpty()) {
+      if (this.selectionQuestion() !== null) countPreselection(ctx)
       this.execute(ctx)
     } else {
       this.state = { phase: "selecting", hover: null }
     }
+  }
+
+  /**
+   * What the set is asked with, `Select objects`; null for a command whose
+   * own wording is not verified yet, which keeps `NAME:`.
+   */
+  protected selectionQuestion(): PromptId | null {
+    return "selectObjects"
+  }
+
+  question(): PromptId | null {
+    return this.selectionQuestion()
   }
 
   onDeactivate(ctx: ToolContext): void {
@@ -123,7 +138,7 @@ export abstract class SelectionActionTool implements Tool {
         this.state.currentWorld,
         ctx.viewport
       )
-      this.applyPick(hits, this.state.subtract, ctx)
+      this.applyPick(hits, this.state.subtract, ctx, true)
       this.state = { phase: "selecting", hover: null }
       ctx.requestRender()
     }
@@ -179,8 +194,13 @@ export abstract class SelectionActionTool implements Tool {
   private applyPick(
     ids: readonly EntityId[],
     subtract: boolean,
-    ctx: ToolContext
+    ctx: ToolContext,
+    box = false
   ): void {
+    if (this.selectionQuestion() !== null) {
+      pickObjects(ids, subtract, box, ctx)
+      return
+    }
     for (const id of ids) {
       if (subtract) ctx.selection.remove(id)
       else ctx.selection.add(id)

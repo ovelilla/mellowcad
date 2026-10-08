@@ -390,11 +390,17 @@ export function transcript(recording: DemoRecording): TranscriptLine[] {
     typed = ""
     if (answer !== null) {
       const segments = promptSegments(step.prompt, answer, recording.locale)
+      const prompt = promptString(segments)
+      // The engine's own line, when it wrote one, also says what a pick found
+      // (`Select objects: 1 found`).
+      const written = step.output.find(
+        (entry) => entry.kind === "prompt" && entry.text.startsWith(prompt)
+      )
       lines.push({
         kind: "input",
-        prompt: promptString(segments),
+        prompt,
         segments,
-        text: answer,
+        text: written ? written.text.slice(prompt.length).trim() : answer,
         step: index,
       })
     }
