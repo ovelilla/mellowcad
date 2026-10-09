@@ -1049,6 +1049,12 @@ export const es: EngineLocale = {
         "Yes": "Sí",
         "No": "No"
       },
+      "TRIM": {
+        "Undo": "desHacer"
+      },
+      "EXTEND": {
+        "Undo": "desHacer"
+      },
       "FILLET": {
         "Undo": "Deshacer",
         "Polyline": "Polilínea",
@@ -1320,6 +1326,8 @@ export const es: EngineLocale = {
       "nextObject": "siguiente objeto",
       "selectObjectToTrimOrShiftSelectToExtend": "Seleccione un objeto que recortar o use la tecla Mayús y seleccione para alargar",
       "selectObjectToExtendOrShiftSelectToTrim": "Seleccione un objeto que alargar o use la tecla Mayús y seleccione para recortar",
+      "selectObjectToTrimOrShiftSelectToExtendOr": "Seleccione un objeto que recortar o use la tecla Mayús y seleccione para alargar, o",
+      "selectObjectToExtendOrShiftSelectToTrimOr": "Seleccione un objeto que alargar o use la tecla Mayús y seleccione para recortar, o",
       "selectFirstObjectOr": "Designe el primer objeto o",
       "selectSecondObjectOrApplyCornerOr": "Designe segundo objeto o use la tecla Mayús para aplicar esquina o",
       "specifyFilletRadius": "Precise radio de empalme",

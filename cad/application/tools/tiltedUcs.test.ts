@@ -330,12 +330,15 @@ describe("the tools in a tilted UCS", () => {
   it("leave an object at an angle to the UCS plane alone", () => {
     const tilted = withNormal(circleOf(p(50, 0), 20, { id: "C" }), FRONT_Z)
     const line = lineOf(p(0, 0), p(100, 0), { id: "L" })
-    const cad = createHarness({ entities: [tilted, line] })
+    const edge = lineOf(p(10, -50), p(10, 50), { id: "E" })
+    const cad = createHarness({ entities: [tilted, line, edge] })
 
     cad.command("TRIM").click(p(50, 0)).click(p(90, 0)).escape()
 
+    // Cut back to the edge: the circle crossing it at 70 was no edge.
     expect(cad.byId("C")).toBe(tilted)
-    expect(cad.byId("L")).toBe(line)
+    const trimmed = cad.byId<LineEntity>("L")
+    expect([trimmed.start, trimmed.end]).toBeCloseToPoints([p(0, 0), p(10, 0)])
   })
 
   it("read a typed * point in the WCS", () => {

@@ -865,6 +865,8 @@ describe("the engine's English surface", () => {
       (s) =>
         s
           .do("TRIM", (c) => c.command("TR"))
+          .do("trim", (c) => c.click(at(200, 300)))
+          .do("U", (c) => answer(c, "U"))
           .do("escape", (c) => c.escape())
           .do("EXTEND", (c) => c.command("EX"))
           .do("escape", (c) => c.escape())

@@ -2484,6 +2484,15 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
   prompt: TRIM Select object to trim or shift-select to extend:
   command| TR TRIM
   info| Current settings: Projection=UCS, Edge=None, Mode=Quick
+> trim
+  prompt: TRIM Select object to trim or shift-select to extend or [Undo]:
+  options: [U] Undo
+  prompt| Select object to trim or shift-select to extend:
+> U
+  prompt: TRIM Select object to trim or shift-select to extend:
+  options: -
+  prompt| Select object to trim or shift-select to extend or [Undo]: U
+  info| Command has been completely undone.
 > escape
   prompt: Command:
   prompt| Select object to trim or shift-select to extend: *Cancel*

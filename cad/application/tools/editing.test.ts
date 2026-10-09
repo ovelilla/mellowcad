@@ -49,15 +49,48 @@ describe("TRIM", () => {
       "TRIM Select object to trim or shift-select to extend:"
     )
     expect(cad.state().dynamicInput).toBeNull()
-    cad.click(p(100, 0)).click(p(0, 50), { shiftKey: true }).enter()
+    cad.click(p(100, 0))
+    expect(cad.state().commandLine.prompt).toBe(
+      "TRIM Select object to trim or shift-select to extend or [Undo]:"
+    )
+    cad.click(p(0, 50), { shiftKey: true }).enter()
 
     expect(cad.commandLog()).toEqual([
       "TRIM",
       "Current settings: Projection=UCS, Edge=None, Mode=Quick",
       "Select object to trim or shift-select to extend:",
-      "Select object to trim or shift-select to extend:",
-      "Select object to trim or shift-select to extend:",
+      "Select object to trim or shift-select to extend or [Undo]:",
+      "Select object to trim or shift-select to extend or [Undo]:",
     ])
+  })
+
+  it("Undo takes back the last trim, and only the command's own", () => {
+    const cad = createHarness({
+      entities: [
+        lineOf(p(-200, 0), p(200, 0), { id: "A" }),
+        lineOf(p(0, -100), p(0, 100), { id: "V" }),
+      ],
+    })
+    cad.command("LINE").click(p(0, -300)).click(p(100, -300)).enter()
+
+    cad.command("TRIM").click(p(100, 0)).click(p(0, 50))
+    cad.option("Undo")
+    expect(endpoints(cad.byId<LineEntity>("V"))).toBeCloseToPoints([
+      p(0, -100),
+      p(0, 100),
+    ])
+    expect(endpoints(cad.byId<LineEntity>("A"))).toBeCloseToPoints([
+      p(-200, 0),
+      p(0, 0),
+    ])
+    cad.option("Undo")
+    expect(cad.commandLog().at(-1)).toBe("Command has been completely undone.")
+    expect(cad.state().commandLine.prompt).toBe(
+      "TRIM Select object to trim or shift-select to extend:"
+    )
+    // With the command's own edits gone, Undo is no longer offered.
+    expect(cad.optionIds()).toEqual([])
+    expect(cad.entityCount).toBe(3)
   })
 
   it("cuts the picked side back to the crossing edge", () => {
@@ -141,17 +174,21 @@ describe("TRIM", () => {
     expect(cad.activeToolId()).toBe("select")
   })
 
-  it("does nothing when the object crosses nothing", () => {
+  it("deletes an object no edge crosses, as Quick mode does", () => {
     const cad = createHarness({
-      entities: [lineOf(p(-200, 0), p(200, 0), { id: "A" })],
+      entities: [
+        lineOf(p(-200, 0), p(200, 0), { id: "A" }),
+        circleOf(p(0, 300), 50, { id: "C" }),
+      ],
     })
 
-    cad.command("TRIM").click(p(100, 0))
-
-    expect(endpoints(cad.byId<LineEntity>("A"))).toBeCloseToPoints([
-      p(-200, 0),
-      p(200, 0),
-    ])
+    cad.command("TRIM").click(p(100, 0)).click(p(50, 300))
+    expect(cad.entityCount).toBe(0)
+    cad.option("Undo")
+    expect(cad.entities().map((e) => e.id)).toEqual(["C"])
+    // Shift extends instead, which never deletes.
+    cad.click(p(50, 300), { shiftKey: true })
+    expect(cad.entityCount).toBe(1)
   })
 
   it("turns a circle into the complementary arc", () => {
@@ -208,7 +245,7 @@ describe("EXTEND", () => {
       "EXTEND",
       "Current settings: Projection=UCS, Edge=None, Mode=Quick",
       "Select object to extend or shift-select to trim:",
-      "Select object to extend or shift-select to trim: *Cancel*",
+      "Select object to extend or shift-select to trim or [Undo]: *Cancel*",
     ])
   })
 

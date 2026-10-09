@@ -412,6 +412,11 @@ describe("Spanish AutoCAD's command language", () => {
     expect(cad.state().commandLine.prompt).toBe(
       "RECORTA Seleccione un objeto que recortar o use la tecla Mayús y seleccione para alargar:"
     )
+    cad.click(p(100, 0))
+    expect(cad.state().commandLine.prompt).toBe(
+      "RECORTA Seleccione un objeto que recortar o use la tecla Mayús y seleccione para alargar, o [desHacer]:"
+    )
+    expect(cad.optionAnswer("Undo")).toBe("H")
     cad.escape().command("ALARGA")
     expect(cad.state().commandLine.prompt).toBe(
       "ALARGA Seleccione un objeto que alargar o use la tecla Mayús y seleccione para recortar:"

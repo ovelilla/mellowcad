@@ -1002,6 +1002,8 @@ export const en: EngineCatalog = {
       "nextObject": "next object",
       "selectObjectToTrimOrShiftSelectToExtend": "Select object to trim or shift-select to extend",
       "selectObjectToExtendOrShiftSelectToTrim": "Select object to extend or shift-select to trim",
+      "selectObjectToTrimOrShiftSelectToExtendOr": "Select object to trim or shift-select to extend or",
+      "selectObjectToExtendOrShiftSelectToTrimOr": "Select object to extend or shift-select to trim or",
       "selectFirstObjectOr": "Select first object or",
       "selectSecondObjectOrApplyCornerOr": "Select second object or shift-select to apply corner or",
       "specifyFilletRadius": "Specify fillet radius",

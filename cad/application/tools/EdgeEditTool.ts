@@ -31,6 +31,7 @@ import {
 } from "../../domain/entities"
 import { LayerId } from "../../domain/layers"
 import {
+  RemoveEntitiesCommand,
   ReplaceEntitiesCommand,
   UpdateEntityCommand,
 } from "../commands/entityCommands"
@@ -38,7 +39,13 @@ import { ScenePrimitive, StrokeStyle } from "../../scene/types"
 import { THEME } from "../../scene/theme"
 import { arcScenePrimitive, entityScenePrimitive } from "../SceneBuilder"
 import type { PromptId } from "../../locales/types"
-import { PointerInput, Tool, ToolContext } from "./Tool"
+import {
+  CommandOption,
+  CommandOptionOutcome,
+  PointerInput,
+  Tool,
+  ToolContext,
+} from "./Tool"
 
 /**
  * TRIM and EXTEND share one interaction and most of their geometry, so they are
@@ -55,6 +62,7 @@ import { PointerInput, Tool, ToolContext } from "./Tool"
  *   portion running off an end just shortens it. A **circle** trimmed between
  *   two crossings becomes the complementary **arc**; an **arc** trims like a
  *   line but along its sweep.
+ *   An object no edge cuts is deleted instead, as Quick mode's is.
  * - **Extend**: a line or arc grows from the endpoint nearest the click, along
  *   its own direction/sweep, until it reaches the closest boundary. (Circles
  *   are closed, so they cannot be extended.)
@@ -102,6 +110,8 @@ type EdgeEditPlan =
       /** The stretch being appended, drawn as an addition preview. */
       readonly added: EditGeom
     }
+  /** Quick mode's trim of an object no edge cuts: it is deleted. */
+  | { readonly kind: "erase"; readonly target: Entity }
 
 export abstract class EdgeEditTool implements Tool {
   abstract readonly id: string
@@ -111,38 +121,72 @@ export abstract class EdgeEditTool implements Tool {
   protected abstract readonly defaultMode: EdgeEditMode
 
   private preview: EdgeEditPlan | null = null
+  /** The edits made since the command started, for Undo. */
+  private steps = 0
+  private lastInput: PointerInput | null = null
 
   onActivate(ctx: ToolContext): void {
     ctx.setCursor("crosshair")
     ctx.selection.clear()
     this.preview = null
+    this.steps = 0
     // PROJMODE 1, EDGEMODE 0 and TRIMEXTENDMODE 1 are fixed here.
     ctx.report(ctx.text.message("trimExtendSettings"))
   }
 
   /**
-   * WHY no keyword list: cuTting edges (Boundary edges), Crossing, mOde,
-   * Project and eRase are not offered, so the question ends at its colon.
+   * WHY Undo alone: cuTting edges (Boundary edges), Crossing, mOde, Project
+   * and eRase are not offered, so the question ends at its colon until the
+   * first edit brings Undo.
    */
   question(): PromptId {
-    return this.defaultMode === "trim"
-      ? "selectObjectToTrimOrShiftSelectToExtend"
+    if (this.defaultMode === "trim") {
+      return this.steps > 0
+        ? "selectObjectToTrimOrShiftSelectToExtendOr"
+        : "selectObjectToTrimOrShiftSelectToExtend"
+    }
+    return this.steps > 0
+      ? "selectObjectToExtendOrShiftSelectToTrimOr"
       : "selectObjectToExtendOrShiftSelectToTrim"
+  }
+
+  commandOptions(): readonly CommandOption[] {
+    return this.steps > 0 ? [{ id: "Undo" }] : []
+  }
+
+  /**
+   * Undo takes back the last edit of this command, and only those; back at
+   * its start AutoCAD says so, and Undo is no longer offered.
+   */
+  invokeOption(id: string, ctx: ToolContext): CommandOptionOutcome {
+    if (id !== "Undo" || this.steps === 0) return "unhandled"
+    this.steps -= 1
+    ctx.undo()
+    if (this.steps === 0) {
+      ctx.report(ctx.text.message("commandCompletelyUndone"))
+    }
+    this.preview = this.lastInput && this.planFor(this.lastInput, ctx)
+    ctx.requestRender()
+    return "continue"
   }
 
   onDeactivate(): void {
     this.preview = null
+    this.lastInput = null
   }
 
   onPointerMove(input: PointerInput, ctx: ToolContext): void {
+    this.lastInput = input
     this.preview = this.planFor(input, ctx)
     ctx.requestRender()
   }
 
   onPointerDown(input: PointerInput, ctx: ToolContext): void {
     if (input.button !== 0) return
+    this.lastInput = input
     const plan = this.planFor(input, ctx)
     if (!plan) return
+    this.steps += 1
     this.commit(plan, ctx)
     // Loop like AutoCAD: recompute the preview against the now-updated drawing
     // so a follow-up click continues trimming/extending from the same spot.
@@ -160,6 +204,13 @@ export abstract class EdgeEditTool implements Tool {
     const plan = this.preview
     if (!plan) return []
     const { viewport } = ctx
+    if (plan.kind === "erase") {
+      return entityScenePrimitive(viewport, plan.target, {
+        color: THEME.gripHot,
+        width: 1.5,
+        dash: [6, 4],
+      })
+    }
     const prim = (
       g: EditGeom,
       color: string,
@@ -228,12 +279,20 @@ export abstract class EdgeEditTool implements Tool {
         (e) =>
           e.id !== hit.id && ctx.document.isEntityVisible(e) && readsInPlan(e)
       )
-    return mode === "trim"
-      ? planTrim(hit, input.world, others)
-      : planExtend(hit, input.world, others)
+    if (mode === "extend") return planExtend(hit, input.world, others)
+    // "In Quick mode, selecting an object that doesn't cross a boundary
+    // deletes the object instead" — of those trimmed here.
+    return (
+      planTrim(hit, input.world, others) ??
+      (TRIMMED.has(hit.type) ? { kind: "erase", target: hit } : null)
+    )
   }
 
   private commit(plan: EdgeEditPlan, ctx: ToolContext): void {
+    if (plan.kind === "erase") {
+      ctx.execute(new RemoveEntitiesCommand([plan.target.id]))
+      return
+    }
     const target = ctx.document.get(plan.targetId)
     if (!target) return
     if (plan.kind === "extend") {
@@ -269,6 +328,14 @@ export abstract class EdgeEditTool implements Tool {
     )
   }
 }
+
+/** What `planTrim` cuts, and so what Quick mode deletes when nothing cuts it. */
+const TRIMMED: ReadonlySet<Entity["type"]> = new Set([
+  "line",
+  "circle",
+  "arc",
+  "polyline",
+])
 
 const PARAM_EPS = 1e-6
 const ANGLE_EPS = 1e-6
