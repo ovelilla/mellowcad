@@ -403,6 +403,28 @@ describe("Spanish AutoCAD's command language", () => {
     )
   })
 
+  it("asks RECORTA's and ALARGA's questions in Spanish AutoCAD's words", () => {
+    const cad = createHarness({
+      locale: es,
+      entities: [
+        lineOf(p(-200, 0), p(200, 0)),
+        lineOf(p(0, -100), p(0, 100)),
+      ],
+    })
+    cad.command("RECORTA")
+    expect(cad.state().commandLine.prompt).toBe(
+      "RECORTA Seleccione un objeto que recortar o use la tecla Mayús y seleccione para alargar:"
+    )
+    cad.escape().command("ALARGA")
+    expect(cad.state().commandLine.prompt).toBe(
+      "ALARGA Seleccione un objeto que alargar o use la tecla Mayús y seleccione para recortar:"
+    )
+    expect(cad.commandLog().slice(0, 2)).toEqual([
+      "RECORTA",
+      "Parámetros actuales: Proyección=SCP, Arista=Ninguno, Modo=Rápido",
+    ])
+  })
+
   it("answers CIRCULO's 3P typed whole and Diámetro by its D", () => {
     const cad = createHarness({ locale: es })
     cad.command("CIRCULO")

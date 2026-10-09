@@ -1306,7 +1306,9 @@ export const es: EngineLocale = {
       "eraseSourceObjectAfterOffsetting": "¿Borrar objeto de origen después del desfase?",
       "enterLayerOptionForOffsetObjects": "Indique opción de capa para objetos desfasados",
       "specifyThroughPointOr": "Precise punto a atravesar o",
-      "nextObject": "siguiente objeto"
+      "nextObject": "siguiente objeto",
+      "selectObjectToTrimOrShiftSelectToExtend": "Seleccione un objeto que recortar o use la tecla Mayús y seleccione para alargar",
+      "selectObjectToExtendOrShiftSelectToTrim": "Seleccione un objeto que alargar o use la tecla Mayús y seleccione para recortar"
     },
     "format": {
       "idle": "Comando",
@@ -1415,6 +1417,7 @@ export const es: EngineLocale = {
       ],
       "cancel": "*Cancelar*",
       "rotateSettings": "Ángulo actual positivo en SCP:  ANGDIR=en sentido horario inverso  ANGBASE=0",
+      "trimExtendSettings": "Parámetros actuales: Proyección=SCP, Arista=Ninguno, Modo=Rápido",
       "offsetSettings": [
         "Parámetros actuales: Borrar origen=",
         [

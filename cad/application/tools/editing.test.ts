@@ -36,6 +36,30 @@ function linesOf(entities: readonly Entity[]): LineEntity[] {
 }
 
 describe("TRIM", () => {
+  it("reports its settings and asks Quick mode's question", () => {
+    const cad = createHarness({
+      entities: [
+        lineOf(p(-200, 0), p(200, 0), { id: "A" }),
+        lineOf(p(0, -100), p(0, 100), { id: "V" }),
+      ],
+    })
+
+    cad.command("TRIM")
+    expect(cad.state().commandLine.prompt).toBe(
+      "TRIM Select object to trim or shift-select to extend:"
+    )
+    expect(cad.state().dynamicInput).toBeNull()
+    cad.click(p(100, 0)).click(p(0, 50), { shiftKey: true }).enter()
+
+    expect(cad.commandLog()).toEqual([
+      "TRIM",
+      "Current settings: Projection=UCS, Edge=None, Mode=Quick",
+      "Select object to trim or shift-select to extend:",
+      "Select object to trim or shift-select to extend:",
+      "Select object to trim or shift-select to extend:",
+    ])
+  })
+
   it("cuts the picked side back to the crossing edge", () => {
     const cad = createHarness({
       entities: [
@@ -166,6 +190,28 @@ describe("TRIM", () => {
 })
 
 describe("EXTEND", () => {
+  it("reports its settings and asks Quick mode's question", () => {
+    const cad = createHarness({
+      entities: [
+        lineOf(p(-200, 0), p(-100, 0), { id: "T" }),
+        lineOf(p(0, -100), p(0, 100), { id: "B" }),
+      ],
+    })
+
+    cad.command("EXTEND")
+    expect(cad.state().commandLine.prompt).toBe(
+      "EXTEND Select object to extend or shift-select to trim:"
+    )
+    cad.click(p(-110, 0)).escape()
+
+    expect(cad.commandLog()).toEqual([
+      "EXTEND",
+      "Current settings: Projection=UCS, Edge=None, Mode=Quick",
+      "Select object to extend or shift-select to trim:",
+      "Select object to extend or shift-select to trim: *Cancel*",
+    ])
+  })
+
   it("grows the picked end to the nearest boundary", () => {
     const cad = createHarness({
       entities: [

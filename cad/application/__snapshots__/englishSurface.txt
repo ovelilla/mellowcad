@@ -2481,15 +2481,19 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
   properties: -
   cycling: -
 > TRIM
-  prompt: TRIM:
+  prompt: TRIM Select object to trim or shift-select to extend:
   command| TR TRIM
+  info| Current settings: Projection=UCS, Edge=None, Mode=Quick
 > escape
   prompt: Command:
+  prompt| Select object to trim or shift-select to extend: *Cancel*
 > EXTEND
-  prompt: EXTEND:
+  prompt: EXTEND Select object to extend or shift-select to trim:
   command| EX EXTEND
+  info| Current settings: Projection=UCS, Edge=None, Mode=Quick
 > escape
   prompt: Command:
+  prompt| Select object to extend or shift-select to trim: *Cancel*
 > FILLET
   prompt: FILLET [Radius]:
   asks: 

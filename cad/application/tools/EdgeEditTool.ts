@@ -37,6 +37,7 @@ import {
 import { ScenePrimitive, StrokeStyle } from "../../scene/types"
 import { THEME } from "../../scene/theme"
 import { arcScenePrimitive, entityScenePrimitive } from "../SceneBuilder"
+import type { PromptId } from "../../locales/types"
 import { PointerInput, Tool, ToolContext } from "./Tool"
 
 /**
@@ -115,6 +116,18 @@ export abstract class EdgeEditTool implements Tool {
     ctx.setCursor("crosshair")
     ctx.selection.clear()
     this.preview = null
+    // PROJMODE 1, EDGEMODE 0 and TRIMEXTENDMODE 1 are fixed here.
+    ctx.report(ctx.text.message("trimExtendSettings"))
+  }
+
+  /**
+   * WHY no keyword list: cuTting edges (Boundary edges), Crossing, mOde,
+   * Project and eRase are not offered, so the question ends at its colon.
+   */
+  question(): PromptId {
+    return this.defaultMode === "trim"
+      ? "selectObjectToTrimOrShiftSelectToExtend"
+      : "selectObjectToExtendOrShiftSelectToTrim"
   }
 
   onDeactivate(): void {

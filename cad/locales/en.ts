@@ -999,7 +999,9 @@ export const en: EngineCatalog = {
       "selectObjectToOffsetOr": "Select object to offset or",
       "specifyPointOnSideToOffsetOr": "Specify point on side to offset or",
       "specifyThroughPointOr": "Specify through point or",
-      "nextObject": "next object"
+      "nextObject": "next object",
+      "selectObjectToTrimOrShiftSelectToExtend": "Select object to trim or shift-select to extend",
+      "selectObjectToExtendOrShiftSelectToTrim": "Select object to extend or shift-select to trim"
     },
     "format": {
       "idle": "Command",
@@ -1110,6 +1112,7 @@ export const en: EngineCatalog = {
       "rotateSettings": "Current positive angle in UCS:  ANGDIR=counterclockwise  ANGBASE=0",
       "rotatingCopy": "Rotating a copy of the selected objects.",
       "scalingCopy": "Scaling a copy of the selected objects.",
+      "trimExtendSettings": "Current settings: Projection=UCS, Edge=None, Mode=Quick",
       "offsetSettings": [
         "Current settings: Erase source=",
         [
