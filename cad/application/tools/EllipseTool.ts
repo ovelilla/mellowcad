@@ -29,6 +29,7 @@ import {
   PointerInput,
   Tool,
   ToolContext,
+  ToolQuestion,
 } from "./Tool"
 import { withCurrentProperties } from "./currentProperties"
 
@@ -80,6 +81,8 @@ type EllipseToolState =
       readonly startParam: number
       readonly startAngle: number
       readonly cursor: Vec2
+      /** Included angle: the sweep is asked instead of the end angle. */
+      readonly included: boolean
     }
 
 /** Id the provisional ellipse carries, so previewing does not mint real ones. */
@@ -103,14 +106,19 @@ export class EllipseTool implements Tool {
   readonly shortcut?: string
 
   private readonly mode: EllipseMode
-  /** The mode actually running: the Arc and Center keywords switch it. */
-  private active: EllipseMode
+  /**
+   * What is actually running: the Arc and Center keywords turn these on, and
+   * an elliptical arc can still be started from its centre.
+   */
+  private arc: boolean
+  private centered: boolean
   private state: EllipseToolState = { phase: "first" }
   private lastScreen: Vec2 | null = null
 
   constructor(mode: EllipseMode, id: string, shortcut?: string) {
     this.mode = mode
-    this.active = mode
+    this.arc = mode === "arc"
+    this.centered = mode === "center"
     this.id = id
     this.shortcut = shortcut
   }
@@ -118,9 +126,39 @@ export class EllipseTool implements Tool {
   onActivate(ctx: ToolContext): void {
     ctx.setCursor("crosshair")
     ctx.selection.clear()
-    this.active = this.mode
+    this.arc = this.mode === "arc"
+    this.centered = this.mode === "center"
     this.state = { phase: "first" }
     this.openPointInput(ctx, this.firstPrompt())
+  }
+
+  /** WHY no Parameter at the arc's angles: it is not offered. */
+  question(): PromptId | ToolQuestion {
+    switch (this.state.phase) {
+      case "first":
+        if (this.centered) {
+          return this.arc
+            ? "specifyCenterOfEllipticalArc"
+            : "specifyCenterOfEllipse"
+        }
+        return this.arc
+          ? "specifyAxisEndpointOfEllipticalArcOr"
+          : "specifyAxisEndpointOfEllipseOr"
+      case "second":
+        return this.centered
+          ? "specifyEndpointOfAxis"
+          : "specifyOtherEndpointOfAxis"
+      case "distance":
+        return "specifyDistanceToOtherAxisOr"
+      case "rotation":
+        return "specifyRotationAroundMajorAxis"
+      case "startAngle":
+        return "specifyStartAngle"
+      case "endAngle":
+        return this.state.included
+          ? { id: "specifyIncludedAngleForArc", enter: { angle: 180 } }
+          : "specifyEndAngleOr"
+    }
   }
 
   onDeactivate(ctx: ToolContext): void {
@@ -129,7 +167,7 @@ export class EllipseTool implements Tool {
   }
 
   private firstPrompt(): PromptId {
-    return this.active === "center" ? "center" : "axisEndpoint"
+    return this.centered ? "center" : "axisEndpoint"
   }
 
   onPointerMove(input: PointerInput, ctx: ToolContext): void {
@@ -234,7 +272,8 @@ export class EllipseTool implements Tool {
 
   onKeyDown(input: KeyInput, ctx: ToolContext): void {
     if (input.key === "Escape") {
-      this.active = this.mode
+      this.arc = this.mode === "arc"
+      this.centered = this.mode === "center"
       this.state = { phase: "first" }
       ctx.dynamicInput.close()
       ctx.requestRender()
@@ -246,16 +285,13 @@ export class EllipseTool implements Tool {
       case "first":
         // AutoCAD's first prompt: `[Arc/Center]` from the axis mode, and just
         // `[Center]` once it is already drawing an elliptical arc.
-        return this.active === "center"
+        return this.centered
           ? []
-          : [
-              ...(this.active === "arc" ? [] : [{ id: "Arc" }]),
-              { id: "Center" },
-            ]
+          : [...(this.arc ? [] : [{ id: "Arc" }]), { id: "Center" }]
       case "distance":
         return [{ id: "Rotation" }]
       case "endAngle":
-        return [{ id: "Included angle" }]
+        return this.state.included ? [] : [{ id: "Included angle" }]
       default:
         return []
     }
@@ -263,7 +299,8 @@ export class EllipseTool implements Tool {
 
   invokeOption(id: string, ctx: ToolContext): CommandOptionOutcome {
     if (this.state.phase === "first" && (id === "Arc" || id === "Center")) {
-      this.active = id === "Arc" ? "arc" : "center"
+      if (id === "Arc") this.arc = true
+      else this.centered = true
       this.openPointInput(ctx, this.firstPrompt())
       ctx.requestRender()
       return "continue"
@@ -274,7 +311,12 @@ export class EllipseTool implements Tool {
       ctx.requestRender()
       return "continue"
     }
-    if (this.state.phase === "endAngle" && id === "Included angle") {
+    if (
+      this.state.phase === "endAngle" &&
+      !this.state.included &&
+      id === "Included angle"
+    ) {
+      this.state = { ...this.state, included: true }
       this.openIncludedAngleInput(ctx)
       ctx.requestRender()
       return "continue"
@@ -382,7 +424,7 @@ export class EllipseTool implements Tool {
     second: Vec2
   ): { center: Vec3; semiAxis: Vec2 } | null {
     const center = withZOf(
-      this.active === "center" ? first : V.midpoint(first, second),
+      this.centered ? first : V.midpoint(first, second),
       first
     )
     const semiAxis = V.sub(second, center)
@@ -466,7 +508,13 @@ export class EllipseTool implements Tool {
   ): void {
     if (this.state.phase !== "rotation") return
     const ratio = rotationRatio(degrees)
-    if (ratio === null) return // inside the band that would draw a line
+    if (ratio === null) {
+      // Inside the band that would draw a line: AutoCAD ends the command.
+      ctx.report(ctx.text.message("invalid"), "error")
+      ctx.dynamicInput.close()
+      ctx.endCommand()
+      return
+    }
     this.commitEllipse(
       this.state.center,
       this.state.semiAxis,
@@ -481,7 +529,7 @@ export class EllipseTool implements Tool {
    * the sweep, which is the point at which the two modes diverge.
    */
   private finish(ellipse: EllipseEntity, ctx: ToolContext, screen: Vec2): void {
-    if (this.active !== "arc") {
+    if (!this.arc) {
       this.add(ellipse, ctx)
       return
     }
@@ -498,6 +546,7 @@ export class EllipseTool implements Tool {
       startParam: ellipseParamFromAngle(this.state.ellipse.ratio, angle),
       startAngle: angle,
       cursor: this.state.cursor,
+      included: false,
     }
     this.openAngleInput(ctx, "endAngle", screen)
     ctx.requestRender()
@@ -531,7 +580,7 @@ export class EllipseTool implements Tool {
   }
 
   private secondPrompt(): PromptId {
-    return this.active === "center" ? "endpointOfAxis" : "otherAxisEndpoint"
+    return this.centered ? "endpointOfAxis" : "otherAxisEndpoint"
   }
 
   /**
@@ -637,6 +686,13 @@ export class EllipseTool implements Tool {
           this.state.startAngle + toRadians(values.included),
           commitCtx
         )
+      },
+      // Enter keeps the `<180>` the prompt shows: half the ellipse.
+      commitRaw: (commitCtx) => {
+        if (this.state.phase !== "endAngle") return false
+        if (commitCtx.dynamicInput.hasTypedText()) return false
+        this.commitArc(this.state.startAngle + Math.PI, commitCtx)
+        return true
       },
     }
     ctx.dynamicInput.open(session)

@@ -521,6 +521,18 @@ describe("Spanish AutoCAD's command language", () => {
     )
   })
 
+  it("asks ELIPSE's questions in Spanish AutoCAD's words", () => {
+    const cad = createHarness({ locale: es })
+    cad.command("ELIPSE")
+    expect(cad.state().commandLine.prompt).toBe(
+      "ELIPSE Precise punto final de eje de elipse o [Arco/Centro]:"
+    )
+    cad.click(p(0, 0)).click(p(100, 0))
+    expect(cad.state().commandLine.prompt).toBe(
+      "ELIPSE Precise distancia a otro eje o [Rotación]:"
+    )
+  })
+
   it("answers CIRCULO's 3P typed whole and Diámetro by its D", () => {
     const cad = createHarness({ locale: es })
     cad.command("CIRCULO")

@@ -424,14 +424,85 @@ describe("ELLIPSE", () => {
     expect(ellipseSemiMinor(ellipse)).toBeCloseTo(50)
   })
 
-  it("refuses a rotation that would draw a straight line", () => {
+  it("refuses a rotation that would draw a straight line, and ends", () => {
     const cad = createHarness()
 
     cad.command("ELLIPSE").click(p(-100, 0)).click(p(100, 0))
     cad.option("Rotation").type("90").enter()
 
     expect(cad.entityCount).toBe(0)
-    expect(cad.activeToolId()).toBe("ellipse")
+    expect(cad.commandLog().slice(-2)).toEqual([
+      "Specify rotation around major axis: 90",
+      "*Invalid*",
+    ])
+    expect(cad.activeToolId()).toBe("select")
+  })
+
+  it("asks AutoCAD's questions in turn", () => {
+    const cad = createHarness()
+
+    cad.command("ELLIPSE").type("0,0").enter().type("200,0").enter()
+    expect(cad.state().commandLine.prompt).toBe(
+      "ELLIPSE Specify distance to other axis or [Rotation]:"
+    )
+    cad.type("50").enter()
+    cad.command("ELLIPSE").option("Center")
+    expect(cad.state().commandLine.prompt).toBe(
+      "ELLIPSE Specify center of ellipse:"
+    )
+    cad.type("0,0").enter()
+    expect(cad.state().commandLine.prompt).toBe(
+      "ELLIPSE Specify endpoint of axis:"
+    )
+    cad.type("100,0").enter().option("Rotation")
+    expect(cad.state().commandLine.prompt).toBe(
+      "ELLIPSE Specify rotation around major axis:"
+    )
+    cad.type("60").enter()
+
+    expect(cad.commandLog()).toEqual([
+      "ELLIPSE",
+      "Specify axis endpoint of ellipse or [Arc/Center]: 0,0",
+      "Specify other endpoint of axis: 200,0",
+      "Specify distance to other axis or [Rotation]: 50",
+      "ELLIPSE",
+      "Specify axis endpoint of ellipse or [Arc/Center]: C",
+      "Specify center of ellipse: 0,0",
+      "Specify endpoint of axis: 100,0",
+      "Specify distance to other axis or [Rotation]: R",
+      "Specify rotation around major axis: 60",
+    ])
+    expect(cad.typeCounts()).toEqual({ ellipse: 2 })
+  })
+
+  it("draws an elliptical arc from its centre, half of it at Enter", () => {
+    const cad = createHarness()
+
+    cad.command("ELLIPSE").option("Arc")
+    expect(cad.state().commandLine.prompt).toBe(
+      "ELLIPSE Specify axis endpoint of elliptical arc or [Center]:"
+    )
+    cad.option("Center")
+    expect(cad.state().commandLine.prompt).toBe(
+      "ELLIPSE Specify center of elliptical arc:"
+    )
+    cad.type("0,0").enter().type("100,0").enter().type("50").enter()
+    expect(cad.state().commandLine.prompt).toBe("ELLIPSE Specify start angle:")
+    cad.type("0").enter()
+    expect(cad.state().commandLine.prompt).toBe(
+      "ELLIPSE Specify end angle or [Included angle]:"
+    )
+    cad.option("Included angle")
+    expect(cad.state().commandLine.prompt).toBe(
+      "ELLIPSE Specify included angle for arc <180.00>:"
+    )
+    cad.enter()
+
+    // Still an arc: Center keeps the Arc chosen before it.
+    const ellipse = cad.only<EllipseEntity>("ellipse")
+    expect(isFullEllipse(ellipse)).toBe(false)
+    expect(ellipseStartPoint(ellipse)).toBeCloseToPoint(p(100, 0), 5)
+    expect(ellipseEndPoint(ellipse)).toBeCloseToPoint(p(-100, 0), 5)
   })
 
   it("draws an elliptical arc between the two angles", () => {

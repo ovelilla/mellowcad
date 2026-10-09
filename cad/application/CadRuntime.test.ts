@@ -163,7 +163,9 @@ describe("command line", () => {
     expect(cad.state().commandLine.prompt).toBe("Command:")
 
     cad.command("ELLIPSE")
-    expect(cad.state().commandLine.prompt).toBe("ELLIPSE [Arc/Center]:")
+    expect(cad.state().commandLine.prompt).toBe(
+      "ELLIPSE Specify axis endpoint of ellipse or [Arc/Center]:"
+    )
   })
 })
 

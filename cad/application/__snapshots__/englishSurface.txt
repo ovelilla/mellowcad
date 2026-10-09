@@ -750,113 +750,154 @@ lweight "Lineweight" LW
   properties: -
   cycling: -
 > ELLIPSE
-  prompt: ELLIPSE [Arc/Center]:
+  prompt: ELLIPSE Specify axis endpoint of ellipse or [Arc/Center]:
   asks: "Axis endpoint"
+  tip: Specify axis endpoint of ellipse or
   dyn: "X,Y"=""||*
   options: [A] Arc, [C] Center
   command| EL ELLIPSE
 > first axis end
-  prompt: ELLIPSE:
+  prompt: ELLIPSE Specify other endpoint of axis:
   asks: "Other endpoint of axis"
+  tip: Specify other endpoint of axis:
   options: -
+  prompt| Specify axis endpoint of ellipse or [Arc/Center]:
 > second axis end
-  prompt: ELLIPSE [Rotation]:
+  prompt: ELLIPSE Specify distance to other axis or [Rotation]:
   asks: "Distance to other axis"
+  tip: Specify distance to other axis or
   dyn: "Distance to other axis"=""|0.00|mm*
   options: [R] Rotation
+  prompt| Specify other endpoint of axis:
 > R
-  prompt: ELLIPSE:
+  prompt: ELLIPSE Specify rotation around major axis:
   asks: "Rotation around major axis"
+  tip: Specify rotation around major axis:
   dyn: "Rotation around major axis"=""|0.00|°*
   options: -
+  prompt| Specify distance to other axis or [Rotation]: R
 > rotation
   dyn: "Rotation around major axis"="60"|0.00|°*
 > enter
   prompt: Command:
   asks: -
+  tip: -
   dyn: -
+  prompt| Specify rotation around major axis: 60
 > ELLIPSE C
-  prompt: ELLIPSE [Arc/Center]:
+  prompt: ELLIPSE Specify axis endpoint of ellipse or [Arc/Center]:
   asks: "Axis endpoint"
+  tip: Specify axis endpoint of ellipse or
   dyn: "X,Y"=""||*
   options: [A] Arc, [C] Center
   command| ELLIPSE
 > C
-  prompt: ELLIPSE:
+  prompt: ELLIPSE Specify center of ellipse:
   asks: "Center"
+  tip: Specify center of ellipse:
   options: -
+  prompt| Specify axis endpoint of ellipse or [Arc/Center]: C
 > centre
+  prompt: ELLIPSE Specify endpoint of axis:
   asks: "Endpoint of axis"
+  tip: Specify endpoint of axis:
+  prompt| Specify center of ellipse:
 > axis end
-  prompt: ELLIPSE [Rotation]:
+  prompt: ELLIPSE Specify distance to other axis or [Rotation]:
   asks: "Distance to other axis"
+  tip: Specify distance to other axis or
   dyn: "Distance to other axis"=""|0.00|mm*
   options: [R] Rotation
+  prompt| Specify endpoint of axis:
 > other axis
   prompt: Command:
   asks: -
+  tip: -
   dyn: -
   options: -
+  prompt| Specify distance to other axis or [Rotation]:
 > ELLIPSE A
-  prompt: ELLIPSE [Arc/Center]:
+  prompt: ELLIPSE Specify axis endpoint of ellipse or [Arc/Center]:
   asks: "Axis endpoint"
+  tip: Specify axis endpoint of ellipse or
   dyn: "X,Y"=""||*
   options: [A] Arc, [C] Center
   command| ELLIPSE
 > A
-  prompt: ELLIPSE [Center]:
+  prompt: ELLIPSE Specify axis endpoint of elliptical arc or [Center]:
+  tip: Specify axis endpoint of elliptical arc or
   options: [C] Center
+  prompt| Specify axis endpoint of ellipse or [Arc/Center]: A
 > escape
   prompt: Command:
   asks: -
+  tip: -
   dyn: -
   options: -
+  prompt| Specify axis endpoint of elliptical arc or [Center]: *Cancel*
 > ELLIPSEC
-  prompt: ELLIPSEC:
+  prompt: ELLIPSEC Specify center of ellipse:
   asks: "Center"
+  tip: Specify center of ellipse:
   dyn: "X,Y"=""||*
   command| ELLIPSEC
 > escape
   prompt: Command:
   asks: -
+  tip: -
   dyn: -
+  prompt| Specify center of ellipse: *Cancel*
 > ELLIPSEARC
-  prompt: ELLIPSEARC [Center]:
+  prompt: ELLIPSEARC Specify axis endpoint of elliptical arc or [Center]:
   asks: "Axis endpoint"
+  tip: Specify axis endpoint of elliptical arc or
   dyn: "X,Y"=""||*
   options: [C] Center
   command| ELLIPSEARC
 > first
-  prompt: ELLIPSEARC:
+  prompt: ELLIPSEARC Specify other endpoint of axis:
   asks: "Other endpoint of axis"
+  tip: Specify other endpoint of axis:
   options: -
+  prompt| Specify axis endpoint of elliptical arc or [Center]:
 > second
-  prompt: ELLIPSEARC [Rotation]:
+  prompt: ELLIPSEARC Specify distance to other axis or [Rotation]:
   asks: "Distance to other axis"
+  tip: Specify distance to other axis or
   dyn: "Distance to other axis"=""|0.00|mm*
   options: [R] Rotation
+  prompt| Specify other endpoint of axis:
 > other axis
-  prompt: ELLIPSEARC:
+  prompt: ELLIPSEARC Specify start angle:
   asks: "Start angle"
+  tip: Specify start angle:
   dyn: "Start angle"=""|0.00|°*
   options: -
+  prompt| Specify distance to other axis or [Rotation]:
 > start angle
   dyn: "Start angle"="0"|0.00|°*
 > enter
-  prompt: ELLIPSEARC [Included angle]:
+  prompt: ELLIPSEARC Specify end angle or [Included angle]:
   asks: "End angle"
+  tip: Specify end angle or
   dyn: "End angle"=""|90.00|°*
   options: [I] Included angle
+  prompt| Specify start angle: 0
 > I
+  prompt: ELLIPSEARC Specify included angle for arc <180.00>:
   asks: "Included angle"
+  tip: Specify included angle for arc
   dyn: "Included angle"=""|0.00|°*
+  options: -
+  prompt| Specify end angle or [Included angle]: I
 > included
   dyn: "Included angle"="90"|0.00|°*
 > enter
   prompt: Command:
   asks: -
+  tip: -
   dyn: -
-  options: -
+  prompt| Specify included angle for arc <180.00>: 90
 
 ## SPLINE
 > start
