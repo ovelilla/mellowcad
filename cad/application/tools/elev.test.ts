@@ -158,7 +158,7 @@ describe("THICKNESS", () => {
     cad.command("CIRCLE").click(p(0, 50)).type("10").enter()
     cad.command("ARC").click(p(100, 0)).click(p(0, 100)).click(p(-100, 0))
     cad.command("PLINE").click(p(0, 0)).click(p(50, 50)).enter()
-    cad.command("POLYGON").enter().click(p(200, 0)).type("20").enter()
+    cad.command("POLYGON").enter().click(p(200, 0)).enter().type("20").enter()
 
     expect(entityThickness(cad.only<LineEntity>("line"))).toBe(4)
     expect(entityThickness(cad.only<CircleEntity>("circle"))).toBe(4)

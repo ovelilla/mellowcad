@@ -1080,32 +1080,86 @@ lweight "Lineweight" LW
   options: -
   prompt| Specify first corner point or [Elevation/Thickness]: *Cancel*
 > POLYGON
-  prompt: POLYGON:
+  prompt: POLYGON Enter number of sides <4>:
   asks: "Number of sides"
+  tip: Enter number of sides
   dyn: "Number of sides"=""|4|*
   command| POL POLYGON
 > sides
   dyn: "Number of sides"="6"|4|*
 > enter
+  prompt: POLYGON Specify center of polygon or [Edge]:
   asks: "Center"
+  tip: Specify center of polygon or
   dyn: "X,Y"=""||*
+  options: [E] Edge
+  prompt| Enter number of sides <4>: 6
 > centre
   dyn: "X,Y"="0,0"||*
 > enter
-  prompt: POLYGON [Type: Inscribed]:
+  prompt: POLYGON Enter an option [Inscribed in circle/Circumscribed about circle] <I>:
+  asks: 
+  tip: Enter an option
+  dyn: 
+  options: [I] Inscribed in circle, [C] Circumscribed about circle
+  prompt| Specify center of polygon or [Edge]: 0,0
+> C
+  prompt: POLYGON Specify radius of circle:
   asks: "Radius"
-  dyn: "Radius"=""|233.24|mm*
-  options: [T] Type: Inscribed
-> T
-  prompt: POLYGON [Type: Circumscribed]:
-  options: [T] Type: Circumscribed
+  tip: Specify radius of circle:
+  dyn: "Radius"=""|0.00|mm*
+  options: -
+  prompt| Enter an option [Inscribed in circle/Circumscribed about circle] <I>: C
 > radius
-  dyn: "Radius"="100"|233.24|mm*
+  dyn: "Radius"="100"|0.00|mm*
 > enter
   prompt: Command:
   asks: -
+  tip: -
   dyn: -
+  prompt| Specify radius of circle: 100
+> POLYGON again
+  prompt: POLYGON Enter number of sides <6>:
+  asks: "Number of sides"
+  tip: Enter number of sides
+  dyn: "Number of sides"=""|6|*
+  command| POL POLYGON
+> enter
+  prompt: POLYGON Specify center of polygon or [Edge]:
+  asks: "Center"
+  tip: Specify center of polygon or
+  dyn: "X,Y"=""||*
+  options: [E] Edge
+  prompt| Enter number of sides <6>:
+> E
+  prompt: POLYGON Specify first endpoint of edge:
+  asks: "First point"
+  tip: Specify first endpoint of edge:
   options: -
+  prompt| Specify center of polygon or [Edge]: E
+> first endpoint
+  prompt: POLYGON Specify second endpoint of edge:
+  asks: "Second point"
+  tip: Specify second endpoint of edge:
+  prompt| Specify first endpoint of edge:
+> second endpoint
+  prompt: Command:
+  asks: -
+  tip: -
+  dyn: -
+  prompt| Specify second endpoint of edge:
+> POLYGON refused
+  prompt: POLYGON Enter number of sides <6>:
+  asks: "Number of sides"
+  tip: Enter number of sides
+  dyn: "Number of sides"=""|6|*
+  command| POL POLYGON
+> sides
+  dyn: "Number of sides"="2"|6|*
+> enter
+  dyn: "Number of sides"=""|6|*
+  prompt| Enter number of sides <6>: 2
+  error| Requires an integer between 3 and 1024.
 
 ## HATCH
 > start

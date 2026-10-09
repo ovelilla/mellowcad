@@ -70,7 +70,8 @@ const FROM_SCRATCH: ReadonlyArray<
   ["RECTANG", (c) => c.command("RECTANG").click(p(0, 0)).click(p(100, 50))],
   [
     "POLYGON",
-    (c) => c.command("POLYGON").enter().click(p(200, 0)).type("20").enter(),
+    (c) =>
+      c.command("POLYGON").enter().click(p(200, 0)).enter().type("20").enter(),
   ],
   [
     "TEXT",

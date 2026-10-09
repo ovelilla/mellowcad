@@ -958,6 +958,13 @@ export const en: EngineCatalog = {
       "specifyCenterPointForCircleOr": "Specify center point for circle or",
       "specifyRadiusOfCircleOr": "Specify radius of circle or",
       "specifyRadiusOfCircle": "Specify radius of circle",
+      "enterNumberOfSides": "Enter number of sides",
+      "specifyCenterOfPolygonOr": "Specify center of polygon or",
+      "enterAnOption": "Enter an option",
+      "inscribedShort": "I",
+      "circumscribedShort": "C",
+      "specifyFirstEndpointOfEdge": "Specify first endpoint of edge",
+      "specifySecondEndpointOfEdge": "Specify second endpoint of edge",
       "specifyDiameterOfCircle": "Specify diameter of circle",
       "specifyFirstEndPointOfDiameter": "Specify first end point of circle's diameter",
       "specifySecondEndPointOfDiameter": "Specify second end point of circle's diameter",
@@ -1562,6 +1569,17 @@ export const en: EngineCatalog = {
         ]
       ],
       "invalid": "*Invalid*",
+      "requiresIntegerBetween": [
+        "Requires an integer between ",
+        [
+          "min"
+        ],
+        " and ",
+        [
+          "max"
+        ],
+        "."
+      ],
       "commandCompletelyUndone": "Command has been completely undone.",
       "linesParallel": "Lines are parallel",
       "linesDiverge": "Lines diverge",
@@ -1760,6 +1778,10 @@ export const en: EngineCatalog = {
     "keywordLabels": {
       "CIRCLE": {
         "Ttr": "Ttr (tan tan radius)"
+      },
+      "POLYGON": {
+        "Inscribed": "Inscribed in circle",
+        "Circumscribed": "Circumscribed about circle"
       },
       "CIRCLED": {
         "Ttr": "Ttr (tan tan radius)"

@@ -500,6 +500,27 @@ describe("Spanish AutoCAD's command language", () => {
     )
   })
 
+  it("asks POLIGONO's questions in Spanish AutoCAD's words", () => {
+    const cad = createHarness({ locale: es })
+    cad.command("POLIGONO")
+    expect(cad.state().commandLine.prompt).toBe(
+      "POLIGONO Indique el número de lados <4>:"
+    )
+    cad.enter()
+    expect(cad.state().commandLine.prompt).toBe(
+      "POLIGONO Precise centro de polígono o [Lado]:"
+    )
+    cad.click(p(0, 0))
+    expect(cad.state().commandLine.prompt).toBe(
+      "POLIGONO Indique una opción [Inscrito en el círculo/Circunscrito alrededor del círculo] <I>:"
+    )
+    cad.press("C")
+    cad.press("Enter")
+    expect(cad.state().commandLine.prompt).toBe(
+      "POLIGONO Precise radio de círculo:"
+    )
+  })
+
   it("answers CIRCULO's 3P typed whole and Diámetro by its D", () => {
     const cad = createHarness({ locale: es })
     cad.command("CIRCULO")

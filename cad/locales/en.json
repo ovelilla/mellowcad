@@ -472,7 +472,7 @@
       },
       "RECTANG": { "Elevation": "Elevation", "Thickness": "Thickness" },
       "POLYGON": {
-        "Type": "Type",
+        "Edge": "Edge",
         "Inscribed": "Inscribed",
         "Circumscribed": "Circumscribed"
       },
@@ -801,6 +801,13 @@
       "specifyCenterPointForCircleOr": "Specify center point for circle or",
       "specifyRadiusOfCircleOr": "Specify radius of circle or",
       "specifyRadiusOfCircle": "Specify radius of circle",
+      "enterNumberOfSides": "Enter number of sides",
+      "specifyCenterOfPolygonOr": "Specify center of polygon or",
+      "enterAnOption": "Enter an option",
+      "inscribedShort": "I",
+      "circumscribedShort": "C",
+      "specifyFirstEndpointOfEdge": "Specify first endpoint of edge",
+      "specifySecondEndpointOfEdge": "Specify second endpoint of edge",
       "specifyDiameterOfCircle": "Specify diameter of circle",
       "specifyFirstEndPointOfDiameter": "Specify first end point of circle's diameter",
       "specifySecondEndPointOfDiameter": "Specify second end point of circle's diameter",
@@ -923,6 +930,7 @@
       "linesNonCoplanar": "Lines are non-coplanar.",
       "cornersSkipped": "{parallel, plural, =0 {} one {# was parallel    } other {# were parallel    }}{tooShort, plural, =0 {} one {# was too short    } other {# were too short    }}{divergent, plural, =0 {} one {# was divergent    } other {# were divergent    }}",
       "invalid": "*Invalid*",
+      "requiresIntegerBetween": "Requires an integer between {min} and {max}.",
       "commandCompletelyUndone": "Command has been completely undone.",
       "linesParallel": "Lines are parallel",
       "linesDiverge": "Lines diverge",
@@ -970,6 +978,10 @@
     },
     "keywordLabels": {
       "CIRCLE": { "Ttr": "Ttr (tan tan radius)" },
+      "POLYGON": {
+        "Inscribed": "Inscribed in circle",
+        "Circumscribed": "Circumscribed about circle"
+      },
       "CIRCLED": { "Ttr": "Ttr (tan tan radius)" }
     },
     "listing": {

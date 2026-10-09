@@ -85,12 +85,18 @@ export interface CommandOption {
  * A question with what a bare Enter keeps, which the prompt shows after its
  * keywords as AutoCAD does: a length (`Specify radius of circle or [Diameter]
  * <10.0000>:`), an angle (`{ angle: 0 }`) or a point (`<0.0000, 0.0000,
- * 0.0000>`), which the runtime formats in the drawing's units, or a phrase of
- * `commands.prompts` (`<use first point as displacement>`).
+ * 0.0000>`), which the runtime formats in the drawing's units, a count
+ * (`Enter number of sides <4>:`), or a phrase of `commands.prompts` (`<use
+ * first point as displacement>`).
  */
 export interface ToolQuestion {
   readonly id: PromptId
-  readonly enter: number | { readonly angle: number } | Vec3 | PromptId
+  readonly enter:
+    | number
+    | { readonly angle: number }
+    | { readonly count: number }
+    | Vec3
+    | PromptId
 }
 
 /**

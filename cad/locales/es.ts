@@ -897,9 +897,9 @@ export const es: EngineLocale = {
         "Thickness": "Alt-objeto"
       },
       "POLYGON": {
-        "Type": "Tipo",
-        "Inscribed": "Inscrito en el círculo",
-        "Circumscribed": "Circunscrito alrededor del círculo"
+        "Edge": "Lado",
+        "Inscribed": "Inscrito",
+        "Circumscribed": "Circunscrito"
       },
       "HATCH": {
         "Properties": "Propiedades",
@@ -1282,6 +1282,13 @@ export const es: EngineLocale = {
       "specifyCenterPointForCircleOr": "Precise punto central para círculo o",
       "specifyRadiusOfCircleOr": "Precise radio de círculo o",
       "specifyRadiusOfCircle": "Precise radio de círculo",
+      "enterNumberOfSides": "Indique el número de lados",
+      "specifyCenterOfPolygonOr": "Precise centro de polígono o",
+      "enterAnOption": "Indique una opción",
+      "inscribedShort": "I",
+      "circumscribedShort": "C",
+      "specifyFirstEndpointOfEdge": "Precise primer punto final del lado",
+      "specifySecondEndpointOfEdge": "Precise segundo punto final del lado",
       "specifyDiameterOfCircle": "Precise diámetro de círculo",
       "specifyFirstEndPointOfDiameter": "Precise primer punto final del diámetro del círculo",
       "specifySecondEndPointOfDiameter": "Precise segundo punto final del diámetro del círculo",
@@ -1886,6 +1893,17 @@ export const es: EngineLocale = {
         ]
       ],
       "invalid": "*No válido*",
+      "requiresIntegerBetween": [
+        "Requiere un número entero entre ",
+        [
+          "min"
+        ],
+        " y ",
+        [
+          "max"
+        ],
+        "."
+      ],
       "commandCompletelyUndone": "Se ha deshecho completamente el comando.",
       "linesParallel": "Las líneas son paralelas",
       "linesDiverge": "Las líneas divergen",
@@ -2088,6 +2106,10 @@ export const es: EngineLocale = {
     "keywordLabels": {
       "CIRCLE": {
         "Ttr": "Ttr (Tangente tangente radio)"
+      },
+      "POLYGON": {
+        "Inscribed": "Inscrito en el círculo",
+        "Circumscribed": "Circunscrito alrededor del círculo"
       },
       "CIRCLED": {
         "Ttr": "Ttr (Tangente tangente radio)"

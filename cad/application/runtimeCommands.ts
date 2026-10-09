@@ -228,6 +228,7 @@ function enterValue(
   if (typeof enter === "number") return formatLength(enter, settings)
   if (typeof enter === "string") return text.prompt(enter)
   if ("angle" in enter) return formatAngle(enter.angle, settings)
+  if ("count" in enter) return String(enter.count)
   return [enter.x, enter.y, enter.z]
     .map((value) => formatLength(value, settings))
     .join(", ")

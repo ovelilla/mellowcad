@@ -716,17 +716,51 @@ describe("RECTANG", () => {
 })
 
 describe("POLYGON", () => {
-  it("inscribes the vertices in the radius circle", () => {
+  it("asks AutoCAD's questions in turn, and keeps the count and option", () => {
     const cad = createHarness()
 
-    cad
-      .command("POLYGON")
-      .type("6")
-      .enter()
-      .type("0,0")
-      .enter()
-      .type("100")
-      .enter()
+    cad.command("POLYGON")
+    expect(cad.state().commandLine.prompt).toBe(
+      "POLYGON Enter number of sides <4>:"
+    )
+    cad.type("5").enter()
+    expect(cad.state().commandLine.prompt).toBe(
+      "POLYGON Specify center of polygon or [Edge]:"
+    )
+    cad.type("0,0").enter()
+    expect(cad.state().commandLine.prompt).toBe(
+      "POLYGON Enter an option [Inscribed in circle/Circumscribed about circle] <I>:"
+    )
+    expect(cad.hasFocusedField()).toBe(false)
+    cad.press("C")
+    cad.press("Enter")
+    expect(cad.state().commandLine.prompt).toBe(
+      "POLYGON Specify radius of circle:"
+    )
+    cad.type("100").enter()
+
+    expect(cad.commandLog()).toEqual([
+      "POLYGON",
+      "Enter number of sides <4>: 5",
+      "Specify center of polygon or [Edge]: 0,0",
+      "Enter an option [Inscribed in circle/Circumscribed about circle] <I>: C",
+      "Specify radius of circle: 100",
+    ])
+    cad.command("POLYGON")
+    expect(cad.state().commandLine.prompt).toBe(
+      "POLYGON Enter number of sides <5>:"
+    )
+    cad.enter().type("300,0").enter()
+    expect(cad.state().commandLine.prompt).toBe(
+      "POLYGON Enter an option [Inscribed in circle/Circumscribed about circle] <C>:"
+    )
+  })
+
+  it("inscribes a typed radius with its bottom edge level", () => {
+    const cad = createHarness()
+
+    cad.command("POLYGON").type("6").enter().type("0,0").enter()
+    cad.enter().type("100").enter()
 
     const polygon = cad.only<PolylineEntity>("polyline")
     expect(polygon.closed).toBe(true)
@@ -734,47 +768,86 @@ describe("POLYGON", () => {
     for (const vertex of polygon.vertices) {
       expect(V.length(vertex)).toBeCloseTo(100, 5)
     }
+    // As AutoCAD 2023 lists it: a vertex at 0°, the bottom edge at y = -86.6.
+    const ys = polygon.vertices.map((v) => v.y)
+    expect(Math.min(...ys)).toBeCloseTo(-86.6025, 3)
+    expect(polygon.vertices.some((v) => V.distance(v, p(100, 0)) < 1e-6)).toBe(
+      true
+    )
   })
 
   it("puts the radius on the edge midpoints when circumscribed", () => {
     const cad = createHarness()
 
-    cad
-      .command("POLYGON")
-      .type("5")
-      .enter()
-      .type("0,0")
-      .enter()
-      .option("Type") // Type: Inscribed → Circumscribed
-      .type("100")
-      .enter()
+    cad.command("POLYGON").type("5").enter().type("0,0").enter()
+    cad.option("Circumscribed").type("100").enter()
 
     const polygon = cad.only<PolylineEntity>("polyline")
     expect(polygon.vertices).toHaveLength(5)
-    // Circumscribed: the radius is the apothem, so vertices sit further out.
-    expect(V.length(polygon.vertices[0])).toBeCloseTo(
-      100 / Math.cos(Math.PI / 5),
-      5
-    )
+    // Circumscribed: the radius is the apothem, so vertices sit further out,
+    // and a typed one leaves a vertex straight up.
+    for (const vertex of polygon.vertices) {
+      expect(V.length(vertex)).toBeCloseTo(100 / Math.cos(Math.PI / 5), 5)
+    }
+    expect(
+      polygon.vertices.some(
+        (v) => V.distance(v, p(0, 100 / Math.cos(Math.PI / 5))) < 1e-6
+      )
+    ).toBe(true)
     const edgeMidpoint = V.midpoint(polygon.vertices[0], polygon.vertices[1])
     expect(V.length(edgeMidpoint)).toBeCloseTo(100, 5)
   })
 
-  it("clamps the side count to a drawable range", () => {
+  it("turns the polygon to a picked radius", () => {
     const cad = createHarness()
 
-    cad
-      .command("POLYGON")
-      .type("2")
-      .enter()
-      .type("0,0")
-      .enter()
-      .type("100")
-      .enter()
+    cad.command("POLYGON").type("4").enter().click(p(0, 0)).enter()
+    cad.click(p(0, 50))
 
-    expect(
-      cad.only<PolylineEntity>("polyline").vertices.length
-    ).toBeGreaterThanOrEqual(3)
+    const polygon = cad.only<PolylineEntity>("polyline")
+    expect(polygon.vertices[0]).toBeCloseToPoint(p(0, 50))
+  })
+
+  it("refuses a side count outside 3–1024 and asks again", () => {
+    const cad = createHarness()
+
+    cad.command("POLYGON").type("2").enter()
+    cad.type("4.5").enter()
+    expect(cad.commandLog().slice(-4)).toEqual([
+      "Enter number of sides <4>: 2",
+      "Requires an integer between 3 and 1024.",
+      "Enter number of sides <4>: 4.5",
+      "Requires an integer between 3 and 1024.",
+    ])
+    expect(cad.state().commandLine.prompt).toBe(
+      "POLYGON Enter number of sides <4>:"
+    )
+    cad.type("1025").enter()
+    expect(cad.entityCount).toBe(0)
+    expect(cad.state().commandLine.prompt).toBe(
+      "POLYGON Enter number of sides <4>:"
+    )
+  })
+
+  it("Edge builds it counterclockwise from its first edge", () => {
+    const cad = createHarness()
+
+    cad.command("POLYGON").enter().option("Edge")
+    expect(cad.state().commandLine.prompt).toBe(
+      "POLYGON Specify first endpoint of edge:"
+    )
+    cad.type("0,0").enter()
+    expect(cad.state().commandLine.prompt).toBe(
+      "POLYGON Specify second endpoint of edge:"
+    )
+    cad.type("10,0").enter()
+
+    expect(cad.only<PolylineEntity>("polyline").vertices).toBeCloseToPoints([
+      p(0, 0),
+      p(10, 0),
+      p(10, 10),
+      p(0, 10),
+    ])
   })
 })
 
