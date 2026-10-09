@@ -1308,7 +1308,10 @@ export const es: EngineLocale = {
       "specifyThroughPointOr": "Precise punto a atravesar o",
       "nextObject": "siguiente objeto",
       "selectObjectToTrimOrShiftSelectToExtend": "Seleccione un objeto que recortar o use la tecla Mayús y seleccione para alargar",
-      "selectObjectToExtendOrShiftSelectToTrim": "Seleccione un objeto que alargar o use la tecla Mayús y seleccione para recortar"
+      "selectObjectToExtendOrShiftSelectToTrim": "Seleccione un objeto que alargar o use la tecla Mayús y seleccione para recortar",
+      "selectFirstObjectOr": "Designe el primer objeto o",
+      "selectSecondObjectOrApplyCornerOr": "Designe segundo objeto o use la tecla Mayús para aplicar esquina o",
+      "specifyFilletRadius": "Precise radio de empalme"
     },
     "format": {
       "idle": "Comando",
@@ -1418,6 +1421,12 @@ export const es: EngineLocale = {
       "cancel": "*Cancelar*",
       "rotateSettings": "Ángulo actual positivo en SCP:  ANGDIR=en sentido horario inverso  ANGBASE=0",
       "trimExtendSettings": "Parámetros actuales: Proyección=SCP, Arista=Ninguno, Modo=Rápido",
+      "filletSettings": [
+        "Parámetros actuales: Modo = Recortar, Radio = ",
+        [
+          "radius"
+        ]
+      ],
       "offsetSettings": [
         "Parámetros actuales: Borrar origen=",
         [

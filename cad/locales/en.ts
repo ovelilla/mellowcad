@@ -1001,7 +1001,10 @@ export const en: EngineCatalog = {
       "specifyThroughPointOr": "Specify through point or",
       "nextObject": "next object",
       "selectObjectToTrimOrShiftSelectToExtend": "Select object to trim or shift-select to extend",
-      "selectObjectToExtendOrShiftSelectToTrim": "Select object to extend or shift-select to trim"
+      "selectObjectToExtendOrShiftSelectToTrim": "Select object to extend or shift-select to trim",
+      "selectFirstObjectOr": "Select first object or",
+      "selectSecondObjectOrApplyCornerOr": "Select second object or shift-select to apply corner or",
+      "specifyFilletRadius": "Specify fillet radius"
     },
     "format": {
       "idle": "Command",
@@ -1113,6 +1116,12 @@ export const en: EngineCatalog = {
       "rotatingCopy": "Rotating a copy of the selected objects.",
       "scalingCopy": "Scaling a copy of the selected objects.",
       "trimExtendSettings": "Current settings: Projection=UCS, Edge=None, Mode=Quick",
+      "filletSettings": [
+        "Current settings: Mode = TRIM, Radius = ",
+        [
+          "radius"
+        ]
+      ],
       "offsetSettings": [
         "Current settings: Erase source=",
         [

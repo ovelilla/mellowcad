@@ -29,6 +29,8 @@ import {
   UpdateEntityCommand,
 } from "../commands/entityCommands"
 import { DynamicInputSession } from "../input/DynamicInput"
+import { formatLength } from "../../domain/units"
+import type { PromptId } from "../../locales/types"
 import { ScenePrimitive, StrokeStyle } from "../../scene/types"
 import { THEME } from "../../scene/theme"
 import { entityScenePrimitive } from "../SceneBuilder"
@@ -40,6 +42,7 @@ import {
   PointerInput,
   Tool,
   ToolContext,
+  ToolQuestion,
 } from "./Tool"
 
 /**
@@ -55,7 +58,8 @@ import {
  *
  * You pick two lines; the arc is placed in the corner nearest to where you
  * clicked each line (the picks choose which of the four possible corners to
- * round), and the lines are trimmed/extended to meet it. The **Radius** keyword
+ * round), and the lines are trimmed/extended to meet it. Shift on the second
+ * pick applies a corner instead, as a radius of 0 does. The **Radius** keyword
  * sets the arc radius and persists for the tool's session; a radius of 0 simply
  * joins the two lines at their intersection with no arc — exactly like AutoCAD.
  *
@@ -79,6 +83,8 @@ type FilletState =
       readonly pick1: LinePick
       readonly hover: LineEntity | null
       readonly cursor: LinePick
+      /** Shift is held: the second pick applies a corner. */
+      readonly corner: boolean
     }
 
 export class FilletTool implements Tool {
@@ -97,7 +103,26 @@ export class FilletTool implements Tool {
     ctx.selection.clear()
     this.state = { phase: "first", hover: null }
     this.awaitingRadius = false
+    // TRIMMODE is always 1 here: the lines are trimmed to the arc.
+    ctx.report(
+      ctx.text.message("filletSettings", {
+        radius: formatLength(this.radius, ctx.document.getSettings()),
+      })
+    )
     this.openSelectPrompt(ctx)
+  }
+
+  /**
+   * WHY `[Radius]` alone: Undo, Polyline, Trim and Multiple are not offered
+   * (a polyline picked first is filleted whole).
+   */
+  question(): PromptId | ToolQuestion {
+    if (this.awaitingRadius) {
+      return { id: "specifyFilletRadius", enter: this.radius }
+    }
+    return this.state.phase === "first"
+      ? "selectFirstObjectOr"
+      : "selectSecondObjectOrApplyCornerOr"
   }
 
   onDeactivate(ctx: ToolContext): void {
@@ -121,6 +146,7 @@ export class FilletTool implements Tool {
         ...this.state,
         hover: this.pickLine(input, ctx, this.state.line1.id),
         cursor: { world: input.world, screen: input.screen },
+        corner: input.shiftKey,
       }
     }
     ctx.requestRender()
@@ -144,6 +170,7 @@ export class FilletTool implements Tool {
         pick1: pick,
         hover: null,
         cursor: pick,
+        corner: false,
       }
       ctx.requestRender()
       return
@@ -156,6 +183,7 @@ export class FilletTool implements Tool {
       this.state.pick1,
       line2,
       { world: input.world, screen: input.screen },
+      input.shiftKey ? 0 : this.radius,
       ctx
     )
   }
@@ -197,8 +225,9 @@ export class FilletTool implements Tool {
     if (!hover) return prims
 
     const corner = lineCorner(line1, pick1, hover, cursor, viewport)
+    const radius = this.state.corner ? 0 : this.radius
     const filleted =
-      corner && this.fillet(corner, line1, hover, ctx, PREVIEW_ID)
+      corner && this.fillet(corner, line1, hover, radius, ctx, PREVIEW_ID)
     if (!filleted) return [...prims, ...draw(hover, hoverStroke)]
     for (const entity of filleted) {
       prims.push(
@@ -214,8 +243,8 @@ export class FilletTool implements Tool {
   }
 
   /**
-   * The two lines trimmed or extended to the arc of the current radius, and
-   * the arc (none at radius 0), back in the frame; `null` when the lines are
+   * The two lines trimmed or extended to the arc of `radius`, and the arc
+   * (none at radius 0), back in the frame; `null` when the lines are
    * parallel or a trimmed line would vanish. A preview gives the arc a fixed
    * `arcId`, so it burns no entity ids.
    */
@@ -223,6 +252,7 @@ export class FilletTool implements Tool {
     corner: LineCorner,
     line1: LineEntity,
     line2: LineEntity,
+    radius: number,
     ctx: ToolContext,
     arcId?: EntityId
   ): Entity[] | null {
@@ -233,7 +263,7 @@ export class FilletTool implements Tool {
       corner.line2.end,
       corner.pick1,
       corner.pick2,
-      this.radius
+      radius
     )
     if (!result) return null
     const trimmed1 = trimLine(
@@ -279,6 +309,7 @@ export class FilletTool implements Tool {
     pick1: LinePick,
     line2: LineEntity,
     pick2: LinePick,
+    radius: number,
     ctx: ToolContext
   ): void {
     const corner = lineCorner(line1, pick1, line2, pick2, ctx.viewport)
@@ -288,7 +319,7 @@ export class FilletTool implements Tool {
       ctx.requestRender()
       return
     }
-    const filleted = this.fillet(corner, line1, line2, ctx)
+    const filleted = this.fillet(corner, line1, line2, radius, ctx)
     if (!filleted) return // degenerate (parallel/collinear) — keep prompting
     ctx.execute(new ReplaceEntitiesCommand([line1.id, line2.id], filleted))
     ctx.dynamicInput.close()

@@ -277,6 +277,54 @@ describe("FILLET", () => {
     expect(cad.hasFocusedField()).toBe(false)
   })
 
+  it("reports its settings and asks AutoCAD's questions", () => {
+    const cad = createHarness({ entities: corner })
+
+    cad.command("FILLET")
+    expect(cad.state().commandLine.prompt).toBe(
+      "FILLET Select first object or [Radius]:"
+    )
+    cad.option("Radius")
+    expect(cad.state().commandLine.prompt).toBe(
+      "FILLET Specify fillet radius <0.00>:"
+    )
+    cad.type("50").enter().click(p(100, 0))
+    expect(cad.state().commandLine.prompt).toBe(
+      "FILLET Select second object or shift-select to apply corner or [Radius]:"
+    )
+    cad.click(p(0, 100))
+
+    expect(cad.commandLog()).toEqual([
+      "FILLET",
+      "Current settings: Mode = TRIM, Radius = 0.00",
+      "Select first object or [Radius]: R",
+      "Specify fillet radius <0.00>: 50",
+      "Select first object or [Radius]:",
+      "Select second object or shift-select to apply corner or [Radius]:",
+    ])
+    cad.command("FILLET")
+    expect(cad.commandLog().at(-1)).toBe(
+      "Current settings: Mode = TRIM, Radius = 50.00"
+    )
+  })
+
+  it("applies a corner when the second line is shift-selected", () => {
+    const cad = createHarness({ entities: corner })
+
+    cad.command("FILLET").option("Radius").type("50").enter()
+    cad.click(p(100, 0)).click(p(0, 100), { shiftKey: true })
+
+    expect(cad.entityCount).toBe(2)
+    expect(endpoints(cad.byId<LineEntity>("L1"))).toBeCloseToPoints([
+      p(0, 0),
+      p(200, 0),
+    ])
+    expect(endpoints(cad.byId<LineEntity>("L2"))).toBeCloseToPoints([
+      p(0, 0),
+      p(0, 200),
+    ])
+  })
+
   it("rounds the picked corner and trims both lines to the tangents", () => {
     const cad = createHarness({ entities: corner })
 

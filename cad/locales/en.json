@@ -829,7 +829,10 @@
       "specifyThroughPointOr": "Specify through point or",
       "nextObject": "next object",
       "selectObjectToTrimOrShiftSelectToExtend": "Select object to trim or shift-select to extend",
-      "selectObjectToExtendOrShiftSelectToTrim": "Select object to extend or shift-select to trim"
+      "selectObjectToExtendOrShiftSelectToTrim": "Select object to extend or shift-select to trim",
+      "selectFirstObjectOr": "Select first object or",
+      "selectSecondObjectOrApplyCornerOr": "Select second object or shift-select to apply corner or",
+      "specifyFilletRadius": "Specify fillet radius"
     },
     "format": {
       "idle": "Command",
@@ -852,6 +855,7 @@
       "rotatingCopy": "Rotating a copy of the selected objects.",
       "scalingCopy": "Scaling a copy of the selected objects.",
       "trimExtendSettings": "Current settings: Projection=UCS, Edge=None, Mode=Quick",
+      "filletSettings": "Current settings: Mode = TRIM, Radius = {radius}",
       "offsetSettings": "Current settings: Erase source={erase, select, yes {Yes} other {No}}  Layer={layer, select, current {Current} other {Source}}  OFFSETGAPTYPE=0",
       "objectsFound": "{box, select, yes {Specify opposite corner: } other {}}{found} found{removed, plural, =0 {} other {, # removed}}{hasTotal, select, yes {, {total} total} other {}}",
       "copyModeMultiple": "Current settings:  Copy mode = Multiple",

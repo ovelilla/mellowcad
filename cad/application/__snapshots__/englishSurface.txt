@@ -2495,29 +2495,40 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
   prompt: Command:
   prompt| Select object to extend or shift-select to trim: *Cancel*
 > FILLET
-  prompt: FILLET [Radius]:
+  prompt: FILLET Select first object or [Radius]:
   asks: 
+  tip: Select first object or
   dyn: 
   options: [R] Radius
   command| F FILLET
+  info| Current settings: Mode = TRIM, Radius = 0.00
 > R
-  prompt: FILLET:
+  prompt: FILLET Specify fillet radius <0.00>:
   asks: "Fillet radius"
+  tip: Specify fillet radius
   dyn: "Fillet radius"=""|0.00|mm*
   options: -
+  prompt| Select first object or [Radius]: R
 > radius
   dyn: "Fillet radius"="20"|0.00|mm*
 > enter
-  prompt: FILLET [Radius]:
+  prompt: FILLET Select first object or [Radius]:
   asks: 
+  tip: Select first object or
   dyn: 
   options: [R] Radius
+  prompt| Specify fillet radius <0.00>: 20
 > first
+  prompt: FILLET Select second object or shift-select to apply corner or [Radius]:
+  tip: Select second object or shift-select to apply corner or
+  prompt| Select first object or [Radius]:
 > second
   prompt: Command:
   asks: -
+  tip: -
   dyn: -
   options: -
+  prompt| Select second object or shift-select to apply corner or [Radius]:
 > CHAMFER
   prompt: CHAMFER [Distance]:
   asks: 

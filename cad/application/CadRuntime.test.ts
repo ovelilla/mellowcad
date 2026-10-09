@@ -162,8 +162,8 @@ describe("command line", () => {
 
     expect(cad.state().commandLine.prompt).toBe("Command:")
 
-    cad.command("FILLET")
-    expect(cad.state().commandLine.prompt).toBe("FILLET [Radius]:")
+    cad.command("ELLIPSE")
+    expect(cad.state().commandLine.prompt).toBe("ELLIPSE [Arc/Center]:")
   })
 })
 

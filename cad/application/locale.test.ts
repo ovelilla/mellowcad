@@ -406,10 +406,7 @@ describe("Spanish AutoCAD's command language", () => {
   it("asks RECORTA's and ALARGA's questions in Spanish AutoCAD's words", () => {
     const cad = createHarness({
       locale: es,
-      entities: [
-        lineOf(p(-200, 0), p(200, 0)),
-        lineOf(p(0, -100), p(0, 100)),
-      ],
+      entities: [lineOf(p(-200, 0), p(200, 0)), lineOf(p(0, -100), p(0, 100))],
     })
     cad.command("RECORTA")
     expect(cad.state().commandLine.prompt).toBe(
@@ -423,6 +420,29 @@ describe("Spanish AutoCAD's command language", () => {
       "RECORTA",
       "Parámetros actuales: Proyección=SCP, Arista=Ninguno, Modo=Rápido",
     ])
+  })
+
+  it("asks EMPALME's questions in Spanish AutoCAD's words", () => {
+    const cad = createHarness({
+      locale: es,
+      entities: [lineOf(p(-50, 0), p(200, 0)), lineOf(p(0, -50), p(0, 200))],
+    })
+    cad.command("EMPALME")
+    expect(cad.state().commandLine.prompt).toBe(
+      "EMPALME Designe el primer objeto o [RAdio]:"
+    )
+    for (const char of "RA") cad.press(char)
+    cad.press("Enter")
+    expect(cad.state().commandLine.prompt).toBe(
+      "EMPALME Precise radio de empalme <0.00>:"
+    )
+    cad.type("10").enter().click(p(100, 0))
+    expect(cad.state().commandLine.prompt).toBe(
+      "EMPALME Designe segundo objeto o use la tecla Mayús para aplicar esquina o [RAdio]:"
+    )
+    expect(cad.commandLog()[1]).toBe(
+      "Parámetros actuales: Modo = Recortar, Radio = 0.00"
+    )
   })
 
   it("answers CIRCULO's 3P typed whole and Diámetro by its D", () => {
