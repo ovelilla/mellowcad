@@ -623,7 +623,10 @@
         "No": "No"
       },
       "FILLET": {
-        "Radius": "RAdio"
+        "Undo": "Deshacer",
+        "Polyline": "Polilínea",
+        "Radius": "RAdio",
+        "Multiple": "múLtiple"
       },
       "CHAMFER": {
         "Distance": "Distancia"
@@ -698,6 +701,9 @@
       },
       "LINETYPE": { "Set": "Defina", "BYLAYER": "PORCAPA" },
       "LWEIGHT": { "BYLAYER": "PORCAPA" }
+    },
+    "promptKeywords": {
+      "select2dPolylineOr": { "Radius": "Radio" }
     },
     "prompts": {
       "length": "Longitud",
@@ -875,6 +881,7 @@
       "selectFirstObjectOr": "Designe el primer objeto o",
       "selectSecondObjectOrApplyCornerOr": "Designe segundo objeto o use la tecla Mayús para aplicar esquina o",
       "specifyFilletRadius": "Precise radio de empalme",
+      "select2dPolylineOr": "Designe polilínea 2D o",
       "selectFirstLineOr": "Designe la primera línea o",
       "selectSecondLineOrApplyCornerOr": "Designe segunda línea o use la tecla Mayús para aplicar esquina o",
       "specifyFirstChamferDistance": "Precise primera distancia de chaflán",
@@ -945,6 +952,13 @@
       "distanceReport": "Distancia = {distance},  Ángulo en plano XY = {angleInPlane},  Ángulo desde plano XY = {angleFromPlane}\nDelta X = {deltaX},  Delta Y = {deltaY},   Delta Z = {deltaZ}",
       "idReport": "X = {x}     Y = {y}     Z = {z}",
       "linesNonCoplanar": "Las líneas no son coplanares.",
+      "cornersSkipped": "{parallel, plural, =0 {} one {# era paralela    } other {# eran paralelas    }}{tooShort, plural, =0 {} one {# era demasiado corta    } other {# eran demasiado cortas    }}{divergent, plural, =0 {} one {# era divergente    } other {# eran divergentes    }}",
+      "invalid": "*No válido*",
+      "commandCompletelyUndone": "Se ha deshecho completamente el comando.",
+      "linesParallel": "Las líneas son paralelas",
+      "linesDiverge": "Las líneas divergen",
+      "filletRadiusTooLarge": "El radio de empalme es demasiado grande",
+      "linesFilleted": "{count, plural, one {Se ha empalmado # línea} other {Se han empalmado # líneas}}",
       "nothingJoined": "0 objetos unidos, {count, plural, one {# objeto descartado} other {# objetos descartados}} de la operación",
       "currentViewDirection": "Dirección de vista actual:  VIEWDIR={x},{y},{z}",
       "regeneratingModel": "Regenerando modelo.",

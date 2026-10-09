@@ -588,7 +588,12 @@
         "Yes": "Yes",
         "No": "No"
       },
-      "FILLET": { "Radius": "Radius" },
+      "FILLET": {
+        "Undo": "Undo",
+        "Polyline": "Polyline",
+        "Radius": "Radius",
+        "Multiple": "Multiple"
+      },
       "CHAMFER": { "Distance": "Distance" },
       "BREAK": { "First point": "First point" },
       "AREA": { "Undo": "Undo" },
@@ -656,6 +661,9 @@
       },
       "LINETYPE": { "Set": "Set", "BYLAYER": "BYLAYER" },
       "LWEIGHT": { "BYLAYER": "BYLAYER" }
+    },
+    "promptKeywords": {
+      "select2dPolylineOr": { "Radius": "Radius" }
     },
     "prompts": {
       "length": "Length",
@@ -833,6 +841,7 @@
       "selectFirstObjectOr": "Select first object or",
       "selectSecondObjectOrApplyCornerOr": "Select second object or shift-select to apply corner or",
       "specifyFilletRadius": "Specify fillet radius",
+      "select2dPolylineOr": "Select 2D polyline or",
       "selectFirstLineOr": "Select first line or",
       "selectSecondLineOrApplyCornerOr": "Select second line or shift-select to apply corner or",
       "specifyFirstChamferDistance": "Specify first chamfer distance",
@@ -903,6 +912,13 @@
       "distanceReport": "Distance = {distance},  Angle in XY Plane = {angleInPlane},  Angle from XY Plane = {angleFromPlane}\nDelta X = {deltaX},  Delta Y = {deltaY},   Delta Z = {deltaZ}",
       "idReport": "X = {x}     Y = {y}     Z = {z}",
       "linesNonCoplanar": "Lines are non-coplanar.",
+      "cornersSkipped": "{parallel, plural, =0 {} one {# was parallel    } other {# were parallel    }}{tooShort, plural, =0 {} one {# was too short    } other {# were too short    }}{divergent, plural, =0 {} one {# was divergent    } other {# were divergent    }}",
+      "invalid": "*Invalid*",
+      "commandCompletelyUndone": "Command has been completely undone.",
+      "linesParallel": "Lines are parallel",
+      "linesDiverge": "Lines diverge",
+      "filletRadiusTooLarge": "Fillet radius is too large",
+      "linesFilleted": "{count, plural, one {# line was filleted} other {# lines were filleted}}",
       "nothingJoined": "0 objects joined, {count, plural, one {# object} other {# objects}} discarded from the operation",
       "currentViewDirection": "Current view direction: VIEWDIR={x},{y},{z}",
       "regeneratingModel": "Regenerating model.",

@@ -2495,11 +2495,11 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
   prompt: Command:
   prompt| Select object to extend or shift-select to trim: *Cancel*
 > FILLET
-  prompt: FILLET Select first object or [Radius]:
+  prompt: FILLET Select first object or [Undo/Polyline/Radius/Multiple]:
   asks: 
   tip: Select first object or
   dyn: 
-  options: [R] Radius
+  options: [U] Undo, [P] Polyline, [R] Radius, [M] Multiple
   command| F FILLET
   info| Current settings: Mode = TRIM, Radius = 0.00
 > R
@@ -2508,27 +2508,50 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
   tip: Specify fillet radius
   dyn: "Fillet radius"=""|0.00|mm*
   options: -
-  prompt| Select first object or [Radius]: R
+  prompt| Select first object or [Undo/Polyline/Radius/Multiple]: R
 > radius
   dyn: "Fillet radius"="20"|0.00|mm*
 > enter
-  prompt: FILLET Select first object or [Radius]:
+  prompt: FILLET Select first object or [Undo/Polyline/Radius/Multiple]:
   asks: 
   tip: Select first object or
   dyn: 
-  options: [R] Radius
+  options: [U] Undo, [P] Polyline, [R] Radius, [M] Multiple
   prompt| Specify fillet radius <0.00>: 20
+> M
+  prompt: FILLET Select first object or [Undo/Polyline/Radius]:
+  options: [U] Undo, [P] Polyline, [R] Radius
+  prompt| Select first object or [Undo/Polyline/Radius/Multiple]: M
 > first
   prompt: FILLET Select second object or shift-select to apply corner or [Radius]:
   tip: Select second object or shift-select to apply corner or
-  prompt| Select first object or [Radius]:
+  options: [R] Radius
+  prompt| Select first object or [Undo/Polyline/Radius]:
 > second
+  prompt: FILLET Select first object or [Undo/Polyline/Radius]:
+  tip: Select first object or
+  options: [U] Undo, [P] Polyline, [R] Radius
+  prompt| Select second object or shift-select to apply corner or [Radius]:
+> U
+  prompt| Select first object or [Undo/Polyline/Radius]: U
+> P
+  prompt: FILLET Select 2D polyline or [Radius]:
+  tip: Select 2D polyline or
+  options: [R] Radius
+  prompt| Select first object or [Undo/Polyline/Radius]: P
+> polyline
+  prompt: FILLET Select first object or [Undo/Polyline/Radius]:
+  tip: Select first object or
+  options: [U] Undo, [P] Polyline, [R] Radius
+  prompt| Select 2D polyline or [Radius]:
+  info| 1 line was filleted
+> enter
   prompt: Command:
   asks: -
   tip: -
   dyn: -
   options: -
-  prompt| Select second object or shift-select to apply corner or [Radius]:
+  prompt| Select first object or [Undo/Polyline/Radius]:
 > CHAMFER
   prompt: CHAMFER Select first line or [Distance]:
   asks: 

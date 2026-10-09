@@ -1050,7 +1050,10 @@ export const es: EngineLocale = {
         "No": "No"
       },
       "FILLET": {
-        "Radius": "RAdio"
+        "Undo": "Deshacer",
+        "Polyline": "Polilínea",
+        "Radius": "RAdio",
+        "Multiple": "múLtiple"
       },
       "CHAMFER": {
         "Distance": "Distancia"
@@ -1134,6 +1137,11 @@ export const es: EngineLocale = {
       },
       "LWEIGHT": {
         "BYLAYER": "PORCAPA"
+      }
+    },
+    "promptKeywords": {
+      "select2dPolylineOr": {
+        "Radius": "Radio"
       }
     },
     "prompts": {
@@ -1312,6 +1320,7 @@ export const es: EngineLocale = {
       "selectFirstObjectOr": "Designe el primer objeto o",
       "selectSecondObjectOrApplyCornerOr": "Designe segundo objeto o use la tecla Mayús para aplicar esquina o",
       "specifyFilletRadius": "Precise radio de empalme",
+      "select2dPolylineOr": "Designe polilínea 2D o",
       "selectFirstLineOr": "Designe la primera línea o",
       "selectSecondLineOrApplyCornerOr": "Designe segunda línea o use la tecla Mayús para aplicar esquina o",
       "specifyFirstChamferDistance": "Precise primera distancia de chaflán",
@@ -1818,6 +1827,76 @@ export const es: EngineLocale = {
         ]
       ],
       "linesNonCoplanar": "Las líneas no son coplanares.",
+      "cornersSkipped": [
+        [
+          "parallel",
+          2,
+          {
+            "=0": "",
+            "one": [
+              0,
+              " era paralela    "
+            ],
+            "other": [
+              0,
+              " eran paralelas    "
+            ]
+          }
+        ],
+        [
+          "tooShort",
+          2,
+          {
+            "=0": "",
+            "one": [
+              0,
+              " era demasiado corta    "
+            ],
+            "other": [
+              0,
+              " eran demasiado cortas    "
+            ]
+          }
+        ],
+        [
+          "divergent",
+          2,
+          {
+            "=0": "",
+            "one": [
+              0,
+              " era divergente    "
+            ],
+            "other": [
+              0,
+              " eran divergentes    "
+            ]
+          }
+        ]
+      ],
+      "invalid": "*No válido*",
+      "commandCompletelyUndone": "Se ha deshecho completamente el comando.",
+      "linesParallel": "Las líneas son paralelas",
+      "linesDiverge": "Las líneas divergen",
+      "filletRadiusTooLarge": "El radio de empalme es demasiado grande",
+      "linesFilleted": [
+        [
+          "count",
+          2,
+          {
+            "one": [
+              "Se ha empalmado ",
+              0,
+              " línea"
+            ],
+            "other": [
+              "Se han empalmado ",
+              0,
+              " líneas"
+            ]
+          }
+        ]
+      ],
       "nothingJoined": [
         "0 objetos unidos, ",
         [

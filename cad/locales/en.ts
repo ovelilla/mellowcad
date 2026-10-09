@@ -1005,6 +1005,7 @@ export const en: EngineCatalog = {
       "selectFirstObjectOr": "Select first object or",
       "selectSecondObjectOrApplyCornerOr": "Select second object or shift-select to apply corner or",
       "specifyFilletRadius": "Specify fillet radius",
+      "select2dPolylineOr": "Select 2D polyline or",
       "selectFirstLineOr": "Select first line or",
       "selectSecondLineOrApplyCornerOr": "Select second line or shift-select to apply corner or",
       "specifyFirstChamferDistance": "Specify first chamfer distance",
@@ -1511,6 +1512,74 @@ export const en: EngineCatalog = {
         ]
       ],
       "linesNonCoplanar": "Lines are non-coplanar.",
+      "cornersSkipped": [
+        [
+          "parallel",
+          2,
+          {
+            "=0": "",
+            "one": [
+              0,
+              " was parallel    "
+            ],
+            "other": [
+              0,
+              " were parallel    "
+            ]
+          }
+        ],
+        [
+          "tooShort",
+          2,
+          {
+            "=0": "",
+            "one": [
+              0,
+              " was too short    "
+            ],
+            "other": [
+              0,
+              " were too short    "
+            ]
+          }
+        ],
+        [
+          "divergent",
+          2,
+          {
+            "=0": "",
+            "one": [
+              0,
+              " was divergent    "
+            ],
+            "other": [
+              0,
+              " were divergent    "
+            ]
+          }
+        ]
+      ],
+      "invalid": "*Invalid*",
+      "commandCompletelyUndone": "Command has been completely undone.",
+      "linesParallel": "Lines are parallel",
+      "linesDiverge": "Lines diverge",
+      "filletRadiusTooLarge": "Fillet radius is too large",
+      "linesFilleted": [
+        [
+          "count",
+          2,
+          {
+            "one": [
+              0,
+              " line was filleted"
+            ],
+            "other": [
+              0,
+              " lines were filleted"
+            ]
+          }
+        ]
+      ],
       "nothingJoined": [
         "0 objects joined, ",
         [

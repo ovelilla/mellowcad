@@ -86,6 +86,9 @@ interface EngineLocale {
   confirmed with Enter or Space, never run on a letter alone.
 - `keywordLabels` gives a keyword the gloss AutoCAD lists it with (`Ttr (tan tan radius)`),
   shown in the prompt's list and on its option; the word typed stays the keyword.
+- `promptKeywords` spells a keyword otherwise at one prompt, by the prompt's id: each AutoCAD
+  prompt declares its own, so Spanish FILLET lists `[RAdio]` but `Designe polilínea 2D o
+  [Radio]:`. A keyword it leaves out is spelled as in `keywords`.
 - A linetype's or hatch pattern's name is drawing data and may be left out in every language.
 
 ### Messages are compiled by the host

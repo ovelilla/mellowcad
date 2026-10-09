@@ -230,16 +230,34 @@ export class EngineText {
 
   /** The keywords `ids` of `command`, as the command language and `_` spell them. */
   // A keyword's id is its global word, which is what `_` selects.
-  keywords(command: string | null, ids: readonly string[]): Keyword[] {
+  keywords(
+    command: string | null,
+    ids: readonly string[],
+    prompt: PromptId | null = null
+  ): Keyword[] {
     return ids.map((id) => ({
       id,
-      word: this.keyword(command, id),
+      word: this.keyword(command, id, prompt),
       global: id,
     }))
   }
 
-  keyword(command: string | null, id: string): string {
+  /** How `command` spells keyword `id`, at `prompt` when it spells it its way. */
+  keyword(
+    command: string | null,
+    id: string,
+    prompt: PromptId | null = null
+  ): string {
     if (command === null) return id
+    const own =
+      prompt === null
+        ? undefined
+        : (
+            this.commands.promptKeywords as
+              | Readonly<Record<string, Readonly<Record<string, string>>>>
+              | undefined
+          )?.[prompt]?.[id]
+    if (own !== undefined) return own
     const table = (
       this.commands.keywords as
         Readonly<Record<string, Readonly<Record<string, string>>>> | undefined

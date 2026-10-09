@@ -2,7 +2,8 @@
  * Compiles the engine's catalogs, `cad/locales/<tag>.json`, into the modules
  * the engine imports, `cad/locales/<tag>.ts`: every ICU message becomes
  * icu-minify's compact form, so the browser never ships a message parser.
- * `names` and `keywords` are vocabulary and pass through untouched.
+ * `names`, `keywords` and `promptKeywords` are vocabulary and pass through
+ * untouched.
  *
  * Run after editing a catalog:  npm run locales
  * (Node runs the TypeScript directly; the outputs are committed, and a test
@@ -20,7 +21,7 @@ export const LOCALES_DIR = resolve(ROOT, "cad/locales")
 type Json = string | readonly Json[] | { readonly [key: string]: Json }
 
 /** Subtrees of `commands` that are words, not messages. */
-const VOCABULARY = new Set(["names", "keywords"])
+const VOCABULARY = new Set(["names", "keywords", "promptKeywords"])
 
 /**
  * Where a missing entry falls back to its own key: a keyword's global word is
@@ -32,6 +33,7 @@ const VOCABULARY = new Set(["names", "keywords"])
  */
 const KEY_FALLBACK = new Set([
   "commands.keywords",
+  "commands.promptKeywords",
   "interface.linetype",
   "interface.hatchPattern",
 ])
@@ -51,10 +53,10 @@ function shippedEnglish(source: Record<string, Json>): Record<string, Json> {
   const copy = structuredClone(source) as Record<string, Record<string, Json>>
   for (const path of KEY_FALLBACK) {
     const [branch, key] = path.split(".")
-    // Keywords are one level deeper: a table per command.
+    // Keywords are one level deeper: a table per command, or per prompt.
     const kept = withoutIdentities(
       copy[branch][key],
-      key === "keywords" ? 1 : 0
+      key === "keywords" || key === "promptKeywords" ? 1 : 0
     )
     if (kept === undefined) delete copy[branch][key]
     else copy[branch][key] = kept

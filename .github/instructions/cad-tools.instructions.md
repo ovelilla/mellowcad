@@ -50,6 +50,12 @@ A tool is an explicit state machine for one AutoCAD command. It owns a discrimin
   machine. Add a grip kind in all four, never by growing the tool class. A type whose points drag
   like a polyline's vertices (a spline's fit points or control vertices) reuses the `vertex` role
   through `withVertexAt` in `selectToolEdits.ts` rather than adding a kind.
+- `cornerObjects.ts` and `polylineCorners.ts` — FILLET's and CHAMFER's objects (a line, or a
+  straight segment of a polyline, `pickCornerObject`) and the polyline corners they cut: two
+  segments picked within one polyline (`cutBetweenSegments`: adjacent, one apart, an open one's
+  ends closing it) and the Polyline option's every corner (`cutPolylineCorners`, FILLET's arc
+  corners and replaced arcs included). A corner-cutting command passes its cut, never walks a
+  polyline itself.
 - `dimensionTextOptions.ts` — the Text and Angle keywords shared by every dimension command, so
   each of them asks with the same words. When two commands offer the same AutoCAD keyword, the
   prompt belongs in a shared helper: identical wording is part of the fidelity, not a nicety.
@@ -269,7 +275,10 @@ never a chip toggled in place. `invokeOption(id)` switches on ids and returns
 `"continue"` or `"end"`. The word, its abbreviation (its capitals: `Close` → `C`, `desHacer` →
 `H`; digits count as capitals, so CIRCLE's `3P` is typed whole) belong to the command language and are resolved by the runtime
 from `commands.keywords.<NAME>`; comparing `key.toLowerCase()` with a letter would break the day
-the language changes. Every keyword a tool offers must be in its command's table.
+the language changes. Every keyword a tool offers must be in its command's table. A keyword one
+prompt spells otherwise — AutoCAD's `initget` is per prompt, so Spanish FILLET's `[RAdio]` is
+`[Radio]` at `Designe polilínea 2D o` — goes in `commands.promptKeywords.<promptId>`, which the
+runtime reads for the question the tool is asking (`askedPrompt`); never a second keyword id.
 
 A keyword is answered by its abbreviation or its whole word, or by `_` and the global one, typed
 and confirmed with Enter or Space — at the prompt or in a value box, as in AutoCAD; no key runs one

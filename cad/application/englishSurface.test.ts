@@ -854,7 +854,14 @@ describe("the engine's English surface", () => {
     )
     walk(
       "TRIM EXTEND FILLET CHAMFER",
-      createHarness({ entities: corner() }),
+      createHarness({
+        entities: [
+          ...corner(),
+          lineOf(p(-50, 300), p(250, 300), { id: "T" }),
+          lineOf(p(100, 250), p(100, 350), { id: "U" }),
+          polylineOf([p(-300, 0), p(-300, 100), p(-200, 100)], { id: "PL" }),
+        ],
+      }),
       (s) =>
         s
           .do("TRIM", (c) => c.command("TR"))
@@ -865,8 +872,13 @@ describe("the engine's English surface", () => {
           .do("R", (c) => answer(c, "R"))
           .do("radius", (c) => c.type("20"))
           .do("enter", (c) => c.enter())
+          .do("M", (c) => answer(c, "M"))
           .do("first", (c) => c.click(at(100, 0)))
           .do("second", (c) => c.click(at(0, 100)))
+          .do("U", (c) => answer(c, "U"))
+          .do("P", (c) => answer(c, "P"))
+          .do("polyline", (c) => c.click(at(-300, 50)))
+          .do("enter", (c) => c.enter())
           .do("CHAMFER", (c) => c.command("CHA"))
           .do("D", (c) => answer(c, "D"))
           .do("first distance", (c) => c.type("10"))

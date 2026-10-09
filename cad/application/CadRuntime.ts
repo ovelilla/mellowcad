@@ -141,6 +141,7 @@ import { buildBlockPreview, purgeBlocks } from "./runtimeBlocks"
 import {
   commandPrompt,
   offerOptions,
+  askedPrompt,
   registerCommands,
   toolCommand,
 } from "./runtimeCommands"
@@ -1988,7 +1989,8 @@ export class CadRuntime extends Observable {
     const options = this.activeTool.commandOptions?.() ?? []
     return this.text.keywords(
       toolCommand(this.activeTool),
-      options.map((option) => option.id)
+      options.map((option) => option.id),
+      askedPrompt(this.activeTool)
     )
   }
 

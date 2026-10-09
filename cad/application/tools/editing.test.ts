@@ -268,12 +268,12 @@ describe("FILLET", () => {
     lineOf(p(0, -50), p(0, 200), { id: "L2" }),
   ]
 
-  it("offers the Radius keyword with no numeric field in the way", () => {
+  it("offers its keywords with no numeric field in the way", () => {
     const cad = createHarness({ entities: corner })
 
     cad.command("FILLET")
 
-    expect(cad.optionAbbreviations()).toEqual(["R"])
+    expect(cad.optionAbbreviations()).toEqual(["U", "P", "R", "M"])
     expect(cad.hasFocusedField()).toBe(false)
   })
 
@@ -282,7 +282,7 @@ describe("FILLET", () => {
 
     cad.command("FILLET")
     expect(cad.state().commandLine.prompt).toBe(
-      "FILLET Select first object or [Radius]:"
+      "FILLET Select first object or [Undo/Polyline/Radius/Multiple]:"
     )
     cad.option("Radius")
     expect(cad.state().commandLine.prompt).toBe(
@@ -294,12 +294,13 @@ describe("FILLET", () => {
     )
     cad.click(p(0, 100))
 
+    expect(cad.activeToolId()).toBe("select")
     expect(cad.commandLog()).toEqual([
       "FILLET",
       "Current settings: Mode = TRIM, Radius = 0.00",
-      "Select first object or [Radius]: R",
+      "Select first object or [Undo/Polyline/Radius/Multiple]: R",
       "Specify fillet radius <0.00>: 50",
-      "Select first object or [Radius]:",
+      "Select first object or [Undo/Polyline/Radius/Multiple]:",
       "Select second object or shift-select to apply corner or [Radius]:",
     ])
     cad.command("FILLET")
@@ -426,7 +427,7 @@ describe("FILLET", () => {
     ])
   })
 
-  it("rounds every corner of a polyline in one pick", () => {
+  it("Polyline rounds every corner of a 2D polyline", () => {
     const cad = createHarness({
       entities: [
         polylineOf([p(-100, -60), p(100, -60), p(100, 60), p(-100, 60)], {
@@ -436,7 +437,11 @@ describe("FILLET", () => {
       ],
     })
 
-    cad.command("FILLET").option("Radius").type("30").enter().click(p(0, -60))
+    cad.command("FILLET").option("Radius").type("30").enter().option("Polyline")
+    expect(cad.state().commandLine.prompt).toBe(
+      "FILLET Select 2D polyline or [Radius]:"
+    )
+    cad.click(p(0, -60))
 
     const poly = cad.byId<PolylineEntity>("P1")
     // Each square corner becomes two vertices joined by a quarter-turn bulge.
@@ -445,6 +450,229 @@ describe("FILLET", () => {
     const arcs = poly.bulges?.filter((b) => b !== 0) ?? []
     expect(arcs).toHaveLength(4)
     for (const b of arcs) expect(b).toBeCloseTo(Math.tan(deg(22.5)), 6)
+    expect(cad.commandLog().slice(-2)).toEqual([
+      "Select 2D polyline or [Radius]:",
+      "4 lines were filleted",
+    ])
+    expect(cad.activeToolId()).toBe("select")
+  })
+
+  it("takes a polyline's segment as an object, not the whole polyline", () => {
+    const ell = polylineOf([p(0, 100), p(0, 0), p(100, 0)], { id: "P1" })
+    const cad = createHarness({ entities: [ell, lineOf(p(200, 0), p(300, 0))] })
+
+    cad.command("FILLET").option("Radius").type("20").enter().click(p(0, 50))
+    expect(cad.byId<PolylineEntity>("P1").vertices).toHaveLength(3)
+    // A line is no corner for a polyline segment here: it is not taken.
+    cad.click(p(250, 0))
+    expect(cad.activeToolId()).toBe("fillet")
+    cad.click(p(50, 0))
+
+    const poly = cad.byId<PolylineEntity>("P1")
+    expect(poly.vertices).toBeCloseToPoints([
+      p(0, 100),
+      p(0, 20),
+      p(20, 0),
+      p(100, 0),
+    ])
+    expect(poly.bulges?.[1]).toBeCloseTo(Math.tan(deg(22.5)), 6)
+    expect(cad.activeToolId()).toBe("select")
+  })
+
+  it("removes the segment between two it fillets, and closes an open polyline's ends", () => {
+    const cad = createHarness({
+      entities: [
+        polylineOf([p(0, 100), p(0, 10), p(10, 0), p(100, 0)], { id: "P1" }),
+        polylineOf(
+          [p(300, 20), p(300, 100), p(400, 100), p(400, 0), p(320, 0)],
+          { id: "P2" }
+        ),
+      ],
+    })
+
+    cad.command("FILLET").click(p(0, 50)).click(p(50, 0))
+    expect(cad.byId<PolylineEntity>("P1").vertices).toBeCloseToPoints([
+      p(0, 100),
+      p(0, 0),
+      p(100, 0),
+    ])
+
+    cad.command("FILLET").click(p(300, 50)).click(p(350, 0))
+    const closed = cad.byId<PolylineEntity>("P2")
+    expect(closed.closed).toBe(true)
+    expect(closed.vertices).toBeCloseToPoints([
+      p(300, 0),
+      p(300, 100),
+      p(400, 100),
+      p(400, 0),
+    ])
+  })
+
+  it("Polyline leaves a tangent arc and a segment too short alone", () => {
+    // A slot: two lines joined by a half-circle end, then a short jog.
+    const cad = createHarness({
+      entities: [
+        polylineOf([p(0, 0), p(100, 0), p(100, 40), p(0, 40), p(0, 45)], {
+          id: "P1",
+          bulges: [0, 1, 0, 0],
+        }),
+      ],
+    })
+
+    cad.command("FILLET").option("Radius").type("10").enter().option("Polyline")
+    cad.click(p(50, 40))
+
+    // The jog at (0, 40) is 5 long: no 10 fillet fits there; the half circle
+    // lies between parallel lines.
+    expect(cad.byId<PolylineEntity>("P1").vertices).toHaveLength(5)
+    expect(cad.commandLog().slice(-2)).toEqual([
+      "0 lines were filleted",
+      "1 was parallel    1 was too short",
+    ])
+  })
+
+  it("Polyline rounds a corner where a line meets an arc (FILLETPOLYARC 1)", () => {
+    // The line runs along +X into an arc about (150, 0) that turns up +Y.
+    const cad = createHarness({
+      entities: [
+        polylineOf([p(0, 0), p(100, 0), p(150, 50)], {
+          id: "P1",
+          bulges: [0, -Math.tan(deg(22.5))],
+        }),
+      ],
+    })
+
+    cad.command("FILLET").option("Radius").type("10").enter().option("Polyline")
+    cad.click(p(50, 0))
+
+    const poly = cad.byId<PolylineEntity>("P1")
+    expect(poly.vertices).toHaveLength(4)
+    expect(poly.vertices[1].y).toBeCloseTo(0)
+    expect(poly.vertices[3]).toBeCloseToPoint(p(150, 50))
+    expect(cad.commandLog().at(-1)).toBe("1 line was filleted")
+  })
+
+  it("Polyline replaces an arc between converging lines, and radius 0 removes it", () => {
+    const rounded = polylineOf([p(0, 100), p(0, 20), p(20, 0), p(100, 0)], {
+      id: "P1",
+      // A quarter circle of radius 20 about (20, 20), tangent to both lines.
+      bulges: [0, Math.tan(deg(22.5)), 0],
+    })
+    const cad = createHarness({ entities: [rounded] })
+
+    cad.command("FILLET").option("Radius").type("40").enter().option("Polyline")
+    cad.click(p(0, 60))
+    let poly = cad.byId<PolylineEntity>("P1")
+    expect(poly.vertices).toBeCloseToPoints([
+      p(0, 100),
+      p(0, 40),
+      p(40, 0),
+      p(100, 0),
+    ])
+    expect(poly.bulges?.[1]).toBeCloseTo(Math.tan(deg(22.5)), 6)
+
+    cad.command("FILLET").option("Radius").type("0").enter().option("Polyline")
+    cad.click(p(0, 60))
+    poly = cad.byId<PolylineEntity>("P1")
+    expect(poly.vertices).toBeCloseToPoints([p(0, 100), p(0, 0), p(100, 0)])
+    expect(poly.bulges).toBeUndefined()
+  })
+
+  it("Multiple keeps asking until Enter, and Undo takes back the last fillet", () => {
+    const cad = createHarness({
+      entities: [
+        ...corner,
+        lineOf(p(300, 0), p(500, 0), { id: "L3" }),
+        lineOf(p(400, -50), p(400, 200), { id: "L4" }),
+      ],
+    })
+    cad.command("LINE").click(p(0, -300)).click(p(100, -300)).enter()
+
+    cad.command("FILLET").option("Radius").type("20").enter()
+    cad.option("Multiple")
+    expect(cad.state().commandLine.prompt).toBe(
+      "FILLET Select first object or [Undo/Polyline/Radius]:"
+    )
+    cad.click(p(100, 0)).click(p(0, 100))
+    expect(cad.activeToolId()).toBe("fillet")
+    cad.click(p(450, 0)).click(p(400, 100))
+    expect(cad.typeCounts()).toEqual({ line: 5, arc: 2 })
+
+    cad.option("Undo")
+    expect(cad.typeCounts()).toEqual({ line: 5, arc: 1 })
+    // The radius given in the command is a step too, the last to go; Undo
+    // stops there: the LINE before the command stays.
+    cad.option("Undo").option("Undo").option("Undo")
+    expect(cad.typeCounts()).toEqual({ line: 5 })
+    cad.enter()
+    expect(cad.activeToolId()).toBe("select")
+    expect(cad.commandLog().slice(-6)).toEqual([
+      "Select first object or [Undo/Polyline/Radius]: U",
+      "Select first object or [Undo/Polyline/Radius]: U",
+      "Command has been completely undone.",
+      "Select first object or [Undo/Polyline/Radius]: U",
+      "Command has been completely undone.",
+      "Select first object or [Undo/Polyline/Radius]:",
+    ])
+    cad.command("FILLET")
+    expect(cad.commandLog().at(-1)).toBe(
+      "Current settings: Mode = TRIM, Radius = 0.00"
+    )
+  })
+
+  it("says why two segments of a polyline make no corner", () => {
+    const cad = createHarness({
+      entities: [
+        // Segments 0 and 2 run apart from the one between them.
+        polylineOf([p(0, 0), p(-10, 100), p(110, 100), p(100, 0)], {
+          id: "P1",
+        }),
+        polylineOf([p(300, 0), p(300, 100), p(400, 100), p(400, 0)], {
+          id: "P2",
+        }),
+      ],
+    })
+
+    // Outside Multiple the input is invalid and the command ends.
+    cad.command("FILLET").click(p(-5, 50)).click(p(105, 50))
+    expect(cad.commandLog().slice(-2)).toEqual(["Lines diverge", "*Invalid*"])
+    expect(cad.activeToolId()).toBe("select")
+
+    cad.command("FILLET").option("Multiple")
+    cad.click(p(300, 50)).click(p(400, 50))
+    expect(cad.commandLog().at(-1)).toBe("Lines are parallel")
+    cad.option("Radius").type("120").enter()
+    cad.click(p(300, 50)).click(p(350, 100))
+    expect(cad.commandLog().at(-1)).toBe("Fillet radius is too large")
+    expect(cad.activeToolId()).toBe("fillet")
+    expect(cad.byId<PolylineEntity>("P2").vertices).toHaveLength(4)
+  })
+
+  it("Polyline counts the corners it leaves on the line after", () => {
+    const cad = createHarness({
+      entities: [
+        // A collinear vertex at (50, 0) and a jog too short at the far end.
+        polylineOf([p(0, 0), p(50, 0), p(100, 0), p(100, 100), p(105, 100)], {
+          id: "P1",
+        }),
+        polylineOf([p(300, 0), p(400, 0), p(400, 100), p(300, 100)], {
+          id: "SQ",
+          closed: true,
+        }),
+      ],
+    })
+
+    cad.command("FILLET").option("Radius").type("10").enter().option("Polyline")
+    cad.click(p(25, 0))
+    expect(cad.commandLog().slice(-2)).toEqual([
+      "1 line was filleted",
+      "1 was parallel    1 was too short",
+    ])
+    // At radius 0 a square's corners are already sharp, and still counted.
+    cad.command("FILLET").option("Radius").type("0").enter().option("Polyline")
+    cad.click(p(350, 0))
+    expect(cad.commandLog().at(-1)).toBe("4 lines were filleted")
+    expect(cad.byId<PolylineEntity>("SQ").vertices).toHaveLength(4)
   })
 })
 

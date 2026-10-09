@@ -33,7 +33,9 @@ export type InterfaceCatalog = Omit<
  * The command language. `names` and `keywords` are vocabulary, not messages: a
  * keyword marks its abbreviation in capitals (`desHacer`), as `initget` does.
  */
-export type CommandCatalog = Compiled<Omit<Commands, "names" | "keywords">> & {
+export type CommandCatalog = Compiled<
+  Omit<Commands, "names" | "keywords" | "promptKeywords">
+> & {
   readonly names: { readonly [C in CommandName]: readonly string[] }
   /**
    * A keyword's global word is its id, so English ships none of these: its
@@ -42,6 +44,16 @@ export type CommandCatalog = Compiled<Omit<Commands, "names" | "keywords">> & {
   readonly keywords?: {
     readonly [C in keyof Commands["keywords"]]?: {
       readonly [K in keyof Commands["keywords"][C]]?: string
+    }
+  }
+  /**
+   * A keyword one prompt spells otherwise than its command's table, as each
+   * AutoCAD prompt declares its own (`initget`): EMPALME's `[RAdio]`, but
+   * `Designe polilínea 2D o [Radio]:`.
+   */
+  readonly promptKeywords?: {
+    readonly [P in keyof Commands["promptKeywords"]]?: {
+      readonly [K in keyof Commands["promptKeywords"][P]]?: string
     }
   }
 }

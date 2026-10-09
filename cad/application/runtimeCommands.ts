@@ -4,6 +4,7 @@ import type { CommandOptionUi, StylesPanelTab } from "./EngineState"
 import { promptString, type EngineText, type PromptSegment } from "./EngineText"
 import { offerKeywords } from "../i18n/keywords"
 import { Tool, type ToolQuestion } from "./tools/Tool"
+import type { PromptId } from "../locales/types"
 import { formatAngle, formatLength } from "../domain/units"
 import type { DocumentSettings } from "../domain/units"
 import { MTextTool } from "./tools/MTextTool"
@@ -177,7 +178,8 @@ export function offerOptions(tool: Tool, text: EngineText): CommandOptionUi[] {
   const offered = offerKeywords(
     text.keywords(
       command,
-      options.map((option) => option.id)
+      options.map((option) => option.id),
+      askedPrompt(tool)
     )
   )
   return offered.map((keyword, index) => {
@@ -209,6 +211,12 @@ export interface CommandPrompt {
    * next point or`). Null when the tool names no question.
    */
   readonly dynamic: string | null
+}
+
+/** The id of the question `tool` is asking, or null. */
+export function askedPrompt(tool: Tool): PromptId | null {
+  const asked = tool.question?.() ?? null
+  return typeof asked === "string" ? asked : (asked?.id ?? null)
 }
 
 /** What Enter keeps, as the prompt shows it between its angle brackets. */
@@ -253,14 +261,14 @@ export function commandPrompt(
   const fallback = tool.defaultOption?.() ?? null
   const labels = options.map((option) => option.label)
   const asked = tool.question?.() ?? null
-  const id = typeof asked === "string" ? asked : (asked?.id ?? null)
+  const id = askedPrompt(tool)
   const question = id === null ? null : text.prompt(id)
   const value =
     typeof asked === "object" && asked !== null
       ? enterValue(asked.enter, text, settings)
       : fallback === null
         ? null
-        : text.keyword(command, fallback)
+        : text.keyword(command, fallback, id)
   return {
     command: name,
     segments: text.composePrompt(
@@ -268,7 +276,8 @@ export function commandPrompt(
       labels,
       value
     ),
-    echo: question === null ? null : text.composePrompt(question, labels, value),
+    echo:
+      question === null ? null : text.composePrompt(question, labels, value),
     dynamic:
       question === null || labels.length > 0 || value !== null
         ? question

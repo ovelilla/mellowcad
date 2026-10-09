@@ -15,9 +15,6 @@ import {
   createLine,
   carryOverrides,
   carryPlane,
-  createPolyline,
-  polylineSegmentGeometries,
-  polylineSegments,
   Entity,
   EntityId,
   LineEntity,
@@ -31,10 +28,27 @@ import {
 import { DynamicInputSession } from "../input/DynamicInput"
 import { formatLength } from "../../domain/units"
 import type { PromptId } from "../../locales/types"
+import type { MessageId } from "../EngineText"
 import { ScenePrimitive, StrokeStyle } from "../../scene/types"
 import { THEME } from "../../scene/theme"
 import { entityScenePrimitive } from "../SceneBuilder"
 import { LineCorner, LinePick, lineCorner } from "./lineCorner"
+import {
+  ArcCorner,
+  CornerCut,
+  PolylineCorner,
+  SegmentsRefusal,
+  cutBetweenSegments,
+  cutPolylineCorners,
+  reportSkipped,
+} from "./polylineCorners"
+import {
+  CornerObject,
+  SegmentPick,
+  cornerEntity,
+  isSegment,
+  pickCornerObject,
+} from "./cornerObjects"
 import {
   CommandOption,
   CommandOptionOutcome,
@@ -50,142 +64,161 @@ import {
  * radius, trimming (or extending) both lines to the points of tangency.
  *
  * ```
- *   ┌── [R] Radius ──► type radius ──┐
- *   ▼                                │
- *  first ──click line──► second ──click line──► fillet + Select
- *    └── click polyline ──► fillet every corner + Select
+ *        [R] Radius ──► radius ──► back to the prompt it was asked from
+ *  first ──click line──► second ──click line──► fillet ──► end, or first (Multiple)
+ *    └──[P] Polyline──► polyline ──click polyline──► every corner ──► end, or first
  * ```
  *
- * You pick two lines; the arc is placed in the corner nearest to where you
- * clicked each line (the picks choose which of the four possible corners to
- * round), and the lines are trimmed/extended to meet it. Shift on the second
- * pick applies a corner instead, as a radius of 0 does. The **Radius** keyword
- * sets the arc radius and persists for the tool's session; a radius of 0 simply
- * joins the two lines at their intersection with no arc — exactly like AutoCAD.
- *
- * Clicking a **polyline** instead rounds *every* eligible straight corner at
- * once with the current radius (AutoCAD's Polyline option), replacing each
- * corner with a tangent arc bulge in a single connected polyline.
- *
- * The whole edit is one command (a {@link ReplaceEntitiesCommand} for two
- * lines, or an {@link UpdateEntityCommand} for a polyline), so a single undo
- * reverts the fillet.
+ * The arc is placed in the corner nearest to where you clicked each line, and
+ * the lines are trimmed/extended to meet it. Two straight segments of one
+ * polyline are objects too, rounded within it. Shift on the second pick applies a
+ * corner instead, as a radius of 0 does. The radius is kept for the session.
+ * Multiple keeps asking for the next pair until Enter, and Undo takes back the
+ * last fillet made in the command. Each fillet is one command — a
+ * {@link ReplaceEntitiesCommand} for two lines, an {@link UpdateEntityCommand}
+ * for a polyline — which the runtime folds into the command's undo step.
  */
 
 type FilletState =
-  /** Awaiting the first object: a line, or a polyline (hover-highlighted). */
-  | { readonly phase: "first"; readonly hover: Entity | null }
-  /** First line chosen; awaiting the second (a live preview tracks the cursor). */
+  /** Awaiting the first object (hover-highlighted). */
+  | { readonly phase: "first"; readonly hover: CornerObject | null }
+  /** First object chosen; awaiting the second (a live preview tracks the cursor). */
   | {
       readonly phase: "second"
-      readonly line1: LineEntity
+      readonly first: CornerObject
       /** Where the first line was clicked — picks which corner to round. */
       readonly pick1: LinePick
-      readonly hover: LineEntity | null
+      readonly hover: CornerObject | null
       readonly cursor: LinePick
       /** Shift is held: the second pick applies a corner. */
       readonly corner: boolean
     }
+  /** Polyline: awaiting the 2D polyline whose every corner is rounded. */
+  | { readonly phase: "polyline"; readonly hover: PolylineEntity | null }
 
 export class FilletTool implements Tool {
   readonly id = "fillet"
   readonly shortcut = "f"
 
   private state: FilletState = { phase: "first", hover: null }
-  /** The fillet radius, persisted across the tool's session (AutoCAD-style). */
+  /** FILLETRAD, kept for the session (Not-saved). */
   private radius = 0
   /** True while the radius sub-prompt's input is open (object picks paused). */
-  private awaitingRadius = false
+  private askingRadius = false
+  private multiple = false
+  /**
+   * What Undo takes back, newest last: a fillet, or a radius given in the
+   * command (the radius it replaced).
+   */
+  private steps: ({ readonly radius: number } | "fillet")[] = []
   private lastScreen: Vec2 | null = null
 
   onActivate(ctx: ToolContext): void {
     ctx.setCursor("crosshair")
     ctx.selection.clear()
-    this.state = { phase: "first", hover: null }
-    this.awaitingRadius = false
+    this.reset()
     // TRIMMODE is always 1 here: the lines are trimmed to the arc.
     ctx.report(
       ctx.text.message("filletSettings", {
         radius: formatLength(this.radius, ctx.document.getSettings()),
       })
     )
-    this.openSelectPrompt(ctx)
+    this.openKeywordPrompt(ctx)
   }
 
-  /**
-   * WHY `[Radius]` alone: Undo, Polyline, Trim and Multiple are not offered
-   * (a polyline picked first is filleted whole).
-   */
+  /** WHY no Trim: TRIMMODE is always 1 here, so it is not offered. */
   question(): PromptId | ToolQuestion {
-    if (this.awaitingRadius) {
+    if (this.askingRadius) {
       return { id: "specifyFilletRadius", enter: this.radius }
     }
-    return this.state.phase === "first"
-      ? "selectFirstObjectOr"
-      : "selectSecondObjectOrApplyCornerOr"
+    switch (this.state.phase) {
+      case "first":
+        return "selectFirstObjectOr"
+      case "second":
+        return "selectSecondObjectOrApplyCornerOr"
+      case "polyline":
+        return "select2dPolylineOr"
+    }
   }
 
   onDeactivate(ctx: ToolContext): void {
-    this.state = { phase: "first", hover: null }
-    this.awaitingRadius = false
+    this.reset()
     ctx.dynamicInput.close()
   }
 
   onPointerMove(input: PointerInput, ctx: ToolContext): void {
     this.lastScreen = input.screen
     ctx.dynamicInput.setPosition(input.screen)
-    if (this.awaitingRadius) {
+    if (this.askingRadius) {
       ctx.requestRender()
       return
     }
 
-    if (this.state.phase === "first") {
-      this.state = { phase: "first", hover: this.pickFirst(input, ctx) }
-    } else {
-      this.state = {
-        ...this.state,
-        hover: this.pickLine(input, ctx, this.state.line1.id),
-        cursor: { world: input.world, screen: input.screen },
-        corner: input.shiftKey,
-      }
+    switch (this.state.phase) {
+      case "first":
+        this.state = {
+          phase: "first",
+          hover: pickCornerObject(ctx, input.world, null),
+        }
+        break
+      case "second":
+        this.state = {
+          ...this.state,
+          hover: pickCornerObject(ctx, input.world, this.state.first),
+          cursor: { world: input.world, screen: input.screen },
+          corner: input.shiftKey,
+        }
+        break
+      case "polyline":
+        this.state = { phase: "polyline", hover: this.pickPolyline(input, ctx) }
+        break
     }
     ctx.requestRender()
   }
 
   onPointerDown(input: PointerInput, ctx: ToolContext): void {
-    if (input.button !== 0 || this.awaitingRadius) return
+    if (input.button !== 0 || this.askingRadius) return
 
-    if (this.state.phase === "first") {
-      const hit = this.pickFirst(input, ctx)
-      if (!hit) return
-      if (hit.type === "polyline") {
-        this.commitPolylineFillet(hit, ctx)
+    switch (this.state.phase) {
+      case "first": {
+        const hit = pickCornerObject(ctx, input.world, null)
+        if (!hit) return
+        const pick = { world: input.world, screen: input.screen }
+        this.state = {
+          phase: "second",
+          first: hit,
+          pick1: pick,
+          hover: null,
+          cursor: pick,
+          corner: false,
+        }
+        ctx.requestRender()
         return
       }
-      if (hit.type !== "line") return
-      const pick = { world: input.world, screen: input.screen }
-      this.state = {
-        phase: "second",
-        line1: hit,
-        pick1: pick,
-        hover: null,
-        cursor: pick,
-        corner: false,
+      case "second": {
+        const { first, pick1 } = this.state
+        const second = pickCornerObject(ctx, input.world, first)
+        if (!second) return
+        const radius = input.shiftKey ? 0 : this.radius
+        if (isSegment(first) && isSegment(second)) {
+          const cut = filletSegments(first, second, radius)
+          if (typeof cut !== "string") {
+            this.done(new UpdateEntityCommand(cut), ctx)
+          } else {
+            this.refuse(REFUSALS[cut], ctx)
+          }
+        } else if (!isSegment(first) && !isSegment(second)) {
+          const pick2 = { world: input.world, screen: input.screen }
+          this.commitFillet(first, pick1, second, pick2, radius, ctx)
+        }
+        return
       }
-      ctx.requestRender()
-      return
+      case "polyline": {
+        const poly = this.pickPolyline(input, ctx)
+        if (poly) this.commitPolyline(poly, ctx)
+        return
+      }
     }
-
-    const line2 = this.pickLine(input, ctx, this.state.line1.id)
-    if (!line2) return
-    this.commitFillet(
-      this.state.line1,
-      this.state.pick1,
-      line2,
-      { world: input.world, screen: input.screen },
-      input.shiftKey ? 0 : this.radius,
-      ctx
-    )
   }
 
   onKeyDown(input: KeyInput, ctx: ToolContext): void {
@@ -193,15 +226,44 @@ export class FilletTool implements Tool {
   }
 
   commandOptions(): readonly CommandOption[] {
-    return this.awaitingRadius ? [] : [{ id: "Radius" }]
+    if (this.askingRadius) return []
+    switch (this.state.phase) {
+      case "first":
+        return this.multiple
+          ? [{ id: "Undo" }, { id: "Polyline" }, { id: "Radius" }]
+          : [
+              { id: "Undo" },
+              { id: "Polyline" },
+              { id: "Radius" },
+              { id: "Multiple" },
+            ]
+      case "second":
+      case "polyline":
+        return [{ id: "Radius" }]
+    }
   }
 
   invokeOption(id: string, ctx: ToolContext): CommandOptionOutcome {
-    if (id === "Radius" && !this.awaitingRadius) {
+    if (this.askingRadius) return "unhandled"
+    if (id === "Radius") {
       this.openRadiusPrompt(ctx)
       return "continue"
     }
-    return "unhandled"
+    if (this.state.phase !== "first") return "unhandled"
+    switch (id) {
+      case "Undo":
+        this.undoStep(ctx)
+        return "continue"
+      case "Polyline":
+        this.state = { phase: "polyline", hover: null }
+        ctx.requestRender()
+        return "continue"
+      case "Multiple":
+        this.multiple = true
+        return "continue"
+      default:
+        return "unhandled"
+    }
   }
 
   wantsSnap(): boolean {
@@ -217,18 +279,32 @@ export class FilletTool implements Tool {
 
     if (this.state.phase === "first") {
       const h = this.state.hover
-      return h ? draw(h, hoverStroke) : []
+      return h ? draw(cornerEntity(h), hoverStroke) : []
+    }
+    if (this.state.phase === "polyline") {
+      const h = this.state.hover
+      return h ? draw(h, selectedStroke) : []
     }
 
-    const { line1, pick1, hover, cursor } = this.state
+    const { first, pick1, hover, cursor } = this.state
+    const radius = this.state.corner ? 0 : this.radius
+    if (isSegment(first)) {
+      const cut =
+        hover && isSegment(hover) && filletSegments(first, hover, radius)
+      return cut && typeof cut !== "string"
+        ? draw(cut, hoverStroke)
+        : draw(first.poly, selectedStroke)
+    }
+    const line1 = first
     const prims = draw(line1, selectedStroke)
-    if (!hover) return prims
+    if (!hover || isSegment(hover)) return prims
 
     const corner = lineCorner(line1, pick1, hover, cursor, viewport)
-    const radius = this.state.corner ? 0 : this.radius
     const filleted =
       corner && this.fillet(corner, line1, hover, radius, ctx, PREVIEW_ID)
-    if (!filleted) return [...prims, ...draw(hover, hoverStroke)]
+    if (!filleted || filleted === "tooLarge") {
+      return [...prims, ...draw(hover, hoverStroke)]
+    }
     for (const entity of filleted) {
       prims.push(
         ...draw(
@@ -242,11 +318,18 @@ export class FilletTool implements Tool {
     return prims
   }
 
+  private reset(): void {
+    this.state = { phase: "first", hover: null }
+    this.askingRadius = false
+    this.multiple = false
+    this.steps = []
+  }
+
   /**
    * The two lines trimmed or extended to the arc of `radius`, and the arc
    * (none at radius 0), back in the frame; `null` when the lines are
-   * parallel or a trimmed line would vanish. A preview gives the arc a fixed
-   * `arcId`, so it burns no entity ids.
+   * parallel, `tooLarge` when a line would be trimmed away. A preview gives
+   * the arc a fixed `arcId`, so it burns no entity ids.
    */
   private fillet(
     corner: LineCorner,
@@ -255,7 +338,7 @@ export class FilletTool implements Tool {
     radius: number,
     ctx: ToolContext,
     arcId?: EntityId
-  ): Entity[] | null {
+  ): Entity[] | "tooLarge" | null {
     const result = filletLines(
       corner.line1.start,
       corner.line1.end,
@@ -278,7 +361,7 @@ export class FilletTool implements Tool {
       result.direction2,
       result.tangent2
     )
-    if (!trimmed1 || !trimmed2) return null
+    if (!trimmed1 || !trimmed2) return "tooLarge"
     const built: Entity[] = [trimmed1, trimmed2]
     if (result.radius > 0) {
       // AutoCAD places the arc on the lines' shared layer, or the current layer
@@ -320,54 +403,104 @@ export class FilletTool implements Tool {
       return
     }
     const filleted = this.fillet(corner, line1, line2, radius, ctx)
-    if (!filleted) return // degenerate (parallel/collinear) — keep prompting
-    ctx.execute(new ReplaceEntitiesCommand([line1.id, line2.id], filleted))
-    ctx.dynamicInput.close()
-    ctx.endCommand()
-  }
-
-  /** The visible line nearest the cursor, excluding `excludeId`, or `null`. */
-  private pickLine(
-    input: PointerInput,
-    ctx: ToolContext,
-    excludeId: string | null
-  ): LineEntity | null {
-    const hit = ctx.pick(input.world)
-    if (!hit || hit.type !== "line" || hit.id === excludeId) return null
-    return hit
-  }
-
-  /** The first-pick target under the cursor: a line, or a polyline. */
-  private pickFirst(input: PointerInput, ctx: ToolContext): Entity | null {
-    const hit = ctx.pick(input.world)
-    if (!hit) return null
-    if (hit.type === "line" || hit.type === "polyline") return hit
-    return null
+    // WHY nothing for parallel lines: AutoCAD caps them with a half circle,
+    // which is not built; the second object is asked again.
+    if (!filleted) return
+    if (filleted === "tooLarge") {
+      this.refuse("filletRadiusTooLarge", ctx)
+      return
+    }
+    this.done(new ReplaceEntitiesCommand([line1.id, line2.id], filleted), ctx)
   }
 
   /**
-   * AutoCAD's FILLET Polyline: rounds every eligible corner of `poly` with the
-   * current radius in one step, then ends the command. Corners whose fillet
-   * would not fit (radius too large for an adjacent segment) are left sharp.
+   * A corner that cannot be made: said, and Multiple asks for the first
+   * object again; otherwise the input is `*Invalid*` and the command ends.
    */
-  private commitPolylineFillet(poly: PolylineEntity, ctx: ToolContext): void {
-    ctx.dynamicInput.close()
-    if (this.radius > 0) {
-      const filleted = filletPolyline(poly, this.radius)
-      if (filleted) ctx.execute(new UpdateEntityCommand(filleted))
+  private refuse(message: MessageId, ctx: ToolContext): void {
+    ctx.report(ctx.text.message(message), "error")
+    if (this.multiple) {
+      this.state = { phase: "first", hover: null }
+      ctx.requestRender()
+      return
     }
+    ctx.report(ctx.text.message("invalid"), "error")
+    ctx.dynamicInput.close()
     ctx.endCommand()
   }
 
-  /** Opens the keyword-only object-selection prompt (shows the [R] chip). */
-  private openSelectPrompt(ctx: ToolContext): void {
+  /**
+   * Polyline: rounds every corner where two line segments meet, and replaces
+   * an arc segment between two lines that converge towards it — at radius 0
+   * removes it, the lines meeting at their crossing.
+   */
+  private commitPolyline(poly: PolylineEntity, ctx: ToolContext): void {
+    const result = cutPolylineCorners(poly, {
+      lines: (corner) => filletCorner(corner, this.radius),
+      acrossArcs: true,
+      arcs: (corner) => filletArcCorner(corner, this.radius),
+    })
+    ctx.report(ctx.text.message("linesFilleted", { count: result.cut }))
+    reportSkipped(result, ctx)
+    if (result.polyline) {
+      this.done(new UpdateEntityCommand(result.polyline), ctx)
+    } else if (this.multiple) {
+      this.state = { phase: "first", hover: null }
+      ctx.requestRender()
+    } else {
+      ctx.dynamicInput.close()
+      ctx.endCommand()
+    }
+  }
+
+  /** Executes a fillet; the command ends, or Multiple asks for the next. */
+  private done(
+    command: ReplaceEntitiesCommand | UpdateEntityCommand,
+    ctx: ToolContext
+  ): void {
+    this.steps.push("fillet")
+    if (this.multiple) {
+      this.state = { phase: "first", hover: null }
+      ctx.execute(command)
+      ctx.requestRender()
+      return
+    }
+    ctx.execute(command)
+    ctx.dynamicInput.close()
+    ctx.endCommand()
+  }
+
+  /**
+   * Undo takes back the last fillet or radius of this command, and only
+   * those; back at its start AutoCAD says so.
+   */
+  private undoStep(ctx: ToolContext): void {
+    const step = this.steps.pop()
+    if (step === "fillet") ctx.undo()
+    else if (step) this.radius = step.radius
+    if (this.steps.length === 0) {
+      ctx.report(ctx.text.message("commandCompletelyUndone"))
+    }
+    ctx.requestRender()
+  }
+
+  private pickPolyline(
+    input: PointerInput,
+    ctx: ToolContext
+  ): PolylineEntity | null {
+    const hit = ctx.pick(input.world)
+    return hit?.type === "polyline" ? hit : null
+  }
+
+  /** A prompt answered by a pick or a keyword, its keywords on the tooltip. */
+  private openKeywordPrompt(ctx: ToolContext): void {
     const session: DynamicInputSession = { fields: [], commit: () => {} }
     ctx.dynamicInput.open(session)
     ctx.dynamicInput.setPosition(this.lastScreen ?? { x: 0, y: 0 })
   }
 
   private openRadiusPrompt(ctx: ToolContext): void {
-    this.awaitingRadius = true
+    this.askingRadius = true
     const session: DynamicInputSession = {
       fields: [{ id: "radius", prompt: "filletRadius", kind: "distance" }],
       commit: (values, commitCtx) => this.setRadius(values.radius, commitCtx),
@@ -378,10 +511,14 @@ export class FilletTool implements Tool {
     ctx.requestRender()
   }
 
+  /** The radius, then the prompt Radius was chosen at, asked again. */
   private setRadius(value: number, ctx: ToolContext): void {
-    if (Number.isFinite(value) && value >= 0) this.radius = value
-    this.awaitingRadius = false
-    this.openSelectPrompt(ctx)
+    if (Number.isFinite(value) && value >= 0) {
+      this.steps.push({ radius: this.radius })
+      this.radius = value
+    }
+    this.askingRadius = false
+    this.openKeywordPrompt(ctx)
     ctx.requestRender()
   }
 }
@@ -394,8 +531,8 @@ const PREVIEW_ID = "fillet-preview"
 /**
  * Rebuilds `line` trimmed/extended to end at `tangent`: the endpoint on the
  * picked side (farther from the corner along `dir`) is kept, the other becomes
- * the tangent point. Preserves the line's id and layer. `null` when the result
- * would be zero-length.
+ * the tangent point. Preserves the line's id and layer. `null` when the
+ * tangent point is not short of the kept end: the line would vanish.
  */
 function trimLine(
   line: LineEntity,
@@ -407,152 +544,66 @@ function trimLine(
     V.dot(V.sub(line.end, corner), dir) >= V.dot(V.sub(line.start, corner), dir)
       ? line.end
       : line.start
-  if (V.equals(keepEnd, tangent)) return null
+  if (V.dot(V.sub(keepEnd, tangent), dir) <= 0) return null
   return carryOverrides(
     line,
     createLine(keepEnd, tangent, line.layerId, line.id)
   )
 }
 
-/** A resolved corner fillet: the two tangent points and the arc bulge between. */
-interface CornerFillet {
-  readonly entry: Vec2 // tangent point toward the previous vertex
-  readonly exit: Vec2 // tangent point toward the next vertex
-  readonly bulge: number // AutoCAD bulge of the arc from entry to exit
-  readonly entryDist: number // distance from the corner to the entry tangent
-  readonly exitDist: number // distance from the corner to the exit tangent
+const REFUSALS: Readonly<Record<SegmentsRefusal, MessageId>> = {
+  parallel: "linesParallel",
+  diverge: "linesDiverge",
+  tooLarge: "filletRadiusTooLarge",
+}
+
+/** Two segments of one polyline rounded within it, or why they cannot be. */
+function filletSegments(
+  first: SegmentPick,
+  second: SegmentPick,
+  radius: number
+): PolylineEntity | SegmentsRefusal {
+  return cutBetweenSegments(first.poly, first.index, second.index, (corner) =>
+    filletCorner(corner, radius)
+  )
+}
+
+/** A polyline corner rounded at `radius`; at 0 the lines meet at the corner. */
+function filletCorner(
+  { from, corner, to }: PolylineCorner,
+  radius: number
+): CornerCut | null {
+  const result = filletLines(from, corner, corner, to, from, to, radius)
+  if (!result) return null
+  if (result.radius <= 0) return { entry: corner, exit: corner, bulge: 0 }
+  const sweep = normalizeAngle(result.endAngle - result.startAngle)
+  const mid = polarPoint(
+    result.center,
+    result.radius,
+    result.startAngle + sweep / 2
+  )
+  return {
+    entry: result.tangent1,
+    exit: result.tangent2,
+    bulge: bulgeThroughPoint(result.tangent1, result.tangent2, mid),
+  }
 }
 
 /**
- * Rounds every eligible corner of `poly` at `radius`, returning a new polyline
- * (same id) whose corners are tangent arc bulges. Straight-to-straight corners
- * use the plain two-line fillet; corners touching an arc segment are solved as a
- * circle tangent to a line and/or a circle. An arc segment adjacent to a fillet
- * has its bulge recomputed from the trimmed endpoints so its curvature stays
- * exact. Corners are skipped when the fillet is degenerate or would overrun an
- * adjacent segment (so two neighbouring fillets never collide). Returns `null`
- * when nothing changes.
+ * A polyline vertex an arc segment meets, rounded at `radius` by the circle
+ * tangent to both sides (FILLETPOLYARC 1); `null` when none fits there.
  */
-function filletPolyline(
-  poly: PolylineEntity,
+function filletArcCorner(
+  { incoming, corner, outgoing }: ArcCorner,
   radius: number
-): PolylineEntity | null {
-  const v = poly.vertices
-  const n = v.length
-  if (n < 3) return null
-  const geoms = polylineSegmentGeometries(poly)
-  const segLen = polylineSegments(poly).map(([a, b]) => V.distance(a, b))
-
-  // Corner i sits between segment (i-1) and segment i. Open polylines only
-  // fillet interior corners; closed ones fillet every vertex (with wraparound).
-  const isCorner = (i: number) => (poly.closed ? true : i > 0 && i < n - 1)
-  const fillets: (CornerFillet | null)[] = v.map((_, i) =>
-    isCorner(i) ? cornerFillet(poly, i, radius, segLen, geoms) : null
-  )
-
-  // Drop neighbouring fillets that would overrun their shared segment (corner j
-  // encroaches from its exit, corner j+1 from its entry).
-  for (let j = 0; j < segLen.length; j++) {
-    const fa = fillets[j]
-    const fb = fillets[(j + 1) % n]
-    if (fa && fb && fa.exitDist + fb.entryDist > segLen[j] + 1e-9) {
-      fillets[j] = null
-      fillets[(j + 1) % n] = null
-    }
-  }
-
-  if (fillets.every((f) => f === null)) return null
-
-  // A segment adjacent to a fillet is trimmed to the tangent point(s); an arc
-  // segment's bulge is recomputed from those (possibly moved) endpoints.
-  const segCount = poly.closed ? n : n - 1
-  const segBulge: number[] = []
-  for (let i = 0; i < segCount; i++) {
-    const g = geoms[i]
-    if (g.kind === "line") {
-      segBulge.push(0)
-      continue
-    }
-    const endIdx = (i + 1) % n
-    const start = fillets[i] ? fillets[i]!.exit : v[i]
-    const end = fillets[endIdx] ? fillets[endIdx]!.entry : v[endIdx]
-    segBulge.push(arcBulgeFromEndpoints(g.center, start, end, g.bulge))
-  }
-
-  const pts: Vec2[] = []
-  const bulges: number[] = []
-  for (let i = 0; i < n; i++) {
-    const f = fillets[i]
-    const hasOut = poly.closed || i < n - 1
-    if (f) {
-      pts.push(f.entry)
-      bulges.push(f.bulge) // the fillet arc, entry → exit
-      pts.push(f.exit)
-      if (hasOut) bulges.push(segBulge[i]) // outgoing segment, recomputed
-    } else {
-      pts.push(v[i])
-      if (hasOut) bulges.push(segBulge[i])
-    }
-  }
-  return carryOverrides(
-    poly,
-    createPolyline(pts, poly.closed, poly.layerId, bulges, poly.id)
-  )
-}
-
-/** The fillet for corner `i`, or `null` when it isn't eligible. */
-function cornerFillet(
-  poly: PolylineEntity,
-  i: number,
-  radius: number,
-  segLen: readonly number[],
-  geoms: readonly PolylineSegmentGeometry[]
-): CornerFillet | null {
-  const n = poly.vertices.length
-  const incoming = (i - 1 + n) % n // segment arriving at vertex i
-  const outgoing = i // segment leaving vertex i
-  const corner = poly.vertices[i]
-  const gi = geoms[incoming]
-  const go = geoms[outgoing]
-
-  // Straight-to-straight corners use the plain two-line fillet (unchanged).
-  if (gi.kind === "line" && go.kind === "line") {
-    const prev = poly.vertices[(i - 1 + n) % n]
-    const next = poly.vertices[(i + 1) % n]
-    const result = filletLines(prev, corner, corner, next, prev, next, radius)
-    if (!result || result.radius <= 0) return null
-    const tangentDist = V.distance(result.tangent1, corner)
-    if (
-      tangentDist > segLen[incoming] + 1e-9 ||
-      tangentDist > segLen[outgoing] + 1e-9
-    ) {
-      return null
-    }
-    const sweep = normalizeAngle(result.endAngle - result.startAngle)
-    const mid = polarPoint(
-      result.center,
-      result.radius,
-      result.startAngle + sweep / 2
-    )
-    return {
-      entry: result.tangent1,
-      exit: result.tangent2,
-      bulge: bulgeThroughPoint(result.tangent1, result.tangent2, mid),
-      entryDist: tangentDist,
-      exitDist: tangentDist,
-    }
-  }
-
-  // Any corner touching an arc is solved as a circle tangent to the two sides.
-  const inSide = toFilletSide(gi, corner, true)
-  const outSide = toFilletSide(go, corner, false)
+): CornerCut | null {
   return solveCornerFillet(
-    inSide,
-    outSide,
+    toFilletSide(incoming, corner, true),
+    toFilletSide(outgoing, corner, false),
     corner,
     radius,
-    segLen[incoming],
-    segLen[outgoing]
+    V.distance(incoming.a, incoming.b),
+    V.distance(outgoing.a, outgoing.b)
   )
 }
 
@@ -607,7 +658,7 @@ function solveCornerFillet(
   radius: number,
   inSegLen: number,
   outSegLen: number
-): CornerFillet | null {
+): CornerCut | null {
   if (radius <= 0) return null
   const turn = Math.sign(V.cross(inSide.tangent, outSide.tangent))
   if (turn === 0) return null // collinear — no corner to round
@@ -632,13 +683,7 @@ function solveCornerFillet(
   }
 
   const mid = V.add(center, V.scale(V.normalize(V.sub(corner, center)), radius))
-  return {
-    entry,
-    exit,
-    bulge: bulgeThroughPoint(entry, exit, mid),
-    entryDist: V.distance(corner, entry),
-    exitDist: V.distance(corner, exit),
-  }
+  return { entry, exit, bulge: bulgeThroughPoint(entry, exit, mid) }
 }
 
 /** The locus of fillet-circle centres at distance `radius` from a side, on the
@@ -744,24 +789,6 @@ function nearestPoint(points: readonly Vec2[], ref: Vec2): Vec2 | null {
     }
   }
   return best
-}
-
-/** The bulge of a concentric arc between two endpoints on its circle, keeping
- * the original rotational direction (sign). */
-function arcBulgeFromEndpoints(
-  center: Vec2,
-  start: Vec2,
-  end: Vec2,
-  originalBulge: number
-): number {
-  const angStart = Math.atan2(start.y - center.y, start.x - center.x)
-  const angEnd = Math.atan2(end.y - center.y, end.x - center.x)
-  const included =
-    originalBulge >= 0
-      ? normalizeAngle(angEnd - angStart)
-      : normalizeAngle(angStart - angEnd)
-  const magnitude = Math.tan(included / 4)
-  return originalBulge >= 0 ? magnitude : -magnitude
 }
 
 /** The interior normal of a side's travel direction for a left (`turn` > 0) or

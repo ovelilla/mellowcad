@@ -427,12 +427,15 @@ describe("Spanish AutoCAD's command language", () => {
       locale: es,
       entities: [lineOf(p(-50, 0), p(200, 0)), lineOf(p(0, -50), p(0, 200))],
     })
+    const answer = (keyword: string) => {
+      for (const char of keyword) cad.press(char)
+      cad.press("Enter")
+    }
     cad.command("EMPALME")
     expect(cad.state().commandLine.prompt).toBe(
-      "EMPALME Designe el primer objeto o [RAdio]:"
+      "EMPALME Designe el primer objeto o [Deshacer/Polilínea/RAdio/múLtiple]:"
     )
-    for (const char of "RA") cad.press(char)
-    cad.press("Enter")
+    answer("RA")
     expect(cad.state().commandLine.prompt).toBe(
       "EMPALME Precise radio de empalme <0.00>:"
     )
@@ -442,6 +445,20 @@ describe("Spanish AutoCAD's command language", () => {
     )
     expect(cad.commandLog()[1]).toBe(
       "Parámetros actuales: Modo = Recortar, Radio = 0.00"
+    )
+    cad.escape().command("EMPALME")
+    answer("L")
+    expect(cad.state().commandLine.prompt).toBe(
+      "EMPALME Designe el primer objeto o [Deshacer/Polilínea/RAdio]:"
+    )
+    answer("P")
+    // The sub-prompt spells it Radio, so R alone answers it there.
+    expect(cad.state().commandLine.prompt).toBe(
+      "EMPALME Designe polilínea 2D o [Radio]:"
+    )
+    answer("R")
+    expect(cad.state().commandLine.prompt).toBe(
+      "EMPALME Precise radio de empalme <10.00>:"
     )
   })
 
