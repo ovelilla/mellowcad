@@ -135,7 +135,7 @@ export class ChamferTool implements Tool {
       case "second":
         return "selectSecondLineOrApplyCornerOr"
       case "polyline":
-        return "select2dPolylineOr"
+        return "selectPolylineToChamferOr"
     }
   }
 

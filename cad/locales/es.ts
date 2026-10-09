@@ -1151,6 +1151,9 @@ export const es: EngineLocale = {
     "promptKeywords": {
       "select2dPolylineOr": {
         "Radius": "Radio"
+      },
+      "selectSecondObjectOrApplyCornerOr": {
+        "Radius": "Radio"
       }
     },
     "prompts": {
@@ -1281,20 +1284,20 @@ export const es: EngineLocale = {
       "specifyCenterPointForCircleOr": "Precise punto central para círculo o",
       "specifyRadiusOfCircleOr": "Precise radio de círculo o",
       "specifyRadiusOfCircle": "Precise radio de círculo",
-      "enterNumberOfSides": "Indique el número de lados",
+      "enterNumberOfSides": "Indique número de lados",
       "specifyCenterOfPolygonOr": "Precise centro de polígono o",
       "enterAnOption": "Indique una opción",
       "inscribedShort": "I",
       "circumscribedShort": "C",
-      "specifyFirstEndpointOfEdge": "Precise primer punto final del lado",
-      "specifySecondEndpointOfEdge": "Precise segundo punto final del lado",
+      "specifyFirstEndpointOfEdge": "Precise primer punto final de lado",
+      "specifySecondEndpointOfEdge": "Precise segundo punto final de lado",
       "specifyAxisEndpointOfEllipseOr": "Precise punto final de eje de elipse o",
       "specifyAxisEndpointOfEllipticalArcOr": "Precise punto final de eje de arco elíptico o",
       "specifyCenterOfEllipse": "Precise centro de elipse",
       "specifyCenterOfEllipticalArc": "Precise centro de arco elíptico",
       "specifyOtherEndpointOfAxis": "Precise otro punto final de eje",
       "specifyEndpointOfAxis": "Precise punto final de eje",
-      "specifyDistanceToOtherAxisOr": "Precise distancia a otro eje o",
+      "specifyDistanceToOtherAxisOr": "Precise distancia de otro eje o",
       "specifyRotationAroundMajorAxis": "Precise rotación alrededor del eje mayor",
       "specifyStartAngle": "Precise ángulo inicial",
       "specifyEndAngleOr": "Precise ángulo final o",
@@ -1358,13 +1361,14 @@ export const es: EngineLocale = {
       "selectObjectToTrimOrShiftSelectToExtendOr": "Seleccione un objeto que recortar o use la tecla Mayús y seleccione para alargar, o",
       "selectObjectToExtendOrShiftSelectToTrimOr": "Seleccione un objeto que alargar o use la tecla Mayús y seleccione para recortar, o",
       "selectFirstObjectOr": "Designe el primer objeto o",
-      "selectSecondObjectOrApplyCornerOr": "Designe segundo objeto o use la tecla Mayús para aplicar esquina o",
+      "selectSecondObjectOrApplyCornerOr": "Designe el segundo objeto o use la tecla Mayús para aplicar esquina o",
       "specifyFilletRadius": "Precise radio de empalme",
-      "select2dPolylineOr": "Designe polilínea 2D o",
+      "select2dPolylineOr": "Designe una polilínea 2D o",
+      "selectPolylineToChamferOr": "Seleccione una polilínea 2D o",
       "selectFirstLineOr": "Designe la primera línea o",
-      "selectSecondLineOrApplyCornerOr": "Designe segunda línea o use la tecla Mayús para aplicar esquina o",
-      "specifyFirstChamferDistance": "Precise primera distancia de chaflán",
-      "specifySecondChamferDistance": "Precise segunda distancia de chaflán"
+      "selectSecondLineOrApplyCornerOr": "Designe la segunda línea o use la tecla Mayús para aplicar esquina o",
+      "specifyFirstChamferDistance": "Precise  primera distancia de chaflán",
+      "specifySecondChamferDistance": "Precise  segunda distancia de chaflán"
     },
     "format": {
       "idle": "Comando",
@@ -1481,7 +1485,7 @@ export const es: EngineLocale = {
         ]
       ],
       "chamferSettings": [
-        "(Modo Recortar) Primera distancia de chaflán actual = ",
+        "(Modo Recortar) Primera distancia de chaflán actual  = ",
         [
           "dist1"
         ],
@@ -1875,11 +1879,11 @@ export const es: EngineLocale = {
             "=0": "",
             "one": [
               0,
-              " era paralela    "
+              " resulta paralela(s)    "
             ],
             "other": [
               0,
-              " eran paralelas    "
+              " resultan paralela(s)    "
             ]
           }
         ],
@@ -1890,11 +1894,11 @@ export const es: EngineLocale = {
             "=0": "",
             "one": [
               0,
-              " era demasiado corta    "
+              " resulta demasiado corta(s)    "
             ],
             "other": [
               0,
-              " eran demasiado cortas    "
+              " resultan demasiado corta(s)    "
             ]
           }
         ],
@@ -1905,11 +1909,11 @@ export const es: EngineLocale = {
             "=0": "",
             "one": [
               0,
-              " era divergente    "
+              " resulta divergente(s)    "
             ],
             "other": [
               0,
-              " eran divergentes    "
+              " resultan divergente(s)    "
             ]
           }
         ]
@@ -1944,25 +1948,23 @@ export const es: EngineLocale = {
         ],
         "."
       ],
-      "commandCompletelyUndone": "Se ha deshecho completamente el comando.",
+      "commandCompletelyUndone": "Todos los efectos del comando han sido deshechos.",
       "linesParallel": "Las líneas son paralelas",
-      "linesDiverge": "Las líneas divergen",
-      "filletRadiusTooLarge": "El radio de empalme es demasiado grande",
-      "chamferDistanceTooLarge": "La distancia de chaflán es demasiado grande",
+      "linesDiverge": "Las líneas son divergentes",
+      "filletRadiusTooLarge": "Radio de empalme es demasiado grande",
+      "chamferDistanceTooLarge": "Distancia de chaflán es demasiado grande",
       "linesChamfered": [
         [
           "count",
           2,
           {
             "one": [
-              "Se ha achaflanado ",
               0,
-              " línea"
+              " línea resulta unida(s) con chaflán"
             ],
             "other": [
-              "Se han achaflanado ",
               0,
-              " líneas"
+              " líneas resultan unida(s) con chaflán"
             ]
           }
         ]
@@ -1973,14 +1975,12 @@ export const es: EngineLocale = {
           2,
           {
             "one": [
-              "Se ha empalmado ",
               0,
-              " línea"
+              " línea resulta unida(s) con empalme"
             ],
             "other": [
-              "Se han empalmado ",
               0,
-              " líneas"
+              " líneas resultan unida(s) con empalme"
             ]
           }
         ]

@@ -20,6 +20,13 @@ and `MAC` are the same URL with `AutoCAD-GettingStarted`, `AutoCAD-DidYouKnow`,
 **partial** was read in prose or an older release; **no** means not confirmed anywhere yet — settle
 it from a screenshot of the Spanish product before relying on it.
 
+For the command line the best source is the product's own string table: Autodesk's public AutoCAD
+2027 Spanish language pack (`Autodesk_AutoCAD_2027_Spanish_Language_Pack.exe`, linked from the
+forum thread "2027 Product download links") holds `es-ES/acadres.dll`, which 7-Zip extracts without
+running anything. Its string ids match an English `acadres.dll`'s, so each prompt, keyword list and
+message pairs with its English one. A message assembled at run time from pieces (`%d line%s %sed`)
+is composed the same way in Spanish; one the table words twice is marked unverified.
+
 The Arabic column marks how each term was chosen, since no Autodesk source exists: **(C)** the word
 Arabic AutoCAD courses and books use (أوتوكاد tutorials name tools this way: تشذيب، تقويس، شطف،
 تهشير، الطبقة); **(M)** the Modern Standard Arabic technical or mathematical term (قطع ناقص، مماس،

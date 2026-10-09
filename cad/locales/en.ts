@@ -1037,6 +1037,7 @@ export const en: EngineCatalog = {
       "selectSecondObjectOrApplyCornerOr": "Select second object or shift-select to apply corner or",
       "specifyFilletRadius": "Specify fillet radius",
       "select2dPolylineOr": "Select 2D polyline or",
+      "selectPolylineToChamferOr": "Select 2D polyline or",
       "selectFirstLineOr": "Select first line or",
       "selectSecondLineOrApplyCornerOr": "Select second line or shift-select to apply corner or",
       "specifyFirstChamferDistance": "Specify first chamfer distance",

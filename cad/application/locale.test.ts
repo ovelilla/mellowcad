@@ -2,7 +2,7 @@ import compile from "icu-minify/compile"
 import { describe, expect, it } from "vitest"
 
 import { createHarness } from "../../test/harness"
-import { lineOf, p } from "../../test/builders"
+import { lineOf, p, polylineOf } from "../../test/builders"
 import { ar } from "../locales/ar"
 import { es } from "../locales/es"
 import type { EngineLocale } from "../locales/types"
@@ -446,7 +446,7 @@ describe("Spanish AutoCAD's command language", () => {
     )
     cad.type("10").enter().click(p(100, 0))
     expect(cad.state().commandLine.prompt).toBe(
-      "EMPALME Designe segundo objeto o use la tecla Mayús para aplicar esquina o [RAdio]:"
+      "EMPALME Designe el segundo objeto o use la tecla Mayús para aplicar esquina o [Radio]:"
     )
     expect(cad.commandLog()[1]).toBe(
       "Parámetros actuales: Modo = Recortar, Radio = 0.00"
@@ -459,12 +459,32 @@ describe("Spanish AutoCAD's command language", () => {
     answer("P")
     // The sub-prompt spells it Radio, so R alone answers it there.
     expect(cad.state().commandLine.prompt).toBe(
-      "EMPALME Designe polilínea 2D o [Radio]:"
+      "EMPALME Designe una polilínea 2D o [Radio]:"
     )
     answer("R")
     expect(cad.state().commandLine.prompt).toBe(
       "EMPALME Precise radio de empalme <10.00>:"
     )
+  })
+
+  it("reports EMPALME's Polyline in the words of Autodesk's Spanish table", () => {
+    const cad = createHarness({
+      locale: es,
+      entities: [
+        polylineOf([p(0, 0), p(50, 0), p(100, 0), p(100, 100), p(105, 100)]),
+      ],
+    })
+    cad.command("EMPALME")
+    for (const char of "RA") cad.press(char)
+    cad.press("Enter")
+    cad.type("10").enter()
+    cad.press("P")
+    cad.press("Enter")
+    cad.click(p(25, 0))
+    expect(cad.commandLog().slice(-2)).toEqual([
+      "1 línea resulta unida(s) con empalme",
+      "1 resulta paralela(s)    1 resulta demasiado corta(s)",
+    ])
   })
 
   it("asks CHAFLAN's questions in Spanish AutoCAD's words", () => {
@@ -479,24 +499,24 @@ describe("Spanish AutoCAD's command language", () => {
     cad.press("D")
     cad.press("Enter")
     expect(cad.state().commandLine.prompt).toBe(
-      "CHAFLAN Precise primera distancia de chaflán <0.00>:"
+      "CHAFLAN Precise  primera distancia de chaflán <0.00>:"
     )
     cad.type("5").enter()
     expect(cad.state().commandLine.prompt).toBe(
-      "CHAFLAN Precise segunda distancia de chaflán <5.00>:"
+      "CHAFLAN Precise  segunda distancia de chaflán <5.00>:"
     )
     cad.enter().click(p(100, 0))
     expect(cad.state().commandLine.prompt).toBe(
-      "CHAFLAN Designe segunda línea o use la tecla Mayús para aplicar esquina o [Distancia]:"
+      "CHAFLAN Designe la segunda línea o use la tecla Mayús para aplicar esquina o [Distancia]:"
     )
     cad.escape().command("CHAFLAN")
     cad.press("P")
     cad.press("Enter")
     expect(cad.state().commandLine.prompt).toBe(
-      "CHAFLAN Designe polilínea 2D o [Distancia]:"
+      "CHAFLAN Seleccione una polilínea 2D o [Distancia]:"
     )
     expect(cad.commandLog()[1]).toBe(
-      "(Modo Recortar) Primera distancia de chaflán actual = 0.00, Segunda distancia = 0.00"
+      "(Modo Recortar) Primera distancia de chaflán actual  = 0.00, Segunda distancia = 0.00"
     )
   })
 
@@ -504,7 +524,7 @@ describe("Spanish AutoCAD's command language", () => {
     const cad = createHarness({ locale: es })
     cad.command("POLIGONO")
     expect(cad.state().commandLine.prompt).toBe(
-      "POLIGONO Indique el número de lados <4>:"
+      "POLIGONO Indique número de lados <4>:"
     )
     cad.enter()
     expect(cad.state().commandLine.prompt).toBe(
@@ -529,7 +549,7 @@ describe("Spanish AutoCAD's command language", () => {
     )
     cad.click(p(0, 0)).click(p(100, 0))
     expect(cad.state().commandLine.prompt).toBe(
-      "ELIPSE Precise distancia a otro eje o [Rotación]:"
+      "ELIPSE Precise distancia de otro eje o [Rotación]:"
     )
   })
 
