@@ -885,7 +885,7 @@ export const es: EngineLocale = {
         "Fit": "Ajustar",
         "CV": "VC",
         "Chord": "Cuerda",
-        "Square root": "Raíz cuadrada",
+        "Square root": "raíz cuaDrada",
         "Uniform": "Uniforme",
         "start Tangency": "iniciar Tangencia",
         "end Tangency": "finalizar Tangencia",
@@ -1176,7 +1176,6 @@ export const es: EngineLocale = {
       "includedAngle": "Ángulo incluido",
       "splineStartTangent": "Precise tangente inicial",
       "splineEndTangent": "Precise tangente final",
-      "splineCloseTangent": "Precise tangente",
       "splineDegree": "Indique grado de spline",
       "firstCorner": "Primer punto de esquina",
       "otherCorner": "Esquina opuesta",
@@ -1300,6 +1299,18 @@ export const es: EngineLocale = {
       "specifyStartAngle": "Precise ángulo inicial",
       "specifyEndAngleOr": "Precise ángulo final o",
       "specifyIncludedAngleForArc": "Precise ángulo incluido para arco",
+      "specifyFirstPointOr": "Precise primer punto o",
+      "enterSplineCreationMethod": "Introduzca método de creación de spline",
+      "enterKnotParameterization": "Introduzca parametrización de nudos",
+      "knotsChord": "Cuerda",
+      "knotsSquareRoot": "Raíz cuadrada",
+      "knotsUniform": "Uniforme",
+      "enterDegreeOfSpline": "Indique grado de spline",
+      "enterNextPoint": "Especifique punto siguiente",
+      "enterNextPointOr": "Especifique punto siguiente o",
+      "enterThirdPointOr": "Precise el punto siguiente o",
+      "specifyStartTangent": "Precise tangente inicial",
+      "specifyEndTangent": "Precise tangente final",
       "specifyDiameterOfCircle": "Precise diámetro de círculo",
       "specifyFirstEndPointOfDiameter": "Precise primer punto final del diámetro del círculo",
       "specifySecondEndPointOfDiameter": "Precise segundo punto final del diámetro del círculo",
@@ -1904,6 +1915,24 @@ export const es: EngineLocale = {
         ]
       ],
       "invalid": "*No válido*",
+      "splineSettingsFit": [
+        "Parámetros actuales: Método=Ajustar Nudos=",
+        [
+          "knots",
+          1,
+          {
+            "chord": "Cuerda",
+            "sqrtChord": "Raíz cuadrada",
+            "other": "Uniforme"
+          }
+        ]
+      ],
+      "splineSettingsCv": [
+        "Parámetros actuales: Método=VC   Grado=",
+        [
+          "degree"
+        ]
+      ],
       "requiresIntegerBetween": [
         "Requiere un número entero entre ",
         [

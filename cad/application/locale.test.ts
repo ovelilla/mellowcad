@@ -533,6 +533,34 @@ describe("Spanish AutoCAD's command language", () => {
     )
   })
 
+  it("asks SPLINE's questions in Spanish AutoCAD's words", () => {
+    const cad = createHarness({ locale: es })
+    const answer = (keyword: string) => {
+      for (const char of keyword) cad.press(char)
+      cad.press("Enter")
+    }
+    cad.command("SPLINE")
+    expect(cad.state().commandLine.prompt).toBe(
+      "SPLINE Precise primer punto o [Método/Nudos]:"
+    )
+    answer("N")
+    expect(cad.state().commandLine.prompt).toBe(
+      "SPLINE Introduzca parametrización de nudos [Cuerda/raíz cuaDrada/Uniforme] <Cuerda>:"
+    )
+    answer("D")
+    expect(cad.commandLog().at(-1)).toBe(
+      "Parámetros actuales: Método=Ajustar Nudos=Raíz cuadrada"
+    )
+    cad.click(p(0, 0))
+    expect(cad.state().commandLine.prompt).toBe(
+      "SPLINE Especifique punto siguiente o [iniciar Tangencia]:"
+    )
+    cad.click(p(100, 0))
+    expect(cad.state().commandLine.prompt).toBe(
+      "SPLINE Precise el punto siguiente o [finalizar Tangencia/desHacer]:"
+    )
+  })
+
   it("answers CIRCULO's 3P typed whole and Diámetro by its D", () => {
     const cad = createHarness({ locale: es })
     cad.command("CIRCULO")

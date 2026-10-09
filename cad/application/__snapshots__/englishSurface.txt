@@ -910,139 +910,198 @@ lweight "Lineweight" LW
   properties: -
   cycling: -
 > SPLINE
-  prompt: SPLINE [Method/Knots]:
+  prompt: SPLINE Specify first point or [Method/Knots]:
   asks: "First point"
+  tip: Specify first point or
   dyn: "X,Y"=""||*
   options: [M] Method, [K] Knots
   command| SPL SPLINE
+  info| Current settings: Method=Fit   Knots=Chord
 > K
-  prompt: SPLINE [Chord/Square root/Uniform]:
+  prompt: SPLINE Enter knot parameterization [Chord/Square root/Uniform] <Chord>:
   asks: 
+  tip: Enter knot parameterization
   dyn: 
   options: [C] Chord, [S] Square root, [U] Uniform
+  prompt| Specify first point or [Method/Knots]: K
 > S
-  prompt: SPLINE [Method/Knots]:
+  prompt: SPLINE Specify first point or [Method/Knots]:
   asks: "First point"
+  tip: Specify first point or
   dyn: "X,Y"=""||*
   options: [M] Method, [K] Knots
+  prompt| Enter knot parameterization [Chord/Square root/Uniform] <Chord>: S
+  info| Current settings: Method=Fit   Knots=Square root
 > first
-  prompt: SPLINE [start Tangency]:
+  prompt: SPLINE Enter next point or [start Tangency]:
   asks: "Length" "Angle"
+  tip: Enter next point or
   dyn: "Length"=""|0.00|mm* "Angle"=""||°
   options: [T] start Tangency
+  prompt| Specify first point or [Method/Knots]:
 > T
-  prompt: SPLINE:
+  prompt: SPLINE Specify start tangent:
   asks: "Specify start tangent"
+  tip: Specify start tangent:
   dyn: "X,Y"=""||*
   options: -
+  prompt| Enter next point or [start Tangency]: T
 > start tangent
-  prompt: SPLINE [start Tangency]:
+  prompt: SPLINE Enter next point or [start Tangency]:
   asks: "Length" "Angle"
+  tip: Enter next point or
   dyn: "Length"=""|0.00|mm* "Angle"=""||°
   options: [T] start Tangency
+  prompt| Specify start tangent:
 > second
-  prompt: SPLINE [end Tangency/Undo]:
+  prompt: SPLINE Enter next point or [end Tangency/Undo]:
   options: [T] end Tangency, [U] Undo
+  prompt| Enter next point or [start Tangency]:
 > third
-  prompt: SPLINE [end Tangency/Undo/Close]:
+  prompt: SPLINE Enter next point or [end Tangency/Undo/Close]:
   options: [T] end Tangency, [U] Undo, [C] Close
+  prompt| Enter next point or [end Tangency/Undo]:
 > U
-  prompt: SPLINE [end Tangency/Undo]:
+  prompt: SPLINE Enter next point or [end Tangency/Undo]:
   options: [T] end Tangency, [U] Undo
+  prompt| Enter next point or [end Tangency/Undo/Close]: U
 > third again
-  prompt: SPLINE [end Tangency/Undo/Close]:
+  prompt: SPLINE Enter next point or [end Tangency/Undo/Close]:
   options: [T] end Tangency, [U] Undo, [C] Close
+  prompt| Enter next point or [end Tangency/Undo]:
 > T
-  prompt: SPLINE:
+  prompt: SPLINE Specify end tangent:
   asks: "Specify end tangent"
+  tip: Specify end tangent:
   dyn: "X,Y"=""||*
   options: -
+  prompt| Enter next point or [end Tangency/Undo/Close]: T
 > end tangent
   prompt: Command:
   asks: -
+  tip: -
   dyn: -
+  prompt| Specify end tangent:
 > select it
   properties: Spline (1) [Misc: Method=Fit, Degree=3, Knot parameterization=Square root, Closed=No]
 > escape
   properties: -
 > SPLINE CV
-  prompt: SPLINE [Method/Knots]:
+  prompt: SPLINE Specify first point or [Method/Knots]:
   asks: "First point"
+  tip: Specify first point or
   dyn: "X,Y"=""||*
   options: [M] Method, [K] Knots
   command| SPLINE
+  info| Current settings: Method=Fit   Knots=Square root
 > M
-  prompt: SPLINE [Fit/CV]:
+  prompt: SPLINE Enter spline creation method [Fit/CV] <Fit>:
   asks: 
+  tip: Enter spline creation method
   dyn: 
   options: [F] Fit, [CV] CV
+  prompt| Specify first point or [Method/Knots]: M
 > CV
-  prompt: SPLINE [Method/Degree]:
+  prompt: SPLINE Specify first point or [Method/Degree]:
   asks: "First point"
+  tip: Specify first point or
   dyn: "X,Y"=""||*
   options: [M] Method, [D] Degree
+  prompt| Enter spline creation method [Fit/CV] <Fit>: CV
+  info| Current settings: Method=CV   Degree=3
 > D
-  prompt: SPLINE:
+  prompt: SPLINE Enter degree of spline <3>:
   asks: "Enter spline degree"
+  tip: Enter degree of spline
   dyn: "Enter spline degree"=""|3|*
   options: -
+  prompt| Specify first point or [Method/Degree]: D
 > degree
   dyn: "Enter spline degree"="2"|3|*
 > enter
-  prompt: SPLINE [Method/Degree]:
+  prompt: SPLINE Specify first point or [Method/Degree]:
   asks: "First point"
+  tip: Specify first point or
   dyn: "X,Y"=""||*
   options: [M] Method, [D] Degree
+  prompt| Enter degree of spline <3>: 2
+  info| Current settings: Method=CV   Degree=2
 > first
-  prompt: SPLINE:
+  prompt: SPLINE Enter next point:
   asks: "Length" "Angle"
+  tip: Enter next point:
   dyn: "Length"=""|0.00|mm* "Angle"=""||°
   options: -
+  prompt| Specify first point or [Method/Degree]:
 > second
-  prompt: SPLINE [Close/Undo]:
-  options: [C] Close, [U] Undo
+  prompt: SPLINE Enter next point or [Undo]:
+  tip: Enter next point or
+  options: [U] Undo
+  prompt| Enter next point:
 > third
+  prompt: SPLINE Enter next point or [Close/Undo]:
+  options: [C] Close, [U] Undo
+  prompt| Enter next point or [Undo]:
 > C
   prompt: Command:
   asks: -
+  tip: -
   dyn: -
   options: -
+  prompt| Enter next point or [Close/Undo]: C
 > SPLINE closed fit
-  prompt: SPLINE [Method/Degree]:
+  prompt: SPLINE Specify first point or [Method/Degree]:
   asks: "First point"
+  tip: Specify first point or
   dyn: "X,Y"=""||*
   options: [M] Method, [D] Degree
   command| SPLINE
+  info| Current settings: Method=CV   Degree=2
 > M
-  prompt: SPLINE [Fit/CV]:
+  prompt: SPLINE Enter spline creation method [Fit/CV] <CV>:
   asks: 
+  tip: Enter spline creation method
   dyn: 
   options: [F] Fit, [CV] CV
+  prompt| Specify first point or [Method/Degree]: M
 > F
-  prompt: SPLINE [Method/Knots]:
+  prompt: SPLINE Specify first point or [Method/Knots]:
   asks: "First point"
+  tip: Specify first point or
   dyn: "X,Y"=""||*
   options: [M] Method, [K] Knots
+  prompt| Enter spline creation method [Fit/CV] <CV>: F
+  info| Current settings: Method=Fit   Knots=Square root
 > first
-  prompt: SPLINE [start Tangency]:
+  prompt: SPLINE Enter next point or [start Tangency]:
   asks: "Length" "Angle"
+  tip: Enter next point or
   dyn: "Length"=""|0.00|mm* "Angle"=""||°
   options: [T] start Tangency
+  prompt| Specify first point or [Method/Knots]:
 > second
-  prompt: SPLINE [end Tangency/Undo]:
+  prompt: SPLINE Enter next point or [end Tangency/Undo]:
   options: [T] end Tangency, [U] Undo
+  prompt| Enter next point or [start Tangency]:
 > third
-  prompt: SPLINE [end Tangency/Undo/Close]:
+  prompt: SPLINE Enter next point or [end Tangency/Undo/Close]:
   options: [T] end Tangency, [U] Undo, [C] Close
+  prompt| Enter next point or [end Tangency/Undo]:
 > C
-  prompt: SPLINE:
-  asks: "Specify tangent"
-  dyn: "X,Y"=""||*
-  options: -
-> enter keeps it periodic
   prompt: Command:
   asks: -
+  tip: -
   dyn: -
+  options: -
+  prompt| Enter next point or [end Tangency/Undo/Close]: C
+> enter keeps it periodic
+  prompt: SPLINE Specify first point or [Method/Knots]:
+  asks: "First point"
+  tip: Specify first point or
+  dyn: "X,Y"=""||*
+  options: [M] Method, [K] Knots
+  command| SPLINE
+  info| Current settings: Method=Fit   Knots=Square root
 
 ## RECTANG and POLYGON
 > start

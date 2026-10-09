@@ -852,7 +852,6 @@ export const en: EngineCatalog = {
       "includedAngle": "Included angle",
       "splineStartTangent": "Specify start tangent",
       "splineEndTangent": "Specify end tangent",
-      "splineCloseTangent": "Specify tangent",
       "splineDegree": "Enter spline degree",
       "firstCorner": "First corner",
       "otherCorner": "Other corner",
@@ -976,6 +975,18 @@ export const en: EngineCatalog = {
       "specifyStartAngle": "Specify start angle",
       "specifyEndAngleOr": "Specify end angle or",
       "specifyIncludedAngleForArc": "Specify included angle for arc",
+      "specifyFirstPointOr": "Specify first point or",
+      "enterSplineCreationMethod": "Enter spline creation method",
+      "enterKnotParameterization": "Enter knot parameterization",
+      "knotsChord": "Chord",
+      "knotsSquareRoot": "Square root",
+      "knotsUniform": "Uniform",
+      "enterDegreeOfSpline": "Enter degree of spline",
+      "enterNextPoint": "Enter next point",
+      "enterNextPointOr": "Enter next point or",
+      "enterThirdPointOr": "Enter next point or",
+      "specifyStartTangent": "Specify start tangent",
+      "specifyEndTangent": "Specify end tangent",
       "specifyDiameterOfCircle": "Specify diameter of circle",
       "specifyFirstEndPointOfDiameter": "Specify first end point of circle's diameter",
       "specifySecondEndPointOfDiameter": "Specify second end point of circle's diameter",
@@ -1580,6 +1591,24 @@ export const en: EngineCatalog = {
         ]
       ],
       "invalid": "*Invalid*",
+      "splineSettingsFit": [
+        "Current settings: Method=Fit   Knots=",
+        [
+          "knots",
+          1,
+          {
+            "chord": "Chord",
+            "sqrtChord": "Square root",
+            "other": "Uniform"
+          }
+        ]
+      ],
+      "splineSettingsCv": [
+        "Current settings: Method=CV   Degree=",
+        [
+          "degree"
+        ]
+      ],
       "requiresIntegerBetween": [
         "Requires an integer between ",
         [

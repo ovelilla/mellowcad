@@ -572,6 +572,53 @@ describe("ELLIPSE", () => {
 })
 
 describe("SPLINE", () => {
+  it("reports its settings and asks AutoCAD's questions", () => {
+    const cad = createHarness()
+
+    cad.command("SPLINE")
+    expect(cad.state().commandLine.prompt).toBe(
+      "SPLINE Specify first point or [Method/Knots]:"
+    )
+    cad.option("Knots")
+    expect(cad.state().commandLine.prompt).toBe(
+      "SPLINE Enter knot parameterization [Chord/Square root/Uniform] <Chord>:"
+    )
+    cad.option("Square root").option("Method")
+    expect(cad.state().commandLine.prompt).toBe(
+      "SPLINE Enter spline creation method [Fit/CV] <Fit>:"
+    )
+    cad.option("CV").option("Degree")
+    expect(cad.state().commandLine.prompt).toBe(
+      "SPLINE Enter degree of spline <3>:"
+    )
+    cad.type("2").enter().option("Method").option("Fit").click(p(0, 0))
+    expect(cad.state().commandLine.prompt).toBe(
+      "SPLINE Enter next point or [start Tangency]:"
+    )
+    cad.click(p(100, 0)).click(p(200, 50)).enter()
+
+    expect(cad.commandLog()).toEqual([
+      "SPLINE",
+      "Current settings: Method=Fit   Knots=Chord",
+      "Specify first point or [Method/Knots]: K",
+      "Enter knot parameterization [Chord/Square root/Uniform] <Chord>: S",
+      "Current settings: Method=Fit   Knots=Square root",
+      "Specify first point or [Method/Knots]: M",
+      "Enter spline creation method [Fit/CV] <Fit>: CV",
+      "Current settings: Method=CV   Degree=3",
+      "Specify first point or [Method/Degree]: D",
+      "Enter degree of spline <3>: 2",
+      "Current settings: Method=CV   Degree=2",
+      "Specify first point or [Method/Degree]: M",
+      "Enter spline creation method [Fit/CV] <CV>: F",
+      "Current settings: Method=Fit   Knots=Square root",
+      "Specify first point or [Method/Knots]:",
+      "Enter next point or [start Tangency]:",
+      "Enter next point or [end Tangency/Undo]:",
+      "Enter next point or [end Tangency/Undo/Close]:",
+    ])
+  })
+
   it("draws one fit spline through the picks, ended by Enter", () => {
     const cad = createHarness()
     const picks = [p(0, 0), p(100, 60), p(200, -20), p(300, 40)]
@@ -648,12 +695,13 @@ describe("SPLINE", () => {
     expect(cad.entityCount).toBe(0)
   })
 
-  it("closes a fit spline periodically when Enter takes the default tangent", () => {
+  it("closes a fit spline periodically and ends, asking no tangent", () => {
     const cad = createHarness()
 
     cad.command("SPLINE").click(p(0, 0)).click(p(100, 0)).click(p(50, 80))
-    cad.option("Close").enter()
+    cad.option("Close")
 
+    expect(cad.activeToolId()).toBe("select")
     const spline = cad.only<SplineEntity>("spline")
     expect(spline.closed).toBe(true)
     expect(spline.startTangent).toBeUndefined()
@@ -697,11 +745,21 @@ describe("SPLINE", () => {
     expect(cad.only<SplineEntity>("spline").degree).toBe(1)
   })
 
-  it("closes a CV spline at once, from the second vertex on", () => {
+  it("closes a CV spline at once, from the third vertex on", () => {
     const cad = createHarness()
 
     cad.command("SPLINE").option("Method").option("CV")
-    cad.click(p(0, 0)).click(p(100, 0)).click(p(50, 80)).option("Close")
+    cad.click(p(0, 0))
+    expect(cad.state().commandLine.prompt).toBe("SPLINE Enter next point:")
+    cad.click(p(100, 0))
+    expect(cad.state().commandLine.prompt).toBe(
+      "SPLINE Enter next point or [Undo]:"
+    )
+    cad.click(p(50, 80))
+    expect(cad.state().commandLine.prompt).toBe(
+      "SPLINE Enter next point or [Close/Undo]:"
+    )
+    cad.option("Close")
 
     const spline = cad.only<SplineEntity>("spline")
     expect(spline.closed).toBe(true)
@@ -713,7 +771,7 @@ describe("SPLINE", () => {
     const cad = createHarness()
 
     cad.command("SPLINE").click(p(0, 0)).click(p(100, 0)).click(p(50, 80))
-    cad.option("Close").enter().selectAll()
+    cad.option("Close").selectAll()
 
     const rows = cad.state().properties.info!.groups.flatMap((g) => g.rows)
     expect(rows.map((row) => [row.id, row.value])).toEqual([

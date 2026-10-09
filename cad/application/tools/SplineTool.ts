@@ -27,6 +27,7 @@ import {
   PointerInput,
   Tool,
   ToolContext,
+  ToolQuestion,
 } from "./Tool"
 import { acuteHeading, headingInUcs } from "./ucsHeading"
 import { pointAlongCursor, showRise } from "./directDistance"
@@ -51,7 +52,6 @@ type SplineToolState =
   | ({ readonly phase: "next" } & Drawn)
   | ({ readonly phase: "startTangent" } & Drawn)
   | ({ readonly phase: "endTangent" } & Drawn)
-  | ({ readonly phase: "closeTangent" } & Drawn)
 
 type DrawingState = Extract<SplineToolState, Drawn>
 
@@ -59,6 +59,13 @@ const KNOTS_BY_KEYWORD: Record<string, KnotParameterization> = {
   Chord: "chord",
   "Square root": "sqrtChord",
   Uniform: "uniform",
+}
+
+/** How the knot prompt's `<default>` names each, as `Current settings:` does. */
+const KNOTS_PHRASE: Record<KnotParameterization, PromptId> = {
+  chord: "knotsChord",
+  sqrtChord: "knotsSquareRoot",
+  uniform: "knotsUniform",
 }
 
 const RUBBER: StrokeStyle = { color: THEME.rubberBand, width: 1 }
@@ -71,7 +78,8 @@ const FRAME: StrokeStyle = { color: THEME.crosshair, width: 1 }
  *
  * Method, Knots and Degree are SPLMETHOD, SPLKNOTS and SPLDEGREE: "Not-saved",
  * so they live on the tool for the session and the next spline starts from the
- * last one's settings. toLerance and Object are not offered (see
+ * last one's settings, which `Current settings:` reports at the start and
+ * after each change. toLerance and Object are not offered (see
  * `docs/autocad-coverage.md`).
  */
 export class SplineTool implements Tool {
@@ -89,6 +97,44 @@ export class SplineTool implements Tool {
     ctx.setCursor("crosshair")
     ctx.selection.clear()
     this.enterFirst(ctx)
+  }
+
+  /** WHY no toLerance or Object: they are not offered, so not listed. */
+  question(): PromptId | ToolQuestion {
+    const state = this.state
+    switch (state.phase) {
+      case "first":
+        return "specifyFirstPointOr"
+      case "method":
+        return "enterSplineCreationMethod"
+      case "knots":
+        return {
+          id: "enterKnotParameterization",
+          enter: KNOTS_PHRASE[this.knots],
+        }
+      case "degree":
+        return { id: "enterDegreeOfSpline", enter: { count: this.degree } }
+      case "next":
+        // WHY three ids for one English text: Spanish words the question
+        // after two points otherwise (`Precise el punto siguiente o`).
+        if (state.points.length === 2) return "enterThirdPointOr"
+        return this.commandOptions().length > 0
+          ? "enterNextPointOr"
+          : "enterNextPoint"
+      case "startTangent":
+        return "specifyStartTangent"
+      case "endTangent":
+        return "specifyEndTangent"
+    }
+  }
+
+  defaultOption(): string | null {
+    switch (this.state.phase) {
+      case "method":
+        return this.method === "cv" ? "CV" : "Fit"
+      default:
+        return null
+    }
   }
 
   onDeactivate(ctx: ToolContext): void {
@@ -148,7 +194,10 @@ export class SplineTool implements Tool {
       case "next": {
         const count = state.points.length
         if (this.method === "cv") {
-          return count >= 2 ? [{ id: "Close" }, { id: "Undo" }] : []
+          if (count < 2) return []
+          return count === 2
+            ? [{ id: "Undo" }]
+            : [{ id: "Close" }, { id: "Undo" }]
         }
         if (count === 1) return [{ id: "start Tangency" }]
         return count === 2
@@ -230,21 +279,10 @@ export class SplineTool implements Tool {
         ctx.requestRender()
         return "continue"
       case "Close":
-        if (this.method === "cv") {
-          this.state = { ...state, closed: true }
-          return "end"
-        }
-        // A fit spline asks for the one tangent at the closure, which replaces
-        // any start tangent; Enter leaves it periodic.
-        this.state = {
-          ...state,
-          phase: "closeTangent",
-          closed: true,
-          startTangent: null,
-        }
-        this.openPointInput(ctx, "splineCloseTangent")
-        ctx.requestRender()
-        return "continue"
+        // Periodic, and the end of the command: AutoCAD 2023 asks no tangent
+        // at the closure, whatever its older `Specify tangent:` suggests.
+        this.state = { ...state, closed: true, startTangent: null }
+        return "end"
       default:
         return "unhandled"
     }
@@ -257,7 +295,6 @@ export class SplineTool implements Tool {
       case "endTangent":
         return lastPoint(state)
       case "startTangent":
-      case "closeTangent":
         return state.points[0]
       default:
         return null
@@ -290,7 +327,7 @@ export class SplineTool implements Tool {
     if (preview.points.length >= 2) {
       out.push(...entityScenePrimitive(ctx.viewport, preview, RUBBER))
     }
-    if (state.phase === "startTangent" || state.phase === "closeTangent") {
+    if (state.phase === "startTangent") {
       out.push(segment(state.points[0], cursor))
     } else if (state.phase === "endTangent") {
       out.push(segment(lastPoint(state), cursor))
@@ -324,11 +361,6 @@ export class SplineTool implements Tool {
       case "endTangent":
         return this.splineOf(
           { ...state, endTangent: V.sub(cursor, lastPoint(state)) },
-          ctx
-        )
-      case "closeTangent":
-        return this.splineOf(
-          { ...state, startTangent: V.sub(cursor, state.points[0]) },
           ctx
         )
     }
@@ -388,15 +420,6 @@ export class SplineTool implements Tool {
         ctx.endCommand()
         return
       }
-      case "closeTangent": {
-        const direction = V.sub(point, state.points[0])
-        this.state = {
-          ...state,
-          startTangent: V.length(direction) > 1e-9 ? direction : null,
-        }
-        ctx.endCommand()
-        return
-      }
       default:
         return
     }
@@ -433,7 +456,13 @@ export class SplineTool implements Tool {
     ctx.execute(new AddEntityCommand(withCurrentProperties(spline, ctx)))
   }
 
+  /** The first point's prompt, after the settings it starts from. */
   private enterFirst(ctx: ToolContext): void {
+    ctx.report(
+      this.method === "cv"
+        ? ctx.text.message("splineSettingsCv", { degree: this.degree })
+        : ctx.text.message("splineSettingsFit", { knots: this.knots })
+    )
     this.state = { phase: "first" }
     this.openPointInput(ctx, "firstPoint")
   }
