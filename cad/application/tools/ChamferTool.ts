@@ -4,15 +4,10 @@ import {
   createLine,
   carryOverrides,
   carryPlane,
-  createPolyline,
-  polylineBulge,
-  polylineSegmentGeometries,
-  polylineSegments,
   Entity,
   EntityId,
   LineEntity,
   PolylineEntity,
-  PolylineSegmentGeometry,
 } from "../../domain/entities"
 import {
   ReplaceEntitiesCommand,
@@ -21,10 +16,26 @@ import {
 import { DynamicInputSession } from "../input/DynamicInput"
 import { formatLength } from "../../domain/units"
 import type { PromptId } from "../../locales/types"
+import type { MessageId } from "../EngineText"
 import { ScenePrimitive, StrokeStyle } from "../../scene/types"
 import { THEME } from "../../scene/theme"
 import { entityScenePrimitive } from "../SceneBuilder"
 import { LineCorner, LinePick, lineCorner } from "./lineCorner"
+import {
+  CornerCut,
+  PolylineCorner,
+  cutBetweenSegments,
+  SegmentsRefusal,
+  cutPolylineCorners,
+  reportSkipped,
+} from "./polylineCorners"
+import {
+  CornerObject,
+  SegmentPick,
+  cornerEntity,
+  isSegment,
+  pickCornerObject,
+} from "./cornerObjects"
 import {
   CommandOption,
   CommandOptionOutcome,
@@ -42,52 +53,60 @@ import {
  * an arc.
  *
  * ```
- *   ┌── [D] Distance ──► first distance ──► second distance ──┐
- *   ▼                                                   │
- *  first ──click line──► second ──click line──► chamfer + Select
- *    └── click polyline ──► chamfer every corner + Select
+ *        [D] Distance ──► first distance ──► second distance ──► back
+ *  first ──click line──► second ──click line──► chamfer ──► end, or first (Multiple)
+ *    └──[P] Polyline──► polyline ──click polyline──► every corner ──► end, or first
  * ```
  *
  * The distances are measured from the corner along each line's *picked* side,
- * so where you click decides which of the four corners is cut. They persist for
+ * so where you click decides which of the four corners is cut. Two straight
+ * segments of one polyline are objects too, bevelled within it. They persist for
  * the tool's session, like AutoCAD's, and both being 0 simply joins the lines
- * at their intersection — as Shift on the second pick does (apply corner). Clicking a **polyline** bevels every eligible straight
- * corner at once (AutoCAD's Polyline option).
- *
- * The whole edit is one command, so a single undo reverts the chamfer.
+ * at their intersection — as Shift on the second pick does (apply corner).
+ * Multiple keeps asking until Enter, and Undo takes back the last chamfer made
+ * in the command; each is one command, folded into the command's undo step.
  */
 
 type ChamferState =
-  /** Awaiting the first object: a line, or a polyline (hover-highlighted). */
-  | { readonly phase: "first"; readonly hover: Entity | null }
-  /** First line chosen; awaiting the second (a live preview tracks the cursor). */
+  /** Awaiting the first object (hover-highlighted). */
+  | { readonly phase: "first"; readonly hover: CornerObject | null }
+  /** First object chosen; awaiting the second (a live preview tracks the cursor). */
   | {
       readonly phase: "second"
-      readonly line1: LineEntity
+      readonly first: CornerObject
       /** Where the first line was clicked — picks which corner to cut. */
       readonly pick1: LinePick
-      readonly hover: LineEntity | null
+      readonly hover: CornerObject | null
       readonly cursor: LinePick
       /** Shift is held: the second pick applies a corner. */
       readonly corner: boolean
     }
+  /** Polyline: awaiting the 2D polyline whose every corner is bevelled. */
+  | { readonly phase: "polyline"; readonly hover: PolylineEntity | null }
 
 export class ChamferTool implements Tool {
   readonly id = "chamfer"
 
   private state: ChamferState = { phase: "first", hover: null }
-  /** Cut distances along the first/second line, kept across the session. */
+  /** CHAMFERA and CHAMFERB, kept for the session. */
   private distance1 = 0
   private distance2 = 0
   /** Which distance Distance is asking (object picks paused), or null. */
   private askingDistance: "first" | "second" | null = null
+  private multiple = false
+  /**
+   * What Undo takes back, newest last: a chamfer, or distances given in the
+   * command (the ones they replaced).
+   */
+  private steps: (Distances | "chamfer")[] = []
+  /** The distances when Distance was chosen, until both are given. */
+  private replaced: Distances = { distance1: 0, distance2: 0 }
   private lastScreen: Vec2 | null = null
 
   onActivate(ctx: ToolContext): void {
     ctx.setCursor("crosshair")
     ctx.selection.clear()
-    this.state = { phase: "first", hover: null }
-    this.askingDistance = null
+    this.reset()
     // TRIMMODE is always 1 and CHAMMODE 0 (Distance) here.
     const settings = ctx.document.getSettings()
     ctx.report(
@@ -96,12 +115,12 @@ export class ChamferTool implements Tool {
         dist2: formatLength(this.distance2, settings),
       })
     )
-    this.openSelectPrompt(ctx)
+    this.openKeywordPrompt(ctx)
   }
 
   /**
-   * WHY `[Distance]` alone: Undo, Polyline, Angle, Trim, mEthod and Multiple
-   * are not offered (a polyline picked first is chamfered whole).
+   * WHY no Angle, Trim or mEthod: CHAMMODE is always Distance and TRIMMODE 1
+   * here, so they are not offered.
    */
   question(): PromptId | ToolQuestion {
     if (this.askingDistance === "first") {
@@ -110,14 +129,18 @@ export class ChamferTool implements Tool {
     if (this.askingDistance === "second") {
       return { id: "specifySecondChamferDistance", enter: this.distance1 }
     }
-    return this.state.phase === "first"
-      ? "selectFirstLineOr"
-      : "selectSecondLineOrApplyCornerOr"
+    switch (this.state.phase) {
+      case "first":
+        return "selectFirstLineOr"
+      case "second":
+        return "selectSecondLineOrApplyCornerOr"
+      case "polyline":
+        return "select2dPolylineOr"
+    }
   }
 
   onDeactivate(ctx: ToolContext): void {
-    this.state = { phase: "first", hover: null }
-    this.askingDistance = null
+    this.reset()
     ctx.dynamicInput.close()
   }
 
@@ -129,15 +152,24 @@ export class ChamferTool implements Tool {
       return
     }
 
-    if (this.state.phase === "first") {
-      this.state = { phase: "first", hover: this.pickFirst(input, ctx) }
-    } else {
-      this.state = {
-        ...this.state,
-        hover: this.pickLine(input, ctx, this.state.line1.id),
-        cursor: { world: input.world, screen: input.screen },
-        corner: input.shiftKey,
-      }
+    switch (this.state.phase) {
+      case "first":
+        this.state = {
+          phase: "first",
+          hover: pickCornerObject(ctx, input.world, null),
+        }
+        break
+      case "second":
+        this.state = {
+          ...this.state,
+          hover: pickCornerObject(ctx, input.world, this.state.first),
+          cursor: { world: input.world, screen: input.screen },
+          corner: input.shiftKey,
+        }
+        break
+      case "polyline":
+        this.state = { phase: "polyline", hover: this.pickPolyline(input, ctx) }
+        break
     }
     ctx.requestRender()
   }
@@ -145,37 +177,45 @@ export class ChamferTool implements Tool {
   onPointerDown(input: PointerInput, ctx: ToolContext): void {
     if (input.button !== 0 || this.askingDistance) return
 
-    if (this.state.phase === "first") {
-      const hit = this.pickFirst(input, ctx)
-      if (!hit) return
-      if (hit.type === "polyline") {
-        this.commitPolylineChamfer(hit, ctx)
+    switch (this.state.phase) {
+      case "first": {
+        const hit = pickCornerObject(ctx, input.world, null)
+        if (!hit) return
+        const pick = { world: input.world, screen: input.screen }
+        this.state = {
+          phase: "second",
+          first: hit,
+          pick1: pick,
+          hover: null,
+          cursor: pick,
+          corner: false,
+        }
+        ctx.requestRender()
         return
       }
-      if (hit.type !== "line") return
-      const pick = { world: input.world, screen: input.screen }
-      this.state = {
-        phase: "second",
-        line1: hit,
-        pick1: pick,
-        hover: null,
-        cursor: pick,
-        corner: false,
+      case "second": {
+        const { first, pick1 } = this.state
+        const second = pickCornerObject(ctx, input.world, first)
+        if (!second) return
+        if (isSegment(first) && isSegment(second)) {
+          const cut = this.chamferSegments(first, second, input.shiftKey)
+          if (typeof cut !== "string") {
+            this.done(new UpdateEntityCommand(cut), ctx)
+          } else {
+            this.refuse(REFUSALS[cut], ctx)
+          }
+        } else if (!isSegment(first) && !isSegment(second)) {
+          const pick2 = { world: input.world, screen: input.screen }
+          this.commitChamfer(first, pick1, second, pick2, input.shiftKey, ctx)
+        }
+        return
       }
-      ctx.requestRender()
-      return
+      case "polyline": {
+        const poly = this.pickPolyline(input, ctx)
+        if (poly) this.commitPolyline(poly, ctx)
+        return
+      }
     }
-
-    const line2 = this.pickLine(input, ctx, this.state.line1.id)
-    if (!line2) return
-    this.commitChamfer(
-      this.state.line1,
-      this.state.pick1,
-      line2,
-      { world: input.world, screen: input.screen },
-      input.shiftKey,
-      ctx
-    )
   }
 
   onKeyDown(input: KeyInput, ctx: ToolContext): void {
@@ -183,15 +223,45 @@ export class ChamferTool implements Tool {
   }
 
   commandOptions(): readonly CommandOption[] {
-    return this.askingDistance ? [] : [{ id: "Distance" }]
+    if (this.askingDistance) return []
+    switch (this.state.phase) {
+      case "first":
+        return this.multiple
+          ? [{ id: "Undo" }, { id: "Polyline" }, { id: "Distance" }]
+          : [
+              { id: "Undo" },
+              { id: "Polyline" },
+              { id: "Distance" },
+              { id: "Multiple" },
+            ]
+      case "second":
+      case "polyline":
+        return [{ id: "Distance" }]
+    }
   }
 
   invokeOption(id: string, ctx: ToolContext): CommandOptionOutcome {
-    if (id === "Distance" && !this.askingDistance) {
+    if (this.askingDistance) return "unhandled"
+    if (id === "Distance") {
+      this.replaced = { distance1: this.distance1, distance2: this.distance2 }
       this.askDistance("first", ctx)
       return "continue"
     }
-    return "unhandled"
+    if (this.state.phase !== "first") return "unhandled"
+    switch (id) {
+      case "Undo":
+        this.undoStep(ctx)
+        return "continue"
+      case "Polyline":
+        this.state = { phase: "polyline", hover: null }
+        ctx.requestRender()
+        return "continue"
+      case "Multiple":
+        this.multiple = true
+        return "continue"
+      default:
+        return "unhandled"
+    }
   }
 
   wantsSnap(): boolean {
@@ -206,18 +276,34 @@ export class ChamferTool implements Tool {
 
     if (this.state.phase === "first") {
       const h = this.state.hover
-      return h ? draw(h, hoverStroke) : []
+      return h ? draw(cornerEntity(h), hoverStroke) : []
+    }
+    if (this.state.phase === "polyline") {
+      const h = this.state.hover
+      return h ? draw(h, selectedStroke) : []
     }
 
-    const { line1, pick1, hover, cursor } = this.state
+    const { first, pick1, hover, cursor } = this.state
+    if (isSegment(first)) {
+      const cut =
+        hover &&
+        isSegment(hover) &&
+        this.chamferSegments(first, hover, this.state.corner)
+      return cut && typeof cut !== "string"
+        ? draw(cut, hoverStroke)
+        : draw(first.poly, selectedStroke)
+    }
+    const line1 = first
     const prims = draw(line1, selectedStroke)
-    if (!hover) return prims
+    if (!hover || isSegment(hover)) return prims
 
     const corner = lineCorner(line1, pick1, hover, cursor, viewport)
     const chamfered =
       corner &&
       this.chamfer(corner, line1, hover, this.state.corner, ctx, PREVIEW_ID)
-    if (!chamfered) return [...prims, ...draw(hover, hoverStroke)]
+    if (!chamfered || chamfered === "tooLarge") {
+      return [...prims, ...draw(hover, hoverStroke)]
+    }
     for (const entity of chamfered) {
       prims.push(
         ...draw(
@@ -229,6 +315,13 @@ export class ChamferTool implements Tool {
       )
     }
     return prims
+  }
+
+  private reset(): void {
+    this.state = { phase: "first", hover: null }
+    this.askingDistance = null
+    this.multiple = false
+    this.steps = []
   }
 
   /**
@@ -243,7 +336,7 @@ export class ChamferTool implements Tool {
     sharp: boolean,
     ctx: ToolContext,
     bevelId?: EntityId
-  ): Entity[] | null {
+  ): Entity[] | "tooLarge" | null {
     const result = chamferLines(
       corner.line1.start,
       corner.line1.end,
@@ -267,7 +360,7 @@ export class ChamferTool implements Tool {
       result.direction2,
       result.point2
     )
-    if (!trimmed1 || !trimmed2) return null
+    if (!trimmed1 || !trimmed2) return "tooLarge"
     const built: Entity[] = [trimmed1, trimmed2]
     if (!V.equals(result.point1, result.point2)) {
       // AutoCAD puts the bevel on the lines' shared layer, or the current layer
@@ -303,45 +396,124 @@ export class ChamferTool implements Tool {
     }
     const chamfered = this.chamfer(corner, line1, line2, sharp, ctx)
     if (!chamfered) return // parallel or collinear — keep prompting
-    ctx.execute(new ReplaceEntitiesCommand([line1.id, line2.id], chamfered))
+    if (chamfered === "tooLarge") {
+      this.refuse("chamferDistanceTooLarge", ctx)
+      return
+    }
+    this.done(new ReplaceEntitiesCommand([line1.id, line2.id], chamfered), ctx)
+  }
+
+  /**
+   * A corner that cannot be made: said, and Multiple asks for the first
+   * object again; otherwise the input is `*Invalid*` and the command ends.
+   */
+  private refuse(message: MessageId, ctx: ToolContext): void {
+    ctx.report(ctx.text.message(message), "error")
+    if (this.multiple) {
+      this.state = { phase: "first", hover: null }
+      ctx.requestRender()
+      return
+    }
+    ctx.report(ctx.text.message("invalid"), "error")
     ctx.dynamicInput.close()
     ctx.endCommand()
   }
 
   /**
-   * AutoCAD's CHAMFER Polyline: bevels every eligible corner of `poly` with the
-   * current distances in one step, then ends the command.
+   * Polyline: bevels every corner where two line segments meet, the first
+   * distance along the segment coming into it.
    */
-  private commitPolylineChamfer(poly: PolylineEntity, ctx: ToolContext): void {
-    ctx.dynamicInput.close()
-    if (this.distance1 > 0 || this.distance2 > 0) {
-      const chamfered = chamferPolyline(poly, this.distance1, this.distance2)
-      if (chamfered) ctx.execute(new UpdateEntityCommand(chamfered))
+  private commitPolyline(poly: PolylineEntity, ctx: ToolContext): void {
+    const result = cutPolylineCorners(poly, {
+      lines: (corner) => this.bevel(corner, false),
+    })
+    ctx.report(ctx.text.message("linesChamfered", { count: result.cut }))
+    reportSkipped(result, ctx)
+    if (result.polyline) {
+      this.done(new UpdateEntityCommand(result.polyline), ctx)
+    } else if (this.multiple) {
+      this.state = { phase: "first", hover: null }
+      ctx.requestRender()
+    } else {
+      ctx.dynamicInput.close()
+      ctx.endCommand()
     }
+  }
+
+  /** Executes a chamfer; the command ends, or Multiple asks for the next. */
+  private done(
+    command: ReplaceEntitiesCommand | UpdateEntityCommand,
+    ctx: ToolContext
+  ): void {
+    this.steps.push("chamfer")
+    if (this.multiple) {
+      this.state = { phase: "first", hover: null }
+      ctx.execute(command)
+      ctx.requestRender()
+      return
+    }
+    ctx.execute(command)
+    ctx.dynamicInput.close()
     ctx.endCommand()
   }
 
-  /** The visible line nearest the cursor, excluding `excludeId`, or `null`. */
-  private pickLine(
+  /**
+   * Undo takes back the last chamfer or distances of this command, and only
+   * those; back at its start AutoCAD says so.
+   */
+  private undoStep(ctx: ToolContext): void {
+    const step = this.steps.pop()
+    if (step === "chamfer") ctx.undo()
+    else if (step)
+      ({ distance1: this.distance1, distance2: this.distance2 } = step)
+    if (this.steps.length === 0) {
+      ctx.report(ctx.text.message("commandCompletelyUndone"))
+    }
+    ctx.requestRender()
+  }
+
+  /**
+   * Two segments of one polyline bevelled within it, the first distance along
+   * the one picked first; or why they cannot be.
+   */
+  private chamferSegments(
+    first: SegmentPick,
+    second: SegmentPick,
+    sharp: boolean
+  ): PolylineEntity | SegmentsRefusal {
+    return cutBetweenSegments(first.poly, first.index, second.index, (corner) =>
+      this.bevel(corner, sharp)
+    )
+  }
+
+  /** A polyline corner bevelled at the two distances (none when `sharp`). */
+  private bevel(
+    { from, corner, to }: PolylineCorner,
+    sharp: boolean
+  ): CornerCut | null {
+    const cut = chamferLines(
+      from,
+      corner,
+      corner,
+      to,
+      from,
+      to,
+      sharp ? 0 : this.distance1,
+      sharp ? 0 : this.distance2
+    )
+    return cut && { entry: cut.point1, exit: cut.point2, bulge: 0 }
+  }
+
+  private pickPolyline(
     input: PointerInput,
-    ctx: ToolContext,
-    excludeId: string | null
-  ): LineEntity | null {
+    ctx: ToolContext
+  ): PolylineEntity | null {
     const hit = ctx.pick(input.world)
-    if (!hit || hit.type !== "line" || hit.id === excludeId) return null
-    return hit
+    return hit?.type === "polyline" ? hit : null
   }
 
-  /** The first-pick target under the cursor: a line, or a polyline. */
-  private pickFirst(input: PointerInput, ctx: ToolContext): Entity | null {
-    const hit = ctx.pick(input.world)
-    if (!hit) return null
-    if (hit.type === "line" || hit.type === "polyline") return hit
-    return null
-  }
-
-  /** Opens the keyword-only object-selection prompt (shows the [D] chip). */
-  private openSelectPrompt(ctx: ToolContext): void {
+  /** A prompt answered by a pick or a keyword, its keywords on the tooltip. */
+  private openKeywordPrompt(ctx: ToolContext): void {
     const session: DynamicInputSession = { fields: [], commit: () => {} }
     ctx.dynamicInput.open(session)
     ctx.dynamicInput.setPosition(this.lastScreen ?? { x: 0, y: 0 })
@@ -370,6 +542,7 @@ export class ChamferTool implements Tool {
     ctx.requestRender()
   }
 
+  /** Then the prompt Distance was chosen at, asked again. */
   private setDistance(
     which: "first" | "second",
     value: number,
@@ -382,10 +555,22 @@ export class ChamferTool implements Tool {
       return
     }
     if (valid) this.distance2 = value
+    this.steps.push(this.replaced)
     this.askingDistance = null
-    this.openSelectPrompt(ctx)
+    this.openKeywordPrompt(ctx)
     ctx.requestRender()
   }
+}
+
+interface Distances {
+  readonly distance1: number
+  readonly distance2: number
+}
+
+const REFUSALS: Readonly<Record<SegmentsRefusal, MessageId>> = {
+  parallel: "linesParallel",
+  diverge: "linesDiverge",
+  tooLarge: "chamferDistanceTooLarge",
 }
 
 const hoverStroke: StrokeStyle = { color: THEME.entityHover, width: 2 }
@@ -396,8 +581,8 @@ const PREVIEW_ID = "chamfer-preview"
 /**
  * Rebuilds `line` trimmed/extended to end at `cut`: the endpoint on the picked
  * side (farther from the corner along `dir`) is kept, the other becomes the cut
- * point. Preserves the line's id and layer. `null` when the result would be
- * zero-length.
+ * point. Preserves the line's id and layer. `null` when the cut point is not
+ * short of the kept end: the line would vanish.
  */
 function trimLine(
   line: LineEntity,
@@ -409,116 +594,6 @@ function trimLine(
     V.dot(V.sub(line.end, corner), dir) >= V.dot(V.sub(line.start, corner), dir)
       ? line.end
       : line.start
-  if (V.equals(keepEnd, cut)) return null
+  if (V.dot(V.sub(keepEnd, cut), dir) <= 0) return null
   return carryOverrides(line, createLine(keepEnd, cut, line.layerId, line.id))
-}
-
-/** A resolved corner bevel: the two cut points that replace the vertex. */
-interface CornerChamfer {
-  readonly entry: Vec2 // cut point toward the previous vertex
-  readonly exit: Vec2 // cut point toward the next vertex
-  readonly entryDist: number
-  readonly exitDist: number
-}
-
-/**
- * Bevels every eligible corner of `poly`, returning a new polyline (same id)
- * where each cut vertex became two. Only straight-to-straight corners are
- * chamfered — a corner touching an arc segment has no single intersection to
- * measure the distances from — and corners are skipped when a cut would overrun
- * an adjacent segment (so neighbouring bevels never collide). Returns `null`
- * when nothing changes.
- */
-function chamferPolyline(
-  poly: PolylineEntity,
-  distance1: number,
-  distance2: number
-): PolylineEntity | null {
-  const v = poly.vertices
-  const n = v.length
-  if (n < 3) return null
-  const geoms = polylineSegmentGeometries(poly)
-  const segLen = polylineSegments(poly).map(([a, b]) => V.distance(a, b))
-
-  const isCorner = (i: number) => (poly.closed ? true : i > 0 && i < n - 1)
-  const chamfers: (CornerChamfer | null)[] = v.map((_, i) =>
-    isCorner(i)
-      ? cornerChamfer(poly, i, distance1, distance2, segLen, geoms)
-      : null
-  )
-
-  // Drop neighbouring bevels that would overrun their shared segment.
-  for (let j = 0; j < segLen.length; j++) {
-    const a = chamfers[j]
-    const b = chamfers[(j + 1) % n]
-    if (a && b && a.exitDist + b.entryDist > segLen[j] + 1e-9) {
-      chamfers[j] = null
-      chamfers[(j + 1) % n] = null
-    }
-  }
-
-  if (chamfers.every((c) => c === null)) return null
-
-  const pts: Vec2[] = []
-  const bulges: number[] = []
-  for (let i = 0; i < n; i++) {
-    const c = chamfers[i]
-    const hasOut = poly.closed || i < n - 1
-    // Any segment next to a bevel is straight (arc corners are never bevelled),
-    // so the original bulges carry over untouched.
-    const outBulge = polylineBulge(poly, i)
-    if (c) {
-      pts.push(c.entry)
-      bulges.push(0) // the bevel itself
-      pts.push(c.exit)
-      if (hasOut) bulges.push(outBulge)
-    } else {
-      pts.push(v[i])
-      if (hasOut) bulges.push(outBulge)
-    }
-  }
-  return carryOverrides(
-    poly,
-    createPolyline(pts, poly.closed, poly.layerId, bulges, poly.id)
-  )
-}
-
-/** The bevel for corner `i`, or `null` when it isn't eligible. */
-function cornerChamfer(
-  poly: PolylineEntity,
-  i: number,
-  distance1: number,
-  distance2: number,
-  segLen: readonly number[],
-  geoms: readonly PolylineSegmentGeometry[]
-): CornerChamfer | null {
-  const n = poly.vertices.length
-  const incoming = (i - 1 + n) % n
-  const outgoing = i
-  if (geoms[incoming].kind !== "line" || geoms[outgoing].kind !== "line") {
-    return null
-  }
-
-  const corner = poly.vertices[i]
-  const prev = poly.vertices[(i - 1 + n) % n]
-  const next = poly.vertices[(i + 1) % n]
-  const result = chamferLines(
-    prev,
-    corner,
-    corner,
-    next,
-    prev,
-    next,
-    distance1,
-    distance2
-  )
-  if (!result) return null
-
-  const entryDist = V.distance(result.point1, corner)
-  const exitDist = V.distance(result.point2, corner)
-  if (entryDist < 1e-9 && exitDist < 1e-9) return null
-  if (entryDist > segLen[incoming] + 1e-9) return null
-  if (exitDist > segLen[outgoing] + 1e-9) return null
-
-  return { entry: result.point1, exit: result.point2, entryDist, exitDist }
 }

@@ -1056,7 +1056,10 @@ export const es: EngineLocale = {
         "Multiple": "múLtiple"
       },
       "CHAMFER": {
-        "Distance": "Distancia"
+        "Undo": "desHacer",
+        "Polyline": "Polilínea",
+        "Distance": "Distancia",
+        "Multiple": "múLtiple"
       },
       "BREAK": {
         "First point": "Primer punto"
@@ -1879,6 +1882,25 @@ export const es: EngineLocale = {
       "linesParallel": "Las líneas son paralelas",
       "linesDiverge": "Las líneas divergen",
       "filletRadiusTooLarge": "El radio de empalme es demasiado grande",
+      "chamferDistanceTooLarge": "La distancia de chaflán es demasiado grande",
+      "linesChamfered": [
+        [
+          "count",
+          2,
+          {
+            "one": [
+              "Se ha achaflanado ",
+              0,
+              " línea"
+            ],
+            "other": [
+              "Se han achaflanado ",
+              0,
+              " líneas"
+            ]
+          }
+        ]
+      ],
       "linesFilleted": [
         [
           "count",

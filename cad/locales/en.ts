@@ -1564,6 +1564,23 @@ export const en: EngineCatalog = {
       "linesParallel": "Lines are parallel",
       "linesDiverge": "Lines diverge",
       "filletRadiusTooLarge": "Fillet radius is too large",
+      "chamferDistanceTooLarge": "Chamfer distance is too large",
+      "linesChamfered": [
+        [
+          "count",
+          2,
+          {
+            "one": [
+              0,
+              " line was chamfered"
+            ],
+            "other": [
+              0,
+              " lines were chamfered"
+            ]
+          }
+        ]
+      ],
       "linesFilleted": [
         [
           "count",

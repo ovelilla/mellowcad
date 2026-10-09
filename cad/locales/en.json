@@ -594,7 +594,12 @@
         "Radius": "Radius",
         "Multiple": "Multiple"
       },
-      "CHAMFER": { "Distance": "Distance" },
+      "CHAMFER": {
+        "Undo": "Undo",
+        "Polyline": "Polyline",
+        "Distance": "Distance",
+        "Multiple": "Multiple"
+      },
       "BREAK": { "First point": "First point" },
       "AREA": { "Undo": "Undo" },
       "ZOOM": {
@@ -918,6 +923,8 @@
       "linesParallel": "Lines are parallel",
       "linesDiverge": "Lines diverge",
       "filletRadiusTooLarge": "Fillet radius is too large",
+      "chamferDistanceTooLarge": "Chamfer distance is too large",
+      "linesChamfered": "{count, plural, one {# line was chamfered} other {# lines were chamfered}}",
       "linesFilleted": "{count, plural, one {# line was filleted} other {# lines were filleted}}",
       "nothingJoined": "0 objects joined, {count, plural, one {# object} other {# objects}} discarded from the operation",
       "currentViewDirection": "Current view direction: VIEWDIR={x},{y},{z}",

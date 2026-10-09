@@ -469,7 +469,7 @@ describe("Spanish AutoCAD's command language", () => {
     })
     cad.command("CHAFLAN")
     expect(cad.state().commandLine.prompt).toBe(
-      "CHAFLAN Designe la primera línea o [Distancia]:"
+      "CHAFLAN Designe la primera línea o [desHacer/Polilínea/Distancia/múLtiple]:"
     )
     cad.press("D")
     cad.press("Enter")
@@ -483,6 +483,12 @@ describe("Spanish AutoCAD's command language", () => {
     cad.enter().click(p(100, 0))
     expect(cad.state().commandLine.prompt).toBe(
       "CHAFLAN Designe segunda línea o use la tecla Mayús para aplicar esquina o [Distancia]:"
+    )
+    cad.escape().command("CHAFLAN")
+    cad.press("P")
+    cad.press("Enter")
+    expect(cad.state().commandLine.prompt).toBe(
+      "CHAFLAN Designe polilínea 2D o [Distancia]:"
     )
     expect(cad.commandLog()[1]).toBe(
       "(Modo Recortar) Primera distancia de chaflán actual = 0.00, Segunda distancia = 0.00"

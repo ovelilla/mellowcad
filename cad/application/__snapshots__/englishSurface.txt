@@ -2553,11 +2553,11 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
   options: -
   prompt| Select first object or [Undo/Polyline/Radius]:
 > CHAMFER
-  prompt: CHAMFER Select first line or [Distance]:
+  prompt: CHAMFER Select first line or [Undo/Polyline/Distance/Multiple]:
   asks: 
   tip: Select first line or
   dyn: 
-  options: [D] Distance
+  options: [U] Undo, [P] Polyline, [D] Distance, [M] Multiple
   command| CHA CHAMFER
   info| (TRIM mode) Current chamfer Dist1 = 0.00, Dist2 = 0.00
 > D
@@ -2566,7 +2566,7 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
   tip: Specify first chamfer distance
   dyn: "First distance"=""|0.00|mm*
   options: -
-  prompt| Select first line or [Distance]: D
+  prompt| Select first line or [Undo/Polyline/Distance/Multiple]: D
 > first distance
   dyn: "First distance"="10"|0.00|mm*
 > enter
@@ -2576,16 +2576,17 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
   dyn: "Second distance"=""|10.00|mm*
   prompt| Specify first chamfer distance <0.00>: 10
 > enter
-  prompt: CHAMFER Select first line or [Distance]:
+  prompt: CHAMFER Select first line or [Undo/Polyline/Distance/Multiple]:
   asks: 
   tip: Select first line or
   dyn: 
-  options: [D] Distance
+  options: [U] Undo, [P] Polyline, [D] Distance, [M] Multiple
   prompt| Specify second chamfer distance <10.00>:
 > first
   prompt: CHAMFER Select second line or shift-select to apply corner or [Distance]:
   tip: Select second line or shift-select to apply corner or
-  prompt| Select first line or [Distance]:
+  options: [D] Distance
+  prompt| Select first line or [Undo/Polyline/Distance/Multiple]:
 > second
   prompt: Command:
   asks: -
@@ -2593,6 +2594,27 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
   dyn: -
   options: -
   prompt| Select second line or shift-select to apply corner or [Distance]:
+> CHAMFER
+  prompt: CHAMFER Select first line or [Undo/Polyline/Distance/Multiple]:
+  asks: 
+  tip: Select first line or
+  dyn: 
+  options: [U] Undo, [P] Polyline, [D] Distance, [M] Multiple
+  command| CHA CHAMFER
+  info| (TRIM mode) Current chamfer Dist1 = 10.00, Dist2 = 10.00
+> P
+  prompt: CHAMFER Select 2D polyline or [Distance]:
+  tip: Select 2D polyline or
+  options: [D] Distance
+  prompt| Select first line or [Undo/Polyline/Distance/Multiple]: P
+> polyline
+  prompt: Command:
+  asks: -
+  tip: -
+  dyn: -
+  options: -
+  prompt| Select 2D polyline or [Distance]:
+  info| 0 lines were chamfered
 
 ## EXPLODE JOIN
 > start

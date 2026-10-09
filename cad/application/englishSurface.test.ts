@@ -886,6 +886,9 @@ describe("the engine's English surface", () => {
           .do("enter", (c) => c.enter())
           .do("first", (c) => c.click(at(100, 0)))
           .do("second", (c) => c.click(at(0, 100), { shiftKey: true }))
+          .do("CHAMFER", (c) => c.command("CHA"))
+          .do("P", (c) => answer(c, "P"))
+          .do("polyline", (c) => c.click(at(-250, 100)))
     )
     walk(
       "EXPLODE JOIN",

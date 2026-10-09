@@ -629,7 +629,10 @@
         "Multiple": "múLtiple"
       },
       "CHAMFER": {
-        "Distance": "Distancia"
+        "Undo": "desHacer",
+        "Polyline": "Polilínea",
+        "Distance": "Distancia",
+        "Multiple": "múLtiple"
       },
       "BREAK": {
         "First point": "Primer punto"
@@ -958,6 +961,8 @@
       "linesParallel": "Las líneas son paralelas",
       "linesDiverge": "Las líneas divergen",
       "filletRadiusTooLarge": "El radio de empalme es demasiado grande",
+      "chamferDistanceTooLarge": "La distancia de chaflán es demasiado grande",
+      "linesChamfered": "{count, plural, one {Se ha achaflanado # línea} other {Se han achaflanado # líneas}}",
       "linesFilleted": "{count, plural, one {Se ha empalmado # línea} other {Se han empalmado # líneas}}",
       "nothingJoined": "0 objetos unidos, {count, plural, one {# objeto descartado} other {# objetos descartados}} de la operación",
       "currentViewDirection": "Dirección de vista actual:  VIEWDIR={x},{y},{z}",

@@ -687,7 +687,7 @@ describe("CHAMFER", () => {
 
     cad.command("CHAMFER")
     expect(cad.state().commandLine.prompt).toBe(
-      "CHAMFER Select first line or [Distance]:"
+      "CHAMFER Select first line or [Undo/Polyline/Distance/Multiple]:"
     )
     cad.option("Distance")
     expect(cad.state().commandLine.prompt).toBe(
@@ -710,10 +710,10 @@ describe("CHAMFER", () => {
     expect(cad.commandLog()).toEqual([
       "CHAMFER",
       "(TRIM mode) Current chamfer Dist1 = 0.00, Dist2 = 0.00",
-      "Select first line or [Distance]: D",
+      "Select first line or [Undo/Polyline/Distance/Multiple]: D",
       "Specify first chamfer distance <0.00>: 30",
       "Specify second chamfer distance <30.00>:",
-      "Select first line or [Distance]:",
+      "Select first line or [Undo/Polyline/Distance/Multiple]:",
       "Select second line or shift-select to apply corner or [Distance]:",
     ])
     cad.command("CHAMFER")
@@ -764,7 +764,7 @@ describe("CHAMFER", () => {
     expect(endpoints(bevel!)).toBeCloseToPoints([p(0, 60), p(40, 0)])
   })
 
-  it("bevels every corner of a polyline", () => {
+  it("Polyline bevels every corner of a 2D polyline", () => {
     const cad = createHarness({
       entities: [
         polylineOf([p(-100, -60), p(100, -60), p(100, 60), p(-100, 60)], {
@@ -779,14 +779,74 @@ describe("CHAMFER", () => {
       .option("Distance")
       .type("20")
       .enter()
-      .type("20")
+      .type("10")
       .enter()
-      .click(p(0, -60))
+      .option("Polyline")
+    expect(cad.state().commandLine.prompt).toBe(
+      "CHAMFER Select 2D polyline or [Distance]:"
+    )
+    cad.click(p(0, -60))
 
     const poly = cad.byId<PolylineEntity>("P1")
+    // The first distance runs along the segment coming into each corner.
+    expect(poly.vertices.slice(0, 2)).toBeCloseToPoints([
+      p(-90, -60),
+      p(80, -60),
+    ])
     expect(poly.vertices).toHaveLength(8)
     // A bevel is straight: no bulges anywhere.
     expect(poly.bulges).toBeUndefined()
+    expect(cad.commandLog().slice(-2)).toEqual([
+      "Select 2D polyline or [Distance]:",
+      "4 lines were chamfered",
+    ])
+  })
+
+  it("bevels two segments of a polyline, the first distance on the first picked", () => {
+    const cad = createHarness({
+      entities: [polylineOf([p(0, 100), p(0, 0), p(100, 0)], { id: "P1" })],
+    })
+
+    cad.command("CHAMFER").option("Distance").type("20").enter()
+    cad.type("10").enter().click(p(50, 0))
+    expect(cad.byId<PolylineEntity>("P1").vertices).toHaveLength(3)
+    cad.click(p(0, 50))
+
+    expect(cad.byId<PolylineEntity>("P1").vertices).toBeCloseToPoints([
+      p(0, 100),
+      p(0, 10),
+      p(20, 0),
+      p(100, 0),
+    ])
+  })
+
+  it("Multiple keeps asking until Enter, and Undo takes back the last chamfer", () => {
+    const cad = createHarness({
+      entities: [
+        ...corner,
+        lineOf(p(300, 0), p(500, 0), { id: "L3" }),
+        lineOf(p(400, -50), p(400, 200), { id: "L4" }),
+      ],
+    })
+
+    cad.command("CHAMFER").option("Distance").type("20").enter().enter()
+    cad.option("Multiple")
+    expect(cad.state().commandLine.prompt).toBe(
+      "CHAMFER Select first line or [Undo/Polyline/Distance]:"
+    )
+    cad.click(p(100, 0)).click(p(0, 100))
+    cad.click(p(450, 0)).click(p(400, 100))
+    expect(cad.entityCount).toBe(6)
+    cad.option("Undo")
+    expect(cad.entityCount).toBe(5)
+    expect(endpoints(cad.byId<LineEntity>("L3"))).toBeCloseToPoints([
+      p(300, 0),
+      p(500, 0),
+    ])
+    cad.enter()
+    expect(cad.activeToolId()).toBe("select")
+    cad.undo()
+    expect(cad.entityCount).toBe(4)
   })
 })
 
