@@ -412,8 +412,9 @@ describe("FILLET and CHAMFER of lines in a tilted plane", () => {
     cad
       .command("CHAMFER")
       .option("Distance")
-      .type("10", "dist1")
-      .type("10", "dist2")
+      .type("10")
+      .enter()
+      .type("10")
       .enter()
     cad.click({ x: 60, y: 0, z: 0 }).click({ x: 0, y: 0, z: 60 })
 

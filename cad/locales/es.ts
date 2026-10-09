@@ -1311,7 +1311,11 @@ export const es: EngineLocale = {
       "selectObjectToExtendOrShiftSelectToTrim": "Seleccione un objeto que alargar o use la tecla Mayús y seleccione para recortar",
       "selectFirstObjectOr": "Designe el primer objeto o",
       "selectSecondObjectOrApplyCornerOr": "Designe segundo objeto o use la tecla Mayús para aplicar esquina o",
-      "specifyFilletRadius": "Precise radio de empalme"
+      "specifyFilletRadius": "Precise radio de empalme",
+      "selectFirstLineOr": "Designe la primera línea o",
+      "selectSecondLineOrApplyCornerOr": "Designe segunda línea o use la tecla Mayús para aplicar esquina o",
+      "specifyFirstChamferDistance": "Precise primera distancia de chaflán",
+      "specifySecondChamferDistance": "Precise segunda distancia de chaflán"
     },
     "format": {
       "idle": "Comando",
@@ -1425,6 +1429,16 @@ export const es: EngineLocale = {
         "Parámetros actuales: Modo = Recortar, Radio = ",
         [
           "radius"
+        ]
+      ],
+      "chamferSettings": [
+        "(Modo Recortar) Primera distancia de chaflán actual = ",
+        [
+          "dist1"
+        ],
+        ", Segunda distancia = ",
+        [
+          "dist2"
         ]
       ],
       "offsetSettings": [

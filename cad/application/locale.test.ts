@@ -445,6 +445,33 @@ describe("Spanish AutoCAD's command language", () => {
     )
   })
 
+  it("asks CHAFLAN's questions in Spanish AutoCAD's words", () => {
+    const cad = createHarness({
+      locale: es,
+      entities: [lineOf(p(-50, 0), p(200, 0)), lineOf(p(0, -50), p(0, 200))],
+    })
+    cad.command("CHAFLAN")
+    expect(cad.state().commandLine.prompt).toBe(
+      "CHAFLAN Designe la primera línea o [Distancia]:"
+    )
+    cad.press("D")
+    cad.press("Enter")
+    expect(cad.state().commandLine.prompt).toBe(
+      "CHAFLAN Precise primera distancia de chaflán <0.00>:"
+    )
+    cad.type("5").enter()
+    expect(cad.state().commandLine.prompt).toBe(
+      "CHAFLAN Precise segunda distancia de chaflán <5.00>:"
+    )
+    cad.enter().click(p(100, 0))
+    expect(cad.state().commandLine.prompt).toBe(
+      "CHAFLAN Designe segunda línea o use la tecla Mayús para aplicar esquina o [Distancia]:"
+    )
+    expect(cad.commandLog()[1]).toBe(
+      "(Modo Recortar) Primera distancia de chaflán actual = 0.00, Segunda distancia = 0.00"
+    )
+  })
+
   it("answers CIRCULO's 3P typed whole and Diámetro by its D", () => {
     const cad = createHarness({ locale: es })
     cad.command("CIRCULO")

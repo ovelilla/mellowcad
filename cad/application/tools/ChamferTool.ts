@@ -19,6 +19,8 @@ import {
   UpdateEntityCommand,
 } from "../commands/entityCommands"
 import { DynamicInputSession } from "../input/DynamicInput"
+import { formatLength } from "../../domain/units"
+import type { PromptId } from "../../locales/types"
 import { ScenePrimitive, StrokeStyle } from "../../scene/types"
 import { THEME } from "../../scene/theme"
 import { entityScenePrimitive } from "../SceneBuilder"
@@ -30,6 +32,7 @@ import {
   PointerInput,
   Tool,
   ToolContext,
+  ToolQuestion,
 } from "./Tool"
 
 /**
@@ -39,7 +42,7 @@ import {
  * an arc.
  *
  * ```
- *   ┌── [D] Distance ──► type first + second distance ──┐
+ *   ┌── [D] Distance ──► first distance ──► second distance ──┐
  *   ▼                                                   │
  *  first ──click line──► second ──click line──► chamfer + Select
  *    └── click polyline ──► chamfer every corner + Select
@@ -48,7 +51,7 @@ import {
  * The distances are measured from the corner along each line's *picked* side,
  * so where you click decides which of the four corners is cut. They persist for
  * the tool's session, like AutoCAD's, and both being 0 simply joins the lines
- * at their intersection. Clicking a **polyline** bevels every eligible straight
+ * at their intersection — as Shift on the second pick does (apply corner). Clicking a **polyline** bevels every eligible straight
  * corner at once (AutoCAD's Polyline option).
  *
  * The whole edit is one command, so a single undo reverts the chamfer.
@@ -65,6 +68,8 @@ type ChamferState =
       readonly pick1: LinePick
       readonly hover: LineEntity | null
       readonly cursor: LinePick
+      /** Shift is held: the second pick applies a corner. */
+      readonly corner: boolean
     }
 
 export class ChamferTool implements Tool {
@@ -74,28 +79,52 @@ export class ChamferTool implements Tool {
   /** Cut distances along the first/second line, kept across the session. */
   private distance1 = 0
   private distance2 = 0
-  /** True while the distance sub-prompt is open (object picks paused). */
-  private awaitingDistances = false
+  /** Which distance Distance is asking (object picks paused), or null. */
+  private askingDistance: "first" | "second" | null = null
   private lastScreen: Vec2 | null = null
 
   onActivate(ctx: ToolContext): void {
     ctx.setCursor("crosshair")
     ctx.selection.clear()
     this.state = { phase: "first", hover: null }
-    this.awaitingDistances = false
+    this.askingDistance = null
+    // TRIMMODE is always 1 and CHAMMODE 0 (Distance) here.
+    const settings = ctx.document.getSettings()
+    ctx.report(
+      ctx.text.message("chamferSettings", {
+        dist1: formatLength(this.distance1, settings),
+        dist2: formatLength(this.distance2, settings),
+      })
+    )
     this.openSelectPrompt(ctx)
+  }
+
+  /**
+   * WHY `[Distance]` alone: Undo, Polyline, Angle, Trim, mEthod and Multiple
+   * are not offered (a polyline picked first is chamfered whole).
+   */
+  question(): PromptId | ToolQuestion {
+    if (this.askingDistance === "first") {
+      return { id: "specifyFirstChamferDistance", enter: this.distance1 }
+    }
+    if (this.askingDistance === "second") {
+      return { id: "specifySecondChamferDistance", enter: this.distance1 }
+    }
+    return this.state.phase === "first"
+      ? "selectFirstLineOr"
+      : "selectSecondLineOrApplyCornerOr"
   }
 
   onDeactivate(ctx: ToolContext): void {
     this.state = { phase: "first", hover: null }
-    this.awaitingDistances = false
+    this.askingDistance = null
     ctx.dynamicInput.close()
   }
 
   onPointerMove(input: PointerInput, ctx: ToolContext): void {
     this.lastScreen = input.screen
     ctx.dynamicInput.setPosition(input.screen)
-    if (this.awaitingDistances) {
+    if (this.askingDistance) {
       ctx.requestRender()
       return
     }
@@ -107,13 +136,14 @@ export class ChamferTool implements Tool {
         ...this.state,
         hover: this.pickLine(input, ctx, this.state.line1.id),
         cursor: { world: input.world, screen: input.screen },
+        corner: input.shiftKey,
       }
     }
     ctx.requestRender()
   }
 
   onPointerDown(input: PointerInput, ctx: ToolContext): void {
-    if (input.button !== 0 || this.awaitingDistances) return
+    if (input.button !== 0 || this.askingDistance) return
 
     if (this.state.phase === "first") {
       const hit = this.pickFirst(input, ctx)
@@ -130,6 +160,7 @@ export class ChamferTool implements Tool {
         pick1: pick,
         hover: null,
         cursor: pick,
+        corner: false,
       }
       ctx.requestRender()
       return
@@ -142,6 +173,7 @@ export class ChamferTool implements Tool {
       this.state.pick1,
       line2,
       { world: input.world, screen: input.screen },
+      input.shiftKey,
       ctx
     )
   }
@@ -151,12 +183,12 @@ export class ChamferTool implements Tool {
   }
 
   commandOptions(): readonly CommandOption[] {
-    return this.awaitingDistances ? [] : [{ id: "Distance" }]
+    return this.askingDistance ? [] : [{ id: "Distance" }]
   }
 
   invokeOption(id: string, ctx: ToolContext): CommandOptionOutcome {
-    if (id === "Distance" && !this.awaitingDistances) {
-      this.openDistancePrompt(ctx)
+    if (id === "Distance" && !this.askingDistance) {
+      this.askDistance("first", ctx)
       return "continue"
     }
     return "unhandled"
@@ -183,7 +215,8 @@ export class ChamferTool implements Tool {
 
     const corner = lineCorner(line1, pick1, hover, cursor, viewport)
     const chamfered =
-      corner && this.chamfer(corner, line1, hover, ctx, PREVIEW_ID)
+      corner &&
+      this.chamfer(corner, line1, hover, this.state.corner, ctx, PREVIEW_ID)
     if (!chamfered) return [...prims, ...draw(hover, hoverStroke)]
     for (const entity of chamfered) {
       prims.push(
@@ -200,13 +233,14 @@ export class ChamferTool implements Tool {
 
   /**
    * The two lines cut back to the bevel, and the bevel (none when both
-   * distances are 0), back in the frame; `null` when the lines are parallel
+   * distances are 0, or for a `sharp` corner), back in the frame; `null` when the lines are parallel
    * or a cut line would vanish. A preview gives the bevel a fixed `bevelId`.
    */
   private chamfer(
     corner: LineCorner,
     line1: LineEntity,
     line2: LineEntity,
+    sharp: boolean,
     ctx: ToolContext,
     bevelId?: EntityId
   ): Entity[] | null {
@@ -217,8 +251,8 @@ export class ChamferTool implements Tool {
       corner.line2.end,
       corner.pick1,
       corner.pick2,
-      this.distance1,
-      this.distance2
+      sharp ? 0 : this.distance1,
+      sharp ? 0 : this.distance2
     )
     if (!result) return null
     const trimmed1 = trimLine(
@@ -257,6 +291,7 @@ export class ChamferTool implements Tool {
     pick1: LinePick,
     line2: LineEntity,
     pick2: LinePick,
+    sharp: boolean,
     ctx: ToolContext
   ): void {
     const corner = lineCorner(line1, pick1, line2, pick2, ctx.viewport)
@@ -266,7 +301,7 @@ export class ChamferTool implements Tool {
       ctx.requestRender()
       return
     }
-    const chamfered = this.chamfer(corner, line1, line2, ctx)
+    const chamfered = this.chamfer(corner, line1, line2, sharp, ctx)
     if (!chamfered) return // parallel or collinear — keep prompting
     ctx.execute(new ReplaceEntitiesCommand([line1.id, line2.id], chamfered))
     ctx.dynamicInput.close()
@@ -312,29 +347,42 @@ export class ChamferTool implements Tool {
     ctx.dynamicInput.setPosition(this.lastScreen ?? { x: 0, y: 0 })
   }
 
-  /** Both distances in one form; Tab cycles them, Enter accepts (AutoCAD asks
-   * for them in sequence, which the two fields make simultaneous). */
-  private openDistancePrompt(ctx: ToolContext): void {
-    this.awaitingDistances = true
+  /**
+   * Distance asks the first distance, then the second, whose `<default>` is
+   * the first one just given, as AutoCAD's is.
+   */
+  private askDistance(which: "first" | "second", ctx: ToolContext): void {
+    this.askingDistance = which
     const session: DynamicInputSession = {
       fields: [
-        { id: "dist1", prompt: "firstDistance", kind: "distance" },
-        { id: "dist2", prompt: "secondDistance", kind: "distance" },
+        {
+          id: "distance",
+          prompt: which === "first" ? "firstDistance" : "secondDistance",
+          kind: "distance",
+        },
       ],
       commit: (values, commitCtx) =>
-        this.setDistances(values.dist1, values.dist2, commitCtx),
+        this.setDistance(which, values.distance, commitCtx),
     }
     ctx.dynamicInput.open(session)
-    ctx.dynamicInput.setDefault("dist1", this.distance1)
-    ctx.dynamicInput.setDefault("dist2", this.distance2)
+    ctx.dynamicInput.setDefault("distance", this.distance1)
     ctx.dynamicInput.setPosition(this.lastScreen ?? { x: 0, y: 0 })
     ctx.requestRender()
   }
 
-  private setDistances(first: number, second: number, ctx: ToolContext): void {
-    if (Number.isFinite(first) && first >= 0) this.distance1 = first
-    if (Number.isFinite(second) && second >= 0) this.distance2 = second
-    this.awaitingDistances = false
+  private setDistance(
+    which: "first" | "second",
+    value: number,
+    ctx: ToolContext
+  ): void {
+    const valid = Number.isFinite(value) && value >= 0
+    if (which === "first") {
+      if (valid) this.distance1 = value
+      this.askDistance("second", ctx)
+      return
+    }
+    if (valid) this.distance2 = value
+    this.askingDistance = null
     this.openSelectPrompt(ctx)
     ctx.requestRender()
   }

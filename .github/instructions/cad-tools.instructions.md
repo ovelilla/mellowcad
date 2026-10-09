@@ -177,9 +177,12 @@ There is a single session at a time. Patterns in use:
   an `X,Y` / `Dist<Ang` box. Typed expressions (`@30,0`, `100<45`, `#x,y`) arrive via
   `session.commitRaw`, not `resolveValues`.
 - **Keyword-only prompt** — a session with `fields: []` renders just the option chips and leaves
-  focus on the canvas (Mirror's Erase Yes/No, Fillet's radius prompt).
+  focus on the canvas (MIRROR's Erase Yes/No, FILLET's and OFFSET's object prompts). What is
+  typed there goes to the command line, so a harness test answers it with `press` per key and
+  `Enter` (`type` only fills a field).
 - **Multi-field form** — several fields with `setDefault(id, value)` so placeholders show the
-  defaults and Enter commits them all (Array, Chamfer distances). Tab cycles fields.
+  defaults and Enter commits them all (Array). Tab cycles fields. Never for questions AutoCAD
+  asks in turn: CHAMFER's two distances are two prompts, the second's `<default>` the first.
 - **Free-text prompt** — one field of kind `"text"` (TEXT's content, its Justify/Style keywords).
   Its content is never a value: `resolveValues` refuses it so `commitRaw` sees the raw string, the
   coordinate collapse skips it, and **no keyword is dispatched from it** — a letter there is

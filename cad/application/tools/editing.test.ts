@@ -454,14 +454,68 @@ describe("CHAMFER", () => {
     lineOf(p(0, -50), p(0, 200), { id: "L2" }),
   ]
 
+  it("reports its settings and asks AutoCAD's questions", () => {
+    const cad = createHarness({ entities: corner })
+
+    cad.command("CHAMFER")
+    expect(cad.state().commandLine.prompt).toBe(
+      "CHAMFER Select first line or [Distance]:"
+    )
+    cad.option("Distance")
+    expect(cad.state().commandLine.prompt).toBe(
+      "CHAMFER Specify first chamfer distance <0.00>:"
+    )
+    cad.type("30").enter()
+    expect(cad.state().commandLine.prompt).toBe(
+      "CHAMFER Specify second chamfer distance <30.00>:"
+    )
+    cad.enter().click(p(100, 0))
+    expect(cad.state().commandLine.prompt).toBe(
+      "CHAMFER Select second line or shift-select to apply corner or [Distance]:"
+    )
+    cad.click(p(0, 100))
+
+    expect(endpoints(cad.byId<LineEntity>("L2"))).toBeCloseToPoints([
+      p(0, 30),
+      p(0, 200),
+    ])
+    expect(cad.commandLog()).toEqual([
+      "CHAMFER",
+      "(TRIM mode) Current chamfer Dist1 = 0.00, Dist2 = 0.00",
+      "Select first line or [Distance]: D",
+      "Specify first chamfer distance <0.00>: 30",
+      "Specify second chamfer distance <30.00>:",
+      "Select first line or [Distance]:",
+      "Select second line or shift-select to apply corner or [Distance]:",
+    ])
+    cad.command("CHAMFER")
+    expect(cad.commandLog().at(-1)).toBe(
+      "(TRIM mode) Current chamfer Dist1 = 30.00, Dist2 = 30.00"
+    )
+  })
+
+  it("applies a corner when the second line is shift-selected", () => {
+    const cad = createHarness({ entities: corner })
+
+    cad.command("CHAMFER").option("Distance").type("30").enter().enter()
+    cad.click(p(100, 0)).click(p(0, 100), { shiftKey: true })
+
+    expect(cad.entityCount).toBe(2)
+    expect(endpoints(cad.byId<LineEntity>("L1"))).toBeCloseToPoints([
+      p(0, 0),
+      p(200, 0),
+    ])
+  })
+
   it("cuts the corner at the two distances", () => {
     const cad = createHarness({ entities: corner })
 
     cad
       .command("CHAMFER")
       .option("Distance")
-      .type("40", "dist1")
-      .type("60", "dist2")
+      .type("40")
+      .enter()
+      .type("60")
       .enter()
       .click(p(100, 0))
       .click(p(0, 100))
@@ -495,8 +549,9 @@ describe("CHAMFER", () => {
     cad
       .command("CHAMFER")
       .option("Distance")
-      .type("20", "dist1")
-      .type("20", "dist2")
+      .type("20")
+      .enter()
+      .type("20")
       .enter()
       .click(p(0, -60))
 

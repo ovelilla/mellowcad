@@ -53,8 +53,9 @@ describe("FILLET and CHAMFER", () => {
     cad
       .command("CHAMFER")
       .option("Distance")
-      .type("40", "dist1")
-      .type("60", "dist2")
+      .type("40")
+      .enter()
+      .type("60")
       .enter()
       .click(p(100, 0))
       .click(p(0, 100))

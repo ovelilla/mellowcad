@@ -2530,28 +2530,46 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
   options: -
   prompt| Select second object or shift-select to apply corner or [Radius]:
 > CHAMFER
-  prompt: CHAMFER [Distance]:
+  prompt: CHAMFER Select first line or [Distance]:
   asks: 
+  tip: Select first line or
   dyn: 
   options: [D] Distance
   command| CHA CHAMFER
+  info| (TRIM mode) Current chamfer Dist1 = 0.00, Dist2 = 0.00
 > D
-  prompt: CHAMFER:
-  asks: "First distance" "Second distance"
-  dyn: "First distance"=""|0.00|mm* "Second distance"=""|0.00|mm
+  prompt: CHAMFER Specify first chamfer distance <0.00>:
+  asks: "First distance"
+  tip: Specify first chamfer distance
+  dyn: "First distance"=""|0.00|mm*
   options: -
+  prompt| Select first line or [Distance]: D
 > first distance
-  dyn: "First distance"="10"|0.00|mm* "Second distance"=""|0.00|mm
+  dyn: "First distance"="10"|0.00|mm*
 > enter
-  prompt: CHAMFER [Distance]:
+  prompt: CHAMFER Specify second chamfer distance <10.00>:
+  asks: "Second distance"
+  tip: Specify second chamfer distance
+  dyn: "Second distance"=""|10.00|mm*
+  prompt| Specify first chamfer distance <0.00>: 10
+> enter
+  prompt: CHAMFER Select first line or [Distance]:
   asks: 
+  tip: Select first line or
   dyn: 
   options: [D] Distance
-> escape
+  prompt| Specify second chamfer distance <10.00>:
+> first
+  prompt: CHAMFER Select second line or shift-select to apply corner or [Distance]:
+  tip: Select second line or shift-select to apply corner or
+  prompt| Select first line or [Distance]:
+> second
   prompt: Command:
   asks: -
+  tip: -
   dyn: -
   options: -
+  prompt| Select second line or shift-select to apply corner or [Distance]:
 
 ## EXPLODE JOIN
 > start

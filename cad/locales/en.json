@@ -832,7 +832,11 @@
       "selectObjectToExtendOrShiftSelectToTrim": "Select object to extend or shift-select to trim",
       "selectFirstObjectOr": "Select first object or",
       "selectSecondObjectOrApplyCornerOr": "Select second object or shift-select to apply corner or",
-      "specifyFilletRadius": "Specify fillet radius"
+      "specifyFilletRadius": "Specify fillet radius",
+      "selectFirstLineOr": "Select first line or",
+      "selectSecondLineOrApplyCornerOr": "Select second line or shift-select to apply corner or",
+      "specifyFirstChamferDistance": "Specify first chamfer distance",
+      "specifySecondChamferDistance": "Specify second chamfer distance"
     },
     "format": {
       "idle": "Command",
@@ -856,6 +860,7 @@
       "scalingCopy": "Scaling a copy of the selected objects.",
       "trimExtendSettings": "Current settings: Projection=UCS, Edge=None, Mode=Quick",
       "filletSettings": "Current settings: Mode = TRIM, Radius = {radius}",
+      "chamferSettings": "(TRIM mode) Current chamfer Dist1 = {dist1}, Dist2 = {dist2}",
       "offsetSettings": "Current settings: Erase source={erase, select, yes {Yes} other {No}}  Layer={layer, select, current {Current} other {Source}}  OFFSETGAPTYPE=0",
       "objectsFound": "{box, select, yes {Specify opposite corner: } other {}}{found} found{removed, plural, =0 {} other {, # removed}}{hasTotal, select, yes {, {total} total} other {}}",
       "copyModeMultiple": "Current settings:  Copy mode = Multiple",

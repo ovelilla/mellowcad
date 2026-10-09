@@ -871,7 +871,9 @@ describe("the engine's English surface", () => {
           .do("D", (c) => answer(c, "D"))
           .do("first distance", (c) => c.type("10"))
           .do("enter", (c) => c.enter())
-          .do("escape", (c) => c.escape())
+          .do("enter", (c) => c.enter())
+          .do("first", (c) => c.click(at(100, 0)))
+          .do("second", (c) => c.click(at(0, 100), { shiftKey: true }))
     )
     walk(
       "EXPLODE JOIN",

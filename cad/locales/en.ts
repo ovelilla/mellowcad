@@ -1004,7 +1004,11 @@ export const en: EngineCatalog = {
       "selectObjectToExtendOrShiftSelectToTrim": "Select object to extend or shift-select to trim",
       "selectFirstObjectOr": "Select first object or",
       "selectSecondObjectOrApplyCornerOr": "Select second object or shift-select to apply corner or",
-      "specifyFilletRadius": "Specify fillet radius"
+      "specifyFilletRadius": "Specify fillet radius",
+      "selectFirstLineOr": "Select first line or",
+      "selectSecondLineOrApplyCornerOr": "Select second line or shift-select to apply corner or",
+      "specifyFirstChamferDistance": "Specify first chamfer distance",
+      "specifySecondChamferDistance": "Specify second chamfer distance"
     },
     "format": {
       "idle": "Command",
@@ -1120,6 +1124,16 @@ export const en: EngineCatalog = {
         "Current settings: Mode = TRIM, Radius = ",
         [
           "radius"
+        ]
+      ],
+      "chamferSettings": [
+        "(TRIM mode) Current chamfer Dist1 = ",
+        [
+          "dist1"
+        ],
+        ", Dist2 = ",
+        [
+          "dist2"
         ]
       ],
       "offsetSettings": [
