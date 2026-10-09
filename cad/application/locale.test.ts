@@ -355,13 +355,51 @@ describe("Spanish AutoCAD's command language", () => {
     })
     cad.command("DESFASE")
     expect(cad.state().commandLine.prompt).toBe(
-      "DESFASE [punto a Atravesar/Borrar: No/Capa: Origen/Múltiple: DES] <punto a Atravesar>:"
+      "DESFASE Precise distancia de desfase o [punto a Atravesar/Borrar/Capa] <punto a Atravesar>:"
     )
     expect(
       cad.state().commandOptions.map((option) => option.abbreviation)
-    ).toEqual(["A", "B", "C", "M"])
+    ).toEqual(["A", "B", "C"])
     expect(cad.state().dynamicInput?.fields[0].label).toBe(
       "Distancia de desfase"
+    )
+    cad.type("B").enter()
+    expect(cad.state().commandLine.prompt).toBe(
+      "DESFASE ¿Borrar objeto de origen después del desfase? [Sí/No] <No>:"
+    )
+    const answer = (keyword: string) => {
+      for (const char of keyword) cad.press(char)
+      cad.press("Enter")
+    }
+    answer("S")
+    cad.type("C").enter()
+    expect(cad.state().commandLine.prompt).toBe(
+      "DESFASE Indique opción de capa para objetos desfasados [Actual/Origen] <Origen>:"
+    )
+    cad.enter().type("5").enter()
+    expect(cad.state().commandLine.prompt).toBe(
+      "DESFASE Designe objeto a desplazar o [Salir/Deshacer] <Salir>:"
+    )
+    cad.click(p(50, 0))
+    expect(cad.state().commandLine.prompt).toBe(
+      "DESFASE Precise punto en lado de desplazamiento o [Salir/Múltiple/Deshacer] <Salir>:"
+    )
+    answer("M")
+    expect(cad.state().commandLine.prompt).toBe(
+      "DESFASE Precise punto en lado de desplazamiento o [Salir/Deshacer] <siguiente objeto>:"
+    )
+    cad.click(p(50, 10)).enter().escape()
+    cad.command("DESFASE").type("A").enter().click(p(50, 0))
+    expect(cad.state().commandLine.prompt).toBe(
+      "DESFASE Precise punto a atravesar o [Salir/Múltiple/Deshacer] <Salir>:"
+    )
+    expect(cad.commandLog().slice(0, 3)).toEqual([
+      "DESFASE",
+      "Parámetros actuales: Borrar origen=No  Capa=Origen  OFFSETGAPTYPE=0",
+      "Precise distancia de desfase o [punto a Atravesar/Borrar/Capa] <punto a Atravesar>: B",
+    ])
+    expect(cad.commandLog()).toContain(
+      "Parámetros actuales: Borrar origen=Sí  Capa=Origen  OFFSETGAPTYPE=0"
     )
   })
 

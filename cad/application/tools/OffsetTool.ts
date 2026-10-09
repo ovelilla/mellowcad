@@ -26,6 +26,7 @@ import {
   ReplaceEntitiesCommand,
 } from "../commands/entityCommands"
 import { DynamicInputSession } from "../input/DynamicInput"
+import type { PromptId } from "../../locales/types"
 import { ScenePrimitive, StrokeStyle } from "../../scene/types"
 import { THEME } from "../../scene/theme"
 import { arcScenePrimitive, entityScenePrimitive } from "../SceneBuilder"
@@ -35,36 +36,34 @@ import {
   PointerInput,
   Tool,
   ToolContext,
+  ToolQuestion,
 } from "./Tool"
 
 /**
  * The offset tool creates equidistant parallel copies — AutoCAD's OFFSET,
- * modelled as an explicit state machine with two modes:
+ * modelled as an explicit state machine:
  *
  * ```
- *  Distance mode:
- *          type / two clicks             click object          click side
- *  distance ─────────────────► select ───────────────► side ──────────────┐
- *                                 ▲                                         │
- *                                 └─────────────────────────────────────────┘
- *  Through mode ([T] at the distance prompt):
- *                 click object              click through-point
- *  throughSelect ───────────────► throughPoint ──────────────────┐
- *        ▲                                                        │
- *        └────────────────────────────────────────────────────────┘
+ *            [E] / [L] sub-prompt, then back
+ *          ┌──────────────┐
+ *          ▼              │      click object          click side
+ *  distance ──type / two clicks──► select ───────────────► side ──────────┐
+ *     │                              ▲   ([M] keeps stepping out: Multiple) │
+ *     │                              └──────────────────────────────────────┘
+ *     └──[T] / Enter at <Through>──► select ──► through point ──► select …
  * ```
  *
  * In *distance* mode you set a distance (typed or as a two-point span) and then
  * repeatedly pick an object and the side to offset towards. In *through* mode
  * (AutoCAD's Through option) you pick an object and then a point the copy must
  * pass through — the distance is whatever makes the copy land on that point.
- * Both modes loop, staying active until Escape or Enter.
+ * Both loop until Exit (Enter) or Escape; Undo takes back the last copy.
  *
- * Lines offset to a parallel line; circles and arcs to a concentric one. Three
- * session toggles at the distance prompt mirror AutoCAD: **Erase** removes the
- * source after copying, **Layer** puts the copy on the current layer instead of
- * the source's, and **Multiple** keeps stepping copies out from the same object.
- * Nothing is mutated directly: each copy is an {@link AddEntityCommand} (or a
+ * Lines offset to a parallel line; circles and arcs to a concentric one. Erase
+ * and Layer are AutoCAD's own sub-prompts at the distance prompt, reported in
+ * `Current settings:` when the command starts; Multiple belongs to the side
+ * prompt and keeps stepping copies out from the same object. Nothing is
+ * mutated directly: each copy is an {@link AddEntityCommand} (or a
  * {@link ReplaceEntitiesCommand} when Erase replaces the source), so every step
  * is individually undoable.
  */
@@ -90,10 +89,16 @@ type OffsetGeom =
 type OffsetToolState =
   /** Awaiting the offset distance: a typed value or two picked points. */
   | { readonly phase: "distance"; readonly basePoint: Vec2 | null }
-  /** Distance fixed; awaiting the object to offset (hover-highlighted). */
+  /** The Erase or Layer sub-prompt of the distance prompt. */
+  | { readonly phase: "erase" }
+  | { readonly phase: "layer" }
+  /**
+   * Awaiting the object to offset (hover-highlighted); `distance` is null in
+   * Through mode.
+   */
   | {
       readonly phase: "select"
-      readonly distance: number
+      readonly distance: number | null
       /** The object under the cursor, drawn highlighted as a preview. */
       readonly hover: Entity | null
     }
@@ -107,18 +112,26 @@ type OffsetToolState =
       readonly original: Entity
       /** Whether the original has already been erased (Erase, once). */
       readonly erasedOriginal: boolean
+      readonly multiple: boolean
       readonly cursor: Vec2
     }
-  /** Through mode: awaiting the object to offset (hover-highlighted). */
-  | { readonly phase: "throughSelect"; readonly hover: Entity | null }
   /** Through mode: object chosen; awaiting the point the copy passes through. */
   | {
       readonly phase: "throughPoint"
       readonly source: Entity
       /** Whether the source has already been erased (Erase, once). */
       readonly erasedOriginal: boolean
+      readonly multiple: boolean
       readonly cursor: Vec2
     }
+
+/** What one copy changed, for Undo to put back. */
+interface OffsetStep {
+  /** The original the copy was made from, and its source before the copy. */
+  readonly original: Entity
+  readonly source: Entity
+  readonly erasedOriginal: boolean
+}
 
 export class OffsetTool implements Tool {
   readonly id = "offset"
@@ -127,11 +140,15 @@ export class OffsetTool implements Tool {
   private state: OffsetToolState = { phase: "distance", basePoint: null }
   /** Last known screen position, used to place dynamic input on open. */
   private lastScreen: Vec2 | null = null
+  /** The copies made since the command started, newest last (Undo). */
+  private steps: OffsetStep[] = []
 
-  /** Session toggles (AutoCAD's Erase/Layer/Multiple), set at the distance prompt. */
+  /**
+   * Erase source and Layer, which the next OFFSET reports in its `Current
+   * settings:` as it was left, for the session.
+   */
   private erase = false
   private offsetLayer: "source" | "current" = "source"
-  private multiple = false
   /**
    * AutoCAD's OFFSETDIST, the distance prompt's `<default>`: the last distance,
    * or Through while negative (initially -1, and not saved).
@@ -141,24 +158,70 @@ export class OffsetTool implements Tool {
   onActivate(ctx: ToolContext): void {
     ctx.setCursor("crosshair")
     ctx.selection.clear()
-    this.erase = false
-    this.offsetLayer = "source"
-    this.multiple = false
+    this.steps = []
+    // OFFSETGAPTYPE is always 0 here: corners are extended to meet.
+    ctx.report(
+      ctx.text.message("offsetSettings", {
+        erase: this.erase ? "yes" : "no",
+        layer: this.offsetLayer,
+      })
+    )
     this.state = { phase: "distance", basePoint: null }
     this.openDistanceInput(ctx)
   }
 
   onDeactivate(ctx: ToolContext): void {
     this.state = { phase: "distance", basePoint: null }
+    this.steps = []
     ctx.dynamicInput.close()
+  }
+
+  question(): PromptId | ToolQuestion {
+    switch (this.state.phase) {
+      case "distance":
+        if (this.state.basePoint) return "specifySecondPoint"
+        return this.offsetDist < 0
+          ? "specifyOffsetDistanceOr"
+          : { id: "specifyOffsetDistanceOr", enter: this.offsetDist }
+      case "erase":
+        return "eraseSourceObjectAfterOffsetting"
+      case "layer":
+        return "enterLayerOptionForOffsetObjects"
+      case "select":
+        return "selectObjectToOffsetOr"
+      case "side":
+        return this.state.multiple
+          ? { id: "specifyPointOnSideToOffsetOr", enter: "nextObject" }
+          : "specifyPointOnSideToOffsetOr"
+      case "throughPoint":
+        return this.state.multiple
+          ? { id: "specifyThroughPointOr", enter: "nextObject" }
+          : "specifyThroughPointOr"
+    }
+  }
+
+  defaultOption(): string | null {
+    switch (this.state.phase) {
+      case "distance":
+        return !this.state.basePoint && this.offsetDist < 0 ? "Through" : null
+      case "erase":
+        return this.erase ? "Yes" : "No"
+      case "layer":
+        return this.offsetLayer === "current" ? "Current" : "Source"
+      case "select":
+        return "Exit"
+      case "side":
+      case "throughPoint":
+        return this.state.multiple ? null : "Exit"
+    }
   }
 
   onPointerMove(input: PointerInput, ctx: ToolContext): void {
     this.lastScreen = input.screen
+    ctx.dynamicInput.setPosition(input.screen)
 
     switch (this.state.phase) {
       case "distance":
-        ctx.dynamicInput.setPosition(input.screen)
         // Two-point entry: once the base is placed, the live distance tracks
         // the span to the cursor.
         if (this.state.basePoint) {
@@ -171,17 +234,15 @@ export class OffsetTool implements Tool {
       case "side":
         this.state = { ...this.state, cursor: input.world }
         break
-      case "select": {
+      case "select":
         // Preview which object a click would offset (AutoCAD rollover highlight).
         this.state = { ...this.state, hover: this.pickSource(input, ctx) }
         break
-      }
-      case "throughSelect": {
-        this.state = { ...this.state, hover: this.pickSource(input, ctx) }
-        break
-      }
       case "throughPoint":
         this.state = { ...this.state, cursor: input.point }
+        break
+      case "erase":
+      case "layer":
         break
     }
 
@@ -205,85 +266,116 @@ export class OffsetTool implements Tool {
       case "select": {
         const hit = this.pickSource(input, ctx)
         if (!hit) return
-        this.state = {
-          phase: "side",
-          distance: this.state.distance,
-          source: hit,
-          original: hit,
-          erasedOriginal: false,
-          cursor: input.world,
-        }
+        this.state =
+          this.state.distance === null
+            ? {
+                phase: "throughPoint",
+                source: hit,
+                erasedOriginal: false,
+                multiple: false,
+                cursor: input.point,
+              }
+            : {
+                phase: "side",
+                distance: this.state.distance,
+                source: hit,
+                original: hit,
+                erasedOriginal: false,
+                multiple: false,
+                cursor: input.world,
+              }
         ctx.requestRender()
         return
       }
-      case "side": {
+      case "side":
         this.placeOffset(this.state, input.world, ctx)
         return
-      }
-      case "throughSelect": {
-        const hit = this.pickSource(input, ctx)
-        if (!hit) return
-        this.state = {
-          phase: "throughPoint",
-          source: hit,
-          erasedOriginal: false,
-          cursor: input.point,
-        }
-        ctx.requestRender()
-        return
-      }
-      case "throughPoint": {
+      case "throughPoint":
         this.placeThrough(this.state, input.point, ctx)
         return
-      }
+      case "erase":
+      case "layer":
+        return
+    }
+  }
+
+  /**
+   * Enter keeps the sub-prompt's setting, and in Multiple mode goes on to the
+   * `<next object>`; anywhere else it is Exit, which ends the command.
+   */
+  onEnter(ctx: ToolContext): boolean {
+    switch (this.state.phase) {
+      case "erase":
+      case "layer":
+        this.backToDistance(ctx)
+        return true
+      case "side":
+      case "throughPoint":
+        if (!this.state.multiple) return false
+        this.selectNext(ctx)
+        return true
+      case "distance":
+      case "select":
+        return false
     }
   }
 
   commandOptions(): readonly CommandOption[] {
-    // Options live at the distance prompt, alongside the value they modify.
-    // Each shows its current state, like AutoCAD's [Yes/No] toggles.
-    if (this.state.phase === "distance") {
-      return [
-        { id: "Through" },
-        { id: "Erase", value: this.erase ? "Yes" : "No" },
-        {
-          id: "Layer",
-          value: this.offsetLayer === "current" ? "Current" : "Source",
-        },
-        { id: "Multiple", value: this.multiple ? "On" : "Off" },
-      ]
+    switch (this.state.phase) {
+      case "distance":
+        return this.state.basePoint
+          ? []
+          : [{ id: "Through" }, { id: "Erase" }, { id: "Layer" }]
+      case "erase":
+        return [{ id: "Yes" }, { id: "No" }]
+      case "layer":
+        return [{ id: "Current" }, { id: "Source" }]
+      case "select":
+        return [{ id: "Exit" }, { id: "Undo" }]
+      case "side":
+      case "throughPoint":
+        return this.state.multiple
+          ? [{ id: "Exit" }, { id: "Undo" }]
+          : [{ id: "Exit" }, { id: "Multiple" }, { id: "Undo" }]
     }
-    if (this.state.phase === "throughSelect") {
-      return [{ id: "Distance" }]
-    }
-    return []
   }
 
   invokeOption(id: string, ctx: ToolContext): CommandOptionOutcome {
-    if (this.state.phase === "distance") {
+    const phase = this.state.phase
+    if (phase === "distance" && !this.state.basePoint) {
       if (id === "Through") {
         this.enterThrough(ctx)
         return "continue"
       }
-      if (id === "Erase") {
-        this.erase = !this.erase
-        ctx.requestRender()
-        return "continue"
-      }
-      if (id === "Layer") {
-        this.offsetLayer = this.offsetLayer === "source" ? "current" : "source"
-        ctx.requestRender()
-        return "continue"
-      }
-      if (id === "Multiple") {
-        this.multiple = !this.multiple
-        ctx.requestRender()
+      if (id === "Erase" || id === "Layer") {
+        this.state = { phase: id === "Erase" ? "erase" : "layer" }
+        this.openKeywordPrompt(ctx)
         return "continue"
       }
     }
-    if (id === "Distance" && this.state.phase === "throughSelect") {
-      this.state = { phase: "distance", basePoint: null }
-      this.openDistanceInput(ctx)
+    if (phase === "erase" && (id === "Yes" || id === "No")) {
+      this.erase = id === "Yes"
+      this.backToDistance(ctx)
+      return "continue"
+    }
+    if (phase === "layer" && (id === "Current" || id === "Source")) {
+      this.offsetLayer = id === "Current" ? "current" : "source"
+      this.backToDistance(ctx)
+      return "continue"
+    }
+    if (phase === "select" || phase === "side" || phase === "throughPoint") {
+      if (id === "Exit") return "end"
+      if (id === "Undo") {
+        this.undoStep(ctx)
+        return "continue"
+      }
+    }
+    if (
+      (phase === "side" || phase === "throughPoint") &&
+      id === "Multiple" &&
+      !this.state.multiple
+    ) {
+      this.state = { ...this.state, multiple: true }
       ctx.requestRender()
       return "continue"
     }
@@ -385,12 +477,6 @@ export class OffsetTool implements Tool {
       return prims
     }
 
-    if (this.state.phase === "throughSelect") {
-      return this.state.hover
-        ? highlight(this.state.hover, THEME.entityHover, 2)
-        : []
-    }
-
     if (this.state.phase === "throughPoint") {
       const { source, cursor } = this.state
       const prims = highlight(source, THEME.selected, 2)
@@ -423,10 +509,17 @@ export class OffsetTool implements Tool {
     if (this.lastScreen) ctx.dynamicInput.setPosition(this.lastScreen)
   }
 
-  defaultOption(): string | null {
-    return this.state.phase === "distance" && this.offsetDist < 0
-      ? "Through"
-      : null
+  /** A prompt answered by a pick or a keyword, its keywords on the tooltip. */
+  private openKeywordPrompt(ctx: ToolContext): void {
+    ctx.dynamicInput.open({ fields: [], commit: () => {} })
+    if (this.lastScreen) ctx.dynamicInput.setPosition(this.lastScreen)
+    ctx.requestRender()
+  }
+
+  private backToDistance(ctx: ToolContext): void {
+    this.state = { phase: "distance", basePoint: null }
+    this.openDistanceInput(ctx)
+    ctx.requestRender()
   }
 
   /** Fixes the offset distance and advances to selecting the object. */
@@ -435,7 +528,20 @@ export class OffsetTool implements Tool {
     if (!(distance > 0)) return
     this.offsetDist = distance
     this.state = { phase: "select", distance, hover: null }
-    ctx.dynamicInput.close()
+    this.openKeywordPrompt(ctx)
+  }
+
+  /** Switches to Through mode: pick an object, then a point to pass through. */
+  private enterThrough(ctx: ToolContext): void {
+    this.offsetDist = -1
+    this.state = { phase: "select", distance: null, hover: null }
+    this.openKeywordPrompt(ctx)
+  }
+
+  /** Back to `Select object to offset`, in the mode the command is in. */
+  private selectNext(ctx: ToolContext): void {
+    const distance = this.state.phase === "side" ? this.state.distance : null
+    this.state = { phase: "select", distance, hover: null }
     ctx.requestRender()
   }
 
@@ -458,31 +564,16 @@ export class OffsetTool implements Tool {
       state.erasedOriginal,
       ctx
     )
-    if (this.multiple) {
+    if (state.multiple) {
       // Step out from the copy just made, keeping the command in this object.
       const source = carryOverrides(
         state.source,
         offsetToEntity(offset, this.copyLayer(state.source, ctx))
       )
-      this.state = {
-        phase: "side",
-        distance: state.distance,
-        source,
-        original: state.original,
-        erasedOriginal,
-        cursor: side,
-      }
+      this.state = { ...state, source, erasedOriginal, cursor: side }
     } else {
       this.state = { phase: "select", distance: state.distance, hover: null }
     }
-    ctx.requestRender()
-  }
-
-  /** Switches to Through mode: pick an object, then a point to pass through. */
-  private enterThrough(ctx: ToolContext): void {
-    this.offsetDist = -1
-    this.state = { phase: "throughSelect", hover: null }
-    ctx.dynamicInput.close()
     ctx.requestRender()
   }
 
@@ -505,15 +596,33 @@ export class OffsetTool implements Tool {
       state.erasedOriginal,
       ctx
     )
-    if (this.multiple) {
-      this.state = {
-        phase: "throughPoint",
-        source: state.source,
-        erasedOriginal,
-        cursor: point,
-      }
-    } else {
-      this.state = { phase: "throughSelect", hover: null }
+    this.state = state.multiple
+      ? { ...state, erasedOriginal, cursor: point }
+      : { phase: "select", distance: null, hover: null }
+    ctx.requestRender()
+  }
+
+  /**
+   * Undo takes back the last copy and asks the same question again; in
+   * Multiple mode the next copy steps out from the one before it again.
+   */
+  private undoStep(ctx: ToolContext): void {
+    const step = this.steps.pop()
+    if (!step) return
+    ctx.undo()
+    const state = this.state
+    if (
+      (state.phase === "side" && state.original.id === step.original.id) ||
+      (state.phase === "throughPoint" && state.source.id === step.source.id)
+    ) {
+      this.state =
+        state.phase === "side"
+          ? {
+              ...state,
+              source: step.source,
+              erasedOriginal: step.erasedOriginal,
+            }
+          : { ...state, erasedOriginal: step.erasedOriginal }
     }
     ctx.requestRender()
   }
@@ -550,6 +659,7 @@ export class OffsetTool implements Tool {
       source,
       offsetToEntity(geom, this.copyLayer(source, ctx))
     )
+    this.steps.push({ original, source, erasedOriginal })
     if (this.erase && !erasedOriginal) {
       ctx.execute(new ReplaceEntitiesCommand([original.id], [copy]))
       return true

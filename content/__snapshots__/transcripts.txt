@@ -4,9 +4,10 @@ idle: Command:
 425 +127 input | Specify center point for circle or [3P/2P/Ttr (tan tan radius)]: | 0,0
 552 +107 input | Specify radius of circle or [Diameter]: | 50
 993 +187 command |  | OFFSET
-1180 +107 input | Offset distance [Through/Erase: No/Layer: Source/Multiple: Off]: | 30
-1287 +124 input | OFFSET: | 
-1411 +124 input | OFFSET: | 
+993 +0 info |  | Current settings: Erase source=No  Layer=Source  OFFSETGAPTYPE=0
+1180 +107 input | Specify offset distance or [Through/Erase/Layer] <Through>: | 30
+1287 +124 input | Select object to offset or [Exit/Undo] <Exit>: | 
+1411 +124 input | Specify point on side to offset or [Exit/Multiple/Undo] <Exit>: | 
 1935 +187 command |  | CIRCLE
 2122 +147 input | Specify center point for circle or [3P/2P/Ttr (tan tan radius)]: | 36,0
 2269 +87 input | Specify radius of circle or [Diameter] <50.00>: | 6
@@ -56,9 +57,10 @@ input | Specify endpoint of arc (hold Ctrl to switch direction) or [Line/Close/U
 input | Specify next point or [Arc/Close/Undo]: | @-80,0
 input | Specify next point or [Arc/Close/Undo]: | C
 command |  | OFFSET
-input | Offset distance [Through/Erase: No/Layer: Source/Multiple: Off]: | 6
-input | OFFSET: | 
-input | OFFSET: | 
+info |  | Current settings: Erase source=No  Layer=Source  OFFSETGAPTYPE=0
+input | Specify offset distance or [Through/Erase/Layer] <Through>: | 6
+input | Select object to offset or [Exit/Undo] <Exit>: | 
+input | Specify point on side to offset or [Exit/Multiple/Undo] <Exit>: | 
 ## osnap
 command |  | CIRCLE
 input | Specify center point for circle or [3P/2P/Ttr (tan tan radius)]: | 10,0
@@ -127,13 +129,14 @@ input | Specify next point or [Arc/Close/Undo]: | A
 input | Specify endpoint of arc (hold Ctrl to switch direction) or [Line/Close/Undo]: | @0,-30
 input | Specify endpoint of arc (hold Ctrl to switch direction) or [Line/Close/Undo]: | 
 command |  | OFFSET
-input | Offset distance [Through/Erase: No/Layer: Source/Multiple: Off]: | 5
-input | OFFSET: | 
-input | OFFSET: | 
-input | OFFSET: | 
-input | OFFSET: | 
-input | OFFSET: | 
-input | OFFSET: | 
+info |  | Current settings: Erase source=No  Layer=Source  OFFSETGAPTYPE=0
+input | Specify offset distance or [Through/Erase/Layer] <Through>: | 5
+input | Select object to offset or [Exit/Undo] <Exit>: | 
+input | Specify point on side to offset or [Exit/Multiple/Undo] <Exit>: | 
+input | Select object to offset or [Exit/Undo] <Exit>: | 
+input | Specify point on side to offset or [Exit/Multiple/Undo] <Exit>: | 
+input | Select object to offset or [Exit/Undo] <Exit>: | 
+input | Specify point on side to offset or [Exit/Multiple/Undo] <Exit>: | 
 ## annotate
 command |  | PLINE
 input | Specify start point: | 0,0

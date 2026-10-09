@@ -134,10 +134,10 @@ describe("Enter with nothing typed", () => {
     })
     cad.command("OFFSET")
     expect(cad.state().commandLine.prompt).toBe(
-      "OFFSET [Through/Erase: No/Layer: Source/Multiple: Off] <Through>:"
+      "OFFSET Specify offset distance or [Through/Erase/Layer] <Through>:"
     )
     cad.moveTo(FAR).enter()
-    expect(cad.optionIds()).toEqual(["Distance"])
+    expect(cad.optionIds()).toEqual(["Exit", "Undo"])
     cad.escape()
 
     cad.command("OFFSET").type("10").enter()

@@ -194,7 +194,9 @@ describe("transcript", () => {
 
     const offset = lines.filter((line) => line.kind === "input").slice(2)
     expect(offset[0].text).toBe("5")
-    expect(offset[0].prompt).toMatch(/^Offset distance \[Through\//)
+    expect(offset[0].prompt).toBe(
+      "Specify offset distance or [Through/Erase/Layer] <Through>:"
+    )
     expect(offset[1].text).toBe("")
     expect(offset.at(-1)).toMatchObject({ text: "R" })
   })

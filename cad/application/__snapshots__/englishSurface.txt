@@ -1933,41 +1933,100 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
   properties: -
   cycling: -
 > OFFSET
-  prompt: OFFSET [Through/Erase: No/Layer: Source/Multiple: Off] <Through>:
+  prompt: OFFSET Specify offset distance or [Through/Erase/Layer] <Through>:
   asks: "Offset distance"
+  tip: Specify offset distance or
   dyn: "Offset distance"=""||mm*
-  options: [T] Through, [E] Erase: No, [L] Layer: Source, [M] Multiple: Off
+  options: [T] Through, [E] Erase, [L] Layer
   command| O OFFSET
+  info| Current settings: Erase source=No  Layer=Source  OFFSETGAPTYPE=0
 > E
-  prompt: OFFSET [Through/Erase: Yes/Layer: Source/Multiple: Off] <Through>:
-  options: [T] Through, [E] Erase: Yes, [L] Layer: Source, [M] Multiple: Off
-> L
-  prompt: OFFSET [Through/Erase: Yes/Layer: Current/Multiple: Off] <Through>:
-  options: [T] Through, [E] Erase: Yes, [L] Layer: Current, [M] Multiple: Off
-> M
-  prompt: OFFSET [Through/Erase: Yes/Layer: Current/Multiple: On] <Through>:
-  options: [T] Through, [E] Erase: Yes, [L] Layer: Current, [M] Multiple: On
-> T
-  prompt: OFFSET [Distance]:
-  asks: -
-  dyn: -
-  options: [D] Distance
-> D
-  prompt: OFFSET [Through/Erase: Yes/Layer: Current/Multiple: On] <Through>:
+  prompt: OFFSET Erase source object after offsetting? [Yes/No] <No>:
+  asks: 
+  tip: Erase source object after offsetting?
+  dyn: 
+  options: [Y] Yes, [N] No
+  prompt| Specify offset distance or [Through/Erase/Layer] <Through>: E
+> Y
+  prompt: OFFSET Specify offset distance or [Through/Erase/Layer] <Through>:
   asks: "Offset distance"
+  tip: Specify offset distance or
   dyn: "Offset distance"=""||mm*
-  options: [T] Through, [E] Erase: Yes, [L] Layer: Current, [M] Multiple: On
+  options: [T] Through, [E] Erase, [L] Layer
+  prompt| Erase source object after offsetting? [Yes/No] <No>: Y
+> L
+  prompt: OFFSET Enter layer option for offset objects [Current/Source] <Source>:
+  asks: 
+  tip: Enter layer option for offset objects
+  dyn: 
+  options: [C] Current, [S] Source
+  prompt| Specify offset distance or [Through/Erase/Layer] <Through>: L
+> C
+  prompt: OFFSET Specify offset distance or [Through/Erase/Layer] <Through>:
+  asks: "Offset distance"
+  tip: Specify offset distance or
+  dyn: "Offset distance"=""||mm*
+  options: [T] Through, [E] Erase, [L] Layer
+  prompt| Enter layer option for offset objects [Current/Source] <Source>: C
 > distance
   dyn: "Offset distance"="20"||mm*
 > enter
-  prompt: OFFSET:
+  prompt: OFFSET Select object to offset or [Exit/Undo] <Exit>:
+  asks: 
+  tip: Select object to offset or
+  dyn: 
+  options: [E] Exit, [U] Undo
+  prompt| Specify offset distance or [Through/Erase/Layer] <Through>: 20
+> pick
+  prompt: OFFSET Specify point on side to offset or [Exit/Multiple/Undo] <Exit>:
+  tip: Specify point on side to offset or
+  options: [E] Exit, [M] Multiple, [U] Undo
+  prompt| Select object to offset or [Exit/Undo] <Exit>:
+> M
+  prompt: OFFSET Specify point on side to offset or [Exit/Undo] <next object>:
+  options: [E] Exit, [U] Undo
+  prompt| Specify point on side to offset or [Exit/Multiple/Undo] <Exit>: M
+> side
+  prompt| Specify point on side to offset or [Exit/Undo] <next object>:
+> enter
+  prompt: OFFSET Select object to offset or [Exit/Undo] <Exit>:
+  tip: Select object to offset or
+  prompt| Specify point on side to offset or [Exit/Undo] <next object>:
+> U
+  prompt| Select object to offset or [Exit/Undo] <Exit>: U
+> enter
+  prompt: Command:
   asks: -
+  tip: -
   dyn: -
   options: -
+  prompt| Select object to offset or [Exit/Undo] <Exit>:
+> OFFSET T
+  prompt: OFFSET Select object to offset or [Exit/Undo] <Exit>:
+  asks: 
+  tip: Select object to offset or
+  dyn: 
+  options: [E] Exit, [U] Undo
+  command| O OFFSET
+  info| Current settings: Erase source=Yes  Layer=Current  OFFSETGAPTYPE=0
+  prompt| Specify offset distance or [Through/Erase/Layer] <20.00>: T
 > pick
-> side
+  prompt: OFFSET Specify through point or [Exit/Multiple/Undo] <Exit>:
+  tip: Specify through point or
+  options: [E] Exit, [M] Multiple, [U] Undo
+  prompt| Select object to offset or [Exit/Undo] <Exit>:
+> through
+  prompt: OFFSET Select object to offset or [Exit/Undo] <Exit>:
+  tip: Select object to offset or
+  options: [E] Exit, [U] Undo
+  prompt| Specify through point or [Exit/Multiple/Undo] <Exit>:
 > escape
   prompt: Command:
+  asks: -
+  tip: -
+  dyn: -
+  options: -
+  prompt| Select object to offset or [Exit/Undo] <Exit>: *Cancel*
 
 ## MOVE
 > start

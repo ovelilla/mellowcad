@@ -126,6 +126,7 @@ describe("a host's words over a shipped language", () => {
       "LN LINEA",
       "Precise primer punto: *Cancelar*",
       "DF DESFASE",
+      "Parámetros actuales: Borrar origen=No  Capa=Origen  OFFSETGAPTYPE=0",
     ])
   })
 

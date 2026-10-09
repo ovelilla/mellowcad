@@ -992,7 +992,14 @@ export const en: EngineCatalog = {
       "specifySecondPointOfMirrorLine": "Specify second point of mirror line",
       "eraseSourceObjects": "Erase source objects?",
       "selectSourceOrMultipleToJoin": "Select source object or multiple objects to join at once",
-      "selectObjectsToJoin": "Select objects to join"
+      "selectObjectsToJoin": "Select objects to join",
+      "specifyOffsetDistanceOr": "Specify offset distance or",
+      "eraseSourceObjectAfterOffsetting": "Erase source object after offsetting?",
+      "enterLayerOptionForOffsetObjects": "Enter layer option for offset objects",
+      "selectObjectToOffsetOr": "Select object to offset or",
+      "specifyPointOnSideToOffsetOr": "Specify point on side to offset or",
+      "specifyThroughPointOr": "Specify through point or",
+      "nextObject": "next object"
     },
     "format": {
       "idle": "Command",
@@ -1103,6 +1110,27 @@ export const en: EngineCatalog = {
       "rotateSettings": "Current positive angle in UCS:  ANGDIR=counterclockwise  ANGBASE=0",
       "rotatingCopy": "Rotating a copy of the selected objects.",
       "scalingCopy": "Scaling a copy of the selected objects.",
+      "offsetSettings": [
+        "Current settings: Erase source=",
+        [
+          "erase",
+          1,
+          {
+            "yes": "Yes",
+            "other": "No"
+          }
+        ],
+        "  Layer=",
+        [
+          "layer",
+          1,
+          {
+            "current": "Current",
+            "other": "Source"
+          }
+        ],
+        "  OFFSETGAPTYPE=0"
+      ],
       "objectsFound": [
         [
           "box",

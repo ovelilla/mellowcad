@@ -564,14 +564,13 @@
         "Through": "Through",
         "Erase": "Erase",
         "Layer": "Layer",
-        "Multiple": "Multiple",
-        "Distance": "Distance",
         "Yes": "Yes",
         "No": "No",
         "Current": "Current",
         "Source": "Source",
-        "On": "On",
-        "Off": "Off"
+        "Exit": "Exit",
+        "Multiple": "Multiple",
+        "Undo": "Undo"
       },
       "ROTATE": { "Copy": "Copy", "Reference": "Reference" },
       "SCALE": { "Copy": "Copy", "Reference": "Reference" },
@@ -821,7 +820,14 @@
       "specifySecondPointOfMirrorLine": "Specify second point of mirror line",
       "eraseSourceObjects": "Erase source objects?",
       "selectSourceOrMultipleToJoin": "Select source object or multiple objects to join at once",
-      "selectObjectsToJoin": "Select objects to join"
+      "selectObjectsToJoin": "Select objects to join",
+      "specifyOffsetDistanceOr": "Specify offset distance or",
+      "eraseSourceObjectAfterOffsetting": "Erase source object after offsetting?",
+      "enterLayerOptionForOffsetObjects": "Enter layer option for offset objects",
+      "selectObjectToOffsetOr": "Select object to offset or",
+      "specifyPointOnSideToOffsetOr": "Specify point on side to offset or",
+      "specifyThroughPointOr": "Specify through point or",
+      "nextObject": "next object"
     },
     "format": {
       "idle": "Command",
@@ -843,6 +849,7 @@
       "rotateSettings": "Current positive angle in UCS:  ANGDIR=counterclockwise  ANGBASE=0",
       "rotatingCopy": "Rotating a copy of the selected objects.",
       "scalingCopy": "Scaling a copy of the selected objects.",
+      "offsetSettings": "Current settings: Erase source={erase, select, yes {Yes} other {No}}  Layer={layer, select, current {Current} other {Source}}  OFFSETGAPTYPE=0",
       "objectsFound": "{box, select, yes {Specify opposite corner: } other {}}{found} found{removed, plural, =0 {} other {, # removed}}{hasTotal, select, yes {, {total} total} other {}}",
       "copyModeMultiple": "Current settings:  Copy mode = Multiple",
       "stretchSelection": "Select objects to stretch by crossing-window or crossing-polygon...",

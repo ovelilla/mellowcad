@@ -583,10 +583,10 @@ describe("OFFSET", () => {
 
     cad
       .command("OFFSET")
-      .option("Multiple")
       .type("20")
       .enter()
       .click(p(0, 0))
+      .option("Multiple")
       .click(p(0, 30))
       .click(p(0, 60))
       .click(p(0, 90))
@@ -606,6 +606,7 @@ describe("OFFSET", () => {
     cad
       .command("OFFSET")
       .option("Erase")
+      .option("Yes")
       .type("20")
       .enter()
       .click(p(0, 0))
@@ -637,5 +638,161 @@ describe("OFFSET", () => {
 
     const copy = linesOf(cad.entities()).find((line) => line.id !== "L1")!
     expect(copy.layerId).toBe(walls)
+  })
+
+  it("asks AutoCAD's questions and writes each with its answer", () => {
+    const cad = createHarness({
+      entities: [lineOf(p(-100, 0), p(100, 0), { id: "L1" })],
+    })
+
+    cad.command("OFFSET")
+    expect(cad.state().commandLine.prompt).toBe(
+      "OFFSET Specify offset distance or [Through/Erase/Layer] <Through>:"
+    )
+    cad.type("20").enter()
+    expect(cad.state().commandLine.prompt).toBe(
+      "OFFSET Select object to offset or [Exit/Undo] <Exit>:"
+    )
+    cad.click(p(0, 0))
+    expect(cad.state().commandLine.prompt).toBe(
+      "OFFSET Specify point on side to offset or [Exit/Multiple/Undo] <Exit>:"
+    )
+    cad.click(p(0, 50)).enter()
+
+    expect(cad.activeToolId()).toBe("select")
+    expect(cad.commandLog()).toEqual([
+      "OFFSET",
+      "Current settings: Erase source=No  Layer=Source  OFFSETGAPTYPE=0",
+      "Specify offset distance or [Through/Erase/Layer] <Through>: 20",
+      "Select object to offset or [Exit/Undo] <Exit>:",
+      "Specify point on side to offset or [Exit/Multiple/Undo] <Exit>:",
+      "Select object to offset or [Exit/Undo] <Exit>:",
+    ])
+    cad.command("OFFSET")
+    expect(cad.state().commandLine.prompt).toBe(
+      "OFFSET Specify offset distance or [Through/Erase/Layer] <20.00>:"
+    )
+  })
+
+  it("asks Erase and Layer as their own questions, and reports them next time", () => {
+    const cad = createHarness({
+      entities: [lineOf(p(-100, 0), p(100, 0), { id: "L1" })],
+    })
+
+    cad.command("OFFSET").option("Erase")
+    expect(cad.state().commandLine.prompt).toBe(
+      "OFFSET Erase source object after offsetting? [Yes/No] <No>:"
+    )
+    cad.option("Yes").option("Layer")
+    expect(cad.state().commandLine.prompt).toBe(
+      "OFFSET Enter layer option for offset objects [Current/Source] <Source>:"
+    )
+    cad.option("Current").option("Erase").enter().escape()
+    cad.command("OFFSET").option("Layer")
+    expect(cad.state().commandLine.prompt).toBe(
+      "OFFSET Enter layer option for offset objects [Current/Source] <Current>:"
+    )
+
+    expect(cad.commandLog().slice(-10)).toEqual([
+      "Specify offset distance or [Through/Erase/Layer] <Through>: E",
+      "Erase source object after offsetting? [Yes/No] <No>: Y",
+      "Specify offset distance or [Through/Erase/Layer] <Through>: L",
+      "Enter layer option for offset objects [Current/Source] <Source>: C",
+      "Specify offset distance or [Through/Erase/Layer] <Through>: E",
+      "Erase source object after offsetting? [Yes/No] <Yes>:",
+      "Specify offset distance or [Through/Erase/Layer] <Through>: *Cancel*",
+      "OFFSET",
+      "Current settings: Erase source=Yes  Layer=Current  OFFSETGAPTYPE=0",
+      "Specify offset distance or [Through/Erase/Layer] <Through>: L",
+    ])
+  })
+
+  it("puts the copy on the current layer with Layer Current", () => {
+    const cad = createHarness()
+    const walls = cad.runtime.createLayer("Walls")
+    cad.runtime.document.load([
+      lineOf(p(-80, 0), p(80, 0), { id: "L1", layerId: walls }),
+    ])
+    const other = cad.runtime.createLayer("Other")
+
+    cad
+      .command("OFFSET")
+      .option("Layer")
+      .option("Current")
+      .type("20")
+      .enter()
+      .click(p(0, 0))
+      .click(p(0, 50))
+      .enter()
+
+    const copy = linesOf(cad.entities()).find((line) => line.id !== "L1")!
+    expect(copy.layerId).toBe(other)
+  })
+
+  it("Multiple asks for the next object on Enter, and Undo takes a step back", () => {
+    const cad = createHarness({
+      entities: [lineOf(p(-80, 0), p(80, 0), { id: "L1" })],
+    })
+
+    cad.command("OFFSET").type("20").enter().click(p(0, 0)).option("Multiple")
+    expect(cad.state().commandLine.prompt).toBe(
+      "OFFSET Specify point on side to offset or [Exit/Undo] <next object>:"
+    )
+    cad.click(p(0, 30)).click(p(0, 60)).option("Undo").click(p(0, 60))
+    cad.enter()
+    expect(cad.state().commandLine.prompt).toBe(
+      "OFFSET Select object to offset or [Exit/Undo] <Exit>:"
+    )
+    cad.option("Undo").enter()
+
+    const ys = linesOf(cad.entities())
+      .map((line) => line.start.y)
+      .sort((a, b) => a - b)
+    expect(ys).toEqual([0, 20])
+    expect(cad.commandLog().slice(-4)).toEqual([
+      "Specify point on side to offset or [Exit/Undo] <next object>:",
+      "Specify point on side to offset or [Exit/Undo] <next object>:",
+      "Select object to offset or [Exit/Undo] <Exit>: U",
+      "Select object to offset or [Exit/Undo] <Exit>:",
+    ])
+  })
+
+  it("asks Through's point, and Multiple through further points", () => {
+    const cad = createHarness({
+      entities: [lineOf(p(-80, 0), p(80, 0), { id: "L1" })],
+    })
+
+    cad.command("OFFSET").enter()
+    expect(cad.state().commandLine.prompt).toBe(
+      "OFFSET Select object to offset or [Exit/Undo] <Exit>:"
+    )
+    cad.click(p(0, 0))
+    expect(cad.state().commandLine.prompt).toBe(
+      "OFFSET Specify through point or [Exit/Multiple/Undo] <Exit>:"
+    )
+    cad.option("Multiple")
+    expect(cad.state().commandLine.prompt).toBe(
+      "OFFSET Specify through point or [Exit/Undo] <next object>:"
+    )
+    cad.click(p(0, 10)).click(p(0, -30)).enter().enter()
+
+    const ys = linesOf(cad.entities())
+      .map((line) => line.start.y)
+      .sort((a, b) => a - b)
+    expect(ys).toEqual([-30, 0, 10])
+    expect(cad.activeToolId()).toBe("select")
+  })
+
+  it("measures the distance between two points, asking the second", () => {
+    const cad = createHarness({
+      entities: [lineOf(p(-80, 0), p(80, 0), { id: "L1" })],
+    })
+
+    cad.command("OFFSET").click(p(0, 100))
+    expect(cad.state().commandLine.prompt).toBe("OFFSET Specify second point:")
+    cad.click(p(30, 140)).click(p(0, 0)).click(p(0, 10)).enter()
+
+    const copy = linesOf(cad.entities()).find((line) => line.id !== "L1")!
+    expect(copy.start.y).toBeCloseTo(50)
   })
 })

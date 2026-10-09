@@ -1016,14 +1016,13 @@ export const es: EngineLocale = {
         "Through": "punto a Atravesar",
         "Erase": "Borrar",
         "Layer": "Capa",
-        "Multiple": "Múltiple",
-        "Distance": "Distancia",
         "Yes": "Sí",
         "No": "No",
         "Current": "Actual",
         "Source": "Origen",
-        "On": "ACT",
-        "Off": "DES"
+        "Exit": "Salir",
+        "Multiple": "Múltiple",
+        "Undo": "Deshacer"
       },
       "ROTATE": {
         "Copy": "Copiar",
@@ -1300,7 +1299,14 @@ export const es: EngineLocale = {
       "specifySecondPointOfMirrorLine": "Precise segundo punto de línea de simetría",
       "eraseSourceObjects": "¿Borrar objetos de origen?",
       "selectSourceOrMultipleToJoin": "Designe un objeto de origen o varios objetos para unirlos a la vez",
-      "selectObjectsToJoin": "Seleccione objetos para unir"
+      "selectObjectsToJoin": "Seleccione objetos para unir",
+      "specifyOffsetDistanceOr": "Precise distancia de desfase o",
+      "selectObjectToOffsetOr": "Designe objeto a desplazar o",
+      "specifyPointOnSideToOffsetOr": "Precise punto en lado de desplazamiento o",
+      "eraseSourceObjectAfterOffsetting": "¿Borrar objeto de origen después del desfase?",
+      "enterLayerOptionForOffsetObjects": "Indique opción de capa para objetos desfasados",
+      "specifyThroughPointOr": "Precise punto a atravesar o",
+      "nextObject": "siguiente objeto"
     },
     "format": {
       "idle": "Comando",
@@ -1409,6 +1415,27 @@ export const es: EngineLocale = {
       ],
       "cancel": "*Cancelar*",
       "rotateSettings": "Ángulo actual positivo en SCP:  ANGDIR=en sentido horario inverso  ANGBASE=0",
+      "offsetSettings": [
+        "Parámetros actuales: Borrar origen=",
+        [
+          "erase",
+          1,
+          {
+            "yes": "Sí",
+            "other": "No"
+          }
+        ],
+        "  Capa=",
+        [
+          "layer",
+          1,
+          {
+            "current": "Actual",
+            "other": "Origen"
+          }
+        ],
+        "  OFFSETGAPTYPE=0"
+      ],
       "rotatingCopy": "Girando una copia de los objetos designados.",
       "scalingCopy": "Ajustando la escala de una copia de los objetos designados.",
       "objectsFound": [

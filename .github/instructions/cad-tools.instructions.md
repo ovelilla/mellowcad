@@ -258,8 +258,11 @@ deliberate deviation, and it is the one that survives a reload.
 
 **Options are named by their global keyword, never by a letter.** `commandOptions()` returns
 `{ id: "Close" }` — the id is AutoCAD's language-independent word — plus `value` when the chip
-shows a state (`{ id: "Erase", value: "Yes" }` reads `Erase: Yes`; the value is a keyword of the
-same command, as AutoCAD's sub-prompt offers it). `invokeOption(id)` switches on ids and returns
+shows a state (`{ id: "Rotate items", value: "Yes" }` reads `Rotate items: Yes`; the value is a
+keyword of the same command, as AutoCAD's sub-prompt offers it). A keyword AutoCAD answers with a
+sub-prompt of its own (OFFSET's Erase and Layer: `Erase source object after offsetting? [Yes/No]
+<No>:`) is a phase of the tool whose `question()` names it, with that answer as `defaultOption()`,
+never a chip toggled in place. `invokeOption(id)` switches on ids and returns
 `"continue"` or `"end"`. The word, its abbreviation (its capitals: `Close` → `C`, `desHacer` →
 `H`; digits count as capitals, so CIRCLE's `3P` is typed whole) belong to the command language and are resolved by the runtime
 from `commands.keywords.<NAME>`; comparing `key.toLowerCase()` with a letter would break the day
