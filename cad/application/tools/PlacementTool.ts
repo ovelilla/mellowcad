@@ -508,6 +508,8 @@ export abstract class PlacementTool implements Tool {
       this.placeAt(base, add3(base, base), originals, ctx)
       return true
     }
+    // What reads as no point is refused, never placed at the cursor.
+    if (!readsTypedPoint(base, ctx)) return false
     const dest = this.resolveSecond(base, this.state.current, ctx)
     this.placeAt(base, dest, originals, ctx)
     return true
@@ -634,6 +636,25 @@ export abstract class PlacementTool implements Tool {
       }) ?? rawCursor
     )
   }
+}
+
+/** Whether the second point's typed text reads as one: a coordinate, a length, an angle. */
+function readsTypedPoint(base: Vec3, ctx: ToolContext): boolean {
+  const coordText = ctx.dynamicInput.getText("distance").trim()
+  if (isCoordinateExpression(coordText)) {
+    return (
+      parseCoordinate(coordText, {
+        lastPoint: base,
+        relativeByDefault: true,
+        ucs: ctx.ucs,
+        elevation: ctx.elevation,
+      }) !== null
+    )
+  }
+  return ["distance", "angle"].every(
+    (id) =>
+      ctx.dynamicInput.getText(id).trim() === "" || parseField(ctx, id) !== null
+  )
 }
 
 /**

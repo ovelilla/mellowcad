@@ -28,6 +28,7 @@ import {
   Tool,
   ToolContext,
   ToolQuestion,
+  type QuestionInput,
 } from "./Tool"
 import { acuteHeading, headingInUcs } from "./ucsHeading"
 import { pointAlongCursor, showRise } from "./directDistance"
@@ -125,6 +126,19 @@ export class SplineTool implements Tool {
         return "specifyStartTangent"
       case "endTangent":
         return "specifyEndTangent"
+    }
+  }
+
+  /** The degree is a whole number; the method and the knots, keywords. */
+  takes(): QuestionInput | null {
+    switch (this.state.phase) {
+      case "degree":
+        return "integer"
+      case "method":
+      case "knots":
+        return "keyword"
+      default:
+        return null
     }
   }
 

@@ -182,10 +182,11 @@ identity: the same document, viewport and objects.
    of the running command (abbreviation, word, or `_` and the global one), then as a point
    modifier (an object snap, FROM, `<angle`), then — with a value box up — as the prompt's answer
    (`answerPrompt`: put in the box and committed, a coordinate without `@`/`#`/`*` given its
-   `#`, because the relative default is the tooltip's, DYNPICOORDS), never a command; only
-   otherwise as a command name (the command language's names and aliases, or `_` and a global
-   name). Empty, it is the prompt's Enter mid-command and repeats the last command at the neutral
-   prompt, as Enter and Space on the drawing do.
+   `#`, because the relative default is the tooltip's, DYNPICOORDS); mid-command anything else is
+   a wrong answer, refused (below, "Answering a prompt") and never run as a command. Only at the
+   neutral prompt is it a command name (the command language's names and aliases, or `_` and a
+   global name). Empty, it is the prompt's Enter mid-command and repeats the last command at the
+   neutral prompt, as Enter and Space on the drawing do.
 7. Tail: Space (not Shift+Space) is Enter mid-command, as at AutoCAD's prompt — so no tool handles
    `" "` itself; Escape/Enter → the tool's `onEnter`, else `returnToNeutralTool`; anything else →
    `activeTool.onKeyDown`.
@@ -208,6 +209,17 @@ keeps it as `answerPrefix` (`_endp of`, typed `end of`), which the next answer w
 a pick, a typed point or `*Cancel*` — and a pick FROM takes as its base, or a tool switch, drops. `ctx.answer` completes a line after the
 fact (`amendLast`), but only one written since the running command started (`commandStart`, its
 echo included): it never lands on the previous command's last prompt.
+
+**A wrong answer is refused, never run.** What is neither a keyword, a point modifier nor what
+the question takes — at the command line, or in the box when its commit returns `false` — goes
+through `answering` to `refuse()`: the history writes `question answer`, then the lines
+`promptRefusal` composes for the input function behind the question, in AutoCAD 2023's console's
+words (`Point or option keyword required.`, `Requires numeric distance, two points, or option
+keyword.`, `*Invalid selection*` + `Expects a point or …`), and the question stays. What the
+question takes is the tool's `takes()` or, without one, read from the asked prompt and its box
+(`cad-tools.instructions.md`, "What a question takes"). A commit that reads typed text it cannot
+parse off the cursor instead ("no number typed, so the cursor's angle") is a bug: it must return
+`false` so the refusal runs.
 
 ## The pointer's buttons (`pointerDown` / `pointerUp`) — order is load-bearing
 

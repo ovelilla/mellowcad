@@ -978,7 +978,21 @@
       "lineweightRounded": "Lineweight rounded to nearest valid value of {value}",
       "colorRequired": "A color number or standard color name is required.",
       "invalidTrueColor": "Invalid color.  Type three comma separated values from 0 to 255.",
-      "invalidOsnapModes": "Invalid object snap modes."
+      "invalidOsnapModes": "Invalid object snap modes.",
+      "invalidPoint": "Invalid point.",
+      "invalidPoint2d": "Invalid 2D point.",
+      "pointOrKeywordRequired": "Point or option keyword required.",
+      "point2dOrKeywordRequired": "2D point or option keyword required.",
+      "requiresDistance": "Requires numeric distance{keyword, select, yes {{points, select, second {, second point, or option keyword.} other {, two points, or option keyword.}}} other {{points, select, second { or second point.} other { or two points.}}}}",
+      "requiresAngle": "Requires valid numeric angle{keyword, select, yes {{points, select, second {, second point, or option keyword.} other {, two points, or option keyword.}}} other {{points, select, second { or second point.} other { or two points.}}}}",
+      "requiresNumber": "Requires numeric value{keyword, select, yes { or option keyword.} other {.}}",
+      "requiresInteger": "Requires an integer value{keyword, select, yes { or option keyword.} other {.}}",
+      "requiresRadius": "Requires numeric radius, point on circumference, or \"D\".",
+      "requiresTangent": "Requires a TAN object-snap and selection of Circle, Arc, or Line.",
+      "invalidOptionKeyword": "Invalid option keyword.",
+      "invalidSelection": "*Invalid selection*",
+      "expectsPointOr": "Expects a point or {keywords}",
+      "selectionModes": "Window/Last/Crossing/BOX/ALL/Fence/WPolygon/CPolygon{set, select, crossingObjects {} other {/Group}}/Add/Remove/Multiple/Previous/Undo/AUto/SIngle{set, select, objects {/SUbobject/Object} other {}}"
     },
     "feedback": {
       "snap": {

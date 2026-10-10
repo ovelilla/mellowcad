@@ -57,6 +57,7 @@ import {
   Tool,
   ToolContext,
   ToolQuestion,
+  type QuestionInput,
 } from "./Tool"
 
 /**
@@ -139,6 +140,10 @@ export class FilletTool implements Tool {
       case "polyline":
         return "select2dPolylineOr"
     }
+  }
+
+  takes(): QuestionInput | null {
+    return this.askingRadius ? null : "object"
   }
 
   onDeactivate(ctx: ToolContext): void {

@@ -11,7 +11,13 @@ import {
 import { TrackingResult } from "../tracking/types"
 import { ScenePrimitive } from "../../scene/types"
 import { THEME } from "../../scene/theme"
-import { KeyInput, PointerInput, Tool, ToolContext } from "./Tool"
+import {
+  KeyInput,
+  PointerInput,
+  Tool,
+  ToolContext,
+  type QuestionInput,
+} from "./Tool"
 import { CommandOption, CommandOptionOutcome } from "./Tool"
 import type { PromptId } from "../../locales/types"
 import { continuePoint } from "./lastDrawnPoint"
@@ -237,6 +243,19 @@ export class LineTool implements Tool {
       case "drawing":
         return "specifyNextPointOr"
     }
+  }
+
+  /**
+   * Every question is a point's — a guide's offset and the segment's length
+   * and angle answer one —, but Continue's length, measured from the arc.
+   */
+  takes(): QuestionInput | null {
+    return this.state.phase === "tangent"
+      ? {
+          refusal: "requiresDistance",
+          values: { points: "second", keyword: "no" },
+        }
+      : "point"
   }
 
   /**

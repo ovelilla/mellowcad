@@ -15,7 +15,7 @@ import {
 import { ReplaceEntitiesCommand } from "../commands/entityCommands"
 import { SelectionActionTool } from "./SelectionActionTool"
 import type { PromptId } from "../../locales/types"
-import { ToolContext } from "./Tool"
+import { QuestionInput, ToolContext } from "./Tool"
 
 /** World tolerance within which two endpoints count as the same point. */
 const JOIN_EPS = 1e-6
@@ -40,6 +40,10 @@ export class JoinTool extends SelectionActionTool {
    */
   protected selectionQuestion(picked: boolean): PromptId {
     return picked ? "selectObjectsToJoin" : "selectSourceOrMultipleToJoin"
+  }
+
+  takes(): QuestionInput {
+    return "wholeObjects"
   }
 
   protected run(entities: readonly Entity[], ctx: ToolContext): void {

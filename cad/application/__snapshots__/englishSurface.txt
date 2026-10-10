@@ -4331,6 +4331,82 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
   asks: -
   dyn: -
 
+## a wrong answer mid-command
+> start
+  prompt: Command:
+  asks: -
+  tip: -
+  dyn: -
+  options: -
+  canvas: -
+  properties: -
+  cycling: -
+> LINE
+  prompt: LINE Specify first point:
+  asks: ""
+  tip: Specify first point:
+  dyn: "X,Y"=""||*
+  command| LINE
+> FOO
+  prompt| Specify first point: FOO
+  error| Invalid point.
+> first point
+  prompt: LINE Specify next point or [Undo]:
+  asks: "Length" "Angle"
+  tip: Specify next point or
+  dyn: "Length"=""|0.00|mm* "Angle"=""||°
+  options: [U] Undo
+  prompt| Specify first point:
+> CIRCLE
+  prompt| Specify next point or [Undo]: CIRCLE
+  error| Point or option keyword required.
+> escape
+  prompt: Command:
+  asks: -
+  tip: -
+  dyn: -
+  options: -
+  prompt| Specify next point or [Undo]: *Cancel*
+> ERASE
+  prompt: ERASE Select objects:
+  command| ERASE
+> FOO
+  prompt| Select objects: FOO
+  error| *Invalid selection*
+  error| Expects a point or Window/Last/Crossing/BOX/ALL/Fence/WPolygon/CPolygon/Group/Add/Remove/Multiple/Previous/Undo/AUto/SIngle/SUbobject/Object
+> escape
+  prompt: Command:
+  prompt| Select objects: *Cancel*
+> OFFSET
+  prompt: OFFSET Specify offset distance or [Through/Erase/Layer] <Through>:
+  asks: "Offset distance"
+  tip: Specify offset distance or
+  dyn: "Offset distance"=""||mm*
+  options: [T] Through, [E] Erase, [L] Layer
+  command| OFFSET
+  info| Current settings: Erase source=No  Layer=Source  OFFSETGAPTYPE=0
+> FOO
+  prompt| Specify offset distance or [Through/Erase/Layer] <Through>: FOO
+  error| Requires numeric distance, two points, or option keyword.
+> distance
+  prompt: OFFSET Select object to offset or [Exit/Undo] <Exit>:
+  asks: 
+  tip: Select object to offset or
+  dyn: 
+  options: [E] Exit, [U] Undo
+  prompt| Specify offset distance or [Through/Erase/Layer] <Through>: 10
+> FOO
+  prompt| Select object to offset or [Exit/Undo] <Exit>: FOO
+  error| *Invalid selection*
+  error| Expects a point or Exit/Undo
+> escape
+  prompt: Command:
+  asks: -
+  tip: -
+  dyn: -
+  options: -
+  prompt| Select object to offset or [Exit/Undo] <Exit>: *Cancel*
+
 ## an object snap typed at a point prompt
 > start
   prompt: Command:

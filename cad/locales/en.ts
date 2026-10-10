@@ -1730,7 +1730,121 @@ export const en: EngineCatalog = {
       ],
       "colorRequired": "A color number or standard color name is required.",
       "invalidTrueColor": "Invalid color.  Type three comma separated values from 0 to 255.",
-      "invalidOsnapModes": "Invalid object snap modes."
+      "invalidOsnapModes": "Invalid object snap modes.",
+      "invalidPoint": "Invalid point.",
+      "invalidPoint2d": "Invalid 2D point.",
+      "pointOrKeywordRequired": "Point or option keyword required.",
+      "point2dOrKeywordRequired": "2D point or option keyword required.",
+      "requiresDistance": [
+        "Requires numeric distance",
+        [
+          "keyword",
+          1,
+          {
+            "yes": [
+              [
+                "points",
+                1,
+                {
+                  "second": ", second point, or option keyword.",
+                  "other": ", two points, or option keyword."
+                }
+              ]
+            ],
+            "other": [
+              [
+                "points",
+                1,
+                {
+                  "second": " or second point.",
+                  "other": " or two points."
+                }
+              ]
+            ]
+          }
+        ]
+      ],
+      "requiresAngle": [
+        "Requires valid numeric angle",
+        [
+          "keyword",
+          1,
+          {
+            "yes": [
+              [
+                "points",
+                1,
+                {
+                  "second": ", second point, or option keyword.",
+                  "other": ", two points, or option keyword."
+                }
+              ]
+            ],
+            "other": [
+              [
+                "points",
+                1,
+                {
+                  "second": " or second point.",
+                  "other": " or two points."
+                }
+              ]
+            ]
+          }
+        ]
+      ],
+      "requiresNumber": [
+        "Requires numeric value",
+        [
+          "keyword",
+          1,
+          {
+            "yes": " or option keyword.",
+            "other": "."
+          }
+        ]
+      ],
+      "requiresInteger": [
+        "Requires an integer value",
+        [
+          "keyword",
+          1,
+          {
+            "yes": " or option keyword.",
+            "other": "."
+          }
+        ]
+      ],
+      "requiresRadius": "Requires numeric radius, point on circumference, or \"D\".",
+      "requiresTangent": "Requires a TAN object-snap and selection of Circle, Arc, or Line.",
+      "invalidOptionKeyword": "Invalid option keyword.",
+      "invalidSelection": "*Invalid selection*",
+      "expectsPointOr": [
+        "Expects a point or ",
+        [
+          "keywords"
+        ]
+      ],
+      "selectionModes": [
+        "Window/Last/Crossing/BOX/ALL/Fence/WPolygon/CPolygon",
+        [
+          "set",
+          1,
+          {
+            "crossingObjects": "",
+            "other": "/Group"
+          }
+        ],
+        "/Add/Remove/Multiple/Previous/Undo/AUto/SIngle",
+        [
+          "set",
+          1,
+          {
+            "objects": "/SUbobject/Object",
+            "other": ""
+          }
+        ]
+      ]
     },
     "feedback": {
       "snap": {

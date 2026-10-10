@@ -28,6 +28,7 @@ import {
   Tool,
   ToolContext,
   ToolQuestion,
+  type QuestionInput,
 } from "./Tool"
 import { countPreselection, pickObjects } from "./objectSelection"
 
@@ -163,6 +164,13 @@ export class RotateTool implements Tool {
       case "newAngle":
         return "specifyTheNewAngle"
     }
+  }
+
+  /** The reference angle is measured by two points of its own. */
+  takes(): QuestionInput | null {
+    return this.state.phase === "refP1"
+      ? { refusal: "requiresAngle", values: { points: "two", keyword: "no" } }
+      : null
   }
 
   onDeactivate(ctx: ToolContext): void {
@@ -503,6 +511,9 @@ export class RotateTool implements Tool {
   /** Handles the rotation angle confirmed from the dynamic input (Enter). */
   private commitAngle(ctx: ToolContext): boolean {
     const typed = ctx.dynamicInput.hasTypedText()
+    // A typed answer that is no angle is refused, never read off the cursor.
+    const field = this.state.phase === "newAngle" ? "newAngle" : "angle"
+    if (typed && parseField(ctx, field) === null) return false
     if (this.state.phase === "angle") {
       const rotation = typed
         ? this.resolveDirectRotation(this.state.base, this.state.current, ctx)
@@ -537,8 +548,9 @@ export class RotateTool implements Tool {
   /** A typed reference angle skips the two-point measure and asks the new one. */
   private commitReference(ctx: ToolContext): boolean {
     if (this.state.phase !== "refP1") return false
-    const reference = parseField(ctx, "reference") ?? 0
-    this.enterNewAngle(reference, ctx)
+    const reference = parseField(ctx, "reference")
+    if (reference === null && ctx.dynamicInput.hasTypedText()) return false
+    this.enterNewAngle(reference ?? 0, ctx)
     return true
   }
 

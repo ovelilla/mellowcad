@@ -27,6 +27,7 @@ import {
   PointerInput,
   Tool,
   ToolContext,
+  type QuestionInput,
 } from "./Tool"
 import {
   withCurrentProperties,
@@ -125,6 +126,11 @@ export class ArcTool implements Tool {
           ? "specifyEndPointOfArc"
           : "specifyEndPointOfArcCtrl"
     }
+  }
+
+  /** Every point after the first is a 2D one, as AutoCAD's console refuses it. */
+  takes(): QuestionInput | null {
+    return this.state.phase === "p1" ? null : "point2d"
   }
 
   commandOptions(): readonly CommandOption[] {

@@ -1410,6 +1410,30 @@ describe("the engine's English surface", () => {
         .do("a mode it does not know", (c) => c.type("END,XYZ").enter())
         .do("a list", (c) => c.type("mid,per").enter())
     )
+    walk(
+      "a wrong answer mid-command",
+      createHarness({ entities: [line()] }),
+      (s) => {
+        const typed = (c: CadHarness, text: string) => {
+          c.runtime.setCommandLineText(text)
+          c.runtime.submitCommandLine()
+        }
+        return s
+          .do("LINE", (c) => c.command("LINE"))
+          .do("FOO", (c) => typed(c, "FOO"))
+          .do("first point", (c) => c.click(at(0, 50)))
+          .do("CIRCLE", (c) => typed(c, "CIRCLE"))
+          .do("escape", (c) => c.escape())
+          .do("ERASE", (c) => c.command("ERASE"))
+          .do("FOO", (c) => typed(c, "FOO"))
+          .do("escape", (c) => c.escape())
+          .do("OFFSET", (c) => c.command("OFFSET"))
+          .do("FOO", (c) => typed(c, "FOO"))
+          .do("distance", (c) => c.type("10").enter())
+          .do("FOO", (c) => typed(c, "FOO"))
+          .do("escape", (c) => c.escape())
+      }
+    )
     walk("an object snap typed at a point prompt", createHarness(), (s) =>
       s
         .do("LINE", (c) => c.command("LINE"))

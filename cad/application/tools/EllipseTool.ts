@@ -30,6 +30,7 @@ import {
   Tool,
   ToolContext,
   ToolQuestion,
+  type QuestionInput,
 } from "./Tool"
 import { withCurrentProperties } from "./currentProperties"
 
@@ -159,6 +160,11 @@ export class EllipseTool implements Tool {
           ? { id: "specifyIncludedAngleForArc", enter: { angle: 180 } }
           : "specifyEndAngleOr"
     }
+  }
+
+  /** The axis's other end is a 2D point, as AutoCAD's console refuses it. */
+  takes(): QuestionInput | null {
+    return this.state.phase === "second" ? "point2d" : null
   }
 
   onDeactivate(ctx: ToolContext): void {

@@ -35,6 +35,7 @@ import {
   Tool,
   ToolContext,
   ToolQuestion,
+  type QuestionInput,
 } from "./Tool"
 import {
   withCurrentProperties,
@@ -219,6 +220,27 @@ export class CircleTool implements Tool {
         return state.base
           ? "specifySecondPoint"
           : sized("specifyRadiusOfCircle", radius)
+    }
+  }
+
+  /**
+   * The radius and Ttr's tangents take AutoCAD's own refusals (the radius's
+   * names its D); the diameter measures from the centre.
+   */
+  takes(): QuestionInput | null {
+    switch (this.state.phase) {
+      case "radius":
+        return this.state.diameter
+          ? {
+              refusal: "requiresDistance",
+              values: { points: "second", keyword: "no" },
+            }
+          : { refusal: "requiresRadius" }
+      case "tangentFirst":
+      case "tangentSecond":
+        return { refusal: "requiresTangent" }
+      default:
+        return null
     }
   }
 

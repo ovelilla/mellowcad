@@ -146,6 +146,7 @@ import {
   toolCommand,
 } from "./runtimeCommands"
 import { defaultTools } from "./runtimeTools"
+import { promptRefusal } from "./promptRefusal"
 import {
   applyDrawingFile,
   copyToClipboard,
@@ -769,9 +770,10 @@ export class CadRuntime extends Observable {
   /**
    * Runs what has been typed. An empty prompt repeats the last command, which
    * is how AutoCAD users chain repeated operations with Enter/Space. While a
-   * command runs, what was typed answers its prompt first: a keyword on offer
-   * — its abbreviation, its word, or `_` and the global one — is taken as such
-   * and only anything else is read as a command name.
+   * command runs, what was typed answers its prompt: a keyword on offer — its
+   * abbreviation, its word, or `_` and the global one —, a point modifier or
+   * the box's value, and anything else is a wrong answer AutoCAD refuses
+   * ({@link refuse}); a command name runs only at the Command prompt.
    */
   submitCommandLine(): void {
     const text = this.commandLine.getBuffer().trim()
@@ -785,7 +787,38 @@ export class CadRuntime extends Observable {
     if (this.invokeToolOption(text)) return
     if (this.pointModifier(text)) return
     if (this.answering(text, () => this.answerPrompt(text))) return
+    if (this.activeTool.id !== "select") {
+      this.answering(text, () => this.refuse())
+      return
+    }
     this.runCommand(text)
+  }
+
+  /**
+   * Writes what AutoCAD answers to an answer the running command's question
+   * cannot take — `Point or option keyword required.`, `*Invalid selection*`
+   * and what it expects… —, after which the prompt asks again. Returns whether
+   * it was refused, which the history writes as an answer.
+   */
+  private refuse(): boolean {
+    const lines = promptRefusal(
+      {
+        tool: this.activeTool,
+        prompt: askedPrompt(this.activeTool),
+        session: this.dynamicInput.isOpen()
+          ? this.dynamicInput.getSession()
+          : null,
+        keywords: offerOptions(this.activeTool, this.text).map(
+          (option) => option.keyword
+        ),
+        hasBase: this.toolAnchor() !== null,
+      },
+      this.text
+    )
+    if (lines === null) return false
+    for (const line of lines) this.commandLine.write("error", line)
+    this.invalidateState()
+    return true
   }
 
   /**
@@ -1911,11 +1944,12 @@ export class CadRuntime extends Observable {
         return true
       }
       if (field && !isContentField(field.kind)) {
-        // A value the prompt cannot take is dropped and asked again, as
-        // AutoCAD's prompt drops it, rather than left for the next keys to
+        // A value the prompt cannot take is refused and asked again, as
+        // AutoCAD's prompt refuses it, rather than left for the next keys to
         // run on from ("ndo" after U, then "_u" read as "ndo_u").
         this.dynamicInput.clearTexts()
         this.invalidateState()
+        return this.refuse()
       }
       return false
     }

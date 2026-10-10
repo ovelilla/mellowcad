@@ -45,6 +45,7 @@ import {
   PointerInput,
   Tool,
   ToolContext,
+  type QuestionInput,
 } from "./Tool"
 
 /**
@@ -148,6 +149,10 @@ export abstract class EdgeEditTool implements Tool {
     return this.steps > 0
       ? "selectObjectToExtendOrShiftSelectToTrimOr"
       : "selectObjectToExtendOrShiftSelectToTrim"
+  }
+
+  takes(): QuestionInput {
+    return "object"
   }
 
   commandOptions(): readonly CommandOption[] {

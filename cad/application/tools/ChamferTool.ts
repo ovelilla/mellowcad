@@ -44,6 +44,7 @@ import {
   Tool,
   ToolContext,
   ToolQuestion,
+  type QuestionInput,
 } from "./Tool"
 
 /**
@@ -137,6 +138,10 @@ export class ChamferTool implements Tool {
       case "polyline":
         return "selectPolylineToChamferOr"
     }
+  }
+
+  takes(): QuestionInput | null {
+    return this.askingDistance ? null : "object"
   }
 
   onDeactivate(ctx: ToolContext): void {

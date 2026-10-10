@@ -27,6 +27,7 @@ import {
   Tool,
   ToolContext,
   ToolQuestion,
+  type QuestionInput,
 } from "./Tool"
 import { countPreselection, pickObjects } from "./objectSelection"
 import type { PromptId } from "../../locales/types"
@@ -156,6 +157,24 @@ export class ScaleTool implements Tool {
         return "specifySecondPoint"
       case "newLength":
         return "specifyNewLength"
+    }
+  }
+
+  /**
+   * The factor is a distance from the base point, as AutoCAD reads it; the
+   * reference length is measured by two points of its own.
+   */
+  takes(): QuestionInput | null {
+    switch (this.state.phase) {
+      case "factor":
+        return "distance"
+      case "refP1":
+        return {
+          refusal: "requiresDistance",
+          values: { points: "two", keyword: "no" },
+        }
+      default:
+        return null
     }
   }
 
@@ -499,6 +518,9 @@ export class ScaleTool implements Tool {
   /** Handles the scale factor confirmed from the dynamic input (Enter). */
   private commitFactor(ctx: ToolContext): boolean {
     const typed = ctx.dynamicInput.hasTypedText()
+    // A typed answer that is no number is refused, never read off the cursor.
+    const field = this.state.phase === "newLength" ? "newLength" : "factor"
+    if (typed && parseField(ctx, field) === null) return false
     if (this.state.phase === "factor") {
       const factor = typed
         ? this.resolveDirectFactor(this.state.base, this.state.current, ctx)
@@ -536,6 +558,7 @@ export class ScaleTool implements Tool {
   private commitReference(ctx: ToolContext): boolean {
     if (this.state.phase !== "refP1") return false
     const typed = parseField(ctx, "reference")
+    if (typed === null && ctx.dynamicInput.hasTypedText()) return false
     const reference = typed !== null && typed > 0 ? typed : 1
     this.enterNewLength(reference, ctx)
     return true

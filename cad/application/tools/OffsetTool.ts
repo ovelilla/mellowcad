@@ -37,6 +37,7 @@ import {
   Tool,
   ToolContext,
   ToolQuestion,
+  type QuestionInput,
 } from "./Tool"
 
 /**
@@ -197,6 +198,18 @@ export class OffsetTool implements Tool {
         return this.state.multiple
           ? { id: "specifyThroughPointOr", enter: "nextObject" }
           : "specifyThroughPointOr"
+    }
+  }
+
+  /** One object picked, then a point on its side. */
+  takes(): QuestionInput | null {
+    switch (this.state.phase) {
+      case "select":
+        return "object"
+      case "side":
+        return "point"
+      default:
+        return null
     }
   }
 

@@ -25,6 +25,7 @@ import {
   PointerInput,
   Tool,
   ToolContext,
+  type QuestionInput,
 } from "./Tool"
 import { countPreselection, pickObjects } from "./objectSelection"
 
@@ -115,6 +116,21 @@ export class MirrorTool implements Tool {
         return "specifySecondPointOfMirrorLine"
       case "erase":
         return "eraseSourceObjects"
+    }
+  }
+
+  /** The mirror line's points are 2D, and its selection whole objects. */
+  takes(): QuestionInput | null {
+    switch (this.state.phase) {
+      case "selecting":
+      case "pressed":
+      case "boxing":
+        return "wholeObjects"
+      case "first":
+      case "second":
+        return "point2d"
+      case "erase":
+        return null
     }
   }
 

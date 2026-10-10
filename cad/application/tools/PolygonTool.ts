@@ -20,6 +20,7 @@ import {
   Tool,
   ToolContext,
   ToolQuestion,
+  type QuestionInput,
 } from "./Tool"
 import {
   withCurrentProperties,
@@ -109,6 +110,23 @@ export class PolygonTool implements Tool {
         return "specifyFirstEndpointOfEdge"
       case "edgeEnd":
         return "specifySecondEndpointOfEdge"
+    }
+  }
+
+  /** A count AutoCAD refuses in its range's words; the edge's end is 2D. */
+  takes(): QuestionInput | null {
+    switch (this.state.phase) {
+      case "sides":
+        return {
+          refusal: "requiresIntegerBetween",
+          values: { min: MIN_SIDES, max: MAX_SIDES },
+        }
+      case "type":
+        return "keyword"
+      case "edgeEnd":
+        return "point2d"
+      default:
+        return null
     }
   }
 

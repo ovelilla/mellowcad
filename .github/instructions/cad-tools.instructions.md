@@ -102,8 +102,7 @@ that still answer the same question (LINE's tracking offset, the deferred tangen
 CIRCLERAD, RECTANG's elevation), a point or a phrase id (`<use first point as displacement>`); a
 keyword Enter keeps is `defaultOption()`'s. The `or` belongs to the text, so a state that offers none of the keywords
 AutoCAD lists there takes an id without it (`specifyOtherCornerPoint`); a wording no source confirms
-is not invented — that state returns `null` and keeps the `NAME [keywords]:` prompt (LINE's
-Continue length). Convert a command whole: one that names no question shows `NAME [keywords]:` and
+is not invented — that state returns `null` and keeps the `NAME [keywords]:` prompt. Convert a command whole: one that names no question shows `NAME [keywords]:` and
 writes no prompt lines, so a half-converted one reads inconsistently. A report the answer produces
 (`Current line-width is 0.0000`) is written after the answered prompt by itself; what only the
 release of a pick knows — what a `Select objects:` pick found — goes on that prompt's line with
@@ -112,6 +111,19 @@ Every `Select objects:` counts through `pickObjects` and `countPreselection`
 (`tools/objectSelection.ts`: `PlacementTool`, `SelectionActionTool`), never on its own. A keyword AutoCAD
 lists with a gloss (`Ttr (tan tan radius)`) has it in `commands.keywordLabels.<NAME>`, for every
 command name that offers it (CIRCLE and CIRCLED).
+
+**What a question takes** — `takes()`, a `QuestionInput` — is how the runtime refuses a wrong
+answer there (`cad-runtime.instructions.md`, "Answering a prompt"). Leave it out where the default
+reads right: `selectObjects` is a selection set with sub-objects; a box with a coordinate field (or
+a distance and an angle) is a point, a lone distance or angle field that, a number field a number;
+with no box, a point when `wantsSnap()` and a keyword otherwise. Declare what the box cannot tell:
+a single object's pick (`"object"`), a 2D point (ARC's, PLINE's, MIRROR's, ELLIPSE's and POLYGON's
+Edge's later points), a keyword prompt that keeps snaps on, a selection of whole objects (MIRROR,
+JOIN) or STRETCH's crossing one, a count (`"integer"`), and a command's own words (`{ refusal:
+"requiresRadius" }`; a distance or an angle measured by two points of its own while the tool has a
+base point, `{ refusal: "requiresDistance", values: { points: "two", keyword: "no" } }`). Type
+`FOO` at the prompt in AutoCAD's console before declaring one: the words differ per input
+function, and per command at `Select objects:`.
 
 A tool never touches an adapter. Anything outside the document it needs — writing the clipboard
 (`ctx.copyToClipboard`) — is a method on `ToolContext` that the runtime wires to the port.

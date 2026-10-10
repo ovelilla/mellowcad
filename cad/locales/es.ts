@@ -2044,7 +2044,121 @@ export const es: EngineLocale = {
       ],
       "colorRequired": "Se necesita un número o nombre de color normalizado.",
       "invalidTrueColor": "Color no válido. Escriba tres valores separados por comas comprendidos entre 0 y 255.",
-      "invalidOsnapModes": "Modos no válidos de referencia a objetos."
+      "invalidOsnapModes": "Modos no válidos de referencia a objetos.",
+      "invalidPoint": "Punto no válido.",
+      "invalidPoint2d": "Punto 2D no válido.",
+      "pointOrKeywordRequired": "Se requiere un punto o una opción.",
+      "point2dOrKeywordRequired": "Se requiere un punto 2D o una opción.",
+      "requiresDistance": [
+        "Requiere una distancia numérica",
+        [
+          "keyword",
+          1,
+          {
+            "yes": [
+              [
+                "points",
+                1,
+                {
+                  "second": ", un segundo punto o una opción.",
+                  "other": ", dos puntos o una opción."
+                }
+              ]
+            ],
+            "other": [
+              [
+                "points",
+                1,
+                {
+                  "second": " o un segundo punto.",
+                  "other": " o dos puntos."
+                }
+              ]
+            ]
+          }
+        ]
+      ],
+      "requiresAngle": [
+        "Requiere un ángulo numérico válido",
+        [
+          "keyword",
+          1,
+          {
+            "yes": [
+              [
+                "points",
+                1,
+                {
+                  "second": ", un segundo punto o una opción.",
+                  "other": ", dos puntos o una opción."
+                }
+              ]
+            ],
+            "other": [
+              [
+                "points",
+                1,
+                {
+                  "second": " o un segundo punto.",
+                  "other": " o dos puntos."
+                }
+              ]
+            ]
+          }
+        ]
+      ],
+      "requiresNumber": [
+        "Requiere un valor numérico",
+        [
+          "keyword",
+          1,
+          {
+            "yes": " o una opción.",
+            "other": "."
+          }
+        ]
+      ],
+      "requiresInteger": [
+        "Requiere un valor entero",
+        [
+          "keyword",
+          1,
+          {
+            "yes": " o una opción.",
+            "other": "."
+          }
+        ]
+      ],
+      "requiresRadius": "Precisa un radio numérico, un punto en la circunferencia, o \"D\".",
+      "requiresTangent": "Requiere una REFENT TAN y la designación de un círculo, arco o línea.",
+      "invalidOptionKeyword": "Opción no válida.",
+      "invalidSelection": "*Designación no válida*",
+      "expectsPointOr": [
+        "Requiere un punto o ",
+        [
+          "keywords"
+        ]
+      ],
+      "selectionModes": [
+        "Ventana/úLTimo/Captura/MArco/Todos/Borde/polígonOV/polígonOC",
+        [
+          "set",
+          1,
+          {
+            "crossingObjects": "",
+            "other": "/Grupo"
+          }
+        ],
+        "/Añadir/Eliminar/Múltiple/Previo/desHacer/AUto/úNico",
+        [
+          "set",
+          1,
+          {
+            "objects": "/Subobjeto/Objeto",
+            "other": ""
+          }
+        ]
+      ]
     },
     "feedback": {
       "snap": {

@@ -7,7 +7,7 @@ import {
   translateEntity,
 } from "../../domain/entities"
 import { UpdateEntitiesCommand } from "../commands/entityCommands"
-import { ToolContext } from "./Tool"
+import { QuestionInput, ToolContext } from "./Tool"
 import { PlacementTool } from "./PlacementTool"
 
 /** An axis-aligned world rectangle dragged while selecting: the stretch frame. */
@@ -56,6 +56,11 @@ export class StretchTool extends PlacementTool {
 
   protected continuesAfterPlace(): boolean {
     return false
+  }
+
+  /** STRETCH's selection takes no group, as AutoCAD's lists its modes. */
+  takes(): QuestionInput | null {
+    return this.question() === "selectObjects" ? "crossingObjects" : null
   }
 
   protected announceSelection(ctx: ToolContext): void {

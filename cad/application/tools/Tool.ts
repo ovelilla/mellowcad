@@ -100,6 +100,32 @@ export interface ToolQuestion {
 }
 
 /**
+ * What a question takes besides its keywords: the AutoCAD input function
+ * behind it, whose words refuse anything else typed there (AutoCAD 2023's
+ * console) — a point (`Invalid point.`, `Point or option keyword required.`;
+ * a 2D one as ARC's, MIRROR's and PLINE's later points ask it), a distance or
+ * an angle (`Requires numeric distance, two points, or option keyword.`), a
+ * number or a whole one, a keyword (`Invalid option keyword.`), a selection set
+ * (`*Invalid selection*` and the selection modes it expects: with sub-objects
+ * as MOVE's, of whole objects as MIRROR's and JOIN's, or STRETCH's crossing
+ * one), one object picked (`*Invalid selection*` and its keywords), or a
+ * command's own refusal (CIRCLE's radius, POLYGON's sides).
+ */
+export type QuestionInput =
+  | "point"
+  | "point2d"
+  | "distance"
+  | "angle"
+  | "number"
+  | "integer"
+  | "keyword"
+  | "objects"
+  | "wholeObjects"
+  | "crossingObjects"
+  | "object"
+  | { readonly refusal: MessageId; readonly values?: MessageValues }
+
+/**
  * The outcome of invoking a command option, telling the runtime what to do:
  * - `"unhandled"`: the key matched no option;
  * - `"continue"`: handled, the command keeps running (e.g. Undo one segment);
@@ -286,6 +312,15 @@ export interface Tool {
    * shows the current value (`[ON/OFF] <ON>:`).
    */
   defaultOption?(): string | null
+
+  /**
+   * What the question takes besides its keywords, when its box does not say.
+   * Null or omitted, `selectObjects` is a selection set and the box's fields
+   * tell a point (a coordinate, or a distance with an angle), a distance, an
+   * angle or a number; with no box, a prompt with object snaps is a point and
+   * any other a keyword.
+   */
+  takes?(): QuestionInput | null
 
   /**
    * Whether the tool works in the WCS rather than in the frame of the UCS's XY

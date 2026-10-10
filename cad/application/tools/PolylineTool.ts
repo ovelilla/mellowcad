@@ -12,7 +12,7 @@ import {
 import { ScenePrimitive } from "../../scene/types"
 import { THEME } from "../../scene/theme"
 import { arcScenePrimitive, entityScenePrimitive } from "../SceneBuilder"
-import { PointerInput, Tool, ToolContext } from "./Tool"
+import { PointerInput, Tool, ToolContext, type QuestionInput } from "./Tool"
 import { CommandOption, CommandOptionOutcome } from "./Tool"
 import type { PromptId } from "../../locales/types"
 import { lastDrawnPoint } from "./lastDrawnPoint"
@@ -143,6 +143,11 @@ export class PolylineTool implements Tool {
   question(): PromptId {
     if (this.state.phase !== "drawing") return "specifyStartPoint"
     return this.state.arcMode ? "specifyEndpointOfArcOr" : "specifyNextPointOr"
+  }
+
+  /** Every point after the start is a 2D one, as AutoCAD's console refuses it. */
+  takes(): QuestionInput | null {
+    return this.state.phase === "drawing" ? "point2d" : null
   }
 
   /**
