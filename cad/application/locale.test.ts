@@ -692,23 +692,56 @@ describe("Spanish AutoCAD's command language", () => {
 
   it("justifies TEXTO by SIZ and the other two-letter codes", () => {
     const cad = createHarness({ locale: es })
-    cad.command("TEXTO").press("u")
-    cad.press("Enter")
+    cad.command("TEXTO")
     expect(cad.commandLog().at(-1)).toBe(
-      "Indique una opción [Izquierda/Centro/Derecha/Medio/SIZ/SC/SD/MI/MC/MD/II/IC/ID]:"
+      'Estilo de texto actual:  "Standard"  Altura de texto:  2.50  Anotativo:  No  Justificar:  Izquierda'
     )
-    cad.type("siz").enter()
-    cad.click(p(0, 0)).type("5").enter().type("0").enter().type("A").enter()
+    expect(cad.state().commandLine.prompt).toBe(
+      "TEXTO Precise punto inicial de texto o [jUstificar/Estilo]:"
+    )
+    cad.press("u")
+    cad.press("Enter")
+    expect(cad.state().commandLine.prompt).toBe(
+      "TEXTO Indique una opción [Izquierda/Centro/Derecha/Medio/SIZ/SC/SD/MI/MC/MD/II/IC/ID]:"
+    )
+    for (const char of "siz") cad.press(char)
+    cad.press("Enter")
+    expect(cad.state().commandLine.prompt).toBe(
+      "TEXTO Precise punto superior izquierdo de texto:"
+    )
+    cad.click(p(0, 0)).type("5").enter().type("0").enter()
+    expect(cad.state().commandLine.prompt).toBe("TEXTO Escriba el texto:")
+    cad.type("A").enter()
     cad.escape()
     expect(cad.only("text")).toMatchObject({ justify: "tl" })
   })
 
   it("asks TEXTOM's corner in Spanish and justifies it by MC", () => {
     const cad = createHarness({ locale: es })
-    cad.command("TEXTOM").click(p(0, 0))
-    expect(cad.state().commandLine.prompt).toBe(
-      "TEXTOM [Altura/Justificar/Interlineado/Rotación/Estilo/aNchura]:"
+    cad.command("TEXTOM")
+    expect(cad.commandLog().at(-1)).toBe(
+      'Estilo de texto actual:  "Standard"  Altura del texto:  2.50  Anotativo:  No'
     )
+    expect(cad.state().commandLine.prompt).toBe(
+      "TEXTOM Precise la primera esquina:"
+    )
+    cad.click(p(0, 0))
+    expect(cad.state().commandLine.prompt).toBe(
+      "TEXTOM Indique la esquina opuesta o [Altura/Justificar/Interlineado/Rotación/Estilo/aNchura]:"
+    )
+    for (const key of ["j", "Enter"]) cad.press(key)
+    expect(cad.state().commandLine.prompt).toBe(
+      "TEXTOM Indique la justificación [SI/SC/SD/MI/MC/MD/II/IC/ID] <SI>:"
+    )
+    for (const key of ["M", "C", "Enter"]) cad.press(key)
+    for (const key of ["i", "Enter"]) cad.press(key)
+    expect(cad.state().commandLine.prompt).toBe(
+      "TEXTOM Indique el tipo de interlineado [Al menos/Exactamente] <Al menos>:"
+    )
+    cad.press("Enter")
+    for (const key of ["n", "Enter"]) cad.press(key)
+    expect(cad.state().commandLine.prompt).toBe("TEXTOM Indique la anchura:")
+    cad.escape().command("TEXTOM").click(p(0, 0))
     for (const key of ["j", "Enter", "M", "C", "Enter"]) cad.press(key)
     cad.click(p(100, -50)).type("A").enter()
     expect(cad.only("mtext")).toMatchObject({ attachment: "mc" })

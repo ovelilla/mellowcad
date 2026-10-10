@@ -1078,7 +1078,38 @@ export const en: EngineCatalog = {
       "specifyNumberOfItemsOr": "Specify number of items or",
       "alignArrayedItemsToPath": "Align arrayed items to path?",
       "specifyInternalPointOr": "Specify internal point or",
-      "enterPatternNameOr": "Enter a pattern name or"
+      "enterPatternNameOr": "Enter a pattern name or",
+      "specifyStartPointOfText": "Specify start point of text",
+      "specifyStartPointOfTextOr": "Specify start point of text or",
+      "specifyCenterPointOfText": "Specify center point of text",
+      "specifyCenterPointOfTextOr": "Specify center point of text or",
+      "specifyRightEndpointOfTextBaseline": "Specify right endpoint of text baseline",
+      "specifyRightEndpointOfTextBaselineOr": "Specify right endpoint of text baseline or",
+      "specifyMiddlePointOfText": "Specify middle point of text",
+      "specifyMiddlePointOfTextOr": "Specify middle point of text or",
+      "specifyTopLeftPointOfText": "Specify top-left point of text",
+      "specifyTopLeftPointOfTextOr": "Specify top-left point of text or",
+      "specifyTopCenterPointOfText": "Specify top-center point of text",
+      "specifyTopCenterPointOfTextOr": "Specify top-center point of text or",
+      "specifyTopRightPointOfText": "Specify top-right point of text",
+      "specifyTopRightPointOfTextOr": "Specify top-right point of text or",
+      "specifyMiddleLeftPointOfText": "Specify middle-left point of text",
+      "specifyMiddleLeftPointOfTextOr": "Specify middle-left point of text or",
+      "specifyMiddleRightPointOfText": "Specify middle-right point of text",
+      "specifyMiddleRightPointOfTextOr": "Specify middle-right point of text or",
+      "specifyBottomLeftPointOfText": "Specify bottom-left point of text",
+      "specifyBottomLeftPointOfTextOr": "Specify bottom-left point of text or",
+      "specifyBottomCenterPointOfText": "Specify bottom-center point of text",
+      "specifyBottomCenterPointOfTextOr": "Specify bottom-center point of text or",
+      "specifyBottomRightPointOfText": "Specify bottom-right point of text",
+      "specifyBottomRightPointOfTextOr": "Specify bottom-right point of text or",
+      "enterStyleNameOr": "Enter style name or",
+      "enterText": "Enter text",
+      "mtextOppositeCornerOr": "Specify opposite corner or",
+      "mtextHeight": "Specify height",
+      "enterJustification": "Enter justification",
+      "enterLineSpacingType": "Enter line spacing type",
+      "mtextStyleNameOr": "Enter style name or"
     },
     "format": {
       "idle": "Command",
@@ -1349,11 +1380,11 @@ export const en: EngineCatalog = {
       "hatchTooDense": "Hatch spacing too dense, or dash size too small.",
       "hatchNoBoundary": "Valid hatch boundary not found.",
       "textStyleUndefined": [
-        "Text style \"",
+        "Cannot find text style \"",
         [
           "name"
         ],
-        "\" is not defined."
+        "\"."
       ],
       "textJustifyOptions": [
         "Enter an option [",
@@ -1901,7 +1932,75 @@ export const en: EngineCatalog = {
       "selectingEverythingVisible": "Selecting everything visible...",
       "analyzingSelectedData": "Analyzing the selected data...",
       "analyzingInternalIslands": "Analyzing internal islands...",
-      "requiresDistanceOrNumberX": "Requires a distance (or numberX)."
+      "requiresDistanceOrNumberX": "Requires a distance (or numberX).",
+      "currentTextStyle": [
+        "Current text style:  \"",
+        [
+          "style"
+        ],
+        "\"  Text height:  ",
+        [
+          "height"
+        ],
+        "  Annotative:  No  Justify:  ",
+        [
+          "justify"
+        ]
+      ],
+      "textStylesHeader": "Text styles:",
+      "textStyleEntry": [
+        "Style name: ",
+        [
+          "name"
+        ],
+        "  Font typeface: Arial\n   Height: ",
+        [
+          "height"
+        ],
+        "  Width factor: ",
+        [
+          "width"
+        ],
+        "  Obliquing angle: 0\n   Generation: Normal"
+      ],
+      "currentTextStyleName": [
+        "Current text style: \"",
+        [
+          "name"
+        ],
+        "\""
+      ],
+      "currentMTextStyle": [
+        "Current text style:  \"",
+        [
+          "style"
+        ],
+        "\"  Text height:  ",
+        [
+          "height"
+        ],
+        "  Annotative:  No"
+      ],
+      "invalidStyleName": "Invalid style name",
+      "lineSpacingRange": [
+        "Please specify a line spacing value between ",
+        [
+          "min"
+        ],
+        " (",
+        [
+          "minFactor"
+        ],
+        "x) and ",
+        [
+          "max"
+        ],
+        " (",
+        [
+          "maxFactor"
+        ],
+        "x), inclusive."
+      ]
     },
     "feedback": {
       "snap": {

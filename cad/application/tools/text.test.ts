@@ -105,20 +105,91 @@ describe("TEXT", () => {
     cad.escape()
   })
 
-  it("applies a justification keyword", () => {
+  it("asks TEXT's questions and writes them answered", () => {
     const cad = createHarness()
-    cad.command("TEXT").option("Justify").type("tc").enter()
-    startText(cad, p(0, 0)).type("MID").enter().escape()
+    cad.command("TEXT")
+    expect(cad.commandLog().at(-1)).toBe(
+      'Current text style:  "Standard"  Text height:  2.50  Annotative:  No  Justify:  Left'
+    )
+    expect(cad.state().commandLine.prompt).toBe(
+      "TEXT Specify start point of text or [Justify/Style]:"
+    )
+    cad.option("Justify")
+    expect(cad.state().commandLine.prompt).toBe(
+      "TEXT Enter an option [Left/Center/Right/Middle/TL/TC/TR/ML/MC/MR/BL/BC/BR]:"
+    )
+    cad.option("TC")
+    expect(cad.state().commandLine.prompt).toBe(
+      "TEXT Specify top-center point of text:"
+    )
+    cad.click(p(0, 0))
+    expect(cad.state().commandLine.prompt).toBe("TEXT Specify height <2.50>:")
+    cad.type("5").enter()
+    expect(cad.state().commandLine.prompt).toBe(
+      "TEXT Specify rotation angle of text <0.00>:"
+    )
+    cad.enter()
+    expect(cad.state().commandLine.prompt).toBe("TEXT Enter text:")
+    cad.type("MID").enter().escape()
 
+    expect(cad.commandLog()).toEqual([
+      "TEXT",
+      'Current text style:  "Standard"  Text height:  2.50  Annotative:  No  Justify:  Left',
+      "Specify start point of text or [Justify/Style]: J",
+      "Enter an option [Left/Center/Right/Middle/TL/TC/TR/ML/MC/MR/BL/BC/BR]: TC",
+      "Specify top-center point of text:",
+      "Specify height <2.50>: 5",
+      "Specify rotation angle of text <0.00>:",
+      "Enter text: MID",
+      "Enter text: *Cancel*",
+    ])
     expect(cad.only<TextEntity>("text").justify).toBe("tc")
   })
 
-  it("re-asks when the justification keyword is not one of the options", () => {
+  it("takes a justification at its first prompt, unlisted, as AutoCAD does", () => {
     const cad = createHarness()
-    cad.command("TEXT").option("Justify").type("nope").enter()
+    cad.command("TEXT").option("MC")
+    expect(cad.state().commandLine.prompt).toBe(
+      "TEXT Specify middle point of text:"
+    )
+    cad.escape().command("TEXT")
+    expect(cad.commandLog().at(-1)).toContain("Justify:  MC")
+    expect(cad.state().commandLine.prompt).toBe(
+      "TEXT Specify middle point of text or [Justify/Style]:"
+    )
+  })
 
-    expect(cad.commandLog().at(-1)).toContain("Enter an option [Left/Center")
+  it("refuses a justification that is not one of the options", () => {
+    const cad = createHarness()
+    cad.command("TEXT").option("Justify")
+    cad.runtime.setCommandLineText("nope")
+    cad.runtime.submitCommandLine()
+
+    expect(cad.commandLog().at(-1)).toBe("Invalid option keyword.")
     expect(cad.activeToolId()).toBe("text")
+  })
+
+  it("names a style it cannot find, and lists them with ?", () => {
+    const cad = createHarness()
+    cad.command("TEXT").option("Style")
+    expect(cad.state().commandLine.prompt).toBe(
+      "TEXT Enter style name or [?] <Standard>:"
+    )
+    cad.type("NOPE").enter()
+    expect(cad.commandLog().at(-1)).toBe('Cannot find text style "NOPE".')
+    cad.type("?").enter()
+    expect(cad.commandLog().at(-1)).toBe(
+      [
+        "Text styles:",
+        'Style name: "Standard"    Font typeface: Arial',
+        "   Height: 0.00  Width factor: 1.00  Obliquing angle: 0",
+        "   Generation: Normal",
+        'Current text style: "Standard"',
+      ].join("\n")
+    )
+    expect(cad.state().commandLine.prompt).toBe(
+      "TEXT Enter style name or [?] <Standard>:"
+    )
   })
 
   it("skips the height prompt when the style fixes a height", () => {

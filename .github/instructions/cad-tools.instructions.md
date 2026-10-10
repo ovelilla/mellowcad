@@ -203,13 +203,14 @@ There is a single session at a time. Patterns in use:
   prompts its keywords open, CHAMFER's two distances two prompts, the second's `<default>` the
   first. The value the prompt offers is the question's `enter`, taken in `commitRaw` when nothing
   is typed.
-- **Free-text prompt** — one field of kind `"text"` (TEXT's content, its Justify/Style keywords).
+- **Free-text prompt** — one field of kind `"text"` (TEXT's content, a style or pattern name).
   Its content is never a value: `resolveValues` refuses it so `commitRaw` sees the raw string, the
   coordinate collapse skips it, and **no keyword is dispatched from it** — a letter there is
-  content. A prompt whose keywords the tool reads itself (TEXT's `TL`, `MC`) resolves the typed
-  text with `ctx.text.resolveKeyword(typed, ids)`, which applies the same abbreviation, word and
-  `_` rules as every other prompt, and echoes the list with `ctx.text.keywordList(ids)` so the
-  command line still shows AutoCAD's prompt. Editing an existing value preloads the field with `setText` after
+  content. A name prompt that also offers keywords (`Enter style name or [?]`, HATCH's
+  `[?/Solid]`) lists them in `commandOptions()` and reads the box's text with
+  `ctx.text.resolveKeyword(typed, ids)`, which applies the same abbreviation, word and `_` rules as
+  every other prompt; a prompt that takes keywords alone (TEXT's Justify) is keyword-only, never a
+  text field. Editing an existing value preloads the field with `setText` after
   `open`, and the tool hides the object it is editing (`hiddenEntityIds`). A question opened from
   inside a `commitRaw` may preload its default the same way: the runtime clears only the session
   that was answered. A field the drawing words rather than the catalog (an attribute's own prompt)

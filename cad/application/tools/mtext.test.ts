@@ -100,7 +100,47 @@ describe("MTEXT", () => {
       .option("At least")
     cad.type("5x").enter()
 
-    expect(cad.state().dynamicInput?.fields[0].value).toBe("5x")
+    expect(cad.commandLog().slice(-2)).toEqual([
+      "Enter line spacing factor or distance <1x>: 5x",
+      "Please specify a line spacing value between 1.04 (0.25x) and 16.67 (4x), inclusive.",
+    ])
+    expect(cad.state().commandLine.prompt).toBe(
+      "MTEXT Enter line spacing factor or distance <1x>:"
+    )
+    cad.escape()
+  })
+
+  it("asks MTEXT's questions and writes them answered", () => {
+    const cad = createHarness()
+    cad.command("MTEXT")
+    expect(cad.commandLog().at(-1)).toBe(
+      'Current text style:  "Standard"  Text height:  2.50  Annotative:  No'
+    )
+    expect(cad.state().commandLine.prompt).toBe("MTEXT Specify first corner:")
+    cad.click(p(0, 0))
+    expect(cad.state().commandLine.prompt).toBe(
+      "MTEXT Specify opposite corner or [Height/Justify/Line spacing/Rotation/Style/Width]:"
+    )
+    cad.option("Height")
+    expect(cad.state().commandLine.prompt).toBe("MTEXT Specify height <2.50>:")
+    cad.enter().option("Justify")
+    expect(cad.state().commandLine.prompt).toBe(
+      "MTEXT Enter justification [TL/TC/TR/ML/MC/MR/BL/BC/BR] <TL>:"
+    )
+    cad.option("MC").option("Line spacing")
+    expect(cad.state().commandLine.prompt).toBe(
+      "MTEXT Enter line spacing type [At least/Exactly] <At least>:"
+    )
+    cad.option("Exactly").type("2x").enter().option("Rotation")
+    expect(cad.state().commandLine.prompt).toBe(
+      "MTEXT Specify rotation angle <0.00>:"
+    )
+    cad.enter().option("Style")
+    expect(cad.state().commandLine.prompt).toBe(
+      "MTEXT Enter style name or [?] <Standard>:"
+    )
+    cad.enter().option("Width")
+    expect(cad.state().commandLine.prompt).toBe("MTEXT Specify width:")
     cad.escape()
   })
 
@@ -129,7 +169,7 @@ describe("MTEXT", () => {
     const cad = createHarness()
     cad.runtime.document.addTextStyle(createTextStyle("Notes", 0))
     cad.command("MTEXT").click(p(0, 0)).option("Style").type("Fancy").enter()
-    expect(cad.commandLog().at(-1)).toContain('"Fancy"')
+    expect(cad.commandLog().at(-1)).toBe("Invalid style name")
 
     cad.type("notes").enter().click(p(100, -50)).type("X").enter()
     expect(cad.only<MTextEntity>("mtext").styleId).toBe("Notes")

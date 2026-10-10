@@ -9,6 +9,7 @@ import {
   TEXT_LINE_SPACING_FACTOR,
 } from "../../domain/entities"
 import { DEFAULT_TEXT_HEIGHT, TextStyleId } from "../../domain/textStyles"
+import { formatLength } from "../../domain/units"
 import { ucsAngleToWorld, worldAngleToUcs } from "../../domain/ucs"
 import { AddEntityCommand } from "../commands/entityCommands"
 import { DynamicInputSession } from "../input/DynamicInput"
@@ -24,18 +25,24 @@ import {
   CommandOption,
   CommandOptionOutcome,
   PointerInput,
+  QuestionInput,
   Tool,
   ToolContext,
+  ToolQuestion,
 } from "./Tool"
 import { withCurrentProperties } from "./currentProperties"
 
 /**
  * AutoCAD's TEXT / DTEXT: single-line text, one object per line.
  *
- * The prompt sequence is AutoCAD's — start point (or the Justify / Style
- * keywords), then height and rotation, then the text itself, with Enter
- * dropping to a fresh line directly beneath the previous one and a click
- * elsewhere starting a new run of lines. The height prompt is skipped when the
+ * The prompt sequence is AutoCAD's, as its 2023 console asks it — `Current text
+ * style:  "Standard"  Text height:  2.5000  Annotative:  No  Justify:  Left`,
+ * `Specify start point of text or [Justify/Style]:` (the point named by the
+ * justification: `Specify middle point of text`…), Justify's `Enter an option
+ * [Left/Center/…/BR]:`, Style's `Enter style name or [?] <Standard>:`, then
+ * `Specify height` and `Specify rotation angle of text`, then `Enter text:`,
+ * with Enter dropping to a fresh line directly beneath the previous one and a
+ * click elsewhere starting a new run of lines. The height prompt is skipped when the
  * current style fixes a height, and pressing Enter at the start point continues
  * beneath the last line this command wrote, skipping height and rotation too.
  *
@@ -49,7 +56,9 @@ import { withCurrentProperties } from "./currentProperties"
 export class TextTool implements Tool {
   readonly id = "text"
 
-  private state: TextToolState = { phase: "start" }
+  private state: TextToolState = { phase: "start", keywords: true }
+  /** The current style's name, offered as Style's `<default>`. */
+  private styleName: string | null = null
 
   /**
    * Last height and rotation used, offered as the `<default>` of their prompts.
@@ -74,15 +83,54 @@ export class TextTool implements Tool {
   onActivate(ctx: ToolContext): void {
     ctx.setCursor("crosshair")
     ctx.selection.clear()
-    this.state = { phase: "start" }
+    const style = ctx.document.getTextStyle(this.currentStyleId(ctx))
+    ctx.report(
+      ctx.text.message("currentTextStyle", {
+        style: style?.name ?? this.currentStyleId(ctx),
+        height: formatLength(this.height, ctx.document.getSettings()),
+        justify: ctx.text.keyword(JUSTIFY_KEYWORD_OF[this.justify]),
+      })
+    )
+    this.state = { phase: "start", keywords: true }
     this.openStartInput(ctx)
+  }
+
+  question(): PromptId | ToolQuestion {
+    const state = this.state
+    switch (state.phase) {
+      case "start": {
+        const [plain, withKeywords] = POINT_PROMPT[this.justify]
+        return state.keywords ? withKeywords : plain
+      }
+      case "justify":
+        return "enterAnOption"
+      case "style":
+        return {
+          id: "enterStyleNameOr",
+          enter: { name: this.styleName ?? "" },
+        }
+      case "height":
+        return { id: "textHeight", enter: this.height }
+      case "rotation":
+        return {
+          id: "textRotation",
+          enter: { angle: normalizeDegrees((this.rotation * 180) / Math.PI) },
+        }
+      case "entry":
+        return "enterText"
+    }
+  }
+
+  /** Justify's answer is a keyword; the text and the style name are content. */
+  takes(): QuestionInput | null {
+    return this.state.phase === "justify" ? "keyword" : null
   }
 
   onDeactivate(ctx: ToolContext): void {
     // Every exit route — Escape, Enter, switching tools — comes through here,
     // and AutoCAD keeps whatever you had typed, so this is the commit point.
     this.commitPending(ctx)
-    this.state = { phase: "start" }
+    this.state = { phase: "start", keywords: true }
     ctx.dynamicInput.close()
   }
 
@@ -128,24 +176,56 @@ export class TextTool implements Tool {
   }
 
   commandOptions(): readonly CommandOption[] {
-    // Only at the start prompt: while a keyword or the text itself is being
-    // typed every letter is content, so nothing may claim it.
-    return this.state.phase === "start"
-      ? [{ id: "Justify" }, { id: "Style" }]
-      : []
+    switch (this.state.phase) {
+      case "start":
+        // The justifications are answered here too, unlisted, as AutoCAD's
+        // first prompt takes them (`MC` asks the middle point at once).
+        return this.state.keywords
+          ? [
+              { id: "Justify" },
+              { id: "Style" },
+              ...JUSTIFY_KEYWORDS.map((id) => ({ id, hidden: true as const })),
+            ]
+          : []
+      case "justify":
+        return JUSTIFY_KEYWORDS.map((id) => ({ id }))
+      case "style":
+        return [{ id: "?" }]
+      default:
+        // While the text itself is typed every letter is content.
+        return []
+    }
   }
 
   invokeOption(id: string, ctx: ToolContext): CommandOptionOutcome {
-    if (this.state.phase !== "start") return "unhandled"
+    const state = this.state
+    if (
+      state.phase === "justify" ||
+      (state.phase === "start" && state.keywords && id in JUSTIFY_BY_KEYWORD)
+    ) {
+      const justify = JUSTIFY_BY_KEYWORD[id]
+      if (justify === undefined) return "unhandled"
+      this.justify = justify
+      // The point the justification names, asked without the keywords.
+      this.state = { phase: "start", keywords: false }
+      this.openStartInput(ctx)
+      return "continue"
+    }
+    if (state.phase === "style") {
+      if (id !== "?") return "unhandled"
+      this.listStyles(ctx)
+      return "continue"
+    }
+    if (state.phase !== "start" || !state.keywords) return "unhandled"
     switch (id) {
       case "Justify":
         this.state = { phase: "justify" }
-        this.reportJustifyOptions(ctx)
-        this.openKeywordInput(ctx, "justify")
+        // Keywords only, the focus left on the drawing.
+        ctx.dynamicInput.open({ fields: [], commit: () => {} })
         return "continue"
       case "Style":
         this.state = { phase: "style" }
-        this.openKeywordInput(ctx, "styleName")
+        this.openStyleInput(ctx)
         return "continue"
       default:
         return "unhandled"
@@ -294,13 +374,7 @@ export class TextTool implements Tool {
 
   private openStartInput(ctx: ToolContext): void {
     const session: DynamicInputSession = {
-      fields: [
-        {
-          id: "point",
-          prompt: "textStartPoint",
-          kind: "coordinate",
-        },
-      ],
+      fields: [{ id: "point", kind: "coordinate" }],
       commit: () => {},
       commitRaw: (commitCtx) => this.commitStart(commitCtx),
     }
@@ -393,62 +467,94 @@ export class TextTool implements Tool {
     ctx.dynamicInput.setPosition(this.lastScreen ?? { x: 0, y: 0 })
   }
 
-  /**
-   * AutoCAD's Justify prompt, minus the two-point Align and Fit options this
-   * command does not implement yet. Its keywords run to two letters (`TL`,
-   * `MC`), so it is read from a free-text field, and echoed here so the
-   * command line still shows the prompt.
-   */
-  private reportJustifyOptions(ctx: ToolContext): void {
-    ctx.report(
-      ctx.text.message("textJustifyOptions", {
-        keywords: ctx.text.keywordList(JUSTIFY_KEYWORDS),
-      })
-    )
-  }
-
-  /** A prompt whose answer is a keyword typed in full (Justify, Style). */
-  private openKeywordInput(ctx: ToolContext, prompt: PromptId): void {
+  /** The style's name, typed in full; `?` lists the styles. */
+  private openStyleInput(ctx: ToolContext): void {
+    this.styleName =
+      ctx.document.getTextStyle(this.currentStyleId(ctx))?.name ?? null
     const session: DynamicInputSession = {
-      fields: [{ id: "keyword", prompt, kind: "text" }],
+      fields: [{ id: "keyword", prompt: "styleName", kind: "text" }],
       commit: () => {},
-      commitRaw: (commitCtx) => this.commitKeyword(commitCtx),
+      commitRaw: (commitCtx) => this.commitStyle(commitCtx),
     }
     ctx.dynamicInput.open(session)
     ctx.dynamicInput.setPosition(this.lastScreen ?? { x: 0, y: 0 })
   }
 
-  private commitKeyword(ctx: ToolContext): boolean {
+  private commitStyle(ctx: ToolContext): boolean {
+    if (this.state.phase !== "style") return false
     const typed = ctx.dynamicInput.getText("keyword").trim()
-    if (this.state.phase === "justify") {
-      const keyword = ctx.text.resolveKeyword(typed, JUSTIFY_KEYWORDS)
-      if (!keyword) {
-        this.reportJustifyOptions(ctx) // re-ask rather than accept a wrong guess
-        return false
-      }
-      this.justify = JUSTIFY_BY_KEYWORD[keyword]
-    } else if (this.state.phase === "style") {
-      // Empty is Enter, which keeps the `<current>` style.
-      if (typed !== "") {
-        const style = ctx.document
-          .getTextStyles()
-          .find((s) => s.name.toLowerCase() === typed.toLowerCase())
-        if (!style) {
-          ctx.report(
-            ctx.text.message("textStyleUndefined", { name: typed }),
-            "error"
-          )
-          return false
-        }
-        this.styleId = style.id
-      }
-    } else {
-      return false
+    // The box holds a name, not a keyword: `?` is read here.
+    if (ctx.text.resolveKeyword(typed, ["?"]) === "?") {
+      this.listStyles(ctx)
+      return true
     }
-    this.state = { phase: "start" }
+    // Empty is Enter, which keeps the `<current>` style.
+    if (typed !== "") {
+      const style = ctx.document
+        .getTextStyles()
+        .find((s) => s.name.toLowerCase() === typed.toLowerCase())
+      if (!style) {
+        ctx.report(
+          ctx.text.message("textStyleUndefined", { name: typed }),
+          "error"
+        )
+        this.openStyleInput(ctx)
+        return true
+      }
+      this.styleId = style.id
+    }
+    this.state = { phase: "start", keywords: true }
     this.openStartInput(ctx)
     return true
   }
+
+  /** `?`: every style as AutoCAD lists it, then the current one; asked again. */
+  private listStyles(ctx: ToolContext): void {
+    const settings = ctx.document.getSettings()
+    const entries = ctx.document.getTextStyles().map((style) =>
+      ctx.text.message("textStyleEntry", {
+        name: `"${style.name}"`.padEnd(12),
+        height: formatLength(style.height, settings),
+        width: formatLength(1, settings),
+      })
+    )
+    const current = ctx.document.getTextStyle(this.currentStyleId(ctx))
+    ctx.report(
+      [
+        ctx.text.message("textStylesHeader"),
+        ...entries,
+        ctx.text.message("currentTextStyleName", {
+          name: current?.name ?? this.currentStyleId(ctx),
+        }),
+      ].join("\n")
+    )
+    this.openStyleInput(ctx)
+  }
+}
+
+/**
+ * The point each justification asks for, as AutoCAD names it: without and with
+ * the `or [Justify/Style]` the first prompt offers.
+ */
+const POINT_PROMPT: Readonly<
+  Record<TextJustify, readonly [PromptId, PromptId]>
+> = {
+  left: ["specifyStartPointOfText", "specifyStartPointOfTextOr"],
+  center: ["specifyCenterPointOfText", "specifyCenterPointOfTextOr"],
+  right: [
+    "specifyRightEndpointOfTextBaseline",
+    "specifyRightEndpointOfTextBaselineOr",
+  ],
+  middle: ["specifyMiddlePointOfText", "specifyMiddlePointOfTextOr"],
+  mc: ["specifyMiddlePointOfText", "specifyMiddlePointOfTextOr"],
+  tl: ["specifyTopLeftPointOfText", "specifyTopLeftPointOfTextOr"],
+  tc: ["specifyTopCenterPointOfText", "specifyTopCenterPointOfTextOr"],
+  tr: ["specifyTopRightPointOfText", "specifyTopRightPointOfTextOr"],
+  ml: ["specifyMiddleLeftPointOfText", "specifyMiddleLeftPointOfTextOr"],
+  mr: ["specifyMiddleRightPointOfText", "specifyMiddleRightPointOfTextOr"],
+  bl: ["specifyBottomLeftPointOfText", "specifyBottomLeftPointOfTextOr"],
+  bc: ["specifyBottomCenterPointOfText", "specifyBottomCenterPointOfTextOr"],
+  br: ["specifyBottomRightPointOfText", "specifyBottomRightPointOfTextOr"],
 }
 
 /** Preview frames reuse one id so drawing them never burns entity ids. */
@@ -473,6 +579,10 @@ export const JUSTIFY_BY_KEYWORD: Readonly<Record<string, TextJustify>> = {
 
 export const JUSTIFY_KEYWORDS = Object.keys(JUSTIFY_BY_KEYWORD)
 
+const JUSTIFY_KEYWORD_OF = Object.fromEntries(
+  Object.entries(JUSTIFY_BY_KEYWORD).map(([id, justify]) => [justify, id])
+) as Readonly<Record<TextJustify, string>>
+
 /**
  * Where the next line of text starts: one line below, measured along the text's
  * own down direction so a rotated run stays stacked square to itself, and at
@@ -492,8 +602,11 @@ export function lineBelow(
 }
 
 type TextToolState =
-  /** Awaiting the start point, or a Justify / Style keyword. */
-  | { readonly phase: "start" }
+  /**
+   * Awaiting the start point — or, at the first prompt, a Justify / Style
+   * keyword; after Justify the point is asked alone.
+   */
+  | { readonly phase: "start"; readonly keywords: boolean }
   /** Typing a justification keyword. */
   | { readonly phase: "justify" }
   /** Typing a style name. */
