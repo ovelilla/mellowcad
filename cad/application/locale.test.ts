@@ -297,17 +297,49 @@ describe("Spanish AutoCAD's command language", () => {
     expect(cad.state().commandLine.prompt).toBe(
       "GIRA Precise ángulo de rotación o [Copiar/Referencia] <0.00>:"
     )
+    cad.option("Copy")
+    expect(cad.commandLog().at(-1)).toBe(
+      "Girando una copia de los objetos seleccionados."
+    )
+    cad.escape().select("A").command("ESCALA").click(p(0, 0)).option("Copy")
+    expect(cad.commandLog().at(-1)).toBe(
+      "Escalando una copia de los objetos seleccionados."
+    )
     cad.escape().select("A").command("SIMETRIA").click(p(0, 10))
+    expect(cad.state().commandLine.prompt).toBe(
+      "SIMETRIA Especifique segundo punto de línea de simetría:"
+    )
     cad.click(p(100, 10))
     expect(cad.state().commandLine.prompt).toBe(
       "SIMETRIA ¿Borrar objetos de origen? [Sí/No] <No>:"
     )
     expect(cad.commandLog().slice(0, 4)).toEqual([
       "GIRA",
-      "Ángulo actual positivo en SCP:  ANGDIR=en sentido horario inverso  ANGBASE=0",
+      "Ángulo actual positivo en SCP:  ANGDIR=en sentido horario inverso ANGBASE=0",
       "1 encontrados",
       "Precise punto base:",
     ])
+  })
+
+  it("counts a selection and stretches in the words of Autodesk's Spanish table", () => {
+    const cad = createHarness({
+      locale: es,
+      entities: [
+        lineOf(p(0, 0), p(100, 0), { id: "A" }),
+        lineOf(p(0, 50), p(100, 50), { id: "B" }),
+      ],
+    })
+    cad.command("DESPLAZA").click(p(50, 0)).click(p(50, 50))
+    cad.click(p(50, 50), { shiftKey: true })
+    expect(cad.commandLog().slice(1)).toEqual([
+      "Designe objetos: 1 encontrados",
+      "Designe objetos: 1 encontrados, 2 total",
+      "Designe objetos: 1 encontrados, eliminados 1, 1 total",
+    ])
+    const stretch = createHarness({ locale: es }).command("ESTIRA")
+    expect(stretch.commandLog().at(-1)).toBe(
+      "Designe objetos que estirar mediante ventana o polígono..."
+    )
   })
 
   it("draws with LINEA, L and _LINE, and undoes a segment with H", () => {
@@ -401,7 +433,7 @@ describe("Spanish AutoCAD's command language", () => {
     )
     cad.type("B").enter()
     expect(cad.state().commandLine.prompt).toBe(
-      "DESFASE ¿Borrar objeto de origen después del desfase? [Sí/No] <No>:"
+      "DESFASE ¿Borrar objeto de origen tras desfase? [Sí/No] <No>:"
     )
     const answer = (keyword: string) => {
       for (const char of keyword) cad.press(char)

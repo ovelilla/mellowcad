@@ -319,8 +319,8 @@ export class RotateTool implements Tool {
 
   invokeOption(id: string, ctx: ToolContext): CommandOptionOutcome {
     if (id === "Copy" && this.state.phase === "angle") {
-      // WHY a second Copy does nothing: what AutoCAD says to it is unverified.
-      if (!this.state.copy) ctx.report(ctx.text.message("rotatingCopy"))
+      // A second Copy says it again, as AutoCAD's console does.
+      ctx.report(ctx.text.message("rotatingCopy"))
       this.state = { ...this.state, copy: true }
       ctx.requestRender()
       return "continue"

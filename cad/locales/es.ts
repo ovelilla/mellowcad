@@ -1346,14 +1346,14 @@ export const es: EngineLocale = {
       "specifyReferenceLength": "Precise longitud de referencia",
       "specifyNewLength": "Precise nueva longitud",
       "specifyFirstPointOfMirrorLine": "Precise primer punto de línea de simetría",
-      "specifySecondPointOfMirrorLine": "Precise segundo punto de línea de simetría",
+      "specifySecondPointOfMirrorLine": "Especifique segundo punto de línea de simetría",
       "eraseSourceObjects": "¿Borrar objetos de origen?",
       "selectSourceOrMultipleToJoin": "Designe un objeto de origen o varios objetos para unirlos a la vez",
       "selectObjectsToJoin": "Seleccione objetos para unir",
       "specifyOffsetDistanceOr": "Precise distancia de desfase o",
       "selectObjectToOffsetOr": "Designe objeto a desplazar o",
       "specifyPointOnSideToOffsetOr": "Precise punto en lado de desplazamiento o",
-      "eraseSourceObjectAfterOffsetting": "¿Borrar objeto de origen después del desfase?",
+      "eraseSourceObjectAfterOffsetting": "¿Borrar objeto de origen tras desfase?",
       "enterLayerOptionForOffsetObjects": "Indique opción de capa para objetos desfasados",
       "specifyThroughPointOr": "Precise punto a atravesar o",
       "nextObject": "siguiente objeto",
@@ -1477,7 +1477,7 @@ export const es: EngineLocale = {
         "\" desconocido."
       ],
       "cancel": "*Cancelar*",
-      "rotateSettings": "Ángulo actual positivo en SCP:  ANGDIR=en sentido horario inverso  ANGBASE=0",
+      "rotateSettings": "Ángulo actual positivo en SCP:  ANGDIR=en sentido horario inverso ANGBASE=0",
       "trimExtendSettings": "Parámetros actuales: Proyección=SCP, Arista=Ninguno, Modo=Rápido",
       "filletSettings": [
         "Parámetros actuales: Modo = Recortar, Radio = ",
@@ -1516,8 +1516,8 @@ export const es: EngineLocale = {
         ],
         "  OFFSETGAPTYPE=0"
       ],
-      "rotatingCopy": "Girando una copia de los objetos designados.",
-      "scalingCopy": "Ajustando la escala de una copia de los objetos designados.",
+      "rotatingCopy": "Girando una copia de los objetos seleccionados.",
+      "scalingCopy": "Escalando una copia de los objetos seleccionados.",
       "objectsFound": [
         [
           "box",
@@ -1537,9 +1537,8 @@ export const es: EngineLocale = {
           {
             "=0": "",
             "other": [
-              ", ",
-              0,
-              " eliminados"
+              ", eliminados ",
+              0
             ]
           }
         ],
@@ -1559,7 +1558,7 @@ export const es: EngineLocale = {
         ]
       ],
       "copyModeMultiple": "Parámetros actuales:  modo de copia = Múltiple",
-      "stretchSelection": "Designe objetos que estirar mediante ventana de captura o polígono de captura...",
+      "stretchSelection": "Designe objetos que estirar mediante ventana o polígono...",
       "currentLineWidth": [
         "El grosor de la línea actual es ",
         [

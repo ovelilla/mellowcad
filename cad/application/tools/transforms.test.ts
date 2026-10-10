@@ -270,6 +270,7 @@ describe("ROTATE", () => {
     )
     cad.option("Copy")
     expect(cad.optionIds()).toEqual(["Copy", "Reference"])
+    cad.option("Copy")
     cad.type("90").enter()
 
     expect(cad.commandLog()).toEqual([
@@ -277,6 +278,8 @@ describe("ROTATE", () => {
       "Current positive angle in UCS:  ANGDIR=counterclockwise  ANGBASE=0",
       "1 found",
       "Specify base point:",
+      "Specify rotation angle or [Copy/Reference] <0.00>: C",
+      "Rotating a copy of the selected objects.",
       "Specify rotation angle or [Copy/Reference] <0.00>: C",
       "Rotating a copy of the selected objects.",
       "Specify rotation angle or [Copy/Reference] <0.00>: 90",
@@ -394,6 +397,22 @@ describe("SCALE", () => {
       "Specify new length: 50",
     ])
     expect(cad.byId<LineEntity>("L1").end).toBeCloseToPoint(p(100, 0))
+  })
+
+  it("says it scales a copy each time Copy is chosen", () => {
+    const cad = createHarness({ entities: [HORIZONTAL] })
+
+    cad.select("L1").command("SCALE").click(p(0, 0))
+    cad.option("Copy").option("Copy").type("2").enter()
+
+    expect(cad.commandLog().slice(-5)).toEqual([
+      "Specify scale factor or [Copy/Reference]: C",
+      "Scaling a copy of the selected objects.",
+      "Specify scale factor or [Copy/Reference]: C",
+      "Scaling a copy of the selected objects.",
+      "Specify scale factor or [Copy/Reference]: 2",
+    ])
+    expect(cad.entityCount).toBe(2)
   })
 
   it("scales about the picked base point", () => {
