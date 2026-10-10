@@ -1059,7 +1059,25 @@ export const en: EngineCatalog = {
       "specifyFirstBreakPoint": "Specify first break point",
       "specifySecondBreakPointOr": "Specify second break point or",
       "specifySecondBreakPoint": "Specify second break point",
-      "specifyBreakPoint": "Specify break point"
+      "specifyBreakPoint": "Specify break point",
+      "selectGripToEditArrayOr": "Select grip to edit array or",
+      "enterNumberOfColumns": "Enter the number of columns",
+      "enterNumberOfRows": "Enter the number of rows",
+      "specifyDistanceBetweenColumnsOfCell": "Specify the distance between columns",
+      "specifyDistanceBetweenColumns": "Specify the distance between columns",
+      "specifyDistanceBetweenRows": "Specify the distance between rows",
+      "specifyIncrementingElevationBetweenRows": "Specify the incrementing elevation between rows",
+      "specifyCenterPointOfArray": "Specify center point of array",
+      "enterNumberOfItemsInArray": "Enter number of items in array",
+      "specifyAngleBetweenItems": "Specify angle between items",
+      "specifyTheAngleToFill": "Specify the angle to fill (+=ccw, -=cw)",
+      "rotateArrayedItems": "Rotate arrayed items?",
+      "selectPathCurve": "Select path curve",
+      "enterPathMethod": "Enter path method",
+      "enterNumberOfItemsAlongPath": "Enter number of items along path",
+      "specifyDistanceBetweenItemsAlongPath": "Specify the distance between items along path",
+      "specifyNumberOfItemsOr": "Specify number of items or",
+      "alignArrayedItemsToPath": "Align arrayed items to path?"
     },
     "format": {
       "idle": "Command",
@@ -1831,35 +1849,53 @@ export const en: EngineCatalog = {
         ]
       ],
       "selectionModes": [
-        "Window/Last/Crossing/BOX/ALL/Fence/WPolygon/CPolygon",
         [
           "set",
           1,
           {
-            "oneObject": "",
-            "other": [
-              [
-                "set",
-                1,
-                {
-                  "crossingObjects": "",
-                  "other": "/Group"
-                }
-              ],
-              "/Add/Remove/Multiple/Previous/Undo/AUto/SIngle",
-              [
-                "set",
-                1,
-                {
-                  "objects": "/SUbobject/Object",
-                  "other": ""
-                }
-              ]
-            ]
+            "oneObject": "Window/Last/Crossing/BOX/ALL/Fence/WPolygon/CPolygon",
+            "pathCurve": "Window/Last/Crossing/BOX/ALL/Fence/WPolygon/CPolygon/Group/Previous/AUto",
+            "crossingObjects": "Window/Last/Crossing/BOX/ALL/Fence/WPolygon/CPolygon/Add/Remove/Multiple/Previous/Undo/AUto/SIngle",
+            "wholeObjects": "Window/Last/Crossing/BOX/ALL/Fence/WPolygon/CPolygon/Group/Add/Remove/Multiple/Previous/Undo/AUto/SIngle",
+            "other": "Window/Last/Crossing/BOX/ALL/Fence/WPolygon/CPolygon/Group/Add/Remove/Multiple/Previous/Undo/AUto/SIngle/SUbobject/Object"
           }
         ]
       ],
-      "noObjectFound": "No object found"
+      "noObjectFound": "No object found",
+      "arrayType": [
+        "Type = ",
+        [
+          "type",
+          1,
+          {
+            "rectangular": "Rectangular",
+            "polar": "Polar",
+            "other": "Path"
+          }
+        ],
+        "  Associative = No"
+      ],
+      "requiresPositiveInteger": "Requires a positive nonzero integer or option keyword.",
+      "maximumItems": [
+        "Maximum items = ",
+        [
+          "count"
+        ]
+      ],
+      "pathCurveIsArrayed": "Objects selected to be arrayed may not be selected as path curve.",
+      "filteredOut": [
+        [
+          "count",
+          2,
+          {
+            "one": "1 was filtered out",
+            "other": [
+              0,
+              " were filtered out"
+            ]
+          }
+        ]
+      ]
     },
     "feedback": {
       "snap": {

@@ -575,16 +575,30 @@
       "ROTATE": { "Copy": "Copy", "Reference": "Reference" },
       "SCALE": { "Copy": "Copy", "Reference": "Reference" },
       "MIRROR": { "Yes": "Yes", "No": "No" },
+      "ARRAYRECT": {
+        "COUnt": "COUnt",
+        "Spacing": "Spacing",
+        "COLumns": "COLumns",
+        "Rows": "Rows",
+        "eXit": "eXit"
+      },
       "ARRAYPOLAR": {
-        "Rotate items": "Rotate items",
+        "Items": "Items",
+        "Angle between": "Angle between",
+        "Fill angle": "Fill angle",
+        "ROTate items": "ROTate items",
+        "eXit": "eXit",
         "Yes": "Yes",
         "No": "No"
       },
       "ARRAYPATH": {
         "Method": "Method",
+        "Items": "Items",
         "Align items": "Align items",
+        "eXit": "eXit",
         "Divide": "Divide",
         "Measure": "Measure",
+        "Fill entire path": "Fill entire path",
         "Yes": "Yes",
         "No": "No"
       },
@@ -891,7 +905,25 @@
       "specifyFirstBreakPoint": "Specify first break point",
       "specifySecondBreakPointOr": "Specify second break point or",
       "specifySecondBreakPoint": "Specify second break point",
-      "specifyBreakPoint": "Specify break point"
+      "specifyBreakPoint": "Specify break point",
+      "selectGripToEditArrayOr": "Select grip to edit array or",
+      "enterNumberOfColumns": "Enter the number of columns",
+      "enterNumberOfRows": "Enter the number of rows",
+      "specifyDistanceBetweenColumnsOfCell": "Specify the distance between columns",
+      "specifyDistanceBetweenColumns": "Specify the distance between columns",
+      "specifyDistanceBetweenRows": "Specify the distance between rows",
+      "specifyIncrementingElevationBetweenRows": "Specify the incrementing elevation between rows",
+      "specifyCenterPointOfArray": "Specify center point of array",
+      "enterNumberOfItemsInArray": "Enter number of items in array",
+      "specifyAngleBetweenItems": "Specify angle between items",
+      "specifyTheAngleToFill": "Specify the angle to fill (+=ccw, -=cw)",
+      "rotateArrayedItems": "Rotate arrayed items?",
+      "selectPathCurve": "Select path curve",
+      "enterPathMethod": "Enter path method",
+      "enterNumberOfItemsAlongPath": "Enter number of items along path",
+      "specifyDistanceBetweenItemsAlongPath": "Specify the distance between items along path",
+      "specifyNumberOfItemsOr": "Specify number of items or",
+      "alignArrayedItemsToPath": "Align arrayed items to path?"
     },
     "format": {
       "idle": "Command",
@@ -997,8 +1029,13 @@
       "invalidOptionKeyword": "Invalid option keyword.",
       "invalidSelection": "*Invalid selection*",
       "expectsPointOr": "Expects a point or {keywords}",
-      "selectionModes": "Window/Last/Crossing/BOX/ALL/Fence/WPolygon/CPolygon{set, select, oneObject {} other {{set, select, crossingObjects {} other {/Group}}/Add/Remove/Multiple/Previous/Undo/AUto/SIngle{set, select, objects {/SUbobject/Object} other {}}}}",
-      "noObjectFound": "No object found"
+      "selectionModes": "{set, select, oneObject {Window/Last/Crossing/BOX/ALL/Fence/WPolygon/CPolygon} pathCurve {Window/Last/Crossing/BOX/ALL/Fence/WPolygon/CPolygon/Group/Previous/AUto} crossingObjects {Window/Last/Crossing/BOX/ALL/Fence/WPolygon/CPolygon/Add/Remove/Multiple/Previous/Undo/AUto/SIngle} wholeObjects {Window/Last/Crossing/BOX/ALL/Fence/WPolygon/CPolygon/Group/Add/Remove/Multiple/Previous/Undo/AUto/SIngle} other {Window/Last/Crossing/BOX/ALL/Fence/WPolygon/CPolygon/Group/Add/Remove/Multiple/Previous/Undo/AUto/SIngle/SUbobject/Object}}",
+      "noObjectFound": "No object found",
+      "arrayType": "Type = {type, select, rectangular {Rectangular} polar {Polar} other {Path}}  Associative = No",
+      "requiresPositiveInteger": "Requires a positive nonzero integer or option keyword.",
+      "maximumItems": "Maximum items = {count}",
+      "pathCurveIsArrayed": "Objects selected to be arrayed may not be selected as path curve.",
+      "filteredOut": "{count, plural, one {1 was filtered out} other {# were filtered out}}"
     },
     "feedback": {
       "snap": {

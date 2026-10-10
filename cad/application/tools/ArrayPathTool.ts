@@ -10,44 +10,46 @@ import {
   translateEntity,
 } from "../../domain/entities"
 import { parseNumber } from "../../domain/units"
-import { DynamicInputSession } from "../input/DynamicInput"
 import { ScenePrimitive, StrokeStyle } from "../../scene/types"
 import { entityScenePrimitive } from "../SceneBuilder"
 import { THEME } from "../../scene/theme"
 import { ReplaceEntitiesCommand } from "../commands/entityCommands"
 import { boxSelect, buildSelectionBoxOverlay } from "./boxSelection"
+import { countPreselection, pickObjects } from "./objectSelection"
+import type { PromptId } from "../../locales/types"
 import {
   CommandOption,
   CommandOptionOutcome,
   PointerInput,
+  QuestionInput,
   Tool,
   ToolContext,
+  ToolQuestion,
 } from "./Tool"
 
 /**
- * AutoCAD's ARRAYPATH command (path array): distribute the selected objects
- * along a path curve. Our model has only lines and circles, so the path is a
- * line (open) or a circle's circumference (closed).
+ * AutoCAD's ARRAYPATH, as its 2023 console asks it: `Select objects:`, `Type =
+ * Path  Associative = No`, `Select path curve:` — a line, a circle or an arc —
+ * then `Select grip to edit array or [Method/Items/Align items/eXit] <eXit>:`
+ * over a live preview. Method asks `Enter path method [Divide/Measure]
+ * <Measure>:`: Measure steps the items a distance apart from the path's start,
+ * Divide spreads them evenly over it. Items asks, by Divide, `Enter number of
+ * items along path`; by Measure, `Specify the distance between items along
+ * path`, then says `Maximum items = 11` and asks `Specify number of items or
+ * [Fill entire path]`. Align items asks `Align arrayed items to path?
+ * [Yes/No] <Yes>:` (Yes turns each copy to follow the path's tangent). At
+ * first the items are one and a half times the selection's size apart and
+ * fill the path. As in AutoCAD the source objects are consumed into the array
+ * (the first item sits at the path's start); the path is left in place. eXit
+ * or Enter commits it as one undo step; Escape changes nothing.
  *
- * ```
- *   (empty selection)   Enter/Space   click a curve    type / Enter   [M] method  [A] align
- *  selecting ─────────────────► pickPath ──────────► config (Items | Spacing) ──► done
- *   click / box-drag adds objects    the path curve      live ghosts along the path
- * ```
- *
- * Two methods, toggled with M: **Divide** spreads a given item *count* evenly
- * over the whole path; **Measure** steps a fixed *spacing* from the start.
- * **Align items** (default Yes, toggled with A) turns each copy to follow the
- * path's tangent — a no-op on a straight line, a steady rotation around a
- * circle. As in AutoCAD, the source objects are consumed into the array (the
- * first item sits at the path start); the path curve itself is left in place.
- * The whole array commits as a single undoable step (non-associative).
+ * WHY Associative = No: as ARRAYRECT's. Base point, Tangent direction, Rows,
+ * Levels and Z direction are not offered.
  */
 
 /** Screen-pixel movement past which a press-drag becomes a box selection. */
 const DRAG_THRESHOLD_PX = 4
 
-const DEFAULT_ITEMS = 6
 const MAX_ITEMS = 1000
 
 /** A curve the array runs along, parameterised by arc length. */
@@ -64,11 +66,18 @@ interface PathConfig {
   readonly path: PathCurve
   /** Base point (selection centroid) placed on the path at each item. */
   readonly basePoint: Vec2
-  readonly method: "divide" | "measure"
-  readonly align: boolean
-  /** Default Measure spacing (≈ DEFAULT_ITEMS items over the path). */
-  readonly spacingDefault: number
 }
+
+/** What the prompts edit: kept together, as AutoCAD keeps the count across methods. */
+interface Layout {
+  readonly method: "divide" | "measure"
+  readonly items: number
+  /** Measure's distance between items. */
+  readonly spacing: number
+  readonly align: boolean
+}
+
+type Step = "main" | "method" | "count" | "spacing" | "measureCount" | "align"
 
 type ArrayPathState =
   | { readonly phase: "selecting" }
@@ -87,8 +96,13 @@ type ArrayPathState =
     }
   /** Objects chosen; awaiting the path curve. `hover` is the rollover candidate. */
   | { readonly phase: "pickPath"; readonly hover: Entity | null }
-  /** Path chosen; editing count/spacing with a live preview. */
-  | { readonly phase: "config"; readonly config: PathConfig }
+  /** Path chosen; editing the layout with a live preview. */
+  | {
+      readonly phase: "edit"
+      readonly config: PathConfig
+      readonly layout: Layout
+      readonly step: Step
+    }
 
 export class ArrayPathTool implements Tool {
   readonly id = "arraypath"
@@ -98,14 +112,162 @@ export class ArrayPathTool implements Tool {
 
   onActivate(ctx: ToolContext): void {
     ctx.setCursor("crosshair")
-    this.state = ctx.selection.isEmpty()
-      ? { phase: "selecting" }
-      : { phase: "pickPath", hover: null }
+    if (ctx.selection.isEmpty()) {
+      this.state = { phase: "selecting" }
+    } else {
+      countPreselection(ctx)
+      this.enterPickPath(ctx)
+    }
   }
 
   onDeactivate(ctx: ToolContext): void {
     this.state = { phase: "selecting" }
     ctx.dynamicInput.close()
+  }
+
+  question(): PromptId | ToolQuestion {
+    const state = this.state
+    switch (state.phase) {
+      case "pickPath":
+        return "selectPathCurve"
+      case "edit":
+        break
+      default:
+        return "selectObjects"
+    }
+    const { layout } = state
+    switch (state.step) {
+      case "main":
+        return "selectGripToEditArrayOr"
+      case "method":
+        return "enterPathMethod"
+      case "count":
+        return {
+          id: "enterNumberOfItemsAlongPath",
+          enter: { count: layout.items },
+        }
+      case "spacing":
+        return {
+          id: "specifyDistanceBetweenItemsAlongPath",
+          enter: layout.spacing,
+        }
+      case "measureCount":
+        return {
+          id: "specifyNumberOfItemsOr",
+          enter: {
+            count: Math.min(
+              layout.items,
+              maxItems(state.config.path, layout.spacing)
+            ),
+          },
+        }
+      case "align":
+        return "alignArrayedItemsToPath"
+    }
+  }
+
+  /** As AutoCAD 2023's console refuses them. */
+  takes(): QuestionInput | null {
+    const state = this.state
+    if (state.phase === "pickPath") return "pathCurve"
+    if (state.phase !== "edit") return null
+    switch (state.step) {
+      case "main":
+        return "point"
+      case "count":
+      case "measureCount":
+        return { refusal: "requiresPositiveInteger" }
+      case "spacing":
+        return {
+          refusal: "requiresDistance",
+          values: { points: "two", keyword: "yes" },
+        }
+      case "method":
+      case "align":
+        return "keyword"
+    }
+  }
+
+  commandOptions(): readonly CommandOption[] {
+    if (this.state.phase !== "edit") return []
+    switch (this.state.step) {
+      case "main":
+        return [
+          { id: "Method" },
+          { id: "Items" },
+          { id: "Align items" },
+          { id: "eXit" },
+        ]
+      case "method":
+        return [{ id: "Divide" }, { id: "Measure" }]
+      case "measureCount":
+        return [{ id: "Fill entire path" }]
+      case "align":
+        return [{ id: "Yes" }, { id: "No" }]
+      default:
+        return []
+    }
+  }
+
+  defaultOption(): string | null {
+    if (this.state.phase !== "edit") return null
+    const { layout } = this.state
+    switch (this.state.step) {
+      case "main":
+        return "eXit"
+      case "method":
+        return layout.method === "divide" ? "Divide" : "Measure"
+      case "align":
+        return layout.align ? "Yes" : "No"
+      default:
+        return null
+    }
+  }
+
+  invokeOption(id: string, ctx: ToolContext): CommandOptionOutcome {
+    const state = this.state
+    if (state.phase !== "edit") return "unhandled"
+    const { layout, config } = state
+    switch (state.step) {
+      case "main":
+        if (id === "eXit") {
+          this.create(ctx)
+          return "end"
+        }
+        if (id === "Method") this.ask("method", ctx)
+        else if (id === "Items") {
+          this.ask(layout.method === "divide" ? "count" : "spacing", ctx)
+        } else if (id === "Align items") this.ask("align", ctx)
+        else return "unhandled"
+        return "continue"
+      case "method": {
+        if (id !== "Divide" && id !== "Measure") return "unhandled"
+        const method = id === "Divide" ? "divide" : "measure"
+        // Measure goes on from the spacing Divide had, as AutoCAD's does.
+        const spacing =
+          method === "measure" && layout.method === "divide"
+            ? divideStep(config.path, layout.items)
+            : layout.spacing
+        this.state = { ...state, layout: { ...layout, method, spacing } }
+        this.ask("main", ctx)
+        return "continue"
+      }
+      case "measureCount":
+        if (id !== "Fill entire path") return "unhandled"
+        this.state = {
+          ...state,
+          layout: { ...layout, items: maxItems(config.path, layout.spacing) },
+        }
+        this.ask("main", ctx)
+        return "continue"
+      case "align":
+        if (id !== "Yes" && id !== "No") return "unhandled"
+        this.state = { ...state, layout: { ...layout, align: id === "Yes" } }
+        this.ask("main", ctx)
+        return "continue"
+      default:
+        return "unhandled"
+    }
   }
 
   onPointerMove(input: PointerInput, ctx: ToolContext): void {
@@ -141,7 +303,7 @@ export class ArrayPathTool implements Tool {
         }
         break
       }
-      case "config":
+      case "edit":
         ctx.dynamicInput.setPosition(input.screen)
         break
     }
@@ -164,7 +326,13 @@ export class ArrayPathTool implements Tool {
         return
       case "pickPath": {
         const hit = this.pickPath(input, ctx)
-        if (hit) this.enterConfig(hit, ctx)
+        if (!hit) return
+        if (ctx.selection.has(hit.id)) {
+          ctx.report(ctx.text.message("pathCurveIsArrayed"))
+          ctx.report(ctx.text.message("filteredOut", { count: 1 }))
+          return
+        }
+        this.enterEdit(hit, ctx)
         return
       }
     }
@@ -176,7 +344,7 @@ export class ArrayPathTool implements Tool {
    */
   private pickPath(input: PointerInput, ctx: ToolContext): Entity | null {
     const hit = ctx.pick(input.world)
-    return hit && readsInPlan(hit) ? hit : null
+    return hit && readsInPlan(hit) && makePath(hit) !== null ? hit : null
   }
 
   onPointerUp(input: PointerInput, ctx: ToolContext): void {
@@ -184,60 +352,46 @@ export class ArrayPathTool implements Tool {
 
     if (this.state.phase === "pressed") {
       const hit = ctx.pick(input.world)
-      if (hit) this.applyPick([hit.id], this.state.subtract, ctx)
+      if (hit) pickObjects([hit.id], this.state.subtract, false, ctx)
       this.state = { phase: "selecting" }
       ctx.requestRender()
       return
     }
     if (this.state.phase === "boxing") {
-      const hits = boxSelect(
+      const hits: readonly EntityId[] = boxSelect(
         ctx.document,
         this.state.startWorld,
         this.state.currentWorld,
         ctx.viewport
       )
-      this.applyPick(hits, this.state.subtract, ctx)
+      pickObjects(hits, this.state.subtract, true, ctx)
       this.state = { phase: "selecting" }
       ctx.requestRender()
     }
   }
 
   onEnter(ctx: ToolContext): boolean {
-    if (this.state.phase === "config") {
-      this.commit(ctx)
+    const state = this.state
+    if (state.phase === "selecting") {
+      if (ctx.selection.isEmpty()) return false
+      this.enterPickPath(ctx)
+      ctx.requestRender()
       return true
     }
-    return this.confirmSelection(ctx)
-  }
-
-  commandOptions(): readonly CommandOption[] {
-    if (this.state.phase !== "config") return []
-    const { method, align } = this.state.config
-    return [
-      { id: "Method", value: method === "divide" ? "Divide" : "Measure" },
-      { id: "Align items", value: align ? "Yes" : "No" },
-    ]
-  }
-
-  invokeOption(id: string, ctx: ToolContext): CommandOptionOutcome {
-    if (this.state.phase !== "config") return "unhandled"
-    if (id === "Method") {
-      const method =
-        this.state.config.method === "divide" ? "measure" : "divide"
-      this.state = { phase: "config", config: { ...this.state.config, method } }
-      this.openConfigInput(ctx)
-      ctx.requestRender()
-      return "continue"
+    if (state.phase !== "edit") return false
+    switch (state.step) {
+      case "main":
+        // <eXit>: the array is made and the command ends.
+        this.create(ctx)
+        ctx.endCommand()
+        return true
+      case "method":
+      case "align":
+        this.ask("main", ctx) // the current answer stays
+        return true
+      default:
+        return false
     }
-    if (id === "Align items") {
-      this.state = {
-        phase: "config",
-        config: { ...this.state.config, align: !this.state.config.align },
-      }
-      ctx.requestRender()
-      return "continue"
-    }
-    return "unhandled"
   }
 
   wantsSnap(): boolean {
@@ -246,21 +400,22 @@ export class ArrayPathTool implements Tool {
 
   buildOverlay(ctx: ToolContext): ScenePrimitive[] {
     const { viewport } = ctx
+    const state = this.state
 
-    if (this.state.phase === "boxing") {
+    if (state.phase === "boxing") {
       return buildSelectionBoxOverlay(
         viewport,
-        this.state.startWorld,
-        this.state.currentWorld
+        state.startWorld,
+        state.currentWorld
       )
     }
 
     // Rollover-highlight the curve under the cursor while choosing the path,
     // in the same amber it takes once picked so the candidate is unmistakable.
-    if (this.state.phase === "pickPath") {
+    if (state.phase === "pickPath") {
       const out: ScenePrimitive[] = []
-      if (this.state.hover) {
-        pushEntityOutline(out, viewport, this.state.hover, {
+      if (state.hover) {
+        pushEntityOutline(out, viewport, state.hover, {
           color: THEME.selected,
           width: 2.5,
         })
@@ -268,23 +423,21 @@ export class ArrayPathTool implements Tool {
       return out
     }
 
-    if (this.state.phase !== "config") return []
+    if (state.phase !== "edit") return []
 
-    const { config } = this.state
+    const { config } = state
     const out: ScenePrimitive[] = []
-
-    // Highlight the chosen path curve.
     pushEntityOutline(out, viewport, config.pathEntity, {
       color: THEME.selected,
       width: 2,
     })
 
-    // Ghost items distributed along the path.
-    const placements = this.computePlacements(ctx, config)
+    const layout = this.previewLayout(ctx, state.layout, state.step)
+    const placements = placementsOf(config.path, layout)
     const ghost: StrokeStyle = { color: THEME.preview, width: 1, dash: [6, 4] }
     const t0 = placements.length > 0 ? placements[0].tangentDeg : 0
     for (const pl of placements) {
-      const dth = config.align ? pl.tangentDeg - t0 : 0
+      const dth = layout.align ? pl.tangentDeg - t0 : 0
       for (const entity of config.originals) {
         pushEntityOutline(
           out,
@@ -298,108 +451,144 @@ export class ArrayPathTool implements Tool {
     return out
   }
 
-  private applyPick(
-    ids: readonly EntityId[],
-    subtract: boolean,
-    ctx: ToolContext
-  ): void {
-    for (const id of ids) {
-      if (subtract) ctx.selection.remove(id)
-      else ctx.selection.add(id)
-    }
-  }
-
-  private confirmSelection(ctx: ToolContext): boolean {
-    if (this.state.phase !== "selecting") return false
-    if (ctx.selection.isEmpty()) return false
+  private enterPickPath(ctx: ToolContext): void {
     this.state = { phase: "pickPath", hover: null }
-    ctx.requestRender()
-    return true
+    ctx.report(ctx.text.message("arrayType", { type: "path" }))
+    ctx.dynamicInput.open({ fields: [], commit: () => {} })
   }
 
-  private enterConfig(pathEntity: Entity, ctx: ToolContext): void {
+  private enterEdit(pathEntity: Entity, ctx: ToolContext): void {
     const path = makePath(pathEntity)
-    if (!path) return // only lines, circles and arcs can be a path
+    if (!path) return
     const originals = ctx.selection
       .toArray()
-      .filter((id) => id !== pathEntity.id)
       .map((id) => ctx.document.get(id))
       .filter((entity): entity is Entity => entity !== undefined)
-    if (originals.length === 0) return // nothing but the path was selected
+    if (originals.length === 0) return
 
-    const spacingDefault =
-      path.length / Math.max(1, DEFAULT_ITEMS - (path.closed ? 0 : 1))
+    const spacing = defaultSpacing(originals, ctx.blocks)
     this.state = {
-      phase: "config",
+      phase: "edit",
       config: {
         originals,
         pathEntity,
         path,
         basePoint: centroid(originals, ctx.blocks),
-        method: "divide",
-        align: true,
-        spacingDefault,
       },
+      layout: {
+        method: "measure",
+        items: maxItems(path, spacing),
+        spacing,
+        align: true,
+      },
+      step: "main",
     }
-    this.openConfigInput(ctx)
+    this.ask("main", ctx)
   }
 
-  private openConfigInput(ctx: ToolContext): void {
-    if (this.state.phase !== "config") return
-    const { method, spacingDefault } = this.state.config
-    const session: DynamicInputSession =
-      method === "divide"
-        ? {
-            fields: [{ id: "count", prompt: "items", kind: "number" }],
-            commit: (_v, c) => this.commit(c),
-          }
-        : {
-            fields: [{ id: "spacing", prompt: "spacing", kind: "distance" }],
-            commit: (_v, c) => this.commit(c),
-          }
-    ctx.dynamicInput.open(session)
-    if (method === "divide") ctx.dynamicInput.setDefault("count", DEFAULT_ITEMS)
-    else ctx.dynamicInput.setDefault("spacing", spacingDefault)
+  private ask(step: Step, ctx: ToolContext): void {
+    const state = this.state
+    if (state.phase !== "edit") return
+    this.state = { ...state, step }
+    if (step === "main" || step === "method" || step === "align") {
+      // Keywords only, the focus left on the drawing.
+      ctx.dynamicInput.open({ fields: [], commit: () => {} })
+      ctx.requestRender()
+      return
+    }
+    if (step === "measureCount") {
+      ctx.report(
+        ctx.text.message("maximumItems", {
+          count: maxItems(state.config.path, state.layout.spacing),
+        })
+      )
+    }
+    const distance = step === "spacing"
+    ctx.dynamicInput.open({
+      fields: [
+        {
+          id: "value",
+          prompt: distance ? "spacing" : "items",
+          kind: distance ? "distance" : "number",
+        },
+      ],
+      commit: (values, commitCtx) => this.answer(values.value, commitCtx),
+      commitRaw: (commitCtx) => {
+        // Enter with nothing typed keeps the value the prompt offers.
+        if (commitCtx.dynamicInput.hasTypedText()) return false
+        this.answer(null, commitCtx)
+        return true
+      },
+    })
     ctx.dynamicInput.setPosition(this.lastScreen ?? { x: 0, y: 0 })
+    ctx.requestRender()
   }
 
-  /** Arc-length positions (and tangents) of every item for the current inputs. */
-  private computePlacements(
-    ctx: ToolContext,
-    config: PathConfig
-  ): { point: Vec2; tangentDeg: number }[] {
-    const { path } = config
-    const distances: number[] = []
-    if (config.method === "divide") {
-      const n = clampCount(readParam(ctx, "count", DEFAULT_ITEMS))
-      if (n <= 1) {
-        distances.push(0)
-      } else {
-        const step = path.closed ? path.length / n : path.length / (n - 1)
-        for (let k = 0; k < n; k++) distances.push(k * step)
+  /** The value typed for the step asked (null: Enter, the offered one). */
+  private answer(value: number | null, ctx: ToolContext): void {
+    const state = this.state
+    if (state.phase !== "edit") return
+    const { step, layout, config } = state
+    if (value !== null && step !== "spacing") {
+      if (value <= 0) {
+        ctx.report(ctx.text.message("positiveNonzero"), "error")
+        return
       }
-    } else {
-      const s = readParam(ctx, "spacing", config.spacingDefault)
-      if (!(s > 0)) {
-        distances.push(0)
-      } else {
-        const limit = path.closed ? path.length - 1e-6 : path.length + 1e-6
-        for (let k = 0; k * s <= limit && k <= MAX_ITEMS; k++) {
-          distances.push(k * s)
-        }
+      if (!Number.isInteger(value) || value > MAX_ITEMS) {
+        ctx.report(ctx.text.message("requiresPositiveInteger"), "error")
+        return
       }
     }
-    return distances.map((distance) => path.at(Math.min(distance, path.length)))
+    if (value !== null && step === "spacing" && value <= 0) {
+      ctx.report(ctx.text.message("positiveNonzero"), "error")
+      return
+    }
+    switch (step) {
+      case "count":
+        if (value !== null) this.setLayout({ ...layout, items: value })
+        this.ask("main", ctx)
+        return
+      case "spacing":
+        if (value !== null) this.setLayout({ ...layout, spacing: value })
+        this.ask("measureCount", ctx)
+        return
+      case "measureCount": {
+        const items = Math.min(
+          value ?? layout.items,
+          maxItems(config.path, layout.spacing)
+        )
+        this.setLayout({ ...layout, items })
+        this.ask("main", ctx)
+        return
+      }
+    }
   }
 
-  private commit(ctx: ToolContext): void {
-    if (this.state.phase !== "config") return
-    const { config } = this.state
-    const placements = this.computePlacements(ctx, config)
+  private setLayout(layout: Layout): void {
+    if (this.state.phase === "edit") this.state = { ...this.state, layout }
+  }
+
+  /** The layout the preview shows: the value being typed already applied. */
+  private previewLayout(ctx: ToolContext, layout: Layout, step: Step): Layout {
+    if (step !== "count" && step !== "spacing" && step !== "measureCount") {
+      return layout
+    }
+    const typed = parseNumber(ctx.dynamicInput.getText("value").trim())
+    if (typed === null || !Number.isFinite(typed) || typed <= 0) return layout
+    if (step === "spacing") return { ...layout, spacing: typed }
+    if (!Number.isInteger(typed)) return layout
+    return { ...layout, items: Math.min(typed, MAX_ITEMS) }
+  }
+
+  private create(ctx: ToolContext): void {
+    const state = this.state
+    if (state.phase !== "edit") return
+    const { config, layout } = state
+    const placements = placementsOf(config.path, layout)
     const items: Entity[] = []
     const t0 = placements.length > 0 ? placements[0].tangentDeg : 0
     for (const pl of placements) {
-      const dth = config.align ? pl.tangentDeg - t0 : 0
+      const dth = layout.align ? pl.tangentDeg - t0 : 0
       for (const entity of config.originals) {
         items.push(itemCopy(entity, config.basePoint, dth, pl.point))
       }
@@ -413,8 +602,61 @@ export class ArrayPathTool implements Tool {
       )
     }
     ctx.dynamicInput.close()
-    ctx.endCommand()
   }
+}
+
+/** How many items fit `spacing` apart on the path (AutoCAD's `Maximum items`). */
+function maxItems(path: PathCurve, spacing: number): number {
+  if (!(spacing > 0)) return 1
+  const fit = Math.floor((path.length + 1e-6) / spacing)
+  return Math.max(1, Math.min(MAX_ITEMS, path.closed ? fit : fit + 1))
+}
+
+/** Divide's step: the path shared evenly, its ends both items when open. */
+function divideStep(path: PathCurve, items: number): number {
+  if (items <= 1) return path.length
+  return path.closed ? path.length / items : path.length / (items - 1)
+}
+
+/** Arc-length positions (and tangents) of every item. */
+function placementsOf(
+  path: PathCurve,
+  layout: Layout
+): { point: Vec2; tangentDeg: number }[] {
+  const step =
+    layout.method === "divide" ? divideStep(path, layout.items) : layout.spacing
+  const count =
+    layout.method === "divide"
+      ? layout.items
+      : Math.min(layout.items, maxItems(path, layout.spacing))
+  const out: { point: Vec2; tangentDeg: number }[] = []
+  for (let k = 0; k < count; k++) {
+    out.push(path.at(Math.min(k * step, path.length)))
+  }
+  return out
+}
+
+/**
+ * The items one and a half times the selection's size apart, as AutoCAD's
+ * Measure starts (a circle 4 across: 6); 1 for a selection of no size.
+ */
+function defaultSpacing(
+  originals: readonly Entity[],
+  blocks: ToolContext["blocks"]
+): number {
+  let minX = Infinity
+  let minY = Infinity
+  let maxX = -Infinity
+  let maxY = -Infinity
+  for (const entity of originals) {
+    const b = entityBounds(entity, blocks)
+    minX = Math.min(minX, b.min.x)
+    minY = Math.min(minY, b.min.y)
+    maxX = Math.max(maxX, b.max.x)
+    maxY = Math.max(maxY, b.max.y)
+  }
+  const size = Math.max(maxX - minX, maxY - minY)
+  return size > 1e-6 ? size * 1.5 : 1
 }
 
 /** Draws an entity with the given stroke. */
@@ -532,17 +774,6 @@ function centroid(
     maxY = Math.max(maxY, b.max.y)
   }
   return { x: (minX + maxX) / 2, y: (minY + maxY) / 2 }
-}
-
-function readParam(ctx: ToolContext, id: string, fallback: number): number {
-  const text = ctx.dynamicInput.getText(id).trim()
-  if (text === "") return fallback
-  const value = parseNumber(text)
-  return value !== null && Number.isFinite(value) ? value : fallback
-}
-
-function clampCount(value: number): number {
-  return Math.max(1, Math.min(MAX_ITEMS, Math.round(value)))
 }
 
 function angleOf(dir: Vec2): number {

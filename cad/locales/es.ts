@@ -1036,16 +1036,30 @@ export const es: EngineLocale = {
         "Yes": "Sí",
         "No": "No"
       },
+      "ARRAYRECT": {
+        "COUnt": "COntar",
+        "Spacing": "Espaciado",
+        "COLumns": "Columnas",
+        "Rows": "Filas",
+        "eXit": "Salir"
+      },
       "ARRAYPOLAR": {
-        "Rotate items": "Girar objetos",
+        "Items": "Elementos",
+        "Angle between": "ángUlo entre",
+        "Fill angle": "ángulo de Relleno",
+        "ROTate items": "Girar objetos",
+        "eXit": "Salir",
         "Yes": "Sí",
         "No": "No"
       },
       "ARRAYPATH": {
         "Method": "Método",
+        "Items": "Elementos",
         "Align items": "ALinear elementos",
+        "eXit": "Salir",
         "Divide": "Dividir",
         "Measure": "Medir",
+        "Fill entire path": "Llenar todo el camino",
         "Yes": "Sí",
         "No": "No"
       },
@@ -1374,7 +1388,25 @@ export const es: EngineLocale = {
       "specifyFirstBreakPoint": "Precise primer punto de ruptura",
       "specifySecondBreakPointOr": "Precise segundo punto de ruptura o",
       "specifySecondBreakPoint": "Precise segundo punto de ruptura",
-      "specifyBreakPoint": "Especifique el punto de interrupción"
+      "specifyBreakPoint": "Especifique el punto de interrupción",
+      "selectGripToEditArrayOr": "Seleccione un pinzamiento para editar la matriz o",
+      "enterNumberOfColumns": "Indique el número de columnas",
+      "enterNumberOfRows": "Indique el número de filas",
+      "specifyDistanceBetweenColumnsOfCell": "Especificar la distancia entre columnas",
+      "specifyDistanceBetweenColumns": "Especifique la distancia entre columnas",
+      "specifyDistanceBetweenRows": "Especifique la distancia entre filas",
+      "specifyIncrementingElevationBetweenRows": "Especifique la elevación incremental entre filas",
+      "specifyCenterPointOfArray": "Precise el punto central de la matriz",
+      "enterNumberOfItemsInArray": "Indique el número de elementos de la matriz",
+      "specifyAngleBetweenItems": "Indique el ángulo entre elementos",
+      "specifyTheAngleToFill": "Precise el ángulo que se debe rellenar (+ =antihorario, -=horario)",
+      "rotateArrayedItems": "¿Girar elementos de la matriz?",
+      "selectPathCurve": "Seleccione la curva de trayectoria",
+      "enterPathMethod": "Introduzca el método de camino",
+      "enterNumberOfItemsAlongPath": "Introduzca el número de elementos a lo largo del camino",
+      "specifyDistanceBetweenItemsAlongPath": "Especifique la distancia entre los elementos a lo largo del camino",
+      "specifyNumberOfItemsOr": "Introduzca el número de elementos o",
+      "alignArrayedItemsToPath": "¿Alinear elementos de matriz con el camino?"
     },
     "format": {
       "idle": "Comando",
@@ -2145,35 +2177,53 @@ export const es: EngineLocale = {
         ]
       ],
       "selectionModes": [
-        "Ventana/úLTimo/Captura/MArco/Todos/Borde/polígonOV/polígonOC",
         [
           "set",
           1,
           {
-            "oneObject": "",
-            "other": [
-              [
-                "set",
-                1,
-                {
-                  "crossingObjects": "",
-                  "other": "/Grupo"
-                }
-              ],
-              "/Añadir/Eliminar/Múltiple/Previo/desHacer/AUto/úNico",
-              [
-                "set",
-                1,
-                {
-                  "objects": "/Subobjeto/Objeto",
-                  "other": ""
-                }
-              ]
-            ]
+            "oneObject": "Ventana/úLTimo/Captura/MArco/Todos/Borde/polígonOV/polígonOC",
+            "pathCurve": "Ventana/úLTimo/Captura/MArco/Todos/Borde/polígonOV/polígonOC/Grupo/Previo/AUto",
+            "crossingObjects": "Ventana/úLTimo/Captura/MArco/Todos/Borde/polígonOV/polígonOC/Añadir/Eliminar/Múltiple/Previo/desHacer/AUto/úNico",
+            "wholeObjects": "Ventana/úLTimo/Captura/MArco/Todos/Borde/polígonOV/polígonOC/Grupo/Añadir/Eliminar/Múltiple/Previo/desHacer/AUto/úNico",
+            "other": "Ventana/úLTimo/Captura/MArco/Todos/Borde/polígonOV/polígonOC/Grupo/Añadir/Eliminar/Múltiple/Previo/desHacer/AUto/úNico/Subobjeto/Objeto"
           }
         ]
       ],
-      "noObjectFound": "No se ha encontrado ningún objeto"
+      "noObjectFound": "No se ha encontrado ningún objeto",
+      "arrayType": [
+        "Tipo = ",
+        [
+          "type",
+          1,
+          {
+            "rectangular": "Rectangular",
+            "polar": "Polar",
+            "other": "Ruta"
+          }
+        ],
+        "  Asociativa = No"
+      ],
+      "requiresPositiveInteger": "Requiere un nº entero positivo que no sea cero o una opción.",
+      "maximumItems": [
+        "Número máximo de elementos = ",
+        [
+          "count"
+        ]
+      ],
+      "pathCurveIsArrayed": "Los objetos seleccionados para la matriz no se pueden seleccionar como curva de trayectoria.",
+      "filteredOut": [
+        [
+          "count",
+          2,
+          {
+            "one": "1 se ha filtrado",
+            "other": [
+              0,
+              " se han filtrado"
+            ]
+          }
+        ]
+      ]
     },
     "feedback": {
       "snap": {

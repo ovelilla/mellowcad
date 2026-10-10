@@ -198,9 +198,11 @@ There is a single session at a time. Patterns in use:
   focus on the canvas (MIRROR's Erase Yes/No, FILLET's and OFFSET's object prompts). What is
   typed there goes to the command line, so a harness test answers it with `press` per key and
   `Enter` (`type` only fills a field).
-- **Multi-field form** — several fields with `setDefault(id, value)` so placeholders show the
-  defaults and Enter commits them all (Array). Tab cycles fields. Never for questions AutoCAD
-  asks in turn: CHAMFER's two distances are two prompts, the second's `<default>` the first.
+- **One value at a time** — AutoCAD asks a command's values in turn, so a box holds one value
+  (a point's length and angle aside, Tab cycling them): ARRAYRECT's columns, rows and spacings are
+  prompts its keywords open, CHAMFER's two distances two prompts, the second's `<default>` the
+  first. The value the prompt offers is the question's `enter`, taken in `commitRaw` when nothing
+  is typed.
 - **Free-text prompt** — one field of kind `"text"` (TEXT's content, its Justify/Style keywords).
   Its content is never a value: `resolveValues` refuses it so `commitRaw` sees the raw string, the
   coordinate collapse skips it, and **no keyword is dispatched from it** — a letter there is

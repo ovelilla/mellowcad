@@ -207,6 +207,23 @@ describe("a wrong answer mid-command", () => {
     expect(cad.commandLog().at(-1)).toBe("Invalid point.")
   })
 
+  it("refuses at the arrays' prompts as AutoCAD's console does", () => {
+    const cad = createHarness({ entities: twoLines() })
+    cad.select("A").command("ARRAYRECT")
+    answerLine(cad, "FOO")
+    expect(cad.commandLog().at(-1)).toBe("Point or option keyword required.")
+    cad.option("COUnt")
+    answerLine(cad, "FOO")
+    expect(cad.commandLog().at(-1)).toBe(
+      "Requires a positive nonzero integer or option keyword."
+    )
+    cad.escape().select("A").command("ARRAYPATH")
+    answerLine(cad, "FOO")
+    expect(cad.commandLog().at(-1)).toBe(
+      "Expects a point or Window/Last/Crossing/BOX/ALL/Fence/WPolygon/CPolygon/Group/Previous/AUto"
+    )
+  })
+
   it("leaves U to TRIM's prompt until there is something to undo", () => {
     const cad = createHarness({
       entities: [...twoLines(), lineOf(p(50, -50), p(50, 50), { id: "C" })],

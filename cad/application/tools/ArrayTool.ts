@@ -8,31 +8,37 @@ import {
 } from "../../domain/entities"
 import { parseNumber } from "../../domain/units"
 import { ucsDirectionToWorld } from "../../domain/ucs"
-import { DynamicInputSession } from "../input/DynamicInput"
 import { ScenePrimitive, StrokeStyle } from "../../scene/types"
 import { entityScenePrimitive } from "../SceneBuilder"
 import { THEME } from "../../scene/theme"
 import { AddEntitiesCommand } from "../commands/entityCommands"
 import { boxSelect, buildSelectionBoxOverlay } from "./boxSelection"
-import { PointerInput, Tool, ToolContext } from "./Tool"
+import { countPreselection, pickObjects } from "./objectSelection"
+import type { PromptId } from "../../locales/types"
+import {
+  CommandOption,
+  CommandOptionOutcome,
+  PointerInput,
+  QuestionInput,
+  Tool,
+  ToolContext,
+  ToolQuestion,
+} from "./Tool"
 
 /**
- * AutoCAD's ARRAYRECT command (rectangular array): replicate the selected
- * objects into a grid of columns and rows.
+ * AutoCAD's ARRAYRECT, as its 2023 console asks it: `Select objects:`, then
+ * `Type = Rectangular  Associative = No` and `Select grip to edit array or
+ * [COUnt/Spacing/COLumns/Rows/eXit] <eXit>:` over a live preview of the grid —
+ * 4 columns along the UCS's +X and 3 rows along its +Y, a negative spacing
+ * flipping the direction. COUnt asks the number of columns and of rows,
+ * Spacing the distance between columns and between rows, COLumns the number
+ * of columns and their distance, Rows the number of rows, their distance and
+ * the elevation each row rises by; eXit or Enter makes the copies, one undo
+ * step with the source as item 1,1. Escape makes none.
  *
- * ```
- *   (empty selection)     Enter/Space              type / Tab / Enter
- *  selecting ──────────────────────► config (Columns · Rows · spacings) ──► done
- *   click / box-drag adds objects       live ghost grid previews the array
- * ```
- *
- * Like AutoCAD's array ribbon, the whole array is described by four parameters
- * — column and row counts and the spacing between them — shown as editable
- * fields with sensible defaults derived from the selection's size. Columns run
- * along the UCS's +X and rows along its +Y; a negative spacing flips that direction. The grid
- * previews live as the values change, and Enter commits every copy as a single
- * undoable step (the source stays as item 1,1). This produces plain geometry
- * (a non-associative array, AutoCAD's ASsociative=No).
+ * WHY Associative = No: an associative array is one object here neither
+ * models nor edits, so the copies are plain geometry, as AutoCAD's are with
+ * ASsociative No. The grips, Base point and Levels are not offered.
  */
 
 /** Screen-pixel movement past which a press-drag becomes a box selection. */
@@ -43,12 +49,31 @@ const DEFAULT_ROWS = 3
 /** Guards against a runaway preview/commit from an accidental huge count. */
 const MAX_COUNT = 1000
 
-interface ArrayConfig {
-  readonly originals: readonly Entity[]
-  /** Default spacings (from the selection's bounding box) used when unset. */
-  readonly colSpacingDefault: number
-  readonly rowSpacingDefault: number
+/** The grid the prompts edit, the preview shows and eXit creates. */
+interface Grid {
+  readonly columns: number
+  readonly rows: number
+  readonly colSpacing: number
+  readonly rowSpacing: number
+  /** How far each row rises above the one before it (the UCS's Z). */
+  readonly rowElevation: number
 }
+
+/**
+ * The question being asked after the selection: the main prompt, or one of
+ * the values its keywords ask in turn.
+ */
+type Step =
+  | "main"
+  | "countColumns"
+  | "countRows"
+  | "spacingColumns"
+  | "spacingRows"
+  | "columnsCount"
+  | "columnsSpacing"
+  | "rowsCount"
+  | "rowsSpacing"
+  | "rowsElevation"
 
 type ArrayState =
   /** No pre-selection: build the set by clicking or box-dragging. */
@@ -68,8 +93,33 @@ type ArrayState =
       readonly currentWorld: Vec2
       readonly subtract: boolean
     }
-  /** Objects chosen; editing the grid parameters with a live preview. */
-  | { readonly phase: "config"; readonly config: ArrayConfig }
+  /** Objects chosen; editing the grid with a live preview. */
+  | {
+      readonly phase: "edit"
+      readonly originals: readonly Entity[]
+      readonly grid: Grid
+      readonly step: Step
+    }
+
+/** The step each keyword starts, and the one each step goes on to. */
+const NEXT: Readonly<Record<Step, Step>> = {
+  main: "main",
+  countColumns: "countRows",
+  countRows: "main",
+  spacingColumns: "spacingRows",
+  spacingRows: "main",
+  columnsCount: "columnsSpacing",
+  columnsSpacing: "main",
+  rowsCount: "rowsSpacing",
+  rowsSpacing: "rowsElevation",
+  rowsElevation: "main",
+}
+const KEYWORD_STEP: Readonly<Record<string, Step>> = {
+  COUnt: "countColumns",
+  Spacing: "spacingColumns",
+  COLumns: "columnsCount",
+  Rows: "rowsCount",
+}
 
 export class ArrayTool implements Tool {
   readonly id = "array"
@@ -83,13 +133,100 @@ export class ArrayTool implements Tool {
     if (ctx.selection.isEmpty()) {
       this.state = { phase: "selecting" }
     } else {
-      this.enterConfig(ctx)
+      countPreselection(ctx)
+      this.beginEdit(ctx)
     }
   }
 
   onDeactivate(ctx: ToolContext): void {
     this.state = { phase: "selecting" }
     ctx.dynamicInput.close()
+  }
+
+  question(): PromptId | ToolQuestion {
+    const state = this.state
+    if (state.phase !== "edit") return "selectObjects"
+    const { grid } = state
+    switch (state.step) {
+      case "main":
+        return "selectGripToEditArrayOr"
+      case "countColumns":
+      case "columnsCount":
+        return { id: "enterNumberOfColumns", enter: { count: grid.columns } }
+      case "countRows":
+      case "rowsCount":
+        return { id: "enterNumberOfRows", enter: { count: grid.rows } }
+      case "spacingColumns":
+        return {
+          id: "specifyDistanceBetweenColumnsOfCell",
+          enter: grid.colSpacing,
+        }
+      case "columnsSpacing":
+        return { id: "specifyDistanceBetweenColumns", enter: grid.colSpacing }
+      case "spacingRows":
+      case "rowsSpacing":
+        return { id: "specifyDistanceBetweenRows", enter: grid.rowSpacing }
+      case "rowsElevation":
+        return {
+          id: "specifyIncrementingElevationBetweenRows",
+          enter: grid.rowElevation,
+        }
+    }
+  }
+
+  /**
+   * The main prompt is a grip's pick; a count refuses as AutoCAD's does, its
+   * Expression keyword counted though not offered here, and a distance takes
+   * two points or Total and Expression (AutoCAD 2023's console).
+   */
+  takes(): QuestionInput | null {
+    const state = this.state
+    if (state.phase !== "edit") return null
+    switch (state.step) {
+      case "main":
+        return "point"
+      case "countColumns":
+      case "countRows":
+      case "columnsCount":
+      case "rowsCount":
+        return { refusal: "requiresPositiveInteger" }
+      default:
+        return {
+          refusal: "requiresDistance",
+          values: { points: "two", keyword: "yes" },
+        }
+    }
+  }
+
+  commandOptions(): readonly CommandOption[] {
+    if (this.state.phase !== "edit" || this.state.step !== "main") return []
+    return [
+      { id: "COUnt" },
+      { id: "Spacing" },
+      { id: "COLumns" },
+      { id: "Rows" },
+      { id: "eXit" },
+    ]
+  }
+
+  defaultOption(): string | null {
+    return this.state.phase === "edit" && this.state.step === "main"
+      ? "eXit"
+      : null
+  }
+
+  invokeOption(id: string, ctx: ToolContext): CommandOptionOutcome {
+    if (this.state.phase !== "edit" || this.state.step !== "main") {
+      return "unhandled"
+    }
+    if (id === "eXit") {
+      this.create(ctx)
+      return "end"
+    }
+    const step = KEYWORD_STEP[id]
+    if (step === undefined) return "unhandled"
+    this.ask(step, ctx)
+    return "continue"
   }
 
   onPointerMove(input: PointerInput, ctx: ToolContext): void {
@@ -116,7 +253,7 @@ export class ArrayTool implements Tool {
       case "boxing":
         this.state = { ...this.state, currentWorld: input.world }
         break
-      case "config":
+      case "edit":
         ctx.dynamicInput.setPosition(input.screen)
         break
     }
@@ -135,7 +272,8 @@ export class ArrayTool implements Tool {
         subtract: input.shiftKey,
       }
     }
-    // In config the parameters are typed; pointer clicks do nothing.
+    // While editing the values are typed; a pick would take a grip, which
+    // the preview does not have.
   }
 
   onPointerUp(input: PointerInput, ctx: ToolContext): void {
@@ -144,28 +282,38 @@ export class ArrayTool implements Tool {
     // AutoCAD's "Select objects" prompt, additive across picks and boxes.
     if (this.state.phase === "pressed") {
       const hit = ctx.pick(input.world)
-      if (hit) this.applyPick([hit.id], this.state.subtract, ctx)
+      if (hit) pickObjects([hit.id], this.state.subtract, false, ctx)
       this.state = { phase: "selecting" }
       ctx.requestRender()
       return
     }
     if (this.state.phase === "boxing") {
-      const hits = boxSelect(
+      const hits: readonly EntityId[] = boxSelect(
         ctx.document,
         this.state.startWorld,
         this.state.currentWorld,
         ctx.viewport
       )
-      this.applyPick(hits, this.state.subtract, ctx)
+      pickObjects(hits, this.state.subtract, true, ctx)
       this.state = { phase: "selecting" }
       ctx.requestRender()
     }
   }
 
   onEnter(ctx: ToolContext): boolean {
-    // Enter confirms the selection set while selecting; once configuring, the
-    // dynamic-input box has focus and its Enter commits the array instead.
-    return this.confirmSelection(ctx)
+    if (this.state.phase === "selecting") {
+      if (ctx.selection.isEmpty()) return false // nothing selected: Enter exits
+      this.beginEdit(ctx)
+      ctx.requestRender()
+      return true
+    }
+    if (this.state.phase === "edit" && this.state.step === "main") {
+      // <eXit>: the array is made and the command ends.
+      this.create(ctx)
+      ctx.endCommand()
+      return true
+    }
+    return false
   }
 
   wantsSnap(): boolean {
@@ -180,54 +328,25 @@ export class ArrayTool implements Tool {
         this.state.currentWorld
       )
     }
-    if (this.state.phase !== "config") return []
+    if (this.state.phase !== "edit") return []
 
-    const { viewport } = ctx
-    const grid = this.computeGrid(ctx, this.state.config)
     const ghost: StrokeStyle = { color: THEME.preview, width: 1, dash: [6, 4] }
-    const out: ScenePrimitive[] = []
-    for (let i = 0; i < grid.columns; i++) {
-      for (let j = 0; j < grid.rows; j++) {
-        if (i === 0 && j === 0) continue // the source occupies cell (0,0)
-        const delta = ucsDirectionToWorld(ctx.ucs, {
-          x: i * grid.colSpacing,
-          y: j * grid.rowSpacing,
-        })
-        for (const entity of this.state.config.originals) {
-          out.push(
-            ...entityScenePrimitive(
-              viewport,
+    const grid = this.previewGrid(ctx, this.state.grid, this.state.step)
+    return cells(grid, ctx).flatMap((delta) =>
+      this.state.phase === "edit"
+        ? this.state.originals.flatMap((entity) =>
+            entityScenePrimitive(
+              ctx.viewport,
               translateEntity(entity, delta),
               ghost,
               { blocks: ctx.blocks }
             )
           )
-        }
-      }
-    }
-    return out
+        : []
+    )
   }
 
-  private applyPick(
-    ids: readonly EntityId[],
-    subtract: boolean,
-    ctx: ToolContext
-  ): void {
-    for (const id of ids) {
-      if (subtract) ctx.selection.remove(id)
-      else ctx.selection.add(id)
-    }
-  }
-
-  private confirmSelection(ctx: ToolContext): boolean {
-    if (this.state.phase !== "selecting") return false
-    if (ctx.selection.isEmpty()) return false // nothing selected: let Enter exit
-    this.enterConfig(ctx)
-    ctx.requestRender()
-    return true
-  }
-
-  private enterConfig(ctx: ToolContext): void {
+  private beginEdit(ctx: ToolContext): void {
     const originals = ctx.selection
       .toArray()
       .map((id) => ctx.document.get(id))
@@ -237,77 +356,167 @@ export class ArrayTool implements Tool {
       ctx.dynamicInput.close()
       return
     }
-
-    const { colSpacingDefault, rowSpacingDefault } = defaultSpacing(
-      originals,
-      ctx.blocks
-    )
+    const { colSpacing, rowSpacing } = defaultSpacing(originals, ctx.blocks)
     this.state = {
-      phase: "config",
-      config: { originals, colSpacingDefault, rowSpacingDefault },
+      phase: "edit",
+      originals,
+      grid: {
+        columns: DEFAULT_COLUMNS,
+        rows: DEFAULT_ROWS,
+        colSpacing,
+        rowSpacing,
+        rowElevation: 0,
+      },
+      step: "main",
     }
+    ctx.report(ctx.text.message("arrayType", { type: "rectangular" }))
+    this.openMain(ctx)
+  }
 
-    const session: DynamicInputSession = {
+  /** The main prompt: keywords only, the focus left on the drawing. */
+  private openMain(ctx: ToolContext): void {
+    ctx.dynamicInput.open({ fields: [], commit: () => {} })
+    ctx.requestRender()
+  }
+
+  private ask(step: Step, ctx: ToolContext): void {
+    if (this.state.phase !== "edit") return
+    this.state = { ...this.state, step }
+    if (step === "main") {
+      this.openMain(ctx)
+      return
+    }
+    ctx.dynamicInput.open({
       fields: [
-        { id: "columns", prompt: "columns", kind: "number" },
-        { id: "rows", prompt: "rows", kind: "number" },
-        { id: "colSpacing", prompt: "columnSpacing", kind: "distance" },
-        { id: "rowSpacing", prompt: "rowSpacing", kind: "distance" },
+        {
+          id: "value",
+          prompt: FIELD_LABEL[step],
+          kind: isCount(step) ? "number" : "distance",
+        },
       ],
-      commit: (_values, commitCtx) => this.commit(commitCtx),
-    }
-    ctx.dynamicInput.open(session)
-    // Defaults shown as placeholders; an untouched field uses its default.
-    ctx.dynamicInput.setDefault("columns", DEFAULT_COLUMNS)
-    ctx.dynamicInput.setDefault("rows", DEFAULT_ROWS)
-    ctx.dynamicInput.setDefault("colSpacing", colSpacingDefault)
-    ctx.dynamicInput.setDefault("rowSpacing", rowSpacingDefault)
+      commit: (values, commitCtx) => this.answer(values.value, commitCtx),
+      commitRaw: (commitCtx) => {
+        // Enter with nothing typed keeps the value the prompt offers.
+        if (commitCtx.dynamicInput.hasTypedText()) return false
+        this.answer(null, commitCtx)
+        return true
+      },
+    })
     ctx.dynamicInput.setPosition(this.lastScreen ?? { x: 0, y: 0 })
+    ctx.requestRender()
   }
 
-  /** Resolves the four grid parameters from typed text, falling back to defaults. */
-  private computeGrid(
-    ctx: ToolContext,
-    config: ArrayConfig
-  ): { columns: number; rows: number; colSpacing: number; rowSpacing: number } {
-    return {
-      columns: clampCount(readParam(ctx, "columns", DEFAULT_COLUMNS)),
-      rows: clampCount(readParam(ctx, "rows", DEFAULT_ROWS)),
-      colSpacing: readParam(ctx, "colSpacing", config.colSpacingDefault),
-      rowSpacing: readParam(ctx, "rowSpacing", config.rowSpacingDefault),
-    }
-  }
-
-  private commit(ctx: ToolContext): void {
-    if (this.state.phase !== "config") return
-    const grid = this.computeGrid(ctx, this.state.config)
-    const copies: Entity[] = []
-    for (let i = 0; i < grid.columns; i++) {
-      for (let j = 0; j < grid.rows; j++) {
-        if (i === 0 && j === 0) continue
-        const delta = ucsDirectionToWorld(ctx.ucs, {
-          x: i * grid.colSpacing,
-          y: j * grid.rowSpacing,
-        })
-        for (const entity of this.state.config.originals) {
-          copies.push(copyEntity(entity, delta))
-        }
+  /** The value typed for the step asked (null: Enter, the offered one). */
+  private answer(value: number | null, ctx: ToolContext): void {
+    if (this.state.phase !== "edit") return
+    const { step, grid } = this.state
+    if (value !== null && isCount(step)) {
+      if (value <= 0) {
+        ctx.report(ctx.text.message("positiveNonzero"), "error")
+        return
+      }
+      if (!Number.isInteger(value) || value > MAX_COUNT) {
+        ctx.report(ctx.text.message("requiresPositiveInteger"), "error")
+        return
       }
     }
+    if (value !== null) {
+      this.state = { ...this.state, grid: withValue(grid, step, value) }
+    }
+    this.ask(NEXT[step], ctx)
+  }
+
+  /** The grid the preview shows: the value being typed already applied. */
+  private previewGrid(ctx: ToolContext, grid: Grid, step: Step): Grid {
+    if (step === "main") return grid
+    const typed = parseNumber(ctx.dynamicInput.getText("value").trim())
+    if (typed === null || !Number.isFinite(typed)) return grid
+    if (isCount(step) && (!Number.isInteger(typed) || typed <= 0)) return grid
+    return withValue(grid, step, Math.min(typed, MAX_COUNT))
+  }
+
+  private create(ctx: ToolContext): void {
+    if (this.state.phase !== "edit") return
+    const copies = cells(this.state.grid, ctx).flatMap((delta) =>
+      this.state.phase === "edit"
+        ? this.state.originals.map((entity) => copyEntity(entity, delta))
+        : []
+    )
     if (copies.length > 0) ctx.execute(new AddEntitiesCommand(copies))
     ctx.dynamicInput.close()
-    ctx.endCommand()
   }
 }
 
-/** Default spacing = one and a half bounding-box extents, so copies sit apart. */
+/** The box's label for each value asked. */
+const FIELD_LABEL: Readonly<Record<Exclude<Step, "main">, PromptId>> = {
+  countColumns: "columns",
+  columnsCount: "columns",
+  countRows: "rows",
+  rowsCount: "rows",
+  spacingColumns: "columnSpacing",
+  columnsSpacing: "columnSpacing",
+  spacingRows: "rowSpacing",
+  rowsSpacing: "rowSpacing",
+  rowsElevation: "distance",
+}
+
+function isCount(step: Step): boolean {
+  return (
+    step === "countColumns" ||
+    step === "countRows" ||
+    step === "columnsCount" ||
+    step === "rowsCount"
+  )
+}
+
+function withValue(grid: Grid, step: Step, value: number): Grid {
+  switch (step) {
+    case "countColumns":
+    case "columnsCount":
+      return { ...grid, columns: value }
+    case "countRows":
+    case "rowsCount":
+      return { ...grid, rows: value }
+    case "spacingColumns":
+    case "columnsSpacing":
+      return { ...grid, colSpacing: value }
+    case "spacingRows":
+    case "rowsSpacing":
+      return { ...grid, rowSpacing: value }
+    case "rowsElevation":
+      return { ...grid, rowElevation: value }
+    case "main":
+      return grid
+  }
+}
+
+/** Where each copy goes, in the WCS: every cell but the source's (0, 0). */
+function cells(grid: Grid, ctx: ToolContext) {
+  const out: ReturnType<typeof ucsDirectionToWorld>[] = []
+  for (let i = 0; i < grid.columns; i++) {
+    for (let j = 0; j < grid.rows; j++) {
+      if (i === 0 && j === 0) continue
+      out.push(
+        ucsDirectionToWorld(ctx.ucs, {
+          x: i * grid.colSpacing,
+          y: j * grid.rowSpacing,
+          z: j * grid.rowElevation,
+        })
+      )
+    }
+  }
+  return out
+}
+
+/**
+ * AutoCAD's default spacing: one and a half times the selection's width
+ * between columns and its height between rows, 1 where it has none (AutoCAD
+ * 2023's console offers `<1>` for a line along the other axis).
+ */
 function defaultSpacing(
   originals: readonly Entity[],
   blocks: ToolContext["blocks"]
-): {
-  colSpacingDefault: number
-  rowSpacingDefault: number
-} {
+): { colSpacing: number; rowSpacing: number } {
   let minX = Infinity
   let minY = Infinity
   let maxX = -Infinity
@@ -321,22 +530,8 @@ function defaultSpacing(
   }
   const width = maxX - minX
   const height = maxY - minY
-  const fallback = Math.max(width, height, 10) * 1.5
   return {
-    colSpacingDefault: width > 1e-6 ? width * 1.5 : fallback,
-    rowSpacingDefault: height > 1e-6 ? height * 1.5 : fallback,
+    colSpacing: width > 1e-6 ? width * 1.5 : 1,
+    rowSpacing: height > 1e-6 ? height * 1.5 : 1,
   }
-}
-
-/** Reads a numeric field, using `fallback` when empty or invalid. */
-function readParam(ctx: ToolContext, id: string, fallback: number): number {
-  const text = ctx.dynamicInput.getText(id).trim()
-  if (text === "") return fallback
-  const value = parseNumber(text)
-  return value !== null && Number.isFinite(value) ? value : fallback
-}
-
-/** Counts are whole numbers, at least 1 and capped to a sane maximum. */
-function clampCount(value: number): number {
-  return Math.max(1, Math.min(MAX_COUNT, Math.round(value)))
 }

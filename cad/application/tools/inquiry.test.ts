@@ -4,6 +4,7 @@ import { withElevation } from "../../domain/entities"
 import type { ScenePrimitive } from "../../scene/types"
 import { createHarness, type CadHarness } from "../../../test/harness"
 import { deg, lineOf, p } from "../../../test/builders"
+import { es } from "../../locales/es"
 
 /**
  * The inquiry and distribution commands. MEASURE creates no geometry at all —
@@ -214,12 +215,9 @@ describe("ARRAYPATH", () => {
   it("divides the path into evenly spaced items", () => {
     const cad = createHarness({ entities: [path, source] })
 
-    cad
-      .select("SRC")
-      .command("ARRAYPATH")
-      .click(p(100, 0)) // pick the path curve
-      .type("5")
-      .enter()
+    cad.select("SRC").command("ARRAYPATH").click(p(100, 0)) // the path
+    cad.option("Method").option("Divide").option("Items")
+    cad.type("5").enter().enter()
 
     // Five items plus the path itself; the source has been redistributed.
     expect(cad.entityCount).toBe(6)
@@ -240,13 +238,10 @@ describe("ARRAYPATH", () => {
   it("places items at a fixed spacing under the Measure method", () => {
     const cad = createHarness({ entities: [path, source] })
 
-    cad
-      .select("SRC")
-      .command("ARRAYPATH")
-      .click(p(100, 0))
-      .option("Method") // Method: Divide → Measure
-      .type("40")
-      .enter()
+    cad.select("SRC").command("ARRAYPATH").click(p(100, 0))
+    cad.option("Items").type("40").enter()
+    expect(cad.commandLog().at(-1)).toBe("Maximum items = 6")
+    cad.option("Fill entire path").enter()
 
     // 0, 40, 80, 120, 160, 200 → six items, plus the path.
     expect(cad.entityCount).toBe(7)
@@ -255,7 +250,7 @@ describe("ARRAYPATH", () => {
   it("restores the source in a single undo step", () => {
     const cad = createHarness({ entities: [path, source] })
 
-    cad.select("SRC").command("ARRAYPATH").click(p(100, 0)).type("5").enter()
+    cad.select("SRC").command("ARRAYPATH").click(p(100, 0)).option("eXit")
     cad.undo()
 
     expect(cad.entityCount).toBe(2)
@@ -274,12 +269,9 @@ describe("ARRAYPATH", () => {
     }
     const aligned = createHarness({ entities: [arcPath, source] })
 
-    aligned
-      .select("SRC")
-      .command("ARRAYPATH")
-      .click(p(150, 0))
-      .type("3")
-      .enter()
+    aligned.select("SRC").command("ARRAYPATH").click(p(150, 0))
+    aligned.option("Method").option("Divide")
+    aligned.option("Items").type("3").enter().enter()
 
     const orientations = aligned
       .entities()
@@ -289,13 +281,10 @@ describe("ARRAYPATH", () => {
     expect(new Set(orientations).size).toBeGreaterThan(1)
 
     const free = createHarness({ entities: [arcPath, source] })
-    free
-      .select("SRC")
-      .command("ARRAYPATH")
-      .click(p(150, 0))
-      .option("Align items") // Align items: Yes → No
-      .type("3")
-      .enter()
+    free.select("SRC").command("ARRAYPATH").click(p(150, 0))
+    free.option("Align items").option("No")
+    free.option("Method").option("Divide")
+    free.option("Items").type("3").enter().enter()
 
     const unrotated = free
       .entities()
@@ -304,6 +293,83 @@ describe("ARRAYPATH", () => {
     for (const line of unrotated) {
       expect(line.start.x).toBeCloseTo(line.end.x, 6)
     }
+  })
+
+  it("asks AutoCAD's questions over the preview and writes them answered", () => {
+    const cad = createHarness({ entities: [path, source] })
+
+    cad.select("SRC").command("ARRAYPATH")
+    expect(cad.state().commandLine.prompt).toBe("ARRAYPATH Select path curve:")
+    cad.click(p(400, 0))
+    expect(cad.commandLog().slice(-2)).toEqual([
+      "Objects selected to be arrayed may not be selected as path curve.",
+      "1 was filtered out",
+    ])
+    cad.click(p(100, 0))
+    expect(cad.state().commandLine.prompt).toBe(
+      "ARRAYPATH Select grip to edit array or [Method/Items/Align items/eXit] <eXit>:"
+    )
+    cad.option("Method")
+    expect(cad.state().commandLine.prompt).toBe(
+      "ARRAYPATH Enter path method [Divide/Measure] <Measure>:"
+    )
+    cad.option("Divide").option("Items")
+    expect(cad.state().commandLine.prompt).toBe(
+      "ARRAYPATH Enter number of items along path <3>:"
+    )
+    cad.type("5").enter().option("Method").option("Measure").option("Items")
+    expect(cad.state().commandLine.prompt).toBe(
+      "ARRAYPATH Specify the distance between items along path <50.00>:"
+    )
+    cad.type("30").enter()
+    expect(cad.state().commandLine.prompt).toBe(
+      "ARRAYPATH Specify number of items or [Fill entire path] <5>:"
+    )
+    cad.option("Fill entire path").option("Align items")
+    expect(cad.state().commandLine.prompt).toBe(
+      "ARRAYPATH Align arrayed items to path? [Yes/No] <Yes>:"
+    )
+    cad.enter().enter()
+
+    expect(cad.commandLog().slice(0, 4)).toEqual([
+      "ARRAYPATH 1 found",
+      "Type = Path  Associative = No",
+      "Select path curve:",
+      "Objects selected to be arrayed may not be selected as path curve.",
+    ])
+    // 0, 30 … 180 → seven items, plus the path.
+    expect(cad.entityCount).toBe(8)
+  })
+
+  it("asks in the words of Autodesk's Spanish table", () => {
+    const cad = createHarness({ locale: es, entities: [path, source] })
+
+    cad.select("SRC").command("MATRIZCAMINO")
+    expect(cad.commandLog().at(-1)).toBe("Tipo = Ruta  Asociativa = No")
+    expect(cad.state().commandLine.prompt).toBe(
+      "MATRIZCAMINO Seleccione la curva de trayectoria:"
+    )
+    cad.click(p(100, 0))
+    expect(cad.state().commandLine.prompt).toBe(
+      "MATRIZCAMINO Seleccione un pinzamiento para editar la matriz o [Método/Elementos/ALinear elementos/Salir] <Salir>:"
+    )
+    cad.option("Method")
+    expect(cad.state().commandLine.prompt).toBe(
+      "MATRIZCAMINO Introduzca el método de camino [Dividir/Medir] <Medir>:"
+    )
+    cad.enter().option("Items")
+    expect(cad.state().commandLine.prompt).toBe(
+      "MATRIZCAMINO Especifique la distancia entre los elementos a lo largo del camino <75.00>:"
+    )
+    cad.enter()
+    expect(cad.commandLog().at(-1)).toBe("Número máximo de elementos = 3")
+    expect(cad.state().commandLine.prompt).toBe(
+      "MATRIZCAMINO Introduzca el número de elementos o [Llenar todo el camino] <3>:"
+    )
+    cad.enter().option("Align items")
+    expect(cad.state().commandLine.prompt).toBe(
+      "MATRIZCAMINO ¿Alinear elementos de matriz con el camino? [Sí/No] <Sí>:"
+    )
   })
 
   it("cancels without touching the drawing", () => {

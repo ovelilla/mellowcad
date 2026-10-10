@@ -37,7 +37,6 @@ export const hero = demo({
   .enter()
   .type("0,0")
   .enter()
-  .type("6")
   .enter()
   .command("_RECTANG")
   .type("80,20")

@@ -10,7 +10,6 @@ import {
   translateEntity,
 } from "../../domain/entities"
 import { parseNumber } from "../../domain/units"
-import { DynamicInputSession } from "../input/DynamicInput"
 import {
   isCoordinateExpression,
   parseCoordinate,
@@ -20,32 +19,33 @@ import { entityScenePrimitive } from "../SceneBuilder"
 import { THEME } from "../../scene/theme"
 import { AddEntitiesCommand } from "../commands/entityCommands"
 import { boxSelect, buildSelectionBoxOverlay } from "./boxSelection"
+import { countPreselection, pickObjects } from "./objectSelection"
+import type { PromptId } from "../../locales/types"
 import {
   CommandOption,
   CommandOptionOutcome,
   PointerInput,
+  QuestionInput,
   Tool,
   ToolContext,
+  ToolQuestion,
 } from "./Tool"
 
 /**
- * AutoCAD's ARRAYPOLAR command (polar array): replicate the selected objects
- * evenly around a center point.
+ * AutoCAD's ARRAYPOLAR, as its 2023 console asks it: `Select objects:`, `Type
+ * = Polar  Associative = No`, `Specify center point of array:`, then `Select
+ * grip to edit array or [Items/Angle between/Fill angle/ROTate items/eXit]
+ * <eXit>:` over a live preview — 6 items over 360° at first. Items asks the
+ * count, Angle between the angle from one item to the next, Fill angle the
+ * angle they span (+ counterclockwise, - clockwise), ROTate items `Rotate
+ * arrayed items? [Yes/No] <Yes>:` (Yes turns each copy to follow the ring,
+ * No only carries it round). A full 360° spaces the items by fill / count; any
+ * other fill spans the first and last, fill / (count − 1), and an angle
+ * between makes the fill that many steps. eXit or Enter makes the copies, one
+ * undo step with the source as item 1. Escape makes none.
  *
- * ```
- *   (empty selection)   Enter/Space   click / type    type / Enter   [R] rotate items
- *  selecting ─────────────────► center ──────────► config (Items · Fill angle) ──► done
- *   click / box-drag adds objects      pick the pivot   live ghost ring previews
- * ```
- *
- * After the center point, the array is described by the **item count** and the
- * **fill angle** (default 6 items over 360°). Items are distributed counter-
- * clockwise; a full 360° fill spaces them by `fill / items` (the closing item
- * would coincide with the first, so it is dropped), while a partial fill spans
- * the endpoints with `fill / (items − 1)`. **Rotate items** (default Yes, toggled
- * with R) turns each copy to follow the ring like spokes of a wheel; No keeps
- * every copy's orientation and only carries it around the circle. The source is
- * item 1; every copy is added as a single undoable step (non-associative).
+ * WHY Associative = No: as ARRAYRECT's. Base point, Axis of rotation, ROWs and
+ * Levels are not offered.
  */
 
 /** Screen-pixel movement past which a press-drag becomes a box selection. */
@@ -55,13 +55,22 @@ const DEFAULT_ITEMS = 6
 const DEFAULT_FILL = 360
 const MAX_ITEMS = 1000
 
+/** The ring the prompts edit: the count and the angles, kept consistent. */
+interface Ring {
+  readonly items: number
+  /** The angle spanned, + counterclockwise; 360 a full circle. */
+  readonly fill: number
+  /** Whether each copy turns to follow the ring (ROTate items). */
+  readonly rotate: boolean
+}
+
+type Step = "main" | "items" | "between" | "fill" | "rotate"
+
 interface PolarConfig {
   readonly originals: readonly Entity[]
   readonly center: Vec2
   /** Base point (selection centroid) carried around the ring when not rotating. */
   readonly basePoint: Vec2
-  /** Whether each copy turns to follow the ring (AutoCAD "Rotate items"). */
-  readonly rotate: boolean
 }
 
 type ArrayPolarState =
@@ -81,8 +90,20 @@ type ArrayPolarState =
     }
   /** Objects chosen; awaiting the center point of the array. */
   | { readonly phase: "center"; readonly originals: readonly Entity[] }
-  /** Center placed; editing item count and fill angle with a live preview. */
-  | { readonly phase: "config"; readonly config: PolarConfig }
+  /** Center placed; editing the ring with a live preview. */
+  | {
+      readonly phase: "edit"
+      readonly config: PolarConfig
+      readonly ring: Ring
+      readonly step: Step
+    }
+
+const KEYWORD_STEP: Readonly<Record<string, Step>> = {
+  Items: "items",
+  "Angle between": "between",
+  "Fill angle": "fill",
+  "ROTate items": "rotate",
+}
 
 export class ArrayPolarTool implements Tool {
   readonly id = "arraypolar"
@@ -95,6 +116,7 @@ export class ArrayPolarTool implements Tool {
     if (ctx.selection.isEmpty()) {
       this.state = { phase: "selecting" }
     } else {
+      countPreselection(ctx)
       this.enterCenter(ctx)
     }
   }
@@ -102,6 +124,111 @@ export class ArrayPolarTool implements Tool {
   onDeactivate(ctx: ToolContext): void {
     this.state = { phase: "selecting" }
     ctx.dynamicInput.close()
+  }
+
+  question(): PromptId | ToolQuestion {
+    const state = this.state
+    switch (state.phase) {
+      case "center":
+        return "specifyCenterPointOfArray"
+      case "edit":
+        break
+      default:
+        return "selectObjects"
+    }
+    const { ring } = state
+    switch (state.step) {
+      case "main":
+        return "selectGripToEditArrayOr"
+      case "items":
+        return { id: "enterNumberOfItemsInArray", enter: { count: ring.items } }
+      case "between":
+        return {
+          id: "specifyAngleBetweenItems",
+          enter: { angle: angleBetween(ring) },
+        }
+      case "fill":
+        return { id: "specifyTheAngleToFill", enter: { angle: ring.fill } }
+      case "rotate":
+        return "rotateArrayedItems"
+    }
+  }
+
+  /**
+   * As AutoCAD 2023's console refuses them: the centre and the grip's pick
+   * expect a point or the keywords AutoCAD lists there, the count a positive
+   * whole number, the angles two points or Expression.
+   */
+  takes(): QuestionInput | null {
+    const state = this.state
+    if (state.phase === "center") return { refusal: "pointOrKeywordRequired" }
+    if (state.phase !== "edit") return null
+    switch (state.step) {
+      case "main":
+        return "point"
+      case "items":
+        return { refusal: "requiresPositiveInteger" }
+      case "between":
+      case "fill":
+        return {
+          refusal: "requiresAngle",
+          values: { points: "two", keyword: "yes" },
+        }
+      case "rotate":
+        return "keyword"
+    }
+  }
+
+  commandOptions(): readonly CommandOption[] {
+    if (this.state.phase !== "edit") return []
+    switch (this.state.step) {
+      case "main":
+        return [
+          { id: "Items" },
+          { id: "Angle between" },
+          { id: "Fill angle" },
+          { id: "ROTate items" },
+          { id: "eXit" },
+        ]
+      case "rotate":
+        return [{ id: "Yes" }, { id: "No" }]
+      default:
+        return []
+    }
+  }
+
+  defaultOption(): string | null {
+    if (this.state.phase !== "edit") return null
+    switch (this.state.step) {
+      case "main":
+        return "eXit"
+      case "rotate":
+        return this.state.ring.rotate ? "Yes" : "No"
+      default:
+        return null
+    }
+  }
+
+  invokeOption(id: string, ctx: ToolContext): CommandOptionOutcome {
+    if (this.state.phase !== "edit") return "unhandled"
+    if (this.state.step === "rotate") {
+      if (id !== "Yes" && id !== "No") return "unhandled"
+      this.state = {
+        ...this.state,
+        ring: { ...this.state.ring, rotate: id === "Yes" },
+      }
+      this.ask("main", ctx)
+      return "continue"
+    }
+    if (this.state.step !== "main") return "unhandled"
+    if (id === "eXit") {
+      this.create(ctx)
+      return "end"
+    }
+    const step = KEYWORD_STEP[id]
+    if (step === undefined) return "unhandled"
+    this.ask(step, ctx)
+    return "continue"
   }
 
   onPointerMove(input: PointerInput, ctx: ToolContext): void {
@@ -129,7 +256,7 @@ export class ArrayPolarTool implements Tool {
         this.state = { ...this.state, currentWorld: input.world }
         break
       case "center":
-      case "config":
+      case "edit":
         ctx.dynamicInput.setPosition(input.screen)
         break
     }
@@ -150,11 +277,9 @@ export class ArrayPolarTool implements Tool {
           subtract: input.shiftKey,
         }
         return
-      case "center": {
-        const center = this.resolveCenter(input.point, ctx)
-        this.enterConfig(center, ctx)
+      case "center":
+        this.enterEdit(input.point, ctx)
         return
-      }
     }
   }
 
@@ -163,54 +288,42 @@ export class ArrayPolarTool implements Tool {
 
     if (this.state.phase === "pressed") {
       const hit = ctx.pick(input.world)
-      if (hit) this.applyPick([hit.id], this.state.subtract, ctx)
+      if (hit) pickObjects([hit.id], this.state.subtract, false, ctx)
       this.state = { phase: "selecting" }
       ctx.requestRender()
       return
     }
     if (this.state.phase === "boxing") {
-      const hits = boxSelect(
+      const hits: readonly EntityId[] = boxSelect(
         ctx.document,
         this.state.startWorld,
         this.state.currentWorld,
         ctx.viewport
       )
-      this.applyPick(hits, this.state.subtract, ctx)
+      pickObjects(hits, this.state.subtract, true, ctx)
       this.state = { phase: "selecting" }
       ctx.requestRender()
     }
   }
 
   onEnter(ctx: ToolContext): boolean {
-    // While configuring, Enter commits the array (handles the case where a
-    // command-option toggle briefly moved focus to the canvas); while selecting
-    // it confirms the set.
-    if (this.state.phase === "config") {
-      this.commit(ctx)
+    if (this.state.phase === "selecting") {
+      if (ctx.selection.isEmpty()) return false
+      this.enterCenter(ctx)
+      ctx.requestRender()
       return true
     }
-    return this.confirmSelection(ctx)
-  }
-
-  commandOptions(): readonly CommandOption[] {
-    if (this.state.phase === "config") {
-      return [
-        { id: "Rotate items", value: this.state.config.rotate ? "Yes" : "No" },
-      ]
+    if (this.state.phase === "edit" && this.state.step === "main") {
+      // <eXit>: the array is made and the command ends.
+      this.create(ctx)
+      ctx.endCommand()
+      return true
     }
-    return []
-  }
-
-  invokeOption(id: string, ctx: ToolContext): CommandOptionOutcome {
-    if (this.state.phase === "config" && id === "Rotate items") {
-      this.state = {
-        phase: "config",
-        config: { ...this.state.config, rotate: !this.state.config.rotate },
-      }
-      ctx.requestRender()
-      return "continue"
+    if (this.state.phase === "edit" && this.state.step === "rotate") {
+      this.ask("main", ctx) // <Yes> or <No>: the current answer stays
+      return true
     }
-    return "unhandled"
+    return false
   }
 
   wantsSnap(): boolean {
@@ -220,55 +333,33 @@ export class ArrayPolarTool implements Tool {
   }
 
   buildOverlay(ctx: ToolContext): ScenePrimitive[] {
-    if (this.state.phase === "boxing") {
+    const state = this.state
+    if (state.phase === "boxing") {
       return buildSelectionBoxOverlay(
         ctx.viewport,
-        this.state.startWorld,
-        this.state.currentWorld
+        state.startWorld,
+        state.currentWorld
       )
     }
-    if (this.state.phase !== "config") return []
+    if (state.phase !== "edit") return []
 
-    const { viewport } = ctx
-    const { config } = this.state
-    const { items, step } = this.computeItems(ctx)
     const ghost: StrokeStyle = { color: THEME.preview, width: 1, dash: [6, 4] }
+    const ring = this.previewRing(ctx, state.ring, state.step)
     const out: ScenePrimitive[] = []
-
-    for (let k = 1; k < items; k++) {
-      const angle = k * step
-      for (const entity of config.originals) {
+    for (const angle of itemAngles(ring)) {
+      for (const entity of state.config.originals) {
         out.push(
           ...entityScenePrimitive(
-            viewport,
-            placeItem(entity, config, angle),
+            ctx.viewport,
+            placeItem(entity, state.config, angle, ring.rotate),
             ghost,
             { blocks: ctx.blocks }
           )
         )
       }
     }
-    pushCenterMarker(out, viewport.worldToScreen(config.center))
+    pushCenterMarker(out, ctx.viewport.worldToScreen(state.config.center))
     return out
-  }
-
-  private applyPick(
-    ids: readonly EntityId[],
-    subtract: boolean,
-    ctx: ToolContext
-  ): void {
-    for (const id of ids) {
-      if (subtract) ctx.selection.remove(id)
-      else ctx.selection.add(id)
-    }
-  }
-
-  private confirmSelection(ctx: ToolContext): boolean {
-    if (this.state.phase !== "selecting") return false
-    if (ctx.selection.isEmpty()) return false
-    this.enterCenter(ctx)
-    ctx.requestRender()
-    return true
   }
 
   private enterCenter(ctx: ToolContext): void {
@@ -282,12 +373,12 @@ export class ArrayPolarTool implements Tool {
       return
     }
     this.state = { phase: "center", originals }
-    const session: DynamicInputSession = {
+    ctx.report(ctx.text.message("arrayType", { type: "polar" }))
+    ctx.dynamicInput.open({
       fields: [{ id: "center", prompt: "centerPoint", kind: "coordinate" }],
       commit: () => {},
       commitRaw: (commitCtx) => this.commitCenterCoordinate(commitCtx),
-    }
-    ctx.dynamicInput.open(session)
+    })
     if (this.lastScreen) ctx.dynamicInput.setPosition(this.lastScreen)
   }
 
@@ -302,89 +393,147 @@ export class ArrayPolarTool implements Tool {
       elevation: ctx.elevation,
     })
     if (!center) return false
-    this.enterConfig(center, ctx)
+    this.enterEdit(center, ctx)
     return true
   }
 
-  private enterConfig(center: Vec2, ctx: ToolContext): void {
+  private enterEdit(center: Vec2, ctx: ToolContext): void {
     if (this.state.phase !== "center") return
     const originals = this.state.originals
     this.state = {
-      phase: "config",
+      phase: "edit",
       config: {
         originals,
         center,
         basePoint: centroid(originals, ctx.blocks),
-        rotate: true,
       },
+      ring: { items: DEFAULT_ITEMS, fill: DEFAULT_FILL, rotate: true },
+      step: "main",
     }
-    const session: DynamicInputSession = {
+    this.ask("main", ctx)
+  }
+
+  private ask(step: Step, ctx: ToolContext): void {
+    if (this.state.phase !== "edit") return
+    this.state = { ...this.state, step }
+    if (step === "main" || step === "rotate") {
+      // Keywords only, the focus left on the drawing.
+      ctx.dynamicInput.open({ fields: [], commit: () => {} })
+      ctx.requestRender()
+      return
+    }
+    ctx.dynamicInput.open({
       fields: [
-        { id: "items", prompt: "items", kind: "number" },
-        { id: "fill", prompt: "fillAngle", kind: "angle" },
+        {
+          id: "value",
+          prompt:
+            step === "items"
+              ? "items"
+              : step === "fill"
+                ? "fillAngle"
+                : "angle",
+          kind: step === "items" ? "number" : "angle",
+        },
       ],
-      commit: (_values, commitCtx) => this.commit(commitCtx),
-    }
-    ctx.dynamicInput.open(session)
-    ctx.dynamicInput.setDefault("items", DEFAULT_ITEMS)
-    ctx.dynamicInput.setDefault("fill", DEFAULT_FILL)
+      commit: (values, commitCtx) => this.answer(values.value, commitCtx),
+      commitRaw: (commitCtx) => {
+        // Enter with nothing typed keeps the value the prompt offers.
+        if (commitCtx.dynamicInput.hasTypedText()) return false
+        this.ask("main", commitCtx)
+        return true
+      },
+    })
     ctx.dynamicInput.setPosition(this.lastScreen ?? { x: 0, y: 0 })
+    ctx.requestRender()
   }
 
-  /** Resolves item count and fill angle, deriving the per-item angle step. */
-  private computeItems(ctx: ToolContext): {
-    items: number
-    fill: number
-    step: number
-  } {
-    const items = clampItems(readParam(ctx, "items", DEFAULT_ITEMS))
-    const fill = readParam(ctx, "fill", DEFAULT_FILL)
-    // A full circle drops the closing item (it would land on the first);
-    // a partial fill spans both endpoints.
-    const isFull = Math.abs(Math.abs(fill) - 360) < 1e-9
-    const step = items <= 1 ? 0 : isFull ? fill / items : fill / (items - 1)
-    return { items, fill, step }
-  }
-
-  private commit(ctx: ToolContext): void {
-    if (this.state.phase !== "config") return
-    const { config } = this.state
-    const { items, step } = this.computeItems(ctx)
-    const copies: Entity[] = []
-    for (let k = 1; k < items; k++) {
-      const angle = k * step
-      for (const entity of config.originals) {
-        copies.push(placeItemCopy(entity, config, angle))
+  private answer(value: number, ctx: ToolContext): void {
+    if (this.state.phase !== "edit") return
+    const { step, ring } = this.state
+    if (step === "items") {
+      if (value <= 0) {
+        ctx.report(ctx.text.message("positiveNonzero"), "error")
+        return
+      }
+      if (!Number.isInteger(value) || value > MAX_ITEMS) {
+        ctx.report(ctx.text.message("requiresPositiveInteger"), "error")
+        return
       }
     }
-    if (copies.length > 0) ctx.execute(new AddEntitiesCommand(copies))
-    ctx.dynamicInput.close()
-    ctx.endCommand()
+    this.state = { ...this.state, ring: withValue(ring, step, value) }
+    this.ask("main", ctx)
   }
 
-  private resolveCenter(rawPoint: Vec2, ctx: ToolContext): Vec2 {
-    const text = ctx.dynamicInput.getText("center").trim()
-    if (isCoordinateExpression(text)) {
-      const point = parseCoordinate(text, {
-        lastPoint: null,
-        relativeByDefault: false,
-        ucs: ctx.ucs,
-        elevation: ctx.elevation,
-      })
-      if (point) return point
+  /** The ring the preview shows: the value being typed already applied. */
+  private previewRing(ctx: ToolContext, ring: Ring, step: Step): Ring {
+    if (step === "main" || step === "rotate") return ring
+    const typed = parseNumber(ctx.dynamicInput.getText("value").trim())
+    if (typed === null || !Number.isFinite(typed)) return ring
+    if (step === "items" && (!Number.isInteger(typed) || typed <= 0)) {
+      return ring
     }
-    return rawPoint
+    return withValue(ring, step, Math.min(typed, MAX_ITEMS))
   }
+
+  private create(ctx: ToolContext): void {
+    const state = this.state
+    if (state.phase !== "edit") return
+    const copies = itemAngles(state.ring).flatMap((angle) =>
+      state.config.originals.map((entity) =>
+        placeItemCopy(entity, state.config, angle, state.ring.rotate)
+      )
+    )
+    if (copies.length > 0) ctx.execute(new AddEntitiesCommand(copies))
+    ctx.dynamicInput.close()
+  }
+}
+
+/** Whether the fill is a whole turn, where the closing item would land on the first. */
+function isFull(fill: number): boolean {
+  return Math.abs(Math.abs(fill) - 360) < 1e-9
+}
+
+function angleBetween(ring: Ring): number {
+  if (ring.items <= 1) return 0
+  return isFull(ring.fill)
+    ? ring.fill / ring.items
+    : ring.fill / (ring.items - 1)
+}
+
+/**
+ * The count keeps the fill; an angle between makes the fill that many steps
+ * from the first item to the last; a fill keeps the count.
+ */
+function withValue(ring: Ring, step: Step, value: number): Ring {
+  switch (step) {
+    case "items":
+      return { ...ring, items: value }
+    case "between":
+      return { ...ring, fill: value * Math.max(ring.items - 1, 1) }
+    case "fill":
+      return { ...ring, fill: value }
+    default:
+      return ring
+  }
+}
+
+/** The angles of the copies, in degrees: every item but the source, item 1. */
+function itemAngles(ring: Ring): number[] {
+  const step = angleBetween(ring)
+  const out: number[] = []
+  for (let k = 1; k < ring.items; k++) out.push(k * step)
+  return out
 }
 
 /** One array item, preserving id — used for the live ghost preview. */
 function placeItem(
   entity: Entity,
   config: PolarConfig,
-  angleDeg: number
+  angleDeg: number,
+  rotate: boolean
 ): Entity {
   const rad = (angleDeg * Math.PI) / 180
-  if (config.rotate) return rotateEntity(entity, config.center, rad)
+  if (rotate) return rotateEntity(entity, config.center, rad)
   const moved = rotatePoint(config.basePoint, config.center, rad)
   return translateEntity(entity, {
     x: moved.x - config.basePoint.x,
@@ -396,10 +545,11 @@ function placeItem(
 function placeItemCopy(
   entity: Entity,
   config: PolarConfig,
-  angleDeg: number
+  angleDeg: number,
+  rotate: boolean
 ): Entity {
   const rad = (angleDeg * Math.PI) / 180
-  if (config.rotate) return rotateEntityCopy(entity, config.center, rad)
+  if (rotate) return rotateEntityCopy(entity, config.center, rad)
   const moved = rotatePoint(config.basePoint, config.center, rad)
   return copyEntity(entity, {
     x: moved.x - config.basePoint.x,
@@ -441,15 +591,4 @@ function centroid(
     maxY = Math.max(maxY, b.max.y)
   }
   return { x: (minX + maxX) / 2, y: (minY + maxY) / 2 }
-}
-
-function readParam(ctx: ToolContext, id: string, fallback: number): number {
-  const text = ctx.dynamicInput.getText(id).trim()
-  if (text === "") return fallback
-  const value = parseNumber(text)
-  return value !== null && Number.isFinite(value) ? value : fallback
-}
-
-function clampItems(value: number): number {
-  return Math.max(1, Math.min(MAX_ITEMS, Math.round(value)))
 }

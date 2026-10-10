@@ -8,6 +8,7 @@ import type {
 } from "../../domain/entities"
 import { createHarness } from "../../../test/harness"
 import { THEME } from "../../scene/theme"
+import { es } from "../../locales/es"
 import {
   arcOf,
   circleOf,
@@ -544,19 +545,101 @@ describe("MIRROR", () => {
 })
 
 describe("ARRAYRECT", () => {
+  it("asks AutoCAD's questions over the preview and writes them answered", () => {
+    const cad = createHarness({
+      entities: [lineOf(p(0, 0), p(40, 0), { id: "L1" })],
+    })
+
+    cad.command("ARRAYRECT").click(p(20, 0)).enter()
+    expect(cad.state().commandLine.prompt).toBe(
+      "ARRAYRECT Select grip to edit array or [COUnt/Spacing/COLumns/Rows/eXit] <eXit>:"
+    )
+    cad.option("COUnt")
+    expect(cad.state().commandLine.prompt).toBe(
+      "ARRAYRECT Enter the number of columns <4>:"
+    )
+    cad.type("0").enter().type("2.5").enter().type("3").enter()
+    expect(cad.state().commandLine.prompt).toBe(
+      "ARRAYRECT Enter the number of rows <3>:"
+    )
+    cad.type("2").enter().option("Spacing")
+    expect(cad.state().commandLine.prompt).toBe(
+      "ARRAYRECT Specify the distance between columns <60.00>:"
+    )
+    cad.type("100").enter()
+    expect(cad.state().commandLine.prompt).toBe(
+      "ARRAYRECT Specify the distance between rows <1.00>:"
+    )
+    cad.type("50").enter().option("Rows").enter().enter()
+    expect(cad.state().commandLine.prompt).toBe(
+      "ARRAYRECT Specify the incrementing elevation between rows <0.00>:"
+    )
+    cad.type("5").enter().enter()
+
+    expect(cad.commandLog()).toEqual([
+      "ARRAYRECT",
+      "Select objects: 1 found",
+      "Select objects:",
+      "Type = Rectangular  Associative = No",
+      "Select grip to edit array or [COUnt/Spacing/COLumns/Rows/eXit] <eXit>: COU",
+      "Enter the number of columns <4>: 0",
+      "Value must be positive and nonzero.",
+      "Enter the number of columns <4>: 2.5",
+      "Requires a positive nonzero integer or option keyword.",
+      "Enter the number of columns <4>: 3",
+      "Enter the number of rows <3>: 2",
+      "Select grip to edit array or [COUnt/Spacing/COLumns/Rows/eXit] <eXit>: S",
+      "Specify the distance between columns <60.00>: 100",
+      "Specify the distance between rows <1.00>: 50",
+      "Select grip to edit array or [COUnt/Spacing/COLumns/Rows/eXit] <eXit>: R",
+      "Enter the number of rows <2>:",
+      "Specify the distance between rows <50.00>:",
+      "Specify the incrementing elevation between rows <0.00>: 5",
+      "Select grip to edit array or [COUnt/Spacing/COLumns/Rows/eXit] <eXit>:",
+    ])
+    expect(cad.entityCount).toBe(6)
+    const raised = linesOf(cad.entities()).filter((line) => line.start.y === 50)
+    expect(raised.map((line) => line.elevation)).toEqual([5, 5, 5])
+  })
+
+  it("asks in the words of Autodesk's Spanish table", () => {
+    const cad = createHarness({
+      locale: es,
+      entities: [lineOf(p(0, 0), p(40, 0), { id: "L1" })],
+    })
+
+    cad.select("L1").command("MATRIZRECTANG")
+    expect(cad.commandLog().at(-1)).toBe("Tipo = Rectangular  Asociativa = No")
+    expect(cad.state().commandLine.prompt).toBe(
+      "MATRIZRECTANG Seleccione un pinzamiento para editar la matriz o [COntar/Espaciado/Columnas/Filas/Salir] <Salir>:"
+    )
+    cad.option("COUnt")
+    expect(cad.state().commandLine.prompt).toBe(
+      "MATRIZRECTANG Indique el número de columnas <4>:"
+    )
+    cad.enter().enter().option("Spacing")
+    expect(cad.state().commandLine.prompt).toBe(
+      "MATRIZRECTANG Especificar la distancia entre columnas <60.00>:"
+    )
+    cad.enter().enter().option("COLumns").enter()
+    expect(cad.state().commandLine.prompt).toBe(
+      "MATRIZRECTANG Especifique la distancia entre columnas <60.00>:"
+    )
+    cad.enter().option("Rows").enter().enter()
+    expect(cad.state().commandLine.prompt).toBe(
+      "MATRIZRECTANG Especifique la elevación incremental entre filas <0.00>:"
+    )
+  })
+
   it("fills a grid, leaving the source in cell (0, 0)", () => {
     const cad = createHarness({
       entities: [lineOf(p(0, 0), p(40, 0), { id: "L1" })],
     })
 
-    cad
-      .select("L1")
-      .command("ARRAYRECT")
-      .type("3", "columns")
-      .type("2", "rows")
-      .type("100", "colSpacing")
-      .type("50", "rowSpacing")
-      .enter()
+    cad.select("L1").command("ARRAYRECT").option("COLumns")
+    cad.type("3").enter().type("100").enter()
+    cad.option("Rows").type("2").enter().type("50").enter().enter()
+    cad.enter()
 
     expect(cad.entityCount).toBe(6)
     const starts = linesOf(cad.entities())
@@ -572,14 +655,7 @@ describe("ARRAYRECT", () => {
       entities: [lineOf(p(0, 0), p(40, 0), { id: "L1" })],
     })
 
-    cad
-      .select("L1")
-      .command("ARRAYRECT")
-      .type("3", "columns")
-      .type("2", "rows")
-      .type("100", "colSpacing")
-      .type("50", "rowSpacing")
-      .enter()
+    cad.select("L1").command("ARRAYRECT").option("eXit")
     cad.undo()
 
     expect(cad.entityCount).toBe(1)
@@ -602,19 +678,100 @@ describe("ARRAYPOLAR", () => {
       entities: [lineOf(p(100, 0), p(100, 20), { id: "L1" })],
     })
 
-    cad
-      .select("L1")
-      .command("ARRAYPOLAR")
-      .click(p(0, 0))
-      .type("4", "items")
-      .type("360", "fill")
-      .enter()
+    cad.select("L1").command("ARRAYPOLAR").click(p(0, 0))
+    cad.option("Items").type("4").enter().enter()
 
     expect(cad.entityCount).toBe(4)
     // Rotating items keeps them radial: every start stays 100 from the centre.
     for (const line of linesOf(cad.entities())) {
       expect(Math.hypot(line.start.x, line.start.y)).toBeCloseTo(100, 5)
     }
+  })
+})
+
+describe("ARRAYPOLAR's questions", () => {
+  it("asks AutoCAD's questions over the preview and writes them answered", () => {
+    const cad = createHarness({
+      entities: [lineOf(p(100, 0), p(100, 20), { id: "L1" })],
+    })
+
+    cad.select("L1").command("ARRAYPOLAR")
+    expect(cad.state().commandLine.prompt).toBe(
+      "ARRAYPOLAR Specify center point of array:"
+    )
+    cad.click(p(0, 0))
+    expect(cad.state().commandLine.prompt).toBe(
+      "ARRAYPOLAR Select grip to edit array or [Items/Angle between/Fill angle/ROTate items/eXit] <eXit>:"
+    )
+    cad.option("Items")
+    expect(cad.state().commandLine.prompt).toBe(
+      "ARRAYPOLAR Enter number of items in array <6>:"
+    )
+    cad.type("4").enter().option("Angle between")
+    expect(cad.state().commandLine.prompt).toBe(
+      "ARRAYPOLAR Specify angle between items <90.00>:"
+    )
+    cad.type("30").enter().option("Fill angle")
+    expect(cad.state().commandLine.prompt).toBe(
+      "ARRAYPOLAR Specify the angle to fill (+=ccw, -=cw) <90.00>:"
+    )
+    cad.type("180").enter().option("ROTate items")
+    expect(cad.state().commandLine.prompt).toBe(
+      "ARRAYPOLAR Rotate arrayed items? [Yes/No] <Yes>:"
+    )
+    cad.option("No").option("eXit")
+
+    expect(cad.commandLog()).toEqual([
+      "ARRAYPOLAR 1 found",
+      "Type = Polar  Associative = No",
+      "Specify center point of array:",
+      "Select grip to edit array or [Items/Angle between/Fill angle/ROTate items/eXit] <eXit>: I",
+      "Enter number of items in array <6>: 4",
+      "Select grip to edit array or [Items/Angle between/Fill angle/ROTate items/eXit] <eXit>: A",
+      "Specify angle between items <90.00>: 30",
+      "Select grip to edit array or [Items/Angle between/Fill angle/ROTate items/eXit] <eXit>: F",
+      "Specify the angle to fill (+=ccw, -=cw) <90.00>: 180",
+      "Select grip to edit array or [Items/Angle between/Fill angle/ROTate items/eXit] <eXit>: ROT",
+      "Rotate arrayed items? [Yes/No] <Yes>: N",
+      "Select grip to edit array or [Items/Angle between/Fill angle/ROTate items/eXit] <eXit>: X",
+    ])
+    // Four items over 180°, 60° apart, carried round without turning.
+    const lines = linesOf(cad.entities())
+    expect(lines).toHaveLength(4)
+    expect(lines.every((line) => line.end.x === line.start.x)).toBe(true)
+  })
+
+  it("asks in the words of Autodesk's Spanish table", () => {
+    const cad = createHarness({
+      locale: es,
+      entities: [lineOf(p(100, 0), p(100, 20), { id: "L1" })],
+    })
+
+    cad.select("L1").command("MATRIZPOLAR")
+    expect(cad.commandLog().at(-1)).toBe("Tipo = Polar  Asociativa = No")
+    expect(cad.state().commandLine.prompt).toBe(
+      "MATRIZPOLAR Precise el punto central de la matriz:"
+    )
+    cad.click(p(0, 0))
+    expect(cad.state().commandLine.prompt).toBe(
+      "MATRIZPOLAR Seleccione un pinzamiento para editar la matriz o [Elementos/ángUlo entre/ángulo de Relleno/Girar objetos/Salir] <Salir>:"
+    )
+    cad.option("Items")
+    expect(cad.state().commandLine.prompt).toBe(
+      "MATRIZPOLAR Indique el número de elementos de la matriz <6>:"
+    )
+    cad.enter().option("Angle between")
+    expect(cad.state().commandLine.prompt).toBe(
+      "MATRIZPOLAR Indique el ángulo entre elementos <60.00>:"
+    )
+    cad.enter().option("Fill angle")
+    expect(cad.state().commandLine.prompt).toBe(
+      "MATRIZPOLAR Precise el ángulo que se debe rellenar (+ =antihorario, -=horario) <360.00>:"
+    )
+    cad.enter().option("ROTate items")
+    expect(cad.state().commandLine.prompt).toBe(
+      "MATRIZPOLAR ¿Girar elementos de la matriz? [Sí/No] <Sí>:"
+    )
   })
 })
 

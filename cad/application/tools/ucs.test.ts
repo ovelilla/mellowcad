@@ -317,8 +317,9 @@ describe("what follows the UCS", () => {
   it("ARRAYRECT runs its columns along its X axis", () => {
     const cad = createHarness({ entities: [circleOf(p(0, 0), 5, { id: "c" })] })
     cad.command("UCS").option("Z").enter()
-    cad.select("c").command("ARRAYRECT")
-    cad.type("2", "columns").type("1", "rows").type("50", "colSpacing").enter()
+    cad.select("c").command("ARRAYRECT").option("COUnt")
+    cad.type("2").enter().type("1").enter()
+    cad.option("Spacing").type("50").enter().enter().enter()
     const centers = cad
       .entities()
       .flatMap((entity) => (entity.type === "circle" ? [entity.center] : []))

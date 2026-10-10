@@ -2569,60 +2569,78 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
   properties: -
   cycling: -
 > ARRAYRECT
-  prompt: ARRAYRECT:
-  asks: "Columns" "Rows" "Column spacing" "Row spacing"
-  dyn: "Columns"=""|4|* "Rows"=""|3| "Column spacing"=""|30.00|mm "Row spacing"=""|30.00|mm
+  prompt: ARRAYRECT Select grip to edit array or [COUnt/Spacing/COLumns/Rows/eXit] <eXit>:
+  asks: 
+  tip: Select grip to edit array or
+  dyn: 
+  options: [COU] COUnt, [S] Spacing, [COL] COLumns, [R] Rows, [X] eXit
   properties: Circle (1) {Thickness=0.00 mm~} [Geometry: Radius=10.00 mm~, Diameter=20.00 mm~, Circumference=62.83 mm, Area=314.16 mm², Normal X=0.00, Normal Y=0.00, Normal Z=1.00] [Center: X=0.00~, Y=0.00~, Z=0.00~]
-  command| AR ARRAYRECT
+  command| AR ARRAYRECT 1 found
+  info| Type = Rectangular  Associative = No
 > enter
   prompt: Command:
   asks: -
-  dyn: -
-> ARRAYPOLAR
-  prompt: ARRAYPOLAR:
-  asks: "Center point"
-  dyn: "X,Y"=""||*
-  command| ARPOLAR ARRAYPOLAR
-> centre
-  prompt: ARRAYPOLAR [Rotate items: Yes]:
-  asks: "Items" "Fill angle"
-  dyn: "Items"=""|6|* "Fill angle"=""|360.00|°
-  options: [R] Rotate items: Yes
-> R
-  prompt: ARRAYPOLAR [Rotate items: No]:
-  options: [R] Rotate items: No
-> enter
-  prompt: Command:
-  asks: -
+  tip: -
   dyn: -
   options: -
-> ARRAYPATH
-  prompt: ARRAYPATH:
-  command| ARPATH ARRAYPATH
-> path
-  prompt: ARRAYPATH [Method: Divide/Align items: Yes]:
-  asks: "Items"
-  dyn: "Items"=""|6|*
-  options: [M] Method: Divide, [A] Align items: Yes
-> M
-  prompt: ARRAYPATH [Method: Measure/Align items: Yes]:
-  asks: "Spacing"
-  dyn: "Spacing"=""|60.00|mm*
-  options: [M] Method: Measure, [A] Align items: Yes
-> A
-  prompt: ARRAYPATH [Method: Measure/Align items: No]:
-  options: [M] Method: Measure, [A] Align items: No
-> M back
-  prompt: ARRAYPATH [Method: Divide/Align items: No]:
-  asks: "Items"
-  dyn: "Items"=""|6|*
-  options: [M] Method: Divide, [A] Align items: No
+  prompt| Select grip to edit array or [COUnt/Spacing/COLumns/Rows/eXit] <eXit>:
+> ARRAYPOLAR
+  prompt: ARRAYPOLAR Specify center point of array:
+  asks: "Center point"
+  tip: Specify center point of array:
+  dyn: "X,Y"=""||*
+  command| ARPOLAR ARRAYPOLAR 1 found
+  info| Type = Polar  Associative = No
+> centre
+  prompt: ARRAYPOLAR Select grip to edit array or [Items/Angle between/Fill angle/ROTate items/eXit] <eXit>:
+  asks: 
+  tip: Select grip to edit array or
+  dyn: 
+  options: [I] Items, [A] Angle between, [F] Fill angle, [ROT] ROTate items, [X] eXit
+  prompt| Specify center point of array:
+> R
+  prompt| Select grip to edit array or [Items/Angle between/Fill angle/ROTate items/eXit] <eXit>: R
+  error| Point or option keyword required.
 > enter
   prompt: Command:
   asks: -
+  tip: -
+  dyn: -
+  options: -
+  prompt| Select grip to edit array or [Items/Angle between/Fill angle/ROTate items/eXit] <eXit>:
+> ARRAYPATH
+  prompt: ARRAYPATH Select path curve:
+  asks: 
+  tip: Select path curve:
+  dyn: 
+  command| ARPATH ARRAYPATH 1 found
+  info| Type = Path  Associative = No
+> path
+  prompt: ARRAYPATH Select grip to edit array or [Method/Items/Align items/eXit] <eXit>:
+  tip: Select grip to edit array or
+  options: [M] Method, [I] Items, [A] Align items, [X] eXit
+  prompt| Select path curve:
+> M
+  prompt: ARRAYPATH Enter path method [Divide/Measure] <Measure>:
+  tip: Enter path method
+  options: [D] Divide, [M] Measure
+  prompt| Select grip to edit array or [Method/Items/Align items/eXit] <eXit>: M
+> A
+  prompt| Enter path method [Divide/Measure] <Measure>: A
+  error| Invalid option keyword.
+> M back
+  prompt: ARRAYPATH Select grip to edit array or [Method/Items/Align items/eXit] <eXit>:
+  tip: Select grip to edit array or
+  options: [M] Method, [I] Items, [A] Align items, [X] eXit
+  prompt| Enter path method [Divide/Measure] <Measure>: M
+> enter
+  prompt: Command:
+  asks: -
+  tip: -
   dyn: -
   options: -
   properties: -
+  prompt| Select grip to edit array or [Method/Items/Align items/eXit] <eXit>:
 
 ## TRIM EXTEND FILLET CHAMFER
 > start

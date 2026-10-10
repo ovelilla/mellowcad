@@ -108,7 +108,7 @@ export interface ToolQuestion {
  * number or a whole one, a keyword (`Invalid option keyword.`), a selection set
  * (`*Invalid selection*` and the selection modes it expects: with sub-objects
  * as MOVE's, of whole objects as MIRROR's and JOIN's, STRETCH's crossing one,
- * or BREAK's set of one object), one object picked (`*Invalid selection*` and
+ * BREAK's set of one object or ARRAYPATH's path curve), one object picked (`*Invalid selection*` and
  * its keywords), or a command's own refusal (CIRCLE's radius, POLYGON's sides).
  */
 export type QuestionInput =
@@ -123,6 +123,7 @@ export type QuestionInput =
   | "wholeObjects"
   | "crossingObjects"
   | "oneObject"
+  | "pathCurve"
   | "object"
   | { readonly refusal: MessageId; readonly values?: MessageValues }
 
