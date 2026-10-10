@@ -639,6 +639,7 @@ describe("editing commands", () => {
         .click(p(50, 0))
         .click(p(250, 0))
         .enter()
+        .enter()
 
       const hatch = cad.only<HatchEntity>("hatch")
       expect(hatch.loops).toHaveLength(1)

@@ -27,6 +27,7 @@ import {
   rectOf,
 } from "../../../test/builders"
 import { createHarness } from "../../../test/harness"
+import { es } from "../../locales/es"
 
 /** The square boundary most of these tests hatch. */
 const SQUARE = rectOf(p(0, 0), p(100, 100), { id: "sq" })
@@ -147,7 +148,7 @@ describe("HATCH boundary by Pick internal point", () => {
 describe("HATCH boundary by Select objects", () => {
   it("fills one selected closed polyline with the default pattern", () => {
     const h = createHarness({ entities: [SQUARE] })
-    h.command("HATCH").option("Select objects").click(p(50, 0)).enter()
+    h.command("HATCH").option("Select objects").click(p(50, 0)).enter().enter()
 
     const hatch = hatchOnly(h.entities())
     expect(hatch.loops).toHaveLength(1)
@@ -161,7 +162,7 @@ describe("HATCH boundary by Select objects", () => {
 
   it("turns a circle into a two-vertex loop of semicircle bulges", () => {
     const h = createHarness({ entities: [circleOf(p(0, 0), 50, { id: "c" })] })
-    h.command("HATCH").option("Select objects").click(p(50, 0)).enter()
+    h.command("HATCH").option("Select objects").click(p(50, 0)).enter().enter()
 
     const hatch = hatchOnly(h.entities())
     expect(hatch.loops[0].vertices).toBeCloseToPoints([p(50, 0), p(-50, 0)])
@@ -182,6 +183,7 @@ describe("HATCH boundary by Select objects", () => {
       .click(p(50, 0))
       .click(p(250, 0))
       .enter()
+      .enter()
 
     expect(h.typeCounts().hatch).toBe(1)
     expect(hatchOnly(h.entities()).loops).toHaveLength(2)
@@ -195,13 +197,14 @@ describe("HATCH boundary by Select objects", () => {
       .option("Select objects")
       .drag(p(400, 50), p(-50, 50))
       .enter()
+      .enter()
 
     expect(hatchOnly(h.entities()).loops).toHaveLength(2)
   })
 
   it("ignores objects that do not close an area", () => {
     const h = createHarness({ entities: [lineOf(p(0, 0), p(100, 0))] })
-    h.command("HATCH").option("Select objects").click(p(50, 0)).enter()
+    h.command("HATCH").option("Select objects").click(p(50, 0)).enter().enter()
 
     expect(h.typeCounts().hatch).toBeUndefined()
     expect(h.activeToolId()).toBe("select")
@@ -240,12 +243,8 @@ describe("HATCH boundary by Select objects", () => {
 
   it("stays behind its boundary (HPDRAWORDER 3), for the eye and for the pick", () => {
     const h = createHarness({ entities: [SQUARE] })
-    h.command("HATCH")
-      .option("Select objects")
-      .option("Properties")
-      .type("SOLID")
-      .enter()
-    h.click(p(50, 0)).enter()
+    h.command("HATCH").option("Properties").type("SOLID").enter()
+    h.option("Select objects").click(p(50, 0)).enter().enter()
 
     // Painted first, so the fill never covers the outline it was traced from.
     const kinds = h.scene().primitives.map((prim) => prim.kind)
@@ -265,7 +264,7 @@ describe("HATCH boundary by Select objects", () => {
 
   it("undoes the whole hatch in one step", () => {
     const h = createHarness({ entities: [SQUARE] })
-    h.command("HATCH").option("Select objects").click(p(50, 0)).enter()
+    h.command("HATCH").option("Select objects").click(p(50, 0)).enter().enter()
     expect(h.typeCounts().hatch).toBe(1)
 
     h.undo()
@@ -283,28 +282,106 @@ describe("HATCH boundary by Select objects", () => {
 })
 
 describe("HATCH Properties", () => {
-  it("asks for the pattern name preloaded with the current one", () => {
+  it("asks -HATCH's questions and writes them answered", () => {
     const h = createHarness({ entities: [SQUARE] })
-    h.command("HATCH").option("Properties")
+    h.command("HATCH")
+    expect(h.commandLog().at(-1)).toBe("Current hatch pattern:  ANSI31")
+    expect(h.state().commandLine.prompt).toBe(
+      "HATCH Specify internal point or [Properties/Select objects]:"
+    )
+    h.option("Properties")
+    expect(h.state().commandLine.prompt).toBe(
+      "HATCH Enter a pattern name or [?/Solid] <ANSI31>:"
+    )
+    h.enter()
+    expect(h.state().commandLine.prompt).toBe(
+      "HATCH Specify a scale for the pattern <1.00>:"
+    )
+    h.type("0").enter().type("2").enter()
+    expect(h.state().commandLine.prompt).toBe(
+      "HATCH Specify an angle for the pattern <0.00>:"
+    )
+    h.type("45").enter().click(p(50, 50))
+    h.option("Select objects")
+    expect(h.state().commandLine.prompt).toBe("HATCH Select objects:")
+    h.enter().enter()
 
-    const fields = h.state().dynamicInput?.fields ?? []
-    expect(fields).toHaveLength(1)
-    expect(fields[0].value).toBe("ANSI31")
+    expect(h.commandLog()).toEqual([
+      "HATCH",
+      "Current hatch pattern:  ANSI31",
+      "Specify internal point or [Properties/Select objects]: P",
+      "Enter a pattern name or [?/Solid] <ANSI31>:",
+      "Specify a scale for the pattern <1.00>: 0",
+      "Value must be positive and nonzero.",
+      "Specify a scale for the pattern <1.00>: 2",
+      "Specify an angle for the pattern <0.00>: 45",
+      "Current hatch pattern:  ANSI31",
+      "Specify internal point or [Properties/Select objects]:",
+      "Selecting everything...",
+      "Selecting everything visible...",
+      "Analyzing the selected data...",
+      "Analyzing internal islands...",
+      "Current hatch pattern:  ANSI31",
+      "Specify internal point or [Properties/Select objects]: S",
+      "Select objects:",
+      "Current hatch pattern:  ANSI31",
+      "Specify internal point or [Properties/Select objects]:",
+    ])
+    expect(hatchOnly(h.entities()).patternScale).toBe(2)
+  })
+
+  it("asks in the words of Autodesk's Spanish table", () => {
+    const h = createHarness({ locale: es, entities: [SQUARE] })
+    h.command("SOMBREA")
+    expect(h.commandLog().at(-1)).toBe("Patrón de sombreado actual:  ANSI31")
+    expect(h.state().commandLine.prompt).toBe(
+      "SOMBREA Precise punto interno o [Propiedades/Designar objetos]:"
+    )
+    h.option("Properties")
+    expect(h.state().commandLine.prompt).toBe(
+      "SOMBREA Indique nombre de patrón o [?/Sólido] <ANSI31>:"
+    )
+    h.type("NADA").enter()
+    expect(h.commandLog().at(-1)).toBe("Nombre de patrón desconocido.")
+    h.enter()
+    expect(h.state().commandLine.prompt).toBe(
+      "SOMBREA Precise escala del patrón <1.00>:"
+    )
+    h.enter()
+    expect(h.state().commandLine.prompt).toBe(
+      "SOMBREA Precise ángulo del patrón <0.00>:"
+    )
+    h.enter().click(p(50, 50))
+    expect(h.commandLog().slice(-5)).toEqual([
+      "Seleccionándolo todo...",
+      "Designando todo lo visible...",
+      "Analizando los datos designados...",
+      "Analizando islas internas...",
+      "Patrón de sombreado actual:  ANSI31",
+    ])
+    h.option("Properties").option("Solid").option("Properties")
+    expect(h.state().commandLine.prompt).toBe(
+      "SOMBREA Indique nombre de patrón o [?/Sólido] <Sólido>:"
+    )
+  })
+
+  it("takes Solid by its keyword and offers it back as the keyword", () => {
+    const h = createHarness({ entities: [SQUARE] })
+    h.command("HATCH").option("Properties").option("Solid")
+    h.command("HATCH").option("Properties")
+    expect(h.state().commandLine.prompt).toBe(
+      "HATCH Enter a pattern name or [?/Solid] <Solid>:"
+    )
   })
 
   it("skips the scale and angle prompts for a solid fill", () => {
     const h = createHarness({ entities: [SQUARE] })
-    h.command("HATCH")
-      .option("Select objects")
-      .option("Properties")
-      .type("SOLID")
-      .enter()
+    h.command("HATCH").option("Properties").type("SOLID").enter()
 
-    // Back at the keyword-only Select prompt: no field, the Properties chip.
-    expect(h.state().dynamicInput?.fields ?? []).toHaveLength(0)
-    expect(h.optionAbbreviations()).toEqual(["P"])
+    // Back at the internal point, its keywords offered again.
+    expect(h.optionAbbreviations()).toEqual(["P", "S"])
 
-    h.click(p(50, 0)).enter()
+    h.option("Select objects").click(p(50, 0)).enter().enter()
     const hatch = hatchOnly(h.entities())
     expect(hatch.patternId).toBe(SOLID_HATCH_PATTERN_ID)
     expect(hatchGeometry(hatch).solid).toBe(true)
@@ -312,21 +389,18 @@ describe("HATCH Properties", () => {
 
   it("asks for a scale then an angle for a real pattern", () => {
     const h = createHarness({ entities: [SQUARE] })
-    h.command("HATCH")
-      .option("Select objects")
-      .option("Properties")
-      .type("ANSI31")
-      .enter()
+    h.command("HATCH").option("Properties").type("ANSI31").enter()
     expect(h.state().dynamicInput?.fields[0].label).toBe(
-      "Specify a scale for pattern"
+      "Specify a scale for the pattern"
     )
 
     h.type("20").enter()
     expect(h.state().dynamicInput?.fields[0].label).toBe(
-      "Specify an angle for pattern"
+      "Specify an angle for the pattern"
     )
 
-    h.type("30").enter().click(p(50, 0)).enter()
+    h.type("30").enter().option("Select objects").click(p(50, 0))
+    h.enter().enter()
     const hatch = hatchOnly(h.entities())
     expect(hatch.patternScale).toBe(20)
     expect(hatch.patternAngle).toBeCloseToAngle(deg(30))
@@ -337,7 +411,6 @@ describe("HATCH Properties", () => {
       entities: [SQUARE, rectOf(p(200, 0), p(300, 100), { id: "sq2" })],
     })
     h.command("HATCH")
-      .option("Select objects")
       .option("Properties")
       .type("ANSI31")
       .enter()
@@ -345,10 +418,12 @@ describe("HATCH Properties", () => {
       .enter()
       .type("0")
       .enter()
+      .option("Select objects")
       .click(p(50, 0))
       .enter()
+      .enter()
 
-    h.command("HATCH").option("Select objects").click(p(250, 0)).enter()
+    h.command("HATCH").option("Select objects").click(p(250, 0)).enter().enter()
     const hatches = h.entities().filter((e) => e.type === "hatch")
     expect(hatches).toHaveLength(2)
     expect((hatches[1] as HatchEntity).patternScale).toBe(20)
@@ -358,7 +433,10 @@ describe("HATCH Properties", () => {
     const h = createHarness({ entities: [SQUARE] })
     h.command("HATCH").option("Properties").type("NOPE").enter()
 
-    expect(h.commandLog().some((line) => line.includes("NOPE"))).toBe(true)
+    expect(h.commandLog().slice(-2)).toEqual([
+      "Enter a pattern name or [?/Solid] <ANSI31>: NOPE",
+      "Unknown pattern name.",
+    ])
     expect(h.state().dynamicInput?.fields[0].label).toBe("Enter a pattern name")
   })
 
@@ -459,7 +537,6 @@ describe("hatch pattern geometry", () => {
   it("refuses to create a hatch that is too dense, and says so", () => {
     const h = createHarness({ entities: [SQUARE] })
     h.command("HATCH")
-      .option("Select objects")
       .option("Properties")
       .type("ANSI31")
       .enter()
@@ -467,7 +544,9 @@ describe("hatch pattern geometry", () => {
       .enter()
       .type("0")
       .enter()
+      .option("Select objects")
       .click(p(50, 0))
+      .enter()
       .enter()
 
     expect(h.typeCounts().hatch).toBeUndefined()
@@ -478,7 +557,7 @@ describe("hatch pattern geometry", () => {
 describe("hatch as an object", () => {
   it("picks anywhere inside the area, not just on its boundary", () => {
     const h = createHarness({ entities: [SQUARE] })
-    h.command("HATCH").option("Select objects").click(p(50, 0)).enter()
+    h.command("HATCH").option("Select objects").click(p(50, 0)).enter().enter()
     const hatch = hatchOnly(h.entities())
 
     // The command has already dropped back to Select.
@@ -503,7 +582,6 @@ describe("hatch as an object", () => {
   it("survives a save and reload", () => {
     const h = createHarness({ entities: [SQUARE] })
     h.command("HATCH")
-      .option("Select objects")
       .option("Properties")
       .type("ANSI31")
       .enter()
@@ -511,7 +589,9 @@ describe("hatch as an object", () => {
       .enter()
       .type("30")
       .enter()
+      .option("Select objects")
       .click(p(50, 0))
+      .enter()
       .enter()
 
     const parsed = parseDrawingFile(
@@ -535,7 +615,7 @@ describe("hatch as an object", () => {
 
   it("shows its pattern in the Properties palette, scale and angle editable", () => {
     const h = createHarness({ entities: [SQUARE] })
-    h.command("HATCH").option("Select objects").click(p(50, 0)).enter()
+    h.command("HATCH").option("Select objects").click(p(50, 0)).enter().enter()
     h.click(p(50, 50))
 
     const rows = h.state().properties.info?.groups[0].rows ?? []

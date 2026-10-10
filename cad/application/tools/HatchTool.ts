@@ -25,7 +25,6 @@ import {
   isSolidHatchPattern,
   resolveHatchPatternId,
 } from "../../domain/hatchPatterns"
-import { parseNumber } from "../../domain/units"
 import { ucsAngleToWorld } from "../../domain/ucs"
 import { AddEntityCommand } from "../commands/entityCommands"
 import { DynamicInputSession } from "../input/DynamicInput"
@@ -34,12 +33,15 @@ import { entityScenePrimitive } from "../SceneBuilder"
 import { ScenePrimitive } from "../../scene/types"
 import { THEME } from "../../scene/theme"
 import { boxSelect, buildSelectionBoxOverlay } from "./boxSelection"
+import type { PromptId } from "../../locales/types"
 import {
   CommandOption,
   CommandOptionOutcome,
   PointerInput,
+  QuestionInput,
   Tool,
   ToolContext,
+  ToolQuestion,
 } from "./Tool"
 import { withCurrentProperties } from "./currentProperties"
 
@@ -50,8 +52,12 @@ const DRAG_THRESHOLD_PX = 4
 const PREVIEW_ID: EntityId = "__hatch_preview__"
 
 /**
- * AutoCAD's HATCH. Its two boundary routes are the two the prompt offers, in
- * the same order:
+ * AutoCAD's HATCH, at the command line as -HATCH asks it (WHY: the Hatch
+ * Creation tab and the Hatch and Gradient dialog, where HATCH sets its
+ * properties, do not exist here; -HATCH is the command line's own): `Current
+ * hatch pattern:  ANSI31`, then `Specify internal point or [Properties/Select
+ * objects]:` until Enter makes the hatch. Its two boundary routes are the two
+ * the prompt offers, in the same order:
  *
  * - **Pick internal point** (the default): "Determines a boundary from existing
  *   objects that form an enclosed area around the specified point" — so an area
@@ -80,8 +86,6 @@ export class HatchTool implements Tool {
   private picked: HatchLoop[] = []
   /** The plane the traced boundaries lie in, fixed by the first one found. */
   private pickedPlane: number | null = null
-  /** Which boundary prompt Properties returns to. */
-  private route: "point" | "select" = "point"
 
   // HPNAME / HPSCALE / HPANG: session defaults, so the next hatch starts from
   // the settings of the last one.
@@ -188,31 +192,88 @@ export class HatchTool implements Tool {
     ctx.requestRender()
   }
 
+  /** Enter at Select objects closes the set and goes back to the internal point. */
   onEnter(ctx: ToolContext): boolean {
     if (this.state.phase !== "select") return false
-    if (this.allLoops(ctx).length === 0) return false
-    this.commit(ctx)
+    this.enterPoint(ctx)
+    ctx.requestRender()
     return true
   }
 
-  commandOptions(): readonly CommandOption[] {
-    if (this.state.phase === "point") {
-      return [{ id: "Properties" }, { id: "Select objects" }]
+  question(): PromptId | ToolQuestion {
+    switch (this.state.phase) {
+      case "point":
+        return "specifyInternalPointOr"
+      case "select":
+      case "pressed":
+      case "boxing":
+        return "selectObjects"
+      case "pattern":
+        // SOLID is offered as the keyword that names it (`<Solid>`).
+        return isSolidHatchPattern(this.patternId)
+          ? "enterPatternNameOr"
+          : { id: "enterPatternNameOr", enter: { name: this.patternId } }
+      case "scale":
+        return { id: "patternScale", enter: this.patternScale }
+      case "angle":
+        return {
+          id: "patternAngle",
+          enter: { angle: (this.patternAngle * 180) / Math.PI },
+        }
     }
-    return this.state.phase === "select" ? [{ id: "Properties" }] : []
+  }
+
+  defaultOption(): string | null {
+    return this.state.phase === "pattern" && isSolidHatchPattern(this.patternId)
+      ? "Solid"
+      : null
+  }
+
+  /** As AutoCAD 2023's console refuses -HATCH's answers. */
+  takes(): QuestionInput | null {
+    switch (this.state.phase) {
+      case "point":
+        return "point2d"
+      case "select":
+      case "pressed":
+      case "boxing":
+        return "wholeObjects"
+      case "scale":
+        return { refusal: "requiresDistanceOrNumberX" }
+      case "angle":
+        return {
+          refusal: "requiresAngle",
+          values: { points: "two", keyword: "no" },
+        }
+      case "pattern":
+        return null
+    }
+  }
+
+  commandOptions(): readonly CommandOption[] {
+    switch (this.state.phase) {
+      case "point":
+        return [{ id: "Properties" }, { id: "Select objects" }]
+      case "pattern":
+        return [{ id: "?" }, { id: "Solid" }]
+      default:
+        return []
+    }
   }
 
   invokeOption(id: string, ctx: ToolContext): CommandOptionOutcome {
-    if (this.state.phase !== "point" && this.state.phase !== "select") {
-      return "unhandled"
+    if (this.state.phase === "pattern") {
+      if (id === "?") this.listPatterns(ctx)
+      else if (id === "Solid") this.setPattern(SOLID, ctx)
+      else return "unhandled"
+      return "continue"
     }
+    if (this.state.phase !== "point") return "unhandled"
     switch (id) {
       case "Properties":
         this.enterPattern(ctx)
         return "continue"
       case "Select objects":
-        if (this.state.phase !== "point") return "unhandled"
-        this.route = "select"
         this.enterSelect(ctx)
         return "continue"
       default:
@@ -308,6 +369,8 @@ export class HatchTool implements Tool {
    * a point that looks enclosed but is not needs an answer.
    */
   private addInternalPoint(point: Vec2, ctx: ToolContext): void {
+    // What -HATCH says while it gathers the boundary set and traces.
+    for (const id of ANALYSIS_MESSAGES) ctx.report(ctx.text.message(id))
     const candidates = this.boundarySet(ctx).filter(
       (e) => isLevel(e) && readsInPlan(e) && BOUNDARY_TYPES.has(e.type)
     )
@@ -429,18 +492,15 @@ export class HatchTool implements Tool {
     this.preview = loops.length > 0 ? this.build(loops, ctx, PREVIEW_ID) : null
   }
 
-  /** Back to whichever boundary prompt Properties was invoked from. */
-  private enterRoute(ctx: ToolContext): void {
-    if (this.route === "select") this.enterSelect(ctx)
-    else this.enterPoint(ctx)
-  }
-
+  /** The main prompt, after the pattern it will use. */
   private enterPoint(ctx: ToolContext): void {
     this.state = { phase: "point" }
-    this.route = "point"
     this.refreshPreview(ctx)
+    ctx.report(
+      ctx.text.message("currentHatchPattern", { name: this.patternId })
+    )
     ctx.dynamicInput.open({
-      fields: [{ id: "point", prompt: "internalPoint", kind: "coordinate" }],
+      fields: [{ id: "point", kind: "coordinate" }],
       commit: () => {},
       commitRaw: (commitCtx) => {
         const typed = commitCtx.dynamicInput.getText("point").trim()
@@ -456,7 +516,9 @@ export class HatchTool implements Tool {
           ucs: commitCtx.ucs,
           elevation: commitCtx.elevation,
         })
-        if (point) this.addInternalPoint(point, commitCtx)
+        // What reads as no point is refused, as AutoCAD's prompt refuses it.
+        if (!point) return false
+        this.addInternalPoint(point, commitCtx)
         return true
       },
     })
@@ -468,10 +530,9 @@ export class HatchTool implements Tool {
       phase: "select",
       hover: this.state.phase === "select" ? this.state.hover : null,
     }
-    this.route = "select"
     this.refreshPreview(ctx)
-    // A keyword-only prompt: no field means the canvas keeps focus, so Enter
-    // reaches `onEnter` to close the boundary set.
+    // No field: the canvas keeps focus, so Enter reaches `onEnter` to close
+    // the boundary set.
     ctx.dynamicInput.open({ fields: [], commit: () => {} })
     ctx.dynamicInput.setPosition(this.lastScreen ?? { x: 0, y: 0 })
   }
@@ -483,36 +544,47 @@ export class HatchTool implements Tool {
       commit: () => {},
       commitRaw: (commitCtx) => {
         const typed = commitCtx.dynamicInput.getText("pattern").trim()
-        if (typed === "?") {
-          commitCtx.report(
-            HATCH_PATTERNS.map((p) =>
-              commitCtx.text.hatchPatternListing(p.id)
-            ).join("\n")
-          )
-          this.enterPattern(commitCtx)
+        // The keywords are read here: the box holds a name, not a keyword.
+        const keyword = commitCtx.text.resolveKeyword(typed, ["?", "Solid"])
+        if (keyword === "?") {
+          this.listPatterns(commitCtx)
           return true
         }
         const resolved =
-          typed.length === 0 ? this.patternId : resolveHatchPatternId(typed)
+          keyword === "Solid"
+            ? SOLID
+            : typed.length === 0
+              ? this.patternId
+              : resolveHatchPatternId(typed)
         if (!resolved) {
           commitCtx.report(
-            commitCtx.text.message("hatchPatternUnknown", { name: typed }),
+            commitCtx.text.message("hatchPatternUnknown"),
             "error"
           )
           this.enterPattern(commitCtx)
           return true
         }
-        this.patternId = resolved
-        // A solid fill has no spacing or direction to ask about.
-        if (isSolidHatchPattern(resolved)) this.enterRoute(commitCtx)
-        else this.enterScale(commitCtx)
+        this.setPattern(resolved, commitCtx)
         return true
       },
     }
     ctx.dynamicInput.open(session)
-    ctx.dynamicInput.setText("pattern", this.patternId)
     ctx.dynamicInput.setPosition(this.lastScreen ?? { x: 0, y: 0 })
     ctx.requestRender()
+  }
+
+  private listPatterns(ctx: ToolContext): void {
+    ctx.report(
+      HATCH_PATTERNS.map((p) => ctx.text.hatchPatternListing(p.id)).join("\n")
+    )
+    this.enterPattern(ctx)
+  }
+
+  private setPattern(id: HatchPatternId, ctx: ToolContext): void {
+    this.patternId = id
+    // A solid fill has no spacing or direction to ask about.
+    if (isSolidHatchPattern(id)) this.enterPoint(ctx)
+    else this.enterScale(ctx)
   }
 
   private enterScale(ctx: ToolContext): void {
@@ -520,19 +592,21 @@ export class HatchTool implements Tool {
     const session: DynamicInputSession = {
       fields: [{ id: "scale", prompt: "patternScale", kind: "number" }],
       commit: (values, commitCtx) => {
-        if (values.scale > 0) this.patternScale = values.scale
+        if (!(values.scale > 0)) {
+          commitCtx.report(commitCtx.text.message("positiveNonzero"), "error")
+          return
+        }
+        this.patternScale = values.scale
         this.enterAngle(commitCtx)
       },
       commitRaw: (commitCtx) => {
         // Enter with nothing typed keeps the current scale, the `<default>`.
-        const typed = parseNumber(commitCtx.dynamicInput.getText("scale"))
-        if (typed !== null && typed > 0) this.patternScale = typed
+        if (commitCtx.dynamicInput.hasTypedText()) return false
         this.enterAngle(commitCtx)
         return true
       },
     }
     ctx.dynamicInput.open(session)
-    ctx.dynamicInput.setDefault("scale", this.patternScale)
     ctx.dynamicInput.setPosition(this.lastScreen ?? { x: 0, y: 0 })
     ctx.requestRender()
   }
@@ -543,21 +617,30 @@ export class HatchTool implements Tool {
       fields: [{ id: "angle", prompt: "patternAngle", kind: "angle" }],
       commit: (values, commitCtx) => {
         this.patternAngle = (values.angle * Math.PI) / 180
-        this.enterRoute(commitCtx)
+        this.enterPoint(commitCtx)
       },
       commitRaw: (commitCtx) => {
-        const typed = parseNumber(commitCtx.dynamicInput.getText("angle"))
-        if (typed !== null) this.patternAngle = (typed * Math.PI) / 180
-        this.enterRoute(commitCtx)
+        // Enter with nothing typed keeps the current angle, the `<default>`.
+        if (commitCtx.dynamicInput.hasTypedText()) return false
+        this.enterPoint(commitCtx)
         return true
       },
     }
     ctx.dynamicInput.open(session)
-    ctx.dynamicInput.setDefault("angle", (this.patternAngle * 180) / Math.PI)
     ctx.dynamicInput.setPosition(this.lastScreen ?? { x: 0, y: 0 })
     ctx.requestRender()
   }
 }
+
+const SOLID: HatchPatternId = "SOLID"
+
+/** -HATCH's report of a pick, in order, before the trace's outcome. */
+const ANALYSIS_MESSAGES = [
+  "selectingEverything",
+  "selectingEverythingVisible",
+  "analyzingSelectedData",
+  "analyzingInternalIslands",
+] as const
 
 /** Overlap test in world coordinates, for the visible boundary set. */
 function overlaps(a: Bounds, b: Bounds): boolean {

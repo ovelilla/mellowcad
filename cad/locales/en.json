@@ -478,7 +478,9 @@
       },
       "HATCH": {
         "Properties": "Properties",
-        "Select objects": "Select objects"
+        "Select objects": "Select objects",
+        "?": "?",
+        "Solid": "Solid"
       },
       "INSERT": { "Scale": "Scale", "Rotate": "Rotate" },
       "ATTDEF": {
@@ -716,10 +718,9 @@
       "rectangleElevation": "Specify the elevation for rectangles",
       "rectangleThickness": "Specify thickness for rectangles",
       "numberOfSides": "Number of sides",
-      "internalPoint": "Pick internal point",
       "patternName": "Enter a pattern name",
-      "patternScale": "Specify a scale for pattern",
-      "patternAngle": "Specify an angle for pattern",
+      "patternScale": "Specify a scale for the pattern",
+      "patternAngle": "Specify an angle for the pattern",
       "blockName": "Enter block name or [?]",
       "insertionBasePoint": "Specify insertion base point",
       "insertionPoint": "Specify insertion point",
@@ -923,7 +924,9 @@
       "enterNumberOfItemsAlongPath": "Enter number of items along path",
       "specifyDistanceBetweenItemsAlongPath": "Specify the distance between items along path",
       "specifyNumberOfItemsOr": "Specify number of items or",
-      "alignArrayedItemsToPath": "Align arrayed items to path?"
+      "alignArrayedItemsToPath": "Align arrayed items to path?",
+      "specifyInternalPointOr": "Specify internal point or",
+      "enterPatternNameOr": "Enter a pattern name or"
     },
     "format": {
       "idle": "Command",
@@ -973,7 +976,7 @@
       "blocksPurged": "{count, plural, one {# block purged.} other {# blocks purged.}}",
       "noBlocks": "No blocks defined.",
       "blockUndefined": "Block \"{name}\" is not defined.",
-      "hatchPatternUnknown": "Unknown hatch pattern \"{name}\".",
+      "hatchPatternUnknown": "Unknown pattern name.",
       "hatchTooDense": "Hatch spacing too dense, or dash size too small.",
       "hatchNoBoundary": "Valid hatch boundary not found.",
       "textStyleUndefined": "Text style \"{name}\" is not defined.",
@@ -1035,7 +1038,13 @@
       "requiresPositiveInteger": "Requires a positive nonzero integer or option keyword.",
       "maximumItems": "Maximum items = {count}",
       "pathCurveIsArrayed": "Objects selected to be arrayed may not be selected as path curve.",
-      "filteredOut": "{count, plural, one {1 was filtered out} other {# were filtered out}}"
+      "filteredOut": "{count, plural, one {1 was filtered out} other {# were filtered out}}",
+      "currentHatchPattern": "Current hatch pattern:  {name}",
+      "selectingEverything": "Selecting everything...",
+      "selectingEverythingVisible": "Selecting everything visible...",
+      "analyzingSelectedData": "Analyzing the selected data...",
+      "analyzingInternalIslands": "Analyzing internal islands...",
+      "requiresDistanceOrNumberX": "Requires a distance (or numberX)."
     },
     "feedback": {
       "snap": {

@@ -903,7 +903,9 @@ export const es: EngineLocale = {
       },
       "HATCH": {
         "Properties": "Propiedades",
-        "Select objects": "Designar objetos"
+        "Select objects": "Designar objetos",
+        "?": "?",
+        "Solid": "Sólido"
       },
       "INSERT": {
         "Scale": "Escala",
@@ -1199,10 +1201,9 @@ export const es: EngineLocale = {
       "rectangleElevation": "Precise elevación para rectángulos",
       "rectangleThickness": "Precise Alt-objeto para rectángulos",
       "numberOfSides": "Número de lados",
-      "internalPoint": "Precise punto interno",
       "patternName": "Indique nombre de patrón",
-      "patternScale": "Precise escala de patrón",
-      "patternAngle": "Precise ángulo de patrón",
+      "patternScale": "Precise escala del patrón",
+      "patternAngle": "Precise ángulo del patrón",
       "blockName": "Indique nombre de bloque o [?]",
       "insertionBasePoint": "Precise punto base de inserción",
       "insertionPoint": "Precise punto de inserción",
@@ -1406,7 +1407,9 @@ export const es: EngineLocale = {
       "enterNumberOfItemsAlongPath": "Introduzca el número de elementos a lo largo del camino",
       "specifyDistanceBetweenItemsAlongPath": "Especifique la distancia entre los elementos a lo largo del camino",
       "specifyNumberOfItemsOr": "Introduzca el número de elementos o",
-      "alignArrayedItemsToPath": "¿Alinear elementos de matriz con el camino?"
+      "alignArrayedItemsToPath": "¿Alinear elementos de matriz con el camino?",
+      "specifyInternalPointOr": "Precise punto interno o",
+      "enterPatternNameOr": "Indique nombre de patrón o"
     },
     "format": {
       "idle": "Comando",
@@ -1672,13 +1675,7 @@ export const es: EngineLocale = {
         ],
         "\" no está definido."
       ],
-      "hatchPatternUnknown": [
-        "Patrón de sombreado \"",
-        [
-          "name"
-        ],
-        "\" desconocido."
-      ],
+      "hatchPatternUnknown": "Nombre de patrón desconocido.",
       "hatchTooDense": "El intervalo de sombreado es demasiado denso o el trazo demasiado pequeño.",
       "hatchNoBoundary": "No se ha encontrado un contorno de sombreado válido.",
       "textStyleUndefined": [
@@ -2223,7 +2220,18 @@ export const es: EngineLocale = {
             ]
           }
         ]
-      ]
+      ],
+      "currentHatchPattern": [
+        "Patrón de sombreado actual:  ",
+        [
+          "name"
+        ]
+      ],
+      "selectingEverything": "Seleccionándolo todo...",
+      "selectingEverythingVisible": "Designando todo lo visible...",
+      "analyzingSelectedData": "Analizando los datos designados...",
+      "analyzingInternalIslands": "Analizando islas internas...",
+      "requiresDistanceOrNumberX": "Requiere una distancia (o un factor X)."
     },
     "feedback": {
       "snap": {

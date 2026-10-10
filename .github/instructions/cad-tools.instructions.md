@@ -287,7 +287,7 @@ sub-prompt of its own (OFFSET's Erase and Layer: `Erase source object after offs
 <No>:`) is a phase of the tool whose `question()` names it, with that answer as `defaultOption()`,
 never a chip toggled in place. `invokeOption(id)` switches on ids and returns
 `"continue"` or `"end"`. The word, its abbreviation (its capitals: `Close` → `C`, `desHacer` →
-`H`; digits count as capitals, so CIRCLE's `3P` is typed whole) belong to the command language and are resolved by the runtime
+`H`; digits count as capitals, so CIRCLE's `3P` is typed whole; `?`, the listing keyword, is its own) belong to the command language and are resolved by the runtime
 from `commands.keywords.<NAME>`; comparing `key.toLowerCase()` with a letter would break the day
 the language changes. Every keyword a tool offers must be in its command's table. A keyword one
 prompt spells otherwise — AutoCAD's `initget` is per prompt, so Spanish FILLET's `[RAdio]` is

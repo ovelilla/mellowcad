@@ -36,8 +36,10 @@ function isCapital(char: string): boolean {
 /**
  * The abbreviation of a keyword: its first run of capital letters, digits
  * counting as capitals — CIRCLE's `3P` and `2P` are typed whole, as in AutoCAD.
+ * `?`, AutoCAD's listing keyword, is itself.
  */
 export function abbreviationOf(word: string): string {
+  if (word === "?") return word
   const chars = [...word]
   const required = (char: string) => isCapital(char) || isDigit(char)
   const start = chars.findIndex(required)

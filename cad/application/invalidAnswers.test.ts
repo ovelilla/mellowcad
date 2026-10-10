@@ -224,6 +224,21 @@ describe("a wrong answer mid-command", () => {
     )
   })
 
+  it("refuses at -HATCH's prompts as AutoCAD's console does", () => {
+    const cad = createHarness({ entities: twoLines() })
+    cad.command("HATCH")
+    answerLine(cad, "FOO")
+    expect(cad.commandLog().at(-1)).toBe("2D point or option keyword required.")
+    cad.option("Properties").enter()
+    answerLine(cad, "FOO")
+    expect(cad.commandLog().at(-1)).toBe("Requires a distance (or numberX).")
+    cad.enter()
+    answerLine(cad, "FOO")
+    expect(cad.commandLog().at(-1)).toBe(
+      "Requires valid numeric angle or two points."
+    )
+  })
+
   it("leaves U to TRIM's prompt until there is something to undo", () => {
     const cad = createHarness({
       entities: [...twoLines(), lineOf(p(50, -50), p(50, 50), { id: "C" })],

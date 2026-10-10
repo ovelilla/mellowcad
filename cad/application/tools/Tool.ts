@@ -86,8 +86,9 @@ export interface CommandOption {
  * keywords as AutoCAD does: a length (`Specify radius of circle or [Diameter]
  * <10.0000>:`), an angle (`{ angle: 0 }`) or a point (`<0.0000, 0.0000,
  * 0.0000>`), which the runtime formats in the drawing's units, a count
- * (`Enter number of sides <4>:`), or a phrase of `commands.prompts` (`<use
- * first point as displacement>`).
+ * (`Enter number of sides <4>:`), a phrase of `commands.prompts` (`<use
+ * first point as displacement>`), or a name the drawing holds, as it is
+ * (HATCH's `<ANSI31>`).
  */
 export interface ToolQuestion {
   readonly id: PromptId
@@ -95,6 +96,7 @@ export interface ToolQuestion {
     | number
     | { readonly angle: number }
     | { readonly count: number }
+    | { readonly name: string }
     | Vec3
     | PromptId
 }

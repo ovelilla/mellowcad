@@ -870,10 +870,9 @@ export const en: EngineCatalog = {
       "rectangleElevation": "Specify the elevation for rectangles",
       "rectangleThickness": "Specify thickness for rectangles",
       "numberOfSides": "Number of sides",
-      "internalPoint": "Pick internal point",
       "patternName": "Enter a pattern name",
-      "patternScale": "Specify a scale for pattern",
-      "patternAngle": "Specify an angle for pattern",
+      "patternScale": "Specify a scale for the pattern",
+      "patternAngle": "Specify an angle for the pattern",
       "blockName": "Enter block name or [?]",
       "insertionBasePoint": "Specify insertion base point",
       "insertionPoint": "Specify insertion point",
@@ -1077,7 +1076,9 @@ export const en: EngineCatalog = {
       "enterNumberOfItemsAlongPath": "Enter number of items along path",
       "specifyDistanceBetweenItemsAlongPath": "Specify the distance between items along path",
       "specifyNumberOfItemsOr": "Specify number of items or",
-      "alignArrayedItemsToPath": "Align arrayed items to path?"
+      "alignArrayedItemsToPath": "Align arrayed items to path?",
+      "specifyInternalPointOr": "Specify internal point or",
+      "enterPatternNameOr": "Enter a pattern name or"
     },
     "format": {
       "idle": "Command",
@@ -1344,13 +1345,7 @@ export const en: EngineCatalog = {
         ],
         "\" is not defined."
       ],
-      "hatchPatternUnknown": [
-        "Unknown hatch pattern \"",
-        [
-          "name"
-        ],
-        "\"."
-      ],
+      "hatchPatternUnknown": "Unknown pattern name.",
       "hatchTooDense": "Hatch spacing too dense, or dash size too small.",
       "hatchNoBoundary": "Valid hatch boundary not found.",
       "textStyleUndefined": [
@@ -1895,7 +1890,18 @@ export const en: EngineCatalog = {
             ]
           }
         ]
-      ]
+      ],
+      "currentHatchPattern": [
+        "Current hatch pattern:  ",
+        [
+          "name"
+        ]
+      ],
+      "selectingEverything": "Selecting everything...",
+      "selectingEverythingVisible": "Selecting everything visible...",
+      "analyzingSelectedData": "Analyzing the selected data...",
+      "analyzingInternalIslands": "Analyzing internal islands...",
+      "requiresDistanceOrNumberX": "Requires a distance (or numberX)."
     },
     "feedback": {
       "snap": {

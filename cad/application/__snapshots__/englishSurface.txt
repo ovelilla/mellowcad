@@ -1272,58 +1272,92 @@ lweight "Lineweight" LW
   properties: -
   cycling: -
 > HATCH
-  prompt: HATCH [Properties/Select objects]:
-  asks: "Pick internal point"
+  prompt: HATCH Specify internal point or [Properties/Select objects]:
+  asks: ""
+  tip: Specify internal point or
   dyn: "X,Y"=""||*
   options: [P] Properties, [S] Select objects
   command| H HATCH
+  info| Current hatch pattern:  ANSI31
 > P
-  prompt: HATCH:
+  prompt: HATCH Enter a pattern name or [?/Solid] <ANSI31>:
   asks: "Enter a pattern name"
-  dyn: "Enter a pattern name"="ANSI31"||*
-  options: -
+  tip: Enter a pattern name or
+  dyn: "Enter a pattern name"=""||*
+  options: [?] ?, [S] Solid
+  prompt| Specify internal point or [Properties/Select objects]: P
 > ?
   dyn: "Enter a pattern name"="?"||*
 > enter
-  dyn: "Enter a pattern name"="ANSI31"||*
+  dyn: "Enter a pattern name"=""||*
+  prompt| Enter a pattern name or [?/Solid] <ANSI31>: ?
   info| SOLID  Solid fill
         ANSI31  ANSI Iron, Brick, Stone masonry
 > unknown pattern
   dyn: "Enter a pattern name"="NOPE"||*
 > enter
-  dyn: "Enter a pattern name"="ANSI31"||*
-  error| Unknown hatch pattern "NOPE".
+  dyn: "Enter a pattern name"=""||*
+  prompt| Enter a pattern name or [?/Solid] <ANSI31>: NOPE
+  error| Unknown pattern name.
 > ANSI31
+  dyn: "Enter a pattern name"="ANSI31"||*
 > enter
-  asks: "Specify a scale for pattern"
-  dyn: "Specify a scale for pattern"=""|1|*
+  prompt: HATCH Specify a scale for the pattern <1.00>:
+  asks: "Specify a scale for the pattern"
+  tip: Specify a scale for the pattern
+  dyn: "Specify a scale for the pattern"=""||*
+  options: -
+  prompt| Enter a pattern name or [?/Solid] <ANSI31>: ANSI31
 > scale
-  dyn: "Specify a scale for pattern"="0.0001"|1|*
+  dyn: "Specify a scale for the pattern"="0.0001"||*
 > enter
-  asks: "Specify an angle for pattern"
-  dyn: "Specify an angle for pattern"=""|0.00|°*
+  prompt: HATCH Specify an angle for the pattern <0.00>:
+  asks: "Specify an angle for the pattern"
+  tip: Specify an angle for the pattern
+  dyn: "Specify an angle for the pattern"=""||°*
+  prompt| Specify a scale for the pattern <1.00>: 0.0001
 > angle
-  dyn: "Specify an angle for pattern"="0"|0.00|°*
+  dyn: "Specify an angle for the pattern"="0"||°*
 > enter
-  prompt: HATCH [Properties/Select objects]:
-  asks: "Pick internal point"
+  prompt: HATCH Specify internal point or [Properties/Select objects]:
+  asks: ""
+  tip: Specify internal point or
   dyn: "X,Y"=""||*
   options: [P] Properties, [S] Select objects
+  prompt| Specify an angle for the pattern <0.00>: 0
+  info| Current hatch pattern:  ANSI31
 > pick inside
+  prompt| Specify internal point or [Properties/Select objects]:
+  info| Selecting everything...
+  info| Selecting everything visible...
+  info| Analyzing the selected data...
+  info| Analyzing internal islands...
+  info| Current hatch pattern:  ANSI31
 > pick outside
+  prompt| Specify internal point or [Properties/Select objects]:
+  info| Selecting everything...
+  info| Selecting everything visible...
+  info| Analyzing the selected data...
+  info| Analyzing internal islands...
   error| Valid hatch boundary not found.
+  info| Current hatch pattern:  ANSI31
 > S
-  prompt: HATCH [Properties]:
+  prompt: HATCH Select objects:
   asks: 
+  tip: Select objects:
   dyn: 
-  options: [P] Properties
-> pick object
-> enter
-  prompt: Command:
-  asks: -
-  dyn: -
   options: -
-  error| Hatch spacing too dense, or dash size too small.
+  prompt| Specify internal point or [Properties/Select objects]: S
+> pick object
+  prompt| Select objects:
+> enter
+  prompt: HATCH Specify internal point or [Properties/Select objects]:
+  asks: ""
+  tip: Specify internal point or
+  dyn: "X,Y"=""||*
+  options: [P] Properties, [S] Select objects
+  prompt| Select objects:
+  info| Current hatch pattern:  ANSI31
 
 ## BLOCK
 > start
