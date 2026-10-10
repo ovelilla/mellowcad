@@ -89,7 +89,7 @@ export class CadEngine {
   private readonly scope: HTMLElement | null
 
   private dpr = 1
-  private framePending = false
+  private frame: number | null = null
   private disposed = false
   private activePointerId: number | null = null
   /** Always true for an engine that owns the document; see `scope`. */
@@ -128,7 +128,7 @@ export class CadEngine {
     )
 
     this.attachEvents()
-    this.resizeObserver = new ResizeObserver(() => this.syncSize())
+    this.resizeObserver = new ResizeObserver(this.onResize)
     this.resizeObserver.observe(canvas)
     this.syncSize()
   }
@@ -680,13 +680,26 @@ export class CadEngine {
   }
 
   private scheduleFrame(): void {
-    if (this.framePending || this.disposed) return
-    this.framePending = true
-    requestAnimationFrame(() => {
-      this.framePending = false
-      if (this.disposed) return
-      this.presenter.draw(this.ctx, this.runtime.buildScene(), this.dpr)
+    if (this.frame !== null || this.disposed) return
+    this.frame = requestAnimationFrame(() => {
+      this.frame = null
+      this.draw()
     })
+  }
+
+  private draw(): void {
+    if (this.disposed) return
+    this.presenter.draw(this.ctx, this.runtime.buildScene(), this.dpr)
+  }
+
+  // Resizing the backing store clears it, and ResizeObserver runs after layout
+  // but before paint: left to the next animation frame, the redraw lands one
+  // paint late and every resize of the side panel flashes an empty canvas.
+  private onResize = (): void => {
+    this.syncSize()
+    if (this.frame !== null) cancelAnimationFrame(this.frame)
+    this.frame = null
+    this.draw()
   }
 
   private syncSize(): void {
