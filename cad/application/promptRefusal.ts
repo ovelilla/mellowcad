@@ -63,6 +63,7 @@ export function promptRefusal(
     case "objects":
     case "wholeObjects":
     case "crossingObjects":
+    case "oneObject":
       return [
         text.message("invalidSelection"),
         text.message("expectsPointOr", {

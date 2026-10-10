@@ -2814,30 +2814,35 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
   properties: -
   cycling: -
 > BREAK
-  prompt: BREAK:
+  prompt: BREAK Select object:
   command| BR BREAK
 > pick
-  prompt: BREAK [First point]:
-  asks: 
+  prompt: BREAK Specify second break point or [First point]:
+  asks: ""
   options: [F] First point
+  prompt| Select object:
 > F
-  prompt: BREAK:
+  prompt: BREAK Specify first break point:
   options: -
+  prompt| Specify second break point or [First point]: F
 > first
-  prompt: BREAK [First point]:
-  options: [F] First point
+  prompt: BREAK Specify second break point:
+  prompt| Specify first break point:
 > second
   prompt: Command:
   asks: -
-  options: -
+  prompt| Specify second break point:
 > BREAKATPOINT
-  prompt: BREAKATPOINT:
+  prompt: BREAKATPOINT Select object:
   command| BREAKATPOINT
 > pick
-  asks: 
+  prompt: BREAKATPOINT Specify break point:
+  asks: ""
+  prompt| Select object:
 > point
   prompt: Command:
   asks: -
+  prompt| Specify break point:
 
 ## MATCHPROP
 > start

@@ -10,6 +10,7 @@ import {
   p,
   polylineOf,
 } from "../../../test/builders"
+import { es } from "../../locales/es"
 
 /**
  * BREAK removes the piece of an object between two picked points;
@@ -95,6 +96,84 @@ describe("BREAK", () => {
     expect(line.end).toBeCloseToPoint(p(200, 0))
   })
 
+  it("asks AutoCAD's questions and writes them with their answers", () => {
+    const cad = createHarness({
+      entities: [lineOf(p(-200, 0), p(200, 0))],
+    })
+
+    cad.command("BREAK")
+    expect(cad.state().commandLine.prompt).toBe("BREAK Select object:")
+    cad.click(p(0, 100))
+    expect(cad.commandLog().at(-1)).toBe("No object found")
+    cad.click(p(-50, 0))
+    expect(cad.state().commandLine.prompt).toBe(
+      "BREAK Specify second break point or [First point]:"
+    )
+    cad.option("First point")
+    expect(cad.state().commandLine.prompt).toBe(
+      "BREAK Specify first break point:"
+    )
+    cad.click(p(0, 0))
+    expect(cad.state().commandLine.prompt).toBe(
+      "BREAK Specify second break point:"
+    )
+    expect(cad.optionIds()).toEqual([])
+    cad.type("100,0").enter()
+
+    expect(cad.commandLog()).toEqual([
+      "BREAK",
+      "Select object:",
+      "No object found",
+      "Select object:",
+      "Specify second break point or [First point]: F",
+      "Specify first break point:",
+      "Specify second break point: 100,0",
+    ])
+    const lines = cad.entities() as LineEntity[]
+    expect(lines[1].start).toBeCloseToPoint(p(100, 0))
+  })
+
+  it("splits at the first point with @ at the second", () => {
+    const cad = createHarness({
+      entities: [lineOf(p(-200, 0), p(200, 0))],
+    })
+
+    cad.command("BREAK").click(p(-50, 0)).type("@").enter()
+
+    const lines = cad.entities() as LineEntity[]
+    expect(lines).toHaveLength(2)
+    expect(lines[0].end).toBeCloseToPoint(p(-50, 0))
+    expect(lines[1].start).toBeCloseToPoint(p(-50, 0))
+  })
+
+  it("asks in the words of Autodesk's Spanish table", () => {
+    const cad = createHarness({
+      locale: es,
+      entities: [lineOf(p(-200, 0), p(200, 0))],
+    })
+
+    cad.command("PARTE")
+    expect(cad.state().commandLine.prompt).toBe("PARTE Designe objeto:")
+    cad.click(p(0, 100))
+    expect(cad.commandLog().at(-1)).toBe("No se ha encontrado ningún objeto")
+    cad.click(p(-50, 0))
+    expect(cad.state().commandLine.prompt).toBe(
+      "PARTE Precise segundo punto de ruptura o [Primer punto]:"
+    )
+    cad.option("First point")
+    expect(cad.state().commandLine.prompt).toBe(
+      "PARTE Precise primer punto de ruptura:"
+    )
+    cad.click(p(0, 0))
+    expect(cad.state().commandLine.prompt).toBe(
+      "PARTE Precise segundo punto de ruptura:"
+    )
+    cad.escape().command("PARTIRENPUNTO").click(p(-50, 0))
+    expect(cad.state().commandLine.prompt).toBe(
+      "PARTIRENPUNTO Especifique el punto de interrupción:"
+    )
+  })
+
   it("re-specifies the first point with the First point keyword", () => {
     const cad = createHarness({
       entities: [lineOf(p(-200, 0), p(200, 0))],
@@ -170,8 +249,13 @@ describe("BREAKATPOINT", () => {
       entities: [lineOf(p(-200, 0), p(200, 0))],
     })
 
-    cad.command("BREAKATPOINT").click(p(-100, 0))
+    cad.command("BREAKATPOINT")
+    expect(cad.state().commandLine.prompt).toBe("BREAKATPOINT Select object:")
+    cad.click(p(-100, 0))
 
+    expect(cad.state().commandLine.prompt).toBe(
+      "BREAKATPOINT Specify break point:"
+    )
     expect(cad.optionAbbreviations()).toEqual([])
   })
 

@@ -102,6 +102,11 @@ describe("parseCoordinate", () => {
       )
     })
 
+    it("a bare @ is the last point itself, as @0,0", () => {
+      expect(parseCoordinate("@", FROM_100_100)).toBeCloseToPoint(p(100, 100))
+      expect(parseCoordinate("@", ABSOLUTE)).toBeNull()
+    })
+
     it("# forces the drawing origin even when relative is the default", () => {
       expect(parseCoordinate("#30,0", FROM_100_100)).toBeCloseToPoint(p(30, 0))
     })

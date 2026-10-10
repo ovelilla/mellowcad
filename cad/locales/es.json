@@ -928,7 +928,12 @@
       "selectFirstLineOr": "Designe la primera línea o",
       "selectSecondLineOrApplyCornerOr": "Designe la segunda línea o use la tecla Mayús para aplicar esquina o",
       "specifyFirstChamferDistance": "Precise  primera distancia de chaflán",
-      "specifySecondChamferDistance": "Precise  segunda distancia de chaflán"
+      "specifySecondChamferDistance": "Precise  segunda distancia de chaflán",
+      "selectObject": "Designe objeto",
+      "specifyFirstBreakPoint": "Precise primer punto de ruptura",
+      "specifySecondBreakPointOr": "Precise segundo punto de ruptura o",
+      "specifySecondBreakPoint": "Precise segundo punto de ruptura",
+      "specifyBreakPoint": "Especifique el punto de interrupción"
     },
     "format": {
       "idle": "Comando",
@@ -1034,7 +1039,8 @@
       "invalidOptionKeyword": "Opción no válida.",
       "invalidSelection": "*Designación no válida*",
       "expectsPointOr": "Requiere un punto o {keywords}",
-      "selectionModes": "Ventana/úLTimo/Captura/MArco/Todos/Borde/polígonOV/polígonOC{set, select, crossingObjects {} other {/Grupo}}/Añadir/Eliminar/Múltiple/Previo/desHacer/AUto/úNico{set, select, objects {/Subobjeto/Objeto} other {}}"
+      "selectionModes": "Ventana/úLTimo/Captura/MArco/Todos/Borde/polígonOV/polígonOC{set, select, oneObject {} other {{set, select, crossingObjects {} other {/Grupo}}/Añadir/Eliminar/Múltiple/Previo/desHacer/AUto/úNico{set, select, objects {/Subobjeto/Objeto} other {}}}}",
+      "noObjectFound": "No se ha encontrado ningún objeto"
     },
     "feedback": {
       "snap": {

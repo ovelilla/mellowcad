@@ -107,9 +107,9 @@ export interface ToolQuestion {
  * an angle (`Requires numeric distance, two points, or option keyword.`), a
  * number or a whole one, a keyword (`Invalid option keyword.`), a selection set
  * (`*Invalid selection*` and the selection modes it expects: with sub-objects
- * as MOVE's, of whole objects as MIRROR's and JOIN's, or STRETCH's crossing
- * one), one object picked (`*Invalid selection*` and its keywords), or a
- * command's own refusal (CIRCLE's radius, POLYGON's sides).
+ * as MOVE's, of whole objects as MIRROR's and JOIN's, STRETCH's crossing one,
+ * or BREAK's set of one object), one object picked (`*Invalid selection*` and
+ * its keywords), or a command's own refusal (CIRCLE's radius, POLYGON's sides).
  */
 export type QuestionInput =
   | "point"
@@ -122,6 +122,7 @@ export type QuestionInput =
   | "objects"
   | "wholeObjects"
   | "crossingObjects"
+  | "oneObject"
   | "object"
   | { readonly refusal: MessageId; readonly values?: MessageValues }
 

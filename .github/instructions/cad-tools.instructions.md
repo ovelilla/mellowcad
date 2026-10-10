@@ -119,7 +119,7 @@ a distance and an angle) is a point, a lone distance or angle field that, a numb
 with no box, a point when `wantsSnap()` and a keyword otherwise. Declare what the box cannot tell:
 a single object's pick (`"object"`), a 2D point (ARC's, PLINE's, MIRROR's, ELLIPSE's and POLYGON's
 Edge's later points), a keyword prompt that keeps snaps on, a selection of whole objects (MIRROR,
-JOIN) or STRETCH's crossing one, a count (`"integer"`), and a command's own words (`{ refusal:
+JOIN), STRETCH's crossing one or BREAK's set of one object (`"oneObject"`), a count (`"integer"`), and a command's own words (`{ refusal:
 "requiresRadius" }`; a distance or an angle measured by two points of its own while the tool has a
 base point, `{ refusal: "requiresDistance", values: { points: "two", keyword: "no" } }`). Type
 `FOO` at the prompt in AutoCAD's console before declaring one: the words differ per input

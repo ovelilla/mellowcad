@@ -1054,7 +1054,12 @@ export const en: EngineCatalog = {
       "selectFirstLineOr": "Select first line or",
       "selectSecondLineOrApplyCornerOr": "Select second line or shift-select to apply corner or",
       "specifyFirstChamferDistance": "Specify first chamfer distance",
-      "specifySecondChamferDistance": "Specify second chamfer distance"
+      "specifySecondChamferDistance": "Specify second chamfer distance",
+      "selectObject": "Select object",
+      "specifyFirstBreakPoint": "Specify first break point",
+      "specifySecondBreakPointOr": "Specify second break point or",
+      "specifySecondBreakPoint": "Specify second break point",
+      "specifyBreakPoint": "Specify break point"
     },
     "format": {
       "idle": "Command",
@@ -1831,20 +1836,30 @@ export const en: EngineCatalog = {
           "set",
           1,
           {
-            "crossingObjects": "",
-            "other": "/Group"
-          }
-        ],
-        "/Add/Remove/Multiple/Previous/Undo/AUto/SIngle",
-        [
-          "set",
-          1,
-          {
-            "objects": "/SUbobject/Object",
-            "other": ""
+            "oneObject": "",
+            "other": [
+              [
+                "set",
+                1,
+                {
+                  "crossingObjects": "",
+                  "other": "/Group"
+                }
+              ],
+              "/Add/Remove/Multiple/Previous/Undo/AUto/SIngle",
+              [
+                "set",
+                1,
+                {
+                  "objects": "/SUbobject/Object",
+                  "other": ""
+                }
+              ]
+            ]
           }
         ]
-      ]
+      ],
+      "noObjectFound": "No object found"
     },
     "feedback": {
       "snap": {

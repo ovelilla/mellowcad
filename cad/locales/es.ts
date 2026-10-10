@@ -1369,7 +1369,12 @@ export const es: EngineLocale = {
       "selectFirstLineOr": "Designe la primera línea o",
       "selectSecondLineOrApplyCornerOr": "Designe la segunda línea o use la tecla Mayús para aplicar esquina o",
       "specifyFirstChamferDistance": "Precise  primera distancia de chaflán",
-      "specifySecondChamferDistance": "Precise  segunda distancia de chaflán"
+      "specifySecondChamferDistance": "Precise  segunda distancia de chaflán",
+      "selectObject": "Designe objeto",
+      "specifyFirstBreakPoint": "Precise primer punto de ruptura",
+      "specifySecondBreakPointOr": "Precise segundo punto de ruptura o",
+      "specifySecondBreakPoint": "Precise segundo punto de ruptura",
+      "specifyBreakPoint": "Especifique el punto de interrupción"
     },
     "format": {
       "idle": "Comando",
@@ -2145,20 +2150,30 @@ export const es: EngineLocale = {
           "set",
           1,
           {
-            "crossingObjects": "",
-            "other": "/Grupo"
-          }
-        ],
-        "/Añadir/Eliminar/Múltiple/Previo/desHacer/AUto/úNico",
-        [
-          "set",
-          1,
-          {
-            "objects": "/Subobjeto/Objeto",
-            "other": ""
+            "oneObject": "",
+            "other": [
+              [
+                "set",
+                1,
+                {
+                  "crossingObjects": "",
+                  "other": "/Grupo"
+                }
+              ],
+              "/Añadir/Eliminar/Múltiple/Previo/desHacer/AUto/úNico",
+              [
+                "set",
+                1,
+                {
+                  "objects": "/Subobjeto/Objeto",
+                  "other": ""
+                }
+              ]
+            ]
           }
         ]
-      ]
+      ],
+      "noObjectFound": "No se ha encontrado ningún objeto"
     },
     "feedback": {
       "snap": {

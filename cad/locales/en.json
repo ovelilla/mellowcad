@@ -886,7 +886,12 @@
       "selectFirstLineOr": "Select first line or",
       "selectSecondLineOrApplyCornerOr": "Select second line or shift-select to apply corner or",
       "specifyFirstChamferDistance": "Specify first chamfer distance",
-      "specifySecondChamferDistance": "Specify second chamfer distance"
+      "specifySecondChamferDistance": "Specify second chamfer distance",
+      "selectObject": "Select object",
+      "specifyFirstBreakPoint": "Specify first break point",
+      "specifySecondBreakPointOr": "Specify second break point or",
+      "specifySecondBreakPoint": "Specify second break point",
+      "specifyBreakPoint": "Specify break point"
     },
     "format": {
       "idle": "Command",
@@ -992,7 +997,8 @@
       "invalidOptionKeyword": "Invalid option keyword.",
       "invalidSelection": "*Invalid selection*",
       "expectsPointOr": "Expects a point or {keywords}",
-      "selectionModes": "Window/Last/Crossing/BOX/ALL/Fence/WPolygon/CPolygon{set, select, crossingObjects {} other {/Group}}/Add/Remove/Multiple/Previous/Undo/AUto/SIngle{set, select, objects {/SUbobject/Object} other {}}"
+      "selectionModes": "Window/Last/Crossing/BOX/ALL/Fence/WPolygon/CPolygon{set, select, oneObject {} other {{set, select, crossingObjects {} other {/Group}}/Add/Remove/Multiple/Previous/Undo/AUto/SIngle{set, select, objects {/SUbobject/Object} other {}}}}",
+      "noObjectFound": "No object found"
     },
     "feedback": {
       "snap": {

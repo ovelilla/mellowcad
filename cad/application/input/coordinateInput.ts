@@ -102,6 +102,10 @@ export function parseCoordinate(
   if (body.startsWith("@")) {
     relative = true
     body = body.slice(1).trim()
+    // A bare `@` is the last point itself, AutoCAD's `@0,0`.
+    if (body === "" && ctx.lastPoint) {
+      return vec3(ctx.lastPoint.x, ctx.lastPoint.y, zOf(ctx.lastPoint))
+    }
   } else if (body.startsWith("#")) {
     relative = false
     body = body.slice(1).trim()

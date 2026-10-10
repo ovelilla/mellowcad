@@ -21,21 +21,30 @@ import {
   UpdateEntityCommand,
 } from "../commands/entityCommands"
 import {
+  isCoordinateExpression,
+  parseCoordinate,
+} from "../input/coordinateInput"
+import type { PromptId } from "../../locales/types"
+import {
   CommandOption,
   CommandOptionOutcome,
   PointerInput,
+  QuestionInput,
   Tool,
   ToolContext,
 } from "./Tool"
 
 /**
  * BREAK and BREAKATPOINT. Two points on an object remove the piece between
- * them; the same point twice (BREAKATPOINT) splits it in place with no gap.
+ * them; the same point twice (BREAKATPOINT, or `@` at BREAK's second point)
+ * splits it in place with no gap.
  *
- * As in AutoCAD, the pick that selects the object *is* the first break point,
- * the `First point` keyword re-specifies it, points off the object are pulled
- * onto its nearest point, and a circle is broken counter-clockwise from the
- * first point to the second, leaving an arc.
+ * As in AutoCAD, BREAK asks `Select object:` and the pick that selects it *is*
+ * the first break point: `Specify second break point or [First point]:`, whose
+ * keyword asks `Specify first break point:` and then `Specify second break
+ * point:`; BREAKATPOINT asks `Specify break point:`. Points off the object are
+ * pulled onto its nearest point, and a circle is broken counter-clockwise from
+ * the first point to the second, leaving an arc.
  *
  * Polylines are not broken yet (EXPLODE them first).
  */
@@ -50,6 +59,8 @@ type BreakState =
       readonly target: Entity
       readonly first: Vec2
       readonly cursor: Vec2
+      /** Whether the first point was given after `First point`, which asks no keyword. */
+      readonly respecified: boolean
     }
 
 /** Geometry a break leaves behind or takes away. */
@@ -92,6 +103,37 @@ export class BreakTool implements Tool {
     ctx.dynamicInput.close()
   }
 
+  question(): PromptId {
+    switch (this.state.phase) {
+      case "select":
+        return "selectObject"
+      case "first":
+        return this.mode === "atPoint"
+          ? "specifyBreakPoint"
+          : "specifyFirstBreakPoint"
+      case "second":
+        return this.state.respecified
+          ? "specifySecondBreakPoint"
+          : "specifySecondBreakPointOr"
+    }
+  }
+
+  /**
+   * `Select object:` is a set of one object, and the second break point keeps
+   * its keyword's refusal even where the prompt lists none (AutoCAD 2023's
+   * console).
+   */
+  takes(): QuestionInput {
+    switch (this.state.phase) {
+      case "select":
+        return "oneObject"
+      case "first":
+        return "point"
+      case "second":
+        return { refusal: "pointOrKeywordRequired" }
+    }
+  }
+
   /** Object picking is by proximity; the break points themselves snap. */
   wantsSnap(): boolean {
     return this.state.phase !== "select"
@@ -117,54 +159,38 @@ export class BreakTool implements Tool {
     switch (this.state.phase) {
       case "select": {
         const hit = this.pick(input, ctx)
-        if (!hit) return
-        // BREAKATPOINT asks for the break point separately; BREAK takes the
-        // selecting pick as its first point.
-        this.state =
-          this.mode === "atPoint"
-            ? { phase: "first", target: hit }
-            : {
-                phase: "second",
-                target: hit,
-                first: input.world,
-                cursor: input.world,
-              }
-        this.openPrompt(ctx)
-        ctx.requestRender()
-        return
-      }
-      case "first": {
-        if (this.mode === "atPoint") {
-          this.commit(this.state.target, input.point, input.point, ctx)
+        if (!hit) {
+          ctx.report(ctx.text.message("noObjectFound"))
           return
         }
-        this.state = {
-          phase: "second",
-          target: this.state.target,
-          first: input.point,
-          cursor: input.point,
-        }
-        this.openPrompt(ctx)
-        ctx.requestRender()
+        // BREAKATPOINT asks for the break point separately; BREAK takes the
+        // selecting pick as its first point.
+        if (this.mode === "atPoint") this.askFirst(hit, ctx)
+        else this.askSecond(hit, input.world, false, ctx)
         return
       }
+      case "first":
+        this.placeFirst(input.point, ctx)
+        return
       case "second":
         this.commit(this.state.target, this.state.first, input.point, ctx)
     }
   }
 
   commandOptions(): readonly CommandOption[] {
-    if (this.mode !== "gap" || this.state.phase !== "second") return []
+    if (this.state.phase !== "second" || this.state.respecified) return []
     return [{ id: "First point" }]
   }
 
   invokeOption(id: string, ctx: ToolContext): CommandOptionOutcome {
-    if (id !== "First point" || this.state.phase !== "second") {
+    if (
+      id !== "First point" ||
+      this.state.phase !== "second" ||
+      this.state.respecified
+    ) {
       return "unhandled"
     }
-    this.state = { phase: "first", target: this.state.target }
-    this.openPrompt(ctx)
-    ctx.requestRender()
+    this.askFirst(this.state.target, ctx)
     return "continue"
   }
 
@@ -206,12 +232,56 @@ export class BreakTool implements Tool {
     return hit && hit.type !== "polyline" && readsInPlan(hit) ? hit : null
   }
 
-  /**
-   * A keyword-only prompt: it leaves focus on the canvas, so `F` reaches the
-   * tool while the break points are still picked with the mouse.
-   */
-  private openPrompt(ctx: ToolContext): void {
-    ctx.dynamicInput.open({ fields: [], commit: () => {} })
+  private askFirst(target: Entity, ctx: ToolContext): void {
+    this.state = { phase: "first", target }
+    this.openPointInput(ctx)
+  }
+
+  private askSecond(
+    target: Entity,
+    first: Vec2,
+    respecified: boolean,
+    ctx: ToolContext
+  ): void {
+    this.state = { phase: "second", target, first, cursor: first, respecified }
+    this.openPointInput(ctx)
+  }
+
+  private placeFirst(point: Vec2, ctx: ToolContext): void {
+    if (this.state.phase !== "first") return
+    if (this.mode === "atPoint") {
+      this.commit(this.state.target, point, point, ctx)
+    } else {
+      this.askSecond(this.state.target, point, true, ctx)
+    }
+  }
+
+  /** A break point, picked or typed (`@` at the second: the first point again). */
+  private openPointInput(ctx: ToolContext): void {
+    ctx.dynamicInput.open({
+      fields: [{ id: "point", kind: "coordinate" }],
+      commit: () => {},
+      commitRaw: (commitCtx) => this.commitTypedPoint(commitCtx),
+    })
+    ctx.requestRender()
+  }
+
+  private commitTypedPoint(ctx: ToolContext): boolean {
+    const text = ctx.dynamicInput.getText("point").trim()
+    if (!isCoordinateExpression(text)) return false
+    const last = this.state.phase === "second" ? this.state.first : null
+    const point = parseCoordinate(text, {
+      lastPoint: last,
+      relativeByDefault: last !== null,
+      ucs: ctx.ucs,
+      elevation: ctx.elevation,
+    })
+    if (!point) return false
+    if (this.state.phase === "first") this.placeFirst(point, ctx)
+    else if (this.state.phase === "second") {
+      this.commit(this.state.target, this.state.first, point, ctx)
+    }
+    return true
   }
 
   private commit(

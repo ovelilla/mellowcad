@@ -191,6 +191,22 @@ describe("a wrong answer mid-command", () => {
     )
   })
 
+  it("expects BREAK's set of one object, and a point or First point after", () => {
+    const cad = createHarness({ entities: twoLines() })
+    cad.command("BREAK")
+    answerLine(cad, "FOO")
+    expect(cad.commandLog().slice(-2)).toEqual([
+      "*Invalid selection*",
+      "Expects a point or Window/Last/Crossing/BOX/ALL/Fence/WPolygon/CPolygon",
+    ])
+    cad.click(p(50, 0))
+    answerLine(cad, "FOO")
+    expect(cad.commandLog().at(-1)).toBe("Point or option keyword required.")
+    cad.option("First point")
+    answerLine(cad, "FOO")
+    expect(cad.commandLog().at(-1)).toBe("Invalid point.")
+  })
+
   it("leaves U to TRIM's prompt until there is something to undo", () => {
     const cad = createHarness({
       entities: [...twoLines(), lineOf(p(50, -50), p(50, 50), { id: "C" })],
