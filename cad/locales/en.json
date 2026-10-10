@@ -657,14 +657,14 @@
       "NAVVCUBE": { "ON": "ON", "OFF": "OFF" },
       "COLOR": {
         "Truecolor": "Truecolor",
-        "BYLAYER": "BYLAYER",
-        "RED": "RED",
-        "YELLOW": "YELLOW",
-        "GREEN": "GREEN",
-        "CYAN": "CYAN",
-        "BLUE": "BLUE",
-        "MAGENTA": "MAGENTA",
-        "WHITE": "WHITE"
+        "BYLAYER": "BYLayer",
+        "RED": "Red",
+        "YELLOW": "Yellow",
+        "GREEN": "Green",
+        "CYAN": "Cyan",
+        "BLUE": "Blue",
+        "MAGENTA": "Magenta",
+        "WHITE": "White"
       },
       "LINETYPE": { "Set": "Set", "BYLAYER": "BYLAYER" },
       "LWEIGHT": { "BYLAYER": "BYLAYER" }
@@ -786,7 +786,7 @@
       "ltscaleFactor": "Enter new linetype scale factor",
       "osnapModes": "Enter list of object snap modes",
       "defaultObjectColor": "Enter default object color [Truecolor]",
-      "trueColor": "Red, Green, Blue",
+      "trueColor": "Red,Green,Blue",
       "linetypeOption": "Enter an option [?/Set]",
       "linetypeName": "Specify linetype name or [?]",
       "defaultLineweight": "Enter default lineweight for new objects or [?]",
@@ -948,10 +948,10 @@
       "currentUcsName": "Current ucs name:  {kind, select, world {*WORLD*} unnamed {*NO NAME*} other {{name}}}",
       "savedUcsHeader": "Saved coordinate systems:",
       "savedUcsEntry": "{name}\nOrigin = '<'{originX},{originY},{originZ}>, X Axis = '<'{xAxisX},{xAxisY},{xAxisZ}>\n    Y Axis = '<'{yAxisX},{yAxisY},{yAxisZ}>, Z Axis = '<'{zAxisX},{zAxisY},{zAxisZ}>",
-      "ucsUndefined": "Cannot find UCS {name}.",
+      "ucsUndefined": "Cannot find UCS \"{name}\".",
       "rectangleModes": "Current rectangle modes:{hasElevation, select, yes {  Elevation={elevation}} other {}}{hasThickness, select, yes {  Thickness={thickness}} other {}}",
       "distanceReport": "Distance = {distance},  Angle in XY Plane = {angleInPlane},  Angle from XY Plane = {angleFromPlane}\nDelta X = {deltaX},  Delta Y = {deltaY},   Delta Z = {deltaZ}",
-      "idReport": "X = {x}     Y = {y}     Z = {z}",
+      "idReport": " X = {x}     Y = {y}     Z = {z}",
       "linesNonCoplanar": "Lines are non-coplanar.",
       "cornersSkipped": "{parallel, plural, =0 {} one {# was parallel    } other {# were parallel    }}{tooShort, plural, =0 {} one {# was too short    } other {# were too short    }}{divergent, plural, =0 {} one {# was divergent    } other {# were divergent    }}",
       "invalid": "*Invalid*",
@@ -972,7 +972,13 @@
       "currentLineweight": "Current lineweight: {value}",
       "pointingEdgeOn": "Pointing in edge-on UCS is prohibited.",
       "circleDoesNotExist": "Circle does not exist.",
-      "noLineOrArcToContinue": "No line or arc to continue."
+      "noLineOrArcToContinue": "No line or arc to continue.",
+      "positiveNonzero": "Value must be positive and nonzero.",
+      "lineweightRequired": "A weight in lineweight units is required.",
+      "lineweightRounded": "Lineweight rounded to nearest valid value of {value}",
+      "colorRequired": "A color number or standard color name is required.",
+      "invalidTrueColor": "Invalid color.  Type three comma separated values from 0 to 255.",
+      "invalidOsnapModes": "Invalid object snap modes."
     },
     "feedback": {
       "snap": {

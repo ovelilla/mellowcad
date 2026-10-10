@@ -420,7 +420,7 @@ describe("PLAN", () => {
   it("asks again for a name it cannot find, and lists with ?", () => {
     const cad = createHarness()
     cad.command("PLAN").option("Ucs").type("Nope").enter()
-    expect(cad.commandLog().at(-1)).toBe("Cannot find UCS Nope.")
+    expect(cad.commandLog().at(-1)).toBe('Cannot find UCS "Nope".')
     expect(cad.activeToolId()).toBe("plan")
     cad.type("?").enter().enter()
     expect(cad.commandLog().join("\n")).toContain("Saved coordinate systems:")

@@ -89,7 +89,17 @@ export class LweightTool implements Tool {
         : ctx.text.resolveKeyword(typed, [BY_LAYER]) === BY_LAYER
           ? LINEWEIGHT_BYLAYER
           : null
-    if (lineweight === null) return this.ask(ctx)
+    if (lineweight === null) {
+      ctx.report(ctx.text.message("lineweightRequired"), "error")
+      return this.ask(ctx)
+    }
+    if (value !== null && lineweight !== value) {
+      ctx.report(
+        ctx.text.message("lineweightRounded", {
+          value: lineweightLabel(nearestLineweight(value)),
+        })
+      )
+    }
     if (lineweight !== ctx.document.getSettings().currentLineweight) {
       ctx.execute(new UpdateSettingsCommand({ currentLineweight: lineweight }))
     }

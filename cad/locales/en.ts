@@ -829,6 +829,18 @@ export const en: EngineCatalog = {
         "-LWEIGHT"
       ]
     },
+    "keywords": {
+      "COLOR": {
+        "BYLAYER": "BYLayer",
+        "RED": "Red",
+        "YELLOW": "Yellow",
+        "GREEN": "Green",
+        "CYAN": "Cyan",
+        "BLUE": "Blue",
+        "MAGENTA": "Magenta",
+        "WHITE": "White"
+      }
+    },
     "prompts": {
       "length": "Length",
       "angle": "Angle",
@@ -942,7 +954,7 @@ export const en: EngineCatalog = {
       "ltscaleFactor": "Enter new linetype scale factor",
       "osnapModes": "Enter list of object snap modes",
       "defaultObjectColor": "Enter default object color [Truecolor]",
-      "trueColor": "Red, Green, Blue",
+      "trueColor": "Red,Green,Blue",
       "linetypeOption": "Enter an option [?/Set]",
       "linetypeName": "Specify linetype name or [?]",
       "defaultLineweight": "Enter default lineweight for new objects or [?]",
@@ -1470,11 +1482,11 @@ export const en: EngineCatalog = {
         ">"
       ],
       "ucsUndefined": [
-        "Cannot find UCS ",
+        "Cannot find UCS \"",
         [
           "name"
         ],
-        "."
+        "\"."
       ],
       "rectangleModes": [
         "Current rectangle modes:",
@@ -1532,7 +1544,7 @@ export const en: EngineCatalog = {
         ]
       ],
       "idReport": [
-        "X = ",
+        " X = ",
         [
           "x"
         ],
@@ -1707,7 +1719,18 @@ export const en: EngineCatalog = {
       ],
       "pointingEdgeOn": "Pointing in edge-on UCS is prohibited.",
       "circleDoesNotExist": "Circle does not exist.",
-      "noLineOrArcToContinue": "No line or arc to continue."
+      "noLineOrArcToContinue": "No line or arc to continue.",
+      "positiveNonzero": "Value must be positive and nonzero.",
+      "lineweightRequired": "A weight in lineweight units is required.",
+      "lineweightRounded": [
+        "Lineweight rounded to nearest valid value of ",
+        [
+          "value"
+        ]
+      ],
+      "colorRequired": "A color number or standard color name is required.",
+      "invalidTrueColor": "Invalid color.  Type three comma separated values from 0 to 255.",
+      "invalidOsnapModes": "Invalid object snap modes."
     },
     "feedback": {
       "snap": {

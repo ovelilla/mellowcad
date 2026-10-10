@@ -139,7 +139,7 @@ describe("ID", () => {
 
     cad.command("ID").type("1,2,3").enter()
 
-    expect(cad.commandLog().at(-1)).toBe("X = 1.00     Y = 2.00     Z = 3.00")
+    expect(cad.commandLog().at(-1)).toBe(" X = 1.00     Y = 2.00     Z = 3.00")
     expect(cad.activeToolId()).toBe("select")
     expect(cad.entityCount).toBe(0)
   })
@@ -150,12 +150,14 @@ describe("ID", () => {
 
     cad.command("ID").click(p(100, 0))
     expect(cad.commandLog().at(-1)).toBe(
-      "X = 100.00     Y = 0.00     Z = 10.00"
+      " X = 100.00     Y = 0.00     Z = 10.00"
     )
 
     cad.command("ELEV").type("4").enter().type("0").enter()
     cad.command("ID").click(p(50, 80))
-    expect(cad.commandLog().at(-1)).toBe("X = 50.00     Y = 80.00     Z = 4.00")
+    expect(cad.commandLog().at(-1)).toBe(
+      " X = 50.00     Y = 80.00     Z = 4.00"
+    )
   })
 })
 

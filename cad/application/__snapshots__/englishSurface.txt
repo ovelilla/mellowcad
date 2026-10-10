@@ -3148,7 +3148,7 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
   dyn: "Enter name of UCS to restore or [?]"="NOPE"||*
 > enter
   dyn: "Enter name of UCS to restore or [?]"=""||*
-  error| Cannot find UCS NOPE.
+  error| Cannot find UCS "NOPE".
 > escape
   prompt: Command:
   asks: -
@@ -3232,7 +3232,7 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
   dyn: "Enter name of UCS or [?]"="NOPE"||*
 > enter
   dyn: "Enter name of UCS or [?]"=""||*
-  error| Cannot find UCS NOPE.
+  error| Cannot find UCS "NOPE".
 > name
   dyn: "Enter name of UCS or [?]"="PLOT"||*
 > enter
@@ -3469,6 +3469,7 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
   dyn: "Enter new linetype scale factor"=""|1|*
   command| LTSCALE
 > zero
+  error| Value must be positive and nonzero.
 > factor
   prompt: Command:
   asks: -
@@ -3494,6 +3495,7 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
   options: [T] Truecolor
   command| -COLOR
 > pink
+  error| A color number or standard color name is required.
 > red
   prompt: Command:
   asks: -
@@ -3502,13 +3504,13 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
 > COLOR
   prompt: COLOR [Truecolor]:
   asks: "Enter default object color [Truecolor]"
-  dyn: "Enter default object color [Truecolor]"=""|RED|*
+  dyn: "Enter default object color [Truecolor]"=""|1 (red)|*
   options: [T] Truecolor
   command| COLOR
 > T
   prompt: COLOR:
-  asks: "Red, Green, Blue"
-  dyn: "Red, Green, Blue"=""||*
+  asks: "Red,Green,Blue"
+  dyn: "Red,Green,Blue"=""||*
   options: -
 > rgb
   prompt: Command:
@@ -3588,6 +3590,7 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
   prompt: Command:
   asks: -
   dyn: -
+  info| Lineweight rounded to nearest valid value of 0.35 mm
 > LW
   prompt: LWEIGHT:
   asks: "Enter default lineweight for new objects or [?]"
@@ -3618,7 +3621,7 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
   prompt: Command:
   asks: -
   dyn: -
-  info| X = 30.00     Y = 40.00     Z = 0.00
+  info|  X = 30.00     Y = 40.00     Z = 0.00
 > ID typed
   prompt: ID:
   asks: "Specify point"
@@ -3628,7 +3631,7 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
   prompt: Command:
   asks: -
   dyn: -
-  info| X = 1.00     Y = 2.00     Z = 3.00
+  info|  X = 1.00     Y = 2.00     Z = 3.00
 
 ## VPOINT VIEW
 > start
@@ -4322,6 +4325,7 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
   command| -OSNAP
   info| Current osnap modes: End,Cen,Int,Ext
 > a mode it does not know
+  error| Invalid object snap modes.
 > a list
   prompt: Command:
   asks: -

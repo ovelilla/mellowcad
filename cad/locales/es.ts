@@ -1120,10 +1120,10 @@ export const es: EngineLocale = {
         "BAck": "Posterior",
         "Left": "IZquierda",
         "Right": "Derecha",
-        "SWiso": "isoSO",
-        "SEiso": "isoSE",
-        "NEiso": "isoNE",
-        "NWiso": "isoNO"
+        "SWiso": "SOIso",
+        "SEiso": "SEIso",
+        "NEiso": "NEIso",
+        "NWiso": "NOIso"
       },
       "NAVVCUBE": {
         "ON": "ACT",
@@ -1131,17 +1131,17 @@ export const es: EngineLocale = {
       },
       "COLOR": {
         "Truecolor": "COlorverdadero",
-        "BYLAYER": "PORCAPA",
-        "RED": "ROJO",
-        "YELLOW": "AMARILLO",
-        "GREEN": "VERDE",
-        "CYAN": "CIÁN",
-        "BLUE": "AZUL",
-        "MAGENTA": "MAGENTA",
-        "WHITE": "BLANCO"
+        "BYLAYER": "porCapa",
+        "RED": "Rojo",
+        "YELLOW": "Amarillo",
+        "GREEN": "Verde",
+        "CYAN": "cIán",
+        "BLUE": "aZul",
+        "MAGENTA": "Magenta",
+        "WHITE": "bLanco"
       },
       "LINETYPE": {
-        "Set": "Defina",
+        "Set": "Definir",
         "BYLAYER": "PORCAPA"
       },
       "LWEIGHT": {
@@ -1266,13 +1266,13 @@ export const es: EngineLocale = {
       "planUcsName": "Indique nombre de SCP o [?]",
       "elevDefaultElevation": "Precise nueva elevación por defecto",
       "elevDefaultThickness": "Precise nueva altura de objeto por defecto",
-      "ltscaleFactor": "Indique nuevo factor de escala de tipo de línea",
-      "osnapModes": "Indique una lista de modo de referencia a objetos",
-      "defaultObjectColor": "Indique color de objeto por defecto [COlorverdadero]",
-      "trueColor": "Rojo, Verde, Azul",
-      "linetypeOption": "Indique una opción [?/Defina]",
+      "ltscaleFactor": "Indique nuevo factor de escala del tipo de línea",
+      "osnapModes": "Indique lista de modo de referencia a objetos",
+      "defaultObjectColor": "Indique el color de objeto por defecto [COlorverdadero]",
+      "trueColor": "Rojo,Verde,Azul",
+      "linetypeOption": "Indique una opción [?/Definir]",
       "linetypeName": "Precise nombre de tipo de línea o [?]",
-      "defaultLineweight": "Indique grosor de línea por defecto para objetos nuevos o [?]",
+      "defaultLineweight": "Indique el grosor de línea por defecto para los nuevos objetos o [?]",
       "idPoint": "Precise punto",
       "viewPoint": "Precise un punto de vista",
       "viewAngleInPlane": "Ángulo a partir del eje X en el plano XY",
@@ -1725,7 +1725,7 @@ export const es: EngineLocale = {
         ]
       ],
       "currentUcsName": [
-        "Nombre de scp actual: ",
+        "Nombre de scp actual:  ",
         [
           "kind",
           1,
@@ -1796,11 +1796,11 @@ export const es: EngineLocale = {
         ">"
       ],
       "ucsUndefined": [
-        "No se encuentra el SCP ",
+        "Imposible encontrar el SCP \"",
         [
           "name"
         ],
-        "."
+        "\"."
       ],
       "rectangleModes": [
         "Modos de rectángulo actuales:",
@@ -1836,29 +1836,29 @@ export const es: EngineLocale = {
         [
           "distance"
         ],
-        ",  Ángulo en plano XY = ",
+        ", Ángulo en el plano XY = ",
         [
           "angleInPlane"
         ],
-        ",  Ángulo desde plano XY = ",
+        ", Ángulo a partir del plano XY = ",
         [
           "angleFromPlane"
         ],
-        "\nDelta X = ",
+        "\nIncremento X = ",
         [
           "deltaX"
         ],
-        ",  Delta Y = ",
+        ", Incremento Y = ",
         [
           "deltaY"
         ],
-        ",   Delta Z = ",
+        ",   Incremento Z = ",
         [
           "deltaZ"
         ]
       ],
       "idReport": [
-        "X = ",
+        " X = ",
         [
           "x"
         ],
@@ -2020,7 +2020,7 @@ export const es: EngineLocale = {
       ],
       "regeneratingModel": "Regenerando modelo.",
       "currentOsnapModes": [
-        "Modos de referencia a objetos actuales: ",
+        "Modos refent actuales: ",
         [
           "modes"
         ]
@@ -2033,7 +2033,18 @@ export const es: EngineLocale = {
       ],
       "pointingEdgeOn": "No se puede señalar en un SCP visto de canto.",
       "circleDoesNotExist": "El círculo no existe.",
-      "noLineOrArcToContinue": "No hay línea o arco que se pueda continuar."
+      "noLineOrArcToContinue": "No hay línea o arco que se pueda continuar.",
+      "positiveNonzero": "El valor debe ser positivo y diferente de cero.",
+      "lineweightRequired": "Se precisa un grosor en unidades de grosor de línea.",
+      "lineweightRounded": [
+        "Grosor de línea redondeado al valor válido más cercano de ",
+        [
+          "value"
+        ]
+      ],
+      "colorRequired": "Se necesita un número o nombre de color normalizado.",
+      "invalidTrueColor": "Color no válido. Escriba tres valores separados por comas comprendidos entre 0 y 255.",
+      "invalidOsnapModes": "Modos no válidos de referencia a objetos."
     },
     "feedback": {
       "snap": {

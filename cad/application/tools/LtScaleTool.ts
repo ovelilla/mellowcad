@@ -6,7 +6,8 @@ import { PointerInput, Tool, ToolContext } from "./Tool"
  * AutoCAD's LTSCALE: `Enter new linetype scale factor <1.0000>:`, offering the
  * current one. LTSCALE is saved in the drawing ("The linetype scale factor
  * cannot equal zero"); changing it regenerates the drawing. A factor that is
- * not above zero is not taken, and the prompt stays.
+ * not above zero is refused, `Value must be positive and nonzero.`, and the
+ * prompt stays.
  */
 export class LtScaleTool implements Tool {
   readonly id = "ltscale"
@@ -38,7 +39,11 @@ export class LtScaleTool implements Tool {
   }
 
   private answer(value: number, ctx: ToolContext): void {
-    if (!Number.isFinite(value) || value <= 0) return
+    if (!Number.isFinite(value)) return
+    if (value <= 0) {
+      ctx.report(ctx.text.message("positiveNonzero"), "error")
+      return
+    }
     if (value !== ctx.document.getSettings().ltScale) {
       ctx.execute(new UpdateSettingsCommand({ ltScale: value }))
       ctx.report(ctx.text.message("regeneratingModel"))

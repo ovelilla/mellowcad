@@ -45,11 +45,12 @@ describe("LTSCALE", () => {
     expect(cad.commandLog().slice(lines)).toEqual(["LTSCALE"])
   })
 
-  it.each(["0", "-1"])("does not take %s and asks again", (typed) => {
+  it.each(["0", "-1"])("refuses %s and asks again", (typed) => {
     const cad = createHarness()
 
     cad.command("LTSCALE").type(typed).enter()
 
+    expect(cad.commandLog().at(-1)).toBe("Value must be positive and nonzero.")
     expect(ltScale(cad)).toBe(1)
     expect(cad.state().activeToolId).toBe("ltscale")
     cad.type("3").enter()
@@ -79,7 +80,7 @@ describe("LTSCALE", () => {
 
     cad.command(name)
     expect(cad.state().dynamicInput?.fields[0].label).toBe(
-      "Indique nuevo factor de escala de tipo de línea"
+      "Indique nuevo factor de escala del tipo de línea"
     )
     cad.type("2").enter()
 

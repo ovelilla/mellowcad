@@ -62,7 +62,7 @@ describe("the command window", () => {
 
     expect(cad.state().commandLine.recent).toEqual([
       { kind: "command", text: "ID" },
-      { kind: "info", text: "X = 3.00     Y = 4.00     Z = 0.00" },
+      { kind: "info", text: " X = 3.00     Y = 4.00     Z = 0.00" },
     ])
 
     cad.command("LTSCALE")

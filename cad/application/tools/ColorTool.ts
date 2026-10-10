@@ -84,8 +84,12 @@ export class ColorTool implements Tool {
       commit: () => {},
       commitRaw: (commitCtx) => {
         const color = parseRgb(commitCtx.dynamicInput.getText("rgb"))
-        if (color) this.finish(color, commitCtx)
-        else this.askTrueColor(commitCtx)
+        if (color) {
+          this.finish(color, commitCtx)
+          return true
+        }
+        commitCtx.report(commitCtx.text.message("invalidTrueColor"), "error")
+        this.askTrueColor(commitCtx)
         return true
       },
     })
@@ -115,7 +119,10 @@ export class ColorTool implements Tool {
     else if (word === BY_LAYER) this.finish(COLOR_BYLAYER, ctx)
     else if (word !== null) {
       this.finish(STANDARD_COLORS[NAMES.indexOf(word)].value, ctx)
-    } else this.askColor(ctx)
+    } else {
+      ctx.report(ctx.text.message("colorRequired"), "error")
+      this.askColor(ctx)
+    }
     return true
   }
 
@@ -129,12 +136,19 @@ export class ColorTool implements Tool {
     ctx.endCommand()
   }
 
-  /** The current colour as the prompt offers it: `BYLAYER`, `RED`, or `R,G,B`. */
+  /**
+   * The current colour as AutoCAD's console offers it: `BYLAYER`, an index
+   * colour by number and name, `1 (red)`, or `R,G,B`.
+   */
   private colorWord(ctx: ToolContext): string {
     const current = ctx.document.getSettings().currentColor
-    if (current === COLOR_BYLAYER) return ctx.text.keywordList([BY_LAYER])
+    if (current === COLOR_BYLAYER) {
+      return ctx.text.keyword(BY_LAYER).toUpperCase()
+    }
     const index = STANDARD_COLORS.findIndex((color) => color.value === current)
-    if (index >= 0) return ctx.text.keywordList([NAMES[index]])
+    if (index >= 0) {
+      return `${index + 1} (${ctx.text.keyword(NAMES[index]).toLowerCase()})`
+    }
     return rgbOf(current).join(",")
   }
 }

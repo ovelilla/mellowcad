@@ -725,7 +725,7 @@ describe("Spanish AutoCAD's command language", () => {
     cad.command("SCP")
     expect(cad.commandLog()).toEqual([
       "SCP",
-      "Nombre de scp actual: *UNIVERSAL*",
+      "Nombre de scp actual:  *UNIVERSAL*",
     ])
     expect(cad.state().commandLine.prompt).toBe(
       "SCP [gUArdado/oBjeto/PRev/Vista/Univ/X/Y/Z/ejEZ]:"
@@ -812,14 +812,38 @@ describe("Spanish AutoCAD's command language", () => {
     const cad = createHarness({ locale: es })
     cad.command("DI").type("0,0").enter().type("3,4,12").enter()
     expect(cad.commandLog().at(-1)).toBe(
-      "Distancia = 13.00,  Ángulo en plano XY = 53.13,  Ángulo desde plano XY = 67.38\n" +
-        "Delta X = 3.00,  Delta Y = 4.00,   Delta Z = 12.00"
+      "Distancia = 13.00, Ángulo en el plano XY = 53.13, Ángulo a partir del plano XY = 67.38\n" +
+        "Incremento X = 3.00, Incremento Y = 4.00,   Incremento Z = 12.00"
     )
     cad.escape()
     cad.command("ID")
     expect(cad.runtime.text.prompt("idPoint")).toBe("Precise punto")
     cad.type("1,2,3").enter()
-    expect(cad.commandLog().at(-1)).toBe("X = 1.00     Y = 2.00     Z = 3.00")
+    expect(cad.commandLog().at(-1)).toBe(" X = 1.00     Y = 2.00     Z = 3.00")
+  })
+
+  it("refuses a setting in the words of Autodesk's Spanish table", () => {
+    const cad = createHarness({ locale: es })
+    const last = () => cad.commandLog().at(-1)
+
+    cad.command("-COLOR").type("rosa").enter()
+    expect(last()).toBe("Se necesita un número o nombre de color normalizado.")
+    cad.type("r").enter()
+    expect(cad.state().currentColor).toBe("#ff0000")
+
+    cad.command("-GROSORLIN").type("fino").enter()
+    expect(last()).toBe("Se precisa un grosor en unidades de grosor de línea.")
+    cad.type("0.33").enter()
+    expect(last()).toBe(
+      "Grosor de línea redondeado al valor válido más cercano de 0.35 mm"
+    )
+
+    cad.command("-REFENT").type("XYZ").enter()
+    expect(last()).toBe("Modos no válidos de referencia a objetos.")
+    cad.escape()
+
+    cad.command("ESCALATL").type("0").enter()
+    expect(last()).toBe("El valor debe ser positivo y diferente de cero.")
   })
 
   it("sets the views as Spanish AutoCAD's captures show them", () => {
@@ -830,6 +854,14 @@ describe("Spanish AutoCAD's command language", () => {
       "VISTA [SUperior/Inferior/Frontal/Posterior/IZquierda/Derecha]:"
     )
     cad.type("su").enter()
+    expect(cad.runtime.viewport.isPlan).toBe(true)
+    cad.command("-VISTA")
+    for (const char of "soiso") cad.press(char)
+    cad.press("Enter")
+    expect(cad.runtime.viewport.isPlan).toBe(false)
+    cad.command("-VISTA")
+    for (const char of "superior") cad.press(char)
+    cad.press("Enter")
     expect(cad.runtime.viewport.isPlan).toBe(true)
     cad.command("-PV")
     expect(cad.commandLog().at(-1)).toBe(

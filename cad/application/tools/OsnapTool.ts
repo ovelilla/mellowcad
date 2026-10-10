@@ -59,6 +59,7 @@ export class OsnapTool implements Tool {
     for (const entry of typed.split(",")) {
       const id = ctx.text.resolveKeyword(entry, [...OSNAP_MODE_IDS, OSNAP_OFF])
       if (id === null) {
+        ctx.report(ctx.text.message("invalidOsnapModes"), "error")
         this.ask(ctx)
         return true
       }

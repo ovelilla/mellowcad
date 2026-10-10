@@ -161,7 +161,29 @@ describe("-COLOR", () => {
     expect(cad.state().currentColor).toBe(RED)
     expect(cad.activeToolId()).toBe("select")
     cad.command("COLOR")
-    expect(asking(cad)?.placeholder).toBe("RED")
+    expect(asking(cad)?.placeholder).toBe("1 (red)")
+  })
+
+  it("says what it needs when it cannot read the colour", () => {
+    const cad = createHarness()
+
+    cad.command("-COLOR").type("pink").enter()
+    expect(cad.commandLog().at(-1)).toBe(
+      "A color number or standard color name is required."
+    )
+    cad.option("Truecolor").type("210,155,300").enter()
+    expect(cad.commandLog().at(-1)).toBe(
+      "Invalid color.  Type three comma separated values from 0 to 255."
+    )
+    expect(asking(cad)?.label).toBe("Red,Green,Blue")
+  })
+
+  it("takes a colour by its capital, as AutoCAD's keywords read it", () => {
+    const cad = createHarness()
+
+    cad.command("-COLOR").type("r").enter()
+
+    expect(cad.state().currentColor).toBe(RED)
   })
 
   it.each([
@@ -182,7 +204,7 @@ describe("-COLOR", () => {
     const cad = createHarness()
 
     cad.command("COLOR").option("Truecolor")
-    expect(asking(cad)?.label).toBe("Red, Green, Blue")
+    expect(asking(cad)?.label).toBe("Red,Green,Blue")
     cad.type("210,155,300").enter()
     expect(cad.activeToolId()).toBe("color")
     cad.type("210, 155, 95").enter()
@@ -219,7 +241,7 @@ describe("-COLOR", () => {
 
     cad.command(name)
     expect(asking(cad)).toMatchObject({
-      label: "Indique color de objeto por defecto [COlorverdadero]",
+      label: "Indique el color de objeto por defecto [COlorverdadero]",
       placeholder: "PORCAPA",
     })
     cad.type("rojo").enter()
@@ -283,7 +305,7 @@ describe("-LINETYPE", () => {
     const cad = createHarness({ locale: es })
 
     cad.command(name)
-    expect(asking(cad)?.label).toBe("Indique una opción [?/Defina]")
+    expect(asking(cad)?.label).toBe("Indique una opción [?/Definir]")
     cad.option("Set").type("hidden").enter()
 
     expect(cad.state().currentLinetype).toBe("Hidden")
@@ -321,6 +343,20 @@ describe("-LWEIGHT", () => {
     cad.command("LW").type(typed).enter()
 
     expect(cad.state().currentLineweight).toBe(lineweight)
+  })
+
+  it("says it rounds to a valid lineweight, and what it needs", () => {
+    const cad = createHarness()
+
+    cad.command("-LWEIGHT").type("thin").enter()
+    expect(cad.commandLog().at(-1)).toBe(
+      "A weight in lineweight units is required."
+    )
+    cad.type("0.33").enter()
+
+    expect(cad.commandLog().at(-1)).toBe(
+      "Lineweight rounded to nearest valid value of 0.35 mm"
+    )
   })
 
   it("lists the valid lineweights with ? and asks again", () => {
