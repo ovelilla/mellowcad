@@ -1230,11 +1230,10 @@ export const es: EngineLocale = {
       "mtextWidth": "Indique la anchura",
       "mtextLineSpacing": "Indique el factor de interlineado o distancia",
       "mtextLine": "textoM",
-      "firstExtensionOrigin": "Designe el origen de la primera línea de referencia o <designar objeto>",
-      "secondExtensionOrigin": "Designe el origen de la segunda línea de referencia",
-      "nextExtensionOrigin": "Designe un origen de la segunda línea de referencia",
+      "firstExtensionOrigin": "Especifique el origen de la primera línea de referencia o <designar objeto>",
+      "secondExtensionOrigin": "Especifique el origen de la segunda línea de referencia",
       "dimensionLineLocation": "Designe ubicación de línea de cota",
-      "dimensionLineAngle": "Precise ángulo de línea de cota",
+      "dimensionLineAngle": "Designe ángulo de línea de cota",
       "dimensionText": "Indique texto de cota",
       "dimensionTextAngle": "Precise ángulo de texto de cota",
       "angleVertex": "Designe vértice del ángulo",
@@ -1442,7 +1441,21 @@ export const es: EngineLocale = {
       "mtextHeight": "Indique la altura",
       "enterJustification": "Indique la justificación",
       "enterLineSpacingType": "Indique el tipo de interlineado",
-      "mtextStyleNameOr": "Indique el nombre de estilo o"
+      "mtextStyleNameOr": "Indique el nombre de estilo o",
+      "selectObjectToDimension": "Designe objeto para acotar",
+      "dimensionLineLocationOr": "Especifique una ubicación de línea de cota o",
+      "enterDimensionText": "Indique texto de cota",
+      "specifyAngleOfDimensionText": "Designe ángulo de texto de cota",
+      "selectArcOrCircle": "Designe un arco o un círculo",
+      "selectArcCircleLineOrVertex": "Designe arco, círculo, línea o <designar vértice>",
+      "selectSecondLine": "Designe segunda línea",
+      "dimensionArcLocationOr": "Designe ubicación del arco de línea de cota o",
+      "secondExtensionOriginOr": "Especifique un origen de la segunda línea de referencia o",
+      "selectBaseDimension": "Designe cota base",
+      "selectContinuedDimension": "Designe cota continua",
+      "spaceBaseDimension": "Designar cota base",
+      "selectDimensionsToSpace": "Designe cotas para intervalo",
+      "enterValueOr": "Indique valor o"
     },
     "format": {
       "idle": "Comando",
@@ -2332,7 +2345,20 @@ export const es: EngineLocale = {
           "maxFactor"
         ],
         "x), ambos inclusive."
-      ]
+      ],
+      "invalidPointInput": "Entrada de punto no válida.",
+      "invalidInputCapital": "Entrada no válida.",
+      "nonAssociativeDimension": "Se ha creado una cota no asociativa.",
+      "dimensionTextIs": [
+        "Texto de cota = ",
+        [
+          "text"
+        ]
+      ],
+      "expectsSingleObject": "Requiere un único objeto.",
+      "lastKeyword": "úLTimo",
+      "noObjectSelected": "No se ha designado ningún objeto.",
+      "negativeSpacing": "Valor de intervalo no válido, el valor de intervalo no puede ser negativo."
     },
     "feedback": {
       "snap": {

@@ -71,6 +71,18 @@ export function promptRefusal(
           keywords: text.message("selectionModes", { set: input }),
         }),
       ]
+    case "objectOrLast":
+      return [
+        text.message("invalidSelection"),
+        text.message("expectsPointOr", {
+          keywords: [text.message("lastKeyword"), ...asked.keywords].join("/"),
+        }),
+      ]
+    case "singleObject":
+      return [
+        text.message("invalidSelection"),
+        text.message("expectsSingleObject"),
+      ]
     case "object":
       // WHY every keyword: AutoCAD 2023 leaves the prompt's last one out of
       // this list (`[Exit/Undo]` expects `Exit`), an off-by-one, not a rule.

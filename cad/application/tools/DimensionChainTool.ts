@@ -24,13 +24,16 @@ import { entityScenePrimitive } from "../SceneBuilder"
 import { ScenePrimitive } from "../../scene/types"
 import { THEME } from "../../scene/theme"
 import { lastDimension } from "./lastDimension"
+import type { PromptId } from "../../locales/types"
 import {
   CommandOption,
   CommandOptionOutcome,
   PointerInput,
+  QuestionInput,
   Tool,
   ToolContext,
 } from "./Tool"
+import { measurementOf } from "./DimensionTool"
 import { withCurrentProperties } from "./currentProperties"
 import { LayerId } from "../../domain/layers"
 
@@ -52,9 +55,11 @@ export type DimensionChainMode = "baseline" | "continue"
  * dimensions, inheriting the base's kind, direction and style (AutoCAD's
  * DIMCONTINUEMODE 0 default), placed automatically from the base.
  *
- * The prompt loop is AutoCAD's: with a base already in hand it asks for a
- * second extension line origin over and over, offering `[Undo/Select]` with
- * `Select` as the Enter default; with no base it opens at the Select prompt.
+ * The prompt loop is AutoCAD's, as its 2023 console asks it: with a base
+ * already in hand `Specify second extension line origin or [Select/Undo]
+ * <Select>:` over and over, each placed one saying `Dimension text =
+ * 106.07`; Select, or Enter, asks `Select base dimension:` (DIMCONTINUE's
+ * `Select continued dimension:`). With no base it opens at that prompt.
  * Escape ends the command, and so does Enter at the Select prompt — AutoCAD's
  * "press Enter twice, or press Esc".
  */
@@ -109,18 +114,36 @@ export class DimensionChainTool implements Tool {
       // Explicitly selecting a base overrides the default end: the chain grows
       // from whichever extension line was picked closest.
       if (base) this.enterSecond(this.chainFrom(base, input.world, ctx), ctx)
+      else ctx.report(ctx.text.message("noObjectSelected"))
     } else {
       this.place(this.state.chain, input.point, ctx)
     }
     ctx.requestRender()
   }
 
+  question(): PromptId {
+    if (this.state.phase === "second") return "secondExtensionOriginOr"
+    return this.mode === "baseline"
+      ? "selectBaseDimension"
+      : "selectContinuedDimension"
+  }
+
+  /** As AutoCAD 2023's console refuses the loop's answers. */
+  takes(): QuestionInput {
+    return this.state.phase === "second"
+      ? { refusal: "invalidPointInput" }
+      : "objectOrLast"
+  }
+
+  defaultOption(): string | null {
+    return this.state.phase === "second" ? "Select" : null
+  }
+
   commandOptions(): readonly CommandOption[] {
-    if (this.state.phase !== "second") return []
-    const options: CommandOption[] = []
-    if (this.history.length > 0) options.push({ id: "Undo" })
-    options.push({ id: "Select" })
-    return options
+    // Undo is offered with nothing to undo too, as AutoCAD's prompt offers it.
+    return this.state.phase === "second"
+      ? [{ id: "Select" }, { id: "Undo" }]
+      : []
   }
 
   invokeOption(id: string, ctx: ToolContext): CommandOptionOutcome {
@@ -203,6 +226,9 @@ export class DimensionChainTool implements Tool {
     this.history.push(chain)
     this.enterSecond(advance(chain, this.mode, dim), ctx)
     ctx.execute(new AddEntityCommand(withCurrentProperties(dim, ctx)))
+    ctx.report(
+      ctx.text.message("dimensionTextIs", { text: measurementOf(dim, ctx) })
+    )
   }
 
   /** The Undo keyword: backs out the last dimension *this run* created. */
@@ -277,13 +303,7 @@ export class DimensionChainTool implements Tool {
   private enterSecond(chain: Chain, ctx: ToolContext): void {
     this.state = { phase: "second", chain, cursor: chain.origin }
     const session: DynamicInputSession = {
-      fields: [
-        {
-          id: "point",
-          prompt: "nextExtensionOrigin",
-          kind: "coordinate",
-        },
-      ],
+      fields: [{ id: "point", kind: "coordinate" }],
       commit: () => {},
       commitRaw: (commitCtx) => {
         if (this.state.phase !== "second") return false

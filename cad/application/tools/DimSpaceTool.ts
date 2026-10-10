@@ -19,10 +19,13 @@ import { entityScenePrimitive } from "../SceneBuilder"
 import { ScenePrimitive } from "../../scene/types"
 import { THEME } from "../../scene/theme"
 import { boxSelect, buildSelectionBoxOverlay } from "./boxSelection"
+import type { PromptId } from "../../locales/types"
+import { pickObjects } from "./objectSelection"
 import {
   CommandOption,
   CommandOptionOutcome,
   PointerInput,
+  QuestionInput,
   Tool,
   ToolContext,
 } from "./Tool"
@@ -155,7 +158,7 @@ export class DimSpaceTool implements Tool {
         const entity = ctx.document.get(id)
         return entity !== undefined && spaceable(entity, base)
       })
-      this.applyPick(ids, subtract, ctx)
+      this.applyPick(ids, subtract, ctx, true)
       this.enterSelect(base, ctx)
     } else {
       return
@@ -171,6 +174,33 @@ export class DimSpaceTool implements Tool {
     this.enterValue(this.state.base, ctx)
     ctx.requestRender()
     return true
+  }
+
+  question(): PromptId {
+    switch (this.state.phase) {
+      case "base":
+        return "spaceBaseDimension"
+      case "value":
+        return "enterValueOr"
+      default:
+        return "selectDimensionsToSpace"
+    }
+  }
+
+  /** As AutoCAD 2023's console refuses DIMSPACE's picks. */
+  takes(): QuestionInput | null {
+    switch (this.state.phase) {
+      case "base":
+        return "objectOrLast"
+      case "value":
+        return null
+      default:
+        return "wholeObjects"
+    }
+  }
+
+  defaultOption(): string | null {
+    return this.state.phase === "value" ? "Auto" : null
   }
 
   commandOptions(): readonly CommandOption[] {
@@ -302,15 +332,14 @@ export class DimSpaceTool implements Tool {
     if (moved.length > 0) ctx.execute(new UpdateEntitiesCommand(moved))
   }
 
+  /** Adds to the set or takes from it, counted on the prompt's line as AutoCAD counts. */
   private applyPick(
     ids: readonly EntityId[],
     subtract: boolean,
-    ctx: ToolContext
+    ctx: ToolContext,
+    box = false
   ): void {
-    for (const id of ids) {
-      if (subtract) ctx.selection.remove(id)
-      else ctx.selection.add(id)
-    }
+    pickObjects(ids, subtract, box, ctx)
   }
 
   private pickDimension(world: Vec2, ctx: ToolContext): DimensionEntity | null {
@@ -362,6 +391,10 @@ export class DimSpaceTool implements Tool {
     const session: DynamicInputSession = {
       fields: [{ id: "spacing", prompt: "dimensionSpacing", kind: "distance" }],
       commit: (values, commitCtx) => {
+        if (values.spacing < 0) {
+          commitCtx.report(commitCtx.text.message("negativeSpacing"), "error")
+          return
+        }
         this.apply(base, values.spacing, commitCtx)
         commitCtx.endCommand()
       },

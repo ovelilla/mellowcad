@@ -239,6 +239,25 @@ describe("a wrong answer mid-command", () => {
     )
   })
 
+  it("refuses at the dimension commands' prompts as AutoCAD's console does", () => {
+    const cad = createHarness({ entities: twoLines() })
+    cad.command("DIMLINEAR")
+    answerLine(cad, "FOO")
+    expect(cad.commandLog().at(-1)).toBe("Invalid point input.")
+    cad.click(p(0, 0)).click(p(100, 0)).option("Angle")
+    answerLine(cad, "FOO")
+    expect(cad.commandLog().at(-1)).toBe("Invalid Input.")
+    cad.escape().command("DIMRADIUS")
+    answerLine(cad, "FOO")
+    expect(cad.commandLog().slice(-2)).toEqual([
+      "*Invalid selection*",
+      "Expects a single object.",
+    ])
+    cad.escape().command("DIMSPACE")
+    answerLine(cad, "FOO")
+    expect(cad.commandLog().at(-1)).toBe("Expects a point or Last")
+  })
+
   it("leaves U to TRIM's prompt until there is something to undo", () => {
     const cad = createHarness({
       entities: [...twoLines(), lineOf(p(50, -50), p(50, 50), { id: "C" })],

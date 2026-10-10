@@ -1847,67 +1847,100 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
   properties: -
   cycling: -
 > DIMLINEAR
-  prompt: DIMLINEAR:
+  prompt: DIMLINEAR Specify first extension line origin or <select object>:
   asks: "Specify first extension line origin or <select object>"
+  tip: Specify first extension line origin or <select object>:
   dyn: "X,Y"=""||*
   command| DLI DIMLINEAR
 > first
+  prompt: DIMLINEAR Specify second extension line origin:
   asks: "Specify second extension line origin"
+  tip: Specify second extension line origin:
+  prompt| Specify first extension line origin or <select object>:
 > second
-  prompt: DIMLINEAR [Text/Angle/Horizontal/Vertical/Rotated]:
+  prompt: DIMLINEAR Specify dimension line location or [Text/Angle/Horizontal/Vertical/Rotated]:
   asks: "Specify dimension line location"
+  tip: Specify dimension line location or
   options: [T] Text, [A] Angle, [H] Horizontal, [V] Vertical, [R] Rotated
+  prompt| Specify second extension line origin:
+  info| Non-associative dimension created.
 > T
+  prompt: DIMLINEAR Enter dimension text <100.00>:
   asks: "Enter dimension text"
+  tip: Enter dimension text
   dyn: "Enter dimension text"=""||*
+  options: -
+  prompt| Specify dimension line location or [Text/Angle/Horizontal/Vertical/Rotated]: T
 > text
   dyn: "Enter dimension text"="<> TYP"||*
 > enter
+  prompt: DIMLINEAR Specify dimension line location or [Text/Angle/Horizontal/Vertical/Rotated]:
   asks: "Specify dimension line location"
+  tip: Specify dimension line location or
   dyn: "X,Y"=""||*
+  options: [T] Text, [A] Angle, [H] Horizontal, [V] Vertical, [R] Rotated
+  prompt| Enter dimension text <100.00>: <> TYP
 > A
+  prompt: DIMLINEAR Specify angle of dimension text:
   asks: "Specify angle of dimension text"
+  tip: Specify angle of dimension text:
   dyn: "Specify angle of dimension text"=""|0.00|°*
+  options: -
+  prompt| Specify dimension line location or [Text/Angle/Horizontal/Vertical/Rotated]: A
 > angle
   dyn: "Specify angle of dimension text"="10"|0.00|°*
 > enter
+  prompt: DIMLINEAR Specify dimension line location or [Text/Angle/Horizontal/Vertical/Rotated]:
   asks: "Specify dimension line location"
-  dyn: "X,Y"=""||*
-> H
-> V
-> R
-  prompt: DIMLINEAR:
-  asks: "Specify angle of dimension line"
-  dyn: "Specify angle of dimension line"=""|90.00|°*
-  options: -
-> rotation
-  dyn: "Specify angle of dimension line"="30"|90.00|°*
-> enter
-  prompt: DIMLINEAR [Text/Angle/Horizontal/Vertical/Rotated]:
-  asks: "Specify dimension line location"
+  tip: Specify dimension line location or
   dyn: "X,Y"=""||*
   options: [T] Text, [A] Angle, [H] Horizontal, [V] Vertical, [R] Rotated
+  prompt| Specify angle of dimension text: 10
+> H
+  prompt: DIMLINEAR Specify dimension line location or [Text/Angle]:
+  options: [T] Text, [A] Angle
+  prompt| Specify dimension line location or [Text/Angle/Horizontal/Vertical/Rotated]: H
+> V
+> R
+> rotation
+  dyn: "X,Y"="30"||*
+> enter
+  dyn: "X,Y"=""||*
+  prompt| Specify dimension line location or [Text/Angle]: 30
 > location
   prompt: Command:
   asks: -
+  tip: -
   dyn: -
   options: -
+  prompt| Specify dimension line location or [Text/Angle]:
+  info| Dimension text = 100.00
 > DIMALIGNED
-  prompt: DIMALIGNED:
+  prompt: DIMALIGNED Specify first extension line origin or <select object>:
   asks: "Specify first extension line origin or <select object>"
+  tip: Specify first extension line origin or <select object>:
   dyn: "X,Y"=""||*
   command| DAL DIMALIGNED
 > first
+  prompt: DIMALIGNED Specify second extension line origin:
   asks: "Specify second extension line origin"
+  tip: Specify second extension line origin:
+  prompt| Specify first extension line origin or <select object>:
 > second
-  prompt: DIMALIGNED [Text/Angle]:
+  prompt: DIMALIGNED Specify dimension line location or [Text/Angle]:
   asks: "Specify dimension line location"
+  tip: Specify dimension line location or
   options: [T] Text, [A] Angle
+  prompt| Specify second extension line origin:
+  info| Non-associative dimension created.
 > location
   prompt: Command:
   asks: -
+  tip: -
   dyn: -
   options: -
+  prompt| Specify dimension line location or [Text/Angle]:
+  info| Dimension text = 100.00
 
 ## DIMLINEAR select object
 > start
@@ -1920,23 +1953,32 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
   properties: -
   cycling: -
 > DIMLINEAR
-  prompt: DIMLINEAR:
+  prompt: DIMLINEAR Specify first extension line origin or <select object>:
   asks: "Specify first extension line origin or <select object>"
+  tip: Specify first extension line origin or <select object>:
   dyn: "X,Y"=""||*
   command| DIMLINEAR
 > enter
+  prompt: DIMLINEAR Select object to dimension:
   asks: 
+  tip: Select object to dimension:
   dyn: 
+  prompt| Specify first extension line origin or <select object>:
 > pick
-  prompt: DIMLINEAR [Text/Angle/Horizontal/Vertical/Rotated]:
+  prompt: DIMLINEAR Specify dimension line location or [Text/Angle/Horizontal/Vertical/Rotated]:
   asks: "Specify dimension line location"
+  tip: Specify dimension line location or
   dyn: "X,Y"=""||*
   options: [T] Text, [A] Angle, [H] Horizontal, [V] Vertical, [R] Rotated
+  prompt| Select object to dimension:
 > location
   prompt: Command:
   asks: -
+  tip: -
   dyn: -
   options: -
+  prompt| Specify dimension line location or [Text/Angle/Horizontal/Vertical/Rotated]:
+  info| Dimension text = 100.00
 
 ## DIMRADIUS and DIMDIAMETER
 > start
@@ -1949,59 +1991,79 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
   properties: -
   cycling: -
 > DIMRADIUS
-  prompt: DIMRADIUS:
+  prompt: DIMRADIUS Select arc or circle:
   asks: 
+  tip: Select arc or circle:
   dyn: 
   command| DRA DIMRADIUS
 > pick
-  prompt: DIMRADIUS [Text/Angle]:
+  prompt: DIMRADIUS Specify dimension line location or [Text/Angle]:
   asks: "Specify dimension line location"
+  tip: Specify dimension line location or
   dyn: "X,Y"=""||*
   options: [T] Text, [A] Angle
+  prompt| Select arc or circle:
 > T
-  prompt: DIMRADIUS:
+  prompt: DIMRADIUS Enter dimension text <50.00>:
   asks: "Enter dimension text"
+  tip: Enter dimension text
   dyn: "Enter dimension text"=""||*
   options: -
+  prompt| Specify dimension line location or [Text/Angle]: T
 > text
   dyn: "Enter dimension text"="R<>"||*
 > enter
-  prompt: DIMRADIUS [Text/Angle]:
+  prompt: DIMRADIUS Specify dimension line location or [Text/Angle]:
   asks: "Specify dimension line location"
+  tip: Specify dimension line location or
   dyn: "X,Y"=""||*
   options: [T] Text, [A] Angle
+  prompt| Enter dimension text <50.00>: R<>
 > A
-  prompt: DIMRADIUS:
+  prompt: DIMRADIUS Specify angle of dimension text:
   asks: "Specify angle of dimension text"
+  tip: Specify angle of dimension text:
   dyn: "Specify angle of dimension text"=""|0.00|°*
   options: -
+  prompt| Specify dimension line location or [Text/Angle]: A
 > angle
   dyn: "Specify angle of dimension text"="15"|0.00|°*
 > enter
-  prompt: DIMRADIUS [Text/Angle]:
+  prompt: DIMRADIUS Specify dimension line location or [Text/Angle]:
   asks: "Specify dimension line location"
+  tip: Specify dimension line location or
   dyn: "X,Y"=""||*
   options: [T] Text, [A] Angle
+  prompt| Specify angle of dimension text: 15
 > location
   prompt: Command:
   asks: -
+  tip: -
   dyn: -
   options: -
+  prompt| Specify dimension line location or [Text/Angle]:
+  info| Dimension text = 50.00
 > DIMDIAMETER
-  prompt: DIMDIAMETER:
+  prompt: DIMDIAMETER Select arc or circle:
   asks: 
+  tip: Select arc or circle:
   dyn: 
   command| DDI DIMDIAMETER
 > pick
-  prompt: DIMDIAMETER [Text/Angle]:
+  prompt: DIMDIAMETER Specify dimension line location or [Text/Angle]:
   asks: "Specify dimension line location"
+  tip: Specify dimension line location or
   dyn: "X,Y"=""||*
   options: [T] Text, [A] Angle
+  prompt| Select arc or circle:
 > location
   prompt: Command:
   asks: -
+  tip: -
   dyn: -
   options: -
+  prompt| Specify dimension line location or [Text/Angle]:
+  info| Dimension text = 100.00
 
 ## DIMANGULAR
 > start
@@ -2014,50 +2076,74 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
   properties: -
   cycling: -
 > DIMANGULAR
-  prompt: DIMANGULAR:
+  prompt: DIMANGULAR Select arc, circle, line, or <specify vertex>:
   asks: 
+  tip: Select arc, circle, line, or <specify vertex>:
   dyn: 
   command| DAN DIMANGULAR
 > enter
+  prompt: DIMANGULAR Specify angle vertex:
   asks: "Specify angle vertex"
+  tip: Specify angle vertex:
   dyn: "X,Y"=""||*
+  prompt| Select arc, circle, line, or <specify vertex>:
 > vertex
+  prompt: DIMANGULAR Specify first angle endpoint:
   asks: "Specify first angle endpoint"
+  tip: Specify first angle endpoint:
+  prompt| Specify angle vertex:
 > first endpoint
+  prompt: DIMANGULAR Specify second angle endpoint:
   asks: "Specify second angle endpoint"
+  tip: Specify second angle endpoint:
+  prompt| Specify first angle endpoint:
 > second endpoint
-  prompt: DIMANGULAR [Text/Angle]:
+  prompt: DIMANGULAR Specify dimension arc line location or [Text/Angle]:
   asks: "Specify dimension arc line location"
+  tip: Specify dimension arc line location or
   options: [T] Text, [A] Angle
+  prompt| Specify second angle endpoint:
+  info| Non-associative dimension created.
 > T
-  prompt: DIMANGULAR:
+  prompt: DIMANGULAR Enter dimension text <90°>:
   asks: "Enter dimension text"
+  tip: Enter dimension text
   dyn: "Enter dimension text"=""||*
   options: -
+  prompt| Specify dimension arc line location or [Text/Angle]: T
 > text
   dyn: "Enter dimension text"="<> TYP"||*
 > enter
-  prompt: DIMANGULAR [Text/Angle]:
+  prompt: DIMANGULAR Specify dimension arc line location or [Text/Angle]:
   asks: "Specify dimension arc line location"
+  tip: Specify dimension arc line location or
   dyn: "X,Y"=""||*
   options: [T] Text, [A] Angle
+  prompt| Enter dimension text <90°>: <> TYP
 > A
-  prompt: DIMANGULAR:
+  prompt: DIMANGULAR Specify angle of dimension text:
   asks: "Specify angle of dimension text"
+  tip: Specify angle of dimension text:
   dyn: "Specify angle of dimension text"=""|0.00|°*
   options: -
+  prompt| Specify dimension arc line location or [Text/Angle]: A
 > angle
   dyn: "Specify angle of dimension text"="30"|0.00|°*
 > enter
-  prompt: DIMANGULAR [Text/Angle]:
+  prompt: DIMANGULAR Specify dimension arc line location or [Text/Angle]:
   asks: "Specify dimension arc line location"
+  tip: Specify dimension arc line location or
   dyn: "X,Y"=""||*
   options: [T] Text, [A] Angle
+  prompt| Specify angle of dimension text: 30
 > arc location
   prompt: Command:
   asks: -
+  tip: -
   dyn: -
   options: -
+  prompt| Specify dimension arc line location or [Text/Angle]:
+  info| Dimension text = 90°
 
 ## DIMANGULAR lines
 > start
@@ -2070,21 +2156,29 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
   properties: -
   cycling: -
 > DIMANGULAR
-  prompt: DIMANGULAR:
+  prompt: DIMANGULAR Select arc, circle, line, or <specify vertex>:
   asks: 
+  tip: Select arc, circle, line, or <specify vertex>:
   dyn: 
   command| DIMANGULAR
 > first line
+  prompt: DIMANGULAR Select second line:
+  tip: Select second line:
+  prompt| Select arc, circle, line, or <specify vertex>:
 > second line
-  prompt: DIMANGULAR [Text/Angle]:
+  prompt: DIMANGULAR Specify dimension arc line location or [Text/Angle]:
   asks: "Specify dimension arc line location"
+  tip: Specify dimension arc line location or
   dyn: "X,Y"=""||*
   options: [T] Text, [A] Angle
+  prompt| Select second line:
 > escape
   prompt: Command:
   asks: -
+  tip: -
   dyn: -
   options: -
+  prompt| Specify dimension arc line location or [Text/Angle]: *Cancel*
 
 ## DIMBASELINE and DIMCONTINUE
 > start
@@ -2097,49 +2191,59 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
   properties: -
   cycling: -
 > DIMBASELINE
-  prompt: DIMBASELINE [Select]:
-  asks: "Specify a second extension line origin"
+  prompt: DIMBASELINE Specify second extension line origin or [Select/Undo] <Select>:
+  asks: ""
+  tip: Specify second extension line origin or
   dyn: "X,Y"=""||*
-  options: [S] Select
+  options: [S] Select, [U] Undo
   command| DBA DIMBASELINE
 > second origin
-  prompt: DIMBASELINE [Undo/Select]:
-  options: [U] Undo, [S] Select
+  prompt| Specify second extension line origin or [Select/Undo] <Select>:
+  info| Dimension text = 180.00
 > U
-  prompt: DIMBASELINE [Select]:
-  options: [S] Select
+  prompt| Specify second extension line origin or [Select/Undo] <Select>: U
 > S
-  prompt: DIMBASELINE:
+  prompt: DIMBASELINE Select base dimension:
   asks: 
+  tip: Select base dimension:
   dyn: 
   options: -
+  prompt| Specify second extension line origin or [Select/Undo] <Select>: S
 > pick
-  prompt: DIMBASELINE [Select]:
-  asks: "Specify a second extension line origin"
+  prompt: DIMBASELINE Specify second extension line origin or [Select/Undo] <Select>:
+  asks: ""
+  tip: Specify second extension line origin or
   dyn: "X,Y"=""||*
-  options: [S] Select
+  options: [S] Select, [U] Undo
+  prompt| Select base dimension:
 > escape
   prompt: Command:
   asks: -
+  tip: -
   dyn: -
   options: -
+  prompt| Specify second extension line origin or [Select/Undo] <Select>: *Cancel*
 > DIMCONTINUE
-  prompt: DIMCONTINUE [Select]:
-  asks: "Specify a second extension line origin"
+  prompt: DIMCONTINUE Specify second extension line origin or [Select/Undo] <Select>:
+  asks: ""
+  tip: Specify second extension line origin or
   dyn: "X,Y"=""||*
-  options: [S] Select
+  options: [S] Select, [U] Undo
   command| DCO DIMCONTINUE
 > second origin
-  prompt: DIMCONTINUE [Undo/Select]:
-  options: [U] Undo, [S] Select
+  prompt| Specify second extension line origin or [Select/Undo] <Select>:
+  info| Dimension text = 80.00
 > escape
   prompt: Command:
   asks: -
+  tip: -
   dyn: -
   options: -
+  prompt| Specify second extension line origin or [Select/Undo] <Select>: *Cancel*
 > DIMBASELINE with none
-  prompt: DIMBASELINE:
+  prompt: DIMBASELINE Select base dimension:
   asks: 
+  tip: Select base dimension:
   dyn: 
   command| ERASE 1 found
   info| 1 object erased.
@@ -2156,25 +2260,35 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
   properties: -
   cycling: -
 > DIMSPACE
-  prompt: DIMSPACE:
+  prompt: DIMSPACE Select base dimension:
   asks: 
+  tip: Select base dimension:
   dyn: 
   command| DIMSPACE
 > base
+  prompt: DIMSPACE Select dimensions to space:
+  tip: Select dimensions to space:
+  prompt| Select base dimension:
 > pick
   properties: Dimension (1) [Dimension: Measurement=100.00 mm, Text override=—, Type=Linear, Rotation=0.00°~] [Definition points: First X=0.00, First Y=0.00, Second X=100.00, Second Y=0.00]
+  prompt| Select dimensions to space: 1 found
 > pick
   properties: 2 objects (2) [Selection: Dimensions=2]
+  prompt| Select dimensions to space: 1 found, 2 total
 > enter
-  prompt: DIMSPACE [Auto]:
+  prompt: DIMSPACE Enter value or [Auto] <Auto>:
   asks: "Enter value"
+  tip: Enter value or
   dyn: "Enter value"=""|5.00|mm*
   options: [A] Auto
+  prompt| Select dimensions to space:
 > A
   prompt: Command:
   asks: -
+  tip: -
   dyn: -
   options: -
+  prompt| Enter value or [Auto] <Auto>: A
 
 ## OFFSET
 > start

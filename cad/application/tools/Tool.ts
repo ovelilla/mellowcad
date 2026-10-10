@@ -111,7 +111,9 @@ export interface ToolQuestion {
  * (`*Invalid selection*` and the selection modes it expects: with sub-objects
  * as MOVE's, of whole objects as MIRROR's and JOIN's, STRETCH's crossing one,
  * BREAK's set of one object or ARRAYPATH's path curve), one object picked (`*Invalid selection*` and
- * its keywords), or a command's own refusal (CIRCLE's radius, POLYGON's sides).
+ * its keywords, `Last` first for a plain pick as DIMSPACE's base dimension, or
+ * `Expects a single object.` for the dimension commands' picks), or a
+ * command's own refusal (CIRCLE's radius, POLYGON's sides).
  */
 export type QuestionInput =
   | "point"
@@ -127,6 +129,8 @@ export type QuestionInput =
   | "oneObject"
   | "pathCurve"
   | "object"
+  | "objectOrLast"
+  | "singleObject"
   | { readonly refusal: MessageId; readonly values?: MessageValues }
 
 /**

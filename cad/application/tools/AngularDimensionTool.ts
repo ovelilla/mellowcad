@@ -36,7 +36,10 @@ import {
   PointerInput,
   Tool,
   ToolContext,
+  ToolQuestion,
+  QuestionInput,
 } from "./Tool"
+import { measurementOf } from "./DimensionTool"
 import { withCurrentProperties } from "./currentProperties"
 
 /**
@@ -74,6 +77,10 @@ export class AngularDimensionTool implements Tool {
   readonly id = "dimangular"
 
   private state: AngularToolState = { phase: "select", hover: null }
+  /** Whether the angle is the three-point form's, which no object defines. */
+  private byPoints = false
+  /** The measurement Text offers as its `<default>`. */
+  private measured = ""
   private text: string | undefined
   private textAngle: number | undefined
   private lastScreen: Vec2 | null = null
@@ -132,6 +139,7 @@ export class AngularDimensionTool implements Tool {
         this.enterSecondEndpoint(this.state.vertex, input.point, ctx)
         break
       case "secondEndpoint":
+        this.reportByPoints(ctx)
         this.enterLocation(
           {
             kind: "points",
@@ -157,6 +165,7 @@ export class AngularDimensionTool implements Tool {
    */
   onEnter(ctx: ToolContext): boolean {
     if (this.state.phase !== "select") return false
+    this.byPoints = true
     this.state = { phase: "vertex" }
     this.openCoordinate(ctx, "angleVertex", (commitCtx) => {
       const point = this.parsePoint(commitCtx, null)
@@ -167,6 +176,49 @@ export class AngularDimensionTool implements Tool {
     return true
   }
 
+  question(): PromptId | ToolQuestion {
+    const state = this.state
+    switch (state.phase) {
+      case "select":
+        return "selectArcCircleLineOrVertex"
+      case "secondLine":
+        return "selectSecondLine"
+      case "vertex":
+        return "angleVertex"
+      case "firstEndpoint":
+        return "firstAngleEndpoint"
+      case "secondEndpoint":
+        return "secondAngleEndpoint"
+      case "location":
+        switch (state.prompt) {
+          case "text":
+            return { id: "enterDimensionText", enter: { name: this.measured } }
+          case "textAngle":
+            return "specifyAngleOfDimensionText"
+          case null:
+            return "dimensionArcLocationOr"
+        }
+    }
+  }
+
+  /** As AutoCAD 2023's console refuses a dimension's answers. */
+  takes(): QuestionInput | null {
+    const state = this.state
+    switch (state.phase) {
+      case "select":
+      case "secondLine":
+        return "singleObject"
+      case "location":
+        if (state.prompt === "text") return null
+        if (state.prompt === "textAngle") {
+          return { refusal: "invalidInputCapital" }
+        }
+        return { refusal: "invalidPointInput" }
+      default:
+        return { refusal: "invalidPointInput" }
+    }
+  }
+
   commandOptions(): readonly CommandOption[] {
     if (this.state.phase !== "location" || this.state.prompt !== null) return []
     return [{ id: "Text" }, { id: "Angle" }]
@@ -175,7 +227,14 @@ export class AngularDimensionTool implements Tool {
   invokeOption(id: string, ctx: ToolContext): CommandOptionOutcome {
     if (this.state.phase !== "location") return "unhandled"
     switch (id) {
-      case "Text":
+      case "Text": {
+        const pending = this.pending(
+          this.state.target,
+          this.state.cursor,
+          ctx,
+          ANGULAR_PREVIEW_ID
+        )
+        this.measured = pending ? measurementOf(pending, ctx) : ""
         this.state = { ...this.state, prompt: "text" }
         openDimensionTextInput(
           ctx,
@@ -187,6 +246,7 @@ export class AngularDimensionTool implements Tool {
           }
         )
         return "continue"
+      }
       case "Angle":
         this.state = { ...this.state, prompt: "textAngle" }
         openDimensionTextAngleInput(
@@ -297,6 +357,9 @@ export class AngularDimensionTool implements Tool {
     const dim = this.pending(this.state.target, at, ctx)
     if (!dim) return
     ctx.execute(new AddEntityCommand(withCurrentProperties(dim, ctx)))
+    ctx.report(
+      ctx.text.message("dimensionTextIs", { text: measurementOf(dim, ctx) })
+    )
     ctx.endCommand()
   }
 
@@ -342,7 +405,13 @@ export class AngularDimensionTool implements Tool {
       : null
   }
 
+  /** Three points: nothing ties the dimension to an object, as AutoCAD says. */
+  private reportByPoints(ctx: ToolContext): void {
+    if (this.byPoints) ctx.report(ctx.text.message("nonAssociativeDimension"))
+  }
+
   private enterSelect(ctx: ToolContext): void {
+    this.byPoints = false
     this.state = { phase: "select", hover: null }
     // Keyword-only prompt: no field, so the canvas keeps focus, clicking an
     // object is the primary gesture and Enter reaches `onEnter`.
@@ -392,6 +461,7 @@ export class AngularDimensionTool implements Tool {
       if (this.state.phase !== "secondEndpoint") return false
       const point = this.parsePoint(commitCtx, this.state.first)
       if (!point) return false
+      this.reportByPoints(commitCtx)
       this.enterLocation(
         {
           kind: "points",

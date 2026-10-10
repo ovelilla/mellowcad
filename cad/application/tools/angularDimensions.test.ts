@@ -444,7 +444,7 @@ describe("angular dimensions elsewhere in the app", () => {
       .click(p(100, 0))
       .click(p(0, -40))
     chainable.command("DIMBASELINE")
-    expect(chainable.optionAbbreviations()).toEqual(["S"])
+    expect(chainable.optionAbbreviations()).toEqual(["S", "U"])
 
     const cad = quarter()
     cad.command("DIMBASELINE")

@@ -10,6 +10,8 @@ import {
   createDimension,
   DimensionEntity,
   DimensionKind,
+  dimensionMeasurement,
+  dimensionText,
   Entity,
   entityZAt,
   onPlaneOf,
@@ -39,8 +41,10 @@ import {
   CommandOption,
   CommandOptionOutcome,
   PointerInput,
+  QuestionInput,
   Tool,
   ToolContext,
+  ToolQuestion,
 } from "./Tool"
 import { withCurrentProperties } from "./currentProperties"
 
@@ -49,11 +53,16 @@ import { withCurrentProperties } from "./currentProperties"
  * it is — they share every prompt, and differ only in what sets the direction
  * measured along and in which keywords the location prompt offers.
  *
- * The prompt sequence is AutoCAD's: first extension line origin (or Enter to
- * pick an object and take its endpoints), second extension line origin, then
- * the dimension line location, where `[Text/Angle]` — plus
- * `[Horizontal/Vertical/Rotated]` for DIMLINEAR — are available. The command
- * ends the moment the location is picked.
+ * The prompt sequence is AutoCAD's, as its 2023 console asks it: `Specify
+ * first extension line origin or <select object>:` (Enter: `Select object to
+ * dimension:`, its endpoints taken), `Specify second extension line origin:`
+ * and `Non-associative dimension created.`, then `Specify dimension line
+ * location or [Text/Angle/Horizontal/Vertical/Rotated]:` — DIMALIGNED, and
+ * DIMLINEAR once Horizontal, Vertical or Rotated has set the direction,
+ * offering only `[Text/Angle]` —, whose Text asks `Enter dimension text
+ * <100.00>:`, Angle `Specify angle of dimension text:` and Rotated `Specify
+ * angle of dimension line <0>:`. The command ends the moment the location is
+ * picked, saying `Dimension text = 100.00`.
  *
  * Left free until Horizontal, Vertical or Rotated says otherwise, a linear
  * dimension picks its direction from where the location is dragged: pull the
@@ -77,6 +86,8 @@ export class DimensionTool implements Tool {
   private rotation: number | null = null
 
   private lastScreen: Vec2 | null = null
+  /** The measurement Text offers as its `<default>`. */
+  private measured = ""
 
   constructor(
     private readonly kind: DimensionKind,
@@ -96,6 +107,58 @@ export class DimensionTool implements Tool {
   onDeactivate(ctx: ToolContext): void {
     this.state = { phase: "first" }
     ctx.dynamicInput.close()
+  }
+
+  question(): PromptId | ToolQuestion {
+    const state = this.state
+    switch (state.phase) {
+      case "first":
+        return "firstExtensionOrigin"
+      case "select":
+        return "selectObjectToDimension"
+      case "second":
+        return "secondExtensionOrigin"
+      case "line":
+        switch (state.prompt) {
+          case "text":
+            return {
+              id: "enterDimensionText",
+              enter: { name: this.measured },
+            }
+          case "textAngle":
+            return this.kind === "aligned"
+              ? "dimensionTextAngle"
+              : "specifyAngleOfDimensionText"
+          case null:
+            return "dimensionLineLocationOr"
+        }
+        break
+      case "rotated":
+        return {
+          id: "dimensionLineAngle",
+          enter: {
+            angle: normalizeDegrees(((this.rotation ?? 0) * 180) / Math.PI),
+          },
+        }
+    }
+  }
+
+  /** As AutoCAD 2023's console refuses a dimension's answers. */
+  takes(): QuestionInput | null {
+    const state = this.state
+    switch (state.phase) {
+      case "select":
+        return "singleObject"
+      case "rotated":
+        return { refusal: "invalidInputCapital" }
+      case "line":
+        if (state.prompt === "textAngle") {
+          return { refusal: "invalidInputCapital" }
+        }
+        return state.prompt === "text" ? null : { refusal: "invalidPointInput" }
+      default:
+        return { refusal: "invalidPointInput" }
+    }
   }
 
   onPointerMove(input: PointerInput, ctx: ToolContext): void {
@@ -122,10 +185,11 @@ export class DimensionTool implements Tool {
       case "select": {
         const origins = this.pickOrigins(input, ctx)
         if (origins) this.enterLine(origins[0], origins[1], ctx)
+        else ctx.report(ctx.text.message("noObjectSelected"))
         break
       }
       case "second":
-        this.enterLine(this.state.first, input.point, ctx)
+        this.enterLineFromPoints(this.state.first, input.point, ctx)
         break
       case "line":
         this.place(input.point, ctx)
@@ -143,9 +207,10 @@ export class DimensionTool implements Tool {
   }
 
   commandOptions(): readonly CommandOption[] {
-    if (this.state.phase !== "line") return []
+    if (this.state.phase !== "line" || this.state.prompt !== null) return []
     const options: CommandOption[] = [{ id: "Text" }, { id: "Angle" }]
-    if (this.kind === "linear") {
+    // Once the direction is set the prompt offers the text keywords alone.
+    if (this.kind === "linear" && this.rotation === null) {
       options.push({ id: "Horizontal" }, { id: "Vertical" }, { id: "Rotated" })
     }
     return options
@@ -155,6 +220,7 @@ export class DimensionTool implements Tool {
     if (this.state.phase !== "line") return "unhandled"
     switch (id) {
       case "Text":
+        this.measured = measurementOf(this.offered(this.state, ctx), ctx)
         this.state = { ...this.state, prompt: "text" }
         this.openTextInput(ctx)
         return "continue"
@@ -237,6 +303,27 @@ export class DimensionTool implements Tool {
     }
   }
 
+  /**
+   * The dimension whose measurement Text offers: the one being dragged, or —
+   * while the cursor still sits on the origins and that measures nothing —
+   * the one along their longer extent, which is what the drag will measure.
+   */
+  private offered(
+    state: Extract<DimensionToolState, { phase: "line" }>,
+    ctx: ToolContext
+  ): DimensionEntity {
+    const pending = this.pending(state, state.cursor, ctx)
+    if (this.kind !== "linear" || this.rotation !== null) return pending
+    if (dimensionMeasurement(pending) > 1e-9) return pending
+    const first = worldPointToUcs(ctx.ucs, state.first)
+    const second = worldPointToUcs(ctx.ucs, state.second)
+    const local =
+      Math.abs(second.x - first.x) >= Math.abs(second.y - first.y)
+        ? 0
+        : Math.PI / 2
+    return { ...pending, rotation: ucsAngleToWorld(ctx.ucs, local) }
+  }
+
   /** The dimension as it stands while the location is dragged. */
   private pending(
     state: Extract<DimensionToolState, { phase: "line" }>,
@@ -305,6 +392,16 @@ export class DimensionTool implements Tool {
     this.openLineInput(ctx)
   }
 
+  /** Origins given as points: nothing ties the dimension to an object. */
+  private enterLineFromPoints(
+    first: Vec3,
+    second: Vec2,
+    ctx: ToolContext
+  ): void {
+    ctx.report(ctx.text.message("nonAssociativeDimension"))
+    this.enterLine(first, second, ctx)
+  }
+
   private setRotation(rotation: number, ctx: ToolContext): void {
     this.rotation = rotation
     if (this.state.phase === "rotated") {
@@ -340,6 +437,9 @@ export class DimensionTool implements Tool {
       linePoint
     )
     ctx.execute(new AddEntityCommand(withCurrentProperties(dim, ctx)))
+    ctx.report(
+      ctx.text.message("dimensionTextIs", { text: measurementOf(dim, ctx) })
+    )
     ctx.endCommand()
   }
 
@@ -388,7 +488,7 @@ export class DimensionTool implements Tool {
       const typed = commitCtx.dynamicInput.getText("point").trim()
       const point = this.parsePoint(typed, this.state.first, commitCtx)
       if (!point) return false
-      this.enterLine(this.state.first, point, commitCtx)
+      this.enterLineFromPoints(this.state.first, point, commitCtx)
       return true
     })
   }
@@ -487,6 +587,12 @@ export class DimensionTool implements Tool {
 
 /** Preview frames reuse one id so drawing them never burns entity ids. */
 const DIM_PREVIEW_ID = "__dimension_preview__"
+
+/** The measurement alone, as AutoCAD offers and reports it: no prefix, no override. */
+export function measurementOf(dim: DimensionEntity, ctx: ToolContext): string {
+  const style = ctx.document.getDimStyle(dim.styleId)
+  return dimensionText({ ...dim, text: "<>" }, style)
+}
 
 /**
  * The two extension-line origins a whole object supplies, following AutoCAD's

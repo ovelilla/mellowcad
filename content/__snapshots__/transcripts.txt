@@ -53,12 +53,15 @@ idle: Command:
 8619 +0 info |  | Current hatch pattern:  ANSI31
 8743 +67 input | Specify internal point or [Properties/Select objects]: | 
 9692 +288 command |  | DIMDIAMETER
-9980 +124 input | DIMDIAMETER: | 
-10104 +124 input | Specify dimension line location [Text/Angle]: | 
+9980 +124 input | Select arc or circle: | 
+10104 +124 input | Specify dimension line location or [Text/Angle]: | 
+10104 +0 info |  | Dimension text = 100.00
 10505 +247 command |  | DIMLINEAR
 10752 +124 input | Specify first extension line origin or <select object>: | 
 10877 +124 input | Specify second extension line origin: | 
-11001 +124 input | Specify dimension line location [Text/Angle/Horizontal/Vertical/Rotated]: | 
+10877 +0 info |  | Non-associative dimension created.
+11001 +124 input | Specify dimension line location or [Text/Angle/Horizontal/Vertical/Rotated]: | 
+11001 +0 info |  | Dimension text = 14.00
 ## offset
 command |  | PLINE
 input | Specify start point: | 0,0
@@ -165,10 +168,14 @@ input | Specify next point or [Arc/Close/Undo]: | C
 command |  | DIMLINEAR
 input | Specify first extension line origin or <select object>: | 
 input | Specify second extension line origin: | 
-input | Specify dimension line location [Text/Angle/Horizontal/Vertical/Rotated]: | 
+info |  | Non-associative dimension created.
+input | Specify dimension line location or [Text/Angle/Horizontal/Vertical/Rotated]: | 
+info |  | Dimension text = 25.00
 command |  | DIMCONTINUE
-input | Specify a second extension line origin [Select]: | 
-input | Specify a second extension line origin [Undo/Select]: | 
+input | Specify second extension line origin or [Select/Undo] <Select>: | 
+info |  | Dimension text = 40.00
+input | Specify second extension line origin or [Select/Undo] <Select>: | 
+info |  | Dimension text = 35.00
 ## organize
 command |  | RECTANG
 input | Specify first corner point or [Elevation/Thickness]: | 0,0
@@ -259,15 +266,19 @@ input | Enter text: |
 command |  | DIMLINEAR
 input | Specify first extension line origin or <select object>: | 
 input | Specify second extension line origin: | 
-input | Specify dimension line location [Text/Angle/Horizontal/Vertical/Rotated]: | T
-input | Enter dimension text [Text/Angle/Horizontal/Vertical/Rotated]: | autosave
-input | Specify dimension line location [Text/Angle/Horizontal/Vertical/Rotated]: | 
+info |  | Non-associative dimension created.
+input | Specify dimension line location or [Text/Angle/Horizontal/Vertical/Rotated]: | T
+input | Enter dimension text <66.00>: | autosave
+input | Specify dimension line location or [Text/Angle/Horizontal/Vertical/Rotated]: | 
+info |  | Dimension text = 66.00
 command |  | DIMLINEAR
 input | Specify first extension line origin or <select object>: | 
 input | Specify second extension line origin: | 
-input | Specify dimension line location [Text/Angle/Horizontal/Vertical/Rotated]: | T
-input | Enter dimension text [Text/Angle/Horizontal/Vertical/Rotated]: | Ctrl+S / Ctrl+O
-input | Specify dimension line location [Text/Angle/Horizontal/Vertical/Rotated]: | 
+info |  | Non-associative dimension created.
+input | Specify dimension line location or [Text/Angle/Horizontal/Vertical/Rotated]: | T
+input | Enter dimension text <66.00>: | Ctrl+S / Ctrl+O
+input | Specify dimension line location or [Text/Angle/Horizontal/Vertical/Rotated]: | 
+info |  | Dimension text = 66.00
 ## engineLayers
 command |  | RECTANG
 input | Specify first corner point or [Elevation/Thickness]: | 0,64
@@ -322,6 +333,8 @@ input | Enter text: |
 command |  | DIMLINEAR
 input | Specify first extension line origin or <select object>: | 
 input | Specify second extension line origin: | 
-input | Specify dimension line location [Text/Angle/Horizontal/Vertical/Rotated]: | T
-input | Enter dimension text [Text/Angle/Horizontal/Vertical/Rotated]: | imports point down
-input | Specify dimension line location [Text/Angle/Horizontal/Vertical/Rotated]: | 
+info |  | Non-associative dimension created.
+input | Specify dimension line location or [Text/Angle/Horizontal/Vertical/Rotated]: | T
+input | Enter dimension text <75.00>: | imports point down
+input | Specify dimension line location or [Text/Angle/Horizontal/Vertical/Rotated]: | 
+info |  | Dimension text = 75.00

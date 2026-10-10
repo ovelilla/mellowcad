@@ -27,14 +27,18 @@ import {
   openDimensionTextAngleInput,
   openDimensionTextInput,
 } from "./dimensionTextOptions"
+import type { PromptId } from "../../locales/types"
 import {
   CommandOption,
   CommandOptionOutcome,
   PointerInput,
+  QuestionInput,
   Tool,
   ToolContext,
+  ToolQuestion,
 } from "./Tool"
 import { withCurrentProperties } from "./currentProperties"
+import { measurementOf } from "./DimensionTool"
 
 /** Which measurement a radial dimension reports. */
 export type RadialDimensionKind = "radius" | "diameter"
@@ -44,11 +48,12 @@ export type RadialDimensionKind = "radius" | "diameter"
  * it is — they run the identical two prompts and differ only in the number they
  * report and the symbol in front of it ("R" or "Ø").
  *
- * The prompts are AutoCAD's: **Select arc or circle** — "specifies a circle,
- * arc, or arc segment on a polyline" — then **Dimension line location**, which
- * "determines the angle of the dimension line and the location of the dimension
- * text", offering `[Text/Angle]`. The command ends the moment the location is
- * picked.
+ * The prompts are AutoCAD's: `Select arc or circle:` — "specifies a circle,
+ * arc, or arc segment on a polyline" — then `Specify dimension line location
+ * or [Text/Angle]:`, which "determines the angle of the dimension line and the
+ * location of the dimension text", its Text asking `Enter dimension text
+ * <10.00>:` and Angle `Specify angle of dimension text:`. The command ends
+ * the moment the location is picked, saying `Dimension text = 10.00`.
  *
  * Placing the location inside the circle draws the dimension line across the
  * object; placing it outside turns it into a leader and marks the centre
@@ -66,6 +71,8 @@ export type RadialDimensionKind = "radius" | "diameter"
  */
 export class RadialDimensionTool implements Tool {
   private state: RadialToolState = { phase: "select", hover: null }
+  /** The measurement Text offers as its `<default>`. */
+  private measured = ""
   private text: string | undefined
   private textAngle: number | undefined
   private lastScreen: Vec2 | null = null
@@ -114,6 +121,33 @@ export class RadialDimensionTool implements Tool {
     ctx.requestRender()
   }
 
+  question(): PromptId | ToolQuestion {
+    const state = this.state
+    if (state.phase === "select") return "selectArcOrCircle"
+    switch (state.prompt) {
+      case "text":
+        return { id: "enterDimensionText", enter: { name: this.measured } }
+      case "textAngle":
+        return "specifyAngleOfDimensionText"
+      case null:
+        return "dimensionLineLocationOr"
+    }
+  }
+
+  /** As AutoCAD 2023's console refuses a dimension's answers. */
+  takes(): QuestionInput | null {
+    const state = this.state
+    if (state.phase === "select") return "singleObject"
+    switch (state.prompt) {
+      case "text":
+        return null
+      case "textAngle":
+        return { refusal: "invalidInputCapital" }
+      case null:
+        return { refusal: "invalidPointInput" }
+    }
+  }
+
   commandOptions(): readonly CommandOption[] {
     if (this.state.phase !== "location" || this.state.prompt !== null) return []
     return [{ id: "Text" }, { id: "Angle" }]
@@ -123,6 +157,10 @@ export class RadialDimensionTool implements Tool {
     if (this.state.phase !== "location") return "unhandled"
     switch (id) {
       case "Text":
+        this.measured = measurementOf(
+          this.pending(this.state.target, this.state.cursor, ctx),
+          ctx
+        )
         this.state = { ...this.state, prompt: "text" }
         openDimensionTextInput(
           ctx,
@@ -216,10 +254,10 @@ export class RadialDimensionTool implements Tool {
 
   private place(at: Vec3, ctx: ToolContext): void {
     if (this.state.phase !== "location") return
-    ctx.execute(
-      new AddEntityCommand(
-        withCurrentProperties(this.pending(this.state.target, at, ctx), ctx)
-      )
+    const dim = this.pending(this.state.target, at, ctx)
+    ctx.execute(new AddEntityCommand(withCurrentProperties(dim, ctx)))
+    ctx.report(
+      ctx.text.message("dimensionTextIs", { text: measurementOf(dim, ctx) })
     )
     ctx.endCommand()
   }

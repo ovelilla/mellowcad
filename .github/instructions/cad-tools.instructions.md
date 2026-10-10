@@ -59,6 +59,8 @@ A tool is an explicit state machine for one AutoCAD command. It owns a discrimin
 - `dimensionTextOptions.ts` — the Text and Angle keywords shared by every dimension command, so
   each of them asks with the same words. When two commands offer the same AutoCAD keyword, the
   prompt belongs in a shared helper: identical wording is part of the fidelity, not a nicety.
+  `measurementOf` (`DimensionTool.ts`) is the measurement as AutoCAD offers it at Text's
+  `<default>` and reports it after placing (`Dimension text = 100.00`): every dimension uses it.
 - `SceneBuilder.entityScenePrimitive` — always use it to draw ghosts, so new entity types render
   correctly everywhere for free. It returns a **list**, so spread it. Its fourth argument is an
   options bag: pass `{ blocks: ctx.blocks }` wherever the entity can be one the _user_ selected,

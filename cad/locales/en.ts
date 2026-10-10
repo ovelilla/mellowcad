@@ -899,7 +899,6 @@ export const en: EngineCatalog = {
       "mtextLine": "MText",
       "firstExtensionOrigin": "Specify first extension line origin or <select object>",
       "secondExtensionOrigin": "Specify second extension line origin",
-      "nextExtensionOrigin": "Specify a second extension line origin",
       "dimensionLineLocation": "Specify dimension line location",
       "dimensionLineAngle": "Specify angle of dimension line",
       "dimensionText": "Enter dimension text",
@@ -1109,7 +1108,21 @@ export const en: EngineCatalog = {
       "mtextHeight": "Specify height",
       "enterJustification": "Enter justification",
       "enterLineSpacingType": "Enter line spacing type",
-      "mtextStyleNameOr": "Enter style name or"
+      "mtextStyleNameOr": "Enter style name or",
+      "selectObjectToDimension": "Select object to dimension",
+      "dimensionLineLocationOr": "Specify dimension line location or",
+      "enterDimensionText": "Enter dimension text",
+      "specifyAngleOfDimensionText": "Specify angle of dimension text",
+      "selectArcOrCircle": "Select arc or circle",
+      "selectArcCircleLineOrVertex": "Select arc, circle, line, or <specify vertex>",
+      "selectSecondLine": "Select second line",
+      "dimensionArcLocationOr": "Specify dimension arc line location or",
+      "secondExtensionOriginOr": "Specify second extension line origin or",
+      "selectBaseDimension": "Select base dimension",
+      "selectContinuedDimension": "Select continued dimension",
+      "spaceBaseDimension": "Select base dimension",
+      "selectDimensionsToSpace": "Select dimensions to space",
+      "enterValueOr": "Enter value or"
     },
     "format": {
       "idle": "Command",
@@ -2000,7 +2013,20 @@ export const en: EngineCatalog = {
           "maxFactor"
         ],
         "x), inclusive."
-      ]
+      ],
+      "invalidPointInput": "Invalid point input.",
+      "invalidInputCapital": "Invalid Input.",
+      "nonAssociativeDimension": "Non-associative dimension created.",
+      "dimensionTextIs": [
+        "Dimension text = ",
+        [
+          "text"
+        ]
+      ],
+      "expectsSingleObject": "Expects a single object.",
+      "lastKeyword": "Last",
+      "noObjectSelected": "No object selected.",
+      "negativeSpacing": "Invalid spacing value, spacing value cannot be negative."
     },
     "feedback": {
       "snap": {

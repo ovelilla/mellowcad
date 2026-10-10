@@ -9,6 +9,7 @@ import {
 import { DEFAULT_DIM_STYLE } from "../../domain/dimStyles"
 import { parseDrawingFile } from "../../serialization/drawingFile"
 import { THEME } from "../../scene/theme"
+import { es } from "../../locales/es"
 
 const SPACING = DEFAULT_DIM_STYLE.baselineSpacing
 
@@ -190,13 +191,38 @@ describe("dimension chain prompts", () => {
     expect(added(cad)[0].first).toBeCloseToPoint(p(100, 0))
   })
 
-  it("offers Select at the origin prompt, and Undo only once one was placed", () => {
+  it("asks AutoCAD's questions and writes them answered", () => {
     const cad = createHarness({ entities: [base()] })
     cad.command("DIMBASELINE")
 
-    expect(cad.optionAbbreviations()).toEqual(["S"])
+    expect(cad.state().commandLine.prompt).toBe(
+      "DIMBASELINE Specify second extension line origin or [Select/Undo] <Select>:"
+    )
+    expect(cad.optionAbbreviations()).toEqual(["S", "U"])
     cad.click(p(180, 0))
-    expect(cad.optionAbbreviations()).toEqual(["U", "S"])
+    expect(cad.commandLog().at(-1)).toMatch(/^Dimension text = /)
+    cad.enter()
+    expect(cad.state().commandLine.prompt).toBe(
+      "DIMBASELINE Select base dimension:"
+    )
+    cad.click(p(500, 500))
+    expect(cad.commandLog().at(-1)).toBe("No object selected.")
+    cad.escape().command("DIMCONTINUE").enter()
+    expect(cad.state().commandLine.prompt).toBe(
+      "DIMCONTINUE Select continued dimension:"
+    )
+  })
+
+  it("asks in the words of Autodesk's Spanish table", () => {
+    const cad = createHarness({ locale: es, entities: [base()] })
+    cad.command("ACOLINEABASE")
+    expect(cad.state().commandLine.prompt).toBe(
+      "ACOLINEABASE Especifique un origen de la segunda línea de referencia o [Designar/desHacer] <Designar>:"
+    )
+    cad.enter()
+    expect(cad.state().commandLine.prompt).toBe(
+      "ACOLINEABASE Designe cota base:"
+    )
   })
 
   it("returns to the Select prompt on Enter, the <Select> default", () => {
