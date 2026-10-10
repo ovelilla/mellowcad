@@ -548,7 +548,7 @@
       "TEXTEDIT": {
         "Undo": "desHacer",
         "Mode": "Modo",
-        "Single": "Única",
+        "Single": "Simple",
         "Multiple": "Múltiple"
       },
       "DIMLINEAR": {
@@ -751,7 +751,7 @@
       "blockName": "Indique nombre de bloque o [?]",
       "insertionBasePoint": "Precise punto base de inserción",
       "insertionPoint": "Precise punto de inserción",
-      "insertScale": "Indique factor de escala",
+      "insertScale": "Precise factor de escala",
       "insertRotation": "Precise ángulo de rotación",
       "attributeTag": "Indique nombre de identificador de atributo",
       "attributePrompt": "Indique solicitud de atributo",
@@ -983,9 +983,9 @@
       "hatchNoBoundary": "No se ha encontrado un contorno de sombreado válido.",
       "textStyleUndefined": "El estilo de texto \"{name}\" no está definido.",
       "textJustifyOptions": "Indique una opción [{keywords}]:",
-      "attributeModes": "Modos de atributo actuales:  Invisible={invisible, select, yes {S} other {N}}  Constante={constant, select, yes {S} other {N}}  Verificable={verify, select, yes {S} other {N}}  Predefinido={preset, select, yes {S} other {N}}  Bloquear posición={lockPosition, select, yes {S} other {N}}",
-      "enterAttributeValues": "Indique los valores de atributo",
-      "verifyAttributeValues": "Verifique los valores de atributo",
+      "attributeModes": "Modos de atributo actuales:\nInvisible={invisible, select, yes {S} other {N}}  Constante={constant, select, yes {S} other {N}}  Verificable={verify, select, yes {S} other {N}}  Predefinido={preset, select, yes {S} other {N}}  Bloquear posición={lockPosition, select, yes {S} other {N}}  Anotativo=N  línea Múltiple=N",
+      "enterAttributeValues": "Indique valores de atributo",
+      "verifyAttributeValues": "Verificar valores de atributo",
       "explodeRejected": "{count, plural, one {# no se ha podido descomponer.} other {# no se han podido descomponer.}}",
       "currentUcsName": "Nombre de scp actual: {kind, select, world {*UNIVERSAL*} unnamed {*SIN NOMBRE*} other {{name}}}",
       "savedUcsHeader": "Sistemas de coordenadas guardados:",

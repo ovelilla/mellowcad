@@ -975,7 +975,7 @@ export const es: EngineLocale = {
       "TEXTEDIT": {
         "Undo": "desHacer",
         "Mode": "Modo",
-        "Single": "Única",
+        "Single": "Simple",
         "Multiple": "Múltiple"
       },
       "DIMLINEAR": {
@@ -1192,7 +1192,7 @@ export const es: EngineLocale = {
       "blockName": "Indique nombre de bloque o [?]",
       "insertionBasePoint": "Precise punto base de inserción",
       "insertionPoint": "Precise punto de inserción",
-      "insertScale": "Indique factor de escala",
+      "insertScale": "Precise factor de escala",
       "insertRotation": "Precise ángulo de rotación",
       "attributeTag": "Indique nombre de identificador de atributo",
       "attributePrompt": "Indique solicitud de atributo",
@@ -1659,7 +1659,7 @@ export const es: EngineLocale = {
         "]:"
       ],
       "attributeModes": [
-        "Modos de atributo actuales:  Invisible=",
+        "Modos de atributo actuales:\nInvisible=",
         [
           "invisible",
           1,
@@ -1703,10 +1703,11 @@ export const es: EngineLocale = {
             "yes": "S",
             "other": "N"
           }
-        ]
+        ],
+        "  Anotativo=N  línea Múltiple=N"
       ],
-      "enterAttributeValues": "Indique los valores de atributo",
-      "verifyAttributeValues": "Verifique los valores de atributo",
+      "enterAttributeValues": "Indique valores de atributo",
+      "verifyAttributeValues": "Verificar valores de atributo",
       "explodeRejected": [
         [
           "count",

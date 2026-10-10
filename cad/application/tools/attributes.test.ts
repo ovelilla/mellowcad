@@ -15,6 +15,7 @@ import {
   insertGeometry,
 } from "../../domain/entities"
 import { parseDrawingFile } from "../../serialization/drawingFile"
+import { es } from "../../locales/es"
 
 type Harness = ReturnType<typeof createHarness>
 
@@ -89,7 +90,7 @@ describe("ATTDEF", () => {
     defineAttribute(cad, { tag: "NOTE", prompt: "", value: "" })
 
     expect(cad.commandLog()).toContain(
-      "Current attribute modes: Invisible=Y Constant=N Verify=N Preset=N Lock position=N"
+      "Current attribute modes:\nInvisible=Y  Constant=N  Verify=N  Preset=N  Lock position=N  Annotative=N  Multiple line=N"
     )
     expect(cad.only<AttributeDefinitionEntity>("attdef").modes).toEqual(
       modes({ invisible: true, lockPosition: false })
@@ -228,6 +229,17 @@ describe("INSERT with attributes", () => {
     cad.command("INSERT").type("TAG").enter().type("300,0").enter()
 
     expect(cad.state().dynamicInput?.fields[0]?.value).toBe("X-0")
+  })
+
+  it("asks and verifies the values in the words of Autodesk's Spanish table", () => {
+    const cad = createHarness({
+      locale: es,
+      blocks: [taggedBlock(partDefinition({ verify: true }))],
+    })
+    insertTag(cad).type("P-7").enter()
+
+    expect(cad.commandLog()).toContain("Indique valores de atributo")
+    expect(cad.commandLog()).toContain("Verificar valores de atributo")
   })
 
   it("asks by tag when the definition has no prompt", () => {

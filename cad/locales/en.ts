@@ -1333,7 +1333,7 @@ export const en: EngineCatalog = {
         "]:"
       ],
       "attributeModes": [
-        "Current attribute modes: Invisible=",
+        "Current attribute modes:\nInvisible=",
         [
           "invisible",
           1,
@@ -1342,7 +1342,7 @@ export const en: EngineCatalog = {
             "other": "N"
           }
         ],
-        " Constant=",
+        "  Constant=",
         [
           "constant",
           1,
@@ -1351,7 +1351,7 @@ export const en: EngineCatalog = {
             "other": "N"
           }
         ],
-        " Verify=",
+        "  Verify=",
         [
           "verify",
           1,
@@ -1360,7 +1360,7 @@ export const en: EngineCatalog = {
             "other": "N"
           }
         ],
-        " Preset=",
+        "  Preset=",
         [
           "preset",
           1,
@@ -1369,7 +1369,7 @@ export const en: EngineCatalog = {
             "other": "N"
           }
         ],
-        " Lock position=",
+        "  Lock position=",
         [
           "lockPosition",
           1,
@@ -1377,7 +1377,8 @@ export const en: EngineCatalog = {
             "yes": "Y",
             "other": "N"
           }
-        ]
+        ],
+        "  Annotative=N  Multiple line=N"
       ],
       "enterAttributeValues": "Enter attribute values",
       "verifyAttributeValues": "Verify attribute values",

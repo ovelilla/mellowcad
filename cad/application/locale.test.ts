@@ -847,8 +847,16 @@ describe("Spanish AutoCAD's command language", () => {
     const cad = createHarness({ locale: es })
     cad.command("AT")
     expect(cad.commandLog().at(-1)).toBe(
-      "Modos de atributo actuales:  Invisible=N  Constante=N  Verificable=N  Predefinido=N  Bloquear posición=S"
+      "Modos de atributo actuales:\nInvisible=N  Constante=N  Verificable=N  Predefinido=N  Bloquear posición=S  Anotativo=N  línea Múltiple=N"
     )
+  })
+
+  it("switches EDITARTEXTO to Simple, as Autodesk's table names the mode", () => {
+    const cad = createHarness({ locale: es })
+    cad.command("EDITARTEXTO").option("Mode")
+    expect(cad.state().commandOptions.map((option) => option.label)).toEqual([
+      "Modo: Simple",
+    ])
   })
 
   it("names the palette's Z rows as Spanish AutoCAD does", () => {

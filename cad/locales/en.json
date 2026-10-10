@@ -941,7 +941,7 @@
       "hatchNoBoundary": "Valid hatch boundary not found.",
       "textStyleUndefined": "Text style \"{name}\" is not defined.",
       "textJustifyOptions": "Enter an option [{keywords}]:",
-      "attributeModes": "Current attribute modes: Invisible={invisible, select, yes {Y} other {N}} Constant={constant, select, yes {Y} other {N}} Verify={verify, select, yes {Y} other {N}} Preset={preset, select, yes {Y} other {N}} Lock position={lockPosition, select, yes {Y} other {N}}",
+      "attributeModes": "Current attribute modes:\nInvisible={invisible, select, yes {Y} other {N}}  Constant={constant, select, yes {Y} other {N}}  Verify={verify, select, yes {Y} other {N}}  Preset={preset, select, yes {Y} other {N}}  Lock position={lockPosition, select, yes {Y} other {N}}  Annotative=N  Multiple line=N",
       "enterAttributeValues": "Enter attribute values",
       "verifyAttributeValues": "Verify attribute values",
       "explodeRejected": "{count, plural, one {# was not able to be exploded.} other {# were not able to be exploded.}}",
