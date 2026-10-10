@@ -120,6 +120,15 @@ export class LineTool implements Tool {
     ctx.selection.clear()
   }
 
+  /**
+   * Enter at the first point before the pointer has opened its box (the
+   * command typed, the mouse not moved yet) is the same Continue the box's
+   * empty Enter is.
+   */
+  onEnter(ctx: ToolContext): boolean {
+    return this.state.phase === "idle" && this.continueFromLast(ctx)
+  }
+
   onDeactivate(ctx: ToolContext): void {
     this.state = { phase: "idle" }
     ctx.dynamicInput.close()

@@ -541,7 +541,16 @@ describe("LINE", () => {
       )
     })
 
-    it("says there is nothing to continue and asks for the first point again", () => {
+    it("continues on Enter before the pointer has moved, as with it", () => {
+    const cad = createHarness()
+    cad.runtime.runCommand("LINE")
+    cad.press("Enter")
+
+    expect(cad.activeToolId()).toBe("line")
+    expect(cad.commandLog().at(-1)).toBe("No line or arc to continue.")
+  })
+
+  it("says there is nothing to continue and asks for the first point again", () => {
       const cad = createHarness()
 
       cad.command("LINE").enter()
