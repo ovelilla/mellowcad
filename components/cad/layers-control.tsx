@@ -1,11 +1,22 @@
 "use client"
 
-import { useEffect, useRef, useState } from "react"
-import { Check, Eye, EyeOff, Lock, LockOpen, Plus, Trash2 } from "lucide-react"
+import { useEffect, useLayoutEffect, useRef, useState } from "react"
+import {
+  Check,
+  ChevronLeft,
+  ChevronRight,
+  Eye,
+  EyeOff,
+  Lock,
+  LockOpen,
+  Plus,
+  Trash2,
+} from "lucide-react"
 import { useTranslations } from "next-intl"
 
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
+import { useDirection } from "@/components/ui/direction"
 import {
   Tooltip,
   TooltipContent,
@@ -27,6 +38,14 @@ const RENAME_DELAY_MS = 400
  * is selected with a click; Set Current — or a double-click on the row —
  * makes it the current layer, and New and Delete act beside it. A click on
  * the selected layer's name renames it.
+ *
+ * At the panel's 280 px half the columns are out of sight, and a scroll bar
+ * alone goes unnoticed (macOS hides it, a wheel only scrolls down), so the
+ * sideways scroll shows itself: Name stays frozen, as AutoCAD's Freeze Column
+ * keeps it, the columns snap against it, a chevron in the header row marks
+ * each side that has more columns (the end's cut column fades out), and
+ * the list is only as tall as its rows, so the scroll bar sits under the last
+ * one rather than at the foot of the panel.
  */
 export function LayersControl({
   engine,
@@ -37,6 +56,8 @@ export function LayersControl({
 }) {
   const t = useTranslations("Editor.Layers")
   const [selectedId, setSelectedId] = useState<string | null>(null)
+  const { scrollRef, frozenRef, before, after, gutters, track, page } =
+    useSidewaysScroll()
   const selected =
     state.layers.find((layer) => layer.id === selectedId) ??
     state.layers.find((layer) => layer.id === state.currentLayerId) ??
@@ -96,55 +117,210 @@ export function LayersControl({
         </ToolbarButton>
       </div>
 
-      <div className="min-h-0 flex-1 overflow-auto">
-        <table
-          aria-label={t("list")}
-          className="w-max min-w-full border-separate border-spacing-0"
-        >
-          <thead className="sticky top-0 z-10 bg-card text-muted-foreground">
-            <tr>
-              <Header className="w-8">{t("columns.status")}</Header>
-              <Header className="w-32">{t("columns.name")}</Header>
-              <Header className="w-9">{t("columns.on")}</Header>
-              <Header className="w-9">{t("columns.lock")}</Header>
-              <Header className="w-12">{t("columns.color")}</Header>
-              <Header className="w-28">{t("columns.linetype")}</Header>
-              <Header className="w-24">{t("columns.lineweight")}</Header>
-              <Header className="w-14 text-end">{t("columns.objects")}</Header>
-            </tr>
-          </thead>
-          <tbody>
-            {state.layers.map((layer) => (
-              <LayerRow
-                key={layer.id}
-                engine={engine}
-                layer={layer}
-                names={state.names}
-                isCurrent={layer.id === state.currentLayerId}
-                isSelected={layer.id === selected.id}
-                onSelect={() => setSelectedId(layer.id)}
-                onSetCurrent={() => setCurrent(layer.id)}
+      <div className="flex min-h-0 flex-1 flex-col">
+        <div className="relative flex min-h-0 flex-col">
+          <div
+            ref={scrollRef}
+            onScroll={track}
+            data-scrolled={before || undefined}
+            // Columns snap against the frozen Name, never cut in half by it.
+            style={{ scrollPaddingInlineStart: gutters.frozen }}
+            className="group/scroll min-h-0 snap-x snap-mandatory overflow-auto"
+          >
+            <table
+              aria-label={t("list")}
+              className="w-max min-w-full border-separate border-spacing-0"
+            >
+              <thead className="text-muted-foreground">
+                <tr>
+                  <Header className="w-8">{t("columns.status")}</Header>
+                  <Header
+                    ref={frozenRef}
+                    className={cn("w-32", FROZEN_HEADER, FROZEN_EDGE)}
+                  >
+                    {t("columns.name")}
+                  </Header>
+                  <Header className="w-9">{t("columns.on")}</Header>
+                  <Header className="w-9">{t("columns.lock")}</Header>
+                  <Header className="w-12">{t("columns.color")}</Header>
+                  <Header className="w-28">{t("columns.linetype")}</Header>
+                  <Header className="w-24">{t("columns.lineweight")}</Header>
+                  <Header className="w-14 text-end">
+                    {t("columns.objects")}
+                  </Header>
+                </tr>
+              </thead>
+              <tbody>
+                {state.layers.map((layer) => (
+                  <LayerRow
+                    key={layer.id}
+                    engine={engine}
+                    layer={layer}
+                    names={state.names}
+                    isCurrent={layer.id === state.currentLayerId}
+                    isSelected={layer.id === selected.id}
+                    onSelect={() => setSelectedId(layer.id)}
+                    onSetCurrent={() => setCurrent(layer.id)}
+                  />
+                ))}
+              </tbody>
+            </table>
+          </div>
+          {before && (
+            // On the frozen Name's header, whose end is empty: past it the
+            // chevron would cover the first visible column's name.
+            <ScrollCue
+              side="start"
+              label={t("previousColumns")}
+              style={{
+                insetInlineStart: Math.max(0, gutters.frozen - CUE_SIZE),
+              }}
+              onClick={() => {
+                page(-1)
+                done()
+              }}
+            />
+          )}
+          {after && (
+            <>
+              <div
+                aria-hidden
+                style={{ insetInlineEnd: gutters.end, bottom: gutters.bottom }}
+                className="pointer-events-none absolute top-0 z-30 w-8 bg-linear-to-l from-card rtl:bg-linear-to-r"
               />
-            ))}
-          </tbody>
-        </table>
+              <ScrollCue
+                side="end"
+                label={t("nextColumns")}
+                style={{ insetInlineEnd: gutters.end }}
+                onClick={() => {
+                  page(1)
+                  done()
+                }}
+              />
+            </>
+          )}
+        </div>
       </div>
     </div>
   )
 }
 
+/** The frozen Name column, opaque so the others scroll beneath it. */
+const FROZEN_HEADER = "start-0 z-20 snap-align-none"
+const FROZEN_CELL = "sticky start-0 z-1"
+
+/** The frozen column's edge, shadowed once a column has gone beneath it. */
+const FROZEN_EDGE =
+  "group-data-scrolled/scroll:shadow-[6px_0_6px_-6px_rgb(0_0_0/0.45)] rtl:group-data-scrolled/scroll:shadow-[-6px_0_6px_-6px_rgb(0_0_0/0.45)]"
+
+/**
+ * Tracks the list's sideways scroll: whether columns lie before the visible
+ * ones (gone under the frozen Name) or after them, and the widths the cues
+ * are placed by — the frozen column's and the scroll bars'.
+ */
+function useSidewaysScroll() {
+  const scrollRef = useRef<HTMLDivElement>(null)
+  const frozenRef = useRef<HTMLTableCellElement>(null)
+  const forward = useDirection() === "rtl" ? -1 : 1
+  const [before, setBefore] = useState(false)
+  const [after, setAfter] = useState(false)
+  const [gutters, setGutters] = useState({ frozen: 0, end: 0, bottom: 0 })
+
+  const track = () => {
+    const el = scrollRef.current
+    if (!el) return
+    // Negative in a right-to-left page.
+    const offset = Math.abs(el.scrollLeft)
+    setBefore(offset > 0)
+    setAfter(offset + el.clientWidth < el.scrollWidth - 1)
+  }
+
+  /** Scrolls a page of columns towards the end (1) or the start (-1). */
+  const page = (towards: 1 | -1) => {
+    const el = scrollRef.current
+    if (!el) return
+    const visible = el.clientWidth - (frozenRef.current?.offsetWidth ?? 0)
+    el.scrollBy({ left: towards * forward * visible, behavior: "smooth" })
+  }
+
+  useLayoutEffect(() => {
+    const el = scrollRef.current
+    if (!el) return
+    const measure = () => {
+      track()
+      const frozen = frozenRef.current?.offsetWidth ?? 0
+      const end = el.offsetWidth - el.clientWidth
+      const bottom = el.offsetHeight - el.clientHeight
+      setGutters((g) =>
+        g.frozen === frozen && g.end === end && g.bottom === bottom
+          ? g
+          : { frozen, end, bottom }
+      )
+    }
+    measure()
+    // The table resizes with its rows and the language, the list with the
+    // panel; either can bring a scroll bar or take it away.
+    const observer = new ResizeObserver(measure)
+    observer.observe(el)
+    if (el.firstElementChild) observer.observe(el.firstElementChild)
+    return () => observer.disconnect()
+  }, [])
+
+  return { scrollRef, frozenRef, before, after, gutters, track, page }
+}
+
+/** The chevrons' side, in px: an icon button, as tall as the header row. */
+const CUE_SIZE = 28
+
+/** A chevron in the header row that scrolls a page of columns its way. */
+function ScrollCue({
+  side,
+  label,
+  style,
+  onClick,
+}: {
+  side: "start" | "end"
+  label: string
+  style: React.CSSProperties
+  onClick: () => void
+}) {
+  const Chevron = side === "end" ? ChevronRight : ChevronLeft
+  return (
+    <Tooltip>
+      <TooltipTrigger
+        render={
+          <Button
+            size="icon"
+            variant="ghost"
+            aria-label={label}
+            onClick={onClick}
+            style={style}
+            className="absolute top-0 z-30 bg-card text-muted-foreground hover:text-foreground"
+          >
+            <Chevron className="rtl:-scale-x-100" />
+          </Button>
+        }
+      />
+      <TooltipContent side="top">{label}</TooltipContent>
+    </Tooltip>
+  )
+}
+
 function Header({
+  ref,
   className,
   children,
 }: {
+  ref?: React.Ref<HTMLTableCellElement>
   className?: string
   children: React.ReactNode
 }) {
   return (
     <th
+      ref={ref}
       scope="col"
       className={cn(
-        "border-b border-border/60 px-1.5 py-1 text-start text-ui whitespace-nowrap",
+        "sticky top-0 z-10 h-7 snap-start border-b border-border/60 bg-card px-1.5 text-start text-ui whitespace-nowrap",
         className
       )}
     >
@@ -203,6 +379,14 @@ function LayerRow({
 }) {
   const t = useTranslations("Editor.Layers")
   const done = () => engine.focusSurface()
+  // The row's tint, painted on the frozen cell's opaque ground: the row's own
+  // would show through the columns scrolled beneath it.
+  const frozen = cn(
+    FROZEN_CELL,
+    isSelected
+      ? "bg-accent"
+      : "bg-card group-hover/row:bg-linear-to-r group-hover/row:from-accent/40 group-hover/row:to-accent/40"
+  )
 
   return (
     <tr
@@ -214,7 +398,10 @@ function LayerRow({
         onSetCurrent()
       }}
       aria-selected={isSelected}
-      className={cn("h-7", isSelected ? "bg-accent" : "hover:bg-accent/40")}
+      className={cn(
+        "group/row h-7",
+        isSelected ? "bg-accent" : "hover:bg-accent/40"
+      )}
     >
       <td className="px-1.5">
         {/* AutoCAD's check mark on the current layer, in the one accent. */}
@@ -225,7 +412,7 @@ function LayerRow({
         />
       </td>
 
-      <td className="max-w-32 px-0.5">
+      <td className={cn("max-w-32 px-0.5", frozen, FROZEN_EDGE)}>
         <NameField
           name={layer.name}
           editable={layer.id !== "0"}

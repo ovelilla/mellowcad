@@ -320,7 +320,11 @@ pixels. 16 px icons go with 28 px controls (20 would go with 32).
   - **Layers** is the Layer Properties Manager: a toolbar (New, Delete — disabled with its reason
     as the label —, Set Current) over a table with column headers in AutoCAD's order (Status,
     Name, On, Lock, Color, Linetype, Lineweight, then the object count), scrolled sideways inside
-    the panel. A click selects a row; a double-click on it, or Set Current, makes it current. A
+    the panel — and the scroll must show itself, as half the columns are hidden at 280 px and a
+    scroll bar alone goes unseen: Name is frozen (sticky, opaque, the row's tint repainted on it;
+    AutoCAD's Freeze Column), the columns snap against it (`scroll-padding-inline-start` = its
+    width), a chevron in the header row pages each side that has more columns, the cut end
+    fades, and the list is only as tall as its rows so the bar sits under them. A click selects a row; a double-click on it, or Set Current, makes it current. A
     click on the selected row's name renames it after a pause, so a double-click still sets it
     current (F2, AutoCAD's other rename key, is the command history here). A double-click on a
     control of the row is that control's.

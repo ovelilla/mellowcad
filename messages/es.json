@@ -425,6 +425,8 @@
       "rename": "Pulse otra vez el nombre de la capa designada para cambiarle el nombre",
       "renameLabel": "Cambiar el nombre de la capa {name}",
       "list": "Lista de capas",
+      "nextColumns": "Columnas siguientes",
+      "previousColumns": "Columnas anteriores",
       "columns": {
         "status": "Estado",
         "name": "Nombre",

@@ -425,6 +425,8 @@
       "rename": "Click the selected layer's name again to rename it",
       "renameLabel": "Rename layer {name}",
       "list": "Layer list",
+      "nextColumns": "Next columns",
+      "previousColumns": "Previous columns",
       "columns": {
         "status": "Status",
         "name": "Name",
