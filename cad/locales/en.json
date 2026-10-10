@@ -796,6 +796,7 @@
       "viewAngleFromPlane": "Enter angle from XY plane",
       "specifyFirstPoint": "Specify first point",
       "specifyNextPointOr": "Specify next point or",
+      "lengthOfLine": "Length of line",
       "specifyStartPoint": "Specify start point",
       "specifyEndpointOfArcOr": "Specify endpoint of arc (hold Ctrl to switch direction) or",
       "specifyCenterPointForCircleOr": "Specify center point for circle or",
@@ -948,7 +949,7 @@
       "savedUcsHeader": "Saved coordinate systems:",
       "savedUcsEntry": "{name}\nOrigin = '<'{originX},{originY},{originZ}>, X Axis = '<'{xAxisX},{xAxisY},{xAxisZ}>\n    Y Axis = '<'{yAxisX},{yAxisY},{yAxisZ}>, Z Axis = '<'{zAxisX},{zAxisY},{zAxisZ}>",
       "ucsUndefined": "Cannot find UCS {name}.",
-      "rectangleModes": "Current rectangle modes:{hasElevation, select, yes { Elevation={elevation}} other {}}{hasThickness, select, yes { Thickness={thickness}} other {}}",
+      "rectangleModes": "Current rectangle modes:{hasElevation, select, yes {  Elevation={elevation}} other {}}{hasThickness, select, yes {  Thickness={thickness}} other {}}",
       "distanceReport": "Distance = {distance},  Angle in XY Plane = {angleInPlane},  Angle from XY Plane = {angleFromPlane}\nDelta X = {deltaX},  Delta Y = {deltaY},   Delta Z = {deltaZ}",
       "idReport": "X = {x}     Y = {y}     Z = {z}",
       "linesNonCoplanar": "Lines are non-coplanar.",
@@ -970,7 +971,8 @@
       "currentOsnapModes": "Current osnap modes: {modes}",
       "currentLineweight": "Current lineweight: {value}",
       "pointingEdgeOn": "Pointing in edge-on UCS is prohibited.",
-      "circleDoesNotExist": "Circle does not exist."
+      "circleDoesNotExist": "Circle does not exist.",
+      "noLineOrArcToContinue": "No line or arc to continue."
     },
     "feedback": {
       "snap": {

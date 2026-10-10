@@ -1171,7 +1171,7 @@ lweight "Lineweight" LW
   dyn: "X,Y"=""||*
   options: [E] Elevation, [T] Thickness
   command| RECTANG
-  info| Current rectangle modes: Elevation=5.00 Thickness=2.00
+  info| Current rectangle modes:  Elevation=5.00  Thickness=2.00
 > escape
   prompt: Command:
   asks: -

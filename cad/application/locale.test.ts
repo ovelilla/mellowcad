@@ -2,7 +2,7 @@ import compile from "icu-minify/compile"
 import { describe, expect, it } from "vitest"
 
 import { createHarness } from "../../test/harness"
-import { lineOf, p, polylineOf } from "../../test/builders"
+import { arcOf, lineOf, p, polylineOf } from "../../test/builders"
 import { ar } from "../locales/ar"
 import { es } from "../locales/es"
 import type { EngineLocale } from "../locales/types"
@@ -336,6 +336,42 @@ describe("Spanish AutoCAD's command language", () => {
     cad.press("Enter")
     expect(cad.entityCount).toBe(3)
     expect(cad.activeToolId()).toBe("select")
+  })
+
+  it("asks LINEA's, POL's, RECTANG's and POLIGONO's questions in Autodesk's Spanish words", () => {
+    const cad = createHarness({ locale: es })
+    cad.command("LINEA").enter()
+    expect(cad.commandLog().at(-1)).toBe(
+      "No hay línea o arco que se pueda continuar."
+    )
+    expect(cad.state().commandLine.prompt).toBe("LINEA Precise primer punto:")
+    cad.escape()
+
+    const arc = createHarness({
+      locale: es,
+      entities: [arcOf(p(0, 0), 50, 0, Math.PI / 2)],
+    })
+    arc.command("LINEA").enter()
+    expect(arc.state().commandLine.prompt).toBe("LINEA Longitud de la línea:")
+
+    cad.command("POL").click(p(0, 0))
+    cad.press("A")
+    cad.press("Enter")
+    expect(cad.state().commandLine.prompt).toBe(
+      "POL Precise punto final del arco (mantenga pulsada la tecla Ctrl para cambiar de dirección) o [líNea]:"
+    )
+    cad.escape()
+
+    cad.command("RECTANG").click(p(0, 0))
+    expect(cad.state().commandLine.prompt).toBe(
+      "RECTANG Precise esquina opuesta:"
+    )
+    cad.escape()
+
+    cad.command("POLIGONO").type("2").enter()
+    expect(cad.commandLog().at(-1)).toBe(
+      "Requiere un nº entero entre 3 y 1024."
+    )
   })
 
   it("undoes with H at the Command prompt, and joins with U", () => {
@@ -726,17 +762,17 @@ describe("Spanish AutoCAD's command language", () => {
     cad.press("a")
     cad.press("Enter")
     expect(cad.state().commandLine.prompt).toBe(
-      "RECTANG Precise la altura de objeto de los rectángulos <0.00>:"
+      "RECTANG Precise Alt-objeto para rectángulos <0.00>:"
     )
     cad.type("3").enter().escape()
     expect(cad.commandLog().slice(-3)).toEqual([
       "Precise primer punto de esquina o [Elevación/Alt-objeto]: a",
-      "Precise la altura de objeto de los rectángulos <0.00>: 3",
+      "Precise Alt-objeto para rectángulos <0.00>: 3",
       "Precise primer punto de esquina o [Elevación/Alt-objeto]: *Cancelar*",
     ])
     cad.command("RECTANG")
     expect(cad.commandLog().at(-1)).toBe(
-      "Modos de rectángulo actuales: Alt-objeto=3.00"
+      "Modos de rectángulo actuales:  Alt-objeto=3.00"
     )
   })
 

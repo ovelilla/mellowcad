@@ -524,18 +524,35 @@ describe("LINE", () => {
       ])
     })
 
-    it("names no question for Continue's length, whose wording is unverified", () => {
+    it("asks Continue's length from an arc as Length of line", () => {
       const cad = createHarness({ entities: [arcOf(p(0, 0), 50, 0, deg(90))] })
 
       cad.command("LINE").enter()
-      expect(cad.state().commandLine.prompt).toBe("LINE:")
-      expect(cad.state().dynamicInput?.prompt).toBeNull()
+      expect(cad.state().commandLine.prompt).toBe("LINE Length of line:")
       cad.type("40").enter()
 
-      expect(cad.commandLog()).toEqual(["LINE", "Specify first point:"])
+      expect(cad.commandLog()).toEqual([
+        "LINE",
+        "Specify first point:",
+        "Length of line: 40",
+      ])
       expect(cad.state().commandLine.prompt).toBe(
         "LINE Specify next point or [Undo]:"
       )
+    })
+
+    it("says there is nothing to continue and asks for the first point again", () => {
+      const cad = createHarness()
+
+      cad.command("LINE").enter()
+
+      expect(cad.activeToolId()).toBe("line")
+      expect(cad.commandLog()).toEqual([
+        "LINE",
+        "Specify first point:",
+        "No line or arc to continue.",
+      ])
+      expect(cad.state().commandLine.prompt).toBe("LINE Specify first point:")
     })
 
     it("still asks for the first point while a guide offers an offset", () => {

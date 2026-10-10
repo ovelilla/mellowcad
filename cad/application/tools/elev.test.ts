@@ -209,7 +209,7 @@ describe("RECTANG Elevation and Thickness", () => {
     cad.command("RECTANG")
 
     expect(cad.state().commandLine.lines.at(-1)?.text).toBe(
-      "Current rectangle modes: Elevation=5.00"
+      "Current rectangle modes:  Elevation=5.00"
     )
     cad.click(p(0, 0)).click(p(100, 50))
     expect(entityElevation(cad.only<PolylineEntity>("polyline"))).toBe(5)

@@ -952,6 +952,7 @@ export const en: EngineCatalog = {
       "viewAngleFromPlane": "Enter angle from XY plane",
       "specifyFirstPoint": "Specify first point",
       "specifyNextPointOr": "Specify next point or",
+      "lengthOfLine": "Length of line",
       "specifyStartPoint": "Specify start point",
       "specifyEndpointOfArcOr": "Specify endpoint of arc (hold Ctrl to switch direction) or",
       "specifyCenterPointForCircleOr": "Specify center point for circle or",
@@ -1481,7 +1482,7 @@ export const en: EngineCatalog = {
           1,
           {
             "yes": [
-              " Elevation=",
+              "  Elevation=",
               [
                 "elevation"
               ]
@@ -1494,7 +1495,7 @@ export const en: EngineCatalog = {
           1,
           {
             "yes": [
-              " Thickness=",
+              "  Thickness=",
               [
                 "thickness"
               ]
@@ -1704,7 +1705,8 @@ export const en: EngineCatalog = {
         ]
       ],
       "pointingEdgeOn": "Pointing in edge-on UCS is prohibited.",
-      "circleDoesNotExist": "Circle does not exist."
+      "circleDoesNotExist": "Circle does not exist.",
+      "noLineOrArcToContinue": "No line or arc to continue."
     },
     "feedback": {
       "snap": {

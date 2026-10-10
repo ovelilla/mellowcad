@@ -224,8 +224,7 @@ export class LineTool implements Tool {
 
   /**
    * A guide's typed offset still answers the first point (direct distance
-   * along it), and the deferred first point waits on the next one. WHY none
-   * for Continue's length: AutoCAD's wording of it is unverified.
+   * along it), and the deferred first point waits on the next one.
    */
   question(): PromptId | null {
     switch (this.state.phase) {
@@ -233,7 +232,7 @@ export class LineTool implements Tool {
       case "tracking":
         return "specifyFirstPoint"
       case "tangent":
-        return null
+        return "lengthOfLine"
       case "deferred":
       case "drawing":
         return "specifyNextPointOr"
@@ -633,7 +632,11 @@ export class LineTool implements Tool {
    */
   private continueFromLast(ctx: ToolContext): boolean {
     const resume = continuePoint(ctx.document)
-    if (!resume) return false
+    if (!resume) {
+      // AutoCAD says so and asks for the first point again: only Escape ends it.
+      ctx.report(ctx.text.message("noLineOrArcToContinue"), "error")
+      return true
+    }
     if (resume.tangent === null) {
       this.beginDrawing(resume.point, ctx)
       return true
