@@ -1016,6 +1016,13 @@ export const en: EngineCatalog = {
       "specifyStartPointOfArc": "Specify start point of arc",
       "specifyEndPointOfArcCtrl": "Specify end point of arc (hold Ctrl to switch direction)",
       "selectObjects": "Select objects",
+      "removeObjects": "Remove objects",
+      "specifyFirstCorner": "Specify first corner",
+      "specifyOppositeCorner": "Specify opposite corner",
+      "specifyFirstFencePoint": "Specify first fence point or pick/drag cursor",
+      "specifyNextFencePointOr": "Specify next fence point or",
+      "firstPolygonPoint": "First polygon point or pick/drag cursor",
+      "specifyEndpointOfLineOr": "Specify endpoint of line or",
       "specifyBasePointOr": "Specify base point or",
       "specifyDisplacement": "Specify displacement",
       "specifySecondPointOr": "Specify second point or",
@@ -1285,6 +1292,18 @@ export const en: EngineCatalog = {
         ],
         " found",
         [
+          "duplicate",
+          2,
+          {
+            "=0": "",
+            "other": [
+              " (",
+              0,
+              " duplicate)"
+            ]
+          }
+        ],
+        [
           "removed",
           2,
           {
@@ -1311,6 +1330,28 @@ export const en: EngineCatalog = {
           }
         ]
       ],
+      "onLockedLayer": [
+        [
+          "count",
+          2,
+          {
+            "one": [
+              0,
+              " was on a locked layer."
+            ],
+            "other": [
+              0,
+              " were on a locked layer."
+            ]
+          }
+        ]
+      ],
+      "noPreviousSelection": "No previous selection set.",
+      "allSelectionsUndone": "All selections have been undone.",
+      "invalidWindowSpecification": "Invalid window specification.",
+      "invalidResponse": "Invalid response.",
+      "polygonSegmentZeroLength": "Invalid point, polygon segment is zero length.",
+      "polygonSegmentsIntersect": "Invalid point, polygon segments cannot intersect.",
       "copyModeMultiple": "Current settings:  Copy mode = Multiple",
       "stretchSelection": "Select objects to stretch by crossing-window or crossing-polygon...",
       "currentLineWidth": [

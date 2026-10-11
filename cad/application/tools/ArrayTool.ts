@@ -1,7 +1,6 @@
 import { Vec2 } from "../../geometry/Vec2"
 import {
   Entity,
-  EntityId,
   copyEntity,
   entityBounds,
   translateEntity,
@@ -12,8 +11,7 @@ import { ScenePrimitive, StrokeStyle } from "../../scene/types"
 import { entityScenePrimitive } from "../SceneBuilder"
 import { THEME } from "../../scene/theme"
 import { AddEntitiesCommand } from "../commands/entityCommands"
-import { boxSelect, buildSelectionBoxOverlay } from "./boxSelection"
-import { countPreselection, pickObjects } from "./objectSelection"
+import { ObjectSelector, countPreselection } from "./objectSelection"
 import type { PromptId } from "../../locales/types"
 import {
   CommandOption,
@@ -40,9 +38,6 @@ import {
  * models nor edits, so the copies are plain geometry, as AutoCAD's are with
  * ASsociative No. The grips, Base point and Levels are not offered.
  */
-
-/** Screen-pixel movement past which a press-drag becomes a box selection. */
-const DRAG_THRESHOLD_PX = 4
 
 const DEFAULT_COLUMNS = 4
 const DEFAULT_ROWS = 3
@@ -76,23 +71,8 @@ type Step =
   | "rowsElevation"
 
 type ArrayState =
-  /** No pre-selection: build the set by clicking or box-dragging. */
+  /** No pre-selection: `Select objects:` builds the set. */
   | { readonly phase: "selecting" }
-  /** Mouse down while selecting: still a click until it drags far enough. */
-  | {
-      readonly phase: "pressed"
-      readonly startWorld: Vec2
-      readonly startScreen: Vec2
-      readonly currentWorld: Vec2
-      readonly subtract: boolean
-    }
-  /** Dragging a selection box (window left→right / crossing right→left). */
-  | {
-      readonly phase: "boxing"
-      readonly startWorld: Vec2
-      readonly currentWorld: Vec2
-      readonly subtract: boolean
-    }
   /** Objects chosen; editing the grid with a live preview. */
   | {
       readonly phase: "edit"
@@ -126,12 +106,16 @@ export class ArrayTool implements Tool {
   readonly shortcut = "a"
 
   private state: ArrayState = { phase: "selecting" }
+  private readonly selector = new ObjectSelector({
+    done: (ctx) => this.confirmSelection(ctx),
+  })
   private lastScreen: Vec2 | null = null
 
   onActivate(ctx: ToolContext): void {
     ctx.setCursor("crosshair")
     if (ctx.selection.isEmpty()) {
       this.state = { phase: "selecting" }
+      this.selector.start()
     } else {
       countPreselection(ctx)
       this.beginEdit(ctx)
@@ -140,12 +124,13 @@ export class ArrayTool implements Tool {
 
   onDeactivate(ctx: ToolContext): void {
     this.state = { phase: "selecting" }
+    this.selector.start()
     ctx.dynamicInput.close()
   }
 
   question(): PromptId | ToolQuestion {
     const state = this.state
-    if (state.phase !== "edit") return "selectObjects"
+    if (state.phase !== "edit") return this.selector.question()
     const { grid } = state
     switch (state.step) {
       case "main":
@@ -181,7 +166,7 @@ export class ArrayTool implements Tool {
    */
   takes(): QuestionInput | null {
     const state = this.state
-    if (state.phase !== "edit") return null
+    if (state.phase !== "edit") return this.selector.takes("objects")
     switch (state.step) {
       case "main":
         return "point"
@@ -199,6 +184,7 @@ export class ArrayTool implements Tool {
   }
 
   commandOptions(): readonly CommandOption[] {
+    if (this.state.phase === "selecting") return this.selector.commandOptions()
     if (this.state.phase !== "edit" || this.state.step !== "main") return []
     return [
       { id: "COUnt" },
@@ -216,6 +202,9 @@ export class ArrayTool implements Tool {
   }
 
   invokeOption(id: string, ctx: ToolContext): CommandOptionOutcome {
+    if (this.state.phase === "selecting") {
+      return this.selector.invokeOption(id, ctx) ? "continue" : "unhandled"
+    }
     if (this.state.phase !== "edit" || this.state.step !== "main") {
       return "unhandled"
     }
@@ -233,25 +222,8 @@ export class ArrayTool implements Tool {
     this.lastScreen = input.screen
 
     switch (this.state.phase) {
-      case "pressed": {
-        const moved = Math.hypot(
-          input.screen.x - this.state.startScreen.x,
-          input.screen.y - this.state.startScreen.y
-        )
-        if (moved >= DRAG_THRESHOLD_PX) {
-          this.state = {
-            phase: "boxing",
-            startWorld: this.state.startWorld,
-            currentWorld: input.world,
-            subtract: this.state.subtract,
-          }
-        } else {
-          this.state = { ...this.state, currentWorld: input.world }
-        }
-        break
-      }
-      case "boxing":
-        this.state = { ...this.state, currentWorld: input.world }
+      case "selecting":
+        this.selector.onPointerMove(input, ctx)
         break
       case "edit":
         ctx.dynamicInput.setPosition(input.screen)
@@ -261,52 +233,19 @@ export class ArrayTool implements Tool {
     ctx.requestRender()
   }
 
-  onPointerDown(input: PointerInput): void {
-    if (input.button !== 0) return
-    if (this.state.phase === "selecting") {
-      this.state = {
-        phase: "pressed",
-        startWorld: input.world,
-        startScreen: input.screen,
-        currentWorld: input.world,
-        subtract: input.shiftKey,
-      }
-    }
+  onPointerDown(input: PointerInput, ctx: ToolContext): void {
+    if (this.state.phase === "selecting")
+      this.selector.onPointerDown(input, ctx)
     // While editing the values are typed; a pick would take a grip, which
     // the preview does not have.
   }
 
   onPointerUp(input: PointerInput, ctx: ToolContext): void {
-    if (input.button !== 0) return
-
-    // AutoCAD's "Select objects" prompt, additive across picks and boxes.
-    if (this.state.phase === "pressed") {
-      const hit = ctx.pick(input.world)
-      if (hit) pickObjects([hit.id], this.state.subtract, false, ctx)
-      this.state = { phase: "selecting" }
-      ctx.requestRender()
-      return
-    }
-    if (this.state.phase === "boxing") {
-      const hits: readonly EntityId[] = boxSelect(
-        ctx.document,
-        this.state.startWorld,
-        this.state.currentWorld,
-        ctx.viewport
-      )
-      pickObjects(hits, this.state.subtract, true, ctx)
-      this.state = { phase: "selecting" }
-      ctx.requestRender()
-    }
+    if (this.state.phase === "selecting") this.selector.onPointerUp(input, ctx)
   }
 
   onEnter(ctx: ToolContext): boolean {
-    if (this.state.phase === "selecting") {
-      if (ctx.selection.isEmpty()) return false // nothing selected: Enter exits
-      this.beginEdit(ctx)
-      ctx.requestRender()
-      return true
-    }
+    if (this.state.phase === "selecting") return this.selector.onEnter(ctx)
     if (this.state.phase === "edit" && this.state.step === "main") {
       // <eXit>: the array is made and the command ends.
       this.create(ctx)
@@ -317,17 +256,11 @@ export class ArrayTool implements Tool {
   }
 
   wantsSnap(): boolean {
-    return false
+    return this.state.phase === "selecting" && this.selector.wantsSnap()
   }
 
   buildOverlay(ctx: ToolContext): ScenePrimitive[] {
-    if (this.state.phase === "boxing") {
-      return buildSelectionBoxOverlay(
-        ctx.viewport,
-        this.state.startWorld,
-        this.state.currentWorld
-      )
-    }
+    if (this.state.phase === "selecting") return this.selector.buildOverlay(ctx)
     if (this.state.phase !== "edit") return []
 
     const ghost: StrokeStyle = { color: THEME.preview, width: 1, dash: [6, 4] }
@@ -346,6 +279,12 @@ export class ArrayTool implements Tool {
     )
   }
 
+  /** Goes on from the set `Select objects:` closed to the grid. */
+  private confirmSelection(ctx: ToolContext): void {
+    this.beginEdit(ctx)
+    ctx.requestRender()
+  }
+
   private beginEdit(ctx: ToolContext): void {
     const originals = ctx.selection
       .toArray()
@@ -353,6 +292,7 @@ export class ArrayTool implements Tool {
       .filter((entity): entity is Entity => entity !== undefined)
     if (originals.length === 0) {
       this.state = { phase: "selecting" }
+      this.selector.start()
       ctx.dynamicInput.close()
       return
     }

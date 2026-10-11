@@ -141,6 +141,8 @@ import { buildBlockPreview, purgeBlocks } from "./runtimeBlocks"
 import {
   commandPrompt,
   offerOptions,
+  optionKeywords,
+  continuesLine,
   askedPrompt,
   registerCommands,
   toolCommand,
@@ -305,6 +307,16 @@ export class CadRuntime extends Observable {
    * answer it qualifies, on the same line.
    */
   private answerPrefix: string | null = null
+  /**
+   * The log's mark just after a prompt line a pick left bare, while nothing
+   * has been written since: what the pick found goes on that line, and a
+   * prompt AutoCAD asks without a new line follows it there.
+   */
+  private openLine: number | null = null
+  /** What the pick being answered found, for its prompt's line. */
+  private pickFound: string[] | null = null
+  /** `Select objects:`' Previous set, the last one a command was given. */
+  private previousSet: readonly EntityId[] = []
 
   // Magnetic crosshair: where to draw it (screen), positioned on the resolved
   // point so it clings to geometry. `null` means the pointer is off-canvas.
@@ -444,18 +456,10 @@ export class CadRuntime extends Observable {
       requestRender: () => this.host.requestRender(),
       setCursor: (cursor) => this.host.setCursor(cursor),
       report: (text, kind = "info") => this.commandLine.write(kind, text),
-      // A count known once objects are picked goes on the line that asked
-      // for them, or after the command's own echo: `Command: M MOVE 1 found`.
-      answer: (text) => {
-        if (
-          !this.commandLine.amendLast(
-            ["prompt", "command"],
-            this.commandStart,
-            (line) => this.text.answered(line, text)
-          )
-        ) {
-          this.commandLine.write("info", text)
-        }
+      answer: (text) => this.answerFound(text),
+      previousSelection: () => this.previousSet,
+      rememberSelection: (ids) => {
+        this.previousSet = [...ids]
       },
       setViewCubeVisible: (visible) => this.setViewCubeVisible(visible),
       snapOverride: () => this.snapping.getOverride(),
@@ -828,7 +832,11 @@ export class CadRuntime extends Observable {
    * bare — ahead of whatever answering it reported. Only the outermost answer
    * is written: a typed one reaches the box, and the box a keyword or Enter.
    */
-  private answering(answer: string, run: () => boolean): boolean {
+  private answering(
+    answer: string,
+    run: () => boolean,
+    picked = false
+  ): boolean {
     if (this.answeringPrompt) return run()
     const { echo } = commandPrompt(
       this.activeTool,
@@ -838,26 +846,70 @@ export class CadRuntime extends Observable {
     )
     const prefix = this.answerPrefix
     const mark = this.commandLine.mark()
+    const continues =
+      this.openLine === mark && continuesLine(askedPrompt(this.activeTool))
     this.answeringPrompt = true
+    this.pickFound = picked ? [] : null
     let took: boolean
+    let found: readonly string[] = []
     try {
       took = run()
     } finally {
       this.answeringPrompt = false
+      found = this.pickFound ?? []
+      this.pickFound = null
     }
     if (!took) return false
     this.answerPrefix = null
-    if (echo !== null) {
-      this.commandLine.writeAt(
-        mark,
-        "prompt",
-        this.text.answered(
-          promptString(echo),
-          [prefix, answer].filter((part) => part).join(" ")
-        )
-      )
+    if (echo === null) {
+      for (const text of found) this.commandLine.write("info", text)
+      return true
     }
+    const given = [prefix, answer, ...found].filter((part) => part).join(" ")
+    const line = this.text.answered(promptString(echo), given)
+    if (continues) {
+      this.commandLine.amendBefore(mark, (last) => `${last} ${line}`)
+    } else {
+      this.commandLine.writeAt(mark, "prompt", line)
+    }
+    const written = this.commandLine.mark()
+    this.openLine =
+      picked && given === "" && written === (continues ? mark : mark + 1)
+        ? written
+        : null
     return true
+  }
+
+  /**
+   * What an answer found (`ToolContext.answer`): on the line of the prompt a
+   * pick answers or left bare, after the command's echo for a set selected
+   * before it (`Command: M MOVE 1 found`), else on a line of its own, as
+   * after a typed answer.
+   */
+  private answerFound(text: string): void {
+    if (this.pickFound !== null) {
+      this.pickFound.push(text)
+      return
+    }
+    // WHY only outside an answer: one being answered (a fence's Enter) found
+    // it, and an earlier pick's line is no longer the one asking.
+    if (!this.answeringPrompt) {
+      const answered = (line: string) => this.text.answered(line, text)
+      const open = this.openLine === this.commandLine.mark()
+      this.openLine = null
+      if (
+        open &&
+        this.commandLine.amendLast(["prompt"], this.commandStart, answered)
+      ) {
+        return
+      }
+      if (
+        this.commandLine.amendLast(["command"], this.commandStart, answered)
+      ) {
+        return
+      }
+    }
+    this.commandLine.write("info", text)
   }
 
   /**
@@ -2020,11 +2072,10 @@ export class CadRuntime extends Observable {
 
   /** The keywords the active tool offers, in both of their languages. */
   private offeredKeywords() {
-    const options = this.activeTool.commandOptions?.() ?? []
-    return this.text.keywords(
-      toolCommand(this.activeTool),
-      options.map((option) => option.id),
-      askedPrompt(this.activeTool)
+    return optionKeywords(
+      this.activeTool,
+      this.text,
+      this.activeTool.commandOptions?.() ?? []
     )
   }
 
@@ -2647,10 +2698,14 @@ export class CadRuntime extends Observable {
     }
 
     const input = this.buildPointerInput(e)
-    this.answering("", () => {
-      this.activeTool.onPointerDown?.(input, this.toolContext)
-      return true
-    })
+    this.answering(
+      "",
+      () => {
+        this.activeTool.onPointerDown?.(input, this.toolContext)
+        return true
+      },
+      true
+    )
     // A one-shot snap override applies to exactly this pick; consume it now that
     // the point has been placed so the next point uses the running snaps again.
     this.snapping.clearOverride()

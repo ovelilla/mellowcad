@@ -119,7 +119,7 @@ whole base. `isPlan` (looking down Z) keeps the 2D arithmetic, so the plan's out
 by a bit — the landing's SVG snapshots guard it. In plan the view can be turned (PLAN,
 VIEWTWIST: `right` is the world direction drawn pointing right). A screen rectangle is therefore
 upright in the **view frame** (`worldToView`), not in the world. Anything
-that tests or frames one works there: `boxSelect` tests `entityInView`, ZOOM Window / Extents /
+that tests or frames one works there: `objectsInWindow` tests `entityInView`, ZOOM Window / Extents /
 Object and PLAN frame `entitiesViewBounds` with `zoomToViewBounds` (`zoomToBounds` is for a
 _world_ rectangle, which a turned view fits by its bounding box), and a visible-area query maps all
 four screen corners, never two. Two opposite corners through `screenToWorld` only bound the view
@@ -209,6 +209,14 @@ keeps it as `answerPrefix` (`_endp of`, typed `end of`), which the next answer w
 a pick, a typed point or `*Cancel*` — and a pick FROM takes as its base, or a tool switch, drops. `ctx.answer` completes a line after the
 fact (`amendLast`), but only one written since the running command started (`commandStart`, its
 echo included): it never lands on the previous command's last prompt.
+
+**A pick answers on its prompt's line** (`answering(…, picked)` from `dispatchPointerDown`): what it
+found (`ctx.answer`) follows the bare prompt, whether the press knows it (`pickFound`) or only the
+release does (`openLine`, while nothing else has been written); after a typed answer or Enter it
+goes on a line of its own, as AutoCAD's Enter ends the line. A prompt AutoCAD prints without a
+new line (`continuesLine`: `Specify opposite corner:`) is written on the line a pick left bare:
+`Select objects: Specify opposite corner: 2 found`. Add one to `continuesLine` only from its
+string in Autodesk's table (no leading new line).
 
 **A wrong answer is refused, never run.** What is neither a keyword, a point modifier nor what
 the question takes — at the command line, or in the box when its commit returns `false` — goes

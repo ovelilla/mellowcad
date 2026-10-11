@@ -100,7 +100,9 @@ export function promptRefusal(
 function questionInput(asked: AskedQuestion): QuestionInput | null {
   const declared = asked.tool.takes?.() ?? null
   if (declared !== null) return declared
-  if (asked.prompt === "selectObjects") return "objects"
+  if (asked.prompt === "selectObjects" || asked.prompt === "removeObjects") {
+    return "objects"
+  }
   const fields = asked.session?.fields ?? []
   if (fields.some((field) => isContentField(field.kind))) return null
   const kinds = new Set(fields.map((field) => field.kind))

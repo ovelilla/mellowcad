@@ -10,18 +10,18 @@ import {
 import { ScenePrimitive, StrokeStyle } from "../../scene/types"
 import { entityScenePrimitive } from "../SceneBuilder"
 import { THEME } from "../../scene/theme"
-import { boxSelect, buildSelectionBoxOverlay } from "./boxSelection"
 import {
   CommandOption,
   CommandOptionOutcome,
   PointerInput,
+  QuestionInput,
   Tool,
   ToolContext,
   ToolQuestion,
 } from "./Tool"
 import type { PromptId } from "../../locales/types"
 import { acuteHeading, headingInUcs } from "./ucsHeading"
-import { countPreselection, pickObjects } from "./objectSelection"
+import { ObjectSelector, countPreselection } from "./objectSelection"
 import { pointAlongCursor, showRise } from "./directDistance"
 
 /**
@@ -44,28 +44,9 @@ import { pointAlongCursor, showRise } from "./directDistance"
  * `true` for COPY's Multiple mode, `false` for MOVE).
  */
 
-/** Screen-pixel movement past which a press-drag becomes a box selection. */
-const DRAG_THRESHOLD_PX = 4
-
 type PlacementState =
-  /** No pre-selection: build the set by clicking or box-dragging. */
+  /** No pre-selection: `Select objects:` builds the set. */
   | { readonly phase: "selecting" }
-  /** Mouse down while selecting: still a click until it drags far enough. */
-  | {
-      readonly phase: "pressed"
-      readonly startWorld: Vec2
-      readonly startScreen: Vec2
-      readonly currentWorld: Vec2
-      /** Shift held at press removes the box result instead of adding it. */
-      readonly subtract: boolean
-    }
-  /** Dragging a selection box (window left→right / crossing right→left). */
-  | {
-      readonly phase: "boxing"
-      readonly startWorld: Vec2
-      readonly currentWorld: Vec2
-      readonly subtract: boolean
-    }
   /** Objects chosen; awaiting the base point of the displacement. */
   | { readonly phase: "basePoint" }
   /** The base point's Displacement: the displacement typed as a point. */
@@ -84,6 +65,10 @@ export abstract class PlacementTool implements Tool {
   abstract readonly id: string
 
   private state: PlacementState = { phase: "selecting" }
+  private readonly selector = new ObjectSelector({
+    done: (ctx) => this.confirmSelection(ctx),
+    onAdded: (ids, frame) => this.onSelectionAdded(ids, frame),
+  })
   private lastScreen: Vec2 | null = null
   /**
    * Whether each placement from the current base point added objects (one at
@@ -117,15 +102,16 @@ export abstract class PlacementTool implements Tool {
   }
 
   /**
-   * Called as objects join the set: `box` is the drag that picked them, or null
-   * for a single click. STRETCH uses it to remember which frames were dragged.
+   * Called as objects join the set: `frame` is the outline of the window or
+   * crossing polygon that took them, or null (a pick, a fence, Last…).
+   * STRETCH uses it to remember which frames were given.
    */
   protected onSelectionAdded(
     ids: readonly EntityId[],
-    box: { readonly start: Vec2; readonly current: Vec2 } | null
+    frame: readonly Vec2[] | null
   ): void {
     void ids
-    void box
+    void frame
   }
 
   /**
@@ -151,6 +137,7 @@ export abstract class PlacementTool implements Tool {
     // the objects first.
     if (ctx.selection.isEmpty()) {
       this.state = { phase: "selecting" }
+      this.selector.start()
       this.announceSelection(ctx)
     } else {
       countPreselection(ctx)
@@ -168,9 +155,7 @@ export abstract class PlacementTool implements Tool {
   question(): PromptId | ToolQuestion {
     switch (this.state.phase) {
       case "selecting":
-      case "pressed":
-      case "boxing":
-        return "selectObjects"
+        return this.selector.question()
       case "basePoint":
         return "specifyBasePointOr"
       case "displacement":
@@ -190,7 +175,19 @@ export abstract class PlacementTool implements Tool {
    * `[Exit/Undo] <Exit>` once a copy is placed. COPY's mOde and Array are
    * not offered.
    */
+  takes(): QuestionInput | null {
+    return this.state.phase === "selecting"
+      ? this.selector.takes(this.selectionInput())
+      : null
+  }
+
+  /** What `Select objects:` takes here, as its refusal lists the modes. */
+  protected selectionInput(): QuestionInput {
+    return "objects"
+  }
+
   commandOptions(): readonly CommandOption[] {
+    if (this.state.phase === "selecting") return this.selector.commandOptions()
     if (this.state.phase === "basePoint") return [{ id: "Displacement" }]
     if (this.state.phase === "secondPoint" && this.placements.length > 0) {
       return [{ id: "Exit" }, { id: "Undo" }]
@@ -207,6 +204,9 @@ export abstract class PlacementTool implements Tool {
   }
 
   invokeOption(id: string, ctx: ToolContext): CommandOptionOutcome {
+    if (this.state.phase === "selecting") {
+      return this.selector.invokeOption(id, ctx) ? "continue" : "unhandled"
+    }
     switch (id) {
       case "Displacement":
         if (this.state.phase !== "basePoint") return "unhandled"
@@ -237,6 +237,7 @@ export abstract class PlacementTool implements Tool {
 
   onDeactivate(ctx: ToolContext): void {
     this.state = { phase: "selecting" }
+    this.selector.start()
     ctx.dynamicInput.close()
   }
 
@@ -244,25 +245,8 @@ export abstract class PlacementTool implements Tool {
     this.lastScreen = input.screen
 
     switch (this.state.phase) {
-      case "pressed": {
-        const moved = Math.hypot(
-          input.screen.x - this.state.startScreen.x,
-          input.screen.y - this.state.startScreen.y
-        )
-        if (moved >= DRAG_THRESHOLD_PX) {
-          this.state = {
-            phase: "boxing",
-            startWorld: this.state.startWorld,
-            currentWorld: input.world,
-            subtract: this.state.subtract,
-          }
-        } else {
-          this.state = { ...this.state, currentWorld: input.world }
-        }
-        break
-      }
-      case "boxing":
-        this.state = { ...this.state, currentWorld: input.world }
+      case "selecting":
+        this.selector.onPointerMove(input, ctx)
         break
       case "basePoint":
         ctx.dynamicInput.setPosition(input.screen)
@@ -292,17 +276,9 @@ export abstract class PlacementTool implements Tool {
     if (input.button !== 0) return
 
     switch (this.state.phase) {
-      case "selecting": {
-        // Begin a pick or a box drag; which one is decided on release.
-        this.state = {
-          phase: "pressed",
-          startWorld: input.world,
-          startScreen: input.screen,
-          currentWorld: input.world,
-          subtract: input.shiftKey,
-        }
+      case "selecting":
+        this.selector.onPointerDown(input, ctx)
         return
-      }
       case "basePoint": {
         const base = this.resolveBase(input.point, ctx)
         this.enterSecondPoint(base, ctx, input.screen)
@@ -317,39 +293,11 @@ export abstract class PlacementTool implements Tool {
   }
 
   onPointerUp(input: PointerInput, ctx: ToolContext): void {
-    if (input.button !== 0) return
-
-    // AutoCAD's "Select objects" prompt, additive across picks and boxes: a
-    // plain click picks the object under the cursor, a drag runs a window/
-    // crossing box; shift removes instead of adds. Selected objects render
-    // highlighted, so the set is always visible.
-    if (this.state.phase === "pressed") {
-      const hit = ctx.pick(input.world)
-      if (hit) this.applyPick([hit.id], this.state.subtract, ctx, null)
-      // WHY nothing written for a miss: AutoCAD starts a window there
-      // ("Specify opposite corner:"), which a click cannot finish here.
-      this.state = { phase: "selecting" }
-      ctx.requestRender()
-      return
-    }
-    if (this.state.phase === "boxing") {
-      const hits = boxSelect(
-        ctx.document,
-        this.state.startWorld,
-        this.state.currentWorld,
-        ctx.viewport
-      )
-      this.applyPick(hits, this.state.subtract, ctx, {
-        start: this.state.startWorld,
-        current: this.state.currentWorld,
-      })
-      this.state = { phase: "selecting" }
-      ctx.requestRender()
-    }
+    if (this.state.phase === "selecting") this.selector.onPointerUp(input, ctx)
   }
 
   onEnter(ctx: ToolContext): boolean {
-    return this.confirmSelection(ctx)
+    return this.state.phase === "selecting" && this.selector.onEnter(ctx)
   }
 
   getConstraintAnchor(): Vec2 | null {
@@ -361,18 +309,14 @@ export abstract class PlacementTool implements Tool {
     // Object snaps help place the base and second points precisely; picking
     // objects (click or box) does not need them.
     return (
-      this.state.phase === "basePoint" || this.state.phase === "secondPoint"
+      this.state.phase === "basePoint" ||
+      this.state.phase === "secondPoint" ||
+      (this.state.phase === "selecting" && this.selector.wantsSnap())
     )
   }
 
   buildOverlay(ctx: ToolContext): ScenePrimitive[] {
-    if (this.state.phase === "boxing") {
-      return buildSelectionBoxOverlay(
-        ctx.viewport,
-        this.state.startWorld,
-        this.state.currentWorld
-      )
-    }
+    if (this.state.phase === "selecting") return this.selector.buildOverlay(ctx)
     if (this.state.phase !== "secondPoint") return []
     const { viewport } = ctx
     const { base, originals, current } = this.state
@@ -401,26 +345,12 @@ export abstract class PlacementTool implements Tool {
     return out
   }
 
-  /** Adds (or, with shift held, removes) picked ids while building the set. */
-  private applyPick(
-    ids: readonly EntityId[],
-    subtract: boolean,
-    ctx: ToolContext,
-    box: { readonly start: Vec2; readonly current: Vec2 } | null
-  ): void {
-    pickObjects(ids, subtract, box !== null, ctx)
-    if (!subtract && ids.length > 0) this.onSelectionAdded(ids, box)
-  }
-
-  /** Confirms the picked set and advances to the base point; ends if empty. */
-  private confirmSelection(ctx: ToolContext): boolean {
-    if (this.state.phase !== "selecting") return false
-    if (ctx.selection.isEmpty()) return false // nothing selected: let Enter exit
+  /** Goes on from the set `Select objects:` closed to the base point. */
+  private confirmSelection(ctx: ToolContext): void {
     this.state = { phase: "basePoint" }
     this.announceBasePoint(ctx)
     this.openBaseInput(ctx)
     ctx.requestRender()
-    return true
   }
 
   private openBaseInput(ctx: ToolContext): void {
@@ -464,6 +394,7 @@ export abstract class PlacementTool implements Tool {
     if (originals.length === 0) {
       // The selection vanished (e.g. undo elsewhere): fall back to picking.
       this.state = { phase: "selecting" }
+      this.selector.start()
       ctx.dynamicInput.close()
       return
     }

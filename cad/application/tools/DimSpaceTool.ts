@@ -18,9 +18,8 @@ import { DynamicInputSession } from "../input/DynamicInput"
 import { entityScenePrimitive } from "../SceneBuilder"
 import { ScenePrimitive } from "../../scene/types"
 import { THEME } from "../../scene/theme"
-import { boxSelect, buildSelectionBoxOverlay } from "./boxSelection"
 import type { PromptId } from "../../locales/types"
-import { pickObjects } from "./objectSelection"
+import { ObjectSelector } from "./objectSelection"
 import {
   CommandOption,
   CommandOptionOutcome,
@@ -29,9 +28,6 @@ import {
   Tool,
   ToolContext,
 } from "./Tool"
-
-/** Screen-pixel movement past which a press-drag becomes a box selection. */
-const DRAG_THRESHOLD_PX = 4
 
 /** Two dimension lines closer together than this are treated as coincident. */
 const COINCIDENT = 1e-9
@@ -65,6 +61,13 @@ export class DimSpaceTool implements Tool {
 
   private state: DimSpaceState = { phase: "base", hover: null }
   private lastScreen: Vec2 | null = null
+  private readonly selector = new ObjectSelector({
+    done: (ctx) => {
+      if (this.state.phase === "select") this.enterValue(this.state.base, ctx)
+    },
+    question: () => "selectDimensionsToSpace",
+    accept: (ids, ctx) => this.spaceableOf(ids, ctx),
+  })
 
   onActivate(ctx: ToolContext): void {
     ctx.setCursor("crosshair")
@@ -87,32 +90,8 @@ export class DimSpaceTool implements Tool {
         }
         break
       }
-      case "select": {
-        const hover = this.pickSpaceable(input.world, this.state.base, ctx)
-        if (hover?.id !== this.state.hover?.id) {
-          this.state = { ...this.state, hover }
-        }
-        break
-      }
-      case "pressed": {
-        const moved = Math.hypot(
-          input.screen.x - this.state.startScreen.x,
-          input.screen.y - this.state.startScreen.y
-        )
-        this.state =
-          moved >= DRAG_THRESHOLD_PX
-            ? {
-                phase: "boxing",
-                base: this.state.base,
-                startWorld: this.state.startWorld,
-                currentWorld: input.world,
-                subtract: this.state.subtract,
-              }
-            : { ...this.state, currentWorld: input.world }
-        break
-      }
-      case "boxing":
-        this.state = { ...this.state, currentWorld: input.world }
+      case "select":
+        this.selector.onPointerMove(input, ctx)
         break
     }
     ctx.dynamicInput.setPosition(input.screen)
@@ -128,52 +107,20 @@ export class DimSpaceTool implements Tool {
         break
       }
       case "select":
-        this.state = {
-          phase: "pressed",
-          base: this.state.base,
-          startWorld: input.world,
-          startScreen: input.screen,
-          currentWorld: input.world,
-          subtract: input.shiftKey,
-        }
+        this.selector.onPointerDown(input, ctx)
         break
     }
     ctx.requestRender()
   }
 
   onPointerUp(input: PointerInput, ctx: ToolContext): void {
-    if (input.button !== 0) return
-    if (this.state.phase === "pressed") {
-      const hit = this.pickSpaceable(input.world, this.state.base, ctx)
-      if (hit) this.applyPick([hit.id], this.state.subtract, ctx)
-      this.enterSelect(this.state.base, ctx)
-    } else if (this.state.phase === "boxing") {
-      const { base, startWorld, currentWorld, subtract } = this.state
-      const ids = boxSelect(
-        ctx.document,
-        startWorld,
-        currentWorld,
-        ctx.viewport
-      ).filter((id) => {
-        const entity = ctx.document.get(id)
-        return entity !== undefined && spaceable(entity, base)
-      })
-      this.applyPick(ids, subtract, ctx, true)
-      this.enterSelect(base, ctx)
-    } else {
-      return
-    }
-    ctx.requestRender()
+    if (this.state.phase === "select") this.selector.onPointerUp(input, ctx)
   }
 
   onEnter(ctx: ToolContext): boolean {
     // Enter closes the "Select dimensions to space" prompt, as AutoCAD's
     // "press Enter after selecting all dimensions to be adjusted" says.
-    if (this.state.phase !== "select") return false
-    if (ctx.selection.isEmpty()) return false
-    this.enterValue(this.state.base, ctx)
-    ctx.requestRender()
-    return true
+    return this.state.phase === "select" && this.selector.onEnter(ctx)
   }
 
   question(): PromptId {
@@ -182,8 +129,8 @@ export class DimSpaceTool implements Tool {
         return "spaceBaseDimension"
       case "value":
         return "enterValueOr"
-      default:
-        return "selectDimensionsToSpace"
+      case "select":
+        return this.selector.question()
     }
   }
 
@@ -194,8 +141,8 @@ export class DimSpaceTool implements Tool {
         return "objectOrLast"
       case "value":
         return null
-      default:
-        return "wholeObjects"
+      case "select":
+        return this.selector.takes("wholeObjects")
     }
   }
 
@@ -204,18 +151,23 @@ export class DimSpaceTool implements Tool {
   }
 
   commandOptions(): readonly CommandOption[] {
+    if (this.state.phase === "select") return this.selector.commandOptions()
     return this.state.phase === "value" ? [{ id: "Auto" }] : []
   }
 
   invokeOption(id: string, ctx: ToolContext): CommandOptionOutcome {
+    if (this.state.phase === "select") {
+      return this.selector.invokeOption(id, ctx) ? "continue" : "unhandled"
+    }
     if (this.state.phase !== "value" || id !== "Auto") return "unhandled"
     const { base } = this.state
     this.apply(base, autoSpacing(this.styleOf(base, ctx)), ctx)
     return "end"
   }
 
+  /** Objects and a value; a point only at a selection mode's prompt. */
   wantsSnap(): boolean {
-    return false // objects and a value; never a point
+    return this.state.phase === "select" && this.selector.wantsSnap()
   }
 
   buildOverlay(ctx: ToolContext): ScenePrimitive[] {
@@ -231,25 +183,7 @@ export class DimSpaceTool implements Tool {
 
     switch (this.state.phase) {
       case "select":
-        if (this.state.hover) {
-          out.push(
-            ...entityScenePrimitive(
-              ctx.viewport,
-              this.state.hover,
-              { color: THEME.entityHover, width: 2 },
-              { dimStyle: this.styleOf(this.state.hover, ctx) }
-            )
-          )
-        }
-        break
-      case "boxing":
-        out.push(
-          ...buildSelectionBoxOverlay(
-            ctx.viewport,
-            this.state.startWorld,
-            this.state.currentWorld
-          )
-        )
+        out.push(...this.selector.buildOverlay(ctx))
         break
       case "value":
         for (const dim of this.spaced(
@@ -332,35 +266,23 @@ export class DimSpaceTool implements Tool {
     if (moved.length > 0) ctx.execute(new UpdateEntitiesCommand(moved))
   }
 
-  /** Adds to the set or takes from it, counted on the prompt's line as AutoCAD counts. */
-  private applyPick(
-    ids: readonly EntityId[],
-    subtract: boolean,
-    ctx: ToolContext,
-    box = false
-  ): void {
-    pickObjects(ids, subtract, box, ctx)
-  }
-
   private pickDimension(world: Vec2, ctx: ToolContext): DimensionEntity | null {
     const hit = ctx.pick(world)
     return hit?.type === "dimension" && isSpaceable(hit) ? hit : null
   }
 
   /**
-   * A dimension a click would add to the set. Only parallel dimensions can be
+   * The dimensions of `ids` the set can take. Only parallel dimensions can be
    * spaced, so a non-parallel one simply never highlights — the pick tells the
    * user what the command can act on.
    */
-  private pickSpaceable(
-    world: Vec2,
-    base: DimensionEntity,
-    ctx: ToolContext
-  ): DimensionEntity | null {
-    const hit = ctx.pick(world)
-    return hit && spaceable(hit, base) && !ctx.selection.has(hit.id)
-      ? hit
-      : null
+  private spaceableOf(ids: readonly EntityId[], ctx: ToolContext): EntityId[] {
+    if (this.state.phase !== "select") return []
+    const { base } = this.state
+    return ids.filter((id) => {
+      const entity = ctx.document.get(id)
+      return entity !== undefined && spaceable(entity, base)
+    })
   }
 
   private outline(dim: DimensionEntity, ctx: ToolContext): ScenePrimitive[] {
@@ -382,7 +304,8 @@ export class DimSpaceTool implements Tool {
   }
 
   private enterSelect(base: DimensionEntity, ctx: ToolContext): void {
-    this.state = { phase: "select", base, hover: null }
+    this.state = { phase: "select", base }
+    this.selector.start()
     this.openPrompt(ctx)
   }
 
@@ -470,25 +393,7 @@ function isSpaceable(dim: DimensionEntity): boolean {
 type DimSpaceState =
   /** Picking the dimension the others are spaced from. */
   | { readonly phase: "base"; readonly hover: DimensionEntity | null }
-  | {
-      readonly phase: "select"
-      readonly base: DimensionEntity
-      readonly hover: DimensionEntity | null
-    }
-  | {
-      readonly phase: "pressed"
-      readonly base: DimensionEntity
-      readonly startWorld: Vec2
-      readonly startScreen: Vec2
-      readonly currentWorld: Vec2
-      readonly subtract: boolean
-    }
-  | {
-      readonly phase: "boxing"
-      readonly base: DimensionEntity
-      readonly startWorld: Vec2
-      readonly currentWorld: Vec2
-      readonly subtract: boolean
-    }
+  /** `Select dimensions to space:`, by {@link ObjectSelector}. */
+  | { readonly phase: "select"; readonly base: DimensionEntity }
   /** Entering the spacing distance, or taking the Auto default. */
   | { readonly phase: "value"; readonly base: DimensionEntity }

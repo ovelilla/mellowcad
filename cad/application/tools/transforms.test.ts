@@ -59,8 +59,8 @@ describe("MOVE", () => {
     expect(cad.commandLog()).toEqual([
       "MOVE",
       "Select objects: 1 found",
-      "Select objects: 1 found, 1 total",
-      "Select objects: Specify opposite corner: 2 found, 2 total",
+      "Select objects: 1 found (1 duplicate), 1 total",
+      "Select objects: Specify opposite corner: 2 found (1 duplicate), 2 total",
       "Select objects: 1 found, 1 removed, 1 total",
       "Select objects:",
       "Specify base point or [Displacement] <Displacement>:",

@@ -2,8 +2,8 @@ import type { CadRuntime } from "./CadRuntime"
 import { CommandDefinition, TOOL_COMMANDS } from "./CommandLine"
 import type { CommandOptionUi, StylesPanelTab } from "./EngineState"
 import { promptString, type EngineText, type PromptSegment } from "./EngineText"
-import { offerKeywords } from "../i18n/keywords"
-import { Tool, type ToolQuestion } from "./tools/Tool"
+import { type Keyword, offerKeywords } from "../i18n/keywords"
+import { type CommandOption, Tool, type ToolQuestion } from "./tools/Tool"
 import type { PromptId } from "../locales/types"
 import { formatAngle, formatLength } from "../domain/units"
 import type { DocumentSettings } from "../domain/units"
@@ -175,13 +175,7 @@ export function offerOptions(tool: Tool, text: EngineText): CommandOptionUi[] {
     (option) => !option.hidden
   )
   const command = toolCommand(tool)
-  const offered = offerKeywords(
-    text.keywords(
-      command,
-      options.map((option) => option.id),
-      askedPrompt(tool)
-    )
-  )
+  const offered = offerKeywords(optionKeywords(tool, text, options))
   return offered.map((keyword, index) => {
     const value = options[index].value
     return {
@@ -194,6 +188,32 @@ export function offerOptions(tool: Tool, text: EngineText): CommandOptionUi[] {
           : text.optionValue(keyword.word, text.keyword(command, value)),
     }
   })
+}
+
+/**
+ * `options` as the running command spells them: at the asked prompt, or at
+ * the one an option names (the selection modes, in `selectObjects`' words).
+ */
+export function optionKeywords(
+  tool: Tool,
+  text: EngineText,
+  options: readonly CommandOption[]
+): Keyword[] {
+  const command = toolCommand(tool)
+  const asked = askedPrompt(tool)
+  return options.map((option) => ({
+    id: option.id,
+    word: text.keyword(command, option.id, option.prompt ?? asked),
+    global: option.id,
+  }))
+}
+
+/**
+ * Whether AutoCAD asks `prompt` on the line a pick left bare — its string has
+ * no new line before it: `Select objects: Specify opposite corner: 2 found`.
+ */
+export function continuesLine(prompt: PromptId | null): boolean {
+  return prompt === "specifyOppositeCorner"
 }
 
 /** A prompt in its two forms: at the prompt line, and as the history writes it. */

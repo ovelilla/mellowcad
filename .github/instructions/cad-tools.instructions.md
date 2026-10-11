@@ -36,13 +36,24 @@ A tool is an explicit state machine for one AutoCAD command. It owns a discrimin
 - `PlacementTool` — select → base point → second point with ghost preview (Move, Copy, Stretch).
   Override `place()`, `continuesAfterPlace()`, optionally `transformEntity()` / `onSelectionAdded()`.
 - `EdgeEditTool` — hover-preview-click editing against implicit boundaries (Trim, Extend).
+- `ObjectSelector` (`objectSelection.ts`) — AutoCAD's `Select objects:`, the one every command
+  that takes a set asks it with: picks, the window a drag or a pick on nothing starts, and the
+  modes typed there (Window, Crossing, BOX, Last, ALL, Fence, WPolygon, CPolygon, Previous,
+  Remove/Add, Undo, AUto, SIngle), each counted as AutoCAD counts it. A tool holds one and, in its
+  select phase, hands it `question`, `takes` (what its refusal lists:
+  `selector.takes("wholeObjects")`), `commandOptions`, `invokeOption`, the three pointer handlers,
+  `onEnter`, `wantsSnap` and `buildOverlay`. It passes `done` (the set is closed) and, where
+  needed, its own wording (`question`), a filter (`accept`: what it leaves out is neither counted
+  nor highlighted, and a pick on it starts no window) and `onAdded` (STRETCH's frames). Never
+  re-implement a pick, a box or a mode in a tool.
 - `SelectionActionTool` — one action over a selection set, supporting both noun-verb and
   verb-noun invocation (Erase, Explode, Join, COPYCLIP). A command that must ask something **before** the
   set — COPYBASE's base point — overrides `onActivate` and calls `begin(ctx)` once it has the
   answer, rather than forking the base class.
-- `boxSelection.ts` — window/crossing box selection. Never re-implement it. `boxSelect` takes
+- `boxSelection.ts` — what a window, a fence or a polygon takes (`objectsInWindow`,
+  `objectsOnFence`, `objectsInPolygon`) and their previews. Never re-implement it. Each takes
   `ctx.viewport`, because the box is upright on the screen, which a turned view (PLAN) does not
-  line up with the world.
+  line up with the world; a fence and a polygon test what is drawn on screen.
 - `SelectTool` is split so a new entity type rarely needs the tool itself: `selectToolState.ts`
   holds the state union, `selectToolGrips.ts` enumerates and hit-tests grips (**the file to edit
   when an entity type gains grips**), `selectToolOverlay.ts` draws each edit's preview, and
@@ -108,15 +119,17 @@ is not invented — that state returns `null` and keeps the `NAME [keywords]:` p
 writes no prompt lines, so a half-converted one reads inconsistently. A report the answer produces
 (`Current line-width is 0.0000`) is written after the answered prompt by itself; what only the
 release of a pick knows — what a `Select objects:` pick found — goes on that prompt's line with
-`ctx.answer(text)`, and with nothing picked yet after the command's echo (`Command: M MOVE 1 found`).
-Every `Select objects:` counts through `pickObjects` and `countPreselection`
-(`tools/objectSelection.ts`: `PlacementTool`, `SelectionActionTool`), never on its own. A keyword AutoCAD
+`ctx.answer(text)`, and with nothing picked yet after the command's echo (`Command: M MOVE 1 found`);
+after a typed answer the runtime puts it on a line of its own (`Select objects: L`, then `1 found`).
+Every `Select objects:` is an `ObjectSelector` (below, "Reuse before writing"), and a set selected
+before the command is counted by `countPreselection`, which also keeps it as the Previous set —
+never on its own. A keyword AutoCAD
 lists with a gloss (`Ttr (tan tan radius)`) has it in `commands.keywordLabels.<NAME>`, for every
 command name that offers it (CIRCLE and CIRCLED).
 
 **What a question takes** — `takes()`, a `QuestionInput` — is how the runtime refuses a wrong
 answer there (`cad-runtime.instructions.md`, "Answering a prompt"). Leave it out where the default
-reads right: `selectObjects` is a selection set with sub-objects; a box with a coordinate field (or
+reads right: `selectObjects` and `removeObjects` are a selection set with sub-objects; a box with a coordinate field (or
 a distance and an angle) is a point, a lone distance or angle field that, a number field a number;
 with no box, a point when `wantsSnap()` and a keyword otherwise. Declare what the box cannot tell:
 a single object's pick (`"object"`), a 2D point (ARC's, PLINE's, MIRROR's, ELLIPSE's and POLYGON's
@@ -296,6 +309,9 @@ the language changes. Every keyword a tool offers must be in its command's table
 prompt spells otherwise — AutoCAD's `initget` is per prompt, so Spanish FILLET's `[RAdio]` is
 `[Radio]` at `Designe polilínea 2D o` — goes in `commands.promptKeywords.<promptId>`, which the
 runtime reads for the question the tool is asking (`askedPrompt`); never a second keyword id.
+An option spelled at another prompt names it (`{ id: "Window", hidden: true, prompt:
+"selectObjects" }`): the selection modes live once, in `promptKeywords.selectObjects`, for every
+command's `Select objects:` however the command words it (JOIN's, DIMSPACE's).
 
 A keyword is answered by its abbreviation or its whole word, or by `_` and the global one, typed
 and confirmed with Enter or Space — at the prompt or in a value box, as in AutoCAD; no key runs one

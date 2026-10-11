@@ -10,11 +10,8 @@ import { UpdateEntitiesCommand } from "../commands/entityCommands"
 import { QuestionInput, ToolContext } from "./Tool"
 import { PlacementTool } from "./PlacementTool"
 
-/** An axis-aligned world rectangle dragged while selecting: the stretch frame. */
-interface Frame {
-  readonly min: Vec2
-  readonly max: Vec2
-}
+/** A window or crossing polygon given while selecting: a stretch frame. */
+type Frame = readonly Vec2[]
 
 /**
  * AutoCAD's STRETCH: drag a crossing window over *part* of the drawing, then
@@ -59,8 +56,8 @@ export class StretchTool extends PlacementTool {
   }
 
   /** STRETCH's selection takes no group, as AutoCAD's lists its modes. */
-  takes(): QuestionInput | null {
-    return this.question() === "selectObjects" ? "crossingObjects" : null
+  protected selectionInput(): QuestionInput {
+    return "crossingObjects"
   }
 
   protected announceSelection(ctx: ToolContext): void {
@@ -69,22 +66,13 @@ export class StretchTool extends PlacementTool {
 
   protected onSelectionAdded(
     ids: readonly EntityId[],
-    box: { readonly start: Vec2; readonly current: Vec2 } | null
+    frame: readonly Vec2[] | null
   ): void {
-    if (!box) {
+    if (!frame) {
       for (const id of ids) this.whole.add(id)
       return
     }
-    this.frames.push({
-      min: {
-        x: Math.min(box.start.x, box.current.x),
-        y: Math.min(box.start.y, box.current.y),
-      },
-      max: {
-        x: Math.max(box.start.x, box.current.x),
-        y: Math.max(box.start.y, box.current.y),
-      },
-    })
+    this.frames.push(frame)
   }
 
   protected transformEntity(entity: Entity, delta: Vec3): Entity {
@@ -108,12 +96,30 @@ export class StretchTool extends PlacementTool {
   }
 
   private isFramed(point: Vec2): boolean {
-    return this.frames.some(
-      (frame) =>
-        point.x >= frame.min.x &&
-        point.x <= frame.max.x &&
-        point.y >= frame.min.y &&
-        point.y <= frame.max.y
-    )
+    return this.frames.some((frame) => withinFrame(point, frame))
   }
+}
+
+/** Whether `point` lies in the frame or on its edge. */
+function withinFrame(point: Vec2, frame: Frame): boolean {
+  let inside = false
+  for (let i = 0, j = frame.length - 1; i < frame.length; j = i++) {
+    const a = frame[i]
+    const b = frame[j]
+    const cross = (b.x - a.x) * (point.y - a.y) - (b.y - a.y) * (point.x - a.x)
+    const onEdge =
+      Math.abs(cross) < 1e-9 &&
+      Math.min(a.x, b.x) <= point.x &&
+      point.x <= Math.max(a.x, b.x) &&
+      Math.min(a.y, b.y) <= point.y &&
+      point.y <= Math.max(a.y, b.y)
+    if (onEdge) return true
+    if (
+      a.y > point.y !== b.y > point.y &&
+      point.x < ((b.x - a.x) * (point.y - a.y)) / (b.y - a.y) + a.x
+    ) {
+      inside = !inside
+    }
+  }
+  return inside
 }

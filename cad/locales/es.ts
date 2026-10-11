@@ -1167,6 +1167,28 @@ export const es: EngineLocale = {
       }
     },
     "promptKeywords": {
+      "selectObjects": {
+        "Window": "Ventana",
+        "Last": "úLTimo",
+        "Crossing": "Captura",
+        "BOX": "MArco",
+        "ALL": "Todos",
+        "Fence": "Borde",
+        "WPolygon": "polígonOV",
+        "CPolygon": "polígonOC",
+        "Add": "Añadir",
+        "Remove": "Eliminar",
+        "Previous": "Previo",
+        "Undo": "desHacer",
+        "AUto": "AUto",
+        "SIngle": "úNico"
+      },
+      "specifyNextFencePointOr": {
+        "Undo": "desHacer"
+      },
+      "specifyEndpointOfLineOr": {
+        "Undo": "desHacer"
+      },
       "select2dPolylineOr": {
         "Radius": "Radio"
       },
@@ -1349,6 +1371,13 @@ export const es: EngineLocale = {
       "specifyStartPointOfArc": "Precise punto inicial del arco",
       "specifyEndPointOfArcCtrl": "Precise punto final del arco (mantenga pulsada la tecla Ctrl para cambiar de dirección)",
       "selectObjects": "Designe objetos",
+      "removeObjects": "Elimine objetos",
+      "specifyFirstCorner": "Designe primera esquina",
+      "specifyOppositeCorner": "Designe esquina opuesta",
+      "specifyFirstFencePoint": "Precise primer punto del borde o designe/arrastre cursor",
+      "specifyNextFencePointOr": "Precise punto del borde o",
+      "firstPolygonPoint": "Primer punto del polígono o designe/arrastre cursor",
+      "specifyEndpointOfLineOr": "Precise punto final de línea o",
       "specifyBasePointOr": "Precise punto base o",
       "specifyDisplacement": "Precise desplazamiento",
       "specifySecondPointOr": "Precise segundo punto o",
@@ -1618,6 +1647,18 @@ export const es: EngineLocale = {
         ],
         " encontrados",
         [
+          "duplicate",
+          2,
+          {
+            "=0": "",
+            "other": [
+              " (",
+              0,
+              " duplicados)"
+            ]
+          }
+        ],
+        [
           "removed",
           2,
           {
@@ -1643,6 +1684,28 @@ export const es: EngineLocale = {
           }
         ]
       ],
+      "onLockedLayer": [
+        [
+          "count",
+          2,
+          {
+            "one": [
+              0,
+              " estaba en una capa bloqueada."
+            ],
+            "other": [
+              0,
+              " estaban en una capa bloqueada."
+            ]
+          }
+        ]
+      ],
+      "noPreviousSelection": "No hay ningún conjunto de selección previo.",
+      "allSelectionsUndone": "Se han anulado todas las designaciones.",
+      "invalidWindowSpecification": "Designación de ventana no válida.",
+      "invalidResponse": "Respuesta no válida.",
+      "polygonSegmentZeroLength": "Punto no válido: el segmento del polígono tiene una longitud cero.",
+      "polygonSegmentsIntersect": "Punto no válido: los segmentos del polígono no pueden intersecarse.",
       "copyModeMultiple": "Parámetros actuales:  modo de copia = Múltiple",
       "stretchSelection": "Designe objetos que estirar mediante ventana o polígono...",
       "currentLineWidth": [

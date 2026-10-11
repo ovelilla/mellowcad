@@ -1,7 +1,6 @@
 import { Vec2 } from "../../geometry/Vec2"
 import {
   Entity,
-  EntityId,
   copyEntity,
   entityBounds,
   rotateEntity,
@@ -18,8 +17,7 @@ import { ScenePrimitive, StrokeStyle } from "../../scene/types"
 import { entityScenePrimitive } from "../SceneBuilder"
 import { THEME } from "../../scene/theme"
 import { AddEntitiesCommand } from "../commands/entityCommands"
-import { boxSelect, buildSelectionBoxOverlay } from "./boxSelection"
-import { countPreselection, pickObjects } from "./objectSelection"
+import { ObjectSelector, countPreselection } from "./objectSelection"
 import type { PromptId } from "../../locales/types"
 import {
   CommandOption,
@@ -48,9 +46,6 @@ import {
  * Levels are not offered.
  */
 
-/** Screen-pixel movement past which a press-drag becomes a box selection. */
-const DRAG_THRESHOLD_PX = 4
-
 const DEFAULT_ITEMS = 6
 const DEFAULT_FILL = 360
 const MAX_ITEMS = 1000
@@ -74,20 +69,8 @@ interface PolarConfig {
 }
 
 type ArrayPolarState =
+  /** No pre-selection: `Select objects:` builds the set. */
   | { readonly phase: "selecting" }
-  | {
-      readonly phase: "pressed"
-      readonly startWorld: Vec2
-      readonly startScreen: Vec2
-      readonly currentWorld: Vec2
-      readonly subtract: boolean
-    }
-  | {
-      readonly phase: "boxing"
-      readonly startWorld: Vec2
-      readonly currentWorld: Vec2
-      readonly subtract: boolean
-    }
   /** Objects chosen; awaiting the center point of the array. */
   | { readonly phase: "center"; readonly originals: readonly Entity[] }
   /** Center placed; editing the ring with a live preview. */
@@ -109,12 +92,16 @@ export class ArrayPolarTool implements Tool {
   readonly id = "arraypolar"
 
   private state: ArrayPolarState = { phase: "selecting" }
+  private readonly selector = new ObjectSelector({
+    done: (ctx) => this.confirmSelection(ctx),
+  })
   private lastScreen: Vec2 | null = null
 
   onActivate(ctx: ToolContext): void {
     ctx.setCursor("crosshair")
     if (ctx.selection.isEmpty()) {
       this.state = { phase: "selecting" }
+      this.selector.start()
     } else {
       countPreselection(ctx)
       this.enterCenter(ctx)
@@ -123,6 +110,7 @@ export class ArrayPolarTool implements Tool {
 
   onDeactivate(ctx: ToolContext): void {
     this.state = { phase: "selecting" }
+    this.selector.start()
     ctx.dynamicInput.close()
   }
 
@@ -133,8 +121,8 @@ export class ArrayPolarTool implements Tool {
         return "specifyCenterPointOfArray"
       case "edit":
         break
-      default:
-        return "selectObjects"
+      case "selecting":
+        return this.selector.question()
     }
     const { ring } = state
     switch (state.step) {
@@ -162,7 +150,7 @@ export class ArrayPolarTool implements Tool {
   takes(): QuestionInput | null {
     const state = this.state
     if (state.phase === "center") return { refusal: "pointOrKeywordRequired" }
-    if (state.phase !== "edit") return null
+    if (state.phase !== "edit") return this.selector.takes("objects")
     switch (state.step) {
       case "main":
         return "point"
@@ -180,6 +168,7 @@ export class ArrayPolarTool implements Tool {
   }
 
   commandOptions(): readonly CommandOption[] {
+    if (this.state.phase === "selecting") return this.selector.commandOptions()
     if (this.state.phase !== "edit") return []
     switch (this.state.step) {
       case "main":
@@ -210,6 +199,9 @@ export class ArrayPolarTool implements Tool {
   }
 
   invokeOption(id: string, ctx: ToolContext): CommandOptionOutcome {
+    if (this.state.phase === "selecting") {
+      return this.selector.invokeOption(id, ctx) ? "continue" : "unhandled"
+    }
     if (this.state.phase !== "edit") return "unhandled"
     if (this.state.step === "rotate") {
       if (id !== "Yes" && id !== "No") return "unhandled"
@@ -235,25 +227,8 @@ export class ArrayPolarTool implements Tool {
     this.lastScreen = input.screen
 
     switch (this.state.phase) {
-      case "pressed": {
-        const moved = Math.hypot(
-          input.screen.x - this.state.startScreen.x,
-          input.screen.y - this.state.startScreen.y
-        )
-        if (moved >= DRAG_THRESHOLD_PX) {
-          this.state = {
-            phase: "boxing",
-            startWorld: this.state.startWorld,
-            currentWorld: input.world,
-            subtract: this.state.subtract,
-          }
-        } else {
-          this.state = { ...this.state, currentWorld: input.world }
-        }
-        break
-      }
-      case "boxing":
-        this.state = { ...this.state, currentWorld: input.world }
+      case "selecting":
+        this.selector.onPointerMove(input, ctx)
         break
       case "center":
       case "edit":
@@ -269,13 +244,7 @@ export class ArrayPolarTool implements Tool {
 
     switch (this.state.phase) {
       case "selecting":
-        this.state = {
-          phase: "pressed",
-          startWorld: input.world,
-          startScreen: input.screen,
-          currentWorld: input.world,
-          subtract: input.shiftKey,
-        }
+        this.selector.onPointerDown(input, ctx)
         return
       case "center":
         this.enterEdit(input.point, ctx)
@@ -284,35 +253,11 @@ export class ArrayPolarTool implements Tool {
   }
 
   onPointerUp(input: PointerInput, ctx: ToolContext): void {
-    if (input.button !== 0) return
-
-    if (this.state.phase === "pressed") {
-      const hit = ctx.pick(input.world)
-      if (hit) pickObjects([hit.id], this.state.subtract, false, ctx)
-      this.state = { phase: "selecting" }
-      ctx.requestRender()
-      return
-    }
-    if (this.state.phase === "boxing") {
-      const hits: readonly EntityId[] = boxSelect(
-        ctx.document,
-        this.state.startWorld,
-        this.state.currentWorld,
-        ctx.viewport
-      )
-      pickObjects(hits, this.state.subtract, true, ctx)
-      this.state = { phase: "selecting" }
-      ctx.requestRender()
-    }
+    if (this.state.phase === "selecting") this.selector.onPointerUp(input, ctx)
   }
 
   onEnter(ctx: ToolContext): boolean {
-    if (this.state.phase === "selecting") {
-      if (ctx.selection.isEmpty()) return false
-      this.enterCenter(ctx)
-      ctx.requestRender()
-      return true
-    }
+    if (this.state.phase === "selecting") return this.selector.onEnter(ctx)
     if (this.state.phase === "edit" && this.state.step === "main") {
       // <eXit>: the array is made and the command ends.
       this.create(ctx)
@@ -329,18 +274,15 @@ export class ArrayPolarTool implements Tool {
   wantsSnap(): boolean {
     // The center point benefits from object snap (e.g. an existing circle's
     // center); picking objects and typing parameters do not.
-    return this.state.phase === "center"
+    return (
+      this.state.phase === "center" ||
+      (this.state.phase === "selecting" && this.selector.wantsSnap())
+    )
   }
 
   buildOverlay(ctx: ToolContext): ScenePrimitive[] {
     const state = this.state
-    if (state.phase === "boxing") {
-      return buildSelectionBoxOverlay(
-        ctx.viewport,
-        state.startWorld,
-        state.currentWorld
-      )
-    }
+    if (state.phase === "selecting") return this.selector.buildOverlay(ctx)
     if (state.phase !== "edit") return []
 
     const ghost: StrokeStyle = { color: THEME.preview, width: 1, dash: [6, 4] }
@@ -362,6 +304,12 @@ export class ArrayPolarTool implements Tool {
     return out
   }
 
+  /** Goes on from the set `Select objects:` closed to the center point. */
+  private confirmSelection(ctx: ToolContext): void {
+    this.enterCenter(ctx)
+    ctx.requestRender()
+  }
+
   private enterCenter(ctx: ToolContext): void {
     const originals = ctx.selection
       .toArray()
@@ -369,6 +317,7 @@ export class ArrayPolarTool implements Tool {
       .filter((entity): entity is Entity => entity !== undefined)
     if (originals.length === 0) {
       this.state = { phase: "selecting" }
+      this.selector.start()
       ctx.dynamicInput.close()
       return
     }

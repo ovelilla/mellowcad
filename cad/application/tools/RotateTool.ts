@@ -1,11 +1,6 @@
 import { Vec2, V } from "../../geometry/Vec2"
 import { headingInUcs } from "./ucsHeading"
-import {
-  Entity,
-  EntityId,
-  rotateEntity,
-  rotateEntityCopy,
-} from "../../domain/entities"
+import { Entity, rotateEntity, rotateEntityCopy } from "../../domain/entities"
 import { parseNumber } from "../../domain/units"
 import { DynamicInputSession } from "../input/DynamicInput"
 import type { PromptId } from "../../locales/types"
@@ -20,7 +15,6 @@ import {
   AddEntitiesCommand,
   UpdateEntitiesCommand,
 } from "../commands/entityCommands"
-import { boxSelect, buildSelectionBoxOverlay } from "./boxSelection"
 import {
   CommandOption,
   CommandOptionOutcome,
@@ -30,7 +24,7 @@ import {
   ToolQuestion,
   type QuestionInput,
 } from "./Tool"
-import { countPreselection, pickObjects } from "./objectSelection"
+import { ObjectSelector, countPreselection } from "./objectSelection"
 
 /**
  * AutoCAD's ROTATE command: select a set of objects, pick a base point (the
@@ -53,27 +47,9 @@ import { countPreselection, pickObjects } from "./objectSelection"
  * snap, Ortho/Polar locking the arm, and typed angle or coordinate entry.
  */
 
-/** Screen-pixel movement past which a press-drag becomes a box selection. */
-const DRAG_THRESHOLD_PX = 4
-
 type RotateState =
-  /** No pre-selection: build the set by clicking or box-dragging. */
+  /** No pre-selection: `Select objects:` builds the set. */
   | { readonly phase: "selecting" }
-  /** Mouse down while selecting: still a click until it drags far enough. */
-  | {
-      readonly phase: "pressed"
-      readonly startWorld: Vec2
-      readonly startScreen: Vec2
-      readonly currentWorld: Vec2
-      readonly subtract: boolean
-    }
-  /** Dragging a selection box (window left→right / crossing right→left). */
-  | {
-      readonly phase: "boxing"
-      readonly startWorld: Vec2
-      readonly currentWorld: Vec2
-      readonly subtract: boolean
-    }
   /** Objects chosen; awaiting the base point (pivot) of the rotation. */
   | { readonly phase: "pivot" }
   /** Base placed; the set spins to the rotation angle (cursor-driven). */
@@ -118,6 +94,9 @@ export class RotateTool implements Tool {
   readonly shortcut = "r"
 
   private state: RotateState = { phase: "selecting" }
+  private readonly selector = new ObjectSelector({
+    done: (ctx) => this.confirmSelection(ctx),
+  })
   private lastScreen: Vec2 | null = null
   /**
    * The rotation angle's `<default>`: AutoCAD "knows the last rotation angle
@@ -133,6 +112,7 @@ export class RotateTool implements Tool {
     // matching AutoCAD; otherwise prompt to select the objects first.
     if (ctx.selection.isEmpty()) {
       this.state = { phase: "selecting" }
+      this.selector.start()
     } else {
       countPreselection(ctx)
       this.state = { phase: "pivot" }
@@ -147,9 +127,7 @@ export class RotateTool implements Tool {
   question(): PromptId | ToolQuestion {
     switch (this.state.phase) {
       case "selecting":
-      case "pressed":
-      case "boxing":
-        return "selectObjects"
+        return this.selector.question()
       case "pivot":
         return "specifyBasePoint"
       case "angle":
@@ -168,6 +146,7 @@ export class RotateTool implements Tool {
 
   /** The reference angle is measured by two points of its own. */
   takes(): QuestionInput | null {
+    if (this.state.phase === "selecting") return this.selector.takes("objects")
     return this.state.phase === "refP1"
       ? { refusal: "requiresAngle", values: { points: "two", keyword: "no" } }
       : null
@@ -175,6 +154,7 @@ export class RotateTool implements Tool {
 
   onDeactivate(ctx: ToolContext): void {
     this.state = { phase: "selecting" }
+    this.selector.start()
     ctx.dynamicInput.close()
   }
 
@@ -182,25 +162,8 @@ export class RotateTool implements Tool {
     this.lastScreen = input.screen
 
     switch (this.state.phase) {
-      case "pressed": {
-        const moved = Math.hypot(
-          input.screen.x - this.state.startScreen.x,
-          input.screen.y - this.state.startScreen.y
-        )
-        if (moved >= DRAG_THRESHOLD_PX) {
-          this.state = {
-            phase: "boxing",
-            startWorld: this.state.startWorld,
-            currentWorld: input.world,
-            subtract: this.state.subtract,
-          }
-        } else {
-          this.state = { ...this.state, currentWorld: input.world }
-        }
-        break
-      }
-      case "boxing":
-        this.state = { ...this.state, currentWorld: input.world }
+      case "selecting":
+        this.selector.onPointerMove(input, ctx)
         break
       case "pivot":
         ctx.dynamicInput.setPosition(input.screen)
@@ -240,16 +203,9 @@ export class RotateTool implements Tool {
     if (input.button !== 0) return
 
     switch (this.state.phase) {
-      case "selecting": {
-        this.state = {
-          phase: "pressed",
-          startWorld: input.world,
-          startScreen: input.screen,
-          currentWorld: input.world,
-          subtract: input.shiftKey,
-        }
+      case "selecting":
+        this.selector.onPointerDown(input, ctx)
         return
-      }
       case "pivot": {
         const base = this.resolvePivot(input.point, ctx)
         this.enterAngle(base, ctx)
@@ -288,31 +244,11 @@ export class RotateTool implements Tool {
   }
 
   onPointerUp(input: PointerInput, ctx: ToolContext): void {
-    if (input.button !== 0) return
-
-    // AutoCAD's "Select objects" prompt, additive across picks and boxes.
-    if (this.state.phase === "pressed") {
-      const hit = ctx.pick(input.world)
-      if (hit) this.applyPick([hit.id], this.state.subtract, ctx)
-      this.state = { phase: "selecting" }
-      ctx.requestRender()
-      return
-    }
-    if (this.state.phase === "boxing") {
-      const hits = boxSelect(
-        ctx.document,
-        this.state.startWorld,
-        this.state.currentWorld,
-        ctx.viewport
-      )
-      this.applyPick(hits, this.state.subtract, ctx, true)
-      this.state = { phase: "selecting" }
-      ctx.requestRender()
-    }
+    if (this.state.phase === "selecting") this.selector.onPointerUp(input, ctx)
   }
 
   onEnter(ctx: ToolContext): boolean {
-    return this.confirmSelection(ctx)
+    return this.state.phase === "selecting" && this.selector.onEnter(ctx)
   }
 
   /**
@@ -320,12 +256,16 @@ export class RotateTool implements Tool {
    * once Copy is chosen; the new angle offers neither.
    */
   commandOptions(): readonly CommandOption[] {
+    if (this.state.phase === "selecting") return this.selector.commandOptions()
     return this.state.phase === "angle"
       ? [{ id: "Copy" }, { id: "Reference" }]
       : []
   }
 
   invokeOption(id: string, ctx: ToolContext): CommandOptionOutcome {
+    if (this.state.phase === "selecting") {
+      return this.selector.invokeOption(id, ctx) ? "continue" : "unhandled"
+    }
     if (id === "Copy" && this.state.phase === "angle") {
       // A second Copy says it again, as AutoCAD's console does.
       ctx.report(ctx.text.message("rotatingCopy"))
@@ -370,20 +310,14 @@ export class RotateTool implements Tool {
       this.state.phase === "angle" ||
       this.state.phase === "refP1" ||
       this.state.phase === "refP2" ||
-      this.state.phase === "newAngle"
+      this.state.phase === "newAngle" ||
+      (this.state.phase === "selecting" && this.selector.wantsSnap())
     )
   }
 
   buildOverlay(ctx: ToolContext): ScenePrimitive[] {
+    if (this.state.phase === "selecting") return this.selector.buildOverlay(ctx)
     const { viewport } = ctx
-
-    if (this.state.phase === "boxing") {
-      return buildSelectionBoxOverlay(
-        viewport,
-        this.state.startWorld,
-        this.state.currentWorld
-      )
-    }
 
     const out: ScenePrimitive[] = []
     const arm: StrokeStyle = { color: THEME.preview, width: 1, dash: [2, 3] }
@@ -438,22 +372,10 @@ export class RotateTool implements Tool {
     return out
   }
 
-  private applyPick(
-    ids: readonly EntityId[],
-    subtract: boolean,
-    ctx: ToolContext,
-    box = false
-  ): void {
-    pickObjects(ids, subtract, box, ctx)
-  }
-
-  private confirmSelection(ctx: ToolContext): boolean {
-    if (this.state.phase !== "selecting") return false
-    if (ctx.selection.isEmpty()) return false // nothing selected: let Enter exit
+  private confirmSelection(ctx: ToolContext): void {
     this.state = { phase: "pivot" }
     this.openPivotInput(ctx)
     ctx.requestRender()
-    return true
   }
 
   private openPivotInput(ctx: ToolContext): void {
@@ -486,6 +408,7 @@ export class RotateTool implements Tool {
     if (originals.length === 0) {
       // The selection vanished (e.g. undo elsewhere): fall back to picking.
       this.state = { phase: "selecting" }
+      this.selector.start()
       ctx.dynamicInput.close()
       return
     }

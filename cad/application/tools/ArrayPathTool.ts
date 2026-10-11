@@ -2,7 +2,6 @@ import { Vec2, V } from "../../geometry/Vec2"
 import { normalizeDegrees } from "../../geometry/primitives"
 import {
   Entity,
-  EntityId,
   copyEntity,
   entityBounds,
   readsInPlan,
@@ -14,8 +13,7 @@ import { ScenePrimitive, StrokeStyle } from "../../scene/types"
 import { entityScenePrimitive } from "../SceneBuilder"
 import { THEME } from "../../scene/theme"
 import { ReplaceEntitiesCommand } from "../commands/entityCommands"
-import { boxSelect, buildSelectionBoxOverlay } from "./boxSelection"
-import { countPreselection, pickObjects } from "./objectSelection"
+import { ObjectSelector, countPreselection } from "./objectSelection"
 import type { PromptId } from "../../locales/types"
 import {
   CommandOption,
@@ -47,9 +45,6 @@ import {
  * Levels and Z direction are not offered.
  */
 
-/** Screen-pixel movement past which a press-drag becomes a box selection. */
-const DRAG_THRESHOLD_PX = 4
-
 const MAX_ITEMS = 1000
 
 /** A curve the array runs along, parameterised by arc length. */
@@ -80,20 +75,8 @@ interface Layout {
 type Step = "main" | "method" | "count" | "spacing" | "measureCount" | "align"
 
 type ArrayPathState =
+  /** No pre-selection: `Select objects:` builds the set. */
   | { readonly phase: "selecting" }
-  | {
-      readonly phase: "pressed"
-      readonly startWorld: Vec2
-      readonly startScreen: Vec2
-      readonly currentWorld: Vec2
-      readonly subtract: boolean
-    }
-  | {
-      readonly phase: "boxing"
-      readonly startWorld: Vec2
-      readonly currentWorld: Vec2
-      readonly subtract: boolean
-    }
   /** Objects chosen; awaiting the path curve. `hover` is the rollover candidate. */
   | { readonly phase: "pickPath"; readonly hover: Entity | null }
   /** Path chosen; editing the layout with a live preview. */
@@ -108,12 +91,16 @@ export class ArrayPathTool implements Tool {
   readonly id = "arraypath"
 
   private state: ArrayPathState = { phase: "selecting" }
+  private readonly selector = new ObjectSelector({
+    done: (ctx) => this.confirmSelection(ctx),
+  })
   private lastScreen: Vec2 | null = null
 
   onActivate(ctx: ToolContext): void {
     ctx.setCursor("crosshair")
     if (ctx.selection.isEmpty()) {
       this.state = { phase: "selecting" }
+      this.selector.start()
     } else {
       countPreselection(ctx)
       this.enterPickPath(ctx)
@@ -122,6 +109,7 @@ export class ArrayPathTool implements Tool {
 
   onDeactivate(ctx: ToolContext): void {
     this.state = { phase: "selecting" }
+    this.selector.start()
     ctx.dynamicInput.close()
   }
 
@@ -132,8 +120,8 @@ export class ArrayPathTool implements Tool {
         return "selectPathCurve"
       case "edit":
         break
-      default:
-        return "selectObjects"
+      case "selecting":
+        return this.selector.question()
     }
     const { layout } = state
     switch (state.step) {
@@ -170,7 +158,7 @@ export class ArrayPathTool implements Tool {
   takes(): QuestionInput | null {
     const state = this.state
     if (state.phase === "pickPath") return "pathCurve"
-    if (state.phase !== "edit") return null
+    if (state.phase !== "edit") return this.selector.takes("objects")
     switch (state.step) {
       case "main":
         return "point"
@@ -189,6 +177,7 @@ export class ArrayPathTool implements Tool {
   }
 
   commandOptions(): readonly CommandOption[] {
+    if (this.state.phase === "selecting") return this.selector.commandOptions()
     if (this.state.phase !== "edit") return []
     switch (this.state.step) {
       case "main":
@@ -225,6 +214,9 @@ export class ArrayPathTool implements Tool {
   }
 
   invokeOption(id: string, ctx: ToolContext): CommandOptionOutcome {
+    if (this.state.phase === "selecting") {
+      return this.selector.invokeOption(id, ctx) ? "continue" : "unhandled"
+    }
     const state = this.state
     if (state.phase !== "edit") return "unhandled"
     const { layout, config } = state
@@ -274,25 +266,8 @@ export class ArrayPathTool implements Tool {
     this.lastScreen = input.screen
 
     switch (this.state.phase) {
-      case "pressed": {
-        const moved = Math.hypot(
-          input.screen.x - this.state.startScreen.x,
-          input.screen.y - this.state.startScreen.y
-        )
-        if (moved >= DRAG_THRESHOLD_PX) {
-          this.state = {
-            phase: "boxing",
-            startWorld: this.state.startWorld,
-            currentWorld: input.world,
-            subtract: this.state.subtract,
-          }
-        } else {
-          this.state = { ...this.state, currentWorld: input.world }
-        }
-        break
-      }
-      case "boxing":
-        this.state = { ...this.state, currentWorld: input.world }
+      case "selecting":
+        this.selector.onPointerMove(input, ctx)
         break
       case "pickPath": {
         // AutoCAD's rollover highlight: preview the curve under the cursor so
@@ -316,13 +291,7 @@ export class ArrayPathTool implements Tool {
 
     switch (this.state.phase) {
       case "selecting":
-        this.state = {
-          phase: "pressed",
-          startWorld: input.world,
-          startScreen: input.screen,
-          currentWorld: input.world,
-          subtract: input.shiftKey,
-        }
+        this.selector.onPointerDown(input, ctx)
         return
       case "pickPath": {
         const hit = this.pickPath(input, ctx)
@@ -348,36 +317,12 @@ export class ArrayPathTool implements Tool {
   }
 
   onPointerUp(input: PointerInput, ctx: ToolContext): void {
-    if (input.button !== 0) return
-
-    if (this.state.phase === "pressed") {
-      const hit = ctx.pick(input.world)
-      if (hit) pickObjects([hit.id], this.state.subtract, false, ctx)
-      this.state = { phase: "selecting" }
-      ctx.requestRender()
-      return
-    }
-    if (this.state.phase === "boxing") {
-      const hits: readonly EntityId[] = boxSelect(
-        ctx.document,
-        this.state.startWorld,
-        this.state.currentWorld,
-        ctx.viewport
-      )
-      pickObjects(hits, this.state.subtract, true, ctx)
-      this.state = { phase: "selecting" }
-      ctx.requestRender()
-    }
+    if (this.state.phase === "selecting") this.selector.onPointerUp(input, ctx)
   }
 
   onEnter(ctx: ToolContext): boolean {
     const state = this.state
-    if (state.phase === "selecting") {
-      if (ctx.selection.isEmpty()) return false
-      this.enterPickPath(ctx)
-      ctx.requestRender()
-      return true
-    }
+    if (state.phase === "selecting") return this.selector.onEnter(ctx)
     if (state.phase !== "edit") return false
     switch (state.step) {
       case "main":
@@ -395,20 +340,14 @@ export class ArrayPathTool implements Tool {
   }
 
   wantsSnap(): boolean {
-    return false
+    return this.state.phase === "selecting" && this.selector.wantsSnap()
   }
 
   buildOverlay(ctx: ToolContext): ScenePrimitive[] {
     const { viewport } = ctx
     const state = this.state
 
-    if (state.phase === "boxing") {
-      return buildSelectionBoxOverlay(
-        viewport,
-        state.startWorld,
-        state.currentWorld
-      )
-    }
+    if (state.phase === "selecting") return this.selector.buildOverlay(ctx)
 
     // Rollover-highlight the curve under the cursor while choosing the path,
     // in the same amber it takes once picked so the candidate is unmistakable.
@@ -449,6 +388,12 @@ export class ArrayPathTool implements Tool {
       }
     }
     return out
+  }
+
+  /** Goes on from the set `Select objects:` closed to the path curve. */
+  private confirmSelection(ctx: ToolContext): void {
+    this.enterPickPath(ctx)
+    ctx.requestRender()
   }
 
   private enterPickPath(ctx: ToolContext): void {

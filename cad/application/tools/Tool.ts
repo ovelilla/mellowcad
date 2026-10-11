@@ -79,6 +79,11 @@ export interface CommandOption {
    * options after the shown ones: a shown keyword wins a shared abbreviation.
    */
   readonly hidden?: true
+  /**
+   * The prompt whose `promptKeywords` spell it, when not the one asked: the
+   * selection modes, which every `Select objects:` takes in the same words.
+   */
+  readonly prompt?: PromptId
 }
 
 /**
@@ -215,11 +220,22 @@ export interface ToolContext {
   report(text: string, kind?: "info" | "error"): void
 
   /**
-   * Completes the prompt the last input answered with what it found, on the
-   * same line, once only the release knows it: `Select objects: 1 found`.
-   * With no such line it is reported.
+   * Says what an answer found where AutoCAD says it: on the line of the
+   * prompt a pick answered (`Select objects: 1 found`, `Specify opposite
+   * corner: 2 found`), even once only the release knows it, or after the
+   * command's echo for the objects selected before it (`Command: M MOVE 3
+   * found`); on a line of its own after a typed answer or Enter (`Select
+   * objects: L` then `1 found`).
    */
   answer(text: string): void
+
+  /**
+   * The Previous selection set, the last one a command was given, as
+   * `Select objects:`'s Previous takes it again; {@link rememberSelection}
+   * keeps a new one.
+   */
+  previousSelection(): readonly EntityId[]
+  rememberSelection(ids: readonly EntityId[]): void
 
   /** The command language, for what a tool writes or draws itself. */
   readonly text: ToolText

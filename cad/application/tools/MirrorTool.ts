@@ -1,10 +1,5 @@
 import { Vec2, V } from "../../geometry/Vec2"
-import {
-  Entity,
-  EntityId,
-  mirrorEntity,
-  mirrorEntityCopy,
-} from "../../domain/entities"
+import { Entity, mirrorEntity, mirrorEntityCopy } from "../../domain/entities"
 import { DynamicInputSession } from "../input/DynamicInput"
 import type { PromptId } from "../../locales/types"
 import {
@@ -18,7 +13,6 @@ import {
   AddEntitiesCommand,
   UpdateEntitiesCommand,
 } from "../commands/entityCommands"
-import { boxSelect, buildSelectionBoxOverlay } from "./boxSelection"
 import {
   CommandOption,
   CommandOptionOutcome,
@@ -27,7 +21,7 @@ import {
   ToolContext,
   type QuestionInput,
 } from "./Tool"
-import { countPreselection, pickObjects } from "./objectSelection"
+import { ObjectSelector, countPreselection } from "./objectSelection"
 
 /**
  * AutoCAD's MIRROR command: select a set of objects, then reflect them across a
@@ -47,27 +41,9 @@ import { countPreselection, pickObjects } from "./objectSelection"
  * to the axes, plus typed coordinate entry for either point.
  */
 
-/** Screen-pixel movement past which a press-drag becomes a box selection. */
-const DRAG_THRESHOLD_PX = 4
-
 type MirrorState =
-  /** No pre-selection: build the set by clicking or box-dragging. */
+  /** No pre-selection: `Select objects:` builds the set. */
   | { readonly phase: "selecting" }
-  /** Mouse down while selecting: still a click until it drags far enough. */
-  | {
-      readonly phase: "pressed"
-      readonly startWorld: Vec2
-      readonly startScreen: Vec2
-      readonly currentWorld: Vec2
-      readonly subtract: boolean
-    }
-  /** Dragging a selection box (window left→right / crossing right→left). */
-  | {
-      readonly phase: "boxing"
-      readonly startWorld: Vec2
-      readonly currentWorld: Vec2
-      readonly subtract: boolean
-    }
   /** Objects chosen; awaiting the first point of the mirror line. */
   | { readonly phase: "first" }
   /** First point placed; the mirror line drags to the second point. */
@@ -89,6 +65,9 @@ export class MirrorTool implements Tool {
   readonly id = "mirror"
 
   private state: MirrorState = { phase: "selecting" }
+  private readonly selector = new ObjectSelector({
+    done: (ctx) => this.confirmSelection(ctx),
+  })
   private lastScreen: Vec2 | null = null
 
   onActivate(ctx: ToolContext): void {
@@ -97,6 +76,7 @@ export class MirrorTool implements Tool {
     // matching AutoCAD; otherwise prompt to select the objects first.
     if (ctx.selection.isEmpty()) {
       this.state = { phase: "selecting" }
+      this.selector.start()
     } else {
       countPreselection(ctx)
       this.state = { phase: "first" }
@@ -107,9 +87,7 @@ export class MirrorTool implements Tool {
   question(): PromptId {
     switch (this.state.phase) {
       case "selecting":
-      case "pressed":
-      case "boxing":
-        return "selectObjects"
+        return this.selector.question()
       case "first":
         return "specifyFirstPointOfMirrorLine"
       case "second":
@@ -123,9 +101,7 @@ export class MirrorTool implements Tool {
   takes(): QuestionInput | null {
     switch (this.state.phase) {
       case "selecting":
-      case "pressed":
-      case "boxing":
-        return "wholeObjects"
+        return this.selector.takes("wholeObjects")
       case "first":
       case "second":
         return "point2d"
@@ -140,6 +116,7 @@ export class MirrorTool implements Tool {
 
   onDeactivate(ctx: ToolContext): void {
     this.state = { phase: "selecting" }
+    this.selector.start()
     ctx.dynamicInput.close()
   }
 
@@ -147,25 +124,8 @@ export class MirrorTool implements Tool {
     this.lastScreen = input.screen
 
     switch (this.state.phase) {
-      case "pressed": {
-        const moved = Math.hypot(
-          input.screen.x - this.state.startScreen.x,
-          input.screen.y - this.state.startScreen.y
-        )
-        if (moved >= DRAG_THRESHOLD_PX) {
-          this.state = {
-            phase: "boxing",
-            startWorld: this.state.startWorld,
-            currentWorld: input.world,
-            subtract: this.state.subtract,
-          }
-        } else {
-          this.state = { ...this.state, currentWorld: input.world }
-        }
-        break
-      }
-      case "boxing":
-        this.state = { ...this.state, currentWorld: input.world }
+      case "selecting":
+        this.selector.onPointerMove(input, ctx)
         break
       case "first":
         ctx.dynamicInput.setPosition(input.screen)
@@ -186,16 +146,9 @@ export class MirrorTool implements Tool {
     if (input.button !== 0) return
 
     switch (this.state.phase) {
-      case "selecting": {
-        this.state = {
-          phase: "pressed",
-          startWorld: input.world,
-          startScreen: input.screen,
-          currentWorld: input.world,
-          subtract: input.shiftKey,
-        }
+      case "selecting":
+        this.selector.onPointerDown(input, ctx)
         return
-      }
       case "first": {
         const first = this.resolvePoint(input.point, "first", ctx, null)
         this.enterSecond(first, ctx)
@@ -218,27 +171,7 @@ export class MirrorTool implements Tool {
   }
 
   onPointerUp(input: PointerInput, ctx: ToolContext): void {
-    if (input.button !== 0) return
-
-    // AutoCAD's "Select objects" prompt, additive across picks and boxes.
-    if (this.state.phase === "pressed") {
-      const hit = ctx.pick(input.world)
-      if (hit) this.applyPick([hit.id], this.state.subtract, ctx)
-      this.state = { phase: "selecting" }
-      ctx.requestRender()
-      return
-    }
-    if (this.state.phase === "boxing") {
-      const hits = boxSelect(
-        ctx.document,
-        this.state.startWorld,
-        this.state.currentWorld,
-        ctx.viewport
-      )
-      this.applyPick(hits, this.state.subtract, ctx, true)
-      this.state = { phase: "selecting" }
-      ctx.requestRender()
-    }
+    if (this.state.phase === "selecting") this.selector.onPointerUp(input, ctx)
   }
 
   onEnter(ctx: ToolContext): boolean {
@@ -248,10 +181,11 @@ export class MirrorTool implements Tool {
       this.commit(this.state, false, ctx)
       return true
     }
-    return this.confirmSelection(ctx)
+    return this.state.phase === "selecting" && this.selector.onEnter(ctx)
   }
 
   commandOptions(): readonly CommandOption[] {
+    if (this.state.phase === "selecting") return this.selector.commandOptions()
     if (this.state.phase === "erase") {
       // "Erase source objects? [Yes/No] <N>" — Enter takes the default No.
       return [{ id: "Yes" }, { id: "No" }]
@@ -260,6 +194,9 @@ export class MirrorTool implements Tool {
   }
 
   invokeOption(id: string, ctx: ToolContext): CommandOptionOutcome {
+    if (this.state.phase === "selecting") {
+      return this.selector.invokeOption(id, ctx) ? "continue" : "unhandled"
+    }
     if (this.state.phase !== "erase") return "unhandled"
     if (id === "Yes") {
       this.commit(this.state, true, ctx)
@@ -280,19 +217,16 @@ export class MirrorTool implements Tool {
   wantsSnap(): boolean {
     // Object snaps help place the mirror-line points precisely; picking objects
     // and the Yes/No prompt do not need them.
-    return this.state.phase === "first" || this.state.phase === "second"
+    return (
+      this.state.phase === "first" ||
+      this.state.phase === "second" ||
+      (this.state.phase === "selecting" && this.selector.wantsSnap())
+    )
   }
 
   buildOverlay(ctx: ToolContext): ScenePrimitive[] {
+    if (this.state.phase === "selecting") return this.selector.buildOverlay(ctx)
     const { viewport } = ctx
-
-    if (this.state.phase === "boxing") {
-      return buildSelectionBoxOverlay(
-        viewport,
-        this.state.startWorld,
-        this.state.currentWorld
-      )
-    }
 
     const out: ScenePrimitive[] = []
     if (this.state.phase === "second") {
@@ -309,22 +243,10 @@ export class MirrorTool implements Tool {
     return out
   }
 
-  private applyPick(
-    ids: readonly EntityId[],
-    subtract: boolean,
-    ctx: ToolContext,
-    box = false
-  ): void {
-    pickObjects(ids, subtract, box, ctx)
-  }
-
-  private confirmSelection(ctx: ToolContext): boolean {
-    if (this.state.phase !== "selecting") return false
-    if (ctx.selection.isEmpty()) return false // nothing selected: let Enter exit
+  private confirmSelection(ctx: ToolContext): void {
     this.state = { phase: "first" }
     this.openPointInput(ctx, "mirrorFirstPoint")
     ctx.requestRender()
-    return true
   }
 
   private openPointInput(ctx: ToolContext, prompt: PromptId): void {
@@ -371,6 +293,7 @@ export class MirrorTool implements Tool {
     if (originals.length === 0) {
       // The selection vanished (e.g. undo elsewhere): fall back to picking.
       this.state = { phase: "selecting" }
+      this.selector.start()
       ctx.dynamicInput.close()
       return
     }

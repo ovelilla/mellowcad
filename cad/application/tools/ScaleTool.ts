@@ -1,11 +1,6 @@
 import { Vec2, V } from "../../geometry/Vec2"
 import { Vec3 } from "../../geometry/Vec3"
-import {
-  Entity,
-  EntityId,
-  scaleEntity,
-  scaleEntityCopy,
-} from "../../domain/entities"
+import { Entity, scaleEntity, scaleEntityCopy } from "../../domain/entities"
 import { parseNumber } from "../../domain/units"
 import { DynamicInputSession } from "../input/DynamicInput"
 import {
@@ -19,7 +14,6 @@ import {
   AddEntitiesCommand,
   UpdateEntitiesCommand,
 } from "../commands/entityCommands"
-import { boxSelect, buildSelectionBoxOverlay } from "./boxSelection"
 import {
   CommandOption,
   CommandOptionOutcome,
@@ -29,7 +23,7 @@ import {
   ToolQuestion,
   type QuestionInput,
 } from "./Tool"
-import { countPreselection, pickObjects } from "./objectSelection"
+import { ObjectSelector, countPreselection } from "./objectSelection"
 import type { PromptId } from "../../locales/types"
 
 /**
@@ -54,27 +48,9 @@ import type { PromptId } from "../../locales/types"
  * factor, length or coordinate entry.
  */
 
-/** Screen-pixel movement past which a press-drag becomes a box selection. */
-const DRAG_THRESHOLD_PX = 4
-
 type ScaleState =
-  /** No pre-selection: build the set by clicking or box-dragging. */
+  /** No pre-selection: `Select objects:` builds the set. */
   | { readonly phase: "selecting" }
-  /** Mouse down while selecting: still a click until it drags far enough. */
-  | {
-      readonly phase: "pressed"
-      readonly startWorld: Vec2
-      readonly startScreen: Vec2
-      readonly currentWorld: Vec2
-      readonly subtract: boolean
-    }
-  /** Dragging a selection box (window left→right / crossing right→left). */
-  | {
-      readonly phase: "boxing"
-      readonly startWorld: Vec2
-      readonly currentWorld: Vec2
-      readonly subtract: boolean
-    }
   /** Objects chosen; awaiting the base point of the scaling. */
   | { readonly phase: "base" }
   /** Base placed; the set scales to the factor (cursor-driven). */
@@ -119,6 +95,9 @@ export class ScaleTool implements Tool {
   readonly id = "scale"
 
   private state: ScaleState = { phase: "selecting" }
+  private readonly selector = new ObjectSelector({
+    done: (ctx) => this.confirmSelection(ctx),
+  })
   private lastScreen: Vec2 | null = null
   /** The scale factor's `<default>`: the last one used, 1 at first; not saved. */
   private lastFactor = 1
@@ -129,6 +108,7 @@ export class ScaleTool implements Tool {
     // matching AutoCAD; otherwise prompt to select the objects first.
     if (ctx.selection.isEmpty()) {
       this.state = { phase: "selecting" }
+      this.selector.start()
     } else {
       countPreselection(ctx)
       this.state = { phase: "base" }
@@ -144,9 +124,7 @@ export class ScaleTool implements Tool {
   question(): PromptId | ToolQuestion {
     switch (this.state.phase) {
       case "selecting":
-      case "pressed":
-      case "boxing":
-        return "selectObjects"
+        return this.selector.question()
       case "base":
         return "specifyBasePoint"
       case "factor":
@@ -166,6 +144,8 @@ export class ScaleTool implements Tool {
    */
   takes(): QuestionInput | null {
     switch (this.state.phase) {
+      case "selecting":
+        return this.selector.takes("objects")
       case "factor":
         return "distance"
       case "refP1":
@@ -180,6 +160,7 @@ export class ScaleTool implements Tool {
 
   onDeactivate(ctx: ToolContext): void {
     this.state = { phase: "selecting" }
+    this.selector.start()
     ctx.dynamicInput.close()
   }
 
@@ -187,25 +168,8 @@ export class ScaleTool implements Tool {
     this.lastScreen = input.screen
 
     switch (this.state.phase) {
-      case "pressed": {
-        const moved = Math.hypot(
-          input.screen.x - this.state.startScreen.x,
-          input.screen.y - this.state.startScreen.y
-        )
-        if (moved >= DRAG_THRESHOLD_PX) {
-          this.state = {
-            phase: "boxing",
-            startWorld: this.state.startWorld,
-            currentWorld: input.world,
-            subtract: this.state.subtract,
-          }
-        } else {
-          this.state = { ...this.state, currentWorld: input.world }
-        }
-        break
-      }
-      case "boxing":
-        this.state = { ...this.state, currentWorld: input.world }
+      case "selecting":
+        this.selector.onPointerMove(input, ctx)
         break
       case "base":
         ctx.dynamicInput.setPosition(input.screen)
@@ -245,16 +209,9 @@ export class ScaleTool implements Tool {
     if (input.button !== 0) return
 
     switch (this.state.phase) {
-      case "selecting": {
-        this.state = {
-          phase: "pressed",
-          startWorld: input.world,
-          startScreen: input.screen,
-          currentWorld: input.world,
-          subtract: input.shiftKey,
-        }
+      case "selecting":
+        this.selector.onPointerDown(input, ctx)
         return
-      }
       case "base": {
         const base = this.resolveBase(input.point, ctx)
         this.enterFactor(base, ctx)
@@ -293,31 +250,11 @@ export class ScaleTool implements Tool {
   }
 
   onPointerUp(input: PointerInput, ctx: ToolContext): void {
-    if (input.button !== 0) return
-
-    // AutoCAD's "Select objects" prompt, additive across picks and boxes.
-    if (this.state.phase === "pressed") {
-      const hit = ctx.pick(input.world)
-      if (hit) this.applyPick([hit.id], this.state.subtract, ctx)
-      this.state = { phase: "selecting" }
-      ctx.requestRender()
-      return
-    }
-    if (this.state.phase === "boxing") {
-      const hits = boxSelect(
-        ctx.document,
-        this.state.startWorld,
-        this.state.currentWorld,
-        ctx.viewport
-      )
-      this.applyPick(hits, this.state.subtract, ctx, true)
-      this.state = { phase: "selecting" }
-      ctx.requestRender()
-    }
+    if (this.state.phase === "selecting") this.selector.onPointerUp(input, ctx)
   }
 
   onEnter(ctx: ToolContext): boolean {
-    return this.confirmSelection(ctx)
+    return this.state.phase === "selecting" && this.selector.onEnter(ctx)
   }
 
   /**
@@ -325,12 +262,16 @@ export class ScaleTool implements Tool {
    * Copy is chosen; the new length offers neither.
    */
   commandOptions(): readonly CommandOption[] {
+    if (this.state.phase === "selecting") return this.selector.commandOptions()
     return this.state.phase === "factor"
       ? [{ id: "Copy" }, { id: "Reference" }]
       : []
   }
 
   invokeOption(id: string, ctx: ToolContext): CommandOptionOutcome {
+    if (this.state.phase === "selecting") {
+      return this.selector.invokeOption(id, ctx) ? "continue" : "unhandled"
+    }
     if (id === "Copy" && this.state.phase === "factor") {
       // A second Copy says it again, as AutoCAD's console does.
       ctx.report(ctx.text.message("scalingCopy"))
@@ -375,20 +316,14 @@ export class ScaleTool implements Tool {
       this.state.phase === "factor" ||
       this.state.phase === "refP1" ||
       this.state.phase === "refP2" ||
-      this.state.phase === "newLength"
+      this.state.phase === "newLength" ||
+      (this.state.phase === "selecting" && this.selector.wantsSnap())
     )
   }
 
   buildOverlay(ctx: ToolContext): ScenePrimitive[] {
+    if (this.state.phase === "selecting") return this.selector.buildOverlay(ctx)
     const { viewport } = ctx
-
-    if (this.state.phase === "boxing") {
-      return buildSelectionBoxOverlay(
-        viewport,
-        this.state.startWorld,
-        this.state.currentWorld
-      )
-    }
 
     const out: ScenePrimitive[] = []
     const arm: StrokeStyle = { color: THEME.preview, width: 1, dash: [2, 3] }
@@ -443,22 +378,10 @@ export class ScaleTool implements Tool {
     return out
   }
 
-  private applyPick(
-    ids: readonly EntityId[],
-    subtract: boolean,
-    ctx: ToolContext,
-    box = false
-  ): void {
-    pickObjects(ids, subtract, box, ctx)
-  }
-
-  private confirmSelection(ctx: ToolContext): boolean {
-    if (this.state.phase !== "selecting") return false
-    if (ctx.selection.isEmpty()) return false // nothing selected: let Enter exit
+  private confirmSelection(ctx: ToolContext): void {
     this.state = { phase: "base" }
     this.openBaseInput(ctx)
     ctx.requestRender()
-    return true
   }
 
   private openBaseInput(ctx: ToolContext): void {
@@ -491,6 +414,7 @@ export class ScaleTool implements Tool {
     if (originals.length === 0) {
       // The selection vanished (e.g. undo elsewhere): fall back to picking.
       this.state = { phase: "selecting" }
+      this.selector.start()
       ctx.dynamicInput.close()
       return
     }

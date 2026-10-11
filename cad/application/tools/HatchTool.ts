@@ -32,7 +32,7 @@ import { parseCoordinate } from "../input/coordinateInput"
 import { entityScenePrimitive } from "../SceneBuilder"
 import { ScenePrimitive } from "../../scene/types"
 import { THEME } from "../../scene/theme"
-import { boxSelect, buildSelectionBoxOverlay } from "./boxSelection"
+import { ObjectSelector } from "./objectSelection"
 import type { PromptId } from "../../locales/types"
 import {
   CommandOption,
@@ -44,9 +44,6 @@ import {
   ToolQuestion,
 } from "./Tool"
 import { withCurrentProperties } from "./currentProperties"
-
-/** Screen-pixel movement past which a press-drag becomes a box selection. */
-const DRAG_THRESHOLD_PX = 4
 
 /** Reused so preview frames don't burn entity ids. */
 const PREVIEW_ID: EntityId = "__hatch_preview__"
@@ -80,6 +77,10 @@ export class HatchTool implements Tool {
   readonly id = "hatch"
 
   private state: HatchState = { phase: "point" }
+  private readonly selector = new ObjectSelector({
+    done: (ctx) => this.enterPoint(ctx),
+    accept: (ids, ctx) => this.boundaries(ids, ctx),
+  })
   private lastScreen: Vec2 | null = null
   private preview: HatchEntity | null = null
   /** Boundaries traced from internal points, one prompt at a time. */
@@ -113,34 +114,7 @@ export class HatchTool implements Tool {
 
   onPointerMove(input: PointerInput, ctx: ToolContext): void {
     this.lastScreen = input.screen
-    switch (this.state.phase) {
-      case "select": {
-        const hover = this.rolloverAt(input.world, ctx)
-        if (hover?.id !== this.state.hover?.id) {
-          this.state = { phase: "select", hover }
-        }
-        break
-      }
-      case "pressed": {
-        const moved = Math.hypot(
-          input.screen.x - this.state.startScreen.x,
-          input.screen.y - this.state.startScreen.y
-        )
-        this.state =
-          moved >= DRAG_THRESHOLD_PX
-            ? {
-                phase: "boxing",
-                startWorld: this.state.startWorld,
-                currentWorld: input.world,
-                subtract: this.state.subtract,
-              }
-            : { ...this.state, currentWorld: input.world }
-        break
-      }
-      case "boxing":
-        this.state = { ...this.state, currentWorld: input.world }
-        break
-    }
+    if (this.state.phase === "select") this.selector.onPointerMove(input, ctx)
     ctx.dynamicInput.setPosition(input.screen)
     ctx.requestRender()
   }
@@ -154,48 +128,25 @@ export class HatchTool implements Tool {
       return
     }
     if (this.state.phase !== "select") return
-    this.state = {
-      phase: "pressed",
-      startWorld: input.world,
-      startScreen: input.screen,
-      currentWorld: input.world,
-      subtract: input.shiftKey,
-    }
+    this.selector.onPointerDown(input, ctx)
+    this.refreshPreview(ctx)
     ctx.requestRender()
   }
 
   onPointerUp(input: PointerInput, ctx: ToolContext): void {
-    if (input.button !== 0) return
-    if (this.state.phase === "pressed") {
-      const hit = ctx.pick(input.world)
-      if (hit && this.canBound(hit, this.plane(ctx))) {
-        this.applyPick([hit.id], this.state.subtract, ctx)
-      }
-    } else if (this.state.phase === "boxing") {
-      let plane = this.plane(ctx)
-      const ids = boxSelect(
-        ctx.document,
-        this.state.startWorld,
-        this.state.currentWorld,
-        ctx.viewport
-      ).filter((id) => {
-        const entity = ctx.document.get(id)
-        if (entity === undefined || !this.canBound(entity, plane)) return false
-        plane ??= entityElevation(entity)
-        return true
-      })
-      this.applyPick(ids, this.state.subtract, ctx)
-    } else {
-      return
-    }
-    this.enterSelect(ctx)
+    if (this.state.phase !== "select") return
+    this.selector.onPointerUp(input, ctx)
+    this.refreshPreview(ctx)
     ctx.requestRender()
   }
 
-  /** Enter at Select objects closes the set and goes back to the internal point. */
+  /**
+   * Enter at Select objects closes the set and goes back to the internal
+   * point, an empty set too.
+   */
   onEnter(ctx: ToolContext): boolean {
     if (this.state.phase !== "select") return false
-    this.enterPoint(ctx)
+    if (!this.selector.onEnter(ctx)) this.enterPoint(ctx)
     ctx.requestRender()
     return true
   }
@@ -205,9 +156,7 @@ export class HatchTool implements Tool {
       case "point":
         return "specifyInternalPointOr"
       case "select":
-      case "pressed":
-      case "boxing":
-        return "selectObjects"
+        return this.selector.question()
       case "pattern":
         // SOLID is offered as the keyword that names it (`<Solid>`).
         return isSolidHatchPattern(this.patternId)
@@ -235,9 +184,7 @@ export class HatchTool implements Tool {
       case "point":
         return "point2d"
       case "select":
-      case "pressed":
-      case "boxing":
-        return "wholeObjects"
+        return this.selector.takes("wholeObjects")
       case "scale":
         return { refusal: "requiresDistanceOrNumberX" }
       case "angle":
@@ -256,6 +203,8 @@ export class HatchTool implements Tool {
         return [{ id: "Properties" }, { id: "Select objects" }]
       case "pattern":
         return [{ id: "?" }, { id: "Solid" }]
+      case "select":
+        return this.selector.commandOptions()
       default:
         return []
     }
@@ -266,6 +215,11 @@ export class HatchTool implements Tool {
       if (id === "?") this.listPatterns(ctx)
       else if (id === "Solid") this.setPattern(SOLID, ctx)
       else return "unhandled"
+      return "continue"
+    }
+    if (this.state.phase === "select") {
+      if (!this.selector.invokeOption(id, ctx)) return "unhandled"
+      this.refreshPreview(ctx)
       return "continue"
     }
     if (this.state.phase !== "point") return "unhandled"
@@ -281,8 +235,9 @@ export class HatchTool implements Tool {
     }
   }
 
+  /** Picking objects, never a point but at a selection mode's prompt. */
   wantsSnap(): boolean {
-    return false // picking objects, never acquiring a point
+    return this.state.phase === "select" && this.selector.wantsSnap()
   }
 
   buildOverlay(ctx: ToolContext): ScenePrimitive[] {
@@ -295,34 +250,25 @@ export class HatchTool implements Tool {
         })
       )
     }
-    if (this.state.phase === "boxing") {
-      out.push(
-        ...buildSelectionBoxOverlay(
-          ctx.viewport,
-          this.state.startWorld,
-          this.state.currentWorld
-        )
-      )
-    } else if (this.state.phase === "select" && this.state.hover) {
-      out.push(
-        ...entityScenePrimitive(ctx.viewport, this.state.hover, {
-          color: THEME.entityHover,
-          width: 2,
-        })
-      )
+    if (this.state.phase === "select") {
+      out.push(...this.selector.buildOverlay(ctx))
     }
     return out
   }
 
   /**
-   * The object a click would add to the boundary set. Objects that cannot close
-   * an area never light up, which answers "what can I hatch?" without inventing
-   * a message AutoCAD does not print here.
+   * The objects of `ids` the boundary set can take. Objects that cannot close
+   * an area never light up, which answers "what can I hatch?" without
+   * inventing a message AutoCAD does not print here.
    */
-  private rolloverAt(world: Vec2, ctx: ToolContext): Entity | null {
-    const hit = ctx.pick(world)
-    if (!hit || ctx.selection.has(hit.id)) return null
-    return this.canBound(hit, this.plane(ctx)) ? hit : null
+  private boundaries(ids: readonly EntityId[], ctx: ToolContext): EntityId[] {
+    let plane = this.plane(ctx)
+    return ids.filter((id) => {
+      const entity = ctx.document.get(id)
+      if (entity === undefined || !this.canBound(entity, plane)) return false
+      plane ??= entityElevation(entity)
+      return true
+    })
   }
 
   /**
@@ -350,17 +296,6 @@ export class HatchTool implements Tool {
       if (entity && hatchLoopFromEntity(entity)) return entityElevation(entity)
     }
     return null
-  }
-
-  private applyPick(
-    ids: readonly EntityId[],
-    subtract: boolean,
-    ctx: ToolContext
-  ): void {
-    for (const id of ids) {
-      if (subtract) ctx.selection.remove(id)
-      else ctx.selection.add(id)
-    }
   }
 
   /**
@@ -526,10 +461,8 @@ export class HatchTool implements Tool {
   }
 
   private enterSelect(ctx: ToolContext): void {
-    this.state = {
-      phase: "select",
-      hover: this.state.phase === "select" ? this.state.hover : null,
-    }
+    this.state = { phase: "select" }
+    this.selector.start()
     this.refreshPreview(ctx)
     // No field: the canvas keeps focus, so Enter reaches `onEnter` to close
     // the boundary set.
@@ -687,20 +620,8 @@ function nearestPlane(
 
 type HatchState =
   | { readonly phase: "point" }
-  | { readonly phase: "select"; readonly hover: Entity | null }
-  | {
-      readonly phase: "pressed"
-      readonly startWorld: Vec2
-      readonly startScreen: Vec2
-      readonly currentWorld: Vec2
-      readonly subtract: boolean
-    }
-  | {
-      readonly phase: "boxing"
-      readonly startWorld: Vec2
-      readonly currentWorld: Vec2
-      readonly subtract: boolean
-    }
+  /** `Select objects:`, by {@link ObjectSelector}. */
+  | { readonly phase: "select" }
   | { readonly phase: "pattern" }
   | { readonly phase: "scale" }
   | { readonly phase: "angle" }

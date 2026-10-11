@@ -5,7 +5,7 @@ import { RemoveEntitiesCommand } from "../commands/entityCommands"
 import { parseCoordinate } from "../input/coordinateInput"
 import { SelectionActionTool } from "./SelectionActionTool"
 import type { PromptId } from "../../locales/types"
-import { PointerInput, ToolContext } from "./Tool"
+import { CommandOption, PointerInput, QuestionInput, ToolContext } from "./Tool"
 
 /**
  * COPYCLIP copies, CUTCLIP copies and erases, COPYBASE copies relative to a
@@ -92,13 +92,20 @@ export class CopyClipTool extends SelectionActionTool {
   }
 
   /** COPYBASE asks its base point before the objects. */
-  question(): PromptId | null {
+  question(): PromptId {
     return this.awaitingBase ? "clipboardBasePoint" : super.question()
   }
 
-  /** Only the base point is a point prompt; the rest is picking objects. */
+  takes(): QuestionInput | null {
+    return this.awaitingBase ? null : super.takes()
+  }
+
+  commandOptions(): readonly CommandOption[] {
+    return this.awaitingBase ? [] : super.commandOptions()
+  }
+
   wantsSnap(): boolean {
-    return this.awaitingBase
+    return this.awaitingBase || super.wantsSnap()
   }
 
   protected run(entities: readonly Entity[], ctx: ToolContext): void {

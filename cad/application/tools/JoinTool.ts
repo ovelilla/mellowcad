@@ -42,7 +42,7 @@ export class JoinTool extends SelectionActionTool {
     return picked ? "selectObjectsToJoin" : "selectSourceOrMultipleToJoin"
   }
 
-  takes(): QuestionInput {
+  protected selectionInput(): QuestionInput {
     return "wholeObjects"
   }
 

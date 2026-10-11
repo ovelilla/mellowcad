@@ -111,6 +111,19 @@ export class CommandLineController extends Observable {
     return true
   }
 
+  /**
+   * Rewrites the line that was the last one at `mark`, ahead of the lines
+   * written since: a prompt asked on the line a pick left bare.
+   */
+  amendBefore(mark: number, amend: (text: string) => string): void {
+    const at = this.lines.length - (this.written - mark) - 1
+    if (at < 0) return
+    this.lines = this.lines.map((line, index) =>
+      index === at ? { kind: line.kind, text: amend(line.text) } : line
+    )
+    this.emit()
+  }
+
   /** A place in the log, for {@link writeAt}. */
   mark(): number {
     return this.written
