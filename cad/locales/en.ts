@@ -1151,7 +1151,7 @@ export const en: EngineCatalog = {
       "specifyTheNewAngle": "Specify the new angle",
       "specifyScaleFactorOr": "Specify scale factor or",
       "specifyReferenceLength": "Specify reference length",
-      "specifyNewLength": "Specify new length",
+      "specifyNewLengthOr": "Specify new length or",
       "specifyFirstPointOfMirrorLine": "Specify first point of mirror line",
       "specifySecondPointOfMirrorLine": "Specify second point of mirror line",
       "eraseSourceObjects": "Erase source objects?",

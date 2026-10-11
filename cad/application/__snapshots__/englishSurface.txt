@@ -2711,10 +2711,11 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0°~, Line space facto
 > reference
   dyn: "Reference length"="100"||mm*
 > enter
-  prompt: SCALE Specify new length:
+  prompt: SCALE Specify new length or [Points] <1.00>:
   asks: "New length"
-  tip: Specify new length:
+  tip: Specify new length or
   dyn: "New length"=""|0.00|mm*
+  options: [P] Points
   prompt| Specify reference length <1.00>: 100
 > new length
   dyn: "New length"="50"|0.00|mm*
@@ -2723,7 +2724,8 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0°~, Line space facto
   asks: -
   tip: -
   dyn: -
-  prompt| Specify new length: 50
+  options: -
+  prompt| Specify new length or [Points] <1.00>: 50
 > SCALE by points
   prompt: SCALE Specify base point:
   asks: "Base point"
@@ -2738,7 +2740,7 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0°~, Line space facto
   options: [C] Copy, [R] Reference
   prompt| Specify base point:
 > R
-  prompt: SCALE Specify reference length <1.00>:
+  prompt: SCALE Specify reference length <100.00>:
   asks: "Reference length"
   tip: Specify reference length
   dyn: "Reference length"=""||mm*
@@ -2747,19 +2749,21 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0°~, Line space facto
 > first reference point
   prompt: SCALE Specify second point:
   tip: Specify second point:
-  prompt| Specify reference length <1.00>:
+  prompt| Specify reference length <100.00>:
 > second reference point
-  prompt: SCALE Specify new length:
+  prompt: SCALE Specify new length or [Points] <50.00>:
   asks: "New length"
-  tip: Specify new length:
+  tip: Specify new length or
   dyn: "New length"=""|100.00|mm*
+  options: [P] Points
   prompt| Specify second point:
 > escape
   prompt: Command:
   asks: -
   tip: -
   dyn: -
-  prompt| Specify new length: *Cancel*
+  options: -
+  prompt| Specify new length or [Points] <50.00>: *Cancel*
 
 ## MIRROR
 > start

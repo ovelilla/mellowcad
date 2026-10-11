@@ -456,7 +456,7 @@ instead, or the command-line buffer will swallow them.
   with none, asks the second point itself — rubber band, snaps and the box's reading included —
   and answers the box with the value as if typed, so the tool's `commit` is all it needs: FILLET's
   radius, CHAMFER's distances, OFFSET's distance, RECTANG's and ELEV's, the array spacings and
-  angles, DIMLINEAR's Rotated and a dimension's text Angle, SCALE's reference, Ttr's radius. A
+  angles, DIMLINEAR's Rotated and a dimension's text Angle, SCALE's reference and Points' new length, Ttr's radius. A
   tool whose prompt AutoCAD measures by two points returns no anchor there (VPOINT's Rotate
   angles, measured from the origin by one, return the origin). Never write a two-point distance
   in a tool; check in the console which of the two a prompt is (`0,0` then `ID @`, or the

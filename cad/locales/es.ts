@@ -1053,7 +1053,8 @@ export const es: EngineLocale = {
       },
       "SCALE": {
         "Copy": "Copiar",
-        "Reference": "Referencia"
+        "Reference": "Referencia",
+        "Points": "Puntos"
       },
       "MIRROR": {
         "Yes": "Sí",
@@ -1490,7 +1491,7 @@ export const es: EngineLocale = {
       "specifyTheNewAngle": "Precise el nuevo ángulo",
       "specifyScaleFactorOr": "Precise factor de escala o",
       "specifyReferenceLength": "Precise longitud de referencia",
-      "specifyNewLength": "Precise nueva longitud",
+      "specifyNewLengthOr": "Precise nueva longitud o",
       "specifyFirstPointOfMirrorLine": "Precise primer punto de línea de simetría",
       "specifySecondPointOfMirrorLine": "Especifique segundo punto de línea de simetría",
       "eraseSourceObjects": "¿Borrar objetos de origen?",

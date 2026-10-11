@@ -35,7 +35,7 @@ import type { PromptId } from "../../locales/types"
  *  selecting ─────────────────────► base ──────────► factor ──────────► done
  *   click / box-drag adds objects       (dashed ghost scales live)  [Reference]
  *                                                                        │
- *                                                     refP1 ─► newLength┘
+ *                                          refP1 ─► newLength ─► [Points]┘
  * ```
  *
  * A typed factor multiplies directly; pointing uses the base → cursor distance
@@ -71,7 +71,10 @@ type ScaleState =
       readonly copy: boolean
       readonly current: Vec2
     }
-  /** Reference mode: the set scales to the new length. */
+  /**
+   * Reference mode: the set scales to the new length, measured from the base
+   * point, or by two points of its own once Points is chosen.
+   */
   | {
       readonly phase: "newLength"
       readonly base: Vec3
@@ -80,6 +83,7 @@ type ScaleState =
       /** Reference length the new length is divided by for the factor. */
       readonly reference: number
       readonly current: Vec2
+      readonly points: boolean
     }
 
 export class ScaleTool implements Tool {
@@ -92,6 +96,9 @@ export class ScaleTool implements Tool {
   private lastScreen: Vec2 | null = null
   /** The scale factor's `<default>`: the last one used, 1 at first; not saved. */
   private lastFactor = 1
+  /** Reference's `<default>`s, the last ones given, 1 at first; not saved. */
+  private lastReference = 1
+  private lastNewLength = 1
 
   onActivate(ctx: ToolContext): void {
     ctx.setCursor("crosshair")
@@ -109,8 +116,8 @@ export class ScaleTool implements Tool {
 
   /**
    * WHY the factor shows no `<default>` though Enter takes the last one:
-   * AutoCAD's 2026 prompt shows none. The new length names no `[Points]` and
-   * no default: neither is offered here.
+   * AutoCAD's 2026 prompt shows none. Reference's lengths show theirs, as
+   * AutoCAD 2023's console does: `Specify new length or [Points] <1.0000>:`.
    */
   question(): PromptId | ToolQuestion {
     switch (this.state.phase) {
@@ -121,15 +128,18 @@ export class ScaleTool implements Tool {
       case "factor":
         return "specifyScaleFactorOr"
       case "refP1":
-        return { id: "specifyReferenceLength", enter: 1 }
+        return { id: "specifyReferenceLength", enter: this.lastReference }
       case "newLength":
-        return "specifyNewLength"
+        return this.state.points
+          ? "specifyFirstPoint"
+          : { id: "specifyNewLengthOr", enter: this.lastNewLength }
     }
   }
 
   /**
    * The factor is a distance from the base point, as AutoCAD reads it; the
-   * reference length is measured by two points of its own.
+   * reference length and Points' new length are measured by two points of
+   * their own.
    */
   takes(): QuestionInput | null {
     switch (this.state.phase) {
@@ -137,11 +147,14 @@ export class ScaleTool implements Tool {
         return this.selector.takes("objects")
       case "factor":
         return "distance"
+      case "newLength":
       case "refP1":
-        return {
-          refusal: "requiresDistance",
-          values: { points: "two", keyword: "no" },
-        }
+        return this.state.phase === "refP1" || this.state.points
+          ? {
+              refusal: "requiresDistance",
+              values: { points: "two", keyword: "no" },
+            }
+          : null
       default:
         return null
     }
@@ -178,6 +191,7 @@ export class ScaleTool implements Tool {
         break
       case "newLength": {
         this.state = { ...this.state, current: input.point }
+        if (this.state.points) break
         ctx.dynamicInput.setLive(
           "newLength",
           distanceFrom(this.state.base, input.point)
@@ -211,16 +225,13 @@ export class ScaleTool implements Tool {
         this.commit(this.state, factor, ctx)
         return
       }
-      case "newLength": {
-        const factor = this.resolveNewFactor(
-          this.state.base,
-          input.point,
-          this.state.reference,
+      case "newLength":
+        this.commitNewLength(
+          this.state,
+          this.resolveNewLength(this.state.base, input.point, ctx),
           ctx
         )
-        this.commit(this.state, factor, ctx)
         return
-      }
     }
   }
 
@@ -240,10 +251,13 @@ export class ScaleTool implements Tool {
 
   /**
    * `[Copy/Reference]` at the factor, as AutoCAD keeps listing them once
-   * Copy is chosen; the new length offers neither.
+   * Copy is chosen; `[Points]` at the new length.
    */
   commandOptions(): readonly CommandOption[] {
     if (this.state.phase === "selecting") return this.selector.commandOptions()
+    if (this.state.phase === "newLength" && !this.state.points) {
+      return [{ id: "Points" }]
+    }
     return this.state.phase === "factor"
       ? [{ id: "Copy" }, { id: "Reference" }]
       : []
@@ -272,6 +286,12 @@ export class ScaleTool implements Tool {
       ctx.requestRender()
       return "continue"
     }
+    if (id === "Points" && this.state.phase === "newLength") {
+      this.state = { ...this.state, points: true }
+      this.openNewLengthInput(ctx)
+      ctx.requestRender()
+      return "continue"
+    }
     return "unhandled"
   }
 
@@ -280,8 +300,9 @@ export class ScaleTool implements Tool {
     // length is measured from its first point.
     switch (this.state.phase) {
       case "factor":
-      case "newLength":
         return this.state.base
+      case "newLength":
+        return this.state.points ? null : this.state.base
       default:
         return null
     }
@@ -294,7 +315,7 @@ export class ScaleTool implements Tool {
     return (
       this.state.phase === "base" ||
       this.state.phase === "factor" ||
-      this.state.phase === "newLength" ||
+      (this.state.phase === "newLength" && !this.state.points) ||
       (this.state.phase === "selecting" && this.selector.wantsSnap())
     )
   }
@@ -328,12 +349,10 @@ export class ScaleTool implements Tool {
         pushArm(out, viewport, this.state.base, this.state.current, arm)
         break
       case "newLength": {
-        const factor = this.resolveNewFactor(
-          this.state.base,
-          this.state.current,
-          this.state.reference,
-          ctx
-        )
+        if (this.state.points) break
+        const factor =
+          this.resolveNewLength(this.state.base, this.state.current, ctx) /
+          this.state.reference
         pushGhost(
           out,
           viewport,
@@ -416,6 +435,11 @@ export class ScaleTool implements Tool {
     // A typed answer that is no number is refused, never read off the cursor.
     const field = this.state.phase === "newLength" ? "newLength" : "factor"
     if (typed && parseField(ctx, field) === null) return false
+    // Enter at Points' first point keeps nothing: AutoCAD 2023's console
+    // scales by a length of its own there, which nothing here reproduces.
+    if (this.state.phase === "newLength" && this.state.points && !typed) {
+      return false
+    }
     if (this.state.phase === "factor") {
       const factor = typed
         ? this.resolveDirectFactor(this.state.base, this.state.current, ctx)
@@ -423,14 +447,14 @@ export class ScaleTool implements Tool {
       this.commit(this.state, factor, ctx)
       return true
     }
-    if (this.state.phase === "newLength" && typed) {
-      const factor = this.resolveNewFactor(
-        this.state.base,
-        this.state.current,
-        this.state.reference,
+    if (this.state.phase === "newLength") {
+      this.commitNewLength(
+        this.state,
+        typed
+          ? this.resolveNewLength(this.state.base, this.state.current, ctx)
+          : this.lastNewLength,
         ctx
       )
-      this.commit(this.state, factor, ctx)
       return true
     }
     return false
@@ -454,7 +478,8 @@ export class ScaleTool implements Tool {
     if (this.state.phase !== "refP1") return false
     const typed = parseField(ctx, "reference")
     if (typed === null && ctx.dynamicInput.hasTypedText()) return false
-    const reference = typed !== null && typed > 0 ? typed : 1
+    const reference = typed !== null && typed > 0 ? typed : this.lastReference
+    this.lastReference = reference
     this.enterNewLength(reference, ctx)
     return true
   }
@@ -468,7 +493,12 @@ export class ScaleTool implements Tool {
       copy: this.state.copy,
       reference,
       current: this.state.current,
+      points: false,
     }
+    this.openNewLengthInput(ctx)
+  }
+
+  private openNewLengthInput(ctx: ToolContext): void {
     const session: DynamicInputSession = {
       fields: [{ id: "newLength", prompt: "newLength", kind: "distance" }],
       commit: (_values, commitCtx) => this.commitFactor(commitCtx),
@@ -477,6 +507,16 @@ export class ScaleTool implements Tool {
     ctx.dynamicInput.open(session)
     ctx.dynamicInput.setLive("newLength", null)
     ctx.dynamicInput.setPosition(this.lastScreen ?? { x: 0, y: 0 })
+  }
+
+  /** Scales to `newLength / reference`, the new length kept as the default. */
+  private commitNewLength(
+    state: Extract<ScaleState, { phase: "newLength" }>,
+    newLength: number,
+    ctx: ToolContext
+  ): void {
+    if (newLength > 0) this.lastNewLength = newLength
+    this.commit(state, newLength / state.reference, ctx)
   }
 
   /** Applies the scaling (in place, or as a fresh copy) and ends the command. */
@@ -543,19 +583,11 @@ export class ScaleTool implements Tool {
   }
 
   /**
-   * Reference-mode factor: `new length / reference length`, where the new length
-   * is a typed value (hard-locked) or the base → cursor distance.
+   * Reference mode's new length: a typed value (hard-locked) or the base →
+   * cursor distance.
    */
-  private resolveNewFactor(
-    base: Vec2,
-    cursor: Vec2,
-    reference: number,
-    ctx: ToolContext
-  ): number {
-    if (reference <= 0) return 1
-    const typed = parseField(ctx, "newLength")
-    const newLength = typed ?? distanceFrom(base, cursor)
-    return newLength / reference
+  private resolveNewLength(base: Vec2, cursor: Vec2, ctx: ToolContext): number {
+    return parseField(ctx, "newLength") ?? distanceFrom(base, cursor)
   }
 }
 

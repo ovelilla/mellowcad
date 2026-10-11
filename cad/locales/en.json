@@ -593,7 +593,7 @@
         "Undo": "Undo"
       },
       "ROTATE": { "Copy": "Copy", "Reference": "Reference" },
-      "SCALE": { "Copy": "Copy", "Reference": "Reference" },
+      "SCALE": { "Copy": "Copy", "Reference": "Reference", "Points": "Points" },
       "MIRROR": { "Yes": "Yes", "No": "No" },
       "ARRAYRECT": {
         "COUnt": "COUnt",
@@ -976,7 +976,7 @@
       "specifyTheNewAngle": "Specify the new angle",
       "specifyScaleFactorOr": "Specify scale factor or",
       "specifyReferenceLength": "Specify reference length",
-      "specifyNewLength": "Specify new length",
+      "specifyNewLengthOr": "Specify new length or",
       "specifyFirstPointOfMirrorLine": "Specify first point of mirror line",
       "specifySecondPointOfMirrorLine": "Specify second point of mirror line",
       "eraseSourceObjects": "Erase source objects?",

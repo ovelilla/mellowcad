@@ -385,7 +385,9 @@ describe("SCALE", () => {
       "SCALE Specify reference length <1.00>:"
     )
     cad.type("100").enter()
-    expect(cad.state().commandLine.prompt).toBe("SCALE Specify new length:")
+    expect(cad.state().commandLine.prompt).toBe(
+      "SCALE Specify new length or [Points] <1.00>:"
+    )
     cad.type("50").enter()
 
     expect(cad.commandLog()).toEqual([
@@ -395,9 +397,76 @@ describe("SCALE", () => {
       "Specify base point:",
       "Specify scale factor or [Copy/Reference]: R",
       "Specify reference length <1.00>: 100",
-      "Specify new length: 50",
+      "Specify new length or [Points] <1.00>: 50",
     ])
     expect(cad.byId<LineEntity>("L1").end).toBeCloseToPoint(p(100, 0))
+  })
+
+  // AutoCAD 2023's console: Points measures the new length by two points of
+  // its own, and both lengths are the next Reference's defaults.
+  it("measures the new length by Points, and keeps the lengths as defaults", () => {
+    const cad = createHarness({ entities: [HORIZONTAL] })
+    const answer = (text: string) => {
+      cad.runtime.setCommandLineText(text)
+      cad.runtime.submitCommandLine()
+    }
+
+    cad.select("L1").command("SCALE").click(p(0, 0)).option("Reference")
+    answer("50")
+    answer("FOO")
+    answer("P")
+    expect(cad.state().commandLine.prompt).toBe("SCALE Specify first point:")
+    answer("FOO")
+    answer("10,0")
+    answer("40,0")
+    expect(cad.commandLog().slice(-7)).toEqual([
+      "Specify new length or [Points] <1.00>: FOO",
+      "Requires numeric distance, second point, or option keyword.",
+      "Specify new length or [Points] <1.00>: P",
+      "Specify first point: FOO",
+      "Requires numeric distance or two points.",
+      "Specify first point: 10,0",
+      "Specify second point: 40,0",
+    ])
+    expect(cad.byId<LineEntity>("L1").end).toBeCloseToPoint(p(120, 0))
+
+    cad.select("L1").command("SCALE").click(p(0, 0)).option("Reference")
+    expect(cad.state().commandLine.prompt).toBe(
+      "SCALE Specify reference length <50.00>:"
+    )
+    cad.enter()
+    expect(cad.state().commandLine.prompt).toBe(
+      "SCALE Specify new length or [Points] <30.00>:"
+    )
+    cad.enter()
+    expect(cad.byId<LineEntity>("L1").end).toBeCloseToPoint(p(72, 0))
+
+    // A factor typed leaves them.
+    cad.select("L1").command("SCALE").click(p(0, 0)).type("2").enter()
+    cad.select("L1").command("SCALE").click(p(0, 0)).option("Reference")
+    expect(cad.state().commandLine.prompt).toBe(
+      "SCALE Specify reference length <50.00>:"
+    )
+    answer("P")
+    expect(cad.commandLog().at(-1)).toBe(
+      "Requires numeric distance or two points."
+    )
+    answer("100")
+    answer("P")
+    answer("25")
+    expect(cad.byId<LineEntity>("L1").end).toBeCloseToPoint(p(36, 0))
+  })
+
+  it("asks Points in Spanish", () => {
+    const cad = createHarness({ locale: es, entities: [HORIZONTAL] })
+    cad.select("L1").command("ESCALA").click(p(0, 0)).option("Reference")
+    cad.type("100").enter()
+    expect(cad.state().commandLine.prompt).toBe(
+      "ESCALA Precise nueva longitud o [Puntos] <1.00>:"
+    )
+    cad.runtime.setCommandLineText("P")
+    cad.runtime.submitCommandLine()
+    expect(cad.state().commandLine.prompt).toBe("ESCALA Precise primer punto:")
   })
 
   it("says it scales a copy each time Copy is chosen", () => {
