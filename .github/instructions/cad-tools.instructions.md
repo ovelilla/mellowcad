@@ -434,6 +434,20 @@ instead, or the command-line buffer will swallow them.
   prompt that asks for an **area** rather than a point — HATCH's internal pick — and read
   `input.world` there, not `input.point`: a point pulled onto an endpoint has landed on the very
   boundary it was meant to be inside.
+- **A distance or an angle takes a point too** — AutoCAD's input measures it from the prompt's
+  base point, or asks `Specify second point:` for a second. A lone `distance` / `length` /
+  `angle` box gets it one of two ways, and `wantsSnap()` says which. True: the point is the
+  tool's, a pick (a typed one is given as a pick, after a move there), measured by its own
+  `onPointerDown` — CIRCLE's radius from the centre, POLYGON's radius, which also turns it, TEXT's
+  height. False: the runtime measures it (`runtimeMeasure.ts`) from `getConstraintAnchor()`, or,
+  with none, asks the second point itself — rubber band, snaps and the box's reading included —
+  and answers the box with the value as if typed, so the tool's `commit` is all it needs: FILLET's
+  radius, CHAMFER's distances, OFFSET's distance, RECTANG's and ELEV's, the array spacings and
+  angles, DIMLINEAR's Rotated and a dimension's text Angle, SCALE's reference, Ttr's radius. A
+  tool whose prompt AutoCAD measures by two points returns no anchor there (VPOINT's Rotate
+  angles, measured from the origin by one, return the origin). Never write a two-point distance
+  in a tool; check in the console which of the two a prompt is (`0,0` then `ID @`, or the
+  ` Specify second point:` it asks).
 - **A typed length is direct distance: `pointAlongCursor`** (`tools/directDistance.ts`), "measured
   along the path from the last point to the current location of the cursor" — the heading in the
   plane keeping the base's Z, or up or down the UCS's Z when the cursor is straight above or below

@@ -1,5 +1,5 @@
 import { Vec2 } from "../../geometry/Vec2"
-import { Vec3 } from "../../geometry/Vec3"
+import { Vec3, vec3 } from "../../geometry/Vec3"
 import { normalizeDegrees } from "../../geometry/primitives"
 import { WORLD_UCS, worldDirectionToUcs } from "../../domain/ucs"
 import { formatLength } from "../../domain/units"
@@ -107,6 +107,14 @@ export class VPointTool implements Tool {
 
   wantsSnap(): boolean {
     return false
+  }
+
+  /**
+   * Rotate's angles are measured from the origin by one point, as AutoCAD
+   * 2023's console takes `10,10` for 45 there.
+   */
+  getConstraintAnchor(): Vec3 | null {
+    return this.state.phase === "viewPoint" ? null : vec3(0, 0, 0)
   }
 
   commandOptions(): readonly CommandOption[] {

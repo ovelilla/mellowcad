@@ -88,8 +88,11 @@ type OffsetGeom =
     }
 
 type OffsetToolState =
-  /** Awaiting the offset distance: a typed value or two picked points. */
-  | { readonly phase: "distance"; readonly basePoint: Vec2 | null }
+  /**
+   * Awaiting the offset distance: a typed value, or two points the runtime
+   * measures.
+   */
+  | { readonly phase: "distance" }
   /** The Erase or Layer sub-prompt of the distance prompt. */
   | { readonly phase: "erase" }
   | { readonly phase: "layer" }
@@ -138,7 +141,7 @@ export class OffsetTool implements Tool {
   readonly id = "offset"
   readonly shortcut = "o"
 
-  private state: OffsetToolState = { phase: "distance", basePoint: null }
+  private state: OffsetToolState = { phase: "distance" }
   /** Last known screen position, used to place dynamic input on open. */
   private lastScreen: Vec2 | null = null
   /** The copies made since the command started, newest last (Undo). */
@@ -167,12 +170,12 @@ export class OffsetTool implements Tool {
         layer: this.offsetLayer,
       })
     )
-    this.state = { phase: "distance", basePoint: null }
+    this.state = { phase: "distance" }
     this.openDistanceInput(ctx)
   }
 
   onDeactivate(ctx: ToolContext): void {
-    this.state = { phase: "distance", basePoint: null }
+    this.state = { phase: "distance" }
     this.steps = []
     ctx.dynamicInput.close()
   }
@@ -180,7 +183,6 @@ export class OffsetTool implements Tool {
   question(): PromptId | ToolQuestion {
     switch (this.state.phase) {
       case "distance":
-        if (this.state.basePoint) return "specifySecondPoint"
         return this.offsetDist < 0
           ? "specifyOffsetDistanceOr"
           : { id: "specifyOffsetDistanceOr", enter: this.offsetDist }
@@ -216,7 +218,7 @@ export class OffsetTool implements Tool {
   defaultOption(): string | null {
     switch (this.state.phase) {
       case "distance":
-        return !this.state.basePoint && this.offsetDist < 0 ? "Through" : null
+        return this.offsetDist < 0 ? "Through" : null
       case "erase":
         return this.erase ? "Yes" : "No"
       case "layer":
@@ -234,16 +236,6 @@ export class OffsetTool implements Tool {
     ctx.dynamicInput.setPosition(input.screen)
 
     switch (this.state.phase) {
-      case "distance":
-        // Two-point entry: once the base is placed, the live distance tracks
-        // the span to the cursor.
-        if (this.state.basePoint) {
-          ctx.dynamicInput.setLive(
-            "distance",
-            V.distance(this.state.basePoint, input.point)
-          )
-        }
-        break
       case "side":
         this.state = { ...this.state, cursor: input.world }
         break
@@ -266,16 +258,6 @@ export class OffsetTool implements Tool {
     if (input.button !== 0) return
 
     switch (this.state.phase) {
-      case "distance": {
-        // Two-point distance: the first click sets the base, the second fixes
-        // the length as the distance between them.
-        if (!this.state.basePoint) {
-          this.state = { phase: "distance", basePoint: input.point }
-          return
-        }
-        this.setDistance(V.distance(this.state.basePoint, input.point), ctx)
-        return
-      }
       case "select": {
         const hit = this.pickSource(input, ctx)
         if (!hit) return
@@ -336,9 +318,7 @@ export class OffsetTool implements Tool {
   commandOptions(): readonly CommandOption[] {
     switch (this.state.phase) {
       case "distance":
-        return this.state.basePoint
-          ? []
-          : [{ id: "Through" }, { id: "Erase" }, { id: "Layer" }]
+        return [{ id: "Through" }, { id: "Erase" }, { id: "Layer" }]
       case "erase":
         return [{ id: "Yes" }, { id: "No" }]
       case "layer":
@@ -355,7 +335,7 @@ export class OffsetTool implements Tool {
 
   invokeOption(id: string, ctx: ToolContext): CommandOptionOutcome {
     const phase = this.state.phase
-    if (phase === "distance" && !this.state.basePoint) {
+    if (phase === "distance") {
       if (id === "Through") {
         this.enterThrough(ctx)
         return "continue"
@@ -395,18 +375,11 @@ export class OffsetTool implements Tool {
     return "unhandled"
   }
 
-  getConstraintAnchor(): Vec2 | null {
-    // Only the two-point distance measurement benefits from a base anchor.
-    return this.state.phase === "distance" ? this.state.basePoint : null
-  }
-
   wantsSnap(): boolean {
-    // Object snaps help while measuring the distance by two points and while
-    // picking the through-point (you often want the copy to pass through an
-    // exact point); object and side picking are proximity/side decisions.
-    return (
-      this.state.phase === "distance" || this.state.phase === "throughPoint"
-    )
+    // The through-point is a point, often an exact one; the distance's two
+    // points are the runtime's to measure, and object and side picking are
+    // proximity/side decisions.
+    return this.state.phase === "throughPoint"
   }
 
   buildOverlay(ctx: ToolContext): ScenePrimitive[] {
@@ -530,7 +503,7 @@ export class OffsetTool implements Tool {
   }
 
   private backToDistance(ctx: ToolContext): void {
-    this.state = { phase: "distance", basePoint: null }
+    this.state = { phase: "distance" }
     this.openDistanceInput(ctx)
     ctx.requestRender()
   }

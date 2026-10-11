@@ -2737,15 +2737,13 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0°~, Line space facto
   prompt| Specify scale factor or [Copy/Reference]: R
 > first reference point
   prompt: SCALE Specify second point:
-  asks: "Second point"
   tip: Specify second point:
-  dyn: "X,Y"=""||*
   prompt| Specify reference length <1.00>:
 > second reference point
   prompt: SCALE Specify new length:
   asks: "New length"
   tip: Specify new length:
-  dyn: "New length"=""||mm*
+  dyn: "New length"=""|100.00|mm*
   prompt| Specify second point:
 > escape
   prompt: Command:

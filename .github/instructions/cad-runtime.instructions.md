@@ -230,6 +230,15 @@ question takes is the tool's `takes()` or, without one, read from the asked prom
 parse off the cursor instead ("no number typed, so the cursor's angle") is a bug: it must return
 `false` so the refusal runs.
 
+**A point answers a distance or an angle** (`commitBox`, `dispatchPointerDown`): a coordinate typed
+in a lone distance or angle box is a pick there when the tool wants a point (`placePoint(…,
+true)`), and is measured by the runtime when it does not (`measurePoint`, `cad-tools`, "Points,
+snapping, constraints"). While the runtime asks the second of two points (`measuring`, dropped
+as soon as the tool, its box or its question change), the prompt is `asking()`'s
+`Specify second point:` with no keyword list, `toolAnchor()` is the first point, and
+`wantsPoint()` keeps the snaps on; a refusal there is the question's own and counts no base
+("two points"), as the console's does.
+
 ## Transparent commands — the running one is suspended, never ended
 
 A command typed with an apostrophe mid-command (`'ZOOM`, `'Z`), at the command line or in a

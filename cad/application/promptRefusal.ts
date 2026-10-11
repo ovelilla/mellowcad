@@ -1,4 +1,4 @@
-import type { EngineText } from "./EngineText"
+import type { EngineText, MessageId } from "./EngineText"
 import { type DynamicInputSession, isContentField } from "./input/DynamicInput"
 import type { PromptId } from "../locales/types"
 import type { QuestionInput, Tool } from "./tools/Tool"
@@ -99,6 +99,25 @@ export function promptRefusal(
         : [text.message("invalidSelection")]
   }
 }
+
+/**
+ * Whether a point answers the question as its value: AutoCAD's distance and
+ * angle input measure one from the base point, or ask for a second point
+ * without one, so their refusals name points ("Requires numeric distance or
+ * second point.", CIRCLE's "point on circumference").
+ */
+export function measuresFromPoints(input: QuestionInput | null): boolean {
+  if (input === "distance" || input === "angle") return true
+  if (input === null || typeof input !== "object") return false
+  const ids = typeof input.refusal === "string" ? [input.refusal] : []
+  return ids.some((id) => MEASURED_BY_POINTS.has(id))
+}
+
+const MEASURED_BY_POINTS: ReadonlySet<MessageId> = new Set<MessageId>([
+  "requiresDistance",
+  "requiresAngle",
+  "requiresRadius",
+])
 
 /** The input function behind the running command's question, as {@link promptRefusal} reads it. */
 export function questionInput(

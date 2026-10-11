@@ -36,7 +36,7 @@ import {
   parseDrawingFile,
 } from "../serialization/drawingFile"
 import { isBlankDrawing } from "../serialization/drawingSummary"
-import { Scene } from "../scene/types"
+import { Scene, ScenePrimitive } from "../scene/types"
 import { Viewport, entitiesViewBounds } from "./Viewport"
 import { UcsFrame } from "./ucsFrame"
 import { planDistanceToEntity, screenDistanceToEntity } from "./viewPick"
@@ -77,7 +77,7 @@ import {
   temporaryPromptLines,
 } from "./CommandLine"
 import { resolveKeyword } from "../i18n/keywords"
-import type { EngineLocale } from "../locales/types"
+import type { EngineLocale, PromptId } from "../locales/types"
 import { EngineText, engineText, promptString } from "./EngineText"
 import { CommandHistory } from "./commands/Command"
 import { UpdateSettingsCommand } from "./commands/settingsCommands"
@@ -149,6 +149,12 @@ import {
   toolCommand,
 } from "./runtimeCommands"
 import { defaultTools } from "./runtimeTools"
+import {
+  measuredField,
+  measuredValue,
+  measureOverlay,
+  secondPointQuestion,
+} from "./runtimeMeasure"
 import { promptRefusal, questionInput } from "./promptRefusal"
 import {
   applyDrawingFile,
@@ -425,6 +431,19 @@ export class CadRuntime extends Observable {
   private fromPending = false
   private fromBase: Vec3 | null = null
   private fromParkedSession: DynamicInputSession | null = null
+  /**
+   * The first of the two points a distance or an angle is measured by, at a
+   * question whose tool takes no point itself (FILLET's radius), in the
+   * tool's coordinates: AutoCAD's input then asks ` Specify second point:`.
+   * Only while that tool asks that question in that box.
+   */
+  private measuring: {
+    readonly tool: Tool
+    readonly session: DynamicInputSession
+    readonly prompt: PromptId | null
+    readonly first: Vec3
+    cursor: Vec3
+  } | null = null
 
   private stateSnapshot: EngineState
 
@@ -1093,7 +1112,9 @@ export class CadRuntime extends Observable {
         keywords: offerOptions(this.activeTool, this.text).map(
           (option) => option.keyword
         ),
-        hasBase: this.toolAnchor() !== null,
+        // WHY the tool's: at the second of two measuring points the console
+        // still requires "two points".
+        hasBase: (this.activeTool.getConstraintAnchor?.() ?? null) !== null,
       },
       this.text
     )
@@ -1116,10 +1137,11 @@ export class CadRuntime extends Observable {
     picked = false
   ): boolean {
     if (this.answeringPrompt) return run()
+    const asking = this.asking()
     const { echo } = commandPrompt(
-      this.activeTool,
+      asking,
       this.text,
-      offerOptions(this.activeTool, this.text),
+      asking === this.activeTool ? offerOptions(asking, this.text) : [],
       this.document.getSettings(),
       this.startedAs,
       this.suspended !== null
@@ -1127,7 +1149,7 @@ export class CadRuntime extends Observable {
     const prefix = this.answerPrefix
     const mark = this.commandLine.mark()
     const continues =
-      this.openLine === mark && continuesLine(askedPrompt(this.activeTool))
+      this.openLine === mark && continuesLine(askedPrompt(asking))
     const asked = this.setsLastPoint()
       ? {
           tool: this.activeTool,
@@ -1239,9 +1261,126 @@ export class CadRuntime extends Observable {
     return point && this.frame.pointToWorld(point)
   }
 
+  /**
+   * The open box's field a point answers as its value — a distance or an
+   * angle AutoCAD's input measures from points — or null.
+   */
+  private pointMeasuredField(): DynamicField | null {
+    const session = this.dynamicInput.isOpen()
+      ? this.dynamicInput.getSession()
+      : null
+    if (session === null) return null
+    return measuredField(
+      session,
+      questionInput({
+        tool: this.activeTool,
+        prompt: askedPrompt(this.activeTool),
+        session,
+      })
+    )
+  }
+
+  /**
+   * Whether the runtime measures the point given at the question itself:
+   * the tool takes no point there (it wants no snap), as FILLET's radius,
+   * RECTANG's elevation or ARRAYPOLAR's fill angle. A tool that does takes
+   * the point as a pick (CIRCLE's radius, POLYGON's, which it also turns by).
+   */
+  private measuresPoints(): boolean {
+    return (
+      !(this.activeTool.wantsSnap?.() ?? true) &&
+      this.pointMeasuredField() !== null
+    )
+  }
+
+  /** Whether the question takes a point: the tool's, or one measured. */
+  private wantsPoint(): boolean {
+    return (this.activeTool.wantsSnap?.() ?? true) || this.measuresPoints()
+  }
+
+  /** The first of two measuring points, while its question stands. */
+  private measuringFrom(): Vec3 | null {
+    const measuring = this.measuring
+    if (measuring === null) return null
+    if (
+      measuring.tool !== this.activeTool ||
+      measuring.session !== this.dynamicInput.getSession() ||
+      measuring.prompt !== askedPrompt(this.activeTool)
+    ) {
+      this.measuring = null
+      return null
+    }
+    return measuring.first
+  }
+
+  /** The question as the prompt asks it: the second point while measuring. */
+  private asking(): Tool {
+    return this.measuringFrom() === null
+      ? this.activeTool
+      : secondPointQuestion(this.activeTool)
+  }
+
+  /**
+   * A point given at a question the runtime measures, in the tool's
+   * coordinates: the value from the tool's base point or the first of two,
+   * answered as if typed; or the first of two, after which the question asks
+   * for the second.
+   */
+  private measurePoint(point: Vec3): boolean {
+    const field = this.pointMeasuredField()
+    const session = this.dynamicInput.getSession()
+    if (field === null || session === null) return false
+    const anchor = this.activeTool.getConstraintAnchor?.() ?? null
+    const from =
+      this.measuringFrom() ??
+      (anchor === null ? null : withZ(anchor, zOf(anchor)))
+    if (from === null) {
+      this.measuring = {
+        tool: this.activeTool,
+        session,
+        prompt: askedPrompt(this.activeTool),
+        first: point,
+        cursor: point,
+      }
+      this.dynamicInput.clearTexts()
+      this.invalidateState()
+      return true
+    }
+    this.measuring = null
+    this.dynamicInput.setText(
+      field.id,
+      String(measuredValue(field, from, point))
+    )
+    return this.commitBox(session, field)
+  }
+
+  private measuringOverlay(): ScenePrimitive[] {
+    const from = this.measuringFrom()
+    if (from === null || this.measuring === null) return []
+    return measureOverlay(
+      this.toolContext.viewport,
+      from,
+      this.measuring.cursor
+    )
+  }
+
+  /** The rubber band and the box's reading while the second point is asked. */
+  private measureMove(point: Vec3): void {
+    const from = this.measuringFrom()
+    const field = this.pointMeasuredField()
+    if (from === null || field === null || this.measuring === null) return
+    this.measuring.cursor = point
+    this.dynamicInput.setLive(field.id, measuredValue(field, from, point))
+  }
+
   /** A point of the active tool's input, in the WCS. */
   private toolPointToWorld(point: Vec3): Vec3 {
     return this.activeTool.inWorld ? point : this.frame.pointToWorld(point)
+  }
+
+  /** A point of the frame as the active tool reads it. */
+  private frameToTool(point: Vec3): Vec3 {
+    return this.activeTool.inWorld ? this.frame.pointToWorld(point) : point
   }
 
   /**
@@ -1322,7 +1461,7 @@ export class CadRuntime extends Observable {
    * the command line.
    */
   private pointModifier(text: string): boolean {
-    if (!(this.activeTool.wantsSnap?.() ?? true)) return false
+    if (!this.wantsPoint()) return false
     const mode = resolveKeyword(
       text,
       this.text.keywords("-OSNAP", OSNAP_MODE_IDS)
@@ -1725,7 +1864,7 @@ export class CadRuntime extends Observable {
    * False when there is none to move to, so Tab keeps its other jobs.
    */
   cycleSnap(): boolean {
-    if (!(this.activeTool.wantsSnap?.() ?? true)) return false
+    if (!this.wantsPoint()) return false
     const at = this.lastPointerScreen
     if (at === null || !this.snapping.cycleNext()) return false
     this.updateSnap(at)
@@ -1857,7 +1996,7 @@ export class CadRuntime extends Observable {
    * It answers that prompt as the menu's macro does, `_from`.
    */
   startFrom(): boolean {
-    if (!(this.activeTool.wantsSnap?.() ?? true)) return false
+    if (!this.wantsPoint()) return false
     return this.answering("_from", () => this.beginFrom())
   }
 
@@ -1911,22 +2050,22 @@ export class CadRuntime extends Observable {
   }
 
   /** Feeds a point to the active tool as if it had been picked there. */
-  private placePoint(point: Vec3): void {
+  private placePoint(point: Vec3, movedThere = false): void {
     this.pointGiven = this.frame.pointToWorld(point)
-    this.activeTool.onPointerDown?.(
-      this.forTool({
-        screen: this.frame.viewport.worldToScreen(point),
-        world: point,
-        snap: null,
-        tracking: null,
-        point,
-        button: 0,
-        shiftKey: false,
-        ctrlKey: false,
-        altKey: false,
-      }),
-      this.toolContext
-    )
+    const input = this.forTool({
+      screen: this.frame.viewport.worldToScreen(point),
+      world: point,
+      snap: null,
+      tracking: null,
+      point,
+      button: 0,
+      shiftKey: false,
+      ctrlKey: false,
+      altKey: false,
+    })
+    // A tool measuring a value reads it off where the pointer stands.
+    if (movedThere) this.activeTool.onPointerMove?.(input, this.toolContext)
+    this.activeTool.onPointerDown?.(input, this.toolContext)
     this.snapping.clearOverride()
     this.answerPrefix = null
     if (!(this.activeTool.retainsTrackingAfterPointerDown?.() ?? false)) {
@@ -2147,7 +2286,7 @@ export class CadRuntime extends Observable {
    * badge would be noise, and AutoCAD cycles between objects, not points.
    */
   private refreshCycling(): void {
-    const picking = !(this.activeTool.wantsSnap?.() ?? true)
+    const picking = !this.wantsPoint()
     if (!this.cycling.isEnabled() || !picking || this.cursorWorld === null) {
       this.cycling.clear()
       return
@@ -2168,10 +2307,9 @@ export class CadRuntime extends Observable {
       ctrlKey: false,
       altKey: false,
     }
-    this.activeTool.onPointerMove?.(
-      this.buildPointerInput(resting),
-      this.toolContext
-    )
+    const input = this.buildPointerInput(resting)
+    this.activeTool.onPointerMove?.(input, this.toolContext)
+    this.measureMove(input.point)
   }
 
   setConstraintEnabled(type: ConstraintType, enabled: boolean): void {
@@ -2396,7 +2534,19 @@ export class CadRuntime extends Observable {
   ): boolean {
     this.pointTyped = this.typedPoint(field)
     const values = this.dynamicInput.resolveValues()
-    if (values) {
+    if (this.pointTyped !== null && this.pointMeasuredField() !== null) {
+      // AutoCAD's distance and angle input take a point as a pick there: the
+      // radius to `25,20`, OFFSET's first of two points.
+      const point = this.frame.pointToFrame(this.pointTyped)
+      this.dynamicInput.clearTexts()
+      if (this.measuresPoints()) {
+        const took = this.measurePoint(this.frameToTool(point))
+        // The value was answered as typed, by the box's own commit.
+        if (!took || this.measuring === null) return took
+      } else {
+        this.placePoint(point, true)
+      }
+    } else if (values) {
       session.commit(values, this.toolContext)
     } else if (!session.commitRaw?.(this.toolContext)) {
       // The numeric fields don't resolve and the session has no raw handler (or
@@ -2902,7 +3052,10 @@ export class CadRuntime extends Observable {
       acquiredTrackingPoints: this.tracking.getAcquired(),
       tracking: this.sceneTracking(),
       parallelReferenceIds: this.parallelRefs.getAcquired(),
-      toolOverlay: this.activeTool.buildOverlay?.(this.toolContext) ?? [],
+      toolOverlay: [
+        ...(this.activeTool.buildOverlay?.(this.toolContext) ?? []),
+        ...this.measuringOverlay(),
+      ],
       cursor: this.crosshairScreen ? { screen: this.crosshairScreen } : null,
       polar: this.buildPolarGuide(),
       fromBase: this.fromBase,
@@ -3022,11 +3175,7 @@ export class CadRuntime extends Observable {
 
     // Shift+right-click during a point prompt opens the object-snap override
     // menu (AutoCAD's temporary single-snap override), instead of panning.
-    if (
-      e.button === 2 &&
-      e.shiftKey &&
-      (this.activeTool.wantsSnap?.() ?? true)
-    ) {
+    if (e.button === 2 && e.shiftKey && this.wantsPoint()) {
       this.openSnapOverrideMenu(e.screen)
       return
     }
@@ -3105,7 +3254,7 @@ export class CadRuntime extends Observable {
     // Seen edge-on the work plane has no point under the cursor: AutoCAD
     // refuses the pick unless an object snap supplies the point.
     if (
-      (this.activeTool.wantsSnap?.() ?? true) &&
+      this.wantsPoint() &&
       this.currentSnap === null &&
       this.workPlaneEdgeOn()
     ) {
@@ -3120,6 +3269,7 @@ export class CadRuntime extends Observable {
       "",
       () => {
         this.pointGiven = this.toolPointToWorld(input.point)
+        if (this.measuresPoints()) return this.measurePoint(input.point)
         this.activeTool.onPointerDown?.(input, this.toolContext)
         return true
       },
@@ -3172,7 +3322,9 @@ export class CadRuntime extends Observable {
     this.lastPointerScreen = e.screen
     this.releaseHeldPressOnDrag(e)
     this.updateSnap(e.screen)
-    this.activeTool.onPointerMove?.(this.buildPointerInput(e), this.toolContext)
+    const input = this.buildPointerInput(e)
+    this.activeTool.onPointerMove?.(input, this.toolContext)
+    this.measureMove(input.point)
     this.host.requestRender()
   }
 
@@ -3636,7 +3788,7 @@ export class CadRuntime extends Observable {
       snap,
       anchor,
       e.shiftKey,
-      this.activeTool.wantsSnap?.() ?? true
+      this.wantsPoint()
     )
     this.lastTracking = resolved.tracking
     return this.forTool({
@@ -3679,7 +3831,8 @@ export class CadRuntime extends Observable {
 
   /** The active tool's constraint anchor, in the frame, with its Z when it has one. */
   private toolAnchor(): Vec2 | Vec3 | null {
-    const anchor = this.activeTool.getConstraintAnchor?.() ?? null
+    const anchor =
+      this.measuringFrom() ?? this.activeTool.getConstraintAnchor?.() ?? null
     if (anchor === null || !this.activeTool.inWorld) return anchor
     return this.frame.pointToFrame(withZ(anchor, zOf(anchor)))
   }
@@ -3809,7 +3962,7 @@ export class CadRuntime extends Observable {
     // acquiring a point (AutoCAD shows running osnaps only during a point
     // prompt). While merely selecting, no snap is computed, so its marker can
     // never overlap a selection grip.
-    if (this.activeTool.wantsSnap?.() ?? true) {
+    if (this.wantsPoint()) {
       // Perpendicular/Tangent snaps measure from the point the tool is drawing
       // from, so hand the current constraint anchor to the snap engine.
       const anchor = this.toolAnchor()
@@ -3883,7 +4036,7 @@ export class CadRuntime extends Observable {
     // user always sees where the pointer really is — e.g. while reaching across
     // the Ortho axis for a tracking reference. While merely selecting (no point
     // prompt) it also follows the raw cursor.
-    if (this.activeTool.wantsSnap?.() ?? true) {
+    if (this.wantsPoint()) {
       if (this.currentSnap) {
         // A snap found through its object (the centre from
         // the rim) leaves the crosshair on the pointer: the magnet only pulls
@@ -4000,9 +4153,11 @@ export class CadRuntime extends Observable {
       .toArray()
       .map((id) => this.document.get(id))
       .filter((entity): entity is Entity => entity !== undefined)
-    const options = offerOptions(this.activeTool, this.text)
+    const asking = this.asking()
+    const options =
+      asking === this.activeTool ? offerOptions(this.activeTool, this.text) : []
     const prompt = commandPrompt(
-      this.activeTool,
+      asking,
       this.text,
       options,
       settings,

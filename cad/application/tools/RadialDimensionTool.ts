@@ -191,11 +191,15 @@ export class RadialDimensionTool implements Tool {
 
   getConstraintAnchor(): Vec2 | null {
     // The centre: Ortho and Polar then lock the direction the leader runs in.
-    return this.state.phase === "location" ? this.state.target.center : null
+    const state = this.state
+    return state.phase === "location" && state.prompt !== "textAngle"
+      ? state.target.center
+      : null
   }
 
+  /** The text's angle is two points the runtime measures. */
   wantsSnap(): boolean {
-    return this.state.phase === "location"
+    return this.state.phase === "location" && this.state.prompt !== "textAngle"
   }
 
   buildOverlay(ctx: ToolContext): ScenePrimitive[] {

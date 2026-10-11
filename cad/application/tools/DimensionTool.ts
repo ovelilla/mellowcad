@@ -18,11 +18,7 @@ import {
   polylineSegmentGeometries,
   readsInPlan,
 } from "../../domain/entities"
-import {
-  ucsAngleToWorld,
-  worldAngleToUcs,
-  worldPointToUcs,
-} from "../../domain/ucs"
+import { ucsAngleToWorld, worldPointToUcs } from "../../domain/ucs"
 import { AddEntityCommand } from "../commands/entityCommands"
 import { DynamicInputSession } from "../input/DynamicInput"
 import type { PromptId } from "../../locales/types"
@@ -194,14 +190,6 @@ export class DimensionTool implements Tool {
       case "line":
         this.place(input.point, ctx)
         break
-      case "rotated":
-        // Pointing the angle of the dimension line: the bearing from the first
-        // origin to the cursor.
-        this.setRotation(
-          worldAngleToUcs(ctx.ucs, bearing(this.state.first, input.point)),
-          ctx
-        )
-        break
     }
     ctx.requestRender()
   }
@@ -249,16 +237,25 @@ export class DimensionTool implements Tool {
   }
 
   getConstraintAnchor(): Vec2 | null {
+    if (this.measuresAngle()) return null
     if (this.state.phase === "second") return this.state.first
     if (this.state.phase === "line") return this.state.first
-    if (this.state.phase === "rotated") return this.state.first
     return null
   }
 
   wantsSnap(): boolean {
     // The origins and the dimension line are point prompts; picking an object
-    // to dimension is not.
-    return this.state.phase !== "select"
+    // to dimension is not, and an angle's two points are the runtime's.
+    return this.state.phase !== "select" && !this.measuresAngle()
+  }
+
+  /** The dimension line's angle or the text's: two points of their own. */
+  private measuresAngle(): boolean {
+    const state = this.state
+    return (
+      state.phase === "rotated" ||
+      (state.phase === "line" && state.prompt === "textAngle")
+    )
   }
 
   buildOverlay(ctx: ToolContext): ScenePrimitive[] {
@@ -648,11 +645,6 @@ function planOrigins(entity: Entity, at: Vec2): [Vec2, Vec2] | null {
     case "insert":
       return null
   }
-}
-
-function bearing(from: Vec2, to: Vec2): number {
-  const offset = V.sub(to, from)
-  return V.length(offset) < 1e-9 ? 0 : Math.atan2(offset.y, offset.x)
 }
 
 /** How far `value` falls outside the interval spanned by `a` and `b`; 0 inside. */

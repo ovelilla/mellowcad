@@ -35,7 +35,7 @@ import type { PromptId } from "../../locales/types"
  *  selecting ─────────────────────► base ──────────► factor ──────────► done
  *   click / box-drag adds objects       (dashed ghost scales live)  [Reference]
  *                                                                        │
- *                                              refP1 ─► refP2 ─► newLength┘
+ *                                                     refP1 ─► newLength┘
  * ```
  *
  * A typed factor multiplies directly; pointing uses the base → cursor distance
@@ -63,21 +63,12 @@ type ScaleState =
       readonly copy: boolean
       readonly current: Vec2
     }
-  /** Reference mode: measuring the first point of the reference length. */
+  /** Reference mode: the reference length, typed or two points the runtime measures. */
   | {
       readonly phase: "refP1"
       readonly base: Vec3
       readonly originals: readonly Entity[]
       readonly copy: boolean
-      readonly current: Vec2
-    }
-  /** Reference mode: measuring the second point of the reference length. */
-  | {
-      readonly phase: "refP2"
-      readonly base: Vec3
-      readonly originals: readonly Entity[]
-      readonly copy: boolean
-      readonly p1: Vec2
       readonly current: Vec2
     }
   /** Reference mode: the set scales to the new length. */
@@ -131,8 +122,6 @@ export class ScaleTool implements Tool {
         return "specifyScaleFactorOr"
       case "refP1":
         return { id: "specifyReferenceLength", enter: 1 }
-      case "refP2":
-        return "specifySecondPoint"
       case "newLength":
         return "specifyNewLength"
     }
@@ -187,10 +176,6 @@ export class ScaleTool implements Tool {
         this.state = { ...this.state, current: input.point }
         ctx.dynamicInput.setPosition(input.screen)
         break
-      case "refP2":
-        this.state = { ...this.state, current: input.point }
-        ctx.dynamicInput.setPosition(input.screen)
-        break
       case "newLength": {
         this.state = { ...this.state, current: input.point }
         ctx.dynamicInput.setLive(
@@ -224,16 +209,6 @@ export class ScaleTool implements Tool {
           ctx
         )
         this.commit(this.state, factor, ctx)
-        return
-      }
-      case "refP1": {
-        this.state = { ...this.state, phase: "refP2", p1: input.point }
-        this.openReferenceSecondInput(ctx)
-        return
-      }
-      case "refP2": {
-        const reference = distanceFrom(this.state.p1, input.point)
-        this.enterNewLength(reference, ctx)
         return
       }
       case "newLength": {
@@ -307,8 +282,6 @@ export class ScaleTool implements Tool {
       case "factor":
       case "newLength":
         return this.state.base
-      case "refP2":
-        return this.state.p1
       default:
         return null
     }
@@ -316,12 +289,11 @@ export class ScaleTool implements Tool {
 
   wantsSnap(): boolean {
     // Object snaps help place every point precisely; picking objects (click or
-    // box) in the selecting phase does not need them.
+    // box) in the selecting phase does not need them, and the reference
+    // length's two points are the runtime's to measure.
     return (
       this.state.phase === "base" ||
       this.state.phase === "factor" ||
-      this.state.phase === "refP1" ||
-      this.state.phase === "refP2" ||
       this.state.phase === "newLength" ||
       (this.state.phase === "selecting" && this.selector.wantsSnap())
     )
@@ -354,13 +326,6 @@ export class ScaleTool implements Tool {
       }
       case "refP1":
         pushArm(out, viewport, this.state.base, this.state.current, arm)
-        break
-      case "refP2":
-        pushArm(out, viewport, this.state.p1, this.state.current, {
-          color: THEME.selected,
-          width: 1,
-          dash: [6, 4],
-        })
         break
       case "newLength": {
         const factor = this.resolveNewFactor(
@@ -494,34 +459,8 @@ export class ScaleTool implements Tool {
     return true
   }
 
-  private openReferenceSecondInput(ctx: ToolContext): void {
-    const session: DynamicInputSession = {
-      fields: [{ id: "second", prompt: "secondPoint", kind: "coordinate" }],
-      commit: () => {},
-      commitRaw: (commitCtx) => this.commitReferenceSecond(commitCtx),
-    }
-    ctx.dynamicInput.open(session)
-    ctx.dynamicInput.setPosition(this.lastScreen ?? { x: 0, y: 0 })
-  }
-
-  /** A typed second point completes the two-point reference length. */
-  private commitReferenceSecond(ctx: ToolContext): boolean {
-    if (this.state.phase !== "refP2") return false
-    const text = ctx.dynamicInput.getText("second").trim()
-    if (!isCoordinateExpression(text)) return false
-    const p2 = parseCoordinate(text, {
-      lastPoint: this.state.p1,
-      relativeByDefault: true,
-      ucs: ctx.ucs,
-      elevation: ctx.elevation,
-    })
-    if (!p2) return false
-    this.enterNewLength(distanceFrom(this.state.p1, p2), ctx)
-    return true
-  }
-
   private enterNewLength(reference: number, ctx: ToolContext): void {
-    if (this.state.phase !== "refP1" && this.state.phase !== "refP2") return
+    if (this.state.phase !== "refP1") return
     this.state = {
       phase: "newLength",
       base: this.state.base,

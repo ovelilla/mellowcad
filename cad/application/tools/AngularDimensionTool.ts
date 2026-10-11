@@ -271,15 +271,22 @@ export class AngularDimensionTool implements Tool {
       case "secondEndpoint":
         return this.state.vertex
       case "location":
-        return this.state.target.vertex
+        return this.state.prompt === "textAngle"
+          ? null
+          : this.state.target.vertex
       default:
         return null
     }
   }
 
   wantsSnap(): boolean {
-    // Everything but the two object prompts asks for a point.
-    return this.state.phase !== "select" && this.state.phase !== "secondLine"
+    // Everything but the two object prompts asks for a point; the text's
+    // angle is two points the runtime measures.
+    return (
+      this.state.phase !== "select" &&
+      this.state.phase !== "secondLine" &&
+      !(this.state.phase === "location" && this.state.prompt === "textAngle")
+    )
   }
 
   buildOverlay(ctx: ToolContext): ScenePrimitive[] {
