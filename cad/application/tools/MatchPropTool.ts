@@ -112,6 +112,12 @@ export class MatchPropTool implements Tool {
     ctx.requestRender()
   }
 
+  answerTyped(text: string, ctx: ToolContext): boolean {
+    return (
+      this.state.phase === "destination" && this.selector.answerTyped(text, ctx)
+    )
+  }
+
   onPointerUp(input: PointerInput, ctx: ToolContext): void {
     if (this.state.phase === "destination") {
       this.selector.onPointerUp(input, ctx)

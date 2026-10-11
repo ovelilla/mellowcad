@@ -920,7 +920,12 @@ export class CadRuntime extends Observable {
    * reach the box with its `#`.
    */
   private answerPrompt(text: string): boolean {
-    if (!this.dynamicInputHasField()) return false
+    if (!this.dynamicInputHasField()) {
+      const taken =
+        this.activeTool.answerTyped?.(text, this.toolContext) ?? false
+      if (taken) this.invalidateState()
+      return taken
+    }
     const id = this.dynamicInput.getActiveFieldId()
     const field = this.dynamicInput
       .getSession()

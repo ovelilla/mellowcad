@@ -348,6 +348,12 @@ export class ArrayPathTool implements Tool {
     return hit && isPath(hit) ? hit : null
   }
 
+  answerTyped(text: string, ctx: ToolContext): boolean {
+    return (
+      this.state.phase === "selecting" && this.selector.answerTyped(text, ctx)
+    )
+  }
+
   onPointerUp(input: PointerInput, ctx: ToolContext): void {
     if (this.state.phase === "selecting") this.selector.onPointerUp(input, ctx)
     if (this.state.phase === "pickPath") this.pathModes.onPointerUp(input, ctx)

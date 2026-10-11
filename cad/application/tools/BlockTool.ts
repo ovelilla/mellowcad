@@ -136,6 +136,10 @@ export class BlockTool implements Tool {
     }
   }
 
+  answerTyped(text: string, ctx: ToolContext): boolean {
+    return this.state.phase === "select" && this.selector.answerTyped(text, ctx)
+  }
+
   onPointerUp(input: PointerInput, ctx: ToolContext): void {
     if (this.state.phase === "select") this.selector.onPointerUp(input, ctx)
   }

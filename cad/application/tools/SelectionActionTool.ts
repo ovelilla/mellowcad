@@ -99,6 +99,10 @@ export abstract class SelectionActionTool implements Tool {
     this.selector.onPointerMove(input, ctx)
   }
 
+  answerTyped(text: string, ctx: ToolContext): boolean {
+    return this.selector.answerTyped(text, ctx)
+  }
+
   onPointerUp(input: PointerInput, ctx: ToolContext): void {
     this.selector.onPointerUp(input, ctx)
   }

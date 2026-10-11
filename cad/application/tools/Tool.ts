@@ -356,6 +356,13 @@ export interface Tool {
   takes?(): QuestionInput | null
 
   /**
+   * An answer typed at a prompt with no box to take it — a point at `Select
+   * objects:` (`ObjectSelector.answerTyped`). Returns whether it was taken;
+   * if not, it is refused as {@link takes} says.
+   */
+  answerTyped?(text: string, ctx: ToolContext): boolean
+
+  /**
    * Whether the tool works in the WCS rather than in the frame of the UCS's XY
    * plane, where every other tool works (see `UcsFrame`): the commands that
    * place the view or the UCS themselves (UCS, PLAN, VPOINT, -VIEW,

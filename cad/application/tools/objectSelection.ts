@@ -325,6 +325,42 @@ export class ObjectSelector {
     }
   }
 
+  /**
+   * A point typed at `Select objects:`, as AutoCAD 2023's console takes it:
+   * the object there is picked (`1 found`), and on nothing a window starts
+   * there, asking `Specify opposite corner:`. A single object's pick takes
+   * none: its own pick is the command's.
+   */
+  answerTyped(text: string, ctx: ToolContext): boolean {
+    if (this.step.kind !== "objects" || this.options.one) return false
+    const point = isCoordinateExpression(text)
+      ? parseCoordinate(text, {
+          lastPoint: null,
+          relativeByDefault: false,
+          ucs: ctx.ucs,
+          elevation: ctx.elevation,
+        })
+      : null
+    if (!point) return false
+    const at = { x: point.x, y: point.y }
+    const hit = this.pickAt(at, ctx)
+    if (hit) {
+      this.select([hit.id], false, null, false, ctx)
+    } else if (!ctx.pick(at)) {
+      this.step = {
+        kind: "oppositeCorner",
+        rule: "box",
+        start: at,
+        current: at,
+        implied: true,
+        subtract: false,
+      }
+      this.openPointInput(ctx)
+    }
+    ctx.requestRender()
+    return true
+  }
+
   onPointerDown(input: PointerInput, ctx: ToolContext): void {
     if (input.button !== 0) return
     const step = this.step
@@ -446,7 +482,7 @@ export class ObjectSelector {
         return true
       case "firstCorner":
       case "oppositeCorner":
-        this.refuseWindow(step.rule, ctx)
+        this.refuseWindow(step, ctx)
         return true
       case "fence": {
         // WHY a short fence or polygon closes the set: AutoCAD's Enter there
@@ -689,7 +725,7 @@ export class ObjectSelector {
         duplicate,
         removed: removed.length,
         total: ctx.selection.size,
-        hasTotal: hasTotal ? "yes" : "no",
+        hasTotal: hasTotal && ids.length > 0 ? "yes" : "no",
         box: dragged ? "yes" : "no",
       })
     )
@@ -747,10 +783,19 @@ export class ObjectSelector {
     return true
   }
 
-  /** A wrong window: AutoCAD asks for its first corner again. */
-  private refuseWindow(rule: WindowRule, ctx: ToolContext): void {
+  /**
+   * A wrong window: AutoCAD asks for its first corner again — or, for the
+   * window a point on nothing started, for its opposite corner (AutoCAD 2023's
+   * console).
+   */
+  private refuseWindow(
+    step: Extract<Step, { kind: "firstCorner" | "oppositeCorner" }>,
+    ctx: ToolContext
+  ): void {
     ctx.report(ctx.text.message("invalidWindowSpecification"))
-    this.step = { kind: "firstCorner", rule }
+    if (step.kind !== "oppositeCorner" || !step.implied) {
+      this.step = { kind: "firstCorner", rule: step.rule }
+    }
     this.openPointInput(ctx)
   }
 
@@ -801,7 +846,7 @@ export class ObjectSelector {
       return true
     }
     if (step.kind === "firstCorner" || step.kind === "oppositeCorner") {
-      this.refuseWindow(step.rule, ctx)
+      this.refuseWindow(step, ctx)
       return true
     }
     return false

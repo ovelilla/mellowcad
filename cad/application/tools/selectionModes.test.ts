@@ -512,3 +512,48 @@ describe("a single object's pick takes the modes", () => {
     cad.escape()
   })
 })
+
+// AutoCAD 2023's console answering the same input.
+describe("a point typed at Select objects", () => {
+  it("picks there, and on nothing starts a window", () => {
+    const cad = createHarness({ entities: drawing() })
+    cad.command("ERASE")
+    answer(cad, "50,0", "50,0", "30,30", "110,60", "30,30", "-10,-10")
+    answer(cad, "120,120", "FOO", "@1,1")
+    expect(cad.commandLog()).toEqual([
+      "ERASE",
+      "Select objects: 50,0",
+      "1 found",
+      "Select objects: 50,0",
+      "1 found (1 duplicate), 1 total",
+      "Select objects: 30,30",
+      "Specify opposite corner: 110,60",
+      "0 found",
+      "Select objects: 30,30",
+      "Specify opposite corner: -10,-10",
+      "1 found (1 duplicate), 1 total",
+      "Select objects: 120,120",
+      "Specify opposite corner: FOO",
+      "Invalid window specification.",
+      "Specify opposite corner: @1,1",
+      "0 found",
+    ])
+    cad.enter()
+    expect(cad.runtime.document.has("A")).toBe(false)
+  })
+
+  it("is answered in Autodesk's Spanish", () => {
+    const cad = createHarness({ locale: es, entities: drawing() })
+    cad.command("BORRA")
+    answer(cad, "50,0", "30,30")
+    expect(cad.commandLog().slice(1)).toEqual([
+      "Designe objetos: 50,0",
+      "1 encontrados",
+      "Designe objetos: 30,30",
+    ])
+    expect(cad.state().commandLine.prompt).toBe(
+      "BORRA Designe esquina opuesta:"
+    )
+    cad.escape()
+  })
+})

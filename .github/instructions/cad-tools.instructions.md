@@ -41,8 +41,9 @@ A tool is an explicit state machine for one AutoCAD command. It owns a discrimin
   modes typed there (Window, Crossing, BOX, Last, ALL, Fence, WPolygon, CPolygon, Previous,
   Remove/Add, Undo, AUto, SIngle), each counted as AutoCAD counts it. A tool holds one and, in its
   select phase, hands it `question`, `takes` (what its refusal lists:
-  `selector.takes("wholeObjects")`), `commandOptions`, `invokeOption`, the three pointer handlers,
-  `onEnter`, `wantsSnap` and `buildOverlay`. It passes `done` (the set is closed) and, where
+  `selector.takes("wholeObjects")`), `commandOptions`, `invokeOption`, `answerTyped` (a point
+  typed there picks, or starts a window), the three pointer handlers, `onEnter`, `wantsSnap` and
+  `buildOverlay`. It passes `done` (the set is closed) and, where
   needed, its own wording (`question`), a filter (`accept`: what it leaves out is neither counted
   nor highlighted, and a pick on it starts no window) and `onAdded` (STRETCH's frames). Never
   re-implement a pick, a box or a mode in a tool. A **single object's pick** that takes the modes

@@ -218,7 +218,8 @@ new line (`continuesLine`: `Specify opposite corner:`) is written on the line a 
 `Select objects: Specify opposite corner: 2 found`. Add one to `continuesLine` only from its
 string in Autodesk's table (no leading new line).
 
-**A wrong answer is refused, never run.** What is neither a keyword, a point modifier nor what
+**A wrong answer is refused, never run.** What is typed at a prompt with no box goes to the tool's
+`answerTyped` (a point at `Select objects:`). What is neither a keyword, a point modifier nor what
 the question takes — at the command line, or in the box when its commit returns `false` — goes
 through `answering` to `refuse()`: the history writes `question answer`, then the lines
 `promptRefusal` composes for the input function behind the question, in AutoCAD 2023's console's

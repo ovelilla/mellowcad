@@ -152,6 +152,10 @@ export class ZoomTool implements Tool {
     }
   }
 
+  answerTyped(text: string, ctx: ToolContext): boolean {
+    return this.state.phase === "object" && this.selector.answerTyped(text, ctx)
+  }
+
   /** A press-drag frames the window on release, the way AutoCAD accepts both. */
   onPointerUp(input: PointerInput, ctx: ToolContext): void {
     if (this.state.phase === "object") {

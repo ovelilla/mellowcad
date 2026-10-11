@@ -240,6 +240,12 @@ export class ArrayTool implements Tool {
     // the preview does not have.
   }
 
+  answerTyped(text: string, ctx: ToolContext): boolean {
+    return (
+      this.state.phase === "selecting" && this.selector.answerTyped(text, ctx)
+    )
+  }
+
   onPointerUp(input: PointerInput, ctx: ToolContext): void {
     if (this.state.phase === "selecting") this.selector.onPointerUp(input, ctx)
   }
