@@ -1025,6 +1025,8 @@ export const en: EngineCatalog = {
       "defaultLineweight": "Enter default lineweight for new objects or",
       "idPoint": "Specify point",
       "distSecondPoint": "Specify second point",
+      "matchpropSource": "Select source object",
+      "matchpropDestination": "Select destination object(s)",
       "viewPoint": "Specify a view point",
       "viewAngleInPlane": "Enter angle in XY plane from X axis",
       "viewAngleFromPlane": "Enter angle from XY plane",

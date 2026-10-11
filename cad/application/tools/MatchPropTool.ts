@@ -1,47 +1,51 @@
-import { Vec2, V } from "../../geometry/Vec2"
 import { Entity, EntityId, matchEntityProperties } from "../../domain/entities"
 import { ScenePrimitive } from "../../scene/types"
 import { THEME } from "../../scene/theme"
+import type { PromptId } from "../../locales/types"
 import { entityScenePrimitive } from "../SceneBuilder"
 import { UpdateEntitiesCommand } from "../commands/entityCommands"
-import { boxSelect, buildSelectionBoxOverlay } from "./boxSelection"
-import { PointerInput, Tool, ToolContext } from "./Tool"
+import { ObjectSelector } from "./objectSelection"
+import {
+  CommandOption,
+  CommandOptionOutcome,
+  PointerInput,
+  QuestionInput,
+  Tool,
+  ToolContext,
+} from "./Tool"
 
 /**
- * MATCHPROP. Pick a source object, then paint its general properties — layer,
- * colour, linetype and lineweight — onto as many destination objects as you
- * like, one pick or one selection box at a time, until Escape or Enter.
+ * MATCHPROP. `Select source object:`, then its general properties — layer,
+ * colour, linetype and lineweight — are painted onto the objects each
+ * selection at `Select destination object(s):` takes (picks, windows and the
+ * selection modes, as every set is selected), until Enter or Escape.
  *
  * The Settings dialog is not implemented: every property we model is matched,
- * which is what its defaults do anyway.
+ * which is what its defaults do anyway, so the prompt offers no `[Settings]`
+ * and no `Current active settings:` line is written (its list is not
+ * documented word for word).
  */
 type MatchState =
   | { readonly phase: "source"; readonly hover: Entity | null }
-  | {
-      readonly phase: "destination"
-      readonly source: Entity
-      readonly hover: Entity | null
-    }
-  | {
-      readonly phase: "pressed"
-      readonly source: Entity
-      readonly startWorld: Vec2
-      readonly startScreen: Vec2
-      readonly currentWorld: Vec2
-    }
-  | {
-      readonly phase: "boxing"
-      readonly source: Entity
-      readonly startWorld: Vec2
-      readonly currentWorld: Vec2
-    }
-
-const DRAG_THRESHOLD_PX = 4
+  | { readonly phase: "destination"; readonly source: Entity }
 
 export class MatchPropTool implements Tool {
   readonly id = "matchprop"
 
   private state: MatchState = { phase: "source", hover: null }
+  private readonly selector = new ObjectSelector({
+    question: () => "matchpropDestination",
+    done: (ctx) => {
+      ctx.selection.clear()
+      ctx.endCommand()
+    },
+    // AutoCAD paints each selection as it is made.
+    onAdded: (ids, _frame, ctx) => {
+      if (this.state.phase === "destination") {
+        this.apply(this.state.source, ids, ctx)
+      }
+    },
+  })
 
   onActivate(ctx: ToolContext): void {
     this.state = { phase: "source", hover: null }
@@ -49,117 +53,99 @@ export class MatchPropTool implements Tool {
     ctx.selection.clear()
   }
 
-  onDeactivate(): void {
+  onDeactivate(ctx: ToolContext): void {
     this.state = { phase: "source", hover: null }
+    this.selector.start()
+    ctx.dynamicInput.close()
+  }
+
+  question(): PromptId {
+    return this.state.phase === "source"
+      ? "matchpropSource"
+      : this.selector.question()
+  }
+
+  takes(): QuestionInput {
+    return this.state.phase === "source"
+      ? "object"
+      : this.selector.takes("objects")
+  }
+
+  commandOptions(): readonly CommandOption[] {
+    return this.state.phase === "destination"
+      ? this.selector.commandOptions()
+      : []
+  }
+
+  invokeOption(id: string, ctx: ToolContext): CommandOptionOutcome {
+    if (this.state.phase !== "destination") return "unhandled"
+    return this.selector.invokeOption(id, ctx) ? "continue" : "unhandled"
   }
 
   /** Objects are picked by proximity, so no snap markers get in the way. */
   wantsSnap(): boolean {
-    return false
+    return this.state.phase === "destination" && this.selector.wantsSnap()
   }
 
   onPointerMove(input: PointerInput, ctx: ToolContext): void {
-    if (this.state.phase === "pressed") {
-      const dragged =
-        V.distance(input.screen, this.state.startScreen) >= DRAG_THRESHOLD_PX
-      this.state = dragged
-        ? {
-            phase: "boxing",
-            source: this.state.source,
-            startWorld: this.state.startWorld,
-            currentWorld: input.world,
-          }
-        : { ...this.state, currentWorld: input.world }
-      ctx.requestRender()
+    if (this.state.phase === "destination") {
+      this.selector.onPointerMove(input, ctx)
       return
     }
-    if (this.state.phase === "boxing") {
-      this.state = { ...this.state, currentWorld: input.world }
-      ctx.requestRender()
-      return
-    }
-
     const hover = ctx.pick(input.world) ?? null
     if (hover?.id !== this.state.hover?.id) {
-      this.state = { ...this.state, hover }
+      this.state = { phase: "source", hover }
       ctx.requestRender()
     }
   }
 
   onPointerDown(input: PointerInput, ctx: ToolContext): void {
-    if (input.button !== 0) return
-    if (this.state.phase === "source") {
-      const hit = ctx.pick(input.world)
-      if (!hit) return
-      this.state = { phase: "destination", source: hit, hover: null }
-      ctx.requestRender()
+    if (this.state.phase === "destination") {
+      this.selector.onPointerDown(input, ctx)
       return
     }
-    if (this.state.phase === "destination") {
-      this.state = {
-        phase: "pressed",
-        source: this.state.source,
-        startWorld: input.world,
-        startScreen: input.screen,
-        currentWorld: input.world,
-      }
-    }
+    if (input.button !== 0) return
+    const hit = ctx.pick(input.world)
+    if (!hit) return
+    this.state = { phase: "destination", source: hit }
+    this.selector.start()
+    ctx.requestRender()
   }
 
   onPointerUp(input: PointerInput, ctx: ToolContext): void {
-    if (input.button !== 0) return
-    if (this.state.phase === "boxing") {
-      const ids = boxSelect(
-        ctx.document,
-        this.state.startWorld,
-        input.world,
-        ctx.viewport
-      )
-      this.apply(this.state.source, ids, ctx)
-      return
+    if (this.state.phase === "destination") {
+      this.selector.onPointerUp(input, ctx)
     }
-    if (this.state.phase !== "pressed") return
-    const hit = ctx.pick(input.world)
-    this.apply(this.state.source, hit ? [hit.id] : [], ctx)
+  }
+
+  onEnter(ctx: ToolContext): boolean {
+    return this.state.phase === "destination" && this.selector.onEnter(ctx)
   }
 
   buildOverlay(ctx: ToolContext): ScenePrimitive[] {
-    if (this.state.phase === "boxing") {
-      return buildSelectionBoxOverlay(
+    const state = this.state
+    if (state.phase === "source") {
+      return state.hover
+        ? entityScenePrimitive(
+            ctx.viewport,
+            state.hover,
+            { color: THEME.entityHover, width: 2 },
+            { blocks: ctx.blocks }
+          )
+        : []
+    }
+    return [
+      ...entityScenePrimitive(
         ctx.viewport,
-        this.state.startWorld,
-        this.state.currentWorld
-      )
-    }
-
-    const out: ScenePrimitive[] = []
-    if (this.state.phase !== "source" && this.state.phase !== "destination") {
-      return out
-    }
-    if (this.state.phase === "destination") {
-      out.push(
-        ...entityScenePrimitive(
-          ctx.viewport,
-          this.state.source,
-          { color: THEME.selected, width: 2 },
-          { blocks: ctx.blocks }
-        )
-      )
-    }
-    if (this.state.hover) {
-      out.push(
-        ...entityScenePrimitive(
-          ctx.viewport,
-          this.state.hover,
-          { color: THEME.entityHover, width: 2 },
-          { blocks: ctx.blocks }
-        )
-      )
-    }
-    return out
+        state.source,
+        { color: THEME.selected, width: 2 },
+        { blocks: ctx.blocks }
+      ),
+      ...this.selector.buildOverlay(ctx),
+    ]
   }
 
-  /** Paints the source's properties on the picked objects and keeps painting. */
+  /** Paints the source's properties on the objects a selection took. */
   private apply(
     source: Entity,
     ids: readonly EntityId[],
@@ -170,9 +156,7 @@ export class MatchPropTool implements Tool {
       .map((id) => ctx.document.get(id))
       .filter((entity): entity is Entity => entity !== undefined)
       .map((entity) => matchEntityProperties(source, entity))
-
     if (updated.length > 0) ctx.execute(new UpdateEntitiesCommand(updated))
-    this.state = { phase: "destination", source, hover: null }
     ctx.requestRender()
   }
 }

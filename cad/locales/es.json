@@ -885,6 +885,8 @@
       "defaultLineweight": "Indique el grosor de línea por defecto para los nuevos objetos o",
       "idPoint": "Precise punto",
       "distSecondPoint": "Especifique segundo punto",
+      "matchpropSource": "Seleccione el objeto de origen",
+      "matchpropDestination": "Seleccione objeto(s) de destino",
       "viewPoint": "Precise un punto de vista",
       "viewAngleInPlane": "Ángulo a partir del eje X en el plano XY",
       "viewAngleFromPlane": "Ángulo a partir del plano XY",

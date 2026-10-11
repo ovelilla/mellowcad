@@ -118,7 +118,8 @@ export interface ObjectSelectorOptions {
    */
   readonly onAdded?: (
     ids: readonly EntityId[],
-    frame: readonly Vec2[] | null
+    frame: readonly Vec2[] | null,
+    ctx: ToolContext
   ) => void
 }
 
@@ -654,7 +655,8 @@ export class ObjectSelector {
     if (locked.size > 0) {
       ctx.report(ctx.text.message("onLockedLayer", { count: locked.size }))
     }
-    if (!removing && usable.length > 0) this.options.onAdded?.(usable, frame)
+    if (!removing && usable.length > 0)
+      this.options.onAdded?.(usable, frame, ctx)
     if (this.single && ids.length > 0) this.close(ctx)
   }
 

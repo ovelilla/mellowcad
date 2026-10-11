@@ -137,3 +137,34 @@ describe("MATCHPROP", () => {
     expect(destination.end).toBeCloseToPoint(p(100, 100))
   })
 })
+
+describe("MATCHPROP asks as AutoCAD 2026", () => {
+  it("asks the source, then paints each destination selection as it is made", () => {
+    const cad = createHarness()
+    cad.runtime.document.load(
+      [
+        lineOf(p(0, 0), p(100, 0), { id: "S", layerId: "red" }),
+        lineOf(p(0, 50), p(100, 50), { id: "D" }),
+      ],
+      { layers: [layerOf("0"), layerOf("red")] }
+    )
+    cad.command("MATCHPROP")
+    expect(cad.state().commandLine.prompt).toBe(
+      "MATCHPROP Select source object:"
+    )
+    cad.click(p(50, 0))
+    cad.runtime.setCommandLineText("L")
+    cad.runtime.submitCommandLine()
+    expect(cad.byId<LineEntity>("D").layerId).toBe("red")
+    cad.enter()
+
+    expect(cad.commandLog()).toEqual([
+      "MATCHPROP",
+      "Select source object:",
+      "Select destination object(s): L",
+      "1 found",
+      "Select destination object(s):",
+    ])
+    expect(cad.activeToolId()).toBe("select")
+  })
+})

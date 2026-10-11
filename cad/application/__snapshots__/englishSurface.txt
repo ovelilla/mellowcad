@@ -3119,11 +3119,14 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
   properties: -
   cycling: -
 > MATCHPROP
-  prompt: MATCHPROP:
+  prompt: MATCHPROP Select source object:
   command| MA MATCHPROP
 > source
+  prompt: MATCHPROP Select destination object(s):
+  prompt| Select source object:
 > escape
   prompt: Command:
+  prompt| Select destination object(s): *Cancel*
 
 ## clipboard copies
 > start
