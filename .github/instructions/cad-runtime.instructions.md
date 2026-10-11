@@ -249,7 +249,8 @@ and replays the pointer through the resumed tool. Starting another tool ends bot
 `endCommands`/`cancelOnce` — a new "end everything" path must call `endCommands`, not
 `returnToNeutralTool`, or it only resumes. A command that is not transparent, typed so, says
 `** That command may not be invoked transparently **` before the prompt's own refusal (at the
-Command prompt, instead of running); one inside a transparent one is refused as any answer.
+Command prompt, instead of running); one inside a transparent one, or inside itself (`'ZOOM` at ZOOM's prompt: the tool is the running
+one), is refused as any answer.
 A button whose AutoCAD macro starts with an apostrophe (the navigation bar's `'_pan`,
 `'_zoom _W`) runs through `navigate` — the same `runTransparently` as typed, at any prompt and
 keeping the box's text, since a button types nothing there; never `setActiveTool`, which ends the

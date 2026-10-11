@@ -154,6 +154,29 @@ describe("a transparent command", () => {
     expect(cad.activeToolId()).toBe("zoom")
   })
 
+  it("is refused inside itself, as any answer", () => {
+    const cad = createHarness()
+    answerLine(cad, "ZOOM")
+    answerLine(cad, "W")
+    answerLine(cad, "'ZOOM")
+    expect(cad.commandLog().slice(-2)).toEqual([
+      "Specify first corner: 'ZOOM",
+      "Invalid window specification.",
+    ])
+    expect(cad.state().commandLine.prompt).toBe("ZOOM Specify first corner:")
+    answerLine(cad, "'PAN")
+    expect(cad.activeToolId()).toBe("pan")
+    cad.enter()
+    expect(cad.commandLog().at(-1)).toBe("Resuming ZOOM command.")
+    expect(cad.state().commandLine.prompt).toBe("ZOOM Specify first corner:")
+    cad.escape()
+
+    answerLine(cad, "PAN")
+    cad.runtime.navigate("PAN")
+    expect(cad.activeToolId()).toBe("pan")
+    expect(cad.commandLog().at(-1)).not.toBe("Resuming PAN command.")
+  })
+
   it("just runs at the Command prompt", () => {
     const cad = createHarness()
     answerLine(cad, "'ZOOM")
@@ -244,5 +267,13 @@ describe("a transparent command", () => {
     expect(cad.state().commandLine.prompt).toBe(
       "'ZOOM >>Designe primera esquina:"
     )
+    cad.escape().escape()
+    answerLine(cad, "ZOOM")
+    answerLine(cad, "V")
+    answerLine(cad, "'ZOOM")
+    expect(cad.commandLog().slice(-2)).toEqual([
+      "Designe primera esquina: 'ZOOM",
+      "Designación de ventana no válida.",
+    ])
   })
 })

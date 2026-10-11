@@ -922,9 +922,9 @@ export class CadRuntime extends Observable {
   /**
    * A command typed with an apostrophe mid-command (`'ZOOM`, `'Z`): one
    * AutoCAD runs transparently runs inside the running one; any other is
-   * refused, saying why, and so is a second one inside a transparent one, as
-   * AutoCAD 2023's console refuses them. Not at a prompt that takes text,
-   * where it is the text.
+   * refused, saying why, and so is a second one inside a transparent one or
+   * one inside itself (`'ZOOM` at ZOOM's prompt), as AutoCAD 2023's console
+   * refuses them. Not at a prompt that takes text, where it is the text.
    */
   private transparentCommand(text: string): boolean {
     const typed = text.trim()
@@ -941,14 +941,18 @@ export class CadRuntime extends Observable {
     const command = this.commandNamed(typed)
     if (!command) return false
     return this.answering(this.commandEcho(typed, command), () => {
-      if (command.transparent && this.suspended === null) {
+      if (
+        command.transparent &&
+        this.suspended === null &&
+        command.tool !== this.activeTool.id
+      ) {
         this.suspend(command, clear)
         return true
       }
       if (!command.transparent) {
         this.commandLine.write("error", this.text.message("notTransparent"))
       }
-      this.dynamicInput.clearTexts()
+      if (clear) this.dynamicInput.clearTexts()
       return this.refuse()
     })
   }
