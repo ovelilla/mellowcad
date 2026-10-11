@@ -16,12 +16,15 @@ import { entityScenePrimitive } from "../SceneBuilder"
 import { ScenePrimitive } from "../../scene/types"
 import { THEME } from "../../scene/theme"
 import { AttributeValuePrompts } from "./attributeValues"
+import type { PromptId } from "../../locales/types"
 import {
   CommandOption,
   CommandOptionOutcome,
   PointerInput,
+  QuestionInput,
   Tool,
   ToolContext,
+  ToolQuestion,
 } from "./Tool"
 import { withCurrentProperties } from "./currentProperties"
 
@@ -101,13 +104,58 @@ export class InsertTool implements Tool {
     this.place(input.point, ctx)
   }
 
+  /**
+   * -INSERT's questions. WHY no X scale, Y scale and rotation after the point:
+   * the point places the reference at the session's scale and angle, which
+   * Scale and Rotate set beforehand.
+   */
+  question(): PromptId | ToolQuestion {
+    switch (this.state.phase) {
+      case "name":
+        return this.blockId
+          ? { id: "blockName", enter: { name: this.blockId } }
+          : "blockName"
+      case "point":
+        return "insertionPoint"
+      case "scale":
+        return { id: "insertScale", enter: this.scale }
+      case "rotation":
+        return {
+          id: "insertRotation",
+          enter: { angle: (this.rotation * 180) / Math.PI },
+        }
+      case "attributes":
+        return this.state.prompts.question()
+    }
+  }
+
+  /** As AutoCAD 2023's console refuses -INSERT's scale. */
+  takes(): QuestionInput | null {
+    return this.state.phase === "scale"
+      ? {
+          refusal: "requiresDistance",
+          values: { points: "two", keyword: "no" },
+        }
+      : null
+  }
+
   commandOptions(): readonly CommandOption[] {
-    return this.state.phase === "point"
-      ? [{ id: "Scale" }, { id: "Rotate" }]
-      : []
+    switch (this.state.phase) {
+      case "name":
+        return [{ id: "?" }]
+      case "point":
+        return [{ id: "Scale" }, { id: "Rotate" }]
+      default:
+        return []
+    }
   }
 
   invokeOption(id: string, ctx: ToolContext): CommandOptionOutcome {
+    if (this.state.phase === "name" && id === "?") {
+      this.listBlocks(ctx)
+      this.enterName(ctx)
+      return "continue"
+    }
     if (this.state.phase !== "point") return "unhandled"
     switch (id) {
       case "Scale":
@@ -178,19 +226,18 @@ export class InsertTool implements Tool {
   }
 
   private enterName(ctx: ToolContext): void {
+    // INSNAME: the last block inserted, or else the last one defined.
+    if (!ctx.document.getBlock(this.blockId)) {
+      this.blockId = ctx.document.getBlocks().at(-1)?.id ?? ""
+    }
     this.state = { phase: "name" }
     ctx.dynamicInput.open({
       fields: [{ id: "name", prompt: "blockName", kind: "text" }],
       commit: () => {},
       commitRaw: (commitCtx) => {
         const typed = commitCtx.dynamicInput.getText("name").trim()
-        const blocks = commitCtx.document.getBlocks()
         if (typed === "?") {
-          commitCtx.report(
-            blocks.length === 0
-              ? commitCtx.text.message("noBlocks")
-              : blocks.map((block) => block.name).join("\n")
-          )
+          this.listBlocks(commitCtx)
           this.enterName(commitCtx)
           return true
         }
@@ -209,8 +256,16 @@ export class InsertTool implements Tool {
         return true
       },
     })
-    ctx.dynamicInput.setText("name", this.blockId)
     ctx.dynamicInput.setPosition(this.lastScreen ?? { x: 0, y: 0 })
+  }
+
+  private listBlocks(ctx: ToolContext): void {
+    const blocks = ctx.document.getBlocks()
+    ctx.report(
+      blocks.length === 0
+        ? ctx.text.message("noBlocks")
+        : blocks.map((block) => block.name).join("\n")
+    )
   }
 
   private enterPoint(ctx: ToolContext): void {
@@ -231,7 +286,8 @@ export class InsertTool implements Tool {
             elevation: commitCtx.elevation,
           }
         )
-        if (point) this.place(point, commitCtx)
+        if (!point) return false
+        this.place(point, commitCtx)
         return true
       },
     })
@@ -248,8 +304,13 @@ export class InsertTool implements Tool {
       },
       commitRaw: (commitCtx) => {
         // Enter with nothing typed keeps the current factor, the `<default>`.
+        if (!commitCtx.dynamicInput.hasTypedText()) {
+          this.enterPoint(commitCtx)
+          return true
+        }
         const typed = parseNumber(commitCtx.dynamicInput.getText("scale"))
-        if (typed !== null && typed > 0) this.scale = typed
+        if (typed === null || !(typed > 0)) return false
+        this.scale = typed
         this.enterPoint(commitCtx)
         return true
       },
@@ -269,8 +330,13 @@ export class InsertTool implements Tool {
       },
       commitRaw: (commitCtx) => {
         // Enter with nothing typed keeps the current angle, the `<default>`.
+        if (!commitCtx.dynamicInput.hasTypedText()) {
+          this.enterPoint(commitCtx)
+          return true
+        }
         const typed = parseNumber(commitCtx.dynamicInput.getText("rotation"))
-        if (typed !== null) this.rotation = (typed * Math.PI) / 180
+        if (typed === null) return false
+        this.rotation = (typed * Math.PI) / 180
         this.enterPoint(commitCtx)
         return true
       },

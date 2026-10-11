@@ -97,7 +97,8 @@ export interface CommandOption {
  */
 export interface ToolQuestion {
   readonly id: PromptId
-  readonly enter:
+  /** Left out when Enter keeps nothing the prompt shows (an empty default). */
+  readonly enter?:
     | number
     | { readonly angle: number }
     | { readonly count: number }

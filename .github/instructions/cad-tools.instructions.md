@@ -72,6 +72,8 @@ A tool is an explicit state machine for one AutoCAD command. It owns a discrimin
   prompt belongs in a shared helper: identical wording is part of the fidelity, not a nicety.
   `measurementOf` (`DimensionTool.ts`) is the measurement as AutoCAD offers it at Text's
   `<default>` and reports it after placing (`Dimension text = 100.00`): every dimension uses it.
+  TEXT's point prompts (`POINT_PROMPT`) and Style's `?` (`listTextStyles`, `TextTool.ts`) are
+  ATTDEF's too, which asks "the same prompts as the TEXT command".
 - `SceneBuilder.entityScenePrimitive` — always use it to draw ghosts, so new entity types render
   correctly everywhere for free. It returns a **list**, so spread it. Its fourth argument is an
   options bag: pass `{ blocks: ctx.blocks }` wherever the entity can be one the _user_ selected,
@@ -288,7 +290,8 @@ A **dash command** that only takes its input differently (`-MTEXT`) is not a too
 A command that **creates a block reference** (INSERT, BLOCK's Convert) asks its attribute values
 through `AttributeValuePrompts` (`tools/attributeValues.ts`) and adds the reference only in its
 `onDone`, so the values, Verify and Preset behave the same everywhere and the whole insertion stays
-one undo step that Escape cancels.
+one undo step that Escape cancels. In that phase the tool's `question()` is the prompts' own
+(`Prompt one <def1>:`, the drawing's words through `attributeValuePrompt`).
 
 A bracketed `<Default>` is implemented in the prompt's `commitRaw`: **empty text means Enter, so
 take the default** (DIMLINEAR's `<select object>`, DIMBASELINE's `<Select>`). Never spend a keyword

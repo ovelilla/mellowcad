@@ -12,6 +12,7 @@ import {
   onPlaneOf,
 } from "../../domain/entities"
 import { DEFAULT_TEXT_HEIGHT, TextStyleId } from "../../domain/textStyles"
+import { formatLength } from "../../domain/units"
 import { ucsAngleToWorld, ucsRotation, worldAngleToUcs } from "../../domain/ucs"
 import { AddEntityCommand } from "../commands/entityCommands"
 import type { PromptId } from "../../locales/types"
@@ -21,13 +22,20 @@ import {
 } from "../input/coordinateInput"
 import { ScenePrimitive } from "../../scene/types"
 import { THEME } from "../../scene/theme"
-import { JUSTIFY_BY_KEYWORD, JUSTIFY_KEYWORDS, lineBelow } from "./TextTool"
+import {
+  JUSTIFY_BY_KEYWORD,
+  JUSTIFY_KEYWORDS,
+  POINT_PROMPT,
+  lineBelow,
+  listTextStyles,
+} from "./TextTool"
 import {
   CommandOption,
   CommandOptionOutcome,
   PointerInput,
   Tool,
   ToolContext,
+  ToolQuestion,
 } from "./Tool"
 import { withCurrentProperties } from "./currentProperties"
 
@@ -40,12 +48,19 @@ const MODE_BY_KEYWORD: Readonly<Record<string, keyof AttributeModes>> = {
   "Lock position": "lockPosition",
 }
 
+/** The justification keyword of each justification, as TEXT reports it. */
+const JUSTIFY_KEYWORD_OF: Readonly<Record<TextJustify, string>> =
+  Object.fromEntries(
+    Object.entries(JUSTIFY_BY_KEYWORD).map(([id, justify]) => [justify, id])
+  ) as Record<TextJustify, string>
+
 type AttDefState =
   | { readonly phase: "modes" }
   | { readonly phase: "tag" }
   | { readonly phase: "prompt" }
   | { readonly phase: "value" }
-  | { readonly phase: "start" }
+  /** `keywords`: the first point prompt, before a justification was chosen. */
+  | { readonly phase: "start"; readonly keywords: boolean }
   | { readonly phase: "justify" }
   | { readonly phase: "style" }
   | { readonly phase: "height"; readonly position: Vec3; readonly cursor: Vec2 }
@@ -59,10 +74,11 @@ type AttDefState =
 /**
  * AutoCAD's -ATTDEF, which ATTDEF runs too: AutoCAD's ATTDEF opens the
  * Attribute Definition dialog, and here, as with BLOCK, the command line asks
- * the same things in -ATTDEF's order — the modes, the tag, the prompt, the
- * default (or, for a constant attribute, the value), and then "the same prompts
- * as the TEXT command, using the attribute tag instead of requesting a text
- * string".
+ * the same things in -ATTDEF's order — `Enter an option to change [...]
+ * <done>:` for the modes, the tag, the prompt, the default (or, for a constant
+ * attribute, the value), and then "the same prompts as the TEXT command, using
+ * the attribute tag instead of requesting a text string", after `Current text
+ * style:  "Standard"  Text height:  2.50  Justify:  Left`.
  *
  * Enter at the start point places the definition one line below the previous
  * one, which is how -ATTDEF stacks a block's attributes and what the dialog
@@ -83,6 +99,8 @@ export class AttDefTool implements Tool {
   private rotation = 0
   private justify: TextJustify = "left"
   private styleId: TextStyleId | null = null
+  /** The current style's name, offered as Style's `<default>`. */
+  private styleName = ""
   private previous: AttributeDefinitionEntity | null = null
   private lastScreen: Vec2 | null = null
 
@@ -97,6 +115,35 @@ export class AttDefTool implements Tool {
   onDeactivate(ctx: ToolContext): void {
     this.state = { phase: "modes" }
     ctx.dynamicInput.close()
+  }
+
+  question(): PromptId | ToolQuestion {
+    const state = this.state
+    switch (state.phase) {
+      case "modes":
+        return { id: "attdefModes", enter: "attdefDone" }
+      case "tag":
+        return "attributeTag"
+      case "prompt":
+        return "attributePrompt"
+      case "value":
+        return this.modes.constant ? "attributeValue" : "attributeDefault"
+      case "start": {
+        const [plain, withKeywords] = POINT_PROMPT[this.justify]
+        return state.keywords ? withKeywords : plain
+      }
+      case "justify":
+        return "enterAnOption"
+      case "style":
+        return { id: "enterStyleNameOr", enter: { name: this.styleName } }
+      case "height":
+        return { id: "textHeight", enter: this.height }
+      case "rotation":
+        return {
+          id: "textRotation",
+          enter: { angle: normalizeDegrees((this.rotation * 180) / Math.PI) },
+        }
+    }
   }
 
   onPointerMove(input: PointerInput, ctx: ToolContext): void {
@@ -140,38 +187,63 @@ export class AttDefTool implements Tool {
   }
 
   commandOptions(): readonly CommandOption[] {
-    switch (this.state.phase) {
+    const state = this.state
+    switch (state.phase) {
       case "modes":
         return Object.keys(MODE_BY_KEYWORD).map((id) => ({ id }))
       case "start":
-        return [{ id: "Justify" }, { id: "Style" }]
+        // The justifications are answered here too, unlisted, as TEXT's are.
+        return state.keywords
+          ? [
+              { id: "Justify" },
+              { id: "Style" },
+              ...JUSTIFY_KEYWORDS.map((id) => ({ id, hidden: true as const })),
+            ]
+          : []
+      case "justify":
+        return JUSTIFY_KEYWORDS.map((id) => ({ id }))
+      case "style":
+        return [{ id: "?" }]
       default:
         return []
     }
   }
 
   invokeOption(id: string, ctx: ToolContext): CommandOptionOutcome {
-    if (this.state.phase === "modes") {
+    const state = this.state
+    if (state.phase === "modes") {
       const mode = MODE_BY_KEYWORD[id]
       if (!mode) return "unhandled"
       this.modes = { ...this.modes, [mode]: !this.modes[mode] }
       this.reportModes(ctx)
       return "continue"
     }
-    if (this.state.phase !== "start") return "unhandled"
+    if (
+      state.phase === "justify" ||
+      (state.phase === "start" && state.keywords && id in JUSTIFY_BY_KEYWORD)
+    ) {
+      const justify = JUSTIFY_BY_KEYWORD[id]
+      if (justify === undefined) return "unhandled"
+      this.justify = justify
+      // The point the justification names, asked without the keywords.
+      this.enterStart(ctx, false)
+      return "continue"
+    }
+    if (state.phase === "style") {
+      if (id !== "?") return "unhandled"
+      listTextStyles(this.currentStyleId(ctx), ctx)
+      this.enterStyle(ctx)
+      return "continue"
+    }
+    if (state.phase !== "start" || !state.keywords) return "unhandled"
     switch (id) {
       case "Justify":
         this.state = { phase: "justify" }
-        ctx.report(
-          ctx.text.message("textJustifyOptions", {
-            keywords: ctx.text.keywordList(JUSTIFY_KEYWORDS),
-          })
-        )
-        this.openText(ctx, "justify")
+        // Keywords only, the focus left on the drawing.
+        ctx.dynamicInput.open({ fields: [], commit: () => {} })
         return "continue"
       case "Style":
-        this.state = { phase: "style" }
-        this.openText(ctx, "styleName")
+        this.enterStyle(ctx)
         return "continue"
       default:
         return "unhandled"
@@ -219,7 +291,7 @@ export class AttDefTool implements Tool {
     )
   }
 
-  /** One of the free-text prompts: tag, prompt, value, justification, style. */
+  /** One of the free-text prompts: tag, prompt, value. */
   private enterText(
     ctx: ToolContext,
     phase: "tag" | "prompt" | "value",
@@ -244,6 +316,9 @@ export class AttDefTool implements Tool {
       case "tag": {
         const tag = attributeTag(typed)
         if (!tag) {
+          if (typed.trim() === "") {
+            ctx.report(ctx.text.message("tagCannotBeNull"), "error")
+          }
           this.enterText(ctx, "tag", "attributeTag")
           return true
         }
@@ -260,33 +335,42 @@ export class AttDefTool implements Tool {
         this.prompt = attributeInput(typed)
         this.enterText(ctx, "value", "attributeDefault")
         return true
-      case "value":
+      case "value": {
         this.value = attributeInput(typed)
-        this.enterStart(ctx)
-        return true
-      case "justify": {
-        const keyword = ctx.text.resolveKeyword(typed.trim(), JUSTIFY_KEYWORDS)
-        if (!keyword) return false
-        this.justify = JUSTIFY_BY_KEYWORD[keyword]
-        this.enterStart(ctx)
+        const style = ctx.document.getTextStyle(this.currentStyleId(ctx))
+        ctx.report(
+          ctx.text.message("attdefTextStyle", {
+            style: style?.name ?? this.currentStyleId(ctx),
+            height: formatLength(this.height, ctx.document.getSettings()),
+            justify: ctx.text.keyword(JUSTIFY_KEYWORD_OF[this.justify]),
+          })
+        )
+        this.enterStart(ctx, true)
         return true
       }
       case "style": {
         const name = typed.trim()
-        // Empty is Enter, which keeps the `<current>` style.
-        if (name === "") {
-          this.enterStart(ctx)
+        if (ctx.text.resolveKeyword(name, ["?"]) === "?") {
+          listTextStyles(this.currentStyleId(ctx), ctx)
+          this.enterStyle(ctx)
           return true
         }
-        const style = ctx.document
-          .getTextStyles()
-          .find((s) => s.name.toLowerCase() === name.toLowerCase())
-        if (!style) {
-          ctx.report(ctx.text.message("textStyleUndefined", { name }), "error")
-          return false
+        // Empty is Enter, which keeps the `<current>` style.
+        if (name !== "") {
+          const style = ctx.document
+            .getTextStyles()
+            .find((s) => s.name.toLowerCase() === name.toLowerCase())
+          if (!style) {
+            ctx.report(
+              ctx.text.message("textStyleUndefined", { name }),
+              "error"
+            )
+            this.enterStyle(ctx)
+            return true
+          }
+          this.styleId = style.id
         }
-        this.styleId = style.id
-        this.enterStart(ctx)
+        this.enterStart(ctx, true)
         return true
       }
       default:
@@ -294,10 +378,24 @@ export class AttDefTool implements Tool {
     }
   }
 
-  private enterStart(ctx: ToolContext): void {
-    this.state = { phase: "start" }
+  private enterStyle(ctx: ToolContext): void {
+    const current = ctx.document.getTextStyle(this.currentStyleId(ctx))
+    this.styleName = current?.name ?? this.currentStyleId(ctx)
+    this.state = { phase: "style" }
+    this.openText(ctx, "enterStyleNameOr")
+  }
+
+  private enterStart(ctx: ToolContext, keywords: boolean): void {
+    this.state = { phase: "start", keywords }
+    const [plain, withKeywords] = POINT_PROMPT[this.justify]
     ctx.dynamicInput.open({
-      fields: [{ id: "point", prompt: "textStartPoint", kind: "coordinate" }],
+      fields: [
+        {
+          id: "point",
+          prompt: keywords ? withKeywords : plain,
+          kind: "coordinate",
+        },
+      ],
       commit: () => {},
       commitRaw: (commitCtx) => this.commitStart(commitCtx),
     })

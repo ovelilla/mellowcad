@@ -7,7 +7,7 @@ import {
   blockAttribute,
   variableAttributes,
 } from "../../domain/entities"
-import { ToolContext } from "./Tool"
+import { ToolContext, ToolQuestion } from "./Tool"
 
 /**
  * INSERT's attribute prompts as ATTDIA 0 asks them: `Enter attribute values`,
@@ -40,6 +40,20 @@ export class AttributeValuePrompts {
     return this.definitions.map((definition, index) =>
       blockAttribute(definition, this.values[index])
     )
+  }
+
+  /**
+   * The attribute being asked, in the drawing's own words: `Prompt one
+   * <def1>:`, its default left out when it has none.
+   */
+  question(): ToolQuestion {
+    const definition = this.definitions[this.queue[0] ?? 0]
+    const value = this.values[this.queue[0] ?? 0]
+    return {
+      id: "attributeValuePrompt",
+      values: { prompt: definition ? attributePrompt(definition) : "" },
+      ...(value ? { enter: { name: value } } : {}),
+    }
   }
 
   /** Asks the first question, or finishes at once when there is none to ask. */

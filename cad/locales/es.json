@@ -481,9 +481,11 @@
         "Solid": "Sólido"
       },
       "INSERT": {
+        "?": "?",
         "Scale": "Escala",
         "Rotate": "Girar"
       },
+      "BLOCK": { "?": "?" },
       "ATTDEF": {
         "Invisible": "Invisible",
         "Constant": "Constante",
@@ -504,7 +506,8 @@
         "MR": "MD",
         "BL": "II",
         "BC": "IC",
-        "BR": "ID"
+        "BR": "ID",
+        "?": "?"
       },
       "ATTDISP": {
         "Normal": "Normal",
@@ -786,15 +789,18 @@
       "patternName": "Indique nombre de patrón",
       "patternScale": "Precise escala del patrón",
       "patternAngle": "Precise ángulo del patrón",
-      "blockName": "Indique nombre de bloque o [?]",
-      "insertionBasePoint": "Precise punto base de inserción",
-      "insertionPoint": "Precise punto de inserción",
-      "insertScale": "Precise factor de escala",
+      "blockName": "Indique nombre de bloque o",
+      "insertionBasePoint": "Especifique un punto base de inserción",
+      "insertionPoint": "Precise punto de inserción o",
+      "insertScale": "Precise factor de escala para ejes XYZ",
       "insertRotation": "Precise ángulo de rotación",
       "attributeTag": "Indique nombre de identificador de atributo",
       "attributePrompt": "Indique solicitud de atributo",
       "attributeDefault": "Indique valor de atributo por defecto",
       "attributeValue": "Indique valor de atributo",
+      "attributeValuePrompt": "{prompt}",
+      "attdefModes": "Indique una opción para modificar",
+      "attdefDone": "terminado",
       "definitionTag": "Identificador",
       "definitionPrompt": "Solicitud",
       "definitionDefault": "Por defecto",
@@ -1139,6 +1145,10 @@
       "solidLine": "Línea continua",
       "noMatchingLinetypes": "  Tipo de línea no encontrado.",
       "invalidColorNumber": "Número de color no válido.",
+      "tagCannotBeNull": "El identificador no puede ser nulo",
+      "attdefTextStyle": "Estilo de texto actual:  \"{style}\"  Altura del texto:  {height}  Justificar:  {justify}",
+      "blockConversion": "Parámetros actuales: conversión de objetos=Convertir",
+      "invalidBlockName": "Nombre de bloque no válido.",
       "rectangleModes": "Modos de rectángulo actuales:{hasElevation, select, yes {  Elevación={elevation}} other {}}{hasThickness, select, yes {  Alt-objeto={thickness}} other {}}",
       "distanceReport": "Distancia = {distance}, Ángulo en el plano XY = {angleInPlane}, Ángulo a partir del plano XY = {angleFromPlane}\nIncremento X = {deltaX}, Incremento Y = {deltaY},   Incremento Z = {deltaZ}",
       "idReport": " X = {x}     Y = {y}     Z = {z}",

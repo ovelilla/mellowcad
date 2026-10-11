@@ -919,15 +919,22 @@ export const en: EngineCatalog = {
       "patternName": "Enter a pattern name",
       "patternScale": "Specify a scale for the pattern",
       "patternAngle": "Specify an angle for the pattern",
-      "blockName": "Enter block name or [?]",
+      "blockName": "Enter block name or",
       "insertionBasePoint": "Specify insertion base point",
-      "insertionPoint": "Specify insertion point",
-      "insertScale": "Specify scale factor",
+      "insertionPoint": "Specify insertion point or",
+      "insertScale": "Specify scale factor for XYZ axes",
       "insertRotation": "Specify rotation angle",
       "attributeTag": "Enter attribute tag name",
       "attributePrompt": "Enter attribute prompt",
       "attributeDefault": "Enter default attribute value",
       "attributeValue": "Enter attribute value",
+      "attributeValuePrompt": [
+        [
+          "prompt"
+        ]
+      ],
+      "attdefModes": "Enter an option to change",
+      "attdefDone": "done",
       "definitionTag": "Tag",
       "definitionPrompt": "Prompt",
       "definitionDefault": "Default",
@@ -1721,6 +1728,23 @@ export const en: EngineCatalog = {
       "solidLine": "Solid line",
       "noMatchingLinetypes": "  No matching linetype names found.",
       "invalidColorNumber": "Invalid color number.",
+      "tagCannotBeNull": "Tag cannot be null",
+      "attdefTextStyle": [
+        "Current text style:  \"",
+        [
+          "style"
+        ],
+        "\"  Text height:  ",
+        [
+          "height"
+        ],
+        "  Justify:  ",
+        [
+          "justify"
+        ]
+      ],
+      "blockConversion": "Current settings: Object conversion=Convert",
+      "invalidBlockName": "Invalid block name.",
       "rectangleModes": [
         "Current rectangle modes:",
         [

@@ -510,33 +510,40 @@ export class TextTool implements Tool {
 
   /** `?`: every style as AutoCAD lists it, then the current one; asked again. */
   private listStyles(ctx: ToolContext): void {
-    const settings = ctx.document.getSettings()
-    const entries = ctx.document.getTextStyles().map((style) =>
-      ctx.text.message("textStyleEntry", {
-        name: `"${style.name}"`.padEnd(12),
-        height: formatLength(style.height, settings),
-        width: formatLength(1, settings),
-      })
-    )
-    const current = ctx.document.getTextStyle(this.currentStyleId(ctx))
-    ctx.report(
-      [
-        ctx.text.message("textStylesHeader"),
-        ...entries,
-        ctx.text.message("currentTextStyleName", {
-          name: current?.name ?? this.currentStyleId(ctx),
-        }),
-      ].join("\n")
-    )
+    listTextStyles(this.currentStyleId(ctx), ctx)
     this.openStyleInput(ctx)
   }
 }
 
 /**
- * The point each justification asks for, as AutoCAD names it: without and with
- * the `or [Justify/Style]` the first prompt offers.
+ * Style's `?`, which TEXT and ATTDEF share: every style as AutoCAD lists it,
+ * then `current`.
  */
-const POINT_PROMPT: Readonly<
+export function listTextStyles(current: TextStyleId, ctx: ToolContext): void {
+  const settings = ctx.document.getSettings()
+  const entries = ctx.document.getTextStyles().map((style) =>
+    ctx.text.message("textStyleEntry", {
+      name: `"${style.name}"`.padEnd(12),
+      height: formatLength(style.height, settings),
+      width: formatLength(1, settings),
+    })
+  )
+  ctx.report(
+    [
+      ctx.text.message("textStylesHeader"),
+      ...entries,
+      ctx.text.message("currentTextStyleName", {
+        name: ctx.document.getTextStyle(current)?.name ?? current,
+      }),
+    ].join("\n")
+  )
+}
+
+/**
+ * The point each justification asks for, as AutoCAD names it: without and with
+ * the `or [Justify/Style]` the first prompt offers. ATTDEF asks TEXT's.
+ */
+export const POINT_PROMPT: Readonly<
   Record<TextJustify, readonly [PromptId, PromptId]>
 > = {
   left: ["specifyStartPointOfText", "specifyStartPointOfTextOr"],

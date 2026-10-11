@@ -241,7 +241,7 @@ export function askedPrompt(tool: Tool): PromptId | null {
 
 /** What Enter keeps, as the prompt shows it between its angle brackets. */
 function enterValue(
-  enter: ToolQuestion["enter"],
+  enter: NonNullable<ToolQuestion["enter"]>,
   text: EngineText,
   settings: DocumentSettings
 ): string {
@@ -292,7 +292,7 @@ export function commandPrompt(
           typeof asked === "object" && asked !== null ? asked.values : undefined
         )
   const value =
-    typeof asked === "object" && asked !== null
+    typeof asked === "object" && asked !== null && asked.enter !== undefined
       ? enterValue(asked.enter, text, settings)
       : fallback === null
         ? null
