@@ -242,7 +242,8 @@ set, its cursor — and makes the transparent tool the active one **without `set
 running command's step, as AutoCAD undoes it). While one is suspended `commandPrompt(…,
 transparent)` heads every question `>>` (and the prompt line `'ZOOM`), and a tool's own prompt
 written with `ctx.report(text, "prompt")` (PAN's) gets it too; plain reports do not (`No previous
-view saved.`). Ending it — `endCommand`, Escape, an option's `"end"`, anything that returns to
+view saved.`). A tool asks `ctx.runsTransparently()` only for what AutoCAD does differently then:
+ZOOM's `Regenerating model.` is left out, as a transparent zoom cannot regenerate. Ending it — `endCommand`, Escape, an option's `"end"`, anything that returns to
 neutral — reaches `setActiveTool("select")`, which **resumes** instead (`Resuming LINE command.`)
 and replays the pointer through the resumed tool. Starting another tool ends both; `undo()`,
 `newDrawing()` and the Command menu's Cancel (^C^C, two cancels) end both through

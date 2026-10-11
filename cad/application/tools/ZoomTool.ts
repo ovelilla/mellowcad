@@ -63,7 +63,7 @@ export class ZoomTool implements Tool {
   private readonly selector = new ObjectSelector({
     done: (ctx) => {
       this.frame(selectedEntities(ctx), ctx)
-      ctx.report(ctx.text.message("regeneratingModel"))
+      regenerated(ctx)
       ctx.endCommand()
     },
   })
@@ -214,7 +214,7 @@ export class ZoomTool implements Tool {
       case "All":
       case "Extents":
         this.frame(ctx.document.getEntities(), ctx)
-        ctx.report(ctx.text.message("regeneratingModel"))
+        regenerated(ctx)
         return "end"
       case "Previous":
         if (!ctx.viewport.restorePrevious()) {
@@ -238,7 +238,7 @@ export class ZoomTool implements Tool {
         // A pre-selected set is what the user already pointed at, so honour it
         // instead of asking again.
         if (this.frame(selectedEntities(ctx), ctx)) {
-          ctx.report(ctx.text.message("regeneratingModel"))
+          regenerated(ctx)
           return "end"
         }
         this.state = { phase: "object" }
@@ -384,6 +384,19 @@ export class ZoomTool implements Tool {
     ctx.dynamicInput.setPosition(this.lastScreen ?? { x: 0, y: 0 })
     ctx.requestRender()
   }
+}
+
+/**
+ * `Regenerating model.` after Extents, All and Object. WHY not transparently:
+ * AutoCAD 2023's console regenerates only when the zoom leaves what it last
+ * generated, and a transparent ZOOM, which cannot regenerate, then refuses
+ * (`** Requires a regen, cannot be transparent.`), zooming without a word
+ * when it needs none. Nothing is generated ahead here, so a transparent zoom
+ * never needs a regeneration, and says nothing.
+ */
+function regenerated(ctx: ToolContext): void {
+  if (ctx.runsTransparently()) return
+  ctx.report(ctx.text.message("regeneratingModel"))
 }
 
 function selectedEntities(ctx: ToolContext): Entity[] {

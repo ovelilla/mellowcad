@@ -106,12 +106,11 @@ describe("a transparent command", () => {
     expect(cad.state().commandLine.prompt).toBe("'ZOOM >>Select objects:")
     answerLine(cad, "ALL")
     cad.enter()
-    expect(cad.commandLog().slice(-6)).toEqual([
+    expect(cad.commandLog().slice(-5)).toEqual([
       `${ZOOM_PROMPT} O`,
       ">>Select objects: ALL",
       "2 found",
       ">>Select objects:",
-      "Regenerating model.",
       "Resuming MOVE command.",
     ])
     expect(cad.activeToolId()).toBe("move")
@@ -123,6 +122,45 @@ describe("a transparent command", () => {
     expect(cad.entities().find((entity) => entity.id === "B")).toMatchObject({
       start: { x: 0, y: 50 },
     })
+  })
+
+  // AutoCAD's transparent ZOOM cannot regenerate: it zooms without a word
+  // when it needs no regeneration, which it never does here.
+  it("zooms to the extents, all or an object without regenerating", () => {
+    const cad = createHarness({
+      entities: [lineOf(p(0, 0), p(1000, 500), { id: "A" })],
+    })
+    cad.command("LINE").click(p(0, 0))
+    const before = cad.state().scale
+    answerLine(cad, "'ZOOM")
+    answerLine(cad, "E")
+    expect(cad.commandLog().slice(-2)).toEqual([
+      `${ZOOM_PROMPT} E`,
+      "Resuming LINE command.",
+    ])
+    expect(cad.state().scale).not.toBe(before)
+    answerLine(cad, "'ZOOM")
+    answerLine(cad, "A")
+    expect(cad.commandLog().slice(-2)).toEqual([
+      `${ZOOM_PROMPT} A`,
+      "Resuming LINE command.",
+    ])
+    cad.escape()
+    // Not transparently, it still regenerates.
+    answerLine(cad, "ZOOM")
+    answerLine(cad, "E")
+    expect(cad.commandLog().at(-1)).toBe("Regenerating model.")
+  })
+
+  it("zooms without regenerating in Spanish too", () => {
+    const cad = createHarness({
+      locale: es,
+      entities: [lineOf(p(0, 0), p(1000, 500))],
+    })
+    cad.command("LINEA").click(p(0, 0))
+    answerLine(cad, "'ZOOM")
+    answerLine(cad, "E")
+    expect(cad.commandLog().at(-1)).toBe("Reanudando el comando LINEA.")
   })
 
   it("refuses a command that cannot run transparently, saying why", () => {

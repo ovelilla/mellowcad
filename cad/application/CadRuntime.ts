@@ -480,6 +480,7 @@ export class CadRuntime extends Observable {
             ? this.text.transparentPrompt(text)
             : text
         ),
+      runsTransparently: () => this.suspended !== null,
       answer: (text) => this.answerFound(text),
       previousSelection: () => this.previousSet,
       rememberSelection: (ids) => {

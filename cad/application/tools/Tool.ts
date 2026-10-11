@@ -230,6 +230,9 @@ export interface ToolContext {
    */
   report(text: string, kind?: "info" | "error" | "prompt"): void
 
+  /** Whether the command runs inside another (`'ZOOM` mid-command). */
+  runsTransparently(): boolean
+
   /**
    * Says what an answer found where AutoCAD says it: on the line of the
    * prompt a pick answered (`Select objects: 1 found`, `Specify opposite
