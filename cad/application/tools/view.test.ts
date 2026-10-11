@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest"
 import { createHarness, type CadHarness } from "../../../test/harness"
 import { circleOf, lineOf, p } from "../../../test/builders"
+import { es as spanish } from "../../locales/es"
 
 /**
  * The view commands. They touch no geometry at all — their whole contract is
@@ -231,6 +232,22 @@ describe("PAN", () => {
     cad.runtime.zoomPrevious()
 
     expect(cad.runtime.viewport.translation).toEqual(before)
+  })
+
+  // AutoCAD 2023's console, and Autodesk's Spanish table.
+  it("says how to leave, as AutoCAD's does", () => {
+    const cad = createHarness()
+    cad.command("PAN")
+    expect(cad.commandLog()).toEqual([
+      "PAN",
+      "Press ESC or ENTER to exit, or right-click to display shortcut menu.",
+    ])
+
+    const es = createHarness({ locale: spanish })
+    es.command("ENCUADRE")
+    expect(es.commandLog().at(-1)).toBe(
+      "Pulse Esc o Intro para salir, o haga clic con el botón derecho para activar el menú contextual."
+    )
   })
 
   it("ends with Escape, like any other command", () => {

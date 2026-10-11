@@ -1179,6 +1179,7 @@
       "linesChamfered": "{count, plural, one {# línea resulta unida(s) con chaflán} other {# líneas resultan unida(s) con chaflán}}",
       "linesFilleted": "{count, plural, one {# línea resulta unida(s) con empalme} other {# líneas resultan unida(s) con empalme}}",
       "nothingJoined": "0 objetos unidos, {count, plural, one {# objeto descartado} other {# objetos descartados}} de la operación",
+      "panExit": "Pulse Esc o Intro para salir, o haga clic con el botón derecho para activar el menú contextual.",
       "currentViewDirection": "Dirección de vista actual:  VIEWDIR={x},{y},{z}",
       "invalidInputTryAgain": "Entrada no válida. Vuelva a intentarlo.",
       "regeneratingModel": "Regenerando modelo.",

@@ -2309,6 +2309,7 @@ export const es: EngineLocale = {
         ],
         " de la operación"
       ],
+      "panExit": "Pulse Esc o Intro para salir, o haga clic con el botón derecho para activar el menú contextual.",
       "currentViewDirection": [
         "Dirección de vista actual:  VIEWDIR=",
         [

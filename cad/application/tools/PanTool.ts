@@ -12,9 +12,11 @@ export class PanTool implements Tool {
 
   private lastScreen: Vec2 | null = null
 
+  /** Real-time PAN asks nothing: it says how to leave, as AutoCAD's does. */
   onActivate(ctx: ToolContext): void {
     this.lastScreen = null
     ctx.setCursor("grab")
+    ctx.report(ctx.text.message("panExit"))
   }
 
   onDeactivate(ctx: ToolContext): void {

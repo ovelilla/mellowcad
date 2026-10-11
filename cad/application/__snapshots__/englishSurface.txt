@@ -3400,6 +3400,7 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
 > PAN
   prompt: PAN:
   command| P PAN
+  info| Press ESC or ENTER to exit, or right-click to display shortcut menu.
 > escape
   prompt: Command:
 

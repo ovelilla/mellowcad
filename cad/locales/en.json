@@ -1137,6 +1137,7 @@
       "currentViewDirection": "Current view direction:  VIEWDIR={x},{y},{z}",
       "invalidInputTryAgain": "Invalid input. Try again.",
       "regeneratingModel": "Regenerating model.",
+      "panExit": "Press ESC or ENTER to exit, or right-click to display shortcut menu.",
       "currentOsnapModes": "Current osnap modes: {modes}",
       "currentLineweight": "Current lineweight: {value}",
       "pointingEdgeOn": "Pointing in edge-on UCS is prohibited.",
