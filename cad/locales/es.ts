@@ -1110,6 +1110,8 @@ export const es: EngineLocale = {
       },
       "AREA": {
         "Object": "Objeto",
+        "Add": "Añadir",
+        "Subtract": "Sustraer",
         "Undo": "desHacer",
         "Total": "Total"
       },
@@ -1428,6 +1430,10 @@ export const es: EngineLocale = {
       "specifySecondTangentOfCircle": "Precise punto en objeto para la segunda tangente del círculo",
       "specifySecondPoint": "Precise segundo punto",
       "specifyFirstCornerPointOr": "Precise primer punto de esquina o",
+      "addModeNextPointOr": " (modo AÑADIR)Precise punto siguiente o",
+      "subtractModeNextPointOr": " (modo SUSTRAER)Precise punto siguiente o",
+      "addModeSelectObjects": "(modo AÑADIR) Designe objetos",
+      "subtractModeSelectObjects": "(modo SUSTRAER) Designe objetos",
       "specifyOtherCornerPoint": "Precise esquina opuesta",
       "specifyStartPointOfArcOr": "Precise punto inicial del arco o",
       "specifySecondPointOfArcOr": "Precise segundo punto de arco o",
@@ -2171,6 +2177,12 @@ export const es: EngineLocale = {
           }
         ]
       ],
+      "totalArea": [
+        "Área total = ",
+        [
+          "total"
+        ]
+      ],
       "areaReport": [
         "Área = ",
         [
@@ -2771,6 +2783,10 @@ export const es: EngineLocale = {
       },
       "DIST": {
         "Multiple": "puntos Múltiples"
+      },
+      "AREA": {
+        "Add": "Añadir área",
+        "Subtract": "Sustraer área"
       }
     },
     "listing": {

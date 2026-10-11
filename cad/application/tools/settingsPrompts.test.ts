@@ -317,7 +317,7 @@ describe("'AREA and 'UCSICON read and set their system variables", () => {
     expect(cad.runtime.document.getSettings().ucsIcon.visible).toBe(true)
     answer(cad, "AREA")
     expect(cad.state().commandLine.prompt).toBe(
-      "AREA Specify first corner point or [Object] <Object>:"
+      "AREA Specify first corner point or [Object/Add area/Subtract area] <Object>:"
     )
   })
 

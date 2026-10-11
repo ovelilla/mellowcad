@@ -3282,11 +3282,11 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0°~, Line space facto
   prompt| Specify next point or [Close/Length/Undo/Total] <Total>:
   info| Distance = 400.00
 > AREA
-  prompt: AREA Specify first corner point or [Object] <Object>:
+  prompt: AREA Specify first corner point or [Object/Add area/Subtract area] <Object>:
   asks: "First point"
   tip: Specify first corner point or
   dyn: "X,Y"=""||*
-  options: [O] Object
+  options: [O] Object, [A] Add area, [S] Subtract area
   command| AA AREA
 > first
   prompt: AREA Specify next point or [Undo]:
@@ -3294,7 +3294,7 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0°~, Line space facto
   tip: Specify next point or
   options: [U] Undo
   canvas: "Area  0.00 mm²" "Perim 0.00 mm"
-  prompt| Specify first corner point or [Object] <Object>:
+  prompt| Specify first corner point or [Object/Add area/Subtract area] <Object>:
 > second
   canvas: "Area  0.00 mm²" "Perim 200.00 mm"
   prompt| Specify next point or [Undo]:
@@ -3321,11 +3321,11 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0°~, Line space facto
   prompt| Specify next point or [Undo/Total] <Total>:
   info| Area = 5000.00, Perimeter = 341.42
 > AREA Object
-  prompt: AREA Specify first corner point or [Object] <Object>:
+  prompt: AREA Specify first corner point or [Object/Add area/Subtract area] <Object>:
   asks: "First point"
   tip: Specify first corner point or
   dyn: "X,Y"=""||*
-  options: [O] Object
+  options: [O] Object, [A] Add area, [S] Subtract area
   command| AREA
 > enter
   prompt: AREA Select objects:
@@ -3333,7 +3333,7 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0°~, Line space facto
   tip: Select objects:
   dyn: 
   options: -
-  prompt| Specify first corner point or [Object] <Object>:
+  prompt| Specify first corner point or [Object/Add area/Subtract area] <Object>:
 > FOO
   prompt| Select objects: FOO
   error| *Invalid selection*

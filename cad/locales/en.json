@@ -638,7 +638,13 @@
         "Undo": "Undo",
         "Total": "Total"
       },
-      "AREA": { "Object": "Object", "Undo": "Undo", "Total": "Total" },
+      "AREA": {
+        "Object": "Object",
+        "Add": "Add",
+        "Subtract": "Subtract",
+        "Undo": "Undo",
+        "Total": "Total"
+      },
       "ZOOM": {
         "All": "All",
         "Extents": "Extents",
@@ -917,6 +923,10 @@
       "specifySecondTangentOfCircle": "Specify point on object for second tangent of circle",
       "specifySecondPoint": "Specify second point",
       "specifyFirstCornerPointOr": "Specify first corner point or",
+      "addModeNextPointOr": " (ADD mode)Specify next point or",
+      "subtractModeNextPointOr": " (SUBTRACT mode)Specify next point or",
+      "addModeSelectObjects": "(ADD mode) Select objects",
+      "subtractModeSelectObjects": "(SUBTRACT mode) Select objects",
       "specifyOtherCornerPoint": "Specify other corner point",
       "specifyStartPointOfArcOr": "Specify start point of arc or",
       "specifySecondPointOfArcOr": "Specify second point of arc or",
@@ -1137,6 +1147,7 @@
       "invalidBlockName": "Invalid block name.",
       "rectangleModes": "Current rectangle modes:{hasElevation, select, yes {  Elevation={elevation}} other {}}{hasThickness, select, yes {  Thickness={thickness}} other {}}",
       "textEditSettings": "Current settings: Edit mode = {mode, select, single {Single} other {Multiple}}",
+      "totalArea": "Total area = {total}",
       "areaReport": "Area = {area}, {measured, select, circumference {Circumference} length {Length} other {Perimeter}} = {around}",
       "objectHasNoArea": "Selected object does not have an area",
       "allSegmentsUndone": "All segments already undone.",
@@ -1254,7 +1265,8 @@
         "Circumscribed": "Circumscribed about circle"
       },
       "CIRCLED": { "Ttr": "Ttr (tan tan radius)" },
-      "DIST": { "Multiple": "Multiple points" }
+      "DIST": { "Multiple": "Multiple points" },
+      "AREA": { "Add": "Add area", "Subtract": "Subtract area" }
     },
     "listing": {
       "hatchPattern": "{name}  {description}",

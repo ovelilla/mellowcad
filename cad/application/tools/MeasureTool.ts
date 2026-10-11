@@ -48,9 +48,20 @@ import type { PromptId } from "../../locales/types"
  * - **Area**: AutoCAD's AREA — a run of points, the enclosed area and perimeter
  *   of the (implicitly closed) polygon updating live with the cursor as a
  *   tentative vertex, or one object's (Object, the prompt's default); the
- *   command reports it and ends, as AutoCAD's does.
+ *   command reports it and ends, as AutoCAD's does — or, under Add area or
+ *   Subtract area, adds it to or takes it from a total and asks again.
  */
 export type MeasureMode = "distance" | "area"
+
+/** AREA's running total: none, or what Add area or Subtract area keeps. */
+type AreaMode = "plain" | "add" | "subtract"
+
+/** What `Area = …, Perimeter = …` writes of one measurement. */
+type AreaReport = {
+  readonly area: string
+  readonly measured: string
+  readonly around: string
+}
 
 type MeasureState =
   | { readonly phase: "first" }
@@ -86,6 +97,11 @@ export class MeasureTool implements Tool {
   private lastScreen: Vec2 | null = null
   /** The AREA system variable: the last area measured, kept for the session. */
   private area = 0
+  private areaMode: AreaMode = "plain"
+  /** Add area's and Subtract area's total so far. */
+  private total = 0
+  /** The last measurement in the mode and the total then, said again at its first corner. */
+  private shown: (AreaReport & { readonly total: string }) | null = null
 
   /** The last area AREA measured, 0 until it has. */
   lastArea(): number {
@@ -105,6 +121,9 @@ export class MeasureTool implements Tool {
   }
 
   private reset(origin: Vec2): void {
+    this.areaMode = "plain"
+    this.total = 0
+    this.shown = null
     this.state =
       this.mode === "area"
         ? { phase: "area", points: [], cursor: origin }
@@ -135,7 +154,13 @@ export class MeasureTool implements Tool {
     if (input.button !== 0) return
     if (this.state.phase === "areaObject") {
       const picked = this.pickArea(input.world, ctx)
-      if (picked && this.reportObject(picked, ctx)) ctx.endCommand()
+      if (
+        picked &&
+        this.reportObject(picked, ctx) &&
+        this.areaMode === "plain"
+      ) {
+        ctx.endCommand()
+      }
     } else {
       this.place(input.point, ctx)
     }
@@ -272,7 +297,10 @@ export class MeasureTool implements Tool {
    * its second measures to the first (LASTPOINT again), as AutoCAD's do, Multiple points'
    * next point takes `<Total>` and its Length refuses it; AREA's first corner
    * takes `<Object>`, from the third point it takes `<Total>`, and before that
-   * AutoCAD 2023's console refuses it as a missing point.
+   * AutoCAD 2023's console refuses it as a missing point. In Add area or
+   * Subtract area the first corner's Enter writes the total and ends, and
+   * `Select objects:`'s goes back to the first corner, saying the last
+   * measurement again.
    */
   private enter(ctx: ToolContext): boolean {
     switch (this.state.phase) {
@@ -296,15 +324,22 @@ export class MeasureTool implements Tool {
         return true
       case "area": {
         const { points } = this.state
-        if (points.length === 0) this.askObject(ctx)
-        else if (points.length >= 3) {
-          this.reportPolygon(points, ctx)
+        if (points.length >= 3) {
+          if (this.totalPolygon(points, ctx) === "end") ctx.endCommand()
+        } else if (points.length > 0) {
+          ctx.report(ctx.text.message("pointOrKeywordRequired"), "error")
+        } else if (this.areaMode === "plain") this.askObject(ctx)
+        else {
+          this.reportTotal(ctx)
           ctx.endCommand()
-        } else ctx.report(ctx.text.message("pointOrKeywordRequired"), "error")
+        }
         return true
       }
       case "areaObject":
-        return false
+        if (this.areaMode === "plain") return false
+        this.reportShown(ctx)
+        this.askCorner(ctx)
+        return true
     }
   }
 
@@ -319,11 +354,18 @@ export class MeasureTool implements Tool {
       case "length":
         return "specifyLengthOfLine"
       case "area":
-        return this.state.points.length === 0
-          ? "specifyFirstCornerPointOr"
-          : "specifyNextPointOr"
+        if (this.state.points.length === 0) return "specifyFirstCornerPointOr"
+        return this.areaMode === "add"
+          ? "addModeNextPointOr"
+          : this.areaMode === "subtract"
+            ? "subtractModeNextPointOr"
+            : "specifyNextPointOr"
       case "areaObject":
-        return "selectObjects"
+        return this.areaMode === "add"
+          ? "addModeSelectObjects"
+          : this.areaMode === "subtract"
+            ? "subtractModeSelectObjects"
+            : "selectObjects"
     }
   }
 
@@ -333,6 +375,17 @@ export class MeasureTool implements Tool {
    */
   takes(): QuestionInput | null {
     if (this.state.phase === "areaObject") return "objectOrLast"
+    if (
+      this.state.phase === "area" &&
+      this.state.points.length === 0 &&
+      this.areaMode !== "plain" &&
+      this.shown
+    ) {
+      return {
+        refusal: ["pointOrKeywordRequired", "areaReport", "totalArea"],
+        values: this.shown,
+      }
+    }
     if (this.state.phase === "multiple" && this.state.points.length > 1) {
       return {
         refusal: ["pointOrKeywordRequired", "distanceTotal"],
@@ -355,7 +408,8 @@ export class MeasureTool implements Tool {
     if (this.state.phase === "multiple") return "Total"
     if (this.state.phase !== "area") return null
     const { length } = this.state.points
-    return length === 0 ? "Object" : length >= 3 ? "Total" : null
+    if (length === 0) return this.areaMode === "plain" ? "Object" : null
+    return length >= 3 ? "Total" : null
   }
 
   onEnter(ctx: ToolContext): boolean {
@@ -370,8 +424,10 @@ export class MeasureTool implements Tool {
   }
 
   /**
-   * WHY no Add area / Subtract area, nor Arc and Length at AREA's next point,
-   * nor Arc at DIST's: not built (docs/autocad-coverage.md).
+   * WHY no Arc and Length at AREA's next point, nor Arc at DIST's: not built
+   * (docs/autocad-coverage.md). In Add area the first corner lists Subtract
+   * area and takes Add area unlisted, as AutoCAD 2023's console does, and
+   * the other way round.
    */
   commandOptions(): readonly CommandOption[] {
     if (this.state.phase === "areaObject") {
@@ -384,7 +440,24 @@ export class MeasureTool implements Tool {
     }
     if (this.state.phase !== "area") return []
     const { length } = this.state.points
-    if (length === 0) return [{ id: "Object" }]
+    if (length === 0) {
+      switch (this.areaMode) {
+        case "plain":
+          return [{ id: "Object" }, { id: "Add" }, { id: "Subtract" }]
+        case "add":
+          return [
+            { id: "Object" },
+            { id: "Subtract" },
+            { id: "Add", hidden: true },
+          ]
+        case "subtract":
+          return [
+            { id: "Object" },
+            { id: "Add" },
+            { id: "Subtract", hidden: true },
+          ]
+      }
+    }
     return length >= 3 ? [{ id: "Undo" }, { id: "Total" }] : [{ id: "Undo" }]
   }
 
@@ -397,16 +470,28 @@ export class MeasureTool implements Tool {
         if (this.state.phase !== "area") return "unhandled"
         this.askObject(ctx)
         return "continue"
+      case "Add":
+      case "Subtract": {
+        if (this.state.phase !== "area" || this.state.points.length > 0) {
+          return "unhandled"
+        }
+        const mode = id === "Add" ? "add" : "subtract"
+        if (mode !== this.areaMode) this.shown = null
+        this.areaMode = mode
+        return "continue"
+      }
       case "Undo":
         return this.undoPoint(ctx) ? "continue" : "unhandled"
       case "Total":
         if (this.state.phase !== "area") return "unhandled"
-        this.reportPolygon(this.state.points, ctx)
-        return "end"
+        return this.totalPolygon(this.state.points, ctx)
       case "Last": {
         if (this.state.phase !== "areaObject") return "unhandled"
         const last = lastObject(ctx)
-        return last && readsInPlan(last) && this.reportObject(last, ctx)
+        return last &&
+          readsInPlan(last) &&
+          this.reportObject(last, ctx) &&
+          this.areaMode === "plain"
           ? "end"
           : "continue"
       }
@@ -481,6 +566,17 @@ export class MeasureTool implements Tool {
     return hit && readsInPlan(hit) ? hit : null
   }
 
+  /** Back to the first corner, in the mode Add area or Subtract area keeps. */
+  private askCorner(ctx: ToolContext): void {
+    this.state = { phase: "area", points: [], cursor: this.lastCursor() }
+    this.askPoint(ctx)
+    ctx.requestRender()
+  }
+
+  private lastCursor(): Vec2 {
+    return this.state.phase === "area" ? this.state.cursor : { x: 0, y: 0 }
+  }
+
   /** Whether the object has an area, which was then reported. */
   private reportObject(entity: Entity, ctx: ToolContext): boolean {
     const measured = objectArea(entity)
@@ -488,28 +584,62 @@ export class MeasureTool implements Tool {
       ctx.report(ctx.text.message("objectHasNoArea"))
       return false
     }
-    this.area = measured.area
-    const settings = ctx.document.getSettings()
-    ctx.report(
-      ctx.text.message("areaReport", {
-        area: formatLength(measured.area, settings),
-        measured: measured.measured,
-        around: formatLength(measured.around, settings),
-      })
-    )
+    this.measure(measured.area, measured.measured, measured.around, ctx)
     return true
   }
 
-  private reportPolygon(points: readonly Vec2[], ctx: ToolContext): void {
-    this.area = polygonArea(points)
-    const settings = ctx.document.getSettings()
-    ctx.report(
-      ctx.text.message("areaReport", {
-        area: formatLength(this.area, settings),
-        measured: "perimeter",
-        around: formatLength(polygonPerimeter(points), settings),
-      })
+  /**
+   * The polygon's area and perimeter, then the command ends, or in Add area
+   * or Subtract area the first corner is asked again.
+   */
+  private totalPolygon(
+    points: readonly Vec2[],
+    ctx: ToolContext
+  ): CommandOptionOutcome {
+    this.measure(
+      polygonArea(points),
+      "perimeter",
+      polygonPerimeter(points),
+      ctx
     )
+    if (this.areaMode === "plain") return "end"
+    this.askCorner(ctx)
+    return "continue"
+  }
+
+  /**
+   * `Area = …, Perimeter = …`, and in Add area or Subtract area the total
+   * it is added to or taken from: `Total area = …`.
+   */
+  private measure(
+    area: number,
+    measured: string,
+    around: number,
+    ctx: ToolContext
+  ): void {
+    this.area = area
+    const settings = ctx.document.getSettings()
+    const report: AreaReport = {
+      area: formatLength(area, settings),
+      measured,
+      around: formatLength(around, settings),
+    }
+    ctx.report(ctx.text.message("areaReport", report))
+    if (this.areaMode === "plain") return
+    this.total += this.areaMode === "add" ? area : -area
+    this.shown = { ...report, total: formatLength(this.total, settings) }
+    this.reportTotal(ctx)
+  }
+
+  private reportShown(ctx: ToolContext): void {
+    if (!this.shown) return
+    ctx.report(ctx.text.message("areaReport", this.shown))
+    ctx.report(ctx.text.message("totalArea", this.shown))
+  }
+
+  private reportTotal(ctx: ToolContext): void {
+    const total = formatLength(this.total, ctx.document.getSettings())
+    ctx.report(ctx.text.message("totalArea", { total }))
   }
 
   wantsSnap(): boolean {

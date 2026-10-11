@@ -1098,6 +1098,10 @@ export const en: EngineCatalog = {
       "specifySecondTangentOfCircle": "Specify point on object for second tangent of circle",
       "specifySecondPoint": "Specify second point",
       "specifyFirstCornerPointOr": "Specify first corner point or",
+      "addModeNextPointOr": " (ADD mode)Specify next point or",
+      "subtractModeNextPointOr": " (SUBTRACT mode)Specify next point or",
+      "addModeSelectObjects": "(ADD mode) Select objects",
+      "subtractModeSelectObjects": "(SUBTRACT mode) Select objects",
       "specifyOtherCornerPoint": "Specify other corner point",
       "specifyStartPointOfArcOr": "Specify start point of arc or",
       "specifySecondPointOfArcOr": "Specify second point of arc or",
@@ -1842,6 +1846,12 @@ export const en: EngineCatalog = {
           }
         ]
       ],
+      "totalArea": [
+        "Total area = ",
+        [
+          "total"
+        ]
+      ],
       "areaReport": [
         "Area = ",
         [
@@ -2442,6 +2452,10 @@ export const en: EngineCatalog = {
       },
       "DIST": {
         "Multiple": "Multiple points"
+      },
+      "AREA": {
+        "Add": "Add area",
+        "Subtract": "Subtract area"
       }
     },
     "listing": {

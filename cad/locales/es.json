@@ -677,6 +677,8 @@
       },
       "AREA": {
         "Object": "Objeto",
+        "Add": "Añadir",
+        "Subtract": "Sustraer",
         "Undo": "desHacer",
         "Total": "Total"
       },
@@ -958,6 +960,10 @@
       "specifySecondTangentOfCircle": "Precise punto en objeto para la segunda tangente del círculo",
       "specifySecondPoint": "Precise segundo punto",
       "specifyFirstCornerPointOr": "Precise primer punto de esquina o",
+      "addModeNextPointOr": " (modo AÑADIR)Precise punto siguiente o",
+      "subtractModeNextPointOr": " (modo SUSTRAER)Precise punto siguiente o",
+      "addModeSelectObjects": "(modo AÑADIR) Designe objetos",
+      "subtractModeSelectObjects": "(modo SUSTRAER) Designe objetos",
       "specifyOtherCornerPoint": "Precise esquina opuesta",
       "specifyStartPointOfArcOr": "Precise punto inicial del arco o",
       "specifySecondPointOfArcOr": "Precise segundo punto de arco o",
@@ -1178,6 +1184,7 @@
       "invalidBlockName": "Nombre de bloque no válido.",
       "rectangleModes": "Modos de rectángulo actuales:{hasElevation, select, yes {  Elevación={elevation}} other {}}{hasThickness, select, yes {  Alt-objeto={thickness}} other {}}",
       "textEditSettings": "Parámetros actuales: Editar modo = {mode, select, single {Simple} other {Múltiple}}",
+      "totalArea": "Área total = {total}",
       "areaReport": "Área = {area}, {measured, select, circumference {Circunferencia} length {Longitud} other {Perímetro}} = {around}",
       "objectHasNoArea": "El objeto seleccionado no tiene área",
       "allSegmentsUndone": "Ya están deshechos todos los segmentos.",
@@ -1295,7 +1302,8 @@
         "Circumscribed": "Circunscrito alrededor del círculo"
       },
       "CIRCLED": { "Ttr": "Ttr (Tangente tangente radio)" },
-      "DIST": { "Multiple": "puntos Múltiples" }
+      "DIST": { "Multiple": "puntos Múltiples" },
+      "AREA": { "Add": "Añadir área", "Subtract": "Sustraer área" }
     },
     "listing": {
       "hatchPattern": "{name}  {description}",

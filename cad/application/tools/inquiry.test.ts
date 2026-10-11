@@ -351,11 +351,11 @@ describe("AREA", () => {
     expect(cad.activeToolId()).toBe("select")
   })
 
-  it("offers Undo from the second point and Total from the fourth", () => {
+  it("offers Object, Add area and Subtract area, then Undo from the second point and Total from the fourth", () => {
     const cad = createHarness()
 
     cad.command("AREA")
-    expect(cad.optionAbbreviations()).toEqual(["O"])
+    expect(cad.optionAbbreviations()).toEqual(["O", "A", "S"])
     cad.click(p(0, 0)).click(p(100, 0))
     expect(cad.optionAbbreviations()).toEqual(["U"])
 
@@ -391,7 +391,7 @@ describe("AREA", () => {
 
     expect(cad.commandLog()).toEqual([
       "AREA",
-      "Specify first corner point or [Object] <Object>:",
+      "Specify first corner point or [Object/Add area/Subtract area] <Object>:",
       "Select objects:",
       "Selected object does not have an area",
       "Select objects:",
@@ -409,7 +409,7 @@ describe("AREA", () => {
     answer(cad, "O", "FOO", "L")
 
     expect(cad.commandLog().slice(1)).toEqual([
-      "Specify first corner point or [Object] <Object>: O",
+      "Specify first corner point or [Object/Add area/Subtract area] <Object>: O",
       "Select objects: FOO",
       "*Invalid selection*",
       "Expects a point or Last",
@@ -427,9 +427,9 @@ describe("AREA", () => {
 
     expect(cad.commandLog()).toEqual([
       "AREA",
-      "Specify first corner point or [Object] <Object>: FOO",
+      "Specify first corner point or [Object/Add area/Subtract area] <Object>: FOO",
       "Point or option keyword required.",
-      "Specify first corner point or [Object] <Object>: 0,0",
+      "Specify first corner point or [Object/Add area/Subtract area] <Object>: 0,0",
       "Specify next point or [Undo]: U",
       "All segments already undone.",
       "Command has been completely undone.",
@@ -443,6 +443,96 @@ describe("AREA", () => {
     ])
   })
 
+  // AutoCAD 2023's console (acc/ar1–ar3.txt).
+  it("adds and subtracts areas to a running total until Enter", () => {
+    const cad = createHarness({ entities: [circleOf(p(5, 5), 2)] })
+
+    cad.command("AREA")
+    answer(cad, "A", "0,0", "10,0", "10,10", "0,10", "", "S", "O", "L", "")
+    answer(cad, "FOO", "")
+
+    expect(cad.commandLog()).toEqual([
+      "AREA",
+      "Specify first corner point or [Object/Add area/Subtract area] <Object>: A",
+      "Specify first corner point or [Object/Subtract area]: 0,0",
+      " (ADD mode)Specify next point or [Undo]: 10,0",
+      " (ADD mode)Specify next point or [Undo]: 10,10",
+      " (ADD mode)Specify next point or [Undo/Total] <Total>: 0,10",
+      " (ADD mode)Specify next point or [Undo/Total] <Total>:",
+      "Area = 100.00, Perimeter = 40.00",
+      "Total area = 100.00",
+      "Specify first corner point or [Object/Subtract area]: S",
+      "Specify first corner point or [Object/Add area]: O",
+      "(SUBTRACT mode) Select objects: L",
+      "Area = 12.57, Circumference = 12.57",
+      "Total area = 87.43",
+      "(SUBTRACT mode) Select objects:",
+      "Area = 12.57, Circumference = 12.57",
+      "Total area = 87.43",
+      "Specify first corner point or [Object/Add area]: FOO",
+      "Point or option keyword required.",
+      "Area = 12.57, Circumference = 12.57",
+      "Total area = 87.43",
+      "Specify first corner point or [Object/Add area]:",
+      "Total area = 87.43",
+    ])
+    expect(cad.activeToolId()).toBe("select")
+  })
+
+  it("says the mode's last area again only once it has one", () => {
+    const cad = createHarness({ entities: [circleOf(p(50, 50), 1)] })
+
+    cad.command("AREA")
+    answer(cad, "A", "FOO", "O", "FOO", "", "0,0", "10,0", "10,10", "U")
+    answer(cad, "10,10", "T", "A", "O", "L", "", "S", "FOO", "")
+
+    expect(cad.commandLog().slice(1)).toEqual([
+      "Specify first corner point or [Object/Add area/Subtract area] <Object>: A",
+      "Specify first corner point or [Object/Subtract area]: FOO",
+      "Point or option keyword required.",
+      "Specify first corner point or [Object/Subtract area]: O",
+      "(ADD mode) Select objects: FOO",
+      "*Invalid selection*",
+      "Expects a point or Last",
+      "(ADD mode) Select objects:",
+      "Specify first corner point or [Object/Subtract area]: 0,0",
+      " (ADD mode)Specify next point or [Undo]: 10,0",
+      " (ADD mode)Specify next point or [Undo]: 10,10",
+      " (ADD mode)Specify next point or [Undo/Total] <Total>: U",
+      " (ADD mode)Specify next point or [Undo]: 10,10",
+      " (ADD mode)Specify next point or [Undo/Total] <Total>: T",
+      "Area = 50.00, Perimeter = 34.14",
+      "Total area = 50.00",
+      "Specify first corner point or [Object/Subtract area]: A",
+      "Specify first corner point or [Object/Subtract area]: O",
+      "(ADD mode) Select objects: L",
+      "Area = 3.14, Circumference = 6.28",
+      "Total area = 53.14",
+      "(ADD mode) Select objects:",
+      "Area = 3.14, Circumference = 6.28",
+      "Total area = 53.14",
+      "Specify first corner point or [Object/Subtract area]: S",
+      "Specify first corner point or [Object/Add area]: FOO",
+      "Point or option keyword required.",
+      "Specify first corner point or [Object/Add area]:",
+      "Total area = 53.14",
+    ])
+  })
+
+  it("takes a subtracted area below zero", () => {
+    const cad = createHarness()
+
+    cad.command("AREA")
+    answer(cad, "S", "0,0", "5,0", "5,5", "", "")
+
+    expect(cad.commandLog().slice(-4)).toEqual([
+      "Area = 12.50, Perimeter = 17.07",
+      "Total area = -12.50",
+      "Specify first corner point or [Object/Add area]:",
+      "Total area = -12.50",
+    ])
+  })
+
   it("asks in Autodesk's Spanish", () => {
     const cad = createHarness({
       locale: es,
@@ -450,8 +540,37 @@ describe("AREA", () => {
     })
 
     cad.command("AREA")
+    answer(cad, "A", "0,0", "10,0", "10,10", "", "S", "O", "LT", "", "")
+    expect(cad.commandLog().slice(1)).toEqual([
+      "Precise primer punto de esquina o [Objeto/Añadir área/Sustraer área] <Objeto>: A",
+      "Precise primer punto de esquina o [Objeto/Sustraer área]: 0,0",
+      " (modo AÑADIR)Precise punto siguiente o [desHacer]: 10,0",
+      " (modo AÑADIR)Precise punto siguiente o [desHacer]: 10,10",
+      " (modo AÑADIR)Precise punto siguiente o [desHacer/Total] <Total>:",
+      "Área = 50.00, Perímetro = 34.14",
+      "Área total = 50.00",
+      "Precise primer punto de esquina o [Objeto/Sustraer área]: S",
+      "Precise primer punto de esquina o [Objeto/Añadir área]: O",
+      "(modo SUSTRAER) Designe objetos: LT",
+      "Área = 78.54, Circunferencia = 31.42",
+      "Área total = -28.54",
+      "(modo SUSTRAER) Designe objetos:",
+      "Área = 78.54, Circunferencia = 31.42",
+      "Área total = -28.54",
+      "Precise primer punto de esquina o [Objeto/Añadir área]:",
+      "Área total = -28.54",
+    ])
+  })
+
+  it("asks in Autodesk's Spanish, its plain run too", () => {
+    const cad = createHarness({
+      locale: es,
+      entities: [circleOf(p(0, 0), 5)],
+    })
+
+    cad.command("AREA")
     expect(cad.state().commandLine.prompt).toBe(
-      "AREA Precise primer punto de esquina o [Objeto] <Objeto>:"
+      "AREA Precise primer punto de esquina o [Objeto/Añadir área/Sustraer área] <Objeto>:"
     )
     answer(cad, "0,0", "H", "10,0", "10,10")
     expect(cad.state().commandLine.prompt).toBe(
@@ -467,7 +586,7 @@ describe("AREA", () => {
     cad.command("AREA")
     answer(cad, "O", "LT")
     expect(cad.commandLog().slice(-3)).toEqual([
-      "Precise primer punto de esquina o [Objeto] <Objeto>: O",
+      "Precise primer punto de esquina o [Objeto/Añadir área/Sustraer área] <Objeto>: O",
       "Designe objetos: LT",
       "Área = 78.54, Circunferencia = 31.42",
     ])
