@@ -300,6 +300,13 @@ export class CadRuntime extends Observable {
   private commandStart = 0
   /** The echo's place while `runCommand` starts the command it wrote. */
   private echoMark: number | null = null
+  /** The command `runCommand` is starting, which names the tool it starts. */
+  private starting: string | null = null
+  /**
+   * The command the running tool was started as, which heads its prompt:
+   * `-LINETYPE`, not the tool's LINETYPE. Null for a tool started otherwise.
+   */
+  private startedAs: string | null = null
   /** Set while an answer runs, so the prompt it answers is written once. */
   private answeringPrompt = false
   /**
@@ -695,6 +702,7 @@ export class CadRuntime extends Observable {
     this.answerPrefix = null
     this.commandStart = this.echoMark ?? this.commandLine.mark()
     this.activeTool = next
+    this.startedAs = this.starting
     if (next.id !== "select") this.history.beginGroup()
     next.onActivate?.(this.toolContext)
     // Commands are usually started from the keyboard or a toolbar button, with
@@ -842,7 +850,8 @@ export class CadRuntime extends Observable {
       this.activeTool,
       this.text,
       offerOptions(this.activeTool, this.text),
-      this.document.getSettings()
+      this.document.getSettings(),
+      this.startedAs
     )
     const prefix = this.answerPrefix
     const mark = this.commandLine.mark()
@@ -1029,10 +1038,12 @@ export class CadRuntime extends Observable {
     this.echoMark = this.commandLine.mark()
     this.commandLine.write("command", alias ? `${text.trim()} ${name}` : name)
     this.commandLine.pushHistory(name)
+    this.starting = command.id
     try {
       command.run()
     } finally {
       this.echoMark = null
+      this.starting = null
     }
     this.invalidateState()
     this.host.focusSurface()
@@ -3587,7 +3598,13 @@ export class CadRuntime extends Observable {
       .map((id) => this.document.get(id))
       .filter((entity): entity is Entity => entity !== undefined)
     const options = offerOptions(this.activeTool, this.text)
-    const prompt = commandPrompt(this.activeTool, this.text, options, settings)
+    const prompt = commandPrompt(
+      this.activeTool,
+      this.text,
+      options,
+      settings,
+      this.startedAs
+    )
     return {
       activeToolId: this.activeTool.id,
       tools: this.listTools().map((t) => ({

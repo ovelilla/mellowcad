@@ -259,13 +259,16 @@ function enterValue(
  * The text shown before the input, mirroring AutoCAD's prompt: `Command:` at
  * rest, and while a command runs its name and the question it asks with the
  * keywords on offer, e.g. `LINE Specify next point or [Close/Undo]:`. A tool
- * that names no question shows its command's name in its place.
+ * that names no question shows its command's name in its place. The name is
+ * the command the tool was started as (`startedAs`: `-LINETYPE` heads
+ * LINETYPE's prompts), its keywords always the tool's command's.
  */
 export function commandPrompt(
   tool: Tool,
   text: EngineText,
   options: readonly CommandOptionUi[],
-  settings: DocumentSettings
+  settings: DocumentSettings,
+  startedAs: string | null = null
 ): CommandPrompt {
   if (tool.id === "select") {
     return {
@@ -276,9 +279,10 @@ export function commandPrompt(
     }
   }
   const command = tool.runningCommand?.() ?? toolCommand(tool)
+  const heading = startedAs ?? command
   const name =
-    command !== null
-      ? text.commandNames(command)[0]
+    heading !== null
+      ? text.commandNames(heading)[0]
       : text.tool(tool.id).toUpperCase()
   const fallback = tool.defaultOption?.() ?? null
   const labels = options.map((option) => option.label)

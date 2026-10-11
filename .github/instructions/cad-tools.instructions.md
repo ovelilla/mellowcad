@@ -292,7 +292,8 @@ command is actually used.
 
 A **dash command** that only takes its input differently (`-MTEXT`) is not a tool or a rail entry:
 `runtimeCommands` registers it against the tool's id, starts the tool and then switches its entry
-(`MTextTool.useCommandLine()`), so the prompts and keywords stay the plain command's.
+(`MTextTool.useCommandLine()`), so the prompts and keywords stay the plain command's; the runtime
+heads them with the name typed (`startedAs`: `-MTEXT Specify first corner:`).
 
 A command that **creates a block reference** (INSERT, BLOCK's Convert) asks its attribute values
 through `AttributeValuePrompts` (`tools/attributeValues.ts`) and adds the reference only in its

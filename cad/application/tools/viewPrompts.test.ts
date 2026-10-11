@@ -188,7 +188,7 @@ describe("VPOINT asks as AutoCAD 2026", () => {
     cad.command("-VPOINT")
     answer(cad, "FOO", "R")
     expect(cad.state().commandLine.prompt).toBe(
-      "VPOINT Enter angle in XY plane from X axis <270.00>:"
+      "-VPOINT Enter angle in XY plane from X axis <270.00>:"
     )
     answer(cad, "FOO", "315", "FOO", "")
 

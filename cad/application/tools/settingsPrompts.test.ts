@@ -47,7 +47,7 @@ describe("the settings commands ask as AutoCAD 2026", () => {
       'Linetype "FOO" not found in acad.lin.\nYou can use the "Load" option to load it from another file.',
     ])
     expect(cad.state().commandLine.prompt).toBe(
-      "LINETYPE Enter an option [?/Set]:"
+      "-LINETYPE Enter an option [?/Set]:"
     )
   })
 
@@ -86,7 +86,7 @@ describe("the settings commands ask as AutoCAD 2026", () => {
       "-COLOR",
     ])
     expect(cad.state().commandLine.prompt).toBe(
-      "COLOR Enter default object color [Truecolor] <1,2,3>:"
+      "-COLOR Enter default object color [Truecolor] <1,2,3>:"
     )
   })
 
@@ -128,7 +128,7 @@ describe("the settings commands ask as AutoCAD 2026", () => {
     cad.escape()
     cad.command("-GROSORLIN")
     expect(cad.state().commandLine.prompt).toBe(
-      "GROSORLIN Indique el grosor de línea por defecto para los nuevos objetos o [?]:"
+      "-GROSORLIN Indique el grosor de línea por defecto para los nuevos objetos o [?]:"
     )
     cad.escape()
     cad.command("-COLOR")

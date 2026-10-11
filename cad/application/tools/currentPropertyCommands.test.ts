@@ -152,7 +152,7 @@ describe("-COLOR", () => {
 
     cad.command("-COLOR")
     expect(cad.state().commandLine.prompt).toBe(
-      "COLOR Enter default object color [Truecolor] <BYLAYER>:"
+      "-COLOR Enter default object color [Truecolor] <BYLAYER>:"
     )
     expect(asking(cad)).toMatchObject({
       label: "Enter default object color",
@@ -262,17 +262,17 @@ describe("-LINETYPE", () => {
     cad.command("-LINETYPE")
     expect(cad.commandLog().at(-1)).toBe('Current line type:  "ByLayer"')
     expect(cad.state().commandLine.prompt).toBe(
-      "LINETYPE Enter an option [?/Set]:"
+      "-LINETYPE Enter an option [?/Set]:"
     )
     cad.option("Set")
     expect(cad.state().commandLine.prompt).toBe(
-      "LINETYPE Specify linetype name or [?] <ByLayer>:"
+      "-LINETYPE Specify linetype name or [?] <ByLayer>:"
     )
     cad.type("dashed").enter()
 
     expect(cad.state().currentLinetype).toBe("Dashed")
     expect(cad.state().commandLine.prompt).toBe(
-      "LINETYPE Enter an option [?/Set]:"
+      "-LINETYPE Enter an option [?/Set]:"
     )
     cad.enter()
     expect(cad.activeToolId()).toBe("select")
@@ -342,7 +342,7 @@ describe("-LWEIGHT", () => {
     cad.command("-LWEIGHT")
     expect(cad.commandLog().at(-1)).toBe("Current lineweight: BYLAYER")
     expect(cad.state().commandLine.prompt).toBe(
-      "LWEIGHT Enter default lineweight for new objects or [?]:"
+      "-LWEIGHT Enter default lineweight for new objects or [?]:"
     )
     expect(asking(cad)?.placeholder).toBe("BYLAYER")
     cad.type("0.5").enter()

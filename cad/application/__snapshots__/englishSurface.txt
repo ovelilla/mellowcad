@@ -1828,19 +1828,19 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
   properties: -
   cycling: -
 > -MTEXT
-  prompt: MTEXT Specify first corner:
+  prompt: -MTEXT Specify first corner:
   asks: ""
   tip: Specify first corner:
   dyn: "X,Y"=""||*
   command| -MTEXT
   info| Current text style:  "Standard"  Text height:  2.50  Annotative:  No
 > first corner
-  prompt: MTEXT Specify opposite corner or [Height/Justify/Line spacing/Rotation/Style/Width]:
+  prompt: -MTEXT Specify opposite corner or [Height/Justify/Line spacing/Rotation/Style/Width]:
   tip: Specify opposite corner or
   options: [H] Height, [J] Justify, [L] Line spacing, [R] Rotation, [S] Style, [W] Width
   prompt| Specify first corner:
 > opposite corner
-  prompt: MTEXT MText:
+  prompt: -MTEXT MText:
   asks: "MText"
   tip: MText:
   dyn: "MText"=""||*
@@ -3967,7 +3967,7 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
   properties: -
   cycling: -
 > -COLOR
-  prompt: COLOR Enter default object color [Truecolor] <BYLAYER>:
+  prompt: -COLOR Enter default object color [Truecolor] <BYLAYER>:
   asks: "Enter default object color"
   tip: Enter default object color
   dyn: "Enter default object color"=""|BYLAYER|*
@@ -4015,7 +4015,7 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
   properties: -
   cycling: -
 > -LINETYPE
-  prompt: LINETYPE Enter an option [?/Set]:
+  prompt: -LINETYPE Enter an option [?/Set]:
   asks: 
   tip: Enter an option
   dyn: 
@@ -4067,7 +4067,7 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
   properties: -
   cycling: -
 > -LWEIGHT
-  prompt: LWEIGHT Enter default lineweight for new objects or [?]:
+  prompt: -LWEIGHT Enter default lineweight for new objects or [?]:
   asks: "Enter default lineweight for new objects or"
   tip: Enter default lineweight for new objects or
   dyn: "Enter default lineweight for new objects or"=""|BYLAYER|*
@@ -4169,7 +4169,7 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
   prompt| Specify a view point or [Rotate]: 1,-1,1
   info| Regenerating model.
 > -VPOINT R
-  prompt: VPOINT Specify a view point or [Rotate]:
+  prompt: -VPOINT Specify a view point or [Rotate]:
   asks: "Specify a view point"
   tip: Specify a view point or
   dyn: "X,Y"=""||*
@@ -4177,14 +4177,14 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
   command| -VPOINT
   info| Current view direction:  VIEWDIR=0.58,-0.58,0.58
 > R
-  prompt: VPOINT Enter angle in XY plane from X axis <315.00>:
+  prompt: -VPOINT Enter angle in XY plane from X axis <315.00>:
   asks: "Enter angle in XY plane from X axis"
   tip: Enter angle in XY plane from X axis
   dyn: "Enter angle in XY plane from X axis"=""|315.00|°*
   options: -
   prompt| Specify a view point or [Rotate]: R
 > in plane
-  prompt: VPOINT Enter angle from XY plane <35.26>:
+  prompt: -VPOINT Enter angle from XY plane <35.26>:
   asks: "Enter angle from XY plane"
   tip: Enter angle from XY plane
   dyn: "Enter angle from XY plane"=""|35.26|°*
@@ -4197,14 +4197,14 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
   prompt| Enter angle from XY plane <35.26>: 35
   info| Regenerating model.
 > -VIEW
-  prompt: VIEW Enter an option [Orthographic]:
+  prompt: -VIEW Enter an option [Orthographic]:
   asks: 
   tip: Enter an option
   dyn: 
   options: [O] Orthographic
   command| -VIEW
 > O
-  prompt: VIEW Enter an option [Top/Bottom/Front/BAck/Left/Right] <Top>:
+  prompt: -VIEW Enter an option [Top/Bottom/Front/BAck/Left/Right] <Top>:
   options: [T] Top, [B] Bottom, [F] Front, [BA] BAck, [L] Left, [R] Right
   prompt| Enter an option [Orthographic]: O
 > F
@@ -4216,7 +4216,7 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
   prompt| Enter an option [Top/Bottom/Front/BAck/Left/Right] <Top>: F
   info| Regenerating model.
 > -VIEW _SWISO
-  prompt: VIEW Enter an option [Orthographic]:
+  prompt: -VIEW Enter an option [Orthographic]:
   asks: 
   tip: Enter an option
   dyn: 
