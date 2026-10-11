@@ -403,7 +403,7 @@ export class RotateTool implements Tool {
     const text = ctx.dynamicInput.getText("base").trim()
     if (!isCoordinateExpression(text)) return false
     const base = parseCoordinate(text, {
-      lastPoint: null,
+      lastPoint: ctx.lastPoint,
       relativeByDefault: false,
       ucs: ctx.ucs,
       elevation: ctx.elevation,
@@ -563,7 +563,7 @@ export class RotateTool implements Tool {
     const text = ctx.dynamicInput.getText("base").trim()
     if (isCoordinateExpression(text)) {
       const point = parseCoordinate(text, {
-        lastPoint: null,
+        lastPoint: ctx.lastPoint,
         relativeByDefault: false,
         ucs: ctx.ucs,
         elevation: ctx.elevation,

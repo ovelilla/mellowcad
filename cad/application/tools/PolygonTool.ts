@@ -296,7 +296,7 @@ export class PolygonTool implements Tool {
     if (!isCoordinateExpression(text)) return false
     const last = state.phase === "edgeEnd" ? state.start : null
     const point = parseCoordinate(text, {
-      lastPoint: last,
+      lastPoint: last ?? ctx.lastPoint,
       relativeByDefault: last !== null,
       ucs: ctx.ucs,
       elevation: ctx.elevation,

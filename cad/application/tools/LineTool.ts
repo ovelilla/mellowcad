@@ -109,12 +109,6 @@ export class LineTool implements Tool {
   private state: LineToolState = { phase: "idle" }
   /** Last known screen position, used to place dynamic input on re-open. */
   private lastScreen: Vec2 | null = null
-  /**
-   * The last point LINE was given (AutoCAD's LASTPOINT, 0,0,0 until one is),
-   * which `@` at the first point is relative to. Kept across runs.
-   */
-  private lastPoint: Vec3 | null = null
-
   onActivate(ctx: ToolContext): void {
     ctx.setCursor("crosshair")
     ctx.selection.clear()
@@ -309,7 +303,6 @@ export class LineTool implements Tool {
     if (!samePoint(start, first)) {
       ctx.execute(new AddEntityCommand(newLine(start, first, ctx)))
     }
-    this.lastPoint = first
     this.state = { phase: "idle" }
     ctx.dynamicInput.close()
     ctx.requestRender()
@@ -350,7 +343,6 @@ export class LineTool implements Tool {
     const { first } = this.state
     const vertices = this.state.vertices.slice(0, -1)
     const start = vertices[vertices.length - 1]
-    this.lastPoint = start
     this.state = {
       phase: "drawing",
       first,
@@ -515,7 +507,7 @@ export class LineTool implements Tool {
     const text = ctx.dynamicInput.getText("point").trim()
     if (isCoordinateExpression(text)) {
       const point = parseCoordinate(text, {
-        lastPoint: this.lastPoint,
+        lastPoint: ctx.lastPoint,
         relativeByDefault: false,
         ucs: ctx.ucs,
         elevation: ctx.elevation,
@@ -530,7 +522,6 @@ export class LineTool implements Tool {
    * the next segment can be typed or picked.
    */
   private beginDrawing(start: Vec3, ctx: ToolContext, screen?: Vec2): void {
-    this.lastPoint = start
     this.state = {
       phase: "drawing",
       first: start,
@@ -571,7 +562,7 @@ export class LineTool implements Tool {
     if (text === "") return this.continueFromLast(ctx)
     if (!isCoordinateExpression(text)) return false
     const start = parseCoordinate(text, {
-      lastPoint: this.lastPoint,
+      lastPoint: ctx.lastPoint,
       relativeByDefault: false,
       ucs: ctx.ucs,
       elevation: ctx.elevation,
@@ -636,7 +627,7 @@ export class LineTool implements Tool {
     const text = ctx.dynamicInput.getText("point").trim()
     if (!isCoordinateExpression(text)) return false
     const end = parseCoordinate(text, {
-      lastPoint: this.lastPoint,
+      lastPoint: ctx.lastPoint,
       relativeByDefault: false,
       ucs: ctx.ucs,
       elevation: ctx.elevation,
@@ -669,7 +660,6 @@ export class LineTool implements Tool {
       this.beginDrawing(resume.point, ctx)
       return true
     }
-    this.lastPoint = resume.point
     this.state = {
       phase: "tangent",
       start: resume.point,
@@ -844,7 +834,6 @@ export class LineTool implements Tool {
     const draws = !samePoint(start, end)
     const direction =
       heading ?? (length > 1e-9 ? V.scale(offset, 1 / length) : null)
-    this.lastPoint = end
     this.state = {
       phase: "drawing",
       first,

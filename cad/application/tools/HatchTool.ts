@@ -450,7 +450,7 @@ export class HatchTool implements Tool {
           return true
         }
         const point = parseCoordinate(typed, {
-          lastPoint: null,
+          lastPoint: commitCtx.lastPoint,
           relativeByDefault: false,
           ucs: commitCtx.ucs,
           elevation: commitCtx.elevation,

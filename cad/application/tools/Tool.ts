@@ -182,6 +182,12 @@ export interface ToolContext {
    * UCS's XY plane.
    */
   readonly elevation: number
+  /**
+   * LASTPOINT, 0,0,0 until a point is given: what `@` is relative to at a
+   * point with no base of the tool's own (a first point), and what Enter
+   * takes at DIST's. The runtime keeps it; a tool only reads it.
+   */
+  readonly lastPoint: Vec3
   readonly viewport: Viewport
   readonly selection: Selection
   readonly dynamicInput: DynamicInputController
@@ -368,6 +374,13 @@ export interface Tool {
    * any other a keyword.
    */
   takes?(): QuestionInput | null
+  /**
+   * Whether the point that answers the question becomes LASTPOINT, where
+   * that is not what {@link takes} says (null: as it says) (a point does, a window's corner, a
+   * distance or a keyword does not): AutoCAD 2023's console keeps it at
+   * DIST's second point and COPY's, and sets it at ZOOM's first.
+   */
+  setsLastPoint?(): boolean | null
 
   /**
    * An answer typed at a prompt with no box to take it — a point at `Select

@@ -395,7 +395,7 @@ export class PolylineTool implements Tool {
     const text = ctx.dynamicInput.getText("point").trim()
     if (isCoordinateExpression(text)) {
       const point = parseCoordinate(text, {
-        lastPoint: null,
+        lastPoint: ctx.lastPoint,
         relativeByDefault: false,
         ucs: ctx.ucs,
         elevation: ctx.elevation,
@@ -427,7 +427,7 @@ export class PolylineTool implements Tool {
     }
     if (!isCoordinateExpression(text)) return false
     const start = parseCoordinate(text, {
-      lastPoint: null,
+      lastPoint: ctx.lastPoint,
       relativeByDefault: false,
       ucs: ctx.ucs,
       elevation: ctx.elevation,

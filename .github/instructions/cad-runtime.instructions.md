@@ -240,7 +240,7 @@ transparently **`; `'AREA` reads a system variable, not the command). One with n
 toggle, UNITS' dialog) runs in place and `Resuming LINE command.` follows at once. `suspend`
 keeps the running tool as it stands — its state, `startedAs`, `commandStart`, the box
 (`DynamicInputController.save` / `restore`, typed text cleared), the selection set and Previous
-set, its cursor — and makes the transparent tool the active one **without `setActiveTool`**: no
+set, its cursor, LASTPOINT (what the transparent command gives it is gone on resuming) — and makes the transparent tool the active one **without `setActiveTool`**: no
 `onDeactivate` of the running tool, no undo group closed or opened (a transparent change joins the
 running command's step, as AutoCAD undoes it). While one is suspended `commandPrompt(…,
 transparent)` heads every question `>>` (and the prompt line `'ZOOM`), and a tool's own prompt

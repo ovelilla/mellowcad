@@ -342,7 +342,7 @@ export class ArrayPolarTool implements Tool {
     const text = ctx.dynamicInput.getText("center").trim()
     if (!isCoordinateExpression(text)) return false
     const center = parseCoordinate(text, {
-      lastPoint: null,
+      lastPoint: ctx.lastPoint,
       relativeByDefault: false,
       ucs: ctx.ucs,
       elevation: ctx.elevation,

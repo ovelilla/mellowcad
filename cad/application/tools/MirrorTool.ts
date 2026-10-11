@@ -271,7 +271,7 @@ export class MirrorTool implements Tool {
     if (!isCoordinateExpression(text)) return false
     if (this.state.phase === "first" && fieldId === "first") {
       const first = parseCoordinate(text, {
-        lastPoint: null,
+        lastPoint: ctx.lastPoint,
         relativeByDefault: false,
         ucs: ctx.ucs,
         elevation: ctx.elevation,
@@ -373,7 +373,7 @@ export class MirrorTool implements Tool {
     const text = ctx.dynamicInput.getText(fieldId).trim()
     if (isCoordinateExpression(text)) {
       const point = parseCoordinate(text, {
-        lastPoint: relativeTo,
+        lastPoint: relativeTo ?? ctx.lastPoint,
         relativeByDefault: relativeTo !== null,
         ucs: ctx.ucs,
         elevation: ctx.elevation,

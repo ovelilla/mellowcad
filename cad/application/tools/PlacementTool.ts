@@ -181,6 +181,17 @@ export abstract class PlacementTool implements Tool {
       : null
   }
 
+  /**
+   * COPY's points keep LASTPOINT at the base point, as AutoCAD 2023's
+   * console shows — `@` at the next copy is from the base again —, where
+   * MOVE's second point sets it.
+   */
+  setsLastPoint(): boolean | null {
+    return this.state.phase === "secondPoint" && this.continuesAfterPlace()
+      ? false
+      : null
+  }
+
   /** What `Select objects:` takes here, as its refusal lists the modes. */
   protected selectionInput(): QuestionInput {
     return "objects"
@@ -382,7 +393,7 @@ export abstract class PlacementTool implements Tool {
     }
     if (!isCoordinateExpression(text)) return false
     const base = parseCoordinate(text, {
-      lastPoint: null,
+      lastPoint: ctx.lastPoint,
       relativeByDefault: false,
       ucs: ctx.ucs,
       elevation: ctx.elevation,
@@ -532,7 +543,7 @@ export abstract class PlacementTool implements Tool {
     const text = ctx.dynamicInput.getText("base").trim()
     if (isCoordinateExpression(text)) {
       const point = parseCoordinate(text, {
-        lastPoint: null,
+        lastPoint: ctx.lastPoint,
         relativeByDefault: false,
         ucs: ctx.ucs,
         elevation: ctx.elevation,

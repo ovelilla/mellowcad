@@ -124,12 +124,15 @@ describe("DIST", () => {
     )
   })
 
-  it("ends on Enter at the first point", () => {
+  it("takes LASTPOINT on Enter at the first point", () => {
     const cad = createHarness()
 
-    cad.command("DIST").enter()
+    cad.command("DIST").enter().type("3,4").enter()
 
-    expect(cad.activeToolId()).toBe("select")
+    expect(cad.commandLog().at(-1)).toBe(
+      "Distance = 5.00,  Angle in XY Plane = 53,  Angle from XY Plane = 0\n" +
+        "Delta X = 3.00,  Delta Y = 4.00,   Delta Z = 0.00"
+    )
   })
 })
 

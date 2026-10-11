@@ -94,6 +94,11 @@ export class ZoomTool implements Tool {
     }
   }
 
+  /** A point at ZOOM's first prompt sets LASTPOINT; the corners after it do not. */
+  setsLastPoint(): boolean | null {
+    return this.state.phase === "main" ? true : null
+  }
+
   /** As AutoCAD 2023's console refuses ZOOM's answers. */
   takes(): QuestionInput {
     switch (this.state.phase) {
@@ -290,7 +295,7 @@ export class ZoomTool implements Tool {
     }
     const point = isCoordinateExpression(text)
       ? parseCoordinate(text, {
-          lastPoint: null,
+          lastPoint: ctx.lastPoint,
           relativeByDefault: false,
           ucs: ctx.ucs,
           elevation: ctx.elevation,

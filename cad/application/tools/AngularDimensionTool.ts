@@ -522,7 +522,7 @@ export class AngularDimensionTool implements Tool {
     const typed = ctx.dynamicInput.getText("point").trim()
     if (!isCoordinateExpression(typed)) return null
     return parseCoordinate(typed, {
-      lastPoint,
+      lastPoint: lastPoint ?? ctx.lastPoint,
       relativeByDefault: lastPoint !== null,
       ucs: ctx.ucs,
       elevation: ctx.elevation,

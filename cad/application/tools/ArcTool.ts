@@ -373,7 +373,7 @@ export class ArcTool implements Tool {
 
     const last = this.previousPoint()
     const point = parseCoordinate(text, {
-      lastPoint: last,
+      lastPoint: last ?? ctx.lastPoint,
       relativeByDefault: last !== null,
       ucs: ctx.ucs,
       elevation: ctx.elevation,

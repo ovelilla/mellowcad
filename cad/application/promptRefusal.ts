@@ -100,7 +100,10 @@ export function promptRefusal(
   }
 }
 
-function questionInput(asked: AskedQuestion): QuestionInput | null {
+/** The input function behind the running command's question, as {@link promptRefusal} reads it. */
+export function questionInput(
+  asked: Pick<AskedQuestion, "tool" | "prompt" | "session">
+): QuestionInput | null {
   const declared = asked.tool.takes?.() ?? null
   if (declared !== null) return declared
   if (asked.prompt === "selectObjects" || asked.prompt === "removeObjects") {

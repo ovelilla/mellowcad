@@ -280,7 +280,7 @@ export class InsertTool implements Tool {
         const point = parseCoordinate(
           commitCtx.dynamicInput.getText("point").trim(),
           {
-            lastPoint: null,
+            lastPoint: commitCtx.lastPoint,
             relativeByDefault: false,
             ucs: commitCtx.ucs,
             elevation: commitCtx.elevation,

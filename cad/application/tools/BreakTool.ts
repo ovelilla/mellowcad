@@ -316,7 +316,7 @@ export class BreakTool implements Tool {
     if (!isCoordinateExpression(text)) return false
     const last = this.state.phase === "second" ? this.state.first : null
     const point = parseCoordinate(text, {
-      lastPoint: last,
+      lastPoint: last ?? ctx.lastPoint,
       relativeByDefault: last !== null,
       ucs: ctx.ucs,
       elevation: ctx.elevation,

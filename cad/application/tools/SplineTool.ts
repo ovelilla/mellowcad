@@ -501,7 +501,7 @@ export class SplineTool implements Tool {
     if (!isCoordinateExpression(text)) return false
     const base = this.getConstraintAnchor()
     const point = parseCoordinate(text, {
-      lastPoint: base,
+      lastPoint: base ?? ctx.lastPoint,
       relativeByDefault: base !== null,
       ucs: ctx.ucs,
       elevation: ctx.elevation,

@@ -801,7 +801,7 @@ export class UcsTool implements Tool {
   ): Vec3 | null {
     if (!isCoordinateExpression(text)) return null
     return parseCoordinate(text, {
-      lastPoint: from,
+      lastPoint: from ?? ctx.lastPoint,
       relativeByDefault: from !== null,
       ucs: ctx.ucs,
       elevation: ctx.elevation,

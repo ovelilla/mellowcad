@@ -414,7 +414,7 @@ export class AttDefTool implements Tool {
     }
     if (!isCoordinateExpression(typed)) return false
     const point = parseCoordinate(typed, {
-      lastPoint: null,
+      lastPoint: ctx.lastPoint,
       relativeByDefault: false,
       ucs: ctx.ucs,
       elevation: ctx.elevation,

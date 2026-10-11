@@ -86,7 +86,7 @@ export class PasteTool implements Tool {
         // Enter asks again, as AutoCAD 2023's console does.
         if (text === "") return true
         const point = parseCoordinate(text, {
-          lastPoint: null,
+          lastPoint: commitCtx.lastPoint,
           relativeByDefault: false,
           ucs: commitCtx.ucs,
           elevation: commitCtx.elevation,

@@ -404,7 +404,7 @@ export class TextTool implements Tool {
     }
     if (!isCoordinateExpression(text)) return false
     const point = parseCoordinate(text, {
-      lastPoint: null,
+      lastPoint: ctx.lastPoint,
       relativeByDefault: false,
       ucs: ctx.ucs,
       elevation: ctx.elevation,

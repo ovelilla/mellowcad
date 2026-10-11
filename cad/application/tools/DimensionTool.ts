@@ -577,7 +577,7 @@ export class DimensionTool implements Tool {
   ): Vec3 | null {
     if (!isCoordinateExpression(text)) return null
     return parseCoordinate(text, {
-      lastPoint,
+      lastPoint: lastPoint ?? ctx.lastPoint,
       relativeByDefault: lastPoint !== null,
       ucs: ctx.ucs,
       elevation: ctx.elevation,

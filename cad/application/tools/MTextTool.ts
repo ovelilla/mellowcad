@@ -606,7 +606,7 @@ export class MTextTool implements Tool {
     if (!isCoordinateExpression(text)) return false
     const first = state.phase === "opposite" ? state.first : null
     const point = parseCoordinate(text, {
-      lastPoint: first,
+      lastPoint: first ?? ctx.lastPoint,
       relativeByDefault: first !== null,
       ucs: ctx.ucs,
       elevation: ctx.elevation,

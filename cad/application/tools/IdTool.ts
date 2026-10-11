@@ -9,8 +9,8 @@ import { PointerInput, Tool, ToolContext } from "./Tool"
 /**
  * AutoCAD's ID: `Specify point`, then the point's X, Y and Z in the current
  * UCS at the command prompt. Picked with an object snap, the Z is the object's
- * there. AutoCAD also keeps it as LASTPOINT for the next `@`; there is no
- * global last point here yet, so it is only reported.
+ * there. It becomes LASTPOINT, as any point given does, which the runtime
+ * keeps: `ID @` reports it.
  */
 export class IdTool implements Tool {
   readonly id = "id"
@@ -29,7 +29,7 @@ export class IdTool implements Tool {
           return true
         }
         const point = parseCoordinate(text, {
-          lastPoint: null,
+          lastPoint: commitCtx.lastPoint,
           relativeByDefault: false,
           ucs: commitCtx.ucs,
           elevation: commitCtx.elevation,

@@ -198,7 +198,7 @@ export class MeasureTool implements Tool {
         const text = commitCtx.dynamicInput.getText("distance").trim()
         if (!isCoordinateExpression(text)) return false
         const point = parseCoordinate(text, {
-          lastPoint: this.basePoint(),
+          lastPoint: this.basePoint() ?? commitCtx.lastPoint,
           relativeByDefault: false,
           ucs: commitCtx.ucs,
           elevation: commitCtx.elevation,
@@ -232,7 +232,7 @@ export class MeasureTool implements Tool {
         const text = commitCtx.dynamicInput.getText("point").trim()
         if (text === "") return this.enter(commitCtx)
         const point = parseCoordinate(text, {
-          lastPoint: this.basePoint(),
+          lastPoint: this.basePoint() ?? commitCtx.lastPoint,
           relativeByDefault: false,
           ucs: commitCtx.ucs,
           elevation: commitCtx.elevation,
@@ -261,8 +261,8 @@ export class MeasureTool implements Tool {
   }
 
   /**
-   * Enter, at the box or the drawing: DIST's first point ends the command and
-   * its second measures to the first, as AutoCAD's does, Multiple points'
+   * Enter, at the box or the drawing: DIST's first point takes LASTPOINT and
+   * its second measures to the first (LASTPOINT again), as AutoCAD's do, Multiple points'
    * next point takes `<Total>` and its Length refuses it; AREA's first corner
    * takes `<Object>`, from the third point it takes `<Total>`, and before that
    * AutoCAD 2023's console refuses it as a missing point.
@@ -270,7 +270,7 @@ export class MeasureTool implements Tool {
   private enter(ctx: ToolContext): boolean {
     switch (this.state.phase) {
       case "first":
-        ctx.endCommand()
+        this.place(ctx.lastPoint, ctx)
         return true
       case "second":
         this.place(this.state.base, ctx)
@@ -333,6 +333,15 @@ export class MeasureTool implements Tool {
       }
     }
     return null
+  }
+
+  /**
+   * DIST's second point keeps LASTPOINT at its first, where Multiple
+   * points' set it, as AutoCAD 2023's console shows.
+   */
+  setsLastPoint(): boolean | null {
+    if (this.state.phase === "second") return false
+    return this.state.phase === "multiple" ? true : null
   }
 
   defaultOption(): string | null {

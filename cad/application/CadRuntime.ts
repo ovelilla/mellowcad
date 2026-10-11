@@ -1,6 +1,6 @@
 import { Observable } from "../shared/Observable"
 import { Vec2, V } from "../geometry/Vec2"
-import { Vec3, planar, withZ, zOf } from "../geometry/Vec3"
+import { Vec3, planar, vec3, withZ, zOf } from "../geometry/Vec3"
 import { closestPointOnSegment } from "../geometry/primitives"
 import { CadDocument } from "../domain/Document"
 import {
@@ -149,7 +149,7 @@ import {
   toolCommand,
 } from "./runtimeCommands"
 import { defaultTools } from "./runtimeTools"
-import { promptRefusal } from "./promptRefusal"
+import { promptRefusal, questionInput } from "./promptRefusal"
 import {
   applyDrawingFile,
   copyToClipboard,
@@ -242,6 +242,7 @@ type FramedPart =
   | "document"
   | "ucs"
   | "elevation"
+  | "lastPoint"
   | "viewport"
   | "execute"
   | "pick"
@@ -337,6 +338,12 @@ export class CadRuntime extends Observable {
    * queued.`): `Regenerating model.` once the command it interrupted ends.
    */
   private regenQueued = false
+  /** LASTPOINT, in the WCS: see {@link keepLastPoint}. */
+  private lastPoint: Vec3 = vec3(0, 0, 0)
+  /** The point a pick or FROM gave the answer running, in the WCS. */
+  private pointGiven: Vec3 | null = null
+  /** The coordinate typed for the answer running, in the WCS. */
+  private pointTyped: Vec3 | null = null
 
   // Magnetic crosshair: where to draw it (screen), positioned on the resolved
   // point so it clings to geometry. `null` means the pointer is off-canvas.
@@ -466,6 +473,7 @@ export class CadRuntime extends Observable {
     // The single surface tools may touch: read-only document + command bus.
     const doc = this.document
     const frame = () => this.frame
+    const lastPoint = () => this.lastPoint
     const shared: Omit<ToolContext, FramedPart> = {
       selection: this.selection,
       dynamicInput: this.dynamicInput,
@@ -544,6 +552,9 @@ export class CadRuntime extends Observable {
       get elevation() {
         return doc.getSettings().elevation
       },
+      get lastPoint() {
+        return frame().pointToFrame(lastPoint())
+      },
       get viewport() {
         return frame().viewport
       },
@@ -566,6 +577,9 @@ export class CadRuntime extends Observable {
       },
       get elevation() {
         return doc.getSettings().elevation
+      },
+      get lastPoint() {
+        return lastPoint()
       },
       viewport: this.viewport,
       execute: (command) => this.history.execute(command),
@@ -623,6 +637,9 @@ export class CadRuntime extends Observable {
       if (next === ucs) return
       ucs = next
       this.resetTracking()
+      // WHY: AutoCAD 2023's console puts LASTPOINT at the new UCS's origin
+      // after UCS Origin and UCS World alike (`ID @` then reads 0,0,0).
+      this.lastPoint = next.origin
     })
     // A new selection shows every object again, as the palette's drop-down
     // starts at All.
@@ -805,6 +822,7 @@ export class CadRuntime extends Observable {
       selection: this.selection.toArray(),
       previousSet: this.previousSet,
       cursor: this.toolCursor,
+      lastPoint: this.lastPoint,
     }
     // WHY a set of its own: ZOOM Object asks `>>Select objects:` and
     // AutoCAD's MOVE still moves its own set after it.
@@ -858,6 +876,9 @@ export class CadRuntime extends Observable {
     this.commandStart = suspended.commandStart
     this.selection.set(suspended.selection)
     this.previousSet = suspended.previousSet
+    // WHY: AutoCAD 2023's console keeps LASTPOINT across a transparent
+    // command — `@` after 'ID or 'DIST is still from the point before it.
+    this.lastPoint = suspended.lastPoint
     this.dynamicInput.restore(suspended.input)
     this.toolCursor = suspended.cursor
     if (suspended.cursor !== null) this.host.setCursor(suspended.cursor)
@@ -1078,8 +1099,18 @@ export class CadRuntime extends Observable {
     const mark = this.commandLine.mark()
     const continues =
       this.openLine === mark && continuesLine(askedPrompt(this.activeTool))
+    const asked = this.setsLastPoint()
+      ? {
+          tool: this.activeTool,
+          anchor: this.toolAnchor(),
+          suspended: this.suspended,
+          ucs: this.document.getSettings().ucs,
+        }
+      : null
     this.answeringPrompt = true
     this.pickFound = picked ? [] : null
+    this.pointGiven = null
+    this.pointTyped = null
     let took: boolean
     let found: readonly string[] = []
     try {
@@ -1090,6 +1121,7 @@ export class CadRuntime extends Observable {
       this.pickFound = null
     }
     if (!took) return false
+    if (asked !== null) this.keepLastPoint(asked)
     this.answerPrefix = null
     if (echo === null) {
       for (const text of found) this.commandLine.write("info", text)
@@ -1108,6 +1140,79 @@ export class CadRuntime extends Observable {
         ? written
         : null
     return true
+  }
+
+  /**
+   * Whether the question asked now sets LASTPOINT once answered: a point
+   * does, as AutoCAD's input functions keep it, a distance, a window's
+   * corner or a selection does not — unless the tool says otherwise.
+   */
+  private setsLastPoint(): boolean {
+    const tool = this.activeTool
+    const prompt = askedPrompt(tool)
+    if (prompt === null) return false
+    const own = tool.setsLastPoint?.() ?? null
+    if (own !== null) return own
+    const input = questionInput({
+      tool,
+      prompt,
+      session: this.dynamicInput.isOpen()
+        ? this.dynamicInput.getSession()
+        : null,
+    })
+    return input === "point" || input === "point2d"
+  }
+
+  /**
+   * LASTPOINT after an answer to a question that sets it: the point picked
+   * (or FROM's), else where the answer moved the tool's base — a length typed
+   * along the cursor, LINE's Undo stepping back to the vertex before, as
+   * AutoCAD 2023's console shows —, else the coordinate typed, which is all
+   * an answer that ends the command leaves. A keyword that moves no base
+   * keeps it (LINE's Close: the last point given). Nothing while a
+   * transparent command starts or ends, which keeps it for the one it
+   * interrupts, nor once the UCS changed, which put it at its origin.
+   */
+  private keepLastPoint(asked: {
+    readonly tool: Tool
+    readonly anchor: Vec2 | Vec3 | null
+    readonly suspended: SuspendedCommand | null
+    readonly ucs: Ucs
+  }): void {
+    if (this.suspended !== asked.suspended) return
+    if (this.document.getSettings().ucs !== asked.ucs) return
+    const anchor = this.activeTool === asked.tool ? this.toolAnchor() : null
+    const moved =
+      anchor !== null &&
+      (asked.anchor === null || !samePlace(anchor, asked.anchor))
+        ? this.frame.pointToWorld(withZ(anchor, zOf(anchor)))
+        : null
+    const point = this.pointGiven ?? moved ?? this.pointTyped
+    if (point !== null) this.lastPoint = point
+  }
+
+  /**
+   * The coordinate typed in the box's `field`, in the WCS, read as the
+   * prompt reads it: from the tool's base when it has one, from LASTPOINT
+   * otherwise. Null for anything else.
+   */
+  private typedPoint(field: DynamicField | undefined): Vec3 | null {
+    if (!field || isContentField(field.kind)) return null
+    const text = this.dynamicInput.getText(field.id).trim()
+    if (!isCoordinateExpression(text)) return null
+    const base = this.toolAnchor()
+    const point = parseCoordinate(text, {
+      lastPoint: base ?? this.frame.pointToFrame(this.lastPoint),
+      relativeByDefault: base !== null,
+      ucs: this.frame.ucs,
+      elevation: this.document.getSettings().elevation,
+    })
+    return point && this.frame.pointToWorld(point)
+  }
+
+  /** A point of the active tool's input, in the WCS. */
+  private toolPointToWorld(point: Vec3): Vec3 {
+    return this.activeTool.inWorld ? point : this.frame.pointToWorld(point)
   }
 
   /**
@@ -1474,6 +1579,7 @@ export class CadRuntime extends Observable {
    */
   newDrawing(): void {
     this.endCommands()
+    this.lastPoint = vec3(0, 0, 0)
     this.selection.clear()
     this.resetTracking()
     this.history.execute(new NewDrawingCommand())
@@ -1764,6 +1870,7 @@ export class CadRuntime extends Observable {
 
   /** Feeds a point to the active tool as if it had been picked there. */
   private placePoint(point: Vec3): void {
+    this.pointGiven = this.frame.pointToWorld(point)
     this.activeTool.onPointerDown?.(
       this.forTool({
         screen: this.frame.viewport.worldToScreen(point),
@@ -2245,6 +2352,7 @@ export class CadRuntime extends Observable {
     session: DynamicInputSession,
     field: DynamicField | undefined
   ): boolean {
+    this.pointTyped = this.typedPoint(field)
     const values = this.dynamicInput.resolveValues()
     if (values) {
       session.commit(values, this.toolContext)
@@ -2687,6 +2795,7 @@ export class CadRuntime extends Observable {
     this.selection.clear()
     this.resetTracking()
     applyDrawingFile(this.document, parsed)
+    this.lastPoint = vec3(0, 0, 0)
     this.history.clear() // a loaded file is a fresh undo baseline
     this.zoomToFit()
     this.autosave.saveNow() // mirror the opened file into this device's store
@@ -2968,6 +3077,7 @@ export class CadRuntime extends Observable {
     this.answering(
       "",
       () => {
+        this.pointGiven = this.toolPointToWorld(input.point)
         this.activeTool.onPointerDown?.(input, this.toolContext)
         return true
       },
@@ -4006,6 +4116,11 @@ function bareCommand(typed: string): string {
   return typed.replace(/^'/, "").trim().toUpperCase()
 }
 
+/** Whether two of a tool's anchors are one point. */
+function samePlace(a: Vec2 | Vec3, b: Vec2 | Vec3): boolean {
+  return a.x === b.x && a.y === b.y && zOf(a) === zOf(b)
+}
+
 /** What a transparent command keeps of the one it interrupted. */
 interface SuspendedCommand {
   readonly tool: Tool
@@ -4015,4 +4130,5 @@ interface SuspendedCommand {
   readonly selection: readonly EntityId[]
   readonly previousSet: readonly EntityId[]
   readonly cursor: string | null
+  readonly lastPoint: Vec3
 }

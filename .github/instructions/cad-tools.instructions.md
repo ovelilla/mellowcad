@@ -370,6 +370,15 @@ instead, or the command-line buffer will swallow them.
   direction — goes through `headingInUcs` / `directionFromUcsHeading` (`tools/ucsHeading.ts`); a
   **relative** one (a rotation, an included angle, a sweep) is the same in every UCS and is left
   alone.
+- **LASTPOINT is the runtime's, never a tool's.** A typed point with no base of the tool's own (a
+  first point) passes `lastPoint: ctx.lastPoint` with `relativeByDefault: false`, so `@` is
+  from the last point given in any command; one with a base passes `base ?? ctx.lastPoint`. The
+  runtime sets it after every answer whose question takes a point (`takes()` or the box says
+  `"point"` / `"point2d"`): the pick, else where the answer moved the tool's anchor
+  (`getConstraintAnchor`), else the coordinate typed. A question AutoCAD's console shows keeping
+  it although it takes a point (DIST's second point, COPY's), or setting it although its refusal
+  is its own (ZOOM's first prompt, DIST's Multiple points), says so with `setsLastPoint()`;
+  check with `ID @` after the command in the console.
 - **A point has a Z; keep it.** `input.point` and `parseCoordinate` give a `Vec3`: `x,y` absolute
   lies ELEVATION above the UCS's XY plane, `@x,y` keeps `lastPoint`'s Z. A point a tool
   _computes_ from another in the plane (`V.add(start, dir * length)`) is `@dist<angle` and keeps
