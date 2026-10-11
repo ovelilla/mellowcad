@@ -44,12 +44,55 @@ describe("DIMLINEAR's questions", () => {
       "DIMLINEAR Specify angle of dimension line <0>:"
     )
     cad.type("0").enter()
-    // The direction set, the location offers the text keywords alone.
     expect(cad.state().commandLine.prompt).toBe(
-      "DIMLINEAR Specify dimension line location or [Text/Angle]:"
+      "DIMLINEAR Specify dimension line location or [Text/Angle/Horizontal/Vertical/Rotated]:"
     )
     cad.click(p(50, 30))
     expect(cad.commandLog().at(-1)).toBe("Dimension text = 100.00")
+  })
+
+  // AutoCAD 2023's console: Rotated leaves every keyword on offer, Horizontal
+  // and Vertical the text ones alone, through Text and Angle too; DIMALIGNED
+  // offers those alone throughout.
+  it("offers the text keywords alone once Horizontal or Vertical is set", () => {
+    const cad = createHarness()
+    cad.command("DIMLINEAR").click(p(0, 0)).click(p(100, 0))
+    answer(cad, "H")
+    expect(cad.state().commandLine.prompt).toBe(
+      "DIMLINEAR Specify dimension line location or [Text/Angle]:"
+    )
+    answer(cad, "V")
+    expect(cad.commandLog().slice(-2)).toEqual([
+      "Specify dimension line location or [Text/Angle]: V",
+      "Invalid point input.",
+    ])
+    answer(cad, "T")
+    answer(cad, "ABC")
+    answer(cad, "A")
+    answer(cad, "45")
+    expect(cad.state().commandLine.prompt).toBe(
+      "DIMLINEAR Specify dimension line location or [Text/Angle]:"
+    )
+
+    cad.escape().command("DIMLINEAR").click(p(0, 0)).click(p(100, 0))
+    answer(cad, "R")
+    answer(cad, "30")
+    answer(cad, "T")
+    answer(cad, "ABC")
+    expect(cad.state().commandLine.prompt).toBe(
+      "DIMLINEAR Specify dimension line location or [Text/Angle/Horizontal/Vertical/Rotated]:"
+    )
+    answer(cad, "V")
+    expect(cad.state().commandLine.prompt).toBe(
+      "DIMLINEAR Specify dimension line location or [Text/Angle]:"
+    )
+
+    cad.escape().command("DIMALIGNED").click(p(0, 0)).click(p(100, 0))
+    answer(cad, "T")
+    answer(cad, "ABC")
+    expect(cad.state().commandLine.prompt).toBe(
+      "DIMALIGNED Specify dimension line location or [Text/Angle]:"
+    )
   })
 
   it("names an object it cannot find, and asks for one", () => {
@@ -80,6 +123,10 @@ describe("DIMLINEAR's questions", () => {
     cad.type("0").enter().option("Rotated")
     expect(cad.state().commandLine.prompt).toBe(
       "ACOLINEAL Designe ángulo de línea de cota <0>:"
+    )
+    cad.type("0").enter().option("Horizontal")
+    expect(cad.state().commandLine.prompt).toBe(
+      "ACOLINEAL Especifique una ubicación de línea de cota o [Texto/ángUlo]:"
     )
     cad.escape().command("ACOALINEADA").click(p(0, 0)).click(p(100, 0))
     cad.option("Angle")

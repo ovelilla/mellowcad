@@ -54,8 +54,8 @@ import { withCurrentProperties } from "./currentProperties"
  * dimension:`, its endpoints taken), `Specify second extension line origin:`
  * and `Non-associative dimension created.`, then `Specify dimension line
  * location or [Text/Angle/Horizontal/Vertical/Rotated]:` — DIMALIGNED, and
- * DIMLINEAR once Horizontal, Vertical or Rotated has set the direction,
- * offering only `[Text/Angle]` —, whose Text asks `Enter dimension text
+ * DIMLINEAR once Horizontal or Vertical has set the direction, offering only
+ * `[Text/Angle]`; after Rotated the whole list again —, whose Text asks `Enter dimension text
  * <100.00>:`, Angle `Specify angle of dimension text:` and Rotated `Specify
  * angle of dimension line <0>:`. The command ends the moment the location is
  * picked, saying `Dimension text = 100.00`.
@@ -80,6 +80,8 @@ export class DimensionTool implements Tool {
    * Aligned dimensions ignore it entirely.
    */
   private rotation: number | null = null
+  /** Horizontal or Vertical set the direction, which only they leave fixed. */
+  private straight = false
 
   private lastScreen: Vec2 | null = null
   /** The measurement Text offers as its `<default>`. */
@@ -97,6 +99,7 @@ export class DimensionTool implements Tool {
     this.text = undefined
     this.textAngle = undefined
     this.rotation = null
+    this.straight = false
     this.openFirstInput(ctx)
   }
 
@@ -197,8 +200,9 @@ export class DimensionTool implements Tool {
   commandOptions(): readonly CommandOption[] {
     if (this.state.phase !== "line" || this.state.prompt !== null) return []
     const options: CommandOption[] = [{ id: "Text" }, { id: "Angle" }]
-    // Once the direction is set the prompt offers the text keywords alone.
-    if (this.kind === "linear" && this.rotation === null) {
+    // AutoCAD 2023's console: after Horizontal or Vertical the prompt offers
+    // the text keywords alone, after Rotated every keyword again.
+    if (this.kind === "linear" && !this.straight) {
       options.push({ id: "Horizontal" }, { id: "Vertical" }, { id: "Rotated" })
     }
     return options
@@ -218,10 +222,12 @@ export class DimensionTool implements Tool {
         return "continue"
       case "Horizontal":
         if (this.kind !== "linear") return "unhandled"
+        this.straight = true
         this.setRotation(0, ctx)
         return "continue"
       case "Vertical":
         if (this.kind !== "linear") return "unhandled"
+        this.straight = true
         this.setRotation(Math.PI / 2, ctx)
         return "continue"
       case "Rotated": {
