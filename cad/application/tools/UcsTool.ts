@@ -37,12 +37,14 @@ import {
   ToolQuestion,
 } from "./Tool"
 import { headingInUcs } from "./ucsHeading"
+import { ONE_OBJECT_MODES, ObjectSelector } from "./objectSelection"
 import {
   alignable,
   hasEnds,
   ucsAlongZ,
   ucsAtEnd,
   ucsFromObject,
+  unpickedStart,
 } from "./ucsObjects"
 
 type Axis = "x" | "y" | "z"
@@ -95,6 +97,40 @@ export class UcsTool implements Tool {
   private previous: { ucs: Ucs; name: string | null }[] = []
   private cursor: Vec3 | null = null
   private lastScreen: Vec2 | null = null
+  /**
+   * The selection modes typed at OBject's and ZAxis Object's picks; AutoCAD
+   * 2023's console takes the newest object found, and reads OBject's at its
+   * start and ZAxis's at the end nearer the WCS origin, as with no pick.
+   */
+  private readonly modes = new ObjectSelector({
+    done: () => {},
+    question: () =>
+      this.state.phase === "zObject" ? "selectObject" : "ucsAlignObject",
+    modes: ONE_OBJECT_MODES,
+    accept: (ids, ctx) =>
+      ids.filter((id) => {
+        const entity = ctx.document.get(id) ?? null
+        return this.state.phase === "zObject"
+          ? hasEnds(entity)
+          : alignable(entity) !== null
+      }),
+    one: {
+      take: (entity, ctx) => {
+        const ucs =
+          this.state.phase === "zObject"
+            ? ucsAtEnd(entity, { x: 0, y: 0, z: 0 })
+            : ucsFromObject(entity, unpickedStart(entity))
+        if (ucs) this.finish(ucs, null, ctx)
+      },
+      newest: true,
+    },
+  })
+
+  /** Whether a selection mode's own prompt is asking, at an object's pick. */
+  private inMode(): boolean {
+    const { phase } = this.state
+    return (phase === "object" || phase === "zObject") && this.modes.inMode()
+  }
 
   onActivate(ctx: ToolContext): void {
     ctx.selection.clear()
@@ -116,6 +152,10 @@ export class UcsTool implements Tool {
   onPointerMove(input: PointerInput, ctx: ToolContext): void {
     this.cursor = input.point
     this.lastScreen = input.screen
+    if (this.inMode()) {
+      this.modes.onPointerMove(input, ctx)
+      return
+    }
     const state = this.state
     if (state.phase === "object") {
       const hover = alignable(ctx.pick(input.world))?.id ?? null
@@ -138,6 +178,10 @@ export class UcsTool implements Tool {
 
   onPointerDown(input: PointerInput, ctx: ToolContext): void {
     if (input.button !== 0) return
+    if (this.inMode()) {
+      this.modes.onPointerDown(input, ctx)
+      return
+    }
     const state = this.state
     switch (state.phase) {
       case "origin":
@@ -201,9 +245,8 @@ export class UcsTool implements Tool {
       case "zPoint":
         return { id: "ucsZAxisPoint", enter: { name: state.enter } }
       case "zObject":
-        return "selectObject"
       case "object":
-        return "ucsAlignObject"
+        return this.modes.question()
       case "named":
         return "enterAnOption"
       case "restore":
@@ -239,7 +282,7 @@ export class UcsTool implements Tool {
         }
       case "object":
       case "zObject":
-        return "singleSet"
+        return this.modes.takes("singleSet")
       case "replace":
         return { refusal: "yesOrNoPlease" }
       default:
@@ -263,6 +306,9 @@ export class UcsTool implements Tool {
         ]
       case "zOrigin":
         return [{ id: "Object" }]
+      case "object":
+      case "zObject":
+        return this.modes.commandOptions()
       case "named":
         return [
           { id: "Restore" },
@@ -286,7 +332,11 @@ export class UcsTool implements Tool {
   invokeOption(id: string, ctx: ToolContext): CommandOptionOutcome {
     const state = this.state
     if (state.phase === "origin") return this.invokeMain(id, ctx)
+    if (state.phase === "object" || state.phase === "zObject") {
+      return this.modes.invokeOption(id, ctx) ? "continue" : "unhandled"
+    }
     if (state.phase === "zOrigin" && id === "Object") {
+      this.modes.start()
       this.state = { phase: "zObject", hover: null }
       ctx.dynamicInput.open({ fields: [], commit: () => {} })
       this.place(ctx)
@@ -334,7 +384,17 @@ export class UcsTool implements Tool {
     }
   }
 
+  onPointerUp(input: PointerInput, ctx: ToolContext): void {
+    if (this.inMode()) this.modes.onPointerUp(input, ctx)
+  }
+
+  /** Enter in a mode's prompt is the mode's. */
+  onEnter(ctx: ToolContext): boolean {
+    return this.inMode() && this.modes.onEnter(ctx)
+  }
+
   wantsSnap(): boolean {
+    if (this.inMode()) return this.modes.wantsSnap()
     switch (this.state.phase) {
       case "origin":
       case "xAxis":
@@ -351,6 +411,7 @@ export class UcsTool implements Tool {
 
   buildOverlay(ctx: ToolContext): ScenePrimitive[] {
     const state = this.state
+    if (this.inMode()) return this.modes.buildOverlay(ctx)
     if (state.phase === "object" || state.phase === "zObject") {
       const hovered = state.hover ? ctx.document.get(state.hover) : undefined
       return hovered
@@ -437,6 +498,7 @@ export class UcsTool implements Tool {
         this.enterNamed(ctx)
         return "continue"
       case "OBject":
+        this.modes.start()
         this.state = { phase: "object", hover: null }
         ctx.dynamicInput.open({ fields: [], commit: () => {} })
         this.place(ctx)

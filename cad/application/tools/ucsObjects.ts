@@ -288,3 +288,27 @@ function segmentTangent(
     ? { x: -radial.y, y: radial.x }
     : { x: radial.y, y: -radial.x }
 }
+
+/**
+ * Where UCS OBject reads an object a selection mode took, which leaves no
+ * pick: at its start — a line's first end, a circle's angle 0, an arc's start
+ * point — as AutoCAD 2023's console aligns those three.
+ */
+export function unpickedStart(entity: Entity): Vec2 | Vec3 {
+  switch (entity.type) {
+    case "line":
+      return { ...entity.start, z: lineStartZ(entity) }
+    case "circle":
+      return polarPoint(entity.center, entity.radius, 0)
+    case "arc":
+      return arcStartPoint(entity)
+    case "ellipse":
+      return ellipseStartPoint(entity)
+    case "polyline":
+      return entity.vertices[0]
+    case "spline":
+      return splinePolyline(entity)[0]
+    default:
+      return { x: 0, y: 0 }
+  }
+}

@@ -45,7 +45,12 @@ A tool is an explicit state machine for one AutoCAD command. It owns a discrimin
   `onEnter`, `wantsSnap` and `buildOverlay`. It passes `done` (the set is closed) and, where
   needed, its own wording (`question`), a filter (`accept`: what it leaves out is neither counted
   nor highlighted, and a pick on it starts no window) and `onAdded` (STRETCH's frames). Never
-  re-implement a pick, a box or a mode in a tool.
+  re-implement a pick, a box or a mode in a tool. A **single object's pick** that takes the modes
+  (BREAK's `Select object:`, UCS OBject's, ARRAYPATH's path curve) holds one too, with `modes`
+  (what its refusal lists and is built: `ONE_OBJECT_MODES`) and `one` (`take` the object, the
+  oldest or `newest` of what a mode found — per command, as the console shows): it keeps its own
+  pick and its own prompt's Enter, and hands the selector its options, and everything else while
+  `inMode()` (a window's corners, a fence's points).
 - `SelectionActionTool` — one action over a selection set, supporting both noun-verb and
   verb-noun invocation (Erase, Explode, Join, COPYCLIP). A command that must ask something **before** the
   set — COPYBASE's base point — overrides `onActivate` and calls `begin(ctx)` once it has the

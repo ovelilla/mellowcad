@@ -25,6 +25,7 @@ import {
   parseCoordinate,
 } from "../input/coordinateInput"
 import type { PromptId } from "../../locales/types"
+import { ONE_OBJECT_MODES, ObjectSelector } from "./objectSelection"
 import {
   CommandOption,
   CommandOptionOutcome,
@@ -91,22 +92,40 @@ export class BreakTool implements Tool {
   ) {}
 
   private state: BreakState = { phase: "select", hover: null }
+  /**
+   * The selection modes typed at `Select object:`. What one finds has no pick
+   * point, so the first break point is asked for; AutoCAD 2023's console takes
+   * the oldest object found.
+   */
+  private readonly modes = new ObjectSelector({
+    done: () => {},
+    question: () => "selectObject",
+    modes: ONE_OBJECT_MODES,
+    accept: (ids, ctx) =>
+      ids.filter((id) => {
+        const entity = ctx.document.get(id)
+        return entity !== undefined && breakable(entity)
+      }),
+    one: { take: (entity, ctx) => this.askFirst(entity, ctx), newest: false },
+  })
 
   onActivate(ctx: ToolContext): void {
     this.state = { phase: "select", hover: null }
+    this.modes.start()
     ctx.setCursor("crosshair")
     ctx.selection.clear()
   }
 
   onDeactivate(ctx: ToolContext): void {
     this.state = { phase: "select", hover: null }
+    this.modes.start()
     ctx.dynamicInput.close()
   }
 
   question(): PromptId {
     switch (this.state.phase) {
       case "select":
-        return "selectObject"
+        return this.modes.question()
       case "first":
         return this.mode === "atPoint"
           ? "specifyBreakPoint"
@@ -126,7 +145,7 @@ export class BreakTool implements Tool {
   takes(): QuestionInput {
     switch (this.state.phase) {
       case "select":
-        return "oneObject"
+        return this.modes.takes("oneObject")
       case "first":
         return "point"
       case "second":
@@ -136,10 +155,14 @@ export class BreakTool implements Tool {
 
   /** Object picking is by proximity; the break points themselves snap. */
   wantsSnap(): boolean {
-    return this.state.phase !== "select"
+    return this.state.phase !== "select" || this.modes.wantsSnap()
   }
 
   onPointerMove(input: PointerInput, ctx: ToolContext): void {
+    if (this.state.phase === "select" && this.modes.inMode()) {
+      this.modes.onPointerMove(input, ctx)
+      return
+    }
     if (this.state.phase === "select") {
       const hover = this.pick(input, ctx)
       if (hover?.id !== this.state.hover?.id) {
@@ -158,6 +181,10 @@ export class BreakTool implements Tool {
     if (input.button !== 0) return
     switch (this.state.phase) {
       case "select": {
+        if (this.modes.inMode()) {
+          this.modes.onPointerDown(input, ctx)
+          return
+        }
         const hit = this.pick(input, ctx)
         if (!hit) {
           ctx.report(ctx.text.message("noObjectFound"))
@@ -177,12 +204,29 @@ export class BreakTool implements Tool {
     }
   }
 
+  onPointerUp(input: PointerInput, ctx: ToolContext): void {
+    if (this.state.phase === "select") this.modes.onPointerUp(input, ctx)
+  }
+
+  /** Enter in a mode's prompt is the mode's; at `Select object:` it ends. */
+  onEnter(ctx: ToolContext): boolean {
+    return (
+      this.state.phase === "select" &&
+      this.modes.inMode() &&
+      this.modes.onEnter(ctx)
+    )
+  }
+
   commandOptions(): readonly CommandOption[] {
+    if (this.state.phase === "select") return this.modes.commandOptions()
     if (this.state.phase !== "second" || this.state.respecified) return []
     return [{ id: "First point" }]
   }
 
   invokeOption(id: string, ctx: ToolContext): CommandOptionOutcome {
+    if (this.state.phase === "select") {
+      return this.modes.invokeOption(id, ctx) ? "continue" : "unhandled"
+    }
     if (
       id !== "First point" ||
       this.state.phase !== "second" ||
@@ -196,6 +240,7 @@ export class BreakTool implements Tool {
 
   buildOverlay(ctx: ToolContext): ScenePrimitive[] {
     if (this.state.phase === "select") {
+      if (this.modes.inMode()) return this.modes.buildOverlay(ctx)
       return this.state.hover ? this.highlight(this.state.hover, ctx) : []
     }
 
@@ -229,7 +274,7 @@ export class BreakTool implements Tool {
   /** A breakable object in the UCS's XY plane, never one at an angle to it. */
   private pick(input: PointerInput, ctx: ToolContext): Entity | null {
     const hit = ctx.pick(input.world)
-    return hit && hit.type !== "polyline" && readsInPlan(hit) ? hit : null
+    return hit && breakable(hit) ? hit : null
   }
 
   private askFirst(target: Entity, ctx: ToolContext): void {
@@ -307,6 +352,10 @@ export class BreakTool implements Tool {
     }
     ctx.endCommand()
   }
+}
+
+function breakable(entity: Entity): boolean {
+  return entity.type !== "polyline" && readsInPlan(entity)
 }
 
 function toEntity(source: Entity, geom: BreakGeom, id?: EntityId): Entity {

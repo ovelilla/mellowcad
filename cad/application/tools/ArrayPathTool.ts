@@ -13,7 +13,11 @@ import { ScenePrimitive, StrokeStyle } from "../../scene/types"
 import { entityScenePrimitive } from "../SceneBuilder"
 import { THEME } from "../../scene/theme"
 import { ReplaceEntitiesCommand } from "../commands/entityCommands"
-import { ObjectSelector, countPreselection } from "./objectSelection"
+import {
+  ONE_OBJECT_MODES,
+  ObjectSelector,
+  countPreselection,
+} from "./objectSelection"
 import type { PromptId } from "../../locales/types"
 import {
   CommandOption,
@@ -94,6 +98,22 @@ export class ArrayPathTool implements Tool {
   private readonly selector = new ObjectSelector({
     done: (ctx) => this.confirmSelection(ctx),
   })
+  /**
+   * The selection modes typed at `Select path curve:` — Previous and AUto
+   * too, as its refusal lists them. AutoCAD 2023's console takes the newest
+   * curve found, and leaves out the objects being arrayed.
+   */
+  private readonly pathModes = new ObjectSelector({
+    done: () => {},
+    question: () => "selectPathCurve",
+    modes: [...ONE_OBJECT_MODES, "Previous", "AUto"],
+    accept: (ids, ctx) =>
+      ids.filter((id) => {
+        const entity = ctx.document.get(id)
+        return entity !== undefined && !ctx.selection.has(id) && isPath(entity)
+      }),
+    one: { take: (entity, ctx) => this.enterEdit(entity, ctx), newest: true },
+  })
   private lastScreen: Vec2 | null = null
 
   onActivate(ctx: ToolContext): void {
@@ -117,7 +137,7 @@ export class ArrayPathTool implements Tool {
     const state = this.state
     switch (state.phase) {
       case "pickPath":
-        return "selectPathCurve"
+        return this.pathModes.question()
       case "edit":
         break
       case "selecting":
@@ -157,7 +177,7 @@ export class ArrayPathTool implements Tool {
   /** As AutoCAD 2023's console refuses them. */
   takes(): QuestionInput | null {
     const state = this.state
-    if (state.phase === "pickPath") return "pathCurve"
+    if (state.phase === "pickPath") return this.pathModes.takes("pathCurve")
     if (state.phase !== "edit") return this.selector.takes("objects")
     switch (state.step) {
       case "main":
@@ -178,6 +198,7 @@ export class ArrayPathTool implements Tool {
 
   commandOptions(): readonly CommandOption[] {
     if (this.state.phase === "selecting") return this.selector.commandOptions()
+    if (this.state.phase === "pickPath") return this.pathModes.commandOptions()
     if (this.state.phase !== "edit") return []
     switch (this.state.step) {
       case "main":
@@ -216,6 +237,9 @@ export class ArrayPathTool implements Tool {
   invokeOption(id: string, ctx: ToolContext): CommandOptionOutcome {
     if (this.state.phase === "selecting") {
       return this.selector.invokeOption(id, ctx) ? "continue" : "unhandled"
+    }
+    if (this.state.phase === "pickPath") {
+      return this.pathModes.invokeOption(id, ctx) ? "continue" : "unhandled"
     }
     const state = this.state
     if (state.phase !== "edit") return "unhandled"
@@ -270,6 +294,10 @@ export class ArrayPathTool implements Tool {
         this.selector.onPointerMove(input, ctx)
         break
       case "pickPath": {
+        if (this.pathModes.inMode()) {
+          this.pathModes.onPointerMove(input, ctx)
+          break
+        }
         // AutoCAD's rollover highlight: preview the curve under the cursor so
         // it is clear what clicking will pick as the path.
         const hover = this.pickPath(input, ctx)
@@ -294,6 +322,10 @@ export class ArrayPathTool implements Tool {
         this.selector.onPointerDown(input, ctx)
         return
       case "pickPath": {
+        if (this.pathModes.inMode()) {
+          this.pathModes.onPointerDown(input, ctx)
+          return
+        }
         const hit = this.pickPath(input, ctx)
         if (!hit) return
         if (ctx.selection.has(hit.id)) {
@@ -313,16 +345,20 @@ export class ArrayPathTool implements Tool {
    */
   private pickPath(input: PointerInput, ctx: ToolContext): Entity | null {
     const hit = ctx.pick(input.world)
-    return hit && readsInPlan(hit) && makePath(hit) !== null ? hit : null
+    return hit && isPath(hit) ? hit : null
   }
 
   onPointerUp(input: PointerInput, ctx: ToolContext): void {
     if (this.state.phase === "selecting") this.selector.onPointerUp(input, ctx)
+    if (this.state.phase === "pickPath") this.pathModes.onPointerUp(input, ctx)
   }
 
   onEnter(ctx: ToolContext): boolean {
     const state = this.state
     if (state.phase === "selecting") return this.selector.onEnter(ctx)
+    if (state.phase === "pickPath") {
+      return this.pathModes.inMode() && this.pathModes.onEnter(ctx)
+    }
     if (state.phase !== "edit") return false
     switch (state.step) {
       case "main":
@@ -340,6 +376,7 @@ export class ArrayPathTool implements Tool {
   }
 
   wantsSnap(): boolean {
+    if (this.state.phase === "pickPath") return this.pathModes.wantsSnap()
     return this.state.phase === "selecting" && this.selector.wantsSnap()
   }
 
@@ -352,6 +389,7 @@ export class ArrayPathTool implements Tool {
     // Rollover-highlight the curve under the cursor while choosing the path,
     // in the same amber it takes once picked so the candidate is unmistakable.
     if (state.phase === "pickPath") {
+      if (this.pathModes.inMode()) return this.pathModes.buildOverlay(ctx)
       const out: ScenePrimitive[] = []
       if (state.hover) {
         pushEntityOutline(out, viewport, state.hover, {
@@ -398,6 +436,7 @@ export class ArrayPathTool implements Tool {
 
   private enterPickPath(ctx: ToolContext): void {
     this.state = { phase: "pickPath", hover: null }
+    this.pathModes.start()
     ctx.report(ctx.text.message("arrayType", { type: "path" }))
     ctx.dynamicInput.open({ fields: [], commit: () => {} })
   }
@@ -616,6 +655,11 @@ function pushEntityOutline(
 }
 
 /** Builds a path curve from a line (open) or circle (closed). */
+/** A curve in the UCS's XY plane, where the array is laid out. */
+function isPath(entity: Entity): boolean {
+  return readsInPlan(entity) && makePath(entity) !== null
+}
+
 function makePath(entity: Entity): PathCurve | null {
   if (entity.type === "line") {
     const dir = V.sub(entity.end, entity.start)

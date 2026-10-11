@@ -44,6 +44,23 @@ const MODES = [
   "SIngle",
 ] as const
 
+export type SelectionMode = (typeof MODES)[number]
+
+/**
+ * The modes a single object's pick takes (BREAK's `Select object:`, UCS
+ * OBject's): those its refusal lists that are built — not Group.
+ */
+export const ONE_OBJECT_MODES: readonly SelectionMode[] = [
+  "Window",
+  "Last",
+  "Crossing",
+  "BOX",
+  "ALL",
+  "Fence",
+  "WPolygon",
+  "CPolygon",
+]
+
 /**
  * How a window takes objects: wholly inside it, inside or crossing it, or by
  * the direction it is drawn in (BOX, and the window a click on nothing starts).
@@ -121,6 +138,19 @@ export interface ObjectSelectorOptions {
     frame: readonly Vec2[] | null,
     ctx: ToolContext
   ) => void
+  /** The modes the prompt takes; all of them by default. */
+  readonly modes?: readonly SelectionMode[]
+  /**
+   * A single object's pick rather than a set: what a mode finds is not added
+   * to the selection nor counted, the command takes one of it — the oldest or
+   * the newest in the drawing, as its pick in AutoCAD 2023's console does —
+   * and finding none says `No object found`. The pick itself stays the
+   * command's, which hands the selector only the modes ({@link inMode}).
+   */
+  readonly one?: {
+    readonly take: (entity: Entity, ctx: ToolContext) => void
+    readonly newest: boolean
+  }
 }
 
 /**
@@ -200,7 +230,7 @@ export class ObjectSelector {
       case "objects":
       case "pressed":
       case "dragging":
-        return MODES.map((id) => ({
+        return (this.options.modes ?? MODES).map((id) => ({
           id,
           hidden: true,
           prompt: "selectObjects",
@@ -223,6 +253,7 @@ export class ObjectSelector {
       return true
     }
     if (step.kind !== "objects") return false
+    if (!(this.options.modes ?? MODES).some((mode) => mode === id)) return false
     switch (id) {
       case "Window":
       case "Crossing":
@@ -456,6 +487,12 @@ export class ObjectSelector {
     }
   }
 
+  /** Whether a mode's own prompt is asking: a window's corner, a fence's point. */
+  inMode(): boolean {
+    const kind = this.step.kind
+    return kind !== "objects" && kind !== "pressed" && kind !== "dragging"
+  }
+
   /** Whether the question is a point: a mode's corner or vertex. */
   wantsSnap(): boolean {
     const step = this.step
@@ -614,6 +651,10 @@ export class ObjectSelector {
     ctx: ToolContext
   ): void {
     const ids = this.options.accept?.(found, ctx) ?? found
+    if (this.options.one) {
+      this.takeOne(ids, found.length - ids.length, this.options.one, ctx)
+      return
+    }
     const locked = new Set(
       ids.filter((id) => {
         const entity = ctx.document.get(id)
@@ -660,6 +701,28 @@ export class ObjectSelector {
     if (this.single && ids.length > 0) this.close(ctx)
   }
 
+  /**
+   * One of `ids` for a single object's pick; with none, how many the command
+   * left out (`1 was filtered out`, ARRAYPATH's source at its path curve in
+   * AutoCAD 2023's console) or that nothing was found.
+   */
+  private takeOne(
+    ids: readonly EntityId[],
+    filtered: number,
+    one: NonNullable<ObjectSelectorOptions["one"]>,
+    ctx: ToolContext
+  ): void {
+    const found = new Set(ids)
+    const inOrder = ctx.document
+      .getEntities()
+      .filter((entity) => found.has(entity.id))
+    const taken = one.newest ? inOrder.at(-1) : inOrder[0]
+    if (taken) one.take(taken, ctx)
+    else if (filtered > 0) {
+      ctx.report(ctx.text.message("filteredOut", { count: filtered }))
+    } else ctx.report(ctx.text.message("noObjectFound"))
+  }
+
   /** Undo: the last selection is taken back, or there is none left. */
   private undo(ctx: ToolContext): void {
     const last = this.operations.pop()
@@ -692,7 +755,12 @@ export class ObjectSelector {
   }
 
   private backToObjects(ctx: ToolContext): void {
-    if (this.step.kind !== "objects") ctx.dynamicInput.close()
+    if (this.step.kind !== "objects") {
+      // A single object's pick asks on in its keyword-only box.
+      if (this.options.one)
+        ctx.dynamicInput.open({ fields: [], commit: () => {} })
+      else ctx.dynamicInput.close()
+    }
     this.step = { kind: "objects", hover: null }
   }
 

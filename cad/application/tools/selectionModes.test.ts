@@ -425,3 +425,90 @@ describe("Select objects' modes", () => {
     ])
   })
 })
+
+// AutoCAD 2023's console: a mode at a single object's pick takes one of what
+// it finds — BREAK the oldest, UCS and ARRAYPATH the newest.
+describe("a single object's pick takes the modes", () => {
+  it("BREAK takes the oldest object a mode finds, and asks its first point", () => {
+    const cad = createHarness({ entities: drawing() })
+    cad.command("BREAK")
+    answer(cad, "W", "200,200", "300,300")
+    expect(cad.state().commandLine.prompt).toBe(
+      "BREAK Specify first break point:"
+    )
+    cad.escape().command("BREAK")
+    answer(cad, "C", "-10,-10", "50,60", "20,0", "40,0")
+    const onA = cad
+      .entities()
+      .filter((e) => e.type === "line" && e.start.y === 0)
+    expect(onA).toHaveLength(2)
+    expect(cad.byId("B")).toMatchObject({
+      start: { x: 0, y: 50 },
+      end: { x: 100, y: 50 },
+    })
+
+    cad.command("BREAK")
+    answer(cad, "W", "400,400", "500,500", "FOO")
+    expect(cad.commandLog().slice(-7)).toEqual([
+      "Select object: W",
+      "Specify first corner: 400,400",
+      "Specify opposite corner: 500,500",
+      "No object found",
+      "Select object: FOO",
+      "*Invalid selection*",
+      "Expects a point or Window/Last/Crossing/BOX/ALL/Fence/WPolygon/CPolygon",
+    ])
+    cad.escape()
+  })
+
+  it("UCS OBject takes the newest, read at its start", () => {
+    const cad = createHarness({ entities: drawing() })
+    cad.command("UCS")
+    answer(cad, "OB", "C", "-10,-10", "50,60")
+    expect(cad.runtime.document.getSettings().ucs.origin).toMatchObject({
+      x: 0,
+      y: 50,
+    })
+    cad.command("UCS")
+    answer(cad, "W")
+    cad.command("UCS")
+    answer(cad, "OB", "L")
+    expect(cad.runtime.document.getSettings().ucs.origin).toMatchObject({
+      x: 250,
+      y: 250,
+    })
+    cad.command("UCS")
+    answer(cad, "W")
+    cad.command("UCS")
+    answer(cad, "ZA", "O", "W", "-10,40", "110,60")
+    expect(cad.runtime.document.getSettings().ucs.origin).toMatchObject({
+      x: 0,
+      y: 50,
+    })
+  })
+
+  it("ARRAYPATH's path takes the newest curve and leaves out what is arrayed", () => {
+    const cad = createHarness({ entities: drawing() })
+    cad.select("C").command("ARRAYPATH")
+    answer(cad, "L")
+    expect(cad.commandLog().slice(-2)).toEqual([
+      "Select path curve: L",
+      "1 was filtered out",
+    ])
+    answer(cad, "C", "-10,-10", "50,60")
+    expect(cad.state().commandLine.prompt).toMatch(
+      /^ARRAYPATH Select grip to edit array/
+    )
+    cad.escape()
+  })
+
+  it("is answered in Autodesk's Spanish", () => {
+    const cad = createHarness({ locale: es, entities: drawing() })
+    cad.command("PARTE")
+    answer(cad, "LT")
+    expect(cad.state().commandLine.prompt).toBe(
+      "PARTE Precise primer punto de ruptura:"
+    )
+    cad.escape()
+  })
+})
