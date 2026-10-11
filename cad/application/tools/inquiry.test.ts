@@ -3,13 +3,7 @@ import type { LineEntity } from "../../domain/entities"
 import { withElevation } from "../../domain/entities"
 import type { ScenePrimitive } from "../../scene/types"
 import { createHarness, type CadHarness } from "../../../test/harness"
-import {
-  circleOf,
-  deg,
-  lineOf,
-  p,
-  polylineOf,
-} from "../../../test/builders"
+import { circleOf, deg, lineOf, p, polylineOf } from "../../../test/builders"
 import { es } from "../../locales/es"
 
 /**
