@@ -2264,6 +2264,8 @@ export const en: EngineCatalog = {
       "expectsSingleObject": "Expects a single object.",
       "lastKeyword": "Last",
       "noObjectSelected": "No object selected.",
+      "associativeDimensionRequired": "Linear, ordinate, or angular associative dimension required.",
+      "selectedObjectNotDimension": "Selected object is not a dimension.",
       "negativeSpacing": "Invalid spacing value, spacing value cannot be negative."
     },
     "feedback": {

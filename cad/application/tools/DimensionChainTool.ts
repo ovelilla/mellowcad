@@ -24,6 +24,7 @@ import { entityScenePrimitive } from "../SceneBuilder"
 import { ScenePrimitive } from "../../scene/types"
 import { THEME } from "../../scene/theme"
 import { lastDimension } from "./lastDimension"
+import { lastObject } from "./objectSelection"
 import type { PromptId } from "../../locales/types"
 import {
   CommandOption,
@@ -36,6 +37,7 @@ import {
 import { measurementOf } from "./DimensionTool"
 import { withCurrentProperties } from "./currentProperties"
 import { LayerId } from "../../domain/layers"
+import { worldPointToUcs } from "../../domain/ucs"
 
 /** Which end of the base dimension a chain grows from. */
 export type DimensionChainMode = "baseline" | "continue"
@@ -143,11 +145,15 @@ export class DimensionChainTool implements Tool {
     // Undo is offered with nothing to undo too, as AutoCAD's prompt offers it.
     return this.state.phase === "second"
       ? [{ id: "Select" }, { id: "Undo" }]
-      : []
+      : [{ id: "Last", hidden: true, prompt: "selectObjects" }]
   }
 
   invokeOption(id: string, ctx: ToolContext): CommandOptionOutcome {
-    if (this.state.phase !== "second") return "unhandled"
+    if (this.state.phase === "select") {
+      if (id !== "Last") return "unhandled"
+      this.takeLast(ctx)
+      return "continue"
+    }
     switch (id) {
       case "Undo":
         this.undoLast(ctx)
@@ -229,6 +235,20 @@ export class DimensionChainTool implements Tool {
     ctx.report(
       ctx.text.message("dimensionTextIs", { text: measurementOf(dim, ctx) })
     )
+  }
+
+  /**
+   * Last at the Select prompt, answered as AutoCAD 2023's console answers
+   * it. With no pick to be nearer to, the console grows the chain from the
+   * extension line nearer the WCS origin, whatever the UCS: Last picks there.
+   */
+  private takeLast(ctx: ToolContext): void {
+    const last = lastObject(ctx)
+    if (!last) ctx.report(ctx.text.message("noObjectSelected"))
+    else if (last.type === "dimension" && isChainable(last)) {
+      const origin = worldPointToUcs(ctx.ucs, { x: 0, y: 0 })
+      this.enterSecond(this.chainFrom(last, origin, ctx), ctx)
+    } else ctx.report(ctx.text.message("associativeDimensionRequired"))
   }
 
   /** The Undo keyword: backs out the last dimension *this run* created. */

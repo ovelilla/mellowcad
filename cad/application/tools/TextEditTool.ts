@@ -25,6 +25,7 @@ import {
   Tool,
   ToolContext,
 } from "./Tool"
+import { lastObject } from "./objectSelection"
 
 /**
  * AutoCAD's TEXTEDIT: retype what an existing annotation says.
@@ -198,9 +199,7 @@ export class TextEditTool implements Tool {
         ctx.dynamicInput.open({ fields: [], commit: () => {} })
         return "continue"
       case "Last": {
-        const last = ctx.document
-          .getEntities()
-          .findLast((entity) => ctx.document.isEntityVisible(entity))
+        const last = lastObject(ctx)
         if (last && isEditable(last)) this.beginEdit(last, ctx)
         return "continue"
       }

@@ -23,6 +23,7 @@ import {
   Tool,
   ToolContext,
 } from "./Tool"
+import { lastObject } from "./objectSelection"
 import type { PromptId } from "../../locales/types"
 
 /**
@@ -268,9 +269,7 @@ export class MeasureTool implements Tool {
         return "end"
       case "Last": {
         if (this.state.phase !== "areaObject") return "unhandled"
-        const last = ctx.document
-          .getEntities()
-          .findLast((entity) => ctx.document.isEntityVisible(entity))
+        const last = lastObject(ctx)
         return last && readsInPlan(last) && this.reportObject(last, ctx)
           ? "end"
           : "continue"

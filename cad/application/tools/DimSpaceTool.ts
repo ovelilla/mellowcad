@@ -19,7 +19,7 @@ import { entityScenePrimitive } from "../SceneBuilder"
 import { ScenePrimitive } from "../../scene/types"
 import { THEME } from "../../scene/theme"
 import type { PromptId } from "../../locales/types"
-import { ObjectSelector } from "./objectSelection"
+import { ObjectSelector, lastObject } from "./objectSelection"
 import {
   CommandOption,
   CommandOptionOutcome,
@@ -155,13 +155,24 @@ export class DimSpaceTool implements Tool {
   }
 
   commandOptions(): readonly CommandOption[] {
-    if (this.state.phase === "select") return this.selector.commandOptions()
-    return this.state.phase === "value" ? [{ id: "Auto" }] : []
+    switch (this.state.phase) {
+      case "base":
+        return [{ id: "Last", hidden: true, prompt: "selectObjects" }]
+      case "select":
+        return this.selector.commandOptions()
+      case "value":
+        return [{ id: "Auto" }]
+    }
   }
 
   invokeOption(id: string, ctx: ToolContext): CommandOptionOutcome {
     if (this.state.phase === "select") {
       return this.selector.invokeOption(id, ctx) ? "continue" : "unhandled"
+    }
+    if (this.state.phase === "base") {
+      if (id !== "Last") return "unhandled"
+      this.takeLast(ctx)
+      return "continue"
     }
     if (this.state.phase !== "value" || id !== "Auto") return "unhandled"
     const { base } = this.state
@@ -268,6 +279,15 @@ export class DimSpaceTool implements Tool {
   ): void {
     const moved = this.spaced(base, spacing, ctx)
     if (moved.length > 0) ctx.execute(new UpdateEntitiesCommand(moved))
+  }
+
+  /** Last at the base prompt, answered as AutoCAD 2023's console answers it. */
+  private takeLast(ctx: ToolContext): void {
+    const last = lastObject(ctx)
+    if (!last) ctx.report(ctx.text.message("noObjectSelected"))
+    else if (last.type !== "dimension") {
+      ctx.report(ctx.text.message("selectedObjectNotDimension"))
+    } else if (isSpaceable(last)) this.enterSelect(last, ctx)
   }
 
   private pickDimension(world: Vec2, ctx: ToolContext): DimensionEntity | null {

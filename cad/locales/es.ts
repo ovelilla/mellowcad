@@ -2586,6 +2586,8 @@ export const es: EngineLocale = {
       "expectsSingleObject": "Requiere un único objeto.",
       "lastKeyword": "úLTimo",
       "noObjectSelected": "No se ha designado ningún objeto.",
+      "associativeDimensionRequired": "Requiere una cota asociativa lineal, de coordenada o angular.",
+      "selectedObjectNotDimension": "El objeto designado no es una cota.",
       "negativeSpacing": "Valor de intervalo no válido, el valor de intervalo no puede ser negativo."
     },
     "feedback": {

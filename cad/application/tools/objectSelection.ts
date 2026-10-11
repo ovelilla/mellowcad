@@ -280,9 +280,7 @@ export class ObjectSelector {
         this.openPointInput(ctx)
         return true
       case "Last": {
-        const last = ctx.document
-          .getEntities()
-          .findLast((entity) => ctx.document.isEntityVisible(entity))
+        const last = lastObject(ctx)
         this.select(last ? [last.id] : [], false, null, false, ctx)
         return true
       }
@@ -875,6 +873,13 @@ export class ObjectSelector {
     const hit = this.pickAt(world, ctx)
     return hit && !ctx.selection.has(hit.id) ? hit : null
   }
+}
+
+/** What the Last mode takes: the last object drawn that is visible. */
+export function lastObject(ctx: ToolContext): Entity | undefined {
+  return ctx.document
+    .getEntities()
+    .findLast((entity) => ctx.document.isEntityVisible(entity))
 }
 
 /**

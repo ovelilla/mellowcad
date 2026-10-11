@@ -1,9 +1,15 @@
 import { describe, expect, it } from "vitest"
 
-import { createHarness } from "../../../test/harness"
+import { type CadHarness, createHarness } from "../../../test/harness"
 import { circleOf, lineOf, p } from "../../../test/builders"
 import { createDimension } from "../../domain/entities"
 import { es } from "../../locales/es"
+
+function answer(cad: CadHarness, text: string): CadHarness {
+  cad.runtime.setCommandLineText(text)
+  cad.runtime.submitCommandLine()
+  return cad
+}
 
 /**
  * The dimension commands' questions, as AutoCAD 2023's console asks them, in
@@ -171,6 +177,37 @@ describe("DIMSPACE's questions", () => {
     expect(cad.commandLog().at(-1)).toBe(
       "Invalid spacing value, spacing value cannot be negative."
     )
+  })
+
+  it("take Last at the base dimension, as AutoCAD's console does", () => {
+    const cad = createHarness({ entities: dims() })
+    answer(cad.command("DIMSPACE"), "L")
+    expect(cad.commandLog().at(-1)).toBe("Select base dimension: L")
+    expect(cad.state().commandLine.prompt).toBe(
+      "DIMSPACE Select dimensions to space:"
+    )
+    cad.click(p(50, -20)).enter().type("10").enter()
+    // The base is the last drawn, D2, so D1 comes 10 above it.
+    expect(cad.entities().find((e) => e.id === "D1")).toMatchObject({
+      linePoint: p(50, -50),
+    })
+  })
+
+  it("say why Last is no base dimension", () => {
+    const cad = createHarness({
+      entities: [...dims(), lineOf(p(0, 300), p(1, 300))],
+    })
+    answer(cad.command("DIMSPACE"), "L")
+    expect(cad.commandLog().slice(-2)).toEqual([
+      "Select base dimension: L",
+      "Selected object is not a dimension.",
+    ])
+    expect(cad.state().commandLine.prompt).toBe(
+      "DIMSPACE Select base dimension:"
+    )
+    const empty = createHarness()
+    answer(empty.command("DIMSPACE"), "L")
+    expect(empty.commandLog().at(-1)).toBe("No object selected.")
   })
 
   it("ask in Spanish", () => {

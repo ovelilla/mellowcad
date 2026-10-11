@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest"
-import { createHarness } from "../../../test/harness"
-import { p } from "../../../test/builders"
+import { type CadHarness, createHarness } from "../../../test/harness"
+import { lineOf, p } from "../../../test/builders"
 import {
   createDimension,
   DimensionEntity,
@@ -10,6 +10,12 @@ import { DEFAULT_DIM_STYLE } from "../../domain/dimStyles"
 import { parseDrawingFile } from "../../serialization/drawingFile"
 import { THEME } from "../../scene/theme"
 import { es } from "../../locales/es"
+
+function answer(cad: CadHarness, text: string): CadHarness {
+  cad.runtime.setCommandLineText(text)
+  cad.runtime.submitCommandLine()
+  return cad
+}
 
 const SPACING = DEFAULT_DIM_STYLE.baselineSpacing
 
@@ -189,6 +195,62 @@ describe("dimension chain prompts", () => {
       .click(p(180, 0))
 
     expect(added(cad)[0].first).toBeCloseToPoint(p(100, 0))
+  })
+
+  // AutoCAD 2023's console: `Select continued dimension: L` grows the chain
+  // from the extension line nearer the WCS origin, as a pick there would.
+  it("takes Last at the Select prompt, from the end nearer the origin", () => {
+    const cad = createHarness({ entities: [base()] })
+    answer(cad.command("DIMCONTINUE").option("Select"), "L")
+    expect(cad.commandLog().at(-1)).toBe("Select continued dimension: L")
+    cad.click(p(200, 0))
+    expect(added(cad)[0].first).toBeCloseToPoint(p(0, 0))
+
+    const reversed = createHarness({
+      entities: [
+        createDimension("linear", p(100, 0), p(0, 0), p(50, -30), {
+          rotation: 0,
+        }),
+      ],
+    })
+    answer(reversed.command("DIMBASELINE").option("Select"), "L")
+    reversed.click(p(300, 0))
+    expect(added(reversed).at(-1)?.first).toBeCloseToPoint(p(0, 0))
+  })
+
+  it("says why Last is no dimension to chain from", () => {
+    const cad = createHarness({
+      entities: [base(), lineOf(p(0, 300), p(1, 300))],
+    })
+    answer(cad.command("DIMBASELINE").option("Select"), "L")
+    expect(cad.commandLog().at(-1)).toBe(
+      "Linear, ordinate, or angular associative dimension required."
+    )
+    expect(cad.state().commandLine.prompt).toBe(
+      "DIMBASELINE Select base dimension:"
+    )
+    const empty = createHarness()
+    answer(empty.command("DIMCONTINUE"), "L")
+    expect(empty.commandLog().at(-1)).toBe("No object selected.")
+    answer(empty, "FOO")
+    expect(empty.commandLog().slice(-2)).toEqual([
+      "*Invalid selection*",
+      "Expects a point or Last",
+    ])
+  })
+
+  it("takes Spanish Last as úLTimo's LT", () => {
+    const cad = createHarness({ locale: es, entities: [base()] })
+    answer(cad.command("ACOCONTINUA").option("Select"), "LT")
+    expect(cad.commandLog().at(-1)).toBe("Designe cota continua: LT")
+    const line = createHarness({
+      locale: es,
+      entities: [lineOf(p(0, 300), p(1, 300))],
+    })
+    answer(line.command("ACOCONTINUA"), "LT")
+    expect(line.commandLog().at(-1)).toBe(
+      "Requiere una cota asociativa lineal, de coordenada o angular."
+    )
   })
 
   it("asks AutoCAD's questions and writes them answered", () => {
