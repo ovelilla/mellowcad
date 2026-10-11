@@ -6,8 +6,18 @@ import {
   normalize3,
   scale3,
   sub3,
+  withZOf,
 } from "../../geometry/Vec3"
-import { normalizeDegrees } from "../../geometry/primitives"
+import {
+  bulgeToArc,
+  normalizeAngle,
+  normalizeDegrees,
+} from "../../geometry/primitives"
+import {
+  ArcSegment,
+  segmentExitTangent,
+  tangentArcBulge,
+} from "../../geometry/bulgeArcs"
 import {
   DocumentSettings,
   formatAngle,
@@ -32,9 +42,12 @@ import {
   QuestionInput,
   Tool,
   ToolContext,
+  ToolQuestion,
 } from "./Tool"
 import { lastObject } from "./objectSelection"
 import type { PromptId } from "../../locales/types"
+import { ARC_SEGMENT_OPTIONS, ArcSegmentInput } from "./arcSegmentInput"
+import { lastDrawnDirection } from "./lastDrawnPoint"
 
 /**
  * MEASURE (AutoCAD's DIST / MEASUREGEOM). Creates no geometry — the result is a
@@ -76,10 +89,23 @@ type MeasureState =
       /** DIST's Multiple points, or its Length's `Specify length of line:`. */
       readonly phase: "multiple" | "length"
       readonly points: readonly Vec3[]
+      /** Each segment's bulge: 0 a line, an Arc's arc otherwise. */
+      readonly bulges: readonly number[]
+      /** Arc: the next segment is an arc, as PLINE's arc mode draws it. */
+      readonly arcMode: boolean
+      /** The way a first arc leaves the first point (PLINE's rule). */
+      readonly startTangent: Vec2
+      /** Ctrl held: the arc leaves the other way. */
+      readonly reversed: boolean
       readonly cursor: Vec3
       /** The run's length so far, as `Distance = …` writes it. */
       readonly total: string
     }
+
+type Run = Extract<MeasureState, { phase: "multiple" | "length" }>
+
+/** A run's points, bulges and mode, from which {@link MeasureTool.walk} goes on. */
+type RunPath = Pick<Run, "points" | "bulges" | "arcMode">
 
 interface Measurement {
   readonly base: Vec3
@@ -102,6 +128,10 @@ export class MeasureTool implements Tool {
   private total = 0
   /** The last measurement in the mode and the total then, said again at its first corner. */
   private shown: (AreaReport & { readonly total: string }) | null = null
+  /** Multiple points' Arc options, the prompts PLINE's ask. */
+  private readonly arc = new ArcSegmentInput((segment, ctx) =>
+    this.arcDone(segment, ctx)
+  )
 
   /** The last area AREA measured, 0 until it has. */
   lastArea(): number {
@@ -116,6 +146,7 @@ export class MeasureTool implements Tool {
   }
 
   onDeactivate(ctx: ToolContext): void {
+    this.arc.cancel()
     this.reset({ x: 0, y: 0 })
     ctx.dynamicInput.close()
   }
@@ -133,11 +164,14 @@ export class MeasureTool implements Tool {
   onPointerMove(input: PointerInput, ctx: ToolContext): void {
     this.lastScreen = input.screen
     ctx.dynamicInput.setPosition(input.screen)
-    if (
-      this.state.phase === "second" ||
-      this.state.phase === "multiple" ||
-      this.state.phase === "length"
-    ) {
+    if (this.state.phase === "multiple") {
+      this.state = {
+        ...this.state,
+        cursor: input.point,
+        reversed: input.ctrlKey,
+      }
+      if (this.arc.active) this.arc.onPointerMove(input, ctx)
+    } else if (this.state.phase === "second" || this.state.phase === "length") {
       this.state = { ...this.state, cursor: input.point }
     } else if (this.state.phase === "area") {
       this.state = { ...this.state, cursor: input.point }
@@ -161,7 +195,12 @@ export class MeasureTool implements Tool {
       ) {
         ctx.endCommand()
       }
+    } else if (this.state.phase === "multiple" && this.arc.active) {
+      this.arc.onPointerDown(input, ctx)
     } else {
+      if (this.state.phase === "multiple") {
+        this.state = { ...this.state, reversed: input.ctrlKey }
+      }
       this.place(input.point, ctx)
     }
     ctx.requestRender()
@@ -175,7 +214,33 @@ export class MeasureTool implements Tool {
       ctx.endCommand()
       return
     } else if (this.state.phase === "multiple") {
-      this.walk([...this.state.points, point], ctx)
+      const run = this.state
+      if (!run.arcMode) {
+        this.walk(
+          {
+            ...run,
+            points: [...run.points, point],
+            bulges: [...run.bulges, 0],
+          },
+          ctx
+        )
+        return
+      }
+      // In Arc the point ends the arc tangent to the run, as PLINE's does.
+      const end = withZOf(point, lastOf(run.points))
+      const bulge = this.pendingBulge(run, end)
+      if (bulge === null) {
+        ctx.report(ctx.text.message("invalid"), "error")
+        return
+      }
+      this.walk(
+        {
+          ...run,
+          points: [...run.points, end],
+          bulges: [...run.bulges, bulge],
+        },
+        ctx
+      )
       return
     } else if (this.state.phase === "length") {
       // A point there gives the length from the last one, as AutoCAD's does.
@@ -195,9 +260,26 @@ export class MeasureTool implements Tool {
    * Multiple points' run so far, then its next point: `Distance = …` once
    * it has a segment, as AutoCAD 2023's console writes it before each.
    */
-  private walk(points: readonly Vec3[], ctx: ToolContext): void {
-    const total = formatLength(pathLength(points), ctx.document.getSettings())
-    this.state = { phase: "multiple", points, cursor: lastOf(points), total }
+  private walk(run: RunPath, ctx: ToolContext): void {
+    const { points, bulges, arcMode } = run
+    const total = formatLength(
+      pathLength(points, bulges),
+      ctx.document.getSettings()
+    )
+    const startTangent =
+      this.state.phase === "multiple" || this.state.phase === "length"
+        ? this.state.startTangent
+        : (lastDrawnDirection(ctx.document) ?? { x: 1, y: 0 })
+    this.state = {
+      phase: "multiple",
+      points,
+      bulges,
+      arcMode,
+      startTangent,
+      reversed: false,
+      cursor: lastOf(points),
+      total,
+    }
     if (points.length > 1) {
       ctx.report(ctx.text.message("distanceTotal", { value: total }))
     }
@@ -205,19 +287,67 @@ export class MeasureTool implements Tool {
   }
 
   /**
-   * Length's segment: on along the last one (a negative length back), or
-   * along the UCS's X axis before there is one.
+   * Length's segment: on along the last one (a negative length back), the
+   * way an arc ends heading, or along the UCS's X axis before there is one.
    */
   private extend(length: number, ctx: ToolContext): void {
     if (this.state.phase !== "length" || !Number.isFinite(length)) return
-    const { points } = this.state
+    const run = this.state
+    const { points } = run
     const last = lastOf(points)
-    const along =
-      points.length > 1
-        ? normalize3(sub3(last, points[points.length - 2]))
+    const n = points.length
+    const bulge = run.bulges[n - 2] ?? 0
+    const exit =
+      bulge !== 0 ? segmentExitTangent(points[n - 2], last, bulge) : null
+    const along = exit
+      ? { x: exit.x, y: exit.y, z: 0 }
+      : n > 1
+        ? normalize3(sub3(last, points[n - 2]))
         : null
     const direction = along ?? ctx.ucs.xAxis
-    this.walk([...points, add3(last, scale3(direction, length))], ctx)
+    this.walk(
+      {
+        ...run,
+        points: [...points, add3(last, scale3(direction, length))],
+        bulges: [...run.bulges, 0],
+      },
+      ctx
+    )
+  }
+
+  /** The way the run leaves its last point. */
+  private runTangent(run: Run): Vec2 {
+    const { points, bulges } = run
+    const n = points.length
+    if (n < 2) return run.startTangent
+    return (
+      segmentExitTangent(points[n - 2], points[n - 1], bulges[n - 2] ?? 0) ??
+      run.startTangent
+    )
+  }
+
+  /** Arc's tangent arc to `end`, or the other way with Ctrl; null for none. */
+  private pendingBulge(run: Run, end: Vec2): number | null {
+    const tangent = this.runTangent(run)
+    return tangentArcBulge(
+      lastOf(run.points),
+      run.reversed ? V.scale(tangent, -1) : tangent,
+      end
+    )
+  }
+
+  /** An Arc option's arc, after which the arc's prompt asks again. */
+  private arcDone(segment: ArcSegment, ctx: ToolContext): void {
+    if (this.state.phase !== "multiple") return
+    const run = this.state
+    this.walk(
+      {
+        ...run,
+        points: [...run.points, withZOf(segment.end, lastOf(run.points))],
+        bulges: [...run.bulges, segment.bulge],
+      },
+      ctx
+    )
   }
 
   private askLength(ctx: ToolContext): void {
@@ -311,6 +441,7 @@ export class MeasureTool implements Tool {
         this.place(this.state.base, ctx)
         return true
       case "multiple":
+        if (this.arc.active) return this.arc.onEnter(ctx)
         if (this.invokeDistOption("Total", ctx) === "end") ctx.endCommand()
         return true
       case "length":
@@ -343,14 +474,17 @@ export class MeasureTool implements Tool {
     }
   }
 
-  question(): PromptId | null {
+  question(): PromptId | ToolQuestion | null {
     switch (this.state.phase) {
       case "first":
         return "specifyFirstPoint"
       case "second":
         return "distSecondPointOr"
       case "multiple":
-        return "specifyNextPointOr"
+        if (this.arc.active) return this.arc.question()
+        return this.state.arcMode
+          ? "specifyEndpointOfArcOr"
+          : "specifyNextPointOr"
       case "length":
         return "specifyLengthOfLine"
       case "area":
@@ -386,10 +520,16 @@ export class MeasureTool implements Tool {
         values: this.shown,
       }
     }
-    if (this.state.phase === "multiple" && this.state.points.length > 1) {
+    if (this.state.phase === "multiple") {
+      if (this.arc.active) return this.arc.takes()
+      const { arcMode, points, total } = this.state
+      if (points.length < 2) return arcMode ? "point2d" : null
       return {
-        refusal: ["pointOrKeywordRequired", "distanceTotal"],
-        values: { value: this.state.total },
+        refusal: [
+          arcMode ? "point2dOrKeywordRequired" : "pointOrKeywordRequired",
+          "distanceTotal",
+        ],
+        values: { value: total },
       }
     }
     return null
@@ -401,11 +541,14 @@ export class MeasureTool implements Tool {
    */
   setsLastPoint(): boolean | null {
     if (this.state.phase === "second") return false
-    return this.state.phase === "multiple" ? true : null
+    return this.state.phase === "multiple" && !this.arc.active ? true : null
   }
 
+  /** Arc's prompt shows no `<Total>`, though Enter there totals too. */
   defaultOption(): string | null {
-    if (this.state.phase === "multiple") return "Total"
+    if (this.state.phase === "multiple") {
+      return this.state.arcMode || this.arc.active ? null : "Total"
+    }
     if (this.state.phase !== "area") return null
     const { length } = this.state.points
     if (length === 0) return this.areaMode === "plain" ? "Object" : null
@@ -424,10 +567,10 @@ export class MeasureTool implements Tool {
   }
 
   /**
-   * WHY no Arc and Length at AREA's next point, nor Arc at DIST's: not built
+   * WHY no Arc and Length at AREA's next point: not built
    * (docs/autocad-coverage.md). In Add area the first corner lists Subtract
    * area and takes Add area unlisted, as AutoCAD 2023's console does, and
-   * the other way round.
+   * the other way round. DIST's Arc lists PLINE's arc options.
    */
   commandOptions(): readonly CommandOption[] {
     if (this.state.phase === "areaObject") {
@@ -435,8 +578,28 @@ export class MeasureTool implements Tool {
     }
     if (this.state.phase === "second") return [{ id: "Multiple" }]
     if (this.state.phase === "multiple") {
-      const later = [{ id: "Length" }, { id: "Undo" }, { id: "Total" }]
-      return this.state.points.length > 1 ? [{ id: "Close" }, ...later] : later
+      if (this.arc.active) return this.arc.commandOptions()
+      const close = this.state.points.length > 1 ? [{ id: "Close" }] : []
+      if (!this.state.arcMode) {
+        return [
+          { id: "Arc" },
+          ...close,
+          { id: "Length" },
+          { id: "Undo" },
+          { id: "Total" },
+        ]
+      }
+      const [angle, center, direction, radius, second] = ARC_SEGMENT_OPTIONS
+      return [
+        { id: angle },
+        { id: center },
+        ...close,
+        { id: direction },
+        { id: "Line" },
+        { id: radius },
+        { id: second },
+        { id: "Undo" },
+      ]
     }
     if (this.state.phase !== "area") return []
     const { length } = this.state.points
@@ -509,15 +672,33 @@ export class MeasureTool implements Tool {
     const state = this.state
     if (state.phase === "second") {
       if (id !== "Multiple") return "unhandled"
-      this.walk([state.base], ctx)
+      this.walk({ points: [state.base], bulges: [], arcMode: false }, ctx)
       return "continue"
     }
     if (state.phase !== "multiple") return "unhandled"
+    if (this.arc.active) return this.arc.invokeOption(id, ctx)
     switch (id) {
-      case "Close":
+      case "Arc":
+      case "Line":
+        // Each switch says the run again, as the console does.
+        this.walk({ ...state, arcMode: id === "Arc" }, ctx)
+        return "continue"
+      case "Close": {
         if (state.points.length < 2) return "unhandled"
-        this.walk([...state.points, state.points[0]], ctx)
+        // WHY no *Invalid*: the console closes a reversal straight, silent.
+        const bulge = state.arcMode
+          ? (this.pendingBulge(state, state.points[0]) ?? 0)
+          : 0
+        this.walk(
+          {
+            ...state,
+            points: [...state.points, state.points[0]],
+            bulges: [...state.bulges, bulge],
+          },
+          ctx
+        )
         return "end"
+      }
       case "Total":
         ctx.report(ctx.text.message("distanceTotal", { value: state.total }))
         return "end"
@@ -528,11 +709,27 @@ export class MeasureTool implements Tool {
         if (state.points.length === 1) {
           ctx.report(ctx.text.message("allSegmentsUndone"))
         } else {
-          this.walk(state.points.slice(0, -1), ctx)
+          // On as the segment left last was drawn, as PLINE's Undo goes.
+          const bulges = state.bulges.slice(0, -1)
+          this.walk(
+            {
+              points: state.points.slice(0, -1),
+              bulges,
+              arcMode: (bulges[bulges.length - 1] ?? 0) !== 0,
+            },
+            ctx
+          )
         }
         return "continue"
       default:
-        return "unhandled"
+        return state.arcMode &&
+          this.arc.begin(
+            id,
+            { point: lastOf(state.points), tangent: this.runTangent(state) },
+            ctx
+          )
+          ? "continue"
+          : "unhandled"
     }
   }
 
@@ -643,10 +840,16 @@ export class MeasureTool implements Tool {
   }
 
   wantsSnap(): boolean {
+    if (this.state.phase === "multiple" && this.arc.active) {
+      return this.arc.wantsSnap()
+    }
     return this.state.phase !== "areaObject"
   }
 
   getConstraintAnchor(): Vec2 | null {
+    if (this.state.phase === "multiple" && this.arc.active) {
+      return this.arc.anchor()
+    }
     return this.basePoint()
   }
 
@@ -657,13 +860,7 @@ export class MeasureTool implements Tool {
       this.drawDistance(out, ctx, this.state.base, this.state.cursor, settings)
     }
     if (this.state.phase === "multiple" || this.state.phase === "length") {
-      const { points, cursor } = this.state
-      this.drawRun(
-        out,
-        ctx,
-        this.state.phase === "multiple" ? [...points, cursor] : points,
-        settings
-      )
+      this.drawRun(out, ctx, this.runWithCursor(this.state, ctx), settings)
     }
     if (this.state.phase === "area" && this.state.points.length > 0) {
       this.drawArea(out, ctx, this.state.points, this.state.cursor, settings)
@@ -729,25 +926,51 @@ export class MeasureTool implements Tool {
     placeAndPushReadout(out, b, lines, viewport)
   }
 
+  /**
+   * The run with the segment the cursor would add: in Multiple points the
+   * line or the tangent arc to it, or the arc an Arc option's answers make.
+   */
+  private runWithCursor(run: Run, ctx: ToolContext): RunPath {
+    if (run.phase === "length") return run
+    let segment: ArcSegment | null
+    if (this.arc.active) segment = this.arc.preview(ctx)
+    else if (run.arcMode) {
+      const bulge = this.pendingBulge(run, run.cursor)
+      segment = { end: run.cursor, bulge: bulge ?? 0 }
+    } else segment = { end: run.cursor, bulge: 0 }
+    if (segment === null) return run
+    const end = run.arcMode
+      ? withZOf(segment.end, lastOf(run.points))
+      : run.cursor
+    return {
+      ...run,
+      points: [...run.points, end],
+      bulges: [...run.bulges, segment.bulge],
+    }
+  }
+
   /** Multiple points' run, the cursor's point last, with its length. */
   private drawRun(
     out: ScenePrimitive[],
     ctx: ToolContext,
-    points: readonly Vec3[],
+    run: RunPath,
     settings: DocumentSettings
   ): void {
     const { viewport } = ctx
-    const screen = points.map((point) => viewport.worldToScreen(point))
+    const { points, bulges } = run
+    const screen = runOutline(points, bulges).map((point) =>
+      viewport.worldToScreen(point)
+    )
     out.push({
       kind: "path",
       points: screen,
       closed: false,
       stroke: { color: THEME.selected, width: 1.5, dash: [6, 4] },
     })
-    for (const p of screen) pushTick(out, p)
+    for (const p of points) pushTick(out, viewport.worldToScreen(p))
     const lines = [
       ctx.text.feedback("measureDistance", {
-        value: formatLength(pathLength(points), settings),
+        value: formatLength(pathLength(points, bulges), settings),
         unit: unitSuffix(settings.unit),
       }),
     ]
@@ -841,13 +1064,53 @@ function lastOf(points: readonly Vec3[]): Vec3 {
   return points[points.length - 1]
 }
 
-/** The 3D length of the run through `points`. */
-function pathLength(points: readonly Vec3[]): number {
+/**
+ * The length of the run through `points`: in space along its lines, and
+ * along its arcs (`bulges`), as Arc's `Distance = …` adds them.
+ */
+function pathLength(
+  points: readonly Vec3[],
+  bulges: readonly number[] = []
+): number {
   let total = 0
   for (let i = 1; i < points.length; i++) {
-    total += length3(sub3(points[i], points[i - 1]))
+    const bulge = bulges[i - 1] ?? 0
+    const chord = length3(sub3(points[i], points[i - 1]))
+    if (bulge === 0) {
+      total += chord
+      continue
+    }
+    const included = 4 * Math.atan(Math.abs(bulge))
+    total += (chord * included) / (2 * Math.sin(included / 2))
   }
   return total
+}
+
+/** The run's outline, its arcs as short chords, for the dashed preview. */
+function runOutline(
+  points: readonly Vec3[],
+  bulges: readonly number[]
+): Vec2[] {
+  const outline: Vec2[] = points.slice(0, 1)
+  for (let i = 1; i < points.length; i++) {
+    const bulge = bulges[i - 1] ?? 0
+    if (bulge !== 0) {
+      const arc = bulgeToArc(points[i - 1], points[i], bulge)
+      const sweep = normalizeAngle(arc.endAngle - arc.startAngle)
+      const steps = Math.max(8, Math.ceil(sweep / (Math.PI / 32)))
+      for (let k = 1; k < steps; k++) {
+        // A clockwise arc runs from its end angle back: follow the run.
+        const t = bulge > 0 ? k / steps : 1 - k / steps
+        const angle = arc.startAngle + sweep * t
+        outline.push({
+          x: arc.center.x + arc.radius * Math.cos(angle),
+          y: arc.center.y + arc.radius * Math.sin(angle),
+        })
+      }
+    }
+    outline.push(points[i])
+  }
+  return outline
 }
 
 /** A small filled square marking a measured point. */

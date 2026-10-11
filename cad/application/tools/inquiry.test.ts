@@ -243,21 +243,21 @@ describe("DIST's Multiple points", () => {
       "DIST",
       "Specify first point: 0,0",
       "Specify second point or [Multiple points]: M",
-      "Specify next point or [Length/Undo/Total] <Total>: 3,4",
+      "Specify next point or [Arc/Length/Undo/Total] <Total>: 3,4",
       "Distance = 5.00",
-      "Specify next point or [Close/Length/Undo/Total] <Total>: 6,8",
+      "Specify next point or [Arc/Close/Length/Undo/Total] <Total>: 6,8",
       "Distance = 10.00",
-      "Specify next point or [Close/Length/Undo/Total] <Total>: FOO",
+      "Specify next point or [Arc/Close/Length/Undo/Total] <Total>: FOO",
       "Point or option keyword required.",
       "Distance = 10.00",
-      "Specify next point or [Close/Length/Undo/Total] <Total>: U",
+      "Specify next point or [Arc/Close/Length/Undo/Total] <Total>: U",
       "Distance = 5.00",
-      "Specify next point or [Close/Length/Undo/Total] <Total>: U",
-      "Specify next point or [Length/Undo/Total] <Total>: U",
+      "Specify next point or [Arc/Close/Length/Undo/Total] <Total>: U",
+      "Specify next point or [Arc/Length/Undo/Total] <Total>: U",
       "All segments already undone.",
-      "Specify next point or [Length/Undo/Total] <Total>: 6,0",
+      "Specify next point or [Arc/Length/Undo/Total] <Total>: 6,0",
       "Distance = 6.00",
-      "Specify next point or [Close/Length/Undo/Total] <Total>:",
+      "Specify next point or [Arc/Close/Length/Undo/Total] <Total>:",
       "Distance = 6.00",
     ])
     expect(cad.activeToolId()).toBe("select")
@@ -268,7 +268,7 @@ describe("DIST's Multiple points", () => {
     cad.command("DIST")
     answer(cad, "0,0", "M", "10,0", "10,10", "C")
     expect(cad.commandLog().slice(-2)).toEqual([
-      "Specify next point or [Close/Length/Undo/Total] <Total>: C",
+      "Specify next point or [Arc/Close/Length/Undo/Total] <Total>: C",
       "Distance = 34.14",
     ])
     expect(cad.activeToolId()).toBe("select")
@@ -281,22 +281,22 @@ describe("DIST's Multiple points", () => {
     cad.enter()
     answer(cad, "-4", "L", "@0,5", "T")
     expect(cad.commandLog().slice(3)).toEqual([
-      "Specify next point or [Length/Undo/Total] <Total>: L",
+      "Specify next point or [Arc/Length/Undo/Total] <Total>: L",
       "Specify length of line: 7",
       "Distance = 7.00",
-      "Specify next point or [Close/Length/Undo/Total] <Total>: 10,0",
+      "Specify next point or [Arc/Close/Length/Undo/Total] <Total>: 10,0",
       "Distance = 10.00",
-      "Specify next point or [Close/Length/Undo/Total] <Total>: L",
+      "Specify next point or [Arc/Close/Length/Undo/Total] <Total>: L",
       "Specify length of line: FOO",
       "Requires numeric distance or second point.",
       "Specify length of line:",
       "Requires numeric distance or second point.",
       "Specify length of line: -4",
       "Distance = 14.00",
-      "Specify next point or [Close/Length/Undo/Total] <Total>: L",
+      "Specify next point or [Arc/Close/Length/Undo/Total] <Total>: L",
       "Specify length of line: @0,5",
       "Distance = 19.00",
-      "Specify next point or [Close/Length/Undo/Total] <Total>: T",
+      "Specify next point or [Arc/Close/Length/Undo/Total] <Total>: T",
       "Distance = 19.00",
     ])
   })
@@ -315,18 +315,96 @@ describe("DIST's Multiple points", () => {
     answer(cad, "0,0", "M", "3,4", "FOO", "C")
     expect(cad.commandLog().slice(2)).toEqual([
       "Especifique segundo punto o [puntos Múltiples]: M",
-      "Precise punto siguiente o [Longitud/desHacer/Total] <Total>: 3,4",
+      "Precise punto siguiente o [Arco/Longitud/desHacer/Total] <Total>: 3,4",
       "Distancia = 5.00",
-      "Precise punto siguiente o [Cerrar/Longitud/desHacer/Total] <Total>: FOO",
+      "Precise punto siguiente o [Arco/Cerrar/Longitud/desHacer/Total] <Total>: FOO",
       "Se requiere un punto o una opción.",
       "Distancia = 5.00",
-      "Precise punto siguiente o [Cerrar/Longitud/desHacer/Total] <Total>: C",
+      "Precise punto siguiente o [Arco/Cerrar/Longitud/desHacer/Total] <Total>: C",
       "Distancia = 10.00",
     ])
     cad.command("DIST")
     answer(cad, "0,0", "M", "L")
     expect(cad.state().commandLine.prompt).toBe(
       "DIST Precise longitud de línea:"
+    )
+  })
+
+  // PLINE's arc options, as AutoCAD 2023's console asks them in DIST.
+  it("Arc adds the arcs' lengths to the run", () => {
+    const cad = createHarness()
+    cad.command("DIST")
+    answer(cad, "0,0", "M", "10,0", "A", "FOO", "R", "10", "A", "90")
+    cad.enter()
+    expect(cad.commandLog().slice(5)).toEqual([
+      "Specify next point or [Arc/Close/Length/Undo/Total] <Total>: A",
+      "Distance = 10.00",
+      "Specify endpoint of arc (hold Ctrl to switch direction) or [Angle/CEnter/CLose/Direction/Line/Radius/Second pt/Undo]: FOO",
+      "2D point or option keyword required.",
+      "Distance = 10.00",
+      "Specify endpoint of arc (hold Ctrl to switch direction) or [Angle/CEnter/CLose/Direction/Line/Radius/Second pt/Undo]: R",
+      "Specify radius of arc: 10",
+      "Specify endpoint of arc (hold Ctrl to switch direction) or [Angle]: A",
+      "Specify included angle: 90",
+      "Specify direction of chord for arc (hold Ctrl to switch direction) <0>:",
+      "Distance = 25.71",
+    ])
+    cad.enter()
+    expect(cad.commandLog().slice(-2)).toEqual([
+      "Specify endpoint of arc (hold Ctrl to switch direction) or [Angle/CEnter/CLose/Direction/Line/Radius/Second pt/Undo]:",
+      "Distance = 25.71",
+    ])
+    expect(cad.activeToolId()).toBe("select")
+  })
+
+  it("Arc's endpoint goes on tangent to the run, and Line back", () => {
+    const cad = createHarness()
+    cad.command("DIST")
+    // A half circle of radius 5 from the line's end: 5π on its 10.
+    answer(cad, "0,0", "M", "10,0", "A", "10,10", "L", "0,10", "T")
+    expect(cad.commandLog().slice(-6)).toEqual([
+      "Specify endpoint of arc (hold Ctrl to switch direction) or [Angle/CEnter/CLose/Direction/Line/Radius/Second pt/Undo]: L",
+      "Distance = 25.71",
+      "Specify next point or [Arc/Close/Length/Undo/Total] <Total>: 0,10",
+      "Distance = 35.71",
+      "Specify next point or [Arc/Close/Length/Undo/Total] <Total>: T",
+      "Distance = 35.71",
+    ])
+  })
+
+  it("Arc's Undo goes back to the line, and CLose closes straight where no arc can", () => {
+    const undo = createHarness()
+    undo.command("DIST")
+    answer(undo, "0,0", "M", "10,0", "A", "U")
+    expect(undo.state().commandLine.prompt).toBe(
+      "DIST Specify next point or [Arc/Length/Undo/Total] <Total>:"
+    )
+
+    const close = createHarness()
+    close.command("DIST")
+    answer(close, "0,0", "M", "10,0", "A", "CL")
+    expect(close.commandLog().slice(-2)).toEqual([
+      "Specify endpoint of arc (hold Ctrl to switch direction) or [Angle/CEnter/CLose/Direction/Line/Radius/Second pt/Undo]: CL",
+      "Distance = 20.00",
+    ])
+  })
+
+  it("draws the arc on screen as it goes", () => {
+    const cad = createHarness()
+    cad.command("DIST").click(p(0, 0))
+    answer(cad, "M")
+    cad.click(p(100, 0))
+    answer(cad, "A")
+    cad.moveTo(p(100, 100))
+    expect(readout(cad)).toEqual(["Dist  257.08 mm"])
+  })
+
+  it("asks Arc in Autodesk's Spanish", () => {
+    const cad = createHarness({ locale: es })
+    cad.command("DIST")
+    answer(cad, "0,0", "M", "10,0", "A")
+    expect(cad.state().commandLine.prompt).toBe(
+      "DIST Precise punto final del arco (mantenga pulsada la tecla Ctrl para cambiar de dirección) o [ángUlo/cEntro/Cerrar/Dirección/líNea/Radio/Segundo pto./desHacer]:"
     )
   })
 })

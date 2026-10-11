@@ -1112,7 +1112,14 @@ export const es: EngineLocale = {
         "Close": "Cerrar",
         "Length": "Longitud",
         "Undo": "desHacer",
-        "Total": "Total"
+        "Total": "Total",
+        "Arc": "Arco",
+        "Line": "líNea",
+        "Angle": "ángUlo",
+        "Center": "cEntro",
+        "Direction": "Dirección",
+        "Radius": "Radio",
+        "Second pt": "Segundo pto."
       },
       "AREA": {
         "Object": "Objeto",

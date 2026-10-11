@@ -3244,16 +3244,16 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0°~, Line space facto
   command| DIST
   prompt| Specify first point:
 > Multiple
-  prompt: DIST Specify next point or [Length/Undo/Total] <Total>:
+  prompt: DIST Specify next point or [Arc/Length/Undo/Total] <Total>:
   tip: Specify next point or
-  options: [L] Length, [U] Undo, [T] Total
+  options: [A] Arc, [L] Length, [U] Undo, [T] Total
   canvas: "Dist  0.00 mm"
   prompt| Specify second point or [Multiple points]: M
 > next
-  prompt: DIST Specify next point or [Close/Length/Undo/Total] <Total>:
-  options: [C] Close, [L] Length, [U] Undo, [T] Total
+  prompt: DIST Specify next point or [Arc/Close/Length/Undo/Total] <Total>:
+  options: [A] Arc, [C] Close, [L] Length, [U] Undo, [T] Total
   canvas: "Dist  300.00 mm"
-  prompt| Specify next point or [Length/Undo/Total] <Total>:
+  prompt| Specify next point or [Arc/Length/Undo/Total] <Total>:
   info| Distance = 300.00
 > Length
   prompt: DIST Specify length of line:
@@ -3261,13 +3261,13 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0°~, Line space facto
   tip: Specify length of line:
   dyn: "Length"=""||mm*
   options: -
-  prompt| Specify next point or [Close/Length/Undo/Total] <Total>: L
+  prompt| Specify next point or [Arc/Close/Length/Undo/Total] <Total>: L
 > length
-  prompt: DIST Specify next point or [Close/Length/Undo/Total] <Total>:
+  prompt: DIST Specify next point or [Arc/Close/Length/Undo/Total] <Total>:
   asks: "Second point"
   tip: Specify next point or
   dyn: "X,Y"=""||*
-  options: [C] Close, [L] Length, [U] Undo, [T] Total
+  options: [A] Arc, [C] Close, [L] Length, [U] Undo, [T] Total
   canvas: "Dist  500.00 mm"
   prompt| Specify length of line: 100
   info| Distance = 400.00
@@ -3278,7 +3278,7 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0°~, Line space facto
   dyn: -
   options: -
   canvas: -
-  prompt| Specify next point or [Close/Length/Undo/Total] <Total>:
+  prompt| Specify next point or [Arc/Close/Length/Undo/Total] <Total>:
   info| Distance = 400.00
 > AREA
   prompt: AREA Specify first corner point or [Object/Add area/Subtract area] <Object>:

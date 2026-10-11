@@ -841,6 +841,9 @@ export const en: EngineCatalog = {
       "PLINE": {
         "Center": "CEnter"
       },
+      "DIST": {
+        "Center": "CEnter"
+      },
       "VIEW": {
         "Right": "RIght",
         "SWiso": "SWIso",

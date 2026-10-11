@@ -642,7 +642,14 @@
         "Close": "Close",
         "Length": "Length",
         "Undo": "Undo",
-        "Total": "Total"
+        "Total": "Total",
+        "Arc": "Arc",
+        "Line": "Line",
+        "Angle": "Angle",
+        "Center": "CEnter",
+        "Direction": "Direction",
+        "Radius": "Radius",
+        "Second pt": "Second pt"
       },
       "AREA": {
         "Object": "Object",
