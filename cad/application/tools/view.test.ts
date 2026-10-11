@@ -138,7 +138,7 @@ describe("ZOOM", () => {
       ],
     })
 
-    cad.command("ZOOM").option("Object").click(p(250, 100))
+    cad.command("ZOOM").option("Object").click(p(250, 100)).enter()
 
     expect(view(cad).center).toBeCloseToPoint(p(200, 100))
     expect(cad.activeToolId()).toBe("select")

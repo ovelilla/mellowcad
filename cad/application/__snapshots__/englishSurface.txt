@@ -3198,81 +3198,111 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
   properties: -
   cycling: -
 > ZOOM
-  prompt: ZOOM [All/Extents/Previous/Scale/Window/Object]:
-  asks: 
-  dyn: 
+  prompt: ZOOM Specify corner of window, enter a scale factor (nX or nXP), or [All/Extents/Previous/Scale/Window/Object]:
+  asks: "Specify corner of window, enter a scale factor (nX or nXP), or"
+  tip: Specify corner of window, enter a scale factor (nX or nXP), or
+  dyn: "X,Y"=""||*
   options: [A] All, [E] Extents, [P] Previous, [S] Scale, [W] Window, [O] Object
   command| Z ZOOM
 > S
-  prompt: ZOOM:
-  asks: "Scale factor"
-  dyn: "Scale factor"=""||*
+  prompt: ZOOM Enter a scale factor (nX or nXP):
+  asks: "Enter a scale factor (nX or nXP)"
+  tip: Enter a scale factor (nX or nXP):
+  dyn: "Enter a scale factor (nX or nXP)"=""||*
   options: -
+  prompt| Specify corner of window, enter a scale factor (nX or nXP), or [All/Extents/Previous/Scale/Window/Object]: S
 > factor
-  dyn: "Scale factor"="2"||*
+  dyn: "Enter a scale factor (nX or nXP)"="2"||*
 > enter
   prompt: Command:
   asks: -
+  tip: -
   dyn: -
+  prompt| Enter a scale factor (nX or nXP): 2
 > ZOOM A
-  prompt: ZOOM [All/Extents/Previous/Scale/Window/Object]:
-  asks: 
-  dyn: 
+  prompt: ZOOM Specify corner of window, enter a scale factor (nX or nXP), or [All/Extents/Previous/Scale/Window/Object]:
+  asks: "Specify corner of window, enter a scale factor (nX or nXP), or"
+  tip: Specify corner of window, enter a scale factor (nX or nXP), or
+  dyn: "X,Y"=""||*
   options: [A] All, [E] Extents, [P] Previous, [S] Scale, [W] Window, [O] Object
   command| ZOOM
 > A
   prompt: Command:
   asks: -
+  tip: -
   dyn: -
   options: -
+  prompt| Specify corner of window, enter a scale factor (nX or nXP), or [All/Extents/Previous/Scale/Window/Object]: A
+  info| Regenerating model.
 > ZOOM E
-  prompt: ZOOM [All/Extents/Previous/Scale/Window/Object]:
-  asks: 
-  dyn: 
+  prompt: ZOOM Specify corner of window, enter a scale factor (nX or nXP), or [All/Extents/Previous/Scale/Window/Object]:
+  asks: "Specify corner of window, enter a scale factor (nX or nXP), or"
+  tip: Specify corner of window, enter a scale factor (nX or nXP), or
+  dyn: "X,Y"=""||*
   options: [A] All, [E] Extents, [P] Previous, [S] Scale, [W] Window, [O] Object
   command| ZOOM
 > E
   prompt: Command:
   asks: -
+  tip: -
   dyn: -
   options: -
+  prompt| Specify corner of window, enter a scale factor (nX or nXP), or [All/Extents/Previous/Scale/Window/Object]: E
+  info| Regenerating model.
 > ZOOM P
-  prompt: ZOOM [All/Extents/Previous/Scale/Window/Object]:
-  asks: 
-  dyn: 
+  prompt: ZOOM Specify corner of window, enter a scale factor (nX or nXP), or [All/Extents/Previous/Scale/Window/Object]:
+  asks: "Specify corner of window, enter a scale factor (nX or nXP), or"
+  tip: Specify corner of window, enter a scale factor (nX or nXP), or
+  dyn: "X,Y"=""||*
   options: [A] All, [E] Extents, [P] Previous, [S] Scale, [W] Window, [O] Object
   command| ZOOM
 > P
   prompt: Command:
   asks: -
+  tip: -
   dyn: -
   options: -
+  prompt| Specify corner of window, enter a scale factor (nX or nXP), or [All/Extents/Previous/Scale/Window/Object]: P
 > ZOOM O
-  prompt: ZOOM [All/Extents/Previous/Scale/Window/Object]:
-  asks: 
-  dyn: 
+  prompt: ZOOM Specify corner of window, enter a scale factor (nX or nXP), or [All/Extents/Previous/Scale/Window/Object]:
+  asks: "Specify corner of window, enter a scale factor (nX or nXP), or"
+  tip: Specify corner of window, enter a scale factor (nX or nXP), or
+  dyn: "X,Y"=""||*
   options: [A] All, [E] Extents, [P] Previous, [S] Scale, [W] Window, [O] Object
   command| ZOOM
 > O
-> pick
-  prompt: Command:
+  prompt: ZOOM Select objects:
   asks: -
+  tip: -
   dyn: -
   options: -
+  prompt| Specify corner of window, enter a scale factor (nX or nXP), or [All/Extents/Previous/Scale/Window/Object]: O
+> pick
+  properties: Line (1) {Thickness=0.00 mm~} [Geometry: Length=100.00 mm~, Angle=0.00°~, Δ X=100.00 mm, Δ Y=0.00 mm, Δ Z=0.00 mm] [Endpoints: Start X=0.00~, Start Y=0.00~, Start Z=0.00~, End X=100.00~, End Y=0.00~, End Z=0.00~]
+  prompt| Select objects: 1 found
 > enter
-  prompt: ZOOM [All/Extents/Previous/Scale/Window/Object]:
-  asks: 
-  dyn: 
+  prompt: Command:
+  prompt| Select objects:
+  info| Regenerating model.
+> ZOOM W
+  prompt: ZOOM Specify corner of window, enter a scale factor (nX or nXP), or [All/Extents/Previous/Scale/Window/Object]:
+  asks: "Specify corner of window, enter a scale factor (nX or nXP), or"
+  tip: Specify corner of window, enter a scale factor (nX or nXP), or
+  dyn: "X,Y"=""||*
   options: [A] All, [E] Extents, [P] Previous, [S] Scale, [W] Window, [O] Object
   command| ZOOM
-> ZOOM W
-  command| ZOOM
 > W
+  prompt: ZOOM Specify first corner:
+  asks: "Specify first corner"
+  tip: Specify first corner:
+  options: -
+  prompt| Specify corner of window, enter a scale factor (nX or nXP), or [All/Extents/Previous/Scale/Window/Object]: W
 > escape
   prompt: Command:
   asks: -
+  tip: -
   dyn: -
-  options: -
+  prompt| Specify first corner: *Cancel*
 > PAN
   prompt: PAN:
   command| P PAN
@@ -4016,44 +4046,58 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
   dyn: -
   info| Regenerating model.
 > -VIEW
-  prompt: VIEW [Orthographic]:
+  prompt: VIEW Enter an option [Orthographic]:
   asks: 
+  tip: Enter an option
   dyn: 
   options: [O] Orthographic
   command| -VIEW
 > O
-  prompt: VIEW [Top/Bottom/Front/BAck/Left/Right]:
+  prompt: VIEW Enter an option [Top/Bottom/Front/BAck/Left/Right] <Top>:
   options: [T] Top, [B] Bottom, [F] Front, [BA] BAck, [L] Left, [R] Right
+  prompt| Enter an option [Orthographic]: O
 > F
   prompt: Command:
   asks: -
+  tip: -
   dyn: -
   options: -
+  prompt| Enter an option [Top/Bottom/Front/BAck/Left/Right] <Top>: F
+  info| Regenerating model.
 > -VIEW _SWISO
-  prompt: VIEW [Orthographic]:
+  prompt: VIEW Enter an option [Orthographic]:
   asks: 
+  tip: Enter an option
   dyn: 
   options: [O] Orthographic
   command| -VIEW
 > _SWISO
   prompt: Command:
   asks: -
+  tip: -
   dyn: -
   options: -
+  prompt| Enter an option [Orthographic]: _SWISO
+  info| Regenerating model.
 > VIEW O enter
-  prompt: VIEW [Orthographic]:
+  prompt: VIEW Enter an option [Orthographic]:
   asks: 
+  tip: Enter an option
   dyn: 
   options: [O] Orthographic
   command| VIEW
 > O
-  prompt: VIEW [Top/Bottom/Front/BAck/Left/Right]:
+  prompt: VIEW Enter an option [Top/Bottom/Front/BAck/Left/Right] <Top>:
   options: [T] Top, [B] Bottom, [F] Front, [BA] BAck, [L] Left, [R] Right
+  prompt| Enter an option [Orthographic]: O
 > enter is Top
   prompt: Command:
   asks: -
+  tip: -
   dyn: -
   options: -
+  prompt| Enter an option [Top/Bottom/Front/BAck/Left/Right] <Top>:
+  info| Regenerating model.
 > NAVVCUBE
   prompt: NAVVCUBE [ON/OFF] <ON>:
   asks: 

@@ -668,11 +668,11 @@
         "Front": "Front",
         "BAck": "BAck",
         "Left": "Left",
-        "Right": "Right",
-        "SWiso": "SWiso",
-        "SEiso": "SEiso",
-        "NEiso": "NEiso",
-        "NWiso": "NWiso"
+        "Right": "RIght",
+        "SWiso": "SWIso",
+        "SEiso": "SEIso",
+        "NEiso": "NEIso",
+        "NWiso": "NWIso"
       },
       "NAVVCUBE": { "ON": "ON", "OFF": "OFF" },
       "COLOR": {
@@ -707,6 +707,7 @@
         "SIngle": "SIngle"
       },
       "specifyNextFencePointOr": { "Undo": "Undo" },
+      "viewOrthographic": { "Right": "Right" },
       "specifyEndpointOfLineOr": { "Undo": "Undo" },
       "select2dPolylineOr": { "Radius": "Radius" },
       "selectSecondObjectOrApplyCornerOr": { "Radius": "Radius" }
@@ -821,6 +822,10 @@
       "ucsAlignObject": "Select object to align UCS",
       "planUcsName": "Enter name of UCS or",
       "planCurrent": "Current",
+      "zoomCornerOr": "Specify corner of window, enter a scale factor (nX or nXP), or",
+      "zoomScaleFactor": "Enter a scale factor (nX or nXP)",
+      "viewOption": "Enter an option",
+      "viewOrthographic": "Enter an option",
       "elevDefaultElevation": "Specify new default elevation",
       "elevDefaultThickness": "Specify new default thickness",
       "ltscaleFactor": "Enter new linetype scale factor",
@@ -1079,6 +1084,8 @@
       "invalidUcsName": "Invalid UCS name.",
       "noPreviousUcs": "No previous coordinate system saved.",
       "yesOrNoPlease": "Yes or No, please.",
+      "requiresDistanceNumberXOrKeyword": "Requires a distance, numberX, or option keyword.",
+      "noPreviousView": "No previous view saved.",
       "rectangleModes": "Current rectangle modes:{hasElevation, select, yes {  Elevation={elevation}} other {}}{hasThickness, select, yes {  Thickness={thickness}} other {}}",
       "distanceReport": "Distance = {distance},  Angle in XY Plane = {angleInPlane},  Angle from XY Plane = {angleFromPlane}\nDelta X = {deltaX},  Delta Y = {deltaY},   Delta Z = {deltaZ}",
       "idReport": " X = {x}     Y = {y}     Z = {z}",

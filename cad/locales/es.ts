@@ -1134,7 +1134,7 @@ export const es: EngineLocale = {
       },
       "VIEW": {
         "Orthographic": "Ortogonal",
-        "Top": "SUperior",
+        "Top": "sUperior",
         "Bottom": "Inferior",
         "Front": "Frontal",
         "BAck": "Posterior",
@@ -1187,6 +1187,9 @@ export const es: EngineLocale = {
       },
       "specifyNextFencePointOr": {
         "Undo": "desHacer"
+      },
+      "viewOrthographic": {
+        "Right": "Derecha"
       },
       "specifyEndpointOfLineOr": {
         "Undo": "desHacer"
@@ -1314,6 +1317,10 @@ export const es: EngineLocale = {
       "ucsAlignObject": "Designe el objeto a alinear con el SCP",
       "planUcsName": "Indique nombre de SCP o",
       "planCurrent": "Actual",
+      "zoomCornerOr": "Precise esquina de ventana, indique un factor de escala (nX o nXP), o",
+      "zoomScaleFactor": "Indique factor de escala (nX o nXP)",
+      "viewOption": "Indique una opción",
+      "viewOrthographic": "Indique una opción",
       "elevDefaultElevation": "Precise nueva elevación por defecto",
       "elevDefaultThickness": "Precise nueva altura de objeto por defecto",
       "ltscaleFactor": "Indique nuevo factor de escala del tipo de línea",
@@ -1996,6 +2003,8 @@ export const es: EngineLocale = {
       "invalidUcsName": "Nombre de SCP no válido.",
       "noPreviousUcs": "No hay ningún sistema de coordenadas guardado.",
       "yesOrNoPlease": "Sí o No.",
+      "requiresDistanceNumberXOrKeyword": "Requiere una distancia, un factorX o una opción.",
+      "noPreviousView": "No se ha guardado ninguna vista previa.",
       "rectangleModes": [
         "Modos de rectángulo actuales:",
         [

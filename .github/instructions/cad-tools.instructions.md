@@ -314,7 +314,10 @@ from `commands.keywords.<NAME>`; comparing `key.toLowerCase()` with a letter wou
 the language changes. Every keyword a tool offers must be in its command's table. A keyword one
 prompt spells otherwise — AutoCAD's `initget` is per prompt, so Spanish FILLET's `[RAdio]` is
 `[Radio]` at `Designe polilínea 2D o` — goes in `commands.promptKeywords.<promptId>`, which the
-runtime reads for the question the tool is asking (`askedPrompt`); never a second keyword id.
+runtime reads for the question the tool is asking (`askedPrompt`); never a second keyword id. Two
+prompts of one command that spell a keyword apart therefore need prompt ids of their own, even
+with the same words (-VIEW's `viewOption` and `viewOrthographic`, both `Enter an option`: the
+first's hidden `RIght`, Orthographic's `Right`).
 An option spelled at another prompt names it (`{ id: "Window", hidden: true, prompt:
 "selectObjects" }`): the selection modes live once, in `promptKeywords.selectObjects`, for every
 command's `Select objects:` however the command words it (JOIN's, DIMSPACE's).

@@ -149,9 +149,11 @@ describe("a language laid over English", () => {
     })
     cad.command("Z")
     cad.press("E")
-    expect(cad.state().commandLine.buffer).toBe("E")
+    expect(cad.state().dynamicInput?.fields[0].value).toBe("E")
     cad.press("Enter")
-    expect(cad.state().dynamicInput?.fields[0].label).toBe("Scale factor")
+    expect(cad.state().commandLine.prompt).toBe(
+      "ZOOM Enter a scale factor (nX or nXP):"
+    )
     cad.escape().command("Z").option("Extents")
     expect(cad.activeToolId()).toBe("select")
   })
@@ -684,10 +686,12 @@ describe("Spanish AutoCAD's command language", () => {
     })
     cad.command("Z")
     expect(cad.state().commandLine.prompt).toBe(
-      "ZOOM [Todo/Extensión/Previo/EScala/Ventana/Objeto]:"
+      "ZOOM Precise esquina de ventana, indique un factor de escala (nX o nXP), o [Todo/Extensión/Previo/EScala/Ventana/Objeto]:"
     )
     for (const key of ["E", "S", "Enter"]) cad.press(key)
-    expect(cad.state().dynamicInput?.fields[0].label).toBe("Factor de escala")
+    expect(cad.state().commandLine.prompt).toBe(
+      "ZOOM Indique factor de escala (nX o nXP):"
+    )
   })
 
   it("justifies TEXTO by SIZ and the other two-letter codes", () => {
@@ -885,9 +889,9 @@ describe("Spanish AutoCAD's command language", () => {
     cad.command("-VISTA").press("o")
     cad.press("Enter")
     expect(cad.state().commandLine.prompt).toBe(
-      "VISTA [SUperior/Inferior/Frontal/Posterior/IZquierda/Derecha]:"
+      "VISTA Indique una opción [sUperior/Inferior/Frontal/Posterior/IZquierda/Derecha] <sUperior>:"
     )
-    cad.type("su").enter()
+    cad.type("u").enter()
     expect(cad.runtime.viewport.isPlan).toBe(true)
     cad.command("-VISTA")
     for (const char of "soiso") cad.press(char)

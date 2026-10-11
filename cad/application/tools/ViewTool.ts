@@ -3,6 +3,7 @@ import { ucsFromAxes } from "../../domain/ucs"
 import { UpdateSettingsCommand } from "../commands/settingsCommands"
 import { VIEW_PRESETS, ViewPreset, lookFrom } from "./viewPresets"
 import { ucsChange } from "./UcsTool"
+import type { PromptId } from "../../locales/types"
 import {
   CommandOption,
   CommandOptionOutcome,
@@ -66,6 +67,18 @@ export class ViewTool implements Tool {
     return false
   }
 
+  /**
+   * Two prompts of their own, as their keywords are spelled apart: the first
+   * one's hidden `RIght`, Orthographic's `Right`.
+   */
+  question(): PromptId {
+    return this.state.phase === "option" ? "viewOption" : "viewOrthographic"
+  }
+
+  defaultOption(): string | null {
+    return this.state.phase === "orthographic" ? "Top" : null
+  }
+
   commandOptions(): readonly CommandOption[] {
     if (this.state.phase === "orthographic") {
       return ORTHOGRAPHIC.map((id) => ({ id }))
@@ -90,6 +103,7 @@ export class ViewTool implements Tool {
 
   private show(preset: ViewPreset, ctx: ToolContext): boolean {
     if (!lookFrom(VIEW_PRESETS[preset], ctx)) return false
+    ctx.report(ctx.text.message("regeneratingModel"))
     if (!ORTHOGRAPHIC.includes(preset)) return true
     const ucs = ucsFromAxes(
       { x: 0, y: 0, z: 0 },

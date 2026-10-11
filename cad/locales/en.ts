@@ -830,6 +830,13 @@ export const en: EngineCatalog = {
       ]
     },
     "keywords": {
+      "VIEW": {
+        "Right": "RIght",
+        "SWiso": "SWIso",
+        "SEiso": "SEIso",
+        "NEiso": "NEIso",
+        "NWiso": "NWIso"
+      },
       "COLOR": {
         "BYLAYER": "BYLayer",
         "RED": "Red",
@@ -839,6 +846,39 @@ export const en: EngineCatalog = {
         "BLUE": "Blue",
         "MAGENTA": "Magenta",
         "WHITE": "White"
+      }
+    },
+    "promptKeywords": {
+      "selectObjects": {
+        "Window": "Window",
+        "Last": "Last",
+        "Crossing": "Crossing",
+        "BOX": "BOX",
+        "ALL": "ALL",
+        "Fence": "Fence",
+        "WPolygon": "WPolygon",
+        "CPolygon": "CPolygon",
+        "Add": "Add",
+        "Remove": "Remove",
+        "Previous": "Previous",
+        "Undo": "Undo",
+        "AUto": "AUto",
+        "SIngle": "SIngle"
+      },
+      "specifyNextFencePointOr": {
+        "Undo": "Undo"
+      },
+      "viewOrthographic": {
+        "Right": "Right"
+      },
+      "specifyEndpointOfLineOr": {
+        "Undo": "Undo"
+      },
+      "select2dPolylineOr": {
+        "Radius": "Radius"
+      },
+      "selectSecondObjectOrApplyCornerOr": {
+        "Radius": "Radius"
       }
     },
     "prompts": {
@@ -957,6 +997,10 @@ export const en: EngineCatalog = {
       "ucsAlignObject": "Select object to align UCS",
       "planUcsName": "Enter name of UCS or",
       "planCurrent": "Current",
+      "zoomCornerOr": "Specify corner of window, enter a scale factor (nX or nXP), or",
+      "zoomScaleFactor": "Enter a scale factor (nX or nXP)",
+      "viewOption": "Enter an option",
+      "viewOrthographic": "Enter an option",
       "elevDefaultElevation": "Specify new default elevation",
       "elevDefaultThickness": "Specify new default thickness",
       "ltscaleFactor": "Enter new linetype scale factor",
@@ -1640,6 +1684,8 @@ export const en: EngineCatalog = {
       "invalidUcsName": "Invalid UCS name.",
       "noPreviousUcs": "No previous coordinate system saved.",
       "yesOrNoPlease": "Yes or No, please.",
+      "requiresDistanceNumberXOrKeyword": "Requires a distance, numberX, or option keyword.",
+      "noPreviousView": "No previous view saved.",
       "rectangleModes": [
         "Current rectangle modes:",
         [

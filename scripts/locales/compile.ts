@@ -29,11 +29,12 @@ const VOCABULARY = new Set(["names", "keywords", "promptKeywords"])
  * English is the global language, so there an entry equal to its key says
  * nothing the engine does not already know — it stays in the source, as the
  * inventory the other languages translate, and is left out of the module the
- * browser loads.
+ * browser loads. Not `promptKeywords`: one equal to its id still overrides a
+ * table that spells it otherwise (-VIEW Orthographic's `Right`, `RIght` at
+ * its first prompt).
  */
 const KEY_FALLBACK = new Set([
   "commands.keywords",
-  "commands.promptKeywords",
   "interface.linetype",
   "interface.hatchPattern",
 ])
@@ -53,10 +54,10 @@ function shippedEnglish(source: Record<string, Json>): Record<string, Json> {
   const copy = structuredClone(source) as Record<string, Record<string, Json>>
   for (const path of KEY_FALLBACK) {
     const [branch, key] = path.split(".")
-    // Keywords are one level deeper: a table per command, or per prompt.
+    // Keywords are one level deeper: a table per command.
     const kept = withoutIdentities(
       copy[branch][key],
-      key === "keywords" || key === "promptKeywords" ? 1 : 0
+      key === "keywords" ? 1 : 0
     )
     if (kept === undefined) delete copy[branch][key]
     else copy[branch][key] = kept

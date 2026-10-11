@@ -27,7 +27,11 @@ describe("the view menu", () => {
     for (const preset of VIEW_MENU) {
       expect(cad.runtime.applyViewPreset(preset)).toBe(true)
       expect(cad.state().view.preset).toBe(preset)
-      expect(cad.commandLog().at(-1)).toBe("-VIEW")
+      expect(cad.commandLog().slice(-3)).toEqual([
+        "-VIEW",
+        `Enter an option [Orthographic]: _${preset}`,
+        "Regenerating model.",
+      ])
       expect(cad.activeToolId()).toBe("select")
     }
   })
@@ -96,8 +100,10 @@ describe("the view menu", () => {
     expect(cad.runtime.applyViewPreset("NWiso")).toBe(true)
 
     expect(cad.state().view.preset).toBe("NWiso")
-    expect(cad.commandLog().at(-1)).toBe(
-      cad.runtime.text.commandNames("-VIEW")[0]
-    )
+    expect(cad.commandLog().slice(-3)).toEqual([
+      cad.runtime.text.commandNames("-VIEW")[0],
+      "Indique una opción [Ortogonal]: _NWiso",
+      "Regenerando modelo.",
+    ])
   })
 })

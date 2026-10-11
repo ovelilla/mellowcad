@@ -2,37 +2,49 @@ import { Vec2, V } from "../../geometry/Vec2"
 import { Entity } from "../../domain/entities"
 import { ScenePrimitive } from "../../scene/types"
 import { THEME } from "../../scene/theme"
-import { entityScenePrimitive } from "../SceneBuilder"
+import type { PromptId } from "../../locales/types"
 import { entitiesViewBounds } from "../Viewport"
+import {
+  isCoordinateExpression,
+  parseCoordinate,
+} from "../input/coordinateInput"
+import { ObjectSelector } from "./objectSelection"
 import {
   CommandOption,
   CommandOptionOutcome,
   PointerInput,
+  QuestionInput,
   Tool,
   ToolContext,
 } from "./Tool"
 
 /**
  * ZOOM. Picking two corners frames that window (the command's default action),
- * and the usual keywords cover the rest of the navigation vocabulary:
+ * a scale factor typed at its first prompt zooms by it, and the usual keywords
+ * cover the rest of the navigation vocabulary:
  * `[All/Extents/Previous/Scale/Window/Object]`.
  *
  * WHY All behaves like Extents: AutoCAD's All frames the drawing limits when
  * the geometry fits inside them, and there is no LIMITS here — so the two
- * coincide. Both are kept because `Z A` and `Z E` are equally worn-in muscle
- * memory. Dynamic and the real-time default are not implemented (the wheel
- * covers real-time zooming).
+ * coincide, and a factor without its `X`, relative to the limits, is relative
+ * to that view. Both are kept because `Z A` and `Z E` are equally worn-in
+ * muscle memory. Center, Dynamic and the real-time default are not
+ * implemented (the wheel covers real-time zooming), so the first prompt
+ * offers no `<real time>`.
  */
 type ZoomState =
-  | { readonly phase: "corner" }
+  | { readonly phase: "main" }
+  | { readonly phase: "first" }
   | {
-      readonly phase: "window"
+      readonly phase: "opposite"
       readonly first: Vec2
-      readonly firstScreen: Vec2
+      readonly firstScreen: Vec2 | null
       readonly cursor: Vec2
+      /** Started at the first prompt, not by Window: a wrong corner stays. */
+      readonly implied: boolean
     }
   | { readonly phase: "scale" }
-  | { readonly phase: "object"; readonly hover: Entity | null }
+  | { readonly phase: "object" }
 
 /** Pixels the press must travel for a drag to count as the whole window. */
 const DRAG_THRESHOLD_PX = 4
@@ -40,132 +52,203 @@ const DRAG_THRESHOLD_PX = 4
 /** Screen margin left around the framed geometry, as in `zoomToFit`. */
 const PADDING_PX = 40
 
+/** `2`, `2X` or `0.5x`: a factor, relative to the current view with its X. */
+const FACTOR = /^(\d+(?:\.\d*)?|\.\d+)\s*(x?)$/i
+
 export class ZoomTool implements Tool {
   readonly id = "zoom"
 
-  private state: ZoomState = { phase: "corner" }
+  private state: ZoomState = { phase: "main" }
+  private lastScreen: Vec2 | null = null
+  private readonly selector = new ObjectSelector({
+    done: (ctx) => {
+      this.frame(selectedEntities(ctx), ctx)
+      ctx.report(ctx.text.message("regeneratingModel"))
+      ctx.endCommand()
+    },
+  })
 
   onActivate(ctx: ToolContext): void {
-    this.state = { phase: "corner" }
     ctx.setCursor("crosshair")
-    this.openKeywordPrompt(ctx)
+    this.ask({ phase: "main" }, ctx)
   }
 
   onDeactivate(ctx: ToolContext): void {
-    this.state = { phase: "corner" }
+    this.state = { phase: "main" }
+    this.selector.start()
     ctx.dynamicInput.close()
+  }
+
+  question(): PromptId {
+    switch (this.state.phase) {
+      case "main":
+        return "zoomCornerOr"
+      case "first":
+        return "specifyFirstCorner"
+      case "opposite":
+        return "specifyOppositeCorner"
+      case "scale":
+        return "zoomScaleFactor"
+      case "object":
+        return this.selector.question()
+    }
+  }
+
+  /** As AutoCAD 2023's console refuses ZOOM's answers. */
+  takes(): QuestionInput {
+    switch (this.state.phase) {
+      case "main":
+        return { refusal: "requiresDistanceNumberXOrKeyword" }
+      case "first":
+      case "opposite":
+        return { refusal: "invalidWindowSpecification" }
+      case "scale":
+        return { refusal: "requiresDistanceOrNumberX" }
+      case "object":
+        return this.selector.takes("wholeObjects")
+    }
   }
 
   /** Zoom picks a rectangle, never a geometric point: no snapping, no markers. */
   wantsSnap(): boolean {
-    return false
+    return this.state.phase === "object" && this.selector.wantsSnap()
   }
 
   onPointerMove(input: PointerInput, ctx: ToolContext): void {
-    if (this.state.phase === "window") {
-      this.state = { ...this.state, cursor: input.world }
-      ctx.requestRender()
-    } else if (this.state.phase === "object") {
-      const hover = ctx.pick(input.world)
-      if (hover?.id !== this.state.hover?.id) {
-        this.state = { phase: "object", hover: hover ?? null }
-        ctx.requestRender()
-      }
+    this.lastScreen = input.screen
+    if (this.state.phase === "object") {
+      this.selector.onPointerMove(input, ctx)
+      return
     }
+    if (this.state.phase === "opposite") {
+      this.state = { ...this.state, cursor: input.world }
+    }
+    ctx.dynamicInput.setPosition(input.screen)
+    ctx.requestRender()
   }
 
   onPointerDown(input: PointerInput, ctx: ToolContext): void {
     if (input.button !== 0) return
-    if (this.state.phase === "corner") {
-      this.state = {
-        phase: "window",
-        first: input.world,
-        firstScreen: input.screen,
-        cursor: input.world,
-      }
-      ctx.requestRender()
-      return
-    }
-    if (this.state.phase === "window") {
-      this.commitWindow(this.state.first, input.world, ctx)
-      return
-    }
-    if (this.state.phase === "object") {
-      const hit = ctx.pick(input.world)
-      if (!hit) return
-      this.frame([hit], ctx)
-      ctx.endCommand()
+    switch (this.state.phase) {
+      case "main":
+      case "first":
+        this.ask(
+          {
+            phase: "opposite",
+            first: input.world,
+            firstScreen: input.screen,
+            cursor: input.world,
+            implied: this.state.phase === "main",
+          },
+          ctx
+        )
+        return
+      case "opposite":
+        this.commitWindow(this.state.first, input.world, ctx)
+        return
+      case "object":
+        this.selector.onPointerDown(input, ctx)
+        return
     }
   }
 
   /** A press-drag frames the window on release, the way AutoCAD accepts both. */
   onPointerUp(input: PointerInput, ctx: ToolContext): void {
-    if (input.button !== 0 || this.state.phase !== "window") return
-    if (V.distance(input.screen, this.state.firstScreen) < DRAG_THRESHOLD_PX) {
+    if (this.state.phase === "object") {
+      this.selector.onPointerUp(input, ctx)
+      return
+    }
+    if (input.button !== 0 || this.state.phase !== "opposite") return
+    const { firstScreen } = this.state
+    if (
+      firstScreen === null ||
+      V.distance(input.screen, firstScreen) < DRAG_THRESHOLD_PX
+    ) {
       return
     }
     this.commitWindow(this.state.first, input.world, ctx)
   }
 
+  /** A window's corners take no Enter, as AutoCAD's refuse it. */
+  onEnter(ctx: ToolContext): boolean {
+    switch (this.state.phase) {
+      case "first":
+      case "opposite":
+        this.refuseWindow(ctx)
+        return true
+      case "object":
+        return this.selector.onEnter(ctx)
+      default:
+        return false
+    }
+  }
+
   commandOptions(): readonly CommandOption[] {
-    if (this.state.phase === "scale") return []
-    return [
-      { id: "All" },
-      { id: "Extents" },
-      { id: "Previous" },
-      { id: "Scale" },
-      { id: "Window" },
-      { id: "Object" },
-    ]
+    switch (this.state.phase) {
+      case "main":
+        return [
+          { id: "All" },
+          { id: "Extents" },
+          { id: "Previous" },
+          { id: "Scale" },
+          { id: "Window" },
+          { id: "Object" },
+        ]
+      case "object":
+        return this.selector.commandOptions()
+      default:
+        return []
+    }
   }
 
   invokeOption(id: string, ctx: ToolContext): CommandOptionOutcome {
+    if (this.state.phase === "object") {
+      return this.selector.invokeOption(id, ctx) ? "continue" : "unhandled"
+    }
+    if (this.state.phase !== "main") return "unhandled"
     switch (id) {
       case "All":
       case "Extents":
-        this.zoomExtents(ctx)
+        this.frame(ctx.document.getEntities(), ctx)
+        ctx.report(ctx.text.message("regeneratingModel"))
         return "end"
       case "Previous":
-        ctx.viewport.restorePrevious()
+        if (!ctx.viewport.restorePrevious()) {
+          ctx.report(ctx.text.message("noPreviousView"))
+        }
         return "end"
       case "Window":
-        this.state = { phase: "corner" }
-        this.openKeywordPrompt(ctx)
+        this.ask({ phase: "first" }, ctx)
         return "continue"
       case "Scale":
         this.state = { phase: "scale" }
         ctx.dynamicInput.open({
-          fields: [{ id: "factor", prompt: "scaleFactor", kind: "number" }],
-          commit: (values) => this.commitScale(values.factor, ctx),
+          fields: [{ id: "factor", prompt: "zoomScaleFactor", kind: "number" }],
+          commit: (values, commitCtx) =>
+            this.zoomBy(values.factor, false, commitCtx),
+          commitRaw: (commitCtx) => this.commitFactor("factor", commitCtx),
         })
+        this.place(ctx)
         return "continue"
-      case "Object": {
+      case "Object":
         // A pre-selected set is what the user already pointed at, so honour it
         // instead of asking again.
-        const selected = ctx.selection
-          .toArray()
-          .map((id) => ctx.document.get(id))
-          .filter((entity): entity is Entity => entity !== undefined)
-        if (this.frame(selected, ctx)) return "end"
-        this.state = { phase: "object", hover: null }
-        this.openKeywordPrompt(ctx)
+        if (this.frame(selectedEntities(ctx), ctx)) {
+          ctx.report(ctx.text.message("regeneratingModel"))
+          return "end"
+        }
+        this.state = { phase: "object" }
+        this.selector.start()
+        ctx.dynamicInput.close()
         return "continue"
-      }
       default:
         return "unhandled"
     }
   }
 
   buildOverlay(ctx: ToolContext): ScenePrimitive[] {
-    if (this.state.phase === "object" && this.state.hover) {
-      return entityScenePrimitive(
-        ctx.viewport,
-        this.state.hover,
-        { color: THEME.selected, width: 2.5 },
-        { blocks: ctx.blocks }
-      )
-    }
-    if (this.state.phase !== "window") return []
+    if (this.state.phase === "object") return this.selector.buildOverlay(ctx)
+    if (this.state.phase !== "opposite") return []
     const a = ctx.viewport.worldToScreen(this.state.first)
     const b = ctx.viewport.worldToScreen(this.state.cursor)
     return [
@@ -180,11 +263,67 @@ export class ZoomTool implements Tool {
   }
 
   /**
-   * The selection-phase prompt carries no fields, so the option chips show
-   * while the canvas keeps focus and the keyword letters reach the tool.
+   * Asks the corner and factor prompts with a box, so a point or a factor
+   * typed there answers them; a keyword typed in it still runs.
    */
-  private openKeywordPrompt(ctx: ToolContext): void {
-    ctx.dynamicInput.open({ fields: [], commit: () => {} })
+  private ask(state: ZoomState, ctx: ToolContext): void {
+    this.state = state
+    ctx.dynamicInput.open({
+      fields: [{ id: "point", prompt: this.question(), kind: "coordinate" }],
+      commit: () => {},
+      commitRaw: (commitCtx) => this.commitTyped(commitCtx),
+    })
+    this.place(ctx)
+  }
+
+  /** A point or, at the first prompt, a factor typed in the box. */
+  private commitTyped(ctx: ToolContext): boolean {
+    const state = this.state
+    const text = ctx.dynamicInput.getText("point").trim()
+    if (text === "") return false
+    if (state.phase === "main" && FACTOR.test(text)) {
+      return this.commitFactor("point", ctx)
+    }
+    const point = isCoordinateExpression(text)
+      ? parseCoordinate(text, {
+          lastPoint: null,
+          relativeByDefault: false,
+          ucs: ctx.ucs,
+          elevation: ctx.elevation,
+        })
+      : null
+    if (point === null) {
+      if (state.phase === "main") return false
+      this.refuseWindow(ctx)
+      return true
+    }
+    const at = { x: point.x, y: point.y }
+    if (state.phase === "opposite") {
+      this.commitWindow(state.first, at, ctx)
+    } else {
+      this.ask(
+        {
+          phase: "opposite",
+          first: at,
+          firstScreen: null,
+          cursor: at,
+          implied: state.phase === "main",
+        },
+        ctx
+      )
+    }
+    return true
+  }
+
+  /**
+   * A wrong corner, or Enter there: `Invalid window specification.`, then
+   * Window's first corner again, or the same corner when a pick or a point at
+   * the first prompt started the window.
+   */
+  private refuseWindow(ctx: ToolContext): void {
+    ctx.report(ctx.text.message("invalidWindowSpecification"))
+    if (this.state.phase === "opposite" && this.state.implied) return
+    this.ask({ phase: "first" }, ctx)
   }
 
   private commitWindow(first: Vec2, second: Vec2, ctx: ToolContext): void {
@@ -196,8 +335,7 @@ export class ZoomTool implements Tool {
     // A stray click (an empty window) would zoom to an absurd scale; keep
     // prompting instead, as AutoCAD does.
     if (max.x - min.x < 1e-9 || max.y - min.y < 1e-9) {
-      this.state = { phase: "corner" }
-      ctx.requestRender()
+      this.ask({ phase: "main" }, ctx)
       return
     }
     ctx.viewport.pushHistory()
@@ -205,19 +343,28 @@ export class ZoomTool implements Tool {
     ctx.endCommand()
   }
 
-  private commitScale(factor: number, ctx: ToolContext): void {
-    if (!Number.isFinite(factor) || factor <= 0) return
-    ctx.viewport.pushHistory()
+  /**
+   * A factor typed in field `id`: with its X, relative to the current view;
+   * without, to ZOOM All's. False for anything else, which is refused.
+   */
+  private commitFactor(id: string, ctx: ToolContext): boolean {
+    const match = FACTOR.exec(ctx.dynamicInput.getText(id).trim())
+    return match !== null && this.zoomBy(Number(match[1]), match[2] !== "", ctx)
+  }
+
+  /** Zooms by `factor`, from the current view or, not `relative`, ZOOM All's. */
+  private zoomBy(factor: number, relative: boolean, ctx: ToolContext): boolean {
+    if (!(factor > 0)) return false
     const center = {
       x: ctx.viewport.width / 2,
       y: ctx.viewport.height / 2,
     }
+    if (relative || !this.frame(ctx.document.getEntities(), ctx)) {
+      ctx.viewport.pushHistory()
+    }
     ctx.viewport.zoomAt(center, factor)
     ctx.endCommand()
-  }
-
-  private zoomExtents(ctx: ToolContext): void {
-    this.frame(ctx.document.getEntities(), ctx)
+    return true
   }
 
   /** Frames `entities` as the view shows them; false when there are none. */
@@ -228,4 +375,16 @@ export class ZoomTool implements Tool {
     ctx.viewport.zoomToViewBounds(bounds.min, bounds.max, PADDING_PX)
     return true
   }
+
+  private place(ctx: ToolContext): void {
+    ctx.dynamicInput.setPosition(this.lastScreen ?? { x: 0, y: 0 })
+    ctx.requestRender()
+  }
+}
+
+function selectedEntities(ctx: ToolContext): Entity[] {
+  return ctx.selection
+    .toArray()
+    .map((id) => ctx.document.get(id))
+    .filter((entity): entity is Entity => entity !== undefined)
 }
