@@ -42,7 +42,8 @@ export interface CommandDefinition {
   readonly tool?: string
   /**
    * Typed with an apostrophe (`'ZOOM`) mid-command, it runs inside the
-   * running one, which resumes once it is done. It must start {@link tool}.
+   * running one, which resumes once it is done: its {@link tool} asks its own
+   * questions, or with none it runs in place.
    */
   readonly transparent?: boolean
   readonly run: () => void

@@ -42,14 +42,22 @@ export class LweightTool implements Tool {
 
   onActivate(ctx: ToolContext): void {
     ctx.setCursor("crosshair")
-    ctx.report(
-      ctx.text.message("currentLineweight", {
-        value: this.lineweightWord(
-          ctx.document.getSettings().currentLineweight,
-          ctx
-        ),
-      })
+    const value = this.lineweightWord(
+      ctx.document.getSettings().currentLineweight,
+      ctx
     )
+    // WHY headed twice transparently: AutoCAD 2023's console writes it as
+    // two prompts, `>>Current lineweight: >>BYLAYER`.
+    if (ctx.runsTransparently()) {
+      ctx.report(
+        ctx.text.message("currentLineweight", {
+          value: ctx.text.transparentPrompt(value),
+        }),
+        "prompt"
+      )
+    } else {
+      ctx.report(ctx.text.message("currentLineweight", { value }))
+    }
     this.ask(ctx)
   }
 

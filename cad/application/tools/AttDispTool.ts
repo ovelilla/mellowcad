@@ -52,7 +52,7 @@ export class AttDispTool implements Tool {
     // AutoCAD 2023's console regenerates only when the setting changes.
     if (display !== this.current) {
       ctx.execute(new SetAttributeDisplayCommand(display))
-      ctx.report(ctx.text.message("regeneratingModel"))
+      ctx.regenerate()
     }
     return "end"
   }

@@ -234,6 +234,13 @@ export interface ToolContext {
   runsTransparently(): boolean
 
   /**
+   * Says `Regenerating model.` after a change AutoCAD regenerates for
+   * (LTSCALE, ATTDISP); inside another command `Regen queued.`, and
+   * `Regenerating model.` once the one it interrupted ends.
+   */
+  regenerate(): void
+
+  /**
    * Says what an answer found where AutoCAD says it: on the line of the
    * prompt a pick answered (`Select objects: 1 found`, `Specify opposite
    * corner: 2 found`), even once only the release knows it, or after the
@@ -314,6 +321,8 @@ export interface ToolText {
   abbreviation(id: string): string
   /** A keyword's whole word in the command language (`NONe` for None). */
   keyword(id: string): string
+  /** `text` headed as a transparent command's prompt (`>>BYLAYER`). */
+  transparentPrompt(text: string): string
 }
 
 /**

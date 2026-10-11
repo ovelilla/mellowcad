@@ -234,7 +234,10 @@ parse off the cursor instead ("no number typed, so the cursor's angle") is a bug
 
 A command typed with an apostrophe mid-command (`'ZOOM`, `'Z`), at the command line or in a
 box that is not content, runs **inside** the running one when its `CommandDefinition` is
-`transparent` (`TRANSPARENT_COMMANDS` in `runtimeCommands.ts`; it must start a tool). `suspend`
+`transparent` (`TRANSPARENT_COMMANDS` in `runtimeCommands.ts`: add a command only after typing it
+so at LINE's prompt in AutoCAD's console — `>>` prompts, or `** That command may not be invoked
+transparently **`; `'AREA` reads a system variable, not the command). One with no tool (SNAP's
+toggle, UNITS' dialog) runs in place and `Resuming LINE command.` follows at once. `suspend`
 keeps the running tool as it stands — its state, `startedAs`, `commandStart`, the box
 (`DynamicInputController.save` / `restore`, typed text cleared), the selection set and Previous
 set, its cursor — and makes the transparent tool the active one **without `setActiveTool`**: no
@@ -243,7 +246,11 @@ running command's step, as AutoCAD undoes it). While one is suspended `commandPr
 transparent)` heads every question `>>` (and the prompt line `'ZOOM`), and a tool's own prompt
 written with `ctx.report(text, "prompt")` (PAN's) gets it too; plain reports do not (`No previous
 view saved.`). A tool asks `ctx.runsTransparently()` only for what AutoCAD does differently then:
-ZOOM's `Regenerating model.` is left out, as a transparent zoom cannot regenerate. Ending it — `endCommand`, Escape, an option's `"end"`, anything that returns to
+ZOOM's `Regenerating model.` is left out, as a transparent zoom cannot regenerate, and -VIEW's
+views are refused (`** Requires a regen, cannot be transparent.`). A change AutoCAD regenerates
+for is said with `ctx.regenerate()`, never a report of `regeneratingModel`: transparently it is
+`Regen queued.`, and `setActiveTool` writes `Regenerating model.` once the interrupted command
+ends. Ending it — `endCommand`, Escape, an option's `"end"`, anything that returns to
 neutral — reaches `setActiveTool("select")`, which **resumes** instead (`Resuming LINE command.`)
 and replays the pointer through the resumed tool. Starting another tool ends both; `undo()`,
 `newDrawing()` and the Command menu's Cancel (^C^C, two cancels) end both through

@@ -1190,6 +1190,8 @@
       "currentViewDirection": "Dirección de vista actual:  VIEWDIR={x},{y},{z}",
       "invalidInputTryAgain": "Entrada no válida. Vuelva a intentarlo.",
       "regeneratingModel": "Regenerando modelo.",
+      "regenQueued": "La regeneración está en espera.",
+      "requiresRegen": "** Regeneración necesaria, no puede ser transparente.",
       "currentOsnapModes": "Modos refent actuales: {modes}",
       "currentLineweight": "Grosor de línea actual: {value}",
       "pointingEdgeOn": "No se puede señalar en un SCP visto de canto.",

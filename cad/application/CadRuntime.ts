@@ -332,6 +332,11 @@ export class CadRuntime extends Observable {
    * to resume once that one ends.
    */
   private suspended: SuspendedCommand | null = null
+  /**
+   * A transparent command changed what AutoCAD regenerates for (`Regen
+   * queued.`): `Regenerating model.` once the command it interrupted ends.
+   */
+  private regenQueued = false
 
   // Magnetic crosshair: where to draw it (screen), positioned on the resolved
   // point so it clings to geometry. `null` means the pointer is off-canvas.
@@ -481,6 +486,14 @@ export class CadRuntime extends Observable {
             : text
         ),
       runsTransparently: () => this.suspended !== null,
+      regenerate: () => {
+        if (this.suspended === null) {
+          this.commandLine.write("info", this.text.message("regeneratingModel"))
+          return
+        }
+        this.commandLine.write("info", this.text.message("regenQueued"))
+        this.regenQueued = true
+      },
       answer: (text) => this.answerFound(text),
       previousSelection: () => this.previousSet,
       rememberSelection: (ids) => {
@@ -513,6 +526,7 @@ export class CadRuntime extends Observable {
         abbreviation: (id) =>
           this.text.abbreviation(toolCommand(this.activeTool), id),
         keyword: (id) => this.text.keyword(toolCommand(this.activeTool), id),
+        transparentPrompt: (text) => this.text.transparentPrompt(text),
       },
       endCommand: () => {
         this.resetTracking()
@@ -722,6 +736,10 @@ export class CadRuntime extends Observable {
     const next = this.tools.get(id)
     if (!next || next === this.activeTool) return
     this.activeTool.onDeactivate?.(this.toolContext)
+    if (this.regenQueued) {
+      this.regenQueued = false
+      this.commandLine.write("info", this.text.message("regeneratingModel"))
+    }
     // A command is one undo step, closed only once its tool has committed
     // what it holds on deactivation.
     this.history.endGroup()
@@ -807,6 +825,15 @@ export class CadRuntime extends Observable {
    */
   private resume(): void {
     this.restoreSuspended()
+    this.writeResuming()
+    this.replayRestingPointer()
+    this.invalidateState()
+    this.host.focusSurface()
+    this.host.requestRender()
+  }
+
+  /** `Resuming LINE command.`, named as the running command was started. */
+  private writeResuming(): void {
     const { command } = commandPrompt(
       this.activeTool,
       this.text,
@@ -818,10 +845,6 @@ export class CadRuntime extends Observable {
       "info",
       this.text.message("resumingCommand", { command: command ?? "" })
     )
-    this.replayRestingPointer()
-    this.invalidateState()
-    this.host.focusSurface()
-    this.host.requestRender()
   }
 
   /** Ends the transparent command and puts back the one it interrupted. */
@@ -942,6 +965,18 @@ export class CadRuntime extends Observable {
     const command = this.commandNamed(typed)
     if (!command) return false
     return this.answering(this.commandEcho(typed, command), () => {
+      if (
+        command.transparent &&
+        this.suspended === null &&
+        command.tool === undefined
+      ) {
+        // One that asks nothing here (SNAP's toggle, UNITS' dialog) runs in
+        // place, and the running command resumes at once.
+        if (clear) this.dynamicInput.clearTexts()
+        command.run()
+        this.writeResuming()
+        return true
+      }
       if (
         command.transparent &&
         this.suspended === null &&

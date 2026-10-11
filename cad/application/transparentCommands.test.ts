@@ -14,6 +14,168 @@ function answerLine(cad: CadHarness, text: string): CadHarness {
 const ZOOM_PROMPT =
   ">>Specify corner of window, enter a scale factor (nX or nXP), or [All/Extents/Previous/Scale/Window/Object]:"
 
+/** LINE started at 0,0, a command typed after it. */
+function lineThen(cad: CadHarness, ...texts: string[]): CadHarness {
+  cad.command(cad.runtime.text.commandNames("LINE")[0]).click(p(0, 0))
+  for (const text of texts) answerLine(cad, text)
+  return cad
+}
+
+// AutoCAD 2023's console typing each at LINE's `Specify next point or
+// [Undo]:`; the reports a transparent command writes are not headed `>>`.
+describe("the other commands AutoCAD runs transparently", () => {
+  it("measures with DIST and ID, and LINE goes on from its own point", () => {
+    const cad = lineThen(cad0(), "'DIST", "0,0", "3,4")
+    expect(cad.commandLog().slice(-5)).toEqual([
+      "Specify next point or [Undo]: 'DIST",
+      ">>Specify first point: 0,0",
+      ">>Specify second point: 3,4",
+      "Distance = 5.00,  Angle in XY Plane = 53,  Angle from XY Plane = 0\nDelta X = 3.00,  Delta Y = 4.00,   Delta Z = 0.00",
+      "Resuming LINE command.",
+    ])
+    answerLine(cad, "'ID")
+    answerLine(cad, "5,6")
+    expect(cad.commandLog().slice(-4)).toEqual([
+      "Specify next point or [Undo]: 'ID",
+      ">>Specify point: 5,6",
+      " X = 5.00     Y = 6.00     Z = 0.00",
+      "Resuming LINE command.",
+    ])
+    answerLine(cad, "@10,0")
+    expect(cad.entities()[0]).toMatchObject({ end: { x: 10, y: 0 } })
+  })
+
+  it("queues the regeneration LTSCALE and ATTDISP ask for until LINE ends", () => {
+    const cad = lineThen(cad0(), "'LTSCALE", "2", "'ATTDISP", "ON")
+    expect(cad.commandLog().slice(-8)).toEqual([
+      "Specify next point or [Undo]: 'LTSCALE",
+      ">>Enter new linetype scale factor <1.00>: 2",
+      "Regen queued.",
+      "Resuming LINE command.",
+      "Specify next point or [Undo]: 'ATTDISP",
+      ">>Enter attribute visibility setting [Normal/ON/OFF] <Normal>: ON",
+      "Regen queued.",
+      "Resuming LINE command.",
+    ])
+    expect(cad.state().ltScale).toBe(2)
+    cad.click(p(10, 0)).enter()
+    expect(cad.commandLog().slice(-2)).toEqual([
+      "Specify next point or [Undo]:",
+      "Regenerating model.",
+    ])
+    // The same value changes nothing, so nothing is regenerated.
+    lineThen(cad, "'LTSCALE", "2")
+    expect(cad.commandLog().slice(-2)).toEqual([
+      ">>Enter new linetype scale factor <2.00>: 2",
+      "Resuming LINE command.",
+    ])
+    cad.escape()
+    expect(cad.commandLog().at(-1)).not.toBe("Regenerating model.")
+  })
+
+  it("sets the running object snaps and the current properties", () => {
+    const cad = lineThen(cad0(), "'-OSNAP", "FOO")
+    expect(cad.commandLog().slice(-4)).toEqual([
+      "Specify next point or [Undo]: '-OSNAP",
+      "Current osnap modes: End,Cen,Int,Ext",
+      ">>Enter list of object snap modes: FOO",
+      "Invalid object snap modes.",
+    ])
+    answerLine(cad, "END")
+    expect(cad.commandLog().at(-1)).toBe("Resuming LINE command.")
+    answerLine(cad, "'-COLOR")
+    answerLine(cad, "1")
+    expect(cad.commandLog().slice(-2)).toEqual([
+      ">>Enter default object color [Truecolor] <BYLAYER>: 1",
+      "Resuming LINE command.",
+    ])
+    // WHY twice: the console writes the current lineweight as two prompts.
+    answerLine(cad, "'-LWEIGHT")
+    expect(cad.commandLog().at(-1)).toBe(">>Current lineweight: >>BYLAYER")
+    answerLine(cad, "0.3")
+    answerLine(cad, "'ELEV")
+    answerLine(cad, "5")
+    answerLine(cad, "0")
+    expect(cad.commandLog().slice(-3)).toEqual([
+      ">>Specify new default elevation <0.00>: 5",
+      ">>Specify new default thickness <0.00>: 0",
+      "Resuming LINE command.",
+    ])
+    expect(cad.activeToolId()).toBe("line")
+    cad.click(p(10, 0))
+    expect(cad.entities()[0]).toMatchObject({
+      color: "#ff0000",
+      lineweight: 0.3,
+    })
+  })
+
+  it("refuses -VIEW's views, which need a regeneration", () => {
+    const cad = lineThen(cad0(), "'-VIEW", "O", "F")
+    expect(cad.commandLog().slice(-4)).toEqual([
+      ">>Enter an option [Orthographic]: O",
+      ">>Enter an option [Top/Bottom/Front/BAck/Left/Right] <Top>: F",
+      "** Requires a regen, cannot be transparent.",
+      "Resuming LINE command.",
+    ])
+    expect(cad.runtime.viewport.up).toEqual({ x: 0, y: 1, z: 0 })
+  })
+
+  it("runs in place what asks nothing here, as SNAP and UNITS", () => {
+    const cad = lineThen(cad0(), "'SNAP")
+    expect(cad.commandLog().slice(-3)).toEqual([
+      "Specify next point or [Undo]: 'SNAP",
+      "Snap mode on.",
+      "Resuming LINE command.",
+    ])
+    answerLine(cad, "'UN")
+    expect(cad.state().unitsDialog).toBe(true)
+    expect(cad.commandLog().slice(-2)).toEqual([
+      "Specify next point or [Undo]: 'UN 'UNITS",
+      "Resuming LINE command.",
+    ])
+    expect(cad.activeToolId()).toBe("line")
+  })
+
+  it("refuses what AutoCAD does not run transparently", () => {
+    const cad = lineThen(cad0())
+    for (const command of ["'UCS", "'PLAN", "'-VPOINT", "'ERASE", "'VIEW"]) {
+      answerLine(cad, command)
+      expect(cad.commandLog().slice(-2)).toEqual([
+        "** That command may not be invoked transparently **",
+        "Point or option keyword required.",
+      ])
+    }
+    expect(cad.activeToolId()).toBe("line")
+  })
+
+  it("runs them in Spanish", () => {
+    const cad = lineThen(createHarness({ locale: es }), "'EC", "2")
+    expect(cad.commandLog().slice(-4)).toEqual([
+      "Precise punto siguiente o [desHacer]: 'EC 'ESCALATL",
+      ">>Indique nuevo factor de escala del tipo de línea <1.00>: 2",
+      "La regeneración está en espera.",
+      "Reanudando el comando LINEA.",
+    ])
+    answerLine(cad, "'-VISTA")
+    answerLine(cad, "_TOP")
+    expect(cad.commandLog().slice(-2)).toEqual([
+      "** Regeneración necesaria, no puede ser transparente.",
+      "Reanudando el comando LINEA.",
+    ])
+    answerLine(cad, "'SCP")
+    expect(cad.commandLog().slice(-2)).toEqual([
+      "** Este comando no funciona de forma transparente **",
+      "Se requiere un punto o una opción.",
+    ])
+    cad.escape()
+    expect(cad.commandLog().at(-1)).toBe("Regenerando modelo.")
+  })
+})
+
+function cad0(): CadHarness {
+  return createHarness()
+}
+
 // AutoCAD 2023's console: `'ZOOM` typed at LINE's prompt asks ZOOM's
 // questions headed `>>`, and once ZOOM is done says `Resuming LINE command.`
 // and asks LINE's again.

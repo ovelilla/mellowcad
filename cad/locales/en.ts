@@ -2038,6 +2038,8 @@ export const en: EngineCatalog = {
       ],
       "invalidInputTryAgain": "Invalid input. Try again.",
       "regeneratingModel": "Regenerating model.",
+      "regenQueued": "Regen queued.",
+      "requiresRegen": "** Requires a regen, cannot be transparent.",
       "panExit": "Press ESC or ENTER to exit, or right-click to display shortcut menu.",
       "currentOsnapModes": [
         "Current osnap modes: ",

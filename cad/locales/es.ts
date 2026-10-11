@@ -2361,6 +2361,8 @@ export const es: EngineLocale = {
       ],
       "invalidInputTryAgain": "Entrada no válida. Vuelva a intentarlo.",
       "regeneratingModel": "Regenerando modelo.",
+      "regenQueued": "La regeneración está en espera.",
+      "requiresRegen": "** Regeneración necesaria, no puede ser transparente.",
       "currentOsnapModes": [
         "Modos refent actuales: ",
         [

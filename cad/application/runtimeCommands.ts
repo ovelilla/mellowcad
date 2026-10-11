@@ -11,14 +11,34 @@ import { MTextTool } from "./tools/MTextTool"
 import { AttEditTool } from "./tools/AttEditTool"
 
 /**
- * The commands AutoCAD runs transparently that are built here. WHY only these:
- * the others it does ('DIST, 'ID, 'LTSCALE, '-OSNAP…) are not made
- * transparent yet (docs/autocad-coverage.md).
+ * The commands built here that AutoCAD 2023's console runs transparently
+ * (`'DIST` at LINE's prompt asks `>>Specify first point:`). Left out: what it
+ * refuses (`** That command may not be invoked transparently **`), what it
+ * does not know and so cannot show (VIEW, PURGE, PROPERTIES, MATCHPROP,
+ * BLOCKSPALETTE, EATTEDIT, LAYER, whose dialog hangs it), and AREA and
+ * UCSICON, which typed so read the system variables of their names.
  */
 const TRANSPARENT_COMMANDS: ReadonlySet<string> = new Set([
   "ZOOM",
   "PAN",
   "AUPREC",
+  "DIST",
+  "ID",
+  "LTSCALE",
+  "ATTDISP",
+  "ELEV",
+  "-OSNAP",
+  "COLOR",
+  "-COLOR",
+  "LINETYPE",
+  "-LINETYPE",
+  "LWEIGHT",
+  "-LWEIGHT",
+  "-VIEW",
+  "SNAP",
+  "UNITS",
+  "DIMSTYLE",
+  "STYLE",
 ])
 
 /**
@@ -26,24 +46,24 @@ const TRANSPARENT_COMMANDS: ReadonlySet<string> = new Set([
  * aliases) plus the editing/view commands that are not tools.
  *
  * Every command is a call into the runtime's own public API — that is what a
- * command line is — so the runtime is passed whole; `startTool` and `register`
- * are the two private entry points it cannot reach.
+ * command line is — so the runtime is passed whole; `startTool` and
+ * `registerCommand` are the two private entry points it cannot reach.
  */
 export function registerCommands(
   runtime: CadRuntime,
   startTool: (id: string) => void,
-  register: (definition: CommandDefinition) => void
+  registerCommand: (definition: CommandDefinition) => void
 ): void {
   const tools = new Set(runtime.listTools().map((tool) => tool.id))
+  const register = (definition: CommandDefinition) =>
+    registerCommand({
+      ...definition,
+      transparent: TRANSPARENT_COMMANDS.has(definition.id),
+    })
 
   for (const [toolId, command] of Object.entries(TOOL_COMMANDS)) {
     if (!tools.has(toolId)) continue
-    register({
-      id: command,
-      tool: toolId,
-      transparent: TRANSPARENT_COMMANDS.has(command),
-      run: () => startTool(toolId),
-    })
+    register({ id: command, tool: toolId, run: () => startTool(toolId) })
   }
 
   const say = (text: string) => runtime.commandLine.write("info", text)

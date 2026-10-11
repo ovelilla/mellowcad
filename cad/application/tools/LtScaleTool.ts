@@ -53,7 +53,7 @@ export class LtScaleTool implements Tool {
     }
     if (value !== ctx.document.getSettings().ltScale) {
       ctx.execute(new UpdateSettingsCommand({ ltScale: value }))
-      ctx.report(ctx.text.message("regeneratingModel"))
+      ctx.regenerate()
     }
     ctx.endCommand()
   }
