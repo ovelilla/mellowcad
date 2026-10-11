@@ -1,5 +1,12 @@
 import { Vec2, V } from "../../geometry/Vec2"
-import { Vec3 } from "../../geometry/Vec3"
+import {
+  Vec3,
+  add3,
+  length3,
+  normalize3,
+  scale3,
+  sub3,
+} from "../../geometry/Vec3"
 import { normalizeDegrees } from "../../geometry/primitives"
 import {
   DocumentSettings,
@@ -12,7 +19,10 @@ import { Entity, readsInPlan } from "../../domain/entities"
 import { objectArea } from "../../domain/objectArea"
 import { ScenePrimitive } from "../../scene/types"
 import { THEME } from "../../scene/theme"
-import { parseCoordinate } from "../input/coordinateInput"
+import {
+  isCoordinateExpression,
+  parseCoordinate,
+} from "../input/coordinateInput"
 import { entityScenePrimitive } from "../SceneBuilder"
 import {
   CommandOption,
@@ -51,6 +61,14 @@ type MeasureState =
       readonly cursor: Vec2
     }
   | { readonly phase: "areaObject"; readonly hover: Entity | null }
+  | {
+      /** DIST's Multiple points, or its Length's `Specify length of line:`. */
+      readonly phase: "multiple" | "length"
+      readonly points: readonly Vec3[]
+      readonly cursor: Vec3
+      /** The run's length so far, as `Distance = …` writes it. */
+      readonly total: string
+    }
 
 interface Measurement {
   readonly base: Vec3
@@ -89,7 +107,11 @@ export class MeasureTool implements Tool {
   onPointerMove(input: PointerInput, ctx: ToolContext): void {
     this.lastScreen = input.screen
     ctx.dynamicInput.setPosition(input.screen)
-    if (this.state.phase === "second") {
+    if (
+      this.state.phase === "second" ||
+      this.state.phase === "multiple" ||
+      this.state.phase === "length"
+    ) {
       this.state = { ...this.state, cursor: input.point }
     } else if (this.state.phase === "area") {
       this.state = { ...this.state, cursor: input.point }
@@ -120,6 +142,13 @@ export class MeasureTool implements Tool {
       ctx.report(distanceReport({ base: this.state.base, tip: point }, ctx))
       ctx.endCommand()
       return
+    } else if (this.state.phase === "multiple") {
+      this.walk([...this.state.points, point], ctx)
+      return
+    } else if (this.state.phase === "length") {
+      // A point there gives the length from the last one, as AutoCAD's does.
+      this.extend(length3(sub3(point, lastOf(this.state.points))), ctx)
+      return
     } else if (this.state.phase === "area") {
       this.state = {
         phase: "area",
@@ -128,6 +157,58 @@ export class MeasureTool implements Tool {
       }
     }
     this.askPoint(ctx)
+  }
+
+  /**
+   * Multiple points' run so far, then its next point: `Distance = …` once
+   * it has a segment, as AutoCAD 2023's console writes it before each.
+   */
+  private walk(points: readonly Vec3[], ctx: ToolContext): void {
+    const total = formatLength(pathLength(points), ctx.document.getSettings())
+    this.state = { phase: "multiple", points, cursor: lastOf(points), total }
+    if (points.length > 1) {
+      ctx.report(ctx.text.message("distanceTotal", { value: total }))
+    }
+    this.askPoint(ctx)
+  }
+
+  /**
+   * Length's segment: on along the last one (a negative length back), or
+   * along the UCS's X axis before there is one.
+   */
+  private extend(length: number, ctx: ToolContext): void {
+    if (this.state.phase !== "length" || !Number.isFinite(length)) return
+    const { points } = this.state
+    const last = lastOf(points)
+    const along =
+      points.length > 1
+        ? normalize3(sub3(last, points[points.length - 2]))
+        : null
+    const direction = along ?? ctx.ucs.xAxis
+    this.walk([...points, add3(last, scale3(direction, length))], ctx)
+  }
+
+  private askLength(ctx: ToolContext): void {
+    if (this.state.phase !== "multiple") return
+    this.state = { ...this.state, phase: "length" }
+    ctx.dynamicInput.open({
+      fields: [{ id: "distance", prompt: "length", kind: "distance" }],
+      commit: (values, commitCtx) => this.extend(values.distance, commitCtx),
+      commitRaw: (commitCtx) => {
+        const text = commitCtx.dynamicInput.getText("distance").trim()
+        if (!isCoordinateExpression(text)) return false
+        const point = parseCoordinate(text, {
+          lastPoint: this.basePoint(),
+          relativeByDefault: false,
+          ucs: commitCtx.ucs,
+          elevation: commitCtx.elevation,
+        })
+        if (!point) return false
+        this.place(point, commitCtx)
+        return true
+      },
+    })
+    ctx.dynamicInput.setPosition(this.lastScreen ?? { x: 0, y: 0 })
   }
 
   /**
@@ -166,14 +247,23 @@ export class MeasureTool implements Tool {
   }
 
   private basePoint(): Vec3 | null {
-    if (this.state.phase === "second") return this.state.base
-    if (this.state.phase === "area") return this.state.points.at(-1) ?? null
-    return null
+    switch (this.state.phase) {
+      case "second":
+        return this.state.base
+      case "area":
+        return this.state.points.at(-1) ?? null
+      case "multiple":
+      case "length":
+        return lastOf(this.state.points)
+      default:
+        return null
+    }
   }
 
   /**
    * Enter, at the box or the drawing: DIST's first point ends the command and
-   * its second measures to the first, as AutoCAD's does; AREA's first corner
+   * its second measures to the first, as AutoCAD's does, Multiple points'
+   * next point takes `<Total>` and its Length refuses it; AREA's first corner
    * takes `<Object>`, from the third point it takes `<Total>`, and before that
    * AutoCAD 2023's console refuses it as a missing point.
    */
@@ -184,6 +274,18 @@ export class MeasureTool implements Tool {
         return true
       case "second":
         this.place(this.state.base, ctx)
+        return true
+      case "multiple":
+        if (this.invokeDistOption("Total", ctx) === "end") ctx.endCommand()
+        return true
+      case "length":
+        ctx.report(
+          ctx.text.message("requiresDistance", {
+            points: "second",
+            keyword: "no",
+          }),
+          "error"
+        )
         return true
       case "area": {
         const { points } = this.state
@@ -199,13 +301,16 @@ export class MeasureTool implements Tool {
     }
   }
 
-  /** DIST's two points; WHY no `[Multiple points]` on the second: not built. */
   question(): PromptId | null {
     switch (this.state.phase) {
       case "first":
         return "specifyFirstPoint"
       case "second":
-        return "distSecondPoint"
+        return "distSecondPointOr"
+      case "multiple":
+        return "specifyNextPointOr"
+      case "length":
+        return "specifyLengthOfLine"
       case "area":
         return this.state.points.length === 0
           ? "specifyFirstCornerPointOr"
@@ -215,12 +320,23 @@ export class MeasureTool implements Tool {
     }
   }
 
-  /** AREA's object is one pick, refused as AutoCAD 2023's console refuses it. */
+  /**
+   * AREA's object is one pick, and Multiple points' next point says the run
+   * so far again after its refusal, as AutoCAD 2023's console refuses them.
+   */
   takes(): QuestionInput | null {
-    return this.state.phase === "areaObject" ? "objectOrLast" : null
+    if (this.state.phase === "areaObject") return "objectOrLast"
+    if (this.state.phase === "multiple" && this.state.points.length > 1) {
+      return {
+        refusal: ["pointOrKeywordRequired", "distanceTotal"],
+        values: { value: this.state.total },
+      }
+    }
+    return null
   }
 
   defaultOption(): string | null {
+    if (this.state.phase === "multiple") return "Total"
     if (this.state.phase !== "area") return null
     const { length } = this.state.points
     return length === 0 ? "Object" : length >= 3 ? "Total" : null
@@ -238,12 +354,17 @@ export class MeasureTool implements Tool {
   }
 
   /**
-   * WHY no Add area / Subtract area, nor Arc and Length at the next point:
-   * not built (docs/autocad-coverage.md).
+   * WHY no Add area / Subtract area, nor Arc and Length at AREA's next point,
+   * nor Arc at DIST's: not built (docs/autocad-coverage.md).
    */
   commandOptions(): readonly CommandOption[] {
     if (this.state.phase === "areaObject") {
       return [{ id: "Last", hidden: true, prompt: "selectObjects" }]
+    }
+    if (this.state.phase === "second") return [{ id: "Multiple" }]
+    if (this.state.phase === "multiple") {
+      const later = [{ id: "Length" }, { id: "Undo" }, { id: "Total" }]
+      return this.state.points.length > 1 ? [{ id: "Close" }, ...later] : later
     }
     if (this.state.phase !== "area") return []
     const { length } = this.state.points
@@ -252,6 +373,9 @@ export class MeasureTool implements Tool {
   }
 
   invokeOption(id: string, ctx: ToolContext): CommandOptionOutcome {
+    if (this.state.phase === "second" || this.state.phase === "multiple") {
+      return this.invokeDistOption(id, ctx)
+    }
     switch (id) {
       case "Object":
         if (this.state.phase !== "area") return "unhandled"
@@ -270,6 +394,42 @@ export class MeasureTool implements Tool {
           ? "end"
           : "continue"
       }
+      default:
+        return "unhandled"
+    }
+  }
+
+  /**
+   * DIST's Multiple points and what its next point offers: Close back to the
+   * first point and Total, each `Distance = …` and the end, Length, and Undo
+   * of one point (`All segments already undone.` at the first).
+   */
+  private invokeDistOption(id: string, ctx: ToolContext): CommandOptionOutcome {
+    const state = this.state
+    if (state.phase === "second") {
+      if (id !== "Multiple") return "unhandled"
+      this.walk([state.base], ctx)
+      return "continue"
+    }
+    if (state.phase !== "multiple") return "unhandled"
+    switch (id) {
+      case "Close":
+        if (state.points.length < 2) return "unhandled"
+        this.walk([...state.points, state.points[0]], ctx)
+        return "end"
+      case "Total":
+        ctx.report(ctx.text.message("distanceTotal", { value: state.total }))
+        return "end"
+      case "Length":
+        this.askLength(ctx)
+        return "continue"
+      case "Undo":
+        if (state.points.length === 1) {
+          ctx.report(ctx.text.message("allSegmentsUndone"))
+        } else {
+          this.walk(state.points.slice(0, -1), ctx)
+        }
+        return "continue"
       default:
         return "unhandled"
     }
@@ -339,12 +499,7 @@ export class MeasureTool implements Tool {
   }
 
   getConstraintAnchor(): Vec2 | null {
-    if (this.state.phase === "second") return this.state.base
-    if (this.state.phase === "area") {
-      const { points } = this.state
-      return points.length > 0 ? points[points.length - 1] : null
-    }
-    return null
+    return this.basePoint()
   }
 
   buildOverlay(ctx: ToolContext): ScenePrimitive[] {
@@ -352,6 +507,15 @@ export class MeasureTool implements Tool {
     const settings = ctx.document.getSettings()
     if (this.state.phase === "second") {
       this.drawDistance(out, ctx, this.state.base, this.state.cursor, settings)
+    }
+    if (this.state.phase === "multiple" || this.state.phase === "length") {
+      const { points, cursor } = this.state
+      this.drawRun(
+        out,
+        ctx,
+        this.state.phase === "multiple" ? [...points, cursor] : points,
+        settings
+      )
     }
     if (this.state.phase === "area" && this.state.points.length > 0) {
       this.drawArea(out, ctx, this.state.points, this.state.cursor, settings)
@@ -415,6 +579,31 @@ export class MeasureTool implements Tool {
     // above-right of it clear of the object-snap tooltip (which sits below-right
     // of the cursor), then clamped inside the viewport.
     placeAndPushReadout(out, b, lines, viewport)
+  }
+
+  /** Multiple points' run, the cursor's point last, with its length. */
+  private drawRun(
+    out: ScenePrimitive[],
+    ctx: ToolContext,
+    points: readonly Vec3[],
+    settings: DocumentSettings
+  ): void {
+    const { viewport } = ctx
+    const screen = points.map((point) => viewport.worldToScreen(point))
+    out.push({
+      kind: "path",
+      points: screen,
+      closed: false,
+      stroke: { color: THEME.selected, width: 1.5, dash: [6, 4] },
+    })
+    for (const p of screen) pushTick(out, p)
+    const lines = [
+      ctx.text.feedback("measureDistance", {
+        value: formatLength(pathLength(points), settings),
+        unit: unitSuffix(settings.unit),
+      }),
+    ]
+    placeAndPushReadout(out, screen[screen.length - 1], lines, viewport)
   }
 
   private drawArea(
@@ -498,6 +687,19 @@ function distanceReport(measurement: Measurement, ctx: ToolContext): string {
     deltaY: length(measured.deltaY),
     deltaZ: length(measured.deltaZ),
   })
+}
+
+function lastOf(points: readonly Vec3[]): Vec3 {
+  return points[points.length - 1]
+}
+
+/** The 3D length of the run through `points`. */
+function pathLength(points: readonly Vec3[]): number {
+  let total = 0
+  for (let i = 1; i < points.length; i++) {
+    total += length3(sub3(points[i], points[i - 1]))
+  }
+  return total
 }
 
 /** A small filled square marking a measured point. */

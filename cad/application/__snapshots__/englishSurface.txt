@@ -3193,9 +3193,10 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0°~, Line space facto
   dyn: "X,Y"=""||*
   command| DI DIST
 > first
-  prompt: DIST Specify second point:
+  prompt: DIST Specify second point or [Multiple points]:
   asks: "Second point"
-  tip: Specify second point:
+  tip: Specify second point or
+  options: [M] Multiple points
   canvas: "Dist  0.00 mm" "Angle 0°" "ΔX    0.00" "ΔY    0.00" "ΔZ    0.00"
   prompt| Specify first point:
 > move
@@ -3205,8 +3206,9 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0°~, Line space facto
   asks: -
   tip: -
   dyn: -
+  options: -
   canvas: -
-  prompt| Specify second point:
+  prompt| Specify second point or [Multiple points]:
   info| Distance = 500.00,  Angle in XY Plane = 53,  Angle from XY Plane = 0
         Delta X = 300.00,  Delta Y = 400.00,   Delta Z = 0.00
 > DIST again
@@ -3216,9 +3218,10 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0°~, Line space facto
   dyn: "X,Y"=""||*
   command| DIST
 > typed first
-  prompt: DIST Specify second point:
+  prompt: DIST Specify second point or [Multiple points]:
   asks: "Second point"
-  tip: Specify second point:
+  tip: Specify second point or
+  options: [M] Multiple points
   canvas: "Dist  500.00 mm" "Angle 53°" "ΔX    300.00" "ΔY    400.00" "ΔZ    0.00"
   prompt| Specify first point: 0,0
 > typed second
@@ -3226,10 +3229,57 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0°~, Line space facto
   asks: -
   tip: -
   dyn: -
+  options: -
   canvas: -
-  prompt| Specify second point: @30,40,120
+  prompt| Specify second point or [Multiple points]: @30,40,120
   info| Distance = 130.00,  Angle in XY Plane = 53,  Angle from XY Plane = 67
         Delta X = 30.00,  Delta Y = 40.00,   Delta Z = 120.00
+> DIST Multiple
+  prompt: DIST Specify second point or [Multiple points]:
+  asks: "Second point"
+  tip: Specify second point or
+  dyn: "X,Y"=""||*
+  options: [M] Multiple points
+  canvas: "Dist  0.00 mm" "Angle 0°" "ΔX    0.00" "ΔY    0.00" "ΔZ    0.00"
+  command| DIST
+  prompt| Specify first point:
+> Multiple
+  prompt: DIST Specify next point or [Length/Undo/Total] <Total>:
+  tip: Specify next point or
+  options: [L] Length, [U] Undo, [T] Total
+  canvas: "Dist  0.00 mm"
+  prompt| Specify second point or [Multiple points]: M
+> next
+  prompt: DIST Specify next point or [Close/Length/Undo/Total] <Total>:
+  options: [C] Close, [L] Length, [U] Undo, [T] Total
+  canvas: "Dist  300.00 mm"
+  prompt| Specify next point or [Length/Undo/Total] <Total>:
+  info| Distance = 300.00
+> Length
+  prompt: DIST Specify length of line:
+  asks: "Length"
+  tip: Specify length of line:
+  dyn: "Length"=""||mm*
+  options: -
+  prompt| Specify next point or [Close/Length/Undo/Total] <Total>: L
+> length
+  prompt: DIST Specify next point or [Close/Length/Undo/Total] <Total>:
+  asks: "Second point"
+  tip: Specify next point or
+  dyn: "X,Y"=""||*
+  options: [C] Close, [L] Length, [U] Undo, [T] Total
+  canvas: "Dist  500.00 mm"
+  prompt| Specify length of line: 100
+  info| Distance = 400.00
+> Total
+  prompt: Command:
+  asks: -
+  tip: -
+  dyn: -
+  options: -
+  canvas: -
+  prompt| Specify next point or [Close/Length/Undo/Total] <Total>:
+  info| Distance = 400.00
 > AREA
   prompt: AREA Specify first corner point or [Object] <Object>:
   asks: "First point"

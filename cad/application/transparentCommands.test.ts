@@ -29,7 +29,7 @@ describe("the other commands AutoCAD runs transparently", () => {
     expect(cad.commandLog().slice(-5)).toEqual([
       "Specify next point or [Undo]: 'DIST",
       ">>Specify first point: 0,0",
-      ">>Specify second point: 3,4",
+      ">>Specify second point or [Multiple points]: 3,4",
       "Distance = 5.00,  Angle in XY Plane = 53,  Angle from XY Plane = 0\nDelta X = 3.00,  Delta Y = 4.00,   Delta Z = 0.00",
       "Resuming LINE command.",
     ])

@@ -171,8 +171,7 @@ function answer(cad: CadHarness, ...texts: string[]): CadHarness {
   return cad
 }
 
-// AutoCAD 2023's console answering the same input (DIST's Multiple points
-// is not offered here, so its second point refuses as a plain point does).
+// AutoCAD 2023's console answering the same input.
 describe("DIST and ID ask as AutoCAD 2026", () => {
   it("DIST asks its two points, and Enter at the second measures to the first", () => {
     const cad = createHarness()
@@ -183,9 +182,9 @@ describe("DIST and ID ask as AutoCAD 2026", () => {
       "Specify first point: FOO",
       "Invalid point.",
       "Specify first point: 0,0",
-      "Specify second point: FOO",
-      "Invalid point.",
-      "Specify second point: 3,4",
+      "Specify second point or [Multiple points]: FOO",
+      "Point or option keyword required.",
+      "Specify second point or [Multiple points]: 3,4",
       "Distance = 5.00,  Angle in XY Plane = 53,  Angle from XY Plane = 0\nDelta X = 3.00,  Delta Y = 4.00,   Delta Z = 0.00",
     ])
     expect(cad.activeToolId()).toBe("select")
@@ -193,7 +192,7 @@ describe("DIST and ID ask as AutoCAD 2026", () => {
     answer(cad, "1,1")
     cad.enter()
     expect(cad.commandLog().slice(-2)).toEqual([
-      "Specify second point:",
+      "Specify second point or [Multiple points]:",
       "Distance = 0.00,  Angle in XY Plane = 0,  Angle from XY Plane = 0\nDelta X = 0.00,  Delta Y = 0.00,   Delta Z = 0.00",
     ])
   })
@@ -216,7 +215,7 @@ describe("DIST and ID ask as AutoCAD 2026", () => {
     cad.command("DIST")
     answer(cad, "0,0")
     expect(cad.state().commandLine.prompt).toBe(
-      "DIST Especifique segundo punto:"
+      "DIST Especifique segundo punto o [puntos Múltiples]:"
     )
     answer(cad, "3,4")
     expect(cad.activeToolId()).toBe("select")
@@ -226,6 +225,106 @@ describe("DIST and ID ask as AutoCAD 2026", () => {
       "Precise punto: FOO",
       "Punto no válido.",
     ])
+  })
+})
+
+// AutoCAD 2023's console, the same input: the run so far before each next
+// point, Arc left out (not built).
+describe("DIST's Multiple points", () => {
+  it("adds up the run, says it again after a refusal and undoes a point", () => {
+    const cad = createHarness()
+    cad.command("DIST")
+    answer(cad, "0,0", "M", "3,4", "6,8", "FOO", "U", "U", "U", "6,0")
+    cad.enter()
+    expect(cad.commandLog()).toEqual([
+      "DIST",
+      "Specify first point: 0,0",
+      "Specify second point or [Multiple points]: M",
+      "Specify next point or [Length/Undo/Total] <Total>: 3,4",
+      "Distance = 5.00",
+      "Specify next point or [Close/Length/Undo/Total] <Total>: 6,8",
+      "Distance = 10.00",
+      "Specify next point or [Close/Length/Undo/Total] <Total>: FOO",
+      "Point or option keyword required.",
+      "Distance = 10.00",
+      "Specify next point or [Close/Length/Undo/Total] <Total>: U",
+      "Distance = 5.00",
+      "Specify next point or [Close/Length/Undo/Total] <Total>: U",
+      "Specify next point or [Length/Undo/Total] <Total>: U",
+      "All segments already undone.",
+      "Specify next point or [Length/Undo/Total] <Total>: 6,0",
+      "Distance = 6.00",
+      "Specify next point or [Close/Length/Undo/Total] <Total>:",
+      "Distance = 6.00",
+    ])
+    expect(cad.activeToolId()).toBe("select")
+  })
+
+  it("closes back to the first point", () => {
+    const cad = createHarness()
+    cad.command("DIST")
+    answer(cad, "0,0", "M", "10,0", "10,10", "C")
+    expect(cad.commandLog().slice(-2)).toEqual([
+      "Specify next point or [Close/Length/Undo/Total] <Total>: C",
+      "Distance = 34.14",
+    ])
+    expect(cad.activeToolId()).toBe("select")
+  })
+
+  it("goes on by a length, along the last segment or the X axis", () => {
+    const cad = createHarness()
+    cad.command("DIST")
+    answer(cad, "0,0", "M", "L", "7", "10,0", "L", "FOO")
+    cad.enter()
+    answer(cad, "-4", "L", "@0,5", "T")
+    expect(cad.commandLog().slice(3)).toEqual([
+      "Specify next point or [Length/Undo/Total] <Total>: L",
+      "Specify length of line: 7",
+      "Distance = 7.00",
+      "Specify next point or [Close/Length/Undo/Total] <Total>: 10,0",
+      "Distance = 10.00",
+      "Specify next point or [Close/Length/Undo/Total] <Total>: L",
+      "Specify length of line: FOO",
+      "Requires numeric distance or second point.",
+      "Specify length of line:",
+      "Requires numeric distance or second point.",
+      "Specify length of line: -4",
+      "Distance = 14.00",
+      "Specify next point or [Close/Length/Undo/Total] <Total>: L",
+      "Specify length of line: @0,5",
+      "Distance = 19.00",
+      "Specify next point or [Close/Length/Undo/Total] <Total>: T",
+      "Distance = 19.00",
+    ])
+  })
+
+  it("reads the run on screen as it goes", () => {
+    const cad = createHarness()
+    cad.command("DIST").click(p(0, 0))
+    answer(cad, "M")
+    cad.click(p(300, 0)).moveTo(p(300, 400))
+    expect(readout(cad)).toEqual(["Dist  700.00 mm"])
+  })
+
+  it("asks in Autodesk's Spanish", () => {
+    const cad = createHarness({ locale: es })
+    cad.command("DIST")
+    answer(cad, "0,0", "M", "3,4", "FOO", "C")
+    expect(cad.commandLog().slice(2)).toEqual([
+      "Especifique segundo punto o [puntos Múltiples]: M",
+      "Precise punto siguiente o [Longitud/desHacer/Total] <Total>: 3,4",
+      "Distancia = 5.00",
+      "Precise punto siguiente o [Cerrar/Longitud/desHacer/Total] <Total>: FOO",
+      "Se requiere un punto o una opción.",
+      "Distancia = 5.00",
+      "Precise punto siguiente o [Cerrar/Longitud/desHacer/Total] <Total>: C",
+      "Distancia = 10.00",
+    ])
+    cad.command("DIST")
+    answer(cad, "0,0", "M", "L")
+    expect(cad.state().commandLine.prompt).toBe(
+      "DIST Precise longitud de línea:"
+    )
   })
 })
 

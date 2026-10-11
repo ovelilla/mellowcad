@@ -629,6 +629,13 @@
         "Multiple": "Multiple"
       },
       "BREAK": { "First point": "First point" },
+      "DIST": {
+        "Multiple": "Multiple",
+        "Close": "Close",
+        "Length": "Length",
+        "Undo": "Undo",
+        "Total": "Total"
+      },
       "AREA": { "Object": "Object", "Undo": "Undo", "Total": "Total" },
       "ZOOM": {
         "All": "All",
@@ -849,7 +856,8 @@
       "linetypeListNames": "Enter linetype name(s) to list",
       "defaultLineweight": "Enter default lineweight for new objects or",
       "idPoint": "Specify point",
-      "distSecondPoint": "Specify second point",
+      "distSecondPointOr": "Specify second point or",
+      "specifyLengthOfLine": "Specify length of line",
       "matchpropSource": "Select source object",
       "matchpropDestination": "Select destination object(s)",
       "viewPoint": "Specify a view point",
@@ -1129,6 +1137,7 @@
       "areaReport": "Area = {area}, {measured, select, circumference {Circumference} length {Length} other {Perimeter}} = {around}",
       "objectHasNoArea": "Selected object does not have an area",
       "allSegmentsUndone": "All segments already undone.",
+      "distanceTotal": "Distance = {value}",
       "distanceReport": "Distance = {distance},  Angle in XY Plane = {angleInPlane},  Angle from XY Plane = {angleFromPlane}\nDelta X = {deltaX},  Delta Y = {deltaY},   Delta Z = {deltaZ}",
       "idReport": " X = {x}     Y = {y}     Z = {z}",
       "linesNonCoplanar": "Lines are non-coplanar.",
@@ -1241,7 +1250,8 @@
         "Inscribed": "Inscribed in circle",
         "Circumscribed": "Circumscribed about circle"
       },
-      "CIRCLED": { "Ttr": "Ttr (tan tan radius)" }
+      "CIRCLED": { "Ttr": "Ttr (tan tan radius)" },
+      "DIST": { "Multiple": "Multiple points" }
     },
     "listing": {
       "hatchPattern": "{name}  {description}",

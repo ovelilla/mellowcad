@@ -1035,7 +1035,8 @@ export const en: EngineCatalog = {
       "linetypeListNames": "Enter linetype name(s) to list",
       "defaultLineweight": "Enter default lineweight for new objects or",
       "idPoint": "Specify point",
-      "distSecondPoint": "Specify second point",
+      "distSecondPointOr": "Specify second point or",
+      "specifyLengthOfLine": "Specify length of line",
       "matchpropSource": "Select source object",
       "matchpropDestination": "Select destination object(s)",
       "viewPoint": "Specify a view point",
@@ -1849,6 +1850,12 @@ export const en: EngineCatalog = {
       ],
       "objectHasNoArea": "Selected object does not have an area",
       "allSegmentsUndone": "All segments already undone.",
+      "distanceTotal": [
+        "Distance = ",
+        [
+          "value"
+        ]
+      ],
       "distanceReport": [
         "Distance = ",
         [
@@ -2418,6 +2425,9 @@ export const en: EngineCatalog = {
       },
       "CIRCLED": {
         "Ttr": "Ttr (tan tan radius)"
+      },
+      "DIST": {
+        "Multiple": "Multiple points"
       }
     },
     "listing": {

@@ -1097,6 +1097,13 @@ export const es: EngineLocale = {
       "BREAK": {
         "First point": "Primer punto"
       },
+      "DIST": {
+        "Multiple": "Múltiples",
+        "Close": "Cerrar",
+        "Length": "Longitud",
+        "Undo": "desHacer",
+        "Total": "Total"
+      },
       "AREA": {
         "Object": "Objeto",
         "Undo": "desHacer",
@@ -1358,7 +1365,8 @@ export const es: EngineLocale = {
       "linetypeListNames": "Indique nombre(s) de tlínea que se van a enumerar",
       "defaultLineweight": "Indique el grosor de línea por defecto para los nuevos objetos o",
       "idPoint": "Precise punto",
-      "distSecondPoint": "Especifique segundo punto",
+      "distSecondPointOr": "Especifique segundo punto o",
+      "specifyLengthOfLine": "Precise longitud de línea",
       "matchpropSource": "Seleccione el objeto de origen",
       "matchpropDestination": "Seleccione objeto(s) de destino",
       "viewPoint": "Precise un punto de vista",
@@ -2171,6 +2179,12 @@ export const es: EngineLocale = {
       ],
       "objectHasNoArea": "El objeto seleccionado no tiene área",
       "allSegmentsUndone": "Ya están deshechos todos los segmentos.",
+      "distanceTotal": [
+        "Distancia = ",
+        [
+          "value"
+        ]
+      ],
       "distanceReport": [
         "Distancia = ",
         [
@@ -2740,6 +2754,9 @@ export const es: EngineLocale = {
       },
       "CIRCLED": {
         "Ttr": "Ttr (Tangente tangente radio)"
+      },
+      "DIST": {
+        "Multiple": "puntos Múltiples"
       }
     },
     "listing": {

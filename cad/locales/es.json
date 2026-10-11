@@ -666,6 +666,13 @@
       "BREAK": {
         "First point": "Primer punto"
       },
+      "DIST": {
+        "Multiple": "Múltiples",
+        "Close": "Cerrar",
+        "Length": "Longitud",
+        "Undo": "desHacer",
+        "Total": "Total"
+      },
       "AREA": {
         "Object": "Objeto",
         "Undo": "desHacer",
@@ -890,7 +897,8 @@
       "linetypeListNames": "Indique nombre(s) de tlínea que se van a enumerar",
       "defaultLineweight": "Indique el grosor de línea por defecto para los nuevos objetos o",
       "idPoint": "Precise punto",
-      "distSecondPoint": "Especifique segundo punto",
+      "distSecondPointOr": "Especifique segundo punto o",
+      "specifyLengthOfLine": "Precise longitud de línea",
       "matchpropSource": "Seleccione el objeto de origen",
       "matchpropDestination": "Seleccione objeto(s) de destino",
       "viewPoint": "Precise un punto de vista",
@@ -1170,6 +1178,7 @@
       "areaReport": "Área = {area}, {measured, select, circumference {Circunferencia} length {Longitud} other {Perímetro}} = {around}",
       "objectHasNoArea": "El objeto seleccionado no tiene área",
       "allSegmentsUndone": "Ya están deshechos todos los segmentos.",
+      "distanceTotal": "Distancia = {value}",
       "distanceReport": "Distancia = {distance}, Ángulo en el plano XY = {angleInPlane}, Ángulo a partir del plano XY = {angleFromPlane}\nIncremento X = {deltaX}, Incremento Y = {deltaY},   Incremento Z = {deltaZ}",
       "idReport": " X = {x}     Y = {y}     Z = {z}",
       "linesNonCoplanar": "Las líneas no son coplanares.",
@@ -1282,7 +1291,8 @@
         "Inscribed": "Inscrito en el círculo",
         "Circumscribed": "Circunscrito alrededor del círculo"
       },
-      "CIRCLED": { "Ttr": "Ttr (Tangente tangente radio)" }
+      "CIRCLED": { "Ttr": "Ttr (Tangente tangente radio)" },
+      "DIST": { "Multiple": "puntos Múltiples" }
     },
     "listing": {
       "hatchPattern": "{name}  {description}",
