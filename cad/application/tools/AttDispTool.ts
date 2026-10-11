@@ -1,5 +1,6 @@
 import { AttributeDisplay } from "../../domain/entities"
 import { SetAttributeDisplayCommand } from "../commands/settingsCommands"
+import type { PromptId } from "../../locales/types"
 import { CommandOption, CommandOptionOutcome, Tool, ToolContext } from "./Tool"
 
 const DISPLAY_BY_KEYWORD: Readonly<Record<string, AttributeDisplay>> = {
@@ -11,15 +12,30 @@ const DISPLAY_BY_KEYWORD: Readonly<Record<string, AttributeDisplay>> = {
 /**
  * AutoCAD's ATTDISP: `Enter attribute visibility setting [Normal/ON/OFF]`.
  * Normal shows each attribute as its Invisible mode says, ON shows them all and
- * OFF none; Enter keeps the current setting. The choice is ATTMODE, which the
- * drawing keeps.
+ * OFF none; Enter keeps the current setting, which the prompt offers. The
+ * choice is ATTMODE, which the drawing keeps.
  */
 export class AttDispTool implements Tool {
   readonly id = "attdisp"
 
+  private current: AttributeDisplay = "normal"
+
   onActivate(ctx: ToolContext): void {
+    this.current = ctx.document.getSettings().attributeDisplay
     ctx.selection.clear()
     ctx.dynamicInput.open({ fields: [], commit: () => {} })
+  }
+
+  question(): PromptId {
+    return "attributeVisibilitySetting"
+  }
+
+  defaultOption(): string | null {
+    return (
+      Object.keys(DISPLAY_BY_KEYWORD).find(
+        (id) => DISPLAY_BY_KEYWORD[id] === this.current
+      ) ?? null
+    )
   }
 
   onDeactivate(ctx: ToolContext): void {
@@ -33,8 +49,10 @@ export class AttDispTool implements Tool {
   invokeOption(id: string, ctx: ToolContext): CommandOptionOutcome {
     const display = DISPLAY_BY_KEYWORD[id]
     if (!display) return "unhandled"
-    if (display !== ctx.document.getSettings().attributeDisplay) {
+    // AutoCAD 2023's console regenerates only when the setting changes.
+    if (display !== this.current) {
       ctx.execute(new SetAttributeDisplayCommand(display))
+      ctx.report(ctx.text.message("regeneratingModel"))
     }
     return "end"
   }

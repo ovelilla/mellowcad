@@ -366,6 +366,37 @@ describe("ATTDISP", () => {
     expect(cad.runtime.document.getSettings().attributeDisplay).toBe("normal")
   })
 
+  // AutoCAD 2023's console answering the same input.
+  it("asks as AutoCAD 2026, regenerating only for a change", () => {
+    const cad = withHidden()
+    const answer = (text: string) => {
+      cad.runtime.setCommandLineText(text)
+      cad.runtime.submitCommandLine()
+    }
+    cad.command("ATTDISP")
+    answer("FOO")
+    answer("ON")
+    cad.command("ATTDISP")
+    answer("ON")
+    expect(cad.commandLog()).toEqual([
+      "ATTDISP",
+      "Enter attribute visibility setting [Normal/ON/OFF] <Normal>: FOO",
+      "Invalid option keyword.",
+      "Enter attribute visibility setting [Normal/ON/OFF] <Normal>: ON",
+      "Regenerating model.",
+      "ATTDISP",
+      "Enter attribute visibility setting [Normal/ON/OFF] <ON>: ON",
+    ])
+  })
+
+  it("asks in Autodesk's Spanish", () => {
+    const cad = createHarness({ locale: es })
+    cad.command("ATRVIS")
+    expect(cad.state().commandLine.prompt).toBe(
+      "ATRVIS Indique parámetro de visibilidad de atributo [Normal/ACT/DES] <Normal>:"
+    )
+  })
+
   it("is saved with the drawing", () => {
     const cad = withHidden()
     cad.command("ATTDISP").option("OFF")
