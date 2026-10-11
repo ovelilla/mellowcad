@@ -1028,6 +1028,7 @@ export const en: EngineCatalog = {
       "matchpropSource": "Select source object",
       "matchpropDestination": "Select destination object(s)",
       "viewPoint": "Specify a view point",
+      "specifyViewPointOr": "Specify a view point or",
       "viewAngleInPlane": "Enter angle in XY plane from X axis",
       "viewAngleFromPlane": "Enter angle from XY plane",
       "specifyFirstPoint": "Specify first point",
@@ -1972,7 +1973,7 @@ export const en: EngineCatalog = {
         " discarded from the operation"
       ],
       "currentViewDirection": [
-        "Current view direction: VIEWDIR=",
+        "Current view direction:  VIEWDIR=",
         [
           "x"
         ],
@@ -1985,6 +1986,7 @@ export const en: EngineCatalog = {
           "z"
         ]
       ],
+      "invalidInputTryAgain": "Invalid input. Try again.",
       "regeneratingModel": "Regenerating model.",
       "currentOsnapModes": [
         "Current osnap modes: ",

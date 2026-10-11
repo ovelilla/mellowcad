@@ -121,7 +121,9 @@ export interface ToolQuestion {
  * BREAK's set of one object, UCS OBject's, which takes a group, or ARRAYPATH's path curve), one object picked (`*Invalid selection*` and
  * its keywords, `Last` first for a plain pick as DIMSPACE's base dimension, or
  * `Expects a single object.` for the dimension commands' picks), or a
- * command's own refusal (CIRCLE's radius, POLYGON's sides).
+ * command's own refusal (CIRCLE's radius, POLYGON's sides), a line each when
+ * it is several (-VPOINT's `Invalid input. Try again.` and the current view
+ * direction again).
  */
 export type QuestionInput =
   | "point"
@@ -140,7 +142,10 @@ export type QuestionInput =
   | "object"
   | "objectOrLast"
   | "singleObject"
-  | { readonly refusal: MessageId; readonly values?: MessageValues }
+  | {
+      readonly refusal: MessageId | readonly MessageId[]
+      readonly values?: MessageValues
+    }
 
 /**
  * The outcome of invoking a command option, telling the runtime what to do:

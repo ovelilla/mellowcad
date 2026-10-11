@@ -178,3 +178,53 @@ describe("-VIEW asks as AutoCAD 2026", () => {
     ])
   })
 })
+
+// AutoCAD 2023's console answering the same input (the compass and tripod,
+// Enter's default at the view point, is not offered).
+describe("VPOINT asks as AutoCAD 2026", () => {
+  it("asks as AutoCAD 2026, and refuses what it cannot take", () => {
+    const cad = createHarness()
+
+    cad.command("-VPOINT")
+    answer(cad, "FOO", "R")
+    expect(cad.state().commandLine.prompt).toBe(
+      "VPOINT Enter angle in XY plane from X axis <270.00>:"
+    )
+    answer(cad, "FOO", "315", "FOO", "")
+
+    expect(cad.commandLog()).toEqual([
+      "-VPOINT",
+      "Current view direction:  VIEWDIR=0.00,0.00,1.00",
+      "Specify a view point or [Rotate]: FOO",
+      "Invalid input. Try again.",
+      "Current view direction:  VIEWDIR=0.00,0.00,1.00",
+      "Specify a view point or [Rotate]: R",
+      "Enter angle in XY plane from X axis <270.00>: FOO",
+      "Requires valid numeric angle or second point.",
+      "Enter angle in XY plane from X axis <270.00>: 315",
+      "Enter angle from XY plane <90.00>: FOO",
+      "Requires valid numeric angle or second point.",
+      "Enter angle from XY plane <90.00>:",
+      "Regenerating model.",
+    ])
+  })
+
+  it("asks in Autodesk's Spanish", () => {
+    const cad = createHarness({ locale: es })
+
+    cad.command("PTOVISTA")
+    expect(cad.state().commandLine.prompt).toBe(
+      "PTOVISTA Precise un punto de vista o [Rotación]:"
+    )
+    answer(cad, "FOO", "R")
+    expect(cad.commandLog().slice(-4)).toEqual([
+      "Precise un punto de vista o [Rotación]: FOO",
+      "Entrada no válida. Vuelva a intentarlo.",
+      "Dirección de vista actual:  VIEWDIR=0.00,0.00,1.00",
+      "Precise un punto de vista o [Rotación]: R",
+    ])
+    expect(cad.state().commandLine.prompt).toBe(
+      "PTOVISTA Ángulo a partir del eje X en el plano XY <270.00>:"
+    )
+  })
+})

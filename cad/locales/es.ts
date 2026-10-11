@@ -1351,6 +1351,7 @@ export const es: EngineLocale = {
       "matchpropSource": "Seleccione el objeto de origen",
       "matchpropDestination": "Seleccione objeto(s) de destino",
       "viewPoint": "Precise un punto de vista",
+      "specifyViewPointOr": "Precise un punto de vista o",
       "viewAngleInPlane": "Ángulo a partir del eje X en el plano XY",
       "viewAngleFromPlane": "Ángulo a partir del plano XY",
       "specifyFirstPoint": "Precise primer punto",
@@ -2307,6 +2308,7 @@ export const es: EngineLocale = {
           "z"
         ]
       ],
+      "invalidInputTryAgain": "Entrada no válida. Vuelva a intentarlo.",
       "regeneratingModel": "Regenerando modelo.",
       "currentOsnapModes": [
         "Modos refent actuales: ",

@@ -4133,37 +4133,48 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
   properties: -
   cycling: -
 > VPOINT
-  prompt: VPOINT [Rotate]:
+  prompt: VPOINT Specify a view point or [Rotate]:
   asks: "Specify a view point"
+  tip: Specify a view point or
   dyn: "X,Y"=""||*
   options: [R] Rotate
   command| VPOINT
-  info| Current view direction: VIEWDIR=0.00,0.00,1.00
+  info| Current view direction:  VIEWDIR=0.00,0.00,1.00
 > view point
   prompt: Command:
   asks: -
+  tip: -
   dyn: -
   options: -
+  prompt| Specify a view point or [Rotate]: 1,-1,1
   info| Regenerating model.
 > -VPOINT R
-  prompt: VPOINT [Rotate]:
+  prompt: VPOINT Specify a view point or [Rotate]:
   asks: "Specify a view point"
+  tip: Specify a view point or
   dyn: "X,Y"=""||*
   options: [R] Rotate
   command| -VPOINT
-  info| Current view direction: VIEWDIR=0.58,-0.58,0.58
+  info| Current view direction:  VIEWDIR=0.58,-0.58,0.58
 > R
-  prompt: VPOINT:
+  prompt: VPOINT Enter angle in XY plane from X axis <315.00>:
   asks: "Enter angle in XY plane from X axis"
+  tip: Enter angle in XY plane from X axis
   dyn: "Enter angle in XY plane from X axis"=""|315.00|°*
   options: -
+  prompt| Specify a view point or [Rotate]: R
 > in plane
+  prompt: VPOINT Enter angle from XY plane <35.26>:
   asks: "Enter angle from XY plane"
+  tip: Enter angle from XY plane
   dyn: "Enter angle from XY plane"=""|35.26|°*
+  prompt| Enter angle in XY plane from X axis <315.00>: 225
 > from plane
   prompt: Command:
   asks: -
+  tip: -
   dyn: -
+  prompt| Enter angle from XY plane <35.26>: 35
   info| Regenerating model.
 > -VIEW
   prompt: VIEW Enter an option [Orthographic]:

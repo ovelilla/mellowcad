@@ -36,7 +36,7 @@ describe("VPOINT", () => {
     expect(up.x).toBeCloseTo(origin.x, 9)
     expect(up.y).toBeLessThan(origin.y)
     expect(cad.commandLog()).toContain(
-      "Current view direction: VIEWDIR=0.00,0.00,1.00"
+      "Current view direction:  VIEWDIR=0.00,0.00,1.00"
     )
     expect(cad.commandLog().at(-1)).toBe("Regenerating model.")
     expect(cad.activeToolId()).toBe("select")

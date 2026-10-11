@@ -905,7 +905,9 @@ describe("Spanish AutoCAD's command language", () => {
     expect(cad.commandLog().at(-1)).toBe(
       "Dirección de vista actual:  VIEWDIR=0.00,0.00,1.00"
     )
-    expect(cad.state().commandLine.prompt).toBe("PTOVISTA [Rotación]:")
+    expect(cad.state().commandLine.prompt).toBe(
+      "PTOVISTA Precise un punto de vista o [Rotación]:"
+    )
     cad.press("r")
     cad.press("Enter")
     expect(cad.runtime.text.prompt("viewAngleInPlane")).toBe(

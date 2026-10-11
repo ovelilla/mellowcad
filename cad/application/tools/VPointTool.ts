@@ -5,12 +5,15 @@ import { WORLD_UCS, worldDirectionToUcs } from "../../domain/ucs"
 import { formatLength } from "../../domain/units"
 import { parseCoordinate } from "../input/coordinateInput"
 import { lookFrom } from "./viewPresets"
+import type { MessageValues } from "../../i18n/types"
 import {
   CommandOption,
   CommandOptionOutcome,
   PointerInput,
+  QuestionInput,
   Tool,
   ToolContext,
+  ToolQuestion,
 } from "./Tool"
 
 type VPointState =
@@ -32,20 +35,64 @@ export class VPointTool implements Tool {
 
   private state: VPointState = { phase: "viewPoint" }
   private lastScreen: Vec2 | null = null
+  /** VIEWDIR as the command reports it when it starts. */
+  private direction: MessageValues = {}
+  /** The current view's two angles, which Rotate's prompts offer. */
+  private angles = { inPlane: 0, fromPlane: 0 }
 
   onActivate(ctx: ToolContext): void {
     ctx.setCursor("crosshair")
     const settings = ctx.document.getSettings()
     const { x, y, z } = worldDirectionToUcs(ctx.ucs, ctx.viewport.direction)
     const value = (n: number) => formatLength(n, settings)
-    ctx.report(
-      ctx.text.message("currentViewDirection", {
-        x: value(x),
-        y: value(y),
-        z: value(z),
-      })
-    )
+    this.direction = { x: value(x), y: value(y), z: value(z) }
+    const world = ctx.viewport.direction
+    this.angles = {
+      // Straight down the Z axis there is no heading; AutoCAD offers 270,
+      // the plan's own (PLAN is VPOINT 270 / 90).
+      inPlane:
+        Math.hypot(world.x, world.y) < 1e-12
+          ? 270
+          : normalizeDegrees((Math.atan2(world.y, world.x) * 180) / Math.PI),
+      fromPlane:
+        (Math.asin(Math.max(-1, Math.min(1, world.z))) * 180) / Math.PI,
+    }
+    ctx.report(ctx.text.message("currentViewDirection", this.direction))
     this.askViewPoint(ctx)
+  }
+
+  /**
+   * WHY no `<display compass and tripod>`: the compass is not built, so Enter
+   * leaves the view as it is.
+   */
+  question(): ToolQuestion {
+    switch (this.state.phase) {
+      case "viewPoint":
+        return { id: "specifyViewPointOr" }
+      case "angleInPlane":
+        return { id: "viewAngleInPlane", enter: { angle: this.angles.inPlane } }
+      case "angleFromPlane":
+        return {
+          id: "viewAngleFromPlane",
+          enter: { angle: this.angles.fromPlane },
+        }
+    }
+  }
+
+  /**
+   * As AutoCAD 2023's console refuses them: a view point by reporting the
+   * current direction again, an angle as one that a second point could give.
+   */
+  takes(): QuestionInput {
+    return this.state.phase === "viewPoint"
+      ? {
+          refusal: ["invalidInputTryAgain", "currentViewDirection"],
+          values: this.direction,
+        }
+      : {
+          refusal: "requiresAngle",
+          values: { points: "second", keyword: "no" },
+        }
   }
 
   onDeactivate(ctx: ToolContext): void {
@@ -96,7 +143,6 @@ export class VPointTool implements Tool {
   }
 
   private askAngle(phase: "angleInPlane" | "angleFromPlane", ctx: ToolContext) {
-    const { x, y, z } = ctx.viewport.direction
     const inPlane = phase === "angleInPlane"
     ctx.dynamicInput.open({
       fields: [
@@ -110,9 +156,7 @@ export class VPointTool implements Tool {
     })
     ctx.dynamicInput.setDefault(
       "angle",
-      inPlane
-        ? normalizeDegrees((Math.atan2(y, x) * 180) / Math.PI)
-        : (Math.asin(Math.max(-1, Math.min(1, z))) * 180) / Math.PI
+      inPlane ? this.angles.inPlane : this.angles.fromPlane
     )
     if (phase === "angleInPlane") this.state = { phase }
     this.place(ctx)

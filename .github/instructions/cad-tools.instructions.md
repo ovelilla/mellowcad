@@ -144,7 +144,8 @@ Edge's later points), a keyword prompt that keeps snaps on, a selection of whole
 JOIN), STRETCH's crossing one or BREAK's set of one object (`"oneObject"`; UCS OBject's, which takes
 a group, `"singleSet"`), a count (`"integer"`), and a command's own words (`{ refusal:
 "requiresRadius" }`; a distance or an angle measured by two points of its own while the tool has a
-base point, `{ refusal: "requiresDistance", values: { points: "two", keyword: "no" } }`). Type
+base point, `{ refusal: "requiresDistance", values: { points: "two", keyword: "no" } }`; several
+lines, a list of ids sharing `values`: -VPOINT's `["invalidInputTryAgain", "currentViewDirection"]`). Type
 `FOO` at the prompt in AutoCAD's console before declaring one: the words differ per input
 function, and per command at `Select objects:`.
 

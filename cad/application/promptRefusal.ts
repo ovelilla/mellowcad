@@ -28,7 +28,9 @@ export function promptRefusal(
   if (input === null) return null
   const keyword = asked.keywords.length > 0
   if (typeof input === "object") {
-    return [text.message(input.refusal, input.values)]
+    const ids =
+      typeof input.refusal === "string" ? [input.refusal] : input.refusal
+    return ids.map((id) => text.message(id, input.values))
   }
   switch (input) {
     case "point":
