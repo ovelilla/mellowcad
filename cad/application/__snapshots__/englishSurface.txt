@@ -3140,29 +3140,43 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
   properties: -
   cycling: -
 > DIST
-  prompt: DIST:
+  prompt: DIST Specify first point:
   asks: "First point"
+  tip: Specify first point:
   dyn: "X,Y"=""||*
   command| DI DIST
 > first
+  prompt: DIST Specify second point:
   asks: "Second point"
+  tip: Specify second point:
   canvas: "Dist  0.00 mm" "Angle 0.00°" "ΔX    0.00" "ΔY    0.00" "ΔZ    0.00"
+  prompt| Specify first point:
 > move
   canvas: "Dist  500.00 mm" "Angle 53.13°" "ΔX    300.00" "ΔY    400.00" "ΔZ    0.00"
 > second
+  prompt: DIST Specify first point:
   asks: "First point"
+  tip: Specify first point:
+  prompt| Specify second point:
   info| Distance = 500.00,  Angle in XY Plane = 53.13,  Angle from XY Plane = 0.00
         Delta X = 300.00,  Delta Y = 400.00,   Delta Z = 0.00
 > typed first
+  prompt: DIST Specify second point:
   asks: "Second point"
+  tip: Specify second point:
+  prompt| Specify first point: 0,0
 > typed second
+  prompt: DIST Specify first point:
   asks: "First point"
+  tip: Specify first point:
   canvas: "Dist  130.00 mm" "Angle 53.13°" "ΔX    30.00" "ΔY    40.00" "ΔZ    120.00"
+  prompt| Specify second point: @30,40,120
   info| Distance = 130.00,  Angle in XY Plane = 53.13,  Angle from XY Plane = 67.38
         Delta X = 30.00,  Delta Y = 40.00,   Delta Z = 120.00
 > AREA
   prompt: AREA:
   asks: -
+  tip: -
   dyn: -
   canvas: -
   command| AA AREA
@@ -4012,24 +4026,30 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
   properties: -
   cycling: -
 > ID
-  prompt: ID:
+  prompt: ID Specify point:
   asks: "Specify point"
+  tip: Specify point:
   dyn: "X,Y"=""||*
   command| ID
 > pick
   prompt: Command:
   asks: -
+  tip: -
   dyn: -
+  prompt| Specify point:
   info|  X = 30.00     Y = 40.00     Z = 0.00
 > ID typed
-  prompt: ID:
+  prompt: ID Specify point:
   asks: "Specify point"
+  tip: Specify point:
   dyn: "X,Y"=""||*
   command| ID
 > point
   prompt: Command:
   asks: -
+  tip: -
   dyn: -
+  prompt| Specify point: 1,2,3
   info|  X = 1.00     Y = 2.00     Z = 3.00
 
 ## VPOINT VIEW

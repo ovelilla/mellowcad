@@ -191,7 +191,7 @@ command |  | RECTANG
 input | Specify first corner point or [Elevation/Thickness]: | 0,0
 input | Specify other corner point: | @70,40
 command |  | DIST
-input | First point: | 
+input | Specify first point: | 
 ## files
 command |  | CIRCLE
 input | Specify center point for circle or [3P/2P/Ttr (tan tan radius)]: | 0,0

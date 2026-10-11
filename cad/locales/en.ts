@@ -1017,6 +1017,7 @@ export const en: EngineCatalog = {
       "linetypeListNames": "Enter linetype name(s) to list",
       "defaultLineweight": "Enter default lineweight for new objects or",
       "idPoint": "Specify point",
+      "distSecondPoint": "Specify second point",
       "viewPoint": "Specify a view point",
       "viewAngleInPlane": "Enter angle in XY plane from X axis",
       "viewAngleFromPlane": "Enter angle from XY plane",

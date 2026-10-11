@@ -3,6 +3,7 @@ import { Vec3 } from "../../geometry/Vec3"
 import { worldPointToUcs } from "../../domain/ucs"
 import { formatLength } from "../../domain/units"
 import { parseCoordinate } from "../input/coordinateInput"
+import type { PromptId } from "../../locales/types"
 import { PointerInput, Tool, ToolContext } from "./Tool"
 
 /**
@@ -56,6 +57,10 @@ export class IdTool implements Tool {
 
   wantsSnap(): boolean {
     return true
+  }
+
+  question(): PromptId {
+    return "idPoint"
   }
 
   private identify(point: Vec3, ctx: ToolContext): void {

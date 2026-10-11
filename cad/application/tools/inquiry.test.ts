@@ -162,6 +162,69 @@ describe("ID", () => {
   })
 })
 
+/** Typed at the command line and confirmed, as AutoCAD's prompt reads it. */
+function answer(cad: CadHarness, ...texts: string[]): CadHarness {
+  for (const text of texts) {
+    cad.runtime.setCommandLineText(text)
+    cad.runtime.submitCommandLine()
+  }
+  return cad
+}
+
+// AutoCAD 2023's console answering the same input (DIST's Multiple points
+// is not offered here, so its second point refuses as a plain point does).
+describe("DIST and ID ask as AutoCAD 2026", () => {
+  it("DIST asks its two points, and Enter at the second measures to the first", () => {
+    const cad = createHarness()
+    cad.command("DIST")
+    answer(cad, "FOO", "0,0", "FOO", "3,4")
+    expect(cad.commandLog()).toEqual([
+      "DIST",
+      "Specify first point: FOO",
+      "Invalid point.",
+      "Specify first point: 0,0",
+      "Specify second point: FOO",
+      "Invalid point.",
+      "Specify second point: 3,4",
+      "Distance = 5.00,  Angle in XY Plane = 53.13,  Angle from XY Plane = 0.00\nDelta X = 3.00,  Delta Y = 4.00,   Delta Z = 0.00",
+    ])
+    answer(cad, "1,1")
+    cad.enter()
+    expect(cad.commandLog().slice(-2)).toEqual([
+      "Specify second point:",
+      "Distance = 0.00,  Angle in XY Plane = 0.00,  Angle from XY Plane = 0.00\nDelta X = 0.00,  Delta Y = 0.00,   Delta Z = 0.00",
+    ])
+  })
+
+  it("ID asks its point and refuses what is none", () => {
+    const cad = createHarness()
+    cad.command("ID")
+    answer(cad, "FOO", "1,2")
+    expect(cad.commandLog()).toEqual([
+      "ID",
+      "Specify point: FOO",
+      "Invalid point.",
+      "Specify point: 1,2",
+      " X = 1.00     Y = 2.00     Z = 0.00",
+    ])
+  })
+
+  it("asks in Autodesk's Spanish", () => {
+    const cad = createHarness({ locale: es })
+    cad.command("DIST")
+    answer(cad, "0,0")
+    expect(cad.state().commandLine.prompt).toBe(
+      "DIST Especifique segundo punto:"
+    )
+    cad.escape().command("ID")
+    answer(cad, "FOO")
+    expect(cad.commandLog().slice(-2)).toEqual([
+      "Precise punto: FOO",
+      "Punto no válido.",
+    ])
+  })
+})
+
 describe("AREA", () => {
   it("reports the area and perimeter of the picked polygon", () => {
     const cad = createHarness()

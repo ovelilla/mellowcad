@@ -19,6 +19,7 @@ import {
   Tool,
   ToolContext,
 } from "./Tool"
+import type { PromptId } from "../../locales/types"
 
 /**
  * MEASURE (AutoCAD's DIST / MEASUREGEOM). Creates no geometry — the result is a
@@ -143,6 +144,11 @@ export class MeasureTool implements Tool {
           commitCtx.endCommand()
           return true
         }
+        // Enter at the second point measures to the first, as AutoCAD's does.
+        if (text === "" && this.state.phase === "second") {
+          this.place(this.state.base, commitCtx)
+          return true
+        }
         const point = parseCoordinate(text, {
           lastPoint: this.state.phase === "second" ? this.state.base : null,
           relativeByDefault: false,
@@ -156,6 +162,21 @@ export class MeasureTool implements Tool {
       },
     })
     ctx.dynamicInput.setPosition(this.lastScreen ?? { x: 0, y: 0 })
+  }
+
+  /**
+   * DIST's two points; WHY no `[Multiple points]` on the second: not built.
+   * AREA's prompts are not converted yet, so it names none.
+   */
+  question(): PromptId | null {
+    switch (this.state.phase) {
+      case "first":
+        return "specifyFirstPoint"
+      case "second":
+        return "distSecondPoint"
+      default:
+        return null
+    }
   }
 
   /** Enter finalises an area polygon (≥3 points); otherwise it ends the tool. */
