@@ -1,4 +1,5 @@
 import { Vec2 } from "../../geometry/Vec2"
+import { Vec3 } from "../../geometry/Vec3"
 import {
   Entity,
   copyEntity,
@@ -11,6 +12,10 @@ import { ScenePrimitive, StrokeStyle } from "../../scene/types"
 import { entityScenePrimitive } from "../SceneBuilder"
 import { THEME } from "../../scene/theme"
 import { AddEntitiesCommand } from "../commands/entityCommands"
+import {
+  isCoordinateExpression,
+  parseCoordinate,
+} from "../input/coordinateInput"
 import { ObjectSelector, countPreselection } from "./objectSelection"
 import type { PromptId } from "../../locales/types"
 import {
@@ -29,7 +34,8 @@ import {
  * [COUnt/Spacing/COLumns/Rows/eXit] <eXit>:` over a live preview of the grid —
  * 4 columns along the UCS's +X and 3 rows along its +Y, a negative spacing
  * flipping the direction. COUnt asks the number of columns and of rows,
- * Spacing the distance between columns and between rows, COLumns the number
+ * Spacing the distance between columns or [Unit cell] — two corners, whose
+ * sides are both distances — and between rows, COLumns the number
  * of columns and their distance, Rows the number of rows, their distance and
  * the elevation each row rises by; eXit or Enter makes the copies, one undo
  * step with the source as item 1,1. Escape makes none.
@@ -69,6 +75,8 @@ type Step =
   | "rowsCount"
   | "rowsSpacing"
   | "rowsElevation"
+  | "unitCellFirst"
+  | "unitCellOpposite"
 
 type ArrayState =
   /** No pre-selection: `Select objects:` builds the set. */
@@ -79,6 +87,9 @@ type ArrayState =
       readonly originals: readonly Entity[]
       readonly grid: Grid
       readonly step: Step
+      /** Unit cell's first corner, in the UCS, once given. */
+      readonly corner?: Vec3
+      readonly cursor?: Vec2
     }
 
 /** The step each keyword starts, and the one each step goes on to. */
@@ -93,6 +104,8 @@ const NEXT: Readonly<Record<Step, Step>> = {
   rowsCount: "rowsSpacing",
   rowsSpacing: "rowsElevation",
   rowsElevation: "main",
+  unitCellFirst: "unitCellOpposite",
+  unitCellOpposite: "main",
 }
 const KEYWORD_STEP: Readonly<Record<string, Step>> = {
   COUnt: "countColumns",
@@ -156,6 +169,10 @@ export class ArrayTool implements Tool {
           id: "specifyIncrementingElevationBetweenRows",
           enter: grid.rowElevation,
         }
+      case "unitCellFirst":
+        return "unitCellFirstCorner"
+      case "unitCellOpposite":
+        return "unitCellOppositeCorner"
     }
   }
 
@@ -175,6 +192,9 @@ export class ArrayTool implements Tool {
       case "columnsCount":
       case "rowsCount":
         return { refusal: "requiresPositiveInteger" }
+      case "unitCellFirst":
+      case "unitCellOpposite":
+        return "point"
       default:
         return {
           refusal: "requiresDistance",
@@ -185,6 +205,9 @@ export class ArrayTool implements Tool {
 
   commandOptions(): readonly CommandOption[] {
     if (this.state.phase === "selecting") return this.selector.commandOptions()
+    if (this.state.phase === "edit" && this.state.step === "spacingColumns") {
+      return [{ id: "Unit cell" }]
+    }
     if (this.state.phase !== "edit" || this.state.step !== "main") return []
     return [
       { id: "COUnt" },
@@ -204,6 +227,14 @@ export class ArrayTool implements Tool {
   invokeOption(id: string, ctx: ToolContext): CommandOptionOutcome {
     if (this.state.phase === "selecting") {
       return this.selector.invokeOption(id, ctx) ? "continue" : "unhandled"
+    }
+    if (
+      this.state.phase === "edit" &&
+      this.state.step === "spacingColumns" &&
+      id === "Unit cell"
+    ) {
+      this.ask("unitCellFirst", ctx)
+      return "continue"
     }
     if (this.state.phase !== "edit" || this.state.step !== "main") {
       return "unhandled"
@@ -226,6 +257,9 @@ export class ArrayTool implements Tool {
         this.selector.onPointerMove(input, ctx)
         break
       case "edit":
+        if (this.state.step === "unitCellOpposite") {
+          this.state = { ...this.state, cursor: input.point }
+        }
         ctx.dynamicInput.setPosition(input.screen)
         break
     }
@@ -237,7 +271,8 @@ export class ArrayTool implements Tool {
     if (this.state.phase === "selecting")
       this.selector.onPointerDown(input, ctx)
     // While editing the values are typed; a pick would take a grip, which
-    // the preview does not have.
+    // the preview does not have. Unit cell's corners are points.
+    else if (input.button === 0) this.unitCellCorner(input.point, ctx)
   }
 
   answerTyped(text: string, ctx: ToolContext): boolean {
@@ -262,7 +297,14 @@ export class ArrayTool implements Tool {
   }
 
   wantsSnap(): boolean {
-    return this.state.phase === "selecting" && this.selector.wantsSnap()
+    if (this.state.phase === "edit") return isUnitCell(this.state.step)
+    return this.selector.wantsSnap()
+  }
+
+  getConstraintAnchor(): Vec3 | null {
+    return this.state.phase === "edit" && this.state.step === "unitCellOpposite"
+      ? (this.state.corner ?? null)
+      : null
   }
 
   buildOverlay(ctx: ToolContext): ScenePrimitive[] {
@@ -270,8 +312,13 @@ export class ArrayTool implements Tool {
     if (this.state.phase !== "edit") return []
 
     const ghost: StrokeStyle = { color: THEME.preview, width: 1, dash: [6, 4] }
-    const grid = this.previewGrid(ctx, this.state.grid, this.state.step)
-    return cells(grid, ctx).flatMap((delta) =>
+    const { corner, cursor } = this.state
+    const cell =
+      this.state.step === "unitCellOpposite" && corner && cursor
+        ? withCell(this.state.grid, corner, cursor)
+        : null
+    const grid = cell ?? this.previewGrid(ctx, this.state.grid, this.state.step)
+    const copies = cells(grid, ctx).flatMap((delta) =>
       this.state.phase === "edit"
         ? this.state.originals.flatMap((entity) =>
             entityScenePrimitive(
@@ -283,6 +330,24 @@ export class ArrayTool implements Tool {
           )
         : []
     )
+    if (cell === null || !corner || !cursor) return copies
+    const rubber: StrokeStyle = { color: THEME.rubberBand, width: 1 }
+    const at = (x: number, y: number) => ctx.viewport.worldToScreen({ x, y })
+    const box = [
+      at(corner.x, corner.y),
+      at(cursor.x, corner.y),
+      at(cursor.x, cursor.y),
+      at(corner.x, cursor.y),
+    ]
+    return [
+      ...copies,
+      ...box.map((a, i): ScenePrimitive => ({
+        kind: "segment",
+        a,
+        b: box[(i + 1) % box.length],
+        stroke: rubber,
+      })),
+    ]
   }
 
   /** Goes on from the set `Select objects:` closed to the grid. */
@@ -332,6 +397,10 @@ export class ArrayTool implements Tool {
       this.openMain(ctx)
       return
     }
+    if (isUnitCell(step)) {
+      this.openUnitCell(ctx)
+      return
+    }
     ctx.dynamicInput.open({
       fields: [
         {
@@ -350,6 +419,69 @@ export class ArrayTool implements Tool {
     })
     ctx.dynamicInput.setPosition(this.lastScreen ?? { x: 0, y: 0 })
     ctx.requestRender()
+  }
+
+  /**
+   * Unit cell's corner, typed: a point, or Enter, which leaves the spacing
+   * as it was. Anything else is refused by the first corner in its own words
+   * and the main prompt asked again, as AutoCAD 2023's console does.
+   */
+  private openUnitCell(ctx: ToolContext): void {
+    ctx.dynamicInput.open({
+      fields: [
+        {
+          id: "corner",
+          prompt:
+            this.state.phase === "edit" &&
+            this.state.step === "unitCellOpposite"
+              ? "otherCorner"
+              : "firstCorner",
+          kind: "coordinate",
+        },
+      ],
+      commit: () => {},
+      commitRaw: (commitCtx) => {
+        if (this.state.phase !== "edit") return false
+        const text = commitCtx.dynamicInput.getText("corner").trim()
+        if (text === "") {
+          this.ask("main", commitCtx)
+          return true
+        }
+        const corner = this.state.corner
+        const point = isCoordinateExpression(text)
+          ? parseCoordinate(text, {
+              lastPoint: corner ?? commitCtx.lastPoint,
+              relativeByDefault: corner !== undefined,
+              ucs: commitCtx.ucs,
+              elevation: commitCtx.elevation,
+            })
+          : null
+        if (point) {
+          this.unitCellCorner(point, commitCtx)
+          return true
+        }
+        if (this.state.step !== "unitCellFirst") return false
+        // WHY not refused and asked again: the console leaves the unit cell.
+        commitCtx.report(commitCtx.text.message("requiresNonzero"), "error")
+        this.ask("main", commitCtx)
+        return true
+      },
+    })
+    ctx.dynamicInput.setPosition(this.lastScreen ?? { x: 0, y: 0 })
+    ctx.requestRender()
+  }
+
+  /** Unit cell's first corner, or its opposite one, which sets both spacings. */
+  private unitCellCorner(point: Vec3, ctx: ToolContext): void {
+    if (this.state.phase !== "edit") return
+    const { step, corner, grid } = this.state
+    if (step === "unitCellFirst") {
+      this.state = { ...this.state, corner: point, cursor: point }
+      this.ask("unitCellOpposite", ctx)
+    } else if (step === "unitCellOpposite" && corner) {
+      this.state = { ...this.state, grid: withCell(grid, corner, point) }
+      this.ask("main", ctx)
+    }
   }
 
   /** The value typed for the step asked (null: Enter, the offered one). */
@@ -394,7 +526,9 @@ export class ArrayTool implements Tool {
 }
 
 /** The box's label for each value asked. */
-const FIELD_LABEL: Readonly<Record<Exclude<Step, "main">, PromptId>> = {
+const FIELD_LABEL: Readonly<
+  Record<Exclude<Step, "main" | "unitCellFirst" | "unitCellOpposite">, PromptId>
+> = {
   countColumns: "columns",
   columnsCount: "columns",
   countRows: "rows",
@@ -404,6 +538,19 @@ const FIELD_LABEL: Readonly<Record<Exclude<Step, "main">, PromptId>> = {
   spacingRows: "rowSpacing",
   rowsSpacing: "rowSpacing",
   rowsElevation: "distance",
+}
+
+function isUnitCell(step: Step): step is "unitCellFirst" | "unitCellOpposite" {
+  return step === "unitCellFirst" || step === "unitCellOpposite"
+}
+
+/** The grid whose cell runs from one corner to the other, in the UCS. */
+function withCell(grid: Grid, corner: Vec2, opposite: Vec2): Grid {
+  return {
+    ...grid,
+    colSpacing: opposite.x - corner.x,
+    rowSpacing: opposite.y - corner.y,
+  }
 }
 
 function isCount(step: Step): boolean {
@@ -431,7 +578,7 @@ function withValue(grid: Grid, step: Step, value: number): Grid {
       return { ...grid, rowSpacing: value }
     case "rowsElevation":
       return { ...grid, rowElevation: value }
-    case "main":
+    default:
       return grid
   }
 }

@@ -850,6 +850,13 @@ describe("the engine's English surface", () => {
       (s) =>
         s
           .do("ARRAYRECT", (c) => c.select("SRC").command("AR"))
+          .do("S", (c) => answer(c, "S"))
+          .do("U", (c) => answer(c, "U"))
+          .do("FOO", (c) => c.type("FOO").enter())
+          .do("S", (c) => answer(c, "S"))
+          .do("U", (c) => answer(c, "U"))
+          .do("corner", (c) => c.click(at(0, 0)))
+          .do("opposite", (c) => c.click(at(60, 40)))
           .do("enter", (c) => c.enter())
           .do("ARRAYPOLAR", (c) => c.select("SRC").command("ARPOLAR"))
           .do("centre", (c) => c.click(at(0, -100)))

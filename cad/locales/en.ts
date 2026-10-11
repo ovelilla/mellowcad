@@ -1185,7 +1185,9 @@ export const en: EngineCatalog = {
       "selectGripToEditArrayOr": "Select grip to edit array or",
       "enterNumberOfColumns": "Enter the number of columns",
       "enterNumberOfRows": "Enter the number of rows",
-      "specifyDistanceBetweenColumnsOfCell": "Specify the distance between columns",
+      "specifyDistanceBetweenColumnsOfCell": "Specify the distance between columns or",
+      "unitCellFirstCorner": "Specify first corner point of unit cell",
+      "unitCellOppositeCorner": "Specify opposite corner",
       "specifyDistanceBetweenColumns": "Specify the distance between columns",
       "specifyDistanceBetweenRows": "Specify the distance between rows",
       "specifyIncrementingElevationBetweenRows": "Specify the incrementing elevation between rows",
@@ -2246,6 +2248,7 @@ export const en: EngineCatalog = {
         "  Associative = No"
       ],
       "requiresPositiveInteger": "Requires a positive nonzero integer or option keyword.",
+      "requiresNonzero": "Requires numeric nonzero value.",
       "maximumItems": [
         "Maximum items = ",
         [

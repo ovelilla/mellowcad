@@ -633,7 +633,7 @@ describe("ARRAYRECT", () => {
     )
     cad.type("2").enter().option("Spacing")
     expect(cad.state().commandLine.prompt).toBe(
-      "ARRAYRECT Specify the distance between columns <60.00>:"
+      "ARRAYRECT Specify the distance between columns or [Unit cell] <60.00>:"
     )
     cad.type("100").enter()
     expect(cad.state().commandLine.prompt).toBe(
@@ -658,7 +658,7 @@ describe("ARRAYRECT", () => {
       "Enter the number of columns <4>: 3",
       "Enter the number of rows <3>: 2",
       "Select grip to edit array or [COUnt/Spacing/COLumns/Rows/eXit] <eXit>: S",
-      "Specify the distance between columns <60.00>: 100",
+      "Specify the distance between columns or [Unit cell] <60.00>: 100",
       "Specify the distance between rows <1.00>: 50",
       "Select grip to edit array or [COUnt/Spacing/COLumns/Rows/eXit] <eXit>: R",
       "Enter the number of rows <2>:",
@@ -688,8 +688,19 @@ describe("ARRAYRECT", () => {
     )
     cad.enter().enter().option("Spacing")
     expect(cad.state().commandLine.prompt).toBe(
-      "MATRIZRECTANG Especificar la distancia entre columnas <60.00>:"
+      "MATRIZRECTANG Especificar la distancia entre columnas o [célula de Unidad] <60.00>:"
     )
+    cad.runtime.setCommandLineText("U")
+    cad.runtime.submitCommandLine()
+    expect(cad.state().commandLine.prompt).toBe(
+      "MATRIZRECTANG Precise primer punto de esquina de la celda de unidad:"
+    )
+    cad.runtime.setCommandLineText("FOO")
+    cad.runtime.submitCommandLine()
+    expect(cad.commandLog().at(-1)).toBe(
+      "Necesita un valor numérico distinto de cero."
+    )
+    cad.option("Spacing")
     cad.enter().enter().option("COLumns").enter()
     expect(cad.state().commandLine.prompt).toBe(
       "MATRIZRECTANG Especifique la distancia entre columnas <60.00>:"
@@ -717,6 +728,61 @@ describe("ARRAYRECT", () => {
     expect(starts).toEqual(
       ["0,0", "0,50", "100,0", "100,50", "200,0", "200,50"].sort()
     )
+  })
+
+  // AutoCAD 2023's console: the cell's sides are the two spacings; a wrong
+  // first corner leaves Unit cell, a wrong opposite one is asked again.
+  it("spaces columns and rows by a unit cell's two corners", () => {
+    const cad = createHarness({
+      entities: [lineOf(p(0, 0), p(10, 0), { id: "L1" })],
+    })
+    const answer = (text: string) => {
+      cad.runtime.setCommandLineText(text)
+      cad.runtime.submitCommandLine()
+    }
+
+    cad.select("L1").command("ARRAYRECT")
+    answer("S")
+    answer("U")
+    expect(cad.state().commandLine.prompt).toBe(
+      "ARRAYRECT Specify first corner point of unit cell:"
+    )
+    answer("FOO")
+    answer("S")
+    answer("U")
+    answer("")
+    answer("S")
+    answer("U")
+    answer("0,0")
+    answer("FOO")
+    answer("30,20")
+    expect(cad.commandLog().slice(-11)).toEqual([
+      "Specify first corner point of unit cell: FOO",
+      "Requires numeric nonzero value.",
+      "Select grip to edit array or [COUnt/Spacing/COLumns/Rows/eXit] <eXit>: S",
+      "Specify the distance between columns or [Unit cell] <15.00>: U",
+      "Specify first corner point of unit cell:",
+      "Select grip to edit array or [COUnt/Spacing/COLumns/Rows/eXit] <eXit>: S",
+      "Specify the distance between columns or [Unit cell] <15.00>: U",
+      "Specify first corner point of unit cell: 0,0",
+      "Specify opposite corner: FOO",
+      "Invalid point.",
+      "Specify opposite corner: 30,20",
+    ])
+    answer("S")
+    expect(cad.state().commandLine.prompt).toBe(
+      "ARRAYRECT Specify the distance between columns or [Unit cell] <30.00>:"
+    )
+    cad.escape().select("L1").command("ARRAYRECT")
+    answer("S")
+    answer("U")
+    cad.click(p(0, 0)).click(p(-30, -20))
+    cad.enter()
+    const starts = linesOf(cad.entities())
+      .map((line) => `${line.start.x},${line.start.y}`)
+      .sort()
+    expect(starts).toContain("-90,-40")
+    expect(cad.entityCount).toBe(12)
   })
 
   it("undoes the whole array in one step", () => {

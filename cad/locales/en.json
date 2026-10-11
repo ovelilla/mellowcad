@@ -600,7 +600,8 @@
         "Spacing": "Spacing",
         "COLumns": "COLumns",
         "Rows": "Rows",
-        "eXit": "eXit"
+        "eXit": "eXit",
+        "Unit cell": "Unit cell"
       },
       "ARRAYPOLAR": {
         "Items": "Items",
@@ -1010,7 +1011,9 @@
       "selectGripToEditArrayOr": "Select grip to edit array or",
       "enterNumberOfColumns": "Enter the number of columns",
       "enterNumberOfRows": "Enter the number of rows",
-      "specifyDistanceBetweenColumnsOfCell": "Specify the distance between columns",
+      "specifyDistanceBetweenColumnsOfCell": "Specify the distance between columns or",
+      "unitCellFirstCorner": "Specify first corner point of unit cell",
+      "unitCellOppositeCorner": "Specify opposite corner",
       "specifyDistanceBetweenColumns": "Specify the distance between columns",
       "specifyDistanceBetweenRows": "Specify the distance between rows",
       "specifyIncrementingElevationBetweenRows": "Specify the incrementing elevation between rows",
@@ -1227,6 +1230,7 @@
       "noObjectFound": "No object found",
       "arrayType": "Type = {type, select, rectangular {Rectangular} polar {Polar} other {Path}}  Associative = No",
       "requiresPositiveInteger": "Requires a positive nonzero integer or option keyword.",
+      "requiresNonzero": "Requires numeric nonzero value.",
       "maximumItems": "Maximum items = {count}",
       "pathCurveIsArrayed": "Objects selected to be arrayed may not be selected as path curve.",
       "filteredOut": "{count, plural, one {1 was filtered out} other {# were filtered out}}",

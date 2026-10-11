@@ -1065,7 +1065,8 @@ export const es: EngineLocale = {
         "Spacing": "Espaciado",
         "COLumns": "Columnas",
         "Rows": "Filas",
-        "eXit": "Salir"
+        "eXit": "Salir",
+        "Unit cell": "célula de Unidad"
       },
       "ARRAYPOLAR": {
         "Items": "Elementos",
@@ -1525,7 +1526,9 @@ export const es: EngineLocale = {
       "selectGripToEditArrayOr": "Seleccione un pinzamiento para editar la matriz o",
       "enterNumberOfColumns": "Indique el número de columnas",
       "enterNumberOfRows": "Indique el número de filas",
-      "specifyDistanceBetweenColumnsOfCell": "Especificar la distancia entre columnas",
+      "specifyDistanceBetweenColumnsOfCell": "Especificar la distancia entre columnas o",
+      "unitCellFirstCorner": "Precise primer punto de esquina de la celda de unidad",
+      "unitCellOppositeCorner": "Precise esquina opuesta",
       "specifyDistanceBetweenColumns": "Especifique la distancia entre columnas",
       "specifyDistanceBetweenRows": "Especifique la distancia entre filas",
       "specifyIncrementingElevationBetweenRows": "Especifique la elevación incremental entre filas",
@@ -2585,6 +2588,7 @@ export const es: EngineLocale = {
         "  Asociativa = No"
       ],
       "requiresPositiveInteger": "Requiere un nº entero positivo que no sea cero o una opción.",
+      "requiresNonzero": "Necesita un valor numérico distinto de cero.",
       "maximumItems": [
         "Número máximo de elementos = ",
         [

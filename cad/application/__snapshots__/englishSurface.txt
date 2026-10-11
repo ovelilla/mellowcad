@@ -2847,6 +2847,54 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0°~, Line space facto
   properties: Circle (1) {Thickness=0.00 mm~} [Geometry: Radius=10.00 mm~, Diameter=20.00 mm~, Circumference=62.83 mm, Area=314.16 mm², Normal X=0.00, Normal Y=0.00, Normal Z=1.00] [Center: X=0.00~, Y=0.00~, Z=0.00~]
   command| AR ARRAYRECT 1 found
   info| Type = Rectangular  Associative = No
+> S
+  prompt: ARRAYRECT Specify the distance between columns or [Unit cell] <30.00>:
+  asks: "Column spacing"
+  tip: Specify the distance between columns or
+  dyn: "Column spacing"=""||mm*
+  options: [U] Unit cell
+  prompt| Select grip to edit array or [COUnt/Spacing/COLumns/Rows/eXit] <eXit>: S
+> U
+  prompt: ARRAYRECT Specify first corner point of unit cell:
+  asks: "First corner"
+  tip: Specify first corner point of unit cell:
+  dyn: "X,Y"=""||*
+  options: -
+  prompt| Specify the distance between columns or [Unit cell] <30.00>: U
+> FOO
+  prompt: ARRAYRECT Select grip to edit array or [COUnt/Spacing/COLumns/Rows/eXit] <eXit>:
+  asks: 
+  tip: Select grip to edit array or
+  dyn: 
+  options: [COU] COUnt, [S] Spacing, [COL] COLumns, [R] Rows, [X] eXit
+  prompt| Specify first corner point of unit cell: FOO
+  error| Requires numeric nonzero value.
+> S
+  prompt: ARRAYRECT Specify the distance between columns or [Unit cell] <30.00>:
+  asks: "Column spacing"
+  tip: Specify the distance between columns or
+  dyn: "Column spacing"=""||mm*
+  options: [U] Unit cell
+  prompt| Select grip to edit array or [COUnt/Spacing/COLumns/Rows/eXit] <eXit>: S
+> U
+  prompt: ARRAYRECT Specify first corner point of unit cell:
+  asks: "First corner"
+  tip: Specify first corner point of unit cell:
+  dyn: "X,Y"=""||*
+  options: -
+  prompt| Specify the distance between columns or [Unit cell] <30.00>: U
+> corner
+  prompt: ARRAYRECT Specify opposite corner:
+  asks: "Other corner"
+  tip: Specify opposite corner:
+  prompt| Specify first corner point of unit cell:
+> opposite
+  prompt: ARRAYRECT Select grip to edit array or [COUnt/Spacing/COLumns/Rows/eXit] <eXit>:
+  asks: 
+  tip: Select grip to edit array or
+  dyn: 
+  options: [COU] COUnt, [S] Spacing, [COL] COLumns, [R] Rows, [X] eXit
+  prompt| Specify opposite corner:
 > enter
   prompt: Command:
   asks: -
