@@ -838,7 +838,13 @@ export const es: EngineLocale = {
         "Arc": "Arco",
         "Line": "líNea",
         "Close": "Cerrar",
-        "Undo": "desHacer"
+        "Undo": "desHacer",
+        "Angle": "ángUlo",
+        "Center": "cEntro",
+        "Direction": "Dirección",
+        "Radius": "Radio",
+        "Second pt": "Segundo pto.",
+        "Length": "Longitud"
       },
       "ARC": {
         "Center": "Centro"
@@ -1225,6 +1231,9 @@ export const es: EngineLocale = {
       },
       "selectSecondObjectOrApplyCornerOr": {
         "Radius": "Radio"
+      },
+      "specifyEndpointOfArcOr": {
+        "Close": "Cerrar"
       }
     },
     "prompts": {
@@ -1439,6 +1448,14 @@ export const es: EngineLocale = {
       "specifySecondPointOfArcOr": "Precise segundo punto de arco o",
       "specifyEndPointOfArc": "Precise punto final del arco",
       "specifyCenterPointOfArc": "Precise punto central del arco",
+      "specifyIncludedAngle": "Precise ángulo incluido",
+      "specifyRadiusOfArc": "Precise radio de arco",
+      "specifyDirectionOfChordForArc": "Precise dirección de cuerda para arco (mantenga pulsada la tecla Ctrl para cambiar de dirección)",
+      "specifyIncludedAngleCtrl": "Precise ángulo incluido (mantenga pulsada la tecla Ctrl para cambiar de dirección)",
+      "specifyLengthOfChordCtrl": "Precise longitud de cuerda (mantenga pulsada la tecla Ctrl para cambiar de dirección)",
+      "specifyTangentDirectionForStartPointOfArc": "Precise la dirección de tangente para el punto inicial del arco",
+      "specifyEndpointOfTheArcCtrl": "Precise punto final del arco (mantenga pulsada la tecla Ctrl para cambiar de dirección)",
+      "specifySecondPointOnArc": "Precise segundo punto en arco",
       "specifyStartPointOfArc": "Precise punto inicial del arco",
       "specifyEndPointOfArcCtrl": "Precise punto final del arco (mantenga pulsada la tecla Ctrl para cambiar de dirección)",
       "selectObjects": "Designe objetos",

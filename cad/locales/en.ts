@@ -838,6 +838,9 @@ export const en: EngineCatalog = {
       ]
     },
     "keywords": {
+      "PLINE": {
+        "Center": "CEnter"
+      },
       "VIEW": {
         "Right": "RIght",
         "SWiso": "SWIso",
@@ -893,6 +896,9 @@ export const en: EngineCatalog = {
       },
       "selectSecondObjectOrApplyCornerOr": {
         "Radius": "Radius"
+      },
+      "specifyEndpointOfArcOr": {
+        "Close": "CLose"
       }
     },
     "prompts": {
@@ -1107,6 +1113,14 @@ export const en: EngineCatalog = {
       "specifySecondPointOfArcOr": "Specify second point of arc or",
       "specifyEndPointOfArc": "Specify end point of arc",
       "specifyCenterPointOfArc": "Specify center point of arc",
+      "specifyIncludedAngle": "Specify included angle",
+      "specifyRadiusOfArc": "Specify radius of arc",
+      "specifyDirectionOfChordForArc": "Specify direction of chord for arc (hold Ctrl to switch direction)",
+      "specifyIncludedAngleCtrl": "Specify included angle (hold Ctrl to switch direction)",
+      "specifyLengthOfChordCtrl": "Specify length of chord (hold Ctrl to switch direction)",
+      "specifyTangentDirectionForStartPointOfArc": "Specify the tangent direction for the start point of arc",
+      "specifyEndpointOfTheArcCtrl": "Specify endpoint of the arc (hold Ctrl to switch direction)",
+      "specifySecondPointOnArc": "Specify second point on arc",
       "specifyStartPointOfArc": "Specify start point of arc",
       "specifyEndPointOfArcCtrl": "Specify end point of arc (hold Ctrl to switch direction)",
       "selectObjects": "Select objects",

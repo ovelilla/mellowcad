@@ -2,6 +2,11 @@ import { Vec2, V } from "../../geometry/Vec2"
 import { Vec3, withZOf } from "../../geometry/Vec3"
 import { createPolyline, onPlaneOf } from "../../domain/entities"
 import { bulgeToArc } from "../../geometry/primitives"
+import {
+  ArcSegment,
+  segmentExitTangent,
+  tangentArcBulge,
+} from "../../geometry/bulgeArcs"
 import { formatLength, parseNumber } from "../../domain/units"
 import { AddEntityCommand } from "../commands/entityCommands"
 import { DynamicInputSession } from "../input/DynamicInput"
@@ -12,16 +17,23 @@ import {
 import { ScenePrimitive } from "../../scene/types"
 import { THEME } from "../../scene/theme"
 import { arcScenePrimitive, entityScenePrimitive } from "../SceneBuilder"
-import { PointerInput, Tool, ToolContext, type QuestionInput } from "./Tool"
+import {
+  PointerInput,
+  Tool,
+  ToolContext,
+  ToolQuestion,
+  type QuestionInput,
+} from "./Tool"
 import { CommandOption, CommandOptionOutcome } from "./Tool"
 import type { PromptId } from "../../locales/types"
-import { lastDrawnPoint } from "./lastDrawnPoint"
+import { lastDrawnDirection, lastDrawnPoint } from "./lastDrawnPoint"
 import {
   withCurrentProperties,
   withCurrentThickness,
 } from "./currentProperties"
 import { acuteHeading, headingInUcs } from "./ucsHeading"
 import { pointAlongCursor, showRise } from "./directDistance"
+import { ARC_SEGMENT_OPTIONS, ArcSegmentInput } from "./arcSegmentInput"
 
 /**
  * The polyline tool draws a single connected chain of straight segments as one
@@ -35,7 +47,9 @@ import { pointAlongCursor, showRise } from "./directDistance"
  * lets the user type an exact length/angle or a coordinate for the next vertex.
  * The command ends on Enter (or Escape, or switching tools), and the polyline
  * is committed then; "Close" (C) joins the last vertex to the first and ends,
- * while "Undo" (U) steps back one vertex without leaving the command.
+ * while "Undo" (U) steps back one vertex without leaving the command. In arc
+ * mode the endpoint draws the arc tangent to the chain, and Angle, CEnter,
+ * Direction, Radius and Second pt ask theirs ({@link ArcSegmentInput}).
  */
 
 type PolylineToolState =
@@ -54,6 +68,11 @@ type PolylineToolState =
       readonly cursor: Vec3
       /** Last non-degenerate unit direction from the last vertex to the cursor. */
       readonly direction: Vec2 | null
+      /**
+       * The way a first arc leaves the start point: where the last line, arc
+       * or polyline drawn ends heading, else along the X axis.
+       */
+      readonly startTangent: Vec2
       /** Whether the chain is to be closed on commit (set by the Close option). */
       readonly closed: boolean
       /** Arc mode: the next segment is a tangent arc rather than a line. */
@@ -65,12 +84,17 @@ type PolylineToolState =
       readonly reversed: boolean
     }
 
+type Drawing = Extract<PolylineToolState, { phase: "drawing" }>
+
 export class PolylineTool implements Tool {
   readonly id = "polyline"
   readonly shortcut = "p"
 
   private state: PolylineToolState = { phase: "idle" }
   private lastScreen: Vec2 | null = null
+  private readonly arc = new ArcSegmentInput((segment, ctx) =>
+    this.appendArc(segment, ctx)
+  )
 
   onActivate(ctx: ToolContext): void {
     ctx.setCursor("crosshair")
@@ -80,6 +104,7 @@ export class PolylineTool implements Tool {
   onDeactivate(ctx: ToolContext): void {
     // Every exit path (Enter, Escape, Close, switching tools) ends here, so the
     // accumulated chain is materialised as one entity in a single place.
+    this.arc.cancel()
     this.commitPolyline(ctx)
     this.state = { phase: "idle" }
     ctx.dynamicInput.close()
@@ -101,7 +126,9 @@ export class PolylineTool implements Tool {
         reversed: input.ctrlKey,
       }
 
-      if (!showRise(ctx, start, input.point)) {
+      if (this.arc.active) {
+        this.arc.onPointerMove(input, ctx)
+      } else if (!showRise(ctx, start, input.point)) {
         ctx.dynamicInput.setLive("distance", length)
         ctx.dynamicInput.setLive(
           "angle",
@@ -128,6 +155,10 @@ export class PolylineTool implements Tool {
       this.beginDrawing(start, ctx, input.screen)
       return
     }
+    if (this.arc.active) {
+      this.arc.onPointerDown(input, ctx)
+      return
+    }
 
     // Place the next vertex at the effective endpoint (honouring any hard-locked
     // typed length/angle), then keep chaining. A click on the same point as the
@@ -140,42 +171,66 @@ export class PolylineTool implements Tool {
     ctx.dynamicInput.setPosition(input.screen)
   }
 
-  question(): PromptId {
+  /** An arc option's step with no default refuses Enter, as the console does. */
+  onEnter(ctx: ToolContext): boolean {
+    return this.arc.onEnter(ctx)
+  }
+
+  question(): PromptId | ToolQuestion | null {
     if (this.state.phase !== "drawing") return "specifyStartPoint"
+    if (this.arc.active) return this.arc.question()
     return this.state.arcMode ? "specifyEndpointOfArcOr" : "specifyNextPointOr"
   }
 
   /** Every point after the start is a 2D one, as AutoCAD's console refuses it. */
   takes(): QuestionInput | null {
-    return this.state.phase === "drawing" ? "point2d" : null
+    if (this.state.phase !== "drawing") return null
+    return this.arc.active ? this.arc.takes() : "point2d"
   }
 
   /**
-   * The keywords offered while drawing. The Line/Arc toggle switches the next
-   * segment's kind (AutoCAD's PLINE Arc/Line options); "Undo" appears once a
-   * segment exists and "Close" once two do, so a lone segment isn't retraced.
+   * The keywords offered while drawing, in AutoCAD's order: Close once a
+   * segment exists, as the console offers it, and Undo from the start point
+   * on. In arc mode the arc options open prompts of their own.
    */
   commandOptions(): readonly CommandOption[] {
     if (this.state.phase !== "drawing") return []
-    const options: CommandOption[] = []
-    options.push({ id: this.state.arcMode ? "Line" : "Arc" })
-    if (this.state.vertices.length >= 3) options.push({ id: "Close" })
-    if (this.state.vertices.length >= 2) options.push({ id: "Undo" })
-    return options
+    if (this.arc.active) return this.arc.commandOptions()
+    const close = this.state.vertices.length >= 2 ? [{ id: "Close" }] : []
+    if (!this.state.arcMode) {
+      return [{ id: "Arc" }, ...close, { id: "Undo" }]
+    }
+    const [angle, center, direction, radius, second] = ARC_SEGMENT_OPTIONS
+    return [
+      { id: angle },
+      { id: center },
+      ...close,
+      { id: direction },
+      { id: "Line" },
+      { id: radius },
+      { id: second },
+      { id: "Undo" },
+    ]
   }
 
   invokeOption(id: string, ctx: ToolContext): CommandOptionOutcome {
+    if (this.state.phase !== "drawing") return "unhandled"
+    if (this.arc.active) return this.arc.invokeOption(id, ctx)
     switch (id) {
       case "Arc":
         return this.setArcMode(true, ctx)
       case "Line":
         return this.setArcMode(false, ctx)
       case "Close":
-        return this.markClosed() ? "end" : "unhandled"
+        return this.close(ctx) ? "end" : "unhandled"
       case "Undo":
-        return this.undoLastVertex(ctx) ? "continue" : "unhandled"
+        this.undoLastVertex(ctx)
+        return "continue"
       default:
-        return "unhandled"
+        return this.state.arcMode &&
+          this.arc.begin(id, this.arcStart(this.state), ctx)
+          ? "continue"
+          : "unhandled"
     }
   }
 
@@ -186,8 +241,14 @@ export class PolylineTool implements Tool {
     return "continue"
   }
 
+  /** An arc option's distances and angles are measured by the runtime. */
+  wantsSnap(): boolean {
+    return !this.arc.active || this.arc.wantsSnap()
+  }
+
   getConstraintAnchor(): Vec2 | null {
-    return this.state.phase === "drawing" ? this.lastVertex(this.state) : null
+    if (this.state.phase !== "drawing") return null
+    return this.arc.active ? this.arc.anchor() : this.lastVertex(this.state)
   }
 
   buildOverlay(ctx: ToolContext): ScenePrimitive[] {
@@ -209,10 +270,20 @@ export class PolylineTool implements Tool {
     }
 
     // The rubber-band from the last vertex to the effective next point — an arc
-    // in arc mode (tangent to the previous segment), otherwise a line.
+    // in arc mode (tangent to the previous segment), otherwise a line; an arc
+    // option's arc as its answers so far make it.
     const last = this.lastVertex(this.state)
-    const end = this.resolveEnd(last, this.state.cursor, ctx)
-    const bulge = this.pendingBulge(this.state, end)
+    let end: Vec2
+    let bulge: number
+    if (this.arc.active) {
+      const segment = this.arc.preview(ctx)
+      if (segment === null) return out
+      end = segment.end
+      bulge = segment.bulge
+    } else {
+      end = this.resolveEnd(last, this.state.cursor, ctx)
+      bulge = this.pendingBulge(this.state, end) ?? 0
+    }
     if (bulge !== 0) {
       const arc = bulgeToArc(last, end, bulge)
       out.push(
@@ -238,48 +309,76 @@ export class PolylineTool implements Tool {
   }
 
   /**
-   * The bulge of the segment about to be drawn to `endpoint`. Zero (a straight
-   * segment) unless arc mode is on and a previous segment exists to be tangent
-   * to; then it is `tan(φ/2)` for the turn angle φ from that exit tangent to the
-   * new chord — the tangent-continuous arc AutoCAD's PLINE Arc draws by default.
+   * The bulge of the segment about to be drawn to `endpoint`: zero for a line,
+   * and in arc mode the arc leaving tangent to the chain — the way the last
+   * segment ends, or for the first the {@link startTangent} — or the other way
+   * with Ctrl held. Null where no such arc exists (`*Invalid*`).
    */
-  private pendingBulge(
-    state: Extract<PolylineToolState, { phase: "drawing" }>,
-    endpoint: Vec2
-  ): number {
+  private pendingBulge(state: Drawing, endpoint: Vec2): number | null {
     if (!state.arcMode) return 0
-    const exit = currentTangent(state)
-    if (!exit) return 0
-    const tangent = state.reversed ? V.scale(exit, -1) : exit
-    const chord = V.sub(endpoint, this.lastVertex(state))
-    const length = V.length(chord)
-    if (length < 1e-9) return 0
-    const chordDir = V.scale(chord, 1 / length)
-    const phi = signedAngle(tangent, chordDir)
-    // A near-180° reversal has no finite tangent arc — fall back to straight.
-    if (Math.abs(Math.abs(phi) - Math.PI) < 1e-6) return 0
-    return Math.tan(phi / 2)
+    const exit = this.tangent(state)
+    return tangentArcBulge(
+      this.lastVertex(state),
+      state.reversed ? V.scale(exit, -1) : exit,
+      endpoint
+    )
+  }
+
+  /** The way the chain leaves its last vertex. */
+  private tangent(state: Drawing): Vec2 {
+    const n = state.vertices.length
+    if (n < 2) return state.startTangent
+    return (
+      segmentExitTangent(
+        state.vertices[n - 2],
+        state.vertices[n - 1],
+        state.bulges[n - 2] ?? 0
+      ) ?? state.startTangent
+    )
+  }
+
+  private arcStart(state: Drawing): { point: Vec3; tangent: Vec2 } {
+    return { point: this.lastVertex(state), tangent: this.tangent(state) }
   }
 
   /** The last (most recent) vertex of the chain being drawn. */
-  private lastVertex(
-    state: Extract<PolylineToolState, { phase: "drawing" }>
-  ): Vec3 {
+  private lastVertex(state: Drawing): Vec3 {
     return state.vertices[state.vertices.length - 1]
   }
 
-  /** Appends `point` as the next vertex and keeps drawing from it. */
+  /**
+   * Appends `point` as the next vertex and keeps drawing from it: in arc mode
+   * by the tangent arc, refused as AutoCAD's `*Invalid*` where none exists.
+   */
   private appendVertex(point: Vec3, ctx: ToolContext): void {
     if (this.state.phase !== "drawing") return
     const onPlane = withZOf(point, this.state.vertices[0])
-    // In arc mode the new segment is a tangent arc; its bulge is derived from
-    // the direction leaving the previous segment.
     const bulge = this.pendingBulge(this.state, onPlane)
+    if (bulge === null) {
+      ctx.report(ctx.text.message("invalid"), "error")
+      return
+    }
+    this.addSegment(onPlane, bulge, ctx)
+  }
+
+  /** An arc option's arc, after which the endpoint prompt asks again. */
+  private appendArc(segment: ArcSegment, ctx: ToolContext): void {
+    if (this.state.phase !== "drawing") return
+    this.addSegment(
+      withZOf(segment.end, this.state.vertices[0]),
+      segment.bulge,
+      ctx
+    )
+    this.openLengthInput(ctx, this.lastScreen ?? { x: 0, y: 0 })
+  }
+
+  private addSegment(end: Vec3, bulge: number, ctx: ToolContext): void {
+    if (this.state.phase !== "drawing") return
     this.state = {
       ...this.state,
-      vertices: [...this.state.vertices, onPlane],
+      vertices: [...this.state.vertices, end],
       bulges: [...this.state.bulges, bulge],
-      cursor: onPlane,
+      cursor: end,
       direction: null,
     }
     ctx.dynamicInput.clearTexts()
@@ -288,42 +387,59 @@ export class PolylineTool implements Tool {
     ctx.requestRender()
   }
 
-  /** Flags the chain to be closed on commit; the runtime then ends the command. */
-  private markClosed(): boolean {
-    if (this.state.phase !== "drawing" || this.state.vertices.length < 3) {
+  /**
+   * Closes the chain and ends: with a line, or in arc mode with the arc
+   * tangent to the chain back to the start — where none leaves that way
+   * (straight back along a line), `*Invalid*` and a line, as the console
+   * closes it.
+   */
+  private close(ctx: ToolContext): boolean {
+    if (this.state.phase !== "drawing" || this.state.vertices.length < 2) {
       return false
     }
-    this.state = { ...this.state, closed: true }
+    let bulge = this.pendingBulge(this.state, this.state.vertices[0])
+    if (bulge === null) {
+      ctx.report(ctx.text.message("invalid"), "error")
+      bulge = 0
+    }
+    this.state = {
+      ...this.state,
+      bulges: [...this.state.bulges, bulge],
+      closed: true,
+    }
     return true
   }
 
   /**
    * Removes the last placed vertex while staying in the command — AutoCAD's
-   * PLINE "Undo" (U). Nothing is committed yet, so this is a pure local rollback
-   * (no document undo). Returns to the previous vertex to resume drawing.
+   * PLINE "Undo" (U), `All segments already undone.` with none. Nothing is
+   * committed yet, so this is a pure local rollback (no document undo). The
+   * chain then goes on as its last segment was drawn, a line or an arc (the
+   * console returns to the line prompt once the only arc is undone).
    */
-  private undoLastVertex(ctx: ToolContext): boolean {
-    if (this.state.phase !== "drawing" || this.state.vertices.length < 2) {
-      return false
+  private undoLastVertex(ctx: ToolContext): void {
+    if (this.state.phase !== "drawing") return
+    if (this.state.vertices.length < 2) {
+      ctx.report(ctx.text.message("allSegmentsUndone"), "error")
+      return
     }
     const vertices = this.state.vertices.slice(0, -1)
     const bulges = this.state.bulges.slice(0, -1)
     const last = vertices[vertices.length - 1]
     this.state = {
-      phase: "drawing",
+      ...this.state,
       vertices,
       bulges,
       cursor: last,
       direction: null,
       closed: false,
-      arcMode: this.state.arcMode,
+      arcMode: (bulges[bulges.length - 1] ?? 0) !== 0,
       reversed: false,
     }
     ctx.dynamicInput.clearTexts()
     ctx.dynamicInput.setLive("distance", 0)
     ctx.dynamicInput.setLive("angle", null)
     ctx.requestRender()
-    return true
   }
 
   /**
@@ -373,6 +489,7 @@ export class PolylineTool implements Tool {
       bulges: [],
       cursor: start,
       direction: null,
+      startTangent: lastDrawnDirection(ctx.document) ?? { x: 1, y: 0 },
       closed: false,
       arcMode: false,
       reversed: false,
@@ -545,53 +662,6 @@ export class PolylineTool implements Tool {
       }) ?? rawCursor
     )
   }
-}
-
-/**
- * The unit tangent direction *leaving* the last committed segment, used to make
- * the next arc segment tangent-continuous. `null` when there is no prior
- * segment (or it is degenerate), so the first arc segment falls back to a line.
- */
-function currentTangent(state: {
-  vertices: readonly Vec2[]
-  bulges: readonly number[]
-}): Vec2 | null {
-  const n = state.vertices.length
-  if (n < 2) return null
-  return exitTangent(
-    state.vertices[n - 2],
-    state.vertices[n - 1],
-    state.bulges[n - 2] ?? 0
-  )
-}
-
-/**
- * The unit tangent at the *end* of a segment from `a` to `b` with the given
- * bulge. For a straight segment it is the chord direction; for an arc the chord
- * bisects the entry/exit tangents, so the exit is the chord rotated by half the
- * included angle (θ/2, θ = 4·atan(bulge)).
- */
-function exitTangent(a: Vec2, b: Vec2, bulge: number): Vec2 | null {
-  const chord = V.sub(b, a)
-  const length = V.length(chord)
-  if (length < 1e-9) return null
-  const dir = V.scale(chord, 1 / length)
-  if (bulge === 0) return dir
-  return rotate(dir, (4 * Math.atan(bulge)) / 2)
-}
-
-/** Rotates a vector by `angle` radians (counter-clockwise). */
-function rotate(v: Vec2, angle: number): Vec2 {
-  const cos = Math.cos(angle)
-  const sin = Math.sin(angle)
-  return { x: v.x * cos - v.y * sin, y: v.x * sin + v.y * cos }
-}
-
-/** Signed angle (radians, in `(-π, π]`) from vector `from` to vector `to`. */
-function signedAngle(from: Vec2, to: Vec2): number {
-  const cross = from.x * to.y - from.y * to.x
-  const dot = from.x * to.x + from.y * to.y
-  return Math.atan2(cross, dot)
 }
 
 /** Reads a field as a finite number, or `null` when empty/invalid (unlocked). */

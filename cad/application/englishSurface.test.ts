@@ -335,7 +335,7 @@ describe("the engine's English surface", () => {
         .do("L", (c) => answer(c, "L"))
         .do("third", (c) => c.click(at(0, 100)))
         .do("U", (c) => answer(c, "U"))
-        .do("C", (c) => answer(c, "C"))
+        .do("CL", (c) => answer(c, "CL"))
     )
     walk("CIRCLE", createHarness(), (s) =>
       s

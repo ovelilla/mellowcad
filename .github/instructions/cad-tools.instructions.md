@@ -73,6 +73,15 @@ A tool is an explicit state machine for one AutoCAD command. It owns a discrimin
   ends closing it) and the Polyline option's every corner (`cutPolylineCorners`, FILLET's arc
   corners and replaced arcs included). A corner-cutting command passes its cut, never walks a
   polyline itself.
+- `ArcSegmentInput` (`arcSegmentInput.ts`) — the prompts AutoCAD's polyline arc options open
+  (Angle, CEnter, Direction, Radius, Second pt and their `[CEnter/Radius]`, `[Angle/Length]`,
+  `[Angle]`), for any command drawing a polyline's arcs (PLINE; DIST's Arc). The tool lists
+  `ARC_SEGMENT_OPTIONS` among its own keywords in AutoCAD's order, calls `begin(option, { point,
+tangent })`, and while `active` hands it `question`, `takes`, `commandOptions`, `invokeOption`,
+  the pointer, `onEnter`, `wantsSnap` and `anchor`, drawing its `preview`; it gets back the
+  `ArcSegment` (end and bulge). The arc geometry itself — the tangent arc, the bulge of an angle,
+  a centre, a chord, a radius or three points, the way a segment ends heading — is
+  `geometry/bulgeArcs.ts`; never solve a bulge in a tool.
 - `dimensionTextOptions.ts` — the Text and Angle keywords shared by every dimension command, so
   each of them asks with the same words. When two commands offer the same AutoCAD keyword, the
   prompt belongs in a shared helper: identical wording is part of the fidelity, not a nicety.

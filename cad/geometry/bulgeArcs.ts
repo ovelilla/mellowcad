@@ -1,0 +1,176 @@
+import { V, Vec2 } from "./Vec2"
+import { circleFrom3Points, normalizeAngle } from "./primitives"
+
+/**
+ * An arc segment of a polyline as AutoCAD's PLINE builds it from where the
+ * chain stands: the point it runs to and its bulge, `tan(θ/4)` of the signed
+ * included angle θ (positive counter-clockwise).
+ */
+export interface ArcSegment {
+  readonly end: Vec2
+  readonly bulge: number
+}
+
+const EPSILON = 1e-9
+
+/** The bulge of an arc that turns through `included` radians. */
+export function bulgeOfAngle(included: number): number {
+  return Math.tan(included / 4)
+}
+
+/**
+ * The direction a segment from `a` to `b` heads at `b`: the chord's for a
+ * straight one; an arc's chord bisects its two tangents, so its exit is the
+ * chord turned on by half the included angle. Null for a segment of no length.
+ */
+export function segmentExitTangent(
+  a: Vec2,
+  b: Vec2,
+  bulge: number
+): Vec2 | null {
+  const chord = V.sub(b, a)
+  const length = V.length(chord)
+  if (length < EPSILON) return null
+  return turn(V.scale(chord, 1 / length), 2 * Math.atan(bulge))
+}
+
+/**
+ * The bulge of the arc leaving `start` along `tangent` to `end`: half the
+ * turn from the tangent to the chord, since the chord bisects the arc's two
+ * tangents. Null when `end` lies on the tangent's line, ahead or behind,
+ * where no arc leaves that way (AutoCAD's `*Invalid*`).
+ */
+export function tangentArcBulge(
+  start: Vec2,
+  tangent: Vec2,
+  end: Vec2
+): number | null {
+  const chord = V.sub(end, start)
+  const length = V.length(chord)
+  if (length < EPSILON) return null
+  const turnAngle = signedAngle(tangent, V.scale(chord, 1 / length))
+  if (Math.abs(Math.sin(turnAngle)) < EPSILON) return null
+  return Math.tan(turnAngle / 2)
+}
+
+/** Where an arc of `included` radians about `center` from `start` ends. */
+export function endAround(start: Vec2, center: Vec2, included: number): Vec2 {
+  return V.add(center, turn(V.sub(start, center), included))
+}
+
+/**
+ * CEnter and an endpoint: the arc about `center` from `start` to the ray
+ * towards `toward`, counter-clockwise, or clockwise with Ctrl held. Null with
+ * no radius or no ray.
+ */
+export function arcAroundToward(
+  start: Vec2,
+  center: Vec2,
+  toward: Vec2,
+  clockwise: boolean
+): ArcSegment | null {
+  const from = V.sub(start, center)
+  const to = V.sub(toward, center)
+  const radius = V.length(from)
+  if (radius < EPSILON || V.length(to) < EPSILON) return null
+  const ccw = normalizeAngle(
+    Math.atan2(to.y, to.x) - Math.atan2(from.y, from.x)
+  )
+  if (ccw < EPSILON) return null
+  const included = clockwise ? ccw - 2 * Math.PI : ccw
+  return {
+    end: endAround(start, center, included),
+    bulge: bulgeOfAngle(included),
+  }
+}
+
+/**
+ * CEnter and a chord length: counter-clockwise, the minor arc for a positive
+ * length and the major one for a negative, as AutoCAD 2023's console draws
+ * them. Null for a chord longer than the diameter.
+ */
+export function arcAroundChord(
+  start: Vec2,
+  center: Vec2,
+  chord: number,
+  clockwise: boolean
+): ArcSegment | null {
+  const radius = V.distance(start, center)
+  if (radius < EPSILON || Math.abs(chord) > 2 * radius + EPSILON) return null
+  const minor = 2 * Math.asin(Math.min(1, Math.abs(chord) / (2 * radius)))
+  if (minor < EPSILON) return null
+  const sweep = chord >= 0 ? minor : 2 * Math.PI - minor
+  const included = clockwise ? -sweep : sweep
+  return {
+    end: endAround(start, center, included),
+    bulge: bulgeOfAngle(included),
+  }
+}
+
+/**
+ * An included angle, a radius and the direction of the chord (radians): the
+ * chord runs that way for as long as the angle and radius make it.
+ */
+export function arcAlongChord(
+  start: Vec2,
+  radius: number,
+  included: number,
+  direction: number
+): ArcSegment {
+  const length = 2 * radius * Math.abs(Math.sin(included / 2))
+  return {
+    end: V.add(start, {
+      x: length * Math.cos(direction),
+      y: length * Math.sin(direction),
+    }),
+    bulge: bulgeOfAngle(included),
+  }
+}
+
+/**
+ * A radius and an endpoint: the minor arc, counter-clockwise or clockwise
+ * with Ctrl held (AutoCAD 2023's console draws it so whichever side the end
+ * lies). Null when the end is farther than the diameter.
+ */
+export function radiusArcBulge(
+  start: Vec2,
+  end: Vec2,
+  radius: number,
+  clockwise: boolean
+): number | null {
+  const chord = V.distance(start, end)
+  if (chord < EPSILON || chord > 2 * radius + EPSILON) return null
+  const included = 2 * Math.asin(Math.min(1, chord / (2 * radius)))
+  return bulgeOfAngle(clockwise ? -included : included)
+}
+
+/**
+ * The bulge of the arc from `start` through `second` to `end`. Null when the
+ * three lie on one line.
+ */
+export function arcThroughBulge(
+  start: Vec2,
+  second: Vec2,
+  end: Vec2
+): number | null {
+  const circle = circleFrom3Points(start, second, end)
+  if (!circle) return null
+  const { center } = circle
+  const a0 = Math.atan2(start.y - center.y, start.x - center.x)
+  const a1 = Math.atan2(end.y - center.y, end.x - center.x)
+  const ccw = normalizeAngle(a1 - a0)
+  const turnsLeft = V.cross(V.sub(second, start), V.sub(end, second)) > 0
+  return bulgeOfAngle(turnsLeft ? ccw : ccw - 2 * Math.PI)
+}
+
+/** Radians, `(-π, π]`, from `from` to `to`. */
+function signedAngle(from: Vec2, to: Vec2): number {
+  return Math.atan2(V.cross(from, to), V.dot(from, to))
+}
+
+/** `v` turned counter-clockwise by `angle` radians. */
+function turn(v: Vec2, angle: number): Vec2 {
+  const cos = Math.cos(angle)
+  const sin = Math.sin(angle)
+  return { x: v.x * cos - v.y * sin, y: v.x * sin + v.y * cos }
+}

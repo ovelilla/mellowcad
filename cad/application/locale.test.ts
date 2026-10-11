@@ -392,7 +392,7 @@ describe("Spanish AutoCAD's command language", () => {
     cad.press("A")
     cad.press("Enter")
     expect(cad.state().commandLine.prompt).toBe(
-      "POL Precise punto final del arco (mantenga pulsada la tecla Ctrl para cambiar de dirección) o [líNea]:"
+      "POL Precise punto final del arco (mantenga pulsada la tecla Ctrl para cambiar de dirección) o [ángUlo/cEntro/Dirección/líNea/Radio/Segundo pto./desHacer]:"
     )
     cad.escape()
 

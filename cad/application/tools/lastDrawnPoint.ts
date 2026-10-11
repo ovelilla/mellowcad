@@ -1,4 +1,5 @@
-import { Vec2 } from "../../geometry/Vec2"
+import { Vec2, V } from "../../geometry/Vec2"
+import { segmentExitTangent } from "../../geometry/bulgeArcs"
 import { Vec3, withZ } from "../../geometry/Vec3"
 import { DocumentReader } from "../../domain/Document"
 import {
@@ -55,6 +56,39 @@ export function continuePoint(document: DocumentReader): ContinuePoint | null {
           ),
           tangent: null,
         }
+    }
+  }
+  return null
+}
+
+/**
+ * The direction the last line, arc or polyline drawn ends in, where PLINE's
+ * first arc leaves from: AutoCAD 2023's console bulges `PLINE 0,0 A 10,0`
+ * -0.4142 after a line drawn at 45°, and passes a circle over. Null with
+ * none, or when the last one is an arc out of the plan.
+ */
+export function lastDrawnDirection(document: DocumentReader): Vec2 | null {
+  const entities = document.getEntities()
+  for (let i = entities.length - 1; i >= 0; i--) {
+    const entity = entities[i]
+    switch (entity.type) {
+      case "line": {
+        const run = V.sub(entity.end, entity.start)
+        return V.length(run) < 1e-9 ? null : V.normalize(run)
+      }
+      case "arc":
+        return arcEndTangent(entity)
+      case "polyline": {
+        const { vertices, closed } = entity
+        const n = vertices.length
+        if (n < 2) return null
+        const last = closed ? n - 1 : n - 2
+        return segmentExitTangent(
+          vertices[last],
+          vertices[(last + 1) % n],
+          entity.bulges?.[last] ?? 0
+        )
+      }
     }
   }
   return null
