@@ -1,6 +1,6 @@
 import { Vec2 } from "../../geometry/Vec2"
 import { UpdateSettingsCommand } from "../commands/settingsCommands"
-import { PointerInput, Tool, ToolContext } from "./Tool"
+import { PointerInput, Tool, ToolContext, ToolQuestion } from "./Tool"
 
 type ElevState =
   | { readonly phase: "elevation" }
@@ -16,6 +16,8 @@ export class ElevTool implements Tool {
 
   private state: ElevState = { phase: "elevation" }
   private lastScreen: Vec2 | null = null
+  /** The value the asked prompt offers, the current one. */
+  private current = 0
 
   onActivate(ctx: ToolContext): void {
     ctx.setCursor("crosshair")
@@ -37,6 +39,16 @@ export class ElevTool implements Tool {
     return false
   }
 
+  question(): ToolQuestion {
+    return {
+      id:
+        this.state.phase === "elevation"
+          ? "elevDefaultElevation"
+          : "elevDefaultThickness",
+      enter: this.current,
+    }
+  }
+
   private ask(ctx: ToolContext): void {
     const settings = ctx.document.getSettings()
     const elevation = this.state.phase === "elevation"
@@ -50,10 +62,8 @@ export class ElevTool implements Tool {
       ],
       commit: (values, commitCtx) => this.answer(values.value, commitCtx),
     })
-    ctx.dynamicInput.setDefault(
-      "value",
-      elevation ? settings.elevation : settings.thickness
-    )
+    this.current = elevation ? settings.elevation : settings.thickness
+    ctx.dynamicInput.setDefault("value", this.current)
     ctx.dynamicInput.setPosition(this.lastScreen ?? { x: 0, y: 0 })
     ctx.requestRender()
   }

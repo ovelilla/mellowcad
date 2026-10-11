@@ -139,3 +139,40 @@ describe("the settings commands ask as AutoCAD 2026", () => {
     ])
   })
 })
+
+// AutoCAD 2023's console answering the same input.
+describe("ELEV asks as AutoCAD 2026", () => {
+  it("offers the current values and refuses what is no distance", () => {
+    const cad = createHarness()
+    cad.command("ELEV")
+    answer(cad, "FOO", "5", "FOO", "2")
+    cad.command("ELEV")
+    answer(cad, "", "")
+    expect(cad.commandLog()).toEqual([
+      "ELEV",
+      "Specify new default elevation <0.00>: FOO",
+      "Requires numeric distance or two points.",
+      "Specify new default elevation <0.00>: 5",
+      "Specify new default thickness <0.00>: FOO",
+      "Requires numeric distance or two points.",
+      "Specify new default thickness <0.00>: 2",
+      "ELEV",
+      "Specify new default elevation <5.00>:",
+      "Specify new default thickness <2.00>:",
+    ])
+  })
+
+  it("asks in Autodesk's Spanish", () => {
+    const cad = createHarness({ locale: es })
+    cad.command("ELEV")
+    answer(cad, "FOO", "5")
+    expect(cad.commandLog().slice(1)).toEqual([
+      "Precise nueva elevación por defecto <0.00>: FOO",
+      "Requiere una distancia numérica o dos puntos.",
+      "Precise nueva elevación por defecto <0.00>: 5",
+    ])
+    expect(cad.state().commandLine.prompt).toBe(
+      "ELEV Precise nueva altura de objeto por defecto <0.00>:"
+    )
+  })
+})

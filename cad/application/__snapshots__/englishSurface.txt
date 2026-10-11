@@ -3889,30 +3889,39 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
   properties: -
   cycling: -
 > ELEV
-  prompt: ELEV:
+  prompt: ELEV Specify new default elevation <0.00>:
   asks: "Specify new default elevation"
+  tip: Specify new default elevation
   dyn: "Specify new default elevation"=""|0.00|mm*
   command| ELEV
 > elevation
   dyn: "Specify new default elevation"="5"|0.00|mm*
 > enter
+  prompt: ELEV Specify new default thickness <0.00>:
   asks: "Specify new default thickness"
+  tip: Specify new default thickness
   dyn: "Specify new default thickness"=""|0.00|mm*
+  prompt| Specify new default elevation <0.00>: 5
 > thickness
   dyn: "Specify new default thickness"="-2"|0.00|mm*
 > enter
   prompt: Command:
   asks: -
+  tip: -
   dyn: -
+  prompt| Specify new default thickness <0.00>: -2
 > ELEV again
-  prompt: ELEV:
+  prompt: ELEV Specify new default elevation <5.00>:
   asks: "Specify new default elevation"
+  tip: Specify new default elevation
   dyn: "Specify new default elevation"=""|5.00|mm*
   command| ELEV
 > escape
   prompt: Command:
   asks: -
+  tip: -
   dyn: -
+  prompt| Specify new default elevation <5.00>: *Cancel*
 
 ## LTSCALE
 > start
