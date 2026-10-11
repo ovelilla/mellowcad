@@ -4247,27 +4247,33 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
   prompt| Enter an option [Top/Bottom/Front/BAck/Left/Right] <Top>:
   info| Regenerating model.
 > NAVVCUBE
-  prompt: NAVVCUBE [ON/OFF] <ON>:
+  prompt: NAVVCUBE Enter an option [ON/OFF] <ON>:
   asks: 
+  tip: Enter an option
   dyn: 
   options: [ON] ON, [OFF] OFF
   command| NAVVCUBE
 > OFF
   prompt: Command:
   asks: -
+  tip: -
   dyn: -
   options: -
+  prompt| Enter an option [ON/OFF] <ON>: OFF
 > CUBE
-  prompt: NAVVCUBE [ON/OFF] <OFF>:
+  prompt: NAVVCUBE Enter an option [ON/OFF] <OFF>:
   asks: 
+  tip: Enter an option
   dyn: 
   options: [ON] ON, [OFF] OFF
   command| CUBE NAVVCUBE
 > ON
   prompt: Command:
   asks: -
+  tip: -
   dyn: -
   options: -
+  prompt| Enter an option [ON/OFF] <OFF>: ON
 
 ## grips
 > start

@@ -352,21 +352,34 @@ describe("NAVVCUBE", () => {
     expect(cad.runtime.serializeDrawing()).toMatch(/"navVCubeDisplay": 0/)
 
     cad.command("CUBE")
-    expect(cad.state().commandLine.prompt).toBe("NAVVCUBE [ON/OFF] <OFF>:")
+    expect(cad.state().commandLine.prompt).toBe(
+      "NAVVCUBE Enter an option [ON/OFF] <OFF>:"
+    )
     cad.option("ON")
     expect(cad.state().viewCube.visible).toBe(true)
+  })
+
+  // AutoCAD 2023's console answering the same input (Settings, the ViewCube
+  // Settings dialog, is not offered).
+  it("refuses what is not one of its keywords", () => {
+    const cad = createHarness()
+    cad.command("NAVVCUBE")
+    cad.runtime.setCommandLineText("FOO")
+    cad.runtime.submitCommandLine()
+    expect(cad.commandLog()).toEqual([
+      "NAVVCUBE",
+      "Enter an option [ON/OFF] <ON>: FOO",
+      "Invalid option keyword.",
+    ])
   })
 
   it("answers ACT and DES in Spanish", () => {
     const cad = createHarness({ locale: es })
 
     cad.command("NAVVCUBE")
-    expect(
-      cad
-        .state()
-        .commandLine.promptSegments.map((s) => s.text)
-        .join("")
-    ).toContain("ACT/DES")
+    expect(cad.state().commandLine.prompt).toBe(
+      "NAVVCUBE Indique una opción [ACT/DES] <ACT>:"
+    )
     cad.option("OFF")
     expect(cad.state().viewCube.visible).toBe(false)
   })
