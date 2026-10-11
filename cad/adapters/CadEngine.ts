@@ -432,6 +432,11 @@ export class CadEngine {
     return this.runtime.applyViewPreset(preset)
   }
 
+  /** The navigation bar's Pan or Zoom Window, transparent mid-command. */
+  navigate(command: "PAN" | "ZOOM", option?: string): boolean {
+    return this.runtime.navigate(command, option)
+  }
+
   viewCubePick(part: ViewCubePart): void {
     this.runtime.viewCubePick(part)
   }

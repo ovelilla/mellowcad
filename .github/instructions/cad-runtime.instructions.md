@@ -250,6 +250,10 @@ and replays the pointer through the resumed tool. Starting another tool ends bot
 `returnToNeutralTool`, or it only resumes. A command that is not transparent, typed so, says
 `** That command may not be invoked transparently **` before the prompt's own refusal (at the
 Command prompt, instead of running); one inside a transparent one is refused as any answer.
+A button whose AutoCAD macro starts with an apostrophe (the navigation bar's `'_pan`,
+`'_zoom _W`) runs through `navigate` — the same `runTransparently` as typed, at any prompt and
+keeping the box's text, since a button types nothing there; never `setActiveTool`, which ends the
+running command.
 
 ## The pointer's buttons (`pointerDown` / `pointerUp`) — order is load-bearing
 

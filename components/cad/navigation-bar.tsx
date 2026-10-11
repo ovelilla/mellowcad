@@ -35,13 +35,17 @@ interface ZoomMember {
 /**
  * The Zoom drop-down's members that exist here, in the ribbon's order
  * (Extents, Window, Previous, …, In, Out); Realtime, All, Dynamic, Scale,
- * Center and Object are not offered. Except Window, which is the ZOOM
- * command, they act on the view at once, so they work in the middle of a
- * command as AutoCAD's transparent zooms do.
+ * Center and Object are not offered. Except Window, which runs AutoCAD's
+ * `'_zoom _w` (transparent mid-command), they act on the view at once, so
+ * they work in the middle of a command as AutoCAD's transparent zooms do.
  */
 const ZOOM: readonly ZoomMember[] = [
   { id: "extents", icon: Maximize, run: (engine) => engine.zoomToFit() },
-  { id: "window", icon: Search, run: (engine) => engine.setActiveTool("zoom") },
+  {
+    id: "window",
+    icon: Search,
+    run: (engine) => engine.navigate("ZOOM", "W"),
+  },
   {
     id: "previous",
     icon: ZoomPreviousIcon,
@@ -84,7 +88,7 @@ export function NavigationBar({
           shortcut={pan?.shortcut?.toUpperCase()}
           side="inline-start"
           active={state.activeToolId === "pan"}
-          onClick={() => engine.setActiveTool("pan")}
+          onClick={() => engine.navigate("PAN")}
         />
         <ZoomSplitButton engine={engine} state={state} />
         <IconAction

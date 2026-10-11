@@ -187,6 +187,41 @@ describe("a transparent command", () => {
     expect(cad.typeCounts().line).toBe(1)
   })
 
+  // The navigation bar's buttons run AutoCAD's macros '_pan and '_zoom _w.
+  it("is what the navigation bar's Pan and Zoom Window run", () => {
+    const cad = createHarness()
+    cad.command("LINE").click(p(0, 0)).moveTo(p(10, 10))
+    cad.type("12")
+    cad.runtime.navigate("ZOOM", "W")
+    expect(cad.state().commandLine.prompt).toBe("'ZOOM >>Specify first corner:")
+    cad.click(p(0, 0)).click(p(50, 50))
+    expect(cad.commandLog().slice(-4)).toEqual([
+      "Specify next point or [Undo]: 'ZOOM",
+      `${ZOOM_PROMPT} _W`,
+      ">>Specify first corner: >>Specify opposite corner:",
+      "Resuming LINE command.",
+    ])
+    // A button types nothing at the prompt, so what was typed there stays.
+    expect(cad.state().dynamicInput?.fields[0]?.value).toBe("12")
+    cad.runtime.navigate("PAN")
+    expect(cad.commandLog().slice(-2)).toEqual([
+      "Specify next point or [Undo]: 'PAN",
+      ">>Press ESC or ENTER to exit, or right-click to display shortcut menu.",
+    ])
+    cad.enter()
+    expect(cad.activeToolId()).toBe("line")
+    cad.escape()
+
+    cad.runtime.navigate("PAN")
+    expect(cad.commandLog().slice(-2)).toEqual([
+      "'PAN",
+      "Press ESC or ENTER to exit, or right-click to display shortcut menu.",
+    ])
+    cad.escape()
+    cad.runtime.navigate("ZOOM", "W")
+    expect(cad.state().commandLine.prompt).toBe("ZOOM Specify first corner:")
+  })
+
   it("asks and resumes in Spanish", () => {
     const cad = createHarness({ locale: es })
     cad.command("LINEA").click(p(0, 0))
@@ -204,5 +239,10 @@ describe("a transparent command", () => {
       "Precise punto siguiente o [desHacer]: 'E 'ENCUADRE",
       ">>Pulse Esc o Intro para salir, o haga clic con el botón derecho para activar el menú contextual.",
     ])
+    cad.enter()
+    cad.runtime.navigate("ZOOM", "W")
+    expect(cad.state().commandLine.prompt).toBe(
+      "'ZOOM >>Designe primera esquina:"
+    )
   })
 })

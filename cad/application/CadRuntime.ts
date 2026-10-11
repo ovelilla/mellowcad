@@ -772,12 +772,12 @@ export class CadRuntime extends Observable {
    * its question, its box, its selection set and its undo step — while
    * `command`'s tool asks its own questions, headed `>>`.
    */
-  private suspend(command: CommandDefinition): void {
+  private suspend(command: CommandDefinition, clear: boolean): void {
     const tool =
       command.tool === undefined ? undefined : this.tools.get(command.tool)
     if (!tool) return
     // What was typed was this answer, not the running command's.
-    this.dynamicInput.clearTexts()
+    if (clear) this.dynamicInput.clearTexts()
     this.suspended = {
       tool: this.activeTool,
       startedAs: this.startedAs,
@@ -930,11 +930,19 @@ export class CadRuntime extends Observable {
     const typed = text.trim()
     if (!typed.startsWith("'") || this.activeTool.id === "select") return false
     if (this.takesText()) return false
+    return this.runTransparently(typed, true)
+  }
+
+  /**
+   * Runs `typed` (`'ZOOM`) inside the running command, or refuses it there.
+   * `clear`: what was typed in the box was this answer, so it goes.
+   */
+  private runTransparently(typed: string, clear: boolean): boolean {
     const command = this.commandNamed(typed)
     if (!command) return false
     return this.answering(this.commandEcho(typed, command), () => {
       if (command.transparent && this.suspended === null) {
-        this.suspend(command)
+        this.suspend(command, clear)
         return true
       }
       if (!command.transparent) {
@@ -1239,6 +1247,24 @@ export class CadRuntime extends Observable {
    */
   applyViewPreset(preset: ViewPreset): boolean {
     return this.runCommand("_-VIEW") && this.invokeToolOption(`_${preset}`)
+  }
+
+  /**
+   * The navigation bar's Pan or Zoom Window, which run AutoCAD's macros
+   * `'_pan` and `'_zoom _w`: inside the running command as if typed with the
+   * apostrophe — whatever its prompt takes, as a button types no text there —
+   * and as the command itself at the Command prompt.
+   */
+  navigate(command: "PAN" | "ZOOM", option?: string): boolean {
+    const typed = `'_${command}`
+    const started =
+      this.activeTool.id === "select"
+        ? this.runCommand(typed)
+        : this.runTransparently(typed, false)
+    if (started) this.host.focusSurface()
+    return (
+      started && (option === undefined || this.invokeToolOption(`_${option}`))
+    )
   }
 
   /** A click on a face, an edge or a corner of the ViewCube. */
