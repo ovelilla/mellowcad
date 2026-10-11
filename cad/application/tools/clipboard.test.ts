@@ -173,6 +173,30 @@ describe("PASTECLIP", () => {
     expect(cad.activeToolId()).toBe("select")
   })
 
+  // AutoCAD 2023's console answering the same input.
+  it("asks as AutoCAD 2026: Enter asks again, what is no 2D point is refused", async () => {
+    const cad = createHarness({
+      entities: [lineOf(p(0, 0), p(100, 0), { id: "L1" })],
+    })
+    copy(cad, "L1")
+    await cad.runtime.pasteFromClipboard()
+    expect(cad.state().commandLine.prompt).toBe(
+      "PASTECLIP Specify insertion point:"
+    )
+    for (const text of ["", "FOO", "5,5"]) {
+      cad.runtime.setCommandLineText(text)
+      cad.runtime.submitCommandLine()
+    }
+
+    expect(cad.commandLog().slice(-4)).toEqual([
+      "Specify insertion point:",
+      "Specify insertion point: FOO",
+      "Invalid 2D point.",
+      "Specify insertion point: 5,5",
+    ])
+    expect(cad.entityCount).toBe(2)
+  })
+
   it("leaves the pasted objects selected", async () => {
     const cad = createHarness({
       entities: [

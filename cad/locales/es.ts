@@ -1244,6 +1244,7 @@ export const es: EngineLocale = {
       "patternAngle": "Precise ángulo del patrón",
       "blockName": "Indique nombre de bloque o",
       "insertionBasePoint": "Especifique un punto base de inserción",
+      "specifyInsertionPoint": "Precise punto de inserción",
       "insertionPoint": "Precise punto de inserción o",
       "insertScale": "Precise factor de escala para ejes XYZ",
       "insertRotation": "Precise ángulo de rotación",

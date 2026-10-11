@@ -922,6 +922,7 @@ export const en: EngineCatalog = {
       "blockName": "Enter block name or",
       "insertionBasePoint": "Specify insertion base point",
       "insertionPoint": "Specify insertion point or",
+      "specifyInsertionPoint": "Specify insertion point",
       "insertScale": "Specify scale factor for XYZ axes",
       "insertRotation": "Specify rotation angle",
       "attributeTag": "Enter attribute tag name",

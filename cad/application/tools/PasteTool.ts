@@ -8,7 +8,8 @@ import { planPaste } from "../clipboard"
 import { PasteCommand } from "../commands/clipboardCommands"
 import { parseCoordinate } from "../input/coordinateInput"
 import { entityScenePrimitive } from "../SceneBuilder"
-import { PointerInput, Tool, ToolContext } from "./Tool"
+import type { PromptId } from "../../locales/types"
+import { PointerInput, QuestionInput, Tool, ToolContext } from "./Tool"
 
 type PasteState =
   | { readonly phase: "idle" }
@@ -30,6 +31,20 @@ export class PasteTool implements Tool {
   private state: PasteState = { phase: "idle" }
   private lastScreen: Vec2 | null = null
   private lookup: BlockLookup = () => undefined
+
+  /** PASTECLIP is registered as a command, not as this tool's. */
+  runningCommand(): string {
+    return "PASTECLIP"
+  }
+
+  question(): PromptId | null {
+    return this.state.phase === "point" ? "specifyInsertionPoint" : null
+  }
+
+  /** As AutoCAD 2023's console refuses it. */
+  takes(): QuestionInput {
+    return "point2d"
+  }
 
   onActivate(ctx: ToolContext): void {
     ctx.setCursor("crosshair")
@@ -62,19 +77,22 @@ export class PasteTool implements Tool {
       },
     }
     ctx.dynamicInput.open({
-      fields: [{ id: "point", prompt: "insertionPoint", kind: "coordinate" }],
+      fields: [
+        { id: "point", prompt: "specifyInsertionPoint", kind: "coordinate" },
+      ],
       commit: () => {},
       commitRaw: (commitCtx) => {
-        const point = parseCoordinate(
-          commitCtx.dynamicInput.getText("point").trim(),
-          {
-            lastPoint: null,
-            relativeByDefault: false,
-            ucs: commitCtx.ucs,
-            elevation: commitCtx.elevation,
-          }
-        )
-        if (point) this.place(point, commitCtx)
+        const text = commitCtx.dynamicInput.getText("point").trim()
+        // Enter asks again, as AutoCAD 2023's console does.
+        if (text === "") return true
+        const point = parseCoordinate(text, {
+          lastPoint: null,
+          relativeByDefault: false,
+          ucs: commitCtx.ucs,
+          elevation: commitCtx.elevation,
+        })
+        if (!point) return false
+        this.place(point, commitCtx)
         return true
       },
     })
