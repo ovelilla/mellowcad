@@ -343,6 +343,11 @@ export class EngineText {
     return words.join(this.format(this.commands.format.keywordSeparator))
   }
 
+  /** What joins the keywords AutoCAD asks to choose from: `CEnter or CLose?`. */
+  keywordOr(): string {
+    return this.format(this.commands.format.keywordOr)
+  }
+
   /** The word the neutral prompt is headed with (`Command`). */
   idleHead(): string {
     return this.format(this.commands.format.idle)

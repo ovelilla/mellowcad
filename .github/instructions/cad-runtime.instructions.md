@@ -230,6 +230,14 @@ question takes is the tool's `takes()` or, without one, read from the asked prom
 parse off the cursor instead ("no number typed, so the cursor's angle") is a bug: it must return
 `false` so the refusal runs.
 
+**An ambiguous keyword asks which** (`answerKeyword`): typed text that starts several keywords on
+offer writes `Ambiguous response, please clarify...` and sets `clarifying` (dropped once the tool
+or its question changes), whose prompt `keywordChoicePrompt` words — `CEnter or CLose?`, no colon.
+Every way of answering checks `clarifyingWords()` before its own reading: a keyword of the prompt
+answers, Enter writes `Invalid option keyword.` and asks again, anything else — a point modifier,
+a pick, a value — goes to `unclarified`, the prompt's own `refuse()`. A new way to answer must
+check it too, or it answers the prompt behind the question.
+
 **A point answers a distance or an angle** (`commitBox`, `dispatchPointerDown`): a coordinate typed
 in a lone distance or angle box is a pick there when the tool wants a point (`placePoint(…,
 true)`), and is measured by the runtime when it does not (`measurePoint`, `cad-tools`, "Points,

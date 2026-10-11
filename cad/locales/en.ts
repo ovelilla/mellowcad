@@ -1106,6 +1106,12 @@ export const en: EngineCatalog = {
       "specifyFirstTangentOfCircle": "Specify point on object for first tangent of circle",
       "specifySecondTangentOfCircle": "Specify point on object for second tangent of circle",
       "specifySecondPoint": "Specify second point",
+      "clarifyKeyword": [
+        [
+          "keywords"
+        ],
+        "?"
+      ],
       "specifyFirstCornerPointOr": "Specify first corner point or",
       "addModeNextPointOr": " (ADD mode)Specify next point or",
       "subtractModeNextPointOr": " (SUBTRACT mode)Specify next point or",
@@ -1339,6 +1345,7 @@ export const en: EngineCatalog = {
         ">:"
       ],
       "keywordSeparator": "/",
+      "keywordOr": " or ",
       "optionValue": [
         [
           "keyword"
@@ -2202,6 +2209,7 @@ export const en: EngineCatalog = {
       "requiresRadius": "Requires numeric radius, point on circumference, or \"D\".",
       "requiresTangent": "Requires a TAN object-snap and selection of Circle, Arc, or Line.",
       "invalidOptionKeyword": "Invalid option keyword.",
+      "ambiguousResponse": "Ambiguous response, please clarify...",
       "invalidSelection": "*Invalid selection*",
       "expectsPointOr": [
         "Expects a point or ",

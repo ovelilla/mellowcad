@@ -354,10 +354,14 @@ An option spelled at another prompt names it (`{ id: "Window", hidden: true, pro
 "selectObjects" }`): the selection modes live once, in `promptKeywords.selectObjects`, for every
 command's `Select objects:` however the command words it (JOIN's, DIMSPACE's).
 
-A keyword is answered by its abbreviation, its whole word or the word's start as far as its capitals
-and on (`OB` for `Object`, `EXI` for `eXit`), or by `_` and the global one, typed
-and confirmed with Enter or Space — at the prompt or in a value box, as in AutoCAD; no key runs one
-on its own. What is typed in a value box (or on the drawing, which feeds the box) is resolved as a
+A keyword is answered by its abbreviation, its whole word or the word's start as far as its first
+capital and on (`OB` for `Object`, `C` for `CEnter`; not `E` for `eXit`, and no number), or by `_`
+and the global one, typed and confirmed with Enter or Space — at the prompt or in a value box, as in
+AutoCAD; no key runs one on its own. The runtime matches them (`matchKeywords`): an answer that
+starts several and is none's abbreviation or word asks which (`CEnter or CLose?`), so two keywords
+of one prompt may share their first letters — that is AutoCAD's own answer, never a reason to
+re-letter one. `resolveKeyword` is the stricter match for words a tool reads itself (a pattern
+name, `?`) and for object snaps, which need their three letters (`CE` is no snap). What is typed in a value box (or on the drawing, which feeds the box) is resolved as a
 keyword before a value; a submitted prompt is read as a keyword before anything else, and an alias
 only starts a command at the neutral prompt.
 

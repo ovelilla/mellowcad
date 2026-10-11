@@ -549,11 +549,19 @@ lweight "Lineweight" LW
   prompt| Specify next point or [Arc/Close/Undo]: A
 > arc
   prompt| Specify endpoint of arc (hold Ctrl to switch direction) or [Angle/CEnter/CLose/Direction/Line/Radius/Second pt/Undo]:
+> C
+  prompt: PLINE CEnter or CLose?
+  tip: CEnter or CLose?
+  prompt| Specify endpoint of arc (hold Ctrl to switch direction) or [Angle/CEnter/CLose/Direction/Line/Radius/Second pt/Undo]: C
+  error| Ambiguous response, please clarify...
+> enter
+  prompt| CEnter or CLose?
+  error| Invalid option keyword.
 > L
   prompt: PLINE Specify next point or [Arc/Close/Undo]:
   tip: Specify next point or
   options: [A] Arc, [C] Close, [U] Undo
-  prompt| Specify endpoint of arc (hold Ctrl to switch direction) or [Angle/CEnter/CLose/Direction/Line/Radius/Second pt/Undo]: L
+  prompt| CEnter or CLose? L
 > third
   prompt| Specify next point or [Arc/Close/Undo]:
 > U
@@ -2857,8 +2865,15 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0°~, Line space facto
   options: [I] Items, [A] Angle between, [F] Fill angle, [ROT] ROTate items, [X] eXit
   prompt| Specify center point of array:
 > R
+  prompt: ARRAYPOLAR Rotate arrayed items? [Yes/No] <Yes>:
+  tip: Rotate arrayed items?
+  options: [Y] Yes, [N] No
   prompt| Select grip to edit array or [Items/Angle between/Fill angle/ROTate items/eXit] <eXit>: R
-  error| Point or option keyword required.
+> enter
+  prompt: ARRAYPOLAR Select grip to edit array or [Items/Angle between/Fill angle/ROTate items/eXit] <eXit>:
+  tip: Select grip to edit array or
+  options: [I] Items, [A] Angle between, [F] Fill angle, [ROT] ROTate items, [X] eXit
+  prompt| Rotate arrayed items? [Yes/No] <Yes>:
 > enter
   prompt: Command:
   asks: -

@@ -973,6 +973,7 @@
       "specifyFirstTangentOfCircle": "Precise punto en objeto para la primera tangente del círculo",
       "specifySecondTangentOfCircle": "Precise punto en objeto para la segunda tangente del círculo",
       "specifySecondPoint": "Precise segundo punto",
+      "clarifyKeyword": "{keywords}?",
       "specifyFirstCornerPointOr": "Precise primer punto de esquina o",
       "addModeNextPointOr": " (modo AÑADIR)Precise punto siguiente o",
       "subtractModeNextPointOr": " (modo SUSTRAER)Precise punto siguiente o",
@@ -1121,6 +1122,7 @@
       "promptWithKeywords": "{head} <keywords>[{list}]</keywords>:",
       "promptWithDefault": "{head} <keywords>[{list}]</keywords> '<'{value}>:",
       "keywordSeparator": "/",
+      "keywordOr": " o ",
       "optionValue": "{keyword}: {value}",
       "cartesian": "X,Y",
       "polar": "Dist'<'Ang"
@@ -1255,6 +1257,7 @@
       "requiresRadius": "Precisa un radio numérico, un punto en la circunferencia, o \"D\".",
       "requiresTangent": "Requiere una REFENT TAN y la designación de un círculo, arco o línea.",
       "invalidOptionKeyword": "Opción no válida.",
+      "ambiguousResponse": "Respuesta ambigua, especifique...",
       "invalidSelection": "*Designación no válida*",
       "expectsPointOr": "Requiere un punto o {keywords}",
       "selectionModes": "{set, select, oneObject {Ventana/úLTimo/Captura/MArco/Todos/Borde/polígonOV/polígonOC} singleSet {Ventana/úLTimo/Captura/MArco/Todos/Borde/polígonOV/polígonOC/Grupo} pathCurve {Ventana/úLTimo/Captura/MArco/Todos/Borde/polígonOV/polígonOC/Grupo/Previo/AUto} crossingObjects {Ventana/úLTimo/Captura/MArco/Todos/Borde/polígonOV/polígonOC/Añadir/Eliminar/Múltiple/Previo/desHacer/AUto/úNico} wholeObjects {Ventana/úLTimo/Captura/MArco/Todos/Borde/polígonOV/polígonOC/Grupo/Añadir/Eliminar/Múltiple/Previo/desHacer/AUto/úNico} other {Ventana/úLTimo/Captura/MArco/Todos/Borde/polígonOV/polígonOC/Grupo/Añadir/Eliminar/Múltiple/Previo/desHacer/AUto/úNico/Subobjeto/Objeto}}",

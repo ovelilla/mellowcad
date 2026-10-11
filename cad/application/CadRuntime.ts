@@ -76,7 +76,7 @@ import {
   shortestName,
   temporaryPromptLines,
 } from "./CommandLine"
-import { resolveKeyword } from "../i18n/keywords"
+import { matchKeywords, resolveKeyword } from "../i18n/keywords"
 import type { EngineLocale, PromptId } from "../locales/types"
 import { EngineText, engineText, promptString } from "./EngineText"
 import { CommandHistory } from "./commands/Command"
@@ -140,7 +140,9 @@ import { Clipboard, DrawingStore, EngineHost, FileTransport } from "./ports"
 import { nextLayerName, updateLayer } from "./runtimeLayers"
 import { buildBlockPreview, purgeBlocks } from "./runtimeBlocks"
 import {
+  CommandPrompt,
   commandPrompt,
+  keywordChoicePrompt,
   offerOptions,
   optionKeywords,
   continuesLine,
@@ -443,6 +445,15 @@ export class CadRuntime extends Observable {
     readonly prompt: PromptId | null
     readonly first: Vec3
     cursor: Vec3
+  } | null = null
+  /**
+   * The keywords AutoCAD asks to choose from (`CEnter or CLose?`) after an
+   * answer that starts them all. Only while that tool asks that question.
+   */
+  private clarifying: {
+    readonly tool: Tool
+    readonly prompt: PromptId | null
+    readonly ids: readonly string[]
   } | null = null
 
   private stateSnapshot: EngineState
@@ -989,6 +1000,10 @@ export class CadRuntime extends Observable {
       return
     }
     if (this.invokeToolOption(text)) return
+    if (this.clarifyingWords() !== null) {
+      this.answering(text, () => this.unclarified(false))
+      return
+    }
     if (this.pointModifier(text)) return
     if (this.transparentCommand(text)) return
     if (this.answering(text, () => this.answerPrompt(text))) return
@@ -1138,14 +1153,7 @@ export class CadRuntime extends Observable {
   ): boolean {
     if (this.answeringPrompt) return run()
     const asking = this.asking()
-    const { echo } = commandPrompt(
-      asking,
-      this.text,
-      asking === this.activeTool ? offerOptions(asking, this.text) : [],
-      this.document.getSettings(),
-      this.startedAs,
-      this.suspended !== null
-    )
+    const { echo } = this.currentPrompt()
     const prefix = this.answerPrefix
     const mark = this.commandLine.mark()
     const continues =
@@ -1318,6 +1326,78 @@ export class CadRuntime extends Observable {
     return this.measuringFrom() === null
       ? this.activeTool
       : secondPointQuestion(this.activeTool)
+  }
+
+  /** The prompt as it stands: the question asked, or which keyword was meant. */
+  private currentPrompt(): CommandPrompt {
+    const asking = this.asking()
+    const prompt = commandPrompt(
+      asking,
+      this.text,
+      asking === this.activeTool ? offerOptions(asking, this.text) : [],
+      this.document.getSettings(),
+      this.startedAs,
+      this.suspended !== null
+    )
+    const words = this.clarifyingWords()
+    return words === null
+      ? prompt
+      : keywordChoicePrompt(prompt, this.text, words, this.suspended !== null)
+  }
+
+  /** The words of the keywords AutoCAD asks to choose from, while it asks. */
+  private clarifyingWords(): string[] | null {
+    const clarifying = this.clarifying
+    if (clarifying === null) return null
+    if (
+      clarifying.tool !== this.activeTool ||
+      clarifying.prompt !== askedPrompt(this.activeTool)
+    ) {
+      this.clarifying = null
+      return null
+    }
+    const offered = this.offeredKeywords()
+    return clarifying.ids.flatMap((id) =>
+      offered.filter((keyword) => keyword.id === id).map(({ word }) => word)
+    )
+  }
+
+  /**
+   * The keyword `typed` names among those on offer, run; or, when it starts
+   * several, AutoCAD's `Ambiguous response, please clarify...` and the
+   * question which one was meant, which any keyword on offer answers.
+   */
+  private answerKeyword(typed: string, ids: readonly string[]): boolean {
+    return this.answering(typed.trim(), () => {
+      if (ids.length === 1) {
+        this.clarifying = null
+        return this.invokeOption(ids[0])
+      }
+      this.commandLine.write("error", this.text.message("ambiguousResponse"))
+      this.clarifying = {
+        tool: this.activeTool,
+        prompt: askedPrompt(this.activeTool),
+        ids,
+      }
+      this.invalidateState()
+      return true
+    })
+  }
+
+  /**
+   * An answer to which keyword was meant that names none: Enter asks again
+   * (`Invalid option keyword.`), anything else — a point, a pick — is the
+   * prompt's own wrong answer, refused in its words, after which the prompt
+   * asks again, as AutoCAD 2023's console does.
+   */
+  private unclarified(enter: boolean): boolean {
+    if (enter) {
+      this.commandLine.write("error", this.text.message("invalidOptionKeyword"))
+      this.invalidateState()
+      return true
+    }
+    this.clarifying = null
+    return this.refuse()
   }
 
   /**
@@ -2510,12 +2590,21 @@ export class CadRuntime extends Observable {
     )
     if (field && !isContentField(field.kind)) {
       const typed = this.dynamicInput.getText(field.id)
-      const keyword = resolveKeyword(typed, this.offeredKeywords())
-      if (keyword !== null) {
+      const ids = matchKeywords(typed, this.offeredKeywords())
+      if (ids.length > 0) {
         this.dynamicInput.setText(field.id, "")
-        this.answering(typed.trim(), () => this.invokeOption(keyword))
+        this.answerKeyword(typed, ids)
         return
       }
+    }
+    if (this.clarifyingWords() !== null) {
+      const typed = this.dynamicInput.typedAnswer()
+      this.dynamicInput.clearTexts()
+      this.answering(typed, () => this.unclarified(typed === ""))
+      return
+    }
+    if (field && !isContentField(field.kind)) {
+      const typed = this.dynamicInput.getText(field.id)
       if (this.pointModifier(typed)) {
         this.dynamicInput.setText(field.id, "")
         return
@@ -2613,6 +2702,7 @@ export class CadRuntime extends Observable {
     this.resetTracking()
     this.snapping.clearOverride()
     this.answering(this.text.message("cancel"), () => {
+      this.clarifying = null
       this.activeTool.onKeyDown?.(plainKey("Escape"), this.toolContext)
       this.returnToNeutralTool()
       return true
@@ -2631,10 +2721,8 @@ export class CadRuntime extends Observable {
    * whether to swallow it.
    */
   invokeToolOption(input: string): boolean {
-    const id = resolveKeyword(input, this.offeredKeywords())
-    return (
-      id !== null && this.answering(input.trim(), () => this.invokeOption(id))
-    )
+    const ids = matchKeywords(input, this.offeredKeywords())
+    return ids.length > 0 && this.answerKeyword(input, ids)
   }
 
   /** The keywords the active tool offers, in both of their languages. */
@@ -3268,6 +3356,7 @@ export class CadRuntime extends Observable {
     this.answering(
       "",
       () => {
+        if (this.clarifyingWords() !== null) return this.unclarified(false)
         this.pointGiven = this.toolPointToWorld(input.point)
         if (this.measuresPoints()) return this.measurePoint(input.point)
         this.activeTool.onPointerDown?.(input, this.toolContext)
@@ -3742,11 +3831,16 @@ export class CadRuntime extends Observable {
       e.key === " " && !e.shiftKey && this.activeTool.id !== "select"
         ? "Enter"
         : e.key
+    if (key === "Enter" && this.clarifyingWords() !== null) {
+      this.answering("", () => this.unclarified(true))
+      return true
+    }
     if (key === "Enter" || key === "Escape") {
       let consumed = false
       this.answering(
         key === "Escape" ? this.text.message("cancel") : "",
         () => {
+          this.clarifying = null
           consumed = this.endKey({ ...e, key })
           return true
         }
@@ -4153,17 +4247,11 @@ export class CadRuntime extends Observable {
       .toArray()
       .map((id) => this.document.get(id))
       .filter((entity): entity is Entity => entity !== undefined)
-    const asking = this.asking()
     const options =
-      asking === this.activeTool ? offerOptions(this.activeTool, this.text) : []
-    const prompt = commandPrompt(
-      asking,
-      this.text,
-      options,
-      settings,
-      this.startedAs,
-      this.suspended !== null
-    )
+      this.asking() === this.activeTool
+        ? offerOptions(this.activeTool, this.text)
+        : []
+    const prompt = this.currentPrompt()
     return {
       activeToolId: this.activeTool.id,
       tools: this.listTools().map((t) => ({

@@ -936,6 +936,7 @@
       "specifyFirstTangentOfCircle": "Specify point on object for first tangent of circle",
       "specifySecondTangentOfCircle": "Specify point on object for second tangent of circle",
       "specifySecondPoint": "Specify second point",
+      "clarifyKeyword": "{keywords}?",
       "specifyFirstCornerPointOr": "Specify first corner point or",
       "addModeNextPointOr": " (ADD mode)Specify next point or",
       "subtractModeNextPointOr": " (SUBTRACT mode)Specify next point or",
@@ -1084,6 +1085,7 @@
       "promptWithKeywords": "{head} <keywords>[{list}]</keywords>:",
       "promptWithDefault": "{head} <keywords>[{list}]</keywords> '<'{value}>:",
       "keywordSeparator": "/",
+      "keywordOr": " or ",
       "optionValue": "{keyword}: {value}",
       "cartesian": "X,Y",
       "polar": "Dist'<'Ang"
@@ -1218,6 +1220,7 @@
       "requiresRadius": "Requires numeric radius, point on circumference, or \"D\".",
       "requiresTangent": "Requires a TAN object-snap and selection of Circle, Arc, or Line.",
       "invalidOptionKeyword": "Invalid option keyword.",
+      "ambiguousResponse": "Ambiguous response, please clarify...",
       "invalidSelection": "*Invalid selection*",
       "expectsPointOr": "Expects a point or {keywords}",
       "selectionModes": "{set, select, oneObject {Window/Last/Crossing/BOX/ALL/Fence/WPolygon/CPolygon} singleSet {Window/Last/Crossing/BOX/ALL/Fence/WPolygon/CPolygon/Group} pathCurve {Window/Last/Crossing/BOX/ALL/Fence/WPolygon/CPolygon/Group/Previous/AUto} crossingObjects {Window/Last/Crossing/BOX/ALL/Fence/WPolygon/CPolygon/Add/Remove/Multiple/Previous/Undo/AUto/SIngle} wholeObjects {Window/Last/Crossing/BOX/ALL/Fence/WPolygon/CPolygon/Group/Add/Remove/Multiple/Previous/Undo/AUto/SIngle} other {Window/Last/Crossing/BOX/ALL/Fence/WPolygon/CPolygon/Group/Add/Remove/Multiple/Previous/Undo/AUto/SIngle/SUbobject/Object}}",

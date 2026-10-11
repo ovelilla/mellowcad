@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest"
 import {
   type Keyword,
   abbreviationOf,
+  matchKeywords,
   offerKeywords,
   parseCommandInput,
   resolveKeyword,
@@ -37,6 +38,10 @@ describe("resolving what was typed", () => {
     { id: "Close", word: "Cerrar", global: "Close" },
     { id: "Undo", word: "desHacer", global: "Undo" },
   ]
+  const spanishArc: Keyword[] = [
+    { id: "Center", word: "cEntro", global: "CEnter" },
+    { id: "Close", word: "Cerrar", global: "CLose" },
+  ]
 
   it("takes the abbreviation or the whole word, in any case", () => {
     expect(resolveKeyword("c", line)).toBe("Close")
@@ -68,6 +73,26 @@ describe("resolving what was typed", () => {
     expect(resolveKeyword("co", array)).toBeNull()
     expect(resolveKeyword("COLU", array)).toBe("COLumns")
     expect(resolveKeyword("OB", [english("Object")])).toBe("Object")
+  })
+
+  // AutoCAD 2023's console: `C` at PLINE's arc prompt is CEnter, or ambiguous
+  // once CLose is offered; `A` at -HATCH's is Advanced, not ANnotative.
+  it("matches every keyword a prompt's answer starts, from its first capital", () => {
+    const arc = [english("CEnter"), english("CLose"), english("Angle")]
+    expect(matchKeywords("c", arc)).toEqual(["CEnter", "CLose"])
+    expect(matchKeywords("C", [english("CEnter")])).toEqual(["CEnter"])
+    expect(matchKeywords("cl", arc)).toEqual(["CLose"])
+    expect(matchKeywords("_c", arc)).toEqual(["CEnter", "CLose"])
+    expect(matchKeywords("CENTERS", arc)).toEqual([])
+    expect(matchKeywords("e", [english("eXit")])).toEqual([])
+    expect(matchKeywords("3", [english("3P"), english("2P")])).toEqual([])
+    expect(matchKeywords("", arc)).toEqual([])
+    expect(matchKeywords("_", arc)).toEqual([])
+    const hatch = [english("ANnotative"), english("Advanced")]
+    expect(matchKeywords("A", hatch)).toEqual(["Advanced"])
+    expect(matchKeywords("ON", [english("OFF"), english("ON")])).toEqual(["ON"])
+    expect(matchKeywords("CE", spanishArc)).toEqual(["Center", "Close"])
+    expect(matchKeywords("des", spanish)).toEqual([])
   })
 
   it("hands back the global id however it was typed", () => {

@@ -94,6 +94,41 @@ export function resolveKeyword(
 }
 
 /**
+ * The ids of the keywords on offer at a prompt that `input` names: the one
+ * whose abbreviation or whole word it is, else every one whose word it starts,
+ * as far as the word's first capital and on — `C` for `CEnter`, but `C` for
+ * both `CEnter` and `CLose`, which AutoCAD 2023's console answers
+ * `Ambiguous response, please clarify...`. `E` is not `eXit`'s start, and a
+ * number is no keyword's: `3` at CIRCLE's first prompt is a point, not `3P`.
+ */
+export function matchKeywords(
+  input: string,
+  keywords: readonly Keyword[]
+): string[] {
+  const text = upper(input.trim())
+  const global = text.startsWith("_")
+  const typed = global ? text.slice(1) : text
+  if (typed === "") return []
+  const wordOf = (keyword: Keyword) => (global ? keyword.global : keyword.word)
+  const exact =
+    keywords.find(
+      (keyword) => upper(abbreviationOf(wordOf(keyword))) === typed
+    ) ?? keywords.find((keyword) => upper(wordOf(keyword)) === typed)
+  if (exact) return [exact.id]
+  if (Number.isFinite(Number(typed))) return []
+  const ids = keywords
+    .filter((keyword) => {
+      const word = wordOf(keyword)
+      const first = [...word].findIndex(isCapital)
+      return (
+        first !== -1 && typed.length > first && upper(word).startsWith(typed)
+      )
+    })
+    .map((keyword) => keyword.id)
+  return [...new Set(ids)]
+}
+
+/**
  * What was typed at the command prompt, split into the name and whether `_`
  * asked for the global one. Names are compared in capitals.
  */

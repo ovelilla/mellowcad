@@ -1445,6 +1445,12 @@ export const es: EngineLocale = {
       "specifyFirstTangentOfCircle": "Precise punto en objeto para la primera tangente del círculo",
       "specifySecondTangentOfCircle": "Precise punto en objeto para la segunda tangente del círculo",
       "specifySecondPoint": "Precise segundo punto",
+      "clarifyKeyword": [
+        [
+          "keywords"
+        ],
+        "?"
+      ],
       "specifyFirstCornerPointOr": "Precise primer punto de esquina o",
       "addModeNextPointOr": " (modo AÑADIR)Precise punto siguiente o",
       "subtractModeNextPointOr": " (modo SUSTRAER)Precise punto siguiente o",
@@ -1678,6 +1684,7 @@ export const es: EngineLocale = {
         ">:"
       ],
       "keywordSeparator": "/",
+      "keywordOr": " o ",
       "optionValue": [
         [
           "keyword"
@@ -2540,6 +2547,7 @@ export const es: EngineLocale = {
       "requiresRadius": "Precisa un radio numérico, un punto en la circunferencia, o \"D\".",
       "requiresTangent": "Requiere una REFENT TAN y la designación de un círculo, arco o línea.",
       "invalidOptionKeyword": "Opción no válida.",
+      "ambiguousResponse": "Respuesta ambigua, especifique...",
       "invalidSelection": "*Designación no válida*",
       "expectsPointOr": [
         "Requiere un punto o ",

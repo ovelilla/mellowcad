@@ -388,3 +388,34 @@ export function commandPrompt(
         : promptString(text.composePrompt(question, [])),
   }
 }
+
+/**
+ * `prompt` while AutoCAD asks which keyword was meant — what was typed starts
+ * several on offer: `CEnter or CLose?`, under the command's name and with no
+ * colon, as AutoCAD 2023's console asks it.
+ */
+// WHY the words as the prompt lists them: AutoCAD names its declared ones
+// (`TLeft or TCenter or TRight?` at TEXT's `[…/TL/TC/TR/…]`), which no
+// table here holds.
+export function keywordChoicePrompt(
+  prompt: CommandPrompt,
+  text: EngineText,
+  words: readonly string[],
+  transparent: boolean
+): CommandPrompt {
+  const asking = text.prompt("clarifyKeyword", {
+    keywords: words.join(text.keywordOr()),
+  })
+  const question = transparent ? text.transparentPrompt(asking) : asking
+  const line = (head: string) => [{ text: head, keywords: false }]
+  return {
+    command: prompt.command,
+    segments: line(
+      prompt.command === null
+        ? question
+        : text.commandQuestion(prompt.command, question)
+    ),
+    echo: line(question),
+    dynamic: question,
+  }
+}
