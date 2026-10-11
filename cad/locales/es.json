@@ -1073,6 +1073,8 @@
       "commandPrompt": "{command} {question}",
       "answered": "{prompt} {answer}",
       "snapOverride": "{snap}{preposition, select, to { a} of { de} other {}}",
+      "transparentCommand": "''{command}",
+      "transparentPrompt": ">>{question}",
       "prompt": "{head}:",
       "promptWithValue": "{head} '<'{value}>:",
       "promptWithKeywords": "{head} <keywords>[{list}]</keywords>:",
@@ -1085,6 +1087,8 @@
     "messages": {
       "unknownCommand": "Comando \"{name}\" desconocido.",
       "cancel": "*Cancelar*",
+      "resumingCommand": "Reanudando el comando {command}.",
+      "notTransparent": "** Este comando no funciona de forma transparente **",
       "rotateSettings": "Ángulo actual positivo en SCP:  ANGDIR=en sentido horario inverso ANGBASE=0",
       "trimExtendSettings": "Parámetros actuales: Proyección=SCP, Arista=Ninguno, Modo=Rápido",
       "filletSettings": "Parámetros actuales: Modo = Recortar, Radio = {radius}",

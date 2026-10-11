@@ -16,7 +16,7 @@ export class PanTool implements Tool {
   onActivate(ctx: ToolContext): void {
     this.lastScreen = null
     ctx.setCursor("grab")
-    ctx.report(ctx.text.message("panExit"))
+    ctx.report(ctx.text.message("panExit"), "prompt")
   }
 
   onDeactivate(ctx: ToolContext): void {

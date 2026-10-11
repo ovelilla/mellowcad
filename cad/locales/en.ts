@@ -1240,6 +1240,18 @@ export const en: EngineCatalog = {
           }
         ]
       ],
+      "transparentCommand": [
+        "'",
+        [
+          "command"
+        ]
+      ],
+      "transparentPrompt": [
+        ">>",
+        [
+          "question"
+        ]
+      ],
       "prompt": [
         [
           "head"
@@ -1312,6 +1324,14 @@ export const en: EngineCatalog = {
         "\"."
       ],
       "cancel": "*Cancel*",
+      "resumingCommand": [
+        "Resuming ",
+        [
+          "command"
+        ],
+        " command."
+      ],
+      "notTransparent": "** That command may not be invoked transparently **",
       "rotateSettings": "Current positive angle in UCS:  ANGDIR=counterclockwise  ANGBASE=0",
       "rotatingCopy": "Rotating a copy of the selected objects.",
       "scalingCopy": "Scaling a copy of the selected objects.",

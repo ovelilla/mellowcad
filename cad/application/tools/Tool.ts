@@ -225,8 +225,10 @@ export interface ToolContext {
    * there ("1 was not able to be exploded."), which is the only feedback a user
    * gets when a command deliberately does nothing. The text comes from
    * {@link text}, or is the user's own data (a block name in a `?` listing).
+   * A `prompt` is one a tool writes itself (PAN's), headed `>>` as any
+   * prompt is while the command runs transparently.
    */
-  report(text: string, kind?: "info" | "error"): void
+  report(text: string, kind?: "info" | "error" | "prompt"): void
 
   /**
    * Says what an answer found where AutoCAD says it: on the line of the

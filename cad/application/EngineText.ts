@@ -364,6 +364,16 @@ export class EngineText {
     })
   }
 
+  /** A command run transparently, as typed and echoed: `'ZOOM`. */
+  transparentCommand(command: string): string {
+    return this.format(this.commands.format.transparentCommand, { command })
+  }
+
+  /** A transparent command's question, `>>Specify first corner`. */
+  transparentPrompt(question: string): string {
+    return this.format(this.commands.format.transparentPrompt, { question })
+  }
+
   /** An object snap given at a point prompt, as answered: `_endp of`. */
   snapOverride(snap: string, to: boolean | null): string {
     return this.format(this.commands.format.snapOverride, {

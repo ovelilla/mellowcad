@@ -1032,6 +1032,8 @@
       "commandPrompt": "{command} {question}",
       "answered": "{prompt} {answer}",
       "snapOverride": "{snap}{preposition, select, to { to} of { of} other {}}",
+      "transparentCommand": "''{command}",
+      "transparentPrompt": ">>{question}",
       "prompt": "{head}:",
       "promptWithValue": "{head} '<'{value}>:",
       "promptWithKeywords": "{head} <keywords>[{list}]</keywords>:",
@@ -1044,6 +1046,8 @@
     "messages": {
       "unknownCommand": "Unknown command \"{name}\".",
       "cancel": "*Cancel*",
+      "resumingCommand": "Resuming {command} command.",
+      "notTransparent": "** That command may not be invoked transparently **",
       "rotateSettings": "Current positive angle in UCS:  ANGDIR=counterclockwise  ANGBASE=0",
       "rotatingCopy": "Rotating a copy of the selected objects.",
       "scalingCopy": "Scaling a copy of the selected objects.",

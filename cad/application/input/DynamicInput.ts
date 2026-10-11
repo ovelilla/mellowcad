@@ -86,6 +86,14 @@ interface FieldState {
   liveText: string | null
 }
 
+/** A session with what was typed in it, kept while another command asks. */
+export interface DynamicInputState {
+  readonly session: DynamicInputSession | null
+  readonly fieldStates: ReadonlyMap<string, Readonly<FieldState>>
+  readonly activeFieldId: string | null
+  readonly screenPos: Vec2 | null
+}
+
 /**
  * Holds the state of the current dynamic-input session. Pure state + behaviour;
  * it has no knowledge of the DOM. The runtime formats this into a UI snapshot
@@ -144,6 +152,28 @@ export class DynamicInputController extends Observable {
     this.fieldStates.clear()
     this.activeFieldId = null
     this.screenPos = null
+    this.emit()
+  }
+
+  /** The session as it stands, for {@link restore} once a transparent command is done. */
+  save(): DynamicInputState {
+    return {
+      session: this.session,
+      fieldStates: new Map(
+        [...this.fieldStates].map(([id, state]) => [id, { ...state }])
+      ),
+      activeFieldId: this.activeFieldId,
+      screenPos: this.screenPos,
+    }
+  }
+
+  restore(state: DynamicInputState): void {
+    this.session = state.session
+    this.fieldStates = new Map(
+      [...state.fieldStates].map(([id, field]) => [id, { ...field }])
+    )
+    this.activeFieldId = state.activeFieldId
+    this.screenPos = state.screenPos
     this.emit()
   }
 

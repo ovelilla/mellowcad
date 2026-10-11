@@ -1563,6 +1563,18 @@ export const es: EngineLocale = {
           }
         ]
       ],
+      "transparentCommand": [
+        "'",
+        [
+          "command"
+        ]
+      ],
+      "transparentPrompt": [
+        ">>",
+        [
+          "question"
+        ]
+      ],
       "prompt": [
         [
           "head"
@@ -1635,6 +1647,14 @@ export const es: EngineLocale = {
         "\" desconocido."
       ],
       "cancel": "*Cancelar*",
+      "resumingCommand": [
+        "Reanudando el comando ",
+        [
+          "command"
+        ],
+        "."
+      ],
+      "notTransparent": "** Este comando no funciona de forma transparente **",
       "rotateSettings": "Ángulo actual positivo en SCP:  ANGDIR=en sentido horario inverso ANGBASE=0",
       "trimExtendSettings": "Parámetros actuales: Proyección=SCP, Arista=Ninguno, Modo=Rápido",
       "filletSettings": [

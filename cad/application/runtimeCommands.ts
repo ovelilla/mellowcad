@@ -11,6 +11,13 @@ import { MTextTool } from "./tools/MTextTool"
 import { AttEditTool } from "./tools/AttEditTool"
 
 /**
+ * The commands AutoCAD runs transparently that are built here. WHY only these:
+ * the others it does ('DIST, 'ID, 'LTSCALE, '-OSNAP…) are not made
+ * transparent yet (docs/autocad-coverage.md).
+ */
+const TRANSPARENT_COMMANDS: ReadonlySet<string> = new Set(["ZOOM", "PAN"])
+
+/**
  * Builds the command table: one command per tool (using AutoCAD's names and
  * aliases) plus the editing/view commands that are not tools.
  *
@@ -27,7 +34,12 @@ export function registerCommands(
 
   for (const [toolId, command] of Object.entries(TOOL_COMMANDS)) {
     if (!tools.has(toolId)) continue
-    register({ id: command, tool: toolId, run: () => startTool(toolId) })
+    register({
+      id: command,
+      tool: toolId,
+      transparent: TRANSPARENT_COMMANDS.has(command),
+      run: () => startTool(toolId),
+    })
   }
 
   const say = (text: string) => runtime.commandLine.write("info", text)
@@ -268,7 +280,8 @@ export function commandPrompt(
   text: EngineText,
   options: readonly CommandOptionUi[],
   settings: DocumentSettings,
-  startedAs: string | null = null
+  startedAs: string | null = null,
+  transparent = false
 ): CommandPrompt {
   if (tool.id === "select") {
     return {
@@ -280,21 +293,25 @@ export function commandPrompt(
   }
   const command = tool.runningCommand?.() ?? toolCommand(tool)
   const heading = startedAs ?? command
-  const name =
+  const named =
     heading !== null
       ? text.commandNames(heading)[0]
       : text.tool(tool.id).toUpperCase()
+  const name = transparent ? text.transparentCommand(named) : named
   const fallback = tool.defaultOption?.() ?? null
   const labels = options.map((option) => option.label)
   const asked = tool.question?.() ?? null
   const id = askedPrompt(tool)
-  const question =
+  const asking =
     id === null
       ? null
       : text.prompt(
           id,
           typeof asked === "object" && asked !== null ? asked.values : undefined
         )
+  // A transparent command's prompts are headed `>>`, as AutoCAD writes them.
+  const question =
+    asking !== null && transparent ? text.transparentPrompt(asking) : asking
   const value =
     typeof asked === "object" && asked !== null && asked.enter !== undefined
       ? enterValue(asked.enter, text, settings)

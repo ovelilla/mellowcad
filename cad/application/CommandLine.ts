@@ -40,6 +40,11 @@ export interface CommandDefinition {
   readonly id: string
   /** The tool it starts, whose label then describes it. */
   readonly tool?: string
+  /**
+   * Typed with an apostrophe (`'ZOOM`) mid-command, it runs inside the
+   * running one, which resumes once it is done. It must start {@link tool}.
+   */
+  readonly transparent?: boolean
   readonly run: () => void
 }
 

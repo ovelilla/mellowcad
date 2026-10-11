@@ -60,6 +60,7 @@ import {
   DynamicField,
   DynamicInputController,
   DynamicInputSession,
+  DynamicInputState,
   isContentField,
 } from "./input/DynamicInput"
 import {
@@ -324,6 +325,13 @@ export class CadRuntime extends Observable {
   private pickFound: string[] | null = null
   /** `Select objects:`' Previous set, the last one a command was given. */
   private previousSet: readonly EntityId[] = []
+  /** The cursor the running tool last asked for. */
+  private toolCursor: string | null = null
+  /**
+   * The command a transparent one (`'ZOOM`) interrupted, kept as it stood
+   * to resume once that one ends.
+   */
+  private suspended: SuspendedCommand | null = null
 
   // Magnetic crosshair: where to draw it (screen), positioned on the resolved
   // point so it clings to geometry. `null` means the pointer is off-canvas.
@@ -461,8 +469,17 @@ export class CadRuntime extends Observable {
       pickTolerance: () =>
         this.viewport.screenToWorldDistance(this.snapping.pixelTolerance),
       requestRender: () => this.host.requestRender(),
-      setCursor: (cursor) => this.host.setCursor(cursor),
-      report: (text, kind = "info") => this.commandLine.write(kind, text),
+      setCursor: (cursor) => {
+        this.toolCursor = cursor
+        this.host.setCursor(cursor)
+      },
+      report: (text, kind = "info") =>
+        this.commandLine.write(
+          kind,
+          kind === "prompt" && this.suspended !== null
+            ? this.text.transparentPrompt(text)
+            : text
+        ),
       answer: (text) => this.answerFound(text),
       previousSelection: () => this.previousSet,
       rememberSelection: (ids) => {
@@ -692,6 +709,15 @@ export class CadRuntime extends Observable {
   }
 
   setActiveTool(id: string): void {
+    if (this.suspended !== null) {
+      // Ending a transparent command resumes the one it interrupted; starting
+      // another ends both.
+      if (id === "select") {
+        this.resume()
+        return
+      }
+      this.restoreSuspended()
+    }
     const next = this.tools.get(id)
     if (!next || next === this.activeTool) return
     this.activeTool.onDeactivate?.(this.toolContext)
@@ -705,25 +731,7 @@ export class CadRuntime extends Observable {
     this.startedAs = this.starting
     if (next.id !== "select") this.history.beginGroup()
     next.onActivate?.(this.toolContext)
-    // Commands are usually started from the keyboard or a toolbar button, with
-    // the mouse standing still. Replay the cursor's last known position through
-    // the new tool so its prompt box appears and the drawing crosshair takes
-    // over right away, instead of the new tool's native cursor sitting on top
-    // of a stale crosshair until the mouse moves.
-    if (this.lastPointerScreen) {
-      const resting: PointerEventData = {
-        screen: this.lastPointerScreen,
-        button: 0,
-        shiftKey: false,
-        ctrlKey: false,
-        altKey: false,
-      }
-      this.updateSnap(resting.screen)
-      next.onPointerMove?.(this.buildPointerInput(resting), this.toolContext)
-      if (this.dynamicInput.isOpen()) {
-        this.dynamicInput.setPosition(resting.screen)
-      }
-    }
+    this.replayRestingPointer()
     this.invalidateState()
     // Give the drawing surface keyboard focus so Escape/shortcuts reach the
     // runtime even when the tool was picked from the toolbar (otherwise focus
@@ -731,6 +739,110 @@ export class CadRuntime extends Observable {
     // acquired object-snap-tracking references).
     this.host.focusSurface()
     this.host.requestRender()
+  }
+
+  /**
+   * Commands are usually started from the keyboard or a toolbar button, with
+   * the mouse standing still. Replay the cursor's last known position through
+   * the tool taking over so its prompt box appears and the drawing crosshair
+   * takes over right away, instead of the new tool's native cursor sitting on
+   * top of a stale crosshair until the mouse moves.
+   */
+  private replayRestingPointer(): void {
+    if (!this.lastPointerScreen) return
+    const resting: PointerEventData = {
+      screen: this.lastPointerScreen,
+      button: 0,
+      shiftKey: false,
+      ctrlKey: false,
+      altKey: false,
+    }
+    this.updateSnap(resting.screen)
+    this.activeTool.onPointerMove?.(
+      this.buildPointerInput(resting),
+      this.toolContext
+    )
+    if (this.dynamicInput.isOpen()) {
+      this.dynamicInput.setPosition(resting.screen)
+    }
+  }
+
+  /**
+   * Runs `command` transparently: the running command is kept as it stands —
+   * its question, its box, its selection set and its undo step — while
+   * `command`'s tool asks its own questions, headed `>>`.
+   */
+  private suspend(command: CommandDefinition): void {
+    const tool =
+      command.tool === undefined ? undefined : this.tools.get(command.tool)
+    if (!tool) return
+    // What was typed was this answer, not the running command's.
+    this.dynamicInput.clearTexts()
+    this.suspended = {
+      tool: this.activeTool,
+      startedAs: this.startedAs,
+      commandStart: this.commandStart,
+      input: this.dynamicInput.save(),
+      selection: this.selection.toArray(),
+      previousSet: this.previousSet,
+      cursor: this.toolCursor,
+    }
+    // WHY a set of its own: ZOOM Object asks `>>Select objects:` and
+    // AutoCAD's MOVE still moves its own set after it.
+    this.selection.clear()
+    this.dynamicInput.close()
+    this.commandStart = this.commandLine.mark()
+    this.activeTool = tool
+    this.startedAs = command.id
+    tool.onActivate?.(this.toolContext)
+    this.replayRestingPointer()
+    this.invalidateState()
+    this.host.requestRender()
+  }
+
+  /**
+   * The transparent command has ended: the one it interrupted asks its
+   * question again, after `Resuming LINE command.`.
+   */
+  private resume(): void {
+    this.restoreSuspended()
+    const { command } = commandPrompt(
+      this.activeTool,
+      this.text,
+      [],
+      this.document.getSettings(),
+      this.startedAs
+    )
+    this.commandLine.write(
+      "info",
+      this.text.message("resumingCommand", { command: command ?? "" })
+    )
+    this.replayRestingPointer()
+    this.invalidateState()
+    this.host.focusSurface()
+    this.host.requestRender()
+  }
+
+  /** Ends the transparent command and puts back the one it interrupted. */
+  private restoreSuspended(): void {
+    const suspended = this.suspended
+    if (suspended === null) return
+    this.suspended = null
+    this.activeTool.onDeactivate?.(this.toolContext)
+    this.activeTool = suspended.tool
+    this.startedAs = suspended.startedAs
+    this.commandStart = suspended.commandStart
+    this.selection.set(suspended.selection)
+    this.previousSet = suspended.previousSet
+    this.dynamicInput.restore(suspended.input)
+    this.toolCursor = suspended.cursor
+    if (suspended.cursor !== null) this.host.setCursor(suspended.cursor)
+  }
+
+  /** Ends whatever runs, a command a transparent one interrupted too. */
+  private endCommands(): void {
+    this.restoreSuspended()
+    this.returnToNeutralTool()
   }
 
   /**
@@ -798,12 +910,72 @@ export class CadRuntime extends Observable {
     }
     if (this.invokeToolOption(text)) return
     if (this.pointModifier(text)) return
+    if (this.transparentCommand(text)) return
     if (this.answering(text, () => this.answerPrompt(text))) return
     if (this.activeTool.id !== "select") {
       this.answering(text, () => this.refuse())
       return
     }
     this.runCommand(text)
+  }
+
+  /**
+   * A command typed with an apostrophe mid-command (`'ZOOM`, `'Z`): one
+   * AutoCAD runs transparently runs inside the running one; any other is
+   * refused, saying why, and so is a second one inside a transparent one, as
+   * AutoCAD 2023's console refuses them. Not at a prompt that takes text,
+   * where it is the text.
+   */
+  private transparentCommand(text: string): boolean {
+    const typed = text.trim()
+    if (!typed.startsWith("'") || this.activeTool.id === "select") return false
+    if (this.takesText()) return false
+    const command = this.commandNamed(typed)
+    if (!command) return false
+    return this.answering(this.commandEcho(typed, command), () => {
+      if (command.transparent && this.suspended === null) {
+        this.suspend(command)
+        return true
+      }
+      if (!command.transparent) {
+        this.commandLine.write("error", this.text.message("notTransparent"))
+      }
+      this.dynamicInput.clearTexts()
+      return this.refuse()
+    })
+  }
+
+  /** Whether the box asks for text, which takes whatever is typed. */
+  private takesText(): boolean {
+    return (this.dynamicInput.getSession()?.fields ?? []).some((field) =>
+      isContentField(field.kind)
+    )
+  }
+
+  /**
+   * The command `typed` names in the command language, or by `_` and its
+   * global name, an apostrophe before it or not.
+   */
+  private commandNamed(typed: string): CommandDefinition | undefined {
+    const id = this.text.resolveCommand(bareCommand(typed))
+    return id === null ? undefined : this.commands.get(id)
+  }
+
+  /**
+   * How a command typed is echoed: by the command language's name, an alias
+   * as typed with that name (`l LINE`, `'z 'ZOOM`). WHY a name or `_` and a
+   * global one echoes the command language's name, not what was typed: the
+   * landing's scripts type `_CIRCLE` so that a Spanish reader sees CIRCULO.
+   */
+  private commandEcho(typed: string, command: CommandDefinition): string {
+    const [name] = this.text.commandNames(command.id)
+    const bare = bareCommand(typed)
+    const echoed = typed.startsWith("'")
+      ? this.text.transparentCommand(name)
+      : name
+    return !bare.startsWith("_") && bare !== name.toUpperCase()
+      ? `${typed} ${echoed}`
+      : echoed
   }
 
   /**
@@ -851,7 +1023,8 @@ export class CadRuntime extends Observable {
       this.text,
       offerOptions(this.activeTool, this.text),
       this.document.getSettings(),
-      this.startedAs
+      this.startedAs,
+      this.suspended !== null
     )
     const prefix = this.answerPrefix
     const mark = this.commandLine.mark()
@@ -1017,26 +1190,28 @@ export class CadRuntime extends Observable {
    * real command line.
    */
   runCommand(text: string): boolean {
-    const typed = text.trim().toUpperCase()
-    if (typed === "") return false
-    const id = this.text.resolveCommand(typed)
-    const command = id === null ? undefined : this.commands.get(id)
+    const typed = text.trim()
+    if (bareCommand(typed) === "") return false
+    const command = this.commandNamed(typed)
     if (!command) {
       this.commandLine.write(
         "error",
-        this.text.message("unknownCommand", { name: typed })
+        this.text.message("unknownCommand", { name: bareCommand(typed) })
       )
       this.invalidateState()
       return false
     }
     const [name] = this.text.commandNames(command.id)
-    // An alias is echoed as typed with the name it runs, `l LINE`. WHY a
-    // name or `_` and a global one echoes the command language's name, not
-    // what was typed: the landing's scripts type `_CIRCLE` so that a
-    // Spanish reader sees CIRCULO.
-    const alias = !typed.startsWith("_") && typed !== name.toUpperCase()
     this.echoMark = this.commandLine.mark()
-    this.commandLine.write("command", alias ? `${text.trim()} ${name}` : name)
+    this.commandLine.write("command", this.commandEcho(typed, command))
+    // At the Command prompt an apostrophe runs a transparent command as any
+    // other, and refuses the rest, as AutoCAD 2023's console does.
+    if (typed.startsWith("'") && !command.transparent) {
+      this.echoMark = null
+      this.commandLine.write("error", this.text.message("notTransparent"))
+      this.invalidateState()
+      return false
+    }
     this.commandLine.pushHistory(name)
     this.starting = command.id
     try {
@@ -1232,7 +1407,7 @@ export class CadRuntime extends Observable {
    * first, as a menu's `^C^C` ends it in AutoCAD.
    */
   newDrawing(): void {
-    this.returnToNeutralTool()
+    this.endCommands()
     this.selection.clear()
     this.resetTracking()
     this.history.execute(new NewDrawingCommand())
@@ -1244,7 +1419,7 @@ export class CadRuntime extends Observable {
     // Undo with a command running ends it first, so what it drew goes as one
     // step: "Click Undo on the Quick Access toolbar to cancel the entire series
     // of line segments".
-    if (this.activeTool.id !== "select") this.returnToNeutralTool()
+    if (this.activeTool.id !== "select") this.endCommands()
     if (this.history.undo()) this.selection.clear()
   }
 
@@ -1414,15 +1589,24 @@ export class CadRuntime extends Observable {
     this.host.requestRender()
   }
 
-  /** The Command menu's Cancel, AutoCAD's ^C^C: the whole command ends. */
+  /**
+   * The Command menu's Cancel, AutoCAD's ^C^C: the whole command ends, the
+   * second cancel ending one a transparent command interrupted.
+   */
   cancelCommand(): void {
     this.shortcutMenu = null
     this.endFrom()
     this.commandLine.setBuffer("")
-    if (this.dynamicInputHasField()) this.cancelDynamicInput()
-    else this.keyDown(plainKey("Escape"))
+    const transparent = this.suspended !== null
+    this.cancelOnce()
+    if (transparent) this.cancelOnce()
     this.invalidateState()
     this.host.requestRender()
+  }
+
+  private cancelOnce(): void {
+    if (this.dynamicInputHasField()) this.cancelDynamicInput()
+    else this.keyDown(plainKey("Escape"))
   }
 
   private dynamicInputHasField(): boolean {
@@ -1983,6 +2167,7 @@ export class CadRuntime extends Observable {
         this.dynamicInput.setText(field.id, "")
         return
       }
+      if (this.transparentCommand(typed)) return
     }
     this.answering(this.dynamicInput.typedAnswer(), () =>
       this.commitBox(session, field)
@@ -3603,7 +3788,8 @@ export class CadRuntime extends Observable {
       this.text,
       options,
       settings,
-      this.startedAs
+      this.startedAs,
+      this.suspended !== null
     )
     return {
       activeToolId: this.activeTool.id,
@@ -3746,4 +3932,20 @@ export class CadRuntime extends Observable {
       names: this.text.names(),
     }
   }
+}
+
+/** A command as typed, without the apostrophe that asks for it transparently. */
+function bareCommand(typed: string): string {
+  return typed.replace(/^'/, "").trim().toUpperCase()
+}
+
+/** What a transparent command keeps of the one it interrupted. */
+interface SuspendedCommand {
+  readonly tool: Tool
+  readonly startedAs: string | null
+  readonly commandStart: number
+  readonly input: DynamicInputState
+  readonly selection: readonly EntityId[]
+  readonly previousSet: readonly EntityId[]
+  readonly cursor: string | null
 }

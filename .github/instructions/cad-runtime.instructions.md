@@ -180,7 +180,7 @@ identity: the same document, viewport and objects.
 6. Everything else feeds the **command-line buffer** (this is why multi-character aliases work and
    why no tool may claim a bare letter in `onKeyDown`). Submitted, it is read first as a keyword
    of the running command (abbreviation, word, or `_` and the global one), then as a point
-   modifier (an object snap, FROM, `<angle`), then — with a value box up — as the prompt's answer
+   modifier (an object snap, FROM, `<angle`), then as a transparent command (`'ZOOM`, below), then — with a value box up — as the prompt's answer
    (`answerPrompt`: put in the box and committed, a coordinate without `@`/`#`/`*` given its
    `#`, because the relative default is the tooltip's, DYNPICOORDS); mid-command anything else is
    a wrong answer, refused (below, "Answering a prompt") and never run as a command. Only at the
@@ -229,6 +229,27 @@ question takes is the tool's `takes()` or, without one, read from the asked prom
 (`cad-tools.instructions.md`, "What a question takes"). A commit that reads typed text it cannot
 parse off the cursor instead ("no number typed, so the cursor's angle") is a bug: it must return
 `false` so the refusal runs.
+
+## Transparent commands — the running one is suspended, never ended
+
+A command typed with an apostrophe mid-command (`'ZOOM`, `'Z`), at the command line or in a
+box that is not content, runs **inside** the running one when its `CommandDefinition` is
+`transparent` (`TRANSPARENT_COMMANDS` in `runtimeCommands.ts`; it must start a tool). `suspend`
+keeps the running tool as it stands — its state, `startedAs`, `commandStart`, the box
+(`DynamicInputController.save` / `restore`, typed text cleared), the selection set and Previous
+set, its cursor — and makes the transparent tool the active one **without `setActiveTool`**: no
+`onDeactivate` of the running tool, no undo group closed or opened (a transparent change joins the
+running command's step, as AutoCAD undoes it). While one is suspended `commandPrompt(…,
+transparent)` heads every question `>>` (and the prompt line `'ZOOM`), and a tool's own prompt
+written with `ctx.report(text, "prompt")` (PAN's) gets it too; plain reports do not (`No previous
+view saved.`). Ending it — `endCommand`, Escape, an option's `"end"`, anything that returns to
+neutral — reaches `setActiveTool("select")`, which **resumes** instead (`Resuming LINE command.`)
+and replays the pointer through the resumed tool. Starting another tool ends both; `undo()`,
+`newDrawing()` and the Command menu's Cancel (^C^C, two cancels) end both through
+`endCommands`/`cancelOnce` — a new "end everything" path must call `endCommands`, not
+`returnToNeutralTool`, or it only resumes. A command that is not transparent, typed so, says
+`** That command may not be invoked transparently **` before the prompt's own refusal (at the
+Command prompt, instead of running); one inside a transparent one is refused as any answer.
 
 ## The pointer's buttons (`pointerDown` / `pointerUp`) — order is load-bearing
 
