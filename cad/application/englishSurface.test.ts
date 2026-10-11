@@ -977,6 +977,9 @@ describe("the engine's English surface", () => {
         .do("second", (c) => c.click(at(100, 0)))
         .do("third", (c) => c.click(at(100, 100)))
         .do("enter", (c) => c.enter())
+        .do("AREA Object", (c) => c.command("AREA"))
+        .do("enter", (c) => c.enter())
+        .do("FOO", (c) => answer(c, "FOO"))
         .do("escape", (c) => c.escape())
     )
     walk("ZOOM PAN", createHarness({ entities: [line()] }), (s) =>

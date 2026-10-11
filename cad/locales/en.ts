@@ -1776,6 +1776,28 @@ export const en: EngineCatalog = {
           }
         ]
       ],
+      "areaReport": [
+        "Area = ",
+        [
+          "area"
+        ],
+        ", ",
+        [
+          "measured",
+          1,
+          {
+            "circumference": "Circumference",
+            "length": "Length",
+            "other": "Perimeter"
+          }
+        ],
+        " = ",
+        [
+          "around"
+        ]
+      ],
+      "objectHasNoArea": "Selected object does not have an area",
+      "allSegmentsUndone": "All segments already undone.",
       "distanceReport": [
         "Distance = ",
         [
@@ -2327,13 +2349,6 @@ export const en: EngineCatalog = {
         [
           "unit"
         ]
-      ],
-      "measureHint": [
-        "[",
-        [
-          "undo"
-        ],
-        "] undo  [Enter] done"
       ]
     },
     "keywordLabels": {

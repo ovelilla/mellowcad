@@ -665,7 +665,9 @@
         "First point": "Primer punto"
       },
       "AREA": {
-        "Undo": "desHacer"
+        "Object": "Objeto",
+        "Undo": "desHacer",
+        "Total": "Total"
       },
       "ZOOM": {
         "All": "Todo",
@@ -1152,6 +1154,9 @@
       "blockConversion": "Parámetros actuales: conversión de objetos=Convertir",
       "invalidBlockName": "Nombre de bloque no válido.",
       "rectangleModes": "Modos de rectángulo actuales:{hasElevation, select, yes {  Elevación={elevation}} other {}}{hasThickness, select, yes {  Alt-objeto={thickness}} other {}}",
+      "areaReport": "Área = {area}, {measured, select, circumference {Circunferencia} length {Longitud} other {Perímetro}} = {around}",
+      "objectHasNoArea": "El objeto seleccionado no tiene área",
+      "allSegmentsUndone": "Ya están deshechos todos los segmentos.",
       "distanceReport": "Distancia = {distance}, Ángulo en el plano XY = {angleInPlane}, Ángulo a partir del plano XY = {angleFromPlane}\nIncremento X = {deltaX}, Incremento Y = {deltaY},   Incremento Z = {deltaZ}",
       "idReport": " X = {x}     Y = {y}     Z = {z}",
       "linesNonCoplanar": "Las líneas no son coplanares.",
@@ -1250,8 +1255,7 @@
       "measureDeltaY": "ΔY    {value}",
       "measureDeltaZ": "ΔZ    {value}",
       "measureArea": "Área  {value} {unit}²",
-      "measurePerimeter": "Perím {value} {unit}",
-      "measureHint": "[{undo}] deshacer  [Intro] terminar"
+      "measurePerimeter": "Perím {value} {unit}"
     },
     "keywordLabels": {
       "CIRCLE": { "Ttr": "Ttr (Tangente tangente radio)" },

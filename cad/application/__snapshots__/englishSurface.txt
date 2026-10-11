@@ -3209,32 +3209,67 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
   info| Distance = 130.00,  Angle in XY Plane = 53.13,  Angle from XY Plane = 67.38
         Delta X = 30.00,  Delta Y = 40.00,   Delta Z = 120.00
 > AREA
-  prompt: AREA:
-  asks: -
-  tip: -
-  dyn: -
+  prompt: AREA Specify first corner point or [Object] <Object>:
+  tip: Specify first corner point or
+  options: [O] Object
   canvas: -
   command| AA AREA
 > first
-  prompt: AREA [Undo]:
+  prompt: AREA Specify next point or [Undo]:
+  asks: "Second point"
+  tip: Specify next point or
   options: [U] Undo
-  canvas: "Area  0.00 mm²" "Perim 0.00 mm" "[U] undo  [Enter] done"
+  canvas: "Area  0.00 mm²" "Perim 0.00 mm"
+  prompt| Specify first corner point or [Object] <Object>:
 > second
-  canvas: "Area  0.00 mm²" "Perim 200.00 mm" "[U] undo  [Enter] done"
+  canvas: "Area  0.00 mm²" "Perim 200.00 mm"
+  prompt| Specify next point or [Undo]:
 > move
-  canvas: "Area  5000.00 mm²" "Perim 341.42 mm" "[U] undo  [Enter] done"
-> U
-  canvas: "Area  0.00 mm²" "Perim 282.84 mm" "[U] undo  [Enter] done"
-> second
-  canvas: "Area  0.00 mm²" "Perim 200.00 mm" "[U] undo  [Enter] done"
-> third
-  canvas: "Area  5000.00 mm²" "Perim 341.42 mm" "[U] undo  [Enter] done"
-> enter
   canvas: "Area  5000.00 mm²" "Perim 341.42 mm"
-> escape
+> U
+  canvas: "Area  0.00 mm²" "Perim 282.84 mm"
+  prompt| Specify next point or [Undo]: U
+> second
+  canvas: "Area  0.00 mm²" "Perim 200.00 mm"
+  prompt| Specify next point or [Undo]:
+> third
+  prompt: AREA Specify next point or [Undo/Total] <Total>:
+  options: [U] Undo, [T] Total
+  canvas: "Area  5000.00 mm²" "Perim 341.42 mm"
+  prompt| Specify next point or [Undo]:
+> enter
   prompt: Command:
+  asks: -
+  tip: -
+  dyn: -
   options: -
   canvas: -
+  prompt| Specify next point or [Undo/Total] <Total>:
+  info| Area = 5000.00, Perimeter = 341.42
+> AREA Object
+  prompt: AREA Specify first corner point or [Object] <Object>:
+  asks: "First point"
+  tip: Specify first corner point or
+  dyn: "X,Y"=""||*
+  options: [O] Object
+  command| AREA
+> enter
+  prompt: AREA Select objects:
+  asks: 
+  tip: Select objects:
+  dyn: 
+  options: -
+  prompt| Specify first corner point or [Object] <Object>:
+> FOO
+  prompt| Select objects: FOO
+  error| *Invalid selection*
+  error| Expects a point or Last
+> escape
+  prompt: Command:
+  asks: -
+  tip: -
+  dyn: -
+  prompt| Select objects: *Cancel*
 
 ## ZOOM PAN
 > start

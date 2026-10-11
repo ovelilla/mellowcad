@@ -3,7 +3,13 @@ import type { LineEntity } from "../../domain/entities"
 import { withElevation } from "../../domain/entities"
 import type { ScenePrimitive } from "../../scene/types"
 import { createHarness, type CadHarness } from "../../../test/harness"
-import { deg, lineOf, p } from "../../../test/builders"
+import {
+  circleOf,
+  deg,
+  lineOf,
+  p,
+  polylineOf,
+} from "../../../test/builders"
 import { es } from "../../locales/es"
 
 /**
@@ -226,7 +232,7 @@ describe("DIST and ID ask as AutoCAD 2026", () => {
 })
 
 describe("AREA", () => {
-  it("reports the area and perimeter of the picked polygon", () => {
+  it("reports the area and perimeter of the picked polygon, and ends", () => {
     const cad = createHarness()
 
     cad
@@ -234,40 +240,137 @@ describe("AREA", () => {
       .click(p(0, 0))
       .click(p(100, 0))
       .click(p(100, 100))
-      .click(p(0, 100))
-      .enter()
+      .moveTo(p(0, 100))
 
     const lines = readout(cad)
     expect(lines.some((line) => /Area\s+10000\.00 mm²/.test(line))).toBe(true)
     expect(lines.some((line) => /Perim\s+400\.00 mm/.test(line))).toBe(true)
+
+    cad.click(p(0, 100)).enter()
+    expect(cad.commandLog().at(-1)).toBe("Area = 10000.00, Perimeter = 400.00")
+    expect(cad.activeToolId()).toBe("select")
   })
 
-  it("offers an Undo keyword while collecting points", () => {
+  it("offers Undo from the second point and Total from the fourth", () => {
     const cad = createHarness()
 
-    cad.command("AREA").click(p(0, 0)).click(p(100, 0))
+    cad.command("AREA")
+    expect(cad.optionAbbreviations()).toEqual(["O"])
+    cad.click(p(0, 0)).click(p(100, 0))
     expect(cad.optionAbbreviations()).toEqual(["U"])
 
     // Step back over the mistaken vertex and replace it.
-    cad
-      .option("Undo")
-      .click(p(200, 0))
-      .click(p(200, 100))
-      .click(p(0, 100))
-      .enter()
+    cad.option("Undo").click(p(200, 0)).click(p(200, 100))
+    expect(cad.optionAbbreviations()).toEqual(["U", "T"])
+    cad.click(p(0, 100)).option("Total")
 
-    expect(readout(cad).some((line) => /Area\s+20000\.00 mm²/.test(line))).toBe(
-      true
-    )
+    expect(cad.commandLog().at(-1)).toBe("Area = 20000.00, Perimeter = 600.00")
   })
 
-  it("needs at least three points to close a shape", () => {
+  it("refuses Enter before a shape has three points", () => {
     const cad = createHarness()
 
     cad.command("AREA").click(p(0, 0)).click(p(100, 0)).enter()
 
+    expect(cad.activeToolId()).toBe("measurearea")
+    expect(cad.commandLog().slice(-2)).toEqual([
+      "Specify next point or [Undo]:",
+      "Point or option keyword required.",
+    ])
+  })
+
+  it("measures an object, the prompt's default", () => {
+    const cad = createHarness({
+      entities: [
+        lineOf(p(0, 0), p(100, 100), { id: "L" }),
+        circleOf(p(500, 0), 5, { id: "C" }),
+      ],
+    })
+
+    cad.command("AREA").enter().click(p(50, 50)).click(p(505, 0))
+
+    expect(cad.commandLog()).toEqual([
+      "AREA",
+      "Specify first corner point or [Object] <Object>:",
+      "Select objects:",
+      "Selected object does not have an area",
+      "Select objects:",
+      "Area = 78.54, Circumference = 31.42",
+    ])
     expect(cad.activeToolId()).toBe("select")
-    expect(readout(cad).some((line) => /Area/.test(line))).toBe(false)
+  })
+
+  it("closes an open curve and reports its length, as AutoCAD's does", () => {
+    const cad = createHarness({
+      entities: [polylineOf([p(0, 0), p(10, 0), p(10, 10)])],
+    })
+
+    cad.command("AREA")
+    answer(cad, "O", "FOO", "L")
+
+    expect(cad.commandLog().slice(1)).toEqual([
+      "Specify first corner point or [Object] <Object>: O",
+      "Select objects: FOO",
+      "*Invalid selection*",
+      "Expects a point or Last",
+      "Select objects: L",
+      "Area = 50.00, Length = 20.00",
+    ])
+  })
+
+  it("keeps the first corner when Undo has nothing else to take back", () => {
+    const cad = createHarness()
+
+    cad.command("AREA")
+    answer(cad, "FOO", "0,0", "U", "FOO", "10,0", "10,10", "0,10")
+    cad.enter()
+
+    expect(cad.commandLog()).toEqual([
+      "AREA",
+      "Specify first corner point or [Object] <Object>: FOO",
+      "Point or option keyword required.",
+      "Specify first corner point or [Object] <Object>: 0,0",
+      "Specify next point or [Undo]: U",
+      "All segments already undone.",
+      "Command has been completely undone.",
+      "Specify next point or [Undo]: FOO",
+      "Point or option keyword required.",
+      "Specify next point or [Undo]: 10,0",
+      "Specify next point or [Undo]: 10,10",
+      "Specify next point or [Undo/Total] <Total>: 0,10",
+      "Specify next point or [Undo/Total] <Total>:",
+      "Area = 100.00, Perimeter = 40.00",
+    ])
+  })
+
+  it("asks in Autodesk's Spanish", () => {
+    const cad = createHarness({
+      locale: es,
+      entities: [circleOf(p(0, 0), 5)],
+    })
+
+    cad.command("AREA")
+    expect(cad.state().commandLine.prompt).toBe(
+      "AREA Precise primer punto de esquina o [Objeto] <Objeto>:"
+    )
+    answer(cad, "0,0", "H", "10,0", "10,10")
+    expect(cad.state().commandLine.prompt).toBe(
+      "AREA Precise punto siguiente o [desHacer/Total] <Total>:"
+    )
+    answer(cad, "T")
+    expect(cad.commandLog().slice(3, 5)).toEqual([
+      "Ya están deshechos todos los segmentos.",
+      "Todos los efectos del comando han sido deshechos.",
+    ])
+    expect(cad.commandLog().at(-1)).toBe("Área = 50.00, Perímetro = 34.14")
+
+    cad.command("AREA")
+    answer(cad, "O", "LT")
+    expect(cad.commandLog().slice(-3)).toEqual([
+      "Precise primer punto de esquina o [Objeto] <Objeto>: O",
+      "Designe objetos: LT",
+      "Área = 78.54, Circunferencia = 31.42",
+    ])
   })
 })
 

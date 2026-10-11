@@ -8,14 +8,18 @@ import {
   unitSuffix,
 } from "../../domain/units"
 import { Ucs, worldDirectionToUcs } from "../../domain/ucs"
+import { Entity, readsInPlan } from "../../domain/entities"
+import { objectArea } from "../../domain/objectArea"
 import { ScenePrimitive } from "../../scene/types"
 import { THEME } from "../../scene/theme"
 import { parseCoordinate } from "../input/coordinateInput"
+import { entityScenePrimitive } from "../SceneBuilder"
 import {
   CommandOption,
   CommandOptionOutcome,
   KeyInput,
   PointerInput,
+  QuestionInput,
   Tool,
   ToolContext,
 } from "./Tool"
@@ -29,9 +33,10 @@ import type { PromptId } from "../../locales/types"
  * - **Distance**: pick two points → AutoCAD's DIST: the 3D distance, the angle
  *   in and from the UCS's XY plane and the ΔX/ΔY/ΔZ between them, on the
  *   command line and on the readout. Loops so successive pairs can be measured.
- * - **Area**: pick a run of points → the enclosed area and perimeter of the
- *   (implicitly closed) polygon, updating live with the cursor as a tentative
- *   vertex. Enter finalises the polygon; the tool then starts a fresh one.
+ * - **Area**: AutoCAD's AREA — a run of points, the enclosed area and perimeter
+ *   of the (implicitly closed) polygon updating live with the cursor as a
+ *   tentative vertex, or one object's (Object, the prompt's default); the
+ *   command reports it and ends, as AutoCAD's does.
  */
 export type MeasureMode = "distance" | "area"
 
@@ -40,9 +45,10 @@ type MeasureState =
   | { readonly phase: "second"; readonly base: Vec3; readonly cursor: Vec3 }
   | {
       readonly phase: "area"
-      readonly points: readonly Vec2[]
+      readonly points: readonly Vec3[]
       readonly cursor: Vec2
     }
+  | { readonly phase: "areaObject"; readonly hover: Entity | null }
 
 interface Measurement {
   readonly base: Vec3
@@ -59,20 +65,18 @@ export class MeasureTool implements Tool {
   private state: MeasureState = { phase: "first" }
   /** The last completed distance measurement, kept until a new one starts. */
   private last: Measurement | null = null
-  /** The last completed area polygon, kept until a new one starts. */
-  private lastArea: readonly Vec2[] | null = null
   private lastScreen: Vec2 | null = null
 
   onActivate(ctx: ToolContext): void {
     ctx.setCursor("crosshair")
     ctx.selection.clear()
     this.reset(ctx.viewport.worldCenter())
-    if (this.mode === "distance") this.askPoint(ctx)
+    this.askPoint(ctx)
   }
 
   onDeactivate(ctx: ToolContext): void {
     this.reset({ x: 0, y: 0 })
-    if (this.mode === "distance") ctx.dynamicInput.close()
+    ctx.dynamicInput.close()
   }
 
   private reset(origin: Vec2): void {
@@ -81,29 +85,29 @@ export class MeasureTool implements Tool {
         ? { phase: "area", points: [], cursor: origin }
         : { phase: "first" }
     this.last = null
-    this.lastArea = null
   }
 
   onPointerMove(input: PointerInput, ctx: ToolContext): void {
     this.lastScreen = input.screen
-    if (this.mode === "distance") ctx.dynamicInput.setPosition(input.screen)
+    ctx.dynamicInput.setPosition(input.screen)
     if (this.state.phase === "second") {
       this.state = { ...this.state, cursor: input.point }
     } else if (this.state.phase === "area") {
       this.state = { ...this.state, cursor: input.point }
+    } else if (this.state.phase === "areaObject") {
+      const hover = this.pickArea(input.world, ctx)
+      if (hover?.id !== this.state.hover?.id) {
+        this.state = { phase: "areaObject", hover }
+      }
     }
     ctx.requestRender()
   }
 
   onPointerDown(input: PointerInput, ctx: ToolContext): void {
     if (input.button !== 0) return
-    if (this.state.phase === "area") {
-      this.lastArea = null
-      this.state = {
-        phase: "area",
-        points: [...this.state.points, input.point],
-        cursor: input.point,
-      }
+    if (this.state.phase === "areaObject") {
+      const picked = this.pickArea(input.world, ctx)
+      if (picked && this.reportObject(picked, ctx)) ctx.endCommand()
     } else {
       this.place(input.point, ctx)
     }
@@ -119,6 +123,12 @@ export class MeasureTool implements Tool {
       this.last = { base: this.state.base, tip: point }
       this.state = { phase: "first" }
       ctx.report(distanceReport(this.last, ctx))
+    } else if (this.state.phase === "area") {
+      this.state = {
+        phase: "area",
+        points: [...this.state.points, point],
+        cursor: point,
+      }
     }
     this.askPoint(ctx)
   }
@@ -128,7 +138,9 @@ export class MeasureTool implements Tool {
    * elevation, as DIST's help says, which is what `parseCoordinate` does.
    */
   private askPoint(ctx: ToolContext): void {
-    const first = this.state.phase === "first"
+    const first =
+      this.state.phase === "first" ||
+      (this.state.phase === "area" && this.state.points.length === 0)
     ctx.dynamicInput.open({
       fields: [
         {
@@ -140,17 +152,9 @@ export class MeasureTool implements Tool {
       commit: () => {},
       commitRaw: (commitCtx) => {
         const text = commitCtx.dynamicInput.getText("point").trim()
-        if (text === "" && this.state.phase === "first") {
-          commitCtx.endCommand()
-          return true
-        }
-        // Enter at the second point measures to the first, as AutoCAD's does.
-        if (text === "" && this.state.phase === "second") {
-          this.place(this.state.base, commitCtx)
-          return true
-        }
+        if (text === "") return this.enter(commitCtx)
         const point = parseCoordinate(text, {
-          lastPoint: this.state.phase === "second" ? this.state.base : null,
+          lastPoint: this.basePoint(),
           relativeByDefault: false,
           ucs: commitCtx.ucs,
           elevation: commitCtx.elevation,
@@ -164,62 +168,179 @@ export class MeasureTool implements Tool {
     ctx.dynamicInput.setPosition(this.lastScreen ?? { x: 0, y: 0 })
   }
 
+  private basePoint(): Vec3 | null {
+    if (this.state.phase === "second") return this.state.base
+    if (this.state.phase === "area") return this.state.points.at(-1) ?? null
+    return null
+  }
+
   /**
-   * DIST's two points; WHY no `[Multiple points]` on the second: not built.
-   * AREA's prompts are not converted yet, so it names none.
+   * Enter, at the box or the drawing: DIST's first point ends the command and
+   * its second measures to the first, as AutoCAD's does; AREA's first corner
+   * takes `<Object>`, from the third point it takes `<Total>`, and before that
+   * AutoCAD 2023's console refuses it as a missing point.
    */
+  private enter(ctx: ToolContext): boolean {
+    switch (this.state.phase) {
+      case "first":
+        ctx.endCommand()
+        return true
+      case "second":
+        this.place(this.state.base, ctx)
+        return true
+      case "area": {
+        const { points } = this.state
+        if (points.length === 0) this.askObject(ctx)
+        else if (points.length >= 3) {
+          this.reportPolygon(points, ctx)
+          ctx.endCommand()
+        } else ctx.report(ctx.text.message("pointOrKeywordRequired"), "error")
+        return true
+      }
+      case "areaObject":
+        return false
+    }
+  }
+
+  /** DIST's two points; WHY no `[Multiple points]` on the second: not built. */
   question(): PromptId | null {
     switch (this.state.phase) {
       case "first":
         return "specifyFirstPoint"
       case "second":
         return "distSecondPoint"
-      default:
-        return null
+      case "area":
+        return this.state.points.length === 0
+          ? "specifyFirstCornerPointOr"
+          : "specifyNextPointOr"
+      case "areaObject":
+        return "selectObjects"
     }
   }
 
-  /** Enter finalises an area polygon (≥3 points); otherwise it ends the tool. */
+  /** AREA's object is one pick, refused as AutoCAD 2023's console refuses it. */
+  takes(): QuestionInput | null {
+    return this.state.phase === "areaObject" ? "objectOrLast" : null
+  }
+
+  defaultOption(): string | null {
+    if (this.state.phase !== "area") return null
+    const { length } = this.state.points
+    return length === 0 ? "Object" : length >= 3 ? "Total" : null
+  }
+
   onEnter(ctx: ToolContext): boolean {
-    if (this.state.phase === "area" && this.state.points.length >= 3) {
-      this.lastArea = this.state.points
-      this.state = { phase: "area", points: [], cursor: this.state.cursor }
-      ctx.requestRender()
-      return true
-    }
-    return false
+    return this.enter(ctx)
   }
 
-  /** While marking an area, U (or Backspace) removes the last placed vertex —
-   * AutoCAD's Undo option. */
+  /** While marking an area, Backspace removes the last placed vertex too. */
   onKeyDown(input: KeyInput, ctx: ToolContext): void {
-    if (input.key === "Backspace") this.removeLastVertex(ctx)
+    if (input.key === "Backspace" && this.state.phase === "area") {
+      this.undoPoint(ctx)
+    }
   }
 
+  /**
+   * WHY no Add area / Subtract area, nor Arc and Length at the next point:
+   * not built (docs/autocad-coverage.md).
+   */
   commandOptions(): readonly CommandOption[] {
-    if (this.state.phase !== "area" || this.state.points.length === 0) return []
-    return [{ id: "Undo" }]
+    if (this.state.phase === "areaObject") {
+      return [{ id: "Last", hidden: true, prompt: "selectObjects" }]
+    }
+    if (this.state.phase !== "area") return []
+    const { length } = this.state.points
+    if (length === 0) return [{ id: "Object" }]
+    return length >= 3 ? [{ id: "Undo" }, { id: "Total" }] : [{ id: "Undo" }]
   }
 
   invokeOption(id: string, ctx: ToolContext): CommandOptionOutcome {
-    if (id !== "Undo") return "unhandled"
-    return this.removeLastVertex(ctx) ? "continue" : "unhandled"
+    switch (id) {
+      case "Object":
+        if (this.state.phase !== "area") return "unhandled"
+        this.askObject(ctx)
+        return "continue"
+      case "Undo":
+        return this.undoPoint(ctx) ? "continue" : "unhandled"
+      case "Total":
+        if (this.state.phase !== "area") return "unhandled"
+        this.reportPolygon(this.state.points, ctx)
+        return "end"
+      case "Last": {
+        if (this.state.phase !== "areaObject") return "unhandled"
+        const last = ctx.document
+          .getEntities()
+          .findLast((entity) => ctx.document.isEntityVisible(entity))
+        return last && readsInPlan(last) && this.reportObject(last, ctx)
+          ? "end"
+          : "continue"
+      }
+      default:
+        return "unhandled"
+    }
   }
 
-  private removeLastVertex(ctx: ToolContext): boolean {
+  /**
+   * AREA's Undo takes back the last point; the first corner it keeps, saying
+   * so as AutoCAD 2023's console does.
+   */
+  private undoPoint(ctx: ToolContext): boolean {
     if (this.state.phase !== "area" || this.state.points.length === 0) {
       return false
     }
-    this.state = {
-      ...this.state,
-      points: this.state.points.slice(0, -1),
+    if (this.state.points.length === 1) {
+      ctx.report(ctx.text.message("allSegmentsUndone"))
+      ctx.report(ctx.text.message("commandCompletelyUndone"))
+      return true
     }
+    this.state = { ...this.state, points: this.state.points.slice(0, -1) }
     ctx.requestRender()
     return true
   }
 
-  wantsSnap(): boolean {
+  private askObject(ctx: ToolContext): void {
+    this.state = { phase: "areaObject", hover: null }
+    ctx.dynamicInput.open({ fields: [], commit: () => {} })
+    ctx.requestRender()
+  }
+
+  /** What an Object pick can take: an object lying in the UCS's XY plane. */
+  private pickArea(world: Vec2, ctx: ToolContext): Entity | null {
+    const hit = ctx.pick(world)
+    return hit && readsInPlan(hit) ? hit : null
+  }
+
+  /** Whether the object has an area, which was then reported. */
+  private reportObject(entity: Entity, ctx: ToolContext): boolean {
+    const measured = objectArea(entity)
+    if (measured === null) {
+      ctx.report(ctx.text.message("objectHasNoArea"))
+      return false
+    }
+    const settings = ctx.document.getSettings()
+    ctx.report(
+      ctx.text.message("areaReport", {
+        area: formatLength(measured.area, settings),
+        measured: measured.measured,
+        around: formatLength(measured.around, settings),
+      })
+    )
     return true
+  }
+
+  private reportPolygon(points: readonly Vec2[], ctx: ToolContext): void {
+    const settings = ctx.document.getSettings()
+    ctx.report(
+      ctx.text.message("areaReport", {
+        area: formatLength(polygonArea(points), settings),
+        measured: "perimeter",
+        around: formatLength(polygonPerimeter(points), settings),
+      })
+    )
+  }
+
+  wantsSnap(): boolean {
+    return this.state.phase !== "areaObject"
   }
 
   getConstraintAnchor(): Vec2 | null {
@@ -244,9 +365,6 @@ export class MeasureTool implements Tool {
         false
       )
     }
-    if (this.lastArea) {
-      this.drawArea(out, ctx, this.lastArea, null, settings)
-    }
     if (this.state.phase === "second") {
       this.drawDistance(
         out,
@@ -259,6 +377,14 @@ export class MeasureTool implements Tool {
     }
     if (this.state.phase === "area" && this.state.points.length > 0) {
       this.drawArea(out, ctx, this.state.points, this.state.cursor, settings)
+    }
+    if (this.state.phase === "areaObject" && this.state.hover) {
+      out.push(
+        ...entityScenePrimitive(ctx.viewport, this.state.hover, {
+          color: THEME.selected,
+          width: 2,
+        })
+      )
     }
     return out
   }
@@ -318,12 +444,11 @@ export class MeasureTool implements Tool {
     out: ScenePrimitive[],
     ctx: ToolContext,
     points: readonly Vec2[],
-    cursor: Vec2 | null,
+    cursor: Vec2,
     settings: DocumentSettings
   ): void {
     const { viewport } = ctx
-    // The tentative cursor vertex belongs only to an in-progress polygon.
-    const vertices = cursor ? [...points, cursor] : points
+    const vertices = [...points, cursor]
     const screen = vertices.map((v) => viewport.worldToScreen(v))
     if (screen.length >= 2) {
       out.push({
@@ -333,7 +458,7 @@ export class MeasureTool implements Tool {
         stroke: {
           color: THEME.selected,
           width: 1.5,
-          dash: cursor ? [6, 4] : undefined,
+          dash: [6, 4],
         },
       })
     }
@@ -353,18 +478,7 @@ export class MeasureTool implements Tool {
         unit: suffix,
       }),
     ]
-    // While collecting, hint the point-undo and finish keys (there is no
-    // command line to show them otherwise).
-    if (cursor && points.length > 0) {
-      lines.push(
-        text.feedback("measureHint", { undo: text.abbreviation("Undo") })
-      )
-    }
-    // Live: anchor by the cursor; completed: by the polygon centroid.
-    const anchor = cursor
-      ? viewport.worldToScreen(cursor)
-      : viewport.worldToScreen(centroid(vertices))
-    placeAndPushReadout(out, anchor, lines, viewport)
+    placeAndPushReadout(out, viewport.worldToScreen(cursor), lines, viewport)
   }
 }
 
@@ -515,13 +629,3 @@ function polygonPerimeter(points: readonly Vec2[]): number {
   }
   return total
 }
-
-function centroid(points: readonly Vec2[]): Vec2 {
-  const sum = points.reduce((acc, p) => ({ x: acc.x + p.x, y: acc.y + p.y }), {
-    x: 0,
-    y: 0,
-  })
-  return { x: sum.x / points.length, y: sum.y / points.length }
-}
-
-/** Normalises a degree value into `[0, 360)`. */

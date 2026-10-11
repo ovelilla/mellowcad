@@ -623,7 +623,7 @@
         "Multiple": "Multiple"
       },
       "BREAK": { "First point": "First point" },
-      "AREA": { "Undo": "Undo" },
+      "AREA": { "Object": "Object", "Undo": "Undo", "Total": "Total" },
       "ZOOM": {
         "All": "All",
         "Extents": "Extents",
@@ -1109,6 +1109,9 @@
       "blockConversion": "Current settings: Object conversion=Convert",
       "invalidBlockName": "Invalid block name.",
       "rectangleModes": "Current rectangle modes:{hasElevation, select, yes {  Elevation={elevation}} other {}}{hasThickness, select, yes {  Thickness={thickness}} other {}}",
+      "areaReport": "Area = {area}, {measured, select, circumference {Circumference} length {Length} other {Perimeter}} = {around}",
+      "objectHasNoArea": "Selected object does not have an area",
+      "allSegmentsUndone": "All segments already undone.",
       "distanceReport": "Distance = {distance},  Angle in XY Plane = {angleInPlane},  Angle from XY Plane = {angleFromPlane}\nDelta X = {deltaX},  Delta Y = {deltaY},   Delta Z = {deltaZ}",
       "idReport": " X = {x}     Y = {y}     Z = {z}",
       "linesNonCoplanar": "Lines are non-coplanar.",
@@ -1207,8 +1210,7 @@
       "measureDeltaY": "ΔY    {value}",
       "measureDeltaZ": "ΔZ    {value}",
       "measureArea": "Area  {value} {unit}²",
-      "measurePerimeter": "Perim {value} {unit}",
-      "measureHint": "[{undo}] undo  [Enter] done"
+      "measurePerimeter": "Perim {value} {unit}"
     },
     "keywordLabels": {
       "CIRCLE": { "Ttr": "Ttr (tan tan radius)" },

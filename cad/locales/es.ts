@@ -1094,7 +1094,9 @@ export const es: EngineLocale = {
         "First point": "Primer punto"
       },
       "AREA": {
-        "Undo": "desHacer"
+        "Object": "Objeto",
+        "Undo": "desHacer",
+        "Total": "Total"
       },
       "ZOOM": {
         "All": "Todo",
@@ -2096,6 +2098,28 @@ export const es: EngineLocale = {
           }
         ]
       ],
+      "areaReport": [
+        "Área = ",
+        [
+          "area"
+        ],
+        ", ",
+        [
+          "measured",
+          1,
+          {
+            "circumference": "Circunferencia",
+            "length": "Longitud",
+            "other": "Perímetro"
+          }
+        ],
+        " = ",
+        [
+          "around"
+        ]
+      ],
+      "objectHasNoArea": "El objeto seleccionado no tiene área",
+      "allSegmentsUndone": "Ya están deshechos todos los segmentos.",
       "distanceReport": [
         "Distancia = ",
         [
@@ -2647,13 +2671,6 @@ export const es: EngineLocale = {
         [
           "unit"
         ]
-      ],
-      "measureHint": [
-        "[",
-        [
-          "undo"
-        ],
-        "] deshacer  [Intro] terminar"
       ]
     },
     "keywordLabels": {
