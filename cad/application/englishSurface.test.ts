@@ -967,6 +967,7 @@ describe("the engine's English surface", () => {
         .do("first", (c) => c.click(at(0, 0)))
         .do("move", (c) => c.moveTo(at(300, 400)))
         .do("second", (c) => c.click(at(300, 400)))
+        .do("DIST again", (c) => c.command("DIST"))
         .do("typed first", (c) => c.type("0,0").enter())
         .do("typed second", (c) => c.type("@30,40,120").enter())
         .do("AREA", (c) => c.command("AA"))

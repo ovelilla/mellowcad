@@ -24,10 +24,10 @@ function readout(cad: CadHarness): string[] {
 }
 
 describe("DIST", () => {
-  it("reports distance, angle and the deltas between two picks", () => {
+  it("reads distance, angle and the deltas while the second point is picked", () => {
     const cad = createHarness()
 
-    cad.command("DIST").click(p(0, 0)).click(p(300, 0))
+    cad.command("DIST").click(p(0, 0)).moveTo(p(300, 0))
 
     const lines = readout(cad)
     expect(lines.some((line) => /Dist\s+300\.00 mm/.test(line))).toBe(true)
@@ -39,7 +39,7 @@ describe("DIST", () => {
   it("measures a diagonal", () => {
     const cad = createHarness()
 
-    cad.command("DIST").click(p(0, 0)).click(p(300, 400))
+    cad.command("DIST").click(p(0, 0)).moveTo(p(300, 400))
 
     const lines = readout(cad)
     expect(lines.some((line) => /Dist\s+500\.00 mm/.test(line))).toBe(true)
@@ -60,19 +60,18 @@ describe("DIST", () => {
     const cad = createHarness()
     cad.runtime.setDocumentPrecision(0)
 
-    cad.command("DIST").click(p(0, 0)).click(p(300, 0))
+    cad.command("DIST").click(p(0, 0)).moveTo(p(300, 0))
 
     expect(readout(cad).some((line) => /Dist\s+300 mm/.test(line))).toBe(true)
   })
 
-  it("keeps measuring until Escape", () => {
+  it("ends after one pair, its readout with it, as AutoCAD's DIST does", () => {
     const cad = createHarness()
 
     cad.command("DIST").click(p(0, 0)).click(p(300, 0))
-    expect(cad.activeToolId()).toBe("measure")
 
-    cad.escape()
     expect(cad.activeToolId()).toBe("select")
+    expect(readout(cad)).toEqual([])
   })
 
   it("writes AutoCAD's report at the command prompt", () => {
@@ -90,13 +89,14 @@ describe("DIST", () => {
     const cad = createHarness()
     cad.command("ELEV").type("5").enter().type("0").enter()
 
-    cad.command("DIST").type("0,0,-7").enter().type("3,4").enter()
+    cad.command("DIST").type("0,0,-7").enter().moveTo(p(3, 4))
+    expect(readout(cad)).toContain("ΔZ    12.00")
+    cad.type("3,4").enter()
 
     expect(cad.commandLog().at(-1)).toBe(
       "Distance = 13.00,  Angle in XY Plane = 53,  Angle from XY Plane = 67\n" +
         "Delta X = 3.00,  Delta Y = 4.00,   Delta Z = 12.00"
     )
-    expect(readout(cad)).toContain("ΔZ    12.00")
   })
 
   it("takes a snapped point's Z from the object", () => {
@@ -188,6 +188,8 @@ describe("DIST and ID ask as AutoCAD 2026", () => {
       "Specify second point: 3,4",
       "Distance = 5.00,  Angle in XY Plane = 53,  Angle from XY Plane = 0\nDelta X = 3.00,  Delta Y = 4.00,   Delta Z = 0.00",
     ])
+    expect(cad.activeToolId()).toBe("select")
+    cad.command("DIST")
     answer(cad, "1,1")
     cad.enter()
     expect(cad.commandLog().slice(-2)).toEqual([
@@ -216,7 +218,9 @@ describe("DIST and ID ask as AutoCAD 2026", () => {
     expect(cad.state().commandLine.prompt).toBe(
       "DIST Especifique segundo punto:"
     )
-    cad.escape().command("ID")
+    answer(cad, "3,4")
+    expect(cad.activeToolId()).toBe("select")
+    cad.command("ID")
     answer(cad, "FOO")
     expect(cad.commandLog().slice(-2)).toEqual([
       "Precise punto: FOO",

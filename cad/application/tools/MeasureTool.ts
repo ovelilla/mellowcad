@@ -33,7 +33,8 @@ import type { PromptId } from "../../locales/types"
  *
  * - **Distance**: pick two points → AutoCAD's DIST: the 3D distance, the angle
  *   in and from the UCS's XY plane and the ΔX/ΔY/ΔZ between them, on the
- *   command line and on the readout. Loops so successive pairs can be measured.
+ *   readout while the second is picked and then on the command line, and the
+ *   command ends, as AutoCAD's DIST does.
  * - **Area**: AutoCAD's AREA — a run of points, the enclosed area and perimeter
  *   of the (implicitly closed) polygon updating live with the cursor as a
  *   tentative vertex, or one object's (Object, the prompt's default); the
@@ -64,8 +65,6 @@ export class MeasureTool implements Tool {
   ) {}
 
   private state: MeasureState = { phase: "first" }
-  /** The last completed distance measurement, kept until a new one starts. */
-  private last: Measurement | null = null
   private lastScreen: Vec2 | null = null
 
   onActivate(ctx: ToolContext): void {
@@ -85,7 +84,6 @@ export class MeasureTool implements Tool {
       this.mode === "area"
         ? { phase: "area", points: [], cursor: origin }
         : { phase: "first" }
-    this.last = null
   }
 
   onPointerMove(input: PointerInput, ctx: ToolContext): void {
@@ -117,13 +115,11 @@ export class MeasureTool implements Tool {
 
   private place(point: Vec3, ctx: ToolContext): void {
     if (this.state.phase === "first") {
-      // A fresh measurement clears the previous readout.
-      this.last = null
       this.state = { phase: "second", base: point, cursor: point }
     } else if (this.state.phase === "second") {
-      this.last = { base: this.state.base, tip: point }
-      this.state = { phase: "first" }
-      ctx.report(distanceReport(this.last, ctx))
+      ctx.report(distanceReport({ base: this.state.base, tip: point }, ctx))
+      ctx.endCommand()
+      return
     } else if (this.state.phase === "area") {
       this.state = {
         phase: "area",
@@ -354,25 +350,8 @@ export class MeasureTool implements Tool {
   buildOverlay(ctx: ToolContext): ScenePrimitive[] {
     const out: ScenePrimitive[] = []
     const settings = ctx.document.getSettings()
-    if (this.last) {
-      this.drawDistance(
-        out,
-        ctx,
-        this.last.base,
-        this.last.tip,
-        settings,
-        false
-      )
-    }
     if (this.state.phase === "second") {
-      this.drawDistance(
-        out,
-        ctx,
-        this.state.base,
-        this.state.cursor,
-        settings,
-        true
-      )
+      this.drawDistance(out, ctx, this.state.base, this.state.cursor, settings)
     }
     if (this.state.phase === "area" && this.state.points.length > 0) {
       this.drawArea(out, ctx, this.state.points, this.state.cursor, settings)
@@ -393,8 +372,7 @@ export class MeasureTool implements Tool {
     ctx: ToolContext,
     base: Vec3,
     tip: Vec3,
-    settings: DocumentSettings,
-    live: boolean
+    settings: DocumentSettings
   ): void {
     const { viewport } = ctx
     const a = viewport.worldToScreen(base)
@@ -406,7 +384,7 @@ export class MeasureTool implements Tool {
       stroke: {
         color: THEME.selected,
         width: 1.5,
-        dash: live ? [6, 4] : undefined,
+        dash: [6, 4],
       },
     })
     pushTick(out, a)
