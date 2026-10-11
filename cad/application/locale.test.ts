@@ -761,18 +761,17 @@ describe("Spanish AutoCAD's command language", () => {
       "Nombre de scp actual:  *UNIVERSAL*",
     ])
     expect(cad.state().commandLine.prompt).toBe(
-      "SCP [gUArdado/oBjeto/PRev/Vista/Univ/X/Y/Z/ejEZ]:"
+      "SCP Indique origen de SCP o [gUArdado/oBjeto/PRev/Vista/Univ/X/Y/Z/ejEZ] <Univ>:"
     )
-    const asks = () => {
-      const field = cad.runtime.dynamicInput.getSession()?.fields[0]
-      return field?.prompt ? cad.runtime.text.prompt(field.prompt) : null
-    }
-    expect(asks()).toBe("Indique origen de SCP")
     cad.click(p(10, 0))
-    expect(asks()).toBe("Precise punto en eje X o <Aceptar>")
+    expect(cad.state().commandLine.prompt).toBe(
+      "SCP Precise punto en eje X o <Aceptar>:"
+    )
     cad.enter()
     cad.command("SCP").type("ua").enter()
-    expect(cad.state().commandLine.prompt).toBe("SCP [Rest/Guardar/Supr]:")
+    expect(cad.state().commandLine.prompt).toBe(
+      "SCP Indique una opción [Rest/Guardar/Supr/?]:"
+    )
     cad.escape().command("SCP")
     expect(cad.optionAbbreviations()).toEqual([
       "UA",
@@ -791,7 +790,7 @@ describe("Spanish AutoCAD's command language", () => {
     )
     cad.command("SIMBSCP")
     expect(cad.state().commandLine.prompt).toBe(
-      "SIMBSCP [ACT/DES/Sin origen/Origen] <ACT>:"
+      "SIMBSCP Indique una opción [ACT/DES/Sin origen/Origen] <ACT>:"
     )
   })
 
@@ -800,15 +799,17 @@ describe("Spanish AutoCAD's command language", () => {
     cad.command("SCP").option("Z").enter()
     cad.command("PLANTA")
     expect(cad.state().commandLine.prompt).toBe(
-      "PLANTA [scp Actual/SCP/Universal]:"
+      "PLANTA Indique una opción [scp Actual/SCP/Universal] <Actual>:"
     )
     expect(cad.optionAbbreviations()).toEqual(["A", "SCP", "U"])
     cad.press("a")
     cad.press("Enter")
     expect(cad.runtime.viewport.right).toBeCloseToPoint(p(0, 1))
-    cad.command("PLANTA").type("scp").enter()
-    expect(cad.runtime.text.prompt("planUcsName")).toBe(
-      "Indique nombre de SCP o [?]"
+    cad.command("PLANTA")
+    cad.runtime.setCommandLineText("scp")
+    cad.runtime.submitCommandLine()
+    expect(cad.state().commandLine.prompt).toBe(
+      "PLANTA Indique nombre de SCP o [?]:"
     )
   })
 

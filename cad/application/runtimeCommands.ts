@@ -284,7 +284,13 @@ export function commandPrompt(
   const labels = options.map((option) => option.label)
   const asked = tool.question?.() ?? null
   const id = askedPrompt(tool)
-  const question = id === null ? null : text.prompt(id)
+  const question =
+    id === null
+      ? null
+      : text.prompt(
+          id,
+          typeof asked === "object" && asked !== null ? asked.values : undefined
+        )
   const value =
     typeof asked === "object" && asked !== null
       ? enterValue(asked.enter, text, settings)

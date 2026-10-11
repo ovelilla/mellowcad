@@ -14,7 +14,7 @@ import {
   worldDirectionToUcs,
   worldPointToUcs,
 } from "../../domain/ucs"
-import { DocumentSettings } from "../../domain/units"
+import { DocumentSettings, formatLength } from "../../domain/units"
 import { matchesWildcard } from "../../shared/wildcard"
 import { UpdateSettingsCommand } from "../commands/settingsCommands"
 import { entityScenePrimitive } from "../SceneBuilder"
@@ -31,8 +31,10 @@ import {
   CommandOption,
   CommandOptionOutcome,
   PointerInput,
+  QuestionInput,
   Tool,
   ToolContext,
+  ToolQuestion,
 } from "./Tool"
 import { headingInUcs } from "./ucsHeading"
 import {
@@ -51,7 +53,12 @@ type UcsState =
   | { readonly phase: "xyPlane"; readonly origin: Vec3; readonly xAxis: Vec3 }
   | { readonly phase: "rotate"; readonly axis: Axis }
   | { readonly phase: "zOrigin" }
-  | { readonly phase: "zPoint"; readonly origin: Vec3 }
+  | {
+      readonly phase: "zPoint"
+      readonly origin: Vec3
+      /** The point Enter keeps, as the prompt shows it: one up the current Z. */
+      readonly enter: string
+    }
   | { readonly phase: "zObject"; readonly hover: EntityId | null }
   | { readonly phase: "named" }
   | { readonly phase: "restore" }
@@ -175,12 +182,69 @@ export class UcsTool implements Tool {
     }
   }
 
-  onEnter(ctx: ToolContext): boolean {
-    if (this.state.phase === "replace") {
-      this.enterNamePrompt("save", ctx)
-      return true
+  question(): PromptId | ToolQuestion {
+    const state = this.state
+    switch (state.phase) {
+      case "origin":
+        return "ucsOrigin"
+      case "xAxis":
+        return { id: "ucsXAxisPoint", enter: "ucsAccept" }
+      case "xyPlane":
+        return { id: "ucsXYPlanePoint", enter: "ucsAccept" }
+      case "rotate":
+        return {
+          id: ROTATION_PROMPTS[state.axis],
+          enter: { angle: DEFAULT_AXIS_ANGLE },
+        }
+      case "zOrigin":
+        return { id: "ucsZAxisOrigin", enter: { name: "0,0,0" } }
+      case "zPoint":
+        return { id: "ucsZAxisPoint", enter: { name: state.enter } }
+      case "zObject":
+        return "selectObject"
+      case "object":
+        return "ucsAlignObject"
+      case "named":
+        return "enterAnOption"
+      case "restore":
+        return "ucsRestoreName"
+      case "save":
+        return "ucsSaveName"
+      // WHY no keyword list: AutoCAD's yes-or-no question lists none, and
+      // writes its default as the letter.
+      case "replace":
+        return {
+          id: "ucsReplace",
+          enter: { name: "N" },
+          values: { name: state.name },
+        }
+      case "delete":
+        return { id: "ucsDeleteNames", enter: "ucsNone" }
+      case "list":
+        return { id: "ucsListNames", enter: { name: "*" } }
     }
-    return false
+  }
+
+  defaultOption(): string | null {
+    return this.state.phase === "origin" ? "World" : null
+  }
+
+  /** As AutoCAD 2023's console refuses UCS's answers. */
+  takes(): QuestionInput | null {
+    switch (this.state.phase) {
+      case "rotate":
+        return {
+          refusal: "requiresAngle",
+          values: { points: "second", keyword: "no" },
+        }
+      case "object":
+      case "zObject":
+        return "singleSet"
+      case "replace":
+        return { refusal: "yesOrNoPlease" }
+      default:
+        return null
+    }
   }
 
   commandOptions(): readonly CommandOption[] {
@@ -200,24 +264,35 @@ export class UcsTool implements Tool {
       case "zOrigin":
         return [{ id: "Object" }]
       case "named":
-        return [{ id: "Restore" }, { id: "Save" }, { id: "Delete" }]
+        return [
+          { id: "Restore" },
+          { id: "Save" },
+          { id: "Delete" },
+          { id: "?" },
+        ]
+      case "restore":
+      case "save":
+        return [{ id: "?" }]
       case "replace":
-        return [{ id: "Yes" }, { id: "No" }]
+        return [
+          { id: "Yes", hidden: true },
+          { id: "No", hidden: true },
+        ]
       default:
         return []
     }
   }
 
   invokeOption(id: string, ctx: ToolContext): CommandOptionOutcome {
-    const phase = this.state.phase
-    if (phase === "origin") return this.invokeMain(id, ctx)
-    if (phase === "zOrigin" && id === "Object") {
+    const state = this.state
+    if (state.phase === "origin") return this.invokeMain(id, ctx)
+    if (state.phase === "zOrigin" && id === "Object") {
       this.state = { phase: "zObject", hover: null }
       ctx.dynamicInput.open({ fields: [], commit: () => {} })
       this.place(ctx)
       return "continue"
     }
-    if (phase === "named") {
+    if (state.phase === "named") {
       switch (id) {
         case "Restore":
           this.enterNamePrompt("restore", ctx)
@@ -228,17 +303,22 @@ export class UcsTool implements Tool {
         case "Delete":
           this.enterNamePrompt("delete", ctx)
           return "continue"
+        case "?":
+          this.enterList("named", ctx)
+          return "continue"
       }
     }
-    if (this.state.phase === "replace") {
+    if ((state.phase === "restore" || state.phase === "save") && id === "?") {
+      this.enterList(state.phase, ctx)
+      return "continue"
+    }
+    if (state.phase === "replace") {
       if (id === "Yes") {
-        this.save(this.state.name, ctx)
+        this.save(state.name, ctx)
         return "end"
       }
-      if (id === "No") {
-        this.enterNamePrompt("save", ctx)
-        return "continue"
-      }
+      // No ends UCS as its Enter does, with nothing saved.
+      if (id === "No") return "end"
     }
     return "unhandled"
   }
@@ -307,7 +387,8 @@ export class UcsTool implements Tool {
         return "end"
       case "Previous": {
         const previous = this.previous.pop()
-        if (previous) {
+        if (!previous) ctx.report(ctx.text.message("noPreviousUcs"))
+        else {
           const table = ctx.document.getSettings().namedUcs
           const name =
             previous.name !== null && findNamed(table, previous.name)
@@ -477,7 +558,12 @@ export class UcsTool implements Tool {
    * only moves the UCS to the new origin.
    */
   private enterZPoint(origin: Vec3, ctx: ToolContext): void {
-    this.state = { phase: "zPoint", origin }
+    const settings = ctx.document.getSettings()
+    const up = worldPointToUcs(ctx.ucs, add3(origin, ucsZAxis(ctx.ucs)))
+    const enter = [up.x, up.y, up.z]
+      .map((value) => formatLength(value, settings))
+      .join(",")
+    this.state = { phase: "zPoint", origin, enter }
     ctx.dynamicInput.open({
       fields: [{ id: "point", prompt: "ucsZAxisPoint", kind: "coordinate" }],
       commit: () => {},
@@ -502,24 +588,10 @@ export class UcsTool implements Tool {
     return true
   }
 
-  /**
-   * `[Restore/Save/Delete/?]`: `?` is no keyword (it has no capital to type),
-   * so it is answered in a value box, which still takes the three keywords.
-   */
+  /** `Enter an option [Restore/Save/Delete/?]:`, keywords alone. */
   private enterNamed(ctx: ToolContext): void {
     this.state = { phase: "named" }
-    ctx.dynamicInput.open({
-      fields: [{ id: "option", prompt: "ucsNamedOption", kind: "number" }],
-      commit: () => {},
-      commitRaw: (commitCtx) => {
-        if (commitCtx.dynamicInput.getText("option").trim() !== "?") {
-          return false
-        }
-        this.state = { phase: "list", back: "named" }
-        this.openNameField("ucsListNames", commitCtx)
-        return true
-      },
-    })
+    ctx.dynamicInput.open({ fields: [], commit: () => {} })
     this.place(ctx)
   }
 
@@ -558,14 +630,10 @@ export class UcsTool implements Tool {
     switch (state.phase) {
       case "restore": {
         if (typed === "?") return this.enterList("restore", ctx)
+        if (typed === "") return ctx.endCommand()
         const entry = findNamed(table, typed)
         if (!entry) {
-          if (typed !== "") {
-            ctx.report(
-              ctx.text.message("ucsUndefined", { name: typed }),
-              "error"
-            )
-          }
+          ctx.report(ctx.text.message("ucsUndefined", { name: typed }), "error")
           return this.enterNamePrompt("restore", ctx)
         }
         this.finish(entry.ucs, entry.name, ctx)
@@ -573,7 +641,9 @@ export class UcsTool implements Tool {
       }
       case "save": {
         if (typed === "?") return this.enterList("save", ctx)
-        if (typed === "" || typed.length > 255 || INVALID_NAME.test(typed)) {
+        if (typed === "") return ctx.endCommand()
+        if (typed.length > 255 || INVALID_NAME.test(typed)) {
+          ctx.report(ctx.text.message("invalidUcsName"), "error")
           return this.enterNamePrompt("save", ctx)
         }
         if (findNamed(table, typed)) {
@@ -604,6 +674,9 @@ export class UcsTool implements Tool {
               ...(currentGone ? { ucsName: null } : {}),
             })
           )
+          ctx.report(ctx.text.message("ucsDeleted", { count: doomed.length }))
+        } else if (typed !== "") {
+          ctx.report(ctx.text.message("noMatchingUcs"))
         }
         return ctx.endCommand()
       }
@@ -615,7 +688,10 @@ export class UcsTool implements Tool {
     }
   }
 
-  private enterList(back: "restore" | "save", ctx: ToolContext): void {
+  private enterList(
+    back: "named" | "restore" | "save",
+    ctx: ToolContext
+  ): void {
     this.state = { phase: "list", back }
     this.openNameField("ucsListNames", ctx)
   }
@@ -695,19 +771,25 @@ export function findNamed(
 }
 
 /**
- * The `?` listing of UCS and PLAN: each saved UCS matching `patterns`, its
- * origin and axes relative to the current UCS.
+ * The `?` listing of UCS and PLAN, laid out as AutoCAD prints it: each saved
+ * UCS matching `patterns`, its origin and axes relative to the current UCS in
+ * the drawing's units, or `No matching UCS names found.`
  */
 export function listNamedUcs(patterns: string, ctx: ToolContext): void {
   const settings = ctx.document.getSettings()
   const wanted = patterns.split(",").map((part) => part.trim())
-  const lines = [ctx.text.message("currentUcsName", currentName(settings))]
-  lines.push(ctx.text.message("savedUcsHeader"))
-  const fmt = (value: number) => value.toFixed(4)
-  for (const entry of settings.namedUcs) {
-    if (!wanted.some((pattern) => matchesWildcard(entry.name, pattern))) {
-      continue
-    }
+  const lines = [
+    ctx.text.message("listedUcsName", currentName(settings)),
+    "",
+    ctx.text.message("savedUcsHeader"),
+    "",
+  ]
+  const fmt = (value: number) => formatLength(value, settings)
+  const matching = settings.namedUcs.filter((entry) =>
+    wanted.some((pattern) => matchesWildcard(entry.name, pattern))
+  )
+  if (matching.length === 0) lines.push(ctx.text.message("noMatchingUcs"))
+  for (const entry of matching) {
     const origin = worldPointToUcs(ctx.ucs, entry.ucs.origin)
     const x = worldDirectionToUcs(ctx.ucs, entry.ucs.xAxis)
     const y = worldDirectionToUcs(ctx.ucs, entry.ucs.yAxis)

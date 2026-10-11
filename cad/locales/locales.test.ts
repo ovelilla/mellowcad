@@ -191,7 +191,13 @@ describe("every command language", () => {
       resolve(LOCALES_DIR, "../application/__snapshots__/englishSurface.txt"),
       "utf8"
     )
-    const prompts = [...surface.matchAll(/^ {2}prompt: (\S+) \[(.+)\]:$/gm)].map(
+    // `LINE [Close/Undo]:`, or a converted command's question with them:
+    // `UCS Specify origin of UCS or [NAmed/…/ZAxis] <World>:`.
+    const prompts = [
+      ...surface.matchAll(
+        /^ {2}prompt: (\S+) (?:[^[\n]* )?\[([^\]\n]+)\](?: <[^>\n]*>)?:$/gm
+      ),
+    ].map(
       ([, command, list]) => ({
         command,
         ids: list.split("/").map((entry) => entry.split(": ")[0]),

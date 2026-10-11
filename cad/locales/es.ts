@@ -1113,6 +1113,7 @@ export const es: EngineLocale = {
         "Restore": "Rest",
         "Save": "Guardar",
         "Delete": "Supr",
+        "?": "?",
         "Yes": "Sí",
         "No": "No"
       },
@@ -1125,7 +1126,8 @@ export const es: EngineLocale = {
       "PLAN": {
         "Current ucs": "scp Actual",
         "Ucs": "SCP",
-        "World": "Universal"
+        "World": "Universal",
+        "?": "?"
       },
       "VPOINT": {
         "Rotate": "Rotación"
@@ -1288,20 +1290,30 @@ export const es: EngineLocale = {
       "lengthen": "Alargar",
       "move": "Desplazar",
       "bulge": "Curvatura",
-      "ucsOrigin": "Indique origen de SCP",
-      "ucsXAxisPoint": "Precise punto en eje X o <Aceptar>",
-      "ucsXYPlanePoint": "Precise punto en plano XY o <Aceptar>",
+      "ucsOrigin": "Indique origen de SCP o",
+      "ucsXAxisPoint": "Precise punto en eje X o",
+      "ucsXYPlanePoint": "Precise punto en plano XY o",
       "ucsRotationX": "Precise ángulo de rotación sobre eje X",
       "ucsRotationY": "Precise ángulo de rotación sobre eje Y",
       "ucsRotationZ": "Precise ángulo de rotación sobre eje Z",
-      "ucsZAxisOrigin": "Precise nuevo punto de origen <0,0,0>",
+      "ucsZAxisOrigin": "Precise nuevo punto de origen u",
       "ucsZAxisPoint": "Precise punto en parte positiva del eje Z",
-      "ucsNamedOption": "Indique una opción [Rest/Guardar/Supr/?]",
-      "ucsRestoreName": "Indique nombre de SCP para restaurarlo o [?]",
-      "ucsSaveName": "Indique nombre para guardar SCP actual o [?]",
-      "ucsDeleteNames": "Indique el nombre del SCP que se suprimirá <ninguno>",
-      "ucsListNames": "Indique nombre(s) del SCP que enumerar <*>",
-      "planUcsName": "Indique nombre de SCP o [?]",
+      "ucsRestoreName": "Indique nombre de SCP para restaurarlo o",
+      "ucsSaveName": "Indique nombre para guardar SCP actual o",
+      "ucsDeleteNames": "Indique el nombre del SCP que se suprimirá",
+      "ucsListNames": "Indique nombre(s) del SCP que enumerar",
+      "ucsAccept": "Aceptar",
+      "ucsNone": "ninguno",
+      "ucsReplace": [
+        "El SCP \"",
+        [
+          "name"
+        ],
+        "\" ya existe. Reemplácelo.?"
+      ],
+      "ucsAlignObject": "Designe el objeto a alinear con el SCP",
+      "planUcsName": "Indique nombre de SCP o",
+      "planCurrent": "Actual",
       "elevDefaultElevation": "Precise nueva elevación por defecto",
       "elevDefaultThickness": "Precise nueva altura de objeto por defecto",
       "ltscaleFactor": "Indique nuevo factor de escala del tipo de línea",
@@ -1883,12 +1895,31 @@ export const es: EngineLocale = {
           }
         ]
       ],
+      "listedUcsName": [
+        "Nombre de scp actual: ",
+        [
+          "kind",
+          1,
+          {
+            "world": "*UNIVERSAL*",
+            "unnamed": "*SIN NOMBRE*",
+            "other": [
+              "\"",
+              [
+                "name"
+              ],
+              "\""
+            ]
+          }
+        ]
+      ],
       "savedUcsHeader": "Sistemas de coordenadas guardados:",
       "savedUcsEntry": [
+        "\"",
         [
           "name"
         ],
-        "\nOrigen = <",
+        "\"\n     Origen = <",
         [
           "originX"
         ],
@@ -1912,7 +1943,7 @@ export const es: EngineLocale = {
         [
           "xAxisZ"
         ],
-        ">\n    Eje Y = <",
+        ">\n     Eje Y = <",
         [
           "yAxisX"
         ],
@@ -1945,6 +1976,26 @@ export const es: EngineLocale = {
         ],
         "\"."
       ],
+      "noMatchingUcs": "  No se ha encontrado ningún SCP con ese nombre.",
+      "ucsDeleted": [
+        "Suprimidos ",
+        [
+          "count"
+        ],
+        " ",
+        [
+          "count",
+          2,
+          {
+            "one": "nombre",
+            "other": "nombres"
+          }
+        ],
+        " de SCP."
+      ],
+      "invalidUcsName": "Nombre de SCP no válido.",
+      "noPreviousUcs": "No hay ningún sistema de coordenadas guardado.",
+      "yesOrNoPlease": "Sí o No.",
       "rectangleModes": [
         "Modos de rectángulo actuales:",
         [
@@ -2288,6 +2339,7 @@ export const es: EngineLocale = {
           1,
           {
             "oneObject": "Ventana/úLTimo/Captura/MArco/Todos/Borde/polígonOV/polígonOC",
+            "singleSet": "Ventana/úLTimo/Captura/MArco/Todos/Borde/polígonOV/polígonOC/Grupo",
             "pathCurve": "Ventana/úLTimo/Captura/MArco/Todos/Borde/polígonOV/polígonOC/Grupo/Previo/AUto",
             "crossingObjects": "Ventana/úLTimo/Captura/MArco/Todos/Borde/polígonOV/polígonOC/Añadir/Eliminar/Múltiple/Previo/desHacer/AUto/úNico",
             "wholeObjects": "Ventana/úLTimo/Captura/MArco/Todos/Borde/polígonOV/polígonOC/Grupo/Añadir/Eliminar/Múltiple/Previo/desHacer/AUto/úNico",

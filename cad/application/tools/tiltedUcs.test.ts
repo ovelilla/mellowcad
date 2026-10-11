@@ -319,9 +319,9 @@ describe("the UCS command in 3D", () => {
     const cad = front(createHarness())
     cad.command("UCS").option("NAmed").option("Save").type("F").enter()
     cad.command("UCS").option("World")
-    cad.command("UCS").option("NAmed").type("?").enter().enter().escape()
+    cad.command("UCS").option("NAmed").option("?").enter().escape()
     expect(cad.commandLog().join("\n")).toContain(
-      "Y Axis = <0.0000,0.0000,1.0000>, Z Axis = <0.0000,-1.0000,0.0000>"
+      "Y Axis = <0.00,0.00,1.00>, Z Axis = <0.00,-1.00,0.00>"
     )
   })
 })

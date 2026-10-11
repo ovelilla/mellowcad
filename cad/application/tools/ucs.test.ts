@@ -121,7 +121,7 @@ describe("UCS", () => {
       expect(ucsOf(cad).origin).toBeCloseToPoint(p(100, 50))
       expect(cad.runtime.document.getSettings().ucsName).toBe("Site")
 
-      cad.command("UCS").option("NAmed").type("?").enter().enter()
+      cad.command("UCS").option("NAmed").option("?").enter()
       expect(cad.commandLog().join("\n")).toContain("Saved coordinate systems:")
 
       cad.escape()
@@ -138,7 +138,9 @@ describe("UCS", () => {
       cad.command("UCS").option("NAmed").option("Save").type("A").enter()
       turned(cad)
       cad.command("UCS").option("NAmed").option("Save").type("a").enter()
-      expect(cad.optionIds()).toEqual(["Yes", "No"])
+      expect(cad.state().commandLine.prompt).toBe(
+        'UCS UCS "a" already exists.  Replace it? <N>:'
+      )
       cad.option("Yes")
       const [entry] = cad.runtime.document.getSettings().namedUcs
       expect(entry.name).toBe("a")

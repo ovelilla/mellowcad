@@ -8,6 +8,7 @@ import {
   PointerInput,
   Tool,
   ToolContext,
+  ToolQuestion,
 } from "./Tool"
 import { findNamed, listNamedUcs } from "./UcsTool"
 
@@ -57,16 +58,38 @@ export class PlanTool implements Tool {
     return true
   }
 
+  /** WHY `<Current>`, not the keyword: AutoCAD's default names it short. */
+  question(): PromptId | ToolQuestion {
+    switch (this.state.phase) {
+      case "option":
+        return { id: "enterAnOption", enter: "planCurrent" }
+      case "name":
+        return "planUcsName"
+      case "list":
+        return { id: "ucsListNames", enter: { name: "*" } }
+    }
+  }
+
   wantsSnap(): boolean {
     return false
   }
 
   commandOptions(): readonly CommandOption[] {
-    if (this.state.phase !== "option") return []
-    return [{ id: "Current ucs" }, { id: "Ucs" }, { id: "World" }]
+    switch (this.state.phase) {
+      case "option":
+        return [{ id: "Current ucs" }, { id: "Ucs" }, { id: "World" }]
+      case "name":
+        return [{ id: "?" }]
+      default:
+        return []
+    }
   }
 
   invokeOption(id: string, ctx: ToolContext): CommandOptionOutcome {
+    if (this.state.phase === "name" && id === "?") {
+      this.ask("list", ctx)
+      return "continue"
+    }
     if (this.state.phase !== "option") return "unhandled"
     switch (id) {
       case "Current ucs":
@@ -103,11 +126,10 @@ export class PlanTool implements Tool {
       return this.ask("name", ctx)
     }
     if (typed === "?") return this.ask("list", ctx)
+    if (typed === "") return ctx.endCommand()
     const entry = findNamed(ctx.document.getSettings().namedUcs, typed)
     if (!entry) {
-      if (typed !== "") {
-        ctx.report(ctx.text.message("ucsUndefined", { name: typed }), "error")
-      }
+      ctx.report(ctx.text.message("ucsUndefined", { name: typed }), "error")
       return this.ask("name", ctx)
     }
     this.plan(entry.ucs, ctx)
@@ -125,6 +147,7 @@ export class PlanTool implements Tool {
       ctx.blocks
     )
     if (bounds) viewport.zoomToViewBounds(bounds.min, bounds.max, PADDING_PX)
+    ctx.report(ctx.text.message("regeneratingModel"))
   }
 
   private place(ctx: ToolContext): void {

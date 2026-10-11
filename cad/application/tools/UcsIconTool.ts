@@ -1,5 +1,6 @@
 import { UcsIconSetting } from "../../domain/units"
 import { UpdateSettingsCommand } from "../commands/settingsCommands"
+import type { PromptId } from "../../locales/types"
 import { CommandOption, CommandOptionOutcome, Tool, ToolContext } from "./Tool"
 
 const CHANGE_BY_KEYWORD: Readonly<Record<string, Partial<UcsIconSetting>>> = {
@@ -28,6 +29,10 @@ export class UcsIconTool implements Tool {
 
   onDeactivate(ctx: ToolContext): void {
     ctx.dynamicInput.close()
+  }
+
+  question(): PromptId {
+    return "enterAnOption"
   }
 
   commandOptions(): readonly CommandOption[] {

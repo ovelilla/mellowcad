@@ -104,6 +104,8 @@ export interface ToolQuestion {
     | { readonly name: string }
     | Vec3
     | PromptId
+  /** What the prompt's words name (UCS's `UCS "{name}" already exists.`). */
+  readonly values?: MessageValues
 }
 
 /**
@@ -115,7 +117,7 @@ export interface ToolQuestion {
  * number or a whole one, a keyword (`Invalid option keyword.`), a selection set
  * (`*Invalid selection*` and the selection modes it expects: with sub-objects
  * as MOVE's, of whole objects as MIRROR's and JOIN's, STRETCH's crossing one,
- * BREAK's set of one object or ARRAYPATH's path curve), one object picked (`*Invalid selection*` and
+ * BREAK's set of one object, UCS OBject's, which takes a group, or ARRAYPATH's path curve), one object picked (`*Invalid selection*` and
  * its keywords, `Last` first for a plain pick as DIMSPACE's base dimension, or
  * `Expects a single object.` for the dimension commands' picks), or a
  * command's own refusal (CIRCLE's radius, POLYGON's sides).
@@ -132,6 +134,7 @@ export type QuestionInput =
   | "wholeObjects"
   | "crossingObjects"
   | "oneObject"
+  | "singleSet"
   | "pathCurve"
   | "object"
   | "objectOrLast"

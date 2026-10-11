@@ -3290,109 +3290,133 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
   properties: -
   cycling: -
 > UCS
-  prompt: UCS [NAmed/OBject/Previous/View/World/X/Y/Z/ZAxis]:
-  asks: "Specify origin of UCS"
+  prompt: UCS Specify origin of UCS or [NAmed/OBject/Previous/View/World/X/Y/Z/ZAxis] <World>:
+  asks: "Specify origin of UCS or"
+  tip: Specify origin of UCS or
   dyn: "X,Y"=""||*
   options: [NA] NAmed, [OB] OBject, [P] Previous, [V] View, [W] World, [X] X, [Y] Y, [Z] Z, [ZA] ZAxis
   command| UCS
   info| Current ucs name:  *WORLD*
 > origin
-  prompt: UCS:
-  asks: "Specify point on X-axis or <Accept>"
+  prompt: UCS Specify point on X-axis or <accept>:
+  asks: "Specify point on X-axis or"
+  tip: Specify point on X-axis or
   options: -
+  prompt| Specify origin of UCS or [NAmed/OBject/Previous/View/World/X/Y/Z/ZAxis] <World>:
 > x axis
-  asks: "Specify point on the XY plane or <Accept>"
+  prompt: UCS Specify point on the XY plane or <accept>:
+  asks: "Specify point on the XY plane or"
+  tip: Specify point on the XY plane or
+  prompt| Specify point on X-axis or <accept>:
 > enter accepts
   prompt: Command:
   asks: -
+  tip: -
   dyn: -
+  prompt| Specify point on the XY plane or <accept>:
 > UCS Z
-  prompt: UCS [NAmed/OBject/Previous/View/World/X/Y/Z/ZAxis]:
-  asks: "Specify origin of UCS"
+  prompt: UCS Specify origin of UCS or [NAmed/OBject/Previous/View/World/X/Y/Z/ZAxis] <World>:
+  asks: "Specify origin of UCS or"
+  tip: Specify origin of UCS or
   dyn: "X,Y"=""||*
   options: [NA] NAmed, [OB] OBject, [P] Previous, [V] View, [W] World, [X] X, [Y] Y, [Z] Z, [ZA] ZAxis
   command| UCS
   info| Current ucs name:  *NO NAME*
 > Z
-  prompt: UCS:
+  prompt: UCS Specify rotation angle about Z axis <90.00>:
   asks: "Specify rotation angle about Z axis"
+  tip: Specify rotation angle about Z axis
   dyn: "Specify rotation angle about Z axis"=""|90.00|°*
   options: -
+  prompt| Specify origin of UCS or [NAmed/OBject/Previous/View/World/X/Y/Z/ZAxis] <World>: Z
 > angle
   dyn: "Specify rotation angle about Z axis"="45"|90.00|°*
 > enter
   prompt: Command:
   asks: -
+  tip: -
   dyn: -
+  prompt| Specify rotation angle about Z axis <90.00>: 45
 > UCS NA
-  prompt: UCS [NAmed/OBject/Previous/View/World/X/Y/Z/ZAxis]:
-  asks: "Specify origin of UCS"
+  prompt: UCS Specify origin of UCS or [NAmed/OBject/Previous/View/World/X/Y/Z/ZAxis] <World>:
+  asks: "Specify origin of UCS or"
+  tip: Specify origin of UCS or
   dyn: "X,Y"=""||*
   options: [NA] NAmed, [OB] OBject, [P] Previous, [V] View, [W] World, [X] X, [Y] Y, [Z] Z, [ZA] ZAxis
   command| UCS
   info| Current ucs name:  *NO NAME*
 > NA
-  prompt: UCS [Restore/Save/Delete]:
-  asks: "Enter an option [Restore/Save/Delete/?]"
-  dyn: "Enter an option [Restore/Save/Delete/?]"=""||*
-  options: [R] Restore, [S] Save, [D] Delete
+  prompt: UCS Enter an option [Restore/Save/Delete/?]:
+  asks: 
+  tip: Enter an option
+  dyn: 
+  options: [R] Restore, [S] Save, [D] Delete, [?] ?
+  prompt| Specify origin of UCS or [NAmed/OBject/Previous/View/World/X/Y/Z/ZAxis] <World>: NA
 > S
-  prompt: UCS:
-  asks: "Enter name to save current UCS or [?]"
-  dyn: "Enter name to save current UCS or [?]"=""||*
-  options: -
+  prompt: UCS Enter name to save current UCS or [?]:
+  asks: "Enter name to save current UCS or"
+  tip: Enter name to save current UCS or
+  dyn: "Enter name to save current UCS or"=""||*
+  options: [?] ?
+  prompt| Enter an option [Restore/Save/Delete/?]: S
 > name
-  dyn: "Enter name to save current UCS or [?]"="PLOT"||*
+  dyn: "Enter name to save current UCS or"="PLOT"||*
 > enter
   prompt: Command:
   asks: -
+  tip: -
   dyn: -
+  options: -
+  prompt| Enter name to save current UCS or [?]: PLOT
 > UCS NA ?
-  prompt: UCS [NAmed/OBject/Previous/View/World/X/Y/Z/ZAxis]:
-  asks: "Specify origin of UCS"
+  prompt: UCS Specify origin of UCS or [NAmed/OBject/Previous/View/World/X/Y/Z/ZAxis] <World>:
+  asks: "Specify origin of UCS or"
+  tip: Specify origin of UCS or
   dyn: "X,Y"=""||*
   options: [NA] NAmed, [OB] OBject, [P] Previous, [V] View, [W] World, [X] X, [Y] Y, [Z] Z, [ZA] ZAxis
   command| UCS
   info| Current ucs name:  PLOT
 > NA
-  prompt: UCS [Restore/Save/Delete]:
-  asks: "Enter an option [Restore/Save/Delete/?]"
-  dyn: "Enter an option [Restore/Save/Delete/?]"=""||*
-  options: [R] Restore, [S] Save, [D] Delete
+  prompt: UCS Enter an option [Restore/Save/Delete/?]:
+  asks: 
+  tip: Enter an option
+  dyn: 
+  options: [R] Restore, [S] Save, [D] Delete, [?] ?
+  prompt| Specify origin of UCS or [NAmed/OBject/Previous/View/World/X/Y/Z/ZAxis] <World>: NA
 > ?
-  dyn: "Enter an option [Restore/Save/Delete/?]"="?"||*
 > enter
-  prompt: UCS:
-  asks: "Enter UCS name(s) to list <*>"
-  dyn: "Enter UCS name(s) to list <*>"=""||*
+  prompt: Command:
+  asks: -
+  tip: -
+  dyn: -
   options: -
+  prompt| Enter an option [Restore/Save/Delete/?]:
 > all
-  prompt: UCS [Restore/Save/Delete]:
-  asks: "Enter an option [Restore/Save/Delete/?]"
-  dyn: "Enter an option [Restore/Save/Delete/?]"=""||*
-  options: [R] Restore, [S] Save, [D] Delete
+  prompt: UCS Specify origin of UCS or [NAmed/OBject/Previous/View/World/X/Y/Z/ZAxis] <World>:
+  asks: "Specify origin of UCS or"
+  tip: Specify origin of UCS or
+  dyn: "X,Y"=""||*
+  options: [NA] NAmed, [OB] OBject, [P] Previous, [V] View, [W] World, [X] X, [Y] Y, [Z] Z, [ZA] ZAxis
+  command| UCS
   info| Current ucs name:  PLOT
-        Saved coordinate systems:
-        PLOT
-        Origin = <0.0000,0.0000,0.0000>, X Axis = <1.0000,0.0000,0.0000>
-            Y Axis = <0.0000,1.0000,0.0000>, Z Axis = <0.0000,0.0000,1.0000>
 > R
-  prompt: UCS:
-  asks: "Enter name of UCS to restore or [?]"
-  dyn: "Enter name of UCS to restore or [?]"=""||*
-  options: -
 > unknown
-  dyn: "Enter name of UCS to restore or [?]"="NOPE"||*
+  dyn: "X,Y"="NOPE"||*
 > enter
-  dyn: "Enter name of UCS to restore or [?]"=""||*
-  error| Cannot find UCS "NOPE".
+  dyn: "X,Y"=""||*
+  prompt| Specify origin of UCS or [NAmed/OBject/Previous/View/World/X/Y/Z/ZAxis] <World>: NOPE
+  error| Point or option keyword required.
 > escape
   prompt: Command:
   asks: -
+  tip: -
   dyn: -
+  options: -
+  prompt| Specify origin of UCS or [NAmed/OBject/Previous/View/World/X/Y/Z/ZAxis] <World>: *Cancel*
 > UCS W
-  prompt: UCS [NAmed/OBject/Previous/View/World/X/Y/Z/ZAxis]:
-  asks: "Specify origin of UCS"
+  prompt: UCS Specify origin of UCS or [NAmed/OBject/Previous/View/World/X/Y/Z/ZAxis] <World>:
+  asks: "Specify origin of UCS or"
+  tip: Specify origin of UCS or
   dyn: "X,Y"=""||*
   options: [NA] NAmed, [OB] OBject, [P] Previous, [V] View, [W] World, [X] X, [Y] Y, [Z] Z, [ZA] ZAxis
   command| UCS
@@ -3400,11 +3424,14 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
 > W
   prompt: Command:
   asks: -
+  tip: -
   dyn: -
   options: -
+  prompt| Specify origin of UCS or [NAmed/OBject/Previous/View/World/X/Y/Z/ZAxis] <World>: W
 > UCS P
-  prompt: UCS [NAmed/OBject/Previous/View/World/X/Y/Z/ZAxis]:
-  asks: "Specify origin of UCS"
+  prompt: UCS Specify origin of UCS or [NAmed/OBject/Previous/View/World/X/Y/Z/ZAxis] <World>:
+  asks: "Specify origin of UCS or"
+  tip: Specify origin of UCS or
   dyn: "X,Y"=""||*
   options: [NA] NAmed, [OB] OBject, [P] Previous, [V] View, [W] World, [X] X, [Y] Y, [Z] Z, [ZA] ZAxis
   command| UCS
@@ -3412,92 +3439,128 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
 > P
   prompt: Command:
   asks: -
+  tip: -
   dyn: -
   options: -
+  prompt| Specify origin of UCS or [NAmed/OBject/Previous/View/World/X/Y/Z/ZAxis] <World>: P
 > UCS OB
-  prompt: UCS [NAmed/OBject/Previous/View/World/X/Y/Z/ZAxis]:
-  asks: "Specify origin of UCS"
+  prompt: UCS Specify origin of UCS or [NAmed/OBject/Previous/View/World/X/Y/Z/ZAxis] <World>:
+  asks: "Specify origin of UCS or"
+  tip: Specify origin of UCS or
   dyn: "X,Y"=""||*
   options: [NA] NAmed, [OB] OBject, [P] Previous, [V] View, [W] World, [X] X, [Y] Y, [Z] Z, [ZA] ZAxis
   command| UCS
   info| Current ucs name:  PLOT
 > OB
-  prompt: UCS:
+  prompt: UCS Select object to align UCS:
   asks: 
+  tip: Select object to align UCS:
   dyn: 
   options: -
+  prompt| Specify origin of UCS or [NAmed/OBject/Previous/View/World/X/Y/Z/ZAxis] <World>: OB
 > pick
   prompt: Command:
   asks: -
+  tip: -
   dyn: -
+  prompt| Select object to align UCS:
 > UCSICON
-  prompt: UCSICON [ON/OFF/Noorigin/ORigin] <ON>:
+  prompt: UCSICON Enter an option [ON/OFF/Noorigin/ORigin] <ON>:
   asks: 
+  tip: Enter an option
   dyn: 
   options: [ON] ON, [OFF] OFF, [N] Noorigin, [OR] ORigin
   command| UCSICON
 > N
   prompt: Command:
   asks: -
+  tip: -
   dyn: -
   options: -
+  prompt| Enter an option [ON/OFF/Noorigin/ORigin] <ON>: N
 > PLAN
-  prompt: PLAN [Current ucs/Ucs/World]:
+  prompt: PLAN Enter an option [Current ucs/Ucs/World] <Current>:
   asks: 
+  tip: Enter an option
   dyn: 
   options: [C] Current ucs, [U] Ucs, [W] World
   command| PLAN
 > U
-  prompt: PLAN:
-  asks: "Enter name of UCS or [?]"
-  dyn: "Enter name of UCS or [?]"=""||*
-  options: -
+  prompt: PLAN Enter name of UCS or [?]:
+  asks: "Enter name of UCS or"
+  tip: Enter name of UCS or
+  dyn: "Enter name of UCS or"=""||*
+  options: [?] ?
+  prompt| Enter an option [Current ucs/Ucs/World] <Current>: U
 > ?
-  dyn: "Enter name of UCS or [?]"="?"||*
+  dyn: "Enter name of UCS or"="?"||*
 > enter
-  asks: "Enter UCS name(s) to list <*>"
-  dyn: "Enter UCS name(s) to list <*>"=""||*
+  prompt: PLAN Enter UCS name(s) to list <*>:
+  asks: "Enter UCS name(s) to list"
+  tip: Enter UCS name(s) to list
+  dyn: "Enter UCS name(s) to list"=""||*
+  options: -
+  prompt| Enter name of UCS or [?]: ?
 > all
-  asks: "Enter name of UCS or [?]"
-  dyn: "Enter name of UCS or [?]"=""||*
-  info| Current ucs name:  *NO NAME*
+  prompt: PLAN Enter name of UCS or [?]:
+  asks: "Enter name of UCS or"
+  tip: Enter name of UCS or
+  dyn: "Enter name of UCS or"=""||*
+  options: [?] ?
+  prompt| Enter UCS name(s) to list <*>:
+  info| Current ucs name: *NO NAME*
+        
         Saved coordinate systems:
-        PLOT
-        Origin = <0.0000,0.0000,0.0000>, X Axis = <0.7071,-0.7071,0.0000>
-            Y Axis = <0.7071,0.7071,0.0000>, Z Axis = <0.0000,0.0000,1.0000>
+        
+        "PLOT"
+             Origin = <0.00,0.00,0.00>, X Axis = <0.71,-0.71,0.00>
+             Y Axis = <0.71,0.71,0.00>, Z Axis = <0.00,0.00,1.00>
 > unknown
-  dyn: "Enter name of UCS or [?]"="NOPE"||*
+  dyn: "Enter name of UCS or"="NOPE"||*
 > enter
-  dyn: "Enter name of UCS or [?]"=""||*
+  dyn: "Enter name of UCS or"=""||*
+  prompt| Enter name of UCS or [?]: NOPE
   error| Cannot find UCS "NOPE".
 > name
-  dyn: "Enter name of UCS or [?]"="PLOT"||*
+  dyn: "Enter name of UCS or"="PLOT"||*
 > enter
   prompt: Command:
   asks: -
+  tip: -
   dyn: -
+  options: -
+  prompt| Enter name of UCS or [?]: PLOT
+  info| Regenerating model.
 > PLAN enter
-  prompt: PLAN [Current ucs/Ucs/World]:
+  prompt: PLAN Enter an option [Current ucs/Ucs/World] <Current>:
   asks: 
+  tip: Enter an option
   dyn: 
   options: [C] Current ucs, [U] Ucs, [W] World
   command| PLAN
 > enter is Current ucs
   prompt: Command:
   asks: -
+  tip: -
   dyn: -
   options: -
+  prompt| Enter an option [Current ucs/Ucs/World] <Current>:
+  info| Regenerating model.
 > PLAN W
-  prompt: PLAN [Current ucs/Ucs/World]:
+  prompt: PLAN Enter an option [Current ucs/Ucs/World] <Current>:
   asks: 
+  tip: Enter an option
   dyn: 
   options: [C] Current ucs, [U] Ucs, [W] World
   command| PLAN
 > W
   prompt: Command:
   asks: -
+  tip: -
   dyn: -
   options: -
+  prompt| Enter an option [Current ucs/Ucs/World] <Current>: W
+  info| Regenerating model.
 
 ## UCS tilted
 > start
@@ -3510,106 +3573,139 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
   properties: -
   cycling: -
 > UCS X
-  prompt: UCS [NAmed/OBject/Previous/View/World/X/Y/Z/ZAxis]:
-  asks: "Specify origin of UCS"
+  prompt: UCS Specify origin of UCS or [NAmed/OBject/Previous/View/World/X/Y/Z/ZAxis] <World>:
+  asks: "Specify origin of UCS or"
+  tip: Specify origin of UCS or
   dyn: "X,Y"=""||*
   options: [NA] NAmed, [OB] OBject, [P] Previous, [V] View, [W] World, [X] X, [Y] Y, [Z] Z, [ZA] ZAxis
   command| UCS
   info| Current ucs name:  *WORLD*
 > X
-  prompt: UCS:
+  prompt: UCS Specify rotation angle about X axis <90.00>:
   asks: "Specify rotation angle about X axis"
+  tip: Specify rotation angle about X axis
   dyn: "Specify rotation angle about X axis"=""|90.00|°*
   options: -
+  prompt| Specify origin of UCS or [NAmed/OBject/Previous/View/World/X/Y/Z/ZAxis] <World>: X
 > angle
   dyn: "Specify rotation angle about X axis"="90"|90.00|°*
 > enter
   prompt: Command:
   asks: -
+  tip: -
   dyn: -
+  prompt| Specify rotation angle about X axis <90.00>: 90
 > UCS Y
-  prompt: UCS [NAmed/OBject/Previous/View/World/X/Y/Z/ZAxis]:
-  asks: "Specify origin of UCS"
+  prompt: UCS Specify origin of UCS or [NAmed/OBject/Previous/View/World/X/Y/Z/ZAxis] <World>:
+  asks: "Specify origin of UCS or"
+  tip: Specify origin of UCS or
   dyn: "X,Y"=""||*
   options: [NA] NAmed, [OB] OBject, [P] Previous, [V] View, [W] World, [X] X, [Y] Y, [Z] Z, [ZA] ZAxis
   command| UCS
   info| Current ucs name:  *NO NAME*
 > Y
-  prompt: UCS:
+  prompt: UCS Specify rotation angle about Y axis <90.00>:
   asks: "Specify rotation angle about Y axis"
+  tip: Specify rotation angle about Y axis
   dyn: "Specify rotation angle about Y axis"=""|90.00|°*
   options: -
+  prompt| Specify origin of UCS or [NAmed/OBject/Previous/View/World/X/Y/Z/ZAxis] <World>: Y
 > enter
   prompt: Command:
   asks: -
+  tip: -
   dyn: -
+  prompt| Specify rotation angle about Y axis <90.00>:
 > UCS ZA
-  prompt: UCS [NAmed/OBject/Previous/View/World/X/Y/Z/ZAxis]:
-  asks: "Specify origin of UCS"
+  prompt: UCS Specify origin of UCS or [NAmed/OBject/Previous/View/World/X/Y/Z/ZAxis] <World>:
+  asks: "Specify origin of UCS or"
+  tip: Specify origin of UCS or
   dyn: "X,Y"=""||*
   options: [NA] NAmed, [OB] OBject, [P] Previous, [V] View, [W] World, [X] X, [Y] Y, [Z] Z, [ZA] ZAxis
   command| UCS
   info| Current ucs name:  *NO NAME*
 > ZA
-  prompt: UCS [Object]:
-  asks: "Specify new origin point <0,0,0>"
+  prompt: UCS Specify new origin point or [Object] <0,0,0>:
+  asks: "Specify new origin point or"
+  tip: Specify new origin point or
   options: [O] Object
+  prompt| Specify origin of UCS or [NAmed/OBject/Previous/View/World/X/Y/Z/ZAxis] <World>: ZA
 > origin
-  prompt: UCS:
+  prompt: UCS Specify point on positive portion of Z-axis <-0.00,0.00,1.00>:
   asks: "Specify point on positive portion of Z-axis"
+  tip: Specify point on positive portion of Z-axis
   options: -
+  prompt| Specify new origin point or [Object] <0,0,0>:
 > z point
   dyn: "X,Y"="1,0,0"||*
 > enter
   prompt: Command:
   asks: -
+  tip: -
   dyn: -
+  prompt| Specify point on positive portion of Z-axis <-0.00,0.00,1.00>: 1,0,0
 > UCS ZA O
-  prompt: UCS [NAmed/OBject/Previous/View/World/X/Y/Z/ZAxis]:
-  asks: "Specify origin of UCS"
+  prompt: UCS Specify origin of UCS or [NAmed/OBject/Previous/View/World/X/Y/Z/ZAxis] <World>:
+  asks: "Specify origin of UCS or"
+  tip: Specify origin of UCS or
   dyn: "X,Y"=""||*
   options: [NA] NAmed, [OB] OBject, [P] Previous, [V] View, [W] World, [X] X, [Y] Y, [Z] Z, [ZA] ZAxis
   command| UCS
   info| Current ucs name:  *NO NAME*
 > ZA
-  prompt: UCS [Object]:
-  asks: "Specify new origin point <0,0,0>"
+  prompt: UCS Specify new origin point or [Object] <0,0,0>:
+  asks: "Specify new origin point or"
+  tip: Specify new origin point or
   options: [O] Object
+  prompt| Specify origin of UCS or [NAmed/OBject/Previous/View/World/X/Y/Z/ZAxis] <World>: ZA
 > O
-  prompt: UCS:
+  prompt: UCS Select object:
   asks: 
+  tip: Select object:
   dyn: 
   options: -
+  prompt| Specify new origin point or [Object] <0,0,0>: O
 > pick
   prompt: Command:
   asks: -
+  tip: -
   dyn: -
+  prompt| Select object:
 > UCS NA
-  prompt: UCS [NAmed/OBject/Previous/View/World/X/Y/Z/ZAxis]:
-  asks: "Specify origin of UCS"
+  prompt: UCS Specify origin of UCS or [NAmed/OBject/Previous/View/World/X/Y/Z/ZAxis] <World>:
+  asks: "Specify origin of UCS or"
+  tip: Specify origin of UCS or
   dyn: "X,Y"=""||*
   options: [NA] NAmed, [OB] OBject, [P] Previous, [V] View, [W] World, [X] X, [Y] Y, [Z] Z, [ZA] ZAxis
   command| UCS
   info| Current ucs name:  *NO NAME*
 > NA
-  prompt: UCS [Restore/Save/Delete]:
-  asks: "Enter an option [Restore/Save/Delete/?]"
-  dyn: "Enter an option [Restore/Save/Delete/?]"=""||*
-  options: [R] Restore, [S] Save, [D] Delete
+  prompt: UCS Enter an option [Restore/Save/Delete/?]:
+  asks: 
+  tip: Enter an option
+  dyn: 
+  options: [R] Restore, [S] Save, [D] Delete, [?] ?
+  prompt| Specify origin of UCS or [NAmed/OBject/Previous/View/World/X/Y/Z/ZAxis] <World>: NA
 > S
-  prompt: UCS:
-  asks: "Enter name to save current UCS or [?]"
-  dyn: "Enter name to save current UCS or [?]"=""||*
-  options: -
+  prompt: UCS Enter name to save current UCS or [?]:
+  asks: "Enter name to save current UCS or"
+  tip: Enter name to save current UCS or
+  dyn: "Enter name to save current UCS or"=""||*
+  options: [?] ?
+  prompt| Enter an option [Restore/Save/Delete/?]: S
 > name
-  dyn: "Enter name to save current UCS or [?]"="END"||*
+  dyn: "Enter name to save current UCS or"="END"||*
 > enter
   prompt: Command:
   asks: -
+  tip: -
   dyn: -
+  options: -
+  prompt| Enter name to save current UCS or [?]: END
 > UCS W
-  prompt: UCS [NAmed/OBject/Previous/View/World/X/Y/Z/ZAxis]:
-  asks: "Specify origin of UCS"
+  prompt: UCS Specify origin of UCS or [NAmed/OBject/Previous/View/World/X/Y/Z/ZAxis] <World>:
+  asks: "Specify origin of UCS or"
+  tip: Specify origin of UCS or
   dyn: "X,Y"=""||*
   options: [NA] NAmed, [OB] OBject, [P] Previous, [V] View, [W] World, [X] X, [Y] Y, [Z] Z, [ZA] ZAxis
   command| UCS
@@ -3617,42 +3713,48 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
 > W
   prompt: Command:
   asks: -
+  tip: -
   dyn: -
   options: -
+  prompt| Specify origin of UCS or [NAmed/OBject/Previous/View/World/X/Y/Z/ZAxis] <World>: W
 > UCS NA ?
-  prompt: UCS [NAmed/OBject/Previous/View/World/X/Y/Z/ZAxis]:
-  asks: "Specify origin of UCS"
+  prompt: UCS Specify origin of UCS or [NAmed/OBject/Previous/View/World/X/Y/Z/ZAxis] <World>:
+  asks: "Specify origin of UCS or"
+  tip: Specify origin of UCS or
   dyn: "X,Y"=""||*
   options: [NA] NAmed, [OB] OBject, [P] Previous, [V] View, [W] World, [X] X, [Y] Y, [Z] Z, [ZA] ZAxis
   command| UCS
   info| Current ucs name:  *WORLD*
 > NA
-  prompt: UCS [Restore/Save/Delete]:
-  asks: "Enter an option [Restore/Save/Delete/?]"
-  dyn: "Enter an option [Restore/Save/Delete/?]"=""||*
-  options: [R] Restore, [S] Save, [D] Delete
+  prompt: UCS Enter an option [Restore/Save/Delete/?]:
+  asks: 
+  tip: Enter an option
+  dyn: 
+  options: [R] Restore, [S] Save, [D] Delete, [?] ?
+  prompt| Specify origin of UCS or [NAmed/OBject/Previous/View/World/X/Y/Z/ZAxis] <World>: NA
 > ?
-  dyn: "Enter an option [Restore/Save/Delete/?]"="?"||*
 > enter
-  prompt: UCS:
-  asks: "Enter UCS name(s) to list <*>"
-  dyn: "Enter UCS name(s) to list <*>"=""||*
+  prompt: Command:
+  asks: -
+  tip: -
+  dyn: -
   options: -
+  prompt| Enter an option [Restore/Save/Delete/?]:
 > all
-  prompt: UCS [Restore/Save/Delete]:
-  asks: "Enter an option [Restore/Save/Delete/?]"
-  dyn: "Enter an option [Restore/Save/Delete/?]"=""||*
-  options: [R] Restore, [S] Save, [D] Delete
+  prompt: UCS Specify origin of UCS or [NAmed/OBject/Previous/View/World/X/Y/Z/ZAxis] <World>:
+  asks: "Specify origin of UCS or"
+  tip: Specify origin of UCS or
+  dyn: "X,Y"=""||*
+  options: [NA] NAmed, [OB] OBject, [P] Previous, [V] View, [W] World, [X] X, [Y] Y, [Z] Z, [ZA] ZAxis
+  command| UCS
   info| Current ucs name:  *WORLD*
-        Saved coordinate systems:
-        END
-        Origin = <100.0000,0.0000,0.0000>, X Axis = <0.0000,1.0000,0.0000>
-            Y Axis = <0.0000,0.0000,1.0000>, Z Axis = <1.0000,0.0000,0.0000>
 > escape
   prompt: Command:
   asks: -
+  tip: -
   dyn: -
   options: -
+  prompt| Specify origin of UCS or [NAmed/OBject/Previous/View/World/X/Y/Z/ZAxis] <World>: *Cancel*
 
 ## ELEV
 > start

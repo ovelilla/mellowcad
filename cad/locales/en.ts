@@ -933,20 +933,30 @@ export const en: EngineCatalog = {
       "lengthen": "Lengthen",
       "move": "Move",
       "bulge": "Bulge",
-      "ucsOrigin": "Specify origin of UCS",
-      "ucsXAxisPoint": "Specify point on X-axis or <Accept>",
-      "ucsXYPlanePoint": "Specify point on the XY plane or <Accept>",
+      "ucsOrigin": "Specify origin of UCS or",
+      "ucsXAxisPoint": "Specify point on X-axis or",
+      "ucsXYPlanePoint": "Specify point on the XY plane or",
       "ucsRotationX": "Specify rotation angle about X axis",
       "ucsRotationY": "Specify rotation angle about Y axis",
       "ucsRotationZ": "Specify rotation angle about Z axis",
-      "ucsZAxisOrigin": "Specify new origin point <0,0,0>",
+      "ucsZAxisOrigin": "Specify new origin point or",
       "ucsZAxisPoint": "Specify point on positive portion of Z-axis",
-      "ucsNamedOption": "Enter an option [Restore/Save/Delete/?]",
-      "ucsRestoreName": "Enter name of UCS to restore or [?]",
-      "ucsSaveName": "Enter name to save current UCS or [?]",
-      "ucsDeleteNames": "Enter UCS name(s) to delete <none>",
-      "ucsListNames": "Enter UCS name(s) to list <*>",
-      "planUcsName": "Enter name of UCS or [?]",
+      "ucsRestoreName": "Enter name of UCS to restore or",
+      "ucsSaveName": "Enter name to save current UCS or",
+      "ucsDeleteNames": "Enter UCS name(s) to delete",
+      "ucsListNames": "Enter UCS name(s) to list",
+      "ucsAccept": "accept",
+      "ucsNone": "none",
+      "ucsReplace": [
+        "UCS \"",
+        [
+          "name"
+        ],
+        "\" already exists.  Replace it?"
+      ],
+      "ucsAlignObject": "Select object to align UCS",
+      "planUcsName": "Enter name of UCS or",
+      "planCurrent": "Current",
       "elevDefaultElevation": "Specify new default elevation",
       "elevDefaultThickness": "Specify new default thickness",
       "ltscaleFactor": "Enter new linetype scale factor",
@@ -1529,12 +1539,31 @@ export const en: EngineCatalog = {
           }
         ]
       ],
+      "listedUcsName": [
+        "Current ucs name: ",
+        [
+          "kind",
+          1,
+          {
+            "world": "*WORLD*",
+            "unnamed": "*NO NAME*",
+            "other": [
+              "\"",
+              [
+                "name"
+              ],
+              "\""
+            ]
+          }
+        ]
+      ],
       "savedUcsHeader": "Saved coordinate systems:",
       "savedUcsEntry": [
+        "\"",
         [
           "name"
         ],
-        "\nOrigin = <",
+        "\"\n     Origin = <",
         [
           "originX"
         ],
@@ -1558,7 +1587,7 @@ export const en: EngineCatalog = {
         [
           "xAxisZ"
         ],
-        ">\n    Y Axis = <",
+        ">\n     Y Axis = <",
         [
           "yAxisX"
         ],
@@ -1591,6 +1620,26 @@ export const en: EngineCatalog = {
         ],
         "\"."
       ],
+      "noMatchingUcs": "  No matching UCS names found.",
+      "ucsDeleted": [
+        "Deleted ",
+        [
+          "count"
+        ],
+        " UCS ",
+        [
+          "count",
+          2,
+          {
+            "one": "name",
+            "other": "names"
+          }
+        ],
+        "."
+      ],
+      "invalidUcsName": "Invalid UCS name.",
+      "noPreviousUcs": "No previous coordinate system saved.",
+      "yesOrNoPlease": "Yes or No, please.",
       "rectangleModes": [
         "Current rectangle modes:",
         [
@@ -1934,6 +1983,7 @@ export const en: EngineCatalog = {
           1,
           {
             "oneObject": "Window/Last/Crossing/BOX/ALL/Fence/WPolygon/CPolygon",
+            "singleSet": "Window/Last/Crossing/BOX/ALL/Fence/WPolygon/CPolygon/Group",
             "pathCurve": "Window/Last/Crossing/BOX/ALL/Fence/WPolygon/CPolygon/Group/Previous/AUto",
             "crossingObjects": "Window/Last/Crossing/BOX/ALL/Fence/WPolygon/CPolygon/Add/Remove/Multiple/Previous/Undo/AUto/SIngle",
             "wholeObjects": "Window/Last/Crossing/BOX/ALL/Fence/WPolygon/CPolygon/Group/Add/Remove/Multiple/Previous/Undo/AUto/SIngle",

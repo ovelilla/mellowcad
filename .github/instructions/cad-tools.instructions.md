@@ -112,8 +112,13 @@ runtime does the rest from that one answer: `LINE Specify next point or [Undo]:`
 So never write a prompt with `ctx.report`. Return the question of every state, including the ones
 that still answer the same question (LINE's tracking offset, the deferred tangent); return a
 `ToolQuestion` (`{ id, enter }`) when the prompt shows what Enter keeps — a length (`<10.0000>`:
-CIRCLERAD, RECTANG's elevation), a point or a phrase id (`<use first point as displacement>`); a
-keyword Enter keeps is `defaultOption()`'s. The `or` belongs to the text, so a state that offers none of the keywords
+CIRCLERAD, RECTANG's elevation), a point or a phrase id (`<use first point as displacement>`,
+UCS's `<accept>`), or a text as the prompt writes it (`{ name: "0,0,0" }`; a point AutoCAD writes
+without spaces, UCS ZAxis's `<5.00,5.00,1.00>`); a keyword Enter keeps is `defaultOption()`'s, unless
+the prompt names it short (PLAN's `<Current>`: a phrase). A prompt that names something carries
+it in `values` (`UCS "{name}" already exists.  Replace it?`). AutoCAD's **yes-or-no question**
+lists no keywords: hidden `Yes` and `No` options, `enter: { name: "N" }`, Enter or No ending as its
+default does, and `{ refusal: "yesOrNoPlease" }`. The `or` belongs to the text, so a state that offers none of the keywords
 AutoCAD lists there takes an id without it (`specifyOtherCornerPoint`); a wording no source confirms
 is not invented — that state returns `null` and keeps the `NAME [keywords]:` prompt. Convert a command whole: one that names no question shows `NAME [keywords]:` and
 writes no prompt lines, so a half-converted one reads inconsistently. A report the answer produces
@@ -134,7 +139,8 @@ a distance and an angle) is a point, a lone distance or angle field that, a numb
 with no box, a point when `wantsSnap()` and a keyword otherwise. Declare what the box cannot tell:
 a single object's pick (`"object"`), a 2D point (ARC's, PLINE's, MIRROR's, ELLIPSE's and POLYGON's
 Edge's later points), a keyword prompt that keeps snaps on, a selection of whole objects (MIRROR,
-JOIN), STRETCH's crossing one or BREAK's set of one object (`"oneObject"`), a count (`"integer"`), and a command's own words (`{ refusal:
+JOIN), STRETCH's crossing one or BREAK's set of one object (`"oneObject"`; UCS OBject's, which takes
+a group, `"singleSet"`), a count (`"integer"`), and a command's own words (`{ refusal:
 "requiresRadius" }`; a distance or an angle measured by two points of its own while the tool has a
 base point, `{ refusal: "requiresDistance", values: { points: "two", keyword: "no" } }`). Type
 `FOO` at the prompt in AutoCAD's console before declaring one: the words differ per input

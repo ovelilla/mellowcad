@@ -284,8 +284,8 @@ export class EngineText {
     return abbreviationOf(this.keyword(command, id))
   }
 
-  prompt(id: PromptId): string {
-    return this.format(this.commands.prompts[id])
+  prompt(id: PromptId, values?: MessageValues): string {
+    return this.format(this.commands.prompts[id], values)
   }
 
   message(id: MessageId, values?: MessageValues): string {
