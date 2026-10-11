@@ -338,3 +338,44 @@ describe("'AREA and 'UCSICON read and set their system variables", () => {
     )
   })
 })
+
+// AutoCAD 2023's console (acc/sv1.txt): a system variable typed as a command
+// runs SETVAR, which a transparent command typed at its prompt resumes.
+describe("a system variable typed as a command resumes as SETVAR", () => {
+  it("after a transparent command, a variable read or another set", () => {
+    const cad = createHarness()
+    answer(cad, "AUPREC", "'ID", "1,2", "'AREA", "'UCSICON", "1", "'AUPREC")
+    expect(cad.commandLog()).toEqual([
+      "AUPREC",
+      "Enter new value for AUPREC <0>: 'ID",
+      ">>Specify point: 1,2",
+      " X = 1.00     Y = 2.00     Z = 0.00",
+      "Resuming SETVAR command.",
+      "Enter new value for AUPREC <0>: 'AREA",
+      "AREA = 0.00 (read only)",
+      "Resuming SETVAR command.",
+      "Enter new value for AUPREC <0>: 'UCSICON",
+      ">>Enter new value for UCSICON <3>: 1",
+      "Resuming SETVAR command.",
+      "Enter new value for AUPREC <0>: 'AUPREC",
+      "Requires an integer between 0 and 8.",
+    ])
+    expect(cad.state().commandLine.prompt).toBe(
+      "AUPREC Enter new value for AUPREC <0>:"
+    )
+    answer(cad, "", "'UCSICON", "'DIST", "0,0", "3,4")
+    expect(cad.commandLog().slice(-2)).toEqual([
+      "Distance = 5.00,  Angle in XY Plane = 53,  Angle from XY Plane = 0\nDelta X = 3.00,  Delta Y = 4.00,   Delta Z = 0.00",
+      "Resuming SETVAR command.",
+    ])
+  })
+
+  it("names SETVAR as Autodesk's Spanish table does", () => {
+    const cad = createHarness({ locale: es })
+    answer(cad, "AUPREC", "'AREA")
+    expect(cad.commandLog().slice(-2)).toEqual([
+      "AREA = 0.00 (sólo lectura)",
+      "Reanudando el comando MODIVAR.",
+    ])
+  })
+})

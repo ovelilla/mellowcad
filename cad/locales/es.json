@@ -384,6 +384,7 @@
       "UNITS": ["UNIDADES", "UNS"],
       "LTSCALE": ["ESCALATL", "EC"],
       "AUPREC": ["AUPREC"],
+      "SETVAR": ["MODIVAR"],
       "CLEANSCREENON": ["LIMPIAPANTACT"],
       "CLEANSCREENOFF": ["LIMPIAPANTDES"],
       "COLOR": ["COLOR"],

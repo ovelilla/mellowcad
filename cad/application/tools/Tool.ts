@@ -352,7 +352,7 @@ export interface Tool {
   runningCommand?(): string
   /**
    * The system variable the tool sets (AUPREC): it heads the prompt as it
-   * is named in every language.
+   * is named in every language, and AutoCAD resumes it as SETVAR.
    */
   systemVariable?(): string
 

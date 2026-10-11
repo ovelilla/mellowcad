@@ -165,7 +165,7 @@ DIMSPACE (non-parallel dimensions) and HATCH (objects that do not close an area)
 A system variable typed as a command (AUPREC) extends `SystemVariableTool`, which asks
 `enterNewValueFor` with its name in `values` and what Enter keeps (`Enter new value for AUPREC
 <0>:`), refuses in the console's words (`requiresIntegerBetween`), heads the prompt with the
-name itself in every language (`systemVariable()`) and sets the drawing's settings through
+name itself in every language (`systemVariable()`), is resumed as SETVAR (`Resuming SETVAR command.`) and sets the drawing's settings through
 `UpdateSettingsCommand`; it is in `TRANSPARENT_COMMANDS`, as every AutoCAD system variable is
 transparent. One whose name is a command's that is not transparent ('AREA, 'UCSICON) is a
 `variable(…)` in `registerCommands`, never a command: typed with an apostrophe in any language,

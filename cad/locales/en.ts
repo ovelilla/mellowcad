@@ -806,6 +806,9 @@ export const en: EngineCatalog = {
       "AUPREC": [
         "AUPREC"
       ],
+      "SETVAR": [
+        "SETVAR"
+      ],
       "CLEANSCREENON": [
         "CLEANSCREENON"
       ],

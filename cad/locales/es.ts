@@ -785,6 +785,9 @@ export const es: EngineLocale = {
       "AUPREC": [
         "AUPREC"
       ],
+      "SETVAR": [
+        "MODIVAR"
+      ],
       "CLEANSCREENON": [
         "LIMPIAPANTACT"
       ],

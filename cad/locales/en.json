@@ -396,6 +396,7 @@
       "UNITS": ["UNITS", "UN"],
       "LTSCALE": ["LTSCALE", "LTS"],
       "AUPREC": ["AUPREC"],
+      "SETVAR": ["SETVAR"],
       "CLEANSCREENON": ["CLEANSCREENON"],
       "CLEANSCREENOFF": ["CLEANSCREENOFF"],
       "COLOR": ["COLOR", "COL"],

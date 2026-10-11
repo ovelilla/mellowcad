@@ -852,8 +852,21 @@ export class CadRuntime extends Observable {
     this.host.requestRender()
   }
 
-  /** `Resuming LINE command.`, named as the running command was started. */
+  /**
+   * `Resuming LINE command.`, named as the running command was started; a
+   * system variable typed as a command is SETVAR, which AutoCAD runs for it
+   * (`Resuming SETVAR command.` in its 2023 console).
+   */
   private writeResuming(): void {
+    if (this.activeTool.systemVariable !== undefined) {
+      this.commandLine.write(
+        "info",
+        this.text.message("resumingCommand", {
+          command: this.text.commandNames("SETVAR")[0],
+        })
+      )
+      return
+    }
     const { command } = commandPrompt(
       this.activeTool,
       this.text,
