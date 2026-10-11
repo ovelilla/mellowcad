@@ -249,3 +249,92 @@ describe("AUPREC asks as AutoCAD 2026", () => {
     ])
   })
 })
+
+// AutoCAD 2023's console (acc/sv1.txt, tr/area.txt, tr/ucsicon.txt): with an
+// apostrophe AREA and UCSICON name their system variables, not the commands.
+describe("'AREA and 'UCSICON read and set their system variables", () => {
+  it("reads AREA, the last area AREA measured, at a prompt and at the Command prompt", () => {
+    const cad = createHarness()
+    answer(cad, "'AREA", "AREA", "0,0", "10,0", "10,10", "")
+    expect(cad.commandLog().slice(0, 3)).toEqual([
+      "'AREA",
+      "AREA = 0.00 (read only)",
+      "AREA",
+    ])
+    answer(cad, "LINE", "0,0", "'AREA")
+    expect(cad.commandLog().slice(-3)).toEqual([
+      "Specify next point or [Undo]: 'AREA",
+      "AREA = 50.00 (read only)",
+      "Resuming LINE command.",
+    ])
+    expect(cad.state().commandLine.prompt).toBe(
+      "LINE Specify next point or [Undo]:"
+    )
+  })
+
+  it("sets UCSICON from 0 to 3, the icon shown and at the origin", () => {
+    const cad = createHarness()
+    answer(cad, "'UCSICON", "2", "'UCSICON")
+    expect(cad.state().commandLine.prompt).toBe(
+      "UCSICON Enter new value for UCSICON <2>:"
+    )
+    answer(cad, "")
+    expect(cad.commandLog()).toEqual([
+      "'UCSICON",
+      "Enter new value for UCSICON <3>: 2",
+      "'UCSICON",
+      "Enter new value for UCSICON <2>:",
+    ])
+    expect(cad.runtime.document.getSettings().ucsIcon).toEqual({
+      visible: false,
+      atOrigin: true,
+    })
+    answer(cad, "LINE", "0,0", "'UCSICON", "OFF", "FOO", "4", "1")
+    expect(cad.commandLog().slice(-9)).toEqual([
+      "Specify next point or [Undo]: 'UCSICON",
+      ">>Enter new value for UCSICON <2>: OFF",
+      "Requires an integer between 0 and 3.",
+      ">>Enter new value for UCSICON <2>: FOO",
+      "Requires an integer between 0 and 3.",
+      ">>Enter new value for UCSICON <2>: 4",
+      "Requires an integer between 0 and 3.",
+      ">>Enter new value for UCSICON <2>: 1",
+      "Resuming LINE command.",
+    ])
+    expect(cad.runtime.document.getSettings().ucsIcon).toEqual({
+      visible: true,
+      atOrigin: false,
+    })
+  })
+
+  it("runs the commands when typed bare", () => {
+    const cad = createHarness()
+    answer(cad, "'UCSICON", "2", "UCSICON")
+    expect(cad.state().commandLine.prompt).toBe(
+      "UCSICON Enter an option [ON/OFF/Noorigin/ORigin] <OFF>:"
+    )
+    answer(cad, "ON")
+    expect(cad.runtime.document.getSettings().ucsIcon.visible).toBe(true)
+    answer(cad, "AREA")
+    expect(cad.state().commandLine.prompt).toBe(
+      "AREA Specify first corner point or [Object] <Object>:"
+    )
+  })
+
+  it("names them in English in Spanish too, bare where the command is named otherwise", () => {
+    const cad = createHarness({ locale: es })
+    answer(cad, "'AREA", "UCSICON", "FOO", "0")
+    expect(cad.commandLog()).toEqual([
+      "'AREA",
+      "AREA = 0.00 (sólo lectura)",
+      "UCSICON",
+      "Indique nuevo valor para UCSICON <3>: FOO",
+      "Requiere un nº entero entre 0 y 3.",
+      "Indique nuevo valor para UCSICON <3>: 0",
+    ])
+    answer(cad, "SIMBSCP")
+    expect(cad.state().commandLine.prompt).toBe(
+      "SIMBSCP Indique una opción [ACT/DES/Sin origen/Origen] <DES>:"
+    )
+  })
+})

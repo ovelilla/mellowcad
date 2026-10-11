@@ -282,6 +282,8 @@ export class CadRuntime extends Observable {
 
   /** Every command by its global name, in registration order. */
   private readonly commands = new Map<string, CommandDefinition>()
+  /** The system variables typed by name, keyed by it (`registerCommands`). */
+  private readonly variables = new Map<string, CommandDefinition>()
   /** The commands as the command language lists them (drives autocomplete). */
   private commandInfos: CommandInfo[] = []
 
@@ -909,7 +911,8 @@ export class CadRuntime extends Observable {
     registerCommands(
       this,
       (id) => this.startTool(id),
-      (definition) => this.registerCommand(definition)
+      (definition) => this.registerCommand(definition),
+      (definition) => this.variables.set(definition.id, definition)
     )
   }
 
@@ -983,9 +986,14 @@ export class CadRuntime extends Observable {
    * `clear`: what was typed in the box was this answer, so it goes.
    */
   private runTransparently(typed: string, clear: boolean): boolean {
-    const command = this.commandNamed(typed)
+    const named = this.commandNamed(typed)
+    const variable = named?.transparent ? undefined : this.variableNamed(typed)
+    const command = variable ?? named
     if (!command) return false
-    return this.answering(this.commandEcho(typed, command), () => {
+    const echo = variable
+      ? this.text.transparentCommand(variable.id)
+      : this.commandEcho(typed, command)
+    return this.answering(echo, () => {
       if (
         command.transparent &&
         this.suspended === null &&
@@ -1012,6 +1020,14 @@ export class CadRuntime extends Observable {
       if (clear) this.dynamicInput.clearTexts()
       return this.refuse()
     })
+  }
+
+  /**
+   * The system variable `typed` names, an apostrophe before it or not: by
+   * its own name in every language, never `_` and a global one.
+   */
+  private variableNamed(typed: string): CommandDefinition | undefined {
+    return this.variables.get(bareCommand(typed))
   }
 
   /** Whether the box asks for text, which takes whatever is typed. */
@@ -1345,7 +1361,15 @@ export class CadRuntime extends Observable {
   runCommand(text: string): boolean {
     const typed = text.trim()
     if (bareCommand(typed) === "") return false
-    const command = this.commandNamed(typed)
+    const named = this.commandNamed(typed)
+    // A command of the name runs, unless typed with an apostrophe and not
+    // transparent: then the system variable of the name, as AutoCAD 2023's
+    // console reads 'AREA and 'UCSICON at the Command prompt.
+    const variable =
+      named !== undefined && (!typed.startsWith("'") || named.transparent)
+        ? undefined
+        : this.variableNamed(typed)
+    const command = variable ?? named
     if (!command) {
       this.commandLine.write(
         "error",
@@ -1354,9 +1378,14 @@ export class CadRuntime extends Observable {
       this.invalidateState()
       return false
     }
-    const [name] = this.text.commandNames(command.id)
+    const echo = variable
+      ? typed.startsWith("'")
+        ? this.text.transparentCommand(variable.id)
+        : variable.id
+      : this.commandEcho(typed, command)
+    const [name] = variable ? [echo] : this.text.commandNames(command.id)
     this.echoMark = this.commandLine.mark()
-    this.commandLine.write("command", this.commandEcho(typed, command))
+    this.commandLine.write("command", echo)
     // At the Command prompt an apostrophe runs a transparent command as any
     // other, and refuses the rest, as AutoCAD 2023's console does.
     if (typed.startsWith("'") && !command.transparent) {

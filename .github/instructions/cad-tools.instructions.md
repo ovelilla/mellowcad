@@ -162,10 +162,15 @@ When the answer is "that object is not eligible at all", **filter the pick inste
 that never highlights has already answered the question, needs no wording to verify, and is what
 DIMSPACE (non-parallel dimensions) and HATCH (objects that do not close an area) both do.
 
-A system variable typed as a command (AUPREC) is a tool that asks `enterNewValueFor` with its name in
-`values` and what Enter keeps (`Enter new value for AUPREC <0>:`), refuses in the console's words
-(`requiresIntegerBetween`), is in `TRANSPARENT_COMMANDS` as every AutoCAD system variable is
-transparent, and sets a saved one through `UpdateSettingsCommand`. An angle is written with
+A system variable typed as a command (AUPREC) extends `SystemVariableTool`, which asks
+`enterNewValueFor` with its name in `values` and what Enter keeps (`Enter new value for AUPREC
+<0>:`), refuses in the console's words (`requiresIntegerBetween`), heads the prompt with the
+name itself in every language (`systemVariable()`) and sets the drawing's settings through
+`UpdateSettingsCommand`; it is in `TRANSPARENT_COMMANDS`, as every AutoCAD system variable is
+transparent. One whose name is a command's that is not transparent ('AREA, 'UCSICON) is a
+`variable(…)` in `registerCommands`, never a command: typed with an apostrophe in any language,
+bare where no command has the name (es `UCSICON`); a read-only one has no tool and says
+`readOnlyVariable`. An angle is written with
 `formatAngle` (AUPREC, `anglePrecision`), a length with `formatLength` (LUPREC): never one
 precision for both.
 

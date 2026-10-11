@@ -84,6 +84,13 @@ export class MeasureTool implements Tool {
 
   private state: MeasureState = { phase: "first" }
   private lastScreen: Vec2 | null = null
+  /** The AREA system variable: the last area measured, kept for the session. */
+  private area = 0
+
+  /** The last area AREA measured, 0 until it has. */
+  lastArea(): number {
+    return this.area
+  }
 
   onActivate(ctx: ToolContext): void {
     ctx.setCursor("crosshair")
@@ -481,6 +488,7 @@ export class MeasureTool implements Tool {
       ctx.report(ctx.text.message("objectHasNoArea"))
       return false
     }
+    this.area = measured.area
     const settings = ctx.document.getSettings()
     ctx.report(
       ctx.text.message("areaReport", {
@@ -493,10 +501,11 @@ export class MeasureTool implements Tool {
   }
 
   private reportPolygon(points: readonly Vec2[], ctx: ToolContext): void {
+    this.area = polygonArea(points)
     const settings = ctx.document.getSettings()
     ctx.report(
       ctx.text.message("areaReport", {
-        area: formatLength(polygonArea(points), settings),
+        area: formatLength(this.area, settings),
         measured: "perimeter",
         around: formatLength(polygonPerimeter(points), settings),
       })

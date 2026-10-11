@@ -6,6 +6,7 @@ import { type Keyword, offerKeywords } from "../i18n/keywords"
 import { type CommandOption, Tool, type ToolQuestion } from "./tools/Tool"
 import type { PromptId } from "../locales/types"
 import { formatAngle, formatLength } from "../domain/units"
+import { MeasureTool } from "./tools/MeasureTool"
 import type { DocumentSettings } from "../domain/units"
 import { MTextTool } from "./tools/MTextTool"
 import { AttEditTool } from "./tools/AttEditTool"
@@ -16,7 +17,8 @@ import { AttEditTool } from "./tools/AttEditTool"
  * refuses (`** That command may not be invoked transparently **`), what it
  * does not know and so cannot show (VIEW, PURGE, PROPERTIES, MATCHPROP,
  * BLOCKSPALETTE, EATTEDIT, LAYER, whose dialog hangs it), and AREA and
- * UCSICON, which typed so read the system variables of their names.
+ * UCSICON, which typed so read the system variables of their names
+ * ({@link registerCommands}' variables).
  */
 const TRANSPARENT_COMMANDS: ReadonlySet<string> = new Set([
   "ZOOM",
@@ -52,7 +54,8 @@ const TRANSPARENT_COMMANDS: ReadonlySet<string> = new Set([
 export function registerCommands(
   runtime: CadRuntime,
   startTool: (id: string) => void,
-  registerCommand: (definition: CommandDefinition) => void
+  registerCommand: (definition: CommandDefinition) => void,
+  registerVariable: (definition: CommandDefinition) => void
 ): void {
   const tools = new Set(runtime.listTools().map((tool) => tool.id))
   const register = (definition: CommandDefinition) =>
@@ -67,6 +70,33 @@ export function registerCommands(
   }
 
   const say = (text: string) => runtime.commandLine.write("info", text)
+
+  // The system variables typed by the name of a command that is not
+  // transparent: with an apostrophe in any language, bare where the command
+  // is named otherwise (es `UCSICON`, whose command is SIMBSCP). Every
+  // system variable is transparent. AREA is the last area AREA measured.
+  const variable = (definition: CommandDefinition) =>
+    registerVariable({ ...definition, transparent: true })
+  variable({
+    id: "AREA",
+    run: () => {
+      const area = runtime.listTools().find((tool) => tool.id === "measurearea")
+      say(
+        runtime.text.message("readOnlyVariable", {
+          name: "AREA",
+          value: formatLength(
+            area instanceof MeasureTool ? area.lastArea() : 0,
+            runtime.document.getSettings()
+          ),
+        })
+      )
+    },
+  })
+  variable({
+    id: "UCSICON",
+    tool: "ucsiconvariable",
+    run: () => startTool("ucsiconvariable"),
+  })
 
   register({ id: "UNDO", run: () => runtime.undo() })
   // -MTEXT is MTEXT with the text typed at the command line, so it runs the
@@ -318,9 +348,10 @@ export function commandPrompt(
   const command = tool.runningCommand?.() ?? toolCommand(tool)
   const heading = startedAs ?? command
   const named =
-    heading !== null
+    tool.systemVariable?.() ??
+    (heading !== null
       ? text.commandNames(heading)[0]
-      : text.tool(tool.id).toUpperCase()
+      : text.tool(tool.id).toUpperCase())
   const name = transparent ? text.transparentCommand(named) : named
   const fallback = tool.defaultOption?.() ?? null
   const labels = options.map((option) => option.label)

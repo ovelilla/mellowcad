@@ -350,6 +350,11 @@ export interface Tool {
 
   /** The command the prompt names when one tool runs several (EATTEDIT); else `TOOL_COMMANDS`'. */
   runningCommand?(): string
+  /**
+   * The system variable the tool sets (AUPREC): it heads the prompt as it
+   * is named in every language.
+   */
+  systemVariable?(): string
 
   /**
    * What the command asks right now, by its id in `commands.prompts`

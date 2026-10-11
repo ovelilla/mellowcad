@@ -69,6 +69,7 @@ export const en: EngineCatalog = {
       "pan": "Pan",
       "ucs": "UCS",
       "ucsicon": "UCS icon",
+      "ucsiconvariable": "UCS icon (variable)",
       "plan": "Plan view",
       "elev": "Elevation",
       "vpoint": "Viewpoint",
@@ -1341,6 +1342,16 @@ export const en: EngineCatalog = {
           "command"
         ],
         " command."
+      ],
+      "readOnlyVariable": [
+        [
+          "name"
+        ],
+        " = ",
+        [
+          "value"
+        ],
+        " (read only)"
       ],
       "notTransparent": "** That command may not be invoked transparently **",
       "rotateSettings": [

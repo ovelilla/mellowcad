@@ -48,7 +48,7 @@ import { IdTool } from "./tools/IdTool"
 import { ZoomTool } from "./tools/ZoomTool"
 import { PanTool } from "./tools/PanTool"
 import { UcsTool } from "./tools/UcsTool"
-import { UcsIconTool } from "./tools/UcsIconTool"
+import { UcsIconTool, UcsIconVariableTool } from "./tools/UcsIconTool"
 import { PlanTool } from "./tools/PlanTool"
 import { ElevTool } from "./tools/ElevTool"
 import { VPointTool } from "./tools/VPointTool"
@@ -147,6 +147,7 @@ export function defaultTools(
     new NavVCubeTool(),
     new LtScaleTool(),
     new AuPrecTool(),
+    new UcsIconVariableTool(),
     new OsnapTool(),
     new ColorTool(),
     new LinetypeTool(),

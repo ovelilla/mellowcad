@@ -69,6 +69,7 @@ export const es: EngineLocale = {
       "pan": "Encuadre",
       "ucs": "SCP",
       "ucsicon": "Icono SCP",
+      "ucsiconvariable": "Icono SCP (variable)",
       "plan": "Vista en planta",
       "elev": "Elevación",
       "vpoint": "Punto de vista",
@@ -1671,6 +1672,16 @@ export const es: EngineLocale = {
           "command"
         ],
         "."
+      ],
+      "readOnlyVariable": [
+        [
+          "name"
+        ],
+        " = ",
+        [
+          "value"
+        ],
+        " (sólo lectura)"
       ],
       "notTransparent": "** Este comando no funciona de forma transparente **",
       "rotateSettings": [

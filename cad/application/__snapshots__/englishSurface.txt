@@ -175,6 +175,7 @@ orbit "3D Orbit" 3DO
 navvcube "ViewCube" CUBE
 ltscale "Linetype scale" LTS
 auprec "Angle precision" AUPREC
+ucsiconvariable "UCS icon (variable)" -
 osnap "Object snap modes" -OS
 color "Color" COL
 linetype "Linetype" LT

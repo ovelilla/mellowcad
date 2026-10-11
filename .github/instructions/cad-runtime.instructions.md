@@ -236,7 +236,8 @@ A command typed with an apostrophe mid-command (`'ZOOM`, `'Z`), at the command l
 box that is not content, runs **inside** the running one when its `CommandDefinition` is
 `transparent` (`TRANSPARENT_COMMANDS` in `runtimeCommands.ts`: add a command only after typing it
 so at LINE's prompt in AutoCAD's console — `>>` prompts, or `** That command may not be invoked
-transparently **`; `'AREA` reads a system variable, not the command). One with no tool (SNAP's
+transparently **`; `'AREA` reads a system variable, not the command: the runtime's `variables`, looked up by
+`variableNamed` when the command of the name is not transparent). One with no tool (SNAP's
 toggle, UNITS' dialog) runs in place and `Resuming LINE command.` follows at once. `suspend`
 keeps the running tool as it stands — its state, `startedAs`, `commandStart`, the box
 (`DynamicInputController.save` / `restore`, typed text cleared), the selection set and Previous
