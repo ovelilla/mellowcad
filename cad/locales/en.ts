@@ -846,6 +846,12 @@ export const en: EngineCatalog = {
         "BLUE": "Blue",
         "MAGENTA": "Magenta",
         "WHITE": "White"
+      },
+      "LINETYPE": {
+        "BYLAYER": "BYLayer"
+      },
+      "LWEIGHT": {
+        "BYLAYER": "BYLayer"
       }
     },
     "promptKeywords": {
@@ -1005,11 +1011,11 @@ export const en: EngineCatalog = {
       "elevDefaultThickness": "Specify new default thickness",
       "ltscaleFactor": "Enter new linetype scale factor",
       "osnapModes": "Enter list of object snap modes",
-      "defaultObjectColor": "Enter default object color [Truecolor]",
+      "defaultObjectColor": "Enter default object color",
       "trueColor": "Red,Green,Blue",
-      "linetypeOption": "Enter an option [?/Set]",
-      "linetypeName": "Specify linetype name or [?]",
-      "defaultLineweight": "Enter default lineweight for new objects or [?]",
+      "linetypeName": "Specify linetype name or",
+      "linetypeListNames": "Enter linetype name(s) to list",
+      "defaultLineweight": "Enter default lineweight for new objects or",
       "idPoint": "Specify point",
       "viewPoint": "Specify a view point",
       "viewAngleInPlane": "Enter angle in XY plane from X axis",
@@ -1686,6 +1692,34 @@ export const en: EngineCatalog = {
       "yesOrNoPlease": "Yes or No, please.",
       "requiresDistanceNumberXOrKeyword": "Requires a distance, numberX, or option keyword.",
       "noPreviousView": "No previous view saved.",
+      "currentLinetype": [
+        "Current line type:  \"",
+        [
+          "name"
+        ],
+        "\""
+      ],
+      "linetypeByLayer": "ByLayer",
+      "linetypeNotFound": [
+        "Linetype \"",
+        [
+          "name"
+        ],
+        "\" not found in acad.lin.\nYou can use the \"Load\" option to load it from another file."
+      ],
+      "loadedLinetypes": "ByLayer, ByBlock, or one of these loaded linetypes:",
+      "linetypeColumns": "      Name          Description\n---------------- ------------------",
+      "linetypesInFile": [
+        "Linetypes defined in file ",
+        [
+          "file"
+        ],
+        ":"
+      ],
+      "fileLinetypeColumns": "      Name          Description\n---------------- -------------------",
+      "solidLine": "Solid line",
+      "noMatchingLinetypes": "  No matching linetype names found.",
+      "invalidColorNumber": "Invalid color number.",
       "rectangleModes": [
         "Current rectangle modes:",
         [

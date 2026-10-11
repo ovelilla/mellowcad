@@ -3833,19 +3833,24 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
   properties: -
   cycling: -
 > LTSCALE
-  prompt: LTSCALE:
+  prompt: LTSCALE Enter new linetype scale factor <1.00>:
   asks: "Enter new linetype scale factor"
+  tip: Enter new linetype scale factor
   dyn: "Enter new linetype scale factor"=""|1|*
   command| LTSCALE
 > zero
+  prompt| Enter new linetype scale factor <1.00>: 0
   error| Value must be positive and nonzero.
 > factor
   prompt: Command:
   asks: -
+  tip: -
   dyn: -
+  prompt| Enter new linetype scale factor <1.00>: 2.5
   info| Regenerating model.
 > LTS enter
   command| LTS LTSCALE
+  prompt| Enter new linetype scale factor <2.50>:
 
 ## -COLOR
 > start
@@ -3858,33 +3863,42 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
   properties: -
   cycling: -
 > -COLOR
-  prompt: COLOR [Truecolor]:
-  asks: "Enter default object color [Truecolor]"
-  dyn: "Enter default object color [Truecolor]"=""|BYLAYER|*
+  prompt: COLOR Enter default object color [Truecolor] <BYLAYER>:
+  asks: "Enter default object color"
+  tip: Enter default object color
+  dyn: "Enter default object color"=""|BYLAYER|*
   options: [T] Truecolor
   command| -COLOR
 > pink
+  prompt| Enter default object color [Truecolor] <BYLAYER>: pink
   error| A color number or standard color name is required.
 > red
   prompt: Command:
   asks: -
+  tip: -
   dyn: -
   options: -
+  prompt| Enter default object color [Truecolor] <BYLAYER>: red
 > COLOR
-  prompt: COLOR [Truecolor]:
-  asks: "Enter default object color [Truecolor]"
-  dyn: "Enter default object color [Truecolor]"=""|1 (red)|*
+  prompt: COLOR Enter default object color [Truecolor] <1 (red)>:
+  asks: "Enter default object color"
+  tip: Enter default object color
+  dyn: "Enter default object color"=""|1 (red)|*
   options: [T] Truecolor
   command| COLOR
 > T
-  prompt: COLOR:
+  prompt: COLOR Red,Green,Blue:
   asks: "Red,Green,Blue"
+  tip: Red,Green,Blue:
   dyn: "Red,Green,Blue"=""||*
   options: -
+  prompt| Enter default object color [Truecolor] <1 (red)>: T
 > rgb
   prompt: Command:
   asks: -
+  tip: -
   dyn: -
+  prompt| Red,Green,Blue: 210,155,95
 
 ## -LINETYPE
 > start
@@ -3897,42 +3911,46 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
   properties: -
   cycling: -
 > -LINETYPE
-  prompt: LINETYPE [Set]:
-  asks: "Enter an option [?/Set]"
-  dyn: "Enter an option [?/Set]"=""||*
-  options: [S] Set
+  prompt: LINETYPE Enter an option [?/Set]:
+  asks: 
+  tip: Enter an option
+  dyn: 
+  options: [?] ?, [S] Set
   command| -LINETYPE
+  info| Current line type:  "ByLayer"
 > ?
-  info| Continuous
-        Dashed
-        Hidden
-        Center
-        Phantom
-        DashDot
-> S
-  prompt: LINETYPE:
-  asks: "Specify linetype name or [?]"
-  dyn: "Specify linetype name or [?]"=""|BYLAYER|*
-  options: -
-> ?
-  info| Continuous
-        Dashed
-        Hidden
-        Center
-        Phantom
-        DashDot
-> name
-  prompt: LINETYPE [Set]:
-  asks: "Enter an option [?/Set]"
-  dyn: "Enter an option [?/Set]"=""||*
-  options: [S] Set
-> enter
   prompt: Command:
   asks: -
+  tip: -
   dyn: -
   options: -
+  prompt| Enter an option [?/Set]:
+> S
+  prompt: STRETCH Select objects:
+  command| S STRETCH
+  info| Select objects to stretch by crossing-window or crossing-polygon...
+> ?
+  prompt: Command:
+  prompt| Select objects:
+> name
+  prompt: STRETCH Select objects:
+  command| STRETCH
+  info| Select objects to stretch by crossing-window or crossing-polygon...
+> enter
+  prompt: Command:
+  prompt| Select objects:
 > unknown
+  prompt: LINETYPE Enter an option [?/Set]:
+  asks: 
+  tip: Enter an option
+  dyn: 
+  options: [?] ?, [S] Set
   command| LT LINETYPE
+  info| Current line type:  "ByLayer"
+  prompt| Enter an option [?/Set]: S
+  prompt| Specify linetype name or [?] <ByLayer>: NOPE
+  info| Linetype "NOPE" not found in acad.lin.
+        You can use the "Load" option to load it from another file.
 
 ## -LWEIGHT
 > start
@@ -3945,31 +3963,43 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
   properties: -
   cycling: -
 > -LWEIGHT
-  prompt: LWEIGHT:
-  asks: "Enter default lineweight for new objects or [?]"
-  dyn: "Enter default lineweight for new objects or [?]"=""|BYLAYER|*
+  prompt: LWEIGHT Enter default lineweight for new objects or [?]:
+  asks: "Enter default lineweight for new objects or"
+  tip: Enter default lineweight for new objects or
+  dyn: "Enter default lineweight for new objects or"=""|BYLAYER|*
+  options: [?] ?
   command| -LWEIGHT
   info| Current lineweight: BYLAYER
 > ?
-  info| 0.00 mm   0.05 mm   0.09 mm   0.13 mm   0.15 mm   0.18 mm
-        0.20 mm   0.25 mm   0.30 mm   0.35 mm   0.40 mm   0.50 mm
-        0.53 mm   0.60 mm   0.70 mm   0.80 mm   0.90 mm   1.00 mm
-        1.06 mm   1.20 mm   1.40 mm   1.58 mm   2.00 mm   2.11 mm
+  prompt| Enter default lineweight for new objects or [?]: ?
+  info| ByLayer
+        0.00 mm 0.05 mm  0.09 mm    0.13 mm 0.15 mm  0.18 mm
+        0.20 mm 0.25 mm  0.30 mm    0.35 mm 0.40 mm  0.50 mm
+        0.53 mm 0.60 mm  0.70 mm    0.80 mm 0.90 mm  1.00 mm
+        1.06 mm 1.20 mm  1.40 mm    1.58 mm 2.00 mm  2.11 mm
 > value
   prompt: Command:
   asks: -
+  tip: -
   dyn: -
+  options: -
+  prompt| Enter default lineweight for new objects or [?]: 0.33
   info| Lineweight rounded to nearest valid value of 0.35 mm
 > LW
-  prompt: LWEIGHT:
-  asks: "Enter default lineweight for new objects or [?]"
-  dyn: "Enter default lineweight for new objects or [?]"=""|0.35 mm|*
+  prompt: LWEIGHT Enter default lineweight for new objects or [?]:
+  asks: "Enter default lineweight for new objects or"
+  tip: Enter default lineweight for new objects or
+  dyn: "Enter default lineweight for new objects or"=""|0.35 mm|*
+  options: [?] ?
   command| LW LWEIGHT
   info| Current lineweight: 0.35 mm
 > enter
   prompt: Command:
   asks: -
+  tip: -
   dyn: -
+  options: -
+  prompt| Enter default lineweight for new objects or [?]:
 
 ## ID
 > start
@@ -4702,17 +4732,21 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
   properties: -
   cycling: -
 > -OSNAP
-  prompt: -OSNAP:
+  prompt: -OSNAP Enter list of object snap modes:
   asks: "Enter list of object snap modes"
+  tip: Enter list of object snap modes:
   dyn: "Enter list of object snap modes"=""||*
   command| -OSNAP
   info| Current osnap modes: End,Cen,Int,Ext
 > a mode it does not know
+  prompt| Enter list of object snap modes: END,XYZ
   error| Invalid object snap modes.
 > a list
   prompt: Command:
   asks: -
+  tip: -
   dyn: -
+  prompt| Enter list of object snap modes: mid,per
 
 ## a wrong answer mid-command
 > start

@@ -1,5 +1,7 @@
 import { Vec2 } from "../../geometry/Vec2"
 import { LINETYPE_BYLAYER, LINETYPES, LinetypeId } from "../../domain/linetypes"
+import { matchesWildcard } from "../../shared/wildcard"
+import type { PromptId } from "../../locales/types"
 import { UpdateSettingsCommand } from "../commands/settingsCommands"
 import {
   CommandOption,
@@ -7,31 +9,41 @@ import {
   PointerInput,
   Tool,
   ToolContext,
+  ToolQuestion,
 } from "./Tool"
 
 const BY_LAYER = "BYLAYER"
 
+/** The width AutoCAD's listing gives a quoted name before its description. */
+const NAME_COLUMN = 17
+
 /**
  * AutoCAD's -LINETYPE, which LINETYPE runs too (its Linetype Manager does not
- * exist here): `Enter an option [?/Create/Load/Set]:`, asked again after each
- * answer until Enter. Set (`Specify linetype name or [?] <ByLayer>:`) sets
- * CELTYPE, the linetype new objects take, saved in the drawing and undone
- * with U: a linetype's name, or `bylayer`; `?` lists the loaded linetypes.
- * Every linetype this build ships is loaded, so `?` at the first prompt — the
- * linetypes of a LIN file — lists the same ones. A name that is not one of
- * them returns to the Command prompt, as AutoCAD does when the LIN file has
- * no definition (its message is not documented, so none is written).
+ * exist here): `Current line type:  "ByLayer"`, then `Enter an option
+ * [?/Create/Load/Set]:`, asked again after each answer until Enter. Set
+ * (`Specify linetype name or [?] <ByLayer>:`) sets CELTYPE, the linetype new
+ * objects take, saved in the drawing and undone with U: a linetype's name,
+ * or `bylayer`; its `?` lists the loaded linetypes. Every linetype this build
+ * ships is loaded, so `?` at the first prompt — the linetypes of a LIN file,
+ * acad.lin's — lists the same ones. A name that is not one of them says it is
+ * not in acad.lin and asks for the option again, as AutoCAD 2023's console
+ * does.
  *
  * Not done: Create and Load (there is no LIN file to read or write), ByBlock.
  */
 export class LinetypeTool implements Tool {
   readonly id = "linetype"
 
-  private phase: "option" | "name" = "option"
+  private phase: "option" | "name" | "list" = "option"
   private lastScreen: Vec2 | null = null
+  /** The linetype Enter keeps at Set, as the prompt offers it. */
+  private current = ""
 
   onActivate(ctx: ToolContext): void {
     ctx.setCursor("crosshair")
+    ctx.report(
+      ctx.text.message("currentLinetype", { name: this.currentName(ctx) })
+    )
     this.askOption(ctx)
   }
 
@@ -49,63 +61,88 @@ export class LinetypeTool implements Tool {
     return false
   }
 
+  question(): PromptId | ToolQuestion {
+    switch (this.phase) {
+      case "option":
+        return "enterAnOption"
+      case "name":
+        return { id: "linetypeName", enter: { name: this.current } }
+      case "list":
+        return { id: "linetypeListNames", enter: { name: "*" } }
+    }
+  }
+
   commandOptions(): readonly CommandOption[] {
-    return this.phase === "option" ? [{ id: "Set" }] : []
+    switch (this.phase) {
+      case "option":
+        return [{ id: "?" }, { id: "Set" }]
+      case "name":
+        return [{ id: "?" }]
+      default:
+        return []
+    }
   }
 
   invokeOption(id: string, ctx: ToolContext): CommandOptionOutcome {
-    if (this.phase !== "option" || id !== "Set") return "unhandled"
-    this.askName(ctx)
-    return "continue"
+    if (this.phase === "option" && id === "Set") {
+      this.askName(ctx)
+      return "continue"
+    }
+    if (this.phase === "option" && id === "?") {
+      this.listFile(ctx)
+      this.askOption(ctx)
+      return "continue"
+    }
+    if (this.phase === "name" && id === "?") {
+      this.askList(ctx)
+      return "continue"
+    }
+    return "unhandled"
   }
 
-  /** `?` has no capital to type, so the option is a value box that still takes Set. */
+  /** `Enter an option [?/Set]:`, keywords alone; Enter ends the command. */
   private askOption(ctx: ToolContext): void {
     this.phase = "option"
-    ctx.dynamicInput.open({
-      fields: [{ id: "option", prompt: "linetypeOption", kind: "number" }],
-      commit: () => {},
-      commitRaw: (commitCtx) => {
-        const typed = commitCtx.dynamicInput.getText("option").trim()
-        if (typed === "") {
-          commitCtx.endCommand()
-          return true
-        }
-        if (typed !== "?") return false
-        this.list(commitCtx)
-        this.askOption(commitCtx)
-        return true
-      },
-    })
+    ctx.dynamicInput.open({ fields: [], commit: () => {} })
     this.place(ctx)
   }
 
   private askName(ctx: ToolContext): void {
     this.phase = "name"
+    this.current = this.currentName(ctx)
+    this.openText(ctx, (typed, commitCtx) => this.answerName(typed, commitCtx))
+  }
+
+  private askList(ctx: ToolContext): void {
+    this.phase = "list"
+    this.openText(ctx, (typed, commitCtx) => {
+      this.listLoaded(typed === "" ? "*" : typed, commitCtx)
+      this.askOption(commitCtx)
+    })
+  }
+
+  private openText(
+    ctx: ToolContext,
+    answer: (typed: string, ctx: ToolContext) => void
+  ): void {
     ctx.dynamicInput.open({
-      fields: [{ id: "name", prompt: "linetypeName", kind: "text" }],
+      fields: [{ id: "name", prompt: this.questionId(), kind: "text" }],
       commit: () => {},
       commitRaw: (commitCtx) => {
-        this.answerName(
-          commitCtx.dynamicInput.getText("name").trim(),
-          commitCtx
-        )
+        answer(commitCtx.dynamicInput.getText("name").trim(), commitCtx)
         return true
       },
     })
-    const current = ctx.document.getSettings().currentLinetype
-    ctx.dynamicInput.setLiveText(
-      "name",
-      current === LINETYPE_BYLAYER ? ctx.text.keywordList([BY_LAYER]) : current
-    )
     this.place(ctx)
   }
 
+  private questionId(): PromptId {
+    const asked = this.question()
+    return typeof asked === "string" ? asked : asked.id
+  }
+
   private answerName(typed: string, ctx: ToolContext): void {
-    if (typed === "?") {
-      this.list(ctx)
-      return this.askName(ctx)
-    }
+    if (typed === "?") return this.askList(ctx)
     if (typed === "") return this.askOption(ctx)
     const linetype: LinetypeId | null =
       ctx.text.resolveKeyword(typed, [BY_LAYER]) === BY_LAYER
@@ -113,15 +150,67 @@ export class LinetypeTool implements Tool {
         : (LINETYPES.find(
             (entry) => entry.id.toLowerCase() === typed.toLowerCase()
           )?.id ?? null)
-    if (linetype === null) return ctx.endCommand()
+    if (linetype === null) {
+      ctx.report(ctx.text.message("linetypeNotFound", { name: typed }))
+      return this.askOption(ctx)
+    }
     if (linetype !== ctx.document.getSettings().currentLinetype) {
       ctx.execute(new UpdateSettingsCommand({ currentLinetype: linetype }))
     }
     this.askOption(ctx)
   }
 
-  private list(ctx: ToolContext): void {
-    ctx.report(LINETYPES.map((entry) => entry.id).join("\n"))
+  /** Set's `?`: the loaded linetypes matching `patterns`, as AutoCAD lists them. */
+  private listLoaded(patterns: string, ctx: ToolContext): void {
+    const wanted = patterns.split(",").map((part) => part.trim())
+    const matching = LINETYPES.filter((entry) =>
+      wanted.some((pattern) => matchesWildcard(entry.id, pattern))
+    )
+    ctx.report(
+      matching.length === 0
+        ? ctx.text.message("noMatchingLinetypes")
+        : [
+            ctx.text.message("loadedLinetypes"),
+            "",
+            ctx.text.message("linetypeColumns"),
+            ...this.rows(matching, ctx),
+          ].join("\n")
+    )
+  }
+
+  /** The first prompt's `?`: acad.lin's linetypes, every one of them loaded. */
+  private listFile(ctx: ToolContext): void {
+    ctx.report(
+      [
+        ctx.text.message("linetypesInFile", { file: "acad.lin" }),
+        "",
+        ctx.text.message("fileLinetypeColumns"),
+        ...this.rows(LINETYPES, ctx),
+      ].join("\n")
+    )
+  }
+
+  /**
+   * `"Continuous"     Solid line`. WHY no description but Continuous's: the
+   * others are acad.lin's, which is not shipped to quote them from.
+   */
+  private rows(
+    entries: readonly (typeof LINETYPES)[number][],
+    ctx: ToolContext
+  ): string[] {
+    return entries.map((entry) => {
+      const name = `"${entry.id}"`
+      return entry.id === "Continuous"
+        ? name.padEnd(NAME_COLUMN) + ctx.text.message("solidLine")
+        : name
+    })
+  }
+
+  private currentName(ctx: ToolContext): string {
+    const current = ctx.document.getSettings().currentLinetype
+    return current === LINETYPE_BYLAYER
+      ? ctx.text.message("linetypeByLayer")
+      : current
   }
 
   private place(ctx: ToolContext): void {

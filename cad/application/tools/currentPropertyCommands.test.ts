@@ -151,8 +151,11 @@ describe("-COLOR", () => {
     const cad = createHarness()
 
     cad.command("-COLOR")
+    expect(cad.state().commandLine.prompt).toBe(
+      "COLOR Enter default object color [Truecolor] <BYLAYER>:"
+    )
     expect(asking(cad)).toMatchObject({
-      label: "Enter default object color [Truecolor]",
+      label: "Enter default object color",
       placeholder: "BYLAYER",
     })
     expect(cad.optionIds()).toEqual(["Truecolor"])
@@ -241,7 +244,7 @@ describe("-COLOR", () => {
 
     cad.command(name)
     expect(asking(cad)).toMatchObject({
-      label: "Indique el color de objeto por defecto [COlorverdadero]",
+      label: "Indique el color de objeto por defecto",
       placeholder: "PORCAPA",
     })
     cad.type("rojo").enter()
@@ -257,16 +260,20 @@ describe("-LINETYPE", () => {
     const cad = createHarness()
 
     cad.command("-LINETYPE")
-    expect(asking(cad)?.label).toBe("Enter an option [?/Set]")
+    expect(cad.commandLog().at(-1)).toBe('Current line type:  "ByLayer"')
+    expect(cad.state().commandLine.prompt).toBe(
+      "LINETYPE Enter an option [?/Set]:"
+    )
     cad.option("Set")
-    expect(asking(cad)).toMatchObject({
-      label: "Specify linetype name or [?]",
-      placeholder: "BYLAYER",
-    })
+    expect(cad.state().commandLine.prompt).toBe(
+      "LINETYPE Specify linetype name or [?] <ByLayer>:"
+    )
     cad.type("dashed").enter()
 
     expect(cad.state().currentLinetype).toBe("Dashed")
-    expect(asking(cad)?.label).toBe("Enter an option [?/Set]")
+    expect(cad.state().commandLine.prompt).toBe(
+      "LINETYPE Enter an option [?/Set]:"
+    )
     cad.enter()
     expect(cad.activeToolId()).toBe("select")
   })
@@ -274,19 +281,32 @@ describe("-LINETYPE", () => {
   it("lists the linetypes with ? at either prompt", () => {
     const cad = createHarness()
 
-    cad.command("LT").type("?").enter()
-    expect(cad.commandLog().at(-1)).toContain("Continuous\nDashed")
-    cad.option("Set").type("?").enter()
-    expect(cad.commandLog().at(-1)).toContain("DashDot")
-    expect(asking(cad)?.label).toBe("Specify linetype name or [?]")
+    cad.command("LT").option("?")
+    expect(cad.commandLog().at(-1)).toContain(
+      'Linetypes defined in file acad.lin:\n\n      Name          Description\n---------------- -------------------\n"Continuous"     Solid line\n"Dashed"'
+    )
+    cad.option("Set").option("?")
+    expect(cad.state().commandLine.prompt).toBe(
+      "LINETYPE Enter linetype name(s) to list <*>:"
+    )
+    cad.type("d*").enter()
+    expect(cad.commandLog().at(-1)).toBe(
+      'ByLayer, ByBlock, or one of these loaded linetypes:\n\n      Name          Description\n---------------- ------------------\n"Dashed"\n"DashDot"'
+    )
+    expect(cad.state().commandLine.prompt).toBe(
+      "LINETYPE Enter an option [?/Set]:"
+    )
   })
 
-  it("returns to the Command prompt for a linetype it does not have", () => {
+  it("says a linetype it does not have is not in acad.lin, and asks the option again", () => {
     const cad = createHarness()
 
     cad.command("LINETYPE").option("Set").type("ZIGZAG").enter()
 
-    expect(cad.activeToolId()).toBe("select")
+    expect(cad.commandLog().at(-1)).toBe(
+      'Linetype "ZIGZAG" not found in acad.lin.\nYou can use the "Load" option to load it from another file.'
+    )
+    expect(cad.activeToolId()).toBe("linetype")
     expect(cad.state().currentLinetype).toBe("ByLayer")
   })
 
@@ -305,7 +325,10 @@ describe("-LINETYPE", () => {
     const cad = createHarness({ locale: es })
 
     cad.command(name)
-    expect(asking(cad)?.label).toBe("Indique una opción [?/Definir]")
+    expect(cad.commandLog().at(-1)).toBe('Tipo de línea actual: "PorCapa"')
+    expect(cad.state().commandLine.prompt).toContain(
+      "Indique una opción [?/Definir]:"
+    )
     cad.option("Set").type("hidden").enter()
 
     expect(cad.state().currentLinetype).toBe("Hidden")
@@ -318,10 +341,10 @@ describe("-LWEIGHT", () => {
 
     cad.command("-LWEIGHT")
     expect(cad.commandLog().at(-1)).toBe("Current lineweight: BYLAYER")
-    expect(asking(cad)).toMatchObject({
-      label: "Enter default lineweight for new objects or [?]",
-      placeholder: "BYLAYER",
-    })
+    expect(cad.state().commandLine.prompt).toBe(
+      "LWEIGHT Enter default lineweight for new objects or [?]:"
+    )
+    expect(asking(cad)?.placeholder).toBe("BYLAYER")
     cad.type("0.5").enter()
 
     expect(cad.state().currentLineweight).toBe(0.5)
@@ -364,8 +387,15 @@ describe("-LWEIGHT", () => {
 
     cad.command("LWEIGHT").type("?").enter()
 
-    expect(cad.commandLog().at(-1)).toMatch(/^0\.00 mm {3}0\.05 mm/)
-    expect(cad.commandLog().at(-1)).toContain("2.11 mm")
+    expect(cad.commandLog().at(-1)).toBe(
+      [
+        "ByLayer",
+        "0.00 mm 0.05 mm  0.09 mm    0.13 mm 0.15 mm  0.18 mm",
+        "0.20 mm 0.25 mm  0.30 mm    0.35 mm 0.40 mm  0.50 mm",
+        "0.53 mm 0.60 mm  0.70 mm    0.80 mm 0.90 mm  1.00 mm",
+        "1.06 mm 1.20 mm  1.40 mm    1.58 mm 2.00 mm  2.11 mm",
+      ].join("\n")
+    )
     expect(cad.activeToolId()).toBe("lweight")
   })
 

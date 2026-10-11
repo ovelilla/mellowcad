@@ -42,7 +42,10 @@ describe("LTSCALE", () => {
 
     expect(ltScale(cad)).toBe(4)
     expect(cad.state().activeToolId).toBe("select")
-    expect(cad.commandLog().slice(lines)).toEqual(["LTSCALE"])
+    expect(cad.commandLog().slice(lines)).toEqual([
+      "LTSCALE",
+      "Enter new linetype scale factor <4.00>:",
+    ])
   })
 
   it.each(["0", "-1"])("refuses %s and asks again", (typed) => {

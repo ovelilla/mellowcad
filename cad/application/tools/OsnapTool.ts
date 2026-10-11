@@ -1,6 +1,7 @@
 import { Vec2 } from "../../geometry/Vec2"
 import { SnapType } from "../snapping/types"
 import { OSNAP_MODES, OSNAP_MODE_IDS, OSNAP_OFF } from "../snapping/osnapModes"
+import type { PromptId } from "../../locales/types"
 import { PointerInput, Tool, ToolContext } from "./Tool"
 
 /**
@@ -37,6 +38,10 @@ export class OsnapTool implements Tool {
 
   wantsSnap(): boolean {
     return false
+  }
+
+  question(): PromptId {
+    return "osnapModes"
   }
 
   private ask(ctx: ToolContext): void {

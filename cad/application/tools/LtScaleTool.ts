@@ -1,6 +1,6 @@
 import { Vec2 } from "../../geometry/Vec2"
 import { UpdateSettingsCommand } from "../commands/settingsCommands"
-import { PointerInput, Tool, ToolContext } from "./Tool"
+import { PointerInput, Tool, ToolContext, ToolQuestion } from "./Tool"
 
 /**
  * AutoCAD's LTSCALE: `Enter new linetype scale factor <1.0000>:`, offering the
@@ -13,9 +13,12 @@ export class LtScaleTool implements Tool {
   readonly id = "ltscale"
 
   private lastScreen: Vec2 | null = null
+  /** The scale Enter keeps, as the prompt offers it. */
+  private current = 1
 
   onActivate(ctx: ToolContext): void {
     ctx.setCursor("crosshair")
+    this.current = ctx.document.getSettings().ltScale
     ctx.dynamicInput.open({
       fields: [{ id: "value", prompt: "ltscaleFactor", kind: "number" }],
       commit: (values, commitCtx) => this.answer(values.value, commitCtx),
@@ -36,6 +39,10 @@ export class LtScaleTool implements Tool {
 
   wantsSnap(): boolean {
     return false
+  }
+
+  question(): ToolQuestion {
+    return { id: "ltscaleFactor", enter: this.current }
   }
 
   private answer(value: number, ctx: ToolContext): void {

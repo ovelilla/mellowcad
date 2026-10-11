@@ -1161,11 +1161,13 @@ export const es: EngineLocale = {
         "WHITE": "bLanco"
       },
       "LINETYPE": {
+        "?": "?",
         "Set": "Definir",
-        "BYLAYER": "PORCAPA"
+        "BYLAYER": "porCapa"
       },
       "LWEIGHT": {
-        "BYLAYER": "PORCAPA"
+        "?": "?",
+        "BYLAYER": "porCapa"
       }
     },
     "promptKeywords": {
@@ -1325,11 +1327,11 @@ export const es: EngineLocale = {
       "elevDefaultThickness": "Precise nueva altura de objeto por defecto",
       "ltscaleFactor": "Indique nuevo factor de escala del tipo de línea",
       "osnapModes": "Indique lista de modo de referencia a objetos",
-      "defaultObjectColor": "Indique el color de objeto por defecto [COlorverdadero]",
+      "defaultObjectColor": "Indique el color de objeto por defecto",
       "trueColor": "Rojo,Verde,Azul",
-      "linetypeOption": "Indique una opción [?/Definir]",
-      "linetypeName": "Precise nombre de tipo de línea o [?]",
-      "defaultLineweight": "Indique el grosor de línea por defecto para los nuevos objetos o [?]",
+      "linetypeName": "Precise nombre de tipo de línea o",
+      "linetypeListNames": "Indique nombre(s) de tlínea que se van a enumerar",
+      "defaultLineweight": "Indique el grosor de línea por defecto para los nuevos objetos o",
       "idPoint": "Precise punto",
       "viewPoint": "Precise un punto de vista",
       "viewAngleInPlane": "Ángulo a partir del eje X en el plano XY",
@@ -2005,6 +2007,34 @@ export const es: EngineLocale = {
       "yesOrNoPlease": "Sí o No.",
       "requiresDistanceNumberXOrKeyword": "Requiere una distancia, un factorX o una opción.",
       "noPreviousView": "No se ha guardado ninguna vista previa.",
+      "currentLinetype": [
+        "Tipo de línea actual: \"",
+        [
+          "name"
+        ],
+        "\""
+      ],
+      "linetypeByLayer": "PorCapa",
+      "linetypeNotFound": [
+        "Tipo de línea \"",
+        [
+          "name"
+        ],
+        "\" no encontrado en acad.lin.\nPuede utilizar la opción \"Cargar\" para cargarlo desde otro archivo."
+      ],
+      "loadedLinetypes": "porCapa, porBloque o uno de estos tipos de línea cargados:",
+      "linetypeColumns": "      Nombre         Descripción\n---------------- ------------------",
+      "linetypesInFile": [
+        "Tipos de línea definidos en el archivo ",
+        [
+          "file"
+        ],
+        ":"
+      ],
+      "fileLinetypeColumns": "      Nombre          Descripción\n---------------- -------------------",
+      "solidLine": "Línea continua",
+      "noMatchingLinetypes": "  Tipo de línea no encontrado.",
+      "invalidColorNumber": "Número de color no válido.",
       "rectangleModes": [
         "Modos de rectángulo actuales:",
         [

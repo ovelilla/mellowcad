@@ -7,12 +7,22 @@ import {
 } from "../../domain/lineweights"
 import { parseNumber } from "../../domain/units"
 import { UpdateSettingsCommand } from "../commands/settingsCommands"
-import { PointerInput, Tool, ToolContext } from "./Tool"
+import type { PromptId } from "../../locales/types"
+import {
+  CommandOption,
+  CommandOptionOutcome,
+  PointerInput,
+  Tool,
+  ToolContext,
+} from "./Tool"
 
 const BY_LAYER = "BYLAYER"
 
-/** How many lineweights a line of the `?` listing holds. */
-const PER_LINE = 6
+/**
+ * The `?` listing's columns, as AutoCAD 2023's console lays them out: six
+ * lineweights a line, spaced in threes.
+ */
+const GAPS = [" ", "  ", "    ", " ", "  "]
 
 /**
  * AutoCAD's -LWEIGHT, which LWEIGHT runs too (its Lineweight Settings dialog
@@ -56,6 +66,21 @@ export class LweightTool implements Tool {
     return false
   }
 
+  question(): PromptId {
+    return "defaultLineweight"
+  }
+
+  commandOptions(): readonly CommandOption[] {
+    return [{ id: "?" }]
+  }
+
+  invokeOption(id: string, ctx: ToolContext): CommandOptionOutcome {
+    if (id !== "?") return "unhandled"
+    ctx.report(listing(ctx))
+    this.ask(ctx)
+    return "continue"
+  }
+
   private ask(ctx: ToolContext): void {
     ctx.dynamicInput.open({
       fields: [{ id: "lineweight", prompt: "defaultLineweight", kind: "text" }],
@@ -79,7 +104,7 @@ export class LweightTool implements Tool {
   private answer(typed: string, ctx: ToolContext): void {
     if (typed === "") return ctx.endCommand()
     if (typed === "?") {
-      ctx.report(listing())
+      ctx.report(listing(ctx))
       return this.ask(ctx)
     }
     const value = parseNumber(typed)
@@ -111,7 +136,7 @@ export class LweightTool implements Tool {
     ctx: ToolContext
   ): string {
     return lineweight === LINEWEIGHT_BYLAYER
-      ? ctx.text.keywordList([BY_LAYER])
+      ? ctx.text.keywordList([BY_LAYER]).toUpperCase()
       : lineweightLabel(lineweight)
   }
 }
@@ -123,15 +148,16 @@ export function nearestLineweight(value: number): Lineweight {
   )
 }
 
-/** The valid lineweights, a few to a line, as `?` lists them. */
-function listing(): string {
-  const lines: string[] = []
-  for (let at = 0; at < LINEWEIGHTS.length; at += PER_LINE) {
+/**
+ * The valid lineweights as `?` lists them, after ByLayer. WHY not ByBlock
+ * and Default, which AutoCAD's listing names first: neither is modelled.
+ */
+function listing(ctx: ToolContext): string {
+  const lines = [ctx.text.message("linetypeByLayer")]
+  for (let at = 0; at < LINEWEIGHTS.length; at += GAPS.length + 1) {
+    const row = LINEWEIGHTS.slice(at, at + GAPS.length + 1).map(lineweightLabel)
     lines.push(
-      LINEWEIGHTS.slice(at, at + PER_LINE)
-        .map((lineweight) => lineweightLabel(lineweight).padEnd(10))
-        .join("")
-        .trimEnd()
+      row.map((label, i) => (i > 0 ? GAPS[i - 1] : "") + label).join("")
     )
   }
   return lines.join("\n")

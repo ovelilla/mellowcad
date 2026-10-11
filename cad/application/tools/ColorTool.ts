@@ -5,12 +5,14 @@ import {
   STANDARD_COLORS,
 } from "../../domain/colors"
 import { UpdateSettingsCommand } from "../commands/settingsCommands"
+import type { PromptId } from "../../locales/types"
 import {
   CommandOption,
   CommandOptionOutcome,
   PointerInput,
   Tool,
   ToolContext,
+  ToolQuestion,
 } from "./Tool"
 
 /** The words -COLOR reads as a colour: ByLayer and the first seven index colours, by name. */
@@ -35,6 +37,8 @@ export class ColorTool implements Tool {
 
   private phase: "color" | "trueColor" = "color"
   private lastScreen: Vec2 | null = null
+  /** The colour Enter keeps, as the prompt offers it. */
+  private current = ""
 
   onActivate(ctx: ToolContext): void {
     ctx.setCursor("crosshair")
@@ -55,6 +59,12 @@ export class ColorTool implements Tool {
     return false
   }
 
+  question(): PromptId | ToolQuestion {
+    return this.phase === "color"
+      ? { id: "defaultObjectColor", enter: { name: this.current } }
+      : "trueColor"
+  }
+
   commandOptions(): readonly CommandOption[] {
     return this.phase === "color" ? [{ id: "Truecolor" }] : []
   }
@@ -67,6 +77,7 @@ export class ColorTool implements Tool {
 
   private askColor(ctx: ToolContext): void {
     this.phase = "color"
+    this.current = this.colorWord(ctx)
     ctx.dynamicInput.open({
       fields: [{ id: "color", prompt: "defaultObjectColor", kind: "text" }],
       commit: () => {},
@@ -107,7 +118,14 @@ export class ColorTool implements Tool {
     if (index !== null) {
       const standard = STANDARD_COLORS[index - 1]
       if (standard) this.finish(standard.value, ctx)
-      else this.askColor(ctx)
+      else {
+        // WHY nothing said for 8 to 255: AutoCAD takes them, and only their
+        // RGB values are missing here.
+        if (index < 1 || index > 255) {
+          ctx.report(ctx.text.message("invalidColorNumber"), "error")
+        }
+        this.askColor(ctx)
+      }
       return true
     }
     const word = ctx.text.resolveKeyword(typed, [
