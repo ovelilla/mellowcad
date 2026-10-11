@@ -31,7 +31,7 @@ describe("DIST", () => {
 
     const lines = readout(cad)
     expect(lines.some((line) => /Dist\s+300\.00 mm/.test(line))).toBe(true)
-    expect(lines.some((line) => /Angle\s+0\.00°/.test(line))).toBe(true)
+    expect(lines.some((line) => /Angle\s+0°/.test(line))).toBe(true)
     expect(lines.some((line) => /ΔX\s+300\.00/.test(line))).toBe(true)
     expect(lines.some((line) => /ΔY\s+0\.00/.test(line))).toBe(true)
   })
@@ -43,9 +43,9 @@ describe("DIST", () => {
 
     const lines = readout(cad)
     expect(lines.some((line) => /Dist\s+500\.00 mm/.test(line))).toBe(true)
-    expect(
-      lines.some((line) => new RegExp(`Angle\\s+53\\.13°`).test(line))
-    ).toBe(true)
+    expect(lines.some((line) => new RegExp(`Angle\\s+53°`).test(line))).toBe(
+      true
+    )
   })
 
   it("creates no geometry", () => {
@@ -81,7 +81,7 @@ describe("DIST", () => {
     cad.command("DIST").click(p(0, 0)).click(p(300, 400))
 
     expect(cad.commandLog().at(-1)).toBe(
-      "Distance = 500.00,  Angle in XY Plane = 53.13,  Angle from XY Plane = 0.00\n" +
+      "Distance = 500.00,  Angle in XY Plane = 53,  Angle from XY Plane = 0\n" +
         "Delta X = 300.00,  Delta Y = 400.00,   Delta Z = 0.00"
     )
   })
@@ -93,7 +93,7 @@ describe("DIST", () => {
     cad.command("DIST").type("0,0,-7").enter().type("3,4").enter()
 
     expect(cad.commandLog().at(-1)).toBe(
-      "Distance = 13.00,  Angle in XY Plane = 53.13,  Angle from XY Plane = 67.38\n" +
+      "Distance = 13.00,  Angle in XY Plane = 53,  Angle from XY Plane = 67\n" +
         "Delta X = 3.00,  Delta Y = 4.00,   Delta Z = 12.00"
     )
     expect(readout(cad)).toContain("ΔZ    12.00")
@@ -107,7 +107,7 @@ describe("DIST", () => {
 
     // Below the XY plane the angle reads the way AutoCAD's do, from 0 to 360.
     expect(cad.commandLog().at(-1)).toBe(
-      "Distance = 50.99,  Angle in XY Plane = 90.00,  Angle from XY Plane = 348.69\n" +
+      "Distance = 50.99,  Angle in XY Plane = 90,  Angle from XY Plane = 349\n" +
         "Delta X = 0.00,  Delta Y = 50.00,   Delta Z = -10.00"
     )
   })
@@ -119,7 +119,7 @@ describe("DIST", () => {
     cad.command("DIST").click(p(0, 0)).click(p(0, 100))
 
     expect(cad.commandLog().at(-1)).toBe(
-      "Distance = 100.00,  Angle in XY Plane = 0.00,  Angle from XY Plane = 0.00\n" +
+      "Distance = 100.00,  Angle in XY Plane = 0,  Angle from XY Plane = 0\n" +
         "Delta X = 100.00,  Delta Y = 0.00,   Delta Z = 0.00"
     )
   })
@@ -186,13 +186,13 @@ describe("DIST and ID ask as AutoCAD 2026", () => {
       "Specify second point: FOO",
       "Invalid point.",
       "Specify second point: 3,4",
-      "Distance = 5.00,  Angle in XY Plane = 53.13,  Angle from XY Plane = 0.00\nDelta X = 3.00,  Delta Y = 4.00,   Delta Z = 0.00",
+      "Distance = 5.00,  Angle in XY Plane = 53,  Angle from XY Plane = 0\nDelta X = 3.00,  Delta Y = 4.00,   Delta Z = 0.00",
     ])
     answer(cad, "1,1")
     cad.enter()
     expect(cad.commandLog().slice(-2)).toEqual([
       "Specify second point:",
-      "Distance = 0.00,  Angle in XY Plane = 0.00,  Angle from XY Plane = 0.00\nDelta X = 0.00,  Delta Y = 0.00,   Delta Z = 0.00",
+      "Distance = 0.00,  Angle in XY Plane = 0,  Angle from XY Plane = 0\nDelta X = 0.00,  Delta Y = 0.00,   Delta Z = 0.00",
     ])
   })
 

@@ -494,7 +494,7 @@ describe("ELLIPSE", () => {
     )
     cad.option("Included angle")
     expect(cad.state().commandLine.prompt).toBe(
-      "ELLIPSE Specify included angle for arc <180.00>:"
+      "ELLIPSE Specify included angle for arc <180>:"
     )
     cad.enter()
 

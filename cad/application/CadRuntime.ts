@@ -3863,6 +3863,7 @@ export class CadRuntime extends Observable {
       ),
       documentUnit: settings.unit,
       documentPrecision: settings.precision,
+      documentAnglePrecision: settings.anglePrecision,
       ltScale: settings.ltScale,
       dimScale:
         this.document.getDimStyle(this.document.getCurrentDimStyleId())

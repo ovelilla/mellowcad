@@ -175,6 +175,7 @@ describe("round trip", () => {
   it("preserves the document settings", () => {
     const ucs = createUcs({ x: 10, y: -5, z: 4 }, { x: 0.6, y: 0.8 })!
     const settings = {
+      anglePrecision: 3,
       unit: LengthUnit.Meter,
       precision: 5,
       ltScale: 2.5,

@@ -133,7 +133,7 @@ describe("MTEXT", () => {
     )
     cad.option("Exactly").type("2x").enter().option("Rotation")
     expect(cad.state().commandLine.prompt).toBe(
-      "MTEXT Specify rotation angle <0.00>:"
+      "MTEXT Specify rotation angle <0>:"
     )
     cad.enter().option("Style")
     expect(cad.state().commandLine.prompt).toBe(

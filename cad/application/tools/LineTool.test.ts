@@ -330,7 +330,7 @@ describe("LINE", () => {
 
       cad.command("LINE").click(p(0, 0)).moveTo(p(-30, -40))
       const angle = cad.state().dynamicInput?.fields[1]
-      expect(Number(angle?.placeholder)).toBeCloseTo(126.87, 2)
+      expect(angle?.placeholder).toBe("127")
 
       cad.type("100", "distance").type("30", "angle").enter()
       expect(cad.only<LineEntity>("line").end).toBeCloseToPoint(
@@ -542,15 +542,15 @@ describe("LINE", () => {
     })
 
     it("continues on Enter before the pointer has moved, as with it", () => {
-    const cad = createHarness()
-    cad.runtime.runCommand("LINE")
-    cad.press("Enter")
+      const cad = createHarness()
+      cad.runtime.runCommand("LINE")
+      cad.press("Enter")
 
-    expect(cad.activeToolId()).toBe("line")
-    expect(cad.commandLog().at(-1)).toBe("No line or arc to continue.")
-  })
+      expect(cad.activeToolId()).toBe("line")
+      expect(cad.commandLog().at(-1)).toBe("No line or arc to continue.")
+    })
 
-  it("says there is nothing to continue and asks for the first point again", () => {
+    it("says there is nothing to continue and asks for the first point again", () => {
       const cad = createHarness()
 
       cad.command("LINE").enter()

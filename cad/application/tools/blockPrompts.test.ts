@@ -50,9 +50,9 @@ describe("ATTDEF, BLOCK and INSERT ask as AutoCAD 2026", () => {
       "Specify height <2.50>: FOO",
       "Requires numeric distance or second point.",
       "Specify height <2.50>: 2.5",
-      "Specify rotation angle of text <0.00>: FOO",
+      "Specify rotation angle of text <0>: FOO",
       "Requires valid numeric angle or second point.",
-      "Specify rotation angle of text <0.00>: 0",
+      "Specify rotation angle of text <0>: 0",
     ])
     expect(cad.typeCounts().attdef).toBe(1)
   })
@@ -118,9 +118,9 @@ describe("ATTDEF, BLOCK and INSERT ask as AutoCAD 2026", () => {
       "Requires numeric distance or two points.",
       "Specify scale factor for XYZ axes <1.00>: 2",
       "Specify insertion point or [Scale/Rotate]: R",
-      "Specify rotation angle <0.00>: FOO",
+      "Specify rotation angle <0>: FOO",
       "Requires valid numeric angle or two points.",
-      "Specify rotation angle <0.00>: 30",
+      "Specify rotation angle <0>: 30",
       "Specify insertion point or [Scale/Rotate]: 5,5",
       "Enter attribute values",
       "Prompt one <def1>: val1",

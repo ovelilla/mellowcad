@@ -15,7 +15,11 @@ import { AttEditTool } from "./tools/AttEditTool"
  * the others it does ('DIST, 'ID, 'LTSCALE, '-OSNAP…) are not made
  * transparent yet (docs/autocad-coverage.md).
  */
-const TRANSPARENT_COMMANDS: ReadonlySet<string> = new Set(["ZOOM", "PAN"])
+const TRANSPARENT_COMMANDS: ReadonlySet<string> = new Set([
+  "ZOOM",
+  "PAN",
+  "AUPREC",
+])
 
 /**
  * Builds the command table: one command per tool (using AutoCAD's names and

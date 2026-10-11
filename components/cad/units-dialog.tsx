@@ -70,6 +70,7 @@ export function UnitsDialog({
               engine={engine}
               unit={state.documentUnit}
               precision={state.documentPrecision}
+              anglePrecision={state.documentAnglePrecision}
               onDone={close}
             />
           )}
@@ -84,17 +85,19 @@ function UnitsForm({
   engine,
   unit: initialUnit,
   precision: initialPrecision,
+  anglePrecision,
   onDone,
 }: {
   engine: CadEngine
   unit: LengthUnit
   precision: number
+  anglePrecision: number
   onDone: () => void
 }) {
   const t = useTranslations("Editor.Units")
   const [unit, setUnit] = useState(initialUnit)
   const [precision, setPrecision] = useState(initialPrecision)
-  const sample = unitsSampleOutput({ precision })
+  const sample = unitsSampleOutput({ precision, anglePrecision })
   const units = Object.fromEntries(
     LENGTH_UNITS.map((entry) => [entry, t(UNIT_NAMES[entry])])
   )

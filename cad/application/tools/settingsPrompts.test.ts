@@ -176,3 +176,76 @@ describe("ELEV asks as AutoCAD 2026", () => {
     )
   })
 })
+
+// AutoCAD 2023's console: AUPREC typed as a command, then DIST's angles and
+// ROTATE's settings and default at its places, apart from lengths'.
+describe("AUPREC asks as AutoCAD 2026", () => {
+  it("offers the current places and refuses what is no integer from 0 to 8", () => {
+    const cad = createHarness()
+    cad.command("AUPREC")
+    expect(cad.state().commandLine.prompt).toBe(
+      "AUPREC Enter new value for AUPREC <0>:"
+    )
+    answer(cad, "FOO", "9", "-1", "2.5", "2")
+    expect(cad.commandLog()).toEqual([
+      "AUPREC",
+      "Enter new value for AUPREC <0>: FOO",
+      "Requires an integer between 0 and 8.",
+      "Enter new value for AUPREC <0>: 9",
+      "Requires an integer between 0 and 8.",
+      "Enter new value for AUPREC <0>: -1",
+      "Requires an integer between 0 and 8.",
+      "Enter new value for AUPREC <0>: 2.5",
+      "Requires an integer between 0 and 8.",
+      "Enter new value for AUPREC <0>: 2",
+    ])
+    cad.command("DIST")
+    answer(cad, "0,0", "10,10")
+    expect(cad.commandLog().at(-1)?.split("\n")[0]).toBe(
+      "Distance = 14.14,  Angle in XY Plane = 45.00,  Angle from XY Plane = 0.00"
+    )
+    cad.command("ROTATE")
+    expect(cad.commandLog().at(-1)).toBe(
+      "Current positive angle in UCS:  ANGDIR=counterclockwise  ANGBASE=0.00"
+    )
+  })
+
+  it("writes angles with no places at first, as AutoCAD's template does", () => {
+    const cad = createHarness()
+    cad.command("DIST")
+    answer(cad, "0,0", "10,10")
+    expect(cad.commandLog().at(-1)?.split("\n")[0]).toBe(
+      "Distance = 14.14,  Angle in XY Plane = 45,  Angle from XY Plane = 0"
+    )
+  })
+
+  it("is one undo step, and runs transparently", () => {
+    const cad = createHarness()
+    cad.command("AUPREC")
+    answer(cad, "3")
+    cad.undo().command("AUPREC")
+    expect(cad.state().commandLine.prompt).toBe(
+      "AUPREC Enter new value for AUPREC <0>:"
+    )
+    cad.escape().command("LINE")
+    answer(cad, "0,0", "'AUPREC", "1")
+    expect(cad.commandLog().slice(-2)).toEqual([
+      ">>Enter new value for AUPREC <0>: 1",
+      "Resuming LINE command.",
+    ])
+    expect(cad.state().commandLine.prompt).toBe(
+      "LINE Specify next point or [Undo]:"
+    )
+  })
+
+  it("asks in the words of Autodesk's Spanish table", () => {
+    const cad = createHarness({ locale: es })
+    cad.command("AUPREC")
+    answer(cad, "9")
+    expect(cad.commandLog()).toEqual([
+      "AUPREC",
+      "Indique nuevo valor para AUPREC <0>: 9",
+      "Requiere un nº entero entre 0 y 8.",
+    ])
+  })
+})

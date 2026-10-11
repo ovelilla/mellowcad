@@ -267,7 +267,7 @@ describe("ROTATE", () => {
 
     cad.select("L1").command("RO").click(p(0, 0))
     expect(cad.state().commandLine.prompt).toBe(
-      "ROTATE Specify rotation angle or [Copy/Reference] <0.00>:"
+      "ROTATE Specify rotation angle or [Copy/Reference] <0>:"
     )
     cad.option("Copy")
     expect(cad.optionIds()).toEqual(["Copy", "Reference"])
@@ -279,16 +279,16 @@ describe("ROTATE", () => {
       "Current positive angle in UCS:  ANGDIR=counterclockwise  ANGBASE=0",
       "1 found",
       "Specify base point:",
-      "Specify rotation angle or [Copy/Reference] <0.00>: C",
+      "Specify rotation angle or [Copy/Reference] <0>: C",
       "Rotating a copy of the selected objects.",
-      "Specify rotation angle or [Copy/Reference] <0.00>: C",
+      "Specify rotation angle or [Copy/Reference] <0>: C",
       "Rotating a copy of the selected objects.",
-      "Specify rotation angle or [Copy/Reference] <0.00>: 90",
+      "Specify rotation angle or [Copy/Reference] <0>: 90",
     ])
     expect(cad.entityCount).toBe(2)
     cad.select("L1").command("ROTATE").click(p(0, 0))
     expect(cad.state().commandLine.prompt).toBe(
-      "ROTATE Specify rotation angle or [Copy/Reference] <90.00>:"
+      "ROTATE Specify rotation angle or [Copy/Reference] <90>:"
     )
   })
 
@@ -297,7 +297,7 @@ describe("ROTATE", () => {
 
     cad.select("L1").command("ROTATE").click(p(0, 0)).option("Reference")
     expect(cad.state().commandLine.prompt).toBe(
-      "ROTATE Specify the reference angle <0.00>:"
+      "ROTATE Specify the reference angle <0>:"
     )
     cad.click(p(0, 0))
     expect(cad.state().commandLine.prompt).toBe("ROTATE Specify second point:")
@@ -709,11 +709,11 @@ describe("ARRAYPOLAR's questions", () => {
     )
     cad.type("4").enter().option("Angle between")
     expect(cad.state().commandLine.prompt).toBe(
-      "ARRAYPOLAR Specify angle between items <90.00>:"
+      "ARRAYPOLAR Specify angle between items <90>:"
     )
     cad.type("30").enter().option("Fill angle")
     expect(cad.state().commandLine.prompt).toBe(
-      "ARRAYPOLAR Specify the angle to fill (+=ccw, -=cw) <90.00>:"
+      "ARRAYPOLAR Specify the angle to fill (+=ccw, -=cw) <90>:"
     )
     cad.type("180").enter().option("ROTate items")
     expect(cad.state().commandLine.prompt).toBe(
@@ -728,9 +728,9 @@ describe("ARRAYPOLAR's questions", () => {
       "Select grip to edit array or [Items/Angle between/Fill angle/ROTate items/eXit] <eXit>: I",
       "Enter number of items in array <6>: 4",
       "Select grip to edit array or [Items/Angle between/Fill angle/ROTate items/eXit] <eXit>: A",
-      "Specify angle between items <90.00>: 30",
+      "Specify angle between items <90>: 30",
       "Select grip to edit array or [Items/Angle between/Fill angle/ROTate items/eXit] <eXit>: F",
-      "Specify the angle to fill (+=ccw, -=cw) <90.00>: 180",
+      "Specify the angle to fill (+=ccw, -=cw) <90>: 180",
       "Select grip to edit array or [Items/Angle between/Fill angle/ROTate items/eXit] <eXit>: ROT",
       "Rotate arrayed items? [Yes/No] <Yes>: N",
       "Select grip to edit array or [Items/Angle between/Fill angle/ROTate items/eXit] <eXit>: X",
@@ -762,11 +762,11 @@ describe("ARRAYPOLAR's questions", () => {
     )
     cad.enter().option("Angle between")
     expect(cad.state().commandLine.prompt).toBe(
-      "MATRIZPOLAR Indique el ángulo entre elementos <60.00>:"
+      "MATRIZPOLAR Indique el ángulo entre elementos <60>:"
     )
     cad.enter().option("Fill angle")
     expect(cad.state().commandLine.prompt).toBe(
-      "MATRIZPOLAR Precise el ángulo que se debe rellenar (+ =antihorario, -=horario) <360.00>:"
+      "MATRIZPOLAR Precise el ángulo que se debe rellenar (+ =antihorario, -=horario) <360>:"
     )
     cad.enter().option("ROTate items")
     expect(cad.state().commandLine.prompt).toBe(

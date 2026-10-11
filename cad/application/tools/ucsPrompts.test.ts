@@ -54,12 +54,12 @@ describe("UCS asks as AutoCAD 2026", () => {
     answer(cad, "X", "FOO")
     expect(cad.commandLog().slice(-3)).toEqual([
       `${ORIGIN} X`,
-      "Specify rotation angle about X axis <90.00>: FOO",
+      "Specify rotation angle about X axis <90>: FOO",
       "Requires valid numeric angle or second point.",
     ])
     cad.enter()
     expect(cad.commandLog().at(-1)).toBe(
-      "Specify rotation angle about X axis <90.00>:"
+      "Specify rotation angle about X axis <90>:"
     )
   })
 

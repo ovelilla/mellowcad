@@ -426,9 +426,7 @@ describe("angular dimensions elsewhere in the app", () => {
       .state()
       .properties.info!.groups.flatMap((group) => group.rows)
 
-    expect(rows.find((row) => row.label === "Measurement")?.value).toBe(
-      "90.00°"
-    )
+    expect(rows.find((row) => row.label === "Measurement")?.value).toBe("90°")
     expect(rows.find((row) => row.label === "Type")?.value).toBe("Angular")
     expect(rows.find((row) => row.label === "Vertex X")).toBeDefined()
   })

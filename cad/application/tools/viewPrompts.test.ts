@@ -188,7 +188,7 @@ describe("VPOINT asks as AutoCAD 2026", () => {
     cad.command("-VPOINT")
     answer(cad, "FOO", "R")
     expect(cad.state().commandLine.prompt).toBe(
-      "-VPOINT Enter angle in XY plane from X axis <270.00>:"
+      "-VPOINT Enter angle in XY plane from X axis <270>:"
     )
     answer(cad, "FOO", "315", "FOO", "")
 
@@ -199,12 +199,12 @@ describe("VPOINT asks as AutoCAD 2026", () => {
       "Invalid input. Try again.",
       "Current view direction:  VIEWDIR=0.00,0.00,1.00",
       "Specify a view point or [Rotate]: R",
-      "Enter angle in XY plane from X axis <270.00>: FOO",
+      "Enter angle in XY plane from X axis <270>: FOO",
       "Requires valid numeric angle or second point.",
-      "Enter angle in XY plane from X axis <270.00>: 315",
-      "Enter angle from XY plane <90.00>: FOO",
+      "Enter angle in XY plane from X axis <270>: 315",
+      "Enter angle from XY plane <90>: FOO",
       "Requires valid numeric angle or second point.",
-      "Enter angle from XY plane <90.00>:",
+      "Enter angle from XY plane <90>:",
       "Regenerating model.",
     ])
   })
@@ -224,7 +224,7 @@ describe("VPOINT asks as AutoCAD 2026", () => {
       "Precise un punto de vista o [Rotación]: R",
     ])
     expect(cad.state().commandLine.prompt).toBe(
-      "PTOVISTA Ángulo a partir del eje X en el plano XY <270.00>:"
+      "PTOVISTA Ángulo a partir del eje X en el plano XY <270>:"
     )
   })
 })

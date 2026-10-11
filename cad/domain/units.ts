@@ -20,6 +20,8 @@ export enum LengthUnit {
 export interface DocumentSettings {
   readonly unit: LengthUnit
   readonly precision: number
+  /** AUPREC: the decimal places angles are written with, apart from lengths'. */
+  readonly anglePrecision: number
   /** Global linetype scale (AutoCAD's LTSCALE): multiplies every dash pattern. */
   readonly ltScale: number
   /** Whether lineweights are drawn at their real thickness (AutoCAD's LWDISPLAY). */
@@ -75,6 +77,8 @@ export const DEFAULT_DOCUMENT_SETTINGS: DocumentSettings = {
   // report follows the drawing's precision as AutoCAD's follows LUPREC, and
   // UNITS sets 4 for AutoCAD's look.
   precision: 2,
+  // AutoCAD's AUPREC starts at 0 in acadiso.dwt as in acad.dwt: `<90>`.
+  anglePrecision: 0,
   ltScale: 1,
   lwDisplay: true,
   attributeDisplay: "normal",
@@ -111,7 +115,7 @@ export function formatAngle(
   degrees: number,
   settings: DocumentSettings
 ): string {
-  return degrees.toFixed(settings.precision)
+  return degrees.toFixed(settings.anglePrecision)
 }
 
 /**
@@ -120,12 +124,12 @@ export function formatAngle(
  * distance<angle,Z, written as the drawing writes them.
  */
 export function unitsSampleOutput(
-  settings: Pick<DocumentSettings, "precision">
+  settings: Pick<DocumentSettings, "precision" | "anglePrecision">
 ): readonly [string, string] {
   const length = (value: number) => value.toFixed(settings.precision)
   return [
     `${length(1.5)},${length(2.0039)},${length(0)}`,
-    `${length(3)}<${(45).toFixed(settings.precision)},${length(0)}`,
+    `${length(3)}<${(45).toFixed(settings.anglePrecision)},${length(0)}`,
   ]
 }
 

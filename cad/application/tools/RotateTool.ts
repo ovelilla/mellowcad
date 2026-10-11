@@ -1,7 +1,7 @@
 import { Vec2, V } from "../../geometry/Vec2"
 import { headingInUcs } from "./ucsHeading"
 import { Entity, rotateEntity, rotateEntityCopy } from "../../domain/entities"
-import { parseNumber } from "../../domain/units"
+import { formatAngle, parseNumber } from "../../domain/units"
 import { DynamicInputSession } from "../input/DynamicInput"
 import type { PromptId } from "../../locales/types"
 import {
@@ -107,7 +107,11 @@ export class RotateTool implements Tool {
   onActivate(ctx: ToolContext): void {
     ctx.setCursor("crosshair")
     // ANGDIR and ANGBASE are fixed here: counterclockwise from east.
-    ctx.report(ctx.text.message("rotateSettings"))
+    ctx.report(
+      ctx.text.message("rotateSettings", {
+        angbase: formatAngle(0, ctx.document.getSettings()),
+      })
+    )
     // Pre-selected objects (the common path) skip straight to the base point,
     // matching AutoCAD; otherwise prompt to select the objects first.
     if (ctx.selection.isEmpty()) {

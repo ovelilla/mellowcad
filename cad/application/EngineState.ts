@@ -429,6 +429,8 @@ export interface EngineState {
   readonly dynamicInput: DynamicInputUi | null
   readonly documentUnit: LengthUnit
   readonly documentPrecision: number
+  /** AUPREC: the decimal places angles are written with. */
+  readonly documentAnglePrecision: number
   /** Global linetype scale (AutoCAD's LTSCALE). */
   readonly ltScale: number
   /** The current dimension style's overall scale (AutoCAD's DIMSCALE). */

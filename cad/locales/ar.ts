@@ -76,6 +76,7 @@ export const ar: EngineLocale = {
       "orbit": "مدار ثلاثي الأبعاد",
       "navvcube": "مكعب العرض",
       "ltscale": "مقياس نوع الخط",
+      "auprec": "دقة الزوايا",
       "osnap": "أوضاع التقاط الكائنات",
       "color": "اللون",
       "linetype": "نوع الخط",

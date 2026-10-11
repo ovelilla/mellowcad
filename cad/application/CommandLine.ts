@@ -294,6 +294,7 @@ export const TOOL_COMMANDS: Readonly<Record<string, string>> = {
   orbit: "3DORBIT",
   navvcube: "NAVVCUBE",
   ltscale: "LTSCALE",
+  auprec: "AUPREC",
   osnap: "-OSNAP",
   color: "COLOR",
   linetype: "LINETYPE",

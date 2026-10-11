@@ -299,7 +299,7 @@ describe("HATCH Properties", () => {
     )
     h.type("0").enter().type("2").enter()
     expect(h.state().commandLine.prompt).toBe(
-      "HATCH Specify an angle for the pattern <0.00>:"
+      "HATCH Specify an angle for the pattern <0>:"
     )
     h.type("45").enter().click(p(50, 50))
     h.option("Select objects")
@@ -314,7 +314,7 @@ describe("HATCH Properties", () => {
       "Specify a scale for the pattern <1.00>: 0",
       "Value must be positive and nonzero.",
       "Specify a scale for the pattern <1.00>: 2",
-      "Specify an angle for the pattern <0.00>: 45",
+      "Specify an angle for the pattern <0>: 45",
       "Current hatch pattern:  ANSI31",
       "Specify internal point or [Properties/Select objects]:",
       "Selecting everything...",
@@ -349,7 +349,7 @@ describe("HATCH Properties", () => {
     )
     h.enter()
     expect(h.state().commandLine.prompt).toBe(
-      "SOMBREA Precise ángulo del patrón <0.00>:"
+      "SOMBREA Precise ángulo del patrón <0>:"
     )
     h.enter().click(p(50, 50))
     expect(h.commandLog().slice(-5)).toEqual([

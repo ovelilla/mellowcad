@@ -56,6 +56,7 @@ import { ViewTool } from "./tools/ViewTool"
 import { OrbitTool } from "./tools/OrbitTool"
 import { NavVCubeTool } from "./tools/NavVCubeTool"
 import { LtScaleTool } from "./tools/LtScaleTool"
+import { AuPrecTool } from "./tools/AuPrecTool"
 import { OsnapTool } from "./tools/OsnapTool"
 import { ColorTool } from "./tools/ColorTool"
 import { LinetypeTool } from "./tools/LinetypeTool"
@@ -145,6 +146,7 @@ export function defaultTools(
     new OrbitTool(),
     new NavVCubeTool(),
     new LtScaleTool(),
+    new AuPrecTool(),
     new OsnapTool(),
     new ColorTool(),
     new LinetypeTool(),

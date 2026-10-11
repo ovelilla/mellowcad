@@ -76,6 +76,7 @@ export const en: EngineCatalog = {
       "orbit": "3D Orbit",
       "navvcube": "ViewCube",
       "ltscale": "Linetype scale",
+      "auprec": "Angle precision",
       "osnap": "Object snap modes",
       "color": "Color",
       "linetype": "Linetype",
@@ -801,6 +802,9 @@ export const en: EngineCatalog = {
         "LTSCALE",
         "LTS"
       ],
+      "AUPREC": [
+        "AUPREC"
+      ],
       "CLEANSCREENON": [
         "CLEANSCREENON"
       ],
@@ -1018,6 +1022,12 @@ export const en: EngineCatalog = {
       "elevDefaultElevation": "Specify new default elevation",
       "elevDefaultThickness": "Specify new default thickness",
       "ltscaleFactor": "Enter new linetype scale factor",
+      "enterNewValueFor": [
+        "Enter new value for ",
+        [
+          "name"
+        ]
+      ],
       "osnapModes": "Enter list of object snap modes",
       "defaultObjectColor": "Enter default object color",
       "trueColor": "Red,Green,Blue",
@@ -1332,7 +1342,12 @@ export const en: EngineCatalog = {
         " command."
       ],
       "notTransparent": "** That command may not be invoked transparently **",
-      "rotateSettings": "Current positive angle in UCS:  ANGDIR=counterclockwise  ANGBASE=0",
+      "rotateSettings": [
+        "Current positive angle in UCS:  ANGDIR=counterclockwise  ANGBASE=",
+        [
+          "angbase"
+        ]
+      ],
       "rotatingCopy": "Rotating a copy of the selected objects.",
       "scalingCopy": "Scaling a copy of the selected objects.",
       "trimExtendSettings": "Current settings: Projection=UCS, Edge=None, Mode=Quick",

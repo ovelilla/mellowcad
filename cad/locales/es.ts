@@ -76,6 +76,7 @@ export const es: EngineLocale = {
       "orbit": "Órbita 3D",
       "navvcube": "ViewCube",
       "ltscale": "Escala de tipo de línea",
+      "auprec": "Precisión de ángulos",
       "osnap": "Modos de referencia a objetos",
       "color": "Color",
       "linetype": "Tipo de línea",
@@ -780,6 +781,9 @@ export const es: EngineLocale = {
         "ESCALATL",
         "EC"
       ],
+      "AUPREC": [
+        "AUPREC"
+      ],
       "CLEANSCREENON": [
         "LIMPIAPANTACT"
       ],
@@ -1341,6 +1345,12 @@ export const es: EngineLocale = {
       "elevDefaultElevation": "Precise nueva elevación por defecto",
       "elevDefaultThickness": "Precise nueva altura de objeto por defecto",
       "ltscaleFactor": "Indique nuevo factor de escala del tipo de línea",
+      "enterNewValueFor": [
+        "Indique nuevo valor para ",
+        [
+          "name"
+        ]
+      ],
       "osnapModes": "Indique lista de modo de referencia a objetos",
       "defaultObjectColor": "Indique el color de objeto por defecto",
       "trueColor": "Rojo,Verde,Azul",
@@ -1655,7 +1665,12 @@ export const es: EngineLocale = {
         "."
       ],
       "notTransparent": "** Este comando no funciona de forma transparente **",
-      "rotateSettings": "Ángulo actual positivo en SCP:  ANGDIR=en sentido horario inverso ANGBASE=0",
+      "rotateSettings": [
+        "Ángulo actual positivo en SCP:  ANGDIR=en sentido horario inverso ANGBASE=",
+        [
+          "angbase"
+        ]
+      ],
       "trimExtendSettings": "Parámetros actuales: Proyección=SCP, Arista=Ninguno, Modo=Rápido",
       "filletSettings": [
         "Parámetros actuales: Modo = Recortar, Radio = ",

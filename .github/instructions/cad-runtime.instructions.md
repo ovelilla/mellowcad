@@ -368,7 +368,7 @@ from a palette mid-command joins it, as AutoCAD undoes transparent changes with 
 `loadDrawing` clears the history (a loaded file is a fresh baseline). Document _settings_ changes made by a host's own
 setters (`setDocumentUnit`, `setDocumentPrecision`, `setLtScale`, layer table edits) are
 deliberately not undoable; anything touching entities is. What a command sets is what AutoCAD's U
-undoes — ATTMODE, the UCS and its table, UCSICON, ELEVATION and THICKNESS, LTSCALE, UNITS'
+undoes — ATTMODE, the UCS and its table, UCSICON, ELEVATION and THICKNESS, LTSCALE, AUPREC, UNITS'
 unit and precision (`applyDrawingUnits`), and CECOLOR, CELTYPE and CELWEIGHT, whether -COLOR,
 -LINETYPE, -LWEIGHT or the Properties drop-downs set them (`setCurrentProperties`; UNDO "displays
 the command or system variable name" it steps past) — and goes through a command (`UpdateSettingsCommand`

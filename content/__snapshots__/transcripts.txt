@@ -37,7 +37,7 @@ idle: Command:
 8167 +87 input | Specify internal point or [Properties/Select objects]: | P
 8254 +67 input | Enter a pattern name or [?/Solid] <ANSI31>: | 
 8321 +107 input | Specify a scale for the pattern <1.00>: | 20
-8428 +67 input | Specify an angle for the pattern <0.00>: | 
+8428 +67 input | Specify an angle for the pattern <0>: | 
 8428 +0 info |  | Current hatch pattern:  ANSI31
 8495 +124 input | Specify internal point or [Properties/Select objects]: | 
 8495 +0 info |  | Selecting everything...
@@ -201,7 +201,7 @@ info |  | Current hatch pattern:  ANSI31
 input | Specify internal point or [Properties/Select objects]: | P
 input | Enter a pattern name or [?/Solid] <ANSI31>: | 
 input | Specify a scale for the pattern <1.00>: | 12
-input | Specify an angle for the pattern <0.00>: | 
+input | Specify an angle for the pattern <0>: | 
 info |  | Current hatch pattern:  ANSI31
 input | Specify internal point or [Properties/Select objects]: | 
 info |  | Selecting everything...
@@ -233,7 +233,7 @@ command |  | TEXT
 info |  | Current text style:  "Standard"  Text height:  2.50  Annotative:  No  Justify:  Left
 input | Specify start point of text or [Justify/Style]: | 4,64
 input | Specify height <2.50>: | 3
-input | Specify rotation angle of text <0.00>: | 0
+input | Specify rotation angle of text <0>: | 0
 input | Enter text: | YOUR DEVICE
 input | Enter text: | 
 command |  | TEXT
@@ -242,7 +242,7 @@ input | Specify start point of text or [Justify/Style]: | J
 input | Enter an option [Left/Center/Right/Middle/TL/TC/TR/ML/MC/MR/BL/BC/BR]: | MC
 input | Specify middle point of text: | 32,33
 input | Specify height <3.00>: | 4
-input | Specify rotation angle of text <0.00>: | 0
+input | Specify rotation angle of text <0>: | 0
 input | Enter text: | EDITOR
 input | Enter text: | 
 command |  | TEXT
@@ -251,7 +251,7 @@ input | Specify middle point of text or [Justify/Style]: | J
 input | Enter an option [Left/Center/Right/Middle/TL/TC/TR/ML/MC/MR/BL/BC/BR]: | MC
 input | Specify middle point of text: | 138,47
 input | Specify height <4.00>: | 4
-input | Specify rotation angle of text <0.00>: | 0
+input | Specify rotation angle of text <0>: | 0
 input | Enter text: | BROWSER
 input | Enter text: | 
 command |  | TEXT
@@ -260,7 +260,7 @@ input | Specify middle point of text or [Justify/Style]: | J
 input | Enter an option [Left/Center/Right/Middle/TL/TC/TR/ML/MC/MR/BL/BC/BR]: | MC
 input | Specify middle point of text: | 138,19
 input | Specify height <4.00>: | 4
-input | Specify rotation angle of text <0.00>: | 0
+input | Specify rotation angle of text <0>: | 0
 input | Enter text: | FILE
 input | Enter text: | 
 command |  | DIMLINEAR
@@ -287,7 +287,7 @@ command |  | TEXT
 info |  | Current text style:  "Standard"  Text height:  2.50  Annotative:  No  Justify:  Left
 input | Specify start point of text or [Justify/Style]: | 6,67.5
 input | Specify height <2.50>: | 4
-input | Specify rotation angle of text <0.00>: | 0
+input | Specify rotation angle of text <0>: | 0
 input | Enter text: | adapters
 input | Enter text: | 
 command |  | RECTANG
@@ -297,7 +297,7 @@ command |  | TEXT
 info |  | Current text style:  "Standard"  Text height:  4.00  Annotative:  No  Justify:  Left
 input | Specify start point of text or [Justify/Style]: | 6,51.5
 input | Specify height <4.00>: | 4
-input | Specify rotation angle of text <0.00>: | 0
+input | Specify rotation angle of text <0>: | 0
 input | Enter text: | application
 input | Enter text: | 
 command |  | RECTANG
@@ -307,7 +307,7 @@ command |  | TEXT
 info |  | Current text style:  "Standard"  Text height:  4.00  Annotative:  No  Justify:  Left
 input | Specify start point of text or [Justify/Style]: | 6,35.5
 input | Specify height <4.00>: | 4
-input | Specify rotation angle of text <0.00>: | 0
+input | Specify rotation angle of text <0>: | 0
 input | Enter text: | scene
 input | Enter text: | 
 command |  | RECTANG
@@ -317,7 +317,7 @@ command |  | TEXT
 info |  | Current text style:  "Standard"  Text height:  4.00  Annotative:  No  Justify:  Left
 input | Specify start point of text or [Justify/Style]: | 6,19.5
 input | Specify height <4.00>: | 4
-input | Specify rotation angle of text <0.00>: | 0
+input | Specify rotation angle of text <0>: | 0
 input | Enter text: | domain
 input | Enter text: | 
 command |  | RECTANG
@@ -327,7 +327,7 @@ command |  | TEXT
 info |  | Current text style:  "Standard"  Text height:  4.00  Annotative:  No  Justify:  Left
 input | Specify start point of text or [Justify/Style]: | 6,3.5
 input | Specify height <4.00>: | 4
-input | Specify rotation angle of text <0.00>: | 0
+input | Specify rotation angle of text <0>: | 0
 input | Enter text: | geometry
 input | Enter text: | 
 command |  | DIMLINEAR

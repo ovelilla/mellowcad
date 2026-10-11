@@ -136,7 +136,7 @@ describe("TEXT", () => {
     expect(cad.state().commandLine.prompt).toBe("TEXT Specify height <2.50>:")
     cad.type("5").enter()
     expect(cad.state().commandLine.prompt).toBe(
-      "TEXT Specify rotation angle of text <0.00>:"
+      "TEXT Specify rotation angle of text <0>:"
     )
     cad.enter()
     expect(cad.state().commandLine.prompt).toBe("TEXT Enter text:")
@@ -149,7 +149,7 @@ describe("TEXT", () => {
       "Enter an option [Left/Center/Right/Middle/TL/TC/TR/ML/MC/MR/BL/BC/BR]: TC",
       "Specify top-center point of text:",
       "Specify height <2.50>: 5",
-      "Specify rotation angle of text <0.00>:",
+      "Specify rotation angle of text <0>:",
       "Enter text: MID",
       "Enter text: *Cancel*",
     ])

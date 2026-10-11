@@ -235,7 +235,7 @@ describe("where there is no Z guide", () => {
     cad.command("LINE").click(p(0, 0)).moveTo(p(0.5, 80))
 
     expect(labels(cad).some((label) => label.includes("Z"))).toBe(false)
-    expect(angleField(cad)?.placeholder).toBe("90.00")
+    expect(angleField(cad)?.placeholder).toBe("90")
   })
 
   it("offers none in the plan of a tilted UCS", () => {

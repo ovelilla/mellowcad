@@ -68,6 +68,7 @@ VIEW ["V"] "Preset views"
 3DORBIT ["3DO","ORBIT"] "3D Orbit"
 NAVVCUBE ["CUBE"] "ViewCube"
 LTSCALE ["LTS"] "Linetype scale"
+AUPREC [] "Angle precision"
 -OSNAP ["-OS"] "Object snap modes"
 COLOR ["COL"] "Color"
 LINETYPE ["LT"] "Linetype"
@@ -173,6 +174,7 @@ view "Preset views" V
 orbit "3D Orbit" 3DO
 navvcube "ViewCube" CUBE
 ltscale "Linetype scale" LTS
+auprec "Angle precision" AUPREC
 osnap "Object snap modes" -OS
 color "Color" COL
 linetype "Linetype" LT
@@ -404,7 +406,7 @@ lweight "Lineweight" LW
   asks: -
   tip: -
   dyn: -
-  properties: Line (1) {Thickness=0.00 mm~} [Geometry: Length=100.00 mm~, Angle=0.00°~, Δ X=100.00 mm, Δ Y=0.00 mm, Δ Z=0.00 mm] [Endpoints: Start X=50.00~, Start Y=50.00~, Start Z=0.00~, End X=150.00~, End Y=50.00~, End Z=0.00~]
+  properties: Line (1) {Thickness=0.00 mm~} [Geometry: Length=100.00 mm~, Angle=0°~, Δ X=100.00 mm, Δ Y=0.00 mm, Δ Z=0.00 mm] [Endpoints: Start X=50.00~, Start Y=50.00~, Start Z=0.00~, End X=150.00~, End Y=50.00~, End Z=0.00~]
   prompt| Specify insertion point:
 
 ## LINE
@@ -433,17 +435,17 @@ lweight "Lineweight" LW
   options: [U] Undo
   prompt| Specify first point: 0,0
 > move
-  dyn: "Length"=""|50.00|mm* "Angle"=""|0.00|°
+  dyn: "Length"=""|50.00|mm* "Angle"=""|0|°
 > type length
-  dyn: "Length"="100"|50.00|mm* "Angle"=""|0.00|°
+  dyn: "Length"="100"|50.00|mm* "Angle"=""|0|°
 > enter
-  dyn: "Length"=""|50.00|mm* "Angle"=""|180.00|°
+  dyn: "Length"=""|50.00|mm* "Angle"=""|180|°
   prompt| Specify next point or [Undo]: 100
 > polar coordinate
   dyn: "Dist<Ang"="100<90"||*
 > enter
   prompt: LINE Specify next point or [Close/Undo]:
-  dyn: "Length"=""|111.80|mm* "Angle"=""|116.57|°
+  dyn: "Length"=""|111.80|mm* "Angle"=""|117|°
   options: [C] Close, [U] Undo
   prompt| Specify next point or [Undo]: 100<90
 > click
@@ -470,7 +472,7 @@ lweight "Lineweight" LW
   prompt: LINE Specify next point or [Undo]:
   asks: "Length" "Angle"
   tip: Specify next point or
-  dyn: "Length"=""|100.00|mm* "Angle"=""|90.00|°
+  dyn: "Length"=""|100.00|mm* "Angle"=""|90|°
   options: [U] Undo
   prompt| Specify first point:
 > escape
@@ -775,11 +777,11 @@ lweight "Lineweight" LW
   prompt: ELLIPSE Specify rotation around major axis:
   asks: "Rotation around major axis"
   tip: Specify rotation around major axis:
-  dyn: "Rotation around major axis"=""|0.00|°*
+  dyn: "Rotation around major axis"=""|0|°*
   options: -
   prompt| Specify distance to other axis or [Rotation]: R
 > rotation
-  dyn: "Rotation around major axis"="60"|0.00|°*
+  dyn: "Rotation around major axis"="60"|0|°*
 > enter
   prompt: Command:
   asks: -
@@ -873,33 +875,33 @@ lweight "Lineweight" LW
   prompt: ELLIPSEARC Specify start angle:
   asks: "Start angle"
   tip: Specify start angle:
-  dyn: "Start angle"=""|0.00|°*
+  dyn: "Start angle"=""|0|°*
   options: -
   prompt| Specify distance to other axis or [Rotation]:
 > start angle
-  dyn: "Start angle"="0"|0.00|°*
+  dyn: "Start angle"="0"|0|°*
 > enter
   prompt: ELLIPSEARC Specify end angle or [Included angle]:
   asks: "End angle"
   tip: Specify end angle or
-  dyn: "End angle"=""|90.00|°*
+  dyn: "End angle"=""|90|°*
   options: [I] Included angle
   prompt| Specify start angle: 0
 > I
-  prompt: ELLIPSEARC Specify included angle for arc <180.00>:
+  prompt: ELLIPSEARC Specify included angle for arc <180>:
   asks: "Included angle"
   tip: Specify included angle for arc
-  dyn: "Included angle"=""|0.00|°*
+  dyn: "Included angle"=""|0|°*
   options: -
   prompt| Specify end angle or [Included angle]: I
 > included
-  dyn: "Included angle"="90"|0.00|°*
+  dyn: "Included angle"="90"|0|°*
 > enter
   prompt: Command:
   asks: -
   tip: -
   dyn: -
-  prompt| Specify included angle for arc <180.00>: 90
+  prompt| Specify included angle for arc <180>: 90
 
 ## SPLINE
 > start
@@ -1313,7 +1315,7 @@ lweight "Lineweight" LW
 > scale
   dyn: "Specify a scale for the pattern"="0.0001"||*
 > enter
-  prompt: HATCH Specify an angle for the pattern <0.00>:
+  prompt: HATCH Specify an angle for the pattern <0>:
   asks: "Specify an angle for the pattern"
   tip: Specify an angle for the pattern
   dyn: "Specify an angle for the pattern"=""||°*
@@ -1326,7 +1328,7 @@ lweight "Lineweight" LW
   tip: Specify internal point or
   dyn: "X,Y"=""||*
   options: [P] Properties, [S] Select objects
-  prompt| Specify an angle for the pattern <0.00>: 0
+  prompt| Specify an angle for the pattern <0>: 0
   info| Current hatch pattern:  ANSI31
 > pick inside
   prompt| Specify internal point or [Properties/Select objects]:
@@ -1401,11 +1403,11 @@ lweight "Lineweight" LW
   dyn: -
   prompt| Specify insertion base point:
 > pick
-  properties: Line (1) {Thickness=0.00 mm~} [Geometry: Length=100.00 mm~, Angle=0.00°~, Δ X=100.00 mm, Δ Y=0.00 mm, Δ Z=0.00 mm] [Endpoints: Start X=0.00~, Start Y=0.00~, Start Z=0.00~, End X=100.00~, End Y=0.00~, End Z=0.00~]
+  properties: Line (1) {Thickness=0.00 mm~} [Geometry: Length=100.00 mm~, Angle=0°~, Δ X=100.00 mm, Δ Y=0.00 mm, Δ Z=0.00 mm] [Endpoints: Start X=0.00~, Start Y=0.00~, Start Z=0.00~, End X=100.00~, End Y=0.00~, End Z=0.00~]
   prompt| Select objects: 1 found
 > enter
   prompt: Command:
-  properties: Block reference (1) [Block: Name=BAR, Scale=1.00~, Rotation=0.00°~] [Position: X=0.00~, Y=0.00~, Z=0.00~]
+  properties: Block reference (1) [Block: Name=BAR, Scale=1.00~, Rotation=0°~] [Position: X=0.00~, Y=0.00~, Z=0.00~]
   prompt| Select objects:
 
 ## INSERT
@@ -1464,21 +1466,21 @@ lweight "Lineweight" LW
   options: [S] Scale, [R] Rotate
   prompt| Specify scale factor for XYZ axes <1.00>: 2
 > R
-  prompt: INSERT Specify rotation angle <0.00>:
+  prompt: INSERT Specify rotation angle <0>:
   asks: "Specify rotation angle"
   tip: Specify rotation angle
-  dyn: "Specify rotation angle"=""|0.00|°*
+  dyn: "Specify rotation angle"=""|0|°*
   options: -
   prompt| Specify insertion point or [Scale/Rotate]: R
 > rotation
-  dyn: "Specify rotation angle"="90"|0.00|°*
+  dyn: "Specify rotation angle"="90"|0|°*
 > enter
   prompt: INSERT Specify insertion point or [Scale/Rotate]:
   asks: "Specify insertion point or"
   tip: Specify insertion point or
   dyn: "X,Y"=""||*
   options: [S] Scale, [R] Rotate
-  prompt| Specify rotation angle <0.00>: 90
+  prompt| Specify rotation angle <0>: 90
 > place
   prompt: Command:
   asks: -
@@ -1595,19 +1597,19 @@ lweight "Lineweight" LW
 > height
   dyn: "Specify height"="5"|2.50|mm*
 > enter
-  prompt: TEXT Specify rotation angle of text <0.00>:
+  prompt: TEXT Specify rotation angle of text <0>:
   asks: "Specify rotation angle of text"
   tip: Specify rotation angle of text
-  dyn: "Specify rotation angle of text"=""|0.00|°*
+  dyn: "Specify rotation angle of text"=""|0|°*
   prompt| Specify height <2.50>: 5
 > rotation
-  dyn: "Specify rotation angle of text"="0"|0.00|°*
+  dyn: "Specify rotation angle of text"="0"|0|°*
 > enter
   prompt: TEXT Enter text:
   asks: "Text"
   tip: Enter text:
   dyn: "Text"=""||*
-  prompt| Specify rotation angle of text <0.00>: 0
+  prompt| Specify rotation angle of text <0>: 0
 > content
   dyn: "Text"="HELLO"||*
 > enter
@@ -1755,7 +1757,7 @@ lweight "Lineweight" LW
   options: [H] Height, [J] Justify, [L] Line spacing, [R] Rotation, [S] Style, [W] Width
   prompt| Enter line spacing factor or distance <1x>: 1.5x
 > R
-  prompt: MTEXT Specify rotation angle <0.00>:
+  prompt: MTEXT Specify rotation angle <0>:
   asks: "Specify rotation angle"
   tip: Specify rotation angle
   dyn: "Specify rotation angle"=""||°*
@@ -1769,7 +1771,7 @@ lweight "Lineweight" LW
   tip: Specify opposite corner or
   dyn: "X,Y"=""||*
   options: [H] Height, [J] Justify, [L] Line spacing, [R] Rotation, [S] Style, [W] Width
-  prompt| Specify rotation angle <0.00>: 0
+  prompt| Specify rotation angle <0>: 0
 > S
   prompt: MTEXT Enter style name or [?] <Standard>:
   asks: "Style name"
@@ -1815,7 +1817,7 @@ lweight "Lineweight" LW
   dyn: -
 > select
   properties: MText (1) [Text: Contents=FIRST LINE
-SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space factor=1.5x~, Line space distance=25.00 mm~, Line space style=Exactly, Defined width=120.00 mm~] [Position: X=0.00~, Y=0.00~, Z=0.00~]
+SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0°~, Line space factor=1.5x~, Line space distance=25.00 mm~, Line space style=Exactly, Defined width=120.00 mm~] [Position: X=0.00~, Y=0.00~, Z=0.00~]
 
 ## -MTEXT
 > start
@@ -1926,11 +1928,11 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
   prompt: DIMLINEAR Specify angle of dimension text:
   asks: "Specify angle of dimension text"
   tip: Specify angle of dimension text:
-  dyn: "Specify angle of dimension text"=""|0.00|°*
+  dyn: "Specify angle of dimension text"=""|0|°*
   options: -
   prompt| Specify dimension line location or [Text/Angle/Horizontal/Vertical/Rotated]: A
 > angle
-  dyn: "Specify angle of dimension text"="10"|0.00|°*
+  dyn: "Specify angle of dimension text"="10"|0|°*
 > enter
   prompt: DIMLINEAR Specify dimension line location or [Text/Angle/Horizontal/Vertical/Rotated]:
   asks: "Specify dimension line location"
@@ -2065,11 +2067,11 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
   prompt: DIMRADIUS Specify angle of dimension text:
   asks: "Specify angle of dimension text"
   tip: Specify angle of dimension text:
-  dyn: "Specify angle of dimension text"=""|0.00|°*
+  dyn: "Specify angle of dimension text"=""|0|°*
   options: -
   prompt| Specify dimension line location or [Text/Angle]: A
 > angle
-  dyn: "Specify angle of dimension text"="15"|0.00|°*
+  dyn: "Specify angle of dimension text"="15"|0|°*
 > enter
   prompt: DIMRADIUS Specify dimension line location or [Text/Angle]:
   asks: "Specify dimension line location"
@@ -2166,11 +2168,11 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
   prompt: DIMANGULAR Specify angle of dimension text:
   asks: "Specify angle of dimension text"
   tip: Specify angle of dimension text:
-  dyn: "Specify angle of dimension text"=""|0.00|°*
+  dyn: "Specify angle of dimension text"=""|0|°*
   options: -
   prompt| Specify dimension arc line location or [Text/Angle]: A
 > angle
-  dyn: "Specify angle of dimension text"="30"|0.00|°*
+  dyn: "Specify angle of dimension text"="30"|0|°*
 > enter
   prompt: DIMANGULAR Specify dimension arc line location or [Text/Angle]:
   asks: "Specify dimension arc line location"
@@ -2312,7 +2314,7 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
   tip: Select dimensions to space:
   prompt| Select base dimension:
 > pick
-  properties: Dimension (1) [Dimension: Measurement=100.00 mm, Text override=—, Type=Linear, Rotation=0.00°~] [Definition points: First X=0.00, First Y=0.00, Second X=100.00, Second Y=0.00]
+  properties: Dimension (1) [Dimension: Measurement=100.00 mm, Text override=—, Type=Linear, Rotation=0°~] [Definition points: First X=0.00, First Y=0.00, Second X=100.00, Second Y=0.00]
   prompt| Select dimensions to space: 1 found
 > pick
   properties: 2 objects (2) [Selection: Dimensions=2]
@@ -2452,7 +2454,7 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
   prompt: MOVE Select objects:
   command| M MOVE
 > pick
-  properties: Line (1) {Thickness=0.00 mm~} [Geometry: Length=100.00 mm~, Angle=0.00°~, Δ X=100.00 mm, Δ Y=0.00 mm, Δ Z=0.00 mm] [Endpoints: Start X=0.00~, Start Y=0.00~, Start Z=0.00~, End X=100.00~, End Y=0.00~, End Z=0.00~]
+  properties: Line (1) {Thickness=0.00 mm~} [Geometry: Length=100.00 mm~, Angle=0°~, Δ X=100.00 mm, Δ Y=0.00 mm, Δ Z=0.00 mm] [Endpoints: Start X=0.00~, Start Y=0.00~, Start Z=0.00~, End X=100.00~, End Y=0.00~, End Z=0.00~]
   prompt| Select objects: 1 found
 > enter
   prompt: MOVE Specify base point or [Displacement] <Displacement>:
@@ -2469,13 +2471,13 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
   options: -
   prompt| Specify base point or [Displacement] <Displacement>:
 > move
-  dyn: "Distance"=""|42.43|mm* "Angle"=""|45.00|°
+  dyn: "Distance"=""|42.43|mm* "Angle"=""|45|°
 > second
   prompt: Command:
   asks: -
   tip: -
   dyn: -
-  properties: Line (1) {Thickness=0.00 mm~} [Geometry: Length=100.00 mm~, Angle=0.00°~, Δ X=100.00 mm, Δ Y=0.00 mm, Δ Z=0.00 mm] [Endpoints: Start X=50.00~, Start Y=30.00~, Start Z=0.00~, End X=150.00~, End Y=30.00~, End Z=0.00~]
+  properties: Line (1) {Thickness=0.00 mm~} [Geometry: Length=100.00 mm~, Angle=0°~, Δ X=100.00 mm, Δ Y=0.00 mm, Δ Z=0.00 mm] [Endpoints: Start X=50.00~, Start Y=30.00~, Start Z=0.00~, End X=150.00~, End Y=30.00~, End Z=0.00~]
   prompt| Specify second point or <use first point as displacement>:
 > escape
   properties: -
@@ -2494,7 +2496,7 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
   prompt: COPY Select objects:
   command| CO COPY
 > pick
-  properties: Line (1) {Thickness=0.00 mm~} [Geometry: Length=100.00 mm~, Angle=0.00°~, Δ X=100.00 mm, Δ Y=0.00 mm, Δ Z=0.00 mm] [Endpoints: Start X=0.00~, Start Y=0.00~, Start Z=0.00~, End X=100.00~, End Y=0.00~, End Z=0.00~]
+  properties: Line (1) {Thickness=0.00 mm~} [Geometry: Length=100.00 mm~, Angle=0°~, Δ X=100.00 mm, Δ Y=0.00 mm, Δ Z=0.00 mm] [Endpoints: Start X=0.00~, Start Y=0.00~, Start Z=0.00~, End X=100.00~, End Y=0.00~, End Z=0.00~]
   prompt| Select objects: 1 found
 > enter
   prompt: COPY Specify base point or [Displacement] <Displacement>:
@@ -2512,7 +2514,7 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
   options: -
   prompt| Specify base point or [Displacement] <Displacement>:
 > move
-  dyn: "Distance"=""|42.43|mm* "Angle"=""|45.00|°
+  dyn: "Distance"=""|42.43|mm* "Angle"=""|45|°
 > second
   prompt: COPY Specify second point or [Exit/Undo] <Exit>:
   dyn: "Distance"=""|0.00|mm* "Angle"=""||°
@@ -2541,7 +2543,7 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
   command| S STRETCH
   info| Select objects to stretch by crossing-window or crossing-polygon...
 > pick
-  properties: Line (1) {Thickness=0.00 mm~} [Geometry: Length=100.00 mm~, Angle=0.00°~, Δ X=100.00 mm, Δ Y=0.00 mm, Δ Z=0.00 mm] [Endpoints: Start X=0.00~, Start Y=0.00~, Start Z=0.00~, End X=100.00~, End Y=0.00~, End Z=0.00~]
+  properties: Line (1) {Thickness=0.00 mm~} [Geometry: Length=100.00 mm~, Angle=0°~, Δ X=100.00 mm, Δ Y=0.00 mm, Δ Z=0.00 mm] [Endpoints: Start X=0.00~, Start Y=0.00~, Start Z=0.00~, End X=100.00~, End Y=0.00~, End Z=0.00~]
   prompt| Select objects: Specify opposite corner: 1 found
 > enter
   prompt: STRETCH Specify base point or [Displacement] <Displacement>:
@@ -2558,13 +2560,13 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
   options: -
   prompt| Specify base point or [Displacement] <Displacement>:
 > move
-  dyn: "Distance"=""|42.43|mm* "Angle"=""|45.00|°
+  dyn: "Distance"=""|42.43|mm* "Angle"=""|45|°
 > second
   prompt: Command:
   asks: -
   tip: -
   dyn: -
-  properties: Line (1) {Thickness=0.00 mm~} [Geometry: Length=152.97 mm~, Angle=11.31°~, Δ X=150.00 mm, Δ Y=30.00 mm, Δ Z=0.00 mm] [Endpoints: Start X=0.00~, Start Y=0.00~, Start Z=0.00~, End X=150.00~, End Y=30.00~, End Z=0.00~]
+  properties: Line (1) {Thickness=0.00 mm~} [Geometry: Length=152.97 mm~, Angle=11°~, Δ X=150.00 mm, Δ Y=30.00 mm, Δ Z=0.00 mm] [Endpoints: Start X=0.00~, Start Y=0.00~, Start Z=0.00~, End X=150.00~, End Y=30.00~, End Z=0.00~]
   prompt| Specify second point or <use first point as displacement>:
 > escape
   properties: -
@@ -2584,27 +2586,27 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
   asks: "Base point"
   tip: Specify base point:
   dyn: "X,Y"=""||*
-  properties: Line (1) {Thickness=0.00 mm~} [Geometry: Length=100.00 mm~, Angle=0.00°~, Δ X=100.00 mm, Δ Y=0.00 mm, Δ Z=0.00 mm] [Endpoints: Start X=0.00~, Start Y=0.00~, Start Z=0.00~, End X=100.00~, End Y=0.00~, End Z=0.00~]
+  properties: Line (1) {Thickness=0.00 mm~} [Geometry: Length=100.00 mm~, Angle=0°~, Δ X=100.00 mm, Δ Y=0.00 mm, Δ Z=0.00 mm] [Endpoints: Start X=0.00~, Start Y=0.00~, Start Z=0.00~, End X=100.00~, End Y=0.00~, End Z=0.00~]
   command| RO ROTATE
   info| Current positive angle in UCS:  ANGDIR=counterclockwise  ANGBASE=0
   info| 1 found
 > base
-  prompt: ROTATE Specify rotation angle or [Copy/Reference] <0.00>:
+  prompt: ROTATE Specify rotation angle or [Copy/Reference] <0>:
   asks: "Rotation angle"
   tip: Specify rotation angle or
   dyn: "Rotation angle"=""||°*
   options: [C] Copy, [R] Reference
   prompt| Specify base point:
 > C
-  prompt| Specify rotation angle or [Copy/Reference] <0.00>: C
+  prompt| Specify rotation angle or [Copy/Reference] <0>: C
   info| Rotating a copy of the selected objects.
 > R
-  prompt: ROTATE Specify the reference angle <0.00>:
+  prompt: ROTATE Specify the reference angle <0>:
   asks: "Reference angle"
   tip: Specify the reference angle
   dyn: "Reference angle"=""||°*
   options: -
-  prompt| Specify rotation angle or [Copy/Reference] <0.00>: R
+  prompt| Specify rotation angle or [Copy/Reference] <0>: R
 > reference
   dyn: "Reference angle"="0"||°*
 > enter
@@ -2612,7 +2614,7 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
   asks: "New angle"
   tip: Specify the new angle:
   dyn: "New angle"=""||°*
-  prompt| Specify the reference angle <0.00>: 0
+  prompt| Specify the reference angle <0>: 0
 > new angle
   dyn: "New angle"="90"||°*
 > enter
@@ -2630,25 +2632,25 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
   info| Current positive angle in UCS:  ANGDIR=counterclockwise  ANGBASE=0
   info| 1 found
 > base
-  prompt: ROTATE Specify rotation angle or [Copy/Reference] <0.00>:
+  prompt: ROTATE Specify rotation angle or [Copy/Reference] <0>:
   asks: "Rotation angle"
   tip: Specify rotation angle or
   dyn: "Rotation angle"=""||°*
   options: [C] Copy, [R] Reference
   prompt| Specify base point:
 > R
-  prompt: ROTATE Specify the reference angle <0.00>:
+  prompt: ROTATE Specify the reference angle <0>:
   asks: "Reference angle"
   tip: Specify the reference angle
   dyn: "Reference angle"=""||°*
   options: -
-  prompt| Specify rotation angle or [Copy/Reference] <0.00>: R
+  prompt| Specify rotation angle or [Copy/Reference] <0>: R
 > first reference point
   prompt: ROTATE Specify second point:
   asks: "Second point"
   tip: Specify second point:
   dyn: "X,Y"=""||*
-  prompt| Specify the reference angle <0.00>:
+  prompt| Specify the reference angle <0>:
 > second reference point
   prompt: ROTATE Specify the new angle:
   asks: "New angle"
@@ -2677,7 +2679,7 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
   asks: "Base point"
   tip: Specify base point:
   dyn: "X,Y"=""||*
-  properties: Line (1) {Thickness=0.00 mm~} [Geometry: Length=100.00 mm~, Angle=0.00°~, Δ X=100.00 mm, Δ Y=0.00 mm, Δ Z=0.00 mm] [Endpoints: Start X=0.00~, Start Y=0.00~, Start Z=0.00~, End X=100.00~, End Y=0.00~, End Z=0.00~]
+  properties: Line (1) {Thickness=0.00 mm~} [Geometry: Length=100.00 mm~, Angle=0°~, Δ X=100.00 mm, Δ Y=0.00 mm, Δ Z=0.00 mm] [Endpoints: Start X=0.00~, Start Y=0.00~, Start Z=0.00~, End X=100.00~, End Y=0.00~, End Z=0.00~]
   command| SC SCALE 1 found
 > base
   prompt: SCALE Specify scale factor or [Copy/Reference]:
@@ -2766,7 +2768,7 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
   asks: "First point of mirror line"
   tip: Specify first point of mirror line:
   dyn: "X,Y"=""||*
-  properties: Line (1) {Thickness=0.00 mm~} [Geometry: Length=100.00 mm~, Angle=0.00°~, Δ X=100.00 mm, Δ Y=0.00 mm, Δ Z=0.00 mm] [Endpoints: Start X=0.00~, Start Y=0.00~, Start Z=0.00~, End X=100.00~, End Y=0.00~, End Z=0.00~]
+  properties: Line (1) {Thickness=0.00 mm~} [Geometry: Length=100.00 mm~, Angle=0°~, Δ X=100.00 mm, Δ Y=0.00 mm, Δ Z=0.00 mm] [Endpoints: Start X=0.00~, Start Y=0.00~, Start Z=0.00~, End X=100.00~, End Y=0.00~, End Z=0.00~]
   command| MI MIRROR 1 found
 > first
   prompt: MIRROR Specify second point of mirror line:
@@ -2786,7 +2788,7 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
   tip: -
   dyn: -
   options: -
-  properties: Line (1) {Thickness=0.00 mm~} [Geometry: Length=100.00 mm~, Angle=0.00°~, Δ X=100.00 mm, Δ Y=0.00 mm, Δ Z=0.00 mm] [Endpoints: Start X=0.00~, Start Y=100.00~, Start Z=0.00~, End X=100.00~, End Y=100.00~, End Z=0.00~]
+  properties: Line (1) {Thickness=0.00 mm~} [Geometry: Length=100.00 mm~, Angle=0°~, Δ X=100.00 mm, Δ Y=0.00 mm, Δ Z=0.00 mm] [Endpoints: Start X=0.00~, Start Y=100.00~, Start Z=0.00~, End X=100.00~, End Y=100.00~, End Z=0.00~]
   prompt| Erase source objects? [Yes/No] <No>: Y
 > MIRROR N
   prompt: MIRROR Specify first point of mirror line:
@@ -3152,7 +3154,7 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
   prompt: COPYCLIP Select objects:
   command| COPYCLIP
 > pick
-  properties: Line (1) {Thickness=0.00 mm~} [Geometry: Length=100.00 mm~, Angle=0.00°~, Δ X=100.00 mm, Δ Y=0.00 mm, Δ Z=0.00 mm] [Endpoints: Start X=0.00~, Start Y=0.00~, Start Z=0.00~, End X=100.00~, End Y=0.00~, End Z=0.00~]
+  properties: Line (1) {Thickness=0.00 mm~} [Geometry: Length=100.00 mm~, Angle=0°~, Δ X=100.00 mm, Δ Y=0.00 mm, Δ Z=0.00 mm] [Endpoints: Start X=0.00~, Start Y=0.00~, Start Z=0.00~, End X=100.00~, End Y=0.00~, End Z=0.00~]
   prompt| Select objects: 1 found
 > enter
   prompt: Command:
@@ -3194,16 +3196,16 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
   prompt: DIST Specify second point:
   asks: "Second point"
   tip: Specify second point:
-  canvas: "Dist  0.00 mm" "Angle 0.00°" "ΔX    0.00" "ΔY    0.00" "ΔZ    0.00"
+  canvas: "Dist  0.00 mm" "Angle 0°" "ΔX    0.00" "ΔY    0.00" "ΔZ    0.00"
   prompt| Specify first point:
 > move
-  canvas: "Dist  500.00 mm" "Angle 53.13°" "ΔX    300.00" "ΔY    400.00" "ΔZ    0.00"
+  canvas: "Dist  500.00 mm" "Angle 53°" "ΔX    300.00" "ΔY    400.00" "ΔZ    0.00"
 > second
   prompt: DIST Specify first point:
   asks: "First point"
   tip: Specify first point:
   prompt| Specify second point:
-  info| Distance = 500.00,  Angle in XY Plane = 53.13,  Angle from XY Plane = 0.00
+  info| Distance = 500.00,  Angle in XY Plane = 53,  Angle from XY Plane = 0
         Delta X = 300.00,  Delta Y = 400.00,   Delta Z = 0.00
 > typed first
   prompt: DIST Specify second point:
@@ -3214,9 +3216,9 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
   prompt: DIST Specify first point:
   asks: "First point"
   tip: Specify first point:
-  canvas: "Dist  130.00 mm" "Angle 53.13°" "ΔX    30.00" "ΔY    40.00" "ΔZ    120.00"
+  canvas: "Dist  130.00 mm" "Angle 53°" "ΔX    30.00" "ΔY    40.00" "ΔZ    120.00"
   prompt| Specify second point: @30,40,120
-  info| Distance = 130.00,  Angle in XY Plane = 53.13,  Angle from XY Plane = 67.38
+  info| Distance = 130.00,  Angle in XY Plane = 53,  Angle from XY Plane = 67
         Delta X = 30.00,  Delta Y = 40.00,   Delta Z = 120.00
 > AREA
   prompt: AREA Specify first corner point or [Object] <Object>:
@@ -3372,7 +3374,7 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
   options: -
   prompt| Specify corner of window, enter a scale factor (nX or nXP), or [All/Extents/Previous/Scale/Window/Object]: O
 > pick
-  properties: Line (1) {Thickness=0.00 mm~} [Geometry: Length=100.00 mm~, Angle=0.00°~, Δ X=100.00 mm, Δ Y=0.00 mm, Δ Z=0.00 mm] [Endpoints: Start X=0.00~, Start Y=0.00~, Start Z=0.00~, End X=100.00~, End Y=0.00~, End Z=0.00~]
+  properties: Line (1) {Thickness=0.00 mm~} [Geometry: Length=100.00 mm~, Angle=0°~, Δ X=100.00 mm, Δ Y=0.00 mm, Δ Z=0.00 mm] [Endpoints: Start X=0.00~, Start Y=0.00~, Start Z=0.00~, End X=100.00~, End Y=0.00~, End Z=0.00~]
   prompt| Select objects: 1 found
 > enter
   prompt: Command:
@@ -3448,20 +3450,20 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
   command| UCS
   info| Current ucs name:  *NO NAME*
 > Z
-  prompt: UCS Specify rotation angle about Z axis <90.00>:
+  prompt: UCS Specify rotation angle about Z axis <90>:
   asks: "Specify rotation angle about Z axis"
   tip: Specify rotation angle about Z axis
-  dyn: "Specify rotation angle about Z axis"=""|90.00|°*
+  dyn: "Specify rotation angle about Z axis"=""|90|°*
   options: -
   prompt| Specify origin of UCS or [NAmed/OBject/Previous/View/World/X/Y/Z/ZAxis] <World>: Z
 > angle
-  dyn: "Specify rotation angle about Z axis"="45"|90.00|°*
+  dyn: "Specify rotation angle about Z axis"="45"|90|°*
 > enter
   prompt: Command:
   asks: -
   tip: -
   dyn: -
-  prompt| Specify rotation angle about Z axis <90.00>: 45
+  prompt| Specify rotation angle about Z axis <90>: 45
 > UCS NA
   prompt: UCS Specify origin of UCS or [NAmed/OBject/Previous/View/World/X/Y/Z/ZAxis] <World>:
   asks: "Specify origin of UCS or"
@@ -3706,20 +3708,20 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
   command| UCS
   info| Current ucs name:  *WORLD*
 > X
-  prompt: UCS Specify rotation angle about X axis <90.00>:
+  prompt: UCS Specify rotation angle about X axis <90>:
   asks: "Specify rotation angle about X axis"
   tip: Specify rotation angle about X axis
-  dyn: "Specify rotation angle about X axis"=""|90.00|°*
+  dyn: "Specify rotation angle about X axis"=""|90|°*
   options: -
   prompt| Specify origin of UCS or [NAmed/OBject/Previous/View/World/X/Y/Z/ZAxis] <World>: X
 > angle
-  dyn: "Specify rotation angle about X axis"="90"|90.00|°*
+  dyn: "Specify rotation angle about X axis"="90"|90|°*
 > enter
   prompt: Command:
   asks: -
   tip: -
   dyn: -
-  prompt| Specify rotation angle about X axis <90.00>: 90
+  prompt| Specify rotation angle about X axis <90>: 90
 > UCS Y
   prompt: UCS Specify origin of UCS or [NAmed/OBject/Previous/View/World/X/Y/Z/ZAxis] <World>:
   asks: "Specify origin of UCS or"
@@ -3729,10 +3731,10 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
   command| UCS
   info| Current ucs name:  *NO NAME*
 > Y
-  prompt: UCS Specify rotation angle about Y axis <90.00>:
+  prompt: UCS Specify rotation angle about Y axis <90>:
   asks: "Specify rotation angle about Y axis"
   tip: Specify rotation angle about Y axis
-  dyn: "Specify rotation angle about Y axis"=""|90.00|°*
+  dyn: "Specify rotation angle about Y axis"=""|90|°*
   options: -
   prompt| Specify origin of UCS or [NAmed/OBject/Previous/View/World/X/Y/Z/ZAxis] <World>: Y
 > enter
@@ -3740,7 +3742,7 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
   asks: -
   tip: -
   dyn: -
-  prompt| Specify rotation angle about Y axis <90.00>:
+  prompt| Specify rotation angle about Y axis <90>:
 > UCS ZA
   prompt: UCS Specify origin of UCS or [NAmed/OBject/Previous/View/World/X/Y/Z/ZAxis] <World>:
   asks: "Specify origin of UCS or"
@@ -4177,24 +4179,24 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
   command| -VPOINT
   info| Current view direction:  VIEWDIR=0.58,-0.58,0.58
 > R
-  prompt: -VPOINT Enter angle in XY plane from X axis <315.00>:
+  prompt: -VPOINT Enter angle in XY plane from X axis <315>:
   asks: "Enter angle in XY plane from X axis"
   tip: Enter angle in XY plane from X axis
-  dyn: "Enter angle in XY plane from X axis"=""|315.00|°*
+  dyn: "Enter angle in XY plane from X axis"=""|315|°*
   options: -
   prompt| Specify a view point or [Rotate]: R
 > in plane
-  prompt: -VPOINT Enter angle from XY plane <35.26>:
+  prompt: -VPOINT Enter angle from XY plane <35>:
   asks: "Enter angle from XY plane"
   tip: Enter angle from XY plane
-  dyn: "Enter angle from XY plane"=""|35.26|°*
-  prompt| Enter angle in XY plane from X axis <315.00>: 225
+  dyn: "Enter angle from XY plane"=""|35|°*
+  prompt| Enter angle in XY plane from X axis <315>: 225
 > from plane
   prompt: Command:
   asks: -
   tip: -
   dyn: -
-  prompt| Enter angle from XY plane <35.26>: 35
+  prompt| Enter angle from XY plane <35>: 35
   info| Regenerating model.
 > -VIEW
   prompt: -VIEW Enter an option [Orthographic]:
@@ -4289,7 +4291,7 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
   properties: -
   cycling: -
 > select line
-  properties: Line (1) {Thickness=0.00 mm~} [Geometry: Length=100.00 mm~, Angle=0.00°~, Δ X=100.00 mm, Δ Y=0.00 mm, Δ Z=0.00 mm] [Endpoints: Start X=0.00~, Start Y=0.00~, Start Z=0.00~, End X=100.00~, End Y=0.00~, End Z=0.00~]
+  properties: Line (1) {Thickness=0.00 mm~} [Geometry: Length=100.00 mm~, Angle=0°~, Δ X=100.00 mm, Δ Y=0.00 mm, Δ Z=0.00 mm] [Endpoints: Start X=0.00~, Start Y=0.00~, Start Z=0.00~, End X=100.00~, End Y=0.00~, End Z=0.00~]
 > grab end
   asks: "Lengthen"
   dyn: "Lengthen"=""|0.00|mm*
@@ -4298,7 +4300,7 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
 > release
   asks: -
   dyn: -
-  properties: Line (1) {Thickness=0.00 mm~} [Geometry: Length=150.00 mm~, Angle=0.00°~, Δ X=150.00 mm, Δ Y=0.00 mm, Δ Z=0.00 mm] [Endpoints: Start X=0.00~, Start Y=0.00~, Start Z=0.00~, End X=150.00~, End Y=0.00~, End Z=0.00~]
+  properties: Line (1) {Thickness=0.00 mm~} [Geometry: Length=150.00 mm~, Angle=0°~, Δ X=150.00 mm, Δ Y=0.00 mm, Δ Z=0.00 mm] [Endpoints: Start X=0.00~, Start Y=0.00~, Start Z=0.00~, End X=150.00~, End Y=0.00~, End Z=0.00~]
 > grab middle
   asks: "Move"
   dyn: "Move"=""|0.00|mm*
@@ -4307,7 +4309,7 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
 > release
   asks: -
   dyn: -
-  properties: Line (1) {Thickness=0.00 mm~} [Geometry: Length=150.00 mm~, Angle=0.00°~, Δ X=150.00 mm, Δ Y=0.00 mm, Δ Z=0.00 mm] [Endpoints: Start X=0.00~, Start Y=40.00~, Start Z=0.00~, End X=150.00~, End Y=40.00~, End Z=0.00~]
+  properties: Line (1) {Thickness=0.00 mm~} [Geometry: Length=150.00 mm~, Angle=0°~, Δ X=150.00 mm, Δ Y=0.00 mm, Δ Z=0.00 mm] [Endpoints: Start X=0.00~, Start Y=40.00~, Start Z=0.00~, End X=150.00~, End Y=40.00~, End Z=0.00~]
 > escape
   properties: -
 > select circle
@@ -4324,16 +4326,16 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
 > escape
   properties: -
 > select arc
-  properties: Arc (1) {Thickness=0.00 mm~} [Geometry: Radius=50.00 mm~, Length=78.54 mm, Angle=90.00°~, Start angle=0.00°~, End angle=90.00°~, Normal X=0.00, Normal Y=0.00, Normal Z=1.00] [Center: X=300.00~, Y=300.00~, Z=0.00~]
+  properties: Arc (1) {Thickness=0.00 mm~} [Geometry: Radius=50.00 mm~, Length=78.54 mm, Angle=90°~, Start angle=0°~, End angle=90°~, Normal X=0.00, Normal Y=0.00, Normal Z=1.00] [Center: X=300.00~, Y=300.00~, Z=0.00~]
 > grab end
   asks: "Angle"
-  dyn: "Angle"=""|0.00|°*
+  dyn: "Angle"=""|0|°*
 > drag
-  dyn: "Angle"=""|36.87|°*
+  dyn: "Angle"=""|37|°*
 > release
   asks: -
   dyn: -
-  properties: Arc (1) {Thickness=0.00 mm~} [Geometry: Radius=50.00 mm~, Length=46.36 mm, Angle=53.13°~, Start angle=36.87°~, End angle=90.00°~, Normal X=0.00, Normal Y=0.00, Normal Z=1.00] [Center: X=300.00~, Y=300.00~, Z=0.00~]
+  properties: Arc (1) {Thickness=0.00 mm~} [Geometry: Radius=50.00 mm~, Length=46.36 mm, Angle=53°~, Start angle=37°~, End angle=90°~, Normal X=0.00, Normal Y=0.00, Normal Z=1.00] [Center: X=300.00~, Y=300.00~, Z=0.00~]
 > escape
   properties: -
 > select polyline
@@ -4359,7 +4361,7 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
 > escape
   properties: -
 > select dimension
-  properties: Dimension (1) [Dimension: Measurement=100.00 mm, Text override=—, Type=Linear, Rotation=0.00°~] [Definition points: First X=300.00, First Y=0.00, Second X=400.00, Second Y=0.00]
+  properties: Dimension (1) [Dimension: Measurement=100.00 mm, Text override=—, Type=Linear, Rotation=0°~] [Definition points: First X=300.00, First Y=0.00, Second X=400.00, Second Y=0.00]
 > grab definition point
   asks: "Move"
   dyn: "Move"=""|0.00|mm*
@@ -4368,7 +4370,7 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
 > release
   asks: -
   dyn: -
-  properties: Dimension (1) [Dimension: Measurement=110.00 mm, Text override=—, Type=Linear, Rotation=0.00°~] [Definition points: First X=290.00, First Y=0.00, Second X=400.00, Second Y=0.00]
+  properties: Dimension (1) [Dimension: Measurement=110.00 mm, Text override=—, Type=Linear, Rotation=0°~] [Definition points: First X=290.00, First Y=0.00, Second X=400.00, Second Y=0.00]
 > escape
   properties: -
 
@@ -4408,49 +4410,49 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
   cycling: -
 > park the cursor
 > select L1
-  properties: Line (1) {Thickness=0.00 mm~} [Geometry: Length=100.00 mm~, Angle=0.00°~, Δ X=100.00 mm, Δ Y=0.00 mm, Δ Z=0.00 mm] [Endpoints: Start X=0.00~, Start Y=0.00~, Start Z=0.00~, End X=100.00~, End Y=0.00~, End Z=0.00~]
+  properties: Line (1) {Thickness=0.00 mm~} [Geometry: Length=100.00 mm~, Angle=0°~, Δ X=100.00 mm, Δ Y=0.00 mm, Δ Z=0.00 mm] [Endpoints: Start X=0.00~, Start Y=0.00~, Start Z=0.00~, End X=100.00~, End Y=0.00~, End Z=0.00~]
 > select C1
   properties: Circle (1) {Thickness=0.00 mm~} [Geometry: Radius=50.00 mm~, Diameter=100.00 mm~, Circumference=314.16 mm, Area=7853.98 mm², Normal X=0.00, Normal Y=0.00, Normal Z=1.00] [Center: X=0.00~, Y=0.00~, Z=0.00~]
 > select A1
-  properties: Arc (1) {Thickness=0.00 mm~} [Geometry: Radius=50.00 mm~, Length=78.54 mm, Angle=90.00°~, Start angle=0.00°~, End angle=90.00°~, Normal X=0.00, Normal Y=0.00, Normal Z=1.00] [Center: X=0.00~, Y=0.00~, Z=0.00~]
+  properties: Arc (1) {Thickness=0.00 mm~} [Geometry: Radius=50.00 mm~, Length=78.54 mm, Angle=90°~, Start angle=0°~, End angle=90°~, Normal X=0.00, Normal Y=0.00, Normal Z=1.00] [Center: X=0.00~, Y=0.00~, Z=0.00~]
 > select E1
   properties: Ellipse (1) [Geometry: Major radius=100.00 mm~, Minor radius=50.00 mm~, Radius ratio=0.50, Area=15707.96 mm²] [Center: X=0.00~, Y=0.00~, Z=0.00~]
 > select E2
-  properties: Elliptical arc (1) [Geometry: Major radius=100.00 mm~, Minor radius=50.00 mm~, Radius ratio=0.50, Start angle=0.00°, End angle=180.00°] [Center: X=0.00~, Y=0.00~, Z=0.00~]
+  properties: Elliptical arc (1) [Geometry: Major radius=100.00 mm~, Minor radius=50.00 mm~, Radius ratio=0.50, Start angle=0°, End angle=180°] [Center: X=0.00~, Y=0.00~, Z=0.00~]
 > select P1
   properties: Polyline (1) {Thickness=0.00 mm~} [Geometry: Length=200.00 mm, Vertices=3, Segments=2, Closed=No, Elevation=0.00~]
 > select P2
   properties: Polyline (1) {Thickness=0.00 mm~} [Geometry: Length=400.00 mm, Area=10000.00 mm², Vertices=4, Segments=4, Closed=Yes, Elevation=0.00~]
 > select T-left
-  properties: Text (1) [Text: Contents=NOTE, Justify=Left, Height=2.50 mm~, Rotation=0.00°~] [Position: X=0.00~, Y=0.00~, Z=0.00~]
+  properties: Text (1) [Text: Contents=NOTE, Justify=Left, Height=2.50 mm~, Rotation=0°~] [Position: X=0.00~, Y=0.00~, Z=0.00~]
 > select T-center
-  properties: Text (1) [Text: Contents=NOTE, Justify=Center, Height=2.50 mm~, Rotation=0.00°~] [Position: X=0.00~, Y=0.00~, Z=0.00~]
+  properties: Text (1) [Text: Contents=NOTE, Justify=Center, Height=2.50 mm~, Rotation=0°~] [Position: X=0.00~, Y=0.00~, Z=0.00~]
 > select T-right
-  properties: Text (1) [Text: Contents=NOTE, Justify=Right, Height=2.50 mm~, Rotation=0.00°~] [Position: X=0.00~, Y=0.00~, Z=0.00~]
+  properties: Text (1) [Text: Contents=NOTE, Justify=Right, Height=2.50 mm~, Rotation=0°~] [Position: X=0.00~, Y=0.00~, Z=0.00~]
 > select T-middle
-  properties: Text (1) [Text: Contents=NOTE, Justify=Middle, Height=2.50 mm~, Rotation=0.00°~] [Position: X=0.00~, Y=0.00~, Z=0.00~]
+  properties: Text (1) [Text: Contents=NOTE, Justify=Middle, Height=2.50 mm~, Rotation=0°~] [Position: X=0.00~, Y=0.00~, Z=0.00~]
 > select T-tl
-  properties: Text (1) [Text: Contents=NOTE, Justify=Top left, Height=2.50 mm~, Rotation=0.00°~] [Position: X=0.00~, Y=0.00~, Z=0.00~]
+  properties: Text (1) [Text: Contents=NOTE, Justify=Top left, Height=2.50 mm~, Rotation=0°~] [Position: X=0.00~, Y=0.00~, Z=0.00~]
 > select T-tc
-  properties: Text (1) [Text: Contents=NOTE, Justify=Top center, Height=2.50 mm~, Rotation=0.00°~] [Position: X=0.00~, Y=0.00~, Z=0.00~]
+  properties: Text (1) [Text: Contents=NOTE, Justify=Top center, Height=2.50 mm~, Rotation=0°~] [Position: X=0.00~, Y=0.00~, Z=0.00~]
 > select T-tr
-  properties: Text (1) [Text: Contents=NOTE, Justify=Top right, Height=2.50 mm~, Rotation=0.00°~] [Position: X=0.00~, Y=0.00~, Z=0.00~]
+  properties: Text (1) [Text: Contents=NOTE, Justify=Top right, Height=2.50 mm~, Rotation=0°~] [Position: X=0.00~, Y=0.00~, Z=0.00~]
 > select T-ml
-  properties: Text (1) [Text: Contents=NOTE, Justify=Middle left, Height=2.50 mm~, Rotation=0.00°~] [Position: X=0.00~, Y=0.00~, Z=0.00~]
+  properties: Text (1) [Text: Contents=NOTE, Justify=Middle left, Height=2.50 mm~, Rotation=0°~] [Position: X=0.00~, Y=0.00~, Z=0.00~]
 > select T-mc
-  properties: Text (1) [Text: Contents=NOTE, Justify=Middle center, Height=2.50 mm~, Rotation=0.00°~] [Position: X=0.00~, Y=0.00~, Z=0.00~]
+  properties: Text (1) [Text: Contents=NOTE, Justify=Middle center, Height=2.50 mm~, Rotation=0°~] [Position: X=0.00~, Y=0.00~, Z=0.00~]
 > select T-mr
-  properties: Text (1) [Text: Contents=NOTE, Justify=Middle right, Height=2.50 mm~, Rotation=0.00°~] [Position: X=0.00~, Y=0.00~, Z=0.00~]
+  properties: Text (1) [Text: Contents=NOTE, Justify=Middle right, Height=2.50 mm~, Rotation=0°~] [Position: X=0.00~, Y=0.00~, Z=0.00~]
 > select T-bl
-  properties: Text (1) [Text: Contents=NOTE, Justify=Bottom left, Height=2.50 mm~, Rotation=0.00°~] [Position: X=0.00~, Y=0.00~, Z=0.00~]
+  properties: Text (1) [Text: Contents=NOTE, Justify=Bottom left, Height=2.50 mm~, Rotation=0°~] [Position: X=0.00~, Y=0.00~, Z=0.00~]
 > select T-bc
-  properties: Text (1) [Text: Contents=NOTE, Justify=Bottom center, Height=2.50 mm~, Rotation=0.00°~] [Position: X=0.00~, Y=0.00~, Z=0.00~]
+  properties: Text (1) [Text: Contents=NOTE, Justify=Bottom center, Height=2.50 mm~, Rotation=0°~] [Position: X=0.00~, Y=0.00~, Z=0.00~]
 > select T-br
-  properties: Text (1) [Text: Contents=NOTE, Justify=Bottom right, Height=2.50 mm~, Rotation=0.00°~] [Position: X=0.00~, Y=0.00~, Z=0.00~]
+  properties: Text (1) [Text: Contents=NOTE, Justify=Bottom right, Height=2.50 mm~, Rotation=0°~] [Position: X=0.00~, Y=0.00~, Z=0.00~]
 > select D1
-  properties: Dimension (1) [Dimension: Measurement=100.00 mm, Text override=—, Type=Linear, Rotation=0.00°~] [Definition points: First X=0.00, First Y=0.00, Second X=100.00, Second Y=0.00]
+  properties: Dimension (1) [Dimension: Measurement=100.00 mm, Text override=—, Type=Linear, Rotation=0°~] [Definition points: First X=0.00, First Y=0.00, Second X=100.00, Second Y=0.00]
 > select D2
-  properties: Dimension (1) [Dimension: Measurement=90.00°, Text override=—, Type=Angular] [Definition points: Vertex X=0.00, Vertex Y=0.00, First X=100.00, First Y=0.00, Second X=0.00, Second Y=100.00]
+  properties: Dimension (1) [Dimension: Measurement=90°, Text override=—, Type=Angular] [Definition points: Vertex X=0.00, Vertex Y=0.00, First X=100.00, First Y=0.00, Second X=0.00, Second Y=100.00]
 > select D3
   properties: Dimension (1) [Dimension: Measurement=50.00 mm, Text override=R<>, Type=Radius] [Definition points: First X=0.00, First Y=0.00, Second X=50.00, Second Y=0.00]
 > select D4
@@ -4458,18 +4460,18 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
 > select D5
   properties: Dimension (1) [Dimension: Measurement=100.00 mm, Text override=—, Type=Diameter] [Definition points: First X=0.00, First Y=0.00, Second X=50.00, Second Y=0.00]
 > select H1
-  properties: Hatch (1) [Pattern: Pattern=ANSI31, Scale=1.00~, Angle=0.00°~, Boundaries=1] [Geometry: Elevation=0.00~]
+  properties: Hatch (1) [Pattern: Pattern=ANSI31, Scale=1.00~, Angle=0°~, Boundaries=1] [Geometry: Elevation=0.00~]
 > select H2
-  properties: Hatch (1) [Pattern: Pattern=Solid, Scale=1.00~, Angle=0.00°~, Boundaries=1] [Geometry: Elevation=0.00~]
+  properties: Hatch (1) [Pattern: Pattern=Solid, Scale=1.00~, Angle=0°~, Boundaries=1] [Geometry: Elevation=0.00~]
 > select I1
-  properties: Block reference (1) [Block: Name=BAR, Scale=1.00~, Rotation=0.00°~] [Position: X=0.00~, Y=0.00~, Z=0.00~]
+  properties: Block reference (1) [Block: Name=BAR, Scale=1.00~, Rotation=0°~] [Position: X=0.00~, Y=0.00~, Z=0.00~]
 > select I2
 > select L2
-  properties: Line (1) {Thickness=0.00 mm~} [Geometry: Length=14.14 mm~, Angle=45.00°~, Δ X=10.00 mm, Δ Y=10.00 mm, Δ Z=0.00 mm] [Endpoints: Start X=0.00~, Start Y=0.00~, Start Z=0.00~, End X=10.00~, End Y=10.00~, End Z=0.00~]
+  properties: Line (1) {Thickness=0.00 mm~} [Geometry: Length=14.14 mm~, Angle=45°~, Δ X=10.00 mm, Δ Y=10.00 mm, Δ Z=0.00 mm] [Endpoints: Start X=0.00~, Start Y=0.00~, Start Z=0.00~, End X=10.00~, End Y=10.00~, End Z=0.00~]
 > select C2
   properties: Circle (1) {Thickness=0.00 mm~} [Geometry: Radius=5.00 mm~, Diameter=10.00 mm~, Circumference=31.42 mm, Area=78.54 mm², Normal X=0.00, Normal Y=0.00, Normal Z=1.00] [Center: X=0.00~, Y=0.00~, Z=0.00~]
 > select A2
-  properties: Arc (1) {Thickness=0.00 mm~} [Geometry: Radius=5.00 mm~, Length=5.00 mm, Angle=57.30°~, Start angle=0.00°~, End angle=57.30°~, Normal X=0.00, Normal Y=0.00, Normal Z=1.00] [Center: X=0.00~, Y=0.00~, Z=0.00~]
+  properties: Arc (1) {Thickness=0.00 mm~} [Geometry: Radius=5.00 mm~, Length=5.00 mm, Angle=57°~, Start angle=0°~, End angle=57°~, Normal X=0.00, Normal Y=0.00, Normal Z=1.00] [Center: X=0.00~, Y=0.00~, Z=0.00~]
 > select everything
   properties: 32 objects (32) [Selection: Lines=2, Circles=2, Arcs=2, Ellipses=2, Polylines=2, Texts=13, Dimensions=5, Hatches=2, Block references=2]
 > select one of each
@@ -4651,7 +4653,7 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
   canvas: -
   prompt| Specify first point:
 > override perpendicular
-  dyn: "Length"=""|80.00|mm* "Angle"=""|90.00|°
+  dyn: "Length"=""|80.00|mm* "Angle"=""|90|°
   canvas: "Perpendicular"
 > escape
   prompt: Command:
@@ -4688,7 +4690,7 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
   canvas: -
   prompt| Specify first point:
 > override tangent
-  dyn: "Length"=""|193.65|mm* "Angle"=""|165.52|°
+  dyn: "Length"=""|193.65|mm* "Angle"=""|166|°
   canvas: "Tangent"
 > escape
   prompt: Command:
@@ -4803,9 +4805,9 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
   options: [U] Undo
   prompt| Specify first point:
 > override parallel and dwell
-  dyn: "Length"=""|213.60|mm* "Angle"=""|159.44|°
+  dyn: "Length"=""|213.60|mm* "Angle"=""|159|°
 > aim along it
-  dyn: "Length"=""|250.00|mm* "Angle"=""|36.87|°
+  dyn: "Length"=""|250.00|mm* "Angle"=""|37|°
   canvas: "Parallel"
 > escape
   prompt: Command:
@@ -5000,8 +5002,8 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
   options: [U] Undo
   prompt| Specify first point:
 > near 45
-  dyn: "Length"=""|99.70|mm* "Angle"=""|45.00|°
-  canvas: "Polar: 99.70mm < 45.00°"
+  dyn: "Length"=""|99.70|mm* "Angle"=""|45|°
+  canvas: "Polar: 99.70mm < 45°"
 > escape
   prompt: Command:
   asks: -
@@ -5039,7 +5041,7 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
   prompt: LINE Specify next point or [Undo]:
   asks: "Length" "Angle"
   tip: Specify next point or
-  dyn: "Length"=""|10.00|mm* "Angle"=""|180.00|°
+  dyn: "Length"=""|10.00|mm* "Angle"=""|180|°
   options: [U] Undo
   prompt| Specify first point: @10,0
 > escape

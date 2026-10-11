@@ -134,6 +134,7 @@ export interface DrawingSnapshot {
  */
 export type StoredSettings = Omit<
   DocumentSettings,
+  | "anglePrecision"
   | "elevation"
   | "thickness"
   | "ucs"
@@ -146,6 +147,7 @@ export type StoredSettings = Omit<
   Partial<
     Pick<
       DocumentSettings,
+      | "anglePrecision"
       | "elevation"
       | "thickness"
       | "currentColor"
@@ -571,6 +573,7 @@ function cloneLayer(layer: Layer): Layer {
 
 function storedSettings(settings: DocumentSettings): StoredSettings {
   const {
+    anglePrecision,
     elevation,
     thickness,
     ucs,
@@ -591,6 +594,7 @@ function storedSettings(settings: DocumentSettings): StoredSettings {
       name: entry.name,
       ucs: storedUcs(entry.ucs),
     })),
+    ...(anglePrecision ? { anglePrecision } : {}),
     ...(elevation ? { elevation } : {}),
     ...(thickness ? { thickness } : {}),
     ...(viewCube.visible ? {} : { navVCubeDisplay: 0 as const }),
@@ -653,6 +657,10 @@ function parseSettings(value: unknown): DocumentSettings {
   return {
     unit,
     precision,
+    // A drawing from before AUPREC has the starting 0.
+    anglePrecision: isFiniteNumber(value.anglePrecision)
+      ? Math.max(0, Math.min(8, Math.round(value.anglePrecision)))
+      : DEFAULT_DOCUMENT_SETTINGS.anglePrecision,
     ltScale,
     lwDisplay,
     attributeDisplay,

@@ -297,7 +297,7 @@ describe("Spanish AutoCAD's command language", () => {
     })
     cad.select("A").command("GIRA").click(p(0, 0))
     expect(cad.state().commandLine.prompt).toBe(
-      "GIRA Precise ángulo de rotación o [Copiar/Referencia] <0.00>:"
+      "GIRA Precise ángulo de rotación o [Copiar/Referencia] <0>:"
     )
     cad.option("Copy")
     expect(cad.commandLog().at(-1)).toBe(
@@ -850,7 +850,7 @@ describe("Spanish AutoCAD's command language", () => {
     const cad = createHarness({ locale: es })
     cad.command("DI").type("0,0").enter().type("3,4,12").enter()
     expect(cad.commandLog().at(-1)).toBe(
-      "Distancia = 13.00, Ángulo en el plano XY = 53.13, Ángulo a partir del plano XY = 67.38\n" +
+      "Distancia = 13.00, Ángulo en el plano XY = 53, Ángulo a partir del plano XY = 67\n" +
         "Incremento X = 3.00, Incremento Y = 4.00,   Incremento Z = 12.00"
     )
     cad.escape()

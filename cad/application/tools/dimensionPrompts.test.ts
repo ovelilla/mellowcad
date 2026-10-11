@@ -41,7 +41,7 @@ describe("DIMLINEAR's questions", () => {
     )
     cad.type("0").enter().option("Rotated")
     expect(cad.state().commandLine.prompt).toBe(
-      "DIMLINEAR Specify angle of dimension line <0.00>:"
+      "DIMLINEAR Specify angle of dimension line <0>:"
     )
     cad.type("0").enter()
     // The direction set, the location offers the text keywords alone.
@@ -79,7 +79,7 @@ describe("DIMLINEAR's questions", () => {
     )
     cad.type("0").enter().option("Rotated")
     expect(cad.state().commandLine.prompt).toBe(
-      "ACOLINEAL Designe ángulo de línea de cota <0.00>:"
+      "ACOLINEAL Designe ángulo de línea de cota <0>:"
     )
     cad.escape().command("ACOALINEADA").click(p(0, 0)).click(p(100, 0))
     cad.option("Angle")
