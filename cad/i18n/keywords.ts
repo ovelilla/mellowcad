@@ -62,9 +62,10 @@ export function offerKeywords(keywords: readonly Keyword[]): OfferedKeyword[] {
 }
 
 /**
- * The id of the keyword `input` names, or null: its abbreviation or its whole
- * word in the command language, or — after `_` — in the global language. Case
- * does not matter.
+ * The id of the keyword `input` names, or null: its abbreviation, its whole
+ * word, or the start of the word as far as its capitals and on (`OB` for
+ * `Object`, `EXI` for `eXit`, as AutoCAD 2023's console takes them) — in
+ * the command language, or after `_` in the global one. Case does not matter.
  */
 export function resolveKeyword(
   input: string,
@@ -81,7 +82,15 @@ export function resolveKeyword(
   )
   if (byAbbreviation) return byAbbreviation.id
   const byWord = keywords.find((keyword) => upper(wordOf(keyword)) === typed)
-  return byWord?.id ?? null
+  if (byWord) return byWord.id
+  const byStart = keywords.find((keyword) => {
+    const word = wordOf(keyword)
+    const abbreviation = abbreviationOf(word)
+    if (abbreviation === "") return false
+    const required = word.indexOf(abbreviation) + abbreviation.length
+    return typed.length >= required && upper(word).startsWith(typed)
+  })
+  return byStart?.id ?? null
 }
 
 /**

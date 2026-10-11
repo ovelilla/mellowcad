@@ -42,7 +42,8 @@ describe("resolving what was typed", () => {
     expect(resolveKeyword("c", line)).toBe("Close")
     expect(resolveKeyword("UNDO", line)).toBe("Undo")
     expect(resolveKeyword(" close ", line)).toBe("Close")
-    expect(resolveKeyword("cl", line)).toBeNull()
+    expect(resolveKeyword("cl", line)).toBe("Close")
+    expect(resolveKeyword("closer", line)).toBeNull()
     expect(resolveKeyword("", line)).toBeNull()
   })
 
@@ -53,7 +54,20 @@ describe("resolving what was typed", () => {
     expect(resolveKeyword("_U", spanish)).toBe("Undo")
     expect(resolveKeyword("_close", spanish)).toBe("Close")
     expect(resolveKeyword("_H", spanish)).toBeNull()
+    expect(resolveKeyword("desh", spanish)).toBe("Undo")
+    expect(resolveKeyword("des", spanish)).toBeNull()
     expect(resolveKeyword("_", spanish)).toBeNull()
+  })
+
+  // AutoCAD 2023's console: `EXI` ends ARRAYRECT, `OB` is UCS ZAxis's Object.
+  it("takes the start of the word as far as its capitals and on", () => {
+    const array = [english("COUnt"), english("COLumns"), english("eXit")]
+    expect(resolveKeyword("EXI", array)).toBe("eXit")
+    expect(resolveKeyword("ex", array)).toBe("eXit")
+    expect(resolveKeyword("e", array)).toBeNull()
+    expect(resolveKeyword("co", array)).toBeNull()
+    expect(resolveKeyword("COLU", array)).toBe("COLumns")
+    expect(resolveKeyword("OB", [english("Object")])).toBe("Object")
   })
 
   it("hands back the global id however it was typed", () => {

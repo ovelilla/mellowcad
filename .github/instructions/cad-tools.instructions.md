@@ -331,7 +331,8 @@ An option spelled at another prompt names it (`{ id: "Window", hidden: true, pro
 "selectObjects" }`): the selection modes live once, in `promptKeywords.selectObjects`, for every
 command's `Select objects:` however the command words it (JOIN's, DIMSPACE's).
 
-A keyword is answered by its abbreviation or its whole word, or by `_` and the global one, typed
+A keyword is answered by its abbreviation, its whole word or the word's start as far as its capitals
+and on (`OB` for `Object`, `EXI` for `eXit`), or by `_` and the global one, typed
 and confirmed with Enter or Space — at the prompt or in a value box, as in AutoCAD; no key runs one
 on its own. What is typed in a value box (or on the drawing, which feeds the box) is resolved as a
 keyword before a value; a submitted prompt is read as a keyword before anything else, and an alias
