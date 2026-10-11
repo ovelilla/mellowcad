@@ -1029,6 +1029,8 @@ export const en: EngineCatalog = {
       "matchpropDestination": "Select destination object(s)",
       "viewPoint": "Specify a view point",
       "specifyViewPointOr": "Specify a view point or",
+      "selectAnnotationObjectOr": "Select an annotation object or",
+      "textEditModeOption": "Enter a text edit mode option",
       "viewAngleInPlane": "Enter angle in XY plane from X axis",
       "viewAngleFromPlane": "Enter angle from XY plane",
       "specifyFirstPoint": "Specify first point",
@@ -1774,6 +1776,17 @@ export const en: EngineCatalog = {
               ]
             ],
             "other": ""
+          }
+        ]
+      ],
+      "textEditSettings": [
+        "Current settings: Edit mode = ",
+        [
+          "mode",
+          1,
+          {
+            "single": "Single",
+            "other": "Multiple"
           }
         ]
       ],

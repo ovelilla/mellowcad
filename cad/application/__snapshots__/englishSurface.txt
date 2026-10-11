@@ -1629,42 +1629,49 @@ lweight "Lineweight" LW
   properties: -
   cycling: -
 > TEXTEDIT
-  prompt: TEXTEDIT [Mode: Multiple]:
+  prompt: TEXTEDIT Select an annotation object or [Undo/Mode]:
   asks: 
+  tip: Select an annotation object or
   dyn: 
-  options: [M] Mode: Multiple
+  options: [U] Undo, [M] Mode
   command| ED TEXTEDIT
+  info| Current settings: Edit mode = Multiple
 > pick
   prompt: TEXTEDIT:
   asks: "Text"
+  tip: -
   dyn: "Text"="WORD"||*
   options: -
+  prompt| Select an annotation object or [Undo/Mode]:
 > retype
   dyn: "Text"="NEW"||*
 > enter
-  prompt: TEXTEDIT [Undo/Mode: Multiple]:
+  prompt: TEXTEDIT Select an annotation object or [Undo/Mode]:
   asks: 
+  tip: Select an annotation object or
   dyn: 
-  options: [U] Undo, [M] Mode: Multiple
+  options: [U] Undo, [M] Mode
 > U
-  prompt: TEXTEDIT [Mode: Multiple]:
-  options: [M] Mode: Multiple
+  prompt| Select an annotation object or [Undo/Mode]: U
 > M
-  prompt: TEXTEDIT [Mode: Single]:
-  options: [M] Mode: Single
+  prompt: TEXTEDIT Enter a text edit mode option [Single/Multiple] <Multiple>:
+  tip: Enter a text edit mode option
+  options: [S] Single, [M] Multiple
+  prompt| Select an annotation object or [Undo/Mode]: M
 > pick
-  prompt: TEXTEDIT:
-  asks: "Text"
-  dyn: "Text"="WORD"||*
-  options: -
+  prompt| Enter a text edit mode option [Single/Multiple] <Multiple>:
 > enter
-  prompt: Command:
-  asks: -
-  dyn: -
+  prompt: TEXTEDIT Select an annotation object or [Undo/Mode]:
+  tip: Select an annotation object or
+  options: [U] Undo, [M] Mode
+  prompt| Enter a text edit mode option [Single/Multiple] <Multiple>:
 > double-click
   prompt: TEXTEDIT:
   asks: "Text"
+  tip: -
   dyn: "Text"="WORD"||*
+  options: -
+  prompt| Select an annotation object or [Undo/Mode]:
 > escape
   prompt: Command:
   asks: -
@@ -1863,6 +1870,7 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0.00°~, Line space fa
   prompt: TEXTEDIT:
   asks: "Text"
   dyn: "Text"="OLD\nLINES"||*
+  info| Current settings: Edit mode = Multiple
 > escape
   prompt: Command:
   asks: -

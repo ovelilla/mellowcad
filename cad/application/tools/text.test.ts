@@ -8,6 +8,16 @@ import {
 } from "../../domain/entities"
 import { DEFAULT_TEXT_HEIGHT } from "../../domain/textStyles"
 import { createTextStyle } from "../../domain/textStyles"
+import { es } from "../../locales/es"
+
+/** Typed at the command line and confirmed, as AutoCAD's prompt reads it. */
+function answer(cad: CadHarness, ...texts: string[]): CadHarness {
+  for (const text of texts) {
+    cad.runtime.setCommandLineText(text)
+    cad.runtime.submitCommandLine()
+  }
+  return cad
+}
 
 /** Runs TEXT up to the point where the text itself is typed. */
 function startText(
@@ -309,6 +319,8 @@ describe("TEXTEDIT", () => {
   it("edits a single object and ends in Single mode", () => {
     const cad = withText()
     cad.command("TEXTEDIT").option("Mode")
+    expect(cad.optionAbbreviations()).toEqual(["S", "M"])
+    cad.option("Single")
     expect(cad.optionAbbreviations()).toEqual(["M"])
 
     cad.click(p(20, 5)).type("ONCE").enter()
@@ -316,17 +328,70 @@ describe("TEXTEDIT", () => {
     expect(cad.activeToolId()).toBe("select")
   })
 
-  it("offers Undo only once something has been edited, and backs it out", () => {
+  it("offers Undo in Multiple mode, and backs out its own edits only", () => {
     const cad = withText()
     cad.command("TEXTEDIT")
-    expect(cad.optionAbbreviations()).toEqual(["M"])
+    expect(cad.optionAbbreviations()).toEqual(["U", "M"])
+    cad.option("Undo")
+    expect(cad.commandLog().at(-1)).toBe("Command has been completely undone.")
 
     cad.click(p(20, 5)).type("CHANGED").enter()
-    expect(cad.optionAbbreviations()).toEqual(["U", "M"])
-
     cad.option("Undo")
     expect(edited(cad).value).toBe("OLD")
-    expect(cad.optionAbbreviations()).toEqual(["M"])
+    cad.escape()
+  })
+
+  // AutoCAD 2023's console answering the same input.
+  it("asks as AutoCAD 2026, and refuses what it cannot take", () => {
+    const cad = createHarness({
+      entities: [textOf(p(0, 0), "OLD", { height: 10, id: "T1" })],
+    })
+    cad.command("TEXTEDIT")
+    answer(cad, "FOO", "M", "FOO", "")
+    answer(cad, "M", "S")
+    expect(cad.state().commandLine.prompt).toBe(
+      "TEXTEDIT Select an annotation object or [Mode]:"
+    )
+    answer(cad, "L")
+    cad.type("LAST").enter()
+
+    expect(edited(cad).value).toBe("LAST")
+    expect(cad.activeToolId()).toBe("select")
+    expect(cad.commandLog()).toEqual([
+      "TEXTEDIT",
+      "Current settings: Edit mode = Multiple",
+      "Select an annotation object or [Undo/Mode]: FOO",
+      "*Invalid selection*",
+      "Expects a point or Last/Undo/Mode",
+      "Select an annotation object or [Undo/Mode]: M",
+      "Enter a text edit mode option [Single/Multiple] <Multiple>: FOO",
+      "Invalid option keyword.",
+      "Enter a text edit mode option [Single/Multiple] <Multiple>:",
+      "Select an annotation object or [Undo/Mode]: M",
+      "Enter a text edit mode option [Single/Multiple] <Multiple>: S",
+      "Current settings: Edit mode = Single",
+      "Select an annotation object or [Mode]: L",
+    ])
+  })
+
+  it("asks in Autodesk's Spanish", () => {
+    const cad = createHarness({
+      locale: es,
+      entities: [textOf(p(0, 0), "OLD", { height: 10 })],
+    })
+    cad.command("EDITARTEXTO")
+    answer(cad, "M")
+    expect(cad.state().commandLine.prompt).toBe(
+      "EDITARTEXTO Indique una opción de modo de edición de texto [Simple/Múltiple] <Múltiple>:"
+    )
+    answer(cad, "S")
+    expect(cad.commandLog()).toEqual([
+      "EDITARTEXTO",
+      "Parámetros actuales: Editar modo = Múltiple",
+      "Designe un objeto de anotación o [desHacer/Modo]: M",
+      "Indique una opción de modo de edición de texto [Simple/Múltiple] <Múltiple>: S",
+      "Parámetros actuales: Editar modo = Simple",
+    ])
     cad.escape()
   })
 

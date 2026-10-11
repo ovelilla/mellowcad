@@ -923,11 +923,12 @@ describe("Spanish AutoCAD's command language", () => {
     )
   })
 
-  it("switches EDITARTEXTO to Simple, as Autodesk's table names the mode", () => {
+  it("asks EDITARTEXTO's modes as Autodesk's table names them", () => {
     const cad = createHarness({ locale: es })
     cad.command("EDITARTEXTO").option("Mode")
     expect(cad.state().commandOptions.map((option) => option.label)).toEqual([
-      "Modo: Simple",
+      "Simple",
+      "Múltiple",
     ])
   })
 

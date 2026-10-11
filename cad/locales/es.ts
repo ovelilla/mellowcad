@@ -1352,6 +1352,8 @@ export const es: EngineLocale = {
       "matchpropDestination": "Seleccione objeto(s) de destino",
       "viewPoint": "Precise un punto de vista",
       "specifyViewPointOr": "Precise un punto de vista o",
+      "selectAnnotationObjectOr": "Designe un objeto de anotación o",
+      "textEditModeOption": "Indique una opción de modo de edición de texto",
       "viewAngleInPlane": "Ángulo a partir del eje X en el plano XY",
       "viewAngleFromPlane": "Ángulo a partir del plano XY",
       "specifyFirstPoint": "Precise primer punto",
@@ -2096,6 +2098,17 @@ export const es: EngineLocale = {
               ]
             ],
             "other": ""
+          }
+        ]
+      ],
+      "textEditSettings": [
+        "Parámetros actuales: Editar modo = ",
+        [
+          "mode",
+          1,
+          {
+            "single": "Simple",
+            "other": "Múltiple"
           }
         ]
       ],

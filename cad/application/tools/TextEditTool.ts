@@ -15,11 +15,13 @@ import { DynamicInputSession } from "../input/DynamicInput"
 import { entityScenePrimitive } from "../SceneBuilder"
 import { ScenePrimitive } from "../../scene/types"
 import { THEME } from "../../scene/theme"
+import type { PromptId } from "../../locales/types"
 import {
   CommandOption,
   CommandOptionOutcome,
   KeyInput,
   PointerInput,
+  QuestionInput,
   Tool,
   ToolContext,
 } from "./Tool"
@@ -30,8 +32,8 @@ import {
  * Pick a text object and its content opens for editing in place — the object
  * itself is hidden while the edit runs, so what you see on the drawing is the
  * new wording, not the old one behind it. The command repeats until Escape or
- * Enter, which is AutoCAD's default (TEXTEDITMODE 0); the Mode keyword switches
- * to editing a single object and ending.
+ * Enter, which is AutoCAD's default (TEXTEDITMODE 0); the Mode keyword asks
+ * which of that and editing a single object and ending.
  *
  * Double-clicking a text object starts this command on it, the gesture users
  * actually reach for.
@@ -56,7 +58,40 @@ export class TextEditTool implements Tool {
     ctx.setCursor("crosshair")
     ctx.selection.clear()
     this.edits = 0
+    this.reportMode(ctx)
     this.enterSelect(ctx)
+  }
+
+  /**
+   * AutoCAD 2023's prompts. WHY the editor names none: AutoCAD edits in place,
+   * with no question at the command line.
+   */
+  question(): PromptId | null {
+    switch (this.state.phase) {
+      case "select":
+        return "selectAnnotationObjectOr"
+      case "mode":
+        return "textEditModeOption"
+      case "edit":
+        return null
+    }
+  }
+
+  /** As AutoCAD 2023's console refuses its pick. */
+  takes(): QuestionInput | null {
+    return this.state.phase === "select" ? "objectOrLast" : null
+  }
+
+  defaultOption(): string | null {
+    if (this.state.phase !== "mode") return null
+    return this.multiple ? "Multiple" : "Single"
+  }
+
+  /** Enter at Mode keeps the mode; at the pick it ends, as AutoCAD's does. */
+  onEnter(ctx: ToolContext): boolean {
+    if (this.state.phase !== "mode") return false
+    this.enterSelect(ctx)
+    return true
   }
 
   onDeactivate(ctx: ToolContext): void {
@@ -100,6 +135,7 @@ export class TextEditTool implements Tool {
       if (target) this.beginEdit(target, ctx)
       return
     }
+    if (this.state.phase !== "edit") return
     const target = this.state.target
     const preview = this.preview(target, ctx)
     if (
@@ -123,27 +159,62 @@ export class TextEditTool implements Tool {
   }
 
   commandOptions(): readonly CommandOption[] {
-    if (this.state.phase !== "select") return []
-    const options: CommandOption[] = []
-    if (this.edits > 0) options.push({ id: "Undo" })
-    options.push({ id: "Mode", value: this.multiple ? "Multiple" : "Single" })
-    return options
+    switch (this.state.phase) {
+      case "select":
+        return [
+          ...(this.multiple ? [{ id: "Undo" }] : []),
+          { id: "Mode" },
+          { id: "Last", hidden: true, prompt: "selectObjects" },
+        ]
+      case "mode":
+        return [{ id: "Single" }, { id: "Multiple" }]
+      case "edit":
+        return []
+    }
   }
 
   invokeOption(id: string, ctx: ToolContext): CommandOptionOutcome {
+    if (this.state.phase === "mode") {
+      if (id !== "Single" && id !== "Multiple") return "unhandled"
+      this.multiple = id === "Multiple"
+      this.reportMode(ctx)
+      this.enterSelect(ctx)
+      return "continue"
+    }
     if (this.state.phase !== "select") return "unhandled"
     switch (id) {
       case "Undo":
-        if (this.edits === 0) return "unhandled"
+        if (!this.multiple) return "unhandled"
+        // With nothing of its own to take back it says so, as AutoCAD's does.
+        if (this.edits === 0) {
+          ctx.report(ctx.text.message("commandCompletelyUndone"))
+          return "continue"
+        }
         this.edits -= 1
         ctx.undo()
         return "continue"
       case "Mode":
-        this.multiple = !this.multiple
+        this.state = { phase: "mode" }
+        ctx.dynamicInput.open({ fields: [], commit: () => {} })
         return "continue"
+      case "Last": {
+        const last = ctx.document
+          .getEntities()
+          .findLast((entity) => ctx.document.isEntityVisible(entity))
+        if (last && isEditable(last)) this.beginEdit(last, ctx)
+        return "continue"
+      }
       default:
         return "unhandled"
     }
+  }
+
+  private reportMode(ctx: ToolContext): void {
+    ctx.report(
+      ctx.text.message("textEditSettings", {
+        mode: this.multiple ? "multiple" : "single",
+      })
+    )
   }
 
   wantsSnap(): boolean {
@@ -160,6 +231,7 @@ export class TextEditTool implements Tool {
           })
         : []
     }
+    if (this.state.phase !== "edit") return []
     const preview = this.preview(this.state.target, ctx)
     if (!preview) return []
     return entityScenePrimitive(viewport, preview, {
@@ -189,11 +261,7 @@ export class TextEditTool implements Tool {
 
   private pickText(world: Vec2, ctx: ToolContext): EditableText | null {
     const hit: Entity | null = ctx.pick(world)
-    return hit?.type === "text" ||
-      hit?.type === "mtext" ||
-      hit?.type === "attdef"
-      ? hit
-      : null
+    return hit && isEditable(hit) ? hit : null
   }
 
   private openEditInput(ctx: ToolContext, target: EditableText): void {
@@ -285,7 +353,17 @@ const TEXT_EDIT_PREVIEW_ID = "__textedit_preview__"
 
 type EditableText = TextEntity | MTextEntity | AttributeDefinitionEntity
 
+function isEditable(entity: Entity): entity is EditableText {
+  return (
+    entity.type === "text" ||
+    entity.type === "mtext" ||
+    entity.type === "attdef"
+  )
+}
+
 type TextEditToolState =
   /** Awaiting an annotation object to edit. */
   | { readonly phase: "select"; readonly hover: EditableText | null }
+  /** Mode's own question, which of TEXTEDITMODE's two. */
+  | { readonly phase: "mode" }
   | { readonly phase: "edit"; readonly target: EditableText }
