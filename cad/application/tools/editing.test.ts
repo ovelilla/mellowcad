@@ -9,6 +9,7 @@ import type {
 import type { Vec2 } from "../../geometry/Vec2"
 import { THEME } from "../../scene/theme"
 import { createHarness } from "../../../test/harness"
+import { es } from "../../locales/es"
 import {
   arcOf,
   circleOf,
@@ -496,13 +497,10 @@ describe("FILLET", () => {
 
   it("takes a polyline's segment as an object, not the whole polyline", () => {
     const ell = polylineOf([p(0, 100), p(0, 0), p(100, 0)], { id: "P1" })
-    const cad = createHarness({ entities: [ell, lineOf(p(200, 0), p(300, 0))] })
+    const cad = createHarness({ entities: [ell] })
 
     cad.command("FILLET").option("Radius").type("20").enter().click(p(0, 50))
     expect(cad.byId<PolylineEntity>("P1").vertices).toHaveLength(3)
-    // A line is no corner for a polyline segment here: it is not taken.
-    cad.click(p(250, 0))
-    expect(cad.activeToolId()).toBe("fillet")
     cad.click(p(50, 0))
 
     const poly = cad.byId<PolylineEntity>("P1")
@@ -514,6 +512,163 @@ describe("FILLET", () => {
     ])
     expect(poly.bulges?.[1]).toBeCloseTo(Math.tan(deg(22.5)), 6)
     expect(cad.activeToolId()).toBe("select")
+  })
+
+  // AutoCAD 2023's console (acc/f1–f17): the line joins the polyline, which
+  // keeps its run on the picked side of the segment and drops the rest.
+  describe("a line with a polyline's segment", () => {
+    const ell = () => polylineOf([p(0, 0), p(100, 0), p(100, 50)], { id: "P1" })
+    const QUARTER = Math.tan(deg(22.5))
+
+    it("joins the line into the polyline through the arc, in one undo step", () => {
+      for (const [first, second] of [
+        [p(100, 25), p(60, 80)],
+        [p(60, 80), p(100, 25)],
+      ]) {
+        const cad = createHarness({
+          entities: [ell(), lineOf(p(50, 80), p(120, 80), { id: "L1" })],
+        })
+        cad.command("FILLET").option("Radius").type("10").enter()
+        cad.click(first).click(second)
+
+        const poly = cad.only<PolylineEntity>("polyline")
+        expect(cad.entityCount).toBe(1)
+        expect(poly.id).toBe("P1")
+        expect(poly.closed).toBe(false)
+        expect(poly.vertices).toBeCloseToPoints([
+          p(0, 0),
+          p(100, 0),
+          p(100, 70),
+          p(90, 80),
+          p(50, 80),
+        ])
+        expect(poly.bulges?.[2]).toBeCloseTo(QUARTER, 6)
+        cad.undo()
+        expect(cad.typeCounts()).toEqual({ polyline: 1, line: 1 })
+      }
+    })
+
+    it("starts the polyline at the line where the run is the later one", () => {
+      const cad = createHarness({
+        entities: [ell(), lineOf(p(-30, 40), p(-30, -20))],
+      })
+      cad.command("FILLET").option("Radius").type("10").enter()
+      cad.click(p(50, 0)).click(p(-30, 30))
+
+      const poly = cad.only<PolylineEntity>("polyline")
+      expect(poly.vertices).toBeCloseToPoints([
+        p(-30, 40),
+        p(-30, 10),
+        p(-20, 0),
+        p(100, 0),
+        p(100, 50),
+      ])
+      expect(poly.bulges?.[1]).toBeCloseTo(QUARTER, 6)
+    })
+
+    it("drops the polyline past the segment, and opens a closed one", () => {
+      const middle = createHarness({
+        entities: [
+          polylineOf([p(0, 0), p(100, 0), p(100, 50), p(150, 50)]),
+          lineOf(p(50, 30), p(80, 30)),
+        ],
+      })
+      middle.command("FILLET").option("Radius").type("5").enter()
+      middle.click(p(100, 25)).click(p(60, 30))
+      expect(
+        middle.only<PolylineEntity>("polyline").vertices
+      ).toBeCloseToPoints([
+        p(0, 0),
+        p(100, 0),
+        p(100, 25),
+        p(95, 30),
+        p(50, 30),
+      ])
+
+      const closed = createHarness({
+        entities: [
+          polylineOf([p(0, 0), p(100, 0), p(100, 50)], { closed: true }),
+          lineOf(p(120, 80), p(120, -30)),
+        ],
+      })
+      closed.command("FILLET").option("Radius").type("5").enter()
+      closed.click(p(50, 0)).click(p(120, 50))
+      const opened = closed.only<PolylineEntity>("polyline")
+      expect(opened.closed).toBe(false)
+      expect(opened.vertices).toBeCloseToPoints([
+        p(0, 0),
+        p(115, 0),
+        p(120, 5),
+        p(120, 80),
+      ])
+    })
+
+    it("turns the arc the corner's way, meets at radius 0 and refuses no size", () => {
+      const across = createHarness({
+        entities: [
+          polylineOf([p(0, 0), p(100, 0), p(100, 100)]),
+          lineOf(p(50, 80), p(150, 80)),
+        ],
+      })
+      across.command("FILLET").option("Radius").type("10").enter()
+      across.click(p(100, 40)).click(p(130, 80))
+      const turned = across.only<PolylineEntity>("polyline")
+      expect(turned.vertices).toBeCloseToPoints([
+        p(0, 0),
+        p(100, 0),
+        p(100, 70),
+        p(110, 80),
+        p(150, 80),
+      ])
+      expect(turned.bulges?.[2]).toBeCloseTo(-QUARTER, 6)
+
+      const sharp = createHarness({
+        entities: [ell(), lineOf(p(50, 80), p(120, 80))],
+      })
+      sharp.command("FILLET").click(p(100, 25)).click(p(60, 80))
+      expect(sharp.only<PolylineEntity>("polyline").vertices).toBeCloseToPoints(
+        [p(0, 0), p(100, 0), p(100, 80), p(50, 80)]
+      )
+
+      // Past the line's kept end the polyline doubles back to it.
+      const large = createHarness({
+        entities: [ell(), lineOf(p(50, 80), p(120, 80))],
+      })
+      large.command("FILLET").option("Radius").type("60").enter()
+      large.click(p(100, 25)).click(p(60, 80))
+      expect(large.only<PolylineEntity>("polyline").vertices).toBeCloseToPoints(
+        [p(0, 0), p(100, 0), p(100, 20), p(40, 80), p(50, 80)]
+      )
+    })
+
+    it("says when the line is not in the polyline's plane", () => {
+      const raised = {
+        ...lineOf(p(50, 80), p(120, 80)),
+        elevation: 5,
+      }
+      const cad = createHarness({ entities: [ell(), raised] })
+      cad.command("FILLET").click(p(100, 25)).click(p(60, 80))
+      expect(cad.commandLog().at(-1)).toBe(
+        "Line and polyline are non coplanar."
+      )
+      expect(cad.activeToolId()).toBe("select")
+      expect(cad.typeCounts()).toEqual({ polyline: 1, line: 1 })
+
+      cad
+        .command("FILLET")
+        .option("Multiple")
+        .click(p(100, 25))
+        .click(p(60, 80))
+      expect(cad.state().commandLine.prompt).toBe(
+        "FILLET Select first object or [Undo/Polyline/Radius]:"
+      )
+
+      const spanish = createHarness({ locale: es, entities: [ell(), raised] })
+      spanish.command("EMPALME").click(p(100, 25)).click(p(60, 80))
+      expect(spanish.commandLog().at(-1)).toBe(
+        "La línea y la polilínea no son coplanares."
+      )
+    })
   })
 
   it("removes the segment between two it fillets, and closes an open polyline's ends", () => {
@@ -837,6 +992,35 @@ describe("CHAMFER", () => {
       "Select 2D polyline or [Distance]:",
       "4 lines were chamfered",
     ])
+  })
+
+  // AutoCAD 2023's console (acc/f7, f18): D 10, 5, either picked first.
+  it("joins a line into a polyline by the bevel, the first distance on the first picked", () => {
+    const entities = () => [
+      polylineOf([p(0, 0), p(100, 0), p(100, 50)], { id: "P1" }),
+      lineOf(p(50, 80), p(120, 80)),
+    ]
+    const cad = createHarness({ entities: entities() })
+    cad.command("CHAMFER").option("Distance").type("10").enter()
+    cad.type("5").enter().click(p(100, 25)).click(p(60, 80))
+
+    const poly = cad.only<PolylineEntity>("polyline")
+    expect(cad.entityCount).toBe(1)
+    expect(poly.vertices).toBeCloseToPoints([
+      p(0, 0),
+      p(100, 0),
+      p(100, 70),
+      p(95, 80),
+      p(50, 80),
+    ])
+    expect((poly.bulges ?? []).every((bulge) => bulge === 0)).toBe(true)
+
+    const lineFirst = createHarness({ entities: entities() })
+    lineFirst.command("CHAMFER").option("Distance").type("10").enter()
+    lineFirst.type("5").enter().click(p(60, 80)).click(p(100, 25))
+    expect(
+      lineFirst.only<PolylineEntity>("polyline").vertices
+    ).toBeCloseToPoints([p(0, 0), p(100, 0), p(100, 75), p(90, 80), p(50, 80)])
   })
 
   it("bevels two segments of a polyline, the first distance on the first picked", () => {

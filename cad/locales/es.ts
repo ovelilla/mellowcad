@@ -2298,6 +2298,7 @@ export const es: EngineLocale = {
         ]
       ],
       "linesNonCoplanar": "Las líneas no son coplanares.",
+      "lineAndPolylineNonCoplanar": "La línea y la polilínea no son coplanares.",
       "cornersSkipped": [
         [
           "parallel",

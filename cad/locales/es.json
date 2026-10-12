@@ -1231,6 +1231,7 @@
       "distanceReport": "Distancia = {distance}, Ángulo en el plano XY = {angleInPlane}, Ángulo a partir del plano XY = {angleFromPlane}\nIncremento X = {deltaX}, Incremento Y = {deltaY},   Incremento Z = {deltaZ}",
       "idReport": " X = {x}     Y = {y}     Z = {z}",
       "linesNonCoplanar": "Las líneas no son coplanares.",
+      "lineAndPolylineNonCoplanar": "La línea y la polilínea no son coplanares.",
       "cornersSkipped": "{parallel, plural, =0 {} one {# resulta paralela(s)    } other {# resultan paralela(s)    }}{tooShort, plural, =0 {} one {# resulta demasiado corta(s)    } other {# resultan demasiado corta(s)    }}{divergent, plural, =0 {} one {# resulta divergente(s)    } other {# resultan divergente(s)    }}",
       "invalid": "*No válido*",
       "splineSettingsFit": "Parámetros actuales: Método=Ajustar Nudos={knots, select, chord {Cuerda} sqrtChord {Raíz cuadrada} other {Uniforme}}",

@@ -44,9 +44,14 @@ import {
 } from "./polylineCorners"
 import {
   CornerObject,
+  LineAndSegment,
+  LineSegmentCut,
   SegmentPick,
   cornerEntity,
   isSegment,
+  joinLineToSegment,
+  joinable,
+  lineAndSegment,
   pickCornerObject,
 } from "./cornerObjects"
 import {
@@ -72,7 +77,8 @@ import {
  *
  * The arc is placed in the corner nearest to where you clicked each line, and
  * the lines are trimmed/extended to meet it. Two straight segments of one
- * polyline are objects too, rounded within it. Shift on the second pick applies a
+ * polyline are objects too, rounded within it, and a line with a polyline's
+ * segment is joined into the polyline. Shift on the second pick applies a
  * corner instead, as a radius of 0 does. The radius is kept for the session.
  * Multiple keeps asking for the next pair until Enter, and Undo takes back the
  * last fillet made in the command. Each fillet is one command — a
@@ -215,6 +221,9 @@ export class FilletTool implements Tool {
         } else if (!isSegment(first) && !isSegment(second)) {
           const pick2 = { world: input.world, screen: input.screen }
           this.commitFillet(first, pick1, second, pick2, radius, ctx)
+        } else {
+          const pair = lineAndSegment(first, pick1.world, second, input.world)
+          if (pair) this.commitJoin(pair, radius, ctx)
         }
         return
       }
@@ -293,6 +302,20 @@ export class FilletTool implements Tool {
 
     const { first, pick1, hover, cursor } = this.state
     const radius = this.state.corner ? 0 : this.radius
+    const pair =
+      hover && lineAndSegment(first, pick1.world, hover, cursor.world)
+    if (pair) {
+      const cut = joinable(pair) && filletJoin(pair, radius)
+      return cut
+        ? draw(joinLineToSegment(pair.line, pair.segment, cut), hoverStroke)
+        : [
+            ...draw(cornerEntity(first), selectedStroke),
+            ...draw(
+              cornerEntity(pair.lineFirst ? pair.segment : pair.line),
+              hoverStroke
+            ),
+          ]
+    }
     if (isSegment(first)) {
       const cut =
         hover && isSegment(hover) && filletSegments(first, hover, radius)
@@ -419,17 +442,42 @@ export class FilletTool implements Tool {
   }
 
   /**
-   * A corner that cannot be made: said, and Multiple asks for the first
-   * object again; otherwise the input is `*Invalid*` and the command ends.
+   * A line and a polyline's segment joined into the polyline through the
+   * arc. Parallel, the second object is asked again, as for two lines.
    */
-  private refuse(message: MessageId, ctx: ToolContext): void {
+  private commitJoin(
+    pair: LineAndSegment,
+    radius: number,
+    ctx: ToolContext
+  ): void {
+    if (!joinable(pair)) {
+      this.refuse("lineAndPolylineNonCoplanar", ctx, false)
+      return
+    }
+    const cut = filletJoin(pair, radius)
+    if (!cut) return
+    this.done(
+      new ReplaceEntitiesCommand(
+        [pair.line.id, pair.segment.poly.id],
+        [joinLineToSegment(pair.line, pair.segment, cut)]
+      ),
+      ctx
+    )
+  }
+
+  /**
+   * A corner that cannot be made: said, and Multiple asks for the first
+   * object again; otherwise the input is `*Invalid*` (unless the console says
+   * only why, as for a line and a polyline apart) and the command ends.
+   */
+  private refuse(message: MessageId, ctx: ToolContext, invalid = true): void {
     ctx.report(ctx.text.message(message), "error")
     if (this.multiple) {
       this.state = { phase: "first", hover: null }
       ctx.requestRender()
       return
     }
-    ctx.report(ctx.text.message("invalid"), "error")
+    if (invalid) ctx.report(ctx.text.message("invalid"), "error")
     ctx.dynamicInput.close()
     ctx.endCommand()
   }
@@ -560,6 +608,40 @@ const REFUSALS: Readonly<Record<SegmentsRefusal, MessageId>> = {
   parallel: "linesParallel",
   diverge: "linesDiverge",
   tooLarge: "filletRadiusTooLarge",
+}
+
+/** The arc between a line and a polyline's segment; `null` when parallel. */
+function filletJoin(
+  { line, linePick, a, b, segmentPick }: LineAndSegment,
+  radius: number
+): LineSegmentCut | null {
+  const result = filletLines(
+    line.start,
+    line.end,
+    a,
+    b,
+    linePick,
+    segmentPick,
+    radius
+  )
+  if (!result) return null
+  const sweep = normalizeAngle(result.endAngle - result.startAngle)
+  const mid = polarPoint(
+    result.center,
+    result.radius,
+    result.startAngle + sweep / 2
+  )
+  return {
+    corner: result.corner,
+    lineSide: result.direction1,
+    segmentSide: result.direction2,
+    onLine: result.tangent1,
+    onSegment: result.tangent2,
+    bulge:
+      result.radius > 0
+        ? bulgeThroughPoint(result.tangent2, result.tangent1, mid)
+        : 0,
+  }
 }
 
 /** Two segments of one polyline rounded within it, or why they cannot be. */

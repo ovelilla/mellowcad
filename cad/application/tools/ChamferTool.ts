@@ -31,9 +31,14 @@ import {
 } from "./polylineCorners"
 import {
   CornerObject,
+  LineAndSegment,
+  LineSegmentCut,
   SegmentPick,
   cornerEntity,
   isSegment,
+  joinLineToSegment,
+  joinable,
+  lineAndSegment,
   pickCornerObject,
 } from "./cornerObjects"
 import {
@@ -61,7 +66,8 @@ import {
  *
  * The distances are measured from the corner along each line's *picked* side,
  * so where you click decides which of the four corners is cut. Two straight
- * segments of one polyline are objects too, bevelled within it. They persist for
+ * segments of one polyline are objects too, bevelled within it, and a line
+ * with a polyline's segment is joined into the polyline. They persist for
  * the tool's session, like AutoCAD's, and both being 0 simply joins the lines
  * at their intersection — as Shift on the second pick does (apply corner).
  * Multiple keeps asking until Enter, and Undo takes back the last chamfer made
@@ -212,6 +218,9 @@ export class ChamferTool implements Tool {
         } else if (!isSegment(first) && !isSegment(second)) {
           const pick2 = { world: input.world, screen: input.screen }
           this.commitChamfer(first, pick1, second, pick2, input.shiftKey, ctx)
+        } else {
+          const pair = lineAndSegment(first, pick1.world, second, input.world)
+          if (pair) this.commitJoin(pair, input.shiftKey, ctx)
         }
         return
       }
@@ -289,6 +298,20 @@ export class ChamferTool implements Tool {
     }
 
     const { first, pick1, hover, cursor } = this.state
+    const pair =
+      hover && lineAndSegment(first, pick1.world, hover, cursor.world)
+    if (pair) {
+      const cut = joinable(pair) && this.chamferJoin(pair, this.state.corner)
+      return cut
+        ? draw(joinLineToSegment(pair.line, pair.segment, cut), hoverStroke)
+        : [
+            ...draw(cornerEntity(first), selectedStroke),
+            ...draw(
+              cornerEntity(pair.lineFirst ? pair.segment : pair.line),
+              hoverStroke
+            ),
+          ]
+    }
     if (isSegment(first)) {
       const cut =
         hover &&
@@ -408,18 +431,92 @@ export class ChamferTool implements Tool {
     this.done(new ReplaceEntitiesCommand([line1.id, line2.id], chamfered), ctx)
   }
 
+  /** A line and a polyline's segment joined into the polyline by the bevel. */
+  private commitJoin(
+    pair: LineAndSegment,
+    sharp: boolean,
+    ctx: ToolContext
+  ): void {
+    if (!joinable(pair)) {
+      this.refuse("lineAndPolylineNonCoplanar", ctx, false)
+      return
+    }
+    const cut = this.chamferJoin(pair, sharp)
+    if (!cut) return // parallel or collinear — keep prompting
+    this.done(
+      new ReplaceEntitiesCommand(
+        [pair.line.id, pair.segment.poly.id],
+        [joinLineToSegment(pair.line, pair.segment, cut)]
+      ),
+      ctx
+    )
+  }
+
+  /**
+   * The bevel between a line and a polyline's segment, the first distance on
+   * the one picked first (none when `sharp`); `null` when parallel.
+   */
+  private chamferJoin(
+    { line, linePick, a, b, segmentPick, lineFirst }: LineAndSegment,
+    sharp: boolean
+  ): LineSegmentCut | null {
+    const first = sharp ? 0 : this.distance1
+    const second = sharp ? 0 : this.distance2
+    const result = lineFirst
+      ? chamferLines(
+          line.start,
+          line.end,
+          a,
+          b,
+          linePick,
+          segmentPick,
+          first,
+          second
+        )
+      : chamferLines(
+          a,
+          b,
+          line.start,
+          line.end,
+          segmentPick,
+          linePick,
+          first,
+          second
+        )
+    if (!result) return null
+    const { corner, direction1, direction2, point1, point2 } = result
+    return lineFirst
+      ? {
+          corner,
+          lineSide: direction1,
+          segmentSide: direction2,
+          onLine: point1,
+          onSegment: point2,
+          bulge: 0,
+        }
+      : {
+          corner,
+          lineSide: direction2,
+          segmentSide: direction1,
+          onLine: point2,
+          onSegment: point1,
+          bulge: 0,
+        }
+  }
+
   /**
    * A corner that cannot be made: said, and Multiple asks for the first
-   * object again; otherwise the input is `*Invalid*` and the command ends.
+   * object again; otherwise the input is `*Invalid*` (unless the console says
+   * only why, as for a line and a polyline apart) and the command ends.
    */
-  private refuse(message: MessageId, ctx: ToolContext): void {
+  private refuse(message: MessageId, ctx: ToolContext, invalid = true): void {
     ctx.report(ctx.text.message(message), "error")
     if (this.multiple) {
       this.state = { phase: "first", hover: null }
       ctx.requestRender()
       return
     }
-    ctx.report(ctx.text.message("invalid"), "error")
+    if (invalid) ctx.report(ctx.text.message("invalid"), "error")
     ctx.dynamicInput.close()
     ctx.endCommand()
   }

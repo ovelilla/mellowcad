@@ -70,9 +70,11 @@ A tool is an explicit state machine for one AutoCAD command. It owns a discrimin
 - `cornerObjects.ts` and `polylineCorners.ts` — FILLET's and CHAMFER's objects (a line, or a
   straight segment of a polyline, `pickCornerObject`) and the polyline corners they cut: two
   segments picked within one polyline (`cutBetweenSegments`: adjacent, one apart, an open one's
-  ends closing it) and the Polyline option's every corner (`cutPolylineCorners`, FILLET's arc
-  corners and replaced arcs included). A corner-cutting command passes its cut, never walks a
-  polyline itself.
+  ends closing it), a line with a segment joined into the polyline (`lineAndSegment`,
+  `joinable`, `joinLineToSegment`: the run on the segment's picked side kept, the rest dropped)
+  and the Polyline option's every corner (`cutPolylineCorners`, FILLET's arc corners and
+  replaced arcs included). A corner-cutting command passes its cut, never walks a polyline
+  itself.
 - `ArcSegmentInput` (`arcSegmentInput.ts`) — the prompts AutoCAD's polyline arc options open
   (Angle, CEnter, Direction, Radius, Second pt and their `[CEnter/Radius]`, `[Angle/Length]`,
   `[Angle]`), for any command drawing a polyline's arcs (PLINE; DIST's Arc). The tool lists
