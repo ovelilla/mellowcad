@@ -36,12 +36,12 @@ import {
   SegmentPick,
   cornerEntity,
   cornerJoin,
+  cornerPlane,
   cutFits,
   isArcSegment,
   isSegment,
   joinAtCut,
   joinRefusal,
-  joinedSecond,
   pickCornerObject,
 } from "./cornerObjects"
 import {
@@ -172,13 +172,13 @@ export class ChamferTool implements Tool {
       case "first":
         this.state = {
           phase: "first",
-          hover: pickCornerObject(ctx, input.world, null),
+          hover: pickCornerObject(ctx, input, null),
         }
         break
       case "second":
         this.state = {
           ...this.state,
-          hover: pickCornerObject(ctx, input.world, this.state.first),
+          hover: pickCornerObject(ctx, input, this.state.first),
           cursor: { world: input.world, screen: input.screen },
           corner: input.shiftKey,
         }
@@ -195,7 +195,7 @@ export class ChamferTool implements Tool {
 
     switch (this.state.phase) {
       case "first": {
-        const hit = pickCornerObject(ctx, input.world, null)
+        const hit = pickCornerObject(ctx, input, null)
         if (!hit) return
         const pick = { world: input.world, screen: input.screen }
         this.state = {
@@ -211,15 +211,25 @@ export class ChamferTool implements Tool {
       }
       case "second": {
         const { first, pick1 } = this.state
-        const second = pickCornerObject(ctx, input.world, first)
+        const second = pickCornerObject(ctx, input, first)
         if (!second) return
-        const join = cornerJoin(first, pick1.world, second, input.world)
+        const plane = cornerPlane(first, pick1, second, input, ctx.viewport)
+        const join = cornerJoin(
+          plane.first,
+          plane.pick1,
+          plane.second,
+          plane.pick2
+        )
         if (join) {
-          this.commitJoin(join, input.shiftKey, ctx)
-        } else if (isSegment(first) && isSegment(second)) {
-          const cut = this.chamferSegments(first, second, input.shiftKey)
+          this.commitJoin(join, input.shiftKey, plane.back, ctx)
+        } else if (isSegment(plane.first) && isSegment(plane.second)) {
+          const cut = this.chamferSegments(
+            plane.first,
+            plane.second,
+            input.shiftKey
+          )
           if (typeof cut !== "string") {
-            this.done(new UpdateEntityCommand(cut), ctx)
+            this.done(new UpdateEntityCommand(plane.back(cut)), ctx)
           } else {
             this.refuse(REFUSALS[cut], ctx)
           }
@@ -303,24 +313,28 @@ export class ChamferTool implements Tool {
     }
 
     const { first, pick1, hover, cursor } = this.state
-    const join = hover && cornerJoin(first, pick1.world, hover, cursor.world)
-    if (join) {
+    const plane =
+      hover && cornerPlane(first, pick1, hover, cursor, ctx.viewport)
+    const join =
+      plane && cornerJoin(plane.first, plane.pick1, plane.second, plane.pick2)
+    if (plane && join) {
       const cut =
         !this.joinRefusal(join) && this.chamferJoin(join, this.state.corner)
       return cut && cutFits(join, cut)
-        ? draw(joinAtCut(join, cut), hoverStroke)
+        ? draw(plane.back(joinAtCut(join, cut)), hoverStroke)
         : [
             ...draw(cornerEntity(first), selectedStroke),
-            ...draw(cornerEntity(joinedSecond(join)), hoverStroke),
+            ...draw(cornerEntity(hover), hoverStroke),
           ]
     }
     if (isSegment(first)) {
       const cut =
-        hover &&
-        isSegment(hover) &&
-        this.chamferSegments(first, hover, this.state.corner)
-      return cut && typeof cut !== "string"
-        ? draw(cut, hoverStroke)
+        plane &&
+        isSegment(plane.first) &&
+        isSegment(plane.second) &&
+        this.chamferSegments(plane.first, plane.second, this.state.corner)
+      return plane && cut && typeof cut !== "string"
+        ? draw(plane.back(cut), hoverStroke)
         : draw(first.poly, selectedStroke)
     }
     const line1 = first
@@ -438,7 +452,12 @@ export class ChamferTool implements Tool {
    * into one polyline by the bevel; refused, as the console does, when they
    * are parallel or a distance runs past the end of its line or segment.
    */
-  private commitJoin(join: CornerJoin, sharp: boolean, ctx: ToolContext): void {
+  private commitJoin(
+    join: CornerJoin,
+    sharp: boolean,
+    back: (entity: Entity) => Entity,
+    ctx: ToolContext
+  ): void {
     const refusal = this.joinRefusal(join)
     if (refusal) {
       this.refuse(refusal, ctx, false)
@@ -456,7 +475,7 @@ export class ChamferTool implements Tool {
     this.done(
       new ReplaceEntitiesCommand(
         [cornerEntity(join.other).id, join.segment.poly.id],
-        [joinAtCut(join, cut)]
+        [back(joinAtCut(join, cut))]
       ),
       ctx
     )

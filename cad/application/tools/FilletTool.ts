@@ -43,12 +43,12 @@ import {
   SegmentPick,
   cornerEntity,
   cornerJoin,
+  cornerPlane,
   curveOf,
   isArcSegment,
   isSegment,
   joinAtCut,
   joinRefusal,
-  joinedSecond,
   pickCornerObject,
 } from "./cornerObjects"
 import {
@@ -175,13 +175,13 @@ export class FilletTool implements Tool {
       case "first":
         this.state = {
           phase: "first",
-          hover: pickCornerObject(ctx, input.world, null),
+          hover: pickCornerObject(ctx, input, null),
         }
         break
       case "second":
         this.state = {
           ...this.state,
-          hover: pickCornerObject(ctx, input.world, this.state.first),
+          hover: pickCornerObject(ctx, input, this.state.first),
           cursor: { world: input.world, screen: input.screen },
           corner: input.shiftKey,
         }
@@ -198,7 +198,7 @@ export class FilletTool implements Tool {
 
     switch (this.state.phase) {
       case "first": {
-        const hit = pickCornerObject(ctx, input.world, null)
+        const hit = pickCornerObject(ctx, input, null)
         if (!hit) return
         const pick = { world: input.world, screen: input.screen }
         this.state = {
@@ -214,16 +214,22 @@ export class FilletTool implements Tool {
       }
       case "second": {
         const { first, pick1 } = this.state
-        const second = pickCornerObject(ctx, input.world, first)
+        const second = pickCornerObject(ctx, input, first)
         if (!second) return
         const radius = input.shiftKey ? 0 : this.radius
-        const join = cornerJoin(first, pick1.world, second, input.world)
+        const plane = cornerPlane(first, pick1, second, input, ctx.viewport)
+        const join = cornerJoin(
+          plane.first,
+          plane.pick1,
+          plane.second,
+          plane.pick2
+        )
         if (join) {
-          this.commitJoin(join, radius, ctx)
-        } else if (isSegment(first) && isSegment(second)) {
-          const cut = filletSegments(first, second, radius)
+          this.commitJoin(join, radius, plane.back, ctx)
+        } else if (isSegment(plane.first) && isSegment(plane.second)) {
+          const cut = filletSegments(plane.first, plane.second, radius)
           if (typeof cut !== "string") {
-            this.done(new UpdateEntityCommand(cut), ctx)
+            this.done(new UpdateEntityCommand(plane.back(cut)), ctx)
           } else if (cut === "noCorner") {
             this.refuse("cannotFilletBetween", ctx, "sameLine")
           } else {
@@ -310,21 +316,27 @@ export class FilletTool implements Tool {
 
     const { first, pick1, hover, cursor } = this.state
     const radius = this.state.corner ? 0 : this.radius
-    const join = hover && cornerJoin(first, pick1.world, hover, cursor.world)
-    if (join) {
+    const plane =
+      hover && cornerPlane(first, pick1, hover, cursor, ctx.viewport)
+    const join =
+      plane && cornerJoin(plane.first, plane.pick1, plane.second, plane.pick2)
+    if (plane && join) {
       const cut = !joinRefusal(join) && filletJoin(join, radius)
       return cut
-        ? draw(joinAtCut(join, cut), hoverStroke)
+        ? draw(plane.back(joinAtCut(join, cut)), hoverStroke)
         : [
             ...draw(cornerEntity(first), selectedStroke),
-            ...draw(cornerEntity(joinedSecond(join)), hoverStroke),
+            ...draw(cornerEntity(hover), hoverStroke),
           ]
     }
     if (isSegment(first)) {
       const cut =
-        hover && isSegment(hover) && filletSegments(first, hover, radius)
-      return cut && typeof cut !== "string"
-        ? draw(cut, hoverStroke)
+        plane &&
+        isSegment(plane.first) &&
+        isSegment(plane.second) &&
+        filletSegments(plane.first, plane.second, radius)
+      return plane && cut && typeof cut !== "string"
+        ? draw(plane.back(cut), hoverStroke)
         : draw(first.poly, selectedStroke)
     }
     const line1 = first
@@ -450,7 +462,12 @@ export class FilletTool implements Tool {
    * into one polyline through the arc; parallel, `Cannot fillet between these
    * two entities.`
    */
-  private commitJoin(join: CornerJoin, radius: number, ctx: ToolContext): void {
+  private commitJoin(
+    join: CornerJoin,
+    radius: number,
+    back: (entity: Entity) => Entity,
+    ctx: ToolContext
+  ): void {
     const refusal = joinRefusal(join)
     if (refusal) {
       this.refuse(refusal, ctx, false)
@@ -464,7 +481,7 @@ export class FilletTool implements Tool {
     this.done(
       new ReplaceEntitiesCommand(
         [cornerEntity(join.other).id, join.segment.poly.id],
-        [joinAtCut(join, cut)]
+        [back(joinAtCut(join, cut))]
       ),
       ctx
     )

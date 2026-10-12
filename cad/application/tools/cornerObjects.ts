@@ -1,6 +1,9 @@
 import { Vec2, V } from "../../geometry/Vec2"
+import { WORLD_Z, planar } from "../../geometry/Vec3"
+import { arbitraryAxis, worldToAxes } from "../../geometry/ocs"
 import {
   closestPointOnArc,
+  closestPointOnInfiniteLine,
   closestPointOnSegment,
 } from "../../geometry/primitives"
 import {
@@ -10,11 +13,20 @@ import {
   carryOverrides,
   coplanar,
   createPolyline,
+  entityFromOcs,
+  entityInOcs,
+  entityNormal,
+  entityPointToWorld,
+  facesAlong,
+  isTilted,
   polylineSegmentGeometries,
   readsInPlan,
+  withNormal,
 } from "../../domain/entities"
+import type { CameraTransform } from "../../scene/types"
 import type { MessageId } from "../EngineText"
 import type { Curve, CurveEnd } from "./curveFillets"
+import { LinePick, alongOnScreen } from "./lineCorner"
 import { bulgeBetween, segmentsPair } from "./polylineCorners"
 import { ToolContext } from "./Tool"
 
@@ -57,22 +69,93 @@ export function curveOf(object: CornerObject): Curve {
  */
 export function pickCornerObject(
   ctx: ToolContext,
-  world: Vec2,
+  pick: LinePick,
   first: CornerObject | null
 ): CornerObject | null {
-  const hit = ctx.pick(world)
+  const hit = ctx.pick(pick.world)
   if (hit?.type === "line") {
     return first === null || isSegment(first) || first.id !== hit.id
       ? hit
       : null
   }
   if (hit?.type !== "polyline") return null
-  const index = nearestSegment(hit, world)
+  // A polyline in a tilted plane is picked as it is drawn.
+  const index = readsInPlan(hit)
+    ? nearestSegment(hit, pick.world)
+    : (nearestOnScreen(hit, pick.screen, ctx.viewport)?.index ?? null)
   if (index === null) return null
   if (first === null || !isSegment(first) || first.poly.id !== hit.id) {
     return { poly: hit, index }
   }
   return segmentsPair(hit, first.index, index) ? { poly: hit, index } : null
+}
+
+/**
+ * FILLET's and CHAMFER's two objects where they are cut, and the picks there:
+ * as they are when both read in plan, else in the OCS of the tilted
+ * polyline's plane, where AutoCAD 2023's console rounds and bevels them too
+ * (within it, or joined with a line lying in it). `back` returns what is
+ * built there; an object off that plane stays off it, for the coplanar test
+ * to refuse.
+ */
+export interface CornerPlane {
+  readonly first: CornerObject
+  readonly pick1: Vec2
+  readonly second: CornerObject
+  readonly pick2: Vec2
+  back(entity: Entity): Entity
+}
+
+export function cornerPlane(
+  first: CornerObject,
+  pick1: LinePick,
+  second: CornerObject,
+  pick2: LinePick,
+  view: CameraTransform
+): CornerPlane {
+  const tilted = [first, second].find(
+    (object): object is SegmentPick =>
+      isSegment(object) && !readsInPlan(object.poly)
+  )
+  const axes = tilted && arbitraryAxis(entityNormal(tilted.poly))
+  if (!tilted || !axes) {
+    return {
+      first,
+      pick1: pick1.world,
+      second,
+      pick2: pick2.world,
+      back: (entity) => entity,
+    }
+  }
+  const normal = entityNormal(tilted.poly)
+  const into = (object: CornerObject, pick: LinePick): [CornerObject, Vec2] => {
+    if (!isSegment(object)) {
+      // WHY no normal: in the plane's frame the line is a level one there,
+      // whatever extrusion it had in the WCS.
+      const line = withNormal(entityInOcs(object, normal), WORLD_Z)
+      const along = alongOnScreen(object, pick.screen, view)
+      return [line as LineEntity, planar(worldToAxes(axes, along))]
+    }
+    const poly = entityInOcs(object.poly, normal) as PolylineEntity
+    const seen = facesAlong(object.poly, normal)
+      ? nearestOnScreen(object.poly, pick.screen, view)
+      : null
+    return [{ poly, index: object.index }, seen?.point ?? pick.world]
+  }
+  const [inFirst, onFirst] = into(first, pick1)
+  const [inSecond, onSecond] = into(second, pick2)
+  return {
+    first: inFirst,
+    pick1: onFirst,
+    second: inSecond,
+    pick2: onSecond,
+    // WHY the polyline's own normal on what lies level there: rebuilt from its
+    // axes it would drift a last bit with every cut, and a file with it.
+    back: (entity) =>
+      entity.type === "line" || isTilted(entity)
+        ? entityFromOcs(entity, normal)
+        : withNormal(entity, normal),
+  }
 }
 
 /**
@@ -126,11 +209,6 @@ export function cornerJoin(
     otherB: ends.b,
     otherFirst,
   }
-}
-
-/** The object of a join picked second, which the preview highlights. */
-export function joinedSecond(join: CornerJoin): CornerObject {
-  return join.otherFirst ? join.segment : join.other
 }
 
 /**
@@ -305,6 +383,56 @@ function segmentEnds({ poly, index }: SegmentPick): { a: Vec2; b: Vec2 } {
   const { a, b } = polylineSegmentGeometries(poly)[index]
   return { a, b }
 }
+
+/**
+ * The segment of a polyline in a tilted plane drawn nearest `screen`, and
+ * its point drawn there, in the polyline's own coordinates.
+ */
+function nearestOnScreen(
+  poly: PolylineEntity,
+  screen: Vec2,
+  view: CameraTransform
+): { readonly index: number; readonly point: Vec2 } | null {
+  const drawn = (point: Vec2) =>
+    view.worldToScreen(entityPointToWorld(poly, point))
+  let best: { index: number; point: Vec2 } | null = null
+  let bestDistance = Infinity
+  const consider = (index: number, point: Vec2) => {
+    const distance = V.distance(drawn(point), screen)
+    if (distance < bestDistance) {
+      bestDistance = distance
+      best = { index, point }
+    }
+  }
+  polylineSegmentGeometries(poly).forEach((segment, index) => {
+    if (segment.kind === "line") {
+      const { t } = closestPointOnInfiniteLine(
+        drawn(segment.a),
+        drawn(segment.b),
+        screen
+      )
+      const along = Number.isFinite(t) ? Math.min(1, Math.max(0, t)) : 0
+      consider(index, V.lerp(segment.a, segment.b, along))
+      return
+    }
+    const start = Math.atan2(
+      segment.a.y - segment.center.y,
+      segment.a.x - segment.center.x
+    )
+    const included = 4 * Math.atan(segment.bulge)
+    for (let k = 0; k <= ARC_SAMPLES; k++) {
+      const angle = start + (included * k) / ARC_SAMPLES
+      consider(index, {
+        x: segment.center.x + segment.radius * Math.cos(angle),
+        y: segment.center.y + segment.radius * Math.sin(angle),
+      })
+    }
+  })
+  return best
+}
+
+/** How finely an arc segment drawn in a tilted plane is searched for a pick. */
+const ARC_SAMPLES = 64
 
 /** The segment of `poly` nearest `world`. */
 function nearestSegment(poly: PolylineEntity, world: Vec2): number | null {

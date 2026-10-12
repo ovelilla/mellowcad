@@ -10,7 +10,7 @@ import {
   type LineEntity,
 } from "../../domain/entities"
 import { createHarness, type CadHarness } from "../../../test/harness"
-import { circleOf, p, polylineOf } from "../../../test/builders"
+import { circleOf, lineOf, p, polylineOf } from "../../../test/builders"
 
 // Its OCS X is the world's X and its OCS Y the world's Z.
 const FACING_FRONT = { x: 0, y: -1, z: 0 }
@@ -159,5 +159,90 @@ describe("an object with a normal of its own", () => {
     if (moved.type !== "circle") throw new Error("not a circle")
     expectAt(entityPointToWorld(moved, moved.center), { x: 100, y: 0, z: 80 })
     expect(entityNormal(moved)).toEqual(FACING_FRONT)
+  })
+})
+
+// AutoCAD 2023's console (acc/f19–f22), with UCS X 45 drawn and the WCS
+// back: FILLET and CHAMFER work a polyline in its tilted plane, within it or
+// joined with a line lying in it; a line off it is non coplanar.
+describe("FILLET and CHAMFER on a polyline in a tilted plane", () => {
+  const TILTED = { x: 0, y: -Math.SQRT1_2, z: Math.SQRT1_2 }
+  /** 0,0 → 100,0 → 100,50 in its OCS, whose X is the world's. */
+  const ell = () =>
+    withNormal(
+      polylineOf([p(0, 0), p(100, 0), p(100, 50)], { id: "P1" }),
+      TILTED
+    )
+  /** 50,100 → 150,100 in the polyline's plane. */
+  const inPlane = () => ({
+    ...lineOf(p(50, 100 * Math.SQRT1_2), p(150, 100 * Math.SQRT1_2), {
+      id: "L1",
+    }),
+    elevation: 100 * Math.SQRT1_2,
+  })
+  const only = (cad: CadHarness) => {
+    const [poly] = cad.entities()
+    if (poly?.type !== "polyline") throw new Error("not a polyline")
+    return poly
+  }
+
+  it("rounds and bevels two of its segments in its plane", () => {
+    const fillet = createHarness({ entities: [ell()] })
+    fillet.command("FILLET").option("Radius").type("5").enter()
+    fillet.click(p(50, 0)).click(p(100, 20))
+    const rounded = only(fillet)
+    expect(entityNormal(rounded)).toEqual(TILTED)
+    expect(rounded.vertices).toBeCloseToPoints([
+      p(0, 0),
+      p(95, 0),
+      p(100, 5),
+      p(100, 50),
+    ])
+    expect(rounded.bulges?.[1]).toBeCloseTo(Math.tan(Math.PI / 8), 9)
+    expectAt(entityPointToWorld(rounded, rounded.vertices[2]), {
+      x: 100,
+      y: 5 * Math.SQRT1_2,
+      z: 5 * Math.SQRT1_2,
+    })
+
+    const chamfer = createHarness({ entities: [ell()] })
+    chamfer.command("CHAMFER").option("Distance").type("5").enter().enter()
+    chamfer.click(p(50, 0)).click(p(100, 20))
+    expect(only(chamfer).vertices).toBeCloseToPoints([
+      p(0, 0),
+      p(95, 0),
+      p(100, 5),
+      p(100, 50),
+    ])
+  })
+
+  it("joins a line lying in its plane, and not one off it", () => {
+    const cad = createHarness({ entities: [ell(), inPlane()] })
+    cad.command("FILLET").option("Radius").type("5").enter()
+    cad.click(p(100, 20)).click(p(80, 100 * Math.SQRT1_2))
+    const joined = only(cad)
+    expect(cad.entities()).toHaveLength(1)
+    expect(joined.id).toBe("P1")
+    expect(entityNormal(joined)).toEqual(TILTED)
+    expect(joined.vertices).toBeCloseToPoints([
+      p(0, 0),
+      p(100, 0),
+      p(100, 95),
+      p(95, 100),
+      p(50, 100),
+    ])
+    expectAt(entityPointToWorld(joined, joined.vertices[2]), {
+      x: 100,
+      y: 67.17514421272201,
+      z: 67.17514421272201,
+    })
+
+    const off = createHarness({
+      entities: [ell(), lineOf(p(50, 100), p(150, 100))],
+    })
+    off.command("FILLET").option("Radius").type("5").enter()
+    off.click(p(100, 20)).click(p(100, 100))
+    expect(off.commandLog().at(-1)).toBe("Line and polyline are non coplanar.")
+    expect(off.entities()).toHaveLength(2)
   })
 })

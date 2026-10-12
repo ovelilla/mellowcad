@@ -66,7 +66,7 @@ export function lineCorner(
 }
 
 /** The point of `line` drawn nearest `screen`: a pick along it, with its Z. */
-function alongOnScreen(
+export function alongOnScreen(
   line: LineEntity,
   screen: Vec2,
   view: CameraTransform

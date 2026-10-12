@@ -84,6 +84,11 @@ A tool is an explicit state machine for one AutoCAD command. It owns a discrimin
   `arcs` and a `JoinCut`'s `keeps`; CHAMFER's `chords` cut it as its chord and refit what
   is left to its radius (`refitArcBulge`, `geometry/bulgeArcs.ts`). `bulgeThroughPoint`
   reads its point as the arc's middle: beside an arc pass the bisector of the radii.
+  `pickCornerObject` takes the pointer (`world` and `screen`), and the two objects are cut
+  in `cornerPlane`: a polyline in a tilted plane (with the UCS not on it) brings the
+  other and both picks into its OCS — a segment picked as it is drawn — and `back` returns
+  what is built, with the polyline's own normal; never cut a tilted polyline's points
+  against plan picks.
 - `ArcSegmentInput` (`arcSegmentInput.ts`) — the prompts AutoCAD's polyline arc options open
   (Angle, CEnter, Direction, Radius, Second pt and their `[CEnter/Radius]`, `[Angle/Length]`,
   `[Angle]`), for any command drawing a polyline's arcs (PLINE; DIST's Arc). The tool lists
