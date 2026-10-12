@@ -11,6 +11,7 @@ import {
   createPolyline,
   polylineSegmentGeometries,
 } from "../../domain/entities"
+import { curveCrossing } from "./curveFillets"
 import { ToolContext } from "./Tool"
 
 /**
@@ -26,7 +27,9 @@ export interface PolylineCorner {
 
 /**
  * A vertex where an arc segment meets another segment: `incoming` ends at
- * `corner` and `outgoing` starts there.
+ * `corner` and `outgoing` starts there — or, for two segments one apart,
+ * where the two cross, `incoming` kept toward its start and `outgoing`
+ * toward its end.
  */
 export interface ArcCorner {
   readonly incoming: PolylineSegmentGeometry
@@ -88,8 +91,11 @@ export function reportSkipped(
   )
 }
 
-/** Why two segments picked within one polyline make no corner. */
-export type SegmentsRefusal = "parallel" | "diverge" | "tooLarge"
+/**
+ * Why two segments picked within one polyline make no corner: an arc's
+ * `noCorner` when the two do not meet, or the cut does not fit or is tangent.
+ */
+export type SegmentsRefusal = "parallel" | "diverge" | "tooLarge" | "noCorner"
 
 interface Candidate {
   readonly inSeg: number
@@ -245,16 +251,19 @@ export function cutPolylineCorners(
  * polyline picked as their two objects: "adjacent to each other or separated
  * by one other segment", which is removed and replaced with the cut; the first
  * and last segments of an open polyline close it — which `pickCornerObject`
- * alone offers. A refusal says why there is no corner. With `chords` an arc
- * segment is cut as its chord and refitted to its radius (CHAMFER's).
+ * alone offers. A refusal says why there is no corner. An arc segment is cut
+ * by `cuts.arcs` where the two meet — their shared vertex, or where they
+ * cross with the one between gone, either extended to it —, or with
+ * `cuts.chords` as its chord, refitted to its radius (CHAMFER's).
  */
 export function cutBetweenSegments(
   poly: PolylineEntity,
   first: number,
   second: number,
-  lines: (corner: PolylineCorner) => CornerCut | null,
-  chords = false
+  cuts: PolylineCuts
 ): PolylineEntity | SegmentsRefusal {
+  const { lines } = cuts
+  const chords = cuts.chords === true
   const segments = polylineSegmentGeometries(poly)
   const count = segments.length
   const [inSeg, outSeg, between] = segmentPair(poly, count, first, second) ?? [
@@ -264,6 +273,24 @@ export function cutBetweenSegments(
   ]
   const incoming = segments[inSeg]
   const outgoing = segments[outSeg]
+  if (
+    !chords &&
+    cuts.arcs &&
+    (incoming.kind === "arc" || outgoing.kind === "arc")
+  ) {
+    const meets = between === null && inSeg < outSeg
+    const corner = meets
+      ? incoming.b
+      : curveCrossing(incoming, outgoing, V.lerp(incoming.b, outgoing.a, 0.5))
+    const cut = corner && cuts.arcs({ incoming, corner, outgoing })
+    if (!corner || !cut) return "noCorner"
+    return rebuild(
+      poly,
+      segments,
+      [{ inSeg, outSeg, changes: true, arc: between, corner, cut }],
+      false
+    )
+  }
   let corner = incoming.b
   if (between !== null || inSeg > outSeg) {
     const crossing = infiniteLineIntersection(
@@ -391,7 +418,7 @@ function rebuild(
  * The bulge of what is left of an arc segment between `start` and `end`, on
  * its own circle and turning its own way.
  */
-function bulgeBetween(
+export function bulgeBetween(
   arc: Extract<PolylineSegmentGeometry, { kind: "arc" }>,
   start: Vec2,
   end: Vec2

@@ -14,10 +14,11 @@ import {
   readsInPlan,
 } from "../../domain/entities"
 import type { MessageId } from "../EngineText"
-import { segmentsPair } from "./polylineCorners"
+import type { Curve, CurveEnd } from "./curveFillets"
+import { bulgeBetween, segmentsPair } from "./polylineCorners"
 import { ToolContext } from "./Tool"
 
-/** A straight segment of a polyline, picked as one of FILLET's two objects. */
+/** A segment of a polyline, picked as one of FILLET's two objects. */
 export interface SegmentPick {
   readonly poly: PolylineEntity
   readonly index: number
@@ -35,24 +36,29 @@ export function cornerEntity(object: CornerObject): Entity {
   return isSegment(object) ? object.poly : object
 }
 
-/** Whether the picked segment is an arc segment of its polyline. */
-export function isArcSegment({ poly, index }: SegmentPick): boolean {
-  return polylineSegmentGeometries(poly)[index].kind === "arc"
+/** Whether the object is an arc segment of a polyline. */
+export function isArcSegment(object: CornerObject): boolean {
+  return isSegment(object) && curveOf(object).kind === "arc"
+}
+
+/** The object as the curve a corner is cut on: a line, or its segment. */
+export function curveOf(object: CornerObject): Curve {
+  return isSegment(object)
+    ? polylineSegmentGeometries(object.poly)[object.index]
+    : { kind: "line", a: object.start, b: object.end }
 }
 
 /**
  * The object a FILLET or CHAMFER pick at `world` takes: a line, or the
- * segment of a polyline nearest it. With `first` already taken, only what can
- * make a corner with it: another line, or a segment of another polyline, or a
- * segment of the same polyline next to it or one segment away. An arc segment
- * only with `arcs` (CHAMFER's, which AutoCAD 2023's console takes and then
- * refuses or cuts as its chord); else it is not taken and never highlights.
+ * segment of a polyline nearest it, an arc segment too. With `first` already
+ * taken, only what can make a corner with it: another line, or a segment of
+ * another polyline, or a segment of the same polyline next to it or one
+ * segment away.
  */
 export function pickCornerObject(
   ctx: ToolContext,
   world: Vec2,
-  first: CornerObject | null,
-  arcs = false
+  first: CornerObject | null
 ): CornerObject | null {
   const hit = ctx.pick(world)
   if (hit?.type === "line") {
@@ -61,7 +67,7 @@ export function pickCornerObject(
       : null
   }
   if (hit?.type !== "polyline") return null
-  const index = nearestSegment(hit, world, arcs)
+  const index = nearestSegment(hit, world)
   if (index === null) return null
   if (first === null || !isSegment(first) || first.poly.id !== hit.id) {
     return { poly: hit, index }
@@ -77,7 +83,7 @@ export interface CornerJoin {
   /** The polyline the join is: the one picked first, or the line's. */
   readonly segment: SegmentPick
   readonly segmentPick: Vec2
-  /** The straight segment's two ends, as the polyline runs. */
+  /** The segment's two ends, as the polyline runs. */
   readonly a: Vec2
   readonly b: Vec2
   /** The line, or the other polyline's segment, joined to it. */
@@ -105,9 +111,9 @@ export function cornerJoin(
   const otherFirst = !isSegment(first)
   const segment = (otherFirst ? second : first) as SegmentPick
   const other = otherFirst ? first : second
-  const { a, b } = straightEnds(segment)
+  const { a, b } = segmentEnds(segment)
   const ends = isSegment(other)
-    ? straightEnds(other)
+    ? segmentEnds(other)
     : { a: other.start, b: other.end }
   return {
     segment,
@@ -158,6 +164,11 @@ export interface JoinCut {
   readonly onOther: Vec2
   readonly onSegment: Vec2
   readonly bulge: number
+  /**
+   * The end each keeps, where the rays cannot tell it: an arc segment's, kept
+   * round its circle from the corner (FILLET's).
+   */
+  readonly keeps?: { readonly segment: CurveEnd; readonly other: CurveEnd }
 }
 
 /**
@@ -184,12 +195,25 @@ export function cutFits(join: CornerJoin, cut: JoinCut): boolean {
  * direction, the other's run reversed where it must be. What lies past either
  * segment on the other side is dropped, and a closed polyline opens there.
  * Nothing is refused for its size: a cut past a kept end doubles back to it
- * (a line at radius 60: `40,80` then `50,80`).
+ * (a line at radius 60: `40,80` then `50,80`). An arc segment keeps what is
+ * left of it on its circle, from the cut.
  */
 export function joinAtCut(join: CornerJoin, cut: JoinCut): PolylineEntity {
   const { poly } = join.segment
-  const own = keptRun(join.segment, cut.segmentSide, cut.corner)
-  const joined = keptRun(join.other, cut.otherSide, cut.corner)
+  const own = keptRun(
+    join.segment,
+    cut.segmentSide,
+    cut.corner,
+    cut.onSegment,
+    cut.keeps?.segment
+  )
+  const joined = keptRun(
+    join.other,
+    cut.otherSide,
+    cut.corner,
+    cut.onOther,
+    cut.keeps?.other
+  )
   const sharp = V.equals(cut.onSegment, cut.onOther)
   const points: Vec2[] = []
   const pointBulges: number[] = []
@@ -205,10 +229,10 @@ export function joinAtCut(join: CornerJoin, cut: JoinCut): PolylineEntity {
     ? [joined, cut.onOther, own, cut.onSegment, -cut.bulge]
     : [own, cut.onSegment, joined, cut.onOther, cut.bulge]
   for (let k = lead.points.length - 1; k >= 0; k--) {
-    add(lead.points[k], k > 0 ? -lead.bulges[k - 1] : 0)
+    add(lead.points[k], k > 0 ? -lead.bulges[k - 1] : -lead.cutBulge)
   }
-  add(leadCut, sharp ? 0 : bulge)
-  if (!sharp) add(tailCut, 0)
+  add(leadCut, sharp ? tail.cutBulge : bulge)
+  if (!sharp) add(tailCut, tail.cutBulge)
   tail.points.forEach((point, k) => add(point, tail.bulges[k] ?? 0))
   pointBulges[pointBulges.length - 1] = 0
   return carryOverrides(
@@ -218,33 +242,52 @@ export function joinAtCut(join: CornerJoin, cut: JoinCut): PolylineEntity {
 }
 
 /**
- * What an object keeps past its cut, going outward: straight from the cut to
- * `points[0]`, then from `points[k]` to `points[k + 1]` by `bulges[k]`.
- * `forward` when that is the polyline's own direction.
+ * What an object keeps past its cut, going outward: from the cut to
+ * `points[0]` by `cutBulge` (straight but on an arc segment), then from
+ * `points[k]` to `points[k + 1]` by `bulges[k]`. `forward` when that is
+ * the polyline's own direction.
  */
 interface Run {
   readonly points: readonly Vec2[]
   readonly bulges: readonly number[]
+  readonly cutBulge: number
   readonly forward: boolean
 }
 
-function keptRun(object: CornerObject, side: Vec2, corner: Vec2): Run {
+function keptRun(
+  object: CornerObject,
+  side: Vec2,
+  corner: Vec2,
+  cut: Vec2,
+  keep?: CurveEnd
+): Run {
   const along = (point: Vec2) => V.dot(V.sub(point, corner), side)
   if (!isSegment(object)) {
-    const end =
-      along(object.end) >= along(object.start) ? object.end : object.start
-    return { points: [end], bulges: [], forward: true }
+    const end = keep
+      ? keep === "b"
+        ? object.end
+        : object.start
+      : along(object.end) >= along(object.start)
+        ? object.end
+        : object.start
+    return { points: [end], bulges: [], cutBulge: 0, forward: true }
   }
   const { poly, index } = object
   const vertices = poly.closed
     ? [...poly.vertices, poly.vertices[0]]
     : poly.vertices
   const bulge = (k: number) => poly.bulges?.[k] ?? 0
-  if (along(vertices[index + 1]) >= along(vertices[index])) {
+  const segment = curveOf(object)
+  const forward = keep
+    ? keep === "b"
+    : along(vertices[index + 1]) >= along(vertices[index])
+  if (forward) {
     const points = vertices.slice(index + 1)
     return {
       points,
       bulges: points.slice(1).map((_, k) => bulge(index + 1 + k)),
+      cutBulge:
+        segment.kind === "arc" ? bulgeBetween(segment, cut, segment.b) : 0,
       forward: true,
     }
   }
@@ -252,24 +295,21 @@ function keptRun(object: CornerObject, side: Vec2, corner: Vec2): Run {
   return {
     points,
     bulges: points.slice(1).map((_, k) => -bulge(index - 1 - k)),
+    cutBulge:
+      segment.kind === "arc" ? -bulgeBetween(segment, segment.a, cut) : 0,
     forward: false,
   }
 }
 
-function straightEnds({ poly, index }: SegmentPick): { a: Vec2; b: Vec2 } {
+function segmentEnds({ poly, index }: SegmentPick): { a: Vec2; b: Vec2 } {
   const { a, b } = polylineSegmentGeometries(poly)[index]
   return { a, b }
 }
 
-/** The segment of `poly` nearest `world`; `null` for an arc without `arcs`. */
-function nearestSegment(
-  poly: PolylineEntity,
-  world: Vec2,
-  arcs: boolean
-): number | null {
+/** The segment of `poly` nearest `world`. */
+function nearestSegment(poly: PolylineEntity, world: Vec2): number | null {
   let nearest: number | null = null
   let best = Infinity
-  let straight = false
   polylineSegmentGeometries(poly).forEach((segment, index) => {
     const distance =
       segment.kind === "line"
@@ -284,8 +324,7 @@ function nearestSegment(
     if (distance < best) {
       best = distance
       nearest = index
-      straight = segment.kind === "line"
     }
   })
-  return straight || arcs ? nearest : null
+  return nearest
 }

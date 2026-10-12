@@ -77,9 +77,13 @@ A tool is an explicit state machine for one AutoCAD command. It owns a discrimin
   on its picked side kept, the rest dropped, the polyline picked first — or the line's — kept
   with its direction, layer and colour) and the Polyline option's every corner (`cutPolylineCorners`, FILLET's arc corners and
   replaced arcs included). A corner-cutting command passes its cut, never walks a polyline
-  itself. An arc segment is picked only with `pickCornerObject`'s `arcs` (`isArcSegment`
-  tells it); `chords` makes both cuts treat it as its chord and refit what is left to its
-  radius (`refitArcBulge`, `geometry/bulgeArcs.ts`), as CHAMFER does.
+  itself. An arc segment is an object too (`isArcSegment`, `curveOf`): FILLET rounds it
+  with `curveFillets.ts` — `curveCrossing` (a line whole, an arc its circle), `keptEnd` and
+  `keptSide` (kept round the circle from the corner, past the arc's end when the corner
+  lies beyond it), `filletSides` (radius 0 meets there) — through `cutBetweenSegments`'
+  `arcs` and a `JoinCut`'s `keeps`; CHAMFER's `chords` cut it as its chord and refit what
+  is left to its radius (`refitArcBulge`, `geometry/bulgeArcs.ts`). `bulgeThroughPoint`
+  reads its point as the arc's middle: beside an arc pass the bisector of the radii.
 - `ArcSegmentInput` (`arcSegmentInput.ts`) — the prompts AutoCAD's polyline arc options open
   (Angle, CEnter, Direction, Radius, Second pt and their `[CEnter/Radius]`, `[Angle/Length]`,
   `[Angle]`), for any command drawing a polyline's arcs (PLINE; DIST's Arc). The tool lists

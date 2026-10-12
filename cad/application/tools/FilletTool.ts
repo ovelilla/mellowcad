@@ -1,12 +1,7 @@
 import { Vec2, V } from "../../geometry/Vec2"
 import {
-  angleWithinSweep,
   bulgeThroughPoint,
-  circleCircleIntersection,
-  closestPointOnInfiniteLine,
   filletLines,
-  infiniteLineIntersection,
-  lineCircleIntersectionParams,
   normalizeAngle,
   polarPoint,
 } from "../../geometry/primitives"
@@ -19,7 +14,6 @@ import {
   EntityId,
   LineEntity,
   PolylineEntity,
-  PolylineSegmentGeometry,
 } from "../../domain/entities"
 import {
   ReplaceEntitiesCommand,
@@ -49,12 +43,21 @@ import {
   SegmentPick,
   cornerEntity,
   cornerJoin,
+  curveOf,
+  isArcSegment,
   isSegment,
   joinAtCut,
   joinRefusal,
   joinedSecond,
   pickCornerObject,
 } from "./cornerObjects"
+import {
+  curveCrossing,
+  filletSides,
+  keptEnd,
+  keptSide,
+  solveCornerFillet,
+} from "./curveFillets"
 import {
   CommandOption,
   CommandOptionOutcome,
@@ -77,9 +80,11 @@ import {
  * ```
  *
  * The arc is placed in the corner nearest to where you clicked each line, and
- * the lines are trimmed/extended to meet it. Two straight segments of one
- * polyline are objects too, rounded within it, and a line with a polyline's
- * segment, or segments of two polylines, are joined into one polyline. Shift on the second pick applies a
+ * the lines are trimmed/extended to meet it. Two segments of one polyline are
+ * objects too, rounded within it, and a line with a polyline's segment, or
+ * segments of two polylines, are joined into one polyline — an arc segment
+ * rounded against its circle where the two cross, as AutoCAD 2023's console
+ * does (`Cannot fillet between these two entities.` where they do not). Shift on the second pick applies a
  * corner instead, as a radius of 0 does. The radius is kept for the session.
  * Multiple keeps asking for the next pair until Enter, and Undo takes back the
  * last fillet made in the command. Each fillet is one command — a
@@ -219,6 +224,8 @@ export class FilletTool implements Tool {
           const cut = filletSegments(first, second, radius)
           if (typeof cut !== "string") {
             this.done(new UpdateEntityCommand(cut), ctx)
+          } else if (cut === "noCorner") {
+            this.refuse("cannotFilletBetween", ctx, "sameLine")
           } else {
             this.refuse(REFUSALS[cut], ctx)
           }
@@ -466,16 +473,29 @@ export class FilletTool implements Tool {
   /**
    * A corner that cannot be made: said, and Multiple asks for the first
    * object again; otherwise the input is `*Invalid*` (unless the console says
-   * only why, as for every join) and the command ends.
+   * only why, as for every join) and the command ends. Two segments of one
+   * polyline an arc cannot round write it on the reason's own line, as the
+   * console does: `Cannot fillet between these two entities.*Invalid*`.
    */
-  private refuse(message: MessageId, ctx: ToolContext, invalid = true): void {
-    ctx.report(ctx.text.message(message), "error")
+  private refuse(
+    message: MessageId,
+    ctx: ToolContext,
+    invalid: boolean | "sameLine" = true
+  ): void {
+    const said = ctx.text.message(message)
     if (this.multiple) {
+      ctx.report(said, "error")
       this.state = { phase: "first", hover: null }
       ctx.requestRender()
       return
     }
-    if (invalid) ctx.report(ctx.text.message("invalid"), "error")
+    const invalidText = ctx.text.message("invalid")
+    if (invalid === "sameLine") {
+      ctx.report(said + invalidText, "error")
+    } else {
+      ctx.report(said, "error")
+      if (invalid) ctx.report(invalidText, "error")
+    }
     ctx.dynamicInput.close()
     ctx.endCommand()
   }
@@ -602,17 +622,24 @@ function trimLine(
   )
 }
 
-const REFUSALS: Readonly<Record<SegmentsRefusal, MessageId>> = {
+const REFUSALS: Readonly<
+  Record<Exclude<SegmentsRefusal, "noCorner">, MessageId>
+> = {
   parallel: "linesParallel",
   diverge: "linesDiverge",
   tooLarge: "filletRadiusTooLarge",
 }
 
-/** The arc between the two objects of a join; `null` when parallel. */
-function filletJoin(
-  { otherA, otherB, otherPick, a, b, segmentPick }: CornerJoin,
-  radius: number
-): JoinCut | null {
+/**
+ * The arc between the two objects of a join; `null` when parallel, or for an
+ * arc segment when the two do not cross or the arc does not fit on what each
+ * keeps (`Cannot fillet between these two entities.`, the console's).
+ */
+function filletJoin(join: CornerJoin, radius: number): JoinCut | null {
+  if (isArcSegment(join.segment) || isArcSegment(join.other)) {
+    return filletArcJoin(join, radius)
+  }
+  const { otherA, otherB, otherPick, a, b, segmentPick } = join
   const result = filletLines(
     otherA,
     otherB,
@@ -642,15 +669,59 @@ function filletJoin(
   }
 }
 
+/**
+ * A join where either object is an arc segment, rounded where the two cross
+ * nearest the picks — a line, or the other's circle, extended to it —, each
+ * kept on its picked side; at radius 0 they meet there.
+ */
+function filletArcJoin(join: CornerJoin, radius: number): JoinCut | null {
+  const segment = curveOf(join.segment)
+  const other = curveOf(join.other)
+  const corner = curveCrossing(
+    segment,
+    other,
+    V.lerp(join.segmentPick, join.otherPick, 0.5)
+  )
+  if (!corner) return null
+  const keeps = {
+    segment: keptEnd(segment, corner, join.segmentPick),
+    other: keptEnd(other, corner, join.otherPick),
+  }
+  const cut = filletSides(
+    keptSide(segment, corner, keeps.segment, true),
+    keptSide(other, corner, keeps.other, false),
+    corner,
+    radius
+  )
+  if (!cut) return null
+  const toward = (end: Vec2) => V.normalize(V.sub(end, corner))
+  return {
+    corner,
+    otherSide: toward(keeps.other === "a" ? other.a : other.b),
+    segmentSide: toward(keeps.segment === "a" ? segment.a : segment.b),
+    onOther: cut.exit,
+    onSegment: cut.entry,
+    bulge: cut.bulge,
+    keeps,
+  }
+}
+
 /** Two segments of one polyline rounded within it, or why they cannot be. */
 function filletSegments(
   first: SegmentPick,
   second: SegmentPick,
   radius: number
 ): PolylineEntity | SegmentsRefusal {
-  return cutBetweenSegments(first.poly, first.index, second.index, (corner) =>
-    filletCorner(corner, radius)
-  )
+  return cutBetweenSegments(first.poly, first.index, second.index, {
+    lines: (corner) => filletCorner(corner, radius),
+    arcs: ({ incoming, corner, outgoing }) =>
+      filletSides(
+        keptSide(incoming, corner, "a", true),
+        keptSide(outgoing, corner, "b", false),
+        corner,
+        radius
+      ),
+  })
 }
 
 /** A polyline corner rounded at `radius`; at 0 the lines meet at the corner. */
@@ -683,206 +754,9 @@ function filletArcCorner(
   radius: number
 ): CornerCut | null {
   return solveCornerFillet(
-    toFilletSide(incoming, corner, true),
-    toFilletSide(outgoing, corner, false),
+    keptSide(incoming, corner, "a", true),
+    keptSide(outgoing, corner, "b", false),
     corner,
-    radius,
-    V.distance(incoming.a, incoming.b),
-    V.distance(outgoing.a, outgoing.b)
+    radius
   )
-}
-
-/** One side of a corner: a straight segment or a circular arc, with the unit
- * travel tangent at the corner (into it for the incoming side, out for the
- * outgoing side). */
-type FilletSide =
-  | { readonly kind: "line"; readonly tangent: Vec2; readonly far: Vec2 }
-  | {
-      readonly kind: "arc"
-      readonly tangent: Vec2
-      readonly center: Vec2
-      readonly radius: number
-      readonly startAngle: number
-      readonly endAngle: number
-    }
-
-/** Builds a {@link FilletSide} for the segment `g` meeting `corner`. `incoming`
- * = the segment arrives at the corner (tangent points into it), else it leaves. */
-function toFilletSide(
-  g: PolylineSegmentGeometry,
-  corner: Vec2,
-  incoming: boolean
-): FilletSide {
-  if (g.kind === "line") {
-    const far = incoming ? g.a : g.b
-    // Travel direction along the segment's own a→b orientation — into the corner
-    // for the incoming side, out of it for the outgoing side, matching the arc
-    // branch so `turn` and the interior normals are consistent for both sides.
-    return { kind: "line", tangent: V.normalize(V.sub(g.b, g.a)), far }
-  }
-  // The arc's travel tangent at the corner: perpendicular to the radius, in the
-  // CCW direction for a positive bulge (its natural start→end orientation).
-  const radial = V.normalize(V.sub(corner, g.center))
-  const ccw = g.bulge >= 0
-  const travel = ccw ? V.perpendicular(radial) : negate(V.perpendicular(radial))
-  return {
-    kind: "arc",
-    tangent: travel,
-    center: g.center,
-    radius: g.radius,
-    startAngle: g.startAngle,
-    endAngle: g.endAngle,
-  }
-}
-
-/** The fillet circle of `radius` tangent to both sides, in the corner's wedge. */
-function solveCornerFillet(
-  inSide: FilletSide,
-  outSide: FilletSide,
-  corner: Vec2,
-  radius: number,
-  inSegLen: number,
-  outSegLen: number
-): CornerCut | null {
-  if (radius <= 0) return null
-  const turn = Math.sign(V.cross(inSide.tangent, outSide.tangent))
-  if (turn === 0) return null // collinear — no corner to round
-
-  const nIn = interiorNormal(inSide.tangent, turn)
-  const nOut = interiorNormal(outSide.tangent, turn)
-  const locusIn = sideLocus(inSide, corner, nIn, radius)
-  const locusOut = sideLocus(outSide, corner, nOut, radius)
-  if (!locusIn || !locusOut) return null
-
-  const ref = V.add(corner, V.scale(V.normalize(V.add(nIn, nOut)), radius))
-  const center = intersectLoci(locusIn, locusOut, ref)
-  if (!center) return null
-
-  const entry = sideTangentPoint(inSide, corner, center)
-  const exit = sideTangentPoint(outSide, corner, center)
-  if (
-    !sideContains(inSide, entry, corner, inSegLen) ||
-    !sideContains(outSide, exit, corner, outSegLen)
-  ) {
-    return null
-  }
-
-  const mid = V.add(center, V.scale(V.normalize(V.sub(corner, center)), radius))
-  return { entry, exit, bulge: bulgeThroughPoint(entry, exit, mid) }
-}
-
-/** The locus of fillet-circle centres at distance `radius` from a side, on the
- * corner-interior side: a parallel line, or a concentric circle. */
-type CenterLocus =
-  | { readonly kind: "line"; readonly p0: Vec2; readonly p1: Vec2 }
-  | { readonly kind: "circle"; readonly center: Vec2; readonly radius: number }
-
-function sideLocus(
-  side: FilletSide,
-  corner: Vec2,
-  normal: Vec2,
-  radius: number
-): CenterLocus | null {
-  if (side.kind === "line") {
-    const p0 = V.add(corner, V.scale(normal, radius))
-    return { kind: "line", p0, p1: V.add(p0, side.tangent) }
-  }
-  // Concentric circle: outside the arc when the interior lies outside, inside
-  // otherwise. `rho` collapses when the fillet can't fit against the arc.
-  const outward = V.normalize(V.sub(corner, side.center))
-  const rho =
-    V.dot(normal, outward) >= 0 ? side.radius + radius : side.radius - radius
-  if (rho <= 1e-9) return null
-  return { kind: "circle", center: side.center, radius: rho }
-}
-
-function intersectLoci(a: CenterLocus, b: CenterLocus, ref: Vec2): Vec2 | null {
-  if (a.kind === "line" && b.kind === "line") {
-    const x = infiniteLineIntersection(a.p0, a.p1, b.p0, b.p1)
-    return x ? x.point : null
-  }
-  if (a.kind === "line" && b.kind === "circle") {
-    return nearestPoint(lineCirclePoints(a.p0, a.p1, b.center, b.radius), ref)
-  }
-  if (a.kind === "circle" && b.kind === "line") {
-    return nearestPoint(lineCirclePoints(b.p0, b.p1, a.center, a.radius), ref)
-  }
-  if (a.kind === "circle" && b.kind === "circle") {
-    return nearestPoint(
-      circleCircleIntersection(a.center, a.radius, b.center, b.radius),
-      ref
-    )
-  }
-  return null
-}
-
-/** The tangent point where the fillet circle at `center` touches a side. */
-function sideTangentPoint(side: FilletSide, corner: Vec2, center: Vec2): Vec2 {
-  if (side.kind === "line") {
-    return closestPointOnInfiniteLine(
-      corner,
-      V.add(corner, side.tangent),
-      center
-    ).point
-  }
-  return V.add(
-    side.center,
-    V.scale(V.normalize(V.sub(center, side.center)), side.radius)
-  )
-}
-
-/** Whether a tangent point lies within the side's real extent (segment length
- * for a line, sweep for an arc) so the fillet doesn't fall off the segment. */
-function sideContains(
-  side: FilletSide,
-  point: Vec2,
-  corner: Vec2,
-  segLen: number
-): boolean {
-  if (side.kind === "line") {
-    // The tangent point must lie between the corner and the segment's far end.
-    const body = V.normalize(V.sub(side.far, corner))
-    const along = V.dot(V.sub(point, corner), body)
-    return along >= -1e-9 && along <= segLen + 1e-9
-  }
-  const angle = Math.atan2(point.y - side.center.y, point.x - side.center.x)
-  return angleWithinSweep(side.startAngle, side.endAngle, angle)
-}
-
-/** Points where the infinite line through `a`/`b` meets a circle. */
-function lineCirclePoints(
-  a: Vec2,
-  b: Vec2,
-  center: Vec2,
-  radius: number
-): Vec2[] {
-  const dir = V.sub(b, a)
-  return lineCircleIntersectionParams(a, b, center, radius).map((t) =>
-    V.add(a, V.scale(dir, t))
-  )
-}
-
-/** The point in `points` nearest `ref`, or `null` when there are none. */
-function nearestPoint(points: readonly Vec2[], ref: Vec2): Vec2 | null {
-  let best: Vec2 | null = null
-  let bestDist = Infinity
-  for (const p of points) {
-    const d = V.distance(p, ref)
-    if (d < bestDist) {
-      bestDist = d
-      best = p
-    }
-  }
-  return best
-}
-
-/** The interior normal of a side's travel direction for a left (`turn` > 0) or
- * right (`turn` < 0) corner — the direction toward the fillet centre. */
-function interiorNormal(tangent: Vec2, turn: number): Vec2 {
-  const perp = V.perpendicular(tangent) // +90° (left)
-  return turn > 0 ? perp : negate(perp)
-}
-
-function negate(v: Vec2): Vec2 {
-  return { x: -v.x, y: -v.y }
 }

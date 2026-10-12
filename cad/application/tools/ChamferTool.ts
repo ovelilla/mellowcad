@@ -172,13 +172,13 @@ export class ChamferTool implements Tool {
       case "first":
         this.state = {
           phase: "first",
-          hover: pickCornerObject(ctx, input.world, null, true),
+          hover: pickCornerObject(ctx, input.world, null),
         }
         break
       case "second":
         this.state = {
           ...this.state,
-          hover: pickCornerObject(ctx, input.world, this.state.first, true),
+          hover: pickCornerObject(ctx, input.world, this.state.first),
           cursor: { world: input.world, screen: input.screen },
           corner: input.shiftKey,
         }
@@ -195,7 +195,7 @@ export class ChamferTool implements Tool {
 
     switch (this.state.phase) {
       case "first": {
-        const hit = pickCornerObject(ctx, input.world, null, true)
+        const hit = pickCornerObject(ctx, input.world, null)
         if (!hit) return
         const pick = { world: input.world, screen: input.screen }
         this.state = {
@@ -211,7 +211,7 @@ export class ChamferTool implements Tool {
       }
       case "second": {
         const { first, pick1 } = this.state
-        const second = pickCornerObject(ctx, input.world, first, true)
+        const second = pickCornerObject(ctx, input.world, first)
         if (!second) return
         const join = cornerJoin(first, pick1.world, second, input.world)
         if (join) {
@@ -464,9 +464,7 @@ export class ChamferTool implements Tool {
 
   /** Why two objects cannot be joined: an arc segment, or FILLET's reasons. */
   private joinRefusal(join: CornerJoin): MessageId | null {
-    const arc = (object: CornerObject) =>
-      isSegment(object) && isArcSegment(object)
-    return arc(join.segment) || arc(join.other)
+    return isArcSegment(join.segment) || isArcSegment(join.other)
       ? "cannotChamferArcSegments"
       : joinRefusal(join)
   }
@@ -604,13 +602,10 @@ export class ChamferTool implements Tool {
     second: SegmentPick,
     sharp: boolean
   ): PolylineEntity | SegmentsRefusal {
-    return cutBetweenSegments(
-      first.poly,
-      first.index,
-      second.index,
-      (corner) => this.bevel(corner, sharp),
-      true
-    )
+    return cutBetweenSegments(first.poly, first.index, second.index, {
+      lines: (corner) => this.bevel(corner, sharp),
+      chords: true,
+    })
   }
 
   /** A polyline corner bevelled at the two distances (none when `sharp`). */
@@ -698,6 +693,8 @@ const REFUSALS: Readonly<Record<SegmentsRefusal, MessageId>> = {
   parallel: "linesParallel",
   diverge: "linesDiverge",
   tooLarge: "chamferDistanceTooLarge",
+  // Chords cross wherever they are not parallel, so it never comes up.
+  noCorner: "linesParallel",
 }
 
 const hoverStroke: StrokeStyle = { color: THEME.entityHover, width: 2 }

@@ -515,6 +515,195 @@ describe("FILLET", () => {
     expect(cad.activeToolId()).toBe("select")
   })
 
+  // AutoCAD 2023's console (acc/f1, f5, f14, f25, f27, g1–g8, h1–h7): an arc
+  // segment is rounded against its circle where it crosses the other object,
+  // either extended to it, each kept on its picked side.
+  describe("an arc segment", () => {
+    /** 0,0 → 100,0, then a half circle bulging east to 100,50. */
+    const hook = () =>
+      polylineOf([p(0, 0), p(100, 0), p(100, 50)], {
+        id: "P1",
+        bulges: [0, 1, 0],
+      })
+    const crossing = () => lineOf(p(90, 40), p(140, 40), { id: "L1" })
+    const fillet = (cad: CadHarness, radius: string, ...picks: Vec2[]) => {
+      cad.command("FILLET").option("Radius").type(radius).enter()
+      for (const pick of picks) cad.click(pick)
+      return cad.byId<PolylineEntity>("P1")
+    }
+
+    it("joins a line it crosses through the arc, the line extended to it", () => {
+      for (const line of [crossing(), lineOf(p(130, 40), p(140, 40))]) {
+        const cad = createHarness({ entities: [hook(), line] })
+        const joined = fillet(cad, "5", p(125, 25), p(135, 40))
+        expect(cad.entityCount).toBe(1)
+        expect(joined.vertices).toBeCloseToPoints(
+          [
+            p(0, 0),
+            p(100, 0),
+            p(123.5702, 33.3333),
+            p(128.2843, 40),
+            p(140, 40),
+          ],
+          4
+        )
+        expect(joined.bulges?.[1]).toBeCloseTo(0.5176, 4)
+        expect(joined.bulges?.[2]).toBeCloseTo(-0.5176, 4)
+        expect(joined.bulges?.[3] ?? 0).toBe(0)
+      }
+
+      const sharp = createHarness({ entities: [hook(), crossing()] })
+      const met = fillet(sharp, "0", p(125, 25), p(135, 40))
+      expect(met.vertices).toBeCloseToPoints(
+        [p(0, 0), p(100, 0), p(120, 40), p(140, 40)],
+        4
+      )
+      expect(met.bulges?.[1]).toBeCloseTo(0.618, 4)
+    })
+
+    it("joins the arcs of two polylines where they cross", () => {
+      const cad = createHarness({
+        entities: [
+          hook(),
+          polylineOf([p(140, 0), p(140, 50)], { id: "P2", bulges: [-1, 0] }),
+        ],
+      })
+      const joined = fillet(cad, "5", p(112.5, 3.3494), p(118.3494, 12.5))
+      expect(cad.entityCount).toBe(1)
+      expect(joined.vertices).toBeCloseToPoints(
+        [
+          p(0, 0),
+          p(100, 0),
+          p(117.1875, 6.8454),
+          p(118.125, 12.8969),
+          p(140, 50),
+        ],
+        4
+      )
+      expect(joined.bulges?.slice(1, 4)).toEqual([
+        expect.closeTo(0.1918, 4),
+        expect.closeTo(0.342, 4),
+        expect.closeTo(-0.5713, 4),
+      ])
+    })
+
+    it("cannot round what it does not cross, or what the arc does not reach", () => {
+      for (const [radius, other, picks] of [
+        ["5", lineOf(p(130, -20), p(130, 80)), [p(125, 25), p(130, 60)]],
+        ["5", lineOf(p(130, -20), p(130, 80)), [p(130, 60), p(125, 25)]],
+        ["5", polylineOf([p(130, -20), p(130, 80)]), [p(125, 25), p(130, 60)]],
+        ["30", crossing(), [p(125, 25), p(135, 40)]],
+      ] as const) {
+        const cad = createHarness({ entities: [hook(), other] })
+        fillet(cad, radius, ...picks)
+        expect(cad.commandLog().at(-1)).toBe(
+          "Cannot fillet between these two entities."
+        )
+        expect(cad.activeToolId()).toBe("select")
+        expect(cad.entityCount).toBe(2)
+      }
+
+      const multiple = createHarness({ entities: [hook(), crossing()] })
+      multiple.command("FILLET").option("Radius").type("30").enter()
+      multiple.option("Multiple").click(p(125, 25)).click(p(135, 40))
+      expect(multiple.commandLog().at(-1)).toBe(
+        "Cannot fillet between these two entities."
+      )
+      expect(multiple.state().commandLine.prompt).toBe(
+        "FILLET Select first object or [Undo/Polyline/Radius]:"
+      )
+    })
+
+    it("rounds a line and an arc of one polyline where they meet", () => {
+      const turn = () =>
+        polylineOf([p(0, 0), p(100, 0), p(150, 50)], {
+          id: "P1",
+          bulges: [0, -Math.tan(deg(22.5)), 0],
+        })
+      for (const picks of [
+        [p(50, 0), p(114.6447, 35.3553)],
+        [p(114.6447, 35.3553), p(50, 0)],
+      ]) {
+        const cad = createHarness({ entities: [turn()] })
+        const rounded = fillet(cad, "5", ...picks)
+        expect(rounded.vertices).toBeCloseToPoints(
+          [p(0, 0), p(95.2277, 0), p(100.207, 4.5455), p(150, 50)],
+          4
+        )
+        expect(rounded.bulges?.slice(1, 3)).toEqual([
+          expect.closeTo(0.3878, 4),
+          expect.closeTo(-0.3878, 4),
+        ])
+      }
+
+      const sharp = createHarness({ entities: [turn()] })
+      expect(fillet(sharp, "0", p(50, 0), p(114.6447, 35.3553))).toEqual(turn())
+
+      const arcs = createHarness({
+        entities: [
+          polylineOf([p(0, 0), p(50, -50), p(100, -100)], {
+            id: "P1",
+            bulges: [Math.tan(deg(22.5)), Math.tan(deg(22.5)), 0],
+          }),
+        ],
+      })
+      const met = fillet(arcs, "5", p(14.6447, -35.3553), p(64.6447, -85.3553))
+      expect(met.vertices).toBeCloseToPoints(
+        [p(0, 0), p(45.6446, -49.8099), p(50.1901, -54.3554), p(100, -100)],
+        4
+      )
+      expect(met.bulges?.slice(0, 3)).toEqual([
+        expect.closeTo(0.3889, 4),
+        expect.closeTo(-0.364, 4),
+        expect.closeTo(0.3889, 4),
+      ])
+    })
+
+    it("removes the segment between a line and an arc it rounds", () => {
+      const step = () =>
+        polylineOf([p(0, 0), p(100, 0), p(100, 20), p(140, 60)], {
+          id: "P1",
+          bulges: [0, 0, -Math.tan(deg(22.5)), 0],
+        })
+      const cad = createHarness({ entities: [step()] })
+      const rounded = fillet(cad, "5", p(50, 0), p(111.7157, 48.2843))
+      expect(rounded.vertices).toBeCloseToPoints(
+        [p(0, 0), p(97.5736, 0), p(102.2876, 6.6667), p(140, 60)],
+        4
+      )
+      expect(rounded.bulges?.slice(1, 3)).toEqual([
+        expect.closeTo(0.5176, 4),
+        expect.closeTo(-0.5176, 4),
+      ])
+
+      const sharp = createHarness({ entities: [step()] })
+      const met = fillet(sharp, "0", p(50, 0), p(111.7157, 48.2843))
+      expect(met.vertices).toBeCloseToPoints(
+        [p(0, 0), p(105.359, 0), p(140, 60)],
+        4
+      )
+      expect(met.bulges?.[1]).toBeCloseTo(-0.5774, 4)
+    })
+
+    it("says a tangent arc makes no corner, on the line it is invalid", () => {
+      for (const radius of ["5", "0"]) {
+        const cad = createHarness({ entities: [hook()] })
+        fillet(cad, radius, p(125, 25), p(50, 0))
+        expect(cad.commandLog().at(-1)).toBe(
+          "Cannot fillet between these two entities.*Invalid*"
+        )
+        expect(cad.byId<PolylineEntity>("P1")).toEqual(hook())
+      }
+
+      const spanish = createHarness({ locale: es, entities: [hook()] })
+      spanish.command("EMPALME").option("Radius").type("5").enter()
+      spanish.click(p(125, 25)).click(p(50, 0))
+      expect(spanish.commandLog().at(-1)).toBe(
+        "Imposible empalmar esos dos objetos.*No válido*"
+      )
+    })
+  })
+
   // AutoCAD 2023's console (acc/f1–f17, r15): the line joins the polyline,
   // which keeps its run on the picked side of the segment and drops the rest.
   describe("a line with a polyline's segment", () => {
