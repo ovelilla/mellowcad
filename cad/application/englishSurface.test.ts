@@ -339,6 +339,16 @@ describe("the engine's English surface", () => {
         .do("U", (c) => answer(c, "U"))
         .do("CL", (c) => answer(c, "CL"))
     )
+    walk("PLINE Length", createHarness(), (s) =>
+      s
+        .do("PLINE", (c) => c.command("PL"))
+        .do("first", (c) => c.click(at(0, 0)))
+        .do("second", (c) => c.click(at(100, 0)))
+        .do("L", (c) => answer(c, "L"))
+        .do("FOO", (c) => c.type("FOO").enter())
+        .do("length", (c) => c.type("50").enter())
+        .do("enter", (c) => c.enter())
+    )
     walk("CIRCLE", createHarness(), (s) =>
       s
         .do("CIRCLE", (c) => c.command("C"))

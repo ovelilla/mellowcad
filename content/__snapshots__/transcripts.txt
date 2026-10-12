@@ -66,12 +66,12 @@ idle: Command:
 command |  | PLINE
 input | Specify start point: | 0,0
 info |  | Current line-width is 0.00
-input | Specify next point or [Arc/Undo]: | @80,0
-input | Specify next point or [Arc/Close/Undo]: | A
+input | Specify next point or [Arc/Length/Undo]: | @80,0
+input | Specify next point or [Arc/Close/Length/Undo]: | A
 input | Specify endpoint of arc (hold Ctrl to switch direction) or [Angle/CEnter/CLose/Direction/Line/Radius/Second pt/Undo]: | @0,40
 input | Specify endpoint of arc (hold Ctrl to switch direction) or [Angle/CEnter/CLose/Direction/Line/Radius/Second pt/Undo]: | L
-input | Specify next point or [Arc/Close/Undo]: | @-80,0
-input | Specify next point or [Arc/Close/Undo]: | C
+input | Specify next point or [Arc/Close/Length/Undo]: | @-80,0
+input | Specify next point or [Arc/Close/Length/Undo]: | C
 command |  | OFFSET
 info |  | Current settings: Erase source=No  Layer=Source  OFFSETGAPTYPE=0
 input | Specify offset distance or [Through/Erase/Layer] <Through>: | 6
@@ -118,12 +118,12 @@ input | Specify next point or [Undo]: | @80,-45
 command |  | PLINE
 input | Specify start point: | 0,0
 info |  | Current line-width is 0.00
-input | Specify next point or [Arc/Undo]: | @60,0
-input | Specify next point or [Arc/Close/Undo]: | A
+input | Specify next point or [Arc/Length/Undo]: | @60,0
+input | Specify next point or [Arc/Close/Length/Undo]: | A
 input | Specify endpoint of arc (hold Ctrl to switch direction) or [Angle/CEnter/CLose/Direction/Line/Radius/Second pt/Undo]: | @0,30
 input | Specify endpoint of arc (hold Ctrl to switch direction) or [Angle/CEnter/CLose/Direction/Line/Radius/Second pt/Undo]: | L
-input | Specify next point or [Arc/Close/Undo]: | @-60,0
-input | Specify next point or [Arc/Close/Undo]: | A
+input | Specify next point or [Arc/Close/Length/Undo]: | @-60,0
+input | Specify next point or [Arc/Close/Length/Undo]: | A
 input | Specify endpoint of arc (hold Ctrl to switch direction) or [Angle/CEnter/CLose/Direction/Line/Radius/Second pt/Undo]: | @0,-30
 input | Specify endpoint of arc (hold Ctrl to switch direction) or [Angle/CEnter/CLose/Direction/Line/Radius/Second pt/Undo]: | 
 command |  | CIRCLE
@@ -136,12 +136,12 @@ input | Specify radius of circle or [Diameter] <6.00>: | 6
 command |  | PLINE
 input | Specify start point: | 0,0
 info |  | Current line-width is 0.00
-input | Specify next point or [Arc/Undo]: | @60,0
-input | Specify next point or [Arc/Close/Undo]: | A
+input | Specify next point or [Arc/Length/Undo]: | @60,0
+input | Specify next point or [Arc/Close/Length/Undo]: | A
 input | Specify endpoint of arc (hold Ctrl to switch direction) or [Angle/CEnter/CLose/Direction/Line/Radius/Second pt/Undo]: | @0,30
 input | Specify endpoint of arc (hold Ctrl to switch direction) or [Angle/CEnter/CLose/Direction/Line/Radius/Second pt/Undo]: | L
-input | Specify next point or [Arc/Close/Undo]: | @-60,0
-input | Specify next point or [Arc/Close/Undo]: | A
+input | Specify next point or [Arc/Close/Length/Undo]: | @-60,0
+input | Specify next point or [Arc/Close/Length/Undo]: | A
 input | Specify endpoint of arc (hold Ctrl to switch direction) or [Angle/CEnter/CLose/Direction/Line/Radius/Second pt/Undo]: | @0,-30
 input | Specify endpoint of arc (hold Ctrl to switch direction) or [Angle/CEnter/CLose/Direction/Line/Radius/Second pt/Undo]: | 
 command |  | OFFSET
@@ -157,14 +157,14 @@ input | Specify point on side to offset or [Exit/Multiple/Undo] <Exit>: |
 command |  | PLINE
 input | Specify start point: | 0,0
 info |  | Current line-width is 0.00
-input | Specify next point or [Arc/Undo]: | @100,0
-input | Specify next point or [Arc/Close/Undo]: | @0,20
-input | Specify next point or [Arc/Close/Undo]: | @-35,0
-input | Specify next point or [Arc/Close/Undo]: | @0,15
-input | Specify next point or [Arc/Close/Undo]: | @-40,0
-input | Specify next point or [Arc/Close/Undo]: | @0,10
-input | Specify next point or [Arc/Close/Undo]: | @-25,0
-input | Specify next point or [Arc/Close/Undo]: | C
+input | Specify next point or [Arc/Length/Undo]: | @100,0
+input | Specify next point or [Arc/Close/Length/Undo]: | @0,20
+input | Specify next point or [Arc/Close/Length/Undo]: | @-35,0
+input | Specify next point or [Arc/Close/Length/Undo]: | @0,15
+input | Specify next point or [Arc/Close/Length/Undo]: | @-40,0
+input | Specify next point or [Arc/Close/Length/Undo]: | @0,10
+input | Specify next point or [Arc/Close/Length/Undo]: | @-25,0
+input | Specify next point or [Arc/Close/Length/Undo]: | C
 command |  | DIMLINEAR
 input | Specify first extension line origin or <select object>: | 
 input | Specify second extension line origin: | 

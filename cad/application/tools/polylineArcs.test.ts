@@ -35,11 +35,11 @@ describe("PLINE's arc mode", () => {
     cad.command("PLINE")
     answerLine(cad, "0,0")
     expect(cad.state().commandLine.prompt).toBe(
-      "PLINE Specify next point or [Arc/Undo]:"
+      "PLINE Specify next point or [Arc/Length/Undo]:"
     )
     answerLine(cad, "10,0")
     expect(cad.state().commandLine.prompt).toBe(
-      "PLINE Specify next point or [Arc/Close/Undo]:"
+      "PLINE Specify next point or [Arc/Close/Length/Undo]:"
     )
     answerLine(cad, "A", "FOO")
     expect(cad.commandLog().slice(-2)).toEqual([
@@ -63,7 +63,7 @@ describe("PLINE's arc mode", () => {
     answerLine(cad, "0,0", "A", "A", "FOO", "90", "R", "FOO", "10", "FOO", "45")
     expect(cad.commandLog().slice(2, 14)).toEqual([
       "Current line-width is 0.00",
-      "Specify next point or [Arc/Undo]: A",
+      "Specify next point or [Arc/Length/Undo]: A",
       "Specify endpoint of arc (hold Ctrl to switch direction) or [Angle/CEnter/Direction/Line/Radius/Second pt/Undo]: A",
       "Specify included angle: FOO",
       "Requires valid numeric angle or second point.",
@@ -152,7 +152,7 @@ describe("PLINE's arc mode", () => {
     expect(cad.commandLog().at(-1)).toBe("All segments already undone.")
     answerLine(cad, "A", "R", "10", "10,10", "U")
     expect(cad.state().commandLine.prompt).toBe(
-      "PLINE Specify next point or [Arc/Undo]:"
+      "PLINE Specify next point or [Arc/Length/Undo]:"
     )
   })
 
@@ -197,5 +197,79 @@ describe("PLINE's arc mode", () => {
       "Precise ángulo incluido (mantenga pulsada la tecla Ctrl para cambiar de dirección): FOO",
       "Requiere un ángulo numérico válido o un segundo punto.",
     ])
+  })
+})
+
+// AutoCAD 2023's console (acc/l1–l9): the line's length, on along the chain.
+describe("PLINE's Length", () => {
+  it("asks the length with no default and runs on along the last segment", () => {
+    const cad = createHarness()
+    cad.command("PLINE")
+    answerLine(cad, "0,0", "100,0", "L")
+    expect(cad.state().commandLine.prompt).toBe("PLINE Specify length of line:")
+    answerLine(cad, "FOO", "", "50")
+    expect(cad.commandLog().slice(-6)).toEqual([
+      "Specify next point or [Arc/Close/Length/Undo]: L",
+      "Specify length of line: FOO",
+      "Requires numeric distance or second point.",
+      "Specify length of line:",
+      "Requires numeric distance or second point.",
+      "Specify length of line: 50",
+    ])
+    expect(cad.state().commandLine.prompt).toBe(
+      "PLINE Specify next point or [Arc/Close/Length/Undo]:"
+    )
+    answerLine(cad, "")
+    expect(drawn(cad).at).toEqual(["0,0", "100,0", "150,0"])
+  })
+
+  it("runs tangent to an arc, and first along the last thing drawn, else east", () => {
+    const arc = createHarness()
+    arc.command("PLINE")
+    answerLine(arc, "0,0", "100,0", "A", "200,100", "L", "L", "50", "")
+    expect(drawn(arc).at).toEqual(["0,0", "100,0", "200,100", "200,150"])
+
+    const blank = createHarness()
+    blank.command("PLINE")
+    answerLine(blank, "0,0", "L", "50", "")
+    expect(drawn(blank).at).toEqual(["0,0", "50,0"])
+
+    const after = createHarness({ entities: [lineOf(p(0, 0), p(0, 10))] })
+    after.command("PLINE")
+    answerLine(after, "100,100", "L", "50", "")
+    expect(drawn(after).at).toEqual(["100,100", "100,150"])
+  })
+
+  it("measures a point from the last vertex, runs back when negative, and adds 0", () => {
+    const typed = createHarness()
+    typed.command("PLINE")
+    answerLine(typed, "0,0", "100,0", "L", "130,40", "")
+    expect(drawn(typed).at).toEqual(["0,0", "100,0", "150,0"])
+
+    const picked = createHarness()
+    picked.command("PLINE").click(p(0, 0)).click(p(100, 0)).option("Length")
+    picked.click(p(130, 40)).enter()
+    expect(drawn(picked).at).toEqual(["0,0", "100,0", "150,0"])
+
+    const back = createHarness()
+    back.command("PLINE")
+    answerLine(back, "0,0", "100,0", "L", "-50", "L", "0", "")
+    expect(drawn(back).at).toEqual(["0,0", "100,0", "50,0", "50,0"])
+  })
+
+  it("asks in Spanish", () => {
+    const cad = createHarness({ locale: es })
+    cad.command("POL")
+    answerLine(cad, "0,0", "100,0")
+    expect(cad.state().commandLine.prompt).toBe(
+      "POL Precise punto siguiente o [Arco/Cerrar/Longitud/desHacer]:"
+    )
+    answerLine(cad, "L", "FOO", "50", "")
+    expect(cad.commandLog().slice(-4, -1)).toEqual([
+      "Precise longitud de línea: FOO",
+      "Requiere una distancia numérica o un segundo punto.",
+      "Precise longitud de línea: 50",
+    ])
+    expect(drawn(cad).at).toEqual(["0,0", "100,0", "150,0"])
   })
 })

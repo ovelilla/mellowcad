@@ -531,22 +531,22 @@ lweight "Lineweight" LW
   dyn: "X,Y"=""||*
   command| PL PLINE
 > first
-  prompt: PLINE Specify next point or [Arc/Undo]:
+  prompt: PLINE Specify next point or [Arc/Length/Undo]:
   asks: "Length" "Angle"
   tip: Specify next point or
   dyn: "Length"=""|0.00|mm* "Angle"=""||°
-  options: [A] Arc, [U] Undo
+  options: [A] Arc, [L] Length, [U] Undo
   prompt| Specify start point:
   info| Current line-width is 0.00
 > second
-  prompt: PLINE Specify next point or [Arc/Close/Undo]:
-  options: [A] Arc, [C] Close, [U] Undo
-  prompt| Specify next point or [Arc/Undo]:
+  prompt: PLINE Specify next point or [Arc/Close/Length/Undo]:
+  options: [A] Arc, [C] Close, [L] Length, [U] Undo
+  prompt| Specify next point or [Arc/Length/Undo]:
 > A
   prompt: PLINE Specify endpoint of arc (hold Ctrl to switch direction) or [Angle/CEnter/CLose/Direction/Line/Radius/Second pt/Undo]:
   tip: Specify endpoint of arc (hold Ctrl to switch direction) or
   options: [A] Angle, [CE] CEnter, [CL] CLose, [D] Direction, [L] Line, [R] Radius, [S] Second pt, [U] Undo
-  prompt| Specify next point or [Arc/Close/Undo]: A
+  prompt| Specify next point or [Arc/Close/Length/Undo]: A
 > arc
   prompt| Specify endpoint of arc (hold Ctrl to switch direction) or [Angle/CEnter/CLose/Direction/Line/Radius/Second pt/Undo]:
 > C
@@ -558,17 +558,17 @@ lweight "Lineweight" LW
   prompt| CEnter or CLose?
   error| Invalid option keyword.
 > L
-  prompt: PLINE Specify next point or [Arc/Close/Undo]:
+  prompt: PLINE Specify next point or [Arc/Close/Length/Undo]:
   tip: Specify next point or
-  options: [A] Arc, [C] Close, [U] Undo
+  options: [A] Arc, [C] Close, [L] Length, [U] Undo
   prompt| CEnter or CLose? L
 > third
-  prompt| Specify next point or [Arc/Close/Undo]:
+  prompt| Specify next point or [Arc/Close/Length/Undo]:
 > U
   prompt: PLINE Specify endpoint of arc (hold Ctrl to switch direction) or [Angle/CEnter/CLose/Direction/Line/Radius/Second pt/Undo]:
   tip: Specify endpoint of arc (hold Ctrl to switch direction) or
   options: [A] Angle, [CE] CEnter, [CL] CLose, [D] Direction, [L] Line, [R] Radius, [S] Second pt, [U] Undo
-  prompt| Specify next point or [Arc/Close/Undo]: U
+  prompt| Specify next point or [Arc/Close/Length/Undo]: U
 > CL
   prompt: Command:
   asks: -
@@ -576,6 +576,59 @@ lweight "Lineweight" LW
   dyn: -
   options: -
   prompt| Specify endpoint of arc (hold Ctrl to switch direction) or [Angle/CEnter/CLose/Direction/Line/Radius/Second pt/Undo]: CL
+
+## PLINE Length
+> start
+  prompt: Command:
+  asks: -
+  tip: -
+  dyn: -
+  options: -
+  canvas: -
+  properties: -
+  cycling: -
+> PLINE
+  prompt: PLINE Specify start point:
+  asks: ""
+  tip: Specify start point:
+  dyn: "X,Y"=""||*
+  command| PL PLINE
+> first
+  prompt: PLINE Specify next point or [Arc/Length/Undo]:
+  asks: "Length" "Angle"
+  tip: Specify next point or
+  dyn: "Length"=""|0.00|mm* "Angle"=""||°
+  options: [A] Arc, [L] Length, [U] Undo
+  prompt| Specify start point:
+  info| Current line-width is 0.00
+> second
+  prompt: PLINE Specify next point or [Arc/Close/Length/Undo]:
+  options: [A] Arc, [C] Close, [L] Length, [U] Undo
+  prompt| Specify next point or [Arc/Length/Undo]:
+> L
+  prompt: PLINE Specify length of line:
+  asks: "Length"
+  tip: Specify length of line:
+  dyn: "Length"=""||mm*
+  options: -
+  prompt| Specify next point or [Arc/Close/Length/Undo]: L
+> FOO
+  prompt| Specify length of line: FOO
+  error| Requires numeric distance or second point.
+> length
+  prompt: PLINE Specify next point or [Arc/Close/Length/Undo]:
+  asks: "Length" "Angle"
+  tip: Specify next point or
+  dyn: "Length"=""|50.00|mm* "Angle"=""|180|°
+  options: [A] Arc, [C] Close, [L] Length, [U] Undo
+  prompt| Specify length of line: 50
+> enter
+  prompt: Command:
+  asks: -
+  tip: -
+  dyn: -
+  options: -
+  prompt| Specify next point or [Arc/Close/Length/Undo]:
 
 ## CIRCLE
 > start

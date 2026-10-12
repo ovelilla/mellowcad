@@ -47,9 +47,10 @@ import { ARC_SEGMENT_OPTIONS, ArcSegmentInput } from "./arcSegmentInput"
  * lets the user type an exact length/angle or a coordinate for the next vertex.
  * The command ends on Enter (or Escape, or switching tools), and the polyline
  * is committed then; "Close" (C) joins the last vertex to the first and ends,
- * while "Undo" (U) steps back one vertex without leaving the command. In arc
- * mode the endpoint draws the arc tangent to the chain, and Angle, CEnter,
- * Direction, Radius and Second pt ask theirs ({@link ArcSegmentInput}).
+ * while "Undo" (U) steps back one vertex without leaving the command. Length
+ * asks a line's length and draws it on the way the chain heads. In arc mode the
+ * endpoint draws the arc tangent to the chain, and Angle, CEnter, Direction,
+ * Radius and Second pt ask theirs ({@link ArcSegmentInput}).
  */
 
 type PolylineToolState =
@@ -91,6 +92,8 @@ export class PolylineTool implements Tool {
   readonly shortcut = "p"
 
   private state: PolylineToolState = { phase: "idle" }
+  /** Length's `Specify length of line:` is open. */
+  private askingLength = false
   private lastScreen: Vec2 | null = null
   private readonly arc = new ArcSegmentInput((segment, ctx) =>
     this.appendArc(segment, ctx)
@@ -105,6 +108,7 @@ export class PolylineTool implements Tool {
     // Every exit path (Enter, Escape, Close, switching tools) ends here, so the
     // accumulated chain is materialised as one entity in a single place.
     this.arc.cancel()
+    this.askingLength = false
     this.commitPolyline(ctx)
     this.state = { phase: "idle" }
     ctx.dynamicInput.close()
@@ -128,6 +132,8 @@ export class PolylineTool implements Tool {
 
       if (this.arc.active) {
         this.arc.onPointerMove(input, ctx)
+      } else if (this.askingLength) {
+        ctx.dynamicInput.setLive("length", length)
       } else if (!showRise(ctx, start, input.point)) {
         ctx.dynamicInput.setLive("distance", length)
         ctx.dynamicInput.setLive(
@@ -159,6 +165,8 @@ export class PolylineTool implements Tool {
       this.arc.onPointerDown(input, ctx)
       return
     }
+    // The runtime measures Length's point from the last vertex.
+    if (this.askingLength) return
 
     // Place the next vertex at the effective endpoint (honouring any hard-locked
     // typed length/angle), then keep chaining. A click on the same point as the
@@ -171,34 +179,50 @@ export class PolylineTool implements Tool {
     ctx.dynamicInput.setPosition(input.screen)
   }
 
-  /** An arc option's step with no default refuses Enter, as the console does. */
+  /**
+   * A prompt with no default refuses Enter, as the console does: an arc
+   * option's step, and Length's, as it refuses `FOO`.
+   */
   onEnter(ctx: ToolContext): boolean {
+    if (this.askingLength) {
+      ctx.report(
+        ctx.text.message("requiresDistance", {
+          points: "second",
+          keyword: "no",
+        }),
+        "error"
+      )
+      return true
+    }
     return this.arc.onEnter(ctx)
   }
 
   question(): PromptId | ToolQuestion | null {
     if (this.state.phase !== "drawing") return "specifyStartPoint"
+    if (this.askingLength) return "specifyLengthOfLine"
     if (this.arc.active) return this.arc.question()
     return this.state.arcMode ? "specifyEndpointOfArcOr" : "specifyNextPointOr"
   }
 
   /** Every point after the start is a 2D one, as AutoCAD's console refuses it. */
   takes(): QuestionInput | null {
-    if (this.state.phase !== "drawing") return null
+    if (this.state.phase !== "drawing" || this.askingLength) return null
     return this.arc.active ? this.arc.takes() : "point2d"
   }
 
   /**
    * The keywords offered while drawing, in AutoCAD's order: Close once a
-   * segment exists, as the console offers it, and Undo from the start point
-   * on. In arc mode the arc options open prompts of their own.
+   * segment exists, as the console offers it, and Length and Undo from the
+   * start point on. In arc mode the arc options open prompts of their own.
+   * WHY no Halfwidth or Width: a polyline has no widths here; AutoCAD's own
+   * table words the list without them too (`[Arc/Close/Length/Undo]`).
    */
   commandOptions(): readonly CommandOption[] {
-    if (this.state.phase !== "drawing") return []
+    if (this.state.phase !== "drawing" || this.askingLength) return []
     if (this.arc.active) return this.arc.commandOptions()
     const close = this.state.vertices.length >= 2 ? [{ id: "Close" }] : []
     if (!this.state.arcMode) {
-      return [{ id: "Arc" }, ...close, { id: "Undo" }]
+      return [{ id: "Arc" }, ...close, { id: "Length" }, { id: "Undo" }]
     }
     const [angle, center, direction, radius, second] = ARC_SEGMENT_OPTIONS
     return [
@@ -214,9 +238,15 @@ export class PolylineTool implements Tool {
   }
 
   invokeOption(id: string, ctx: ToolContext): CommandOptionOutcome {
-    if (this.state.phase !== "drawing") return "unhandled"
+    if (this.state.phase !== "drawing" || this.askingLength) {
+      return "unhandled"
+    }
     if (this.arc.active) return this.arc.invokeOption(id, ctx)
     switch (id) {
+      case "Length":
+        if (this.state.arcMode) return "unhandled"
+        this.openLengthPrompt(ctx)
+        return "continue"
       case "Arc":
         return this.setArcMode(true, ctx)
       case "Line":
@@ -241,8 +271,9 @@ export class PolylineTool implements Tool {
     return "continue"
   }
 
-  /** An arc option's distances and angles are measured by the runtime. */
+  /** Length's and an arc option's distances are measured by the runtime. */
   wantsSnap(): boolean {
+    if (this.askingLength) return false
     return !this.arc.active || this.arc.wantsSnap()
   }
 
@@ -324,17 +355,20 @@ export class PolylineTool implements Tool {
     )
   }
 
-  /** The way the chain leaves its last vertex. */
+  /**
+   * The way the chain leaves its last vertex: where its last segment of any
+   * length ends heading, else the {@link startTangent}.
+   */
   private tangent(state: Drawing): Vec2 {
-    const n = state.vertices.length
-    if (n < 2) return state.startTangent
-    return (
-      segmentExitTangent(
-        state.vertices[n - 2],
-        state.vertices[n - 1],
-        state.bulges[n - 2] ?? 0
-      ) ?? state.startTangent
-    )
+    for (let k = state.vertices.length - 1; k > 0; k--) {
+      const exit = segmentExitTangent(
+        state.vertices[k - 1],
+        state.vertices[k],
+        state.bulges[k - 1] ?? 0
+      )
+      if (exit) return exit
+    }
+    return state.startTangent
   }
 
   private arcStart(state: Drawing): { point: Vec3; tangent: Vec2 } {
@@ -552,6 +586,35 @@ export class PolylineTool implements Tool {
     if (!start) return false
     this.beginDrawing(start, ctx)
     return true
+  }
+
+  /**
+   * Length: `Specify length of line:`, with no default (Enter and `FOO` say
+   * `Requires numeric distance or second point.`); a point is measured from
+   * the last vertex. The line runs the way the chain heads — along the last
+   * segment, tangent to an arc —, and first along the last line, arc or
+   * polyline drawn, else east; a negative length runs back, and 0 adds a
+   * segment of no length, as the console's do.
+   */
+  private openLengthPrompt(ctx: ToolContext): void {
+    this.askingLength = true
+    const session: DynamicInputSession = {
+      fields: [{ id: "length", prompt: "length", kind: "distance" }],
+      commit: (values, commitCtx) =>
+        this.commitLength(values.length, commitCtx),
+    }
+    ctx.dynamicInput.open(session)
+    ctx.dynamicInput.setPosition(this.lastScreen ?? { x: 0, y: 0 })
+    ctx.requestRender()
+  }
+
+  private commitLength(length: number, ctx: ToolContext): void {
+    if (this.state.phase !== "drawing" || !Number.isFinite(length)) return
+    const last = this.lastVertex(this.state)
+    const end = V.add(last, V.scale(this.tangent(this.state), length))
+    this.askingLength = false
+    this.addSegment(withZOf(end, this.state.vertices[0]), 0, ctx)
+    this.openLengthInput(ctx, this.lastScreen ?? { x: 0, y: 0 })
   }
 
   private openLengthInput(ctx: ToolContext, screen: Vec2): void {
