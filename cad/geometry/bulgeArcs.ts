@@ -145,6 +145,27 @@ export function radiusArcBulge(
 }
 
 /**
+ * The bulge of an arc segment of bulge `bulge` and radius `radius` whose ends
+ * move to `start` and `end`, as AutoCAD 2023's CHAMFER refits one it cut as
+ * its chord: the same radius, turn and side of a half circle (a half circle
+ * stays the major arc). An end past the diameter opens it as far as the
+ * chord asks, `s / (1 ± 0)` with `s` half the chord over the radius — the
+ * console's `-1.0357` for a chord of 82.85 at radius 40.
+ */
+export function refitArcBulge(
+  bulge: number,
+  radius: number,
+  start: Vec2,
+  end: Vec2
+): number {
+  const s = V.distance(start, end) / (2 * radius)
+  if (s < EPSILON) return 0
+  const rise = Math.sqrt(Math.max(0, 1 - s * s))
+  const magnitude = s / (Math.abs(bulge) >= 1 ? 1 - rise : 1 + rise)
+  return bulge < 0 ? -magnitude : magnitude
+}
+
+/**
  * The bulge of the arc from `start` through `second` to `end`. Null when the
  * three lie on one line.
  */

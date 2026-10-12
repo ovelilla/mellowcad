@@ -37,6 +37,7 @@ import {
   cornerEntity,
   cornerJoin,
   cutFits,
+  isArcSegment,
   isSegment,
   joinAtCut,
   joinRefusal,
@@ -67,10 +68,12 @@ import {
  * ```
  *
  * The distances are measured from the corner along each line's *picked* side,
- * so where you click decides which of the four corners is cut. Two straight
- * segments of one polyline are objects too, bevelled within it, and a line
- * with a polyline's segment, or segments of two polylines, are joined into one
- * polyline. The distances persist for the tool's session, like AutoCAD's, and both being 0 simply joins the lines
+ * so where you click decides which of the four corners is cut. Two segments
+ * of one polyline are objects too, bevelled within it — an arc segment as its
+ * chord, what is left of it keeping its radius, as AutoCAD 2023's console
+ * cuts it —, and a line with a polyline's straight segment, or straight
+ * segments of two polylines, are joined into one polyline; an arc segment
+ * there is `Cannot chamfer polyline arc segments.` The distances persist for the tool's session, like AutoCAD's, and both being 0 simply joins the lines
  * at their intersection — as Shift on the second pick does (apply corner).
  * Multiple keeps asking until Enter, and Undo takes back the last chamfer made
  * in the command; each is one command, folded into the command's undo step.
@@ -169,13 +172,13 @@ export class ChamferTool implements Tool {
       case "first":
         this.state = {
           phase: "first",
-          hover: pickCornerObject(ctx, input.world, null),
+          hover: pickCornerObject(ctx, input.world, null, true),
         }
         break
       case "second":
         this.state = {
           ...this.state,
-          hover: pickCornerObject(ctx, input.world, this.state.first),
+          hover: pickCornerObject(ctx, input.world, this.state.first, true),
           cursor: { world: input.world, screen: input.screen },
           corner: input.shiftKey,
         }
@@ -192,7 +195,7 @@ export class ChamferTool implements Tool {
 
     switch (this.state.phase) {
       case "first": {
-        const hit = pickCornerObject(ctx, input.world, null)
+        const hit = pickCornerObject(ctx, input.world, null, true)
         if (!hit) return
         const pick = { world: input.world, screen: input.screen }
         this.state = {
@@ -208,7 +211,7 @@ export class ChamferTool implements Tool {
       }
       case "second": {
         const { first, pick1 } = this.state
-        const second = pickCornerObject(ctx, input.world, first)
+        const second = pickCornerObject(ctx, input.world, first, true)
         if (!second) return
         const join = cornerJoin(first, pick1.world, second, input.world)
         if (join) {
@@ -303,7 +306,7 @@ export class ChamferTool implements Tool {
     const join = hover && cornerJoin(first, pick1.world, hover, cursor.world)
     if (join) {
       const cut =
-        !joinRefusal(join) && this.chamferJoin(join, this.state.corner)
+        !this.joinRefusal(join) && this.chamferJoin(join, this.state.corner)
       return cut && cutFits(join, cut)
         ? draw(joinAtCut(join, cut), hoverStroke)
         : [
@@ -436,7 +439,7 @@ export class ChamferTool implements Tool {
    * are parallel or a distance runs past the end of its line or segment.
    */
   private commitJoin(join: CornerJoin, sharp: boolean, ctx: ToolContext): void {
-    const refusal = joinRefusal(join)
+    const refusal = this.joinRefusal(join)
     if (refusal) {
       this.refuse(refusal, ctx, false)
       return
@@ -457,6 +460,15 @@ export class ChamferTool implements Tool {
       ),
       ctx
     )
+  }
+
+  /** Why two objects cannot be joined: an arc segment, or FILLET's reasons. */
+  private joinRefusal(join: CornerJoin): MessageId | null {
+    const arc = (object: CornerObject) =>
+      isSegment(object) && isArcSegment(object)
+    return arc(join.segment) || arc(join.other)
+      ? "cannotChamferArcSegments"
+      : joinRefusal(join)
   }
 
   /**
@@ -529,12 +541,14 @@ export class ChamferTool implements Tool {
   }
 
   /**
-   * Polyline: bevels every corner where two line segments meet, the first
-   * distance along the segment coming into it.
+   * Polyline: bevels every vertex, the first distance along the segment
+   * coming into it — an arc segment as its chord (`1 line was chamfered`
+   * at a line–arc vertex, the console's).
    */
   private commitPolyline(poly: PolylineEntity, ctx: ToolContext): void {
     const result = cutPolylineCorners(poly, {
       lines: (corner) => this.bevel(corner, false),
+      chords: true,
     })
     ctx.report(ctx.text.message("linesChamfered", { count: result.cut }))
     reportSkipped(result, ctx)
@@ -583,15 +597,19 @@ export class ChamferTool implements Tool {
 
   /**
    * Two segments of one polyline bevelled within it, the first distance along
-   * the one picked first; or why they cannot be.
+   * the one picked first, an arc segment as its chord; or why they cannot be.
    */
   private chamferSegments(
     first: SegmentPick,
     second: SegmentPick,
     sharp: boolean
   ): PolylineEntity | SegmentsRefusal {
-    return cutBetweenSegments(first.poly, first.index, second.index, (corner) =>
-      this.bevel(corner, sharp)
+    return cutBetweenSegments(
+      first.poly,
+      first.index,
+      second.index,
+      (corner) => this.bevel(corner, sharp),
+      true
     )
   }
 

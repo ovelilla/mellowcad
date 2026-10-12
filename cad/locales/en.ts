@@ -2110,6 +2110,7 @@ export const en: EngineCatalog = {
       "linesDiverge": "Lines diverge",
       "filletRadiusTooLarge": "Fillet radius is too large",
       "chamferDistanceTooLarge": "Chamfer distance is too large",
+      "cannotChamferArcSegments": "Cannot chamfer polyline arc segments.",
       "linesChamfered": [
         [
           "count",

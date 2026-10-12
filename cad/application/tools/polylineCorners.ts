@@ -1,4 +1,5 @@
 import { Vec2, V } from "../../geometry/Vec2"
+import { refitArcBulge } from "../../geometry/bulgeArcs"
 import {
   infiniteLineIntersection,
   normalizeAngle,
@@ -53,6 +54,12 @@ export interface PolylineCuts {
   readonly acrossArcs?: boolean
   /** A vertex an arc segment meets, or `null` to leave it: FILLETPOLYARC 1. */
   readonly arcs?: (corner: ArcCorner) => CornerCut | null
+  /**
+   * An arc segment is cut as its chord, by `lines`, and what is left of it
+   * refitted to its radius (`refitArcBulge`): CHAMFER's, as AutoCAD 2023's
+   * console bevels a vertex an arc meets.
+   */
+  readonly chords?: boolean
 }
 
 export interface PolylineCornersResult {
@@ -115,7 +122,9 @@ export function cutPolylineCorners(
   const none = { polyline: null, cut: 0, parallel, tooShort: 0, divergent }
   if (count < 2) return none
   const wrap = (s: number) => (s + count) % count
-  const isLine = (s: number) => segments[s].kind === "line"
+  // CHAMFER's chords: every segment is cut as a line.
+  const isLine = (s: number) =>
+    cuts.chords === true || segments[s].kind === "line"
   const start = (s: number) => segments[s].a
   const end = (s: number) => segments[s].b
 
@@ -220,7 +229,10 @@ export function cutPolylineCorners(
   }
   const changed = [...kept].filter((corner) => corner.changes)
   return {
-    polyline: changed.length === 0 ? null : rebuild(poly, segments, changed),
+    polyline:
+      changed.length === 0
+        ? null
+        : rebuild(poly, segments, changed, cuts.chords === true),
     cut: kept.size,
     parallel,
     tooShort,
@@ -233,13 +245,15 @@ export function cutPolylineCorners(
  * polyline picked as their two objects: "adjacent to each other or separated
  * by one other segment", which is removed and replaced with the cut; the first
  * and last segments of an open polyline close it — which `pickCornerObject`
- * alone offers. A refusal says why there is no corner.
+ * alone offers. A refusal says why there is no corner. With `chords` an arc
+ * segment is cut as its chord and refitted to its radius (CHAMFER's).
  */
 export function cutBetweenSegments(
   poly: PolylineEntity,
   first: number,
   second: number,
-  lines: (corner: PolylineCorner) => CornerCut | null
+  lines: (corner: PolylineCorner) => CornerCut | null,
+  chords = false
 ): PolylineEntity | SegmentsRefusal {
   const segments = polylineSegmentGeometries(poly)
   const count = segments.length
@@ -277,9 +291,12 @@ export function cutBetweenSegments(
   ) {
     return "tooLarge"
   }
-  return rebuild(poly, segments, [
-    { inSeg, outSeg, changes: true, arc: between, corner, cut },
-  ])
+  return rebuild(
+    poly,
+    segments,
+    [{ inSeg, outSeg, changes: true, arc: between, corner, cut }],
+    chords
+  )
 }
 
 /** Whether two segments of `poly` can be picked as FILLET's two objects. */
@@ -322,12 +339,14 @@ function segmentPair(
 /**
  * `poly` with each corner's segments cut back to it and joined by its cut;
  * the segment a corner replaces goes. A corner from the last segment of an open
- * polyline round to its first closes it.
+ * polyline round to its first closes it. What is left of an arc segment stays
+ * on its circle, or with `chords` keeps its radius over its new chord.
  */
 function rebuild(
   poly: PolylineEntity,
   segments: readonly PolylineSegmentGeometry[],
-  corners: readonly Candidate[]
+  corners: readonly Candidate[],
+  chords: boolean
 ): PolylineEntity {
   const count = segments.length
   const closed =
@@ -344,7 +363,15 @@ function rebuild(
     const from = byOut.get(s)?.cut.exit ?? segment.a
     const to = corner?.cut.entry ?? segment.b
     points.push(from)
-    bulges.push(segment.kind === "line" ? 0 : bulgeBetween(segment, from, to))
+    bulges.push(
+      segment.kind === "line"
+        ? 0
+        : V.equals(from, segment.a) && V.equals(to, segment.b)
+          ? segment.bulge
+          : chords
+            ? refitArcBulge(segment.bulge, segment.radius, from, to)
+            : bulgeBetween(segment, from, to)
+    )
     if (corner && !V.equals(corner.cut.entry, corner.cut.exit)) {
       points.push(corner.cut.entry)
       bulges.push(corner.cut.bulge)

@@ -35,17 +35,24 @@ export function cornerEntity(object: CornerObject): Entity {
   return isSegment(object) ? object.poly : object
 }
 
+/** Whether the picked segment is an arc segment of its polyline. */
+export function isArcSegment({ poly, index }: SegmentPick): boolean {
+  return polylineSegmentGeometries(poly)[index].kind === "arc"
+}
+
 /**
- * The object a FILLET or CHAMFER pick at `world` takes: a line, or the straight
+ * The object a FILLET or CHAMFER pick at `world` takes: a line, or the
  * segment of a polyline nearest it. With `first` already taken, only what can
  * make a corner with it: another line, or a segment of another polyline, or a
  * segment of the same polyline next to it or one segment away. An arc segment
- * is not taken (here it never highlights).
+ * only with `arcs` (CHAMFER's, which AutoCAD 2023's console takes and then
+ * refuses or cuts as its chord); else it is not taken and never highlights.
  */
 export function pickCornerObject(
   ctx: ToolContext,
   world: Vec2,
-  first: CornerObject | null
+  first: CornerObject | null,
+  arcs = false
 ): CornerObject | null {
   const hit = ctx.pick(world)
   if (hit?.type === "line") {
@@ -54,7 +61,7 @@ export function pickCornerObject(
       : null
   }
   if (hit?.type !== "polyline") return null
-  const index = nearestStraightSegment(hit, world)
+  const index = nearestSegment(hit, world, arcs)
   if (index === null) return null
   if (first === null || !isSegment(first) || first.poly.id !== hit.id) {
     return { poly: hit, index }
@@ -254,10 +261,11 @@ function straightEnds({ poly, index }: SegmentPick): { a: Vec2; b: Vec2 } {
   return { a, b }
 }
 
-/** The segment of `poly` nearest `world`, or `null` when it is an arc. */
-function nearestStraightSegment(
+/** The segment of `poly` nearest `world`; `null` for an arc without `arcs`. */
+function nearestSegment(
   poly: PolylineEntity,
-  world: Vec2
+  world: Vec2,
+  arcs: boolean
 ): number | null {
   let nearest: number | null = null
   let best = Infinity
@@ -279,5 +287,5 @@ function nearestStraightSegment(
       straight = segment.kind === "line"
     }
   })
-  return straight ? nearest : null
+  return straight || arcs ? nearest : null
 }

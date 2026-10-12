@@ -3172,7 +3172,7 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0°~, Line space facto
   dyn: -
   options: -
   prompt| Select 2D polyline or [Distance]:
-  info| 0 lines were chamfered
+  info| 2 lines were chamfered
 
 ## EXPLODE JOIN
 > start

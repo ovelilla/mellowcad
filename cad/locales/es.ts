@@ -2393,6 +2393,7 @@ export const es: EngineLocale = {
       "linesDiverge": "Las líneas son divergentes",
       "filletRadiusTooLarge": "Radio de empalme es demasiado grande",
       "chamferDistanceTooLarge": "Distancia de chaflán es demasiado grande",
+      "cannotChamferArcSegments": "Imposible unir con chaflán segmentos de arco de polilínea.",
       "linesChamfered": [
         [
           "count",

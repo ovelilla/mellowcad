@@ -1251,6 +1251,7 @@
       "linesDiverge": "Las líneas son divergentes",
       "filletRadiusTooLarge": "Radio de empalme es demasiado grande",
       "chamferDistanceTooLarge": "Distancia de chaflán es demasiado grande",
+      "cannotChamferArcSegments": "Imposible unir con chaflán segmentos de arco de polilínea.",
       "linesChamfered": "{count, plural, one {# línea resulta unida(s) con chaflán} other {# líneas resultan unida(s) con chaflán}}",
       "linesFilleted": "{count, plural, one {# línea resulta unida(s) con empalme} other {# líneas resultan unida(s) con empalme}}",
       "nothingJoined": "0 objetos unidos, {count, plural, one {# objeto descartado} other {# objetos descartados}} de la operación",

@@ -8,6 +8,7 @@ import {
   arcThroughBulge,
   bulgeOfAngle,
   radiusArcBulge,
+  refitArcBulge,
   segmentExitTangent,
   tangentArcBulge,
 } from "./bulgeArcs"
@@ -97,6 +98,30 @@ describe("polyline arc segments", () => {
     ).toBeCloseTo(-0.2679, 4)
     expect(radiusArcBulge(o, { x: 30, y: 0 }, 10, false)).toBeNull()
     expect(radiusArcBulge(o, o, 10, false)).toBeNull()
+  })
+
+  // AutoCAD 2023's console (acc/f6, f13, f15, f24): CHAMFER's refitted arcs.
+  it("refits an arc to new ends at its radius, turn and side", () => {
+    const at = (y: number) => ({ x: 100, y })
+    expect(refitArcBulge(1, 25, at(5), at(50))).toBeCloseTo(1.5954, 4)
+    expect(refitArcBulge(1, 25, at(40), at(50))).toBeCloseTo(9.899, 3)
+    expect(
+      refitArcBulge(
+        Math.tan(Math.PI / 8),
+        25,
+        { x: 103.5355339, y: 3.5355339 },
+        { x: 125, y: 25 }
+      )
+    ).toBeCloseTo(0.3383, 4)
+    expect(
+      refitArcBulge(
+        -Math.tan(Math.PI / 8),
+        40,
+        { x: 81.4142136, y: 1.4142136 },
+        { x: 140, y: 60 }
+      )
+    ).toBeCloseTo(-1.0357, 4)
+    expect(refitArcBulge(0.5, 10, o, o)).toBe(0)
   })
 
   it("passes through a second point, turning as the three do", () => {

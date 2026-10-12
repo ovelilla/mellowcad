@@ -8,7 +8,7 @@ import type {
 } from "../../domain/entities"
 import type { Vec2 } from "../../geometry/Vec2"
 import { THEME } from "../../scene/theme"
-import { createHarness } from "../../../test/harness"
+import { type CadHarness, createHarness } from "../../../test/harness"
 import { es } from "../../locales/es"
 import {
   arcOf,
@@ -1303,6 +1303,162 @@ describe("CHAMFER", () => {
       p(20, 0),
       p(100, 0),
     ])
+  })
+
+  // AutoCAD 2023's console (acc/f3–f18, f23, f24, f28): an arc segment is
+  // refused beside another object, and within its polyline cut as its chord,
+  // what is left of it keeping its radius, turn and side of a half circle.
+  describe("an arc segment", () => {
+    /** 0,0 → 100,0, then a half circle bulging east to 100,50. */
+    const hook = () =>
+      polylineOf([p(0, 0), p(100, 0), p(100, 50)], {
+        id: "P1",
+        bulges: [0, 1, 0],
+      })
+    const bulgesOf = (cad: CadHarness) =>
+      cad.byId<PolylineEntity>("P1").bulges ?? []
+
+    it("is cut as its chord within its polyline, keeping its radius", () => {
+      const cad = createHarness({ entities: [hook()] })
+      cad.command("CHAMFER").option("Distance").type("5").enter()
+      cad.type("5").enter().click(p(125, 25)).click(p(50, 0))
+      expect(cad.byId<PolylineEntity>("P1").vertices).toBeCloseToPoints([
+        p(0, 0),
+        p(95, 0),
+        p(100, 5),
+        p(100, 50),
+      ])
+      expect(bulgesOf(cad)[2]).toBeCloseTo(1.5954, 4)
+
+      const second = createHarness({ entities: [hook()] })
+      second.command("CHAMFER").option("Distance").type("5").enter()
+      second.type("10").enter().click(p(50, 0)).click(p(125, 25))
+      expect(second.byId<PolylineEntity>("P1").vertices).toBeCloseToPoints([
+        p(0, 0),
+        p(95, 0),
+        p(100, 10),
+        p(100, 50),
+      ])
+      expect(bulgesOf(second)[2]).toBeCloseTo(2, 4)
+
+      const quarter = createHarness({
+        entities: [
+          polylineOf([p(0, 0), p(100, 0), p(125, 25)], {
+            id: "P1",
+            bulges: [0, Math.tan(Math.PI / 8), 0],
+          }),
+        ],
+      })
+      quarter.command("CHAMFER").option("Distance").type("5").enter()
+      quarter.type("5").enter().click(p(50, 0)).click(p(117.6777, 7.3223))
+      expect(quarter.byId<PolylineEntity>("P1").vertices).toBeCloseToPoints(
+        [p(0, 0), p(95, 0), p(103.5355, 3.5355), p(125, 25)],
+        4
+      )
+      expect(bulgesOf(quarter)[2]).toBeCloseTo(0.3383, 4)
+    })
+
+    it("cuts one segment apart across their chords", () => {
+      const step = () =>
+        polylineOf([p(0, 0), p(100, 0), p(100, 20), p(140, 60)], {
+          id: "P1",
+          bulges: [0, 0, -Math.tan(Math.PI / 8), 0],
+        })
+      for (const [distance, cut, bulge] of [
+        ["5", p(83.5355, 3.5355), -0.9411],
+        ["2", p(81.4142, 1.4142), -1.0357],
+      ] as const) {
+        const cad = createHarness({ entities: [step()] })
+        cad.command("CHAMFER").option("Distance").type(distance).enter()
+        cad.enter().click(p(50, 0)).click(p(111.7157, 48.2843))
+        const along = 80 - Number(distance)
+        expect(cad.byId<PolylineEntity>("P1").vertices).toBeCloseToPoints(
+          [p(0, 0), p(along, 0), cut, p(140, 60)],
+          4
+        )
+        expect(bulgesOf(cad)[2]).toBeCloseTo(bulge, 4)
+      }
+    })
+
+    it("says a distance past the chord, or parallel chords, is invalid", () => {
+      const cad = createHarness({ entities: [hook()] })
+      cad.command("CHAMFER").option("Distance").type("60").enter()
+      cad.enter().click(p(125, 25)).click(p(50, 0))
+      expect(cad.commandLog().slice(-2)).toEqual([
+        "Chamfer distance is too large",
+        "*Invalid*",
+      ])
+      expect(bulgesOf(cad)).toEqual([0, 1, 0])
+
+      const parallel = createHarness({
+        entities: [
+          polylineOf([p(0, 0), p(100, 0), p(100, 50), p(150, 50)], {
+            id: "P1",
+            bulges: [0, 0, -1, 0],
+          }),
+        ],
+      })
+      parallel.command("CHAMFER").click(p(50, 0)).click(p(125, 75))
+      expect(parallel.commandLog().slice(-2)).toEqual([
+        "Lines are parallel",
+        "*Invalid*",
+      ])
+    })
+
+    it("cannot be chamfered with another object, in either language", () => {
+      for (const other of [
+        lineOf(p(50, 100), p(150, 100)),
+        polylineOf([p(50, 100), p(150, 100)]),
+      ]) {
+        for (const picks of [
+          [p(125, 25), p(100, 100)],
+          [p(100, 100), p(125, 25)],
+        ]) {
+          const cad = createHarness({ entities: [hook(), other] })
+          cad.command("CHAMFER").click(picks[0]).click(picks[1])
+          expect(cad.commandLog().at(-1)).toBe(
+            "Cannot chamfer polyline arc segments."
+          )
+          expect(cad.activeToolId()).toBe("select")
+          expect(bulgesOf(cad)).toEqual([0, 1, 0])
+        }
+      }
+
+      const multiple = createHarness({
+        entities: [hook(), lineOf(p(50, 100), p(150, 100))],
+      })
+      multiple.command("CHAMFER").option("Multiple")
+      multiple.click(p(125, 25)).click(p(100, 100))
+      expect(multiple.commandLog().at(-1)).toBe(
+        "Cannot chamfer polyline arc segments."
+      )
+      expect(multiple.state().commandLine.prompt).toBe(
+        "CHAMFER Select first line or [Undo/Polyline/Distance]:"
+      )
+
+      const spanish = createHarness({
+        locale: es,
+        entities: [hook(), lineOf(p(50, 100), p(150, 100))],
+      })
+      spanish.command("CHAFLAN").click(p(125, 25)).click(p(100, 100))
+      expect(spanish.commandLog().at(-1)).toBe(
+        "Imposible unir con chaflán segmentos de arco de polilínea."
+      )
+    })
+
+    it("Polyline bevels a vertex an arc meets as its chord", () => {
+      const cad = createHarness({ entities: [hook()] })
+      cad.command("CHAMFER").option("Distance").type("5").enter().enter()
+      cad.option("Polyline").click(p(125, 25))
+      expect(cad.commandLog().at(-1)).toBe("1 line was chamfered")
+      expect(cad.byId<PolylineEntity>("P1").vertices).toBeCloseToPoints([
+        p(0, 0),
+        p(95, 0),
+        p(100, 5),
+        p(100, 50),
+      ])
+      expect(bulgesOf(cad)[2]).toBeCloseTo(1.5954, 4)
+    })
   })
 
   it("Multiple keeps asking until Enter, and Undo takes back the last chamfer", () => {
