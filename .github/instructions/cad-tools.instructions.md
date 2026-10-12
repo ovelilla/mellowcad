@@ -430,7 +430,9 @@ instead, or the command-line buffer will swallow them.
   (`getConstraintAnchor`), else the coordinate typed. A question AutoCAD's console shows keeping
   it although it takes a point (DIST's second point, COPY's), or setting it although its refusal
   is its own (ZOOM's first prompt, DIST's Multiple points), says so with `setsLastPoint()`;
-  check with `ID @` after the command in the console.
+  check with `ID @` after the command in the console. A UCS change puts it at the new UCS's
+  origin (the runtime, not while `history.replaying`: U leaves it); a tool moves it with no
+  point given only through `ctx.setLastPoint` — UCS Previous and Restore, to the WCS origin.
 - **A point has a Z; keep it.** `input.point` and `parseCoordinate` give a `Vec3`: `x,y` absolute
   lies ELEVATION above the UCS's XY plane, `@x,y` keeps `lastPoint`'s Z. A point a tool
   _computes_ from another in the plane (`V.add(start, dir * length)`) is `@dist<angle` and keeps

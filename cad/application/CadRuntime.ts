@@ -512,6 +512,9 @@ export class CadRuntime extends Observable {
       dynamicInput: this.dynamicInput,
       blocks: this.document.blockLookup(),
       undo: () => this.history.undo(),
+      setLastPoint: (world) => {
+        this.lastPoint = world
+      },
       pickTolerance: () =>
         this.viewport.screenToWorldDistance(this.snapping.pixelTolerance),
       requestRender: () => this.host.requestRender(),
@@ -677,8 +680,9 @@ export class CadRuntime extends Observable {
       ucs = next
       this.resetTracking()
       // WHY: AutoCAD 2023's console puts LASTPOINT at the new UCS's origin
-      // after UCS Origin and UCS World alike (`ID @` then reads 0,0,0).
-      this.lastPoint = next.origin
+      // after UCS Origin and UCS World alike (`ID @` then reads 0,0,0), and
+      // leaves it where it was when U takes a UCS back (acc/u5, u6).
+      if (!this.history.replaying) this.lastPoint = next.origin
     })
     // A new selection shows every object again, as the palette's drop-down
     // starts at All.

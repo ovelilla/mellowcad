@@ -72,6 +72,12 @@ type UcsState =
 
 /** UCSAXISANG's initial value, which the X, Y and Z options offer as their default. */
 const DEFAULT_AXIS_ANGLE = 90
+/**
+ * Where UCS Previous and a restored named UCS put LASTPOINT: the WCS's
+ * origin, not the restored UCS's (AutoCAD 2023's console, acc/u4, u7, u8).
+ */
+const WCS_ORIGIN: Vec3 = { x: 0, y: 0, z: 0 }
+
 /** UCS Previous steps back through the last 10 of the session. */
 const MAX_PREVIOUS = 10
 /** Characters a symbol-table name may not hold (AutoCAD's naming rule). */
@@ -457,6 +463,7 @@ export class UcsTool implements Tool {
               ? previous.name
               : null
           this.apply(previous.ucs, name, ctx, false)
+          ctx.setLastPoint(WCS_ORIGIN)
         }
         return "end"
       }
@@ -699,7 +706,9 @@ export class UcsTool implements Tool {
           ctx.report(ctx.text.message("ucsUndefined", { name: typed }), "error")
           return this.enterNamePrompt("restore", ctx)
         }
-        this.finish(entry.ucs, entry.name, ctx)
+        this.apply(entry.ucs, entry.name, ctx)
+        ctx.setLastPoint(WCS_ORIGIN)
+        ctx.endCommand()
         return
       }
       case "save": {

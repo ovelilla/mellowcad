@@ -125,6 +125,35 @@ describe("LASTPOINT", () => {
     expect(lastPoint(cad)).toBe(" X = 0.00     Y = 0.00     Z = 0.00")
   })
 
+  // AutoCAD 2023's console (acc/u4, u5, u7): Previous and a restored named
+  // UCS put it at the WCS's origin, read in the UCS they make current; U
+  // taking a UCS back leaves it at the origin of the UCS it took back.
+  it("is the WCS's origin after UCS Previous or Restore, and stays after U", () => {
+    const previous = createHarness()
+    answer(previous, "UCS", "0,50", "", "UCS", "100,0", "", "ID", "5,5")
+    answer(previous, "UCS", "P")
+    expect(lastPoint(previous)).toBe(" X = 0.00     Y = -50.00     Z = 0.00")
+
+    const restored = createHarness()
+    answer(restored, "UCS", "100,0", "", "UCS", "NA", "S", "ONE", "UCS", "W")
+    answer(restored, "UCS", "0,50", "", "ID", "5,5", "UCS", "NA", "R", "ONE")
+    expect(lastPoint(restored)).toBe(" X = -100.00     Y = 0.00     Z = 0.00")
+
+    const undone = createHarness()
+    answer(undone, "ID", "5,5", "UCS", "100,0", "", "U")
+    expect(lastPoint(undone)).toBe(" X = 100.00     Y = 0.00     Z = 0.00")
+
+    const spanish = createHarness({ locale: es })
+    answer(spanish, "SCP", "0,50", "", "SCP", "100,0", "", "ID", "5,5")
+    answer(spanish, "SCP", "FOO")
+    expect(spanish.commandLog().at(-1)).toBe(
+      "Se requiere un punto o una opción."
+    )
+    spanish.escape()
+    answer(spanish, "SCP", "PR")
+    expect(lastPoint(spanish)).toBe(" X = 0.00     Y = -50.00     Z = 0.00")
+  })
+
   it("goes back to 0,0,0 with a new drawing", () => {
     const cad = createHarness()
     answer(cad, "ID", "7,8")

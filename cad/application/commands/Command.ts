@@ -38,6 +38,7 @@ export class CommandHistory extends Observable {
    * option (LINE's U) still steps back one at a time.
    */
   private groupStart: number | null = null
+  private replayingStep = false
 
   constructor(
     private readonly document: CadDocument,
@@ -78,6 +79,14 @@ export class CommandHistory extends Observable {
     this.undoStack.push(new GroupCommand(steps))
   }
 
+  /**
+   * Whether an undo or a redo is putting the document back, for what follows
+   * a change made and not one undone (LASTPOINT after a UCS).
+   */
+  get replaying(): boolean {
+    return this.replayingStep
+  }
+
   canUndo(): boolean {
     return this.undoStack.length > 0
   }
@@ -92,7 +101,12 @@ export class CommandHistory extends Observable {
     if (this.groupStart !== null) {
       this.groupStart = Math.min(this.groupStart, this.undoStack.length)
     }
-    command.undo(this.document)
+    this.replayingStep = true
+    try {
+      command.undo(this.document)
+    } finally {
+      this.replayingStep = false
+    }
     this.redoStack.push(command)
     this.emit()
     return true
@@ -101,7 +115,12 @@ export class CommandHistory extends Observable {
   redo(): boolean {
     const command = this.redoStack.pop()
     if (!command) return false
-    command.execute(this.document)
+    this.replayingStep = true
+    try {
+      command.execute(this.document)
+    } finally {
+      this.replayingStep = false
+    }
     this.undoStack.push(command)
     this.emit()
     return true

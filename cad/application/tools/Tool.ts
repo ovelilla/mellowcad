@@ -193,7 +193,8 @@ export interface ToolContext {
   /**
    * LASTPOINT, 0,0,0 until a point is given: what `@` is relative to at a
    * point with no base of the tool's own (a first point), and what Enter
-   * takes at DIST's. The runtime keeps it; a tool only reads it.
+   * takes at DIST's. The runtime keeps it; a tool reads it, and sets it only
+   * where AutoCAD moves it with no point given ({@link setLastPoint}).
    */
   readonly lastPoint: Vec3
   readonly viewport: Viewport
@@ -205,6 +206,13 @@ export interface ToolContext {
    * empty ghost.
    */
   readonly blocks: BlockLookup
+
+  /**
+   * Puts LASTPOINT at `world`, a point of the WCS: UCS Previous and a
+   * restored named UCS put it at the WCS's origin, as AutoCAD 2023's console
+   * does, where any other UCS change puts it at the new UCS's origin.
+   */
+  setLastPoint(world: Vec3): void
 
   /** Executes a reversible command against the document (the only write-path). */
   execute(command: Command): void

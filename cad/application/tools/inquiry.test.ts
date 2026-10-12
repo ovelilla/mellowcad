@@ -389,6 +389,32 @@ describe("DIST's Multiple points", () => {
     ])
   })
 
+  // AutoCAD 2023's console (acc/d1–d4): the first arc leaves as PLINE's
+  // does, along the last line or polyline drawn, else east — the chord's
+  // default after an included angle of 90 and a radius.
+  it("Arc's first arc leaves along what was drawn last, else east", () => {
+    for (const [drawn, chord] of [
+      [[], "<0>"],
+      [[lineOf(p(0, 0), p(0, 10))], "<90>"],
+      [[polylineOf([p(0, 0), p(0, 10)])], "<90>"],
+    ] as const) {
+      const cad = createHarness({ entities: [...drawn] })
+      cad.command("DIST")
+      answer(cad, "50,50", "M", "A", "A", "90", "R", "10")
+      expect(cad.state().commandLine.prompt).toBe(
+        `DIST Specify direction of chord for arc (hold Ctrl to switch direction) ${chord}:`
+      )
+    }
+
+    const spanish = createHarness({
+      locale: es,
+      entities: [lineOf(p(0, 0), p(0, 10))],
+    })
+    spanish.command("DIST")
+    answer(spanish, "50,50", "M", "A", "U", "90", "R", "10")
+    expect(spanish.state().commandLine.prompt).toMatch(/<90>:$/)
+  })
+
   it("draws the arc on screen as it goes", () => {
     const cad = createHarness()
     cad.command("DIST").click(p(0, 0))
