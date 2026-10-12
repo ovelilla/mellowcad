@@ -1756,6 +1756,9 @@ export const es: EngineLocale = {
         ]
       ],
       "trimExtendSettings": "Parámetros actuales: Proyección=SCP, Arista=Ninguno, Modo=Rápido",
+      "pathDoesNotIntersectBoundingEdge": "La trayectoria no se interseca con la arista de contorno.",
+      "objectDoesNotIntersectEdge": "El objeto no se interseca con ninguna arista.",
+      "cannotExtendObject": "Objeto no procesado por ALARGA.",
       "filletSettings": [
         "Parámetros actuales: Modo = Recortar, Radio = ",
         [

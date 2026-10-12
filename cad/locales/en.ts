@@ -1474,6 +1474,9 @@ export const en: EngineCatalog = {
       "rotatingCopy": "Rotating a copy of the selected objects.",
       "scalingCopy": "Scaling a copy of the selected objects.",
       "trimExtendSettings": "Current settings: Projection=UCS, Edge=None, Mode=Quick",
+      "pathDoesNotIntersectBoundingEdge": "Path does not intersect with the bounding edge.",
+      "objectDoesNotIntersectEdge": "Object does not intersect an edge.",
+      "cannotExtendObject": "Cannot EXTEND this object.",
       "filletSettings": [
         "Current settings: Mode = TRIM, Radius = ",
         [

@@ -39,6 +39,7 @@ import { ScenePrimitive, StrokeStyle } from "../../scene/types"
 import { THEME } from "../../scene/theme"
 import { arcScenePrimitive, entityScenePrimitive } from "../SceneBuilder"
 import type { PromptId } from "../../locales/types"
+import type { MessageId } from "../EngineText"
 import {
   CommandOption,
   CommandOptionOutcome,
@@ -122,15 +123,18 @@ export abstract class EdgeEditTool implements Tool {
   protected abstract readonly defaultMode: EdgeEditMode
 
   private preview: EdgeEditPlan | null = null
-  /** The edits made since the command started, for Undo. */
-  private steps = 0
+  /**
+   * What Undo takes back since the command started, newest last: an edit
+   * (`true`), or a pick EXTEND refused that the console still counts.
+   */
+  private steps: boolean[] = []
   private lastInput: PointerInput | null = null
 
   onActivate(ctx: ToolContext): void {
     ctx.setCursor("crosshair")
     ctx.selection.clear()
     this.preview = null
-    this.steps = 0
+    this.steps = []
     // PROJMODE 1, EDGEMODE 0 and TRIMEXTENDMODE 1 are fixed here.
     ctx.report(ctx.text.message("trimExtendSettings"))
   }
@@ -142,11 +146,11 @@ export abstract class EdgeEditTool implements Tool {
    */
   question(): PromptId {
     if (this.defaultMode === "trim") {
-      return this.steps > 0
+      return this.steps.length > 0
         ? "selectObjectToTrimOrShiftSelectToExtendOr"
         : "selectObjectToTrimOrShiftSelectToExtend"
     }
-    return this.steps > 0
+    return this.steps.length > 0
       ? "selectObjectToExtendOrShiftSelectToTrimOr"
       : "selectObjectToExtendOrShiftSelectToTrim"
   }
@@ -156,7 +160,7 @@ export abstract class EdgeEditTool implements Tool {
   }
 
   commandOptions(): readonly CommandOption[] {
-    return this.steps > 0 ? [{ id: "Undo" }] : []
+    return this.steps.length > 0 ? [{ id: "Undo" }] : []
   }
 
   /**
@@ -164,10 +168,9 @@ export abstract class EdgeEditTool implements Tool {
    * its start AutoCAD says so, and Undo is no longer offered.
    */
   invokeOption(id: string, ctx: ToolContext): CommandOptionOutcome {
-    if (id !== "Undo" || this.steps === 0) return "unhandled"
-    this.steps -= 1
-    ctx.undo()
-    if (this.steps === 0) {
+    if (id !== "Undo" || this.steps.length === 0) return "unhandled"
+    if (this.steps.pop()) ctx.undo()
+    if (this.steps.length === 0) {
       ctx.report(ctx.text.message("commandCompletelyUndone"))
     }
     this.preview = this.lastInput && this.planFor(this.lastInput, ctx)
@@ -190,8 +193,11 @@ export abstract class EdgeEditTool implements Tool {
     if (input.button !== 0) return
     this.lastInput = input
     const plan = this.planFor(input, ctx)
-    if (!plan) return
-    this.steps += 1
+    if (!plan) {
+      this.refuseExtend(input, ctx)
+      return
+    }
+    this.steps.push(true)
     this.commit(plan, ctx)
     // Loop like AutoCAD: recompute the preview against the now-updated drawing
     // so a follow-up click continues trimming/extending from the same spot.
@@ -268,16 +274,39 @@ export abstract class EdgeEditTool implements Tool {
     return prim(plan.added, THEME.selected, 1.5, [6, 4])
   }
 
-  private planFor(input: PointerInput, ctx: ToolContext): EdgeEditPlan | null {
-    // TRIM and EXTEND work in the UCS's XY plane: an object at an angle to it
-    // is neither cut nor a boundary (AutoCAD would project some; PROJMODE).
+  /**
+   * An object EXTEND reaches no edge with, said in AutoCAD 2023's console's
+   * words (acc/x1, x5, x6, x8, x12, x15 of the arcs session), the pick
+   * counted for Undo where the console counts it.
+   */
+  private refuseExtend(input: PointerInput, ctx: ToolContext): void {
+    const hit = this.pickFor(input, ctx)
+    if (!hit || this.modeFor(input) !== "extend") return
+    const refusal = extendRefusal(hit, input.world)
+    if (!refusal) return
+    ctx.report(ctx.text.message(refusal.message), "error")
+    if (refusal.counts) this.steps.push(false)
+    ctx.requestRender()
+  }
+
+  private modeFor(input: PointerInput): EdgeEditMode {
+    if (!input.shiftKey) return this.defaultMode
+    return this.defaultMode === "trim" ? "extend" : "trim"
+  }
+
+  /**
+   * TRIM and EXTEND work in the UCS's XY plane: an object at an angle to it
+   * is neither cut nor a boundary (AutoCAD would project some; PROJMODE).
+   */
+  private pickFor(input: PointerInput, ctx: ToolContext): Entity | null {
     const hit = ctx.pick(input.world)
-    if (!hit || !readsInPlan(hit)) return null
-    const mode: EdgeEditMode = input.shiftKey
-      ? this.defaultMode === "trim"
-        ? "extend"
-        : "trim"
-      : this.defaultMode
+    return hit && readsInPlan(hit) ? hit : null
+  }
+
+  private planFor(input: PointerInput, ctx: ToolContext): EdgeEditPlan | null {
+    const hit = this.pickFor(input, ctx)
+    if (!hit) return null
+    const mode = this.modeFor(input)
     const others = ctx.document
       .getEntities()
       .filter(
@@ -387,6 +416,41 @@ function planTrim(
     case "dimension":
     case "hatch":
     case "insert":
+      return null
+  }
+}
+
+/**
+ * Why EXTEND leaves `target` as it is, in the console's words, and whether
+ * Undo then counts the pick: a line or an arc `Path does not intersect with
+ * the bounding edge.`, an open polyline's end `Object does not intersect an
+ * edge.`, a closed polyline `Cannot EXTEND this object.`, all counted; a
+ * circle that too and a dimension the path's, neither counted. `null` where
+ * the console extends what is not built here (a polyline's middle segment,
+ * an elliptical arc, a spline) or was not asked.
+ */
+function extendRefusal(
+  target: Entity,
+  click: Vec2
+): { readonly message: MessageId; readonly counts: boolean } | null {
+  switch (target.type) {
+    case "line":
+    case "arc":
+      return { message: "pathDoesNotIntersectBoundingEdge", counts: true }
+    case "polyline": {
+      if (target.closed) {
+        return { message: "cannotExtendObject", counts: true }
+      }
+      const index = nearestPolylineSegment(target, click)
+      return index === 0 || index === target.vertices.length - 2
+        ? { message: "objectDoesNotIntersectEdge", counts: true }
+        : null
+    }
+    case "circle":
+      return { message: "cannotExtendObject", counts: false }
+    case "dimension":
+      return { message: "pathDoesNotIntersectBoundingEdge", counts: false }
+    default:
       return null
   }
 }

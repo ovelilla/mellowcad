@@ -62,6 +62,7 @@ describe("TRIM", () => {
       "Current settings: Projection=UCS, Edge=None, Mode=Quick",
       "Select object to trim or shift-select to extend:",
       "Select object to trim or shift-select to extend or [Undo]:",
+      "Path does not intersect with the bounding edge.",
       "Select object to trim or shift-select to extend or [Undo]:",
     ])
   })
@@ -281,6 +282,70 @@ describe("EXTEND", () => {
       p(-200, 0),
       p(-100, 0),
     ])
+    expect(cad.commandLog().at(-1)).toBe(
+      "Path does not intersect with the bounding edge."
+    )
+  })
+
+  // AutoCAD 2023's console (acc/x1, x5, x6, x8, x12, x15 of the arcs session):
+  // each object EXTEND cannot reach an edge with has its words, and Undo
+  // counts the pick of a line, an arc or a polyline, not a circle's.
+  it("says why an object reaches no edge, and counts it as Undo does", () => {
+    const boundary = lineOf(p(100, -50), p(100, 50), { id: "B" })
+    for (const [locale, name, said] of [
+      [
+        undefined,
+        "EXTEND",
+        [
+          "Path does not intersect with the bounding edge.",
+          "Object does not intersect an edge.",
+          "Cannot EXTEND this object.",
+        ],
+      ],
+      [
+        es,
+        "ALARGA",
+        [
+          "La trayectoria no se interseca con la arista de contorno.",
+          "El objeto no se interseca con ninguna arista.",
+          "Objeto no procesado por ALARGA.",
+        ],
+      ],
+    ] as const) {
+      const entities = [
+        boundary,
+        lineOf(p(0, 0), p(50, 0), { id: "L" }),
+        polylineOf([p(0, 20), p(30, 20), p(30, 30)], { id: "P" }),
+        polylineOf([p(0, 60), p(50, 60), p(50, 80)], { id: "Q", closed: true }),
+        circleOf(p(30, -40), 10, { id: "C" }),
+      ]
+      const cad = createHarness({ locale, entities })
+      cad.command(name).click(p(100, 40))
+      expect(cad.commandLog().at(-1)).toBe(said[0])
+      const counted = cad.state().commandLine.prompt
+      expect(counted).toMatch(/\[(Undo|desHacer)\]:$/)
+
+      cad.option("Undo")
+      expect(cad.commandLog().at(-1)).toMatch(/^(Command|Todos)/)
+      cad.click(p(10, 20))
+      expect(cad.commandLog().at(-1)).toBe(said[1])
+      cad.click(p(25, 60))
+      expect(cad.commandLog().at(-1)).toBe(said[2])
+      cad.option("Undo").option("Undo")
+
+      cad.click(p(40, -40))
+      expect(cad.commandLog().at(-1)).toBe(said[2])
+      expect(cad.optionIds()).toEqual([])
+      expect(cad.entities()).toEqual(entities)
+
+      cad.click(p(40, 0)).click(p(40, 0))
+      expect(cad.commandLog().at(-1)).toBe(said[0])
+      expect(cad.byId<LineEntity>("L").end).toEqual(p(100, 0))
+      cad.option("Undo")
+      expect(cad.byId<LineEntity>("L").end).toEqual(p(100, 0))
+      cad.option("Undo")
+      expect(cad.byId<LineEntity>("L").end).toEqual(p(50, 0))
+    }
   })
 
   it("Shift swaps TRIM and EXTEND on the fly", () => {
