@@ -91,8 +91,21 @@ describe("resolving what was typed", () => {
     const hatch = [english("ANnotative"), english("Advanced")]
     expect(matchKeywords("A", hatch)).toEqual(["Advanced"])
     expect(matchKeywords("ON", [english("OFF"), english("ON")])).toEqual(["ON"])
-    expect(matchKeywords("CE", spanishArc)).toEqual(["Center", "Close"])
     expect(matchKeywords("des", spanish)).toEqual([])
+  })
+
+  // AutoCAD 2023's console (acc/k19, k20, k22): `TH` and `THR` at OFFSET's
+  // `Through Thru` and `CE` at ELLIPSE's `Center Centre` are the first.
+  it("takes the first word whose capitals the answer covers", () => {
+    const offset = [english("Through"), english("Erase"), english("Thru")]
+    expect(matchKeywords("TH", offset)).toEqual(["Through"])
+    expect(matchKeywords("thr", offset)).toEqual(["Through"])
+    expect(matchKeywords("THRU", offset)).toEqual(["Thru"])
+    const ellipse = [english("Arc"), english("Center"), english("Centre")]
+    expect(matchKeywords("CE", ellipse)).toEqual(["Center"])
+    expect(matchKeywords("CENTR", ellipse)).toEqual(["Centre"])
+    expect(matchKeywords("CE", spanishArc)).toEqual(["Center"])
+    expect(matchKeywords("c", spanishArc)).toEqual(["Close"])
   })
 
   it("hands back the global id however it was typed", () => {

@@ -156,9 +156,18 @@ command name that offers it (CIRCLE and CIRCLED). So does one AutoCAD **declares
 it lists — its `initget` string in Autodesk's table: TEXT's `TLeft` listed `TL`, ATTDISP's `OFf`
 listed `OFF` —, whose `commands.keywords` word is the declared one: it is what answers (`TLE`)
 and what `Ambiguous response` names (`TLeft or TCenter or TRight?`), the label what the list, the
-`<default>` and `ctx.text.keyword` show. Every language gives both. A prompt whose declared
-order is not the listed one names it in its question (`declared: ["OFF", "Normal", "ON"]`),
-which that question asks in (`OFf or ON?`); never a second keyword id for either.
+`<default>` and `ctx.text.keyword` show. Every language gives both: a language's labels can
+only name what English labels (keep English's even when it equals the word, as OFFSET's
+`Through` for Spanish `punto a Atravesar`), and one with no label of its own lists English's.
+Spanish often declares otherwise where English does not (`Atravesar`, `Actual`, `Tangencia`):
+read both tables' `initget`. The console outranks the table: PLINE's arc prompt asks `CEnter or
+CLose?` although its string declares `CE`, so it keeps `CEnter`. A prompt whose declared order
+is not the listed one names it in its question (`declared: ["OFF", "Normal", "ON"]`), which that
+question asks in (`OFf or ON?`) — only where two words on offer can be ambiguous, since nothing
+else shows the order; never a second keyword id for either. A word the `initget` declares and
+the list leaves out is a hidden option, after the shown ones (OFFSET's `Thru`, ELLIPSE's
+`Centre`, PLINE's `LIne` in line mode, which asks the same prompt again), only once the
+console shows what it does.
 
 **What a question takes** — `takes()`, a `QuestionInput` — is how the runtime refuses a wrong
 answer there (`cad-runtime.instructions.md`, "Answering a prompt"). Leave it out where the default
@@ -369,7 +378,9 @@ A keyword is answered by its abbreviation, its whole word or the word's start as
 capital and on (`OB` for `Object`, `C` for `CEnter`; not `E` for `eXit`, and no number), or by `_`
 and the global one, typed and confirmed with Enter or Space — at the prompt or in a value box, as in
 AutoCAD; no key runs one on its own. The runtime matches them (`matchKeywords`): an answer that
-starts several and is none's abbreviation or word asks which (`CEnter or CLose?`), so two keywords
+reaches past the capitals of several is the first of them (`TH` for `Through`, not `Thru`); one that
+starts several, stops short of their capitals and is none's abbreviation or word asks which
+(`CEnter or CLose?`), so two keywords
 of one prompt may share their first letters — that is AutoCAD's own answer, never a reason to
 re-letter one. `resolveKeyword` is the stricter match for words a tool reads itself (a pattern
 name, `?`) and for object snaps, which need their three letters (`CE` is no snap). What is typed in a value box (or on the drawing, which feeds the box) is resolved as a

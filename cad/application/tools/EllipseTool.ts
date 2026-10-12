@@ -303,10 +303,15 @@ export class EllipseTool implements Tool {
     switch (this.state.phase) {
       case "first":
         // AutoCAD's first prompt: `[Arc/Center]` from the axis mode, and just
-        // `[Center]` once it is already drawing an elliptical arc.
+        // `[Center]` once it is already drawing an elliptical arc; both
+        // declare `Centre` too, unlisted.
         return this.centered
           ? []
-          : [...(this.arc ? [] : [{ id: "Arc" }]), { id: "Center" }]
+          : [
+              ...(this.arc ? [] : [{ id: "Arc" }]),
+              { id: "Center" },
+              { id: "Centre", hidden: true },
+            ]
       case "distance":
         return [{ id: "Rotation" }]
       case "startAngle":
@@ -326,7 +331,10 @@ export class EllipseTool implements Tool {
   }
 
   invokeOption(id: string, ctx: ToolContext): CommandOptionOutcome {
-    if (this.state.phase === "first" && (id === "Arc" || id === "Center")) {
+    if (
+      this.state.phase === "first" &&
+      (id === "Arc" || id === "Center" || id === "Centre")
+    ) {
       if (id === "Arc") this.arc = true
       else this.centered = true
       this.openPointInput(ctx, this.firstPrompt())

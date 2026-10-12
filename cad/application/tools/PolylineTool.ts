@@ -216,13 +216,21 @@ export class PolylineTool implements Tool {
    * start point on. In arc mode the arc options open prompts of their own.
    * WHY no Halfwidth or Width: a polyline has no widths here; AutoCAD's own
    * table words the list without them too (`[Arc/Close/Length/Undo]`).
+   * Each mode also declares, unlisted, the mode it is in (`LIne`, `ARc`):
+   * typed, the console asks the same prompt again.
    */
   commandOptions(): readonly CommandOption[] {
     if (this.state.phase !== "drawing" || this.askingLength) return []
     if (this.arc.active) return this.arc.commandOptions()
     const close = this.state.vertices.length >= 2 ? [{ id: "Close" }] : []
     if (!this.state.arcMode) {
-      return [{ id: "Arc" }, ...close, { id: "Length" }, { id: "Undo" }]
+      return [
+        { id: "Arc" },
+        ...close,
+        { id: "Length" },
+        { id: "Undo" },
+        { id: "Line", hidden: true },
+      ]
     }
     const [angle, center, direction, radius, second] = ARC_SEGMENT_OPTIONS
     return [
@@ -234,6 +242,7 @@ export class PolylineTool implements Tool {
       { id: radius },
       { id: second },
       { id: "Undo" },
+      { id: "Arc", hidden: true },
     ]
   }
 

@@ -221,22 +221,75 @@ describe("an answer that starts several keywords", () => {
 
   it("asks in Spanish", () => {
     const cad = createHarness({ locale: es })
-    cad.command("POL")
-    answerLine(cad, "0,0", "10,0", "A", "CE")
+    cad.command("TEXTO")
+    answerLine(cad, "U", "S")
     expect(cad.commandLog().at(-1)).toBe("Respuesta ambigua, especifique...")
-    expect(cad.state().commandLine.prompt).toBe("POL cEntro o Cerrar?")
     answerLine(cad, "")
     expect(cad.commandLog().slice(-2)).toEqual([
-      "cEntro o Cerrar?",
+      "SIZquierda o SCentro o SDerecha?",
       "Opción no válida.",
     ])
     answerLine(cad, "FOO")
-    expect(cad.commandLog().at(-1)).toBe(
-      "Se requiere un punto 2D o una opción."
-    )
-    answerLine(cad, "CE", "E")
+    expect(cad.commandLog().slice(-2)).toEqual([
+      "SIZquierda o SCentro o SDerecha? FOO",
+      "Opción no válida.",
+    ])
+    answerLine(cad, "SC")
     expect(cad.state().commandLine.prompt).toBe(
+      "TEXTO Precise punto central superior de texto:"
+    )
+  })
+
+  // AutoCAD 2023's console (acc/k6, k19, k20): an answer that reaches past
+  // the capitals of several words is the first of them, and a mode's unlisted
+  // word for itself (PLINE's `LIne`, `ARc`) asks the same prompt again.
+  it("takes the first word whose capitals it covers, without asking", () => {
+    const offset = createHarness()
+    offset.command("OFFSET")
+    answerLine(offset, "TH")
+    expect(offset.state().commandLine.prompt).toBe(
+      "OFFSET Select object to offset or [Exit/Undo] <Exit>:"
+    )
+    offset.command("OFFSET")
+    answerLine(offset, "THRU")
+    expect(offset.state().commandLine.prompt).toBe(
+      "OFFSET Select object to offset or [Exit/Undo] <Exit>:"
+    )
+
+    const ellipse = createHarness()
+    ellipse.command("ELLIPSE")
+    answerLine(ellipse, "CE")
+    expect(ellipse.state().commandLine.prompt).toBe(
+      "ELLIPSE Specify center of ellipse:"
+    )
+    ellipse.press("Escape")
+    ellipse.command("ELLIPSE")
+    answerLine(ellipse, "A", "CENTRE")
+    expect(ellipse.state().commandLine.prompt).toBe(
+      "ELLIPSE Specify center of elliptical arc:"
+    )
+
+    const spanish = createHarness({ locale: es })
+    spanish.command("POL")
+    answerLine(spanish, "0,0", "10,0", "A", "CE")
+    expect(spanish.state().commandLine.prompt).toBe(
       "POL Precise punto central del arco:"
+    )
+
+    const pline = createHarness()
+    pline.command("PLINE")
+    answerLine(pline, "0,0", "10,0", "LI")
+    expect(pline.commandLog().at(-1)).toBe(
+      "Specify next point or [Arc/Close/Length/Undo]: LI"
+    )
+    expect(pline.state().commandLine.prompt).toBe(
+      "PLINE Specify next point or [Arc/Close/Length/Undo]:"
+    )
+    answerLine(pline, "A", "AR")
+    expect(pline.state().commandLine.prompt).toBe(`PLINE ${ARC_PROMPT}`)
+    answerLine(pline, "L", "L")
+    expect(pline.state().commandLine.prompt).toBe(
+      "PLINE Specify length of line:"
     )
   })
 })
@@ -296,6 +349,62 @@ describe("an object snap's name at a point prompt", () => {
     answerLine(cad, "E")
     expect(cad.state().commandLine.prompt).toBe(
       "POL Precise punto central del arco:"
+    )
+  })
+})
+
+// AutoCAD declares some keywords in other words than its prompt lists them
+// (initget `Tangency` at `[start Tangency]`, `Atravesar` at Spanish
+// `[punto a Atravesar]`): the declared word is what is typed, as far as its
+// capitals and on, and the prompt keeps listing the other (acc/k8–k12, k23).
+describe("a keyword declared otherwise than listed", () => {
+  it("is typed as declared, and listed as AutoCAD lists it", () => {
+    const spline = createHarness()
+    spline.command("SPLINE")
+    answerLine(spline, "0,0")
+    expect(spline.state().commandLine.prompt).toBe(
+      "SPLINE Enter next point or [start Tangency]:"
+    )
+    answerLine(spline, "TANGENC")
+    expect(spline.state().commandLine.prompt).toBe(
+      "SPLINE Specify start tangent:"
+    )
+
+    const plan = createHarness()
+    plan.command("PLAN")
+    answerLine(plan, "CURRENTUCS")
+    expect(plan.commandLog().slice(-2)).toEqual([
+      "Enter an option [Current ucs/Ucs/World] <Current>: CURRENTUCS",
+      "Invalid option keyword.",
+    ])
+  })
+
+  it("is typed as declared in Spanish", () => {
+    const offset = createHarness({ locale: es })
+    offset.command("DESFASE")
+    expect(offset.state().commandLine.prompt).toBe(
+      "DESFASE Precise distancia de desfase o [punto a Atravesar/Borrar/Capa] <punto a Atravesar>:"
+    )
+    answerLine(offset, "PUNTO")
+    expect(offset.commandLog().slice(-2)).toEqual([
+      "Precise distancia de desfase o [punto a Atravesar/Borrar/Capa] <punto a Atravesar>: PUNTO",
+      "Requiere una distancia numérica, dos puntos o una opción.",
+    ])
+    answerLine(offset, "ATRAV")
+    expect(offset.state().commandLine.prompt).toBe(
+      "DESFASE Designe objeto a desplazar o [Salir/Deshacer] <Salir>:"
+    )
+    offset.command("DESFASE")
+    answerLine(offset, "PUN")
+    expect(offset.state().commandLine.prompt).toBe(
+      "DESFASE Designe objeto a desplazar o [Salir/Deshacer] <Salir>:"
+    )
+
+    const spline = createHarness({ locale: es })
+    spline.command("SPLINE")
+    answerLine(spline, "0,0", "TANGENCIA")
+    expect(spline.state().commandLine.prompt).toBe(
+      "SPLINE Precise tangente inicial:"
     )
   })
 })

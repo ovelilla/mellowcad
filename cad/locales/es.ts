@@ -877,24 +877,27 @@ export const es: EngineLocale = {
       "ELLIPSE": {
         "Arc": "Arco",
         "Center": "Centro",
+        "Centre": "Centro",
         "Rotation": "Rotación",
-        "Included angle": "ángulo Incluido",
+        "Included angle": "Incluido",
         "Parameter": "Parámetro",
         "Angle": "ángUlo"
       },
       "ELLIPSEC": {
         "Arc": "Arco",
         "Center": "Centro",
+        "Centre": "Centro",
         "Rotation": "Rotación",
-        "Included angle": "ángulo Incluido",
+        "Included angle": "Incluido",
         "Parameter": "Parámetro",
         "Angle": "ángUlo"
       },
       "ELLIPSEARC": {
         "Arc": "Arco",
         "Center": "Centro",
+        "Centre": "Centro",
         "Rotation": "Rotación",
-        "Included angle": "ángulo Incluido",
+        "Included angle": "Incluido",
         "Parameter": "Parámetro",
         "Angle": "ángUlo"
       },
@@ -905,10 +908,10 @@ export const es: EngineLocale = {
         "Fit": "Ajustar",
         "CV": "VC",
         "Chord": "Cuerda",
-        "Square root": "raíz cuaDrada",
+        "Square root": "cuaDrada",
         "Uniform": "Uniforme",
-        "start Tangency": "iniciar Tangencia",
-        "end Tangency": "finalizar Tangencia",
+        "start Tangency": "Tangencia",
+        "end Tangency": "Tangencia",
         "Undo": "desHacer",
         "Close": "Cerrar"
       },
@@ -923,7 +926,7 @@ export const es: EngineLocale = {
       },
       "HATCH": {
         "Properties": "Propiedades",
-        "Select objects": "Designar objetos",
+        "Select objects": "Designar",
         "?": "?",
         "Solid": "Sólido"
       },
@@ -940,7 +943,7 @@ export const es: EngineLocale = {
         "Constant": "Constante",
         "Verify": "Verificable",
         "Preset": "Predefinido",
-        "Lock position": "Bloquear posición",
+        "Lock position": "Bloquear",
         "Justify": "jUstificar",
         "Style": "Estilo",
         "Left": "Izquierda",
@@ -1042,7 +1045,8 @@ export const es: EngineLocale = {
         "Auto": "Auto"
       },
       "OFFSET": {
-        "Through": "punto a Atravesar",
+        "Through": "Atravesar",
+        "Thru": "Pun",
         "Erase": "Borrar",
         "Layer": "Capa",
         "Yes": "Sí",
@@ -1072,13 +1076,13 @@ export const es: EngineLocale = {
         "COLumns": "Columnas",
         "Rows": "Filas",
         "eXit": "Salir",
-        "Unit cell": "célula de Unidad"
+        "Unit cell": "Unidad"
       },
       "ARRAYPOLAR": {
         "Items": "Elementos",
-        "Angle between": "ángUlo entre",
-        "Fill angle": "ángulo de Relleno",
-        "ROTate items": "Girar objetos",
+        "Angle between": "ángUlo",
+        "Fill angle": "Relleno",
+        "ROTate items": "Girar",
         "eXit": "Salir",
         "Yes": "Sí",
         "No": "No"
@@ -1086,11 +1090,11 @@ export const es: EngineLocale = {
       "ARRAYPATH": {
         "Method": "Método",
         "Items": "Elementos",
-        "Align items": "ALinear elementos",
+        "Align items": "ALinear",
         "eXit": "Salir",
         "Divide": "Dividir",
         "Measure": "Medir",
-        "Fill entire path": "Llenar todo el camino",
+        "Fill entire path": "Llenar",
         "Yes": "Sí",
         "No": "No"
       },
@@ -1113,7 +1117,7 @@ export const es: EngineLocale = {
         "Multiple": "múLtiple"
       },
       "BREAK": {
-        "First point": "Primer punto"
+        "First point": "Primer"
       },
       "DIST": {
         "Multiple": "Múltiples",
@@ -1169,7 +1173,7 @@ export const es: EngineLocale = {
         "ORigin": "Origen"
       },
       "PLAN": {
-        "Current ucs": "scp Actual",
+        "Current ucs": "Actual",
         "Ucs": "SCP",
         "World": "Universal",
         "?": "?"
@@ -1250,7 +1254,11 @@ export const es: EngineLocale = {
         "Radius": "Radio"
       },
       "specifyEndpointOfArcOr": {
-        "Close": "Cerrar"
+        "Close": "Cerrar",
+        "Arc": "Arco"
+      },
+      "specifyNextPointOr": {
+        "Line": "líNea"
       }
     },
     "prompts": {
@@ -2862,10 +2870,55 @@ export const es: EngineLocale = {
         "MR": "MD",
         "BL": "II",
         "BC": "IC",
-        "BR": "ID"
+        "BR": "ID",
+        "Lock position": "Bloquear posición"
       },
       "ATTDISP": {
         "OFF": "DES"
+      },
+      "ARC": {
+        "Center": "Centro"
+      },
+      "ARCSCE": {
+        "Center": "Centro"
+      },
+      "ELLIPSE": {
+        "Included angle": "ángulo Incluido"
+      },
+      "ELLIPSEC": {
+        "Included angle": "ángulo Incluido"
+      },
+      "ELLIPSEARC": {
+        "Included angle": "ángulo Incluido"
+      },
+      "PLAN": {
+        "Current ucs": "scp Actual"
+      },
+      "SPLINE": {
+        "Square root": "raíz cuaDrada",
+        "start Tangency": "iniciar Tangencia",
+        "end Tangency": "finalizar Tangencia"
+      },
+      "HATCH": {
+        "Select objects": "Designar objetos"
+      },
+      "BREAK": {
+        "First point": "Primer punto"
+      },
+      "ARRAYRECT": {
+        "Unit cell": "célula de Unidad"
+      },
+      "ARRAYPOLAR": {
+        "Angle between": "ángUlo entre",
+        "Fill angle": "ángulo de Relleno",
+        "ROTate items": "Girar objetos"
+      },
+      "ARRAYPATH": {
+        "Align items": "ALinear elementos",
+        "Fill entire path": "Llenar todo el camino"
+      },
+      "OFFSET": {
+        "Through": "punto a Atravesar"
       }
     },
     "listing": {

@@ -87,7 +87,8 @@ interface EngineLocale {
 - `keywordLabels` gives a keyword the gloss AutoCAD lists it with (`Ttr (tan tan radius)`), or
   the form it lists a keyword declared otherwise in (`TL` for TEXT's `TLeft`), shown in the
   prompt's list, its `<default>` and on its option; the word typed and named when AutoCAD asks
-  which was meant stays the keyword.
+  which was meant stays the keyword. A language labels only what English labels, and lists
+  English's label where it gives none.
 - `promptKeywords` spells a keyword otherwise at one prompt, by the prompt's id: each AutoCAD
   prompt declares its own, so Spanish FILLET lists `[RAdio]` but `Designe polilínea 2D o
 [Radio]:`. A keyword it leaves out is spelled as in `keywords`.

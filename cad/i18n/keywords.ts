@@ -95,11 +95,13 @@ export function resolveKeyword(
 
 /**
  * The ids of the keywords on offer at a prompt that `input` names: the one
- * whose abbreviation or whole word it is, else every one whose word it starts,
- * as far as the word's first capital and on — `C` for `CEnter`, but `C` for
- * both `CEnter` and `CLose`, which AutoCAD 2023's console answers
- * `Ambiguous response, please clarify...`. `E` is not `eXit`'s start, and a
- * number is no keyword's: `3` at CIRCLE's first prompt is a point, not `3P`.
+ * whose abbreviation or whole word it is, else the first whose word it starts
+ * past all of its capitals (`TH` for `Through`, before the hidden `Thru`),
+ * else every one whose word it starts, as far as the word's first capital and
+ * on — `C` for `CEnter`, but `C` for both `CEnter` and `CLose`, which AutoCAD
+ * 2023's console answers `Ambiguous response, please clarify...`. `E` is not
+ * `eXit`'s start, and a number is no keyword's: `3` at CIRCLE's first prompt
+ * is a point, not `3P`.
  */
 export function matchKeywords(
   input: string,
@@ -116,16 +118,22 @@ export function matchKeywords(
     ) ?? keywords.find((keyword) => upper(wordOf(keyword)) === typed)
   if (exact) return [exact.id]
   if (Number.isFinite(Number(typed))) return []
-  const ids = keywords
-    .filter((keyword) => {
-      const word = wordOf(keyword)
-      const first = [...word].findIndex(isCapital)
-      return (
-        first !== -1 && typed.length > first && upper(word).startsWith(typed)
-      )
-    })
-    .map((keyword) => keyword.id)
-  return [...new Set(ids)]
+  const started = keywords.filter((keyword) => {
+    const word = wordOf(keyword)
+    const first = [...word].findIndex(isCapital)
+    return first !== -1 && typed.length > first && upper(word).startsWith(typed)
+  })
+  // WHY the first whose capitals are all typed, not a question: AutoCAD 2023's
+  // console takes `TH` at OFFSET's `Through Thru` and `CE` at ELLIPSE's
+  // `Center Centre` as the first, and asks only when the input stops short of
+  // each word's capitals (`C` at `CEnter CLose`).
+  const covered = started.find((keyword) => {
+    const word = wordOf(keyword)
+    const abbreviation = abbreviationOf(word)
+    return typed.length >= word.indexOf(abbreviation) + abbreviation.length
+  })
+  if (covered) return [covered.id]
+  return [...new Set(started.map((keyword) => keyword.id))]
 }
 
 /**

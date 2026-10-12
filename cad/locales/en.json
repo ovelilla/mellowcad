@@ -436,7 +436,7 @@
         "Second pt": "Second pt",
         "Length": "Length"
       },
-      "ARC": { "Center": "Center" },
+      "ARC": { "Center": "Ce" },
       "MOVE": { "Displacement": "Displacement" },
       "COPY": {
         "Displacement": "Displacement",
@@ -444,7 +444,7 @@
         "Undo": "Undo"
       },
       "STRETCH": { "Displacement": "Displacement" },
-      "ARCSCE": { "Center": "Center" },
+      "ARCSCE": { "Center": "Ce" },
       "CIRCLE": {
         "3P": "3P",
         "2P": "2P",
@@ -455,24 +455,27 @@
       "ELLIPSE": {
         "Arc": "Arc",
         "Center": "Center",
+        "Centre": "Centre",
         "Rotation": "Rotation",
-        "Included angle": "Included angle",
+        "Included angle": "Included",
         "Parameter": "Parameter",
         "Angle": "Angle"
       },
       "ELLIPSEC": {
         "Arc": "Arc",
         "Center": "Center",
+        "Centre": "Centre",
         "Rotation": "Rotation",
-        "Included angle": "Included angle",
+        "Included angle": "Included",
         "Parameter": "Parameter",
         "Angle": "Angle"
       },
       "ELLIPSEARC": {
         "Arc": "Arc",
         "Center": "Center",
+        "Centre": "Centre",
         "Rotation": "Rotation",
-        "Included angle": "Included angle",
+        "Included angle": "Included",
         "Parameter": "Parameter",
         "Angle": "Angle"
       },
@@ -483,10 +486,10 @@
         "Fit": "Fit",
         "CV": "CV",
         "Chord": "Chord",
-        "Square root": "Square root",
+        "Square root": "Square",
         "Uniform": "Uniform",
-        "start Tangency": "start Tangency",
-        "end Tangency": "end Tangency",
+        "start Tangency": "Tangency",
+        "end Tangency": "Tangency",
         "Undo": "Undo",
         "Close": "Close"
       },
@@ -498,7 +501,7 @@
       },
       "HATCH": {
         "Properties": "Properties",
-        "Select objects": "Select objects",
+        "Select objects": "Select",
         "?": "?",
         "Solid": "Solid"
       },
@@ -509,7 +512,7 @@
         "Constant": "Constant",
         "Verify": "Verify",
         "Preset": "Preset",
-        "Lock position": "Lock position",
+        "Lock position": "Lock",
         "Justify": "Justify",
         "Style": "Style",
         "Left": "Left",
@@ -588,6 +591,7 @@
       "DIMSPACE": { "Auto": "Auto" },
       "OFFSET": {
         "Through": "Through",
+        "Thru": "Thru",
         "Erase": "Erase",
         "Layer": "Layer",
         "Yes": "Yes",
@@ -607,13 +611,13 @@
         "COLumns": "COLumns",
         "Rows": "Rows",
         "eXit": "eXit",
-        "Unit cell": "Unit cell"
+        "Unit cell": "Unit"
       },
       "ARRAYPOLAR": {
         "Items": "Items",
-        "Angle between": "Angle between",
-        "Fill angle": "Fill angle",
-        "ROTate items": "ROTate items",
+        "Angle between": "Angle",
+        "Fill angle": "Fill",
+        "ROTate items": "ROTate",
         "eXit": "eXit",
         "Yes": "Yes",
         "No": "No"
@@ -621,11 +625,11 @@
       "ARRAYPATH": {
         "Method": "Method",
         "Items": "Items",
-        "Align items": "Align items",
+        "Align items": "Align",
         "eXit": "eXit",
         "Divide": "Divide",
         "Measure": "Measure",
-        "Fill entire path": "Fill entire path",
+        "Fill entire path": "Fill",
         "Yes": "Yes",
         "No": "No"
       },
@@ -643,7 +647,7 @@
         "Distance": "Distance",
         "Multiple": "Multiple"
       },
-      "BREAK": { "First point": "First point" },
+      "BREAK": { "First point": "First" },
       "DIST": {
         "Multiple": "Multiple",
         "Close": "Close",
@@ -698,7 +702,7 @@
         "ORigin": "ORigin"
       },
       "PLAN": {
-        "Current ucs": "Current ucs",
+        "Current ucs": "Current",
         "Ucs": "Ucs",
         "World": "World",
         "?": "?"
@@ -756,7 +760,8 @@
       "specifyEndpointOfLineOr": { "Undo": "Undo" },
       "select2dPolylineOr": { "Radius": "Radius" },
       "selectSecondObjectOrApplyCornerOr": { "Radius": "Radius" },
-      "specifyEndpointOfArcOr": { "Close": "CLose" }
+      "specifyEndpointOfArcOr": { "Close": "CLose", "Arc": "ARc" },
+      "specifyNextPointOr": { "Line": "LIne" }
     },
     "prompts": {
       "length": "Length",
@@ -1332,9 +1337,34 @@
         "MR": "MR",
         "BL": "BL",
         "BC": "BC",
-        "BR": "BR"
+        "BR": "BR",
+        "Lock position": "Lock position"
       },
-      "ATTDISP": { "OFF": "OFF" }
+      "ATTDISP": { "OFF": "OFF" },
+      "ARC": { "Center": "Center" },
+      "ARCSCE": { "Center": "Center" },
+      "ELLIPSE": { "Included angle": "Included angle" },
+      "ELLIPSEC": { "Included angle": "Included angle" },
+      "ELLIPSEARC": { "Included angle": "Included angle" },
+      "PLAN": { "Current ucs": "Current ucs" },
+      "SPLINE": {
+        "Square root": "Square root",
+        "start Tangency": "start Tangency",
+        "end Tangency": "end Tangency"
+      },
+      "HATCH": { "Select objects": "Select objects" },
+      "BREAK": { "First point": "First point" },
+      "ARRAYRECT": { "Unit cell": "Unit cell" },
+      "ARRAYPOLAR": {
+        "Angle between": "Angle between",
+        "Fill angle": "Fill angle",
+        "ROTate items": "ROTate items"
+      },
+      "ARRAYPATH": {
+        "Align items": "Align items",
+        "Fill entire path": "Fill entire path"
+      },
+      "OFFSET": { "Through": "Through" }
     },
     "listing": {
       "hatchPattern": "{name}  {description}",

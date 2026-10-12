@@ -841,7 +841,31 @@ export const en: EngineCatalog = {
       "PLINE": {
         "Center": "CEnter"
       },
+      "ARC": {
+        "Center": "Ce"
+      },
+      "ARCSCE": {
+        "Center": "Ce"
+      },
+      "ELLIPSE": {
+        "Included angle": "Included"
+      },
+      "ELLIPSEC": {
+        "Included angle": "Included"
+      },
+      "ELLIPSEARC": {
+        "Included angle": "Included"
+      },
+      "SPLINE": {
+        "Square root": "Square",
+        "start Tangency": "Tangency",
+        "end Tangency": "Tangency"
+      },
+      "HATCH": {
+        "Select objects": "Select"
+      },
       "ATTDEF": {
+        "Lock position": "Lock",
         "TL": "TLeft",
         "TC": "TCenter",
         "TR": "TRight",
@@ -866,8 +890,26 @@ export const en: EngineCatalog = {
         "BC": "BCenter",
         "BR": "BRight"
       },
+      "ARRAYRECT": {
+        "Unit cell": "Unit"
+      },
+      "ARRAYPOLAR": {
+        "Angle between": "Angle",
+        "Fill angle": "Fill",
+        "ROTate items": "ROTate"
+      },
+      "ARRAYPATH": {
+        "Align items": "Align",
+        "Fill entire path": "Fill"
+      },
+      "BREAK": {
+        "First point": "First"
+      },
       "DIST": {
         "Center": "CEnter"
+      },
+      "PLAN": {
+        "Current ucs": "Current"
       },
       "VIEW": {
         "Right": "RIght",
@@ -928,7 +970,11 @@ export const en: EngineCatalog = {
         "Radius": "Radius"
       },
       "specifyEndpointOfArcOr": {
-        "Close": "CLose"
+        "Close": "CLose",
+        "Arc": "ARc"
+      },
+      "specifyNextPointOr": {
+        "Line": "LIne"
       }
     },
     "prompts": {
@@ -2541,10 +2587,55 @@ export const en: EngineCatalog = {
         "MR": "MR",
         "BL": "BL",
         "BC": "BC",
-        "BR": "BR"
+        "BR": "BR",
+        "Lock position": "Lock position"
       },
       "ATTDISP": {
         "OFF": "OFF"
+      },
+      "ARC": {
+        "Center": "Center"
+      },
+      "ARCSCE": {
+        "Center": "Center"
+      },
+      "ELLIPSE": {
+        "Included angle": "Included angle"
+      },
+      "ELLIPSEC": {
+        "Included angle": "Included angle"
+      },
+      "ELLIPSEARC": {
+        "Included angle": "Included angle"
+      },
+      "PLAN": {
+        "Current ucs": "Current ucs"
+      },
+      "SPLINE": {
+        "Square root": "Square root",
+        "start Tangency": "start Tangency",
+        "end Tangency": "end Tangency"
+      },
+      "HATCH": {
+        "Select objects": "Select objects"
+      },
+      "BREAK": {
+        "First point": "First point"
+      },
+      "ARRAYRECT": {
+        "Unit cell": "Unit cell"
+      },
+      "ARRAYPOLAR": {
+        "Angle between": "Angle between",
+        "Fill angle": "Fill angle",
+        "ROTate items": "ROTate items"
+      },
+      "ARRAYPATH": {
+        "Align items": "Align items",
+        "Fill entire path": "Fill entire path"
+      },
+      "OFFSET": {
+        "Through": "Through"
       }
     },
     "listing": {

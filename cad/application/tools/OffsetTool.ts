@@ -318,7 +318,13 @@ export class OffsetTool implements Tool {
   commandOptions(): readonly CommandOption[] {
     switch (this.state.phase) {
       case "distance":
-        return [{ id: "Through" }, { id: "Erase" }, { id: "Layer" }]
+        // `Thru` is AutoCAD's unlisted second word for Through.
+        return [
+          { id: "Through" },
+          { id: "Erase" },
+          { id: "Layer" },
+          { id: "Thru", hidden: true },
+        ]
       case "erase":
         return [{ id: "Yes" }, { id: "No" }]
       case "layer":
@@ -336,7 +342,7 @@ export class OffsetTool implements Tool {
   invokeOption(id: string, ctx: ToolContext): CommandOptionOutcome {
     const phase = this.state.phase
     if (phase === "distance") {
-      if (id === "Through") {
+      if (id === "Through" || id === "Thru") {
         this.enterThrough(ctx)
         return "continue"
       }
