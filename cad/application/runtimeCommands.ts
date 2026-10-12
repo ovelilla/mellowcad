@@ -276,10 +276,14 @@ export function optionKeywords(
 
 /**
  * Whether AutoCAD asks `prompt` on the line a pick left bare — its string has
- * no new line before it: `Select objects: Specify opposite corner: 2 found`.
+ * no new line before it: `Select objects: Specify opposite corner: 2 found`,
+ * and the second of two measuring points, whose own space follows the
+ * picked one's: `Specify fillet radius <0.0000>:  Specify second point:`.
  */
 export function continuesLine(prompt: PromptId | null): boolean {
-  return prompt === "specifyOppositeCorner"
+  return (
+    prompt === "specifyOppositeCorner" || prompt === "secondPointOfDistance"
+  )
 }
 
 /** A prompt in its two forms: at the prompt line, and as the history writes it. */
@@ -373,19 +377,23 @@ export function commandPrompt(
       : fallback === null
         ? null
         : text.keyword(command, fallback, id)
+  // WHY only the history keeps a prompt's leading space (` Specify second
+  // point:`, ` (ADD mode)…`): it is how AutoCAD lays the line out after the
+  // last, not part of the question the prompt line and the tooltip show.
+  const shown = question?.trimStart() ?? null
   return {
     command: name,
     segments: text.composePrompt(
-      question === null ? name : text.commandQuestion(name, question),
+      shown === null ? name : text.commandQuestion(name, shown),
       labels,
       value
     ),
     echo:
       question === null ? null : text.composePrompt(question, labels, value),
     dynamic:
-      question === null || labels.length > 0 || value !== null
-        ? question
-        : promptString(text.composePrompt(question, [])),
+      shown === null || labels.length > 0 || value !== null
+        ? shown
+        : promptString(text.composePrompt(shown, [])),
   }
 }
 

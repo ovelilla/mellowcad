@@ -2756,7 +2756,6 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0°~, Line space facto
   tip: Specify new length or
   dyn: "New length"=""|100.00|mm*
   options: [P] Points
-  prompt| Specify second point:
 > escape
   prompt: Command:
   asks: -

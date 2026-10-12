@@ -937,6 +937,7 @@
       "specifyFirstTangentOfCircle": "Specify point on object for first tangent of circle",
       "specifySecondTangentOfCircle": "Specify point on object for second tangent of circle",
       "specifySecondPoint": "Specify second point",
+      "secondPointOfDistance": " Specify second point",
       "clarifyKeyword": "{keywords}?",
       "specifyFirstCornerPointOr": "Specify first corner point or",
       "addModeNextPointOr": " (ADD mode)Specify next point or",

@@ -449,7 +449,7 @@ instead, or the command-line buffer will swallow them.
   `input.world` there, not `input.point`: a point pulled onto an endpoint has landed on the very
   boundary it was meant to be inside.
 - **A distance or an angle takes a point too** — AutoCAD's input measures it from the prompt's
-  base point, or asks `Specify second point:` for a second. A lone `distance` / `length` /
+  base point, or asks ` Specify second point:` for a second. A lone `distance` / `length` /
   `angle` box gets it one of two ways, and `wantsSnap()` says which. True: the point is the
   tool's, a pick (a typed one is given as a pick, after a move there), measured by its own
   `onPointerDown` — CIRCLE's radius from the centre, POLYGON's radius, which also turns it, TEXT's

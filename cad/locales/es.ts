@@ -1447,6 +1447,7 @@ export const es: EngineLocale = {
       "specifyFirstTangentOfCircle": "Precise punto en objeto para la primera tangente del círculo",
       "specifySecondTangentOfCircle": "Precise punto en objeto para la segunda tangente del círculo",
       "specifySecondPoint": "Precise segundo punto",
+      "secondPointOfDistance": " Designe segundo punto",
       "clarifyKeyword": [
         [
           "keywords"

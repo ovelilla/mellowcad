@@ -218,7 +218,10 @@ release does (`openLine`, while nothing else has been written); after a typed an
 goes on a line of its own, as AutoCAD's Enter ends the line. A prompt AutoCAD prints without a
 new line (`continuesLine`: `Specify opposite corner:`) is written on the line a pick left bare:
 `Select objects: Specify opposite corner: 2 found`. Add one to `continuesLine` only from its
-string in Autodesk's table (no leading new line).
+string in Autodesk's table (no leading new line). A table string that starts with a space
+(`Specify second point:`, ` (ADD mode)Specify next point or`) keeps it in `commands.prompts`:
+the history writes it (` Specify second point: 10,0`, and two spaces after a picked prompt's
+colon), and `commandPrompt` trims it from the prompt line and the tooltip.
 
 **A wrong answer is refused, never run.** What is typed at a prompt with no box goes to the tool's
 `answerTyped` (a point at `Select objects:`). What is neither a keyword, a point modifier nor what
@@ -246,7 +249,8 @@ in a lone distance or angle box is a pick there when the tool wants a point (`pl
 true)`), and is measured by the runtime when it does not (`measurePoint`, `cad-tools`, "Points,
 snapping, constraints"). While the runtime asks the second of two points (`measuring`, dropped
 as soon as the tool, its box or its question change), the prompt is `asking()`'s
-`Specify second point:` with no keyword list, `toolAnchor()` is the first point, and
+` Specify second point:` (`secondPointOfDistance`, table 26278, es ` Designe segundo punto:`; not
+ROTATE's own `specifySecondPoint`, which starts a line) with no keyword list, `toolAnchor()` is the first point, and
 `wantsPoint()` keeps the snaps on; a refusal there is the question's own and counts no base
 ("two points"), as the console's does.
 

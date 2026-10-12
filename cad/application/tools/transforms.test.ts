@@ -426,7 +426,7 @@ describe("SCALE", () => {
       "Specify first point: FOO",
       "Requires numeric distance or two points.",
       "Specify first point: 10,0",
-      "Specify second point: 40,0",
+      " Specify second point: 40,0",
     ])
     expect(cad.byId<LineEntity>("L1").end).toBeCloseToPoint(p(120, 0))
 

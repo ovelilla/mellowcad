@@ -73,9 +73,9 @@ describe("a point at a distance or an angle prompt", () => {
     answerLine(cad, "FOO", "6,8")
     expect(cad.commandLog().slice(-4)).toEqual([
       "Specify fillet radius <0.00>: 0,0",
-      "Specify second point: FOO",
+      " Specify second point: FOO",
       "Requires numeric distance or two points.",
-      "Specify second point: 6,8",
+      " Specify second point: 6,8",
     ])
     cad.escape().command("FILLET")
     expect(cad.commandLog().at(-1)).toBe(
@@ -101,10 +101,27 @@ describe("a point at a distance or an angle prompt", () => {
     expect(
       cad.scene().primitives.some((primitive) => primitive.kind === "segment")
     ).toBe(true)
-    cad.click(p(6, 8)).escape().command("FILLET")
+    cad.click(p(6, 8))
+    // The string has no new line: after a pick it follows on the bare line.
+    expect(cad.commandLog().slice(-2)).toEqual([
+      "Select first object or [Undo/Polyline/Radius/Multiple]: R",
+      "Specify fillet radius <0.00>:  Specify second point:",
+    ])
+    cad.escape().command("FILLET")
     expect(cad.commandLog().at(-1)).toBe(
       "Current settings: Mode = TRIM, Radius = 10.00"
     )
+  })
+
+  it("writes the second point on a line of its own after a typed first", () => {
+    const cad = createHarness({ entities: aLine() })
+    cad.command("FILLET").option("Radius")
+    answerLine(cad, "0,0")
+    cad.click(p(6, 8))
+    expect(cad.commandLog().slice(-2)).toEqual([
+      "Specify fillet radius <0.00>: 0,0",
+      " Specify second point:",
+    ])
   })
 
   it("keeps the question's own refusal and keywords at the second point", () => {
@@ -113,9 +130,9 @@ describe("a point at a distance or an angle prompt", () => {
     answerLine(cad, "10,0", "FOO", "20,5")
     expect(cad.commandLog().slice(-4)).toEqual([
       "Specify offset distance or [Through/Erase/Layer] <Through>: 10,0",
-      "Specify second point: FOO",
+      " Specify second point: FOO",
       "Requires numeric distance, two points, or option keyword.",
-      "Specify second point: 20,5",
+      " Specify second point: 20,5",
     ])
     expect(cad.state().commandLine.prompt).toBe(
       "OFFSET Select object to offset or [Exit/Undo] <Exit>:"
@@ -173,7 +190,7 @@ describe("a point at a distance or an angle prompt", () => {
       "Specify angle of dimension line <0>: FOO",
       "Invalid Input.",
       "Specify angle of dimension line <0>: 10,10",
-      "Specify second point: 50,-20",
+      " Specify second point: 50,-20",
       "Specify dimension line location or [Text/Angle/Horizontal/Vertical/Rotated]: 0,30",
       "Dimension text = 80.00",
     ])
@@ -193,14 +210,14 @@ describe("a point at a distance or an angle prompt", () => {
     cad.command("EMPALME")
     answerLine(cad, "RA", "0,0")
     expect(cad.state().commandLine.prompt).toBe(
-      "EMPALME Precise segundo punto:"
+      "EMPALME Designe segundo punto:"
     )
     answerLine(cad, "FOO", "6,8")
     expect(cad.commandLog().slice(-4)).toEqual([
       "Precise radio de empalme <0.00>: 0,0",
-      "Precise segundo punto: FOO",
+      " Designe segundo punto: FOO",
       "Requiere una distancia numérica o dos puntos.",
-      "Precise segundo punto: 6,8",
+      " Designe segundo punto: 6,8",
     ])
   })
 })

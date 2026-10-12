@@ -54,7 +54,7 @@ export function secondPointQuestion(tool: Tool): Tool {
     id: tool.id,
     runningCommand: tool.runningCommand && (() => tool.runningCommand!()),
     systemVariable: tool.systemVariable && (() => tool.systemVariable!()),
-    question: () => "specifySecondPoint",
+    question: () => "secondPointOfDistance",
   }
 }
 

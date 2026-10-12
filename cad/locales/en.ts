@@ -1106,6 +1106,7 @@ export const en: EngineCatalog = {
       "specifyFirstTangentOfCircle": "Specify point on object for first tangent of circle",
       "specifySecondTangentOfCircle": "Specify point on object for second tangent of circle",
       "specifySecondPoint": "Specify second point",
+      "secondPointOfDistance": " Specify second point",
       "clarifyKeyword": [
         [
           "keywords"
