@@ -376,7 +376,8 @@ export function commandPrompt(
       ? enterValue(asked.enter, text, settings)
       : fallback === null
         ? null
-        : text.keyword(command, fallback, id)
+        : (text.keywordLabel(command, fallback) ??
+          text.keyword(command, fallback, id))
   // WHY only the history keeps a prompt's leading space (` Specify second
   // point:`, ` (ADD mode)…`): it is how AutoCAD lays the line out after the
   // last, not part of the question the prompt line and the tooltip show.
@@ -398,13 +399,30 @@ export function commandPrompt(
 }
 
 /**
+ * `ids` in the order the tool's question declares its keywords, which AutoCAD
+ * asks which was meant in; as they are where it declares none.
+ */
+export function inDeclaredOrder(
+  tool: Tool,
+  ids: readonly string[]
+): readonly string[] {
+  const asked = tool.question?.() ?? null
+  const declared = typeof asked === "object" ? asked?.declared : undefined
+  if (!declared) return ids
+  const rank = (id: string) => {
+    const at = declared.indexOf(id)
+    return at < 0 ? declared.length : at
+  }
+  return [...ids].sort((a, b) => rank(a) - rank(b))
+}
+
+/**
  * `prompt` while AutoCAD asks which keyword was meant — what was typed starts
  * several on offer: `CEnter or CLose?`, under the command's name and with no
- * colon, as AutoCAD 2023's console asks it.
+ * colon, as AutoCAD 2023's console asks it. The words are the declared ones
+ * (`TLeft or TCenter or TRight?` at TEXT's `[…/TL/TC/TR/…]`), which the
+ * keyword tables hold, the prompt listing their labels.
  */
-// WHY the words as the prompt lists them: AutoCAD names its declared ones
-// (`TLeft or TCenter or TRight?` at TEXT's `[…/TL/TC/TR/…]`), which no
-// table here holds.
 export function keywordChoicePrompt(
   prompt: CommandPrompt,
   text: EngineText,

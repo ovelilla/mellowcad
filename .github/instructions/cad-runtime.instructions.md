@@ -237,7 +237,8 @@ parse off the cursor instead ("no number typed, so the cursor's angle") is a bug
 
 **An ambiguous keyword asks which** (`answerKeyword`): typed text that starts several keywords on
 offer writes `Ambiguous response, please clarify...` and sets `clarifying` (dropped once the tool
-or its question changes), whose prompt `keywordChoicePrompt` words — `CEnter or CLose?`, no colon.
+or its question changes), whose prompt `keywordChoicePrompt` words — `CEnter or CLose?`, no colon,
+in the keywords' declared words and the question's `declared` order (`inDeclaredOrder`).
 Every way of answering checks `clarifyingWords()` before its own reading: a keyword of the prompt
 answers, Enter writes `Invalid option keyword.` and asks again, anything else — a point modifier
 (`CEN`, although it starts `CEnter`: `pointModifierFirst`), a pick, a value — goes to

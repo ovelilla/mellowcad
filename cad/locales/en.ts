@@ -841,6 +841,31 @@ export const en: EngineCatalog = {
       "PLINE": {
         "Center": "CEnter"
       },
+      "ATTDEF": {
+        "TL": "TLeft",
+        "TC": "TCenter",
+        "TR": "TRight",
+        "ML": "MLeft",
+        "MC": "MCenter",
+        "MR": "MRight",
+        "BL": "BLeft",
+        "BC": "BCenter",
+        "BR": "BRight"
+      },
+      "ATTDISP": {
+        "OFF": "OFf"
+      },
+      "TEXT": {
+        "TL": "TLeft",
+        "TC": "TCenter",
+        "TR": "TRight",
+        "ML": "MLeft",
+        "MC": "MCenter",
+        "MR": "MRight",
+        "BL": "BLeft",
+        "BC": "BCenter",
+        "BR": "BRight"
+      },
       "DIST": {
         "Center": "CEnter"
       },
@@ -2495,6 +2520,31 @@ export const en: EngineCatalog = {
       "AREA": {
         "Add": "Add area",
         "Subtract": "Subtract area"
+      },
+      "TEXT": {
+        "TL": "TL",
+        "TC": "TC",
+        "TR": "TR",
+        "ML": "ML",
+        "MC": "MC",
+        "MR": "MR",
+        "BL": "BL",
+        "BC": "BC",
+        "BR": "BR"
+      },
+      "ATTDEF": {
+        "TL": "TL",
+        "TC": "TC",
+        "TR": "TR",
+        "ML": "ML",
+        "MC": "MC",
+        "MR": "MR",
+        "BL": "BL",
+        "BC": "BC",
+        "BR": "BR"
+      },
+      "ATTDISP": {
+        "OFF": "OFF"
       }
     },
     "listing": {

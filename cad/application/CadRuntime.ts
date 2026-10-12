@@ -142,6 +142,7 @@ import { buildBlockPreview, purgeBlocks } from "./runtimeBlocks"
 import {
   CommandPrompt,
   commandPrompt,
+  inDeclaredOrder,
   keywordChoicePrompt,
   offerOptions,
   optionKeywords,
@@ -565,7 +566,13 @@ export class CadRuntime extends Observable {
           ),
         abbreviation: (id) =>
           this.text.abbreviation(toolCommand(this.activeTool), id),
-        keyword: (id) => this.text.keyword(toolCommand(this.activeTool), id),
+        keyword: (id) => {
+          const command = toolCommand(this.activeTool)
+          return (
+            this.text.keywordLabel(command, id) ??
+            this.text.keyword(command, id)
+          )
+        },
         transparentPrompt: (text) => this.text.transparentPrompt(text),
       },
       endCommand: () => {
@@ -1377,7 +1384,7 @@ export class CadRuntime extends Observable {
       this.clarifying = {
         tool: this.activeTool,
         prompt: askedPrompt(this.activeTool),
-        ids,
+        ids: inDeclaredOrder(this.activeTool, ids),
       }
       this.invalidateState()
       return true

@@ -514,21 +514,21 @@
         "Center": "Centro",
         "Right": "Derecha",
         "Middle": "Medio",
-        "TL": "SIZ",
-        "TC": "SC",
-        "TR": "SD",
-        "ML": "MI",
-        "MC": "MC",
-        "MR": "MD",
-        "BL": "II",
-        "BC": "IC",
-        "BR": "ID",
+        "TL": "SIZquierda",
+        "TC": "SCentro",
+        "TR": "SDerecha",
+        "ML": "MIzquierda",
+        "MC": "MCentro",
+        "MR": "MDerecha",
+        "BL": "IIzquierda",
+        "BC": "ICentro",
+        "BR": "IDerecha",
         "?": "?"
       },
       "ATTDISP": {
+        "OFF": "DES",
         "Normal": "Normal",
-        "ON": "ACT",
-        "OFF": "DES"
+        "ON": "ACT"
       },
       "TEXT": {
         "Justify": "jUstificar",
@@ -538,15 +538,15 @@
         "Center": "Centro",
         "Right": "Derecha",
         "Middle": "Medio",
-        "TL": "SIZ",
-        "TC": "SC",
-        "TR": "SD",
-        "ML": "MI",
-        "MC": "MC",
-        "MR": "MD",
-        "BL": "II",
-        "BC": "IC",
-        "BR": "ID"
+        "TL": "SIZquierda",
+        "TC": "SCentro",
+        "TR": "SDerecha",
+        "ML": "MIzquierda",
+        "MC": "MCentro",
+        "MR": "MDerecha",
+        "BL": "IIzquierda",
+        "BC": "ICentro",
+        "BR": "IDerecha"
       },
       "MTEXT": {
         "Height": "Altura",
@@ -1349,7 +1349,30 @@
       },
       "CIRCLED": { "Ttr": "Ttr (Tangente tangente radio)" },
       "DIST": { "Multiple": "puntos Múltiples" },
-      "AREA": { "Add": "Añadir área", "Subtract": "Sustraer área" }
+      "AREA": { "Add": "Añadir área", "Subtract": "Sustraer área" },
+      "TEXT": {
+        "TL": "SIZ",
+        "TC": "SC",
+        "TR": "SD",
+        "ML": "MI",
+        "MC": "MC",
+        "MR": "MD",
+        "BL": "II",
+        "BC": "IC",
+        "BR": "ID"
+      },
+      "ATTDEF": {
+        "TL": "SIZ",
+        "TC": "SC",
+        "TR": "SD",
+        "ML": "MI",
+        "MC": "MC",
+        "MR": "MD",
+        "BL": "II",
+        "BC": "IC",
+        "BR": "ID"
+      },
+      "ATTDISP": { "OFF": "DES" }
     },
     "listing": {
       "hatchPattern": "{name}  {description}",

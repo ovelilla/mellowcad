@@ -152,7 +152,13 @@ Every `Select objects:` is an `ObjectSelector` (below, "Reuse before writing"), 
 before the command is counted by `countPreselection`, which also keeps it as the Previous set —
 never on its own. A keyword AutoCAD
 lists with a gloss (`Ttr (tan tan radius)`) has it in `commands.keywordLabels.<NAME>`, for every
-command name that offers it (CIRCLE and CIRCLED).
+command name that offers it (CIRCLE and CIRCLED). So does one AutoCAD **declares** otherwise than
+it lists — its `initget` string in Autodesk's table: TEXT's `TLeft` listed `TL`, ATTDISP's `OFf`
+listed `OFF` —, whose `commands.keywords` word is the declared one: it is what answers (`TLE`)
+and what `Ambiguous response` names (`TLeft or TCenter or TRight?`), the label what the list, the
+`<default>` and `ctx.text.keyword` show. Every language gives both. A prompt whose declared
+order is not the listed one names it in its question (`declared: ["OFF", "Normal", "ON"]`),
+which that question asks in (`OFf or ON?`); never a second keyword id for either.
 
 **What a question takes** — `takes()`, a `QuestionInput` — is how the runtime refuses a wrong
 answer there (`cad-runtime.instructions.md`, "Answering a prompt"). Leave it out where the default

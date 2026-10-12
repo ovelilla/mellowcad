@@ -947,21 +947,21 @@ export const es: EngineLocale = {
         "Center": "Centro",
         "Right": "Derecha",
         "Middle": "Medio",
-        "TL": "SIZ",
-        "TC": "SC",
-        "TR": "SD",
-        "ML": "MI",
-        "MC": "MC",
-        "MR": "MD",
-        "BL": "II",
-        "BC": "IC",
-        "BR": "ID",
+        "TL": "SIZquierda",
+        "TC": "SCentro",
+        "TR": "SDerecha",
+        "ML": "MIzquierda",
+        "MC": "MCentro",
+        "MR": "MDerecha",
+        "BL": "IIzquierda",
+        "BC": "ICentro",
+        "BR": "IDerecha",
         "?": "?"
       },
       "ATTDISP": {
+        "OFF": "DES",
         "Normal": "Normal",
-        "ON": "ACT",
-        "OFF": "DES"
+        "ON": "ACT"
       },
       "TEXT": {
         "Justify": "jUstificar",
@@ -971,15 +971,15 @@ export const es: EngineLocale = {
         "Center": "Centro",
         "Right": "Derecha",
         "Middle": "Medio",
-        "TL": "SIZ",
-        "TC": "SC",
-        "TR": "SD",
-        "ML": "MI",
-        "MC": "MC",
-        "MR": "MD",
-        "BL": "II",
-        "BC": "IC",
-        "BR": "ID"
+        "TL": "SIZquierda",
+        "TC": "SCentro",
+        "TR": "SDerecha",
+        "ML": "MIzquierda",
+        "MC": "MCentro",
+        "MR": "MDerecha",
+        "BL": "IIzquierda",
+        "BC": "ICentro",
+        "BR": "IDerecha"
       },
       "MTEXT": {
         "Height": "Altura",
@@ -2841,6 +2841,31 @@ export const es: EngineLocale = {
       "AREA": {
         "Add": "Añadir área",
         "Subtract": "Sustraer área"
+      },
+      "TEXT": {
+        "TL": "SIZ",
+        "TC": "SC",
+        "TR": "SD",
+        "ML": "MI",
+        "MC": "MC",
+        "MR": "MD",
+        "BL": "II",
+        "BC": "IC",
+        "BR": "ID"
+      },
+      "ATTDEF": {
+        "TL": "SIZ",
+        "TC": "SC",
+        "TR": "SD",
+        "ML": "MI",
+        "MC": "MC",
+        "MR": "MD",
+        "BL": "II",
+        "BC": "IC",
+        "BR": "ID"
+      },
+      "ATTDISP": {
+        "OFF": "DES"
       }
     },
     "listing": {

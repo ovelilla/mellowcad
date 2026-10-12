@@ -1,7 +1,12 @@
 import { AttributeDisplay } from "../../domain/entities"
 import { SetAttributeDisplayCommand } from "../commands/settingsCommands"
-import type { PromptId } from "../../locales/types"
-import { CommandOption, CommandOptionOutcome, Tool, ToolContext } from "./Tool"
+import {
+  CommandOption,
+  CommandOptionOutcome,
+  Tool,
+  ToolContext,
+  ToolQuestion,
+} from "./Tool"
 
 const DISPLAY_BY_KEYWORD: Readonly<Record<string, AttributeDisplay>> = {
   Normal: "normal",
@@ -26,8 +31,12 @@ export class AttDispTool implements Tool {
     ctx.dynamicInput.open({ fields: [], commit: () => {} })
   }
 
-  question(): PromptId {
-    return "attributeVisibilitySetting"
+  /** AutoCAD declares its keywords `OFf Normal ON` (table 25908). */
+  question(): ToolQuestion {
+    return {
+      id: "attributeVisibilitySetting",
+      declared: ["OFF", "Normal", "ON"],
+    }
   }
 
   defaultOption(): string | null {

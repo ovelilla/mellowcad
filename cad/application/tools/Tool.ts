@@ -107,6 +107,12 @@ export interface ToolQuestion {
     | PromptId
   /** What the prompt's words name (UCS's `UCS "{name}" already exists.`). */
   readonly values?: MessageValues
+  /**
+   * The keyword ids in the order AutoCAD declares them, where it differs from
+   * the order listed: the order it asks which was meant in (ATTDISP's
+   * `[Normal/ON/OFF]` declares `OFf Normal ON`: `OFf or ON?`).
+   */
+  readonly declared?: readonly string[]
 }
 
 /**
@@ -327,7 +333,10 @@ export interface ToolText {
   keywordList(ids: readonly string[]): string
   /** A keyword's abbreviation in the command language (`U` for Undo). */
   abbreviation(id: string): string
-  /** A keyword's whole word in the command language (`NONe` for None). */
+  /**
+   * A keyword as its prompt lists it in the command language: its whole word
+   * (`NONe` for None), or the label it is listed with (`TL` for TLeft).
+   */
   keyword(id: string): string
   /** `text` headed as a transparent command's prompt (`>>BYLAYER`). */
   transparentPrompt(text: string): string

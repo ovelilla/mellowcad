@@ -138,12 +138,6 @@ describe("an answer that starts several keywords", () => {
       "Invalid option keyword.",
     ])
 
-    // AutoCAD names its declared words here, `TLeft or TCenter or TRight?`.
-    const text = createHarness()
-    text.command("TEXT")
-    answerLine(text, "J", "T")
-    expect(text.state().commandLine.prompt).toBe("TEXT TL or TC or TR?")
-
     const array = createHarness({ entities: [lineOf(p(0, 0), p(10, 0))] })
     array.command("ARRAYRECT")
     answerLine(array, "L", "", "CO", "COL")
@@ -151,6 +145,53 @@ describe("an answer that starts several keywords", () => {
       "Ambiguous response, please clarify...",
       "COUnt or COLumns? COL",
     ])
+  })
+
+  // AutoCAD 2023's console (acc/t1, t3, t5): it asks in the words its
+  // keywords are declared with, in their declared order.
+  it("names the declared words, which the prompt lists otherwise", () => {
+    const text = createHarness()
+    text.command("TEXT")
+    answerLine(text, "J")
+    expect(text.state().commandLine.prompt).toBe(
+      "TEXT Enter an option [Left/Center/Right/Middle/TL/TC/TR/ML/MC/MR/BL/BC/BR]:"
+    )
+    answerLine(text, "T", "TLE")
+    expect(text.commandLog().slice(-2)).toEqual([
+      "Ambiguous response, please clarify...",
+      "TLeft or TCenter or TRight? TLE",
+    ])
+    expect(text.state().commandLine.prompt).toBe(
+      "TEXT Specify top-left point of text:"
+    )
+
+    const attdef = createHarness()
+    attdef.command("ATTDEF")
+    answerLine(attdef, "", "TAG1", "PROMPT1", "DEF", "J", "B")
+    expect(attdef.state().commandLine.prompt).toBe(
+      "ATTDEF BLeft or BCenter or BRight?"
+    )
+
+    const attdisp = createHarness()
+    attdisp.command("ATTDISP")
+    answerLine(attdisp, "O")
+    expect(attdisp.state().commandLine.prompt).toBe("ATTDISP OFf or ON?")
+    answerLine(attdisp, "OF")
+    attdisp.command("ATTDISP")
+    expect(attdisp.state().commandLine.prompt).toBe(
+      "ATTDISP Enter attribute visibility setting [Normal/ON/OFF] <OFF>:"
+    )
+
+    const spanish = createHarness({ locale: es })
+    spanish.command("TEXTO")
+    answerLine(spanish, "U", "S")
+    expect(spanish.state().commandLine.prompt).toBe(
+      "TEXTO SIZquierda o SCentro o SDerecha?"
+    )
+    answerLine(spanish, "SIZQ")
+    expect(spanish.state().commandLine.prompt).toBe(
+      "TEXTO Precise punto superior izquierdo de texto:"
+    )
   })
 
   it("is answered in the box too", () => {
