@@ -1232,6 +1232,8 @@
       "idReport": " X = {x}     Y = {y}     Z = {z}",
       "linesNonCoplanar": "Las líneas no son coplanares.",
       "lineAndPolylineNonCoplanar": "La línea y la polilínea no son coplanares.",
+      "twoEntitiesNonCoplanar": "Los dos objetos no son coplanares.",
+      "cannotFilletBetween": "Imposible empalmar esos dos objetos.",
       "cornersSkipped": "{parallel, plural, =0 {} one {# resulta paralela(s)    } other {# resultan paralela(s)    }}{tooShort, plural, =0 {} one {# resulta demasiado corta(s)    } other {# resultan demasiado corta(s)    }}{divergent, plural, =0 {} one {# resulta divergente(s)    } other {# resultan divergente(s)    }}",
       "invalid": "*No válido*",
       "splineSettingsFit": "Parámetros actuales: Método=Ajustar Nudos={knots, select, chord {Cuerda} sqrtChord {Raíz cuadrada} other {Uniforme}}",

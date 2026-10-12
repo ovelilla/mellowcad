@@ -43,15 +43,16 @@ import {
   reportSkipped,
 } from "./polylineCorners"
 import {
+  CornerJoin,
   CornerObject,
-  LineAndSegment,
-  LineSegmentCut,
+  JoinCut,
   SegmentPick,
   cornerEntity,
+  cornerJoin,
   isSegment,
-  joinLineToSegment,
-  joinable,
-  lineAndSegment,
+  joinAtCut,
+  joinRefusal,
+  joinedSecond,
   pickCornerObject,
 } from "./cornerObjects"
 import {
@@ -78,7 +79,7 @@ import {
  * The arc is placed in the corner nearest to where you clicked each line, and
  * the lines are trimmed/extended to meet it. Two straight segments of one
  * polyline are objects too, rounded within it, and a line with a polyline's
- * segment is joined into the polyline. Shift on the second pick applies a
+ * segment, or segments of two polylines, are joined into one polyline. Shift on the second pick applies a
  * corner instead, as a radius of 0 does. The radius is kept for the session.
  * Multiple keeps asking for the next pair until Enter, and Undo takes back the
  * last fillet made in the command. Each fillet is one command — a
@@ -211,7 +212,10 @@ export class FilletTool implements Tool {
         const second = pickCornerObject(ctx, input.world, first)
         if (!second) return
         const radius = input.shiftKey ? 0 : this.radius
-        if (isSegment(first) && isSegment(second)) {
+        const join = cornerJoin(first, pick1.world, second, input.world)
+        if (join) {
+          this.commitJoin(join, radius, ctx)
+        } else if (isSegment(first) && isSegment(second)) {
           const cut = filletSegments(first, second, radius)
           if (typeof cut !== "string") {
             this.done(new UpdateEntityCommand(cut), ctx)
@@ -221,9 +225,6 @@ export class FilletTool implements Tool {
         } else if (!isSegment(first) && !isSegment(second)) {
           const pick2 = { world: input.world, screen: input.screen }
           this.commitFillet(first, pick1, second, pick2, radius, ctx)
-        } else {
-          const pair = lineAndSegment(first, pick1.world, second, input.world)
-          if (pair) this.commitJoin(pair, radius, ctx)
         }
         return
       }
@@ -302,18 +303,14 @@ export class FilletTool implements Tool {
 
     const { first, pick1, hover, cursor } = this.state
     const radius = this.state.corner ? 0 : this.radius
-    const pair =
-      hover && lineAndSegment(first, pick1.world, hover, cursor.world)
-    if (pair) {
-      const cut = joinable(pair) && filletJoin(pair, radius)
+    const join = hover && cornerJoin(first, pick1.world, hover, cursor.world)
+    if (join) {
+      const cut = !joinRefusal(join) && filletJoin(join, radius)
       return cut
-        ? draw(joinLineToSegment(pair.line, pair.segment, cut), hoverStroke)
+        ? draw(joinAtCut(join, cut), hoverStroke)
         : [
             ...draw(cornerEntity(first), selectedStroke),
-            ...draw(
-              cornerEntity(pair.lineFirst ? pair.segment : pair.line),
-              hoverStroke
-            ),
+            ...draw(cornerEntity(joinedSecond(join)), hoverStroke),
           ]
     }
     if (isSegment(first)) {
@@ -442,24 +439,25 @@ export class FilletTool implements Tool {
   }
 
   /**
-   * A line and a polyline's segment joined into the polyline through the
-   * arc. Parallel, the second object is asked again, as for two lines.
+   * A line and a polyline's segment, or segments of two polylines, joined
+   * into one polyline through the arc; parallel, `Cannot fillet between these
+   * two entities.`
    */
-  private commitJoin(
-    pair: LineAndSegment,
-    radius: number,
-    ctx: ToolContext
-  ): void {
-    if (!joinable(pair)) {
-      this.refuse("lineAndPolylineNonCoplanar", ctx, false)
+  private commitJoin(join: CornerJoin, radius: number, ctx: ToolContext): void {
+    const refusal = joinRefusal(join)
+    if (refusal) {
+      this.refuse(refusal, ctx, false)
       return
     }
-    const cut = filletJoin(pair, radius)
-    if (!cut) return
+    const cut = filletJoin(join, radius)
+    if (!cut) {
+      this.refuse("cannotFilletBetween", ctx, false)
+      return
+    }
     this.done(
       new ReplaceEntitiesCommand(
-        [pair.line.id, pair.segment.poly.id],
-        [joinLineToSegment(pair.line, pair.segment, cut)]
+        [cornerEntity(join.other).id, join.segment.poly.id],
+        [joinAtCut(join, cut)]
       ),
       ctx
     )
@@ -468,7 +466,7 @@ export class FilletTool implements Tool {
   /**
    * A corner that cannot be made: said, and Multiple asks for the first
    * object again; otherwise the input is `*Invalid*` (unless the console says
-   * only why, as for a line and a polyline apart) and the command ends.
+   * only why, as for every join) and the command ends.
    */
   private refuse(message: MessageId, ctx: ToolContext, invalid = true): void {
     ctx.report(ctx.text.message(message), "error")
@@ -610,17 +608,17 @@ const REFUSALS: Readonly<Record<SegmentsRefusal, MessageId>> = {
   tooLarge: "filletRadiusTooLarge",
 }
 
-/** The arc between a line and a polyline's segment; `null` when parallel. */
+/** The arc between the two objects of a join; `null` when parallel. */
 function filletJoin(
-  { line, linePick, a, b, segmentPick }: LineAndSegment,
+  { otherA, otherB, otherPick, a, b, segmentPick }: CornerJoin,
   radius: number
-): LineSegmentCut | null {
+): JoinCut | null {
   const result = filletLines(
-    line.start,
-    line.end,
+    otherA,
+    otherB,
     a,
     b,
-    linePick,
+    otherPick,
     segmentPick,
     radius
   )
@@ -633,9 +631,9 @@ function filletJoin(
   )
   return {
     corner: result.corner,
-    lineSide: result.direction1,
+    otherSide: result.direction1,
     segmentSide: result.direction2,
-    onLine: result.tangent1,
+    onOther: result.tangent1,
     onSegment: result.tangent2,
     bulge:
       result.radius > 0

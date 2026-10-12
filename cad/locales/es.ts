@@ -2299,6 +2299,8 @@ export const es: EngineLocale = {
       ],
       "linesNonCoplanar": "Las líneas no son coplanares.",
       "lineAndPolylineNonCoplanar": "La línea y la polilínea no son coplanares.",
+      "twoEntitiesNonCoplanar": "Los dos objetos no son coplanares.",
+      "cannotFilletBetween": "Imposible empalmar esos dos objetos.",
       "cornersSkipped": [
         [
           "parallel",

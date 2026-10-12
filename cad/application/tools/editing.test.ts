@@ -15,6 +15,7 @@ import {
   circleOf,
   deg,
   ellipseOf,
+  layerOf,
   lineOf,
   p,
   polylineOf,
@@ -514,8 +515,8 @@ describe("FILLET", () => {
     expect(cad.activeToolId()).toBe("select")
   })
 
-  // AutoCAD 2023's console (acc/f1–f17): the line joins the polyline, which
-  // keeps its run on the picked side of the segment and drops the rest.
+  // AutoCAD 2023's console (acc/f1–f17, r15): the line joins the polyline,
+  // which keeps its run on the picked side of the segment and drops the rest.
   describe("a line with a polyline's segment", () => {
     const ell = () => polylineOf([p(0, 0), p(100, 0), p(100, 50)], { id: "P1" })
     const QUARTER = Math.tan(deg(22.5))
@@ -667,6 +668,206 @@ describe("FILLET", () => {
       spanish.command("EMPALME").click(p(100, 25)).click(p(60, 80))
       expect(spanish.commandLog().at(-1)).toBe(
         "La línea y la polilínea no son coplanares."
+      )
+    })
+
+    it("says it cannot fillet a line parallel to the segment, and ends", () => {
+      const cad = createHarness({
+        entities: [ell(), lineOf(p(120, 0), p(120, 50))],
+      })
+      cad.command("FILLET").click(p(100, 25)).click(p(120, 25))
+      expect(cad.commandLog().at(-1)).toBe(
+        "Cannot fillet between these two entities."
+      )
+      expect(cad.activeToolId()).toBe("select")
+      expect(cad.typeCounts()).toEqual({ polyline: 1, line: 1 })
+    })
+  })
+
+  // AutoCAD 2023's console (acc/g1–g10, r1–r4, r13): one polyline of the two,
+  // the one picked first, each keeping its run on its picked side.
+  describe("segments of two polylines", () => {
+    const ell = () => polylineOf([p(0, 0), p(100, 0), p(100, 50)], { id: "P1" })
+    const hook = () =>
+      polylineOf([p(50, 80), p(120, 80), p(120, 150)], { id: "P2" })
+
+    it("joins them into the one picked first, its direction kept, in one undo step", () => {
+      const cad = createHarness({ entities: [ell(), hook()] })
+      cad.command("FILLET").click(p(100, 25)).click(p(60, 80))
+      const joined = cad.only<PolylineEntity>("polyline")
+      expect(joined.id).toBe("P1")
+      expect(joined.vertices).toBeCloseToPoints([
+        p(0, 0),
+        p(100, 0),
+        p(100, 80),
+        p(50, 80),
+      ])
+      cad.undo()
+      expect(cad.typeCounts()).toEqual({ polyline: 2 })
+
+      const hookFirst = createHarness({ entities: [ell(), hook()] })
+      hookFirst.command("FILLET").click(p(60, 80)).click(p(100, 25))
+      const other = hookFirst.only<PolylineEntity>("polyline")
+      expect(other.id).toBe("P2")
+      expect(other.vertices).toBeCloseToPoints([
+        p(50, 80),
+        p(100, 80),
+        p(100, 0),
+        p(0, 0),
+      ])
+
+      const rounded = createHarness({ entities: [ell(), hook()] })
+      rounded.command("FILLET").option("Radius").type("10").enter()
+      rounded.click(p(100, 25)).click(p(60, 80))
+      const arc = rounded.only<PolylineEntity>("polyline")
+      expect(arc.vertices).toBeCloseToPoints([
+        p(0, 0),
+        p(100, 0),
+        p(100, 70),
+        p(90, 80),
+        p(50, 80),
+      ])
+      expect(arc.bulges?.[2]).toBeCloseTo(Math.tan(deg(22.5)), 6)
+    })
+
+    it("keeps the first one's layer and colour", () => {
+      const cad = createHarness()
+      cad.runtime.document.load(
+        [
+          polylineOf([p(0, 0), p(100, 0), p(100, 50)], {
+            id: "P1",
+            layerId: "L1",
+          }),
+          {
+            ...polylineOf([p(50, 80), p(120, 80), p(120, 150)], {
+              id: "P2",
+              layerId: "L2",
+            }),
+            color: "#ff0000",
+          },
+        ],
+        { layers: [layerOf("0"), layerOf("L1"), layerOf("L2")] }
+      )
+      cad.command("FILLET").click(p(60, 80)).click(p(100, 25))
+      const joined = cad.only<PolylineEntity>("polyline")
+      expect(joined.id).toBe("P2")
+      expect(joined.layerId).toBe("L2")
+      expect(joined.color).toBe("#ff0000")
+    })
+
+    it("leads with the second one's run where the first's runs on to its end", () => {
+      const cad = createHarness({
+        entities: [
+          polylineOf([p(100, 50), p(100, 0), p(0, 0)], { id: "P1" }),
+          hook(),
+        ],
+      })
+      cad.command("FILLET").click(p(100, 25)).click(p(60, 80))
+      const joined = cad.only<PolylineEntity>("polyline")
+      expect(joined.id).toBe("P1")
+      expect(joined.vertices).toBeCloseToPoints([
+        p(50, 80),
+        p(100, 80),
+        p(100, 0),
+        p(0, 0),
+      ])
+    })
+
+    it("drops what lies past either segment, and opens a closed one", () => {
+      const middle = createHarness({
+        entities: [
+          polylineOf([p(0, 0), p(100, 0), p(100, 50), p(150, 50)]),
+          polylineOf([p(30, 120), p(30, 80), p(120, 80), p(120, 150)]),
+        ],
+      })
+      middle.command("FILLET").click(p(100, 25)).click(p(60, 80))
+      expect(
+        middle.only<PolylineEntity>("polyline").vertices
+      ).toBeCloseToPoints([
+        p(0, 0),
+        p(100, 0),
+        p(100, 80),
+        p(30, 80),
+        p(30, 120),
+      ])
+
+      for (const [first, second] of [
+        [
+          polylineOf([p(0, 0), p(100, 0), p(100, 50), p(0, 50)], {
+            closed: true,
+          }),
+          hook(),
+        ],
+        [
+          ell(),
+          polylineOf([p(50, 80), p(120, 80), p(120, 150), p(50, 150)], {
+            closed: true,
+          }),
+        ],
+      ]) {
+        const closed = createHarness({ entities: [first, second] })
+        closed.command("FILLET").click(p(100, 25)).click(p(60, 80))
+        const opened = closed.only<PolylineEntity>("polyline")
+        expect(opened.closed).toBe(false)
+        expect(opened.vertices).toBeCloseToPoints([
+          p(0, 0),
+          p(100, 0),
+          p(100, 80),
+          p(50, 80),
+        ])
+      }
+    })
+
+    it("refuses no radius for its size", () => {
+      const cad = createHarness({ entities: [ell(), hook()] })
+      cad.command("FILLET").option("Radius").type("200").enter()
+      cad.click(p(100, 25)).click(p(60, 80))
+      expect(cad.only<PolylineEntity>("polyline").vertices).toBeCloseToPoints([
+        p(0, 0),
+        p(100, 0),
+        p(100, -120),
+        p(-100, 80),
+        p(50, 80),
+      ])
+    })
+
+    it("says why it cannot join them, and ends or in Multiple asks again", () => {
+      const parallel = () => [
+        ell(),
+        polylineOf([p(120, 0), p(120, 50), p(120, 100)]),
+      ]
+      const cad = createHarness({ entities: parallel() })
+      cad.command("FILLET").click(p(100, 25)).click(p(120, 25))
+      expect(cad.commandLog().at(-1)).toBe(
+        "Cannot fillet between these two entities."
+      )
+      expect(cad.activeToolId()).toBe("select")
+      expect(cad.typeCounts()).toEqual({ polyline: 2 })
+
+      cad
+        .command("FILLET")
+        .option("Multiple")
+        .click(p(100, 25))
+        .click(p(120, 25))
+      expect(cad.state().commandLine.prompt).toBe(
+        "FILLET Select first object or [Undo/Polyline/Radius]:"
+      )
+
+      const raised = () => [ell(), { ...hook(), elevation: 10 }]
+      const apart = createHarness({ entities: raised() })
+      apart.command("FILLET").click(p(100, 25)).click(p(60, 80))
+      expect(apart.commandLog().at(-1)).toBe("Two entities are non coplanar.")
+      expect(apart.activeToolId()).toBe("select")
+
+      const spanish = createHarness({ locale: es, entities: parallel() })
+      spanish.command("EMPALME").click(p(100, 25)).click(p(120, 25))
+      expect(spanish.commandLog().at(-1)).toBe(
+        "Imposible empalmar esos dos objetos."
+      )
+      const spanishApart = createHarness({ locale: es, entities: raised() })
+      spanishApart.command("EMPALME").click(p(100, 25)).click(p(60, 80))
+      expect(spanishApart.commandLog().at(-1)).toBe(
+        "Los dos objetos no son coplanares."
       )
     })
   })
@@ -1021,6 +1222,69 @@ describe("CHAMFER", () => {
     expect(
       lineFirst.only<PolylineEntity>("polyline").vertices
     ).toBeCloseToPoints([p(0, 0), p(100, 0), p(100, 75), p(90, 80), p(50, 80)])
+  })
+
+  // AutoCAD 2023's console (acc/g4, r6–r10, r12, r14, r16): joined as FILLET
+  // joins them; each distance must fall on its line or picked segment.
+  describe("a join", () => {
+    const ell = () => polylineOf([p(0, 0), p(100, 0), p(100, 50)], { id: "P1" })
+    const hook = () =>
+      polylineOf([p(50, 80), p(120, 80), p(120, 150)], { id: "P2" })
+
+    it("joins segments of two polylines, the first distance on the first picked", () => {
+      const cad = createHarness({ entities: [ell(), hook()] })
+      cad.command("CHAMFER").option("Distance").type("10").enter()
+      cad.type("5").enter().click(p(100, 25)).click(p(60, 80))
+      const joined = cad.only<PolylineEntity>("polyline")
+      expect(joined.id).toBe("P1")
+      expect(joined.vertices).toBeCloseToPoints([
+        p(0, 0),
+        p(100, 0),
+        p(100, 70),
+        p(95, 80),
+        p(50, 80),
+      ])
+    })
+
+    it("says a distance is too large past the end of its line or segment, and ends", () => {
+      for (const [d1, d2, other] of [
+        ["60", "60", hook()],
+        ["85", "10", hook()],
+        ["60", "60", lineOf(p(50, 80), p(120, 80))],
+      ] as const) {
+        const cad = createHarness({ entities: [ell(), other] })
+        cad.command("CHAMFER").option("Distance").type(d1).enter()
+        cad.type(d2).enter().click(p(100, 25)).click(p(60, 80))
+        expect(cad.commandLog().at(-1)).toBe("Chamfer distance is too large")
+        expect(cad.activeToolId()).toBe("select")
+        expect(cad.entityCount).toBe(2)
+      }
+    })
+
+    it("says why it cannot join them, in either language", () => {
+      for (const other of [
+        polylineOf([p(120, 0), p(120, 50), p(120, 100)]),
+        lineOf(p(120, 0), p(120, 50)),
+      ]) {
+        const cad = createHarness({ entities: [ell(), other] })
+        cad.command("CHAMFER").click(p(100, 25)).click(p(120, 25))
+        expect(cad.commandLog().at(-1)).toBe("Lines are parallel")
+        expect(cad.activeToolId()).toBe("select")
+      }
+
+      const apart = createHarness({
+        entities: [ell(), { ...hook(), elevation: 10 }],
+      })
+      apart.command("CHAMFER").click(p(100, 25)).click(p(60, 80))
+      expect(apart.commandLog().at(-1)).toBe("Two entities are non coplanar.")
+
+      const spanish = createHarness({ locale: es, entities: [ell(), hook()] })
+      spanish.command("CHAFLAN").option("Distance").type("60").enter()
+      spanish.type("60").enter().click(p(100, 25)).click(p(60, 80))
+      expect(spanish.commandLog().at(-1)).toBe(
+        "Distancia de chaflán es demasiado grande"
+      )
+    })
   })
 
   it("bevels two segments of a polyline, the first distance on the first picked", () => {

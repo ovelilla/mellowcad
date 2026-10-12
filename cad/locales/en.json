@@ -1194,6 +1194,8 @@
       "idReport": " X = {x}     Y = {y}     Z = {z}",
       "linesNonCoplanar": "Lines are non-coplanar.",
       "lineAndPolylineNonCoplanar": "Line and polyline are non coplanar.",
+      "twoEntitiesNonCoplanar": "Two entities are non coplanar.",
+      "cannotFilletBetween": "Cannot fillet between these two entities.",
       "cornersSkipped": "{parallel, plural, =0 {} one {# was parallel    } other {# were parallel    }}{tooShort, plural, =0 {} one {# was too short    } other {# were too short    }}{divergent, plural, =0 {} one {# was divergent    } other {# were divergent    }}",
       "invalid": "*Invalid*",
       "splineSettingsFit": "Current settings: Method=Fit   Knots={knots, select, chord {Chord} sqrtChord {Square root} other {Uniform}}",

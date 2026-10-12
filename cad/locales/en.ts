@@ -1953,6 +1953,8 @@ export const en: EngineCatalog = {
       ],
       "linesNonCoplanar": "Lines are non-coplanar.",
       "lineAndPolylineNonCoplanar": "Line and polyline are non coplanar.",
+      "twoEntitiesNonCoplanar": "Two entities are non coplanar.",
+      "cannotFilletBetween": "Cannot fillet between these two entities.",
       "cornersSkipped": [
         [
           "parallel",

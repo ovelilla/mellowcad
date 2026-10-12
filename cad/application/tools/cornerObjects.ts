@@ -13,6 +13,7 @@ import {
   polylineSegmentGeometries,
   readsInPlan,
 } from "../../domain/entities"
+import type { MessageId } from "../EngineText"
 import { segmentsPair } from "./polylineCorners"
 import { ToolContext } from "./Tool"
 
@@ -37,10 +38,9 @@ export function cornerEntity(object: CornerObject): Entity {
 /**
  * The object a FILLET or CHAMFER pick at `world` takes: a line, or the straight
  * segment of a polyline nearest it. With `first` already taken, only what can
- * make a corner with it: another line or a polyline's segment with a line, or
- * a segment of the same polyline next to it or one segment away. An arc
- * segment and segments of two polylines are not taken (here they never
- * highlight).
+ * make a corner with it: another line, or a segment of another polyline, or a
+ * segment of the same polyline next to it or one segment away. An arc segment
+ * is not taken (here it never highlights).
  */
 export function pickCornerObject(
   ctx: ToolContext,
@@ -55,102 +55,135 @@ export function pickCornerObject(
   }
   if (hit?.type !== "polyline") return null
   const index = nearestStraightSegment(hit, world)
-  if (index === null || first === null || !isSegment(first)) {
-    return index === null ? null : { poly: hit, index }
+  if (index === null) return null
+  if (first === null || !isSegment(first) || first.poly.id !== hit.id) {
+    return { poly: hit, index }
   }
-  return first.poly.id === hit.id && segmentsPair(hit, first.index, index)
-    ? { poly: hit, index }
-    : null
+  return segmentsPair(hit, first.index, index) ? { poly: hit, index } : null
 }
 
-/** A line and a polyline's segment picked as the two objects, in either order. */
-export interface LineAndSegment {
-  readonly line: LineEntity
-  readonly linePick: Vec2
+/**
+ * Two objects FILLET and CHAMFER join into one polyline: a line and a
+ * polyline's segment, in either order, or segments of two polylines.
+ */
+export interface CornerJoin {
+  /** The polyline the join is: the one picked first, or the line's. */
   readonly segment: SegmentPick
   readonly segmentPick: Vec2
   /** The straight segment's two ends, as the polyline runs. */
   readonly a: Vec2
   readonly b: Vec2
-  readonly lineFirst: boolean
+  /** The line, or the other polyline's segment, joined to it. */
+  readonly other: CornerObject
+  readonly otherPick: Vec2
+  readonly otherA: Vec2
+  readonly otherB: Vec2
+  readonly otherFirst: boolean
 }
 
-/** The two objects as a line and a segment, or `null` unless one is each. */
-export function lineAndSegment(
+/**
+ * The two objects as a join, or `null` for two lines or two segments of one
+ * polyline. AutoCAD 2023's console keeps the polyline picked first: its
+ * handle, layer, colour and direction.
+ */
+export function cornerJoin(
   first: CornerObject,
   pick1: Vec2,
   second: CornerObject,
   pick2: Vec2
-): LineAndSegment | null {
-  if (isSegment(first) === isSegment(second)) return null
-  const lineFirst = !isSegment(first)
-  const segment = (lineFirst ? second : first) as SegmentPick
-  const geometry = polylineSegmentGeometries(segment.poly)[segment.index]
+): CornerJoin | null {
+  if (!isSegment(first) && !isSegment(second)) return null
+  if (isSegment(first) && isSegment(second) && first.poly.id === second.poly.id)
+    return null
+  const otherFirst = !isSegment(first)
+  const segment = (otherFirst ? second : first) as SegmentPick
+  const other = otherFirst ? first : second
+  const { a, b } = straightEnds(segment)
+  const ends = isSegment(other)
+    ? straightEnds(other)
+    : { a: other.start, b: other.end }
   return {
-    line: (lineFirst ? first : second) as LineEntity,
-    linePick: lineFirst ? pick1 : pick2,
     segment,
-    segmentPick: lineFirst ? pick2 : pick1,
-    a: geometry.a,
-    b: geometry.b,
-    lineFirst,
+    segmentPick: otherFirst ? pick2 : pick1,
+    a,
+    b,
+    other,
+    otherPick: otherFirst ? pick1 : pick2,
+    otherA: ends.a,
+    otherB: ends.b,
+    otherFirst,
   }
 }
 
-/**
- * Whether a line and a polyline lie in one plane read level, as a join needs;
- * else AutoCAD's `Line and polyline are non coplanar.`
- */
-export function joinable({ line, segment }: LineAndSegment): boolean {
-  // WHY level only: a polyline in a tilted plane keeps its points in its own
-  // OCS, which a line is not given in; AutoCAD joins them there too (a gap).
-  return readsInPlan(segment.poly) && coplanar(line, segment.poly)
+/** The object of a join picked second, which the preview highlights. */
+export function joinedSecond(join: CornerJoin): CornerObject {
+  return join.otherFirst ? join.segment : join.other
 }
 
 /**
- * A corner cut between a line and a polyline's straight segment: where each
- * is cut — the same point at a sharp corner — and the bulge from the
- * segment's cut to the line's (0 for a bevel).
+ * Why two objects cannot be joined, in AutoCAD's words, or `null`: they must
+ * lie in one plane read level — `Line and polyline are non coplanar.`, and
+ * for two polylines `Two entities are non coplanar.`
  */
-export interface LineSegmentCut {
+export function joinRefusal({ segment, other }: CornerJoin): MessageId | null {
+  // WHY level only: a polyline in a tilted plane keeps its points in its own
+  // OCS, which the picks are not given in; AutoCAD joins them there too (a gap).
+  const otherEntity = cornerEntity(other)
+  return readsInPlan(segment.poly) &&
+    readsInPlan(otherEntity) &&
+    coplanar(otherEntity, segment.poly)
+    ? null
+    : isSegment(other)
+      ? "twoEntitiesNonCoplanar"
+      : "lineAndPolylineNonCoplanar"
+}
+
+/**
+ * A corner cut between the two objects of a join: where each is cut — the
+ * same point at a sharp corner — and the bulge from the segment's cut to the
+ * other's (0 for a bevel).
+ */
+export interface JoinCut {
   readonly corner: Vec2
-  /** Unit rays from the corner toward the line's and the segment's kept side. */
-  readonly lineSide: Vec2
+  /** Unit rays from the corner toward the other's and the segment's kept side. */
+  readonly otherSide: Vec2
   readonly segmentSide: Vec2
-  readonly onLine: Vec2
+  readonly onOther: Vec2
   readonly onSegment: Vec2
   readonly bulge: number
 }
 
 /**
- * The polyline FILLET and CHAMFER make of a line and a segment of a polyline,
- * as AutoCAD 2023's console joins them: the polyline keeps its run on the
- * segment's kept side up to the cut — from its first vertex, or from the
- * segment's end to its last — and goes on through the arc or bevel to the
- * line's kept end, which starts it when the run is the later one. What lies
- * past the segment on the other side is dropped, and a closed polyline opens
- * there. Nothing is refused for its size: a cut past the line's kept end
- * doubles back to it (radius 60 there: `40,80` then `50,80`).
+ * Whether each cut falls short of the far end of its line or straight
+ * segment: CHAMFER's `Chamfer distance is too large` otherwise, even with
+ * more of the polyline beyond (FILLET refuses no radius for its size).
  */
-export function joinLineToSegment(
-  line: LineEntity,
-  { poly, index }: SegmentPick,
-  cut: LineSegmentCut
-): PolylineEntity {
-  const { corner, lineSide, segmentSide, onLine, onSegment, bulge } = cut
-  const vertices = poly.closed
-    ? [...poly.vertices, poly.vertices[0]]
-    : poly.vertices
-  const bulges = vertices.map((_, k) => poly.bulges?.[k] ?? 0)
-  const along = (point: Vec2, side: Vec2) => V.dot(V.sub(point, corner), side)
-  const lineEnd =
-    along(line.end, lineSide) >= along(line.start, lineSide)
-      ? line.end
-      : line.start
-  const towardEnd =
-    along(vertices[index + 1], segmentSide) >=
-    along(vertices[index], segmentSide)
-  const sharp = V.equals(onSegment, onLine)
+export function cutFits(join: CornerJoin, cut: JoinCut): boolean {
+  const fits = (a: Vec2, b: Vec2, side: Vec2, at: Vec2) => {
+    const along = (point: Vec2) => V.dot(V.sub(point, cut.corner), side)
+    return along(at) < Math.max(along(a), along(b)) - 1e-9
+  }
+  return (
+    fits(join.a, join.b, cut.segmentSide, cut.onSegment) &&
+    fits(join.otherA, join.otherB, cut.otherSide, cut.onOther)
+  )
+}
+
+/**
+ * The polyline FILLET and CHAMFER make of a join, as AutoCAD 2023's console
+ * makes it: each object keeps its run on its kept side up to the cut — a
+ * line its kept end, a polyline from its first vertex, or from the segment's
+ * end to its last —, and the polyline picked first (or the line's) keeps its
+ * direction, the other's run reversed where it must be. What lies past either
+ * segment on the other side is dropped, and a closed polyline opens there.
+ * Nothing is refused for its size: a cut past a kept end doubles back to it
+ * (a line at radius 60: `40,80` then `50,80`).
+ */
+export function joinAtCut(join: CornerJoin, cut: JoinCut): PolylineEntity {
+  const { poly } = join.segment
+  const own = keptRun(join.segment, cut.segmentSide, cut.corner)
+  const joined = keptRun(join.other, cut.otherSide, cut.corner)
+  const sharp = V.equals(cut.onSegment, cut.onOther)
   const points: Vec2[] = []
   const pointBulges: number[] = []
   const add = (point: Vec2, next: number) => {
@@ -161,23 +194,64 @@ export function joinLineToSegment(
     points.push(point)
     pointBulges.push(next)
   }
-  if (towardEnd) {
-    add(lineEnd, 0)
-    if (!sharp) add(onLine, -bulge)
-    add(onSegment, 0)
-    for (let k = index + 1; k < vertices.length; k++)
-      add(vertices[k], bulges[k])
-  } else {
-    for (let k = 0; k <= index; k++) add(vertices[k], k < index ? bulges[k] : 0)
-    add(onSegment, sharp ? 0 : bulge)
-    if (!sharp) add(onLine, 0)
-    add(lineEnd, 0)
+  const [lead, leadCut, tail, tailCut, bulge] = own.forward
+    ? [joined, cut.onOther, own, cut.onSegment, -cut.bulge]
+    : [own, cut.onSegment, joined, cut.onOther, cut.bulge]
+  for (let k = lead.points.length - 1; k >= 0; k--) {
+    add(lead.points[k], k > 0 ? -lead.bulges[k - 1] : 0)
   }
+  add(leadCut, sharp ? 0 : bulge)
+  if (!sharp) add(tailCut, 0)
+  tail.points.forEach((point, k) => add(point, tail.bulges[k] ?? 0))
   pointBulges[pointBulges.length - 1] = 0
   return carryOverrides(
     poly,
     createPolyline(points, false, poly.layerId, pointBulges, poly.id)
   )
+}
+
+/**
+ * What an object keeps past its cut, going outward: straight from the cut to
+ * `points[0]`, then from `points[k]` to `points[k + 1]` by `bulges[k]`.
+ * `forward` when that is the polyline's own direction.
+ */
+interface Run {
+  readonly points: readonly Vec2[]
+  readonly bulges: readonly number[]
+  readonly forward: boolean
+}
+
+function keptRun(object: CornerObject, side: Vec2, corner: Vec2): Run {
+  const along = (point: Vec2) => V.dot(V.sub(point, corner), side)
+  if (!isSegment(object)) {
+    const end =
+      along(object.end) >= along(object.start) ? object.end : object.start
+    return { points: [end], bulges: [], forward: true }
+  }
+  const { poly, index } = object
+  const vertices = poly.closed
+    ? [...poly.vertices, poly.vertices[0]]
+    : poly.vertices
+  const bulge = (k: number) => poly.bulges?.[k] ?? 0
+  if (along(vertices[index + 1]) >= along(vertices[index])) {
+    const points = vertices.slice(index + 1)
+    return {
+      points,
+      bulges: points.slice(1).map((_, k) => bulge(index + 1 + k)),
+      forward: true,
+    }
+  }
+  const points = vertices.slice(0, index + 1).reverse()
+  return {
+    points,
+    bulges: points.slice(1).map((_, k) => -bulge(index - 1 - k)),
+    forward: false,
+  }
+}
+
+function straightEnds({ poly, index }: SegmentPick): { a: Vec2; b: Vec2 } {
+  const { a, b } = polylineSegmentGeometries(poly)[index]
+  return { a, b }
 }
 
 /** The segment of `poly` nearest `world`, or `null` when it is an arc. */

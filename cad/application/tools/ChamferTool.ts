@@ -30,15 +30,17 @@ import {
   reportSkipped,
 } from "./polylineCorners"
 import {
+  CornerJoin,
   CornerObject,
-  LineAndSegment,
-  LineSegmentCut,
+  JoinCut,
   SegmentPick,
   cornerEntity,
+  cornerJoin,
+  cutFits,
   isSegment,
-  joinLineToSegment,
-  joinable,
-  lineAndSegment,
+  joinAtCut,
+  joinRefusal,
+  joinedSecond,
   pickCornerObject,
 } from "./cornerObjects"
 import {
@@ -67,8 +69,8 @@ import {
  * The distances are measured from the corner along each line's *picked* side,
  * so where you click decides which of the four corners is cut. Two straight
  * segments of one polyline are objects too, bevelled within it, and a line
- * with a polyline's segment is joined into the polyline. They persist for
- * the tool's session, like AutoCAD's, and both being 0 simply joins the lines
+ * with a polyline's segment, or segments of two polylines, are joined into one
+ * polyline. The distances persist for the tool's session, like AutoCAD's, and both being 0 simply joins the lines
  * at their intersection — as Shift on the second pick does (apply corner).
  * Multiple keeps asking until Enter, and Undo takes back the last chamfer made
  * in the command; each is one command, folded into the command's undo step.
@@ -208,7 +210,10 @@ export class ChamferTool implements Tool {
         const { first, pick1 } = this.state
         const second = pickCornerObject(ctx, input.world, first)
         if (!second) return
-        if (isSegment(first) && isSegment(second)) {
+        const join = cornerJoin(first, pick1.world, second, input.world)
+        if (join) {
+          this.commitJoin(join, input.shiftKey, ctx)
+        } else if (isSegment(first) && isSegment(second)) {
           const cut = this.chamferSegments(first, second, input.shiftKey)
           if (typeof cut !== "string") {
             this.done(new UpdateEntityCommand(cut), ctx)
@@ -218,9 +223,6 @@ export class ChamferTool implements Tool {
         } else if (!isSegment(first) && !isSegment(second)) {
           const pick2 = { world: input.world, screen: input.screen }
           this.commitChamfer(first, pick1, second, pick2, input.shiftKey, ctx)
-        } else {
-          const pair = lineAndSegment(first, pick1.world, second, input.world)
-          if (pair) this.commitJoin(pair, input.shiftKey, ctx)
         }
         return
       }
@@ -298,18 +300,15 @@ export class ChamferTool implements Tool {
     }
 
     const { first, pick1, hover, cursor } = this.state
-    const pair =
-      hover && lineAndSegment(first, pick1.world, hover, cursor.world)
-    if (pair) {
-      const cut = joinable(pair) && this.chamferJoin(pair, this.state.corner)
-      return cut
-        ? draw(joinLineToSegment(pair.line, pair.segment, cut), hoverStroke)
+    const join = hover && cornerJoin(first, pick1.world, hover, cursor.world)
+    if (join) {
+      const cut =
+        !joinRefusal(join) && this.chamferJoin(join, this.state.corner)
+      return cut && cutFits(join, cut)
+        ? draw(joinAtCut(join, cut), hoverStroke)
         : [
             ...draw(cornerEntity(first), selectedStroke),
-            ...draw(
-              cornerEntity(pair.lineFirst ? pair.segment : pair.line),
-              hoverStroke
-            ),
+            ...draw(cornerEntity(joinedSecond(join)), hoverStroke),
           ]
     }
     if (isSegment(first)) {
@@ -431,44 +430,52 @@ export class ChamferTool implements Tool {
     this.done(new ReplaceEntitiesCommand([line1.id, line2.id], chamfered), ctx)
   }
 
-  /** A line and a polyline's segment joined into the polyline by the bevel. */
-  private commitJoin(
-    pair: LineAndSegment,
-    sharp: boolean,
-    ctx: ToolContext
-  ): void {
-    if (!joinable(pair)) {
-      this.refuse("lineAndPolylineNonCoplanar", ctx, false)
+  /**
+   * A line and a polyline's segment, or segments of two polylines, joined
+   * into one polyline by the bevel; refused, as the console does, when they
+   * are parallel or a distance runs past the end of its line or segment.
+   */
+  private commitJoin(join: CornerJoin, sharp: boolean, ctx: ToolContext): void {
+    const refusal = joinRefusal(join)
+    if (refusal) {
+      this.refuse(refusal, ctx, false)
       return
     }
-    const cut = this.chamferJoin(pair, sharp)
-    if (!cut) return // parallel or collinear — keep prompting
+    const cut = this.chamferJoin(join, sharp)
+    if (!cut) {
+      this.refuse("linesParallel", ctx, false)
+      return
+    }
+    if (!cutFits(join, cut)) {
+      this.refuse("chamferDistanceTooLarge", ctx, false)
+      return
+    }
     this.done(
       new ReplaceEntitiesCommand(
-        [pair.line.id, pair.segment.poly.id],
-        [joinLineToSegment(pair.line, pair.segment, cut)]
+        [cornerEntity(join.other).id, join.segment.poly.id],
+        [joinAtCut(join, cut)]
       ),
       ctx
     )
   }
 
   /**
-   * The bevel between a line and a polyline's segment, the first distance on
-   * the one picked first (none when `sharp`); `null` when parallel.
+   * The bevel between the two objects of a join, the first distance on the
+   * one picked first (none when `sharp`); `null` when parallel.
    */
   private chamferJoin(
-    { line, linePick, a, b, segmentPick, lineFirst }: LineAndSegment,
+    { otherA, otherB, otherPick, a, b, segmentPick, otherFirst }: CornerJoin,
     sharp: boolean
-  ): LineSegmentCut | null {
+  ): JoinCut | null {
     const first = sharp ? 0 : this.distance1
     const second = sharp ? 0 : this.distance2
-    const result = lineFirst
+    const result = otherFirst
       ? chamferLines(
-          line.start,
-          line.end,
+          otherA,
+          otherB,
           a,
           b,
-          linePick,
+          otherPick,
           segmentPick,
           first,
           second
@@ -476,29 +483,29 @@ export class ChamferTool implements Tool {
       : chamferLines(
           a,
           b,
-          line.start,
-          line.end,
+          otherA,
+          otherB,
           segmentPick,
-          linePick,
+          otherPick,
           first,
           second
         )
     if (!result) return null
     const { corner, direction1, direction2, point1, point2 } = result
-    return lineFirst
+    return otherFirst
       ? {
           corner,
-          lineSide: direction1,
+          otherSide: direction1,
           segmentSide: direction2,
-          onLine: point1,
+          onOther: point1,
           onSegment: point2,
           bulge: 0,
         }
       : {
           corner,
-          lineSide: direction2,
+          otherSide: direction2,
           segmentSide: direction1,
-          onLine: point2,
+          onOther: point2,
           onSegment: point1,
           bulge: 0,
         }
@@ -507,7 +514,7 @@ export class ChamferTool implements Tool {
   /**
    * A corner that cannot be made: said, and Multiple asks for the first
    * object again; otherwise the input is `*Invalid*` (unless the console says
-   * only why, as for a line and a polyline apart) and the command ends.
+   * only why, as for every join) and the command ends.
    */
   private refuse(message: MessageId, ctx: ToolContext, invalid = true): void {
     ctx.report(ctx.text.message(message), "error")
