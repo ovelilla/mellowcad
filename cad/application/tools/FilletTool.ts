@@ -23,6 +23,7 @@ import { DynamicInputSession } from "../input/DynamicInput"
 import { formatLength } from "../../domain/units"
 import type { PromptId } from "../../locales/types"
 import type { MessageId } from "../EngineText"
+import type { MessageValues } from "../../i18n/types"
 import { ScenePrimitive, StrokeStyle } from "../../scene/types"
 import { THEME } from "../../scene/theme"
 import { entityScenePrimitive } from "../SceneBuilder"
@@ -38,7 +39,7 @@ import {
 } from "./polylineCorners"
 import {
   CornerJoin,
-  CornerObject,
+  FilletObject,
   JoinCut,
   SegmentPick,
   cornerEntity,
@@ -46,11 +47,13 @@ import {
   cornerPlane,
   curveOf,
   isArcSegment,
+  isRound,
   isSegment,
   joinAtCut,
   joinRefusal,
-  pickCornerObject,
+  pickFilletObject,
 } from "./cornerObjects"
+import { filletRound } from "./roundFillets"
 import {
   curveCrossing,
   filletSides,
@@ -84,7 +87,9 @@ import {
  * objects too, rounded within it, and a line with a polyline's segment, or
  * segments of two polylines, are joined into one polyline — an arc segment
  * rounded against its circle where the two cross, as AutoCAD 2023's console
- * does (`Cannot fillet between these two entities.` where they do not). Shift on the second pick applies a
+ * does (`Cannot fillet between these two entities.` where they do not). An
+ * ARC or a CIRCLE is an object too, rounded against a line or another of
+ * them by {@link filletRound} (a circle never trimmed). Shift on the second pick applies a
  * corner instead, as a radius of 0 does. The radius is kept for the session.
  * Multiple keeps asking for the next pair until Enter, and Undo takes back the
  * last fillet made in the command. Each fillet is one command — a
@@ -94,14 +99,14 @@ import {
 
 type FilletState =
   /** Awaiting the first object (hover-highlighted). */
-  | { readonly phase: "first"; readonly hover: CornerObject | null }
+  | { readonly phase: "first"; readonly hover: FilletObject | null }
   /** First object chosen; awaiting the second (a live preview tracks the cursor). */
   | {
       readonly phase: "second"
-      readonly first: CornerObject
+      readonly first: FilletObject
       /** Where the first line was clicked — picks which corner to round. */
       readonly pick1: LinePick
-      readonly hover: CornerObject | null
+      readonly hover: FilletObject | null
       readonly cursor: LinePick
       /** Shift is held: the second pick applies a corner. */
       readonly corner: boolean
@@ -175,13 +180,13 @@ export class FilletTool implements Tool {
       case "first":
         this.state = {
           phase: "first",
-          hover: pickCornerObject(ctx, input, null),
+          hover: pickFilletObject(ctx, input, null),
         }
         break
       case "second":
         this.state = {
           ...this.state,
-          hover: pickCornerObject(ctx, input, this.state.first),
+          hover: pickFilletObject(ctx, input, this.state.first),
           cursor: { world: input.world, screen: input.screen },
           corner: input.shiftKey,
         }
@@ -198,7 +203,7 @@ export class FilletTool implements Tool {
 
     switch (this.state.phase) {
       case "first": {
-        const hit = pickCornerObject(ctx, input, null)
+        const hit = pickFilletObject(ctx, input, null)
         if (!hit) return
         const pick = { world: input.world, screen: input.screen }
         this.state = {
@@ -214,9 +219,13 @@ export class FilletTool implements Tool {
       }
       case "second": {
         const { first, pick1 } = this.state
-        const second = pickCornerObject(ctx, input, first)
+        const second = pickFilletObject(ctx, input, first)
         if (!second) return
         const radius = input.shiftKey ? 0 : this.radius
+        if (isRound(first) || isRound(second)) {
+          this.commitRound(first, pick1.world, second, input.world, radius, ctx)
+          return
+        }
         const plane = cornerPlane(first, pick1, second, input, ctx.viewport)
         const join = cornerJoin(
           plane.first,
@@ -316,6 +325,35 @@ export class FilletTool implements Tool {
 
     const { first, pick1, hover, cursor } = this.state
     const radius = this.state.corner ? 0 : this.radius
+    if (isRound(first) || (hover && isRound(hover))) {
+      const filleted =
+        hover &&
+        !isSegment(first) &&
+        !isSegment(hover) &&
+        filletRound(
+          first,
+          pick1.world,
+          hover,
+          cursor.world,
+          radius,
+          ctx.document.getCurrentLayerId(),
+          PREVIEW_ID
+        )
+      if (!filleted || typeof filleted === "string") {
+        return [
+          ...draw(cornerEntity(first), selectedStroke),
+          ...(hover ? draw(cornerEntity(hover), hoverStroke) : []),
+        ]
+      }
+      return filleted.built.flatMap((entity) =>
+        draw(
+          entity,
+          entity.id === PREVIEW_ID
+            ? { color: THEME.rubberBand, width: 1 }
+            : hoverStroke
+        )
+      )
+    }
     const plane =
       hover && cornerPlane(first, pick1, hover, cursor, ctx.viewport)
     const join =
@@ -458,6 +496,44 @@ export class FilletTool implements Tool {
   }
 
   /**
+   * An ARC or a CIRCLE with a line or another of them; with a polyline's
+   * segment, `Cannot fillet between these two entities.` (acc/d1–d3).
+   */
+  private commitRound(
+    first: FilletObject,
+    pick1: Vec2,
+    second: FilletObject,
+    pick2: Vec2,
+    radius: number,
+    ctx: ToolContext
+  ): void {
+    if (isSegment(first) || isSegment(second)) {
+      this.refuse("cannotFilletBetween", ctx, false)
+      return
+    }
+    const filleted = filletRound(
+      first,
+      pick1,
+      second,
+      pick2,
+      radius,
+      ctx.document.getCurrentLayerId()
+    )
+    if (filleted === "noValidFillet") {
+      this.refuse("noValidFillet", ctx, false, {
+        radius: formatLength(radius, ctx.document.getSettings()),
+      })
+    } else if (filleted === "nothing") {
+      this.done(null, ctx)
+    } else {
+      this.done(
+        new ReplaceEntitiesCommand(filleted.replaced, filleted.built),
+        ctx
+      )
+    }
+  }
+
+  /**
    * A line and a polyline's segment, or segments of two polylines, joined
    * into one polyline through the arc; parallel, `Cannot fillet between these
    * two entities.`
@@ -497,9 +573,10 @@ export class FilletTool implements Tool {
   private refuse(
     message: MessageId,
     ctx: ToolContext,
-    invalid: boolean | "sameLine" = true
+    invalid: boolean | "sameLine" = true,
+    values?: MessageValues
   ): void {
-    const said = ctx.text.message(message)
+    const said = ctx.text.message(message, values)
     if (this.multiple) {
       ctx.report(said, "error")
       this.state = { phase: "first", hover: null }
@@ -541,19 +618,23 @@ export class FilletTool implements Tool {
     }
   }
 
-  /** Executes a fillet; the command ends, or Multiple asks for the next. */
+  /**
+   * Executes a fillet — none where two circles meet at radius 0, which the
+   * console leaves as they are —; the command ends, or Multiple asks for the
+   * next.
+   */
   private done(
-    command: ReplaceEntitiesCommand | UpdateEntityCommand,
+    command: ReplaceEntitiesCommand | UpdateEntityCommand | null,
     ctx: ToolContext
   ): void {
-    this.steps.push("fillet")
+    if (command) this.steps.push("fillet")
     if (this.multiple) {
       this.state = { phase: "first", hover: null }
-      ctx.execute(command)
+      if (command) ctx.execute(command)
       ctx.requestRender()
       return
     }
-    ctx.execute(command)
+    if (command) ctx.execute(command)
     ctx.dynamicInput.close()
     ctx.endCommand()
   }

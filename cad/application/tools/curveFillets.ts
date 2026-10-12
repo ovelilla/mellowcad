@@ -227,23 +227,158 @@ function sideLocus(
 }
 
 function intersectLoci(a: CenterLocus, b: CenterLocus, ref: Vec2): Vec2 | null {
+  return nearestPoint(lociPoints(a, b), ref)
+}
+
+/** Every point where two loci meet. */
+function lociPoints(a: CenterLocus, b: CenterLocus): Vec2[] {
   if (a.kind === "line" && b.kind === "line") {
     const x = infiniteLineIntersection(a.p0, a.p1, b.p0, b.p1)
-    return x ? x.point : null
+    return x ? [x.point] : []
   }
   if (a.kind === "line" && b.kind === "circle") {
-    return nearestPoint(lineCirclePoints(a.p0, a.p1, b.center, b.radius), ref)
+    return lineCirclePoints(a.p0, a.p1, b.center, b.radius)
   }
   if (a.kind === "circle" && b.kind === "line") {
-    return nearestPoint(lineCirclePoints(b.p0, b.p1, a.center, a.radius), ref)
+    return lineCirclePoints(b.p0, b.p1, a.center, a.radius)
   }
   if (a.kind === "circle" && b.kind === "circle") {
+    return circleCircleIntersection(a.center, a.radius, b.center, b.radius)
+  }
+  return []
+}
+
+/**
+ * What FILLET rounds an ARC or a CIRCLE against: a line taken whole, and an
+ * arc as its whole circle.
+ */
+export type WholeCurve =
+  | { readonly kind: "line"; readonly a: Vec2; readonly b: Vec2 }
+  | { readonly kind: "circle"; readonly center: Vec2; readonly radius: number }
+
+/** A fillet circle's centre and where it touches the first and the second. */
+export interface WholeFillet {
+  readonly center: Vec2
+  readonly first: Vec2
+  readonly second: Vec2
+}
+
+/**
+ * The fillet of `radius` AutoCAD 2023's console draws between two whole
+ * curves, at least one a circle, or `null` (`No valid fillet with radius`).
+ * As between two lines, it lies on the side of each — of a line, or in or out
+ * of a circle — where the other was picked; of the two that leaves, the one
+ * touching a line nearest its pick, else the one touching both nearest theirs
+ * (acc/p1, r3, r9–r12).
+ */
+export function wholeFillet(
+  first: WholeCurve,
+  pick1: Vec2,
+  second: WholeCurve,
+  pick2: Vec2,
+  radius: number
+): WholeFillet | null {
+  let best: WholeFillet | null = null
+  let bestDistance = Infinity
+  for (const locus1 of wholeLoci(first, radius)) {
+    for (const locus2 of wholeLoci(second, radius)) {
+      for (const center of lociPoints(locus1, locus2)) {
+        if (
+          sideOf(first, center) !== sideOf(first, pick2) ||
+          sideOf(second, center) !== sideOf(second, pick1)
+        ) {
+          continue
+        }
+        const fillet = {
+          center,
+          first: touchPoint(first, center),
+          second: touchPoint(second, center),
+        }
+        const distance =
+          first.kind === "line"
+            ? V.distance(fillet.first, pick1)
+            : second.kind === "line"
+              ? V.distance(fillet.second, pick2)
+              : V.distance(fillet.first, pick1) +
+                V.distance(fillet.second, pick2)
+        if (distance < bestDistance - EPS) {
+          bestDistance = distance
+          best = fillet
+        }
+      }
+    }
+  }
+  return best
+}
+
+/**
+ * Where two whole curves meet for a fillet of radius 0: the crossing nearest
+ * a line's pick, or between two circles the one nearest both picks.
+ */
+export function wholeCrossing(
+  first: WholeCurve,
+  pick1: Vec2,
+  second: WholeCurve,
+  pick2: Vec2
+): Vec2 | null {
+  if (first.kind === "circle" && second.kind === "circle") {
     return nearestPoint(
-      circleCircleIntersection(a.center, a.radius, b.center, b.radius),
-      ref
+      circleCircleIntersection(
+        first.center,
+        first.radius,
+        second.center,
+        second.radius
+      ),
+      V.lerp(pick1, pick2, 0.5)
     )
   }
-  return null
+  const [line, circle, pick] =
+    first.kind === "line" ? [first, second, pick1] : [second, first, pick2]
+  if (line.kind !== "line" || circle.kind !== "circle") return null
+  return nearestPoint(
+    lineCirclePoints(line.a, line.b, circle.center, circle.radius),
+    pick
+  )
+}
+
+/** The loci of centres at `radius` from a whole curve, on both its sides. */
+function wholeLoci(curve: WholeCurve, radius: number): CenterLocus[] {
+  if (curve.kind === "line") {
+    const along = V.sub(curve.b, curve.a)
+    const normal = V.scale(V.normalize(V.perpendicular(along)), radius)
+    return [normal, negate(normal)].map((offset) => {
+      const p0 = V.add(curve.a, offset)
+      return { kind: "line", p0, p1: V.add(p0, along) }
+    })
+  }
+  const loci: CenterLocus[] = [
+    { kind: "circle", center: curve.center, radius: curve.radius + radius },
+  ]
+  if (curve.radius - radius > EPS) {
+    loci.push({
+      kind: "circle",
+      center: curve.center,
+      radius: curve.radius - radius,
+    })
+  }
+  return loci
+}
+
+/** Which side of a whole curve a point lies on: left of a line, out of a circle. */
+function sideOf(curve: WholeCurve, point: Vec2): boolean {
+  return curve.kind === "line"
+    ? V.cross(V.sub(curve.b, curve.a), V.sub(point, curve.a)) >= 0
+    : V.distance(point, curve.center) >= curve.radius
+}
+
+function touchPoint(curve: WholeCurve, center: Vec2): Vec2 {
+  if (curve.kind === "line") {
+    return closestPointOnInfiniteLine(curve.a, curve.b, center).point
+  }
+  return V.add(
+    curve.center,
+    V.scale(V.normalize(V.sub(center, curve.center)), curve.radius)
+  )
 }
 
 /** The tangent point where the fillet circle at `center` touches a side. */

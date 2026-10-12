@@ -2311,6 +2311,12 @@ export const es: EngineLocale = {
       "lineAndPolylineNonCoplanar": "La línea y la polilínea no son coplanares.",
       "twoEntitiesNonCoplanar": "Los dos objetos no son coplanares.",
       "cannotFilletBetween": "Imposible empalmar esos dos objetos.",
+      "noValidFillet": [
+        "No hay un empalme válido con el radio ",
+        [
+          "radius"
+        ]
+      ],
       "cornersSkipped": [
         [
           "parallel",
@@ -2394,6 +2400,7 @@ export const es: EngineLocale = {
       "filletRadiusTooLarge": "Radio de empalme es demasiado grande",
       "chamferDistanceTooLarge": "Distancia de chaflán es demasiado grande",
       "cannotChamferArcSegments": "Imposible unir con chaflán segmentos de arco de polilínea.",
+      "chamferRequiresLines": "Chaflán requiere 2 líneas (no segmentos de arco).",
       "linesChamfered": [
         [
           "count",

@@ -2028,6 +2028,12 @@ export const en: EngineCatalog = {
       "lineAndPolylineNonCoplanar": "Line and polyline are non coplanar.",
       "twoEntitiesNonCoplanar": "Two entities are non coplanar.",
       "cannotFilletBetween": "Cannot fillet between these two entities.",
+      "noValidFillet": [
+        "No valid fillet with radius ",
+        [
+          "radius"
+        ]
+      ],
       "cornersSkipped": [
         [
           "parallel",
@@ -2111,6 +2117,7 @@ export const en: EngineCatalog = {
       "filletRadiusTooLarge": "Fillet radius is too large",
       "chamferDistanceTooLarge": "Chamfer distance is too large",
       "cannotChamferArcSegments": "Cannot chamfer polyline arc segments.",
+      "chamferRequiresLines": "Chamfer requires 2 lines (not arc segments).",
       "linesChamfered": [
         [
           "count",

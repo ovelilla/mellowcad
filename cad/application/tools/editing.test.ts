@@ -1256,6 +1256,300 @@ describe("FILLET", () => {
     expect(cad.commandLog().at(-1)).toBe("4 lines were filleted")
     expect(cad.byId<PolylineEntity>("SQ").vertices).toHaveLength(4)
   })
+
+  // AutoCAD 2023's console (acc/a*, b*, c*, d*, p*, q*, r* of this session):
+  // the fillet lies on the side of each object the other was picked on; a
+  // circle is never trimmed; LIST's values to 4 decimals.
+  describe("arcs and circles", () => {
+    const line = () => lineOf(p(0, 0), p(100, 0), { id: "L1" })
+    /** The upper half of a circle round 50,-10, crossing L1 twice. */
+    const half = () => arcOf(p(50, -10), 30, 0, deg(180), { id: "A1" })
+    const circle = () => circleOf(p(50, 20), 30, { id: "C1" })
+    const fillet = (
+      entities: Entity[],
+      radius: string,
+      ...picks: Vec2[]
+    ): CadHarness => {
+      const cad = createHarness({ entities })
+      cad.command("FILLET").option("Radius").type(radius).enter()
+      for (const pick of picks) cad.click(pick)
+      return cad
+    }
+    const degrees = (radians: number) => (radians * 180) / Math.PI
+    const expectArc = (
+      arc: ArcEntity,
+      center: Vec2,
+      radius: number,
+      start: number,
+      end: number
+    ) => {
+      expect(arc.center).toBeCloseToPoint(center, 4)
+      expect(arc.radius).toBeCloseTo(radius, 4)
+      expect(degrees(arc.startAngle)).toBeCloseTo(start, 4)
+      expect(degrees(arc.endAngle)).toBeCloseTo(end, 4)
+    }
+    const filletArc = (cad: CadHarness) =>
+      cad
+        .entities()
+        .find((e): e is ArcEntity => e.type === "arc" && e.radius < 20)!
+
+    it("rounds a line and an arc where the picks say, either picked first", () => {
+      for (const picks of [
+        [p(10, 0), p(50, 20)],
+        [p(50, 20), p(10, 0)],
+      ]) {
+        const cad = fillet([line(), half()], "5", ...picks)
+        expect(cad.activeToolId()).toBe("select")
+        expect(cad.byId<LineEntity>("L1")).toMatchObject({
+          start: p(0, 0),
+          end: expect.objectContaining({ y: 0 }),
+        })
+        expect(cad.byId<LineEntity>("L1").end.x).toBeCloseTo(18.3772, 4)
+        expectArc(cad.byId<ArcEntity>("A1"), p(50, -10), 30, 0, 154.6231)
+        expectArc(filletArc(cad), p(18.3772, 5), 5, 270, 334.6231)
+      }
+
+      // Below the line, where the arc is picked under it: kept beyond.
+      const below = fillet([line(), half()], "5", p(10, 0), p(79.5442, -4.7906))
+      expect(below.byId<LineEntity>("L1").end).toBeCloseToPoint(p(15.359, 0), 4)
+      expectArc(below.byId<ArcEntity>("A1"), p(50, -10), 30, 171.7868, 180)
+      expectArc(filletArc(below), p(15.359, -5), 5, 351.7868, 90)
+
+      // Picked inside the circle: the fillet inside it, nearest the pick.
+      const inside = fillet([line(), half()], "5", p(60, 0), p(50, 20))
+      expect(inside.byId<LineEntity>("L1").end).toBeCloseToPoint(p(70, 0), 4)
+      expectArc(inside.byId<ArcEntity>("A1"), p(50, -10), 30, 36.8699, 180)
+      expectArc(filletArc(inside), p(70, 5), 5, 270, 36.8699)
+    })
+
+    it("extends a line or an arc to the fillet", () => {
+      const short = fillet(
+        [lineOf(p(0, 0), p(15, 0), { id: "L1" }), half()],
+        "5",
+        p(5, 0),
+        p(50, 20)
+      )
+      expect(short.byId<LineEntity>("L1").end).toBeCloseToPoint(
+        p(18.3772, 0),
+        4
+      )
+
+      const arc = arcOf(p(50, -10), 30, deg(30), deg(150), { id: "A1" })
+      const reached = fillet([line(), arc], "5", p(10, 0), p(50, 20))
+      expectArc(reached.byId<ArcEntity>("A1"), p(50, -10), 30, 30, 154.6231)
+    })
+
+    it("never trims a circle, and keeps a line on the side it runs on", () => {
+      const right = fillet([line(), circle()], "5", p(75, 0), p(20, 20))
+      expect(right.byId<CircleEntity>("C1")).toEqual(circle())
+      expect(right.byId<LineEntity>("L1")).toMatchObject({ end: p(100, 0) })
+      expect(right.byId<LineEntity>("L1").start).toBeCloseToPoint(
+        p(81.6228, 0),
+        4
+      )
+      expectArc(filletArc(right), p(81.6228, 5), 5, 154.6231, 270)
+
+      const under = fillet([line(), circle()], "5", p(10, 0), p(50, -10))
+      expect(under.byId<LineEntity>("L1").end).toBeCloseToPoint(
+        p(25.5051, 0),
+        4
+      )
+      expectArc(filletArc(under), p(25.5051, -5), 5, 45.5847, 90)
+
+      // The circle picked first: the line's pick still chooses.
+      const within = fillet([line(), circle()], "5", p(20, 20), p(60, 0))
+      expect(within.byId<LineEntity>("L1").end).toBeCloseToPoint(p(70, 0), 4)
+      expectArc(filletArc(within), p(70, 5), 5, 270, 323.1301)
+    })
+
+    it("rounds a line and a circle that do not meet, where a fillet fits", () => {
+      const apart = () => circleOf(p(50, 50), 30, { id: "C1" })
+      const cad = fillet([line(), apart()], "15", p(10, 0), p(20, 50))
+      expect(cad.byId<LineEntity>("L1").end).toBeCloseToPoint(p(21.7157, 0), 4)
+      expect(filletArc(cad).center).toBeCloseToPoint(p(21.7157, 15), 4)
+
+      for (const radius of ["5", "0"]) {
+        const none = fillet([line(), apart()], radius, p(10, 0), p(20, 50))
+        expect(none.commandLog().at(-1)).toBe(
+          `No valid fillet with radius ${radius}.00`
+        )
+        expect(none.activeToolId()).toBe("select")
+        expect(none.entities()).toEqual([line(), apart()])
+      }
+
+      const multiple = createHarness({ entities: [line(), apart()] })
+      multiple.command("FILLET").option("Radius").type("5").enter()
+      multiple.option("Multiple").click(p(10, 0)).click(p(20, 50))
+      expect(multiple.commandLog().at(-1)).toBe(
+        "No valid fillet with radius 5.00"
+      )
+      expect(multiple.state().commandLine.prompt).toBe(
+        "FILLET Select first object or [Undo/Polyline/Radius]:"
+      )
+
+      const spanish = createHarness({ locale: es, entities: [line(), apart()] })
+      spanish.command("EMPALME").option("Radius").type("5").enter()
+      spanish.click(p(10, 0)).click(p(20, 50))
+      expect(spanish.commandLog().at(-1)).toBe(
+        "No hay un empalme válido con el radio 5.00"
+      )
+    })
+
+    it("rounds two arcs, or two circles, where the picks say", () => {
+      const left = () => arcOf(p(0, 0), 30, 0, deg(180), { id: "A1" })
+      const crossing = fillet(
+        [left(), arcOf(p(40, 0), 30, 0, deg(180), { id: "A2" })],
+        "5",
+        p(-25.9808, 15),
+        p(65.9808, 15)
+      )
+      expectArc(crossing.byId<ArcEntity>("A1"), p(0, 0), 30, 55.1501, 180)
+      expectArc(crossing.byId<ArcEntity>("A2"), p(40, 0), 30, 0, 124.8499)
+      expectArc(filletArc(crossing), p(20, 28.7228), 5, 235.1501, 304.8499)
+
+      const apart = fillet(
+        [left(), arcOf(p(70, 0), 30, 0, deg(180), { id: "A2" })],
+        "10",
+        p(-25.9808, 15),
+        p(95.9808, 15)
+      )
+      expectArc(apart.byId<ArcEntity>("A1"), p(0, 0), 30, 28.955, 180)
+      expectArc(apart.byId<ArcEntity>("A2"), p(70, 0), 30, 0, 151.045)
+      expectArc(filletArc(apart), p(35, 19.3649), 10, 208.955, 331.045)
+
+      // Picked inside the other circle: the fillet inside that one.
+      const within = fillet(
+        [left(), arcOf(p(40, 0), 30, 0, deg(180), { id: "A2" })],
+        "5",
+        p(25.9808, 15),
+        p(65.9808, 15)
+      )
+      expectArc(within.byId<ArcEntity>("A1"), p(0, 0), 30, 0, 38.2132)
+      expectArc(within.byId<ArcEntity>("A2"), p(40, 0), 30, 0, 120)
+      expectArc(filletArc(within), p(27.5, 21.6506), 5, 120, 218.2132)
+
+      const circles = () => [
+        circleOf(p(0, 0), 30, { id: "C1" }),
+        circleOf(p(40, 0), 30, { id: "C2" }),
+      ]
+      const under = fillet(circles(), "5", p(-25.9808, -15), p(70, 0))
+      expect(under.entities().slice(0, 2)).toEqual(circles())
+      expectArc(filletArc(under), p(20, -28.7228), 5, 55.1501, 124.8499)
+    })
+
+    it("meets at radius 0 where they cross, each kept on its picked part", () => {
+      const met = fillet([line(), half()], "0", p(10, 0), p(50, 20))
+      expect(met.typeCounts()).toEqual({ line: 1, arc: 1 })
+      expect(met.byId<LineEntity>("L1").end).toBeCloseToPoint(p(21.7157, 0), 4)
+      expectArc(met.byId<ArcEntity>("A1"), p(50, -10), 30, 0, 160.5288)
+
+      const beyond = fillet(
+        [line(), half()],
+        "0",
+        p(10, 0),
+        p(20.4558, -4.7906)
+      )
+      expectArc(beyond.byId<ArcEntity>("A1"), p(50, -10), 30, 160.5288, 180)
+
+      // Off the arc: reached from the end its pick is nearer.
+      const arc = () => arcOf(p(50, -10), 30, deg(30), deg(150), { id: "A1" })
+      const nearEnd = fillet([line(), arc()], "0", p(10, 0), p(35, 15.9808))
+      expectArc(nearEnd.byId<ArcEntity>("A1"), p(50, -10), 30, 30, 160.5288)
+      const nearStart = fillet([line(), arc()], "0", p(10, 0), p(65, 15.9808))
+      expectArc(nearStart.byId<ArcEntity>("A1"), p(50, -10), 30, 160.5288, 150)
+
+      const circled = fillet([line(), circle()], "0", p(90, 0), p(50, 50))
+      expect(circled.byId<LineEntity>("L1").start).toBeCloseToPoint(
+        p(72.3607, 0),
+        4
+      )
+      expect(circled.byId<CircleEntity>("C1")).toEqual(circle())
+
+      const arcs = fillet(
+        [
+          arcOf(p(0, 0), 30, 0, deg(180), { id: "A1" }),
+          circleOf(p(40, 0), 30, { id: "C2" }),
+        ],
+        "0",
+        p(-25.9808, 15),
+        p(70, 0)
+      )
+      expectArc(arcs.byId<ArcEntity>("A1"), p(0, 0), 30, 48.1897, 180)
+
+      // Two circles: nothing to trim, nothing said.
+      const circles = [
+        circleOf(p(0, 0), 30, { id: "C1" }),
+        circleOf(p(40, 0), 30, { id: "C2" }),
+      ]
+      const untouched = fillet(circles, "0", p(-30, 0), p(70, 0))
+      expect(untouched.entities()).toEqual(circles)
+      expect(untouched.activeToolId()).toBe("select")
+      expect(untouched.commandLog().at(-1)).toBe(
+        "Select second object or shift-select to apply corner or [Radius]:"
+      )
+    })
+
+    it("puts the arc on the shared layer, else the current one, in one undo step", () => {
+      const cad = createHarness()
+      cad.runtime.document.load([line(), { ...half(), layerId: "L2" }], {
+        layers: [layerOf("0"), layerOf("L2"), layerOf("L3")],
+      })
+      cad.runtime.document.setCurrentLayer("L3")
+      cad.command("FILLET").option("Radius").type("5").enter()
+      cad.click(p(10, 0)).click(p(50, 20))
+      expect(filletArc(cad).layerId).toBe("L3")
+      expect(cad.byId<ArcEntity>("A1").layerId).toBe("L2")
+
+      cad.undo()
+      expect(cad.entities()).toEqual([line(), { ...half(), layerId: "L2" }])
+    })
+
+    it("cannot fillet one with a polyline", () => {
+      const cad = fillet(
+        [polylineOf([p(0, 0), p(100, 0)], { id: "P1" }), half()],
+        "5",
+        p(10, 0),
+        p(50, 20)
+      )
+      expect(cad.commandLog().at(-1)).toBe(
+        "Cannot fillet between these two entities."
+      )
+      expect(cad.activeToolId()).toBe("select")
+      expect(cad.entityCount).toBe(2)
+    })
+
+    it("refuses a word typed after an arc is picked", () => {
+      for (const [locale, name, refused] of [
+        [
+          undefined,
+          "FILLET",
+          [
+            "Select second object or shift-select to apply corner or [Radius]: FOO",
+            "*Invalid selection*",
+            "Expects a point or Radius",
+          ],
+        ],
+        [
+          es,
+          "EMPALME",
+          [
+            "Designe el segundo objeto o use la tecla Mayús para aplicar esquina o [Radio]: FOO",
+            "*Designación no válida*",
+            "Requiere un punto o Radio",
+          ],
+        ],
+      ] as const) {
+        const cad = createHarness({ locale, entities: [line(), half()] })
+        cad.command(name).click(p(50, 20))
+        cad.runtime.setCommandLineText("FOO")
+        cad.runtime.submitCommandLine()
+        expect(cad.commandLog().slice(-3)).toEqual(refused)
+        cad.click(p(10, 0))
+        expect(cad.typeCounts()).toEqual({ line: 1, arc: 1 })
+        expect(cad.activeToolId()).toBe("select")
+      }
+    })
+  })
 })
 
 describe("CHAMFER", () => {
@@ -1492,6 +1786,34 @@ describe("CHAMFER", () => {
       p(20, 0),
       p(100, 0),
     ])
+  })
+
+  // AutoCAD 2023's console (acc/e1–e4 of the arcs session): an ARC or a
+  // CIRCLE is said to be no line, and the same prompt is asked again.
+  it("refuses an arc or a circle and asks again", () => {
+    for (const [locale, name, said] of [
+      [undefined, "CHAMFER", "Chamfer requires 2 lines (not arc segments)."],
+      [es, "CHAFLAN", "Chaflán requiere 2 líneas (no segmentos de arco)."],
+    ] as const) {
+      const entities = [
+        lineOf(p(0, 0), p(100, 0), { id: "L1" }),
+        arcOf(p(50, -10), 30, 0, deg(180), { id: "A1" }),
+        circleOf(p(50, 80), 20, { id: "C1" }),
+      ]
+      const cad = createHarness({ locale, entities })
+      cad.command(name).click(p(50, 20))
+      expect(cad.commandLog().at(-1)).toBe(said)
+      const first = cad.state().commandLine.prompt
+      expect(first).toMatch(/^(CHAMFER|CHAFLAN) /)
+
+      cad.click(p(10, 0))
+      const second = cad.state().commandLine.prompt
+      cad.click(p(50, 100))
+      expect(cad.commandLog().at(-1)).toBe(said)
+      expect(cad.state().commandLine.prompt).toBe(second)
+      expect(second).not.toBe(first)
+      expect(cad.entities()).toEqual(entities)
+    }
   })
 
   // AutoCAD 2023's console (acc/f3–f18, f23, f24, f28): an arc segment is

@@ -84,6 +84,12 @@ A tool is an explicit state machine for one AutoCAD command. It owns a discrimin
   `arcs` and a `JoinCut`'s `keeps`; CHAMFER's `chords` cut it as its chord and refit what
   is left to its radius (`refitArcBulge`, `geometry/bulgeArcs.ts`). `bulgeThroughPoint`
   reads its point as the arc's middle: beside an arc pass the bisector of the radii.
+  An ARC or a CIRCLE entity is FILLET's object too (`pickFilletObject`, `FilletObject`,
+  `isRound`; CHAMFER says it is no line): `roundFillets.ts`' `filletRound` rounds it with
+  `curveFillets.ts`' `wholeFillet` — every circle tangent to both, on the side of each where
+  the other was picked, no crossing needed — and `wholeCrossing` at radius 0. The console
+  rules differ from an arc segment's (which `curveCrossing` and `keptEnd` keep, needing a
+  crossing): never send one kind through the other's path.
   `pickCornerObject` takes the pointer (`world` and `screen`), and the two objects are cut
   in `cornerPlane`: a polyline in a tilted plane (with the UCS not on it) brings the
   other and both picks into its OCS — a segment picked as it is drawn — and `back` returns

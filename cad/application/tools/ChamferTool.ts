@@ -195,6 +195,7 @@ export class ChamferTool implements Tool {
 
     switch (this.state.phase) {
       case "first": {
+        if (this.refusesRound(input, ctx)) return
         const hit = pickCornerObject(ctx, input, null)
         if (!hit) return
         const pick = { world: input.world, screen: input.screen }
@@ -210,6 +211,7 @@ export class ChamferTool implements Tool {
         return
       }
       case "second": {
+        if (this.refusesRound(input, ctx)) return
         const { first, pick1 } = this.state
         const second = pickCornerObject(ctx, input, first)
         if (!second) return
@@ -643,6 +645,17 @@ export class ChamferTool implements Tool {
       sharp ? 0 : this.distance2
     )
     return cut && { entry: cut.point1, exit: cut.point2, bulge: 0 }
+  }
+
+  /**
+   * An ARC or a CIRCLE picked as a line: said, and the same prompt asked
+   * again (acc/e1–e4).
+   */
+  private refusesRound(input: PointerInput, ctx: ToolContext): boolean {
+    const hit = ctx.pick(input.world)
+    if (hit?.type !== "arc" && hit?.type !== "circle") return false
+    ctx.report(ctx.text.message("chamferRequiresLines"), "error")
+    return true
   }
 
   private pickPolyline(

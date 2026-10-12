@@ -28,6 +28,7 @@ import type { MessageId } from "../EngineText"
 import type { Curve, CurveEnd } from "./curveFillets"
 import { LinePick, alongOnScreen } from "./lineCorner"
 import { bulgeBetween, segmentsPair } from "./polylineCorners"
+import type { RoundObject } from "./roundFillets"
 import { ToolContext } from "./Tool"
 
 /** A segment of a polyline, picked as one of FILLET's two objects. */
@@ -39,12 +40,19 @@ export interface SegmentPick {
 /** What FILLET and CHAMFER take as each of their two objects. */
 export type CornerObject = LineEntity | SegmentPick
 
-export function isSegment(object: CornerObject): object is SegmentPick {
+/** FILLET's objects: CHAMFER's, and an ARC or a CIRCLE. */
+export type FilletObject = CornerObject | RoundObject
+
+export function isSegment(object: FilletObject): object is SegmentPick {
   return "poly" in object
 }
 
+export function isRound(object: FilletObject): object is RoundObject {
+  return !isSegment(object) && object.type !== "line"
+}
+
 /** What a pick of `object` highlights: the line, or its whole polyline. */
-export function cornerEntity(object: CornerObject): Entity {
+export function cornerEntity(object: FilletObject): Entity {
   return isSegment(object) ? object.poly : object
 }
 
@@ -88,6 +96,29 @@ export function pickCornerObject(
     return { poly: hit, index }
   }
   return segmentsPair(hit, first.index, index) ? { poly: hit, index } : null
+}
+
+/**
+ * The object a pick takes where an ARC or a CIRCLE is one too (FILLET's, and
+ * CHAMFER's to refuse): one level in the frame, and with `first` taken not
+ * the same object and in its plane — neither highlights here. Anything else
+ * as {@link pickCornerObject}.
+ */
+export function pickFilletObject(
+  ctx: ToolContext,
+  pick: LinePick,
+  first: FilletObject | null
+): FilletObject | null {
+  const hit = ctx.pick(pick.world)
+  if (hit?.type !== "arc" && hit?.type !== "circle") {
+    if (!first || !isRound(first)) return pickCornerObject(ctx, pick, first)
+    const taken = pickCornerObject(ctx, pick, null)
+    return taken && (isSegment(taken) || coplanar(first, taken)) ? taken : null
+  }
+  if (!readsInPlan(hit)) return null
+  if (first === null) return hit
+  const other = cornerEntity(first)
+  return other.id !== hit.id && coplanar(other, hit) ? hit : null
 }
 
 /**
