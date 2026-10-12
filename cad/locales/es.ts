@@ -878,19 +878,25 @@ export const es: EngineLocale = {
         "Arc": "Arco",
         "Center": "Centro",
         "Rotation": "Rotación",
-        "Included angle": "ángulo Incluido"
+        "Included angle": "ángulo Incluido",
+        "Parameter": "Parámetro",
+        "Angle": "ángUlo"
       },
       "ELLIPSEC": {
         "Arc": "Arco",
         "Center": "Centro",
         "Rotation": "Rotación",
-        "Included angle": "ángulo Incluido"
+        "Included angle": "ángulo Incluido",
+        "Parameter": "Parámetro",
+        "Angle": "ángUlo"
       },
       "ELLIPSEARC": {
         "Arc": "Arco",
         "Center": "Centro",
         "Rotation": "Rotación",
-        "Included angle": "ángulo Incluido"
+        "Included angle": "ángulo Incluido",
+        "Parameter": "Parámetro",
+        "Angle": "ángUlo"
       },
       "SPLINE": {
         "Method": "Método",
@@ -1265,6 +1271,8 @@ export const es: EngineLocale = {
       "rotationAroundMajorAxis": "Rotación alrededor del eje mayor",
       "startAngle": "Ángulo inicial",
       "endAngle": "Ángulo final",
+      "startParameter": "Parámetro inicial",
+      "endParameter": "Parámetro final",
       "includedAngle": "Ángulo incluido",
       "splineStartTangent": "Precise tangente inicial",
       "splineEndTangent": "Precise tangente final",
@@ -1423,8 +1431,10 @@ export const es: EngineLocale = {
       "specifyEndpointOfAxis": "Precise punto final de eje",
       "specifyDistanceToOtherAxisOr": "Precise distancia de otro eje o",
       "specifyRotationAroundMajorAxis": "Precise rotación alrededor del eje mayor",
-      "specifyStartAngle": "Precise ángulo inicial",
+      "specifyStartAngleOr": "Precise ángulo inicial o",
       "specifyEndAngleOr": "Precise ángulo final o",
+      "specifyStartParameterOr": "Precise parámetro inicial o",
+      "specifyEndParameterOr": "Precise parámetro final o",
       "specifyIncludedAngleForArc": "Precise ángulo incluido para arco",
       "specifyFirstPointOr": "Precise primer punto o",
       "enterSplineCreationMethod": "Introduzca método de creación de spline",

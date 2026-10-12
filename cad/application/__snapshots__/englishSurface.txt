@@ -882,28 +882,28 @@ lweight "Lineweight" LW
   options: [R] Rotation
   prompt| Specify other endpoint of axis:
 > other axis
-  prompt: ELLIPSEARC Specify start angle:
+  prompt: ELLIPSEARC Specify start angle or [Parameter]:
   asks: "Start angle"
-  tip: Specify start angle:
+  tip: Specify start angle or
   dyn: "Start angle"=""|0|°*
-  options: -
+  options: [P] Parameter
   prompt| Specify distance to other axis or [Rotation]:
 > start angle
   dyn: "Start angle"="0"|0|°*
 > enter
-  prompt: ELLIPSEARC Specify end angle or [Included angle]:
+  prompt: ELLIPSEARC Specify end angle or [Parameter/Included angle]:
   asks: "End angle"
   tip: Specify end angle or
-  dyn: "End angle"=""|90|°*
-  options: [I] Included angle
-  prompt| Specify start angle: 0
+  dyn: "End angle"=""|270|°*
+  options: [P] Parameter, [I] Included angle
+  prompt| Specify start angle or [Parameter]: 0
 > I
   prompt: ELLIPSEARC Specify included angle for arc <180>:
   asks: "Included angle"
   tip: Specify included angle for arc
   dyn: "Included angle"=""|0|°*
   options: -
-  prompt| Specify end angle or [Included angle]: I
+  prompt| Specify end angle or [Parameter/Included angle]: I
 > included
   dyn: "Included angle"="90"|0|°*
 > enter

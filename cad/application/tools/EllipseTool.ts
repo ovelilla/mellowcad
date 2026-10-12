@@ -1,6 +1,7 @@
 import { Vec2, V } from "../../geometry/Vec2"
 import { Vec3, withZOf } from "../../geometry/Vec3"
 import {
+  ellipseAngleFromParam,
   ellipseParamFromAngle,
   normalizeAngle,
 } from "../../geometry/primitives"
@@ -80,7 +81,6 @@ type EllipseToolState =
       readonly phase: "endAngle"
       readonly ellipse: EllipseEntity
       readonly startParam: number
-      readonly startAngle: number
       readonly cursor: Vec2
       /** Included angle: the sweep is asked instead of the end angle. */
       readonly included: boolean
@@ -113,6 +113,12 @@ export class EllipseTool implements Tool {
    */
   private arc: boolean
   private centered: boolean
+  /**
+   * The arc's Parameter mode: its start and end are parameters of
+   * `p(u) = c + a·cos(u) + b·sin(u)`, not angles. The start prompt's choice
+   * holds at the end prompt, as AutoCAD 2023's console keeps it.
+   */
+  private parameter = false
   private state: EllipseToolState = { phase: "first" }
   private lastScreen: Vec2 | null = null
 
@@ -129,11 +135,11 @@ export class EllipseTool implements Tool {
     ctx.selection.clear()
     this.arc = this.mode === "arc"
     this.centered = this.mode === "center"
+    this.parameter = false
     this.state = { phase: "first" }
     this.openPointInput(ctx, this.firstPrompt())
   }
 
-  /** WHY no Parameter at the arc's angles: it is not offered. */
   question(): PromptId | ToolQuestion {
     switch (this.state.phase) {
       case "first":
@@ -154,11 +160,14 @@ export class EllipseTool implements Tool {
       case "rotation":
         return "specifyRotationAroundMajorAxis"
       case "startAngle":
-        return "specifyStartAngle"
+        return this.parameter
+          ? "specifyStartParameterOr"
+          : "specifyStartAngleOr"
       case "endAngle":
-        return this.state.included
-          ? { id: "specifyIncludedAngleForArc", enter: { angle: 180 } }
-          : "specifyEndAngleOr"
+        if (this.state.included) {
+          return { id: "specifyIncludedAngleForArc", enter: { angle: 180 } }
+        }
+        return this.parameter ? "specifyEndParameterOr" : "specifyEndAngleOr"
     }
   }
 
@@ -265,9 +274,12 @@ export class EllipseTool implements Tool {
       case "endAngle": {
         const typed = parseField(ctx, "endAngle")
         this.commitArc(
-          typed !== null
-            ? toRadians(typed)
-            : this.pointedAngle(this.state.ellipse, point),
+          this.paramAt(
+            this.state.ellipse,
+            typed !== null
+              ? toRadians(typed)
+              : this.pointedAngle(this.state.ellipse, point)
+          ),
           ctx
         )
         return
@@ -280,6 +292,7 @@ export class EllipseTool implements Tool {
     if (input.key === "Escape") {
       this.arc = this.mode === "arc"
       this.centered = this.mode === "center"
+      this.parameter = false
       this.state = { phase: "first" }
       ctx.dynamicInput.close()
       ctx.requestRender()
@@ -296,11 +309,20 @@ export class EllipseTool implements Tool {
           : [...(this.arc ? [] : [{ id: "Arc" }]), { id: "Center" }]
       case "distance":
         return [{ id: "Rotation" }]
+      case "startAngle":
+        return [this.otherMeasure()]
       case "endAngle":
-        return this.state.included ? [] : [{ id: "Included angle" }]
+        return this.state.included
+          ? []
+          : [this.otherMeasure(), { id: "Included angle" }]
       default:
         return []
     }
+  }
+
+  /** The keyword that switches the arc's angles and parameters. */
+  private otherMeasure(): CommandOption {
+    return { id: this.parameter ? "Angle" : "Parameter" }
   }
 
   invokeOption(id: string, ctx: ToolContext): CommandOptionOutcome {
@@ -314,6 +336,19 @@ export class EllipseTool implements Tool {
     if (this.state.phase === "distance" && id === "Rotation") {
       this.state = { ...this.state, phase: "rotation" }
       this.openRotationInput(ctx)
+      ctx.requestRender()
+      return "continue"
+    }
+    const measuring =
+      this.state.phase === "startAngle" ||
+      (this.state.phase === "endAngle" && !this.state.included)
+    if (measuring && (id === "Parameter" || id === "Angle")) {
+      this.parameter = id === "Parameter"
+      this.openAngleInput(
+        ctx,
+        this.state.phase === "startAngle" ? "startAngle" : "endAngle",
+        this.lastScreen ?? { x: 0, y: 0 }
+      )
       ctx.requestRender()
       return "continue"
     }
@@ -409,14 +444,14 @@ export class EllipseTool implements Tool {
         return this.state.ellipse
       case "endAngle": {
         const typed = parseField(ctx, "endAngle")
-        const angle =
+        const value =
           typed !== null
             ? toRadians(typed)
             : this.pointedAngle(this.state.ellipse, this.state.cursor)
         return this.sweptEllipse(
           this.state.ellipse,
           this.state.startParam,
-          angle
+          this.paramAt(this.state.ellipse, value)
         )
       }
       default:
@@ -424,7 +459,12 @@ export class EllipseTool implements Tool {
     }
   }
 
-  /** The centre and first semi-axis the two picked points define, per mode. */
+  /**
+   * The centre and first semi-axis the two picked points define, per mode.
+   * The semi-axis runs to the first endpoint, or from the centre to the one
+   * endpoint, which is where an arc's angle 0 lies: the console's 0,0 → 100,0
+   * stores the major axis as -50,0 and starts an arc at 0 on 0,0.
+   */
   private axisFrom(
     first: Vec3,
     second: Vec2
@@ -433,7 +473,7 @@ export class EllipseTool implements Tool {
       this.centered ? first : V.midpoint(first, second),
       first
     )
-    const semiAxis = V.sub(second, center)
+    const semiAxis = V.sub(this.centered ? second : first, center)
     return V.length(semiAxis) < 1e-9 ? null : { center, semiAxis }
   }
 
@@ -456,20 +496,29 @@ export class EllipseTool implements Tool {
     )
   }
 
-  /** A copy of `ellipse` swept from `startParam` to the given angle. */
+  /** A copy of `ellipse` swept between two parameters. */
   private sweptEllipse(
     ellipse: EllipseEntity,
     startParam: number,
-    endAngle: number
+    endParam: number
   ): EllipseEntity {
     return carryPlane(
       ellipse,
       createEllipse(ellipse.center, ellipse.majorAxis, ellipse.ratio, {
         startParam,
-        endParam: ellipseParamFromAngle(ellipse.ratio, endAngle),
+        endParam,
         id: PREVIEW_ID,
       })
     )
+  }
+
+  /**
+   * The parameter a start or end value names: an angle's, or the value itself
+   * in Parameter mode — a point's angle from the major axis included, as the
+   * console takes `0,25` there (u = 333.43°, not the point on that heading).
+   */
+  private paramAt(ellipse: EllipseEntity, value: number): number {
+    return this.parameter ? value : ellipseParamFromAngle(ellipse.ratio, value)
   }
 
   /**
@@ -544,13 +593,12 @@ export class EllipseTool implements Tool {
     ctx.requestRender()
   }
 
-  private beginEndAngle(angle: number, ctx: ToolContext, screen: Vec2): void {
+  private beginEndAngle(value: number, ctx: ToolContext, screen: Vec2): void {
     if (this.state.phase !== "startAngle") return
     this.state = {
       phase: "endAngle",
       ellipse: this.state.ellipse,
-      startParam: ellipseParamFromAngle(this.state.ellipse.ratio, angle),
-      startAngle: angle,
+      startParam: this.paramAt(this.state.ellipse, value),
       cursor: this.state.cursor,
       included: false,
     }
@@ -558,10 +606,29 @@ export class EllipseTool implements Tool {
     ctx.requestRender()
   }
 
-  private commitArc(endAngle: number, ctx: ToolContext): void {
+  private commitArc(endParam: number, ctx: ToolContext): void {
     if (this.state.phase !== "endAngle") return
     this.add(
-      this.sweptEllipse(this.state.ellipse, this.state.startParam, endAngle),
+      this.sweptEllipse(this.state.ellipse, this.state.startParam, endParam),
+      ctx
+    )
+  }
+
+  /**
+   * The arc swept `included` from its start: in parameters when the end was
+   * asked as a parameter, else in angles — the console's 90 from a start
+   * angle of 30 ends at 120 (angle) or at parameter 139.1 (angle 157).
+   */
+  private commitIncluded(included: number, ctx: ToolContext): void {
+    if (this.state.phase !== "endAngle") return
+    const { ellipse, startParam } = this.state
+    this.commitArc(
+      this.parameter
+        ? startParam + included
+        : ellipseParamFromAngle(
+            ellipse.ratio,
+            ellipseAngleFromParam(ellipse.ratio, startParam) + included
+          ),
       ctx
     )
   }
@@ -667,13 +734,19 @@ export class EllipseTool implements Tool {
     id: "startAngle" | "endAngle",
     screen: Vec2
   ): void {
+    const prompt: PromptId = this.parameter
+      ? id === "startAngle"
+        ? "startParameter"
+        : "endParameter"
+      : id
     const session: DynamicInputSession = {
-      // The field and its prompt share the id: startAngle, endAngle.
-      fields: [{ id, prompt: id, kind: "angle" }],
+      fields: [{ id, prompt, kind: "angle" }],
       commit: (values, commitCtx) => {
-        const angle = toRadians(values[id])
-        if (id === "startAngle") this.beginEndAngle(angle, commitCtx, screen)
-        else this.commitArc(angle, commitCtx)
+        const value = toRadians(values[id])
+        if (id === "startAngle") this.beginEndAngle(value, commitCtx, screen)
+        else if (this.state.phase === "endAngle") {
+          this.commitArc(this.paramAt(this.state.ellipse, value), commitCtx)
+        }
       },
     }
     ctx.dynamicInput.open(session)
@@ -686,18 +759,13 @@ export class EllipseTool implements Tool {
     const screen = this.lastScreen ?? { x: 0, y: 0 }
     const session: DynamicInputSession = {
       fields: [{ id: "included", prompt: "includedAngle", kind: "angle" }],
-      commit: (values, commitCtx) => {
-        if (this.state.phase !== "endAngle") return
-        this.commitArc(
-          this.state.startAngle + toRadians(values.included),
-          commitCtx
-        )
-      },
+      commit: (values, commitCtx) =>
+        this.commitIncluded(toRadians(values.included), commitCtx),
       // Enter keeps the `<180>` the prompt shows: half the ellipse.
       commitRaw: (commitCtx) => {
         if (this.state.phase !== "endAngle") return false
         if (commitCtx.dynamicInput.hasTypedText()) return false
-        this.commitArc(this.state.startAngle + Math.PI, commitCtx)
+        this.commitIncluded(Math.PI, commitCtx)
         return true
       },
     }

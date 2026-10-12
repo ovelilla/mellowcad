@@ -456,19 +456,25 @@
         "Arc": "Arc",
         "Center": "Center",
         "Rotation": "Rotation",
-        "Included angle": "Included angle"
+        "Included angle": "Included angle",
+        "Parameter": "Parameter",
+        "Angle": "Angle"
       },
       "ELLIPSEC": {
         "Arc": "Arc",
         "Center": "Center",
         "Rotation": "Rotation",
-        "Included angle": "Included angle"
+        "Included angle": "Included angle",
+        "Parameter": "Parameter",
+        "Angle": "Angle"
       },
       "ELLIPSEARC": {
         "Arc": "Arc",
         "Center": "Center",
         "Rotation": "Rotation",
-        "Included angle": "Included angle"
+        "Included angle": "Included angle",
+        "Parameter": "Parameter",
+        "Angle": "Angle"
       },
       "SPLINE": {
         "Method": "Method",
@@ -770,6 +776,8 @@
       "rotationAroundMajorAxis": "Rotation around major axis",
       "startAngle": "Start angle",
       "endAngle": "End angle",
+      "startParameter": "Start parameter",
+      "endParameter": "End parameter",
       "includedAngle": "Included angle",
       "splineStartTangent": "Specify start tangent",
       "splineEndTangent": "Specify end tangent",
@@ -913,8 +921,10 @@
       "specifyEndpointOfAxis": "Specify endpoint of axis",
       "specifyDistanceToOtherAxisOr": "Specify distance to other axis or",
       "specifyRotationAroundMajorAxis": "Specify rotation around major axis",
-      "specifyStartAngle": "Specify start angle",
+      "specifyStartAngleOr": "Specify start angle or",
       "specifyEndAngleOr": "Specify end angle or",
+      "specifyStartParameterOr": "Specify start parameter or",
+      "specifyEndParameterOr": "Specify end parameter or",
       "specifyIncludedAngleForArc": "Specify included angle for arc",
       "specifyFirstPointOr": "Specify first point or",
       "enterSplineCreationMethod": "Enter spline creation method",

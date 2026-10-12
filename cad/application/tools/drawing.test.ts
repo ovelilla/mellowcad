@@ -17,8 +17,18 @@ import {
   splineStartPoint,
 } from "../../domain/entities"
 import { V } from "../../geometry/Vec2"
-import { createHarness } from "../../../test/harness"
+import { type CadHarness, createHarness } from "../../../test/harness"
 import { circleOf, deg, lineOf, p } from "../../../test/builders"
+import { es } from "../../locales/es"
+
+/** Typed at the command line and confirmed, as AutoCAD's prompt reads it. */
+function answer(cad: CadHarness, ...answers: string[]): CadHarness {
+  for (const text of answers) {
+    cad.runtime.setCommandLineText(text)
+    cad.runtime.submitCommandLine()
+  }
+  return cad
+}
 
 /**
  * The draw commands. Each is checked through both of its input routes — picking
@@ -487,10 +497,12 @@ describe("ELLIPSE", () => {
       "ELLIPSE Specify center of elliptical arc:"
     )
     cad.type("0,0").enter().type("100,0").enter().type("50").enter()
-    expect(cad.state().commandLine.prompt).toBe("ELLIPSE Specify start angle:")
+    expect(cad.state().commandLine.prompt).toBe(
+      "ELLIPSE Specify start angle or [Parameter]:"
+    )
     cad.type("0").enter()
     expect(cad.state().commandLine.prompt).toBe(
-      "ELLIPSE Specify end angle or [Included angle]:"
+      "ELLIPSE Specify end angle or [Parameter/Included angle]:"
     )
     cad.option("Included angle")
     expect(cad.state().commandLine.prompt).toBe(
@@ -521,24 +533,37 @@ describe("ELLIPSE", () => {
     const cad = createHarness()
 
     // At ratio 0.5 the point at *parameter* 45° is not the point at 45° from
-    // the centre; the prompt asks for the angle, so the end must be on the ray.
+    // the centre; the prompt asks for the angle, so the end must be on the ray
+    // — 45° on from the major axis, which points to the first endpoint.
     cad.command("ELLIPSEARC").click(p(-100, 0)).click(p(100, 0)).click(p(0, 50))
     cad.type("0").enter().type("45").enter()
 
     const end = ellipseEndPoint(cad.only<EllipseEntity>("ellipse"))
-    expect(Math.atan2(end.y, end.x)).toBeCloseToAngle(deg(45), 5)
+    expect(Math.atan2(end.y, end.x)).toBeCloseToAngle(deg(-135), 5)
   })
 
+  // AutoCAD 2023's console: 0,0 → 100,0 stores Major Axis -50,0, and the arc
+  // at 0 starts on 0,0; from a centre, on the endpoint given; and a longer
+  // other axis is the semi-axis turned a quarter left (0,0 → 40,0, 50:
+  // Major Axis 0,-50).
   it("measures an arc's angles from the major axis, not from world X", () => {
     const cad = createHarness()
 
-    // The major axis runs vertically here, so angle 0 is the top of the
-    // ellipse — the frame AutoCAD's Parameter equation is written in.
+    // The major axis runs vertically here, so angle 0 is the bottom of the
+    // ellipse, the first endpoint — the frame of AutoCAD's Parameter equation.
     cad.command("ELLIPSEARC").click(p(0, -100)).click(p(0, 100)).click(p(50, 0))
     cad.type("0").enter().type("90").enter()
 
     const ellipse = cad.only<EllipseEntity>("ellipse")
-    expect(ellipseStartPoint(ellipse)).toBeCloseToPoint(p(0, 100), 5)
+    expect(ellipseStartPoint(ellipse)).toBeCloseToPoint(p(0, -100), 5)
+    expect(ellipseEndPoint(ellipse)).toBeCloseToPoint(p(50, 0), 5)
+
+    cad.command("ELLIPSEARC")
+    answer(cad, "0,0", "40,0", "50", "0", "90")
+    const turned = cad.entities().at(-1) as EllipseEntity
+    expect(turned.majorAxis).toBeCloseToPoint(p(0, -50))
+    expect(ellipseStartPoint(turned)).toBeCloseToPoint(p(20, -50), 5)
+    expect(ellipseEndPoint(turned)).toBeCloseToPoint(p(40, 0), 5)
   })
 
   it("Included angle sweeps on from the start angle", () => {
@@ -549,8 +574,116 @@ describe("ELLIPSE", () => {
     cad.option("Included angle").type("90").enter()
 
     const ellipse = cad.only<EllipseEntity>("ellipse")
-    expect(ellipseStartPoint(ellipse)).toBeCloseToPoint(p(100, 0), 5)
-    expect(ellipseEndPoint(ellipse)).toBeCloseToPoint(p(0, 50), 5)
+    expect(ellipseStartPoint(ellipse)).toBeCloseToPoint(p(-100, 0), 5)
+    expect(ellipseEndPoint(ellipse)).toBeCloseToPoint(p(0, -50), 5)
+  })
+
+  // AutoCAD 2023's console (acc/e1–e7): Parameter asks `Specify start
+  // parameter or [Angle]:` and `Specify end parameter or [Angle/Included
+  // angle]:`, the choice holding until Angle; a point there is taken by its
+  // angle from the major axis as the parameter, and Included angle sweeps in
+  // the end prompt's own measure.
+  describe("Parameter", () => {
+    /** An arc on 0,0 → 100,0 with the other half-axis 25, at its start. */
+    function arc(locale?: typeof es): CadHarness {
+      const cad = createHarness({ locale })
+      cad.command(locale ? "ELIPSE" : "ELLIPSE")
+      answer(cad, "A", "0,0", "100,0", "25")
+      return cad
+    }
+
+    it("asks parameters, and they are the equation's", () => {
+      const cad = arc()
+      answer(cad, "P", "0", "FOO", "90")
+      expect(cad.commandLog().slice(-5)).toEqual([
+        "Specify start angle or [Parameter]: P",
+        "Specify start parameter or [Angle]: 0",
+        "Specify end parameter or [Angle/Included angle]: FOO",
+        "Requires valid numeric angle, second point, or option keyword.",
+        "Specify end parameter or [Angle/Included angle]: 90",
+      ])
+      const ellipse = cad.only<EllipseEntity>("ellipse")
+      expect(ellipse.majorAxis).toBeCloseToPoint(p(-50, 0))
+      expect(ellipseStartPoint(ellipse)).toBeCloseToPoint(p(0, 0), 5)
+      expect(ellipseEndPoint(ellipse)).toBeCloseToPoint(p(50, -25), 5)
+    })
+
+    it("refuses as the console does and goes back to angles on Angle", () => {
+      const cad = arc()
+      answer(cad, "FOO", "P", "FOO", "A")
+      expect(cad.commandLog().slice(-6)).toEqual([
+        "Specify start angle or [Parameter]: FOO",
+        "Requires valid numeric angle, second point, or option keyword.",
+        "Specify start angle or [Parameter]: P",
+        "Specify start parameter or [Angle]: FOO",
+        "Requires valid numeric angle, second point, or option keyword.",
+        "Specify start parameter or [Angle]: A",
+      ])
+      expect(cad.state().commandLine.prompt).toBe(
+        "ELLIPSE Specify start angle or [Parameter]:"
+      )
+      answer(cad, "30", "P")
+      expect(cad.state().commandLine.prompt).toBe(
+        "ELLIPSE Specify end parameter or [Angle/Included angle]:"
+      )
+    })
+
+    it("sweeps Included angle in the end prompt's measure", () => {
+      const angles = arc()
+      answer(angles, "30", "I", "90")
+      expect(
+        ellipseEndPoint(angles.only<EllipseEntity>("ellipse"))
+      ).toBeCloseToPoint(p(63.8675, -24.0192), 3)
+
+      const parameters = arc()
+      answer(parameters, "30", "P", "I", "90")
+      expect(
+        ellipseEndPoint(parameters.only<EllipseEntity>("ellipse"))
+      ).toBeCloseToPoint(p(87.7964, -16.3663), 3)
+
+      const fromParameter = arc()
+      answer(fromParameter, "P", "45", "I", "FOO", "90")
+      expect(fromParameter.commandLog().slice(-2)).toEqual([
+        "Requires valid numeric angle or second point.",
+        "Specify included angle for arc <180>: 90",
+      ])
+      const ellipse = fromParameter.only<EllipseEntity>("ellipse")
+      expect(ellipseStartPoint(ellipse)).toBeCloseToPoint(
+        p(14.6447, -17.6777),
+        3
+      )
+      expect(ellipseEndPoint(ellipse)).toBeCloseToPoint(p(85.3553, -17.6777), 3)
+    })
+
+    it("takes a point's angle from the major axis as the parameter", () => {
+      const parameter = arc()
+      answer(parameter, "P", "0,25", "180")
+      expect(
+        ellipseStartPoint(parameter.only<EllipseEntity>("ellipse"))
+      ).toBeCloseToPoint(p(5.2786, 11.1803), 3)
+
+      const angle = arc()
+      answer(angle, "0,25", "180")
+      expect(
+        ellipseStartPoint(angle.only<EllipseEntity>("ellipse"))
+      ).toBeCloseToPoint(p(14.6447, 17.6777), 3)
+    })
+
+    it("asks in Spanish", () => {
+      const cad = arc(es)
+      answer(cad, "P", "FOO", "U", "30", "P")
+      expect(cad.commandLog().slice(-6)).toEqual([
+        "Precise ángulo inicial o [Parámetro]: P",
+        "Precise parámetro inicial o [ángUlo]: FOO",
+        "Requiere un ángulo numérico válido, un segundo punto o una opción.",
+        "Precise parámetro inicial o [ángUlo]: U",
+        "Precise ángulo inicial o [Parámetro]: 30",
+        "Precise ángulo final o [Parámetro/ángulo Incluido]: P",
+      ])
+      expect(cad.state().commandLine.prompt).toBe(
+        "ELIPSE Precise parámetro final o [ángUlo/ángulo Incluido]:"
+      )
+    })
   })
 
   it("ends after a single ellipse, like AutoCAD", () => {
