@@ -78,6 +78,7 @@ export class HatchTool implements Tool {
 
   private state: HatchState = { phase: "point" }
   private readonly selector = new ObjectSelector({
+    takes: () => "wholeObjects",
     done: (ctx) => this.enterPoint(ctx),
     accept: (ids, ctx) => this.boundaries(ids, ctx),
   })
@@ -188,7 +189,7 @@ export class HatchTool implements Tool {
       case "point":
         return "point2d"
       case "select":
-        return this.selector.takes("wholeObjects")
+        return this.selector.takes()
       case "scale":
         return { refusal: "requiresDistanceOrNumberX" }
       case "angle":

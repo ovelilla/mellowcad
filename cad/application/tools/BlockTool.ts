@@ -95,7 +95,7 @@ export class BlockTool implements Tool {
   }
 
   takes(): QuestionInput | null {
-    return this.state.phase === "select" ? this.selector.takes("objects") : null
+    return this.state.phase === "select" ? this.selector.takes() : null
   }
 
   commandOptions(): readonly CommandOption[] {

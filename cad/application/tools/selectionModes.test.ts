@@ -340,6 +340,102 @@ describe("Select objects' modes", () => {
     )
   })
 
+  // AutoCAD 2023's console (acc/u1–u17, v1–v7): `S` starts SIngle and the
+  // hidden SUbobject alike where the set takes sub-objects.
+  it("asks SIngle or SUbobject? for S, as the console does", () => {
+    const cad = createHarness({ entities: drawing() })
+    cad.command("ERASE")
+    answer(cad, "S")
+    expect(cad.state().commandLine.prompt).toBe("ERASE SIngle or SUbobject?")
+    answer(cad, "SI", "L")
+    expect(cad.commandLog().slice(1)).toEqual([
+      "Select objects: S",
+      "Ambiguous response, please clarify...",
+      "SIngle or SUbobject? SI",
+      "Select objects: L",
+      "1 found",
+      "1 object erased.",
+    ])
+    expect(cad.entityCount).toBe(2)
+
+    const other = createHarness({ entities: drawing() })
+    other.command("ERASE")
+    answer(other, "S", "", "L", "S", "FOO")
+    expect(other.commandLog().slice(1)).toEqual([
+      "Select objects: S",
+      "Ambiguous response, please clarify...",
+      "SIngle or SUbobject?",
+      "Invalid option keyword.",
+      "SIngle or SUbobject? L",
+      "1 found",
+      "Select objects: S",
+      "Ambiguous response, please clarify...",
+      "SIngle or SUbobject? FOO",
+      "*Invalid selection*",
+      `Expects a point or ${SELECTION_MODES}`,
+    ])
+  })
+
+  it("finds nothing in SUbobject, refuses Last and ALL there, and Object goes back", () => {
+    const cad = createHarness({ entities: drawing() })
+    cad.command("ERASE")
+    answer(cad, "SU", "L", "50,0", "W", "-10,-10", "110,60", "O", "L")
+    expect(cad.commandLog().slice(1)).toEqual([
+      "Select objects: SU",
+      "Select objects: L",
+      "*Invalid selection*",
+      "Expects a point or Window/Crossing/BOX/Fence/WPolygon/CPolygon/Add/Remove/Multiple/Previous/Undo/AUto/SIngle/SUbobject/Object",
+      "Select objects: 50,0",
+      "0 found",
+      "Select objects: W",
+      "Specify first corner: -10,-10",
+      "Specify opposite corner: 110,60",
+      "0 found",
+      "Select objects: O",
+      "Select objects: L",
+      "1 found",
+    ])
+
+    const picked = createHarness({ entities: drawing() })
+    picked.command("ERASE")
+    answer(picked, "SU")
+    picked.click(p(50, 0))
+    expect(picked.commandLog().at(-1)).toBe("Select objects: 0 found")
+    expect(picked.runtime.selection.isEmpty()).toBe(true)
+  })
+
+  it("takes S as SIngle where the set is of whole objects, and refuses SU", () => {
+    const cad = createHarness({ entities: drawing() })
+    cad.command("MIRROR")
+    answer(cad, "SU", "S", "L")
+    expect(cad.commandLog().slice(1)).toEqual([
+      "Select objects: SU",
+      "*Invalid selection*",
+      "Expects a point or Window/Last/Crossing/BOX/ALL/Fence/WPolygon/CPolygon/Group/Add/Remove/Multiple/Previous/Undo/AUto/SIngle",
+      "Select objects: S",
+      "Select objects: L",
+      "1 found",
+    ])
+    expect(cad.state().commandLine.prompt).toBe(
+      "MIRROR Specify first point of mirror line:"
+    )
+  })
+
+  it("takes S as Subobjeto in Autodesk's Spanish, whose SIngle is úNico", () => {
+    const cad = createHarness({ locale: es, entities: drawing() })
+    cad.command("BORRA")
+    answer(cad, "S", "LT", "O", "LT")
+    expect(cad.commandLog().slice(1)).toEqual([
+      "Designe objetos: S",
+      "Designe objetos: LT",
+      "*Designación no válida*",
+      "Requiere un punto o Ventana/Captura/MArco/Borde/polígonOV/polígonOC/Añadir/Eliminar/Múltiple/Previo/desHacer/AUto/úNico/Subobjeto/Objeto",
+      "Designe objetos: O",
+      "Designe objetos: LT",
+      "1 encontrados",
+    ])
+  })
+
   it("is the same Select objects in every command that asks for a set", () => {
     const cad = createHarness({ entities: drawing() })
     for (const command of ["COPY", "ROTATE", "SCALE", "MIRROR", "EXPLODE"]) {

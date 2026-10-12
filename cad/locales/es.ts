@@ -1230,7 +1230,9 @@ export const es: EngineLocale = {
         "Previous": "Previo",
         "Undo": "desHacer",
         "AUto": "AUto",
-        "SIngle": "úNico"
+        "SIngle": "úNico",
+        "SUbobject": "Subobjeto",
+        "Object": "Objeto"
       },
       "specifyNextFencePointOr": {
         "Undo": "desHacer"
@@ -2578,6 +2580,7 @@ export const es: EngineLocale = {
           "set",
           1,
           {
+            "subobjects": "Ventana/Captura/MArco/Borde/polígonOV/polígonOC/Añadir/Eliminar/Múltiple/Previo/desHacer/AUto/úNico/Subobjeto/Objeto",
             "oneObject": "Ventana/úLTimo/Captura/MArco/Todos/Borde/polígonOV/polígonOC",
             "singleSet": "Ventana/úLTimo/Captura/MArco/Todos/Borde/polígonOV/polígonOC/Grupo",
             "pathCurve": "Ventana/úLTimo/Captura/MArco/Todos/Borde/polígonOV/polígonOC/Grupo/Previo/AUto",

@@ -104,6 +104,7 @@ export class ArrayPathTool implements Tool {
    * curve found, and leaves out the objects being arrayed.
    */
   private readonly pathModes = new ObjectSelector({
+    takes: () => "pathCurve",
     done: () => {},
     question: () => "selectPathCurve",
     modes: [...ONE_OBJECT_MODES, "Previous", "AUto"],
@@ -177,8 +178,8 @@ export class ArrayPathTool implements Tool {
   /** As AutoCAD 2023's console refuses them. */
   takes(): QuestionInput | null {
     const state = this.state
-    if (state.phase === "pickPath") return this.pathModes.takes("pathCurve")
-    if (state.phase !== "edit") return this.selector.takes("objects")
+    if (state.phase === "pickPath") return this.pathModes.takes()
+    if (state.phase !== "edit") return this.selector.takes()
     switch (state.step) {
       case "main":
         return "point"

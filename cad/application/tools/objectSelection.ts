@@ -25,7 +25,8 @@ const DRAG_THRESHOLD_PX = 4
 
 /**
  * The selection modes `Select objects:` takes — typed, never listed in its
- * prompt. Group, Multiple, SUbobject and Object are not offered.
+ * prompt, SUbobject and Object only where its refusal lists them (a set with
+ * sub-objects). Group and Multiple are not offered.
  */
 const MODES = [
   "Window",
@@ -42,9 +43,21 @@ const MODES = [
   "Undo",
   "AUto",
   "SIngle",
+  "SUbobject",
+  "Object",
 ] as const
 
 export type SelectionMode = (typeof MODES)[number]
+
+/** The modes a set of whole objects takes (MIRROR's, JOIN's, STRETCH's). */
+const WHOLE_OBJECT_MODES = MODES.filter(
+  (mode) => mode !== "SUbobject" && mode !== "Object"
+)
+
+/** The modes SUbobject takes, as its refusal lists them: not Last nor ALL. */
+const SUBOBJECT_MODES = MODES.filter(
+  (mode) => mode !== "Last" && mode !== "ALL"
+)
 
 /**
  * The modes a single object's pick takes (BREAK's `Select object:`, UCS
@@ -118,6 +131,11 @@ export interface ObjectSelectorOptions {
    * find, a fence or polygon ended short — for the command to go on.
    */
   readonly done: (ctx: ToolContext) => void
+  /**
+   * What `Select objects:` takes, which its refusal lists the modes of: a
+   * selection set with sub-objects (`"objects"`) by default.
+   */
+  readonly takes?: () => QuestionInput
   /** How the command asks for the set, when not `Select objects`. */
   readonly question?: () => PromptId
   /**
@@ -138,7 +156,7 @@ export interface ObjectSelectorOptions {
     frame: readonly Vec2[] | null,
     ctx: ToolContext
   ) => void
-  /** The modes the prompt takes; all of them by default. */
+  /** The modes the prompt takes; by default those {@link takes} lists. */
   readonly modes?: readonly SelectionMode[]
   /**
    * A single object's pick rather than a set: what a mode finds is not added
@@ -158,8 +176,9 @@ export interface ObjectSelectorOptions {
  * asks it with, shared so each one takes the same answers: a pick, a window
  * dragged or clicked from a point on nothing, and the modes typed there
  * (Window, Crossing, BOX, Last, ALL, Fence, WPolygon, CPolygon, Previous,
- * Remove and Add, Undo, AUto, SIngle). Each says what it found on the line
- * AutoCAD says it, in its words (`1 found (1 duplicate), 2 total`).
+ * Remove and Add, Undo, AUto, SIngle, SUbobject and Object). Each says what it
+ * found on the line AutoCAD says it, in its words (`1 found (1 duplicate), 2
+ * total`).
  */
 export class ObjectSelector {
   private step: Step = { kind: "objects", hover: null }
@@ -167,6 +186,8 @@ export class ObjectSelector {
   private removing = false
   /** SIngle: the first selection that finds anything closes the set. */
   private single = false
+  /** SUbobject until Object: what is picked is a sub-object. */
+  private subobject = false
   private operations: Operation[] = []
   /**
    * Whether a selection has found anything since the prompt opened: from the
@@ -181,6 +202,7 @@ export class ObjectSelector {
     this.step = { kind: "objects", hover: null }
     this.removing = false
     this.single = false
+    this.subobject = false
     this.operations = []
     this.counted = false
   }
@@ -209,10 +231,11 @@ export class ObjectSelector {
   }
 
   /**
-   * What the question takes: `set` at `Select objects:` (what its refusal
-   * lists differs per command), a point at the modes' own prompts.
+   * What the question takes: the set at `Select objects:` (what its refusal
+   * lists differs per command, and in SUbobject), a point at the modes' own
+   * prompts.
    */
-  takes(set: QuestionInput): QuestionInput {
+  takes(): QuestionInput {
     switch (this.step.kind) {
       case "firstCorner":
       case "oppositeCorner":
@@ -221,7 +244,7 @@ export class ObjectSelector {
       case "polygon":
         return { refusal: "invalidResponse" }
       default:
-        return set
+        return this.subobject ? "subobjects" : this.set()
     }
   }
 
@@ -230,7 +253,7 @@ export class ObjectSelector {
       case "objects":
       case "pressed":
       case "dragging":
-        return (this.options.modes ?? MODES).map((id) => ({
+        return this.offered().map((id) => ({
           id,
           hidden: true,
           prompt: "selectObjects",
@@ -253,7 +276,7 @@ export class ObjectSelector {
       return true
     }
     if (step.kind !== "objects") return false
-    if (!(this.options.modes ?? MODES).some((mode) => mode === id)) return false
+    if (!this.offered().some((mode) => mode === id)) return false
     switch (id) {
       case "Window":
       case "Crossing":
@@ -318,6 +341,10 @@ export class ObjectSelector {
       case "SIngle":
         this.single = true
         return true
+      case "SUbobject":
+      case "Object":
+        this.subobject = id === "SUbobject"
+        return true
       default:
         return false
     }
@@ -344,6 +371,8 @@ export class ObjectSelector {
     const hit = this.pickAt(at, ctx)
     if (hit) {
       this.select([hit.id], false, null, false, ctx)
+    } else if (this.subobject && ctx.pick(at)) {
+      this.select([], false, null, false, ctx)
     } else if (!ctx.pick(at)) {
       this.step = {
         kind: "oppositeCorner",
@@ -425,7 +454,10 @@ export class ObjectSelector {
     if (step.kind === "pressed") {
       const under = ctx.pick(input.world)
       const hit = this.pickAt(input.world, ctx)
-      if (under && !hit) {
+      if (under && this.subobject) {
+        this.step = { kind: "objects", hover: null }
+        this.select([], step.subtract, null, false, ctx)
+      } else if (under && !hit) {
         // An object the command cannot take: it never highlighted, and being
         // under the pick it starts no window either.
         this.step = { kind: "objects", hover: null }
@@ -668,6 +700,10 @@ export class ObjectSelector {
     ctx: ToolContext,
     find: (include: (entity: Entity) => boolean) => EntityId[]
   ): EntityId[] {
+    // WHY nothing in SUbobject: it takes the faces, edges and vertices of 3D
+    // solids, surfaces and meshes, which no object here has; AutoCAD 2023's
+    // console finds `0 found` on a line too.
+    if (this.subobject) return []
     return find((entity) => ctx.document.isEntityVisible(entity))
   }
 
@@ -857,8 +893,21 @@ export class ObjectSelector {
       : input.world
   }
 
+  /** What the prompt takes, as {@link ObjectSelectorOptions.takes}. */
+  private set(): QuestionInput {
+    return this.options.takes?.() ?? "objects"
+  }
+
+  /** The modes typed at `Select objects:`, as its refusal lists them. */
+  private offered(): readonly SelectionMode[] {
+    if (this.options.modes) return this.options.modes
+    if (this.subobject) return SUBOBJECT_MODES
+    return this.set() === "objects" ? MODES : WHOLE_OBJECT_MODES
+  }
+
   /** The object a pick takes, if the command can take it. */
   private pickAt(world: Vec2, ctx: ToolContext): Entity | null {
+    if (this.subobject) return null
     const hit = ctx.pick(world)
     if (!hit) return null
     const accepted = this.options.accept?.([hit.id], ctx) ?? [hit.id]

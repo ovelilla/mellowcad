@@ -98,6 +98,7 @@ export class BreakTool implements Tool {
    * the oldest object found.
    */
   private readonly modes = new ObjectSelector({
+    takes: () => "oneObject",
     done: () => {},
     question: () => "selectObject",
     modes: ONE_OBJECT_MODES,
@@ -145,7 +146,7 @@ export class BreakTool implements Tool {
   takes(): QuestionInput {
     switch (this.state.phase) {
       case "select":
-        return this.modes.takes("oneObject")
+        return this.modes.takes()
       case "first":
         return "point"
       case "second":

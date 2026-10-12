@@ -66,6 +66,7 @@ export class MirrorTool implements Tool {
 
   private state: MirrorState = { phase: "selecting" }
   private readonly selector = new ObjectSelector({
+    takes: () => "wholeObjects",
     done: (ctx) => this.confirmSelection(ctx),
   })
   private lastScreen: Vec2 | null = null
@@ -101,7 +102,7 @@ export class MirrorTool implements Tool {
   takes(): QuestionInput | null {
     switch (this.state.phase) {
       case "selecting":
-        return this.selector.takes("wholeObjects")
+        return this.selector.takes()
       case "first":
       case "second":
         return "point2d"

@@ -103,6 +103,7 @@ export class UcsTool implements Tool {
    * start and ZAxis's at the end nearer the WCS origin, as with no pick.
    */
   private readonly modes = new ObjectSelector({
+    takes: () => "singleSet",
     done: () => {},
     question: () =>
       this.state.phase === "zObject" ? "selectObject" : "ucsAlignObject",
@@ -282,7 +283,7 @@ export class UcsTool implements Tool {
         }
       case "object":
       case "zObject":
-        return this.modes.takes("singleSet")
+        return this.modes.takes()
       case "replace":
         return { refusal: "yesOrNoPlease" }
       default:

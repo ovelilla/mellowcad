@@ -66,6 +66,7 @@ export abstract class PlacementTool implements Tool {
 
   private state: PlacementState = { phase: "selecting" }
   private readonly selector = new ObjectSelector({
+    takes: () => this.selectionInput(),
     done: (ctx) => this.confirmSelection(ctx),
     onAdded: (ids, frame) => this.onSelectionAdded(ids, frame),
   })
@@ -176,9 +177,7 @@ export abstract class PlacementTool implements Tool {
    * not offered.
    */
   takes(): QuestionInput | null {
-    return this.state.phase === "selecting"
-      ? this.selector.takes(this.selectionInput())
-      : null
+    return this.state.phase === "selecting" ? this.selector.takes() : null
   }
 
   /**

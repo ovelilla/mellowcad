@@ -39,11 +39,13 @@ A tool is an explicit state machine for one AutoCAD command. It owns a discrimin
 - `ObjectSelector` (`objectSelection.ts`) — AutoCAD's `Select objects:`, the one every command
   that takes a set asks it with: picks, the window a drag or a pick on nothing starts, and the
   modes typed there (Window, Crossing, BOX, Last, ALL, Fence, WPolygon, CPolygon, Previous,
-  Remove/Add, Undo, AUto, SIngle), each counted as AutoCAD counts it. A tool holds one and, in its
-  select phase, hands it `question`, `takes` (what its refusal lists:
-  `selector.takes("wholeObjects")`), `commandOptions`, `invokeOption`, `answerTyped` (a point
-  typed there picks, or starts a window), the three pointer handlers, `onEnter`, `wantsSnap` and
-  `buildOverlay`. It passes `done` (the set is closed) and, where
+  Remove/Add, Undo, AUto, SIngle, and SUbobject/Object where the set takes sub-objects), each
+  counted as AutoCAD counts it. A tool holds one and, in its
+  select phase, hands it `question`, `takes`, `commandOptions`, `invokeOption`, `answerTyped` (a
+  point typed there picks, or starts a window), the three pointer handlers, `onEnter`, `wantsSnap`
+  and `buildOverlay`. It passes `done` (the set is closed), `takes` when the set is not one with
+  sub-objects (`takes: () => "wholeObjects"`: what its refusal lists, and so which modes it
+  offers — MIRROR's `S` is SIngle, MOVE's asks `SIngle or SUbobject?`) and, where
   needed, its own wording (`question`), a filter (`accept`: what it leaves out is neither counted
   nor highlighted, and a pick on it starts no window) and `onAdded` (STRETCH's frames). Never
   re-implement a pick, a box or a mode in a tool. A **single object's pick** that takes the modes

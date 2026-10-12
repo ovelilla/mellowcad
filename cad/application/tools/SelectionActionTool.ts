@@ -29,6 +29,7 @@ export abstract class SelectionActionTool implements Tool {
   /** The set being built, read live: JOIN asks differently once it holds one. */
   private selection: ToolContext["selection"] | null = null
   private readonly selector = new ObjectSelector({
+    takes: () => this.selectionInput(),
     done: (ctx) => this.execute(ctx),
     question: () =>
       this.selectionQuestion(!(this.selection?.isEmpty() ?? true)),
@@ -68,7 +69,7 @@ export abstract class SelectionActionTool implements Tool {
   }
 
   takes(): QuestionInput | null {
-    return this.selector.takes(this.selectionInput())
+    return this.selector.takes()
   }
 
   /** What `Select objects:` takes here, as its refusal lists the modes. */

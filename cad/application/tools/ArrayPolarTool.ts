@@ -150,7 +150,7 @@ export class ArrayPolarTool implements Tool {
   takes(): QuestionInput | null {
     const state = this.state
     if (state.phase === "center") return { refusal: "pointOrKeywordRequired" }
-    if (state.phase !== "edit") return this.selector.takes("objects")
+    if (state.phase !== "edit") return this.selector.takes()
     switch (state.step) {
       case "main":
         return "point"

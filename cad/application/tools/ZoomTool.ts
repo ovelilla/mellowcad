@@ -61,6 +61,7 @@ export class ZoomTool implements Tool {
   private state: ZoomState = { phase: "main" }
   private lastScreen: Vec2 | null = null
   private readonly selector = new ObjectSelector({
+    takes: () => "wholeObjects",
     done: (ctx) => {
       this.frame(selectedEntities(ctx), ctx)
       regenerated(ctx)
@@ -110,7 +111,7 @@ export class ZoomTool implements Tool {
       case "scale":
         return { refusal: "requiresDistanceOrNumberX" }
       case "object":
-        return this.selector.takes("wholeObjects")
+        return this.selector.takes()
     }
   }
 

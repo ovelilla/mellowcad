@@ -63,6 +63,7 @@ export function promptRefusal(
     case "keyword":
       return [text.message("invalidOptionKeyword")]
     case "objects":
+    case "subobjects":
     case "wholeObjects":
     case "crossingObjects":
     case "oneObject":

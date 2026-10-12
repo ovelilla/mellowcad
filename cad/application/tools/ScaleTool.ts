@@ -144,7 +144,7 @@ export class ScaleTool implements Tool {
   takes(): QuestionInput | null {
     switch (this.state.phase) {
       case "selecting":
-        return this.selector.takes("objects")
+        return this.selector.takes()
       case "factor":
         return "distance"
       case "newLength":

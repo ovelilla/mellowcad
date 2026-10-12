@@ -883,7 +883,9 @@ export const en: EngineCatalog = {
         "Previous": "Previous",
         "Undo": "Undo",
         "AUto": "AUto",
-        "SIngle": "SIngle"
+        "SIngle": "SIngle",
+        "SUbobject": "SUbobject",
+        "Object": "Object"
       },
       "specifyNextFencePointOr": {
         "Undo": "Undo"
@@ -2232,6 +2234,7 @@ export const en: EngineCatalog = {
           "set",
           1,
           {
+            "subobjects": "Window/Crossing/BOX/Fence/WPolygon/CPolygon/Add/Remove/Multiple/Previous/Undo/AUto/SIngle/SUbobject/Object",
             "oneObject": "Window/Last/Crossing/BOX/ALL/Fence/WPolygon/CPolygon",
             "singleSet": "Window/Last/Crossing/BOX/ALL/Fence/WPolygon/CPolygon/Group",
             "pathCurve": "Window/Last/Crossing/BOX/ALL/Fence/WPolygon/CPolygon/Group/Previous/AUto",

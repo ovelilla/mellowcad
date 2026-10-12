@@ -150,7 +150,7 @@ export class RotateTool implements Tool {
 
   /** The reference angle is measured by two points of its own. */
   takes(): QuestionInput | null {
-    if (this.state.phase === "selecting") return this.selector.takes("objects")
+    if (this.state.phase === "selecting") return this.selector.takes()
     return this.state.phase === "refP1"
       ? { refusal: "requiresAngle", values: { points: "two", keyword: "no" } }
       : null

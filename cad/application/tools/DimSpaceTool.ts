@@ -62,6 +62,7 @@ export class DimSpaceTool implements Tool {
   private state: DimSpaceState = { phase: "base", hover: null }
   private lastScreen: Vec2 | null = null
   private readonly selector = new ObjectSelector({
+    takes: () => "wholeObjects",
     done: (ctx) => {
       if (this.state.phase === "select") this.enterValue(this.state.base, ctx)
     },
@@ -146,7 +147,7 @@ export class DimSpaceTool implements Tool {
       case "value":
         return null
       case "select":
-        return this.selector.takes("wholeObjects")
+        return this.selector.takes()
     }
   }
 

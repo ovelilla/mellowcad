@@ -66,9 +66,7 @@ export class MatchPropTool implements Tool {
   }
 
   takes(): QuestionInput {
-    return this.state.phase === "source"
-      ? "object"
-      : this.selector.takes("objects")
+    return this.state.phase === "source" ? "object" : this.selector.takes()
   }
 
   commandOptions(): readonly CommandOption[] {

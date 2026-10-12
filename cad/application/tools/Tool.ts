@@ -117,7 +117,8 @@ export interface ToolQuestion {
  * an angle (`Requires numeric distance, two points, or option keyword.`), a
  * number or a whole one, a keyword (`Invalid option keyword.`), a selection set
  * (`*Invalid selection*` and the selection modes it expects: with sub-objects
- * as MOVE's, of whole objects as MIRROR's and JOIN's, STRETCH's crossing one,
+ * as MOVE's, and in their SUbobject mode, of whole objects as MIRROR's and
+ * JOIN's, STRETCH's crossing one,
  * BREAK's set of one object, UCS OBject's, which takes a group, or ARRAYPATH's path curve), one object picked (`*Invalid selection*` and
  * its keywords, `Last` first for a plain pick as DIMSPACE's base dimension, or
  * `Expects a single object.` for the dimension commands' picks), or a
@@ -134,6 +135,7 @@ export type QuestionInput =
   | "integer"
   | "keyword"
   | "objects"
+  | "subobjects"
   | "wholeObjects"
   | "crossingObjects"
   | "oneObject"

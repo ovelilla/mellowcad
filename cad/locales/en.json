@@ -747,7 +747,9 @@
         "Previous": "Previous",
         "Undo": "Undo",
         "AUto": "AUto",
-        "SIngle": "SIngle"
+        "SIngle": "SIngle",
+        "SUbobject": "SUbobject",
+        "Object": "Object"
       },
       "specifyNextFencePointOr": { "Undo": "Undo" },
       "viewOrthographic": { "Right": "Right" },
@@ -1240,7 +1242,7 @@
       "ambiguousResponse": "Ambiguous response, please clarify...",
       "invalidSelection": "*Invalid selection*",
       "expectsPointOr": "Expects a point or {keywords}",
-      "selectionModes": "{set, select, oneObject {Window/Last/Crossing/BOX/ALL/Fence/WPolygon/CPolygon} singleSet {Window/Last/Crossing/BOX/ALL/Fence/WPolygon/CPolygon/Group} pathCurve {Window/Last/Crossing/BOX/ALL/Fence/WPolygon/CPolygon/Group/Previous/AUto} crossingObjects {Window/Last/Crossing/BOX/ALL/Fence/WPolygon/CPolygon/Add/Remove/Multiple/Previous/Undo/AUto/SIngle} wholeObjects {Window/Last/Crossing/BOX/ALL/Fence/WPolygon/CPolygon/Group/Add/Remove/Multiple/Previous/Undo/AUto/SIngle} other {Window/Last/Crossing/BOX/ALL/Fence/WPolygon/CPolygon/Group/Add/Remove/Multiple/Previous/Undo/AUto/SIngle/SUbobject/Object}}",
+      "selectionModes": "{set, select, subobjects {Window/Crossing/BOX/Fence/WPolygon/CPolygon/Add/Remove/Multiple/Previous/Undo/AUto/SIngle/SUbobject/Object} oneObject {Window/Last/Crossing/BOX/ALL/Fence/WPolygon/CPolygon} singleSet {Window/Last/Crossing/BOX/ALL/Fence/WPolygon/CPolygon/Group} pathCurve {Window/Last/Crossing/BOX/ALL/Fence/WPolygon/CPolygon/Group/Previous/AUto} crossingObjects {Window/Last/Crossing/BOX/ALL/Fence/WPolygon/CPolygon/Add/Remove/Multiple/Previous/Undo/AUto/SIngle} wholeObjects {Window/Last/Crossing/BOX/ALL/Fence/WPolygon/CPolygon/Group/Add/Remove/Multiple/Previous/Undo/AUto/SIngle} other {Window/Last/Crossing/BOX/ALL/Fence/WPolygon/CPolygon/Group/Add/Remove/Multiple/Previous/Undo/AUto/SIngle/SUbobject/Object}}",
       "noObjectFound": "No object found",
       "arrayType": "Type = {type, select, rectangular {Rectangular} polar {Polar} other {Path}}  Associative = No",
       "requiresPositiveInteger": "Requires a positive nonzero integer or option keyword.",

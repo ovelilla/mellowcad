@@ -183,7 +183,7 @@ export class ArrayTool implements Tool {
    */
   takes(): QuestionInput | null {
     const state = this.state
-    if (state.phase !== "edit") return this.selector.takes("objects")
+    if (state.phase !== "edit") return this.selector.takes()
     switch (state.step) {
       case "main":
         return "point"
