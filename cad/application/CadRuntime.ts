@@ -985,9 +985,9 @@ export class CadRuntime extends Observable {
   /**
    * Runs what has been typed. An empty prompt repeats the last command, which
    * is how AutoCAD users chain repeated operations with Enter/Space. While a
-   * command runs, what was typed answers its prompt: a keyword on offer — its
-   * abbreviation, its word, or `_` and the global one —, a point modifier or
-   * the box's value, and anything else is a wrong answer AutoCAD refuses
+   * command runs, what was typed answers its prompt: at a point prompt a point
+   * modifier, then a keyword on offer — its abbreviation, its word, or `_` and
+   * the global one —, or the box's value, and anything else is a wrong answer AutoCAD refuses
    * ({@link refuse}); a command name runs only at the Command prompt.
    */
   submitCommandLine(): void {
@@ -999,12 +999,12 @@ export class CadRuntime extends Observable {
       else this.repeatLastCommand()
       return
     }
+    if (this.pointModifierFirst(text)) return
     if (this.invokeToolOption(text)) return
     if (this.clarifyingWords() !== null) {
       this.answering(text, () => this.unclarified(false))
       return
     }
-    if (this.pointModifier(text)) return
     if (this.transparentCommand(text)) return
     if (this.answering(text, () => this.answerPrompt(text))) return
     if (this.activeTool.id !== "select") {
@@ -1538,14 +1538,13 @@ export class CadRuntime extends Observable {
    * An object snap typed at a point prompt — END, MID, NON… or `_END` in any
    * language — forces that snap for the next point, as the Shift+right-click
    * menu does; FROM typed into the dynamic-input box starts FROM as it does at
-   * the command line.
+   * the command line. Read before the prompt's keywords: AutoCAD 2023's
+   * console takes `CEN` at PLINE's arc prompt as the snap, not `CEnter`, and
+   * `CENTER` at ZOOM's as the snap, although it spells the `Center` keyword.
    */
   private pointModifier(text: string): boolean {
     if (!this.wantsPoint()) return false
-    const mode = resolveKeyword(
-      text,
-      this.text.keywords("-OSNAP", OSNAP_MODE_IDS)
-    )
+    const mode = this.objectSnapNamed(text)
     // Not an answer: AutoCAD writes it on the line the pick that follows
     // answers, "Specify first point: _endp of".
     if (mode !== null) {
@@ -1559,6 +1558,22 @@ export class CadRuntime extends Observable {
         (this.text.resolveCommand(text.trim().toUpperCase()) === "FROM" &&
           this.startFrom())
     )
+  }
+
+  /**
+   * {@link pointModifier}, read before the keywords; while AutoCAD asks which
+   * keyword was meant, a snap's name is the prompt's wrong answer, as the
+   * console refuses `CEN` at `CEnter or CLose?` although it starts `CEnter`.
+   */
+  private pointModifierFirst(text: string): boolean {
+    if (this.clarifyingWords() === null) return this.pointModifier(text)
+    if (!this.wantsPoint() || this.objectSnapNamed(text) === null) return false
+    return this.answering(text.trim(), () => this.unclarified(false))
+  }
+
+  /** The object snap `text` names (`END`, `_endp`), or null. */
+  private objectSnapNamed(text: string): string | null {
+    return resolveKeyword(text, this.text.keywords("-OSNAP", OSNAP_MODE_IDS))
   }
 
   /**
@@ -2590,6 +2605,10 @@ export class CadRuntime extends Observable {
     )
     if (field && !isContentField(field.kind)) {
       const typed = this.dynamicInput.getText(field.id)
+      if (this.pointModifierFirst(typed)) {
+        this.dynamicInput.setText(field.id, "")
+        return
+      }
       const ids = matchKeywords(typed, this.offeredKeywords())
       if (ids.length > 0) {
         this.dynamicInput.setText(field.id, "")
@@ -2604,12 +2623,7 @@ export class CadRuntime extends Observable {
       return
     }
     if (field && !isContentField(field.kind)) {
-      const typed = this.dynamicInput.getText(field.id)
-      if (this.pointModifier(typed)) {
-        this.dynamicInput.setText(field.id, "")
-        return
-      }
-      if (this.transparentCommand(typed)) return
+      if (this.transparentCommand(this.dynamicInput.getText(field.id))) return
     }
     this.answering(this.dynamicInput.typedAnswer(), () =>
       this.commitBox(session, field)

@@ -362,8 +362,9 @@ starts several and is none's abbreviation or word asks which (`CEnter or CLose?`
 of one prompt may share their first letters — that is AutoCAD's own answer, never a reason to
 re-letter one. `resolveKeyword` is the stricter match for words a tool reads itself (a pattern
 name, `?`) and for object snaps, which need their three letters (`CE` is no snap). What is typed in a value box (or on the drawing, which feeds the box) is resolved as a
-keyword before a value; a submitted prompt is read as a keyword before anything else, and an alias
-only starts a command at the neutral prompt.
+keyword before a value; a submitted prompt is read as a keyword before anything else but, at a
+point prompt, an object snap's name (`CEN` at PLINE's arc prompt is Center, not `CEnter`; never
+re-letter a keyword for it), and an alias only starts a command at the neutral prompt.
 
 Any tool that used to read raw letters in `onKeyDown` must expose them as command options
 instead, or the command-line buffer will swallow them.

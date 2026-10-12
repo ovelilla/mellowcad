@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest"
 
 import { type CadHarness, createHarness } from "../../test/harness"
-import { lineOf, p } from "../../test/builders"
+import { circleOf, lineOf, p } from "../../test/builders"
 import type { PolylineEntity } from "../domain/entities"
 import { es } from "../locales/es"
 
@@ -163,6 +163,21 @@ describe("an answer that starts several keywords", () => {
     )
   })
 
+  it("takes an object snap's name as the prompt's wrong answer", () => {
+    const cad = plineArc()
+    answerLine(cad, "C", "CENTER")
+    expect(cad.commandLog().slice(-2)).toEqual([
+      "CEnter or CLose? CENTER",
+      "2D point or option keyword required.",
+    ])
+    cad.type("C").enter().type("CEN").enter()
+    expect(cad.commandLog().slice(-2)).toEqual([
+      "CEnter or CLose? CEN",
+      "2D point or option keyword required.",
+    ])
+    expect(cad.state().commandLine.prompt).toBe(`PLINE ${ARC_PROMPT}`)
+  })
+
   it("asks in Spanish", () => {
     const cad = createHarness({ locale: es })
     cad.command("POL")
@@ -179,6 +194,65 @@ describe("an answer that starts several keywords", () => {
       "Se requiere un punto 2D o una opción."
     )
     answerLine(cad, "CE", "E")
+    expect(cad.state().commandLine.prompt).toBe(
+      "POL Precise punto central del arco:"
+    )
+  })
+})
+
+// AutoCAD 2023's console reads an object snap typed at a point prompt before
+// the prompt's keywords: `CEN`, `CENT`, `CENTER` and `_CEN` at PLINE's arc
+// prompt are the Center snap (`of`), not `CEnter`, and `CENTER` at ZOOM's
+// first prompt is the snap although it spells the `Center` keyword whole.
+describe("an object snap's name at a point prompt", () => {
+  /** PLINE at its arc prompt from 0,0, a circle about 50,50 to snap to. */
+  function arcBesideCircle(locale?: typeof es): CadHarness {
+    const cad = createHarness({
+      locale,
+      entities: [circleOf(p(50, 50), 10)],
+    })
+    cad.command(locale ? "POL" : "PLINE")
+    return answerLine(cad, "0,0", "A")
+  }
+
+  it.each(["CEN", "CENT", "CENTER", "_CEN", "cen"])(
+    "is the snap, not a keyword it starts: %s",
+    (typed) => {
+      const cad = arcBesideCircle()
+      const prompt = cad.state().commandLine.prompt
+      answerLine(cad, typed)
+      expect(cad.state().commandLine.prompt).toBe(prompt)
+      cad.click(p(60, 50.5))
+      expect(cad.commandLog().at(-1)).toMatch(new RegExp(`\\]: ${typed} of$`))
+      const [, end] = cad.enter().only<PolylineEntity>("polyline").vertices
+      expect(end).toBeCloseToPoint(p(50, 50))
+    }
+  )
+
+  it("is the snap where it spells a keyword whole", () => {
+    const cad = createHarness({ entities: [circleOf(p(50, 50), 10)] })
+    cad.command("ZOOM")
+    answerLine(cad, "CENTER")
+    expect(cad.state().commandLine.prompt).toContain("Specify corner of window")
+  })
+
+  it("leaves the keyword to what names no snap", () => {
+    const cad = arcBesideCircle()
+    answerLine(cad, "CE")
+    expect(cad.state().commandLine.prompt).toBe(
+      "PLINE Specify center point of arc:"
+    )
+  })
+
+  it("is the snap in Spanish", () => {
+    const cad = arcBesideCircle(es)
+    const prompt = cad.state().commandLine.prompt
+    answerLine(cad, "CEN")
+    expect(cad.state().commandLine.prompt).toBe(prompt)
+    // `CENTRO` spells both the snap and `cEntro`, which `E` names.
+    answerLine(cad, "CENTRO")
+    expect(cad.state().commandLine.prompt).toBe(prompt)
+    answerLine(cad, "E")
     expect(cad.state().commandLine.prompt).toBe(
       "POL Precise punto central del arco:"
     )

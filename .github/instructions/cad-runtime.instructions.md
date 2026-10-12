@@ -178,9 +178,11 @@ identity: the same document, viewport and objects.
    `00` in the box. `commitDynamicInput` hands an unanswered Enter on to the drawing under
    `enterFromBox`, which this step lets through.
 6. Everything else feeds the **command-line buffer** (this is why multi-character aliases work and
-   why no tool may claim a bare letter in `onKeyDown`). Submitted, it is read first as a keyword
-   of the running command (abbreviation, word, or `_` and the global one), then as a point
-   modifier (an object snap, FROM, `<angle`), then as a transparent command (`'ZOOM`, below), then — with a value box up — as the prompt's answer
+   why no tool may claim a bare letter in `onKeyDown`). Submitted, it is read first, at a point
+   prompt, as a point modifier (an object snap, FROM, `<angle`: `CEN` is the snap even where it
+   starts a keyword, PLINE's `CEnter`, or spells one, ZOOM's `Center`, as AutoCAD's console reads
+   it), then as a keyword of the running command (abbreviation, word, or `_` and the global one),
+   then as a transparent command (`'ZOOM`, below), then — with a value box up — as the prompt's answer
    (`answerPrompt`: put in the box and committed, a coordinate without `@`/`#`/`*` given its
    `#`, because the relative default is the tooltip's, DYNPICOORDS); mid-command anything else is
    a wrong answer, refused (below, "Answering a prompt") and never run as a command. Only at the
@@ -234,8 +236,9 @@ parse off the cursor instead ("no number typed, so the cursor's angle") is a bug
 offer writes `Ambiguous response, please clarify...` and sets `clarifying` (dropped once the tool
 or its question changes), whose prompt `keywordChoicePrompt` words — `CEnter or CLose?`, no colon.
 Every way of answering checks `clarifyingWords()` before its own reading: a keyword of the prompt
-answers, Enter writes `Invalid option keyword.` and asks again, anything else — a point modifier,
-a pick, a value — goes to `unclarified`, the prompt's own `refuse()`. A new way to answer must
+answers, Enter writes `Invalid option keyword.` and asks again, anything else — a point modifier
+(`CEN`, although it starts `CEnter`: `pointModifierFirst`), a pick, a value — goes to
+`unclarified`, the prompt's own `refuse()`. A new way to answer must
 check it too, or it answers the prompt behind the question.
 
 **A point answers a distance or an angle** (`commitBox`, `dispatchPointerDown`): a coordinate typed
