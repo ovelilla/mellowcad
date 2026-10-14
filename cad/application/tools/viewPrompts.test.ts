@@ -227,4 +227,29 @@ describe("VPOINT asks as AutoCAD 2026", () => {
       "PTOVISTA Ángulo a partir del eje X en el plano XY <270>:"
     )
   })
+
+  // WHY: the prompt declares Tripod unlisted (table 32848, es `trípode`),
+  // and the console opens the compass and tripod with it (acc/vp1, vp2,
+  // vp5 of 2026-10-14), which is not built: it is refused as any answer.
+  it("refuses Tripod, which opens the compass and tripod", () => {
+    const cad = createHarness()
+    cad.command("VPOINT")
+    answer(cad, "T", "TRIPOD")
+    expect(cad.commandLog().slice(-6)).toEqual([
+      "Specify a view point or [Rotate]: T",
+      "Invalid input. Try again.",
+      "Current view direction:  VIEWDIR=0.00,0.00,1.00",
+      "Specify a view point or [Rotate]: TRIPOD",
+      "Invalid input. Try again.",
+      "Current view direction:  VIEWDIR=0.00,0.00,1.00",
+    ])
+
+    const spanish = createHarness({ locale: es })
+    spanish.command("PTOVISTA")
+    answer(spanish, "TRÍPODE")
+    expect(spanish.commandLog().slice(-3, -1)).toEqual([
+      "Precise un punto de vista o [Rotación]: TRÍPODE",
+      "Entrada no válida. Vuelva a intentarlo.",
+    ])
+  })
 })

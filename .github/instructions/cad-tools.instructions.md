@@ -203,7 +203,8 @@ question asks in (`OFf or ON?`) — only where two words on offer can be ambiguo
 else shows the order; never a second keyword id for either. A word the `initget` declares and
 the list leaves out is a hidden option, after the shown ones (OFFSET's `Thru`, ELLIPSE's
 `Centre`, PLINE's `LIne` in line mode, which asks the same prompt again), only once the
-console shows what it does.
+console shows what it does; one opening an option not built here (VPOINT's `Tripod`) stays
+refused as any answer, and is noted in the coverage row.
 
 **What a question takes** — `takes()`, a `QuestionInput` — is how the runtime refuses a wrong
 answer there (`cad-runtime.instructions.md`, "Answering a prompt"). Leave it out where the default
