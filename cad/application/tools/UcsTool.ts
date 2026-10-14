@@ -4,12 +4,15 @@ import { closestPointOnInfiniteLine } from "../../geometry/primitives"
 import { Entity, EntityId, lineEndZ, lineStartZ } from "../../domain/entities"
 import {
   NamedUcs,
+  OrthographicUcs,
   Ucs,
   WORLD_UCS,
   isWorldUcs,
+  orthographicUcs,
   rotateUcs,
   sameUcs,
   ucsFromAxes,
+  ucsPointToWorld,
   ucsZAxis,
   worldDirectionToUcs,
   worldPointToUcs,
@@ -51,8 +54,27 @@ type Axis = "x" | "y" | "z"
 
 type UcsState =
   | { readonly phase: "origin" }
-  | { readonly phase: "xAxis"; readonly origin: Vec3 }
-  | { readonly phase: "xyPlane"; readonly origin: Vec3; readonly xAxis: Vec3 }
+  | { readonly phase: "newUcs" }
+  /** Origin's new origin, or Move's (which offers Zdepth). */
+  | { readonly phase: "shift"; readonly move: boolean }
+  | { readonly phase: "zdepth" }
+  | { readonly phase: "orthographic"; readonly current: OrthographicUcs }
+  | { readonly phase: "threeOrigin" }
+  /**
+   * `three`: 3point's prompt, with the point Enter takes as it shows it; null
+   * after an origin given at the first prompt (`<accept>`).
+   */
+  | {
+      readonly phase: "xAxis"
+      readonly origin: Vec3
+      readonly three: string | null
+    }
+  | {
+      readonly phase: "xyPlane"
+      readonly origin: Vec3
+      readonly xAxis: Vec3
+      readonly three: string | null
+    }
   | { readonly phase: "rotate"; readonly axis: Axis }
   | { readonly phase: "zOrigin" }
   | {
@@ -67,8 +89,11 @@ type UcsState =
   | { readonly phase: "save" }
   | { readonly phase: "replace"; readonly name: string }
   | { readonly phase: "delete" }
-  | { readonly phase: "list"; readonly back: "named" | "restore" | "save" }
+  | { readonly phase: "list"; readonly back: ListBack }
   | { readonly phase: "object"; readonly hover: EntityId | null }
+
+/** The prompt a `?` listing asks again once it is written. */
+type ListBack = "origin" | "named" | "restore" | "save"
 
 /** UCSAXISANG's initial value, which the X, Y and Z options offer as their default. */
 const DEFAULT_AXIS_ANGLE = 90
@@ -89,18 +114,70 @@ const ROTATION_PROMPTS: Readonly<Record<Axis, PromptId>> = {
   z: "ucsRotationZ",
 }
 
+/** The orthographic UCS each keyword sets: UCS's, and -VIEW's views. */
+export const ORTHOGRAPHIC_OPTIONS: Readonly<Record<string, OrthographicUcs>> = {
+  Top: "top",
+  Bottom: "bottom",
+  Front: "front",
+  BAck: "back",
+  Left: "left",
+  Right: "right",
+}
+
+/** orthoGraphic's default, named as AutoCAD writes it (`<Back>`, not BAck). */
+const ORTHOGRAPHIC_NAMES: Readonly<Record<OrthographicUcs, PromptId>> = {
+  top: "ucsTop",
+  bottom: "ucsBottom",
+  front: "ucsFront",
+  back: "ucsBack",
+  left: "ucsLeft",
+  right: "ucsRight",
+}
+
+/**
+ * The words the first prompt declares and does not list, in its `initget`'s
+ * order (table 25652): Face, which needs solids, only so that `F` is
+ * refused as the console takes it, rather than read as `FRont`.
+ */
+const HIDDEN_OPTIONS = [
+  "Origin",
+  "Face",
+  "3point",
+  "Entity",
+  "Move",
+  "orthoGraphic",
+  "Restore",
+  "Save",
+  "Delete",
+  "?",
+  "New",
+  ...Object.keys(ORTHOGRAPHIC_OPTIONS),
+] as const
+
+/** New's `Specify origin of new UCS or [ZAxis/3point/OBject/View/X/Y/Z]`. */
+const NEW_UCS_OPTIONS = ["ZAxis", "3point", "OBject", "View", "X", "Y", "Z"]
+/** What New's `initget` declares and does not list (table 25627). */
+const NEW_UCS_HIDDEN = ["Origin", "Face", "Entity"]
+
 /**
  * AutoCAD's UCS: the origin and the three points, the X, Y and Z turns,
- * ZAxis (with its Object), OBject, View, World, Previous and the named UCSs.
- * Face is not offered: there are no solids. It works in the WCS, since it is
- * what places the UCS the other commands work in.
+ * ZAxis (with its Object), OBject, View, World, Previous and the named UCSs,
+ * and the words its first prompt takes unlisted — Origin, 3point, Entity,
+ * Move, orthoGraphic and its six views, Restore, Save, Delete, `?` and New,
+ * the older prompts AutoCAD 2023's console still answers them with. Face is
+ * not offered: there are no solids. It works in the WCS, since it is what
+ * places the UCS the other commands work in.
  */
 export class UcsTool implements Tool {
   readonly id = "ucs"
   readonly inWorld = true
 
   private state: UcsState = { phase: "origin" }
-  private previous: { ucs: Ucs; name: string | null }[] = []
+  private previous: {
+    ucs: Ucs
+    name: string | null
+    orthographic: OrthographicUcs | null
+  }[] = []
   private cursor: Vec3 | null = null
   private lastScreen: Vec2 | null = null
   /**
@@ -192,13 +269,20 @@ export class UcsTool implements Tool {
     const state = this.state
     switch (state.phase) {
       case "origin":
-        this.enterXAxis(input.point, ctx)
+        this.enterXAxis(input.point, false, ctx)
+        return
+      case "threeOrigin":
+        this.enterXAxis(input.point, true, ctx)
+        return
+      case "newUcs":
+      case "shift":
+        this.finish({ ...ctx.ucs, origin: input.point }, null, ctx)
         return
       case "xAxis":
-        this.enterXYPlane(state.origin, input.point, ctx)
+        this.enterXYPlane(state.origin, input.point, state.three !== null, ctx)
         return
       case "xyPlane":
-        this.acceptPlanePoint(state.origin, state.xAxis, input.point, ctx)
+        this.acceptPlanePoint(state, input.point, ctx)
         return
       case "rotate": {
         if (state.axis !== "z") return
@@ -238,10 +322,30 @@ export class UcsTool implements Tool {
     switch (state.phase) {
       case "origin":
         return "ucsOrigin"
+      case "newUcs":
+        return { id: "ucsNewUcs", enter: { name: "0,0,0" } }
+      case "shift":
+        return state.move
+          ? { id: "ucsMoveOrigin", enter: { name: "0,0,0" }, tight: true }
+          : { id: "ucsNewOrigin", enter: { name: "0,0,0" } }
+      case "zdepth":
+        return { id: "ucsZdepth", enter: { name: "0" }, tight: true }
+      case "orthographic":
+        return {
+          id: "ucsOrthographic",
+          enter: ORTHOGRAPHIC_NAMES[state.current],
+          tight: true,
+        }
+      case "threeOrigin":
+        return { id: "ucsNewOrigin", enter: { name: "0,0,0" } }
       case "xAxis":
-        return { id: "ucsXAxisPoint", enter: "ucsAccept" }
+        return state.three === null
+          ? { id: "ucsXAxisPoint", enter: "ucsAccept" }
+          : { id: "ucs3XAxisPoint", enter: { name: state.three } }
       case "xyPlane":
-        return { id: "ucsXYPlanePoint", enter: "ucsAccept" }
+        return state.three === null
+          ? { id: "ucsXYPlanePoint", enter: "ucsAccept" }
+          : { id: "ucs3XYPlanePoint", enter: { name: state.three } }
       case "rotate":
         return {
           id: ROTATION_PROMPTS[state.axis],
@@ -292,6 +396,11 @@ export class UcsTool implements Tool {
         return this.modes.takes()
       case "replace":
         return { refusal: "yesOrNoPlease" }
+      case "zdepth":
+        return {
+          refusal: "requiresDistance",
+          values: { points: "two", keyword: "no" },
+        }
       default:
         return null
     }
@@ -310,7 +419,17 @@ export class UcsTool implements Tool {
           { id: "Y" },
           { id: "Z" },
           { id: "ZAxis" },
+          ...HIDDEN_OPTIONS.map((id) => ({ id, hidden: true as const })),
         ]
+      case "newUcs":
+        return [
+          ...NEW_UCS_OPTIONS.map((id) => ({ id })),
+          ...NEW_UCS_HIDDEN.map((id) => ({ id, hidden: true as const })),
+        ]
+      case "shift":
+        return this.state.move ? [{ id: "Zdepth" }] : []
+      case "orthographic":
+        return Object.keys(ORTHOGRAPHIC_OPTIONS).map((id) => ({ id }))
       case "zOrigin":
         return [{ id: "Object" }]
       case "object":
@@ -339,6 +458,19 @@ export class UcsTool implements Tool {
   invokeOption(id: string, ctx: ToolContext): CommandOptionOutcome {
     const state = this.state
     if (state.phase === "origin") return this.invokeMain(id, ctx)
+    if (state.phase === "newUcs") {
+      return [...NEW_UCS_OPTIONS, ...NEW_UCS_HIDDEN].includes(id)
+        ? this.invokeMain(id, ctx)
+        : "unhandled"
+    }
+    if (state.phase === "shift" && state.move && id === "Zdepth") {
+      this.enterZdepth(ctx)
+      return "continue"
+    }
+    if (state.phase === "orthographic" && id in ORTHOGRAPHIC_OPTIONS) {
+      this.setOrthographic(ORTHOGRAPHIC_OPTIONS[id], ctx)
+      return "end"
+    }
     if (state.phase === "object" || state.phase === "zObject") {
       return this.modes.invokeOption(id, ctx) ? "continue" : "unhandled"
     }
@@ -372,10 +504,14 @@ export class UcsTool implements Tool {
     if (state.phase === "replace") {
       if (id === "Yes") {
         this.save(state.name, ctx)
+        ctx.setLastPoint(WCS_ORIGIN)
         return "end"
       }
       // No ends UCS as its Enter does, with nothing saved.
-      if (id === "No") return "end"
+      if (id === "No") {
+        ctx.setLastPoint(WCS_ORIGIN)
+        return "end"
+      }
     }
     return "unhandled"
   }
@@ -395,8 +531,13 @@ export class UcsTool implements Tool {
     if (this.inMode()) this.modes.onPointerUp(input, ctx)
   }
 
-  /** Enter in a mode's prompt is the mode's. */
+  /** Enter in a mode's prompt is the mode's; orthoGraphic's takes its default. */
   onEnter(ctx: ToolContext): boolean {
+    if (this.state.phase === "orthographic") {
+      this.setOrthographic(this.state.current, ctx)
+      ctx.endCommand()
+      return true
+    }
     return this.inMode() && this.modes.onEnter(ctx)
   }
 
@@ -404,6 +545,9 @@ export class UcsTool implements Tool {
     if (this.inMode()) return this.modes.wantsSnap()
     switch (this.state.phase) {
       case "origin":
+      case "newUcs":
+      case "shift":
+      case "threeOrigin":
       case "xAxis":
       case "xyPlane":
       case "zOrigin":
@@ -449,6 +593,10 @@ export class UcsTool implements Tool {
   }
 
   private invokeMain(id: string, ctx: ToolContext): CommandOptionOutcome {
+    if (id in ORTHOGRAPHIC_OPTIONS) {
+      this.setOrthographic(ORTHOGRAPHIC_OPTIONS[id], ctx)
+      return "end"
+    }
     switch (id) {
       case "World":
         this.apply(WORLD_UCS, null, ctx)
@@ -462,8 +610,11 @@ export class UcsTool implements Tool {
             previous.name !== null && findNamed(table, previous.name)
               ? previous.name
               : null
-          this.apply(previous.ucs, name, ctx, false, true)
-          ctx.setLastPoint(WCS_ORIGIN)
+          this.apply(previous.ucs, name, ctx, {
+            remember: false,
+            lastPoint: WCS_ORIGIN,
+            orthographic: previous.orthographic,
+          })
         }
         return "end"
       }
@@ -506,11 +657,48 @@ export class UcsTool implements Tool {
         this.enterNamed(ctx)
         return "continue"
       case "OBject":
+      // Entity is OBject's older name, which the console still takes.
+      case "Entity":
         this.modes.start()
         this.state = { phase: "object", hover: null }
         ctx.dynamicInput.open({ fields: [], commit: () => {} })
         this.place(ctx)
         return "continue"
+      case "Origin":
+        this.enterShift(false, ctx)
+        return "continue"
+      case "Move":
+        this.enterShift(true, ctx)
+        return "continue"
+      case "3point":
+        this.enterThreeOrigin(ctx)
+        return "continue"
+      case "orthoGraphic":
+        // Its default is the orthographic UCS the current one was set as,
+        // else Top (AutoCAD 2023's console, acc/p4, q12, q13, q21).
+        this.state = {
+          phase: "orthographic",
+          current: ctx.document.getSettings().ucsOrthographic ?? "top",
+        }
+        ctx.dynamicInput.open({ fields: [], commit: () => {} })
+        this.place(ctx)
+        return "continue"
+      case "Restore":
+        this.enterNamePrompt("restore", ctx)
+        return "continue"
+      case "Save":
+        this.enterNamePrompt("save", ctx)
+        return "continue"
+      case "Delete":
+        this.enterNamePrompt("delete", ctx)
+        return "continue"
+      case "?":
+        this.enterList("origin", ctx)
+        return "continue"
+      case "New":
+        this.enterNewUcs(ctx)
+        return "continue"
+      // Face opens a solid's face, which there is none of: refused.
       default:
         return "unhandled"
     }
@@ -529,75 +717,245 @@ export class UcsTool implements Tool {
         }
         const point = this.parse(text, null, commitCtx)
         if (!point) return false
-        this.enterXAxis(point, commitCtx)
+        this.enterXAxis(point, false, commitCtx)
         return true
       },
     })
     this.place(ctx)
   }
 
-  private enterXAxis(origin: Vec3, ctx: ToolContext): void {
-    this.state = { phase: "xAxis", origin }
+  /**
+   * New's `Specify origin of new UCS or [ZAxis/3point/…] <0,0,0>`: a point
+   * moves the origin, as Origin does; Enter keeps the UCS, and puts LASTPOINT
+   * at its origin (AutoCAD 2023's console, acc/q6).
+   */
+  private enterNewUcs(ctx: ToolContext): void {
+    this.state = { phase: "newUcs" }
+    this.openPointField("ucsNewUcs", ctx, (point, commitCtx) =>
+      this.finish(
+        { ...commitCtx.ucs, origin: point ?? commitCtx.ucs.origin },
+        null,
+        commitCtx
+      )
+    )
+  }
+
+  /**
+   * Origin's `Specify new origin point <0,0,0>` and Move's, which offers
+   * Zdepth: the axes kept. Enter changes nothing and, as everything that
+   * changes nothing, puts LASTPOINT at the WCS's origin (acc/p2, q2).
+   */
+  private enterShift(move: boolean, ctx: ToolContext): void {
+    this.state = { phase: "shift", move }
+    this.openPointField(
+      move ? "ucsMoveOrigin" : "ucsNewOrigin",
+      ctx,
+      (point, commitCtx) => {
+        if (point)
+          this.finish({ ...commitCtx.ucs, origin: point }, null, commitCtx)
+        else this.endUnchanged(commitCtx)
+      }
+    )
+  }
+
+  /**
+   * Move's Zdepth: the origin along the current Z, a distance or two points.
+   * LASTPOINT goes to the WCS's origin, not the new one (acc/p1, q14).
+   */
+  private enterZdepth(ctx: ToolContext): void {
+    this.state = { phase: "zdepth" }
+    const depthBy = (depth: number, commitCtx: ToolContext) => {
+      const ucs = commitCtx.ucs
+      const origin = add3(ucs.origin, scale3(ucsZAxis(ucs), depth))
+      this.finish({ ...ucs, origin }, null, commitCtx, {
+        lastPoint: WCS_ORIGIN,
+      })
+    }
     ctx.dynamicInput.open({
-      fields: [{ id: "point", prompt: "ucsXAxisPoint", kind: "coordinate" }],
+      fields: [{ id: "depth", prompt: "ucsZdepth", kind: "distance" }],
+      commit: (values, commitCtx) => depthBy(values.depth, commitCtx),
+      commitRaw: (commitCtx) => {
+        if (commitCtx.dynamicInput.hasTypedText()) return false
+        depthBy(0, commitCtx)
+        return true
+      },
+    })
+    this.place(ctx)
+  }
+
+  /** 3point's `Specify new origin point <0,0,0>`, Enter the current origin. */
+  private enterThreeOrigin(ctx: ToolContext): void {
+    this.state = { phase: "threeOrigin" }
+    this.openPointField("ucsNewOrigin", ctx, (point, commitCtx) =>
+      this.enterXAxis(point ?? commitCtx.ucs.origin, true, commitCtx)
+    )
+  }
+
+  /**
+   * A prompt whose box takes a point, and Enter (`point` null) its default.
+   */
+  private openPointField(
+    prompt: PromptId,
+    ctx: ToolContext,
+    answer: (point: Vec3 | null, ctx: ToolContext) => void
+  ): void {
+    ctx.dynamicInput.open({
+      fields: [{ id: "point", prompt, kind: "coordinate" }],
+      commit: () => {},
+      commitRaw: (commitCtx) => {
+        const text = commitCtx.dynamicInput.getText("point").trim()
+        if (text === "") {
+          answer(null, commitCtx)
+          return true
+        }
+        const point = this.parse(text, null, commitCtx)
+        if (!point) return false
+        answer(point, commitCtx)
+        return true
+      },
+    })
+    this.place(ctx)
+  }
+
+  /**
+   * The point on X after `origin`: the first prompt's (`<accept>` keeps the
+   * axes) or 3point's, whose Enter takes one along the current X.
+   */
+  private enterXAxis(origin: Vec3, three: boolean, ctx: ToolContext): void {
+    const along = add3(origin, ctx.ucs.xAxis)
+    this.state = {
+      phase: "xAxis",
+      origin,
+      three: three ? this.shown(along, ctx) : null,
+    }
+    ctx.dynamicInput.open({
+      fields: [
+        {
+          id: "point",
+          prompt: three ? "ucs3XAxisPoint" : "ucsXAxisPoint",
+          kind: "coordinate",
+        },
+      ],
       commit: () => {},
       commitRaw: (commitCtx) => {
         if (this.state.phase !== "xAxis") return false
         const text = commitCtx.dynamicInput.getText("point").trim()
         if (text === "") {
-          this.finish({ ...commitCtx.ucs, origin }, null, commitCtx)
+          if (three) this.enterXYPlane(origin, along, true, commitCtx)
+          else this.finish({ ...commitCtx.ucs, origin }, null, commitCtx)
           return true
         }
         const point = this.parse(text, origin, commitCtx)
         if (!point) return false
-        this.enterXYPlane(origin, point, commitCtx)
+        this.enterXYPlane(origin, point, three, commitCtx)
         return true
       },
     })
     this.place(ctx)
   }
 
-  private enterXYPlane(origin: Vec3, onXAxis: Vec3, ctx: ToolContext): void {
+  private enterXYPlane(
+    origin: Vec3,
+    onXAxis: Vec3,
+    three: boolean,
+    ctx: ToolContext
+  ): void {
     const xAxis = sub3(onXAxis, origin)
-    if (!(length3(xAxis) > 1e-9)) return
-    this.state = { phase: "xyPlane", origin, xAxis }
+    if (!(length3(xAxis) > 1e-9)) {
+      ctx.report(ctx.text.message("coincidentWithFirstPoint"), "error")
+      return
+    }
+    // Accepted, the new Y axis lies in the current UCS's XY plane.
+    const level = cross3(ucsZAxis(ctx.ucs), xAxis)
+    const towardsY = length3(level) > 1e-9 ? level : ctx.ucs.yAxis
+    const state = {
+      phase: "xyPlane" as const,
+      origin,
+      xAxis,
+      three: three
+        ? this.shown(add3(origin, scale3(towardsY, 1 / length3(towardsY))), ctx)
+        : null,
+    }
+    this.state = state
     ctx.dynamicInput.open({
-      fields: [{ id: "point", prompt: "ucsXYPlanePoint", kind: "coordinate" }],
+      fields: [
+        {
+          id: "point",
+          prompt: three ? "ucs3XYPlanePoint" : "ucsXYPlanePoint",
+          kind: "coordinate",
+        },
+      ],
       commit: () => {},
       commitRaw: (commitCtx) => {
         if (this.state.phase !== "xyPlane") return false
         const text = commitCtx.dynamicInput.getText("point").trim()
         if (text === "") {
-          // Accepted, the new Y axis lies in the current UCS's XY plane.
-          const z = ucsZAxis(commitCtx.ucs)
-          const towardsY = cross3(z, xAxis)
-          const ucs = ucsFromAxes(
-            origin,
-            xAxis,
-            length3(towardsY) > 1e-9 ? towardsY : commitCtx.ucs.yAxis
-          )
+          const ucs = ucsFromAxes(origin, xAxis, towardsY)
           if (ucs) this.finish(ucs, null, commitCtx)
           return true
         }
         const point = this.parse(text, origin, commitCtx)
         if (!point) return false
-        return this.acceptPlanePoint(origin, xAxis, point, commitCtx)
+        this.acceptPlanePoint(state, point, commitCtx)
+        return true
       },
     })
     this.place(ctx)
   }
 
-  /** The third point, on the positive Y side of the new XY plane. */
+  /**
+   * The third point, on the positive Y side of the new XY plane. LASTPOINT
+   * then is that point, where AutoCAD 2023's console puts it: 3point's
+   * where it was given (acc/u5, p17), the first prompt's at the numbers it
+   * was given in, read in the new UCS (q10).
+   */
   private acceptPlanePoint(
-    origin: Vec3,
-    xAxis: Vec3,
+    state: {
+      readonly origin: Vec3
+      readonly xAxis: Vec3
+      readonly three: string | null
+    },
     point: Vec3,
     ctx: ToolContext
-  ): boolean {
-    const ucs = ucsFromAxes(origin, xAxis, sub3(point, origin))
-    if (!ucs) return false
-    this.finish(ucs, null, ctx)
-    return true
+  ): void {
+    const ucs = ucsFromAxes(
+      state.origin,
+      state.xAxis,
+      sub3(point, state.origin)
+    )
+    if (!ucs) {
+      ctx.report(ctx.text.message("pointsAreColinear"), "error")
+      return
+    }
+    const lastPoint =
+      state.three === null
+        ? ucsPointToWorld(ucs, worldPointToUcs(ctx.ucs, point))
+        : point
+    this.finish(ucs, null, ctx, { lastPoint })
+  }
+
+  /** orthoGraphic's views, and the six words typed at the first prompt. */
+  private setOrthographic(kind: OrthographicUcs, ctx: ToolContext): void {
+    this.apply(orthographicUcs(kind), null, ctx, { orthographic: kind })
+  }
+
+  /** A point as a prompt's default writes it, in the current UCS. */
+  private shown(point: Vec3, ctx: ToolContext): string {
+    const settings = ctx.document.getSettings()
+    const at = worldPointToUcs(ctx.ucs, point)
+    return [at.x, at.y, at.z]
+      .map((value) => formatLength(value, settings))
+      .join(",")
+  }
+
+  /**
+   * UCS ending with the UCS unchanged — Enter at Origin's or Move's point, a
+   * name saved, deleted or none restored: LASTPOINT goes to the WCS's origin
+   * (AutoCAD 2023's console, acc/p2, q1–q8, q16, q17).
+   */
+  private endUnchanged(ctx: ToolContext): void {
+    ctx.setLastPoint(WCS_ORIGIN)
+    ctx.endCommand()
   }
 
   private rotate(axis: Axis, degrees: number, ctx: ToolContext): void {
@@ -700,20 +1058,18 @@ export class UcsTool implements Tool {
     switch (state.phase) {
       case "restore": {
         if (typed === "?") return this.enterList("restore", ctx)
-        if (typed === "") return ctx.endCommand()
+        if (typed === "") return this.endUnchanged(ctx)
         const entry = findNamed(table, typed)
         if (!entry) {
           ctx.report(ctx.text.message("ucsUndefined", { name: typed }), "error")
           return this.enterNamePrompt("restore", ctx)
         }
-        this.apply(entry.ucs, entry.name, ctx, true, true)
-        ctx.setLastPoint(WCS_ORIGIN)
-        ctx.endCommand()
+        this.finish(entry.ucs, entry.name, ctx, { lastPoint: WCS_ORIGIN })
         return
       }
       case "save": {
         if (typed === "?") return this.enterList("save", ctx)
-        if (typed === "") return ctx.endCommand()
+        if (typed === "") return this.endUnchanged(ctx)
         if (typed.length > 255 || INVALID_NAME.test(typed)) {
           ctx.report(ctx.text.message("invalidUcsName"), "error")
           return this.enterNamePrompt("save", ctx)
@@ -725,7 +1081,7 @@ export class UcsTool implements Tool {
           return
         }
         this.save(typed, ctx)
-        return ctx.endCommand()
+        return this.endUnchanged(ctx)
       }
       case "delete": {
         const patterns = typed.split(",").map((part) => part.trim())
@@ -750,20 +1106,18 @@ export class UcsTool implements Tool {
         } else if (typed !== "") {
           ctx.report(ctx.text.message("noMatchingUcs"))
         }
-        return ctx.endCommand()
+        return this.endUnchanged(ctx)
       }
       case "list": {
         listNamedUcs(typed === "" ? "*" : typed, ctx)
+        if (state.back === "origin") return this.enterOrigin(ctx)
         if (state.back === "named") return this.enterNamed(ctx)
         return this.enterNamePrompt(state.back, ctx)
       }
     }
   }
 
-  private enterList(
-    back: "named" | "restore" | "save",
-    ctx: ToolContext
-  ): void {
+  private enterList(back: ListBack, ctx: ToolContext): void {
     this.state = { phase: "list", back }
     this.openNameField("ucsListNames", ctx)
   }
@@ -782,47 +1136,65 @@ export class UcsTool implements Tool {
   }
 
   /**
-   * Makes `ucs` current, one undo step, remembering the one it replaces;
-   * `restored` when Previous or Restore brings back one made before.
+   * Makes `ucs` current, one undo step, remembering the one it replaces
+   * unless `remember` is false (Previous); `lastPoint` where LASTPOINT
+   * goes, when not to the new origin, and `orthographic` the view it is.
    */
   private apply(
     ucs: Ucs,
     name: string | null,
     ctx: ToolContext,
-    remember = true,
-    restored = false
+    options: {
+      readonly remember?: boolean
+      readonly lastPoint?: Vec3
+      readonly orthographic?: OrthographicUcs | null
+    } = {}
   ): void {
+    const { remember = true, lastPoint, orthographic = null } = options
     const settings = ctx.document.getSettings()
-    const patch = ucsChange(settings, ucs, name)
+    const patch = ucsChange(settings, ucs, name, orthographic)
     if (!patch) {
-      // acc/a11: World in the WCS changes nothing and still puts it there.
-      ctx.setLastPoint(ucs.origin)
+      // acc/a11: World in the WCS changes nothing and still puts it there;
+      // so do 3point's and New's Enter, at the origin they keep (p9, q6).
+      ctx.setLastPoint(lastPoint ?? ucs.origin)
       return
     }
     if (remember) {
-      this.previous.push({ ucs: settings.ucs, name: settings.ucsName })
+      this.previous.push({
+        ucs: settings.ucs,
+        name: settings.ucsName,
+        orthographic: settings.ucsOrthographic,
+      })
       if (this.previous.length > MAX_PREVIOUS) this.previous.shift()
     }
     // WHY: AutoCAD 2023's console: U puts LASTPOINT back at an origin
     // given at the first prompt (acc/a2, a5, a14 of the elliptical arcs
     // session), at the WCS's origin after any other way (a1, a4, a9, a12,
     // a20–a24); REDO puts it where the UCS did (a7, a8, a16).
+    // 3point's origin is not one: U puts it at the WCS's (acc/u8).
     const state = this.state
     const given =
-      state.phase === "xAxis" || state.phase === "xyPlane"
+      (state.phase === "xAxis" || state.phase === "xyPlane") &&
+      state.three === null
         ? state.origin
         : WCS_ORIGIN
     ctx.execute(
       new UpdateSettingsCommand(patch, {
         undone: given,
-        redone: restored ? WCS_ORIGIN : ucs.origin,
+        redone: lastPoint ?? ucs.origin,
       })
     )
+    if (lastPoint) ctx.setLastPoint(lastPoint)
   }
 
   /** {@link apply} as the command's last answer, from a prompt that ends it itself. */
-  private finish(ucs: Ucs, name: string | null, ctx: ToolContext): void {
-    this.apply(ucs, name, ctx)
+  private finish(
+    ucs: Ucs,
+    name: string | null,
+    ctx: ToolContext,
+    options?: Parameters<UcsTool["apply"]>[3]
+  ): void {
+    this.apply(ucs, name, ctx, options)
     ctx.endCommand()
   }
 
@@ -846,13 +1218,16 @@ export class UcsTool implements Tool {
   }
 }
 
-/** What `Current ucs name:` prints: *WORLD*, *NO NAME* or the saved name. */
+/** What `Current ucs name:` prints: *WORLD*, *NO NAME*, *TOP* or the saved name. */
 export function currentName(settings: DocumentSettings): {
-  kind: "world" | "unnamed" | "named"
+  kind: "world" | "unnamed" | "named" | OrthographicUcs
   name: string
 } {
   if (settings.ucsName !== null)
     return { kind: "named", name: settings.ucsName }
+  // acc/p32: the WCS set as Top is `*TOP*`.
+  if (settings.ucsOrthographic !== null)
+    return { kind: settings.ucsOrthographic, name: "" }
   return { kind: isWorldUcs(settings.ucs) ? "world" : "unnamed", name: "" }
 }
 
@@ -910,18 +1285,31 @@ export function listNamedUcs(patterns: string, ctx: ToolContext): void {
 }
 
 /**
- * The patch that makes `ucs` current under `name`, or `null` when it already
- * is: UCS, and -VIEW aligning the UCS with an orthographic view. Changing to
+ * The patch that makes `ucs` current under `name` (or as an `orthographic`
+ * one), or `null` when it already is: UCS, and -VIEW aligning the UCS with
+ * an orthographic view. Changing to
  * the WCS puts ELEVATION back to 0, as ELEV documents.
  */
 export function ucsChange(
   settings: DocumentSettings,
   ucs: Ucs,
-  name: string | null
+  name: string | null,
+  orthographic: OrthographicUcs | null = null
 ): Partial<DocumentSettings> | null {
-  if (sameUcs(ucs, settings.ucs) && name === settings.ucsName) return null
+  if (
+    sameUcs(ucs, settings.ucs) &&
+    name === settings.ucsName &&
+    orthographic === settings.ucsOrthographic
+  ) {
+    return null
+  }
   const toWorld = isWorldUcs(ucs) && settings.elevation !== 0
-  return { ucs, ucsName: name, ...(toWorld ? { elevation: 0 } : {}) }
+  return {
+    ucs,
+    ucsName: name,
+    ucsOrthographic: orthographic,
+    ...(toWorld ? { elevation: 0 } : {}),
+  }
 }
 
 /**

@@ -178,7 +178,9 @@ that still answer the same question (LINE's tracking offset, the deferred tangen
 CIRCLERAD, RECTANG's elevation), a point or a phrase id (`<use first point as displacement>`,
 UCS's `<accept>`), or a text as the prompt writes it (`{ name: "0,0,0" }`; a point AutoCAD writes
 without spaces, UCS ZAxis's `<5.00,5.00,1.00>`); a keyword Enter keeps is `defaultOption()`'s, unless
-the prompt names it short (PLAN's `<Current>`: a phrase). A prompt that names something carries
+the prompt names it short (PLAN's `<Current>`, UCS orthoGraphic's `<Back>`: a phrase). A string that
+writes the default against what precedes it (`[Zdepth]<0,0,0>:`, `Specify Zdepth<0>:`, -VIEW's
+`[…/Right]<Top>:`) says `tight: true`; read the table, never assume the space. A prompt that names something carries
 it in `values` (`UCS "{name}" already exists.  Replace it?`). AutoCAD's **yes-or-no question**
 lists no keywords: hidden `Yes` and `No` options, `enter: { name: "N" }`, Enter or No ending as its
 default does, and `{ refusal: "yesOrNoPlease" }`. The `or` belongs to the text, so a state that offers none of the keywords
@@ -209,7 +211,9 @@ else shows the order; never a second keyword id for either. A word the `initget`
 the list leaves out is a hidden option, after the shown ones (OFFSET's `Thru`, ELLIPSE's
 `Centre`, PLINE's `LIne` in line mode, which asks the same prompt again), only once the
 console shows what it does; one opening an option not built here (VPOINT's `Tripod`) stays
-refused as any answer, and is noted in the coverage row.
+refused as any answer, and is noted in the coverage row. Where its letters would otherwise
+answer another word (UCS's `F`, Face, which `FRont` would take), offer it hidden and leave it
+`unhandled` in `invokeOption`: the runtime then refuses the answer as the prompt's wrong one.
 
 **What a question takes** — `takes()`, a `QuestionInput` — is how the runtime refuses a wrong
 answer there (`cad-runtime.instructions.md`, "Answering a prompt"). Leave it out where the default
@@ -465,7 +469,9 @@ instead, or the command-line buffer will swallow them.
   origin (the runtime); U and REDO of one put it where the change's `UpdateSettingsCommand`
   says (`lastPoint`: the origin typed at UCS's first prompt or the WCS's, and where the UCS put
   it), read through `history.replaying`, the command replayed. A tool moves it with no point
-  given only through `ctx.setLastPoint` — UCS Previous and Restore, to the WCS origin.
+  given only through `ctx.setLastPoint` — UCS Previous, Restore, Zdepth and every UCS that ends
+  leaving the UCS as it was, to the WCS origin; 3point, to its third point (`UcsTool`'s `apply`
+  `lastPoint`, which its REDO repeats).
 - **A point has a Z; keep it.** `input.point` and `parseCoordinate` give a `Vec3`: `x,y` absolute
   lies ELEVATION above the UCS's XY plane, `@x,y` keeps `lastPoint`'s Z. A point a tool
   _computes_ from another in the plane (`V.add(start, dir * length)`) is `@dist<angle` and keeps

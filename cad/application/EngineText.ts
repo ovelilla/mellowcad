@@ -397,26 +397,33 @@ export class EngineText {
   /**
    * A prompt from its parts: what is asked (a command name, a field, or the
    * neutral `Command`), the keywords on offer and the one Enter keeps, e.g.
-   * `LINE [Close/Undo]:` or `UCSICON [ON/OFF/Noorigin/ORigin] <ON>:`.
+   * `LINE [Close/Undo]:` or `UCSICON [ON/OFF/Noorigin/ORigin] <ON>:`;
+   * `tight`, the default written against them (`[Zdepth]<0,0,0>:`).
    */
   composePrompt(
     head: string,
     keywords: readonly string[],
-    fallback: string | null = null
+    fallback: string | null = null,
+    tight = false
   ): PromptSegment[] {
     const format = this.commands.format
     if (keywords.length === 0) {
       const text =
         fallback === null
           ? this.format(format.prompt, { head })
-          : this.format(format.promptWithValue, { head, value: fallback })
+          : this.format(
+              tight ? format.promptWithValueTight : format.promptWithValue,
+              { head, value: fallback }
+            )
       return [{ text, keywords: false }]
     }
     return this.formatter
       .formatParts<PromptSegment>(
         fallback === null
           ? format.promptWithKeywords
-          : format.promptWithDefault,
+          : tight
+            ? format.promptWithDefaultTight
+            : format.promptWithDefault,
         { head, list: this.keywordList(keywords), value: fallback ?? "" },
         {
           keywords: (chunks) => ({

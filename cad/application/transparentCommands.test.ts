@@ -113,7 +113,7 @@ describe("the other commands AutoCAD runs transparently", () => {
     const cad = lineThen(cad0(), "'-VIEW", "O", "F")
     expect(cad.commandLog().slice(-4)).toEqual([
       ">>Enter an option [Orthographic]: O",
-      ">>Enter an option [Top/Bottom/Front/BAck/Left/Right] <Top>: F",
+      ">>Enter an option [Top/Bottom/Front/BAck/Left/Right]<Top>: F",
       "** Requires a regen, cannot be transparent.",
       "Resuming LINE command.",
     ])

@@ -145,9 +145,9 @@ describe("-VIEW asks as AutoCAD 2026", () => {
       "Enter an option [Orthographic]: FOO",
       "Invalid option keyword.",
       "Enter an option [Orthographic]: O",
-      "Enter an option [Top/Bottom/Front/BAck/Left/Right] <Top>: FOO",
+      "Enter an option [Top/Bottom/Front/BAck/Left/Right]<Top>: FOO",
       "Invalid option keyword.",
-      "Enter an option [Top/Bottom/Front/BAck/Left/Right] <Top>:",
+      "Enter an option [Top/Bottom/Front/BAck/Left/Right]<Top>:",
       "Regenerating model.",
     ])
     expect(cad.runtime.viewport.isPlan).toBe(true)
@@ -173,7 +173,7 @@ describe("-VIEW asks as AutoCAD 2026", () => {
     expect(cad.commandLog()).toEqual([
       "-VISTA",
       "Indique una opción [Ortogonal]: O",
-      "Indique una opción [sUperior/Inferior/Frontal/Posterior/IZquierda/Derecha] <sUperior>: U",
+      "Indique una opción [sUperior/Inferior/Frontal/Posterior/IZquierda/Derecha]<sUperior>: U",
       "Regenerando modelo.",
     ])
   })

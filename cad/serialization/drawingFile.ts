@@ -87,6 +87,8 @@ import {
   createUcs,
   isUpright,
   NamedUcs,
+  ORTHOGRAPHIC_UCS,
+  OrthographicUcs,
   Ucs,
   ucsFromAxes,
   WORLD_UCS,
@@ -105,7 +107,7 @@ import { DRAWING_FILE_TYPE } from "./drawingSummary"
 export { DRAWING_FILE_TYPE }
 
 /** Current schema version written by {@link serializeDrawing}. */
-export const DRAWING_FILE_VERSION = 25
+export const DRAWING_FILE_VERSION = 26
 
 /** MIME type a serialised drawing is handed to the host as. */
 export const DRAWING_FILE_MIME_TYPE = "application/json"
@@ -130,7 +132,8 @@ export interface DrawingSnapshot {
  * The settings as written: a zero ELEVATION or THICKNESS is left out, as on
  * objects, and so are a shown ViewCube (NAVVCUBEDISPLAY 3) and the default
  * Home view, so a drawing that never touched them reads as before 24, and a
- * current colour, linetype or lineweight that is ByLayer, as before 25.
+ * current colour, linetype or lineweight that is ByLayer, as before 25, and a
+ * UCS set as no orthographic one, as before 26.
  */
 export type StoredSettings = Omit<
   DocumentSettings,
@@ -138,6 +141,7 @@ export type StoredSettings = Omit<
   | "elevation"
   | "thickness"
   | "ucs"
+  | "ucsOrthographic"
   | "namedUcs"
   | "viewCube"
   | "currentColor"
@@ -155,6 +159,7 @@ export type StoredSettings = Omit<
       | "currentLineweight"
     >
   > & {
+    readonly ucsOrthographic?: OrthographicUcs
     readonly ucs: StoredUcs
     readonly namedUcs: readonly { name: string; ucs: StoredUcs }[]
     readonly navVCubeDisplay?: 0
@@ -577,6 +582,7 @@ function storedSettings(settings: DocumentSettings): StoredSettings {
     elevation,
     thickness,
     ucs,
+    ucsOrthographic,
     namedUcs,
     viewCube,
     currentColor,
@@ -590,6 +596,7 @@ function storedSettings(settings: DocumentSettings): StoredSettings {
     ...(currentLinetype !== LINETYPE_BYLAYER ? { currentLinetype } : {}),
     ...(currentLineweight !== LINEWEIGHT_BYLAYER ? { currentLineweight } : {}),
     ucs: storedUcs(ucs),
+    ...(ucsOrthographic ? { ucsOrthographic } : {}),
     namedUcs: namedUcs.map((entry) => ({
       name: entry.name,
       ucs: storedUcs(entry.ucs),
@@ -643,6 +650,9 @@ function parseSettings(value: unknown): DocumentSettings {
     namedUcs.some((entry) => entry.name === value.ucsName)
       ? value.ucsName
       : null
+  const ucsOrthographic = ORTHOGRAPHIC_UCS.find(
+    (kind) => kind === value.ucsOrthographic
+  )
   const icon = isRecord(value.ucsIcon) ? value.ucsIcon : {}
   const ucsIcon = {
     visible:
@@ -666,6 +676,7 @@ function parseSettings(value: unknown): DocumentSettings {
     attributeDisplay,
     ucs,
     ucsName,
+    ucsOrthographic: ucsOrthographic ?? null,
     namedUcs,
     ucsIcon,
     elevation: isFiniteNumber(value.elevation) ? value.elevation : 0,

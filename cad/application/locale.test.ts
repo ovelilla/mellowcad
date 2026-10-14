@@ -889,7 +889,7 @@ describe("Spanish AutoCAD's command language", () => {
     cad.command("-VISTA").press("o")
     cad.press("Enter")
     expect(cad.state().commandLine.prompt).toBe(
-      "-VISTA Indique una opción [sUperior/Inferior/Frontal/Posterior/IZquierda/Derecha] <sUperior>:"
+      "-VISTA Indique una opción [sUperior/Inferior/Frontal/Posterior/IZquierda/Derecha]<sUperior>:"
     )
     cad.type("u").enter()
     expect(cad.runtime.viewport.isPlan).toBe(true)

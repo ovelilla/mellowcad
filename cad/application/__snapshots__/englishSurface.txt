@@ -3705,19 +3705,25 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0°~, Line space facto
   command| UCS
   info| Current ucs name:  PLOT
 > R
+  prompt: UCS Enter name of UCS to restore or [?]:
+  asks: "Enter name of UCS to restore or"
+  tip: Enter name of UCS to restore or
+  dyn: "Enter name of UCS to restore or"=""||*
+  options: [?] ?
+  prompt| Specify origin of UCS or [NAmed/OBject/Previous/View/World/X/Y/Z/ZAxis] <World>: R
 > unknown
-  dyn: "X,Y"="NOPE"||*
+  dyn: "Enter name of UCS to restore or"="NOPE"||*
 > enter
-  dyn: "X,Y"=""||*
-  prompt| Specify origin of UCS or [NAmed/OBject/Previous/View/World/X/Y/Z/ZAxis] <World>: NOPE
-  error| Point or option keyword required.
+  dyn: "Enter name of UCS to restore or"=""||*
+  prompt| Enter name of UCS to restore or [?]: NOPE
+  error| Cannot find UCS "NOPE".
 > escape
   prompt: Command:
   asks: -
   tip: -
   dyn: -
   options: -
-  prompt| Specify origin of UCS or [NAmed/OBject/Previous/View/World/X/Y/Z/ZAxis] <World>: *Cancel*
+  prompt| Enter name of UCS to restore or [?]: *Cancel*
 > UCS W
   prompt: UCS Specify origin of UCS or [NAmed/OBject/Previous/View/World/X/Y/Z/ZAxis] <World>:
   asks: "Specify origin of UCS or"
@@ -4384,7 +4390,7 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0°~, Line space facto
   options: [O] Orthographic
   command| -VIEW
 > O
-  prompt: -VIEW Enter an option [Top/Bottom/Front/BAck/Left/Right] <Top>:
+  prompt: -VIEW Enter an option [Top/Bottom/Front/BAck/Left/Right]<Top>:
   options: [T] Top, [B] Bottom, [F] Front, [BA] BAck, [L] Left, [R] Right
   prompt| Enter an option [Orthographic]: O
 > F
@@ -4393,7 +4399,7 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0°~, Line space facto
   tip: -
   dyn: -
   options: -
-  prompt| Enter an option [Top/Bottom/Front/BAck/Left/Right] <Top>: F
+  prompt| Enter an option [Top/Bottom/Front/BAck/Left/Right]<Top>: F
   info| Regenerating model.
 > -VIEW _SWISO
   prompt: -VIEW Enter an option [Orthographic]:
@@ -4418,7 +4424,7 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0°~, Line space facto
   options: [O] Orthographic
   command| VIEW
 > O
-  prompt: VIEW Enter an option [Top/Bottom/Front/BAck/Left/Right] <Top>:
+  prompt: VIEW Enter an option [Top/Bottom/Front/BAck/Left/Right]<Top>:
   options: [T] Top, [B] Bottom, [F] Front, [BA] BAck, [L] Left, [R] Right
   prompt| Enter an option [Orthographic]: O
 > enter is Top
@@ -4427,7 +4433,7 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0°~, Line space facto
   tip: -
   dyn: -
   options: -
-  prompt| Enter an option [Top/Bottom/Front/BAck/Left/Right] <Top>:
+  prompt| Enter an option [Top/Bottom/Front/BAck/Left/Right]<Top>:
   info| Regenerating model.
 > NAVVCUBE
   prompt: NAVVCUBE Enter an option [ON/OFF] <ON>:

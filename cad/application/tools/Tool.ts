@@ -113,6 +113,11 @@ export interface ToolQuestion {
    * `[Normal/ON/OFF]` declares `OFf Normal ON`: `OFf or ON?`).
    */
   readonly declared?: readonly string[]
+  /**
+   * The default written against what comes before it, as AutoCAD's string
+   * has it (`[Zdepth]<0,0,0>:`, `Specify Zdepth<0>:`).
+   */
+  readonly tight?: true
 }
 
 /**

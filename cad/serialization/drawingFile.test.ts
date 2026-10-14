@@ -183,6 +183,7 @@ describe("round trip", () => {
       attributeDisplay: "off" as const,
       ucs,
       ucsName: "Plot",
+      ucsOrthographic: "front" as const,
       namedUcs: [{ name: "Plot", ucs }],
       ucsIcon: { visible: true, atOrigin: false },
       elevation: 3,
@@ -212,6 +213,23 @@ describe("round trip", () => {
       currentLinetype: "ByLayer",
       currentLineweight: "ByLayer",
     })
+  })
+
+  it("writes no orthographic UCS when there is none, as before 26", () => {
+    const text = serializeDrawing(snapshotOf([]))
+    expect(text).not.toMatch(/"ucsOrthographic"/)
+    expect(parseDrawingFile(text).settings.ucsOrthographic).toBeNull()
+    const read = (ucsOrthographic: unknown) =>
+      parseDrawingFile(
+        JSON.stringify({
+          type: DRAWING_FILE_TYPE,
+          version: DRAWING_FILE_VERSION,
+          settings: { ucsOrthographic },
+          entities: [],
+        })
+      ).settings.ucsOrthographic
+    expect(read("back")).toBe("back")
+    expect(read("BACK")).toBeNull()
   })
 
   it("opens a drawing from before 25 with everything new ByLayer", () => {

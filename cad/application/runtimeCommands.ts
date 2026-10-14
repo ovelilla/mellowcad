@@ -382,15 +382,19 @@ export function commandPrompt(
   // point:`, ` (ADD mode)…`): it is how AutoCAD lays the line out after the
   // last, not part of the question the prompt line and the tooltip show.
   const shown = question?.trimStart() ?? null
+  const tight = typeof asked === "object" && asked?.tight === true
   return {
     command: name,
     segments: text.composePrompt(
       shown === null ? name : text.commandQuestion(name, shown),
       labels,
-      value
+      value,
+      tight
     ),
     echo:
-      question === null ? null : text.composePrompt(question, labels, value),
+      question === null
+        ? null
+        : text.composePrompt(question, labels, value, tight),
     dynamic:
       shown === null || labels.length > 0 || value !== null
         ? shown

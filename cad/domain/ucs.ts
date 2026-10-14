@@ -42,6 +42,37 @@ export const WORLD_UCS: Ucs = {
   yAxis: { x: 0, y: 1, z: 0 },
 }
 
+/**
+ * One of the six orthographic UCSs (UCS orthoGraphic, and -VIEW's orthographic
+ * views with UCSORTHO 1), which AutoCAD names the current UCS by (`*TOP*`).
+ */
+export type OrthographicUcs =
+  "top" | "bottom" | "front" | "back" | "left" | "right"
+
+const ORTHOGRAPHIC_AXES: Readonly<
+  Record<OrthographicUcs, { readonly xAxis: Vec3; readonly yAxis: Vec3 }>
+> = {
+  top: { xAxis: { x: 1, y: 0, z: 0 }, yAxis: { x: 0, y: 1, z: 0 } },
+  bottom: { xAxis: { x: -1, y: 0, z: 0 }, yAxis: { x: 0, y: 1, z: 0 } },
+  front: { xAxis: { x: 1, y: 0, z: 0 }, yAxis: { x: 0, y: 0, z: 1 } },
+  back: { xAxis: { x: -1, y: 0, z: 0 }, yAxis: { x: 0, y: 0, z: 1 } },
+  left: { xAxis: { x: 0, y: -1, z: 0 }, yAxis: { x: 0, y: 0, z: 1 } },
+  right: { xAxis: { x: 0, y: 1, z: 0 }, yAxis: { x: 0, y: 0, z: 1 } },
+}
+
+export const ORTHOGRAPHIC_UCS = Object.keys(
+  ORTHOGRAPHIC_AXES
+) as readonly OrthographicUcs[]
+
+/**
+ * An orthographic UCS: at the WCS's origin (UCSBASE's initial World) with
+ * the axes AutoCAD 2023's console gives it (UCSXDIR, UCSYDIR), whatever
+ * the UCS was before.
+ */
+export function orthographicUcs(kind: OrthographicUcs): Ucs {
+  return { origin: { x: 0, y: 0, z: 0 }, ...ORTHOGRAPHIC_AXES[kind] }
+}
+
 const EPSILON = 1e-12
 
 /**

@@ -205,6 +205,63 @@ describe("LASTPOINT", () => {
     expect(lastPoint(spanish)).toBe(origin)
   })
 
+  // AutoCAD 2023's console (acc/u1–u30, p1–p33, q1–q24 of the hidden UCS
+  // words session), each read with ID @ at LUPREC 4.
+  it("goes where UCS's unlisted words put it", () => {
+    const at = (...texts: string[]) => {
+      const cad = createHarness()
+      cad.runtime.setDocumentPrecision(4)
+      return lastPoint(answer(cad, ...texts))
+    }
+    const origin = " X = 0.0000     Y = 0.0000     Z = 0.0000"
+    const wcsOrigin = " X = -100.0000     Y = 0.0000     Z = 0.0000"
+    const at100 = ["UCS", "O", "100,0", "ID", "5,5"]
+
+    expect(at("ID", "5,5", "UCS", "O", "100,50")).toBe(origin)
+    expect(at(...at100, "UCS", "M", "100,50")).toBe(origin)
+    expect(at(...at100, "UCS", "G", "F")).toBe(origin)
+    expect(at(...at100, "UCS", "N", "")).toBe(origin)
+    expect(at(...at100, "UCS", "3", "", "", "")).toBe(origin)
+    expect(at("ID", "5,5", "UCS", "3", "100,0", "200,50", "")).toBe(origin)
+    // Nothing changed, or Zdepth: the WCS's origin.
+    for (const way of [
+      ["O", ""],
+      ["M", ""],
+      ["M", "Z", ""],
+      ["S", "AA"],
+      ["R", ""],
+      ["NA", "R", ""],
+      ["D", ""],
+    ]) {
+      expect(at(...at100, "UCS", ...way)).toBe(wcsOrigin)
+    }
+    expect(at(...at100, "UCS", "M", "Z", "10")).toBe(
+      " X = -100.0000     Y = 0.0000     Z = -10.0000"
+    )
+    // The third point: 3point's where it was given, the first prompt's at
+    // the numbers it was typed in, read in the new UCS.
+    const third = " X = 44.7214     Y = 89.4427     Z = 0.0000"
+    expect(at("UCS", "3", "100,0", "200,50", "100,100")).toBe(third)
+    expect(at("UCS", "N", "3", "100,0", "200,50", "100,100")).toBe(third)
+    expect(at("UCS", "100,0", "200,50", "100,100")).toBe(
+      " X = 100.0000     Y = 100.0000     Z = 0.0000"
+    )
+
+    // U: the WCS's origin; REDO: where the UCS put it.
+    expect(at("UCS", "3", "100,0", "200,50", "100,100", "U")).toBe(origin)
+    expect(at("UCS", "3", "100,0", "200,50", "100,100", "U", "REDO")).toBe(
+      third
+    )
+    expect(at("UCS", "M", "100,50", "U", "REDO")).toBe(origin)
+    expect(at(...at100, "UCS", "M", "Z", "10", "U")).toBe(wcsOrigin)
+    expect(at(...at100, "UCS", "M", "Z", "10", "U", "REDO")).toBe(
+      " X = -100.0000     Y = 0.0000     Z = -10.0000"
+    )
+    expect(at("UCS", "O", "100,50", "ID", "5,5", "UCS", "G", "F", "U")).toBe(
+      " X = -100.0000     Y = -50.0000     Z = 0.0000"
+    )
+  })
+
   it("goes back to 0,0,0 with a new drawing", () => {
     const cad = createHarness()
     answer(cad, "ID", "7,8")

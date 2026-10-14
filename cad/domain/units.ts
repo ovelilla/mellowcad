@@ -2,7 +2,7 @@ import type { AttributeDisplay } from "./entityTypes"
 import { COLOR_BYLAYER, EntityColor } from "./colors"
 import { LINETYPE_BYLAYER, LinetypeId } from "./linetypes"
 import { LINEWEIGHT_BYLAYER, Lineweight } from "./lineweights"
-import { NamedUcs, Ucs, WORLD_UCS } from "./ucs"
+import { NamedUcs, OrthographicUcs, Ucs, WORLD_UCS } from "./ucs"
 import { Vec3 } from "../geometry/Vec3"
 
 /**
@@ -32,6 +32,8 @@ export interface DocumentSettings {
   readonly ucs: Ucs
   /** UCSNAME: the saved UCS the current one was restored from, until it changes. */
   readonly ucsName: string | null
+  /** The orthographic UCS the current one was set as (`*TOP*`), until it changes. */
+  readonly ucsOrthographic: OrthographicUcs | null
   /** The UCS table: every UCS saved by name. */
   readonly namedUcs: readonly NamedUcs[]
   /** UCSICON: bit 1 shows the icon, bit 2 puts it at the origin when in view. */
@@ -84,6 +86,7 @@ export const DEFAULT_DOCUMENT_SETTINGS: DocumentSettings = {
   attributeDisplay: "normal",
   ucs: WORLD_UCS,
   ucsName: null,
+  ucsOrthographic: null,
   namedUcs: [],
   ucsIcon: { visible: true, atOrigin: true },
   elevation: 0,

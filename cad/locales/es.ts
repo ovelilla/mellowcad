@@ -1167,7 +1167,21 @@ export const es: EngineLocale = {
         "Delete": "Supr",
         "?": "?",
         "Yes": "Sí",
-        "No": "No"
+        "No": "No",
+        "Origin": "ORigen",
+        "Face": "Cara",
+        "3point": "3p",
+        "Entity": "Entidad",
+        "Move": "DEsplazar",
+        "orthoGraphic": "Ortogonal",
+        "New": "Nuevo",
+        "Top": "SUperior",
+        "Bottom": "Inferior",
+        "Front": "Frontal",
+        "BAck": "Posterior",
+        "Left": "IZquierda",
+        "Right": "Derecha",
+        "Zdepth": "profundidadZ"
       },
       "UCSICON": {
         "ON": "ACT",
@@ -1245,6 +1259,10 @@ export const es: EngineLocale = {
         "Undo": "desHacer"
       },
       "viewOrthographic": {
+        "Right": "Derecha"
+      },
+      "ucsOrthographic": {
+        "Front": "Frontal",
         "Right": "Derecha"
       },
       "specifyEndpointOfLineOr": {
@@ -1388,6 +1406,19 @@ export const es: EngineLocale = {
         "\" ya existe. Reemplácelo.?"
       ],
       "ucsAlignObject": "Designe el objeto a alinear con el SCP",
+      "ucsNewUcs": "Precise origen de nuevo SCP o",
+      "ucsNewOrigin": "Precise nuevo punto de origen",
+      "ucsMoveOrigin": "Precise nuevo punto de origen o",
+      "ucsZdepth": "Precise profundidadZ",
+      "ucsOrthographic": "Indique una opción",
+      "ucs3XAxisPoint": "Precise punto en parte positiva del eje X",
+      "ucs3XYPlanePoint": "Precise punto en parte Y positiva del plano XY del SCP",
+      "ucsTop": "Superior",
+      "ucsBottom": "Inferior",
+      "ucsFront": "Frontal",
+      "ucsBack": "Posterior",
+      "ucsLeft": "Izquierda",
+      "ucsRight": "Derecha",
       "planUcsName": "Indique nombre de SCP o",
       "planCurrent": "Actual",
       "zoomCornerOr": "Precise esquina de ventana, indique un factor de escala (nX o nXP), o",
@@ -1677,6 +1708,16 @@ export const es: EngineLocale = {
         ],
         ">:"
       ],
+      "promptWithValueTight": [
+        [
+          "head"
+        ],
+        "<",
+        [
+          "value"
+        ],
+        ">:"
+      ],
       "promptWithKeywords": [
         [
           "head"
@@ -1706,6 +1747,25 @@ export const es: EngineLocale = {
           "]"
         ],
         " <",
+        [
+          "value"
+        ],
+        ">:"
+      ],
+      "promptWithDefaultTight": [
+        [
+          "head"
+        ],
+        " ",
+        [
+          "keywords",
+          "[",
+          [
+            "list"
+          ],
+          "]"
+        ],
+        "<",
         [
           "value"
         ],
@@ -2046,6 +2106,12 @@ export const es: EngineLocale = {
           {
             "world": "*UNIVERSAL*",
             "unnamed": "*SIN NOMBRE*",
+            "top": "*SUPERIOR*",
+            "bottom": "*INFERIOR*",
+            "front": "*FRONTAL*",
+            "back": "*POSTERIOR*",
+            "left": "*IZQUIERDA*",
+            "right": "*DERECHA*",
             "other": [
               [
                 "name"
@@ -2062,6 +2128,12 @@ export const es: EngineLocale = {
           {
             "world": "*UNIVERSAL*",
             "unnamed": "*SIN NOMBRE*",
+            "top": "*SUPERIOR*",
+            "bottom": "*INFERIOR*",
+            "front": "*FRONTAL*",
+            "back": "*POSTERIOR*",
+            "left": "*IZQUIERDA*",
+            "right": "*DERECHA*",
             "other": [
               "\"",
               [
@@ -2153,6 +2225,8 @@ export const es: EngineLocale = {
         " de SCP."
       ],
       "invalidUcsName": "Nombre de SCP no válido.",
+      "coincidentWithFirstPoint": "Coincide con el primer punto",
+      "pointsAreColinear": "Puntos colineales",
       "noPreviousUcs": "No hay ningún sistema de coordenadas guardado.",
       "yesOrNoPlease": "Sí o No.",
       "requiresDistanceNumberXOrKeyword": "Requiere una distancia, un factorX o una opción.",

@@ -2,7 +2,7 @@ import { Vec2 } from "../../geometry/Vec2"
 import { ucsFromAxes } from "../../domain/ucs"
 import { UpdateSettingsCommand } from "../commands/settingsCommands"
 import { VIEW_PRESETS, ViewPreset, lookFrom } from "./viewPresets"
-import { ucsChange } from "./UcsTool"
+import { ORTHOGRAPHIC_OPTIONS, ucsChange } from "./UcsTool"
 import type { PromptId } from "../../locales/types"
 import {
   CommandOption,
@@ -10,6 +10,7 @@ import {
   PointerInput,
   Tool,
   ToolContext,
+  ToolQuestion,
 } from "./Tool"
 
 type ViewState =
@@ -32,7 +33,8 @@ const ISOMETRIC: readonly ViewPreset[] = ["SWiso", "SEiso", "NEiso", "NWiso"]
  * answers without listing them. A preset fits the drawing's extents; named
  * views (`?`, Delete, Restore, Save, sEttings, Window) wait for saved views.
  * An orthographic view also aligns the UCS's XY plane with the screen, as
- * UCSORTHO's initial 1 does, from the WCS (UCSBASE's initial value). It works
+ * UCSORTHO's initial 1 does, from the WCS (UCSBASE's initial value), and
+ * names it as UCS orthoGraphic does (`*FRONT*`, AutoCAD 2023's console). It works
  * in the WCS, the presets' reference.
  */
 export class ViewTool implements Tool {
@@ -69,10 +71,13 @@ export class ViewTool implements Tool {
 
   /**
    * Two prompts of their own, as their keywords are spelled apart: the first
-   * one's hidden `RIght`, Orthographic's `Right`.
+   * one's hidden `RIght`, Orthographic's `Right`, which writes its default
+   * against the list (`[…/Right]<Top>:`).
    */
-  question(): PromptId {
-    return this.state.phase === "option" ? "viewOption" : "viewOrthographic"
+  question(): PromptId | ToolQuestion {
+    return this.state.phase === "option"
+      ? "viewOption"
+      : { id: "viewOrthographic", tight: true }
   }
 
   defaultOption(): string | null {
@@ -116,7 +121,14 @@ export class ViewTool implements Tool {
       ctx.viewport.right,
       ctx.viewport.up
     )
-    const patch = ucs && ucsChange(ctx.document.getSettings(), ucs, null)
+    const patch =
+      ucs &&
+      ucsChange(
+        ctx.document.getSettings(),
+        ucs,
+        null,
+        ORTHOGRAPHIC_OPTIONS[preset]
+      )
     if (patch) ctx.execute(new UpdateSettingsCommand(patch))
     return true
   }

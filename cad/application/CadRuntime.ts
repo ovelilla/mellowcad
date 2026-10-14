@@ -2639,8 +2639,10 @@ export class CadRuntime extends Observable {
       const ids = matchKeywords(typed, this.offeredKeywords())
       if (ids.length > 0) {
         this.dynamicInput.setText(field.id, "")
-        this.answerKeyword(typed, ids)
-        return
+        if (this.answerKeyword(typed, ids)) return
+        // A word declared only to be refused (UCS's Face): the prompt's own
+        // wrong answer, as any other.
+        this.dynamicInput.setText(field.id, typed)
       }
     }
     if (this.clarifyingWords() !== null) {

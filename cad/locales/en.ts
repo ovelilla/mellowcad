@@ -908,6 +908,10 @@ export const en: EngineCatalog = {
       "DIST": {
         "Center": "CEnter"
       },
+      "UCS": {
+        "Front": "FRont",
+        "Right": "RIght"
+      },
       "PLAN": {
         "Current ucs": "Current"
       },
@@ -958,6 +962,10 @@ export const en: EngineCatalog = {
         "Undo": "Undo"
       },
       "viewOrthographic": {
+        "Right": "Right"
+      },
+      "ucsOrthographic": {
+        "Front": "Front",
         "Right": "Right"
       },
       "specifyEndpointOfLineOr": {
@@ -1101,6 +1109,19 @@ export const en: EngineCatalog = {
         "\" already exists.  Replace it?"
       ],
       "ucsAlignObject": "Select object to align UCS",
+      "ucsNewUcs": "Specify origin of new UCS or",
+      "ucsNewOrigin": "Specify new origin point",
+      "ucsMoveOrigin": "Specify new origin point or",
+      "ucsZdepth": "Specify Zdepth",
+      "ucsOrthographic": "Enter an option",
+      "ucs3XAxisPoint": "Specify point on positive portion of X-axis",
+      "ucs3XYPlanePoint": "Specify point on positive-Y portion of the UCS XY plane",
+      "ucsTop": "Top",
+      "ucsBottom": "Bottom",
+      "ucsFront": "Front",
+      "ucsBack": "Back",
+      "ucsLeft": "Left",
+      "ucsRight": "Right",
       "planUcsName": "Enter name of UCS or",
       "planCurrent": "Current",
       "zoomCornerOr": "Specify corner of window, enter a scale factor (nX or nXP), or",
@@ -1390,6 +1411,16 @@ export const en: EngineCatalog = {
         ],
         ">:"
       ],
+      "promptWithValueTight": [
+        [
+          "head"
+        ],
+        "<",
+        [
+          "value"
+        ],
+        ">:"
+      ],
       "promptWithKeywords": [
         [
           "head"
@@ -1419,6 +1450,25 @@ export const en: EngineCatalog = {
           "]"
         ],
         " <",
+        [
+          "value"
+        ],
+        ">:"
+      ],
+      "promptWithDefaultTight": [
+        [
+          "head"
+        ],
+        " ",
+        [
+          "keywords",
+          "[",
+          [
+            "list"
+          ],
+          "]"
+        ],
+        "<",
         [
           "value"
         ],
@@ -1760,6 +1810,12 @@ export const en: EngineCatalog = {
           {
             "world": "*WORLD*",
             "unnamed": "*NO NAME*",
+            "top": "*TOP*",
+            "bottom": "*BOTTOM*",
+            "front": "*FRONT*",
+            "back": "*BACK*",
+            "left": "*LEFT*",
+            "right": "*RIGHT*",
             "other": [
               [
                 "name"
@@ -1776,6 +1832,12 @@ export const en: EngineCatalog = {
           {
             "world": "*WORLD*",
             "unnamed": "*NO NAME*",
+            "top": "*TOP*",
+            "bottom": "*BOTTOM*",
+            "front": "*FRONT*",
+            "back": "*BACK*",
+            "left": "*LEFT*",
+            "right": "*RIGHT*",
             "other": [
               "\"",
               [
@@ -1867,6 +1929,8 @@ export const en: EngineCatalog = {
         "."
       ],
       "invalidUcsName": "Invalid UCS name.",
+      "coincidentWithFirstPoint": "Coincident with first point",
+      "pointsAreColinear": "Points are colinear",
       "noPreviousUcs": "No previous coordinate system saved.",
       "yesOrNoPlease": "Yes or No, please.",
       "requiresDistanceNumberXOrKeyword": "Requires a distance, numberX, or option keyword.",
