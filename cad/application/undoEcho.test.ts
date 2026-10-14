@@ -90,13 +90,15 @@ describe("U and REDO say what they did", () => {
 
   it("names a command by its name, however it was typed", () => {
     const cad = answer(createHarness(), ...LINE)
-    expect(written(cad, "_U", "_REDO", "UNDO")).toEqual([
+    expect(written(cad, "_U", "_REDO", "UNDO", "")).toEqual([
       "U",
       "LINE",
       "REDO",
       "LINE",
       "Everything has been redone",
       "UNDO",
+      "Current settings: Auto = On, Control = All, Combine = Yes, Layer = Yes",
+      "Enter the number of operations to undo or [BEgin/End/Mark/Back] <1>:",
       "LINE",
     ])
     answer(cad, "UCS", "O", "10,0", "AUPREC", "2")
@@ -164,6 +166,8 @@ describe("U and REDO say what they did", () => {
       "REHACER",
       "REHACER debe ir directamente a continuación del comando H o DESHACER.",
     ])
-    expect(written(cad, "DESHACER")).toEqual(["DESHACER", "Nada que deshacer"])
+    expect(written(cad, "DESHACER", "").slice(-1)).toEqual([
+      "Nada que deshacer",
+    ])
   })
 })

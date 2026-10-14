@@ -80,6 +80,7 @@ import { matchKeywords, resolveKeyword } from "../i18n/keywords"
 import type { EngineLocale, PromptId } from "../locales/types"
 import { EngineText, engineText, promptString } from "./EngineText"
 import { CommandHistory, Step } from "./commands/Command"
+import type { UndoHistory } from "./tools/Tool"
 import { UpdateSettingsCommand } from "./commands/settingsCommands"
 import {
   NewDrawingCommand,
@@ -322,10 +323,15 @@ export class CadRuntime extends Observable {
   /** Its name as echoed (`LINE` for `L`), which U and REDO say. */
   private startingName: string | null = null
   /**
-   * What the last U or REDO did, which the next one answers by (AutoCAD's
-   * REDO takes back only the U just before it); null after any other command.
+   * What the last U, UNDO or REDO did, which the next one answers by: how
+   * many steps an undo took back, which REDO does again (AutoCAD's REDO
+   * follows only the undo just before it); null after any other command.
    */
-  private undoing: "undid" | "bottom" | "redid" | null = null
+  private undoing:
+    | { readonly undid: number; readonly bottom: boolean }
+    | "bottom"
+    | "redid"
+    | null = null
   /**
    * The command the running tool was started as, which heads its prompt:
    * `-LINETYPE`, not the tool's LINETYPE. Null for a tool started otherwise.
@@ -523,6 +529,7 @@ export class CadRuntime extends Observable {
       dynamicInput: this.dynamicInput,
       blocks: this.document.blockLookup(),
       undo: () => this.history.undo() !== null,
+      undoHistory: this.undoHistory,
       pickTolerance: () =>
         this.viewport.screenToWorldDistance(this.snapping.pixelTolerance),
       requestRender: () => this.host.requestRender(),
@@ -1910,70 +1917,157 @@ export class CadRuntime extends Observable {
 
   /**
    * Takes back the last command. `said`: as the U command, which writes what
-   * it took back — the command's name (`LINE`) — or, with nothing left,
-   * `Everything has been undone`, then `Nothing to undo`, as AutoCAD 2023's
-   * console does.
+   * it took back (see {@link takeBack}).
    */
   undo(said = false): void {
     // Undo with a command running ends it first, so what it drew goes as one
     // step: "Click Undo on the Quick Access toolbar to cancel the entire series
     // of line segments".
     if (this.activeTool.id !== "select") this.endCommands()
-    const step = this.history.undo()
-    if (step) this.selection.clear()
-    if (said) {
-      const text = step
-        ? this.stepName(step)
-        : this.text.message(
-            this.undoing === "bottom" ? "nothingToUndo" : "everythingUndone"
-          )
-      if (text !== null) this.commandLine.write("info", text)
+    this.takeBack(1, said)
+  }
+
+  /**
+   * Takes back `count` steps, or back to the last mark (UNDO Back), stopping
+   * at a mark, which goes, and at the start of a group UNDO BEgin opened,
+   * which stays. `said`: writing what AutoCAD 2023's console writes — the
+   * names on one line (`CIRCLE LINE`, `GROUP CIRCLE LINE`, then ` Regenerating
+   * model.` once if one regenerated), then `Mark encountered`, `Start of Group
+   * encountered.`, or, with nothing left, `Everything has been undone` — and
+   * `Nothing to undo` when the last one already said so.
+   */
+  private takeBack(count: number | "mark", said: boolean): void {
+    const names: string[] = []
+    let regenerates = false
+    let taken = 0
+    let stop: "mark" | "group" | "bottom" | null = null
+    while (count === "mark" || taken < count) {
+      if (this.history.atUndoGroupStart()) {
+        stop = "group"
+        break
+      }
+      const step = this.history.undo()
+      if (!step) {
+        stop = "bottom"
+        break
+      }
+      taken += 1
+      if (step.kind === "mark") {
+        stop = "mark"
+        break
+      }
+      const name = this.stepName(step, true)
+      if (name !== null) names.push(name)
+      regenerates ||= step.regenerates
     }
-    this.undoing = step ? "undid" : "bottom"
+    if (taken > 0) this.selection.clear()
+    if (said) {
+      if (names.length > 0) {
+        const regen = this.text.message("regeneratingModel")
+        const line = names.join(" ")
+        this.commandLine.write("info", regenerates ? `${line} ${regen}` : line)
+      }
+      const ending =
+        stop === "mark"
+          ? "markEncountered"
+          : stop === "group"
+            ? "startOfGroup"
+            : stop === "bottom"
+              ? taken === 0 && this.reachedBottom()
+                ? "nothingToUndo"
+                : "everythingUndone"
+              : null
+      if (ending) this.commandLine.write("info", this.text.message(ending))
+    }
+    this.undoing =
+      taken > 0 ? { undid: taken, bottom: stop === "bottom" } : "bottom"
+  }
+
+  /** Whether the last undo already said `Everything has been undone`. */
+  private reachedBottom(): boolean {
+    const undoing = this.undoing
+    return (
+      undoing === "bottom" ||
+      (undoing !== null && typeof undoing === "object" && undoing.bottom)
+    )
   }
 
   /**
    * Does again what the last undo took back. `said`: as the REDO command,
-   * which only follows a U that took something back (MREDO, which steps
-   * further, is not built), and writes what it did again, then `Everything
-   * has been redone` once nothing is left, as AutoCAD 2023's console does.
+   * which only follows a U or UNDO that took something back, and does it all
+   * again (MREDO, which steps further, is not built), writing what it did,
+   * then `Everything has been redone` once nothing is left and the
+   * regeneration last, as AutoCAD 2023's console does (acc/s5, x1, x11).
    */
   redo(said = false): void {
-    if (said && this.undoing !== "undid") {
+    const undoing = this.undoing
+    if (said && (undoing === null || typeof undoing === "string")) {
       const refused =
-        this.undoing === "bottom" ||
-        (this.undoing === "redid" && this.history.canRedo())
+        undoing === "bottom" || (undoing === "redid" && this.history.canRedo())
       this.commandLine.write(
         "info",
         this.text.message(refused ? "redoMustFollowUndo" : "nothingToRedo")
       )
       return
     }
-    const step = this.history.redo()
-    if (step) this.selection.clear()
+    const count =
+      said && undoing !== null && typeof undoing === "object"
+        ? undoing.undid
+        : 1
+    const names: string[] = []
+    let regenerates = false
+    let done = 0
+    for (; done < count; done++) {
+      const step = this.history.redo()
+      if (!step) break
+      const name = this.stepName(step, false)
+      if (name !== null) names.push(name)
+      regenerates ||= step.regenerates
+    }
+    if (done > 0) this.selection.clear()
     this.undoing = "redid"
     if (!said) return
-    if (!step) {
+    if (done === 0) {
       this.commandLine.write("info", this.text.message("nothingToRedo"))
       return
     }
-    // The console says the regeneration after the rest (acc/s5, s6).
-    const name = step.name
-    if (name !== null) this.commandLine.write("info", name)
+    if (names.length > 0) this.commandLine.write("info", names.join(" "))
     if (!this.history.canRedo()) {
       this.commandLine.write("info", this.text.message("everythingRedone"))
     }
-    if (step.regenerates) {
+    if (regenerates) {
       this.commandLine.write("info", this.text.message("regeneratingModel"))
     }
   }
 
-  /** How U names what it took back: `LINE`, `LTSCALE Regenerating model.` */
-  private stepName(step: Step): string | null {
-    if (step.name === null) return null
-    return step.regenerates
-      ? `${step.name} ${this.text.message("regeneratingModel")}`
-      : step.name
+  /**
+   * How U and REDO name a step: its command (`LINE`), a group with its
+   * commands, last first when taken back (`GROUP CIRCLE LINE`); a mark, or
+   * an edit made with no command, nothing.
+   */
+  private stepName(step: Step, undone: boolean): string | null {
+    if (step.kind === "mark") return null
+    if (step.kind === "command") return step.name
+    const names = undone ? [...step.names].reverse() : step.names
+    return [this.text.message("undoGroup"), ...names].join(" ")
+  }
+
+  /** UNDO's own operations, for its tool. */
+  private readonly undoHistory: UndoHistory = {
+    takeBack: (count) => this.takeBack(count, true),
+    backStops: () => this.history.hasMark() || this.history.undoGroupOpen(),
+    mark: () => {
+      this.history.mark()
+      this.undoing = null
+    },
+    begin: () => {
+      this.history.openUndoGroup()
+      this.undoing = null
+    },
+    end: () => {
+      this.history.closeUndoGroup()
+      this.undoing = null
+    },
   }
 
   zoomIn(): void {

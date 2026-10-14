@@ -181,7 +181,8 @@ UCS's `<accept>`), or a text as the prompt writes it (`{ name: "0,0,0" }`; a poi
 without spaces, UCS ZAxis's `<5.00,5.00,1.00>`); a keyword Enter keeps is `defaultOption()`'s, unless
 the prompt names it short (PLAN's `<Current>`, UCS orthoGraphic's `<Back>`: a phrase). A string that
 writes the default against what precedes it (`[Zdepth]<0,0,0>:`, `Specify Zdepth<0>:`, -VIEW's
-`[…/Right]<Top>:`) says `tight: true`; read the table, never assume the space. A prompt that names something carries
+`[…/Right]<Top>:`) says `tight: true`, and one that ends at its default with no colon (UNDO's
+`This will undo everything. OK? <Y>`) `open: true`; read the table, never assume the space or the colon. A prompt that names something carries
 it in `values` (`UCS "{name}" already exists.  Replace it?`). AutoCAD's **yes-or-no question**
 lists no keywords: hidden `Yes` and `No` options, `enter: { name: "N" }`, Enter or No ending as its
 default does, and `{ refusal: "yesOrNoPlease" }`. The `or` belongs to the text, so a state that offers none of the keywords
@@ -296,6 +297,9 @@ current layer.
   echoed with (`history.nameCommand`, from `runCommand` and `setActiveTool`), which U and REDO
   write; a regeneration said through `ctx.regenerate()` marks it, and they repeat it
   (`LTSCALE Regenerating model.`) — one more reason never to report `regeneratingModel`.
+  UNDO's marks and its BEgin/End groups are entries of `CommandHistory` (`mark`,
+  `openUndoGroup`, `closeUndoGroup`); only the UNDO tool reaches them, through
+  `ctx.undoHistory`, and the runtime's `takeBack` says what any undo took back.
 - A tool offering its own **Undo keyword** must count its own edits and refuse when there are
   none: `ctx.undo()` pops the history, which otherwise backs out an unrelated earlier command.
   Inside the run each commit is still its own entry, so `ctx.undo()` takes back one; Ctrl+Z runs

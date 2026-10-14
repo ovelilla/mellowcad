@@ -118,6 +118,25 @@ export interface ToolQuestion {
    * has it (`[Zdepth]<0,0,0>:`, `Specify Zdepth<0>:`).
    */
   readonly tight?: true
+  /** No colon after the default, as AutoCAD's string ends (`OK? <Y>`). */
+  readonly open?: true
+}
+
+/** UNDO's operations on the undo history, which only its tool uses. */
+export interface UndoHistory {
+  /**
+   * Takes back `count` steps, or back to the last mark (`"mark"`), saying
+   * what it took back as U does.
+   */
+  takeBack(count: number | "mark"): void
+  /** Whether Back stops short of everything: at a mark or an open group's start. */
+  backStops(): boolean
+  /** Mark. */
+  mark(): void
+  /** BEgin: opens a group, closing one already open. */
+  begin(): void
+  /** End: closes the open group, if any. */
+  end(): void
 }
 
 /**
@@ -231,6 +250,8 @@ export interface ToolContext {
    * AutoCAD's LINE `Undo` (U) option.
    */
   undo(): boolean
+  /** UNDO's own operations: its number, Mark, Back, BEgin and End. */
+  readonly undoHistory: UndoHistory
 
   /** World-unit tolerance for click hit-testing at the current zoom. */
   pickTolerance(): number

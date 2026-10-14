@@ -26,6 +26,9 @@ export interface PromptSegment {
   readonly keywords: boolean
 }
 
+/** How a prompt writes its default: `<1>:`, against the list, or with no colon. */
+export type PromptForm = "spaced" | "tight" | "open"
+
 /**
  * What the engine names, in the interface language (`EngineState.names`): a
  * host draws these words and never keeps a copy of its own, so a menu and the
@@ -398,13 +401,14 @@ export class EngineText {
    * A prompt from its parts: what is asked (a command name, a field, or the
    * neutral `Command`), the keywords on offer and the one Enter keeps, e.g.
    * `LINE [Close/Undo]:` or `UCSICON [ON/OFF/Noorigin/ORigin] <ON>:`;
-   * `tight`, the default written against them (`[Zdepth]<0,0,0>:`).
+   * `tight`, the default written against them (`[Zdepth]<0,0,0>:`); `open`,
+   * a default with no colon after it (`OK? <Y>`).
    */
   composePrompt(
     head: string,
     keywords: readonly string[],
     fallback: string | null = null,
-    tight = false
+    form: PromptForm = "spaced"
   ): PromptSegment[] {
     const format = this.commands.format
     if (keywords.length === 0) {
@@ -412,7 +416,11 @@ export class EngineText {
         fallback === null
           ? this.format(format.prompt, { head })
           : this.format(
-              tight ? format.promptWithValueTight : format.promptWithValue,
+              form === "tight"
+                ? format.promptWithValueTight
+                : form === "open"
+                  ? format.promptWithValueOpen
+                  : format.promptWithValue,
               { head, value: fallback }
             )
       return [{ text, keywords: false }]
@@ -421,7 +429,7 @@ export class EngineText {
       .formatParts<PromptSegment>(
         fallback === null
           ? format.promptWithKeywords
-          : tight
+          : form === "tight"
             ? format.promptWithDefaultTight
             : format.promptWithDefault,
         { head, list: this.keywordList(keywords), value: fallback ?? "" },

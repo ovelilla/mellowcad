@@ -78,6 +78,7 @@ export const es: EngineLocale = {
       "navvcube": "ViewCube",
       "ltscale": "Escala de tipo de línea",
       "auprec": "Precisión de ángulos",
+      "undo": "Deshacer",
       "osnap": "Modos de referencia a objetos",
       "color": "Color",
       "linetype": "Tipo de línea",
@@ -85,7 +86,6 @@ export const es: EngineLocale = {
     },
     "description": {
       "U": "Deshacer la última acción",
-      "UNDO": "Deshacer el efecto de los comandos",
       "REDO": "Rehacer la última acción deshecha",
       "SNAP": "Restringir el cursor a los intervalos de resolución",
       "-OSNAP": "Establece los modos de referencia a objetos en ejecución",
@@ -1186,6 +1186,15 @@ export const es: EngineLocale = {
         "Right": "Derecha",
         "Zdepth": "profundidadZ"
       },
+      "UNDO": {
+        "BEgin": "Inicio",
+        "End": "Fin",
+        "Mark": "Marca",
+        "Back": "Retorno",
+        "Group": "Grupo",
+        "Yes": "Sí",
+        "No": "No"
+      },
       "UCSICON": {
         "ON": "ACT",
         "OFF": "DES",
@@ -1422,6 +1431,9 @@ export const es: EngineLocale = {
       "ucsBack": "Posterior",
       "ucsLeft": "Izquierda",
       "ucsRight": "Derecha",
+      "undoCount": "Indique el número de operaciones a deshacer o",
+      "undoEverything": "Esto lo deshará todo. ¿De acuerdo?",
+      "undoYes": "S",
       "planUcsName": "Indique nombre de SCP o",
       "planCurrent": "Actual",
       "zoomCornerOr": "Precise esquina de ventana, indique un factor de escala (nX o nXP), o",
@@ -1720,6 +1732,16 @@ export const es: EngineLocale = {
           "value"
         ],
         ">:"
+      ],
+      "promptWithValueOpen": [
+        [
+          "head"
+        ],
+        " <",
+        [
+          "value"
+        ],
+        ">"
       ],
       "promptWithKeywords": [
         [
@@ -2236,6 +2258,21 @@ export const es: EngineLocale = {
       "nothingToRedo": "Nada que repetir",
       "everythingRedone": "Todo repetido",
       "redoMustFollowUndo": "REHACER debe ir directamente a continuación del comando H o DESHACER.",
+      "undoSettings": "Parámetros actuales: Auto = Act, Control = Todos, Combinar = Sí, Capa = Sí",
+      "markEncountered": "Marca encontrada",
+      "startOfGroup": "Se ha encontrado el comienzo del Grupo.\nPara retroceder aún más, utilice DESHACER FIN.",
+      "undoGroup": "GRUPO",
+      "requiresIntegerBetweenOrKeyword": [
+        "Requiere un nº entero entre ",
+        [
+          "min"
+        ],
+        " y ",
+        [
+          "max"
+        ],
+        " o una opción."
+      ],
       "yesOrNoPlease": "Sí o No.",
       "requiresDistanceNumberXOrKeyword": "Requiere una distancia, un factorX o una opción.",
       "noPreviousView": "No se ha guardado ninguna vista previa.",

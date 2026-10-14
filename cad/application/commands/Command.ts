@@ -31,16 +31,25 @@ export interface Replayed {
   readonly undone: boolean
 }
 
-/** What an undo or a redo took back or did again, as U and REDO name it. */
+/**
+ * What an undo or a redo took back or did again, as U and REDO name it: a
+ * command's step, a group UNDO BEgin and End made of several, or UNDO's mark.
+ */
 export interface Step {
+  readonly kind: "command" | "group" | "mark"
   /** The command that made it (`LINE`), or null for an edit made outside one. */
   readonly name: string | null
+  /** A group's commands, in the order they ran. */
+  readonly names: readonly string[]
   /** Whether that command regenerated the drawing (LTSCALE, -VIEW). */
   readonly regenerates: boolean
 }
 
-interface Entry extends Step {
-  readonly command: Command
+interface Entry extends Omit<Step, "kind"> {
+  /** `begin`: where an UNDO group still open starts, which no undo passes. */
+  readonly kind: Step["kind"] | "begin"
+  /** What it does and undoes; null for a mark, a group's start or an empty group. */
+  readonly command: Command | null
 }
 
 /**
@@ -58,6 +67,8 @@ export class CommandHistory extends Observable {
    * option (LINE's U) still steps back one at a time.
    */
   private groupStart: number | null = null
+  /** The start of the group UNDO BEgin opened and End has not closed. */
+  private undoGroup: Entry | null = null
   private replayingStep: Replayed | null = null
 
   constructor(
@@ -70,13 +81,19 @@ export class CommandHistory extends Observable {
 
   execute(command: Command): void {
     command.execute(this.document)
-    this.undoStack.push({
+    this.push({
+      kind: "command",
       command,
       name: this.commandName,
+      names: [],
       regenerates: this.regenerated,
     })
+  }
+
+  private push(entry: Entry): void {
+    this.undoStack.push(entry)
     if (this.undoStack.length > this.capacity) {
-      this.undoStack.shift()
+      if (this.undoStack.shift() === this.undoGroup) this.undoGroup = null
       if (this.groupStart !== null) {
         this.groupStart = Math.max(0, this.groupStart - 1)
       }
@@ -96,7 +113,8 @@ export class CommandHistory extends Observable {
 
   /**
    * Closes the open group, folding what it executed into one entry, which
-   * regenerates if anything in it did.
+   * regenerates if anything in it did. UNDO's marks and group starts, which
+   * execute nothing, stay as they are.
    */
   endGroup(): void {
     const start = this.groupStart
@@ -105,14 +123,93 @@ export class CommandHistory extends Observable {
     this.regenerated = false
     if (start === null || this.undoStack.length === start) return
     const steps = this.undoStack.splice(start)
+    if (steps.some((step) => step.kind !== "command")) {
+      this.undoStack.push(...steps)
+      return
+    }
     this.undoStack.push({
+      kind: "command",
       command:
         steps.length === 1
           ? steps[0].command
-          : new GroupCommand(steps.map((step) => step.command)),
+          : new GroupCommand(steps.flatMap((step) => step.command ?? [])),
       name: steps[0].name,
+      names: [],
       regenerates: regenerated || steps.some((step) => step.regenerates),
     })
+  }
+
+  /** UNDO Mark: a place Back, U and UNDO's number stop at. */
+  mark(): void {
+    this.push({
+      kind: "mark",
+      command: null,
+      name: null,
+      names: [],
+      regenerates: false,
+    })
+  }
+
+  /**
+   * UNDO BEgin: what runs until {@link closeUndoGroup} becomes one step, which
+   * U names `GROUP CIRCLE LINE`. One already open is closed first.
+   */
+  openUndoGroup(): void {
+    this.closeUndoGroup()
+    const start: Entry = {
+      kind: "begin",
+      command: null,
+      name: null,
+      names: [],
+      regenerates: false,
+    }
+    this.push(start)
+    this.undoGroup = start
+  }
+
+  /** UNDO End: folds the open group into one step, its marks dropped. */
+  closeUndoGroup(): void {
+    const start = this.undoGroup
+    if (start === null) return
+    this.undoGroup = null
+    const at = this.undoStack.indexOf(start)
+    const inner = this.undoStack
+      .splice(at + 1)
+      .filter((entry) => entry.kind !== "mark")
+    const commands = inner.flatMap((entry) => entry.command ?? [])
+    this.undoStack[at] = {
+      kind: "group",
+      command: commands.length > 0 ? new GroupCommand(commands) : null,
+      name: null,
+      names: inner.flatMap((entry) =>
+        entry.kind === "group" ? entry.names : (entry.name ?? [])
+      ),
+      regenerates: inner.some((entry) => entry.regenerates),
+    }
+    if (this.groupStart !== null) {
+      this.groupStart = Math.min(this.groupStart, this.undoStack.length)
+    }
+    this.emit()
+  }
+
+  /** Whether a group UNDO BEgin opened is still open. */
+  undoGroupOpen(): boolean {
+    return this.undoGroup !== null
+  }
+
+  /** Whether the next undo meets the start of the group UNDO BEgin opened. */
+  atUndoGroupStart(): boolean {
+    return this.undoGroup !== null && this.undoStack.at(-1) === this.undoGroup
+  }
+
+  /** Whether an undo going back meets a mark before an open group's start. */
+  hasMark(): boolean {
+    for (let i = this.undoStack.length - 1; i >= 0; i--) {
+      const entry = this.undoStack[i]
+      if (entry === this.undoGroup) return false
+      if (entry.kind === "mark") return true
+    }
+    return false
   }
 
   /**
@@ -138,47 +235,57 @@ export class CommandHistory extends Observable {
   }
 
   canUndo(): boolean {
-    return this.undoStack.length > 0
+    return this.undoStack.length > 0 && !this.atUndoGroupStart()
   }
 
   canRedo(): boolean {
     return this.redoStack.length > 0
   }
 
+  /** Takes back the last step; null with none, or at an open group's start. */
   undo(): Step | null {
+    if (this.atUndoGroupStart()) return null
     const entry = this.undoStack.pop()
     if (!entry) return null
     if (this.groupStart !== null) {
       this.groupStart = Math.min(this.groupStart, this.undoStack.length)
     }
-    this.replayingStep = { command: entry.command, undone: true }
-    try {
-      entry.command.undo(this.document)
-    } finally {
-      this.replayingStep = null
-    }
+    this.replay(entry, true)
     this.redoStack.push(entry)
     this.emit()
-    return entry
+    return this.step(entry)
   }
 
   redo(): Step | null {
     const entry = this.redoStack.pop()
     if (!entry) return null
-    this.replayingStep = { command: entry.command, undone: false }
+    this.replay(entry, false)
+    this.undoStack.push(entry)
+    this.emit()
+    return this.step(entry)
+  }
+
+  private replay(entry: Entry, undone: boolean): void {
+    const { command } = entry
+    if (command === null) return
+    this.replayingStep = { command, undone }
     try {
-      entry.command.execute(this.document)
+      if (undone) command.undo(this.document)
+      else command.execute(this.document)
     } finally {
       this.replayingStep = null
     }
-    this.undoStack.push(entry)
-    this.emit()
-    return entry
+  }
+
+  private step(entry: Entry): Step {
+    // Only an open group's start is a `begin`, and no undo passes it.
+    return { ...entry, kind: entry.kind === "begin" ? "group" : entry.kind }
   }
 
   /** Drops all history, e.g. after loading a file (a fresh baseline). */
   clear(): void {
     if (this.groupStart !== null) this.groupStart = 0
+    this.undoGroup = null
     if (this.undoStack.length === 0 && this.redoStack.length === 0) return
     this.undoStack = []
     this.redoStack = []

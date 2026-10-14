@@ -78,6 +78,7 @@ export const en: EngineCatalog = {
       "navvcube": "ViewCube",
       "ltscale": "Linetype scale",
       "auprec": "Angle precision",
+      "undo": "Undo",
       "osnap": "Object snap modes",
       "color": "Color",
       "linetype": "Linetype",
@@ -85,7 +86,6 @@ export const en: EngineCatalog = {
     },
     "description": {
       "U": "Undo the last action",
-      "UNDO": "Undo the effect of commands",
       "REDO": "Redo the last undone action",
       "SNAP": "Force the cursor onto the snap increments",
       "-OSNAP": "Set the running object snap modes",
@@ -1125,6 +1125,9 @@ export const en: EngineCatalog = {
       "ucsBack": "Back",
       "ucsLeft": "Left",
       "ucsRight": "Right",
+      "undoCount": "Enter the number of operations to undo or",
+      "undoEverything": "This will undo everything. OK?",
+      "undoYes": "Y",
       "planUcsName": "Enter name of UCS or",
       "planCurrent": "Current",
       "zoomCornerOr": "Specify corner of window, enter a scale factor (nX or nXP), or",
@@ -1423,6 +1426,16 @@ export const en: EngineCatalog = {
           "value"
         ],
         ">:"
+      ],
+      "promptWithValueOpen": [
+        [
+          "head"
+        ],
+        " <",
+        [
+          "value"
+        ],
+        ">"
       ],
       "promptWithKeywords": [
         [
@@ -1940,6 +1953,21 @@ export const en: EngineCatalog = {
       "nothingToRedo": "Nothing to redo",
       "everythingRedone": "Everything has been redone",
       "redoMustFollowUndo": "REDO must immediately follow the U or UNDO command.",
+      "undoSettings": "Current settings: Auto = On, Control = All, Combine = Yes, Layer = Yes",
+      "markEncountered": "Mark encountered",
+      "startOfGroup": "Start of Group encountered.\nMust enter UNDO END to go back further.",
+      "undoGroup": "GROUP",
+      "requiresIntegerBetweenOrKeyword": [
+        "Requires an integer between ",
+        [
+          "min"
+        ],
+        " and ",
+        [
+          "max"
+        ],
+        ", or option keyword."
+      ],
       "yesOrNoPlease": "Yes or No, please.",
       "requiresDistanceNumberXOrKeyword": "Requires a distance, numberX, or option keyword.",
       "noPreviousView": "No previous view saved.",

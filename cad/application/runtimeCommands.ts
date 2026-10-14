@@ -1,7 +1,12 @@
 import type { CadRuntime } from "./CadRuntime"
 import { CommandDefinition, TOOL_COMMANDS } from "./CommandLine"
 import type { CommandOptionUi, StylesPanelTab } from "./EngineState"
-import { promptString, type EngineText, type PromptSegment } from "./EngineText"
+import {
+  promptString,
+  type EngineText,
+  type PromptForm,
+  type PromptSegment,
+} from "./EngineText"
 import { type Keyword, offerKeywords } from "../i18n/keywords"
 import { type CommandOption, Tool, type ToolQuestion } from "./tools/Tool"
 import type { PromptId } from "../locales/types"
@@ -98,11 +103,7 @@ export function registerCommands(
     run: () => startTool("ucsiconvariable"),
   })
 
-  // WHY UNDO takes one step back as U does: its own prompt (`Enter the number
-  // of operations to undo or [Auto/Control/BEgin/End/Mark/Back] <1>:`) is
-  // not built, and its Enter is that one step.
   register({ id: "U", run: () => runtime.undo(true) })
-  register({ id: "UNDO", run: () => runtime.undo(true) })
   // -MTEXT is MTEXT with the text typed at the command line, so it runs the
   // same tool and switches its entry.
   register({
@@ -386,19 +387,26 @@ export function commandPrompt(
   // point:`, ` (ADD mode)…`): it is how AutoCAD lays the line out after the
   // last, not part of the question the prompt line and the tooltip show.
   const shown = question?.trimStart() ?? null
-  const tight = typeof asked === "object" && asked?.tight === true
+  const form: PromptForm =
+    typeof asked !== "object" || asked === null
+      ? "spaced"
+      : asked.tight
+        ? "tight"
+        : asked.open
+          ? "open"
+          : "spaced"
   return {
     command: name,
     segments: text.composePrompt(
       shown === null ? name : text.commandQuestion(name, shown),
       labels,
       value,
-      tight
+      form
     ),
     echo:
       question === null
         ? null
-        : text.composePrompt(question, labels, value, tight),
+        : text.composePrompt(question, labels, value, form),
     dynamic:
       shown === null || labels.length > 0 || value !== null
         ? shown
