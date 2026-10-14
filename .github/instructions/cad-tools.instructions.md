@@ -106,7 +106,8 @@ A tool is an explicit state machine for one AutoCAD command. It owns a discrimin
   object and the pick it stands for (a fence's crossing; a line's, an arc's or a circle's middle;
   a crossed polyline's first segment crossed, read from its first vertex; a polyline found whole
   `whole`, of which nothing is made) — never invent a pick point in the tool. A point typed
-  there is a pick (`typedCornerPick`, through the tool's `answerTyped`): `@` from LASTPOINT,
+  there is a pick (`typedCornerPick`, through the tool's `answerTyped`; TRIM's and EXTEND's too,
+  through `typedPick`, which every typed pick reads with): `@` from LASTPOINT,
   which it becomes by `ctx.setLastPoint` (a point of the tool's frame, as `ctx.lastPoint` is).
   A pick at the second prompt goes through `cornerPairRefusal` first, and a mode's find
   through `foundPairRefusal`: the first object again and a segment of its polyline two or

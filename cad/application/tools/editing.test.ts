@@ -491,6 +491,77 @@ describe("EXTEND", () => {
   })
 })
 
+// AutoCAD 2023's console (acc/t1–t5, v1–v7 of the hidden UCS words session).
+describe("TRIM and EXTEND answer what is typed", () => {
+  const drawing = () =>
+    createHarness({
+      entities: [
+        lineOf(p(0, 0), p(100, 0), { id: "A" }),
+        lineOf(p(50, -50), p(50, 50), { id: "V" }),
+        lineOf(p(0, 20), p(100, 20), { id: "B" }),
+      ],
+    })
+  const typed = (cad: CadHarness, ...texts: string[]) => {
+    for (const text of texts) {
+      cad.runtime.setCommandLineText(text)
+      cad.runtime.submitCommandLine()
+    }
+    return cad
+  }
+
+  it("a point typed picks there, `@` from LASTPOINT, which it becomes", () => {
+    const cad = typed(drawing(), "ID", "5,5", "TRIM", "@75,-5")
+    expect(endpoints(cad.byId<LineEntity>("A"))).toEqual([p(0, 0), p(50, 0)])
+    typed(cad, "80,80")
+    expect(cad.commandLog().slice(-2)).toEqual([
+      "Select object to trim or shift-select to extend: @75,-5",
+      "Select object to trim or shift-select to extend or [Undo]: 80,80",
+    ])
+    cad.enter()
+    typed(cad, "ID", "@")
+    expect(cad.commandLog().at(-1)).toBe(
+      " X = 80.00     Y = 80.00     Z = 0.00"
+    )
+
+    const extend = typed(drawing(), "EXTEND", "80,20")
+    expect(extend.commandLog().slice(-2)).toEqual([
+      "Select object to extend or shift-select to trim: 80,20",
+      "Path does not intersect with the bounding edge.",
+    ])
+    expect(extend.state().commandLine.prompt).toBe(
+      "EXTEND Select object to extend or shift-select to trim or [Undo]:"
+    )
+  })
+
+  it("refuses anything else with *Invalid selection*, Undo on offer or not", () => {
+    const cad = typed(drawing(), "TRIM", "FOO", "80,0", "FOO")
+    expect(cad.commandLog().slice(2)).toEqual([
+      "Select object to trim or shift-select to extend: FOO",
+      "*Invalid selection*",
+      "Select object to trim or shift-select to extend: 80,0",
+      "Select object to trim or shift-select to extend or [Undo]: FOO",
+      "*Invalid selection*",
+    ])
+    cad.escape()
+    typed(cad, "EXTEND", "C")
+    expect(cad.commandLog().slice(-2)).toEqual([
+      "Select object to extend or shift-select to trim: C",
+      "*Invalid selection*",
+    ])
+
+    const spanish = createHarness({
+      locale: es,
+      entities: [lineOf(p(0, 0), p(100, 0)), lineOf(p(50, -50), p(50, 50))],
+    })
+    typed(spanish, "RECORTA", "80,0", "FOO")
+    expect(spanish.commandLog().slice(-3)).toEqual([
+      "Seleccione un objeto que recortar o use la tecla Mayús y seleccione para alargar: 80,0",
+      "Seleccione un objeto que recortar o use la tecla Mayús y seleccione para alargar, o [desHacer]: FOO",
+      "*Designación no válida*",
+    ])
+  })
+})
+
 // AutoCAD 2023's console (acc/e1–e7, m1–m4, w1, c1–c4, t1–t9, x1, o4 of the
 // elliptical arcs session), read with LIST at AUPREC 4.
 describe("TRIM and EXTEND an ellipse", () => {

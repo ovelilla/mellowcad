@@ -30,10 +30,6 @@ import {
 } from "../../domain/entities"
 import type { CameraTransform } from "../../scene/types"
 import type { MessageId } from "../EngineText"
-import {
-  isCoordinateExpression,
-  parseCoordinate,
-} from "../input/coordinateInput"
 import type { Curve, CurveEnd } from "./curveFillets"
 import { LinePick, alongOnScreen } from "./lineCorner"
 import { fenceCrossing, meetsPolygon } from "./boxSelection"
@@ -43,6 +39,7 @@ import { cursorInPlane } from "../viewPick"
 import { bulgeBetween, segmentsPair } from "./polylineCorners"
 import type { RoundObject, RoundPartner } from "./roundFillets"
 import { QuestionInput, ToolContext } from "./Tool"
+import { typedPick } from "./typedPick"
 
 /** A segment of a polyline, picked as one of FILLET's two objects. */
 export interface SegmentPick {
@@ -234,23 +231,17 @@ export function cornerObjectRefusal(
 /**
  * A point typed at FILLET's and CHAMFER's object prompts, a pick there as
  * AutoCAD 2023's console takes it: `30,40` picks what passes through it, and
- * on nothing the prompt is asked again. `@` is from LASTPOINT, which it
- * becomes. Null for anything but a coordinate.
+ * on nothing the prompt is asked again ({@link typedPick}). Null for
+ * anything but a coordinate.
  */
 export function typedCornerPick(
   text: string,
   ctx: ToolContext
 ): LinePick | null {
-  if (!isCoordinateExpression(text)) return null
-  const point = parseCoordinate(text, {
-    lastPoint: ctx.lastPoint,
-    relativeByDefault: false,
-    ucs: ctx.ucs,
-    elevation: ctx.elevation,
-  })
-  if (!point) return null
-  ctx.setLastPoint(point)
-  return { world: planar(point), screen: ctx.viewport.worldToScreen(point) }
+  const point = typedPick(text, ctx)
+  return (
+    point && { world: planar(point), screen: ctx.viewport.worldToScreen(point) }
+  )
 }
 
 /** Whether a mode's find is an object FILLET or CHAMFER takes. */

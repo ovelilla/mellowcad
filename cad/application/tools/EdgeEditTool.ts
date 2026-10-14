@@ -62,6 +62,7 @@ import {
   implicitEdges,
   parametricCurve,
 } from "./curveCrossings"
+import { typedPick } from "./typedPick"
 
 /**
  * TRIM and EXTEND share one interaction and most of their geometry, so they are
@@ -180,8 +181,14 @@ export abstract class EdgeEditTool implements Tool {
       : "selectObjectToExtendOrShiftSelectToTrim"
   }
 
+  /**
+   * WHY `*Invalid selection*` alone: the console's second line lists the
+   * prompt's words but its last, after its unlisted Fence (`Expects a point
+   * or Fence/cuTting edges/Crossing/mOde/Project`, EXTEND's `…/Boundary
+   * edges/…`, acc/t1, t2) — never Undo, the only one offered here.
+   */
   takes(): QuestionInput {
-    return "object"
+    return { refusal: "invalidSelection" }
   }
 
   commandOptions(): readonly CommandOption[] {
@@ -212,6 +219,31 @@ export abstract class EdgeEditTool implements Tool {
     this.lastInput = input
     this.preview = this.planFor(input, ctx)
     ctx.requestRender()
+  }
+
+  /**
+   * A point typed at the prompt picks there (AutoCAD 2023's console, acc/v1,
+   * v3, v4 of the hidden UCS words session); on nothing it would start the
+   * console's fence, which is not built: the prompt asks again.
+   */
+  answerTyped(text: string, ctx: ToolContext): boolean {
+    const point = typedPick(text, ctx)
+    if (!point) return false
+    this.onPointerDown(
+      {
+        screen: ctx.viewport.worldToScreen(point),
+        world: point,
+        point,
+        snap: null,
+        tracking: null,
+        button: 0,
+        shiftKey: false,
+        ctrlKey: false,
+        altKey: false,
+      },
+      ctx
+    )
+    return true
   }
 
   onPointerDown(input: PointerInput, ctx: ToolContext): void {
