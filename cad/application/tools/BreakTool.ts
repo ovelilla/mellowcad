@@ -341,13 +341,16 @@ export class BreakTool implements Tool {
       ctx.endCommand()
       return
     }
-    const pieces = result.kept.map((geom) => toEntity(target, geom))
+    // The piece from the object's start, listed first, is the object kept
+    // (its handle; a circle's one arc too), the other a new one, which Last
+    // then finds — AutoCAD 2023's console (acc/hd9–hd13, hd16–hd18).
+    const pieces = result.kept.map((geom, i) =>
+      toEntity(target, geom, i === 0 ? target.id : undefined)
+    )
     if (pieces.length === 0) {
       ctx.execute(new RemoveEntitiesCommand([target.id]))
     } else if (pieces.length === 1) {
-      ctx.execute(
-        new UpdateEntityCommand(toEntity(target, result.kept[0], target.id))
-      )
+      ctx.execute(new UpdateEntityCommand(pieces[0]))
     } else {
       ctx.execute(new ReplaceEntitiesCommand([target.id], pieces))
     }

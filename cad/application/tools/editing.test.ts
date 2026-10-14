@@ -139,6 +139,95 @@ describe("TRIM", () => {
     expect(spans[1]).toBeCloseToPoints([p(50, 0), p(200, 0)])
   })
 
+  // AutoCAD 2023's console (acc/hd1–hd7, hd20): the piece from the object's
+  // start is the object kept — its handle, its place —, the other is new and
+  // Last finds it; U puts the object back whole.
+  it("keeps the object as the piece from its start, the other new", () => {
+    for (const [start, end, kept, added] of [
+      [p(0, 0), p(100, 0), [p(0, 0), p(30, 0)], [p(70, 0), p(100, 0)]],
+      [p(100, 0), p(0, 0), [p(100, 0), p(70, 0)], [p(30, 0), p(0, 0)]],
+    ] as const) {
+      const cad = createHarness({
+        entities: [
+          lineOf(start, end, { id: "A" }),
+          lineOf(p(30, -10), p(30, 10), { id: "V1" }),
+          lineOf(p(70, -10), p(70, 10), { id: "V2" }),
+        ],
+      })
+      cad.command("TRIM").click(p(50, 0)).enter()
+      const [line, , , piece] = cad.entities() as LineEntity[]
+      expect(cad.entities().map((entity) => entity.id)).toEqual([
+        "A",
+        "V1",
+        "V2",
+        piece.id,
+      ])
+      expect([line.start, line.end]).toBeCloseToPoints(kept)
+      expect([piece.start, piece.end]).toBeCloseToPoints(added)
+
+      for (const text of ["ERASE", "L", ""]) {
+        cad.runtime.setCommandLineText(text)
+        cad.runtime.submitCommandLine()
+      }
+      expect(cad.entities().map((entity) => entity.id)).toEqual([
+        "A",
+        "V1",
+        "V2",
+      ])
+      cad.undo().undo()
+      expect(cad.entities()).toHaveLength(3)
+      expect(cad.entities()[0]).toMatchObject({ id: "A", start, end })
+    }
+
+    const arc = createHarness({
+      entities: [
+        arcOf(p(0, 0), 50, deg(0), deg(180), { id: "R" }),
+        lineOf(p(-20, 0), p(-20, 60)),
+        lineOf(p(20, 0), p(20, 60)),
+      ],
+    })
+    arc.command("TRIM").click(p(0, 50)).enter()
+    const [kept, , , other] = arc.entities() as ArcEntity[]
+    expect(kept.id).toBe("R")
+    expect(kept.endAngle).toBeCloseToAngle(deg(66.4218))
+    expect(other.startAngle).toBeCloseToAngle(deg(113.5782))
+
+    const polyline = createHarness({
+      entities: [
+        polylineOf([p(0, 0), p(100, 0), p(100, 100), p(0, 100)], { id: "P" }),
+        lineOf(p(90, 30), p(110, 30)),
+        lineOf(p(90, 70), p(110, 70)),
+      ],
+    })
+    polyline.command("TRIM").click(p(100, 50)).enter()
+    const [first, , , second] = polyline.entities() as PolylineEntity[]
+    expect(first.id).toBe("P")
+    expect(first.vertices).toBeCloseToPoints([p(0, 0), p(100, 0), p(100, 30)])
+    expect(second.vertices).toBeCloseToPoints([
+      p(100, 70),
+      p(100, 100),
+      p(0, 100),
+    ])
+
+    const ellipse = createHarness({
+      entities: [
+        ellipseOf(p(50, 0), p(-50, 0), 0.5, {
+          id: "E",
+          startParam: 0,
+          endParam: Math.PI,
+        }),
+        lineOf(p(30, -40), p(30, 40)),
+        lineOf(p(70, -40), p(70, 40)),
+      ],
+    })
+    ellipse.command("TRIM").click(p(50, -25)).enter()
+    const [from, , , to] = ellipse.entities() as EllipseEntity[]
+    expect(from.id).toBe("E")
+    expect(ellipseStartPoint(from)).toBeCloseToPoint(p(0, 0))
+    expect(ellipseEndPoint(from)).toBeCloseToPoint(p(30, -22.9129), 4)
+    expect(ellipseStartPoint(to)).toBeCloseToPoint(p(70, -22.9129), 4)
+  })
+
   it("keeps the trimmed object's colour, plane and thickness", () => {
     const cad = createHarness({
       entities: [

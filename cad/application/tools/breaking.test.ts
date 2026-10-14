@@ -218,6 +218,56 @@ describe("BREAK", () => {
     expect(arcSweepAngle(arcs[1])).toBeCloseTo(deg(45))
   })
 
+  // AutoCAD 2023's console (acc/hd9–hd13, hd16–hd18): the piece from the
+  // object's start is the object kept — its handle, its place —, the other
+  // is new and Last finds it; U puts the object back whole.
+  it("keeps the object as the piece from its start, the other new", () => {
+    for (const [start, end, second, kept, added] of [
+      [p(0, 0), p(100, 0), "70,0", [p(0, 0), p(50, 0)], [p(70, 0), p(100, 0)]],
+      [p(0, 0), p(100, 0), "@", [p(0, 0), p(50, 0)], [p(50, 0), p(100, 0)]],
+      [p(100, 0), p(0, 0), "70,0", [p(100, 0), p(70, 0)], [p(50, 0), p(0, 0)]],
+    ] as const) {
+      const cad = createHarness({
+        entities: [
+          lineOf(start, end, { id: "l1" }),
+          lineOf(p(0, 50), p(100, 50), { id: "l2" }),
+        ],
+      })
+      cad.command("BREAK").click(p(50, 0))
+      cad.runtime.setCommandLineText(second)
+      cad.runtime.submitCommandLine()
+      const [line, , piece] = cad.entities() as LineEntity[]
+      expect(cad.entities().map((entity) => entity.id)).toEqual([
+        "l1",
+        "l2",
+        piece.id,
+      ])
+      expect([line.start, line.end]).toBeCloseToPoints(kept)
+      expect([piece.start, piece.end]).toBeCloseToPoints(added)
+
+      for (const text of ["ERASE", "L", ""]) {
+        cad.runtime.setCommandLineText(text)
+        cad.runtime.submitCommandLine()
+      }
+      expect(cad.entities().map((entity) => entity.id)).toEqual(["l1", "l2"])
+      cad.undo().undo()
+      expect(cad.entities()).toHaveLength(2)
+      expect(cad.entities()[0]).toMatchObject({ id: "l1", start, end })
+    }
+
+    const cad = createHarness({
+      entities: [arcOf(p(0, 0), 50, deg(0), deg(180), { id: "a1" })],
+    })
+    cad.command("BREAK").click(p(0, 50))
+    cad.runtime.setCommandLineText("@")
+    cad.runtime.submitCommandLine()
+    const [kept, other] = cad.entities() as ArcEntity[]
+    expect(kept).toMatchObject({ id: "a1", startAngle: 0 })
+    expect(kept.endAngle).toBeCloseToAngle(deg(90))
+    expect(other.startAngle).toBeCloseToAngle(deg(90))
+    expect(other.endAngle).toBeCloseToAngle(deg(180))
+  })
+
   it("leaves polylines alone (they are not breakable yet)", () => {
     const cad = createHarness({
       entities: [polylineOf([p(-100, 0), p(100, 0), p(100, 100)])],

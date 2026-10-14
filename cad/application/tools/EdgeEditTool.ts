@@ -411,12 +411,17 @@ export abstract class EdgeEditTool implements Tool {
       )
       return
     }
-    // A mid-object cut splits it into two independent pieces.
+    // A mid-object cut splits it in two: the piece from its start, listed
+    // first, is the object kept (its handle), the other a new one, which
+    // Last then finds — AutoCAD 2023's console (acc/hd1–hd7, hd20).
     ctx.execute(
       new ReplaceEntitiesCommand(
         [plan.targetId],
-        plan.replacements.map((g) =>
-          carryPiece(target, geomToEntity(g, plan.layerId))
+        plan.replacements.map((g, i) =>
+          carryPiece(
+            target,
+            geomToEntity(g, plan.layerId, i === 0 ? plan.targetId : undefined)
+          )
         )
       )
     )

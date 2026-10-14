@@ -295,7 +295,10 @@ current layer.
   and SPLINE, whose Escape cancels the whole curve as AutoCAD's does:
   it resets its state there on purpose, and `onDeactivate` then finds nothing to keep.
 - One gesture = one command. Splits and multi-entity edits use `ReplaceEntitiesCommand` /
-  `UpdateEntitiesCommand` so a single Ctrl+Z undoes the whole operation. A whole run of a command
+  `UpdateEntitiesCommand` so a single Ctrl+Z undoes the whole operation. A split keeps the
+  object as the piece from its start (AutoCAD's handle stays on it; TRIM, BREAK): give that
+  piece the object's id and `ReplaceEntitiesCommand` changes it in place, adding the others
+  after it, where Last finds them. Only a piece that is no part of the object gets a new id. A whole run of a command
   (LINE's segments, COPY's copies) is one undo step too, which the runtime makes by grouping:
   a tool never batches across its own loop for that. The step carries the name the command was
   echoed with (`history.nameCommand`, from `runCommand` and `setActiveTool`), which U and REDO

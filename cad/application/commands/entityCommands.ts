@@ -103,10 +103,12 @@ export class UpdateEntitiesCommand implements Command {
 
 /**
  * Replaces a set of entities with a new set as one undoable step: removes the
- * entities identified by `removedIds` and adds the `added` ones. Underpins
- * TRIM when a cut falls in the *middle* of a line, splitting it into two
- * separate lines (the original is removed and two fresh-id lines take its
- * place). Captures the removed entities so `undo` restores them exactly.
+ * entities identified by `removedIds` and adds the `added` ones. An added
+ * entity under a removed one's id is that object changed, kept in its place
+ * in the drawing, and the others come after it: TRIM or BREAK splitting a
+ * line keeps the line as its first piece and adds the second, as AutoCAD
+ * keeps the handle. Captures the removed entities so `undo` restores them
+ * exactly.
  */
 export class ReplaceEntitiesCommand implements Command {
   readonly label = "replace-entities"
@@ -125,12 +127,16 @@ export class ReplaceEntitiesCommand implements Command {
     this.removed = this.removedIds
       .map((id) => doc.get(id))
       .filter((entity): entity is Entity => entity !== undefined)
-    doc.removeMany(this.removedIds)
+    const kept = new Set(this.added.map((entity) => entity.id))
+    doc.removeMany(this.removedIds.filter((id) => !kept.has(id)))
     doc.addMany(this.added)
   }
 
   undo(doc: CadDocument): void {
-    doc.removeMany(this.added.map((entity) => entity.id))
+    const removed = new Set(this.removedIds)
+    doc.removeMany(
+      this.added.map((entity) => entity.id).filter((id) => !removed.has(id))
+    )
     doc.addMany(this.removed)
   }
 }
