@@ -26,7 +26,7 @@ export function rightClickResponse(
 /**
  * The commands behind the fixed entries, run as AutoCAD's menu macros run them
  * (`_erase`): echoed at the prompt, repeated by Enter and undone like a typed
- * one.
+ * one. Redo's macro answers a prompt too (`_mredo 1`), so the runtime runs it.
  */
 export const SHORTCUT_MENU_COMMANDS: Partial<
   Readonly<Record<ShortcutMenuAction, string>>
@@ -36,7 +36,6 @@ export const SHORTCUT_MENU_COMMANDS: Partial<
   copyBase: "_COPYBASE",
   paste: "_PASTECLIP",
   undo: "_U",
-  redo: "_REDO",
   pan: "_PAN",
   erase: "_ERASE",
   move: "_MOVE",

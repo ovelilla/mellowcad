@@ -126,6 +126,15 @@ describe("U and REDO say what they did", () => {
       "Regenerating model.",
     ])
 
+    // acc/n19 of the MREDO session: with more left, on the names' line.
+    const before = answer(createHarness(), "LTSCALE", "2", ...LINE, "U", "U")
+    expect(written(before, "REDO", "REDO")).toEqual([
+      "REDO",
+      "LTSCALE Regenerating model.",
+      "REDO",
+      "REDO must immediately follow the U or UNDO command.",
+    ])
+
     const view = answer(createHarness(), "-VIEW", "O", "F")
     expect(written(view, "U")).toEqual(["U", "-VIEW Regenerating model."])
 

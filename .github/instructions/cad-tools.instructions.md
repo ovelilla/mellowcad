@@ -298,8 +298,12 @@ current layer.
   write; a regeneration said through `ctx.regenerate()` marks it, and they repeat it
   (`LTSCALE Regenerating model.`) — one more reason never to report `regeneratingModel`.
   UNDO's marks and its BEgin/End groups are entries of `CommandHistory` (`mark`,
-  `openUndoGroup`, `closeUndoGroup`); only the UNDO tool reaches them, through
-  `ctx.undoHistory`, and the runtime's `takeBack` says what any undo took back.
+  `openUndoGroup`, `closeUndoGroup`); only the UNDO and MREDO tools reach them, through
+  `ctx.undoHistory`, and the runtime's `takeBack` and `doAgain` say what any undo or redo
+  did. A step done again goes below the group of the command redoing it, so MREDO's
+  steps stay apart. Any command but U, UNDO, REDO and MREDO drops what can be redone
+  (`history.dropRedo`), even one that changes nothing: the console's MREDO then finds
+  `Nothing to redo`.
 - A tool offering its own **Undo keyword** must count its own edits and refuse when there are
   none: `ctx.undo()` pops the history, which otherwise backs out an unrelated earlier command.
   Inside the run each commit is still its own entry, so `ctx.undo()` takes back one; Ctrl+Z runs

@@ -58,6 +58,7 @@ import { NavVCubeTool } from "./tools/NavVCubeTool"
 import { LtScaleTool } from "./tools/LtScaleTool"
 import { AuPrecTool } from "./tools/AuPrecTool"
 import { UndoTool } from "./tools/UndoTool"
+import { MredoTool } from "./tools/MredoTool"
 import { OsnapTool } from "./tools/OsnapTool"
 import { ColorTool } from "./tools/ColorTool"
 import { LinetypeTool } from "./tools/LinetypeTool"
@@ -149,6 +150,7 @@ export function defaultTools(
     new LtScaleTool(),
     new AuPrecTool(),
     new UndoTool(),
+    new MredoTool(),
     new UcsIconVariableTool(),
     new OsnapTool(),
     new ColorTool(),

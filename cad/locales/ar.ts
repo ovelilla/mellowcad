@@ -79,6 +79,7 @@ export const ar: EngineLocale = {
       "ltscale": "مقياس نوع الخط",
       "auprec": "دقة الزوايا",
       "undo": "تراجع",
+      "mredo": "إعادة متعددة",
       "osnap": "أوضاع التقاط الكائنات",
       "color": "اللون",
       "linetype": "نوع الخط",

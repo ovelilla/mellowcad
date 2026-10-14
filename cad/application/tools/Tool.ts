@@ -129,6 +129,11 @@ export interface UndoHistory {
    * what it took back as U does.
    */
   takeBack(count: number | "mark"): void
+  /**
+   * MREDO: does again `count` of the steps taken back, all of them, or the
+   * last undo's, saying what it did as REDO does.
+   */
+  redo(count: number | "all" | "last"): void
   /** Whether Back stops short of everything: at a mark or an open group's start. */
   backStops(): boolean
   /** Mark. */

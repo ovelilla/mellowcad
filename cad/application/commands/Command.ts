@@ -260,7 +260,10 @@ export class CommandHistory extends Observable {
     const entry = this.redoStack.pop()
     if (!entry) return null
     this.replay(entry, false)
-    this.undoStack.push(entry)
+    // A step done again stays its own, below the group of the command
+    // redoing it (MREDO), which would otherwise fold it into one.
+    if (this.groupStart === null) this.undoStack.push(entry)
+    else this.undoStack.splice(this.groupStart++, 0, entry)
     this.emit()
     return this.step(entry)
   }
@@ -280,6 +283,13 @@ export class CommandHistory extends Observable {
   private step(entry: Entry): Step {
     // Only an open group's start is a `begin`, and no undo passes it.
     return { ...entry, kind: entry.kind === "begin" ? "group" : entry.kind }
+  }
+
+  /** What the undos took back can no longer be done again. */
+  dropRedo(): void {
+    if (this.redoStack.length === 0) return
+    this.redoStack = []
+    this.emit()
   }
 
   /** Drops all history, e.g. after loading a file (a fresh baseline). */

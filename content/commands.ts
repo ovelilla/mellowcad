@@ -110,6 +110,7 @@ export const COMMAND_FILING: Readonly<Record<string, Filing>> = {
   U: { group: "inquiry" },
   UNDO: { group: "inquiry" },
   REDO: { group: "inquiry" },
+  MREDO: { group: "inquiry" },
   SNAP: { group: "inquiry" },
   "-OSNAP": { group: "inquiry" },
   FROM: { group: "inquiry" },

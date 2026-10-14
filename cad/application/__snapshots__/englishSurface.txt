@@ -70,6 +70,7 @@ NAVVCUBE ["CUBE"] "ViewCube"
 LTSCALE ["LTS"] "Linetype scale"
 AUPREC [] "Angle precision"
 UNDO [] "Undo"
+MREDO [] "Multiple redo"
 -OSNAP ["-OS"] "Object snap modes"
 COLOR ["COL"] "Color"
 LINETYPE ["LT"] "Linetype"
@@ -177,6 +178,7 @@ navvcube "ViewCube" CUBE
 ltscale "Linetype scale" LTS
 auprec "Angle precision" AUPREC
 undo "Undo" UNDO
+mredo "Multiple redo" MREDO
 ucsiconvariable "UCS icon (variable)" -
 osnap "Object snap modes" -OS
 color "Color" COL

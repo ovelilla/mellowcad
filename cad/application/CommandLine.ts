@@ -297,6 +297,7 @@ export const TOOL_COMMANDS: Readonly<Record<string, string>> = {
   ltscale: "LTSCALE",
   auprec: "AUPREC",
   undo: "UNDO",
+  mredo: "MREDO",
   osnap: "-OSNAP",
   color: "COLOR",
   linetype: "LINETYPE",

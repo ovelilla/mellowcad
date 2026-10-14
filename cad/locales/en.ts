@@ -79,6 +79,7 @@ export const en: EngineCatalog = {
       "ltscale": "Linetype scale",
       "auprec": "Angle precision",
       "undo": "Undo",
+      "mredo": "Multiple redo",
       "osnap": "Object snap modes",
       "color": "Color",
       "linetype": "Linetype",
@@ -699,6 +700,9 @@ export const en: EngineCatalog = {
       "REDO": [
         "REDO"
       ],
+      "MREDO": [
+        "MREDO"
+      ],
       "SNAP": [
         "SNAP",
         "SN"
@@ -1127,6 +1131,7 @@ export const en: EngineCatalog = {
       "ucsRight": "Right",
       "undoCount": "Enter the number of operations to undo or",
       "undoEverything": "This will undo everything. OK?",
+      "mredoCount": "Enter number of actions or",
       "undoYes": "Y",
       "planUcsName": "Enter name of UCS or",
       "planCurrent": "Current",
@@ -1953,6 +1958,7 @@ export const en: EngineCatalog = {
       "nothingToRedo": "Nothing to redo",
       "everythingRedone": "Everything has been redone",
       "redoMustFollowUndo": "REDO must immediately follow the U or UNDO command.",
+      "alreadyRedone": "The last UNDO operation has been already redone.",
       "undoSettings": "Current settings: Auto = On, Control = All, Combine = Yes, Layer = Yes",
       "markEncountered": "Mark encountered",
       "startOfGroup": "Start of Group encountered.\nMust enter UNDO END to go back further.",

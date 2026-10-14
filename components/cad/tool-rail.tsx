@@ -299,6 +299,9 @@ const RAIL_EXCLUDED = new Set([
   "navvcube",
   "ltscale",
   "auprec",
+  // UNDO and MREDO are typed; the top bar has Undo and Redo.
+  "undo",
+  "mredo",
   // 'UCSICON, the system variable: typed only.
   "ucsiconvariable",
   // -OSNAP is typed; the status bar's Object snap menu is its chrome.

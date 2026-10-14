@@ -79,6 +79,7 @@ export const es: EngineLocale = {
       "ltscale": "Escala de tipo de línea",
       "auprec": "Precisión de ángulos",
       "undo": "Deshacer",
+      "mredo": "Rehacer varias",
       "osnap": "Modos de referencia a objetos",
       "color": "Color",
       "linetype": "Tipo de línea",
@@ -686,6 +687,9 @@ export const es: EngineLocale = {
       "REDO": [
         "REHACER"
       ],
+      "MREDO": [
+        "MREHACER"
+      ],
       "SNAP": [
         "FORZCURSOR",
         "FC"
@@ -1195,6 +1199,10 @@ export const es: EngineLocale = {
         "Yes": "Sí",
         "No": "No"
       },
+      "MREDO": {
+        "All": "Todas",
+        "Last": "úLtima"
+      },
       "UCSICON": {
         "ON": "ACT",
         "OFF": "DES",
@@ -1433,6 +1441,7 @@ export const es: EngineLocale = {
       "ucsRight": "Derecha",
       "undoCount": "Indique el número de operaciones a deshacer o",
       "undoEverything": "Esto lo deshará todo. ¿De acuerdo?",
+      "mredoCount": "Indique número de acciones o",
       "undoYes": "S",
       "planUcsName": "Indique nombre de SCP o",
       "planCurrent": "Actual",
@@ -2258,6 +2267,7 @@ export const es: EngineLocale = {
       "nothingToRedo": "Nada que repetir",
       "everythingRedone": "Todo repetido",
       "redoMustFollowUndo": "REHACER debe ir directamente a continuación del comando H o DESHACER.",
+      "alreadyRedone": "Ya se ha repetido la última operación DESHACER.",
       "undoSettings": "Parámetros actuales: Auto = Act, Control = Todos, Combinar = Sí, Capa = Sí",
       "markEncountered": "Marca encontrada",
       "startOfGroup": "Se ha encontrado el comienzo del Grupo.\nPara retroceder aún más, utilice DESHACER FIN.",

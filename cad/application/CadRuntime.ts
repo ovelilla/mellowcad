@@ -239,8 +239,11 @@ const DRAG_THRESHOLD_PX = 4
  */
 const DOUBLE_CLICK_MS = 500
 
-/** The commands that keep what the last U or REDO did for the next REDO. */
-const UNDO_COMMANDS = new Set(["U", "UNDO", "REDO"])
+/**
+ * The commands that keep what the last U or REDO did for the next REDO, and
+ * what the undos took back for MREDO.
+ */
+const UNDO_COMMANDS = new Set(["U", "UNDO", "REDO", "MREDO"])
 
 /** A key pressed with no modifier, as the shortcut menu presses Enter and Esc. */
 const plainKey = (key: string): KeyEventData => ({
@@ -1690,7 +1693,12 @@ export class CadRuntime extends Observable {
     this.commandLine.pushHistory(name)
     this.starting = command.id
     this.startingName = name
-    if (!UNDO_COMMANDS.has(command.id)) this.undoing = null
+    // Any other command, even one that changes nothing (LIST, ID, ZOOM),
+    // leaves MREDO `Nothing to redo` in AutoCAD 2023's console (acc/n6–n18).
+    if (!UNDO_COMMANDS.has(command.id)) {
+      this.undoing = null
+      this.history.dropRedo()
+    }
     // One run in place makes its steps here; a tool's, once it starts.
     if (this.activeTool.id === "select") this.history.nameCommand(name)
     try {
@@ -1979,8 +1987,12 @@ export class CadRuntime extends Observable {
               : null
       if (ending) this.commandLine.write("info", this.text.message(ending))
     }
+    // Stopped at a group's start with nothing taken, REDO and MREDO find
+    // `Nothing to redo` (acc/n26); at the bottom, REDO is refused.
     this.undoing =
-      taken > 0 ? { undid: taken, bottom: stop === "bottom" } : "bottom"
+      taken > 0 || stop === "group"
+        ? { undid: taken, bottom: stop === "bottom" }
+        : "bottom"
   }
 
   /** Whether the last undo already said `Everything has been undone`. */
@@ -1995,9 +2007,8 @@ export class CadRuntime extends Observable {
   /**
    * Does again what the last undo took back. `said`: as the REDO command,
    * which only follows a U or UNDO that took something back, and does it all
-   * again (MREDO, which steps further, is not built), writing what it did,
-   * then `Everything has been redone` once nothing is left and the
-   * regeneration last, as AutoCAD 2023's console does (acc/s5, x1, x11).
+   * again, writing what it did (see {@link doAgain}), as AutoCAD 2023's
+   * console does (acc/s5, x1, x11, n19).
    */
   redo(said = false): void {
     const undoing = this.undoing
@@ -2010,10 +2021,48 @@ export class CadRuntime extends Observable {
       )
       return
     }
-    const count =
+    this.doAgain(
       said && undoing !== null && typeof undoing === "object"
         ? undoing.undid
-        : 1
+        : 1,
+      said
+    )
+  }
+
+  /**
+   * MREDO: `count` of the steps the undos took back, all of them, or the
+   * last undo's, done again whatever ran since among U, UNDO, REDO and
+   * MREDO, as AutoCAD 2023's console does (acc/m1–m18, n1–n30). Last once
+   * the last undo is done again says so; after an undo that found nothing,
+   * nothing.
+   */
+  private redoMany(count: number | "all" | "last"): void {
+    const undoing = this.undoing
+    let steps: number
+    if (count === "last") {
+      if (undoing === "bottom") return
+      if (undoing === null || typeof undoing === "string") {
+        this.commandLine.write("info", this.text.message("alreadyRedone"))
+        return
+      }
+      steps = undoing.undid
+    } else steps = count === "all" ? Infinity : count
+    // An undo that found nothing leaves MREDO `Everything has been redone`
+    // (acc/n22, n27).
+    if (!this.history.canRedo() && undoing === "bottom") {
+      this.commandLine.write("info", this.text.message("everythingRedone"))
+      return
+    }
+    this.doAgain(steps, true)
+  }
+
+  /**
+   * Redoes up to `count` steps. `said`: writing their names on one line —
+   * with ` Regenerating model.` after them while more is left to redo —,
+   * then `Everything has been redone` and the regeneration on a line of its
+   * own once nothing is (acc/m12, n2, n3, n19, n24), or `Nothing to redo`.
+   */
+  private doAgain(count: number, said: boolean): void {
     const names: string[] = []
     let regenerates = false
     let done = 0
@@ -2024,20 +2073,27 @@ export class CadRuntime extends Observable {
       if (name !== null) names.push(name)
       regenerates ||= step.regenerates
     }
-    if (done > 0) this.selection.clear()
-    this.undoing = "redid"
+    if (done > 0) {
+      this.selection.clear()
+      this.undoing = "redid"
+    }
     if (!said) return
     if (done === 0) {
       this.commandLine.write("info", this.text.message("nothingToRedo"))
       return
     }
-    if (names.length > 0) this.commandLine.write("info", names.join(" "))
-    if (!this.history.canRedo()) {
-      this.commandLine.write("info", this.text.message("everythingRedone"))
+    const all = !this.history.canRedo()
+    const regen = this.text.message("regeneratingModel")
+    if (names.length > 0) {
+      const line = names.join(" ")
+      this.commandLine.write(
+        "info",
+        regenerates && !all ? `${line} ${regen}` : line
+      )
     }
-    if (regenerates) {
-      this.commandLine.write("info", this.text.message("regeneratingModel"))
-    }
+    if (!all) return
+    this.commandLine.write("info", this.text.message("everythingRedone"))
+    if (regenerates) this.commandLine.write("info", regen)
   }
 
   /**
@@ -2055,6 +2111,7 @@ export class CadRuntime extends Observable {
   /** UNDO's own operations, for its tool. */
   private readonly undoHistory: UndoHistory = {
     takeBack: (count) => this.takeBack(count, true),
+    redo: (count) => this.redoMany(count),
     backStops: () => this.history.hasMark() || this.history.undoGroupOpen(),
     mark: () => {
       this.history.mark()
@@ -2206,11 +2263,24 @@ export class CadRuntime extends Observable {
     this.closeShortcutMenu()
     const command = SHORTCUT_MENU_COMMANDS[action]
     if (command !== undefined) this.runCommand(command)
+    else if (action === "redo") this.runRedoMacro()
     else if (action === "repeat") this.repeatLastCommand()
     else if (action === "enter") this.pressEnter()
     // Cancel is AutoCAD's ^C^C; Deselect All is the same Escape at the
     // neutral prompt ("Press Esc to deselect all objects").
     else this.cancelCommand()
+  }
+
+  /**
+   * acad.cuix's Redo, behind Ctrl+Y and the shortcut menu's Redo:
+   * `^C^C_mredo 1`, which cancels the running command and answers MREDO's
+   * prompt with 1, both echoed as typed.
+   */
+  private runRedoMacro(): void {
+    if (this.activeTool.id !== "select") this.cancelCommand()
+    if (!this.runCommand("_MREDO")) return
+    this.setCommandLineText("1")
+    this.submitCommandLine()
   }
 
   /** A keyword of the prompt, chosen from the Command menu. */
@@ -3884,7 +3954,7 @@ export class CadRuntime extends Observable {
       return true
     }
     if (e.ctrlKey && (e.key === "y" || e.key === "Y")) {
-      this.redo()
+      this.runRedoMacro()
       return true
     }
     // AutoCAD's window shortcuts. Chrome hands Ctrl+<digit> to the page first
