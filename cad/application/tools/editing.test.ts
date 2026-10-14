@@ -348,6 +348,92 @@ describe("EXTEND", () => {
     }
   })
 
+  // AutoCAD 2023's console (acc/e1–e15 of the selection modes session): the
+  // end the pick lies nearer in the polyline's parameter grows — not the one
+  // nearer along it nor in a straight line —, and only that one.
+  it("grows a polyline picked at a middle segment from the end nearer in its parameter", () => {
+    const extend = (
+      vertices: Vec2[],
+      edges: [Vec2, Vec2][],
+      pick: Vec2,
+      bulges?: number[]
+    ) => {
+      const cad = createHarness({
+        entities: [
+          polylineOf(vertices, { id: "P", bulges }),
+          ...edges.map(([a, b]) => lineOf(a, b)),
+        ],
+      })
+      cad.command("EXTEND").click(pick)
+      return cad
+    }
+    const vertices = (cad: CadHarness) => cad.byId<PolylineEntity>("P").vertices
+
+    const s = [p(0, 30), p(0, 0), p(100, 0), p(100, 100), p(30, 100)]
+    const sEdges: [Vec2, Vec2][] = [
+      [p(-50, 150), p(250, 150)],
+      [p(-50, -100), p(-50, 300)],
+    ]
+    expect(vertices(extend(s, sEdges, p(80, 0)))).toBeCloseToPoints(
+      [p(0, 150), ...s.slice(1)],
+      4
+    )
+    expect(vertices(extend(s, sEdges, p(100, 25)))).toBeCloseToPoints(
+      [...s.slice(0, 4), p(-50, 100)],
+      4
+    )
+
+    const tail = [p(0, -30), p(0, 0), p(100, 0), p(100, 10), p(90, 10)]
+    const tailEdges: [Vec2, Vec2][] = [
+      [p(-60, -150), p(250, -150)],
+      [p(-50, -200), p(-50, 300)],
+    ]
+    expect(vertices(extend(tail, tailEdges, p(90, 0)))).toBeCloseToPoints(
+      [p(0, -150), ...tail.slice(1)],
+      4
+    )
+    expect(vertices(extend(tail, tailEdges, p(100, 4)))).toBeCloseToPoints(
+      [...tail.slice(0, 4), p(-50, 10)],
+      4
+    )
+
+    // Three segments: the middle one's halves.
+    const three = [p(0, -80), p(0, 0), p(100, 0), p(100, 10)]
+    const threeEdges: [Vec2, Vec2][] = [
+      [p(-60, -150), p(250, -150)],
+      [p(-60, 150), p(250, 150)],
+    ]
+    for (const [pick, grown] of [
+      [p(30, 0), [p(0, -150), ...three.slice(1)]],
+      [p(45, 0), [p(0, -150), ...three.slice(1)]],
+      [p(70, 0), [...three.slice(0, 3), p(100, 150)]],
+    ] as const) {
+      expect(vertices(extend(three, threeEdges, pick))).toBeCloseToPoints(
+        grown,
+        4
+      )
+    }
+
+    // An arc at the end grows round its circle.
+    const arced = extend(
+      s.slice(0, 4).concat(p(30, 100)),
+      [[p(-10, 80), p(60, 80)]],
+      p(100, 90),
+      [0, 0, 0, 1]
+    )
+    const poly = arced.byId<PolylineEntity>("P")
+    expect(poly.vertices).toBeCloseToPoints(
+      [...s.slice(0, 4), p(36.2772, 80)],
+      4
+    )
+    expect(poly.bulges?.[3]).toBeCloseTo(1.362, 4)
+
+    // The other end reaching an edge does not help.
+    const stuck = extend(s, [[p(-50, -100), p(-50, 300)]], p(20, 0))
+    expect(vertices(stuck)).toEqual(s)
+    expect(stuck.commandLog().at(-1)).toBe("Object does not intersect an edge.")
+  })
+
   it("Shift swaps TRIM and EXTEND on the fly", () => {
     // AutoCAD's Quick mode: holding Shift runs the opposite command.
     const cad = createHarness({

@@ -282,7 +282,7 @@ export abstract class EdgeEditTool implements Tool {
   private refuseExtend(input: PointerInput, ctx: ToolContext): void {
     const hit = this.pickFor(input, ctx)
     if (!hit || this.modeFor(input) !== "extend") return
-    const refusal = extendRefusal(hit, input.world)
+    const refusal = extendRefusal(hit)
     if (!refusal) return
     ctx.report(ctx.text.message(refusal.message), "error")
     if (refusal.counts) this.steps.push(false)
@@ -426,26 +426,23 @@ function planTrim(
  * the bounding edge.`, an open polyline's end `Object does not intersect an
  * edge.`, a closed polyline `Cannot EXTEND this object.`, all counted; a
  * circle that too and a dimension the path's, neither counted. `null` where
- * the console extends what is not built here (a polyline's middle segment,
- * an elliptical arc, a spline) or was not asked.
+ * the console extends what is not built here (an elliptical arc, a spline)
+ * or was not asked.
  */
 function extendRefusal(
-  target: Entity,
-  click: Vec2
+  target: Entity
 ): { readonly message: MessageId; readonly counts: boolean } | null {
   switch (target.type) {
     case "line":
     case "arc":
       return { message: "pathDoesNotIntersectBoundingEdge", counts: true }
-    case "polyline": {
-      if (target.closed) {
-        return { message: "cannotExtendObject", counts: true }
+    case "polyline":
+      return {
+        message: target.closed
+          ? "cannotExtendObject"
+          : "objectDoesNotIntersectEdge",
+        counts: true,
       }
-      const index = nearestPolylineSegment(target, click)
-      return index === 0 || index === target.vertices.length - 2
-        ? { message: "objectDoesNotIntersectEdge", counts: true }
-        : null
-    }
     case "circle":
       return { message: "cannotExtendObject", counts: false }
     case "dimension":
@@ -1166,10 +1163,13 @@ function trimPolylinePieces(
 }
 
 /**
- * Extends a free end of an open polyline: the clicked end segment grows along
- * its own direction/sweep until it meets the nearest boundary, moving the
- * chain's endpoint vertex (arc segments are handled by
- * {@link planExtendPolylineArc}). Closed polylines have no free end.
+ * Extends a free end of an open polyline: its end segment grows along its
+ * own direction/sweep until it meets the nearest boundary, moving the chain's
+ * endpoint vertex (arc segments are handled by {@link planExtendPolylineArc}).
+ * The end is the one the pick lies nearer in the polyline's parameter — its
+ * segment's index plus how far along it —, as AutoCAD 2023's console grows
+ * it from any segment: from the first half of the segments the start, so an
+ * end segment's own end. Closed polylines have no free end.
  */
 function planExtendPolyline(
   poly: PolylineEntity,
@@ -1179,20 +1179,14 @@ function planExtendPolyline(
   if (poly.closed) return null
   const v = poly.vertices
   const n = v.length
+  const segments = polylineSegmentGeometries(poly)
   const si = nearestPolylineSegment(poly, click)
-  const geom = polylineSegmentGeometries(poly)[si]
-
-  const isFirst = si === 0
-  const isLast = si === n - 2
-  if (!isFirst && !isLast) return null
-
-  if (geom.kind === "arc")
-    return planExtendPolylineArc(poly, si, geom, click, others, isFirst, isLast)
-
-  // The clicked half of the end segment decides which endpoint grows.
-  const line = createLine(v[si], v[si + 1])
-  const p = paramOnLine(line, click)
-  const growStart = isFirst && (!isLast || p < 0.5)
+  const growStart = si + fractionAlong(segments[si], click) < (n - 1) / 2
+  const end = growStart ? 0 : n - 2
+  const geom = segments[end]
+  if (geom.kind === "arc") {
+    return planExtendPolylineArc(poly, end, geom, others, growStart)
+  }
 
   if (growStart) {
     const seg = createLine(v[0], v[1])
@@ -1207,35 +1201,55 @@ function planExtendPolyline(
       added: { kind: "line", start: v[0], end: np },
     }
   }
-  if (isLast && (!isFirst || p >= 0.5)) {
-    const seg = createLine(v[n - 2], v[n - 1])
-    const t = nearestExtendParam(seg, others, "after")
-    if (t === null) return null
-    const np = pointOnLine(seg, t)
-    return {
-      kind: "extend",
-      targetId: poly.id,
-      layerId: poly.layerId,
-      result: extendedPolyline(poly, n - 1, np),
-      added: { kind: "line", start: v[n - 1], end: np },
-    }
+  const seg = createLine(v[n - 2], v[n - 1])
+  const t = nearestExtendParam(seg, others, "after")
+  if (t === null) return null
+  const np = pointOnLine(seg, t)
+  return {
+    kind: "extend",
+    targetId: poly.id,
+    layerId: poly.layerId,
+    result: extendedPolyline(poly, n - 1, np),
+    added: { kind: "line", start: v[n - 1], end: np },
   }
-  return null
+}
+
+/**
+ * How far along `segment` the point nearest `click` lies, from 0 at its
+ * start to 1 at its end — an arc's by its sweep.
+ */
+function fractionAlong(segment: PolylineSegmentGeometry, click: Vec2): number {
+  if (segment.kind === "line") {
+    const t = paramOnLine(createLine(segment.a, segment.b), click)
+    return Math.min(1, Math.max(0, t))
+  }
+  const phi = 4 * Math.atan(segment.bulge)
+  const angA = Math.atan2(
+    segment.a.y - segment.center.y,
+    segment.a.x - segment.center.x
+  )
+  const angClick = Math.atan2(
+    click.y - segment.center.y,
+    click.x - segment.center.x
+  )
+  const f = normalizeAngle((angClick - angA) * Math.sign(phi)) / Math.abs(phi)
+  if (f <= 1) return f
+  // Past the sweep: the end of it the click lies nearer round the circle.
+  return f - 1 < (2 * Math.PI) / Math.abs(phi) - f ? 1 : 0
 }
 
 /**
  * Extends a free end of an open polyline whose end segment is an *arc*: the arc
- * grows along its own sweep, past the free endpoint, to the nearest boundary on
- * its circle. The end segment's bulge is enlarged to match the new sweep.
+ * grows along its own sweep, past the free endpoint (the start's when
+ * `growStart`), to the nearest boundary on its circle. The end segment's
+ * bulge is enlarged to match the new sweep.
  */
 function planExtendPolylineArc(
   poly: PolylineEntity,
   si: number,
   seg: ArcSegment,
-  click: Vec2,
   others: readonly Entity[],
-  isFirst: boolean,
-  isLast: boolean
+  growStart: boolean
 ): EdgeEditPlan | null {
   const phi = 4 * Math.atan(seg.bulge)
   const angA = Math.atan2(seg.a.y - seg.center.y, seg.a.x - seg.center.x)
@@ -1254,9 +1268,6 @@ function planExtendPolylineArc(
   }
   if (outside.length === 0) return null
 
-  const angClick = Math.atan2(click.y - seg.center.y, click.x - seg.center.x)
-  const fc = normalizeAngle((angClick - angA) * sign) / absPhi
-  const growStart = isFirst && (!isLast || fc < 0.5)
   const n = poly.vertices.length
   const base = {
     kind: "extend" as const,
