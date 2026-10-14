@@ -604,20 +604,33 @@ export class MeasureTool implements Tool {
     if (this.state.phase !== "area") return []
     const { length } = this.state.points
     if (length === 0) {
+      // The first corner also declares Entity (Object's old name) and eXit
+      // unlisted (table 20164), which AutoCAD 2023's console takes.
+      const unlisted: CommandOption[] = [
+        { id: "Entity", hidden: true },
+        { id: "eXit", hidden: true },
+      ]
       switch (this.areaMode) {
         case "plain":
-          return [{ id: "Object" }, { id: "Add" }, { id: "Subtract" }]
+          return [
+            { id: "Object" },
+            { id: "Add" },
+            { id: "Subtract" },
+            ...unlisted,
+          ]
         case "add":
           return [
             { id: "Object" },
             { id: "Subtract" },
             { id: "Add", hidden: true },
+            ...unlisted,
           ]
         case "subtract":
           return [
             { id: "Object" },
             { id: "Add" },
             { id: "Subtract", hidden: true },
+            ...unlisted,
           ]
       }
     }
@@ -630,9 +643,16 @@ export class MeasureTool implements Tool {
     }
     switch (id) {
       case "Object":
+      case "Entity":
         if (this.state.phase !== "area") return "unhandled"
         this.askObject(ctx)
         return "continue"
+      // WHY no `Total area = …`, which Enter says in Add or Subtract area:
+      // the console's eXit ends without a word (acc/ar3, ar5 of 2026-10-14).
+      case "eXit":
+        return this.state.phase === "area" && this.state.points.length === 0
+          ? "end"
+          : "unhandled"
       case "Add":
       case "Subtract": {
         if (this.state.phase !== "area" || this.state.points.length > 0) {

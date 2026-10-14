@@ -1139,7 +1139,9 @@ export const es: EngineLocale = {
         "Add": "Añadir",
         "Subtract": "Sustraer",
         "Undo": "desHacer",
-        "Total": "Total"
+        "Total": "Total",
+        "Entity": "Entidad",
+        "eXit": "SAlir"
       },
       "ZOOM": {
         "All": "Todo",

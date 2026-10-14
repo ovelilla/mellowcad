@@ -668,7 +668,9 @@
         "Add": "Add",
         "Subtract": "Subtract",
         "Undo": "Undo",
-        "Total": "Total"
+        "Total": "Total",
+        "Entity": "Entity",
+        "eXit": "eXit"
       },
       "ZOOM": {
         "All": "All",

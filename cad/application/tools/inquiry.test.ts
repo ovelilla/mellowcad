@@ -623,6 +623,66 @@ describe("AREA", () => {
     ])
   })
 
+  // AutoCAD 2023's console (acc/ar1–ar6 of 2026-10-14): the first corner
+  // declares Entity and eXit unlisted (table 20164).
+  it("takes Entity as Object and eXit to end, without listing them", () => {
+    const cad = createHarness({ entities: [circleOf(p(5, 5), 2)] })
+
+    cad.command("AREA")
+    answer(cad, "E", "FOO", "L")
+    expect(cad.commandLog().slice(1)).toEqual([
+      "Specify first corner point or [Object/Add area/Subtract area] <Object>: E",
+      "Select objects: FOO",
+      "*Invalid selection*",
+      "Expects a point or Last",
+      "Select objects: L",
+      "Area = 12.57, Circumference = 12.57",
+    ])
+
+    cad.command("AREA")
+    answer(cad, "X")
+    expect(cad.commandLog().at(-1)).toBe(
+      "Specify first corner point or [Object/Add area/Subtract area] <Object>: X"
+    )
+    expect(cad.activeToolId()).toBe("select")
+
+    cad.command("AREA")
+    answer(cad, "A", "ENTITY", "L", "", "EXIT")
+    expect(cad.commandLog().slice(-8)).toEqual([
+      "Specify first corner point or [Object/Subtract area]: ENTITY",
+      "(ADD mode) Select objects: L",
+      "Area = 12.57, Circumference = 12.57",
+      "Total area = 12.57",
+      "(ADD mode) Select objects:",
+      "Area = 12.57, Circumference = 12.57",
+      "Total area = 12.57",
+      "Specify first corner point or [Object/Subtract area]: EXIT",
+    ])
+    expect(cad.activeToolId()).toBe("select")
+  })
+
+  it("takes Entity and eXit in Autodesk's Spanish", () => {
+    const cad = createHarness({
+      locale: es,
+      entities: [circleOf(p(0, 0), 5)],
+    })
+
+    cad.command("AREA")
+    answer(cad, "E", "LT")
+    expect(cad.commandLog().slice(-3)).toEqual([
+      "Precise primer punto de esquina o [Objeto/Añadir área/Sustraer área] <Objeto>: E",
+      "Designe objetos: LT",
+      "Área = 78.54, Circunferencia = 31.42",
+    ])
+
+    cad.command("AREA")
+    answer(cad, "S", "SA")
+    expect(cad.commandLog().at(-1)).toBe(
+      "Precise primer punto de esquina o [Objeto/Añadir área]: SA"
+    )
+    expect(cad.activeToolId()).toBe("select")
+  })
+
   it("takes a subtracted area below zero", () => {
     const cad = createHarness()
 
