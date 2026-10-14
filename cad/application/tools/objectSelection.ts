@@ -119,6 +119,19 @@ type Step =
       readonly current: Vec2 | null
     }
 
+/**
+ * How a mode found what a single object's pick takes, which the command may
+ * read where a pick would have been: across a fence (its points), by a
+ * crossing window or polygon (its outline), or wholly inside a window or a
+ * polygon, or by Last, which leave no trace on the object.
+ */
+export type ModeFind =
+  | { readonly by: "fence"; readonly points: readonly Vec2[] }
+  | { readonly by: "crossing"; readonly outline: readonly Vec2[] }
+  | { readonly by: "enclosing" }
+
+const ENCLOSING: ModeFind = { by: "enclosing" }
+
 /** What one selection changed in the set, which `Undo` takes back. */
 interface Operation {
   readonly added: readonly EntityId[]
@@ -166,8 +179,20 @@ export interface ObjectSelectorOptions {
    * command's, which hands the selector only the modes ({@link inMode}).
    */
   readonly one?: {
-    readonly take: (entity: Entity, ctx: ToolContext) => void
+    readonly take: (entity: Entity, ctx: ToolContext, find: ModeFind) => void
     readonly newest: boolean
+    /**
+     * Two found or more are taken together, the older of the two newest
+     * first: FILLET's first object (AutoCAD 2023's console fillets them).
+     */
+    readonly pair?: (
+      first: Entity,
+      second: Entity,
+      ctx: ToolContext,
+      find: ModeFind
+    ) => void
+    /** Finding none says nothing: the prompt is asked again (FILLET's). */
+    readonly silent?: boolean
   }
 }
 
@@ -526,7 +551,8 @@ export class ObjectSelector {
           false,
           null,
           false,
-          ctx
+          ctx,
+          { by: "fence", points: step.points }
         )
         return true
       }
@@ -546,7 +572,8 @@ export class ObjectSelector {
           false,
           step.crossing ? step.points : null,
           false,
-          ctx
+          ctx,
+          step.crossing ? { by: "crossing", outline: step.points } : ENCLOSING
         )
         return true
       }
@@ -688,7 +715,21 @@ export class ObjectSelector {
       end,
       { x: start.x, y: end.y },
     ]
-    this.select(found, subtract, frame, dragged, ctx)
+    // WHY from the screen: the box is upright there, which a turned view's
+    // world is not.
+    const a = ctx.viewport.worldToScreen(start)
+    const b = ctx.viewport.worldToScreen(end)
+    const outline = [a, { x: b.x, y: a.y }, b, { x: a.x, y: b.y }].map((p) =>
+      ctx.viewport.screenToWorld(p)
+    )
+    this.select(
+      found,
+      subtract,
+      frame,
+      dragged,
+      ctx,
+      crossing ? { by: "crossing", outline } : ENCLOSING
+    )
   }
 
   /**
@@ -718,11 +759,12 @@ export class ObjectSelector {
     subtract: boolean,
     frame: readonly Vec2[] | null,
     dragged: boolean,
-    ctx: ToolContext
+    ctx: ToolContext,
+    find: ModeFind = ENCLOSING
   ): void {
     const ids = this.options.accept?.(found, ctx) ?? found
     if (this.options.one) {
-      this.takeOne(ids, found.length - ids.length, this.options.one, ctx)
+      this.takeOne(ids, found.length - ids.length, this.options.one, find, ctx)
       return
     }
     const locked = new Set(
@@ -772,14 +814,16 @@ export class ObjectSelector {
   }
 
   /**
-   * One of `ids` for a single object's pick; with none, how many the command
-   * left out (`1 was filtered out`, ARRAYPATH's source at its path curve in
-   * AutoCAD 2023's console) or that nothing was found.
+   * One of `ids` for a single object's pick, or two for a {@link pair}; with
+   * none, how many the command left out (`1 was filtered out`, ARRAYPATH's
+   * source at its path curve in AutoCAD 2023's console) or that nothing was
+   * found, unless the command says nothing.
    */
   private takeOne(
     ids: readonly EntityId[],
     filtered: number,
     one: NonNullable<ObjectSelectorOptions["one"]>,
+    find: ModeFind,
     ctx: ToolContext
   ): void {
     const found = new Set(ids)
@@ -787,7 +831,15 @@ export class ObjectSelector {
       .getEntities()
       .filter((entity) => found.has(entity.id))
     const taken = one.newest ? inOrder.at(-1) : inOrder[0]
-    if (taken) one.take(taken, ctx)
+    if (one.pair && inOrder.length > 1) {
+      one.pair(
+        inOrder[inOrder.length - 2],
+        inOrder[inOrder.length - 1],
+        ctx,
+        find
+      )
+    } else if (taken) one.take(taken, ctx, find)
+    else if (one.silent) ctx.requestRender()
     else if (filtered > 0) {
       ctx.report(ctx.text.message("filteredOut", { count: filtered }))
     } else ctx.report(ctx.text.message("noObjectFound"))

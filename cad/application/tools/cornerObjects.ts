@@ -5,6 +5,8 @@ import {
   closestPointOnArc,
   closestPointOnInfiniteLine,
   closestPointOnSegment,
+  normalizeAngle,
+  polarPoint,
 } from "../../geometry/primitives"
 import {
   Entity,
@@ -27,9 +29,12 @@ import type { CameraTransform } from "../../scene/types"
 import type { MessageId } from "../EngineText"
 import type { Curve, CurveEnd } from "./curveFillets"
 import { LinePick, alongOnScreen } from "./lineCorner"
+import { fenceCrossing, meetsPolygon } from "./boxSelection"
+import { ONE_OBJECT_MODES, type ModeFind } from "./objectSelection"
+import { entityScreenOutline } from "../viewOutline"
 import { bulgeBetween, segmentsPair } from "./polylineCorners"
 import type { RoundObject } from "./roundFillets"
-import { ToolContext } from "./Tool"
+import { QuestionInput, ToolContext } from "./Tool"
 
 /** A segment of a polyline, picked as one of FILLET's two objects. */
 export interface SegmentPick {
@@ -81,17 +86,26 @@ export function pickCornerObject(
   first: CornerObject | null
 ): CornerObject | null {
   const hit = ctx.pick(pick.world)
-  if (hit?.type === "line") {
+  return hit ? cornerObjectAt(ctx, hit, pick, first) : null
+}
+
+/**
+ * The object `hit` is as {@link pickCornerObject} takes it at `pick`, a
+ * polyline's segment given by `index` where it is not the one nearest.
+ */
+function cornerObjectAt(
+  ctx: ToolContext,
+  hit: Entity,
+  pick: LinePick,
+  first: CornerObject | null,
+  index = segmentAt(ctx, hit, pick)
+): CornerObject | null {
+  if (hit.type === "line") {
     return first === null || isSegment(first) || first.id !== hit.id
       ? hit
       : null
   }
-  if (hit?.type !== "polyline") return null
-  // A polyline in a tilted plane is picked as it is drawn.
-  const index = readsInPlan(hit)
-    ? nearestSegment(hit, pick.world)
-    : (nearestOnScreen(hit, pick.screen, ctx.viewport)?.index ?? null)
-  if (index === null) return null
+  if (hit.type !== "polyline" || index === null) return null
   if (first === null || !isSegment(first) || first.poly.id !== hit.id) {
     return { poly: hit, index }
   }
@@ -110,15 +124,158 @@ export function pickFilletObject(
   first: FilletObject | null
 ): FilletObject | null {
   const hit = ctx.pick(pick.world)
-  if (hit?.type !== "arc" && hit?.type !== "circle") {
-    if (!first || !isRound(first)) return pickCornerObject(ctx, pick, first)
-    const taken = pickCornerObject(ctx, pick, null)
+  return hit ? filletObjectAt(ctx, hit, pick, first) : null
+}
+
+function filletObjectAt(
+  ctx: ToolContext,
+  hit: Entity,
+  pick: LinePick,
+  first: FilletObject | null,
+  index?: number
+): FilletObject | null {
+  if (hit.type !== "arc" && hit.type !== "circle") {
+    if (!first || !isRound(first)) {
+      return cornerObjectAt(ctx, hit, pick, first, index)
+    }
+    const taken = cornerObjectAt(ctx, hit, pick, null, index)
     return taken && (isSegment(taken) || coplanar(first, taken)) ? taken : null
   }
   if (!readsInPlan(hit)) return null
   if (first === null) return hit
   const other = cornerEntity(first)
   return other.id !== hit.id && coplanar(other, hit) ? hit : null
+}
+
+/**
+ * The modes FILLET's and CHAMFER's object prompts take, as their refusal
+ * lists them: a single object's, not ALL.
+ */
+export const CORNER_OBJECT_MODES = ONE_OBJECT_MODES.filter(
+  (mode) => mode !== "ALL"
+)
+
+/**
+ * How FILLET's and CHAMFER's object prompts refuse an answer, in AutoCAD
+ * 2023's console's words: the modes, then the keywords `set` names. The
+ * console lists the prompt's own words but the last (FILLET's first prompt
+ * leaves out Multiple), and a prompt with one word that word and the end of
+ * the prompt (`Radius]:`); the words this command does not offer (Trim,
+ * Angle, mEthod) are left out with it.
+ */
+export function cornerObjectRefusal(
+  set: "fillet" | "filletRadius" | "chamfer" | "chamferDistance"
+): QuestionInput {
+  return {
+    refusal: ["invalidSelection", "expectsCornerObject"],
+    values: { set },
+  }
+}
+
+/** Whether a mode's find is an object FILLET or CHAMFER takes. */
+export function isCornerEntity(entity: Entity | undefined): boolean {
+  return (
+    entity?.type === "line" ||
+    entity?.type === "polyline" ||
+    entity?.type === "arc" ||
+    entity?.type === "circle"
+  )
+}
+
+/**
+ * An object a selection mode found at FILLET's and CHAMFER's object prompts,
+ * and the pick it stands for there.
+ */
+export interface FoundObject {
+  readonly object: FilletObject
+  readonly pick: LinePick
+  /**
+   * A polyline a window, a polygon or Last found whole: no segment is read
+   * from it, and no corner is made of it.
+   */
+  readonly whole: boolean
+}
+
+/**
+ * What a mode's find stands for at FILLET's and CHAMFER's object prompts, as
+ * AutoCAD 2023's console reads it: a fence picks where it first crosses the
+ * object; otherwise a line, an arc or a circle is picked at its middle (a
+ * line keeps its longer side), and a polyline at the first segment a
+ * crossing window or polygon meets, picked at the polyline's first vertex
+ * (the run from it is kept, wherever the window lies). `null` where a pick
+ * there takes nothing.
+ */
+export function foundFilletObject(
+  ctx: ToolContext,
+  entity: Entity,
+  find: ModeFind,
+  first: FilletObject | null
+): FoundObject | null {
+  const view = ctx.viewport
+  const at = (point: Vec2): LinePick => ({
+    world: point,
+    screen: view.worldToScreen(entityPointToWorld(entity, point)),
+  })
+  const take = (pick: LinePick, index?: number) => {
+    const object = filletObjectAt(ctx, entity, pick, first, index)
+    return object && { object, pick, whole: false }
+  }
+  const crossed =
+    find.by === "fence" &&
+    fenceCrossing(
+      entityScreenOutline(view, entity, ctx.blocks),
+      find.points.map((point) => view.worldToScreen(point))
+    )
+  if (crossed) {
+    return take({ world: view.screenToWorld(crossed), screen: crossed })
+  }
+  if (entity.type === "polyline") {
+    const pick = at(entity.vertices[0])
+    const index =
+      find.by === "crossing" ? firstSegmentIn(entity, find.outline, view) : null
+    return index === null
+      ? { object: { poly: entity, index: 0 }, pick, whole: true }
+      : take(pick, index)
+  }
+  const middle = middleOf(entity)
+  return middle && take(at(middle))
+}
+
+/**
+ * Where a mode's find of a line, an arc or a circle stands for its pick: its
+ * middle — a circle's half way round from its angle 0.
+ */
+function middleOf(entity: Entity): Vec2 | null {
+  switch (entity.type) {
+    case "line":
+      return V.lerp(entity.start, entity.end, 0.5)
+    case "arc":
+      return polarPoint(
+        entity.center,
+        entity.radius,
+        entity.startAngle +
+          normalizeAngle(entity.endAngle - entity.startAngle) / 2
+      )
+    case "circle":
+      return polarPoint(entity.center, entity.radius, Math.PI)
+    default:
+      return null
+  }
+}
+
+/** The first segment of `poly` drawn crossing or inside `outline`. */
+function firstSegmentIn(
+  poly: PolylineEntity,
+  outline: readonly Vec2[],
+  view: CameraTransform
+): number | null {
+  const polygon = outline.map((point) => view.worldToScreen(point))
+  const drawn = (point: Vec2) =>
+    view.worldToScreen(entityPointToWorld(poly, point))
+  const index = polylineSegmentGeometries(poly).findIndex((segment) =>
+    meetsPolygon(segmentPoints(segment).map(drawn), polygon)
+  )
+  return index < 0 ? null : index
 }
 
 /**
@@ -415,6 +572,36 @@ function segmentEnds({ poly, index }: SegmentPick): { a: Vec2; b: Vec2 } {
   return { a, b }
 }
 
+/** The segment of `hit`, a polyline, a pick at `pick` takes. */
+function segmentAt(
+  ctx: ToolContext,
+  hit: Entity,
+  pick: LinePick
+): number | null {
+  if (hit.type !== "polyline") return null
+  // A polyline in a tilted plane is picked as it is drawn.
+  return readsInPlan(hit)
+    ? nearestSegment(hit, pick.world)
+    : (nearestOnScreen(hit, pick.screen, ctx.viewport)?.index ?? null)
+}
+
+/** The points a segment is drawn through: an arc's sampled along it. */
+function segmentPoints(segment: Curve): Vec2[] {
+  if (segment.kind === "line") return [segment.a, segment.b]
+  const start = Math.atan2(
+    segment.a.y - segment.center.y,
+    segment.a.x - segment.center.x
+  )
+  const included = 4 * Math.atan(segment.bulge)
+  return Array.from({ length: ARC_SAMPLES + 1 }, (_, k) =>
+    polarPoint(
+      segment.center,
+      segment.radius,
+      start + (included * k) / ARC_SAMPLES
+    )
+  )
+}
+
 /**
  * The segment of a polyline in a tilted plane drawn nearest `screen`, and
  * its point drawn there, in the polyline's own coordinates.
@@ -446,18 +633,7 @@ function nearestOnScreen(
       consider(index, V.lerp(segment.a, segment.b, along))
       return
     }
-    const start = Math.atan2(
-      segment.a.y - segment.center.y,
-      segment.a.x - segment.center.x
-    )
-    const included = 4 * Math.atan(segment.bulge)
-    for (let k = 0; k <= ARC_SAMPLES; k++) {
-      const angle = start + (included * k) / ARC_SAMPLES
-      consider(index, {
-        x: segment.center.x + segment.radius * Math.cos(angle),
-        y: segment.center.y + segment.radius * Math.sin(angle),
-      })
-    }
+    for (const point of segmentPoints(segment)) consider(index, point)
   })
   return best
 }

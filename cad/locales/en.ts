@@ -2037,6 +2037,8 @@ export const en: EngineCatalog = {
           "radius"
         ]
       ],
+      "cannotFilletItself": "Cannot fillet an entity with itself.",
+      "cannotChamferItself": "Cannot chamfer an entity with itself.",
       "cornersSkipped": [
         [
           "parallel",
@@ -2451,6 +2453,19 @@ export const en: EngineCatalog = {
         ]
       ],
       "expectsSingleObject": "Expects a single object.",
+      "expectsCornerObject": [
+        "Expects a point or Window/Last/Crossing/BOX/Fence/WPolygon/CPolygon/",
+        [
+          "set",
+          1,
+          {
+            "fillet": "Undo/Polyline/Radius",
+            "filletRadius": "Radius]:",
+            "chamfer": "Undo/Polyline/Distance",
+            "other": "Distance"
+          }
+        ]
+      ],
       "lastKeyword": "Last",
       "noObjectSelected": "No object selected.",
       "associativeDimensionRequired": "Linear, ordinate, or angular associative dimension required.",

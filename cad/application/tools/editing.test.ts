@@ -1591,7 +1591,7 @@ describe("FILLET", () => {
           [
             "Select second object or shift-select to apply corner or [Radius]: FOO",
             "*Invalid selection*",
-            "Expects a point or Radius",
+            "Expects a point or Window/Last/Crossing/BOX/Fence/WPolygon/CPolygon/Radius]:",
           ],
         ],
         [
@@ -1600,7 +1600,7 @@ describe("FILLET", () => {
           [
             "Designe el segundo objeto o use la tecla Mayús para aplicar esquina o [Radio]: FOO",
             "*Designación no válida*",
-            "Requiere un punto o Radio",
+            "Requiere un punto o Ventana/úLTimo/Captura/MArco/Borde/polígonOV/polígonOC/Radio]:",
           ],
         ],
       ] as const) {

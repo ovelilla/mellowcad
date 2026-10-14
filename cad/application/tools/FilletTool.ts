@@ -38,21 +38,27 @@ import {
   reportSkipped,
 } from "./polylineCorners"
 import {
+  CORNER_OBJECT_MODES,
   CornerJoin,
   FilletObject,
+  FoundObject,
   JoinCut,
   SegmentPick,
   cornerEntity,
   cornerJoin,
+  cornerObjectRefusal,
   cornerPlane,
   curveOf,
+  foundFilletObject,
   isArcSegment,
+  isCornerEntity,
   isRound,
   isSegment,
   joinAtCut,
   joinRefusal,
   pickFilletObject,
 } from "./cornerObjects"
+import { ModeFind, ObjectSelector } from "./objectSelection"
 import { filletRound } from "./roundFillets"
 import {
   curveCrossing,
@@ -110,6 +116,8 @@ type FilletState =
       readonly cursor: LinePick
       /** Shift is held: the second pick applies a corner. */
       readonly corner: boolean
+      /** The first a polyline a mode found whole: no corner will be made. */
+      readonly whole: boolean
     }
   /** Polyline: awaiting the 2D polyline whose every corner is rounded. */
   | { readonly phase: "polyline"; readonly hover: PolylineEntity | null }
@@ -130,6 +138,29 @@ export class FilletTool implements Tool {
    */
   private steps: ({ readonly radius: number } | "fillet")[] = []
   private lastScreen: Vec2 | null = null
+  /**
+   * The selection modes typed at the object prompts. The second prompt and
+   * Polyline's take the newest object found; the first takes two found or
+   * more as both objects, the older of the two newest first, and fillets
+   * them (AutoCAD 2023's console). Finding none asks the prompt again.
+   */
+  private readonly modes = new ObjectSelector({
+    done: () => {},
+    modes: CORNER_OBJECT_MODES,
+    accept: (ids, ctx) =>
+      ids.filter((id) => this.takesFound(ctx.document.get(id))),
+    one: {
+      take: (entity, ctx, find) => this.takeFound(entity, find, ctx),
+      newest: true,
+      pair: (first, second, ctx, find) => {
+        const asFirst = this.state.phase === "first"
+        if (!asFirst || this.takeFound(first, find, ctx)) {
+          this.takeFound(second, find, ctx)
+        }
+      },
+      silent: true,
+    },
+  })
 
   onActivate(ctx: ToolContext): void {
     ctx.setCursor("crosshair")
@@ -149,6 +180,7 @@ export class FilletTool implements Tool {
     if (this.askingRadius) {
       return { id: "specifyFilletRadius", enter: this.radius }
     }
+    if (this.modes.inMode()) return this.modes.question()
     switch (this.state.phase) {
       case "first":
         return "selectFirstObjectOr"
@@ -160,7 +192,11 @@ export class FilletTool implements Tool {
   }
 
   takes(): QuestionInput | null {
-    return this.askingRadius ? null : "object"
+    if (this.askingRadius) return null
+    if (this.modes.inMode()) return this.modes.takes()
+    return cornerObjectRefusal(
+      this.state.phase === "first" ? "fillet" : "filletRadius"
+    )
   }
 
   onDeactivate(ctx: ToolContext): void {
@@ -170,6 +206,10 @@ export class FilletTool implements Tool {
 
   onPointerMove(input: PointerInput, ctx: ToolContext): void {
     this.lastScreen = input.screen
+    if (this.modes.inMode()) {
+      this.modes.onPointerMove(input, ctx)
+      return
+    }
     ctx.dynamicInput.setPosition(input.screen)
     if (this.askingRadius) {
       ctx.requestRender()
@@ -200,54 +240,21 @@ export class FilletTool implements Tool {
 
   onPointerDown(input: PointerInput, ctx: ToolContext): void {
     if (input.button !== 0 || this.askingRadius) return
+    if (this.modes.inMode()) {
+      this.modes.onPointerDown(input, ctx)
+      return
+    }
+    const pick = { world: input.world, screen: input.screen }
 
     switch (this.state.phase) {
       case "first": {
         const hit = pickFilletObject(ctx, input, null)
-        if (!hit) return
-        const pick = { world: input.world, screen: input.screen }
-        this.state = {
-          phase: "second",
-          first: hit,
-          pick1: pick,
-          hover: null,
-          cursor: pick,
-          corner: false,
-        }
-        ctx.requestRender()
+        if (hit) this.takeFirst({ object: hit, pick, whole: false }, ctx)
         return
       }
       case "second": {
-        const { first, pick1 } = this.state
-        const second = pickFilletObject(ctx, input, first)
-        if (!second) return
-        const radius = input.shiftKey ? 0 : this.radius
-        if (isRound(first) || isRound(second)) {
-          this.commitRound(first, pick1.world, second, input.world, radius, ctx)
-          return
-        }
-        const plane = cornerPlane(first, pick1, second, input, ctx.viewport)
-        const join = cornerJoin(
-          plane.first,
-          plane.pick1,
-          plane.second,
-          plane.pick2
-        )
-        if (join) {
-          this.commitJoin(join, radius, plane.back, ctx)
-        } else if (isSegment(plane.first) && isSegment(plane.second)) {
-          const cut = filletSegments(plane.first, plane.second, radius)
-          if (typeof cut !== "string") {
-            this.done(new UpdateEntityCommand(plane.back(cut)), ctx)
-          } else if (cut === "noCorner") {
-            this.refuse("cannotFilletBetween", ctx, "sameLine")
-          } else {
-            this.refuse(REFUSALS[cut], ctx)
-          }
-        } else if (!isSegment(first) && !isSegment(second)) {
-          const pick2 = { world: input.world, screen: input.screen }
-          this.commitFillet(first, pick1, second, pick2, radius, ctx)
-        }
+        const second = pickFilletObject(ctx, input, this.state.first)
+        if (second) this.placeSecond(second, pick, input.shiftKey, false, ctx)
         return
       }
       case "polyline": {
@@ -258,12 +265,22 @@ export class FilletTool implements Tool {
     }
   }
 
+  /** Enter in a mode's prompt is the mode's; at an object prompt it ends. */
+  onEnter(ctx: ToolContext): boolean {
+    return !this.askingRadius && this.modes.inMode() && this.modes.onEnter(ctx)
+  }
+
   onKeyDown(input: KeyInput, ctx: ToolContext): void {
     if (input.key === "Escape") ctx.dynamicInput.close()
   }
 
   commandOptions(): readonly CommandOption[] {
     if (this.askingRadius) return []
+    if (this.modes.inMode()) return this.modes.commandOptions()
+    return [...this.ownOptions(), ...this.modes.commandOptions()]
+  }
+
+  private ownOptions(): readonly CommandOption[] {
     switch (this.state.phase) {
       case "first":
         return this.multiple
@@ -282,31 +299,35 @@ export class FilletTool implements Tool {
 
   invokeOption(id: string, ctx: ToolContext): CommandOptionOutcome {
     if (this.askingRadius) return "unhandled"
-    if (id === "Radius") {
-      this.openRadiusPrompt(ctx)
+    if (!this.modes.inMode() && this.ownOptions().some((o) => o.id === id)) {
+      this.invokeOwn(id, ctx)
       return "continue"
     }
-    if (this.state.phase !== "first") return "unhandled"
+    return this.modes.invokeOption(id, ctx) ? "continue" : "unhandled"
+  }
+
+  private invokeOwn(id: string, ctx: ToolContext): void {
     switch (id) {
+      case "Radius":
+        this.openRadiusPrompt(ctx)
+        return
       case "Undo":
         this.undoStep(ctx)
-        return "continue"
+        return
       case "Polyline":
         this.state = { phase: "polyline", hover: null }
         ctx.requestRender()
-        return "continue"
+        return
       case "Multiple":
         this.multiple = true
-        return "continue"
-      default:
-        return "unhandled"
     }
   }
 
   wantsSnap(): boolean {
     // Lines are picked by proximity, not precise points, so running snaps would
-    // only clutter the hover — the same choice as TRIM/EXTEND.
-    return false
+    // only clutter the hover — the same choice as TRIM/EXTEND. A mode's
+    // corners and points snap.
+    return !this.askingRadius && this.modes.wantsSnap()
   }
 
   buildOverlay(ctx: ToolContext): ScenePrimitive[] {
@@ -314,6 +335,14 @@ export class FilletTool implements Tool {
     const draw = (entity: Entity, stroke: StrokeStyle) =>
       entityScenePrimitive(viewport, entity, stroke)
 
+    if (this.modes.inMode()) {
+      return [
+        ...(this.state.phase === "second"
+          ? draw(cornerEntity(this.state.first), selectedStroke)
+          : []),
+        ...this.modes.buildOverlay(ctx),
+      ]
+    }
     if (this.state.phase === "first") {
       const h = this.state.hover
       return h ? draw(cornerEntity(h), hoverStroke) : []
@@ -405,6 +434,93 @@ export class FilletTool implements Tool {
     this.askingRadius = false
     this.multiple = false
     this.steps = []
+    this.modes.start()
+  }
+
+  /** Whether a mode's find counts: Polyline's takes a polyline. */
+  private takesFound(entity: Entity | undefined): boolean {
+    return this.state.phase === "polyline"
+      ? entity?.type === "polyline"
+      : isCornerEntity(entity)
+  }
+
+  /**
+   * An object a mode found, taken at the prompt asked as its pick would be;
+   * false when it takes nothing there. The first object again (not another
+   * segment of its polyline) ends the command, in Multiple too, saying so
+   * (AutoCAD 2023's console; a pick on it does not highlight).
+   */
+  private takeFound(entity: Entity, find: ModeFind, ctx: ToolContext): boolean {
+    if (this.state.phase === "polyline") {
+      if (entity.type === "polyline") this.commitPolyline(entity, ctx)
+      return true
+    }
+    const first = this.state.phase === "second" ? this.state.first : null
+    if (first && !isSegment(first) && first.id === entity.id) {
+      ctx.report(ctx.text.message("cannotFilletItself"), "error")
+      ctx.dynamicInput.close()
+      ctx.endCommand()
+      return false
+    }
+    const found = foundFilletObject(ctx, entity, find, first)
+    if (!found) return false
+    if (this.state.phase === "first") this.takeFirst(found, ctx)
+    else this.placeSecond(found.object, found.pick, false, found.whole, ctx)
+    return true
+  }
+
+  private takeFirst(found: FoundObject, ctx: ToolContext): void {
+    this.state = {
+      phase: "second",
+      first: found.object,
+      pick1: found.pick,
+      hover: null,
+      cursor: found.pick,
+      corner: false,
+      whole: found.whole,
+    }
+    ctx.requestRender()
+  }
+
+  /**
+   * The second object, picked at `pick2` (`corner`: with Shift), filleted
+   * with the first. A polyline a mode found whole makes nothing, as AutoCAD
+   * 2023's console makes nothing of it, and says nothing.
+   */
+  private placeSecond(
+    second: FilletObject,
+    pick2: LinePick,
+    corner: boolean,
+    whole: boolean,
+    ctx: ToolContext
+  ): void {
+    if (this.state.phase !== "second") return
+    const { first, pick1 } = this.state
+    if (whole || this.state.whole) {
+      this.done(null, ctx)
+      return
+    }
+    const radius = corner ? 0 : this.radius
+    if (isRound(first) || isRound(second)) {
+      this.commitRound(first, pick1.world, second, pick2.world, radius, ctx)
+      return
+    }
+    const plane = cornerPlane(first, pick1, second, pick2, ctx.viewport)
+    const join = cornerJoin(plane.first, plane.pick1, plane.second, plane.pick2)
+    if (join) {
+      this.commitJoin(join, radius, plane.back, ctx)
+    } else if (isSegment(plane.first) && isSegment(plane.second)) {
+      const cut = filletSegments(plane.first, plane.second, radius)
+      if (typeof cut !== "string") {
+        this.done(new UpdateEntityCommand(plane.back(cut)), ctx)
+      } else if (cut === "noCorner") {
+        this.refuse("cannotFilletBetween", ctx, "sameLine")
+      } else {
+        this.refuse(REFUSALS[cut], ctx)
+      }
+    } else if (!isSegment(first) && !isSegment(second)) {
+      this.commitFillet(first, pick1, second, pick2, radius, ctx)
+    }
   }
 
   /**

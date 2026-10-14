@@ -187,7 +187,7 @@ describe("a wrong answer mid-command", () => {
     cad.escape().command("FILLET")
     answerLine(cad, "FOO")
     expect(cad.commandLog().at(-1)).toBe(
-      "Expects a point or Undo/Polyline/Radius/Multiple"
+      "Expects a point or Window/Last/Crossing/BOX/Fence/WPolygon/CPolygon/Undo/Polyline/Radius"
     )
   })
 

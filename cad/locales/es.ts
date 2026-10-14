@@ -2320,6 +2320,8 @@ export const es: EngineLocale = {
           "radius"
         ]
       ],
+      "cannotFilletItself": "No se puede empalmar un objeto consigo mismo.",
+      "cannotChamferItself": "No se puede achaflanar un objeto consigo mismo.",
       "cornersSkipped": [
         [
           "parallel",
@@ -2734,6 +2736,19 @@ export const es: EngineLocale = {
         ]
       ],
       "expectsSingleObject": "Requiere un único objeto.",
+      "expectsCornerObject": [
+        "Requiere un punto o Ventana/úLTimo/Captura/MArco/Borde/polígonOV/polígonOC/",
+        [
+          "set",
+          1,
+          {
+            "fillet": "Deshacer/Polilínea/RAdio",
+            "filletRadius": "Radio]:",
+            "chamfer": "desHacer/Polilínea/Distancia",
+            "other": "Distancia"
+          }
+        ]
+      ],
       "lastKeyword": "úLTimo",
       "noObjectSelected": "No se ha designado ningún objeto.",
       "associativeDimensionRequired": "Requiere una cota asociativa lineal, de coordenada o angular.",

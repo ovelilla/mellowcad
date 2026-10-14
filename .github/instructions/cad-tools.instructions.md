@@ -53,7 +53,10 @@ A tool is an explicit state machine for one AutoCAD command. It owns a discrimin
   (what its refusal lists and is built: `ONE_OBJECT_MODES`) and `one` (`take` the object, the
   oldest or `newest` of what a mode found — per command, as the console shows): it keeps its own
   pick and its own prompt's Enter, and hands the selector its options, and everything else while
-  `inMode()` (a window's corners, a fence's points).
+  `inMode()` (a window's corners, a fence's points). `take` is told how the mode found it
+  (`ModeFind`: a fence's points, a crossing outline, or enclosing — Window, WPolygon, Last), for
+  a command that reads a pick from it; `pair` takes two found at once (FILLET's first object)
+  and `silent` finds none without a word.
 - `SelectionActionTool` — one action over a selection set, supporting both noun-verb and
   verb-noun invocation (Erase, Explode, Join, COPYCLIP). A command that must ask something **before** the
   set — COPYBASE's base point — overrides `onActivate` and calls `begin(ctx)` once it has the
@@ -90,6 +93,12 @@ A tool is an explicit state machine for one AutoCAD command. It owns a discrimin
   the other was picked, no crossing needed — and `wholeCrossing` at radius 0. The console
   rules differ from an arc segment's (which `curveCrossing` and `keptEnd` keep, needing a
   crossing): never send one kind through the other's path.
+  Their object prompts take `CORNER_OBJECT_MODES` (a single object's, not ALL) and refuse in the
+  console's words (`cornerObjectRefusal`: the prompt's words but the last, Trim, Angle and mEthod
+  left out; one word ends `Radius]:`); `foundFilletObject` turns what a mode found into the
+  object and the pick it stands for (a fence's crossing; a line's, an arc's or a circle's middle;
+  a crossed polyline's first segment crossed, read from its first vertex; a polyline found whole
+  `whole`, of which nothing is made) — never invent a pick point in the tool.
   `pickCornerObject` takes the pointer (`world` and `screen`), and the two objects are cut
   in `cornerPlane`: a polyline in a tilted plane (with the UCS not on it) brings the
   other and both picks into its OCS — a segment picked as it is drawn — and `back` returns

@@ -30,20 +30,26 @@ import {
   reportSkipped,
 } from "./polylineCorners"
 import {
+  CORNER_OBJECT_MODES,
   CornerJoin,
   CornerObject,
   JoinCut,
   SegmentPick,
   cornerEntity,
   cornerJoin,
+  cornerObjectRefusal,
   cornerPlane,
   cutFits,
+  foundFilletObject,
   isArcSegment,
+  isCornerEntity,
+  isRound,
   isSegment,
   joinAtCut,
   joinRefusal,
   pickCornerObject,
 } from "./cornerObjects"
+import { ModeFind, ObjectSelector } from "./objectSelection"
 import {
   CommandOption,
   CommandOptionOutcome,
@@ -92,6 +98,8 @@ type ChamferState =
       readonly cursor: LinePick
       /** Shift is held: the second pick applies a corner. */
       readonly corner: boolean
+      /** The first a polyline a mode found whole: no corner will be made. */
+      readonly whole: boolean
     }
   /** Polyline: awaiting the 2D polyline whose every corner is bevelled. */
   | { readonly phase: "polyline"; readonly hover: PolylineEntity | null }
@@ -114,6 +122,22 @@ export class ChamferTool implements Tool {
   /** The distances when Distance was chosen, until both are given. */
   private replaced: Distances = { distance1: 0, distance2: 0 }
   private lastScreen: Vec2 | null = null
+  /**
+   * The selection modes typed at the object prompts, each taking the newest
+   * object found — the first too, where FILLET's takes two (AutoCAD 2023's
+   * console). Finding none asks the prompt again.
+   */
+  private readonly modes = new ObjectSelector({
+    done: () => {},
+    modes: CORNER_OBJECT_MODES,
+    accept: (ids, ctx) =>
+      ids.filter((id) => this.takesFound(ctx.document.get(id))),
+    one: {
+      take: (entity, ctx, find) => this.takeFound(entity, find, ctx),
+      newest: true,
+      silent: true,
+    },
+  })
 
   onActivate(ctx: ToolContext): void {
     ctx.setCursor("crosshair")
@@ -141,6 +165,7 @@ export class ChamferTool implements Tool {
     if (this.askingDistance === "second") {
       return { id: "specifySecondChamferDistance", enter: this.distance1 }
     }
+    if (this.modes.inMode()) return this.modes.question()
     switch (this.state.phase) {
       case "first":
         return "selectFirstLineOr"
@@ -152,7 +177,11 @@ export class ChamferTool implements Tool {
   }
 
   takes(): QuestionInput | null {
-    return this.askingDistance ? null : "object"
+    if (this.askingDistance) return null
+    if (this.modes.inMode()) return this.modes.takes()
+    return cornerObjectRefusal(
+      this.state.phase === "first" ? "chamfer" : "chamferDistance"
+    )
   }
 
   onDeactivate(ctx: ToolContext): void {
@@ -162,6 +191,10 @@ export class ChamferTool implements Tool {
 
   onPointerMove(input: PointerInput, ctx: ToolContext): void {
     this.lastScreen = input.screen
+    if (this.modes.inMode()) {
+      this.modes.onPointerMove(input, ctx)
+      return
+    }
     ctx.dynamicInput.setPosition(input.screen)
     if (this.askingDistance) {
       ctx.requestRender()
@@ -192,53 +225,23 @@ export class ChamferTool implements Tool {
 
   onPointerDown(input: PointerInput, ctx: ToolContext): void {
     if (input.button !== 0 || this.askingDistance) return
+    if (this.modes.inMode()) {
+      this.modes.onPointerDown(input, ctx)
+      return
+    }
+    const pick = { world: input.world, screen: input.screen }
 
     switch (this.state.phase) {
       case "first": {
-        if (this.refusesRound(input, ctx)) return
+        if (this.refusesRound(ctx.pick(input.world), ctx)) return
         const hit = pickCornerObject(ctx, input, null)
-        if (!hit) return
-        const pick = { world: input.world, screen: input.screen }
-        this.state = {
-          phase: "second",
-          first: hit,
-          pick1: pick,
-          hover: null,
-          cursor: pick,
-          corner: false,
-        }
-        ctx.requestRender()
+        if (hit) this.takeFirst(hit, pick, false, ctx)
         return
       }
       case "second": {
-        if (this.refusesRound(input, ctx)) return
-        const { first, pick1 } = this.state
-        const second = pickCornerObject(ctx, input, first)
-        if (!second) return
-        const plane = cornerPlane(first, pick1, second, input, ctx.viewport)
-        const join = cornerJoin(
-          plane.first,
-          plane.pick1,
-          plane.second,
-          plane.pick2
-        )
-        if (join) {
-          this.commitJoin(join, input.shiftKey, plane.back, ctx)
-        } else if (isSegment(plane.first) && isSegment(plane.second)) {
-          const cut = this.chamferSegments(
-            plane.first,
-            plane.second,
-            input.shiftKey
-          )
-          if (typeof cut !== "string") {
-            this.done(new UpdateEntityCommand(plane.back(cut)), ctx)
-          } else {
-            this.refuse(REFUSALS[cut], ctx)
-          }
-        } else if (!isSegment(first) && !isSegment(second)) {
-          const pick2 = { world: input.world, screen: input.screen }
-          this.commitChamfer(first, pick1, second, pick2, input.shiftKey, ctx)
-        }
+        if (this.refusesRound(ctx.pick(input.world), ctx)) return
+        const second = pickCornerObject(ctx, input, this.state.first)
+        if (second) this.placeSecond(second, pick, input.shiftKey, false, ctx)
         return
       }
       case "polyline": {
@@ -249,12 +252,24 @@ export class ChamferTool implements Tool {
     }
   }
 
+  /** Enter in a mode's prompt is the mode's; at an object prompt it ends. */
+  onEnter(ctx: ToolContext): boolean {
+    return (
+      !this.askingDistance && this.modes.inMode() && this.modes.onEnter(ctx)
+    )
+  }
+
   onKeyDown(input: KeyInput, ctx: ToolContext): void {
     if (input.key === "Escape") ctx.dynamicInput.close()
   }
 
   commandOptions(): readonly CommandOption[] {
     if (this.askingDistance) return []
+    if (this.modes.inMode()) return this.modes.commandOptions()
+    return [...this.ownOptions(), ...this.modes.commandOptions()]
+  }
+
+  private ownOptions(): readonly CommandOption[] {
     switch (this.state.phase) {
       case "first":
         return this.multiple
@@ -273,37 +288,50 @@ export class ChamferTool implements Tool {
 
   invokeOption(id: string, ctx: ToolContext): CommandOptionOutcome {
     if (this.askingDistance) return "unhandled"
-    if (id === "Distance") {
-      this.replaced = { distance1: this.distance1, distance2: this.distance2 }
-      this.askDistance("first", ctx)
+    if (!this.modes.inMode() && this.ownOptions().some((o) => o.id === id)) {
+      this.invokeOwn(id, ctx)
       return "continue"
     }
-    if (this.state.phase !== "first") return "unhandled"
+    return this.modes.invokeOption(id, ctx) ? "continue" : "unhandled"
+  }
+
+  private invokeOwn(id: string, ctx: ToolContext): void {
     switch (id) {
+      case "Distance":
+        this.replaced = { distance1: this.distance1, distance2: this.distance2 }
+        this.askDistance("first", ctx)
+        return
       case "Undo":
         this.undoStep(ctx)
-        return "continue"
+        return
       case "Polyline":
         this.state = { phase: "polyline", hover: null }
         ctx.requestRender()
-        return "continue"
+        return
       case "Multiple":
         this.multiple = true
-        return "continue"
-      default:
-        return "unhandled"
     }
   }
 
   wantsSnap(): boolean {
     // Lines are picked by proximity, not precise points — as in FILLET/TRIM.
-    return false
+    // A mode's corners and points snap.
+    return !this.askingDistance && this.modes.wantsSnap()
   }
 
   buildOverlay(ctx: ToolContext): ScenePrimitive[] {
     const { viewport } = ctx
     const draw = (entity: Entity, stroke: StrokeStyle) =>
       entityScenePrimitive(viewport, entity, stroke)
+
+    if (this.modes.inMode()) {
+      return [
+        ...(this.state.phase === "second"
+          ? draw(cornerEntity(this.state.first), selectedStroke)
+          : []),
+        ...this.modes.buildOverlay(ctx),
+      ]
+    }
 
     if (this.state.phase === "first") {
       const h = this.state.hover
@@ -368,6 +396,96 @@ export class ChamferTool implements Tool {
     this.askingDistance = null
     this.multiple = false
     this.steps = []
+    this.modes.start()
+  }
+
+  /**
+   * Whether a mode's find counts: Polyline's takes a polyline, the others a
+   * line, a polyline or — to refuse it — an arc or a circle.
+   */
+  private takesFound(entity: Entity | undefined): boolean {
+    return this.state.phase === "polyline"
+      ? entity?.type === "polyline"
+      : isCornerEntity(entity)
+  }
+
+  /**
+   * An object a mode found, taken at the prompt asked as its pick would be.
+   * The first line again ends the command, in Multiple too, saying so
+   * (AutoCAD 2023's console; a pick on it does not highlight).
+   */
+  private takeFound(entity: Entity, find: ModeFind, ctx: ToolContext): void {
+    if (this.state.phase === "polyline") {
+      if (entity.type === "polyline") this.commitPolyline(entity, ctx)
+      return
+    }
+    if (this.refusesRound(entity, ctx)) return
+    const first = this.state.phase === "second" ? this.state.first : null
+    if (first && !isSegment(first) && first.id === entity.id) {
+      ctx.report(ctx.text.message("cannotChamferItself"), "error")
+      ctx.dynamicInput.close()
+      ctx.endCommand()
+      return
+    }
+    const found = foundFilletObject(ctx, entity, find, first)
+    if (!found || isRound(found.object)) return
+    if (this.state.phase === "first") {
+      this.takeFirst(found.object, found.pick, found.whole, ctx)
+    } else {
+      this.placeSecond(found.object, found.pick, false, found.whole, ctx)
+    }
+  }
+
+  private takeFirst(
+    first: CornerObject,
+    pick: LinePick,
+    whole: boolean,
+    ctx: ToolContext
+  ): void {
+    this.state = {
+      phase: "second",
+      first,
+      pick1: pick,
+      hover: null,
+      cursor: pick,
+      corner: false,
+      whole,
+    }
+    ctx.requestRender()
+  }
+
+  /**
+   * The second object, picked at `pick2` (`corner`: with Shift), chamfered
+   * with the first. A polyline a mode found whole makes nothing, as AutoCAD
+   * 2023's console makes nothing of it in FILLET, and says nothing.
+   */
+  private placeSecond(
+    second: CornerObject,
+    pick2: LinePick,
+    corner: boolean,
+    whole: boolean,
+    ctx: ToolContext
+  ): void {
+    if (this.state.phase !== "second") return
+    const { first, pick1 } = this.state
+    if (whole || this.state.whole) {
+      this.done(null, ctx)
+      return
+    }
+    const plane = cornerPlane(first, pick1, second, pick2, ctx.viewport)
+    const join = cornerJoin(plane.first, plane.pick1, plane.second, plane.pick2)
+    if (join) {
+      this.commitJoin(join, corner, plane.back, ctx)
+    } else if (isSegment(plane.first) && isSegment(plane.second)) {
+      const cut = this.chamferSegments(plane.first, plane.second, corner)
+      if (typeof cut !== "string") {
+        this.done(new UpdateEntityCommand(plane.back(cut)), ctx)
+      } else {
+        this.refuse(REFUSALS[cut], ctx)
+      }
+    } else if (!isSegment(first) && !isSegment(second)) {
+      this.commitChamfer(first, pick1, second, pick2, corner, ctx)
+    }
   }
 
   /**
@@ -582,19 +700,22 @@ export class ChamferTool implements Tool {
     }
   }
 
-  /** Executes a chamfer; the command ends, or Multiple asks for the next. */
+  /**
+   * Executes a chamfer — none of a polyline a mode found whole —; the
+   * command ends, or Multiple asks for the next.
+   */
   private done(
-    command: ReplaceEntitiesCommand | UpdateEntityCommand,
+    command: ReplaceEntitiesCommand | UpdateEntityCommand | null,
     ctx: ToolContext
   ): void {
-    this.steps.push("chamfer")
+    if (command) this.steps.push("chamfer")
     if (this.multiple) {
       this.state = { phase: "first", hover: null }
-      ctx.execute(command)
+      if (command) ctx.execute(command)
       ctx.requestRender()
       return
     }
-    ctx.execute(command)
+    if (command) ctx.execute(command)
     ctx.dynamicInput.close()
     ctx.endCommand()
   }
@@ -651,8 +772,7 @@ export class ChamferTool implements Tool {
    * An ARC or a CIRCLE picked as a line: said, and the same prompt asked
    * again (acc/e1–e4).
    */
-  private refusesRound(input: PointerInput, ctx: ToolContext): boolean {
-    const hit = ctx.pick(input.world)
+  private refusesRound(hit: Entity | null, ctx: ToolContext): boolean {
     if (hit?.type !== "arc" && hit?.type !== "circle") return false
     ctx.report(ctx.text.message("chamferRequiresLines"), "error")
     return true

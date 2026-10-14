@@ -1,4 +1,5 @@
 import { Vec2 } from "../../geometry/Vec2"
+import { infiniteLineIntersection } from "../../geometry/primitives"
 import { DocumentReader } from "../../domain/Document"
 import {
   BlockLookup,
@@ -211,6 +212,48 @@ export function objectsInPolygon(
     if (takes) hits.push(entity.id)
   }
   return hits
+}
+
+/**
+ * Whether the line through `line` meets the closed polygon through
+ * `polygon`, crossing its edges or inside it: what a crossing window or
+ * CPolygon takes of it. Both on screen.
+ */
+export function meetsPolygon(
+  line: readonly Vec2[],
+  polygon: readonly Vec2[]
+): boolean {
+  return (
+    linesMeet(line, [...polygon, polygon[0]]) ||
+    line.some((p) => insidePolygon(p, polygon))
+  )
+}
+
+/**
+ * Where the fence through `fence` first meets one of `lines`, going along
+ * it, or null. Both on screen.
+ */
+export function fenceCrossing(
+  lines: readonly (readonly Vec2[])[],
+  fence: readonly Vec2[]
+): Vec2 | null {
+  for (let j = 1; j < fence.length; j++) {
+    let first: { point: Vec2; t: number } | null = null
+    for (const line of lines) {
+      for (let i = 1; i < line.length; i++) {
+        const x = infiniteLineIntersection(
+          fence[j - 1],
+          fence[j],
+          line[i - 1],
+          line[i]
+        )
+        if (!x || x.t < 0 || x.t > 1 || x.u < 0 || x.u > 1) continue
+        if (!first || x.t < first.t) first = x
+      }
+    }
+    if (first) return first.point
+  }
+  return null
 }
 
 /**
