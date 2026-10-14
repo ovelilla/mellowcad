@@ -207,6 +207,7 @@ export {
   withLineZ,
   isLevel,
   coplanar,
+  sharesTiltedPlane,
   linesPlaneNormal,
   entityNormal,
   isTilted,

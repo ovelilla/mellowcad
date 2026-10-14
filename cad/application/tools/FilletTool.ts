@@ -12,6 +12,7 @@ import {
   createLine,
   carryOverrides,
   carryPlane,
+  coplanar,
   Entity,
   EntityId,
   LineEntity,
@@ -409,6 +410,7 @@ export class FilletTool implements Tool {
         hover &&
         !isSegment(first) &&
         !isSegment(hover) &&
+        coplanar(first, hover) &&
         filletRound(
           first,
           pick1.world,
@@ -773,7 +775,9 @@ export class FilletTool implements Tool {
 
   /**
    * An ARC or a CIRCLE with a line or another of them; with a polyline's
-   * segment, `Cannot fillet between these two entities.` (acc/d1–d3).
+   * segment, `Cannot fillet between these two entities.` (acc/d1–d3); out
+   * of each other's plane, `Two entities are non coplanar.` (acc/w1–w6 of
+   * 2026-10-14: at another height, or one upright).
    */
   private commitRound(
     first: FilletObject,
@@ -785,6 +789,10 @@ export class FilletTool implements Tool {
   ): void {
     if (isSegment(first) || isSegment(second)) {
       this.refuse("cannotFilletBetween", ctx, false)
+      return
+    }
+    if (!coplanar(first, second)) {
+      this.refuse("twoEntitiesNonCoplanar", ctx, false)
       return
     }
     const filleted = filletRound(

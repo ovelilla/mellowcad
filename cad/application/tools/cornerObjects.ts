@@ -23,6 +23,7 @@ import {
   isTilted,
   polylineSegmentGeometries,
   readsInPlan,
+  sharesTiltedPlane,
   withNormal,
 } from "../../domain/entities"
 import type { CameraTransform } from "../../scene/types"
@@ -118,9 +119,10 @@ function cornerObjectAt(
 
 /**
  * The object a pick takes where an ARC or a CIRCLE is one too (FILLET's, and
- * CHAMFER's to refuse): one level in the frame, and with `first` taken not
- * the same object and in its plane — neither highlights here. Anything else
- * as {@link pickCornerObject}.
+ * CHAMFER's to refuse): with `first` taken not the same object, nor one in a
+ * tilted plane they share — AutoCAD 2023's console rounds those in it, which
+ * is not built, so it does not highlight here (one out of the other's plane
+ * is taken, for FILLET to refuse). Anything else as {@link pickCornerObject}.
  */
 export function pickFilletObject(
   ctx: ToolContext,
@@ -143,12 +145,13 @@ function filletObjectAt(
       return cornerObjectAt(ctx, hit, pick, first, index)
     }
     const taken = cornerObjectAt(ctx, hit, pick, null, index)
-    return taken && (isSegment(taken) || coplanar(first, taken)) ? taken : null
+    return taken && (isSegment(taken) || !sharesTiltedPlane(first, taken))
+      ? taken
+      : null
   }
-  if (!readsInPlan(hit)) return null
   if (first === null) return hit
   const other = cornerEntity(first)
-  return other.id !== hit.id && coplanar(other, hit) ? hit : null
+  return other.id !== hit.id && !sharesTiltedPlane(other, hit) ? hit : null
 }
 
 /**

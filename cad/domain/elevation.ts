@@ -321,6 +321,28 @@ export function coplanar(a: Entity, b: Entity): boolean {
 }
 
 /**
+ * Whether two objects lie in one plane that does not read in plan, the plane
+ * of the one that is no line: its normal, at its elevation along it (its
+ * OCS's Z), a line's two ends on it.
+ */
+export function sharesTiltedPlane(a: Entity, b: Entity): boolean {
+  const plane = [a, b].find((entity) => !readsInPlan(entity))
+  if (!plane) return false
+  const normal = entityNormal(plane)
+  const height = entityElevation(plane)
+  const on = (point: Vec3) =>
+    Math.abs(dot3(point, normal) - height) <=
+    PLANE_TOLERANCE * Math.max(1, length3(point))
+  const lies = (entity: Entity) =>
+    entity.type === "line"
+      ? on({ ...entity.start, z: lineStartZ(entity) }) &&
+        on({ ...entity.end, z: lineEndZ(entity) })
+      : facesAlong(entity, normal) &&
+        Math.abs(entityElevation(entity) - height) <= PLANE_TOLERANCE
+  return lies(a) && lies(b)
+}
+
+/**
  * The plane two lines share when it is not a level one {@link coplanar}
  * covers: its unit normal, facing up where it can. Two parallel lines share
  * one too. `null` when they share no plane — AutoCAD's "Lines are
