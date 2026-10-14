@@ -43,7 +43,10 @@ A tool is an explicit state machine for one AutoCAD command. It owns a discrimin
   never write another scan. A new type that is an edge gets its implicit function there.
   Quick mode makes the trimmed object an edge of its own too: a polyline's picked segment is
   cut at its vertices and where it crosses itself (`ownEdges`), never at the next crossing
-  round the chain.
+  round the chain. A polyline is cut with `polylineSpan` (`domain/polylines.ts`): the run
+  between two of its parameters (`polylineParamAt`: segment index plus the fraction along
+  it), round a closed one past its start, a cut arc segment's bulge refitted to its part —
+  TRIM's pieces and BREAK's; never walk the vertices to cut one in a tool.
 - `ObjectSelector` (`objectSelection.ts`) — AutoCAD's `Select objects:`, the one every command
   that takes a set asks it with: picks, the window a drag or a pick on nothing starts, and the
   modes typed there (Window, Crossing, BOX, Last, ALL, Fence, WPolygon, CPolygon, Previous,

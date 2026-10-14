@@ -1,7 +1,12 @@
 import { describe, expect, it } from "vitest"
-import type { ArcEntity, LineEntity } from "../../domain/entities"
+import type {
+  ArcEntity,
+  CircleEntity,
+  LineEntity,
+  PolylineEntity,
+} from "../../domain/entities"
 import { arcSweepAngle } from "../../domain/entities"
-import { createHarness } from "../../../test/harness"
+import { type CadHarness, createHarness } from "../../../test/harness"
 import {
   arcOf,
   circleOf,
@@ -268,15 +273,217 @@ describe("BREAK", () => {
     expect(other.endAngle).toBeCloseToAngle(deg(180))
   })
 
-  it("leaves polylines alone (they are not breakable yet)", () => {
-    const cad = createHarness({
-      entities: [polylineOf([p(-100, 0), p(100, 0), p(100, 100)])],
+  it("refuses to split a circle in place, as AutoCAD says", () => {
+    for (const [locale, command, atPoint, refusal] of [
+      [undefined, "BREAK", "BREAKATPOINT", "Arc cannot be full 360 degrees"],
+      [es, "PARTE", "PARTIRENPUNTO", "Un arco no puede tener 360 grados"],
+    ] as const) {
+      const cad = createHarness({
+        locale,
+        entities: [circleOf(p(0, 0), 50, { id: "c1" })],
+      })
+      answer(cad, command, "50,0", "@")
+      expect(cad.commandLog().at(-1)).toBe(refusal)
+      answer(cad, atPoint, "50,0", "50,0")
+      expect(cad.commandLog().at(-1)).toBe(refusal)
+      expect(cad.only<CircleEntity>("circle").id).toBe("c1")
+      expect(cad.activeToolId()).toBe("select")
+    }
+  })
+})
+
+/** Each answer typed at the command line and confirmed. */
+function answer(cad: CadHarness, ...texts: string[]): CadHarness {
+  for (const text of texts) {
+    cad.runtime.setCommandLineText(text)
+    cad.runtime.submitCommandLine()
+  }
+  return cad
+}
+
+/** The polylines left, in drawing order, their vertices to four places. */
+function pieces(cad: CadHarness): { id: string; vertices: string }[] {
+  const round = (value: number) => Math.round(value * 1e4) / 1e4
+  return (cad.entities() as PolylineEntity[]).map((poly) => ({
+    id: poly.id,
+    vertices: poly.vertices.map((v) => round(v.x) + "," + round(v.y)).join(" "),
+  }))
+}
+
+const SQUARE = [p(0, 0), p(100, 0), p(100, 100), p(0, 100)]
+
+// AutoCAD 2023's console's LIST after each break (acc/pb1–pb11, pc1–pc12,
+// pa1–pa4, pk1–pk9): the piece from the polyline's start keeps its handle.
+describe("BREAK of a polyline", () => {
+  it("keeps what lies before and after on an open one, the first piece the object", () => {
+    for (const [first, second, kept, added] of [
+      ["20,0", "60,0", "0,0 20,0", "60,0 100,0 100,100 0,100"],
+      ["50,0", "50,100", "0,0 50,0", "50,100 0,100"],
+      ["50,100", "50,0", "0,0 50,0", "50,100 0,100"],
+      ["100,0", "100,50", "0,0 100,0", "100,50 100,100 0,100"],
+      ["0,0", "50,0", "50,0 100,0 100,100 0,100", null],
+      ["50,100", "0,100", "0,0 100,0 100,100 50,100", null],
+      ["100,0", "@", "0,0 100,0", "100,0 100,100 0,100"],
+      ["50,0", "@", "0,0 50,0", "50,0 100,0 100,100 0,100"],
+      ["0,0", "@", "0,0 100,0 100,100 0,100", null],
+      ["0,100", "@", "0,0 100,0 100,100 0,100", null],
+    ] as const) {
+      const cad = createHarness({ entities: [polylineOf(SQUARE, { id: "P" })] })
+      answer(cad, "BREAK", first, second)
+      const left = pieces(cad)
+      expect(left[0]).toEqual({ id: "P", vertices: kept })
+      expect(left.slice(1).map((piece) => piece.vertices)).toEqual(
+        added ? [added] : []
+      )
+    }
+
+    const whole = createHarness({ entities: [polylineOf(SQUARE)] })
+    answer(whole, "BREAK", "0,0", "0,100")
+    expect(whole.entityCount).toBe(0)
+  })
+
+  it("keeps a closed one open from the later point round to the earlier", () => {
+    const cw = [p(0, 0), p(0, 100), p(100, 100), p(100, 0)]
+    for (const [shape, first, second, kept, added] of [
+      [SQUARE, "50,0", "100,50", "100,50 100,100 0,100 0,0 50,0", null],
+      [SQUARE, "100,50", "50,0", "100,50 100,100 0,100 0,0 50,0", null],
+      [SQUARE, "50,0", "50,100", "50,100 0,100 0,0 50,0", null],
+      [SQUARE, "0,50", "50,0", "0,50 0,0 50,0", null],
+      [cw, "50,0", "100,50", "50,0 0,0 0,100 100,100 100,50", null],
+      [cw, "100,50", "50,0", "50,0 0,0 0,100 100,100 100,50", null],
+      [SQUARE, "100,0", "100,50", "100,50 100,100 0,100 0,0 100,0", null],
+      [SQUARE, "0,0", "100,50", "100,50 100,100 0,100 0,0", null],
+      [SQUARE, "50,0", "@", "0,0 50,0", "50,0 100,0 100,100 0,100 0,0"],
+      [SQUARE, "100,0", "@", "0,0 100,0", "100,0 100,100 0,100 0,0"],
+    ] as const) {
+      const cad = createHarness({
+        entities: [polylineOf(shape, { id: "P", closed: true })],
+      })
+      answer(cad, "BREAK", first, second)
+      const left = pieces(cad)
+      expect(left[0]).toEqual({ id: "P", vertices: kept })
+      expect(left.slice(1).map((piece) => piece.vertices)).toEqual(
+        added ? [added] : []
+      )
+      const closed = (cad.entities() as PolylineEntity[]).map(
+        (poly) => poly.closed
+      )
+      expect(closed).not.toContain(true)
+    }
+
+    const atStart = createHarness({
+      entities: [polylineOf(SQUARE, { id: "P", closed: true })],
     })
+    answer(atStart, "BREAK", "0,0", "@")
+    expect(atStart.only<PolylineEntity>("polyline")).toMatchObject({
+      id: "P",
+      closed: true,
+    })
+  })
 
-    cad.command("BREAK").click(p(-50, 0)).click(p(50, 0))
+  it("cuts an arc segment on its own circle", () => {
+    // 0,0 → 100,0, a half circle bulging east to 100,100, → 0,100.
+    for (const [first, second, kept, keptBulges, added, addedBulges] of [
+      [
+        "150,50",
+        "135.3553,85.3553",
+        "0,0 100,0 150,50",
+        [0, 0.4142],
+        "135.3553,85.3553 100,100 0,100",
+        [0.1989, 0],
+      ],
+      ["50,0", "150,50", "0,0 50,0", [0], "150,50 100,100 0,100", [0.4142, 0]],
+      [
+        "150,50",
+        "@",
+        "0,0 100,0 150,50",
+        [0, 0.4142],
+        "150,50 100,100 0,100",
+        [0.4142, 0],
+      ],
+    ] as const) {
+      const cad = createHarness({
+        entities: [polylineOf(SQUARE, { id: "P", bulges: [0, 1, 0] })],
+      })
+      answer(cad, "BREAK", first, second)
+      const [poly, piece] = cad.entities() as PolylineEntity[]
+      expect(pieces(cad).map((left) => left.vertices)).toEqual([kept, added])
+      const bulges = (line: PolylineEntity) =>
+        line.vertices
+          .slice(1)
+          .map((_, i) => Math.round((line.bulges?.[i] ?? 0) * 1e4) / 1e4)
+      expect(poly.id).toBe("P")
+      expect(bulges(poly)).toEqual(keptBulges)
+      expect(bulges(piece)).toEqual(addedBulges)
+    }
+  })
 
-    expect(cad.entityCount).toBe(1)
-    expect(cad.activeToolId()).toBe("break") // still waiting for a valid object
+  it("leaves the new piece Last, and U puts the polyline back whole", () => {
+    const cad = createHarness({ entities: [polylineOf(SQUARE, { id: "P" })] })
+    answer(cad, "BREAK", "50,0", "50,100", "ERASE", "L", "")
+    expect(pieces(cad)).toEqual([{ id: "P", vertices: "0,0 50,0" }])
+    cad.undo().undo()
+    expect(pieces(cad)).toEqual([
+      { id: "P", vertices: "0,0 100,0 100,100 0,100" },
+    ])
+
+    // One piece left: it is the polyline, and Last finds it (pk9).
+    const closed = createHarness({
+      entities: [polylineOf(SQUARE, { id: "P", closed: true })],
+    })
+    answer(closed, "BREAK", "50,0", "100,50", "ERASE", "L", "")
+    expect(closed.entityCount).toBe(0)
+  })
+
+  it("splits it at BREAKATPOINT's point, a closed one at its start too", () => {
+    for (const [locale, command, closed, at, kept, added] of [
+      [
+        undefined,
+        "BREAKATPOINT",
+        false,
+        "50,0",
+        "0,0 50,0",
+        "50,0 100,0 100,100 0,100",
+      ],
+      [es, "PARTIRENPUNTO", false, "100,0", "0,0 100,0", "100,0 100,100 0,100"],
+      [
+        undefined,
+        "BREAKATPOINT",
+        true,
+        "50,0",
+        "0,0 50,0",
+        "50,0 100,0 100,100 0,100 0,0",
+      ],
+    ] as const) {
+      const cad = createHarness({
+        locale,
+        entities: [polylineOf(SQUARE, { id: "P", closed })],
+      })
+      answer(cad, command, at, at)
+      expect(pieces(cad)).toEqual([
+        { id: "P", vertices: kept },
+        { id: expect.any(String), vertices: added },
+      ])
+      cad.undo()
+      expect(cad.only<PolylineEntity>("polyline")).toMatchObject({ closed })
+    }
+  })
+
+  it("is asked in Autodesk's Spanish", () => {
+    const cad = createHarness({
+      locale: es,
+      entities: [polylineOf(SQUARE, { id: "P" })],
+    })
+    answer(cad, "PARTE", "20,0", "60,0")
+    expect(cad.commandLog()).toEqual([
+      "PARTE",
+      "Designe objeto: 20,0",
+      "Precise segundo punto de ruptura o [Primer punto]: 60,0",
+    ])
+    expect(pieces(cad).map((piece) => piece.vertices)).toEqual([
+      "0,0 20,0",
+      "60,0 100,0 100,100 0,100",
+    ])
   })
 })
 

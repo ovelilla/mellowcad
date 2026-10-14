@@ -1354,6 +1354,7 @@
       "expectsPointOr": "Expects a point or {keywords}",
       "selectionModes": "{set, select, subobjects {Window/Crossing/BOX/Fence/WPolygon/CPolygon/Add/Remove/Multiple/Previous/Undo/AUto/SIngle/SUbobject/Object} oneObject {Window/Last/Crossing/BOX/ALL/Fence/WPolygon/CPolygon} singleSet {Window/Last/Crossing/BOX/ALL/Fence/WPolygon/CPolygon/Group} pathCurve {Window/Last/Crossing/BOX/ALL/Fence/WPolygon/CPolygon/Group/Previous/AUto} crossingObjects {Window/Last/Crossing/BOX/ALL/Fence/WPolygon/CPolygon/Add/Remove/Multiple/Previous/Undo/AUto/SIngle} wholeObjects {Window/Last/Crossing/BOX/ALL/Fence/WPolygon/CPolygon/Group/Add/Remove/Multiple/Previous/Undo/AUto/SIngle} other {Window/Last/Crossing/BOX/ALL/Fence/WPolygon/CPolygon/Group/Add/Remove/Multiple/Previous/Undo/AUto/SIngle/SUbobject/Object}}",
       "noObjectFound": "No object found",
+      "arcCannotBeFull360": "Arc cannot be full 360 degrees",
       "arrayType": "Type = {type, select, rectangular {Rectangular} polar {Polar} other {Path}}  Associative = No",
       "requiresPositiveInteger": "Requires a positive nonzero integer or option keyword.",
       "requiresNonzero": "Requires numeric nonzero value.",

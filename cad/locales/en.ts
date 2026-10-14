@@ -2514,6 +2514,7 @@ export const en: EngineCatalog = {
         ]
       ],
       "noObjectFound": "No object found",
+      "arcCannotBeFull360": "Arc cannot be full 360 degrees",
       "arrayType": [
         "Type = ",
         [

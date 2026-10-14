@@ -2,9 +2,7 @@ import { Vec2, V } from "../../geometry/Vec2"
 import {
   angleWithinSweep,
   circleCircleIntersection,
-  closestPointOnArc,
   closestPointOnEllipse,
-  closestPointOnSegment,
   infiniteLineIntersection,
   lineCircleIntersectionParams,
   normalizeAngle,
@@ -30,9 +28,11 @@ import {
   createPolyline,
   ellipseSweepParams,
   isFullEllipse,
-  polylineBulge,
+  fractionAlongSegment,
+  nearestPolylineSegment,
   polylineSegmentGeometries,
   polylineSegments,
+  polylineSpan,
   readsInPlan,
 } from "../../domain/entities"
 import { LayerId } from "../../domain/layers"
@@ -1247,25 +1247,6 @@ function planTrimSpline(
 // --- Polyline target --------------------------------------------------------
 
 /** Index of the polyline segment nearest the click (matches `polylineSegmentGeometries`). */
-function nearestPolylineSegment(poly: PolylineEntity, click: Vec2): number {
-  const geoms = polylineSegmentGeometries(poly)
-  let best = 0
-  let bestDist = Infinity
-  for (let i = 0; i < geoms.length; i++) {
-    const g = geoms[i]
-    const d =
-      g.kind === "line"
-        ? closestPointOnSegment(g.a, g.b, click).distance
-        : closestPointOnArc(g.center, g.radius, g.startAngle, g.endAngle, click)
-            .distance
-    if (d < bestDist) {
-      bestDist = d
-      best = i
-    }
-  }
-  return best
-}
-
 /**
  * The polyline's other segments, which cut the picked one as any edge does:
  * Quick mode makes every object an edge, the polyline too, so AutoCAD 2023's
@@ -1321,9 +1302,7 @@ function planTrimPolyline(
   const ta = bounds[i]
   const tb = bounds[i + 1]
 
-  const pa = pointOnLine(line, ta)
-  const pb = pointOnLine(line, tb)
-  const replacements = trimPolylinePieces(poly, si, ta, tb, pa, pb)
+  const replacements = trimPolylinePieces(poly, si, ta, tb)
   if (replacements.length === 0) return null
 
   return {
@@ -1331,7 +1310,11 @@ function planTrimPolyline(
     targetId: poly.id,
     layerId: poly.layerId,
     replacements,
-    removed: { kind: "line", start: pa, end: pb },
+    removed: {
+      kind: "line",
+      start: pointOnLine(line, ta),
+      end: pointOnLine(line, tb),
+    },
   }
 }
 
@@ -1409,21 +1392,7 @@ function planTrimPolylineArc(
   const fa = bounds[i]
   const fb = bounds[i + 1]
 
-  const pa = polarPoint(seg.center, seg.radius, angA + fa * phi)
-  const pb = polarPoint(seg.center, seg.radius, angA + fb * phi)
-  const startBulge = Math.tan((fa * phi) / 4) // sub-arc from start vertex to pa
-  const endBulge = Math.tan(((1 - fb) * phi) / 4) // sub-arc from pb to end vertex
-
-  const replacements = trimPolylinePieces(
-    poly,
-    si,
-    fa,
-    fb,
-    pa,
-    pb,
-    startBulge,
-    endBulge
-  )
+  const replacements = trimPolylinePieces(poly, si, fa, fb)
   if (replacements.length === 0) return null
 
   return {
@@ -1436,93 +1405,29 @@ function planTrimPolylineArc(
 }
 
 /**
- * The polyline piece(s) left after removing the interval `[ta, tb]` of segment
- * `si`, with every other segment's bulge carried into the surviving pieces. The
- * two new boundary segments (start-vertex→pa and pb→end-vertex) take
- * `startBulge`/`endBulge` — zero for a straight target, or the retained sub-arc
- * bulge when the trimmed segment is an arc. Pieces with fewer than two vertices
- * (a bare stub at a free end) are dropped.
+ * The polyline piece(s) left after removing the interval `[ta, tb]` of
+ * segment `si` (fractions along it, an arc's by its sweep), every other
+ * segment's bulge carried into what survives (`polylineSpan`, BREAK's cut
+ * too). A cut that reaches a free end merely shortens the chain; a mid-chain
+ * cut breaks it in two; a closed polyline opens into one chain, from the
+ * cut's far end round to its near one. A bare stub at a free end is dropped.
  */
 function trimPolylinePieces(
   poly: PolylineEntity,
   si: number,
   ta: number,
-  tb: number,
-  pa: Vec2,
-  pb: Vec2,
-  startBulge = 0,
-  endBulge = 0
+  tb: number
 ): EditGeom[] {
-  const v = poly.vertices
-  const n = v.length
-  const keepStart = ta > PARAM_EPS // pa is distinct from the segment's start vertex
-  const keepEnd = tb < 1 - PARAM_EPS // pb is distinct from the segment's end vertex
-  const clone = (p: Vec2): Vec2 => ({ x: p.x, y: p.y })
-
-  // Two vertices make one segment, closed or not (`polylineSegments`).
-  if (poly.closed && n > 2) {
-    // A cut opens the loop into one chain: from pb, around the ring past the
-    // untouched vertices back to the start vertex, ending at pa.
-    const endVertex = (si + 1) % n
-    const vertices: Vec2[] = []
-    const bulges: number[] = []
-    if (keepEnd) {
-      vertices.push(clone(pb))
-      bulges.push(endBulge)
-    }
-    for (let k = 0; k < n; k++) {
-      const idx = (endVertex + k) % n
-      vertices.push(clone(v[idx]))
-      if (k < n - 1) bulges.push(polylineBulge(poly, idx))
-    }
-    if (keepStart) {
-      bulges.push(startBulge)
-      vertices.push(clone(pa))
-    }
-    return vertices.length >= 2
-      ? [{ kind: "polyline", vertices, closed: false, bulges }]
+  const count = polylineSegments(poly).length
+  const piece = (from: number, to: number): EditGeom[] =>
+    to - from > PARAM_EPS
+      ? [{ kind: "polyline", ...polylineSpan(poly, from, to), closed: false }]
       : []
+  // Two vertices make one segment, closed or not (`polylineSegments`).
+  if (poly.closed && poly.vertices.length > 2) {
+    return piece(si + tb, si + ta + count)
   }
-
-  const pieces: EditGeom[] = []
-  const beforeV: Vec2[] = []
-  const beforeB: number[] = []
-  for (let idx = 0; idx <= si; idx++) {
-    beforeV.push(clone(v[idx]))
-    if (idx < si) beforeB.push(polylineBulge(poly, idx))
-  }
-  if (keepStart) {
-    beforeB.push(startBulge)
-    beforeV.push(clone(pa))
-  }
-  if (beforeV.length >= 2) {
-    pieces.push({
-      kind: "polyline",
-      vertices: beforeV,
-      closed: false,
-      bulges: beforeB,
-    })
-  }
-
-  const afterV: Vec2[] = []
-  const afterB: number[] = []
-  if (keepEnd) {
-    afterV.push(clone(pb))
-    afterB.push(endBulge)
-  }
-  for (let idx = si + 1; idx < n; idx++) {
-    afterV.push(clone(v[idx]))
-    if (idx < n - 1) afterB.push(polylineBulge(poly, idx))
-  }
-  if (afterV.length >= 2) {
-    pieces.push({
-      kind: "polyline",
-      vertices: afterV,
-      closed: false,
-      bulges: afterB,
-    })
-  }
-  return pieces
+  return [...piece(0, si + ta), ...piece(si + tb, count)]
 }
 
 /**
@@ -1544,7 +1449,7 @@ function planExtendPolyline(
   const n = v.length
   const segments = polylineSegmentGeometries(poly)
   const si = nearestPolylineSegment(poly, click)
-  const growStart = si + fractionAlong(segments[si], click) < (n - 1) / 2
+  const growStart = si + fractionAlongSegment(segments[si], click) < (n - 1) / 2
   const end = growStart ? 0 : n - 2
   const geom = segments[end]
   if (geom.kind === "arc") {
@@ -1575,30 +1480,6 @@ function planExtendPolyline(
     result: extendedPolyline(poly, n - 1, np),
     added: { kind: "line", start: v[n - 1], end: np },
   }
-}
-
-/**
- * How far along `segment` the point nearest `click` lies, from 0 at its
- * start to 1 at its end — an arc's by its sweep.
- */
-function fractionAlong(segment: PolylineSegmentGeometry, click: Vec2): number {
-  if (segment.kind === "line") {
-    const t = paramOnLine(createLine(segment.a, segment.b), click)
-    return Math.min(1, Math.max(0, t))
-  }
-  const phi = 4 * Math.atan(segment.bulge)
-  const angA = Math.atan2(
-    segment.a.y - segment.center.y,
-    segment.a.x - segment.center.x
-  )
-  const angClick = Math.atan2(
-    click.y - segment.center.y,
-    click.x - segment.center.x
-  )
-  const f = normalizeAngle((angClick - angA) * Math.sign(phi)) / Math.abs(phi)
-  if (f <= 1) return f
-  // Past the sweep: the end of it the click lies nearer round the circle.
-  return f - 1 < (2 * Math.PI) / Math.abs(phi) - f ? 1 : 0
 }
 
 /**

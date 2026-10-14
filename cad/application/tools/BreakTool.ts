@@ -6,9 +6,14 @@ import {
   CircleEntity,
   createArc,
   createLine,
+  createPolyline,
   Entity,
   EntityId,
   LineEntity,
+  PolylineEntity,
+  polylineParamAt,
+  polylineSegments,
+  polylineSpan,
   readsInPlan,
 } from "../../domain/entities"
 import { normalizeAngle } from "../../geometry/primitives"
@@ -46,8 +51,6 @@ import {
  * point:`; BREAKATPOINT asks `Specify break point:`. Points off the object are
  * pulled onto its nearest point, and a circle is broken counter-clockwise from
  * the first point to the second, leaving an arc.
- *
- * Polylines are not broken yet (EXPLODE them first).
  */
 export type BreakMode = "gap" | "atPoint"
 
@@ -73,6 +76,11 @@ type BreakGeom =
       readonly radius: number
       readonly startAngle: number
       readonly endAngle: number
+    }
+  | {
+      readonly kind: "polyline"
+      readonly vertices: readonly Vec2[]
+      readonly bulges: readonly number[]
     }
 
 interface BreakResult {
@@ -262,7 +270,7 @@ export class BreakTool implements Tool {
       )
       if (result?.removed) {
         out.push(
-          geomPrimitive(result.removed, ctx, {
+          ...geomPrimitives(this.state.target, result.removed, ctx, {
             color: THEME.gripHot,
             width: 1.5,
             dash: [6, 4],
@@ -359,6 +367,11 @@ export class BreakTool implements Tool {
   ): void {
     const result = computeBreak(target, first, second)
     if (!result) {
+      // WHY: AutoCAD 2023's console will not split a circle in place
+      // (acc/pc5, pc13); at a line's or an arc's end it does nothing.
+      if (target.type === "circle") {
+        ctx.report(ctx.text.message("arcCannotBeFull360"))
+      }
       ctx.endCommand()
       return
     }
@@ -379,15 +392,29 @@ export class BreakTool implements Tool {
   }
 }
 
+/** What {@link computeBreak} cuts; anything else does not highlight. */
+const BROKEN: ReadonlySet<Entity["type"]> = new Set([
+  "line",
+  "arc",
+  "circle",
+  "polyline",
+])
+
 function breakable(entity: Entity): boolean {
-  return entity.type !== "polyline" && readsInPlan(entity)
+  return BROKEN.has(entity.type) && readsInPlan(entity)
 }
 
 function toEntity(source: Entity, geom: BreakGeom, id?: EntityId): Entity {
-  const entity =
-    geom.kind === "line"
-      ? createLine(geom.start, geom.end, source.layerId, id)
-      : createArc(
+  switch (geom.kind) {
+    case "line":
+      return carryPiece(
+        source,
+        createLine(geom.start, geom.end, source.layerId, id)
+      )
+    case "arc":
+      return carryPiece(
+        source,
+        createArc(
           geom.center,
           geom.radius,
           geom.startAngle,
@@ -395,30 +422,49 @@ function toEntity(source: Entity, geom: BreakGeom, id?: EntityId): Entity {
           source.layerId,
           id
         )
-  return carryPiece(source, entity)
+      )
+    case "polyline":
+      return carryPiece(
+        source,
+        createPolyline(geom.vertices, false, source.layerId, geom.bulges, id)
+      )
+  }
 }
 
-function geomPrimitive(
+function geomPrimitives(
+  source: Entity,
   geom: BreakGeom,
   ctx: ToolContext,
   stroke: { color: string; width: number; dash?: number[] }
-): ScenePrimitive {
-  if (geom.kind === "line") {
-    return {
-      kind: "segment",
-      a: ctx.viewport.worldToScreen(geom.start),
-      b: ctx.viewport.worldToScreen(geom.end),
-      stroke,
-    }
+): ScenePrimitive[] {
+  switch (geom.kind) {
+    case "line":
+      return [
+        {
+          kind: "segment",
+          a: ctx.viewport.worldToScreen(geom.start),
+          b: ctx.viewport.worldToScreen(geom.end),
+          stroke,
+        },
+      ]
+    case "arc":
+      return [
+        arcScenePrimitive(
+          ctx.viewport,
+          geom.center,
+          geom.radius,
+          geom.startAngle,
+          geom.endAngle,
+          stroke
+        ),
+      ]
+    case "polyline":
+      return entityScenePrimitive(
+        ctx.viewport,
+        toEntity(source, geom, "break-preview"),
+        stroke
+      )
   }
-  return arcScenePrimitive(
-    ctx.viewport,
-    geom.center,
-    geom.radius,
-    geom.startAngle,
-    geom.endAngle,
-    stroke
-  )
 }
 
 /** The pieces a break at `first`/`second` leaves, or null when it does nothing. */
@@ -434,9 +480,10 @@ function computeBreak(
       return breakArc(entity, first, second)
     case "circle":
       return breakCircle(entity, first, second)
+    case "polyline":
+      return breakPolyline(entity, first, second)
     case "ellipse":
     case "spline":
-    case "polyline":
     case "text":
     case "mtext":
     case "attdef":
@@ -543,6 +590,48 @@ function breakCircle(
       endAngle: a2,
     },
   }
+}
+
+/**
+ * A polyline loses the part between the two points in its vertices' order,
+ * whichever is picked first (AutoCAD 2023's console, acc/pb1–pb11): an open
+ * one keeps what lies before and after, a closed one what runs on from the
+ * later point round to the earlier, opened there, even where that is the
+ * longer way round (pc1–pc10). The same point twice splits it, a closed one
+ * at its start vertex too, and does nothing at an end or at that vertex
+ * (pb7–pb10, pc4, pc11, pc12).
+ */
+function breakPolyline(
+  poly: PolylineEntity,
+  first: Vec2,
+  second: Vec2
+): BreakResult | null {
+  const count = polylineSegments(poly).length
+  const t1 = polylineParamAt(poly, first)
+  const t2 = polylineParamAt(poly, second)
+  const ta = Math.min(t1, t2)
+  const tb = Math.max(t1, t2)
+  const span = (from: number, to: number): BreakGeom => ({
+    kind: "polyline",
+    ...polylineSpan(poly, from, to),
+  })
+
+  if (tb - ta < PARAM_EPS) {
+    if (ta < PARAM_EPS || ta > count - PARAM_EPS) return null
+    return { kept: [span(0, ta), span(ta, count)], removed: null }
+  }
+  // Two vertices make one segment, closed or not (`polylineSegments`).
+  if (poly.closed && poly.vertices.length > 2) {
+    const rest = ta + count - tb
+    return {
+      kept: rest > PARAM_EPS ? [span(tb, ta + count)] : [],
+      removed: span(ta, tb),
+    }
+  }
+  const kept: BreakGeom[] = []
+  if (ta > PARAM_EPS) kept.push(span(0, ta))
+  if (tb < count - PARAM_EPS) kept.push(span(tb, count))
+  return { kept, removed: span(ta, tb) }
 }
 
 function arcGeom(

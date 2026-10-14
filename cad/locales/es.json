@@ -1392,6 +1392,7 @@
       "expectsPointOr": "Requiere un punto o {keywords}",
       "selectionModes": "{set, select, subobjects {Ventana/Captura/MArco/Borde/polígonOV/polígonOC/Añadir/Eliminar/Múltiple/Previo/desHacer/AUto/úNico/Subobjeto/Objeto} oneObject {Ventana/úLTimo/Captura/MArco/Todos/Borde/polígonOV/polígonOC} singleSet {Ventana/úLTimo/Captura/MArco/Todos/Borde/polígonOV/polígonOC/Grupo} pathCurve {Ventana/úLTimo/Captura/MArco/Todos/Borde/polígonOV/polígonOC/Grupo/Previo/AUto} crossingObjects {Ventana/úLTimo/Captura/MArco/Todos/Borde/polígonOV/polígonOC/Añadir/Eliminar/Múltiple/Previo/desHacer/AUto/úNico} wholeObjects {Ventana/úLTimo/Captura/MArco/Todos/Borde/polígonOV/polígonOC/Grupo/Añadir/Eliminar/Múltiple/Previo/desHacer/AUto/úNico} other {Ventana/úLTimo/Captura/MArco/Todos/Borde/polígonOV/polígonOC/Grupo/Añadir/Eliminar/Múltiple/Previo/desHacer/AUto/úNico/Subobjeto/Objeto}}",
       "noObjectFound": "No se ha encontrado ningún objeto",
+      "arcCannotBeFull360": "Un arco no puede tener 360 grados",
       "arrayType": "Tipo = {type, select, rectangular {Rectangular} polar {Polar} other {Ruta}}  Asociativa = No",
       "requiresPositiveInteger": "Requiere un nº entero positivo que no sea cero o una opción.",
       "requiresNonzero": "Necesita un valor numérico distinto de cero.",

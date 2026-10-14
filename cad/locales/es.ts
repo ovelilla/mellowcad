@@ -2829,6 +2829,7 @@ export const es: EngineLocale = {
         ]
       ],
       "noObjectFound": "No se ha encontrado ningún objeto",
+      "arcCannotBeFull360": "Un arco no puede tener 360 grados",
       "arrayType": [
         "Tipo = ",
         [

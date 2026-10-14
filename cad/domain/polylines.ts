@@ -1,5 +1,11 @@
 import { Vec2, V } from "../geometry/Vec2"
-import { bulgeToArc, normalizeAngle } from "../geometry/primitives"
+import {
+  bulgeToArc,
+  closestPointOnArc,
+  closestPointOnSegment,
+  normalizeAngle,
+  polarPoint,
+} from "../geometry/primitives"
 import { PolylineEntity } from "./entityTypes"
 import { createPolyline } from "./entityFactories"
 
@@ -72,6 +78,128 @@ export function polylineSegments(poly: PolylineEntity): [Vec2, Vec2][] {
     segments.push([vertices[vertices.length - 1], vertices[0]])
   }
   return segments
+}
+
+/** The index of the segment nearest `point`, the first of two as near. */
+export function nearestPolylineSegment(
+  poly: PolylineEntity,
+  point: Vec2
+): number {
+  const segments = polylineSegmentGeometries(poly)
+  let best = 0
+  let bestDistance = Infinity
+  segments.forEach((segment, i) => {
+    const distance =
+      segment.kind === "line"
+        ? closestPointOnSegment(segment.a, segment.b, point).distance
+        : closestPointOnArc(
+            segment.center,
+            segment.radius,
+            segment.startAngle,
+            segment.endAngle,
+            point
+          ).distance
+    if (distance < bestDistance) {
+      bestDistance = distance
+      best = i
+    }
+  })
+  return best
+}
+
+/**
+ * How far along `segment` the point nearest `point` lies, from 0 at its
+ * start to 1 at its end — an arc's by its sweep.
+ */
+export function fractionAlongSegment(
+  segment: PolylineSegmentGeometry,
+  point: Vec2
+): number {
+  if (segment.kind === "line") {
+    const along = V.sub(segment.b, segment.a)
+    const lengthSq = V.lengthSq(along)
+    if (lengthSq === 0) return 0
+    const t = V.dot(V.sub(point, segment.a), along) / lengthSq
+    return Math.min(1, Math.max(0, t))
+  }
+  const phi = 4 * Math.atan(segment.bulge)
+  const start = Math.atan2(
+    segment.a.y - segment.center.y,
+    segment.a.x - segment.center.x
+  )
+  const at = Math.atan2(point.y - segment.center.y, point.x - segment.center.x)
+  const f = normalizeAngle((at - start) * Math.sign(phi)) / Math.abs(phi)
+  if (f <= 1) return f
+  // Past the sweep: the end of it the point lies nearer round the circle.
+  return f - 1 < (2 * Math.PI) / Math.abs(phi) - f ? 1 : 0
+}
+
+/**
+ * The polyline's parameter at the point of it nearest `point`: the nearest
+ * segment's index plus how far along it, so a vertex's is its index.
+ */
+export function polylineParamAt(poly: PolylineEntity, point: Vec2): number {
+  const i = nearestPolylineSegment(poly, point)
+  return i + fractionAlongSegment(polylineSegmentGeometries(poly)[i], point)
+}
+
+const SPAN_EPS = 1e-9
+
+/**
+ * The run of `poly` between two of its parameters, `from` before `to`: the
+ * points met on the way and the bulges between them, a cut arc segment
+ * keeping its centre and radius. Round a closed polyline `to` may pass its
+ * last segment and go on from the start. TRIM and BREAK cut polylines with
+ * it.
+ */
+export function polylineSpan(
+  poly: PolylineEntity,
+  from: number,
+  to: number
+): { vertices: Vec2[]; bulges: number[] } {
+  const segments = polylineSegmentGeometries(poly)
+  const count = segments.length
+  const segmentAt = (i: number) => segments[i % count]
+  const first = Math.min(Math.floor(from + SPAN_EPS), count - 1)
+  const vertices = [pointAlongSegment(segmentAt(first), from - first)]
+  const bulges: number[] = []
+  let t = from
+  while (to - t > SPAN_EPS) {
+    const i = Math.floor(t + SPAN_EPS)
+    const next = Math.min(i + 1, to)
+    const segment = segmentAt(i)
+    const f0 = Math.max(0, t - i)
+    const f1 = next - i
+    // A whole segment keeps its own bulge, a part the bulge of its sweep.
+    bulges.push(
+      segment.kind === "line"
+        ? 0
+        : f1 - f0 > 1 - SPAN_EPS
+          ? segment.bulge
+          : Math.tan((f1 - f0) * Math.atan(segment.bulge))
+    )
+    vertices.push(pointAlongSegment(segment, f1))
+    t = next
+  }
+  return { vertices, bulges }
+}
+
+/** The point a fraction `f` along `segment`, its own vertex at either end. */
+function pointAlongSegment(segment: PolylineSegmentGeometry, f: number): Vec2 {
+  if (f <= SPAN_EPS) return { x: segment.a.x, y: segment.a.y }
+  if (f >= 1 - SPAN_EPS) return { x: segment.b.x, y: segment.b.y }
+  if (segment.kind === "line") {
+    return V.add(segment.a, V.scale(V.sub(segment.b, segment.a), f))
+  }
+  const start = Math.atan2(
+    segment.a.y - segment.center.y,
+    segment.a.x - segment.center.x
+  )
+  return polarPoint(
+    segment.center,
+    segment.radius,
+    start + f * 4 * Math.atan(segment.bulge)
+  )
 }
 
 /** Total length of a polyline's outline (world units), arcs included. */
