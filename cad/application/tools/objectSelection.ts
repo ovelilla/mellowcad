@@ -686,13 +686,17 @@ export class ObjectSelector {
         )
         return
       case "fence":
-        this.step = { ...step, points: [...step.points, point] }
-        this.openPointInput(ctx)
-        return
       case "polygon": {
+        // WHY a fence too: AutoCAD 2023's console refuses its point on the
+        // one before in the polygon's words (acc/fn1, fn4).
         const last = step.points.at(-1)
         if (last && last.x === point.x && last.y === point.y) {
           ctx.report(ctx.text.message("polygonSegmentZeroLength"))
+          return
+        }
+        if (step.kind === "fence") {
+          this.step = { ...step, points: [...step.points, point] }
+          this.openPointInput(ctx)
           return
         }
         const first = step.points[0]
@@ -930,23 +934,25 @@ export class ObjectSelector {
 
   /**
    * The point box of a mode's prompt, so a typed coordinate answers it. A
-   * number at a window's corner is a direct distance, as AutoCAD 2023's
-   * console takes it at W, C and BOX and after a point typed on nothing:
-   * the first corner from LASTPOINT, the opposite one from the first
-   * (acc/wn13–wn17, as ZOOM's wn1–wn6 show where).
+   * number there is a direct distance, as AutoCAD 2023's console takes it
+   * at W, C and BOX and after a point typed on nothing — the first corner
+   * from LASTPOINT, the opposite one from the first (acc/wn13–wn17, as
+   * ZOOM's wn1–wn6 show where) — and at a fence's or a polygon's points,
+   * the first from LASTPOINT, the next from the point before (fn1–fn3).
    */
   private openPointInput(ctx: ToolContext): void {
     const step = this.step
+    const from =
+      step.kind === "oppositeCorner"
+        ? step.start
+        : step.kind === "fence" || step.kind === "polygon"
+          ? step.points.at(-1)
+          : undefined
     ctx.dynamicInput.open({
       fields: [{ id: "point", prompt: this.question(), kind: "coordinate" }],
       commit: () => {},
       commitRaw: (commitCtx) => this.commitTyped(commitCtx),
-      directDistance:
-        step.kind === "firstCorner"
-          ? "lastPoint"
-          : step.kind === "oppositeCorner"
-            ? { ...step.start, z: ctx.elevation }
-            : undefined,
+      directDistance: from ? { ...from, z: ctx.elevation } : "lastPoint",
     })
   }
 

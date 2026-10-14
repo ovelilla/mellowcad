@@ -581,6 +581,47 @@ describe("A number typed at a window's corner or where objects are picked", () =
     }
   })
 
+  // acc/fn1–fn7: the first point from LASTPOINT, the next from the point
+  // before, `@` too; LASTPOINT as it was once the set is closed. A line
+  // crossed only where each point stands tells where it is.
+  it("is a fence's or a polygon's point: the first from LASTPOINT, the next from the point before", () => {
+    for (const [locale, erase, fence, polygon] of [
+      [undefined, "ERASE", "F", "WP"],
+      [es, "BORRA", "B", "OV"],
+    ] as const) {
+      const drawing = () => [
+        lineOf(p(20, 0), p(20, 20), { id: "first" }),
+        lineOf(p(102, 99), p(102, 102), { id: "next" }),
+        circleOf(p(102, 99.6), 0.2, { id: "inside" }),
+      ]
+      const left = (cad: CadHarness) =>
+        cad.entities().map((entity) => entity.id)
+      const fenced = answer(fromTen(locale, drawing()), erase, fence, "5")
+      answer(fenced, "100,100", "5", "", "")
+      expect(left(fenced)).toEqual(["inside"])
+      expect(lastPoint(fenced)).toMatch(/10[.,]00 .* 0[.,]00 /)
+
+      const relative = answer(fromTen(locale, drawing()), erase, fence)
+      answer(relative, "98,100", "@6,0", "", "")
+      expect(left(relative)).toEqual(["first", "inside"])
+
+      const enclosed = answer(fromTen(locale, drawing()), erase, polygon, "5")
+      answer(enclosed, "100,100", "5", "200,0", "", "")
+      expect(left(enclosed)).toEqual(["first", "next"])
+      expect(lastPoint(enclosed)).toMatch(/10[.,]00 .* 0[.,]00 /)
+    }
+  })
+
+  // acc/fn1: a fence's point on the one before is refused as a polygon's is.
+  it("refuses a fence's point on the point before", () => {
+    const cad = answer(fromTen(), "ERASE", "F", "100,100", "100,100")
+    expect(cad.commandLog().slice(-2)).toEqual([
+      "Specify next fence point or [Undo]: 100,100",
+      "Invalid point, polygon segment is zero length.",
+    ])
+    cad.escape()
+  })
+
   // acc/wn53, bk36–bk38: BREAK's `Select object:` picks the line there.
   it("is a pick at BREAK's Select object, its first break point", () => {
     for (const [locale, command, distance, at] of [
