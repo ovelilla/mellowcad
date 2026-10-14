@@ -25,6 +25,12 @@ export interface Command {
   mapEntities(map: (entity: Entity) => Entity): Command
 }
 
+/** The command an undo (`undone`) or a redo is replaying. */
+export interface Replayed {
+  readonly command: Command
+  readonly undone: boolean
+}
+
 /**
  * Executes commands against the document and keeps linear undo/redo stacks.
  * Executing a new command clears the redo stack (standard editor semantics).
@@ -38,7 +44,7 @@ export class CommandHistory extends Observable {
    * option (LINE's U) still steps back one at a time.
    */
   private groupStart: number | null = null
-  private replayingStep = false
+  private replayingStep: Replayed | null = null
 
   constructor(
     private readonly document: CadDocument,
@@ -80,10 +86,10 @@ export class CommandHistory extends Observable {
   }
 
   /**
-   * Whether an undo or a redo is putting the document back, for what follows
-   * a change made and not one undone (LASTPOINT after a UCS).
+   * The undo or the redo putting the document back, `null` for a change
+   * made: what follows one and not the other (LASTPOINT after a UCS).
    */
-  get replaying(): boolean {
+  get replaying(): Replayed | null {
     return this.replayingStep
   }
 
@@ -101,11 +107,11 @@ export class CommandHistory extends Observable {
     if (this.groupStart !== null) {
       this.groupStart = Math.min(this.groupStart, this.undoStack.length)
     }
-    this.replayingStep = true
+    this.replayingStep = { command, undone: true }
     try {
       command.undo(this.document)
     } finally {
-      this.replayingStep = false
+      this.replayingStep = null
     }
     this.redoStack.push(command)
     this.emit()
@@ -115,11 +121,11 @@ export class CommandHistory extends Observable {
   redo(): boolean {
     const command = this.redoStack.pop()
     if (!command) return false
-    this.replayingStep = true
+    this.replayingStep = { command, undone: false }
     try {
       command.execute(this.document)
     } finally {
-      this.replayingStep = false
+      this.replayingStep = null
     }
     this.undoStack.push(command)
     this.emit()

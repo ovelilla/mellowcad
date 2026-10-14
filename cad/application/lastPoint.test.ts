@@ -127,7 +127,7 @@ describe("LASTPOINT", () => {
 
   // AutoCAD 2023's console (acc/u4, u5, u7): Previous and a restored named
   // UCS put it at the WCS's origin, read in the UCS they make current; U
-  // taking a UCS back leaves it at the origin of the UCS it took back.
+  // taking back a UCS whose origin was typed puts it back there.
   it("is the WCS's origin after UCS Previous or Restore, and stays after U", () => {
     const previous = createHarness()
     answer(previous, "UCS", "0,50", "", "UCS", "100,0", "", "ID", "5,5")
@@ -152,6 +152,57 @@ describe("LASTPOINT", () => {
     spanish.escape()
     answer(spanish, "SCP", "PR")
     expect(lastPoint(spanish)).toBe(" X = 0.00     Y = -50.00     Z = 0.00")
+  })
+
+  // AutoCAD 2023's console (acc/a1–a24 of the elliptical arcs session): U
+  // taking a UCS back puts it at the origin given at UCS's first prompt, and
+  // at the WCS's origin after any other way; REDO where the UCS put it.
+  it("goes where U and REDO of a UCS put it", () => {
+    const at = (...texts: string[]) =>
+      lastPoint(answer(createHarness(), ...texts))
+    const origin = " X = 0.00     Y = 0.00     Z = 0.00"
+    const wcsOrigin = " X = -100.00     Y = 0.00     Z = 0.00"
+
+    expect(at("ID", "5,5", "UCS", "100,0,0", "200,50,0", "", "U")).toBe(
+      " X = 100.00     Y = 0.00     Z = 0.00"
+    )
+    expect(at("UCS", "100,0", "", "ID", "5,5", "UCS", "50,0", "", "U")).toBe(
+      " X = 50.00     Y = 0.00     Z = 0.00"
+    )
+    for (const way of [
+      ["Z", "90"],
+      ["X", "45"],
+      ["ZA", "100,0,0", ""],
+      ["W"],
+    ]) {
+      expect(at("ID", "5,5", "UCS", ...way, "U")).toBe(origin)
+      expect(at("UCS", "100,0", "", "ID", "5,5", "UCS", ...way, "U")).toBe(
+        wcsOrigin
+      )
+    }
+
+    // World in the WCS changes nothing, and still puts it at the origin.
+    expect(at("ID", "5,5", "UCS", "W")).toBe(origin)
+
+    expect(at("ID", "5,5", "UCS", "100,0", "", "U", "REDO")).toBe(origin)
+    expect(at("UCS", "100,0", "", "ID", "5,5", "UCS", "W", "U", "REDO")).toBe(
+      origin
+    )
+    const previous = createHarness()
+    answer(previous, "UCS", "100,0", "", "UCS", "50,0", "", "UCS", "P")
+    answer(previous, "U", "REDO")
+    expect(lastPoint(previous)).toBe(wcsOrigin)
+    expect(previous.runtime.document.getSettings().ucs.origin).toEqual({
+      x: 100,
+      y: 0,
+      z: 0,
+    })
+
+    const spanish = createHarness({ locale: es })
+    answer(spanish, "SCP", "100,0", "", "ID", "5,5", "SCP", "Z", "90", "H")
+    expect(lastPoint(spanish)).toBe(wcsOrigin)
+    answer(spanish, "SCP", "U", "H", "REHACER")
+    expect(lastPoint(spanish)).toBe(origin)
   })
 
   it("goes back to 0,0,0 with a new drawing", () => {

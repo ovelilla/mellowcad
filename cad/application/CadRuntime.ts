@@ -684,9 +684,21 @@ export class CadRuntime extends Observable {
       ucs = next
       this.resetTracking()
       // WHY: AutoCAD 2023's console puts LASTPOINT at the new UCS's origin
-      // after UCS Origin and UCS World alike (`ID @` then reads 0,0,0), and
-      // leaves it where it was when U takes a UCS back (acc/u5, u6).
-      if (!this.history.replaying) this.lastPoint = next.origin
+      // after UCS Origin and UCS World alike (`ID @` then reads 0,0,0); U
+      // and REDO put it where the change says (acc/a1–a24 of the elliptical
+      // arcs session), else at the WCS's origin and the new one's.
+      const replayed = this.history.replaying
+      if (!replayed) {
+        this.lastPoint = next.origin
+        return
+      }
+      const said =
+        replayed.command instanceof UpdateSettingsCommand
+          ? replayed.command.lastPoint
+          : undefined
+      this.lastPoint = replayed.undone
+        ? (said?.undone ?? vec3(0, 0, 0))
+        : (said?.redone ?? next.origin)
     })
     // A new selection shows every object again, as the palette's drop-down
     // starts at All.

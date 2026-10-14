@@ -462,7 +462,7 @@ export class UcsTool implements Tool {
             previous.name !== null && findNamed(table, previous.name)
               ? previous.name
               : null
-          this.apply(previous.ucs, name, ctx, false)
+          this.apply(previous.ucs, name, ctx, false, true)
           ctx.setLastPoint(WCS_ORIGIN)
         }
         return "end"
@@ -706,7 +706,7 @@ export class UcsTool implements Tool {
           ctx.report(ctx.text.message("ucsUndefined", { name: typed }), "error")
           return this.enterNamePrompt("restore", ctx)
         }
-        this.apply(entry.ucs, entry.name, ctx)
+        this.apply(entry.ucs, entry.name, ctx, true, true)
         ctx.setLastPoint(WCS_ORIGIN)
         ctx.endCommand()
         return
@@ -781,21 +781,43 @@ export class UcsTool implements Tool {
     )
   }
 
-  /** Makes `ucs` current, one undo step, remembering the one it replaces. */
+  /**
+   * Makes `ucs` current, one undo step, remembering the one it replaces;
+   * `restored` when Previous or Restore brings back one made before.
+   */
   private apply(
     ucs: Ucs,
     name: string | null,
     ctx: ToolContext,
-    remember = true
+    remember = true,
+    restored = false
   ): void {
     const settings = ctx.document.getSettings()
     const patch = ucsChange(settings, ucs, name)
-    if (!patch) return
+    if (!patch) {
+      // acc/a11: World in the WCS changes nothing and still puts it there.
+      ctx.setLastPoint(ucs.origin)
+      return
+    }
     if (remember) {
       this.previous.push({ ucs: settings.ucs, name: settings.ucsName })
       if (this.previous.length > MAX_PREVIOUS) this.previous.shift()
     }
-    ctx.execute(new UpdateSettingsCommand(patch))
+    // WHY: AutoCAD 2023's console: U puts LASTPOINT back at an origin
+    // given at the first prompt (acc/a2, a5, a14 of the elliptical arcs
+    // session), at the WCS's origin after any other way (a1, a4, a9, a12,
+    // a20–a24); REDO puts it where the UCS did (a7, a8, a16).
+    const state = this.state
+    const given =
+      state.phase === "xAxis" || state.phase === "xyPlane"
+        ? state.origin
+        : WCS_ORIGIN
+    ctx.execute(
+      new UpdateSettingsCommand(patch, {
+        undone: given,
+        redone: restored ? WCS_ORIGIN : ucs.origin,
+      })
+    )
   }
 
   /** {@link apply} as the command's last answer, from a prompt that ends it itself. */

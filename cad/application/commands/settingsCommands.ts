@@ -1,14 +1,27 @@
 import { CadDocument } from "../../domain/Document"
 import { AttributeDisplay } from "../../domain/entities"
 import { DocumentSettings } from "../../domain/units"
+import type { Vec3 } from "../../geometry/Vec3"
 import { Command } from "./Command"
+
+/**
+ * Where LASTPOINT goes when U takes a UCS change back and when REDO makes it
+ * again — the runtime keeps LASTPOINT, so the change only says.
+ */
+export interface UcsChangeLastPoint {
+  readonly undone: Vec3
+  readonly redone: Vec3
+}
 
 /** UCS, UCSICON and ELEV: settings saved in the drawing, and undone with it. */
 export class UpdateSettingsCommand implements Command {
   readonly label = "update-settings"
   private previous: Partial<DocumentSettings> = {}
 
-  constructor(private readonly patch: Partial<DocumentSettings>) {}
+  constructor(
+    private readonly patch: Partial<DocumentSettings>,
+    readonly lastPoint?: UcsChangeLastPoint
+  ) {}
 
   /**
    * Its UCS is the WCS's: only the commands that work in the WCS (UCS, -VIEW)
