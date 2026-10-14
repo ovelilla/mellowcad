@@ -31,13 +31,27 @@ export interface Replayed {
   readonly undone: boolean
 }
 
+/** What an undo or a redo took back or did again, as U and REDO name it. */
+export interface Step {
+  /** The command that made it (`LINE`), or null for an edit made outside one. */
+  readonly name: string | null
+  /** Whether that command regenerated the drawing (LTSCALE, -VIEW). */
+  readonly regenerates: boolean
+}
+
+interface Entry extends Step {
+  readonly command: Command
+}
+
 /**
  * Executes commands against the document and keeps linear undo/redo stacks.
  * Executing a new command clears the redo stack (standard editor semantics).
  */
 export class CommandHistory extends Observable {
-  private undoStack: Command[] = []
-  private redoStack: Command[] = []
+  private undoStack: Entry[] = []
+  private redoStack: Entry[] = []
+  private commandName: string | null = null
+  private regenerated = false
   /**
    * Where the open group starts on the undo stack, or null when none is open.
    * Inside a group each command stays its own entry, so a command's own Undo
@@ -56,7 +70,11 @@ export class CommandHistory extends Observable {
 
   execute(command: Command): void {
     command.execute(this.document)
-    this.undoStack.push(command)
+    this.undoStack.push({
+      command,
+      name: this.commandName,
+      regenerates: this.regenerated,
+    })
     if (this.undoStack.length > this.capacity) {
       this.undoStack.shift()
       if (this.groupStart !== null) {
@@ -76,13 +94,39 @@ export class CommandHistory extends Observable {
     if (this.groupStart === null) this.groupStart = this.undoStack.length
   }
 
-  /** Closes the open group, folding what it executed into one entry. */
+  /**
+   * Closes the open group, folding what it executed into one entry, which
+   * regenerates if anything in it did.
+   */
   endGroup(): void {
     const start = this.groupStart
+    const regenerated = this.regenerated
     this.groupStart = null
-    if (start === null || this.undoStack.length - start < 2) return
+    this.regenerated = false
+    if (start === null || this.undoStack.length === start) return
     const steps = this.undoStack.splice(start)
-    this.undoStack.push(new GroupCommand(steps))
+    this.undoStack.push({
+      command:
+        steps.length === 1
+          ? steps[0].command
+          : new GroupCommand(steps.map((step) => step.command)),
+      name: steps[0].name,
+      regenerates: regenerated || steps.some((step) => step.regenerates),
+    })
+  }
+
+  /**
+   * The command what executes from now on belongs to, which U and REDO
+   * name; null once it has ended.
+   */
+  nameCommand(name: string | null): void {
+    this.commandName = name
+    if (name === null) this.regenerated = false
+  }
+
+  /** The running command regenerated the drawing, which U and REDO say again. */
+  markRegenerated(): void {
+    this.regenerated = true
   }
 
   /**
@@ -101,35 +145,35 @@ export class CommandHistory extends Observable {
     return this.redoStack.length > 0
   }
 
-  undo(): boolean {
-    const command = this.undoStack.pop()
-    if (!command) return false
+  undo(): Step | null {
+    const entry = this.undoStack.pop()
+    if (!entry) return null
     if (this.groupStart !== null) {
       this.groupStart = Math.min(this.groupStart, this.undoStack.length)
     }
-    this.replayingStep = { command, undone: true }
+    this.replayingStep = { command: entry.command, undone: true }
     try {
-      command.undo(this.document)
+      entry.command.undo(this.document)
     } finally {
       this.replayingStep = null
     }
-    this.redoStack.push(command)
+    this.redoStack.push(entry)
     this.emit()
-    return true
+    return entry
   }
 
-  redo(): boolean {
-    const command = this.redoStack.pop()
-    if (!command) return false
-    this.replayingStep = { command, undone: false }
+  redo(): Step | null {
+    const entry = this.redoStack.pop()
+    if (!entry) return null
+    this.replayingStep = { command: entry.command, undone: false }
     try {
-      command.execute(this.document)
+      entry.command.execute(this.document)
     } finally {
       this.replayingStep = null
     }
-    this.undoStack.push(command)
+    this.undoStack.push(entry)
     this.emit()
-    return true
+    return entry
   }
 
   /** Drops all history, e.g. after loading a file (a fresh baseline). */

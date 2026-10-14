@@ -98,7 +98,11 @@ export function registerCommands(
     run: () => startTool("ucsiconvariable"),
   })
 
-  register({ id: "UNDO", run: () => runtime.undo() })
+  // WHY UNDO takes one step back as U does: its own prompt (`Enter the number
+  // of operations to undo or [Auto/Control/BEgin/End/Mark/Back] <1>:`) is
+  // not built, and its Enter is that one step.
+  register({ id: "U", run: () => runtime.undo(true) })
+  register({ id: "UNDO", run: () => runtime.undo(true) })
   // -MTEXT is MTEXT with the text typed at the command line, so it runs the
   // same tool and switches its entry.
   register({
@@ -110,7 +114,7 @@ export function registerCommands(
       if (tool instanceof MTextTool) tool.useCommandLine()
     },
   })
-  register({ id: "REDO", run: () => runtime.redo() })
+  register({ id: "REDO", run: () => runtime.redo(true) })
   // AutoCAD's ATTDEF opens a dialog; here it asks at the command line, so
   // -ATTDEF is the same tool under its own name.
   register({ id: "-ATTDEF", tool: "attdef", run: () => startTool("attdef") })

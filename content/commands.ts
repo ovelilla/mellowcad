@@ -107,6 +107,7 @@ export const COMMAND_FILING: Readonly<Record<string, Filing>> = {
   ID: { group: "inquiry" },
   ZOOM: { group: "inquiry" },
   PAN: { group: "inquiry" },
+  U: { group: "inquiry" },
   UNDO: { group: "inquiry" },
   REDO: { group: "inquiry" },
   SNAP: { group: "inquiry" },

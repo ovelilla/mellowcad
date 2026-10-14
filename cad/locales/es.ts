@@ -84,7 +84,8 @@ export const es: EngineLocale = {
       "lweight": "Grosor de línea"
     },
     "description": {
-      "UNDO": "Deshacer la última acción",
+      "U": "Deshacer la última acción",
+      "UNDO": "Deshacer el efecto de los comandos",
       "REDO": "Rehacer la última acción deshecha",
       "SNAP": "Restringir el cursor a los intervalos de resolución",
       "-OSNAP": "Establece los modos de referencia a objetos en ejecución",
@@ -676,9 +677,11 @@ export const es: EngineLocale = {
         "BORRA",
         "B"
       ],
-      "UNDO": [
-        "DESHACER",
+      "U": [
         "H"
+      ],
+      "UNDO": [
+        "DESHACER"
       ],
       "REDO": [
         "REHACER"
@@ -2228,6 +2231,11 @@ export const es: EngineLocale = {
       "coincidentWithFirstPoint": "Coincide con el primer punto",
       "pointsAreColinear": "Puntos colineales",
       "noPreviousUcs": "No hay ningún sistema de coordenadas guardado.",
+      "everythingUndone": "Ya se ha deshecho todo",
+      "nothingToUndo": "Nada que deshacer",
+      "nothingToRedo": "Nada que repetir",
+      "everythingRedone": "Todo repetido",
+      "redoMustFollowUndo": "REHACER debe ir directamente a continuación del comando H o DESHACER.",
       "yesOrNoPlease": "Sí o No.",
       "requiresDistanceNumberXOrKeyword": "Requiere una distancia, un factorX o una opción.",
       "noPreviousView": "No se ha guardado ninguna vista previa.",

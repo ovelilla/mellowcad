@@ -83,7 +83,7 @@ describe("the Default menu", () => {
     )
   })
 
-  it("runs its entries as their commands: Undo is UNDO, one step back", () => {
+  it("runs its entries as their commands: Undo is U, one step back", () => {
     const cad = createHarness()
     cad.command("LINE").click(p(0, 0)).click(p(100, 0)).escape()
 
@@ -91,7 +91,7 @@ describe("the Default menu", () => {
     cad.runtime.chooseShortcutMenuAction("undo")
 
     expect(cad.entityCount).toBe(0)
-    expect(cad.commandLog()).toContain("UNDO")
+    expect(cad.commandLog().slice(-2)).toEqual(["U", "LINE"])
   })
 
   it("starts PAN from Pan", () => {

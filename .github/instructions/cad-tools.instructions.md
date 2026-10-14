@@ -291,7 +291,10 @@ current layer.
 - One gesture = one command. Splits and multi-entity edits use `ReplaceEntitiesCommand` /
   `UpdateEntitiesCommand` so a single Ctrl+Z undoes the whole operation. A whole run of a command
   (LINE's segments, COPY's copies) is one undo step too, which the runtime makes by grouping:
-  a tool never batches across its own loop for that.
+  a tool never batches across its own loop for that. The step carries the name the command was
+  echoed with (`history.nameCommand`, from `runCommand` and `setActiveTool`), which U and REDO
+  write; a regeneration said through `ctx.regenerate()` marks it, and they repeat it
+  (`LTSCALE Regenerating model.`) — one more reason never to report `regeneratingModel`.
 - A tool offering its own **Undo keyword** must count its own edits and refuse when there are
   none: `ctx.undo()` pops the history, which otherwise backs out an unrelated earlier command.
   Inside the run each commit is still its own entry, so `ctx.undo()` takes back one; Ctrl+Z runs

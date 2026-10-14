@@ -84,7 +84,8 @@ export const en: EngineCatalog = {
       "lweight": "Lineweight"
     },
     "description": {
-      "UNDO": "Undo the last action",
+      "U": "Undo the last action",
+      "UNDO": "Undo the effect of commands",
       "REDO": "Redo the last undone action",
       "SNAP": "Force the cursor onto the snap increments",
       "-OSNAP": "Set the running object snap modes",
@@ -689,9 +690,11 @@ export const en: EngineCatalog = {
         "ERASE",
         "E"
       ],
-      "UNDO": [
-        "UNDO",
+      "U": [
         "U"
+      ],
+      "UNDO": [
+        "UNDO"
       ],
       "REDO": [
         "REDO"
@@ -1932,6 +1935,11 @@ export const en: EngineCatalog = {
       "coincidentWithFirstPoint": "Coincident with first point",
       "pointsAreColinear": "Points are colinear",
       "noPreviousUcs": "No previous coordinate system saved.",
+      "everythingUndone": "Everything has been undone",
+      "nothingToUndo": "Nothing to undo",
+      "nothingToRedo": "Nothing to redo",
+      "everythingRedone": "Everything has been redone",
+      "redoMustFollowUndo": "REDO must immediately follow the U or UNDO command.",
       "yesOrNoPlease": "Yes or No, please.",
       "requiresDistanceNumberXOrKeyword": "Requires a distance, numberX, or option keyword.",
       "noPreviousView": "No previous view saved.",

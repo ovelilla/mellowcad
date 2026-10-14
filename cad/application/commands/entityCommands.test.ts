@@ -202,11 +202,11 @@ describe("CommandHistory", () => {
     expect(history.canRedo()).toBe(true)
   })
 
-  it("returns false rather than throwing on an empty stack", () => {
+  it("returns null rather than throwing on an empty stack", () => {
     const history = historyOn(new CadDocument())
 
-    expect(history.undo()).toBe(false)
-    expect(history.redo()).toBe(false)
+    expect(history.undo()).toBeNull()
+    expect(history.redo()).toBeNull()
   })
 
   it("discards the redo stack when a new command is executed", () => {

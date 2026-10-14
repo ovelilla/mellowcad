@@ -114,7 +114,7 @@ export class ViewTool implements Tool {
       return true
     }
     if (!lookFrom(VIEW_PRESETS[preset], ctx)) return false
-    ctx.report(ctx.text.message("regeneratingModel"))
+    ctx.regenerate()
     if (!ORTHOGRAPHIC.includes(preset)) return true
     const ucs = ucsFromAxes(
       { x: 0, y: 0, z: 0 },

@@ -79,7 +79,7 @@ import {
 import { matchKeywords, resolveKeyword } from "../i18n/keywords"
 import type { EngineLocale, PromptId } from "../locales/types"
 import { EngineText, engineText, promptString } from "./EngineText"
-import { CommandHistory } from "./commands/Command"
+import { CommandHistory, Step } from "./commands/Command"
 import { UpdateSettingsCommand } from "./commands/settingsCommands"
 import {
   NewDrawingCommand,
@@ -238,6 +238,9 @@ const DRAG_THRESHOLD_PX = 4
  */
 const DOUBLE_CLICK_MS = 500
 
+/** The commands that keep what the last U or REDO did for the next REDO. */
+const UNDO_COMMANDS = new Set(["U", "UNDO", "REDO"])
+
 /** A key pressed with no modifier, as the shortcut menu presses Enter and Esc. */
 const plainKey = (key: string): KeyEventData => ({
   key,
@@ -316,6 +319,13 @@ export class CadRuntime extends Observable {
   private echoMark: number | null = null
   /** The command `runCommand` is starting, which names the tool it starts. */
   private starting: string | null = null
+  /** Its name as echoed (`LINE` for `L`), which U and REDO say. */
+  private startingName: string | null = null
+  /**
+   * What the last U or REDO did, which the next one answers by (AutoCAD's
+   * REDO takes back only the U just before it); null after any other command.
+   */
+  private undoing: "undid" | "bottom" | "redid" | null = null
   /**
    * The command the running tool was started as, which heads its prompt:
    * `-LINETYPE`, not the tool's LINETYPE. Null for a tool started otherwise.
@@ -512,7 +522,7 @@ export class CadRuntime extends Observable {
       selection: this.selection,
       dynamicInput: this.dynamicInput,
       blocks: this.document.blockLookup(),
-      undo: () => this.history.undo(),
+      undo: () => this.history.undo() !== null,
       pickTolerance: () =>
         this.viewport.screenToWorldDistance(this.snapping.pixelTolerance),
       requestRender: () => this.host.requestRender(),
@@ -529,6 +539,7 @@ export class CadRuntime extends Observable {
         ),
       runsTransparently: () => this.suspended !== null,
       regenerate: () => {
+        this.history.markRegenerated()
         if (this.suspended === null) {
           this.commandLine.write("info", this.text.message("regeneratingModel"))
           return
@@ -819,6 +830,7 @@ export class CadRuntime extends Observable {
     // A command is one undo step, closed only once its tool has committed
     // what it holds on deactivation.
     this.history.endGroup()
+    this.history.nameCommand(next.id === "select" ? null : this.startingName)
     this.resetTracking()
     this.answerPrefix = null
     this.commandStart = this.echoMark ?? this.commandLine.mark()
@@ -1670,11 +1682,17 @@ export class CadRuntime extends Observable {
     }
     this.commandLine.pushHistory(name)
     this.starting = command.id
+    this.startingName = name
+    if (!UNDO_COMMANDS.has(command.id)) this.undoing = null
+    // One run in place makes its steps here; a tool's, once it starts.
+    if (this.activeTool.id === "select") this.history.nameCommand(name)
     try {
       command.run()
     } finally {
       this.echoMark = null
       this.starting = null
+      this.startingName = null
+      if (this.activeTool.id === "select") this.history.nameCommand(null)
     }
     this.invalidateState()
     this.host.focusSurface()
@@ -1890,16 +1908,72 @@ export class CadRuntime extends Observable {
     this.viewport.reset()
   }
 
-  undo(): void {
+  /**
+   * Takes back the last command. `said`: as the U command, which writes what
+   * it took back — the command's name (`LINE`) — or, with nothing left,
+   * `Everything has been undone`, then `Nothing to undo`, as AutoCAD 2023's
+   * console does.
+   */
+  undo(said = false): void {
     // Undo with a command running ends it first, so what it drew goes as one
     // step: "Click Undo on the Quick Access toolbar to cancel the entire series
     // of line segments".
     if (this.activeTool.id !== "select") this.endCommands()
-    if (this.history.undo()) this.selection.clear()
+    const step = this.history.undo()
+    if (step) this.selection.clear()
+    if (said) {
+      const text = step
+        ? this.stepName(step)
+        : this.text.message(
+            this.undoing === "bottom" ? "nothingToUndo" : "everythingUndone"
+          )
+      if (text !== null) this.commandLine.write("info", text)
+    }
+    this.undoing = step ? "undid" : "bottom"
   }
 
-  redo(): void {
-    if (this.history.redo()) this.selection.clear()
+  /**
+   * Does again what the last undo took back. `said`: as the REDO command,
+   * which only follows a U that took something back (MREDO, which steps
+   * further, is not built), and writes what it did again, then `Everything
+   * has been redone` once nothing is left, as AutoCAD 2023's console does.
+   */
+  redo(said = false): void {
+    if (said && this.undoing !== "undid") {
+      const refused =
+        this.undoing === "bottom" ||
+        (this.undoing === "redid" && this.history.canRedo())
+      this.commandLine.write(
+        "info",
+        this.text.message(refused ? "redoMustFollowUndo" : "nothingToRedo")
+      )
+      return
+    }
+    const step = this.history.redo()
+    if (step) this.selection.clear()
+    this.undoing = "redid"
+    if (!said) return
+    if (!step) {
+      this.commandLine.write("info", this.text.message("nothingToRedo"))
+      return
+    }
+    // The console says the regeneration after the rest (acc/s5, s6).
+    const name = step.name
+    if (name !== null) this.commandLine.write("info", name)
+    if (!this.history.canRedo()) {
+      this.commandLine.write("info", this.text.message("everythingRedone"))
+    }
+    if (step.regenerates) {
+      this.commandLine.write("info", this.text.message("regeneratingModel"))
+    }
+  }
+
+  /** How U names what it took back: `LINE`, `LTSCALE Regenerating model.` */
+  private stepName(step: Step): string | null {
+    if (step.name === null) return null
+    return step.regenerates
+      ? `${step.name} ${this.text.message("regeneratingModel")}`
+      : step.name
   }
 
   zoomIn(): void {
@@ -3120,6 +3194,7 @@ export class CadRuntime extends Observable {
     applyDrawingFile(this.document, parsed)
     this.lastPoint = vec3(0, 0, 0)
     this.history.clear() // a loaded file is a fresh undo baseline
+    this.undoing = null
     this.zoomToFit()
     this.autosave.saveNow() // mirror the opened file into this device's store
   }

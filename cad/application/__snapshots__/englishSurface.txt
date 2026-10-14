@@ -73,7 +73,8 @@ AUPREC [] "Angle precision"
 COLOR ["COL"] "Color"
 LINETYPE ["LT"] "Linetype"
 LWEIGHT ["LW"] "Lineweight"
-UNDO ["U"] "Undo the last action"
+U [] "Undo the last action"
+UNDO [] "Undo the effect of commands"
 -MTEXT [] "Multiline text"
 REDO [] "Redo the last undone action"
 -ATTDEF [] "Define attributes"
@@ -213,9 +214,12 @@ lweight "Lineweight" LW
   command| E ERASE 1 found
   info| 1 object erased.
 > UNDO
-  command| U UNDO
+  command| U
+  info| ERASE
 > REDO
   command| REDO
+  info| ERASE
+  info| Everything has been redone
 > SNAP on
   command| SN SNAP
   info| Snap mode on.

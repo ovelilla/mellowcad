@@ -35,7 +35,7 @@ export const SHORTCUT_MENU_COMMANDS: Partial<
   copy: "_COPYCLIP",
   copyBase: "_COPYBASE",
   paste: "_PASTECLIP",
-  undo: "_UNDO",
+  undo: "_U",
   redo: "_REDO",
   pan: "_PAN",
   erase: "_ERASE",
