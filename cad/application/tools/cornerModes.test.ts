@@ -420,3 +420,113 @@ describe("CHAMFER's object prompts take the selection modes", () => {
     )
   })
 })
+
+/** Two lines crossing at 30,0 (acc/a1–a9). */
+const cross = (): Entity[] => [
+  lineOf(p(0, 0), p(100, 0), { id: "L1" }),
+  lineOf(p(30, -20), p(30, 60), { id: "L2" }),
+]
+
+describe("a point typed at FILLET's and CHAMFER's object prompts picks there", () => {
+  it("picks each object, keeping the side typed", () => {
+    const cad = createHarness({ entities: cross() })
+    cad.command("FILLET")
+    answer(cad, "30,40", "80,0")
+    expect(cad.commandLog().slice(-2)).toEqual([
+      "Select first object or [Undo/Polyline/Radius/Multiple]: 30,40",
+      "Select second object or shift-select to apply corner or [Radius]: 80,0",
+    ])
+    expectLine(cad, "L2", p(30, 0), p(30, 60))
+    expectLine(cad, "L1", p(30, 0), p(100, 0))
+    expect(cad.activeToolId()).toBe("select")
+
+    const other = createHarness({ entities: cross() })
+    other.command("FILLET")
+    answer(other, "30,-10", "10,0")
+    expectLine(other, "L2", p(30, -20), p(30, 0))
+    expectLine(other, "L1", p(0, 0), p(30, 0))
+  })
+
+  it("asks again, saying nothing, where a point lies on nothing", () => {
+    const cad = createHarness({ entities: cross() })
+    cad.command("FILLET")
+    answer(cad, "M", "60,40", "30,40", "60,40", "80,0")
+    expect(cad.commandLog().slice(-4)).toEqual([
+      "Select first object or [Undo/Polyline/Radius/Multiple]: 60,40",
+      "Select first object or [Undo/Polyline/Radius/Multiple]: 30,40",
+      "Select second object or shift-select to apply corner or [Radius]: 60,40",
+      "Select second object or shift-select to apply corner or [Radius]: 80,0",
+    ])
+    expect(cad.activeToolId()).toBe("fillet")
+    expectLine(cad, "L1", p(30, 0), p(100, 0))
+  })
+
+  it("reads @ from LASTPOINT, which the point typed becomes", () => {
+    const cad = createHarness({ entities: cross() })
+    cad.command("LINE")
+    answer(cad, "0,60", "30,60", "")
+    cad.command("FILLET")
+    answer(cad, "@0,-20", "@50,-40")
+    expectLine(cad, "L2", p(30, 0), p(30, 60))
+    expectLine(cad, "L1", p(30, 0), p(100, 0))
+  })
+
+  it("picks Polyline's polyline, asking again on nothing", () => {
+    const cad = createHarness({
+      entities: [polylineOf([p(0, 0), p(100, 0), p(100, 100)], { id: "P" })],
+    })
+    cad.command("FILLET")
+    answer(cad, "R", "10", "P", "50,50", "50,0")
+    expect(cad.commandLog().slice(-3)).toEqual([
+      "Select 2D polyline or [Radius]: 50,50",
+      "Select 2D polyline or [Radius]: 50,0",
+      "1 line was filleted",
+    ])
+    const poly = cad.byId<PolylineEntity>("P")
+    expect(poly.vertices).toBeCloseToPoints(
+      [p(0, 0), p(90, 0), p(100, 10), p(100, 100)],
+      4
+    )
+    expect(poly.bulges?.[1]).toBeCloseTo(0.4142, 4)
+  })
+
+  it("picks CHAMFER's lines too", () => {
+    const cad = createHarness({ entities: cross() })
+    cad.command("CHAMFER")
+    answer(cad, "D", "10", "5", "60,40", "30,40", "60,40", "80,0")
+    expect(cad.commandLog().slice(-4)).toEqual([
+      "Select first line or [Undo/Polyline/Distance/Multiple]: 60,40",
+      "Select first line or [Undo/Polyline/Distance/Multiple]: 30,40",
+      "Select second line or shift-select to apply corner or [Distance]: 60,40",
+      "Select second line or shift-select to apply corner or [Distance]: 80,0",
+    ])
+    expectLine(cad, "L2", p(30, 10), p(30, 60))
+    expectLine(cad, "L1", p(35, 0), p(100, 0))
+    const bevel = cad
+      .entities()
+      .find(
+        (e): e is LineEntity =>
+          e.type === "line" && !["L1", "L2"].includes(e.id)
+      )!
+    expectLine(cad, bevel.id, p(30, 10), p(35, 0))
+  })
+
+  it("is answered in Autodesk's Spanish", () => {
+    const cad = createHarness({ locale: es, entities: cross() })
+    cad.command("EMPALME")
+    answer(cad, "30,40", "80,0")
+    expect(cad.commandLog().slice(-2)).toEqual([
+      "Designe el primer objeto o [Deshacer/Polilínea/RAdio/múLtiple]: 30,40",
+      "Designe el segundo objeto o use la tecla Mayús para aplicar esquina o [Radio]: 80,0",
+    ])
+    expectLine(cad, "L1", p(30, 0), p(100, 0))
+    const chamfer = createHarness({ locale: es, entities: cross() })
+    chamfer.command("CHAFLAN")
+    answer(chamfer, "30,40", "80,0")
+    expect(chamfer.commandLog().slice(-2)).toEqual([
+      "Designe la primera línea o [desHacer/Polilínea/Distancia/múLtiple]: 30,40",
+      "Designe la segunda línea o use la tecla Mayús para aplicar esquina o [Distancia]: 80,0",
+    ])
+    expectLine(chamfer, "L1", p(30, 0), p(100, 0))
+  })
+})

@@ -252,6 +252,7 @@ type FramedPart =
   | "ucs"
   | "elevation"
   | "lastPoint"
+  | "setLastPoint"
   | "viewport"
   | "execute"
   | "pick"
@@ -512,9 +513,6 @@ export class CadRuntime extends Observable {
       dynamicInput: this.dynamicInput,
       blocks: this.document.blockLookup(),
       undo: () => this.history.undo(),
-      setLastPoint: (world) => {
-        this.lastPoint = world
-      },
       pickTolerance: () =>
         this.viewport.screenToWorldDistance(this.snapping.pixelTolerance),
       requestRender: () => this.host.requestRender(),
@@ -597,6 +595,9 @@ export class CadRuntime extends Observable {
       get lastPoint() {
         return frame().pointToFrame(lastPoint())
       },
+      setLastPoint: (point) => {
+        this.lastPoint = this.frame.pointToWorld(point)
+      },
       get viewport() {
         return frame().viewport
       },
@@ -622,6 +623,9 @@ export class CadRuntime extends Observable {
       },
       get lastPoint() {
         return lastPoint()
+      },
+      setLastPoint: (world) => {
+        this.lastPoint = world
       },
       viewport: this.viewport,
       execute: (command) => this.history.execute(command),

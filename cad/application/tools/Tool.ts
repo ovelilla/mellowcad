@@ -208,11 +208,13 @@ export interface ToolContext {
   readonly blocks: BlockLookup
 
   /**
-   * Puts LASTPOINT at `world`, a point of the WCS: UCS Previous and a
-   * restored named UCS put it at the WCS's origin, as AutoCAD 2023's console
-   * does, where any other UCS change puts it at the new UCS's origin.
+   * Puts LASTPOINT at `point`, read as {@link lastPoint} is (in the WCS for a
+   * tool working there): UCS Previous and a restored named UCS put it at the
+   * WCS's origin, as AutoCAD 2023's console does, where any other UCS change
+   * puts it at the new UCS's origin; a point typed where the runtime reads
+   * none (FILLET's object prompts) is the tool's to keep.
    */
-  setLastPoint(world: Vec3): void
+  setLastPoint(point: Vec3): void
 
   /** Executes a reversible command against the document (the only write-path). */
   execute(command: Command): void

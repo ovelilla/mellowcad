@@ -48,6 +48,7 @@ import {
   joinAtCut,
   joinRefusal,
   pickCornerObject,
+  typedCornerPick,
 } from "./cornerObjects"
 import { ModeFind, ObjectSelector } from "./objectSelection"
 import {
@@ -217,7 +218,10 @@ export class ChamferTool implements Tool {
         }
         break
       case "polyline":
-        this.state = { phase: "polyline", hover: this.pickPolyline(input, ctx) }
+        this.state = {
+          phase: "polyline",
+          hover: this.pickPolyline(input.world, ctx),
+        }
         break
     }
     ctx.requestRender()
@@ -229,23 +233,37 @@ export class ChamferTool implements Tool {
       this.modes.onPointerDown(input, ctx)
       return
     }
-    const pick = { world: input.world, screen: input.screen }
+    this.pickAt(
+      { world: input.world, screen: input.screen },
+      input.shiftKey,
+      ctx
+    )
+  }
 
+  /** A point typed at an object prompt picks there, as at FILLET's. */
+  answerTyped(text: string, ctx: ToolContext): boolean {
+    if (this.askingDistance || this.modes.inMode()) return false
+    const pick = typedCornerPick(text, ctx)
+    if (pick) this.pickAt(pick, false, ctx)
+    return pick !== null
+  }
+
+  private pickAt(pick: LinePick, shift: boolean, ctx: ToolContext): void {
     switch (this.state.phase) {
       case "first": {
-        if (this.refusesRound(ctx.pick(input.world), ctx)) return
-        const hit = pickCornerObject(ctx, input, null)
+        if (this.refusesRound(ctx.pick(pick.world), ctx)) return
+        const hit = pickCornerObject(ctx, pick, null)
         if (hit) this.takeFirst(hit, pick, false, ctx)
         return
       }
       case "second": {
-        if (this.refusesRound(ctx.pick(input.world), ctx)) return
-        const second = pickCornerObject(ctx, input, this.state.first)
-        if (second) this.placeSecond(second, pick, input.shiftKey, false, ctx)
+        if (this.refusesRound(ctx.pick(pick.world), ctx)) return
+        const second = pickCornerObject(ctx, pick, this.state.first)
+        if (second) this.placeSecond(second, pick, shift, false, ctx)
         return
       }
       case "polyline": {
-        const poly = this.pickPolyline(input, ctx)
+        const poly = this.pickPolyline(pick.world, ctx)
         if (poly) this.commitPolyline(poly, ctx)
         return
       }
@@ -777,11 +795,8 @@ export class ChamferTool implements Tool {
     return true
   }
 
-  private pickPolyline(
-    input: PointerInput,
-    ctx: ToolContext
-  ): PolylineEntity | null {
-    const hit = ctx.pick(input.world)
+  private pickPolyline(world: Vec2, ctx: ToolContext): PolylineEntity | null {
+    const hit = ctx.pick(world)
     return hit?.type === "polyline" ? hit : null
   }
 

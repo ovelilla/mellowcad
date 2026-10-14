@@ -98,7 +98,9 @@ A tool is an explicit state machine for one AutoCAD command. It owns a discrimin
   left out; one word ends `Radius]:`); `foundFilletObject` turns what a mode found into the
   object and the pick it stands for (a fence's crossing; a line's, an arc's or a circle's middle;
   a crossed polyline's first segment crossed, read from its first vertex; a polyline found whole
-  `whole`, of which nothing is made) — never invent a pick point in the tool.
+  `whole`, of which nothing is made) — never invent a pick point in the tool. A point typed
+  there is a pick (`typedCornerPick`, through the tool's `answerTyped`): `@` from LASTPOINT,
+  which it becomes by `ctx.setLastPoint` (a point of the tool's frame, as `ctx.lastPoint` is).
   `pickCornerObject` takes the pointer (`world` and `screen`), and the two objects are cut
   in `cornerPlane`: a polyline in a tilted plane (with the UCS not on it) brings the
   other and both picks into its OCS — a segment picked as it is drawn — and `back` returns
