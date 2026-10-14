@@ -110,7 +110,10 @@ A tool is an explicit state machine for one AutoCAD command. It owns a discrimin
   in `cornerPlane`: a polyline in a tilted plane (with the UCS not on it) brings the
   other and both picks into its OCS — a segment picked as it is drawn — and `back` returns
   what is built, with the polyline's own normal; never cut a tilted polyline's points
-  against plan picks.
+  against plan picks. An ARC or a CIRCLE goes through `roundPlane` instead: in a tilted
+  plane the other shares (`sharesTiltedPlane`) both and the picks — where the line of
+  sight meets the plane (`viewPick.ts`' `cursorInPlane`) — are brought into its OCS for
+  `filletRound`, and `back` returns them; `null` is `Two entities are non coplanar.`
 - `ArcSegmentInput` (`arcSegmentInput.ts`) — the prompts AutoCAD's polyline arc options open
   (Angle, CEnter, Direction, Radius, Second pt and their `[CEnter/Radius]`, `[Angle/Length]`,
   `[Angle]`), for any command drawing a polyline's arcs (PLINE; DIST's Arc). The tool lists

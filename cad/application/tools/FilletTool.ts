@@ -12,7 +12,6 @@ import {
   createLine,
   carryOverrides,
   carryPlane,
-  coplanar,
   Entity,
   EntityId,
   LineEntity,
@@ -54,6 +53,7 @@ import {
   foundPairRefusal,
   type PairRefusal,
   cornerPlane,
+  roundPlane,
   curveOf,
   foundFilletObject,
   isArcSegment,
@@ -406,21 +406,23 @@ export class FilletTool implements Tool {
     const { first, pick1, hover, cursor } = this.state
     const radius = this.state.corner ? 0 : this.radius
     if (isRound(first) || (hover && isRound(hover))) {
-      const filleted =
+      const plane =
         hover &&
         !isSegment(first) &&
         !isSegment(hover) &&
-        coplanar(first, hover) &&
+        roundPlane(first, pick1, hover, cursor, viewport)
+      const filleted =
+        plane &&
         filletRound(
-          first,
-          pick1.world,
-          hover,
-          cursor.world,
+          plane.first,
+          plane.pick1,
+          plane.second,
+          plane.pick2,
           radius,
           ctx.document.getCurrentLayerId(),
           PREVIEW_ID
         )
-      if (!filleted || typeof filleted === "string") {
+      if (!plane || !filleted || typeof filleted === "string") {
         return [
           ...draw(cornerEntity(first), selectedStroke),
           ...(hover ? draw(cornerEntity(hover), hoverStroke) : []),
@@ -428,7 +430,7 @@ export class FilletTool implements Tool {
       }
       return filleted.built.flatMap((entity) =>
         draw(
-          entity,
+          plane.back(entity),
           entity.id === PREVIEW_ID
             ? { color: THEME.rubberBand, width: 1 }
             : hoverStroke
@@ -593,7 +595,7 @@ export class FilletTool implements Tool {
     }
     const radius = corner ? 0 : this.radius
     if (isRound(first) || isRound(second)) {
-      this.commitRound(first, pick1.world, second, pick2.world, radius, ctx)
+      this.commitRound(first, pick1, second, pick2, radius, ctx)
       return
     }
     const plane = cornerPlane(first, pick1, second, pick2, ctx.viewport)
@@ -777,13 +779,14 @@ export class FilletTool implements Tool {
    * An ARC or a CIRCLE with a line or another of them; with a polyline's
    * segment, `Cannot fillet between these two entities.` (acc/d1–d3); out
    * of each other's plane, `Two entities are non coplanar.` (acc/w1–w6 of
-   * 2026-10-14: at another height, or one upright).
+   * 2026-10-14: at another height, or one upright); in a tilted plane they
+   * share, rounded in it (see {@link roundPlane}).
    */
   private commitRound(
     first: FilletObject,
-    pick1: Vec2,
+    pick1: LinePick,
     second: FilletObject,
-    pick2: Vec2,
+    pick2: LinePick,
     radius: number,
     ctx: ToolContext
   ): void {
@@ -791,15 +794,16 @@ export class FilletTool implements Tool {
       this.refuse("cannotFilletBetween", ctx, false)
       return
     }
-    if (!coplanar(first, second)) {
+    const plane = roundPlane(first, pick1, second, pick2, ctx.viewport)
+    if (!plane) {
       this.refuse("twoEntitiesNonCoplanar", ctx, false)
       return
     }
     const filleted = filletRound(
-      first,
-      pick1,
-      second,
-      pick2,
+      plane.first,
+      plane.pick1,
+      plane.second,
+      plane.pick2,
       radius,
       ctx.document.getCurrentLayerId()
     )
@@ -811,7 +815,10 @@ export class FilletTool implements Tool {
       this.done(null, ctx)
     } else {
       this.done(
-        new ReplaceEntitiesCommand(filleted.replaced, filleted.built),
+        new ReplaceEntitiesCommand(
+          filleted.replaced,
+          filleted.built.map(plane.back)
+        ),
         ctx
       )
     }

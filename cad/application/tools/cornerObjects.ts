@@ -1,5 +1,5 @@
 import { Vec2, V } from "../../geometry/Vec2"
-import { WORLD_Z, planar } from "../../geometry/Vec3"
+import { Vec3, WORLD_Z, planar } from "../../geometry/Vec3"
 import { arbitraryAxis, worldToAxes } from "../../geometry/ocs"
 import {
   closestPointOnArc,
@@ -15,6 +15,8 @@ import {
   carryOverrides,
   coplanar,
   createPolyline,
+  entityAxes,
+  entityElevation,
   entityFromOcs,
   entityInOcs,
   entityNormal,
@@ -37,8 +39,9 @@ import { LinePick, alongOnScreen } from "./lineCorner"
 import { fenceCrossing, meetsPolygon } from "./boxSelection"
 import { ONE_OBJECT_MODES, type ModeFind } from "./objectSelection"
 import { entityScreenOutline } from "../viewOutline"
+import { cursorInPlane } from "../viewPick"
 import { bulgeBetween, segmentsPair } from "./polylineCorners"
-import type { RoundObject } from "./roundFillets"
+import type { RoundObject, RoundPartner } from "./roundFillets"
 import { QuestionInput, ToolContext } from "./Tool"
 
 /** A segment of a polyline, picked as one of FILLET's two objects. */
@@ -119,10 +122,9 @@ function cornerObjectAt(
 
 /**
  * The object a pick takes where an ARC or a CIRCLE is one too (FILLET's, and
- * CHAMFER's to refuse): with `first` taken not the same object, nor one in a
- * tilted plane they share — AutoCAD 2023's console rounds those in it, which
- * is not built, so it does not highlight here (one out of the other's plane
- * is taken, for FILLET to refuse). Anything else as {@link pickCornerObject}.
+ * CHAMFER's to refuse): with `first` taken not the same object (one out of
+ * the other's plane is taken, for FILLET to refuse). Anything else as
+ * {@link pickCornerObject}.
  */
 export function pickFilletObject(
   ctx: ToolContext,
@@ -141,17 +143,15 @@ function filletObjectAt(
   index?: number
 ): FilletObject | null {
   if (hit.type !== "arc" && hit.type !== "circle") {
-    if (!first || !isRound(first)) {
-      return cornerObjectAt(ctx, hit, pick, first, index)
-    }
-    const taken = cornerObjectAt(ctx, hit, pick, null, index)
-    return taken && (isSegment(taken) || !sharesTiltedPlane(first, taken))
-      ? taken
-      : null
+    return cornerObjectAt(
+      ctx,
+      hit,
+      pick,
+      first && isRound(first) ? null : first,
+      index
+    )
   }
-  if (first === null) return hit
-  const other = cornerEntity(first)
-  return other.id !== hit.id && !sharesTiltedPlane(other, hit) ? hit : null
+  return first === null || cornerEntity(first).id !== hit.id ? hit : null
 }
 
 /**
@@ -424,12 +424,70 @@ export function cornerPlane(
     pick1: onFirst,
     second: inSecond,
     pick2: onSecond,
-    // WHY the polyline's own normal on what lies level there: rebuilt from its
-    // axes it would drift a last bit with every cut, and a file with it.
-    back: (entity) =>
-      entity.type === "line" || isTilted(entity)
-        ? entityFromOcs(entity, normal)
-        : withNormal(entity, normal),
+    back: backFromPlane(normal),
+  }
+}
+
+/**
+ * What is built in the OCS of the plane facing `normal`, back in the WCS.
+ * WHY the plane's own normal on what lies level there: rebuilt from its axes
+ * it would drift a last bit with every cut, and a file with it.
+ */
+function backFromPlane(normal: Vec3): (entity: Entity) => Entity {
+  return (entity) =>
+    entity.type === "line" || isTilted(entity)
+      ? entityFromOcs(entity, normal)
+      : withNormal(entity, normal)
+}
+
+/**
+ * FILLET's two objects where one is an ARC or a CIRCLE, and the picks there:
+ * as they are in a plane read level, else in the OCS of the tilted plane
+ * they share, where AutoCAD 2023's console rounds them as it does in plan
+ * (acc/w7, w9, a1–a7 of 2026-10-14); `back` returns what is built there.
+ * A pick is where the line of sight through it meets that plane. `null`
+ * when they share no plane: `Two entities are non coplanar.`
+ */
+export interface RoundPlane {
+  readonly first: RoundPartner
+  readonly pick1: Vec2
+  readonly second: RoundPartner
+  readonly pick2: Vec2
+  back(entity: Entity): Entity
+}
+
+export function roundPlane(
+  first: RoundPartner,
+  pick1: LinePick,
+  second: RoundPartner,
+  pick2: LinePick,
+  view: CameraTransform
+): RoundPlane | null {
+  const plane = [first, second].find((entity) => !readsInPlan(entity))
+  if (!plane || !sharesTiltedPlane(first, second)) {
+    return coplanar(first, second)
+      ? {
+          first,
+          pick1: pick1.world,
+          second,
+          pick2: pick2.world,
+          back: (entity) => entity,
+        }
+      : null
+  }
+  const normal = entityNormal(plane)
+  const axes = entityAxes(plane)
+  const height = entityElevation(plane)
+  const into = (object: RoundPartner) =>
+    entityInOcs(object, normal) as RoundPartner
+  const onPlane = (pick: LinePick) =>
+    cursorInPlane(view, height, pick.screen, axes)
+  return {
+    first: into(first),
+    pick1: onPlane(pick1),
+    second: into(second),
+    pick2: onPlane(pick2),
+    back: backFromPlane(normal),
   }
 }
 

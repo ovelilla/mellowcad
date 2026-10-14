@@ -428,33 +428,6 @@ describe("FILLET of an ARC or a CIRCLE out of the other's plane", () => {
     expect(fillet(two, "40,50", "60,50").commandLog().at(-1)).toBe(NON_COPLANAR)
   })
 
-  // WHY: the console rounds them in that plane (acc/w7, w9), not built here.
-  it("takes nothing in a tilted plane the two share", () => {
-    const cad = createHarness()
-    for (const [command, ...rest] of [
-      ["UCS", "X", "45"],
-      ["LINE", "0,0", "100,0", ""],
-      ["CIRCLE", "50,40", "20"],
-      ["UCS", "W"],
-    ]) {
-      cad.command(command)
-      answer(cad, ...rest)
-    }
-    const drawing = cad.entities()
-    for (const [first, second] of [
-      ["50,0", "50,14.1421"],
-      ["50,14.1421", "50,0"],
-    ]) {
-      const tried = fillet(createHarness({ entities: drawing }), first, second)
-      // The first pick took its object: the second prompt was asked.
-      expect(tried.commandLog().at(-1)).toBe(
-        "Select second object or shift-select to apply corner or [Radius]: " +
-          second
-      )
-      expect(tried.activeToolId()).toBe("fillet")
-    }
-  })
-
   it("is answered in Autodesk's Spanish", () => {
     const cad = createHarness({
       locale: es,
