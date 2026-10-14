@@ -255,6 +255,15 @@ ROTATE's own `specifySecondPoint`, which starts a line) with no keyword list, `t
 `wantsPoint()` keeps the snaps on; a refusal there is the question's own and counts no base
 ("two points"), as the console's does.
 
+**A number answers a point** (`directDistance`, in `commitBox`): typed in a lone `coordinate`
+box — at the command line or in the box — it is direct distance from `toolAnchor()`, else
+LASTPOINT, towards the cursor (`pointAtDistance`, `tools/directDistance.ts`), given to the tool
+as a pick there, at every prompt whose tool `wantsSnap()`. A tool never reads a bare number in
+its point box: a `coordinate` field never resolves to a value (`resolveValues`), so where the
+tool picks no point the number reaches its `commitRaw` instead (ZOOM's factor). The heading is
+the cursor's last place on the drawing (`heldCursorScreen`, which leaving the canvas keeps), and
+the UCS's X with none.
+
 ## Transparent commands — the running one is suspended, never ended
 
 A command typed with an apostrophe mid-command (`'ZOOM`, `'Z`), at the command line or in a

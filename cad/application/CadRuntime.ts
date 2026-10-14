@@ -98,6 +98,7 @@ import { TextEditTool } from "./tools/TextEditTool"
 import { AttEditTool } from "./tools/AttEditTool"
 import { PasteTool } from "./tools/PasteTool"
 import { directionFromUcsHeading, headingInUcs } from "./tools/ucsHeading"
+import { pointAtDistance } from "./tools/directDistance"
 import { ViewPreset, currentViewPreset } from "./tools/viewPresets"
 import {
   CompassLetter,
@@ -408,6 +409,10 @@ export class CadRuntime extends Observable {
   // Lets a command started from the keyboard or a toolbar button pick up the
   // cursor's position without waiting for the next mouse move.
   private lastPointerScreen: Vec2 | null = null
+  // Where the cursor last was on the drawing, kept off it: the heading a
+  // number typed for a point is measured towards, as AutoCAD keeps it while
+  // the mouse is over the command line.
+  private heldCursorScreen: Vec2 | null = null
 
   private gridVisible = true
   /** Whether this host shows the UCS icon at all; UCSICON decides where. */
@@ -3014,6 +3019,40 @@ export class CadRuntime extends Observable {
     )
   }
 
+  /**
+   * A number typed in a point's box, at the command line or in the box:
+   * AutoCAD's direct distance from the prompt's base, LASTPOINT where it has
+   * none, towards the cursor (`pointAtDistance`), the same at every point
+   * prompt, as AutoCAD 2023's console takes `5` at ID's, LINE's, CIRCLE's and
+   * -PAN's first point (acc/dd1, dd5–dd7) and at 2P's second (dd17). Not
+   * where the tool picks no point (ZOOM's factor, its window's corners).
+   */
+  private directDistance(
+    session: DynamicInputSession,
+    field: DynamicField | undefined
+  ): boolean {
+    if (field?.kind !== "coordinate" || session.fields.length !== 1) {
+      return false
+    }
+    if (!(this.activeTool.wantsSnap?.() ?? true)) return false
+    const text = this.dynamicInput.getText(field.id)
+    const distance = isCoordinateExpression(text) ? null : parseNumber(text)
+    if (distance === null) return false
+    const anchor = this.toolAnchor()
+    const base =
+      anchor === null
+        ? this.frame.pointToFrame(this.lastPoint)
+        : withZ(anchor, zOf(anchor))
+    const cursor =
+      this.heldCursorScreen && this.screenToWork(this.heldCursorScreen)
+    this.dynamicInput.clearTexts()
+    this.placePoint(
+      pointAtDistance({ ucs: this.frame.ucs }, base, cursor, distance),
+      true
+    )
+    return true
+  }
+
   /** {@link commitDynamicInput}'s value, returning whether the prompt took it. */
   private commitBox(
     session: DynamicInputSession,
@@ -3035,6 +3074,8 @@ export class CadRuntime extends Observable {
       }
     } else if (values) {
       session.commit(values, this.toolContext)
+    } else if (this.directDistance(session, field)) {
+      // Given as a pick there, which LASTPOINT and the tool take as any other.
     } else if (!session.commitRaw?.(this.toolContext)) {
       // The numeric fields don't resolve and the session has no raw handler (or
       // it rejected the text, e.g. an incomplete coordinate): nothing to do,
@@ -4450,6 +4491,7 @@ export class CadRuntime extends Observable {
   private updateSnap(screen: Vec2): void {
     const cursor = this.screenToWork(screen)
     this.cursorWorld = cursor
+    this.heldCursorScreen = screen
     this.refreshCycling()
     const { frame } = this
 

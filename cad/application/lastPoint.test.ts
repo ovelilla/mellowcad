@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest"
 
 import { type CadHarness, createHarness } from "../../test/harness"
 import { lineOf, p } from "../../test/builders"
+import type { CircleEntity, LineEntity } from "../domain/entities"
 import { es } from "../locales/es"
 
 /** Each answer typed at the command line and confirmed, as the console types it. */
@@ -283,5 +284,132 @@ describe("LASTPOINT", () => {
     cad.escape()
     expect(cad.entities()).toHaveLength(0)
     expect(lastPoint(cad)).toBe(" X = 8.00     Y = 8.00     Z = 0.00")
+  })
+})
+
+// AutoCAD 2023's console (acc/dd1–dd23): a number typed for a point is a
+// direct distance from LASTPOINT, or the prompt's base, towards the cursor.
+// The console's cursor stands where `100` from 10,0 gives 102.3493,38.3614.
+describe("A number typed for a point", () => {
+  const CURSOR = p(102.3493, 38.3614)
+  const AHEAD = p(14.6175, 1.9181)
+  const BACK = p(5.3825, -1.9181)
+
+  /** LASTPOINT at 10,0 and the cursor where the console's stands. */
+  function fromTen(locale?: typeof es): CadHarness {
+    const cad = answer(createHarness({ locale }), "ID", "10,0")
+    cad.moveTo(CURSOR)
+    return cad
+  }
+
+  it("is that far from LASTPOINT towards the cursor at a first point, the other way when negative", () => {
+    for (const [
+      locale,
+      asked,
+      line,
+      circle,
+      pan,
+      invalid,
+      required,
+      twoPoints,
+    ] of [
+      [
+        undefined,
+        "Specify point:",
+        "LINE",
+        "CIRCLE",
+        "-PAN",
+        "Invalid point.",
+        "Point or option keyword required.",
+        "Requires two points, or a displacement followed by ENTER.",
+      ],
+      [
+        es,
+        "Precise punto:",
+        "LINEA",
+        "CIRCULO",
+        "-ENCUADRE",
+        "Punto no válido.",
+        "Se requiere un punto o una opción.",
+        "Requiere dos puntos o un desplazamiento seguido por INTRO.",
+      ],
+    ] as const) {
+      const id = answer(fromTen(locale), "ID", "5")
+      expect(id.commandLog().at(-1)).toMatch(/14[.,]62 .* 1[.,]92 /)
+      answer(id, "ID", "FOO", "-5")
+      expect(id.commandLog().slice(-4, -1)).toEqual([
+        `${asked} FOO`,
+        invalid,
+        `${asked} -5`,
+      ])
+      // Back from where the 5 left LASTPOINT.
+      expect(id.commandLog().at(-1)).toMatch(/10[.,]00 .* 0[.,]00 /)
+
+      const drawn = answer(fromTen(locale), line, "FOO", "5", "20,20", "")
+      expect(drawn.commandLog()).toContain(invalid)
+      expect(drawn.entities()[0]).toMatchObject({ end: { x: 20, y: 20 } })
+      expect((drawn.entities()[0] as LineEntity).start).toBeCloseToPoint(
+        AHEAD,
+        4
+      )
+
+      const round = answer(fromTen(locale), circle, "FOO", "-5", "1")
+      expect(round.commandLog()).toContain(required)
+      expect((round.entities()[0] as CircleEntity).center).toBeCloseToPoint(
+        BACK,
+        4
+      )
+
+      const panned = fromTen(locale)
+      const before = panned.runtime.viewport.worldCenter()
+      answer(panned, pan, "FOO", "5", "")
+      expect(panned.commandLog()).toContain(twoPoints)
+      expect(panned.runtime.viewport.worldCenter()).toBeCloseToPoint(
+        p(before.x - AHEAD.x, before.y - AHEAD.y),
+        4
+      )
+      // -PAN's points never become LASTPOINT.
+      expect(lastPoint(panned)).toMatch(/10[.,]00 .* 0[.,]00 /)
+    }
+  })
+
+  it("becomes LASTPOINT, which 0 gives itself", () => {
+    const cad = answer(fromTen(), "LINE", "5", "@10,0", "")
+    expect(cad.entities()[0]).toMatchObject({
+      start: { x: expect.closeTo(14.6175, 4) },
+      end: { x: expect.closeTo(24.6175, 4), y: expect.closeTo(1.9181, 4) },
+    })
+    expect(lastPoint(cad)).toBe(" X = 24.62     Y = 1.92     Z = 0.00")
+    answer(cad, "ID", "10,0", "LINE", "0", "20,20", "")
+    expect(cad.entities()[1]).toMatchObject({ start: { x: 10, y: 0 } })
+  })
+
+  it("is measured from the prompt's own base point", () => {
+    const cad = answer(createHarness(), "ID", "10,0")
+    cad.moveTo(p(46.407, 18.612))
+    answer(cad, "CIRCLE", "2P", "0,0", "5")
+    const circle = cad.entities()[0] as CircleEntity
+    expect(circle.center).toBeCloseToPoint(p(2.3203, 0.9306), 4)
+    expect(circle.radius).toBeCloseTo(2.5)
+  })
+
+  it("keeps the cursor's heading off the drawing, and runs along X from a cursor on LASTPOINT", () => {
+    const off = fromTen()
+    off.runtime.pointerLeave()
+    expect(answer(off, "ID", "5").commandLog().at(-1)).toBe(
+      " X = 14.62     Y = 1.92     Z = 0.00"
+    )
+    const on = answer(createHarness(), "ID", "10,0")
+    on.moveTo(p(10, 0))
+    expect(answer(on, "ID", "5").commandLog().at(-1)).toBe(
+      " X = 15.00     Y = 0.00     Z = 0.00"
+    )
+  })
+
+  it("is ZOOM's factor at its first prompt, no point", () => {
+    const cad = createHarness()
+    answer(cad, "ZOOM", "2")
+    expect(cad.runtime.viewport.scale).toBeCloseTo(2)
+    expect(cad.activeToolId()).toBe("select")
   })
 })

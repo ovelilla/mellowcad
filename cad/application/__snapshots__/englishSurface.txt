@@ -2021,16 +2021,14 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0°~, Line space facto
 > rotation
   dyn: "X,Y"="30"||*
 > enter
-  dyn: "X,Y"=""||*
-  prompt| Specify dimension line location or [Text/Angle]: 30
-> location
   prompt: Command:
   asks: -
   tip: -
   dyn: -
   options: -
-  prompt| Specify dimension line location or [Text/Angle]:
+  prompt| Specify dimension line location or [Text/Angle]: 30
   info| Dimension text = 100.00
+> location
 > DIMALIGNED
   prompt: DIMALIGNED Specify first extension line origin or <select object>:
   asks: "Specify first extension line origin or <select object>"

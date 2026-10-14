@@ -1,4 +1,4 @@
-import { V } from "../../geometry/Vec2"
+import { V, Vec2 } from "../../geometry/Vec2"
 import { Vec3, withZOf } from "../../geometry/Vec3"
 import type { ToolContext } from "./Tool"
 import {
@@ -50,6 +50,35 @@ export function pointAlongCursor(
       )
     ),
     base
+  )
+}
+
+/**
+ * A number typed for a whole point: direct distance from `base` — the
+ * prompt's own, or LASTPOINT at a first point — towards the cursor in the
+ * plane, the other way when negative. WHY along the UCS's X with no cursor
+ * (or one on the base): AutoCAD 2023's console measures towards a cursor
+ * fixed on its screen, so its heading follows the view; here only a cursor
+ * that never reached the drawing gives none.
+ */
+export function pointAtDistance(
+  ctx: Pick<ToolContext, "ucs">,
+  base: Vec3,
+  cursor: Vec2 | null,
+  distance: number
+): Vec3 {
+  const along =
+    cursor &&
+    pointAlongCursor(ctx, base, withZOf(cursor, base), {
+      distance,
+      angle: null,
+    })
+  return (
+    along ??
+    withZOf(
+      V.add(base, V.scale(directionFromUcsHeading(ctx.ucs, 0), distance)),
+      base
+    )
   )
 }
 

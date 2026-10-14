@@ -285,6 +285,9 @@ export class DynamicInputController extends Observable {
       // number — the comma separates X and Y. Fail the numeric resolution so
       // the session's `commitRaw` handler interprets the whole point instead.
       if (isCoordinateExpression(fieldState.text)) return null
+      // Nor is a number typed for a point: the runtime reads it as a direct
+      // distance, or the session's `commitRaw` as its own (ZOOM's factor).
+      if (field.kind === "coordinate") return null
       const typed = fieldState.text.trim() !== ""
       if (!anyTyped && !fieldState.isDefault) return null
       if (!typed && fieldState.liveText !== null) continue
