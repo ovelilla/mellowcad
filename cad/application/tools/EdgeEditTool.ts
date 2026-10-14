@@ -3,17 +3,21 @@ import {
   angleWithinSweep,
   circleCircleIntersection,
   closestPointOnArc,
+  closestPointOnEllipse,
   closestPointOnSegment,
+  ellipsePoint,
   infiniteLineIntersection,
   lineCircleIntersectionParams,
   normalizeAngle,
   polarPoint,
   segmentArcIntersection,
   segmentCircleIntersection,
+  signChanges,
 } from "../../geometry/primitives"
 import {
   ArcEntity,
   CircleEntity,
+  EllipseEntity,
   Entity,
   EntityId,
   LineEntity,
@@ -21,9 +25,12 @@ import {
   PolylineSegmentGeometry,
   arcSweepAngle,
   createArc,
+  createEllipse,
   createLine,
   carryPiece,
   createPolyline,
+  ellipseSweepParams,
+  isFullEllipse,
   polylineBulge,
   polylineSegmentGeometries,
   polylineSegments,
@@ -91,6 +98,14 @@ type EditGeom =
       readonly vertices: readonly Vec2[]
       readonly closed: boolean
       readonly bulges?: readonly number[]
+    }
+  | {
+      readonly kind: "ellipse"
+      readonly center: Vec2
+      readonly majorAxis: Vec2
+      readonly ratio: number
+      readonly startParam: number
+      readonly endParam: number
     }
 
 /** A resolved edit ready to preview and commit against the hovered object. */
@@ -247,17 +262,11 @@ export abstract class EdgeEditTool implements Tool {
           },
         ]
       }
-      if (g.kind === "polyline") {
+      if (g.kind === "polyline" || g.kind === "ellipse") {
         // A reused id keeps preview frames from burning fresh entity ids.
         return entityScenePrimitive(
           viewport,
-          createPolyline(
-            g.vertices,
-            g.closed,
-            plan.layerId,
-            g.bulges,
-            plan.targetId
-          ),
+          geomToEntity(g, plan.layerId, plan.targetId),
           stroke
         )
       }
@@ -380,6 +389,7 @@ const TRIMMED: ReadonlySet<Entity["type"]> = new Set([
   "circle",
   "arc",
   "polyline",
+  "ellipse",
 ])
 
 const PARAM_EPS = 1e-6
@@ -401,6 +411,13 @@ function geomToEntity(g: EditGeom, layerId: LayerId, id?: EntityId): Entity {
       )
     case "polyline":
       return createPolyline(g.vertices, g.closed, layerId, g.bulges, id)
+    case "ellipse":
+      return createEllipse(g.center, g.majorAxis, g.ratio, {
+        startParam: g.startParam,
+        endParam: g.endParam,
+        layerId,
+        id,
+      })
   }
 }
 
@@ -418,11 +435,12 @@ function planTrim(
       return planTrimArc(target, click, others)
     case "polyline":
       return planTrimPolyline(target, click, others)
+    case "ellipse":
+      return planTrimEllipse(target, click, others)
     case "text":
     case "mtext":
     case "attdef":
       return null // annotation, not an outline to cut
-    case "ellipse":
     case "spline":
     case "dimension":
     case "hatch":
@@ -436,9 +454,10 @@ function planTrim(
  * Undo then counts the pick: a line or an arc `Path does not intersect with
  * the bounding edge.`, an open polyline's end `Object does not intersect an
  * edge.`, a closed polyline `Cannot EXTEND this object.`, all counted; a
- * circle that too and a dimension the path's, neither counted. `null` where
- * the console extends what is not built here (an elliptical arc, a spline)
- * or was not asked.
+ * circle that too and a dimension the path's, neither counted; an elliptical
+ * arc as an open polyline's end, a whole ellipse as a closed polyline. `null`
+ * where the console extends what is not built here (a spline) or was not
+ * asked.
  */
 function extendRefusal(
   target: Entity
@@ -456,6 +475,13 @@ function extendRefusal(
       }
     case "circle":
       return { message: "cannotExtendObject", counts: false }
+    case "ellipse":
+      return {
+        message: isFullEllipse(target)
+          ? "cannotExtendObject"
+          : "objectDoesNotIntersectEdge",
+        counts: true,
+      }
     case "dimension":
       return { message: "pathDoesNotIntersectBoundingEdge", counts: false }
     default:
@@ -478,6 +504,7 @@ function planExtend(
     case "polyline":
       return planExtendPolyline(target, click, others)
     case "ellipse":
+      return planExtendEllipse(target, click, others)
     case "spline":
     case "text":
     case "mtext":
@@ -919,6 +946,237 @@ function planExtendArc(
     ...base,
     result: piece(best, arc.endAngle),
     added: piece(best, arc.startAngle),
+  }
+}
+
+// --- Ellipse targets --------------------------------------------------------
+
+/** Steps of the scan round an ellipse that brackets its crossings. */
+const ELLIPSE_SCAN = 720
+
+/**
+ * Parameters (normalised, deduped) where the edges cross the whole ellipse
+ * of `ellipse`, each within its own extent. An ellipse meets a circle where
+ * no closed form does, so every edge is found the same way: the sign changes
+ * round the ellipse of the edge's implicit function.
+ */
+function ellipseCrossParams(
+  ellipse: EllipseEntity,
+  others: readonly Entity[]
+): number[] {
+  const at = (t: number) =>
+    ellipsePoint(ellipse.center, ellipse.majorAxis, ellipse.ratio, t)
+  const crossings = (f: (p: Vec2) => number, within: (p: Vec2) => boolean) =>
+    signChanges((t) => f(at(t)), 0, TWO_PI, ELLIPSE_SCAN).filter((t) =>
+      within(at(t))
+    )
+  const segment = (a: Vec2, b: Vec2) => {
+    const d = V.sub(b, a)
+    const lenSq = V.lengthSq(d)
+    return lenSq === 0
+      ? []
+      : crossings(
+          (p) => V.cross(d, V.sub(p, a)),
+          (p) => {
+            const u = V.dot(V.sub(p, a), d) / lenSq
+            return u >= -PARAM_EPS && u <= 1 + PARAM_EPS
+          }
+        )
+  }
+  const round = (
+    center: Vec2,
+    radius: number,
+    sweep?: { readonly start: number; readonly end: number }
+  ) =>
+    crossings(
+      (p) => V.distance(p, center) - radius,
+      (p) =>
+        !sweep ||
+        angleWithinSweep(
+          sweep.start,
+          sweep.end,
+          Math.atan2(p.y - center.y, p.x - center.x)
+        )
+    )
+  const params: number[] = []
+  for (const o of others) {
+    if (o.type === "line") params.push(...segment(o.start, o.end))
+    else if (o.type === "circle") params.push(...round(o.center, o.radius))
+    else if (o.type === "arc") {
+      params.push(
+        ...round(o.center, o.radius, { start: o.startAngle, end: o.endAngle })
+      )
+    } else if (o.type === "polyline") {
+      for (const g of polylineSegmentGeometries(o)) {
+        params.push(
+          ...(g.kind === "line"
+            ? segment(g.a, g.b)
+            : round(g.center, g.radius, {
+                start: g.startAngle,
+                end: g.endAngle,
+              }))
+        )
+      }
+    }
+  }
+  return dedupeAngles(params.map(normalizeAngle))
+}
+
+function ellipsePiece(
+  ellipse: EllipseEntity,
+  startParam: number,
+  endParam: number
+): EditGeom {
+  return {
+    kind: "ellipse",
+    center: ellipse.center,
+    majorAxis: ellipse.majorAxis,
+    ratio: ellipse.ratio,
+    startParam,
+    endParam,
+  }
+}
+
+/**
+ * How far into `ellipse`'s sweep, in its parameter, the point of it nearest
+ * `click` lies.
+ */
+function ellipseOffsetAt(ellipse: EllipseEntity, click: Vec2): number {
+  const { start, sweep } = ellipseSweepParams(ellipse)
+  const { t } = closestPointOnEllipse(
+    ellipse.center,
+    ellipse.majorAxis,
+    ellipse.ratio,
+    click,
+    ellipse.startParam,
+    ellipse.endParam
+  )
+  return isFullEllipse(ellipse)
+    ? normalizeAngle(t)
+    : Math.min(Math.max(t - start, 0), sweep)
+}
+
+/**
+ * Trims an ellipse as a circle (two crossings bound the removed piece, the
+ * rest is left as an elliptical arc) and an elliptical arc as an arc, in the
+ * ellipse's parameter. Cut once, a whole ellipse is refused, as AutoCAD 2023's
+ * console refuses it (acc/o4).
+ */
+function planTrimEllipse(
+  ellipse: EllipseEntity,
+  click: Vec2,
+  others: readonly Entity[]
+): EdgeEditPlan | null {
+  const crossings = ellipseCrossParams(ellipse, others)
+  const { start, sweep } = ellipseSweepParams(ellipse)
+  const base = {
+    kind: "trim" as const,
+    targetId: ellipse.id,
+    layerId: ellipse.layerId,
+  }
+  const clickOffset = ellipseOffsetAt(ellipse, click)
+
+  if (isFullEllipse(ellipse)) {
+    if (crossings.length === 0) return null
+    if (crossings.length === 1) {
+      return { kind: "refuse", message: "curveMustIntersectTwice" }
+    }
+    let ta = crossings[crossings.length - 1]
+    let tb = crossings[0]
+    for (let i = 0; i < crossings.length - 1; i++) {
+      if (clickOffset >= crossings[i] && clickOffset <= crossings[i + 1]) {
+        ta = crossings[i]
+        tb = crossings[i + 1]
+        break
+      }
+    }
+    return {
+      ...base,
+      replacements: [ellipsePiece(ellipse, tb, ta)],
+      removed: ellipsePiece(ellipse, ta, tb),
+    }
+  }
+
+  const offsets = dedupeSorted(
+    crossings
+      .map((t) => normalizeAngle(t - start))
+      .filter((o) => o > ANGLE_EPS && o < sweep - ANGLE_EPS)
+  )
+  if (offsets.length === 0) return null
+  const bounds = [0, ...offsets, sweep]
+  let i = 0
+  while (
+    i < bounds.length - 1 &&
+    !(clickOffset >= bounds[i] && clickOffset <= bounds[i + 1])
+  ) {
+    i++
+  }
+  const ta = start + bounds[i]
+  const tb = start + bounds[i + 1]
+  const end = start + sweep
+  if (bounds[i] === 0) {
+    return {
+      ...base,
+      replacements: [ellipsePiece(ellipse, tb, end)],
+      removed: ellipsePiece(ellipse, start, tb),
+    }
+  }
+  if (bounds[i + 1] === sweep) {
+    return {
+      ...base,
+      replacements: [ellipsePiece(ellipse, start, ta)],
+      removed: ellipsePiece(ellipse, ta, end),
+    }
+  }
+  return {
+    ...base,
+    replacements: [
+      ellipsePiece(ellipse, start, ta),
+      ellipsePiece(ellipse, tb, end),
+    ],
+    removed: ellipsePiece(ellipse, ta, tb),
+  }
+}
+
+/**
+ * Extends an elliptical arc round its ellipse to the nearest edge past the
+ * end that grows: the one the pick lies nearer in the ellipse's parameter, as
+ * AutoCAD 2023's console decides it (acc/m1–m4) — not along the curve, nor in
+ * a straight line.
+ */
+function planExtendEllipse(
+  ellipse: EllipseEntity,
+  click: Vec2,
+  others: readonly Entity[]
+): EdgeEditPlan | null {
+  if (isFullEllipse(ellipse)) return null
+  const { start, sweep } = ellipseSweepParams(ellipse)
+  const end = start + sweep
+  const outside = ellipseCrossParams(ellipse, others).filter((t) => {
+    const off = normalizeAngle(t - start)
+    return off > sweep + ANGLE_EPS && off < TWO_PI - ANGLE_EPS
+  })
+  if (outside.length === 0) return null
+  const base = {
+    kind: "extend" as const,
+    targetId: ellipse.id,
+    layerId: ellipse.layerId,
+  }
+  if (ellipseOffsetAt(ellipse, click) < sweep / 2) {
+    const best = nearestAngle(outside, (t) => normalizeAngle(start - t))
+    if (best === null) return null
+    return {
+      ...base,
+      result: ellipsePiece(ellipse, best, end),
+      added: ellipsePiece(ellipse, best, start),
+    }
+  }
+  const best = nearestAngle(outside, (t) => normalizeAngle(t - end))
+  if (best === null) return null
+  return {
+    ...base,
+    result: ellipsePiece(ellipse, start, best),
+    added: ellipsePiece(ellipse, end, best),
   }
 }
 

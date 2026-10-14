@@ -1763,6 +1763,7 @@ export const es: EngineLocale = {
       "objectDoesNotIntersectEdge": "El objeto no se interseca con ninguna arista.",
       "cannotExtendObject": "Objeto no procesado por ALARGA.",
       "circleMustIntersectTwice": "Se requieren dos intersecciones para el círculo.",
+      "curveMustIntersectTwice": "La curva debe intersecar las aristas de corte al menos dos veces.",
       "filletSettings": [
         "Parámetros actuales: Modo = Recortar, Radio = ",
         [

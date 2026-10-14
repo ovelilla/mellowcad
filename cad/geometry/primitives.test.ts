@@ -28,6 +28,7 @@ import {
   segmentArcIntersection,
   segmentCircleIntersection,
   segmentSegmentIntersection,
+  signChanges,
   tangentPointsFromPoint,
   tangentLinesOfCircles,
   type TangentTarget,
@@ -1015,5 +1016,24 @@ describe("tangentLinesOfCircles", () => {
 
   it("gives none when one circle holds the other", () => {
     expect(tangentLinesOfCircles(p(0, 0), 5, p(1, 0), 1)).toEqual([])
+  })
+})
+
+describe("signChanges", () => {
+  it("bisects each sign change to full precision", () => {
+    const roots = signChanges(Math.cos, 0, 2 * Math.PI, 7)
+    expect(roots).toHaveLength(2)
+    expect(roots[0]).toBeCloseTo(Math.PI / 2, 12)
+    expect(roots[1]).toBeCloseTo((3 * Math.PI) / 2, 12)
+  })
+
+  it("takes a zero that falls on a sample, the last one too", () => {
+    expect(signChanges((t) => t * (t - 1) * (t - 2), 0, 2, 4)).toEqual([
+      0, 1, 2,
+    ])
+  })
+
+  it("misses a touch that does not change sign", () => {
+    expect(signChanges((t) => (t - 0.3) ** 2, 0, 1, 4)).toEqual([])
   })
 })

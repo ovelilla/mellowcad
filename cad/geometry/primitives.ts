@@ -669,6 +669,53 @@ export function closestPointOnEllipse(
   return { point, distance: V.distance(point, p), t }
 }
 
+/** Halvings of a bracket: past 60 a double no longer narrows. */
+const BISECTIONS = 60
+
+/**
+ * The parameters in `[start, start + sweep]` where `f` is zero or changes
+ * sign, each sign change bisected to full precision: where a curve with no
+ * closed-form intersection (an ellipse with a circle) crosses an edge given
+ * implicitly. A touch that does not change sign is missed, and so are two
+ * crossings within one of the `samples` steps.
+ */
+export function signChanges(
+  f: (t: number) => number,
+  start: number,
+  sweep: number,
+  samples: number
+): number[] {
+  const roots: number[] = []
+  let t0 = start
+  let f0 = f(t0)
+  for (let i = 1; i <= samples; i++) {
+    const t1 = start + (sweep * i) / samples
+    const f1 = f(t1)
+    if (f0 === 0) {
+      roots.push(t0)
+    } else if (f0 * f1 < 0) {
+      let a = t0
+      let b = t1
+      let fa = f0
+      for (let k = 0; k < BISECTIONS; k++) {
+        const m = (a + b) / 2
+        const fm = f(m)
+        if (fa * fm <= 0) {
+          b = m
+        } else {
+          a = m
+          fa = fm
+        }
+      }
+      roots.push((a + b) / 2)
+    }
+    t0 = t1
+    f0 = f1
+  }
+  if (f0 === 0) roots.push(t0)
+  return roots
+}
+
 /**
  * The arc passing through three points, oriented so it runs from `a` through
  * `b` to `c`. Returns the circumscribed circle's centre/radius plus the start

@@ -1,11 +1,15 @@
 import { describe, expect, it } from "vitest"
-import type {
-  ArcEntity,
-  CircleEntity,
-  Entity,
-  LineEntity,
-  PolylineEntity,
+import {
+  ellipseEndPoint,
+  ellipseStartPoint,
+  type ArcEntity,
+  type CircleEntity,
+  type EllipseEntity,
+  type Entity,
+  type LineEntity,
+  type PolylineEntity,
 } from "../../domain/entities"
+import { ellipseParamFromAngle } from "../../geometry/primitives"
 import type { Vec2 } from "../../geometry/Vec2"
 import { THEME } from "../../scene/theme"
 import { type CadHarness, createHarness } from "../../../test/harness"
@@ -483,6 +487,178 @@ describe("EXTEND", () => {
       p(-200, 0),
       p(0, 0),
     ])
+  })
+})
+
+// AutoCAD 2023's console (acc/e1–e7, m1–m4, w1, c1–c4, t1–t9, x1, o4 of the
+// elliptical arcs session), read with LIST at AUPREC 4.
+describe("TRIM and EXTEND an ellipse", () => {
+  /**
+   * a = 100, b = 50 round the origin, from the angle `from` to `to`
+   * (degrees), as ELLIPSE's Arc asks them.
+   */
+  const arcOfEllipse = (from: number, to: number) =>
+    ellipseOf(p(0, 0), p(100, 0), 0.5, {
+      id: "E",
+      startParam: ellipseParamFromAngle(0.5, deg(from)),
+      endParam: ellipseParamFromAngle(0.5, deg(to)),
+    })
+  /** The point at the parameter `t` (degrees). */
+  const at = (t: number) => p(100 * Math.cos(deg(t)), 50 * Math.sin(deg(t)))
+  const ends = (cad: CadHarness, id = "E") => {
+    const ellipse = cad.byId<EllipseEntity>(id)
+    return [ellipseStartPoint(ellipse), ellipseEndPoint(ellipse)]
+  }
+  const below = lineOf(p(-200, -30), p(200, -30))
+  const left = lineOf(p(-50, -100), p(-50, 100))
+
+  it("grows the end the pick lies nearer in the ellipse's parameter", () => {
+    for (const [from, to, edges, pick, grown] of [
+      [0, 90, [left, below], 80, [p(100, 0), p(-50, 43.3013)]],
+      [0, 90, [left, below], 10, [p(80, -30), p(0, 50)]],
+      [0, 90, [left, below], 46, [p(100, 0), p(-50, 43.3013)]],
+      [0, 90, [left, below], 44, [p(80, -30), p(0, 50)]],
+      [30, 150, [below], 88, [p(80, -30), p(-65.4654, 37.7964)]],
+      [30, 150, [below], 92, [p(65.4654, 37.7964), p(-80, -30)]],
+      // Round past the start, to the edge's other crossing.
+      [0, 90, [below], 80, [p(100, 0), p(-80, -30)]],
+    ] as const) {
+      const cad = createHarness({
+        entities: [arcOfEllipse(from, to), ...edges],
+      })
+      cad.command("EXTEND").click(at(pick))
+      expect(ends(cad)).toBeCloseToPoints(grown, 4)
+    }
+  })
+
+  it("grows to a circle, an arc or a polyline", () => {
+    for (const edge of [
+      circleOf(p(-80, 0), 30),
+      arcOf(p(-80, 0), 30, 0, deg(90)),
+      polylineOf([p(-120, 0), p(-40, 60)]),
+    ]) {
+      const cad = createHarness({ entities: [arcOfEllipse(0, 90), edge] })
+      cad.command("EXTEND").click(at(80))
+      expect(ends(cad)).toBeCloseToPoints([p(100, 0), p(-80, 30)], 4)
+    }
+  })
+
+  it("says why it reaches no edge, and Undo counts the pick", () => {
+    for (const [locale, name, said] of [
+      [
+        undefined,
+        "EXTEND",
+        ["Object does not intersect an edge.", "Cannot EXTEND this object."],
+      ],
+      [
+        es,
+        "ALARGA",
+        [
+          "El objeto no se interseca con ninguna arista.",
+          "Objeto no procesado por ALARGA.",
+        ],
+      ],
+    ] as const) {
+      const entities = [
+        arcOfEllipse(0, 90),
+        ellipseOf(p(0, 300), p(100, 0), 0.5, { id: "F" }),
+        lineOf(p(300, 300), p(400, 300)),
+      ]
+      const cad = createHarness({ locale, entities })
+      cad.command(name).click(at(80))
+      expect(cad.commandLog().at(-1)).toBe(said[0])
+      cad.click(p(-100, 300))
+      expect(cad.commandLog().at(-1)).toBe(said[1])
+      cad.option("Undo").option("Undo")
+      expect(cad.commandLog().at(-1)).toMatch(/^(Command|Todos)/)
+      expect(cad.optionIds()).toEqual([])
+      expect(cad.entities()).toEqual(entities)
+    }
+  })
+
+  it("trims an elliptical arc back to the edge, or in two", () => {
+    const cad = createHarness({
+      entities: [arcOfEllipse(0, 180), lineOf(p(0, -100), p(0, 100))],
+    })
+    cad.command("TRIM").click(at(45))
+    expect(ends(cad)).toBeCloseToPoints([p(0, 50), p(-100, 0)], 4)
+
+    const split = createHarness({
+      entities: [
+        arcOfEllipse(0, 180),
+        lineOf(p(-50, -100), p(-50, 100), { id: "L" }),
+        lineOf(p(50, -100), p(50, 100), { id: "R" }),
+      ],
+    })
+    split.command("TRIM").click(p(0, 50))
+    const pieces = split
+      .entities()
+      .filter((e): e is EllipseEntity => e.type === "ellipse")
+      .map((e) => [ellipseStartPoint(e), ellipseEndPoint(e)])
+      .sort((a, b) => b[0].x - a[0].x)
+    expect(pieces).toHaveLength(2)
+    expect(pieces[0]).toBeCloseToPoints([p(100, 0), p(50, 43.3013)], 4)
+    expect(pieces[1]).toBeCloseToPoints([p(-50, 43.3013), p(-100, 0)], 4)
+  })
+
+  it("trims a whole ellipse to the arc left between two crossings", () => {
+    const full = ellipseOf(p(0, 0), p(100, 0), 0.5, { id: "E" })
+    const vertical = lineOf(p(0, -100), p(0, 100))
+    for (const [edges, kept] of [
+      [[vertical], [p(0, -50), p(0, 50)]],
+      [
+        [vertical, lineOf(p(-200, 30), p(200, 30))],
+        [p(0, -50), p(-80, 30)],
+      ],
+    ] as const) {
+      const cad = createHarness({ entities: [full, ...edges] })
+      cad.command("TRIM").click(p(-100, 0))
+      expect(ends(cad)).toBeCloseToPoints(kept, 4)
+    }
+
+    // Turned, its major axis upright.
+    const turned = createHarness({
+      entities: [
+        ellipseOf(p(50, 0), p(0, 40), 0.5, { id: "T" }),
+        lineOf(p(-200, -30), p(200, -30)),
+      ],
+    })
+    turned.command("TRIM").click(p(50, 40))
+    expect(ends(turned, "T")).toBeCloseToPoints(
+      [p(36.7712, -30), p(63.2288, -30)],
+      4
+    )
+  })
+
+  it("deletes one no edge crosses, and refuses a whole one cut once", () => {
+    const far = lineOf(p(300, 0), p(400, 0), { id: "far" })
+    for (const ellipse of [
+      arcOfEllipse(0, 90),
+      ellipseOf(p(0, 0), p(100, 0), 0.5, { id: "E" }),
+    ]) {
+      const cad = createHarness({ entities: [ellipse, far] })
+      cad.command("TRIM").click(ellipseStartPoint(ellipse))
+      expect(cad.entities()).toEqual([far])
+    }
+
+    for (const [locale, name, said] of [
+      [undefined, "TRIM", "Curve must intersect cutting edges at least twice."],
+      [
+        es,
+        "RECORTA",
+        "La curva debe intersecar las aristas de corte al menos dos veces.",
+      ],
+    ] as const) {
+      const entities = [
+        ellipseOf(p(0, 0), p(100, 0), 0.5, { id: "E" }),
+        lineOf(p(0, 0), p(0, 100)),
+      ]
+      const cad = createHarness({ locale, entities })
+      cad.command(name).click(p(-100, 0))
+      expect(cad.commandLog().at(-1)).toBe(said)
+      expect(cad.entities()).toEqual(entities)
+      expect(cad.state().commandLine.prompt).toMatch(/\[(Undo|desHacer)\]:$/)
+    }
   })
 })
 

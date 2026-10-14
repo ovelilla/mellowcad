@@ -1128,6 +1128,7 @@
       "objectDoesNotIntersectEdge": "Object does not intersect an edge.",
       "cannotExtendObject": "Cannot EXTEND this object.",
       "circleMustIntersectTwice": "Circle must intersect twice.",
+      "curveMustIntersectTwice": "Curve must intersect cutting edges at least twice.",
       "filletSettings": "Current settings: Mode = TRIM, Radius = {radius}",
       "chamferSettings": "(TRIM mode) Current chamfer Dist1 = {dist1}, Dist2 = {dist2}",
       "offsetSettings": "Current settings: Erase source={erase, select, yes {Yes} other {No}}  Layer={layer, select, current {Current} other {Source}}  OFFSETGAPTYPE=0",

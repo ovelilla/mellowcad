@@ -1478,6 +1478,7 @@ export const en: EngineCatalog = {
       "objectDoesNotIntersectEdge": "Object does not intersect an edge.",
       "cannotExtendObject": "Cannot EXTEND this object.",
       "circleMustIntersectTwice": "Circle must intersect twice.",
+      "curveMustIntersectTwice": "Curve must intersect cutting edges at least twice.",
       "filletSettings": [
         "Current settings: Mode = TRIM, Radius = ",
         [

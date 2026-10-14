@@ -36,6 +36,9 @@ A tool is an explicit state machine for one AutoCAD command. It owns a discrimin
 - `PlacementTool` — select → base point → second point with ghost preview (Move, Copy, Stretch).
   Override `place()`, `continuesAfterPlace()`, optionally `transformEntity()` / `onSelectionAdded()`.
 - `EdgeEditTool` — hover-preview-click editing against implicit boundaries (Trim, Extend).
+  Where no closed form gives a crossing (an ellipse with a circle), `signChanges`
+  (`geometry/primitives.ts`) scans the curve's parameter for the sign changes of the edge's
+  implicit function and bisects them — the one root finder; never write another scan.
 - `ObjectSelector` (`objectSelection.ts`) — AutoCAD's `Select objects:`, the one every command
   that takes a set asks it with: picks, the window a drag or a pick on nothing starts, and the
   modes typed there (Window, Crossing, BOX, Last, ALL, Fence, WPolygon, CPolygon, Previous,
