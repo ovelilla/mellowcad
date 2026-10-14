@@ -993,15 +993,14 @@ function trimLine(
   dir: Vec2,
   tangent: Vec2
 ): LineEntity | null {
-  const keepEnd =
+  const keepsEnd =
     V.dot(V.sub(line.end, corner), dir) >= V.dot(V.sub(line.start, corner), dir)
-      ? line.end
-      : line.start
+  const keepEnd = keepsEnd ? line.end : line.start
   if (V.dot(V.sub(keepEnd, tangent), dir) <= 0) return null
-  return carryOverrides(
-    line,
-    createLine(keepEnd, tangent, line.layerId, line.id)
-  )
+  // WHY only the moved end changes: AutoCAD 2023's console keeps each line's
+  // direction, trimmed or extended, radius 0 or not (CHAMFER too).
+  const [start, end] = keepsEnd ? [tangent, line.end] : [line.start, tangent]
+  return carryOverrides(line, createLine(start, end, line.layerId, line.id))
 }
 
 const REFUSALS: Readonly<
