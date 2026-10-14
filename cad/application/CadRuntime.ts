@@ -3877,7 +3877,9 @@ export class CadRuntime extends Observable {
       // Inside a command that offers Undo, Ctrl+Z is that option: "only the
       // previous line segment is undone because you are still in the Line
       // Command".
+      // At the Command prompt it is acad.cuix's `_u`: U, echoed as typed.
       if (e.shiftKey) this.redo()
+      else if (this.activeTool.id === "select") this.runCommand("_U")
       else if (!this.invokeToolOption("_Undo")) this.undo()
       return true
     }

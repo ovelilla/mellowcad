@@ -141,6 +141,14 @@ describe("U and REDO say what they did", () => {
     ])
   })
 
+  // acad.cuix: Ctrl+Z runs `_u` (ID_U), the shortcut menu's Undo `^C^C_u`.
+  it("Ctrl+Z at the Command prompt is U", () => {
+    const cad = answer(createHarness(), ...LINE)
+    cad.press("z", { ctrlKey: true })
+    expect(cad.commandLog().slice(-2)).toEqual(["U", "LINE"])
+    expect(cad.entities()).toHaveLength(0)
+  })
+
   it("the shortcut menu's Undo is U", () => {
     const cad = createHarness({ entities: [lineOf(p(0, 0), p(10, 0))] })
     answer(cad, ...CIRCLE)
