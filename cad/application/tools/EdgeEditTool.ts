@@ -5,14 +5,12 @@ import {
   closestPointOnArc,
   closestPointOnEllipse,
   closestPointOnSegment,
-  ellipsePoint,
   infiniteLineIntersection,
   lineCircleIntersectionParams,
   normalizeAngle,
   polarPoint,
   segmentArcIntersection,
   segmentCircleIntersection,
-  signChanges,
 } from "../../geometry/primitives"
 import {
   ArcEntity,
@@ -23,6 +21,7 @@ import {
   LineEntity,
   PolylineEntity,
   PolylineSegmentGeometry,
+  SplineEntity,
   arcSweepAngle,
   createArc,
   createEllipse,
@@ -55,6 +54,14 @@ import {
   ToolContext,
   type QuestionInput,
 } from "./Tool"
+import {
+  crossingParams,
+  curveCrossings,
+  ellipseImplicit,
+  ellipseParamOf,
+  implicitEdges,
+  parametricCurve,
+} from "./curveCrossings"
 
 /**
  * TRIM and EXTEND share one interaction and most of their geometry, so they are
@@ -77,8 +84,9 @@ import {
  *   are closed, so they cannot be extended.)
  *
  * The command loops until Escape/Enter, so successive clicks trim more pieces
- * or extend to further boundaries — exactly like AutoCAD. Lines, circles and
- * arcs all serve as edges/boundaries for one another.
+ * or extend to further boundaries — exactly like AutoCAD. Lines, circles,
+ * arcs, polylines, ellipses and splines all serve as edges/boundaries for
+ * one another.
  */
 
 type EdgeEditMode = "trim" | "extend"
@@ -437,11 +445,12 @@ function planTrim(
       return planTrimPolyline(target, click, others)
     case "ellipse":
       return planTrimEllipse(target, click, others)
+    case "spline":
+      return planTrimSpline(target, others)
     case "text":
     case "mtext":
     case "attdef":
       return null // annotation, not an outline to cut
-    case "spline":
     case "dimension":
     case "hatch":
     case "insert":
@@ -455,9 +464,9 @@ function planTrim(
  * the bounding edge.`, an open polyline's end `Object does not intersect an
  * edge.`, a closed polyline `Cannot EXTEND this object.`, all counted; a
  * circle that too and a dimension the path's, neither counted; an elliptical
- * arc as an open polyline's end, a whole ellipse as a closed polyline. `null`
- * where the console extends what is not built here (a spline) or was not
- * asked.
+ * arc as an open polyline's end, a whole ellipse and a closed spline as a
+ * closed polyline. `null` where the console extends what is not built here
+ * (an open spline) or was not asked.
  */
 function extendRefusal(
   target: Entity
@@ -482,6 +491,10 @@ function extendRefusal(
           : "objectDoesNotIntersectEdge",
         counts: true,
       }
+    case "spline":
+      return target.closed
+        ? { message: "cannotExtendObject", counts: true }
+        : null
     case "dimension":
       return { message: "pathDoesNotIntersectBoundingEdge", counts: false }
     default:
@@ -585,9 +598,28 @@ function trimCrossParams(
           out.push(x.t)
         }
       }
+    } else if (o.type === "ellipse" || o.type === "spline") {
+      for (const t of lineCurveParams(line, o)) {
+        if (t > PARAM_EPS && t < 1 - PARAM_EPS) out.push(t)
+      }
     }
   }
   return dedupeSorted(out)
+}
+
+/**
+ * Parameters along the infinite line through `line` where an ellipse or a
+ * spline crosses it, within the curve's extent.
+ */
+function lineCurveParams(
+  line: LineEntity,
+  curve: EllipseEntity | SplineEntity
+): number[] {
+  const d = V.sub(line.end, line.start)
+  if (V.lengthSq(d) === 0) return []
+  return curveCrossings(curve, (p) => V.cross(d, V.sub(p, line.start))).map(
+    (p) => paramOnLine(line, p)
+  )
 }
 
 /**
@@ -628,6 +660,8 @@ function extendCrossParams(
         const x = infiniteLineIntersection(line.start, line.end, a, b)
         if (x && x.u >= -PARAM_EPS && x.u <= 1 + PARAM_EPS) out.push(x.t)
       }
+    } else if (o.type === "ellipse" || o.type === "spline") {
+      out.push(...lineCurveParams(line, o))
     }
   }
   return out
@@ -755,6 +789,7 @@ function circleEdgeCrossPoints(
     }
     case "ellipse":
     case "spline":
+      return curveCrossings(o, (p) => V.distance(p, center) - radius)
     case "text":
     case "mtext":
     case "attdef":
@@ -951,72 +986,36 @@ function planExtendArc(
 
 // --- Ellipse targets --------------------------------------------------------
 
-/** Steps of the scan round an ellipse that brackets its crossings. */
-const ELLIPSE_SCAN = 720
-
 /**
  * Parameters (normalised, deduped) where the edges cross the whole ellipse
- * of `ellipse`, each within its own extent. An ellipse meets a circle where
- * no closed form does, so every edge is found the same way: the sign changes
- * round the ellipse of the edge's implicit function.
+ * of `ellipse`, each within its own extent: round the ellipse, the sign
+ * changes of each edge's implicit function — but along a spline edge,
+ * which has none, those of the ellipse's own.
  */
 function ellipseCrossParams(
   ellipse: EllipseEntity,
   others: readonly Entity[]
 ): number[] {
-  const at = (t: number) =>
-    ellipsePoint(ellipse.center, ellipse.majorAxis, ellipse.ratio, t)
-  const crossings = (f: (p: Vec2) => number, within: (p: Vec2) => boolean) =>
-    signChanges((t) => f(at(t)), 0, TWO_PI, ELLIPSE_SCAN).filter((t) =>
-      within(at(t))
-    )
-  const segment = (a: Vec2, b: Vec2) => {
-    const d = V.sub(b, a)
-    const lenSq = V.lengthSq(d)
-    return lenSq === 0
-      ? []
-      : crossings(
-          (p) => V.cross(d, V.sub(p, a)),
-          (p) => {
-            const u = V.dot(V.sub(p, a), d) / lenSq
-            return u >= -PARAM_EPS && u <= 1 + PARAM_EPS
-          }
-        )
-  }
-  const round = (
-    center: Vec2,
-    radius: number,
-    sweep?: { readonly start: number; readonly end: number }
-  ) =>
-    crossings(
-      (p) => V.distance(p, center) - radius,
-      (p) =>
-        !sweep ||
-        angleWithinSweep(
-          sweep.start,
-          sweep.end,
-          Math.atan2(p.y - center.y, p.x - center.x)
-        )
-    )
+  const whole = createEllipse(
+    ellipse.center,
+    ellipse.majorAxis,
+    ellipse.ratio,
+    {
+      id: ellipse.id,
+    }
+  )
+  const round = parametricCurve(whole)
+  const own = ellipseImplicit(whole).f
   const params: number[] = []
   for (const o of others) {
-    if (o.type === "line") params.push(...segment(o.start, o.end))
-    else if (o.type === "circle") params.push(...round(o.center, o.radius))
-    else if (o.type === "arc") {
-      params.push(
-        ...round(o.center, o.radius, { start: o.startAngle, end: o.endAngle })
-      )
-    } else if (o.type === "polyline") {
-      for (const g of polylineSegmentGeometries(o)) {
-        params.push(
-          ...(g.kind === "line"
-            ? segment(g.a, g.b)
-            : round(g.center, g.radius, {
-                start: g.startAngle,
-                end: g.endAngle,
-              }))
-        )
+    if (o.type === "spline") {
+      for (const p of curveCrossings(o, own)) {
+        params.push(ellipseParamOf(ellipse, p))
       }
+      continue
+    }
+    for (const edge of implicitEdges(o)) {
+      params.push(...crossingParams(round, edge))
     }
   }
   return dedupeAngles(params.map(normalizeAngle))
@@ -1178,6 +1177,34 @@ function planExtendEllipse(
     result: ellipsePiece(ellipse, start, best),
     added: ellipsePiece(ellipse, end, best),
   }
+}
+
+// --- Spline target ----------------------------------------------------------
+
+/**
+ * A spline is only deleted or refused here: trimmed, AutoCAD 2023's console
+ * leaves its piece on control points and knots of its own (acc/t2, p12),
+ * which a spline here — fit points or control vertices on uniform knots —
+ * cannot hold, so a spline an edge cuts stays as it is.
+ */
+function planTrimSpline(
+  spline: SplineEntity,
+  others: readonly Entity[]
+): EdgeEditPlan | null {
+  const curve = parametricCurve(spline)
+  const params: number[] = []
+  for (const o of others) {
+    for (const edge of implicitEdges(o)) {
+      params.push(...crossingParams(curve, edge))
+    }
+  }
+  const crossings = dedupeSorted(params).length
+  if (crossings === 0) return { kind: "erase", target: spline }
+  // acc/o3: cut once, a closed one is refused as a whole ellipse is.
+  if (spline.closed && crossings === 1) {
+    return { kind: "refuse", message: "curveMustIntersectTwice" }
+  }
+  return null
 }
 
 // --- Polyline target --------------------------------------------------------

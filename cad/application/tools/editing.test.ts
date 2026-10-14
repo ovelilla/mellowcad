@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest"
 import {
+  createSpline,
   ellipseEndPoint,
   ellipseStartPoint,
   type ArcEntity,
@@ -658,6 +659,164 @@ describe("TRIM and EXTEND an ellipse", () => {
       expect(cad.commandLog().at(-1)).toBe(said)
       expect(cad.entities()).toEqual(entities)
       expect(cad.state().commandLine.prompt).toMatch(/\[(Undo|desHacer)\]:$/)
+    }
+  })
+})
+
+// AutoCAD 2023's console (acc/b1, p1, p4, q1–q6, c3, s4, t2, t6, o3,
+// p12 of the elliptical arcs session), read with LIST at AUPREC 4. The values
+// are a CV spline's: a fit spline's end tangents are not AutoCAD's here.
+describe("TRIM and EXTEND with an ellipse or a spline", () => {
+  const ellipse = ellipseOf(p(0, 0), p(100, 0), 0.5, { id: "E" })
+  const spline = createSpline(
+    "fit",
+    [p(0, 0), p(50, 30), p(100, 0), p(150, 30)],
+    { id: "S" }
+  )
+  const cv = createSpline("cv", [p(0, 0), p(50, 50), p(100, -50), p(150, 0)], {
+    id: "S",
+  })
+
+  it("cuts and grows a line to them", () => {
+    const trim = (edge: Entity, line: LineEntity, pick: Vec2) => {
+      const cad = createHarness({ entities: [edge, line] })
+      cad.command("TRIM").click(pick)
+      const kept = cad.byId<LineEntity>(line.id)
+      return [kept.start, kept.end]
+    }
+    expect(
+      trim(ellipse, lineOf(p(-200, 30), p(200, 30), { id: "L" }), p(150, 30))
+    ).toBeCloseToPoints([p(-200, 30), p(80, 30)], 4)
+    expect(
+      trim(cv, lineOf(p(-50, 10), p(200, 10), { id: "L" }), p(175, 10))
+    ).toBeCloseToPoints([p(-50, 10), p(53.1439, 10)], 4)
+
+    for (const [edge, from, to, grown] of [
+      [ellipse, p(200, 0), p(150, 0), p(100, 0)],
+      [cv, p(75, 100), p(75, 60), p(75, 0)],
+    ] as const) {
+      const cad = createHarness({
+        entities: [edge, lineOf(from, to, { id: "L" })],
+      })
+      cad.command("EXTEND").click(to)
+      const line = cad.byId<LineEntity>("L")
+      expect([line.start, line.end]).toBeCloseToPoints([from, grown], 4)
+    }
+
+    const polyline = createHarness({
+      entities: [cv, polylineOf([p(40, 80), p(40, 40)], { id: "P" })],
+    })
+    polyline.command("EXTEND").click(p(40, 40))
+    expect(polyline.byId<PolylineEntity>("P").vertices).toBeCloseToPoints(
+      [p(40, 80), p(40, 13.6889)],
+      4
+    )
+  })
+
+  it("cuts a circle and grows an arc or an elliptical arc to them", () => {
+    const cut = createHarness({
+      entities: [cv, circleOf(p(75, 0), 20, { id: "C" })],
+    })
+    cut.command("TRIM").click(p(75, -20))
+    const arc = cut.byId<ArcEntity>("C")
+    expect(arc.startAngle).toBeCloseTo(deg(334.7844), 5)
+    expect(arc.endAngle).toBeCloseTo(deg(154.7844), 5)
+
+    const grown = createHarness({
+      entities: [ellipse, arcOf(p(0, 0), 80, 0, deg(20), { id: "A" })],
+    })
+    grown.command("EXTEND").click(p(75.1754, 27.3616))
+    expect(grown.byId<ArcEntity>("A").endAngle).toBeCloseTo(deg(25.6589), 5)
+    const toSpline = createHarness({
+      entities: [cv, arcOf(p(0, 0), 100, deg(330), deg(350), { id: "A" })],
+    })
+    toSpline.command("EXTEND").click(p(93.9693, -34.202))
+    expect(toSpline.byId<ArcEntity>("A").endAngle).toBeCloseTo(deg(353.7367), 5)
+
+    const round = createHarness({
+      entities: [
+        ellipseOf(p(0, 0), p(100, 0), 0.5, {
+          id: "A",
+          startParam: 0,
+          endParam: deg(90),
+        }),
+        ellipseOf(p(-80, 0), p(30, 0), 0.5),
+      ],
+    })
+    round.command("EXTEND").click(p(17.3648, 49.2404))
+    const arcOfEllipse = round.byId<EllipseEntity>("A")
+    expect([
+      ellipseStartPoint(arcOfEllipse),
+      ellipseEndPoint(arcOfEllipse),
+    ]).toBeCloseToPoints([p(100, 0), p(-96.875, 12.402)], 4)
+
+    const backToSpline = createHarness({
+      entities: [
+        ellipseOf(p(0, 0), p(100, 0), 0.5, {
+          id: "A",
+          startParam: 0,
+          endParam: deg(90),
+        }),
+        cv,
+      ],
+    })
+    backToSpline.command("EXTEND").click(p(98.4808, 8.6824))
+    const grownBack = backToSpline.byId<EllipseEntity>("A")
+    expect([
+      ellipseStartPoint(grownBack),
+      ellipseEndPoint(grownBack),
+    ]).toBeCloseToPoints([p(97.8309, -10.3576), p(0, 50)], 4)
+  })
+
+  it("deletes a spline no edge crosses, and leaves one an edge cuts", () => {
+    const far = lineOf(p(300, 0), p(400, 0), { id: "far" })
+    const deleted = createHarness({ entities: [spline, far] })
+    deleted.command("TRIM").click(p(0, 0))
+    expect(deleted.entities()).toEqual([far])
+
+    // The console leaves the piece on knots a spline here cannot hold.
+    const entities = [spline, lineOf(p(-50, 15), p(200, 15))]
+    const cut = createHarness({ entities })
+    cut.command("TRIM").click(p(0, 0))
+    expect(cut.entities()).toEqual(entities)
+    expect(cut.optionIds()).toEqual([])
+  })
+
+  it("refuses a closed spline cut once, or extended", () => {
+    const closed = createSpline(
+      "fit",
+      [p(0, 0), p(50, 30), p(100, 0), p(50, -30)],
+      { id: "S", closed: true }
+    )
+    for (const [locale, trim, extend, said] of [
+      [
+        undefined,
+        "TRIM",
+        "EXTEND",
+        [
+          "Curve must intersect cutting edges at least twice.",
+          "Cannot EXTEND this object.",
+        ],
+      ],
+      [
+        es,
+        "RECORTA",
+        "ALARGA",
+        [
+          "La curva debe intersecar las aristas de corte al menos dos veces.",
+          "Objeto no procesado por ALARGA.",
+        ],
+      ],
+    ] as const) {
+      const entities = [closed, lineOf(p(50, 0), p(50, 100))]
+      const cad = createHarness({ locale, entities })
+      cad.command(trim).click(p(100, 0))
+      expect(cad.commandLog().at(-1)).toBe(said[0])
+      expect(cad.state().commandLine.prompt).toMatch(/\[(Undo|desHacer)\]:$/)
+      cad.escape().command(extend).click(p(0, 0))
+      expect(cad.commandLog().at(-1)).toBe(said[1])
+      expect(cad.state().commandLine.prompt).toMatch(/\[(Undo|desHacer)\]:$/)
+      expect(cad.entities()).toEqual(entities)
     }
   })
 })
