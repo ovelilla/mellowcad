@@ -307,11 +307,14 @@ export class FilletTool implements Tool {
 
   /**
    * Enter in a mode's prompt is the mode's; at Polyline's in Multiple it asks
-   * the first prompt again (acc/k6, l3); at an object prompt it ends.
+   * the first prompt again (acc/k6, l3); at the second prompt it asks that
+   * again, Multiple or not, as AutoCAD 2023's console does; at the first it
+   * ends.
    */
   onEnter(ctx: ToolContext): boolean {
     if (this.askingRadius) return false
     if (this.modes.inMode()) return this.modes.onEnter(ctx)
+    if (this.state.phase === "second") return true
     if (this.state.phase !== "polyline" || !this.multiple) return false
     this.state = { phase: "first", hover: null }
     ctx.requestRender()

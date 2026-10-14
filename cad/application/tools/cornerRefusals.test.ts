@@ -197,3 +197,35 @@ describe("FILLET's and CHAMFER's Polyline say what is no 2D polyline", () => {
     )
   })
 })
+
+// AutoCAD 2023's console, acc/u1–u3 of 2026-10-14.
+describe("FILLET's and CHAMFER's second prompt on Enter", () => {
+  it("is asked again without a word, in Multiple or not", () => {
+    for (const multiple of [[], ["M"]]) {
+      const cad = run(cross(), "FILLET", ...multiple, "30,40", "", "FOO")
+      expect(cad.commandLog().slice(-4)).toEqual([
+        "Select second object or shift-select to apply corner or [Radius]:",
+        "Select second object or shift-select to apply corner or [Radius]: FOO",
+        "*Invalid selection*",
+        "Expects a point or Window/Last/Crossing/BOX/Fence/WPolygon/CPolygon/Radius]:",
+      ])
+      expect(cad.activeToolId()).toBe("fillet")
+
+      const chamfer = run(cross(), "CHAMFER", ...multiple, "30,40", "", "80,0")
+      expect(chamfer.commandLog().slice(-2)).toEqual([
+        "Select second line or shift-select to apply corner or [Distance]:",
+        "Select second line or shift-select to apply corner or [Distance]: 80,0",
+      ])
+    }
+  })
+
+  it("is asked again in Spanish too", () => {
+    const cad = createHarness({ locale: es, entities: cross() })
+    cad.command("EMPALME")
+    answer(cad, "30,40", "")
+    expect(cad.commandLog().at(-1)).toBe(
+      "Designe el segundo objeto o use la tecla Mayús para aplicar esquina o [Radio]:"
+    )
+    expect(cad.activeToolId()).toBe("fillet")
+  })
+})
