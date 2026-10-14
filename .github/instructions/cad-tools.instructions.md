@@ -304,6 +304,13 @@ current layer.
   steps stay apart. Any command but U, UNDO, REDO and MREDO drops what can be redone
   (`history.dropRedo`), even one that changes nothing: the console's MREDO then finds
   `Nothing to redo`.
+- **The view is undone with the command that changed it.** A tool that changes the view says
+  `changesView` (ZOOM, PAN, -VIEW, VPOINT, PLAN, 3DORBIT): the runtime saves the view and
+  ZOOM Previous's list when it starts, transparently too, and puts what it did into the step
+  of the command it runs in (`ViewChangeCommand`), so a tool never records a view change
+  itself. A typed ZOOM's step joins the ZOOM's just before (UNDO Combine: U says it
+  regenerates only if the view moves, REDO never); a menu's (the navigation bar's) never
+  does. The wheel, the wheel button's pan and the ViewCube are no command and stay out.
 - A tool offering its own **Undo keyword** must count its own edits and refuse when there are
   none: `ctx.undo()` pops the history, which otherwise backs out an unrelated earlier command.
   Inside the run each commit is still its own entry, so `ctx.undo()` takes back one; Ctrl+Z runs

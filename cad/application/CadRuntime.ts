@@ -37,7 +37,12 @@ import {
 } from "../serialization/drawingFile"
 import { isBlankDrawing } from "../serialization/drawingSummary"
 import { Scene, ScenePrimitive } from "../scene/types"
-import { Viewport, entitiesViewBounds } from "./Viewport"
+import {
+  Viewport,
+  type ViewState,
+  entitiesViewBounds,
+  sameCamera,
+} from "./Viewport"
 import { UcsFrame } from "./ucsFrame"
 import { planDistanceToEntity, screenDistanceToEntity } from "./viewPick"
 import { orbitTarget, orbitView } from "./orbit"
@@ -82,6 +87,7 @@ import { EngineText, engineText, promptString } from "./EngineText"
 import { CommandHistory, Step } from "./commands/Command"
 import type { UndoHistory } from "./tools/Tool"
 import { UpdateSettingsCommand } from "./commands/settingsCommands"
+import { ViewChangeCommand } from "./commands/viewCommands"
 import {
   NewDrawingCommand,
   RemoveEntitiesCommand,
@@ -335,6 +341,17 @@ export class CadRuntime extends Observable {
     | "bottom"
     | "redid"
     | null = null
+  /**
+   * The view as the running command found it, from when a tool that changes
+   * it started (in it or transparently): what U puts back. Null otherwise.
+   */
+  private viewBefore: ViewState | null = null
+  /** Whether the running tool is a ZOOM typed, which UNDO Combine joins. */
+  private typedZoom = false
+  /** Whether the last step is a typed ZOOM's, which the next one joins. */
+  private zoomCombines = false
+  /** Set while the navigation bar starts its command. */
+  private navigating = false
   /**
    * The command the running tool was started as, which heads its prompt:
    * `-LINETYPE`, not the tool's LINETYPE. Null for a tool started otherwise.
@@ -838,8 +855,11 @@ export class CadRuntime extends Observable {
       this.commandLine.write("info", this.text.message("regeneratingModel"))
     }
     // A command is one undo step, closed only once its tool has committed
-    // what it holds on deactivation.
-    this.history.endGroup()
+    // what it holds on deactivation, with what it did to the view.
+    const zoom =
+      this.activeTool.id !== "select" && this.recordView() && this.typedZoom
+    this.history.endGroup(zoom ? { withLast: this.zoomCombines } : undefined)
+    if (this.typedZoom) this.zoomCombines = zoom
     this.history.nameCommand(next.id === "select" ? null : this.startingName)
     this.resetTracking()
     this.answerPrefix = null
@@ -847,6 +867,13 @@ export class CadRuntime extends Observable {
     this.activeTool = next
     this.startedAs = this.starting
     if (next.id !== "select") this.history.beginGroup()
+    // A tool started from the rail is its command too.
+    if (next.id !== "select" && this.starting === null) {
+      this.commandStarts(TOOL_COMMANDS[next.id] ?? next.id)
+    }
+    this.viewBefore = next.changesView ? this.viewport.saveView() : null
+    // Menu-started zooms are never combined (UNDO's help).
+    this.typedZoom = next.id === "zoom" && !this.navigating
     next.onActivate?.(this.toolContext)
     this.replayRestingPointer()
     this.invalidateState()
@@ -912,6 +939,10 @@ export class CadRuntime extends Observable {
     this.commandStart = this.commandLine.mark()
     this.activeTool = tool
     this.startedAs = command.id
+    // What it does to the view goes with the command it runs in (acc/z12).
+    if (tool.changesView && this.viewBefore === null) {
+      this.viewBefore = this.viewport.saveView()
+    }
     tool.onActivate?.(this.toolContext)
     this.replayRestingPointer()
     this.invalidateState()
@@ -1692,15 +1723,15 @@ export class CadRuntime extends Observable {
     }
     this.commandLine.pushHistory(name)
     this.starting = command.id
-    this.startingName = name
-    // Any other command, even one that changes nothing (LIST, ID, ZOOM),
-    // leaves MREDO `Nothing to redo` in AutoCAD 2023's console (acc/n6–n18).
-    if (!UNDO_COMMANDS.has(command.id)) {
-      this.undoing = null
-      this.history.dropRedo()
-    }
+    // U names a ZOOM typed with an apostrophe so (`ZOOM 'ZOOM`, acc/z24).
+    const said =
+      typed.startsWith("'") && !variable
+        ? this.text.transparentCommand(name)
+        : name
+    this.startingName = said
+    this.commandStarts(command.id)
     // One run in place makes its steps here; a tool's, once it starts.
-    if (this.activeTool.id === "select") this.history.nameCommand(name)
+    if (this.activeTool.id === "select") this.history.nameCommand(said)
     try {
       command.run()
     } finally {
@@ -1712,6 +1743,19 @@ export class CadRuntime extends Observable {
     this.invalidateState()
     this.host.focusSurface()
     return true
+  }
+
+  /**
+   * `command` (its global name) starts: any but U, UNDO, REDO and MREDO,
+   * even one that changes nothing (LIST, ID, ZOOM), leaves MREDO `Nothing to
+   * redo` in AutoCAD 2023's console (acc/n6–n18), and a ZOOM after it is a
+   * step of its own (acc/z25).
+   */
+  private commandStarts(command: string): void {
+    if (UNDO_COMMANDS.has(command)) return
+    this.undoing = null
+    this.history.dropRedo()
+    if (command !== "ZOOM") this.zoomCombines = false
   }
 
   /** Repeats the last command, AutoCAD's Enter/Space at the neutral prompt. */
@@ -1738,10 +1782,16 @@ export class CadRuntime extends Observable {
    */
   navigate(command: "PAN" | "ZOOM", option?: string): boolean {
     const typed = `'_${command}`
-    const started =
-      this.activeTool.id === "select"
-        ? this.runCommand(typed)
-        : this.runTransparently(typed, false)
+    this.navigating = true
+    let started: boolean
+    try {
+      started =
+        this.activeTool.id === "select"
+          ? this.runCommand(typed)
+          : this.runTransparently(typed, false)
+    } finally {
+      this.navigating = false
+    }
     if (started) this.host.focusSurface()
     return (
       started && (option === undefined || this.invokeToolOption(`_${option}`))
@@ -1995,6 +2045,31 @@ export class CadRuntime extends Observable {
         : "bottom"
   }
 
+  /**
+   * Puts what the ending command did to the view into its undo step, from
+   * when a tool that changes it started (ZOOM, PAN, -VIEW, VPOINT, PLAN,
+   * 3DORBIT, typed or transparent). The wheel, the ViewCube and the
+   * navigation bar's direct zooms are no command, and stay out of it.
+   * Returns whether it did.
+   */
+  private recordView(): boolean {
+    const before = this.viewBefore
+    this.viewBefore = null
+    if (before === null) return false
+    const after = this.viewport.saveView()
+    if (
+      sameCamera(before.camera, after.camera) &&
+      before.previous.length === after.previous.length &&
+      before.previous.every((camera, i) =>
+        sameCamera(camera, after.previous[i])
+      )
+    ) {
+      return false
+    }
+    this.history.execute(new ViewChangeCommand(this.viewport, before, after))
+    return true
+  }
+
   /** Whether the last undo already said `Everything has been undone`. */
   private reachedBottom(): boolean {
     const undoing = this.undoing
@@ -2071,7 +2146,7 @@ export class CadRuntime extends Observable {
       if (!step) break
       const name = this.stepName(step, false)
       if (name !== null) names.push(name)
-      regenerates ||= step.regenerates
+      regenerates ||= step.regeneratesRedone
     }
     if (done > 0) {
       this.selection.clear()
@@ -2097,14 +2172,16 @@ export class CadRuntime extends Observable {
   }
 
   /**
-   * How U and REDO name a step: its command (`LINE`), a group with its
-   * commands, last first when taken back (`GROUP CIRCLE LINE`); a mark, or
-   * an edit made with no command, nothing.
+   * How U and REDO name a step: its command (`LINE`), consecutive ZOOMs or
+   * a group with its commands, last first when taken back (`ZOOM 'ZOOM`,
+   * `GROUP CIRCLE LINE`); a mark, or an edit made with no command, nothing.
    */
   private stepName(step: Step, undone: boolean): string | null {
     if (step.kind === "mark") return null
-    if (step.kind === "command") return step.name
     const names = undone ? [...step.names].reverse() : step.names
+    if (step.kind === "command") {
+      return names.length > 0 ? names.join(" ") : step.name
+    }
     return [this.text.message("undoGroup"), ...names].join(" ")
   }
 

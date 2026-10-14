@@ -190,6 +190,8 @@ describe("Home", () => {
     expectDirection(cad, -1, -1, 1)
 
     cad.runtime.applyViewPreset("NEiso")
+    // -VIEW is an undo step of its own; setting Home is none.
+    cad.runtime.history.clear()
     cad.runtime.setHomeFromCurrentView()
     cad.runtime.viewCubePick("top")
     cad.runtime.viewCubeHome()

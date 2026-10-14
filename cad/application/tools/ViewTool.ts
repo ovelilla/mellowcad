@@ -40,6 +40,7 @@ const ISOMETRIC: readonly ViewPreset[] = ["SWiso", "SEiso", "NEiso", "NWiso"]
 export class ViewTool implements Tool {
   readonly id = "view"
   readonly inWorld = true
+  readonly changesView = true
 
   private state: ViewState = { phase: "option" }
   private lastScreen: Vec2 | null = null

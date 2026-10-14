@@ -1,6 +1,7 @@
 import { Observable } from "../../shared/Observable"
 import { CadDocument } from "../../domain/Document"
 import { Entity } from "../../domain/entities"
+import { ViewChangeCommand } from "./viewCommands"
 
 /**
  * Command pattern: every mutation of the persistent document is expressed as a
@@ -39,17 +40,30 @@ export interface Step {
   readonly kind: "command" | "group" | "mark"
   /** The command that made it (`LINE`), or null for an edit made outside one. */
   readonly name: string | null
-  /** A group's commands, in the order they ran. */
+  /** A group's commands, or consecutive ZOOMs', in the order they ran. */
   readonly names: readonly string[]
-  /** Whether that command regenerated the drawing (LTSCALE, -VIEW). */
+  /** Whether taking it back regenerates the drawing (LTSCALE, -VIEW). */
   readonly regenerates: boolean
+  /** Whether doing it again does. */
+  readonly regeneratesRedone: boolean
 }
 
-interface Entry extends Omit<Step, "kind"> {
+interface Entry extends Omit<Step, "kind" | "regeneratesRedone"> {
   /** `begin`: where an UNDO group still open starts, which no undo passes. */
   readonly kind: Step["kind"] | "begin"
   /** What it does and undoes; null for a mark, a group's start or an empty group. */
   readonly command: Command | null
+  /**
+   * A ZOOM's view change, which the next ZOOM joins (UNDO Combine). Whether
+   * it regenerated is said only when taking it back moves the view, never
+   * when doing it again (acc/z4, z29, z32–z38 of the MREDO session).
+   */
+  readonly combines?: true
+}
+
+/** How a group closes: as a ZOOM's, joining the ZOOM before it or not. */
+export interface ZoomStep {
+  readonly withLast: boolean
 }
 
 /**
@@ -114,9 +128,10 @@ export class CommandHistory extends Observable {
   /**
    * Closes the open group, folding what it executed into one entry, which
    * regenerates if anything in it did. UNDO's marks and group starts, which
-   * execute nothing, stay as they are.
+   * execute nothing, stay as they are. A ZOOM's (`zoom`) joins the ZOOM's
+   * just below when `withLast`, U naming them both (`ZOOM 'ZOOM`).
    */
-  endGroup(): void {
+  endGroup(zoom?: ZoomStep): void {
     const start = this.groupStart
     const regenerated = this.regenerated
     this.groupStart = null
@@ -127,16 +142,37 @@ export class CommandHistory extends Observable {
       this.undoStack.push(...steps)
       return
     }
-    this.undoStack.push({
+    const command =
+      steps.length === 1
+        ? steps[0].command
+        : new GroupCommand(steps.flatMap((step) => step.command ?? []))
+    const entry: Entry = {
       kind: "command",
-      command:
-        steps.length === 1
-          ? steps[0].command
-          : new GroupCommand(steps.flatMap((step) => step.command ?? [])),
+      command,
       name: steps[0].name,
       names: [],
       regenerates: regenerated || steps.some((step) => step.regenerates),
-    })
+    }
+    if (!zoom || !(command instanceof ViewChangeCommand)) {
+      this.undoStack.push(entry)
+      return
+    }
+    const below = this.undoStack.at(-1)
+    if (
+      zoom.withLast &&
+      below?.combines &&
+      below.command instanceof ViewChangeCommand
+    ) {
+      this.undoStack[this.undoStack.length - 1] = {
+        ...below,
+        command: below.command.then(command),
+        name: null,
+        names: [...namesOf(below), ...namesOf(entry)],
+        regenerates: below.regenerates || entry.regenerates,
+      }
+      return
+    }
+    this.undoStack.push({ ...entry, combines: true })
   }
 
   /** UNDO Mark: a place Back, U and UNDO's number stop at. */
@@ -181,9 +217,7 @@ export class CommandHistory extends Observable {
       kind: "group",
       command: commands.length > 0 ? new GroupCommand(commands) : null,
       name: null,
-      names: inner.flatMap((entry) =>
-        entry.kind === "group" ? entry.names : (entry.name ?? [])
-      ),
+      names: inner.flatMap(namesOf),
       regenerates: inner.some((entry) => entry.regenerates),
     }
     if (this.groupStart !== null) {
@@ -281,8 +315,17 @@ export class CommandHistory extends Observable {
   }
 
   private step(entry: Entry): Step {
-    // Only an open group's start is a `begin`, and no undo passes it.
-    return { ...entry, kind: entry.kind === "begin" ? "group" : entry.kind }
+    const view = entry.combines ? entry.command : null
+    return {
+      // Only an open group's start is a `begin`, and no undo passes it.
+      kind: entry.kind === "begin" ? "group" : entry.kind,
+      name: entry.name,
+      names: entry.names,
+      regenerates:
+        entry.regenerates &&
+        (!(view instanceof ViewChangeCommand) || view.moves()),
+      regeneratesRedone: entry.regenerates && view === null,
+    }
   }
 
   /** What the undos took back can no longer be done again. */
@@ -301,6 +344,12 @@ export class CommandHistory extends Observable {
     this.redoStack = []
     this.emit()
   }
+}
+
+/** The commands an entry names: a group's or joined ZOOMs', or its one. */
+function namesOf(entry: Entry): readonly string[] {
+  if (entry.names.length > 0) return entry.names
+  return entry.name === null ? [] : [entry.name]
 }
 
 /** The commands of one group, done in order and undone in reverse. */

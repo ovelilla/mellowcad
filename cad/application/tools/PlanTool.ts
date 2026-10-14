@@ -30,6 +30,7 @@ const PADDING_PX = 40
 export class PlanTool implements Tool {
   readonly id = "plan"
   readonly inWorld = true
+  readonly changesView = true
 
   private state: PlanState = { phase: "option" }
   private lastScreen: Vec2 | null = null
@@ -147,7 +148,7 @@ export class PlanTool implements Tool {
       ctx.blocks
     )
     if (bounds) viewport.zoomToViewBounds(bounds.min, bounds.max, PADDING_PX)
-    ctx.report(ctx.text.message("regeneratingModel"))
+    ctx.regenerate()
   }
 
   private place(ctx: ToolContext): void {

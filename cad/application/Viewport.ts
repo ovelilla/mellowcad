@@ -48,6 +48,27 @@ export interface Camera {
   readonly right: Vec3
 }
 
+/** A view with the ZOOM Previous list that goes back with it when it is undone. */
+export interface ViewState {
+  readonly camera: Camera
+  readonly previous: readonly Camera[]
+}
+
+/** Whether two cameras show the same view. */
+export function sameCamera(a: Camera, b: Camera): boolean {
+  return (
+    a.scale === b.scale &&
+    a.translation.x === b.translation.x &&
+    a.translation.y === b.translation.y &&
+    a.direction.x === b.direction.x &&
+    a.direction.y === b.direction.y &&
+    a.direction.z === b.direction.z &&
+    a.right.x === b.right.x &&
+    a.right.y === b.right.y &&
+    a.right.z === b.right.z
+  )
+}
+
 /** The view itself, which every frame it is read in shares; its camera is in the WCS. */
 interface ViewCore {
   scale: number
@@ -317,6 +338,17 @@ export class Viewport extends Observable {
     core.right = camera.right
     core.up = cross3(camera.direction, camera.right)
     this.changed()
+  }
+
+  /** The view and the views ZOOM Previous steps back through. */
+  saveView(): ViewState {
+    return { camera: this.getCamera(), previous: [...this.core.history] }
+  }
+
+  /** Puts back what {@link saveView} gave, as U puts back a command's view. */
+  restoreView(state: ViewState): void {
+    this.core.history = [...state.previous]
+    this.setCamera(state.camera)
   }
 
   /**

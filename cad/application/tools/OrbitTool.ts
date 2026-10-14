@@ -14,6 +14,7 @@ import { PointerInput, Tool, ToolContext } from "./Tool"
 export class OrbitTool implements Tool {
   readonly id = "orbit"
   readonly inWorld = true
+  readonly changesView = true
 
   private drag: { last: Vec2; target: Vec3 } | null = null
 

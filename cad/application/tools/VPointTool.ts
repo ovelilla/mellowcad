@@ -32,6 +32,7 @@ type VPointState =
 export class VPointTool implements Tool {
   readonly id = "vpoint"
   readonly inWorld = true
+  readonly changesView = true
 
   private state: VPointState = { phase: "viewPoint" }
   private lastScreen: Vec2 | null = null
@@ -192,7 +193,7 @@ export class VPointTool implements Tool {
 
   private view(point: Vec3, ctx: ToolContext): boolean {
     if (!lookFrom(point, ctx)) return false
-    ctx.report(ctx.text.message("regeneratingModel"))
+    ctx.regenerate()
     ctx.endCommand()
     return true
   }

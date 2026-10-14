@@ -455,6 +455,13 @@ export interface Tool {
    */
   readonly inWorld?: boolean
 
+  /**
+   * Whether the tool changes the view (ZOOM, PAN, -VIEW, VPOINT, PLAN,
+   * 3DORBIT): what it does to it is part of the undo step of the command it
+   * runs in, itself or the one it interrupts.
+   */
+  readonly changesView?: true
+
   onActivate?(ctx: ToolContext): void
   onDeactivate?(ctx: ToolContext): void
 

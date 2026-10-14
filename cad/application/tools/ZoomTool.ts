@@ -57,6 +57,7 @@ const FACTOR = /^(\d+(?:\.\d*)?|\.\d+)\s*(x?)$/i
 
 export class ZoomTool implements Tool {
   readonly id = "zoom"
+  readonly changesView = true
 
   private state: ZoomState = { phase: "main" }
   private lastScreen: Vec2 | null = null
@@ -402,7 +403,7 @@ export class ZoomTool implements Tool {
  */
 function regenerated(ctx: ToolContext): void {
   if (ctx.runsTransparently()) return
-  ctx.report(ctx.text.message("regeneratingModel"))
+  ctx.regenerate()
 }
 
 function selectedEntities(ctx: ToolContext): Entity[] {
