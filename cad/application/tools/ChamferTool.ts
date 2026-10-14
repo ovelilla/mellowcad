@@ -272,14 +272,13 @@ export class ChamferTool implements Tool {
   private ownOptions(): readonly CommandOption[] {
     switch (this.state.phase) {
       case "first":
-        return this.multiple
-          ? [{ id: "Undo" }, { id: "Polyline" }, { id: "Distance" }]
-          : [
-              { id: "Undo" },
-              { id: "Polyline" },
-              { id: "Distance" },
-              { id: "Multiple" },
-            ]
+        // WHY Multiple still listed once on: AutoCAD 2023 console lists it.
+        return [
+          { id: "Undo" },
+          { id: "Polyline" },
+          { id: "Distance" },
+          { id: "Multiple" },
+        ]
       case "second":
       case "polyline":
         return [{ id: "Distance" }]

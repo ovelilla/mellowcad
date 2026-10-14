@@ -3077,30 +3077,28 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0°~, Line space facto
   options: [U] Undo, [P] Polyline, [R] Radius, [M] Multiple
   prompt| Specify fillet radius <0.00>: 20
 > M
-  prompt: FILLET Select first object or [Undo/Polyline/Radius]:
-  options: [U] Undo, [P] Polyline, [R] Radius
   prompt| Select first object or [Undo/Polyline/Radius/Multiple]: M
 > first
   prompt: FILLET Select second object or shift-select to apply corner or [Radius]:
   tip: Select second object or shift-select to apply corner or
   options: [R] Radius
-  prompt| Select first object or [Undo/Polyline/Radius]:
+  prompt| Select first object or [Undo/Polyline/Radius/Multiple]:
 > second
-  prompt: FILLET Select first object or [Undo/Polyline/Radius]:
+  prompt: FILLET Select first object or [Undo/Polyline/Radius/Multiple]:
   tip: Select first object or
-  options: [U] Undo, [P] Polyline, [R] Radius
+  options: [U] Undo, [P] Polyline, [R] Radius, [M] Multiple
   prompt| Select second object or shift-select to apply corner or [Radius]:
 > U
-  prompt| Select first object or [Undo/Polyline/Radius]: U
+  prompt| Select first object or [Undo/Polyline/Radius/Multiple]: U
 > P
   prompt: FILLET Select 2D polyline or [Radius]:
   tip: Select 2D polyline or
   options: [R] Radius
-  prompt| Select first object or [Undo/Polyline/Radius]: P
+  prompt| Select first object or [Undo/Polyline/Radius/Multiple]: P
 > polyline
-  prompt: FILLET Select first object or [Undo/Polyline/Radius]:
+  prompt: FILLET Select first object or [Undo/Polyline/Radius/Multiple]:
   tip: Select first object or
-  options: [U] Undo, [P] Polyline, [R] Radius
+  options: [U] Undo, [P] Polyline, [R] Radius, [M] Multiple
   prompt| Select 2D polyline or [Radius]:
   info| 1 line was filleted
 > enter
@@ -3109,7 +3107,7 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0°~, Line space facto
   tip: -
   dyn: -
   options: -
-  prompt| Select first object or [Undo/Polyline/Radius]:
+  prompt| Select first object or [Undo/Polyline/Radius/Multiple]:
 > CHAMFER
   prompt: CHAMFER Select first line or [Undo/Polyline/Distance/Multiple]:
   asks: 

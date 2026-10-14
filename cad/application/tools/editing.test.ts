@@ -761,7 +761,7 @@ describe("FILLET", () => {
         "Cannot fillet between these two entities."
       )
       expect(multiple.state().commandLine.prompt).toBe(
-        "FILLET Select first object or [Undo/Polyline/Radius]:"
+        "FILLET Select first object or [Undo/Polyline/Radius/Multiple]:"
       )
     })
 
@@ -1001,7 +1001,7 @@ describe("FILLET", () => {
         .click(p(100, 25))
         .click(p(60, 80))
       expect(cad.state().commandLine.prompt).toBe(
-        "FILLET Select first object or [Undo/Polyline/Radius]:"
+        "FILLET Select first object or [Undo/Polyline/Radius/Multiple]:"
       )
 
       const spanish = createHarness({ locale: es, entities: [ell(), raised] })
@@ -1190,7 +1190,7 @@ describe("FILLET", () => {
         .click(p(100, 25))
         .click(p(120, 25))
       expect(cad.state().commandLine.prompt).toBe(
-        "FILLET Select first object or [Undo/Polyline/Radius]:"
+        "FILLET Select first object or [Undo/Polyline/Radius/Multiple]:"
       )
 
       const raised = () => [ell(), { ...hook(), elevation: 10 }]
@@ -1324,7 +1324,7 @@ describe("FILLET", () => {
     cad.command("FILLET").option("Radius").type("20").enter()
     cad.option("Multiple")
     expect(cad.state().commandLine.prompt).toBe(
-      "FILLET Select first object or [Undo/Polyline/Radius]:"
+      "FILLET Select first object or [Undo/Polyline/Radius/Multiple]:"
     )
     cad.click(p(100, 0)).click(p(0, 100))
     expect(cad.activeToolId()).toBe("fillet")
@@ -1340,12 +1340,12 @@ describe("FILLET", () => {
     cad.enter()
     expect(cad.activeToolId()).toBe("select")
     expect(cad.commandLog().slice(-6)).toEqual([
-      "Select first object or [Undo/Polyline/Radius]: U",
-      "Select first object or [Undo/Polyline/Radius]: U",
+      "Select first object or [Undo/Polyline/Radius/Multiple]: U",
+      "Select first object or [Undo/Polyline/Radius/Multiple]: U",
       "Command has been completely undone.",
-      "Select first object or [Undo/Polyline/Radius]: U",
+      "Select first object or [Undo/Polyline/Radius/Multiple]: U",
       "Command has been completely undone.",
-      "Select first object or [Undo/Polyline/Radius]:",
+      "Select first object or [Undo/Polyline/Radius/Multiple]:",
     ])
     cad.command("FILLET")
     expect(cad.commandLog().at(-1)).toBe(
@@ -1535,7 +1535,7 @@ describe("FILLET", () => {
         "No valid fillet with radius 5.00"
       )
       expect(multiple.state().commandLine.prompt).toBe(
-        "FILLET Select first object or [Undo/Polyline/Radius]:"
+        "FILLET Select first object or [Undo/Polyline/Radius/Multiple]:"
       )
 
       const spanish = createHarness({ locale: es, entities: [line(), apart()] })
@@ -2095,7 +2095,7 @@ describe("CHAMFER", () => {
         "Cannot chamfer polyline arc segments."
       )
       expect(multiple.state().commandLine.prompt).toBe(
-        "CHAMFER Select first line or [Undo/Polyline/Distance]:"
+        "CHAMFER Select first line or [Undo/Polyline/Distance/Multiple]:"
       )
 
       const spanish = createHarness({
@@ -2135,7 +2135,7 @@ describe("CHAMFER", () => {
     cad.command("CHAMFER").option("Distance").type("20").enter().enter()
     cad.option("Multiple")
     expect(cad.state().commandLine.prompt).toBe(
-      "CHAMFER Select first line or [Undo/Polyline/Distance]:"
+      "CHAMFER Select first line or [Undo/Polyline/Distance/Multiple]:"
     )
     cad.click(p(100, 0)).click(p(0, 100))
     cad.click(p(450, 0)).click(p(400, 100))

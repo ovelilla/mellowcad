@@ -524,7 +524,7 @@ describe("Spanish AutoCAD's command language", () => {
     cad.escape().command("EMPALME")
     answer("L")
     expect(cad.state().commandLine.prompt).toBe(
-      "EMPALME Designe el primer objeto o [Deshacer/Polilínea/RAdio]:"
+      "EMPALME Designe el primer objeto o [Deshacer/Polilínea/RAdio/múLtiple]:"
     )
     answer("P")
     // The sub-prompt spells it Radio, so R alone answers it there.
