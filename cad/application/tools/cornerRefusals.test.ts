@@ -292,3 +292,72 @@ describe("CHAMFER of two parallel lines", () => {
     ])
   })
 })
+
+// AutoCAD 2023's console, acc/v1–v8 of 2026-10-14.
+describe("FILLET and CHAMFER refuse a mode's find at the second prompt as a pick", () => {
+  const same = [
+    ["C", "40,-5", "60,5"],
+    ["F", "50,-5", "50,5", ""],
+  ]
+  const far = [
+    ["C", "-5,70", "5,80"],
+    ["F", "-5,75", "5,75", ""],
+  ]
+
+  it("the first segment again ends saying so, in Multiple too", () => {
+    for (const mode of same) {
+      for (const multiple of [[], ["M"]]) {
+        const cad = run(zigzag(), "FILLET", ...multiple, "50,0", ...mode)
+        expect(cad.commandLog().at(-1)).toBe(
+          "Cannot fillet an entity with itself."
+        )
+        expect(cad.activeToolId()).toBe("select")
+      }
+    }
+    const chamfer = run(zigzag(), "CHAMFER", "50,0", ...same[0])
+    expect(chamfer.commandLog().at(-1)).toBe(
+      "Cannot chamfer an entity with itself."
+    )
+    expect(chamfer.activeToolId()).toBe("select")
+  })
+
+  it("a segment two or more away: *Invalid*, or in Multiple the first prompt", () => {
+    for (const mode of far) {
+      const cad = run(zigzag(), "FILLET", "50,0", ...mode)
+      expect(cad.commandLog().slice(-2)).toEqual([APART, "*Invalid*"])
+      expect(cad.activeToolId()).toBe("select")
+    }
+    const multiple = run(zigzag(), "FILLET", "M", "50,0", ...far[0], "FOO")
+    expect(multiple.commandLog().slice(-4, -2)).toEqual([
+      APART,
+      "Select first object or [Undo/Polyline/Radius/Multiple]: FOO",
+    ])
+    const chamfer = run(zigzag(), "CHAMFER", "M", "50,0", ...far[0], "FOO")
+    expect(chamfer.commandLog().slice(-4, -2)).toEqual([
+      APART,
+      "Select first line or [Undo/Polyline/Distance/Multiple]: FOO",
+    ])
+  })
+
+  it("a segment next to it still makes the corner", () => {
+    const cad = run(zigzag(), "FILLET", "50,0", "C", "95,20", "105,30")
+    expect(cad.commandLog().at(-1)).toBe("Specify opposite corner: 105,30")
+    expect(cad.activeToolId()).toBe("select")
+  })
+
+  it("is answered in Autodesk's Spanish", () => {
+    const cad = createHarness({ locale: es, entities: zigzag() })
+    cad.command("EMPALME")
+    answer(cad, "50,0", "C", "40,-5", "60,5")
+    expect(cad.commandLog().at(-1)).toBe(
+      "No se puede empalmar un objeto consigo mismo."
+    )
+    const far = createHarness({ locale: es, entities: zigzag() })
+    far.command("CHAFLAN")
+    answer(far, "50,0", "B", "-5,75", "5,75", "")
+    expect(far.commandLog().slice(-2)).toEqual([
+      "Las líneas pertenecientes a polilíneas tienen que ser consecutivas o estar separadas por un segmento",
+      "*No válido*",
+    ])
+  })
+})

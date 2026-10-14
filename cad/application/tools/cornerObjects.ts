@@ -161,13 +161,44 @@ export function cornerPairRefusal(
   ctx: ToolContext,
   pick: LinePick,
   first: FilletObject
-): "itself" | "apart" | null {
+): PairRefusal | null {
   const hit = ctx.pick(pick.world)
-  if (!hit) return null
+  return hit && pairRefusal(first, hit, () => segmentAt(ctx, hit, pick))
+}
+
+/** Why the second object makes no corner with the first, said and refused. */
+export type PairRefusal = "itself" | "apart"
+
+/**
+ * {@link cornerPairRefusal} for what a mode found at the second prompt, read
+ * as {@link foundFilletObject} reads it: the console refuses a crossing
+ * window's or a fence's segment as it refuses a pick there (acc/v1–v8 of
+ * 2026-10-14).
+ */
+export function foundPairRefusal(
+  ctx: ToolContext,
+  entity: Entity,
+  find: ModeFind,
+  first: FilletObject
+): PairRefusal | null {
+  return pairRefusal(first, entity, () => {
+    const found = foundFilletObject(ctx, entity, find, null)
+    return found && !found.whole && isSegment(found.object)
+      ? found.object.index
+      : null
+  })
+}
+
+function pairRefusal(
+  first: FilletObject,
+  hit: Entity,
+  segment: () => number | null
+): PairRefusal | null {
   if (!isSegment(first))
     return cornerEntity(first).id === hit.id ? "itself" : null
-  const index = segmentAt(ctx, hit, pick)
-  if (hit.id !== first.poly.id || index === null) return null
+  if (hit.id !== first.poly.id) return null
+  const index = segment()
+  if (index === null) return null
   if (index === first.index) return "itself"
   return segmentsPair(first.poly, first.index, index) ? null : "apart"
 }

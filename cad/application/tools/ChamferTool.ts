@@ -39,6 +39,8 @@ import {
   cornerJoin,
   cornerObjectRefusal,
   cornerPairRefusal,
+  foundPairRefusal,
+  type PairRefusal,
   cornerPlane,
   cutFits,
   foundFilletObject,
@@ -260,10 +262,8 @@ export class ChamferTool implements Tool {
       case "second": {
         if (this.refusesRound(ctx.pick(pick.world), ctx)) return
         const refusal = cornerPairRefusal(ctx, pick, this.state.first)
-        if (refusal === "itself") {
-          this.refuseItself(ctx)
-        } else if (refusal === "apart") {
-          this.refuse("segmentsNotConsecutive", ctx)
+        if (refusal) {
+          this.refusePair(refusal, ctx)
         } else {
           const second = pickCornerObject(ctx, pick, this.state.first)
           if (second) this.placeSecond(second, pick, shift, false, ctx)
@@ -443,8 +443,8 @@ export class ChamferTool implements Tool {
 
   /**
    * An object a mode found, taken at the prompt asked as its pick would be.
-   * The first line again ends the command, in Multiple too, saying so
-   * (AutoCAD 2023's console; a pick on it does not highlight).
+   * At the second prompt it is refused as a pick there is (see
+   * {@link foundPairRefusal}).
    */
   private takeFound(entity: Entity, find: ModeFind, ctx: ToolContext): void {
     if (this.state.phase === "polyline") {
@@ -453,8 +453,9 @@ export class ChamferTool implements Tool {
     }
     if (this.refusesRound(entity, ctx)) return
     const first = this.state.phase === "second" ? this.state.first : null
-    if (first && !isSegment(first) && first.id === entity.id) {
-      this.refuseItself(ctx)
+    const refusal = first && foundPairRefusal(ctx, entity, find, first)
+    if (refusal) {
+      this.refusePair(refusal, ctx)
       return
     }
     const found = foundFilletObject(ctx, entity, find, first)
@@ -721,7 +722,12 @@ export class ChamferTool implements Tool {
   }
 
   /** The first line picked again: said, and the command ends, in Multiple too. */
-  private refuseItself(ctx: ToolContext): void {
+  /** As FILLET's, in CHAMFER's words. */
+  private refusePair(refusal: PairRefusal, ctx: ToolContext): void {
+    if (refusal === "apart") {
+      this.refuse("segmentsNotConsecutive", ctx)
+      return
+    }
     ctx.report(ctx.text.message("cannotChamferItself"), "error")
     ctx.dynamicInput.close()
     ctx.endCommand()

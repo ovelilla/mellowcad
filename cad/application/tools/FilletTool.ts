@@ -50,6 +50,8 @@ import {
   cornerJoin,
   cornerObjectRefusal,
   cornerPairRefusal,
+  foundPairRefusal,
+  type PairRefusal,
   cornerPlane,
   curveOf,
   foundFilletObject,
@@ -287,10 +289,8 @@ export class FilletTool implements Tool {
       }
       case "second": {
         const refusal = cornerPairRefusal(ctx, pick, this.state.first)
-        if (refusal === "itself") {
-          this.refuseItself(ctx)
-        } else if (refusal === "apart") {
-          this.refuse("segmentsNotConsecutive", ctx)
+        if (refusal) {
+          this.refusePair(refusal, ctx)
         } else {
           const second = pickFilletObject(ctx, pick, this.state.first)
           if (second) this.placeSecond(second, pick, shift, false, ctx)
@@ -510,9 +510,8 @@ export class FilletTool implements Tool {
 
   /**
    * An object a mode found, taken at the prompt asked as its pick would be;
-   * false when it takes nothing there. The first object again (not another
-   * segment of its polyline) ends the command, in Multiple too, saying so
-   * (AutoCAD 2023's console; a pick on it does not highlight).
+   * false when it takes nothing there. At the second prompt it is refused
+   * as a pick there is (see {@link foundPairRefusal}).
    */
   private takeFound(entity: Entity, find: ModeFind, ctx: ToolContext): boolean {
     if (this.state.phase === "polyline") {
@@ -520,8 +519,9 @@ export class FilletTool implements Tool {
       return true
     }
     const first = this.state.phase === "second" ? this.state.first : null
-    if (first && !isSegment(first) && first.id === entity.id) {
-      this.refuseItself(ctx)
+    const refusal = first && foundPairRefusal(ctx, entity, find, first)
+    if (refusal) {
+      this.refusePair(refusal, ctx)
       return false
     }
     const found = foundFilletObject(ctx, entity, find, first)
@@ -531,8 +531,15 @@ export class FilletTool implements Tool {
     return true
   }
 
-  /** The first object picked again: said, and the command ends, in Multiple too. */
-  private refuseItself(ctx: ToolContext): void {
+  /**
+   * The first object again: said, and the command ends, in Multiple too; a
+   * segment of its polyline two or more away as any corner not made.
+   */
+  private refusePair(refusal: PairRefusal, ctx: ToolContext): void {
+    if (refusal === "apart") {
+      this.refuse("segmentsNotConsecutive", ctx)
+      return
+    }
     ctx.report(ctx.text.message("cannotFilletItself"), "error")
     ctx.dynamicInput.close()
     ctx.endCommand()
