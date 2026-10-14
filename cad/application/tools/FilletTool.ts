@@ -49,6 +49,7 @@ import {
   cornerEntity,
   cornerJoin,
   cornerObjectRefusal,
+  cornerPairRefusal,
   cornerPlane,
   curveOf,
   foundFilletObject,
@@ -285,8 +286,15 @@ export class FilletTool implements Tool {
         return
       }
       case "second": {
-        const second = pickFilletObject(ctx, pick, this.state.first)
-        if (second) this.placeSecond(second, pick, shift, false, ctx)
+        const refusal = cornerPairRefusal(ctx, pick, this.state.first)
+        if (refusal === "itself") {
+          this.refuseItself(ctx)
+        } else if (refusal === "apart") {
+          this.refuse("segmentsNotConsecutive", ctx)
+        } else {
+          const second = pickFilletObject(ctx, pick, this.state.first)
+          if (second) this.placeSecond(second, pick, shift, false, ctx)
+        }
         return
       }
       case "polyline": {
@@ -504,9 +512,7 @@ export class FilletTool implements Tool {
     }
     const first = this.state.phase === "second" ? this.state.first : null
     if (first && !isSegment(first) && first.id === entity.id) {
-      ctx.report(ctx.text.message("cannotFilletItself"), "error")
-      ctx.dynamicInput.close()
-      ctx.endCommand()
+      this.refuseItself(ctx)
       return false
     }
     const found = foundFilletObject(ctx, entity, find, first)
@@ -514,6 +520,13 @@ export class FilletTool implements Tool {
     if (this.state.phase === "first") this.takeFirst(found, ctx)
     else this.placeSecond(found.object, found.pick, false, found.whole, ctx)
     return true
+  }
+
+  /** The first object picked again: said, and the command ends, in Multiple too. */
+  private refuseItself(ctx: ToolContext): void {
+    ctx.report(ctx.text.message("cannotFilletItself"), "error")
+    ctx.dynamicInput.close()
+    ctx.endCommand()
   }
 
   private takeFirst(found: FoundObject, ctx: ToolContext): void {

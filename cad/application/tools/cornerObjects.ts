@@ -152,6 +152,27 @@ function filletObjectAt(
 }
 
 /**
+ * Why a pick at the second prompt makes no corner with `first`, where the
+ * console says so rather than taking nothing (acc/i1–i5, j6, k1–k5): the
+ * first object again, its polyline's segment included, or a segment of its
+ * polyline two or more away (an open one's first and last make a corner).
+ */
+export function cornerPairRefusal(
+  ctx: ToolContext,
+  pick: LinePick,
+  first: FilletObject
+): "itself" | "apart" | null {
+  const hit = ctx.pick(pick.world)
+  if (!hit) return null
+  if (!isSegment(first))
+    return cornerEntity(first).id === hit.id ? "itself" : null
+  const index = segmentAt(ctx, hit, pick)
+  if (hit.id !== first.poly.id || index === null) return null
+  if (index === first.index) return "itself"
+  return segmentsPair(first.poly, first.index, index) ? null : "apart"
+}
+
+/**
  * The modes FILLET's and CHAMFER's object prompts take, as their refusal
  * lists them: a single object's, not ALL.
  */

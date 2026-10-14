@@ -103,6 +103,8 @@ A tool is an explicit state machine for one AutoCAD command. It owns a discrimin
   `whole`, of which nothing is made) — never invent a pick point in the tool. A point typed
   there is a pick (`typedCornerPick`, through the tool's `answerTyped`): `@` from LASTPOINT,
   which it becomes by `ctx.setLastPoint` (a point of the tool's frame, as `ctx.lastPoint` is).
+  A pick at the second prompt goes through `cornerPairRefusal` first: the first object again
+  and a segment of its polyline two or more away are said and refused, never filtered out.
   `pickCornerObject` takes the pointer (`world` and `screen`), and the two objects are cut
   in `cornerPlane`: a polyline in a tilted plane (with the UCS not on it) brings the
   other and both picks into its OCS — a segment picked as it is drawn — and `back` returns

@@ -38,6 +38,7 @@ import {
   cornerEntity,
   cornerJoin,
   cornerObjectRefusal,
+  cornerPairRefusal,
   cornerPlane,
   cutFits,
   foundFilletObject,
@@ -258,8 +259,15 @@ export class ChamferTool implements Tool {
       }
       case "second": {
         if (this.refusesRound(ctx.pick(pick.world), ctx)) return
-        const second = pickCornerObject(ctx, pick, this.state.first)
-        if (second) this.placeSecond(second, pick, shift, false, ctx)
+        const refusal = cornerPairRefusal(ctx, pick, this.state.first)
+        if (refusal === "itself") {
+          this.refuseItself(ctx)
+        } else if (refusal === "apart") {
+          this.refuse("segmentsNotConsecutive", ctx)
+        } else {
+          const second = pickCornerObject(ctx, pick, this.state.first)
+          if (second) this.placeSecond(second, pick, shift, false, ctx)
+        }
         return
       }
       case "polyline": {
@@ -439,9 +447,7 @@ export class ChamferTool implements Tool {
     if (this.refusesRound(entity, ctx)) return
     const first = this.state.phase === "second" ? this.state.first : null
     if (first && !isSegment(first) && first.id === entity.id) {
-      ctx.report(ctx.text.message("cannotChamferItself"), "error")
-      ctx.dynamicInput.close()
-      ctx.endCommand()
+      this.refuseItself(ctx)
       return
     }
     const found = foundFilletObject(ctx, entity, find, first)
@@ -682,6 +688,13 @@ export class ChamferTool implements Tool {
    * object again; otherwise the input is `*Invalid*` (unless the console says
    * only why, as for every join) and the command ends.
    */
+  /** The first line picked again: said, and the command ends, in Multiple too. */
+  private refuseItself(ctx: ToolContext): void {
+    ctx.report(ctx.text.message("cannotChamferItself"), "error")
+    ctx.dynamicInput.close()
+    ctx.endCommand()
+  }
+
   private refuse(message: MessageId, ctx: ToolContext, invalid = true): void {
     ctx.report(ctx.text.message(message), "error")
     if (this.multiple) {

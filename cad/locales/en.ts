@@ -2040,6 +2040,7 @@ export const en: EngineCatalog = {
       "cannotFilletItself": "Cannot fillet an entity with itself.",
       "collinearCannotFillet": "Collinear lines connot be filleted.",
       "cannotChamferItself": "Cannot chamfer an entity with itself.",
+      "segmentsNotConsecutive": "Lines belonging to polylines must be consecutive or separated by one segment",
       "cornersSkipped": [
         [
           "parallel",

@@ -1210,6 +1210,7 @@
       "cannotFilletItself": "Cannot fillet an entity with itself.",
       "collinearCannotFillet": "Collinear lines connot be filleted.",
       "cannotChamferItself": "Cannot chamfer an entity with itself.",
+      "segmentsNotConsecutive": "Lines belonging to polylines must be consecutive or separated by one segment",
       "cornersSkipped": "{parallel, plural, =0 {} one {# was parallel    } other {# were parallel    }}{tooShort, plural, =0 {} one {# was too short    } other {# were too short    }}{divergent, plural, =0 {} one {# was divergent    } other {# were divergent    }}",
       "invalid": "*Invalid*",
       "splineSettingsFit": "Current settings: Method=Fit   Knots={knots, select, chord {Chord} sqrtChord {Square root} other {Uniform}}",
