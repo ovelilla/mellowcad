@@ -1163,6 +1163,7 @@
       "pathDoesNotIntersectBoundingEdge": "La trayectoria no se interseca con la arista de contorno.",
       "objectDoesNotIntersectEdge": "El objeto no se interseca con ninguna arista.",
       "cannotExtendObject": "Objeto no procesado por ALARGA.",
+      "circleMustIntersectTwice": "Se requieren dos intersecciones para el círculo.",
       "filletSettings": "Parámetros actuales: Modo = Recortar, Radio = {radius}",
       "chamferSettings": "(Modo Recortar) Primera distancia de chaflán actual  = {dist1}, Segunda distancia = {dist2}",
       "offsetSettings": "Parámetros actuales: Borrar origen={erase, select, yes {Sí} other {No}}  Capa={layer, select, current {Actual} other {Origen}}  OFFSETGAPTYPE=0",

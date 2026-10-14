@@ -1762,6 +1762,7 @@ export const es: EngineLocale = {
       "pathDoesNotIntersectBoundingEdge": "La trayectoria no se interseca con la arista de contorno.",
       "objectDoesNotIntersectEdge": "El objeto no se interseca con ninguna arista.",
       "cannotExtendObject": "Objeto no procesado por ALARGA.",
+      "circleMustIntersectTwice": "Se requieren dos intersecciones para el círculo.",
       "filletSettings": [
         "Parámetros actuales: Modo = Recortar, Radio = ",
         [

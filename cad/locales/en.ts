@@ -1477,6 +1477,7 @@ export const en: EngineCatalog = {
       "pathDoesNotIntersectBoundingEdge": "Path does not intersect with the bounding edge.",
       "objectDoesNotIntersectEdge": "Object does not intersect an edge.",
       "cannotExtendObject": "Cannot EXTEND this object.",
+      "circleMustIntersectTwice": "Circle must intersect twice.",
       "filletSettings": [
         "Current settings: Mode = TRIM, Radius = ",
         [

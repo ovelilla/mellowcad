@@ -194,6 +194,40 @@ describe("TRIM", () => {
     expect(cad.entityCount).toBe(1)
   })
 
+  // AutoCAD 2023's console (acc/o1): a circle one edge crosses once is not
+  // deleted, and Undo counts the pick.
+  it("leaves a circle cut once as it is, saying it must be cut twice", () => {
+    for (const [locale, name, asked, said, undone] of [
+      [
+        undefined,
+        "TRIM",
+        "Select object to trim or shift-select to extend:",
+        "Circle must intersect twice.",
+        "Command has been completely undone.",
+      ],
+      [
+        es,
+        "RECORTA",
+        "Seleccione un objeto que recortar o use la tecla Mayús y seleccione para alargar:",
+        "Se requieren dos intersecciones para el círculo.",
+        "Todos los efectos del comando han sido deshechos.",
+      ],
+    ] as const) {
+      const entities = [
+        circleOf(p(0, 0), 50, { id: "C" }),
+        lineOf(p(0, 0), p(0, 100), { id: "V" }),
+      ]
+      const cad = createHarness({ locale, entities })
+      cad.command(name).click(p(-50, 0))
+      expect(cad.entities()).toEqual(entities)
+      expect(cad.commandLog().slice(-2)).toEqual([asked, said])
+      expect(cad.state().commandLine.prompt).toMatch(/\[(Undo|desHacer)\]:$/)
+      cad.option("Undo")
+      expect(cad.commandLog().at(-1)).toBe(undone)
+      expect(cad.optionIds()).toEqual([])
+    }
+  })
+
   it("turns a circle into the complementary arc", () => {
     const cad = createHarness({
       entities: [

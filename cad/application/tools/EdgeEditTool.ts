@@ -114,6 +114,8 @@ type EdgeEditPlan =
     }
   /** Quick mode's trim of an object no edge cuts: it is deleted. */
   | { readonly kind: "erase"; readonly target: Entity }
+  /** A pick TRIM refuses, in the console's words; Undo counts it. */
+  | { readonly kind: "refuse"; readonly message: MessageId }
 
 export abstract class EdgeEditTool implements Tool {
   abstract readonly id: string
@@ -197,6 +199,12 @@ export abstract class EdgeEditTool implements Tool {
       this.refuseExtend(input, ctx)
       return
     }
+    if (plan.kind === "refuse") {
+      ctx.report(ctx.text.message(plan.message), "error")
+      this.steps.push(false)
+      ctx.requestRender()
+      return
+    }
     this.steps.push(true)
     this.commit(plan, ctx)
     // Loop like AutoCAD: recompute the preview against the now-updated drawing
@@ -213,7 +221,7 @@ export abstract class EdgeEditTool implements Tool {
 
   buildOverlay(ctx: ToolContext): ScenePrimitive[] {
     const plan = this.preview
-    if (!plan) return []
+    if (!plan || plan.kind === "refuse") return []
     const { viewport } = ctx
     if (plan.kind === "erase") {
       return entityScenePrimitive(viewport, plan.target, {
@@ -322,7 +330,10 @@ export abstract class EdgeEditTool implements Tool {
     )
   }
 
-  private commit(plan: EdgeEditPlan, ctx: ToolContext): void {
+  private commit(
+    plan: Exclude<EdgeEditPlan, { kind: "refuse" }>,
+    ctx: ToolContext
+  ): void {
     if (plan.kind === "erase") {
       ctx.execute(new RemoveEntitiesCommand([plan.target.id]))
       return
@@ -755,7 +766,11 @@ function planTrimCircle(
   others: readonly Entity[]
 ): EdgeEditPlan | null {
   const angles = circleCrossAngles(circle.center, circle.radius, others)
-  if (angles.length < 2) return null // need two crossings to bound a piece
+  if (angles.length === 0) return null
+  // AutoCAD 2023's console (acc/o1): cut once, a circle is left as it is.
+  if (angles.length === 1) {
+    return { kind: "refuse", message: "circleMustIntersectTwice" }
+  }
 
   const clickAngle = angleAt(circle.center, click)
   // Find the CCW segment [θa, θb] the click falls in; the last→first segment
