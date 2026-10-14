@@ -65,6 +65,7 @@ describe("the ViewCube's parts", () => {
     expect(cad.state().view.preset).toBe("Front")
     cad.runtime.viewCubePick("bottom")
     expect(cad.state().view.preset).toBe("Bottom")
+    expect(cad.runtime.viewport.right).toEqual({ x: -1, y: 0, z: 0 })
     cad.runtime.viewCubePick("top-left-front")
     expect(cad.state().view.preset).toBe("SWiso")
   })

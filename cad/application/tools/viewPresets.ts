@@ -1,11 +1,5 @@
-import {
-  Vec3,
-  WORLD_X,
-  WORLD_Z,
-  cross3,
-  length3,
-  normalize3,
-} from "../../geometry/Vec3"
+import { Vec3, WORLD_X, length3, normalize3 } from "../../geometry/Vec3"
+import { arbitraryAxis } from "../../geometry/ocs"
 import { Viewport, entitiesViewBounds } from "../Viewport"
 import { BlockLookup, Entity } from "../../domain/entities"
 import { ToolContext } from "./Tool"
@@ -50,10 +44,15 @@ export const VIEW_MENU: readonly ViewPreset[] = [
 /** Below this a camera axis is taken as a preset's. */
 const SAME_AXIS = 1e-6
 
-/** The direction drawn right when looking from `viewPoint`: the world's Z drawn up. */
+/**
+ * The direction drawn right when looking from `viewPoint`, AutoCAD's twist 0:
+ * the X of the arbitrary-axis frame of the line of sight — the world's Z drawn
+ * up, and looking along Z the WCS's Y up, so Bottom has the X to the left
+ * (AutoCAD 2023's console: VPOINT 0,0,-1 and -VIEW Bottom, then UCS View, give
+ * X = -1,0,0; VPOINT 0.01,0,-1 gives -1,0,-0.01).
+ */
 function presetRight(viewPoint: Vec3): Vec3 {
-  const across = cross3(WORLD_Z, viewPoint)
-  return length3(across) > 1e-12 * length3(viewPoint) ? across : WORLD_X
+  return arbitraryAxis(viewPoint)?.x ?? WORLD_X
 }
 
 /**

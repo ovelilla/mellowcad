@@ -10,7 +10,7 @@ import {
   normalize3,
   scale3,
 } from "../geometry/Vec3"
-import { Axes3, worldToAxes } from "../geometry/ocs"
+import { Axes3, arbitraryAxis, worldToAxes } from "../geometry/ocs"
 import { Ucs, ucsZAxis } from "../domain/ucs"
 
 /**
@@ -187,7 +187,7 @@ export function isFace(part: ViewCubePart): part is ViewCubeFace {
 
 /**
  * The view a part shows: from its direction, the frame's Z drawn up, as -VIEW
- * shows a preset (Top and Bottom with the X to the right).
+ * shows a preset (Top with the X to the right, Bottom to the left).
  */
 export function partView(part: ViewCubePart): CubeView | null {
   const vector = partVector(part)
@@ -196,9 +196,9 @@ export function partView(part: ViewCubePart): CubeView | null {
   return { direction, right: uprightRight(direction) }
 }
 
-/** The direction drawn right when the frame's Z is kept up (its X looking along Z). */
+/** The direction drawn right when the frame's Z is kept up, as -VIEW's presets. */
 function uprightRight(direction: Vec3): Vec3 {
-  return normalize3(cross3(WORLD_Z, direction)) ?? WORLD_X
+  return arbitraryAxis(direction)?.x ?? WORLD_X
 }
 
 /** The part a camera direction looks along, if it is one of the 26. */

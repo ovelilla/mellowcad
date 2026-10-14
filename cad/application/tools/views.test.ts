@@ -113,6 +113,30 @@ describe("-VIEW", () => {
     expect(cad.runtime.viewport.right).toEqual({ x: 1, y: 0, z: 0 })
   })
 
+  // AutoCAD 2023's console (acc/v1, y1 of the hidden UCS words session):
+  // -VIEW Bottom, then UCSXDIR / UCSYDIR, and VPOINT then UCS View, read the
+  // screen's horizontal — twist 0 is the line of sight's arbitrary-axis X.
+  it("shows Bottom with the X to the left, as twist 0 does", () => {
+    const cad = createHarness()
+    cad.command("-VIEW").option("Orthographic").option("Bottom")
+    expect(cad.runtime.viewport.right).toEqual({ x: -1, y: 0, z: 0 })
+    const { xAxis, yAxis } = cad.runtime.document.getSettings().ucs
+    expect([xAxis, yAxis]).toEqual([
+      { x: -1, y: 0, z: 0 },
+      { x: 0, y: 1, z: 0 },
+    ])
+    expect(cad.state().view.preset).toBe("Bottom")
+
+    const vpoint = createHarness()
+    vpoint.command("VPOINT").type("0,0,-1").enter()
+    expect(vpoint.runtime.viewport.right).toEqual({ x: -1, y: 0, z: 0 })
+    vpoint.command("VPOINT").type("0.01,0,-1").enter()
+    const right = vpoint.runtime.viewport.right
+    expect([right.x, right.y, right.z].map((v) => +v.toFixed(4) + 0)).toEqual([
+      -1, 0, -0.01,
+    ])
+  })
+
   it("answers the preset names AutoCAD's menus type without listing them", () => {
     const cad = createHarness()
 
