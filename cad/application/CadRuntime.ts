@@ -267,6 +267,7 @@ type FramedPart =
   | "elevation"
   | "lastPoint"
   | "setLastPoint"
+  | "pointAtDistance"
   | "viewport"
   | "execute"
   | "pick"
@@ -648,6 +649,8 @@ export class CadRuntime extends Observable {
       setLastPoint: (point) => {
         this.lastPoint = this.frame.pointToWorld(point)
       },
+      pointAtDistance: (distance) =>
+        this.atDistance(this.frame.pointToFrame(this.lastPoint), distance),
       get viewport() {
         return frame().viewport
       },
@@ -677,6 +680,10 @@ export class CadRuntime extends Observable {
       setLastPoint: (world) => {
         this.lastPoint = world
       },
+      pointAtDistance: (distance) =>
+        this.frame.pointToWorld(
+          this.atDistance(this.frame.pointToFrame(this.lastPoint), distance)
+        ),
       viewport: this.viewport,
       execute: (command) => this.history.execute(command),
       pick: (world, tolerance) => {
@@ -3025,7 +3032,8 @@ export class CadRuntime extends Observable {
    * none, towards the cursor (`pointAtDistance`), the same at every point
    * prompt, as AutoCAD 2023's console takes `5` at ID's, LINE's, CIRCLE's and
    * -PAN's first point (acc/dd1, dd5–dd7) and at 2P's second (dd17). Not
-   * where the tool picks no point (ZOOM's factor, its window's corners).
+   * where the tool picks no point (ZOOM's factor), unless its box says where
+   * from (`DynamicInputSession.directDistance`: a window's corners, wn1–wn6).
    */
   private directDistance(
     session: DynamicInputSession,
@@ -3034,23 +3042,34 @@ export class CadRuntime extends Observable {
     if (field?.kind !== "coordinate" || session.fields.length !== 1) {
       return false
     }
-    if (!(this.activeTool.wantsSnap?.() ?? true)) return false
+    const from = session.directDistance
+    if (from === "typed") return false
+    if (from === undefined && !(this.activeTool.wantsSnap?.() ?? true)) {
+      return false
+    }
     const text = this.dynamicInput.getText(field.id)
     const distance = isCoordinateExpression(text) ? null : parseNumber(text)
     if (distance === null) return false
-    const anchor = this.toolAnchor()
+    const anchor = from === undefined ? this.toolAnchor() : null
     const base =
-      anchor === null
-        ? this.frame.pointToFrame(this.lastPoint)
-        : withZ(anchor, zOf(anchor))
+      from !== undefined && from !== "lastPoint"
+        ? from
+        : anchor === null
+          ? this.frame.pointToFrame(this.lastPoint)
+          : withZ(anchor, zOf(anchor))
+    this.dynamicInput.clearTexts()
+    this.placePoint(this.atDistance(base, distance), true)
+    return true
+  }
+
+  /**
+   * The point `distance` from `base` towards the cursor's last place on the
+   * drawing, in the frame (`pointAtDistance`).
+   */
+  private atDistance(base: Vec3, distance: number): Vec3 {
     const cursor =
       this.heldCursorScreen && this.screenToWork(this.heldCursorScreen)
-    this.dynamicInput.clearTexts()
-    this.placePoint(
-      pointAtDistance({ ucs: this.frame.ucs }, base, cursor, distance),
-      true
-    )
-    return true
+    return pointAtDistance({ ucs: this.frame.ucs }, base, cursor, distance)
   }
 
   /** {@link commitDynamicInput}'s value, returning whether the prompt took it. */

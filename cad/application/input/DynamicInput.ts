@@ -1,5 +1,6 @@
 import { Observable } from "../../shared/Observable"
 import { Vec2 } from "../../geometry/Vec2"
+import type { Vec3 } from "../../geometry/Vec3"
 import { parseNumber } from "../../domain/units"
 import { isCoordinateExpression } from "./coordinateInput"
 import type { ToolContext } from "../tools/Tool"
@@ -67,6 +68,15 @@ export interface DynamicInputSession {
    * When omitted, only the numeric {@link commit} path is available.
    */
   commitRaw?(ctx: ToolContext): boolean
+  /**
+   * Where a number typed in a lone coordinate field is measured from —
+   * AutoCAD's direct distance, which the runtime gives as a pick there:
+   * LASTPOINT, or a point (a window's opposite corner from its first, which
+   * AutoCAD makes LASTPOINT while it asks); `"typed"` where {@link commitRaw}
+   * reads the number itself (ARRAYRECT's unit cell). Omitted: from the
+   * tool's anchor, else LASTPOINT, where the tool wants a snapped point.
+   */
+  readonly directDistance?: Vec3 | "lastPoint" | "typed"
 }
 
 interface FieldState {

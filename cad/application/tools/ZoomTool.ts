@@ -275,7 +275,10 @@ export class ZoomTool implements Tool {
 
   /**
    * Asks the corner and factor prompts with a box, so a point or a factor
-   * typed there answers them; a keyword typed in it still runs.
+   * typed there answers them; a keyword typed in it still runs. A number at
+   * a corner is a direct distance (AutoCAD 2023's console, acc/wn1–wn6):
+   * Window's first corner from LASTPOINT, the opposite one from the first,
+   * which the console makes LASTPOINT while it asks (`@` too, wn42).
    */
   private ask(state: ZoomState, ctx: ToolContext): void {
     this.state = state
@@ -283,6 +286,12 @@ export class ZoomTool implements Tool {
       fields: [{ id: "point", prompt: this.question(), kind: "coordinate" }],
       commit: () => {},
       commitRaw: (commitCtx) => this.commitTyped(commitCtx),
+      directDistance:
+        state.phase === "first"
+          ? "lastPoint"
+          : state.phase === "opposite"
+            ? { ...state.first, z: ctx.elevation }
+            : undefined,
     })
     this.place(ctx)
   }
@@ -297,7 +306,10 @@ export class ZoomTool implements Tool {
     }
     const point = isCoordinateExpression(text)
       ? parseCoordinate(text, {
-          lastPoint: ctx.lastPoint,
+          lastPoint:
+            state.phase === "opposite"
+              ? { ...state.first, z: ctx.elevation }
+              : ctx.lastPoint,
           relativeByDefault: false,
           ucs: ctx.ucs,
           elevation: ctx.elevation,

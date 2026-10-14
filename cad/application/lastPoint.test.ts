@@ -1,8 +1,8 @@
 import { describe, expect, it } from "vitest"
 
 import { type CadHarness, createHarness } from "../../test/harness"
-import { lineOf, p } from "../../test/builders"
-import type { CircleEntity, LineEntity } from "../domain/entities"
+import { circleOf, lineOf, p } from "../../test/builders"
+import type { CircleEntity, Entity, LineEntity } from "../domain/entities"
 import { es } from "../locales/es"
 
 /** Each answer typed at the command line and confirmed, as the console types it. */
@@ -411,5 +411,173 @@ describe("A number typed for a point", () => {
     answer(cad, "ZOOM", "2")
     expect(cad.runtime.viewport.scale).toBeCloseTo(2)
     expect(cad.activeToolId()).toBe("select")
+  })
+})
+
+// AutoCAD 2023's console (acc/wn1–wn57): a number is a direct distance at a
+// window's corner too, and where objects are picked. Its cursor stands
+// where `5` gives 14.6175,1.91807 from 10,0 and 104.9817,100.4275 from 100,100.
+describe("A number typed at a window's corner or where objects are picked", () => {
+  const CURSOR = p(289.985, 116.3034)
+
+  function fromTen(locale?: typeof es, entities: Entity[] = []): CadHarness {
+    const cad = answer(createHarness({ locale, entities }), "ID", "10,0")
+    cad.moveTo(CURSOR)
+    return cad
+  }
+
+  it("is ZOOM's corner: the first from LASTPOINT, the opposite from the first", () => {
+    for (const [locale, window, first, opposite, invalid] of [
+      [
+        undefined,
+        "W",
+        "Specify first corner:",
+        "Specify opposite corner:",
+        "Invalid window specification.",
+      ],
+      [
+        es,
+        "V",
+        "Designe primera esquina:",
+        "Designe esquina opuesta:",
+        "Designación de ventana no válida.",
+      ],
+    ] as const) {
+      const ahead = answer(fromTen(locale), "ZOOM", window, "FOO", "5", "20,20")
+      expect(ahead.commandLog().slice(-4)).toEqual([
+        `${first} FOO`,
+        invalid,
+        `${first} 5`,
+        `${opposite} 20,20`,
+      ])
+      expect(ahead.runtime.viewport.worldCenter()).toBeCloseToPoint(
+        p(17.3087, 10.959),
+        3
+      )
+      // The corners leave LASTPOINT where it was.
+      expect(lastPoint(ahead)).toMatch(/10[.,]00 .* 0[.,]00 /)
+
+      const back = answer(fromTen(locale), "ZOOM", window, "100,100", "FOO")
+      answer(back, "100,100", "-5")
+      expect(back.commandLog().slice(-5)).toEqual([
+        `${first} 100,100`,
+        `${opposite} FOO`,
+        invalid,
+        `${first} 100,100`,
+        `${opposite} -5`,
+      ])
+      expect(back.runtime.viewport.worldCenter()).toBeCloseToPoint(
+        p(97.5092, 99.7862),
+        3
+      )
+
+      const implied = answer(fromTen(locale), "ZOOM", "100,100", "FOO", "5")
+      expect(implied.commandLog().slice(-3)).toEqual([
+        `${opposite} FOO`,
+        invalid,
+        `${opposite} 5`,
+      ])
+      expect(implied.runtime.viewport.worldCenter()).toBeCloseToPoint(
+        p(102.491, 100.214),
+        3
+      )
+      expect(lastPoint(implied)).toMatch(/100[.,]00 .* 100[.,]00 /)
+
+      // `@` at the opposite corner is from the first too (wn42).
+      const relative = answer(fromTen(locale), "ZOOM", window, "100,100")
+      answer(relative, "@5,5")
+      expect(relative.runtime.viewport.worldCenter()).toBeCloseToPoint(
+        p(102.5, 102.5),
+        6
+      )
+    }
+  })
+
+  // 50 along the console's heading: 56.17,19.18 from 10,0, 149.82,104.28
+  // from 100,100 — where a window can hold a circle away from the picks.
+  it("is a point at Select objects, which becomes LASTPOINT, and a window's corner there", () => {
+    const drawing = () => [
+      circleOf(p(80, 30), 2, { id: "A" }),
+      circleOf(p(140, 102), 1, { id: "B" }),
+      lineOf(p(0, -20), p(200, -20), { id: "L" }),
+    ]
+    const left = (cad: CadHarness) => cad.entities().map((entity) => entity.id)
+    for (const [locale, erase, window, select, invalid] of [
+      [undefined, "ERASE", "W", "Select objects:", "*Invalid selection*"],
+      [es, "BORRA", "V", "Designe objetos:", "*Designación no válida*"],
+    ] as const) {
+      const ahead = answer(fromTen(locale, drawing()), erase, "FOO", "50")
+      answer(ahead, "100,40", "")
+      expect(ahead.commandLog()).toContain(`${select} FOO`)
+      expect(ahead.commandLog()).toContain(invalid)
+      expect(ahead.commandLog()).toContain(`${select} 50`)
+      expect(left(ahead)).toEqual(["B", "L"])
+      expect(lastPoint(ahead)).toMatch(/56[.,]17 .* 19[.,]18 /)
+
+      const back = answer(fromTen(locale, drawing()), erase, "-50", "100,40")
+      answer(back, "")
+      expect(left(back)).toEqual(["B", "L"])
+      expect(lastPoint(back)).toMatch(/-36[.,]17 .* -19[.,]18 /)
+
+      const corner = answer(
+        fromTen(locale, drawing()),
+        erase,
+        window,
+        "100,100"
+      )
+      answer(corner, "50", "")
+      expect(left(corner)).toEqual(["A", "L"])
+      // Window's corners leave LASTPOINT.
+      expect(lastPoint(corner)).toMatch(/10[.,]00 .* 0[.,]00 /)
+
+      const first = answer(fromTen(locale, drawing()), erase, window, "-50")
+      answer(first, "100,40", "")
+      expect(left(first)).toEqual(["B", "L"])
+
+      const implied = answer(fromTen(locale, drawing()), erase, "100,100")
+      answer(implied, "50", "")
+      expect(left(implied)).toEqual(["A", "L"])
+      expect(lastPoint(implied)).toMatch(/100[.,]00 .* 100[.,]00 /)
+
+      const picked = answer(fromTen(locale, drawing()), erase, "100,-20", "")
+      expect(left(picked)).toEqual(["A", "B"])
+      expect(lastPoint(picked)).toMatch(/100[.,]00 .* -20[.,]00 /)
+
+      const relative = answer(fromTen(locale, drawing()), erase, "@5,0")
+      answer(relative, "20,20", "")
+      expect(lastPoint(relative)).toMatch(/15[.,]00 .* 0[.,]00 /)
+    }
+  })
+
+  it("is a pick where TRIM and FILLET pick objects", () => {
+    for (const [locale, trim, fillet] of [
+      [undefined, "TRIM", "FILLET"],
+      [es, "RECORTA", "EMPALME"],
+    ] as const) {
+      const cad = fromTen(locale, [
+        lineOf(p(0, 1.9181), p(30, 1.9181), { id: "H" }),
+        lineOf(p(5, -10), p(5, 10)),
+        lineOf(p(25, -10), p(25, 10)),
+      ])
+      answer(cad, trim, "5", "")
+      const ends = cad
+        .entities()
+        .filter((entity): entity is LineEntity => entity.type === "line")
+        .filter((line) => line.start.y === line.end.y)
+        .map((line) => [line.start.x, line.end.x])
+      expect(ends).toEqual([
+        [0, 5],
+        [25, 30],
+      ])
+      expect(lastPoint(cad)).toMatch(/14[.,]62 .* 1[.,]92 /)
+
+      const nothing = answer(fromTen(locale), fillet, "5")
+      const prompt = nothing.state().commandLine.prompt
+      expect(nothing.commandLog().at(-1)).toBe(
+        `${prompt.slice(prompt.indexOf(" ") + 1)} 5`
+      )
+      nothing.escape()
+      expect(lastPoint(nothing)).toMatch(/14[.,]62 .* 1[.,]92 /)
+    }
   })
 })

@@ -249,6 +249,13 @@ export interface ToolContext {
    */
   setLastPoint(point: Vec3): void
 
+  /**
+   * AutoCAD's direct distance for a number typed where no box takes it
+   * (`Select objects:`, TRIM's object): the point that far from
+   * {@link lastPoint} towards the cursor, as the runtime takes it in a box.
+   */
+  pointAtDistance(distance: number): Vec3
+
   /** Executes a reversible command against the document (the only write-path). */
   execute(command: Command): void
 

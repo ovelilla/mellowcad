@@ -258,9 +258,15 @@ ROTATE's own `specifySecondPoint`, which starts a line) with no keyword list, `t
 **A number answers a point** (`directDistance`, in `commitBox`): typed in a lone `coordinate`
 box — at the command line or in the box — it is direct distance from `toolAnchor()`, else
 LASTPOINT, towards the cursor (`pointAtDistance`, `tools/directDistance.ts`), given to the tool
-as a pick there, at every prompt whose tool `wantsSnap()`. A tool never reads a bare number in
+as a pick there, at every prompt whose tool `wantsSnap()` — or whose box says where from
+(`DynamicInputSession.directDistance`): a window's corner, which picks no point, from
+`"lastPoint"` or, the opposite corner, from the first, as AutoCAD makes that corner LASTPOINT
+while it asks (ZOOM's, `Select objects:`' modes). A tool never reads a bare number in
 its point box: a `coordinate` field never resolves to a value (`resolveValues`), so where the
-tool picks no point the number reaches its `commitRaw` instead (ZOOM's factor). The heading is
+tool picks no point the number reaches its `commitRaw` instead (ZOOM's factor), and a box
+whose number is no point at all says `"typed"` (ARRAYRECT's unit cell's side). Where no box
+takes it (`Select objects:`, TRIM's or FILLET's object) `typedPick` reads it through
+`ctx.pointAtDistance`, the same point. The heading is
 the cursor's last place on the drawing (`heldCursorScreen`, which leaving the canvas keeps), and
 the UCS's X with none.
 

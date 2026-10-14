@@ -19,6 +19,7 @@ import {
   objectsOnFence,
 } from "./boxSelection"
 import { CommandOption, PointerInput, QuestionInput, ToolContext } from "./Tool"
+import { typedPick } from "./typedPick"
 
 /** Screen-pixel movement past which a press-drag becomes a box selection. */
 const DRAG_THRESHOLD_PX = 4
@@ -376,21 +377,14 @@ export class ObjectSelector {
   }
 
   /**
-   * A point typed at `Select objects:`, as AutoCAD 2023's console takes it:
-   * the object there is picked (`1 found`), and on nothing a window starts
-   * there, asking `Specify opposite corner:`. A single object's pick takes
-   * none: its own pick is the command's.
+   * A point typed at `Select objects:` (`typedPick`, a number too), as
+   * AutoCAD 2023's console takes it: the object there is picked (`1 found`),
+   * and on nothing a window starts there, asking `Specify opposite corner:`.
+   * A single object's pick takes none: its own pick is the command's.
    */
   answerTyped(text: string, ctx: ToolContext): boolean {
     if (this.step.kind !== "objects" || this.options.one) return false
-    const point = isCoordinateExpression(text)
-      ? parseCoordinate(text, {
-          lastPoint: null,
-          relativeByDefault: false,
-          ucs: ctx.ucs,
-          elevation: ctx.elevation,
-        })
-      : null
+    const point = typedPick(text, ctx)
     if (!point) return false
     const at = { x: point.x, y: point.y }
     const hit = this.pickAt(at, ctx)
@@ -895,12 +889,25 @@ export class ObjectSelector {
     this.step = { kind: "objects", hover: null }
   }
 
-  /** The point box of a mode's prompt, so a typed coordinate answers it. */
+  /**
+   * The point box of a mode's prompt, so a typed coordinate answers it. A
+   * number at a window's corner is a direct distance, as AutoCAD 2023's
+   * console takes it at W, C and BOX and after a point typed on nothing:
+   * the first corner from LASTPOINT, the opposite one from the first
+   * (acc/wn13–wn17, as ZOOM's wn1–wn6 show where).
+   */
   private openPointInput(ctx: ToolContext): void {
+    const step = this.step
     ctx.dynamicInput.open({
       fields: [{ id: "point", prompt: this.question(), kind: "coordinate" }],
       commit: () => {},
       commitRaw: (commitCtx) => this.commitTyped(commitCtx),
+      directDistance:
+        step.kind === "firstCorner"
+          ? "lastPoint"
+          : step.kind === "oppositeCorner"
+            ? { ...step.start, z: ctx.elevation }
+            : undefined,
     })
   }
 

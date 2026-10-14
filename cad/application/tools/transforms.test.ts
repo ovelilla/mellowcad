@@ -785,6 +785,55 @@ describe("ARRAYRECT", () => {
     expect(cad.entityCount).toBe(12)
   })
 
+  // AutoCAD 2023's console (acc/wn28–wn30, wn40, wn41, wn50): a number at
+  // the first corner is a square cell's side, at the opposite corner a
+  // direct distance from the first towards the cursor.
+  it("takes a number at a unit cell's corners", () => {
+    for (const [locale, command, spacing, prompt, nonzero] of [
+      [
+        undefined,
+        "ARRAYRECT",
+        "S",
+        "ARRAYRECT Specify the distance between columns or [Unit cell]",
+        "Requires numeric nonzero value.",
+      ],
+      [
+        es,
+        "MATRIZRECTANG",
+        "E",
+        "MATRIZRECTANG Especificar la distancia entre columnas o [célula de Unidad]",
+        "Necesita un valor numérico distinto de cero.",
+      ],
+    ] as const) {
+      const cad = createHarness({
+        locale,
+        entities: [lineOf(p(0, 0), p(10, 0), { id: "L1" })],
+      })
+      const answer = (...texts: string[]) => {
+        for (const text of texts) {
+          cad.runtime.setCommandLineText(text)
+          cad.runtime.submitCommandLine()
+        }
+      }
+      cad.select("L1").command(command)
+      for (const refused of ["FOO", "0", "-5"]) {
+        answer(spacing, "U", refused)
+        expect(cad.commandLog().at(-1)).toBe(nonzero)
+      }
+      answer(spacing)
+      expect(cad.state().commandLine.prompt).toBe(`${prompt} <15.00>:`)
+      answer("U", "5", spacing)
+      expect(cad.state().commandLine.prompt).toBe(`${prompt} <5.00>:`)
+      answer("U", "1e1", spacing)
+      expect(cad.state().commandLine.prompt).toBe(`${prompt} <10.00>:`)
+      cad.moveTo(p(289.985, 116.3034))
+      answer("U", "100,100", "5", spacing)
+      expect(cad.state().commandLine.prompt).toBe(`${prompt} <4.98>:`)
+      answer("")
+      expect(cad.state().commandLine.prompt).toMatch(/<0[.,]43>:$/)
+    }
+  })
+
   it("undoes the whole array in one step", () => {
     const cad = createHarness({
       entities: [lineOf(p(0, 0), p(40, 0), { id: "L1" })],

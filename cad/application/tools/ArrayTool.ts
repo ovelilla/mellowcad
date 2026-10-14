@@ -423,10 +423,15 @@ export class ArrayTool implements Tool {
 
   /**
    * Unit cell's corner, typed: a point, or Enter, which leaves the spacing
-   * as it was. Anything else is refused by the first corner in its own words
-   * and the main prompt asked again, as AutoCAD 2023's console does.
+   * as it was. A number at the first corner is a square cell's side when
+   * positive (acc/wn28, wn50), never a direct distance; anything else is
+   * refused by the first corner in its own words and the main prompt asked
+   * again, as AutoCAD 2023's console does (wn30, wn40, wn41). At the
+   * opposite corner a number is a direct distance from the first (wn29).
    */
   private openUnitCell(ctx: ToolContext): void {
+    const first =
+      this.state.phase === "edit" && this.state.step === "unitCellFirst"
     ctx.dynamicInput.open({
       fields: [
         {
@@ -461,11 +466,21 @@ export class ArrayTool implements Tool {
           return true
         }
         if (this.state.step !== "unitCellFirst") return false
+        const side = isCoordinateExpression(text) ? null : parseNumber(text)
+        if (side !== null && side > 0) {
+          this.state = {
+            ...this.state,
+            grid: { ...this.state.grid, colSpacing: side, rowSpacing: side },
+          }
+          this.ask("main", commitCtx)
+          return true
+        }
         // WHY not refused and asked again: the console leaves the unit cell.
         commitCtx.report(commitCtx.text.message("requiresNonzero"), "error")
         this.ask("main", commitCtx)
         return true
       },
+      directDistance: first ? "typed" : undefined,
     })
     ctx.dynamicInput.setPosition(this.lastScreen ?? { x: 0, y: 0 })
     ctx.requestRender()
