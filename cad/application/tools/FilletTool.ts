@@ -1,7 +1,9 @@
 import { Vec2, V } from "../../geometry/Vec2"
 import {
   bulgeThroughPoint,
+  capParallelLines,
   filletLines,
+  infiniteLineIntersection,
   normalizeAngle,
   polarPoint,
 } from "../../geometry/primitives"
@@ -119,6 +121,8 @@ type FilletState =
       readonly corner: boolean
       /** The first a polyline a mode found whole: no corner will be made. */
       readonly whole: boolean
+      /** {@link pick1} only stands for a pick a mode did not give. */
+      readonly stands: boolean
     }
   /** Polyline: awaiting the 2D polyline whose every corner is rounded. */
   | { readonly phase: "polyline"; readonly hover: PolylineEntity | null }
@@ -142,7 +146,8 @@ export class FilletTool implements Tool {
   /**
    * The selection modes typed at the object prompts. The second prompt and
    * Polyline's take the newest object found; the first takes two found or
-   * more as both objects, the older of the two newest first, and fillets
+   * more as both objects, the older of the two newest first — the newer
+   * first where they are parallel lines, capped from it —, and fillets
    * them (AutoCAD 2023's console). Finding none asks the prompt again.
    */
   private readonly modes = new ObjectSelector({
@@ -153,8 +158,12 @@ export class FilletTool implements Tool {
     one: {
       take: (entity, ctx, find) => this.takeFound(entity, find, ctx),
       newest: true,
-      pair: (first, second, ctx, find) => {
+      pair: (older, newer, ctx, find) => {
         const asFirst = this.state.phase === "first"
+        const [first, second] =
+          asFirst && parallelLines(older, newer)
+            ? [newer, older]
+            : [older, newer]
         if (!asFirst || this.takeFound(first, find, ctx)) {
           this.takeFound(second, find, ctx)
         }
@@ -267,7 +276,12 @@ export class FilletTool implements Tool {
     switch (this.state.phase) {
       case "first": {
         const hit = pickFilletObject(ctx, pick, null)
-        if (hit) this.takeFirst({ object: hit, pick, whole: false }, ctx)
+        if (hit) {
+          this.takeFirst(
+            { object: hit, pick, whole: false, stands: false },
+            ctx
+          )
+        }
         return
       }
       case "second": {
@@ -429,8 +443,10 @@ export class FilletTool implements Tool {
 
     const corner = lineCorner(line1, pick1, hover, cursor, viewport)
     const filleted =
-      corner && this.fillet(corner, line1, hover, radius, ctx, PREVIEW_ID)
-    if (!filleted || filleted === "tooLarge") {
+      corner &&
+      (this.fillet(corner, line1, hover, radius, ctx, PREVIEW_ID) ??
+        this.previewCap(line1, hover, cursor, ctx))
+    if (!filleted || typeof filleted === "string") {
       return [...prims, ...draw(hover, hoverStroke)]
     }
     for (const entity of filleted) {
@@ -444,6 +460,20 @@ export class FilletTool implements Tool {
       )
     }
     return prims
+  }
+
+  /** The cap two parallel lines would get, the first drawn as it stays. */
+  private previewCap(
+    line1: LineEntity,
+    line2: LineEntity,
+    cursor: LinePick,
+    ctx: ToolContext
+  ): Entity[] | "collinear" | "turnsBack" | null {
+    if (this.state.phase !== "second") return null
+    const { pick1, stands } = this.state
+    const from = stands ? originPick(ctx) : pick1
+    const corner = lineCorner(line1, from, line2, cursor, ctx.viewport)
+    return corner && this.cap(corner, line1, line2, ctx, PREVIEW_ID)
   }
 
   private reset(): void {
@@ -495,6 +525,7 @@ export class FilletTool implements Tool {
       cursor: found.pick,
       corner: false,
       whole: found.whole,
+      stands: found.stands,
     }
     ctx.requestRender()
   }
@@ -512,7 +543,7 @@ export class FilletTool implements Tool {
     ctx: ToolContext
   ): void {
     if (this.state.phase !== "second") return
-    const { first, pick1 } = this.state
+    const { first, pick1, stands } = this.state
     if (whole || this.state.whole) {
       this.done(null, ctx)
       return
@@ -536,7 +567,8 @@ export class FilletTool implements Tool {
         this.refuse(REFUSALS[cut], ctx)
       }
     } else if (!isSegment(first) && !isSegment(second)) {
-      this.commitFillet(first, pick1, second, pick2, radius, ctx)
+      const capFrom = stands ? originPick(ctx) : pick1
+      this.commitFillet(first, pick1, second, pick2, capFrom, radius, ctx)
     }
   }
 
@@ -607,6 +639,7 @@ export class FilletTool implements Tool {
     pick1: LinePick,
     line2: LineEntity,
     pick2: LinePick,
+    capFrom: LinePick,
     radius: number,
     ctx: ToolContext
   ): void {
@@ -618,14 +651,83 @@ export class FilletTool implements Tool {
       return
     }
     const filleted = this.fillet(corner, line1, line2, radius, ctx)
-    // WHY nothing for parallel lines: AutoCAD caps them with a half circle,
-    // which is not built; the second object is asked again.
-    if (!filleted) return
+    if (!filleted) {
+      this.commitCap(line1, capFrom, line2, pick2, ctx)
+      return
+    }
     if (filleted === "tooLarge") {
       this.refuse("filletRadiusTooLarge", ctx)
       return
     }
     this.done(new ReplaceEntitiesCommand([line1.id, line2.id], filleted), ctx)
+  }
+
+  /**
+   * Two parallel lines capped with a half circle, whatever the radius;
+   * collinear, `Collinear lines connot be filleted.`, Autodesk's typo and
+   * all, and no `*Invalid*` (acc/e6, h3). WHY nothing is made where the
+   * second line would turn back: the console then adds a zero-length arc at
+   * the origin and changes nothing else, silently (acc/e4, h5).
+   */
+  private commitCap(
+    line1: LineEntity,
+    capFrom: LinePick,
+    line2: LineEntity,
+    pick2: LinePick,
+    ctx: ToolContext
+  ): void {
+    const corner = lineCorner(line1, capFrom, line2, pick2, ctx.viewport)
+    const capped = corner && this.cap(corner, line1, line2, ctx)
+    if (capped === "collinear") {
+      this.refuse("collinearCannotFillet", ctx, false)
+    } else if (capped === "turnsBack") {
+      this.done(null, ctx)
+    } else if (capped) {
+      this.done(new ReplaceEntitiesCommand([line2.id], capped), ctx)
+    }
+  }
+
+  /**
+   * The cap AutoCAD's FILLET joins two parallel lines with (see
+   * {@link capParallelLines}): the second line with its end moved, and the
+   * half circle, on the lines' layer or the current one and with the
+   * second's thickness (acc/g4), back in the frame.
+   */
+  private cap(
+    corner: LineCorner,
+    line1: LineEntity,
+    line2: LineEntity,
+    ctx: ToolContext,
+    arcId?: EntityId
+  ): Entity[] | "collinear" | "turnsBack" | null {
+    const { line1: a, line2: b } = corner
+    const cap = capParallelLines(a.start, a.end, b.start, b.end, corner.pick1)
+    if (!cap || typeof cap === "string") return cap
+    const moved = carryOverrides(
+      b,
+      createLine(
+        cap.moved === "start" ? cap.across : b.start,
+        cap.moved === "end" ? cap.across : b.end,
+        b.layerId,
+        b.id
+      )
+    )
+    const arcLayer =
+      line1.layerId === line2.layerId
+        ? line1.layerId
+        : ctx.document.getCurrentLayerId()
+    const arc = carryPlane(
+      b,
+      createArc(
+        cap.center,
+        cap.radius,
+        cap.startAngle,
+        cap.endAngle,
+        arcLayer,
+        arcId
+      )
+    )
+    return [moved, arc].map((entity) => corner.back(entity))
   }
 
   /**
@@ -820,6 +922,27 @@ export class FilletTool implements Tool {
     this.openKeywordPrompt(ctx)
     ctx.requestRender()
   }
+}
+
+/**
+ * Whether two objects are parallel lines, which the console caps from the
+ * newer when a mode finds both at once (acc/d3, e1, g1, h1).
+ */
+function parallelLines(a: Entity, b: Entity): boolean {
+  return (
+    a.type === "line" &&
+    b.type === "line" &&
+    !infiniteLineIntersection(a.start, a.end, b.start, b.end)
+  )
+}
+
+/**
+ * The origin as a pick: where the console reads a capped line's end from
+ * when a mode but a fence found it (acc/g1, g5, g6, g8, h2).
+ */
+function originPick(ctx: ToolContext): LinePick {
+  const origin = { x: 0, y: 0 }
+  return { world: origin, screen: ctx.viewport.worldToScreen(origin) }
 }
 
 const hoverStroke: StrokeStyle = { color: THEME.entityHover, width: 2 }

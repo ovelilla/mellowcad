@@ -2321,6 +2321,7 @@ export const es: EngineLocale = {
         ]
       ],
       "cannotFilletItself": "No se puede empalmar un objeto consigo mismo.",
+      "collinearCannotFillet": "Las líneas colineales no pueden ser unidos con empalme.",
       "cannotChamferItself": "No se puede achaflanar un objeto consigo mismo.",
       "cornersSkipped": [
         [

@@ -258,6 +258,66 @@ export function filletLines(
   }
 }
 
+/** The half circle capping two parallel lines (see {@link capParallelLines}). */
+export interface ParallelCap {
+  /** The first line's end the cap leaves from. */
+  readonly end: Vec2
+  /** Straight across on the second line: where its end on that side moves. */
+  readonly across: Vec2
+  /** Which end of the second line moves to `across`. */
+  readonly moved: "start" | "end"
+  readonly center: Vec2
+  readonly radius: number
+  /** CCW `startAngle`→`endAngle`: the half bulging out past `end`. */
+  readonly startAngle: number
+  readonly endAngle: number
+}
+
+/**
+ * The half circle AutoCAD's FILLET joins two parallel lines with, whatever
+ * the radius: from the end of the first line `a1`→`a2` nearer `from` (its
+ * end `a2` on a tie) straight across to the second `b1`→`b2`, whose end on
+ * that side moves there — extended or trimmed —, the first left as it is.
+ * `collinear` when the two lie on one line, `turnsBack` where the second's
+ * other end lies at or past the cap, `null` when they are not parallel.
+ */
+export function capParallelLines(
+  a1: Vec2,
+  a2: Vec2,
+  b1: Vec2,
+  b2: Vec2,
+  from: Vec2
+): ParallelCap | "collinear" | "turnsBack" | null {
+  const r = V.sub(a2, a1)
+  const s = V.sub(b2, b1)
+  const scale = V.length(r) * V.length(s)
+  if (scale === 0 || Math.abs(V.cross(r, s)) > PARALLEL_SINE_EPSILON * scale) {
+    return null
+  }
+  const end = V.distance(from, a1) < V.distance(from, a2) ? a1 : a2
+  const out = V.normalize(V.sub(end, end === a1 ? a2 : a1))
+  const across = closestPointOnInfiniteLine(b1, b2, end).point
+  const radius = V.distance(end, across) / 2
+  if (radius <= PARALLEL_SINE_EPSILON * V.length(r)) return "collinear"
+  const moved = V.dot(s, out) >= 0 ? "end" : "start"
+  const kept = moved === "end" ? b1 : b2
+  if (V.dot(V.sub(kept, end), out) >= 0) return "turnsBack"
+  const center = V.midpoint(end, across)
+  const angleOf = (p: Vec2) => Math.atan2(p.y - center.y, p.x - center.x)
+  // The arc starts where turning CCW heads out past `end`.
+  const fromAcross = V.cross(V.sub(across, center), out) > 0
+  const [first, last] = fromAcross ? [across, end] : [end, across]
+  return {
+    end,
+    across,
+    moved,
+    center,
+    radius,
+    startAngle: angleOf(first),
+    endAngle: angleOf(last),
+  }
+}
+
 /** A resolved chamfer: where each line is cut and the corner it replaces. */
 export interface ChamferResult {
   /** Intersection of the two (infinite) lines — the corner being cut off. */

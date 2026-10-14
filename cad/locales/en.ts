@@ -2038,6 +2038,7 @@ export const en: EngineCatalog = {
         ]
       ],
       "cannotFilletItself": "Cannot fillet an entity with itself.",
+      "collinearCannotFillet": "Collinear lines connot be filleted.",
       "cannotChamferItself": "Cannot chamfer an entity with itself.",
       "cornersSkipped": [
         [

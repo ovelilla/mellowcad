@@ -1246,6 +1246,7 @@
       "cannotFilletBetween": "Imposible empalmar esos dos objetos.",
       "noValidFillet": "No hay un empalme válido con el radio {radius}",
       "cannotFilletItself": "No se puede empalmar un objeto consigo mismo.",
+      "collinearCannotFillet": "Las líneas colineales no pueden ser unidos con empalme.",
       "cannotChamferItself": "No se puede achaflanar un objeto consigo mismo.",
       "cornersSkipped": "{parallel, plural, =0 {} one {# resulta paralela(s)    } other {# resultan paralela(s)    }}{tooShort, plural, =0 {} one {# resulta demasiado corta(s)    } other {# resultan demasiado corta(s)    }}{divergent, plural, =0 {} one {# resulta divergente(s)    } other {# resultan divergente(s)    }}",
       "invalid": "*No válido*",

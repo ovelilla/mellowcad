@@ -92,7 +92,9 @@ A tool is an explicit state machine for one AutoCAD command. It owns a discrimin
   `curveFillets.ts`' `wholeFillet` — every circle tangent to both, on the side of each where
   the other was picked, no crossing needed — and `wholeCrossing` at radius 0. The console
   rules differ from an arc segment's (which `curveCrossing` and `keptEnd` keep, needing a
-  crossing): never send one kind through the other's path.
+  crossing): never send one kind through the other's path. Two parallel lines are capped by
+  `geometry`'s `capParallelLines`, from the first line's end nearer its pick — for a line a mode
+  found (`FoundObject.stands`), nearer the origin, and of a pair the newer is first.
   Their object prompts take `CORNER_OBJECT_MODES` (a single object's, not ALL) and refuse in the
   console's words (`cornerObjectRefusal`: the prompt's words but the last, Trim, Angle and mEthod
   left out; one word ends `Radius]:`); `foundFilletObject` turns what a mode found into the

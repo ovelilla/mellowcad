@@ -6,6 +6,7 @@ import {
   arcFrom3Points,
   bulgeThroughPoint,
   bulgeToArc,
+  capParallelLines,
   chamferLines,
   circleCircleIntersection,
   circleFrom3Points,
@@ -281,6 +282,62 @@ describe("segmentSegmentIntersection", () => {
     // snapping providers rely on this to avoid spurious self-intersections.
     expect(
       segmentSegmentIntersection(p(0, 0), p(10, 0), p(5, 0), p(20, 0))
+    ).toBeNull()
+  })
+})
+
+describe("capParallelLines", () => {
+  it("caps from the first line's end nearer the pick, moving the second's end there", () => {
+    const left = capParallelLines(
+      p(0, 0),
+      p(100, 0),
+      p(30, 10),
+      p(150, 10),
+      p(20, 0)
+    )
+    expect(left).toMatchObject({ moved: "start", radius: 5 })
+    if (!left || typeof left === "string") throw new Error("no cap")
+    expect(left.end).toBeCloseToPoint(p(0, 0))
+    expect(left.across).toBeCloseToPoint(p(0, 10))
+    expect(left.startAngle).toBeCloseTo(Math.PI / 2)
+    expect(normalizeAngle(left.endAngle)).toBeCloseTo((3 * Math.PI) / 2)
+    const right = capParallelLines(
+      p(0, 10),
+      p(100, 10),
+      p(0, 0),
+      p(150, 0),
+      p(90, 10)
+    )
+    if (!right || typeof right === "string") throw new Error("no cap")
+    expect(right.moved).toBe("end")
+    expect(right.center).toBeCloseToPoint(p(100, 5))
+    expect(normalizeAngle(right.startAngle)).toBeCloseTo((3 * Math.PI) / 2)
+    expect(right.endAngle).toBeCloseTo(Math.PI / 2)
+  })
+
+  it("takes the end point on a tie", () => {
+    const tie = capParallelLines(
+      p(0, 0),
+      p(100, 0),
+      p(0, 10),
+      p(100, 10),
+      p(50, 0)
+    )
+    expect(tie).toMatchObject({ end: p(100, 0) })
+  })
+
+  it("tells collinear, turned back and not parallel apart", () => {
+    expect(
+      capParallelLines(p(0, 0), p(100, 0), p(120, 0), p(200, 0), p(80, 0))
+    ).toBe("collinear")
+    expect(
+      capParallelLines(p(0, 0), p(100, 0), p(120, 10), p(200, 10), p(80, 0))
+    ).toBe("turnsBack")
+    expect(
+      capParallelLines(p(0, 0), p(100, 0), p(0, 10), p(100, 20), p(80, 0))
+    ).toBeNull()
+    expect(
+      capParallelLines(p(0, 0), p(0, 0), p(0, 10), p(100, 10), p(0, 0))
     ).toBeNull()
   })
 })

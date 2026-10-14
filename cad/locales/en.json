@@ -1208,6 +1208,7 @@
       "cannotFilletBetween": "Cannot fillet between these two entities.",
       "noValidFillet": "No valid fillet with radius {radius}",
       "cannotFilletItself": "Cannot fillet an entity with itself.",
+      "collinearCannotFillet": "Collinear lines connot be filleted.",
       "cannotChamferItself": "Cannot chamfer an entity with itself.",
       "cornersSkipped": "{parallel, plural, =0 {} one {# was parallel    } other {# were parallel    }}{tooShort, plural, =0 {} one {# was too short    } other {# were too short    }}{divergent, plural, =0 {} one {# was divergent    } other {# were divergent    }}",
       "invalid": "*Invalid*",

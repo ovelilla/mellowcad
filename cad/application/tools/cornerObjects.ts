@@ -220,6 +220,12 @@ export interface FoundObject {
    * from it, and no corner is made of it.
    */
   readonly whole: boolean
+  /**
+   * The pick only stands for one the mode did not give (a middle, a first
+   * vertex): where two parallel lines are capped, the console reads the
+   * cap's end from the origin instead.
+   */
+  readonly stands: boolean
 }
 
 /**
@@ -242,9 +248,9 @@ export function foundFilletObject(
     world: point,
     screen: view.worldToScreen(entityPointToWorld(entity, point)),
   })
-  const take = (pick: LinePick, index?: number) => {
+  const take = (pick: LinePick, stands: boolean, index?: number) => {
     const object = filletObjectAt(ctx, entity, pick, first, index)
-    return object && { object, pick, whole: false }
+    return object && { object, pick, whole: false, stands }
   }
   const crossed =
     find.by === "fence" &&
@@ -253,18 +259,18 @@ export function foundFilletObject(
       find.points.map((point) => view.worldToScreen(point))
     )
   if (crossed) {
-    return take({ world: view.screenToWorld(crossed), screen: crossed })
+    return take({ world: view.screenToWorld(crossed), screen: crossed }, false)
   }
   if (entity.type === "polyline") {
     const pick = at(entity.vertices[0])
     const index =
       find.by === "crossing" ? firstSegmentIn(entity, find.outline, view) : null
     return index === null
-      ? { object: { poly: entity, index: 0 }, pick, whole: true }
-      : take(pick, index)
+      ? { object: { poly: entity, index: 0 }, pick, whole: true, stands: true }
+      : take(pick, true, index)
   }
   const middle = middleOf(entity)
-  return middle && take(at(middle))
+  return middle && take(at(middle), true)
 }
 
 /**
