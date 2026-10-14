@@ -1249,6 +1249,7 @@
       "collinearCannotFillet": "Las líneas colineales no pueden ser unidos con empalme.",
       "cannotChamferItself": "No se puede achaflanar un objeto consigo mismo.",
       "segmentsNotConsecutive": "Las líneas pertenecientes a polilíneas tienen que ser consecutivas o estar separadas por un segmento",
+      "notA2dPolyline": "El objeto designado no es una polilínea 2D.",
       "cornersSkipped": "{parallel, plural, =0 {} one {# resulta paralela(s)    } other {# resultan paralela(s)    }}{tooShort, plural, =0 {} one {# resulta demasiado corta(s)    } other {# resultan demasiado corta(s)    }}{divergent, plural, =0 {} one {# resulta divergente(s)    } other {# resultan divergente(s)    }}",
       "invalid": "*No válido*",
       "splineSettingsFit": "Parámetros actuales: Método=Ajustar Nudos={knots, select, chord {Cuerda} sqrtChord {Raíz cuadrada} other {Uniforme}}",

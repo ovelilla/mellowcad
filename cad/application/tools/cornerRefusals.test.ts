@@ -135,3 +135,65 @@ describe("FILLET and CHAMFER refuse a second pick that makes no corner", () => {
     )
   })
 })
+
+describe("FILLET's and CHAMFER's Polyline say what is no 2D polyline", () => {
+  it("asks again saying so, for a pick and for what a mode finds", () => {
+    const cad = run(cross(), "FILLET", "P", "30,40", "FOO")
+    expect(cad.commandLog().slice(-5, -1)).toEqual([
+      "Select 2D polyline or [Radius]: 30,40",
+      "Object selected is not a 2D polyline",
+      "Select 2D polyline or [Radius]: FOO",
+      "*Invalid selection*",
+    ])
+    expect(cad.activeToolId()).toBe("fillet")
+
+    const circle = run([circleOf(p(50, 50), 20)], "FILLET", "P", "70,50")
+    expect(circle.commandLog().at(-1)).toBe(
+      "Object selected is not a 2D polyline"
+    )
+
+    // The newest found, a line, though the window holds a polyline too.
+    const window = run(
+      [...zigzag(), lineOf(p(20, 20), p(80, 20), { id: "L" })],
+      "FILLET",
+      "P",
+      "W",
+      "-10,-10",
+      "110,110"
+    )
+    expect(window.commandLog().at(-1)).toBe(
+      "Object selected is not a 2D polyline"
+    )
+    expect(window.activeToolId()).toBe("fillet")
+    const last = run(
+      [...zigzag(), lineOf(p(20, 20), p(80, 20), { id: "L" })],
+      "CHAMFER",
+      "P",
+      "L"
+    )
+    expect(last.commandLog().at(-1)).toBe(
+      "Object selected is not a 2D polyline"
+    )
+  })
+
+  it("goes back to the first prompt on Enter in Multiple, else ends", () => {
+    const cad = run(cross(), "FILLET", "M", "P", "", "FOO")
+    expect(cad.commandLog().slice(-4, -1)).toEqual([
+      "Select 2D polyline or [Radius]:",
+      "Select first object or [Undo/Polyline/Radius/Multiple]: FOO",
+      "*Invalid selection*",
+    ])
+    const chamfer = run(cross(), "CHAMFER", "M", "P", "")
+    expect(chamfer.activeToolId()).toBe("chamfer")
+    expect(run(cross(), "FILLET", "P", "").activeToolId()).toBe("select")
+  })
+
+  it("is answered in Autodesk's Spanish", () => {
+    const cad = createHarness({ locale: es, entities: cross() })
+    cad.command("CHAFLAN")
+    answer(cad, "P", "30,40")
+    expect(cad.commandLog().at(-1)).toBe(
+      "El objeto designado no es una polilínea 2D."
+    )
+  })
+})

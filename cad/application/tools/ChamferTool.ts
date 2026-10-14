@@ -271,18 +271,24 @@ export class ChamferTool implements Tool {
         return
       }
       case "polyline": {
-        const poly = this.pickPolyline(pick.world, ctx)
-        if (poly) this.commitPolyline(poly, ctx)
+        const hit = ctx.pick(pick.world)
+        if (hit) this.takePolyline(hit, ctx)
         return
       }
     }
   }
 
-  /** Enter in a mode's prompt is the mode's; at an object prompt it ends. */
+  /**
+   * Enter in a mode's prompt is the mode's; at Polyline's in Multiple it asks
+   * the first prompt again (acc/k6, l3); at an object prompt it ends.
+   */
   onEnter(ctx: ToolContext): boolean {
-    return (
-      !this.askingDistance && this.modes.inMode() && this.modes.onEnter(ctx)
-    )
+    if (this.askingDistance) return false
+    if (this.modes.inMode()) return this.modes.onEnter(ctx)
+    if (this.state.phase !== "polyline" || !this.multiple) return false
+    this.state = { phase: "first", hover: null }
+    ctx.requestRender()
+    return true
   }
 
   onKeyDown(input: KeyInput, ctx: ToolContext): void {
@@ -429,9 +435,7 @@ export class ChamferTool implements Tool {
    * line, a polyline or — to refuse it — an arc or a circle.
    */
   private takesFound(entity: Entity | undefined): boolean {
-    return this.state.phase === "polyline"
-      ? entity?.type === "polyline"
-      : isCornerEntity(entity)
+    return this.state.phase === "polyline" || isCornerEntity(entity)
   }
 
   /**
@@ -441,7 +445,7 @@ export class ChamferTool implements Tool {
    */
   private takeFound(entity: Entity, find: ModeFind, ctx: ToolContext): void {
     if (this.state.phase === "polyline") {
-      if (entity.type === "polyline") this.commitPolyline(entity, ctx)
+      this.takePolyline(entity, ctx)
       return
     }
     if (this.refusesRound(entity, ctx)) return
@@ -688,6 +692,18 @@ export class ChamferTool implements Tool {
    * object again; otherwise the input is `*Invalid*` (unless the console says
    * only why, as for every join) and the command ends.
    */
+  /**
+   * Polyline's object: anything else says so and asks again, a mode's
+   * newest find too (acc/j1–j7, k7, k8).
+   */
+  private takePolyline(entity: Entity, ctx: ToolContext): void {
+    if (entity.type === "polyline") {
+      this.commitPolyline(entity, ctx)
+    } else {
+      ctx.report(ctx.text.message("notA2dPolyline"), "error")
+    }
+  }
+
   /** The first line picked again: said, and the command ends, in Multiple too. */
   private refuseItself(ctx: ToolContext): void {
     ctx.report(ctx.text.message("cannotChamferItself"), "error")
