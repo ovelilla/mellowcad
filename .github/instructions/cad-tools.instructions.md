@@ -402,7 +402,8 @@ typed field it fills the untyped one (a typed length takes the cursor's heading)
 default is not what the box shows — the cursor overwrites it (MTEXT's height, UCS Z's `<90>`) or the
 tool remembers it (CIRCLERAD, ROTATE's last angle, SCALE's last factor, OFFSETDIST) — takes it in
 `commitRaw` when `!ctx.dynamicInput.hasTypedText()`, and a `commitRaw` that returns `true` on empty
-text swallows Enter.
+text swallows Enter. A point prompt the console asks again at Enter (RECTANG's corners, -PAN's base
+point) reports its refusal there and returns `true`; `false` on empty text ends the command.
 
 ## Command options (keywords)
 
@@ -557,7 +558,8 @@ instead, or the command-line buffer will swallow them.
 - **A default AutoCAD aligns with the UCS is kept relative to it**: TEXT, MTEXT, ATTDEF and
   INSERT remember their rotation from the UCS X axis and add the UCS's own on commit
   (`ucsAngleToWorld`); HATCH does the same with its angle and starts at the UCS origin; DIMLINEAR's
-  horizontal and vertical, RECTANG's sides and ARRAYRECT's rows and columns are the UCS's; BLOCK
+  horizontal and vertical, RECTANG's sides (turned by its Rotation) and ARRAYRECT's rows and
+  columns are the UCS's; BLOCK
   defines its objects in the UCS and turns the converted reference back. A tool that invents a new
   orientation default starts it at the UCS X axis.
 - `wantsSnap()` — true only while prompting for a point; false while picking objects or

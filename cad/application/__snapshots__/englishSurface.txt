@@ -1190,11 +1190,11 @@ lweight "Lineweight" LW
   properties: -
   cycling: -
 > RECTANG
-  prompt: RECTANG Specify first corner point or [Elevation/Thickness]:
+  prompt: RECTANG Specify first corner point or [Chamfer/Elevation/Fillet/Thickness]:
   asks: "First corner"
   tip: Specify first corner point or
   dyn: "X,Y"=""||*
-  options: [E] Elevation, [T] Thickness
+  options: [C] Chamfer, [E] Elevation, [F] Fillet, [T] Thickness
   command| REC RECTANG
 > E
   prompt: RECTANG Specify the elevation for rectangles <0.00>:
@@ -1202,15 +1202,15 @@ lweight "Lineweight" LW
   tip: Specify the elevation for rectangles
   dyn: "Specify the elevation for rectangles"=""|0.00|mm*
   options: -
-  prompt| Specify first corner point or [Elevation/Thickness]: E
+  prompt| Specify first corner point or [Chamfer/Elevation/Fillet/Thickness]: E
 > elevation
   dyn: "Specify the elevation for rectangles"="5"|0.00|mm*
 > enter
-  prompt: RECTANG Specify first corner point or [Elevation/Thickness]:
+  prompt: RECTANG Specify first corner point or [Chamfer/Elevation/Fillet/Thickness]:
   asks: "First corner"
   tip: Specify first corner point or
   dyn: "X,Y"=""||*
-  options: [E] Elevation, [T] Thickness
+  options: [C] Chamfer, [E] Elevation, [F] Fillet, [T] Thickness
   prompt| Specify the elevation for rectangles <0.00>: 5
 > T
   prompt: RECTANG Specify thickness for rectangles <0.00>:
@@ -1218,34 +1218,35 @@ lweight "Lineweight" LW
   tip: Specify thickness for rectangles
   dyn: "Specify thickness for rectangles"=""|0.00|mm*
   options: -
-  prompt| Specify first corner point or [Elevation/Thickness]: T
+  prompt| Specify first corner point or [Chamfer/Elevation/Fillet/Thickness]: T
 > thickness
   dyn: "Specify thickness for rectangles"="2"|0.00|mm*
 > enter
-  prompt: RECTANG Specify first corner point or [Elevation/Thickness]:
+  prompt: RECTANG Specify first corner point or [Chamfer/Elevation/Fillet/Thickness]:
   asks: "First corner"
   tip: Specify first corner point or
   dyn: "X,Y"=""||*
-  options: [E] Elevation, [T] Thickness
+  options: [C] Chamfer, [E] Elevation, [F] Fillet, [T] Thickness
   prompt| Specify thickness for rectangles <0.00>: 2
 > first corner
-  prompt: RECTANG Specify other corner point:
+  prompt: RECTANG Specify other corner point or [Area/Dimensions/Rotation]:
   asks: "Other corner"
-  tip: Specify other corner point:
-  options: -
-  prompt| Specify first corner point or [Elevation/Thickness]:
+  tip: Specify other corner point or
+  options: [A] Area, [D] Dimensions, [R] Rotation
+  prompt| Specify first corner point or [Chamfer/Elevation/Fillet/Thickness]:
 > other corner
   prompt: Command:
   asks: -
   tip: -
   dyn: -
-  prompt| Specify other corner point:
+  options: -
+  prompt| Specify other corner point or [Area/Dimensions/Rotation]:
 > RECTANG with modes
-  prompt: RECTANG Specify first corner point or [Elevation/Thickness]:
+  prompt: RECTANG Specify first corner point or [Chamfer/Elevation/Fillet/Thickness]:
   asks: "First corner"
   tip: Specify first corner point or
   dyn: "X,Y"=""||*
-  options: [E] Elevation, [T] Thickness
+  options: [C] Chamfer, [E] Elevation, [F] Fillet, [T] Thickness
   command| RECTANG
   info| Current rectangle modes:  Elevation=5.00  Thickness=2.00
 > escape
@@ -1254,7 +1255,7 @@ lweight "Lineweight" LW
   tip: -
   dyn: -
   options: -
-  prompt| Specify first corner point or [Elevation/Thickness]: *Cancel*
+  prompt| Specify first corner point or [Chamfer/Elevation/Fillet/Thickness]: *Cancel*
 > POLYGON
   prompt: POLYGON Enter number of sides <4>:
   asks: "Number of sides"

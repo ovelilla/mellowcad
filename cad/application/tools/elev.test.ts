@@ -185,8 +185,13 @@ describe("RECTANG Elevation and Thickness", () => {
 
     cad.command("RECTANG")
 
-    expect(cad.optionIds()).toEqual(["Elevation", "Thickness"])
-    expect(cad.optionAbbreviations()).toEqual(["E", "T"])
+    expect(cad.optionIds()).toEqual([
+      "Chamfer",
+      "Elevation",
+      "Fillet",
+      "Thickness",
+    ])
+    expect(cad.optionAbbreviations()).toEqual(["C", "E", "F", "T"])
   })
 
   it("set the rectangle's plane and extrusion, whatever the corners' Z", () => {

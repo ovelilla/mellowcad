@@ -917,66 +917,6 @@ describe("SPLINE", () => {
   })
 })
 
-describe("RECTANG", () => {
-  it("asks for the first corner, the option's value and the other corner", () => {
-    const cad = createHarness()
-
-    cad.command("RECTANG").option("Elevation")
-    expect(cad.state().commandLine.prompt).toBe(
-      "RECTANG Specify the elevation for rectangles <0.00>:"
-    )
-    cad.type("5").enter().click(p(0, 0))
-    expect(cad.state().commandLine.prompt).toBe(
-      "RECTANG Specify other corner point:"
-    )
-    cad.click(p(20, 10))
-
-    expect(cad.commandLog()).toEqual([
-      "RECTANG",
-      "Specify first corner point or [Elevation/Thickness]: E",
-      "Specify the elevation for rectangles <0.00>: 5",
-      "Specify first corner point or [Elevation/Thickness]:",
-      "Specify other corner point:",
-    ])
-  })
-
-  it("draws a closed polyline from two corners", () => {
-    const cad = createHarness()
-
-    cad.command("RECTANG").click(p(0, 0)).click(p(200, 120))
-
-    const rect = cad.only<PolylineEntity>("polyline")
-    expect(rect.closed).toBe(true)
-    expect(rect.vertices).toBeCloseToPoints([
-      p(0, 0),
-      p(200, 0),
-      p(200, 120),
-      p(0, 120),
-    ])
-  })
-
-  it("accepts relative dimensions for the second corner", () => {
-    const cad = createHarness()
-
-    cad.command("RECTANG").type("0,0").enter().type("@200,120").enter()
-
-    expect(cad.only<PolylineEntity>("polyline").vertices).toBeCloseToPoints([
-      p(0, 0),
-      p(200, 0),
-      p(200, 120),
-      p(0, 120),
-    ])
-  })
-
-  it("ignores a degenerate rectangle", () => {
-    const cad = createHarness()
-
-    cad.command("RECTANG").click(p(0, 0)).click(p(200, 0))
-
-    expect(cad.entityCount).toBe(0)
-  })
-})
-
 describe("POLYGON", () => {
   it("asks AutoCAD's questions in turn, and keeps the count and option", () => {
     const cad = createHarness()

@@ -18,11 +18,11 @@ idle: Command:
 3015 +127 input | Specify center point of array: | 0,0
 3142 +67 input | Select grip to edit array or [Items/Angle between/Fill angle/ROTate items/eXit] <eXit>: | 
 3512 +207 command |  | RECTANG
-3719 +167 input | Specify first corner point or [Elevation/Thickness]: | 80,20
-3886 +187 input | Specify other corner point: | @14,30
+3719 +167 input | Specify first corner point or [Chamfer/Elevation/Fillet/Thickness]: | 80,20
+3886 +187 input | Specify other corner point or [Area/Dimensions/Rotation]: | @14,30
 4312 +207 command |  | RECTANG
-4520 +187 input | Specify first corner point or [Elevation/Thickness]: | 80,-50
-4707 +187 input | Specify other corner point: | @14,30
+4520 +187 input | Specify first corner point or [Chamfer/Elevation/Fillet/Thickness]: | 80,-50
+4707 +187 input | Specify other corner point or [Area/Dimensions/Rotation]: | @14,30
 5286 +147 command |  | LINE
 5433 +167 input | Specify first point: | -58,0
 5600 +187 input | Specify next point or [Undo]: | @160,0
@@ -96,8 +96,8 @@ command |  | LINE
 input | Specify first point: | 0,0
 ## window
 command |  | RECTANG
-input | Specify first corner point or [Elevation/Thickness]: | 0,0
-input | Specify other corner point: | @30,20
+input | Specify first corner point or [Chamfer/Elevation/Fillet/Thickness]: | 0,0
+input | Specify other corner point or [Area/Dimensions/Rotation]: | @30,20
 command |  | CIRCLE
 input | Specify center point for circle or [3P/2P/Ttr (tan tan radius)]: | 60,40
 input | Specify radius of circle or [Diameter]: | 14
@@ -106,8 +106,8 @@ input | Specify first point: | 15,50
 input | Specify next point or [Undo]: | @80,-45
 ## crossing
 command |  | RECTANG
-input | Specify first corner point or [Elevation/Thickness]: | 0,0
-input | Specify other corner point: | @30,20
+input | Specify first corner point or [Chamfer/Elevation/Fillet/Thickness]: | 0,0
+input | Specify other corner point or [Area/Dimensions/Rotation]: | @30,20
 command |  | CIRCLE
 input | Specify center point for circle or [3P/2P/Ttr (tan tan radius)]: | 60,40
 input | Specify radius of circle or [Diameter]: | 14
@@ -178,18 +178,18 @@ input | Specify second extension line origin or [Select/Undo] <Select>: |
 info |  | Dimension text = 35.00
 ## organize
 command |  | RECTANG
-input | Specify first corner point or [Elevation/Thickness]: | 0,0
-input | Specify other corner point: | @90,40
+input | Specify first corner point or [Chamfer/Elevation/Fillet/Thickness]: | 0,0
+input | Specify other corner point or [Area/Dimensions/Rotation]: | @90,40
 command |  | RECTANG
-input | Specify first corner point or [Elevation/Thickness]: | 35,0
-input | Specify other corner point: | @20,40
+input | Specify first corner point or [Chamfer/Elevation/Fillet/Thickness]: | 35,0
+input | Specify other corner point or [Area/Dimensions/Rotation]: | @20,40
 command |  | LINE
 input | Specify first point: | 45,-8
 input | Specify next point or [Undo]: | @0,56
 ## inquiry
 command |  | RECTANG
-input | Specify first corner point or [Elevation/Thickness]: | 0,0
-input | Specify other corner point: | @70,40
+input | Specify first corner point or [Chamfer/Elevation/Fillet/Thickness]: | 0,0
+input | Specify other corner point or [Area/Dimensions/Rotation]: | @70,40
 command |  | DIST
 input | Specify first point: | 
 ## files
@@ -218,17 +218,17 @@ input | Select objects: |
 command |  | PASTECLIP
 ## localFirst
 command |  | RECTANG
-input | Specify first corner point or [Elevation/Thickness]: | 0,0
-input | Specify other corner point: | @170,70
+input | Specify first corner point or [Chamfer/Elevation/Fillet/Thickness]: | 0,0
+input | Specify other corner point or [Area/Dimensions/Rotation]: | @170,70
 command |  | RECTANG
-input | Specify first corner point or [Elevation/Thickness]: | 12,8
-input | Specify other corner point: | @40,50
+input | Specify first corner point or [Chamfer/Elevation/Fillet/Thickness]: | 12,8
+input | Specify other corner point or [Area/Dimensions/Rotation]: | @40,50
 command |  | RECTANG
-input | Specify first corner point or [Elevation/Thickness]: | 118,36
-input | Specify other corner point: | @40,22
+input | Specify first corner point or [Chamfer/Elevation/Fillet/Thickness]: | 118,36
+input | Specify other corner point or [Area/Dimensions/Rotation]: | @40,22
 command |  | RECTANG
-input | Specify first corner point or [Elevation/Thickness]: | 118,8
-input | Specify other corner point: | @40,22
+input | Specify first corner point or [Chamfer/Elevation/Fillet/Thickness]: | 118,8
+input | Specify other corner point or [Area/Dimensions/Rotation]: | @40,22
 command |  | TEXT
 info |  | Current text style:  "Standard"  Text height:  2.50  Annotative:  No  Justify:  Left
 input | Specify start point of text or [Justify/Style]: | 4,64
@@ -281,8 +281,8 @@ input | Specify dimension line location or [Text/Angle/Horizontal/Vertical/Rotat
 info |  | Dimension text = 66.00
 ## engineLayers
 command |  | RECTANG
-input | Specify first corner point or [Elevation/Thickness]: | 0,64
-input | Specify other corner point: | @90,11
+input | Specify first corner point or [Chamfer/Elevation/Fillet/Thickness]: | 0,64
+input | Specify other corner point or [Area/Dimensions/Rotation]: | @90,11
 command |  | TEXT
 info |  | Current text style:  "Standard"  Text height:  2.50  Annotative:  No  Justify:  Left
 input | Specify start point of text or [Justify/Style]: | 6,67.5
@@ -291,8 +291,8 @@ input | Specify rotation angle of text <0>: | 0
 input | Enter text: | adapters
 input | Enter text: | 
 command |  | RECTANG
-input | Specify first corner point or [Elevation/Thickness]: | 0,48
-input | Specify other corner point: | @90,11
+input | Specify first corner point or [Chamfer/Elevation/Fillet/Thickness]: | 0,48
+input | Specify other corner point or [Area/Dimensions/Rotation]: | @90,11
 command |  | TEXT
 info |  | Current text style:  "Standard"  Text height:  4.00  Annotative:  No  Justify:  Left
 input | Specify start point of text or [Justify/Style]: | 6,51.5
@@ -301,8 +301,8 @@ input | Specify rotation angle of text <0>: | 0
 input | Enter text: | application
 input | Enter text: | 
 command |  | RECTANG
-input | Specify first corner point or [Elevation/Thickness]: | 0,32
-input | Specify other corner point: | @90,11
+input | Specify first corner point or [Chamfer/Elevation/Fillet/Thickness]: | 0,32
+input | Specify other corner point or [Area/Dimensions/Rotation]: | @90,11
 command |  | TEXT
 info |  | Current text style:  "Standard"  Text height:  4.00  Annotative:  No  Justify:  Left
 input | Specify start point of text or [Justify/Style]: | 6,35.5
@@ -311,8 +311,8 @@ input | Specify rotation angle of text <0>: | 0
 input | Enter text: | scene
 input | Enter text: | 
 command |  | RECTANG
-input | Specify first corner point or [Elevation/Thickness]: | 0,16
-input | Specify other corner point: | @90,11
+input | Specify first corner point or [Chamfer/Elevation/Fillet/Thickness]: | 0,16
+input | Specify other corner point or [Area/Dimensions/Rotation]: | @90,11
 command |  | TEXT
 info |  | Current text style:  "Standard"  Text height:  4.00  Annotative:  No  Justify:  Left
 input | Specify start point of text or [Justify/Style]: | 6,19.5
@@ -321,8 +321,8 @@ input | Specify rotation angle of text <0>: | 0
 input | Enter text: | domain
 input | Enter text: | 
 command |  | RECTANG
-input | Specify first corner point or [Elevation/Thickness]: | 0,0
-input | Specify other corner point: | @90,11
+input | Specify first corner point or [Chamfer/Elevation/Fillet/Thickness]: | 0,0
+input | Specify other corner point or [Area/Dimensions/Rotation]: | @90,11
 command |  | TEXT
 info |  | Current text style:  "Standard"  Text height:  4.00  Annotative:  No  Justify:  Left
 input | Specify start point of text or [Justify/Style]: | 6,3.5

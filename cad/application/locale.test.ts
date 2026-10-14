@@ -398,7 +398,7 @@ describe("Spanish AutoCAD's command language", () => {
 
     cad.command("RECTANG").click(p(0, 0))
     expect(cad.state().commandLine.prompt).toBe(
-      "RECTANG Precise esquina opuesta:"
+      "RECTANG Precise esquina opuesta o [áRea/Cotas/rOtación]:"
     )
     cad.escape()
 
@@ -826,9 +826,9 @@ describe("Spanish AutoCAD's command language", () => {
     })
     cad.command("RECTANG")
     expect(cad.state().commandLine.prompt).toBe(
-      "RECTANG Precise primer punto de esquina o [Elevación/Alt-objeto]:"
+      "RECTANG Precise primer punto de esquina o [Chaflán/Elevación/eMpalme/Alt-objeto]:"
     )
-    expect(cad.optionAbbreviations()).toEqual(["E", "A"])
+    expect(cad.optionAbbreviations()).toEqual(["C", "E", "M", "A"])
     cad.press("a")
     cad.press("Enter")
     expect(cad.state().commandLine.prompt).toBe(
@@ -836,9 +836,9 @@ describe("Spanish AutoCAD's command language", () => {
     )
     cad.type("3").enter().escape()
     expect(cad.commandLog().slice(-3)).toEqual([
-      "Precise primer punto de esquina o [Elevación/Alt-objeto]: a",
+      "Precise primer punto de esquina o [Chaflán/Elevación/eMpalme/Alt-objeto]: a",
       "Precise Alt-objeto para rectángulos <0.00>: 3",
-      "Precise primer punto de esquina o [Elevación/Alt-objeto]: *Cancelar*",
+      "Precise primer punto de esquina o [Chaflán/Elevación/eMpalme/Alt-objeto]: *Cancelar*",
     ])
     cad.command("RECTANG")
     expect(cad.commandLog().at(-1)).toBe(

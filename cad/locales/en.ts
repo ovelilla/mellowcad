@@ -1029,6 +1029,16 @@ export const en: EngineCatalog = {
       "otherCorner": "Other corner",
       "rectangleElevation": "Specify the elevation for rectangles",
       "rectangleThickness": "Specify thickness for rectangles",
+      "rectangleFirstChamfer": "Specify first chamfer distance for rectangles",
+      "rectangleSecondChamfer": "Specify second chamfer distance for rectangles",
+      "rectangleFillet": "Specify fillet radius for rectangles",
+      "rectangleArea": "Enter area of rectangle in current units",
+      "rectangleAreaBasis": "Calculate rectangle dimensions based on",
+      "rectangleLength": "Enter rectangle length",
+      "rectangleWidth": "Enter rectangle width",
+      "rectangleDimensionLength": "Specify length for rectangles",
+      "rectangleDimensionWidth": "Specify width for rectangles",
+      "rectangleRotation": "Specify rotation angle or",
       "numberOfSides": "Number of sides",
       "patternName": "Enter a pattern name",
       "patternScale": "Specify a scale for the pattern",
@@ -1241,7 +1251,7 @@ export const en: EngineCatalog = {
       "subtractModeNextPointOr": " (SUBTRACT mode)Specify next point or",
       "addModeSelectObjects": "(ADD mode) Select objects",
       "subtractModeSelectObjects": "(SUBTRACT mode) Select objects",
-      "specifyOtherCornerPoint": "Specify other corner point",
+      "specifyOtherCornerPointOr": "Specify other corner point or",
       "specifyStartPointOfArcOr": "Specify start point of arc or",
       "specifySecondPointOfArcOr": "Specify second point of arc or",
       "specifyEndPointOfArc": "Specify end point of arc",
@@ -2096,6 +2106,23 @@ export const en: EngineCatalog = {
       "rectangleModes": [
         "Current rectangle modes:",
         [
+          "corners",
+          1,
+          {
+            "chamfer": [
+              "  Chamfer=",
+              [
+                "first"
+              ],
+              " x ",
+              [
+                "second"
+              ]
+            ],
+            "other": ""
+          }
+        ],
+        [
           "hasElevation",
           1,
           {
@@ -2109,6 +2136,19 @@ export const en: EngineCatalog = {
           }
         ],
         [
+          "corners",
+          1,
+          {
+            "fillet": [
+              "  Fillet=",
+              [
+                "first"
+              ]
+            ],
+            "other": ""
+          }
+        ],
+        [
           "hasThickness",
           1,
           {
@@ -2116,6 +2156,19 @@ export const en: EngineCatalog = {
               "  Thickness=",
               [
                 "thickness"
+              ]
+            ],
+            "other": ""
+          }
+        ],
+        [
+          "hasRotation",
+          1,
+          {
+            "yes": [
+              "  Rotation=",
+              [
+                "rotation"
               ]
             ],
             "other": ""
@@ -2774,6 +2827,9 @@ export const en: EngineCatalog = {
       },
       "DIST": {
         "Multiple": "Multiple points"
+      },
+      "RECTANG": {
+        "Pick": "Pick points"
       },
       "AREA": {
         "Add": "Add area",

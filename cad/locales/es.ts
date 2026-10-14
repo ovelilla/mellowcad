@@ -927,8 +927,16 @@ export const es: EngineLocale = {
         "Close": "Cerrar"
       },
       "RECTANG": {
+        "Chamfer": "Chaflán",
         "Elevation": "Elevación",
-        "Thickness": "Alt-objeto"
+        "Fillet": "eMpalme",
+        "Thickness": "Alt-objeto",
+        "Area": "áRea",
+        "Dimensions": "Cotas",
+        "Rotation": "rOtación",
+        "Length": "Longitud",
+        "Width": "Anchura",
+        "Pick": "Designar"
       },
       "POLYGON": {
         "Edge": "Lado",
@@ -1345,6 +1353,16 @@ export const es: EngineLocale = {
       "otherCorner": "Esquina opuesta",
       "rectangleElevation": "Precise elevación para rectángulos",
       "rectangleThickness": "Precise Alt-objeto para rectángulos",
+      "rectangleFirstChamfer": "Precise primera distancia de chaflán para rectángulos",
+      "rectangleSecondChamfer": "Precise segunda distancia de chaflán para rectángulos",
+      "rectangleFillet": "Precise radio de empalme para rectángulos",
+      "rectangleArea": "Precise área del rectángulo con las unidades actuales",
+      "rectangleAreaBasis": "Calcular cotas del rectángulo en función de",
+      "rectangleLength": "Precise longitud del rectángulo",
+      "rectangleWidth": "Precise anchura del rectángulo",
+      "rectangleDimensionLength": "Precise longitud para rectángulos",
+      "rectangleDimensionWidth": "Precise anchura para rectángulos",
+      "rectangleRotation": "Precise ángulo de rotación o",
       "numberOfSides": "Número de lados",
       "patternName": "Indique nombre de patrón",
       "patternScale": "Precise escala del patrón",
@@ -1557,7 +1575,7 @@ export const es: EngineLocale = {
       "subtractModeNextPointOr": " (modo SUSTRAER)Precise punto siguiente o",
       "addModeSelectObjects": "(modo AÑADIR) Designe objetos",
       "subtractModeSelectObjects": "(modo SUSTRAER) Designe objetos",
-      "specifyOtherCornerPoint": "Precise esquina opuesta",
+      "specifyOtherCornerPointOr": "Precise esquina opuesta o",
       "specifyStartPointOfArcOr": "Precise punto inicial del arco o",
       "specifySecondPointOfArcOr": "Precise segundo punto de arco o",
       "specifyEndPointOfArc": "Precise punto final del arco",
@@ -2411,6 +2429,23 @@ export const es: EngineLocale = {
       "rectangleModes": [
         "Modos de rectángulo actuales:",
         [
+          "corners",
+          1,
+          {
+            "chamfer": [
+              "  Chaflán=",
+              [
+                "first"
+              ],
+              " x ",
+              [
+                "second"
+              ]
+            ],
+            "other": ""
+          }
+        ],
+        [
           "hasElevation",
           1,
           {
@@ -2424,6 +2459,19 @@ export const es: EngineLocale = {
           }
         ],
         [
+          "corners",
+          1,
+          {
+            "fillet": [
+              "  Empalme=",
+              [
+                "first"
+              ]
+            ],
+            "other": ""
+          }
+        ],
+        [
           "hasThickness",
           1,
           {
@@ -2431,6 +2479,19 @@ export const es: EngineLocale = {
               "  Alt-objeto=",
               [
                 "thickness"
+              ]
+            ],
+            "other": ""
+          }
+        ],
+        [
+          "hasRotation",
+          1,
+          {
+            "yes": [
+              "  Rotación=",
+              [
+                "rotation"
               ]
             ],
             "other": ""
@@ -3089,6 +3150,9 @@ export const es: EngineLocale = {
       },
       "DIST": {
         "Multiple": "puntos Múltiples"
+      },
+      "RECTANG": {
+        "Pick": "Designar puntos"
       },
       "AREA": {
         "Add": "Añadir área",
