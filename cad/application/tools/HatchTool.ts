@@ -84,10 +84,12 @@ export class HatchTool implements Tool {
   })
   private lastScreen: Vec2 | null = null
   private preview: HatchEntity | null = null
-  /** Boundaries traced from internal points, one prompt at a time. */
-  private picked: HatchLoop[] = []
+  /** Boundaries traced from internal points, those of each point together. */
+  private picked: HatchLoop[][] = []
   /** The plane the traced boundaries lie in, fixed by the first one found. */
   private pickedPlane: number | null = null
+  /** The plane before each internal point, for its Undo. */
+  private planesBefore: (number | null)[] = []
 
   // HPNAME / HPSCALE / HPANG: session defaults, so the next hatch starts from
   // the settings of the last one.
@@ -102,6 +104,7 @@ export class HatchTool implements Tool {
     ctx.selection.clear()
     this.picked = []
     this.pickedPlane = null
+    this.planesBefore = []
     this.enterPoint(ctx)
   }
 
@@ -110,6 +113,7 @@ export class HatchTool implements Tool {
     this.preview = null
     this.picked = []
     this.pickedPlane = null
+    this.planesBefore = []
     ctx.dynamicInput.close()
   }
 
@@ -205,7 +209,12 @@ export class HatchTool implements Tool {
   commandOptions(): readonly CommandOption[] {
     switch (this.state.phase) {
       case "point":
-        return [{ id: "Properties" }, { id: "Select objects" }]
+        // -HATCH declares Undo here and lists it nowhere (table 25032).
+        return [
+          { id: "Properties" },
+          { id: "Select objects" },
+          { id: "Undo", hidden: true },
+        ]
       case "pattern":
         return [{ id: "?" }, { id: "Solid" }]
       case "select":
@@ -234,6 +243,9 @@ export class HatchTool implements Tool {
         return "continue"
       case "Select objects":
         this.enterSelect(ctx)
+        return "continue"
+      case "Undo":
+        this.undoInternalPoint(ctx)
         return "continue"
       default:
         return "unhandled"
@@ -326,7 +338,8 @@ export class HatchTool implements Tool {
       // What AutoCAD answers when an internal point is not enclosed by anything.
       ctx.report(ctx.text.message("hatchNoBoundary"), "error")
     } else {
-      this.picked.push(...loops)
+      this.picked.push(loops)
+      this.planesBefore.push(this.pickedPlane)
       this.pickedPlane = plane
     }
     this.enterPoint(ctx)
@@ -380,7 +393,23 @@ export class HatchTool implements Tool {
       const loop = entity ? hatchLoopFromEntity(entity) : null
       if (loop) loops.push(loop)
     }
-    return [...loops, ...this.picked]
+    return [...loops, ...this.picked.flat()]
+  }
+
+  /**
+   * Undo, as AutoCAD 2023's console takes it at -HATCH's internal point
+   * (acc/h1–h23 of 2026-10-14): the boundaries of the last internal point
+   * go, silently; what Select objects took stays, and with no internal point
+   * left it says `No boundary to Undo.`
+   */
+  private undoInternalPoint(ctx: ToolContext): void {
+    if (this.picked.pop()) {
+      this.pickedPlane = this.planesBefore.pop() ?? null
+    } else {
+      ctx.report(ctx.text.message("noBoundaryToUndo"), "error")
+    }
+    this.enterPoint(ctx)
+    ctx.requestRender()
   }
 
   /** The hatch the current boundary set and settings would produce. */

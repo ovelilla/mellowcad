@@ -145,6 +145,92 @@ describe("HATCH boundary by Pick internal point", () => {
   })
 })
 
+// AutoCAD 2023's console (acc/h1–h23 of 2026-10-14): -HATCH declares Undo at
+// its internal point (table 25032) without listing it.
+describe("HATCH's unlisted Undo", () => {
+  const SMALL = rectOf(p(200, 0), p(250, 50), { id: "small" })
+  const typed = (h: ReturnType<typeof createHarness>, ...texts: string[]) => {
+    for (const text of texts) {
+      h.runtime.setCommandLineText(text)
+      h.runtime.submitCommandLine()
+    }
+    return h
+  }
+  const filled = (h: ReturnType<typeof createHarness>) => {
+    const hatch = hatchOnly(h.entities())
+    return [p(50, 50), p(225, 25)].map((at) => pointInsideHatch(hatch, at))
+  }
+
+  it("takes back the last internal point's boundary, silently", () => {
+    const h = typed(
+      createHarness({ entities: [SQUARE, SMALL] }),
+      "HATCH",
+      "50,50",
+      "225,25",
+      "U"
+    )
+    expect(h.commandLog().slice(-2)).toEqual([
+      "Specify internal point or [Properties/Select objects]: U",
+      "Current hatch pattern:  ANSI31",
+    ])
+    typed(h, "UNDO", "U")
+    expect(h.commandLog().slice(-3)).toEqual([
+      "Specify internal point or [Properties/Select objects]: U",
+      "No boundary to Undo.",
+      "Current hatch pattern:  ANSI31",
+    ])
+    typed(h, "225,25", "")
+    expect(filled(h)).toEqual([false, true])
+  })
+
+  it("leaves what Select objects took", () => {
+    const window = ["S", "W", "190,-10", "260,60", ""]
+    const picked = typed(
+      createHarness({ entities: [SQUARE, SMALL] }),
+      "HATCH",
+      "50,50",
+      ...window,
+      "U",
+      ""
+    )
+    expect(filled(picked)).toEqual([false, true])
+
+    const selected = typed(
+      createHarness({ entities: [SQUARE, SMALL] }),
+      "HATCH",
+      ...window,
+      "U"
+    )
+    expect(selected.commandLog().at(-2)).toBe("No boundary to Undo.")
+    typed(selected, "")
+    expect(filled(selected)).toEqual([false, true])
+  })
+
+  it("refuses anything else, and is answered in Autodesk's Spanish", () => {
+    const h = typed(createHarness({ entities: [SQUARE] }), "HATCH", "FOO")
+    expect(h.commandLog().slice(-2)).toEqual([
+      "Specify internal point or [Properties/Select objects]: FOO",
+      "2D point or option keyword required.",
+    ])
+
+    const spanish = typed(
+      createHarness({ locale: es, entities: [SQUARE, SMALL] }),
+      "SOMBREA",
+      "50,50",
+      "H",
+      "DESHACER",
+      "FOO"
+    )
+    expect(spanish.commandLog().slice(-5)).toEqual([
+      "Precise punto interno o [Propiedades/Designar objetos]: DESHACER",
+      "Ningún contorno por deshacer.",
+      "Patrón de sombreado actual:  ANSI31",
+      "Precise punto interno o [Propiedades/Designar objetos]: FOO",
+      "Se requiere un punto 2D o una opción.",
+    ])
+  })
+})
+
 describe("HATCH boundary by Select objects", () => {
   it("fills one selected closed polyline with the default pattern", () => {
     const h = createHarness({ entities: [SQUARE] })

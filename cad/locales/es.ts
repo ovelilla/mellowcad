@@ -928,7 +928,8 @@ export const es: EngineLocale = {
         "Properties": "Propiedades",
         "Select objects": "Designar",
         "?": "?",
-        "Solid": "Sólido"
+        "Solid": "Sólido",
+        "Undo": "desHacer"
       },
       "INSERT": {
         "?": "?",
@@ -1952,6 +1953,7 @@ export const es: EngineLocale = {
       "hatchPatternUnknown": "Nombre de patrón desconocido.",
       "hatchTooDense": "El intervalo de sombreado es demasiado denso o el trazo demasiado pequeño.",
       "hatchNoBoundary": "No se ha encontrado un contorno de sombreado válido.",
+      "noBoundaryToUndo": "Ningún contorno por deshacer.",
       "textStyleUndefined": [
         "No se puede encontrar estilo de texto \"",
         [

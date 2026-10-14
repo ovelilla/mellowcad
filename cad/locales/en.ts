@@ -1669,6 +1669,7 @@ export const en: EngineCatalog = {
       "hatchPatternUnknown": "Unknown pattern name.",
       "hatchTooDense": "Hatch spacing too dense, or dash size too small.",
       "hatchNoBoundary": "Valid hatch boundary not found.",
+      "noBoundaryToUndo": "No boundary to Undo.",
       "textStyleUndefined": [
         "Cannot find text style \"",
         [
