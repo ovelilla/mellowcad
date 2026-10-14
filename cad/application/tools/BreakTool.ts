@@ -107,7 +107,11 @@ export class BreakTool implements Tool {
         const entity = ctx.document.get(id)
         return entity !== undefined && breakable(entity)
       }),
-    one: { take: (entity, ctx) => this.askFirst(entity, ctx), newest: false },
+    one: {
+      take: (entity, ctx) => this.askFirst(entity, ctx),
+      newest: false,
+      pick: (point, ctx) => this.pickObject(point, ctx),
+    },
   })
 
   onActivate(ctx: ToolContext): void {
@@ -154,6 +158,14 @@ export class BreakTool implements Tool {
     }
   }
 
+  /**
+   * The second break point is LASTPOINT, although its refusal is its own
+   * (AutoCAD 2023's console, acc/bk31, bk35).
+   */
+  setsLastPoint(): boolean | null {
+    return this.state.phase === "second" ? true : null
+  }
+
   /** Object picking is by proximity; the break points themselves snap. */
   wantsSnap(): boolean {
     return this.state.phase !== "select" || this.modes.wantsSnap()
@@ -165,7 +177,7 @@ export class BreakTool implements Tool {
       return
     }
     if (this.state.phase === "select") {
-      const hover = this.pick(input, ctx)
+      const hover = this.pick(input.world, ctx)
       if (hover?.id !== this.state.hover?.id) {
         this.state = { phase: "select", hover: hover ?? null }
         ctx.requestRender()
@@ -186,15 +198,7 @@ export class BreakTool implements Tool {
           this.modes.onPointerDown(input, ctx)
           return
         }
-        const hit = this.pick(input, ctx)
-        if (!hit) {
-          ctx.report(ctx.text.message("noObjectFound"))
-          return
-        }
-        // BREAKATPOINT asks for the break point separately; BREAK takes the
-        // selecting pick as its first point.
-        if (this.mode === "atPoint") this.askFirst(hit, ctx)
-        else this.askSecond(hit, input.world, false, ctx)
+        this.pickObject(input.world, ctx)
         return
       }
       case "first":
@@ -216,6 +220,10 @@ export class BreakTool implements Tool {
       this.modes.inMode() &&
       this.modes.onEnter(ctx)
     )
+  }
+
+  answerTyped(text: string, ctx: ToolContext): boolean {
+    return this.state.phase === "select" && this.modes.answerTyped(text, ctx)
   }
 
   commandOptions(): readonly CommandOption[] {
@@ -273,9 +281,22 @@ export class BreakTool implements Tool {
   }
 
   /** A breakable object in the UCS's XY plane, never one at an angle to it. */
-  private pick(input: PointerInput, ctx: ToolContext): Entity | null {
-    const hit = ctx.pick(input.world)
+  private pick(world: Vec2, ctx: ToolContext): Entity | null {
+    const hit = ctx.pick(world)
     return hit && breakable(hit) ? hit : null
+  }
+
+  /**
+   * The pick at `Select object:`, clicked or typed — AutoCAD 2023's console
+   * takes a typed point as a pick there (acc/bk1–bk11, bk31–bk38): on nothing
+   * `No object found` and the prompt again; BREAK's pick is its first break
+   * point, BREAKATPOINT asks for its break point separately.
+   */
+  private pickObject(world: Vec2, ctx: ToolContext): void {
+    const hit = this.pick(world, ctx)
+    if (!hit) ctx.report(ctx.text.message("noObjectFound"))
+    else if (this.mode === "atPoint") this.askFirst(hit, ctx)
+    else this.askSecond(hit, { x: world.x, y: world.y }, false, ctx)
   }
 
   private askFirst(target: Entity, ctx: ToolContext): void {

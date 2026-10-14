@@ -653,3 +653,253 @@ describe("a point typed at Select objects", () => {
     cad.escape()
   })
 })
+
+/** What ID @ reports: LASTPOINT, in the current UCS. */
+function lastPoint(cad: CadHarness): string | undefined {
+  answer(cad, "ID", "@")
+  return cad.commandLog().at(-1)
+}
+
+/** The lines a drawing holds, as [start, end] pairs, in drawing order. */
+function lineEnds(cad: CadHarness): [number, number][][] {
+  return cad
+    .entities()
+    .flatMap((entity) =>
+      entity.type === "line"
+        ? [[entity.start, entity.end].map((point) => [point.x, point.y])]
+        : []
+    ) as [number, number][][]
+}
+
+// AutoCAD 2023's console (acc/bk1–bk60): a point typed at a single object's
+// pick is a pick there, of the newest object under it.
+describe("a point typed at a single object's pick", () => {
+  it("is BREAK's pick and first break point; on nothing No object found", () => {
+    for (const [locale, command, select, second, none, invalid, expects] of [
+      [
+        undefined,
+        "BREAK",
+        "Select object:",
+        "Specify second break point or [First point]:",
+        "No object found",
+        "*Invalid selection*",
+        "Expects a point or Window/Last/Crossing/BOX/ALL/Fence/WPolygon/CPolygon",
+      ],
+      [
+        es,
+        "PARTE",
+        "Designe objeto:",
+        "Precise segundo punto de ruptura o [Primer punto]:",
+        "No se ha encontrado ningún objeto",
+        "*Designación no válida*",
+        "Requiere un punto o Ventana/úLTimo/Captura/MArco/Todos/Borde/polígonOV/polígonOC",
+      ],
+    ] as const) {
+      const cad = createHarness({ locale, entities: drawing() })
+      cad.command(command)
+      answer(cad, "50,30", "FOO", "50,0.2", "70,0")
+      expect(cad.commandLog().slice(1, 6)).toEqual([
+        `${select} 50,30`,
+        none,
+        `${select} FOO`,
+        invalid,
+        expects,
+      ])
+      expect(cad.commandLog().slice(6)).toEqual([
+        `${select} 50,0.2`,
+        `${second} 70,0`,
+      ])
+      // The first point is the typed one, pulled onto the line (bk33).
+      expect(lineEnds(cad)).toEqual([
+        [
+          [0, 0],
+          [50, 0],
+        ],
+        [
+          [0, 50],
+          [100, 50],
+        ],
+        [
+          [70, 0],
+          [100, 0],
+        ],
+      ])
+      expect(lastPoint(cad)).toMatch(/70[.,]00 .* 0[.,]00 /)
+    }
+  })
+
+  it("is BREAK's from LASTPOINT with @, on the newest object there", () => {
+    const cad = createHarness({
+      entities: [
+        lineOf(p(0, 0), p(100, 0), { id: "A" }),
+        lineOf(p(20, 0), p(80, 0), { id: "D" }),
+      ],
+    })
+    answer(cad, "ID", "50,0", "BREAK", "@", "@")
+    expect(lineEnds(cad)).toEqual([
+      [
+        [0, 0],
+        [100, 0],
+      ],
+      [
+        [20, 0],
+        [50, 0],
+      ],
+      [
+        [50, 0],
+        [80, 0],
+      ],
+    ])
+    expect(cad.byId("D")).toMatchObject({ end: { x: 50, y: 0 } })
+    expect(lastPoint(cad)).toMatch(/50[.,]00 .* 0[.,]00 /)
+  })
+
+  it("is BREAKATPOINT's pick, which then asks its break point", () => {
+    const cad = createHarness({ entities: drawing() })
+    answer(cad, "BREAKATPOINT", "50,30", "50,0")
+    expect(cad.commandLog().slice(1)).toEqual([
+      "Select object: 50,30",
+      "No object found",
+      "Select object: 50,0",
+    ])
+    expect(cad.state().commandLine.prompt).toBe(
+      "BREAKATPOINT Specify break point:"
+    )
+    answer(cad, "30,0")
+    expect(lineEnds(cad)[0]).toEqual([
+      [0, 0],
+      [30, 0],
+    ])
+    expect(lastPoint(cad)).toMatch(/30[.,]00 .* 0[.,]00 /)
+  })
+
+  it("is UCS OBject's pick, which LASTPOINT stays at; on nothing it ends", () => {
+    for (const [locale, ucs, object, select, none] of [
+      [
+        undefined,
+        "UCS",
+        "OB",
+        "Select object to align UCS:",
+        "No object found",
+      ],
+      [
+        es,
+        "SCP",
+        "B",
+        "Designe el objeto a alinear con el SCP:",
+        "No se ha encontrado ningún objeto",
+      ],
+    ] as const) {
+      const slant = () => [lineOf(p(20, 10), p(80, 40), { id: "S" })]
+      const near = answer(createHarness({ locale, entities: slant() }), ucs)
+      answer(near, object, "60,30")
+      const at = near.runtime.document.getSettings().ucs
+      expect(at.origin).toMatchObject({ x: 80, y: 40 })
+      expect(at.xAxis.x).toBeCloseTo(-0.894427, 6)
+      expect(at.xAxis.y).toBeCloseTo(-0.447214, 6)
+      // 60,30 read in the new UCS (bk12).
+      expect(lastPoint(near)).toMatch(/22[.,]36 .* 0[.,]00 .* 0[.,]00/)
+
+      const far = answer(createHarness({ locale, entities: slant() }), ucs)
+      answer(far, object, "30,15")
+      expect(far.runtime.document.getSettings().ucs.origin).toMatchObject({
+        x: 20,
+        y: 10,
+      })
+
+      const nothing = answer(createHarness({ locale, entities: slant() }), ucs)
+      answer(nothing, object, "60,50")
+      expect(nothing.commandLog().slice(-2)).toEqual([`${select} 60,50`, none])
+      expect(nothing.activeToolId()).toBe("select")
+      expect(nothing.runtime.document.getSettings().ucs.origin).toMatchObject({
+        x: 0,
+        y: 0,
+      })
+      expect(lastPoint(nothing)).toMatch(/60[.,]00 .* 50[.,]00 /)
+    }
+  })
+
+  it("is UCS ZAxis Object's pick; on nothing it asks again", () => {
+    const cad = createHarness({
+      entities: [lineOf(p(20, 10), p(80, 40), { id: "S" })],
+    })
+    answer(cad, "UCS", "ZA", "O", "60,50", "30,15")
+    expect(cad.commandLog().slice(-3)).toEqual([
+      "Select object: 60,50",
+      "No object found",
+      "Select object: 30,15",
+    ])
+    const ucs = cad.runtime.document.getSettings().ucs
+    expect(ucs.origin).toMatchObject({ x: 20, y: 10 })
+    expect(ucs.xAxis.x).toBeCloseTo(0.447214, 6)
+    expect(ucs.xAxis.y).toBeCloseTo(-0.894427, 6)
+    // 30,15 read in the new UCS, down its Z (bk16).
+    expect(lastPoint(cad)).toMatch(/0[.,]00 .* 0[.,]00 .* -11[.,]18/)
+  })
+
+  it("is a click too: on nothing OBject ends and ZAxis Object asks again", () => {
+    const cad = createHarness({
+      entities: [lineOf(p(20, 10), p(80, 40), { id: "S" })],
+    })
+    answer(cad, "UCS", "OB")
+    cad.click(p(60, 50))
+    expect(cad.commandLog().at(-1)).toBe("No object found")
+    expect(cad.activeToolId()).toBe("select")
+
+    answer(cad, "UCS", "ZA", "O")
+    cad.click(p(60, 50))
+    expect(cad.commandLog().at(-1)).toBe("No object found")
+    expect(cad.state().commandLine.prompt).toBe("UCS Select object:")
+    cad.escape()
+  })
+
+  it("is ARRAYPATH's path pick, which leaves LASTPOINT; on nothing a window starts", () => {
+    for (const [locale, arrayed, filtered, select, opposite] of [
+      [
+        undefined,
+        "Objects selected to be arrayed may not be selected as path curve.",
+        "1 was filtered out",
+        "Select path curve:",
+        "Specify opposite corner:",
+      ],
+      [
+        es,
+        "Los objetos seleccionados para la matriz no se pueden seleccionar como curva de trayectoria.",
+        "1 se ha filtrado",
+        "Seleccione la curva de trayectoria:",
+        "Designe esquina opuesta:",
+      ],
+    ] as const) {
+      const cad = createHarness({ locale, entities: drawing() })
+      answer(cad, "ID", "5,5")
+      cad.select("C").command(locale ? "MATRIZCAMINO" : "ARRAYPATH")
+      answer(cad, "260,250", "300,300", "310,310")
+      expect(cad.commandLog().slice(-5)).toEqual([
+        `${select} 260,250`,
+        arrayed,
+        filtered,
+        `${select} 300,300`,
+        `${opposite} 310,310`,
+      ])
+      expect(cad.state().commandLine.prompt).toMatch(new RegExp(` ${select}$`))
+      answer(cad, "50,0")
+      expect(cad.state().commandLine.prompt).not.toMatch(
+        new RegExp(` ${select}$`)
+      )
+      cad.escape()
+      expect(lastPoint(cad)).toMatch(/5[.,]00 .* 5[.,]00 /)
+    }
+
+    const clicked = createHarness({ entities: drawing() })
+    clicked.select("C").command("ARRAYPATH")
+    clicked.click(p(300, 300))
+    expect(clicked.state().commandLine.prompt).toBe(
+      "ARRAYPATH Specify opposite corner:"
+    )
+    clicked.click(p(-10, -10))
+    expect(clicked.state().commandLine.prompt).toMatch(
+      /^ARRAYPATH Select grip to edit array/
+    )
+    clicked.escape()
+  })
+})

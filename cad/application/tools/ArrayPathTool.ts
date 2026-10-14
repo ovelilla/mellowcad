@@ -1,4 +1,5 @@
 import { Vec2, V } from "../../geometry/Vec2"
+import { Vec3, vec3 } from "../../geometry/Vec3"
 import { normalizeDegrees } from "../../geometry/primitives"
 import {
   Entity,
@@ -113,9 +114,20 @@ export class ArrayPathTool implements Tool {
         const entity = ctx.document.get(id)
         return entity !== undefined && !ctx.selection.has(id) && isPath(entity)
       }),
-    one: { take: (entity, ctx) => this.enterEdit(entity, ctx), newest: true },
+    one: {
+      take: (entity, ctx) => this.enterEdit(entity, ctx),
+      newest: true,
+      // WHY LASTPOINT put back: a point typed on an object there leaves it
+      // as it was (AutoCAD 2023's console, acc/bk45, bk46).
+      pick: (point, ctx) => {
+        ctx.setLastPoint(this.lastPointAtPath)
+        this.pickCurve(point, ctx)
+      },
+    },
   })
   private lastScreen: Vec2 | null = null
+  /** LASTPOINT as `Select path curve:` found it. */
+  private lastPointAtPath: Vec3 = vec3(0, 0, 0)
 
   onActivate(ctx: ToolContext): void {
     ctx.setCursor("crosshair")
@@ -327,17 +339,31 @@ export class ArrayPathTool implements Tool {
           this.pathModes.onPointerDown(input, ctx)
           return
         }
-        const hit = this.pickPath(input, ctx)
-        if (!hit) return
-        if (ctx.selection.has(hit.id)) {
-          ctx.report(ctx.text.message("pathCurveIsArrayed"))
-          ctx.report(ctx.text.message("filteredOut", { count: 1 }))
-          return
-        }
-        this.enterEdit(hit, ctx)
+        this.pickCurve(input.world, ctx)
         return
       }
     }
+  }
+
+  /**
+   * The pick at `Select path curve:`, clicked or typed (AutoCAD 2023's
+   * console takes a typed point as one, acc/bk19, bk21): an arrayed object is
+   * refused, and on nothing a window starts, as the AUto its refusal lists
+   * makes it (bk20, bk48).
+   */
+  private pickCurve(world: Vec2, ctx: ToolContext): void {
+    const under = ctx.pick(world)
+    if (!under) {
+      this.pathModes.startWindow({ x: world.x, y: world.y }, ctx)
+      return
+    }
+    if (!isPath(under)) return
+    if (ctx.selection.has(under.id)) {
+      ctx.report(ctx.text.message("pathCurveIsArrayed"))
+      ctx.report(ctx.text.message("filteredOut", { count: 1 }))
+      return
+    }
+    this.enterEdit(under, ctx)
   }
 
   /**
@@ -350,9 +376,14 @@ export class ArrayPathTool implements Tool {
   }
 
   answerTyped(text: string, ctx: ToolContext): boolean {
-    return (
-      this.state.phase === "selecting" && this.selector.answerTyped(text, ctx)
-    )
+    switch (this.state.phase) {
+      case "selecting":
+        return this.selector.answerTyped(text, ctx)
+      case "pickPath":
+        return this.pathModes.answerTyped(text, ctx)
+      default:
+        return false
+    }
   }
 
   onPointerUp(input: PointerInput, ctx: ToolContext): void {
@@ -444,6 +475,7 @@ export class ArrayPathTool implements Tool {
   private enterPickPath(ctx: ToolContext): void {
     this.state = { phase: "pickPath", hover: null }
     this.pathModes.start()
+    this.lastPointAtPath = ctx.lastPoint
     ctx.report(ctx.text.message("arrayType", { type: "path" }))
     ctx.dynamicInput.open({ fields: [], commit: () => {} })
   }

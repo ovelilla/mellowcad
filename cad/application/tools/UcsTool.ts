@@ -207,6 +207,8 @@ export class UcsTool implements Tool {
         if (ucs) this.finish(ucs, null, ctx)
       },
       newest: true,
+      pick: (point, ctx) =>
+        this.pickObject(point, ctx.viewport.worldToScreen(point), ctx),
     },
   })
 
@@ -298,23 +300,39 @@ export class UcsTool implements Tool {
       case "zPoint":
         this.acceptZPoint(state.origin, input.point, ctx)
         return
-      case "object": {
-        const entity = alignable(ctx.pick(input.world))
-        const ucs = entity
-          ? ucsFromObject(entity, pickOn(ctx.viewport, entity, input.screen))
-          : null
-        if (ucs) this.finish(ucs, null, ctx)
-        return
-      }
-      case "zObject": {
-        const entity = ctx.pick(input.world)
-        const ucs = hasEnds(entity)
-          ? ucsAtEnd(entity, pickOn(ctx.viewport, entity, input.screen))
-          : null
-        if (ucs) this.finish(ucs, null, ctx)
-        return
-      }
+      case "object":
+      case "zObject":
+        this.pickObject(input.world, input.screen, ctx)
     }
+  }
+
+  /**
+   * OBject's and ZAxis Object's pick, clicked or typed — AutoCAD 2023's
+   * console takes a typed point as a pick there and leaves LASTPOINT at it
+   * (acc/bk12–bk18, bk51, bk53): on nothing `No object found`, which ends
+   * OBject with the UCS as it was and asks ZAxis Object again (bk13, bk16).
+   */
+  private pickObject(world: Vec3, screen: Vec2, ctx: ToolContext): void {
+    const zAxis = this.state.phase === "zObject"
+    const hit = ctx.pick(world)
+    if (!hit) {
+      ctx.report(ctx.text.message("noObjectFound"))
+      if (!zAxis) ctx.endCommand()
+      return
+    }
+    const entity = zAxis ? (hasEnds(hit) ? hit : null) : alignable(hit)
+    if (!entity) return
+    const at = pickOn(ctx.viewport, entity, screen)
+    const ucs = zAxis ? ucsAtEnd(entity, at) : ucsFromObject(entity, at)
+    if (ucs) this.finish(ucs, null, ctx, { lastPoint: world })
+  }
+
+  answerTyped(text: string, ctx: ToolContext): boolean {
+    const { phase } = this.state
+    return (
+      (phase === "object" || phase === "zObject") &&
+      this.modes.answerTyped(text, ctx)
+    )
   }
 
   question(): PromptId | ToolQuestion {

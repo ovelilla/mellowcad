@@ -265,7 +265,7 @@ while it asks (ZOOM's, `Select objects:`' modes). A tool never reads a bare numb
 its point box: a `coordinate` field never resolves to a value (`resolveValues`), so where the
 tool picks no point the number reaches its `commitRaw` instead (ZOOM's factor), and a box
 whose number is no point at all says `"typed"` (ARRAYRECT's unit cell's side). Where no box
-takes it (`Select objects:`, TRIM's or FILLET's object) `typedPick` reads it through
+takes it (`Select objects:`, a single object's pick, TRIM's or FILLET's object) `typedPick` reads it through
 `ctx.pointAtDistance`, the same point. The heading is
 the cursor's last place on the drawing (`heldCursorScreen`, which leaving the canvas keeps), and
 the UCS's X with none.

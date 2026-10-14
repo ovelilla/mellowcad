@@ -1,4 +1,5 @@
 import { Vec2 } from "../../geometry/Vec2"
+import { Vec3 } from "../../geometry/Vec3"
 import { Entity, EntityId } from "../../domain/entities"
 import { ScenePrimitive } from "../../scene/types"
 import { THEME } from "../../scene/theme"
@@ -194,6 +195,13 @@ export interface ObjectSelectorOptions {
     ) => void
     /** Finding none says nothing: the prompt is asked again (FILLET's). */
     readonly silent?: boolean
+    /**
+     * A point typed at the prompt, read as {@link typedPick} reads it (`@`,
+     * a number), which AutoCAD 2023's console takes as a pick there: the
+     * command's own, which says what a pick on nothing does — unless the
+     * prompt takes AUto, where nothing under it starts a window.
+     */
+    readonly pick?: (point: Vec3, ctx: ToolContext) => void
   }
 }
 
@@ -380,31 +388,47 @@ export class ObjectSelector {
    * A point typed at `Select objects:` (`typedPick`, a number too), as
    * AutoCAD 2023's console takes it: the object there is picked (`1 found`),
    * and on nothing a window starts there, asking `Specify opposite corner:`.
-   * A single object's pick takes none: its own pick is the command's.
+   * A single object's pick hands it to the command's {@link one}`.pick`
+   * (none without one), but for a window on nothing where it takes AUto.
    */
   answerTyped(text: string, ctx: ToolContext): boolean {
-    if (this.step.kind !== "objects" || this.options.one) return false
+    const one = this.options.one
+    if (this.step.kind !== "objects" || (one && !one.pick)) return false
     const point = typedPick(text, ctx)
     if (!point) return false
     const at = { x: point.x, y: point.y }
+    if (one?.pick && (ctx.pick(at) || !this.offered().includes("AUto"))) {
+      one.pick(point, ctx)
+      ctx.requestRender()
+      return true
+    }
     const hit = this.pickAt(at, ctx)
     if (hit) {
       this.select([hit.id], false, null, false, ctx)
     } else if (this.subobject && ctx.pick(at)) {
       this.select([], false, null, false, ctx)
     } else if (!ctx.pick(at)) {
-      this.step = {
-        kind: "oppositeCorner",
-        rule: "box",
-        start: at,
-        current: at,
-        implied: true,
-        subtract: false,
-      }
-      this.openPointInput(ctx)
+      this.startWindow(at, ctx)
     }
     ctx.requestRender()
     return true
+  }
+
+  /**
+   * The window a pick on nothing starts there, finished by its opposite
+   * corner: `Select objects:`' own, and a single object's pick that takes
+   * AUto (ARRAYPATH's path curve, acc/bk20, bk23, bk48).
+   */
+  startWindow(at: Vec2, ctx: ToolContext): void {
+    this.step = {
+      kind: "oppositeCorner",
+      rule: "box",
+      start: at,
+      current: at,
+      implied: true,
+      subtract: false,
+    }
+    this.openPointInput(ctx)
   }
 
   onPointerDown(input: PointerInput, ctx: ToolContext): void {
@@ -510,7 +534,8 @@ export class ObjectSelector {
         "box",
         step.subtract,
         true,
-        ctx
+        ctx,
+        true
       )
       ctx.requestRender()
     }
@@ -656,7 +681,8 @@ export class ObjectSelector {
           step.rule,
           step.subtract || shift,
           false,
-          ctx
+          ctx,
+          step.implied
         )
         return
       case "fence":
@@ -694,7 +720,8 @@ export class ObjectSelector {
     rule: WindowRule,
     subtract: boolean,
     dragged: boolean,
-    ctx: ToolContext
+    ctx: ToolContext,
+    implied = false
   ): void {
     const crossing =
       rule === "box"
@@ -722,7 +749,8 @@ export class ObjectSelector {
       frame,
       dragged,
       ctx,
-      crossing ? { by: "crossing", outline } : ENCLOSING
+      crossing ? { by: "crossing", outline } : ENCLOSING,
+      implied
     )
   }
 
@@ -754,11 +782,19 @@ export class ObjectSelector {
     frame: readonly Vec2[] | null,
     dragged: boolean,
     ctx: ToolContext,
-    find: ModeFind = ENCLOSING
+    find: ModeFind = ENCLOSING,
+    implied = false
   ): void {
     const ids = this.options.accept?.(found, ctx) ?? found
     if (this.options.one) {
-      this.takeOne(ids, found.length - ids.length, this.options.one, find, ctx)
+      this.takeOne(
+        ids,
+        found.length - ids.length,
+        this.options.one,
+        find,
+        implied,
+        ctx
+      )
       return
     }
     const locked = new Set(
@@ -811,13 +847,15 @@ export class ObjectSelector {
    * One of `ids` for a single object's pick, or two for a {@link pair}; with
    * none, how many the command left out (`1 was filtered out`, ARRAYPATH's
    * source at its path curve in AutoCAD 2023's console) or that nothing was
-   * found, unless the command says nothing.
+   * found, unless the command says nothing — nor does a window a pick on
+   * nothing started (acc/bk20, bk48).
    */
   private takeOne(
     ids: readonly EntityId[],
     filtered: number,
     one: NonNullable<ObjectSelectorOptions["one"]>,
     find: ModeFind,
+    implied: boolean,
     ctx: ToolContext
   ): void {
     const found = new Set(ids)
@@ -836,7 +874,8 @@ export class ObjectSelector {
     else if (one.silent) ctx.requestRender()
     else if (filtered > 0) {
       ctx.report(ctx.text.message("filteredOut", { count: filtered }))
-    } else ctx.report(ctx.text.message("noObjectFound"))
+    } else if (implied) ctx.requestRender()
+    else ctx.report(ctx.text.message("noObjectFound"))
   }
 
   /** Undo: the last selection is taken back, or there is none left. */

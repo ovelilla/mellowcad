@@ -580,4 +580,28 @@ describe("A number typed at a window's corner or where objects are picked", () =
       expect(lastPoint(nothing)).toMatch(/14[.,]62 .* 1[.,]92 /)
     }
   })
+
+  // acc/wn53, bk36–bk38: BREAK's `Select object:` picks the line there.
+  it("is a pick at BREAK's Select object, its first break point", () => {
+    for (const [locale, command, distance, at] of [
+      [undefined, "BREAK", "5", p(14.6175, 1.9181)],
+      [es, "PARTE", "-5", p(5.3825, -1.9181)],
+      [undefined, "BREAK", "0", p(10, 0)],
+    ] as const) {
+      const ray = lineOf(p(-269.985, -116.3034), CURSOR, { id: "R" })
+      const cad = answer(fromTen(locale, [ray]), command, distance, "@")
+      const [kept, other] = cad.entities() as LineEntity[]
+      expect(kept.id).toBe("R")
+      expect(kept.end).toBeCloseToPoint(at, 3)
+      expect(other.start).toBeCloseToPoint(at, 3)
+    }
+
+    const nothing = answer(fromTen(), "BREAK", "5")
+    expect(nothing.commandLog().slice(-2)).toEqual([
+      "Select object: 5",
+      "No object found",
+    ])
+    nothing.escape()
+    expect(lastPoint(nothing)).toMatch(/14[.,]62 .* 1[.,]92 /)
+  })
 })

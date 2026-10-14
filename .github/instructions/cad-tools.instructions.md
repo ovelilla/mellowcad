@@ -64,7 +64,11 @@ A tool is an explicit state machine for one AutoCAD command. It owns a discrimin
   `inMode()` (a window's corners, a fence's points). `take` is told how the mode found it
   (`ModeFind`: a fence's points, a crossing outline, or enclosing — Window, WPolygon, Last), for
   a command that reads a pick from it; `pair` takes two found at once (FILLET's first object)
-  and `silent` finds none without a word.
+  and `silent` finds none without a word. A point typed there reaches the selector's
+  `answerTyped`, which reads it (`typedPick`) and hands it to `one.pick`: the command's own
+  pick, the one its click runs, so a typed point and a click do the same — on nothing too
+  (BREAK's `No object found`, UCS OBject's end) —; where the prompt takes AUto (ARRAYPATH's
+  path) nothing under it starts a window instead (`startWindow`), as a click on nothing does.
 - `SelectionActionTool` — one action over a selection set, supporting both noun-verb and
   verb-noun invocation (Erase, Explode, Join, COPYCLIP). A command that must ask something **before** the
   set — COPYBASE's base point — overrides `onActivate` and calls `begin(ctx)` once it has the
