@@ -1,5 +1,5 @@
 import { Vec2, V } from "../../geometry/Vec2"
-import { chamferLines } from "../../geometry/primitives"
+import { capParallelLines, chamferLines } from "../../geometry/primitives"
 import {
   createLine,
   carryOverrides,
@@ -589,7 +589,20 @@ export class ChamferTool implements Tool {
       return
     }
     const chamfered = this.chamfer(corner, line1, line2, sharp, ctx)
-    if (!chamfered) return // parallel or collinear — keep prompting
+    if (!chamfered) {
+      // WHY collinear apart: AutoCAD 2023's console says it with no *Invalid*,
+      // as FILLET does; parallel lines are `Lines are parallel`, *Invalid*.
+      const { line1: a, line2: b } = corner
+      if (
+        capParallelLines(a.start, a.end, b.start, b.end, a.start) ===
+        "collinear"
+      ) {
+        this.refuse("collinearCannotChamfer", ctx, false)
+      } else {
+        this.refuse("linesParallel", ctx)
+      }
+      return
+    }
     if (chamfered === "tooLarge") {
       this.refuse("chamferDistanceTooLarge", ctx)
       return

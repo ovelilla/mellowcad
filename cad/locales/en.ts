@@ -2039,6 +2039,7 @@ export const en: EngineCatalog = {
       ],
       "cannotFilletItself": "Cannot fillet an entity with itself.",
       "collinearCannotFillet": "Collinear lines connot be filleted.",
+      "collinearCannotChamfer": "Collinear lines connot be chamfered.",
       "cannotChamferItself": "Cannot chamfer an entity with itself.",
       "segmentsNotConsecutive": "Lines belonging to polylines must be consecutive or separated by one segment",
       "notA2dPolyline": "Object selected is not a 2D polyline",

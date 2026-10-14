@@ -229,3 +229,66 @@ describe("FILLET's and CHAMFER's second prompt on Enter", () => {
     expect(cad.activeToolId()).toBe("fillet")
   })
 })
+
+// AutoCAD 2023's console, acc/u4–u9 of 2026-10-14.
+describe("CHAMFER of two parallel lines", () => {
+  const parallel = (): Entity[] => [
+    lineOf(p(0, 0), p(100, 0)),
+    lineOf(p(0, 10), p(100, 10)),
+  ]
+  const collinear = (): Entity[] => [
+    lineOf(p(0, 0), p(40, 0)),
+    lineOf(p(60, 0), p(100, 0)),
+  ]
+
+  it("says they are parallel: *Invalid*, or in Multiple the first prompt", () => {
+    const cad = run(parallel(), "CHAMFER", "20,0", "80,10")
+    expect(cad.commandLog().slice(-3)).toEqual([
+      "Select second line or shift-select to apply corner or [Distance]: 80,10",
+      "Lines are parallel",
+      "*Invalid*",
+    ])
+    expect(cad.activeToolId()).toBe("select")
+
+    const multiple = run(parallel(), "CHAMFER", "M", "20,0", "80,10", "FOO")
+    expect(multiple.commandLog().slice(-4)).toEqual([
+      "Lines are parallel",
+      "Select first line or [Undo/Polyline/Distance/Multiple]: FOO",
+      "*Invalid selection*",
+      "Expects a point or Window/Last/Crossing/BOX/Fence/WPolygon/CPolygon/Undo/Polyline/Distance",
+    ])
+  })
+
+  it("says collinear ones cannot be chamfered, with no *Invalid*, by a pick or a mode", () => {
+    for (const second of [["80,0"], ["C", "50,-5", "90,5"]]) {
+      const cad = run(collinear(), "CHAMFER", "D", "5", "5", "20,0", ...second)
+      expect(cad.commandLog().at(-1)).toBe(
+        "Collinear lines connot be chamfered."
+      )
+      expect(cad.activeToolId()).toBe("select")
+      expect(cad.entities().map((e) => e.type)).toEqual(["line", "line"])
+    }
+
+    const multiple = run(collinear(), "CHAMFER", "M", "20,0", "80,0", "FOO")
+    expect(multiple.commandLog().slice(-4, -2)).toEqual([
+      "Collinear lines connot be chamfered.",
+      "Select first line or [Undo/Polyline/Distance/Multiple]: FOO",
+    ])
+  })
+
+  it("is answered in Autodesk's Spanish", () => {
+    const cad = createHarness({ locale: es, entities: collinear() })
+    cad.command("CHAFLAN")
+    answer(cad, "20,0", "80,0")
+    expect(cad.commandLog().at(-1)).toBe(
+      "Las líneas colineales no pueden ser unidos con chaflán."
+    )
+    const parallelEs = createHarness({ locale: es, entities: parallel() })
+    parallelEs.command("CHAFLAN")
+    answer(parallelEs, "20,0", "80,10")
+    expect(parallelEs.commandLog().slice(-2)).toEqual([
+      "Las líneas son paralelas",
+      "*No válido*",
+    ])
+  })
+})

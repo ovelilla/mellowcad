@@ -2322,6 +2322,7 @@ export const es: EngineLocale = {
       ],
       "cannotFilletItself": "No se puede empalmar un objeto consigo mismo.",
       "collinearCannotFillet": "Las líneas colineales no pueden ser unidos con empalme.",
+      "collinearCannotChamfer": "Las líneas colineales no pueden ser unidos con chaflán.",
       "cannotChamferItself": "No se puede achaflanar un objeto consigo mismo.",
       "segmentsNotConsecutive": "Las líneas pertenecientes a polilíneas tienen que ser consecutivas o estar separadas por un segmento",
       "notA2dPolyline": "El objeto designado no es una polilínea 2D.",
