@@ -468,3 +468,36 @@ describe("FILLET of an ARC or a CIRCLE out of the other's plane", () => {
     expect(cad.commandLog().at(-1)).toBe("Los dos objetos no son coplanares.")
   })
 })
+
+// AutoCAD 2023's console, acc/x1–x9, y1–y6, z1–z3 of 2026-10-14: the table
+// declares the first prompt's words beside the second's (20626, 20628), but
+// the second prompt refuses every one of them.
+describe("FILLET's and CHAMFER's second prompt takes no first-prompt word", () => {
+  it("refuses Polyline, Multiple, Undo and Trim as any answer, in Multiple too", () => {
+    for (const word of [
+      "P",
+      "POLYLINE",
+      "U",
+      "MULTIPLE",
+      "N",
+      "UNDO",
+      "T",
+      "TRIM",
+    ]) {
+      for (const multiple of [[], ["M"]]) {
+        const cad = run(cross(), "FILLET", ...multiple, "30,40", word)
+        expect(cad.commandLog().slice(-3)).toEqual([
+          `Select second object or shift-select to apply corner or [Radius]: ${word}`,
+          "*Invalid selection*",
+          "Expects a point or Window/Last/Crossing/BOX/Fence/WPolygon/CPolygon/Radius]:",
+        ])
+      }
+      const chamfer = run(cross(), "CHAMFER", "30,40", word)
+      expect(chamfer.commandLog().slice(-2)).toEqual([
+        "*Invalid selection*",
+        "Expects a point or Window/Last/Crossing/BOX/Fence/WPolygon/CPolygon/Distance",
+      ])
+      expect(chamfer.activeToolId()).toBe("chamfer")
+    }
+  })
+})
