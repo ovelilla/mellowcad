@@ -346,6 +346,13 @@ export class CadRuntime extends Observable {
    * it started (in it or transparently): what U puts back. Null otherwise.
    */
   private viewBefore: ViewState | null = null
+  /**
+   * Whether the history still holds what AutoCAD's own start puts beneath the
+   * first command, which U takes back last, saying only `Everything has been
+   * undone`. Once UNDO Control None or One drops it, taking back the last
+   * command says so itself (acc/h2, h3).
+   */
+  private startSteps = true
   /** Whether the running tool is a ZOOM typed, which UNDO Combine joins. */
   private typedZoom = false
   /** Whether the last step is a typed ZOOM's, which the next one joins. */
@@ -1982,6 +1989,10 @@ export class CadRuntime extends Observable {
     // step: "Click Undo on the Quick Access toolbar to cancel the entire series
     // of line segments".
     if (this.activeTool.id !== "select") this.endCommands()
+    if (this.history.settings.control === "none") {
+      if (said) this.commandLine.write("info", this.text.message("uDisabled"))
+      return
+    }
     this.takeBack(1, said)
   }
 
@@ -2018,7 +2029,16 @@ export class CadRuntime extends Observable {
       if (name !== null) names.push(name)
       regenerates ||= step.regenerates
     }
+    if (
+      stop === null &&
+      !this.startSteps &&
+      !this.history.canUndo() &&
+      !this.history.atUndoGroupStart()
+    ) {
+      stop = "bottom"
+    }
     if (taken > 0) this.selection.clear()
+    const nothing = taken === 0 && stop === "bottom" && this.reachedBottom()
     if (said) {
       if (names.length > 0) {
         const regen = this.text.message("regeneratingModel")
@@ -2031,12 +2051,14 @@ export class CadRuntime extends Observable {
           : stop === "group"
             ? "startOfGroup"
             : stop === "bottom"
-              ? taken === 0 && this.reachedBottom()
+              ? nothing
                 ? "nothingToUndo"
                 : "everythingUndone"
               : null
       if (ending) this.commandLine.write("info", this.text.message(ending))
     }
+    // An undo that finds nothing leaves REDO the one before it (acc/h3).
+    if (nothing) return
     // Stopped at a group's start with nothing taken, REDO and MREDO find
     // `Nothing to redo` (acc/n26); at the bottom, REDO is refused.
     this.undoing =
@@ -2087,6 +2109,13 @@ export class CadRuntime extends Observable {
    */
   redo(said = false): void {
     const undoing = this.undoing
+    if (said && this.history.settings.control === "none") {
+      this.commandLine.write(
+        "info",
+        this.text.message("redoDisabled", { command: "redo" })
+      )
+      return
+    }
     if (said && (undoing === null || typeof undoing === "string")) {
       const refused =
         undoing === "bottom" || (undoing === "redid" && this.history.canRedo())
@@ -2201,6 +2230,15 @@ export class CadRuntime extends Observable {
     end: () => {
       this.history.closeUndoGroup()
       this.undoing = null
+    },
+    settings: () => this.history.settings,
+    configure: (changes) => {
+      this.history.configure(changes)
+      // What None and One drop leaves U `Nothing to undo` (acc/h1, k4).
+      if (changes.control === "none" || changes.control === "one") {
+        this.undoing = "bottom"
+        this.startSteps = false
+      }
     },
   }
 

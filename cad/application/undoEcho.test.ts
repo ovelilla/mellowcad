@@ -98,7 +98,7 @@ describe("U and REDO say what they did", () => {
       "Everything has been redone",
       "UNDO",
       "Current settings: Auto = On, Control = All, Combine = Yes, Layer = Yes",
-      "Enter the number of operations to undo or [BEgin/End/Mark/Back] <1>:",
+      "Enter the number of operations to undo or [Auto/Control/BEgin/End/Mark/Back] <1>:",
       "LINE",
     ])
     answer(cad, "UCS", "O", "10,0", "AUPREC", "2")

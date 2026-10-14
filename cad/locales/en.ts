@@ -919,6 +919,9 @@ export const en: EngineCatalog = {
         "Front": "FRont",
         "Right": "RIght"
       },
+      "UNDO": {
+        "OFF": "OFf"
+      },
       "PLAN": {
         "Current ucs": "Current"
       },
@@ -1133,6 +1136,12 @@ export const en: EngineCatalog = {
       "undoEverything": "This will undo everything. OK?",
       "mredoCount": "Enter number of actions or",
       "undoYes": "Y",
+      "undoControl": "Enter an UNDO control option",
+      "undoCombine": "Combine zoom and pan operations?",
+      "undoLayer": "Combine layer dialog operations?",
+      "undoAuto": "Enter UNDO Auto mode",
+      "undoOn": "On",
+      "undoOff": "Off",
       "planUcsName": "Enter name of UCS or",
       "planCurrent": "Current",
       "zoomCornerOr": "Specify corner of window, enter a scale factor (nX or nXP), or",
@@ -1959,10 +1968,67 @@ export const en: EngineCatalog = {
       "everythingRedone": "Everything has been redone",
       "redoMustFollowUndo": "REDO must immediately follow the U or UNDO command.",
       "alreadyRedone": "The last UNDO operation has been already redone.",
-      "undoSettings": "Current settings: Auto = On, Control = All, Combine = Yes, Layer = Yes",
+      "undoSettings": [
+        "Current settings: Auto = ",
+        [
+          "auto",
+          1,
+          {
+            "on": "On",
+            "other": "Off"
+          }
+        ],
+        ", Control = ",
+        [
+          "control",
+          1,
+          {
+            "all": "All",
+            "one": "One",
+            "other": "None"
+          }
+        ],
+        ", Combine = ",
+        [
+          "combine",
+          1,
+          {
+            "yes": "Yes",
+            "other": "No"
+          }
+        ],
+        ", Layer = ",
+        [
+          "layer",
+          1,
+          {
+            "yes": "Yes",
+            "other": "No"
+          }
+        ]
+      ],
       "markEncountered": "Mark encountered",
       "startOfGroup": "Start of Group encountered.\nMust enter UNDO END to go back further.",
       "undoGroup": "GROUP",
+      "uDisabled": "U command disabled.  Use UNDO command to turn it on",
+      "redoDisabled": [
+        [
+          "command",
+          1,
+          {
+            "mredo": "REDO and MREDO commands disabled",
+            "other": "REDO command disabled"
+          }
+        ],
+        ". Use UNDO C to turn it on."
+      ],
+      "requiresIntegerValueOrKeyword": [
+        "Requires an integer value ",
+        [
+          "value"
+        ],
+        ", or option keyword."
+      ],
       "requiresIntegerBetweenOrKeyword": [
         "Requires an integer between ",
         [
@@ -2730,6 +2796,9 @@ export const en: EngineCatalog = {
         "Lock position": "Lock position"
       },
       "ATTDISP": {
+        "OFF": "OFF"
+      },
+      "UNDO": {
         "OFF": "OFF"
       },
       "ARC": {

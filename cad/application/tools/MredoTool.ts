@@ -23,7 +23,13 @@ export class MredoTool implements Tool {
 
   private lastScreen: Vec2 | null = null
 
+  /** With UNDO Control None it asks nothing (acc/k2). */
   onActivate(ctx: ToolContext): void {
+    if (ctx.undoHistory.settings().control === "none") {
+      ctx.report(ctx.text.message("redoDisabled", { command: "mredo" }))
+      ctx.endCommand()
+      return
+    }
     ctx.setCursor("crosshair")
     ctx.dynamicInput.open({
       fields: [{ id: "count", kind: "number" }],

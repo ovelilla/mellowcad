@@ -8,7 +8,7 @@ import { Selection } from "../Selection"
 import { SnapResult, SnapType } from "../snapping/types"
 import { TrackingResult } from "../tracking/types"
 import { DynamicInputController } from "../input/DynamicInput"
-import { Command } from "../commands/Command"
+import { Command, UndoSettings } from "../commands/Command"
 import { ScenePrimitive } from "../../scene/types"
 import type { MessageValues } from "../../i18n/types"
 import type { FeedbackId, MessageId } from "../EngineText"
@@ -142,6 +142,10 @@ export interface UndoHistory {
   begin(): void
   /** End: closes the open group, if any. */
   end(): void
+  /** Auto, Control, Combine and Layer, as the settings line says them. */
+  settings(): UndoSettings
+  /** Sets them: Control None and One drop what was kept. */
+  configure(changes: Partial<UndoSettings>): void
 }
 
 /**

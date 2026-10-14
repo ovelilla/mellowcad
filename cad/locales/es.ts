@@ -1197,7 +1197,16 @@ export const es: EngineLocale = {
         "Back": "Retorno",
         "Group": "Grupo",
         "Yes": "Sí",
-        "No": "No"
+        "No": "No",
+        "Auto": "Auto",
+        "Control": "Control",
+        "All": "Todas",
+        "None": "Ninguna",
+        "One": "Una",
+        "Combine": "Combinar",
+        "Layer": "CApa",
+        "ON": "ACT",
+        "OFF": "DES"
       },
       "MREDO": {
         "All": "Todas",
@@ -1443,6 +1452,12 @@ export const es: EngineLocale = {
       "undoEverything": "Esto lo deshará todo. ¿De acuerdo?",
       "mredoCount": "Indique número de acciones o",
       "undoYes": "S",
+      "undoControl": "Indique una opción de control DESHACER",
+      "undoCombine": "¿Combinar operaciones de zoom y encuadre?",
+      "undoLayer": "¿Combinar operaciones de cuadro de diálogo de capa?",
+      "undoAuto": "Indique modo automático de DESHACER",
+      "undoOn": "ACT",
+      "undoOff": "DES",
       "planUcsName": "Indique nombre de SCP o",
       "planCurrent": "Actual",
       "zoomCornerOr": "Precise esquina de ventana, indique un factor de escala (nX o nXP), o",
@@ -2268,10 +2283,67 @@ export const es: EngineLocale = {
       "everythingRedone": "Todo repetido",
       "redoMustFollowUndo": "REHACER debe ir directamente a continuación del comando H o DESHACER.",
       "alreadyRedone": "Ya se ha repetido la última operación DESHACER.",
-      "undoSettings": "Parámetros actuales: Auto = Act, Control = Todos, Combinar = Sí, Capa = Sí",
+      "undoSettings": [
+        "Parámetros actuales: Auto = ",
+        [
+          "auto",
+          1,
+          {
+            "on": "Act",
+            "other": "Des"
+          }
+        ],
+        ", Control = ",
+        [
+          "control",
+          1,
+          {
+            "all": "Todos",
+            "one": "Uno",
+            "other": "Ninguna"
+          }
+        ],
+        ", Combinar = ",
+        [
+          "combine",
+          1,
+          {
+            "yes": "Sí",
+            "other": "No"
+          }
+        ],
+        ", Capa = ",
+        [
+          "layer",
+          1,
+          {
+            "yes": "Sí",
+            "other": "No"
+          }
+        ]
+      ],
       "markEncountered": "Marca encontrada",
       "startOfGroup": "Se ha encontrado el comienzo del Grupo.\nPara retroceder aún más, utilice DESHACER FIN.",
       "undoGroup": "GRUPO",
+      "uDisabled": "Comando H desactivado. Utilice el comando DESHACER para activarlo",
+      "redoDisabled": [
+        [
+          "command",
+          1,
+          {
+            "mredo": "Comandos REHACER y MREHACER desactivados",
+            "other": "Comando REHACER desactivado"
+          }
+        ],
+        ". Usar DESHACER C para activarlo."
+      ],
+      "requiresIntegerValueOrKeyword": [
+        "Requiere un valor ",
+        [
+          "value"
+        ],
+        " entero o una opción."
+      ],
       "requiresIntegerBetweenOrKeyword": [
         "Requiere un nº entero entre ",
         [
@@ -3039,6 +3111,9 @@ export const es: EngineLocale = {
         "Lock position": "Bloquear posición"
       },
       "ATTDISP": {
+        "OFF": "DES"
+      },
+      "UNDO": {
         "OFF": "DES"
       },
       "ARC": {

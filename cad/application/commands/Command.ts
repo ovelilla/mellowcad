@@ -66,6 +66,19 @@ export interface ZoomStep {
   readonly withLast: boolean
 }
 
+/** UNDO Control: every step kept, only the last one, or none. */
+export type UndoControl = "all" | "one" | "none"
+
+/** UNDO's Auto, Control, Combine and Layer (UNDOCTL). */
+export interface UndoSettings {
+  readonly auto: boolean
+  readonly control: UndoControl
+  /** Whether consecutive ZOOMs are one step. */
+  readonly combine: boolean
+  /** Whether the layer dialog's operations are one step. */
+  readonly layer: boolean
+}
+
 /**
  * Executes commands against the document and keeps linear undo/redo stacks.
  * Executing a new command clears the redo stack (standard editor semantics).
@@ -84,6 +97,12 @@ export class CommandHistory extends Observable {
   /** The start of the group UNDO BEgin opened and End has not closed. */
   private undoGroup: Entry | null = null
   private replayingStep: Replayed | null = null
+  private undoSettings: UndoSettings = {
+    auto: true,
+    control: "all",
+    combine: true,
+    layer: true,
+  }
 
   constructor(
     private readonly document: CadDocument,
@@ -105,6 +124,9 @@ export class CommandHistory extends Observable {
   }
 
   private push(entry: Entry): void {
+    // With UNDO Control None nothing is kept, so a command's own Undo (LINE's
+    // U) steps its prompt back and leaves the segment drawn (acc/h40).
+    if (this.undoSettings.control === "none") return
     this.undoStack.push(entry)
     if (this.undoStack.length > this.capacity) {
       if (this.undoStack.shift() === this.undoGroup) this.undoGroup = null
@@ -113,7 +135,41 @@ export class CommandHistory extends Observable {
       }
     }
     this.redoStack = []
+    this.keepOne()
     this.emit()
+  }
+
+  /**
+   * With UNDO Control One, only the last step stays once no command is
+   * running: inside one, its own Undo still steps back (acc/h3, h41).
+   */
+  private keepOne(): void {
+    if (
+      this.undoSettings.control === "one" &&
+      this.groupStart === null &&
+      this.undoStack.length > 1
+    ) {
+      this.undoStack = this.undoStack.slice(-1)
+    }
+  }
+
+  get settings(): UndoSettings {
+    return this.undoSettings
+  }
+
+  /**
+   * Sets UNDO's settings, as AutoCAD 2023's console does (acc/k1–k16,
+   * h1–h44): None and One drop every step kept so far, an open group's
+   * too, and turn Auto off; All turns it back on and keeps what One kept.
+   */
+  configure(changes: Partial<UndoSettings>): void {
+    const { control } = changes
+    this.undoSettings = {
+      ...this.undoSettings,
+      ...changes,
+      ...(control === undefined ? {} : { auto: control === "all" }),
+    }
+    if (control === "none" || control === "one") this.clear()
   }
 
   /**
@@ -129,7 +185,8 @@ export class CommandHistory extends Observable {
    * Closes the open group, folding what it executed into one entry, which
    * regenerates if anything in it did. UNDO's marks and group starts, which
    * execute nothing, stay as they are. A ZOOM's (`zoom`) joins the ZOOM's
-   * just below when `withLast`, U naming them both (`ZOOM 'ZOOM`).
+   * just below when `withLast`, U naming them both (`ZOOM 'ZOOM`), unless
+   * UNDO Combine is No or Control One (acc/k15, h33).
    */
   endGroup(zoom?: ZoomStep): void {
     const start = this.groupStart
@@ -142,6 +199,15 @@ export class CommandHistory extends Observable {
       this.undoStack.push(...steps)
       return
     }
+    this.fold(steps, regenerated, zoom)
+    this.keepOne()
+  }
+
+  private fold(
+    steps: readonly Entry[],
+    regenerated: boolean,
+    zoom: ZoomStep | undefined
+  ): void {
     const command =
       steps.length === 1
         ? steps[0].command
@@ -158,8 +224,11 @@ export class CommandHistory extends Observable {
       return
     }
     const below = this.undoStack.at(-1)
+    const { control, combine } = this.undoSettings
     if (
       zoom.withLast &&
+      control === "all" &&
+      combine &&
       below?.combines &&
       below.command instanceof ViewChangeCommand
     ) {
@@ -188,10 +257,20 @@ export class CommandHistory extends Observable {
 
   /**
    * UNDO BEgin: what runs until {@link closeUndoGroup} becomes one step, which
-   * U names `GROUP CIRCLE LINE`. One already open is closed first.
+   * U names `GROUP CIRCLE LINE`. One already open is closed first, followed
+   * by a step U takes back without a word (acc/k13, k14, h26, h30).
    */
   openUndoGroup(): void {
-    this.closeUndoGroup()
+    if (this.undoGroup !== null) {
+      this.closeUndoGroup()
+      this.push({
+        kind: "command",
+        command: null,
+        name: null,
+        names: [],
+        regenerates: false,
+      })
+    }
     const start: Entry = {
       kind: "begin",
       command: null,

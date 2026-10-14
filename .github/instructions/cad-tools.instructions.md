@@ -303,7 +303,10 @@ current layer.
   did. A step done again goes below the group of the command redoing it, so MREDO's
   steps stay apart. Any command but U, UNDO, REDO and MREDO drops what can be redone
   (`history.dropRedo`), even one that changes nothing: the console's MREDO then finds
-  `Nothing to redo`.
+  `Nothing to redo`. UNDO's settings (Auto, Control, Combine, Layer — UNDOCTL) are the
+  history's (`settings`, `configure`), so it enforces them itself: with Control None it keeps
+  nothing, with One only the last step once no command runs, and ZOOMs join only under All
+  with Combine.
 - **The view is undone with the command that changed it.** A tool that changes the view says
   `changesView` (ZOOM, PAN, -VIEW, VPOINT, PLAN, 3DORBIT): the runtime saves the view and
   ZOOM Previous's list when it starts, transparently too, and puts what it did into the step
@@ -318,6 +321,8 @@ current layer.
   point), where it takes that point back.
   For a looping command, push the tool state onto a stack before each commit and restore it on
   Undo — popping the document alone leaves the tool prompting from where the undone step left it.
+  Restore it whatever `ctx.undo()` returns: under UNDO Control None it pops nothing, and the
+  console's LINE still steps its prompt back, leaving the segment drawn.
 - **Preview must equal commit**: share one `resolveX()` between `buildOverlay` and the pointer /
   Enter paths, so a typed value hard-locks the click exactly as it locks the rubber band. When the
   preview is expensive (a hatch clips its whole pattern), build it into the tool's state whenever
