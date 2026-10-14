@@ -1262,11 +1262,37 @@ function nearestPolylineSegment(poly: PolylineEntity, click: Vec2): number {
 }
 
 /**
+ * The polyline's other segments, which cut the picked one as any edge does:
+ * Quick mode makes every object an edge, the polyline too, so AutoCAD 2023's
+ * console trims a segment back to its own vertices and to where the polyline
+ * crosses itself (acc/tp1, tq1, tq5, tr4), and deletes only a polyline of one
+ * segment nothing crosses (tr1).
+ */
+function ownEdges(poly: PolylineEntity, si: number): Entity[] {
+  return polylineSegmentGeometries(poly).flatMap((g, j): Entity[] => {
+    if (j === si) return []
+    return g.kind === "line"
+      ? [createLine(g.a, g.b, poly.layerId, poly.id)]
+      : [
+          createArc(
+            g.center,
+            g.radius,
+            g.startAngle,
+            g.endAngle,
+            poly.layerId,
+            poly.id
+          ),
+        ]
+  })
+}
+
+/**
  * Trims the clicked segment of a polyline (arc segments are handled by
- * {@link planTrimPolylineArc}). A cut that reaches a free end of the chain
- * merely shortens it (one polyline survives); a mid-segment cut breaks the
- * chain in two; trimming any segment of a closed polyline opens it into a
- * single chain. Other segments (including arc bulges) are preserved.
+ * {@link planTrimPolylineArc}) between its vertices and the crossings on it.
+ * A cut that reaches a free end of the chain merely shortens it (one polyline
+ * survives); a mid-chain cut breaks it in two; trimming any segment of a
+ * closed polyline opens it into a single chain, from the cut's far end round
+ * to its near one. Other segments (including arc bulges) are preserved.
  */
 function planTrimPolyline(
   poly: PolylineEntity,
@@ -1281,8 +1307,7 @@ function planTrimPolyline(
     return planTrimPolylineArc(poly, si, geom, click, others)
 
   const line = createLine(a, b)
-  const crossings = trimCrossParams(line, others)
-  if (crossings.length === 0) return null
+  const crossings = trimCrossParams(line, [...others, ...ownEdges(poly, si)])
 
   const tc = Math.max(0, Math.min(1, paramOnLine(line, click)))
   const bounds = [0, ...crossings, 1]
@@ -1290,7 +1315,6 @@ function planTrimPolyline(
   while (i < bounds.length - 1 && !(tc >= bounds[i] && tc <= bounds[i + 1])) i++
   const ta = bounds[i]
   const tb = bounds[i + 1]
-  if (ta === 0 && tb === 1) return null // no crossing brackets the click
 
   const pa = pointOnLine(line, ta)
   const pb = pointOnLine(line, tb)
@@ -1359,8 +1383,10 @@ function planTrimPolylineArc(
   click: Vec2,
   others: readonly Entity[]
 ): EdgeEditPlan | null {
-  const fractions = arcSegmentCrossFractions(seg, others)
-  if (fractions.length === 0) return null
+  const fractions = arcSegmentCrossFractions(seg, [
+    ...others,
+    ...ownEdges(poly, si),
+  ])
 
   const phi = 4 * Math.atan(seg.bulge)
   const angA = Math.atan2(seg.a.y - seg.center.y, seg.a.x - seg.center.x)
@@ -1377,7 +1403,6 @@ function planTrimPolylineArc(
   while (i < bounds.length - 1 && !(fc >= bounds[i] && fc <= bounds[i + 1])) i++
   const fa = bounds[i]
   const fb = bounds[i + 1]
-  if (fa === 0 && fb === 1) return null
 
   const pa = polarPoint(seg.center, seg.radius, angA + fa * phi)
   const pb = polarPoint(seg.center, seg.radius, angA + fb * phi)
@@ -1429,7 +1454,8 @@ function trimPolylinePieces(
   const keepEnd = tb < 1 - PARAM_EPS // pb is distinct from the segment's end vertex
   const clone = (p: Vec2): Vec2 => ({ x: p.x, y: p.y })
 
-  if (poly.closed) {
+  // Two vertices make one segment, closed or not (`polylineSegments`).
+  if (poly.closed && n > 2) {
     // A cut opens the loop into one chain: from pb, around the ring past the
     // untouched vertices back to the start vertex, ending at pa.
     const endVertex = (si + 1) % n

@@ -233,6 +233,142 @@ describe("TRIM", () => {
     }
   })
 
+  // AutoCAD 2023's console (acc/o6, o7, tp1, tp3, tq1, tp11, tp10): a
+  // polyline is its own edge, so a segment is trimmed back to its vertices and
+  // the crossings on it; a closed one opens from the cut's far end round to
+  // its near one, keeping its handle and direction.
+  it("trims a polyline's segment between its vertices and the crossings on it", () => {
+    for (const [locale, name, asked] of [
+      [undefined, "TRIM", "Select object to trim or shift-select to extend:"],
+      [
+        es,
+        "RECORTA",
+        "Seleccione un objeto que recortar o use la tecla Mayús y seleccione para alargar:",
+      ],
+    ] as const) {
+      const square = [p(-50, -50), p(50, -50), p(50, 50), p(-50, 50)]
+      const trimmed = (
+        pick: Vec2,
+        bulges?: readonly number[],
+        edges = [lineOf(p(0, 0), p(0, 100), { id: "V" })]
+      ): PolylineEntity => {
+        const cad = createHarness({
+          locale,
+          entities: [
+            polylineOf(square, { id: "P", closed: true, bulges }),
+            ...edges,
+          ],
+        })
+        cad.command(name).click(pick)
+        expect(cad.commandLog().at(-1)).toBe(asked)
+        const poly = cad.byId<PolylineEntity>("P")
+        expect(poly.closed).toBe(false)
+        return poly
+      }
+
+      expect(trimmed(p(-50, 0)).vertices).toBeCloseToPoints(square)
+      expect(trimmed(p(0, -50)).vertices).toBeCloseToPoints([
+        p(50, -50),
+        p(50, 50),
+        p(-50, 50),
+        p(-50, -50),
+      ])
+      expect(trimmed(p(-25, 50)).vertices).toBeCloseToPoints([
+        p(-50, 50),
+        p(-50, -50),
+        p(50, -50),
+        p(50, 50),
+        p(0, 50),
+      ])
+      expect(trimmed(p(25, 50)).vertices).toBeCloseToPoints([
+        p(0, 50),
+        p(-50, 50),
+        p(-50, -50),
+        p(50, -50),
+        p(50, 50),
+      ])
+      // Nothing else in the drawing: its own vertices still bound the cut.
+      expect(trimmed(p(-50, 0), undefined, []).vertices).toBeCloseToPoints(
+        square
+      )
+      // An arc segment is kept whole beside the cut, or cut whole itself.
+      const beside = trimmed(p(-50, 0), [0, 1, 0, 0])
+      expect(beside.vertices).toBeCloseToPoints(square)
+      expect(beside.bulges).toEqual([0, 1, 0])
+      const arc = trimmed(p(100, 0), [0, 1, 0, 0])
+      expect(arc.vertices).toBeCloseToPoints([
+        p(50, 50),
+        p(-50, 50),
+        p(-50, -50),
+        p(50, -50),
+      ])
+      expect(arc.bulges ?? [0, 0, 0]).toEqual([0, 0, 0])
+    }
+  })
+
+  // AutoCAD 2023's console (acc/tr1–tr4): an open polyline too, split in two
+  // at a middle segment; where it crosses itself is an edge; one segment
+  // nothing crosses is deleted.
+  it("trims an open polyline at its vertices and where it crosses itself", () => {
+    const run = (vertices: readonly Vec2[], pick: Vec2): CadHarness => {
+      const cad = createHarness({
+        entities: [polylineOf(vertices, { id: "P" })],
+      })
+      cad.command("TRIM").click(pick)
+      return cad
+    }
+    const u = [p(0, 0), p(0, 100), p(100, 100), p(100, 0)]
+    const split = run(u, p(50, 100))
+      .entities()
+      .map((e) => (e as PolylineEntity).vertices)
+    expect(split).toHaveLength(2)
+    expect(split[0]).toBeCloseToPoints([p(0, 0), p(0, 100)])
+    expect(split[1]).toBeCloseToPoints([p(100, 100), p(100, 0)])
+    expect(
+      run(u, p(0, 50)).byId<PolylineEntity>("P").vertices
+    ).toBeCloseToPoints([p(0, 100), p(100, 100), p(100, 0)])
+    expect(
+      run(
+        [p(0, 0), p(100, 100), p(100, 0), p(0, 100)],
+        p(20, 20)
+      ).byId<PolylineEntity>("P").vertices
+    ).toBeCloseToPoints([p(50, 50), p(100, 100), p(100, 0), p(0, 100)])
+    expect(run([p(0, 0), p(100, 0)], p(50, 0)).entityCount).toBe(0)
+  })
+
+  // AutoCAD 2023's console (acc/tp14): EXTEND still refuses a closed one,
+  // the pick counted for Undo.
+  it("cannot EXTEND a closed polyline", () => {
+    for (const [locale, name, said, undone] of [
+      [
+        undefined,
+        "EXTEND",
+        "Cannot EXTEND this object.",
+        "Command has been completely undone.",
+      ],
+      [
+        es,
+        "ALARGA",
+        "Objeto no procesado por ALARGA.",
+        "Todos los efectos del comando han sido deshechos.",
+      ],
+    ] as const) {
+      const entities = [
+        polylineOf([p(-50, -50), p(50, -50), p(50, 50), p(-50, 50)], {
+          id: "P",
+          closed: true,
+        }),
+        lineOf(p(0, 0), p(0, 100), { id: "V" }),
+      ]
+      const cad = createHarness({ locale, entities })
+      cad.command(name).click(p(-50, 0))
+      expect(cad.commandLog().at(-1)).toBe(said)
+      cad.option("Undo")
+      expect(cad.commandLog().at(-1)).toBe(undone)
+      expect(cad.entities()).toEqual(entities)
+    }
+  })
+
   it("turns a circle into the complementary arc", () => {
     const cad = createHarness({
       entities: [

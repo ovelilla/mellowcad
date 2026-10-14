@@ -41,6 +41,9 @@ A tool is an explicit state machine for one AutoCAD command. It owns a discrimin
   the other's implicit function (`implicitEdges`; a spline, which has none, as its chords) with
   `signChanges` (`geometry/primitives.ts`), bisected to full precision — the one root finder;
   never write another scan. A new type that is an edge gets its implicit function there.
+  Quick mode makes the trimmed object an edge of its own too: a polyline's picked segment is
+  cut at its vertices and where it crosses itself (`ownEdges`), never at the next crossing
+  round the chain.
 - `ObjectSelector` (`objectSelection.ts`) — AutoCAD's `Select objects:`, the one every command
   that takes a set asks it with: picks, the window a drag or a pick on nothing starts, and the
   modes typed there (Window, Crossing, BOX, Last, ALL, Fence, WPolygon, CPolygon, Previous,
