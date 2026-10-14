@@ -1030,6 +1030,10 @@ describe("the engine's English surface", () => {
         .do("escape", (c) => c.escape())
         .do("PAN", (c) => c.command("P"))
         .do("escape", (c) => c.escape())
+        .do("-PAN", (c) => c.command("-PAN"))
+        .do("enter", (c) => c.enter())
+        .do("base", (c) => c.click(at(0, 0)))
+        .do("second", (c) => c.click(at(50, 0)))
     )
     walk("UCS UCSICON", createHarness({ entities: [line()] }), (s) =>
       s

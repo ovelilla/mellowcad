@@ -47,6 +47,7 @@ import { MeasureTool } from "./tools/MeasureTool"
 import { IdTool } from "./tools/IdTool"
 import { ZoomTool } from "./tools/ZoomTool"
 import { PanTool } from "./tools/PanTool"
+import { DashPanTool } from "./tools/DashPanTool"
 import { UcsTool } from "./tools/UcsTool"
 import { UcsIconTool, UcsIconVariableTool } from "./tools/UcsIconTool"
 import { PlanTool } from "./tools/PlanTool"
@@ -139,6 +140,7 @@ export function defaultTools(
     new IdTool(),
     new ZoomTool(),
     new PanTool(),
+    new DashPanTool(),
     new UcsTool(),
     new UcsIconTool(),
     new PlanTool(),

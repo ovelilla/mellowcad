@@ -67,6 +67,7 @@ export const en: EngineCatalog = {
       "id": "ID Point",
       "zoom": "Zoom",
       "pan": "Pan",
+      "dashpan": "Pan by points",
       "ucs": "UCS",
       "ucsicon": "UCS icon",
       "ucsiconvariable": "UCS icon (variable)",
@@ -687,6 +688,9 @@ export const en: EngineCatalog = {
         "PAN",
         "P"
       ],
+      "-PAN": [
+        "-PAN"
+      ],
       "ERASE": [
         "ERASE",
         "E"
@@ -1142,6 +1146,7 @@ export const en: EngineCatalog = {
       "undoAuto": "Enter UNDO Auto mode",
       "undoOn": "On",
       "undoOff": "Off",
+      "panBasePoint": "Specify base point or displacement",
       "planUcsName": "Enter name of UCS or",
       "planCurrent": "Current",
       "zoomCornerOr": "Specify corner of window, enter a scale factor (nX or nXP), or",
@@ -2371,6 +2376,7 @@ export const en: EngineCatalog = {
       "regenQueued": "Regen queued.",
       "requiresRegen": "** Requires a regen, cannot be transparent.",
       "panExit": "Press ESC or ENTER to exit, or right-click to display shortcut menu.",
+      "requiresTwoPointsOrDisplacement": "Requires two points, or a displacement followed by ENTER.",
       "currentOsnapModes": [
         "Current osnap modes: ",
         [

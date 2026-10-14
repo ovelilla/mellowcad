@@ -308,12 +308,14 @@ current layer.
   nothing, with One only the last step once no command runs, and ZOOMs join only under All
   with Combine.
 - **The view is undone with the command that changed it.** A tool that changes the view says
-  `changesView` (ZOOM, PAN, -VIEW, VPOINT, PLAN, 3DORBIT): the runtime saves the view and
+  `changesView` (ZOOM, PAN, -PAN, -VIEW, VPOINT, PLAN, 3DORBIT): the runtime saves the view and
   ZOOM Previous's list when it starts, transparently too, and puts what it did into the step
   of the command it runs in (`ViewChangeCommand`), so a tool never records a view change
-  itself. A typed ZOOM's step joins the ZOOM's just before (UNDO Combine: U says it
-  regenerates only if the view moves, REDO never); a menu's (the navigation bar's) never
-  does. The wheel, the wheel button's pan and the ViewCube are no command and stay out.
+  itself; a view left where it was makes no step, unless the tool says `viewStep()` (-PAN,
+  which the console undoes even by nothing). A typed ZOOM's step joins the ZOOM's just
+  before (UNDO Combine: U says it regenerates only if the view moves, REDO never); a menu's
+  (the navigation bar's) never does. The wheel, the wheel button's pan and the ViewCube are
+  no command and stay out.
 - A tool offering its own **Undo keyword** must count its own edits and refuse when there are
   none: `ctx.undo()` pops the history, which otherwise backs out an unrelated earlier command.
   Inside the run each commit is still its own entry, so `ctx.undo()` takes back one; Ctrl+Z runs
@@ -404,7 +406,10 @@ command is actually used.
 A **dash command** that only takes its input differently (`-MTEXT`) is not a tool or a rail entry:
 `runtimeCommands` registers it against the tool's id, starts the tool and then switches its entry
 (`MTextTool.useCommandLine()`), so the prompts and keywords stay the plain command's; the runtime
-heads them with the name typed (`startedAs`: `-MTEXT Specify first corner:`).
+heads them with the name typed (`startedAs`: `-MTEXT Specify first corner:`). One that asks
+otherwise altogether (-PAN's two points against PAN's drag) is a tool of its own, with its own
+`TOOL_COMMANDS` name: a transparent command (`'-PAN`) starts its definition's `tool` by id and
+never runs its `run`, so a switch made there would be skipped.
 
 A command that **creates a block reference** (INSERT, BLOCK's Convert) asks its attribute values
 through `AttributeValuePrompts` (`tools/attributeValues.ts`) and adds the reference only in its

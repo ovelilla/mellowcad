@@ -465,6 +465,11 @@ export interface Tool {
    * runs in, itself or the one it interrupts.
    */
   readonly changesView?: true
+  /**
+   * Whether its run is an undo step though the view ends where it was, read
+   * as it ends: -PAN's, once it has panned, by nothing too (acc/g17, g19).
+   */
+  viewStep?(): boolean
 
   onActivate?(ctx: ToolContext): void
   onDeactivate?(ctx: ToolContext): void

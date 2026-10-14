@@ -2069,10 +2069,11 @@ export class CadRuntime extends Observable {
 
   /**
    * Puts what the ending command did to the view into its undo step, from
-   * when a tool that changes it started (ZOOM, PAN, -VIEW, VPOINT, PLAN,
-   * 3DORBIT, typed or transparent). The wheel, the ViewCube and the
-   * navigation bar's direct zooms are no command, and stay out of it.
-   * Returns whether it did.
+   * when a tool that changes it started (ZOOM, PAN, -PAN, -VIEW, VPOINT,
+   * PLAN, 3DORBIT, typed or transparent), unless the view is where it was
+   * and the tool makes no step of that (`viewStep`). The wheel, the ViewCube
+   * and the navigation bar's direct zooms are no command, and stay out of
+   * it. Returns whether it did.
    */
   private recordView(): boolean {
     const before = this.viewBefore
@@ -2080,6 +2081,7 @@ export class CadRuntime extends Observable {
     if (before === null) return false
     const after = this.viewport.saveView()
     if (
+      !(this.activeTool.viewStep?.() ?? false) &&
       sameCamera(before.camera, after.camera) &&
       before.previous.length === after.previous.length &&
       before.previous.every((camera, i) =>

@@ -59,6 +59,7 @@ AREA ["AA"] "Area"
 ID [] "ID Point"
 ZOOM ["Z"] "Zoom"
 PAN ["P"] "Pan"
+-PAN [] "Pan by points"
 UCS [] "UCS"
 UCSICON [] "UCS icon"
 PLAN [] "Plan view"
@@ -167,6 +168,7 @@ measurearea "Area" AA
 id "ID Point" ID
 zoom "Zoom" Z
 pan "Pan" P
+dashpan "Pan by points" -PAN
 ucs "UCS" UCS
 ucsicon "UCS icon" UCSICON
 plan "Plan view" PLAN
@@ -3590,6 +3592,25 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0°~, Line space facto
   prompt| Press ESC or ENTER to exit, or right-click to display shortcut menu.
 > escape
   prompt: Command:
+> -PAN
+  prompt: -PAN Specify base point or displacement:
+  asks: "Specify base point or displacement"
+  tip: Specify base point or displacement:
+  dyn: "X,Y"=""||*
+  command| -PAN
+> enter
+  prompt| Specify base point or displacement:
+  error| Requires two points, or a displacement followed by ENTER.
+> base
+  prompt: -PAN Specify second point:
+  asks: " Specify second point"
+  tip: Specify second point:
+  prompt| Specify base point or displacement:
+> second
+  prompt: Command:
+  asks: -
+  tip: -
+  dyn: -
 
 ## UCS UCSICON
 > start

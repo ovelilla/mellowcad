@@ -28,6 +28,7 @@ import { AttEditTool } from "./tools/AttEditTool"
 const TRANSPARENT_COMMANDS: ReadonlySet<string> = new Set([
   "ZOOM",
   "PAN",
+  "-PAN",
   "AUPREC",
   "DIST",
   "ID",

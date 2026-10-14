@@ -272,6 +272,7 @@ export type { MeasureMode } from "./application/tools/MeasureTool"
 export { IdTool } from "./application/tools/IdTool"
 export { ZoomTool } from "./application/tools/ZoomTool"
 export { PanTool } from "./application/tools/PanTool"
+export { DashPanTool } from "./application/tools/DashPanTool"
 export { UcsTool } from "./application/tools/UcsTool"
 export {
   UcsIconTool,

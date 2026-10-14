@@ -285,6 +285,7 @@ const RAIL_EXCLUDED = new Set([
   "matchprop",
   "zoom",
   "pan",
+  "dashpan",
   "orbit",
   "copyclip",
   "cutclip",

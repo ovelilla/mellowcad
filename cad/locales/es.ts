@@ -67,6 +67,7 @@ export const es: EngineLocale = {
       "id": "Coordenadas punto",
       "zoom": "Zoom",
       "pan": "Encuadre",
+      "dashpan": "Encuadre por puntos",
       "ucs": "SCP",
       "ucsicon": "Icono SCP",
       "ucsiconvariable": "Icono SCP (variable)",
@@ -673,6 +674,9 @@ export const es: EngineLocale = {
       "PAN": [
         "ENCUADRE",
         "E"
+      ],
+      "-PAN": [
+        "-ENCUADRE"
       ],
       "ERASE": [
         "BORRA",
@@ -1458,6 +1462,7 @@ export const es: EngineLocale = {
       "undoAuto": "Indique modo automático de DESHACER",
       "undoOn": "ACT",
       "undoOff": "DES",
+      "panBasePoint": "Precise punto base de desplazamiento",
       "planUcsName": "Indique nombre de SCP o",
       "planCurrent": "Actual",
       "zoomCornerOr": "Precise esquina de ventana, indique un factor de escala (nX o nXP), o",
@@ -2668,6 +2673,7 @@ export const es: EngineLocale = {
         " de la operación"
       ],
       "panExit": "Pulse Esc o Intro para salir, o haga clic con el botón derecho para activar el menú contextual.",
+      "requiresTwoPointsOrDisplacement": "Requiere dos puntos o un desplazamiento seguido por INTRO.",
       "currentViewDirection": [
         "Dirección de vista actual:  VIEWDIR=",
         [
