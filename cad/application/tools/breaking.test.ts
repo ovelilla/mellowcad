@@ -562,6 +562,45 @@ describe("BREAK of a polyline in a turned UCS", () => {
   })
 })
 
+// AutoCAD 2023's console (acc/bz1–bz5): at a line's or an arc's end, `@`
+// and BREAKATPOINT leave it as it was, saying nothing.
+describe("BREAK at an end", () => {
+  it("does nothing to a line or an arc, silently", () => {
+    for (const [command, first, second] of [
+      ["BREAK", "100,0", "@"],
+      ["BREAK", "0,0", "@"],
+      ["BREAKATPOINT", "50,0", "100,0"],
+    ]) {
+      const cad = answer(
+        createHarness({ entities: [lineOf(p(0, 0), p(100, 0), { id: "l1" })] }),
+        command,
+        first,
+        second
+      )
+      expect(cad.only<LineEntity>("line")).toMatchObject({
+        id: "l1",
+        end: { x: 100, y: 0 },
+      })
+      expect(cad.commandLog().at(-1)).toMatch(/break point/)
+      expect(cad.activeToolId()).toBe("select")
+    }
+    for (const first of ["100,0", "0,100"]) {
+      const cad = answer(
+        createHarness({
+          entities: [arcOf(p(0, 0), 100, 0, deg(90), { id: "a1" })],
+        }),
+        "BREAK",
+        first,
+        "@"
+      )
+      expect(cad.only<ArcEntity>("arc").endAngle).toBeCloseToAngle(deg(90))
+      expect(cad.commandLog().at(-1)).toBe(
+        "Specify second break point or [First point]: @"
+      )
+    }
+  })
+})
+
 /** The ellipses left, in drawing order: the object's or a new one, and its parameters. */
 function ellipsePieces(cad: CadHarness): string[] {
   const round = (value: number) => Math.round(value * 1e4) / 1e4
