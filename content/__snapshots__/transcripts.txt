@@ -18,10 +18,10 @@ idle: Command:
 3015 +127 input | Specify center point of array: | 0,0
 3142 +67 input | Select grip to edit array or [Items/Angle between/Fill angle/ROTate items/eXit] <eXit>: | 
 3512 +207 command |  | RECTANG
-3719 +167 input | Specify first corner point or [Chamfer/Elevation/Fillet/Thickness]: | 80,20
+3719 +167 input | Specify first corner point or [Chamfer/Elevation/Fillet/Thickness/Width]: | 80,20
 3886 +187 input | Specify other corner point or [Area/Dimensions/Rotation]: | @14,30
 4312 +207 command |  | RECTANG
-4520 +187 input | Specify first corner point or [Chamfer/Elevation/Fillet/Thickness]: | 80,-50
+4520 +187 input | Specify first corner point or [Chamfer/Elevation/Fillet/Thickness/Width]: | 80,-50
 4707 +187 input | Specify other corner point or [Area/Dimensions/Rotation]: | @14,30
 5286 +147 command |  | LINE
 5433 +167 input | Specify first point: | -58,0
@@ -66,12 +66,12 @@ idle: Command:
 command |  | PLINE
 input | Specify start point: | 0,0
 info |  | Current line-width is 0.00
-input | Specify next point or [Arc/Length/Undo]: | @80,0
-input | Specify next point or [Arc/Close/Length/Undo]: | A
-input | Specify endpoint of arc (hold Ctrl to switch direction) or [Angle/CEnter/CLose/Direction/Line/Radius/Second pt/Undo]: | @0,40
-input | Specify endpoint of arc (hold Ctrl to switch direction) or [Angle/CEnter/CLose/Direction/Line/Radius/Second pt/Undo]: | L
-input | Specify next point or [Arc/Close/Length/Undo]: | @-80,0
-input | Specify next point or [Arc/Close/Length/Undo]: | C
+input | Specify next point or [Arc/Halfwidth/Length/Undo/Width]: | @80,0
+input | Specify next point or [Arc/Close/Halfwidth/Length/Undo/Width]: | A
+input | Specify endpoint of arc (hold Ctrl to switch direction) or [Angle/CEnter/CLose/Direction/Halfwidth/Line/Radius/Second pt/Undo/Width]: | @0,40
+input | Specify endpoint of arc (hold Ctrl to switch direction) or [Angle/CEnter/CLose/Direction/Halfwidth/Line/Radius/Second pt/Undo/Width]: | L
+input | Specify next point or [Arc/Close/Halfwidth/Length/Undo/Width]: | @-80,0
+input | Specify next point or [Arc/Close/Halfwidth/Length/Undo/Width]: | C
 command |  | OFFSET
 info |  | Current settings: Erase source=No  Layer=Source  OFFSETGAPTYPE=0
 input | Specify offset distance or [Through/Erase/Layer] <Through>: | 6
@@ -96,7 +96,7 @@ command |  | LINE
 input | Specify first point: | 0,0
 ## window
 command |  | RECTANG
-input | Specify first corner point or [Chamfer/Elevation/Fillet/Thickness]: | 0,0
+input | Specify first corner point or [Chamfer/Elevation/Fillet/Thickness/Width]: | 0,0
 input | Specify other corner point or [Area/Dimensions/Rotation]: | @30,20
 command |  | CIRCLE
 input | Specify center point for circle or [3P/2P/Ttr (tan tan radius)]: | 60,40
@@ -106,7 +106,7 @@ input | Specify first point: | 15,50
 input | Specify next point or [Undo]: | @80,-45
 ## crossing
 command |  | RECTANG
-input | Specify first corner point or [Chamfer/Elevation/Fillet/Thickness]: | 0,0
+input | Specify first corner point or [Chamfer/Elevation/Fillet/Thickness/Width]: | 0,0
 input | Specify other corner point or [Area/Dimensions/Rotation]: | @30,20
 command |  | CIRCLE
 input | Specify center point for circle or [3P/2P/Ttr (tan tan radius)]: | 60,40
@@ -118,14 +118,14 @@ input | Specify next point or [Undo]: | @80,-45
 command |  | PLINE
 input | Specify start point: | 0,0
 info |  | Current line-width is 0.00
-input | Specify next point or [Arc/Length/Undo]: | @60,0
-input | Specify next point or [Arc/Close/Length/Undo]: | A
-input | Specify endpoint of arc (hold Ctrl to switch direction) or [Angle/CEnter/CLose/Direction/Line/Radius/Second pt/Undo]: | @0,30
-input | Specify endpoint of arc (hold Ctrl to switch direction) or [Angle/CEnter/CLose/Direction/Line/Radius/Second pt/Undo]: | L
-input | Specify next point or [Arc/Close/Length/Undo]: | @-60,0
-input | Specify next point or [Arc/Close/Length/Undo]: | A
-input | Specify endpoint of arc (hold Ctrl to switch direction) or [Angle/CEnter/CLose/Direction/Line/Radius/Second pt/Undo]: | @0,-30
-input | Specify endpoint of arc (hold Ctrl to switch direction) or [Angle/CEnter/CLose/Direction/Line/Radius/Second pt/Undo]: | 
+input | Specify next point or [Arc/Halfwidth/Length/Undo/Width]: | @60,0
+input | Specify next point or [Arc/Close/Halfwidth/Length/Undo/Width]: | A
+input | Specify endpoint of arc (hold Ctrl to switch direction) or [Angle/CEnter/CLose/Direction/Halfwidth/Line/Radius/Second pt/Undo/Width]: | @0,30
+input | Specify endpoint of arc (hold Ctrl to switch direction) or [Angle/CEnter/CLose/Direction/Halfwidth/Line/Radius/Second pt/Undo/Width]: | L
+input | Specify next point or [Arc/Close/Halfwidth/Length/Undo/Width]: | @-60,0
+input | Specify next point or [Arc/Close/Halfwidth/Length/Undo/Width]: | A
+input | Specify endpoint of arc (hold Ctrl to switch direction) or [Angle/CEnter/CLose/Direction/Halfwidth/Line/Radius/Second pt/Undo/Width]: | @0,-30
+input | Specify endpoint of arc (hold Ctrl to switch direction) or [Angle/CEnter/CLose/Direction/Halfwidth/Line/Radius/Second pt/Undo/Width]: | 
 command |  | CIRCLE
 input | Specify center point for circle or [3P/2P/Ttr (tan tan radius)]: | 0,15
 input | Specify radius of circle or [Diameter]: | 6
@@ -136,14 +136,14 @@ input | Specify radius of circle or [Diameter] <6.00>: | 6
 command |  | PLINE
 input | Specify start point: | 0,0
 info |  | Current line-width is 0.00
-input | Specify next point or [Arc/Length/Undo]: | @60,0
-input | Specify next point or [Arc/Close/Length/Undo]: | A
-input | Specify endpoint of arc (hold Ctrl to switch direction) or [Angle/CEnter/CLose/Direction/Line/Radius/Second pt/Undo]: | @0,30
-input | Specify endpoint of arc (hold Ctrl to switch direction) or [Angle/CEnter/CLose/Direction/Line/Radius/Second pt/Undo]: | L
-input | Specify next point or [Arc/Close/Length/Undo]: | @-60,0
-input | Specify next point or [Arc/Close/Length/Undo]: | A
-input | Specify endpoint of arc (hold Ctrl to switch direction) or [Angle/CEnter/CLose/Direction/Line/Radius/Second pt/Undo]: | @0,-30
-input | Specify endpoint of arc (hold Ctrl to switch direction) or [Angle/CEnter/CLose/Direction/Line/Radius/Second pt/Undo]: | 
+input | Specify next point or [Arc/Halfwidth/Length/Undo/Width]: | @60,0
+input | Specify next point or [Arc/Close/Halfwidth/Length/Undo/Width]: | A
+input | Specify endpoint of arc (hold Ctrl to switch direction) or [Angle/CEnter/CLose/Direction/Halfwidth/Line/Radius/Second pt/Undo/Width]: | @0,30
+input | Specify endpoint of arc (hold Ctrl to switch direction) or [Angle/CEnter/CLose/Direction/Halfwidth/Line/Radius/Second pt/Undo/Width]: | L
+input | Specify next point or [Arc/Close/Halfwidth/Length/Undo/Width]: | @-60,0
+input | Specify next point or [Arc/Close/Halfwidth/Length/Undo/Width]: | A
+input | Specify endpoint of arc (hold Ctrl to switch direction) or [Angle/CEnter/CLose/Direction/Halfwidth/Line/Radius/Second pt/Undo/Width]: | @0,-30
+input | Specify endpoint of arc (hold Ctrl to switch direction) or [Angle/CEnter/CLose/Direction/Halfwidth/Line/Radius/Second pt/Undo/Width]: | 
 command |  | OFFSET
 info |  | Current settings: Erase source=No  Layer=Source  OFFSETGAPTYPE=0
 input | Specify offset distance or [Through/Erase/Layer] <Through>: | 5
@@ -157,14 +157,14 @@ input | Specify point on side to offset or [Exit/Multiple/Undo] <Exit>: |
 command |  | PLINE
 input | Specify start point: | 0,0
 info |  | Current line-width is 0.00
-input | Specify next point or [Arc/Length/Undo]: | @100,0
-input | Specify next point or [Arc/Close/Length/Undo]: | @0,20
-input | Specify next point or [Arc/Close/Length/Undo]: | @-35,0
-input | Specify next point or [Arc/Close/Length/Undo]: | @0,15
-input | Specify next point or [Arc/Close/Length/Undo]: | @-40,0
-input | Specify next point or [Arc/Close/Length/Undo]: | @0,10
-input | Specify next point or [Arc/Close/Length/Undo]: | @-25,0
-input | Specify next point or [Arc/Close/Length/Undo]: | C
+input | Specify next point or [Arc/Halfwidth/Length/Undo/Width]: | @100,0
+input | Specify next point or [Arc/Close/Halfwidth/Length/Undo/Width]: | @0,20
+input | Specify next point or [Arc/Close/Halfwidth/Length/Undo/Width]: | @-35,0
+input | Specify next point or [Arc/Close/Halfwidth/Length/Undo/Width]: | @0,15
+input | Specify next point or [Arc/Close/Halfwidth/Length/Undo/Width]: | @-40,0
+input | Specify next point or [Arc/Close/Halfwidth/Length/Undo/Width]: | @0,10
+input | Specify next point or [Arc/Close/Halfwidth/Length/Undo/Width]: | @-25,0
+input | Specify next point or [Arc/Close/Halfwidth/Length/Undo/Width]: | C
 command |  | DIMLINEAR
 input | Specify first extension line origin or <select object>: | 
 input | Specify second extension line origin: | 
@@ -178,17 +178,17 @@ input | Specify second extension line origin or [Select/Undo] <Select>: |
 info |  | Dimension text = 35.00
 ## organize
 command |  | RECTANG
-input | Specify first corner point or [Chamfer/Elevation/Fillet/Thickness]: | 0,0
+input | Specify first corner point or [Chamfer/Elevation/Fillet/Thickness/Width]: | 0,0
 input | Specify other corner point or [Area/Dimensions/Rotation]: | @90,40
 command |  | RECTANG
-input | Specify first corner point or [Chamfer/Elevation/Fillet/Thickness]: | 35,0
+input | Specify first corner point or [Chamfer/Elevation/Fillet/Thickness/Width]: | 35,0
 input | Specify other corner point or [Area/Dimensions/Rotation]: | @20,40
 command |  | LINE
 input | Specify first point: | 45,-8
 input | Specify next point or [Undo]: | @0,56
 ## inquiry
 command |  | RECTANG
-input | Specify first corner point or [Chamfer/Elevation/Fillet/Thickness]: | 0,0
+input | Specify first corner point or [Chamfer/Elevation/Fillet/Thickness/Width]: | 0,0
 input | Specify other corner point or [Area/Dimensions/Rotation]: | @70,40
 command |  | DIST
 input | Specify first point: | 
@@ -218,16 +218,16 @@ input | Select objects: |
 command |  | PASTECLIP
 ## localFirst
 command |  | RECTANG
-input | Specify first corner point or [Chamfer/Elevation/Fillet/Thickness]: | 0,0
+input | Specify first corner point or [Chamfer/Elevation/Fillet/Thickness/Width]: | 0,0
 input | Specify other corner point or [Area/Dimensions/Rotation]: | @170,70
 command |  | RECTANG
-input | Specify first corner point or [Chamfer/Elevation/Fillet/Thickness]: | 12,8
+input | Specify first corner point or [Chamfer/Elevation/Fillet/Thickness/Width]: | 12,8
 input | Specify other corner point or [Area/Dimensions/Rotation]: | @40,50
 command |  | RECTANG
-input | Specify first corner point or [Chamfer/Elevation/Fillet/Thickness]: | 118,36
+input | Specify first corner point or [Chamfer/Elevation/Fillet/Thickness/Width]: | 118,36
 input | Specify other corner point or [Area/Dimensions/Rotation]: | @40,22
 command |  | RECTANG
-input | Specify first corner point or [Chamfer/Elevation/Fillet/Thickness]: | 118,8
+input | Specify first corner point or [Chamfer/Elevation/Fillet/Thickness/Width]: | 118,8
 input | Specify other corner point or [Area/Dimensions/Rotation]: | @40,22
 command |  | TEXT
 info |  | Current text style:  "Standard"  Text height:  2.50  Annotative:  No  Justify:  Left
@@ -281,7 +281,7 @@ input | Specify dimension line location or [Text/Angle/Horizontal/Vertical/Rotat
 info |  | Dimension text = 66.00
 ## engineLayers
 command |  | RECTANG
-input | Specify first corner point or [Chamfer/Elevation/Fillet/Thickness]: | 0,64
+input | Specify first corner point or [Chamfer/Elevation/Fillet/Thickness/Width]: | 0,64
 input | Specify other corner point or [Area/Dimensions/Rotation]: | @90,11
 command |  | TEXT
 info |  | Current text style:  "Standard"  Text height:  2.50  Annotative:  No  Justify:  Left
@@ -291,7 +291,7 @@ input | Specify rotation angle of text <0>: | 0
 input | Enter text: | adapters
 input | Enter text: | 
 command |  | RECTANG
-input | Specify first corner point or [Chamfer/Elevation/Fillet/Thickness]: | 0,48
+input | Specify first corner point or [Chamfer/Elevation/Fillet/Thickness/Width]: | 0,48
 input | Specify other corner point or [Area/Dimensions/Rotation]: | @90,11
 command |  | TEXT
 info |  | Current text style:  "Standard"  Text height:  4.00  Annotative:  No  Justify:  Left
@@ -301,7 +301,7 @@ input | Specify rotation angle of text <0>: | 0
 input | Enter text: | application
 input | Enter text: | 
 command |  | RECTANG
-input | Specify first corner point or [Chamfer/Elevation/Fillet/Thickness]: | 0,32
+input | Specify first corner point or [Chamfer/Elevation/Fillet/Thickness/Width]: | 0,32
 input | Specify other corner point or [Area/Dimensions/Rotation]: | @90,11
 command |  | TEXT
 info |  | Current text style:  "Standard"  Text height:  4.00  Annotative:  No  Justify:  Left
@@ -311,7 +311,7 @@ input | Specify rotation angle of text <0>: | 0
 input | Enter text: | scene
 input | Enter text: | 
 command |  | RECTANG
-input | Specify first corner point or [Chamfer/Elevation/Fillet/Thickness]: | 0,16
+input | Specify first corner point or [Chamfer/Elevation/Fillet/Thickness/Width]: | 0,16
 input | Specify other corner point or [Area/Dimensions/Rotation]: | @90,11
 command |  | TEXT
 info |  | Current text style:  "Standard"  Text height:  4.00  Annotative:  No  Justify:  Left
@@ -321,7 +321,7 @@ input | Specify rotation angle of text <0>: | 0
 input | Enter text: | domain
 input | Enter text: | 
 command |  | RECTANG
-input | Specify first corner point or [Chamfer/Elevation/Fillet/Thickness]: | 0,0
+input | Specify first corner point or [Chamfer/Elevation/Fillet/Thickness/Width]: | 0,0
 input | Specify other corner point or [Area/Dimensions/Rotation]: | @90,11
 command |  | TEXT
 info |  | Current text style:  "Standard"  Text height:  4.00  Annotative:  No  Justify:  Left

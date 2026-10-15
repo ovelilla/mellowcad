@@ -198,6 +198,8 @@ describe("round trip", () => {
       currentColor: "#00ff00",
       currentLinetype: "Center",
       currentLineweight: 0.5,
+      fillMode: false,
+      polylineWidth: 4,
     }
     const parsed = parseDrawingFile(
       serializeDrawing(snapshotOf([], { settings }))
@@ -576,6 +578,83 @@ describe("tolerates damaged and legacy content", () => {
   })
 })
 
+describe("polyline widths", () => {
+  it("writes one constant width as DXF's 43 does, and reads it back per segment", () => {
+    const poly = polylineOf([p(0, 0), p(10, 0), p(10, 10)], {
+      id: "P",
+      closed: true,
+      widths: [
+        [2, 2],
+        [2, 2],
+        [2, 2],
+      ],
+    })
+    const text = serializeDrawing(snapshotOf([poly]))
+    expect(text).toMatch(/"constantWidth": 2/)
+    expect(text).not.toMatch(/"widths"/)
+    expect(parseDrawingFile(text).entities).toEqual([poly])
+  })
+
+  it("writes varying widths per segment, as DXF's 40 and 41", () => {
+    const poly = polylineOf([p(0, 0), p(10, 0), p(10, 10)], {
+      id: "P",
+      widths: [
+        [0, 5],
+        [2, 2],
+      ],
+    })
+    const text = serializeDrawing(snapshotOf([poly]))
+    expect(text).not.toMatch(/constantWidth/)
+    expect(parseDrawingFile(text).entities).toEqual([poly])
+  })
+
+  it("writes no widths for a polyline with none", () => {
+    const text = serializeDrawing(snapshotOf([polylineOf([p(0, 0), p(1, 0)])]))
+    expect(text).not.toMatch(/idth/)
+  })
+
+  it("reads damaged widths tolerantly", () => {
+    const vertices = [
+      { x: 0, y: 0 },
+      { x: 10, y: 0 },
+      { x: 10, y: 10 },
+    ]
+    const read = (extra: Record<string, unknown>) => {
+      const [entity] = parseDrawingFile(
+        JSON.stringify({
+          type: DRAWING_FILE_TYPE,
+          version: DRAWING_FILE_VERSION,
+          entities: [{ type: "polyline", vertices, ...extra }],
+        })
+      ).entities
+      return entity.type === "polyline" ? entity.widths : "not a polyline"
+    }
+    expect(read({ widths: [[1, "x"], "nonsense", [-3, 2], [9, 9]] })).toEqual([
+      [1, 0],
+      [0, 0],
+    ])
+    expect(read({ widths: [[1, 2]] })).toEqual([
+      [1, 2],
+      [0, 0],
+    ])
+    expect(read({ widths: [[0, 0]] })).toBeUndefined()
+    expect(read({ constantWidth: -1 })).toBeUndefined()
+    expect(read({ constantWidth: 3, widths: [[1, 1]] })).toEqual([
+      [3, 3],
+      [3, 3],
+    ])
+  })
+
+  it("keeps FILLMODE on and PLINEWID 0 out of the file, as before 27", () => {
+    const text = serializeDrawing(snapshotOf([]))
+    expect(text).not.toMatch(/fillMode|polylineWidth/)
+    expect(parseDrawingFile(text).settings).toMatchObject({
+      fillMode: true,
+      polylineWidth: 0,
+    })
+  })
+})
+
 describe("opens drawings written by every earlier schema", () => {
   /**
    * Hand-written fixtures, deliberately *not* produced by the current writer:
@@ -807,6 +886,32 @@ describe("opens drawings written by every earlier schema", () => {
     const dimension = parsed.entities[0]
     expect(dimension.type).toBe("dimension")
     expect("vertex" in dimension).toBe(false)
+  })
+
+  it("version 26 — a drawing from before widths has none, fills and starts PLINE at 0", () => {
+    const parsed = parseDrawingFile(
+      JSON.stringify({
+        type: DRAWING_FILE_TYPE,
+        version: 26,
+        settings: { unit: "mm", precision: 2 },
+        entities: [
+          {
+            id: "p1",
+            type: "polyline",
+            layerId: "0",
+            vertices: [
+              { x: 0, y: 0 },
+              { x: 10, y: 0 },
+            ],
+            closed: false,
+          },
+        ],
+      })
+    )
+    const [polyline] = parsed.entities
+    expect(polyline.type === "polyline" && polyline.widths).toBeUndefined()
+    expect(parsed.settings.fillMode).toBe(true)
+    expect(parsed.settings.polylineWidth).toBe(0)
   })
 
   it("version 21 — a drawing from before Z lies flat", () => {

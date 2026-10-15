@@ -18,6 +18,7 @@ import {
   HatchEntity,
   InsertEntity,
   LineEntity,
+  PolylineWidth,
   Entity,
 } from "./entityTypes"
 import {
@@ -503,7 +504,9 @@ export function copyEntity(entity: Entity, delta: Vec2 | Vec3): Entity {
           entity.vertices.map((v) => V.add(v, delta)),
           entity.closed,
           entity.layerId,
-          entity.bulges
+          entity.bulges,
+          undefined,
+          entity.widths
         )
       case "text":
         return textLike(entity, V.add(entity.position, delta))
@@ -667,7 +670,9 @@ export function rotateEntityCopy(
           entity.vertices.map((v) => rotatePoint(v, pivot, radians)),
           entity.closed,
           entity.layerId,
-          entity.bulges
+          entity.bulges,
+          undefined,
+          entity.widths
         )
       case "text":
         return textLike(entity, rotatePoint(entity.position, pivot, radians), {
@@ -730,6 +735,15 @@ export function scalePoint(point: Vec2, base: Vec2, factor: number): Vec2 {
  * with the factor. The scale is 3D, as AutoCAD's is: the plane moves away from
  * the base's Z and the rise and thickness grow with the rest.
  */
+/** SCALE scales a polyline's widths with it, as AutoCAD's does. */
+function scaledWidths(
+  widths: readonly PolylineWidth[],
+  factor: number
+): PolylineWidth[] {
+  const k = Math.abs(factor)
+  return widths.map(([start, end]) => [start * k, end * k])
+}
+
 export function scaleEntity(
   entity: Entity,
   base: Vec2 | Vec3,
@@ -778,6 +792,9 @@ function scalePlanar(entity: Entity, base: Vec2, factor: number): Entity {
       return {
         ...entity,
         vertices: entity.vertices.map((v) => scalePoint(v, base, factor)),
+        ...(entity.widths
+          ? { widths: scaledWidths(entity.widths, factor) }
+          : {}),
       }
     case "text":
     case "attdef":
@@ -863,7 +880,9 @@ export function scaleEntityCopy(
           entity.vertices.map((v) => scalePoint(v, base, factor)),
           entity.closed,
           entity.layerId,
-          entity.bulges
+          entity.bulges,
+          undefined,
+          entity.widths && scaledWidths(entity.widths, factor)
         )
       case "text":
         return textLike(entity, scalePoint(entity.position, base, factor), {
@@ -1064,7 +1083,9 @@ export function mirrorEntityCopy(entity: Entity, a: Vec2, b: Vec2): Entity {
           entity.vertices.map((v) => mirrorPoint(v, a, b)),
           entity.closed,
           entity.layerId,
-          entity.bulges ? negateBulges(entity.bulges) : undefined
+          entity.bulges ? negateBulges(entity.bulges) : undefined,
+          undefined,
+          entity.widths
         )
       case "text":
         return textLike(entity, mirrorPoint(entity.position, a, b))

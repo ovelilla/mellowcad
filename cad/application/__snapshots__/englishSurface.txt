@@ -68,6 +68,7 @@ VPOINT ["VP"] "Viewpoint"
 VIEW ["V"] "Preset views"
 3DORBIT ["3DO","ORBIT"] "3D Orbit"
 NAVVCUBE ["CUBE"] "ViewCube"
+FILL [] "Fill"
 LTSCALE ["LTS"] "Linetype scale"
 AUPREC [] "Angle precision"
 UNDO [] "Undo"
@@ -177,6 +178,7 @@ vpoint "Viewpoint" VP
 view "Preset views" V
 orbit "3D Orbit" 3DO
 navvcube "ViewCube" CUBE
+fill "Fill" FILL
 ltscale "Linetype scale" LTS
 auprec "Angle precision" AUPREC
 undo "Undo" UNDO
@@ -540,51 +542,51 @@ lweight "Lineweight" LW
   dyn: "X,Y"=""||*
   command| PL PLINE
 > first
-  prompt: PLINE Specify next point or [Arc/Length/Undo]:
+  prompt: PLINE Specify next point or [Arc/Halfwidth/Length/Undo/Width]:
   asks: "Length" "Angle"
   tip: Specify next point or
   dyn: "Length"=""|0.00|mm* "Angle"=""||°
-  options: [A] Arc, [L] Length, [U] Undo
+  options: [A] Arc, [H] Halfwidth, [L] Length, [U] Undo, [W] Width
   prompt| Specify start point:
   info| Current line-width is 0.00
 > second
-  prompt: PLINE Specify next point or [Arc/Close/Length/Undo]:
-  options: [A] Arc, [C] Close, [L] Length, [U] Undo
-  prompt| Specify next point or [Arc/Length/Undo]:
+  prompt: PLINE Specify next point or [Arc/Close/Halfwidth/Length/Undo/Width]:
+  options: [A] Arc, [C] Close, [H] Halfwidth, [L] Length, [U] Undo, [W] Width
+  prompt| Specify next point or [Arc/Halfwidth/Length/Undo/Width]:
 > A
-  prompt: PLINE Specify endpoint of arc (hold Ctrl to switch direction) or [Angle/CEnter/CLose/Direction/Line/Radius/Second pt/Undo]:
+  prompt: PLINE Specify endpoint of arc (hold Ctrl to switch direction) or [Angle/CEnter/CLose/Direction/Halfwidth/Line/Radius/Second pt/Undo/Width]:
   tip: Specify endpoint of arc (hold Ctrl to switch direction) or
-  options: [A] Angle, [CE] CEnter, [CL] CLose, [D] Direction, [L] Line, [R] Radius, [S] Second pt, [U] Undo
-  prompt| Specify next point or [Arc/Close/Length/Undo]: A
+  options: [A] Angle, [CE] CEnter, [CL] CLose, [D] Direction, [H] Halfwidth, [L] Line, [R] Radius, [S] Second pt, [U] Undo, [W] Width
+  prompt| Specify next point or [Arc/Close/Halfwidth/Length/Undo/Width]: A
 > arc
-  prompt| Specify endpoint of arc (hold Ctrl to switch direction) or [Angle/CEnter/CLose/Direction/Line/Radius/Second pt/Undo]:
+  prompt| Specify endpoint of arc (hold Ctrl to switch direction) or [Angle/CEnter/CLose/Direction/Halfwidth/Line/Radius/Second pt/Undo/Width]:
 > C
   prompt: PLINE CEnter or CLose?
   tip: CEnter or CLose?
-  prompt| Specify endpoint of arc (hold Ctrl to switch direction) or [Angle/CEnter/CLose/Direction/Line/Radius/Second pt/Undo]: C
+  prompt| Specify endpoint of arc (hold Ctrl to switch direction) or [Angle/CEnter/CLose/Direction/Halfwidth/Line/Radius/Second pt/Undo/Width]: C
   error| Ambiguous response, please clarify...
 > enter
   prompt| CEnter or CLose?
   error| Invalid option keyword.
 > L
-  prompt: PLINE Specify next point or [Arc/Close/Length/Undo]:
+  prompt: PLINE Specify next point or [Arc/Close/Halfwidth/Length/Undo/Width]:
   tip: Specify next point or
-  options: [A] Arc, [C] Close, [L] Length, [U] Undo
+  options: [A] Arc, [C] Close, [H] Halfwidth, [L] Length, [U] Undo, [W] Width
   prompt| CEnter or CLose? L
 > third
-  prompt| Specify next point or [Arc/Close/Length/Undo]:
+  prompt| Specify next point or [Arc/Close/Halfwidth/Length/Undo/Width]:
 > U
-  prompt: PLINE Specify endpoint of arc (hold Ctrl to switch direction) or [Angle/CEnter/CLose/Direction/Line/Radius/Second pt/Undo]:
+  prompt: PLINE Specify endpoint of arc (hold Ctrl to switch direction) or [Angle/CEnter/CLose/Direction/Halfwidth/Line/Radius/Second pt/Undo/Width]:
   tip: Specify endpoint of arc (hold Ctrl to switch direction) or
-  options: [A] Angle, [CE] CEnter, [CL] CLose, [D] Direction, [L] Line, [R] Radius, [S] Second pt, [U] Undo
-  prompt| Specify next point or [Arc/Close/Length/Undo]: U
+  options: [A] Angle, [CE] CEnter, [CL] CLose, [D] Direction, [H] Halfwidth, [L] Line, [R] Radius, [S] Second pt, [U] Undo, [W] Width
+  prompt| Specify next point or [Arc/Close/Halfwidth/Length/Undo/Width]: U
 > CL
   prompt: Command:
   asks: -
   tip: -
   dyn: -
   options: -
-  prompt| Specify endpoint of arc (hold Ctrl to switch direction) or [Angle/CEnter/CLose/Direction/Line/Radius/Second pt/Undo]: CL
+  prompt| Specify endpoint of arc (hold Ctrl to switch direction) or [Angle/CEnter/CLose/Direction/Halfwidth/Line/Radius/Second pt/Undo/Width]: CL
 
 ## PLINE Length
 > start
@@ -603,33 +605,33 @@ lweight "Lineweight" LW
   dyn: "X,Y"=""||*
   command| PL PLINE
 > first
-  prompt: PLINE Specify next point or [Arc/Length/Undo]:
+  prompt: PLINE Specify next point or [Arc/Halfwidth/Length/Undo/Width]:
   asks: "Length" "Angle"
   tip: Specify next point or
   dyn: "Length"=""|0.00|mm* "Angle"=""||°
-  options: [A] Arc, [L] Length, [U] Undo
+  options: [A] Arc, [H] Halfwidth, [L] Length, [U] Undo, [W] Width
   prompt| Specify start point:
   info| Current line-width is 0.00
 > second
-  prompt: PLINE Specify next point or [Arc/Close/Length/Undo]:
-  options: [A] Arc, [C] Close, [L] Length, [U] Undo
-  prompt| Specify next point or [Arc/Length/Undo]:
+  prompt: PLINE Specify next point or [Arc/Close/Halfwidth/Length/Undo/Width]:
+  options: [A] Arc, [C] Close, [H] Halfwidth, [L] Length, [U] Undo, [W] Width
+  prompt| Specify next point or [Arc/Halfwidth/Length/Undo/Width]:
 > L
   prompt: PLINE Specify length of line:
   asks: "Length"
   tip: Specify length of line:
   dyn: "Length"=""||mm*
   options: -
-  prompt| Specify next point or [Arc/Close/Length/Undo]: L
+  prompt| Specify next point or [Arc/Close/Halfwidth/Length/Undo/Width]: L
 > FOO
   prompt| Specify length of line: FOO
   error| Requires numeric distance or second point.
 > length
-  prompt: PLINE Specify next point or [Arc/Close/Length/Undo]:
+  prompt: PLINE Specify next point or [Arc/Close/Halfwidth/Length/Undo/Width]:
   asks: "Length" "Angle"
   tip: Specify next point or
   dyn: "Length"=""|50.00|mm* "Angle"=""|180|°
-  options: [A] Arc, [C] Close, [L] Length, [U] Undo
+  options: [A] Arc, [C] Close, [H] Halfwidth, [L] Length, [U] Undo, [W] Width
   prompt| Specify length of line: 50
 > enter
   prompt: Command:
@@ -637,7 +639,7 @@ lweight "Lineweight" LW
   tip: -
   dyn: -
   options: -
-  prompt| Specify next point or [Arc/Close/Length/Undo]:
+  prompt| Specify next point or [Arc/Close/Halfwidth/Length/Undo/Width]:
 
 ## CIRCLE
 > start
@@ -1190,11 +1192,11 @@ lweight "Lineweight" LW
   properties: -
   cycling: -
 > RECTANG
-  prompt: RECTANG Specify first corner point or [Chamfer/Elevation/Fillet/Thickness]:
+  prompt: RECTANG Specify first corner point or [Chamfer/Elevation/Fillet/Thickness/Width]:
   asks: "First corner"
   tip: Specify first corner point or
   dyn: "X,Y"=""||*
-  options: [C] Chamfer, [E] Elevation, [F] Fillet, [T] Thickness
+  options: [C] Chamfer, [E] Elevation, [F] Fillet, [T] Thickness, [W] Width
   command| REC RECTANG
 > E
   prompt: RECTANG Specify the elevation for rectangles <0.00>:
@@ -1202,15 +1204,15 @@ lweight "Lineweight" LW
   tip: Specify the elevation for rectangles
   dyn: "Specify the elevation for rectangles"=""|0.00|mm*
   options: -
-  prompt| Specify first corner point or [Chamfer/Elevation/Fillet/Thickness]: E
+  prompt| Specify first corner point or [Chamfer/Elevation/Fillet/Thickness/Width]: E
 > elevation
   dyn: "Specify the elevation for rectangles"="5"|0.00|mm*
 > enter
-  prompt: RECTANG Specify first corner point or [Chamfer/Elevation/Fillet/Thickness]:
+  prompt: RECTANG Specify first corner point or [Chamfer/Elevation/Fillet/Thickness/Width]:
   asks: "First corner"
   tip: Specify first corner point or
   dyn: "X,Y"=""||*
-  options: [C] Chamfer, [E] Elevation, [F] Fillet, [T] Thickness
+  options: [C] Chamfer, [E] Elevation, [F] Fillet, [T] Thickness, [W] Width
   prompt| Specify the elevation for rectangles <0.00>: 5
 > T
   prompt: RECTANG Specify thickness for rectangles <0.00>:
@@ -1218,22 +1220,22 @@ lweight "Lineweight" LW
   tip: Specify thickness for rectangles
   dyn: "Specify thickness for rectangles"=""|0.00|mm*
   options: -
-  prompt| Specify first corner point or [Chamfer/Elevation/Fillet/Thickness]: T
+  prompt| Specify first corner point or [Chamfer/Elevation/Fillet/Thickness/Width]: T
 > thickness
   dyn: "Specify thickness for rectangles"="2"|0.00|mm*
 > enter
-  prompt: RECTANG Specify first corner point or [Chamfer/Elevation/Fillet/Thickness]:
+  prompt: RECTANG Specify first corner point or [Chamfer/Elevation/Fillet/Thickness/Width]:
   asks: "First corner"
   tip: Specify first corner point or
   dyn: "X,Y"=""||*
-  options: [C] Chamfer, [E] Elevation, [F] Fillet, [T] Thickness
+  options: [C] Chamfer, [E] Elevation, [F] Fillet, [T] Thickness, [W] Width
   prompt| Specify thickness for rectangles <0.00>: 2
 > first corner
   prompt: RECTANG Specify other corner point or [Area/Dimensions/Rotation]:
   asks: "Other corner"
   tip: Specify other corner point or
   options: [A] Area, [D] Dimensions, [R] Rotation
-  prompt| Specify first corner point or [Chamfer/Elevation/Fillet/Thickness]:
+  prompt| Specify first corner point or [Chamfer/Elevation/Fillet/Thickness/Width]:
 > other corner
   prompt: Command:
   asks: -
@@ -1242,11 +1244,11 @@ lweight "Lineweight" LW
   options: -
   prompt| Specify other corner point or [Area/Dimensions/Rotation]:
 > RECTANG with modes
-  prompt: RECTANG Specify first corner point or [Chamfer/Elevation/Fillet/Thickness]:
+  prompt: RECTANG Specify first corner point or [Chamfer/Elevation/Fillet/Thickness/Width]:
   asks: "First corner"
   tip: Specify first corner point or
   dyn: "X,Y"=""||*
-  options: [C] Chamfer, [E] Elevation, [F] Fillet, [T] Thickness
+  options: [C] Chamfer, [E] Elevation, [F] Fillet, [T] Thickness, [W] Width
   command| RECTANG
   info| Current rectangle modes:  Elevation=5.00  Thickness=2.00
 > escape
@@ -1255,7 +1257,7 @@ lweight "Lineweight" LW
   tip: -
   dyn: -
   options: -
-  prompt| Specify first corner point or [Chamfer/Elevation/Fillet/Thickness]: *Cancel*
+  prompt| Specify first corner point or [Chamfer/Elevation/Fillet/Thickness/Width]: *Cancel*
 > POLYGON
   prompt: POLYGON Enter number of sides <4>:
   asks: "Number of sides"
@@ -4550,7 +4552,7 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0°~, Line space facto
 > escape
   properties: -
 > select polyline
-  properties: Polyline (1) {Thickness=0.00 mm~} [Geometry: Length=215.91 mm, Vertices=3, Segments=2, Closed=No, Elevation=0.00~]
+  properties: Polyline (1) {Thickness=0.00 mm~} [Geometry: Vertex=1~, Vertex X=0.00~, Vertex Y=-300.00~, Start segment width=0.00 mm~, End segment width=0.00 mm~, Global width=0.00 mm~, Length=215.91 mm, Vertices=3, Segments=2, Closed=No, Elevation=0.00~]
 > grab vertex
   asks: "Move"
   dyn: "Move"=""|0.00|mm*
@@ -4559,7 +4561,7 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0°~, Line space facto
 > release
   asks: -
   dyn: -
-  properties: Polyline (1) {Thickness=0.00 mm~} [Geometry: Length=238.21 mm, Vertices=3, Segments=2, Closed=No, Elevation=0.00~]
+  properties: Polyline (1) {Thickness=0.00 mm~} [Geometry: Vertex=1~, Vertex X=0.00~, Vertex Y=-300.00~, Start segment width=0.00 mm~, End segment width=0.00 mm~, Global width=0.00 mm~, Length=238.21 mm, Vertices=3, Segments=2, Closed=No, Elevation=0.00~]
 > grab straight midpoint
   asks: "Move"
   dyn: "Move"=""|0.00|mm*
@@ -4568,7 +4570,7 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0°~, Line space facto
 > release
   asks: -
   dyn: -
-  properties: Polyline (1) {Thickness=0.00 mm~} [Geometry: Length=244.70 mm, Vertices=4, Segments=3, Closed=No, Elevation=0.00~]
+  properties: Polyline (1) {Thickness=0.00 mm~} [Geometry: Vertex=1~, Vertex X=0.00~, Vertex Y=-300.00~, Start segment width=0.00 mm~, End segment width=0.00 mm~, Global width=0.00 mm~, Length=244.70 mm, Vertices=4, Segments=3, Closed=No, Elevation=0.00~]
 > escape
   properties: -
 > select dimension
@@ -4596,7 +4598,7 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0°~, Line space facto
   properties: -
   cycling: -
 > select
-  properties: Polyline (1) {Thickness=0.00 mm~} [Geometry: Length=157.08 mm, Vertices=2, Segments=1, Closed=No, Elevation=0.00~]
+  properties: Polyline (1) {Thickness=0.00 mm~} [Geometry: Vertex=1~, Vertex X=0.00~, Vertex Y=0.00~, Start segment width=0.00 mm~, End segment width=0.00 mm~, Global width=0.00 mm~, Length=157.08 mm, Vertices=2, Segments=1, Closed=No, Elevation=0.00~]
 > grab arc middle
   asks: "Bulge"
   dyn: "Bulge"=""|1|*
@@ -4605,7 +4607,7 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0°~, Line space facto
 > release
   asks: -
   dyn: -
-  properties: Polyline (1) {Thickness=0.00 mm~} [Geometry: Length=200.97 mm, Vertices=2, Segments=1, Closed=No, Elevation=0.00~]
+  properties: Polyline (1) {Thickness=0.00 mm~} [Geometry: Vertex=1~, Vertex X=0.00~, Vertex Y=0.00~, Start segment width=0.00 mm~, End segment width=0.00 mm~, Global width=0.00 mm~, Length=200.97 mm, Vertices=2, Segments=1, Closed=No, Elevation=0.00~]
 > escape
   properties: -
 
@@ -4631,9 +4633,9 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0°~, Line space facto
 > select E2
   properties: Elliptical arc (1) [Geometry: Major radius=100.00 mm~, Minor radius=50.00 mm~, Radius ratio=0.50, Start angle=0°, End angle=180°] [Center: X=0.00~, Y=0.00~, Z=0.00~]
 > select P1
-  properties: Polyline (1) {Thickness=0.00 mm~} [Geometry: Length=200.00 mm, Vertices=3, Segments=2, Closed=No, Elevation=0.00~]
+  properties: Polyline (1) {Thickness=0.00 mm~} [Geometry: Vertex=1~, Vertex X=0.00~, Vertex Y=0.00~, Start segment width=0.00 mm~, End segment width=0.00 mm~, Global width=0.00 mm~, Length=200.00 mm, Vertices=3, Segments=2, Closed=No, Elevation=0.00~]
 > select P2
-  properties: Polyline (1) {Thickness=0.00 mm~} [Geometry: Length=400.00 mm, Area=10000.00 mm², Vertices=4, Segments=4, Closed=Yes, Elevation=0.00~]
+  properties: Polyline (1) {Thickness=0.00 mm~} [Geometry: Vertex=1~, Vertex X=0.00~, Vertex Y=0.00~, Start segment width=0.00 mm~, End segment width=0.00 mm~, Global width=0.00 mm~, Length=400.00 mm, Area=10000.00 mm², Vertices=4, Segments=4, Closed=Yes, Elevation=0.00~]
 > select T-left
   properties: Text (1) [Text: Contents=NOTE, Justify=Left, Height=2.50 mm~, Rotation=0°~] [Position: X=0.00~, Y=0.00~, Z=0.00~]
 > select T-center

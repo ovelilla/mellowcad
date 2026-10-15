@@ -20,6 +20,7 @@ import {
   readsInPlan,
   Entity,
   PolylineEntity,
+  PolylineWidth,
 } from "../../domain/entities"
 import {
   AddEntityCommand,
@@ -85,6 +86,7 @@ type OffsetGeom =
       readonly vertices: readonly Vec2[]
       readonly closed: boolean
       readonly bulges?: readonly number[]
+      readonly widths?: readonly PolylineWidth[]
     }
 
 type OffsetToolState =
@@ -434,7 +436,8 @@ export class OffsetTool implements Tool {
               geom.closed,
               "0",
               geom.bulges,
-              OFFSET_PREVIEW_ID
+              OFFSET_PREVIEW_ID,
+              geom.widths
             ),
             stroke
           )
@@ -682,6 +685,7 @@ function entityAsGeom(entity: Entity): OffsetGeom | null {
         vertices: entity.vertices,
         closed: entity.closed,
         bulges: entity.bulges,
+        widths: entity.widths,
       }
     case "text":
     case "mtext":
@@ -857,7 +861,14 @@ function offsetToEntity(geom: OffsetGeom, layerId: string): Entity {
         layerId
       )
     case "polyline":
-      return createPolyline(geom.vertices, geom.closed, layerId, geom.bulges)
+      return createPolyline(
+        geom.vertices,
+        geom.closed,
+        layerId,
+        geom.bulges,
+        undefined,
+        geom.widths
+      )
   }
 }
 
@@ -937,7 +948,14 @@ function offsetPolyline(
     bulges.push(arcBulgeFromEndpoints(seg.center, start, end, seg.bulge))
   }
 
-  return { kind: "polyline", vertices, closed: poly.closed, bulges }
+  // Each segment keeps its widths (acc/w9).
+  return {
+    kind: "polyline",
+    vertices,
+    closed: poly.closed,
+    bulges,
+    widths: poly.widths,
+  }
 }
 
 /** An offset segment before its corners are re-joined. */

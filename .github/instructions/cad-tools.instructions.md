@@ -98,7 +98,8 @@ A tool is an explicit state machine for one AutoCAD command. It owns a discrimin
   on its picked side kept, the rest dropped, the polyline picked first — or the line's — kept
   with its direction, layer and colour) and the Polyline option's every corner (`cutPolylineCorners`, FILLET's arc corners and
   replaced arcs included). A corner-cutting command passes its cut, never walks a polyline
-  itself. An arc segment is an object too (`isArcSegment`, `curveOf`): FILLET rounds it
+  itself; both carry the widths (cad-engine, "widths"), and so must any tool that makes a
+  polyline out of another's pieces (OFFSET's copy, JOIN's chain, TRIM's and BREAK's spans). An arc segment is an object too (`isArcSegment`, `curveOf`): FILLET rounds it
   with `curveFillets.ts` — `curveCrossing` (a line whole, an arc its circle), `keptEnd` and
   `keptSide` (kept round the circle from the corner, past the arc's end when the corner
   lies beyond it), `filletSides` (radius 0 meets there) — through `cutBetweenSegments`'

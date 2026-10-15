@@ -369,6 +369,13 @@ function expectSameShape(actual: Entity, expected: Entity, precision = 6) {
     expect(actual.vertices).toBeCloseToPoints(expected.vertices, precision)
     expect(actual.closed).toBe(expected.closed)
     expect(actual.bulges ?? []).toEqual(expected.bulges ?? [])
+    expect(actual.widths !== undefined).toBe(expected.widths !== undefined)
+    const widths = (actual.widths ?? []).flat()
+    const expectedWidths = (expected.widths ?? []).flat()
+    expect(widths.length).toBe(expectedWidths.length)
+    widths.forEach((w, i) =>
+      expect(w).toBeCloseTo(expectedWidths[i], precision)
+    )
   } else if (actual.type === "text" && expected.type === "text") {
     expect(actual.position).toBeCloseToPoint(expected.position, precision)
     expect(actual.height).toBeCloseTo(expected.height, precision)

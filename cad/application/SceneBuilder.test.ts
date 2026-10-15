@@ -208,6 +208,27 @@ describe("appearance resolution", () => {
     expect(widthOf()).toBeLessThan(thick)
   })
 
+  it("draws a wide polyline by its width in plan, its lineweight off the plan", () => {
+    // "Wide polylines display lineweights only when displayed outside of
+    // plan view."
+    const cad = createHarness({
+      entities: [polylineOf([p(-100, 0), p(100, 0)], { widths: [[10, 10]] })],
+    })
+    cad.runtime.updateLayer("0", { lineweight: 2.11 })
+    const band = () =>
+      strokes(cad.scene().primitives, THEME.entity).find(
+        (primitive) => primitive.kind === "path"
+      )
+    const plan = band()
+    expect(plan?.kind === "path" && plan.fill).toBe(THEME.entity)
+    expect(plan?.kind === "path" && plan.stroke?.width).toBe(1.25)
+
+    cad.command("VPOINT").type("1,-1,1").enter()
+    const off = band()
+    expect(off?.kind === "path" && off.fill).toBeUndefined()
+    expect(off?.kind === "path" && off.stroke?.width).toBeGreaterThan(1.25)
+  })
+
   it("keeps lineweight independent of zoom, like a plotted drawing", () => {
     const cad = createHarness({
       entities: [lineOf(p(-100, 0), p(100, 0), { id: "L1" })],

@@ -6,6 +6,7 @@ import {
   createArc,
   createLine,
   insertGeometry,
+  isWidePolyline,
   mtextLineTexts,
   polylineSegmentGeometries,
 } from "../../domain/entities"
@@ -21,7 +22,9 @@ import { ToolContext } from "./Tool"
  * nested block comes back as a nested block, to be exploded again, and the
  * objects "revert to their original properties" rather than keeping the ones
  * the reference lent them. A multiline text becomes one single-line text per
- * line as drawn ("Multiline Text — Explodes into text objects").
+ * line as drawn ("Multiline Text — Explodes into text objects"). A polyline's
+ * widths are lost, its pieces following its centreline, and AutoCAD says so
+ * for each wide one.
  *
  * Everything else is left untouched and reported, and one undo step reverts the
  * whole explode.
@@ -67,6 +70,9 @@ export class ExplodeTool extends SelectionActionTool {
       }
       if (entity.type !== "polyline") continue
       removedIds.push(entity.id)
+      if (isWidePolyline(entity)) {
+        ctx.report(ctx.text.message("explodeLostWidth"))
+      }
       for (const seg of polylineSegmentGeometries(entity)) {
         const piece =
           seg.kind === "line"

@@ -70,6 +70,7 @@ export const en: EngineCatalog = {
       "dashpan": "Pan by points",
       "ucs": "UCS",
       "ucsicon": "UCS icon",
+      "fill": "Fill",
       "ucsiconvariable": "UCS icon (variable)",
       "plan": "Plan view",
       "elev": "Elevation",
@@ -373,6 +374,10 @@ export const en: EngineCatalog = {
         "radiusRatio": "Radius ratio",
         "vertices": "Vertices",
         "segments": "Segments",
+        "vertex": "Vertex",
+        "startSegmentWidth": "Start segment width",
+        "endSegmentWidth": "End segment width",
+        "globalWidth": "Global width",
         "closed": "Closed",
         "contents": "Contents",
         "justify": "Justify",
@@ -775,6 +780,9 @@ export const en: EngineCatalog = {
       "UCSICON": [
         "UCSICON"
       ],
+      "FILL": [
+        "FILL"
+      ],
       "PLAN": [
         "PLAN"
       ],
@@ -857,6 +865,9 @@ export const en: EngineCatalog = {
       },
       "ARCSCE": {
         "Center": "Ce"
+      },
+      "FILL": {
+        "OFF": "OFf"
       },
       "ELLIPSE": {
         "Included angle": "Included"
@@ -997,6 +1008,9 @@ export const en: EngineCatalog = {
       },
       "specifyNextPointOr": {
         "Line": "LIne"
+      },
+      "specifyFirstCornerPointOr": {
+        "Width": "Width"
       }
     },
     "prompts": {
@@ -1032,6 +1046,7 @@ export const en: EngineCatalog = {
       "rectangleFirstChamfer": "Specify first chamfer distance for rectangles",
       "rectangleSecondChamfer": "Specify second chamfer distance for rectangles",
       "rectangleFillet": "Specify fillet radius for rectangles",
+      "rectangleLineWidth": "Specify line width for rectangles",
       "rectangleArea": "Enter area of rectangle in current units",
       "rectangleAreaBasis": "Calculate rectangle dimensions based on",
       "rectangleLength": "Enter rectangle length",
@@ -1181,6 +1196,11 @@ export const en: EngineCatalog = {
       "idPoint": "Specify point",
       "distSecondPointOr": "Specify second point or",
       "specifyLengthOfLine": "Specify length of line",
+      "polylineStartingWidth": "Specify starting width",
+      "polylineEndingWidth": "Specify ending width",
+      "polylineStartingHalfWidth": "Specify starting half-width",
+      "polylineEndingHalfWidth": "Specify ending half-width",
+      "fillMode": "Enter mode",
       "matchpropSource": "Select source object",
       "matchpropDestination": "Select destination object(s)",
       "viewPoint": "Specify a view point",
@@ -1847,6 +1867,7 @@ export const en: EngineCatalog = {
           }
         ]
       ],
+      "explodeLostWidth": "Exploding this polyline has lost width information.\nThe UNDO command will restore it.",
       "currentUcsName": [
         "Current ucs name:  ",
         [
@@ -2162,6 +2183,19 @@ export const en: EngineCatalog = {
           }
         ],
         [
+          "hasWidth",
+          1,
+          {
+            "yes": [
+              "  Width=",
+              [
+                "width"
+              ]
+            ],
+            "other": ""
+          }
+        ],
+        [
           "hasRotation",
           1,
           {
@@ -2446,6 +2480,7 @@ export const en: EngineCatalog = {
       "circleDoesNotExist": "Circle does not exist.",
       "noLineOrArcToContinue": "No line or arc to continue.",
       "positiveNonzero": "Value must be positive and nonzero.",
+      "valueMustBePositive": "Value must be positive.",
       "lineweightRequired": "A weight in lineweight units is required.",
       "lineweightRounded": [
         "Lineweight rounded to nearest valid value of ",
@@ -2828,6 +2863,9 @@ export const en: EngineCatalog = {
       "CIRCLED": {
         "Ttr": "Ttr (tan tan radius)"
       },
+      "PLINE": {
+        "Halfwidth": "Halfwidth"
+      },
       "DIST": {
         "Multiple": "Multiple points"
       },
@@ -2862,6 +2900,9 @@ export const en: EngineCatalog = {
         "Lock position": "Lock position"
       },
       "ATTDISP": {
+        "OFF": "OFF"
+      },
+      "FILL": {
         "OFF": "OFF"
       },
       "UNDO": {

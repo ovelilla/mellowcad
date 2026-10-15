@@ -50,6 +50,10 @@ export interface DocumentSettings {
   readonly currentLinetype: LinetypeId | typeof LINETYPE_BYLAYER
   /** CELWEIGHT: the lineweight new objects take, in millimetres, or ByLayer. */
   readonly currentLineweight: Lineweight | typeof LINEWEIGHT_BYLAYER
+  /** FILLMODE: whether wide polylines are drawn filled or as their outline. */
+  readonly fillMode: boolean
+  /** PLINEWID: the width PLINE starts with, the last one it was left at. */
+  readonly polylineWidth: number
 }
 
 export interface UcsIconSetting {
@@ -95,6 +99,8 @@ export const DEFAULT_DOCUMENT_SETTINGS: DocumentSettings = {
   currentColor: COLOR_BYLAYER,
   currentLinetype: LINETYPE_BYLAYER,
   currentLineweight: LINEWEIGHT_BYLAYER,
+  fillMode: true,
+  polylineWidth: 0,
 }
 
 export const LENGTH_UNITS: LengthUnit[] = [

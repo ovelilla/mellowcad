@@ -1,7 +1,10 @@
 import { Vec2, V } from "../../geometry/Vec2"
 import { Vec3, withZOf } from "../../geometry/Vec3"
-import { createPolyline, onPlaneOf } from "../../domain/entities"
-import { bulgeToArc } from "../../geometry/primitives"
+import {
+  createPolyline,
+  onPlaneOf,
+  type PolylineWidth,
+} from "../../domain/entities"
 import {
   ArcSegment,
   segmentExitTangent,
@@ -9,6 +12,7 @@ import {
 } from "../../geometry/bulgeArcs"
 import { formatLength, parseNumber } from "../../domain/units"
 import { AddEntityCommand } from "../commands/entityCommands"
+import { UpdateSettingsCommand } from "../commands/settingsCommands"
 import { DynamicInputSession } from "../input/DynamicInput"
 import {
   isCoordinateExpression,
@@ -16,7 +20,7 @@ import {
 } from "../input/coordinateInput"
 import { ScenePrimitive } from "../../scene/types"
 import { THEME } from "../../scene/theme"
-import { arcScenePrimitive, entityScenePrimitive } from "../SceneBuilder"
+import { entityScenePrimitive } from "../SceneBuilder"
 import {
   PointerInput,
   Tool,
@@ -50,7 +54,9 @@ import { ARC_SEGMENT_OPTIONS, ArcSegmentInput } from "./arcSegmentInput"
  * while "Undo" (U) steps back one vertex without leaving the command. Length
  * asks a line's length and draws it on the way the chain heads. In arc mode the
  * endpoint draws the arc tangent to the chain, and Angle, CEnter, Direction,
- * Radius and Second pt ask theirs ({@link ArcSegmentInput}).
+ * Radius and Second pt ask theirs ({@link ArcSegmentInput}). Width and
+ * Halfwidth set the starting and ending width of the next segment, the ending
+ * one going on through the segments after it; the width it ends at is PLINEWID.
  */
 
 type PolylineToolState =
@@ -66,6 +72,12 @@ type PolylineToolState =
       readonly vertices: readonly Vec3[]
       /** Bulge of each committed segment (entry `i` = vertices[i]→[i+1]). */
       readonly bulges: readonly number[]
+      /** Starting and ending width of each committed segment, likewise. */
+      readonly widths: readonly PolylineWidth[]
+      /** The widths the next segment takes. */
+      readonly width: PolylineWidth
+      /** PLINEWID as the command started: the width Undo may go back to. */
+      readonly startWidth: number
       readonly cursor: Vec3
       /** Last non-degenerate unit direction from the last vertex to the cursor. */
       readonly direction: Vec2 | null
@@ -87,6 +99,13 @@ type PolylineToolState =
 
 type Drawing = Extract<PolylineToolState, { phase: "drawing" }>
 
+/** Width's or Halfwidth's prompt: its starting width, then its ending one. */
+interface WidthPrompt {
+  readonly half: boolean
+  /** The starting width given, once the ending one is asked. */
+  readonly start: number | null
+}
+
 export class PolylineTool implements Tool {
   readonly id = "polyline"
   readonly shortcut = "p"
@@ -94,6 +113,7 @@ export class PolylineTool implements Tool {
   private state: PolylineToolState = { phase: "idle" }
   /** Length's `Specify length of line:` is open. */
   private askingLength = false
+  private askingWidth: WidthPrompt | null = null
   private lastScreen: Vec2 | null = null
   private readonly arc = new ArcSegmentInput((segment, ctx) =>
     this.appendArc(segment, ctx)
@@ -109,6 +129,7 @@ export class PolylineTool implements Tool {
     // accumulated chain is materialised as one entity in a single place.
     this.arc.cancel()
     this.askingLength = false
+    this.askingWidth = null
     this.commitPolyline(ctx)
     this.state = { phase: "idle" }
     ctx.dynamicInput.close()
@@ -132,6 +153,8 @@ export class PolylineTool implements Tool {
 
       if (this.arc.active) {
         this.arc.onPointerMove(input, ctx)
+      } else if (this.askingWidth) {
+        // The runtime measures a width from the last vertex.
       } else if (this.askingLength) {
         ctx.dynamicInput.setLive("length", length)
       } else if (!showRise(ctx, start, input.point)) {
@@ -165,8 +188,8 @@ export class PolylineTool implements Tool {
       this.arc.onPointerDown(input, ctx)
       return
     }
-    // The runtime measures Length's point from the last vertex.
-    if (this.askingLength) return
+    // The runtime measures Length's point, and a width's, from the last vertex.
+    if (this.askingLength || this.askingWidth) return
 
     // Place the next vertex at the effective endpoint (honouring any hard-locked
     // typed length/angle), then keep chaining. A click on the same point as the
@@ -199,6 +222,7 @@ export class PolylineTool implements Tool {
 
   question(): PromptId | ToolQuestion | null {
     if (this.state.phase !== "drawing") return "specifyStartPoint"
+    if (this.askingWidth) return this.widthQuestion(this.askingWidth)
     if (this.askingLength) return "specifyLengthOfLine"
     if (this.arc.active) return this.arc.question()
     return this.state.arcMode ? "specifyEndpointOfArcOr" : "specifyNextPointOr"
@@ -206,6 +230,12 @@ export class PolylineTool implements Tool {
 
   /** Every point after the start is a 2D one, as AutoCAD's console refuses it. */
   takes(): QuestionInput | null {
+    if (this.askingWidth) {
+      return {
+        refusal: "requiresDistance",
+        values: { points: "second", keyword: "no" },
+      }
+    }
     if (this.state.phase !== "drawing" || this.askingLength) return null
     return this.arc.active ? this.arc.takes() : "point2d"
   }
@@ -213,22 +243,28 @@ export class PolylineTool implements Tool {
   /**
    * The keywords offered while drawing, in AutoCAD's order: Close once a
    * segment exists, as the console offers it, and Length and Undo from the
-   * start point on. In arc mode the arc options open prompts of their own.
-   * WHY no Halfwidth or Width: a polyline has no widths here; AutoCAD's own
-   * table words the list without them too (`[Arc/Close/Length/Undo]`).
-   * Each mode also declares, unlisted, the mode it is in (`LIne`, `ARc`):
-   * typed, the console asks the same prompt again.
+   * start point on, Halfwidth and Width too. In arc mode the arc options open
+   * prompts of their own. Each mode also declares, unlisted, the mode it is
+   * in (`LIne`, `ARc`): typed, the console asks the same prompt again.
    */
   commandOptions(): readonly CommandOption[] {
-    if (this.state.phase !== "drawing" || this.askingLength) return []
+    if (
+      this.state.phase !== "drawing" ||
+      this.askingLength ||
+      this.askingWidth
+    ) {
+      return []
+    }
     if (this.arc.active) return this.arc.commandOptions()
     const close = this.state.vertices.length >= 2 ? [{ id: "Close" }] : []
     if (!this.state.arcMode) {
       return [
         { id: "Arc" },
         ...close,
+        { id: "Halfwidth" },
         { id: "Length" },
         { id: "Undo" },
+        { id: "Width" },
         { id: "Line", hidden: true },
       ]
     }
@@ -238,16 +274,22 @@ export class PolylineTool implements Tool {
       { id: center },
       ...close,
       { id: direction },
+      { id: "Halfwidth" },
       { id: "Line" },
       { id: radius },
       { id: second },
       { id: "Undo" },
+      { id: "Width" },
       { id: "Arc", hidden: true },
     ]
   }
 
   invokeOption(id: string, ctx: ToolContext): CommandOptionOutcome {
-    if (this.state.phase !== "drawing" || this.askingLength) {
+    if (
+      this.state.phase !== "drawing" ||
+      this.askingLength ||
+      this.askingWidth
+    ) {
       return "unhandled"
     }
     if (this.arc.active) return this.arc.invokeOption(id, ctx)
@@ -265,6 +307,10 @@ export class PolylineTool implements Tool {
       case "Undo":
         this.undoLastVertex(ctx)
         return "continue"
+      case "Width":
+      case "Halfwidth":
+        this.openWidthPrompt({ half: id === "Halfwidth", start: null }, ctx)
+        return "continue"
       default:
         return this.state.arcMode &&
           this.arc.begin(id, this.arcStart(this.state), ctx)
@@ -280,9 +326,9 @@ export class PolylineTool implements Tool {
     return "continue"
   }
 
-  /** Length's and an arc option's distances are measured by the runtime. */
+  /** Length's, a width's and an arc option's distances are the runtime's to measure. */
   wantsSnap(): boolean {
-    if (this.askingLength) return false
+    if (this.askingLength || this.askingWidth) return false
     return !this.arc.active || this.arc.wantsSnap()
   }
 
@@ -298,16 +344,19 @@ export class PolylineTool implements Tool {
     const out: ScenePrimitive[] = []
 
     // The chain committed so far, drawn as it will look once materialised
-    // (arcs included, via the shared entity renderer).
+    // (arcs and widths included, via the shared entity renderer).
     if (this.state.vertices.length >= 2) {
       const committed = createPolyline(
         this.state.vertices,
         false,
         ctx.document.getCurrentLayerId(),
-        this.state.bulges
+        this.state.bulges,
+        undefined,
+        this.state.widths
       )
       out.push(...entityScenePrimitive(viewport, committed, stroke))
     }
+    if (this.askingWidth) return out
 
     // The rubber-band from the last vertex to the effective next point — an arc
     // in arc mode (tangent to the previous segment), otherwise a line; an arc
@@ -324,27 +373,16 @@ export class PolylineTool implements Tool {
       end = this.resolveEnd(last, this.state.cursor, ctx)
       bulge = this.pendingBulge(this.state, end) ?? 0
     }
-    if (bulge !== 0) {
-      const arc = bulgeToArc(last, end, bulge)
-      out.push(
-        arcScenePrimitive(
-          viewport,
-          arc.center,
-          arc.radius,
-          arc.startAngle,
-          arc.endAngle,
-          stroke
-        )
-      )
-    } else {
-      out.push({
-        kind: "segment",
-        a: viewport.worldToScreen(last),
-        b: viewport.worldToScreen(end),
-        stroke,
-      })
-    }
-
+    // The next segment, as wide as it will be drawn.
+    const next = createPolyline(
+      [last, end],
+      false,
+      ctx.document.getCurrentLayerId(),
+      [bulge],
+      "polyline-preview",
+      [this.state.width]
+    )
+    out.push(...entityScenePrimitive(viewport, next, stroke))
     return out
   }
 
@@ -417,10 +455,15 @@ export class PolylineTool implements Tool {
 
   private addSegment(end: Vec3, bulge: number, ctx: ToolContext): void {
     if (this.state.phase !== "drawing") return
+    const [, ending] = this.state.width
     this.state = {
       ...this.state,
       vertices: [...this.state.vertices, end],
       bulges: [...this.state.bulges, bulge],
+      widths: [...this.state.widths, this.state.width],
+      // "The ending width becomes the uniform width for all subsequent
+      // segments until you change the width again."
+      width: [ending, ending],
       cursor: end,
       direction: null,
     }
@@ -448,6 +491,7 @@ export class PolylineTool implements Tool {
     this.state = {
       ...this.state,
       bulges: [...this.state.bulges, bulge],
+      widths: [...this.state.widths, this.state.width],
       closed: true,
     }
     return true
@@ -458,7 +502,10 @@ export class PolylineTool implements Tool {
    * PLINE "Undo" (U), `All segments already undone.` with none. Nothing is
    * committed yet, so this is a pure local rollback (no document undo). The
    * chain then goes on as its last segment was drawn, a line or an arc (the
-   * console returns to the line prompt once the only arc is undone).
+   * console returns to the line prompt once the only arc is undone). The
+   * width goes back to the command's starting one where every segment left
+   * has it, else to 0, whatever it was before: AutoCAD 2023's console
+   * (acc/w3–w7).
    */
   private undoLastVertex(ctx: ToolContext): void {
     if (this.state.phase !== "drawing") return
@@ -468,11 +515,19 @@ export class PolylineTool implements Tool {
     }
     const vertices = this.state.vertices.slice(0, -1)
     const bulges = this.state.bulges.slice(0, -1)
+    const widths = this.state.widths.slice(0, -1)
+    const { startWidth } = this.state
+    const kept = widths.every(
+      ([start, end]) => start === startWidth && end === startWidth
+    )
+    const width = kept ? startWidth : 0
     const last = vertices[vertices.length - 1]
     this.state = {
       ...this.state,
       vertices,
       bulges,
+      widths,
+      width: [width, width],
       cursor: last,
       direction: null,
       closed: false,
@@ -492,8 +547,13 @@ export class PolylineTool implements Tool {
    */
   private commitPolyline(ctx: ToolContext): void {
     if (this.state.phase !== "drawing") return
-    const { vertices, closed, bulges } = this.state
+    const { vertices, closed, bulges, widths, width } = this.state
     this.state = { phase: "idle" }
+    // PLINEWID keeps the width the command was left at, whether it drew a
+    // polyline or not (acc/w2).
+    if (width[1] !== ctx.document.getSettings().polylineWidth) {
+      ctx.execute(new UpdateSettingsCommand({ polylineWidth: width[1] }))
+    }
     if (vertices.length < 2) return
     ctx.execute(
       new AddEntityCommand(
@@ -504,7 +564,9 @@ export class PolylineTool implements Tool {
                 vertices,
                 closed,
                 ctx.document.getCurrentLayerId(),
-                bulges
+                bulges,
+                undefined,
+                widths
               ),
               vertices[0]
             ),
@@ -517,19 +579,24 @@ export class PolylineTool implements Tool {
   }
 
   /**
-   * Enters the drawing phase from the first vertex, opening the length session.
-   * Width is not offered, so the line-width AutoCAD reports is always 0.
+   * Enters the drawing phase from the first vertex, opening the length
+   * session, at PLINEWID's width.
    */
   private beginDrawing(start: Vec3, ctx: ToolContext, screen?: Vec2): void {
+    const settings = ctx.document.getSettings()
+    const startWidth = settings.polylineWidth
     ctx.report(
       ctx.text.message("currentLineWidth", {
-        width: formatLength(0, ctx.document.getSettings()),
+        width: formatLength(startWidth, settings),
       })
     )
     this.state = {
       phase: "drawing",
       vertices: [start],
       bulges: [],
+      widths: [],
+      width: [startWidth, startWidth],
+      startWidth,
       cursor: start,
       direction: null,
       startTangent: lastDrawnDirection(ctx.document) ?? { x: 1, y: 0 },
@@ -614,6 +681,62 @@ export class PolylineTool implements Tool {
     }
     ctx.dynamicInput.open(session)
     ctx.dynamicInput.setPosition(this.lastScreen ?? { x: 0, y: 0 })
+    ctx.requestRender()
+  }
+
+  /**
+   * Width's or Halfwidth's prompt: the starting width offering the width the
+   * next segment would end at, the ending one the starting one just given.
+   */
+  private widthQuestion(prompt: WidthPrompt): ToolQuestion {
+    const scale = prompt.half ? 0.5 : 1
+    if (prompt.start === null) {
+      const ending = this.state.phase === "drawing" ? this.state.width[1] : 0
+      return {
+        id: prompt.half ? "polylineStartingHalfWidth" : "polylineStartingWidth",
+        enter: ending * scale,
+      }
+    }
+    return {
+      id: prompt.half ? "polylineEndingHalfWidth" : "polylineEndingWidth",
+      enter: prompt.start * scale,
+    }
+  }
+
+  /**
+   * A width is a value or a point measured from the last vertex, as AutoCAD
+   * measures one (`Requires numeric distance or second point.`).
+   */
+  private openWidthPrompt(prompt: WidthPrompt, ctx: ToolContext): void {
+    this.askingWidth = prompt
+    ctx.dynamicInput.open({
+      fields: [{ id: "width", prompt: "length", kind: "distance" }],
+      commit: (values, commitCtx) => this.commitWidth(values.width, commitCtx),
+    })
+    ctx.dynamicInput.setDefault("width", this.widthQuestion(prompt).enter as number)
+    ctx.dynamicInput.setPosition(this.lastScreen ?? { x: 0, y: 0 })
+    ctx.requestRender()
+  }
+
+  /** Never negative: `Value must be positive.` and the same prompt again. */
+  private commitWidth(value: number, ctx: ToolContext): void {
+    const prompt = this.askingWidth
+    if (this.state.phase !== "drawing" || !prompt || !Number.isFinite(value)) {
+      return
+    }
+    if (value < 0) {
+      ctx.report(ctx.text.message("valueMustBePositive"), "error")
+      this.openWidthPrompt(prompt, ctx)
+      return
+    }
+    const width = prompt.half ? value * 2 : value
+    if (prompt.start === null) {
+      this.openWidthPrompt({ ...prompt, start: width }, ctx)
+      return
+    }
+    this.askingWidth = null
+    this.state = { ...this.state, width: [prompt.start, width] }
+    this.openLengthInput(ctx, this.lastScreen ?? { x: 0, y: 0 })
     ctx.requestRender()
   }
 

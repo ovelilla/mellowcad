@@ -11,6 +11,7 @@ import {
   EntityId,
   LineEntity,
   PolylineEntity,
+  PolylineWidth,
   polylineParamAt,
   polylineSegments,
   polylineSpan,
@@ -97,6 +98,7 @@ type BreakGeom =
       readonly kind: "polyline"
       readonly vertices: readonly Vec2[]
       readonly bulges: readonly number[]
+      readonly widths: readonly PolylineWidth[]
     }
 
 interface BreakResult {
@@ -492,7 +494,14 @@ function toEntity(source: Entity, geom: BreakGeom, id?: EntityId): Entity {
     case "polyline":
       return carryPiece(
         source,
-        createPolyline(geom.vertices, false, source.layerId, geom.bulges, id)
+        createPolyline(
+          geom.vertices,
+          false,
+          source.layerId,
+          geom.bulges,
+          id,
+          geom.widths
+        )
       )
   }
 }

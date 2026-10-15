@@ -10,6 +10,8 @@ import {
   entityElevation,
   isLevel,
   polylineSegmentGeometries,
+  polylineWidth,
+  type PolylineWidth,
   readsInPlan,
 } from "../../domain/entities"
 import { ReplaceEntitiesCommand } from "../commands/entityCommands"
@@ -63,6 +65,7 @@ export class JoinTool extends SelectionActionTool {
           b: entity.end,
           z,
           bulge: 0,
+          width: null,
           source: entity.id,
         })
         sourceOf.set(entity.id, entity)
@@ -72,19 +75,21 @@ export class JoinTool extends SelectionActionTool {
           b: arcEndPoint(entity),
           z,
           bulge: Math.tan(arcSweepAngle(entity) / 4), // CCW start→end
+          width: null,
           source: entity.id,
         })
         sourceOf.set(entity.id, entity)
       } else if (entity.type === "polyline") {
-        for (const seg of polylineSegmentGeometries(entity)) {
+        polylineSegmentGeometries(entity).forEach((seg, i) => {
           segments.push({
             a: seg.a,
             b: seg.b,
             z,
             bulge: seg.kind === "arc" ? seg.bulge : 0,
+            width: polylineWidth(entity, i),
             source: entity.id,
           })
-        }
+        })
         sourceOf.set(entity.id, entity)
       }
     }
@@ -109,7 +114,9 @@ export class JoinTool extends SelectionActionTool {
             chain.vertices,
             chain.closed,
             source.layerId,
-            chain.bulges
+            chain.bulges,
+            undefined,
+            joinedWidths(chain.widths)
           )
         )
       )
@@ -134,6 +141,8 @@ interface JoinSegment {
   readonly z: number
   /** AutoCAD bulge of the segment from `a` to `b` (0 = straight). */
   readonly bulge: number
+  /** A polyline segment's widths from `a` to `b`; a line's or an arc's none. */
+  readonly width: PolylineWidth | null
   readonly source: EntityId
 }
 
@@ -141,6 +150,8 @@ interface JoinChain {
   readonly vertices: Vec2[]
   /** Bulge per segment, aligned to `vertices` (reversed segments negate it). */
   readonly bulges: number[]
+  /** Widths per segment, aligned like `bulges` (reversed segments swap them). */
+  readonly widths: (PolylineWidth | null)[]
   readonly sources: Set<EntityId>
   /** The first source contributed, whose layer the merged polyline inherits. */
   readonly firstSource: EntityId
@@ -172,6 +183,7 @@ function chainSegments(segments: readonly JoinSegment[]): JoinChain[] {
     const seed = segments[i]
     const vertices: Vec2[] = [seed.a, seed.b]
     const bulges: number[] = [seed.bulge] // bulge for vertices[k] → vertices[k+1]
+    const widths = [seed.width]
     const sources = new Set<EntityId>([seed.source])
 
     // Extend forward from the tail, then backward from the head.
@@ -185,9 +197,11 @@ function chainSegments(segments: readonly JoinSegment[]): JoinChain[] {
         if (samePoint(s.a, tail)) {
           vertices.push(s.b)
           bulges.push(s.bulge)
+          widths.push(s.width)
         } else if (samePoint(s.b, tail)) {
           vertices.push(s.a)
           bulges.push(-s.bulge) // traversed b → a
+          widths.push(reversed(s.width))
         } else continue
         used[j] = true
         sources.add(s.source)
@@ -205,9 +219,11 @@ function chainSegments(segments: readonly JoinSegment[]): JoinChain[] {
         if (samePoint(s.b, head)) {
           vertices.unshift(s.a)
           bulges.unshift(s.bulge) // s.a → head is a → b
+          widths.unshift(s.width)
         } else if (samePoint(s.a, head)) {
           vertices.unshift(s.b)
           bulges.unshift(-s.bulge) // s.b → head is b → a
+          widths.unshift(reversed(s.width))
         } else continue
         used[j] = true
         sources.add(s.source)
@@ -226,8 +242,43 @@ function chainSegments(segments: readonly JoinSegment[]): JoinChain[] {
       closed = true
     }
 
-    chains.push({ vertices, bulges, sources, firstSource: seed.source, closed })
+    chains.push({
+      vertices,
+      bulges,
+      widths,
+      sources,
+      firstSource: seed.source,
+      closed,
+    })
   }
 
   return chains
+}
+
+function reversed(width: PolylineWidth | null): PolylineWidth | null {
+  return width && [width[1], width[0]]
+}
+
+/**
+ * The widths of a joined chain. A line or an arc joined to a polyline takes
+ * the widths AutoCAD 2023's console gives it (acc/w11, w22): after the
+ * polyline's end the width it ends at, all along; before its start the first
+ * segment's widths again. With no polyline in the chain there are none.
+ */
+function joinedWidths(
+  widths: readonly (PolylineWidth | null)[]
+): PolylineWidth[] | undefined {
+  const first = widths.findIndex((width) => width !== null)
+  if (first < 0) return undefined
+  const out: PolylineWidth[] = []
+  let after: PolylineWidth = widths[first]!
+  widths.forEach((width, i) => {
+    if (width) {
+      out.push(width)
+      after = [width[1], width[1]]
+    } else {
+      out.push(i < first ? widths[first]! : after)
+    }
+  })
+  return out
 }

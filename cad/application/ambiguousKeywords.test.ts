@@ -15,7 +15,7 @@ function answerLine(cad: CadHarness, ...answers: string[]): CadHarness {
 }
 
 const ARC_PROMPT =
-  "Specify endpoint of arc (hold Ctrl to switch direction) or [Angle/CEnter/CLose/Direction/Line/Radius/Second pt/Undo]:"
+  "Specify endpoint of arc (hold Ctrl to switch direction) or [Angle/CEnter/CLose/Direction/Halfwidth/Line/Radius/Second pt/Undo/Width]:"
 
 /** PLINE at its arc prompt, one line drawn, so CLose is offered. */
 function plineArc(): CadHarness {
@@ -280,10 +280,10 @@ describe("an answer that starts several keywords", () => {
     pline.command("PLINE")
     answerLine(pline, "0,0", "10,0", "LI")
     expect(pline.commandLog().at(-1)).toBe(
-      "Specify next point or [Arc/Close/Length/Undo]: LI"
+      "Specify next point or [Arc/Close/Halfwidth/Length/Undo/Width]: LI"
     )
     expect(pline.state().commandLine.prompt).toBe(
-      "PLINE Specify next point or [Arc/Close/Length/Undo]:"
+      "PLINE Specify next point or [Arc/Close/Halfwidth/Length/Undo/Width]:"
     )
     answerLine(pline, "A", "AR")
     expect(pline.state().commandLine.prompt).toBe(`PLINE ${ARC_PROMPT}`)

@@ -34,6 +34,7 @@ const TRANSPARENT_COMMANDS: ReadonlySet<string> = new Set([
   "ID",
   "LTSCALE",
   "ATTDISP",
+  "FILL",
   "ELEV",
   "-OSNAP",
   "COLOR",

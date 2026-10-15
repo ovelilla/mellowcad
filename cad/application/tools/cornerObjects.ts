@@ -24,6 +24,8 @@ import {
   facesAlong,
   isTilted,
   polylineSegmentGeometries,
+  polylineWidth,
+  type PolylineWidth,
   readsInPlan,
   sharesTiltedPlane,
   withNormal,
@@ -619,28 +621,56 @@ export function joinAtCut(join: CornerJoin, cut: JoinCut): PolylineEntity {
   const sharp = V.equals(cut.onSegment, cut.onOther)
   const points: Vec2[] = []
   const pointBulges: number[] = []
-  const add = (point: Vec2, next: number) => {
+  const pointWidths: PolylineWidth[] = []
+  const add = (point: Vec2, next: number, width: PolylineWidth) => {
     if (points.length > 0 && V.equals(points[points.length - 1], point)) {
       pointBulges[pointBulges.length - 1] = next
+      pointWidths[pointWidths.length - 1] = width
       return
     }
     points.push(point)
     pointBulges.push(next)
+    pointWidths.push(width)
   }
   const [lead, leadCut, tail, tailCut, bulge] = own.forward
     ? [joined, cut.onOther, own, cut.onSegment, -cut.bulge]
     : [own, cut.onSegment, joined, cut.onOther, cut.bulge]
   for (let k = lead.points.length - 1; k >= 0; k--) {
-    add(lead.points[k], k > 0 ? -lead.bulges[k - 1] : -lead.cutBulge)
+    add(
+      lead.points[k],
+      k > 0 ? -lead.bulges[k - 1] : -lead.cutBulge,
+      swapped(k > 0 ? lead.widths[k - 1] : lead.cutWidth)
+    )
   }
-  add(leadCut, sharp ? tail.cutBulge : bulge)
-  if (!sharp) add(tailCut, tail.cutBulge)
-  tail.points.forEach((point, k) => add(point, tail.bulges[k] ?? 0))
+  // The cut's arc or bevel runs from one's width at the cut to the other's,
+  // as a corner within a polyline does (acc/w21).
+  add(
+    leadCut,
+    sharp ? tail.cutBulge : bulge,
+    sharp ? tail.cutWidth : [lead.cutWidth[0], tail.cutWidth[0]]
+  )
+  if (!sharp) add(tailCut, tail.cutBulge, tail.cutWidth)
+  tail.points.forEach((point, k) =>
+    add(point, tail.bulges[k] ?? 0, tail.widths[k] ?? NO_WIDTH)
+  )
   pointBulges[pointBulges.length - 1] = 0
   return carryOverrides(
     poly,
-    createPolyline(points, false, poly.layerId, pointBulges, poly.id)
+    createPolyline(
+      points,
+      false,
+      poly.layerId,
+      pointBulges,
+      poly.id,
+      pointWidths.slice(0, -1)
+    )
   )
+}
+
+const NO_WIDTH: PolylineWidth = [0, 0]
+
+function swapped([start, end]: PolylineWidth): PolylineWidth {
+  return [end, start]
 }
 
 /**
@@ -653,6 +683,9 @@ interface Run {
   readonly points: readonly Vec2[]
   readonly bulges: readonly number[]
   readonly cutBulge: number
+  /** The widths going outward, like the bulges: a cut segment keeps its own. */
+  readonly widths: readonly PolylineWidth[]
+  readonly cutWidth: PolylineWidth
   readonly forward: boolean
 }
 
@@ -672,7 +705,14 @@ function keptRun(
       : along(object.end) >= along(object.start)
         ? object.end
         : object.start
-    return { points: [end], bulges: [], cutBulge: 0, forward: true }
+    return {
+      points: [end],
+      bulges: [],
+      cutBulge: 0,
+      widths: [],
+      cutWidth: NO_WIDTH,
+      forward: true,
+    }
   }
   const { poly, index } = object
   const vertices = poly.closed
@@ -683,6 +723,7 @@ function keptRun(
   const forward = keep
     ? keep === "b"
     : along(vertices[index + 1]) >= along(vertices[index])
+  const width = (k: number) => polylineWidth(poly, k)
   if (forward) {
     const points = vertices.slice(index + 1)
     return {
@@ -690,6 +731,8 @@ function keptRun(
       bulges: points.slice(1).map((_, k) => bulge(index + 1 + k)),
       cutBulge:
         segment.kind === "arc" ? bulgeBetween(segment, cut, segment.b) : 0,
+      widths: points.slice(1).map((_, k) => width(index + 1 + k)),
+      cutWidth: width(index),
       forward: true,
     }
   }
@@ -699,6 +742,8 @@ function keptRun(
     bulges: points.slice(1).map((_, k) => -bulge(index - 1 - k)),
     cutBulge:
       segment.kind === "arc" ? -bulgeBetween(segment, segment.a, cut) : 0,
+    widths: points.slice(1).map((_, k) => swapped(width(index - 1 - k))),
+    cutWidth: swapped(width(index)),
     forward: false,
   }
 }

@@ -17,6 +17,7 @@ import {
   EntityId,
   LineEntity,
   PolylineEntity,
+  PolylineWidth,
   PolylineSegmentGeometry,
   SplineEntity,
   arcSweepAngle,
@@ -108,6 +109,7 @@ type EditGeom =
       readonly vertices: readonly Vec2[]
       readonly closed: boolean
       readonly bulges?: readonly number[]
+      readonly widths?: readonly PolylineWidth[]
     }
   | {
       readonly kind: "ellipse"
@@ -456,7 +458,14 @@ function geomToEntity(g: EditGeom, layerId: LayerId, id?: EntityId): Entity {
         id
       )
     case "polyline":
-      return createPolyline(g.vertices, g.closed, layerId, g.bulges, id)
+      return createPolyline(
+        g.vertices,
+        g.closed,
+        layerId,
+        g.bulges,
+        id,
+        g.widths
+      )
     case "ellipse":
       return createEllipse(g.center, g.majorAxis, g.ratio, {
         startParam: g.startParam,
@@ -1541,11 +1550,14 @@ function extendedPolyline(
     if (!bulges) bulges = new Array(poly.vertices.length - 1).fill(0)
     bulges[bulgeOverride.index] = bulgeOverride.value
   }
+  // The segment grown keeps its widths, tapering over its new length
+  // (acc/w18).
   return {
     kind: "polyline",
     vertices,
     closed: false,
     bulges,
+    widths: poly.widths,
   }
 }
 

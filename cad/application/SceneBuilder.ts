@@ -30,6 +30,8 @@ import {
   lineStartZ,
   mtextLayout,
   mtextToWorld,
+  isWidePolyline,
+  polylineOutline,
   polylineSegmentGeometries,
   splinePolyline,
   TextJustify,
@@ -142,6 +144,8 @@ export interface SceneInput {
   readonly ltScale: number
   /** Whether lineweights are drawn thick (LWDISPLAY) or everything hairline. */
   readonly lwDisplay: boolean
+  /** FILLMODE: wide polylines filled, or their outline only. On when absent. */
+  readonly fillMode?: boolean
   /** ATTMODE: which attributes block references show; Normal when absent. */
   readonly attributeDisplay?: AttributeDisplay
   readonly snap: SnapResult | null
@@ -195,7 +199,8 @@ export function buildScene(input: SceneInput): Scene {
     input.hiddenIds,
     input.ltScale,
     input.lwDisplay,
-    input.attributeDisplay ?? "normal"
+    input.attributeDisplay ?? "normal",
+    input.fillMode ?? true
   )
   if (input.ucsIcon) {
     pushUcsIcon(primitives, aid, input.ucs, input.ucsIcon)
@@ -665,6 +670,8 @@ export function ellipseScenePrimitive(
 export interface EntityDrawOptions {
   readonly dimStyle?: DimStyle
   readonly blocks?: BlockLookup
+  /** FILLMODE, for a wide polyline; on when absent. */
+  readonly fill?: boolean
 }
 
 export function entityScenePrimitive(
@@ -843,6 +850,16 @@ function planarPrimitives(
       ]
     }
     case "polyline":
+      if (isWidePolyline(entity)) {
+        // Filled only seen square on, as AutoCAD fills one only "parallel
+        // to the current viewing direction".
+        return widePolylinePrimitives(
+          camera,
+          entity,
+          stroke,
+          camera.isPlan && (options.fill ?? true)
+        )
+      }
       // A straight polyline is one crisp path (mitred corners). One that
       // carries arc bulges is tessellated finely into the same path, so arcs
       // render everywhere a polyline is drawn — including transient ghosts.
@@ -1140,6 +1157,78 @@ function textBaselineOf(justify: TextJustify): TextBaseline {
 }
 
 /**
+ * A wide polyline: each band filled — or, with FILLMODE off or off the plan,
+ * outlined —, a joint's wedge with it, and a segment of no width as its
+ * centreline. The fill is solid whatever the linetype (PLINEGEN's dashed
+ * bands are not drawn).
+ */
+function widePolylinePrimitives(
+  camera: CameraTransform,
+  poly: PolylineEntity,
+  stroke: StrokeStyle,
+  filled: boolean
+): ScenePrimitive[] {
+  const tolerance = 0.25 / camera.worldToScreenDistance(1)
+  const { bands, wedges, bare } = polylineOutline(poly, tolerance)
+  const screen = (ring: readonly Vec2[]) =>
+    ring.map((p) => camera.worldToScreen(p))
+  const out: ScenePrimitive[] = []
+  const solid: StrokeStyle = { color: stroke.color, width: stroke.width }
+  for (const band of bands) {
+    out.push(
+      filled
+        ? // The hairline keeps a band thinner than a pixel in sight.
+          {
+            kind: "path",
+            points: screen(band),
+            closed: true,
+            fill: stroke.color,
+            stroke: solid,
+          }
+        : { kind: "path", points: screen(band), closed: true, stroke }
+    )
+  }
+  for (const wedge of wedges) {
+    out.push(
+      filled
+        ? {
+            kind: "path",
+            points: screen(wedge),
+            closed: true,
+            fill: stroke.color,
+            stroke: solid,
+          }
+        : {
+            kind: "path",
+            points: screen(wedge.slice(1)),
+            closed: false,
+            stroke,
+          }
+    )
+  }
+  for (const segment of bare) {
+    out.push(
+      segment.kind === "line"
+        ? {
+            kind: "segment",
+            a: camera.worldToScreen(segment.a),
+            b: camera.worldToScreen(segment.b),
+            stroke,
+          }
+        : arcScenePrimitive(
+            camera,
+            segment.center,
+            segment.radius,
+            segment.startAngle,
+            segment.endAngle,
+            stroke
+          )
+    )
+  }
+  return out
+}
+
+/**
  * Screen-space points tracing a polyline that has arc segments, with each arc
  * densified into short chords (~11° facets) so the `path` primitive renders a
  * smooth curve. Straight segments contribute just their endpoint.
@@ -1185,7 +1274,8 @@ function pushEntities(
   hiddenIds: ReadonlySet<EntityId>,
   ltScale: number,
   lwDisplay: boolean,
-  attributeDisplay: AttributeDisplay
+  attributeDisplay: AttributeDisplay,
+  fillMode: boolean
 ): void {
   const layerById = new Map<LayerId, Layer>()
   for (const layer of layers) layerById.set(layer.id, layer)
@@ -1209,11 +1299,18 @@ function pushEntities(
     const dash = dashFor(linetypeId, ltScale, camera.scale)
     const lineweight =
       entity.lineweight ?? layer?.lineweight ?? DEFAULT_LINEWEIGHT
+    // "Wide polylines display lineweights only when displayed outside of
+    // plan view": in plan their width is what they show.
+    const wideInPlan =
+      entity.type === "polyline" &&
+      isWidePolyline(entity) &&
+      camera.isPlan &&
+      !isTilted(entity)
     const stroke: StrokeStyle = {
       color: isSelected
         ? THEME.selected
         : (entity.color ?? layer?.color ?? DEFAULT_LAYER_COLOR),
-      width: widthFor(lineweight, lwDisplay, isSelected),
+      width: widthFor(lineweight, lwDisplay && !wideInPlan, isSelected),
       ...(dash ? { dash } : {}),
     }
     if (entity.type === "insert") {
@@ -1232,6 +1329,7 @@ function pushEntities(
     }
     out.push(
       ...entityScenePrimitive(camera, entity, stroke, {
+        fill: fillMode,
         dimStyle:
           entity.type === "dimension"
             ? (dimStyleById.get(entity.styleId) ??

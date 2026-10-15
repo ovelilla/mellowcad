@@ -122,6 +122,12 @@ export const nonCollinearPoints: fc.Arbitrary<readonly [Vec2, Vec2, Vec2]> = fc
   })
 
 /** Bulge values spanning gentle curves through to the semicircle limit. */
+/** A polyline segment's width: often none, else up to a few units. */
+export const width: fc.Arbitrary<number> = fc.oneof(
+  fc.constant(0),
+  fc.double({ min: 0.01, max: 20, noNaN: true })
+)
+
 export const bulge: fc.Arbitrary<number> = fc
   .integer({ min: -300, max: 300 })
   .map((n) => n / 100)
@@ -236,9 +242,16 @@ export const polylineEntity: fc.Arbitrary<PolylineEntity> = fc
     fc.boolean(),
     fc.option(fc.array(bulge, { minLength: 1, maxLength: 8 }), {
       nil: undefined,
+    }),
+    fc.option(fc.array(fc.tuple(width, width), { minLength: 8, maxLength: 8 }), {
+      nil: undefined,
     })
   )
-  .map(([vertices, closed, bulges]) => {
+  .map(([vertices, closed, bulges, widthList]) => {
+    // One width pair per segment, as the factory and the file keep them.
+    const segments =
+      closed && vertices.length > 2 ? vertices.length : vertices.length - 1
+    const widths = widthList?.slice(0, segments)
     const entity: PolylineEntity = {
       id: "polyline",
       type: "polyline",
@@ -246,6 +259,9 @@ export const polylineEntity: fc.Arbitrary<PolylineEntity> = fc
       vertices,
       closed,
       ...(bulges && bulges.some((b) => b !== 0) ? { bulges } : {}),
+      ...(widths && widths.some(([s, e]) => s > 0 || e > 0)
+        ? { widths }
+        : {}),
     }
     return entity
   })

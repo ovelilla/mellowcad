@@ -10,6 +10,7 @@ import {
   type HatchOptions,
   type LineEntity,
   type PolylineEntity,
+  type PolylineWidth,
   type TextEntity,
   type TextOptions,
   createArc,
@@ -128,6 +129,7 @@ export function polylineOf(
   options: EntityOptions & {
     readonly closed?: boolean
     readonly bulges?: readonly number[]
+    readonly widths?: readonly PolylineWidth[]
   } = {}
 ): PolylineEntity {
   return createPolyline(
@@ -135,7 +137,8 @@ export function polylineOf(
     options.closed ?? false,
     options.layerId ?? DEFAULT_LAYER_ID,
     options.bulges,
-    options.id
+    options.id,
+    options.widths
   )
 }
 

@@ -33,7 +33,13 @@ import { mtextCorners, mtextFromWorld, mtextLayout } from "./mtext"
 import { DimensionGeometry, dimensionGeometry } from "./dimensions"
 import { ellipseBounds, ellipseSegments } from "./ellipses"
 import { closestPointOnSpline, splineBounds, splinePolyline } from "./splines"
-import { polylineSegmentGeometries } from "./polylines"
+import {
+  fractionAlongSegment,
+  isWidePolyline,
+  polylineSegmentGeometries,
+  polylineWidthAt,
+} from "./polylines"
+import { polylineOutline } from "./polylineOutline"
 import { arcStartPoint, arcEndPoint } from "./entityMeasures"
 
 /** A box outline as four segments, for hit-testing and crossing tests. */
@@ -182,8 +188,8 @@ export function closestOnEntity(
         distance: Infinity,
         t: 0,
       }
-      for (const seg of polylineSegmentGeometries(entity)) {
-        const candidate =
+      polylineSegmentGeometries(entity).forEach((seg, i) => {
+        let candidate =
           seg.kind === "line"
             ? closestPointOnSegment(seg.a, seg.b, point)
             : closestPointOnArc(
@@ -193,8 +199,18 @@ export function closestOnEntity(
                 seg.endAngle,
                 point
               )
+        // A wide segment is an area, picked anywhere on its band. The
+        // console picks one only on its edges, having no fill to click.
+        const half =
+          polylineWidthAt(entity, i, fractionAlongSegment(seg, point)) / 2
+        if (half > 0) {
+          candidate = {
+            ...candidate,
+            distance: Math.max(0, candidate.distance - half),
+          }
+        }
         if (candidate.distance < best.distance) best = candidate
-      }
+      })
       return best
     }
     case "text":
@@ -344,6 +360,14 @@ export function entityBounds(entity: Entity, blocks?: BlockLookup): Bounds {
         }
       }
       if (minX === Infinity) for (const v of entity.vertices) include(v)
+      if (isWidePolyline(entity)) {
+        // The width reaches past the centreline, and ZOOM Extents shows it.
+        const size = Math.max(maxX - minX, maxY - minY)
+        const outline = polylineOutline(entity, size * 1e-5)
+        for (const ring of [...outline.bands, ...outline.wedges]) {
+          for (const p of ring) include(p)
+        }
+      }
       return { min: { x: minX, y: minY }, max: { x: maxX, y: maxY } }
     }
     case "text":
@@ -468,6 +492,29 @@ export function entityWithinRect(
   )
 }
 
+/** Whether a wide polyline's band reaches into the rectangle. */
+function wideBandCrossesRect(
+  poly: Extract<Entity, { type: "polyline" }>,
+  min: Vec2,
+  max: Vec2
+): boolean {
+  const edges = rectEdges(min, max)
+  const size = V.distance(min, max)
+  const outline = polylineOutline(poly, size * 1e-3)
+  for (const ring of [...outline.bands, ...outline.wedges]) {
+    for (let i = 0; i < ring.length; i++) {
+      const a = ring[i]
+      if (pointInRect(a, min, max)) return true
+      const b = ring[(i + 1) % ring.length]
+      for (const [e1, e2] of edges) {
+        if (segmentSegmentIntersection(a, b, e1, e2)) return true
+      }
+    }
+  }
+  // A box drawn wholly inside the band.
+  return closestOnEntity(poly, V.midpoint(min, max)).distance === 0
+}
+
 /**
  * True when the entity's outline crosses the boundary of the rectangle
  * `min`..`max` (i.e. it is partially inside). Combined with
@@ -547,6 +594,9 @@ export function entityCrossesRect(
     case "polyline": {
       for (const v of entity.vertices) {
         if (pointInRect(v, min, max)) return true
+      }
+      if (isWidePolyline(entity) && wideBandCrossesRect(entity, min, max)) {
+        return true
       }
       for (const seg of polylineSegmentGeometries(entity)) {
         for (const [e1, e2] of edges) {

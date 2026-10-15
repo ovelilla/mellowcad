@@ -35,9 +35,9 @@ describe("RECTANG", () => {
 
     expect(cad.commandLog()).toEqual([
       "RECTANG",
-      "Specify first corner point or [Chamfer/Elevation/Fillet/Thickness]: E",
+      "Specify first corner point or [Chamfer/Elevation/Fillet/Thickness/Width]: E",
       "Specify the elevation for rectangles <0.00>: 5",
-      "Specify first corner point or [Chamfer/Elevation/Fillet/Thickness]:",
+      "Specify first corner point or [Chamfer/Elevation/Fillet/Thickness/Width]:",
       "Specify other corner point or [Area/Dimensions/Rotation]:",
     ])
   })
@@ -88,9 +88,9 @@ describe("RECTANG", () => {
 
     expect(cad.commandLog()).toEqual([
       "RECTANG",
-      "Specify first corner point or [Chamfer/Elevation/Fillet/Thickness]:",
+      "Specify first corner point or [Chamfer/Elevation/Fillet/Thickness/Width]:",
       "Point or option keyword required.",
-      "Specify first corner point or [Chamfer/Elevation/Fillet/Thickness]:",
+      "Specify first corner point or [Chamfer/Elevation/Fillet/Thickness/Width]:",
       "Specify other corner point or [Area/Dimensions/Rotation]:",
       "Point or option keyword required.",
       "Specify other corner point or [Area/Dimensions/Rotation]: FOO",

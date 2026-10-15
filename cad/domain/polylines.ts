@@ -6,12 +6,59 @@ import {
   normalizeAngle,
   polarPoint,
 } from "../geometry/primitives"
-import { PolylineEntity } from "./entityTypes"
+import { PolylineEntity, PolylineWidth } from "./entityTypes"
 import { createPolyline } from "./entityFactories"
 
 /** The bulge of the segment starting at vertex `index` (0 = straight). */
 export function polylineBulge(poly: PolylineEntity, index: number): number {
   return poly.bulges?.[index] ?? 0
+}
+
+const NO_WIDTH: PolylineWidth = [0, 0]
+
+/** The starting and ending width of segment `index`. */
+export function polylineWidth(
+  poly: PolylineEntity,
+  index: number
+): PolylineWidth {
+  return poly.widths?.[index] ?? NO_WIDTH
+}
+
+/** Whether any segment of `poly` has a width: AutoCAD's wide polyline. */
+export function isWidePolyline(poly: PolylineEntity): boolean {
+  return poly.widths?.some(([start, end]) => start > 0 || end > 0) ?? false
+}
+
+/**
+ * The one width every segment starts and ends with — DXF 43, LIST's
+ * `Constant width` —, or `null` when they differ.
+ */
+export function polylineConstantWidth(poly: PolylineEntity): number | null {
+  const count = polylineSegments(poly).length
+  const [width] = polylineWidth(poly, 0)
+  for (let i = 0; i < count; i++) {
+    const [start, end] = polylineWidth(poly, i)
+    if (start !== width || end !== width) return null
+  }
+  return width
+}
+
+/** `poly` with `widths` (indexed like its segments), none when all are 0. */
+export function withPolylineWidths(
+  poly: PolylineEntity,
+  widths: readonly PolylineWidth[] | undefined
+): PolylineEntity {
+  return reshaped(poly, poly.vertices, poly.bulges, widths)
+}
+
+/** The width segment `index` has a fraction `f` along it. */
+export function polylineWidthAt(
+  poly: PolylineEntity,
+  index: number,
+  f: number
+): number {
+  const [start, end] = polylineWidth(poly, index)
+  return start + (end - start) * f
 }
 
 /**
@@ -147,8 +194,10 @@ const SPAN_EPS = 1e-9
 
 /**
  * The run of `poly` between two of its parameters, `from` before `to`: the
- * points met on the way and the bulges between them, a cut arc segment
- * keeping its centre and radius. Round a closed polyline `to` may pass its
+ * points met on the way and the bulges and widths between them, a cut arc
+ * segment keeping its centre and radius and a cut segment its width where it
+ * is cut (AutoCAD 2023's console: BREAK and TRIM of a 0→10 taper at a
+ * quarter leave 0→2.5). Round a closed polyline `to` may pass its
  * last segment and go on from the start. TRIM and BREAK cut polylines with
  * it.
  */
@@ -156,13 +205,14 @@ export function polylineSpan(
   poly: PolylineEntity,
   from: number,
   to: number
-): { vertices: Vec2[]; bulges: number[] } {
+): { vertices: Vec2[]; bulges: number[]; widths: PolylineWidth[] } {
   const segments = polylineSegmentGeometries(poly)
   const count = segments.length
   const segmentAt = (i: number) => segments[i % count]
   const first = Math.min(Math.floor(from + SPAN_EPS), count - 1)
   const vertices = [pointAlongSegment(segmentAt(first), from - first)]
   const bulges: number[] = []
+  const widths: PolylineWidth[] = []
   let t = from
   while (to - t > SPAN_EPS) {
     const i = Math.floor(t + SPAN_EPS)
@@ -178,10 +228,15 @@ export function polylineSpan(
           ? segment.bulge
           : Math.tan((f1 - f0) * Math.atan(segment.bulge))
     )
+    const index = i % count
+    widths.push([
+      polylineWidthAt(poly, index, f0),
+      polylineWidthAt(poly, index, f1),
+    ])
     vertices.push(pointAlongSegment(segment, f1))
     t = next
   }
-  return { vertices, bulges }
+  return { vertices, bulges, widths }
 }
 
 /** The point a fraction `f` along `segment`, its own vertex at either end. */
@@ -286,7 +341,21 @@ export function insertPolylineVertex(
     bulges = poly.bulges.slice()
     bulges.splice(segmentIndex, 1, 0, 0) // both halves are straight
   }
-  return reshaped(poly, vertices, bulges)
+  let widths: PolylineWidth[] | undefined
+  if (poly.widths) {
+    // The taper goes on through the new vertex (**unverified**: the console
+    // has no grips).
+    const [start, end] = polylineWidth(poly, segmentIndex)
+    const [a, b] = polylineSegments(poly)[segmentIndex]
+    const length = V.distance(a, b)
+    const middle =
+      length > 0
+        ? start + ((end - start) * V.distance(a, point)) / length
+        : start
+    widths = padWidths(poly)
+    widths.splice(segmentIndex, 1, [start, middle], [middle, end])
+  }
+  return reshaped(poly, vertices, bulges, widths)
 }
 
 /**
@@ -303,7 +372,29 @@ export function removePolylineVertex(
   if (n <= (poly.closed ? 3 : 2)) return null
   const vertices = poly.vertices.filter((_, i) => i !== index)
   const bulges = poly.bulges ? removeBulgeForVertex(poly, index) : undefined
-  return reshaped(poly, vertices, bulges)
+  const widths = poly.widths ? removeWidthsForVertex(poly, index) : undefined
+  return reshaped(poly, vertices, bulges, widths)
+}
+
+/**
+ * The widths after dropping vertex `index`: the segment spanning the gap
+ * keeps the widths of the vertex before it, as removing a vertex of an
+ * AcDbPolyline keeps the others' (**unverified**: the console has no grips).
+ */
+function removeWidthsForVertex(
+  poly: PolylineEntity,
+  index: number
+): PolylineWidth[] {
+  const widths = padWidths(poly)
+  const n = poly.vertices.length
+  if (!poly.closed && index === n - 1) widths.splice(n - 2, 1)
+  else widths.splice(index, 1)
+  return widths
+}
+
+/** A copy of the widths with one entry per segment. */
+function padWidths(poly: PolylineEntity): PolylineWidth[] {
+  return polylineSegments(poly).map((_, i) => polylineWidth(poly, i))
 }
 
 /** Rebuilds the bulge array after dropping vertex `index`, straightening the
@@ -349,26 +440,29 @@ export function setPolylineBulge(
     for (let i = 0; i < segCount; i++) bulges[i] = poly.bulges[i] ?? 0
   }
   bulges[segmentIndex] = Math.abs(bulge) < 1e-9 ? 0 : bulge
-  return reshaped(poly, poly.vertices, bulges)
+  return reshaped(poly, poly.vertices, bulges, poly.widths)
 }
 
 /**
- * `poly` with other vertices and bulges and everything else kept — its
- * overrides, plane and thickness. The factory still normalises the bulges.
+ * `poly` with other vertices, bulges and widths and everything else kept —
+ * its overrides, plane and thickness. The factory still normalises them.
  */
 function reshaped(
   poly: PolylineEntity,
   vertices: readonly Vec2[],
-  bulges: readonly number[] | undefined
+  bulges: readonly number[] | undefined,
+  widths: readonly PolylineWidth[] | undefined
 ): PolylineEntity {
   const fresh = createPolyline(
     vertices,
     poly.closed,
     poly.layerId,
     bulges,
-    poly.id
+    poly.id,
+    widths
   )
   const copy: Record<string, unknown> = { ...poly, ...fresh }
   if (!fresh.bulges) delete copy.bulges
+  if (!fresh.widths) delete copy.widths
   return copy as unknown as PolylineEntity
 }

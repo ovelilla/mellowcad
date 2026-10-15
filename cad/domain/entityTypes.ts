@@ -175,13 +175,22 @@ export interface SplineEntity extends BaseEntity {
  * is optional and, when present, is indexed like {@link polylineSegments}
  * (entry `i` = segment `i`; the closing segment is the last entry). A missing
  * or all-zero array means every segment is straight.
+ *
+ * `widths` is indexed the same way: each segment's starting and ending width
+ * (DXF 40 / 41 of the vertex it starts at), absent or all zero for none. A
+ * constant width (DXF 43) is not stored apart: it is every segment's one width,
+ * read with `polylineConstantWidth`.
  */
 export interface PolylineEntity extends BaseEntity, Thick {
   readonly type: "polyline"
   readonly vertices: readonly Vec2[]
   readonly closed: boolean
   readonly bulges?: readonly number[]
+  readonly widths?: readonly PolylineWidth[]
 }
+
+/** A polyline segment's starting and ending width, never negative. */
+export type PolylineWidth = readonly [start: number, end: number]
 
 /**
  * Where a text object hangs off its {@link TextEntity.position} — AutoCAD's

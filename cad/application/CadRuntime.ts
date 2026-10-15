@@ -427,6 +427,8 @@ export class CadRuntime extends Observable {
   private paletteTab: PaletteTab = "properties"
   // The Properties palette's object type filter; null is All.
   private propertiesFilter: EntityType | null = null
+  // The Properties palette's current vertex of a polyline (its Vertex row).
+  private paletteVertex = 0
   // Whether the Drawing Units dialog (UNITS) is showing.
   private unitsDialog = false
   // Whether the command prompt is shown. Hiding it is purely visual: typing
@@ -766,6 +768,7 @@ export class CadRuntime extends Observable {
     // starts at All.
     this.selection.subscribe(() => {
       this.propertiesFilter = null
+      this.paletteVertex = 0
     })
     this.selection.subscribe(onModelChange)
     this.viewport.subscribe(onModelChange)
@@ -2965,13 +2968,32 @@ export class CadRuntime extends Observable {
 
   /** Retypes a geometry value of the one object the Properties palette edits. */
   setSelectionProperty(property: EntityProperty, text: string): boolean {
+    const ids = this.scopeIds("properties")
+    if (property === "vertex") return this.setPaletteVertex(ids, text)
     return setSelectionProperty(
       this.document,
-      this.scopeIds("properties"),
+      ids,
       this.history,
       property,
-      text
+      text,
+      this.paletteVertex
     )
+  }
+
+  /**
+   * The polyline vertex the palette's Vertex row shows, as AutoCAD's palette
+   * steps through them: a number from 1 to the vertex count. No geometry
+   * changes, so nothing is undone.
+   */
+  private setPaletteVertex(ids: readonly EntityId[], text: string): boolean {
+    const entity = ids.length === 1 ? this.document.get(ids[0]) : undefined
+    const value = parseNumber(text)
+    if (entity?.type !== "polyline" || value === null) return false
+    const index = Math.round(value) - 1
+    if (index < 0 || index >= entity.vertices.length) return false
+    this.paletteVertex = index
+    this.invalidateState()
+    return true
   }
 
   /** Updates the text of a dynamic-input field (defaults to the active one). */
@@ -3599,6 +3621,7 @@ export class CadRuntime extends Observable {
           : null,
       ltScale: settings.ltScale,
       lwDisplay: settings.lwDisplay,
+      fillMode: settings.fillMode,
       attributeDisplay: settings.attributeDisplay,
       snap: this.currentSnap,
       snapLabel: this.currentSnap
@@ -4816,7 +4839,8 @@ export class CadRuntime extends Observable {
         selectedEntities,
         this.propertiesFilter,
         settings,
-        this.text
+        this.text,
+        this.paletteVertex
       ),
       selectionLayerId: commonSelectionLayer(selectedEntities),
       selectionColor: commonSelectionColor(selectedEntities),

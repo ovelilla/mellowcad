@@ -41,6 +41,12 @@ import {
   DimensionKind,
   HatchLoop,
   hasThickness,
+  isWidePolyline,
+  polylineConstantWidth,
+  PolylineEntity,
+  polylineSegments,
+  polylineWidth,
+  PolylineWidth,
   MTEXT_ATTACHMENTS,
   MTextAttachment,
   TEXT_JUSTIFICATIONS,
@@ -107,7 +113,7 @@ import { DRAWING_FILE_TYPE } from "./drawingSummary"
 export { DRAWING_FILE_TYPE }
 
 /** Current schema version written by {@link serializeDrawing}. */
-export const DRAWING_FILE_VERSION = 26
+export const DRAWING_FILE_VERSION = 27
 
 /** MIME type a serialised drawing is handed to the host as. */
 export const DRAWING_FILE_MIME_TYPE = "application/json"
@@ -133,10 +139,13 @@ export interface DrawingSnapshot {
  * objects, and so are a shown ViewCube (NAVVCUBEDISPLAY 3) and the default
  * Home view, so a drawing that never touched them reads as before 24, and a
  * current colour, linetype or lineweight that is ByLayer, as before 25, and a
- * UCS set as no orthographic one, as before 26.
+ * UCS set as no orthographic one, as before 26, and FILLMODE on and PLINEWID 0,
+ * as before 27.
  */
 export type StoredSettings = Omit<
   DocumentSettings,
+  | "fillMode"
+  | "polylineWidth"
   | "anglePrecision"
   | "elevation"
   | "thickness"
@@ -160,6 +169,8 @@ export type StoredSettings = Omit<
     >
   > & {
     readonly ucsOrthographic?: OrthographicUcs
+    readonly fillMode?: false
+    readonly polylineWidth?: number
     readonly ucs: StoredUcs
     readonly namedUcs: readonly { name: string; ucs: StoredUcs }[]
     readonly navVCubeDisplay?: 0
@@ -395,6 +406,7 @@ function cloneEntityShape(entity: Entity): Entity {
         vertices: entity.vertices.map((v) => ({ x: v.x, y: v.y })),
         closed: entity.closed,
         ...(entity.bulges ? { bulges: entity.bulges.slice() } : {}),
+        ...storedWidths(entity),
       }
     case "text":
       return {
@@ -578,6 +590,8 @@ function cloneLayer(layer: Layer): Layer {
 
 function storedSettings(settings: DocumentSettings): StoredSettings {
   const {
+    fillMode,
+    polylineWidth,
     anglePrecision,
     elevation,
     thickness,
@@ -604,6 +618,8 @@ function storedSettings(settings: DocumentSettings): StoredSettings {
     ...(anglePrecision ? { anglePrecision } : {}),
     ...(elevation ? { elevation } : {}),
     ...(thickness ? { thickness } : {}),
+    ...(fillMode ? {} : { fillMode: false as const }),
+    ...(polylineWidth ? { polylineWidth } : {}),
     ...(viewCube.visible ? {} : { navVCubeDisplay: 0 as const }),
     ...(viewCube.home
       ? {
@@ -698,6 +714,12 @@ function parseSettings(value: unknown): DocumentSettings {
     currentLineweight: isFiniteNumber(value.currentLineweight)
       ? clampLineweight(value.currentLineweight)
       : LINEWEIGHT_BYLAYER,
+    // A drawing from before 27 fills, and PLINE starts at 0.
+    fillMode: value.fillMode !== false,
+    polylineWidth:
+      isFiniteNumber(value.polylineWidth) && value.polylineWidth > 0
+        ? value.polylineWidth
+        : 0,
   }
 }
 
@@ -898,17 +920,17 @@ function parseEntityShape(raw: unknown): Entity | null {
       if (vertices.length < 2) return null
       const closed = typeof raw.closed === "boolean" ? raw.closed : false
       const bulges = parseBulges(raw.bulges)
-      return bulges
-        ? {
-            id,
-            type: "polyline",
-            layerId,
-            ...overrides,
-            vertices,
-            closed,
-            bulges,
-          }
-        : { id, type: "polyline", layerId, ...overrides, vertices, closed }
+      const widths = parseWidths(raw, vertices.length, closed)
+      return {
+        id,
+        type: "polyline",
+        layerId,
+        ...overrides,
+        vertices,
+        closed,
+        ...(bulges ? { bulges } : {}),
+        ...(widths ? { widths } : {}),
+      }
     }
     case "text": {
       const position = parseVec2(raw.position)
@@ -1299,6 +1321,54 @@ function parseBulges(value: unknown): number[] | undefined {
   if (!Array.isArray(value)) return undefined
   const bulges = value.map((b) => (isFiniteNumber(b) ? b : 0))
   return bulges.some((b) => b !== 0) ? bulges : undefined
+}
+
+/**
+ * A polyline's widths as DXF writes them: one `constantWidth` (43) when every
+ * segment has it, else each segment's `[start, end]` (40 / 41).
+ */
+function storedWidths(
+  poly: PolylineEntity
+): { constantWidth: number } | { widths: [number, number][] } | object {
+  if (!isWidePolyline(poly)) return {}
+  const constant = polylineConstantWidth(poly)
+  if (constant !== null) return { constantWidth: constant }
+  return {
+    widths: polylineSegments(poly).map((_, i): [number, number] => {
+      const [start, end] = polylineWidth(poly, i)
+      return [start, end]
+    }),
+  }
+}
+
+/**
+ * Reads a polyline's widths, tolerantly: a malformed or negative width is 0,
+ * a short list is padded and a long one cut to the segments. None at all
+ * (before 27) is none.
+ */
+function parseWidths(
+  raw: Record<string, unknown>,
+  vertexCount: number,
+  closed: boolean
+): PolylineWidth[] | undefined {
+  const count = closed && vertexCount > 2 ? vertexCount : vertexCount - 1
+  const width = (value: unknown) =>
+    isFiniteNumber(value) && value > 0 ? value : 0
+  let widths: PolylineWidth[]
+  if (isFiniteNumber(raw.constantWidth)) {
+    const constant = width(raw.constantWidth)
+    widths = Array.from({ length: count }, () => [constant, constant])
+  } else if (Array.isArray(raw.widths)) {
+    widths = Array.from({ length: count }, (_, i): PolylineWidth => {
+      const pair: unknown = (raw.widths as unknown[])[i]
+      return Array.isArray(pair) ? [width(pair[0]), width(pair[1])] : [0, 0]
+    })
+  } else {
+    return undefined
+  }
+  return widths.some(([start, end]) => start > 0 || end > 0)
+    ? widths
+    : undefined
 }
 
 function isRecord(value: unknown): value is Record<string, unknown> {

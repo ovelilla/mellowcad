@@ -17,6 +17,7 @@ export type {
   SplineMethod,
   SplineEntity,
   PolylineEntity,
+  PolylineWidth,
   TextJustify,
   TextEntity,
   MTextAttachment,
@@ -169,6 +170,11 @@ export {
 export type { PolylineSegmentGeometry } from "./polylines"
 export {
   polylineBulge,
+  polylineWidth,
+  polylineWidthAt,
+  polylineConstantWidth,
+  isWidePolyline,
+  withPolylineWidths,
   polylineSegmentGeometries,
   polylineSegments,
   nearestPolylineSegment,
@@ -182,6 +188,8 @@ export {
   removePolylineVertex,
   setPolylineBulge,
 } from "./polylines"
+export type { PolylineOutline } from "./polylineOutline"
+export { polylineOutline } from "./polylineOutline"
 
 export {
   assignTextStyle,

@@ -56,6 +56,7 @@ import { VPointTool } from "./tools/VPointTool"
 import { ViewTool } from "./tools/ViewTool"
 import { OrbitTool } from "./tools/OrbitTool"
 import { NavVCubeTool } from "./tools/NavVCubeTool"
+import { FillTool } from "./tools/FillTool"
 import { LtScaleTool } from "./tools/LtScaleTool"
 import { AuPrecTool } from "./tools/AuPrecTool"
 import { UndoTool } from "./tools/UndoTool"
@@ -149,6 +150,7 @@ export function defaultTools(
     new ViewTool(),
     new OrbitTool(),
     new NavVCubeTool(),
+    new FillTool(),
     new LtScaleTool(),
     new AuPrecTool(),
     new UndoTool(),

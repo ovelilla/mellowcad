@@ -392,7 +392,7 @@ describe("Spanish AutoCAD's command language", () => {
     cad.press("A")
     cad.press("Enter")
     expect(cad.state().commandLine.prompt).toBe(
-      "POL Precise punto final del arco (mantenga pulsada la tecla Ctrl para cambiar de dirección) o [ángUlo/cEntro/Dirección/líNea/Radio/Segundo pto./desHacer]:"
+      "POL Precise punto final del arco (mantenga pulsada la tecla Ctrl para cambiar de dirección) o [ángUlo/cEntro/Dirección/Mitad grosor/líNea/Radio/Segundo pto./desHacer/Grosor]:"
     )
     cad.escape()
 
@@ -826,9 +826,9 @@ describe("Spanish AutoCAD's command language", () => {
     })
     cad.command("RECTANG")
     expect(cad.state().commandLine.prompt).toBe(
-      "RECTANG Precise primer punto de esquina o [Chaflán/Elevación/eMpalme/Alt-objeto]:"
+      "RECTANG Precise primer punto de esquina o [Chaflán/Elevación/eMpalme/Alt-objeto/Grosor]:"
     )
-    expect(cad.optionAbbreviations()).toEqual(["C", "E", "M", "A"])
+    expect(cad.optionAbbreviations()).toEqual(["C", "E", "M", "A", "G"])
     cad.press("a")
     cad.press("Enter")
     expect(cad.state().commandLine.prompt).toBe(
@@ -836,9 +836,9 @@ describe("Spanish AutoCAD's command language", () => {
     )
     cad.type("3").enter().escape()
     expect(cad.commandLog().slice(-3)).toEqual([
-      "Precise primer punto de esquina o [Chaflán/Elevación/eMpalme/Alt-objeto]: a",
+      "Precise primer punto de esquina o [Chaflán/Elevación/eMpalme/Alt-objeto/Grosor]: a",
       "Precise Alt-objeto para rectángulos <0.00>: 3",
-      "Precise primer punto de esquina o [Chaflán/Elevación/eMpalme/Alt-objeto]: *Cancelar*",
+      "Precise primer punto de esquina o [Chaflán/Elevación/eMpalme/Alt-objeto/Grosor]: *Cancelar*",
     ])
     cad.command("RECTANG")
     expect(cad.commandLog().at(-1)).toBe(

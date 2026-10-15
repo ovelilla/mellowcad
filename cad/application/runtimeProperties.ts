@@ -10,6 +10,7 @@ import {
   EntityProperty,
   EntityType,
   entityPointToWorld,
+  worldToEntity,
   isZProperty,
   lineEndZ,
   lineStartZ,
@@ -195,7 +196,8 @@ export function setSelectionProperty(
   ids: readonly EntityId[],
   history: CommandHistory,
   property: EntityProperty,
-  text: string
+  text: string,
+  vertex = 0
 ): boolean {
   if (ids.length !== 1) return false
   const entity = document.get(ids[0])
@@ -206,7 +208,8 @@ export function setSelectionProperty(
     entity,
     property,
     value,
-    document.getSettings().ucs
+    document.getSettings().ucs,
+    vertex
   )
   if (!updated) return false
   history.execute(new UpdateEntityCommand(updated))
@@ -246,10 +249,26 @@ function applyInUcs(
   entity: Entity,
   property: EntityProperty,
   value: number,
-  ucs: Ucs
+  ucs: Ucs,
+  vertex: number
 ): Entity | null {
+  if (
+    entity.type === "polyline" &&
+    (property === "vertexX" || property === "vertexY")
+  ) {
+    // The vertex moves along that UCS axis, and stays in the polyline's plane.
+    const at = entity.vertices[vertex]
+    if (!at) return null
+    const target = ucsPointToWorld(ucs, {
+      ...worldPointToUcs(ucs, entityPointToWorld(entity, at)),
+      [property === "vertexX" ? "x" : "y"]: value,
+    })
+    const moved = worldToEntity(entity, target)
+    const x = applyEntityProperty(entity, "vertexX", moved.x, vertex)
+    return x && applyEntityProperty(x, "vertexY", moved.y, vertex)
+  }
   if (planeAxes(entity) || !isUpright(ucs)) {
-    return applyOffPlane(entity, property, value, ucs)
+    return applyOffPlane(entity, property, value, ucs, vertex)
   }
   if (isZProperty(property)) {
     // Thickness is a length along Z, not a position, so the origin does not apply.
@@ -258,7 +277,7 @@ function applyInUcs(
   }
   const row = COORDINATE_ROWS[property]
   if (!row || isWorldUcs(ucs)) {
-    return applyEntityProperty(entity, property, value)
+    return applyEntityProperty(entity, property, value, vertex)
   }
   const point = rowPoint(entity, row.point)
   if (!point) return null
@@ -307,10 +326,11 @@ function applyOffPlane(
   entity: Entity,
   property: EntityProperty,
   value: number,
-  ucs: Ucs
+  ucs: Ucs,
+  vertex: number
 ): Entity | null {
   const row = POSITION_ROWS[property]
-  if (!row) return applyEntityProperty(entity, property, value)
+  if (!row) return applyEntityProperty(entity, property, value, vertex)
   if (entity.type === "line") {
     if (row.point !== "start" && row.point !== "end") return null
     const start: Vec3 = { ...entity.start, z: lineStartZ(entity) }
@@ -428,7 +448,8 @@ export function buildPropertiesUi(
   entities: readonly Entity[],
   filter: EntityType | null,
   settings: DocumentSettings,
-  text: EngineText
+  text: EngineText,
+  vertex = 0
 ): PropertiesUi {
   const counts = new Map<EntityType, number>()
   for (const entity of entities) {
@@ -451,7 +472,7 @@ export function buildPropertiesUi(
     // With one type there is no All entry: the type is the whole selection.
     filter: shown ?? (types.length === 1 ? types[0].type : null),
     filters,
-    info: buildSelectionInfo(edited, settings, text),
+    info: buildSelectionInfo(edited, settings, text, vertex),
     layerId: commonSelectionLayer(edited),
     color: commonSelectionColor(edited),
     linetype: commonSelectionLinetype(edited),

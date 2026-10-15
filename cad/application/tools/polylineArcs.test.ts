@@ -25,7 +25,7 @@ function drawn(cad: CadHarness): { at: string[]; bulges: number[] } {
 }
 
 const ARC_PROMPT =
-  "Specify endpoint of arc (hold Ctrl to switch direction) or [Angle/CEnter/CLose/Direction/Line/Radius/Second pt/Undo]:"
+  "Specify endpoint of arc (hold Ctrl to switch direction) or [Angle/CEnter/CLose/Direction/Halfwidth/Line/Radius/Second pt/Undo/Width]:"
 
 // AutoCAD 2023's console is the reference for every prompt, refusal and
 // bulge below (its LIST of the polyline drawn by the same answers).
@@ -35,11 +35,11 @@ describe("PLINE's arc mode", () => {
     cad.command("PLINE")
     answerLine(cad, "0,0")
     expect(cad.state().commandLine.prompt).toBe(
-      "PLINE Specify next point or [Arc/Length/Undo]:"
+      "PLINE Specify next point or [Arc/Halfwidth/Length/Undo/Width]:"
     )
     answerLine(cad, "10,0")
     expect(cad.state().commandLine.prompt).toBe(
-      "PLINE Specify next point or [Arc/Close/Length/Undo]:"
+      "PLINE Specify next point or [Arc/Close/Halfwidth/Length/Undo/Width]:"
     )
     answerLine(cad, "A", "FOO")
     expect(cad.commandLog().slice(-2)).toEqual([
@@ -63,8 +63,8 @@ describe("PLINE's arc mode", () => {
     answerLine(cad, "0,0", "A", "A", "FOO", "90", "R", "FOO", "10", "FOO", "45")
     expect(cad.commandLog().slice(2, 14)).toEqual([
       "Current line-width is 0.00",
-      "Specify next point or [Arc/Length/Undo]: A",
-      "Specify endpoint of arc (hold Ctrl to switch direction) or [Angle/CEnter/Direction/Line/Radius/Second pt/Undo]: A",
+      "Specify next point or [Arc/Halfwidth/Length/Undo/Width]: A",
+      "Specify endpoint of arc (hold Ctrl to switch direction) or [Angle/CEnter/Direction/Halfwidth/Line/Radius/Second pt/Undo/Width]: A",
       "Specify included angle: FOO",
       "Requires valid numeric angle or second point.",
       "Specify included angle: 90",
@@ -140,7 +140,7 @@ describe("PLINE's arc mode", () => {
     blank.command("PLINE")
     answerLine(blank, "0,0", "A", "10,0")
     expect(blank.commandLog().slice(-2)).toEqual([
-      "Specify endpoint of arc (hold Ctrl to switch direction) or [Angle/CEnter/Direction/Line/Radius/Second pt/Undo]: 10,0",
+      "Specify endpoint of arc (hold Ctrl to switch direction) or [Angle/CEnter/Direction/Halfwidth/Line/Radius/Second pt/Undo/Width]: 10,0",
       "*Invalid*",
     ])
   })
@@ -152,7 +152,7 @@ describe("PLINE's arc mode", () => {
     expect(cad.commandLog().at(-1)).toBe("All segments already undone.")
     answerLine(cad, "A", "R", "10", "10,10", "U")
     expect(cad.state().commandLine.prompt).toBe(
-      "PLINE Specify next point or [Arc/Length/Undo]:"
+      "PLINE Specify next point or [Arc/Halfwidth/Length/Undo/Width]:"
     )
   })
 
@@ -188,7 +188,7 @@ describe("PLINE's arc mode", () => {
     cad.command("POL")
     answerLine(cad, "0,0", "10,0", "A")
     expect(cad.state().commandLine.prompt).toBe(
-      "POL Precise punto final del arco (mantenga pulsada la tecla Ctrl para cambiar de dirección) o [ángUlo/cEntro/Cerrar/Dirección/líNea/Radio/Segundo pto./desHacer]:"
+      "POL Precise punto final del arco (mantenga pulsada la tecla Ctrl para cambiar de dirección) o [ángUlo/cEntro/Cerrar/Dirección/Mitad grosor/líNea/Radio/Segundo pto./desHacer/Grosor]:"
     )
     answerLine(cad, "E", "20,0", "U", "FOO")
     expect(cad.commandLog().slice(-4)).toEqual([
@@ -209,7 +209,7 @@ describe("PLINE's Length", () => {
     expect(cad.state().commandLine.prompt).toBe("PLINE Specify length of line:")
     answerLine(cad, "FOO", "", "50")
     expect(cad.commandLog().slice(-6)).toEqual([
-      "Specify next point or [Arc/Close/Length/Undo]: L",
+      "Specify next point or [Arc/Close/Halfwidth/Length/Undo/Width]: L",
       "Specify length of line: FOO",
       "Requires numeric distance or second point.",
       "Specify length of line:",
@@ -217,7 +217,7 @@ describe("PLINE's Length", () => {
       "Specify length of line: 50",
     ])
     expect(cad.state().commandLine.prompt).toBe(
-      "PLINE Specify next point or [Arc/Close/Length/Undo]:"
+      "PLINE Specify next point or [Arc/Close/Halfwidth/Length/Undo/Width]:"
     )
     answerLine(cad, "")
     expect(drawn(cad).at).toEqual(["0,0", "100,0", "150,0"])
@@ -262,7 +262,7 @@ describe("PLINE's Length", () => {
     cad.command("POL")
     answerLine(cad, "0,0", "100,0")
     expect(cad.state().commandLine.prompt).toBe(
-      "POL Precise punto siguiente o [Arco/Cerrar/Longitud/desHacer]:"
+      "POL Precise punto siguiente o [Arco/Cerrar/Mitad grosor/Longitud/desHacer/Grosor]:"
     )
     answerLine(cad, "L", "FOO", "50", "")
     expect(cad.commandLog().slice(-4, -1)).toEqual([

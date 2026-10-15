@@ -295,6 +295,7 @@ export const TOOL_COMMANDS: Readonly<Record<string, string>> = {
   view: "VIEW",
   orbit: "3DORBIT",
   navvcube: "NAVVCUBE",
+  fill: "FILL",
   ltscale: "LTSCALE",
   auprec: "AUPREC",
   undo: "UNDO",

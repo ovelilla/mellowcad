@@ -186,7 +186,11 @@ describe("every command language", () => {
    * worded as a message. A value shown beside a keyword (`Erase: No`) is not
    * a keyword of that prompt.
    */
-  function sharedPrompts(): { command: string; ids: string[] }[] {
+  function sharedPrompts(): {
+    command: string
+    prompt?: string
+    ids: string[]
+  }[] {
     const surface = readFileSync(
       resolve(LOCALES_DIR, "../application/__snapshots__/englishSurface.txt"),
       "utf8"
@@ -195,14 +199,16 @@ describe("every command language", () => {
     // `UCS Specify origin of UCS or [NAmed/…/ZAxis] <World>:`.
     const prompts = [
       ...surface.matchAll(
-        /^ {2}prompt: (\S+) (?:[^[\n]* )?\[([^\]\n]+)\](?: <[^>\n]*>)?:$/gm
+        /^ {2}prompt: (\S+) (?:([^[\n]*) )?\[([^\]\n]+)\](?: <[^>\n]*>)?:$/gm
       ),
-    ].map(
-      ([, command, list]) => ({
-        command,
-        ids: list.split("/").map((entry) => entry.split(": ")[0]),
-      })
-    )
+    ].map(([, command, question, list]) => ({
+      command,
+      // Its id, for the words one prompt spells otherwise (promptKeywords).
+      prompt: Object.entries(en.commands.prompts).find(
+        ([, text]) => text === question
+      )?.[0],
+      ids: list.split("/").map((entry) => entry.split(": ")[0]),
+    }))
     const justify = ["Left", "Center", "Right", "Middle"]
     const corners = ["TL", "TC", "TR", "ML", "MC", "MR", "BL", "BC", "BR"]
     return [...prompts, { command: "TEXT", ids: [...justify, ...corners] }]
@@ -212,14 +218,18 @@ describe("every command language", () => {
     const prompts = sharedPrompts()
     expect(prompts.length).toBeGreaterThan(40)
     for (const tag of catalogTags()) {
-      const keywords = (
-        (readCatalog(tag) as Tree).commands as Tree | undefined
-      )?.keywords as
-        | Readonly<Record<string, Readonly<Record<string, string>>>>
-        | undefined
+      type Words = Readonly<Record<string, Readonly<Record<string, string>>>>
+      const commands = (readCatalog(tag) as Tree).commands as Tree | undefined
+      const keywords = commands?.keywords as Words | undefined
+      const promptKeywords = (commands?.promptKeywords ?? {}) as Words
       if (!keywords) continue
-      for (const { command, ids } of prompts) {
-        const words = ids.map((id) => keywords[command]?.[id] ?? id)
+      for (const { command, prompt, ids } of prompts) {
+        const words = ids.map(
+          (id) =>
+            (prompt && promptKeywords[prompt]?.[id]) ??
+            keywords[command]?.[id] ??
+            id
+        )
         const abbreviations = words.map((word) =>
           abbreviationOf(word).toUpperCase()
         )

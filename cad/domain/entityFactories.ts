@@ -13,6 +13,7 @@ import {
   CircleEntity,
   ArcEntity,
   PolylineEntity,
+  PolylineWidth,
   HatchLoop,
   HatchEntity,
   BlockId,
@@ -86,9 +87,11 @@ export function createPolyline(
   closed: boolean = false,
   layerId: LayerId = DEFAULT_LAYER_ID,
   bulges?: readonly number[],
-  id: EntityId = nextEntityId()
+  id: EntityId = nextEntityId(),
+  widths?: readonly PolylineWidth[]
 ): PolylineEntity {
   const normalized = normalizeBulges(bulges)
+  const wide = normalizeWidths(widths)
   return {
     id,
     type: "polyline",
@@ -96,6 +99,7 @@ export function createPolyline(
     vertices: vertices.map((v) => ({ x: v.x, y: v.y })),
     closed,
     ...(normalized ? { bulges: normalized } : {}),
+    ...(wide ? { widths: wide } : {}),
   }
 }
 
@@ -183,6 +187,20 @@ export function createBlockDefinition(
  * Drops a bulge array that carries no arcs (undefined or all zeros) so a
  * straight polyline never stores a redundant array, and copies it otherwise.
  */
+/** A width is never negative, and no width at all is stored as none. */
+function normalizeWidths(
+  widths: readonly PolylineWidth[] | undefined
+): readonly PolylineWidth[] | undefined {
+  if (!widths) return undefined
+  const clean = widths.map(([start, end]): PolylineWidth => [
+    start > 0 ? start : 0,
+    end > 0 ? end : 0,
+  ])
+  return clean.some(([start, end]) => start !== 0 || end !== 0)
+    ? clean
+    : undefined
+}
+
 function normalizeBulges(
   bulges: readonly number[] | undefined
 ): readonly number[] | undefined {

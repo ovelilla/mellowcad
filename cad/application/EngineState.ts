@@ -33,6 +33,8 @@ import {
   polylineArea,
   polylineLength,
   polylineSegments,
+  polylineConstantWidth,
+  polylineWidth,
   splineArea,
   dimensionMeasurement,
   dimensionMeasurementUnit,
@@ -745,12 +747,13 @@ function fieldUnitSuffix(
 export function buildSelectionInfo(
   entities: ReadonlyArray<Entity>,
   settings: DocumentSettings,
-  text: EngineText
+  text: EngineText,
+  vertex = 0
 ): SelectionInfo | null {
   if (entities.length === 0) return null
   if (entities.length === 1) {
     return {
-      ...singleEntityInfo(entities[0], settings, text),
+      ...singleEntityInfo(entities[0], settings, text, vertex),
       general: generalRows(entities[0], settings, text),
     }
   }
@@ -782,7 +785,8 @@ function generalRows(
 function singleEntityInfo(
   entity: Entity,
   settings: DocumentSettings,
-  text: EngineText
+  text: EngineText,
+  vertex: number
 ): Omit<SelectionInfo, "general"> {
   const length = (value: number) =>
     `${formatLength(value, settings)} ${unitSuffix(settings.unit)}`
@@ -969,11 +973,40 @@ function singleEntityInfo(
       }
     }
     case "polyline": {
+      // AutoCAD's current vertex, its point and the segment it starts.
+      const current = Math.min(vertex, entity.vertices.length - 1)
+      const segments = polylineSegments(entity).length
+      const [start, end] = polylineWidth(entity, current)
+      const constant = polylineConstantWidth(entity)
       return {
         title: title("polyline"),
         count: 1,
         groups: [
           group("geometry", [
+            {
+              ...row("vertex", String(current + 1)),
+              edit: { property: "vertex", text: String(current + 1), unit: "" },
+            },
+            coordRow("vertexX", "vertexX", at(entity.vertices[current]).x),
+            coordRow("vertexY", "vertexY", at(entity.vertices[current]).y),
+            ...(current < segments
+              ? [
+                  lengthRow("startSegmentWidth", "startSegmentWidth", start),
+                  lengthRow("endSegmentWidth", "endSegmentWidth", end),
+                ]
+              : []),
+            // WHY blank where the widths vary: one value would be a lie
+            // (**unverified** what AutoCAD's palette shows there).
+            constant === null
+              ? {
+                  ...row("globalWidth", ""),
+                  edit: {
+                    property: "globalWidth",
+                    text: "",
+                    unit: unitSuffix(settings.unit),
+                  },
+                }
+              : lengthRow("globalWidth", "globalWidth", constant),
             row("length", length(polylineLength(entity))),
             ...(entity.closed ? [row("area", area(polylineArea(entity)))] : []),
             row("vertices", String(entity.vertices.length)),

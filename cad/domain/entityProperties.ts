@@ -9,8 +9,15 @@ import {
   MTextEntity,
   AttributeDefinitionEntity,
   InsertEntity,
+  PolylineEntity,
   Entity,
 } from "./entityTypes"
+import {
+  polylineSegments,
+  polylineWidth,
+  replacePolylineVertex,
+  withPolylineWidths,
+} from "./polylines"
 import { ellipseSemiMajor, ellipseSemiMinor, ellipseWithAxes } from "./ellipses"
 import { lineLength, lineAngleDegrees } from "./entityMeasures"
 import {
@@ -56,6 +63,13 @@ export type EntityProperty =
   | "patternScale"
   | "patternAngle"
   | "insertScale"
+  /** The palette's current vertex of a polyline, 1-based: the runtime's, no geometry. */
+  | "vertex"
+  | "vertexX"
+  | "vertexY"
+  | "startSegmentWidth"
+  | "endSegmentWidth"
+  | "globalWidth"
   | ZProperty
 
 /** The rows that write an object's Z, all in the WCS here. */
@@ -89,12 +103,14 @@ const PLANE_ROWS: Readonly<
  * Properties palette: a line keeps its start point when you retype its length
  * or angle, a circle keeps its centre when you retype its radius. Angles are in
  * degrees, CCW from +X. Returns null when the value doesn't apply to the entity
- * or would degenerate it.
+ * or would degenerate it. A polyline's vertex rows act on its `vertex`th
+ * vertex (0-based), the palette's current one.
  */
 export function applyEntityProperty(
   entity: Entity,
   property: EntityProperty,
-  value: number
+  value: number,
+  vertex = 0
 ): Entity | null {
   if (!Number.isFinite(value)) return null
   if (isZProperty(property)) return applyZProperty(entity, property, value)
@@ -130,6 +146,7 @@ export function applyEntityProperty(
       }
       return null
     case "polyline":
+      return applyPolylineProperty(entity, property, value, vertex)
     case "spline":
       return null
     case "insert":
@@ -138,6 +155,51 @@ export function applyEntityProperty(
 }
 
 const toRadians = (degrees: number) => (degrees * Math.PI) / 180
+
+/**
+ * A polyline's Geometry rows: the current vertex's X and Y, the starting and
+ * ending width of the segment it starts, and the Global width every segment
+ * takes. A width is never negative; the last vertex of an open polyline
+ * starts no segment, so it has no widths to set.
+ */
+function applyPolylineProperty(
+  poly: PolylineEntity,
+  property: EntityProperty,
+  value: number,
+  vertex: number
+): PolylineEntity | null {
+  const { vertices } = poly
+  if (vertex < 0 || vertex >= vertices.length) return null
+  switch (property) {
+    case "vertexX":
+    case "vertexY": {
+      const at = vertices[vertex]
+      return replacePolylineVertex(
+        poly,
+        vertex,
+        property === "vertexX" ? { x: value, y: at.y } : { x: at.x, y: value }
+      )
+    }
+    case "startSegmentWidth":
+    case "endSegmentWidth": {
+      const count = polylineSegments(poly).length
+      if (value < 0 || vertex >= count) return null
+      const widths = polylineSegments(poly).map((_, i) => polylineWidth(poly, i))
+      const [start, end] = widths[vertex]
+      widths[vertex] =
+        property === "startSegmentWidth" ? [value, end] : [start, value]
+      return withPolylineWidths(poly, widths)
+    }
+    case "globalWidth":
+      if (value < 0) return null
+      return withPolylineWidths(
+        poly,
+        polylineSegments(poly).map(() => [value, value])
+      )
+    default:
+      return null
+  }
+}
 
 function applyZProperty(
   entity: Entity,

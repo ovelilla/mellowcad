@@ -70,6 +70,7 @@ export const es: EngineLocale = {
       "dashpan": "Encuadre por puntos",
       "ucs": "SCP",
       "ucsicon": "Icono SCP",
+      "fill": "Rellenar",
       "ucsiconvariable": "Icono SCP (variable)",
       "plan": "Vista en planta",
       "elev": "Elevación",
@@ -367,6 +368,10 @@ export const es: EngineLocale = {
         "radiusRatio": "Relación de radios",
         "vertices": "Vértices",
         "segments": "Segmentos",
+        "vertex": "Vértice",
+        "startSegmentWidth": "Anchura inicial del segmento",
+        "endSegmentWidth": "Anchura final del segmento",
+        "globalWidth": "Grosor global",
         "closed": "Cerrado",
         "contents": "Contenido",
         "justify": "Justificar",
@@ -760,6 +765,9 @@ export const es: EngineLocale = {
       "UCSICON": [
         "SIMBSCP"
       ],
+      "FILL": [
+        "RELLENAR"
+      ],
       "PLAN": [
         "PLANTA"
       ],
@@ -849,7 +857,9 @@ export const es: EngineLocale = {
         "Arc": "Arco",
         "Line": "líNea",
         "Close": "Cerrar",
+        "Halfwidth": "Mitad",
         "Undo": "desHacer",
+        "Width": "Grosor",
         "Angle": "ángUlo",
         "Center": "cEntro",
         "Direction": "Dirección",
@@ -884,6 +894,12 @@ export const es: EngineLocale = {
         "3P": "3P",
         "2P": "2P",
         "Ttr": "Ttr"
+      },
+      "FILL": {
+        "0": "0",
+        "1": "1",
+        "ON": "ACT",
+        "OFF": "DES"
       },
       "ELLIPSE": {
         "Arc": "Arco",
@@ -1321,6 +1337,9 @@ export const es: EngineLocale = {
       },
       "specifyNextPointOr": {
         "Line": "líNea"
+      },
+      "specifyFirstCornerPointOr": {
+        "Width": "Grosor"
       }
     },
     "prompts": {
@@ -1356,6 +1375,7 @@ export const es: EngineLocale = {
       "rectangleFirstChamfer": "Precise primera distancia de chaflán para rectángulos",
       "rectangleSecondChamfer": "Precise segunda distancia de chaflán para rectángulos",
       "rectangleFillet": "Precise radio de empalme para rectángulos",
+      "rectangleLineWidth": "Precise grosor de línea para rectángulos",
       "rectangleArea": "Precise área del rectángulo con las unidades actuales",
       "rectangleAreaBasis": "Calcular cotas del rectángulo en función de",
       "rectangleLength": "Precise longitud del rectángulo",
@@ -1505,6 +1525,11 @@ export const es: EngineLocale = {
       "idPoint": "Precise punto",
       "distSecondPointOr": "Especifique segundo punto o",
       "specifyLengthOfLine": "Precise longitud de línea",
+      "polylineStartingWidth": "Precise grosor inicial",
+      "polylineEndingWidth": "Precise grosor final",
+      "polylineStartingHalfWidth": "Precise mitad de grosor inicial",
+      "polylineEndingHalfWidth": "Precise mitad de grosor final",
+      "fillMode": "Indique modo",
       "matchpropSource": "Seleccione el objeto de origen",
       "matchpropDestination": "Seleccione objeto(s) de destino",
       "viewPoint": "Precise un punto de vista",
@@ -2170,6 +2195,7 @@ export const es: EngineLocale = {
           }
         ]
       ],
+      "explodeLostWidth": "Al descomponer esta línea se ha perdido información de grosor.\nSe puede restituir con el comando DESHACER.",
       "currentUcsName": [
         "Nombre de scp actual:  ",
         [
@@ -2485,6 +2511,19 @@ export const es: EngineLocale = {
           }
         ],
         [
+          "hasWidth",
+          1,
+          {
+            "yes": [
+              "  Grosor=",
+              [
+                "width"
+              ]
+            ],
+            "other": ""
+          }
+        ],
+        [
           "hasRotation",
           1,
           {
@@ -2769,6 +2808,7 @@ export const es: EngineLocale = {
       "circleDoesNotExist": "El círculo no existe.",
       "noLineOrArcToContinue": "No hay línea o arco que se pueda continuar.",
       "positiveNonzero": "El valor debe ser positivo y diferente de cero.",
+      "valueMustBePositive": "El valor debe ser positivo.",
       "lineweightRequired": "Se precisa un grosor en unidades de grosor de línea.",
       "lineweightRounded": [
         "Grosor de línea redondeado al valor válido más cercano de ",
@@ -3151,6 +3191,9 @@ export const es: EngineLocale = {
       "CIRCLED": {
         "Ttr": "Ttr (Tangente tangente radio)"
       },
+      "PLINE": {
+        "Halfwidth": "Mitad grosor"
+      },
       "DIST": {
         "Multiple": "puntos Múltiples"
       },
@@ -3185,6 +3228,9 @@ export const es: EngineLocale = {
         "Lock position": "Bloquear posición"
       },
       "ATTDISP": {
+        "OFF": "DES"
+      },
+      "FILL": {
         "OFF": "DES"
       },
       "UNDO": {

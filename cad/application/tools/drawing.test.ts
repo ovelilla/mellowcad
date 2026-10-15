@@ -1069,10 +1069,10 @@ describe("PLINE", () => {
       "PLINE",
       "Specify start point:",
       "Current line-width is 0.00",
-      "Specify next point or [Arc/Length/Undo]:",
-      "Specify next point or [Arc/Close/Length/Undo]: A",
-      "Specify endpoint of arc (hold Ctrl to switch direction) or [Angle/CEnter/CLose/Direction/Line/Radius/Second pt/Undo]:",
-      "Specify endpoint of arc (hold Ctrl to switch direction) or [Angle/CEnter/CLose/Direction/Line/Radius/Second pt/Undo]:",
+      "Specify next point or [Arc/Halfwidth/Length/Undo/Width]:",
+      "Specify next point or [Arc/Close/Halfwidth/Length/Undo/Width]: A",
+      "Specify endpoint of arc (hold Ctrl to switch direction) or [Angle/CEnter/CLose/Direction/Halfwidth/Line/Radius/Second pt/Undo/Width]:",
+      "Specify endpoint of arc (hold Ctrl to switch direction) or [Angle/CEnter/CLose/Direction/Halfwidth/Line/Radius/Second pt/Undo/Width]:",
     ])
   })
 

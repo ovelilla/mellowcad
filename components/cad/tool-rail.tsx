@@ -298,6 +298,8 @@ const RAIL_EXCLUDED = new Set([
   "vpoint",
   "view",
   "navvcube",
+  // FILL is typed, as AutoCAD's: no panel offers it.
+  "fill",
   "ltscale",
   "auprec",
   // UNDO and MREDO are typed; the top bar has Undo and Redo.

@@ -10,6 +10,8 @@ import {
   carryOverrides,
   createPolyline,
   polylineSegmentGeometries,
+  polylineWidth,
+  type PolylineWidth,
 } from "../../domain/entities"
 import { curveCrossing } from "./curveFillets"
 import { ToolContext } from "./Tool"
@@ -367,7 +369,10 @@ function segmentPair(
  * `poly` with each corner's segments cut back to it and joined by its cut;
  * the segment a corner replaces goes. A corner from the last segment of an open
  * polyline round to its first closes it. What is left of an arc segment stays
- * on its circle, or with `chords` keeps its radius over its new chord.
+ * on its circle, or with `chords` keeps its radius over its new chord. A cut
+ * segment keeps its widths, shortened or not, and a corner's arc or bevel runs
+ * from the width the segment before it ends at to the one the segment after
+ * it starts at (AutoCAD 2023's console, acc/w19, w20, w23).
  */
 function rebuild(
   poly: PolylineEntity,
@@ -383,6 +388,7 @@ function rebuild(
   const replaced = new Set(corners.map((c) => c.arc))
   const points: Vec2[] = []
   const bulges: number[] = []
+  const widths: PolylineWidth[] = []
   for (let s = 0; s < count; s++) {
     if (replaced.has(s)) continue
     const segment = segments[s]
@@ -399,9 +405,14 @@ function rebuild(
             ? refitArcBulge(segment.bulge, segment.radius, from, to)
             : bulgeBetween(segment, from, to)
     )
+    widths.push(polylineWidth(poly, s))
     if (corner && !V.equals(corner.cut.entry, corner.cut.exit)) {
       points.push(corner.cut.entry)
       bulges.push(corner.cut.bulge)
+      widths.push([
+        polylineWidth(poly, corner.inSeg)[1],
+        polylineWidth(poly, corner.outSeg)[0],
+      ])
     }
   }
   if (!closed) {
@@ -410,7 +421,7 @@ function rebuild(
   }
   return carryOverrides(
     poly,
-    createPolyline(points, closed, poly.layerId, bulges, poly.id)
+    createPolyline(points, closed, poly.layerId, bulges, poly.id, widths)
   )
 }
 

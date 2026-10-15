@@ -107,6 +107,18 @@ snapping, command history, adapters) is in `cad-runtime.instructions.md`; writin
   orientation (mirror) must reflect _and swap_ the angles to preserve the invariant.
 - Polyline `bulges[i]` is AutoCAD's `tan(θ/4)` for segment `i`, indexed like `polylineSegments`.
   Mirroring negates them; translate/rotate/uniform-scale leave them untouched.
+- Polyline `widths[i]` is segment `i`'s starting and ending width (DXF 40 / 41), indexed the
+  same way; none at all is no array. A constant width (DXF 43, LIST's `Constant width`) is
+  derived — `polylineConstantWidth` — and only the file writes it apart. SCALE scales widths,
+  everything else keeps them. **Anything that rebuilds a polyline from another carries them**
+  (`createPolyline`'s sixth argument; spreads keep them): a piece cut through a segment takes
+  the width where it is cut (`polylineSpan`'s `widths`: TRIM, BREAK), a segment FILLET or
+  CHAMFER shortens keeps its own, and a new corner segment runs from the width before it to
+  the width after (`polylineCorners.ts`' `rebuild`, `cornerObjects.ts`' `joinAtCut`) — as
+  AutoCAD's console does each. A wide polyline is an area: `polylineOutline`
+  (`polylineOutline.ts`) gives its bands — mitred where two straight ones meet, a wedge where
+  an arc meets another at an angle — and is what drawing, bounds and window crossing read;
+  `closestOnEntity` picks it anywhere on its band. Never derive the edges in a caller.
 - `polylineSegmentGeometries()` is the single source of truth for how a polyline is shaped —
   rendering, bounds, hit-testing, explode and snapping all read it. Do not re-derive segments.
   A hatch boundary loop is the same shape (`hatchLoopSegments()`), but it **always closes**, even
@@ -138,6 +150,7 @@ snapping, command history, adapters) is in `cad-runtime.instructions.md`; writin
 | `entityTypes.ts`                                                              | the interfaces, the `Entity` union, `Bounds`                         |
 | `entityFactories.ts`                                                          | `nextEntityId` and the `create*` that have no geometry of their own  |
 | `text.ts` `dimensions.ts` `polylines.ts` `hatch.ts` `blocks.ts` `ellipses.ts` | one type's own geometry, its factory included                        |
+| `polylineOutline.ts`                                                          | a wide polyline's bands, derived for drawing, bounds and picking     |
 | `entityOverrides.ts`                                                          | `assign*`, `carryOverrides`, `matchEntityProperties`                 |
 | `elevation.ts`                                                                | the Z fields: readers, `with*`, `carryPlane`, the Z of scale/shift   |
 | `entityTransforms.ts`                                                         | translate / stretch / copy / rotate / scale / mirror (+ `*Copy`)     |
@@ -221,6 +234,12 @@ and `splineCurve` derives the control points and knots every time. Queries with 
 (bounds, crossing, length, area, the Intersection snap) read `splinePolyline` at its default
 tolerance, a hundred-thousandth of the curve's size; the closest point refines that with a bounded
 Newton. A future curve of the same kind (a helix, an offset spline) follows the same split.
+
+**A wide polyline is filled only seen in plan**, and only with FILLMODE on
+(`SceneInput.fillMode`, `EntityDrawOptions.fill`, on when absent so a ghost fills too): off the
+plan, or with FILL off, its bands are outlined. In plan its lineweight is not drawn — "wide
+polylines display lineweights only when displayed outside of plan view" — so `pushEntities`
+gives it the hairline; its width is what it shows.
 
 **Both presenters clip segments to the frame** (`adapters/clipSegment.ts`): a scene draws alignment
 paths millions of pixels long. SVG would dash them end to end, and so does Chrome's canvas unless

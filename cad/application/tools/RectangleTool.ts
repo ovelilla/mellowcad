@@ -35,7 +35,13 @@ import { withCurrentProperties } from "./currentProperties"
 import { headingInUcs } from "./ucsHeading"
 
 /** A value the first prompt's options ask. */
-type Mode = "elevation" | "thickness" | "chamferFirst" | "chamferSecond" | "fillet"
+type Mode =
+  | "elevation"
+  | "thickness"
+  | "chamferFirst"
+  | "chamferSecond"
+  | "fillet"
+  | "width"
 type Side = "length" | "width"
 
 /**
@@ -43,8 +49,7 @@ type Side = "length" | "width"
  * RECTANG session): two opposite corners define a rectangle along the UCS
  * turned by Rotation, created as a single closed polyline; Area and
  * Dimensions give its size instead. Single-shot — the command ends once the
- * rectangle is made. Of the first prompt's options Width is not offered: the
- * polyline has no widths.
+ * rectangle is made.
  */
 type RectangleToolState =
   /** Awaiting the first corner. */
@@ -91,6 +96,8 @@ export class RectangleTool implements Tool {
   private elevation = 0
   private thickness = 0
   private corners: Corners = { kind: null, first: 0, second: 0 }
+  /** Width's line width, negative as typed (acc/w6), drawn as none. */
+  private lineWidth = 0
   /** Degrees from the UCS X axis. */
   private rotation = 0
   private area = 100
@@ -186,6 +193,7 @@ export class RectangleTool implements Tool {
           { id: "Elevation" },
           { id: "Fillet" },
           { id: "Thickness" },
+          { id: "Width" },
         ]
       case "second":
         return [{ id: "Area" }, { id: "Dimensions" }, { id: "Rotation" }]
@@ -332,13 +340,16 @@ export class RectangleTool implements Tool {
         return { id: "rectangleSecondChamfer", enter: secondDefault(second, first) }
       case "fillet":
         return { id: "rectangleFillet", enter: first }
+      case "width":
+        return { id: "rectangleLineWidth", enter: this.lineWidth }
     }
   }
 
   /**
    * A value of the first prompt's options, offering the current one. Negative
    * values are taken, as AutoCAD takes them: a negative fillet turns the
-   * corners' arcs inside out.
+   * corners' arcs inside out, and a negative width is listed as typed and
+   * drawn as none (acc/w6).
    */
   private askMode(mode: Mode, ctx: ToolContext): void {
     this.state = { phase: "mode", mode }
@@ -356,6 +367,9 @@ export class RectangleTool implements Tool {
         break
       case "thickness":
         this.thickness = value
+        break
+      case "width":
+        this.lineWidth = value
         break
       case "chamferFirst":
         this.corners = { ...corners, first: value }
@@ -534,12 +548,14 @@ export class RectangleTool implements Tool {
       Math.abs(width),
       length * width > 0
     )
+    const lineWidth = Math.max(0, this.lineWidth)
     const rectangle = createPolyline(
       vertices.map((point) => ucsPointToWorld(ctx.ucs, point)),
       true,
       ctx.document.getCurrentLayerId(),
       bulges,
-      id
+      id,
+      vertices.map(() => [lineWidth, lineWidth])
     )
     // An Elevation set here puts the rectangle that far above the UCS's XY
     // plane whatever the corners' Z; at 0 the first corner fixes its plane,
@@ -563,6 +579,7 @@ export class RectangleTool implements Tool {
       kind === null &&
       this.elevation === 0 &&
       this.thickness === 0 &&
+      this.lineWidth === 0 &&
       this.rotation === 0
     ) {
       return
@@ -577,6 +594,8 @@ export class RectangleTool implements Tool {
         elevation: formatLength(this.elevation, settings),
         hasThickness: this.thickness !== 0 ? "yes" : "no",
         thickness: formatLength(this.thickness, settings),
+        hasWidth: this.lineWidth !== 0 ? "yes" : "no",
+        width: formatLength(this.lineWidth, settings),
         hasRotation: this.rotation !== 0 ? "yes" : "no",
         rotation: formatAngle(this.rotation, settings),
       })
@@ -628,6 +647,7 @@ const FIRST_PROMPT_MODES: Readonly<Record<string, Mode>> = {
   Elevation: "elevation",
   Fillet: "fillet",
   Thickness: "thickness",
+  Width: "width",
 }
 
 /**
