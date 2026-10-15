@@ -12,6 +12,8 @@ export interface AskedQuestion {
   readonly keywords: readonly string[]
   /** Whether the question measures from a point already given. */
   readonly hasBase: boolean
+  /** A keyword of the command by id: as listed, or as `declared`. */
+  readonly keyword: (id: string, declared: boolean) => string
 }
 
 /**
@@ -30,7 +32,16 @@ export function promptRefusal(
   if (typeof input === "object") {
     const ids =
       typeof input.refusal === "string" ? [input.refusal] : input.refusal
-    return ids.map((id) => text.message(id, input.values))
+    const named = input.keywords
+    const values = named
+      ? {
+          ...input.values,
+          keywords: named.ids
+            .map((id) => asked.keyword(id, named.declared === true))
+            .join("/"),
+        }
+      : input.values
+    return ids.map((id) => text.message(id, values))
   }
   switch (input) {
     case "point":

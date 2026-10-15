@@ -237,23 +237,47 @@ export function fenceCrossing(
   lines: readonly (readonly Vec2[])[],
   fence: readonly Vec2[]
 ): Vec2 | null {
+  return fenceCrossings([lines], fence)[0]?.point ?? null
+}
+
+/**
+ * Every place the fence through `fence` meets one of `outlines` (each an
+ * object's lines), in the order the fence goes, each place of an outline
+ * once (where two of its lines meet, or the fence comes back). Both on
+ * screen.
+ */
+export function fenceCrossings(
+  outlines: readonly (readonly (readonly Vec2[])[])[],
+  fence: readonly Vec2[]
+): { readonly outline: number; readonly point: Vec2 }[] {
+  const crossings: { readonly outline: number; readonly point: Vec2 }[] = []
   for (let j = 1; j < fence.length; j++) {
-    let first: { point: Vec2; t: number } | null = null
-    for (const line of lines) {
-      for (let i = 1; i < line.length; i++) {
-        const x = infiniteLineIntersection(
-          fence[j - 1],
-          fence[j],
-          line[i - 1],
-          line[i]
-        )
-        if (!x || x.t < 0 || x.t > 1 || x.u < 0 || x.u > 1) continue
-        if (!first || x.t < first.t) first = x
+    const along: { outline: number; point: Vec2; t: number }[] = []
+    outlines.forEach((lines, outline) => {
+      for (const line of lines) {
+        for (let i = 1; i < line.length; i++) {
+          const x = infiniteLineIntersection(
+            fence[j - 1],
+            fence[j],
+            line[i - 1],
+            line[i]
+          )
+          if (!x || x.t < 0 || x.t > 1 || x.u < 0 || x.u > 1) continue
+          along.push({ outline, point: x.point, t: x.t })
+        }
       }
+    })
+    along.sort((a, b) => a.t - b.t)
+    for (const { outline, point } of along) {
+      const twice = crossings.some(
+        (c) =>
+          c.outline === outline &&
+          Math.hypot(c.point.x - point.x, c.point.y - point.y) < 1e-6
+      )
+      if (!twice) crossings.push({ outline, point })
     }
-    if (first) return first.point
   }
-  return null
+  return crossings
 }
 
 /**

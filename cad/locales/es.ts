@@ -1135,10 +1135,14 @@ export const es: EngineLocale = {
         "No": "No"
       },
       "TRIM": {
-        "Undo": "desHacer"
+        "Undo": "desHacer",
+        "Fence": "Borde",
+        "Crossing": "Captura"
       },
       "EXTEND": {
-        "Undo": "desHacer"
+        "Undo": "desHacer",
+        "Fence": "Borde",
+        "Crossing": "Captura"
       },
       "FILLET": {
         "Undo": "Deshacer",
@@ -1647,8 +1651,6 @@ export const es: EngineLocale = {
       "enterLayerOptionForOffsetObjects": "Indique opción de capa para objetos desfasados",
       "specifyThroughPointOr": "Precise punto a atravesar o",
       "nextObject": "siguiente objeto",
-      "selectObjectToTrimOrShiftSelectToExtend": "Seleccione un objeto que recortar o use la tecla Mayús y seleccione para alargar",
-      "selectObjectToExtendOrShiftSelectToTrim": "Seleccione un objeto que alargar o use la tecla Mayús y seleccione para recortar",
       "selectObjectToTrimOrShiftSelectToExtendOr": "Seleccione un objeto que recortar o use la tecla Mayús y seleccione para alargar, o",
       "selectObjectToExtendOrShiftSelectToTrimOr": "Seleccione un objeto que alargar o use la tecla Mayús y seleccione para recortar, o",
       "selectFirstObjectOr": "Designe el primer objeto o",
@@ -1919,6 +1921,8 @@ export const es: EngineLocale = {
       "pathDoesNotIntersectBoundingEdge": "La trayectoria no se interseca con la arista de contorno.",
       "objectDoesNotIntersectEdge": "El objeto no se interseca con ninguna arista.",
       "cannotExtendObject": "Objeto no procesado por ALARGA.",
+      "noEdgeInThatDirection": "No hay límite en esta dirección.",
+      "noObjectsCrossedByCrossingWindow": "No hay objetos intersecados en la ventana de captura.",
       "circleMustIntersectTwice": "Se requieren dos intersecciones para el círculo.",
       "curveMustIntersectTwice": "La curva debe intersecar las aristas de corte al menos dos veces.",
       "filletSettings": [

@@ -49,10 +49,13 @@ A tool is an explicit state machine for one AutoCAD command. It owns a discrimin
   TRIM's pieces and BREAK's; never walk the vertices to cut one in a tool. An ellipse is cut
   the same way with `ellipseCut` (`domain/ellipses.ts`), between two offsets into its sweep
   (`ellipseParamAt`): a whole one kept from the later round to the earlier, an elliptical arc
-  its pieces before and after. A pick on nothing starts AutoCAD's two-point crossing fence:
-  what it crosses is found with `boxSelection`'s `objectsOnFence`, each object planned as
-  picked where the fence first meets it (`fenceCrossing`, as FILLET reads a fence), and all
-  their `piecesOf` done as one `ReplaceEntitiesCommand` — one Undo step.
+  its pieces before and after. A pick on nothing starts AutoCAD's two-point crossing fence,
+  Fence one of any points, and Crossing's window is a closed fence round its outline, clockwise
+  from its first corner (`clockwiseOutline`): `editAcross` takes every place one meets an
+  object, in its order (`boxSelection`'s `fenceCrossings`), as a pick there on what is then
+  left of the object (`nearestOf` its pieces), planned against the drawing as it then is,
+  and does all their `piecesOf` as one `ReplaceEntitiesCommand` — one Undo step. Never plan
+  a fence's objects against the drawing as it was: the console cuts them one by one.
 - `ObjectSelector` (`objectSelection.ts`) — AutoCAD's `Select objects:`, the one every command
   that takes a set asks it with: picks, the window a drag or a pick on nothing starts, and the
   modes typed there (Window, Crossing, BOX, Last, ALL, Fence, WPolygon, CPolygon, Previous,
@@ -246,7 +249,9 @@ JOIN), STRETCH's crossing one or BREAK's set of one object (`"oneObject"`; UCS O
 a group, `"singleSet"`), a count (`"integer"`), and a command's own words (`{ refusal:
 "requiresRadius" }`; a distance or an angle measured by two points of its own while the tool has a
 base point, `{ refusal: "requiresDistance", values: { points: "two", keyword: "no" } }`; several
-lines, a list of ids sharing `values`: -VPOINT's `["invalidInputTryAgain", "currentViewDirection"]`). Type
+lines, a list of ids sharing `values`: -VPOINT's `["invalidInputTryAgain", "currentViewDirection"]`; words of
+the command it names, `keywords` by id, which the runtime words as listed or as declared:
+TRIM's `Expects a point or Fence/Crossing`, the console's prompt words but its last). Type
 `FOO` at the prompt in AutoCAD's console before declaring one: the words differ per input
 function, and per command at `Select objects:`.
 

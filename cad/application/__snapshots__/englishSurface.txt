@@ -3040,28 +3040,32 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0°~, Line space facto
   properties: -
   cycling: -
 > TRIM
-  prompt: TRIM Select object to trim or shift-select to extend:
+  prompt: TRIM Select object to trim or shift-select to extend or [Crossing]:
+  options: [C] Crossing
   command| TR TRIM
   info| Current settings: Projection=UCS, Edge=None, Mode=Quick
 > trim
-  prompt: TRIM Select object to trim or shift-select to extend or [Undo]:
-  options: [U] Undo
-  prompt| Select object to trim or shift-select to extend:
+  prompt: TRIM Select object to trim or shift-select to extend or [Crossing/Undo]:
+  options: [C] Crossing, [U] Undo
+  prompt| Select object to trim or shift-select to extend or [Crossing]:
 > U
-  prompt: TRIM Select object to trim or shift-select to extend:
-  options: -
-  prompt| Select object to trim or shift-select to extend or [Undo]: U
+  prompt: TRIM Select object to trim or shift-select to extend or [Crossing]:
+  options: [C] Crossing
+  prompt| Select object to trim or shift-select to extend or [Crossing/Undo]: U
   info| Command has been completely undone.
 > escape
   prompt: Command:
-  prompt| Select object to trim or shift-select to extend: *Cancel*
+  options: -
+  prompt| Select object to trim or shift-select to extend or [Crossing]: *Cancel*
 > EXTEND
-  prompt: EXTEND Select object to extend or shift-select to trim:
+  prompt: EXTEND Select object to extend or shift-select to trim or [Crossing]:
+  options: [C] Crossing
   command| EX EXTEND
   info| Current settings: Projection=UCS, Edge=None, Mode=Quick
 > escape
   prompt: Command:
-  prompt| Select object to extend or shift-select to trim: *Cancel*
+  options: -
+  prompt| Select object to extend or shift-select to trim or [Crossing]: *Cancel*
 > FILLET
   prompt: FILLET Select first object or [Undo/Polyline/Radius/Multiple]:
   asks: 

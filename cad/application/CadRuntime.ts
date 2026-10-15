@@ -634,8 +634,19 @@ export class CadRuntime extends Observable {
           )
         },
         transparentPrompt: (text) => this.text.transparentPrompt(text),
-        prompt: (id) =>
-          promptString(this.text.composePrompt(this.text.prompt(id), [])),
+        prompt: (id, keywords = []) => {
+          const command = toolCommand(this.activeTool)
+          return promptString(
+            this.text.composePrompt(
+              this.text.prompt(id),
+              keywords.map(
+                (keyword) =>
+                  this.text.keywordLabel(command, keyword) ??
+                  this.text.keyword(command, keyword, id)
+              )
+            )
+          )
+        },
       },
       endCommand: () => {
         this.resetTracking()
@@ -1237,6 +1248,15 @@ export class CadRuntime extends Observable {
         // WHY the tool's: at the second of two measuring points the console
         // still requires "two points".
         hasBase: (this.activeTool.getConstraintAnchor?.() ?? null) !== null,
+        keyword: (id, declared) => {
+          const command = toolCommand(this.activeTool)
+          const word = this.text.keyword(
+            command,
+            id,
+            askedPrompt(this.activeTool)
+          )
+          return declared ? word : (this.text.keywordLabel(command, id) ?? word)
+        },
       },
       this.text
     )

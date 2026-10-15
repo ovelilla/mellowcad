@@ -53,22 +53,22 @@ describe("TRIM", () => {
 
     cad.command("TRIM")
     expect(cad.state().commandLine.prompt).toBe(
-      "TRIM Select object to trim or shift-select to extend:"
+      "TRIM Select object to trim or shift-select to extend or [Crossing]:"
     )
     expect(cad.state().dynamicInput).toBeNull()
     cad.click(p(100, 0))
     expect(cad.state().commandLine.prompt).toBe(
-      "TRIM Select object to trim or shift-select to extend or [Undo]:"
+      "TRIM Select object to trim or shift-select to extend or [Crossing/Undo]:"
     )
     cad.click(p(0, 50), { shiftKey: true }).enter()
 
     expect(cad.commandLog()).toEqual([
       "TRIM",
       "Current settings: Projection=UCS, Edge=None, Mode=Quick",
-      "Select object to trim or shift-select to extend:",
-      "Select object to trim or shift-select to extend or [Undo]:",
+      "Select object to trim or shift-select to extend or [Crossing]:",
+      "Select object to trim or shift-select to extend or [Crossing/Undo]:",
       "Path does not intersect with the bounding edge.",
-      "Select object to trim or shift-select to extend or [Undo]:",
+      "Select object to trim or shift-select to extend or [Crossing/Undo]:",
     ])
   })
 
@@ -94,10 +94,10 @@ describe("TRIM", () => {
     cad.option("Undo")
     expect(cad.commandLog().at(-1)).toBe("Command has been completely undone.")
     expect(cad.state().commandLine.prompt).toBe(
-      "TRIM Select object to trim or shift-select to extend:"
+      "TRIM Select object to trim or shift-select to extend or [Crossing]:"
     )
     // With the command's own edits gone, Undo is no longer offered.
-    expect(cad.optionIds()).toEqual([])
+    expect(cad.optionIds()).toEqual(["Crossing"])
     expect(cad.entityCount).toBe(3)
   })
 
@@ -295,14 +295,14 @@ describe("TRIM", () => {
       [
         undefined,
         "TRIM",
-        "Select object to trim or shift-select to extend:",
+        "Select object to trim or shift-select to extend or [Crossing]:",
         "Circle must intersect twice.",
         "Command has been completely undone.",
       ],
       [
         es,
         "RECORTA",
-        "Seleccione un objeto que recortar o use la tecla Mayús y seleccione para alargar:",
+        "Seleccione un objeto que recortar o use la tecla Mayús y seleccione para alargar, o [Captura]:",
         "Se requieren dos intersecciones para el círculo.",
         "Todos los efectos del comando han sido deshechos.",
       ],
@@ -315,10 +315,10 @@ describe("TRIM", () => {
       cad.command(name).click(p(-50, 0))
       expect(cad.entities()).toEqual(entities)
       expect(cad.commandLog().slice(-2)).toEqual([asked, said])
-      expect(cad.state().commandLine.prompt).toMatch(/\[(Undo|desHacer)\]:$/)
+      expect(cad.state().commandLine.prompt).toMatch(/\/(Undo|desHacer)\]:$/)
       cad.option("Undo")
       expect(cad.commandLog().at(-1)).toBe(undone)
-      expect(cad.optionIds()).toEqual([])
+      expect(cad.optionIds()).toEqual(["Crossing"])
     }
   })
 
@@ -328,11 +328,15 @@ describe("TRIM", () => {
   // its near one, keeping its handle and direction.
   it("trims a polyline's segment between its vertices and the crossings on it", () => {
     for (const [locale, name, asked] of [
-      [undefined, "TRIM", "Select object to trim or shift-select to extend:"],
+      [
+        undefined,
+        "TRIM",
+        "Select object to trim or shift-select to extend or [Crossing]:",
+      ],
       [
         es,
         "RECORTA",
-        "Seleccione un objeto que recortar o use la tecla Mayús y seleccione para alargar:",
+        "Seleccione un objeto que recortar o use la tecla Mayús y seleccione para alargar, o [Captura]:",
       ],
     ] as const) {
       const square = [p(-50, -50), p(50, -50), p(50, 50), p(-50, 50)]
@@ -504,15 +508,15 @@ describe("EXTEND", () => {
 
     cad.command("EXTEND")
     expect(cad.state().commandLine.prompt).toBe(
-      "EXTEND Select object to extend or shift-select to trim:"
+      "EXTEND Select object to extend or shift-select to trim or [Crossing]:"
     )
     cad.click(p(-110, 0)).escape()
 
     expect(cad.commandLog()).toEqual([
       "EXTEND",
       "Current settings: Projection=UCS, Edge=None, Mode=Quick",
-      "Select object to extend or shift-select to trim:",
-      "Select object to extend or shift-select to trim or [Undo]: *Cancel*",
+      "Select object to extend or shift-select to trim or [Crossing]:",
+      "Select object to extend or shift-select to trim or [Crossing/Undo]: *Cancel*",
     ])
   })
 
@@ -587,7 +591,7 @@ describe("EXTEND", () => {
       cad.command(name).click(p(100, 40))
       expect(cad.commandLog().at(-1)).toBe(said[0])
       const counted = cad.state().commandLine.prompt
-      expect(counted).toMatch(/\[(Undo|desHacer)\]:$/)
+      expect(counted).toMatch(/\/(Undo|desHacer)\]:$/)
 
       cad.option("Undo")
       expect(cad.commandLog().at(-1)).toMatch(/^(Command|Todos)/)
@@ -599,7 +603,7 @@ describe("EXTEND", () => {
 
       cad.click(p(40, -40))
       expect(cad.commandLog().at(-1)).toBe(said[2])
-      expect(cad.optionIds()).toEqual([])
+      expect(cad.optionIds()).toEqual(["Crossing"])
       expect(cad.entities()).toEqual(entities)
 
       cad.click(p(40, 0)).click(p(40, 0))
@@ -739,8 +743,8 @@ describe("TRIM and EXTEND answer what is typed", () => {
     expect(endpoints(cad.byId<LineEntity>("A"))).toEqual([p(0, 0), p(50, 0)])
     typed(cad, "80,80")
     expect(cad.commandLog().slice(-2)).toEqual([
-      "Select object to trim or shift-select to extend: @75,-5",
-      "Select object to trim or shift-select to extend or [Undo]: 80,80",
+      "Select object to trim or shift-select to extend or [Crossing]: @75,-5",
+      "Select object to trim or shift-select to extend or [Crossing/Undo]: 80,80",
     ])
     cad.enter()
     typed(cad, "ID", "@")
@@ -750,11 +754,11 @@ describe("TRIM and EXTEND answer what is typed", () => {
 
     const extend = typed(drawing(), "EXTEND", "80,20")
     expect(extend.commandLog().slice(-2)).toEqual([
-      "Select object to extend or shift-select to trim: 80,20",
+      "Select object to extend or shift-select to trim or [Crossing]: 80,20",
       "Path does not intersect with the bounding edge.",
     ])
     expect(extend.state().commandLine.prompt).toBe(
-      "EXTEND Select object to extend or shift-select to trim or [Undo]:"
+      "EXTEND Select object to extend or shift-select to trim or [Crossing/Undo]:"
     )
   })
 
@@ -763,7 +767,7 @@ describe("TRIM and EXTEND answer what is typed", () => {
   it("starts a fence on nothing, which its next point closes, as one step", () => {
     const cad = typed(drawing(), "ID", "1,1", "TRIM", "70,30", "70,-20")
     expect(cad.commandLog().slice(-2)).toEqual([
-      "Select object to trim or shift-select to extend: 70,30",
+      "Select object to trim or shift-select to extend or [Crossing]: 70,30",
       "Specify next fence point or [Undo]: 70,-20",
     ])
     for (const id of ["A", "B"]) {
@@ -772,7 +776,7 @@ describe("TRIM and EXTEND answer what is typed", () => {
       )
     }
     expect(cad.state().commandLine.prompt).toBe(
-      "TRIM Select object to trim or shift-select to extend or [Undo]:"
+      "TRIM Select object to trim or shift-select to extend or [Crossing/Undo]:"
     )
     typed(cad, "U")
     expect(cad.commandLog().at(-1)).toBe("Command has been completely undone.")
@@ -795,7 +799,7 @@ describe("TRIM and EXTEND answer what is typed", () => {
     const cad = typed(drawing(), "TRIM", "70,30", "FOO", "U", "70,30")
     typed(cad, "@0,-50")
     expect(cad.commandLog().slice(2)).toEqual([
-      "Select object to trim or shift-select to extend: 70,30",
+      "Select object to trim or shift-select to extend or [Crossing]: 70,30",
       "Specify next fence point or [Undo]: FOO",
       "Invalid response.",
       "Specify next fence point or [Undo]: U",
@@ -842,20 +846,25 @@ describe("TRIM and EXTEND answer what is typed", () => {
     expect(endpoints(cad.byId<LineEntity>("S"))).toEqual([p(0, 0), p(50, 0)])
   })
 
-  it("refuses anything else with *Invalid selection*, Undo on offer or not", () => {
+  // WHY Fence: the console names its unlisted word first, then the
+  // prompt's but the last (acc/t1, tf18, ta7, tb5).
+  it("refuses anything else with *Invalid selection* and the words it expects", () => {
     const cad = typed(drawing(), "TRIM", "FOO", "80,0", "FOO")
     expect(cad.commandLog().slice(2)).toEqual([
-      "Select object to trim or shift-select to extend: FOO",
+      "Select object to trim or shift-select to extend or [Crossing]: FOO",
       "*Invalid selection*",
-      "Select object to trim or shift-select to extend: 80,0",
-      "Select object to trim or shift-select to extend or [Undo]: FOO",
+      "Expects a point or Fence",
+      "Select object to trim or shift-select to extend or [Crossing]: 80,0",
+      "Select object to trim or shift-select to extend or [Crossing/Undo]: FOO",
       "*Invalid selection*",
+      "Expects a point or Fence/Crossing",
     ])
     cad.escape()
-    typed(cad, "EXTEND", "C")
-    expect(cad.commandLog().slice(-2)).toEqual([
-      "Select object to extend or shift-select to trim: C",
+    typed(cad, "EXTEND", "FOO")
+    expect(cad.commandLog().slice(-3)).toEqual([
+      "Select object to extend or shift-select to trim or [Crossing]: FOO",
       "*Invalid selection*",
+      "Expects a point or Fence",
     ])
 
     const spanish = createHarness({
@@ -863,14 +872,413 @@ describe("TRIM and EXTEND answer what is typed", () => {
       entities: [lineOf(p(0, 0), p(100, 0)), lineOf(p(50, -50), p(50, 50))],
     })
     typed(spanish, "RECORTA", "80,0", "FOO")
-    expect(spanish.commandLog().slice(-3)).toEqual([
-      "Seleccione un objeto que recortar o use la tecla Mayús y seleccione para alargar: 80,0",
-      "Seleccione un objeto que recortar o use la tecla Mayús y seleccione para alargar, o [desHacer]: FOO",
+    expect(spanish.commandLog().slice(-4)).toEqual([
+      "Seleccione un objeto que recortar o use la tecla Mayús y seleccione para alargar, o [Captura]: 80,0",
+      "Seleccione un objeto que recortar o use la tecla Mayús y seleccione para alargar, o [Captura/desHacer]: FOO",
       "*Designación no válida*",
+      "Requiere un punto o Borde/Captura",
     ])
   })
 })
 
+// AutoCAD 2023's console (acc/ta1–ta18, tb1–tb16, tc1–tc10, td1–td4,
+// te1–te6, th1–th6 of the TRIM options session).
+describe("TRIM and EXTEND's Fence and Crossing", () => {
+  const drawing = () =>
+    createHarness({
+      entities: [
+        lineOf(p(0, 0), p(100, 0), { id: "A" }),
+        lineOf(p(30, -50), p(30, 50), { id: "L" }),
+        lineOf(p(70, -50), p(70, 50), { id: "R" }),
+      ],
+    })
+  const short = (...more: Entity[]) =>
+    createHarness({
+      entities: [
+        lineOf(p(0, 0), p(20, 0), { id: "S" }),
+        lineOf(p(30, -50), p(30, 50)),
+        lineOf(p(-30, -50), p(-30, 50)),
+        ...more,
+      ],
+    })
+  const typed = (cad: CadHarness, ...texts: string[]) => {
+    for (const text of texts) {
+      if (text === "") cad.enter()
+      else {
+        cad.runtime.setCommandLineText(text)
+        cad.runtime.submitCommandLine()
+      }
+    }
+    return cad
+  }
+  const at = (v: Vec2) => `${+v.x.toFixed(4)},${+v.y.toFixed(4)}`
+  /** The drawing's objects, those not named `ids` as `new`. */
+  const drawn = (cad: CadHarness, ...ids: string[]) =>
+    cad.entities().map((e) => {
+      const name = ids.includes(e.id) ? e.id : "new"
+      if (e.type === "line") return `${name} ${at(e.start)} ${at(e.end)}`
+      if (e.type === "arc") {
+        return `${name} arc ${at(e.center)} ${e.radius} ${+e.startAngle.toFixed(4)} ${+e.endAngle.toFixed(4)}`
+      }
+      return `${name} ${e.type}`
+    })
+
+  it("trims at every place Fence crosses, as one step", () => {
+    const cad = typed(
+      drawing(),
+      "TRIM",
+      "F",
+      "20,20",
+      "20,-20",
+      "80,-20",
+      "80,20",
+      ""
+    )
+    expect(cad.commandLog().slice(2)).toEqual([
+      "Select object to trim or shift-select to extend or [Crossing]: F",
+      "Specify first fence point or pick/drag cursor: 20,20",
+      "Specify next fence point or [Undo]: 20,-20",
+      "Specify next fence point or [Undo]: 80,-20",
+      "Specify next fence point or [Undo]: 80,20",
+      "Specify next fence point or [Undo]:",
+    ])
+    expect(drawn(cad, "A", "L", "R")).toEqual([
+      "A 30,0 70,0",
+      "L 30,0 30,50",
+      "R 70,0 70,50",
+    ])
+    expect(cad.state().commandLine.prompt).toBe(
+      "TRIM Select object to trim or shift-select to extend or [Crossing/Undo]:"
+    )
+    typed(cad, "U")
+    expect(cad.commandLog().at(-1)).toBe("Command has been completely undone.")
+    expect(drawn(cad, "A", "L", "R")).toEqual([
+      "A 0,0 100,0",
+      "L 30,-50 30,50",
+      "R 70,-50 70,50",
+    ])
+  })
+
+  it("asks Fence's points as AutoCAD does", () => {
+    const cad = typed(drawing(), "TRIM", "F", "U", "FOO", "20,20", "U")
+    expect(cad.commandLog().slice(3)).toEqual([
+      "Specify first fence point or pick/drag cursor: U",
+      "Invalid response.",
+      "Specify first fence point or pick/drag cursor: FOO",
+      "Invalid response.",
+      "Specify first fence point or pick/drag cursor: 20,20",
+      "Specify next fence point or [Undo]: U",
+    ])
+    expect(cad.state().commandLine.prompt).toBe(
+      "TRIM Specify first fence point or pick/drag cursor:"
+    )
+
+    // Undo drops the last point; `@` is from the one before.
+    const undone = typed(
+      drawing(),
+      "TRIM",
+      "F",
+      "20,20",
+      "20,-20",
+      "U",
+      "80,20",
+      "@0,-40",
+      "@",
+      ""
+    )
+    expect(undone.commandLog().slice(-3)).toEqual([
+      "Specify next fence point or [Undo]: @",
+      "Invalid point, polygon segment is zero length.",
+      "Specify next fence point or [Undo]:",
+    ])
+    expect(drawn(undone, "A", "L", "R")).toEqual([
+      "A 0,0 70,0",
+      "L 30,-50 30,0",
+      "R 70,-50 70,0",
+    ])
+
+    // Enter with no point or one is a step that changed nothing.
+    for (const points of [[], ["50,20"]]) {
+      const short = typed(drawing(), "TRIM", "F", ...points, "")
+      expect(short.state().commandLine.prompt).toBe(
+        "TRIM Select object to trim or shift-select to extend or [Crossing/Undo]:"
+      )
+      expect(drawn(short, "A", "L", "R")[0]).toBe("A 0,0 100,0")
+    }
+
+    // Its points leave LASTPOINT.
+    const last = typed(drawing(), "ID", "5,5", "TRIM", "F", "20,20", "20,-20")
+    typed(last, "", "", "ID", "@")
+    expect(last.commandLog().at(-1)).toBe(" X = 5.00     Y = 5.00     Z = 0.00")
+
+    const spanish = createHarness({
+      locale: es,
+      entities: [lineOf(p(0, 0), p(100, 0)), lineOf(p(50, -50), p(50, 50))],
+    })
+    typed(spanish, "RECORTA", "B", "FOO", "70,20", "70,-20", "")
+    expect(spanish.commandLog().slice(2)).toEqual([
+      "Seleccione un objeto que recortar o use la tecla Mayús y seleccione para alargar, o [Captura]: B",
+      "Precise primer punto del borde o designe/arrastre cursor: FOO",
+      "Respuesta no válida.",
+      "Precise primer punto del borde o designe/arrastre cursor: 70,20",
+      "Precise punto del borde o [desHacer]: 70,-20",
+      "Precise punto del borde o [desHacer]:",
+    ])
+  })
+
+  it("trims what Crossing's window crosses, round it clockwise", () => {
+    const cad = typed(drawing(), "TRIM", "C", "75,10", "95,-10")
+    expect(cad.commandLog().slice(2)).toEqual([
+      "Select object to trim or shift-select to extend or [Crossing]: C",
+      "Specify first corner: 75,10",
+      "Select object to trim or shift-select to extend or [Crossing]: Specify opposite corner: 95,-10",
+    ])
+    expect(drawn(cad, "A", "L", "R")[0]).toBe("A 0,0 70,0")
+    typed(cad, "U")
+    expect(drawn(cad, "A", "L", "R")[0]).toBe("A 0,0 100,0")
+
+    for (const [first, opposite, left] of [
+      // Every piece it meets, an object no edge crosses then deleted.
+      ["60,10", "90,-10", ["A 0,0 30,0", "L 30,-50 30,50"]],
+      ["90,-10", "60,10", ["A 0,0 30,0", "L 30,-50 30,50"]],
+      [
+        "35,10",
+        "65,-10",
+        ["A 0,0 30,0", "L 30,-50 30,50", "R 70,-50 70,50", "new 70,0 100,0"],
+      ],
+      // From the top left corner the middle piece goes first, splitting
+      // the line: what is left is the new piece.
+      ["20,10", "40,-10", ["R 70,-50 70,50", "new 70,0 100,0"]],
+      ["40,10", "20,-10", ["R 70,-50 70,50", "new 70,0 100,0"]],
+      // From the bottom ones, the end piece: the line is kept.
+      ["20,-10", "40,10", ["A 70,0 100,0", "R 70,-50 70,50"]],
+      ["40,-10", "20,10", ["A 70,0 100,0", "R 70,-50 70,50"]],
+    ] as const) {
+      const window = typed(drawing(), "TRIM", "C", first, opposite)
+      expect(drawn(window, "A", "L", "R")).toEqual(left)
+    }
+
+    // An object inside the window is no object it crosses.
+    const inside = typed(
+      createHarness({
+        entities: [
+          lineOf(p(0, 0), p(100, 0), { id: "A" }),
+          lineOf(p(30, -50), p(30, 50), { id: "L" }),
+          lineOf(p(70, -50), p(70, 50), { id: "R" }),
+          lineOf(p(45, -5), p(45, 5), { id: "I" }),
+        ],
+      }),
+      "TRIM",
+      "C",
+      "35,10",
+      "65,-10"
+    )
+    expect(drawn(inside, "A", "L", "R", "I")).toEqual([
+      "A 0,0 30,0",
+      "L 30,-50 30,50",
+      "R 70,-50 70,50",
+      "I 45,-5 45,5",
+      "new 70,0 100,0",
+    ])
+
+    // A circle loses the arc in the window.
+    const circle = typed(
+      createHarness({
+        entities: [
+          circleOf(p(50, 0), 20, { id: "O" }),
+          lineOf(p(0, 0), p(100, 0), { id: "A" }),
+        ],
+      }),
+      "TRIM",
+      "C",
+      "45,25",
+      "55,15"
+    )
+    expect(drawn(circle, "O", "A")).toEqual([
+      "O arc 50,0 20 3.1416 0",
+      "A 0,0 100,0",
+    ])
+  })
+
+  it("asks Crossing's corners as AutoCAD does", () => {
+    const cad = typed(drawing(), "TRIM", "C", "FOO", "60,10", "FOO")
+    typed(cad, "", "90,-10")
+    expect(cad.commandLog().slice(3)).toEqual([
+      "Specify first corner: FOO",
+      "*Invalid selection*",
+      "Expects a point or Fence/Crossing",
+      "Specify first corner: 60,10",
+      "Select object to trim or shift-select to extend or [Crossing]: Specify opposite corner: FOO",
+      "Invalid window specification.",
+      "Select object to trim or shift-select to extend or [Crossing]: Specify opposite corner:",
+      "Invalid window specification.",
+      "Select object to trim or shift-select to extend or [Crossing]: Specify opposite corner: 90,-10",
+    ])
+    expect(drawn(cad, "A", "L", "R")[0]).toBe("A 0,0 30,0")
+    // Its first corner is LASTPOINT.
+    typed(cad, "", "ID", "@")
+    expect(cad.commandLog().at(-1)).toBe(
+      " X = 60.00     Y = 10.00     Z = 0.00"
+    )
+
+    // Enter at the first corner ends the command; a window that crosses
+    // nothing says so, and is no step.
+    const ended = typed(drawing(), "TRIM", "C", "")
+    expect(ended.activeToolId()).toBe("select")
+    const empty = typed(drawing(), "TRIM", "C", "200,200", "210,210")
+    expect(empty.commandLog().slice(-2)).toEqual([
+      "Select object to trim or shift-select to extend or [Crossing]: Specify opposite corner: 210,210",
+      "No objects crossed by crossing window.",
+    ])
+    expect(empty.optionIds()).toEqual(["Crossing"])
+
+    // The first corner takes the prompt's words.
+    const words = typed(drawing(), "TRIM", "75,0", "C", "U", "F")
+    expect(words.commandLog().slice(-4)).toEqual([
+      "Select object to trim or shift-select to extend or [Crossing/Undo]: C",
+      "Specify first corner: U",
+      "Command has been completely undone.",
+      "Specify first corner: F",
+    ])
+    expect(words.state().commandLine.prompt).toBe(
+      "TRIM Specify first fence point or pick/drag cursor:"
+    )
+    expect(drawn(words, "A", "L", "R")[0]).toBe("A 0,0 100,0")
+
+    const spanish = createHarness({
+      locale: es,
+      entities: [lineOf(p(0, 0), p(100, 0)), lineOf(p(50, -50), p(50, 50))],
+    })
+    typed(spanish, "RECORTA", "C", "FOO", "60,10", "FOO", "300,300")
+    expect(spanish.commandLog().slice(3)).toEqual([
+      "Designe primera esquina: FOO",
+      "*Designación no válida*",
+      "Requiere un punto o Borde/Captura",
+      "Designe primera esquina: 60,10",
+      "Seleccione un objeto que recortar o use la tecla Mayús y seleccione para alargar, o [Captura]: Designe esquina opuesta: FOO",
+      "Designación de ventana no válida.",
+      "Seleccione un objeto que recortar o use la tecla Mayús y seleccione para alargar, o [Captura]: Designe esquina opuesta: 300,300",
+      "No hay objetos intersecados en la ventana de captura.",
+    ])
+  })
+
+  it("extends an object at the first place Fence or Crossing meets it", () => {
+    const fence = typed(
+      short(),
+      "EXTEND",
+      "F",
+      "2,5",
+      "18,5",
+      "18,-5",
+      "2,-5",
+      "2,5",
+      ""
+    )
+    expect(fence.commandLog().slice(-2)).toEqual([
+      "Specify next fence point or [Undo]:",
+      "No edge in that direction.",
+    ])
+    expect(drawn(fence, "S")[0]).toBe("S 0,0 30,0")
+
+    // Not again, though another edge lies further on.
+    const further = typed(
+      short(lineOf(p(50, -50), p(50, 50))),
+      "EXTEND",
+      "F",
+      "18,5",
+      "18,-5",
+      "2,-5",
+      "2,5",
+      ""
+    )
+    expect(drawn(further, "S")[0]).toBe("S 0,0 30,0")
+    const backwards = typed(short(), "EXTEND", "F", "2,-5", "2,5", "18,5")
+    typed(backwards, "18,-5", "")
+    expect(drawn(backwards, "S")[0]).toBe("S -30,0 20,0")
+
+    // Each object it extended says so once.
+    const two = typed(
+      short(lineOf(p(0, 10), p(20, 10), { id: "T" })),
+      "EXTEND",
+      "F",
+      "18,15",
+      "18,-5",
+      "2,-5",
+      "2,15",
+      ""
+    )
+    expect(two.commandLog().slice(-2)).toEqual([
+      "No edge in that direction.",
+      "No edge in that direction.",
+    ])
+    expect(drawn(two, "S", "T").filter((l) => !l.startsWith("new"))).toEqual([
+      "S 0,0 30,0",
+      "T 0,10 30,10",
+    ])
+
+    // One it could not extend says why, and nothing more.
+    const none = typed(
+      createHarness({
+        entities: [
+          lineOf(p(0, 0), p(20, 0), { id: "S" }),
+          lineOf(p(-30, -50), p(-30, 50)),
+        ],
+      }),
+      "EXTEND",
+      "F",
+      "18,5",
+      "18,-5",
+      "2,-5",
+      "2,5",
+      ""
+    )
+    expect(none.commandLog().slice(-2)).toEqual([
+      "Specify next fence point or [Undo]:",
+      "Path does not intersect with the bounding edge.",
+    ])
+    expect(drawn(none, "S")[0]).toBe("S 0,0 20,0")
+
+    const window = typed(short(), "EXTEND", "C", "2,5", "18,-5")
+    expect(window.commandLog().at(-1)).toBe("No edge in that direction.")
+    expect(drawn(window, "S")[0]).toBe("S 0,0 30,0")
+    const right = typed(short(), "EXTEND", "C", "12,5", "18,-5")
+    expect(drawn(right, "S")[0]).toBe("S 0,0 30,0")
+    const left = typed(short(), "EXTEND", "C", "2,-5", "18,5")
+    expect(drawn(left, "S")[0]).toBe("S -30,0 20,0")
+
+    const spanish = createHarness({
+      locale: es,
+      entities: [
+        lineOf(p(0, 0), p(20, 0)),
+        lineOf(p(30, -50), p(30, 50)),
+        lineOf(p(-30, -50), p(-30, 50)),
+      ],
+    })
+    typed(spanish, "ALARGA", "C", "2,5", "18,-5")
+    expect(spanish.commandLog().at(-1)).toBe("No hay límite en esta dirección.")
+  })
+
+  it("says once why a fence leaves an object", () => {
+    const cad = typed(
+      createHarness({
+        entities: [
+          circleOf(p(50, 0), 20, { id: "O" }),
+          lineOf(p(50, -50), p(50, 10)),
+        ],
+      }),
+      "TRIM",
+      "F",
+      "40,30",
+      "40,-30",
+      ""
+    )
+    expect(cad.commandLog().slice(-2)).toEqual([
+      "Specify next fence point or [Undo]:",
+      "Circle must intersect twice.",
+    ])
+    expect(cad.byId<CircleEntity>("O").type).toBe("circle")
+  })
+})
 // AutoCAD 2023's console (acc/e1–e7, m1–m4, w1, c1–c4, t1–t9, x1, o4 of the
 // elliptical arcs session), read with LIST at AUPREC 4.
 describe("TRIM and EXTEND an ellipse", () => {
@@ -952,7 +1360,7 @@ describe("TRIM and EXTEND an ellipse", () => {
       expect(cad.commandLog().at(-1)).toBe(said[1])
       cad.option("Undo").option("Undo")
       expect(cad.commandLog().at(-1)).toMatch(/^(Command|Todos)/)
-      expect(cad.optionIds()).toEqual([])
+      expect(cad.optionIds()).toEqual(["Crossing"])
       expect(cad.entities()).toEqual(entities)
     }
   })
@@ -1038,7 +1446,7 @@ describe("TRIM and EXTEND an ellipse", () => {
       cad.command(name).click(p(-100, 0))
       expect(cad.commandLog().at(-1)).toBe(said)
       expect(cad.entities()).toEqual(entities)
-      expect(cad.state().commandLine.prompt).toMatch(/\[(Undo|desHacer)\]:$/)
+      expect(cad.state().commandLine.prompt).toMatch(/\/(Undo|desHacer)\]:$/)
     }
   })
 })
@@ -1159,7 +1567,7 @@ describe("TRIM and EXTEND with an ellipse or a spline", () => {
     const cut = createHarness({ entities })
     cut.command("TRIM").click(p(0, 0))
     expect(cut.entities()).toEqual(entities)
-    expect(cut.optionIds()).toEqual([])
+    expect(cut.optionIds()).toEqual(["Crossing"])
   })
 
   it("refuses a closed spline cut once, or extended", () => {
@@ -1192,10 +1600,10 @@ describe("TRIM and EXTEND with an ellipse or a spline", () => {
       const cad = createHarness({ locale, entities })
       cad.command(trim).click(p(100, 0))
       expect(cad.commandLog().at(-1)).toBe(said[0])
-      expect(cad.state().commandLine.prompt).toMatch(/\[(Undo|desHacer)\]:$/)
+      expect(cad.state().commandLine.prompt).toMatch(/\/(Undo|desHacer)\]:$/)
       cad.escape().command(extend).click(p(0, 0))
       expect(cad.commandLog().at(-1)).toBe(said[1])
-      expect(cad.state().commandLine.prompt).toMatch(/\[(Undo|desHacer)\]:$/)
+      expect(cad.state().commandLine.prompt).toMatch(/\/(Undo|desHacer)\]:$/)
       expect(cad.entities()).toEqual(entities)
     }
   })

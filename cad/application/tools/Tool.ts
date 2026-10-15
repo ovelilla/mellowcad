@@ -186,6 +186,16 @@ export type QuestionInput =
   | {
       readonly refusal: MessageId | readonly MessageId[]
       readonly values?: MessageValues
+      /**
+       * The keywords the refusal names as `{keywords}`, by id, in the command
+       * language: as the prompt lists them (`cuTting edges`), or as they are
+       * declared (`cuTting`) — TRIM's, whose console lists the prompt's words
+       * but one, and its first corner's declared ones.
+       */
+      readonly keywords?: {
+        readonly ids: readonly string[]
+        readonly declared?: true
+      }
     }
 
 /**
@@ -394,8 +404,11 @@ export interface ToolText {
   keyword(id: string): string
   /** `text` headed as a transparent command's prompt (`>>BYLAYER`). */
   transparentPrompt(text: string): string
-  /** A prompt as it is asked with no keywords (`Select objects:`). */
-  prompt(id: PromptId): string
+  /**
+   * A prompt as it is asked, with the keywords `keywords` names by id
+   * (`Select objects:`, `…to extend or [Crossing]:`).
+   */
+  prompt(id: PromptId, keywords?: readonly string[]): string
 }
 
 /**

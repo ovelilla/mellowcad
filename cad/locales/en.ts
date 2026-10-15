@@ -1318,8 +1318,6 @@ export const en: EngineCatalog = {
       "specifyPointOnSideToOffsetOr": "Specify point on side to offset or",
       "specifyThroughPointOr": "Specify through point or",
       "nextObject": "next object",
-      "selectObjectToTrimOrShiftSelectToExtend": "Select object to trim or shift-select to extend",
-      "selectObjectToExtendOrShiftSelectToTrim": "Select object to extend or shift-select to trim",
       "selectObjectToTrimOrShiftSelectToExtendOr": "Select object to trim or shift-select to extend or",
       "selectObjectToExtendOrShiftSelectToTrimOr": "Select object to extend or shift-select to trim or",
       "selectFirstObjectOr": "Select first object or",
@@ -1592,6 +1590,8 @@ export const en: EngineCatalog = {
       "pathDoesNotIntersectBoundingEdge": "Path does not intersect with the bounding edge.",
       "objectDoesNotIntersectEdge": "Object does not intersect an edge.",
       "cannotExtendObject": "Cannot EXTEND this object.",
+      "noEdgeInThatDirection": "No edge in that direction.",
+      "noObjectsCrossedByCrossingWindow": "No objects crossed by crossing window.",
       "circleMustIntersectTwice": "Circle must intersect twice.",
       "curveMustIntersectTwice": "Curve must intersect cutting edges at least twice.",
       "filletSettings": [
