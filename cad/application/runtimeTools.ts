@@ -34,6 +34,7 @@ import { ArrayPolarTool } from "./tools/ArrayPolarTool"
 import { ArrayPathTool } from "./tools/ArrayPathTool"
 import { TrimTool } from "./tools/TrimTool"
 import { ExtendTool } from "./tools/ExtendTool"
+import type { TrimExtendMode } from "./tools/EdgeEditTool"
 import { FilletTool } from "./tools/FilletTool"
 import { ChamferTool } from "./tools/ChamferTool"
 import { EraseTool } from "./tools/EraseTool"
@@ -78,6 +79,7 @@ export function defaultTools(
   attEdit: AttEditTool
 ): Tool[] {
   const circleRadius = { radius: 0 }
+  const trimExtendMode: TrimExtendMode = { standard: false }
   return [
     new SelectTool(),
     new LineTool(),
@@ -122,8 +124,8 @@ export function defaultTools(
     new ArrayTool(),
     new ArrayPolarTool(),
     new ArrayPathTool(),
-    new TrimTool(),
-    new ExtendTool(),
+    new TrimTool(trimExtendMode),
+    new ExtendTool(trimExtendMode),
     new FilletTool(),
     new ChamferTool(),
     new EraseTool(),

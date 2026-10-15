@@ -1318,6 +1318,10 @@ export const en: EngineCatalog = {
       "specifyPointOnSideToOffsetOr": "Specify point on side to offset or",
       "specifyThroughPointOr": "Specify through point or",
       "nextObject": "next object",
+      "enterTrimModeOption": "Enter a trim mode option",
+      "enterExtendModeOption": "Enter an extend mode option",
+      "selectObjectsOr": "Select objects or",
+      "selectAll": "select all",
       "selectObjectsToEraseOrExit": "Select objects to erase or <exit>",
       "selectObjectsToErase": "Select objects to erase",
       "selectObjectToTrimOrShiftSelectToExtendOr": "Select object to trim or shift-select to extend or",
@@ -1588,7 +1592,20 @@ export const en: EngineCatalog = {
       ],
       "rotatingCopy": "Rotating a copy of the selected objects.",
       "scalingCopy": "Scaling a copy of the selected objects.",
-      "trimExtendSettings": "Current settings: Projection=UCS, Edge=None, Mode=Quick",
+      "trimExtendSettings": [
+        "Current settings: Projection=UCS, Edge=None, Mode=",
+        [
+          "mode",
+          1,
+          {
+            "standard": "Standard",
+            "other": "Quick"
+          }
+        ]
+      ],
+      "selectCuttingEdges": "Select cutting edges ...",
+      "selectBoundaryEdges": "Select boundary edges ...",
+      "doesNotIntersectCuttingEdge": "Does not intersect with the cutting edge.",
       "pathDoesNotIntersectBoundingEdge": "Path does not intersect with the bounding edge.",
       "objectDoesNotIntersectEdge": "Object does not intersect an edge.",
       "cannotExtendObject": "Cannot EXTEND this object.",
@@ -2857,6 +2874,12 @@ export const en: EngineCatalog = {
     "keywordLabels": {
       "CIRCLE": {
         "Ttr": "Ttr (tan tan radius)"
+      },
+      "TRIM": {
+        "cuTting": "cuTting edges"
+      },
+      "EXTEND": {
+        "Boundary": "Boundary edges"
       },
       "POLYGON": {
         "Inscribed": "Inscribed in circle",

@@ -34,6 +34,7 @@ import {
   isFullEllipse,
   fractionAlongSegment,
   nearestPolylineSegment,
+  polylineParamAt,
   polylineSegmentGeometries,
   polylineSegments,
   polylineSpan,
@@ -57,6 +58,7 @@ import {
   Tool,
   ToolContext,
   type QuestionInput,
+  type ToolQuestion,
 } from "./Tool"
 import {
   crossingParams,
@@ -155,8 +157,12 @@ type EdgeEditPlan =
     }
   /** Quick mode's trim of an object no edge cuts: it is deleted. */
   | { readonly kind: "erase"; readonly target: Entity }
-  /** A pick TRIM refuses, in the console's words; Undo counts it. */
-  | { readonly kind: "refuse"; readonly message: MessageId }
+  /** A pick TRIM refuses, in the console's words; Undo counts it, or not. */
+  | {
+      readonly kind: "refuse"
+      readonly message: MessageId
+      readonly uncounted?: true
+    }
 
 /**
  * A fence: the one a pick on nothing starts, AutoCAD's "pick two empty
@@ -167,6 +173,16 @@ interface EdgeEditFence {
   readonly points: readonly Vec2[]
   readonly cursor: Vec2 | null
   readonly typed: boolean
+}
+
+/**
+ * AutoCAD's TRIMEXTENDMODE, shared by TRIM and EXTEND of one runtime:
+ * Standard, or Quick. WHY for the session: AutoCAD keeps it in the registry,
+ * across sessions; here it lasts as long as the runtime, as UNDO's Combine
+ * and Layer do.
+ */
+export interface TrimExtendMode {
+  standard: boolean
 }
 
 export abstract class EdgeEditTool implements Tool {
@@ -189,8 +205,18 @@ export abstract class EdgeEditTool implements Tool {
     readonly start: Vec2 | null
     readonly cursor: Vec2 | null
   } | null = null
-  /** eRase's `Select objects to erase`, while it asks (acc/ri1–ri12). */
-  private erasing = false
+  /**
+   * What the command asks besides its object: eRase's set (acc/ri1–ri12),
+   * cuTting edges' (Boundary edges') or mOde's option (sm1–sm12, sn1–sn12,
+   * sp1–sp4).
+   */
+  private asking: "erase" | "edges" | "mode" | null = null
+  /** Whether the edges are asked as the command starts, which offers mOde. */
+  private starting = false
+  /** Whether mOde was asked at the edges' prompt, which it goes back to. */
+  private modeFromEdges = false
+  /** The edges, by id, the pieces of one with them; null for every object. */
+  private edges: Set<EntityId> | null = null
   private selection: ToolContext["selection"] | null = null
   private readonly eraser = new ObjectSelector({
     takes: () => "wholeObjects",
@@ -200,6 +226,12 @@ export abstract class EdgeEditTool implements Tool {
         : "selectObjectsToErase",
     done: (ctx) => this.eraseSet(ctx),
   })
+  private readonly edgeSelector = new ObjectSelector({
+    takes: () => "wholeObjects",
+    done: (ctx) => this.takeEdges(ctx),
+  })
+
+  constructor(private readonly mode: TrimExtendMode = { standard: false }) {}
 
   onActivate(ctx: ToolContext): void {
     ctx.setCursor("crosshair")
@@ -208,28 +240,35 @@ export abstract class EdgeEditTool implements Tool {
     this.preview = null
     this.fence = null
     this.window = null
-    this.erasing = false
+    this.asking = null
+    this.edges = null
     this.steps = []
-    // PROJMODE 1, EDGEMODE 0 and TRIMEXTENDMODE 1 are fixed here.
-    ctx.report(ctx.text.message("trimExtendSettings"))
+    // PROJMODE 1 and EDGEMODE 0 are fixed here.
+    this.reportSettings(ctx)
+    if (this.mode.standard) this.askEdges(true, ctx)
   }
 
   /**
-   * WHY Crossing, eRase and Undo alone: cuTting edges (Boundary edges), mOde
-   * and Project are not built, so the prompt lists what is; Fence is
-   * unlisted, as in AutoCAD's Quick mode.
+   * WHY no Project nor Edge: they are not built, so the prompt lists what is;
+   * Fence is unlisted in Quick mode, as in AutoCAD.
    */
-  question(): PromptId {
-    if (this.erasing) return this.eraser.question()
-    if (this.fence) {
-      return this.fence.points.length === 0
-        ? "specifyFirstFencePoint"
-        : "specifyNextFencePointOr"
+  question(): PromptId | ToolQuestion {
+    if (this.asking === "mode") {
+      return this.defaultMode === "trim"
+        ? "enterTrimModeOption"
+        : "enterExtendModeOption"
     }
-    if (this.window) {
-      return this.window.start ? "specifyOppositeCorner" : "specifyFirstCorner"
+    const selector = this.selector()
+    if (selector) {
+      const asked = selector.question()
+      // `Select objects or [mOde] <select all>:` while the set is empty.
+      return this.asking === "edges" &&
+        asked === "selectObjects" &&
+        (this.selection?.isEmpty() ?? true)
+        ? { id: "selectObjectsOr", enter: "selectAll" }
+        : asked
     }
-    return this.objectQuestion()
+    return this.fence || this.window ? this.boxPrompt() : this.objectQuestion()
   }
 
   /**
@@ -239,18 +278,28 @@ export abstract class EdgeEditTool implements Tool {
    * first corner every word declared but Undo (`Fence/cuTting/Crossing/…`,
    * ta12, tb9) — of those built here.
    */
+  /** mOde's `<Quick>`: the current mode, which Enter keeps. */
+  defaultOption(): string | null {
+    if (this.asking !== "mode") return null
+    return this.mode.standard ? "Standard" : "Quick"
+  }
+
   takes(): QuestionInput {
-    if (this.erasing) return this.eraser.takes()
+    if (this.asking === "mode") return "keyword"
+    const selector = this.selector()
+    if (selector) return selector.takes()
     if (this.fence) return { refusal: "invalidResponse" }
     if (this.window?.start) return { refusal: "invalidWindowSpecification" }
     const refusal = ["invalidSelection", "expectsPointOr"] as const
     if (this.window) {
       return {
         refusal,
-        keywords: { ids: ["Fence", ...this.words()], declared: true },
+        keywords: { ids: ["Fence", ...this.unfenced()], declared: true },
       }
     }
-    const listed = this.listed().map((option) => option.id)
+    const listed = this.listed()
+      .map((option) => option.id)
+      .filter((id) => id !== "Fence")
     return { refusal, keywords: { ids: ["Fence", ...listed].slice(0, -1) } }
   }
 
@@ -259,7 +308,7 @@ export abstract class EdgeEditTool implements Tool {
    * fence's points do not (AutoCAD 2023's console, acc/th1, th2, th6).
    */
   setsLastPoint(): boolean | null {
-    if (this.erasing) return null
+    if (this.asking) return null
     if (this.window) return this.window.start === null
     return this.fence ? false : null
   }
@@ -270,7 +319,17 @@ export abstract class EdgeEditTool implements Tool {
    * unlisted (tc6, tc7, th5).
    */
   commandOptions(): readonly CommandOption[] {
-    if (this.erasing) return this.eraser.commandOptions()
+    if (this.asking === "mode") return [{ id: "Quick" }, { id: "Standard" }]
+    const selector = this.selector()
+    if (selector) {
+      // WHY mOde only as the command starts, the set empty (acc/sm3, sm5, sp2).
+      const mode =
+        this.asking === "edges" &&
+        this.starting &&
+        (this.selection?.isEmpty() ?? true) &&
+        !selector.inMode()
+      return [...(mode ? [{ id: "mOde" }] : []), ...selector.commandOptions()]
+    }
     if (this.fence) {
       return !this.fence.typed || this.fence.points.length > 0
         ? [{ id: "Undo" }]
@@ -278,14 +337,14 @@ export abstract class EdgeEditTool implements Tool {
     }
     if (this.window) {
       if (this.window.start) return []
-      return ["Fence", ...this.words(), "Undo"].map((id) => ({
+      return ["Fence", ...this.unfenced(), "Undo"].map((id) => ({
         id,
         hidden: true,
       }))
     }
     return [
       ...this.listed(),
-      { id: "Fence", hidden: true },
+      ...(this.mode.standard ? [] : [{ id: "Fence", hidden: true } as const]),
       ...(this.steps.length === 0
         ? [{ id: "Undo", hidden: true } as const]
         : []),
@@ -293,8 +352,15 @@ export abstract class EdgeEditTool implements Tool {
   }
 
   invokeOption(id: string, ctx: ToolContext): CommandOptionOutcome {
-    if (this.erasing) {
-      return this.eraser.invokeOption(id, ctx) ? "continue" : "unhandled"
+    if (this.asking === "mode") return this.chooseMode(id, ctx)
+    const selector = this.selector()
+    if (selector) {
+      if (id === "mOde" && this.asking === "edges") {
+        this.asking = "mode"
+        this.modeFromEdges = true
+        return "continue"
+      }
+      return selector.invokeOption(id, ctx) ? "continue" : "unhandled"
     }
     const fence = this.fence
     if (fence) {
@@ -325,10 +391,27 @@ export abstract class EdgeEditTool implements Tool {
         if (!this.words().includes(id)) return "unhandled"
         this.window = null
         this.preview = null
-        this.erasing = true
+        this.asking = "erase"
         ctx.dynamicInput.close()
         ctx.selection.clear()
         this.eraser.start()
+        break
+      case "cuTting":
+      case "Boundary":
+        if (!this.words().includes(id)) return "unhandled"
+        this.window = null
+        this.preview = null
+        ctx.dynamicInput.close()
+        // WHY the settings again: the console says them first (acc/sm5, sm7).
+        this.reportSettings(ctx)
+        this.askEdges(false, ctx)
+        break
+      case "mOde":
+        this.window = null
+        this.preview = null
+        ctx.dynamicInput.close()
+        this.asking = "mode"
+        this.modeFromEdges = false
         break
       case "Undo":
         this.undoEdit(ctx)
@@ -343,17 +426,18 @@ export abstract class EdgeEditTool implements Tool {
   onDeactivate(ctx: ToolContext): void {
     this.preview = null
     this.lastInput = null
-    if (this.fence || this.window || this.erasing) ctx.dynamicInput.close()
-    if (this.erasing) ctx.selection.clear()
+    if (this.fence || this.window || this.asking) ctx.dynamicInput.close()
+    if (this.selector()) ctx.selection.clear()
     this.fence = null
     this.window = null
-    this.erasing = false
+    this.asking = null
+    this.edges = null
     this.selection = null
   }
 
   onPointerMove(input: PointerInput, ctx: ToolContext): void {
-    if (this.erasing) {
-      this.eraser.onPointerMove(input, ctx)
+    if (this.asking) {
+      this.selector()?.onPointerMove(input, ctx)
       return
     }
     if (this.fence || this.window) {
@@ -371,10 +455,10 @@ export abstract class EdgeEditTool implements Tool {
   /**
    * A point typed at the prompt picks there (AutoCAD 2023's console, acc/v1,
    * v3, v4 of the hidden UCS words session), and on nothing starts the
-   * fence, as a click does.
+   * fence, or Standard's window, as a click does.
    */
   answerTyped(text: string, ctx: ToolContext): boolean {
-    if (this.erasing) return this.eraser.answerTyped(text, ctx)
+    if (this.asking) return this.selector()?.answerTyped(text, ctx) ?? false
     if (this.fence || this.window) return false
     const point = typedPick(text, ctx)
     if (!point) return false
@@ -396,8 +480,8 @@ export abstract class EdgeEditTool implements Tool {
   }
 
   onPointerDown(input: PointerInput, ctx: ToolContext): void {
-    if (this.erasing) {
-      this.eraser.onPointerDown(input, ctx)
+    if (this.asking) {
+      this.selector()?.onPointerDown(input, ctx)
       ctx.requestRender()
       return
     }
@@ -414,12 +498,13 @@ export abstract class EdgeEditTool implements Tool {
     const plan = this.planFor(input, ctx)
     if (!plan) {
       if (ctx.pick(input.world)) this.refuseExtend(input, ctx)
+      else if (this.mode.standard) this.startWindow(input.point, ctx)
       else this.startFence(input.point, ctx)
       return
     }
     if (plan.kind === "refuse") {
       ctx.report(ctx.text.message(plan.message), "error")
-      this.steps.push(false)
+      if (!plan.uncounted) this.steps.push(false)
       ctx.requestRender()
       return
     }
@@ -432,17 +517,33 @@ export abstract class EdgeEditTool implements Tool {
   }
 
   onPointerUp(input: PointerInput, ctx: ToolContext): void {
-    if (this.erasing) this.eraser.onPointerUp(input, ctx)
+    this.selector()?.onPointerUp(input, ctx)
   }
 
   /**
    * Enter: Fence's ends it, whatever its points (acc/ta1, ta2), and a
    * window's opposite corner refuses it; at the prompt and Crossing's first
    * corner it ends the command (ta12), as at a pick on nothing's fence and
-   * at eRase's with nothing in its set (ri2, ri3, ri12).
+   * at eRase's with nothing in its set (ri2, ri3, ri12); at the edges' it
+   * takes every object (sm2, sn8, sn10), and at mOde's it keeps the mode.
    */
   onEnter(ctx: ToolContext): boolean {
-    if (this.erasing) return this.eraser.onEnter(ctx)
+    if (this.asking === "mode") {
+      this.chooseMode(null, ctx)
+      return true
+    }
+    if (
+      this.asking === "edges" &&
+      !this.edgeSelector.inMode() &&
+      (this.selection?.isEmpty() ?? true)
+    ) {
+      this.asking = null
+      this.edges = null
+      ctx.requestRender()
+      return true
+    }
+    const selector = this.selector()
+    if (selector) return selector.onEnter(ctx)
     if (this.fence?.typed) {
       this.editAcross(this.fence.points, false, ctx)
       return true
@@ -455,7 +556,7 @@ export abstract class EdgeEditTool implements Tool {
   }
 
   wantsSnap(): boolean {
-    if (this.erasing) return this.eraser.wantsSnap()
+    if (this.asking) return this.selector()?.wantsSnap() ?? false
     // Trim/Extend pick objects by proximity, not precise points — running snaps
     // would only clutter the hover, exactly as in AutoCAD. A fence's point and
     // a window's corner are points.
@@ -463,7 +564,7 @@ export abstract class EdgeEditTool implements Tool {
   }
 
   buildOverlay(ctx: ToolContext): ScenePrimitive[] {
-    if (this.erasing) return this.eraser.buildOverlay(ctx)
+    if (this.asking) return this.selector()?.buildOverlay(ctx) ?? []
     if (this.fence) {
       const { points, cursor } = this.fence
       const through = cursor ? [...points, cursor] : points
@@ -531,15 +632,95 @@ export abstract class EdgeEditTool implements Tool {
     return prim(plan.added, THEME.selected, 1.5, [6, 4])
   }
 
+  /** A fence's or a window's point prompt. */
+  private boxPrompt(): PromptId {
+    if (this.fence) {
+      return this.fence.points.length === 0
+        ? "specifyFirstFencePoint"
+        : "specifyNextFencePointOr"
+    }
+    return this.window?.start ? "specifyOppositeCorner" : "specifyFirstCorner"
+  }
+
   private objectQuestion(): PromptId {
     return this.defaultMode === "trim"
       ? "selectObjectToTrimOrShiftSelectToExtendOr"
       : "selectObjectToExtendOrShiftSelectToTrimOr"
   }
 
-  /** The words of the object prompt built here, in AutoCAD's order. */
+  /**
+   * The words of the object prompt built here, in AutoCAD's order: Fence
+   * listed in Standard mode only.
+   */
   private words(): readonly string[] {
-    return this.defaultMode === "trim" ? ["Crossing", "eRase"] : ["Crossing"]
+    const fence = this.mode.standard ? ["Fence"] : []
+    return this.defaultMode === "trim"
+      ? ["cuTting", ...fence, "Crossing", "mOde", "eRase"]
+      : ["Boundary", ...fence, "Crossing", "mOde"]
+  }
+
+  private unfenced(): readonly string[] {
+    return this.words().filter((id) => id !== "Fence")
+  }
+
+  private selector(): ObjectSelector | null {
+    if (this.asking === "erase") return this.eraser
+    return this.asking === "edges" ? this.edgeSelector : null
+  }
+
+  private reportSettings(ctx: ToolContext): void {
+    ctx.report(
+      ctx.text.message("trimExtendSettings", {
+        mode: this.mode.standard ? "standard" : "quick",
+      })
+    )
+  }
+
+  /** `Select cutting edges ...` (`Select boundary edges ...`) and the set. */
+  private askEdges(starting: boolean, ctx: ToolContext): void {
+    ctx.report(
+      ctx.text.message(
+        this.defaultMode === "trim"
+          ? "selectCuttingEdges"
+          : "selectBoundaryEdges"
+      )
+    )
+    this.asking = "edges"
+    this.starting = starting
+    ctx.selection.clear()
+    this.edgeSelector.start()
+  }
+
+  private takeEdges(ctx: ToolContext): void {
+    this.edges = new Set(ctx.selection.toArray())
+    ctx.selection.clear()
+    this.asking = null
+    ctx.requestRender()
+  }
+
+  /**
+   * mOde's answer, or Enter keeping it: the object prompt again, or the
+   * edges' prompt it was asked at while Standard (acc/sm9, sp2).
+   */
+  private chooseMode(
+    id: string | null,
+    ctx: ToolContext
+  ): CommandOptionOutcome {
+    if (id !== null && id !== "Quick" && id !== "Standard") return "unhandled"
+    if (id !== null) this.mode.standard = id === "Standard"
+    this.asking = this.modeFromEdges && this.mode.standard ? "edges" : null
+    ctx.requestRender()
+    return "continue"
+  }
+
+  private isEdge(id: EntityId): boolean {
+    return this.edges === null || this.edges.has(id)
+  }
+
+  /** An edge's pieces are edges too (acc/sp1). */
+  private keepEdges(id: EntityId, added: readonly Entity[]): void {
+    if (!this.edges?.has(id)) return
+    for (const entity of added) this.edges.add(entity.id)
   }
 
   /** The words the object prompt lists. */
@@ -572,7 +753,7 @@ export abstract class EdgeEditTool implements Tool {
   private eraseSet(ctx: ToolContext): void {
     ctx.execute(new RemoveEntitiesCommand(ctx.selection.toArray()))
     ctx.selection.clear()
-    this.erasing = false
+    this.asking = null
     this.steps.push(true)
     ctx.requestRender()
   }
@@ -590,6 +771,13 @@ export abstract class EdgeEditTool implements Tool {
     ctx.report(ctx.text.message(refusal.message), "error")
     if (refusal.counts) this.steps.push(false)
     ctx.requestRender()
+  }
+
+  /** Standard mode's crossing window, a pick on nothing its first corner (acc/sm4, sn1, sn2). */
+  private startWindow(start: Vec2, ctx: ToolContext): void {
+    this.window = { start: null, cursor: null }
+    this.preview = null
+    this.cornerPoint(start, ctx)
   }
 
   private startFence(start: Vec2, ctx: ToolContext): void {
@@ -626,7 +814,7 @@ export abstract class EdgeEditTool implements Tool {
     const last = this.fence?.points.at(-1)
     const from = last ? { ...last, z: ctx.elevation } : null
     ctx.dynamicInput.open({
-      fields: [{ id: "point", prompt: this.question(), kind: "coordinate" }],
+      fields: [{ id: "point", prompt: this.boxPrompt(), kind: "coordinate" }],
       commit: () => {},
       commitRaw: (commitCtx) => {
         const point = typedPoint(commitCtx, from)
@@ -647,7 +835,7 @@ export abstract class EdgeEditTool implements Tool {
     const start = this.window?.start
     const from = start ? { ...start, z: ctx.elevation } : null
     ctx.dynamicInput.open({
-      fields: [{ id: "point", prompt: this.question(), kind: "coordinate" }],
+      fields: [{ id: "point", prompt: this.boxPrompt(), kind: "coordinate" }],
       commit: () => {},
       commitRaw: (commitCtx) => {
         const point = typedPoint(commitCtx, from)
@@ -763,6 +951,7 @@ export abstract class EdgeEditTool implements Tool {
         continue
       }
       const { id, added } = this.piecesOf(plan, target)
+      this.keepEdges(id, added)
       drawing = [...drawing.filter((entity) => entity.id !== id), ...added]
       pieces.set(source, [
         ...(pieces.get(source) ?? [source]).filter((piece) => piece !== id),
@@ -809,21 +998,27 @@ export abstract class EdgeEditTool implements Tool {
     return this.planOn(hit, input.world, this.modeFor(input), this.drawing(ctx))
   }
 
-  /** The edit of `hit` picked at `click`, every other object of `drawing` an edge. */
+  /** The edit of `hit` picked at `click`, the edges of `drawing` edges. */
   private planOn(
     hit: Entity,
     click: Vec2,
     mode: EdgeEditMode,
     drawing: readonly Entity[]
   ): EdgeEditPlan | null {
-    const others = drawing.filter((e) => e.id !== hit.id)
+    const others = drawing.filter((e) => e.id !== hit.id && this.isEdge(e.id))
     if (mode === "extend") return planExtend(hit, click, others)
+    const plan = planTrim(hit, click, others, this.isEdge(hit.id))
+    if (plan || !TRIMMED.has(hit.type)) return plan
     // "In Quick mode, selecting an object that doesn't cross a boundary
-    // deletes the object instead" — of those trimmed here.
-    return (
-      planTrim(hit, click, others) ??
-      (TRIMMED.has(hit.type) ? { kind: "erase", target: hit } : null)
-    )
+    // deletes the object instead" — of those trimmed here; Standard says so,
+    // and Undo does not count it (acc/sm3, sn3, sn12).
+    return this.mode.standard
+      ? {
+          kind: "refuse",
+          message: "doesNotIntersectCuttingEdge",
+          uncounted: true,
+        }
+      : { kind: "erase", target: hit }
   }
 
   private commit(
@@ -834,6 +1029,7 @@ export abstract class EdgeEditTool implements Tool {
       plan.kind === "erase" ? plan.target : ctx.document.get(plan.targetId)
     if (!target) return
     const pieces = this.piecesOf(plan, target)
+    this.keepEdges(pieces.id, pieces.added)
     if (pieces.added.length === 0) {
       ctx.execute(new RemoveEntitiesCommand([pieces.id]))
     } else if (pieces.added.length === 1) {
@@ -960,10 +1156,12 @@ function geomToEntity(g: EditGeom, layerId: LayerId, id?: EntityId): Entity {
   }
 }
 
+/** `own`: whether `target` is an edge, which cuts a polyline at its own vertices. */
 function planTrim(
   target: Entity,
   click: Vec2,
-  others: readonly Entity[]
+  others: readonly Entity[],
+  own: boolean
 ): EdgeEditPlan | null {
   switch (target.type) {
     case "line":
@@ -973,7 +1171,9 @@ function planTrim(
     case "arc":
       return planTrimArc(target, click, others)
     case "polyline":
-      return planTrimPolyline(target, click, others)
+      return own
+        ? planTrimPolyline(target, click, others)
+        : planTrimPolylinePath(target, click, others)
     case "ellipse":
       return planTrimEllipse(target, click, others)
     case "spline":
@@ -1869,6 +2069,53 @@ function planTrimPolylineArc(
  * cut breaks it in two; a closed polyline opens into one chain, from the
  * cut's far end round to its near one. A bare stub at a free end is dropped.
  */
+/**
+ * A polyline that is no edge, its own vertices none: its pick is trimmed
+ * along it, past its vertices, back to the nearest edges' crossings round a
+ * closed one (AutoCAD 2023's console, acc/sn5, sn11); cut once, a closed
+ * one is refused as a closed spline is (**unverified**).
+ */
+function planTrimPolylinePath(
+  poly: PolylineEntity,
+  click: Vec2,
+  others: readonly Entity[]
+): EdgeEditPlan | null {
+  const count = polylineSegments(poly).length
+  const crossings = polylineSegmentGeometries(poly).flatMap((g, j) =>
+    (g.kind === "arc"
+      ? arcSegmentCrossFractions(g, others)
+      : trimCrossParams(createLine(g.a, g.b), others)
+    ).map((f) => j + f)
+  )
+  if (crossings.length === 0) return null
+  const closed = poly.closed && poly.vertices.length > 2
+  if (closed && crossings.length === 1) {
+    return { kind: "refuse", message: "curveMustIntersectTwice" }
+  }
+  const at = polylineParamAt(poly, click)
+  const below = crossings.filter((t) => t < at)
+  const above = crossings.filter((t) => t > at)
+  let from =
+    below.at(-1) ?? (closed ? crossings[crossings.length - 1] - count : 0)
+  let to = above[0] ?? (closed ? crossings[0] + count : count)
+  if (to > count) {
+    from -= count
+    to -= count
+  }
+  const shift = from < 0 ? count : 0
+  return {
+    kind: "trim",
+    targetId: poly.id,
+    layerId: poly.layerId,
+    replacements: trimPolylinePieces(poly, 0, from, to),
+    removed: {
+      kind: "polyline",
+      ...polylineSpan(poly, from + shift, to + shift),
+      closed: false,
+    },
+  }
+}
+
 function trimPolylinePieces(
   poly: PolylineEntity,
   si: number,

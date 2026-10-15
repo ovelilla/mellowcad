@@ -41,9 +41,12 @@ A tool is an explicit state machine for one AutoCAD command. It owns a discrimin
   the other's implicit function (`implicitEdges`; a spline, which has none, as its chords) with
   `signChanges` (`geometry/primitives.ts`), bisected to full precision — the one root finder;
   never write another scan. A new type that is an edge gets its implicit function there.
-  Quick mode makes the trimmed object an edge of its own too: a polyline's picked segment is
-  cut at its vertices and where it crosses itself (`ownEdges`), never at the next crossing
-  round the chain. A polyline is cut with `polylineSpan` (`domain/polylines.ts`): the run
+  The edges are `edges` (null: every object, Quick mode's until cuTting edges chooses some),
+  asked with the tool's `edgeSelector`, an edge's pieces edges too (`keepEdges`); the mode is
+  TRIMEXTENDMODE, one `TrimExtendMode` TRIM and EXTEND share. A polyline that is an edge is
+  one of its own too: its picked segment is cut at its vertices and where it crosses itself
+  (`ownEdges`), never at the next crossing round the chain; one that is not is trimmed along
+  it, past its vertices, to the nearest edge (`planTrimPolylinePath`). A polyline is cut with `polylineSpan` (`domain/polylines.ts`): the run
   between two of its parameters (`polylineParamAt`: segment index plus the fraction along
   it), round a closed one past its start, a cut arc segment's bulge refitted to its part —
   TRIM's pieces and BREAK's; never walk the vertices to cut one in a tool. An ellipse is cut
@@ -280,7 +283,9 @@ A system variable AutoCAD saves "Not-saved" — i.e. for the session — is a **
 tool instance**, which the runtime owns for exactly that long: FILLET's radius, CHAMFER's two
 distances, HATCH's HPNAME / HPSCALE / HPANG. Do not reset it in `onActivate`; the next run of the
 command starting from the last one's settings is the behaviour. One saved in the drawing belongs
-on the document instead (LTSCALE) or on a style table (DIMSCALE).
+on the document instead (LTSCALE) or on a style table (DIMSCALE). One several tools read (CIRCLERAD
+across CIRCLE's modes, TRIMEXTENDMODE across TRIM and EXTEND) is one object `defaultTools` hands
+each; one AutoCAD keeps in the registry lasts the session here too, noted in the coverage row.
 
 ## What a new object wears
 

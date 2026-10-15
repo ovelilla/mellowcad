@@ -3040,32 +3040,32 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0°~, Line space facto
   properties: -
   cycling: -
 > TRIM
-  prompt: TRIM Select object to trim or shift-select to extend or [Crossing/eRase]:
-  options: [C] Crossing, [R] eRase
+  prompt: TRIM Select object to trim or shift-select to extend or [cuTting edges/Crossing/mOde/eRase]:
+  options: [T] cuTting edges, [C] Crossing, [O] mOde, [R] eRase
   command| TR TRIM
   info| Current settings: Projection=UCS, Edge=None, Mode=Quick
 > trim
-  prompt: TRIM Select object to trim or shift-select to extend or [Crossing/eRase/Undo]:
-  options: [C] Crossing, [R] eRase, [U] Undo
-  prompt| Select object to trim or shift-select to extend or [Crossing/eRase]:
+  prompt: TRIM Select object to trim or shift-select to extend or [cuTting edges/Crossing/mOde/eRase/Undo]:
+  options: [T] cuTting edges, [C] Crossing, [O] mOde, [R] eRase, [U] Undo
+  prompt| Select object to trim or shift-select to extend or [cuTting edges/Crossing/mOde/eRase]:
 > U
-  prompt: TRIM Select object to trim or shift-select to extend or [Crossing/eRase]:
-  options: [C] Crossing, [R] eRase
-  prompt| Select object to trim or shift-select to extend or [Crossing/eRase/Undo]: U
+  prompt: TRIM Select object to trim or shift-select to extend or [cuTting edges/Crossing/mOde/eRase]:
+  options: [T] cuTting edges, [C] Crossing, [O] mOde, [R] eRase
+  prompt| Select object to trim or shift-select to extend or [cuTting edges/Crossing/mOde/eRase/Undo]: U
   info| Command has been completely undone.
 > escape
   prompt: Command:
   options: -
-  prompt| Select object to trim or shift-select to extend or [Crossing/eRase]: *Cancel*
+  prompt| Select object to trim or shift-select to extend or [cuTting edges/Crossing/mOde/eRase]: *Cancel*
 > EXTEND
-  prompt: EXTEND Select object to extend or shift-select to trim or [Crossing]:
-  options: [C] Crossing
+  prompt: EXTEND Select object to extend or shift-select to trim or [Boundary edges/Crossing/mOde]:
+  options: [B] Boundary edges, [C] Crossing, [O] mOde
   command| EX EXTEND
   info| Current settings: Projection=UCS, Edge=None, Mode=Quick
 > escape
   prompt: Command:
   options: -
-  prompt| Select object to extend or shift-select to trim or [Crossing]: *Cancel*
+  prompt| Select object to extend or shift-select to trim or [Boundary edges/Crossing/mOde]: *Cancel*
 > FILLET
   prompt: FILLET Select first object or [Undo/Polyline/Radius/Multiple]:
   asks: 

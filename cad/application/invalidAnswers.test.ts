@@ -272,7 +272,7 @@ describe("a wrong answer mid-command", () => {
 
     expect(cad.commandLog().slice(-2)).toEqual([
       "Current settings: Projection=UCS, Edge=None, Mode=Quick",
-      "Select object to trim or shift-select to extend or [Crossing/eRase]: U",
+      "Select object to trim or shift-select to extend or [cuTting edges/Crossing/mOde/eRase]: U",
     ])
     expect(cad.entityCount).toBe(entities)
     expect(cad.activeToolId()).toBe("trim")

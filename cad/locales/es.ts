@@ -1138,12 +1138,20 @@ export const es: EngineLocale = {
         "Undo": "desHacer",
         "Fence": "Borde",
         "Crossing": "Captura",
-        "eRase": "bOrrar"
+        "eRase": "bOrrar",
+        "cuTting": "COrte",
+        "mOde": "MOdo",
+        "Quick": "Rápido",
+        "Standard": "Estándar"
       },
       "EXTEND": {
         "Undo": "desHacer",
         "Fence": "Borde",
-        "Crossing": "Captura"
+        "Crossing": "Captura",
+        "Boundary": "COrte",
+        "mOde": "MOdo",
+        "Quick": "Rápido",
+        "Standard": "Estándar"
       },
       "FILLET": {
         "Undo": "Deshacer",
@@ -1652,6 +1660,10 @@ export const es: EngineLocale = {
       "enterLayerOptionForOffsetObjects": "Indique opción de capa para objetos desfasados",
       "specifyThroughPointOr": "Precise punto a atravesar o",
       "nextObject": "siguiente objeto",
+      "enterTrimModeOption": "Introduzca una opción de modo de recorte",
+      "enterExtendModeOption": "Introduzca una opción de modo de alargamiento",
+      "selectObjectsOr": "Seleccione objetos o",
+      "selectAll": "seleccionar todo",
       "selectObjectsToEraseOrExit": "Designe objetos que borrar o <salir>",
       "selectObjectsToErase": "Designe objetos que borrar",
       "selectObjectToTrimOrShiftSelectToExtendOr": "Seleccione un objeto que recortar o use la tecla Mayús y seleccione para alargar, o",
@@ -1920,7 +1932,20 @@ export const es: EngineLocale = {
           "angbase"
         ]
       ],
-      "trimExtendSettings": "Parámetros actuales: Proyección=SCP, Arista=Ninguno, Modo=Rápido",
+      "trimExtendSettings": [
+        "Parámetros actuales: Proyección=SCP, Arista=Ninguno, Modo=",
+        [
+          "mode",
+          1,
+          {
+            "standard": "Estándar",
+            "other": "Rápido"
+          }
+        ]
+      ],
+      "selectCuttingEdges": "Seleccione aristas de corte...",
+      "selectBoundaryEdges": "Seleccione las aristas de contorno...",
+      "doesNotIntersectCuttingEdge": "No se interseca con la arista de corte.",
       "pathDoesNotIntersectBoundingEdge": "La trayectoria no se interseca con la arista de contorno.",
       "objectDoesNotIntersectEdge": "El objeto no se interseca con ninguna arista.",
       "cannotExtendObject": "Objeto no procesado por ALARGA.",
@@ -3190,6 +3215,12 @@ export const es: EngineLocale = {
     "keywordLabels": {
       "CIRCLE": {
         "Ttr": "Ttr (Tangente tangente radio)"
+      },
+      "TRIM": {
+        "cuTting": "aristas de COrte"
+      },
+      "EXTEND": {
+        "Boundary": "aristas de COrte"
       },
       "POLYGON": {
         "Inscribed": "Inscrito en el círculo",

@@ -664,9 +664,21 @@
         "Undo": "Undo",
         "Fence": "Fence",
         "Crossing": "Crossing",
-        "eRase": "eRase"
+        "eRase": "eRase",
+        "cuTting": "cuTting",
+        "mOde": "mOde",
+        "Quick": "Quick",
+        "Standard": "Standard"
       },
-      "EXTEND": { "Undo": "Undo", "Fence": "Fence", "Crossing": "Crossing" },
+      "EXTEND": {
+        "Undo": "Undo",
+        "Fence": "Fence",
+        "Crossing": "Crossing",
+        "Boundary": "Boundary",
+        "mOde": "mOde",
+        "Quick": "Quick",
+        "Standard": "Standard"
+      },
       "FILLET": {
         "Undo": "Undo",
         "Polyline": "Polyline",
@@ -1120,6 +1132,10 @@
       "specifyPointOnSideToOffsetOr": "Specify point on side to offset or",
       "specifyThroughPointOr": "Specify through point or",
       "nextObject": "next object",
+      "enterTrimModeOption": "Enter a trim mode option",
+      "enterExtendModeOption": "Enter an extend mode option",
+      "selectObjectsOr": "Select objects or",
+      "selectAll": "select all",
       "selectObjectsToEraseOrExit": "Select objects to erase or '<'exit>",
       "selectObjectsToErase": "Select objects to erase",
       "selectObjectToTrimOrShiftSelectToExtendOr": "Select object to trim or shift-select to extend or",
@@ -1235,7 +1251,10 @@
       "rotateSettings": "Current positive angle in UCS:  ANGDIR=counterclockwise  ANGBASE={angbase}",
       "rotatingCopy": "Rotating a copy of the selected objects.",
       "scalingCopy": "Scaling a copy of the selected objects.",
-      "trimExtendSettings": "Current settings: Projection=UCS, Edge=None, Mode=Quick",
+      "trimExtendSettings": "Current settings: Projection=UCS, Edge=None, Mode={mode, select, standard {Standard} other {Quick}}",
+      "selectCuttingEdges": "Select cutting edges ...",
+      "selectBoundaryEdges": "Select boundary edges ...",
+      "doesNotIntersectCuttingEdge": "Does not intersect with the cutting edge.",
       "pathDoesNotIntersectBoundingEdge": "Path does not intersect with the bounding edge.",
       "objectDoesNotIntersectEdge": "Object does not intersect an edge.",
       "cannotExtendObject": "Cannot EXTEND this object.",
@@ -1466,6 +1485,8 @@
     },
     "keywordLabels": {
       "CIRCLE": { "Ttr": "Ttr (tan tan radius)" },
+      "TRIM": { "cuTting": "cuTting edges" },
+      "EXTEND": { "Boundary": "Boundary edges" },
       "POLYGON": {
         "Inscribed": "Inscribed in circle",
         "Circumscribed": "Circumscribed about circle"
