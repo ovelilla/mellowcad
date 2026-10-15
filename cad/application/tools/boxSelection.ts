@@ -259,7 +259,8 @@ export function fenceCrossing(
 /**
  * Whether the edge `a`–`b` crosses one of the polygon's edges through
  * `points` that it does not share a vertex with: AutoCAD refuses a polygon
- * point whose edges would (`polygon segments cannot intersect`).
+ * point whose edge would, and Enter while the closing edge would (`polygon
+ * segments cannot intersect`).
  */
 export function crossesPolygonEdges(
   points: readonly Vec2[],

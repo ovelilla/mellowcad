@@ -275,20 +275,75 @@ describe("Select objects' modes", () => {
     ])
   })
 
+  // acc/fn2, sq3.
   it("refuses a polygon point whose edge has no length or crosses another", () => {
     const cad = createHarness({ entities: drawing() })
     cad.command("ERASE")
-    answer(cad, "WP", "0,0", "0,0", "100,0", "0,100", "100,100")
+    answer(cad, "WP", "0,0", "0,0", "100,0", "100,100", "50,-50")
+    cad.enter()
 
-    // The last point's closing edge, back to 0,0, would cross 100,0–0,100.
     expect(cad.commandLog().slice(2)).toEqual([
       "First polygon point or pick/drag cursor: 0,0",
       "Specify endpoint of line or [Undo]: 0,0",
       "Invalid point, polygon segment is zero length.",
       "Specify endpoint of line or [Undo]: 100,0",
+      "Specify endpoint of line or [Undo]: 100,100",
+      "Specify endpoint of line or [Undo]: 50,-50",
+      "Invalid point, polygon segments cannot intersect.",
+      "Specify endpoint of line or [Undo]:",
+      "0 found",
+    ])
+  })
+
+  // acc/sq1, sq2, sq4, sq5: the closing edge back to 0,0 crosses 100,0–0,100.
+  it("refuses Enter while the polygon's closing edge crosses another, keeping its points", () => {
+    const cad = createHarness({ entities: drawing() })
+    cad.command("ERASE")
+    answer(cad, "WP", "0,0", "100,0", "0,100", "100,100")
+    cad.enter().enter()
+    answer(cad, "FOO", "U")
+    cad.enter()
+    answer(cad, "CP", "0,0", "100,0", "0,100", "100,100")
+    cad.enter()
+    answer(cad, "-50,150")
+    cad.enter()
+
+    expect(cad.commandLog().slice(1)).toEqual([
+      "Select objects: WP",
+      "First polygon point or pick/drag cursor: 0,0",
+      "Specify endpoint of line or [Undo]: 100,0",
       "Specify endpoint of line or [Undo]: 0,100",
       "Specify endpoint of line or [Undo]: 100,100",
+      "Specify endpoint of line or [Undo]:",
       "Invalid point, polygon segments cannot intersect.",
+      "Specify endpoint of line or [Undo]:",
+      "Invalid point, polygon segments cannot intersect.",
+      "Specify endpoint of line or [Undo]: FOO",
+      "Invalid response.",
+      "Specify endpoint of line or [Undo]: U",
+      "Specify endpoint of line or [Undo]:",
+      "0 found",
+      "Select objects: CP",
+      "First polygon point or pick/drag cursor: 0,0",
+      "Specify endpoint of line or [Undo]: 100,0",
+      "Specify endpoint of line or [Undo]: 0,100",
+      "Specify endpoint of line or [Undo]: 100,100",
+      "Specify endpoint of line or [Undo]:",
+      "Invalid point, polygon segments cannot intersect.",
+      "Specify endpoint of line or [Undo]: -50,150",
+      "Specify endpoint of line or [Undo]:",
+      "2 found",
+    ])
+  })
+
+  it("refuses it in Autodesk's Spanish", () => {
+    const cad = createHarness({ locale: es, entities: drawing() })
+    cad.command("BORRA")
+    answer(cad, "OV", "0,0", "100,0", "0,100", "100,100")
+    cad.enter()
+    expect(cad.commandLog().slice(-2)).toEqual([
+      "Precise punto final de línea o [desHacer]:",
+      "Punto no válido: los segmentos del polígono no pueden intersecarse.",
     ])
   })
 

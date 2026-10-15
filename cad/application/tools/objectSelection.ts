@@ -575,6 +575,13 @@ export class ObjectSelector {
       }
       case "polygon": {
         if (step.points.length < 3) return this.close(ctx)
+        const first = step.points[0]
+        const last = step.points[step.points.length - 1]
+        if (crossesPolygonEdges(step.points, last, first)) {
+          ctx.report(ctx.text.message("polygonSegmentsIntersect"))
+          this.openPointInput(ctx)
+          return true
+        }
         this.backToObjects(ctx)
         this.select(
           this.found(ctx, (include) =>
@@ -697,13 +704,9 @@ export class ObjectSelector {
           this.openPointInput(ctx)
           return
         }
-        const first = step.points[0]
-        if (
-          last &&
-          (crossesPolygonEdges(step.points, last, point) ||
-            (step.points.length > 1 &&
-              crossesPolygonEdges(step.points, point, first)))
-        ) {
+        // WHY only the point's own edge: AutoCAD 2023's console checks the
+        // closing one at Enter (acc/sq1–sq5).
+        if (last && crossesPolygonEdges(step.points, last, point)) {
           ctx.report(ctx.text.message("polygonSegmentsIntersect"))
           return
         }
