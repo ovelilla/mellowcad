@@ -497,6 +497,71 @@ describe("BREAK of a polyline", () => {
   })
 })
 
+// AutoCAD 2023's console, LWPOLYLINE vertices read in the WCS (acc/bz6–bz10):
+// in a UCS at 10,0 turned 30°, the points typed in the WCS with `*`.
+describe("BREAK of a polyline in a turned UCS", () => {
+  const turned = (...entities: PolylineEntity[]) =>
+    answer(createHarness({ entities }), "UCS", "O", "10,0", "UCS", "Z", "30")
+  const square = () => polylineOf(SQUARE, { closed: true, id: "p1" })
+  const arched = () =>
+    polylineOf([p(0, 0), p(100, 0), p(100, 100), p(0, 100)], {
+      bulges: [0, 1, 0],
+      id: "p1",
+    })
+
+  it("cuts it as in the WCS", () => {
+    for (const [polyline, command, first, second, kept] of [
+      [
+        square,
+        "BREAK",
+        "*50,0",
+        "*100,50",
+        ["p1 100,50 100,100 0,100 0,0 50,0"],
+      ],
+      [
+        square,
+        "BREAK",
+        "*100,50",
+        "*50,0",
+        ["p1 100,50 100,100 0,100 0,0 50,0"],
+      ],
+      [
+        square,
+        "BREAK",
+        "*50,0",
+        "@",
+        ["p1 0,0 50,0", "new 50,0 100,0 100,100 0,100 0,0"],
+      ],
+      [
+        arched,
+        "BREAK",
+        "*50,0",
+        "*150,50",
+        ["p1 0,0 50,0", "new 150,50 100,100 0,100"],
+      ],
+      [
+        arched,
+        "BREAKATPOINT",
+        "*150,50",
+        "*150,50",
+        ["p1 0,0 100,0 150,50", "new 150,50 100,100 0,100"],
+      ],
+    ] as const) {
+      const cad = answer(turned(polyline()), command, first, second)
+      expect(
+        pieces(cad).map(
+          ({ id, vertices }) => `${id === "p1" ? "p1" : "new"} ${vertices}`
+        )
+      ).toEqual(kept)
+    }
+    // The arc's pieces keep its circle: a quarter each (bulge tan 22.5°).
+    const cad = answer(turned(arched()), "BREAKATPOINT", "*150,50", "*150,50")
+    const [before, after] = cad.entities() as PolylineEntity[]
+    expect(before.bulges?.[1]).toBeCloseTo(0.414214, 6)
+    expect(after.bulges?.[0]).toBeCloseTo(0.414214, 6)
+  })
+})
+
 /** The ellipses left, in drawing order: the object's or a new one, and its parameters. */
 function ellipsePieces(cad: CadHarness): string[] {
   const round = (value: number) => Math.round(value * 1e4) / 1e4

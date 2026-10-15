@@ -171,6 +171,8 @@ describe("parseCoordinate", () => {
       expect(parseCoordinate("*5,0", inUcs)).toBeCloseToPoint(p(5, 0))
       expect(parseCoordinate("#*5,0", fromLast)).toBeCloseToPoint(p(5, 0))
       expect(parseCoordinate("@*5,0", fromLast)).toBeCloseToPoint(p(105, 100))
+      // Absolute where the relative default holds: AutoCAD's `*x,y`.
+      expect(parseCoordinate("*5,0", fromLast)).toBeCloseToPoint(p(5, 0))
       expect(parseCoordinate("*", inUcs)).toBeNull()
     })
   })

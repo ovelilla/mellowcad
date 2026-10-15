@@ -113,6 +113,10 @@ export function parseCoordinate(
   if (body === "") return null
   let ucs = ctx.ucs
   if (body.startsWith("*")) {
+    // WHY absolute unless `@` came first: `*x,y` is a WCS point, `@*x,y`
+    // the relative form (AutoCAD 2023's console, acc/bz7: BREAK's second
+    // point `*50,0` in a turned UCS).
+    if (!text.trim().startsWith("@")) relative = false
     ucs = ctx.ucs.wcs ?? WORLD_UCS
     body = body.slice(1).trim()
   }
