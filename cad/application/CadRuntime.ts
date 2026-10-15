@@ -374,11 +374,13 @@ export class CadRuntime extends Observable {
    */
   private answerPrefix: string | null = null
   /**
-   * The log's mark just after a prompt line a pick left bare, while nothing
-   * has been written since: what the pick found goes on that line, and a
-   * prompt AutoCAD asks without a new line follows it there.
+   * The log's mark just after a prompt line a pick left bare, or a tool wrote
+   * itself, while nothing has been written since: what the pick found goes on
+   * that line, and a prompt AutoCAD asks without a new line follows it there.
    */
   private openLine: number | null = null
+  /** The log's mark after the prompt line a tool wrote while answering. */
+  private reportedPrompt: number | null = null
   /** What the pick being answered found, for its prompt's line. */
   private pickFound: string[] | null = null
   /** `Select objects:`' Previous set, the last one a command was given. */
@@ -570,13 +572,17 @@ export class CadRuntime extends Observable {
         this.toolCursor = cursor
         this.host.setCursor(cursor)
       },
-      report: (text, kind = "info") =>
+      report: (text, kind = "info") => {
         this.commandLine.write(
           kind,
           kind === "prompt" && this.suspended !== null
             ? this.text.transparentPrompt(text)
             : text
-        ),
+        )
+        if (kind !== "prompt") return
+        this.reportedPrompt = this.commandLine.mark()
+        if (!this.answeringPrompt) this.openLine = this.reportedPrompt
+      },
       runsTransparently: () => this.suspended !== null,
       regenerate: () => {
         this.history.markRegenerated()
@@ -626,6 +632,8 @@ export class CadRuntime extends Observable {
           )
         },
         transparentPrompt: (text) => this.text.transparentPrompt(text),
+        prompt: (id) =>
+          promptString(this.text.composePrompt(this.text.prompt(id), [])),
       },
       endCommand: () => {
         this.resetTracking()
@@ -1269,6 +1277,7 @@ export class CadRuntime extends Observable {
     this.pickFound = picked ? [] : null
     this.pointGiven = null
     this.pointTyped = null
+    this.reportedPrompt = null
     let took: boolean
     let found: readonly string[] = []
     try {
@@ -1279,6 +1288,7 @@ export class CadRuntime extends Observable {
       this.pickFound = null
     }
     if (!took) return false
+    const reportedLast = this.reportedPrompt === this.commandLine.mark()
     if (asked !== null) this.keepLastPoint(asked)
     this.answerPrefix = null
     if (echo === null) {
@@ -1294,7 +1304,8 @@ export class CadRuntime extends Observable {
     }
     const written = this.commandLine.mark()
     this.openLine =
-      picked && given === "" && written === (continues ? mark : mark + 1)
+      (picked && given === "" && written === (continues ? mark : mark + 1)) ||
+      reportedLast
         ? written
         : null
     return true

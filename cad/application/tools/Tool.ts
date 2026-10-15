@@ -292,7 +292,9 @@ export interface ToolContext {
    * gets when a command deliberately does nothing. The text comes from
    * {@link text}, or is the user's own data (a block name in a `?` listing).
    * A `prompt` is one a tool writes itself (PAN's), headed `>>` as any
-   * prompt is while the command runs transparently.
+   * prompt is while the command runs transparently, and left open: a prompt
+   * AutoCAD asks without a new line goes on it (`Select objects: Specify
+   * opposite corner:`).
    */
   report(text: string, kind?: "info" | "error" | "prompt"): void
 
@@ -392,6 +394,8 @@ export interface ToolText {
   keyword(id: string): string
   /** `text` headed as a transparent command's prompt (`>>BYLAYER`). */
   transparentPrompt(text: string): string
+  /** A prompt as it is asked with no keywords (`Select objects:`). */
+  prompt(id: PromptId): string
 }
 
 /**

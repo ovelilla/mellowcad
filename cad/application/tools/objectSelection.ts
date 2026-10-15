@@ -246,9 +246,7 @@ export class ObjectSelector {
       case "objects":
       case "pressed":
       case "dragging":
-        return this.removing
-          ? "removeObjects"
-          : (this.options.question?.() ?? "selectObjects")
+        return this.objectsQuestion()
       case "firstCorner":
         return "specifyFirstCorner"
       case "oppositeCorner":
@@ -906,10 +904,17 @@ export class ObjectSelector {
     return true
   }
 
+  private objectsQuestion(): PromptId {
+    return this.removing
+      ? "removeObjects"
+      : (this.options.question?.() ?? "selectObjects")
+  }
+
   /**
    * A wrong window: AutoCAD asks for its first corner again — or, for the
-   * window a point on nothing started, for its opposite corner (AutoCAD 2023's
-   * console).
+   * window a point on nothing started, for its opposite corner after the
+   * prompt it started at, on one line: `Select objects: Specify opposite
+   * corner:` (AutoCAD 2023's console, acc/sw1, sw5, sw10, sw11).
    */
   private refuseWindow(
     step: Extract<Step, { kind: "firstCorner" | "oppositeCorner" }>,
@@ -918,6 +923,8 @@ export class ObjectSelector {
     ctx.report(ctx.text.message("invalidWindowSpecification"))
     if (step.kind !== "oppositeCorner" || !step.implied) {
       this.step = { kind: "firstCorner", rule: step.rule }
+    } else {
+      ctx.report(ctx.text.prompt(this.objectsQuestion()), "prompt")
     }
     this.openPointInput(ctx)
   }

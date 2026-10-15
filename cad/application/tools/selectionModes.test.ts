@@ -631,11 +631,70 @@ describe("a point typed at Select objects", () => {
       "Select objects: 120,120",
       "Specify opposite corner: FOO",
       "Invalid window specification.",
-      "Specify opposite corner: @1,1",
+      "Select objects: Specify opposite corner: @1,1",
       "0 found",
     ])
     cad.enter()
     expect(cad.runtime.document.has("A")).toBe(false)
+  })
+
+  // acc/sw1, sw5–sw8, sw10, sw11.
+  it("says the prompt it started at before asking the opposite corner again", () => {
+    const cad = createHarness({ entities: drawing() })
+    cad.command("ERASE")
+    answer(cad, "500,500", "FOO", "FOO", "L")
+    cad.enter()
+    answer(cad, "600,600", "500,500", "500,500", "L", "R", "500,500", "FOO")
+    cad.click(p(-10, -10))
+    expect(cad.commandLog().slice(1)).toEqual([
+      "Select objects: 500,500",
+      "Specify opposite corner: FOO",
+      "Invalid window specification.",
+      "Select objects: Specify opposite corner: FOO",
+      "Invalid window specification.",
+      "Select objects: Specify opposite corner: L",
+      "Invalid window specification.",
+      "Select objects: Specify opposite corner:",
+      "Invalid window specification.",
+      "Select objects: Specify opposite corner: 600,600",
+      "0 found",
+      "Select objects: 500,500",
+      "Specify opposite corner: 500,500",
+      "0 found",
+      "Select objects: L",
+      "1 found",
+      "Select objects: R",
+      "Remove objects: 500,500",
+      "Specify opposite corner: FOO",
+      "Invalid window specification.",
+      "Remove objects: Specify opposite corner: 3 found, 1 removed, 0 total",
+    ])
+
+    const path = createHarness({ entities: drawing() })
+    path.command("ARRAYPATH")
+    answer(path, "L")
+    path.enter()
+    answer(path, "500,500", "FOO", "600,600")
+    expect(path.commandLog().slice(-4)).toEqual([
+      "Select path curve: 500,500",
+      "Specify opposite corner: FOO",
+      "Invalid window specification.",
+      "Select path curve: Specify opposite corner: 600,600",
+    ])
+    expect(path.state().commandLine.prompt).toBe("ARRAYPATH Select path curve:")
+  })
+
+  it("says it in Autodesk's Spanish", () => {
+    const cad = createHarness({ locale: es, entities: drawing() })
+    cad.command("BORRA")
+    answer(cad, "500,500", "FOO", "600,600")
+    expect(cad.commandLog().slice(1)).toEqual([
+      "Designe objetos: 500,500",
+      "Designe esquina opuesta: FOO",
+      "Designación de ventana no válida.",
+      "Designe objetos: Designe esquina opuesta: 600,600",
+      "0 encontrados",
+    ])
   })
 
   it("is answered in Autodesk's Spanish", () => {

@@ -218,8 +218,11 @@ release does (`openLine`, while nothing else has been written); after a typed an
 goes on a line of its own, as AutoCAD's Enter ends the line. A prompt AutoCAD prints without a
 new line (`continuesLine`: `Specify opposite corner:`) is written on the line a pick left bare:
 `Select objects: Specify opposite corner: 2 found`. Add one to `continuesLine` only from its
-string in Autodesk's table (no leading new line). A table string that starts with a space
-(`Specify second point:`, ` (ADD mode)Specify next point or`) keeps it in `commands.prompts`:
+string in Autodesk's table (no leading new line). A prompt line a tool writes itself
+(`ctx.report(ctx.text.prompt(id), "prompt")`) is left open the same way: the wrong opposite
+corner of a window a pick on nothing started writes `Select objects:` and asks on it. A table
+string that starts with a space (`Specify second point:`, ` (ADD mode)Specify next point or`)
+keeps it in `commands.prompts`:
 the history writes it (` Specify second point: 10,0`, and two spaces after a picked prompt's
 colon), and `commandPrompt` trims it from the prompt line and the tooltip.
 
