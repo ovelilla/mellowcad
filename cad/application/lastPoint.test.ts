@@ -263,6 +263,71 @@ describe("LASTPOINT", () => {
     )
   })
 
+  // AutoCAD 2023's console (acc/bk59–bk63, ul1–ul36), from a UCS at 30,0
+  // with LASTPOINT at 35,5: UCS puts it at the WCS's origin as it starts,
+  // and only a point given moves it; -VIEW and PLAN leave it.
+  it("is the WCS's origin as UCS starts, until a point is given", () => {
+    const at = (...texts: string[]) => {
+      const cad = createHarness({ entities: [lineOf(p(20, 10), p(80, 40))] })
+      cad.runtime.setDocumentPrecision(4)
+      answer(cad, "UCS", "O", "30,0", "ID", "5,5", ...texts)
+      return lastPoint(cad)
+    }
+    const reads = (x: string, y: string, z = "0.0000") =>
+      ` X = ${x}     Y = ${y}     Z = ${z}`
+    const origin = reads("0.0000", "0.0000")
+    const wcsOrigin = reads("-30.0000", "0.0000")
+
+    expect(at("UCS", "Z", "30")).toBe(reads("-25.9808", "15.0000"))
+    expect(at("UCS", "X", "90")).toBe(wcsOrigin)
+    expect(at("UCS", "V")).toBe(wcsOrigin)
+    expect(at("UCS", "OB", "L")).toBe(reads("-22.3607", "0.0000"))
+    // A point at Z's angle turns the UCS and is no point given (ul32).
+    expect(at("UCS", "Z", "40,10")).toBe(reads("-29.1043", "7.2761"))
+    // ZAxis' Z point is given, its origin too, Enter there the current one.
+    expect(at("UCS", "ZA", "50,0", "50,0,10")).toBe(
+      reads("0.0000", "0.0000", "10.0000")
+    )
+    expect(at("UCS", "ZA", "50,0", "")).toBe(origin)
+    expect(at("UCS", "ZA", "", "")).toBe(origin)
+    // A point on X is not (ul9, ul27, ul28).
+    expect(at("UCS", "50,0", "60,10", "")).toBe(origin)
+    expect(at("UCS", "3", "", "60,10", "")).toBe(origin)
+    expect(at("UCS", "3", "50,0", "60,10", "")).toBe(origin)
+    expect(at("-VIEW", "O", "T")).toBe(reads("35.0000", "5.0000"))
+    expect(at("-VIEW", "O", "B")).toBe(reads("-35.0000", "5.0000"))
+    expect(at("PLAN", "")).toBe(reads("5.0000", "5.0000"))
+
+    // U: the WCS's origin, but where a UCS made at the first prompt left
+    // it; REDO: where the UCS left it. -VIEW's U leaves it.
+    expect(at("UCS", "Z", "30", "U")).toBe(wcsOrigin)
+    expect(at("UCS", "Z", "30", "U", "REDO")).toBe(reads("-25.9808", "15.0000"))
+    expect(at("UCS", "ZA", "50,0", "50,0,10", "U")).toBe(wcsOrigin)
+    expect(at("UCS", "ZA", "50,0", "50,0,10", "U", "REDO")).toBe(
+      reads("0.0000", "0.0000", "10.0000")
+    )
+    expect(at("UCS", "50,0", "", "U")).toBe(reads("50.0000", "0.0000"))
+    expect(at("UCS", "50,0", "", "U", "REDO")).toBe(origin)
+    expect(at("UCS", "N", "50,0", "U")).toBe(wcsOrigin)
+    expect(at("-VIEW", "O", "T", "U")).toBe(reads("5.0000", "5.0000"))
+  })
+
+  // AutoCAD 2023's console (acc/q6, ul31, ul35): New's Enter is World.
+  it("is the WCS's origin after New's Enter, which is World", () => {
+    const cad = createHarness()
+    answer(cad, "UCS", "O", "30,0", "UCS", "Z", "30", "ID", "5,5")
+    answer(cad, "UCS", "N", "")
+    expect(cad.runtime.document.getSettings().ucs).toMatchObject({
+      origin: { x: 0, y: 0, z: 0 },
+      xAxis: { x: 1, y: 0, z: 0 },
+    })
+    expect(lastPoint(cad)).toBe(" X = 0.00     Y = 0.00     Z = 0.00")
+
+    const spanish = createHarness({ locale: es })
+    answer(spanish, "SCP", "OR", "30,0", "ID", "5,5", "SCP", "X", "90")
+    expect(lastPoint(spanish)).toBe(" X = -30.00     Y = 0.00     Z = 0.00")
+  })
+
   it("goes back to 0,0,0 with a new drawing", () => {
     const cad = createHarness()
     answer(cad, "ID", "7,8")

@@ -748,22 +748,19 @@ export class CadRuntime extends Observable {
       if (next === ucs) return
       ucs = next
       this.resetTracking()
-      // WHY: AutoCAD 2023's console puts LASTPOINT at the new UCS's origin
-      // after UCS Origin and UCS World alike (`ID @` then reads 0,0,0); U
-      // and REDO put it where the change says (acc/a1–a24 of the elliptical
-      // arcs session), else at the WCS's origin and the new one's.
-      const replayed = this.history.replaying
-      if (!replayed) {
-        this.lastPoint = next.origin
-        return
-      }
+      // WHY: a UCS change leaves LASTPOINT, as AutoCAD 2023's console's
+      // -VIEW Top does (acc/ul15, ul16); UCS sets it itself, and U and REDO
+      // of a UCS put it where the change says (acc/a1–a24 of the elliptical
+      // arcs session, ul1–ul34).
       const said =
-        replayed.command instanceof UpdateSettingsCommand
-          ? replayed.command.lastPoint
+        this.history.replaying?.command instanceof UpdateSettingsCommand
+          ? this.history.replaying.command.lastPoint
           : undefined
-      this.lastPoint = replayed.undone
-        ? (said?.undone ?? vec3(0, 0, 0))
-        : (said?.redone ?? next.origin)
+      if (said) {
+        this.lastPoint = this.history.replaying?.undone
+          ? said.undone
+          : said.redone
+      }
     })
     // A new selection shows every object again, as the palette's drop-down
     // starts at All.
@@ -1340,7 +1337,7 @@ export class CadRuntime extends Observable {
    * an answer that ends the command leaves. A keyword that moves no base
    * keeps it (LINE's Close: the last point given). Nothing while a
    * transparent command starts or ends, which keeps it for the one it
-   * interrupts, nor once the UCS changed, which put it at its origin.
+   * interrupts, nor once the UCS changed, as UCS says itself where it goes.
    */
   private keepLastPoint(asked: {
     readonly tool: Tool

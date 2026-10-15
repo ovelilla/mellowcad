@@ -507,15 +507,17 @@ instead, or the command-line buffer will swallow them.
   runtime sets it after every answer whose question takes a point (`takes()` or the box says
   `"point"` / `"point2d"`): the pick, else where the answer moved the tool's anchor
   (`getConstraintAnchor`), else the coordinate typed. A question AutoCAD's console shows keeping
-  it although it takes a point (DIST's second point, COPY's), or setting it although its refusal
-  is its own (ZOOM's first prompt, DIST's Multiple points), says so with `setsLastPoint()`;
-  check with `ID @` after the command in the console. A UCS change puts it at the new UCS's
-  origin (the runtime); U and REDO of one put it where the change's `UpdateSettingsCommand`
-  says (`lastPoint`: the origin typed at UCS's first prompt or the WCS's, and where the UCS put
-  it), read through `history.replaying`, the command replayed. A tool moves it with no point
-  given only through `ctx.setLastPoint` — UCS Previous, Restore, Zdepth and every UCS that ends
-  leaving the UCS as it was, to the WCS origin; 3point, to its third point (`UcsTool`'s `apply`
-  `lastPoint`, which its REDO repeats).
+  it although it takes a point (DIST's second point, COPY's, UCS's point on X), or setting it
+  although its refusal is its own (ZOOM's first prompt, DIST's Multiple points), says so with
+  `setsLastPoint()`;
+  check with `ID @` after the command in the console. A UCS change leaves it: UCS puts it at
+  the WCS's origin as it starts (`UcsTool.onActivate`), and a point given at its prompts moves it
+  as anywhere — the answer that changes the UCS passes its point to `apply`'s `lastPoint`, as the
+  runtime skips an answer that changed the UCS. U and REDO of a UCS put it where the change's
+  `UpdateSettingsCommand` says (`lastPoint`: where it was or the WCS's origin, and where the UCS
+  left it), read through `history.replaying`, the command replayed. A tool moves it with no point
+  given only through `ctx.setLastPoint` — 3point's and ZAxis' Enter at their origin, to the
+  current one; the first prompt's third point, to its numbers read in the new UCS.
 - **A point has a Z; keep it.** `input.point` and `parseCoordinate` give a `Vec3`: `x,y` absolute
   lies ELEVATION above the UCS's XY plane, `@x,y` keeps `lastPoint`'s Z. A point a tool
   _computes_ from another in the plane (`V.add(start, dir * length)`) is `@dist<angle` and keeps

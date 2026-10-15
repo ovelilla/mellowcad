@@ -97,10 +97,6 @@ type ListBack = "origin" | "named" | "restore" | "save"
 
 /** UCSAXISANG's initial value, which the X, Y and Z options offer as their default. */
 const DEFAULT_AXIS_ANGLE = 90
-/**
- * Where UCS Previous and a restored named UCS put LASTPOINT: the WCS's
- * origin, not the restored UCS's (AutoCAD 2023's console, acc/u4, u7, u8).
- */
 const WCS_ORIGIN: Vec3 = { x: 0, y: 0, z: 0 }
 
 /** UCS Previous steps back through the last 10 of the session. */
@@ -227,6 +223,11 @@ export class UcsTool implements Tool {
         currentName(ctx.document.getSettings())
       )
     )
+    // WHY: AutoCAD 2023's console puts LASTPOINT at the WCS's origin as UCS
+    // starts, and only a point given moves it — so after X, Y, Z, View,
+    // World, Previous, a name or OBject found by a mode it is still there,
+    // whatever the new origin (acc/bk52, bk57, bk61–bk64, ul1–ul34).
+    ctx.setLastPoint(WCS_ORIGIN)
     this.enterOrigin(ctx)
   }
 
@@ -278,7 +279,9 @@ export class UcsTool implements Tool {
         return
       case "newUcs":
       case "shift":
-        this.finish({ ...ctx.ucs, origin: input.point }, null, ctx)
+        this.finish({ ...ctx.ucs, origin: input.point }, null, ctx, {
+          lastPoint: input.point,
+        })
         return
       case "xAxis":
         this.enterXYPlane(state.origin, input.point, state.three !== null, ctx)
@@ -522,16 +525,17 @@ export class UcsTool implements Tool {
     if (state.phase === "replace") {
       if (id === "Yes") {
         this.save(state.name, ctx)
-        ctx.setLastPoint(WCS_ORIGIN)
         return "end"
       }
       // No ends UCS as its Enter does, with nothing saved.
-      if (id === "No") {
-        ctx.setLastPoint(WCS_ORIGIN)
-        return "end"
-      }
+      if (id === "No") return "end"
     }
     return "unhandled"
+  }
+
+  /** A point on X leaves LASTPOINT at the origin (acc/ul9, ul27, ul28). */
+  setsLastPoint(): boolean | null {
+    return this.state.phase === "xAxis" ? false : null
   }
 
   getConstraintAnchor(): Vec2 | null {
@@ -630,7 +634,6 @@ export class UcsTool implements Tool {
               : null
           this.apply(previous.ucs, name, ctx, {
             remember: false,
-            lastPoint: WCS_ORIGIN,
             orthographic: previous.orthographic,
           })
         }
@@ -744,24 +747,22 @@ export class UcsTool implements Tool {
 
   /**
    * New's `Specify origin of new UCS or [ZAxis/3point/…] <0,0,0>`: a point
-   * moves the origin, as Origin does; Enter keeps the UCS, and puts LASTPOINT
-   * at its origin (AutoCAD 2023's console, acc/q6).
+   * moves the origin, as Origin does; Enter is World, whatever its
+   * `<0,0,0>` says (AutoCAD 2023's console, acc/q6, ul31, ul35).
    */
   private enterNewUcs(ctx: ToolContext): void {
     this.state = { phase: "newUcs" }
-    this.openPointField("ucsNewUcs", ctx, (point, commitCtx) =>
-      this.finish(
-        { ...commitCtx.ucs, origin: point ?? commitCtx.ucs.origin },
-        null,
-        commitCtx
-      )
-    )
+    this.openPointField("ucsNewUcs", ctx, (point, commitCtx) => {
+      if (!point) return this.finish(WORLD_UCS, null, commitCtx)
+      this.finish({ ...commitCtx.ucs, origin: point }, null, commitCtx, {
+        lastPoint: point,
+      })
+    })
   }
 
   /**
    * Origin's `Specify new origin point <0,0,0>` and Move's, which offers
-   * Zdepth: the axes kept. Enter changes nothing and, as everything that
-   * changes nothing, puts LASTPOINT at the WCS's origin (acc/p2, q2).
+   * Zdepth: the axes kept. Enter changes nothing (acc/p2, q2).
    */
   private enterShift(move: boolean, ctx: ToolContext): void {
     this.state = { phase: "shift", move }
@@ -770,24 +771,21 @@ export class UcsTool implements Tool {
       ctx,
       (point, commitCtx) => {
         if (point)
-          this.finish({ ...commitCtx.ucs, origin: point }, null, commitCtx)
-        else this.endUnchanged(commitCtx)
+          this.finish({ ...commitCtx.ucs, origin: point }, null, commitCtx, {
+            lastPoint: point,
+          })
+        else commitCtx.endCommand()
       }
     )
   }
 
-  /**
-   * Move's Zdepth: the origin along the current Z, a distance or two points.
-   * LASTPOINT goes to the WCS's origin, not the new one (acc/p1, q14).
-   */
+  /** Move's Zdepth: the origin along the current Z, a distance or two points. */
   private enterZdepth(ctx: ToolContext): void {
     this.state = { phase: "zdepth" }
     const depthBy = (depth: number, commitCtx: ToolContext) => {
       const ucs = commitCtx.ucs
       const origin = add3(ucs.origin, scale3(ucsZAxis(ucs), depth))
-      this.finish({ ...ucs, origin }, null, commitCtx, {
-        lastPoint: WCS_ORIGIN,
-      })
+      this.finish({ ...ucs, origin }, null, commitCtx)
     }
     ctx.dynamicInput.open({
       fields: [{ id: "depth", prompt: "ucsZdepth", kind: "distance" }],
@@ -801,12 +799,16 @@ export class UcsTool implements Tool {
     this.place(ctx)
   }
 
-  /** 3point's `Specify new origin point <0,0,0>`, Enter the current origin. */
+  /**
+   * 3point's `Specify new origin point <0,0,0>`, Enter the current origin —
+   * given, as AutoCAD 2023's console takes it for LASTPOINT (acc/ul23).
+   */
   private enterThreeOrigin(ctx: ToolContext): void {
     this.state = { phase: "threeOrigin" }
-    this.openPointField("ucsNewOrigin", ctx, (point, commitCtx) =>
+    this.openPointField("ucsNewOrigin", ctx, (point, commitCtx) => {
+      if (!point) commitCtx.setLastPoint(commitCtx.ucs.origin)
       this.enterXAxis(point ?? commitCtx.ucs.origin, true, commitCtx)
-    )
+    })
   }
 
   /**
@@ -966,22 +968,15 @@ export class UcsTool implements Tool {
       .join(",")
   }
 
-  /**
-   * UCS ending with the UCS unchanged — Enter at Origin's or Move's point, a
-   * name saved, deleted or none restored: LASTPOINT goes to the WCS's origin
-   * (AutoCAD 2023's console, acc/p2, q1–q8, q16, q17).
-   */
-  private endUnchanged(ctx: ToolContext): void {
-    ctx.setLastPoint(WCS_ORIGIN)
-    ctx.endCommand()
-  }
-
   private rotate(axis: Axis, degrees: number, ctx: ToolContext): void {
     if (!Number.isFinite(degrees)) return
     this.finish(rotateUcs(ctx.ucs, axis, (degrees * Math.PI) / 180), null, ctx)
   }
 
-  /** ZAxis: `Specify new origin point or [Object] <0,0,0>`, the current origin by default. */
+  /**
+   * ZAxis: `Specify new origin point or [Object] <0,0,0>`, the current
+   * origin by default — given, as 3point's (acc/ul6).
+   */
   private enterZOrigin(ctx: ToolContext): void {
     this.state = { phase: "zOrigin" }
     ctx.dynamicInput.open({
@@ -989,6 +984,7 @@ export class UcsTool implements Tool {
       commit: () => {},
       commitRaw: (commitCtx) => {
         const text = commitCtx.dynamicInput.getText("point").trim()
+        if (text === "") commitCtx.setLastPoint(commitCtx.ucs.origin)
         const point =
           text === "" ? commitCtx.ucs.origin : this.parse(text, null, commitCtx)
         if (!point) return false
@@ -1030,7 +1026,7 @@ export class UcsTool implements Tool {
   private acceptZPoint(origin: Vec3, point: Vec3, ctx: ToolContext): boolean {
     const ucs = ucsAlongZ(origin, sub3(point, origin))
     if (!ucs) return false
-    this.finish(ucs, null, ctx)
+    this.finish(ucs, null, ctx, { lastPoint: point })
     return true
   }
 
@@ -1076,18 +1072,18 @@ export class UcsTool implements Tool {
     switch (state.phase) {
       case "restore": {
         if (typed === "?") return this.enterList("restore", ctx)
-        if (typed === "") return this.endUnchanged(ctx)
+        if (typed === "") return ctx.endCommand()
         const entry = findNamed(table, typed)
         if (!entry) {
           ctx.report(ctx.text.message("ucsUndefined", { name: typed }), "error")
           return this.enterNamePrompt("restore", ctx)
         }
-        this.finish(entry.ucs, entry.name, ctx, { lastPoint: WCS_ORIGIN })
+        this.finish(entry.ucs, entry.name, ctx)
         return
       }
       case "save": {
         if (typed === "?") return this.enterList("save", ctx)
-        if (typed === "") return this.endUnchanged(ctx)
+        if (typed === "") return ctx.endCommand()
         if (typed.length > 255 || INVALID_NAME.test(typed)) {
           ctx.report(ctx.text.message("invalidUcsName"), "error")
           return this.enterNamePrompt("save", ctx)
@@ -1099,7 +1095,7 @@ export class UcsTool implements Tool {
           return
         }
         this.save(typed, ctx)
-        return this.endUnchanged(ctx)
+        return ctx.endCommand()
       }
       case "delete": {
         const patterns = typed.split(",").map((part) => part.trim())
@@ -1124,7 +1120,7 @@ export class UcsTool implements Tool {
         } else if (typed !== "") {
           ctx.report(ctx.text.message("noMatchingUcs"))
         }
-        return this.endUnchanged(ctx)
+        return ctx.endCommand()
       }
       case "list": {
         listNamedUcs(typed === "" ? "*" : typed, ctx)
@@ -1155,8 +1151,8 @@ export class UcsTool implements Tool {
 
   /**
    * Makes `ucs` current, one undo step, remembering the one it replaces
-   * unless `remember` is false (Previous); `lastPoint` where LASTPOINT
-   * goes, when not to the new origin, and `orthographic` the view it is.
+   * unless `remember` is false (Previous); `lastPoint` the point the
+   * answer gave, where LASTPOINT goes, and `orthographic` the view it is.
    */
   private apply(
     ucs: Ucs,
@@ -1169,14 +1165,10 @@ export class UcsTool implements Tool {
     } = {}
   ): void {
     const { remember = true, lastPoint, orthographic = null } = options
+    if (lastPoint) ctx.setLastPoint(lastPoint)
     const settings = ctx.document.getSettings()
     const patch = ucsChange(settings, ucs, name, orthographic)
-    if (!patch) {
-      // acc/a11: World in the WCS changes nothing and still puts it there;
-      // so do 3point's and New's Enter, at the origin they keep (p9, q6).
-      ctx.setLastPoint(lastPoint ?? ucs.origin)
-      return
-    }
+    if (!patch) return
     if (remember) {
       this.previous.push({
         ucs: settings.ucs,
@@ -1185,24 +1177,22 @@ export class UcsTool implements Tool {
       })
       if (this.previous.length > MAX_PREVIOUS) this.previous.shift()
     }
-    // WHY: AutoCAD 2023's console: U puts LASTPOINT back at an origin
-    // given at the first prompt (acc/a2, a5, a14 of the elliptical arcs
-    // session), at the WCS's origin after any other way (a1, a4, a9, a12,
-    // a20–a24); REDO puts it where the UCS did (a7, a8, a16).
-    // 3point's origin is not one: U puts it at the WCS's (acc/u8).
+    // WHY: AutoCAD 2023's console: U leaves LASTPOINT where a UCS made at
+    // the first prompt left it (acc/a2, a5, a14 of the elliptical arcs
+    // session, ul8–ul10), and puts it at the WCS's origin after any other
+    // way (a1, a4, a9, a12, a20–a24, u8, ul1–ul7, ul11–ul34); REDO puts it
+    // where the UCS left it (a7, a8, a16, ul*).
     const state = this.state
-    const given =
+    const left = ctx.lastPoint
+    const firstPrompt =
       (state.phase === "xAxis" || state.phase === "xyPlane") &&
       state.three === null
-        ? state.origin
-        : WCS_ORIGIN
     ctx.execute(
       new UpdateSettingsCommand(patch, {
-        undone: given,
-        redone: lastPoint ?? ucs.origin,
+        undone: firstPrompt ? left : WCS_ORIGIN,
+        redone: left,
       })
     )
-    if (lastPoint) ctx.setLastPoint(lastPoint)
   }
 
   /** {@link apply} as the command's last answer, from a prompt that ends it itself. */
