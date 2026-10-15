@@ -43,10 +43,12 @@ A tool is an explicit state machine for one AutoCAD command. It owns a discrimin
   never write another scan. A new type that is an edge gets its implicit function there.
   The edges are `edges` (null: every object, Quick mode's until cuTting edges chooses some),
   asked with the tool's `edgeSelector`, an edge's pieces edges too (`keepEdges`); the mode is
-  TRIMEXTENDMODE, one `TrimExtendMode` TRIM and EXTEND share. A polyline that is an edge is
+  TRIMEXTENDMODE and EDGEMODE, one `TrimExtendMode` TRIM and EXTEND share; Edge's Extend runs
+  the edges on (`prolonged`) in Standard mode alone. A polyline that is an edge is
   one of its own too: its picked segment is cut at its vertices and where it crosses itself
   (`ownEdges`), never at the next crossing round the chain; one that is not is trimmed along
-  it, past its vertices, to the nearest edge (`planTrimPolylinePath`). A polyline is cut with `polylineSpan` (`domain/polylines.ts`): the run
+  it, past its vertices, to the nearest edge (`planTrimPolylinePath`). A polyline is cut with
+  `polylineSpan` (`domain/polylines.ts`): the run
   between two of its parameters (`polylineParamAt`: segment index plus the fraction along
   it), round a closed one past its start, a cut arc segment's bulge refitted to its part —
   TRIM's pieces and BREAK's; never walk the vertices to cut one in a tool. An ellipse is cut

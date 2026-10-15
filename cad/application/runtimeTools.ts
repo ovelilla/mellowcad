@@ -79,7 +79,7 @@ export function defaultTools(
   attEdit: AttEditTool
 ): Tool[] {
   const circleRadius = { radius: 0 }
-  const trimExtendMode: TrimExtendMode = { standard: false }
+  const trimExtendMode: TrimExtendMode = { standard: false, edgeExtend: false }
   return [
     new SelectTool(),
     new LineTool(),

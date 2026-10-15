@@ -1142,7 +1142,10 @@ export const es: EngineLocale = {
         "cuTting": "COrte",
         "mOde": "MOdo",
         "Quick": "Rápido",
-        "Standard": "Estándar"
+        "Standard": "Estándar",
+        "Edge": "Arista",
+        "Extend": "Alargar",
+        "No extend": "No alargar"
       },
       "EXTEND": {
         "Undo": "desHacer",
@@ -1151,7 +1154,10 @@ export const es: EngineLocale = {
         "Boundary": "COrte",
         "mOde": "MOdo",
         "Quick": "Rápido",
-        "Standard": "Estándar"
+        "Standard": "Estándar",
+        "Edge": "Arista",
+        "Extend": "Alargar",
+        "No extend": "No alargar"
       },
       "FILLET": {
         "Undo": "Deshacer",
@@ -1660,6 +1666,7 @@ export const es: EngineLocale = {
       "enterLayerOptionForOffsetObjects": "Indique opción de capa para objetos desfasados",
       "specifyThroughPointOr": "Precise punto a atravesar o",
       "nextObject": "siguiente objeto",
+      "enterImpliedEdgeExtensionMode": "Indique modo de alargamiento de arista implícito",
       "enterTrimModeOption": "Introduzca una opción de modo de recorte",
       "enterExtendModeOption": "Introduzca una opción de modo de alargamiento",
       "selectObjectsOr": "Seleccione objetos o",
@@ -1933,7 +1940,16 @@ export const es: EngineLocale = {
         ]
       ],
       "trimExtendSettings": [
-        "Parámetros actuales: Proyección=SCP, Arista=Ninguno, Modo=",
+        "Parámetros actuales: Proyección=SCP, Arista=",
+        [
+          "edge",
+          1,
+          {
+            "extend": "Alargar",
+            "other": "Ninguno"
+          }
+        ],
+        ", Modo=",
         [
           "mode",
           1,

@@ -1318,6 +1318,7 @@ export const en: EngineCatalog = {
       "specifyPointOnSideToOffsetOr": "Specify point on side to offset or",
       "specifyThroughPointOr": "Specify through point or",
       "nextObject": "next object",
+      "enterImpliedEdgeExtensionMode": "Enter an implied edge extension mode",
       "enterTrimModeOption": "Enter a trim mode option",
       "enterExtendModeOption": "Enter an extend mode option",
       "selectObjectsOr": "Select objects or",
@@ -1593,7 +1594,16 @@ export const en: EngineCatalog = {
       "rotatingCopy": "Rotating a copy of the selected objects.",
       "scalingCopy": "Scaling a copy of the selected objects.",
       "trimExtendSettings": [
-        "Current settings: Projection=UCS, Edge=None, Mode=",
+        "Current settings: Projection=UCS, Edge=",
+        [
+          "edge",
+          1,
+          {
+            "extend": "Extend",
+            "other": "None"
+          }
+        ],
+        ", Mode=",
         [
           "mode",
           1,

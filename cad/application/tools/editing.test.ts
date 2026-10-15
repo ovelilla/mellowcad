@@ -1416,7 +1416,7 @@ describe("TRIM and EXTEND's mOde and cuTting edges", () => {
     // Standard now, every object an edge, as none was chosen.
     typed(cad, "O", "S")
     expect(prompt(cad)).toBe(
-      "TRIM Select object to trim or shift-select to extend or [cuTting edges/Fence/Crossing/mOde/eRase]:"
+      "TRIM Select object to trim or shift-select to extend or [cuTting edges/Fence/Crossing/mOde/Edge/eRase]:"
     )
     typed(cad, "50,0")
     expect(drawn(cad, "A", "L", "R", "F")).toEqual([
@@ -1442,13 +1442,13 @@ describe("TRIM and EXTEND's mOde and cuTting edges", () => {
     ])
     typed(cad, "")
     expect(prompt(cad)).toBe(
-      "EXTEND Select object to extend or shift-select to trim or [Boundary edges/Fence/Crossing/mOde]:"
+      "EXTEND Select object to extend or shift-select to trim or [Boundary edges/Fence/Crossing/mOde/Edge]:"
     )
     typed(cad, "FOO", "O")
     expect(cad.commandLog().slice(-3)).toEqual([
       "*Invalid selection*",
-      "Expects a point or Fence/Boundary edges/Crossing",
-      "Select object to extend or shift-select to trim or [Boundary edges/Fence/Crossing/mOde]: O",
+      "Expects a point or Fence/Boundary edges/Crossing/mOde",
+      "Select object to extend or shift-select to trim or [Boundary edges/Fence/Crossing/mOde/Edge]: O",
     ])
     expect(prompt(cad)).toBe(
       "EXTEND Enter an extend mode option [Quick/Standard] <Standard>:"
@@ -1489,8 +1489,8 @@ describe("TRIM and EXTEND's mOde and cuTting edges", () => {
       const window = typed(drawing(), "TRIM", "O", "S", "", "TRIM", "")
       typed(window, first, opposite)
       expect(window.commandLog().slice(-2)).toEqual([
-        `Select object to trim or shift-select to extend or [cuTting edges/Fence/Crossing/mOde/eRase]: ${first}`,
-        `Select object to trim or shift-select to extend or [cuTting edges/Fence/Crossing/mOde/eRase]: Specify opposite corner: ${opposite}`,
+        `Select object to trim or shift-select to extend or [cuTting edges/Fence/Crossing/mOde/Edge/eRase]: ${first}`,
+        `Select object to trim or shift-select to extend or [cuTting edges/Fence/Crossing/mOde/Edge/eRase]: Specify opposite corner: ${opposite}`,
       ])
       expect(drawn(window, "A", "L", "R", "F")[0]).toBe("A 0,0 70,0")
     }
@@ -1601,12 +1601,185 @@ describe("TRIM and EXTEND's mOde and cuTting edges", () => {
       "No se interseca con la arista de corte."
     )
     expect(prompt(cad)).toBe(
-      "RECORTA Seleccione un objeto que recortar o use la tecla Mayús y seleccione para alargar, o [aristas de COrte/Borde/Captura/MOdo/bOrrar]:"
+      "RECORTA Seleccione un objeto que recortar o use la tecla Mayús y seleccione para alargar, o [aristas de COrte/Borde/Captura/MOdo/Arista/bOrrar]:"
     )
     typed(cad, "", "ALARGA")
     expect(cad.commandLog().at(-1)).toBe(
       "Seleccione las aristas de contorno..."
     )
+  })
+})
+// AutoCAD 2023's console (acc/eg1–eg9, eh1–eh7, ei1–ei5, ej1–ej4 of the
+// TRIM options session).
+describe("TRIM and EXTEND's Edge", () => {
+  const typed = (cad: CadHarness, ...texts: string[]) => {
+    for (const text of texts) {
+      if (text === "") cad.enter()
+      else {
+        cad.runtime.setCommandLineText(text)
+        cad.runtime.submitCommandLine()
+      }
+    }
+    return cad
+  }
+  /** Standard mode, every object an edge. */
+  const standard = (cad: CadHarness, command = "TRIM") =>
+    typed(cad, "TRIM", "O", "S", "", command, "")
+  const short = (...more: Entity[]) =>
+    createHarness({
+      entities: [
+        lineOf(p(0, 0), p(100, 0), { id: "A" }),
+        lineOf(p(30, 10), p(30, 50), { id: "L" }),
+        ...more,
+      ],
+    })
+  const at = (v: Vec2) => `${+v.x.toFixed(4)},${+v.y.toFixed(4)}`
+  /** The lines `id` and those new, start and end. */
+  const lines = (cad: CadHarness, id = "A") =>
+    cad
+      .entities()
+      .filter((e): e is LineEntity => e.type === "line")
+      .filter((e) => e.id === id || !["L", "R", "M"].includes(e.id))
+      .map((e) => `${at(e.start)} ${at(e.end)}`)
+  const prompt = (cad: CadHarness) => cad.state().commandLine.prompt
+
+  it("asks the implied edge extension mode, Standard's alone", () => {
+    const cad = standard(short(lineOf(p(70, -50), p(70, 50), { id: "R" })))
+    typed(cad, "E", "FOO", "")
+    expect(cad.commandLog().slice(-4)).toEqual([
+      "Select object to trim or shift-select to extend or [cuTting edges/Fence/Crossing/mOde/Edge/eRase]: E",
+      "Enter an implied edge extension mode [Extend/No extend] <No extend>: FOO",
+      "Invalid option keyword.",
+      "Enter an implied edge extension mode [Extend/No extend] <No extend>:",
+    ])
+    expect(cad.optionIds()).not.toContain("Undo")
+    // A choice is a step; the short edge now cuts as if it ran on.
+    typed(cad, "E", "E")
+    expect(prompt(cad)).toBe(
+      "TRIM Select object to trim or shift-select to extend or [cuTting edges/Fence/Crossing/mOde/Edge/eRase/Undo]:"
+    )
+    typed(cad, "50,0")
+    expect(lines(cad)).toEqual(["0,0 30,0", "70,0 100,0"])
+    typed(cad, "", "TRIM")
+    expect(cad.commandLog().slice(-2)).toEqual([
+      "Current settings: Projection=UCS, Edge=Extend, Mode=Standard",
+      "Select cutting edges ...",
+    ])
+    typed(cad, "", "E")
+    expect(prompt(cad)).toBe(
+      "TRIM Enter an implied edge extension mode [Extend/No extend] <Extend>:"
+    )
+
+    // Quick mode lets no edge run on, and says None.
+    typed(cad, "N", "O", "Q", "", "TRIM", "E")
+    expect(cad.commandLog().slice(-2)).toEqual([
+      "*Invalid selection*",
+      "Expects a point or Fence/cuTting edges/Crossing/mOde",
+    ])
+    const quick = standard(short(lineOf(p(70, -50), p(70, 50), { id: "R" })))
+    typed(quick, "E", "E", "", "TRIM", "O", "Q", "", "TRIM")
+    expect(quick.commandLog().at(-1)).toBe(
+      "Current settings: Projection=UCS, Edge=None, Mode=Quick"
+    )
+    typed(quick, "50,0")
+    expect(lines(quick)).toEqual(["70,0 100,0"])
+
+    const extend = standard(
+      createHarness({
+        entities: [
+          lineOf(p(0, 0), p(20, 0), { id: "A" }),
+          lineOf(p(30, 10), p(30, 50), { id: "L" }),
+        ],
+      }),
+      "EXTEND"
+    )
+    typed(extend, "E", "E", "18,0")
+    expect(lines(extend)).toEqual(["0,0 30,0"])
+
+    const spanish = createHarness({
+      locale: es,
+      entities: [lineOf(p(0, 0), p(100, 0)), lineOf(p(30, 10), p(30, 50))],
+    })
+    typed(spanish, "RECORTA", "MO", "E", "", "RECORTA", "", "A")
+    expect(prompt(spanish)).toBe(
+      "RECORTA Indique modo de alargamiento de arista implícito [Alargar/No alargar] <No alargar>:"
+    )
+    typed(spanish, "A", "", "RECORTA")
+    expect(spanish.commandLog().at(-2)).toBe(
+      "Parámetros actuales: Proyección=SCP, Arista=Alargar, Modo=Estándar"
+    )
+  })
+
+  it("runs an edge on as AutoCAD does", () => {
+    const extended = (...edges: Entity[]) => {
+      const cad = standard(
+        createHarness({
+          entities: [lineOf(p(0, 0), p(100, 0), { id: "A" }), ...edges],
+        })
+      )
+      return typed(cad, "E", "E", "50,0")
+    }
+    // An arc and an elliptical arc round their whole curve.
+    expect(lines(extended(arcOf(p(50, 0), 20, deg(30), deg(150))))).toEqual([
+      "0,0 30,0",
+      "70,0 100,0",
+    ])
+    const ellipse = ellipseOf(p(50, 0), p(20, 0), 0.5, {
+      startParam: ellipseParamFromAngle(0.5, deg(30)),
+      endParam: ellipseParamFromAngle(0.5, deg(150)),
+    })
+    expect(lines(extended(ellipse))).toEqual(["0,0 30,0", "70,0 100,0"])
+    // An open polyline on from its ends, along its end segments.
+    expect(
+      lines(extended(polylineOf([p(30, 50), p(30, 10)], { id: "M" })))
+    ).toEqual(["0,0 30,0"])
+    expect(
+      lines(
+        extended(polylineOf([p(40, 10), p(30, 30), p(30, 50)], { id: "M" }))
+      )
+    ).toEqual(["0,0 45,0"])
+    const corner = extended(
+      polylineOf([p(20, 10), p(30, 10), p(30, 50)], { id: "M" })
+    )
+    expect(corner.commandLog().at(-1)).toBe(
+      "Does not intersect with the cutting edge."
+    )
+  })
+
+  it("takes an Edge choice back with the step after it, or before", () => {
+    const drawing = () =>
+      standard(
+        short(
+          lineOf(p(50, -50), p(50, 50), { id: "M" }),
+          lineOf(p(70, -50), p(70, 50), { id: "R" })
+        )
+      )
+    const alone = typed(drawing(), "E", "E", "U")
+    expect(alone.commandLog().at(-1)).toBe(
+      "Command has been completely undone."
+    )
+    typed(alone, "E")
+    expect(prompt(alone)).toContain("<No extend>:")
+
+    const after = typed(drawing(), "E", "E", "40,0", "60,0", "U")
+    expect(lines(after)).toEqual(["0,0 30,0", "50,0 100,0"])
+    typed(after, "U")
+    expect(after.commandLog().at(-1)).toBe(
+      "Command has been completely undone."
+    )
+    expect(lines(after)).toEqual(["0,0 100,0"])
+    typed(after, "E")
+    expect(prompt(after)).toContain("<No extend>:")
+
+    const between = typed(drawing(), "60,0", "E", "E", "40,0", "U", "E")
+    expect(lines(between)).toEqual(["0,0 50,0", "70,0 100,0"])
+    expect(prompt(between)).toContain("<No extend>:")
+
+    const before = typed(drawing(), "60,0", "E", "E", "U")
+    expect(before.commandLog().at(-1)).toBe(
+      "Command has been completely undone."
+    )
+    expect(lines(before)).toEqual(["0,0 100,0"])
   })
 })
 // AutoCAD 2023's console (acc/e1–e7, m1–m4, w1, c1–c4, t1–t9, x1, o4 of the

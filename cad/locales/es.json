@@ -697,7 +697,10 @@
         "cuTting": "COrte",
         "mOde": "MOdo",
         "Quick": "Rápido",
-        "Standard": "Estándar"
+        "Standard": "Estándar",
+        "Edge": "Arista",
+        "Extend": "Alargar",
+        "No extend": "No alargar"
       },
       "EXTEND": {
         "Undo": "desHacer",
@@ -706,7 +709,10 @@
         "Boundary": "COrte",
         "mOde": "MOdo",
         "Quick": "Rápido",
-        "Standard": "Estándar"
+        "Standard": "Estándar",
+        "Edge": "Arista",
+        "Extend": "Alargar",
+        "No extend": "No alargar"
       },
       "FILLET": {
         "Undo": "Deshacer",
@@ -1163,6 +1169,7 @@
       "enterLayerOptionForOffsetObjects": "Indique opción de capa para objetos desfasados",
       "specifyThroughPointOr": "Precise punto a atravesar o",
       "nextObject": "siguiente objeto",
+      "enterImpliedEdgeExtensionMode": "Indique modo de alargamiento de arista implícito",
       "enterTrimModeOption": "Introduzca una opción de modo de recorte",
       "enterExtendModeOption": "Introduzca una opción de modo de alargamiento",
       "selectObjectsOr": "Seleccione objetos o",
@@ -1280,7 +1287,7 @@
       "readOnlyVariable": "{name} = {value} (sólo lectura)",
       "notTransparent": "** Este comando no funciona de forma transparente **",
       "rotateSettings": "Ángulo actual positivo en SCP:  ANGDIR=en sentido horario inverso ANGBASE={angbase}",
-      "trimExtendSettings": "Parámetros actuales: Proyección=SCP, Arista=Ninguno, Modo={mode, select, standard {Estándar} other {Rápido}}",
+      "trimExtendSettings": "Parámetros actuales: Proyección=SCP, Arista={edge, select, extend {Alargar} other {Ninguno}}, Modo={mode, select, standard {Estándar} other {Rápido}}",
       "selectCuttingEdges": "Seleccione aristas de corte...",
       "selectBoundaryEdges": "Seleccione las aristas de contorno...",
       "doesNotIntersectCuttingEdge": "No se interseca con la arista de corte.",

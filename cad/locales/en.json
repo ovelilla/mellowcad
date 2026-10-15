@@ -668,7 +668,10 @@
         "cuTting": "cuTting",
         "mOde": "mOde",
         "Quick": "Quick",
-        "Standard": "Standard"
+        "Standard": "Standard",
+        "Edge": "Edge",
+        "Extend": "Extend",
+        "No extend": "No extend"
       },
       "EXTEND": {
         "Undo": "Undo",
@@ -677,7 +680,10 @@
         "Boundary": "Boundary",
         "mOde": "mOde",
         "Quick": "Quick",
-        "Standard": "Standard"
+        "Standard": "Standard",
+        "Edge": "Edge",
+        "Extend": "Extend",
+        "No extend": "No extend"
       },
       "FILLET": {
         "Undo": "Undo",
@@ -1132,6 +1138,7 @@
       "specifyPointOnSideToOffsetOr": "Specify point on side to offset or",
       "specifyThroughPointOr": "Specify through point or",
       "nextObject": "next object",
+      "enterImpliedEdgeExtensionMode": "Enter an implied edge extension mode",
       "enterTrimModeOption": "Enter a trim mode option",
       "enterExtendModeOption": "Enter an extend mode option",
       "selectObjectsOr": "Select objects or",
@@ -1251,7 +1258,7 @@
       "rotateSettings": "Current positive angle in UCS:  ANGDIR=counterclockwise  ANGBASE={angbase}",
       "rotatingCopy": "Rotating a copy of the selected objects.",
       "scalingCopy": "Scaling a copy of the selected objects.",
-      "trimExtendSettings": "Current settings: Projection=UCS, Edge=None, Mode={mode, select, standard {Standard} other {Quick}}",
+      "trimExtendSettings": "Current settings: Projection=UCS, Edge={edge, select, extend {Extend} other {None}}, Mode={mode, select, standard {Standard} other {Quick}}",
       "selectCuttingEdges": "Select cutting edges ...",
       "selectBoundaryEdges": "Select boundary edges ...",
       "doesNotIntersectCuttingEdge": "Does not intersect with the cutting edge.",
