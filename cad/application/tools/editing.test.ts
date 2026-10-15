@@ -1746,6 +1746,26 @@ describe("TRIM and EXTEND's Edge", () => {
     )
   })
 
+  // WHY refused: AutoCAD 2023's console asks `Enter a projection option
+  // [None/Ucs/View] <Ucs>:` (acc/pr1–pr5), whose None and View are not built.
+  it("refuses Project, an option not built", () => {
+    const cad = typed(short(), "TRIM", "P")
+    expect(cad.commandLog().slice(-3)).toEqual([
+      "Select object to trim or shift-select to extend or [cuTting edges/Crossing/mOde/eRase]: P",
+      "*Invalid selection*",
+      "Expects a point or Fence/cuTting edges/Crossing/mOde",
+    ])
+    cad.escape()
+    standard(cad, "EXTEND")
+    typed(cad, "P")
+    expect(cad.commandLog().at(-3)).toBe(
+      "Select object to extend or shift-select to trim or [Boundary edges/Fence/Crossing/mOde/Edge]: P"
+    )
+    expect(cad.commandLog().at(-1)).toBe(
+      "Expects a point or Fence/Boundary edges/Crossing/mOde"
+    )
+  })
+
   it("takes an Edge choice back with the step after it, or before", () => {
     const drawing = () =>
       standard(
