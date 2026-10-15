@@ -2568,6 +2568,9 @@ export const en: EngineCatalog = {
       ],
       "noObjectFound": "No object found",
       "arcCannotBeFull360": "Arc cannot be full 360 degrees",
+      "objectCannotBeBroken": "Object can't be broken",
+      "cannotBreakBlock": "Can't break a block",
+      "cannotBreakClosedAtOnePoint": "Cannot break a closed, periodic curve at only one point.",
       "arrayType": [
         "Type = ",
         [

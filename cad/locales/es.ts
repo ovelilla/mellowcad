@@ -2891,6 +2891,9 @@ export const es: EngineLocale = {
       ],
       "noObjectFound": "No se ha encontrado ningún objeto",
       "arcCannotBeFull360": "Un arco no puede tener 360 grados",
+      "objectCannotBeBroken": "Imposible partir este objeto",
+      "cannotBreakBlock": "Imposible partir un bloque",
+      "cannotBreakClosedAtOnePoint": "No es posible partir una curva periódica cerrada en un solo punto.",
       "arrayType": [
         "Tipo = ",
         [

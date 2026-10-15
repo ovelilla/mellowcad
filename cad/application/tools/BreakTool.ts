@@ -17,6 +17,16 @@ import {
   readsInPlan,
 } from "../../domain/entities"
 import { normalizeAngle } from "../../geometry/primitives"
+import {
+  createEllipse,
+  ellipseCut,
+  ellipseParamAt,
+  ellipseSweepParams,
+  isFullEllipse,
+  type EllipsePiece,
+} from "../../domain/ellipses"
+import type { EllipseEntity } from "../../domain/entityTypes"
+import type { MessageId } from "../EngineText"
 import { ScenePrimitive } from "../../scene/types"
 import { THEME } from "../../scene/theme"
 import { arcScenePrimitive, entityScenePrimitive } from "../SceneBuilder"
@@ -49,8 +59,8 @@ import {
  * the first break point: `Specify second break point or [First point]:`, whose
  * keyword asks `Specify first break point:` and then `Specify second break
  * point:`; BREAKATPOINT asks `Specify break point:`. Points off the object are
- * pulled onto its nearest point, and a circle is broken counter-clockwise from
- * the first point to the second, leaving an arc.
+ * pulled onto its nearest point, and a circle or an ellipse is broken
+ * counter-clockwise from the first point to the second, leaving an arc.
  */
 export type BreakMode = "gap" | "atPoint"
 
@@ -69,6 +79,12 @@ type BreakState =
 
 /** Geometry a break leaves behind or takes away. */
 type BreakGeom =
+  | ({
+      readonly kind: "ellipse"
+      readonly center: Vec2
+      readonly majorAxis: Vec2
+      readonly ratio: number
+    } & EllipsePiece)
   | { readonly kind: "line"; readonly start: Vec2; readonly end: Vec2 }
   | {
       readonly kind: "arc"
@@ -113,10 +129,15 @@ export class BreakTool implements Tool {
     accept: (ids, ctx) =>
       ids.filter((id) => {
         const entity = ctx.document.get(id)
-        return entity !== undefined && breakable(entity)
+        return (
+          entity !== undefined &&
+          (breakable(entity) || cannotBreak(entity) !== null)
+        )
       }),
     one: {
-      take: (entity, ctx) => this.askFirst(entity, ctx),
+      take: (entity, ctx) => {
+        if (!this.refuse(entity, ctx)) this.askFirst(entity, ctx)
+      },
       newest: false,
       pick: (point, ctx) => this.pickObject(point, ctx),
     },
@@ -288,10 +309,20 @@ export class BreakTool implements Tool {
     })
   }
 
-  /** A breakable object in the UCS's XY plane, never one at an angle to it. */
+  /**
+   * A breakable object in the UCS's XY plane, never one at an angle to it,
+   * or one AutoCAD says it cannot break.
+   */
   private pick(world: Vec2, ctx: ToolContext): Entity | null {
     const hit = ctx.pick(world)
-    return hit && breakable(hit) ? hit : null
+    return hit && (breakable(hit) || cannotBreak(hit) !== null) ? hit : null
+  }
+
+  /** Whether `entity` is one BREAK cannot break, saying so. */
+  private refuse(entity: Entity, ctx: ToolContext): boolean {
+    const message = cannotBreak(entity)
+    if (message !== null) ctx.report(ctx.text.message(message))
+    return message !== null
   }
 
   /**
@@ -303,6 +334,7 @@ export class BreakTool implements Tool {
   private pickObject(world: Vec2, ctx: ToolContext): void {
     const hit = this.pick(world, ctx)
     if (!hit) ctx.report(ctx.text.message("noObjectFound"))
+    else if (this.refuse(hit, ctx)) ctx.requestRender()
     else if (this.mode === "atPoint") this.askFirst(hit, ctx)
     else this.askSecond(hit, { x: world.x, y: world.y }, false, ctx)
   }
@@ -367,10 +399,13 @@ export class BreakTool implements Tool {
   ): void {
     const result = computeBreak(target, first, second)
     if (!result) {
-      // WHY: AutoCAD 2023's console will not split a circle in place
-      // (acc/pc5, pc13); at a line's or an arc's end it does nothing.
+      // WHY: AutoCAD 2023's console will not split a circle or an ellipse
+      // in place (acc/pc5, pc13, be4, be5, be18); at a line's or an arc's
+      // end it does nothing.
       if (target.type === "circle") {
         ctx.report(ctx.text.message("arcCannotBeFull360"))
+      } else if (target.type === "ellipse") {
+        ctx.report(ctx.text.message("cannotBreakClosedAtOnePoint"))
       }
       ctx.endCommand()
       return
@@ -397,6 +432,7 @@ const BROKEN: ReadonlySet<Entity["type"]> = new Set([
   "line",
   "arc",
   "circle",
+  "ellipse",
   "polyline",
 ])
 
@@ -404,8 +440,38 @@ function breakable(entity: Entity): boolean {
   return BROKEN.has(entity.type) && readsInPlan(entity)
 }
 
+/**
+ * What AutoCAD 2023's console says of an object BREAK cannot break, asking
+ * `Select object:` again (acc/be13–be15, be19–be21); a spline it breaks,
+ * which is not built here.
+ */
+function cannotBreak(entity: Entity): MessageId | null {
+  switch (entity.type) {
+    case "insert":
+      return "cannotBreakBlock"
+    case "text":
+    case "mtext":
+    case "attdef":
+    case "dimension":
+    case "hatch":
+      return "objectCannotBeBroken"
+    default:
+      return null
+  }
+}
+
 function toEntity(source: Entity, geom: BreakGeom, id?: EntityId): Entity {
   switch (geom.kind) {
+    case "ellipse":
+      return carryPiece(
+        source,
+        createEllipse(geom.center, geom.majorAxis, geom.ratio, {
+          startParam: geom.startParam,
+          endParam: geom.endParam,
+          layerId: source.layerId,
+          id,
+        })
+      )
     case "line":
       return carryPiece(
         source,
@@ -438,6 +504,12 @@ function geomPrimitives(
   stroke: { color: string; width: number; dash?: number[] }
 ): ScenePrimitive[] {
   switch (geom.kind) {
+    case "ellipse":
+      return entityScenePrimitive(
+        ctx.viewport,
+        toEntity(source, geom, "break-preview"),
+        stroke
+      )
     case "line":
       return [
         {
@@ -483,6 +555,7 @@ function computeBreak(
     case "polyline":
       return breakPolyline(entity, first, second)
     case "ellipse":
+      return breakEllipse(entity, first, second)
     case "spline":
     case "text":
     case "mtext":
@@ -632,6 +705,41 @@ function breakPolyline(
   if (ta > PARAM_EPS) kept.push(span(0, ta))
   if (tb < count - PARAM_EPS) kept.push(span(tb, count))
   return { kept, removed: span(ta, tb) }
+}
+
+/**
+ * An ellipse loses what runs counter-clockwise from the first point to the
+ * second, as a circle does, its piece keeping the handle; an elliptical arc
+ * what lies between them in its parameter, as an arc does (AutoCAD 2023's
+ * console, acc/be1–be12) — cut with `ellipseCut`, as TRIM cuts it.
+ */
+function breakEllipse(
+  ellipse: EllipseEntity,
+  first: Vec2,
+  second: Vec2
+): BreakResult | null {
+  const piece = (part: EllipsePiece): BreakGeom => ({
+    kind: "ellipse",
+    center: ellipse.center,
+    majorAxis: ellipse.majorAxis,
+    ratio: ellipse.ratio,
+    ...part,
+  })
+  const t1 = ellipseParamAt(ellipse, first)
+  const t2 = ellipseParamAt(ellipse, second)
+  if (isFullEllipse(ellipse)) {
+    const gap = normalizeAngle(t2 - t1)
+    if (gap < ANGLE_EPS) return null
+    const { kept, removed } = ellipseCut(ellipse, t1, t1 + gap)
+    return { kept: kept.map(piece), removed: piece(removed) }
+  }
+  const { sweep } = ellipseSweepParams(ellipse)
+  const from = Math.min(t1, t2)
+  const to = Math.max(t1, t2)
+  const split = to - from < ANGLE_EPS
+  if (split && (from < ANGLE_EPS || from > sweep - ANGLE_EPS)) return null
+  const { kept, removed } = ellipseCut(ellipse, from, to)
+  return { kept: kept.map(piece), removed: split ? null : piece(removed) }
 }
 
 function arcGeom(

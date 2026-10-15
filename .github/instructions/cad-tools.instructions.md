@@ -46,7 +46,10 @@ A tool is an explicit state machine for one AutoCAD command. It owns a discrimin
   round the chain. A polyline is cut with `polylineSpan` (`domain/polylines.ts`): the run
   between two of its parameters (`polylineParamAt`: segment index plus the fraction along
   it), round a closed one past its start, a cut arc segment's bulge refitted to its part —
-  TRIM's pieces and BREAK's; never walk the vertices to cut one in a tool.
+  TRIM's pieces and BREAK's; never walk the vertices to cut one in a tool. An ellipse is cut
+  the same way with `ellipseCut` (`domain/ellipses.ts`), between two offsets into its sweep
+  (`ellipseParamAt`): a whole one kept from the later round to the earlier, an elliptical arc
+  its pieces before and after.
 - `ObjectSelector` (`objectSelection.ts`) — AutoCAD's `Select objects:`, the one every command
   that takes a set asks it with: picks, the window a drag or a pick on nothing starts, and the
   modes typed there (Window, Crossing, BOX, Last, ALL, Fence, WPolygon, CPolygon, Previous,

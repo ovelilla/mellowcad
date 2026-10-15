@@ -1,5 +1,9 @@
 import { Vec2, V } from "../geometry/Vec2"
-import { ellipsePoint, normalizeAngle } from "../geometry/primitives"
+import {
+  closestPointOnEllipse,
+  ellipsePoint,
+  normalizeAngle,
+} from "../geometry/primitives"
 import { DEFAULT_LAYER_ID, LayerId } from "./layers"
 import { EntityId, EllipseEntity, Bounds } from "./entityTypes"
 import { nextEntityId } from "./entityFactories"
@@ -246,6 +250,64 @@ export function ellipseSegments(ellipse: EllipseEntity): [Vec2, Vec2][] {
     previous = point
   }
   return runs
+}
+
+/**
+ * How far into `ellipse`'s sweep, in its parameter, the point of it nearest
+ * `p` lies: a whole ellipse's own parameter, an elliptical arc's from its
+ * start, a point off the arc read at its nearer end.
+ */
+export function ellipseParamAt(ellipse: EllipseEntity, p: Vec2): number {
+  const { start, sweep } = ellipseSweepParams(ellipse)
+  const { t } = closestPointOnEllipse(
+    ellipse.center,
+    ellipse.majorAxis,
+    ellipse.ratio,
+    p,
+    ellipse.startParam,
+    ellipse.endParam
+  )
+  return isFullEllipse(ellipse)
+    ? normalizeAngle(t)
+    : Math.min(Math.max(t - start, 0), sweep)
+}
+
+/** A piece of an ellipse, from one of its parameters to a later one. */
+export interface EllipsePiece {
+  readonly startParam: number
+  readonly endParam: number
+}
+
+const CUT_EPS = 1e-9
+
+/**
+ * What is left of `ellipse` once the part between `from` and `to`, offsets
+ * into its sweep (`ellipseParamAt`) with `from` first, is cut out, and that
+ * part: a whole ellipse runs on from `to` round to `from`, its end past its
+ * start (AutoCAD 2023's console, acc/be1–be3); an elliptical arc keeps what
+ * lies before and after, nothing at an end, and the same offset twice splits
+ * it. TRIM and BREAK cut ellipses with it.
+ */
+export function ellipseCut(
+  ellipse: EllipseEntity,
+  from: number,
+  to: number
+): { readonly kept: EllipsePiece[]; readonly removed: EllipsePiece } {
+  const { start, sweep } = ellipseSweepParams(ellipse)
+  const removed = { startParam: start + from, endParam: start + to }
+  if (isFullEllipse(ellipse)) {
+    const startParam = normalizeAngle(start + to)
+    return {
+      kept: [{ startParam, endParam: startParam + sweep - (to - from) }],
+      removed,
+    }
+  }
+  const kept: EllipsePiece[] = []
+  if (from > CUT_EPS) kept.push({ startParam: start, endParam: start + from })
+  if (to < sweep - CUT_EPS) {
+    kept.push({ startParam: start + to, endParam: start + sweep })
+  }
+  return { kept, removed }
 }
 
 /** Area enclosed by a full ellipse, `π·a·b`. */

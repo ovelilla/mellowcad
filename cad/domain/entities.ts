@@ -89,7 +89,10 @@ export {
   ellipseQuadrantPoints,
   ellipseBounds,
   ellipseArea,
+  ellipseParamAt,
+  ellipseCut,
 } from "./ellipses"
+export type { EllipsePiece } from "./ellipses"
 
 export type { SplineOptions } from "./splines"
 export {

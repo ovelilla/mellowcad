@@ -2,18 +2,28 @@ import { describe, expect, it } from "vitest"
 import type {
   ArcEntity,
   CircleEntity,
+  EllipseEntity,
   LineEntity,
   PolylineEntity,
 } from "../../domain/entities"
-import { arcSweepAngle } from "../../domain/entities"
+import {
+  arcSweepAngle,
+  createBlockDefinition,
+  createInsert,
+  createMText,
+} from "../../domain/entities"
 import { type CadHarness, createHarness } from "../../../test/harness"
 import {
   arcOf,
   circleOf,
   deg,
+  ellipseOf,
+  hatchOf,
   lineOf,
+  loopOf,
   p,
   polylineOf,
+  textOf,
 } from "../../../test/builders"
 import { es } from "../../locales/es"
 
@@ -484,6 +494,151 @@ describe("BREAK of a polyline", () => {
       "0,0 20,0",
       "60,0 100,0 100,100 0,100",
     ])
+  })
+})
+
+/** The ellipses left, in drawing order: the object's or a new one, and its parameters. */
+function ellipsePieces(cad: CadHarness): string[] {
+  const round = (value: number) => Math.round(value * 1e4) / 1e4
+  return (cad.entities() as EllipseEntity[]).map((ellipse) =>
+    [
+      ellipse.id === "e1" ? "e1" : "new",
+      round(ellipse.startParam ?? 0),
+      round(ellipse.endParam ?? 2 * Math.PI),
+    ].join(" ")
+  )
+}
+
+// Centre 50,50, 50 along X and 25 along Y: t = 0 at 100,50, 45° at
+// 85.3553,67.6777, 90° at 50,75, 180° at 0,50, 270° at 50,25.
+const WHOLE = () => ellipseOf(p(50, 50), p(50, 0), 0.5, { id: "e1" })
+const ARC = () =>
+  ellipseOf(p(50, 50), p(50, 0), 0.5, {
+    id: "e1",
+    startParam: 0,
+    endParam: deg(270),
+  })
+const T45 = "85.3553,67.6777"
+
+// AutoCAD 2023's console, each ellipse's handle and DXF 41/42 read after
+// the break (acc/be1–be21).
+describe("BREAK of an ellipse", () => {
+  it("takes from a whole one what runs counter-clockwise from the first point to the second", () => {
+    for (const [first, second, kept] of [
+      ["100,50", "50,75", "e1 1.5708 6.2832"],
+      ["50,75", "100,50", "e1 0 1.5708"],
+      [T45, "0,50", "e1 3.1416 7.0686"],
+    ]) {
+      const cad = answer(
+        createHarness({ entities: [WHOLE()] }),
+        "BREAK",
+        first,
+        second
+      )
+      expect(ellipsePieces(cad)).toEqual([kept])
+    }
+  })
+
+  it("refuses to split a whole one in place", () => {
+    for (const [locale, command, atPoint, refusal] of [
+      [
+        undefined,
+        "BREAK",
+        "BREAKATPOINT",
+        "Cannot break a closed, periodic curve at only one point.",
+      ],
+      [
+        es,
+        "PARTE",
+        "PARTIRENPUNTO",
+        "No es posible partir una curva periódica cerrada en un solo punto.",
+      ],
+    ] as const) {
+      const cad = createHarness({ locale, entities: [WHOLE()] })
+      answer(cad, command, T45, "@")
+      expect(cad.commandLog().at(-1)).toBe(refusal)
+      answer(cad, atPoint, "0,50", "0,50")
+      expect(cad.commandLog().at(-1)).toBe(refusal)
+      expect(ellipsePieces(cad)).toEqual(["e1 0 6.2832"])
+      expect(cad.activeToolId()).toBe("select")
+    }
+  })
+
+  it("breaks an elliptical arc in its parameter, the piece from its start the object", () => {
+    for (const [command, first, second, kept] of [
+      ["BREAK", T45, "0,50", ["e1 0 0.7854", "new 3.1416 4.7124"]],
+      ["BREAK", "0,50", T45, ["e1 0 0.7854", "new 3.1416 4.7124"]],
+      ["BREAK", T45, "@", ["e1 0 0.7854", "new 0.7854 4.7124"]],
+      ["BREAKATPOINT", T45, T45, ["e1 0 0.7854", "new 0.7854 4.7124"]],
+      ["BREAK", "100,50", "@", ["e1 0 4.7124"]],
+      ["BREAK", T45, "50,25", ["e1 0 0.7854"]],
+      // In the arc's gap, nearer its start.
+      ["BREAK", T45, "85.3553,32.3223", ["e1 0.7854 4.7124"]],
+    ] as const) {
+      const cad = answer(
+        createHarness({ entities: [ARC()] }),
+        command,
+        first,
+        second
+      )
+      expect(ellipsePieces(cad)).toEqual(kept)
+    }
+  })
+
+  it("says what it cannot break, and asks again", () => {
+    const entities = () => [
+      textOf(p(0, 0), "ABCDEF", { height: 10 }),
+      createMText(p(0, 100), "ABCDEF", { height: 10 }),
+      createInsert("B", p(200, 0)),
+      hatchOf([loopOf(p(300, 0), p(400, 50))]),
+    ]
+    const blocks = [
+      createBlockDefinition("B", p(0, 0), [lineOf(p(0, 0), p(100, 0))]),
+    ]
+    for (const [locale, command, cannot, block, prompt, last] of [
+      [
+        undefined,
+        "BREAK",
+        "Object can't be broken",
+        "Can't break a block",
+        "Select object:",
+        "L",
+      ],
+      [
+        es,
+        "PARTE",
+        "Imposible partir este objeto",
+        "Imposible partir un bloque",
+        "Designe objeto:",
+        "LT",
+      ],
+    ] as const) {
+      const cad = createHarness({ locale, blocks, entities: entities() })
+      answer(cad, command, "20,5", "20,105", "250,0", last)
+      expect(cad.commandLog().slice(1)).toEqual([
+        `${prompt} 20,5`,
+        cannot,
+        `${prompt} 20,105`,
+        cannot,
+        `${prompt} 250,0`,
+        block,
+        `${prompt} ${last}`,
+        cannot,
+      ])
+      expect(cad.state().commandLine.prompt).toBe(`${command} ${prompt}`)
+      expect(cad.entityCount).toBe(4)
+    }
+
+    const dimension = answer(
+      createHarness(),
+      "DIMLINEAR",
+      "0,0",
+      "100,0",
+      "0,-20",
+      "BREAK",
+      "50,-20"
+    )
+    expect(dimension.commandLog().at(-1)).toBe("Object can't be broken")
   })
 })
 

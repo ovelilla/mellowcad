@@ -2,7 +2,6 @@ import { Vec2, V } from "../../geometry/Vec2"
 import {
   angleWithinSweep,
   circleCircleIntersection,
-  closestPointOnEllipse,
   infiniteLineIntersection,
   lineCircleIntersectionParams,
   normalizeAngle,
@@ -26,6 +25,8 @@ import {
   createLine,
   carryPiece,
   createPolyline,
+  ellipseCut,
+  ellipseParamAt,
   ellipseSweepParams,
   isFullEllipse,
   fractionAlongSegment,
@@ -1074,25 +1075,6 @@ function ellipsePiece(
 }
 
 /**
- * How far into `ellipse`'s sweep, in its parameter, the point of it nearest
- * `click` lies.
- */
-function ellipseOffsetAt(ellipse: EllipseEntity, click: Vec2): number {
-  const { start, sweep } = ellipseSweepParams(ellipse)
-  const { t } = closestPointOnEllipse(
-    ellipse.center,
-    ellipse.majorAxis,
-    ellipse.ratio,
-    click,
-    ellipse.startParam,
-    ellipse.endParam
-  )
-  return isFullEllipse(ellipse)
-    ? normalizeAngle(t)
-    : Math.min(Math.max(t - start, 0), sweep)
-}
-
-/**
  * Trims an ellipse as a circle (two crossings bound the removed piece, the
  * rest is left as an elliptical arc) and an elliptical arc as an arc, in the
  * ellipse's parameter. Cut once, a whole ellipse is refused, as AutoCAD 2023's
@@ -1110,7 +1092,17 @@ function planTrimEllipse(
     targetId: ellipse.id,
     layerId: ellipse.layerId,
   }
-  const clickOffset = ellipseOffsetAt(ellipse, click)
+  const clickOffset = ellipseParamAt(ellipse, click)
+  const cut = (from: number, to: number): EdgeEditPlan => {
+    const { kept, removed } = ellipseCut(ellipse, from, to)
+    return {
+      ...base,
+      replacements: kept.map((piece) =>
+        ellipsePiece(ellipse, piece.startParam, piece.endParam)
+      ),
+      removed: ellipsePiece(ellipse, removed.startParam, removed.endParam),
+    }
+  }
 
   if (isFullEllipse(ellipse)) {
     if (crossings.length === 0) return null
@@ -1126,11 +1118,7 @@ function planTrimEllipse(
         break
       }
     }
-    return {
-      ...base,
-      replacements: [ellipsePiece(ellipse, tb, ta)],
-      removed: ellipsePiece(ellipse, ta, tb),
-    }
+    return cut(ta, ta + normalizeAngle(tb - ta))
   }
 
   const offsets = dedupeSorted(
@@ -1147,31 +1135,7 @@ function planTrimEllipse(
   ) {
     i++
   }
-  const ta = start + bounds[i]
-  const tb = start + bounds[i + 1]
-  const end = start + sweep
-  if (bounds[i] === 0) {
-    return {
-      ...base,
-      replacements: [ellipsePiece(ellipse, tb, end)],
-      removed: ellipsePiece(ellipse, start, tb),
-    }
-  }
-  if (bounds[i + 1] === sweep) {
-    return {
-      ...base,
-      replacements: [ellipsePiece(ellipse, start, ta)],
-      removed: ellipsePiece(ellipse, ta, end),
-    }
-  }
-  return {
-    ...base,
-    replacements: [
-      ellipsePiece(ellipse, start, ta),
-      ellipsePiece(ellipse, tb, end),
-    ],
-    removed: ellipsePiece(ellipse, ta, tb),
-  }
+  return cut(bounds[i], bounds[i + 1])
 }
 
 /**
@@ -1198,7 +1162,7 @@ function planExtendEllipse(
     targetId: ellipse.id,
     layerId: ellipse.layerId,
   }
-  if (ellipseOffsetAt(ellipse, click) < sweep / 2) {
+  if (ellipseParamAt(ellipse, click) < sweep / 2) {
     const best = nearestAngle(outside, (t) => normalizeAngle(start - t))
     if (best === null) return null
     return {
