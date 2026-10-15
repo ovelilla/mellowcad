@@ -49,7 +49,10 @@ A tool is an explicit state machine for one AutoCAD command. It owns a discrimin
   TRIM's pieces and BREAK's; never walk the vertices to cut one in a tool. An ellipse is cut
   the same way with `ellipseCut` (`domain/ellipses.ts`), between two offsets into its sweep
   (`ellipseParamAt`): a whole one kept from the later round to the earlier, an elliptical arc
-  its pieces before and after.
+  its pieces before and after. A pick on nothing starts AutoCAD's two-point crossing fence:
+  what it crosses is found with `boxSelection`'s `objectsOnFence`, each object planned as
+  picked where the fence first meets it (`fenceCrossing`, as FILLET reads a fence), and all
+  their `piecesOf` done as one `ReplaceEntitiesCommand` — one Undo step.
 - `ObjectSelector` (`objectSelection.ts`) — AutoCAD's `Select objects:`, the one every command
   that takes a set asks it with: picks, the window a drag or a pick on nothing starts, and the
   modes typed there (Window, Crossing, BOX, Last, ALL, Fence, WPolygon, CPolygon, Previous,

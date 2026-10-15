@@ -758,6 +758,90 @@ describe("TRIM and EXTEND answer what is typed", () => {
     )
   })
 
+  // AutoCAD 2023's console (acc/tf1–tf19, tg1–tg7): its "pick two empty
+  // locations".
+  it("starts a fence on nothing, which its next point closes, as one step", () => {
+    const cad = typed(drawing(), "ID", "1,1", "TRIM", "70,30", "70,-20")
+    expect(cad.commandLog().slice(-2)).toEqual([
+      "Select object to trim or shift-select to extend: 70,30",
+      "Specify next fence point or [Undo]: 70,-20",
+    ])
+    for (const id of ["A", "B"]) {
+      expect(endpoints(cad.byId<LineEntity>(id))[1]).toEqual(
+        p(50, id === "A" ? 0 : 20)
+      )
+    }
+    expect(cad.state().commandLine.prompt).toBe(
+      "TRIM Select object to trim or shift-select to extend or [Undo]:"
+    )
+    typed(cad, "U")
+    expect(cad.commandLog().at(-1)).toBe("Command has been completely undone.")
+    expect(endpoints(cad.byId<LineEntity>("A"))[1]).toEqual(p(100, 0))
+    expect(endpoints(cad.byId<LineEntity>("B"))[1]).toEqual(p(100, 20))
+    cad.enter()
+    // LASTPOINT is the fence's first point.
+    typed(cad, "ID", "@")
+    expect(cad.commandLog().at(-1)).toBe(
+      " X = 70.00     Y = 30.00     Z = 0.00"
+    )
+
+    // Clicked, the same.
+    const clicked = drawing()
+    clicked.command("TRIM").click(p(70, 30)).click(p(70, -20))
+    expect(endpoints(clicked.byId<LineEntity>("A"))[1]).toEqual(p(50, 0))
+  })
+
+  it("asks the fence's next point as AutoCAD does", () => {
+    const cad = typed(drawing(), "TRIM", "70,30", "FOO", "U", "70,30")
+    typed(cad, "@0,-50")
+    expect(cad.commandLog().slice(2)).toEqual([
+      "Select object to trim or shift-select to extend: 70,30",
+      "Specify next fence point or [Undo]: FOO",
+      "Invalid response.",
+      "Specify next fence point or [Undo]: U",
+      "Specify next fence point or [Undo]: 70,30",
+      "Invalid point, polygon segment is zero length.",
+      "Specify next fence point or [Undo]: @0,-50",
+    ])
+    expect(endpoints(cad.byId<LineEntity>("A"))[1]).toEqual(p(50, 0))
+
+    // Enter there ends the command, nothing trimmed.
+    const ended = typed(drawing(), "TRIM", "70,30")
+    ended.enter()
+    expect(ended.activeToolId()).toBe("select")
+    expect(endpoints(ended.byId<LineEntity>("A"))[1]).toEqual(p(100, 0))
+
+    // A second point on an object is the fence's (acc/tg5).
+    const onto = typed(drawing(), "TRIM", "70,10", "50,5")
+    expect(endpoints(onto.byId<LineEntity>("V"))).toEqual([
+      p(50, -50),
+      p(50, 0),
+    ])
+
+    const spanish = createHarness({
+      locale: es,
+      entities: [lineOf(p(0, 0), p(100, 0)), lineOf(p(50, -50), p(50, 50))],
+    })
+    typed(spanish, "RECORTA", "70,30", "FOO", "70,30")
+    expect(spanish.commandLog().slice(-4)).toEqual([
+      "Precise punto del borde o [desHacer]: FOO",
+      "Respuesta no válida.",
+      "Precise punto del borde o [desHacer]: 70,30",
+      "Punto no válido: el segmento del polígono tiene una longitud cero.",
+    ])
+  })
+
+  it("extends what EXTEND's fence crosses", () => {
+    const cad = createHarness({
+      entities: [
+        lineOf(p(0, 0), p(40, 0), { id: "S" }),
+        lineOf(p(50, -50), p(50, 50)),
+      ],
+    })
+    typed(cad, "EXTEND", "30,20", "30,-20")
+    expect(endpoints(cad.byId<LineEntity>("S"))).toEqual([p(0, 0), p(50, 0)])
+  })
+
   it("refuses anything else with *Invalid selection*, Undo on offer or not", () => {
     const cad = typed(drawing(), "TRIM", "FOO", "80,0", "FOO")
     expect(cad.commandLog().slice(2)).toEqual([

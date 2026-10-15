@@ -65,6 +65,16 @@ import {
   parametricCurve,
 } from "./curveCrossings"
 import { typedPick } from "./typedPick"
+import {
+  buildFenceOverlay,
+  fenceCrossing,
+  objectsOnFence,
+} from "./boxSelection"
+import { entityScreenOutline } from "../viewOutline"
+import {
+  isCoordinateExpression,
+  parseCoordinate,
+} from "../input/coordinateInput"
 
 /**
  * TRIM and EXTEND share one interaction and most of their geometry, so they are
@@ -158,11 +168,17 @@ export abstract class EdgeEditTool implements Tool {
    */
   private steps: boolean[] = []
   private lastInput: PointerInput | null = null
+  /**
+   * The crossing fence a pick on nothing starts, AutoCAD's "pick two empty
+   * locations": its second point closes it (acc/tf1–tf19, tg1–tg7).
+   */
+  private fence: { readonly start: Vec2; readonly cursor: Vec2 } | null = null
 
   onActivate(ctx: ToolContext): void {
     ctx.setCursor("crosshair")
     ctx.selection.clear()
     this.preview = null
+    this.fence = null
     this.steps = []
     // PROJMODE 1, EDGEMODE 0 and TRIMEXTENDMODE 1 are fixed here.
     ctx.report(ctx.text.message("trimExtendSettings"))
@@ -174,6 +190,7 @@ export abstract class EdgeEditTool implements Tool {
    * first edit brings Undo.
    */
   question(): PromptId {
+    if (this.fence) return "specifyNextFencePointOr"
     if (this.defaultMode === "trim") {
       return this.steps.length > 0
         ? "selectObjectToTrimOrShiftSelectToExtendOr"
@@ -191,11 +208,11 @@ export abstract class EdgeEditTool implements Tool {
    * edges/…`, acc/t1, t2) — never Undo, the only one offered here.
    */
   takes(): QuestionInput {
-    return { refusal: "invalidSelection" }
+    return { refusal: this.fence ? "invalidResponse" : "invalidSelection" }
   }
 
   commandOptions(): readonly CommandOption[] {
-    return this.steps.length > 0 ? [{ id: "Undo" }] : []
+    return this.fence || this.steps.length > 0 ? [{ id: "Undo" }] : []
   }
 
   /**
@@ -203,6 +220,9 @@ export abstract class EdgeEditTool implements Tool {
    * its start AutoCAD says so, and Undo is no longer offered.
    */
   invokeOption(id: string, ctx: ToolContext): CommandOptionOutcome {
+    // WHY nothing: AutoCAD 2023's console keeps the fence's first point and
+    // asks again (acc/tg1, tg7).
+    if (this.fence) return id === "Undo" ? "continue" : "unhandled"
     if (id !== "Undo" || this.steps.length === 0) return "unhandled"
     if (this.steps.pop()) ctx.undo()
     if (this.steps.length === 0) {
@@ -213,12 +233,20 @@ export abstract class EdgeEditTool implements Tool {
     return "continue"
   }
 
-  onDeactivate(): void {
+  onDeactivate(ctx: ToolContext): void {
     this.preview = null
     this.lastInput = null
+    if (this.fence) ctx.dynamicInput.close()
+    this.fence = null
   }
 
   onPointerMove(input: PointerInput, ctx: ToolContext): void {
+    if (this.fence) {
+      this.fence = { ...this.fence, cursor: input.point }
+      ctx.dynamicInput.setPosition(input.screen)
+      ctx.requestRender()
+      return
+    }
     this.lastInput = input
     this.preview = this.planFor(input, ctx)
     ctx.requestRender()
@@ -226,10 +254,11 @@ export abstract class EdgeEditTool implements Tool {
 
   /**
    * A point typed at the prompt picks there (AutoCAD 2023's console, acc/v1,
-   * v3, v4 of the hidden UCS words session); on nothing it would start the
-   * console's fence, which is not built: the prompt asks again.
+   * v3, v4 of the hidden UCS words session), and on nothing starts the
+   * fence, as a click does.
    */
   answerTyped(text: string, ctx: ToolContext): boolean {
+    if (this.fence) return false
     const point = typedPick(text, ctx)
     if (!point) return false
     this.onPointerDown(
@@ -251,10 +280,15 @@ export abstract class EdgeEditTool implements Tool {
 
   onPointerDown(input: PointerInput, ctx: ToolContext): void {
     if (input.button !== 0) return
+    if (this.fence) {
+      this.closeFence(input.point, ctx)
+      return
+    }
     this.lastInput = input
     const plan = this.planFor(input, ctx)
     if (!plan) {
-      this.refuseExtend(input, ctx)
+      if (ctx.pick(input.world)) this.refuseExtend(input, ctx)
+      else this.startFence(input.point, ctx)
       return
     }
     if (plan.kind === "refuse") {
@@ -273,11 +307,18 @@ export abstract class EdgeEditTool implements Tool {
 
   wantsSnap(): boolean {
     // Trim/Extend pick objects by proximity, not precise points — running snaps
-    // would only clutter the hover, exactly as in AutoCAD.
-    return false
+    // would only clutter the hover, exactly as in AutoCAD. A fence's point is
+    // a point.
+    return this.fence !== null
   }
 
   buildOverlay(ctx: ToolContext): ScenePrimitive[] {
+    if (this.fence) {
+      return buildFenceOverlay(ctx.viewport, [
+        this.fence.start,
+        this.fence.cursor,
+      ])
+    }
     const plan = this.preview
     if (!plan || plan.kind === "refuse") return []
     const { viewport } = ctx
@@ -349,6 +390,83 @@ export abstract class EdgeEditTool implements Tool {
     ctx.requestRender()
   }
 
+  /** The fence's next point, picked or typed: `@` and a number from its first. */
+  private startFence(start: Vec2, ctx: ToolContext): void {
+    this.fence = { start, cursor: start }
+    this.preview = null
+    const from = { ...start, z: ctx.elevation }
+    ctx.dynamicInput.open({
+      fields: [
+        { id: "point", prompt: "specifyNextFencePointOr", kind: "coordinate" },
+      ],
+      commit: () => {},
+      commitRaw: (commitCtx) => {
+        const text = commitCtx.dynamicInput.getText("point").trim()
+        const point = isCoordinateExpression(text)
+          ? parseCoordinate(text, {
+              lastPoint: from,
+              relativeByDefault: false,
+              ucs: commitCtx.ucs,
+              elevation: commitCtx.elevation,
+            })
+          : null
+        if (!point) return false
+        this.closeFence({ x: point.x, y: point.y }, commitCtx)
+        return true
+      },
+      directDistance: from,
+    })
+    ctx.requestRender()
+  }
+
+  /**
+   * The fence's second point: every object it crosses is trimmed or extended
+   * as if picked where the fence first meets it, all planned against the
+   * drawing as it was and done as one Undo step, which the console counts
+   * even when the fence crosses nothing (acc/tf12, tf14, tf17, tg3–tg6).
+   */
+  private closeFence(end: Vec2, ctx: ToolContext): void {
+    const fence = this.fence
+    if (!fence) return
+    if (end.x === fence.start.x && end.y === fence.start.y) {
+      ctx.report(ctx.text.message("polygonSegmentZeroLength"))
+      return
+    }
+    this.fence = null
+    ctx.dynamicInput.close()
+    const view = ctx.viewport
+    const points = [fence.start, end]
+    const screen = points.map((point) => view.worldToScreen(point))
+    const crossed = objectsOnFence(
+      ctx.document,
+      points,
+      view,
+      (entity) => ctx.document.isEntityVisible(entity) && readsInPlan(entity)
+    )
+    const ids: EntityId[] = []
+    const added: Entity[] = []
+    for (const id of crossed) {
+      const entity = ctx.document.get(id)
+      const at =
+        entity &&
+        fenceCrossing(entityScreenOutline(view, entity, ctx.blocks), screen)
+      if (!entity || !at) continue
+      const plan = this.planOn(
+        entity,
+        view.screenToWorld(at),
+        this.defaultMode,
+        ctx
+      )
+      const pieces = plan && plan.kind !== "refuse" && this.piecesOf(plan, ctx)
+      if (!pieces) continue
+      ids.push(pieces.id)
+      added.push(...pieces.added)
+    }
+    if (ids.length > 0) ctx.execute(new ReplaceEntitiesCommand(ids, added))
+    this.steps.push(ids.length > 0)
+    ctx.requestRender()
+  }
+
   private modeFor(input: PointerInput): EdgeEditMode {
     if (!input.shiftKey) return this.defaultMode
     return this.defaultMode === "trim" ? "extend" : "trim"
@@ -366,18 +484,26 @@ export abstract class EdgeEditTool implements Tool {
   private planFor(input: PointerInput, ctx: ToolContext): EdgeEditPlan | null {
     const hit = this.pickFor(input, ctx)
     if (!hit) return null
-    const mode = this.modeFor(input)
+    return this.planOn(hit, input.world, this.modeFor(input), ctx)
+  }
+
+  private planOn(
+    hit: Entity,
+    click: Vec2,
+    mode: EdgeEditMode,
+    ctx: ToolContext
+  ): EdgeEditPlan | null {
     const others = ctx.document
       .getEntities()
       .filter(
         (e) =>
           e.id !== hit.id && ctx.document.isEntityVisible(e) && readsInPlan(e)
       )
-    if (mode === "extend") return planExtend(hit, input.world, others)
+    if (mode === "extend") return planExtend(hit, click, others)
     // "In Quick mode, selecting an object that doesn't cross a boundary
     // deletes the object instead" — of those trimmed here.
     return (
-      planTrim(hit, input.world, others) ??
+      planTrim(hit, click, others) ??
       (TRIMMED.has(hit.type) ? { kind: "erase", target: hit } : null)
     )
   }
@@ -386,48 +512,38 @@ export abstract class EdgeEditTool implements Tool {
     plan: Exclude<EdgeEditPlan, { kind: "refuse" }>,
     ctx: ToolContext
   ): void {
-    if (plan.kind === "erase") {
-      ctx.execute(new RemoveEntitiesCommand([plan.target.id]))
-      return
+    const pieces = this.piecesOf(plan, ctx)
+    if (!pieces) return
+    if (pieces.added.length === 0) {
+      ctx.execute(new RemoveEntitiesCommand([pieces.id]))
+    } else if (pieces.added.length === 1) {
+      ctx.execute(new UpdateEntityCommand(pieces.added[0]))
+    } else {
+      ctx.execute(new ReplaceEntitiesCommand([pieces.id], pieces.added))
     }
+  }
+
+  /** The object an edit takes, and what it leaves in its place. */
+  private piecesOf(
+    plan: Exclude<EdgeEditPlan, { kind: "refuse" }>,
+    ctx: ToolContext
+  ): { readonly id: EntityId; readonly added: readonly Entity[] } | null {
+    if (plan.kind === "erase") return { id: plan.target.id, added: [] }
     const target = ctx.document.get(plan.targetId)
-    if (!target) return
-    if (plan.kind === "extend") {
-      ctx.execute(
-        new UpdateEntityCommand(
-          carryPiece(
-            target,
-            geomToEntity(plan.result, plan.layerId, plan.targetId)
-          )
-        )
-      )
-      return
-    }
-    if (plan.replacements.length === 1) {
-      ctx.execute(
-        new UpdateEntityCommand(
-          carryPiece(
-            target,
-            geomToEntity(plan.replacements[0], plan.layerId, plan.targetId)
-          )
-        )
-      )
-      return
-    }
+    if (!target) return null
+    const geoms = plan.kind === "extend" ? [plan.result] : plan.replacements
     // A mid-object cut splits it in two: the piece from its start, listed
     // first, is the object kept (its handle), the other a new one, which
     // Last then finds — AutoCAD 2023's console (acc/hd1–hd7, hd20).
-    ctx.execute(
-      new ReplaceEntitiesCommand(
-        [plan.targetId],
-        plan.replacements.map((g, i) =>
-          carryPiece(
-            target,
-            geomToEntity(g, plan.layerId, i === 0 ? plan.targetId : undefined)
-          )
+    return {
+      id: plan.targetId,
+      added: geoms.map((g, i) =>
+        carryPiece(
+          target,
+          geomToEntity(g, plan.layerId, i === 0 ? plan.targetId : undefined)
         )
-      )
-    )
+      ),
+    }
   }
 }
 
