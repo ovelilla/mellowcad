@@ -64,6 +64,47 @@ describe("UCS", () => {
     expect(ucsOf(cad).origin).toBeCloseToPoint(p(100, 60))
   })
 
+  // AutoCAD 2023's console (acc/ul37–ul39): the first prompt's point on X
+  // and on the XY plane are read in the UCS moved to the origin given;
+  // 3point's in the current UCS.
+  it("reads the first prompt's points on X and on the plane from the new origin", () => {
+    const typed = (...texts: string[]) => {
+      const cad = createHarness()
+      for (const text of texts) {
+        cad.runtime.setCommandLineText(text)
+        cad.runtime.submitCommandLine()
+      }
+      return cad
+    }
+    const fromWorld = typed("UCS", "100,0", "200,50", "100,100")
+    expect(ucsOf(fromWorld).origin).toBeCloseToPoint(p(100, 0))
+    expect(ucsOf(fromWorld).xAxis).toBeCloseToPoint(p(0.970143, 0.242536))
+
+    const moved = typed("UCS", "O", "30,0", "UCS", "50,0", "60,10", "50,10")
+    expect(ucsOf(moved).origin).toBeCloseToPoint(p(80, 0))
+    expect(ucsOf(moved).xAxis).toBeCloseToPoint(p(0.986394, 0.164399))
+    expect(ucsOf(moved).yAxis).toBeCloseToPoint(p(-0.164399, 0.986394))
+    moved.runtime.setCommandLineText("ID")
+    moved.runtime.submitCommandLine()
+    moved.runtime.setCommandLineText("@")
+    moved.runtime.submitCommandLine()
+    expect(moved.commandLog().at(-1)).toBe(
+      " X = 50.00     Y = 10.00     Z = 0.00"
+    )
+
+    const three = typed(
+      "UCS",
+      "O",
+      "30,0",
+      "UCS",
+      "3",
+      "50,0",
+      "60,10",
+      "50,10"
+    )
+    expect(ucsOf(three).xAxis).toBeCloseToPoint(p(0.707107, 0.707107))
+  })
+
   it("Enter at the first prompt is <World>", () => {
     const cad = turned(createHarness())
     cad.command("UCS").enter()

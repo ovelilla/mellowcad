@@ -865,7 +865,12 @@ export class UcsTool implements Tool {
           else this.finish({ ...commitCtx.ucs, origin }, null, commitCtx)
           return true
         }
-        const point = this.parse(text, origin, commitCtx)
+        const point = this.parse(
+          text,
+          origin,
+          commitCtx,
+          this.readIn(origin, three, commitCtx)
+        )
         if (!point) return false
         this.enterXYPlane(origin, point, three, commitCtx)
         return true
@@ -914,7 +919,12 @@ export class UcsTool implements Tool {
           if (ucs) this.finish(ucs, null, commitCtx)
           return true
         }
-        const point = this.parse(text, origin, commitCtx)
+        const point = this.parse(
+          text,
+          origin,
+          commitCtx,
+          this.readIn(origin, three, commitCtx)
+        )
         if (!point) return false
         this.acceptPlanePoint(state, point, commitCtx)
         return true
@@ -949,7 +959,10 @@ export class UcsTool implements Tool {
     }
     const lastPoint =
       state.three === null
-        ? ucsPointToWorld(ucs, worldPointToUcs(ctx.ucs, point))
+        ? ucsPointToWorld(
+            ucs,
+            worldPointToUcs(this.readIn(state.origin, false, ctx), point)
+          )
         : point
     this.finish(ucs, null, ctx, { lastPoint })
   }
@@ -1209,15 +1222,26 @@ export class UcsTool implements Tool {
   private parse(
     text: string,
     from: Vec3 | null,
-    ctx: ToolContext
+    ctx: ToolContext,
+    ucs: Ucs = ctx.ucs
   ): Vec3 | null {
     if (!isCoordinateExpression(text)) return null
     return parseCoordinate(text, {
       lastPoint: from ?? ctx.lastPoint,
       relativeByDefault: from !== null,
-      ucs: ctx.ucs,
+      ucs,
       elevation: ctx.elevation,
     })
+  }
+
+  /**
+   * Where the first prompt's point on X and on the XY plane are read: the
+   * UCS moved to the origin given, its axes kept — AutoCAD 2023's console
+   * lays X along `200,50` typed after the origin `100,0` (acc/ul37, ul38);
+   * 3point reads them in the current UCS (ul39).
+   */
+  private readIn(origin: Vec3, three: boolean, ctx: ToolContext): Ucs {
+    return three ? ctx.ucs : { ...ctx.ucs, origin }
   }
 
   private place(ctx: ToolContext): void {
