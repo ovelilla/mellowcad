@@ -1137,7 +1137,8 @@ export const es: EngineLocale = {
       "TRIM": {
         "Undo": "desHacer",
         "Fence": "Borde",
-        "Crossing": "Captura"
+        "Crossing": "Captura",
+        "eRase": "bOrrar"
       },
       "EXTEND": {
         "Undo": "desHacer",
@@ -1651,6 +1652,8 @@ export const es: EngineLocale = {
       "enterLayerOptionForOffsetObjects": "Indique opción de capa para objetos desfasados",
       "specifyThroughPointOr": "Precise punto a atravesar o",
       "nextObject": "siguiente objeto",
+      "selectObjectsToEraseOrExit": "Designe objetos que borrar o <salir>",
+      "selectObjectsToErase": "Designe objetos que borrar",
       "selectObjectToTrimOrShiftSelectToExtendOr": "Seleccione un objeto que recortar o use la tecla Mayús y seleccione para alargar, o",
       "selectObjectToExtendOrShiftSelectToTrimOr": "Seleccione un objeto que alargar o use la tecla Mayús y seleccione para recortar, o",
       "selectFirstObjectOr": "Designe el primer objeto o",

@@ -3040,23 +3040,23 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0°~, Line space facto
   properties: -
   cycling: -
 > TRIM
-  prompt: TRIM Select object to trim or shift-select to extend or [Crossing]:
-  options: [C] Crossing
+  prompt: TRIM Select object to trim or shift-select to extend or [Crossing/eRase]:
+  options: [C] Crossing, [R] eRase
   command| TR TRIM
   info| Current settings: Projection=UCS, Edge=None, Mode=Quick
 > trim
-  prompt: TRIM Select object to trim or shift-select to extend or [Crossing/Undo]:
-  options: [C] Crossing, [U] Undo
-  prompt| Select object to trim or shift-select to extend or [Crossing]:
+  prompt: TRIM Select object to trim or shift-select to extend or [Crossing/eRase/Undo]:
+  options: [C] Crossing, [R] eRase, [U] Undo
+  prompt| Select object to trim or shift-select to extend or [Crossing/eRase]:
 > U
-  prompt: TRIM Select object to trim or shift-select to extend or [Crossing]:
-  options: [C] Crossing
-  prompt| Select object to trim or shift-select to extend or [Crossing/Undo]: U
+  prompt: TRIM Select object to trim or shift-select to extend or [Crossing/eRase]:
+  options: [C] Crossing, [R] eRase
+  prompt| Select object to trim or shift-select to extend or [Crossing/eRase/Undo]: U
   info| Command has been completely undone.
 > escape
   prompt: Command:
   options: -
-  prompt| Select object to trim or shift-select to extend or [Crossing]: *Cancel*
+  prompt| Select object to trim or shift-select to extend or [Crossing/eRase]: *Cancel*
 > EXTEND
   prompt: EXTEND Select object to extend or shift-select to trim or [Crossing]:
   options: [C] Crossing

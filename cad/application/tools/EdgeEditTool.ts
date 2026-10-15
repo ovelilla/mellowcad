@@ -67,6 +67,7 @@ import {
   parametricCurve,
 } from "./curveCrossings"
 import { typedPick } from "./typedPick"
+import { ObjectSelector } from "./objectSelection"
 import {
   buildFenceOverlay,
   buildSelectionBoxOverlay,
@@ -168,9 +169,6 @@ interface EdgeEditFence {
   readonly typed: boolean
 }
 
-/** The words the prompt offers that are built here, in AutoCAD's order. */
-const OPTIONS = ["Crossing"] as const
-
 export abstract class EdgeEditTool implements Tool {
   abstract readonly id: string
   abstract readonly shortcut?: string
@@ -191,24 +189,38 @@ export abstract class EdgeEditTool implements Tool {
     readonly start: Vec2 | null
     readonly cursor: Vec2 | null
   } | null = null
+  /** eRase's `Select objects to erase`, while it asks (acc/ri1–ri12). */
+  private erasing = false
+  private selection: ToolContext["selection"] | null = null
+  private readonly eraser = new ObjectSelector({
+    takes: () => "wholeObjects",
+    question: () =>
+      (this.selection?.isEmpty() ?? true)
+        ? "selectObjectsToEraseOrExit"
+        : "selectObjectsToErase",
+    done: (ctx) => this.eraseSet(ctx),
+  })
 
   onActivate(ctx: ToolContext): void {
     ctx.setCursor("crosshair")
     ctx.selection.clear()
+    this.selection = ctx.selection
     this.preview = null
     this.fence = null
     this.window = null
+    this.erasing = false
     this.steps = []
     // PROJMODE 1, EDGEMODE 0 and TRIMEXTENDMODE 1 are fixed here.
     ctx.report(ctx.text.message("trimExtendSettings"))
   }
 
   /**
-   * WHY Crossing and Undo alone: cuTting edges (Boundary edges), mOde,
-   * Project and eRase are not built, so the prompt lists what is; Fence is
+   * WHY Crossing, eRase and Undo alone: cuTting edges (Boundary edges), mOde
+   * and Project are not built, so the prompt lists what is; Fence is
    * unlisted, as in AutoCAD's Quick mode.
    */
   question(): PromptId {
+    if (this.erasing) return this.eraser.question()
     if (this.fence) {
       return this.fence.points.length === 0
         ? "specifyFirstFencePoint"
@@ -228,13 +240,14 @@ export abstract class EdgeEditTool implements Tool {
    * ta12, tb9) — of those built here.
    */
   takes(): QuestionInput {
+    if (this.erasing) return this.eraser.takes()
     if (this.fence) return { refusal: "invalidResponse" }
     if (this.window?.start) return { refusal: "invalidWindowSpecification" }
     const refusal = ["invalidSelection", "expectsPointOr"] as const
     if (this.window) {
       return {
         refusal,
-        keywords: { ids: ["Fence", ...OPTIONS], declared: true },
+        keywords: { ids: ["Fence", ...this.words()], declared: true },
       }
     }
     const listed = this.listed().map((option) => option.id)
@@ -246,6 +259,7 @@ export abstract class EdgeEditTool implements Tool {
    * fence's points do not (AutoCAD 2023's console, acc/th1, th2, th6).
    */
   setsLastPoint(): boolean | null {
+    if (this.erasing) return null
     if (this.window) return this.window.start === null
     return this.fence ? false : null
   }
@@ -256,6 +270,7 @@ export abstract class EdgeEditTool implements Tool {
    * unlisted (tc6, tc7, th5).
    */
   commandOptions(): readonly CommandOption[] {
+    if (this.erasing) return this.eraser.commandOptions()
     if (this.fence) {
       return !this.fence.typed || this.fence.points.length > 0
         ? [{ id: "Undo" }]
@@ -263,7 +278,10 @@ export abstract class EdgeEditTool implements Tool {
     }
     if (this.window) {
       if (this.window.start) return []
-      return ["Fence", ...OPTIONS, "Undo"].map((id) => ({ id, hidden: true }))
+      return ["Fence", ...this.words(), "Undo"].map((id) => ({
+        id,
+        hidden: true,
+      }))
     }
     return [
       ...this.listed(),
@@ -275,6 +293,9 @@ export abstract class EdgeEditTool implements Tool {
   }
 
   invokeOption(id: string, ctx: ToolContext): CommandOptionOutcome {
+    if (this.erasing) {
+      return this.eraser.invokeOption(id, ctx) ? "continue" : "unhandled"
+    }
     const fence = this.fence
     if (fence) {
       if (id !== "Undo") return "unhandled"
@@ -300,6 +321,15 @@ export abstract class EdgeEditTool implements Tool {
         this.preview = null
         this.openWindowInput(ctx)
         break
+      case "eRase":
+        if (!this.words().includes(id)) return "unhandled"
+        this.window = null
+        this.preview = null
+        this.erasing = true
+        ctx.dynamicInput.close()
+        ctx.selection.clear()
+        this.eraser.start()
+        break
       case "Undo":
         this.undoEdit(ctx)
         break
@@ -313,12 +343,19 @@ export abstract class EdgeEditTool implements Tool {
   onDeactivate(ctx: ToolContext): void {
     this.preview = null
     this.lastInput = null
-    if (this.fence || this.window) ctx.dynamicInput.close()
+    if (this.fence || this.window || this.erasing) ctx.dynamicInput.close()
+    if (this.erasing) ctx.selection.clear()
     this.fence = null
     this.window = null
+    this.erasing = false
+    this.selection = null
   }
 
   onPointerMove(input: PointerInput, ctx: ToolContext): void {
+    if (this.erasing) {
+      this.eraser.onPointerMove(input, ctx)
+      return
+    }
     if (this.fence || this.window) {
       if (this.fence) this.fence = { ...this.fence, cursor: input.point }
       if (this.window) this.window = { ...this.window, cursor: input.point }
@@ -337,6 +374,7 @@ export abstract class EdgeEditTool implements Tool {
    * fence, as a click does.
    */
   answerTyped(text: string, ctx: ToolContext): boolean {
+    if (this.erasing) return this.eraser.answerTyped(text, ctx)
     if (this.fence || this.window) return false
     const point = typedPick(text, ctx)
     if (!point) return false
@@ -358,6 +396,11 @@ export abstract class EdgeEditTool implements Tool {
   }
 
   onPointerDown(input: PointerInput, ctx: ToolContext): void {
+    if (this.erasing) {
+      this.eraser.onPointerDown(input, ctx)
+      ctx.requestRender()
+      return
+    }
     if (input.button !== 0) return
     if (this.fence) {
       this.fencePoint(input.point, ctx)
@@ -388,12 +431,18 @@ export abstract class EdgeEditTool implements Tool {
     ctx.requestRender()
   }
 
+  onPointerUp(input: PointerInput, ctx: ToolContext): void {
+    if (this.erasing) this.eraser.onPointerUp(input, ctx)
+  }
+
   /**
    * Enter: Fence's ends it, whatever its points (acc/ta1, ta2), and a
    * window's opposite corner refuses it; at the prompt and Crossing's first
-   * corner it ends the command (ta12), as at a pick on nothing's fence.
+   * corner it ends the command (ta12), as at a pick on nothing's fence and
+   * at eRase's with nothing in its set (ri2, ri3, ri12).
    */
   onEnter(ctx: ToolContext): boolean {
+    if (this.erasing) return this.eraser.onEnter(ctx)
     if (this.fence?.typed) {
       this.editAcross(this.fence.points, false, ctx)
       return true
@@ -406,6 +455,7 @@ export abstract class EdgeEditTool implements Tool {
   }
 
   wantsSnap(): boolean {
+    if (this.erasing) return this.eraser.wantsSnap()
     // Trim/Extend pick objects by proximity, not precise points — running snaps
     // would only clutter the hover, exactly as in AutoCAD. A fence's point and
     // a window's corner are points.
@@ -413,6 +463,7 @@ export abstract class EdgeEditTool implements Tool {
   }
 
   buildOverlay(ctx: ToolContext): ScenePrimitive[] {
+    if (this.erasing) return this.eraser.buildOverlay(ctx)
     if (this.fence) {
       const { points, cursor } = this.fence
       const through = cursor ? [...points, cursor] : points
@@ -486,10 +537,15 @@ export abstract class EdgeEditTool implements Tool {
       : "selectObjectToExtendOrShiftSelectToTrimOr"
   }
 
+  /** The words of the object prompt built here, in AutoCAD's order. */
+  private words(): readonly string[] {
+    return this.defaultMode === "trim" ? ["Crossing", "eRase"] : ["Crossing"]
+  }
+
   /** The words the object prompt lists. */
   private listed(): CommandOption[] {
     return [
-      ...OPTIONS.map((id) => ({ id })),
+      ...this.words().map((id) => ({ id })),
       ...(this.steps.length > 0 ? [{ id: "Undo" }] : []),
     ]
   }
@@ -507,6 +563,18 @@ export abstract class EdgeEditTool implements Tool {
     if (!this.window) {
       this.preview = this.lastInput && this.planFor(this.lastInput, ctx)
     }
+  }
+
+  /**
+   * eRase's set, erased as one Undo step of the command's, which asks its
+   * object again (acc/ri1, ri4, ri9).
+   */
+  private eraseSet(ctx: ToolContext): void {
+    ctx.execute(new RemoveEntitiesCommand(ctx.selection.toArray()))
+    ctx.selection.clear()
+    this.erasing = false
+    this.steps.push(true)
+    ctx.requestRender()
   }
 
   /**

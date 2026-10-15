@@ -1318,6 +1318,8 @@ export const en: EngineCatalog = {
       "specifyPointOnSideToOffsetOr": "Specify point on side to offset or",
       "specifyThroughPointOr": "Specify through point or",
       "nextObject": "next object",
+      "selectObjectsToEraseOrExit": "Select objects to erase or <exit>",
+      "selectObjectsToErase": "Select objects to erase",
       "selectObjectToTrimOrShiftSelectToExtendOr": "Select object to trim or shift-select to extend or",
       "selectObjectToExtendOrShiftSelectToTrimOr": "Select object to extend or shift-select to trim or",
       "selectFirstObjectOr": "Select first object or",

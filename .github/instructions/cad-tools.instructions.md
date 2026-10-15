@@ -55,7 +55,9 @@ A tool is an explicit state machine for one AutoCAD command. It owns a discrimin
   object, in its order (`boxSelection`'s `fenceCrossings`), as a pick there on what is then
   left of the object (`nearestOf` its pieces), planned against the drawing as it then is,
   and does all their `piecesOf` as one `ReplaceEntitiesCommand` — one Undo step. Never plan
-  a fence's objects against the drawing as it was: the console cuts them one by one.
+  a fence's objects against the drawing as it was: the console cuts them one by one. TRIM's
+  eRase asks its set with an `ObjectSelector` of whole objects (`eraser`), handed every input
+  while it asks, whose `done` erases the set as one step of the command's.
 - `ObjectSelector` (`objectSelection.ts`) — AutoCAD's `Select objects:`, the one every command
   that takes a set asks it with: picks, the window a drag or a pick on nothing starts, and the
   modes typed there (Window, Crossing, BOX, Last, ALL, Fence, WPolygon, CPolygon, Previous,
