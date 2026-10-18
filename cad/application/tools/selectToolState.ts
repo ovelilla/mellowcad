@@ -53,8 +53,8 @@ export type SelectToolState =
       readonly startWorld: Vec2
       readonly startScreen: Vec2
       readonly currentWorld: Vec2
-      /** Whether shift was held at press (adds the box result to selection). */
-      readonly additive: boolean
+      /** Whether shift was held at press (removes what it finds). */
+      readonly subtract: boolean
       /**
        * The press landed on an object that was already selected, so dragging
        * moves the selection instead of opening a selection box.
@@ -62,10 +62,14 @@ export type SelectToolState =
       readonly onSelection: boolean
     }
   | {
+      /**
+       * A window or crossing under way: dragged (released to close) or begun
+       * by a click on nothing (closed by the next click).
+       */
       readonly phase: "boxing"
       readonly startWorld: Vec2
       readonly currentWorld: Vec2
-      readonly additive: boolean
+      readonly subtract: boolean
     }
   | {
       /** An endpoint grip is hot: the line is being lengthened along its axis. */

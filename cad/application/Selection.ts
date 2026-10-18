@@ -36,12 +36,6 @@ export class Selection extends Observable {
     this.emit()
   }
 
-  toggle(id: EntityId): void {
-    if (this.ids.has(id)) this.ids.delete(id)
-    else this.ids.add(id)
-    this.emit()
-  }
-
   remove(id: EntityId): void {
     if (this.ids.delete(id)) this.emit()
   }

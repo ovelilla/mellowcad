@@ -103,6 +103,7 @@ export function previewScene(
     polar: null,
     fromBase: null,
     cyclingBadge: null,
+    removeBadge: null,
     cyclingHighlight: null,
   })
 }

@@ -256,6 +256,17 @@ export class CadDriver {
     })
   }
 
+  /** Lets go of a key held on the drawing surface. */
+  release(key: string): this {
+    this.runtime.keyUp({
+      key,
+      shiftKey: false,
+      ctrlKey: false,
+      altKey: false,
+    })
+    return this
+  }
+
   /**
    * True when a dynamic-input *field* is on screen. This mirrors focus in the
    * real UI: a session with fields auto-focuses its input (so keys go to the

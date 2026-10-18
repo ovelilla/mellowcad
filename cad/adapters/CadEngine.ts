@@ -742,6 +742,7 @@ export class CadEngine {
     // command or clear tracking references. The handler skips keys aimed at the
     // dynamic-input box, which handles its own Enter/Escape.
     c.ownerDocument.addEventListener("keydown", this.onKeyDown)
+    c.ownerDocument.addEventListener("keyup", this.onKeyUp)
     if (this.scope) {
       // Capture, so a press whose own handler stops it still moves the user's
       // attention in or out of the embedded engine.
@@ -760,6 +761,7 @@ export class CadEngine {
     c.removeEventListener("wheel", this.onWheel)
     c.ownerDocument.removeEventListener("contextmenu", this.onContextMenu)
     c.ownerDocument.removeEventListener("keydown", this.onKeyDown)
+    c.ownerDocument.removeEventListener("keyup", this.onKeyUp)
     c.ownerDocument.removeEventListener("pointerdown", this.onPagePress, true)
     c.ownerDocument.removeEventListener("focusin", this.onPageFocus)
   }
@@ -861,6 +863,16 @@ export class CadEngine {
     if (target?.closest(EDITABLE)) return
     if (this.scope && !this.withinScope(target)) return
     e.preventDefault()
+  }
+
+  // Unfiltered, unlike keydown: a Shift let go anywhere has stopped removing.
+  private onKeyUp = (e: KeyboardEvent): void => {
+    this.runtime.keyUp({
+      key: e.key,
+      shiftKey: e.shiftKey,
+      ctrlKey: e.ctrlKey,
+      altKey: e.altKey,
+    })
   }
 
   private onKeyDown = (e: KeyboardEvent): void => {

@@ -8,6 +8,7 @@ import type {
 } from "../../domain/entities"
 import { closestOnEntity, createSpline } from "../../domain/entities"
 import { polarPoint } from "../../geometry/primitives"
+import { THEME } from "../../scene/theme"
 import { createHarness } from "../../../test/harness"
 import {
   arcOf,
@@ -37,25 +38,78 @@ describe("picking", () => {
     expect(cad.selectedIds()).toEqual(["L1"])
   })
 
-  it("clears the selection when clicking empty space", () => {
+  it("adds each object picked to the selection (PICKADD 2)", () => {
+    const cad = createHarness({ entities: [SHORT, FAR] })
+
+    cad.click(p(50, 0))
+    cad.click(p(450, 400))
+
+    expect(cad.selectedIds().sort()).toEqual(["L1", "L2"])
+  })
+
+  it("removes an object with Shift, and Shift on one not selected does nothing", () => {
+    const cad = createHarness({ entities: [SHORT, FAR] })
+
+    cad.click(p(50, 0))
+    // Away from L1's own grips, which would be grabbed instead.
+    cad.click(p(30, 0), { shiftKey: true })
+    expect(cad.selectedIds()).toEqual([])
+
+    cad.click(p(470, 400), { shiftKey: true })
+    expect(cad.selectedIds()).toEqual([])
+  })
+
+  it("keeps the selection when a click on nothing starts a window", () => {
     const cad = createHarness({ entities: [SHORT, FAR] })
 
     cad.click(p(50, 0))
     cad.click(p(50, 300))
 
-    expect(cad.selectedIds()).toEqual([])
+    expect(cad.selectedIds()).toEqual(["L1"])
   })
 
-  it("adds and removes with Shift", () => {
-    const cad = createHarness({ entities: [SHORT, FAR] })
+  describe("the minus badge while Shift is held", () => {
+    const hasMinus = (cad: ReturnType<typeof createHarness>) =>
+      cad
+        .scene()
+        .primitives.some(
+          (prim) =>
+            prim.kind === "segment" &&
+            prim.stroke.color === THEME.grip &&
+            prim.a.y === prim.b.y
+        )
 
-    cad.click(p(50, 0))
-    // Away from L2's own grips, which would be grabbed instead of toggled.
-    cad.click(p(470, 400), { shiftKey: true })
-    expect(cad.selectedIds().sort()).toEqual(["L1", "L2"])
+    it("shows with no command, from the key alone, until it is let go", () => {
+      const cad = createHarness({ entities: [SHORT] })
+      cad.moveTo(p(50, 300))
 
-    cad.click(p(470, 400), { shiftKey: true })
-    expect(cad.selectedIds()).toEqual(["L1"])
+      cad.press("Shift")
+      expect(hasMinus(cad)).toBe(true)
+      cad.release("Shift")
+      expect(hasMinus(cad)).toBe(false)
+    })
+
+    it("shows at Select objects:", () => {
+      const cad = createHarness({ entities: [SHORT] })
+      cad.command("ERASE").moveTo(p(50, 300))
+
+      cad.press("Shift")
+
+      expect(hasMinus(cad)).toBe(true)
+    })
+
+    it("is not shown where Shift does not remove", () => {
+      const cad = createHarness({ entities: [SHORT, FAR] })
+
+      cad.command("LINE").moveTo(p(50, 300)).press("Shift")
+      expect(hasMinus(cad)).toBe(false)
+      cad.release("Shift").escape()
+
+      // TRIM's Shift extends.
+      cad.command("TR").moveTo(p(50, 300)).press("Shift")
+      expect(cad.state().commandLine.prompt).toContain("shift-select to extend")
+      expect(hasMinus(cad)).toBe(false)
+    })
   })
 
   it("drops the selection on Escape", () => {
@@ -91,11 +145,52 @@ describe("box selection", () => {
     expect(cad.selectedIds().sort()).toEqual(["INSIDE", "STRADDLING"])
   })
 
-  it("is additive with Shift held", () => {
+  it("adds what it finds to the selection", () => {
     const cad = createHarness({ entities })
 
     cad.click(p(650, 600))
+    cad.drag(p(-50, -50), p(200, 200))
+
+    expect(cad.selectedIds().sort()).toEqual(["INSIDE", "OUTSIDE"])
+  })
+
+  it("removes what it finds with Shift held", () => {
+    const cad = createHarness({ entities })
+
+    cad.click(p(650, 600))
+    cad.drag(p(200, 200), p(-50, -50))
     cad.drag(p(-50, -50), p(200, 200), { shiftKey: true })
+
+    expect(cad.selectedIds().sort()).toEqual(["OUTSIDE", "STRADDLING"])
+  })
+
+  it("is drawn by two clicks from a point on nothing", () => {
+    const cad = createHarness({ entities })
+
+    cad.click(p(-50, -50))
+    expect(cad.selectedIds()).toEqual([])
+    cad.click(p(200, 200))
+
+    expect(cad.selectedIds()).toEqual(["INSIDE"])
+  })
+
+  it("removes with Shift at either click of a clicked window", () => {
+    const cad = createHarness({ entities })
+    cad.select("INSIDE", "OUTSIDE")
+
+    cad.click(p(-50, -50))
+    cad.click(p(200, 200), { shiftKey: true })
+
+    expect(cad.selectedIds()).toEqual(["OUTSIDE"])
+  })
+
+  it("drops a clicked window on Escape and keeps the selection", () => {
+    const cad = createHarness({ entities })
+    cad.select("OUTSIDE")
+
+    cad.click(p(-50, -50))
+    cad.escape()
+    cad.click(p(50, 0))
 
     expect(cad.selectedIds().sort()).toEqual(["INSIDE", "OUTSIDE"])
   })
@@ -334,12 +429,12 @@ describe("dragging a selection", () => {
   })
 
   it("still draws a selection box when the drag starts on empty space", () => {
-    const cad = createHarness({ entities: [SHORT] })
+    const cad = createHarness({ entities: [SHORT, FAR] })
     cad.select("L1")
 
-    cad.drag(p(300, 300), p(600, 600))
+    cad.drag(p(-50, 300), p(600, 600))
 
-    expect(cad.selectedIds()).toEqual([])
+    expect(cad.selectedIds().sort()).toEqual(["L1", "L2"])
     expect(cad.byId<LineEntity>("L1").start).toBeCloseToPoint(p(0, 0))
   })
 })

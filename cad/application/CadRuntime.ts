@@ -320,8 +320,9 @@ export class CadRuntime extends Observable {
   private pathGuides: readonly TrackingGuide[] = []
   private cursorWorld: Vec3 | null = null
 
-  // Whether Shift was held on the last pointer event. AutoCAD uses Shift as a
-  // temporary Ortho override while specifying a point; this feeds the resolver.
+  // Whether Shift is held, as the last pointer event or Shift key said. AutoCAD
+  // uses Shift as a temporary Ortho override while specifying a point, and as
+  // Remove while selecting; this feeds the resolver and the minus badge.
   private pointerShift = false
   /** Set while the box hands an unanswered Enter on to the drawing. */
   private enterFromBox = false
@@ -3658,8 +3659,31 @@ export class CadRuntime extends Observable {
       polar: this.buildPolarGuide(),
       fromBase: this.fromBase,
       cyclingBadge: this.cycling.hasStack() ? this.crosshairScreen : null,
+      removeBadge:
+        this.pointerShift && this.shiftRemoves() ? this.crosshairScreen : null,
       cyclingHighlight: this.cyclingHighlight(),
     })
+  }
+
+  /**
+   * Whether Shift held now removes from the selection: picking with no command
+   * (PICKADD 2) and at a prompt that takes a set, `Select objects:`. Not at a
+   * single object's pick, where Shift means something else (TRIM's extend).
+   */
+  private shiftRemoves(): boolean {
+    if (this.wantsPoint()) return false
+    if (this.activeTool.id === "select") return true
+    const input = questionInput({
+      tool: this.activeTool,
+      prompt: askedPrompt(this.activeTool),
+      session: null,
+    })
+    return (
+      input === "objects" ||
+      input === "subobjects" ||
+      input === "wholeObjects" ||
+      input === "crossingObjects"
+    )
   }
 
   /**
@@ -4076,7 +4100,19 @@ export class CadRuntime extends Observable {
    * Handles a key press. Returns `true` when the runtime consumed the key
    * (the host should call `preventDefault`).
    */
+  /** A key let go: only Shift's matters, for the badge it shows. */
+  keyUp(e: KeyEventData): void {
+    if (e.key !== "Shift" || !this.pointerShift) return
+    this.pointerShift = false
+    this.host.requestRender()
+  }
+
   keyDown(e: KeyEventData): boolean {
+    // Shift alone redraws, so its badge shows before the mouse moves.
+    if (e.key === "Shift" && !this.pointerShift) {
+      this.pointerShift = true
+      this.host.requestRender()
+    }
     // Escape first dismisses an open override menu (without cancelling the
     // command), so a single Escape closes the menu rather than ending drawing.
     if (e.key === "Escape" && this.snapOverrideMenu !== null) {

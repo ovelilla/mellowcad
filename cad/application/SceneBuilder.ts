@@ -171,6 +171,11 @@ export interface SceneInput {
    * beside the cursor), or `null` when the pick box covers at most one object.
    */
   readonly cyclingBadge: Vec2 | null
+  /**
+   * Where to draw the minus badge saying Shift removes from the selection, or
+   * `null` when Shift is up or would not remove.
+   */
+  readonly removeBadge: Vec2 | null
   /** The object the open Selection list box is offering, or `null`. */
   readonly cyclingHighlight: Entity | null
 }
@@ -233,6 +238,9 @@ export function buildScene(input: SceneInput): Scene {
     pushCrosshair(primitives, camera.width, camera.height, input.cursor.screen)
   }
   if (input.cyclingBadge) pushCyclingBadge(primitives, input.cyclingBadge)
+  if (input.removeBadge) {
+    pushRemoveBadge(primitives, input.removeBadge, input.cyclingBadge !== null)
+  }
   if (input.tracking && !input.snap) {
     pushTrackedPointMarker(primitives, aid.worldToScreen(input.tracking.point))
   }
@@ -1652,6 +1660,25 @@ function pushCyclingBadge(out: ScenePrimitive[], at: Vec2): void {
     width: s,
     height: s,
     stroke,
+  })
+}
+
+/**
+ * AutoCAD's minus badge: Shift held where a pick removes from the selection.
+ * Up-right of the crosshair like the cycling badge, and after it when both show.
+ */
+function pushRemoveBadge(
+  out: ScenePrimitive[],
+  at: Vec2,
+  besideCycling: boolean
+): void {
+  const x = Math.round(at.x) + (besideCycling ? 28 : 14)
+  const y = Math.round(at.y) - 16.5
+  out.push({
+    kind: "segment",
+    a: { x, y },
+    b: { x: x + 8, y },
+    stroke: { color: THEME.grip, width: 2 },
   })
 }
 

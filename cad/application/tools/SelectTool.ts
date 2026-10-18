@@ -69,12 +69,13 @@ const DRAG_THRESHOLD_PX = 4
  *                     └────────────────────► idle (click select)
  * ```
  *
- * Behaves like AutoCAD's default pick:
- * - A plain click selects the entity under the cursor (shift-click toggles it,
- *   clicking empty space clears the selection).
- * - Dragging left→right selects only fully-enclosed objects (a blue *window*);
- *   dragging right→left also selects objects the box merely touches (a green
- *   *crossing* window). Holding shift adds the box result to the selection.
+ * Behaves like AutoCAD's default pick (PICKADD 2, PICKAUTO, PICKDRAG 2):
+ * - A click adds the object under the cursor to the selection; Shift+click
+ *   removes it. Only Escape clears the selection.
+ * - A click on nothing starts a window that the next click closes; a drag
+ *   draws it in one gesture. Left→right selects only fully-enclosed objects (a
+ *   blue *window*); right→left also selects objects the box merely touches (a
+ *   green *crossing* window). It adds what it finds, or removes it with Shift.
  *
  * Selected objects also show *grips* (small squares). Lines show endpoint grips
  * (lengthen along the axis) and a midpoint grip (move). Circles show a centre
@@ -144,6 +145,18 @@ export class SelectTool implements Tool {
       this.placeMTextWidth(this.state, this.state.width, ctx)
       return
     }
+    // The second click of a window begun by a click on nothing.
+    if (this.state.phase === "boxing") {
+      this.commitBoxSelection(
+        this.state.startWorld,
+        input.world,
+        this.state.subtract || input.shiftKey,
+        ctx
+      )
+      this.state = { phase: "idle" }
+      ctx.requestRender()
+      return
+    }
 
     // Grab a grip of a selected object, if the click lands on one, and begin
     // the edit its role prescribes.
@@ -198,7 +211,7 @@ export class SelectTool implements Tool {
       startWorld: input.world,
       startScreen: input.screen,
       currentWorld: input.world,
-      additive: input.shiftKey,
+      subtract: input.shiftKey,
       onSelection: this.pressedOnSelection(input, ctx),
     }
     ctx.requestRender()
@@ -342,7 +355,7 @@ export class SelectTool implements Tool {
           // Dragging from an already-selected object moves the whole selection
           // (the direct gesture for objects whose grips all reshape rather than
           // move, like a rectangle); dragging from anywhere else boxes.
-          if (this.state.onSelection && !this.state.additive) {
+          if (this.state.onSelection && !this.state.subtract) {
             this.beginSelectionDrag(
               this.state.startWorld,
               this.state.startScreen,
@@ -353,7 +366,7 @@ export class SelectTool implements Tool {
               phase: "boxing",
               startWorld: this.state.startWorld,
               currentWorld: input.world,
-              additive: this.state.additive,
+              subtract: this.state.subtract,
             }
           }
           ctx.requestRender()
@@ -479,12 +492,21 @@ export class SelectTool implements Tool {
         this.commitBoxSelection(
           this.state.startWorld,
           this.state.currentWorld,
-          this.state.additive,
+          this.state.subtract,
           ctx
         )
         break
       case "pressed":
-        this.commitClickSelection(input, ctx)
+        if (!this.commitClickSelection(input, ctx)) {
+          this.state = {
+            phase: "boxing",
+            startWorld: this.state.startWorld,
+            currentWorld: input.world,
+            subtract: this.state.subtract,
+          }
+          ctx.requestRender()
+          return
+        }
         break
       case "idle":
         return
@@ -674,30 +696,23 @@ export class SelectTool implements Tool {
   private commitBoxSelection(
     start: Vec2,
     current: Vec2,
-    additive: boolean,
+    subtract: boolean,
     ctx: ToolContext
   ): void {
     const hits = boxSelect(ctx.document, start, current, ctx.viewport)
-    if (additive) {
-      for (const id of hits) ctx.selection.add(id)
-    } else {
-      ctx.selection.set(hits)
+    for (const id of hits) {
+      if (subtract) ctx.selection.remove(id)
+      else ctx.selection.add(id)
     }
   }
 
-  private commitClickSelection(input: PointerInput, ctx: ToolContext): void {
+  /** Adds or removes the object clicked; false when the click found none. */
+  private commitClickSelection(input: PointerInput, ctx: ToolContext): boolean {
     const hit = ctx.pick(input.world)
-
-    if (!hit) {
-      if (!input.shiftKey) ctx.selection.clear()
-      return
-    }
-
-    if (input.shiftKey) {
-      ctx.selection.toggle(hit.id)
-    } else {
-      ctx.selection.set([hit.id])
-    }
+    if (!hit) return false
+    if (input.shiftKey) ctx.selection.remove(hit.id)
+    else ctx.selection.add(hit.id)
+    return true
   }
 
   /** Makes an endpoint grip hot and opens the lengthen dynamic input. */

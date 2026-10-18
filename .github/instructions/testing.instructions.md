@@ -67,7 +67,9 @@ moves or rewords text must leave both untouched; update them (`-u`) only when th
 to change, and read the diff.
 
 Known harness behaviours worth remembering: grips are hit before click-selection (a shift-click
-meant to toggle must avoid the entity's own grip positions). A notable point is offered from
+meant to remove must avoid the entity's own grip positions). With no command, picks add to the
+selection (PICKADD 2) and a click on nothing starts a window the next click closes — so empty
+the set with `escape()`, never a click on empty space. A notable point is offered from
 anywhere over its object, so with snapping on a click _on_ a line lands on its nearer endpoint:
 aim off the object, or turn the competing snap off, when the raw point matters. Extension and
 OTRACK need a dwell to acquire: `vi.useFakeTimers()`, `moveTo` the point,
