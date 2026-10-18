@@ -53,14 +53,20 @@ DOM); Next.js/React es solo la capa de presentación. Las reglas de trabajo est�
 
 ### Qué no está en git y hay que copiar a mano
 
-- **`.playwright-mcp/`**: capturas y material de investigación sobre AutoCAD (`research/`, `help/`),
-  como volcados de la ayuda de Autodesk y tablas en español. No se regenera.
-- **La memoria de Claude Code** de este proyecto, en
-  `C:\Users\<usuario>\.claude\projects\<ruta-del-proyecto>\memory\`. El nombre de esa carpeta sale
-  de la ruta del proyecto, con `\` y `:` cambiados por `-`. Por ejemplo,
-  `C:\Users\oveli\Desktop\mellowcad` da `c--Users-oveli-Desktop-mellowcad`. Si el proyecto cambia
-  de ruta, abre Claude Code una vez en la ruta nueva para que cree su carpeta, y copia dentro el
-  contenido de `memory\`.
+- **`research/`**: las tablas de textos de AutoCAD en inglés y en español, con las que se
+  comprueba la redacción de cada mensaje. Son textos de Autodesk, por eso no van en git. Cómo se
+  usan está en
+  [.github/instructions/autocad-research.instructions.md](.github/instructions/autocad-research.instructions.md).
+- **`.playwright-mcp/`**: capturas y material de investigación de sesiones anteriores (`research/`,
+  `help/`), como volcados de la ayuda de Autodesk. No se regenera.
+
+Todo lo que el proyecto necesita para seguir está dentro de esta carpeta. No hace falta conservar
+la memoria de Claude Code (`C:\Users\<usuario>\.claude\`): sus reglas se pasaron a `AGENTS.md` y a
+`.github/instructions/`.
+
+Para comprobar comportamientos con la consola de AutoCAD (`scripts/research/runacc.sh`), hay que
+tener AutoCAD instalado. Se usaba AutoCAD 2023 en inglés. Si se instala otra versión, se indica su
+ruta en la variable `ACCORE`.
 
 ### Qué se regenera solo (no hace falta copiarlo)
 

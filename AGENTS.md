@@ -99,6 +99,19 @@ and what each option does must be the ones they already know.
   `geometry/` are correct notation.
 - Do not add features, options or abstractions that were not asked for. This codebase grows one
   AutoCAD command at a time, each fully finished.
+- **Decide, don't ask.** The owner does not answer technical, design or product questions: take
+  the most standard option by current conventions, note why in one line, and go on. Never end a
+  plan with "open decisions". This does not cover destructive or outward-facing actions (deleting
+  data, publishing, spending): take the conservative path, and still confirm when it cannot be
+  avoided.
+- **Several sessions may work in this tree at once.** Stage only your own files or hunks. The hook
+  checks the whole tree, so when someone else's change turns it red, verify yours in a clean
+  worktree and commit once the tree is green.
+- **Windows working copy:** git checks files out with CRLF, so a scripted replace whose search
+  string holds `\n` silently misses. Use the Edit tool, or normalise first. PowerShell 5.1 reads
+  UTF-8 without a BOM as ANSI and writes one with `-Encoding utf8`, so edit text through node
+  instead. Commit with `git commit -F <file>`, because PowerShell splits a here-string at its
+  quotes.
 
 ## Where the details live
 
@@ -110,6 +123,8 @@ and what each option does must be the ones they already know.
 - `cad/README.md` — the engine's public contract for whoever integrates it: entry points,
   languages, versioning. Keep it true when that contract changes.
 - `docs/next-*.md` — the brief for the next feature, when one has been agreed; deleted once it ships.
+- `scripts/research/` and `research/` (gitignored) — AutoCAD's console runner and its string
+  tables, for checking a behaviour before building it; how in `autocad-research.instructions.md`.
 
 ## Finishing a feature
 

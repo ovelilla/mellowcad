@@ -116,8 +116,17 @@ Only for what the harness cannot see: canvas rendering, DOM, theming, CSS. If yo
   its own units, scales and layers, so a result is impossible to attribute and the values a
   feature should be judged on (DIMSCALE, LTSCALE, layer colours) are not the defaults.
 - **Back up `localStorage` before seeding.** Copy `easycad:autosave:v1` to a `__…_backup` key and
-  restore it afterwards — that key holds the user's drawing.
+  restore it afterwards — that key holds the user's drawing. To start `/draw` with a given drawing,
+  write `{type:"easycad-drawing",version:3,layers,currentLayerId,entities}` there and reload: the
+  reader is tolerant, so an old version is enough. `browser.newPage()` gives each page its own
+  storage.
 - Check the dev-server port first (it hops to 3001), and remember `localStorage` is per-origin.
+  Port 3000 may be another project's server: read the listening process's command line before
+  trusting it. Start your own with `npx next dev -p 3005`, and a production build with
+  `npm run build` + `npx next start -p 3006`.
+- The command line takes command names only. Coordinates go into the dynamic input, which needs
+  the cursor moved onto the canvas first (`#x,y` for absolute: a point typed at a second-point
+  prompt is relative).
 - Scope dynamic-input typing to `[data-dynamic-input] input`; a bare `querySelector("input")`
   matches the hidden file input.
 - A typed length takes its direction from the cursor, as AutoCAD's direct distance entry does:
@@ -185,3 +194,32 @@ Only for what the harness cannot see: canvas rendering, DOM, theming, CSS. If yo
   dynamic-input box), the browser dialogs a shortcut must suppress, and an async host call that
   never settles are all invisible to the headless runtime — the clipboard shipped a hang that 31
   green harness tests could not see. Drive those with real keys on a real page.
+
+## Browser tooling on Windows
+
+- Install `playwright-core` (and `lighthouse`, `axe-core`) in a scratch directory, never in the
+  project, and launch the installed Chrome with `chromium.launch({ channel: "chrome" })`: no
+  browser download is needed. Lighthouse needs
+  `CHROME_PATH="C:/Program Files/Google/Chrome/Application/chrome.exe"`.
+- Run Vitest from PowerShell (`C:\…`), not Git Bash (`/c/…`). With the lowercase drive Vitest
+  loads every file twice, under two path casings, and each one fails with "Vitest failed to find
+  the current suite".
+- In Git Bash, set `MSYS_NO_PATHCONV=1` before passing a URL path like `/draw` to node or curl, or
+  it is rewritten to `C:/Program Files/Git/draw`.
+- Next keeps dev output in `.next/dev`, which `next build` leaves alone, so a running dev server
+  survives a build; a running `next start` on the same `.next` must be stopped first. Stopping a
+  background `next start` task does not kill its node process. That process keeps the port and
+  serves a `.next` rebuilt under it, so every chunk 404s. Free the port by its owner:
+  `Get-NetTCPConnection -LocalPort 3006 -State Listen | % { Stop-Process -Id $_.OwningProcess -Force }`.
+  Never leave a shell's working directory inside `.next` (EBUSY on the next build).
+- **Never judge a performance regression against a number from an earlier session.** Lighthouse
+  mobile on `/` flips between 94 and 95 run to run. Build the old commit in a worktree
+  (`git worktree add ../mellowcad-a <sha>`, `npm ci`, `next start -p 3007`), run both a few
+  times, then `git worktree remove --force`. Best Practices reads 96 locally only because Vercel
+  Analytics' scripts 404 off Vercel.
+- To build uncommitted work without touching `.next`: `git worktree add --detach ../x HEAD`, then
+  `robocopy . ../x //MIR //XD node_modules .next coverage .git //XF .git tsconfig.tsbuildinfo`
+  (exit < 8 is success). `/XF .git` matters: without it the source's `.git` directory is copied
+  over the worktree's `.git` link file and the copy becomes a separate repository.
+- `content-visibility: auto` sections render blank in a full-page screenshot: take viewport shots
+  while scrolling.
