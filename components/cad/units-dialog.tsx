@@ -119,43 +119,45 @@ function UnitsForm({
         <legend className="mb-1 text-title text-muted-foreground">
           {t("length")}
         </legend>
-        <Row label={t("type")}>
-          <Select items={{ decimal: t("decimal") }} value="decimal" disabled>
-            <SelectTrigger aria-label={t("type")} className="w-36">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="decimal">{t("decimal")}</SelectItem>
-            </SelectContent>
-          </Select>
-        </Row>
-        <Row label={t("precision")}>
-          <Select
-            items={precisions}
-            value={String(precision)}
-            onValueChange={(value) => {
-              if (value != null) setPrecision(Number(value))
-            }}
-          >
-            <SelectTrigger
-              aria-label={t("precision")}
-              className="w-36 font-mono"
+        <div className="flex flex-col gap-1">
+          <Row label={t("type")}>
+            <Select items={{ decimal: t("decimal") }} value="decimal" disabled>
+              <SelectTrigger aria-label={t("type")} className="w-36">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="decimal">{t("decimal")}</SelectItem>
+              </SelectContent>
+            </Select>
+          </Row>
+          <Row label={t("precision")}>
+            <Select
+              items={precisions}
+              value={String(precision)}
+              onValueChange={(value) => {
+                if (value != null) setPrecision(Number(value))
+              }}
             >
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              {PRECISIONS.map((label, places) => (
-                <SelectItem
-                  key={label}
-                  value={String(places)}
-                  className="font-mono"
-                >
-                  {label}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </Row>
+              <SelectTrigger
+                aria-label={t("precision")}
+                className="w-36 font-mono"
+              >
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {PRECISIONS.map((label, places) => (
+                  <SelectItem
+                    key={label}
+                    value={String(places)}
+                    className="font-mono"
+                  >
+                    {label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </Row>
+        </div>
       </fieldset>
 
       <fieldset className="mt-3">
@@ -221,7 +223,7 @@ function Row({
   children: React.ReactNode
 }) {
   return (
-    <div className="flex h-7 items-center justify-between gap-3">
+    <div className="flex items-center justify-between gap-3">
       <span className="text-muted-foreground">{label}</span>
       {children}
     </div>
