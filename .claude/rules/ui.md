@@ -9,7 +9,7 @@ paths:
 # UI layer (the editor, `/draw`)
 
 > Verified against **@base-ui/react 1.7.0**, **next-intl 4.14.9**, **tailwind-merge 3.7.0**,
-> **lucide-react 1.34.0**.
+> **lucide-react 1.59.0**.
 
 React is a **dumb presentation shell**. Components read `EngineState` and call `CadEngine`
 methods; they never contain CAD logic, geometry or drawing decisions. Import from `@/cad` only.
