@@ -10,34 +10,25 @@ The rules these steps serve are in `cad-engine.md` (modelling, dimensions, style
 
 ## An entity type
 
-**The compiler points at** the exhaustive `switch (entity.type)` with no `default:`: the `assign*`
-in `entityOverrides.ts`; translate, stretch, copy, rotate, scale, mirror (and the `*Copy`) in
-`entityTransforms.ts`; `closestOnEntity`, `entityBounds`, `entityCrossesRect`;
-`applyEntityProperty`; `cloneEntityShape` in `drawingFile.ts`; `planarPrimitives` in
-`SceneBuilder.ts`; `singleEntityInfo`; and the editing tools' plans (`computeBreak`, `planTrim` /
-`planExtend`, `OffsetTool`, `DimensionTool`, `implicitEdges` in `curveCrossings.ts`). A type they
-cannot act on returns `null` explicitly rather than falling through.
+**The compiler points at every `switch (entity.type)`**: each names all the types, and one with a
+fallback ends in `const unhandled: never`, so a new type fails to compile in each — the transforms,
+overrides and queries, `applyEntityProperty`, `cloneEntityShape`, `planarPrimitives`,
+`singleEntityInfo`, the editing tools' plans, and the switches that answer "nothing" for most types
+(`objectArea`, `hatchLoopFromEntity`, `collectCurves`, `clipboardSnapshot`, `usesTextStyle`,
+`selectedGrips`, `continuePoint`, UCS OBject in `ucsObjects.ts`). Place the type in each; never add
+a `default:` that answers for the types it does not name.
 
-**The compiler does not see** a `switch` with a `default:` or one that lists only some types. Go
-through each and decide:
+**A test points at the file**: `ENTITY_TYPES` in `cad/serialization/drawingFile.test.ts` fails to
+compile until the type is listed, then fails until the `entity` arbitrary in `test/arbitraries.ts`
+generates it, and the round trip fails until `parseEntityShape` reads it (its `default:` must stay:
+the file is untrusted). Bump `DRAWING_FILE_VERSION`. The Z fields come through `planeOf` /
+`parsePlane`; thickness only if DXF gives the type one (then `hasThickness`).
 
-- `cad/serialization/drawingFile.ts`: `parseEntityShape` (its `default:` drops the type from every
-  file) and a `DRAWING_FILE_VERSION` bump. The Z fields come through `planeOf` / `parsePlane`;
-  thickness only if DXF gives the type one (then `hasThickness`).
-- `cad/application/tools/ucsObjects.ts`: UCS OBject's four switches (alignment, `hasEnds`,
-  `planarEnd`, `unpickedStart`).
-- `cad/domain/objectArea.ts`: whether AREA and LIST give it an area.
-- `cad/application/clipboard.ts`: `clipboardSnapshot`, the table entries the type references (a
-  pasted object loses its style otherwise).
-- `cad/domain/boundary.ts` (`collectCurves`), `cad/domain/hatch.ts` (`hatchLoopFromEntity`), the
-  stretch vertices in `entityTransforms.ts`, `cad/application/tools/selectToolGrips.ts`
-  (`selectedGrips`), `cad/application/tools/lastDrawnPoint.ts`, and the per-tool filters
-  (`cannotBreak` and `BROKEN` in `BreakTool.ts`, `TRIMMED` in `EdgeEditTool.ts`,
-  `BOUNDARY_TYPES` in `HatchTool.ts`, `RadialDimensionTool.ts`, `cornerObjects.ts`).
-- A type that wears a **text style** (text, mtext, attdef, a reference's attributes): also
-  `assignTextStyle`, `CadDocument.textStyleInUse` (its `usesTextStyle` has a `default:`) and
-  `reconcile`, `setSelectionTextStyle` and `EngineState`'s `hasStyleOf`. Miss one and a style in
-  use can be deleted.
+**Neither sees** the subsets by design; decide for each: `TRIMMED` in `EdgeEditTool.ts`, `BROKEN` in
+`BreakTool.ts`, `BOUNDARY_TYPES` in `HatchTool.ts`, `PLANE_ROWS` in `entityProperties.ts`,
+`hasThickness`. A type that wears a **text style** (text, mtext, attdef, a reference's attributes)
+also owes the type tests in `assignTextStyle`, `reconcile`, `setSelectionTextStyle` and
+`EngineState`'s `hasStyleOf`: miss one and a style in use can be deleted.
 
 Then the parts that are no switch at all:
 
@@ -48,8 +39,6 @@ Then the parts that are no switch at all:
   the cursor only (`collectShapes`'s `near`), tagged with `curveId` so its own chords never meet.
 - The type's name in `interface.entity` and its rows in `interface.property` (`cad/locales/en.json`,
   then `npm run locales`).
-- The fast-check `entity` arbitrary in `test/arbitraries.ts` must generate it, or every transform,
-  bounds and round-trip property silently stops covering it.
 
 ## A dimension kind
 

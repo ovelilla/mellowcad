@@ -457,8 +457,17 @@ function cannotBreak(entity: Entity): MessageId | null {
     case "dimension":
     case "hatch":
       return "objectCannotBeBroken"
-    default:
+    case "line":
+    case "circle":
+    case "arc":
+    case "ellipse":
+    case "spline":
+    case "polyline":
       return null
+    default: {
+      const unhandled: never = entity
+      return unhandled
+    }
   }
 }
 

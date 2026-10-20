@@ -20,8 +20,11 @@ import {
   DEFAULT_HATCH_PATTERN_ID,
   DEFAULT_HATCH_SCALE,
 } from "../domain/hatchPatterns"
-import { createDimension, createHatch } from "../domain/entities"
-import { drawingSnapshot } from "../../test/arbitraries"
+import { Entity, createDimension, createHatch } from "../domain/entities"
+import {
+  drawingSnapshot,
+  entity as entityArbitrary,
+} from "../../test/arbitraries"
 import {
   arcOf,
   circleOf,
@@ -389,6 +392,31 @@ describe("round trip", () => {
         const twice = serializeDrawing(parseDrawingFile(once))
         expect(twice).toBe(once)
       })
+    )
+  })
+
+  it("is fed every entity type, so the round trip reaches each reader", () => {
+    // A new member of `Entity` fails to compile here until it is listed, and
+    // the sample then fails until the arbitrary generates it — which is what
+    // puts the type through the writer and the reader above: the reader
+    // drops a type it does not know without a word.
+    const ENTITY_TYPES = {
+      line: true,
+      circle: true,
+      arc: true,
+      ellipse: true,
+      spline: true,
+      polyline: true,
+      text: true,
+      mtext: true,
+      attdef: true,
+      dimension: true,
+      hatch: true,
+      insert: true,
+    } satisfies Record<Entity["type"], true>
+    const sampled = fc.sample(entityArbitrary, { numRuns: 1000, seed: 1 })
+    expect(new Set(sampled.map((e) => e.type))).toEqual(
+      new Set(Object.keys(ENTITY_TYPES))
     )
   })
 })

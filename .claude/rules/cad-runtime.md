@@ -25,7 +25,7 @@ sibling. **A sibling takes the collaborators it needs (`document`, `selection`, 
 never the runtime**; wanting many private fields means the code belongs in the class.
 `registerCommands` is the one exception (a command _is_ a call into the public API): it receives the
 runtime plus `startTool` and `registerCommand`, and imports `CadRuntime` as a **type only**, so no
-import cycle exists at runtime.
+import cycle exists at runtime (`cad/entryPoints.test.ts` fails on a value import from any sibling).
 
 `drawingPreview.ts` is the one way to draw objects **without** the editor: `buildDrawingPreview`
 frames a drawing with every aid off, and parts of one drawing share a camera by default so they
@@ -305,7 +305,8 @@ a `scope`, a capture `pointerdown` and a `focusin`.
   target. It is always prevented over the editor but in editable fields.
 
 **A shortcut belongs in `CadRuntime.keyDown`, never in a React `useEffect`**: a second
-document-level listener bypasses the routing order and cannot `preventDefault` in step with it.
+document-level listener bypasses the routing order and cannot `preventDefault` in step with it
+(ESLint fails on a `keydown` / `keyup` listener in `components/`, `app/` or `hooks/`).
 
 ### Embedding (`CadEngineOptions`)
 

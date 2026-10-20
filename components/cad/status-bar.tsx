@@ -41,22 +41,6 @@ import { IconAction } from "./toolbar-primitives"
 import { DecimalInput } from "./decimal-input"
 import { LineweightIcon, SelectionCyclingIcon, SnapModeIcon } from "./icons"
 
-/** Snap types wired to a working provider today. The rest are shown disabled. */
-const IMPLEMENTED_SNAPS = new Set<SnapType>([
-  SnapType.Endpoint,
-  SnapType.Midpoint,
-  SnapType.Center,
-  SnapType.Intersection,
-  SnapType.ApparentIntersection,
-  SnapType.Perpendicular,
-  SnapType.Tangent,
-  SnapType.Insertion,
-  SnapType.Extension,
-  SnapType.Parallel,
-  SnapType.Quadrant,
-  SnapType.Nearest,
-])
-
 /** POLARANG's increments, as the help lists them. */
 const POLAR_ANGLES: readonly number[] = [90, 60, 45, 30, 22.5, 18, 15, 10, 5]
 
@@ -207,20 +191,18 @@ export function StatusBar({
             onToggle={() => engine.toggleSnap()}
           >
             {(Object.values(SnapType) as SnapType[]).map((type) => {
-              const implemented = IMPLEMENTED_SNAPS.has(type)
               const name = state.names.snaps[type]
               return (
                 <Menu.CheckboxItem
                   key={type}
-                  checked={implemented && state.snapEnabled[type]}
-                  disabled={!implemented}
+                  checked={state.snapEnabled[type]}
                   closeOnClick={false}
                   onCheckedChange={(checked) =>
                     engine.setSnapEnabled(type, checked)
                   }
                   className={MENU_ITEM}
                 >
-                  {implemented ? name : t("comingSoon", { name })}
+                  {name}
                   <Menu.CheckboxItemIndicator>
                     {CHECK}
                   </Menu.CheckboxItemIndicator>

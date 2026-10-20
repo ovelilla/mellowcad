@@ -383,8 +383,20 @@ function measuredCircle(entity: Entity, at: Vec2): MeasuredCircle | null {
       }
       return best
     }
-    default:
+    case "line":
+    case "ellipse":
+    case "spline":
+    case "text":
+    case "mtext":
+    case "attdef":
+    case "dimension":
+    case "hatch":
+    case "insert":
       return null
+    default: {
+      const unhandled: never = entity
+      return unhandled
+    }
   }
 }
 

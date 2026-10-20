@@ -338,8 +338,20 @@ function middleOf(entity: Entity): Vec2 | null {
       )
     case "circle":
       return polarPoint(entity.center, entity.radius, Math.PI)
-    default:
+    case "ellipse":
+    case "spline":
+    case "polyline":
+    case "text":
+    case "mtext":
+    case "attdef":
+    case "dimension":
+    case "hatch":
+    case "insert":
       return null
+    default: {
+      const unhandled: never = entity
+      return unhandled
+    }
   }
 }
 

@@ -195,6 +195,12 @@ export function selectedGrips(ctx: ToolContext): Grip[] {
           world: entity.position,
         })
         break
+      case "attdef":
+        break
+      default: {
+        const unhandled: never = entity
+        void unhandled
+      }
     }
   }
   const lifted: Grip[] = []

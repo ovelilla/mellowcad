@@ -1,8 +1,8 @@
 # Capa de conocimiento para agentes — plan
 
-> **Estado:** KL-D1 a KL-D5 cerradas con la recomendación el 2026-10-20; bloques 1 a 4 hechos.
-> Quedan el 5 (el error como canal) y el 6 (KL-D5 y medición final). Se borra cuando esté hecho
-> (convención de `docs/next-*.md`); el detalle queda en git.
+> **Estado:** KL-D1 a KL-D5 cerradas con la recomendación el 2026-10-20; bloques 1 a 5 hechos y
+> `AGENTS.md` reescrito. Queda KL-D5 (el listado de `.playwright-mcp/`, pendiente del visto bueno del
+> usuario). Se borra cuando esté hecho (convención de `docs/next-*.md`); el detalle queda en git.
 
 Auditoría del 2026-10-20 de cómo llega el conocimiento del repo a los agentes (Claude Code y Copilot):
 `AGENTS.md`, `.github/instructions/`, `docs/`, `cad/README.md`, el enforcement y el entorno. Modelo

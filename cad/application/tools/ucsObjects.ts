@@ -132,8 +132,14 @@ function levelUcsFromObject(entity: Entity, pick: Vec2): Ucs | null {
         withZ(entity.position, entityZAt(entity, entity.position)),
         polarPoint({ x: 0, y: 0 }, 1, entity.rotation)
       )
-    default:
+    case "line":
+    case "dimension":
+    case "hatch":
       return null
+    default: {
+      const unhandled: never = entity
+      return unhandled
+    }
   }
 }
 
@@ -168,8 +174,18 @@ export function hasEnds(entity: Entity | null): entity is Entity {
     case "polyline":
     case "spline":
       return !entity.closed
-    default:
+    case "circle":
+    case "text":
+    case "mtext":
+    case "attdef":
+    case "dimension":
+    case "hatch":
+    case "insert":
       return false
+    default: {
+      const unhandled: never = entity
+      return unhandled
+    }
   }
 }
 
@@ -269,8 +285,19 @@ function planarEnd(entity: Entity, pick: Vec2): PlanarEnd | null {
         }
       )
     }
-    default:
+    case "line":
+    case "circle":
+    case "text":
+    case "mtext":
+    case "attdef":
+    case "dimension":
+    case "hatch":
+    case "insert":
       return null
+    default: {
+      const unhandled: never = entity
+      return unhandled
+    }
   }
 }
 
@@ -308,7 +335,16 @@ export function unpickedStart(entity: Entity): Vec2 | Vec3 {
       return entity.vertices[0]
     case "spline":
       return splinePolyline(entity)[0]
-    default:
+    case "text":
+    case "mtext":
+    case "attdef":
+    case "dimension":
+    case "hatch":
+    case "insert":
       return { x: 0, y: 0 }
+    default: {
+      const unhandled: never = entity
+      return unhandled
+    }
   }
 }

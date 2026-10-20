@@ -377,8 +377,18 @@ function stretchVertices(entity: Entity): readonly Vec2[] {
         : [entity.first, entity.second]
     case "hatch":
       return entity.loops.flatMap((loop) => loop.vertices)
-    default:
+    case "circle":
+    case "arc":
+    case "ellipse":
+    case "text":
+    case "mtext":
+    case "attdef":
+    case "insert":
       return []
+    default: {
+      const unhandled: never = entity
+      return unhandled
+    }
   }
 }
 
@@ -397,8 +407,16 @@ function stretchAnchors(entity: Entity): readonly Vec2[] {
     case "attdef":
     case "insert":
       return [entity.position]
-    default:
+    case "line":
+    case "polyline":
+    case "spline":
+    case "dimension":
+    case "hatch":
       return stretchVertices(entity)
+    default: {
+      const unhandled: never = entity
+      return unhandled
+    }
   }
 }
 

@@ -78,6 +78,9 @@ export default async function MarketingLayout({
 }>) {
   const locale = await getLocale()
   const common = await getTranslations("Common")
+  // The drawings' colours, written from the engine's own THEME so the
+  // figures and the editor can never drift apart.
+  const themeStyle = `:root{${themeCustomProperties()}}`
   return (
     <html
       lang={locale}
@@ -90,9 +93,7 @@ export default async function MarketingLayout({
       })}
     >
       <head>
-        {/* The drawings' colours, written from the engine's own THEME so the
-            figures and the editor can never drift apart. */}
-        <style>{`:root{${themeCustomProperties()}}`}</style>
+        <style>{themeStyle}</style>
         <style>{VIEW_TRANSITION_OPT_IN}</style>
       </head>
       <body>

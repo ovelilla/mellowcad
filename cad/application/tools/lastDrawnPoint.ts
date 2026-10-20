@@ -56,6 +56,20 @@ export function continuePoint(document: DocumentReader): ContinuePoint | null {
           ),
           tangent: null,
         }
+      case "circle":
+      case "ellipse":
+      case "spline":
+      case "text":
+      case "mtext":
+      case "attdef":
+      case "dimension":
+      case "hatch":
+      case "insert":
+        break
+      default: {
+        const unhandled: never = entity
+        void unhandled
+      }
     }
   }
   return null
@@ -88,6 +102,20 @@ export function lastDrawnDirection(document: DocumentReader): Vec2 | null {
           vertices[(last + 1) % n],
           entity.bulges?.[last] ?? 0
         )
+      }
+      case "circle":
+      case "ellipse":
+      case "spline":
+      case "text":
+      case "mtext":
+      case "attdef":
+      case "dimension":
+      case "hatch":
+      case "insert":
+        break
+      default: {
+        const unhandled: never = entity
+        void unhandled
       }
     }
   }

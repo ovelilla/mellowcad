@@ -50,8 +50,8 @@ prefixed (`/es/draw`). Texts live in `messages/` (next-intl) and `cad/locales/` 
 
 ## Non-negotiable invariants
 
-- **`cad/` outside `adapters/` is DOM-free.** No `window`, `document`, `canvas`, `HTMLElement`.
-  A test that suddenly needs jsdom means a layering rule was broken.
+- **`cad/` outside `adapters/` is DOM-free.** No `window`, `document`, `canvas`, `HTMLElement`
+  (ESLint). A test that suddenly needs jsdom means a layering rule was broken.
 - **`cad/` is visually agnostic.** Tools and the scene builder emit `ScenePrimitive[]`;
   only the presenters touch a canvas or SVG.
 - **Every entity mutation goes through a `Command`** executed via `ctx.execute(...)` /

@@ -66,6 +66,18 @@ export function clipboardSnapshot(
           visit(block.entities, depth + 1)
           break
         }
+        case "line":
+        case "circle":
+        case "arc":
+        case "ellipse":
+        case "spline":
+        case "polyline":
+        case "hatch":
+          break
+        default: {
+          const unhandled: never = entity
+          void unhandled
+        }
       }
     }
   }

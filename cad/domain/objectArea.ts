@@ -62,8 +62,18 @@ export function objectArea(entity: Entity): ObjectArea | null {
         around: entity.loops.reduce((sum, loop) => sum + loopLength(loop), 0),
         measured: "perimeter",
       }
-    default:
+    case "line":
+    case "arc":
+    case "text":
+    case "mtext":
+    case "attdef":
+    case "dimension":
+    case "insert":
       return null
+    default: {
+      const unhandled: never = entity
+      return unhandled
+    }
   }
 }
 

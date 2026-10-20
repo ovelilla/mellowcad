@@ -75,7 +75,7 @@ a second layout. This file owns the rule for the landing too.
   `left`/`top`.
 - **A technical value in a palette is an island with `text-end`**, so `-12.5` never reads `12.5-`.
   A typeable one is an island with its unit, or the unit lands before the number. A numeric field
-  is `DecimalInput` (text, `inputMode="decimal"`, arrows step it), never `type="number"`: Chrome
+  is `DecimalInput` (text, `inputMode="decimal"`, arrows step it), never `type="number"` (ESLint): Chrome
   writes one in the browser's language (`3,75`) whatever the page's `lang`.
 - **Icons**: `mirrored` on `IconAction` (elsewhere `rtl:-scale-x-100`) for linear direction or time
   — undo, redo, zoom previous, send, open outside. Never a rotation (orbit, the cube's roll) or a

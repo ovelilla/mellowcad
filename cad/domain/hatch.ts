@@ -33,8 +33,21 @@ export function hatchLoopFromEntity(entity: Entity): HatchLoop | null {
         vertices: entity.vertices.map((v) => ({ x: v.x, y: v.y })),
         ...(entity.bulges ? { bulges: entity.bulges.slice() } : {}),
       }
-    default:
+    case "line":
+    case "arc":
+    case "ellipse":
+    case "spline":
+    case "text":
+    case "mtext":
+    case "attdef":
+    case "dimension":
+    case "hatch":
+    case "insert":
       return null
+    default: {
+      const unhandled: never = entity
+      return unhandled
+    }
   }
 }
 

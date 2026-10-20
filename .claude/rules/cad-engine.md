@@ -24,7 +24,8 @@ Adding an entity type, a dimension kind, a property, a style table or a snap typ
 | `application/`   | `geometry/`, `domain/`, `scene/`, `serialization/`, `shared/`, `i18n/`, `locales/`    |
 | `adapters/`      | everything (the only browser-aware layer)                                             |
 
-Tests may also reach `test/` and `scripts/`. `cad/index.ts` and the language modules
+`cad/entryPoints.test.ts` checks the table and the packages for product code; tests may import
+any layer, `test/` and `scripts/`. `cad/index.ts` and the language modules
 `cad/locales/<tag>` are the public entry points (tomorrow the package's `exports`): anything React
 or the landing needs is exported there, and nothing outside `cad/` imports a deep path, not even
 `cad/locales/types` (`cad/entryPoints.test.ts` fails on one). `cad/README.md` is what an integrator
@@ -62,7 +63,7 @@ capability the app has belongs to the engine, behind a port; only the _mechanism
   helpers return new objects and either keep the id (in-place edit) or mint one (`*Copy` helpers).
 - Angles are **radians CCW from +X** in `geometry/` and `domain/`; degrees only at the UI boundary.
   Normalise with `normalizeAngle` / `normalizeDegrees` (`geometry/primitives`): a hand-rolled
-  `deg < 0 ? deg + 360 : deg` lands a tiny negative angle on exactly 360.
+  `deg < 0 ? deg + 360 : deg` lands a tiny negative angle on exactly 360 (ESLint fails on it).
 - `ArcEntity` is **always CCW from `startAngle` to `endAngle`**: a transform that reverses
   orientation (mirror) reflects _and swaps_ the angles.
 - Polyline `bulges[i]` is AutoCAD's `tan(θ/4)` for segment `i`; mirroring negates them.

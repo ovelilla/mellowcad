@@ -1193,8 +1193,19 @@ function prolonged(edge: Entity, reach: number): Entity[] {
             : ray(g.b, V.sub(g.b, g.a))
       return [edge, ...end(first, true), ...end(last, false)]
     }
-    default:
+    case "circle":
+    case "spline":
+    case "text":
+    case "mtext":
+    case "attdef":
+    case "dimension":
+    case "hatch":
+    case "insert":
       return [edge]
+    default: {
+      const unhandled: never = edge
+      return unhandled
+    }
   }
 }
 
@@ -1371,8 +1382,16 @@ function extendRefusal(
         : null
     case "dimension":
       return { message: "pathDoesNotIntersectBoundingEdge", counts: false }
-    default:
+    case "text":
+    case "mtext":
+    case "attdef":
+    case "hatch":
+    case "insert":
       return null
+    default: {
+      const unhandled: never = target
+      return unhandled
+    }
   }
 }
 

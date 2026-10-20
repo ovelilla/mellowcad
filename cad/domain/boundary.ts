@@ -189,8 +189,19 @@ function collectCurves(entities: readonly Entity[]): Curve[] | null {
           }
         }
         break
-      default:
+      case "ellipse":
+      case "spline":
+      case "text":
+      case "mtext":
+      case "attdef":
+      case "dimension":
+      case "hatch":
+      case "insert":
         break
+      default: {
+        const unhandled: never = entity
+        void unhandled
+      }
     }
     if (curves.length > MAX_BOUNDARY_CURVES) return null
   }

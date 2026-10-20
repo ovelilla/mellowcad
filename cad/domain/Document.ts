@@ -657,7 +657,18 @@ function usesTextStyle(entity: Entity, id: TextStyleId): boolean {
       return entity.styleId === id
     case "insert":
       return (entity.attributes ?? []).some((a) => a.styleId === id)
-    default:
+    case "line":
+    case "circle":
+    case "arc":
+    case "ellipse":
+    case "spline":
+    case "polyline":
+    case "dimension":
+    case "hatch":
       return false
+    default: {
+      const unhandled: never = entity
+      return unhandled
+    }
   }
 }
