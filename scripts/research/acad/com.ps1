@@ -55,7 +55,8 @@ switch ($op) {
     $f = ProbeFile "hist.txt"
     $n = if ($a1) { $a1 } else { "40" }
     Send "MPHIST $n $f\n"
-    Get-Content $f -Encoding UTF8
+    # AutoCAD hands the history newest first.
+    $lines = @(Get-Content $f -Encoding UTF8); [array]::Reverse($lines); $lines
   }
   "dump" { $f = ProbeFile "dump.jsonl"; Send "MPDUMP $f\n"; Get-Content $f -Encoding UTF8 }
   "close" { $name = $doc.Name; $doc.Close($false); "closed $name without saving" }
