@@ -1,6 +1,9 @@
 # shot.ps1 [hwnd] [crop] : captures a window (default: AutoCAD's main window) to a PNG and prints
 # its path. PrintWindow sees the window even when it is covered. crop is "x,y,w,h" in window
-# pixels; a negative x or y counts from the right or bottom edge.
+# pixels; a negative x or y counts from the right or bottom edge. `-hwnd -1` (named: a bare -1 reads
+# as a switch) captures the screen
+# itself (crop then in screen pixels, required): what PrintWindow misses — tooltips, the snap
+# marker's tip, shortcut menus, a floating command line, the cursor's own drawing.
 param([long]$hwnd = 0, [string]$crop = "", [string]$out = "")
 Add-Type -AssemblyName System.Drawing
 Add-Type @"
@@ -15,6 +18,14 @@ public static class S {
 [S]::SetProcessDPIAware() | Out-Null
 if ($hwnd -eq 0) { $hwnd = (Get-Process acad | Select-Object -First 1).MainWindowHandle }
 if (-not $out) { $dir = Join-Path $env:TEMP "mellowcad-acad"; New-Item -ItemType Directory -Force $dir | Out-Null; $out = Join-Path $dir ("shot-" + (Get-Date -Format "HHmmss-fff") + ".png") }
+if ($hwnd -eq -1) {
+  $c = $crop.Split(',') | ForEach-Object { [int]$_ }
+  $bmp = New-Object Drawing.Bitmap $c[2], $c[3]
+  $g = [Drawing.Graphics]::FromImage($bmp); $g.CopyFromScreen($c[0], $c[1], 0, 0, $bmp.Size); $g.Dispose()
+  $bmp.Save($out, [Drawing.Imaging.ImageFormat]::Png); $bmp.Dispose()
+  $out
+  return
+}
 $r = New-Object S+RECT; [S]::GetWindowRect([IntPtr]$hwnd, [ref]$r) | Out-Null
 $w = $r.R - $r.L; $h = $r.B - $r.T
 $bmp = New-Object Drawing.Bitmap $w, $h

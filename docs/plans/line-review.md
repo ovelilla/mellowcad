@@ -6,12 +6,12 @@
 
 ## 1. Summary
 
-| Severity | CAT | LIN | CLI | UND | PIN | OSN | TRK | DYN | CPR | EDT | FIL | RND | Total |
-| -------- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | ----- |
-| Critical | 0   | 0   | 0   | 0   | 0   | 0   | 0   | 0   | 0   | 0   | 0   | 0   | 0     |
-| High     | 0   | 2   | 0   | 0   | 0   | 2   | 1   | 0   | 0   | 1   | 0   | 1   | 7     |
-| Medium   | 0   | 5   | 0   | 1   | 4   | 6   | 1   | 1   | 0   | 2   | 0   | 2   | 22    |
-| Low      | 2   | 2   | 3   | 2   | 2   | 4   | 1   | 1   | 3   | 3   | 0   | 1   | 24    |
+| Severity | CAT | LIN | CLI | UND | PIN | OSN | TRK | DYN | CPR | EDT | FIL | RND | DSK | Total |
+| -------- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | ----- |
+| Critical | 0   | 0   | 0   | 0   | 0   | 0   | 0   | 0   | 0   | 0   | 0   | 0   | 0   | 0     |
+| High     | 0   | 2   | 0   | 0   | 0   | 2   | 1   | 0   | 0   | 1   | 0   | 1   | 0   | 7     |
+| Medium   | 0   | 5   | 0   | 1   | 4   | 6   | 1   | 1   | 0   | 2   | 0   | 2   | 2   | 24    |
+| Low      | 2   | 2   | 3   | 2   | 2   | 4   | 1   | 1   | 3   | 3   | 0   | 0   | 5   | 28    |
 
 No finding loses or corrupts a drawing: every mutation goes through a command, the file round-trips
 every property a line holds, and undo never drops objects. The seven highs are gestures an AutoCAD
@@ -23,7 +23,7 @@ user makes daily that end elsewhere here:
   instead of refusing (OSN-02); FROM with a base typed at the command line is skipped and stays
   pending (OSN-03); SNAP is a toggle of our own where AutoCAD asks the spacing (TRK-01).
 - **The object:** every linetype's dashes are invented rather than acadiso.lin's (RND-01), and a
-  line's end grip lengthens where AutoCAD's stretches (EDT-01, help only until a desktop probe).
+  line's end grip lengthens where AutoCAD's stretches (EDT-01, confirmed on the desktop).
 
 The catalog sweep against the 2027 tables found the update's rewording already handled: no
 catalog string is the release's language pack any more (DIMANGULAR was the one; DIMORDINATE is not
@@ -59,12 +59,12 @@ OSN-03 and TRK-01 (scratch tests and p36, p154, p158), RND-01 (`cad/domain/linet
 p202). OSN-01 was downgraded from high to medium (typing a coordinate after an override is a
 script idiom more than a gesture).
 
-**The desktop could not be driven by keys:** AutoCAD was in the foreground and `SendInput`
+**The desktop, first pass, could not be driven by keys:** AutoCAD was in the foreground and `SendInput`
 injected the keys, but the keyboard focus sat on an inner window and no key reached a prompt,
 Unicode or virtual (SetFocus from outside did not move it); a real click in the drawing area gives
 the focus, and that needs the owner's mouse. So the jig, dynamic input's tooltip, Escape and the
-right button, grips and the palette rest on Autodesk's help and are marked **unverified**, for the
-desktop block DSK (§12). COM's SendCommand still works for what is typed
+right button, grips and the palette rested on Autodesk's help. The owner then lent the mouse for
+block DSK (§4): a click in the drawing area gives the focus, and the keys and clicks reach AutoCAD. COM's SendCommand still works for what is typed
 at the command line (d02). A launched instance may open another language's profile with settings
 of its own (the second one had DYNMODE 3): read and restore per instance.
 
@@ -175,6 +175,7 @@ depth), run with `scripts/research/probe.sh line <ids>` in es-ES and en-US; desk
 | p206 / p207 | plot to PNG (es-ES / en-US): dashes laid along lines of 100, 20, 5; CELTSCALE 2; DASHDOT |
 | p208 | dead end: `dumpallproperties` is not defined in the console |
 | d02 | desktop, DYNMODE 3, typed at the command line through COM: `10,0` absolute, `#30,30` refused |
+| d03–d20 | desktop, Spanish profile, the owner's mouse (`dsk.sh`): picks, the rubber band, the snap marker, both shortcut menus, Escape, Ctrl+Z, F-keys, dynamic input, Ortho, Polar, OTRACK, the angle override, grips, the palette, a double-click, the wheel, the ribbon, the rollover (§4, DSK) |
 
 An INS override probe (TEXT then `_INS`) hung the console at TEXT's prompt and was dropped; INS's
 echo stays unverified.
@@ -384,6 +385,44 @@ tests pass); older files load (`drawingFile.test.ts:945`, `:804`). Untested: a l
 | Rubber band colour | **RND-04** (unverified) |
 | Both presenters' dashes | match for the mechanism · `SvgScenePresenter.test.ts:336`, `CanvasScenePresenter.test.ts:43` |
 
+### DSK — the desktop session
+
+2026-10-21, Spanish profile, with the owner's mouse (`scripts/research/probes/line/dsk.sh`, d03–d20;
+screenshots in `research/probes/line/`). It settles the help-only cells above and the rows the
+template gained after the first pass (matrix.md P and Q).
+
+| Row | Gesture | AutoCAD | mellowcad | State |
+| --- | --- | --- | --- | --- |
+| P | LINE from the rail | the ribbon's Line runs `_line`, written `Comando: _line` (d19) | writes nothing | **DSK-05** |
+| P | points picked, aids off | land where clicked (d03) | `LineTool.test.ts:19` | match |
+| P, Q | the rubber band | a solid line in the colour the object will wear: red with CECOLOR 1 (d04) | `THEME.rubberBand`, fixed | **DSK-01** |
+| P, D | a running Endpoint under the cursor | green square marker, the crosshair jumps onto the point, tooltip `Punto final` below and right (d05) | the crosshair jumps (`snapping.test.ts`); marker and tooltip look | **DSK-07** |
+| P | Shift+right button | the snap menu: TT, From, Mid Between 2 Points, Point Filters ▸, 3D Osnap ▸ · Endpoint, Midpoint, Intersection, Apparent Intersect, Extension · Center, Geometric Center, Quadrant, Tangent · Perpendicular, Parallel, Node, Insert, Nearest, None · Osnap Settings… (d06) | another order and no groups | **DSK-02** |
+| P | the right button at the next point | Intro, Cancelar, Entrada reciente ▸ · desHacer · Modificaciones de REFENT ▸ · Encuadre, Zoom, SteeringWheels · Calculadora rápida (d07) | order matches for what exists; es label | **DSK-03**; Pan, Zoom known |
+| G | Escape | segments kept; es `*Cancelado*` inside a command, `*Cancelar*` at `Comando:` (d08, d19) | `*Cancelar*` always | **DSK-04** |
+| F | Ctrl+Z inside LINE | answers `_u` at each prompt: a segment back, `Ya están anulados todos los segmentos.`, at the first point `Punto no válido.` and LINE stays (d09) | | UND-03 confirmed |
+| D | F3, F8, F9, F10, F11, F12 | es ` <Refent desactivado>`, ` <Orto activado>`, ` <Forzcursor activado>`, ` <Polar activado>`, ` <Rastreo de referencia a objetos desactivado>`; F12 writes nothing; F8 on turns Polar off (d10) | nothing written | TRK-03 widened |
+| D | the tooltip at the first point | `Precise primer punto:` and X, Y fields; `5,5` absolute (d11) | `dyn.test.ts` | match (look: DSK-07) |
+| D | the tooltip at the next point | length on the line, angle by a dotted arc, `Precise siguiente punto o` with a ⬇; `10,0` relative, `#30,30` absolute, length Tab angle (d11) | `LineTool.test.ts:86`, `:93` | match; PIN-02 holds at the command line only |
+| D | the Down arrow | lists `Cerrar`, `desHacer` under the prompt (d11) | chips always shown | DYN-02 verified |
+| D | Ortho with picks | the point squared to the axis (d12) | `LineTool.test.ts:195` | match |
+| D | Polar 30° with a typed distance | green dashed path, tooltip `Polar: 18.6707 < 30°`, `20` runs along it (d12) | `snapping.test.ts` | match (look: DSK-07) |
+| C | `<30` then a number with the cursor elsewhere | the line at 30° (d14) | `LineTool.test.ts:342` | match, settles p18 |
+| D | OTRACK from an acquired Endpoint | a small green `+`, green dashed guide, tooltip `Punto final: 15.0451 < 0°`, the pick on the guide (d13) | alignment `LineTool.test.ts:404`; the tooltip's distance known (Missing) | match (look: DSK-07) |
+| I | a line's grips | blue squares at both ends and the middle, red under the cursor, the line glowing blue (d15) | `selectToolGrips.ts:33` | match (look: DSK-07) |
+| I | the end grip's hover menu | `Estirar`, `Longitud` (d15) | not built | known; es label of the lengthen field `Alargar` → EDT-01 |
+| I | an end grip dragged off its line | the end goes to the cursor (d15) | slides along the line | EDT-01 confirmed |
+| I | the midpoint grip, two lines selected | `** ESTIRAR **`; only its line moves (d15) | both move | EDT-02 confirmed |
+| I | the Properties palette | General: Color, Capa, Tipo de línea, Escala de tipo de línea, Estilo de trazado, Grosor de línea, Transparencia, Hipervínculo, Altura de objeto · Visualización 3D: Material · Geometría: Inicio X Y Z, Fin X Y Z, Incremento X Y Z, Longitud, Ángulo — the last five greyed (d16) | | EDT-03, EDT-06 confirmed |
+| C | a double-click on one point | one segment, no zero-length line (d17) | the second pick skipped | match; LIN-07 stays for typed `0`, `@` |
+| P | the wheel mid-command | zooms, LINE goes on (d18) | `viewUndo.test.ts` | match |
+| Q | hovering a line at `Comando:` | it thickens, the pickbox shows, a tooltip `Línea · Color · Capa · Tipo de línea` (d20) | the highlight only | **DSK-06** |
+
+Not reached in this pass, for a second one with the owner's mouse: every object snap running and
+picked from the menu (only Endpoint was hovered; all were typed in the console), Tab cycling and
+the aperture, snap mode (F9) with picks, the pairs of the modes table beyond those above, the
+English profile's echoes (`*Cancel*`, F-keys).
+
 ## 5. Findings
 
 Each finding's scratch test is in `research/review/line/<A|B|C>/`; in the execution it moves into
@@ -478,14 +517,14 @@ the file named as its regression test, citing its probe.
 
 #### EDT-01 — a line's end grip lengthens where AutoCAD's stretches
 
-- **Severity:** high · **Row:** I · **Status:** unverified (help; the code path is verified)
+- **Severity:** high · **Row:** I · **Status:** verified
 - **Where:** `cad/application/tools/SelectTool.ts:217-236` (the point projected on the line)
-- **AutoCAD:** help 2027, "Just Grip It!": the default grip mode is Stretch, "The line segment
-  stretches as you move the cursor"; "The Stretch and Lengthen Commands": Lengthen is the hover
-  menu's second choice.
-- **mellowcad:** dragging (100,0) to (150,50) leaves the end at (150,0).
-- **Fix:** the end follows the cursor (LINE-D24), after a desktop probe confirms it.
-- **Regression test:** the grips tests, citing that probe.
+- **AutoCAD:** d15: an end grip clicked, the cursor moved off the line and clicked → the end at the
+  cursor. Hovering it lists `Estirar`, `Longitud` (Stretch, Lengthen), Lengthen being the second.
+- **mellowcad:** dragging (100,0) to (150,50) leaves the end at (150,0). Its lengthen field is
+  labelled `Alargar` in Spanish; AutoCAD's menu says `Longitud`.
+- **Fix:** the end follows the cursor (LINE-D24).
+- **Regression test:** the grips tests, citing d15.
 
 ### Medium
 
@@ -588,12 +627,12 @@ the file named as its regression test, citing its probe.
 
 #### EDT-02 — a line's midpoint grip moves the whole selection
 
-- **Status:** unverified (help: "midpoints of lines … move the object") · **Where:**
-  `SelectTool.ts:783-800`.
+- **Status:** verified (d15: with two lines selected the midpoint grip moved only its line, in
+  `** ESTIRAR **`) · **Where:** `SelectTool.ts:783-800`.
 
 #### EDT-03 — the palette edits a line's Length and Angle; AutoCAD's are read-only
 
-- **Status:** unverified (help, AcDbLine `Length (RO)`, `Angle (RO)`) · **Where:**
+- **Status:** verified (d16: Incremento X Y Z, Longitud and Ángulo greyed) · **Where:**
   `cad/application/EngineState.ts`, `cad/domain/entityProperties.ts:239-260` ·
   `CadRuntime.test.ts:438`, `:556` pin the edit.
 
@@ -608,6 +647,28 @@ the file named as its regression test, citing its probe.
 
 - **Where:** `cad/domain/units.ts:89` · **AutoCAD:** p204 LWDISPLAY 0. AGENTS.md declares the
   deviation; the code and the coverage do not (template §4.7) · **Fix:** WHY and note (LINE-D22).
+
+#### DSK-01 — the rubber band is a fixed colour; AutoCAD's is the colour the object will wear
+
+- **Severity:** medium · **Row:** M, Q · **Status:** verified
+- **Where:** `cad/application/tools/LineTool.ts:397` (`THEME.rubberBand`), `cad/scene/theme.ts:39`
+- **AutoCAD:** d04: with CECOLOR 1 the rubber band is red, the colour the line takes.
+- **Fix:** LINE's rubber band in the current colour, ByLayer resolved to the layer's. Whether the
+  ghosts of MOVE, COPY and the others follow is their reviews' (the rule says the rubber band's
+  colour for all). **Rules:** `cad-tools.md` "A ghost is drawn in the rubber band's colour" is
+  wrong for LINE; the THEME comment was right. Replaces RND-04.
+
+#### DSK-02 — the snap menu's order and groups are not AutoCAD's
+
+- **Severity:** medium (a menu used by position) · **Row:** P · **Status:** verified
+- **Where:** `components/cad/snap-override-menu.tsx:31-44`, whose comment claims AutoCAD's order
+- **AutoCAD:** d06, the groups and order in the DSK table.
+- **mellowcad:** From, Endpoint, Midpoint, Center, Quadrant, Intersection, Apparent Intersection,
+  Perpendicular, Tangent, Extension, Insertion, Parallel, Nearest, None, ungrouped.
+- **Fix:** AutoCAD's order with its separators for what exists (From; Endpoint, Midpoint,
+  Intersection, Apparent Intersect, Extension; Center, Quadrant, Tangent; Perpendicular, Parallel,
+  Insert, Nearest, None); TT, M2P, the filters, 3D osnaps, Geometric Center, Node and the settings
+  stay out until built, as `cad-runtime.md` rules for shortcut menus.
 
 ### Low
 
@@ -635,9 +696,12 @@ the file named as its regression test, citing its probe.
 - **OSN-12** — docs drift: the `of` echo listed as Missing is built; the `OSNAP_MENU_ANSWERS` WHY
   and `command-line.md`'s unverified prepositions are settled by p24, p25, p32, p156 (INS stays
   unverified).
-- **TRK-03** — F3 writes nothing; AutoCAD ` <Osnap on> ` / ` <Osnap off> ` (es ` <Refent activado> `
-  / ` <Refent desactivado> `, tables 33112, 33113).
-- **DYN-02** — the Down arrow lists nothing (unverified on AutoCAD's side; the chips stand in).
+- **TRK-03** — F3, F8, F9, F10 and F11 write nothing; AutoCAD writes ` <Osnap on> ` / ` <Osnap off> `
+  (tables 33112, 33113) and, in Spanish, ` <Orto activado>`, ` <Forzcursor activado>`,
+  ` <Polar activado>`, ` <Rastreo de referencia a objetos activado>` and their `desactivado` (d10);
+  F12 nothing. The English words of F8–F11 are in no table: the English profile's pass settles them.
+- **DYN-02** — the Down arrow lists nothing; AutoCAD lists the options under the prompt (d11). The
+  chips stay as the always-visible list; the Down arrow opens them.
 - **CPR-01** — a true colour 255,0,0 reads back as index 1 (p200): to Colour Missing (LINE-D27).
 - **CPR-02** — -LINETYPE names acad.lin; 2027's metric default is acadiso.lin, and `?` asks the
   file and pages (p202, p205).
@@ -647,10 +711,21 @@ the file named as its regression test, citing its probe.
   through `entityZAt`, not `lineStartZ` / `lineEndZ`).
 - **EDT-05** — a rising line's ends cannot meet in plan through the palette (`entityProperties.ts:236`
   compares in 2D); unverified.
-- **EDT-06** — palette labels `Δ X` and two groups; the help's `Delta X` under one Geometry
-  category; unverified.
-- **RND-04** — `THEME.rubberBand`'s comment says AutoCAD draws it in the object's colour while
-  `cad-tools.md` says the rubber band's; unverified.
+- **EDT-06** — palette labels `Δ X` (es `Delta X`) in two groups; AutoCAD's one Geometría group
+  reads Inicio X Y Z, Fin X Y Z, Incremento X Y Z, Longitud, Ángulo (d16).
+- **DSK-03** — the Command menu's es label is `Modificaciones de REFENT` (d07), not
+  `Modificaciones de referencias`; the menu's order, unverified in the coverage, is settled.
+- **DSK-04** — es Escape inside a command writes `*Cancelado*`; at `Comando:` `*Cancelar*` (d08,
+  d19). mellowcad writes `*Cancelar*` for both (scratch `research/review/line/D/rail.test.ts`).
+- **DSK-05** — LINE started from the rail writes nothing; the ribbon's writes `Comando: _line` (d19).
+- **DSK-06** — hovering an object at `Comando:` shows AutoCAD's rollover tooltip (`Línea`, Color,
+  Capa, Tipo de línea; d20); absent here and not in Missing.
+- **DSK-07** — the aids look otherwise than AutoCAD's dark theme: the snap marker cyan (AutoCAD's
+  green), its tooltip a dark box above the cursor (a light box below and right; the WHY placing it
+  above holds only with dynamic input showing), the selection amber (a blue glow), OTRACK's guide
+  violet (green dashed, a small green `+` on the acquired point), the crosshair across the screen
+  (CURSORSIZE 5, a pickbox only at `Comando:`). Recognition, not styling: each to AutoCAD's look
+  (LINE-D31).
 
 ## 6. Decisions taken
 
@@ -672,7 +747,8 @@ the file named as its regression test, citing its probe.
 | LINE-D25 | A midpoint grip moves its own object — after the desktop confirms | The help |
 | LINE-D26 | Linetype names stay drawing data; Spanish file names to Missing | `cad-catalogs.md`: data names stay data |
 | LINE-D27 | True colour against index colour to Colour Missing | The model change outweighs the gap |
-| LINE-D30 | A desktop block (DSK), with the owner's leave to use the mouse, settles the unverified cells before EDT executes; command-line input goes through COM, the rest by clicks and keys after a click in the drawing area | The only way to settle them |
+| LINE-D30 | A desktop block (DSK), with the owner's leave to use the mouse, settles the unverified cells; command-line input goes through COM, the rest by clicks and keys after a click in the drawing area | The only way to settle them |
+| LINE-D31 | The aids take AutoCAD's dark-theme colours and placements (DSK-07) | AGENTS.md: a look that slows an AutoCAD user down is a finding |
 
 Nothing here needs the owner but the approval itself: no data, publishing or spending.
 
@@ -705,18 +781,17 @@ Regression tests first, each in its finding. Then the untested cells, by file:
 
 ## 8. What is not tested, and why
 
-- Hover and selection colours, the rubber band's look: presentation, allowed to differ.
+- Colours as such: the scene's tests pin ids and kinds; a colour is checked by eye against the
+  desktop's screenshots (DSK-07).
 - The scratch tests for cells already pinned elsewhere: they duplicate.
 
 ## 9. What could not be reviewed, and why
 
-The desktop (§2): the dynamic-input tooltip (`#`, relative default, Tab, the Down arrow), Escape
-once and twice, the right button and its menus, Ctrl+Z's echo inside LINE, the jig and rubber band,
-grips and their hover menu, the palette's rows and labels, Tab cycling and the aperture, the
-markers, F8–F12's echo, Polar and OTRACK with a typed distance, Shift, the angle override with a
-number, a double-click on one point, GRIPHOVER and the rubber band's colour. These cells are
-**unverified**; block DSK (§12) settles them before EDT executes. Also not
-reviewed: the INS override's echo (the probe hung), Extension and Parallel geometry, polar snap.
+What DSK's first pass did not reach (§4, end of the DSK table): every object snap running and
+picked from the menu, Tab cycling and the aperture, snap mode with picks, the remaining pairs of
+the modes table, Shift's override, the English profile's echoes. They need the owner's mouse once
+more (block 11 below). Also not reviewed: the INS override's echo (the probe hung), Extension and
+Parallel geometry, polar snap.
 
 ## 10. Refuted in the adversarial pass
 
@@ -769,7 +844,7 @@ hold (p109, p111); `*` in a tilted UCS holds (p153).
 | `cad-catalogs.md` Messages | an unverifiable message is left out | `snapMode`, `fromBase`, `fromOffset`, `fromNeedsPoint` | broken (TRK-01, OSN-04) |
 | `cad-engine.md` Style tables | transcribe a definition from AutoCAD's | `linetypes.ts` | broken (RND-01) |
 | `cad-engine.md` Z and the normal | a line's ends through `lineStartZ` / `lineEndZ` | `selectToolGrips.ts:206-213` | broken (EDT-04) |
-| `cad-tools.md` vs `THEME.rubberBand` | the rubber band's colour | `theme.ts` | contradictory (RND-04) |
+| `cad-tools.md` What a new object wears | a ghost in the rubber band's colour | `LineTool.ts:397` | wrong for LINE (DSK-01, d04) |
 
 Behaviours without a rule: what an override does when it finds nothing; Ctrl+Z mid-command is `_u`
 typed at the prompt; the dash phase.
@@ -785,23 +860,16 @@ One commit per block, in this order (each `fix(engine): LINE review — <IDs>`):
 5. **PIN** — PIN-01 to PIN-06. Half a day (PIN-03, PIN-04 touch `parseNumber` and the angle parser).
 6. **OSN** — OSN-01 to OSN-12 (FROM's five together). Half a day.
 7. **TRK** — TRK-01 (the SNAP tool, through skill `new-command`'s steps), TRK-02, TRK-03. Half a day.
-8. **RND** — RND-01 to RND-03 (RND-04 waits for the desktop). Half a day.
+8. **RND** — RND-01 to RND-03. Half a day.
 9. **CPR** — CPR-01 to CPR-03 (notes and wording). An hour.
 10. **DYN** — DYN-01, DYN-02 (notes). Minutes.
-11. **DSK — desktop session** (LINE-D30), with the owner's leave to use the mouse. It probes,
-    with LINE, the rows the template gained after this review (matrix.md): **P** pointer gestures
-    (LINE from the rail, every point picked, hover and the rollover highlight, the snap marker and
-    its tooltip, the aperture, an OTRACK dwell, the wheel and the middle button mid-command,
-    Shift+right button, the right button's menus, a double-click on one point); **Q** the look
-    (cursor, pickbox, markers, tooltips, dynamic-input boxes, rubber band, grips, the prompt, the
-    rail) against screenshots; **D** every object snap running and picked, not only typed; the
-    **modes in combination** (each input against running snaps, Ortho, Polar, OTRACK, snap mode
-    and dynamic input); and the cells §9 lists. Its findings, prefix DSK, are added to this plan
-    and approved before blocks 12 and on.
-12. **EDT** — EDT-01 to EDT-06 as the desktop settles them. Half a day.
+11. **DSK** — DSK-01 to DSK-07, with TRK-03's Spanish echoes. Half a day. Before it, a second
+    desktop pass with the owner's mouse (the list at the end of §4's DSK table); what it finds is
+    added here.
+12. **EDT** — EDT-01 to EDT-06. Half a day.
 13. **FIL** — the tests of §7 only.
 
-Blocks 1–10 depend on nothing outside themselves; 12 waits for 11.
+The blocks depend on nothing outside themselves; the second desktop pass may add findings to 11.
 
 ## 13. Changes to coverage, rules, catalogs and roadmap
 

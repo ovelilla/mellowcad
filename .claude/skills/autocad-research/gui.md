@@ -31,17 +31,25 @@ Windows desktop.
 - **Reading the command line**: `com hist` (MellowProbe's MPHIST), or `com trace` for the prompts.
   The getvar LASTPROMPT holds only the last line.
 - **Seeing**: `acad.sh shot [hwnd] [x,y,w,h]` captures with PrintWindow, even a covered window,
-  and prints the PNG's path for Read. The capture is in physical pixels: read the window and view
-  rectangles with `acad.sh children <hwnd>` (the drawing area is the view window of class
-  ACADDM_CHILD_DXGI_FLIP_MODE_VIEW_CLASS). AutoCAD may sit on a second monitor, at x ≥ 2560.
-- **Moving the crosshair**: `acad.sh cursor <x> <y>` moves the real mouse, captures and puts it
-  back. AutoCAD reads the real cursor; posted mouse messages move nothing.
-- **Typing**: `acad.sh type "<text>"` (SendInput; `\n` Enter, `\e` Esc). The keys reach a prompt
-  only with the command line visible or dynamic input on, **and** the keyboard focus in the
-  drawing area (a real click there should give it — to confirm): launched from WSL, AutoCAD came to the foreground
-  with the focus on an inner window and swallowed every key (2026-10-21). This profile hides the
-  command line and has DYNMODE 0: show it with `com send "_COMMANDLINE\n"`, hide it after with
-  `_COMMANDLINEHIDE`. What the command line takes goes more simply through `com send`.
+  and prints the PNG's path for Read. What floats above the window — tooltips, the snap marker's
+  tip, shortcut menus, the floating command line, the crosshair — needs the screen itself:
+  `acad.sh shot -hwnd -1 -crop x,y,w,h` (named: a bare -1 reads as a switch), in screen pixels.
+  The capture is in physical pixels: read the window and view rectangles with
+  `acad.sh children <hwnd>` (the drawing area is the view window of class
+  ACADDM_CHILD_DXGI_FLIP_MODE_VIEW_CLASS). AutoCAD may sit on a second monitor, at x ≥ 2560. A
+  world point's pixel comes from `(getvar "VIEWCTR")`, VIEWSIZE (the view's height in drawing
+  units) and SCREENSIZE.
+- **The mouse**: `acad.sh cursor <x> <y>` moves the real mouse, captures and puts it back;
+  `acad.sh click <x> <y> [left|right|middle|none|wheel] [count] [shift|ctrl]` moves it there and
+  clicks (or only moves, or turns the wheel) and leaves it there, so hovering shows. AutoCAD reads
+  the real cursor; posted mouse messages move nothing. Both move the owner's mouse: ask first.
+- **Typing**: `acad.sh type "<text>"` (`\n` Enter, `\e` Esc), one virtual key at a time;
+  `acad.sh key ctrl+z f8 shift+tab down` for what text cannot say. The keys reach a prompt only
+  when the drawing area holds the keyboard focus, which a click there gives: launched from WSL,
+  AutoCAD came to the foreground with the focus on an inner window and swallowed every key until
+  then (2026-10-21). A click at `Command:` on nothing starts a window: press Escape after it.
+  What the command line takes goes more simply through `com send`. This profile hides the command
+  line (CLISTATE 0); `_COMMANDLINEHIDE` asks to confirm in a task dialog (`acad.sh uia`).
 - **A second instance**: `acad.sh launch [script.scr]` starts one beside the user's (`/b` runs a
   script). COM will not reach it; type and capture by its window handle.
 

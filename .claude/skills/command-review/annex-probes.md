@@ -80,7 +80,7 @@ read and restore them per instance.
 - **What is typed at the command line goes through COM** (`com send`): no keystroke, no focus
   needed. d02 of LINE's review answered a whole prompt sequence that way.
 - **Keystrokes and the mouse need the owner.** `acad.sh type` reaches AutoCAD only when the
-  drawing area holds the keyboard focus, which a real click should give (to confirm) (2026-10-21: in the foreground
+  drawing area holds the keyboard focus, which a real click gives (2026-10-21: in the foreground
   but with the focus on an inner window, no key reached a prompt; SetFocus from outside did not
   move it). `cursor` and a click move the owner's mouse. Ask the owner before such a session, ask
   them not to touch the mouse, and tell them when it is theirs again.
