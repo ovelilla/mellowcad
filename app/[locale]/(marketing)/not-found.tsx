@@ -11,7 +11,7 @@ export async function generateMetadata(): Promise<Metadata> {
 /**
  * A language's 404, inside its layout, with the site's header and footer.
  *
- * Next 16.3 prerenders a page's `notFound()` as an empty document with the
+ * Next 16.4 prerenders a page's `notFound()` as an empty document with the
  * 404 status and the metadata, and renders this in the browser; the global
  * 404 is the one that arrives already drawn.
  */

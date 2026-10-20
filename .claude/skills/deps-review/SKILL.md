@@ -74,6 +74,12 @@ npm audit signatures --min-release-age=0
 `npm ci` fails when `package.json` and the lockfile disagree: fix with `npm install`, never by
 deleting the lockfile. Read its `npm warn deprecated` lines (section 3).
 
+npm 11 runs no install script that `allowScripts` in `package.json` does not list. Today all three
+are `false` (`@parcel/watcher`, `@swc/core`, `unrs-resolver`: native-binary builds and checks; the
+prebuilt binaries arrive as optional dependencies). An `npm warn install-scripts` naming a package is
+a new script: read it (`npm install-scripts ls`, then the script in `node_modules/<pkg>`) and
+`npm install-scripts deny <pkg>` unless the package fails without it.
+
 ## 5. Verify
 
 - Always the gate: `npm run typecheck`, `npm run lint`, `npm run test:coverage`.

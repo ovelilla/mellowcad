@@ -16,7 +16,7 @@ export async function generateMetadata(): Promise<Metadata> {
  *
  * WHY not a `[...rest]` catch-all: a catch-all cannot be prerendered for paths
  * nobody knows in advance, so it is rendered on demand — a function for every
- * mistyped URL, on a site that is otherwise entirely static — and Next 16.3
+ * mistyped URL, on a site that is otherwise entirely static — and Next 16.4
  * sends the same body either way (see `not-found.tsx`).
  */
 export default function LocaleNotFound() {
