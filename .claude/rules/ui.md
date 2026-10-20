@@ -8,7 +8,7 @@ paths:
 
 # UI layer (the editor, `/draw`)
 
-> Verified against **@base-ui/react 1.7.0**, **next-intl 4.14.9**, **tailwind-merge 3.7.0**,
+> Verified against **@base-ui/react 1.9.0**, **next-intl 4.14.9**, **tailwind-merge 3.7.0**,
 > **lucide-react 1.59.0**.
 
 React is a **dumb presentation shell**. Components read `EngineState` and call `CadEngine`
@@ -185,11 +185,9 @@ the tool palette would fold on a Full HD laptop at 125 %).
 - `Dialog.Popup` sets no `aria-modal`: a modal dialog sets `aria-modal="true"` itself — the engine
   reads it to leave the dialog its keys. While it is open the rest of the page is inert, so a test
   reaches the command line by a CSS selector, not by its role.
-- **A menu the engine opens has no trigger, and Base UI names a menu's node in its floating tree
-  only through its trigger**: a submenu opening then reads as a sibling menu and closes the whole
-  menu (`onOpenChange` reason `sibling-open`). A trigger-less menu with a submenu renders an empty
-  `<Menu.Trigger nativeButton={false} render={<span hidden />} />` and names it on the root
-  (`triggerId`), as `ShortcutMenu` does.
+- **A menu the engine opens has no trigger**: `ShortcutMenu` is a controlled `Menu.Root` anchored
+  to the pointer. Since 1.9 Base UI names a trigger-less menu's node in its floating tree itself, so
+  a submenu no longer closes it as a sibling (`sibling-open`); before 1.9 it needed a hidden trigger.
 - **A modal menu leaves the page inert until it has closed**, so a `focusSurface()` run as an item
   acts is lost and Base UI returns focus to the trigger. Give focus back in the popup's
   `finalFocus` (`() => { engine.focusSurface(); return false }`). A dialog: `finalFocus={false}` and

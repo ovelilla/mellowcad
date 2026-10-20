@@ -62,7 +62,6 @@ export function ShortcutMenu({
 }) {
   const t = useTranslations("Editor.ShortcutMenu")
   const keys = useTranslations("Editor.Keys")
-  const triggerId = React.useId()
   // The last menu stays rendered while the popup fades out.
   const [shown, setShown] = React.useState(state.shortcutMenu)
   if (state.shortcutMenu && state.shortcutMenu !== shown) {
@@ -172,20 +171,10 @@ export function ShortcutMenu({
   return (
     <Menu.Root
       open={!!state.shortcutMenu}
-      triggerId={triggerId}
       onOpenChange={(open) => {
         if (!open) engine.closeShortcutMenu()
       }}
     >
-      {/* WHY: Base UI (1.7) names a menu's node in its floating tree only
-          through its trigger; without one, a submenu opening reads as a
-          sibling menu and closes this one. The engine opens it, so its
-          trigger is an empty element nobody presses. */}
-      <Menu.Trigger
-        id={triggerId}
-        nativeButton={false}
-        render={<span hidden />}
-      />
       <Menu.Portal>
         <Menu.Backdrop />
         <Menu.Positioner
