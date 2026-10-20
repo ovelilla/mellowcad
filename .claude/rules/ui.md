@@ -8,7 +8,7 @@ paths:
 
 # UI layer (the editor, `/draw`)
 
-> Verified against **@base-ui/react 1.7.0**, **next-intl 4.14.9**, **tailwind-merge 3.6.0**,
+> Verified against **@base-ui/react 1.7.0**, **next-intl 4.14.9**, **tailwind-merge 3.7.0**,
 > **lucide-react 1.34.0**.
 
 React is a **dumb presentation shell**. Components read `EngineState` and call `CadEngine`
@@ -81,8 +81,8 @@ a second layout. This file owns the rule for the landing too.
   — undo, redo, zoom previous, send, open outside. Never a rotation (orbit, the cube's roll) or a
   CAD glyph (mirror, extend, offset). `rtl:` matches inside an LTR island too (`[dir=rtl] *`).
 - The workspace is the page's `<main>`: every control sits in a landmark (axe's `region`).
-- `cn()` pairs `px`, `mx` and `inset-x` with their logical sides, which tailwind-merge does not
-  (`lib/utils.ts`): without it a caller's `px-1.5` stops replacing a component's `ps-2.5 pe-2`.
+- A caller's `px-1.5` replaces a component's `ps-2.5 pe-2` (tailwind-merge pairs `px`, `mx` and
+  `inset-x` with their logical sides since 3.7; `lib/utils.test.ts` holds it).
 
 ## File layout
 
