@@ -70,7 +70,7 @@ The bar: **someone who uses AutoCAD every day should sit down at this app and wo
 memory.** Command names and aliases, the order of the prompts, the keyword letters, the defaults
 and what each option does must be the ones they already know.
 
-- **Match the current AutoCAD** (2025/2026 documented behaviour, Autodesk Help). Do not implement
+- **Match the current AutoCAD** (2027, the one installed, and its Autodesk Help). Do not implement
   from a vague recollection of an older release — when a behaviour is unclear or you are guessing,
   look it up first (skill `autocad-research`). Research has repeatedly overturned the "obvious"
   design here.
@@ -117,7 +117,7 @@ and what each option does must be the ones they already know.
 - **Everything runs in WSL2 (Ubuntu) with Bash.** The repo lives in `~/projects/mellowcad`, on
   the Linux disk, and VS Code connects through Remote-WSL: no native Windows, PowerShell or
   `/mnt/c` working copy (slow, and the watchers miss changes there). The one Windows program used
-  is AutoCAD's console, through `scripts/research/runacc.sh`. Scratch files go in a `mktemp -d`
+  is AutoCAD 2027 (console and desktop), through `scripts/research/`. Scratch files go in a `mktemp -d`
   directory outside the repo.
 
 ## Where the knowledge lives
@@ -138,8 +138,8 @@ and what each option does must be the ones they already know.
   contract changes.
 - `docs/next-*.md` — the brief for the next piece of work, when one has been agreed; deleted once
   it ships.
-- `scripts/research/` and `research/` (gitignored) — AutoCAD's console runner and its string
-  tables.
+- `scripts/research/` and `research/` (gitignored) — AutoCAD's runners, its tracer plugin and
+  its string tables.
 
 A rule that is now wrong is worse than no rule: fix or delete it in the change that made it wrong.
 Keep this file short: it is loaded on every request (`test/knowledge.test.ts` caps it).

@@ -1,6 +1,6 @@
 ---
 name: browser-verify
-description: Check in a real browser with Playwright what the Vitest harness cannot see — canvas rendering, DOM, theming, CSS, RTL, menus opened from the canvas, focus, view transitions, performance — or read Autodesk's help viewer. Use only when the harness cannot answer the question.
+description: Check in a real browser with Playwright what the Vitest harness cannot see — canvas rendering, DOM, theming, CSS, RTL, menus opened from the canvas, focus, view transitions, performance — or Autodesk's help viewer when a page will not come from cloudhelp. Use only when the harness cannot answer the question.
 ---
 
 # Verifying in the browser

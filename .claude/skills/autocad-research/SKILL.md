@@ -1,56 +1,27 @@
 ---
 name: autocad-research
-description: Establish how AutoCAD behaves and words something before building or changing a command — run a probe in AutoCAD's console from WSL, look up a prompt, message or keyword in its string tables, or read Autodesk's help. Use when a behaviour, prompt, default or wording is unclear, or a coverage row says unverified.
+description: Establish how AutoCAD behaves and words something before building or changing a command — run a probe in AutoCAD 2027's console from WSL (optionally tracing each prompt's keywords, defaults and flags), drive the desktop AutoCAD to see dialogs and on-screen feedback, render a drawing to PNG, look up a prompt, message or keyword in its string tables, or read Autodesk's help. Use when a behaviour, prompt, default or wording is unclear, or a coverage row says unverified.
 ---
 
 # Researching AutoCAD
 
-Check a behaviour before building it, in this order:
+The AutoCAD installed is **2027** (R26.0) on Windows, with the Spanish language pack only; every
+tool runs from WSL through interop. Pick the source by the question:
 
-1. **AutoCAD's console** (`accoreconsole.exe`), when an AutoCAD is installed. It answers with the
-   real prompts, refusals and results, verbatim. It settles what a command does.
-2. **AutoCAD's string tables** (`research/strings/`) for the exact wording, in English and in
-   Spanish, by id. A message the English composes from pieces (`Cannot find %s "%s".` +
-   `text style`) is composed from the same pieces in Spanish.
-3. **Autodesk's help** for what the console cannot show (dialogs, palettes, the cursor), below.
+| Question                                                                   | Source                      | Read       |
+| -------------------------------------------------------------------------- | --------------------------- | ---------- |
+| What a command asks, accepts, refuses and produces, verbatim               | the console                 | console.md |
+| A prompt's options: keywords in Spanish and English, defaults, Enter, zero | the console, traced (`-t`)  | tracing.md |
+| The raw initget string and flags                                           | the desktop AutoCAD, traced | tracing.md |
+| Exact geometry of a result, every property                                 | MPDUMP, traced run          | tracing.md |
+| How AutoCAD draws a result: linetypes, hatches, dimensions, text           | the console, plotted to PNG | console.md |
+| What the user sees: jig, grips, snap markers, dialogs, palettes            | the desktop AutoCAD         | gui.md     |
+| The exact wording, by id, in English and Spanish                           | the string tables           | below      |
+| What no program shows: intent, the cursor, documented defaults             | Autodesk's help             | below      |
 
-What none of them settles is written **unverified** in `docs/coverage/`, with what was
-seen instead. Cite the table id (`21682`) or the probe in tests and comments, so the next person
-can check it again.
-
-## The console
-
-`scripts/research/runacc.sh probe.txt` feeds a file of answers, one per line, to the console of
-the AutoCAD 2027 installed on Windows (run from WSL through interop) and prints the transcript.
-Set `ACCORE` to use another install. That install has only the Spanish pack, so the console
-answers in Spanish whatever `/l` says; English wording comes from the tables, or from the console
-once the English language pack is installed (`runacc.sh probe.txt en-US`). The notes below were
-measured on AutoCAD 2023's English console; recheck one before relying on it.
-
-- **Type commands and keywords in their underscore form** (`_LINE`, `_L`, `_Y`): the Spanish
-  console refuses a bare `LINE`, and the same probe then runs in either language.
-- **Keep a probe short.** A refused answer desyncs everything after it.
-- **Typed points pick unreliably.** Select with `L` or a `W`/`C` window instead. To pick an arc by
-  a typed point, `ZOOM E`, then `VIEWRES Y 20000`, `REGEN` and `PICKBOX 8` first.
-- **Some commands hang or are missing.** TEXT's text entry and `LAYER` hang it (use `-LAYER`);
-  `3DORBIT` crashes it; VIEW, PURGE, PROPERTIES, MATCHPROP, BLOCKSPALETTE and EATTEDIT are unknown
-  to it.
-- **Jig prompts echo twice, bare.** Put `(princ "M1")` markers between answers to see which input
-  each prompt took. LISP in the middle of a prompt muddles the echo and undo; read state between
-  commands instead: `(getvar "VIEWSIZE")` reads the view without making an undo step, and
-  `(trans (getvar "LASTPOINT") 1 0)` gives LASTPOINT in the WCS. `QAFLAGS 2` makes LIST stop
-  pausing.
-- **The console's cursor is a fixed screen point**, about `289.985,116.3034` in the initial view.
-  A direct distance takes its heading from it, so tests that reproduce a console value move the
-  harness cursor there.
-- **Some variables persist in the registry** (TRIMEXTENDMODE, UNDO's Combine and Layer) and
-  carry from one probe to the next, including probes run in parallel. Set the ones a probe depends
-  on at its start, and restore the defaults after a round: `TRIMEXTENDMODE 1`, `EDGEMODE 0`,
-  `PROJMODE 1`, `AUTOSNAP 55`, `UNDOCTL 53`.
-- **Menu macros** are in `acad.cuix`, a zip: Ctrl+Z is `_u`, Ctrl+Y and the menu's Redo are
-  `^C^C_mredo 1`.
-- Before declaring what a prompt refuses, type `FOO` at it: the words differ per input function.
-  Whether a prompt keeps or sets LASTPOINT: `ID @` after the command.
+The console settles what a command does; the help never overrides it. What none of them settles
+is written **unverified** in `docs/coverage/`, with what was seen instead. Cite the table id
+(`21682`) or the probe in tests and comments, so the next person can check it again.
 
 ## The string tables
 
@@ -67,26 +38,52 @@ the project. Each table is `id<TAB>text`, with the text JSON-quoted:
 `node scripts/research/pair.mjs "<regex>"` prints every English string that matches, beside the
 Spanish one of the same id. The Spanish came from the AutoCAD 2027 language pack: open
 `x64/es-ES/acadlp/acadlp.adix` with 7-Zip and read the string tables of its resource DLLs. The
-palettes' labels are in `ax24res.dll` / `ax26res.dll` and `acappres.dll`.
+palettes' labels are in `ax24res.dll` / `ax26res.dll` and `acappres.dll`. The English table is
+2023's: a traced prompt (tracing.md) gives 2027's English keywords beside the Spanish ones.
 
 A keyword is the word the table declares for `initget`; the prompt lists its label. How both are
 written in the catalogs is in `.claude/rules/cad-catalogs.md`.
 
 ## Autodesk's help
 
-The help viewer is a single-page app: a plain fetch (WebFetch, curl) returns the empty shell, not
-the page. Pages already read, in English and Spanish, are in `research/autodesk-help/` (gitignored,
-named by GUID): grep there first. **Read a new one with Playwright** (skill `browser-verify`,
-"Tooling"):
-`help.autodesk.com/view/ACD/2026/ENU/?guid=…`, then take `innerText`.
+**Find** a page with Autodesk's Product Help MCP server — public, no sign-in, configured in
+`.mcp.json` as `autodesk-help` (tool `search_help_content`). Without the MCP tools, the same call
+works with curl:
 
-- Search engines start serving captchas after a few queries: collect the GUIDs early and navigate
-  by GUID. The viewer's own search (`…/view/ACD/2026/ENU/?query=COPYCLIP`, then harvest the
-  `?guid=` links) beats guessing, and `…/cloudhelp/2026/ENU/AutoCAD-Core/files/<GUID>.htm` opens a
-  page straight from its GUID.
+```bash
+curl -sS https://developer.api.autodesk.com/knowledge/public/v1/mcp \
+  -H 'Content-Type: application/json' -H 'Accept: application/json, text/event-stream' \
+  -d '{"jsonrpc":"2.0","id":1,"method":"tools/call","params":{"name":"search_help_content",
+       "arguments":{"query":"OFFSET command","locale":"en_US","product_name":"AutoCAD",
+       "release_code":"2027","max_results":5}}}' | sed -n 's/^data: //p'
+```
+
+It returns titles, URLs (with the page's GUID) and an excerpt of about 1 KB, support articles
+included (they often quote a whole command-line session). `locale` is `en_US` or `es_ES`.
+
+**Read** the whole page from its GUID with curl or WebFetch:
+`https://help.autodesk.com/cloudhelp/2027/ENU/AutoCAD-Core/files/GUID-….htm` (`ESP` for the
+Spanish page, which shares the GUID). Only the `view/ACD/…` viewer is a JavaScript shell that
+needs a browser (skill `browser-verify`). Pages already read are in `research/autodesk-help/`
+(gitignored, named by GUID): grep there first.
+
 - **A thin command page is not an undocumented behaviour.** COPYCLIP's reference page has no
   prompts; the rule that decides it ("the cursor location is based on the lower-left corner of the
   extents of the objects you selected") is on a _Have You Tried_ page, and the prompt order on a
   _To …_ task page. Read `About …`, `To …` and `Have You Tried` before concluding that something
   cannot be verified.
 - Spanish names come from the Spanish help pages that share the English GUIDs.
+
+## Routes tried and dropped
+
+So that nobody spends a session on them again (October 2026):
+
+- **An English console** needs the English language pack, which is not installed: `/l en-US`
+  still answers in Spanish. Installing it is the owner's call.
+- **AutoCAD's own MCP server** and window messages (WM_COPYDATA, WM_CHAR): gui.md.
+- **Community MCP servers** (COM, Lisp IPC or ezdxf based) draw and query objects; none exposes
+  prompts or keywords, which MellowProbe does.
+- **APS Design Automation** runs this same console in the cloud, for pay. **PyRx** (Python inside
+  AutoCAD) needs a Windows Python. Autodesk's AutoLISP extension for VS Code does not run under
+  Remote-WSL. **AcEdInputContextReactor** (C++) would need Visual Studio and ObjectARX; the
+  command line monitor of tracing.md gives the same initget string.
