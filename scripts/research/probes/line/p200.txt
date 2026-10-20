@@ -1,0 +1,17 @@
+_-COLOR
+_T
+255,0,0
+_LINE
+0,0
+@10,0
+
+_-COLOR
+
+_-COLOR
+1
+_LINE
+0,5
+@10,0
+
+MPDUMP
+-

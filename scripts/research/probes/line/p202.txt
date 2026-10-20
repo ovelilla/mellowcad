@@ -1,0 +1,11 @@
+(getvar "MEASUREMENT")
+_-LINETYPE
+_L
+DASHED,HIDDEN,CENTER,PHANTOM,DASHDOT
+acadiso.lin
+
+(tblsearch "LTYPE" "DASHED")
+(tblsearch "LTYPE" "HIDDEN")
+(tblsearch "LTYPE" "CENTER")
+(tblsearch "LTYPE" "PHANTOM")
+(tblsearch "LTYPE" "DASHDOT")

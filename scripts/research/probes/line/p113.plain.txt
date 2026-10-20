@@ -1,0 +1,11 @@
+_LINE
+0,0
+@1,0
+
+_MREDO
+_A
+_U
+_MREDO
+FOO
+0
+

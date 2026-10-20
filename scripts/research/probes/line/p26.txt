@@ -1,0 +1,7 @@
+_LINE
+@
+@10,0
+
+(getvar "LASTPOINT")
+MPDUMP
+-

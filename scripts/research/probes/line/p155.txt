@@ -1,0 +1,20 @@
+_-OSNAP
+_END,_MID
+_-OSNAP
+_OFF
+(getvar "OSMODE")
+_-OSNAP
+
+(getvar "OSMODE")
+_-OSNAP
+_END,_MID
+_-OSNAP
+_NON
+(getvar "OSMODE")
+_-OSNAP
+_ENDP,_QUI
+(getvar "OSMODE")
+_-OSNAP
+_INT,_FOO
+_CEN
+(getvar "OSMODE")

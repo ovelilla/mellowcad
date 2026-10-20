@@ -1,0 +1,15 @@
+_ORTHOMODE
+1
+_LINE
+0,0
+
+_LINE
+5
+@0,10
+
+_LINE
+0,0
+@10,10
+
+MPDUMP
+-

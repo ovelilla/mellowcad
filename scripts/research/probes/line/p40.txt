@@ -1,0 +1,5 @@
+FOO
+'FOO
+'_ZOOM
+_E
+'_LINE

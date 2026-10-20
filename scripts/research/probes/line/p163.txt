@@ -1,0 +1,18 @@
+_ELEVATION
+5
+_LINE
+0,0
+*1,1
+*2,2,1
+
+_-OSNAP
+_ENDP
+_CEN
+_-OSNAP
+_QUI
+_CEN
+_-OSNAP
+_APPINT
+(getvar "OSMODE")
+MPDUMP
+-

@@ -1,0 +1,11 @@
+_UCS
+_X
+90
+_THICKNESS
+3
+_LINE
+0,0
+@10,0
+
+MPDUMP
+-

@@ -41,8 +41,9 @@ function table(file) {
   return map
 }
 
+// printf's conversions and AutoCAD's own `%q` (a length or angle in the drawing's units).
 const PRINTF =
-  /%(\d+\$)?[-+ 0#]*(\d+|\*)?(\.(\d+|\*))?(l|ll|h|I64)?[sdifgSuxXc]|%\d/g
+  /%(\d+\$)?[-+ 0#]*(\d+|\*)?(\.(\d+|\*))?(l|ll|h|I64)?([sdifgSuxXc]|q\d?)|%\d/g
 const ICU_ARG = /\{\w+(, (number|select|date)[^{}]*(\{[^{}]*\}[^{}]*)*)?\}/g
 
 const tidy = (text) => text.replace(/\s+/g, " ").trim().replace(/\s*:$/, "")
@@ -61,7 +62,7 @@ const loose = (text) =>
 function forms(text) {
   const full = fromTable(text)
   const cut = head(full)
-  return [...new Set([full, cut, cut.replace(/ or$/, "")])]
+  return [...new Set([full, cut, cut.replace(/ (or|o|u)$/, "")])]
 }
 
 function index(tableMap, normal = (form) => form) {
@@ -112,6 +113,27 @@ const esOld = table("previous/all_es.tsv")
 const en27Index = index(en27)
 const enOldIndex = index(enOld)
 const en27Loose = index(en27, loose)
+
+// A table string with an argument mid-sentence ("about %s axis") matches the catalog's with the
+// argument filled in ("about X axis"); an argument may also stand for nothing ("text%s:").
+const pattern = (form) =>
+  new RegExp(
+    `^${form
+      .split("{}")
+      .map((part) => part.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"))
+      .join("(.*?)")}$`
+  )
+const en27Patterns = [...en27].flatMap(([id, text]) =>
+  forms(text)
+    .filter(
+      (form) => form.includes("{}") && form.replace(/\{\}/g, "").length > 8
+    )
+    .map((form) => ({
+      id,
+      regex: pattern(form),
+      literal: form.replace(/\{\}/g, "").length,
+    }))
+)
 
 // The Spanish of an id, cut the way its English matched: whole, up to its keyword list, or
 // without the "or" that leads into the list.
@@ -165,6 +187,32 @@ for (const [key, english] of entries) {
         (id) =>
           `${fromTable(en27.get(id) ?? "")} / ${fromTable(es27.get(id) ?? "")}`
       ),
+    })
+    continue
+  }
+  // Most of the sentence must be the table's own words: "%s is too large" is no source for
+  // "Fillet radius is too large".
+  const matched = en27Patterns.filter(
+    ({ regex, literal }) =>
+      literal >= 0.6 * enForm.replace(/\{\}/g, "").length && regex.test(enForm)
+  )
+  if (matched.length) {
+    const ids = [...new Set(matched.map(({ id }) => id))]
+    const spanishOf = (tableMap) =>
+      ids.flatMap((id) =>
+        tableMap.has(id) ? forms(tableMap.get(id)).map(pattern) : []
+      )
+    const fits = (patterns) =>
+      esForm !== undefined && patterns.some((p) => p.test(esForm))
+    results.push({
+      ...row,
+      state: fits(spanishOf(es27))
+        ? "ok"
+        : fits(spanishOf(esOld))
+          ? "es-2027"
+          : "es-differs",
+      ids,
+      tables: ids.map((id) => fromTable(es27.get(id) ?? "")),
     })
     continue
   }

@@ -1,0 +1,12 @@
+_LINE
+0,0
+@10,0
+@0,10
+'_-COLOR
+1
+_U
+@5,5
+
+(getvar "CECOLOR")
+MPDUMP
+-

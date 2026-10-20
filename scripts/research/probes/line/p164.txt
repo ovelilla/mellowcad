@@ -1,0 +1,15 @@
+_LINE
+0,0
+_FRO
+50,50
+
+(getvar "LASTPOINT")
+_LINE
+5,5
+_FRO
+50,50
+@1,1
+(getvar "LASTPOINT")
+
+MPDUMP
+-

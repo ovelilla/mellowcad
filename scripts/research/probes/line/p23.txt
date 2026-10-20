@@ -1,0 +1,7 @@
+_LINE
+_C
+0,0
+_CLOSE
+@10,0
+_CLOSE
+

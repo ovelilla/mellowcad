@@ -1,0 +1,8 @@
+_LINE
+FOO
+0,0
+FOO
+0
+
+MPDUMP
+-

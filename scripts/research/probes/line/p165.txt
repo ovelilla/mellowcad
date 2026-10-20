@@ -1,0 +1,31 @@
+_ZOOM
+_W
+-50,-50
+150,150
+_LINE
+0,0
+@100,0
+
+_LINE
+0,20
+<30
+_END
+99,1
+
+_LINE
+0,0
+1/2
+
+(getvar "LASTPOINT")
+_LINE
+0,0
+0x10
+
+(getvar "LASTPOINT")
+_LINE
+0,0
+1e1
+
+(getvar "LASTPOINT")
+MPDUMP
+-

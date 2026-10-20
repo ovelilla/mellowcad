@@ -1,0 +1,45 @@
+_LINE
+0,0
+10<30d
+
+(getvar "LASTPOINT")
+_LINE
+0,0
+10<30d30'
+
+(getvar "LASTPOINT")
+_LINE
+0,0
+10<0.5r
+
+(getvar "LASTPOINT")
+_LINE
+0,0
+10<50g
+
+(getvar "LASTPOINT")
+_LINE
+0,0
+10<N45dE
+
+(getvar "LASTPOINT")
+_LINE
+0,0
+10<1e1
+
+(getvar "LASTPOINT")
+_LINE
+0,0
+10<30,5
+
+(getvar "LASTPOINT")
+_LINE
+0,0
+10<30<45
+
+(getvar "LASTPOINT")
+_LINE
+0,0
+@10<30<45
+
+(getvar "LASTPOINT")

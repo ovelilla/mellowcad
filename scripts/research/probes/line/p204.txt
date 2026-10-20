@@ -1,0 +1,3 @@
+(list "LWDISPLAY" (getvar "LWDISPLAY") "LTSCALE" (getvar "LTSCALE") "CELTSCALE" (getvar "CELTSCALE") "PSLTSCALE" (getvar "PSLTSCALE") "MSLTSCALE" (getvar "MSLTSCALE"))
+(list "LWDEFAULT" (getvar "LWDEFAULT") "LWUNITS" (getvar "LWUNITS") "CELWEIGHT" (getvar "CELWEIGHT") "CECOLOR" (getvar "CECOLOR") "CELTYPE" (getvar "CELTYPE"))
+(list "ELEVATION" (getvar "ELEVATION") "THICKNESS" (getvar "THICKNESS") "CLAYER" (getvar "CLAYER") "MEASUREMENT" (getvar "MEASUREMENT") "PLINEGEN" (getvar "PLINEGEN"))

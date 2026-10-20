@@ -1,0 +1,6 @@
+_LINE
+0,0
+30,40
+
+(ispropertyreadonly (entlast) "Length")
+(getpropertyvalue (entlast) "Length")

@@ -1,0 +1,26 @@
+_SNAP
+10
+(getvar "SNAPMODE")
+_SNAP
+_OFF
+(getvar "SNAPMODE")
+_SNAP
+
+(getvar "SNAPMODE")
+_SNAP
+FOO
+_ON
+(getvar "SNAPMODE")
+_SNAP
+0
+-5
+_A
+5
+10
+(getvar "SNAPUNIT")
+_LINE
+0,0
+'_SNAP
+5
+@10,0
+
