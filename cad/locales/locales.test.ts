@@ -61,7 +61,7 @@ describe("the engine's catalogs", () => {
   it("are committed exactly as the source compiles to", () => {
     for (const tag of catalogTags()) {
       const committed = readFileSync(join(LOCALES_DIR, `${tag}.ts`), "utf8")
-      expect(committed.replace(/\r\n/g, "\n")).toBe(
+      expect(committed).toBe(
         localeModule(tag, readCatalog(tag))
       )
     }

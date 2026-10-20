@@ -8,20 +8,25 @@ DOM); Next.js/React es solo la capa de presentación. Las reglas de trabajo est�
 
 ### Requisitos
 
-- **Node 24** (desarrollado con 24.16.0 y npm 11, instalado con nvm-windows).
+- **WSL2 con Ubuntu**: todo se desarrolla dentro de WSL, con Bash. El proyecto vive en el disco
+  de Linux (`~/projects/mellowcad`), nunca en `/mnt/c`, y VS Code se conecta con Remote-WSL.
+- **Node 24** dentro de WSL (instalado con nvm, npm 11).
 - **Git**.
-- **Google Chrome**, para las comprobaciones en el navegador con Playwright.
+- **Google Chrome para Linux**, instalado dentro de WSL, para las comprobaciones en el navegador
+  con Playwright.
 - **Vercel CLI**, para desplegar: `npm i -g vercel`.
 
 ### Pasos
 
 1. Trae el código, de una de estas dos formas:
    - clona el repositorio: `git clone https://github.com/ovelilla/mellowcad.git`;
-   - o copia la carpeta del proyecto con `.git` incluida.
+   - o copia la carpeta del proyecto con `.git` incluida. Si viene de Windows, sin `node_modules`
+     (sus binarios nativos son de Windows) y con `git checkout -- .` después, para devolver los
+     finales de línea a LF.
 2. Instala las dependencias:
 
    ```
-   npm install
+   npm ci
    ```
 
    El script `prepare` activa el hook de pre-commit (`git config core.hooksPath .githooks`).
@@ -47,10 +52,6 @@ DOM); Next.js/React es solo la capa de presentación. Las reglas de trabajo est�
    npm run test:coverage
    ```
 
-   En Windows, lanza los tests desde PowerShell (`C:\...`), no desde Git Bash (`/c/...`). Con la
-   letra de unidad en minúscula, Vitest carga los archivos dos veces y todos fallan con
-   "Vitest failed to find the current suite".
-
 ### Qué no está en git y hay que copiar a mano
 
 - **`research/`**: las tablas de textos de AutoCAD en inglés y en español, con las que se
@@ -61,18 +62,18 @@ DOM); Next.js/React es solo la capa de presentación. Las reglas de trabajo est�
   `help/`), como volcados de la ayuda de Autodesk. No se regenera.
 
 Todo lo que el proyecto necesita para seguir está dentro de esta carpeta. No hace falta conservar
-la memoria de Claude Code (`C:\Users\<usuario>\.claude\`): sus reglas se pasaron a `AGENTS.md` y a
+la memoria de Claude Code (`~/.claude/`): sus reglas se pasaron a `AGENTS.md` y a
 `.github/instructions/`.
 
 Para comprobar comportamientos con la consola de AutoCAD (`scripts/research/runacc.sh`), hay que
-tener AutoCAD instalado. Se usaba AutoCAD 2023 en inglés. Si se instala otra versión, se indica su
-ruta en la variable `ACCORE`.
+tener AutoCAD instalado en Windows; el script lo lanza desde WSL. Hoy es AutoCAD 2027 en español.
+Si se instala otra versión, se indica su ruta en la variable `ACCORE`.
 
 ### Qué se regenera solo (no hace falta copiarlo)
 
 | Carpeta / archivo                       | Se regenera con                    |
 | --------------------------------------- | ---------------------------------- |
-| `node_modules/`                         | `npm install`                      |
+| `node_modules/`                         | `npm ci`                           |
 | `.next/`                                | `npm run dev` / `npm run build`    |
 | `coverage/`                             | `npm run test:coverage`            |
 | `tsconfig.tsbuildinfo`, `next-env.d.ts` | `npm run typecheck` / `npm run dev` |

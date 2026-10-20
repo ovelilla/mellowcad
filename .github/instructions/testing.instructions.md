@@ -195,31 +195,25 @@ Only for what the harness cannot see: canvas rendering, DOM, theming, CSS. If yo
   never settles are all invisible to the headless runtime — the clipboard shipped a hang that 31
   green harness tests could not see. Drive those with real keys on a real page.
 
-## Browser tooling on Windows
+## Browser tooling
 
-- Install `playwright-core` (and `lighthouse`, `axe-core`) in a scratch directory, never in the
-  project, and launch the installed Chrome with `chromium.launch({ channel: "chrome" })`: no
-  browser download is needed. Lighthouse needs
-  `CHROME_PATH="C:/Program Files/Google/Chrome/Application/chrome.exe"`.
-- Run Vitest from PowerShell (`C:\…`), not Git Bash (`/c/…`). With the lowercase drive Vitest
-  loads every file twice, under two path casings, and each one fails with "Vitest failed to find
-  the current suite".
-- In Git Bash, set `MSYS_NO_PATHCONV=1` before passing a URL path like `/draw` to node or curl, or
-  it is rewritten to `C:/Program Files/Git/draw`.
+- Install `playwright-core` (and `lighthouse`, `axe-core`) in a scratch directory from
+  `mktemp -d`, never in the project, and launch the installed Chrome (`/usr/bin/google-chrome`,
+  inside WSL) with `chromium.launch({ channel: "chrome" })`: no browser download is needed.
+  Lighthouse finds the same Chrome on its own.
 - Next keeps dev output in `.next/dev`, which `next build` leaves alone, so a running dev server
   survives a build; a running `next start` on the same `.next` must be stopped first. Stopping a
   background `next start` task does not kill its node process. That process keeps the port and
   serves a `.next` rebuilt under it, so every chunk 404s. Free the port by its owner:
-  `Get-NetTCPConnection -LocalPort 3006 -State Listen | % { Stop-Process -Id $_.OwningProcess -Force }`.
-  Never leave a shell's working directory inside `.next` (EBUSY on the next build).
+  `fuser -k 3006/tcp`.
 - **Never judge a performance regression against a number from an earlier session.** Lighthouse
   mobile on `/` flips between 94 and 95 run to run. Build the old commit in a worktree
   (`git worktree add ../mellowcad-a <sha>`, `npm ci`, `next start -p 3007`), run both a few
   times, then `git worktree remove --force`. Best Practices reads 96 locally only because Vercel
   Analytics' scripts 404 off Vercel.
 - To build uncommitted work without touching `.next`: `git worktree add --detach ../x HEAD`, then
-  `robocopy . ../x //MIR //XD node_modules .next coverage .git //XF .git tsconfig.tsbuildinfo`
-  (exit < 8 is success). `/XF .git` matters: without it the source's `.git` directory is copied
-  over the worktree's `.git` link file and the copy becomes a separate repository.
+  `rsync -a --delete --exclude node_modules --exclude .next --exclude coverage --exclude .git --exclude tsconfig.tsbuildinfo ./ ../x/`.
+  `--exclude .git` matters: without it the source's `.git` directory is copied over the
+  worktree's `.git` link file and the copy becomes a separate repository.
 - `content-visibility: auto` sections render blank in a full-page screenshot: take viewport shots
   while scrolling.

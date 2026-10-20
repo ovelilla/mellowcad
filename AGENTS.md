@@ -107,11 +107,11 @@ and what each option does must be the ones they already know.
 - **Several sessions may work in this tree at once.** Stage only your own files or hunks. The hook
   checks the whole tree, so when someone else's change turns it red, verify yours in a clean
   worktree and commit once the tree is green.
-- **Windows working copy:** git checks files out with CRLF, so a scripted replace whose search
-  string holds `\n` silently misses. Use the Edit tool, or normalise first. PowerShell 5.1 reads
-  UTF-8 without a BOM as ANSI and writes one with `-Encoding utf8`, so edit text through node
-  instead. Commit with `git commit -F <file>`, because PowerShell splits a here-string at its
-  quotes.
+- **Everything runs in WSL2 (Ubuntu) with Bash.** The repo lives in `~/projects/mellowcad`, on
+  the Linux disk, and VS Code connects through Remote-WSL: no native Windows, PowerShell or
+  `/mnt/c` working copy (slow, and the watchers miss changes there). The one Windows program used
+  is AutoCAD's console, through `scripts/research/runacc.sh`. Scratch files go in a `mktemp -d`
+  directory outside the repo. Commit a multi-line message with `git commit -F - <<'EOF'`.
 
 ## Where the details live
 

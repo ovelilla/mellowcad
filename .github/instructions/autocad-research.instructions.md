@@ -21,10 +21,15 @@ can check it again.
 
 ## The console
 
-`scripts/research/runacc.sh probe.txt` feeds a file of answers, one per line, to AutoCAD 2023's
-console and prints the transcript. Set `ACCORE` to use another install. There is no Spanish
-console: `es-ES` still answers in English, so Spanish wording comes from the tables.
+`scripts/research/runacc.sh probe.txt` feeds a file of answers, one per line, to the console of
+the AutoCAD 2027 installed on Windows (run from WSL through interop) and prints the transcript.
+Set `ACCORE` to use another install. That install has only the Spanish pack, so the console
+answers in Spanish whatever `/l` says; English wording comes from the tables, or from the console
+once the English language pack is installed (`runacc.sh probe.txt en-US`). The notes below were
+measured on AutoCAD 2023's English console; recheck one before relying on it.
 
+- **Type commands and keywords in their underscore form** (`_LINE`, `_L`, `_Y`): the Spanish
+  console refuses a bare `LINE`, and the same probe then runs in either language.
 - **Keep a probe short.** A refused answer desyncs everything after it.
 - **Typed points pick unreliably.** Select with `L` or a `W`/`C` window instead. To pick an arc by
   a typed point, `ZOOM E`, then `VIEWRES Y 20000`, `REGEN` and `PICKBOX 8` first.
