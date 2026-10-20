@@ -8,7 +8,7 @@ paths:
 
 # UI layer (the editor, `/draw`)
 
-> Verified against **@base-ui/react 1.7.0**, **next-intl 4.14.7**, **tailwind-merge 3.6.0**,
+> Verified against **@base-ui/react 1.7.0**, **next-intl 4.14.9**, **tailwind-merge 3.6.0**,
 > **lucide-react 1.34.0**.
 
 React is a **dumb presentation shell**. Components read `EngineState` and call `CadEngine`

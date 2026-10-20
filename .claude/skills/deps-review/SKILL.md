@@ -48,7 +48,8 @@ An advisory does not wait for the next review. For each one (`npm audit --json`)
 4. **What cites it**: `git grep -n "<pkg>" -- .claude AGENTS.md README.md docs`. A rule whose
    header says `> Verified against **<pkg> <version>**` fails `test/knowledge.test.ts` until its
    claims are checked against the new source in `node_modules` and the version updated.
-5. **Install** keeping the manifest's range style (`^`, or exact with `-E` where it is exact).
+5. **Install** keeping the manifest's range style (`^`, or exact with `-E` where it is exact); a
+   caret's floor moves up to the version installed, as npm writes it.
 6. **Adapt the code** to the changelog; adopt a new API when it replaces our own code.
 7. **A major not finished in the session is deferred**: say what was read and what is left in the
    report, and leave it; the next review starts from there.
