@@ -105,7 +105,7 @@ describe("the engine's catalogs", () => {
 
   // There is no Arabic AutoCAD: someone who drafts in Arabic reads English
   // AutoCAD's prompts every day, so Arabic's command language is the global
-  // one (docs/autocad-coverage.md, "Command line").
+  // one (docs/coverage/command-line.md).
   it("give Arabic the global command language", () => {
     expect(readCatalog("ar")).not.toHaveProperty("commands")
   })

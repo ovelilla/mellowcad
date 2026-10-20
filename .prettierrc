@@ -11,7 +11,7 @@
   "overrides": [
     {
       "files": [
-        "app/[locale]/(marketing)/**",
+        "app/*/*marketing*/**",
         "app/global-not-found.tsx",
         "components/marketing/**"
       ],

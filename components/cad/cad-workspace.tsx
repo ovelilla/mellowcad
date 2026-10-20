@@ -85,7 +85,7 @@ export function CadWorkspace({
   // direction: in a right-to-left page the tools are on the right and the
   // palettes on the left.
   //
-  // The sizes are one system (ui.instructions.md, "Size"): every control is
+  // The sizes are one system (.claude/rules/ui.md, "Size"): every control is
   // 28 px; a bar of them, 36 — the control and 4 px either side —, the command
   // line among them; the tool palette, two columns of 28, 2 px apart. Each
   // zone sizes its content (`box-content`) and its border lies outside it, or

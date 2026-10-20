@@ -2,20 +2,15 @@
 
 > **Estado:** pendiente; la landing está terminada en código. Sigue la convención de `docs/next-*.md`:
 > se borra cuando el lanzamiento haya ocurrido. Las reglas de la landing están en
-> `.github/instructions/marketing.instructions.md`; el brief que la diseñó (`docs/next-landing.md`)
-> está en el historial de git.
+> `.claude/rules/marketing.md`; el brief que la diseñó (`docs/next-landing.md`) está en el historial
+> de git.
 
-## 1. Requiere las cuentas y la URL pública
+## 1. Search Console y Bing
 
-Hecho el 01/10/2026: Search Console (verificada por DNS) y Bing Webmaster Tools (importada desde Search
-Console, así que no usa `BING_SITE_VERIFICATION`), con el sitemap enviado y `/`, `/es` y `/ar`
-inspeccionadas. En producción, el JSON-LD de cada idioma se lee bien (`WebSite`, `WebApplication` y
-`Organization`), y las tarjetas OG responden a 1200 px en los tres idiomas.
-
+- Pendiente: revisar el informe **Páginas** de Search Console y, cuando haya tráfico, **Core Web
+  Vitals** (el objetivo de LCP de campo es ≤ 1,8 s).
 - El Rich Results Test no mostrará la ficha de software de Google: exige `aggregateRating` o `review`,
   y no se inventan valoraciones. Que no sea apta es lo esperado.
-- Pendiente: revisar en unos días el informe **Páginas** de Search Console y, cuando haya tráfico,
-  **Core Web Vitals** (el objetivo de LCP de campo es ≤ 1,8 s).
 
 ## 2. Secuencia de lanzamiento
 
@@ -31,10 +26,10 @@ inspeccionadas. En producción, el JSON-LD de cada idioma se lee bien (`WebSite`
 6. **Outreach** a los autores de los listados "free AutoCAD alternatives / online CAD" que hoy
    posicionan.
 7. **Artículo técnico** (dev.to, Hashnode o un blog propio) que enlace a la home. El repo es privado y
-   el lanzamiento no depende de GitHub; si algún día se publica, necesita un README de verdad (el
-   actual es el de la plantilla de shadcn).
+   el lanzamiento no depende de GitHub; si algún día se publica, su README (hoy, cómo montar el
+   proyecto) necesita una presentación para quien no lo desarrolla.
 
-Todo lo que se publique sigue la política de afirmaciones de `marketing.instructions.md`.
+Todo lo que se publique sigue la política de afirmaciones de `.claude/rules/i18n.md` («Claims»).
 
 ## 3. Medición
 

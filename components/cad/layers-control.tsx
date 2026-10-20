@@ -27,7 +27,11 @@ import type { EditorState } from "@/hooks/useCadEngine"
 import { LinetypeSelect } from "./linetype-select"
 import { LineweightSelect } from "./lineweight-select"
 
-/** How long a second click on a selected name waits for a double-click. */
+/**
+ * How long a second click on a selected name waits for a double-click, which
+ * still makes the layer current. F2, AutoCAD's other rename key, is the
+ * command history here.
+ */
 const RENAME_DELAY_MS = 400
 
 /**

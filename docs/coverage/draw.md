@@ -1,0 +1,406 @@
+# Draw
+
+### `LINE` / `L` · es `LINEA` / `L`
+
+**Implemented:** `LINE Specify first point:` (es `LINEA Precise primer punto:`), then
+`Specify next point or [Undo]:` from it on — its Undo takes that point back — and `[Close/Undo]`
+from the second segment (es `Precise punto siguiente o [desHacer]` / `[Cerrar/desHacer]`); the
+history writes each prompt with its answer (see Command window); Undo steps back one segment at a
+time, Close draws back to the first point and ends; Continue, Enter or a right-click at the first
+point: from the end of the last line, polyline or arc, from an arc tangent to it asking only
+`Length of line:` (es `Longitud de la línea:`; typed, or a pick at that distance), then on, and with
+nothing to continue `No line or arc to continue.` (es `No hay línea o arco que se pueda continuar.`)
+and the first point asked again; direct distance along the cursor (negative: the other way), along
+an OTRACK guide or an Extension measured from the acquired point (still the first point's question);
+the `<angle` override; the length and angle fields, the angle shown acute (0–180°) and a typed one
+read on the cursor's side; `@` at the first point from LASTPOINT; a Tangent or Perpendicular
+override at the first point deferred until the next ("Deferred Tangent", asking for the next point):
+with a plain next point, the tangent from it or the foot of the perpendicular (on a line, a circle
+or an arc), with a second Tangent the line touching both circles — of the four, the one nearest the
+picks — and a Tangent with a Perpendicular to a line the line touching the one square to the other;
+each end at its own point's Z, with THICKNESS; one U undoes the whole command, Ctrl+Z inside it is
+its Undo
+
+**Missing:** the deferred marker and its tooltip (only the rubber band shows it), a deferred snap on
+a polyline segment, an ellipse or a spline, two deferred Perpendiculars, a zero-length segment from
+two picks on one point (skipped here; AutoCAD keeps one, **unverified** for a double-click)
+
+### `PLINE` / `PL` · es `POL` / `PL`†
+
+**Implemented:** `Specify start point:`, `Current line-width is 0.0000` (at the drawing's
+precision), `Specify next point or [Arc/Close/Halfwidth/Length/Undo/Width]:` (Close once a segment
+exists, Undo from the start: `All segments already undone.` with none) and in arc mode
+`Specify endpoint of arc (hold Ctrl to switch direction) or [Angle/CEnter/CLose/Direction/Halfwidth/Line/Radius/Second pt/Undo/Width]:`
+(es `Precise punto inicial`, `El grosor de la línea actual es`,
+`Precise punto siguiente o [Arco/Cerrar/Mitad grosor/Longitud/desHacer/Grosor]`,
+`Precise punto final del arco (mantenga pulsada la tecla Ctrl para cambiar de dirección) o [ángUlo/cEntro/Cerrar/Dirección/Mitad grosor/líNea/Radio/Segundo pto./desHacer/Grosor]`);
+straight segments and arcs, open + closed, Continue; the arc's endpoint tangent to the chain — the
+first one leaving along the last line, arc or polyline drawn, else east — or the other way while
+Ctrl is held, an end straight ahead `*Invalid*`; Angle (`Specify included angle:`, then the endpoint
+or `[CEnter/Radius]`, Radius's `Specify direction of chord for arc … <0>:` defaulting to where the
+chain heads), CEnter (`Specify center point of arc:`, then the endpoint or `[Angle/Length]`, a
+negative chord the major arc), Direction
+(`Specify the tangent direction for the start point of arc:`, `Specify endpoint of the arc …:`),
+Radius (the minor arc counter-clockwise, or `[Angle]` and the chord's direction), Second pt
+(`Specify second point on arc:`, `Specify end point of arc:`), each refusing as the console does
+(Enter where no default: `Invalid 2D point.`), their angles and distances measured by points as
+AutoCAD's are; arc-mode CLose with the tangent arc (`*Invalid*` and a line where none leaves that
+way); Undo back to the mode of the segment left last; Length's `Specify length of line:` (es
+`Precise longitud de línea:`), no default (Enter and `FOO`:
+`Requires numeric distance or second point.`), a point measured from the last vertex, the line on
+the way the chain heads — along the last segment, tangent to an arc, and as the first segment along
+the last line, arc or polyline drawn, else east —, a negative length back the other way and 0 a
+segment of no length, as the console's; in the first vertex's plane, the others projected onto it,
+with THICKNESS; Halfwidth and Width (es `Mitad grosor`, declared `Mitad`, and `Grosor`), in line and
+arc mode alike: `Specify starting width <0.0000>:` and `Specify ending width <…>:`
+(`Specify starting half-width`, `Specify ending half-width`; es `Precise grosor inicial`,
+`Precise grosor final`, `Precise mitad de grosor inicial`, `Precise mitad de grosor final`), a value
+or a point measured from the last vertex (`Requires numeric distance or second point.`; a negative
+one `Value must be positive.`), the starting width offering the one the next segment would end at,
+the ending one the starting just given; the ending width runs on through the segments after it,
+Close and arc CLose included, and is PLINEWID when the command ends — drawn or not, with the
+polyline's undo step — and `Current line-width is` the next PLINE's start; Undo takes the width back
+to PLINEWID's as the command started where every segment left has it, else to 0, whatever it was set
+to, as AutoCAD 2023's console does (acc/w3–w7)
+
+**Missing:** Spanish declares `Mitadgrosor` at the first segment's prompt (21322; `Mitad` everywhere
+here, **unverified** whether `MITADG` answers there); PLINEGEN and a linetype's dashes along a wide
+band (drawn solid); AutoCAD breaks the arc prompt after its `or`, written here on one line
+
+### `RECTANG` / `REC` · es `RECTANG` / `REC`
+
+**Implemented:** `Specify first corner point or [Chamfer/Elevation/Fillet/Thickness/Width]:` (es
+`Precise primer punto de esquina o [Chaflán/Elevación/eMpalme/Alt-objeto/Grosor]`) and
+`Specify other corner point or [Area/Dimensions/Rotation]:` (es
+`Precise esquina opuesta o [áRea/Cotas/rOtación]`), neither taking Enter
+(`Point or option keyword required.`); two-corner closed polyline. The first prompt's options ask a
+value offering the one they keep for the session, negative ones too: Chamfer
+`Specify first chamfer distance for rectangles` and `Specify second chamfer distance for rectangles`
+(its `<default>` the last second distance, or with none the first just given), Fillet
+`Specify fillet radius for rectangles` (its default Chamfer's first distance, and it sets both),
+Elevation `Specify the elevation for rectangles` and Thickness `Specify thickness for rectangles`
+(instead of ELEVATION and THICKNESS), and Width `Specify line width for rectangles` (es
+`Precise grosor de línea para rectángulos`, its keyword `Grosor` at that prompt only, `Anchura`
+being Area's), a value or two points (`Requires numeric distance or two points.`), never PLINEWID:
+every side and fillet that wide, a negative width listed as typed and drawn as none (acc/w6).
+Chamfer and Fillet replace each other, and 0 (0 x 0) turns them off; each corner is cut the first
+distance back along the side reaching it and the second along the side leaving it, the polyline
+starting where the first corner's cut begins, eight vertices — doubled and plain when the cuts do
+not fit on a side, as the console leaves them.
+`Current rectangle modes:  Chamfer=10.00 x 5.00  Elevation=…  Fillet=…  Thickness=…  Width=…  Rotation=30`
+lists the ones not 0 (es
+`Modos de rectángulo actuales:  Chaflán=…  Elevación=…  Empalme=…  Alt-objeto=…  Grosor=…  Rotación=…`).
+Area: `Enter area of rectangle in current units <100.00>:` (`Requires numeric value.`,
+`Value must be positive and nonzero.`),
+`Calculate rectangle dimensions based on [Length/Width] <Length>:`,
+`Enter rectangle length <10.00>:` or `Enter rectangle width`, the other side giving the area with
+the chamfers or fillets when they fit, laid along the turned +X and +Y and made at once. Dimensions:
+`Specify length for rectangles` and `Specify width for rectangles` (the sides Area keeps too, its
+computed one included), then the other corner picks the quadrant — read along the UCS, not along the
+turned sides, as AutoCAD 2023's console reads it (WHY in the tool). Rotation:
+`Specify rotation angle or [Pick points] <0>:`, an angle, a point measured from the first corner, or
+Pick points' `Specify first point:` and `Specify second point:` (`Invalid point.`), kept for the
+session. The words are Autodesk's 2027 Spanish string table's. An Elevation other than 0 puts the
+rectangle that high above the UCS's XY plane whatever the corners' Z; at 0 the first corner fixes
+the plane (**unverified**: the help only says it "Specifies the Z-value for the rectangle")
+
+**Missing:** a length of 0 at Area, which here makes nothing (the console a polyline of no size at
+the origin); Enter at Pick points' first point (the console takes its own cursor there; refused here
+as `Invalid point.`)
+
+### `POLYGON` / `POL` · es `POLIGONO` / `PG`†
+
+**Implemented:** `Enter number of sides <4>:` (es `Indique número de lados <4>:`), a count outside
+3–1024 or not whole refused with `Requires an integer between 3 and 1024.` (es
+`Requiere un nº entero entre 3 y 1024.`, the table's `Requires an integer between %d and %d` with
+the period AutoCAD's input functions end it with) and asked again;
+`Specify center of polygon or [Edge]:` (es `Precise centro de polígono o [Lado]:`),
+`Enter an option [Inscribed in circle/Circumscribed about circle] <I>:` (es
+`Indique una opción [Inscrito en el círculo/Circunscrito alrededor del círculo] <I>:`), then
+`Specify radius of circle:` (es `Precise radio de círculo:`); the count (POLYSIDES) and the option
+are the next run's `<default>`, for the session; Inscribed puts the vertices on the radius,
+Circumscribed the edges' midpoints; a picked radius sizes and turns it, a typed one draws the bottom
+edge level in the UCS ("Specifying the radius draws the bottom edge of the polygon at the current
+snap rotation angle"); Edge's `Specify first endpoint of edge:` and
+`Specify second endpoint of edge:` (es `Precise primer punto final de lado:`,
+`Precise segundo punto final de lado:`) build it counterclockwise from that edge; a closed polyline
+in the plane of its centre or first endpoint, with THICKNESS. English wording and geometry from
+AutoCAD 2023's own console, Spanish from the 2027 Spanish language pack's string table, paired with
+the English by id
+
+**Missing:** a point at `Specify radius of circle:` typed as a coordinate (a distance only here),
+SNAPANG (no rotated snap here: a typed radius levels the bottom edge with the UCS), POLYSIDES as a
+variable
+
+### `CIRCLE` / `C` · es `CIRCULO` / `C`
+
+**Implemented:** `Specify center point for circle or [3P/2P/Ttr (tan tan radius)]:` (CIRCLED's too),
+`Specify radius of circle or [Diameter] <10.0000>:` and `Specify diameter of circle <20.0000>:` with
+CIRCLERAD (none while it is 0), 2P's `Specify first/second end point of circle's diameter:`, 3P's
+`Specify first/second/third point on circle:`, Ttr's
+`Specify point on object for first/second tangent of circle:`, `Specify radius of circle:` and
+`Specify second point:` (es
+`Precise punto central para círculo o [3P/2P/Ttr (Tangente tangente radio)]`,
+`Precise radio de círculo o [Diámetro]`…); Center-Radius, Center-Diameter, 2P, 3P (`3P` and `2P`
+typed whole: digits count as a keyword's capitals); Ttr — two lines, circles or arcs (an arc as its
+whole circle, a line as its whole line), the radius typed, as two points or Enter's CIRCLERAD, and
+of the circles that fit the one whose tangent points are nearest the picks (none:
+`Circle does not exist.` and the command ends), at the height of the first pick's drawing plane; a
+radius or diameter of 0 or less is refused (`Value must be positive and nonzero.`, and the prompt
+asks again); Enter at the radius or diameter takes the last circle's (CIRCLERAD: per session, none
+at first, when Enter ends the command); in the plane of the centre or of the first 2P point, with
+THICKNESS; 3P through points at different heights lies in the plane of the three, with its own
+normal
+
+**Missing:** Ttr on polyline segments, ellipses and splines, Ttt (tangent-tangent-tangent); 2P
+through points at different heights stays in the first point's plane (**unverified**: no source says
+whether AutoCAD tilts it)
+
+### `ARC` / `A` · es `ARCO` / `A`
+
+**Implemented:** `Specify start point of arc or [Center]:` — Center asks
+`Specify center point of arc:` then `Specify start point of arc:` — then
+`Specify second point of arc or [Center]:` — Center asks the centre next — and
+`Specify end point of arc:`; a centre mode's end,
+`Specify end point of arc (hold Ctrl to switch direction):`, runs clockwise while Ctrl is held (es
+`Precise punto inicial del arco o [Centro]`, `Precise segundo punto de arco o`,
+`Precise punto central del arco`, `Precise punto inicial del arco`, `Precise punto final del arco`,
+`Precise punto final del arco (mantenga pulsada la tecla Ctrl para cambiar de dirección)`); 3-point
+(through points at different heights, in the plane of the three), Start-Center-End, Center-Start-End
+(the rail's ARCSCE and ARCCSE); CCW storage invariant; in the first point's plane, with THICKNESS
+
+**Missing:** End at the second point and Angle / chord Length at the end point (so those questions
+go without the `or` that introduces them), the remaining SCA/SCL/SEA/SED/SER permutations, Continue
+
+### `ELLIPSE` / `EL` · es `ELIPSE` / `EL`†
+
+**Implemented:** `Specify axis endpoint of ellipse or [Arc/Center]:` (es
+`Precise punto final de eje de elipse o [Arco/Centro]:`), `Specify other endpoint of axis:`,
+`Specify distance to other axis or [Rotation]:` (es `Precise distancia de otro eje o [Rotación]:`),
+Rotation's `Specify rotation around major axis:`; Center's `Specify center of ellipse:` then
+`Specify endpoint of axis:`; Arc's `Specify axis endpoint of elliptical arc or [Center]:` (and
+`Specify center of elliptical arc:` — Center keeps the Arc chosen before it),
+`Specify start angle or [Parameter]:`, `Specify end angle or [Parameter/Included angle]:` and
+`Specify included angle for arc <180>:` (Enter draws half); Parameter asks
+`Specify start parameter or [Angle]:` and `Specify end parameter or [Angle/Included angle]:` (es
+`Precise ángulo inicial o [Parámetro]`, `Precise parámetro inicial o [ángUlo]`,
+`Precise parámetro final o [ángUlo/ángulo Incluido]`), the choice holding from the start to the end
+prompt until Angle; a parameter is u in `p(u) = c + a·cos(u) + b·sin(u)`, a point given there is
+taken by its angle from the major axis as u (`0,25` on 0,0 → 100,0, 25 starts at 5.28,11.18), and
+Included angle sweeps in the end prompt's measure (90 from an angle of 30: to angle 120, or after
+Parameter to u 139.1); the first axis's semi-axis runs to the first endpoint (from a centre, to the
+endpoint given), where angle and parameter 0 lie, and a longer other axis is it turned a quarter
+left — AutoCAD 2023's console, its refusals included
+(`Requires valid numeric angle, second point, or option keyword.`). ELLIPSEC and ELLIPSEARC (the
+ribbon's Center and Elliptical Arc) start at the centre's and the arc's first prompt. A rotation in
+the refused band says `*Invalid*` and ends the command, as AutoCAD's does. Axis-End, Center, Arc
+(start/end angle + Included angle), Rotation (with AutoCAD's 89.4°–90.6° refusal); DXF model (centre
++ major-axis vector + ratio + parameters); centre/quadrant/endpoint/nearest snaps; both radii
+editable in the palette
+
+**Missing:** Isocircle: AutoCAD offers it only under the isometric snap style (SNAPSTYL 1, not built
+here), as `[Arc/Center/Isocircle]`, `Specify center of isocircle:`,
+`Specify radius of isocircle or [Diameter]:` and `Specify diameter of isocircle:`; `PELLIPSE` = 1
+(polyline approximation), axis grips (only the centre grips), ratio and angles as palette rows,
+OFFSET / HATCH / boundary / BREAK / JOIN / FILLET / DIM on an ellipse, tangent and perpendicular
+snaps, ellipse intersections; the ribbon's `_c` / `_a` answer in the history of ELLIPSEC and
+ELLIPSEARC, a zero-length first axis (AutoCAD takes it and then says `*Invalid*`); Spanish from the
+2027 Spanish language pack's string table, paired with the English by id
+
+### `SPLINE` / `SPL` · es `SPLINE` / `SPL`
+
+**Implemented:** `Current settings: Method=Fit   Knots=Chord` (es
+`Parámetros actuales: Método=Ajustar Nudos=Cuerda`; CV `Method=CV   Degree=3`, es
+`Método=VC   Grado=3`) at the start and after each Method, Knots or Degree;
+`Specify first point or [Method/Knots]:` (CV `[Method/Degree]`; es
+`Precise primer punto o [Método/Nudos]:`), `Enter spline creation method [Fit/CV] <Fit>:`,
+`Enter knot parameterization [Chord/Square root/Uniform] <Chord>:` (es
+`[Cuerda/raíz cuaDrada/Uniforme]`), `Enter degree of spline <3>:`, then
+`Enter next point or [start Tangency]:`, `[end Tangency/Undo]` and `[end Tangency/Undo/Close]` (es
+`Especifique punto siguiente o`, but `Precise el punto siguiente o` at the third point, as
+Autodesk's table words it), CV's `Enter next point:`, `[Undo]` and `[Close/Undo]`,
+`Specify start tangent:` and `Specify end tangent:`. Fit: a cubic through the points (n + 2 control
+vertices, knots the unnormalised chord sums LIST reports), Knots Chord / Square root / Uniform,
+start Tangency after the first point, end Tangency ending the command, Close from the third point,
+periodic, ending the command (AutoCAD 2023's console asks no tangent there). CV: Degree 1–10,
+lowered to vertices − 1 when fewer, knots 1 apart, Close from the third point (periodic). Undo;
+Method, Knots and Degree kept for the session (SPLMETHOD / SPLKNOTS / SPLDEGREE, Not-saved); Escape
+discards the curve; one undo step; the control frame while drawing CV. Endpoint, Midpoint (halfway
+along), Nearest and Intersection snaps (against the chords of a tessellation a hundred-thousandth of
+the size off the curve); a grip per fit point or control vertex, with the frame of a CV spline;
+palette rows Method, Degree, Knot parameterization, Closed, Area (read-only); STRETCH moves the
+points in the window; EXPLODE refuses it, as AutoCAD's does. Wording from AutoCAD 2023's console and
+resources and the 2027 Spanish language pack's
+
+**Missing:** toLerance and Object (not offered: a tolerance above 0 is an approximation Autodesk
+does not document, and there are no spline-fit polylines to convert), the end tangents AutoCAD
+computes when none is given (undocumented; here the parabola through the three end points),
+SPLINEDIT, CVSHOW / CVHIDE, the triangular grip and the multifunction grip menus (add / remove
+point, tangent, refine), weights, palette editing, TRIM / EXTEND of a spline an edge reaches (TRIM's
+row), BREAK / JOIN / OFFSET / FILLET / HATCH / DIM on a spline or against one, Perpendicular /
+Tangent / Geometric Center snaps, PEDIT Spline, BLEND
+
+### `TEXT` / `DTEXT` / `DT` · es `TEXTO` / `T`†
+
+**Implemented:** single-line text, 13 justifications, text styles table, as AutoCAD 2023's console
+asks it: `Current text style:  "Standard"  Text height:  2.5000  Annotative:  No  Justify:  Left`
+(es `Estilo de texto actual:  … Altura de texto: … Anotativo: … Justificar:`),
+`Specify start point of text or [Justify/Style]:` — the point the justification names,
+`Specify middle point of text`, `Specify top-left point of text`… (es
+`Precise punto inicial de texto`, `Precise punto medio de texto`…), without the keywords after
+Justify, whose `Enter an option [Left/Center/Right/Middle/TL/TC/TR/ML/MC/MR/BL/BC/BR]:` (es
+`[Izquierda/Centro/Derecha/Medio/SIZ/…]`) is also answered unlisted at the first prompt (`MC` there
+asks the middle point at once) —, Style's `Enter style name or [?] <Standard>:` (Enter keeps it;
+`Cannot find text style "NAME".`, es `No se puede encontrar estilo de texto "NAME".`; `?` lists the
+styles as the console lists them, `Text styles:` … `Current text style: "Standard"`),
+`Specify height <2.50>:`, `Specify rotation angle of text <0.00>:`, then `Enter text:` (es
+`Escriba el texto`) a line at a time
+
+**Missing:** Align and Fit justifications, `?`'s `Enter text style(s) to list <*>:` and its pages,
+in-place caret editing (the text is typed in the box: `Enter text:` is DTEXT's command-line prompt),
+content edit from the palette; **unverified**: how the `Current text style` line names a
+justification other than Left (its keyword here, `Justify:  MC`)
+
+### `MTEXT` / `T` / `MT` / `-MTEXT` · es `TEXTOM` / `-TEXTOM`
+
+**Implemented:** two corners or Width; as AutoCAD 2023's console asks it:
+`Current text style:  "Standard"  Text height:  2.5  Annotative:  No`, `Specify first corner:`,
+`Specify opposite corner or [Height/Justify/Line spacing/Rotation/Style/Width]:` and its keywords'
+`Specify height <2.50>:`, `Enter justification [TL/TC/TR/ML/MC/MR/BL/BC/BR] <TL>:` (nine
+attachments; the box hangs off the attachment point however it was dragged),
+`Enter line spacing type [At least/Exactly] <At least>:` and
+`Enter line spacing factor or distance <1x>:` (a factor `nx` or a distance, 0.25x–4x, else
+`Please specify a line spacing value between 1.04 (0.25x) and 16.67 (4x), inclusive.`),
+`Specify rotation angle <0.00>:` and `Enter style name or [?] <Standard>:` (`Invalid style name`)
+looping back to the corner, Width's `Specify width:`; es from Autodesk's MTEXT table
+(`Precise la primera esquina`, `Indique la esquina opuesta o`, `Indique la altura`,
+`Indique la justificación`, `Indique el tipo de interlineado [Al menos/Exactamente]`,
+`Indique el ángulo de rotación`, `Indique la anchura`, `Nombre de estilo no válido`); word wrap from
+Arial's widths (a longer word overflows), single spacing 5/3 of the height; MTJIGSTRING `abc` jig
+and flow arrow; the editor is the dynamic-input box made multi-line and drawn in place (Enter breaks
+a paragraph, Ctrl+Enter or a click outside the frame keeps, Escape discards); `-MTEXT` takes the
+lines at `MText:` (es `textoM:`); contents kept as AutoCAD's string (`P`, escapes; inline codes
+survive but are not drawn); Insertion snap, width grip, palette rows (line space
+factor/distance/style, defined width), TEXTEDIT and double-click, EXPLODE to TEXT
+
+**Missing:** Columns (the keyword is not offered), drawing inline formatting (height, font, colour,
+stacking, underline…), the editor's ruler, tabs, indents and lists, background mask, text frame, the
+Text Formatting toolbar, MTEXTFIXED 2 (horizontal while typing; here always as drawn), a caret on
+the canvas, Node snap on MTEXT (OSNAPNODELEGACY 0; where its points fall is undocumented), defined
+height and the column-height grip, Annotative, `?`'s own listing (here TEXT's: MTEXT's table words
+it `Style name: … Font files: …`), what a click with no drag does (undocumented)
+
+### `HATCH` / `H` / `BH` · es `SOMBREA` / `SB`† / `SMB`†
+
+**Implemented:** -HATCH's command line for both names (WHY: the Hatch Creation tab and the Hatch and
+Gradient dialog, where HATCH sets its properties, do not exist here):
+`Current hatch pattern:  ANSI31` (es `Patrón de sombreado actual:`), then
+`Specify internal point or [Properties/Select objects]:` (es
+`Precise punto interno o [Propiedades/Designar objetos]`) until Enter makes the hatch — each
+internal point says `Selecting everything...`, `Selecting everything visible...`,
+`Analyzing the selected data...`, `Analyzing internal islands...` (es `Seleccionándolo todo...` …)
+and traces the area (boundary tracing, Outer island style), Select objects asks `Select objects:`
+(MOVE's counts and modes) and goes back to the internal point, with an empty set too; Undo, which
+the prompt declares but does not list (es `desHacer`), takes back the last internal point's
+boundaries without a word and asks again, leaving what Select objects took, and with no internal
+point left says `No boundary to Undo.` (es `Ningún contorno por deshacer.`); Properties asks
+`Enter a pattern name or [?/Solid] <ANSI31>:` (`Unknown pattern name.`), then for a pattern
+`Specify a scale for the pattern <1.00>:` and `Specify an angle for the pattern <0.00>:` (es
+`Indique nombre de patrón o [?/Sólido]`, `Nombre de patrón desconocido.`,
+`Precise escala del patrón`, `Precise ángulo del patrón`); SOLID + ANSI31, live preview, single
+undo, paint order behind the boundary, area hit-test, single grip; the hatch lies at the height of
+its boundary: the object nearest an internal point (-HATCH's Nearest ray casting) or the first
+object selected fixes it, and objects at another height are neither traced nor taken ("enclosed
+areas can be hatched only if they are in a plane parallel to the XY plane of the current UCS";
+objects "not all at the same elevation" give `Valid hatch boundary not found.`); which object fixes
+the plane is **unverified**; objects at an angle to the UCS's XY plane are not taken
+
+**Missing:** the metric pattern file (acadiso.pat defines ANSI31 at 3.175 spacing; the imperial
+0.125 is used, so a millimetre drawing needs HPSCALE ≈ 25), chained open-object boundaries,
+HPGAPTOL, HPASSOC, HPSEPARATE=1, Normal/Ignore island styles, -HATCH's other keywords (draW
+boundary, remove Boundaries, Advanced, DRaw order, Origin, ANnotative, hatch COlor, LAyer,
+Transparency) and `?`'s `Enter pattern(s) to list <*>:` with its pages, HATCHEDIT/HE, gradients,
+user-defined patterns + Double, Origin, `-HATCH` draw order/colour/layer/transparency, annotative,
+the other ~70 predefined patterns
+
+### `BLOCK` / `B` / `-BLOCK` · es `BLOQUE` / `BQ`†
+
+**Implemented:** -BLOCK's command line: `Current settings: Object conversion=Convert`,
+`Enter block name or [?]:` (Enter ends; a name with `<>/\":;?*|,=` and the like says
+`Invalid block name.`), `Specify insertion base point:` (`Invalid point.`), then `Select objects:`
+with its modes and counts (es `Parámetros actuales: conversión de objetos=Convertir` — the word
+**unverified** —, `Indique nombre de bloque o [?]`, `Especifique un punto base de inserción`,
+`Nombre de bloque no válido.`); `?` list, Convert mode, layer-0 inheritance on insert; attribute
+definitions ask in pick order (a window or crossing picks them in reverse order of creation), and
+the converted reference asks their values as INSERT does
+
+**Missing:** the base point's Annotative and mOde (Retain/Delete), `?`'s
+`Enter block(s) to list <*>:` and AutoCAD's table of counts (here the names), "block already exists"
+redefine prompt, ATTSYNC / ATTREDEF / BATTMAN / BATTORDER (redefining leaves existing attributes as
+they were, as AutoCAD does)
+
+### `INSERT` / `I` / `-INSERT` · es `INSERT` / `IN`†
+
+**Implemented:** -INSERT's command line: `Enter block name or [?] <B1>:` (the last block inserted,
+or else the last defined, INSNAME's), `Specify insertion point or [Scale/Rotate]:`, Scale's
+`Specify scale factor for XYZ axes <1.00>:` (uniform; `Requires numeric distance or two points.`)
+and Rotate's `Specify rotation angle <0.00>:` (`Requires valid numeric angle or two points.`), each
+back to the point (es `Indique nombre de bloque o [?]`,
+`Precise punto de inserción o [Escala/Girar]`, `Precise factor de escala para ejes XYZ`,
+`Precise ángulo de rotación`); mirrored flag; attribute values at the command line (ATTDIA 0, ATTREQ
+1): `Enter attribute values` (es `Indique valores de atributo`), each asked by its prompt (its tag
+when it has none) with its default, `Prompt one <def1>:`, `Verify attribute values` (es
+`Verificar valores de atributo`) for Verify mode, Preset takes its default, Constant is drawn from
+the block; the reference is added once all are given (one undo step, Escape cancels the whole
+insertion)
+
+**Missing:** the X scale, Y scale and rotation AutoCAD asks after the point when Scale and Rotate
+were not given (here the point places the reference at the session's scale and angle),
+`Units: Millimeters   Conversion:    1.0000`, a name not in the drawing (AutoCAD searches for a
+drawing file, `"FOO.dwg": Can't find file in search path:` … `*Invalid*`; here
+`Block "FOO" is not defined.` and the name again), Basepoint/Corner/XYZ/Explode/Repeat, non-uniform
+X/Y/Z scale (the ellipse exists now, but this also needs `InsertEntity.scale` split into X/Y and a
+per-axis `scaleEntity`), inserting an external drawing + INSUNITS, ATTDIA 1 (the Edit Attributes
+dialog at insertion), ATTREQ 0
+
+### `ATTDEF` / `ATT` / `-ATTDEF` · es `ATRDEF` / `AT`† / `-ATRDEF` / `-AT`†
+
+**Implemented:** -ATTDEF's command-line sequence for both names (ATTDEF's dialog is not built, as
+BLOCK's is not): the modes line on two lines, as AutoCAD 2023's console prints it
+(`Current attribute modes:` /
+`Invisible=N  Constant=N  Verify=N  Preset=N  Lock position=Y  Annotative=N  Multiple line=N`, then
+`Enter an option to change [Invisible/Constant/Verify/Preset/Lock position] <done>:`, es
+`Indique una opción para modificar [Invisible/Constante/Verificable/Predefinido/Bloquear posición] <terminado>`;
+es `Modos de atributo actuales:` / `Invisible=N  Constante=N … Anotativo=N  línea Múltiple=N`, the
+last two always N here) and Invisible / Constant / Verify / Preset / Lock position toggles (AFLAGS,
+per session, initially Lock position), `Enter attribute tag name:` (uppercased; Enter says
+`Tag cannot be null`, es `El identificador no puede ser nulo`; spaces and `!` refused),
+`Enter attribute prompt:` (Enter = the tag), `Enter default attribute value:` or, for Constant,
+`Enter attribute value:`, a leading `\` keeps blanks; then
+`Current text style:  "Standard"  Text height:  2.50  Justify:  Left` (es
+`Estilo de texto actual:  "Standard"  Altura del texto: …`) and TEXT's prompts in TEXT's words and
+refusals (Justify, Style, start point, height, rotation) with Enter at the start point stacking
+below the previous definition; a loose definition shows its tag, always (ATTMODE governs references
+only), has Insertion snap, palette rows and TEXTEDIT / double-click for Tag, Prompt and Default
+
+**Missing:** Multiple lines (ATTMULTI) and Annotative (not offered), fields, Align/Fit (as TEXT),
+the Attribute Definition dialog
+
+### `ATTEDIT` / `ATE` / `EATTEDIT` · es `ATREDIT` / `EDITATR`
+
+**Implemented:** pick a reference with attributes and edit its values in the dynamic-input box (not
+asked through the command line's question: the pick's prompt is not in the string tables extracted,
+so it keeps `ATTEDIT:`), one field per attribute labelled by prompt (ATTEDIT's Edit Attributes) or
+by tag (EATTEDIT's Attribute tab); Tab moves, Enter is OK, Escape Cancel; one undo step;
+double-click on a reference with attributes opens EATTEDIT
+
+**Missing:** -ATTEDIT, ATTIPEDIT and Ctrl+double-click, EATTEDIT's Text Options and Properties tabs
+and Select Block button, moving an unlocked attribute with grips, attribute rows editable in the
+Properties palette
+
+### `ATTDISP` · es `ATRVIS`
+
+**Implemented:** `Enter attribute visibility setting [Normal/ON/OFF] <Normal>:` (the current one; es
+`Indique parámetro de visibilidad de atributo [Normal/ACT/DES]`), `Invalid option keyword.` for
+anything else; Normal / ON / OFF (ATTMODE, saved in the drawing, undoable), `Regenerating model.`
+when it changes, as AutoCAD 2023's console says it; Enter keeps the setting

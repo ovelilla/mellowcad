@@ -4,7 +4,7 @@
  *
  *   node scripts/research/pair.mjs "Specify next point"
  *
- * See .github/instructions/autocad-research.instructions.md.
+ * See .claude/skills/autocad-research/SKILL.md.
  */
 import { readFileSync } from "node:fs"
 

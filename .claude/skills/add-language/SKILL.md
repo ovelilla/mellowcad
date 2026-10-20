@@ -1,0 +1,35 @@
+---
+name: add-language
+description: Add a language to MellowCAD (the site, the editor and the engine's catalog), from a draft that is reachable but unannounced to a live one. Use when asked to add, translate into or launch a new language.
+---
+
+# Adding a language
+
+Rules: `.claude/rules/i18n.md` (URLs, messages, draft and live) and `.claude/rules/ui.md` (right
+to left). The words: `docs/i18n-glossary.md`.
+
+1. **`i18n/routing.ts`**: add the tag to `locales`, then `npm run typecheck` lists every map keyed
+   by `AppLocale` that now lacks it — `DIRECTION`, `LOCALE_STATUS` (start `draft`),
+   `LANGUAGE_NAMES` (the language named in itself), `OG_LOCALE` and `catalogs`
+   (`i18n/messages.ts`).
+2. **`messages/<tag>.json`**: a draft may leave keys out (they show in English). Nothing to list
+   in a test: `TRANSLATED` in `i18n/messages.test.ts` is every `live` language.
+3. **The engine's catalog**, `cad/locales/<tag>.json` (`.claude/rules/cad-catalogs.md`): the
+   interface always; `commands` only with an AutoCAD of that language to copy, and then complete.
+   Run `npm run locales` to compile it to `cad/locales/<tag>.ts`, and add it to the entry table in
+   `cad/README.md`.
+4. **`i18n/engine.ts`**: its entry in `ENGINE_LOCALES`. The map is `Partial`, so nothing fails
+   without it — the language just draws in English.
+5. **Its words** in `docs/i18n-glossary.md`, with their sources; register and search texts
+   researched, not translated.
+6. **A script Inter lacks**: its face in both root layouts (`preload: false`),
+   `scriptFontVariables` (`lib/fonts.ts`), its `:lang()` rules in both stylesheets, and a whole
+   static face for the share card (`lib/og.tsx`) if Satori is to draw it. Right to left also needs
+   its `DIRECTION` and a look at every LTR island.
+7. **Verify**: `npm run typecheck`, `npm run lint`, `npm test`; a production build shows the new
+   pages as `●`, never `ƒ`; screenshots of the landing at 360 px and of the editor's palettes for
+   text that no longer fits (skill `browser-verify`).
+8. **Going `live`** (`LOCALE_STATUS`): every English key must exist (the test fails otherwise), and
+   it joins the selector, `hreflang` and the sitemap. A language without an AutoCAD of its own is
+   read by a native speaker first when one can be found (Arabic went without), and its
+   announcement takes it off the Status section's «Next up» in every language in the same commit.

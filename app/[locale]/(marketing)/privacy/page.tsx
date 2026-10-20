@@ -35,10 +35,10 @@ function Block({
   return (
     <section className="flex flex-col gap-4 border-t border-border pt-8">
       <h2 className="text-h3">{title}</h2>
-      <ul className="text-fg-muted flex flex-col gap-3">
+      <ul className="flex flex-col gap-3 text-fg-muted">
         {items.map((item, index) => (
           <li key={index} className="flex gap-3">
-            <span aria-hidden="true" className="text-fg-subtle font-mono">
+            <span aria-hidden="true" className="font-mono text-fg-subtle">
               —
             </span>
             <span>{item}</span>
@@ -46,7 +46,7 @@ function Block({
         ))}
       </ul>
       {note && (
-        <p className="bg-bg-raised text-fg-muted rounded-md border border-border p-4 text-sm">
+        <p className="rounded-md border border-border bg-bg-raised p-4 text-sm text-fg-muted">
           {note}
         </p>
       )}
@@ -102,7 +102,7 @@ export default async function PrivacyPage() {
         ]}
       />
       <Block title={t("rightsTitle")} items={[t("rights1"), t("rights2")]} />
-      <p className="data-mono text-fg-subtle text-xs">
+      <p className="data-mono text-xs text-fg-subtle">
         {t("updated", {
           date: format.dateTime(new Date(CONTENT_UPDATED), {
             dateStyle: "long",

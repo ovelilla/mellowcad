@@ -1,0 +1,193 @@
+# Coordinate systems
+
+The UCS is an origin and X and Y axes in space, so its XY plane can tilt. Every object keeps a
+normal (DXF 210) and, a line aside, its points in the OCS of that normal, as DXF stores them; what
+is drawn in a tilted UCS takes its Z as the normal. The commands work in the UCS's XY plane.
+
+### `UCS` · es `SCP`
+
+**Implemented:** `Current ucs name:  *WORLD*` (`*NO NAME*` / the name), then
+`Specify origin of UCS or [NAmed/OBject/Previous/View/World/X/Y/Z/ZAxis] <World>:`,
+`Specify point on X-axis or <accept>:`, `Specify point on the XY plane or <accept>:`, NAmed's
+`Enter an option [Restore/Save/Delete/?]:`, `Enter name of UCS to restore or [?]:`,
+`Enter name to save current UCS or [?]:` (Enter saves none; `Invalid UCS name.`),
+`UCS "AA" already exists.  Replace it? <N>:` (No or Enter ends with nothing saved;
+`Yes or No, please.`), `Enter UCS name(s) to delete <none>:` (`Deleted 1 UCS name.`,
+`  No matching UCS names found.`), `Enter UCS name(s) to list <*>:` and its listing as AutoCAD lays
+it out (`Current ucs name: "AA"`, `Saved coordinate systems:`, each `"NAME"` with its
+`     Origin = <…>, X Axis = <…>` / `     Y Axis = <…>, Z Axis = <…>` in the drawing's units),
+`Select object to align UCS:`, ZAxis's Object `Select object:`, Previous with none
+`No previous coordinate system saved.`; each refusing as AutoCAD 2023's console does
+(`Point or option keyword required.`, `Invalid point.`,
+`Requires valid numeric angle or second point.`, `Invalid option keyword.`, OBject's
+`*Invalid selection*` +
+`Expects a point or Window/Last/Crossing/BOX/ALL/Fence/WPolygon/CPolygon/Group`); es from Autodesk's
+table (`Indique origen de SCP o [gUArdado/oBjeto/PRev/Vista/Univ/X/Y/Z/ejEZ] <Univ>`,
+`Precise punto en eje X o <Aceptar>`, `Precise nuevo punto de origen u [Objeto] <0,0,0>`,
+`Indique una opción [Rest/Guardar/Supr/?]`, `Designe el objeto a alinear con el SCP`,
+`Suprimidos 1 nombre de SCP.`, `Sí o No.`); origin (with its Z; one given without a Z lies on the
+current UCS's plane), then a point on X, then one on the XY plane, each with its Z, both typed in
+the UCS moved to that origin (`100,0`, `200,50` lays X along 200,50, as AutoCAD 2023's console does;
+3point reads its points in the current UCS) (Enter accepts at each: at the X point the axes stay, at
+the third Y is laid in the current XY plane; a third point on the side that would turn Z down is not
+taken); NAmed Restore / Save (asks Yes/No before replacing) / Delete (commas and wildcards; deleting
+the current one leaves it `*NO NAME*`) / `?` (origin and axes relative to the current UCS); OBject
+(line, circle, arc, ellipse, polyline segment, spline, text, multiline text, attribute definition,
+block reference, as aCADemia's table gives them; the origin at the object's Z there, the Z its
+normal — a line's, its extrusion, the line in the new XZ plane); Previous (10, per session, with
+their names); View (XY square to the line of sight, X and Y along the screen's horizontal and
+vertical, the origin kept); World (Enter's default); X / Y / Z (UCSAXISANG 90 by default, typed or
+pointed; turned by the right-hand rule); ZAxis (a new origin, Enter keeping the current one, then a
+point on the positive Z, Enter keeping the Z; X laid parallel to the WCS's XY plane by the
+arbitrary-axis rule, as aCADemia's captures show) and its Object (a line, circular or elliptical
+arc, open polyline or spline: the origin at the end nearest the pick, Z along the tangent pointing
+away); at OBject's and ZAxis Object's picks the selection modes (Window, Last, Crossing, BOX, ALL,
+Fence, WPolygon, CPolygon) take the newest object found, read with no pick as AutoCAD 2023's console
+reads it — OBject at the object's start (a line's first end, a circle's angle 0, an arc's start),
+ZAxis Object at the end nearest the WCS origin; a point typed there is a pick of the newest object
+under it, as a click is, LASTPOINT staying at that point, and on nothing — typed or clicked —
+`No object found`, which ends OBject with the UCS as it was and asks ZAxis Object again; one undo
+step; saved in the drawing; changing to the WCS puts ELEVATION back to 0 (in the same undo step).
+The X / Y / Z and ZAxis prompts are AutoCAD 2023's console's
+(`Specify rotation angle about X axis <90>:`, `Specify new origin point or [Object] <0,0,0>:`,
+`Specify point on positive portion of Z-axis`; es `Precise ángulo de rotación sobre eje X`,
+`Precise punto en parte positiva del eje Z`); a name Restore cannot find says
+`Cannot find UCS "NAME".` (es `Imposible encontrar el SCP "NAME".`) and asks again; the words the
+first prompt declares and does not list (its `initget`, table 25652), answered as AutoCAD 2023's
+console answers them: Origin (`O`, `Specify new origin point <0,0,0>:`, the axes kept,
+`Invalid point.`), 3point (`Specify new origin point <0,0,0>:`,
+`Specify point on positive portion of X-axis <101.0000,0.0000,0.0000>:`,
+`Specify point on positive-Y portion of the UCS XY plane <99.5528,0.8944,0.0000>:` — a unit along
+the current X, then square to the new X in the current XY plane, written in the current UCS;
+`Coincident with first point`, `Points are colinear`, which the first prompt's points now say too),
+Entity (OBject's older name), Move (`Specify new origin point or [Zdepth]<0,0,0>:`, the default
+against the list as the string writes it; Zdepth `Specify Zdepth<0>:`, a distance or two points
+along the current Z, `Requires numeric distance or two points.`), orthoGraphic
+(`Enter an option [Top/Bottom/Front/BAck/Left/Right]<Top>:`, its default the orthographic UCS the
+current one was set as, else Top) and its six views typed straight (`T`, `B`, `FR`, `BA`, `L`,
+`RI`): at the WCS's origin with the console's axes (Bottom's X is -1,0,0), the UCS named `*TOP*` …
+`*RIGHT*` until another is set (saved in the drawing; -VIEW's orthographic views name it too),
+Restore, Save, Delete and `?` (NAmed's prompts; the listing asks the first prompt again), New
+(`Specify origin of new UCS or [ZAxis/3point/OBject/View/X/Y/Z] <0,0,0>:`: a point moves the origin,
+Enter is World whatever its `<0,0,0>` says, its words and the unlisted Origin and Entity do what the
+first prompt's do); es from the table (`ORigen`, `3p`, `Entidad`, `DEsplazar`, `Ortogonal` — so `O`
+is Ortogonal there —, `Nuevo`, `SUperior` … `Derecha`, `profundidadZ`, `*SUPERIOR*`,
+`Precise nuevo punto de origen o [profundidadZ]<0,0,0>`; **unverified**, no Spanish console);
+LASTPOINT where the console leaves it — the WCS's origin as UCS starts (so `@` and a number at its
+first prompt and at OBject's pick are from there), then the last point given: an origin (3point's
+and ZAxis' Enter giving the current one), ZAxis' Z point, 3point's third point, OBject's pick, the
+first prompt's third point at the numbers it was typed in read in the new UCS — never a point on X,
+an angle given by a point, nor Enter at Origin, Move or New; U the WCS's origin, but where a UCS
+made at the first prompt left it, REDO where the UCS left it
+
+**Missing:** Origin's or Move's Enter and OBject on nothing as an undo step of their own (AutoCAD
+2023's console's U echoes `UCS` and puts LASTPOINT at the WCS's origin, acc/ul34; here U takes back
+the step before), the listing's `Press ENTER to continue:` (the console pauses there; no page is
+long enough here), Group at OBject's picks, **unverified**: where OBject reads an ellipse, a
+polyline or a spline taken by a mode (at its start here), a point default at the drawing's precision
+(`<5.00,5.00,1.00>`, where AutoCAD's LUPREC 4 writes `<5.0000,5.0000,1.0000>`); **unverified**: es's
+replace prompt, composed from the table's `El SCP "AA" ya existe. Reemplácelo.` and the yes-or-no
+question's `? <N>`; Face (no solids; `F`, which the first prompt and New's declare, is refused
+rather than read as `FRont`), Apply, the Zdepth an orthographic UCS keeps (UCSBASE,
+ORTHOGRAPHICUCS), Previous after 3point's Enter left the UCS as it was (the console steps back to
+that same UCS), the name New's Enter leaves (**unverified**), OBject on a dimension (its UCS at
+creation is not stored) or a hatch, UCSMAN, the icon's grips (UCSSELECTMODE), UCSFOLLOW, UCSVP,
+UCSDETECT, the crosshair turning with the UCS (it stays upright on screen; PLAN makes the two agree)
+
+### `UCSICON` · es `SIMBSCP`
+
+**Implemented:** `Enter an option [ON/OFF/Noorigin/ORigin] <ON>:` (es
+`Indique una opción [ACT/DES/Sin origen/Origen] <ACT>`; `Invalid option keyword.`), the current
+state as the default: ON / OFF / Noorigin / ORigin (UCSICON, saved in the drawing, undoable, 3 by
+default); the icon of 2D wireframe — X and Y arms with their letters, a square at the origin when
+the UCS is the WCS — on the origin while it fits, else in the lower-left corner (lifted clear of the
+status readout); off the plan its arms are projected, and with the XY plane seen edge-on it is the
+broken pencil (**unverified** for a 2D icon); `'UCSICON`, at the Command prompt or mid-command (es
+also bare, `UCSICON`, its command being SIMBSCP), sets the system variable as AutoCAD 2023's console
+asks it: `Enter new value for UCSICON <3>:` (es `Indique nuevo valor para UCSICON <3>`), 1 for the
+icon shown plus 2 for it at the origin (else `Requires an integer between 0 and 3.`), one undo step
+
+**Missing:** All, Selectable, Properties (the UCS Icon dialog: style, size, colour)
+
+### `ELEV` · es `ELEV`
+
+**Implemented:** `Specify new default elevation <0.00>:`, then
+`Specify new default thickness <0.00>:` (es `Precise nueva elevación por defecto`,
+`Precise nueva altura de objeto por defecto`), each offering the current value (a negative thickness
+extrudes down), what is no distance refused with `Requires numeric distance or two points.`, as
+AutoCAD 2023's console does; ELEVATION and THICKNESS are saved in the drawing and change as one undo
+step once both are answered (Escape at the second changes neither)
+
+**Missing:** the variables typed by name (no SETVAR yet)
+
+**The last point (LASTPOINT):** 0,0,0 in a new drawing, then the last point a prompt took — picked,
+snapped, typed, given with FROM or as a length along the cursor; LINE's Undo steps it back to the
+vertex before —, and the WCS's origin as UCS starts, which only a point given at its prompts moves
+(after X / Y / Z, View, World, Previous or a restored name it is still there: `ID @` reads `-30,0,0`
+in a UCS at 30,0), while -VIEW's orthographic UCS leaves it; when U takes a UCS back, where it was
+if the UCS was made at its first prompt, else the WCS's origin, REDO putting it again where the UCS
+left it. `@` at a first point is relative to it, and Enter at DIST's first point takes it. A number
+typed for a point, at the command line or in the box, is a direct distance from the prompt's base
+point, from LASTPOINT where it has none (a first point), towards the cursor — the other way when
+negative, LASTPOINT itself at `0` — at every prompt that picks a point, as AutoCAD 2023's console
+takes `5` at LINE's, CIRCLE's, ID's and -PAN's first point and at CIRCLE 2P's second (each prompt
+refusing what is no number, `FOO`, in its own words), and at a window's corners (ZOOM's,
+`Select objects:`' — the first from LASTPOINT, the opposite one from the first corner) and at a
+fence's and a polygon's points (the first from LASTPOINT, the next from the point before), at
+`Select objects:`, at BREAK's `Select object:` and at TRIM's, EXTEND's, FILLET's and CHAMFER's
+object prompts, where it is a typed pick — but at ARRAYRECT's unit cell's first corner it is the
+cell's side; the cursor's last place on the drawing is kept while the mouse is off it, and with
+none, or one on the point, it runs along the UCS's X (WHY: the console's cursor is fixed on its
+screen, so its heading follows the view). A distance given by a point (CIRCLE's radius), a window's
+corner (ZOOM Window's first one too), DIST's second point, COPY's second points and a keyword
+(LINE's Close) leave it, and a transparent command keeps the one it interrupts (`@` after `'ID` is
+still from the point before) — AutoCAD 2023's console, each followed by `ID @`. The runtime keeps
+it, so every command shares it.
+
+**What follows the UCS:** typed coordinates (`x,y`, `x,y,z`, `d<a`, cylindrical `d<a,z`, spherical
+`d<a<b`, `@`, `#` from its origin; `*` for the WCS — absolute, even at a second point the box reads
+relative —, `@*` relative in the WCS), the angle fields of
+LINE, PLINE, SPLINE, MOVE, COPY and ROTATE, the
+status readout (X, Y and Z), the Properties palette's coordinate rows (X, Y and Z) and a line's
+deltas (read and retyped), DIST's deltas and angles, ID, Ortho,
+polar tracking and its readout, OTRACK guides, the snap lattice and the grid with its tinted axes;
+the rotation TEXT, MTEXT, ATTDEF and INSERT ask for; HATCH's angle and origin (HPORIGIN 0,0);
+DIMLINEAR's horizontal / vertical / Rotated; RECTANG; ARRAYRECT's rows and columns; POLYGON's
+first vertex before the cursor moves; BLOCK, which defines its objects in the UCS. **Not yet:** the
+text angle of a dimension (Angle), the default spacing ARRAYRECT offers (from
+world extents), and palette rotations (they stay in the WCS, as AutoCAD's TEXT and INSERT rows do).
+In a tilted UCS all of it works in its XY plane, and so does every command: what is drawn lies in
+it (or above it at ELEVATION), ROTATE turns about the UCS's Z and MIRROR's plane holds it. A WCS
+point typed with `*` and no Z lies on the WCS's XY plane (**unverified**). The commands with flat
+geometry — TRIM, EXTEND, BREAK, OFFSET, JOIN, HATCH, ARRAYPATH's path and the dimensions — take
+only objects parallel to the UCS's XY plane (and lines); AutoCAD projects some of the others
+(PROJMODE), which is left out.
+
+**Where a point's Z comes from:** an object snap gives the object's Z there (OSNAPZ 0, not exposed;
+a line's is interpolated along it, and Intersection needs the two objects to meet in 3D, while
+Apparent Intersection is where they cross on the screen, on the first one — **unverified**, the
+help only says it snaps where two objects "do not intersect in 3D space"; objects in different
+planes have no Intersection yet); an OTRACK point the acquired point's (**unverified**), or that
+plus the rise along its `+Z` / `-Z` guide; an
+absolute point typed without a Z, or the bare cursor, ELEVATION above the XY plane of the UCS
+(ELEV and DIST say so; one conceptual page keeps the last Z instead); a relative one, a
+typed length or angle, the last point's. Ortho, Polar and the snap lattice leave it alone, except
+on the `+Z` / `-Z` guide of a 3D view, where the point is the base point's in plan and the height is
+where the cursor is drawn along the guide (a snapped object's, under a snap), and a typed length
+the base point's plus that length up or down. What LINE
+draws has a Z at each end; a flat object (PLINE, SPLINE, CIRCLE, ARC, ELLIPSE, RECTANG, POLYGON,
+TEXT, MTEXT, ATTDEF, INSERT) lies in the plane of the first point that fixed it,
+and the others are projected onto it — what AutoCAD's PLINE does; CIRCLE 3P and ARC through three
+points at different heights lie in the plane of the three instead, as AutoCAD's do. A dimension
+lies at the height of the point that places its dimension line, whatever its origins': snapped on
+objects above the plane, AutoCAD's is still "created at the current elevation" (Autodesk forum 2016,
+AUGI 2010); DIMBASELINE / DIMCONTINUE take the base dimension's, and a location snapped to an object
+its Z (**unverified**). Its origins' own Z is not kept (one elevation per dimension here; AutoCAD
+keeps each definition point's).
+MOVE, COPY, STRETCH and PASTECLIP displace in 3D, SCALE scales about a 3D base point, and BLOCK's
+base point and the clipboard's have a Z. LINE, CIRCLE, ARC, PLINE and POLYGON give what they draw
+the THICKNESS; RECTANG uses its own and TEXT none. The editing commands keep the Z: TRIM, EXTEND and
+BREAK work in the UCS's XY plane (PROJMODE 1, EDGEMODE 0, not exposed) and give a line's new end
+the Z along its slope; OFFSET keeps the plane, rise and thickness; FILLET, CHAMFER and JOIN need
+their objects in one plane (FILLET and CHAMFER join two lines in any plane they share); HATCH lies
+in its boundary's; a grip drags to a point as a click does.

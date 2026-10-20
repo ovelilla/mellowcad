@@ -56,14 +56,14 @@ DOM); Next.js/React es solo la capa de presentación. Las reglas de trabajo est�
 
 - **`research/`**: las tablas de textos de AutoCAD en inglés y en español, con las que se
   comprueba la redacción de cada mensaje. Son textos de Autodesk, por eso no van en git. Cómo se
-  usan está en
-  [.github/instructions/autocad-research.instructions.md](.github/instructions/autocad-research.instructions.md).
+  usan está en el skill
+  [autocad-research](.claude/skills/autocad-research/SKILL.md).
 - **`.playwright-mcp/`**: capturas y material de investigación de sesiones anteriores (`research/`,
   `help/`), como volcados de la ayuda de Autodesk. No se regenera.
 
 Todo lo que el proyecto necesita para seguir está dentro de esta carpeta. No hace falta conservar
-la memoria de Claude Code (`~/.claude/`): sus reglas se pasaron a `AGENTS.md` y a
-`.github/instructions/`.
+la memoria de Claude Code (`~/.claude/`), que está desactivada para este proyecto: lo que los
+agentes necesitan vive en el repo.
 
 Para comprobar comportamientos con la consola de AutoCAD (`scripts/research/runacc.sh`), hay que
 tener AutoCAD instalado en Windows; el script lo lanza desde WSL. Hoy es AutoCAD 2027 en español.
@@ -80,9 +80,10 @@ Si se instala otra versión, se indica su ruta en la variable `ACCORE`.
 
 ## Seguir con el desarrollo
 
-- [AGENTS.md](AGENTS.md): la arquitectura, las invariantes y cómo se da por terminada una
-  funcionalidad.
-- [docs/autocad-coverage.md](docs/autocad-coverage.md): lo que hace cada comando y lo que le falta
-  respecto a AutoCAD.
-- [.github/instructions/](.github/instructions/): las reglas de cada área (motor, herramientas, UI,
-  tests, i18n, landing).
+- [AGENTS.md](AGENTS.md): la arquitectura, las invariantes y dónde vive cada cosa.
+- [docs/coverage/](docs/coverage/README.md): lo que hace cada comando y lo que le falta respecto a
+  AutoCAD, por áreas, y el roadmap.
+- [.claude/rules/](.claude/rules/): las reglas de cada área (motor, herramientas, UI, tests, i18n,
+  landing), que Claude Code y Copilot cargan solas al tocar sus ficheros.
+- [.claude/skills/](.claude/skills/): los procedimientos (añadir un comando o un idioma, investigar
+  en AutoCAD, verificar en el navegador, cerrar una funcionalidad).

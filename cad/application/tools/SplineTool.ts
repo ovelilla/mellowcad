@@ -81,7 +81,7 @@ const FRAME: StrokeStyle = { color: THEME.crosshair, width: 1 }
  * so they live on the tool for the session and the next spline starts from the
  * last one's settings, which `Current settings:` reports at the start and
  * after each change. toLerance and Object are not offered (see
- * `docs/autocad-coverage.md`).
+ * `docs/coverage/draw.md`).
  */
 export class SplineTool implements Tool {
   readonly id = "spline"

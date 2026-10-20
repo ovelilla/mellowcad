@@ -29,7 +29,7 @@ export type StatusBarItem = (typeof STATUS_BAR_ITEMS)[number]
 
 /**
  * The tools hidden in `stored`, the remembered JSON. Everything shows until
- * the user hides it: the coordinates too (COORDS 1, `autocad-coverage.md`).
+ * the user hides it: the coordinates too (COORDS 1, `docs/coverage/drafting-aids.md`).
  */
 export function parseHiddenStatusItems(
   stored: string | null

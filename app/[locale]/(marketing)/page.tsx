@@ -33,7 +33,7 @@ export default async function HomePage() {
       <JsonLd data={await homeStructuredData()} />
       <div
         aria-hidden="true"
-        className="sheet-grid pointer-events-none absolute inset-x-0 top-0 -z-10 h-275"
+        className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-275 sheet-grid"
       />
       <Hero />
       <CommandsSection />

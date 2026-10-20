@@ -36,7 +36,7 @@
   --palette-width: 280px;
 }
 
-/* The chrome's type scale (ui.instructions.md, "Type"): one body, as
+/* The chrome's type scale (.claude/rules/ui.md, "Type"): one body, as
    AutoCAD's Segoe UI at 9 pt, its hierarchy in weight and colour. A role
    carries its size, weight and line height; monospace is `font-mono` on
    `text-ui`. */

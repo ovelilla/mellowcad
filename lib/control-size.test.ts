@@ -8,7 +8,7 @@ const ROOT = path.resolve(import.meta.dirname, "..")
 const DIRS = ["components/cad", "components/ui"]
 
 /**
- * A height or square size off the system (ui.instructions.md, "Size"): every
+ * A height or square size off the system (.claude/rules/ui.md, "Size"): every
  * control is 28 px (`h-7`, `size-7`), its icon 16 (`size-4`), a docked bar 36
  * (`h-9`). A 20, 24, 32 or 40 px control, or an arbitrary one, is not.
  */

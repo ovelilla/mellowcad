@@ -1,21 +1,20 @@
 ---
-applyTo: "cad/application/**,cad/locales/**,docs/autocad-coverage.md"
-description: "How AutoCAD's behaviour and wording are established before they are built: Autodesk's help, AutoCAD's own console, its string tables, and what is marked unverified."
+name: autocad-research
+description: Establish how AutoCAD behaves and words something before building or changing a command — run a probe in AutoCAD's console from WSL, look up a prompt, message or keyword in its string tables, or read Autodesk's help. Use when a behaviour, prompt, default or wording is unclear, or a coverage row says unverified.
 ---
 
 # Researching AutoCAD
 
 Check a behaviour before building it, in this order:
 
-1. **AutoCAD's console** (`accoreconsole.exe`) when an AutoCAD is installed. It answers with the
+1. **AutoCAD's console** (`accoreconsole.exe`), when an AutoCAD is installed. It answers with the
    real prompts, refusals and results, verbatim. It settles what a command does.
 2. **AutoCAD's string tables** (`research/strings/`) for the exact wording, in English and in
    Spanish, by id. A message the English composes from pieces (`Cannot find %s "%s".` +
    `text style`) is composed from the same pieces in Spanish.
-3. **Autodesk's help** for what the console cannot show (dialogs, palettes, the cursor). Read it
-   with Playwright, as `testing.instructions.md` ("Playwright") says.
+3. **Autodesk's help** for what the console cannot show (dialogs, palettes, the cursor), below.
 
-What none of them settles is written **unverified** in `docs/autocad-coverage.md`, with what was
+What none of them settles is written **unverified** in `docs/coverage/`, with what was
 seen instead. Cite the table id (`21682`) or the probe in tests and comments, so the next person
 can check it again.
 
@@ -50,18 +49,20 @@ measured on AutoCAD 2023's English console; recheck one before relying on it.
   `PROJMODE 1`, `AUTOSNAP 55`, `UNDOCTL 53`.
 - **Menu macros** are in `acad.cuix`, a zip: Ctrl+Z is `_u`, Ctrl+Y and the menu's Redo are
   `^C^C_mredo 1`.
+- Before declaring what a prompt refuses, type `FOO` at it: the words differ per input function.
+  Whether a prompt keeps or sets LASTPOINT: `ID @` after the command.
 
 ## The string tables
 
 `research/strings/` is gitignored, because it holds Autodesk's text, not ours. Copy it along with
 the project. Each table is `id<TAB>text`, with the text JSON-quoted:
 
-| File                             | Source                                                          |
-| -------------------------------- | --------------------------------------------------------------- |
-| `st2023_en.tsv`                  | `acadres`, AutoCAD 2023 English                                 |
-| `st2027_es.tsv`                  | `acadres`, AutoCAD 2027 Spanish                                 |
+| File                                                         | Source                                             |
+| ------------------------------------------------------------ | -------------------------------------------------- |
+| `st2023_en.tsv`                                              | `acadres`, AutoCAD 2023 English                    |
+| `st2027_es.tsv`                                              | `acadres`, AutoCAD 2027 Spanish                    |
 | `AcDimRes_*`, `acmtedRes_*`, `AcArrayRes_*`, `texteditRes_*` | the dimension, MTEXT, array and TEXTEDIT resources |
-| `all_en.tsv`, `all_es.tsv`       | everything above merged                                         |
+| `all_en.tsv`, `all_es.tsv`                                   | everything above merged                            |
 
 `node scripts/research/pair.mjs "<regex>"` prints every English string that matches, beside the
 Spanish one of the same id. The Spanish came from the AutoCAD 2027 language pack: open
@@ -69,4 +70,21 @@ Spanish one of the same id. The Spanish came from the AutoCAD 2027 language pack
 palettes' labels are in `ax24res.dll` / `ax26res.dll` and `acappres.dll`.
 
 A keyword is the word the table declares for `initget`; the prompt lists its label. How both are
-written in the catalogs is in `cad-tools.instructions.md`.
+written in the catalogs is in `.claude/rules/cad-catalogs.md`.
+
+## Autodesk's help
+
+The help viewer is a single-page app: a plain fetch (WebFetch, curl) returns the empty shell, not
+the page. **Read it with Playwright** (skill `browser-verify`, "Tooling"):
+`help.autodesk.com/view/ACD/2026/ENU/?guid=…`, then take `innerText`.
+
+- Search engines start serving captchas after a few queries: collect the GUIDs early and navigate
+  by GUID. The viewer's own search (`…/view/ACD/2026/ENU/?query=COPYCLIP`, then harvest the
+  `?guid=` links) beats guessing, and `…/cloudhelp/2026/ENU/AutoCAD-Core/files/<GUID>.htm` opens a
+  page straight from its GUID.
+- **A thin command page is not an undocumented behaviour.** COPYCLIP's reference page has no
+  prompts; the rule that decides it ("the cursor location is based on the lower-left corner of the
+  extents of the objects you selected") is on a _Have You Tried_ page, and the prompt order on a
+  _To …_ task page. Read `About …`, `To …` and `Have You Tried` before concluding that something
+  cannot be verified.
+- Spanish names come from the Spanish help pages that share the English GUIDs.

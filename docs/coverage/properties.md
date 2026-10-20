@@ -1,0 +1,163 @@
+# Properties and tables
+
+### Layers · `LAYER` / `LA` · `LAYERCLOSE` · es `CAPA` / `CA` · `CERRARCAPA`
+
+**Implemented:** colour, visibility, lock, current layer, ByLayer resolution, selection respects
+hidden/locked; LAYER opens the Layer Properties Manager as a modeless palette ("It can remain open
+as you work", LAYERDLGMODE 1), a tab of the palette panel, and LAYERCLOSE closes it — WHY folding
+the panel only while Layers is the tab shown: AutoCAD's palettes are separate windows, here they
+share one panel, so closing the layer manager leaves another palette where it is; the manager's
+columns in the reference page's order — Status (the check mark on the current layer), Name, On,
+Lock, Color, Linetype, Lineweight — then the object count, scrolled sideways in the panel; New,
+Delete (refused for 0, the current layer and one in use, with the reason) and Set Current act on the
+selected row, and a double-click on a row makes it current ("Select a layer and click Set Current …
+or double-click the name of the layer", 2026 onboarding); a click on the selected name renames it;
+the Layers panel's drop-down in the top bar shows the selection's layer (empty when it is mixed:
+**unverified** what the ribbon shows) or, with nothing selected, the current one; choosing a layer
+moves the selected objects to it in one undo step and keeps the current layer, or with nothing
+selected makes it current ("If no objects are selected, the drop-down lists … display the current
+settings", 2026)
+
+**Missing:** the drop-down's On / Freeze / Lock icons, Make Object's Layer Current, Match Layer,
+Layer Previous and the rest of the Layers panel, freezing, Freeze / Plot / Transparency / Plot Style
+/ New VP Freeze / Description columns, column reordering, layer filters and the tree, F2 to rename
+(F2 is the command history here), New Layer leaving the current layer as it is (here the new layer
+becomes current), the manager's settings dialog
+
+### Linetypes · `LTSCALE` / `LTS` · `LINETYPE` / `LT` · `-LINETYPE` · es `ESCALATL` / `EC`† · `TIPOLIN` · `-TIPOLIN`
+
+**Implemented:** 6 patterns, ByLayer and ByObject; LTSCALE asks
+`Enter new linetype scale factor <current>:` (es
+`Indique nuevo factor de escala del tipo de línea`), offering the current factor at the drawing's
+precision (`<1.00>`, where AutoCAD's LUPREC 4 writes `<1.0000>`); anything but a number
+`Requires numeric value.` (es `Requiere un valor numérico.`); a factor above zero (0 or less:
+`Value must be positive and nonzero.`, es `El valor debe ser positivo y diferente de cero.`, and
+asked again); saved in the drawing (initial 1.0000), one undo step, `Regenerating model.` when it
+changes; CELTYPE, the linetype new objects take (saved in the drawing, initial ByLayer; one undo
+step, as UNDO steps past "the command or system variable"): -LINETYPE, which LINETYPE runs too (WHY:
+the Linetype Manager does not exist), opens with `Current line type:  "ByLayer"` and asks
+`Enter an option [?/Set]:` again after each answer until Enter (`Invalid option keyword.`), as
+AutoCAD 2023's console does; its `?` lists acad.lin's linetypes as AutoCAD lays them out
+(`Linetypes defined in file acad.lin:`, `Name` / `Description` columns), without asking the file's
+name (every linetype this build ships is loaded); Set asks `Specify linetype name or [?] <ByLayer>:`
+and takes a linetype's name or `BYLayer`, its `?` asks `Enter linetype name(s) to list <*>:` and
+lists `ByLayer, ByBlock, or one of these loaded linetypes:` with their columns, then the option
+prompt again; a name it does not have says `Linetype "X" not found in acad.lin.` /
+`You can use the "Load" option to load it from another file.` and asks the option again; es
+`Tipo de línea actual: "PorCapa"`, `Indique una opción [?/Definir]`,
+`Precise nombre de tipo de línea o [?] <PorCapa>`, `porCapa`,
+`Tipo de línea "X" no encontrado en acad.lin.`; LT is the shortcut guide's alias (LTYPE, -LT and
+-LTYPE could not be verified; es none)
+
+**Missing:** the listings' descriptions but Continuous's `Solid line` (acad.lin's are not shipped to
+quote); **unverified**: es `PorCapa` as the current linetype's name and acad.lin as Spanish
+AutoCAD's file; per-object ltscale (CELTSCALE), the Linetype Manager (its Details' Global Scale
+Factor is LTSCALE), PSLTSCALE / MSLTSCALE (no paper space), Create and Load (there is no LIN file to
+read or write), ByBlock, the Linetype Manager, the drop-down's Other…
+
+### Lineweights + `LWDISPLAY` · `LWEIGHT` / `LW` · `-LWEIGHT` · es `GROSORLIN` · `-GROSORLIN`
+
+**Implemented:** 24 standard values, ByLayer and ByObject; CELWEIGHT, the lineweight new objects
+take (saved in the drawing, initial ByLayer, one undo step): -LWEIGHT, which LWEIGHT runs too (WHY:
+the Lineweight Settings dialog does not exist), shows `Current lineweight: BYLAYER` (or `0.50 mm`;
+"The current lineweight value is displayed") and asks
+`Enter default lineweight for new objects or [?]:`, in millimetres: any other value is set to the
+nearest valid value (the thinner on a tie) and says so,
+`Lineweight rounded to nearest valid value of 0.35 mm` (es
+`Grosor de línea redondeado al valor válido más cercano de 0.35 mm`), anything else
+`A weight in lineweight units is required.` (es
+`Se precisa un grosor en unidades de grosor de línea.`), `BYLayer` (es `porCapa`) is ByLayer, `?`
+lists ByLayer and the 24 as AutoCAD 2023's console lays them out (six to a line, spaced in threes)
+and asks again, Enter keeps it; es `Grosor de línea actual: …`,
+`Indique el grosor de línea por defecto para los nuevos objetos o [?]`; LW is the shortcut guide's
+alias (LINEWEIGHT could not be verified); "wide polylines display lineweights only when displayed
+outside of plan view": in plan their width is drawn, hairline at its edges
+
+**Missing:** ByBlock and Default (LWDEFAULT; so the `?` listing's first line names ByLayer alone),
+inches, the Lineweight Settings dialog and the drop-down's Lineweight Settings…
+
+### `FILL` · es `RELLENAR`
+
+**Implemented:** `Enter mode [ON/OFF] <ON>:` (es `Indique modo [ACT/DES]`, the table's; the Spanish
+name is CAD Forum's, **unverified** in Autodesk's help), offering the current FILLMODE, which the
+drawing keeps: wide polylines filled or outlined, each segment's band closed; `1` and `0` (declared,
+unlisted) are ON and OFF, `O` asks `ON or OFf?`, FOO `Invalid option keyword.`, transparent
+(`'FILL`), and U takes it back, as AutoCAD 2023's console (acc/w22, w24); a wide polyline off the
+plan is outlined, as AutoCAD fills one only seen along its extrusion direction
+
+**Missing:** solid hatches and fills stay filled (what a solid hatch shows with FILL off is
+**unverified**); the change shows at once rather than at the next regeneration (WHY in the tool:
+nothing here keeps a regenerated display apart); FILLMODE typed as a system variable
+
+### Colour · `COLOR` / `COL` · `-COLOR` · es `COLOR` · `-COLOR`
+
+**Implemented:** ByLayer and ByObject per-object override; CECOLOR, the colour new objects take
+(saved in the drawing, initial ByLayer, one undo step): -COLOR, which COLOR runs too (WHY: the
+Select Color dialog does not exist), asks `Enter default object color [Truecolor] <BYLAYER>:`
+offering the current one as AutoCAD 2023's console does (`BYLAYER`, `1 (red)`, `210,155,95`) and
+takes an index colour's number (1–7) or name by its keyword (`Red` / `R` … `White`, `BYLayer`; es
+`Rojo`, `Amarillo`, `Verde`, `cIán`, `aZul`, `Magenta`, `bLanco`, `porCapa`), or with Truecolor
+`Red,Green,Blue:` three values from 0 to 255 separated by commas (es
+`Indique el color de objeto por defecto [COlorverdadero]`, `Rojo,Verde,Azul`); a word it cannot read
+says `A color number or standard color name is required.` (es
+`Se necesita un número o nombre de color normalizado.`), a number past 255 `Invalid color number.`
+(es `Número de color no válido.`), a bad true colour
+`Invalid color.  Type three comma separated values from 0 to 255.` (es
+`Color no válido. Escriba tres valores separados por comas comprendidos entre 0 y 255.`), and asks
+again; Enter keeps it; **unverified**: es `PORCAPA` and `1 (rojo)` as the offered value; COL is the
+shortcut guide's alias (COLOUR could not be verified)
+
+**Missing:** the index colours 8–255 (their RGB values are not in the help), ByBlock (not modelled),
+Colorbook, CECOLOR's `RGB:` and HSL forms, the Select Color dialog, typing CECOLOR, CELTYPE or
+CELWEIGHT as a system variable (no SETVAR), the per-type defaults HPLAYER and HPCOLOR, DIMLAYER,
+TEXTLAYER (all "use current" initially, which is what everything does here), CETRANSPARENCY
+
+### Object properties (top bar)
+
+**Implemented:** the Properties panel's Match Properties, Object Color, Lineweight and Linetype, in
+that order: with objects selected they show their value (empty when mixed — **unverified**: the help
+documents only the Properties palette's `*VARIES*`) and a choice changes them in one undo step; with
+nothing selected they show the current settings, CECOLOR, CELWEIGHT and CELTYPE ("If no objects are
+selected, the drop-down lists … display the current settings for the drawing"), and a choice sets
+it, one undo step
+
+**Missing:** Select Colors (the swatch beside the colour opens the browser's picker instead), the
+linetype list's Other… and the lineweight list's Lineweight Settings…, ByBlock and Default in the
+lists, Transparency, the List drop-down
+
+### Properties palette · `PROPERTIES` / `PR` / `CH` / `MO` · `PROPERTIESCLOSE` · es `PROPIEDADES` / `PR` · `CERPROP`
+
+**Implemented:** PROPERTIES opens the Properties palette, a tab of the modeless palette panel, and
+PROPERTIESCLOSE closes it while it is the tab shown (as LAYERCLOSE); PR, CH and MO are the aliases
+of Autodesk's shortcut guide (the 2026 help names only PR, in both languages; in Spanish CH is
+CHAFLAN), and Ctrl+1 shows and hides it, as AutoCAD's does; WHY at the inline end: the 2026 help
+documents no default side ("docked to either side of the drawing window"), and AutoCAD does not show
+the palette at first start ("not displayed by default"); here it is open from 1600 px of window,
+folded below, and the panel's width and fold are remembered; the object type drop-down at its top —
+`All (n)` and one entry per type with its count (`Line (5)`), only the type when the selection has
+one — narrows what the palette shows and edits ("modify the properties of a single object type at a
+time") and keeps the selection; it goes back to All when the selection changes; `No selection`
+without one, when General shows the current settings ("When no objects are selected, only the
+current settings of general properties are displayed"): the current layer, which can be changed
+there, and the current colour, linetype and lineweight, each set there too ("you can view and change
+the current properties to be used for all new objects"), one undo step; geometry rows per entity
+type, editable (retype a value), coordinates read and retyped in the current UCS, closed-polyline
+area; an attribute definition's tag, prompt, default and modes, a reference's attributes by tag
+(read-only); the Z: Thickness under General (line, circle, arc, polyline), a line's Start Z and End
+Z (each retyped alone) and Delta Z (read-only, like Delta X and Y), Center Z (circle, arc, ellipse),
+Position Z (text, multiline text, attribute definition, reference) and Elevation (polyline, hatch),
+all read and retyped above the UCS's XY plane; a line's Length is its 3D one and keeps the slope
+when retyped; with a tilted UCS or object the position rows are read and moved as points in space;
+Normal X / Y / Z (read-only) on a circle and an arc; a polyline's Vertex (the current one, typed
+here where AutoCAD steps it with arrows), Vertex X and Y, Start segment width and End segment width
+of the segment it starts (none at an open one's last vertex) and Global width, which sets every
+segment's (es `Vértice`, `Anchura inicial del segmento`, `Anchura final del segmento`,
+`Grosor global`, Autodesk's 2027 resources)
+
+**Missing:** the current vertex's marker in the drawing, what Global width shows where the widths
+vary (blank here, **unverified**), the geometry rows of several objects of one type (`*VARIES*`),
+Area/Circumference rows, text content, editing attribute values, MTEXT's rotation in the UCS
+(AutoCAD shows that one row there), a spline's and a dimension's Z, the Normal rows on the other
+types (**unverified** which ones AutoCAD shows), the drop-down's order of types and its wording for
+a single object (**unverified**: `All (n)` and `Line (5)` are only in the help's screenshots), Quick
+Select, Toggle PICKADD, the Auto-hide and Allow Docking options, floating the palette

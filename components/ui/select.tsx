@@ -28,7 +28,7 @@ function SelectValue({ className, ...props }: SelectPrimitive.Value.Props) {
   )
 }
 
-/** A drop-down's trigger: a control of 28 px, as every one is (ui.instructions.md, "Size"). */
+/** A drop-down's trigger: a control of 28 px, as every one is (.claude/rules/ui.md, "Size"). */
 function SelectTrigger({
   className,
   children,

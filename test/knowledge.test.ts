@@ -17,8 +17,8 @@ import { describe, expect, it } from "vitest"
 
 // Ratchets: lower them as the knowledge slims down, never raise them to pass.
 const ALWAYS_LOADED_MAX_KB = 10
-const FILE_MAX_KB = 46
-const LOAD_P90_MAX_KB = 1000
+const FILE_MAX_KB = 25
+const LOAD_P90_MAX_KB = 52
 
 // Cited on purpose without existing in the repo or a declared package.
 const ABSENT_CITATIONS: Record<string, { reason: string; values: string[] }> = {
@@ -31,10 +31,12 @@ const ABSENT_CITATIONS: Record<string, { reason: string; values: string[] }> = {
     values: ["docs/next-landing.md"],
   },
   "docs/next-knowledge-layer.md": {
-    reason: "the plan names what it creates and a brief already deleted",
+    reason: "the plan names what it creates and what it replaced or deleted",
     values: [
       ".claude/rules",
       ".claude/rules/*.md",
+      ".github/instructions",
+      "docs/autocad-coverage.md",
       "docs/coverage/draw.md",
       "docs/next-i18n.md",
     ],

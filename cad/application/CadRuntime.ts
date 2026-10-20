@@ -3784,6 +3784,13 @@ export class CadRuntime extends Observable {
     return this.disposed
   }
 
+  /**
+   * A button pressed on the drawing. Each step that takes the press returns,
+   * so the order decides who gets a button: the open shortcut menu's dismissal
+   * first, Shift+right before anything else reads the right button, the wheel
+   * button's orbit and pan, the right button held for its release (it never
+   * reaches a tool), and only then the left button.
+   */
   pointerDown(e: PointerEventData): void {
     // A press on the drawing collapses the expanded command history.
     if (this.commandHistoryOpen) this.setCommandHistoryOpen(false)
@@ -4096,10 +4103,6 @@ export class CadRuntime extends Observable {
     this.host.requestRender()
   }
 
-  /**
-   * Handles a key press. Returns `true` when the runtime consumed the key
-   * (the host should call `preventDefault`).
-   */
   /** A key let go: only Shift's matters, for the badge it shows. */
   keyUp(e: KeyEventData): void {
     if (e.key !== "Shift" || !this.pointerShift) return
@@ -4107,6 +4110,18 @@ export class CadRuntime extends Observable {
     this.host.requestRender()
   }
 
+  /**
+   * Handles a key press. Returns `true` when the runtime consumed the key
+   * (the host should call `preventDefault`).
+   *
+   * The order of the steps is the routing, and each step that consumes a key
+   * hides it from every later one: Escape on a menu, the function keys,
+   * Shift+Space and the Ctrl combos are global aids, so they come first —
+   * Shift+Space before the command line, which reads a bare space as Enter.
+   * Then the value box, then the command-line buffer, then the tool. A step
+   * inserted above the value box steals keys from running commands; one above
+   * the command line steals them from typing. No key runs a keyword on its own.
+   */
   keyDown(e: KeyEventData): boolean {
     // Shift alone redraws, so its badge shows before the mouse moves.
     if (e.key === "Shift" && !this.pointerShift) {

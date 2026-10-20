@@ -1,3 +1,4 @@
+import { normalizeDegrees } from "../geometry/primitives"
 import { Vec3 } from "../geometry/Vec3"
 import { ScenePrimitive } from "../scene/types"
 import { THEME } from "../scene/theme"
@@ -41,7 +42,7 @@ export function measuredValue(
   const dy = to.y - from.y
   if (field.kind !== "angle") return Math.hypot(dx, dy, to.z - from.z)
   const degrees = (Math.atan2(dy, dx) * 180) / Math.PI
-  return degrees < 0 ? degrees + 360 : degrees
+  return normalizeDegrees(degrees)
 }
 
 /**

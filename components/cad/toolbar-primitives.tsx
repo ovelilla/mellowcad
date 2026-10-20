@@ -16,7 +16,7 @@ export type Side =
 
 /**
  * An icon button with a tooltip — the atom every toolbar region is built from:
- * a square of 28 px, as every control is (ui.instructions.md, "Size").
+ * a square of 28 px, as every control is (.claude/rules/ui.md, "Size").
  */
 export function IconAction({
   icon: Icon,

@@ -36,6 +36,10 @@ type Phase =
  * here runs more than one. WHY Layer changes nothing else: what it joins is
  * the Layer Properties Manager's changes, which the console cannot show
  * (LAYER hangs it).
+ *
+ * The marks, groups and settings are `CommandHistory`'s, through
+ * `ctx.undoHistory`: the history enforces Control and Combine itself, so
+ * every command's step obeys them, not only UNDO's.
  */
 export class UndoTool implements Tool {
   readonly id = "undo"

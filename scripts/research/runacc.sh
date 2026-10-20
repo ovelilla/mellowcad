@@ -8,7 +8,7 @@
 # wants CRLF, writes Windows-1252 and is quit at the end; its banner is
 # dropped, so the output starts at the first prompt. A run that hangs (TEXT's
 # text entry, LAYER) is cut after 90 s. See
-# .github/instructions/autocad-research.instructions.md.
+# .claude/skills/autocad-research/SKILL.md.
 ACCORE=${ACCORE:-"/mnt/c/Program Files/Autodesk/AutoCAD 2027/accoreconsole.exe"}
 L=${2:-es-ES}
 { sed 's/$/\r/' "$1"; printf '_.QUIT\r\n_Y\r\n'; } |

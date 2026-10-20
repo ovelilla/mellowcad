@@ -568,7 +568,7 @@ export class MeasureTool implements Tool {
 
   /**
    * WHY no Arc and Length at AREA's next point: not built
-   * (docs/autocad-coverage.md). In Add area the first corner lists Subtract
+   * (docs/coverage/inquiry.md). In Add area the first corner lists Subtract
    * area and takes Add area unlisted, as AutoCAD 2023's console does, and
    * the other way round. DIST's Arc lists PLINE's arc options.
    */

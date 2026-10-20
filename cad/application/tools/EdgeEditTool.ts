@@ -89,9 +89,22 @@ import {
  * built on this common base — AutoCAD likewise treats them as a single command
  * pair where **Shift toggles** from one to the other on the fly.
  *
- * This mirrors AutoCAD's modern *Quick* mode: there is no separate step to pick
- * cutting edges or boundaries — *every* other visible object implicitly acts as
- * one. You simply hover the object to edit (which previews the result) and
+ * The mode is TRIMEXTENDMODE and EDGEMODE (`TrimExtendMode`, one object TRIM
+ * and EXTEND share). In Quick mode *every* other object is an edge; Standard
+ * mode's are the ones cuTting edges / Boundary edges chose (`edges`), asked
+ * with `edgeSelector`, and an edge's pieces stay edges (`keepEdges`). Edge's
+ * Extend runs the edges on (`prolonged`) in Standard mode alone. A polyline
+ * that is an edge is one of its own too: its picked segment is cut at its
+ * vertices and where it crosses itself (`ownEdges`), never at the next
+ * crossing round the chain; one that is not is trimmed along it, past its
+ * vertices, to the nearest edge (`planTrimPolylinePath`).
+ *
+ * A pick on nothing starts AutoCAD's two-point crossing fence, Fence one of
+ * any points, and Crossing's window is a closed fence round its outline
+ * (`clockwiseOutline`): `editAcross` takes each place one meets an object as
+ * a pick there, one Undo step. eRase asks its set with an `ObjectSelector` of
+ * whole objects (`eraser`), whose `done` erases it as one step of the
+ * command's. You hover the object to edit (which previews the result) and
  * click:
  *
  * - **Trim**: the clicked portion of the object is removed up to its nearest
