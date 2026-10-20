@@ -19,7 +19,7 @@ with a plain next point, the tangent from it or the foot of the perpendicular (o
 or an arc), with a second Tangent the line touching both circles — of the four, the one nearest the
 picks — and a Tangent with a Perpendicular to a line the line touching the one square to the other;
 each end at its own point's Z, with THICKNESS; one U undoes the whole command, Ctrl+Z inside it is
-its Undo
+`_u` typed at its prompt (its Undo, `Invalid point.` at the first point)
 
 **Missing:** the deferred marker and its tooltip (only the rubber band shows it), a deferred snap on
 a polyline segment, an ellipse or a spline, two deferred Perpendiculars, a zero-length segment from

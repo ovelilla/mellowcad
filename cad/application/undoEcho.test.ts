@@ -23,8 +23,8 @@ function written(cad: CadHarness, ...texts: string[]): string[] {
 const LINE = ["L", "0,0", "10,0", ""]
 const CIRCLE = ["C", "5,5", "2"]
 
-// AutoCAD 2023's console (acc/r1–r20, s1–s14 of the hidden UCS words
-// session): U names what it took back, REDO what it did again.
+// U names what it took back, REDO what it did again: probes line/p41,
+// line/p108, line/p110 (en and es).
 describe("U and REDO say what they did", () => {
   it("U names the command, then says nothing is left", () => {
     const cad = answer(createHarness(), ...LINE, ...CIRCLE)
@@ -158,6 +158,47 @@ describe("U and REDO say what they did", () => {
     expect(cad.entities()).toHaveLength(0)
   })
 
+  // desktop line/d09: with no ^C^C in `_u`, the running prompt takes it as
+  // typed, LINE's Undo keyword or a wrong point, and the command goes on.
+  it("Ctrl+Z inside a command answers its prompt with _u", () => {
+    const cad = createHarness({
+      locale: es,
+      entities: [lineOf(p(0, 0), p(10, 0))],
+    })
+    cad.command("LINEA").click(p(0, 40)).click(p(20, 40)).click(p(20, 50))
+    const ctrlZ = () => {
+      const question = cad
+        .state()
+        .commandLine.question?.map((span) => span.text)
+        .join("")
+      const from = cad.commandLog().length
+      cad.press("z", { ctrlKey: true })
+      expect(cad.commandLog()[from]).toBe(`${question} _u`)
+      expect(cad.activeToolId()).toBe("line")
+      return cad.commandLog().slice(from)
+    }
+    expect(ctrlZ()[0]).toMatch(/\[Cerrar\/desHacer\]: _u$/)
+    expect(cad.entities()).toHaveLength(2)
+    ctrlZ()
+    expect(cad.entities()).toHaveLength(1)
+    ctrlZ()
+    expect(ctrlZ()).toEqual(["Precise primer punto: _u", "Punto no válido."])
+    expect(cad.entities()).toHaveLength(1)
+  })
+
+  // probe line/p115: `_U` at Length of line: is refused there.
+  it("Ctrl+Z at Length of line is refused, and LINE goes on", () => {
+    const cad = answer(createHarness(), "ARC", "0,0", "50,50", "100,0")
+    answer(cad, "LINE", "")
+    cad.press("z", { ctrlKey: true })
+    expect(cad.commandLog().slice(-2)).toEqual([
+      "Length of line: _u",
+      "Requires numeric distance or second point.",
+    ])
+    expect(cad.activeToolId()).toBe("line")
+    expect(cad.entities()).toHaveLength(1)
+  })
+
   it("the shortcut menu's Undo is U", () => {
     const cad = createHarness({ entities: [lineOf(p(0, 0), p(10, 0))] })
     answer(cad, ...CIRCLE)
@@ -179,12 +220,13 @@ describe("U and REDO say what they did", () => {
       "H",
       "Ya se ha deshecho todo",
       "H",
-      "Nada que deshacer",
+      // probe line/p41 (es)
+      "No hay nada que se pueda deshacer",
       "REHACER",
       "REHACER debe ir directamente a continuación del comando H o DESHACER.",
     ])
     expect(written(cad, "DESHACER", "").slice(-1)).toEqual([
-      "Nada que deshacer",
+      "No hay nada que se pueda deshacer",
     ])
   })
 })

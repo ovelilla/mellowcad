@@ -174,6 +174,10 @@ export class CadEngine {
     this.runtime.redo()
   }
 
+  runUndoMacro(): void {
+    this.runtime.runUndoMacro()
+  }
+
   zoomIn(): void {
     this.runtime.zoomIn()
   }

@@ -30,8 +30,8 @@ const REFUSED = "Requires an integer between 1 and 32767, or option keyword."
 const GROUP_START =
   "Start of Group encountered.\nMust enter UNDO END to go back further."
 
-// AutoCAD 2023's console (acc/w1–w16, x1–x15 of the hidden UCS words
-// session).
+// Probes line/p100, line/p106, line/p110 (a count, Enter, the refusals),
+// line/p42 (Mark, Back, BEgin, End), line/p109 (Back with no mark).
 describe("UNDO", () => {
   it("asks how many operations, and takes back that many", () => {
     const cad = answer(createHarness(), ...LINE)
@@ -72,6 +72,22 @@ describe("UNDO", () => {
       "U",
       "LINE",
     ])
+
+    // probe line/p100: Enter is one, and REDO does only that one again.
+    const enter = answer(createHarness(), ...LINE, ...CIRCLE, ...LINE)
+    expect(written(enter, "UNDO", "2", "UNDO", "", "REDO")).toEqual([
+      "UNDO",
+      SETTINGS,
+      `${ASK} 2`,
+      "LINE CIRCLE",
+      "UNDO",
+      SETTINGS,
+      ASK,
+      "LINE",
+      "REDO",
+      "LINE",
+    ])
+    expect(enter.entities()).toHaveLength(1)
 
     const exact = answer(createHarness(), ...LINE, ...CIRCLE, "UNDO", "2")
     expect(exact.commandLog().slice(-1)).toEqual(["CIRCLE LINE"])
@@ -289,7 +305,8 @@ describe("UNDO", () => {
       "DESHACER",
       "Parámetros actuales: Auto = Act, Control = Todos, Combinar = Sí, Capa = Sí",
       `${ASK_ES} FOO`,
-      "Requiere un nº entero entre 1 y 32767 o una opción.",
+      // probe line/p106 (es)
+      "Requiere un nº entero entre 1 y 32767, o una opción.",
       `${ASK_ES} R`,
       "GRUPO LINEA CIRCULO",
       "Marca encontrada",
@@ -317,7 +334,8 @@ const settings = (
 ) =>
   `Current settings: Auto = ${auto}, Control = ${control}, Combine = ${combine}, Layer = ${layer}`
 
-// AutoCAD 2023's console (acc/k1–k16, h1–h44 of the -PAN session).
+// Probes line/p43 (None, Combine's refusals), line/p111 (One); Auto and
+// Layer from AutoCAD 2023's console (acc/k1–k16, h1–h44 of the -PAN session).
 describe("UNDO Control and Auto", () => {
   it("None keeps nothing, and U, REDO and MREDO say so", () => {
     const cad = answer(createHarness(), ...LINE)
@@ -568,7 +586,8 @@ describe("UNDO Control and Auto", () => {
       "DESHACER",
       "Parámetros actuales: Auto = Des, Control = Uno, Combinar = No, Capa = No",
       "Indique una opción [Control] <1>: 2",
-      "Requiere un valor 1 entero o una opción.",
+      // probe line/p111 (es)
+      "Requiere un valor 1 entero, o una opción.",
       "Indique una opción [Control] <1>: C",
       `${CONTROL_ES} N`,
       "H",

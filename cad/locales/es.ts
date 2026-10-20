@@ -2375,7 +2375,7 @@ export const es: EngineLocale = {
       "pointsAreColinear": "Puntos colineales",
       "noPreviousUcs": "No hay ningún sistema de coordenadas guardado.",
       "everythingUndone": "Ya se ha deshecho todo",
-      "nothingToUndo": "Nada que deshacer",
+      "nothingToUndo": "No hay nada que se pueda deshacer",
       "nothingToRedo": "Nada que repetir",
       "everythingRedone": "Todo repetido",
       "redoMustFollowUndo": "REHACER debe ir directamente a continuación del comando H o DESHACER.",
@@ -2439,7 +2439,7 @@ export const es: EngineLocale = {
         [
           "value"
         ],
-        " entero o una opción."
+        " entero, o una opción."
       ],
       "requiresIntegerBetweenOrKeyword": [
         "Requiere un nº entero entre ",
@@ -2450,7 +2450,7 @@ export const es: EngineLocale = {
         [
           "max"
         ],
-        " o una opción."
+        ", o una opción."
       ],
       "yesOrNoPlease": "Sí o No.",
       "requiresDistanceNumberXOrKeyword": "Requiere una distancia, un factorX o una opción.",

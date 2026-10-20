@@ -159,10 +159,10 @@ export function DynamicInput({
                     !e.shiftKey &&
                     e.key.toLowerCase() === "z"
                   ) {
-                    // Ctrl+Z with nothing typed is the drawing's: the command's
-                    // Undo option, else UNDO, rather than the box's own.
+                    // Ctrl+Z with nothing typed is the drawing's `_u`, typed
+                    // at the prompt, rather than the box's own.
                     e.preventDefault()
-                    if (!engine.invokeToolOption("_Undo")) engine.undo()
+                    engine.runUndoMacro()
                   } else if (e.key === "Escape") {
                     e.preventDefault()
                     engine.cancelDynamicInput()

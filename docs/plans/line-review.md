@@ -916,3 +916,4 @@ every object snap three ways and the modes in combination:
 
 | Block | Findings | Commit |
 | ----- | -------- | ------ |
+| CAT | CAT-01 (CAT-02 refuted, p70) | `4f61e91` |

@@ -218,9 +218,12 @@ box's chips show each abbreviation
 ### Undo · `U` · `UNDO` · `REDO` · `MREDO` · Ctrl+Z / Ctrl+Y
 
 **Implemented:** one step per command: what a command draws and sets folds into one ("The effects of
-the last command (Line) will be undone, removing all 3 of the lines created by it"); inside a
-command that offers Undo, Ctrl+Z is that option ("only the previous line segment is undone because
-you are still in the Line Command"); with none on offer, and from the Quick Access Toolbar, the
+the last command (Line) will be undone, removing all 3 of the lines created by it"); Ctrl+Z inside a
+command is acad.cuix's `_u` typed at its prompt and written so
+(`Specify next point or [Close/Undo]: _u`), and the command goes on: LINE's Undo keyword ("only the
+previous line segment is undone because you are still in the Line Command"), a refusal where the
+prompt has no Undo (`Invalid point.` at LINE's first point, `Requires numeric distance or second
+point.` at `Length of line:`; desktop d09, probes p103, p115); from the Quick Access Toolbar the
 running command ends first and goes whole ("Click Undo on the Quick Access toolbar to cancel the
 entire series of line segments"); U (a command of its own, es `H`) writes what it took back, as
 AutoCAD 2023's console does: the command's name as echoed (`LINE` for `L`, `-LAYER`, `AUPREC`),
@@ -255,7 +258,7 @@ turns it back on; with None nothing is kept — U says
 prompt back and leaves what it drew, and UNDO asks Control at once; with One only the last step is
 kept (no ZOOMs joined) and UNDO asks `Enter an option [Control] <1>:`
 (`Requires an integer value 1, or option keyword.`; es `Indique una opción [Control] <1>`,
-`Requiere un valor 1 entero o una opción.` composed, **unverified**); Combine's
+`Requiere un valor 1 entero, o una opción.`); Combine's
 `Combine zoom and pan operations? [Yes/No] <Yes>:` and Layer's
 `Combine layer dialog operations? [Yes/No] <Yes>:` offer Yes whatever the setting
 (`Yes or No, please.`; es `¿Combinar operaciones de zoom y encuadre? [Sí/No] <Sí>`,
@@ -276,12 +279,12 @@ even one that changes nothing (LIST, ID, ZOOM), leaves nothing to redo (`Nothing
 and the shortcut menu's Redo run acad.cuix's `^C^C_mredo 1`: the running command cancelled, then
 MREDO answered `1`, both written; es
 `Indique el número de operaciones a deshacer o [Auto/Control/Inicio/Fin/Marca/Retorno] <1>`,
-`Marca encontrada`, `GRUPO`, `Esto lo deshará todo. ¿De acuerdo?` (its `<S>` and the refusal
-`Requiere un nº entero entre 1 y 32767 o una opción.` composed, **unverified**); the shortcut menu's
+`Marca encontrada`, `GRUPO`, `Esto lo deshará todo. ¿De acuerdo? <S>` (`Sí o No.`), the refusal
+`Requiere un nº entero entre 1 y 32767, o una opción.`; the shortcut menu's
 Undo runs U (acad.cuix's `^C^C_u`), and so does Ctrl+Z at the Command prompt (`_u`), writing what U
 writes; es from the table (`Ya se ha deshecho todo`, `Todo repetido`, `Nada que repetir`,
-`REHACER debe ir directamente a continuación del comando H o DESHACER.`; `Nada que deshacer`
-**unverified**, one of two the table has)
+`REHACER debe ir directamente a continuación del comando H o DESHACER.`,
+`No hay nada que se pueda deshacer`)
 
 **Missing:** what Auto and Layer join (WHY: Auto makes one step of a menu macro's commands, and no
 menu here runs more than one; Layer joins the Layer Properties Manager's changes, which the console

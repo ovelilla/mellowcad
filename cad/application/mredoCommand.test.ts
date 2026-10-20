@@ -29,7 +29,9 @@ const REFUSED = "Requires an integer between 1 and 32767, or option keyword."
 /** A drawing of a line, a circle and an arc, all three taken back by U. */
 const undone = () => answer(createHarness(), ...THREE, "U", "U", "U")
 
-// AutoCAD 2023's console (acc/m1–m18, n1–n30 of the MREDO session).
+// Probes line/p107 (right after a command, All, Last), line/p113 (the
+// refusals, Enter); counts and the rest from AutoCAD 2023's console (acc/m1–m18,
+// n1–n30 of the MREDO session).
 describe("MREDO", () => {
   it("does again that many of what the undos took back", () => {
     const cad = undone()
@@ -92,6 +94,35 @@ describe("MREDO", () => {
       "MREDO",
       `${ASK} 5`,
       "Nothing to redo",
+    ])
+  })
+
+  // probe line/p107, line/p113: nothing was undone, whatever is asked.
+  it("finds nothing to redo right after a command", () => {
+    const cad = answer(createHarness(), ...LINE)
+    expect(written(cad, "REDO", "MREDO", "", "MREDO", "_A")).toEqual([
+      "REDO",
+      "Nothing to redo",
+      "MREDO",
+      ASK,
+      "Nothing to redo",
+      "MREDO",
+      `${ASK} _A`,
+      "Nothing to redo",
+    ])
+    expect(written(cad, "U", "MREDO", "_A", "U", "MREDO", "_L")).toEqual([
+      "U",
+      "LINE",
+      "MREDO",
+      `${ASK} _A`,
+      "LINE",
+      "Everything has been redone",
+      "U",
+      "LINE",
+      "MREDO",
+      `${ASK} _L`,
+      "LINE",
+      "Everything has been redone",
     ])
   })
 
@@ -311,7 +342,8 @@ describe("MREDO", () => {
     expect(written(cad, "MREHACER", "FOO", "L", "MREHACER", "L")).toEqual([
       "MREHACER",
       `${ASK_ES} FOO`,
-      "Requiere un nº entero entre 1 y 32767 o una opción.",
+      // probe line/p113 (es)
+      "Requiere un nº entero entre 1 y 32767, o una opción.",
       `${ASK_ES} L`,
       "LINEA",
       "MREHACER",

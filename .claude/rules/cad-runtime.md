@@ -131,6 +131,10 @@ The routing order is the comments in `CadRuntime.keyDown` and `CadRuntime.pointe
 command line steals them from typing, and no key runs a keyword on its own (it is typed and
 confirmed). The right button is answered on its release and never reaches a tool.
 
+**Ctrl+Z is acad.cuix's `_u` typed at the running prompt** (`runUndoMacro`, no `^C^C`): a keyword
+where Undo is offered, else that prompt's refusal, and the command goes on; at `Command:` it is U.
+The top bar's Undo ends the running command first; the Default menu's is `^C^C_u`.
+
 **A right-click's Enter is `pressEnter`, and so is the Command menu's Enter**: one path with the
 keyboard's. `rightClickResponse` (SHORTCUTMENU 11) picks the menu. Every entry runs through
 `chooseShortcutMenuAction` / `chooseShortcutMenuOption`, which close the menu first; a fixed entry

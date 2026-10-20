@@ -2433,6 +2433,16 @@ export class CadRuntime extends Observable {
   }
 
   /**
+   * acad.cuix's Ctrl+Z: `_u` with no `^C^C`, so it is typed at the running
+   * prompt — LINE's Undo keyword, a wrong point at its first point, and the
+   * command goes on (desktop d09) — and at the Command prompt it runs U.
+   */
+  runUndoMacro(): void {
+    this.setCommandLineText("_u")
+    this.submitCommandLine()
+  }
+
+  /**
    * acad.cuix's Redo, behind Ctrl+Y and the shortcut menu's Redo:
    * `^C^C_mredo 1`, which cancels the running command and answers MREDO's
    * prompt with 1, both echoed as typed.
@@ -4223,13 +4233,8 @@ export class CadRuntime extends Observable {
     if (e.key === " " && e.shiftKey && this.cycleSelection()) return true
 
     if (e.ctrlKey && (e.key === "z" || e.key === "Z")) {
-      // Inside a command that offers Undo, Ctrl+Z is that option: "only the
-      // previous line segment is undone because you are still in the Line
-      // Command".
-      // At the Command prompt it is acad.cuix's `_u`: U, echoed as typed.
       if (e.shiftKey) this.redo()
-      else if (this.activeTool.id === "select") this.runCommand("_U")
-      else if (!this.invokeToolOption("_Undo")) this.undo()
+      else this.runUndoMacro()
       return true
     }
     if (e.ctrlKey && (e.key === "y" || e.key === "Y")) {
