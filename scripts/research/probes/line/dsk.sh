@@ -67,3 +67,29 @@ mv 18.67 45.04; sleep 1; scr 18 45
 # put the settings back
 $A com set DYNMODE 0; $A com set OSMODE 4133; $A com set ORTHOMODE 0; $A com set AUTOSNAP 63
 $A com eval '(setvar "POLARANG" (/ pi 2))'; $A com eval '(setvar "CECOLOR" "BYLAYER")'
+
+# Second pass (the same night). Objects: lines 0,0–30,0; 40,-10–40,20; 35,5–50,5; 45,30–60,45;
+# a circle at 70,20 radius 10. AUTOSNAP 39 (no Polar, no OTRACK), LINE from 60,-5.
+$A com set AUTOSNAP 39
+snap() { at 95 45; $A key esc esc; $A com set OSMODE "$2"; $A type '_LINE\n60,-5\n'; mv "$3" "$4"
+  sleep 1.3; scr "$3" "$4"; at "$3" "$4"; $A key esc; $A com dump; }
+# d21 each running snap, hovered then picked
+snap end 1 29.6 0.3; snap mid 2 15.3 0.3; snap cen 4 79.7 21; snap qua 16 80.3 20.3
+snap int 32 40.3 5.3; snap per 128 40.2 -3; snap tan 256 60.4 19.2; snap nea 512 10.3 0.2
+snap app 2048 40.3 5.3
+# d22 Midpoint picked from the Shift+right menu (it opens upwards near the screen's bottom: shoot it
+# first and click the entry where it shows)
+$A com set OSMODE 0; $A type '_LINE\n60,-5\n'; at 5 3 right 1 shift
+# d23 snap mode with picks
+$A com set SNAPMODE 1; $A type '_LINE\n'; at 13 7; at 27.5 -14; $A key esc; $A com set SNAPMODE 0
+# d24 a running snap with Ortho on
+$A com set OSMODE 1; $A com set ORTHOMODE 1; $A type '_LINE\n60,-5\n'; at 30.3 0.3; $A key esc
+$A com set ORTHOMODE 0
+# d25 the aperture: Endpoint at 5, 7, 9, 10, 11, 12, 14 px from 30,0
+for px in 5 7 9 10 11 12 14; do $A type '_LINE\n60,-5\n'; $A click "$(sx 30)" "$(($(sy 0) - px))"
+  $A key esc; $A com dump; done
+# d26 Tab over stacked snaps
+$A com set OSMODE 35; $A type '_LINE\n60,-5\n'; mv 40.3 5.4; scr 40 5; $A key tab; scr 40 5
+$A key esc esc
+# d27 the English profile (acad.exe /language en-US): F3, F8, F9, F10, F11 twice each, Escape
+# inside LINE and at Command:

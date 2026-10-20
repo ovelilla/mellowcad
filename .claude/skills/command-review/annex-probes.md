@@ -104,7 +104,7 @@ hook runs them. They need a config there, created once per machine as
 `research/review/vitest.config.mts`:
 
 ```ts
-import base from "../../vitest.config"
+import base from "../../vitest.config.ts"
 import { defineConfig } from "vitest/config"
 
 export default defineConfig({

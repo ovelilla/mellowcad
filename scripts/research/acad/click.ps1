@@ -26,10 +26,11 @@ public static class Cl {
 $flags = @{ left = @(0x2, 0x4); right = @(0x8, 0x10); middle = @(0x20, 0x40); none = @(); wheel = @() }[$button]
 if ($null -eq $flags) { throw "button is left, right, middle, none or wheel" }
 $holdVk = @{ shift = 0x10; ctrl = 0x11 }[$hold]
+# The key goes down before the moves: AutoCAD reads Shift's temporary Ortho as the cursor moves.
+if ($holdVk) { [Cl]::Key([uint16]$holdVk, $false); Start-Sleep -Milliseconds 60 }
 # Two moves: AutoCAD redraws on a change of position, not on arrival.
 [Cl]::SetCursorPos($x - 3, $y - 3) | Out-Null; Start-Sleep -Milliseconds 120
 [Cl]::SetCursorPos($x, $y) | Out-Null; Start-Sleep -Milliseconds 250
-if ($holdVk) { [Cl]::Key([uint16]$holdVk, $false); Start-Sleep -Milliseconds 60 }
 if ($button -eq "wheel") { [Cl]::Button(0x800, [uint32](120 * $count -band 0xFFFFFFFF)) }
 elseif ($flags.Count) {
   for ($i = 0; $i -lt $count; $i++) {

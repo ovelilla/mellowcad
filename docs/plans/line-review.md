@@ -1,8 +1,8 @@
 # LINE review
 
-> **Status:** reviewed, waiting for the owner's approval. First review of the order in
-> `docs/coverage/roadmap.md` ("Command reviews"), with skill `command-review`. Nothing has been
-> fixed yet.
+> **Status:** approved by the owner on 2026-10-21, with leave to run it overnight; executing block by
+> block. First review of the order in `docs/coverage/roadmap.md` ("Command reviews"), with skill
+> `command-review`.
 
 ## 1. Summary
 
@@ -11,7 +11,7 @@
 | Critical | 0   | 0   | 0   | 0   | 0   | 0   | 0   | 0   | 0   | 0   | 0   | 0   | 0   | 0     |
 | High     | 0   | 2   | 0   | 0   | 0   | 2   | 1   | 0   | 0   | 1   | 0   | 1   | 0   | 7     |
 | Medium   | 0   | 5   | 0   | 1   | 4   | 6   | 1   | 1   | 0   | 2   | 0   | 2   | 2   | 24    |
-| Low      | 2   | 2   | 3   | 2   | 2   | 4   | 1   | 1   | 3   | 3   | 0   | 0   | 5   | 28    |
+| Low      | 2   | 2   | 3   | 2   | 2   | 4   | 1   | 1   | 3   | 3   | 0   | 0   | 6   | 29    |
 
 No finding loses or corrupts a drawing: every mutation goes through a command, the file round-trips
 every property a line holds, and undo never drops objects. The seven highs are gestures an AutoCAD
@@ -418,10 +418,21 @@ template gained after the first pass (matrix.md P and Q).
 | P | the wheel mid-command | zooms, LINE goes on (d18) | `viewUndo.test.ts` | match |
 | Q | hovering a line at `Comando:` | it thickens, the pickbox shows, a tooltip `Línea · Color · Capa · Tipo de línea` (d20) | the highlight only | **DSK-06** |
 
-Not reached in this pass, for a second one with the owner's mouse: every object snap running and
-picked from the menu (only Endpoint was hovered; all were typed in the console), Tab cycling and
-the aperture, snap mode (F9) with picks, the pairs of the modes table beyond those above, the
-English profile's echoes (`*Cancel*`, F-keys).
+A second pass the same night (d21–d27, `dsk.sh`'s second part), mouse lent for the night:
+
+| Row | Gesture | AutoCAD | mellowcad | State |
+| --- | --- | --- | --- | --- |
+| D | each running snap hovered and picked, one OSMODE at a time: Endpoint, Midpoint, Center, Quadrant, Intersection, Perpendicular, Tangent, Nearest, Apparent Intersection | each lands on its point; green markers (square, triangle, circle with a cross, diamond, ✕, right angle, circle with a bar, hourglass); Center and Perpendicular leave the crosshair on the pointer, the marker on the point (d21) | the same points and crosshair rule (`snapping.test.ts`, `providers.test.ts`); glyphs per type (`SceneBuilder.ts` `pushSnapMarker`) | match (colour: DSK-07) |
+| D | Midpoint picked from the Shift+right menu | written `_mid de`; the midpoint of the object under the cursor (d22) | `OSNAP_MENU_ANSWERS` | match |
+| D | snap mode (F9) with picks | (13,7) → (10,10), (27.5,−14) → (30,−10) (d23) | scratch `research/review/line/D/snapmode.test.ts` passes | untested |
+| D | a running snap with Ortho on | the snap wins (d24) | `snapping.test.ts:320` | match |
+| D | the aperture | Endpoint engages up to 10 px from the point, not at 11 (APERTURE 10; d25) | 8 px (`pixelTolerance`) | **DSK-08** |
+| D, Q | Tab over stacked snaps | cycles, the current snap's object glowing blue (d26) | cycles (`CadRuntime.ts:4339`) | match; the glow: DSK-07 |
+| D | Shift for a temporary Ortho | a synthetic Shift is not read (TEMPOVERRIDES 1) | `LineTool.test.ts:615` | unverified (help only) |
+| D, K | the English profile's echoes | ` <Ortho on>`, ` <Snap on>`, ` <Polar on>`, ` <Object Snap Tracking on>` and their `off`; `*Cancel*` inside a command and at `Command:` alike (d27) | nothing written | TRK-03 widened; DSK-04 is Spanish only |
+
+Not reached: Extension, Parallel and Insertion hovered (they need an acquisition or a block), and
+the modes table's pairs with dynamic input.
 
 ## 5. Findings
 
@@ -696,10 +707,10 @@ the file named as its regression test, citing its probe.
 - **OSN-12** — docs drift: the `of` echo listed as Missing is built; the `OSNAP_MENU_ANSWERS` WHY
   and `command-line.md`'s unverified prepositions are settled by p24, p25, p32, p156 (INS stays
   unverified).
-- **TRK-03** — F3, F8, F9, F10 and F11 write nothing; AutoCAD writes ` <Osnap on> ` / ` <Osnap off> `
-  (tables 33112, 33113) and, in Spanish, ` <Orto activado>`, ` <Forzcursor activado>`,
-  ` <Polar activado>`, ` <Rastreo de referencia a objetos activado>` and their `desactivado` (d10);
-  F12 nothing. The English words of F8–F11 are in no table: the English profile's pass settles them.
+- **TRK-03** — F3, F8, F9, F10 and F11 write nothing; AutoCAD writes ` <Osnap on>`, ` <Ortho on>`,
+  ` <Snap on>`, ` <Polar on>`, ` <Object Snap Tracking on>` and their `off` (d27, tables 33112,
+  33113), es ` <Refent activado>`, ` <Orto activado>`, ` <Forzcursor activado>`, ` <Polar activado>`,
+  ` <Rastreo de referencia a objetos activado>` and their `desactivado` (d10); F12 nothing.
 - **DYN-02** — the Down arrow lists nothing; AutoCAD lists the options under the prompt (d11). The
   chips stay as the always-visible list; the Down arrow opens them.
 - **CPR-01** — a true colour 255,0,0 reads back as index 1 (p200): to Colour Missing (LINE-D27).
@@ -716,14 +727,16 @@ the file named as its regression test, citing its probe.
 - **DSK-03** — the Command menu's es label is `Modificaciones de REFENT` (d07), not
   `Modificaciones de referencias`; the menu's order, unverified in the coverage, is settled.
 - **DSK-04** — es Escape inside a command writes `*Cancelado*`; at `Comando:` `*Cancelar*` (d08,
-  d19). mellowcad writes `*Cancelar*` for both (scratch `research/review/line/D/rail.test.ts`).
+  d19); English writes `*Cancel*` for both (d27). mellowcad writes `*Cancelar*` for both (scratch `research/review/line/D/rail.test.ts`).
 - **DSK-05** — LINE started from the rail writes nothing; the ribbon's writes `Comando: _line` (d19).
 - **DSK-06** — hovering an object at `Comando:` shows AutoCAD's rollover tooltip (`Línea`, Color,
   Capa, Tipo de línea; d20); absent here and not in Missing.
+- **DSK-08** — the snap aperture is 8 px here; AutoCAD's APERTURE 10 engages at 10 px and not at 11
+  (d25). Capture at 10, release a little beyond (`releaseTolerance`).
 - **DSK-07** — the aids look otherwise than AutoCAD's dark theme: the snap marker cyan (AutoCAD's
   green), its tooltip a dark box above the cursor (a light box below and right; the WHY placing it
   above holds only with dynamic input showing), the selection amber (a blue glow), OTRACK's guide
-  violet (green dashed, a small green `+` on the acquired point), the crosshair across the screen
+  violet with a hollow square on the acquired point (green dashed, a small green `+`), the crosshair across the screen
   (CURSORSIZE 5, a pickbox only at `Comando:`). Recognition, not styling: each to AutoCAD's look
   (LINE-D31).
 
@@ -787,10 +800,9 @@ Regression tests first, each in its finding. Then the untested cells, by file:
 
 ## 9. What could not be reviewed, and why
 
-What DSK's first pass did not reach (§4, end of the DSK table): every object snap running and
-picked from the menu, Tab cycling and the aperture, snap mode with picks, the remaining pairs of
-the modes table, Shift's override, the English profile's echoes. They need the owner's mouse once
-more (block 11 below). Also not reviewed: the INS override's echo (the probe hung), Extension and
+What the desktop passes did not reach (§4, DSK): Extension, Parallel and Insertion hovered, the
+modes table's pairs with dynamic input, and Shift's temporary Ortho, which AutoCAD does not read
+from a synthetic Shift (help only). Also not reviewed: the INS override's echo (the probe hung), Extension and
 Parallel geometry, polar snap.
 
 ## 10. Refuted in the adversarial pass
@@ -863,13 +875,11 @@ One commit per block, in this order (each `fix(engine): LINE review — <IDs>`):
 8. **RND** — RND-01 to RND-03. Half a day.
 9. **CPR** — CPR-01 to CPR-03 (notes and wording). An hour.
 10. **DYN** — DYN-01, DYN-02 (notes). Minutes.
-11. **DSK** — DSK-01 to DSK-07, with TRK-03's Spanish echoes. Half a day. Before it, a second
-    desktop pass with the owner's mouse (the list at the end of §4's DSK table); what it finds is
-    added here.
+11. **DSK** — DSK-01 to DSK-08. Half a day.
 12. **EDT** — EDT-01 to EDT-06. Half a day.
 13. **FIL** — the tests of §7 only.
 
-The blocks depend on nothing outside themselves; the second desktop pass may add findings to 11.
+The blocks depend on nothing outside themselves.
 
 ## 13. Changes to coverage, rules, catalogs and roadmap
 
