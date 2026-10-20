@@ -90,7 +90,9 @@ negative centrelines; **unverified**: es of the location prompt, as DIMRADIUS's
 **Implemented:** `Select arc, circle, line, or <specify vertex>:` (es
 `Designe arco, círculo, línea o <designar vértice>`), `Select second line:`, Enter's
 `Specify angle vertex:`, `Specify first angle endpoint:`, `Specify second angle endpoint:` (es
-`Designe vértice del ángulo`, `Designe primer extremo`, `Designe segundo extremo`) and
+`Designe vértice del ángulo`,
+`Designe primer punto final del ángulo`, `Designe segundo punto final del ángulo` — the 2027
+console's words since its update; the release's language pack said `primer extremo`) and
 `Non-associative dimension created.`, `Specify dimension arc line location or [Text/Angle]:` (es
 `Designe ubicación del arco de línea de cota o`), then `Dimension text = 90°`; arc, circle, line
 pair and three-point vertex forms; Text, Angle; reflex angle chosen by location; <180° for a line

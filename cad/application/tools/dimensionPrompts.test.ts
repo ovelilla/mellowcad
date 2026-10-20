@@ -181,7 +181,7 @@ describe("DIMRADIUS's and DIMANGULAR's questions", () => {
     )
     cad.enter().click(p(0, 0)).click(p(100, 0))
     expect(cad.state().commandLine.prompt).toBe(
-      "ACOANGULO Designe segundo extremo:"
+      "ACOANGULO Designe segundo punto final del ángulo:"
     )
     cad.click(p(0, 100))
     expect(cad.state().commandLine.prompt).toBe(

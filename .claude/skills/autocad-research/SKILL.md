@@ -28,18 +28,21 @@ is written **unverified** in `docs/coverage/`, with what was seen instead. Cite 
 `research/strings/` is gitignored, because it holds Autodesk's text, not ours. Copy it along with
 the project. Each table is `id<TAB>text`, with the text JSON-quoted:
 
-| File                                                         | Source                                             |
-| ------------------------------------------------------------ | -------------------------------------------------- |
-| `st2023_en.tsv`                                              | `acadres`, AutoCAD 2023 English                    |
-| `st2027_es.tsv`                                              | `acadres`, AutoCAD 2027 Spanish                    |
-| `AcDimRes_*`, `acmtedRes_*`, `AcArrayRes_*`, `texteditRes_*` | the dimension, MTEXT, array and TEXTEDIT resources |
-| `all_en.tsv`, `all_es.tsv`                                   | everything above merged                            |
+| File                                                         | Source                                                   |
+| ------------------------------------------------------------ | -------------------------------------------------------- |
+| `st2027_en.tsv`, `st2027_es.tsv`                             | `acadres`, AutoCAD 2027 English and Spanish              |
+| `AcDimRes_*`, `acmtedRes_*`, `AcArrayRes_*`, `texteditRes_*` | the dimension, MTEXT, array and TEXTEDIT resources, 2027 |
+| `all_en.tsv`, `all_es.tsv`                                   | everything above merged, the other DLLs' ids prefixed    |
+| `st2023_en.tsv`                                              | `acadres`, AutoCAD 2023 English, kept for history        |
 
 `node scripts/research/pair.mjs "<regex>"` prints every English string that matches, beside the
-Spanish one of the same id. The Spanish came from the AutoCAD 2027 language pack: open
-`x64/es-ES/acadlp/acadlp.adix` with 7-Zip and read the string tables of its resource DLLs. The
-palettes' labels are in `ax24res.dll` / `ax26res.dll` and `acappres.dll`. The English table is
-2023's: a traced prompt (tracing.md) gives 2027's English keywords beside the Spanish ones.
+Spanish one of the same id. The tables come from the installed DLLs: after an AutoCAD update,
+regenerate them with `node scripts/research/strtable.mjs <dll>` from the install's `en-US/` and
+`es-ES/` folders (it reads the PE file, nothing runs). **An update rewords prompts**: 2027's
+update turned DIMANGULAR's `Designe primer extremo` into `Designe primer punto final del
+ángulo`, so a table from the release's language pack is not the current product. The installed
+language packs are English and Spanish; AutoCAD has none for Arabic. The palettes' labels are in
+`ax24res.dll` / `ax26res.dll` and `acappres.dll`.
 
 A keyword is the word the table declares for `initget`; the prompt lists its label. How both are
 written in the catalogs is in `.claude/rules/cad-catalogs.md`.
@@ -78,8 +81,6 @@ needs a browser (skill `browser-verify`). Pages already read are in `research/au
 
 So that nobody spends a session on them again (October 2026):
 
-- **An English console** needs the English language pack, which is not installed: `/l en-US`
-  still answers in Spanish. Installing it is the owner's call.
 - **AutoCAD's own MCP server** and window messages (WM_COPYDATA, WM_CHAR): gui.md.
 - **Community MCP servers** (COM, Lisp IPC or ezdxf based) draw and query objects; none exposes
   prompts or keywords, which MellowProbe does.
