@@ -120,6 +120,8 @@ const eslintConfig = defineConfig([
     "next-env.d.ts",
     // Generated coverage report.
     "coverage/**",
+    // Gitignored: AutoCAD's strings and a command review's scratch tests.
+    "research/**",
   ]),
 ])
 

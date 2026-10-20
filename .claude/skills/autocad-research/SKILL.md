@@ -44,6 +44,9 @@ update turned DIMANGULAR's `Designe primer extremo` into `Designe primer punto f
 language packs are English and Spanish; AutoCAD has none for Arabic. The palettes' labels are in
 `ax24res.dll` / `ax26res.dll` and `acappres.dll`.
 
+`node scripts/research/catalog-sweep.mjs` checks the engine's catalogs against the tables (skill
+`command-review`).
+
 A keyword is the word the table declares for `initget`; the prompt lists its label. How both are
 written in the catalogs is in `.claude/rules/cad-catalogs.md`.
 

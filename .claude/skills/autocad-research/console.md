@@ -5,6 +5,8 @@ line, to `accoreconsole.exe` of the AutoCAD 2027 installed on Windows and prints
 its header says what each flag does. Set `ACCORE` to use another install. A run takes about 2 s,
 11 s traced (`-t`, tracing.md).
 
+- A command review keeps its probes as files and runs them in both languages with
+  `scripts/research/probe.sh` (skill `command-review`).
 - **Each run is isolated**: `/isolate` gives it a registry hive and user folder of its own,
   removed afterwards. Variables that live in the registry (TRIMEXTENDMODE, UNDO's Combine and
   Layer…) start at their defaults every time, and runs can go in parallel. `-r` runs in the

@@ -129,13 +129,15 @@ and what each option does must be the ones they already know.
   `cad-catalogs.md` (prompts, keywords), `testing.md`, `ui.md` (the editor), `marketing.md` (the
   landing), `i18n.md` (languages), `knowledge.md` (where knowledge goes).
 - **Skills** (`.claude/skills/`, loaded on demand): `new-command`, `extend-model`,
-  `autocad-research`, `browser-verify`, `add-language`, `finish-feature`, `deps-review`.
+  `autocad-research`, `browser-verify`, `add-language`, `finish-feature`, `deps-review`,
+  `command-review`.
 - **`docs/coverage/`** — what each implemented command does and which AutoCAD options it still
   lacks, one file per area, plus the roadmap. **Read a command's entry before extending it** —
   the gaps are deliberate and already researched.
 - `docs/i18n-glossary.md` — the interface terms in each language and how each one is written.
 - `cad/README.md` — the engine's public contract for whoever integrates it. Keep it true when that
   contract changes.
+- `docs/plans/<command>-review.md` — a command review's plan (skill `command-review`).
 - `docs/next-*.md` — the brief for the next piece of work, when one has been agreed; deleted once
   it ships.
 - `scripts/research/` and `research/` (gitignored) — AutoCAD's runners, its tracer plugin and

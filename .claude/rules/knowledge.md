@@ -15,6 +15,7 @@ paths:
 | A rule of an area the code does not show             | `.claude/rules/<area>.md`, loaded by its `paths:`         |
 | A procedure used now and then (a checklist, a probe) | a skill, `.claude/skills/<name>/SKILL.md`                 |
 | What a command does and lacks against AutoCAD        | its entry in `docs/coverage/`                             |
+| A command review's findings and their execution      | `docs/plans/<command>-review.md` (skill `command-review`) |
 | The why of one place in the code                     | a comment there                                           |
 | What was done, measured or tried                     | the commit message                                        |
 | A rule a machine can check                           | a test or a lint rule, and one line in the rule naming it |
