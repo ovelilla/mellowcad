@@ -46,6 +46,8 @@ summary, order of execution and estimate for every block).
 - MellowProbe built (`scripts/research/mellowprobe/build.sh`) and the console answering a one-line
   probe. The desktop is opened only when a desktop probe is due, with
   `scripts/research/acad.sh launch`, and its rules (`gui.md` of `autocad-research`) hold throughout.
+  A session with desktop probes that move the mouse or type keys asks the owner first and tells
+  them when they may use the mouse again (annex-probes.md §4).
 - Finding prefixes of the session: `git grep -nE "\b<PREFIX>-[0-9]+" -- docs .claude` is empty
   for each one.
 - "Command reviews" in the roadmap: which cross-cutting areas are already owned, and by which plan
@@ -108,9 +110,9 @@ is **owned by the first review whose command uses it**, in the roadmap's order:
 
 - A block is the command itself, or one cross-cutting area it owns. Each has a three-letter prefix
   no other review used.
-- A session takes as many blocks as fit: about 30 probes (each in two languages) and the reading of
-  the code they touch. The input pipeline (point input, snaps, tracking, dynamic input) is one
-  session's worth on its own.
+- A session takes as many blocks as fit. With subagents probing in parallel (§4.8), LINE's
+  session took twelve blocks and about 110 console probes. Desktop probes are slower and need the
+  owner's mouse: they go in a session of their own, planned in the plan's order.
 - Order: the blocks whose result other blocks rely on first (the catalogs before any wording
   finding; the command line before transparency in a later block).
 
@@ -209,8 +211,9 @@ deviation without a `WHY` and a coverage note is a finding.
 
 ### 4.8 Subagents
 
-- At most three at once, never nested, read-only: they neither edit nor create files and run no
-  AutoCAD probe (the console is fine in parallel, but the reviewer owns the probe ids).
+- At most three at once, never nested. They change nothing in the repo but their own console
+  probes, in an id range each (`p100`–`p149`…), and write scratch tests only in a folder each
+  (`research/review/<command>/<letter>/`). They never drive the desktop.
 - Each gets its list of files, the rules to open, the matrix rows it answers, the finding format
   (§5.1), its prefix and a range of decision ids of its own, the order to claim nothing about
   AutoCAD without a probe id the reviewer gave it, and the patterns found earlier in the review
@@ -334,4 +337,13 @@ a finding that needed a question the template does not ask, a step that cost mor
 probe pattern worth reusing. They are proposed in the plan (§6.14) and applied here only after the
 owner confirms, each with its date.
 
-Applied: none yet.
+Applied:
+
+- 2026-10-21, after LINE's review: subagents probe and run scratch tests in ranges of their own
+  (§4.8: three of them wrote 45 probes and 230 scratch tests); undo-depth probes run untraced, a
+  probe's trailing Enter repeats the last command, and typed desktop input goes through COM
+  (annex-probes.md); `es-several` and `no-source` are settled per command (annex-catalogs.md);
+  sessions sized by blocks, desktop probes apart (§1.4).
+- 2026-10-21, at the owner's request: the matrix gained pointer gestures (P), the look (Q, after
+  AGENTS.md's rule that a look slowing an AutoCAD user down is a finding), every object snap three
+  ways (running, picked, typed) and the modes in combination.

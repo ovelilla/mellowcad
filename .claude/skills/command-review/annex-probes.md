@@ -31,6 +31,11 @@ Writing one (the traps of `console.md` hold; these are the review's):
 - Answers in the **underscore form** (`_LINE`, `_U`, `_C`), so one file runs in both languages;
   a probe of the Spanish names (`LINEA`, `H` for undo) runs in es-ES only and says so in its index.
 - `_ZOOM _W` around the drawing before any pick or window selection (`console.md`).
+- **How far U and UNDO go is probed untraced**: name the file `<id>.plain.txt`. Loading the
+  tracer leaves undo steps of its own (SECURELOAD, NETLOAD, MPTRACE), and U took them back
+  silently in LINE's first probes.
+- **An empty line at `Command:` repeats the last command**: end a probe on the command's own last
+  answer, not on an extra Enter (FILLET ran twice in LINE's p60).
 - Typed coordinates are taken as typed: with the console's OSMODE 4133 and OSNAPCOORD 2, a point
   typed beside an endpoint was not snapped (checked 2026-10-21). A snap is probed with a typed
   override (`_END`) and a point inside the aperture.
@@ -62,13 +67,25 @@ The minimum per prompt of the command, adapted and numbered in the plan:
 | J   | `_.SAVEAS` to a DWG and a DXF, then a run that opens it (`-i`) and dumps it                                                                                                                      |
 | L   | the transcript itself is the history: compared line by line with the harness's `commandLog()`                                                                                                    |
 
-Rows I, M and the keys of G (Escape, the right button, SHORTCUTMENU) are desktop probes.
+Rows I, M, P and Q, the keys of G (Escape, the right button, SHORTCUTMENU), the tooltip of D and
+the modes in combination (matrix.md) are desktop probes.
 
 ## 4. The desktop
 
 Rules: `gui.md` of `autocad-research`, always. The owner's AutoCAD may be closed: open it with
 `scripts/research/acad.sh launch` and wait for its window (`acad.sh wins`); with no other
-instance, COM reaches it. Then, per desktop probe:
+instance, COM reaches it. A launch may open another language's profile, with settings of its own:
+read and restore them per instance.
+
+- **What is typed at the command line goes through COM** (`com send`): no keystroke, no focus
+  needed. d02 of LINE's review answered a whole prompt sequence that way.
+- **Keystrokes and the mouse need the owner.** `acad.sh type` reaches AutoCAD only when the
+  drawing area holds the keyboard focus, which a real click should give (to confirm) (2026-10-21: in the foreground
+  but with the focus on an inner window, no key reached a prompt; SetFocus from outside did not
+  move it). `cursor` and a click move the owner's mouse. Ask the owner before such a session, ask
+  them not to touch the mouse, and tell them when it is theirs again.
+
+Then, per desktop probe:
 
 1. `acad.sh com new` — a drawing of the review's own.
 2. Read every setting the probe will change (`acad.sh com get DYNMODE`) and write the value in

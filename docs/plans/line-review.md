@@ -59,10 +59,12 @@ OSN-03 and TRK-01 (scratch tests and p36, p154, p158), RND-01 (`cad/domain/linet
 p202). OSN-01 was downgraded from high to medium (typing a coordinate after an override is a
 script idiom more than a gesture).
 
-**The desktop could not be driven:** `acad.sh type` delivers Escape but no character
-(SendInput's Unicode keys never reach the prompt, with the command line shown or dynamic input
-on), so the jig, dynamic input's tooltip, Escape and the right button, grips and the palette rest
-on Autodesk's help and are marked **unverified**. COM's SendCommand still works for what is typed
+**The desktop could not be driven by keys:** AutoCAD was in the foreground and `SendInput`
+injected the keys, but the keyboard focus sat on an inner window and no key reached a prompt,
+Unicode or virtual (SetFocus from outside did not move it); a real click in the drawing area gives
+the focus, and that needs the owner's mouse. So the jig, dynamic input's tooltip, Escape and the
+right button, grips and the palette rest on Autodesk's help and are marked **unverified**, for the
+desktop block DSK (§12). COM's SendCommand still works for what is typed
 at the command line (d02). A launched instance may open another language's profile with settings
 of its own (the second one had DYNMODE 3): read and restore per instance.
 
@@ -670,7 +672,7 @@ the file named as its regression test, citing its probe.
 | LINE-D25 | A midpoint grip moves its own object — after the desktop confirms | The help |
 | LINE-D26 | Linetype names stay drawing data; Spanish file names to Missing | `cad-catalogs.md`: data names stay data |
 | LINE-D27 | True colour against index colour to Colour Missing | The model change outweighs the gap |
-| LINE-D30 | The desktop route is fixed before EDT and the unverified cells: characters sent as virtual keys, or COM's SendCommand for anything typed at the command line | The only way to settle them |
+| LINE-D30 | A desktop block (DSK), with the owner's leave to use the mouse, settles the unverified cells before EDT executes; command-line input goes through COM, the rest by clicks and keys after a click in the drawing area | The only way to settle them |
 
 Nothing here needs the owner but the approval itself: no data, publishing or spending.
 
@@ -713,7 +715,7 @@ once and twice, the right button and its menus, Ctrl+Z's echo inside LINE, the j
 grips and their hover menu, the palette's rows and labels, Tab cycling and the aperture, the
 markers, F8–F12's echo, Polar and OTRACK with a typed distance, Shift, the angle override with a
 number, a double-click on one point, GRIPHOVER and the rubber band's colour. These cells are
-**unverified**; LINE-D30 makes them a desktop session of this review before EDT executes. Also not
+**unverified**; block DSK (§12) settles them before EDT executes. Also not
 reviewed: the INS override's echo (the probe hung), Extension and Parallel geometry, polar snap.
 
 ## 10. Refuted in the adversarial pass
@@ -786,8 +788,16 @@ One commit per block, in this order (each `fix(engine): LINE review — <IDs>`):
 8. **RND** — RND-01 to RND-03 (RND-04 waits for the desktop). Half a day.
 9. **CPR** — CPR-01 to CPR-03 (notes and wording). An hour.
 10. **DYN** — DYN-01, DYN-02 (notes). Minutes.
-11. **Desktop session** (LINE-D30): fix the keystroke route, probe the unverified cells; findings
-    that change go back into this plan.
+11. **DSK — desktop session** (LINE-D30), with the owner's leave to use the mouse. It probes,
+    with LINE, the rows the template gained after this review (matrix.md): **P** pointer gestures
+    (LINE from the rail, every point picked, hover and the rollover highlight, the snap marker and
+    its tooltip, the aperture, an OTRACK dwell, the wheel and the middle button mid-command,
+    Shift+right button, the right button's menus, a double-click on one point); **Q** the look
+    (cursor, pickbox, markers, tooltips, dynamic-input boxes, rubber band, grips, the prompt, the
+    rail) against screenshots; **D** every object snap running and picked, not only typed; the
+    **modes in combination** (each input against running snaps, Ortho, Polar, OTRACK, snap mode
+    and dynamic input); and the cells §9 lists. Its findings, prefix DSK, are added to this plan
+    and approved before blocks 12 and on.
 12. **EDT** — EDT-01 to EDT-06 as the desktop settles them. Half a day.
 13. **FIL** — the tests of §7 only.
 
@@ -805,9 +815,10 @@ Blocks 1–10 depend on nothing outside themselves; 12 waits for 11.
 - **Roadmap:** row 1 done with this plan's commit once executed; the analogues for PLINE's review
   (row 2): its Undo after a transparent command, `lastDrawnDirection` from a clockwise arc.
 
-## 14. Template improvements proposed
+## 14. Template improvements
 
-To apply to `.claude/skills/command-review/` once the owner confirms:
+Confirmed by the owner and applied on 2026-10-21 (template §9), with the matrix's new rows P and Q,
+every object snap three ways and the modes in combination:
 
 1. **Subagents may probe and run scratch tests** in id ranges and folders of their own (template
    §4.8 says read-only). Here three of them wrote 45 probes and 230 scratch tests; read-only, the

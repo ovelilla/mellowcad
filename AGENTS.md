@@ -77,9 +77,9 @@ and what each option does must be the ones they already know.
   design here.
 - **What must match**: the functional and interaction contract — commands, aliases, prompt
   sequences, keywords, defaults, option semantics, what a gesture produces.
-- **What may differ**: visual presentation and chrome — panel layout, styling, iconography, and
-  anything the browser cannot reproduce. A different-looking palette is fine; a different-behaving
-  command is not.
+- **What may differ, a little**: styling and chrome, and what the browser cannot reproduce. An
+  AutoCAD user must find each thing where they expect it and recognise it on sight (markers,
+  grips, cursor, tooltips, palettes): a look that slows them down is a finding.
 - **Do not "improve" a behaviour that looks awkward** — it is usually load-bearing. OFFSET really
   is one object at a time; the Center-Diameter guide really does extend past the rim, because its
   length _is_ the diameter cue. Bespoke visuals invented to compensate get rejected.

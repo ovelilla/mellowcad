@@ -36,10 +36,12 @@ Windows desktop.
   ACADDM_CHILD_DXGI_FLIP_MODE_VIEW_CLASS). AutoCAD may sit on a second monitor, at x ≥ 2560.
 - **Moving the crosshair**: `acad.sh cursor <x> <y>` moves the real mouse, captures and puts it
   back. AutoCAD reads the real cursor; posted mouse messages move nothing.
-- **Typing**: `acad.sh type "<text>"` (SendInput; `\n` Enter, `\e` Esc). The keys reach AutoCAD
-  only if the command line is visible or dynamic input is on — this profile hides the command
-  line and has DYNMODE 0: show it with `com send "_COMMANDLINE\n"`, hide it after with
-  `_COMMANDLINEHIDE`.
+- **Typing**: `acad.sh type "<text>"` (SendInput; `\n` Enter, `\e` Esc). The keys reach a prompt
+  only with the command line visible or dynamic input on, **and** the keyboard focus in the
+  drawing area (a real click there should give it — to confirm): launched from WSL, AutoCAD came to the foreground
+  with the focus on an inner window and swallowed every key (2026-10-21). This profile hides the
+  command line and has DYNMODE 0: show it with `com send "_COMMANDLINE\n"`, hide it after with
+  `_COMMANDLINEHIDE`. What the command line takes goes more simply through `com send`.
 - **A second instance**: `acad.sh launch [script.scr]` starts one beside the user's (`/b` runs a
   script). COM will not reach it; type and capture by its window handle.
 

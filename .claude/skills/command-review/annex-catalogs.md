@@ -47,6 +47,8 @@ how a string is worded, the console which string a prompt uses.
 
 ## 4. Its findings
 
-The first review groups the sweep's findings by command and fixes them in one block, one commit
-per area of the catalog, each change confirmed by its probe. A later review that finds its
+The first review settles every state the tables can settle — `es-2027`, `en-2027`, `es-differs`,
+`en-near`, `plural` — and fixes them in one block, each change confirmed by its probe.
+`es-several` and `no-source` need the console prompt by prompt (which id a prompt uses), so each
+command's own review settles its keys (row K). A later review that finds its
 command's strings already swept only reruns `--from` and reports the cell (row K) as `match`.

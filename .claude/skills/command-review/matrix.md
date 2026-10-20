@@ -47,8 +47,11 @@ plan each block has its table, a cell reading `match · p07 · LineTool.test.ts:
 
 **D. Drafting aids** — at every point prompt:
 
-- Running object snaps, each mode the command can use; typed overrides; deferred Tangent and
-  Perpendicular; FROm, MID or M2P and TT where they exist; Tab cycling.
+- Every object snap the command can use — Endpoint, Midpoint, Center, Quadrant, Intersection,
+  Apparent Intersection, Extension, Insertion, Perpendicular, Tangent, Nearest, Parallel, None —
+  each three ways: running (OSMODE, found under the cursor), picked as an override, and typed as
+  one; deferred Tangent and Perpendicular; FROm, MID or M2P and TT where they exist; Tab cycling;
+  what an override that finds nothing says.
 - Ortho (F8, Shift to override), Polar (F10, increment, relative to the last segment), OTRACK
   (acquire, guides, a distance typed along one), snap mode (F9).
 - Dynamic input: pointer and dimensional input, the prompt at the cursor, Tab between fields,
@@ -90,7 +93,40 @@ the echo of options, refusals, reports, `>>` lines, what F2 shows.
 
 **M. Render** — the rubber band and the ghost while asking, the final object; the canvas and the
 SVG presenter; linetype dashes and lineweight; hover and selection highlight. The desktop shows
-AutoCAD's (template §2); presentation may differ, behaviour may not (AGENTS.md).
+AutoCAD's (template §2).
+
+**P. Pointer gestures** — the command used with the mouse alone, as most users use it: started
+from the rail, each point picked, the rubber band following, hover over objects (rollover
+highlight, the snap marker and its tooltip, the aperture), a dwell that acquires a tracking point,
+a drag, the wheel's zoom and pan and the middle button mid-command, Shift with the right button
+(the snap menu), the right button's menus, a double-click. Each gesture is a desktop probe.
+
+**Q. Look** — what an AutoCAD user sees and must recognise on sight (AGENTS.md: a look that slows
+them down is a finding): the cursor and pickbox, the snap markers' shapes, the tooltips, the
+dynamic-input boxes, the rubber band, grips and their colours, the command line's prompt, where the
+command sits in the rail. Compared with the desktop's screenshot; styling may differ, recognition
+may not.
+
+## Modes in combination
+
+Rows C, D and P are read with the drawing aids off. Then each kind of input meets each aid, one
+pair at a time (pairwise, not the full product), at the command's point prompts:
+
+| Input ↓ · aid →          | running snaps | Ortho (F8) | Polar (F10) | OTRACK (F11) | snap mode (F9) | dynamic input (F12) |
+| ------------------------ | ------------- | ---------- | ----------- | ------------ | -------------- | ------------------- |
+| a pick                   |               |            |             |              |                |                     |
+| a pick under an override |               |            |             |              |                |                     |
+| a typed coordinate       |               |            |             |              |                |                     |
+| a bare number (distance) |               |            |             |              |                |                     |
+| the `<a` angle override  |               |            |             |              |                |                     |
+| Shift held               |               |            |             |              |                |                     |
+
+Each cell names what wins and cites its probe; the rules AutoCAD documents ("Ortho is ignored when
+you … specify an object snap", a typed coordinate ignores Ortho) are cells too, never assumed.
+Combinations of two aids (Ortho with OTRACK, Polar with snap mode) are probed where the command
+has a direction to constrain.
+
+## The last rows
 
 **N. Tests** — template §4.5, per test file of the inventory.
 
