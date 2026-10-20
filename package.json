@@ -17,6 +17,7 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
+    "knowledge": "KNOWLEDGE_STATS=1 vitest run test/knowledge.test.ts",
     "locales": "node scripts/locales/compile.ts"
   },
   "dependencies": {
