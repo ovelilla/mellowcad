@@ -1564,7 +1564,7 @@ export const en: EngineCatalog = {
         [
           "name"
         ],
-        "\"."
+        "\".  Press F1 for help."
       ],
       "cancel": "*Cancel*",
       "resumingCommand": [

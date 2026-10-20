@@ -73,6 +73,19 @@ describe("the other commands AutoCAD runs transparently", () => {
     expect(cad.commandLog().at(-1)).not.toBe("Regenerating model.")
   })
 
+  // probe line/p19
+  it("takes the global names typed with an apostrophe", () => {
+    const cad = lineThen(cad0(), "'_-OSNAP", "_END")
+    expect(cad.commandLog().slice(-4)).toEqual([
+      // Echoed with the command language's name: the coverage's WHY.
+      "Specify next point or [Undo]: '-OSNAP",
+      "Current osnap modes: End,Cen,Int,Ext",
+      ">>Enter list of object snap modes: _END",
+      "Resuming LINE command.",
+    ])
+    expect(cad.activeToolId()).toBe("line")
+  })
+
   it("sets the running object snaps and the current properties", () => {
     const cad = lineThen(cad0(), "'-OSNAP", "FOO")
     expect(cad.commandLog().slice(-4)).toEqual([
@@ -287,7 +300,8 @@ describe("a transparent command", () => {
   })
 
   // AutoCAD's transparent ZOOM cannot regenerate: it zooms without a word
-  // when it needs no regeneration, which it never does here.
+  // when it needs no regeneration, which here is whenever something is drawn
+  // (probe line/p112).
   it("zooms to the extents, all or an object without regenerating", () => {
     const cad = createHarness({
       entities: [lineOf(p(0, 0), p(1000, 500), { id: "A" })],
@@ -312,6 +326,47 @@ describe("a transparent command", () => {
     answerLine(cad, "ZOOM")
     answerLine(cad, "E")
     expect(cad.commandLog().at(-1)).toBe("Regenerating model.")
+  })
+
+  // probe line/p19: an empty drawing's extents need a regeneration, so a
+  // transparent Extents or All refuses and the view stays.
+  it("refuses Extents and All in an empty drawing, which need a regen", () => {
+    const cad = createHarness()
+    cad.command("LINE").click(p(0, 0))
+    const before = cad.state().scale
+    for (const option of ["E", "A"]) {
+      answerLine(cad, "'ZOOM")
+      answerLine(cad, option)
+      expect(cad.commandLog().slice(-3)).toEqual([
+        `${ZOOM_PROMPT} ${option}`,
+        "** Requires a regen, cannot be transparent.",
+        "Resuming LINE command.",
+      ])
+    }
+    expect(cad.state().scale).toBe(before)
+    // A factor needs none.
+    answerLine(cad, "'ZOOM")
+    answerLine(cad, "2")
+    expect(cad.commandLog().at(-1)).toBe("Resuming LINE command.")
+    expect(cad.state().scale).not.toBe(before)
+    // Once the first segment is drawn, Extents runs.
+    cad.click(p(100, 0))
+    const drawn = cad.state().scale
+    answerLine(cad, "'ZOOM")
+    answerLine(cad, "E")
+    expect(cad.commandLog().at(-1)).toBe("Resuming LINE command.")
+    expect(cad.state().scale).not.toBe(drawn)
+  })
+
+  it("refuses an empty drawing's Extents in Spanish", () => {
+    const cad = createHarness({ locale: es })
+    cad.command("LINEA").click(p(0, 0))
+    answerLine(cad, "'ZOOM")
+    answerLine(cad, "E")
+    expect(cad.commandLog().slice(-2)).toEqual([
+      "** Regeneración necesaria, no puede ser transparente.",
+      "Reanudando el comando LINEA.",
+    ])
   })
 
   it("zooms without regenerating in Spanish too", () => {
@@ -377,6 +432,7 @@ describe("a transparent command", () => {
     expect(cad.commandLog().at(-1)).not.toBe("Resuming PAN command.")
   })
 
+  // probe line/p40
   it("just runs at the Command prompt", () => {
     const cad = createHarness()
     answerLine(cad, "'ZOOM")
@@ -384,15 +440,29 @@ describe("a transparent command", () => {
     expect(cad.state().commandLine.prompt).toBe(
       "ZOOM Specify corner of window, enter a scale factor (nX or nXP), or [All/Extents/Previous/Scale/Window/Object]:"
     )
-    cad.escape()
+    // Not transparent there, so an empty drawing's Extents regenerates.
+    answerLine(cad, "_E")
+    expect(cad.commandLog().slice(-2)).toEqual([
+      "Specify corner of window, enter a scale factor (nX or nXP), or [All/Extents/Previous/Scale/Window/Object]: _E",
+      "Regenerating model.",
+    ])
+    answerLine(cad, "'_LINE")
+    expect(cad.commandLog().slice(-2)).toEqual([
+      "'LINE",
+      "** That command may not be invoked transparently **",
+    ])
     answerLine(cad, "'L")
     expect(cad.commandLog().slice(-2)).toEqual([
       "'L 'LINE",
       "** That command may not be invoked transparently **",
     ])
     expect(cad.activeToolId()).toBe("select")
-    answerLine(cad, "'FOO")
-    expect(cad.commandLog().at(-1)).toBe('Unknown command "FOO".')
+    for (const typed of ["FOO", "'FOO"]) {
+      answerLine(cad, typed)
+      expect(cad.commandLog().at(-1)).toBe(
+        'Unknown command "FOO".  Press F1 for help.'
+      )
+    }
   })
 
   it("ends with the one it interrupted on ^C^C and on U", () => {

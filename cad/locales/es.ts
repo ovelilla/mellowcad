@@ -1912,7 +1912,7 @@ export const es: EngineLocale = {
         [
           "name"
         ],
-        "\" desconocido."
+        "\" desconocido. Pulse F1 para obtener ayuda."
       ],
       "cancel": "*Cancelar*",
       "resumingCommand": [

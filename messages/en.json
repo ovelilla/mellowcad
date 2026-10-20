@@ -229,7 +229,6 @@
   },
   "NotFound": {
     "metaTitle": "Page not found",
-    "help": "Press F1 for help.",
     "fallbackCommand": "PAGE",
     "home": "Back to the drawing sheet",
     "cta": "Start drawing"

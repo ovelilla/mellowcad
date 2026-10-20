@@ -58,7 +58,7 @@ describe("recordDemo", () => {
     const recording = await recordDemo(demo().command("NOPE").command("LINE"))
 
     expect(recording.steps[0].output).toEqual([
-      { kind: "error", text: 'Unknown command "NOPE".' },
+      { kind: "error", text: 'Unknown command "NOPE".  Press F1 for help.' },
     ])
     expect(recording.steps[1].output).toEqual([
       { kind: "command", text: "LINE" },

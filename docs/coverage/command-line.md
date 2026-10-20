@@ -50,7 +50,10 @@ running command resumes at once; Escape cancels only the transparent one
 `** That command may not be invoked transparently **` (es
 `** Este comando no funciona de forma transparente **`) before the prompt's own refusal, a second
 `'ZOOM` inside one, or `'ZOOM` inside ZOOM, is refused as any answer, `'FOO` too; at the Command
-prompt `'ZOOM` runs ZOOM, `'LINE` is refused saying so and `'FOO` is `Unknown command "FOO".`;
+prompt `'ZOOM` runs ZOOM (not transparently: an empty drawing's Extents says `Regenerating model.`),
+`'LINE` and `'_LINE` are refused saying so, and `'FOO`, as `FOO`, says
+`Unknown command "FOO".  Press F1 for help.` (es
+`Comando "FOO" desconocido. Pulse F1 para obtener ayuda.`; the 2027 console);
 `'AREA` and `'UCSICON` name the system variables, not the commands, there and mid-command (the DIST
 / AREA and UCSICON rows). Above the line, the running command's temporary prompt history
 (CLIPROMPTLINES 3: "displays above the command window while a command is in progress"), which fades
@@ -89,7 +92,8 @@ Tangent, Perpendicular, Nearest and Parallel, and Spanish's `de` / `a` after a s
 ### Command names
 
 **Implemented:** names and aliases of the command language (the engine's catalog), case-insensitive;
-`_` plus the global name in every language, English included (`_LINE`); Enter/Space repeats;
+`_` plus the global name in every language, English included (`_LINE`); `'` before a transparent
+one mid-command, and an unknown name's refusal (both under Command window); Enter/Space repeats;
 autocomplete. While a command asks for a value or a point, what is typed there answers it —
 coordinates absolute (the relative default is the tooltip's, DYNPICOORDS), `@` relative — and a
 command name is no answer: it is not run; Enter or Space with nothing typed is the prompt's Enter. A
@@ -105,7 +109,7 @@ Angle, SCALE's reference length and Points' new length), where a number or a key
 the question and a wrong answer gets the question's own refusal
 (`Requires numeric distance or two points.`) — AutoCAD 2023's console
 
-**Missing:** the `.` prefix (`._LINE`: nothing can be redefined here), transparent `'` commands, `_`
+**Missing:** the `.` prefix (`._LINE`: nothing can be redefined here), `_`
 with a global alias (`_` selects global command names; aliases belong to each language's acad.pgp)
 
 ### Keywords

@@ -1250,7 +1250,7 @@
       "polar": "Dist'<'Ang"
     },
     "messages": {
-      "unknownCommand": "Unknown command \"{name}\".",
+      "unknownCommand": "Unknown command \"{name}\".  Press F1 for help.",
       "cancel": "*Cancel*",
       "resumingCommand": "Resuming {command} command.",
       "readOnlyVariable": "{name} = {value} (read only)",

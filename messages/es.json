@@ -229,7 +229,6 @@
   },
   "NotFound": {
     "metaTitle": "Página no encontrada",
-    "help": "Pulse F1 para obtener ayuda.",
     "fallbackCommand": "PAGINA",
     "home": "Volver a la hoja de dibujo",
     "cta": "Empezar a dibujar"

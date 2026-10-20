@@ -229,7 +229,6 @@
   },
   "NotFound": {
     "metaTitle": "الصفحة غير موجودة",
-    "help": "Press F1 for help.",
     "fallbackCommand": "PAGE",
     "home": "العودة إلى لوحة الرسم",
     "cta": "ابدأ الرسم"

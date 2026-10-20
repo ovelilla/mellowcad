@@ -24,6 +24,7 @@ const SELECTION_MODES =
 // in the words of the input function behind the question (AutoCAD 2023's
 // console), and the question is asked again.
 describe("a wrong answer mid-command", () => {
+  // probe line/p09, p103
   it("is refused at a point prompt, never run as a command", () => {
     const cad = createHarness()
     cad.command("LINE")
@@ -35,11 +36,13 @@ describe("a wrong answer mid-command", () => {
     ])
 
     cad.click(p(0, 0))
-    answerLine(cad, "CIRCLE")
-    expect(cad.commandLog().slice(-2)).toEqual([
-      "Specify next point or [Undo]: CIRCLE",
-      "Point or option keyword required.",
-    ])
+    for (const typed of ["FOO", "CIRCLE", "_LINE"]) {
+      answerLine(cad, typed)
+      expect(cad.commandLog().slice(-2)).toEqual([
+        `Specify next point or [Undo]: ${typed}`,
+        "Point or option keyword required.",
+      ])
+    }
     expect(cad.activeToolId()).toBe("line")
     expect(cad.state().commandLine.prompt).toBe(
       "LINE Specify next point or [Undo]:"

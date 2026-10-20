@@ -16,8 +16,7 @@ import { UnknownCommand } from "./unknown-command"
  */
 export async function NotFoundMessage({ locale }: { locale: AppLocale }) {
   const t = await getTranslations({ locale, namespace: "NotFound" })
-  // The engine's own words, as the command line would print them, then
-  // AutoCAD's pointer to its help.
+  // The engine's own words, as the command line would print them.
   const text = engineText(await loadEngineLocale(locale))
   const unknown = text.message("unknownCommand", { name: "{command}" })
   return (
@@ -30,10 +29,7 @@ export async function NotFoundMessage({ locale }: { locale: AppLocale }) {
         className="rounded-md border border-border bg-bg-sunken p-5 font-mono text-sm leading-relaxed"
       >
         <span className="text-fg-subtle">{text.idlePrompt()} </span>
-        <UnknownCommand
-          fallback={t("fallbackCommand")}
-          template={`${unknown}  ${t("help")}`}
-        />
+        <UnknownCommand fallback={t("fallbackCommand")} template={unknown} />
       </p>
       <p className="flex flex-wrap gap-3">
         <Link

@@ -110,7 +110,8 @@ interlineado`, `Anchura definida`, `Método`, `Grado`…), the prompts of POL, C
   rows mark,
   and every dynamic-input label (Spanish AutoCAD's box shows the
   prompt and unlabelled fields; the labels are the nouns of its prompts).
-- **Messages:** verified `Comando:`, `Comando "X" desconocido.`, `*Cancelar*` (a 2026 help capture),
+- **Messages:** verified `Comando:`, `*Cancelar*` (a 2026 help capture),
+  `Comando "X" desconocido. Pulse F1 para obtener ayuda.` (the 2027 console),
   the snap tooltips, the hatch
   density message (partial) and `Las líneas no son coplanares.` (Autodesk's Spanish support article
   on it); FILLET's, CHAMFER's, TRIM's, POLYGON's, ELLIPSE's and SPLINE's prompts and reports,

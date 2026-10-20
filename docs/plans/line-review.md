@@ -174,6 +174,8 @@ depth), run with `scripts/research/probe.sh line <ids>` in es-ES and en-US; desk
 | p205 | `-LINETYPE ?`: `<acadiso.lin>`, paging; es names `LÍNEAS_OCULTAS`, `CENTRO`… |
 | p206 / p207 | plot to PNG (es-ES / en-US): dashes laid along lines of 100, 20, 5; CELTSCALE 2; DASHDOT |
 | p208 | dead end: `dumpallproperties` is not defined in the console |
+| p209 | `'ZOOM` All and Extents transparently with nothing drawn: `** Requires a regen, cannot be transparent.` |
+| p210 | `'ZOOM 2` and `2X` transparently with nothing drawn: they zoom |
 | d02 | desktop, DYNMODE 3, typed at the command line through COM: `10,0` absolute, `#30,30` refused |
 | d03–d20 | desktop, Spanish profile, the owner's mouse (`dsk.sh`): picks, the rubber band, the snap marker, both shortcut menus, Escape, Ctrl+Z, F-keys, dynamic input, Ortho, Polar, OTRACK, the angle override, grips, the palette, a double-click, the wheel, the ribbon, the rollover (§4, DSK) |
 
@@ -917,3 +919,4 @@ every object snap three ways and the modes in combination:
 | Block | Findings | Commit |
 | ----- | -------- | ------ |
 | CAT | CAT-01 (CAT-02 refuted, p70) | `4f61e91` |
+| UND | UND-01 to UND-03 | `626b283` |

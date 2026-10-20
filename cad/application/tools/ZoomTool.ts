@@ -220,7 +220,13 @@ export class ZoomTool implements Tool {
     switch (id) {
       case "All":
       case "Extents":
-        this.frame(ctx.document.getEntities(), ctx)
+        if (
+          !this.frame(ctx.document.getEntities(), ctx) &&
+          ctx.runsTransparently()
+        ) {
+          ctx.report(ctx.text.message("requiresRegen"))
+          return "end"
+        }
         regenerated(ctx)
         return "end"
       case "Previous":
@@ -411,7 +417,9 @@ export class ZoomTool implements Tool {
  * generated, and a transparent ZOOM, which cannot regenerate, then refuses
  * (`** Requires a regen, cannot be transparent.`), zooming without a word
  * when it needs none. Nothing is generated ahead here, so a transparent zoom
- * never needs a regeneration, and says nothing.
+ * needs a regeneration only where 2027's console always asks for one: Extents
+ * or All with nothing drawn (probes line/p19, p209; with objects it zooms, p112; a
+ * factor always zooms, p210).
  */
 function regenerated(ctx: ToolContext): void {
   if (ctx.runsTransparently()) return

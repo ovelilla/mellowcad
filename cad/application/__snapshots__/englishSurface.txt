@@ -200,7 +200,7 @@ lweight "Lineweight" LW
   properties: -
   cycling: -
 > type FOO
-  error| Unknown command "FOO".
+  error| Unknown command "FOO".  Press F1 for help.
 > lowercase l runs LINE
   prompt: LINE Specify first point:
   asks: ""

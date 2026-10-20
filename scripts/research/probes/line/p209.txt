@@ -1,0 +1,10 @@
+_LINE
+0,0
+'_ZOOM
+_A
+'_ZOOM
+_E
+@1,0
+'_ZOOM
+_E
+

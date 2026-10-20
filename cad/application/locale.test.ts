@@ -91,7 +91,9 @@ describe("a language laid over English", () => {
   it("names commands in it, keeps _ for the global names", () => {
     const cad = createHarness({ locale: partial })
     cad.command("LINE")
-    expect(cad.commandLog()).toEqual(['Unknown command "LINE".'])
+    expect(cad.commandLog()).toEqual([
+      'Unknown command "LINE".  Press F1 for help.',
+    ])
     cad.command("_LINE").escape().command("linea")
     expect(cad.commandLog().slice(1)).toEqual([
       "LINEA",
@@ -751,10 +753,13 @@ describe("Spanish AutoCAD's command language", () => {
     expect(cad.only("mtext")).toMatchObject({ attachment: "mc" })
   })
 
+  // probe line/p40, p105; table 20241
   it("reports an unknown command in Spanish", () => {
     const cad = createHarness({ locale: es })
     cad.command("LINE")
-    expect(cad.commandLog()).toEqual(['Comando "LINE" desconocido.'])
+    expect(cad.commandLog()).toEqual([
+      'Comando "LINE" desconocido. Pulse F1 para obtener ayuda.',
+    ])
   })
 
   it("sets the SCP with SCP, Univ typed as U and gUArdado as UA", () => {

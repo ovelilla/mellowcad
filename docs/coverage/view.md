@@ -15,8 +15,10 @@ from the current view, `2` from ZOOM All's); Window's `Specify first corner:` /
 distance towards the cursor, Window's first corner's from LASTPOINT, an opposite corner's from the
 first corner, as `@` there is (AutoCAD 2023's console; the corners leave LASTPOINT); Extents and All
 (`Regenerating model.`; transparently nothing, as AutoCAD's transparent ZOOM says when it needs no
-regeneration — it refuses one with `** Requires a regen, cannot be transparent.` — and nothing is
-generated ahead here to leave); Previous (bounded history; `No previous view saved.`); Scale's
+regeneration, since nothing is generated ahead here to leave — but with nothing drawn they refuse
+with `** Requires a regen, cannot be transparent.` (es
+`** Regeneración necesaria, no puede ser transparente.`) and leave the view, as 2027's console does;
+a factor still zooms then); Previous (bounded history; `No previous view saved.`); Scale's
 `Enter a scale factor (nX or nXP):` (es `Indique factor de escala (nX o nXP)`;
 `Requires a distance (or numberX).`); Object's `Select objects:` with its modes and counts (a set
 selected before it framed at once; `Regenerating model.`); transparent, `'ZOOM` / `'Z` typed
@@ -29,9 +31,7 @@ ZOOM is part of the command it ran in (U of LINE takes it back too)
 
 **Missing:** Realtime (so the first prompt offers no `<real time>`, and its Enter ends ZOOM) and
 Dynamic (mitigated by the mouse wheel), Center, `nXP` (no paper space); the first prompt written on
-one line (AutoCAD breaks it before its keywords); transparent, its Extents, All and Object still say
-`Regenerating model.`, where AutoCAD's transparent ZOOM cannot regenerate (one that would needs it
-says `** Requires a regen, cannot be transparent.`)
+one line (AutoCAD breaks it before its keywords)
 
 ### `PAN` / `P` / `-PAN` · es `ENCUADRE` / `E`† / `-ENCUADRE`
 
