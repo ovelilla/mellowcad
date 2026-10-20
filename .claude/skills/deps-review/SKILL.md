@@ -83,7 +83,7 @@ a new script: read it (`npm install-scripts ls`, then the script in `node_module
 
 ## 5. Verify
 
-- Always the gate: `npm run typecheck`, `npm run lint`, `npm run test:coverage`.
+- Always the gate: `npm run typecheck`, `npm run lint`, `npm run format:check`, `npm run test:coverage`.
 - Next, React, next-intl, Base UI, Tailwind, lucide or the PostCSS chain: also `npm run build`
   and a look at `/draw` and `/` in each language (skill `browser-verify`).
 - Vitest or its config: the whole suite, and the coverage thresholds unchanged.

@@ -242,16 +242,19 @@ describe("RECTANG Area, Dimensions and Rotation", () => {
     )
     answer(cad, "L", "40")
 
-    expect(rectangle(cad).vertices).toBeCloseToPoints([
-      p(-2.5, 4.3301),
-      p(4.3301, 2.5),
-      p(30.3109, 17.5),
-      p(32.141, 24.3301),
-      p(26.8728, 33.455),
-      p(20.0426, 35.2851),
-      p(-5.9381, 20.2851),
-      p(-7.7683, 13.455),
-    ], 3)
+    expect(rectangle(cad).vertices).toBeCloseToPoints(
+      [
+        p(-2.5, 4.3301),
+        p(4.3301, 2.5),
+        p(30.3109, 17.5),
+        p(32.141, 24.3301),
+        p(26.8728, 33.455),
+        p(20.0426, 35.2851),
+        p(-5.9381, 20.2851),
+        p(-7.7683, 13.455),
+      ],
+      3
+    )
     expect(cad.activeToolId()).toBe("select")
 
     cad.command("RECTANG")
@@ -333,12 +336,15 @@ describe("RECTANG Area, Dimensions and Rotation", () => {
     cad.command("RECTANG")
     answer(cad, "0,0", "R", "45", "D", "-30", "5", "-10,50")
 
-    expect(rectangle(cad).vertices).toBeCloseToPoints([
-      p(0, 0),
-      p(-21.2132, -21.2132),
-      p(-24.7487, -17.6777),
-      p(-3.5355, 3.5355),
-    ], 3)
+    expect(rectangle(cad).vertices).toBeCloseToPoints(
+      [
+        p(0, 0),
+        p(-21.2132, -21.2132),
+        p(-24.7487, -17.6777),
+        p(-3.5355, 3.5355),
+      ],
+      3
+    )
   })
 
   it("turns the rectangle, by an angle or two points (acc/r2, r6, r7)", () => {
@@ -346,12 +352,10 @@ describe("RECTANG Area, Dimensions and Rotation", () => {
 
     cad.command("RECTANG")
     answer(cad, "0,300", "R", "30", "100,350")
-    expect(rectangle(cad).vertices).toBeCloseToPoints([
-      p(0, 300),
-      p(96.6506, 355.8013),
-      p(100, 350),
-      p(3.3494, 294.1987),
-    ], 3)
+    expect(rectangle(cad).vertices).toBeCloseToPoints(
+      [p(0, 300), p(96.6506, 355.8013), p(100, 350), p(3.3494, 294.1987)],
+      3
+    )
 
     cad.command("RECTANG")
     answer(cad, "100,0", "R")

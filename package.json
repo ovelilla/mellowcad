@@ -13,6 +13,7 @@
     "prepare": "git config core.hooksPath .githooks || exit 0",
     "lint": "eslint",
     "format": "prettier --write \"**/*.{ts,tsx}\"",
+    "format:check": "prettier --check \"**/*.{ts,tsx}\"",
     "typecheck": "next typegen && tsc --noEmit --incremental false",
     "test": "vitest run",
     "test:watch": "vitest",

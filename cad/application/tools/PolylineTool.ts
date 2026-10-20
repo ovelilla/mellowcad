@@ -713,7 +713,10 @@ export class PolylineTool implements Tool {
       fields: [{ id: "width", prompt: "length", kind: "distance" }],
       commit: (values, commitCtx) => this.commitWidth(values.width, commitCtx),
     })
-    ctx.dynamicInput.setDefault("width", this.widthQuestion(prompt).enter as number)
+    ctx.dynamicInput.setDefault(
+      "width",
+      this.widthQuestion(prompt).enter as number
+    )
     ctx.dynamicInput.setPosition(this.lastScreen ?? { x: 0, y: 0 })
     ctx.requestRender()
   }

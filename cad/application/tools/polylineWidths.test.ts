@@ -408,7 +408,9 @@ describe("FILL", () => {
     expect(cad.runtime.document.getSettings().fillMode).toBe(true)
     cad.command("FILL")
     answer(cad, "O")
-    expect(cad.commandLog().at(-1)).toBe("Ambiguous response, please clarify...")
+    expect(cad.commandLog().at(-1)).toBe(
+      "Ambiguous response, please clarify..."
+    )
     answer(cad, "OF")
     expect(cad.runtime.document.getSettings().fillMode).toBe(false)
     cad.command("U")
@@ -681,8 +683,12 @@ describe("the Properties palette", () => {
     const cad = createHarness({ entities: [tapered()] })
     cad.select("P")
     cad.runtime.setSelectionProperty("vertex", "2")
-    expect(cad.runtime.setSelectionProperty("startSegmentWidth", "3")).toBe(true)
-    expect(cad.runtime.setSelectionProperty("endSegmentWidth", "-1")).toBe(false)
+    expect(cad.runtime.setSelectionProperty("startSegmentWidth", "3")).toBe(
+      true
+    )
+    expect(cad.runtime.setSelectionProperty("endSegmentWidth", "-1")).toBe(
+      false
+    )
     expect(widths(cad)).toEqual([
       [
         [0, 10],

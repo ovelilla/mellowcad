@@ -1,5 +1,5 @@
 #!/bin/sh
-# Quality gate before every commit: the same three checks CI runs.
+# Quality gate before every commit: the same checks CI runs.
 #
 # Enabled automatically by the `prepare` script (npm sets core.hooksPath here
 # after install). To skip it for one commit: git commit --no-verify
@@ -11,6 +11,9 @@ npm run --silent typecheck
 
 echo "› lint"
 npm run --silent lint
+
+echo "› format"
+npm run --silent format:check
 
 # With coverage: CI fails on vitest.config.ts's thresholds, and a plain
 # `npm test` let nine commits through that CI then rejected.

@@ -34,6 +34,11 @@ export default defineConfig({
         inline: ["next-intl"],
       },
     },
+    // WHY: the slowest test takes under a second, but the commit hook runs
+    // the suite on a machine other projects load too, and at the default 5 s
+    // a busy CPU failed it with timeouts alone. 30 s still catches a hang.
+    testTimeout: 30_000,
+    hookTimeout: 30_000,
     restoreMocks: true,
     unstubEnvs: true,
     unstubGlobals: true,

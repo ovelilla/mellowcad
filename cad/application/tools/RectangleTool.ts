@@ -337,7 +337,10 @@ export class RectangleTool implements Tool {
       case "chamferFirst":
         return { id: "rectangleFirstChamfer", enter: first }
       case "chamferSecond":
-        return { id: "rectangleSecondChamfer", enter: secondDefault(second, first) }
+        return {
+          id: "rectangleSecondChamfer",
+          enter: secondDefault(second, first),
+        }
       case "fillet":
         return { id: "rectangleFillet", enter: first }
       case "width":
@@ -399,17 +402,23 @@ export class RectangleTool implements Tool {
 
   private askArea(first: Vec3, ctx: ToolContext): void {
     this.state = { phase: "area", first }
-    this.askValue("rectangleArea", "number", this.area, ctx, (value, commitCtx) => {
-      if (!(value > 0)) {
-        commitCtx.report(commitCtx.text.message("positiveNonzero"), "error")
-        return
+    this.askValue(
+      "rectangleArea",
+      "number",
+      this.area,
+      ctx,
+      (value, commitCtx) => {
+        if (!(value > 0)) {
+          commitCtx.report(commitCtx.text.message("positiveNonzero"), "error")
+          return
+        }
+        this.area = value
+        this.state = { phase: "areaBasis", first }
+        commitCtx.dynamicInput.open({ fields: [], commit: () => {} })
+        commitCtx.dynamicInput.setPosition(this.lastScreen ?? { x: 0, y: 0 })
+        commitCtx.requestRender()
       }
-      this.area = value
-      this.state = { phase: "areaBasis", first }
-      commitCtx.dynamicInput.open({ fields: [], commit: () => {} })
-      commitCtx.dynamicInput.setPosition(this.lastScreen ?? { x: 0, y: 0 })
-      commitCtx.requestRender()
-    })
+    )
   }
 
   private askAreaSide(side: Side, ctx: ToolContext): void {
@@ -465,10 +474,16 @@ export class RectangleTool implements Tool {
 
   private askRotation(first: Vec3, ctx: ToolContext): void {
     this.state = { phase: "rotation", first }
-    this.askValue("rectangleRotation", "angle", this.rotation, ctx, (value, commitCtx) => {
-      this.rotation = normalizeDegrees(value)
-      this.askCorner(first, commitCtx)
-    })
+    this.askValue(
+      "rectangleRotation",
+      "angle",
+      this.rotation,
+      ctx,
+      (value, commitCtx) => {
+        this.rotation = normalizeDegrees(value)
+        this.askCorner(first, commitCtx)
+      }
+    )
   }
 
   /** A box for one value, `<default>` the current one. */

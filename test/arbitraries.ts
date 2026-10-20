@@ -243,9 +243,12 @@ export const polylineEntity: fc.Arbitrary<PolylineEntity> = fc
     fc.option(fc.array(bulge, { minLength: 1, maxLength: 8 }), {
       nil: undefined,
     }),
-    fc.option(fc.array(fc.tuple(width, width), { minLength: 8, maxLength: 8 }), {
-      nil: undefined,
-    })
+    fc.option(
+      fc.array(fc.tuple(width, width), { minLength: 8, maxLength: 8 }),
+      {
+        nil: undefined,
+      }
+    )
   )
   .map(([vertices, closed, bulges, widthList]) => {
     // One width pair per segment, as the factory and the file keep them.
@@ -259,9 +262,7 @@ export const polylineEntity: fc.Arbitrary<PolylineEntity> = fc
       vertices,
       closed,
       ...(bulges && bulges.some((b) => b !== 0) ? { bulges } : {}),
-      ...(widths && widths.some(([s, e]) => s > 0 || e > 0)
-        ? { widths }
-        : {}),
+      ...(widths && widths.some(([s, e]) => s > 0 || e > 0) ? { widths } : {}),
     }
     return entity
   })

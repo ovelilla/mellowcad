@@ -30,7 +30,10 @@ export const OSNAP_MODES: Readonly<Record<string, SnapType | "none">> = {
  * `_endp of` is confirmed; the rest follow it and are unverified.
  */
 export const OSNAP_MENU_ANSWERS: Readonly<
-  Record<SnapType | "none", { readonly macro: string; readonly to: boolean | null }>
+  Record<
+    SnapType | "none",
+    { readonly macro: string; readonly to: boolean | null }
+  >
 > = {
   [SnapType.Endpoint]: { macro: "_endp", to: false },
   [SnapType.Midpoint]: { macro: "_mid", to: false },

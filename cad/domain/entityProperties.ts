@@ -184,7 +184,9 @@ function applyPolylineProperty(
     case "endSegmentWidth": {
       const count = polylineSegments(poly).length
       if (value < 0 || vertex >= count) return null
-      const widths = polylineSegments(poly).map((_, i) => polylineWidth(poly, i))
+      const widths = polylineSegments(poly).map((_, i) =>
+        polylineWidth(poly, i)
+      )
       const [start, end] = widths[vertex]
       widths[vertex] =
         property === "startSegmentWidth" ? [value, end] : [start, value]
