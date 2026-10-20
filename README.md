@@ -54,12 +54,10 @@ DOM); Next.js/React es solo la capa de presentación. Las reglas de trabajo est�
 
 ### Qué no está en git y hay que copiar a mano
 
-- **`research/`**: las tablas de textos de AutoCAD en inglés y en español, con las que se
-  comprueba la redacción de cada mensaje. Son textos de Autodesk, por eso no van en git. Cómo se
-  usan está en el skill
+- **`research/`**: las tablas de textos de AutoCAD en inglés y en español (`strings/`), con las que
+  se comprueba la redacción de cada mensaje, y las páginas de la ayuda de Autodesk ya consultadas
+  (`autodesk-help/`). Son textos de Autodesk, por eso no van en git. Cómo se usan está en el skill
   [autocad-research](.claude/skills/autocad-research/SKILL.md).
-- **`.playwright-mcp/`**: capturas y material de investigación de sesiones anteriores (`research/`,
-  `help/`), como volcados de la ayuda de Autodesk. No se regenera.
 
 Todo lo que el proyecto necesita para seguir está dentro de esta carpeta. No hace falta conservar
 la memoria de Claude Code (`~/.claude/`), que está desactivada para este proyecto: lo que los

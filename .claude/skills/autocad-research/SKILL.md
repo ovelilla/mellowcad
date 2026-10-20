@@ -75,7 +75,9 @@ written in the catalogs is in `.claude/rules/cad-catalogs.md`.
 ## Autodesk's help
 
 The help viewer is a single-page app: a plain fetch (WebFetch, curl) returns the empty shell, not
-the page. **Read it with Playwright** (skill `browser-verify`, "Tooling"):
+the page. Pages already read, in English and Spanish, are in `research/autodesk-help/` (gitignored,
+named by GUID): grep there first. **Read a new one with Playwright** (skill `browser-verify`,
+"Tooling"):
 `help.autodesk.com/view/ACD/2026/ENU/?guid=…`, then take `innerText`.
 
 - Search engines start serving captchas after a few queries: collect the GUIDs early and navigate

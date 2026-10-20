@@ -30,17 +30,6 @@ const ABSENT_CITATIONS: Record<string, { reason: string; values: string[] }> = {
     reason: "the landing's brief, deleted once it shipped; it is in git",
     values: ["docs/next-landing.md"],
   },
-  "docs/next-knowledge-layer.md": {
-    reason: "the plan names what it creates and what it replaced or deleted",
-    values: [
-      ".claude/rules",
-      ".claude/rules/*.md",
-      ".github/instructions",
-      "docs/autocad-coverage.md",
-      "docs/coverage/draw.md",
-      "docs/next-i18n.md",
-    ],
-  },
 }
 
 const ALWAYS_LOADED = ["AGENTS.md"]
