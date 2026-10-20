@@ -129,7 +129,7 @@ and what each option does must be the ones they already know.
   `cad-catalogs.md` (prompts, keywords), `testing.md`, `ui.md` (the editor), `marketing.md` (the
   landing), `i18n.md` (languages), `knowledge.md` (where knowledge goes).
 - **Skills** (`.claude/skills/`, loaded on demand): `new-command`, `extend-model`,
-  `autocad-research`, `browser-verify`, `add-language`, `finish-feature`.
+  `autocad-research`, `browser-verify`, `add-language`, `finish-feature`, `deps-review`.
 - **`docs/coverage/`** — what each implemented command does and which AutoCAD options it still
   lacks, one file per area, plus the roadmap. **Read a command's entry before extending it** —
   the gaps are deliberate and already researched.

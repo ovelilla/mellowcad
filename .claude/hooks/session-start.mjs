@@ -7,6 +7,7 @@ import { join } from "node:path"
 
 const ROOT = process.env.CLAUDE_PROJECT_DIR ?? process.cwd()
 const MAX_STATUS_LINES = 20
+const DEPS_REVIEW_DAYS = 30
 
 function git(...args) {
   try {
@@ -57,6 +58,23 @@ if (status === "") {
   if (entries.length > MAX_STATUS_LINES) {
     lines.push(`  … and ${entries.length - MAX_STATUS_LINES} more.`)
   }
+}
+
+// The last review is the last `chore(deps):` commit (skill deps-review).
+const lastReview = git(
+  "log",
+  "-1",
+  "--format=%ct",
+  "-E",
+  "--grep=^chore\\(deps\\):"
+)
+const days = lastReview
+  ? Math.floor((Date.now() / 1000 - Number(lastReview)) / 86400)
+  : null
+if (days === null || days > DEPS_REVIEW_DAYS) {
+  lines.push(
+    `- Dependencies ${days === null ? "never reviewed" : `last reviewed ${days} days ago`}: when the task allows, skill deps-review.`
+  )
 }
 
 const open = briefs()
