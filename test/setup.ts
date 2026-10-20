@@ -12,7 +12,9 @@ fc.configureGlobal({
   // Print the whole shrinking path so a failure arrives with the minimal
   // counter-example *and* the seed needed to reproduce it verbatim.
   verbose: fc.VerbosityLevel.VeryVerbose,
-  // Property tests must stay pure and fast; a slow one is a design smell.
-  interruptAfterTimeLimit: 10_000,
-  markInterruptAsFailure: true,
 })
+
+// Property tests must stay pure and fast; a slow one is a design smell.
+fc.installGlobalPlugin(
+  fc.interruptAfterTimeLimit(10_000, { failOnInterrupt: true })
+)
