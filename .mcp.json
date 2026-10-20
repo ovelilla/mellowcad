@@ -3,6 +3,11 @@
     "autodesk-help": {
       "type": "http",
       "url": "https://developer.api.autodesk.com/knowledge/public/v1/mcp"
+    },
+    "next-devtools": {
+      "command": "npx",
+      "args": ["-y", "next-devtools-mcp@0.4.0"],
+      "env": { "NEXT_TELEMETRY_DISABLED": "1" }
     }
   }
 }

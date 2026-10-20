@@ -38,9 +38,6 @@ pnpm-debug.log*
 *.tsbuildinfo
 next-env.d.ts
 
-# playwright mcp session artifacts (snapshots, console logs, screenshots)
-/.playwright-mcp/
-
 # AutoCAD's string tables: Autodesk's text, kept beside the project, never in git
 /research/
 .vercel

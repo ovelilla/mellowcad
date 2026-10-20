@@ -27,7 +27,8 @@ engine; Next.js/React is only a presentation shell around it.
 `typecheck` + `lint` + `format:check` + `test:coverage` must pass before a change is done;
 `.githooks/pre-commit` runs exactly that. GitHub Actions (`.github/workflows/ci.yml`) has not run since 2026-10-18
 (billing), so the hook is the only gate: never `--no-verify` unless the same checks just passed in
-a clean worktree. `npm run build` is outside the gate (it fights the dev server over `.next`).
+a clean worktree. `npm run build` is outside the gate (it fights the dev server over `.next`):
+whether a route compiles, ask the running dev server through the MCP `next-devtools`.
 
 ## Architecture
 

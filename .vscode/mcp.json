@@ -1,8 +1,14 @@
 {
   "servers": {
-    "cloudflare": {
+    "autodesk-help": {
       "type": "http",
-      "url": "https://mcp.cloudflare.com/mcp"
+      "url": "https://developer.api.autodesk.com/knowledge/public/v1/mcp"
+    },
+    "next-devtools": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["-y", "next-devtools-mcp@0.4.0"],
+      "env": { "NEXT_TELEMETRY_DISABLED": "1" }
     }
   }
 }

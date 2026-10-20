@@ -3,7 +3,24 @@
   "autoMemoryEnabled": false,
   "permissions": {
     "ask": ["Bash(git push *)", "Bash(git push)"],
-    "deny": ["Read(./.env.local)", "Read(./.playwright-mcp/**)"]
+    "deny": ["Read(./.env.local)"]
+  },
+  "enabledMcpjsonServers": ["autodesk-help", "next-devtools"],
+  "deniedMcpServers": [{ "serverName": "claude.ai Claude Docs" }],
+  "skillOverrides": {
+    "using-ably": "off",
+    "debugging-with-ably-cli": "off",
+    "anthropic-skills:docs": "off",
+    "anthropic-skills:docx": "off",
+    "anthropic-skills:pptx": "off",
+    "anthropic-skills:xlsx": "off",
+    "anthropic-skills:pdf": "off",
+    "anthropic-skills:google-workspace": "off",
+    "anthropic-skills:morning": "off",
+    "anthropic-skills:import-memory": "off",
+    "anthropic-skills:built-in-browser": "off",
+    "anthropic-skills:chrome-browser": "off",
+    "anthropic-skills:computer-use": "off"
   },
   "hooks": {
     "SessionStart": [
@@ -13,6 +30,17 @@
           {
             "type": "command",
             "command": "node \"$CLAUDE_PROJECT_DIR/.claude/hooks/session-start.mjs\""
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write|MultiEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"$CLAUDE_PROJECT_DIR/.claude/hooks/format.mjs\""
           }
         ]
       }

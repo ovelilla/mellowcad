@@ -17,6 +17,8 @@ install nothing.
   work in a worktree (`git worktree add ../mellowcad-deps -b deps`).
 - `npm outdated` and `npm audit`. `.npmrc` sets `min-release-age=3`: npm resolves only versions at
   least 3 days old, so `npm outdated`'s Wanted/Latest can be younger than what installs.
+- `next-devtools-mcp` is pinned in `.mcp.json` and `.vscode/mcp.json`, outside `package.json`:
+  `npm view next-devtools-mcp version`, and it moves like a direct dependency (section 2).
 
 ## 1. Security first
 
