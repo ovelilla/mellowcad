@@ -1365,7 +1365,7 @@
       "distanceTotal": "Distance = {value}",
       "distanceReport": "Distance = {distance},  Angle in XY Plane = {angleInPlane},  Angle from XY Plane = {angleFromPlane}\nDelta X = {deltaX},  Delta Y = {deltaY},   Delta Z = {deltaZ}",
       "idReport": " X = {x}     Y = {y}     Z = {z}",
-      "linesNonCoplanar": "Lines are non-coplanar.",
+      "linesNonCoplanar": "Lines are non coplanar.",
       "lineAndPolylineNonCoplanar": "Line and polyline are non coplanar.",
       "twoEntitiesNonCoplanar": "Two entities are non coplanar.",
       "cannotFilletBetween": "Cannot fillet between these two entities.",

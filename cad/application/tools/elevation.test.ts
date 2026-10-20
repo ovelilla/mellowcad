@@ -439,7 +439,8 @@ describe("editing commands", () => {
       cad.command("FILLET").option("Radius").type("50").enter()
       cad.click(p(100, 0)).click(p(0, 100))
 
-      expect(cad.commandLog()).toContain("Lines are non-coplanar.")
+      // probe line/p61: AutoCAD 2027 writes "non coplanar", without the hyphen.
+      expect(cad.commandLog()).toContain("Lines are non coplanar.")
       expect(cad.typeCounts()).toEqual({ line: 2 })
       expect(cad.byId<LineEntity>("L1").start).toBeCloseToPoint(p(-50, 0))
       // Back at the first prompt, as AutoCAD's is.
@@ -454,7 +455,8 @@ describe("editing commands", () => {
 
       cad.command("FILLET").click(p(100, 0)).click(p(0, 100))
 
-      expect(cad.commandLog()).toContain("Lines are non-coplanar.")
+      // probe line/p61: AutoCAD 2027 writes "non coplanar", without the hyphen.
+      expect(cad.commandLog()).toContain("Lines are non coplanar.")
     })
 
     it("FILLET puts the arc at the first line's height and thickness", () => {
@@ -482,7 +484,8 @@ describe("editing commands", () => {
         .click(p(100, 0))
         .click(p(0, 100))
 
-      expect(cad.commandLog()).toContain("Lines are non-coplanar.")
+      // probe line/p61: AutoCAD 2027 writes "non coplanar", without the hyphen.
+      expect(cad.commandLog()).toContain("Lines are non coplanar.")
       expect(cad.typeCounts()).toEqual({ line: 2 })
     })
 

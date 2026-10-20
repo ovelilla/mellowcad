@@ -447,7 +447,7 @@ describe("FILLET and CHAMFER of lines in a tilted plane", () => {
     cad.command("FILLET").click({ x: 20, y: 0, z: 0 })
     cad.click({ x: 50, y: 0, z: 20 })
 
-    expect(cad.commandLog().at(-1)).toBe("Lines are non-coplanar.")
+    expect(cad.commandLog().at(-1)).toBe("Lines are non coplanar.") // probe line/p61
     expect(only(cad, "arc")).toHaveLength(0)
   })
 })

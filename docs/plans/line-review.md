@@ -11,7 +11,7 @@
 | Critical | 0   | 0   | 0   | 0   | 0   | 0   | 0   | 0   | 0   | 0   | 0   | 0   | 0   | 0     |
 | High     | 0   | 2   | 0   | 0   | 0   | 2   | 1   | 0   | 0   | 1   | 0   | 1   | 0   | 7     |
 | Medium   | 0   | 5   | 0   | 1   | 4   | 6   | 1   | 1   | 0   | 2   | 0   | 2   | 2   | 24    |
-| Low      | 2   | 2   | 3   | 2   | 2   | 4   | 1   | 1   | 3   | 3   | 0   | 0   | 6   | 29    |
+| Low      | 1   | 2   | 3   | 2   | 2   | 4   | 1   | 1   | 3   | 3   | 0   | 0   | 6   | 28    |
 
 No finding loses or corrupts a drawing: every mutation goes through a command, the file round-trips
 every property a line holds, and undo never drops objects. The seven highs are gestures an AutoCAD
@@ -27,7 +27,7 @@ user makes daily that end elsewhere here:
 
 The catalog sweep against the 2027 tables found the update's rewording already handled: no
 catalog string is the release's language pack any more (DIMANGULAR was the one; DIMORDINATE is not
-implemented). Two other wordings differ (CAT-01, CAT-02).
+implemented). One other wording differs (CAT-01).
 
 ## 2. Inventory
 
@@ -195,7 +195,7 @@ the tables can settle was probed:
 | Key | State | AutoCAD | Outcome |
 | --- | --- | --- | --- |
 | `linesNonCoplanar` | en-near | p61 `Lines are non coplanar.` | **CAT-01** |
-| `specifyDistanceBetweenColumns` | es-differs | p63 `Especificar la distancia entre columnas o` | **CAT-02** |
+| `specifyDistanceBetweenColumns` | es-differs | p70: COLumns asks `Especifique la distancia entre columnas o [Total/Expresión]`; Spacing's `Especificar …` (p63) is `specifyDistanceBetweenColumnsOfCell` | refuted |
 | `specifyNumberOfItemsOr` | es-differs | p69 `Introduzca el número de elementos o` | refuted |
 | `keywordLabels.TEXT.TL` | es-differs | p64 `SIZ` | refuted |
 | `keywordLabels.SPLINE.Square root` | es-differs | p65 `raíz cuaDrada` | refuted |
@@ -684,8 +684,6 @@ the file named as its regression test, citing its probe.
 ### Low
 
 - **CAT-01** — en `Lines are non-coplanar.` is 2027's `Lines are non coplanar.` (p61, table 20687).
-- **CAT-02** — es ARRAYRECT's spacing prompt is `Especificar la distancia entre columnas o`
-  (p63), not `Especifique …`.
 - **LIN-08** — es `[Cerrar/desHacer]` prompt is `Precise siguiente punto o` (p01, table 21157): a
   prompt id of its own; `locale.test.ts:109`, `:360` pin the wrong text.
 - **LIN-09** — `#x,y` at the command line, LINE's cell of PIN-02.
@@ -865,7 +863,7 @@ typed at the prompt; the dash phase.
 
 One commit per block, in this order (each `fix(engine): LINE review — <IDs>`):
 
-1. **CAT** — CAT-01, CAT-02. Minutes.
+1. **CAT** — CAT-01. Minutes.
 2. **UND** — UND-01, UND-02, UND-03, and the citations. An hour.
 3. **CLI** — CLI-01 to CLI-03. An hour.
 4. **LIN** — LIN-01 to LIN-09 (LIN-09 lands with PIN-02). Half a day.
@@ -913,3 +911,8 @@ every object snap three ways and the modes in combination:
    end a probe on the command's own last answer (annex-probes §2).
 6. **Session sizing** (template §1.4): with subagents probing, one session covered twelve blocks and
    about 110 probes; "about 30 probes" understated it.
+
+## 15. Execution
+
+| Block | Findings | Commit |
+| ----- | -------- | ------ |

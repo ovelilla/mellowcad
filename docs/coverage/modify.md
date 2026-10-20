@@ -388,8 +388,8 @@ anything but a polyline picked at Polyline's, or the newest a mode finds there, 
 `Object selected is not a 2D polyline` (es `El objeto designado no es una polilínea 2D.`) and
 Polyline's prompt is asked again; Undo takes back the last fillet or radius given in the command,
 and back at its start says `Command has been completely undone.`; two lines at different heights or
-one rising give `Lines are non-coplanar.` (es `Las líneas no son coplanares.`, Autodesk's support
-article in both languages) and the first prompt again; a line trimmed or extended keeps its
+one rising give `Lines are non coplanar.` (es `Las líneas no son coplanares.`, AutoCAD 2027's
+console) and the first prompt again; a line trimmed or extended keeps its
 direction, only its end at the arc moving (a line kept from 100,0 to 0,0 now runs from 100,0 to
 30,0); the arc takes the first line's elevation and thickness, and lies on the lines' layer when
 they share one, else on the current layer, ByLayer ("The layer affects object properties including

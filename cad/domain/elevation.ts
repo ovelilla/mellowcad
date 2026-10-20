@@ -306,7 +306,7 @@ export function isLevel(entity: Entity): boolean {
 }
 
 /**
- * Whether two objects share a plane: AutoCAD's "Lines are non-coplanar" test,
+ * Whether two objects share a plane: AutoCAD's "Lines are non coplanar" test,
  * whose cause it gives as "one or more of the line vertices is not at the
  * same elevation as the other vertices". The same normal and elevation, and
  * no line rising off it.
@@ -346,7 +346,7 @@ export function sharesTiltedPlane(a: Entity, b: Entity): boolean {
  * The plane two lines share when it is not a level one {@link coplanar}
  * covers: its unit normal, facing up where it can. Two parallel lines share
  * one too. `null` when they share no plane — AutoCAD's "Lines are
- * non-coplanar" — or lie on one line.
+ * non coplanar" — or lie on one line.
  */
 export function linesPlaneNormal(a: LineEntity, b: LineEntity): Vec3 | null {
   const a0: Vec3 = { ...a.start, z: lineStartZ(a) }
