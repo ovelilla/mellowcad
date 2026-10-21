@@ -1,6 +1,11 @@
 import { Vec2, V } from "../../geometry/Vec2"
 import { Vec3 } from "../../geometry/Vec3"
-import { Entity, scaleEntity, scaleEntityCopy } from "../../domain/entities"
+import {
+  Entity,
+  entitiesBounds,
+  scaleEntity,
+  scaleEntityCopy,
+} from "../../domain/entities"
 import { parseNumber } from "../../domain/units"
 import { DynamicInputSession } from "../input/DynamicInput"
 import {
@@ -24,6 +29,7 @@ import {
   type QuestionInput,
 } from "./Tool"
 import { ObjectSelector } from "./objectSelection"
+import { selectedInDrawingOrder } from "./drawingOrder"
 import type { PromptId } from "../../locales/types"
 
 /**
@@ -38,13 +44,15 @@ import type { PromptId } from "../../locales/types"
  *                                          refP1 ─► newLength ─► [Points]┘
  * ```
  *
- * A typed factor multiplies directly; pointing uses the base → cursor distance
- * as the factor (AutoCAD's implicit unit reference), so the set grows as the
- * cursor moves away from the base and shrinks toward it. Two keywords match
- * AutoCAD: **Copy** leaves the originals in place and scales a fresh duplicate;
- * **Reference** scales by `new length / reference length`, letting you resize
- * so a measured length becomes a target length. Works on any selection — lines
- * and circles alike (a circle's radius scales too) — with object snap and typed
+ * A typed factor multiplies directly. A point, picked or typed, scales by its
+ * distance from the base over half the largest side of the set's extents (1
+ * when they have no size): a point that far from the base leaves the set as it
+ * is, nearer shrinks it, farther grows it (probe transforms/p219, desktop d06,
+ * d07). Two keywords match AutoCAD: **Copy** leaves the originals in place and
+ * scales a fresh duplicate; **Reference** scales by `new length / reference
+ * length`, whose lengths a point measures directly, letting you resize so a
+ * measured length becomes a target length. Works on any selection — lines and
+ * circles alike (a circle's radius scales too) — with object snap and typed
  * factor, length or coordinate entry.
  */
 
@@ -59,6 +67,8 @@ type ScaleState =
       /** Its Z too: the set scales in 3D about it. */
       readonly base: Vec3
       readonly originals: readonly Entity[]
+      /** What a point's distance from the base is divided by: {@link factorUnit}. */
+      readonly unit: number
       /** Reference mode Copy keeps the originals in place. */
       readonly copy: boolean
       readonly current: Vec2
@@ -124,8 +134,9 @@ export class ScaleTool implements Tool {
 
   /**
    * WHY the factor shows no `<default>` though Enter takes the last one:
-   * AutoCAD's 2026 prompt shows none. Reference's lengths show theirs, as
-   * AutoCAD 2023's console does: `Specify new length or [Points] <1.0000>:`.
+   * AutoCAD's prompt shows none (probes transforms/p160, p165). Reference's
+   * lengths show theirs: `Specify new length or [Points] <1.0000>:` (p172,
+   * p187).
    */
   question(): PromptId | ToolQuestion {
     switch (this.state.phase) {
@@ -145,9 +156,9 @@ export class ScaleTool implements Tool {
   }
 
   /**
-   * The factor is a distance from the base point, as AutoCAD reads it; the
-   * reference length and Points' new length are measured by two points of
-   * their own.
+   * The factor takes a point, which the tool reads itself (over the set's
+   * extents); the reference length and Points' new length are measured by two
+   * points of their own.
    */
   takes(): QuestionInput | null {
     switch (this.state.phase) {
@@ -186,10 +197,7 @@ export class ScaleTool implements Tool {
         break
       case "factor": {
         this.state = { ...this.state, current: input.point }
-        ctx.dynamicInput.setLive(
-          "factor",
-          distanceFrom(this.state.base, input.point)
-        )
+        ctx.dynamicInput.setLive("factor", pointFactor(this.state, input.point))
         ctx.dynamicInput.setPosition(input.screen)
         break
       }
@@ -224,15 +232,13 @@ export class ScaleTool implements Tool {
         this.enterFactor(base, ctx)
         return
       }
-      case "factor": {
-        const factor = this.resolveDirectFactor(
-          this.state.base,
-          input.point,
+      case "factor":
+        this.scaleBy(
+          this.state,
+          this.resolveDirectFactor(this.state, input.point, ctx),
           ctx
         )
-        this.commit(this.state, factor, ctx)
         return
-      }
       case "newLength":
         this.commitNewLength(
           this.state,
@@ -342,7 +348,7 @@ export class ScaleTool implements Tool {
     switch (this.state.phase) {
       case "factor": {
         const factor = this.resolveDirectFactor(
-          this.state.base,
+          this.state,
           this.state.current,
           ctx
         )
@@ -412,7 +418,7 @@ export class ScaleTool implements Tool {
   }
 
   private enterFactor(base: Vec3, ctx: ToolContext): void {
-    const originals = this.snapshotSelection(ctx)
+    const originals = selectedInDrawingOrder(ctx)
     if (originals.length === 0) {
       // The selection vanished (e.g. undo elsewhere): fall back to picking.
       this.state = { phase: "selecting" }
@@ -424,6 +430,7 @@ export class ScaleTool implements Tool {
       phase: "factor",
       base,
       originals,
+      unit: factorUnit(originals, ctx.blocks),
       copy: false,
       current: base,
     }
@@ -447,16 +454,16 @@ export class ScaleTool implements Tool {
     // A typed answer that is no number is refused, never read off the cursor.
     const field = this.state.phase === "newLength" ? "newLength" : "factor"
     if (typed && parseField(ctx, field) === null) return false
-    // Enter at Points' first point keeps nothing: AutoCAD 2023's console
-    // scales by a length of its own there, which nothing here reproduces.
+    // Enter at Points' first point keeps nothing: AutoCAD's console scales by
+    // its cursor's reading there, which nothing here reproduces (p183).
     if (this.state.phase === "newLength" && this.state.points && !typed) {
       return false
     }
     if (this.state.phase === "factor") {
       const factor = typed
-        ? this.resolveDirectFactor(this.state.base, this.state.current, ctx)
+        ? this.resolveDirectFactor(this.state, this.state.current, ctx)
         : this.lastFactor
-      this.commit(this.state, factor, ctx)
+      this.scaleBy(this.state, factor, ctx)
       return true
     }
     if (this.state.phase === "newLength") {
@@ -531,7 +538,26 @@ export class ScaleTool implements Tool {
     this.commit(state, newLength / state.reference, ctx)
   }
 
-  /** Applies the scaling (in place, or as a fresh copy) and ends the command. */
+  /**
+   * The factor's answer: 0, a negative or a point on the base is refused and
+   * asked again (probes transforms/p167, p168, p193).
+   */
+  private scaleBy(
+    state: Extract<ScaleState, { phase: "factor" }>,
+    factor: number,
+    ctx: ToolContext
+  ): void {
+    if (!(factor > 0)) {
+      ctx.report(ctx.text.message("positiveNonzero"), "error")
+      return
+    }
+    this.commit(state, factor, ctx)
+  }
+
+  /**
+   * Applies the scaling (in place, or as a fresh copy) and ends the command;
+   * the factor, however reached, is the next one's `<default>` (p188).
+   */
   private commit(
     state: Extract<ScaleState, { phase: "factor" | "newLength" }>,
     factor: number,
@@ -539,7 +565,7 @@ export class ScaleTool implements Tool {
   ): void {
     // AutoCAD rejects a non-positive factor; treat it as a no-op that ends.
     if (Number.isFinite(factor) && factor > 0) {
-      if (state.phase === "factor") this.lastFactor = factor
+      this.lastFactor = factor
       if (state.copy) {
         ctx.execute(
           new AddEntitiesCommand(
@@ -558,13 +584,6 @@ export class ScaleTool implements Tool {
     ctx.endCommand()
   }
 
-  private snapshotSelection(ctx: ToolContext): readonly Entity[] {
-    return ctx.selection
-      .toArray()
-      .map((id) => ctx.document.get(id))
-      .filter((entity): entity is Entity => entity !== undefined)
-  }
-
   private resolveBase(rawPoint: Vec3, ctx: ToolContext): Vec3 {
     const text = ctx.dynamicInput.getText("base").trim()
     if (isCoordinateExpression(text)) {
@@ -580,18 +599,15 @@ export class ScaleTool implements Tool {
   }
 
   /**
-   * The direct-mode factor: a typed number hard-locks it, otherwise the base →
-   * cursor distance drives it (AutoCAD's "specify on screen" behaviour, where a
-   * unit distance means no change).
+   * The factor a click, a typed point and the drag share: a typed number
+   * hard-locks it, otherwise the point's {@link pointFactor}.
    */
   private resolveDirectFactor(
-    base: Vec2,
+    state: Extract<ScaleState, { phase: "factor" }>,
     cursor: Vec2,
     ctx: ToolContext
   ): number {
-    const typed = parseField(ctx, "factor")
-    if (typed !== null) return typed
-    return distanceFrom(base, cursor)
+    return parseField(ctx, "factor") ?? pointFactor(state, cursor)
   }
 
   /**
@@ -601,6 +617,31 @@ export class ScaleTool implements Tool {
   private resolveNewLength(base: Vec2, cursor: Vec2, ctx: ToolContext): number {
     return parseField(ctx, "newLength") ?? distanceFrom(base, cursor)
   }
+}
+
+/**
+ * Half the largest side of the set's extents in the UCS, which a point at the
+ * factor is measured against, or 1 when they have no size (a POINT): not the
+ * diagonal, the base or the view (probe transforms/p219).
+ */
+function factorUnit(
+  originals: readonly Entity[],
+  blocks: ToolContext["blocks"]
+): number {
+  const bounds = entitiesBounds(originals, blocks)
+  if (bounds === null) return 1
+  const side = Math.max(
+    bounds.max.x - bounds.min.x,
+    bounds.max.y - bounds.min.y
+  )
+  return side > 0 ? side / 2 : 1
+}
+
+function pointFactor(
+  state: Extract<ScaleState, { phase: "factor" }>,
+  point: Vec2
+): number {
+  return distanceFrom(state.base, point) / state.unit
 }
 
 function pushGhost(

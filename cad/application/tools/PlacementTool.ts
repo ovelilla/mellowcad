@@ -23,6 +23,7 @@ import type { PromptId } from "../../locales/types"
 import { acuteHeading, headingInUcs } from "./ucsHeading"
 import { ObjectSelector } from "./objectSelection"
 import { pointAlongCursor, showRise } from "./directDistance"
+import { selectedInDrawingOrder } from "./drawingOrder"
 
 /**
  * Shared machinery for AutoCAD's displacement-modify commands (MOVE, COPY,
@@ -651,16 +652,6 @@ export abstract class PlacementTool implements Tool {
       }) ?? rawCursor
     )
   }
-}
-
-/**
- * The set as the drawing orders it, whatever order it was picked in: COPY
- * appends its copies so, and ERASE Last takes the last one's (move/p201,
- * p212, p223).
- */
-function selectedInDrawingOrder(ctx: ToolContext): Entity[] {
-  const ids = new Set(ctx.selection.toArray())
-  return ctx.document.getEntities().filter((entity) => ids.has(entity.id))
 }
 
 /** Whether the second point's typed text reads as one: a coordinate, a length, an angle. */

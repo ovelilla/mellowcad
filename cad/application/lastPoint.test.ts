@@ -151,6 +151,28 @@ describe("LASTPOINT", () => {
     expect(lastPoint(cad)).toBe(" X = 3.00     Y = 4.00     Z = 0.00")
   })
 
+  // probes transforms/p191, p192, p195, p196, p176, p182: SCALE leaves it at
+  // the base point whichever way the factor is given.
+  it.each<[string, string[], number]>([
+    ["a point", ["0,0", "30,40"], 100],
+    ["a relative point", ["10,0", "@30,40"], 100],
+    ["a number", ["10,5", "2"], 190],
+    ["Reference typed", ["10,5", "_R", "10", "20"], 190],
+    ["Reference by two points", ["0,0", "_R", "10,10", "40,50", "100"], 200],
+    ["Points", ["0,0", "_R", "10", "_P", "10,0", "40,0"], 300],
+  ])("is SCALE's base point after %s", (_, answers, endX) => {
+    const cad = createHarness({
+      entities: [
+        circleOf(p(200, 200), 20),
+        lineOf(p(0, 0), p(100, 0), { id: "A" }),
+      ],
+    })
+    answer(cad, "SCALE", "L", "", ...answers)
+    expect(cad.byId<LineEntity>("A").end.x).toBeCloseTo(endX)
+    const [x, y] = answers[0].split(",")
+    expect(lastPoint(cad)).toBe(` X = ${x}.00     Y = ${y}.00     Z = 0.00`)
+  })
+
   it("is the UCS origin as Specify displacement opens, which reads `@` from it", () => {
     const moved = (cad: CadHarness) => cad.byId<LineEntity>("A").start
     const cad = createHarness({

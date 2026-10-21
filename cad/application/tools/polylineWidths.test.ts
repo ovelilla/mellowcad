@@ -557,7 +557,7 @@ describe("FILL", () => {
 })
 
 describe("what the editing commands do with the widths", () => {
-  it("SCALE scales them, MIRROR keeps them (acc/w8)", () => {
+  it("SCALE scales them (transforms/p210), MIRROR keeps them (acc/w8)", () => {
     const cad = createHarness({ entities: [tapered()] })
     cad.command("SCALE")
     answer(cad, "ALL", "", "0,0", "2")

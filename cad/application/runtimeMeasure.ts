@@ -11,7 +11,8 @@ import { Viewport } from "./Viewport"
 /**
  * The box's field a point answers as its value: a lone distance or angle,
  * which AutoCAD's distance and angle input measure from points, or a number
- * the question measures so (SCALE's factor). Null for anything else.
+ * the question takes a point at (SCALE's factor, whose tool reads the point
+ * itself: its distance over half the set's extents). Null for anything else.
  */
 export function measuredField(
   session: DynamicInputSession,

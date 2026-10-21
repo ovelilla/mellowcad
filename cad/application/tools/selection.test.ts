@@ -1474,6 +1474,16 @@ describe("what a command leaves selected", () => {
     expect(cad.entityCount).toBe(3)
   })
 
+  it("keeps SCALE Copy's originals as Previous (transforms/p217)", () => {
+    const cad = createHarness({ entities: drawing() })
+    typed(cad, "_SCALE", "50,0", "", "0,0", "_C", "2")
+    expect(cad.selectedIds()).toEqual([])
+
+    typed(cad, "_ERASE", "_P", "")
+    expect(cad.entityCount).toBe(3)
+    expect(cad.entities().map((entity) => entity.id)).not.toContain("A")
+  })
+
   it.each(["ERASE", "MOVE", "EXPLODE", "ROTATE", "STRETCH"])(
     "leaves nothing selected when Escape ends %s's Select objects after a pick (erase/d10)",
     (command) => {

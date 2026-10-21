@@ -321,7 +321,8 @@ first)`, later points projected (`withZOf(point, first)`); SPLINE by limitation 
   internal pick): read `input.world` there, since a snapped point lands on the boundary.
 - **A distance or an angle takes a point too.** A lone `distance` / `length` / `angle` box gets it
   one of two ways, and `wantsSnap()` says which. True: the tool measures its own pick
-  (CIRCLE's radius, POLYGON's, TEXT's height). False: the runtime measures it
+  (CIRCLE's radius, POLYGON's, TEXT's height; SCALE's factor is the distance over half the set's
+  extents). False: the runtime measures it
   (`runtimeMeasure.ts`) from `getConstraintAnchor()` or asks ` Specify second point:` itself, and
   answers the box as if typed. Never write a two-point distance in a tool; check in the console
   which a prompt is (`0,0` then `ID @`, or the ` Specify second point:` it asks).

@@ -2,8 +2,10 @@ import { describe, expect, it } from "vitest"
 import type {
   ArcEntity,
   CircleEntity,
+  DimensionEntity,
   EllipseEntity,
   Entity,
+  HatchEntity,
   LineEntity,
   PolylineEntity,
 } from "../../domain/entities"
@@ -12,7 +14,9 @@ import {
   createBlockDefinition,
   createInsert,
   createSpline,
+  dimensionMeasurement,
   isFullEllipse,
+  scaleEntity,
 } from "../../domain/entities"
 import { type CadHarness, createHarness } from "../../../test/harness"
 import { THEME } from "../../scene/theme"
@@ -24,10 +28,13 @@ import {
   arcOf,
   circleOf,
   deg,
+  hatchOf,
   layerOf,
   lineOf,
+  loopOf,
   p,
   polylineOf,
+  rectOf,
 } from "../../../test/builders"
 
 /**
@@ -750,6 +757,7 @@ describe("ROTATE", () => {
 })
 
 describe("SCALE", () => {
+  // probes transforms/p160, p172.
   it("asks the base point, the factor and the reference lengths", () => {
     const cad = createHarness({ entities: [HORIZONTAL] })
 
@@ -781,8 +789,8 @@ describe("SCALE", () => {
     expect(cad.byId<LineEntity>("L1").end).toBeCloseToPoint(p(100, 0))
   })
 
-  // AutoCAD 2023's console: Points measures the new length by two points of
-  // its own, and both lengths are the next Reference's defaults.
+  // probes transforms/p182, p187: Points measures the new length by two points
+  // of its own, and both lengths are the next Reference's defaults.
   it("measures the new length by Points, and keeps the lengths as defaults", () => {
     const cad = createHarness({ entities: [HORIZONTAL] })
     const answer = (text: string) => {
@@ -836,6 +844,7 @@ describe("SCALE", () => {
     expect(cad.byId<LineEntity>("L1").end).toBeCloseToPoint(p(36, 0))
   })
 
+  // probe transforms/p182 (es-ES).
   it("asks Points in Spanish", () => {
     const cad = createHarness({ locale: es, entities: [HORIZONTAL] })
     cad.select("L1").command("ESCALA").click(p(0, 0)).option("Reference")
@@ -848,6 +857,7 @@ describe("SCALE", () => {
     expect(cad.state().commandLine.prompt).toBe("ESCALA Precise primer punto:")
   })
 
+  // probe transforms/p171.
   it("says it scales a copy each time Copy is chosen", () => {
     const cad = createHarness({ entities: [HORIZONTAL] })
 
@@ -905,13 +915,206 @@ describe("SCALE", () => {
     expect(cad.byId<LineEntity>("L1").end).toBeCloseToPoint(p(300, 0))
   })
 
-  it("refuses a non-positive factor", () => {
+  // probe transforms/p219: a point at the factor is its distance from the base
+  // over half the largest side of the set's extents; 1 when they have no size
+  // (a POINT there, a line of no length here).
+  it.each<[string, Entity[], number]>([
+    ["a 100-long line", [lineOf(p(10, 0), p(110, 0))], 0.2],
+    ["a 30×10 rectangle", [rectOf(p(10, 10), p(40, 20))], 2 / 3],
+    ["a 10×30 rectangle", [rectOf(p(10, 10), p(20, 40))], 2 / 3],
+    ["a 20×20 square", [rectOf(p(10, 10), p(30, 30))], 1],
+    ["a 45° line of extents 30×30", [lineOf(p(10, 10), p(40, 40))], 2 / 3],
+    ["a circle of radius 5", [circleOf(p(100, 100), 5)], 2],
+    ["a line of no length", [lineOf(p(50, 50), p(50, 50))], 10],
+    [
+      "two lines of extents 210×100",
+      [lineOf(p(10, 0), p(20, 0)), lineOf(p(210, 100), p(220, 100))],
+      10 / 105,
+    ],
+  ])("scales %s by @10,0 at the factor as AutoCAD (p219)", (_, set, factor) => {
+    const cad = createHarness({ entities: set })
+    answer(cad, "_SCALE", "_ALL", "", "0,0", "@10,0")
+
+    expect(cad.entities()).toEqual(
+      set.map((entity) => scaleEntity(entity, p(0, 0), factor))
+    )
+  })
+
+  // probe transforms/p219, desktop d07: a click measures as a typed point.
+  it("scales by a click over half the set's extents", () => {
+    const cad = createHarness({
+      entities: [lineOf(p(10, 0), p(110, 0), { id: "L1" })],
+    })
+    cad.select("L1").command("SCALE").click(p(0, 0)).click(p(0, 50))
+
+    expect(cad.byId<LineEntity>("L1").start).toBeCloseToPoint(p(10, 0))
+    expect(cad.byId<LineEntity>("L1").end).toBeCloseToPoint(p(110, 0))
+  })
+
+  // desktop d06: the dragged set and the factor's field read what a click
+  // there would scale by.
+  it("drags and reads the factor a click would scale by", () => {
+    const cad = createHarness({
+      entities: [lineOf(p(10, 0), p(110, 0), { id: "L1" })],
+    })
+    cad.select("L1").command("SCALE").click(p(0, 0)).moveTo(p(0, 100))
+
+    expect(cad.state().dynamicInput?.fields[0].placeholder).toBe("2")
+    const [a, b] = [cad.toScreen(p(20, 0)), cad.toScreen(p(220, 0))]
+    const near = (q: { x: number; y: number }, r: { x: number; y: number }) =>
+      Math.hypot(q.x - r.x, q.y - r.y) < 1e-6
+    expect(
+      cad
+        .scene()
+        .primitives.some(
+          (prim) =>
+            prim.kind === "segment" && near(prim.a, a) && near(prim.b, b)
+        )
+    ).toBe(true)
+    cad.click(p(0, 100))
+    expect(cad.byId<LineEntity>("L1").end).toBeCloseToPoint(p(220, 0))
+  })
+
+  // probe transforms/p167, p168, p193: AutoCAD refuses and asks again.
+  it.each([["0"], ["-2"], ["@"]])(
+    "refuses %s at the factor and asks again",
+    (bad) => {
+      const cad = createHarness({
+        entities: [lineOf(p(0, 0), p(100, 0), { id: "L1" })],
+      })
+      answer(cad, "_SCALE", "_ALL", "", "0,0", bad)
+
+      expect(cad.commandLog().slice(-2)).toEqual([
+        `Specify scale factor or [Copy/Reference]: ${bad}`,
+        "Value must be positive and nonzero.",
+      ])
+      expect(cad.state().commandLine.prompt).toBe(
+        "SCALE Specify scale factor or [Copy/Reference]:"
+      )
+      answer(cad, "2")
+      expect(cad.byId<LineEntity>("L1").end).toBeCloseToPoint(p(200, 0))
+    }
+  )
+
+  it("refuses a click on the base point at the factor (p193)", () => {
     const cad = createHarness({
       entities: [lineOf(p(0, 0), p(100, 0), { id: "L1" })],
     })
+    cad.select("L1").command("SCALE").click(p(0, 0)).click(p(0, 0))
 
-    cad.select("L1").command("SCALE").click(p(0, 0)).type("-2").enter()
+    expect(cad.commandLog().at(-1)).toBe("Value must be positive and nonzero.")
+    expect(cad.activeToolId()).toBe("scale")
+  })
 
+  it("refuses a factor of 0 in Spanish (p167)", () => {
+    const cad = createHarness({
+      locale: es,
+      entities: [lineOf(p(0, 0), p(100, 0), { id: "L1" })],
+    })
+    answer(cad, "ESCALA", "_ALL", "", "0,0", "0")
+
+    expect(cad.commandLog().at(-1)).toBe(
+      "El valor debe ser positivo y diferente de cero."
+    )
+    expect(cad.state().commandLine.prompt).toBe(
+      "ESCALA Precise factor de escala o [Copiar/Referencia]:"
+    )
+  })
+
+  // probe transforms/p213: the copy of the object earlier in the drawing is
+  // appended first, so ERASE Last takes the later one's.
+  it("adds Copy's copies in drawing order, whatever the pick order", () => {
+    const cad = createHarness({
+      entities: [
+        lineOf(p(0, 0), p(100, 0), { id: "A" }),
+        lineOf(p(0, 50), p(100, 50), { id: "B" }),
+      ],
+    })
+    answer(cad, "_SCALE", "50,50", "50,0", "", "0,0", "_C", "2")
+    expect(
+      linesOf(cad.entities())
+        .slice(2)
+        .map((line) => line.start.y)
+    ).toEqual([0, 100])
+
+    answer(cad, "_ERASE", "_L", "")
+    expect(linesOf(cad.entities()).map((line) => line.start.y)).toEqual([
+      0, 50, 0,
+    ])
+  })
+
+  // probes transforms/p205–p208: each run is one step U names, a scale by 1
+  // included; a Copy by 1 leaves a duplicate U takes back.
+  it("is one step for U, REDO, UNDO and MREDO", () => {
+    const drawing = () =>
+      createHarness({
+        entities: [
+          circleOf(p(200, 200), 20),
+          lineOf(p(0, 0), p(100, 0), { id: "L1" }),
+        ],
+      })
+    const end = (cad: CadHarness) => cad.byId<LineEntity>("L1").end
+
+    const redone = answer(drawing(), "_SCALE", "_L", "", "0,0", "2", "_U")
+    expect(end(redone)).toBeCloseToPoint(p(100, 0))
+    answer(redone, "_REDO")
+    expect(end(redone)).toBeCloseToPoint(p(200, 0))
+    expect(redone.commandLog().slice(-5)).toEqual([
+      "U",
+      "SCALE",
+      "REDO",
+      "SCALE",
+      "Everything has been redone",
+    ])
+
+    const byOne = answer(drawing(), "_SCALE", "_L", "", "0,0", "1", "_U")
+    expect(byOne.commandLog().at(-1)).toBe("SCALE")
+
+    const copied = answer(drawing(), "_SCALE", "_L", "", "0,0", "_C", "1")
+    expect(copied.entityCount).toBe(3)
+    answer(copied, "_U")
+    expect(copied.entityCount).toBe(2)
+    expect(copied.commandLog().at(-1)).toBe("SCALE")
+
+    const twice = answer(drawing(), "_SCALE", "_L", "", "0,0", "2")
+    answer(twice, "_SCALE", "_L", "", "0,0", "3", "_UNDO", "2")
+    expect(end(twice)).toBeCloseToPoint(p(100, 0))
+    answer(twice, "_MREDO", "1")
+    expect(end(twice)).toBeCloseToPoint(p(200, 0))
+  })
+
+  // probe transforms/p212: a hatch's pattern scale and a dimension's
+  // measurement scale with it.
+  it("scales a hatch's pattern and a dimension's measurement", () => {
+    const cad = createHarness({
+      entities: [hatchOf([loopOf(p(0, 0), p(10, 10))])],
+    })
+    answer(cad, "_DIMLINEAR", "0,-30", "50,-30", "25,-40")
+    answer(cad, "_SCALE", "_ALL", "", "0,0", "2")
+
+    expect(cad.only<HatchEntity>("hatch").patternScale).toBeCloseTo(2)
+    expect(
+      dimensionMeasurement(cad.only<DimensionEntity>("dimension"))
+    ).toBeCloseTo(100)
+  })
+
+  // probe transforms/p218 (es-ES): Copy, Reference and Points by their
+  // Spanish letters.
+  it("takes C, R and P in Spanish", () => {
+    const cad = createHarness({
+      locale: es,
+      entities: [
+        circleOf(p(200, 200), 20),
+        lineOf(p(0, 0), p(100, 0), { id: "L1" }),
+      ],
+    })
+    answer(cad, "ESCALA", "_L", "", "0,0", "C", "R", "10", "P", "10,0", "40,0")
+
+    expect(cad.commandLog()).toContain(
+      "Escalando una copia de los objetos seleccionados."
+    )
+    expect(cad.entityCount).toBe(3)
+    expect((cad.latest() as LineEntity).end).toBeCloseToPoint(p(300, 0))
     expect(cad.byId<LineEntity>("L1").end).toBeCloseToPoint(p(100, 0))
   })
 })

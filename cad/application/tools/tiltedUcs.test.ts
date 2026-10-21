@@ -366,6 +366,43 @@ describe("the tools in a tilted UCS", () => {
     }
   })
 
+  // probes transforms/p215 (UCS Z 30, Reference by two points), p216 (UCS X
+  // 90, a base with a Z).
+  it("scale about a base typed in the UCS", () => {
+    const answer = (cad: CadHarness, ...texts: string[]) => {
+      for (const text of texts) {
+        cad.runtime.setCommandLineText(text)
+        cad.runtime.submitCommandLine()
+      }
+      return cad
+    }
+    const drawing = () =>
+      createHarness({
+        entities: [
+          circleOf(p(200, 200), 20),
+          lineOf(p(0, 0), p(100, 0), { id: "L" }),
+        ],
+      })
+
+    const turned = answer(drawing(), "_UCS", "_Z", "30", "_SCALE", "_L", "")
+    answer(turned, "10,0", "_R", "0,0", "10,0", "20")
+    const inPlan = turned.byId<LineEntity>("L")
+    expect([inPlan.start, inPlan.end]).toBeCloseToPoints(
+      [p(-8.66025, -5), p(191.33975, -5)],
+      4
+    )
+
+    const tilted = answer(drawing(), "_UCS", "_X", "90", "_SCALE", "_L", "")
+    answer(tilted, "10,0,5", "2")
+    const standing = tilted.byId<LineEntity>("L")
+    expect([standing.start, standing.end]).toBeCloseToPoints(
+      [p(-10, 5), p(190, 5)],
+      9
+    )
+    expect(lineStartZ(standing)).toBeCloseTo(0, 9)
+    expect(lineEndZ(standing)).toBeCloseTo(0, 9)
+  })
+
   it("read a typed * point in the WCS", () => {
     const cad = front(createHarness())
     cad.command("LINE").type("*10,20,30").enter().type("@0,0,5").enter()

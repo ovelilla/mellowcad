@@ -77,26 +77,39 @@ direction for rotating objects about a point"); an elliptical arc keeps its para
 there ends ROTATE, **unverified**); defaults written at the drawing's precision (`<0.00>`) where
 AutoCAD's AUPREC 0 writes `<0>`
 
-### `SCALE` / `SC` · es `ESCALA` / `ES`†
+### `SCALE` / `SC` · es `ESCALA` / `ES`
 
 **Implemented:** `Select objects:`, `Specify base point:`,
-`Specify scale factor or [Copy/Reference]:` — Copy says `Scaling a copy of the selected objects.`
-(es `Escalando una copia de los objetos seleccionados.`), again at each Copy, and stays listed —
+`Specify scale factor or [Copy/Reference]:` — a number is the factor; a point, picked or typed
+(`x,y`, `@dx,dy`, a snap), is its distance from the base over half the largest side of the set's
+extents in the UCS, 1 when they have no size, so a point that far leaves the set as it is (p191,
+p192, p197, p219; desktop d06, d07), and the drag and the factor's field read the same; 0, a
+negative or `@` say `Value must be positive and nonzero.` (es
+`El valor debe ser positivo y diferente de cero.`) and ask again (p167, p168, p193) — Copy says
+`Scaling a copy of the selected objects.` (es `Escalando una copia de los objetos seleccionados.`),
+again at each Copy, and stays listed (p171) —
 then Reference's `Specify reference length <1.0000>:` (typed, or two points) and
 `Specify new length or [Points] <1.0000>:` (typed, or a point measured from the base point; Points
 asks `Specify first point:` and the second, the length between them;
 `Requires numeric distance, second point, or option keyword.`, at Points
 `Requires numeric distance or two points.`), both defaults the last lengths given, 1 in each
-drawing (a factor typed leaves them), as AutoCAD 2023's console asks them (es
+drawing (a factor typed leaves them), as AutoCAD's console asks them (p172, p176, p182, p187; es
 `Precise factor de escala o [Copiar/Referencia]`, `Precise longitud de referencia`,
-`Precise nueva longitud o [Puntos]`); factor (Enter takes the last one, 1 in each drawing — per
-drawing, not saved, rectang/p315 —, though the prompt shows no default, as AutoCAD's 2026 one shows
-none), Copy, Reference; in 3D about
-the base point, elevation, a line's rise and thickness included; an elliptical arc keeps its
-parameters and ratio (ellipse/p323)
+`Precise nueva longitud o [Puntos]`); Enter at the factor takes the last one any run scaled by,
+Reference's too, 1 in each drawing — per drawing, not saved, rectang/p315 —, though the prompt
+shows no default (p160, p165, p166, p188); Copy's copies go in drawing order whatever the pick
+order, so ERASE Last takes the later one's (p213); LASTPOINT is the base point however the factor
+is given (p176, p182, p191–p196); each run is one step U names, a scale by 1 too (p205–p208);
+nothing is left selected and the set is Previous (p217); in 3D about the base point, elevation, a
+line's rise and thickness included (p214), in a turned or tilted UCS (p215, p216); a hatch's
+pattern scale and a dimension's measurement scale (p212); an elliptical arc keeps its parameters
+and ratio (ellipse/p323); `ES` from the Spanish `acad.pgp` (p161)
 
 **Missing:** Enter at Points' `Specify first point:` ends the command unscaled (AutoCAD 2023's
-console scales by a length of its own there)
+console scales by a length of its own there); a tiny factor is applied in silence, where AutoCAD
+says `Extremely small scale factor ignored.` (es `Factor de escala demasiado pequeño ignorado.`,
+table 21197, p170): the threshold and what follows are **unverified** (the console read its cursor
+after it)
 
 ### `MIRROR` / `MI` · es `SIMETRIA` / `SI`†
 

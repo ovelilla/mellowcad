@@ -524,6 +524,26 @@ describe("editing commands", () => {
     expect(lineZ(right)).toEqual([30, 40])
   })
 
+  // probe transforms/p214 (MPDUMP).
+  it("SCALE scales the elevation, the thickness and a line's rise about a base with a Z", () => {
+    const cad = createHarness({
+      entities: [
+        withThickness(withElevation(circleOf(p(0, 0), 10, { id: "C" }), 10), 5),
+        withDeltaZ(lineOf(p(0, 0), p(100, 0), { id: "L" }), 20),
+      ],
+    })
+    answer(cad, "_SCALE", "_ALL", "", "0,0,4", "2")
+
+    expect(cad.byId<CircleEntity>("C")).toMatchObject({
+      elevation: 16,
+      thickness: 10,
+      radius: 20,
+    })
+    const line = cad.byId<LineEntity>("L")
+    expect(lineZ(line)).toEqual([-4, 36])
+    expect(line.end.x).toBeCloseTo(200)
+  })
+
   it("OFFSET keeps the elevation, the rise and the thickness", () => {
     const cad = createHarness({
       entities: [{ ...SLOPING, elevation: 8, thickness: 2 }],

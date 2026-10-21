@@ -125,6 +125,7 @@ describe.each(ENTERS)("Enter from %s with nothing typed", (_, enter) => {
     expect(cad.byId<LineEntity>("A").end).toBeCloseToPoint(p(-100, 0))
   })
 
+  // probes transforms/p165, p166.
   it("scales by the last factor, 1 at first", () => {
     const cad = createHarness({
       entities: [lineOf(p(0, 0), p(100, 0), { id: "A" })],
@@ -136,6 +137,19 @@ describe.each(ENTERS)("Enter from %s with nothing typed", (_, enter) => {
 
     cad.select("A").command("SCALE").click(p(0, 0))
     cad.type("2").enter()
+    cad.select("A").command("SCALE").click(p(0, 0))
+    cad.moveTo(FAR)
+    enter(cad)
+    expect(cad.byId<LineEntity>("A").end).toBeCloseToPoint(p(400, 0))
+  })
+
+  // probe transforms/p188: a Reference run's factor is the next default too.
+  it("scales by the factor a Reference run made", () => {
+    const cad = createHarness({
+      entities: [lineOf(p(0, 0), p(100, 0), { id: "A" })],
+    })
+    cad.select("A").command("SCALE").click(p(0, 0)).option("Reference")
+    cad.type("50").enter().type("100").enter()
     cad.select("A").command("SCALE").click(p(0, 0))
     cad.moveTo(FAR)
     enter(cad)
