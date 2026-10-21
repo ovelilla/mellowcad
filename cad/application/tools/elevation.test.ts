@@ -603,7 +603,8 @@ describe("editing commands", () => {
 
       cad
         .command("STRETCH")
-        .drag(p(100, 250), p(-50, -50))
+        .click(p(100, 250))
+        .click(p(-50, -50))
         .enter()
         .click(p(0, 0))
         .type("@10,0,5")

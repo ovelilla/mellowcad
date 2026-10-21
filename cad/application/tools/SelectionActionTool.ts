@@ -126,6 +126,10 @@ export abstract class SelectionActionTool implements Tool {
     this.selector.onPointerUp(input, ctx)
   }
 
+  cycleLasso(ctx: ToolContext): boolean {
+    return this.selector.cycleLasso(ctx)
+  }
+
   onEnter(ctx: ToolContext): boolean {
     return this.selector.onEnter(ctx)
   }
@@ -135,15 +139,12 @@ export abstract class SelectionActionTool implements Tool {
   }
 
   buildOverlay(ctx: ToolContext): ScenePrimitive[] {
-    if (this.fadesSet && this.selector.hovered() !== null) return []
-    return this.selector.buildOverlay(ctx)
+    return this.selector.buildOverlay(ctx, !this.fadesSet)
   }
 
   fadedEntityIds(ctx: ToolContext): readonly EntityId[] {
     if (!this.fadesSet) return []
-    const hovered = this.selector.hovered()
-    const set = ctx.selection.toArray()
-    return hovered === null ? set : [...set, hovered.id]
+    return [...ctx.selection.toArray(), ...this.selector.previewed()]
   }
 
   /** Runs the action on the current selection, then ends the command. */

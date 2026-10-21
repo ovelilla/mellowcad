@@ -121,12 +121,12 @@ describe("recordDemo", () => {
     expect(acquired.length).toBeGreaterThan(0)
   })
 
-  it("holds the button between down and up, so a selection box shows", async () => {
+  it("holds the button between down and up, so a lasso shows", async () => {
     const box = (script: ReturnType<typeof demo>) =>
       recordDemo(script).then(({ scene }) =>
         scene.primitives.find(
           (primitive) =>
-            primitive.kind === "rect" &&
+            primitive.kind === "path" &&
             primitive.fill === THEME.selectionWindowFill
         )
       )

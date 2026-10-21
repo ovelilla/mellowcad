@@ -12,13 +12,14 @@ import { Viewport, entityInView } from "../Viewport"
 import { drawsTilted, entityScreenOutline } from "../viewOutline"
 import { ScenePrimitive } from "../../scene/types"
 import { THEME } from "../../scene/theme"
+import { entityScenePrimitive } from "../SceneBuilder"
 
 /**
- * AutoCAD's rectangular selection, shared by every tool that lets the user drag
- * a box (Select, Move, Copy, ...). Dragging left→right is a *window* (only
- * fully-enclosed objects match); right→left is a *crossing* window (objects the
- * box merely touches also match). The selection modes' fence and polygons are
- * here too.
+ * AutoCAD's window selection, shared by every tool that selects (Select, Move,
+ * Copy, ...): drawn left→right it is a *window* (only fully-enclosed objects
+ * match), right→left a *crossing* (objects it merely touches also match). The
+ * lasso a press and drag draws, and the selection modes' fence and polygons,
+ * are here too.
  */
 
 /** Which objects a test of the drawing looks at. */
@@ -170,16 +171,17 @@ export function objectsOnFence(
   viewport: Viewport,
   include: ObjectFilter
 ): EntityId[] {
-  const fence = points.map((point) => viewport.worldToScreen(point))
+  const fence = new ScreenPath(
+    points.map((point) => viewport.worldToScreen(point)),
+    false
+  )
   const blocks = document.blockLookup()
   return document
     .getEntities()
     .filter(
       (entity) =>
         include(entity) &&
-        entityScreenOutline(viewport, entity, blocks).some((line) =>
-          linesMeet(line, fence)
-        )
+        fence.meets(entityScreenOutline(viewport, entity, blocks))
     )
     .map((entity) => entity.id)
 }
@@ -196,8 +198,10 @@ export function objectsInPolygon(
   crossing: boolean,
   include: ObjectFilter
 ): EntityId[] {
-  const polygon = points.map((point) => viewport.worldToScreen(point))
-  const edges = [...polygon, polygon[0]]
+  const polygon = new ScreenPath(
+    points.map((point) => viewport.worldToScreen(point)),
+    true
+  )
   const blocks = document.blockLookup()
   const hits: EntityId[] = []
   for (const entity of document.getEntities()) {
@@ -205,14 +209,137 @@ export function objectsInPolygon(
     const outline = entityScreenOutline(viewport, entity, blocks)
     const vertices = outline.flat()
     if (vertices.length === 0) continue
-    const meets = outline.some((line) => linesMeet(line, edges))
     const takes = crossing
-      ? meets || vertices.some((p) => insidePolygon(p, polygon))
-      : !meets && vertices.every((p) => insidePolygon(p, polygon))
+      ? polygon.meets(outline) || vertices.some((p) => polygon.encloses(p))
+      : vertices.every((p) => polygon.encloses(p)) && !polygon.meets(outline)
     if (takes) hits.push(entity.id)
   }
   return hits
 }
+
+/**
+ * A fence's or a polygon's edges on the screen, filed in a grid of cells so
+ * that what meets them, or lies inside, is asked of the few edges near it:
+ * a lasso's path has hundreds, asked of every object at each move.
+ */
+class ScreenPath {
+  private readonly edges: readonly (readonly [Vec2, Vec2])[]
+  private readonly min: Vec2
+  private readonly max: Vec2
+  private readonly cell: number
+  private readonly columns: number
+  /** The edges through each cell, row by row. */
+  private readonly cells: number[][]
+  /** The edges each row's band of Y reaches, for {@link encloses}. */
+  private readonly rows: number[][]
+  /** Marks the edges a {@link meets} has tested, against testing one twice. */
+  private readonly seen: number[]
+  private visit = 0
+
+  constructor(points: readonly Vec2[], closed: boolean) {
+    const ends = closed ? [...points, points[0]] : points
+    this.edges = ends.slice(1).map((b, i) => [ends[i], b] as const)
+    this.min = {
+      x: Math.min(...points.map((p) => p.x)),
+      y: Math.min(...points.map((p) => p.y)),
+    }
+    this.max = {
+      x: Math.max(...points.map((p) => p.x)),
+      y: Math.max(...points.map((p) => p.y)),
+    }
+    const size = Math.max(this.max.x - this.min.x, this.max.y - this.min.y)
+    this.cell = Math.max(4, size / GRID_CELLS)
+    this.columns = this.column(this.max.x) + 1
+    const rowCount = this.row(this.max.y) + 1
+    this.cells = Array.from({ length: this.columns * rowCount }, () => [])
+    this.rows = Array.from({ length: rowCount }, () => [])
+    this.seen = this.edges.map(() => 0)
+    this.edges.forEach(([a, b], edge) => {
+      const [c0, c1] = [this.column(a.x), this.column(b.x)].sort(
+        (m, n) => m - n
+      )
+      const [r0, r1] = [this.row(a.y), this.row(b.y)].sort((m, n) => m - n)
+      for (let r = r0; r <= r1; r++) {
+        this.rows[r].push(edge)
+        for (let c = c0; c <= c1; c++)
+          this.cells[r * this.columns + c].push(edge)
+      }
+    })
+  }
+
+  /** Whether one of the lines meets an edge. */
+  meets(lines: readonly (readonly Vec2[])[]): boolean {
+    return lines.some((line) =>
+      line.some((b, i) => i > 0 && this.meetsSegment(line[i - 1], b))
+    )
+  }
+
+  /** Even-odd: whether `p` lies inside the closed path. */
+  encloses(p: Vec2): boolean {
+    if (!this.within(p.x, p.y, p.x, p.y)) return false
+    let inside = false
+    for (const edge of this.rows[this.row(p.y)]) {
+      const [a, b] = this.edges[edge]
+      if (
+        a.y > p.y !== b.y > p.y &&
+        p.x < ((b.x - a.x) * (p.y - a.y)) / (b.y - a.y) + a.x
+      ) {
+        inside = !inside
+      }
+    }
+    return inside
+  }
+
+  private meetsSegment(a: Vec2, b: Vec2): boolean {
+    const x0 = Math.min(a.x, b.x)
+    const x1 = Math.max(a.x, b.x)
+    const y0 = Math.min(a.y, b.y)
+    const y1 = Math.max(a.y, b.y)
+    if (!this.within(x0, y0, x1, y1)) return false
+    const visit = ++this.visit
+    const [c0, c1] = [this.column(x0), this.column(x1)]
+    for (let r = this.row(y0); r <= this.row(y1); r++) {
+      for (let c = c0; c <= c1; c++) {
+        for (const edge of this.cells[r * this.columns + c]) {
+          if (this.seen[edge] === visit) continue
+          this.seen[edge] = visit
+          const [p, q] = this.edges[edge]
+          if (segmentsMeet(a, b, p, q)) return true
+        }
+      }
+    }
+    return false
+  }
+
+  private within(x0: number, y0: number, x1: number, y1: number): boolean {
+    return (
+      x1 >= this.min.x &&
+      x0 <= this.max.x &&
+      y1 >= this.min.y &&
+      y0 <= this.max.y
+    )
+  }
+
+  /** The cell's column at `x`, clamped to the grid. */
+  private column(x: number): number {
+    const at = Math.floor((x - this.min.x) / this.cell)
+    return Math.min(
+      Math.max(at, 0),
+      Math.floor((this.max.x - this.min.x) / this.cell)
+    )
+  }
+
+  private row(y: number): number {
+    const at = Math.floor((y - this.min.y) / this.cell)
+    return Math.min(
+      Math.max(at, 0),
+      Math.floor((this.max.y - this.min.y) / this.cell)
+    )
+  }
+}
+
+/** Cells along a {@link ScreenPath}'s longer side. */
+const GRID_CELLS = 64
 
 /**
  * Whether the line through `line` meets the closed polygon through
@@ -428,4 +555,123 @@ export function buildFenceOverlay(
       stroke: { color: THEME.selectionCrossingStroke, width: 1, dash: [6, 4] },
     },
   ]
+}
+
+/** What a lasso takes, which Space cycles while its button is held. */
+export type LassoMode = "window" | "crossing" | "fence"
+
+/**
+ * A lasso under way: the path dragged from the press, its last point the
+ * cursor's, the earlier ones kept every {@link LASSO_STEP_PX} pixels.
+ */
+export interface Lasso {
+  readonly mode: LassoMode
+  readonly path: readonly Vec2[]
+}
+
+/** Screen pixels between the points a lasso keeps of the dragged path. */
+const LASSO_STEP_PX = 3
+
+/**
+ * The lasso a drag from `start` begins as it reaches `current`: a window
+ * rightwards, a crossing leftwards. WHY on its first stretch: AutoCAD says the
+ * mode as the drag starts, and keeps a crossing whose release lands right of
+ * its press (desktop erase/d04, d09-4).
+ */
+export function startLasso(
+  viewport: Viewport,
+  start: Vec2,
+  current: Vec2
+): Lasso {
+  return {
+    mode: isCrossingBox(viewport, start, current) ? "crossing" : "window",
+    path: [start, current],
+  }
+}
+
+/** The lasso with the cursor moved to `point`. */
+export function extendLasso(
+  viewport: Viewport,
+  lasso: Lasso,
+  point: Vec2
+): Lasso {
+  const kept = lasso.path.slice(0, -1)
+  const tail = lasso.path[lasso.path.length - 1]
+  const a = viewport.worldToScreen(kept[kept.length - 1])
+  const b = viewport.worldToScreen(tail)
+  const far = Math.hypot(b.x - a.x, b.y - a.y) >= LASSO_STEP_PX
+  return { ...lasso, path: [...kept, ...(far ? [tail] : []), point] }
+}
+
+/**
+ * Space's next mode: Window → Fence → Crossing → Window (desktop erase/d04;
+ * the help's "cycle between the Window, Crossing, and Fence").
+ */
+export function nextLassoMode(mode: LassoMode): LassoMode {
+  return mode === "window" ? "fence" : mode === "fence" ? "crossing" : "window"
+}
+
+/**
+ * The objects `include` admits that a lasso takes, as WPolygon, CPolygon or
+ * Fence would along its path. A path that crosses itself is taken as drawn:
+ * the lasso refuses none (desktop erase/d04).
+ */
+export function lassoSelect(
+  document: DocumentReader,
+  lasso: Lasso,
+  viewport: Viewport,
+  include: ObjectFilter
+): EntityId[] {
+  return lasso.mode === "fence"
+    ? objectsOnFence(document, lasso.path, viewport, include)
+    : objectsInPolygon(
+        document,
+        lasso.path,
+        viewport,
+        lasso.mode === "crossing",
+        include
+      )
+}
+
+/** A lasso being dragged: the window's or the crossing's region, or a fence. */
+export function buildLassoOverlay(
+  viewport: Viewport,
+  lasso: Lasso
+): ScenePrimitive[] {
+  return lasso.mode === "fence"
+    ? buildFenceOverlay(viewport, lasso.path)
+    : buildSelectionPolygonOverlay(
+        viewport,
+        lasso.path,
+        lasso.mode === "crossing"
+      )
+}
+
+/**
+ * What a window, a crossing or a lasso under way would take, drawn as the
+ * hover is (SELECTIONPREVIEW 3, desktop erase/d02-1, d03-1, d05-1).
+ */
+export function buildSelectionPreview(
+  viewport: Viewport,
+  document: DocumentReader,
+  ids: readonly EntityId[]
+): ScenePrimitive[] {
+  const blocks = document.blockLookup()
+  return ids.flatMap((id) => {
+    const entity = document.get(id)
+    return entity
+      ? entityScenePrimitive(
+          viewport,
+          entity,
+          { color: THEME.entityHover, width: 2 },
+          {
+            blocks,
+            dimStyle:
+              entity.type === "dimension"
+                ? document.getDimStyle(entity.styleId)
+                : undefined,
+          }
+        )
+      : []
+  })
 }

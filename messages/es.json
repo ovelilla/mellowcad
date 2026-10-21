@@ -90,8 +90,8 @@
     "osnapAlt": "Una línea que se dibuja hasta un círculo, con referencia al punto de tangencia, el marcador de Tangente y su etiqueta.",
     "otrackAlt": "Dos puntos finales adquiridos y sus trayectorias de alineación, de puntos, que se cruzan en el cursor.",
     "polarAlt": "Una línea fijada al rayo polar de 30 grados, con la etiqueta de su distancia y su ángulo.",
-    "windowAlt": "Un recuadro azul de selección por ventana, arrastrado de izquierda a derecha sobre un rectángulo, un círculo y una línea.",
-    "crossingAlt": "Un recuadro verde y discontinuo de selección por captura, arrastrado de derecha a izquierda sobre un círculo y una línea."
+    "windowAlt": "Una ventana de forma irregular azul, arrastrada de izquierda a derecha alrededor de un círculo y a través de una línea, con resaltado el círculo que designa.",
+    "crossingAlt": "Una captura de forma irregular verde y discontinua, arrastrada de derecha a izquierda alrededor de un círculo y a través de una línea, con ambos resaltados."
   },
   "Toolset": {
     "label": "03 · Herramientas",

@@ -1771,6 +1771,18 @@ export const en: EngineCatalog = {
           }
         ]
       ],
+      "lassoMode": [
+        [
+          "mode",
+          1,
+          {
+            "window": "Window",
+            "crossing": "Crossing",
+            "other": "Fence"
+          }
+        ],
+        " Lasso  Press Spacebar to cycle options"
+      ],
       "onLockedLayer": [
         [
           "count",

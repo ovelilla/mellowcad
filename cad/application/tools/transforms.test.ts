@@ -47,7 +47,7 @@ describe("MOVE", () => {
     })
 
     cad.command("MOVE").click(p(100, 0)).click(p(100, 0))
-    cad.mouseDown(p(-10, -10)).moveTo(p(210, 60)).mouseUp(p(210, 60))
+    cad.click(p(-10, -10)).click(p(210, 60))
     cad.click(p(100, 50), { shiftKey: true })
     cad.press(" ")
     expect(cad.state().commandLine.prompt).toBe(
@@ -78,7 +78,8 @@ describe("MOVE", () => {
 
     cad.select("L1").command("MOVE")
 
-    expect(cad.commandLog()).toEqual(["MOVE 1 found"])
+    // A name typed whole: the count on a line of its own (desktop erase/d11).
+    expect(cad.commandLog()).toEqual(["MOVE", "1 found"])
   })
 
   it("moves by a Displacement typed, or Enter's last one", () => {
@@ -100,7 +101,7 @@ describe("MOVE", () => {
 
     expect(cad.byId<LineEntity>("L1").start).toBeCloseToPoint(p(20, 10))
     expect(cad.commandLog().slice(-3)).toEqual([
-      "MOVE 1 found",
+      "1 found",
       "Specify base point or [Displacement] <Displacement>:",
       "Specify displacement <10.00, 5.00, 0.00>:",
     ])
@@ -200,7 +201,8 @@ describe("COPY", () => {
 
     expect(cad.activeToolId()).toBe("select")
     expect(cad.commandLog()).toEqual([
-      "COPY 1 found",
+      "COPY",
+      "1 found",
       "Current settings:  Copy mode = Multiple",
       "Specify base point or [Displacement] <Displacement>:",
       "Specify second point or <use first point as displacement>:",
@@ -551,7 +553,8 @@ describe("MIRROR", () => {
     cad.enter()
 
     expect(cad.commandLog()).toEqual([
-      "MIRROR 1 found",
+      "MIRROR",
+      "1 found",
       "Specify first point of mirror line:",
       "Specify second point of mirror line:",
       "Erase source objects? [Yes/No] <No>:",
@@ -928,7 +931,8 @@ describe("ARRAYPOLAR's questions", () => {
     cad.option("No").option("eXit")
 
     expect(cad.commandLog()).toEqual([
-      "ARRAYPOLAR 1 found",
+      "ARRAYPOLAR",
+      "1 found",
       "Type = Polar  Associative = No",
       "Specify center point of array:",
       "Select grip to edit array or [Items/Angle between/Fill angle/ROTate items/eXit] <eXit>: I",
@@ -1398,7 +1402,8 @@ describe("EXPLODE's Select objects", () => {
     cad.select("A", "P", "C").command("EXPLODE")
 
     expect(cad.commandLog()).toEqual([
-      "EXPLODE 3 found",
+      "EXPLODE",
+      "3 found",
       "2 were not able to be exploded.",
     ])
     expect(cad.typeCounts()).toEqual({ line: 3, circle: 1 })
@@ -1408,13 +1413,14 @@ describe("EXPLODE's Select objects", () => {
     const cad = createHarness({ entities: explodable() })
     cad.select("A").command("EXPLODE")
     expect(cad.commandLog()).toEqual([
-      "EXPLODE 1 found",
+      "EXPLODE",
+      "1 found",
       "1 was not able to be exploded.",
     ])
     expect(cad.state().commandLine.prompt).toBe("EXPLODE Select objects:")
 
     typed(cad, "50,0", "50,100")
-    expect(cad.commandLog().slice(2)).toEqual([
+    expect(cad.commandLog().slice(3)).toEqual([
       "Select objects: 50,0",
       "1 found, 0 total",
       "1 was not able to be exploded.",

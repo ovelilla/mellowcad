@@ -52,11 +52,11 @@ object snap  →  object-snap tracking  →  snap mode (lattice)  →  constrain
   constraints skipped.
 - Shift held is `orthoOverride`: it **toggles** Ortho and Polar yields to it either way;
   `ConstraintManager` and `aidState` both read it so. While picking, Shift removes from the
-  selection and the runtime draws AutoCAD's minus badge (`shiftRemoves`): with no command and
-  wherever `questionInput` says the question takes a set, never at a single pick. `pointerShift`
-  follows the Shift key too (`keyDown` / `keyUp`), so the badge shows before the mouse moves. The
-  cursor's badges are one `SceneInput` field each (`cyclingBadge`, `removeBadge`); a third badge
-  turns them into one `badges` list the scene lays out, never another placement flag.
+  selection; AutoCAD's minus badge (`shiftRemoves`) shows only with no command, over a selected
+  object (erase/d14). `pointerShift` follows the Shift key too (`keyDown` / `keyUp`), so the badge
+  shows before the mouse moves. The cursor's badges are one `SceneInput` field each
+  (`cyclingBadge`, `removeBadge`); a third badge turns them into one `badges` list the scene lays
+  out, never another placement flag.
 - `allowSnapMode` is false while a tool is merely picking objects (`wantsSnap()` false): rounding
   the cursor would make objects hard to hit. Polar snap only rounds along an alignment path.
 

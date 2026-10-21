@@ -299,7 +299,7 @@ describe("a block reference in the drawing", () => {
 
   it("is caught by a crossing box", () => {
     const cad = placed()
-    cad.drag(p(300, 40), p(40, -40))
+    cad.click(p(300, 40)).click(p(40, -40))
 
     expect(cad.selectedIds()).toEqual(["I1"])
   })

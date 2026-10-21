@@ -1355,6 +1355,7 @@
       "rotatingCopy": "Girando una copia de los objetos seleccionados.",
       "scalingCopy": "Escalando una copia de los objetos seleccionados.",
       "objectsFound": "{box, select, yes {Designe esquina opuesta: } other {}}{found} encontrados{duplicate, plural, =0 {} other { (# duplicados)}}{removed, plural, =0 {} other {, eliminados #}}{hasTotal, select, yes {, {total} total} other {}}",
+      "lassoMode": "{mode, select, window {Ventana} crossing {Captura} other {Borde}} Forma irregular: pulse la barra espaciadora para recorrer las opciones.",
       "onLockedLayer": "{count, plural, one {# estaba en una capa bloqueada.} other {# estaban en una capa bloqueada.}}",
       "noPreviousSelection": "No hay ningún conjunto de selección previo.",
       "allSelectionsUndone": "Se han anulado todas las designaciones.",

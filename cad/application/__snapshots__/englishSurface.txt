@@ -280,7 +280,8 @@ lweight "Lineweight" LW
   properties: -
   cycling: -
 > ERASE two
-  command| ERASE 2 found
+  command| ERASE
+  info| 2 found
 
 ## purge
 > start
@@ -2466,7 +2467,8 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0°~, Line space facto
   asks: 
   tip: Select base dimension:
   dyn: 
-  command| ERASE 1 found
+  command| ERASE
+  info| 1 found
   command| DIMBASELINE
 
 ## DIMSPACE
@@ -2722,7 +2724,8 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0°~, Line space facto
   info| Select objects to stretch by crossing-window or crossing-polygon...
 > pick
   properties: Line (1) {Thickness=0.00 mm~} [Geometry: Start X=0.00~, Start Y=0.00~, Start Z=0.00~, End X=100.00~, End Y=0.00~, End Z=0.00~, Delta X=100.00 mm, Delta Y=0.00 mm, Delta Z=0.00 mm, Length=100.00 mm, Angle=0°]
-  prompt| Select objects: Specify opposite corner: 1 found
+  info| Crossing Lasso  Press Spacebar to cycle options
+  info| 1 found
 > enter
   prompt: STRETCH Specify base point or [Displacement] <Displacement>:
   asks: "Base point"
@@ -2904,7 +2907,8 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0°~, Line space facto
   tip: Specify base point:
   dyn: "X,Y"=""||*
   properties: Line (1) {Thickness=0.00 mm~} [Geometry: Start X=0.00~, Start Y=0.00~, Start Z=0.00~, End X=100.00~, End Y=0.00~, End Z=0.00~, Delta X=100.00 mm, Delta Y=0.00 mm, Delta Z=0.00 mm, Length=100.00 mm, Angle=0°]
-  command| SCALE 1 found
+  command| SCALE
+  info| 1 found
 > base
   prompt: SCALE Specify scale factor or [Copy/Reference]:
   asks: "Scale factor"
@@ -2981,7 +2985,8 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0°~, Line space facto
   tip: Specify first point of mirror line:
   dyn: "X,Y"=""||*
   properties: Line (1) {Thickness=0.00 mm~} [Geometry: Start X=0.00~, Start Y=100.00~, Start Z=0.00~, End X=100.00~, End Y=100.00~, End Z=0.00~, Delta X=100.00 mm, Delta Y=0.00 mm, Delta Z=0.00 mm, Length=100.00 mm, Angle=0°]
-  command| MIRROR 1 found
+  command| MIRROR
+  info| 1 found
 > first
   prompt: MIRROR Specify second point of mirror line:
   asks: "Second point of mirror line"
@@ -3411,7 +3416,8 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0°~, Line space facto
   properties: -
   prompt| Select objects:
 > CUTCLIP
-  command| CUTCLIP 1 found
+  command| CUTCLIP
+  info| 1 found
 > undo
 > COPYBASE
   prompt: COPYBASE Specify base point:

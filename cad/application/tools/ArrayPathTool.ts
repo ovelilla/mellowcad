@@ -387,6 +387,10 @@ export class ArrayPathTool implements Tool {
     if (this.state.phase === "pickPath") this.pathModes.onPointerUp(input, ctx)
   }
 
+  cycleLasso(ctx: ToolContext): boolean {
+    return this.selector.cycleLasso(ctx)
+  }
+
   onEnter(ctx: ToolContext): boolean {
     const state = this.state
     if (state.phase === "selecting") return this.selector.onEnter(ctx)

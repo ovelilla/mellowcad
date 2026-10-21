@@ -267,15 +267,17 @@ selection does; SELECTIONCYCLING lasts the session (a registry variable: see Obj
 ### Selecting with no command
 
 **Implemented:** PICKADD at its default 2: a pick adds its object to the set, Shift+pick removes it
-("To remove objects from the set, press SHIFT while selecting"); a window or crossing — dragged, or
-begun by a click on nothing and closed by the next click (PICKAUTO, PICKDRAG 2) — adds what it
-finds, or removes it with Shift held at either corner; a click on nothing never empties the set:
+("To remove objects from the set, press SHIFT while selecting"); a window or crossing begun by a
+click on nothing and closed by the next click, its outline white, solid or dashed, over a blue or
+green fill (desktop erase/d02-1, d03-1), or a lasso dragged from a press on nothing (PICKAUTO 5,
+PICKDRAG 2; command-line.md, `Select objects:`; d04, d05), adds what it finds, or removes it with
+Shift held at either corner or at the press, and what it would take glows as it is drawn
+(SELECTIONPREVIEW 3, d02-1); a click on nothing never empties the set:
 Escape drops a window under way, and with none the selection; a command started with it takes it,
 and its end or Escape drops it (but COPYCLIP's and PASTECLIP's, command-line.md, `Select objects:`;
-erase/p249–p251, desktop d10), while a grip edit, no command, leaves it; Shift held shows a minus badge beside
-the crosshair, here and at a prompt that takes a set (`Select objects:`), never at a single object's
-pick where Shift means something else (TRIM's extend) — **unverified** beyond users' reports:
-Autodesk's help does not describe it; a selected object keeps its colour and glows blue (the
+erase/p249–p251, desktop d10), while a grip edit, no command, leaves it; Shift held over a selected
+object shows a minus badge beside the crosshair, and only there: none over nothing or an object not
+selected, none at `Select objects:` (desktop erase/d14-1 to d14-6); a selected object keeps its colour and glows blue (the
 selection effect, desktop line/d15); the crosshair is CURSORSIZE 5's, 5 % of the screen end to end
 (here of the canvas's longer side), with the pick box at `Command:` and wherever objects are picked,
 none at a point prompt (d03, d20); the rollover tooltip (ROLLOVERTIPS 1): an object hovered at
@@ -287,7 +289,7 @@ over it (es `Línea`, `Color PorCapa`, `Capa 0`, `Tipo de línea PorCapa`, d20),
 lasso options; PICKADD, PICKAUTO and PICKDRAG as variables, and the Properties palette's Toggle
 PICKADD; CURSORBADGE and the other cursor badges (MOVE's, COPY's…); whether a `+` badge shows with
 PICKADD 0 (**unverified**); the crosshair hidden at `Select objects:` (AutoCAD shows the pick box
-alone there, **unverified**); the rollover tooltip on a selected object, its other rows (QPMODE's
+alone there, desktop erase/d09-1); the rollover tooltip on a selected object, its other rows (QPMODE's
 properties per type, CUI's Rollover Tooltips), ROLLOVERTIPS and CURSORSIZE as variables
 
 ### Grips

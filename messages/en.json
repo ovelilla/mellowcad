@@ -90,8 +90,8 @@
     "osnapAlt": "A line being drawn to a circle, snapped to the tangent point, with the Tangent marker and tooltip.",
     "otrackAlt": "Two acquired endpoints and their dotted alignment paths crossing at the cursor.",
     "polarAlt": "A line locked to the 30 degree polar ray, with its distance and angle tooltip.",
-    "windowAlt": "A blue window selection box dragged from left to right over a rectangle, a circle and a line.",
-    "crossingAlt": "A green, dashed crossing selection box dragged from right to left over a circle and a line."
+    "windowAlt": "A blue window lasso dragged from left to right round a circle, across a line, with the circle it takes highlighted.",
+    "crossingAlt": "A green, dashed crossing lasso dragged from right to left round a circle, across a line, with both highlighted."
   },
   "Toolset": {
     "label": "03 · Toolset",

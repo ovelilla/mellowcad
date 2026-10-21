@@ -318,9 +318,10 @@ export interface ToolContext {
    * A `prompt` is one a tool writes itself (PAN's), headed `>>` as any
    * prompt is while the command runs transparently, and left open: a prompt
    * AutoCAD asks without a new line goes on it (`Select objects: Specify
-   * opposite corner:`).
+   * opposite corner:`). A `gesture` is said by a press dragged on: it takes
+   * the place of the prompt's line the press left bare (the lasso's).
    */
-  report(text: string, kind?: "info" | "error" | "prompt"): void
+  report(text: string, kind?: "info" | "error" | "prompt" | "gesture"): void
 
   /** Whether the command runs inside another (`'ZOOM` mid-command). */
   runsTransparently(): boolean
@@ -617,6 +618,13 @@ export interface Tool {
    * focused — there Enter commits the typed value instead.
    */
   onEnter?(ctx: ToolContext): boolean
+
+  /**
+   * Space with the left button held: a lasso under way takes its next mode
+   * (Window → Fence → Crossing), before Space is anything else. Returns
+   * whether one was under way.
+   */
+  cycleLasso?(ctx: ToolContext): boolean
 
   /**
    * The command options (keywords) the tool offers right now — AutoCAD's

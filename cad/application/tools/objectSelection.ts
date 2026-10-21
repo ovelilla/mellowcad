@@ -2,8 +2,6 @@ import { Vec2 } from "../../geometry/Vec2"
 import { Vec3 } from "../../geometry/Vec3"
 import { Entity, EntityId } from "../../domain/entities"
 import { ScenePrimitive } from "../../scene/types"
-import { THEME } from "../../scene/theme"
-import { entityScenePrimitive } from "../SceneBuilder"
 import {
   isCoordinateExpression,
   parseCoordinate,
@@ -11,19 +9,26 @@ import {
 import type { PromptId } from "../../locales/types"
 import type { MessageId } from "../EngineText"
 import {
+  Lasso,
   buildFenceOverlay,
+  buildLassoOverlay,
   buildSelectionBoxOverlay,
   buildSelectionPolygonOverlay,
+  buildSelectionPreview,
   crossesPolygonEdges,
+  extendLasso,
   isCrossingBox,
+  lassoSelect,
+  nextLassoMode,
   objectsInPolygon,
   objectsInWindow,
   objectsOnFence,
+  startLasso,
 } from "./boxSelection"
 import { CommandOption, PointerInput, QuestionInput, ToolContext } from "./Tool"
 import { typedPick } from "./typedPick"
 
-/** Screen-pixel movement past which a press-drag becomes a box selection. */
+/** Screen-pixel movement past which a press-drag becomes a lasso. */
 const DRAG_THRESHOLD_PX = 4
 
 /**
@@ -85,7 +90,7 @@ type WindowRule = "window" | "crossing" | "box"
 
 type Step =
   | { readonly kind: "objects"; readonly hover: Entity | null }
-  /** A press at `Select objects:`: a pick, or the drag of a window. */
+  /** A press at `Select objects:`: a pick, or the drag of a lasso. */
   | {
       readonly kind: "pressed"
       readonly start: Vec2
@@ -95,10 +100,11 @@ type Step =
       readonly subtract: boolean
     }
   | {
-      readonly kind: "dragging"
-      readonly start: Vec2
-      readonly current: Vec2
+      readonly kind: "lasso"
+      readonly lasso: Lasso
       readonly subtract: boolean
+      /** What it would take now, previewed. */
+      readonly preview: readonly EntityId[]
     }
   | { readonly kind: "firstCorner"; readonly rule: WindowRule }
   | {
@@ -109,6 +115,8 @@ type Step =
       /** Started by a click on nothing, which no object snap or mode set. */
       readonly implied: boolean
       readonly subtract: boolean
+      /** What it would take now, previewed. */
+      readonly preview: readonly EntityId[]
     }
   | {
       readonly kind: "fence"
@@ -229,7 +237,7 @@ export interface ObjectSelectorOptions {
 /**
  * AutoCAD's `Select objects:` — what every command that takes a selection set
  * asks it with, shared so each one takes the same answers: a pick, a window
- * dragged or clicked from a point on nothing, and the modes typed there
+ * clicked from a point on nothing, a lasso dragged, and the modes typed there
  * (Window, Crossing, BOX, Last, ALL, Fence, WPolygon, CPolygon, Previous,
  * Remove and Add, Undo, AUto, SIngle, SUbobject and Object). Each says what it
  * found on the line AutoCAD says it, in its words (`1 found (1 duplicate), 2
@@ -307,7 +315,7 @@ export class ObjectSelector {
     switch (this.step.kind) {
       case "objects":
       case "pressed":
-      case "dragging":
+      case "lasso":
         return this.objectsQuestion()
       case "firstCorner":
         return "specifyFirstCorner"
@@ -346,7 +354,7 @@ export class ObjectSelector {
     switch (this.step.kind) {
       case "objects":
       case "pressed":
-      case "dragging": {
+      case "lasso": {
         const offered = this.offered()
         // WHY: AutoCAD 2027 takes MIRROR's `S` and does nothing, `SI` being
         // SIngle (erase/p153, p158, p154). Only MIRROR was probed; every set
@@ -407,7 +415,7 @@ export class ObjectSelector {
         return true
       case "Last": {
         const last = lastObject(ctx)
-        this.select(last ? [last.id] : [], false, null, false, ctx)
+        this.select(last ? [last.id] : [], false, null, ctx)
         return true
       }
       case "ALL":
@@ -415,7 +423,6 @@ export class ObjectSelector {
           ctx.document.getEntities().map((entity) => entity.id),
           false,
           null,
-          false,
           ctx
         )
         return true
@@ -426,7 +433,7 @@ export class ObjectSelector {
         if (previous.length === 0) {
           ctx.report(ctx.text.message("noPreviousSelection"))
         } else {
-          this.select(previous, false, null, false, ctx)
+          this.select(previous, false, null, ctx)
         }
         return true
       }
@@ -477,7 +484,6 @@ export class ObjectSelector {
         this.found(ctx, () => [under.id]),
         false,
         null,
-        false,
         ctx
       )
     } else {
@@ -500,6 +506,7 @@ export class ObjectSelector {
       current: at,
       implied: true,
       subtract: false,
+      preview: [],
     }
     this.openPointInput(ctx)
   }
@@ -536,23 +543,42 @@ export class ObjectSelector {
           input.screen.x - step.startScreen.x,
           input.screen.y - step.startScreen.y
         )
-        this.step =
-          moved >= DRAG_THRESHOLD_PX
-            ? {
-                kind: "dragging",
-                start: step.start,
-                current: input.world,
-                subtract: step.subtract,
-              }
-            : { ...step, current: input.world }
+        if (moved < DRAG_THRESHOLD_PX) {
+          this.step = { ...step, current: input.world }
+          break
+        }
+        const lasso = startLasso(ctx.viewport, step.start, input.world)
+        this.step = {
+          kind: "lasso",
+          lasso,
+          subtract: step.subtract,
+          preview: this.lassoPreview(lasso, ctx),
+        }
+        // WHY in place of the prompt's line: AutoCAD writes no `Select
+        // objects:` before it, the press having answered nothing (desktop
+        // erase/d09-cl5).
+        this.sayLasso(lasso, ctx, "gesture")
         break
       }
-      case "dragging":
-        this.step = { ...step, current: input.world }
+      case "lasso": {
+        const lasso = extendLasso(ctx.viewport, step.lasso, input.world)
+        const grew = lasso.path.length !== step.lasso.path.length
+        this.step = {
+          ...step,
+          lasso,
+          preview: grew ? this.lassoPreview(lasso, ctx) : step.preview,
+        }
         break
-      case "oppositeCorner":
-        this.step = { ...step, current: this.pointOf(input) }
+      }
+      case "oppositeCorner": {
+        const current = this.pointOf(input)
+        this.step = {
+          ...step,
+          current,
+          preview: this.windowPreview(step.start, current, step.rule, ctx),
+        }
         break
+      }
       case "fence":
       case "polygon":
         this.step = { ...step, current: this.pointOf(input) }
@@ -575,7 +601,6 @@ export class ObjectSelector {
           this.found(ctx, () => [under.id]),
           step.subtract,
           null,
-          false,
           ctx
         )
         this.step = {
@@ -591,25 +616,47 @@ export class ObjectSelector {
           current: input.world,
           implied: true,
           subtract: step.subtract,
+          preview: [],
         }
         this.openPointInput(ctx)
       }
       ctx.requestRender()
       return
     }
-    if (step.kind === "dragging") {
+    if (step.kind === "lasso") {
+      const { lasso } = step
       this.step = { kind: "objects", hover: null }
-      this.selectWindow(
-        step.start,
-        step.current,
-        "box",
+      const { mode, path } = lasso
+      this.select(
+        this.found(ctx, (include) =>
+          lassoSelect(ctx.document, lasso, ctx.viewport, include)
+        ),
         step.subtract,
-        true,
+        mode === "crossing" ? path : null,
         ctx,
+        mode === "fence"
+          ? { by: "fence", points: path }
+          : mode === "crossing"
+            ? { by: "crossing", outline: path }
+            : ENCLOSING,
         true
       )
       ctx.requestRender()
     }
+  }
+
+  /**
+   * Space with the button held: the lasso under way takes its next mode and
+   * says it (desktop erase/d04). False with none under way.
+   */
+  cycleLasso(ctx: ToolContext): boolean {
+    const step = this.step
+    if (step.kind !== "lasso") return false
+    const lasso = { ...step.lasso, mode: nextLassoMode(step.lasso.mode) }
+    this.step = { ...step, lasso, preview: this.lassoPreview(lasso, ctx) }
+    this.sayLasso(lasso, ctx, "info")
+    ctx.requestRender()
+    return true
   }
 
   /**
@@ -623,7 +670,7 @@ export class ObjectSelector {
       case "objects":
         return this.close(ctx)
       case "pressed":
-      case "dragging":
+      case "lasso":
         return true
       case "firstCorner":
       case "oppositeCorner":
@@ -640,7 +687,6 @@ export class ObjectSelector {
           ),
           false,
           null,
-          false,
           ctx,
           { by: "fence", points: step.points }
         )
@@ -668,7 +714,6 @@ export class ObjectSelector {
           ),
           false,
           step.crossing ? step.points : null,
-          false,
           ctx,
           step.crossing ? { by: "crossing", outline: step.points } : ENCLOSING
         )
@@ -677,15 +722,22 @@ export class ObjectSelector {
     }
   }
 
-  /** The object the rollover highlights at `Select objects:`, or null. */
-  hovered(): Entity | null {
-    return this.step.kind === "objects" ? this.step.hover : null
+  /**
+   * What a pick, a window or a lasso under way would take: the object the
+   * rollover highlights, or what the window or lasso holds.
+   */
+  previewed(): readonly EntityId[] {
+    const step = this.step
+    if (step.kind === "objects") return step.hover ? [step.hover.id] : []
+    return step.kind === "lasso" || step.kind === "oppositeCorner"
+      ? step.preview
+      : []
   }
 
   /** Whether a mode's own prompt is asking: a window's corner, a fence's point. */
   inMode(): boolean {
     const kind = this.step.kind
-    return kind !== "objects" && kind !== "pressed" && kind !== "dragging"
+    return kind !== "objects" && kind !== "pressed" && kind !== "lasso"
   }
 
   /** Whether the question is a point: a mode's corner or vertex. */
@@ -699,33 +751,30 @@ export class ObjectSelector {
     )
   }
 
-  buildOverlay(ctx: ToolContext): ScenePrimitive[] {
+  /**
+   * The rollover, the window or lasso under way and the mode's preview;
+   * `glow` false leaves out what {@link previewed} names (ERASE fades it).
+   */
+  buildOverlay(ctx: ToolContext, glow = true): ScenePrimitive[] {
     const step = this.step
+    const preview = glow
+      ? buildSelectionPreview(ctx.viewport, ctx.document, this.previewed())
+      : []
     switch (step.kind) {
       case "objects":
-        return step.hover
-          ? entityScenePrimitive(
-              ctx.viewport,
-              step.hover,
-              { color: THEME.entityHover, width: 2 },
-              {
-                blocks: ctx.blocks,
-                dimStyle:
-                  step.hover.type === "dimension"
-                    ? ctx.document.getDimStyle(step.hover.styleId)
-                    : undefined,
-              }
-            )
-          : []
-      case "dragging":
-        return buildSelectionBoxOverlay(ctx.viewport, step.start, step.current)
+        return preview
+      case "lasso":
+        return [...buildLassoOverlay(ctx.viewport, step.lasso), ...preview]
       case "oppositeCorner":
-        return buildSelectionBoxOverlay(
-          ctx.viewport,
-          step.start,
-          step.current,
-          step.rule === "box" ? undefined : step.rule === "crossing"
-        )
+        return [
+          ...buildSelectionBoxOverlay(
+            ctx.viewport,
+            step.start,
+            step.current,
+            step.rule === "box" ? undefined : step.rule === "crossing"
+          ),
+          ...preview,
+        ]
       case "fence": {
         const points = step.current ? [...step.points, step.current] : []
         return points.length > 1 ? buildFenceOverlay(ctx.viewport, points) : []
@@ -753,6 +802,7 @@ export class ObjectSelector {
           current: point,
           implied: false,
           subtract: false,
+          preview: [],
         }
         this.openPointInput(ctx)
         return
@@ -763,7 +813,6 @@ export class ObjectSelector {
           point,
           step.rule,
           step.subtract || shift,
-          false,
           ctx,
           step.implied
         )
@@ -802,7 +851,6 @@ export class ObjectSelector {
     end: Vec2,
     rule: WindowRule,
     subtract: boolean,
-    dragged: boolean,
     ctx: ToolContext,
     implied = false
   ): void {
@@ -830,11 +878,76 @@ export class ObjectSelector {
       found,
       subtract,
       frame,
-      dragged,
       ctx,
       crossing ? { by: "crossing", outline } : ENCLOSING,
       implied
     )
+  }
+
+  /** What a window from `start` to `end` would take, as it is drawn. */
+  private windowPreview(
+    start: Vec2,
+    end: Vec2,
+    rule: WindowRule,
+    ctx: ToolContext
+  ): readonly EntityId[] {
+    const crossing =
+      rule === "box"
+        ? isCrossingBox(ctx.viewport, start, end)
+        : rule === "crossing"
+    return this.preview(
+      this.found(ctx, (include) =>
+        objectsInWindow(
+          ctx.document,
+          start,
+          end,
+          ctx.viewport,
+          crossing,
+          include
+        )
+      ),
+      ctx
+    )
+  }
+
+  private lassoPreview(lasso: Lasso, ctx: ToolContext): readonly EntityId[] {
+    return this.preview(
+      this.found(ctx, (include) =>
+        lassoSelect(ctx.document, lasso, ctx.viewport, include)
+      ),
+      ctx
+    )
+  }
+
+  /**
+   * Of what a window or lasso finds, what the command would take that is not
+   * yet in the set: what the hover would glow on.
+   */
+  private preview(
+    found: readonly EntityId[],
+    ctx: ToolContext
+  ): readonly EntityId[] {
+    const ids = this.options.accept?.(found, ctx) ?? found
+    return ids.filter((id) => {
+      const entity = ctx.document.get(id)
+      return (
+        entity !== undefined &&
+        !ctx.document.getLayer(entity.layerId)?.locked &&
+        !ctx.selection.has(id)
+      )
+    })
+  }
+
+  /**
+   * The lasso's line, `Window Lasso  Press Spacebar to cycle options`, as it
+   * starts and at each Space (desktop erase/d04-cl3).
+   */
+  private sayLasso(
+    lasso: Lasso,
+    ctx: ToolContext,
+    kind: "gesture" | "info"
+  ): void {
+    ctx.report(ctx.text.message("lassoMode", { mode: lasso.mode }), kind)
   }
 
   /**
@@ -858,14 +971,12 @@ export class ObjectSelector {
    * with Shift — and says so: `2 found (1 duplicate), 3 total`, then how many
    * were on a locked layer and what the command refuses, which stay out of
    * the set (said only when adding, erase/p243, p247). The total follows
-   * what was found, refused or not (`1 found, 0 total`, p241). `dragged` puts
-   * the window's own prompt first, on the line its press answered.
+   * what was found, refused or not (`1 found, 0 total`, p241).
    */
   private select(
     found: readonly EntityId[],
     subtract: boolean,
     frame: readonly Vec2[] | null,
-    dragged: boolean,
     ctx: ToolContext,
     find: ModeFind = ENCLOSING,
     implied = false
@@ -910,7 +1021,7 @@ export class ObjectSelector {
         removed: removed.length,
         total: ctx.selection.size,
         hasTotal: hasTotal ? "yes" : "no",
-        box: dragged ? "yes" : "no",
+        box: "no",
       })
     )
     if (sifted) this.sayRefused(sifted, ctx)

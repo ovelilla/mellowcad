@@ -145,6 +145,10 @@ export class BlockTool implements Tool {
     if (this.state.phase === "select") this.selector.onPointerUp(input, ctx)
   }
 
+  cycleLasso(ctx: ToolContext): boolean {
+    return this.selector.cycleLasso(ctx)
+  }
+
   onEnter(ctx: ToolContext): boolean {
     return this.state.phase === "select" && this.selector.onEnter(ctx)
   }

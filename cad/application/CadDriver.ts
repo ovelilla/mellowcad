@@ -228,6 +228,18 @@ export class CadDriver {
     return this
   }
 
+  /**
+   * A press at the path's first point, the cursor dragged through the rest
+   * and released at its last: AutoCAD's lasso, drawn along that path.
+   */
+  lasso(path: readonly WorldPoint[], modifiers: PointerModifiers = {}): this {
+    const [first, ...rest] = path
+    const last = rest.pop() ?? first
+    this.mouseDown(first, modifiers)
+    for (const point of rest) this.moveTo(point, modifiers)
+    return this.mouseUp(last, modifiers)
+  }
+
   wheel(world: WorldPoint, deltaY: number): this {
     this.runtime.wheel({ screen: this.toScreen(world), deltaY })
     return this

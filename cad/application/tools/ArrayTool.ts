@@ -285,6 +285,10 @@ export class ArrayTool implements Tool {
     if (this.state.phase === "selecting") this.selector.onPointerUp(input, ctx)
   }
 
+  cycleLasso(ctx: ToolContext): boolean {
+    return this.selector.cycleLasso(ctx)
+  }
+
   onEnter(ctx: ToolContext): boolean {
     if (this.state.phase === "selecting") return this.selector.onEnter(ctx)
     if (this.state.phase === "edit" && this.state.step === "main") {

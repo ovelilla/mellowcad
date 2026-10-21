@@ -50,9 +50,14 @@ export const THEME = {
   dashedRubberBand: "#d7a320",
   preview: "#38bdf8",
   selectionWindowFill: "rgba(64, 140, 255, 0.12)",
-  selectionWindowStroke: "#3b82f6",
+  /**
+   * The window's outline, white over its blue as AutoCAD draws it, solid; the
+   * crossing's dashed over its green, and a fence's (desktop erase/d02-1,
+   * d03-1, d04-2).
+   */
+  selectionWindowStroke: "#ffffff",
   selectionCrossingFill: "rgba(74, 222, 128, 0.12)",
-  selectionCrossingStroke: "#4ade80",
+  selectionCrossingStroke: "#ffffff",
 } as const
 
 /**

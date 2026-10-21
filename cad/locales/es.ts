@@ -2118,6 +2118,18 @@ export const es: EngineLocale = {
           }
         ]
       ],
+      "lassoMode": [
+        [
+          "mode",
+          1,
+          {
+            "window": "Ventana",
+            "crossing": "Captura",
+            "other": "Borde"
+          }
+        ],
+        " Forma irregular: pulse la barra espaciadora para recorrer las opciones."
+      ],
       "onLockedLayer": [
         [
           "count",

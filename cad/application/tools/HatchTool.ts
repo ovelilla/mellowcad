@@ -153,6 +153,10 @@ export class HatchTool implements Tool {
     ctx.requestRender()
   }
 
+  cycleLasso(ctx: ToolContext): boolean {
+    return this.selector.cycleLasso(ctx)
+  }
+
   /**
    * Enter at Select objects closes the set and goes back to the internal
    * point, an empty set too.

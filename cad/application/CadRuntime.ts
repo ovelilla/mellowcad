@@ -389,6 +389,11 @@ export class CadRuntime extends Observable {
    * `-LINETYPE`, not the tool's LINETYPE. Null for a tool started otherwise.
    */
   private startedAs: string | null = null
+  /**
+   * While a command typed by its whole name starts: a preselection's count
+   * goes on a line of its own, not on the echo's.
+   */
+  private countOnOwnLine = false
   /** Set while an answer runs, so the prompt it answers is written once. */
   private answeringPrompt = false
   /**
@@ -622,6 +627,22 @@ export class CadRuntime extends Observable {
         this.host.setCursor(cursor)
       },
       report: (text, kind = "info") => {
+        if (kind === "gesture") {
+          const bare = this.openLine === this.commandLine.mark()
+          this.openLine = null
+          if (
+            !bare ||
+            !this.commandLine.amendLast(
+              ["prompt"],
+              this.commandStart,
+              () => text,
+              "info"
+            )
+          ) {
+            this.commandLine.write("info", text)
+          }
+          return
+        }
         this.commandLine.write(
           kind,
           kind === "prompt" && this.suspended !== null
@@ -1874,6 +1895,7 @@ export class CadRuntime extends Observable {
         return
       }
       if (
+        !this.countOnOwnLine &&
         this.commandLine.amendLast(["command"], this.commandStart, answered)
       ) {
         return
@@ -2051,6 +2073,17 @@ export class CadRuntime extends Observable {
    * real command line.
    */
   runCommand(text: string): boolean {
+    return this.runCommandAs(text, null)
+  }
+
+  /**
+   * Runs a command as {@link runCommand}, or as a menu or key macro runs it
+   * (`macro`): echoed as given, when given.
+   */
+  private runCommandAs(
+    text: string,
+    macro: { readonly echo?: string } | null
+  ): boolean {
     const typed = text.trim()
     if (bareCommand(typed) === "") return false
     const named = this.commandNamed(typed)
@@ -2073,11 +2106,13 @@ export class CadRuntime extends Observable {
       this.invalidateState()
       return false
     }
-    const echo = variable
-      ? typed.startsWith("'")
-        ? this.text.transparentCommand(variable.id)
-        : variable.id
-      : this.commandEcho(typed, command)
+    const echo =
+      macro?.echo ??
+      (variable
+        ? typed.startsWith("'")
+          ? this.text.transparentCommand(variable.id)
+          : variable.id
+        : this.commandEcho(typed, command))
     const [name] = variable ? [echo] : this.text.commandNames(command.id)
     this.echoMark = this.commandLine.mark()
     this.commandLine.write("command", echo)
@@ -2100,12 +2135,17 @@ export class CadRuntime extends Observable {
     this.commandStarts(command.id)
     // One run in place makes its steps here; a tool's, once it starts.
     if (this.activeTool.id === "select") this.history.nameCommand(said)
+    // WHY: a name typed whole echoes nothing more, and AutoCAD counts a
+    // preselection on the next line; an alias's expansion or a macro's echo
+    // takes it (desktop erase/d11).
+    this.countOnOwnLine = macro === null && echo === name
     try {
       command.run()
     } finally {
       this.echoMark = null
       this.starting = null
       this.startingName = null
+      this.countOnOwnLine = false
       if (this.activeTool.id === "select") this.history.nameCommand(null)
     }
     this.invalidateState()
@@ -2327,7 +2367,8 @@ export class CadRuntime extends Observable {
    * is a command, as for the right button, and keeps the key.
    */
   deleteSelection(): void {
-    if (this.deletes()) this.runCommand("_ERASE")
+    // acad.cuix's Delete, echoed `_.erase` (desktop erase/d11).
+    if (this.deletes()) this.runCommandAs("_ERASE", { echo: "_.erase" })
   }
 
   private deletes(): boolean {
@@ -2781,7 +2822,7 @@ export class CadRuntime extends Observable {
   chooseShortcutMenuAction(action: ShortcutMenuAction): void {
     this.closeShortcutMenu()
     const command = SHORTCUT_MENU_COMMANDS[action]
-    if (command !== undefined) this.runCommand(command)
+    if (command !== undefined) this.runCommandAs(command, {})
     else if (action === "redo") this.runRedoMacro()
     else if (action === "repeat") this.repeatLastCommand()
     else if (action === "enter") this.pressEnter()
@@ -4293,24 +4334,16 @@ export class CadRuntime extends Observable {
   }
 
   /**
-   * Whether Shift held now removes from the selection: picking with no command
-   * (PICKADD 2) and at a prompt that takes a set, `Select objects:`. Not at a
-   * single object's pick, where Shift means something else (TRIM's extend).
+   * Whether Shift held shows the minus badge: with no command, over an
+   * object that is selected, which a click would take out of the set. Not
+   * over nothing nor an object not selected, nor at `Select objects:`, where
+   * Shift still removes (desktop erase/d14-1 to d14-6).
    */
   private shiftRemoves(): boolean {
-    if (this.wantsPoint()) return false
-    if (this.activeTool.id === "select") return true
-    const input = questionInput({
-      tool: this.activeTool,
-      prompt: askedPrompt(this.activeTool),
-      session: null,
-    })
-    return (
-      input === "objects" ||
-      input === "subobjects" ||
-      input === "wholeObjects" ||
-      input === "crossingObjects"
-    )
+    if (this.activeTool.id !== "select" || this.wantsPoint()) return false
+    if (this.crosshairScreen === null) return false
+    const under = this.pickEntity(this.screenToWork(this.crosshairScreen))
+    return under !== null && this.selection.has(under.id)
   }
 
   /**
@@ -4760,8 +4793,9 @@ export class CadRuntime extends Observable {
    * (the host should call `preventDefault`).
    *
    * The order of the steps is the routing, and each step that consumes a key
-   * hides it from every later one: Escape on a menu, the function keys,
-   * Shift+Space and the Ctrl combos are global aids, so they come first —
+   * hides it from every later one: a lasso's Space comes first, the
+   * gesture's while the button is held. Escape on a menu, the function keys,
+   * Shift+Space and the Ctrl combos are global aids, so they come next —
    * Shift+Space before the command line, which reads a bare space as Enter.
    * Then the value box, then the command-line buffer, then the tool. A step
    * inserted above the value box steals keys from running commands; one above
@@ -4772,6 +4806,13 @@ export class CadRuntime extends Observable {
     if (e.key === "Shift" && !this.pointerShift) {
       this.pointerShift = true
       this.host.requestRender()
+    }
+    // Space with the button held cycles a lasso's mode (desktop erase/d04),
+    // before it is Enter, a repeat or Shift+Space's cycling.
+    if (e.key === " " && this.activeTool.cycleLasso?.(this.toolContext)) {
+      this.invalidateState()
+      this.host.requestRender()
+      return true
     }
     // Escape first dismisses an open override menu (without cancelling the
     // command), so a single Escape closes the menu rather than ending drawing.

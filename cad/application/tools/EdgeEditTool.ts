@@ -572,6 +572,10 @@ export abstract class EdgeEditTool implements Tool {
     this.selector()?.onPointerUp(input, ctx)
   }
 
+  cycleLasso(ctx: ToolContext): boolean {
+    return this.selector()?.cycleLasso(ctx) ?? false
+  }
+
   /**
    * Enter: Fence's ends it, whatever its points (acc/ta1, ta2), and a
    * window's opposite corner refuses it; at the prompt and Crossing's first

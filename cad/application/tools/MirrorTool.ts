@@ -180,6 +180,10 @@ export class MirrorTool implements Tool {
     if (this.state.phase === "selecting") this.selector.onPointerUp(input, ctx)
   }
 
+  cycleLasso(ctx: ToolContext): boolean {
+    return this.selector.cycleLasso(ctx)
+  }
+
   onEnter(ctx: ToolContext): boolean {
     // Enter accepts the default at the "Erase source objects?" prompt (No), and
     // confirms the selection set while selecting.

@@ -159,8 +159,10 @@ describe("BLOCK with attributes", () => {
       .type("TAG")
       .enter()
       .click(p(0, 0))
-      .drag(p(-10, -10), p(200, 50))
+      .click(p(-10, -10))
+      .click(p(200, 50))
       .enter()
+      .moveTo(p(300, 300))
 
     expect(cad.commandLog()).toContain("Enter attribute values")
     expect(asking(cad)).toBe("Part number")

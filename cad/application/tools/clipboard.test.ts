@@ -447,7 +447,7 @@ describe("the clipboard host", () => {
       entities: [lineOf(p(0, 0), p(100, 0), { id: "L1" })],
     })
     copy(cad, "L1")
-    expect(cad.commandLog()).toHaveLength(1)
+    expect(cad.commandLog()).toEqual(["COPYCLIP", "1 found"])
   })
 })
 

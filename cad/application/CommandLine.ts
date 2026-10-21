@@ -104,12 +104,14 @@ export class CommandLineController extends Observable {
   /**
    * Rewrites the last line when it is of one of `kinds` and was written at
    * `since` or after, returning whether it was: an answer known only after
-   * its prompt was written goes on its line.
+   * its prompt was written goes on its line. `as` makes it a line of that
+   * kind.
    */
   amendLast(
     kinds: readonly CommandLineEntryKind[],
     since: number,
-    amend: (text: string) => string
+    amend: (text: string) => string,
+    as?: CommandLineEntryKind
   ): boolean {
     const last = this.lines.at(-1)
     if (!last || !kinds.includes(last.kind) || this.written - 1 < since) {
@@ -117,7 +119,7 @@ export class CommandLineController extends Observable {
     }
     this.lines = [
       ...this.lines.slice(0, -1),
-      { kind: last.kind, text: amend(last.text) },
+      { kind: as ?? last.kind, text: amend(last.text) },
     ]
     this.emit()
     return true

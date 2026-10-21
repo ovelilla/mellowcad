@@ -80,7 +80,7 @@ describe("an object with a normal of its own", () => {
   it("is window-selected by its outline on screen", () => {
     const cad = createHarness({ entities: [CIRCLE] })
 
-    cad.drag(p(40, -10), p(160, 10))
+    cad.click(p(40, -10)).click(p(160, 10))
 
     expect(cad.selectedIds()).toEqual(["C"])
   })

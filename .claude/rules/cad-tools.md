@@ -24,15 +24,15 @@ How prompts, keywords and messages are worded and named: `cad-catalogs.md`.
   one past its start, arc bulges refitted) and an ellipse with `ellipseCut` (`domain/ellipses.ts`):
   never walk the vertices to cut one in a tool. A fence's objects are planned one by one against
   the drawing as it then is, never as it was: the console cuts them in turn.
-- `ObjectSelector` (`objectSelection.ts`) — AutoCAD's `Select objects:`, the one every command
-  that takes a set asks it with: picks, the window a drag or a pick on nothing starts, and every
-  mode typed there, each counted as AutoCAD counts it. A tool holds one and, in its select phase,
-  hands it `question`, `takes`, `commandOptions`, `invokeOption`, `answerTyped`, the three pointer
-  handlers, `onEnter`, `wantsSnap` and `buildOverlay`. It passes `done`, `takes` when the set takes
-  no sub-objects (`takes: () => "wholeObjects"`: what its refusal lists, and so which modes it
-  offers), and where needed `question`, `accept` (a silent filter), `refuse` and `noneFound`
-  (EXPLODE's lines) and `onAdded` (STRETCH's frames); a preselection goes through `preselect`.
-  Never re-implement a pick, a box or a mode in a tool. A **single object's pick** that takes the
+- `ObjectSelector` (`objectSelection.ts`) — AutoCAD's `Select objects:`, which every command
+  taking a set asks: picks, the window a pick on nothing starts, the lasso a drag draws, every
+  mode typed there, each counted as AutoCAD does. A tool holds one and, in its select
+  phase, hands it `question`, `takes`, `commandOptions`, `invokeOption`, `answerTyped`, the pointer
+  handlers, `onEnter`, `cycleLasso`, `wantsSnap` and `buildOverlay`. It passes `done`, `takes` when
+  the set takes no sub-objects (`takes: () => "wholeObjects"`: what its refusal lists, and so which
+  modes it offers), and where needed `question`, `accept` (a silent filter), `refuse` and
+  `noneFound` (EXPLODE's lines) and `onAdded` (STRETCH's frames); a preselection goes through
+  `preselect`. Never re-implement a pick, a box or a mode. A **single object's pick** that takes the
   modes (BREAK's `Select object:`, UCS OBject's, ARRAYPATH's path) holds one too, with `modes`
   (`ONE_OBJECT_MODES`) and `one` (`take`, told how the mode found it — `ModeFind`; `newest`,
   `pair`, `silent`): it keeps its own pick and Enter and hands the selector the rest while
@@ -41,9 +41,9 @@ How prompts, keywords and messages are worded and named: `cad-catalogs.md`.
 - `SelectionActionTool` — one action over a set, noun-verb and verb-noun (Erase, Explode, Join,
   COPYCLIP). A command that asks something **before** the set (COPYBASE's base point) overrides
   `onActivate` and calls `begin(ctx)` once it has the answer, rather than forking the class.
-- `boxSelection.ts` — what a window, a fence or a polygon takes (`objectsInWindow`,
-  `objectsOnFence`, `objectsInPolygon`) and their previews; never re-implement it. Each takes
-  `ctx.viewport`: the box is upright on the screen, which a turned view does not line up with.
+- `boxSelection.ts` — what a window, lasso, fence or polygon takes (`objectsInWindow`,
+  `lassoSelect`, `objectsOnFence`, `objectsInPolygon`) and their previews; never re-implement it.
+  Each takes `ctx.viewport`: the box is upright on the screen, which a turned view is not.
 - `SelectTool` is split so a new entity type rarely needs the tool: `selectToolState.ts` (the
   union), `selectToolGrips.ts` (**the file to edit when a type gains grips**),
   `selectToolOverlay.ts` (each edit's preview), `selectToolEdits.ts` (pure helpers). Add a grip
@@ -221,7 +221,7 @@ One session at a time:
 - **Free-text prompt** — one `"text"` field: never a value (`resolveValues` refuses it), skipped by
   the coordinate collapse, and **no keyword is dispatched from it**. A name prompt that also offers
   keywords lists them in `commandOptions()` and reads the box with `ctx.text.resolveKeyword(typed,
-  ids)`; a prompt that takes keywords alone (TEXT's Justify) is keyword-only, never a text field.
+ids)`; a prompt that takes keywords alone (TEXT's Justify) is keyword-only, never a text field.
   Editing a value preloads it with `setText` after `open` and hides the object
   (`hiddenEntityIds`); a question opened inside a `commitRaw` may preload its default too. A field
   the drawing words (an attribute's prompt) sets `label` instead of `prompt`.
@@ -292,7 +292,7 @@ returns `true`; `false` ends the command.
   **absolute** angle goes through `headingInUcs` / `directionFromUcsHeading`
   (`tools/ucsHeading.ts`); a **relative** one (rotation, included angle, sweep) is left alone.
 - **LASTPOINT is the runtime's, never a tool's.** A typed first point passes `lastPoint:
-  ctx.lastPoint` with `relativeByDefault: false`; one with a base passes `base ?? ctx.lastPoint`.
+ctx.lastPoint` with `relativeByDefault: false`; one with a base passes `base ?? ctx.lastPoint`.
   The runtime sets it after every answer whose question takes a point; a question the console shows
   keeping it, or setting it though its refusal is its own, says so with `setsLastPoint()` — check
   with `ID @` after the command in the console. A tool moves it with no point given, or keeps it

@@ -6,7 +6,8 @@
 line — `1 found`, `1 found (1 duplicate), 2 total`, a window's `Specify opposite corner: 3 found`,
 Shift's `1 found, 1 removed, 1 total` (es `1 encontrados`, `1 encontrados, eliminados 1, 1 total`,
 `Designe esquina opuesta:`) — with the selection modes (Command line, `Select objects:`), and
-objects selected before it counted after the command's echo, `Command: M MOVE 1 found`;
+objects selected before it counted on an alias's echo, `Command: M MOVE 1 found`, and on a line of
+its own after the name typed whole (`Command: MOVE` / `1 found`, desktop erase/d11);
 `Specify base point or [Displacement] <Displacement>:` — Displacement, or Enter, asks
 `Specify displacement <0.0000, 0.0000, 0.0000>:` (the last one given in the drawing, MOVE's own;
 per drawing, not saved, NEW and OPEN putting it back to 0, rectang/p314, p315) and moves by
@@ -540,9 +541,9 @@ erases, Escape erases nothing), one undo step that U names `ERASE`; nothing said
 closes, the history ending at `Select objects:` or a preselection's count, and Enter on an empty set
 silent (erase/p00, p01, p304, desktop d09); `DELETE` from both `acad.pgp` files (erase/p302). At its
 `Select objects:` the object under the cursor and the set draw faded in their own colour, AutoCAD's
-erase preview, where other commands glow (desktop d09-2, d09-4). The Delete key with objects
-selected at `Command:` runs ERASE as acad.cuix's `^C^C_erase;` does: echoed with its count, U names
-it, Enter repeats it (desktop d11; the echo is the runtime's `ERASE`, not the macro's `_.erase`).
+erase preview, where other commands glow (desktop d09-2, d09-4), and so does what a window or lasso
+under way would take. The Delete key with objects selected at `Command:` runs ERASE as acad.cuix's
+`^C^C_erase;` does: echoed `_.erase 1 found`, U names it, Enter repeats it (desktop d11).
 Backspace does the same: a Mac's Delete key reaches the browser as Backspace (AutoCAD's own
 Backspace there is unverified)
 

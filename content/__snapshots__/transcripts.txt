@@ -105,6 +105,7 @@ input | Specify radius of circle or [Diameter]: | 14
 command |  | LINE
 input | Specify first point: | 15,50
 input | Specify next point or [Undo]: | @80,-45
+info |  | Window Lasso  Press Spacebar to cycle options
 ## crossing
 command |  | RECTANG
 input | Specify first corner point or [Chamfer/Elevation/Fillet/Thickness/Width]: | 0,0
@@ -115,6 +116,7 @@ input | Specify radius of circle or [Diameter]: | 14
 command |  | LINE
 input | Specify first point: | 15,50
 input | Specify next point or [Undo]: | @80,-45
+info |  | Crossing Lasso  Press Spacebar to cycle options
 ## draw
 command |  | PLINE
 input | Specify start point: | 0,0

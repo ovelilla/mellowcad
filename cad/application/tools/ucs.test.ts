@@ -498,9 +498,9 @@ describe("PLAN", () => {
     cad.command("UCS").option("Z").enter()
     cad.command("PLAN").enter()
     // Screen right is world +Y here, so this runs left to right: a window.
-    cad.drag(p(5, -5), p(-5, 15))
+    cad.click(p(5, -5)).click(p(-5, 15))
     expect(cad.selectedIds()).toEqual(["along"])
-    cad.escape().drag(p(-5, 15), p(5, -5))
+    cad.escape().click(p(-5, 15)).click(p(5, -5))
     expect(cad.selectedIds().sort()).toEqual(["across", "along"])
   })
 

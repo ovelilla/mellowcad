@@ -1,6 +1,7 @@
 import { Vec2 } from "../../geometry/Vec2"
 import { Vec3 } from "../../geometry/Vec3"
 import { Entity, EntityId } from "../../domain/entities"
+import type { Lasso } from "./boxSelection"
 
 export type LineEnd = "start" | "end"
 
@@ -82,13 +83,23 @@ export type SelectToolState =
     }
   | {
       /**
-       * A window or crossing under way: dragged (released to close) or begun
-       * by a click on nothing (closed by the next click).
+       * A window or crossing under way, begun by a click on nothing and
+       * closed by the next click.
        */
       readonly phase: "boxing"
       readonly startWorld: Vec2
       readonly currentWorld: Vec2
       readonly subtract: boolean
+      /** What it would take now, previewed. */
+      readonly preview: readonly EntityId[]
+    }
+  | {
+      /** A lasso dragged from a press on nothing, released to close. */
+      readonly phase: "lasso"
+      readonly lasso: Lasso
+      readonly subtract: boolean
+      /** What it would take now, previewed. */
+      readonly preview: readonly EntityId[]
     }
   | {
       /** An endpoint grip is hot: the line's end is being stretched. */

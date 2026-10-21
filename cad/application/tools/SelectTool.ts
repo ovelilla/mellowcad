@@ -20,7 +20,14 @@ import {
 import { DynamicInputSession } from "../input/DynamicInput"
 import { bulgeThroughPoint, normalizeDegrees } from "../../geometry/primitives"
 import { ScenePrimitive } from "../../scene/types"
-import { boxSelect } from "./boxSelection"
+import {
+  Lasso,
+  boxSelect,
+  extendLasso,
+  lassoSelect,
+  nextLassoMode,
+  startLasso,
+} from "./boxSelection"
 import { riseAlongCursor, showRise } from "./directDistance"
 import { KeyInput, PointerInput, Tool, ToolContext } from "./Tool"
 import {
@@ -59,7 +66,7 @@ import {
   pickRolloverEntity,
 } from "./selectToolOverlay"
 
-/** Screen-pixel movement past which a press-drag becomes a box selection. */
+/** Screen-pixel movement past which a press-drag becomes a lasso. */
 const DRAG_THRESHOLD_PX = 4
 
 /**
@@ -67,18 +74,21 @@ const DRAG_THRESHOLD_PX = 4
  *
  * ```
  *          press                 move ≥ threshold           release
- *  idle ─────────► pressed ───────────────────► boxing ───────────► idle
- *                     │ release (no drag)                    (box select)
- *                     └────────────────────► idle (click select)
+ *  idle ─────────► pressed ───────────────────► lasso ────────────► idle
+ *                     │ release (no drag)                  (lasso select)
+ *                     ├────────────────────► idle (click select)
+ *                     └─ on nothing ───────► boxing ─ click ──► idle
  * ```
  *
  * Behaves like AutoCAD's default pick (PICKADD 2, PICKAUTO, PICKDRAG 2):
  * - A click adds the object under the cursor to the selection; Shift+click
  *   removes it. Only Escape clears the selection.
- * - A click on nothing starts a window that the next click closes; a drag
- *   draws it in one gesture. Left→right selects only fully-enclosed objects (a
- *   blue *window*); right→left also selects objects the box merely touches (a
- *   green *crossing* window). It adds what it finds, or removes it with Shift.
+ * - A click on nothing starts a window that the next click closes. Left→right
+ *   selects only fully-enclosed objects (a blue *window*); right→left also
+ *   selects objects the box merely touches (a green *crossing* window). A
+ *   drag draws a lasso along its path instead (PICKAUTO 5), a window or a
+ *   crossing by the way it sets off, which Space cycles through a fence. Each
+ *   adds what it finds, or removes it with Shift.
  *
  * Selected objects also show *grips* (small squares). Lines show endpoint grips
  * (stretch) and a midpoint grip (move). Circles show a centre
@@ -359,12 +369,18 @@ export class SelectTool implements Tool {
               ctx
             )
           } else {
+            const lasso = startLasso(
+              ctx.viewport,
+              this.state.startWorld,
+              input.world
+            )
             this.state = {
-              phase: "boxing",
-              startWorld: this.state.startWorld,
-              currentWorld: input.world,
+              phase: "lasso",
+              lasso,
               subtract: this.state.subtract,
+              preview: lassoPreview(lasso, ctx),
             }
+            sayLasso(lasso, ctx)
           }
           ctx.requestRender()
         } else {
@@ -373,9 +389,32 @@ export class SelectTool implements Tool {
         break
       }
       case "boxing":
-        this.state = { ...this.state, currentWorld: input.world }
+        this.state = {
+          ...this.state,
+          currentWorld: input.world,
+          preview: previewOf(
+            boxSelect(
+              ctx.document,
+              this.state.startWorld,
+              input.world,
+              ctx.viewport
+            ),
+            ctx
+          ),
+        }
         ctx.requestRender()
         break
+      case "lasso": {
+        const lasso = extendLasso(ctx.viewport, this.state.lasso, input.world)
+        const grew = lasso.path.length !== this.state.lasso.path.length
+        this.state = {
+          ...this.state,
+          lasso,
+          preview: grew ? lassoPreview(lasso, ctx) : this.state.preview,
+        }
+        ctx.requestRender()
+        break
+      }
       case "idle": {
         // Track which grip the cursor hovers so it can be drawn hot, matching
         // AutoCAD's grip highlight. The magnetic crosshair snap is handled
@@ -505,14 +544,16 @@ export class SelectTool implements Tool {
         if (dragged) this.placeBulge(this.state, this.state.bulge, ctx)
         return
       }
-      case "boxing":
-        this.commitBoxSelection(
-          this.state.startWorld,
-          this.state.currentWorld,
-          this.state.subtract,
-          ctx
+      case "lasso": {
+        const hits = lassoSelect(
+          ctx.document,
+          this.state.lasso,
+          ctx.viewport,
+          (entity) => ctx.document.isEntitySelectable(entity)
         )
+        this.addOrRemove(hits, this.state.subtract, ctx)
         break
+      }
       case "pressed":
         if (!this.commitClickSelection(input, ctx)) {
           this.state = {
@@ -520,17 +561,32 @@ export class SelectTool implements Tool {
             startWorld: this.state.startWorld,
             currentWorld: input.world,
             subtract: this.state.subtract,
+            preview: [],
           }
           ctx.requestRender()
           return
         }
         break
+      case "boxing":
       case "idle":
         return
     }
 
     this.state = { phase: "idle" }
     ctx.requestRender()
+  }
+
+  /** Space with the button held: the lasso's next mode, said (erase/d04). */
+  cycleLasso(ctx: ToolContext): boolean {
+    if (this.state.phase !== "lasso") return false
+    const lasso = {
+      ...this.state.lasso,
+      mode: nextLassoMode(this.state.lasso.mode),
+    }
+    this.state = { ...this.state, lasso, preview: lassoPreview(lasso, ctx) }
+    sayLasso(lasso, ctx)
+    ctx.requestRender()
+    return true
   }
 
   onKeyDown(input: KeyInput, ctx: ToolContext): void {
@@ -693,6 +749,7 @@ export class SelectTool implements Tool {
     const state = this.state
     switch (state.phase) {
       case "boxing":
+      case "lasso":
         return buildSelectionBox(state, ctx)
       case "grip":
         return buildGripEdit(state, ctx)
@@ -728,7 +785,15 @@ export class SelectTool implements Tool {
     ctx: ToolContext
   ): void {
     const hits = boxSelect(ctx.document, start, current, ctx.viewport)
-    for (const id of hits) {
+    this.addOrRemove(hits, subtract, ctx)
+  }
+
+  private addOrRemove(
+    ids: readonly EntityId[],
+    subtract: boolean,
+    ctx: ToolContext
+  ): void {
+    for (const id of ids) {
       if (subtract) ctx.selection.remove(id)
       else ctx.selection.add(id)
     }
@@ -1466,4 +1531,26 @@ export class SelectTool implements Tool {
     this.state = { phase: "idle" }
     ctx.requestRender()
   }
+}
+
+/** What the lasso would take that is not selected yet, previewed. */
+function lassoPreview(lasso: Lasso, ctx: ToolContext): readonly EntityId[] {
+  return previewOf(
+    lassoSelect(ctx.document, lasso, ctx.viewport, (entity) =>
+      ctx.document.isEntitySelectable(entity)
+    ),
+    ctx
+  )
+}
+
+function previewOf(
+  ids: readonly EntityId[],
+  ctx: ToolContext
+): readonly EntityId[] {
+  return ids.filter((id) => !ctx.selection.has(id))
+}
+
+/** The lasso's line, as it starts and at each Space (desktop erase/d04-cl3). */
+function sayLasso(lasso: Lasso, ctx: ToolContext): void {
+  ctx.report(ctx.text.message("lassoMode", { mode: lasso.mode }))
 }

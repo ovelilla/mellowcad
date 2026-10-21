@@ -275,6 +275,34 @@ describe("CadEngine owning the document (the editor)", () => {
     expect(keyAt(page, page.search, "ئ").defaultPrevented).toBe(false)
   })
 
+  // The lasso's Space arrives while the button is held, at the canvas the
+  // press focused (desktop erase/d04).
+  it("hands the runtime a Space pressed while a lasso is dragged", () => {
+    const engine = engineOn()
+    const pointer = (type: string, clientX: number, clientY: number) =>
+      dispatch(page.canvas, type, page.canvas, {
+        button: 0,
+        pointerId: 1,
+        clientX,
+        clientY,
+        shiftKey: false,
+        ctrlKey: false,
+        altKey: false,
+      })
+
+    pointer("pointerdown", 100, 100)
+    pointer("pointermove", 200, 110)
+    const space = keyAt(page, page.canvas, " ")
+    pointer("pointermove", 210, 200)
+    pointer("pointerup", 210, 200)
+
+    expect(space.defaultPrevented).toBe(true)
+    expect(engine.getState().commandLine.lines.map((l) => l.text)).toEqual([
+      "Window Lasso  Press Spacebar to cycle options",
+      "Fence Lasso  Press Spacebar to cycle options",
+    ])
+  })
+
   it("zooms on every wheel turn over the canvas", () => {
     const engine = engineOn()
     const wheel = dispatch(page.canvas, "wheel", page.canvas, {

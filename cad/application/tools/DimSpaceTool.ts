@@ -140,6 +140,10 @@ export class DimSpaceTool implements Tool {
     if (this.state.phase === "select") this.selector.onPointerUp(input, ctx)
   }
 
+  cycleLasso(ctx: ToolContext): boolean {
+    return this.selector.cycleLasso(ctx)
+  }
+
   onEnter(ctx: ToolContext): boolean {
     // Enter closes the "Select dimensions to space" prompt, as AutoCAD's
     // "press Enter after selecting all dimensions to be adjusted" says.

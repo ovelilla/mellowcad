@@ -1216,3 +1216,88 @@ describe("a point typed at a single object's pick", () => {
     clicked.escape()
   })
 })
+
+// A press and drag on nothing at Select objects is AutoCAD 2027's lasso, as
+// with no command: its line said as it starts and at each Space, its count on
+// a line of its own after it, where a window's goes on the prompt's (desktop
+// erase/d04, d05, d09).
+describe("the lasso at Select objects", () => {
+  const entities = () => [
+    lineOf(p(0, 0), p(100, 0), { id: "INSIDE" }),
+    lineOf(p(100, 80), p(400, 80), { id: "CROSSED" }),
+    circleOf(p(600, 600), 10, { id: "FAR" }),
+  ]
+  /** Encloses INSIDE and crosses CROSSED, setting off rightwards. */
+  const RIGHTWARDS = [p(-50, -50), p(200, -50), p(200, 120), p(-50, 120)]
+  /** The same, setting off leftwards. */
+  const LEFTWARDS = [p(200, -50), p(-50, -50), p(-50, 120), p(200, 120)]
+
+  it("says its line, then counts what it took on the next (erase/d09)", () => {
+    const cad = createHarness({ entities: entities() })
+    cad.command("ERASE")
+
+    cad.click(p(-50, -50)).click(p(150, 30))
+    cad.lasso([...LEFTWARDS, p(210, -40)])
+    cad.enter()
+
+    expect(cad.commandLog()).toEqual([
+      "ERASE",
+      "Select objects: Specify opposite corner: 1 found",
+      "Crossing Lasso  Press Spacebar to cycle options",
+      "2 found (1 duplicate), 2 total",
+      "Select objects:",
+    ])
+    expect(cad.entities().map((e) => e.id)).toEqual(["FAR"])
+  })
+
+  it("takes what it encloses rightwards, and what a fence crosses after Space (erase/d04)", () => {
+    const cad = createHarness({ entities: entities() })
+    cad.command("ERASE")
+
+    cad.lasso([...RIGHTWARDS, p(-60, -40)])
+    cad.mouseDown(RIGHTWARDS[0]).moveTo(RIGHTWARDS[1])
+    expect(cad.press(" ")).toBe(true)
+    cad.moveTo(RIGHTWARDS[2]).moveTo(RIGHTWARDS[3]).mouseUp(p(-60, -40))
+
+    expect(cad.commandLog()).toEqual([
+      "ERASE",
+      "Window Lasso  Press Spacebar to cycle options",
+      "1 found",
+      "Window Lasso  Press Spacebar to cycle options",
+      "Fence Lasso  Press Spacebar to cycle options",
+      "1 found, 2 total",
+    ])
+    expect(cad.selectedIds().sort()).toEqual(["CROSSED", "INSIDE"])
+    expect(cad.state().commandLine.prompt).toBe("ERASE Select objects:")
+  })
+
+  it("removes what it takes with Shift held", () => {
+    const cad = createHarness({ entities: entities() })
+    cad.command("MOVE").click(p(50, 0)).click(p(300, 80))
+
+    cad.lasso([...RIGHTWARDS, p(-60, -40)], { shiftKey: true })
+
+    expect(cad.commandLog().slice(-2)).toEqual([
+      "Window Lasso  Press Spacebar to cycle options",
+      "1 found, 1 removed, 1 total",
+    ])
+    expect(cad.selectedIds()).toEqual(["CROSSED"])
+  })
+
+  it("says its line in Spanish AutoCAD's words (erase/d04-cl3, d09-cl7)", () => {
+    const cad = createHarness({ locale: es, entities: entities() })
+    cad.command("BORRA")
+
+    cad.mouseDown(RIGHTWARDS[0]).moveTo(RIGHTWARDS[1]).press(" ")
+    cad.press(" ")
+    cad.moveTo(RIGHTWARDS[2]).moveTo(RIGHTWARDS[3]).mouseUp(p(-60, -40))
+
+    expect(cad.commandLog()).toEqual([
+      "BORRA",
+      "Ventana Forma irregular: pulse la barra espaciadora para recorrer las opciones.",
+      "Borde Forma irregular: pulse la barra espaciadora para recorrer las opciones.",
+      "Captura Forma irregular: pulse la barra espaciadora para recorrer las opciones.",
+      "2 encontrados",
+    ])
+  })
+})

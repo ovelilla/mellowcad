@@ -1,4 +1,4 @@
-import { SnapType, demo } from "@/cad"
+import { type DemoScript, SnapType, demo } from "@/cad"
 
 /**
  * The precision figures: each ends mid-gesture, so the frame the engine draws
@@ -82,8 +82,34 @@ const selectable = demo({
   .enter()
   .escape()
 
-/** Left to right: a window takes only what it encloses. */
-export const windowSelection = selectable.down(-5, 30).moveTo(80, 62)
+/** A path round the circle and across the line, the button still held. */
+const lasso = (
+  script: DemoScript,
+  path: readonly (readonly [number, number])[]
+): DemoScript =>
+  path.slice(1).reduce((s, [x, y]) => s.moveTo(x, y), script.down(...path[0]))
 
-/** Right to left: a crossing takes whatever it touches. */
-export const crossingSelection = selectable.down(80, 62).moveTo(40, 30)
+/**
+ * Dragged off left to right: a window lasso takes only what it encloses, the
+ * circle (AutoCAD 2027's press and drag, erase/d04).
+ */
+export const windowSelection = lasso(selectable, [
+  [36, 24],
+  [60, 22],
+  [80, 30],
+  [80, 50],
+  [66, 60],
+  [46, 60],
+  [38, 46],
+])
+
+/** Right to left: a crossing lasso takes whatever it touches, the line too. */
+export const crossingSelection = lasso(selectable, [
+  [80, 30],
+  [60, 22],
+  [36, 24],
+  [38, 46],
+  [46, 60],
+  [66, 60],
+  [80, 50],
+])

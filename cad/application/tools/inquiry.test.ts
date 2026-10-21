@@ -920,8 +920,9 @@ describe("ARRAYPATH", () => {
     )
     cad.enter().enter()
 
-    expect(cad.commandLog().slice(0, 4)).toEqual([
-      "ARRAYPATH 1 found",
+    expect(cad.commandLog().slice(0, 5)).toEqual([
+      "ARRAYPATH",
+      "1 found",
       "Type = Path  Associative = No",
       "Select path curve:",
       "Objects selected to be arrayed may not be selected as path curve.",

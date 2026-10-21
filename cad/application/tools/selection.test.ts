@@ -98,6 +98,9 @@ describe("picking", () => {
     expect(cad.selectedIds()).toEqual(["L1"])
   })
 
+  // AutoCAD 2027 shows it only with no command and over a selected object:
+  // none over nothing or an unselected one, none at Select objects (desktop
+  // erase/d14-1 to d14-6).
   describe("the minus badge while Shift is held", () => {
     const hasMinus = (cad: ReturnType<typeof createHarness>) =>
       cad
@@ -109,9 +112,9 @@ describe("picking", () => {
             prim.a.y === prim.b.y
         )
 
-    it("shows with no command, from the key alone, until it is let go", () => {
+    it("shows over a selected object with no command, from the key alone, until it is let go (erase/d14-3)", () => {
       const cad = createHarness({ entities: [SHORT] })
-      cad.moveTo(p(50, 300))
+      cad.select("L1").moveTo(p(30, 0))
 
       cad.press("Shift")
       expect(hasMinus(cad)).toBe(true)
@@ -119,13 +122,25 @@ describe("picking", () => {
       expect(hasMinus(cad)).toBe(false)
     })
 
-    it("shows at Select objects:", () => {
+    it("is not shown over nothing nor over an object not selected (erase/d14-1, d14-5)", () => {
+      const cad = createHarness({ entities: [SHORT, FAR] })
+      cad.select("L1").moveTo(p(50, 300))
+
+      cad.press("Shift")
+      expect(hasMinus(cad)).toBe(false)
+      cad.moveTo(p(430, 400), { shiftKey: true })
+      expect(hasMinus(cad)).toBe(false)
+    })
+
+    it("is not shown at Select objects, over nothing or a picked object (erase/d14-2, d14-6)", () => {
       const cad = createHarness({ entities: [SHORT] })
       cad.command("ERASE").moveTo(p(50, 300))
 
       cad.press("Shift")
-
-      expect(hasMinus(cad)).toBe(true)
+      expect(hasMinus(cad)).toBe(false)
+      cad.release("Shift").click(p(30, 0)).moveTo(p(30, 0))
+      cad.press("Shift")
+      expect(hasMinus(cad)).toBe(false)
     })
 
     it("is not shown where Shift does not remove", () => {
@@ -162,7 +177,7 @@ describe("box selection", () => {
   it("window (left to right) takes only fully enclosed objects", () => {
     const cad = createHarness({ entities })
 
-    cad.drag(p(-50, -50), p(200, 200))
+    cad.click(p(-50, -50)).click(p(200, 200))
 
     expect(cad.selectedIds()).toEqual(["INSIDE"])
   })
@@ -170,7 +185,7 @@ describe("box selection", () => {
   it("crossing (right to left) also takes objects it merely touches", () => {
     const cad = createHarness({ entities })
 
-    cad.drag(p(200, 200), p(-50, -50))
+    cad.click(p(200, 200)).click(p(-50, -50))
 
     expect(cad.selectedIds().sort()).toEqual(["INSIDE", "STRADDLING"])
   })
@@ -179,7 +194,7 @@ describe("box selection", () => {
     const cad = createHarness({ entities })
 
     cad.click(p(650, 600))
-    cad.drag(p(-50, -50), p(200, 200))
+    cad.click(p(-50, -50)).click(p(200, 200))
 
     expect(cad.selectedIds().sort()).toEqual(["INSIDE", "OUTSIDE"])
   })
@@ -188,8 +203,9 @@ describe("box selection", () => {
     const cad = createHarness({ entities })
 
     cad.click(p(650, 600))
-    cad.drag(p(200, 200), p(-50, -50))
-    cad.drag(p(-50, -50), p(200, 200), { shiftKey: true })
+    cad.click(p(200, 200)).click(p(-50, -50))
+    cad.click(p(-50, -50), { shiftKey: true })
+    cad.click(p(200, 200), { shiftKey: true })
 
     expect(cad.selectedIds().sort()).toEqual(["OUTSIDE", "STRADDLING"])
   })
@@ -239,7 +255,7 @@ describe("box selection", () => {
     cad.runtime.updateLayer(hidden, { visible: false })
     cad.runtime.updateLayer(locked, { locked: true })
 
-    cad.drag(p(200, 200), p(-50, -50))
+    cad.click(p(200, 200)).click(p(-50, -50))
 
     expect(cad.selectedIds()).toEqual(["VISIBLE"])
   })
@@ -255,6 +271,173 @@ describe("box selection", () => {
     cad.click(p(50, 0))
 
     expect(cad.selectedIds()).toEqual([])
+  })
+})
+
+// AutoCAD 2027's press and drag on nothing (PICKAUTO 5): the dragged path,
+// closed, is a window lasso rightwards and a crossing lasso leftwards; Space
+// with the button held cycles Window → Fence → Crossing; each mode says its
+// line (desktop erase/d04, d05; the help's "To Select Objects").
+describe("the lasso", () => {
+  const INSIDE = lineOf(p(0, 0), p(100, 0), { id: "INSIDE" })
+  const CROSSED = lineOf(p(100, 80), p(400, 80), { id: "CROSSED" })
+  const entities = [INSIDE, CROSSED]
+  /** Encloses INSIDE and crosses CROSSED, setting off rightwards. */
+  const RIGHTWARDS = [p(-50, -50), p(200, -50), p(200, 120), p(-50, 120)]
+  /** The same, setting off leftwards. */
+  const LEFTWARDS = [p(200, -50), p(-50, -50), p(-50, 120), p(200, 120)]
+  const line = (mode: string) =>
+    `${mode} Lasso  Press Spacebar to cycle options`
+
+  it("takes what its path encloses dragged rightwards, a window (erase/d04)", () => {
+    const cad = createHarness({ entities })
+
+    cad.lasso([...RIGHTWARDS, p(-60, -40)])
+
+    expect(cad.selectedIds()).toEqual(["INSIDE"])
+    expect(cad.commandLog()).toEqual([line("Window")])
+  })
+
+  it("takes what it encloses or crosses dragged leftwards, a crossing (erase/d05)", () => {
+    const cad = createHarness({ entities })
+
+    cad.lasso([...LEFTWARDS, p(210, -40)])
+
+    expect(cad.selectedIds().sort()).toEqual(["CROSSED", "INSIDE"])
+    expect(cad.commandLog()).toEqual([line("Crossing")])
+  })
+
+  it("keeps the mode its first stretch set, released past its press (erase/d09-4)", () => {
+    const cad = createHarness({ entities })
+
+    cad.lasso([p(200, -50), p(-50, -50), p(-50, 120), p(250, 120), p(260, -40)])
+
+    expect(cad.selectedIds().sort()).toEqual(["CROSSED", "INSIDE"])
+  })
+
+  it("cycles Window, Fence, Crossing with Space while the button is held (erase/d04)", () => {
+    const cad = createHarness({ entities })
+    cad.command("LINE").escape()
+    const from = cad.commandLog().length
+
+    cad.mouseDown(RIGHTWARDS[0]).moveTo(RIGHTWARDS[1])
+    expect(cad.press(" ")).toBe(true)
+    cad.moveTo(RIGHTWARDS[2]).moveTo(RIGHTWARDS[3]).mouseUp(p(-60, -40))
+    // A fence takes what its open path crosses.
+    expect(cad.selectedIds()).toEqual(["CROSSED"])
+    expect(cad.activeToolId()).toBe("select")
+    expect(cad.commandLog().slice(from)).toEqual([
+      line("Window"),
+      line("Fence"),
+    ])
+
+    cad.escape()
+    cad.mouseDown(RIGHTWARDS[0]).moveTo(RIGHTWARDS[1]).press(" ")
+    cad.press(" ")
+    cad.moveTo(RIGHTWARDS[2]).moveTo(RIGHTWARDS[3]).mouseUp(p(-60, -40))
+    expect(cad.selectedIds().sort()).toEqual(["CROSSED", "INSIDE"])
+
+    cad.escape()
+    cad.mouseDown(LEFTWARDS[0]).moveTo(LEFTWARDS[1]).press(" ")
+    cad.moveTo(LEFTWARDS[2]).moveTo(LEFTWARDS[3]).mouseUp(p(210, -40))
+    // From Crossing, Space gives Window.
+    expect(cad.selectedIds()).toEqual(["INSIDE"])
+    expect(cad.commandLog().slice(-2)).toEqual([
+      line("Crossing"),
+      line("Window"),
+    ])
+  })
+
+  it("removes what it takes with Shift held at the press", () => {
+    const cad = createHarness({ entities })
+    cad.select("INSIDE", "CROSSED")
+
+    cad.lasso([...RIGHTWARDS, p(-60, -40)], { shiftKey: true })
+
+    expect(cad.selectedIds()).toEqual(["CROSSED"])
+  })
+
+  it("takes a path that crosses itself as drawn", () => {
+    const cad = createHarness({ entities })
+
+    cad.lasso([p(-50, -50), p(200, 120), p(200, -50), p(-50, 120), p(-60, -40)])
+
+    expect(cad.commandLog()).toEqual([line("Window")])
+    expect(cad.selectedIds()).toEqual([])
+  })
+
+  it("is drawn in the window's or the crossing's colours, a fence as a dashed line", () => {
+    const cad = createHarness({ entities })
+    const paths = () =>
+      cad.scene().primitives.filter((prim) => prim.kind === "path")
+
+    cad.mouseDown(RIGHTWARDS[0]).moveTo(RIGHTWARDS[1]).moveTo(RIGHTWARDS[2])
+    expect(paths()).toMatchObject([
+      {
+        closed: true,
+        fill: THEME.selectionWindowFill,
+        stroke: { color: THEME.selectionWindowStroke, dash: undefined },
+      },
+    ])
+    cad.press(" ")
+    expect(paths()).toMatchObject([
+      { stroke: { color: THEME.selectionCrossingStroke, dash: [6, 4] } },
+    ])
+    expect(paths()[0]).not.toHaveProperty("fill")
+    cad.press(" ")
+    expect(paths()).toMatchObject([
+      { closed: true, fill: THEME.selectionCrossingFill },
+    ])
+  })
+})
+
+// The window's and the crossing's outline is white in AutoCAD 2027, solid and
+// dashed, over the blue and the green fills (desktop erase/d02-1, d03-1).
+it("outlines the window and the crossing in white", () => {
+  expect(THEME.selectionWindowStroke).toBe("#ffffff")
+  expect(THEME.selectionCrossingStroke).toBe("#ffffff")
+})
+
+// SELECTIONPREVIEW 3: what a window, a crossing or a lasso under way would
+// take glows as the hover does, but what is already selected (desktop
+// erase/d02-1, d03-1, d05-1).
+describe("what a window or a lasso would take", () => {
+  const INSIDE = lineOf(p(0, 0), p(100, 0), { id: "INSIDE" })
+  const OUTSIDE = lineOf(p(0, 300), p(100, 300), { id: "OUTSIDE" })
+  const HELD = lineOf(p(0, 50), p(100, 50), { id: "HELD" })
+  const glowing = (cad: CadHarness) =>
+    cad
+      .scene()
+      .primitives.filter(
+        (prim) =>
+          prim.kind === "segment" &&
+          prim.stroke.color === THEME.entityHover &&
+          prim.stroke.width === 2
+      )
+      .map((prim) =>
+        prim.kind === "segment" ? Math.round(cad.toWorld(prim.a).y) + 0 : null
+      )
+
+  it("glows with no command as a clicked window is drawn, not what is selected", () => {
+    const cad = createHarness({ entities: [INSIDE, OUTSIDE, HELD] })
+    cad.select("HELD")
+
+    cad.click(p(-50, -50)).moveTo(p(200, 100))
+
+    expect(glowing(cad)).toEqual([0])
+  })
+
+  it("glows at Select objects for a clicked window and a lasso", () => {
+    const cad = createHarness({ entities: [INSIDE, OUTSIDE, HELD] })
+    cad.command("MOVE").click(p(50, 50))
+
+    cad.click(p(-50, -50)).moveTo(p(200, 100))
+    expect(glowing(cad)).toEqual([0])
+    cad.click(p(200, 100))
+
+    cad.mouseDown(p(200, 400)).moveTo(p(-50, 400)).moveTo(p(-50, 250))
+    cad.moveTo(p(200, 250))
+    expect(glowing(cad)).toEqual([300])
   })
 })
 
@@ -891,11 +1074,11 @@ describe("dragging a selection", () => {
     ])
   })
 
-  it("still draws a selection box when the drag starts on empty space", () => {
+  it("still draws a lasso when the drag starts on empty space", () => {
     const cad = createHarness({ entities: [SHORT, FAR] })
     cad.select("L1")
 
-    cad.drag(p(-50, 300), p(600, 600))
+    cad.lasso([p(-50, 300), p(600, 300), p(600, 600), p(-50, 600), p(-60, 310)])
 
     expect(cad.selectedIds().sort()).toEqual(["L1", "L2"])
     expect(cad.byId<LineEntity>("L1").start).toBeCloseToPoint(p(0, 0))
@@ -943,9 +1126,40 @@ describe("ERASE", () => {
       "E ERASE",
       "Select objects: 1 found",
       "Select objects:",
-      "ERASE 1 found",
+      "ERASE",
+      "1 found",
     ])
     expect(cad.entityCount).toBe(0)
+  })
+
+  // A preselection's count goes on the line of an alias's expansion or a
+  // macro's echo, and on a line of its own after a name typed whole (desktop
+  // erase/d11: `B` → `BORRA 1 encontrados`, `DESPLAZA` → `1 encontrados`,
+  // the Delete key → `_.erase 1 encontrados`; console erase/p01).
+  it("counts a preselection on the echo's line after an alias or a macro, else on its own (erase/d11, p01)", () => {
+    const cad = createHarness({
+      entities: [SHORT, FAR, lineOf(p(0, 50), p(100, 50), { id: "L3" })],
+    })
+
+    cad.select("L1").command("E")
+    cad.select("L2").command("_ERASE")
+    cad.select("L3").tool("erase")
+
+    expect(cad.commandLog()).toEqual([
+      "E ERASE 1 found",
+      "ERASE",
+      "1 found",
+      "_erase 1 found",
+    ])
+
+    const spanish = createHarness({ locale: es, entities: [SHORT, FAR] })
+    spanish.select("L1").command("B")
+    spanish.select("L2").command("DESPLAZA")
+    expect(spanish.commandLog()).toEqual([
+      "B BORRA 1 encontrados",
+      "DESPLAZA",
+      "1 encontrados",
+    ])
   })
 
   it("is BORRA and B in Spanish, and Enter at Command: repeats it (erase/p300, p303)", () => {
@@ -1051,7 +1265,7 @@ describe("ERASE", () => {
     cad.select("L1")
     expect(cad.press("Delete")).toBe(true)
     expect(cad.entities().map((e) => e.id)).toEqual(["L2"])
-    expect(cad.commandLog().slice(-1)).toEqual(["ERASE 1 found"])
+    expect(cad.commandLog().slice(-1)).toEqual(["_.erase 1 found"])
 
     cad.command("U")
     expect(cad.commandLog().slice(-2)).toEqual(["U", "ERASE"])
@@ -1073,7 +1287,7 @@ describe("ERASE", () => {
 
     cad.select("L1").press("Backspace")
     expect(cad.entities().map((e) => e.id)).toEqual(["L2"])
-    expect(cad.commandLog()).toEqual(["ERASE 1 found"])
+    expect(cad.commandLog()).toEqual(["_.erase 1 found"])
   })
 
   // AutoCAD's erase preview: at ERASE's `Select objects:` the object under

@@ -13,7 +13,11 @@ import { ScenePrimitive, StrokeStyle } from "../../scene/types"
 import { THEME } from "../../scene/theme"
 import { DEFAULT_LAYER_COLOR } from "../../domain/layers"
 import { arcScenePrimitive, entityScenePrimitive } from "../SceneBuilder"
-import { buildSelectionBoxOverlay } from "./boxSelection"
+import {
+  buildLassoOverlay,
+  buildSelectionBoxOverlay,
+  buildSelectionPreview,
+} from "./boxSelection"
 import { PointerInput, ToolContext } from "./Tool"
 import { SelectToolState } from "./selectToolState"
 import {
@@ -39,16 +43,24 @@ type Phase<P extends SelectToolState["phase"]> = Extract<
   { phase: P }
 >
 
-/** The in-progress selection rectangle (window or crossing). */
+/**
+ * The window or crossing under way, or the lasso, and what it would take
+ * (SELECTIONPREVIEW 3, desktop erase/d02-1, d03-1).
+ */
 export function buildSelectionBox(
-  state: Phase<"boxing">,
+  state: Phase<"boxing" | "lasso">,
   ctx: ToolContext
 ): ScenePrimitive[] {
-  return buildSelectionBoxOverlay(
-    ctx.viewport,
-    state.startWorld,
-    state.currentWorld
-  )
+  return [
+    ...(state.phase === "lasso"
+      ? buildLassoOverlay(ctx.viewport, state.lasso)
+      : buildSelectionBoxOverlay(
+          ctx.viewport,
+          state.startWorld,
+          state.currentWorld
+        )),
+    ...buildSelectionPreview(ctx.viewport, ctx.document, state.preview),
+  ]
 }
 
 /**

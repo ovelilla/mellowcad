@@ -127,10 +127,9 @@ describe("picking off the plan", () => {
     const top = Math.min(...around.map((s) => s.y)) - 5
     const bottom = Math.max(...around.map((s) => s.y)) + 5
 
-    cad.drag(
-      viewport.screenToFacing({ x: left, y: top }),
-      viewport.screenToFacing({ x: right, y: bottom })
-    )
+    cad
+      .click(viewport.screenToFacing({ x: left, y: top }))
+      .click(viewport.screenToFacing({ x: right, y: bottom }))
 
     expect(cad.selectedIds()).toEqual(["HIGH"])
   })

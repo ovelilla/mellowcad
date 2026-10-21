@@ -181,6 +181,10 @@ export class ZoomTool implements Tool {
   }
 
   /** A window's corners take no Enter, as AutoCAD's refuse it. */
+  cycleLasso(ctx: ToolContext): boolean {
+    return this.selector.cycleLasso(ctx)
+  }
+
   onEnter(ctx: ToolContext): boolean {
     switch (this.state.phase) {
       case "first":

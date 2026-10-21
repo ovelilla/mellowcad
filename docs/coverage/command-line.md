@@ -177,8 +177,17 @@ HATCH `Undo`, VPOINT `Tripod`, FILLET's and CHAMFER's second-object
 
 **Implemented:** what every command that takes a set asks it with (`tools/objectSelection.ts`),
 answered as AutoCAD 2023's console answers: a pick (`1 found`), Shift+pick removing, a window
-dragged or clicked from a point on nothing (`Select objects: Specify opposite corner: 2 found`;
-left→right a window, right→left a crossing), a point typed there — `@` from LASTPOINT, a number a
+clicked from a point on nothing (`Select objects: Specify opposite corner: 2 found`; left→right a
+window, right→left a crossing), a press dragged on nothing a lasso, as 2027's PICKAUTO 5 draws it —
+the dragged path closed, a window lasso if it sets off rightwards and a crossing lasso leftwards,
+decided on its first stretch (a crossing released right of its press stays one, desktop
+erase/d09-4), Space with the button held cycling Window → Fence → Crossing (d04), each said on a
+line of its own in the place of the prompt's (`Window Lasso  Press Spacebar to cycle options`, es
+`Ventana Forma irregular: pulse la barra espaciadora para recorrer las opciones.`), taking what
+WPolygon, CPolygon or Fence would along it (a path that crosses itself as drawn), Shift at the press
+removing, its count on the next line (`3 found, 5 total`, d09) —, what a window or a lasso under
+way would take glowing as the hover does (SELECTIONPREVIEW 3, d02-1, d03-1, d05-1; ERASE's fading),
+a point typed there — `@` from LASTPOINT, a number a
 direct distance from it towards the cursor, LASTPOINT itself after — picking the object at it or, on
 nothing, starting that window (a wrong opposite corner, a keyword or Enter says
 `Invalid window specification.`, then the prompt the window started at, and asks the opposite corner
@@ -224,7 +233,9 @@ what was refused counts: `1 found, 0 total`, erase/p241); `0 found` on nothing s
 find a command's filter empties (DIMSPACE's: no dimension) totals (`0 found, 0 total`, p244);
 objects on a locked layer are counted, then left out: `1 was on a locked layer.`, and under it what
 the command refuses, also left out (EXPLODE's `1 was not able to be exploded.`, p219); at `Remove
-objects:` neither is said (p243, p247). A set selected before the command is counted after its echo
+objects:` neither is said (p243, p247). A set selected before the command is counted on the line
+of an alias's expansion or a macro's echo (`E ERASE 1 found`, the Delete key's `_.erase 1 found`),
+on a line of its own after a name typed whole (`ERASE` / `1 found`, desktop erase/d11; console p01),
 and sifted the same way; with nothing left the command asks `Select objects:`, closing the set at
 the first selection that adds something (EXPLODE's, p241, p242). The set is dropped as the command
 ends or is cancelled, so the next one asks `Select objects:` — `(ssget "_I")` is nil after MOVE,
@@ -248,8 +259,8 @@ selects them (no object here has sub-objects); a pick or a typed point on an obj
 layer (here it finds nothing and starts a window; AutoCAD says `1 found` / `1 was on a locked
 layer.`, erase/p211, p257); PICKFIRST (a set selected before the command is always taken; with
 PICKFIRST 0 AutoCAD ignores it, erase/p230); the lasso `pick/drag cursor` offers at a fence's or
-polygon's first point; PICKADD, PICKAUTO and PICKDRAG as variables (their defaults are the
-behaviour); the Previous set lasts the session, not the drawing
+polygon's first point; PICKADD, PICKAUTO, PICKDRAG and SELECTIONPREVIEW as variables (their
+defaults are the behaviour); the Previous set lasts the session, not the drawing
 
 ### Typed and confirmed
 

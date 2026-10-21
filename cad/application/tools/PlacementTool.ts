@@ -318,6 +318,10 @@ export abstract class PlacementTool implements Tool {
     if (this.state.phase === "selecting") this.selector.onPointerUp(input, ctx)
   }
 
+  cycleLasso(ctx: ToolContext): boolean {
+    return this.selector.cycleLasso(ctx)
+  }
+
   onEnter(ctx: ToolContext): boolean {
     return this.state.phase === "selecting" && this.selector.onEnter(ctx)
   }

@@ -122,6 +122,10 @@ export class MatchPropTool implements Tool {
     }
   }
 
+  cycleLasso(ctx: ToolContext): boolean {
+    return this.selector.cycleLasso(ctx)
+  }
+
   onEnter(ctx: ToolContext): boolean {
     return this.state.phase === "destination" && this.selector.onEnter(ctx)
   }
