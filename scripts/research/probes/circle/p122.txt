@@ -1,0 +1,8 @@
+_CIRCLE
+_3P
+FOO
+0,0
+FOO
+10,0
+FOO
+0,10

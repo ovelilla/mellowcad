@@ -1,0 +1,25 @@
+_CIRCLE
+0,0
+10
+_CIRCLE
+40,0
+10
+_LINE
+-20,-15
+60,-15
+
+_ZOOM
+_W
+-30,-30
+70,30
+(defun pc (/ e x a n) (setq x (entlast)) (if (equal x s0) (princ "\nNONE") (progn (setq e (entget x) a (assoc 10 e) n (assoc 210 e)) (princ (strcat "\nRES " (cdr (assoc 0 e)) " " (rtos (cadr a) 2 10) "," (rtos (caddr a) 2 10) "," (rtos (cadddr a) 2 10) " r" (rtos (cdr (assoc 40 e)) 2 10) " n" (rtos (cadddr n) 2 6))) (entdel x))) (princ))
+(setq s0 (entlast))
+_ID
+-25,25
+_CIRCLE
+_TAN
+0,10
+5
+(pc)
+_ID
+@

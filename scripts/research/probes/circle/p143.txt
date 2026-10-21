@@ -1,0 +1,4 @@
+_CIRCLE
+5,5
+3
+(princ (getvar "LASTPOINT"))

@@ -1,0 +1,5 @@
+(setvar "CIRCLERAD" 0)
+_CIRCLE
+0,0
+
+5

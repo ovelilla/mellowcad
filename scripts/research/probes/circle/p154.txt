@@ -1,0 +1,7 @@
+_CIRCLE
+_3P
+0,0
+'ORTHOMODE
+1
+10,0
+0,10

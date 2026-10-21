@@ -1,0 +1,17 @@
+_CIRCLE
+0,0
+10
+_ZOOM
+_W
+-30,-30
+50,40
+_CIRCLE
+12,0
+10
+_LINE
+_INT
+6,8
+30,30
+
+MPDUMP
+-

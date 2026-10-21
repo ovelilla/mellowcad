@@ -1,0 +1,6 @@
+_CIRCLE
+_2P
+FOO
+0,0
+FOO
+10,0

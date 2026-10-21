@@ -1,0 +1,6 @@
+(setvar "CIRCLERAD" 0)
+_CIRCLE
+0,0
+_D
+
+6

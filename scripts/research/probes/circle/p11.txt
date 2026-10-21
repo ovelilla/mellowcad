@@ -1,0 +1,7 @@
+_CIRCLE
+0,0
+'_-COLOR
+1
+10
+MPDUMP
+-

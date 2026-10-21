@@ -1,0 +1,10 @@
+_CIRCLE
+0,0
+10
+_ZOOM
+_W
+-30,-30
+50,40
+(princ (getvar "SCREENSIZE"))
+(princ (getvar "VIEWSIZE"))
+(princ (getvar "APERTURE"))

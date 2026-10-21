@@ -1,0 +1,6 @@
+_CIRCLE
+0,0
+5
+(progn (command "_CIRCLE" "10,0") (command) (princ))
+_U
+(princ (sslength (ssget "_X")))

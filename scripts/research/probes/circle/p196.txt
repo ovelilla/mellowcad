@@ -1,0 +1,9 @@
+ORTHOMODE
+1
+_CIRCLE
+_3P
+0,0
+10
+0,10
+MPDUMP
+-

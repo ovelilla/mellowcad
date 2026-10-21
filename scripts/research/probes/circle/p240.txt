@@ -1,0 +1,11 @@
+_CIRCLE
+10,0
+5
+_MIRROR
+_L
+
+0,0
+0,10
+_N
+MPDUMP
+-

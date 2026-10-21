@@ -1,0 +1,8 @@
+_UCS
+_X
+90
+_CIRCLE
+10,0
+5
+MPDUMP
+-

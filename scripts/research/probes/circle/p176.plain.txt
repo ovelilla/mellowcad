@@ -1,0 +1,19 @@
+_CIRCLE
+0,0
+5
+_CIRCLE
+10,0
+5
+_CIRCLE
+20,0
+5
+_U
+(princ (sslength (ssget "_X")))
+_UNDO
+1
+(princ (sslength (ssget "_X")))
+_REDO
+(princ (sslength (ssget "_X")))
+_MREDO
+1
+(princ (sslength (ssget "_X")))

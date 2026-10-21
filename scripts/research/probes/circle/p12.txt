@@ -1,0 +1,7 @@
+_CIRCLE
+0,0
+'_THICKNESS
+3
+10
+MPDUMP
+-

@@ -1,0 +1,14 @@
+_CIRCLE
+0,0
+5
+_CIRCLE
+10,0
+5
+_CIRCLE
+20,0
+5
+_UNDO
+2
+_REDO
+MPDUMP
+-

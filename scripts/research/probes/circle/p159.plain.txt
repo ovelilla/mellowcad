@@ -1,0 +1,12 @@
+_CIRCLE
+_2P
+0,0
+10,0
+_circle
+0,0
+_d
+20
+_U
+_U
+MPDUMP
+-
