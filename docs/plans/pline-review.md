@@ -1,8 +1,9 @@
 # PLINE review
 
-> **Status:** plan, written 2026-10-21, waiting for the owner's approval. Second review of the order
-> in `docs/coverage/roadmap.md` ("Command reviews"), with skill `command-review`. Phases 0–4 ran in
-> one session, with three subagents and a desktop pass with the owner's mouse.
+> **Status:** approved by the owner on 2026-10-21, §14 included; executing block by block in the
+> review's own session. Second review of the order in `docs/coverage/roadmap.md` ("Command
+> reviews"), with skill `command-review`. Phases 0–4 ran in one session, with three subagents and a
+> desktop pass with the owner's mouse.
 
 ## 1. Summary
 
@@ -651,7 +652,8 @@ One commit per block, each `fix(engine): PLINE review — <IDs>`, in this order:
 
 ## 14. Template improvements
 
-Proposed, to apply once the owner confirms:
+Confirmed by the owner and applied on 2026-10-21 (template §0, §4.1, §9; matrix.md H;
+annex-probes.md §2, §4; `probe.sh`):
 
 1. **Start from the previous review's analogues** (§4.1): LINE's list gave PLN-01 to PLN-03 in the
    first hour.

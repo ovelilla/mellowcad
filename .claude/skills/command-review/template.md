@@ -24,7 +24,9 @@ share the tree and the hook checks it whole, so nothing waits uncommitted. The o
 corrects it; corrections are a new commit.
 
 A review runs in **fresh sessions**, one per group of blocks (§1.4), in the order the plan sets.
-Phases 0–4 of a group fit in one session; its execution in another. Opening prompt:
+Phases 0–4 of a group fit in one session. Its execution follows in the same session when the owner
+approves there and then — each block's subagent starts clean anyway, and the reviewer keeps what
+the plan does not say; otherwise in a new one, from the plan alone. Opening prompt:
 
 ```text
 Review of <COMMAND>, blocks <ids>, with the command-review skill.
@@ -149,6 +151,8 @@ the review, not an "n/a".
 
 ### 4.1 Before probing
 
+- Start from the analogues the previous review left (its plan's index and the roadmap): each is
+  a probe to run first (LINE's list gave PLINE's first three highs in an hour).
 - Read the coverage entry, the rules of the area and the command's tests **whole**. Turn each
   claim of the entry (Implemented and Missing) into a matrix cell to check (§4.4).
 - Draw the matrix's columns from the tool's `question()` states and the console's prompts: a
@@ -358,3 +362,6 @@ Applied:
 - 2026-10-21, at the owner's request: the matrix gained pointer gestures (P), the look (Q, after
   AGENTS.md's rule that a look slowing an AutoCAD user down is a finding), every object snap three
   ways (running, picked, typed) and the modes in combination.
+- 2026-10-21, after PLINE's review: start from the previous review's analogues (§4.1); row H
+  asks for properties changed mid-command (matrix.md); the desktop's traps and a probe for one
+  locale (annex-probes.md); the execution may follow in the review's session (§0).

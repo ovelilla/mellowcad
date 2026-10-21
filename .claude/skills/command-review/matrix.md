@@ -76,6 +76,8 @@ off, and with the menu), Escape (once, twice), another command typed mid-prompt,
 - The object type, how many, in which order (handles), its geometry to full precision.
 - Layer (CLAYER), colour (CECOLOR), linetype (CELTYPE), lineweight (CELWEIGHT), linetype scale,
   ELEVATION and the Z of each point, THICKNESS, the normal; drawn in a rotated and in a tilted UCS.
+- The same settings changed mid-command, transparently (`'-COLOR`, `'ELEVATION`): AutoCAD fixes
+  them when the object starts (PLINE's p39), not when the command ends.
 
 **I. Editing afterwards** — for its object: the grips (which, where, hover, what a drag does, the
 multifunctional grip's menu) and the Properties palette (rows, order, units, which edit, what an

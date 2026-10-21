@@ -26,6 +26,9 @@ languages, AllowNone, the base point and every object appended, modified or eras
 
 Writing one (the traps of `console.md` hold; these are the review's):
 
+- A probe for one language only is `<id>.es.txt` or `<id>.en.txt` (`.plain` before it when
+  untraced): `probe.sh` runs it in that locale alone (a Spanish name such as `POL` is POLYGON in
+  English, and the run slips).
 - **One question per probe**, ending back at the command prompt: a refused answer slips every line
   after it by one, and the runner flags the probe.
 - Answers in the **underscore form** (`_LINE`, `_U`, `_C`), so one file runs in both languages;
@@ -93,6 +96,18 @@ Then, per desktop probe:
 3. Show the command line if keys are typed (`com send "_COMMANDLINE\n"`), draw, `type`, `cursor`,
    `shot`; copy each screenshot to `research/probes/<command>/<id>-<n>.png`.
 4. Restore the settings, hide the command line again (`_COMMANDLINEHIDE`), `acad.sh com close`.
+
+Traps seen on the desktop (PLINE's review, 2026-10-21):
+
+- Ctrl+1 docks the Properties palette and shifts the drawing area: capture the palette last, or
+  read the view again after closing it.
+- A grip's hover menu stays open until Escape, and the cursor moved meanwhile shows nothing new:
+  press Escape and select again between two hovers.
+- A click sent right after typed keys can be lost while AutoCAD still reads them: wait after
+  typing.
+- A launched instance may open the English profile: a cell that needs the Spanish labels goes in
+  a session in the owner's profile.
+- A Ctrl held only during a move is not read by the jig; held at the pick it is.
 
 A probe that only reads the raw `initget` (flags, `control`) loads MellowProbe with
 `acad.sh com netload` and reads `com trace` (`tracing.md`).

@@ -8,7 +8,8 @@
 # it; with no ids, every probe of the command runs. Each runs twice, es-ES and en-US, with -t,
 # into research/probes/<command>/<id>.<locale>.txt (gitignored: the transcript is Autodesk's
 # text). A probe named <id>.plain.txt runs untraced: loading the tracer leaves undo steps of its
-# own (SECURELOAD, NETLOAD, MPTRACE), which a probe of how far U and UNDO go would undo too. Runs
+# own (SECURELOAD, NETLOAD, MPTRACE), which a probe of how far U and UNDO go would undo too. A
+# probe named <id>[.plain].es.txt or <id>[.plain].en.txt runs in that locale only. Runs
 # are isolated, so they go in parallel (PROBE_JOBS, 4 by default). Each run prints ok, or the
 # prompt that swallowed the runner's QUIT. Read a transcript without the tracer's lines,
 # answers kept, with sed 's/«MP[^»]*»//g'. A desktop probe (<id>.sh, driving acad.sh) is not
@@ -23,16 +24,31 @@ out="$root/research/probes/$command"
 mkdir -p "$out"
 if (($#)); then ids=("$@"); else
   ids=()
-  for f in "$src"/*.txt; do [[ -e $f ]] && ids+=("$(basename "${f%.plain.txt}" .txt)"); done
+  for f in "$src"/*.txt; do
+    [[ -e $f ]] || continue
+    id=$(basename "$f" .txt); id=${id%.es}; id=${id%.en}; ids+=("${id%.plain}")
+  done
+  mapfile -t ids < <(printf '%s\n' "${ids[@]}" | sort -u)
 fi
 ((${#ids[@]})) || { echo "no probes in $src" >&2; exit 1; }
 
+# The probe file of <id> in <locale>, and whether it runs untraced; nothing if it is not run there.
+probe_file() {
+  local id=$1 lang=${2%%-*} f
+  for f in "$id.txt" "$id.$lang.txt" "$id.plain.txt" "$id.plain.$lang.txt"; do
+    [[ -e $src/$f ]] && { echo "$src/$f"; return; }
+  done
+}
+export -f probe_file
+
 run() {
-  local id=$1 locale=$2
-  if [[ -e $src/$id.plain.txt ]]; then
-    "$here/runacc.sh" "$src/$id.plain.txt" "$locale" >"$out/$id.$locale.txt" 2>&1
+  local id=$1 locale=$2 file
+  file=$(probe_file "$id" "$locale")
+  [[ $file ]] || return 0
+  if [[ $file == *.plain.* ]]; then
+    "$here/runacc.sh" "$file" "$locale" >"$out/$id.$locale.txt" 2>&1
   else
-    "$here/runacc.sh" -t "$src/$id.txt" "$locale" >"$out/$id.$locale.txt" 2>&1
+    "$here/runacc.sh" -t "$file" "$locale" >"$out/$id.$locale.txt" 2>&1
   fi
   # The runner's _.QUIT must answer the command prompt; anything else, the probe ended inside a
   # command (or an answer was refused and the rest slipped by one). Traced, a prompt is its own
@@ -48,6 +64,6 @@ run() {
 export -f run
 export here src out
 for id in "${ids[@]}"; do
-  [[ -e $src/$id.txt || -e $src/$id.plain.txt ]] || { echo "missing $src/$id.txt" >&2; exit 1; }
+  [[ $(probe_file "$id" es-ES)$(probe_file "$id" en-US) ]] || { echo "missing $src/$id.txt" >&2; exit 1; }
   printf '%s es-ES\n%s en-US\n' "$id" "$id"
 done | xargs -P "${PROBE_JOBS:-4}" -L 1 bash -c 'run "$0" "$1"' | sort
