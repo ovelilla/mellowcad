@@ -936,3 +936,4 @@ every object snap three ways and the modes in combination:
 | CPR | CPR-01 to CPR-03 | `7ba4cc2` |
 | DYN | DYN-01, DYN-02 | `4b15a28` |
 | DSK | DSK-01 to DSK-08 | `6a9591f` |
+| EDT | EDT-01 to EDT-06 | `500fff9` |
