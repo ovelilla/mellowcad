@@ -1,6 +1,6 @@
 # Modify
 
-### `MOVE` / `M` · es `DESPLAZA` / `D`†
+### `MOVE` / `M` · es `DESPLAZA` / `D`
 
 **Implemented:** `Select objects:` (es `Designe objetos:`), each pick writing what it found on that
 line — `1 found`, `1 found (1 duplicate), 2 total`, a window's `Specify opposite corner: 3 found`,
@@ -20,24 +20,20 @@ runs from the origin towards the cursor (p125, p126, p138), an object snap or a 
 `Precise punto base o [Desplazamiento] <Desplazamiento>`, `Precise desplazamiento`,
 `Precise segundo punto o <usar primer punto como desplazamiento>`); noun-verb and verb-noun, box
 select, displacement + angle field; the displacement is 3D (`@0,0,5` lifts); Enter at the second
-point uses the first point as the displacement; a move by nothing changes nothing, its run still the
+point uses the first point as the displacement, LASTPOINT left at the base (p150), and a
+second point however given, a number or the tooltip's fields too, is LASTPOINT after (p170; STRETCH's,
+p242); a move by nothing changes nothing, its run still the
 step U names (p195, p231); the drag draws the set as itself at the cursor, solid in each object's
 colour, the originals faded where they were and an amber dashed line from the base point (desktop
-d01); a whole ellipse moves with its centre and stays for a quadrant alone
-(ellipse/p326, p331)
+d01); `D` from the Spanish `acad.pgp` (p101)
 
 **Missing:** the selection modes' gaps (Command line, `Select objects:`); the drag's ghost wears
 each object's colour only, not its linetype or lineweight, and a block reference's objects all
 wear the reference's, where AutoCAD drags the set as itself (d01); what the desktop
 draws at `Specify displacement` (no line from the origin here) and what a number does after `<a`
-there are **unverified** (the console ignores it, p139); an elliptical
-arc with an
-end in the window: AutoCAD moves that end and keeps the other, the arc an affine image of itself
-with its parameter sweep kept (ellipse/p324, p333, p336–p338; p332 moved an end lying 0.14 outside
-the window), whose rule no probe has fixed yet (ELLIPSE-D44); here the arc moves whole with its
-centre, else stays
+there are **unverified** (the console ignores it, p139)
 
-### `COPY` / `CO` · es `COPIA` / `CP` / `DUP`†
+### `COPY` / `CO` · es `COPIA` / `CP` / `DUP`
 
 **Implemented:** MOVE's selection and base point, then `Current settings:  Copy mode = Multiple` (es
 `Parámetros actuales:  modo de copia = Múltiple`),
@@ -49,7 +45,7 @@ Displacement places one copy and ends, its `<default>` COPY's own last one, not 
 back to 0 at NEW and OPEN; a zero displacement — the second point at the base, a Displacement of
 `0,0,0`, Enter and Enter — leaves a duplicate in place, which Undo takes back like any other
 (p147, p193, p228–p232); the drag as MOVE's, the originals keeping the selection's glow (desktop
-d02, d11)
+d02, d11); `CP` and `DUP` from the Spanish `acad.pgp` (p103)
 
 **Missing:** mOde (COPYMODE is always Multiple, so the base point offers `[Displacement]` alone),
 Array (so the second point's `[Array]` is not offered)
@@ -546,9 +542,14 @@ second point; crossing-window stretch via `PlacementTool`, a crossing polygon (C
 a crossing window does, and what a pick, Last or a Fence takes moving whole; a 3D displacement moves
 whole (Z included) what the window catches whole, and a line's caught end in Z; a polyline, spline,
 hatch or dimension caught in part stays in its plane; Enter at the second point uses the first point
-as the displacement
+as the displacement; a whole ellipse moves with its centre in the window and stays for a quadrant
+alone (ellipse/p326, p331)
 
-**Missing:** the selection modes' gaps (Command line, `Select objects:`)
+**Missing:** the selection modes' gaps (Command line, `Select objects:`); an elliptical arc with an
+end in the window: AutoCAD moves that end and keeps the other, the arc an affine image of itself
+with its parameter sweep kept (ellipse/p324, p333, p336–p338; p332 moved an end lying 0.14 outside
+the window), whose rule no probe has fixed yet (ELLIPSE-D44); here the arc moves whole with its
+centre in the window, else stays
 
 ### `ERASE` / `E` / `DELETE` · es `BORRA` / `B` / `DELETE`
 

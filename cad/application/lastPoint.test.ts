@@ -577,6 +577,54 @@ describe("A number typed for a point", () => {
     expect(circle.radius).toBeCloseTo(2.5)
   })
 
+  it("is MOVE's destination at its second point, also from the tooltip's distance and angle", () => {
+    // probe move/p170: base 3,4, `10` towards the console's cursor → the
+    // object at -9.8789,-1.55156 and LASTPOINT -6.8789,2.44844,0.
+    const typed = createHarness({
+      entities: [lineOf(p(0, 0), p(100, 0), { id: "A" })],
+    })
+    typed.moveTo(p(3 - 98.789, 4 - 15.5156))
+    answer(typed, "MOVE", "L", "", "3,4", "10")
+    expect(typed.byId<LineEntity>("A").start).toBeCloseToPoint(
+      p(-9.8789, -1.55156),
+      4
+    )
+    expect(lastPoint(typed)).toBe(" X = -6.88     Y = 2.45     Z = 0.00")
+
+    const tooltip = createHarness({
+      entities: [lineOf(p(0, 0), p(100, 0), { id: "A" })],
+    })
+    tooltip.moveTo(p(3, 50))
+    answer(tooltip, "MOVE", "L", "", "3,4")
+    tooltip.type("10", "distance").type("90", "angle").enter()
+    expect(tooltip.byId<LineEntity>("A").start).toBeCloseToPoint(p(0, 10))
+    expect(lastPoint(tooltip)).toBe(" X = 3.00     Y = 14.00     Z = 0.00")
+
+    // move/p184: Ortho bends the number to X, on the cursor's side.
+    const ortho = createHarness({
+      entities: [lineOf(p(0, 0), p(100, 0), { id: "A" })],
+    })
+    ortho.press("F8")
+    ortho.moveTo(p(-98.789, -15.5156))
+    answer(ortho, "MOVE", "L", "", "0,0", "10")
+    expect(ortho.byId<LineEntity>("A").start).toBeCloseToPoint(p(-10, 0))
+    expect(lastPoint(ortho)).toBe(" X = -10.00     Y = 0.00     Z = 0.00")
+
+    // move/p150: Enter's `<use first point as displacement>` keeps the base.
+    answer(ortho, "MOVE", "L", "", "3,4", "")
+    expect(ortho.byId<LineEntity>("A").start).toBeCloseToPoint(p(-7, 4))
+    expect(lastPoint(ortho)).toBe(" X = 3.00     Y = 4.00     Z = 0.00")
+  })
+
+  it("is STRETCH's destination too (move/p242)", () => {
+    const cad = createHarness({
+      entities: [lineOf(p(0, 0), p(100, 0), { id: "A" })],
+    })
+    cad.moveTo(p(3 - 98.789, 4 - 15.5156))
+    answer(cad, "STRETCH", "C", "90,-10", "110,10", "", "3,4", "10")
+    expect(lastPoint(cad)).toBe(" X = -6.88     Y = 2.45     Z = 0.00")
+  })
+
   it("keeps the cursor's heading off the drawing, and runs along X from a cursor on LASTPOINT", () => {
     const off = fromTen()
     off.runtime.pointerLeave()

@@ -307,7 +307,7 @@ export abstract class PlacementTool implements Tool {
       }
       case "secondPoint": {
         const dest = this.resolveSecond(this.state.base, input.point, ctx)
-        this.placeAt(this.state.base, dest, this.state.originals, ctx)
+        this.placeAtPoint(this.state.base, dest, this.state.originals, ctx)
         return
       }
       case "displacement":
@@ -494,8 +494,25 @@ export abstract class PlacementTool implements Tool {
     // What reads as no point is refused, never placed at the cursor.
     if (!readsTypedPoint(base, ctx)) return false
     const dest = this.resolveSecond(base, this.state.current, ctx)
-    this.placeAt(base, dest, originals, ctx)
+    this.placeAtPoint(base, dest, originals, ctx)
     return true
+  }
+
+  /**
+   * Places at a second point given, which MOVE's makes LASTPOINT however it
+   * was given: a number or the tooltip's fields leave the runtime nothing to
+   * read once the command has ended (move/p170). Enter's
+   * `<use first point as displacement>` keeps it at the base (p150), COPY's
+   * points too (p172).
+   */
+  private placeAtPoint(
+    base: Vec3,
+    dest: Vec3,
+    originals: readonly Entity[],
+    ctx: ToolContext
+  ): void {
+    if (!this.continuesAfterPlace()) ctx.setLastPoint(dest)
+    this.placeAt(base, dest, originals, ctx)
   }
 
   /**
