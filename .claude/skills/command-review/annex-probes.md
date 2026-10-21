@@ -116,7 +116,7 @@ Traps seen on the desktop (PLINE's review, 2026-10-21):
 
 - Ctrl+1 docks the Properties palette and shifts the drawing area: capture the palette last, or
   read the view again after closing it. When Ctrl+1 does not reach AutoCAD, `com send
-  "_PROPERTIES\n"`; the palette may float on another monitor: capture it by its handle
+"_PROPERTIES\n"`; the palette may float on another monitor: capture it by its handle
   (`acad.sh wins`, `acad.sh shot <hwnd>`) (SPLINE's review).
 - A grip's hover menu stays open until Escape, and the cursor moved meanwhile shows nothing new:
   press Escape and select again between two hovers.
@@ -141,6 +141,14 @@ Traps seen on the desktop (PLINE's review, 2026-10-21):
   took the fixed cursor as a tangent and p148 asked a tangent the desktop refuses (d11, d12). Check
   it on the desktop through COM alone, with no mouse; COM's space is an Enter, so `_T \n` is two
   answers (SPLINE's review).
+
+- A press and drag (a lasso, a window by drag) needs the button held between screenshots:
+  `scripts/research/probes/erase/drag.ps1` presses, moves, sends a key and releases in separate
+  calls, the button held between them; a key held across a screenshot (Shift's badge) is a
+  SendInput key-down in one process and its key-up in another (ERASE's review).
+- `acad.sh click` moves the cursor 3 px off and back before clicking, which restarts selection
+  cycling's stack: which candidate a click takes after Shift+Space needs a click without the
+  jiggle (ERASE's review).
 
 A probe that only reads the raw `initget` (flags, `control`) loads MellowProbe with
 `acad.sh com netload` and reads `com trace` (`tracing.md`).

@@ -161,6 +161,8 @@ the review, not an "n/a".
   claim of the entry (Implemented and Missing) into a matrix cell to check (§4.4).
 - Draw the matrix's columns from the tool's `question()` states and the console's prompts: a
   prompt AutoCAD has and the tool lacks is already a finding.
+- Read what each command leaves selected (`(ssget "_I")` after it ends or is cancelled): a set
+  left behind is the next command's preselection (ERASE's SEL-43).
 
 ### 4.2 Probes
 
@@ -385,3 +387,6 @@ Applied:
 - 2026-10-21, after SPLINE's review: the launcher opens the Spanish profile (`/language es-ES`, the
   trap that blamed launching went); subagents return their reports as text (§4.8); the palette on
   a second monitor, and a console answer at a jig checked through COM (annex-probes.md §4).
+- 2026-10-21, after ERASE's review: what a command leaves selected (§4.1); a press and drag with
+  the button held between screenshots, a key held across one, and the click tool's jiggle against
+  selection cycling (annex-probes.md §4).
