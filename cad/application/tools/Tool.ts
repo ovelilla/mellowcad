@@ -369,6 +369,12 @@ export interface ToolContext {
     set(types: readonly SnapType[]): void
   }
 
+  /** Snap mode (SNAPMODE) and its lattice's spacing (SNAPUNIT), which SNAP reads and sets. */
+  readonly snapMode: {
+    spacing(): Vec2
+    set(on: boolean, spacing?: Vec2): void
+  }
+
   /**
    * The one-shot object snap given for the point being asked (`tan`, the
    * Shift+right-click menu), or null: what LINE reads to defer a Tangent or a

@@ -63,6 +63,7 @@ import { AuPrecTool } from "./tools/AuPrecTool"
 import { UndoTool } from "./tools/UndoTool"
 import { MredoTool } from "./tools/MredoTool"
 import { OsnapTool } from "./tools/OsnapTool"
+import { SnapTool } from "./tools/SnapTool"
 import { ColorTool } from "./tools/ColorTool"
 import { LinetypeTool } from "./tools/LinetypeTool"
 import { LweightTool } from "./tools/LweightTool"
@@ -159,6 +160,7 @@ export function defaultTools(
     new MredoTool(),
     new UcsIconVariableTool(),
     new OsnapTool(),
+    new SnapTool(),
     new ColorTool(),
     new LinetypeTool(),
     new LweightTool(),

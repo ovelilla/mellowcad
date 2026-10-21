@@ -74,6 +74,7 @@ AUPREC [] "Angle precision"
 UNDO [] "Undo"
 MREDO [] "Multiple redo"
 -OSNAP ["-OS"] "Object snap modes"
+SNAP ["SN"] "Snap mode"
 COLOR ["COL"] "Color"
 LINETYPE ["LT"] "Linetype"
 LWEIGHT ["LW"] "Lineweight"
@@ -87,7 +88,6 @@ REDO [] "Redo the last undone action"
 -VPOINT ["-VP"] "Viewpoint"
 -VIEW ["-V"] "Preset views"
 EATTEDIT [] "Edit attributes"
-SNAP ["SN"] "Force the cursor onto the snap increments"
 FROM ["FRO"] "Pick a point offset from a base point"
 NEW [] "Start a new drawing"
 QNEW [] "Start a new drawing"
@@ -185,6 +185,7 @@ undo "Undo" UNDO
 mredo "Multiple redo" MREDO
 ucsiconvariable "UCS icon (variable)" -
 osnap "Object snap modes" -OS
+snap "Snap mode" SN
 color "Color" COL
 linetype "Linetype" LT
 lweight "Lineweight" LW
@@ -227,12 +228,16 @@ lweight "Lineweight" LW
   command| REDO
   info| ERASE
   info| Everything has been redone
-> SNAP on
-  command| SN SNAP
-  info| Snap mode on.
-> SNAP off
-  command| SNAP
-  info| Snap mode off.
+> F3 Osnap
+  command|  <Osnap on>
+> F8 Ortho
+  command|  <Ortho on>
+> F9 Snap
+  command|  <Snap on>
+> F10 Polar
+  command|  <Polar on>
+> F11 Object Snap Tracking
+  command|  <Object Snap Tracking off>
 > FROM at Command:
   error| Unknown command "FRO".  Press F1 for help.
 > QSAVE without files
@@ -5165,6 +5170,77 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0°~, Line space facto
   canvas: -
   prompt| Specify first point: _ext of *Cancel*
 
+## SNAP
+> start
+  prompt: Command:
+  asks: -
+  tip: -
+  dyn: -
+  options: -
+  canvas: -
+  properties: -
+  cycling: -
+> SNAP
+  prompt: SNAP Specify snap spacing or [ON/OFF/Aspect] <10.00>:
+  asks: "Specify snap spacing or"
+  tip: Specify snap spacing or
+  dyn: "Specify snap spacing or"=""|10.00|mm*
+  options: [ON] ON, [OF] OFF, [A] Aspect
+  command| SN SNAP
+> a word
+  prompt| Specify snap spacing or [ON/OFF/Aspect] <10.00>: FOO
+  error| Requires numeric distance, two points, or option keyword.
+> zero
+  prompt| Specify snap spacing or [ON/OFF/Aspect] <10.00>: 0
+  error| Value must be positive and nonzero.
+> a spacing
+  prompt: Command:
+  asks: -
+  tip: -
+  dyn: -
+  options: -
+  prompt| Specify snap spacing or [ON/OFF/Aspect] <10.00>: 5
+> SNAP again
+  prompt: SNAP Specify snap spacing or [ON/OFF/Aspect] <5.00>:
+  asks: "Specify snap spacing or"
+  tip: Specify snap spacing or
+  dyn: "Specify snap spacing or"=""|5.00|mm*
+  options: [ON] ON, [OF] OFF, [A] Aspect
+  command| SNAP
+> Aspect
+  prompt: SNAP Specify horizontal spacing <5.00>:
+  asks: "Specify horizontal spacing"
+  tip: Specify horizontal spacing
+  dyn: "Specify horizontal spacing"=""|5.00|mm*
+  options: -
+  prompt| Specify snap spacing or [ON/OFF/Aspect] <5.00>: A
+> horizontal spacing
+  prompt: SNAP Specify vertical spacing <5.00>:
+  asks: "Specify vertical spacing"
+  tip: Specify vertical spacing
+  dyn: "Specify vertical spacing"=""|5.00|mm*
+  prompt| Specify horizontal spacing <5.00>: 5
+> vertical spacing
+  prompt: Command:
+  asks: -
+  tip: -
+  dyn: -
+  prompt| Specify vertical spacing <5.00>: 10
+> SNAP with spacings apart
+  prompt: SNAP Specify snap spacing or [ON/OFF/Aspect] <A>:
+  asks: "Specify snap spacing or"
+  tip: Specify snap spacing or
+  dyn: "Specify snap spacing or"=""||mm*
+  options: [ON] ON, [OF] OFF, [A] Aspect
+  command| SNAP
+> OFF
+  prompt: Command:
+  asks: -
+  tip: -
+  dyn: -
+  options: -
+  prompt| Specify snap spacing or [ON/OFF/Aspect] <A>: OF
+
 ## -OSNAP
 > start
   prompt: Command:
@@ -5303,6 +5379,7 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0°~, Line space facto
   properties: -
   cycling: -
 > F10
+  command|  <Polar on>
 > LINE
   prompt: LINE Specify first point:
   asks: ""

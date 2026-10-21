@@ -294,7 +294,7 @@ describe("drawing in a UCS", () => {
   it("lays the snap lattice on it", () => {
     const cad = createHarness()
     cad.command("UCS").click(p(3, 4)).enter()
-    cad.command("SNAP")
+    cad.command("SNAP").option("ON")
     cad.command("LINE").click(p(11, 13)).click(p(40, 4)).escape()
     expect(cad.only<LineEntity>("line").start).toBeCloseToPoint(p(13, 14))
   })

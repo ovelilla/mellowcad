@@ -85,7 +85,8 @@ export const en: EngineCatalog = {
       "osnap": "Object snap modes",
       "color": "Color",
       "linetype": "Linetype",
-      "lweight": "Lineweight"
+      "lweight": "Lineweight",
+      "snap": "Snap mode"
     },
     "description": {
       "U": "Undo the last action",
@@ -904,6 +905,9 @@ export const en: EngineCatalog = {
       "ATTDISP": {
         "OFF": "OFf"
       },
+      "SNAP": {
+        "OFF": "OFf"
+      },
       "TEXT": {
         "TL": "TLeft",
         "TC": "TCenter",
@@ -1192,6 +1196,10 @@ export const en: EngineCatalog = {
         ]
       ],
       "osnapModes": "Enter list of object snap modes",
+      "snapSpacingOr": "Specify snap spacing or",
+      "snapAspect": "A",
+      "snapHorizontalSpacing": "Specify horizontal spacing",
+      "snapVerticalSpacing": "Specify vertical spacing",
       "defaultObjectColor": "Enter default object color",
       "trueColor": "Red,Green,Blue",
       "linetypeName": "Specify linetype name or",
@@ -1764,14 +1772,64 @@ export const en: EngineCatalog = {
         ]
       ],
       "snapMode": [
+        " <Snap ",
         [
           "state",
           1,
           {
-            "on": "Snap mode on.",
-            "other": "Snap mode off."
+            "on": "on",
+            "other": "off"
           }
-        ]
+        ],
+        ">"
+      ],
+      "osnapMode": [
+        " <Osnap ",
+        [
+          "state",
+          1,
+          {
+            "on": "on",
+            "other": "off"
+          }
+        ],
+        ">"
+      ],
+      "orthoMode": [
+        " <Ortho ",
+        [
+          "state",
+          1,
+          {
+            "on": "on",
+            "other": "off"
+          }
+        ],
+        ">"
+      ],
+      "polarMode": [
+        " <Polar ",
+        [
+          "state",
+          1,
+          {
+            "on": "on",
+            "other": "off"
+          }
+        ],
+        ">"
+      ],
+      "otrackMode": [
+        " <Object Snap Tracking ",
+        [
+          "state",
+          1,
+          {
+            "on": "on",
+            "other": "off"
+          }
+        ],
+        ">"
       ],
       "fromNeedsPoint": "FROM needs a point prompt.",
       "fromBase": "FROM: pick the base point.",
@@ -2975,6 +3033,9 @@ export const en: EngineCatalog = {
         "Lock position": "Lock position"
       },
       "ATTDISP": {
+        "OFF": "OFF"
+      },
+      "SNAP": {
         "OFF": "OFF"
       },
       "FILL": {

@@ -85,7 +85,8 @@ export const es: EngineLocale = {
       "osnap": "Modos de referencia a objetos",
       "color": "Color",
       "linetype": "Tipo de línea",
-      "lweight": "Grosor de línea"
+      "lweight": "Grosor de línea",
+      "snap": "Modo Forzcursor"
     },
     "description": {
       "U": "Deshacer la última acción",
@@ -1002,6 +1003,11 @@ export const es: EngineLocale = {
         "Normal": "Normal",
         "ON": "ACT"
       },
+      "SNAP": {
+        "ON": "ACT",
+        "OFF": "DES",
+        "Aspect": "asPecto"
+      },
       "TEXT": {
         "Justify": "jUstificar",
         "Style": "Estilo",
@@ -1537,6 +1543,10 @@ export const es: EngineLocale = {
         ]
       ],
       "osnapModes": "Indique lista de modo de referencia a objetos",
+      "snapSpacingOr": "Precise distancia de resolución o",
+      "snapAspect": "asP",
+      "snapHorizontalSpacing": "Precise intervalo horizontal",
+      "snapVerticalSpacing": "Precise intervalo vertical",
       "defaultObjectColor": "Indique el color de objeto por defecto",
       "trueColor": "Rojo,Verde,Azul",
       "linetypeName": "Precise nombre de tipo de línea o",
@@ -2108,14 +2118,64 @@ export const es: EngineLocale = {
         ]
       ],
       "snapMode": [
+        " <Forzcursor ",
         [
           "state",
           1,
           {
-            "on": "Modo Forzcursor activado.",
-            "other": "Modo Forzcursor desactivado."
+            "on": "activado",
+            "other": "desactivado"
           }
-        ]
+        ],
+        ">"
+      ],
+      "osnapMode": [
+        " <Refent ",
+        [
+          "state",
+          1,
+          {
+            "on": "activado",
+            "other": "desactivado"
+          }
+        ],
+        ">"
+      ],
+      "orthoMode": [
+        " <Orto ",
+        [
+          "state",
+          1,
+          {
+            "on": "activado",
+            "other": "desactivado"
+          }
+        ],
+        ">"
+      ],
+      "polarMode": [
+        " <Polar ",
+        [
+          "state",
+          1,
+          {
+            "on": "activado",
+            "other": "desactivado"
+          }
+        ],
+        ">"
+      ],
+      "otrackMode": [
+        " <Rastreo de referencia a objetos ",
+        [
+          "state",
+          1,
+          {
+            "on": "activado",
+            "other": "desactivado"
+          }
+        ],
+        ">"
       ],
       "fromNeedsPoint": "DESDE necesita una solicitud de punto.",
       "fromBase": "DESDE: precise el punto base.",
@@ -3319,6 +3379,9 @@ export const es: EngineLocale = {
         "Lock position": "Bloquear posición"
       },
       "ATTDISP": {
+        "OFF": "DES"
+      },
+      "SNAP": {
         "OFF": "DES"
       },
       "FILL": {

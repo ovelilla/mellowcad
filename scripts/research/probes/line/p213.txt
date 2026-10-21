@@ -1,0 +1,9 @@
+_SNAP
+_A
+FOO
+0
+-2
+
+0
+4
+(getvar "SNAPUNIT")

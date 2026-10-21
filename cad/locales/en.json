@@ -81,7 +81,8 @@
       "osnap": "Object snap modes",
       "color": "Color",
       "linetype": "Linetype",
-      "lweight": "Lineweight"
+      "lweight": "Lineweight",
+      "snap": "Snap mode"
     },
     "description": {
       "U": "Undo the last action",
@@ -558,6 +559,7 @@
         "?": "?"
       },
       "ATTDISP": { "OFF": "OFf", "Normal": "Normal", "ON": "ON" },
+      "SNAP": { "ON": "ON", "OFF": "OFf", "Aspect": "Aspect" },
       "TEXT": {
         "Justify": "Justify",
         "Style": "Style",
@@ -1014,6 +1016,10 @@
       "ltscaleFactor": "Enter new linetype scale factor",
       "enterNewValueFor": "Enter new value for {name}",
       "osnapModes": "Enter list of object snap modes",
+      "snapSpacingOr": "Specify snap spacing or",
+      "snapAspect": "A",
+      "snapHorizontalSpacing": "Specify horizontal spacing",
+      "snapVerticalSpacing": "Specify vertical spacing",
       "defaultObjectColor": "Enter default object color",
       "trueColor": "Red,Green,Blue",
       "linetypeName": "Specify linetype name or",
@@ -1286,7 +1292,11 @@
       "stretchSelection": "Select objects to stretch by crossing-window or crossing-polygon...",
       "currentLineWidth": "Current line-width is {width}",
       "erased": "{count, plural, one {# object erased.} other {# objects erased.}}",
-      "snapMode": "{state, select, on {Snap mode on.} other {Snap mode off.}}",
+      "snapMode": " '<'Snap {state, select, on {on} other {off}}>",
+      "osnapMode": " '<'Osnap {state, select, on {on} other {off}}>",
+      "orthoMode": " '<'Ortho {state, select, on {on} other {off}}>",
+      "polarMode": " '<'Polar {state, select, on {on} other {off}}>",
+      "otrackMode": " '<'Object Snap Tracking {state, select, on {on} other {off}}>",
       "fromNeedsPoint": "FROM needs a point prompt.",
       "fromBase": "FROM: pick the base point.",
       "fromOffset": "FROM: offset from the base point.",
@@ -1532,6 +1542,7 @@
         "Lock position": "Lock position"
       },
       "ATTDISP": { "OFF": "OFF" },
+      "SNAP": { "OFF": "OFF" },
       "FILL": { "OFF": "OFF" },
       "UNDO": { "OFF": "OFF" },
       "ARC": { "Center": "Center" },

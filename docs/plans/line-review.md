@@ -177,6 +177,8 @@ depth), run with `scripts/research/probe.sh line <ids>` in es-ES and en-US; desk
 | p209 | `'ZOOM` All and Extents transparently with nothing drawn: `** Requires a regen, cannot be transparent.` |
 | p210 | `'ZOOM 2` and `2X` transparently with nothing drawn: they zoom |
 | p211 | FROM at `Command:` (unknown), FOO, U and Enter at `Base point:` and `<Offset>:`, an override at `<Offset>`, INT on one object |
+| p212 | SNAP Aspect: snap on, the default becomes `<A>` (es `<asP>`), Enter opens Aspect |
+| p213 | SNAP Aspect's spacings refuse FOO with `Requires numeric distance or two points.` |
 | d02 | desktop, DYNMODE 3, typed at the command line through COM: `10,0` absolute, `#30,30` refused |
 | d03–d20 | desktop, Spanish profile, the owner's mouse (`dsk.sh`): picks, the rubber band, the snap marker, both shortcut menus, Escape, Ctrl+Z, F-keys, dynamic input, Ortho, Polar, OTRACK, the angle override, grips, the palette, a double-click, the wheel, the ribbon, the rollover (§4, DSK) |
 
@@ -928,3 +930,4 @@ every object snap three ways and the modes in combination:
 | CLI | CLI-01 to CLI-03 | `2625477` |
 | LIN | LIN-01 to LIN-08 | `6a3ba75` |
 | PIN | PIN-01 to PIN-06, LIN-09 | `bb1b4a4` |
+| OSN | OSN-01 to OSN-12 | `e383cc7` |

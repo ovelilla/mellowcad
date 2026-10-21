@@ -92,6 +92,7 @@ input | Specify first point: | 90,20
 input | Specify next point or [Undo]: | @0,40
 command |  | CIRCLE
 ## polar
+command |  |  <Polar on>
 command |  | LINE
 input | Specify first point: | 0,0
 ## window

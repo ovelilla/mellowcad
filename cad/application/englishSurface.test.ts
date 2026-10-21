@@ -207,8 +207,11 @@ describe("the engine's English surface", () => {
         .do("ERASE one", (c) => c.select("L1").command("E"))
         .do("UNDO", (c) => c.command("U"))
         .do("REDO", (c) => c.command("REDO"))
-        .do("SNAP on", (c) => c.command("SN"))
-        .do("SNAP off", (c) => c.command("SNAP"))
+        .do("F3 Osnap", (c) => c.press("F3"))
+        .do("F8 Ortho", (c) => c.press("F8"))
+        .do("F9 Snap", (c) => c.press("F9"))
+        .do("F10 Polar", (c) => c.press("F10"))
+        .do("F11 Object Snap Tracking", (c) => c.press("F11"))
         .do("FROM at Command:", (c) => c.command("FRO"))
         .do("QSAVE without files", (c) => c.command("QSAVE"))
         .do("OPEN without files", (c) => c.command("OPEN"))
@@ -1462,6 +1465,19 @@ describe("the engine's English surface", () => {
           .do("aim past it", (c) => c.moveTo(p(150, 3)))
           .do("escape", (c) => c.escape())
       }
+    )
+    walk("SNAP", createHarness(), (s) =>
+      s
+        .do("SNAP", (c) => c.command("SN"))
+        .do("a word", (c) => c.type("FOO").enter())
+        .do("zero", (c) => c.type("0").enter())
+        .do("a spacing", (c) => c.type("5").enter())
+        .do("SNAP again", (c) => c.command("SNAP"))
+        .do("Aspect", (c) => c.option("Aspect"))
+        .do("horizontal spacing", (c) => c.type("5").enter())
+        .do("vertical spacing", (c) => c.type("10").enter())
+        .do("SNAP with spacings apart", (c) => c.command("SNAP"))
+        .do("OFF", (c) => c.option("OFF"))
     )
     walk("-OSNAP", createHarness(), (s) =>
       s

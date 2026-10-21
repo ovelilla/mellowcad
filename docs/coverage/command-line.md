@@ -44,8 +44,8 @@ again, its preview, box, selection set and undo step as they were (ZOOM Object a
 it); a change AutoCAD regenerates for (LTSCALE, ATTDISP) says `Regen queued.` (es
 `La regeneración está en espera.`), and once the interrupted command ends `Regenerating model.`;
 -VIEW's views turn the view, so transparently they say `** Requires a regen, cannot be transparent.`
-(es `** Regeneración necesaria, no puede ser transparente.`) and change nothing; SNAP, UNITS,
-DIMSTYLE and STYLE, which ask nothing here (a toggle, a dialog, a palette), run in place and the
+(es `** Regeneración necesaria, no puede ser transparente.`) and change nothing; UNITS, DIMSTYLE
+and STYLE, which ask nothing here (a dialog, a palette), run in place and the
 running command resumes at once; Escape cancels only the transparent one
 (`>>Specify first corner: *Cancel*`), the Command menu's Cancel (^C^C) both, as U does; `'LINE` says
 `** That command may not be invoked transparently **` (es
@@ -77,7 +77,9 @@ prompt lines), what was typed for a command's whole name or `_` and its global n
 type `_CIRCLE` so that a Spanish reader sees CIRCULO), the text window (Ctrl+F2; TEXTSCR, es
 PANTTEXT), COMMANDLINE / COMMANDLINEHIDE (es LINEACOM / OCULTARLINEACOM), CLIPROMPTLINES as a
 variable, floating, resizing, transparency and the window's Customize menu, the dynamic prompt's
-Down-arrow list, **unverified** whether AutoCAD runs VIEW, LAYER, PROPERTIES, MATCHPROP, PURGE,
+Down-arrow list, the system variables typed by name but those built as commands (ORTHOMODE,
+SNAPMODE, POLARANG, OSMODE…: `'ORTHOMODE` at LINE's prompt asks `>>Enter new value for ORTHOMODE <0>:`,
+probe line/p19, and here is a wrong answer; SETVAR, roadmap row 24), **unverified** whether AutoCAD runs VIEW, LAYER, PROPERTIES, MATCHPROP, PURGE,
 BLOCKSPALETTE and EATTEDIT transparently (the console does not know them, or hangs on LAYER; refused
 here), **unverified**: the prompt line's head while one runs (`'ZOOM >>Specify first corner:` here;
 the console shows no head) and the dynamic prompt's `>>`, the selection modes `Expects a point or`

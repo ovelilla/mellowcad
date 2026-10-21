@@ -621,6 +621,14 @@ export class CadRuntime extends Observable {
           if (types.length > 0) this.snapping.setActive(true)
         },
       },
+      snapMode: {
+        spacing: () => this.snapMode.getSpacing(),
+        set: (on, spacing) => {
+          if (spacing) this.snapMode.setSpacing(spacing.x, spacing.y)
+          this.snapMode.setActive(on)
+          this.refreshSnapAtCursor()
+        },
+      },
       text: {
         message: (id, values) => this.text.message(id, values),
         feedback: (id, values) => this.text.feedback(id, values),
@@ -1174,7 +1182,7 @@ export class CadRuntime extends Observable {
         this.suspended === null &&
         command.tool === undefined
       ) {
-        // One that asks nothing here (SNAP's toggle, UNITS' dialog) runs in
+        // One that asks nothing here (UNITS' dialog, STYLE's palette) runs in
         // place, and the running command resumes at once.
         if (clear) this.dynamicInput.clearTexts()
         command.run()
@@ -2826,7 +2834,31 @@ export class CadRuntime extends Observable {
     this.host.requestRender()
   }
 
-  /** Toggles snap mode (AutoCAD's SNAP / F9). */
+  /**
+   * What a drafting aid's function key writes, ` <Ortho on>` (es
+   * ` <Orto activado>`; desktop passes line/d10, d27, tables 33112 and 33113
+   * for F3): at `Command:` on a line of its own; inside a command after the
+   * prompt asking, which stays, and from the status bar's buttons nothing —
+   * both unverified, as the passes pressed the keys at `Command:` only.
+   */
+  private echoAid(
+    id: "osnapMode" | "orthoMode" | "snapMode" | "polarMode" | "otrackMode",
+    on: boolean
+  ): void {
+    const text = this.text.message(id, { state: on ? "on" : "off" })
+    const { echo } = this.currentPrompt()
+    if (this.activeTool.id === "select") this.commandLine.write("command", text)
+    else if (echo === null) this.commandLine.write("info", text.trimStart())
+    else {
+      this.commandLine.write(
+        "prompt",
+        this.text.answered(promptString(echo), text)
+      )
+    }
+    this.invalidateState()
+  }
+
+  /** Toggles snap mode (F9). */
   toggleSnapMode(): void {
     this.snapMode.toggleActive()
     this.refreshSnapAtCursor()
@@ -4344,6 +4376,7 @@ export class CadRuntime extends Observable {
     // F3 toggles Object snap, matching AutoCAD's shortcut.
     if (e.key === "F3") {
       this.toggleSnap()
+      this.echoAid("osnapMode", this.snapping.isActive())
       this.host.requestRender()
       return true
     }
@@ -4358,6 +4391,10 @@ export class CadRuntime extends Observable {
     // F8 toggles Ortho, matching AutoCAD's shortcut.
     if (e.key === "F8") {
       this.toggleOrtho()
+      this.echoAid(
+        "orthoMode",
+        this.constraints.isEnabled(ConstraintType.Ortho)
+      )
       this.host.requestRender()
       return true
     }
@@ -4365,12 +4402,17 @@ export class CadRuntime extends Observable {
     // F9 toggles snap mode, matching AutoCAD's shortcut.
     if (e.key === "F9") {
       this.toggleSnapMode()
+      this.echoAid("snapMode", this.snapMode.isActive())
       return true
     }
 
     // F10 toggles Polar tracking, matching AutoCAD's shortcut.
     if (e.key === "F10") {
       this.togglePolar()
+      this.echoAid(
+        "polarMode",
+        this.constraints.isEnabled(ConstraintType.Polar)
+      )
       this.host.requestRender()
       return true
     }
@@ -4378,6 +4420,7 @@ export class CadRuntime extends Observable {
     // F11 toggles Object snap tracking, matching AutoCAD's shortcut.
     if (e.key === "F11") {
       this.toggleObjectSnapTracking()
+      this.echoAid("otrackMode", this.tracking.isActive())
       this.host.requestRender()
       return true
     }

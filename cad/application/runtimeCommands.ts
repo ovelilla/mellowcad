@@ -145,17 +145,6 @@ export function registerCommands(
       if (tool instanceof AttEditTool) tool.useEnhancedEditor()
     },
   })
-  register({
-    id: "SNAP",
-    run: () => {
-      runtime.toggleSnapMode()
-      say(
-        runtime.text.message("snapMode", {
-          state: runtime.snapMode.isActive() ? "on" : "off",
-        })
-      )
-    },
-  })
   register({ id: "FROM", modifier: true, run: () => runtime.startFrom() })
   // With no templates here, NEW's Select Template dialog has nothing to offer:
   // both start the blank drawing QNEW starts from the default template.

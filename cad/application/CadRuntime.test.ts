@@ -28,6 +28,7 @@ import {
   textOf,
 } from "../../test/builders"
 import { serializeDrawing } from "../serialization/drawingFile"
+import { es } from "../locales/es"
 
 /**
  * The runtime is the application's imperative shell: it owns the tools, the
@@ -641,6 +642,61 @@ describe("drafting aids", () => {
     expect(cad.state().polarActive).toBe(true)
     // Both at once would fight over the same direction.
     expect(cad.state().orthoActive).toBe(false)
+
+    // Desktop pass line/d10: F8 turning Ortho on turns Polar off.
+    cad.press("F8")
+    expect(cad.state().orthoActive).toBe(true)
+    expect(cad.state().polarActive).toBe(false)
+  })
+
+  // Desktop passes line/d27 (en) and d10 (es); tables 33112 and 33113 for F3.
+  it("writes each aid's function key at the Command prompt", () => {
+    const cad = createHarness()
+    for (const key of ["F3", "F8", "F9", "F10", "F11"]) cad.press(key)
+    for (const key of ["F3", "F8", "F9", "F10", "F11", "F12"]) cad.press(key)
+    expect(cad.state().commandLine.lines).toEqual(
+      [
+        " <Osnap on>",
+        " <Ortho on>",
+        " <Snap on>",
+        // Polar turns Ortho off, and F8 then turns Polar off.
+        " <Polar on>",
+        " <Object Snap Tracking off>",
+        " <Osnap off>",
+        " <Ortho on>",
+        " <Snap off>",
+        " <Polar on>",
+        " <Object Snap Tracking on>",
+      ].map((text) => ({ kind: "command", text }))
+    )
+    // The host heads a command line with `Command:`, so it reads as
+    // AutoCAD's `Command:  <Ortho on>`.
+    expect(cad.state().commandLine.idlePrompt).toBe("Command:")
+  })
+
+  it("writes them in Spanish AutoCAD's words", () => {
+    const cad = createHarness({ locale: es })
+    for (const key of ["F3", "F8", "F9", "F10", "F11", "F3"]) cad.press(key)
+    expect(cad.commandLog()).toEqual([
+      " <Refent activado>",
+      " <Orto activado>",
+      " <Forzcursor activado>",
+      " <Polar activado>",
+      " <Rastreo de referencia a objetos desactivado>",
+      " <Refent desactivado>",
+    ])
+  })
+
+  it("writes a key's echo after the prompt a command asks", () => {
+    const cad = createHarness()
+    cad.command("LINE").click(p(0, 0))
+    cad.press("F8")
+    expect(cad.commandLog().at(-1)).toBe(
+      "Specify next point or [Undo]:  <Ortho on>"
+    )
+    expect(cad.state().commandLine.prompt).toBe(
+      "LINE Specify next point or [Undo]:"
+    )
   })
 
   it("toggles the grid and snap mode from the function keys", () => {
@@ -654,6 +710,16 @@ describe("drafting aids", () => {
 
     cad.press("F3")
     expect(cad.state().snapActive).toBe(true)
+  })
+
+  // Desktop pass line/d23: SNAPUNIT 10, F9, and LINE's picks.
+  it("rounds picks to the lattice once F9 turns snap mode on", () => {
+    const cad = createHarness()
+    cad.press("F9")
+    cad.command("LINE").click(p(13, 7)).click(p(27.5, -14)).escape()
+    const line = cad.only<LineEntity>("line")
+    expect(line.start).toBeCloseToPoint(p(10, 10))
+    expect(line.end).toBeCloseToPoint(p(30, -10))
   })
 
   it("forces picks onto the snap increments when snap mode is on", () => {

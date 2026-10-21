@@ -85,7 +85,8 @@ export const ar: EngineLocale = {
       "osnap": "أوضاع التقاط الكائنات",
       "color": "اللون",
       "linetype": "نوع الخط",
-      "lweight": "وزن الخط"
+      "lweight": "وزن الخط",
+      "snap": "وضع الالتقاط"
     },
     "description": {
       "U": "التراجع عن آخر إجراء",

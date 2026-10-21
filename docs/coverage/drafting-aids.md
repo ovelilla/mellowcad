@@ -19,14 +19,20 @@ passed over (the + marker, OTRACK off too), dashed from that end, a typed distan
 from the end; running Apparent Intersection is the visual crossing of two objects at different
 heights; Perpendicular to lines (past their ends), circles, arcs and polyline segments; Tangent to
 circles, arcs and polyline arcs; Center and Quadrant of polyline arcs; the tooltip above the cursor
-— WHY: the dynamic-input box sits below and to the right of it
+— WHY: the dynamic-input box sits below and to the right of it; F3 turns object snapping on and off,
+writing `Command:  <Osnap on>` / ` <Osnap off>` (es ` <Refent activado>` / ` <Refent desactivado>`;
+tables 33112, 33113, desktop passes line/d10, d27)
 
 **Missing:** Node and Geometric Center (no POINT object; a dimension's definition points snap as
 Endpoint), deferred Perpendicular and Tangent at the first point of a command other than LINE,
 Perpendicular and Tangent on ellipses and splines, extended Intersection and extended Apparent
 Intersection (picked object by object, as an override), Extension from a polyline's arc end, the
 tooltip's distance and angle (`Extension: 12.00 < 0°`), per-entity opt-in still required for every
-new entity type (OSOPTIONS-like, deliberate), Intersection between objects in different planes
+new entity type (OSOPTIONS-like, deliberate), Intersection between objects in different planes,
+OSMODE as a variable (`'OSMODE`; SETVAR, roadmap row 24), the F-keys' echo inside a command (after
+the prompt asking, `Specify next point or [Undo]:  <Ortho on>`, which stays: **unverified**, the
+desktop passes pressed them at `Command:`) and from the status bar's buttons (they write nothing
+here: **unverified** whether AutoCAD's do)
 
 ### Object snap overrides
 
@@ -79,7 +85,9 @@ GCEnter and NODe in the list, a Spanish alias (none verified)
 
 ### `OSNAP` tracking (OTRACK)
 
-**Implemented:** acquisition by dwell on a snap under the aperture, up to seven points ("you can
+**Implemented:** F11 turns it on and off, writing ` <Object Snap Tracking on>` / `off` (es
+` <Rastreo de referencia a objetos activado>` / `desactivado`; desktop passes line/d10, d27);
+acquisition by dwell on a snap under the aperture, up to seven points ("you can
 acquire up to seven tracking points"), orthogonal guides along the UCS's axes whatever Polar's
 increment ("By default, object snap tracking is set to orthogonal"), the crossing of two paths
 (guides, Extensions, the Ortho / Polar line) winning over a snap that slides along one of them
@@ -96,28 +104,52 @@ first point does), Shift to avoid acquiring, Perpendicular or Tangent tracked fr
 
 ### Polar tracking (F10)
 
-**Implemented:** angle increments from the UCS X axis (the status bar's menu offers POLARANG's 90,
+**Implemented:** F10 turns it on and off, writing ` <Polar on>` / ` <Polar off>` (es
+` <Polar activado>` / `desactivado`; desktop passes line/d10, d27); angle increments from the UCS X
+axis (the status bar's menu offers POLARANG's 90,
 60, 45, 30, 22.5, 18, 15, 10 and 5, and choosing one turns Polar on), guides, mutually exclusive
 with Ortho, Shift override; in a 3D view the `+Z` / `-Z` guide along the UCS's Z, engaged within the
 same 12 px measured on the screen, the guide drawn nearer the cursor winning against a polar angle,
 the Z on a tie (**unverified** rule); readout `Polar: 50.00mm < +Z` (**unverified** wording)
 
-**Missing:** additional angles list, "track using all polar angles", POLARMODE and TRACKPATH as
-variables, the plane's angles measured in plan off the plan
+**Missing:** additional angles list, "track using all polar angles", POLARANG, POLARMODE and
+TRACKPATH as variables (SETVAR, roadmap row 24), the plane's angles measured in plan off the plan
 
 ### Ortho (F8)
 
-**Implemented:** constraint to the UCS's axes; Shift held toggles it ("To turn Ortho off
+**Implemented:** constraint to the UCS's axes; F8 turns it on and off, writing ` <Ortho on>` /
+` <Ortho off>` (es ` <Orto activado>` / `desactivado`), and turning it on turns Polar off, as Polar
+turns it off (desktop passes line/d10, d27); Shift held toggles it ("To turn Ortho off
 temporarily, hold down the Shift key"; with it off, on), Polar yielding; in a 3D view its Z as a
 third axis, the one drawn nearest the cursor winning (**unverified**: AutoCAD does not publish the
 rule)
 
-### Snap mode (F9)
+**Missing:** ORTHOMODE as a variable — `'ORTHOMODE` at LINE's prompt asks
+`>>Enter new value for ORTHOMODE <0>:` (probe line/p19) and here is a wrong answer (SETVAR, roadmap
+row 24)
 
-**Implemented:** grid snap on the UCS (from its origin, along its axes), polar snap; on the `+Z` /
-`-Z` guide PolarSnap rounds the height and the grid leaves it (**unverified**)
+### `SNAP` / `SN` · es `FORZCURSOR` / `FC` · snap mode (F9)
 
-**Missing:** isometric snap, SNAPBASE, SNAPANG, persistence in the file
+**Implemented:** grid snap on the UCS (from its origin, along its axes), the picks rounded to the
+lattice (SNAPUNIT 10: 13,7 is 10,10, desktop pass line/d23), polar snap; on the `+Z` / `-Z` guide
+PolarSnap rounds the height and the grid leaves it (**unverified**). SNAP asks
+`Specify snap spacing or [ON/OFF/Aspect] <10.0000>:` (es
+`Precise distancia de resolución o [ACT/DES/asPecto]`): a spacing, typed or two points apart, sets
+SNAPUNIT's X and Y and turns snap mode on; Enter turns it on; ON and OFF (es ACT, DES); Aspect asks
+`Specify horizontal spacing <…>:` and `Specify vertical spacing <…>:` (es `Precise intervalo
+horizontal`, `Precise intervalo vertical`) and turns it on, after which the default is `<A>` (es
+`<asP>`, table 25931), which Enter opens. FOO says
+`Requires numeric distance, two points, or option keyword.` (at Aspect's,
+`Requires numeric distance or two points.`), 0 and −5 `Value must be positive and nonzero.`, and the
+prompt stays; transparently its prompts are headed `>>` and `Resuming LINE command.` follows (2027's
+console, probes line/p38, p158, p212, p213). F9 toggles it, writing ` <Snap on>` / ` <Snap off>`
+(es ` <Forzcursor activado>` / `desactivado`; desktop passes line/d10, d27)
+
+**Missing:** Legacy, Style (isometric snap) and Type (grid or polar: the status bar's Snap menu
+chooses it here) — not listed, as they are not built (WHY: the prompt lists what is, as TRIM's
+leaves out Project) —, the unlisted Rotate (SNAPANG), SNAPBASE, SNAPMODE and SNAPUNIT as variables
+(SETVAR, roadmap row 24), persistence in the file and U taking SNAP back (session state here;
+**unverified** in AutoCAD)
 
 ### Dynamic input (DYN)
 
