@@ -370,3 +370,6 @@ Applied:
 - 2026-10-21, after CIRCLE's review: the trace's flags read before the desktop, the ribbon's
   macros, solutions as data tables, scratch output to a file, two desktop traps, quitting AutoCAD
   at the end (annex-probes.md).
+- 2026-10-21, after ARC's review: two desktop traps (a command left open by `com send`, a
+  negative DYNMODE), a grip's default drag probed apart from its menu, the Spanish profile planned
+  with the owner (annex-probes.md §4).

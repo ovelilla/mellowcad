@@ -116,9 +116,15 @@ Traps seen on the desktop (PLINE's review, 2026-10-21):
   press Escape and select again between two hovers.
 - A click sent right after typed keys can be lost while AutoCAD still reads them: wait after
   typing.
-- A launched instance may open the English profile: a cell that needs the Spanish labels goes in
-  a session in the owner's profile.
+- A launched instance may open the English profile (three reviews running): a cell that needs the
+  Spanish labels goes in a session started with the owner's AutoCAD already open in Spanish.
 - A Ctrl held only during a move is not read by the jig; held at the pick it is.
+- `com send` of a command that leaves its own prompt open locks COM (`_MPHIST 6` took `6` as its
+  first answer): read the history with `com hist` only. `com set` cannot write a negative value:
+  DYNMODE −1 (dynamic input on in the owner's profile) is put back with
+  `com eval '(setvar "DYNMODE" -1)'` (ARC's review).
+- A grip's default drag is a probe of its own: the hover menu does not show what a plain drag does
+  (arc/d07 against d08).
 - `com send` with a space inside a string answer sends it whole (`DASHED acadiso.lin` is one
   answer); -LINETYPE's file needs FILEDIA 0, put back after (CIRCLE's review).
 
