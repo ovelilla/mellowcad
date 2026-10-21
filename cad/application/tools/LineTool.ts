@@ -395,6 +395,11 @@ export class LineTool implements Tool {
     ctx.requestRender()
   }
 
+  /** The first point's Tangent or Perpendicular waits for the next point. */
+  defersSnap(): boolean {
+    return this.state.phase === "idle" || this.state.phase === "deferred"
+  }
+
   getConstraintAnchor(): Vec2 | null {
     return this.state.phase === "drawing" ? this.state.start : null
   }

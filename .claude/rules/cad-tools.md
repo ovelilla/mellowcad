@@ -152,7 +152,8 @@ CELWEIGHT; ByLayer by default, which stores nothing). Every creating command has
 `FROM_SCRATCH` or `DERIVED` of `currentProperties.test.ts`, which pins which it is:
 
 - **Drawn from scratch**: wrap it in `withCurrentProperties(entity, ctx)`
-  (`tools/currentProperties.ts`), on the current layer. DIMBASELINE and DIMCONTINUE use the base
+  (`tools/currentProperties.ts`), on the current layer; one added at the command's end wears the
+  `currentProperties` of its start (PLINE, pline/p39). DIMBASELINE and DIMCONTINUE use the base
   dimension's layer and style.
 - **Made from another**: the source's, through `carryOverrides` / `carryPiece` / the copy helpers;
   never the current ones.
@@ -192,11 +193,11 @@ current layer.
   no command and stay out.
 - A tool offering its own **Undo keyword** counts its own edits and refuses when there are none:
   `ctx.undo()` pops the history, which would otherwise back out an earlier command. Offer it from
-  the first point a prompt holds. For a looping command, push the tool state before each commit and
-  restore it on Undo **whatever the undo returns** (under UNDO Control None it pops nothing and
-  the console's LINE still steps its prompt back). A transparent command run between two commits
-  ('LTSCALE) is an entry of its own, which the console's Undo takes back with the commit: mark
-  `ctx.historyDepth()` before each commit and take back with `ctx.undoTo(mark)`, as LINE does.
+  the first point a prompt holds. A transparent command run since a step ('LTSCALE) goes back with
+  it: mark `ctx.historyDepth()` at each step and take back with `ctx.undoTo(mark)`. A looping
+  command restores its state **whatever the undo returns**: under UNDO Control None it pops
+  nothing and LINE still steps back, while PLINE, which commits at its end, keeps its chain
+  (pline/p42).
 - **Preview must equal commit**: one resolver shared by `buildOverlay` and the pointer / Enter
   paths, so a typed value locks the click as it locks the rubber band. An expensive preview (a
   hatch's pattern) is built into the state when its inputs change, never per frame.
@@ -265,8 +266,8 @@ asks again at Enter (RECTANG's corners, -PAN's base point) reports its refusal t
 - A command that continues from what was drawn (LINE's Continue, DIMBASELINE, DIMCONTINUE) reads
   the drawing through a `lastDrawnPoint`-style helper, not runtime state: document order is the
   deliberate deviation from AutoCAD's session scope, the one that survives a reload. Only which end
-  of an arc was drawn last is read off LASTPOINT (`continuePoint`): the arc is stored
-  counter-clockwise whichever way it was drawn.
+  of an arc was drawn last is read off LASTPOINT (`continuePoint`, `lastDrawnDirection`), before
+  the first point's answer moves it: an arc is stored counter-clockwise.
 - `endCommand()` for single-shot commands; `onEnter()` returning `true` consumes Enter and keeps
   the command running.
 
@@ -291,8 +292,9 @@ asks again at Enter (RECTANG's corners, -PAN's base point) reports its refusal t
   ctx.lastPoint` with `relativeByDefault: false`; one with a base passes `base ?? ctx.lastPoint`.
   The runtime sets it after every answer whose question takes a point; a question the console shows
   keeping it, or setting it though its refusal is its own, says so with `setsLastPoint()` — check
-  with `ID @` after the command in the console. A tool moves it with no point given only through
-  `ctx.setLastPoint`. UCS puts it at the WCS's origin as it starts (`UcsTool.onActivate`).
+  with `ID @` after the command in the console. A tool moves it with no point given, or keeps it
+  at its own refusal, only through `ctx.setLastPoint`, which wins. UCS puts it at the WCS's origin
+  as it starts (`UcsTool.onActivate`).
 - **A point has a Z; keep it.** `input.point` and `parseCoordinate` give a `Vec3`. A point computed
   in the plane from another (`V.add(start, dir * length)`) keeps the base's Z: `withZOf(point,
   base)`, because every `V` helper returns a `Vec2`. Type a state field that feeds `lastPoint` or a
@@ -328,9 +330,9 @@ asks again at Enter (RECTANG's corners, -PAN's base point) reports its refusal t
 - `getConstraintAnchor()` — the base Ortho/Polar restrict against, in every phase defining a
   direction, with its Z.
 - No hook exposes a preview to the snaps: ghosts are not objects.
-- **A Tangent or Perpendicular with no point to measure from is deferred**: read
-  `ctx.snapOverride()` at the pick and use `tools/deferredSnap.ts` (`deferredPick`,
-  `deferredFrom`, `deferredPair`), as LINE's first point does.
+- **A Tangent or Perpendicular with no point to measure from is deferred** where the tool
+  `defersSnap()`: read `ctx.snapOverride()` at the pick and use `tools/deferredSnap.ts`
+  (`deferredPick`, `deferredFrom`, `deferredPair`), as LINE does.
 - `retainsTrackingAfterPointerDown()` — true when a click _begins_ an edit, so tracking survives
   the drag.
 - `usesCrosshair()` — false only for view tools that own the cursor (PAN's hand): no crosshair is

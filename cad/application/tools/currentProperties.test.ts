@@ -9,6 +9,7 @@ import {
   lineEndZ,
   lineStartZ,
   type LineEntity,
+  type PolylineEntity,
 } from "../../domain/entities"
 
 /**
@@ -399,5 +400,61 @@ describe("what a new LINE wears", () => {
     cad.command("LINE").type("0,0").enter().type("@10,0").enter().enter()
 
     expect(cad.only<LineEntity>("line").layerId).toBe("0")
+  })
+})
+
+describe("what a new PLINE wears", () => {
+  /** Typed at the command line and confirmed, as the console types it. */
+  function answer(cad: CadHarness, ...texts: string[]): CadHarness {
+    for (const text of texts) {
+      cad.runtime.setCommandLineText(text)
+      cad.runtime.submitCommandLine()
+    }
+    return cad
+  }
+
+  it("takes the current layer, colour, linetype, lineweight, elevation and thickness", () => {
+    // probe pline/p181 (CELTSCALE is not built)
+    const cad = createHarness()
+    const l1 = cad.runtime.createLayer("L1", undefined, true)
+    cad.command("-COLOR").type("1").enter()
+    cad.command("-LINETYPE").option("Set").type("HIDDEN").enter().enter()
+    cad.command("-LWEIGHT").type("0.5").enter()
+    cad.command("ELEV").type("5").enter().type("3").enter()
+
+    answer(cad, "PLINE", "0,0", "@10,0", "")
+
+    expect(cad.only<PolylineEntity>("polyline")).toMatchObject({
+      layerId: l1,
+      color: RED,
+      linetype: "Hidden",
+      lineweight: 0.5,
+      elevation: 5,
+      thickness: 3,
+    })
+  })
+
+  it("keeps those current at its start point, whatever is set after", () => {
+    // probes pline/p39, p182, p183: '-COLOR, CLAYER, CELTYPE, CELWEIGHT and
+    // THICKNESS set mid-PLINE leave the polyline as it started.
+    const cad = createHarness()
+    const l1 = cad.runtime.createLayer("L1", undefined, false)
+    answer(cad, "PLINE", "0,0", "@10,0", "'-COLOR", "1")
+    cad.runtime.setCurrentLayer(l1)
+    answer(cad, "'-LINETYPE", "S", "HIDDEN", "", "'-LWEIGHT", "0.5")
+    answer(cad, "'ELEV", "0", "3", "@0,10", "")
+
+    const polyline = cad.only<PolylineEntity>("polyline")
+    expect(polyline.layerId).toBe("0")
+    expect(polyline.color).toBeUndefined()
+    expect(polyline.linetype).toBeUndefined()
+    expect(polyline.lineweight).toBeUndefined()
+    expect(polyline.thickness).toBeUndefined()
+    expect(cad.runtime.document.getSettings()).toMatchObject({
+      currentColor: RED,
+      currentLinetype: "Hidden",
+      currentLineweight: 0.5,
+      thickness: 3,
+    })
   })
 })

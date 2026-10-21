@@ -1,5 +1,5 @@
 import { Vec2, V } from "../../geometry/Vec2"
-import { Vec3, withZOf } from "../../geometry/Vec3"
+import { Vec3, vec3, withZOf } from "../../geometry/Vec3"
 import {
   createPolyline,
   onPlaneOf,
@@ -11,6 +11,7 @@ import {
   tangentArcBulge,
 } from "../../geometry/bulgeArcs"
 import { formatLength, parseNumber } from "../../domain/units"
+import { ucsPointToWorld, WORLD_UCS } from "../../domain/ucs"
 import { AddEntityCommand } from "../commands/entityCommands"
 import { UpdateSettingsCommand } from "../commands/settingsCommands"
 import { DynamicInputSession } from "../input/DynamicInput"
@@ -32,10 +33,15 @@ import { CommandOption, CommandOptionOutcome } from "./Tool"
 import type { PromptId } from "../../locales/types"
 import { lastDrawnDirection, lastDrawnPoint } from "./lastDrawnPoint"
 import {
-  withCurrentProperties,
-  withCurrentThickness,
+  type CurrentProperties,
+  currentProperties,
+  withProperties,
 } from "./currentProperties"
-import { acuteHeading, headingInUcs } from "./ucsHeading"
+import {
+  acuteHeading,
+  directionFromUcsHeading,
+  headingInUcs,
+} from "./ucsHeading"
 import { pointAlongCursor, showRise } from "./directDistance"
 import { ARC_SEGMENT_OPTIONS, ArcSegmentInput } from "./arcSegmentInput"
 
@@ -74,6 +80,18 @@ type PolylineToolState =
       readonly bulges: readonly number[]
       /** Starting and ending width of each committed segment, likewise. */
       readonly widths: readonly PolylineWidth[]
+      /**
+       * The history's depth when each segment was added, after its arc's
+       * sub-prompts: Undo takes back to the last, so a transparent command
+       * run since goes with the segment (pline/p26, p43, p144).
+       */
+      readonly marks: readonly number[]
+      /**
+       * The layer, colour, linetype, lineweight and thickness current at the
+       * start point, which the polyline keeps whatever is set after
+       * (pline/p39, p182, p183).
+       */
+      readonly properties: CurrentProperties
       /** The widths the next segment takes. */
       readonly width: PolylineWidth
       /** PLINEWID as the command started: the width Undo may go back to. */
@@ -83,7 +101,7 @@ type PolylineToolState =
       readonly direction: Vec2 | null
       /**
        * The way a first arc leaves the start point: where the last line, arc
-       * or polyline drawn ends heading, else along the X axis.
+       * or polyline drawn ends heading, else along the UCS's X (pline/p161).
        */
       readonly startTangent: Vec2
       /** Whether the chain is to be closed on commit (set by the Close option). */
@@ -226,6 +244,11 @@ export class PolylineTool implements Tool {
     if (this.askingLength) return "specifyLengthOfLine"
     if (this.arc.active) return this.arc.question()
     return this.state.arcMode ? "specifyEndpointOfArcOr" : "specifyNextPointOr"
+  }
+
+  /** A Tangent at the start point finds nothing: PLINE defers none (pline/p29). */
+  defersSnap(): boolean {
+    return false
   }
 
   /** Every point after the start is a 2D one, as AutoCAD's console refuses it. */
@@ -439,7 +462,8 @@ export class PolylineTool implements Tool {
 
   /**
    * Appends `point` as the next vertex and keeps drawing from it: in arc mode
-   * by the tangent arc, refused as AutoCAD's `*Invalid*` where none exists.
+   * by the tangent arc, refused as AutoCAD's `*Invalid*` where none exists,
+   * which leaves LASTPOINT where it was (pline/p38).
    */
   private appendVertex(point: Vec3, ctx: ToolContext): void {
     if (this.state.phase !== "drawing") return
@@ -447,6 +471,7 @@ export class PolylineTool implements Tool {
     const bulge = this.pendingBulge(this.state, onPlane)
     if (bulge === null) {
       ctx.report(ctx.text.message("invalid"), "error")
+      ctx.setLastPoint(ctx.lastPoint)
       return
     }
     this.addSegment(onPlane, bulge, ctx)
@@ -471,6 +496,7 @@ export class PolylineTool implements Tool {
       vertices: [...this.state.vertices, end],
       bulges: [...this.state.bulges, bulge],
       widths: [...this.state.widths, this.state.width],
+      marks: [...this.state.marks, ctx.historyDepth()],
       // "The ending width becomes the uniform width for all subsequent
       // segments until you change the width again."
       width: [ending, ending],
@@ -509,13 +535,14 @@ export class PolylineTool implements Tool {
 
   /**
    * Removes the last placed vertex while staying in the command — AutoCAD's
-   * PLINE "Undo" (U), `All segments already undone.` with none. Nothing is
-   * committed yet, so this is a pure local rollback (no document undo). The
+   * PLINE "Undo" (U), `All segments already undone.` with none. The polyline
+   * is committed only at the end, so what the history takes back to the
+   * segment's mark is a transparent command run since (pline/p26, p27, p43).
+   * Under UNDO Control None the console keeps the chain whole (p42). The
    * chain then goes on as its last segment was drawn, a line or an arc (the
    * console returns to the line prompt once the only arc is undone). The
    * width goes back to the command's starting one where every segment left
-   * has it, else to 0, whatever it was before: AutoCAD 2023's console
-   * (acc/w3–w7).
+   * has it, else to 0, whatever it was before (p208–p218).
    */
   private undoLastVertex(ctx: ToolContext): void {
     if (this.state.phase !== "drawing") return
@@ -523,9 +550,11 @@ export class PolylineTool implements Tool {
       ctx.report(ctx.text.message("allSegmentsUndone"), "error")
       return
     }
+    if (ctx.undoHistory.settings().control === "none") return
     const vertices = this.state.vertices.slice(0, -1)
     const bulges = this.state.bulges.slice(0, -1)
     const widths = this.state.widths.slice(0, -1)
+    const mark = this.state.marks[this.state.marks.length - 1]
     const { startWidth } = this.state
     const kept = widths.every(
       ([start, end]) => start === startWidth && end === startWidth
@@ -537,6 +566,7 @@ export class PolylineTool implements Tool {
       vertices,
       bulges,
       widths,
+      marks: this.state.marks.slice(0, -1),
       width: [width, width],
       cursor: last,
       direction: null,
@@ -544,6 +574,7 @@ export class PolylineTool implements Tool {
       arcMode: (bulges[bulges.length - 1] ?? 0) !== 0,
       reversed: false,
     }
+    ctx.undoTo(mark)
     ctx.dynamicInput.clearTexts()
     ctx.dynamicInput.setLive("distance", 0)
     ctx.dynamicInput.setLive("angle", null)
@@ -557,7 +588,7 @@ export class PolylineTool implements Tool {
    */
   private commitPolyline(ctx: ToolContext): void {
     if (this.state.phase !== "drawing") return
-    const { vertices, closed, bulges, widths, width } = this.state
+    const { vertices, closed, bulges, widths, width, properties } = this.state
     this.state = { phase: "idle" }
     // PLINEWID keeps the width the command was left at, whether it drew a
     // polyline or not (acc/w2).
@@ -565,24 +596,25 @@ export class PolylineTool implements Tool {
       ctx.execute(new UpdateSettingsCommand({ polylineWidth: width[1] }))
     }
     if (vertices.length < 2) return
+    // WHY the start's properties, added only now: AutoCAD appends the
+    // polyline at the start point (the probes' `{appended}` there) and it
+    // keeps what was current then; one command here keeps the run one undo
+    // step (pline/p39, p182).
     ctx.execute(
       new AddEntityCommand(
-        withCurrentProperties(
-          withCurrentThickness(
-            onPlaneOf(
-              createPolyline(
-                vertices,
-                closed,
-                ctx.document.getCurrentLayerId(),
-                bulges,
-                undefined,
-                widths
-              ),
-              vertices[0]
+        withProperties(
+          onPlaneOf(
+            createPolyline(
+              vertices,
+              closed,
+              properties.layerId,
+              bulges,
+              undefined,
+              widths
             ),
-            ctx
+            vertices[0]
           ),
-          ctx
+          properties
         )
       )
     )
@@ -605,11 +637,16 @@ export class PolylineTool implements Tool {
       vertices: [start],
       bulges: [],
       widths: [],
+      marks: [],
+      properties: currentProperties(ctx),
       width: [startWidth, startWidth],
       startWidth,
       cursor: start,
       direction: null,
-      startTangent: lastDrawnDirection(ctx.document) ?? { x: 1, y: 0 },
+      // LASTPOINT is still the last object's: the start's answer sets it after.
+      startTangent:
+        lastDrawnDirection(ctx.document, ctx.lastPoint) ??
+        directionFromUcsHeading(ctx.ucs, 0),
       closed: false,
       arcMode: false,
       reversed: false,
@@ -652,13 +689,18 @@ export class PolylineTool implements Tool {
     ctx.dynamicInput.setPosition(screen)
   }
 
-  /** An empty box resumes from the last drawn endpoint (AutoCAD's Continue). */
+  /**
+   * An empty box resumes from the last drawn endpoint (AutoCAD's Continue),
+   * with nothing to continue from the WCS's origin, silently, whatever
+   * LASTPOINT and the UCS (pline/p178, p184, p191).
+   */
   private commitFirstPoint(ctx: ToolContext): boolean {
     if (this.state.phase !== "idle") return false
     const text = ctx.dynamicInput.getText("point").trim()
     if (text === "") {
-      const resume = lastDrawnPoint(ctx.document)
-      if (!resume) return false
+      const resume =
+        lastDrawnPoint(ctx.document, ctx.lastPoint) ??
+        ucsPointToWorld(ctx.ucs.wcs ?? WORLD_UCS, vec3(0, 0, 0))
       this.beginDrawing(resume, ctx)
       return true
     }
@@ -753,12 +795,17 @@ export class PolylineTool implements Tool {
     ctx.requestRender()
   }
 
+  /** The line Length adds, whose end becomes LASTPOINT (pline/p153, p171). */
   private commitLength(length: number, ctx: ToolContext): void {
     if (this.state.phase !== "drawing" || !Number.isFinite(length)) return
     const last = this.lastVertex(this.state)
-    const end = V.add(last, V.scale(this.tangent(this.state), length))
+    const end = withZOf(
+      V.add(last, V.scale(this.tangent(this.state), length)),
+      this.state.vertices[0]
+    )
     this.askingLength = false
-    this.addSegment(withZOf(end, this.state.vertices[0]), 0, ctx)
+    this.addSegment(end, 0, ctx)
+    ctx.setLastPoint(end)
     this.openLengthInput(ctx, this.lastScreen ?? { x: 0, y: 0 })
   }
 
@@ -793,12 +840,15 @@ export class PolylineTool implements Tool {
     }
 
     const { distance, angle } = values
-    if (!(distance > 0)) return
+    if (!Number.isFinite(distance)) return
     const last = this.lastVertex(this.state)
-    const next = pointAlongCursor(ctx, last, this.state.cursor, {
-      distance,
-      angle: Number.isFinite(angle) ? angle : null,
-    })
+    // A length of 0 adds a vertex where it is, and a negative one runs back
+    // (pline/p195); 0 needs no heading, which the cursor on the vertex lacks.
+    const next =
+      pointAlongCursor(ctx, last, this.state.cursor, {
+        distance,
+        angle: Number.isFinite(angle) ? angle : null,
+      }) ?? (distance === 0 ? last : null)
     if (next) this.appendVertex(next, ctx)
   }
 
@@ -832,7 +882,13 @@ export class PolylineTool implements Tool {
   private commitCoordinate(ctx: ToolContext): boolean {
     if (this.state.phase !== "drawing") return false
     const coordText = ctx.dynamicInput.getText("distance").trim()
-    if (!isCoordinateExpression(coordText)) return false
+    if (!isCoordinateExpression(coordText)) {
+      // With the cursor on the vertex the angle has no reading, which a
+      // length of 0 does not need (pline/p195).
+      if (parseNumber(coordText) !== 0) return false
+      this.commitSegment({ distance: 0, angle: Number.NaN }, ctx)
+      return true
+    }
     const point = parseCoordinate(coordText, {
       lastPoint: this.lastVertex(this.state),
       relativeByDefault: true,

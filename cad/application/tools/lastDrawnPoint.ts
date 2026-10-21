@@ -24,11 +24,15 @@ export interface ContinuePoint {
 /**
  * The endpoint of the last line, arc or polyline drawn — what AutoCAD resumes
  * from when you press Enter at a draw command's "Specify first point" prompt
- * (its Continue behaviour). Objects with no endpoint, such as circles, are
- * skipped rather than ending the search.
+ * (its Continue behaviour), an arc's drawn end told by `lastPoint` as
+ * {@link continuePoint} tells it (pline/p32). Objects with no endpoint, such
+ * as circles, are skipped rather than ending the search.
  */
-export function lastDrawnPoint(document: DocumentReader): Vec3 | null {
-  return continuePoint(document)?.point ?? null
+export function lastDrawnPoint(
+  document: DocumentReader,
+  lastPoint?: Vec3
+): Vec3 | null {
+  return continuePoint(document, lastPoint)?.point ?? null
 }
 
 /**
@@ -84,11 +88,16 @@ export function continuePoint(
 
 /**
  * The direction the last line, arc or polyline drawn ends in, where PLINE's
- * first arc leaves from: AutoCAD 2023's console bulges `PLINE 0,0 A 10,0`
- * -0.4142 after a line drawn at 45°, and passes a circle over. Null with
- * none, or when the last one is an arc out of the plan.
+ * first arc leaves from: AutoCAD 2027's console bulges `PLINE 0,0 A 10,0`
+ * -0.4142 after a line drawn at 45° (pline/p09), and passes a circle over
+ * (p159, p190). An arc drawn clockwise, told by `lastPoint` as
+ * {@link continuePoint} tells it, ends heading back along its stored start
+ * (p33, p34). Null with none, or when the last one is an arc out of the plan.
  */
-export function lastDrawnDirection(document: DocumentReader): Vec2 | null {
+export function lastDrawnDirection(
+  document: DocumentReader,
+  lastPoint?: Vec3
+): Vec2 | null {
   const entities = document.getEntities()
   for (let i = entities.length - 1; i >= 0; i--) {
     const entity = entities[i]
@@ -98,7 +107,7 @@ export function lastDrawnDirection(document: DocumentReader): Vec2 | null {
         return V.length(run) < 1e-9 ? null : V.normalize(run)
       }
       case "arc":
-        return arcEndTangent(entity)
+        return arcContinue(entity, lastPoint).tangent
       case "polyline": {
         const { vertices, closed } = entity
         const n = vertices.length

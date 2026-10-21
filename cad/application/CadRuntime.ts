@@ -72,6 +72,7 @@ import {
 } from "./input/DynamicInput"
 import {
   isCoordinateExpression,
+  isPlanarCoordinate,
   parseCoordinate,
 } from "./input/coordinateInput"
 import {
@@ -423,6 +424,8 @@ export class CadRuntime extends Observable {
   private pointGiven: Vec3 | null = null
   /** The coordinate typed for the answer running, in the WCS. */
   private pointTyped: Vec3 | null = null
+  /** The tool put LASTPOINT where the answer running leaves it. */
+  private lastPointSet = false
 
   // Magnetic crosshair: where to draw it (screen), positioned on the resolved
   // point so it clings to geometry. `null` means the pointer is off-canvas.
@@ -704,6 +707,7 @@ export class CadRuntime extends Observable {
       },
       setLastPoint: (point) => {
         this.lastPoint = this.frame.pointToWorld(point)
+        this.lastPointSet = this.answeringPrompt
       },
       pointAtDistance: (distance) =>
         this.atDistance(this.frame.pointToFrame(this.lastPoint), distance),
@@ -735,6 +739,7 @@ export class CadRuntime extends Observable {
       },
       setLastPoint: (world) => {
         this.lastPoint = world
+        this.lastPointSet = this.answeringPrompt
       },
       pointAtDistance: (distance) =>
         this.frame.pointToWorld(
@@ -1253,6 +1258,19 @@ export class CadRuntime extends Observable {
     return this.variables.get(bareCommand(typed))
   }
 
+  /** A coordinate with a Z or `*` typed where the tool asks a 2D point. */
+  private refusesOffPlane(text: string): boolean {
+    if (this.asking() !== this.activeTool) return false
+    if (!isCoordinateExpression(text) || isPlanarCoordinate(text)) return false
+    const session = this.dynamicInput.isOpen()
+      ? this.dynamicInput.getSession()
+      : null
+    const prompt = askedPrompt(this.activeTool)
+    return (
+      questionInput({ tool: this.activeTool, prompt, session }) === "point2d"
+    )
+  }
+
   /** Whether the box asks for text, which takes whatever is typed. */
   private takesText(): boolean {
     return (this.dynamicInput.getSession()?.fields ?? []).some((field) =>
@@ -1360,6 +1378,7 @@ export class CadRuntime extends Observable {
     this.pickFound = picked ? [] : null
     this.pointGiven = null
     this.pointTyped = null
+    this.lastPointSet = false
     this.reportedPrompt = null
     let took: boolean
     let found: readonly string[] = []
@@ -1372,7 +1391,9 @@ export class CadRuntime extends Observable {
     }
     if (!took) return false
     const reportedLast = this.reportedPrompt === this.commandLine.mark()
-    if (asked !== null) this.keepLastPoint(asked)
+    // A LASTPOINT the tool set answering wins: a refusal of its own keeps it
+    // (PLINE's `*Invalid*` arc end, pline/p38).
+    if (asked !== null && !this.lastPointSet) this.keepLastPoint(asked)
     this.answerPrefix = null
     if (echo === null) {
       for (const text of found) this.commandLine.write("info", text)
@@ -1714,10 +1735,13 @@ export class CadRuntime extends Observable {
    * relative default is the dynamic-input tooltip's (DYNPICOORDS), so they
    * reach the box with its `#`. A `#` typed here is the prompt's wrong answer:
    * it is the tooltip's prefix, which the command window refuses even with
-   * DYNMODE 3 (desktop d02, probes line/p15, p28).
+   * DYNMODE 3 (desktop d02, probes line/p15, p28). So is a Z or `*` where the
+   * question takes a 2D point (pline/p18–p20, p137); the box keeps what it
+   * reads, unverified on the desktop.
    */
   private answerPrompt(text: string): boolean {
     if (text.startsWith("#") && !this.takesText()) return false
+    if (this.refusesOffPlane(text)) return false
     if (!this.dynamicInputHasField()) {
       const taken =
         this.activeTool.answerTyped?.(text, this.toolContext) ?? false
@@ -2896,14 +2920,19 @@ export class CadRuntime extends Observable {
    * refuses — `No Endpoint found for specified point.`, then the prompt's own
    * refusal, the override gone (probes line/p36, p156, p211) —, or null. Not
    * a Tangent or Perpendicular on an object with no point yet to measure
-   * from: the tool defers it (LINE's first point, p24).
+   * from where the tool defers it (LINE's first point, p24); PLINE's start
+   * point does not (pline/p29).
    */
   private overrideMissed(input: PointerInput): SnapType | null {
     const override = this.snapping.getOverride()
     if (override === null || override === "none" || input.snap !== null) {
       return null
     }
-    if (this.toolAnchor() === null && !this.fromRuns()) {
+    if (
+      this.toolAnchor() === null &&
+      !this.fromRuns() &&
+      (this.activeTool.defersSnap?.() ?? true)
+    ) {
       const entity = this.toolContext.pick(
         input.world,
         this.toolContext.pickTolerance()

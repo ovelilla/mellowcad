@@ -87,6 +87,21 @@ export function isCoordinateExpression(text: string): boolean {
 }
 
 /**
+ * Whether `text` is a coordinate a 2D point prompt takes from the command
+ * line: no Z (cartesian, cylindrical or spherical) and no `*`, which AutoCAD's
+ * console refuses there (`2D point or option keyword required.`, probes
+ * pline/p18–p20, p137). Text that is no coordinate is not one.
+ */
+export function isPlanarCoordinate(text: string): boolean {
+  if (!isCoordinateExpression(text)) return false
+  const body = text.trim().replace(/^[@#]\s*/, "")
+  if (body.startsWith("*")) return false
+  if (body === "") return true
+  const offset = body.includes("<") ? parsePolar(body) : parseCartesian(body)
+  return offset?.z === null
+}
+
+/**
  * Parses a coordinate expression into a world point, or `null` when the text is
  * empty, malformed or still incomplete (e.g. `"50,"` while the user is typing).
  * A `null` result lets callers keep following the cursor until the value is

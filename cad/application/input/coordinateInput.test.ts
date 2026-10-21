@@ -1,6 +1,10 @@
 import fc from "fast-check"
 import { describe, expect, it } from "vitest"
-import { isCoordinateExpression, parseCoordinate } from "./coordinateInput"
+import {
+  isCoordinateExpression,
+  isPlanarCoordinate,
+  parseCoordinate,
+} from "./coordinateInput"
 import { Ucs, WORLD_UCS, createUcs } from "../../domain/ucs"
 import { coordinate, point } from "../../../test/arbitraries"
 import { deg, p } from "../../../test/builders"
@@ -48,6 +52,28 @@ describe("isCoordinateExpression", () => {
     // even complete, or the numeric parser would claim "50," as 50.
     expect(isCoordinateExpression("50")).toBe(false)
     expect(isCoordinateExpression("50,")).toBe(true)
+  })
+})
+
+describe("isPlanarCoordinate", () => {
+  it("takes what a 2D point prompt takes at the command line", () => {
+    // probes pline/p18–p20, p137
+    for (const text of ["5,5", "@10,0", "#20,0", "10<30", "@10<90", "@"]) {
+      expect(isPlanarCoordinate(text)).toBe(true)
+    }
+    for (const text of [
+      "20,20,7",
+      "@0,10,5",
+      "#20,0,5",
+      "*20,0",
+      "@*5,0",
+      "10<30,5",
+      "10<30<45",
+      "10",
+      "FOO",
+    ]) {
+      expect(isPlanarCoordinate(text)).toBe(false)
+    }
   })
 })
 

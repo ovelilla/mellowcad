@@ -16,6 +16,7 @@ import {
   splineEndPoint,
   splineStartPoint,
 } from "../../domain/entities"
+import { COLOR_BYLAYER } from "../../domain/colors"
 import { V } from "../../geometry/Vec2"
 import { type CadHarness, createHarness } from "../../../test/harness"
 import { circleOf, deg, lineOf, p } from "../../../test/builders"
@@ -1125,7 +1126,7 @@ describe("PLINE", () => {
   it("keeps the polyline when Escape ends the command", () => {
     // Regression: Escape used to discard the accumulated vertices because the
     // tool reset its state before the commit-on-deactivate could run. AutoCAD
-    // keeps what you drew, exactly as Enter does.
+    // keeps what you drew, exactly as Enter does (desktop pline/d01, d02).
     const cad = createHarness()
 
     cad
@@ -1233,4 +1234,335 @@ describe("PLINE", () => {
       p(100, 100),
     ])
   })
+
+  describe("its Undo after a transparent command", () => {
+    const ltScale = (cad: CadHarness) =>
+      cad.runtime.document.getSettings().ltScale
+
+    it("takes 'LTSCALE back with the segment drawn before it", () => {
+      // probe pline/p26: `Regenerating model.` said by the Undo, LTSCALE 1.
+      const cad = answer(createHarness(), "PLINE", "0,0", "@10,0", "@0,10")
+      answer(cad, "'LTSCALE", "2")
+
+      expect(written(cad, "U")).toEqual([
+        "Specify next point or [Arc/Close/Halfwidth/Length/Undo/Width]: U",
+        "Regenerating model.",
+      ])
+      expect(ltScale(cad)).toBe(1)
+      expect(written(cad, "")).toEqual([
+        "Specify next point or [Arc/Close/Halfwidth/Length/Undo/Width]:",
+      ])
+      expect(vertices(cad)).toEqual(["0,0", "10,0"])
+    })
+
+    it("takes '-COLOR back with it", () => {
+      // probe pline/p27: CECOLOR back to BYLAYER.
+      const cad = answer(createHarness(), "PLINE", "0,0", "@10,0", "@0,10")
+      answer(cad, "'-COLOR", "1", "U", "")
+
+      expect(cad.runtime.document.getSettings().currentColor).toBe(
+        COLOR_BYLAYER
+      )
+      expect(vertices(cad)).toEqual(["0,0", "10,0"])
+    })
+
+    it("takes a change back with the segment it was made after, not before", () => {
+      // probe pline/p43: LTSCALE stays at the first Undo, goes at the second.
+      const cad = answer(createHarness(), "PLINE", "0,0", "@10,0")
+      answer(cad, "'LTSCALE", "2", "@0,10", "U")
+      expect(ltScale(cad)).toBe(2)
+
+      expect(written(cad, "U")).toEqual([
+        "Specify next point or [Arc/Close/Halfwidth/Length/Undo/Width]: U",
+        "Regenerating model.",
+      ])
+      expect(ltScale(cad)).toBe(1)
+      expect(cad.state().commandLine.prompt).toBe(
+        "PLINE Specify next point or [Arc/Halfwidth/Length/Undo/Width]:"
+      )
+    })
+
+    it("keeps a change made before a Width that went before the segment", () => {
+      // probe pline/p44: the Width answered after 'LTSCALE, then the segment.
+      const cad = answer(createHarness(), "PLINE", "0,0", "W", "2", "4")
+      answer(cad, "@10,0", "'LTSCALE", "2", "W", "1", "1", "@0,10", "U", "")
+
+      expect(ltScale(cad)).toBe(2)
+      const polyline = cad.only<PolylineEntity>("polyline")
+      expect(vertices(cad)).toEqual(["0,0", "10,0"])
+      expect(polyline.widths).toEqual([[2, 4]])
+      expect(cad.runtime.document.getSettings().polylineWidth).toBe(0)
+    })
+
+    it("keeps a change made at an arc's sub-prompt, before the arc", () => {
+      // probe pline/p144: 'LTSCALE at Radius's prompt survives the arc's Undo.
+      const cad = answer(createHarness(), "PLINE", "0,0", "10,0", "A", "R")
+      answer(cad, "'LTSCALE", "2", "10", "20,10", "U")
+
+      expect(ltScale(cad)).toBe(2)
+      expect(cad.state().commandLine.prompt).toBe(
+        "PLINE Specify next point or [Arc/Close/Halfwidth/Length/Undo/Width]:"
+      )
+      answer(cad, "")
+      expect(vertices(cad)).toEqual(["0,0", "10,0"])
+    })
+
+    it("removes nothing under UNDO Control None", () => {
+      // probe pline/p42: the chain and LTSCALE both stay.
+      const cad = answer(createHarness(), "UNDO", "C", "N")
+      answer(cad, "PLINE", "0,0", "@10,0", "@0,10", "'LTSCALE", "2", "U")
+
+      expect(cad.state().commandLine.prompt).toBe(
+        "PLINE Specify next point or [Arc/Close/Halfwidth/Length/Undo/Width]:"
+      )
+      answer(cad, "")
+      expect(ltScale(cad)).toBe(2)
+      expect(vertices(cad)).toEqual(["0,0", "10,0", "10,10"])
+    })
+  })
+
+  describe("Continue", () => {
+    it("starts at a clockwise arc's drawn end", () => {
+      // probe pline/p32: the arc is stored counter-clockwise from (10,0).
+      const cad = answer(createHarness(), ...CLOCKWISE_ARC)
+      answer(cad, "PLINE", "", "@5,0", "")
+
+      expect(vertices(cad)).toEqual(["10,0", "15,0"])
+    })
+
+    it("starts at a line's end whatever LASTPOINT is, past a circle", () => {
+      // probes pline/p185, p190
+      const cad = answer(createHarness(), "LINE", "0,0", "10,10", "")
+      answer(cad, "ID", "50,50", "CIRCLE", "50,50", "5")
+      answer(cad, "PLINE", "", "@5,0", "")
+
+      expect(vertices(cad)).toEqual(["10,10", "15,10"])
+    })
+
+    it("starts at a closed polyline's first vertex", () => {
+      // probe pline/p189
+      const cad = answer(createHarness(), "PLINE", "0,0", "@10,0", "@0,10")
+      answer(cad, "C", "PLINE", "", "@5,0", "")
+
+      expect(vertices(cad, 1)).toEqual(["0,0", "5,0"])
+    })
+
+    it("runs Length on along an arc-ended polyline's tangent", () => {
+      // probe pline/p188
+      const cad = answer(createHarness(), "PLINE", "0,0", "A", "@10,10", "")
+      answer(cad, "PLINE", "", "L", "5", "")
+
+      expect(vertices(cad, 1)).toEqual(["10,10", "10,15"])
+    })
+
+    it("with nothing to continue starts at the WCS origin, saying nothing", () => {
+      // probes pline/p178, p184, p186: whatever LASTPOINT, past a circle.
+      const cad = answer(createHarness(), "PLINE", "", "0,0", "@5,0", "")
+      expect(cad.commandLog().slice(0, 4)).toEqual([
+        "PLINE",
+        "Specify start point:",
+        "Current line-width is 0.00",
+        "Specify next point or [Arc/Halfwidth/Length/Undo/Width]: 0,0",
+      ])
+      expect(vertices(cad)).toEqual(["0,0", "0,0", "5,0"])
+
+      const elsewhere = answer(createHarness(), "ID", "7,8")
+      answer(elsewhere, "CIRCLE", "30,30", "5", "PLINE", "", "@5,0", "")
+      expect(vertices(elsewhere)).toEqual(["0,0", "5,0"])
+    })
+
+    it("with nothing to continue starts at the WCS origin in a moved UCS", () => {
+      // probe pline/p191: UCS origin 5,5.
+      const cad = answer(createHarness(), "UCS", "5,5", "")
+      answer(cad, "PLINE", "", "@5,0", "")
+
+      expect(vertices(cad)).toEqual(["0,0", "5,0"])
+    })
+  })
+
+  describe("the points it is given", () => {
+    it("starts at a 3D point's height and refuses a Z after it", () => {
+      // probe pline/p18
+      const cad = answer(createHarness(), "PLINE", "1,2,3", "@10,0")
+
+      expect(written(cad, "@0,10,5", "20,20,7")).toEqual([
+        "Specify next point or [Arc/Close/Halfwidth/Length/Undo/Width]: @0,10,5",
+        "2D point or option keyword required.",
+        "Specify next point or [Arc/Close/Halfwidth/Length/Undo/Width]: 20,20,7",
+        "2D point or option keyword required.",
+      ])
+      answer(cad, "")
+      expect(cad.only<PolylineEntity>("polyline").elevation).toBe(3)
+      expect(vertices(cad)).toEqual(["1,2", "11,2"])
+    })
+
+    it("refuses `#` and `*` after the start, in any UCS", () => {
+      // probes pline/p19, p20
+      const cad = answer(createHarness(), "PLINE", "0,0", "10<30")
+      expect(written(cad, "#5,5", "*20,0")).toEqual([
+        "Specify next point or [Arc/Close/Halfwidth/Length/Undo/Width]: #5,5",
+        "2D point or option keyword required.",
+        "Specify next point or [Arc/Close/Halfwidth/Length/Undo/Width]: *20,0",
+        "2D point or option keyword required.",
+      ])
+
+      const turned = answer(createHarness(), "UCS", "Z", "30")
+      answer(turned, "PLINE", "0,0", "@10,0", "*20,0", "10<0", "")
+      expect(turned.commandLog()).toContain(
+        "2D point or option keyword required."
+      )
+      expect(vertices(turned)).toEqual(["0,0", "8.6603,5", "8.6603,5"])
+    })
+
+    it("adds a zero-length vertex for `@`", () => {
+      // probe pline/p17
+      const cad = answer(createHarness(), "PLINE", "@", "@10,0", "@", "@0,5")
+      answer(cad, "")
+
+      expect(vertices(cad)).toEqual(["0,0", "10,0", "10,0", "10,5"])
+    })
+
+    it("adds a vertex for a direct distance of 0, and runs back for a negative one", () => {
+      // probe pline/p195: the console's cursor fixed at (289.98, 116.30).
+      const cursor = p(289.98397, 116.30379)
+      const cad = answer(createHarness(), "PLINE", "0,0", "@10,0")
+      cad.moveTo(cursor)
+      answer(cad, "0")
+      cad.moveTo(cursor)
+      answer(cad, "-5", "")
+
+      expect(vertices(cad)).toEqual(["0,0", "10,0", "10,0", "5.3825,-1.9181"])
+    })
+
+    it("refuses a Tangent at the start point, with nothing to defer it to", () => {
+      // probe pline/p29: `No found`, the snap left unnamed, then the start's.
+      const cad = answer(createHarness(), "CIRCLE", "50,0", "10", "ZOOM", "E")
+      answer(cad, "PLINE", "TAN", "50,10")
+
+      expect(cad.commandLog().slice(-2)).toEqual([
+        "No found for specified point.",
+        "Invalid point.",
+      ])
+      expect(cad.state().commandLine.prompt).toBe("PLINE Specify start point:")
+    })
+
+    it("takes CIRCLE typed as a wrong answer, and LINE as its hidden LIne", () => {
+      // probe pline/p180
+      const cad = answer(createHarness(), "PLINE", "0,0", "@10,0")
+
+      expect(written(cad, "_CIRCLE")).toEqual([
+        "Specify next point or [Arc/Close/Halfwidth/Length/Undo/Width]: _CIRCLE",
+        "2D point or option keyword required.",
+      ])
+      answer(cad, "_LINE", "@0,10", "")
+      expect(vertices(cad)).toEqual(["0,0", "10,0", "10,10"])
+    })
+  })
+
+  describe("LASTPOINT", () => {
+    it("is the last vertex after Close, Undo and Enter", () => {
+      // probes pline/p03, p16, p179
+      const closed = answer(createHarness(), "PLINE", "0,0", "@10,0", "@0,10")
+      answer(closed, "C")
+      expect(lastPoint(closed)).toMatch(/^ X = 10\.00 +Y = 10\.00 /)
+
+      const undone = answer(createHarness(), "PLINE", "20,0", "@10,0", "@0,10")
+      answer(undone, "U", "")
+      expect(lastPoint(undone)).toMatch(/^ X = 30\.00 +Y = 0\.00 /)
+
+      const ended = answer(createHarness(), "PLINE", "3,4", "")
+      expect(ended.entityCount).toBe(0)
+      expect(lastPoint(ended)).toMatch(/^ X = 3\.00 +Y = 4\.00 /)
+    })
+
+    it("is the vertex Length adds", () => {
+      // probes pline/p171, p153: a point at Length measures from the vertex.
+      const typed = answer(createHarness(), "PLINE", "0,0", "@10,0", "L", "5")
+      answer(typed, "")
+      expect(lastPoint(typed)).toMatch(/^ X = 15\.00 +Y = 0\.00 /)
+
+      const pointed = answer(createHarness(), "PLINE", "0,0", "@10,0", "L")
+      answer(pointed, "3,4", "")
+      expect(vertices(pointed)).toEqual(["0,0", "10,0", "18.0623,0"])
+      expect(lastPoint(pointed)).toMatch(/^ X = 18\.06 +Y = 0\.00 /)
+    })
+
+    it("stays at the arc's start when its end is refused", () => {
+      // probe pline/p38: straight ahead no arc leaves tangent.
+      const cad = answer(createHarness(), "PLINE", "0,0", "A", "@10,0")
+      expect(cad.commandLog().at(-1)).toBe("*Invalid*")
+      answer(cad, "")
+
+      expect(lastPoint(cad)).toMatch(/^ X = 0\.00 +Y = 0\.00 /)
+    })
+  })
+
+  describe("Close", () => {
+    it("closes after Length, and where the last point is the first", () => {
+      // probes pline/p162, p163
+      const length = answer(createHarness(), "PLINE", "0,0", "@10,0", "L", "5")
+      answer(length, "C")
+      expect(length.only<PolylineEntity>("polyline").closed).toBe(true)
+      expect(vertices(length)).toEqual(["0,0", "10,0", "15,0"])
+
+      const back = answer(createHarness(), "PLINE", "0,0", "@10,0", "@0,10")
+      answer(back, "0,0", "C")
+      expect(back.only<PolylineEntity>("polyline").closed).toBe(true)
+      expect(vertices(back)).toEqual(["0,0", "10,0", "10,10", "0,0"])
+    })
+
+    it("is typed CL and CLOSE too", () => {
+      // probe pline/p164
+      const cad = answer(createHarness(), "PLINE", "0,0", "@10,0", "@0,10")
+      answer(cad, "CL", "PLINE", "20,0", "@10,0", "@0,10", "CLOSE")
+
+      const closed = cad
+        .entities()
+        .filter((e): e is PolylineEntity => e.type === "polyline")
+        .map((polyline) => polyline.closed)
+      expect(closed).toEqual([true, true])
+    })
+
+    it("closes a zero-length first segment, two vertices", () => {
+      // probe pline/p177
+      const cad = answer(createHarness(), "PLINE", "0,0", "@", "C")
+
+      expect(cad.only<PolylineEntity>("polyline").closed).toBe(true)
+      expect(vertices(cad)).toEqual(["0,0", "0,0"])
+    })
+
+    it("is undone whole by U, which says PLINE", () => {
+      // probe pline/p165
+      const cad = answer(createHarness(), "PLINE", "0,0", "@10,0", "@0,10")
+      answer(cad, "C", "U")
+
+      expect(cad.commandLog().slice(-2)).toEqual(["U", "PLINE"])
+      expect(cad.entityCount).toBe(0)
+    })
+  })
 })
+
+/** `ARC 0,10 7.0710678,7.0710678 10,0`: a quarter drawn clockwise (pline/p32). */
+const CLOCKWISE_ARC = ["ARC", "0,10", "7.0710678,7.0710678", "10,0"] as const
+
+/** What answering `texts` writes to the history. */
+function written(cad: CadHarness, ...texts: string[]): string[] {
+  const from = cad.commandLog().length
+  answer(cad, ...texts)
+  return cad.commandLog().slice(from)
+}
+
+/** The `index`th polyline's vertices as `x,y`, to four places. */
+function vertices(cad: CadHarness, index = 0): string[] {
+  const polyline = cad
+    .entities()
+    .filter((e): e is PolylineEntity => e.type === "polyline")[index]
+  const round = (n: number) => Math.round(n * 10000) / 10000 + 0
+  return polyline.vertices.map((v) => `${round(v.x)},${round(v.y)}`)
+}
+
+/** LASTPOINT as `ID @` writes it. */
+function lastPoint(cad: CadHarness): string | undefined {
+  answer(cad, "ID", "@")
+  return cad.commandLog().at(-1)
+}

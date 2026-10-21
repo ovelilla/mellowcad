@@ -78,7 +78,13 @@ type AreaReport = {
 
 type MeasureState =
   | { readonly phase: "first" }
-  | { readonly phase: "second"; readonly base: Vec3; readonly cursor: Vec3 }
+  | {
+      readonly phase: "second"
+      readonly base: Vec3
+      readonly cursor: Vec3
+      /** Multiple points' {@link Run.startTangent}, read as the first point was given. */
+      readonly startTangent: Vec2
+    }
   | {
       readonly phase: "area"
       readonly points: readonly Vec3[]
@@ -208,7 +214,13 @@ export class MeasureTool implements Tool {
 
   private place(point: Vec3, ctx: ToolContext): void {
     if (this.state.phase === "first") {
-      this.state = { phase: "second", base: point, cursor: point }
+      // LASTPOINT is still the last object's: the first point sets it after,
+      // and it tells a clockwise arc's drawn end (pline/p115).
+      const startTangent = lastDrawnDirection(ctx.document, ctx.lastPoint) ?? {
+        x: 1,
+        y: 0,
+      }
+      this.state = { phase: "second", base: point, cursor: point, startTangent }
     } else if (this.state.phase === "second") {
       ctx.report(distanceReport({ base: this.state.base, tip: point }, ctx))
       ctx.endCommand()
@@ -266,10 +278,9 @@ export class MeasureTool implements Tool {
       pathLength(points, bulges),
       ctx.document.getSettings()
     )
+    // Only Multiple points and its run walk, each holding the start tangent.
     const startTangent =
-      this.state.phase === "multiple" || this.state.phase === "length"
-        ? this.state.startTangent
-        : (lastDrawnDirection(ctx.document) ?? { x: 1, y: 0 })
+      "startTangent" in this.state ? this.state.startTangent : { x: 1, y: 0 }
     this.state = {
       phase: "multiple",
       points,

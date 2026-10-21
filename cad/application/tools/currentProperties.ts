@@ -10,6 +10,7 @@ import { COLOR_BYLAYER } from "../../domain/colors"
 import { DEFAULT_LAYER_COLOR } from "../../domain/layers"
 import { LINETYPE_BYLAYER } from "../../domain/linetypes"
 import { LINEWEIGHT_BYLAYER } from "../../domain/lineweights"
+import type { DocumentSettings } from "../../domain/units"
 import { ToolContext } from "./Tool"
 
 /**
@@ -21,8 +22,56 @@ export function withCurrentProperties<T extends Entity>(
   entity: T,
   ctx: ToolContext
 ): T {
-  const { currentColor, currentLinetype, currentLineweight } =
+  return wearing(entity, ctx.document.getSettings())
+}
+
+/**
+ * The current layer, CECOLOR, CELTYPE, CELWEIGHT and THICKNESS as they stand:
+ * what a command that adds its object only at its end takes when that object
+ * starts, as AutoCAD appends it then (PLINE's start point, pline/p39, p182,
+ * p183).
+ */
+export interface CurrentProperties extends Pick<
+  DocumentSettings,
+  "currentColor" | "currentLinetype" | "currentLineweight" | "thickness"
+> {
+  readonly layerId: string
+}
+
+export function currentProperties(ctx: ToolContext): CurrentProperties {
+  const { currentColor, currentLinetype, currentLineweight, thickness } =
     ctx.document.getSettings()
+  return {
+    layerId: ctx.document.getCurrentLayerId(),
+    currentColor,
+    currentLinetype,
+    currentLineweight,
+    thickness,
+  }
+}
+
+/**
+ * {@link withCurrentProperties} and {@link withCurrentThickness} as they
+ * stood in `properties`; the layer is the factory's argument.
+ */
+export function withProperties<T extends ThickEntity>(
+  entity: T,
+  properties: CurrentProperties
+): T {
+  return withThickness(wearing(entity, properties), properties.thickness)
+}
+
+function wearing<T extends Entity>(
+  entity: T,
+  {
+    currentColor,
+    currentLinetype,
+    currentLineweight,
+  }: Pick<
+    DocumentSettings,
+    "currentColor" | "currentLinetype" | "currentLineweight"
+  >
+): T {
   let placed: Entity = entity
   if (currentColor !== COLOR_BYLAYER) {
     placed = assignEntityColor(placed, currentColor)

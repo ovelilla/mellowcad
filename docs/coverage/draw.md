@@ -48,24 +48,40 @@ exists, Undo from the start: `All segments already undone.` with none) and in ar
 (es `Precise punto inicial`, `El grosor de la línea actual es`,
 `Precise punto siguiente o [Arco/Cerrar/Mitad grosor/Longitud/desHacer/Grosor]`,
 `Precise punto final del arco (mantenga pulsada la tecla Ctrl para cambiar de dirección) o [ángUlo/cEntro/Cerrar/Dirección/Mitad grosor/líNea/Radio/Segundo pto./desHacer/Grosor]`);
-straight segments and arcs, open + closed, Continue; the arc's endpoint tangent to the chain — the
-first one leaving along the last line, arc or polyline drawn, else east — or the other way while
-Ctrl is held, an end straight ahead `*Invalid*`; Angle (`Specify included angle:`, then the endpoint
-or `[CEnter/Radius]`, Radius's `Specify direction of chord for arc … <0>:` defaulting to where the
-chain heads), CEnter (`Specify center point of arc:`, then the endpoint or `[Angle/Length]`, a
+straight segments and arcs, open + closed; Continue, Enter or a right-click at the start point:
+from the end of the last line, polyline or arc — an arc drawn clockwise from the end it was drawn
+to, the one LASTPOINT is on (p32), a closed polyline from its first vertex (p189) —, whatever
+LASTPOINT is and past a circle (p185, p190); with nothing to continue from the WCS's origin,
+silently, whatever LASTPOINT and the UCS's origin (p178, p184, p186, p191); the arc's endpoint
+tangent to the chain — the first one leaving the way the last line, arc or polyline drawn ends
+heading, a clockwise arc the way it was drawn (p33, p35), else along the UCS's X (p193) — or the
+other way while Ctrl is held, an end straight ahead `*Invalid*`, which keeps LASTPOINT (p38); Angle
+(`Specify included angle:`, then the endpoint or `[CEnter/Radius]`, Radius's
+`Specify direction of chord for arc … <0>:` defaulting to where the chain heads, `<270>` after a
+clockwise arc, p37), CEnter (`Specify center point of arc:`, then the endpoint or `[Angle/Length]`, a
 negative chord the major arc), Direction
 (`Specify the tangent direction for the start point of arc:`, `Specify endpoint of the arc …:`),
 Radius (the minor arc counter-clockwise, or `[Angle]` and the chord's direction), Second pt
 (`Specify second point on arc:`, `Specify end point of arc:`), each refusing as the console does
 (Enter where no default: `Invalid 2D point.`), their angles and distances measured by points as
 AutoCAD's are; arc-mode CLose with the tangent arc (`*Invalid*` and a line where none leaves that
-way); Undo back to the mode of the segment left last; Length's `Specify length of line:` (es
+way); Undo back to the mode of the segment left last, taking back with the segment a transparent
+command run since it was added (`'LTSCALE`, `'-COLOR`, p26, p27, p43, p44; one run at an arc's
+sub-prompts stays, p144), whose queued regeneration it does then, and under UNDO Control None
+removing nothing (p42); Length's `Specify length of line:` (es
 `Precise longitud de línea:`), no default (Enter and `FOO`:
 `Requires numeric distance or second point.`), a point measured from the last vertex, the line on
-the way the chain heads — along the last segment, tangent to an arc, and as the first segment along
-the last line, arc or polyline drawn, else east —, a negative length back the other way and 0 a
-segment of no length, as the console's; in the first vertex's plane, the others projected onto it,
-with THICKNESS; Halfwidth and Width (es `Mitad grosor`, declared `Mitad`, and `Grosor`), in line and
+the way the chain heads — along the last segment, tangent to an arc, and as the first segment the
+way the last line, arc or polyline drawn ends heading (p34), else along the UCS's X (p161) —, a
+negative length back the other way and 0 a segment of no length, as the console's, its end
+LASTPOINT (p153, p171); a 3D start point sets the polyline's height (p18) and after it a point typed
+at the command line with a Z or `*` is refused (`2D point or option keyword required.`, at an arc
+sub-prompt's point `Invalid 2D point.`; p18–p20, p137), the dynamic-input box taking it; `@` a
+zero-length vertex (p17); direct distance along the cursor, 0 a zero-length vertex and a negative
+one the other way (p195); a Tangent or Perpendicular override at the start point, with nothing to
+measure from, finds nothing (`No found for specified point.`, `Invalid point.`, p29); in the first
+vertex's plane, the others projected onto it; the layer, colour, linetype, lineweight and THICKNESS
+current at the start point, whatever is set during the command (p39, p181–p183); Halfwidth and Width (es `Mitad grosor`, declared `Mitad`, and `Grosor`), in line and
 arc mode alike: `Specify starting width <0.0000>:` and `Specify ending width <…>:`
 (`Specify starting half-width`, `Specify ending half-width`; es `Precise grosor inicial`,
 `Precise grosor final`, `Precise mitad de grosor inicial`, `Precise mitad de grosor final`), a value
@@ -86,7 +102,9 @@ back to its start square there (p236); its linetype laid segment by segment (PLI
 its grips and palette rows: `drafting-aids.md` Grips, `properties.md` Properties palette
 
 **Missing:** Spanish declares `Mitadgrosor` at the first segment's prompt (21322; `Mitad` everywhere
-here, **unverified** whether `MITADG` answers there); PLINEGEN 1 and a linetype's dashes along a wide
+here, **unverified** whether `MITADG` answers there); **unverified**: Continue with nothing to
+continue in a tilted UCS (from the WCS's origin here), and a Z or `*` typed in the dynamic-input box
+after the start (taken here); PLINEGEN 1 and a linetype's dashes along a wide
 band (drawn solid); AutoCAD breaks the arc prompt after its `or`, written here on one line;
 **unverified**: where two wide arcs meet at an angle (a wedge closes the outer corner here), how an
 arc segment lays a linetype (from its start here), and a wide band's outline with FILL off, whose

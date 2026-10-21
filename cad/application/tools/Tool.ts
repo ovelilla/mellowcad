@@ -480,6 +480,13 @@ export interface Tool {
    * DIST's second point and COPY's, and sets it at ZOOM's first.
    */
   setsLastPoint?(): boolean | null
+  /**
+   * Whether a Tangent or Perpendicular override with no point yet to measure
+   * from is let through for the tool to defer (LINE's first point,
+   * `tools/deferredSnap.ts`), the default; false where it finds nothing and
+   * the point is refused, as at PLINE's start point (pline/p29).
+   */
+  defersSnap?(): boolean
 
   /**
    * An answer typed at a prompt with no box to take it — a point at `Select

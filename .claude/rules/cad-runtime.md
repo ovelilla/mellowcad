@@ -156,7 +156,8 @@ clarify...`): a keyword answers, Enter writes `Invalid option keyword.`, anythin
 - **A wrong answer is refused, never run**: what the question does not take goes through
   `answering` to `refuse()` (`promptRefusal`, AutoCAD's console words) and the question stays. A box
   commit that cannot parse the typed text **returns `false`** so the refusal runs; reading the
-  cursor instead is a bug.
+  cursor instead is a bug. `answerPrompt` refuses at the command line what the box would take: a
+  `#`, and a Z or `*` where the question takes `"point2d"` (pline/p18–p20, p137).
 
 ## Transparent commands
 
@@ -216,7 +217,8 @@ runtime picks for the tool" feature.
 - **An override that finds nothing refuses the point** (`overrideMissed`): `snapNotFound`, then
   the prompt's own refusal, never the cursor's point. A point typed under one is found as a pick
   there (`pickTyped`), never handed to the tool as typed. Only a Tangent or Perpendicular with no
-  base yet is let through, for the tool to defer.
+  base yet is let through, for the tool to defer, unless `defersSnap()` says false (PLINE's
+  start, pline/p29).
 - **FROM asks in the place of the tool** (`asking()` gives `questionInstead`): its prompts, no
   keywords, its box over the tool's. A point given while it asks reaches it through `pickAnswer`
   and `placePoint`; a new way to give a point goes through them, or FROM is skipped.

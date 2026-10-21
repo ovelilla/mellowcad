@@ -42,8 +42,9 @@ PLINE's arc prompt and options, `[Angle/CEnter/CLose/Direction/Line/Radius/Secon
 length added to `Distance = …`, said again on switching to Arc or Line, its refusal
 `2D point or option keyword required.` and the run; its CLose closes with the tangent arc, straight
 and silent where none leaves that way, and Undo goes back to the mode of the segment left last, as
-AutoCAD 2023's console does (the first arc leaves as PLINE's does, along the last line or polyline
-drawn, else east — the chord's `<0>` or `<90>` after Angle and Radius, as the console shows); its
+AutoCAD 2023's console does (the first arc leaves as PLINE's does, the way the last line, arc or
+polyline drawn ends heading — a clockwise arc the way it was drawn, `<270>`, pline/p115 —, else
+east — the chord's `<0>` or `<90>` after Angle and Radius, as the console shows); its
 two points picked or typed (one without a Z at the current elevation), the 3D distance, the angle in
 and from the UCS's XY plane (0–360, as AutoCAD prints them) and ΔX / ΔY / ΔZ in the UCS, on the
 readout while the second point is picked and then at the command prompt in AutoCAD's words

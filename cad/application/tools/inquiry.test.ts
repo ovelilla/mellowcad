@@ -406,6 +406,15 @@ describe("DIST's Multiple points", () => {
       )
     }
 
+    // probe pline/p115: after `ARC 0,10 7.0710678,7.0710678 10,0`, drawn
+    // clockwise, the way it ends: (0,-1).
+    const clockwise = createHarness()
+    answer(clockwise, "ARC", "0,10", "7.0710678,7.0710678", "10,0")
+    answer(clockwise, "DIST", "20,0", "M", "A", "A", "90", "R", "10")
+    expect(clockwise.state().commandLine.prompt).toBe(
+      "DIST Specify direction of chord for arc (hold Ctrl to switch direction) <270>:"
+    )
+
     const spanish = createHarness({
       locale: es,
       entities: [lineOf(p(0, 0), p(0, 10))],

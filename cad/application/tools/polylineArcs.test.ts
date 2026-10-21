@@ -24,6 +24,9 @@ function drawn(cad: CadHarness): { at: string[]; bulges: number[] } {
   }
 }
 
+/** `ARC 0,10 7.0710678,7.0710678 10,0`: a quarter drawn clockwise (pline/p32). */
+const CLOCKWISE_ARC = ["ARC", "0,10", "7.0710678,7.0710678", "10,0"] as const
+
 const ARC_PROMPT =
   "Specify endpoint of arc (hold Ctrl to switch direction) or [Angle/CEnter/CLose/Direction/Halfwidth/Line/Radius/Second pt/Undo/Width]:"
 
@@ -145,6 +148,52 @@ describe("PLINE's arc mode", () => {
     ])
   })
 
+  it("leaves the start the way a clockwise arc was drawn, ending", () => {
+    // probes pline/p33, p35, p37: the arc drawn from (0,10) ends heading
+    // (0,-1), at (10,0), its stored start.
+    const half = answerLine(createHarness(), ...CLOCKWISE_ARC)
+    answerLine(half, "PLINE", "20,0", "A", "@10,0", "")
+    expect(drawn(half).bulges[0]).toBeCloseTo(1, 6)
+
+    const continued = answerLine(createHarness(), ...CLOCKWISE_ARC)
+    answerLine(continued, "PLINE", "", "A", "@10,10", "")
+    expect(drawn(continued)).toEqual({
+      at: ["10,0", "20,10"],
+      bulges: [2.4142],
+    })
+
+    const chord = answerLine(createHarness(), ...CLOCKWISE_ARC)
+    answerLine(chord, "PLINE", "20,0", "A", "R", "10", "A", "90")
+    expect(chord.state().commandLine.prompt).toBe(
+      "PLINE Specify direction of chord for arc (hold Ctrl to switch direction) <270>:"
+    )
+  })
+
+  it("leaves the start along the UCS's X with nothing drawn", () => {
+    // probe pline/p193: UCS Z 30, a half circle to @0,10.
+    const cad = answerLine(createHarness(), "UCS", "Z", "30")
+    answerLine(cad, "PLINE", "0,0", "A", "@0,10", "")
+
+    expect(drawn(cad).bulges[0]).toBeCloseTo(1, 6)
+  })
+
+  it("refuses a Z, `*` and `#` at a sub-prompt's point", () => {
+    // probe pline/p137: CEnter's centre.
+    const cad = answerLine(createHarness(), "PLINE", "0,0", "10,0", "A", "CE")
+    const from = cad.commandLog().length
+    answerLine(cad, "20,0,5", "*20,0", "#20,0", "20,0")
+
+    expect(cad.commandLog().slice(from)).toEqual([
+      "Specify center point of arc: 20,0,5",
+      "Invalid 2D point.",
+      "Specify center point of arc: *20,0",
+      "Invalid 2D point.",
+      "Specify center point of arc: #20,0",
+      "Invalid 2D point.",
+      "Specify center point of arc: 20,0",
+    ])
+  })
+
   it("undoes nothing with nothing drawn, and an arc back to the line prompt", () => {
     const cad = createHarness()
     cad.command("PLINE")
@@ -200,7 +249,8 @@ describe("PLINE's arc mode", () => {
   })
 })
 
-// AutoCAD 2023's console (acc/l1–l9): the line's length, on along the chain.
+// AutoCAD 2027's console (pline/p152–p160): the line's length, on along the
+// chain.
 describe("PLINE's Length", () => {
   it("asks the length with no default and runs on along the last segment", () => {
     const cad = createHarness()
@@ -238,6 +288,22 @@ describe("PLINE's Length", () => {
     after.command("PLINE")
     answerLine(after, "100,100", "L", "50", "")
     expect(drawn(after).at).toEqual(["100,100", "100,150"])
+  })
+
+  it("runs first the way a clockwise arc was drawn, ending", () => {
+    // probe pline/p34
+    const cad = answerLine(createHarness(), ...CLOCKWISE_ARC)
+    answerLine(cad, "PLINE", "20,0", "L", "10", "")
+
+    expect(drawn(cad).at).toEqual(["20,0", "20,-10"])
+  })
+
+  it("runs first along the UCS's X with nothing drawn", () => {
+    // probe pline/p161: UCS Z 30.
+    const cad = answerLine(createHarness(), "UCS", "Z", "30")
+    answerLine(cad, "PLINE", "0,0", "L", "10", "")
+
+    expect(drawn(cad).at).toEqual(["0,0", "8.6603,5"])
   })
 
   it("measures a point from the last vertex, runs back when negative, and adds 0", () => {
