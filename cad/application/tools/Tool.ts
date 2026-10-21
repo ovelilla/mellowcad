@@ -503,12 +503,26 @@ export interface Tool {
    */
   setsLastPoint?(): boolean | null
   /**
-   * Whether a Tangent or Perpendicular override with no point yet to measure
-   * from is let through for the tool to defer (LINE's first point,
-   * `tools/deferredSnap.ts`), the default; false where it finds nothing and
-   * the point is refused, as at PLINE's start point (pline/p29).
+   * Whether a Tangent or Perpendicular override that found nothing at the
+   * pick, on `entity` (null: no object there), is let through for the tool
+   * to work out itself: LINE's first point defers it (`tools/deferredSnap.ts`),
+   * CIRCLE's 2P and 3P solve the circle at the last point, its radius makes
+   * the circle tangent to the object. False, the default, refuses it as any
+   * override that finds nothing, as at PLINE's start point (pline/p29). WHY
+   * not let through by default: a tool that does not work it out takes the
+   * raw pick, a point that is not tangent, and says nothing (circle CTN-05).
    */
-  defersSnap?(): boolean
+  defersSnap?(
+    kind: SnapType.Tangent | SnapType.Perpendicular,
+    entity: Entity | null
+  ): boolean
+  /**
+   * Whether a Tangent or Perpendicular override is measured from LASTPOINT
+   * where the prompt has no base point: CIRCLE's centre (probes circle/p343,
+   * p345). Only the snap measures from it; Ortho and Polar still have no
+   * base there.
+   */
+  snapsFromLastPoint?(): boolean
 
   /**
    * An answer typed at a prompt with no box to take it — a point at `Select

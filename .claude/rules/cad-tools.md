@@ -329,9 +329,9 @@ returns `true`; `false` ends the command.
 - `getConstraintAnchor()` — the base Ortho/Polar restrict against, in every phase defining a
   direction, with its Z; none where the trace says `UseBasePoint` false (circle/d12, p137).
 - No hook exposes a preview to the snaps: ghosts are not objects.
-- **A Tangent or Perpendicular with no point to measure from is deferred** where the tool
-  `defersSnap()`: read `ctx.snapOverride()` at the pick and use `tools/deferredSnap.ts`
-  (`deferredPick`, `deferredFrom`, `deferredPair`), as LINE does.
+- **A Tangent or Perpendicular that finds nothing** reaches the tool where `defersSnap(kind,
+  entity)` says so: it reads `ctx.snapOverride()` and `ctx.pick`, as LINE (`tools/deferredSnap.ts`)
+  and CIRCLE (`circlesMeetingThree`, `circleOnDiameter`) do.
 - `retainsTrackingAfterPointerDown()` — true when a click _begins_ an edit, so tracking survives
   the drag.
 - `usesCrosshair()` — false only for view tools that own the cursor (PAN's hand): no crosshair is

@@ -975,3 +975,353 @@ function touchPoint(
     ? near
     : far
 }
+
+/**
+ * What a circle of a tangent construction must meet: pass through a point,
+ * touch a line (infinite) or a circle, or have its centre on a line — CIRCLE's
+ * Perpendicular to a line among 3P's points (probes circle/p337d, p10).
+ */
+export type CircleConstraint =
+  | { readonly kind: "point"; readonly point: Vec2 }
+  | TangentTarget
+  | { readonly kind: "centerOn"; readonly a: Vec2; readonly b: Vec2 }
+
+/** A circle meeting its constraints, and where it meets each, in their order. */
+export interface ConstrainedCircle {
+  readonly center: Vec2
+  readonly radius: number
+  /** The point itself, the touch on a line or a circle, the centre on a line. */
+  readonly touches: readonly Vec2[]
+}
+
+/**
+ * Every circle meeting three constraints — Apollonius' problem. A point is a
+ * circle of radius 0 and each circle is touched from outside or inside, so
+ * with `Q = x² + y² − r²` every constraint is linear in (x, y, r, Q): a circle
+ * `Q − 2c·(x, y) ∓ 2Rr + |c|² − R² = 0`, a line `n·(x, y) + d = ±r`, a centre
+ * on a line `n·(x, y) + d = 0`. Each of the sign sets leaves a line of
+ * solutions, which `Q`'s own definition cuts in at most two.
+ */
+export function circlesMeetingThree(
+  constraints: readonly [CircleConstraint, CircleConstraint, CircleConstraint]
+): ConstrainedCircle[] {
+  // Solved about the constraints' own middle and size, so the thresholds
+  // below are relative to the drawing, whatever its units.
+  const anchors = constraints.flatMap(anchorsOf)
+  const origin = V.scale(
+    anchors.reduce((sum, q) => V.add(sum, q), V.zero()),
+    1 / anchors.length
+  )
+  const scale = Math.max(
+    1e-12,
+    ...anchors.map((q) => V.distance(q, origin)),
+    ...constraints.map((c) => (c.kind === "circle" ? c.radius : 0))
+  )
+  const local = constraints.map((c) => toLocal(c, origin, scale))
+  const found: { center: Vec2; radius: number }[] = []
+  for (const signs of signSets(local)) {
+    const rows = local.map((c, i) => constraintRow(c, signs[i]))
+    for (const [x, y, r] of solveRows(rows)) {
+      if (!(r > 1e-9)) continue
+      const center = { x, y }
+      if (!local.every((c, i) => meetsLocal(c, signs[i], center, r))) continue
+      if (
+        found.some(
+          (f) =>
+            V.distance(f.center, center) < 1e-9 && Math.abs(f.radius - r) < 1e-9
+        )
+      ) {
+        continue
+      }
+      found.push({ center, radius: r })
+    }
+  }
+  return found.map(({ center, radius }) => {
+    const world = {
+      center: V.add(origin, V.scale(center, scale)),
+      radius: radius * scale,
+    }
+    return {
+      ...world,
+      touches: constraints.map((c) =>
+        constraintTouch(c, world.center, world.radius)
+      ),
+    }
+  })
+}
+
+/**
+ * Of the fitting circles, the one whose touches lie nearest the picks: the
+ * least sum of squared distances, AutoCAD's choice in Ttr, Tan-Tan-Tan and
+ * 2P's (45 console cases fit it, the plain sum not; CIRCLE-D30). Among equal
+ * ones, the first.
+ */
+export function nearestToPicks<T>(
+  fits: readonly T[],
+  picks: readonly Vec2[],
+  touches: (fit: T) => readonly Vec2[]
+): T | null {
+  let best: T | null = null
+  let bestReach = Infinity
+  for (const fit of fits) {
+    const reach = touches(fit).reduce((sum, touch, i) => {
+      const gap = V.distance(touch, picks[i])
+      return sum + gap * gap
+    }, 0)
+    if (reach < bestReach) {
+      best = fit
+      bestReach = reach
+    }
+  }
+  return best
+}
+
+/** One end of a diameter: what it lies on, and where that was picked. */
+export interface DiameterEnd {
+  readonly constraint: CircleConstraint
+  readonly pick: Vec2
+}
+
+/**
+ * The circle on a diameter between two constraints — CIRCLE's 2P with a
+ * deferred Tangent. A circle touched at a diameter's end has the diameter
+ * square to it there, so the diameter lies on the line through the two
+ * centres (a point's own, a circle's), and an end on a line is the foot from
+ * the other end's centre. A circle's end is the crossing nearer its pick
+ * (probes circle/p08, p09, p334, p370, p374). Null for two lines, concentric
+ * circles or one point twice.
+ */
+export function circleOnDiameter(
+  first: DiameterEnd,
+  second: DiameterEnd
+): { center: Vec2; radius: number } | null {
+  const a = first.constraint
+  const b = second.constraint
+  if (a.kind === "centerOn" || b.kind === "centerOn") return null
+  let ends: [Vec2, Vec2] | null
+  if (a.kind === "line" && b.kind === "line") ends = null
+  else if (a.kind === "line") {
+    const flipped = lineEnd(a, second)
+    ends = flipped && [flipped[1], flipped[0]]
+  } else if (b.kind === "line") ends = lineEnd(b, first)
+  else {
+    const from = centreOf(a)
+    const to = centreOf(b)
+    const along = V.sub(to, from)
+    const length = V.length(along)
+    if (length < 1e-12) return null
+    const u = V.scale(along, 1 / length)
+    ends = [diameterEnd(first, u), diameterEnd(second, u)]
+  }
+  if (!ends) return null
+  const radius = V.distance(ends[0], ends[1]) / 2
+  if (!(radius > 1e-12)) return null
+  return { center: V.midpoint(ends[0], ends[1]), radius }
+}
+
+/** The ends when one lies on `line`: [the other's, the foot on the line]. */
+function lineEnd(
+  line: { readonly a: Vec2; readonly b: Vec2 },
+  other: DiameterEnd
+): [Vec2, Vec2] | null {
+  const c = other.constraint
+  if (c.kind !== "point" && c.kind !== "circle") return null
+  const centre = centreOf(c)
+  const foot = closestPointOnInfiniteLine(line.a, line.b, centre).point
+  if (c.kind === "point") return [c.point, foot]
+  const toward = V.sub(foot, centre)
+  const length = V.length(toward)
+  const u =
+    length > 1e-12
+      ? V.scale(toward, 1 / length)
+      : V.normalize(V.perpendicular(V.sub(line.b, line.a)))
+  return [diameterEnd(other, u), foot]
+}
+
+/** A point's end is itself; a circle's, its crossing with the line along `u`. */
+function diameterEnd(end: DiameterEnd, u: Vec2): Vec2 {
+  const c = end.constraint
+  if (c.kind !== "circle") return centreOf(c)
+  const back = V.sub(c.center, V.scale(u, c.radius))
+  const ahead = V.add(c.center, V.scale(u, c.radius))
+  const gapBack = V.distance(back, end.pick)
+  const gapAhead = V.distance(ahead, end.pick)
+  if (Math.abs(gapBack - gapAhead) > 1e-9 * Math.max(1, c.radius)) {
+    return gapBack < gapAhead ? back : ahead
+  }
+  // WHY counter-clockwise from the pick: a pick square to the line of
+  // centres is as near both, and AutoCAD then takes the crossing the pick
+  // reaches first turning counter-clockwise (probes circle/p02, p334e, p334f).
+  const turn = (q: Vec2) =>
+    normalizeAngle(
+      angleOf(V.sub(q, c.center)) - angleOf(V.sub(end.pick, c.center))
+    ) || 2 * Math.PI
+  return turn(back) <= turn(ahead) ? back : ahead
+}
+
+function angleOf(v: Vec2): number {
+  return Math.atan2(v.y, v.x)
+}
+
+function centreOf(c: CircleConstraint): Vec2 {
+  switch (c.kind) {
+    case "point":
+      return c.point
+    case "circle":
+      return c.center
+    default:
+      return c.a
+  }
+}
+
+/** The points that place a constraint, to centre and size the problem on. */
+function anchorsOf(c: CircleConstraint): Vec2[] {
+  switch (c.kind) {
+    case "point":
+      return [c.point]
+    case "circle":
+      return [c.center]
+    default:
+      return [c.a, c.b]
+  }
+}
+
+function toLocal(
+  c: CircleConstraint,
+  origin: Vec2,
+  scale: number
+): CircleConstraint {
+  const at = (q: Vec2) => V.scale(V.sub(q, origin), 1 / scale)
+  switch (c.kind) {
+    case "point":
+      return { kind: "point", point: at(c.point) }
+    case "circle":
+      return { kind: "circle", center: at(c.center), radius: c.radius / scale }
+    default:
+      return { kind: c.kind, a: at(c.a), b: at(c.b) }
+  }
+}
+
+/** Outside and inside for a circle, both sides for a line, one way else. */
+function signSets(constraints: readonly CircleConstraint[]): number[][] {
+  let sets: number[][] = [[]]
+  for (const c of constraints) {
+    const signs =
+      c.kind === "line" || (c.kind === "circle" && c.radius > 0) ? [1, -1] : [1]
+    sets = sets.flatMap((set) => signs.map((sign) => [...set, sign]))
+  }
+  return sets
+}
+
+/**
+ * A constraint as `[x, y, r, Q, constant]`, the coefficients of a linear
+ * equation in x, y, r and `Q = x² + y² − r²` (see {@link circlesMeetingThree}).
+ */
+function constraintRow(c: CircleConstraint, sign: number): number[] {
+  if (c.kind === "point" || c.kind === "circle") {
+    const centre = centreOf(c)
+    const radius = c.kind === "circle" ? c.radius : 0
+    return [
+      -2 * centre.x,
+      -2 * centre.y,
+      -2 * sign * radius,
+      1,
+      centre.x * centre.x + centre.y * centre.y - radius * radius,
+    ]
+  }
+  const n = V.normalize(V.perpendicular(V.sub(c.b, c.a)))
+  return [n.x, n.y, c.kind === "line" ? -sign : 0, 0, -V.dot(n, c.a)]
+}
+
+/**
+ * The (x, y, r) of three rows: three of the four unknowns solved in terms of
+ * the fourth, the best-conditioned choice, and that put into `Q`'s definition.
+ */
+function solveRows(rows: readonly number[][]): [number, number, number][] {
+  let best: { free: number; cols: number[]; det: number } | null = null
+  for (let free = 0; free < 4; free++) {
+    const cols = [0, 1, 2, 3].filter((j) => j !== free)
+    const det = det3(rows.map((row) => cols.map((j) => row[j])))
+    if (!best || Math.abs(det) > Math.abs(best.det)) best = { free, cols, det }
+  }
+  if (!best || Math.abs(best.det) < 1e-10) return []
+  const { free, cols } = best
+  const m = rows.map((row) => cols.map((j) => row[j]))
+  const base = cramer(
+    m,
+    rows.map((row) => -row[4])
+  )
+  const slope = cramer(
+    m,
+    rows.map((row) => -row[free])
+  )
+  // Each unknown as base + slope·t, t being the free one.
+  const unknown = (k: number): [number, number] =>
+    k === free ? [0, 1] : [base[cols.indexOf(k)], slope[cols.indexOf(k)]]
+  const [[xa, xb], [ya, yb], [ra, rb], [qa, qb]] = [0, 1, 2, 3].map(unknown)
+  // x² + y² − r² − Q = 0, a quadratic in t.
+  const qA = xb * xb + yb * yb - rb * rb
+  const qB = 2 * (xa * xb + ya * yb - ra * rb) - qb
+  const qC = xa * xa + ya * ya - ra * ra - qa
+  const roots: number[] = []
+  if (Math.abs(qA) < 1e-12) {
+    if (Math.abs(qB) > 1e-12) roots.push(-qC / qB)
+  } else {
+    const disc = qB * qB - 4 * qA * qC
+    if (disc < -1e-9 * Math.max(1, qB * qB)) return []
+    const root = Math.sqrt(Math.max(0, disc))
+    roots.push((-qB - root) / (2 * qA), (-qB + root) / (2 * qA))
+  }
+  return roots.map((t) => [xa + xb * t, ya + yb * t, ra + rb * t])
+}
+
+function det3(m: readonly number[][]): number {
+  return (
+    m[0][0] * (m[1][1] * m[2][2] - m[1][2] * m[2][1]) -
+    m[0][1] * (m[1][0] * m[2][2] - m[1][2] * m[2][0]) +
+    m[0][2] * (m[1][0] * m[2][1] - m[1][1] * m[2][0])
+  )
+}
+
+function cramer(m: readonly number[][], rhs: readonly number[]): number[] {
+  const det = det3(m)
+  return [0, 1, 2].map(
+    (j) =>
+      det3(m.map((row, i) => row.map((v, k) => (k === j ? rhs[i] : v)))) / det
+  )
+}
+
+/** Whether a solution meets its constraint with the sign it was solved for. */
+function meetsLocal(
+  c: CircleConstraint,
+  sign: number,
+  center: Vec2,
+  r: number
+): boolean {
+  const tolerance = 1e-7 * Math.max(1, r, V.length(center))
+  if (c.kind === "point" || c.kind === "circle") {
+    const radius = c.kind === "circle" ? c.radius : 0
+    return (
+      Math.abs(V.distance(center, centreOf(c)) - Math.abs(r + sign * radius)) <=
+      tolerance
+    )
+  }
+  const n = V.normalize(V.perpendicular(V.sub(c.b, c.a)))
+  const offset = V.dot(n, V.sub(center, c.a))
+  return Math.abs(offset - (c.kind === "line" ? sign * r : 0)) <= tolerance
+}
+
+function constraintTouch(
+  c: CircleConstraint,
+  center: Vec2,
+  radius: number
+): Vec2 {
+  switch (c.kind) {
+    case "point":
+      return c.point
+    case "centerOn":
+      return center
+    default:
+      return touchPoint(c, center, radius) ?? center
+  }
+}

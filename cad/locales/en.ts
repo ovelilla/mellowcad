@@ -2715,6 +2715,7 @@ export const en: EngineCatalog = {
       ],
       "requiresRadius": "Requires numeric radius, point on circumference, or \"D\".",
       "requiresTangent": "Requires a TAN object-snap and selection of Circle, Arc, or Line.",
+      "requiresTangentSelection": "*Requires a TAN object-snap and selection of Circle, Arc, or Line.",
       "invalidOptionKeyword": "Invalid option keyword.",
       "ambiguousResponse": "Ambiguous response, please clarify...",
       "invalidSelection": "*Invalid selection*",

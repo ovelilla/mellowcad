@@ -29,7 +29,8 @@ writing `Command:  <Osnap on>` / ` <Osnap off>` (es ` <Refent activado>` / ` <Re
 tables 33112, 33113, desktop passes line/d10, d27)
 
 **Missing:** Node and Geometric Center (no POINT object; a dimension's definition points snap as
-Endpoint), deferred Perpendicular and Tangent at the first point of a command other than LINE,
+Endpoint), deferred Perpendicular and Tangent at the first point of a command other than LINE and
+CIRCLE (refused there as finding nothing, as at PLINE's start, pline/p29),
 Perpendicular and Tangent on ellipses and splines, extended Intersection and extended Apparent
 Intersection (picked object by object, as an override), Extension from a polyline's arc end, the
 tooltip's distance and angle (`Extension: 12.00 < 0°`), the snapped object's blue glow while Tab

@@ -10,7 +10,10 @@ import {
   chamferLines,
   circleCircleIntersection,
   circleFrom3Points,
+  circleOnDiameter,
+  circlesMeetingThree,
   circlesTangentToBoth,
+  type CircleConstraint,
   closestPointOnArc,
   closestPointOnCircle,
   closestPointOnInfiniteLine,
@@ -21,6 +24,7 @@ import {
   infiniteLineIntersection,
   intersectRays,
   lineCircleIntersectionParams,
+  nearestToPicks,
   normalizeAngle,
   offsetSegment,
   polarPoint,
@@ -602,6 +606,412 @@ describe("circlesTangentToBoth", () => {
         }
       })
     )
+  })
+})
+
+/**
+ * CIRCLE's tangent constructions against AutoCAD 2027's console (probes
+ * circle/p01–p10, p330–p337, p370–p379). Setup of most: circle A (0,0) r10,
+ * circle B (40,0) r10, line L (−20,−15)–(60,−15).
+ */
+const A: TangentTarget = { kind: "circle", center: p(0, 0), radius: 10 }
+const B: TangentTarget = { kind: "circle", center: p(40, 0), radius: 10 }
+const L: TangentTarget = { kind: "line", a: p(-20, -15), b: p(60, -15) }
+const ON_L: CircleConstraint = {
+  kind: "centerOn",
+  a: p(-20, -15),
+  b: p(60, -15),
+}
+const at = (x: number, y: number): CircleConstraint => ({
+  kind: "point",
+  point: p(x, y),
+})
+
+/** The constraints' circle AutoCAD draws for these picks (CIRCLE-D30). */
+function chosen(
+  constraints: [CircleConstraint, CircleConstraint, CircleConstraint],
+  picks: readonly Vec2Like[]
+) {
+  return nearestToPicks(
+    circlesMeetingThree(constraints),
+    picks,
+    (fit) => fit.touches
+  )
+}
+
+describe("circlesMeetingThree", () => {
+  const C: TangentTarget = { kind: "circle", center: p(20, 30), radius: 10 }
+  const T1: TangentTarget = { kind: "line", a: p(-40, 0), b: p(100, 0) }
+  const T2: TangentTarget = { kind: "line", a: p(-15, -20), b: p(45, 60) }
+  const T3: TangentTarget = { kind: "line", a: p(75, -20), b: p(15, 60) }
+  const s = Math.SQRT1_2 * 10
+
+  it("draws AutoCAD's Tan, Tan, Tan circle for the picks", () => {
+    const cases: [
+      string,
+      [CircleConstraint, CircleConstraint, CircleConstraint],
+      Vec2Like[],
+      [number, number, number],
+    ][] = [
+      ["p01", [A, B, L], [p(0, 10), p(40, 10), p(20, -15)], [20, -4.5, 10.5]],
+      [
+        "p330a",
+        [A, B, L],
+        [p(0, -10), p(40, -10), p(20, -15)],
+        [20, 37.5, 52.5],
+      ],
+      [
+        "p330d",
+        [A, B, L],
+        [p(-10, 0), p(30, 0), p(20, -15)],
+        [9.364916731, 6.2701665379, 21.2701665379],
+      ],
+      [
+        "p331a",
+        [A, B, L],
+        [p(0, 10), p(40, 10), p(-15, -15)],
+        [-29.364916731, 83.7298334621, 98.7298334621],
+      ],
+      ["p331c", [L, A, B], [p(20, -15), p(0, 10), p(40, 10)], [20, -4.5, 10.5]],
+      [
+        "p331d",
+        [A, B, L],
+        [p(-s, s), p(40 + s, s), p(20, -15)],
+        [20, 37.5, 52.5],
+      ],
+      ["p332a", [T1, T2, T3], [p(30, 0), p(15, 20), p(45, 20)], [30, 15, 15]],
+      [
+        "p332b",
+        [T1, T2, T3],
+        [p(-20, 0), p(-9, -12), p(45, 20)],
+        [-20, 40, 40],
+      ],
+      [
+        "p333a",
+        [A, B, C],
+        [p(8.9442719, 4.472136), p(31.0557281, 4.472136), p(20, 20)],
+        [20, 8.3333333333, 11.6666666667],
+      ],
+      [
+        "p333b",
+        [A, B, C],
+        [p(-8.9442719, -4.472136), p(48.9442719, -4.472136), p(20, 40)],
+        [20, 8.3333333333, 31.6666666667],
+      ],
+      ["p333c", [A, B, C], [p(0, 10), p(40, 10), p(20, 20)], [20, -15, 35]],
+    ]
+    for (const [probe, constraints, picks, [x, y, r]] of cases) {
+      const circle = chosen(constraints, picks)
+      expect(circle?.center, probe).toBeCloseToPoint(p(x, y), 6)
+      expect(circle?.radius, probe).toBeCloseTo(r, 6)
+    }
+  })
+
+  it("takes points and a centre on a line among the three", () => {
+    const cases: [
+      string,
+      [CircleConstraint, CircleConstraint, CircleConstraint],
+      Vec2Like[],
+      [number, number, number],
+    ][] = [
+      [
+        "p03",
+        [A, at(60, 20), at(70, 0)],
+        [p(0, 10), p(60, 20), p(70, 0)],
+        [29.882351152901, -7.558824423549, 40.82354192969],
+      ],
+      [
+        "p337a",
+        [A, at(60, 20), at(70, 0)],
+        [p(0, -10), p(60, 20), p(70, 0)],
+        [40.0129368052, -2.4935315974, 30.0905576365],
+      ],
+      [
+        "p04",
+        [at(20, 20), at(25, 25), B],
+        [p(20, 20), p(25, 25), p(40, 10)],
+        [28.840374726443, 16.159625273557, 9.638501094228],
+      ],
+      [
+        "p336a",
+        [A, B, at(20, 30)],
+        [p(0, 10), p(40, 10), p(20, 30)],
+        [20, 15, 15],
+      ],
+      [
+        "p336c",
+        [at(20, 30), A, B],
+        [p(20, 30), p(0, 10), p(40, 10)],
+        [20, 15, 15],
+      ],
+      [
+        "p337c",
+        [at(20, 20), at(25, 25), ON_L],
+        [p(20, 20), p(25, 25), p(20, -15)],
+        [60, -15, 53.1507290637],
+      ],
+      [
+        "p337d",
+        [ON_L, at(0, 20), at(40, 20)],
+        [p(20, -15), p(0, 20), p(40, 20)],
+        [20, -15, 40.3112887415],
+      ],
+      [
+        "p337e",
+        [A, ON_L, at(20, 30)],
+        [p(0, 10), p(20, -15), p(20, 30)],
+        [33.9444872454, -15, 47.1110255093],
+      ],
+      ["p10", [ON_L, A, B], [p(20, -15), p(0, 10), p(40, 10)], [20, -15, 35]],
+      [
+        "p371",
+        [L, at(60, 20), at(70, 20)],
+        [p(20, -15), p(60, 20), p(70, 20)],
+        [65, 2.8571428571, 17.8571428571],
+      ],
+    ]
+    for (const [probe, constraints, picks, [x, y, r]] of cases) {
+      const circle = chosen(constraints, picks)
+      expect(circle?.center, probe).toBeCloseToPoint(p(x, y), 6)
+      expect(circle?.radius, probe).toBeCloseTo(r, 6)
+    }
+  })
+
+  it("finds the eight circles of three apart, the four of a triangle", () => {
+    expect(circlesMeetingThree([A, B, C])).toHaveLength(8)
+    expect(circlesMeetingThree([T1, T2, T3])).toHaveLength(4)
+    expect(circlesMeetingThree([A, B, L])).toHaveLength(6)
+  })
+
+  it("is the circumscribed circle of three points, none on one line", () => {
+    const [circle] = circlesMeetingThree([at(100, 0), at(0, 100), at(-100, 0)])
+    expect(circle.center).toBeCloseToPoint(ORIGIN)
+    expect(circle.radius).toBeCloseTo(100)
+    expect(circlesMeetingThree([at(0, 0), at(1, 0), at(2, 0)])).toEqual([])
+  })
+
+  it("finds none touching three parallels", () => {
+    const parallel = (y: number): TangentTarget => ({
+      kind: "line",
+      a: p(0, y),
+      b: p(1, y),
+    })
+    expect(
+      circlesMeetingThree([parallel(0), parallel(10), parallel(30)])
+    ).toEqual([])
+  })
+
+  it("returns circles meeting every constraint where they say", () => {
+    const constraint: fc.Arbitrary<CircleConstraint> = fc.oneof(
+      point.map((q): CircleConstraint => ({ kind: "point", point: q })),
+      fc
+        .tuple(point, point)
+        .filter(([a, b]) => V.distance(a, b) > 1)
+        .map(([a, b]): CircleConstraint => ({ kind: "line", a, b })),
+      fc
+        .tuple(point, positiveLength)
+        .map(([center, radius]): CircleConstraint => ({
+          kind: "circle",
+          center,
+          radius,
+        })),
+      fc
+        .tuple(point, point)
+        .filter(([a, b]) => V.distance(a, b) > 1)
+        .map(([a, b]): CircleConstraint => ({ kind: "centerOn", a, b }))
+    )
+    const meets = (
+      c: CircleConstraint,
+      fit: { center: Vec2Like; radius: number },
+      touch: Vec2Like
+    ): void => {
+      const size = Math.max(1, fit.radius, V.length(fit.center))
+      const near = (value: number) =>
+        expect(Math.abs(value) / size).toBeLessThan(1e-6)
+      switch (c.kind) {
+        case "point":
+          near(V.distance(fit.center, c.point) - fit.radius)
+          near(V.distance(touch, c.point))
+          return
+        case "line":
+          near(distanceToLine(c.a, c.b, fit.center) - fit.radius)
+          near(distanceToLine(c.a, c.b, touch))
+          near(V.distance(fit.center, touch) - fit.radius)
+          return
+        case "circle": {
+          const apart = V.distance(fit.center, c.center)
+          near(
+            Math.min(
+              Math.abs(apart - (c.radius + fit.radius)),
+              Math.abs(apart - Math.abs(c.radius - fit.radius))
+            )
+          )
+          near(V.distance(touch, c.center) - c.radius)
+          near(V.distance(fit.center, touch) - fit.radius)
+          return
+        }
+        case "centerOn":
+          near(distanceToLine(c.a, c.b, fit.center))
+          return
+      }
+    }
+    fc.assert(
+      fc.property(constraint, constraint, constraint, (a, b, c) => {
+        for (const fit of circlesMeetingThree([a, b, c])) {
+          expect(fit.radius).toBeGreaterThan(0)
+          ;[a, b, c].forEach((each, i) => meets(each, fit, fit.touches[i]))
+        }
+      })
+    )
+  })
+})
+
+describe("nearestToPicks", () => {
+  it("takes the least sum of squared distances, as Ttr in AutoCAD", () => {
+    // probes circle/p378c, p379b, p379c: overlapping circles (0,0) r10 and
+    // (15,0) r10, where the plain sum of distances chooses another circle.
+    const left: TangentTarget = { kind: "circle", center: p(0, 0), radius: 10 }
+    const right: TangentTarget = {
+      kind: "circle",
+      center: p(15, 0),
+      radius: 10,
+    }
+    const ttr = (first: Vec2Like, second: Vec2Like, r: number) =>
+      nearestToPicks(
+        circlesTangentToBoth(left, right, r),
+        [first, second],
+        (fit) => [fit.touchFirst, fit.touchSecond]
+      )?.center
+    expect(ttr(p(9.6824584, 2.5), p(25, 0), 2)).toBeCloseToPoint(
+      p(10.1666666667, 6.374863833),
+      6
+    )
+    expect(ttr(p(-8.6602540378, 5), p(6.3397459622, -5), 3)).toBeCloseToPoint(
+      p(3.5, 6.0621778265),
+      6
+    )
+    expect(
+      ttr(p(8.6602540378, -5), p(5.3407417371, -2.588190451), 6)
+    ).toBeCloseToPoint(p(7.5, -14.1332940251), 6)
+  })
+
+  it("is null with nothing to choose", () => {
+    expect(nearestToPicks([], [ORIGIN], () => [ORIGIN])).toBeNull()
+  })
+})
+
+describe("circleOnDiameter", () => {
+  const end = (constraint: CircleConstraint, pick: Vec2Like) => ({
+    constraint,
+    pick,
+  })
+  const s = Math.SQRT1_2 * 10
+
+  it("ends each diameter where the line of the centres crosses its circle", () => {
+    // probes circle/p334a–d: of the two crossings, the one nearer the pick.
+    const cases: [Vec2Like, Vec2Like, [number, number, number]][] = [
+      [p(-s, s), p(40 - s, s), [10, 0, 20]],
+      [p(s, s), p(40 + s, s), [30, 0, 20]],
+      [p(s, s), p(40 - s, s), [20, 0, 10]],
+      [p(-s, s), p(40 + s, s), [20, 0, 30]],
+    ]
+    for (const [first, second, [x, y, r]] of cases) {
+      const circle = circleOnDiameter(end(A, first), end(B, second))
+      expect(circle?.center).toBeCloseToPoint(p(x, y), 6)
+      expect(circle?.radius).toBeCloseTo(r, 6)
+    }
+  })
+
+  it("turns counter-clockwise from the pick between two crossings as near", () => {
+    // probes circle/p02, p334e, p334f: picks square to the line of centres.
+    const cases: [
+      CircleConstraint,
+      Vec2Like,
+      CircleConstraint,
+      Vec2Like,
+      [number, number, number],
+    ][] = [
+      [A, p(0, 10), B, p(40, 10), [10, 0, 20]],
+      [A, p(0, -10), B, p(40, -10), [30, 0, 20]],
+      [B, p(40, 10), A, p(0, 10), [10, 0, 20]],
+    ]
+    for (const [first, a, second, b, [x, y, r]] of cases) {
+      const circle = circleOnDiameter(end(first, a), end(second, b))
+      expect(circle?.center).toBeCloseToPoint(p(x, y), 6)
+      expect(circle?.radius).toBeCloseTo(r, 6)
+    }
+  })
+
+  it("ends on a line at the foot from the other end's centre", () => {
+    // probes circle/p374a, p374b, p370.
+    const cases: [
+      CircleConstraint,
+      Vec2Like,
+      CircleConstraint,
+      Vec2Like,
+      [number, number, number],
+    ][] = [
+      [L, p(20, -15), A, p(0, -10), [0, -12.5, 2.5]],
+      [L, p(20, -15), A, p(0, 10), [0, -2.5, 12.5]],
+      [A, p(0, 10), L, p(20, -15), [0, -2.5, 12.5]],
+      [L, p(20, -15), at(60, 20), p(60, 20), [60, 2.5, 17.5]],
+    ]
+    for (const [first, a, second, b, [x, y, r]] of cases) {
+      const circle = circleOnDiameter(end(first, a), end(second, b))
+      expect(circle?.center).toBeCloseToPoint(p(x, y), 6)
+      expect(circle?.radius).toBeCloseTo(r, 6)
+    }
+  })
+
+  it("ends on a circle toward or away from a point, nearer the pick", () => {
+    // probes circle/p08, p09, p335c.
+    const cases: [
+      CircleConstraint,
+      Vec2Like,
+      CircleConstraint,
+      Vec2Like,
+      [number, number, number],
+    ][] = [
+      [
+        A,
+        p(0, 10),
+        at(60, 20),
+        p(60, 20),
+        [34.743416490253, 11.581138830084, 26.622776601684],
+      ],
+      [
+        at(20, 20),
+        p(20, 20),
+        B,
+        p(40, 10),
+        [26.464466094067, 13.535533905933, 9.142135623731],
+      ],
+      [
+        at(60, 20),
+        p(60, 20),
+        A,
+        p(0, -10),
+        [25.2565835097, 8.4188611699, 36.6227766017],
+      ],
+    ]
+    for (const [first, a, second, b, [x, y, r]] of cases) {
+      const circle = circleOnDiameter(end(first, a), end(second, b))
+      expect(circle?.center).toBeCloseToPoint(p(x, y), 6)
+      expect(circle?.radius).toBeCloseTo(r, 6)
+    }
+  })
+
+  it("is null for two lines, concentric circles or one point twice", () => {
+    expect(circleOnDiameter(end(L, ORIGIN), end(L, ORIGIN))).toBeNull()
+    expect(
+      circleOnDiameter(
+        end(A, p(10, 0)),
+        end({ kind: "circle", center: ORIGIN, radius: 5 }, p(5, 0))
+      )
+    ).toBeNull()
+    expect(
+      circleOnDiameter(end(at(1, 1), ORIGIN), end(at(1, 1), ORIGIN))
+    ).toBeNull()
   })
 })
 

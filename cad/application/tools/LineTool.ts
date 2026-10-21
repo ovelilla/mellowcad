@@ -1,6 +1,7 @@
 import { Vec2, V } from "../../geometry/Vec2"
 import { Vec3, add3, scale3, withZOf } from "../../geometry/Vec3"
-import { LineEntity, createLine } from "../../domain/entities"
+import { Entity, LineEntity, createLine } from "../../domain/entities"
+import { SnapType } from "../snapping/types"
 import { formatLength, parseNumber } from "../../domain/units"
 import { worldPointToUcs } from "../../domain/ucs"
 import { AddEntityCommand } from "../commands/entityCommands"
@@ -33,6 +34,7 @@ import {
   deferredFrom,
   deferredPair,
   deferredPick,
+  defersOn,
 } from "./deferredSnap"
 
 /**
@@ -396,8 +398,14 @@ export class LineTool implements Tool {
   }
 
   /** The first point's Tangent or Perpendicular waits for the next point. */
-  defersSnap(): boolean {
-    return this.state.phase === "idle" || this.state.phase === "deferred"
+  defersSnap(
+    kind: SnapType.Tangent | SnapType.Perpendicular,
+    entity: Entity | null
+  ): boolean {
+    return (
+      (this.state.phase === "idle" || this.state.phase === "deferred") &&
+      defersOn(kind, entity)
+    )
   }
 
   getConstraintAnchor(): Vec2 | null {

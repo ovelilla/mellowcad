@@ -102,7 +102,6 @@ import { AttEditTool } from "./tools/AttEditTool"
 import { PasteTool } from "./tools/PasteTool"
 import { directionFromUcsHeading, headingInUcs } from "./tools/ucsHeading"
 import { pointAtDistance } from "./tools/directDistance"
-import { deferredPick } from "./tools/deferredSnap"
 import { ViewPreset, currentViewPreset } from "./tools/viewPresets"
 import {
   CompassLetter,
@@ -2997,8 +2996,8 @@ export class CadRuntime extends Observable {
    * The object snap override that found nothing at the pick, which AutoCAD
    * refuses — `No Endpoint found for specified point.`, then the prompt's own
    * refusal, the override gone (probes line/p36, p156, p211) —, or null. Not
-   * a Tangent or Perpendicular on an object with no point yet to measure
-   * from where the tool defers it (LINE's first point, p24); PLINE's start
+   * a Tangent or Perpendicular the tool works out itself (`defersSnap`):
+   * LINE's first point (p24), CIRCLE's 2P and 3P (circle/p01); PLINE's start
    * point does not (pline/p29).
    */
   private overrideMissed(input: PointerInput): SnapType | null {
@@ -3007,15 +3006,14 @@ export class CadRuntime extends Observable {
       return null
     }
     if (
-      this.toolAnchor() === null &&
-      !this.fromRuns() &&
-      (this.activeTool.defersSnap?.() ?? true)
+      (override === SnapType.Tangent || override === SnapType.Perpendicular) &&
+      !this.fromRuns()
     ) {
       const entity = this.toolContext.pick(
         input.world,
         this.toolContext.pickTolerance()
       )
-      if (deferredPick(override, entity, input.world) !== null) return null
+      if (this.activeTool.defersSnap?.(override, entity) ?? false) return null
     }
     return override
   }
@@ -4978,6 +4976,20 @@ export class CadRuntime extends Observable {
     }
   }
 
+  /**
+   * Where a Tangent or Perpendicular override measures from at a prompt with
+   * no base point: LASTPOINT where the tool says so (CIRCLE's centre,
+   * circle/p343), else nothing. The snap's base only: Ortho and Polar keep
+   * none.
+   */
+  private snapBase(override: SnapType | "none" | null): Vec3 | null {
+    if (override !== SnapType.Tangent && override !== SnapType.Perpendicular) {
+      return null
+    }
+    if (!(this.activeTool.snapsFromLastPoint?.() ?? false)) return null
+    return this.frame.pointToFrame(this.lastPoint)
+  }
+
   /** The active tool's constraint anchor, in the frame, with its Z when it has one. */
   private toolAnchor(): Vec2 | Vec3 | null {
     const anchor =
@@ -5121,6 +5133,7 @@ export class CadRuntime extends Observable {
       // lines the user points at are offered as parallels — AutoCAD's workflow.
       this.updateParallelAcquisition(anchor)
       const override = this.snapping.getOverride()
+      const measuredFrom = anchor ?? this.snapBase(override)
       this.tracking.acquireEndpoints =
         override === SnapType.Extension ||
         (override === null &&
@@ -5131,7 +5144,7 @@ export class CadRuntime extends Observable {
         frame.document,
         frame.viewport,
         construction,
-        anchor,
+        measuredFrom,
         this.parallelRefs.getAcquired(),
         this.tracking.getAcquired()
       )

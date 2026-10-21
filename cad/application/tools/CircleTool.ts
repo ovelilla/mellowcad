@@ -1,8 +1,14 @@
 import { Vec2, V } from "../../geometry/Vec2"
-import { length3, sub3, Vec3 } from "../../geometry/Vec3"
+import { length3, sub3, Vec3, vec3, withZ } from "../../geometry/Vec3"
 import {
+  CircleConstraint,
   circleFrom3Points,
+  circleOnDiameter,
+  circlesMeetingThree,
   circlesTangentToBoth,
+  closestPointOnCircle,
+  closestPointOnInfiniteLine,
+  nearestToPicks,
   TangentTarget,
 } from "../../geometry/primitives"
 import {
@@ -10,6 +16,8 @@ import {
   createCircle,
   Entity,
   EntityId,
+  entityElevation,
+  entityZAt,
   onPlaneOf,
   readsInPlan,
 } from "../../domain/entities"
@@ -23,6 +31,7 @@ import {
   parseCoordinate,
 } from "../input/coordinateInput"
 import { ScenePrimitive } from "../../scene/types"
+import { SnapType } from "../snapping/types"
 import { THEME } from "../../scene/theme"
 import { entityScenePrimitive } from "../SceneBuilder"
 import {
@@ -79,9 +88,23 @@ export interface CircleRadiusDefault {
 interface Tangency {
   readonly target: TangentTarget
   readonly pick: Vec2
-  /** The pick on the drawing plane, whose height the circle takes. */
-  readonly at: Vec3
+  /** The object's height, which the circle takes when both share it. */
+  readonly z: number
 }
+
+/**
+ * One of 2P's or 3P's points as given: a point, or an object picked under a
+ * Tangent or Perpendicular, which AutoCAD defers and solves with the others
+ * at the last point (probes circle/p01, p03, p08, p337d).
+ */
+type Given =
+  | { readonly kind: "point"; readonly point: Vec3 }
+  | {
+      readonly kind: "object"
+      readonly constraint: CircleConstraint
+      readonly pick: Vec2
+      readonly z: number
+    }
 
 type CircleToolState =
   /** Awaiting the centre point (center mode). */
@@ -96,13 +119,16 @@ type CircleToolState =
     }
   /** Awaiting the first point (2P first / 3P first). */
   | { readonly phase: "p1" }
-  /** First point placed (2P diameter end / 3P second point). */
-  | { readonly phase: "p2"; readonly p1: Vec3; readonly cursor: Vec3 }
-  /** Two points placed; awaiting the third (3P only). */
+  /** First point given (2P diameter end / 3P second point). */
+  | {
+      readonly phase: "p2"
+      readonly given: readonly [Given]
+      readonly cursor: Vec3
+    }
+  /** Two points given; awaiting the third (3P only). */
   | {
       readonly phase: "p3"
-      readonly p1: Vec3
-      readonly p2: Vec3
+      readonly given: readonly [Given, Given]
       readonly cursor: Vec3
     }
   /** Ttr: awaiting the object of the first tangent. */
@@ -278,8 +304,7 @@ export class CircleTool implements Tool {
       if (id === "Ttr") {
         this.active = "ttr"
         this.state = { phase: "tangentFirst", hover: null }
-        // An object pick: no field, so the drawing keeps focus.
-        ctx.dynamicInput.open({ fields: [], commit: () => {} })
+        this.openTangentInput(ctx)
         ctx.requestRender()
         return "continue"
       }
@@ -293,13 +318,63 @@ export class CircleTool implements Tool {
     return "unhandled"
   }
 
-  /** Ttr's radius takes no point of its own: the runtime measures two. */
+  /**
+   * Ttr's radius takes no point of its own: the runtime measures two. Its
+   * tangents are points, so a typed `_TAN` and point reach them (probe
+   * circle/p300); the pick is read off the object, never the snap.
+   */
   wantsSnap(): boolean {
-    return (
-      this.state.phase !== "tangentFirst" &&
-      this.state.phase !== "tangentSecond" &&
-      this.state.phase !== "ttrRadius"
-    )
+    return this.state.phase !== "ttrRadius"
+  }
+
+  /**
+   * Which Tangent or Perpendicular finding nothing this prompt works out
+   * itself. 2P and 3P defer a Tangent on a line, a circle or an arc, and a
+   * Perpendicular on a line; a Perpendicular on a circle only at 2P, where
+   * it is a Tangent (probe circle/p335e), never at 3P (p337f). The radius
+   * makes the circle tangent to the object, also from inside it (p338b). Ttr
+   * says its own refusal on any line or curve (p314, p373); on nothing, or
+   * text, the override's (p307, p316).
+   */
+  defersSnap(
+    kind: SnapType.Tangent | SnapType.Perpendicular,
+    entity: Entity | null
+  ): boolean {
+    if (!entity || !readsInPlan(entity)) return false
+    const flat = entity.type === "line" || entity.type === "circle"
+    const round = entity.type === "circle" || entity.type === "arc"
+    switch (this.state.phase) {
+      case "radius":
+        return (
+          !this.state.diameter && kind === SnapType.Tangent && (flat || round)
+        )
+      case "p1":
+      case "p2":
+      case "p3":
+        if (kind === SnapType.Tangent || entity.type === "line") {
+          return flat || round
+        }
+        return round && this.active === "twoPoint"
+      case "tangentFirst":
+      case "tangentSecond":
+        return (
+          flat ||
+          round ||
+          entity.type === "ellipse" ||
+          entity.type === "spline" ||
+          entity.type === "polyline"
+        )
+      default:
+        return false
+    }
+  }
+
+  /**
+   * The centre's Tangent and Perpendicular are measured from LASTPOINT, the
+   * answer nearer the pick (probes circle/p343–p347; CIRCLE-D32).
+   */
+  snapsFromLastPoint(): boolean {
+    return this.state.phase === "center"
   }
 
   onPointerMove(input: PointerInput, ctx: ToolContext): void {
@@ -307,7 +382,7 @@ export class CircleTool implements Tool {
 
     switch (this.state.phase) {
       case "radius": {
-        this.state = { ...this.state, cursor: input.point }
+        this.state = { ...this.state, cursor: this.radiusPoint(input, ctx) }
         // The distance from the centre to the cursor is the value being
         // specified: the radius, or the diameter in diameter mode (AutoCAD puts
         // the cursor at the diameter distance, i.e. 2× the radius).
@@ -338,16 +413,24 @@ export class CircleTool implements Tool {
 
     switch (state.phase) {
       case "radius":
-        this.commitRadiusAt(input.point, ctx)
+        this.commitRadiusAt(this.radiusPoint(input, ctx), ctx)
         return
       case "tangentFirst":
       case "tangentSecond": {
-        const picked = this.pickTangent(input.world, ctx)
-        if (!picked) return
+        // WHY a Perpendicular is refused on any object: Ttr takes a Tangent
+        // only (probe circle/p373).
+        const picked =
+          ctx.snapOverride() === SnapType.Perpendicular
+            ? null
+            : this.pickTangent(input.world, ctx)
+        if (!picked) {
+          ctx.report(ctx.text.message("requiresTangentSelection"), "error")
+          return
+        }
         const tangency = {
           target: picked.target,
           pick: input.world,
-          at: input.point,
+          z: entityElevation(picked.entity),
         }
         if (state.phase === "tangentFirst") {
           this.state = { phase: "tangentSecond", first: tangency, hover: null }
@@ -362,9 +445,126 @@ export class CircleTool implements Tool {
         ctx.requestRender()
         return
       }
+      case "p1":
+      case "p2":
+      case "p3": {
+        const given = this.givenAt(input, ctx)
+        if (given.kind === "point") {
+          this.advanceWithPoint(given.point, ctx, input.screen)
+        } else {
+          // A deferred pick gives no point: LASTPOINT stays (probe
+          // circle/p335, a Perpendicular after it measured from the old one).
+          ctx.setLastPoint(ctx.lastPoint)
+          this.advanceWith(given, ctx, input.screen)
+        }
+        return
+      }
       default:
         this.advanceWithPoint(input.point, ctx, input.screen)
     }
+  }
+
+  /**
+   * What a 2P or 3P pick gives: under a Tangent or Perpendicular that found
+   * nothing to measure from, the object, solved with the rest at the last
+   * point; else the point. A Perpendicular to a line is the circle's centre
+   * on it at 3P (probes circle/p337c, p337d), and at 2P the foot from
+   * LASTPOINT, an ordinary point (p335).
+   */
+  private givenAt(input: PointerInput, ctx: ToolContext): Given {
+    const kind = ctx.snapOverride()
+    const asPoint: Given = { kind: "point", point: input.point }
+    if (
+      input.snap ||
+      (kind !== SnapType.Tangent && kind !== SnapType.Perpendicular)
+    ) {
+      return asPoint
+    }
+    const entity = ctx.pick(input.world, ctx.pickTolerance())
+    if (!entity || !this.defersSnap(kind, entity)) return asPoint
+    const pick = input.world
+    if (entity.type === "line") {
+      const z = entityZAt(entity, pick)
+      if (kind === SnapType.Tangent) {
+        return {
+          kind: "object",
+          constraint: { kind: "line", a: entity.start, b: entity.end },
+          pick,
+          z,
+        }
+      }
+      if (this.active === "twoPoint") {
+        const foot = closestPointOnInfiniteLine(
+          entity.start,
+          entity.end,
+          ctx.lastPoint
+        ).point
+        const point = withZ(foot, entityZAt(entity, foot))
+        ctx.setLastPoint(point)
+        return { kind: "point", point }
+      }
+      return {
+        kind: "object",
+        constraint: { kind: "centerOn", a: entity.start, b: entity.end },
+        pick,
+        z,
+      }
+    }
+    if (entity.type !== "circle" && entity.type !== "arc") return asPoint
+    return {
+      kind: "object",
+      constraint: {
+        kind: "circle",
+        center: entity.center,
+        radius: entity.radius,
+      },
+      pick,
+      z: entityElevation(entity),
+    }
+  }
+
+  /**
+   * Where the radius is measured to. Under a Tangent, the point of the object
+   * the circle touches: on a circle or an arc's circle the radial point nearer
+   * the pick, on a line the foot (probes circle/p06, p338–p340; CIRCLE-D33).
+   * The diameter keeps the ordinary snaps (p342).
+   */
+  private radiusPoint(input: PointerInput, ctx: ToolContext): Vec3 {
+    const state = this.state
+    if (
+      state.phase !== "radius" ||
+      state.diameter ||
+      ctx.snapOverride() !== SnapType.Tangent
+    ) {
+      return input.point
+    }
+    const entity = ctx.pick(input.world, ctx.pickTolerance())
+    if (!entity || !this.defersSnap(SnapType.Tangent, entity)) {
+      return input.point
+    }
+    if (entity.type === "line") {
+      const foot = closestPointOnInfiniteLine(
+        entity.start,
+        entity.end,
+        state.center
+      ).point
+      return withZ(foot, entityZAt(entity, foot))
+    }
+    if (entity.type !== "circle" && entity.type !== "arc") return input.point
+    const { center, radius } = entity
+    const away = V.sub(state.center, center)
+    const length = V.length(away)
+    const touch =
+      length < 1e-12
+        ? closestPointOnCircle(center, radius, input.world).point
+        : nearestTo(
+            [
+              V.add(center, V.scale(away, radius / length)),
+              V.sub(center, V.scale(away, radius / length)),
+            ],
+            input.world
+          )
+    return withZ(touch, entityElevation(entity))
   }
 
   /**
@@ -373,37 +573,51 @@ export class CircleTool implements Tool {
    * behave identically.
    */
   private advanceWithPoint(point: Vec3, ctx: ToolContext, screen?: Vec2): void {
+    if (this.state.phase !== "center") {
+      this.advanceWith({ kind: "point", point }, ctx, screen)
+      return
+    }
     const at = screen ?? this.lastScreen ?? ctx.viewport.worldToScreen(point)
+    this.state = {
+      phase: "radius",
+      center: point,
+      cursor: point,
+      diameter: false,
+    }
+    this.openRadiusInput(ctx, at)
+    ctx.requestRender()
+  }
 
-    switch (this.state.phase) {
-      case "center":
-        this.state = {
-          phase: "radius",
-          center: point,
-          cursor: point,
-          diameter: false,
-        }
-        this.openRadiusInput(ctx, at)
-        break
+  /** 2P's and 3P's points, each a point or a deferred object. */
+  private advanceWith(given: Given, ctx: ToolContext, screen?: Vec2): void {
+    const state = this.state
+    const cursor = given.kind === "point" ? given.point : null
+    const at =
+      screen ?? this.lastScreen ?? ctx.viewport.worldToScreen(pickOf(given))
+    switch (state.phase) {
       case "p1":
-        this.state = { phase: "p2", p1: point, cursor: point }
+        this.state = {
+          phase: "p2",
+          given: [given],
+          cursor:
+            given.kind === "point" ? given.point : withZ(given.pick, given.z),
+        }
         this.openPointInput(ctx, "secondPoint", at)
         break
       case "p2":
         if (this.active === "twoPoint") {
-          this.commitTwoPoint(this.state.p1, point, ctx)
+          this.commitTwoPoint(state.given[0], given, ctx)
           return
         }
         this.state = {
           phase: "p3",
-          p1: this.state.p1,
-          p2: point,
-          cursor: point,
+          given: [state.given[0], given],
+          cursor: cursor ?? state.cursor,
         }
         this.openPointInput(ctx, "thirdPoint", at)
         break
       case "p3":
-        this.commitThreePoint(this.state.p1, this.state.p2, point, ctx)
+        this.commitThreePoint(state.given[0], state.given[1], given, ctx)
         return
     }
     ctx.requestRender()
@@ -496,15 +710,52 @@ export class CircleTool implements Tool {
         ]
       }
       case "p2": {
-        const { p1, cursor } = this.state
-        const chord = segment(p1, cursor)
+        const [first] = this.state.given
+        const { cursor } = this.state
+        if (first.kind === "object") {
+          // AutoCAD's jig solves the circle through the cursor as a point.
+          if (this.active !== "twoPoint") return []
+          return ghost(
+            solvedTwoPoint(
+              first,
+              { kind: "point", point: cursor },
+              ctx.elevation,
+              layer,
+              PREVIEW_ID
+            )
+          )
+        }
+        const chord = segment(first.point, cursor)
         // Three-point: only two points so far — show the chord.
         if (this.active !== "twoPoint") return [chord]
-        return [chord, ...ghost(twoPointCircle(p1, cursor, layer, PREVIEW_ID))]
+        return [
+          chord,
+          ...ghost(twoPointCircle(first.point, cursor, layer, PREVIEW_ID)),
+        ]
       }
       case "p3": {
-        const { p1, p2, cursor } = this.state
-        return ghost(threePointCircle(p1, p2, cursor, layer, PREVIEW_ID))
+        const [first, second] = this.state.given
+        const { cursor } = this.state
+        if (first.kind === "point" && second.kind === "point") {
+          return ghost(
+            threePointCircle(
+              first.point,
+              second.point,
+              cursor,
+              layer,
+              PREVIEW_ID
+            )
+          )
+        }
+        const third: Given = { kind: "point", point: cursor }
+        return ghost(
+          solvedThreePoint(
+            [first, second, third],
+            ctx.elevation,
+            layer,
+            PREVIEW_ID
+          )
+        )
       }
       case "tangentFirst":
       case "tangentSecond": {
@@ -519,7 +770,9 @@ export class CircleTool implements Tool {
       case "ttrRadius": {
         const radius = this.resolveTtrRadius(ctx)
         return ghost(
-          radius === null ? null : this.ttrCircle(radius, layer, PREVIEW_ID)
+          radius === null
+            ? null
+            : this.ttrCircle(radius, ctx.elevation, layer, PREVIEW_ID)
         )
       }
       default:
@@ -559,17 +812,54 @@ export class CircleTool implements Tool {
     this.commitCircle(circleAt(center, radius, center, layerOf(ctx)), ctx)
   }
 
-  private commitTwoPoint(p1: Vec3, p2: Vec3, ctx: ToolContext): void {
-    this.commitOrEnd(twoPointCircle(p1, p2, layerOf(ctx)), ctx)
+  private commitTwoPoint(first: Given, second: Given, ctx: ToolContext): void {
+    if (first.kind === "point" && second.kind === "point") {
+      this.commitOrEnd(
+        twoPointCircle(first.point, second.point, layerOf(ctx)),
+        ctx
+      )
+      return
+    }
+    this.commitSolved(
+      solvedTwoPoint(first, second, ctx.elevation, layerOf(ctx)),
+      ctx
+    )
   }
 
   private commitThreePoint(
-    p1: Vec3,
-    p2: Vec3,
-    p3: Vec3,
+    first: Given,
+    second: Given,
+    third: Given,
     ctx: ToolContext
   ): void {
-    this.commitOrEnd(threePointCircle(p1, p2, p3, layerOf(ctx)), ctx)
+    if (
+      first.kind === "point" &&
+      second.kind === "point" &&
+      third.kind === "point"
+    ) {
+      this.commitOrEnd(
+        threePointCircle(first.point, second.point, third.point, layerOf(ctx)),
+        ctx
+      )
+      return
+    }
+    this.commitSolved(
+      solvedThreePoint([first, second, third], ctx.elevation, layerOf(ctx)),
+      ctx
+    )
+  }
+
+  /**
+   * A circle solved from a deferred Tangent or Perpendicular, or AutoCAD's
+   * `Circle does not exist.` and the end when none fits (desktop circle/d04).
+   */
+  private commitSolved(circle: CircleEntity | null, ctx: ToolContext): void {
+    if (circle) {
+      this.commitCircle(circle, ctx)
+      return
+    }
+    ctx.report(ctx.text.message("circleDoesNotExist"), "error")
+    ctx.endCommand()
   }
 
   /**
@@ -592,34 +882,34 @@ export class CircleTool implements Tool {
       ctx.report(ctx.text.message("positiveNonzero"), "error")
       return
     }
-    const circle = this.ttrCircle(radius, layerOf(ctx))
-    if (circle) {
-      this.commitCircle(circle, ctx)
-      return
-    }
-    ctx.report(ctx.text.message("circleDoesNotExist"), "error")
-    ctx.endCommand()
+    this.commitSolved(this.ttrCircle(radius, ctx.elevation, layerOf(ctx)), ctx)
   }
 
   /**
    * The circle of `radius` tangent to both objects. Of the several that may
    * fit, "the program draws the circle of the specified radius whose tangent
-   * points are closest to the selected points".
+   * points are closest to the selected points": by the sum of the squared
+   * distances (probes circle/p378c, p379; CIRCLE-D30). It lies at the
+   * objects' height when they share one, else at the current elevation
+   * (p321, p327–p329; CIRCLE-D34).
    */
   private ttrCircle(
     radius: number,
+    elevation: number,
     layerId: LayerId,
     id?: EntityId
   ): CircleEntity | null {
     if (this.state.phase !== "ttrRadius") return null
     const { first, second } = this.state
-    const reach = (fit: { touchFirst: Vec2; touchSecond: Vec2 }): number =>
-      V.distance(fit.touchFirst, first.pick) +
-      V.distance(fit.touchSecond, second.pick)
-    const best = circlesTangentToBoth(first.target, second.target, radius).sort(
-      (a, b) => reach(a) - reach(b)
-    )[0]
-    return best ? circleAt(best.center, radius, first.at, layerId, id) : null
+    const best = nearestToPicks(
+      circlesTangentToBoth(first.target, second.target, radius),
+      [first.pick, second.pick],
+      (fit) => [fit.touchFirst, fit.touchSecond]
+    )
+    const z = commonHeight([first.z, second.z], elevation)
+    return best
+      ? circleAt(best.center, radius, vec3(0, 0, z), layerId, id)
+      : null
   }
 
   /** Ttr's radius as it stands: typed, else the two points' distance. */
@@ -697,14 +987,35 @@ export class CircleTool implements Tool {
 
   /** The point a relative coordinate is measured from, per phase. */
   private previousPoint(): Vec3 | null {
-    switch (this.state.phase) {
-      case "p2":
-        return this.state.p1
-      case "p3":
-        return this.state.p2
-      default:
-        return null
+    const state = this.state
+    if (state.phase !== "p2" && state.phase !== "p3") return null
+    const last = state.given[state.given.length - 1]
+    return last.kind === "point" ? last.point : null
+  }
+
+  /**
+   * Ttr's tangent prompts: a point box, where a typed point or number picks
+   * no object — AutoCAD's starred refusal (probes circle/p300, p314, p373) —
+   * and a word falls to the plain one (p308). A typed `_TAN` and point are
+   * a pick there, which the runtime makes.
+   */
+  private openTangentInput(ctx: ToolContext): void {
+    ctx.dynamicInput.open({
+      fields: [{ id: "point", kind: "coordinate" }],
+      commit: () => {},
+      commitRaw: (commitCtx) => this.refuseTypedTangent(commitCtx),
+      directDistance: "typed",
+    })
+  }
+
+  private refuseTypedTangent(ctx: ToolContext): boolean {
+    const text = ctx.dynamicInput.getText("point").trim()
+    if (text === "") return this.refuseEnter(ctx)
+    if (!isCoordinateExpression(text) && parseNumber(text) === null) {
+      return false
     }
+    ctx.report(ctx.text.message("requiresTangentSelection"), "error")
+    return true
   }
 
   private openRadiusInput(ctx: ToolContext, screen: Vec2): void {
@@ -807,6 +1118,90 @@ function twoPointCircle(
 ): CircleEntity | null {
   const center = V.scale(V.add(p1, p2), 0.5)
   return circleAt(center, V.distance(p1, p2) / 2, p1, layerId, id)
+}
+
+/** What a given asks of the circle: to pass through it, or its object's. */
+function constraintOf(given: Given): CircleConstraint {
+  return given.kind === "point"
+    ? { kind: "point", point: given.point }
+    : given.constraint
+}
+
+function pickOf(given: Given): Vec2 {
+  return given.kind === "point" ? given.point : given.pick
+}
+
+/**
+ * The height of objects a circle touches: theirs when they share one, else
+ * the current elevation (Ttr, probes circle/p321, p327–p329).
+ */
+function commonHeight(heights: readonly number[], elevation: number): number {
+  return heights.every((z) => Math.abs(z - heights[0]) < 1e-9)
+    ? heights[0]
+    : elevation
+}
+
+/**
+ * The plane of a circle solved from 2P's or 3P's givens: the first point's,
+ * as with points alone; with none, the objects' common height, else the
+ * elevation, as Ttr's (**unverified**: AutoCAD's at mixed heights is
+ * unprobed).
+ */
+function planeOfGiven(given: readonly Given[], elevation: number): Vec3 {
+  const point = given.find((g) => g.kind === "point")
+  if (point) return point.point
+  return vec3(
+    0,
+    0,
+    commonHeight(
+      given.map((g) => (g.kind === "object" ? g.z : 0)),
+      elevation
+    )
+  )
+}
+
+/** The 2P circle when a Tangent or Perpendicular is among its ends. */
+function solvedTwoPoint(
+  first: Given,
+  second: Given,
+  elevation: number,
+  layerId: LayerId,
+  id?: EntityId
+): CircleEntity | null {
+  const fit = circleOnDiameter(
+    { constraint: constraintOf(first), pick: pickOf(first) },
+    { constraint: constraintOf(second), pick: pickOf(second) }
+  )
+  if (!fit) return null
+  const plane = planeOfGiven([first, second], elevation)
+  return circleAt(fit.center, fit.radius, plane, layerId, id)
+}
+
+/**
+ * The 3P circle when a Tangent or Perpendicular is among its points: of the
+ * circles meeting the three, the one touching nearest the picks (CIRCLE-D30).
+ */
+function solvedThreePoint(
+  given: readonly [Given, Given, Given],
+  elevation: number,
+  layerId: LayerId,
+  id?: EntityId
+): CircleEntity | null {
+  const [a, b, c] = given
+  const fit = nearestToPicks(
+    circlesMeetingThree([constraintOf(a), constraintOf(b), constraintOf(c)]),
+    given.map(pickOf),
+    (each) => each.touches
+  )
+  if (!fit) return null
+  const plane = planeOfGiven(given, elevation)
+  return circleAt(fit.center, fit.radius, plane, layerId, id)
+}
+
+function nearestTo(points: readonly Vec2[], to: Vec2): Vec2 {
+  return points.reduce((best, q) =>
+    V.distance(q, to) < V.distance(best, to) ? q : best
+  )
 }
 
 /**

@@ -184,6 +184,25 @@ describe("a wrong answer mid-command", () => {
     expect(cad.commandLog().at(-1)).toBe("Invalid option keyword.")
   })
 
+  it("refuses a point at Ttr's tangents in AutoCAD's starred words", () => {
+    // probe circle/p300, en and es: a typed point picks no object there.
+    const english = createHarness()
+    english.command("CIRCLE").option("Ttr")
+    answerLine(english, "0,10")
+    expect(english.commandLog().slice(-2)).toEqual([
+      "Specify point on object for first tangent of circle: 0,10",
+      "*Requires a TAN object-snap and selection of Circle, Arc, or Line.",
+    ])
+
+    const spanish = createHarness({ locale: es })
+    spanish.command("CIRCULO").option("Ttr")
+    answerLine(spanish, "0,10")
+    expect(spanish.commandLog().slice(-2)).toEqual([
+      "Precise punto en objeto para la primera tangente del círculo: 0,10",
+      "*Necesita una referencia a un objeto tangente y que se designe un círculo, arco o línea.",
+    ])
+  })
+
   it("expects a point or the selection modes at Select objects", () => {
     const cad = createHarness({ entities: twoLines() })
     cad.command("ERASE")

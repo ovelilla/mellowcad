@@ -216,9 +216,10 @@ runtime picks for the tool" feature.
   a point is given or refused.
 - **An override that finds nothing refuses the point** (`overrideMissed`): `snapNotFound`, then
   the prompt's own refusal, never the cursor's point. A point typed under one is found as a pick
-  there (`pickTyped`), never handed to the tool as typed. Only a Tangent or Perpendicular with no
-  base yet is let through, for the tool to defer, unless `defersSnap()` says false (PLINE's
-  start, pline/p29).
+  there (`pickTyped`), never handed to the tool as typed. Only a Tangent or Perpendicular the tool
+  works out is let through (`defersSnap`, false by default: the raw pick drew circles touching
+  nothing, circle CTN-05). `snapsFromLastPoint()`: LASTPOINT is the snap's base, not Ortho's
+  (circle/p343).
 - **FROM asks in the place of the tool** (`asking()` gives `questionInstead`): its prompts, no
   keywords, its box over the tool's. A point given while it asks reaches it through `pickAnswer`
   and `placePoint`; a new way to give a point goes through them, or FROM is skipped.

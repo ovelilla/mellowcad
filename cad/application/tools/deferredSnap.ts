@@ -38,17 +38,25 @@ export function deferredPick(
   pick: Vec2
 ): DeferredPick | null {
   if (kind !== SnapType.Tangent && kind !== SnapType.Perpendicular) return null
-  if (!entity) return null
+  if (!entity || !defersOn(kind, entity)) return null
+  return { kind, entity, pick }
+}
+
+/** Whether {@link deferredPick} takes `entity` for a `kind` override. */
+export function defersOn(
+  kind: SnapType.Tangent | SnapType.Perpendicular,
+  entity: Entity | null
+): entity is LineEntity | CircleEntity | ArcEntity {
+  if (!entity) return false
   if (entity.type === "circle" || entity.type === "arc") {
-    if (entity.normal && entity.normal.z < 1 - 1e-9) return null
-    return { kind, entity, pick }
+    return !entity.normal || entity.normal.z >= 1 - 1e-9
   }
-  if (entity.type === "line" && kind === SnapType.Perpendicular) {
-    if (Math.abs(entity.deltaZ ?? 0) > 1e-9) return null
-    if (V.distance(entity.start, entity.end) < 1e-12) return null
-    return { kind, entity, pick }
-  }
-  return null
+  return (
+    entity.type === "line" &&
+    kind === SnapType.Perpendicular &&
+    Math.abs(entity.deltaZ ?? 0) <= 1e-9 &&
+    V.distance(entity.start, entity.end) >= 1e-12
+  )
 }
 
 /**

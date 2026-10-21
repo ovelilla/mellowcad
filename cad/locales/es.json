@@ -1471,6 +1471,7 @@
       "requiresInteger": "Requiere un valor entero{keyword, select, yes { o una opción.} other {.}}",
       "requiresRadius": "Precisa un radio numérico, un punto en la circunferencia, o \"D\".",
       "requiresTangent": "Requiere una REFENT TAN y la designación de un círculo, arco o línea.",
+      "requiresTangentSelection": "*Necesita una referencia a un objeto tangente y que se designe un círculo, arco o línea.",
       "invalidOptionKeyword": "Opción no válida.",
       "ambiguousResponse": "Respuesta ambigua, especifique...",
       "invalidSelection": "*Designación no válida*",

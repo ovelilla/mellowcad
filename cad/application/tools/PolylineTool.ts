@@ -262,11 +262,6 @@ export class PolylineTool implements Tool {
     return this.state.arcMode ? "specifyEndpointOfArcOr" : "specifyNextPointOr"
   }
 
-  /** A Tangent at the start point finds nothing: PLINE defers none (pline/p29). */
-  defersSnap(): boolean {
-    return false
-  }
-
   /** Every point after the start is a 2D one, as AutoCAD's console refuses it. */
   takes(): QuestionInput | null {
     if (this.askingWidth) {

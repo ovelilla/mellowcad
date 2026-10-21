@@ -218,9 +218,35 @@ its line (`…: _2p Specify first end point of circle's diameter: 0,0`, desktop 
 p105–p107); Enter afterwards repeats CIRCLE and U names it CIRCLE (es CIRCULO; p159, p191, p192);
 CIRCLED, CIRCLE2P and CIRCLE3P, this app's names for those buttons (AutoCAD knows none, p21), run
 the same macros typed; Ttr — two lines, circles or arcs (an arc as its whole circle, a line as its
-whole line), the radius typed, as two points or Enter's CIRCLERAD, and of the circles that fit the
-one whose tangent points are nearest the picks (none: `Circle does not exist.` and the command
-ends), at the height of the first pick's drawing plane; a radius or diameter of 0 or less is refused
+whole line; p311, p312, p380), picked or typed after `_TAN` (`_TAN to 0,10`, p300), the radius
+typed, as two points or Enter's CIRCLERAD, and of the circles that fit the one whose tangent points
+lie nearest the picks by the sum of the squared distances (p378, p379; CIRCLE-D30; none:
+`Circle does not exist.` and the command ends, p317), at the objects' height when they share one,
+else at the current elevation (p321, p327–p329); at its objects a typed point or number, a `_PER`,
+a click on nothing or on an ellipse and a Tangent on an ellipse or a spline are refused with
+`*Requires a TAN object-snap and selection of Circle, Arc, or Line.` (es
+`*Necesita una referencia a un objeto tangente y que se designe un círculo, arco o línea.`, table
+20418; p300, p314, p315, p373, desktop d13), a word, Enter or a `_TAN` finding nothing with the
+words without the star (table 26317, es `Requiere una REFENT TAN…`; p307–p309); Tan, Tan, Tan
+(3P with `_TAN` three times) and any Tangent or Perpendicular among 2P's and 3P's points, deferred
+and solved at the last point (p01–p04, p08–p10, p330–p337, p370, p371, desktop d04): a Tangent
+touches a circle, an arc's whole circle or a line's whole line; at 3P a Perpendicular to a line
+puts the centre on it (p337c–e, p10) and one on a circle is refused
+(`No Perpendicular found for specified point.`, p337f); at 2P one on a circle is a Tangent (p335e)
+and one on a line the foot from LASTPOINT, which a deferred pick leaves where it was (p335); 2P's
+ends lie on the line through the two centres (a point's own, a circle's; on a line, the foot from
+the other end's centre), each the crossing nearer its pick, the one met first turning
+counter-clockwise from a pick as near both (p02, p334, p374); 3P's circle, of the up to eight that
+fit, is the one whose touch points lie nearest the picks by the sum of the squared distances (a
+point being its own touch, a centre on a line its centre); none: `Circle does not exist.` and the
+command ends (d04); before the last point the ghost is the circle through the cursor; it lies in
+the first point's plane, with no point at the objects' common height else the elevation
+(**unverified**: AutoCAD's at mixed heights is unprobed); a `_TAN` at the radius makes the circle
+tangent to the object, from the radial point nearer the pick on a circle or an arc's circle, the
+centre inside it too, and to a line from its distance (p06, p338–p340), while the radius's
+Perpendicular and the diameter's Tangent and Perpendicular are the ordinary snaps (p07, p341,
+p342); the centre's Tangent and Perpendicular are measured from LASTPOINT, the answer nearer the
+pick, and Ortho does not bend it (p343–p347); a radius or diameter of 0 or less is refused
 (`Value must be positive and nonzero.`, and the prompt asks again, p113, p118), and so is Enter
 at every prompt with no default, in that prompt's words, the prompt asked again and nothing given
 lost: `Point or option keyword required.` at the centre,
@@ -239,7 +265,8 @@ height flattened, p185, p189, p190) and refusing a Z, `*` or `<angle` typed ther
 point, so Ortho and Polar bend only the radius's pick (desktop d12); 2P on one point or 3P on one
 line says `*Invalid*` (es `*No válido*`) and ends, LASTPOINT the last point given (p123–p125, p164)
 
-**Missing:** Ttr on polyline segments, ellipses and splines, Ttt (tangent-tangent-tangent)
+**Missing:** Ttr on polyline segments (AutoCAD takes them, p313; refused here with the starred
+words), the rail's Tan, Tan, Tan entry (`_circle _3p _tan \_tan \_tan \`; typed it works)
 
 ### `ARC` / `A` · es `ARCO` / `A`
 
