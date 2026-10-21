@@ -83,6 +83,13 @@ export function SelectionCyclingList({
                 )}
               </Menu.Item>
             ))}
+            {/* AutoCAD's last row: the click selects nothing (desktop erase/d12-2). */}
+            <Menu.Item
+              onClick={() => engine.closeCyclingList()}
+              className="relative flex cursor-default items-center rounded-sm py-1.5 ps-2 pe-8 text-ui outline-hidden select-none data-highlighted:bg-accent data-highlighted:text-accent-foreground"
+            >
+              {t("none")}
+            </Menu.Item>
           </Menu.Popup>
         </Menu.Positioner>
       </Menu.Portal>

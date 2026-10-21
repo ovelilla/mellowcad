@@ -384,7 +384,8 @@
       "none": "Ninguno"
     },
     "SelectionCycling": {
-      "title": "Selección"
+      "title": "Selección",
+      "none": "Ninguna"
     },
     "ShortcutMenu": {
       "label": "Menú contextual",

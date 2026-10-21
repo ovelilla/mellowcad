@@ -259,10 +259,15 @@ status bar by default"), and there is no other readout of the cursor here; Custo
 
 ### Selection cycling
 
-**Implemented:** badge, Shift+Space, selection list box, the candidate offered glowing blue as a
-selection does; SELECTIONCYCLING lasts the session (a registry variable: see Object snaps)
+**Implemented:** off by default (SELECTIONCYCLING 0, erase/p01); badge, Shift+Space at `Command:`
+and at `Select objects:`, the Selection list box (es `Selección`) with the candidates by type and
+AutoCAD's last row, None (es `Ninguna`), which selects nothing; the candidate offered glowing blue as
+a selection does (desktop erase/d12, d13); SELECTIONCYCLING lasts the session (a registry
+variable: see Object snaps)
 
-**Missing:** placement options, subobject filtering, type icons in the list, LEGACYCTRLPICK
+**Missing:** placement options, subobject filtering, type icons in the list, LEGACYCTRLPICK; whether
+a click after Shift+Space opens the list again (**unverified**: d12-7 opened it, but the probe's
+click moves the cursor first, which restarts the stack)
 
 ### Selecting with no command
 

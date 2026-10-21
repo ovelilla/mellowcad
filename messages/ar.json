@@ -384,7 +384,8 @@
       "none": "لا شيء"
     },
     "SelectionCycling": {
-      "title": "التحديد"
+      "title": "التحديد",
+      "none": "لا شيء"
     },
     "ShortcutMenu": {
       "label": "القائمة المختصرة",

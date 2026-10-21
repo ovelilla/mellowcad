@@ -56,7 +56,7 @@ marks a choice between competing terms that a native review should settle first 
 |  | Ortho mode, Grid | Modo Orto, Rejilla | الوضع المتعامد، الشبكة (C) | same | yes |
 |  | Snap mode | Modo Forzcursor | وضع الالتقاط (L) † | C 8AA3D979-2636-4C9D-BEFF-528E572B8FF4 | yes |
 |  | Show lineweight | Mostrar grosor de línea | إظهار وزن الخط (C) † | C DB74CB64-2083-4285-92B9-653DEBAFEDDE | yes |
-|  | Selection cycling; its list box | Ciclo de selección; cuadro de lista Selección | تدوير التحديد؛ مربع قائمة التحديد (L) | C 6BD7F1F7-477E-43C4-B6AE-680F5FE6CB0D, C BD08721C-A2BB-472E-B706-B3E6DC8FCEC7 | yes |
+|  | Selection cycling; its list box, its None | Ciclo de selección; cuadro de lista Selección, su Ninguna (desktop erase/d12) | تدوير التحديد؛ مربع قائمة التحديد، لا شيء (L) | C 6BD7F1F7-477E-43C4-B6AE-680F5FE6CB0D, C BD08721C-A2BB-472E-B706-B3E6DC8FCEC7 | yes |
 |  | Dynamic input | Entrada dinámica | الإدخال الديناميكي (C) | C C5381B8D-FAE1-437D-BC08-6D279073A61C | yes |
 |  | Coordinates; Model space, its label MODEL; Customization | Coordenadas; Espacio modelo, MODELO; Personalización | الإحداثيات؛ فضاء النموذج، النموذج؛ التخصيص (L) | C E3B34B0A-EA98-45E9-937A-BF5FEF4152DB, C 5FD72B72-1FFF-44BF-97B3-938552FD6C51 | yes |
 |  | Units; Clean screen | Unidades; Limpiar pantalla | الوحدات؛ تنظيف الشاشة (L) | C F780BFA4-F711-43CB-A9B9-9D08683FA2CF, C 8FBF7BAA-4A34-4171-A7B5-A6E28B8EC4CE | yes |
