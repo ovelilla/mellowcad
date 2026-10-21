@@ -105,9 +105,9 @@ default reads right: `selectObjects` / `removeObjects` are a set with sub-object
 coordinate field (or a distance and an angle) a point, a lone distance or angle field that, a
 number field a number; with no box, a point when `wantsSnap()`, else a keyword. Declare what the box
 cannot tell: a single object's pick (`"object"`), a 2D point (ARC's, PLINE's, MIRROR's later
-points), a keyword prompt that keeps snaps on, a set of whole objects, STRETCH's crossing set or
-BREAK's one object (`"oneObject"`; UCS OBject's `"singleSet"`), a count (`"integer"`), and a
-command's own words (`{ refusal: "requiresRadius" }`; with `values`; a list of ids for several
+points, CIRCLE's 2P and 3P ones), a keyword prompt that keeps snaps on, a set of whole objects,
+STRETCH's crossing set or BREAK's one object (`"oneObject"`; UCS OBject's `"singleSet"`), a count
+(`"integer"`), and a command's own words (`{ refusal: "requiresRadius" }`; with `values`; a list of ids for several
 lines; `keywords` by id). Type `FOO` at the prompt in AutoCAD's console before declaring one: the
 words differ per input function, and per command at `Select objects:`.
 
@@ -244,8 +244,8 @@ button, `commitDynamicInput`): the defaults if every field holds one, else `comm
 text, else the drawing's Enter. A reading never commits on its own. So a prompt whose default is
 not what the box shows (MTEXT's height, CIRCLERAD, ROTATE's last angle) takes it in `commitRaw` when
 `!ctx.dynamicInput.hasTypedText()`; `true` on empty text swallows Enter. A point prompt the console
-asks again at Enter (RECTANG's corners, -PAN's base point) reports its refusal there and returns
-`true`; `false` ends the command.
+asks again at Enter (RECTANG's corners, -PAN's base point) reports its refusal there and
+returns `true`; `false` ends the command.
 
 ## Command shape
 
@@ -302,10 +302,9 @@ asks again at Enter (RECTANG's corners, -PAN's base point) reports its refusal t
 - **A flat object lies in the plane of the first point that fixed it**: `onPlaneOf(createX(...),
   first)`, later points projected (`withZOf(point, first)`). `createLine` reads both ends' Z. A
   dimension lies at the height of the point placing its dimension line, whatever its origins'.
-- **Three points fix their own plane**: `planeThrough` (`threePointPlane.ts`), `null` falling back
-  to the first point's plane. FILLET and CHAMFER resolve two lines with `lineCorner`
-  (`lineCorner.ts`). A preview that may be tilted is drawn with `entityScenePrimitive` under a fixed
-  id, never as a screen-space circle.
+- **Three points fix their own plane** (ARC's; not CIRCLE's, circle/p189): `planeThrough`
+  (`threePointPlane.ts`), `null` falling back to the first point's plane. FILLET and CHAMFER
+  resolve two lines with `lineCorner` (`lineCorner.ts`).
 - **A grip drags to a point like any click**; only a line's end grip writes that Z into the
   object, every other grip stores `planar(point)`.
 - **An edit that needs coplanar objects refuses with AutoCAD's message** (`coplanar`,
@@ -328,7 +327,7 @@ asks again at Enter (RECTANG's corners, -PAN's base point) reports its refusal t
   first: on the `+Z` / `-Z` guide `resolveValues` leaves the angle out, so a commit passes
   `angle: null`.
 - `getConstraintAnchor()` — the base Ortho/Polar restrict against, in every phase defining a
-  direction, with its Z.
+  direction, with its Z; none where the trace says `UseBasePoint` false (circle/d12, p137).
 - No hook exposes a preview to the snaps: ghosts are not objects.
 - **A Tangent or Perpendicular with no point to measure from is deferred** where the tool
   `defersSnap()`: read `ctx.snapOverride()` at the pick and use `tools/deferredSnap.ts`

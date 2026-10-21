@@ -174,13 +174,30 @@ describe("flat objects", () => {
   })
 
   it("CIRCLE 2P lies in the plane of its first point", () => {
+    // probe circle/p190: ends snapped at Z 5 and 0 make (5,5,5) r7.0711.
     const cad = createHarness()
-
-    cad.command("CIRCLE2P").type("0,0,7").enter().type("#100,0,50").enter()
+    for (const typed of [
+      "LINE",
+      "0,0,5",
+      "10,0,5",
+      "",
+      "LINE",
+      "0,10,0",
+      "5,5,0",
+      "",
+    ]) {
+      cad.runtime.setCommandLineText(typed)
+      cad.runtime.submitCommandLine()
+    }
+    for (const typed of ["CIRCLE", "2P", "END", "10,0", "END", "0,10"]) {
+      cad.runtime.setCommandLineText(typed)
+      cad.runtime.submitCommandLine()
+    }
 
     const circle = cad.only<CircleEntity>("circle")
-    expect(circle.center).toBeCloseToPoint(p(50, 0))
-    expect(entityElevation(circle)).toBe(7)
+    expect(circle.center).toBeCloseToPoint(p(5, 5))
+    expect(circle.radius).toBeCloseTo(Math.sqrt(50), 9)
+    expect(entityElevation(circle)).toBe(5)
   })
 
   it("CIRCLE takes the height of the centre it snaps to", () => {

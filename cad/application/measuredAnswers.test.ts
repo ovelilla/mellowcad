@@ -22,6 +22,7 @@ const aLine = () => [lineOf(p(0, 0), p(100, 0), { id: "A" })]
 // console). A point typed there is the same as one picked.
 describe("a point at a distance or an angle prompt", () => {
   it("is a point on CIRCLE's circumference, typed or picked", () => {
+    // probes circle/p140 (`@5<0`), p163 (`@`, from the centre), p146.
     const cad = createHarness()
     cad.command("CIRCLE")
     answerLine(cad, "0,0", "25,20")
@@ -41,6 +42,24 @@ describe("a point at a distance or an angle prompt", () => {
     expect(diameter.only<CircleEntity>("circle").radius).toBeCloseTo(25)
   })
 
+  it("is CIRCLE's radius or diameter measured in space from the centre", () => {
+    // probes circle/p17 (`3,4,12` → r13), p148 (the diameter → r6.5), p184
+    // (an end snapped at Z 5 → r11.1803): the radius is no 2D prompt.
+    const typed = answerLine(createHarness(), "CIRCLE", "0,0,0", "3,4,12")
+    expect(typed.only<CircleEntity>("circle").radius).toBeCloseTo(13, 9)
+
+    const diameter = answerLine(createHarness(), "CIRCLE", "0,0,0", "D")
+    answerLine(diameter, "3,4,12")
+    expect(diameter.only<CircleEntity>("circle").radius).toBeCloseTo(6.5, 9)
+
+    const snapped = createHarness()
+    answerLine(snapped, "LINE", "0,10,5", "5,5,5", "", "CIRCLE", "0,0")
+    answerLine(snapped, "END", "0,10")
+    const circle = snapped.latest() as CircleEntity
+    expect(circle.radius).toBeCloseTo(Math.sqrt(125), 9)
+    expect(circle.elevation).toBeUndefined()
+  })
+
   it("is read from the centre in the box, as the dynamic input's second point", () => {
     const cad = createHarness()
     cad.command("CIRCLE").click(p(10, 0)).type("3,4").enter()
@@ -48,6 +67,7 @@ describe("a point at a distance or an angle prompt", () => {
   })
 
   it("must leave CIRCLE a size", () => {
+    // probe circle/p113: `0` and `-5` are `Value must be positive and nonzero.`
     const cad = createHarness()
     cad.command("CIRCLE")
     answerLine(cad, "0,0", "0", "-3", "0,0")

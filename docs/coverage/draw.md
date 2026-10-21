@@ -201,27 +201,45 @@ variable
 
 ### `CIRCLE` / `C` · es `CIRCULO` / `C`
 
-**Implemented:** `Specify center point for circle or [3P/2P/Ttr (tan tan radius)]:` (CIRCLED's too),
+**Implemented:** `Specify center point for circle or [3P/2P/Ttr (tan tan radius)]:`,
 `Specify radius of circle or [Diameter] <10.0000>:` and `Specify diameter of circle <20.0000>:` with
 CIRCLERAD (none while it is 0), 2P's `Specify first/second end point of circle's diameter:`, 3P's
 `Specify first/second/third point on circle:`, Ttr's
 `Specify point on object for first/second tangent of circle:`, `Specify radius of circle:` and
 `Specify second point:` (es
 `Precise punto central para círculo o [3P/2P/Ttr (Tangente tangente radio)]`,
-`Precise radio de círculo o [Diámetro]`…); Center-Radius, Center-Diameter, 2P, 3P (`3P` and `2P`
-typed whole: digits count as a keyword's capitals); Ttr — two lines, circles or arcs (an arc as its
-whole circle, a line as its whole line), the radius typed, as two points or Enter's CIRCLERAD, and
-of the circles that fit the one whose tangent points are nearest the picks (none:
-`Circle does not exist.` and the command ends), at the height of the first pick's drawing plane; a
-radius or diameter of 0 or less is refused (`Value must be positive and nonzero.`, and the prompt
-asks again); Enter at the radius or diameter takes the last circle's (CIRCLERAD: per session, none
-at first, when Enter ends the command); in the plane of the centre or of the first 2P point, with
-THICKNESS; 3P through points at different heights lies in the plane of the three, with its own
-normal
+`Precise radio de círculo o [Diámetro]`…, Ttr's radius `Precise radio del círculo`, table 20419,
+probe circle/p187, where POLYGON's is `Precise radio de círculo`, p188); Center-Radius,
+Center-Diameter, 2P, 3P (`3P` and `2P` typed whole: digits count as a keyword's capitals); the rail's
+Center, Diameter, 2-Point and 3-Point run the ribbon's macros, `^C^C_circle`, `_circle \_d`,
+`_circle _2p`, `_circle _3p`: echoed `_circle`, the centre prompt answered `_2p` or `_3p` (Diameter:
+the radius prompt answered `_d` once the centre is given), the prompt that answer opens written on
+its line (`…: _2p Specify first end point of circle's diameter: 0,0`, desktop circle/d01, d02;
+p105–p107); Enter afterwards repeats CIRCLE and U names it CIRCLE (es CIRCULO; p159, p191, p192);
+CIRCLED, CIRCLE2P and CIRCLE3P, this app's names for those buttons (AutoCAD knows none, p21), run
+the same macros typed; Ttr — two lines, circles or arcs (an arc as its whole circle, a line as its
+whole line), the radius typed, as two points or Enter's CIRCLERAD, and of the circles that fit the
+one whose tangent points are nearest the picks (none: `Circle does not exist.` and the command
+ends), at the height of the first pick's drawing plane; a radius or diameter of 0 or less is refused
+(`Value must be positive and nonzero.`, and the prompt asks again, p113, p118), and so is Enter
+at every prompt with no default, in that prompt's words, the prompt asked again and nothing given
+lost: `Point or option keyword required.` at the centre,
+`Requires numeric radius, point on circumference, or "D".` and
+`Requires numeric distance or second point.` at the radius and the diameter with CIRCLERAD 0,
+`Invalid point.` at 2P's and 3P's first point, `Invalid 2D point.` at their later ones,
+`Requires a TAN object-snap and selection of Circle, Arc, or Line.` at Ttr's objects and
+`Requires numeric distance or two points.` at its radius (es `Se requiere un punto o una opción.`…;
+p109, p114, p119, p126–p130, p306, p309, p310, p376, p377); Enter at the radius or diameter takes
+the last circle's (CIRCLERAD: per session, whichever mode made it, p162); a radius or diameter
+given by a point is its distance from the centre in space (`3,4,12` from the origin r13, p17, p148,
+p184); in the plane of the centre or of the first 2P or 3P point, with THICKNESS: 2P's and 3P's
+later points are 2D prompts, taken by their X and Y in that plane (a snapped point at another
+height flattened, p185, p189, p190) and refusing a Z, `*` or `<angle` typed there with
+`Invalid 2D point.` (es `Punto 2D no válido.`; p16, p18, p20, p137, p180, p181); they have no base
+point, so Ortho and Polar bend only the radius's pick (desktop d12); 2P on one point or 3P on one
+line says `*Invalid*` (es `*No válido*`) and ends, LASTPOINT the last point given (p123–p125, p164)
 
-**Missing:** Ttr on polyline segments, ellipses and splines, Ttt (tangent-tangent-tangent); 2P
-through points at different heights stays in the first point's plane (**unverified**: no source says
-whether AutoCAD tilts it)
+**Missing:** Ttr on polyline segments, ellipses and splines, Ttt (tangent-tangent-tangent)
 
 ### `ARC` / `A` · es `ARCO` / `A`
 

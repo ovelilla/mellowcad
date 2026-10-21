@@ -454,19 +454,43 @@ describe("FILLET and CHAMFER of lines in a tilted plane", () => {
 })
 
 describe("curves by three points at different heights", () => {
-  it("lays a 3P circle in the points' own plane", () => {
+  it("lays a 3P circle in its first point's plane, the others' X and Y", () => {
+    // probe circle/p189: ends snapped at Z 5, 5 and 0 make a flat circle at
+    // the first one's height, (5,5,5) r7.0711, normal +Z (a typed Z there is
+    // refused, p180, p181).
     const cad = createHarness()
-
-    cad.command("CIRCLE3P")
-    cad.type("0,0,0").enter().type("#100,0,0").enter().type("#0,0,100").enter()
+    for (const typed of [
+      "LINE",
+      "0,0,5",
+      "10,0,5",
+      "",
+      "LINE",
+      "0,10,0",
+      "5,5,0",
+      "",
+    ]) {
+      cad.runtime.setCommandLineText(typed)
+      cad.runtime.submitCommandLine()
+    }
+    for (const typed of [
+      "CIRCLE",
+      "3P",
+      "END",
+      "0,0",
+      "END",
+      "10,0",
+      "END",
+      "0,10",
+    ]) {
+      cad.runtime.setCommandLineText(typed)
+      cad.runtime.submitCommandLine()
+    }
 
     const [circle] = only(cad, "circle")
-    expect(entityNormal(circle)).toBeCloseToPoint(FRONT_Z)
-    expect(Math.abs(entityNormal(circle).z)).toBeCloseTo(0, 12)
-    const center = worldOf(circle, circle.center)
-    expect(center).toBeCloseToPoint(p(50, 0))
-    expect(center.z).toBeCloseTo(50, 9)
-    expect(circle.radius).toBeCloseTo(50 * Math.SQRT2, 9)
+    expect(circle.normal).toBeUndefined()
+    expect(circle.elevation).toBe(5)
+    expect(circle.center).toBeCloseToPoint(p(5, 5))
+    expect(circle.radius).toBeCloseTo(Math.sqrt(50), 9)
   })
 
   it("lays a 3P arc in their plane, from the first point through the second to the third", () => {
@@ -506,7 +530,7 @@ describe("curves by three points at different heights", () => {
   it("keeps a 3P circle through points at one height in the plan", () => {
     const cad = createHarness()
     cad.command("CIRCLE3P")
-    cad.type("0,0,5").enter().type("#100,0,5").enter().type("#0,100,5").enter()
+    cad.type("0,0,5").enter().type("#100,0").enter().type("#0,100").enter()
 
     const [circle] = only(cad, "circle")
     expect(circle.normal).toBeUndefined()

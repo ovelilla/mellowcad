@@ -1,5 +1,5 @@
 import { Vec2, V } from "../../geometry/Vec2"
-import { Vec3 } from "../../geometry/Vec3"
+import { length3, sub3, Vec3 } from "../../geometry/Vec3"
 import {
   circleFrom3Points,
   circlesTangentToBoth,
@@ -12,8 +12,6 @@ import {
   EntityId,
   onPlaneOf,
   readsInPlan,
-  withElevation,
-  withNormal,
 } from "../../domain/entities"
 import { LayerId } from "../../domain/layers"
 import { parseNumber } from "../../domain/units"
@@ -31,7 +29,9 @@ import {
   CommandOption,
   CommandOptionOutcome,
   KeyInput,
+  MACRO_PAUSE,
   PointerInput,
+  type RibbonMacro,
   Tool,
   ToolContext,
   ToolQuestion,
@@ -41,20 +41,19 @@ import {
   withCurrentProperties,
   withCurrentThickness,
 } from "./currentProperties"
-import { planeThrough } from "./threePointPlane"
 
 /** The ghost's id, reused every frame so a preview burns no entity ids. */
 const PREVIEW_ID = "circle-preview"
 
 /**
- * How a circle is defined — AutoCAD's CIRCLE modes, each surfaced as its own
- * rail entry (a flyout, like AutoCAD's Circle dropdown, which since recent
- * releases lists Center-Radius and Center-Diameter as separate commands):
+ * How a circle is defined — the ribbon's Circle buttons, each a rail entry,
+ * each CIRCLE with the macro's answers (acad.cuix; see {@link
+ * CircleTool.ribbonMacro}):
  *
- * - `center`: a centre point then a radius;
- * - `centerDiameter`: a centre point then a diameter;
- * - `twoPoint`: two points defining the diameter;
- * - `threePoint`: three points on the circumference (circumscribed circle).
+ * - `center`: a centre point then a radius (`^C^C_circle`);
+ * - `centerDiameter`: a centre point then a diameter (`_circle \_d`);
+ * - `twoPoint`: two points defining the diameter (`_circle _2p`);
+ * - `threePoint`: three points on the circumference (`_circle _3p`).
  *
  * Center-Radius and Center-Diameter follow AutoCAD: the size line runs from the
  * centre to the cursor, whose distance is the radius or the diameter
@@ -64,8 +63,8 @@ const PREVIEW_ID = "circle-preview"
  */
 export type CircleMode = "center" | "centerDiameter" | "twoPoint" | "threePoint"
 
-/** A mode the first prompt's keywords can switch to: `Ttr` has no rail entry. */
-type ActiveMode = CircleMode | "ttr"
+/** What the first prompt's keywords switch CIRCLE to. */
+type ActiveMode = "center" | "twoPoint" | "threePoint" | "ttr"
 
 /**
  * AutoCAD's CIRCLERAD, shared by every mode of one runtime: the last circle's
@@ -91,7 +90,7 @@ type CircleToolState =
   | {
       readonly phase: "radius"
       readonly center: Vec3
-      readonly cursor: Vec2
+      readonly cursor: Vec3
       /** When set, the pointed/typed value is the diameter, not the radius. */
       readonly diameter: boolean
     }
@@ -126,7 +125,8 @@ type CircleToolState =
 
 /**
  * The circle tool — AutoCAD's CIRCLE. One class parameterised by {@link
- * CircleMode}, registered once per mode; the first prompt's `[3P/2P/Ttr]` and
+ * CircleMode}, registered once per mode: every mode starts at CIRCLE's centre
+ * prompt and its macro answers it, and the first prompt's `[3P/2P/Ttr]` and
  * the radius prompt's `[Diameter]` switch the mode actually running. It never
  * mutates the document: the finished circle is submitted as an {@link
  * AddEntityCommand}, so it is undoable, and the command ends the moment the
@@ -149,22 +149,30 @@ export class CircleTool implements Tool {
     private readonly lastRadius: CircleRadiusDefault = { radius: 0 }
   ) {
     this.mode = mode
-    this.active = mode
+    this.active = "center"
     this.id = id
     this.shortcut = shortcut
     this.state = this.initialState()
   }
 
   private initialState(): CircleToolState {
-    switch (this.active) {
-      case "center":
-      case "centerDiameter":
-        return { phase: "center" }
-      case "ttr":
-        return { phase: "tangentFirst", hover: null }
-      default:
-        return { phase: "p1" }
+    return { phase: "center" }
+  }
+
+  /**
+   * The ribbon's Circle buttons are CIRCLE answered (acad.cuix): Center
+   * `^C^C_circle`, Diameter `_circle \_d`, 2-Point `_circle _2p`, 3-Point
+   * `_circle _3p` (desktop circle/d01, d02). WHY CIRCLED, CIRCLE2P and
+   * CIRCLE3P typed run them too: they are this app's names for the buttons.
+   */
+  ribbonMacro(): RibbonMacro {
+    const answers: Record<CircleMode, readonly string[]> = {
+      center: [],
+      centerDiameter: [MACRO_PAUSE, "_d"],
+      twoPoint: ["_2p"],
+      threePoint: ["_3p"],
     }
+    return { command: "CIRCLE", answers: answers[this.mode] }
   }
 
   onActivate(ctx: ToolContext): void {
@@ -174,20 +182,16 @@ export class CircleTool implements Tool {
   }
 
   onDeactivate(ctx: ToolContext): void {
-    this.active = this.mode
+    this.active = "center"
     this.state = this.initialState()
     ctx.dynamicInput.close()
   }
 
-  /** Back to the first prompt of the mode the tool was started in. */
+  /** Back to CIRCLE's first prompt. */
   private restart(ctx: ToolContext): void {
-    this.active = this.mode
+    this.active = "center"
     this.state = this.initialState()
-    this.openPointInput(ctx, this.firstPrompt())
-  }
-
-  private firstPrompt(): PromptId {
-    return this.state.phase === "center" ? "center" : "firstPoint"
+    this.openPointInput(ctx, "center")
   }
 
   /** A radius prompt shows CIRCLERAD as its default, unless it is 0. */
@@ -218,16 +222,23 @@ export class CircleTool implements Tool {
       case "tangentSecond":
         return "specifySecondTangentOfCircle"
       case "ttrRadius":
-        return sized("specifyRadiusOfCircle", radius)
+        // WHY not POLYGON's id: Spanish words them apart, `Precise radio del
+        // círculo` (table 20419, probe circle/p187) and `de círculo` (p188).
+        return sized("specifyRadiusOfCircleTtr", radius)
     }
   }
 
   /**
    * The radius and Ttr's tangents take AutoCAD's own refusals (the radius's
-   * names its D); the diameter measures from the centre.
+   * names its D); the diameter measures from the centre. 2P's and 3P's later
+   * points are 2D: a Z or `*` there is `Invalid 2D point.` (probes circle/p16,
+   * p18, p20, p121, p122, p180, p181).
    */
   takes(): QuestionInput | null {
     switch (this.state.phase) {
+      case "p2":
+      case "p3":
+        return "point2d"
       case "radius":
         return this.state.diameter
           ? {
@@ -300,7 +311,7 @@ export class CircleTool implements Tool {
         // The distance from the centre to the cursor is the value being
         // specified: the radius, or the diameter in diameter mode (AutoCAD puts
         // the cursor at the diameter distance, i.e. 2× the radius).
-        const dist = V.distance(this.state.center, input.point)
+        const dist = sizeFrom(this.state.center, input.point)
         ctx.dynamicInput.setLive("radius", dist)
         break
       }
@@ -370,7 +381,7 @@ export class CircleTool implements Tool {
           phase: "radius",
           center: point,
           cursor: point,
-          diameter: this.active === "centerDiameter",
+          diameter: false,
         }
         this.openRadiusInput(ctx, at)
         break
@@ -398,26 +409,64 @@ export class CircleTool implements Tool {
     ctx.requestRender()
   }
 
+  /** Ttr's object picks have no box: their Enter reaches the drawing. */
+  onEnter(ctx: ToolContext): boolean {
+    return this.refuseEnter(ctx)
+  }
+
+  /**
+   * Enter where nothing is given and no default stands: every CIRCLE prompt
+   * refuses it in its own words and asks again (AllowNone false; probes
+   * circle/p109, p114, p119, p126–p130, p306, p309, p310).
+   */
+  private refuseEnter(ctx: ToolContext): boolean {
+    const message = ((): string => {
+      switch (this.state.phase) {
+        case "center":
+          return ctx.text.message("pointOrKeywordRequired")
+        case "p1":
+          return ctx.text.message("invalidPoint")
+        case "p2":
+        case "p3":
+          return ctx.text.message("invalidPoint2d")
+        case "radius":
+          return this.state.diameter
+            ? ctx.text.message("requiresDistance", {
+                points: "second",
+                keyword: "no",
+              })
+            : ctx.text.message("requiresRadius")
+        case "tangentFirst":
+        case "tangentSecond":
+          return ctx.text.message("requiresTangent")
+        case "ttrRadius":
+          return ctx.text.message("requiresDistance", {
+            points: "two",
+            keyword: "no",
+          })
+      }
+    })()
+    ctx.report(message, "error")
+    return true
+  }
+
   onKeyDown(input: KeyInput, ctx: ToolContext): void {
     if (input.key === "Escape") {
-      this.active = this.mode
+      this.active = "center"
       this.state = this.initialState()
       ctx.dynamicInput.close()
       ctx.requestRender()
     }
   }
 
-  getConstraintAnchor(): Vec2 | null {
-    switch (this.state.phase) {
-      case "radius":
-        return this.state.center
-      case "p2":
-        return this.state.p1
-      case "p3":
-        return this.state.p2
-      default:
-        return null
-    }
+  /**
+   * Only the radius bends about a base. WHY none at 2P's and 3P's later
+   * points: AutoCAD asks them with no base point (UseBasePoint false), so
+   * Ortho and Polar leave their picks alone (desktop circle/d12) and `<45`
+   * there is the prompt's wrong answer (p137).
+   */
+  getConstraintAnchor(): Vec3 | null {
+    return this.state.phase === "radius" ? this.state.center : null
   }
 
   buildOverlay(ctx: ToolContext): ScenePrimitive[] {
@@ -486,16 +535,16 @@ export class CircleTool implements Tool {
   private resolveRadius(ctx: ToolContext): number {
     if (this.state.phase !== "radius") return 0
     const typed = parseField(ctx, "radius")
-    const value = typed ?? V.distance(this.state.center, this.state.cursor)
+    const value = typed ?? sizeFrom(this.state.center, this.state.cursor)
     return this.state.diameter ? value / 2 : value
   }
 
-  private commitRadiusAt(point: Vec2, ctx: ToolContext): void {
+  private commitRadiusAt(point: Vec3, ctx: ToolContext): void {
     if (this.state.phase !== "radius") return
     const typed = parseField(ctx, "radius")
     // A typed value hard-locks the size; otherwise the click distance from the
     // centre is the value. In diameter mode that value is the diameter.
-    const value = typed ?? V.distance(this.state.center, point)
+    const value = typed ?? sizeFrom(this.state.center, point)
     this.commitRadiusValue(value, ctx)
   }
 
@@ -511,7 +560,7 @@ export class CircleTool implements Tool {
   }
 
   private commitTwoPoint(p1: Vec3, p2: Vec3, ctx: ToolContext): void {
-    this.commitCircle(twoPointCircle(p1, p2, layerOf(ctx)), ctx)
+    this.commitOrEnd(twoPointCircle(p1, p2, layerOf(ctx)), ctx)
   }
 
   private commitThreePoint(
@@ -520,8 +569,21 @@ export class CircleTool implements Tool {
     p3: Vec3,
     ctx: ToolContext
   ): void {
-    // Collinear: ignored, the third point is asked again.
-    this.commitCircle(threePointCircle(p1, p2, p3, layerOf(ctx)), ctx)
+    this.commitOrEnd(threePointCircle(p1, p2, p3, layerOf(ctx)), ctx)
+  }
+
+  /**
+   * 2P on one point or 3P on one line makes no circle: AutoCAD says
+   * `*Invalid*` and CIRCLE ends, LASTPOINT the last point given (probes
+   * circle/p123–p125, p164).
+   */
+  private commitOrEnd(circle: CircleEntity | null, ctx: ToolContext): void {
+    if (circle) {
+      this.commitCircle(circle, ctx)
+      return
+    }
+    ctx.report(ctx.text.message("invalid"), "error")
+    ctx.endCommand()
   }
 
   /** Ttr's circle of `radius`, or AutoCAD's "Circle does not exist." and the end. */
@@ -618,6 +680,7 @@ export class CircleTool implements Tool {
   /** Places a point phase from a typed coordinate, if one is present. */
   private commitTypedPoint(ctx: ToolContext): boolean {
     const text = ctx.dynamicInput.getText("point").trim()
+    if (text === "") return this.refuseEnter(ctx)
     if (!isCoordinateExpression(text)) return false
 
     const last = this.previousPoint()
@@ -655,12 +718,11 @@ export class CircleTool implements Tool {
       ],
       commit: (values, commitCtx) =>
         this.commitRadiusValue(values.radius, commitCtx),
-      // Enter with nothing typed takes CIRCLERAD; with none, it ends CIRCLE.
+      // Enter with nothing typed takes CIRCLERAD; with none, it is refused.
       commitRaw: (commitCtx) => {
         const { radius } = this.lastRadius
-        if (commitCtx.dynamicInput.hasTypedText() || !(radius > 0)) {
-          return false
-        }
+        if (commitCtx.dynamicInput.hasTypedText()) return false
+        if (!(radius > 0)) return this.refuseEnter(commitCtx)
         this.commitRadiusValue(this.sizeOf(radius), commitCtx)
         return true
       },
@@ -674,12 +736,11 @@ export class CircleTool implements Tool {
     ctx.dynamicInput.open({
       fields: [{ id: "radius", prompt: "radius", kind: "distance" }],
       commit: (values, commitCtx) => this.commitTtr(values.radius, commitCtx),
-      // Enter with nothing typed takes CIRCLERAD; with none, it ends CIRCLE.
+      // Enter with nothing typed takes CIRCLERAD; with none, it is refused.
       commitRaw: (commitCtx) => {
         const { radius } = this.lastRadius
-        if (commitCtx.dynamicInput.hasTypedText() || !(radius > 0)) {
-          return false
-        }
+        if (commitCtx.dynamicInput.hasTypedText()) return false
+        if (!(radius > 0)) return this.refuseEnter(commitCtx)
         this.commitTtr(radius, commitCtx)
         return true
       },
@@ -709,6 +770,14 @@ function parseField(ctx: ToolContext, fieldId: string): number | null {
   return value !== null && Number.isFinite(value) ? value : null
 }
 
+/**
+ * The radius or diameter a point gives: its distance from the centre in
+ * space, not in plan (probes circle/p17 `3,4,12` → r13, p148, p184).
+ */
+function sizeFrom(center: Vec3, point: Vec3): number {
+  return length3(sub3(point, center))
+}
+
 function layerOf(ctx: ToolContext): LayerId {
   return ctx.document.getCurrentLayerId()
 }
@@ -726,9 +795,9 @@ function circleAt(
 }
 
 /**
- * The 2P circle, in the UCS plane through its first point.
- * WHY not in the two points' own plane: two points fix no plane, and what
- * AutoCAD does with two at different heights is not documented.
+ * The 2P circle, in the UCS plane through its first point. WHY not the two
+ * points' own: AutoCAD takes the second point's X and Y only, in the first
+ * one's plane (probe circle/p190: ends at Z 5 and 0 make (5,5,5) r7.0711).
  */
 function twoPointCircle(
   p1: Vec3,
@@ -741,8 +810,9 @@ function twoPointCircle(
 }
 
 /**
- * The 3P circle: through the three points, in their own plane when they are at
- * different heights, as AutoCAD's is. `null` when they lie on one line.
+ * The 3P circle through the three points' X and Y, in the first one's plane:
+ * AutoCAD's later points are 2D (probes circle/p185, p189: snapped at other
+ * heights, the circle is flat at the first's). `null` on one line.
  */
 function threePointCircle(
   p1: Vec3,
@@ -751,16 +821,6 @@ function threePointCircle(
   layerId: LayerId,
   id?: EntityId
 ): CircleEntity | null {
-  const plane = planeThrough(p1, p2, p3)
-  if (!plane) {
-    const solved = circleFrom3Points(p1, p2, p3)
-    return solved && circleAt(solved.center, solved.radius, p1, layerId, id)
-  }
-  const [a, b, c] = plane.points
-  const solved = circleFrom3Points(a, b, c)
-  if (!solved || !(solved.radius > 0)) return null
-  return withNormal(
-    withElevation(createCircle(solved.center, solved.radius, layerId, id), a.z),
-    plane.normal
-  )
+  const solved = circleFrom3Points(p1, p2, p3)
+  return solved && circleAt(solved.center, solved.radius, p1, layerId, id)
 }

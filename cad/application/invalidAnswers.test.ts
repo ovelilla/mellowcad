@@ -76,6 +76,32 @@ describe("a wrong answer mid-command", () => {
     expect(mirror.commandLog().at(-1)).toBe("Invalid option keyword.")
   })
 
+  it("asks for a 2D point at CIRCLE's later 2P and 3P points", () => {
+    // probes circle/p121, p122 (FOO), p133 (_U), p137 (`<45`, no base point
+    // there to turn about), en and es.
+    for (const [locale, refusal] of [
+      [undefined, "Invalid 2D point."],
+      [es, "Punto 2D no válido."],
+    ] as const) {
+      const cad = createHarness(locale ? { locale } : {})
+      for (const typed of ["_CIRCLE", "_3P", "0,0", "FOO"])
+        answerLine(cad, typed)
+      expect(cad.commandLog().at(-1)).toBe(refusal)
+      for (const typed of ["10,0", "FOO", "_U"]) answerLine(cad, typed)
+      expect(cad.commandLog().slice(-3)).toEqual([
+        refusal,
+        expect.any(String),
+        refusal,
+      ])
+      cad.escape()
+
+      for (const typed of ["_CIRCLE", "_2P", "0,0", "<45"])
+        answerLine(cad, typed)
+      expect(cad.commandLog().at(-1)).toBe(refusal)
+      expect(cad.activeToolId()).toBe("circle")
+    }
+  })
+
   it("names what a distance or an angle takes, from a base point or not", () => {
     const cad = createHarness({ entities: twoLines() })
     cad.command("OFFSET")
@@ -129,6 +155,7 @@ describe("a wrong answer mid-command", () => {
   })
 
   it("keeps CIRCLE's and POLYGON's own words", () => {
+    // probes circle/p113 (the radius), p118 (the diameter), p194 (Ttr).
     const cad = createHarness()
     cad.command("CIRCLE").click(p(0, 0))
     answerLine(cad, "FOO")

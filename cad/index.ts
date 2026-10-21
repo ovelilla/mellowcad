@@ -212,6 +212,7 @@ export type {
   CommandOption,
   CommandOptionOutcome,
   ToolQuestion,
+  RibbonMacro,
 } from "./application/tools/Tool"
 export { SelectTool } from "./application/tools/SelectTool"
 export { LineTool } from "./application/tools/LineTool"

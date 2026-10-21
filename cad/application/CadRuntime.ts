@@ -95,7 +95,7 @@ import {
   NewDrawingCommand,
   RemoveEntitiesCommand,
 } from "./commands/entityCommands"
-import { PointerInput, Tool, ToolContext } from "./tools/Tool"
+import { MACRO_PAUSE, PointerInput, Tool, ToolContext } from "./tools/Tool"
 import { InsertTool } from "./tools/InsertTool"
 import { TextEditTool } from "./tools/TextEditTool"
 import { AttEditTool } from "./tools/AttEditTool"
@@ -398,6 +398,17 @@ export class CadRuntime extends Observable {
    * that line, and a prompt AutoCAD asks without a new line follows it there.
    */
   private openLine: number | null = null
+  /** Whether {@link openLine} is a ribbon macro's answer, which the next prompt continues. */
+  private macroOpen = false
+  /**
+   * The answers a ribbon macro has still to type ({@link RibbonMacro}), and
+   * the question a pause waits at until the user's answer moves it on.
+   */
+  private macro: {
+    readonly tool: Tool
+    readonly answers: readonly string[]
+    readonly pausedAt?: PromptId | null
+  } | null = null
   /** The log's mark after the prompt line a tool wrote while answering. */
   private reportedPrompt: number | null = null
   /** What the pick being answered found, for its prompt's line. */
@@ -917,7 +928,10 @@ export class CadRuntime extends Observable {
 
   /**
    * Starts `id` as a button does. Its command is echoed as AutoCAD's ribbon
-   * macro `^C^C_line` echoes it, `Command: _line` (desktop d19).
+   * macro `^C^C_line` echoes it, `Command: _line` (desktop line/d19), a mode
+   * of another command's as that command (`_circle`, circle/d01), and it is a
+   * command run: Enter repeats it and U names it (probes circle/p159, p191,
+   * p192).
    */
   setActiveTool(id: string): void {
     const next = this.tools.get(id)
@@ -925,15 +939,19 @@ export class CadRuntime extends Observable {
       this.switchTool(id)
       return
     }
+    const command = next.ribbonMacro?.()?.command ?? TOOL_COMMANDS[id]
     this.echoMark = this.commandLine.mark()
-    this.commandLine.write(
-      "command",
-      `_${(TOOL_COMMANDS[id] ?? id).toLowerCase()}`
-    )
+    this.commandLine.write("command", `_${(command ?? id).toLowerCase()}`)
+    if (command !== undefined) {
+      const [name] = this.text.commandNames(command)
+      this.commandLine.pushHistory(name)
+      this.startingName = name
+    }
     try {
       this.switchTool(id)
     } finally {
       this.echoMark = null
+      this.startingName = null
     }
   }
 
@@ -950,6 +968,7 @@ export class CadRuntime extends Observable {
     }
     const next = this.tools.get(id)
     if (!next || next === this.activeTool) return
+    this.macro = null
     this.activeTool.onDeactivate?.(this.toolContext)
     if (this.regenQueued) {
       this.regenQueued = false
@@ -984,6 +1003,56 @@ export class CadRuntime extends Observable {
     // acquired object-snap-tracking references).
     this.host.focusSurface()
     this.host.requestRender()
+    if (next.id !== "select") this.startMacro(next)
+  }
+
+  /** Types the ribbon macro `tool` runs, if any ({@link RibbonMacro}). */
+  private startMacro(tool: Tool): void {
+    const answers = tool.ribbonMacro?.()?.answers ?? []
+    this.macro = answers.length > 0 ? { tool, answers } : null
+    this.feedMacro()
+  }
+
+  /** Types the macro's answers as its command asks, up to a pause or its end. */
+  private feedMacro(): void {
+    while (this.macro !== null && this.macro.pausedAt === undefined) {
+      const { tool, answers } = this.macro
+      const [next, ...rest] = answers
+      if (next === undefined || this.activeTool !== tool) {
+        this.macro = null
+        return
+      }
+      if (next === MACRO_PAUSE) {
+        this.macro = { tool, answers: rest, pausedAt: askedPrompt(tool) }
+        return
+      }
+      this.macro = { tool, answers: rest }
+      const before = this.commandLine.mark()
+      this.submitText(next)
+      // The desktop writes the prompt the answer opens on the answer's line,
+      // `…: _2p Specify first end point of circle's diameter:` (desktop
+      // circle/d01, d02).
+      if (this.commandLine.mark() === before + 1) {
+        this.openLine = before + 1
+        this.macroOpen = true
+      }
+    }
+  }
+
+  /** After an answer: a macro's pause ends once its question has moved on. */
+  private resumeMacro(): void {
+    const macro = this.macro
+    if (macro === null || macro.pausedAt === undefined) return
+    // A transparent command's answers leave the pause waiting for the
+    // suspended command's own.
+    if (this.suspended !== null) return
+    if (this.activeTool !== macro.tool) {
+      this.macro = null
+      return
+    }
+    if (askedPrompt(macro.tool) === macro.pausedAt) return
+    this.macro = { tool: macro.tool, answers: macro.answers }
+    this.feedMacro()
   }
 
   /**
@@ -1174,6 +1243,11 @@ export class CadRuntime extends Observable {
   submitCommandLine(): void {
     const text = this.commandLine.getBuffer().trim()
     this.commandLine.setBuffer("")
+    this.submitText(text)
+  }
+
+  /** {@link submitCommandLine} of `text`, typed or a macro's. */
+  private submitText(text: string): void {
     if (text === "") {
       // Mid-command the command window's Enter is the prompt's Enter.
       if (this.activeTool.id !== "select") this.pressEnter()
@@ -1365,7 +1439,8 @@ export class CadRuntime extends Observable {
     const prefix = this.answerPrefix
     const mark = this.commandLine.mark()
     const continues =
-      this.openLine === mark && continuesLine(askedPrompt(asking))
+      this.openLine === mark &&
+      (this.macroOpen || continuesLine(askedPrompt(asking)))
     const asked = this.setsLastPoint()
       ? {
           tool: this.activeTool,
@@ -1390,6 +1465,7 @@ export class CadRuntime extends Observable {
       this.pickFound = null
     }
     if (!took) return false
+    this.macroOpen = false
     const reportedLast = this.reportedPrompt === this.commandLine.mark()
     // A LASTPOINT the tool set answering wins: a refusal of its own keeps it
     // (PLINE's `*Invalid*` arc end, pline/p38).
@@ -1397,6 +1473,7 @@ export class CadRuntime extends Observable {
     this.answerPrefix = null
     if (echo === null) {
       for (const text of found) this.commandLine.write("info", text)
+      this.resumeMacro()
       return true
     }
     const given = [prefix, answer, ...found].filter((part) => part).join(" ")
@@ -1412,6 +1489,7 @@ export class CadRuntime extends Observable {
       reportedLast
         ? written
         : null
+    this.resumeMacro()
     return true
   }
 

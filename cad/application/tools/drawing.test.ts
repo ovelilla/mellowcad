@@ -40,6 +40,8 @@ function answer(cad: CadHarness, ...answers: string[]): CadHarness {
 
 describe("CIRCLE", () => {
   it("asks each question of its modes, CIRCLERAD as the radius default", () => {
+    // probes circle/p106, p108 (the prompts), p115, p120 (CIRCLERAD at the
+    // radius and twice it at the diameter).
     const cad = createHarness()
 
     cad.command("CIRCLE").click(p(0, 0)).type("10").enter()
@@ -138,6 +140,45 @@ describe("CIRCLE", () => {
     expect(cad.activeToolId()).toBe("circle")
   })
 
+  it("refuses a diameter of 0 or less, as the radius", () => {
+    // probe circle/p118: FOO, 0, -5 and `_D` at `Specify diameter of circle:`.
+    const cad = answer(createHarness(), "CIRCLE", "0,0", "D")
+    answer(cad, "FOO", "0", "-5", "_D", "20")
+    expect(cad.commandLog().slice(-9)).toEqual([
+      "Specify diameter of circle: FOO",
+      "Requires numeric distance or second point.",
+      "Specify diameter of circle: 0",
+      "Value must be positive and nonzero.",
+      "Specify diameter of circle: -5",
+      "Value must be positive and nonzero.",
+      "Specify diameter of circle: _D",
+      "Requires numeric distance or second point.",
+      "Specify diameter of circle: 20",
+    ])
+    expect(cad.only<CircleEntity>("circle").radius).toBe(10)
+  })
+
+  it("keeps the last circle's radius as CIRCLERAD, whatever made it", () => {
+    // probe circle/p162: 2P → 5, 3P → 7.0711, a diameter of 30 → 15.
+    const cad = answer(createHarness(), "CIRCLE", "2P", "0,0", "10,0")
+    answer(cad, "CIRCLE", "50,50")
+    expect(cad.state().commandLine.prompt).toBe(
+      "CIRCLE Specify radius of circle or [Diameter] <5.00>:"
+    )
+    answer(cad, "", "CIRCLE", "3P", "0,0", "10,0", "0,10", "CIRCLE", "0,0")
+    expect(cad.state().commandLine.prompt).toBe(
+      "CIRCLE Specify radius of circle or [Diameter] <7.07>:"
+    )
+    answer(cad, "D")
+    expect(cad.state().commandLine.prompt).toBe(
+      "CIRCLE Specify diameter of circle <14.14>:"
+    )
+    answer(cad, "30", "CIRCLE", "0,0")
+    expect(cad.state().commandLine.prompt).toBe(
+      "CIRCLE Specify radius of circle or [Diameter] <15.00>:"
+    )
+  })
+
   it("halves the typed value in Diameter mode", () => {
     const cad = createHarness()
 
@@ -166,12 +207,25 @@ describe("CIRCLE", () => {
     expect(circle.radius).toBeCloseTo(100, 5)
   })
 
-  it("3-Point ignores a collinear third pick and keeps prompting", () => {
-    const cad = createHarness()
+  it("ends 2P and 3P that make no circle with *Invalid*", () => {
+    // probes circle/p123 (2P on one point), p124 (3P on one line), p125, p164:
+    // `*Invalid*` (es `*No válido*`) and the end, LASTPOINT the last point.
+    for (const [locale, said] of [
+      [undefined, "*Invalid*"],
+      [es, "*No válido*"],
+    ] as const) {
+      const cad = createHarness(locale ? { locale } : {})
+      answer(cad, "_CIRCLE", "_2P", "0,0", "0,0")
+      expect(cad.commandLog().at(-1)).toBe(said)
+      expect(cad.activeToolId()).toBe("select")
 
-    cad.command("CIRCLE3P").click(p(0, 0)).click(p(50, 0)).click(p(100, 0)) // collinear: no circle exists
-    expect(cad.entityCount).toBe(0)
-    expect(cad.activeToolId()).toBe("circle3p")
+      answer(cad, "_CIRCLE", "_3P", "0,0", "10,0", "20,0")
+      expect(cad.commandLog().at(-1)).toBe(said)
+      expect(cad.activeToolId()).toBe("select")
+      expect(cad.entityCount).toBe(0)
+      answer(cad, "_ID", "@")
+      expect(cad.commandLog().at(-1)).toMatch(/X = 20\.00 +Y = 0\.00/)
+    }
   })
 
   it("offers [3P/2P/Ttr] at the centre and [Diameter] at the radius", () => {
@@ -208,6 +262,25 @@ describe("CIRCLE", () => {
     expect(three.radius).toBeCloseTo(100, 5)
     expect(two.center).toBeCloseToPoint(p(320, 0))
     expect(two.radius).toBeCloseTo(20)
+  })
+
+  it("asks Ttr's radius in its own words, POLYGON's in its own", () => {
+    // probes circle/p187 (es `Precise radio del círculo`, table 20419) and
+    // p188 (POLYGON's `Precise radio de círculo`, 25454).
+    const cad = createHarness({
+      locale: es,
+      entities: [circleOf(p(0, 0), 10), circleOf(p(40, 0), 10)],
+    })
+    answer(cad, "_CIRCLE", "_T")
+    cad.click(p(0, 10)).click(p(40, 10))
+    expect(cad.state().commandLine.prompt).toBe(
+      "CIRCULO Precise radio del círculo:"
+    )
+    cad.escape()
+    answer(cad, "_POLYGON", "6", "0,0", "_I")
+    expect(cad.state().commandLine.prompt).toBe(
+      "POLIGONO Precise radio de círculo:"
+    )
   })
 
   it("Ttr touches two lines, on the side of the picks", () => {
@@ -269,6 +342,244 @@ describe("CIRCLE", () => {
     expect(cad.entityCount).toBe(2)
     expect(cad.commandLog().at(-1)).toBe("Circle does not exist.")
     expect(cad.activeToolId()).toBe("select")
+  })
+
+  it("runs the rail's entries as the ribbon's macros", () => {
+    // desktop circle/d01, d02, probes p105–p107: the ribbon's Circle buttons
+    // run `^C^C_circle`, `_circle \_d`, `_circle _2p`, `_circle _3p`; the
+    // desktop writes the prompt the macro's answer opens on its line.
+    const run = (id: string, ...answers: string[]) => {
+      const cad = createHarness()
+      cad.tool(id)
+      expect(cad.activeToolId()).toBe(id)
+      answer(cad, ...answers)
+      return cad
+    }
+    const centre =
+      "Specify center point for circle or [3P/2P/Ttr (tan tan radius)]:"
+
+    const radius = run("circle", "0,0", "5")
+    expect(radius.commandLog()).toEqual([
+      "_circle",
+      `${centre} 0,0`,
+      "Specify radius of circle or [Diameter]: 5",
+    ])
+
+    const diameter = run("circlediameter", "0,0", "20")
+    expect(diameter.commandLog()).toEqual([
+      "_circle",
+      `${centre} 0,0`,
+      "Specify radius of circle or [Diameter]: _d Specify diameter of circle: 20",
+    ])
+    expect(diameter.only<CircleEntity>("circle").radius).toBeCloseTo(10)
+
+    const two = run("circle2p", "0,0", "10,0")
+    expect(two.commandLog()).toEqual([
+      "_circle",
+      `${centre} _2p Specify first end point of circle's diameter: 0,0`,
+      "Specify second end point of circle's diameter: 10,0",
+    ])
+
+    const three = run("circle3p", "0,0", "10,0", "0,10")
+    expect(three.commandLog()).toEqual([
+      "_circle",
+      `${centre} _3p Specify first point on circle: 0,0`,
+      "Specify second point on circle: 10,0",
+      "Specify third point on circle: 0,10",
+    ])
+
+    const spanish = createHarness({ locale: es })
+    spanish.tool("circle2p")
+    expect(spanish.state().commandLine.prompt).toBe(
+      "CIRCULO Precise primer punto final del diámetro del círculo:"
+    )
+    answer(spanish, "0,0", "10,0")
+    expect(spanish.commandLog().slice(0, 2)).toEqual([
+      "_circle",
+      "Precise punto central para círculo o [3P/2P/Ttr (Tangente tangente radio)]: _2p Precise primer punto final del diámetro del círculo: 0,0",
+    ])
+  })
+
+  it("keeps a macro's pause through a transparent command", () => {
+    const cad = createHarness()
+    cad.tool("circlediameter")
+    answer(cad, "'ZOOM", "E", "0,0", "20")
+    expect(cad.commandLog().slice(-2)).toEqual([
+      "Specify center point for circle or [3P/2P/Ttr (tan tan radius)]: 0,0",
+      "Specify radius of circle or [Diameter]: _d Specify diameter of circle: 20",
+    ])
+    expect(cad.only<CircleEntity>("circle").radius).toBeCloseTo(10)
+  })
+
+  it("keeps CIRCLED, CIRCLE2P and CIRCLE3P typable, as the rail runs them", () => {
+    const cad = createHarness()
+    cad.command("CIRCLED").type("0,0").enter().type("200").enter()
+    expect(cad.only<CircleEntity>("circle").radius).toBeCloseTo(100)
+    expect(cad.commandLog()[0]).toBe("CIRCLED")
+  })
+
+  it("takes 2P's and 3P's later points in X and Y only", () => {
+    // probes circle/p16, p20 (2P), p18 (`*` in UCS Z 30), p180, p181 (3P): a
+    // Z or `*` typed there is `Invalid 2D point.` and the point asked again.
+    const cad = answer(createHarness(), "CIRCLE", "2P", "0,0,0")
+    for (const typed of ["10,0,5", "@10,0,5", "*20,0"]) {
+      answer(cad, typed)
+      expect(cad.commandLog().slice(-2)).toEqual([
+        `Specify second end point of circle's diameter: ${typed}`,
+        "Invalid 2D point.",
+      ])
+    }
+    answer(cad, "10,0")
+    expect(cad.only<CircleEntity>("circle").radius).toBeCloseTo(5)
+
+    answer(cad, "CIRCLE", "3P", "0,0,0", "10,0,0", "@10,0,5", "10,0")
+    answer(cad, "0,10,5")
+    expect(cad.commandLog().slice(-7)).toEqual([
+      "Specify second point on circle: 10,0,0",
+      "Invalid 2D point.",
+      "Specify second point on circle: @10,0,5",
+      "Invalid 2D point.",
+      "Specify second point on circle: 10,0",
+      "Specify third point on circle: 0,10,5",
+      "Invalid 2D point.",
+    ])
+    expect(cad.activeToolId()).toBe("circle")
+  })
+
+  it("bends the radius's pick with Ortho, never 2P's or 3P's later picks", () => {
+    // desktop circle/d12: 2P's and 3P's later prompts have no base point
+    // (UseBasePoint false), so Ortho has nothing to bend them about; the
+    // radius's pick is bent from the centre.
+    const cad = createHarness()
+    cad.press("F8")
+    cad.command("CIRCLE").option("2P").click(p(40, 10)).click(p(55, 18))
+    const two = cad.latest() as CircleEntity
+    expect(two.center).toBeCloseToPoint(p(47.5, 14))
+    expect(two.radius).toBeCloseTo(8.5)
+
+    const picks = [p(70, 10), p(80, 14), p(74, 25)]
+    cad.command("CIRCLE").option("3P")
+    for (const pick of picks) cad.click(pick)
+    const three = cad.latest() as CircleEntity
+    for (const pick of picks) {
+      expect(V.distance(three.center, pick)).toBeCloseTo(three.radius)
+    }
+
+    cad.command("CIRCLE").click(p(20, 40)).click(p(26, 43))
+    expect((cad.latest() as CircleEntity).radius).toBeCloseTo(6)
+  })
+
+  describe("Enter at a prompt with no default", () => {
+    // Every CIRCLE prompt is AllowNone:false: Enter is refused in the prompt's
+    // own words and the prompt asked again, nothing given lost (probes
+    // circle/p109, p114, p119, p126–p130, p306, p309, p310, p376, p377; all
+    // with CIRCLERAD 0).
+    const tangents = () => [circleOf(p(0, 0), 10), circleOf(p(40, 0), 10)]
+    const CASES: ReadonlyArray<{
+      prompt: string
+      reach: (cad: CadHarness) => void
+      en: string
+      es: string
+    }> = [
+      {
+        prompt:
+          "Specify center point for circle or [3P/2P/Ttr (tan tan radius)]:",
+        reach: (cad) => answer(cad, "_CIRCLE"),
+        en: "Point or option keyword required.",
+        es: "Se requiere un punto o una opción.",
+      },
+      {
+        prompt: "Specify radius of circle or [Diameter]:",
+        reach: (cad) => answer(cad, "_CIRCLE", "100,100"),
+        en: 'Requires numeric radius, point on circumference, or "D".',
+        es: 'Precisa un radio numérico, un punto en la circunferencia, o "D".',
+      },
+      {
+        prompt: "Specify diameter of circle:",
+        reach: (cad) => answer(cad, "_CIRCLE", "100,100", "_D"),
+        en: "Requires numeric distance or second point.",
+        es: "Requiere una distancia numérica o un segundo punto.",
+      },
+      {
+        prompt: "Specify first end point of circle's diameter:",
+        reach: (cad) => answer(cad, "_CIRCLE", "_2P"),
+        en: "Invalid point.",
+        es: "Punto no válido.",
+      },
+      {
+        prompt: "Specify second end point of circle's diameter:",
+        reach: (cad) => answer(cad, "_CIRCLE", "_2P", "100,100"),
+        en: "Invalid 2D point.",
+        es: "Punto 2D no válido.",
+      },
+      {
+        prompt: "Specify first point on circle:",
+        reach: (cad) => answer(cad, "_CIRCLE", "_3P"),
+        en: "Invalid point.",
+        es: "Punto no válido.",
+      },
+      {
+        prompt: "Specify second point on circle:",
+        reach: (cad) => answer(cad, "_CIRCLE", "_3P", "100,100"),
+        en: "Invalid 2D point.",
+        es: "Punto 2D no válido.",
+      },
+      {
+        prompt: "Specify third point on circle:",
+        reach: (cad) => answer(cad, "_CIRCLE", "_3P", "100,100", "110,100"),
+        en: "Invalid 2D point.",
+        es: "Punto 2D no válido.",
+      },
+      {
+        prompt: "Specify point on object for first tangent of circle:",
+        reach: (cad) => answer(cad, "_CIRCLE", "_T"),
+        en: "Requires a TAN object-snap and selection of Circle, Arc, or Line.",
+        es: "Requiere una REFENT TAN y la designación de un círculo, arco o línea.",
+      },
+      {
+        prompt: "Specify point on object for second tangent of circle:",
+        reach: (cad) => {
+          answer(cad, "_CIRCLE", "_T")
+          cad.click(p(0, 10))
+        },
+        en: "Requires a TAN object-snap and selection of Circle, Arc, or Line.",
+        es: "Requiere una REFENT TAN y la designación de un círculo, arco o línea.",
+      },
+      {
+        prompt: "Specify radius of circle:",
+        reach: (cad) => {
+          answer(cad, "_CIRCLE", "_T")
+          cad.click(p(0, 10)).click(p(40, 10))
+        },
+        en: "Requires numeric distance or two points.",
+        es: "Requiere una distancia numérica o dos puntos.",
+      },
+    ]
+
+    it.each(CASES)("refuses it at $prompt and asks again", (c) => {
+      const cad = createHarness({ entities: tangents() })
+      c.reach(cad)
+      const prompt = cad.state().commandLine.prompt
+      answer(cad, "")
+
+      expect(cad.commandLog().slice(-2)).toEqual([c.prompt, c.en])
+      expect(cad.state().commandLine.prompt).toBe(prompt)
+      expect(cad.entityCount).toBe(2)
+
+      const spanish = createHarness({ entities: tangents(), locale: es })
+      c.reach(spanish)
+      spanish.enter()
+      expect(spanish.commandLog().at(-1)).toBe(c.es)
+      expect(spanish.activeToolId()).toBe("circle")
+    })
+
+    it("keeps what was given: the centre, then a radius makes the circle", () => {
+      // probe circle/p376: Enter at the radius, then 5.
+      const cad = answer(createHarness(), "CIRCLE", "0,0", "", "5")
+      const circle = cad.only<CircleEntity>("circle")
+      expect(circle.center).toBeCloseToPoint(p(0, 0))
+      expect(circle.radius).toBe(5)
+    })
   })
 })
 

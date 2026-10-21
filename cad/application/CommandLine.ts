@@ -228,8 +228,12 @@ export function temporaryPromptLines(
  *
  * Variants that AutoCAD exposes as ribbon options rather than commands (the
  * circle/arc construction modes) get descriptive names of our own so every tool
- * is reachable by typing. The clipboard copies have no alias in Autodesk's
- * shortcut guide, and PASTECLIP is registered separately — it is not a tool.
+ * is reachable by typing. WHY CIRCLED, CIRCLE2P and CIRCLE3P stay, though
+ * AutoCAD knows none of them (probe circle/p21) and their rail entries run
+ * CIRCLE as the ribbon's macros do (`CircleTool.ribbonMacro`): removing a
+ * name is a major version, and typing one runs the same macro. The clipboard
+ * copies have no alias in Autodesk's shortcut guide, and PASTECLIP is
+ * registered separately — it is not a tool.
  */
 export const TOOL_COMMANDS: Readonly<Record<string, string>> = {
   line: "LINE",

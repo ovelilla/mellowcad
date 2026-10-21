@@ -157,7 +157,7 @@ clarify...`): a keyword answers, Enter writes `Invalid option keyword.`, anythin
   `answering` to `refuse()` (`promptRefusal`, AutoCAD's console words) and the question stays. A box
   commit that cannot parse the typed text **returns `false`** so the refusal runs; reading the
   cursor instead is a bug. `answerPrompt` refuses at the command line what the box would take: a
-  `#`, and a Z or `*` where the question takes `"point2d"` (pline/p18–p20, p137).
+  `#`, and a Z or `*` where the question takes `"point2d"` (pline/p18–p20, p137; circle/p16, p18).
 
 ## Transparent commands
 
@@ -231,7 +231,10 @@ runtime picks for the tool" feature.
 **Every entity mutation goes through a `Command`** (`history.execute`). **A command is one undo
 step**, as AutoCAD's U undoes "the effects of the last command": `setActiveTool` opens a group
 (`history.beginGroup`) for every tool but Select and closes it after the old tool's `onDeactivate`,
-which may still commit. Inside the group each command stays its own entry, so a tool's Undo keyword
+which may still commit. **A rail start is a command run**: `setActiveTool` echoes the macro
+(`_line`), pushes the command into Enter's repeat and names the step (circle/p192). A mode of
+another command declares `ribbonMacro()`: that command and the answers typed once it starts
+(`MACRO_PAUSE` waits for the user's), the prompt an answer opens on its line (circle/d01). Inside the group each command stays its own entry, so a tool's Undo keyword
 steps back one; on close they fold into one. A transparent command's change is an entry of the
 group it interrupts, so a tool's Undo takes back to the depth it marked before its commit
 (`CommandHistory.undoTo`), and a regeneration that change queued is done then. A change set from a

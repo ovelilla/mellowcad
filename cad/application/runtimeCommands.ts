@@ -213,9 +213,12 @@ export function registerCommands(
   })
 }
 
-/** The command a tool runs, whose keywords its options are. */
+/**
+ * The command a tool runs, whose keywords its options are: a ribbon macro's
+ * (CIRCLE for the rail's 2-Point), else `TOOL_COMMANDS`'.
+ */
 export function toolCommand(tool: Tool): string | null {
-  return TOOL_COMMANDS[tool.id] ?? null
+  return tool.ribbonMacro?.()?.command ?? TOOL_COMMANDS[tool.id] ?? null
 }
 
 /**

@@ -115,6 +115,22 @@ describe("U and REDO say what they did", () => {
     ])
   })
 
+  it("names a command started from the rail as the ribbon's macro runs it", () => {
+    // probe circle/p159: the ribbon's `_circle` macros undo as CIRCLE (es
+    // CIRCULO); LINE's button, `^C^C_line`, as LINE.
+    for (const [locale, u, circle, line] of [
+      [undefined, "U", "CIRCLE", "LINE"],
+      [es, "H", "CIRCULO", "LINEA"],
+    ] as const) {
+      const cad = createHarness(locale ? { locale } : {})
+      cad.tool("line")
+      answer(cad, "0,0", "10,0", "")
+      cad.tool("circle2p")
+      answer(cad, "0,0", "10,0")
+      expect(written(cad, "_U", "_U")).toEqual([u, circle, u, line])
+    }
+  })
+
   it("says the regeneration a command made, a transparent one's too", () => {
     const cad = answer(createHarness(), "LTSCALE", "2")
     expect(written(cad, "U", "REDO")).toEqual([

@@ -129,6 +129,25 @@ describe("command line", () => {
     expect(cad.activeToolId()).toBe("circle")
   })
 
+  it("repeats a command started from the rail", () => {
+    // probes circle/p191, p192: Enter after the ribbon's `_circle _2p` starts
+    // CIRCLE at its centre prompt; LINE's button, `^C^C_line`, likewise.
+    const cad = createHarness()
+    cad.tool("circle2p").click(p(0, 0)).click(p(10, 0))
+    cad.press("Enter")
+    expect(cad.activeToolId()).toBe("circle")
+    expect(cad.commandLog().at(-1)).toBe("CIRCLE")
+    expect(cad.state().commandLine.prompt).toBe(
+      "CIRCLE Specify center point for circle or [3P/2P/Ttr (tan tan radius)]:"
+    )
+    cad.escape()
+
+    cad.tool("line").click(p(0, 0)).click(p(10, 0)).escape()
+    cad.press("Enter")
+    expect(cad.activeToolId()).toBe("line")
+    expect(cad.commandLog().at(-1)).toBe("LINE")
+  })
+
   it("walks the history with the arrow keys", () => {
     const cad = createHarness()
 

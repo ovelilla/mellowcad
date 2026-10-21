@@ -425,6 +425,21 @@ export interface ToolText {
   prompt(id: PromptId, keywords?: readonly string[]): string
 }
 
+/** Waits, in a {@link RibbonMacro}'s answers, for the user's answer: `\`. */
+export const MACRO_PAUSE = "\\"
+
+/**
+ * A ribbon button that runs a command and answers its prompts, as AutoCAD's
+ * `^C^C_circle \_d` does: echoed `_circle`, repeated by Enter and named by U
+ * as that command, its answers typed in turn as it asks.
+ */
+export interface RibbonMacro {
+  /** The command it runs, by its global name (`CIRCLE`). */
+  readonly command: string
+  /** What it types after the command, {@link MACRO_PAUSE} waiting for the user. */
+  readonly answers: readonly string[]
+}
+
 /**
  * A tool encapsulates one interactive editing mode (draw line, select, ...) as
  * an explicit interaction flow: the runtime forwards normalised input to the
@@ -444,6 +459,13 @@ export interface Tool {
 
   /** The command the prompt names when one tool runs several (EATTEDIT); else `TOOL_COMMANDS`'. */
   runningCommand?(): string
+  /**
+   * AutoCAD's ribbon macro the tool runs, where it is a mode of another
+   * command (`^C^C_circle _2p`): that command's keywords are the tool's, the
+   * rail echoes, repeats and undoes it, and its answers are typed each time
+   * the tool starts. Null or omitted: the tool's own command.
+   */
+  ribbonMacro?(): RibbonMacro | null
   /**
    * The system variable the tool sets (AUPREC): it heads the prompt as it
    * is named in every language, and AutoCAD resumes it as SETVAR.

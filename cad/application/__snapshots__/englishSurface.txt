@@ -793,23 +793,23 @@ lweight "Lineweight" LW
   dyn: "Diameter"=""|0.00|mm*
   options: -
   prompt| Specify center point for circle or [3P/2P/Ttr (tan tan radius)]:
+  prompt| Specify radius of circle or [Diameter] <50.00>: _d
 > diameter
   prompt: Command:
   asks: -
   tip: -
   dyn: -
-  prompt| Specify diameter of circle <100.00>:
 > CIRCLE2P
   prompt: CIRCLE2P Specify first end point of circle's diameter:
   asks: "First point"
   tip: Specify first end point of circle's diameter:
   dyn: "X,Y"=""||*
   command| CIRCLE2P
+  prompt| Specify center point for circle or [3P/2P/Ttr (tan tan radius)]: _2p
 > first
   prompt: CIRCLE2P Specify second end point of circle's diameter:
   asks: "Second point"
   tip: Specify second end point of circle's diameter:
-  prompt| Specify first end point of circle's diameter:
 > second
   prompt: Command:
   asks: -
@@ -822,11 +822,11 @@ lweight "Lineweight" LW
   tip: Specify first point on circle:
   dyn: "X,Y"=""||*
   command| CIRCLE3P
+  prompt| Specify center point for circle or [3P/2P/Ttr (tan tan radius)]: _3p
 > first
   prompt: CIRCLE3P Specify second point on circle:
   asks: "Second point"
   tip: Specify second point on circle:
-  prompt| Specify first point on circle:
 > second
   prompt: CIRCLE3P Specify third point on circle:
   asks: "Third point"

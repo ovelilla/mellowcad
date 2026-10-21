@@ -117,9 +117,12 @@ describe("an answer that starts several keywords", () => {
     expect(cad.state().commandLine.prompt).toBe(
       "PLINE Specify center point of arc:"
     )
+    // probe circle/p112: `2` or `3` at the centre is a direct distance.
     cad.escape().command("CIRCLE")
     answerLine(cad, "3")
-    expect(cad.state().commandLine.prompt).not.toContain("on circle")
+    expect(cad.state().commandLine.prompt).toBe(
+      "CIRCLE Specify radius of circle or [Diameter]:"
+    )
   })
 
   it("lists every keyword it starts, hidden ones too", () => {

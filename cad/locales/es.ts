@@ -1579,6 +1579,7 @@ export const es: EngineLocale = {
       "specifyCenterPointForCircleOr": "Precise punto central para círculo o",
       "specifyRadiusOfCircleOr": "Precise radio de círculo o",
       "specifyRadiusOfCircle": "Precise radio de círculo",
+      "specifyRadiusOfCircleTtr": "Precise radio del círculo",
       "enterNumberOfSides": "Indique número de lados",
       "specifyCenterOfPolygonOr": "Precise centro de polígono o",
       "enterAnOption": "Indique una opción",

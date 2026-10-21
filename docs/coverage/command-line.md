@@ -12,9 +12,13 @@ shows the question alone, up to its `or` (its keywords are the chips below it), 
 when it offers none. An alias is echoed as typed with the name it runs (`Command: l LINE`, es
 `Comando: l LINEA`); a command started from the tool palette is echoed as AutoCAD's ribbon macro
 (`^C^C_line`) echoes it, `Command: _line` (desktop line/d19; every other button's macro is
-**unverified**, and a mode the rail offers as its own entry is echoed by this app's name for it,
-`_circle2p`, where AutoCAD's ribbon runs `_circle` and answers `_2p`); the prompt is headed by the command typed, a dash one's with its dash
-(`-LINETYPE Enter an option [?/Set]:`, es `-TIPOLIN`). The history writes each prompt with its
+**unverified**), and is a command run: Enter at `Command:` repeats it, U names it (`CIRCLE`, es
+`CIRCULO`; probes circle/p159, p191, p192); the rail's Circle modes run the ribbon's macros, `_circle`
+and the mode answered at its prompt, the prompt that answer opens written on the answer's line as the
+desktop writes it (`Specify center point for circle or [3P/2P/Ttr (tan tan radius)]: _2p Specify
+first end point of circle's diameter: 0,0`, desktop circle/d01, d02), while ARC's and ELLIPSE's
+modes are still echoed by this app's names for them (`_arcsce`); the prompt is headed by the
+command typed, a dash one's with its dash (`-LINETYPE Enter an option [?/Set]:`, es `-TIPOLIN`). The history writes each prompt with its
 answer: what was typed (a value, a keyword, `<45`, FROM), bare for a pick or Enter, `*Cancel*` after
 Escape (es `*Cancelado*`; at `Command:` Escape writes `Command: *Cancel*`, es `Comando: *Cancelar*`,
 desktop passes line/d08, d19, d27), and an object snap on the line its pick answers
@@ -24,7 +28,8 @@ their own), ahead of what answering it reported
 nor what the question asks — typed at the command line or in the tooltip — is written as its answer
 and refused in the words of the input function behind the question, as AutoCAD 2023's console
 refuses it, and the question is asked again: `Invalid point.` / `Point or option keyword required.`
-(a 2D point's at ARC's, PLINE's, MIRROR's, ELLIPSE's and POLYGON's Edge's later points),
+(a 2D point's at ARC's, PLINE's, MIRROR's, ELLIPSE's and POLYGON's Edge's later points and
+CIRCLE's 2P and 3P ones, which refuse a Z or `*` typed there too, circle/p16, p18, p180),
 `Requires numeric distance, two points, or option keyword.` and its forms (from a base point,
 `second point`), `Requires valid numeric angle…`, `Requires numeric value.`,
 `Requires an integer value.`, `Invalid option keyword.`, at `Select objects:` `*Invalid selection*`

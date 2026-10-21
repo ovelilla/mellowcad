@@ -55,6 +55,7 @@ describe("LASTPOINT", () => {
   })
 
   it("is a circle's center, not the point its radius is given by", () => {
+    // probes circle/p143, p144 (the radius), p138 (2P), p145 (3P's third).
     const cad = createHarness()
     answer(cad, "CIRCLE", "10,10", "5")
     expect(lastPoint(cad)).toBe(" X = 10.00     Y = 10.00     Z = 0.00")
@@ -63,6 +64,8 @@ describe("LASTPOINT", () => {
     expect(lastPoint(cad)).toBe(" X = 20.00     Y = 20.00     Z = 0.00")
     answer(cad, "CIRCLE", "2P", "50,50", "60,50")
     expect(lastPoint(cad)).toBe(" X = 60.00     Y = 50.00     Z = 0.00")
+    answer(cad, "CIRCLE", "3P", "0,0", "10,0", "0,10")
+    expect(lastPoint(cad)).toBe(" X = 0.00     Y = 10.00     Z = 0.00")
   })
 
   it("follows a length typed along the cursor and LINE's Undo, not its Close", () => {

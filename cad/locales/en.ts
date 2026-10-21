@@ -1232,6 +1232,7 @@ export const en: EngineCatalog = {
       "specifyCenterPointForCircleOr": "Specify center point for circle or",
       "specifyRadiusOfCircleOr": "Specify radius of circle or",
       "specifyRadiusOfCircle": "Specify radius of circle",
+      "specifyRadiusOfCircleTtr": "Specify radius of circle",
       "enterNumberOfSides": "Enter number of sides",
       "specifyCenterOfPolygonOr": "Specify center of polygon or",
       "enterAnOption": "Enter an option",

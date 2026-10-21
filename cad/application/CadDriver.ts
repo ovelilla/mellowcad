@@ -1,5 +1,5 @@
 import { CadRuntime } from "./CadRuntime"
-import { TOOL_COMMANDS } from "./CommandLine"
+import { toolCommand } from "./runtimeCommands"
 import { ConstraintType } from "./constraints/types"
 import { abbreviationOf } from "../i18n/keywords"
 import source from "../locales/en.json"
@@ -349,7 +349,8 @@ export class CadDriver {
    */
   optionAnswer(id: string): string {
     const toolId = this.activeToolId()
-    const command = TOOL_COMMANDS[toolId] ?? null
+    const tool = this.runtime.listTools().find((t) => t.id === toolId)
+    const command = tool === undefined ? null : toolCommand(tool)
     const text = this.runtime.text
     const inventory: Readonly<Record<string, object>> = source.commands.keywords
     if (command === null || !(id in (inventory[command] ?? {}))) {

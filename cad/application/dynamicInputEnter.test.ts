@@ -73,12 +73,20 @@ describe.each(ENTERS)("Enter from %s with nothing typed", (_, enter) => {
     expect(cad.state().commandLine.prompt).toBe("LINE Length of line:")
   })
 
-  it("gives CIRCLE the last radius, CIRCLERAD, and ends it with none", () => {
+  it("gives CIRCLE the last radius, CIRCLERAD, and refuses Enter with none", () => {
+    // probes circle/p114, p115: with CIRCLERAD 0 the radius is asked again.
     const cad = createHarness()
     cad.command("CIRCLE").click(p(0, 0)).moveTo(p(30, 0))
     enter(cad)
-    expect(cad.activeToolId()).toBe("select")
+    expect(cad.activeToolId()).toBe("circle")
     expect(cad.entityCount).toBe(0)
+    expect(cad.commandLog().at(-1)).toBe(
+      'Requires numeric radius, point on circumference, or "D".'
+    )
+    expect(cad.state().commandLine.prompt).toBe(
+      "CIRCLE Specify radius of circle or [Diameter]:"
+    )
+    cad.escape()
 
     cad.command("CIRCLE").click(p(0, 0)).type("25").enter()
     cad.command("CIRCLE").click(p(200, 0)).moveTo(p(260, 0))

@@ -132,7 +132,8 @@ TRACKPATH as variables (SETVAR, roadmap row 24), the plane's angles measured in 
 
 ### Ortho (F8)
 
-**Implemented:** constraint to the UCS's axes; F8 turns it on and off, writing ` <Ortho on>` /
+**Implemented:** constraint to the UCS's axes, from the prompt's base point (none at CIRCLE's 2P
+and 3P later points, whose picks it leaves alone, desktop circle/d12); F8 turns it on and off, writing ` <Ortho on>` /
 ` <Ortho off>` (es ` <Orto activado>` / `desactivado`), and turning it on turns Polar off, as Polar
 turns it off (desktop passes line/d10, d27); Shift held toggles it ("To turn Ortho off
 temporarily, hold down the Shift key"; with it off, on), Polar yielding; in a 3D view its Z as a
@@ -200,7 +201,8 @@ command line: `Angle Override: 30` (es `Modo momentáneo de ángulo: 30`), the n
 that heading from the base point in the UCS, over Ortho, Polar and the snap lattice, object snaps
 (`_END`, p165) and typed coordinates (`@10,0`, p161) still winning; for that one point. The angle in
 any of the forms a typed angle takes (`30d30'`, `0.5r`, `50g`, `N45dE`: coordinate-systems.md). At a
-first point, with no base, it is `Invalid point.`; a second `<angle` while one holds is the prompt's
+first point, with no base, it is `Invalid point.`, and at CIRCLE's 2P and 3P later points, which
+have none either, `Invalid 2D point.` (circle/p137; CIRCLE's radius has one, p173); a second `<angle` while one holds is the prompt's
 wrong answer (`Point or option keyword required.`) and drops the first, so a length typed next runs
 towards the cursor (2027's console, p161); **unverified**: the echo of an angle typed in another
 form than a number (what was typed here, `Angle Override: 50g`)
