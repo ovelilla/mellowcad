@@ -198,4 +198,70 @@ describe("the Properties palette's object type drop-down", () => {
       "Círculo (1)",
     ])
   })
+
+  // desktop circle/d10: one Geometry group, Center X Y Z first, then Radius,
+  // Diameter, Circumference, Area and Normal X Y Z, only the normal greyed.
+  it("lists a circle's geometry in AutoCAD's order, Circumference and Area editable", () => {
+    const cad = createHarness({
+      entities: [circleOf(p(10, 20), 10, { id: "C1" })],
+    })
+    cad.select("C1")
+    const groups = cad.state().properties.info!.groups
+    expect(
+      groups.map((g) => [
+        g.title,
+        g.rows.map((r) => `${r.label}=${r.value}${r.edit ? "*" : ""}`),
+      ])
+    ).toEqual([
+      [
+        "Geometry",
+        [
+          "Center X=10.00*",
+          "Center Y=20.00*",
+          "Center Z=0.00*",
+          "Radius=10.00 mm*",
+          "Diameter=20.00 mm*",
+          "Circumference=62.83 mm*",
+          "Area=314.16 mm²*",
+          "Normal X=0.00",
+          "Normal Y=0.00",
+          "Normal Z=1.00",
+        ],
+      ],
+    ])
+  })
+
+  it("sets a circle's radius from its Circumference or Area, refusing 0 or less", () => {
+    const cad = createHarness({
+      entities: [circleOf(p(0, 0), 10, { id: "C1" })],
+    })
+    cad.select("C1")
+    expect(cad.runtime.setSelectionProperty("circumference", "0")).toBe(false)
+    expect(cad.runtime.setSelectionProperty("area", "-1")).toBe(false)
+    expect(cad.byId<CircleEntity>("C1").radius).toBe(10)
+    expect(cad.runtime.setSelectionProperty("circumference", "100")).toBe(true)
+    expect(cad.byId<CircleEntity>("C1").radius).toBeCloseTo(50 / Math.PI, 9)
+    expect(cad.runtime.setSelectionProperty("area", "100")).toBe(true)
+    expect(cad.byId<CircleEntity>("C1").radius).toBeCloseTo(
+      Math.sqrt(100 / Math.PI),
+      9
+    )
+  })
+
+  // Spanish: Centro X as Autodesk's Spanish support names the palette's
+  // View rows ("Centro X y Centro Y dentro de la vista"); the desktop's own
+  // circle rows are unverified.
+  it("names a circle's centre rows in Spanish", () => {
+    const cad = createHarness({
+      locale: es,
+      entities: [circleOf(p(0, 0), 10, { id: "C1" })],
+    })
+    cad.select("C1")
+    const rows = cad.state().properties.info!.groups[0].rows
+    expect(rows.slice(0, 3).map((row) => row.label)).toEqual([
+      "Centro X",
+      "Centro Y",
+      "Centro Z",
+    ])
+  })
 })

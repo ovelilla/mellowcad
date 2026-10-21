@@ -31,7 +31,12 @@ metric drawing's file (MEASUREMENT 1, p202), DASHDOT's dash of 0 drawn as a dot;
 ByObject; a line's pattern laid as AutoCAD lays it (p207): centred, beginning and ending on equal
 dashes of `(L − m·period + first dash) / 2` with m whole periods (longer than the first dash when
 the remainder is), and solid under one period; a polyline's straight segments each laid so, the
-dashes either side of a vertex merging (PLINEGEN 0, pline/p232); LTSCALE asks
+dashes either side of a vertex merging (PLINEGEN 0, pline/p232); a circle's laid from its start
+(its OCS X) counter-clockwise about its normal, a dash first, stretched to n whole periods, n =
+max(2, round(L / period)), and solid under one period (circle/p230–p232 on the plot, desktop
+circle/d14 on the screen alike), so a circle drawn with its normal along −Z runs clockwise in plan
+from 180° and a tilted one is laid at true length in its plane (circle/p233) — past 2048 periods
+it is left unfitted to the renderer (WHY at `MAX_FITTED_PERIODS`, `SceneBuilder.ts`); LTSCALE asks
 `Enter new linetype scale factor <current>:` (es
 `Indique nuevo factor de escala del tipo de línea`), offering the current factor at the drawing's
 precision (`<1.00>`, where AutoCAD's LUPREC 4 writes `<1.0000>`); anything but a number
@@ -66,9 +71,9 @@ every language here; per-object ltscale (CELTSCALE), the Linetype Manager (its D
 Factor is LTSCALE), PSLTSCALE / MSLTSCALE (no paper space), Create and Load (there is no LIN file to
 read or write), ByBlock, the Linetype Manager, the drop-down's Other…; PLINEGEN (a polyline lays
 its pattern segment by segment, PLINEGEN 0's; PEDIT's Ltype gen is not built); **unverified**: how
-AutoCAD lays a pattern on the other objects (round a circle or an arc, a polyline's arc segment):
-theirs runs from the start; a line off the plan is centred on its length as drawn, its pattern not
-foreshortened
+AutoCAD lays a pattern on the other objects (an arc, a polyline's arc segment): theirs runs from the
+start; a line off the plan is centred on its length as drawn, its pattern not foreshortened; a
+circle's dot is drawn as a line's, a run as long as the stroke is wide
 
 ### Lineweights + `LWDISPLAY` · `LWEIGHT` / `LW` · `-LWEIGHT` · es `GROSORLIN` · `-GROSORLIN`
 
@@ -172,7 +177,11 @@ retyped alone) and Delta Z (read-only, like Delta X and Y), Center Z (circle, ar
 Position Z (text, multiline text, attribute definition, reference) and Elevation (polyline, hatch),
 all read and retyped above the UCS's XY plane; a line's Length is its 3D one; with a tilted UCS or
 object the position rows are read and moved as points in space; Normal X / Y / Z (read-only) on a
-circle and an arc; a polyline's rows and groups as AutoCAD's (desktop pline/d08): Geometry's
+circle and an arc; a circle's one Geometry group as AutoCAD's (desktop circle/d10): Center X, Y and
+Z, Radius, Diameter, Circumference, Area, Normal X, Y and Z, only the normal read-only (greyed
+there), Circumference and Area setting the radius (0 or less refused, as Radius refuses it); es
+`Centro X` as Autodesk's Spanish support names the palette's View rows ("Centro X y Centro Y
+dentro de la vista aparecen atenuados en AutoCAD"), the desktop's own **unverified**; a polyline's rows and groups as AutoCAD's (desktop pline/d08): Geometry's
 Current Vertex (typed here where AutoCAD steps it with arrows), Vertex X and Y, Start segment width
 and End segment width of the segment it starts (none at an open one's last vertex), Global width,
 which sets every segment's, Elevation, Area (an open one's as if closed) and Length, the last two
@@ -188,7 +197,7 @@ a row is shown only where it can be changed as there); the width a closing segme
 widths, which nothing stores here); the Spanish desktop's own labels (**unverified**, only the help
 page read); the current vertex's marker in the drawing, what Global width shows where the widths
 vary (blank here, **unverified**), the geometry rows of several objects of one type (`*VARIES*`),
-Area/Circumference rows, text content, editing attribute values, MTEXT's rotation in the UCS
+text content, editing attribute values, MTEXT's rotation in the UCS
 (AutoCAD shows that one row there), a spline's and a dimension's Z, the Normal rows on the other
 types (**unverified** which ones AutoCAD shows), the drop-down's order of types and its wording for
 a single object (**unverified**: `All (n)` and `Line (5)` are only in the help's screenshots), Quick

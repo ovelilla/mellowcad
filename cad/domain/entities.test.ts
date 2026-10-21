@@ -1482,6 +1482,20 @@ describe("property editing", () => {
     expect(edited.center).toBeCloseToPoint(p(5, 5))
   })
 
+  // desktop circle/d10: Circumference and Area are not greyed; either sets
+  // the radius.
+  it("sets a circle's radius from its circumference or area", () => {
+    const circle = circleOf(p(5, 5), 10)
+
+    const around = applyEntityProperty(circle, "circumference", 100)
+    expect((around as CircleEntity).radius).toBeCloseTo(50 / Math.PI, 12)
+    const area = applyEntityProperty(circle, "area", 100) as CircleEntity
+    expect(area.radius).toBeCloseTo(Math.sqrt(100 / Math.PI), 12)
+    expect(area.center).toBeCloseToPoint(p(5, 5))
+    expect(applyEntityProperty(circle, "circumference", 0)).toBeNull()
+    expect(applyEntityProperty(circle, "area", -1)).toBeNull()
+  })
+
   it("swings an arc's end angle when the total angle is retyped", () => {
     const arc = arcOf(ORIGIN, 10, deg(0), deg(90))
 

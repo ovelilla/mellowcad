@@ -679,7 +679,7 @@ describe("the palette's Z", () => {
     raiseUcs(cad)
 
     for (const [id, property, row] of [
-      ["C", "centerZ", "z"],
+      ["C", "centerZ", "centerZ"],
       ["T", "positionZ", "z"],
       ["P", "elevation", "elevation"],
       ["H", "elevation", "elevation"],

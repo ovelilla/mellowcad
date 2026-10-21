@@ -3012,7 +3012,7 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0°~, Line space facto
   tip: Select grip to edit array or
   dyn: 
   options: [COU] COUnt, [S] Spacing, [COL] COLumns, [R] Rows, [X] eXit
-  properties: Circle (1) {Thickness=0.00 mm~} [Geometry: Radius=10.00 mm~, Diameter=20.00 mm~, Circumference=62.83 mm, Area=314.16 mm², Normal X=0.00, Normal Y=0.00, Normal Z=1.00] [Center: X=0.00~, Y=0.00~, Z=0.00~]
+  properties: Circle (1) {Thickness=0.00 mm~} [Geometry: Center X=0.00~, Center Y=0.00~, Center Z=0.00~, Radius=10.00 mm~, Diameter=20.00 mm~, Circumference=62.83 mm~, Area=314.16 mm²~, Normal X=0.00, Normal Y=0.00, Normal Z=1.00]
   command| AR ARRAYRECT 1 found
   info| Type = Rectangular  Associative = No
 > S
@@ -4638,7 +4638,7 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0°~, Line space facto
   properties: -
   command| *Cancel*
 > select circle
-  properties: Circle (1) {Thickness=0.00 mm~} [Geometry: Radius=50.00 mm~, Diameter=100.00 mm~, Circumference=314.16 mm, Area=7853.98 mm², Normal X=0.00, Normal Y=0.00, Normal Z=1.00] [Center: X=0.00~, Y=300.00~, Z=0.00~]
+  properties: Circle (1) {Thickness=0.00 mm~} [Geometry: Center X=0.00~, Center Y=300.00~, Center Z=0.00~, Radius=50.00 mm~, Diameter=100.00 mm~, Circumference=314.16 mm~, Area=7853.98 mm²~, Normal X=0.00, Normal Y=0.00, Normal Z=1.00]
 > grab quadrant
   asks: "Radius"
   dyn: "Radius"=""|50.00|mm*
@@ -4647,7 +4647,7 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0°~, Line space facto
 > release
   asks: -
   dyn: -
-  properties: Circle (1) {Thickness=0.00 mm~} [Geometry: Radius=70.00 mm~, Diameter=140.00 mm~, Circumference=439.82 mm, Area=15393.80 mm², Normal X=0.00, Normal Y=0.00, Normal Z=1.00] [Center: X=0.00~, Y=300.00~, Z=0.00~]
+  properties: Circle (1) {Thickness=0.00 mm~} [Geometry: Center X=0.00~, Center Y=300.00~, Center Z=0.00~, Radius=70.00 mm~, Diameter=140.00 mm~, Circumference=439.82 mm~, Area=15393.80 mm²~, Normal X=0.00, Normal Y=0.00, Normal Z=1.00]
 > escape
   properties: -
   command| *Cancel*
@@ -4742,7 +4742,7 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0°~, Line space facto
 > select L1
   properties: Line (1) {Thickness=0.00 mm~} [Geometry: Start X=0.00~, Start Y=0.00~, Start Z=0.00~, End X=100.00~, End Y=0.00~, End Z=0.00~, Delta X=100.00 mm, Delta Y=0.00 mm, Delta Z=0.00 mm, Length=100.00 mm, Angle=0°]
 > select C1
-  properties: Circle (1) {Thickness=0.00 mm~} [Geometry: Radius=50.00 mm~, Diameter=100.00 mm~, Circumference=314.16 mm, Area=7853.98 mm², Normal X=0.00, Normal Y=0.00, Normal Z=1.00] [Center: X=0.00~, Y=0.00~, Z=0.00~]
+  properties: Circle (1) {Thickness=0.00 mm~} [Geometry: Center X=0.00~, Center Y=0.00~, Center Z=0.00~, Radius=50.00 mm~, Diameter=100.00 mm~, Circumference=314.16 mm~, Area=7853.98 mm²~, Normal X=0.00, Normal Y=0.00, Normal Z=1.00]
 > select A1
   properties: Arc (1) {Thickness=0.00 mm~} [Geometry: Radius=50.00 mm~, Length=78.54 mm, Angle=90°~, Start angle=0°~, End angle=90°~, Normal X=0.00, Normal Y=0.00, Normal Z=1.00] [Center: X=0.00~, Y=0.00~, Z=0.00~]
 > select E1
@@ -4799,7 +4799,7 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0°~, Line space facto
 > select L2
   properties: Line (1) {Thickness=0.00 mm~} [Geometry: Start X=0.00~, Start Y=0.00~, Start Z=0.00~, End X=10.00~, End Y=10.00~, End Z=0.00~, Delta X=10.00 mm, Delta Y=10.00 mm, Delta Z=0.00 mm, Length=14.14 mm, Angle=45°]
 > select C2
-  properties: Circle (1) {Thickness=0.00 mm~} [Geometry: Radius=5.00 mm~, Diameter=10.00 mm~, Circumference=31.42 mm, Area=78.54 mm², Normal X=0.00, Normal Y=0.00, Normal Z=1.00] [Center: X=0.00~, Y=0.00~, Z=0.00~]
+  properties: Circle (1) {Thickness=0.00 mm~} [Geometry: Center X=0.00~, Center Y=0.00~, Center Z=0.00~, Radius=5.00 mm~, Diameter=10.00 mm~, Circumference=31.42 mm~, Area=78.54 mm²~, Normal X=0.00, Normal Y=0.00, Normal Z=1.00]
 > select A2
   properties: Arc (1) {Thickness=0.00 mm~} [Geometry: Radius=5.00 mm~, Length=5.00 mm, Angle=57°~, Start angle=0°~, End angle=57°~, Normal X=0.00, Normal Y=0.00, Normal Z=1.00] [Center: X=0.00~, Y=0.00~, Z=0.00~]
 > select everything

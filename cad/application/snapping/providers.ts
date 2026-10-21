@@ -1,6 +1,7 @@
 import { V, Vec2 } from "../../geometry/Vec2"
 import {
   Vec3,
+  dot3,
   length3,
   planar,
   sub3,
@@ -10,6 +11,7 @@ import {
 } from "../../geometry/Vec3"
 import { axesToWorld } from "../../geometry/ocs"
 import { CameraTransform } from "../../scene/types"
+import { Ucs, ucsZAxis } from "../../domain/ucs"
 import {
   angleWithinSweep,
   circleCircleIntersection,
@@ -34,6 +36,7 @@ import {
   ellipseEndPoint,
   ellipseQuadrantPoints,
   ellipseStartPoint,
+  entityAxes,
   entityPointToWorld,
   entityZAt,
   insertAttributePoints,
@@ -262,6 +265,18 @@ export const insertionProvider: SnapProvider = {
   },
 }
 
+/**
+ * Where a circle's quadrants start in its own plan: along the UCS's X when it
+ * lies parallel to the UCS's XY plane (circle/p212, p217), its OCS X
+ * otherwise (**unverified**: a quadrant on a circle tilted to the UCS was not
+ * probed). An arc's stay at its OCS's (ARC's review).
+ */
+function quadrantTurn(circle: Entity, ucs: Ucs): number {
+  const axes = entityAxes(circle)
+  if (Math.abs(Math.abs(dot3(axes.z, ucsZAxis(ucs))) - 1) > 1e-9) return 0
+  return Math.atan2(dot3(ucs.xAxis, axes.y), dot3(ucs.xAxis, axes.x))
+}
+
 /** Snaps to the 0°/90°/180°/270° cardinal points of a circle, and to the
  * endpoints of an ellipse's axes. */
 export const quadrantProvider: SnapProvider = {
@@ -272,12 +287,16 @@ export const quadrantProvider: SnapProvider = {
       if (!document.isEntityVisible(entity)) continue
       if (entity.type === "circle") {
         const { center: c, radius: r } = entity
-        const points = [
-          { x: c.x + r, y: c.y },
-          { x: c.x, y: c.y + r },
-          { x: c.x - r, y: c.y },
-          { x: c.x, y: c.y - r },
-        ]
+        const turn = quadrantTurn(entity, document.getSettings().ucs)
+        const points =
+          turn === 0
+            ? [
+                { x: c.x + r, y: c.y },
+                { x: c.x, y: c.y + r },
+                { x: c.x - r, y: c.y },
+                { x: c.x, y: c.y - r },
+              ]
+            : QUADRANT_ANGLES.map((angle) => polarPoint(c, r, turn + angle))
         for (const point of points) {
           candidates.push(notable(SnapType.Quadrant, entity, point, touch))
         }

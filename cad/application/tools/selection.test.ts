@@ -340,6 +340,46 @@ describe("grips", () => {
     expect(cad.byId<CircleEntity>("C1").radius).toBeCloseTo(120)
   })
 
+  // help GUID-01DE459C and desktop circle/d15: a value typed while a
+  // quadrant grip is hot is the radius, from the centre.
+  it("takes a number typed at a hot quadrant grip as the circle's radius", () => {
+    const cad = createHarness({
+      entities: [circleOf(p(0, 0), 80, { id: "C1" })],
+    })
+    cad.select("C1")
+
+    cad.click(p(80, 0)).moveTo(p(100, 30)).type("25").enter()
+
+    expect(cad.byId<CircleEntity>("C1").radius).toBeCloseTo(25, 9)
+    expect(cad.byId<CircleEntity>("C1").center).toBeCloseToPoint(p(0, 0))
+  })
+
+  // desktop circle/d15: in UCS Z 30 the grips stay at the circle's own
+  // quadrants; only the Quadrant snap turns with the UCS (p212).
+  it("keeps a circle's quadrant grips at its OCS's in a rotated UCS", () => {
+    const cad = createHarness({
+      entities: [circleOf(p(0, 0), 80, { id: "C1" })],
+    })
+    cad.command("UCS").option("Z").type("30").enter()
+    cad.select("C1")
+
+    cad.drag(p(80, 0), p(120, 0))
+
+    expect(cad.byId<CircleEntity>("C1").radius).toBeCloseTo(120, 9)
+  })
+
+  it("bends a quadrant grip's drag with Ortho", () => {
+    const cad = createHarness({
+      entities: [circleOf(p(0, 0), 80, { id: "C1" })],
+    })
+    cad.runtime.toggleOrtho()
+    cad.select("C1")
+
+    cad.drag(p(80, 0), p(120, 30))
+
+    expect(cad.byId<CircleEntity>("C1").radius).toBeCloseTo(120, 9)
+  })
+
   it("swings an arc endpoint without changing its radius", () => {
     const cad = createHarness({
       entities: [arcOf(p(0, 0), 80, 0, deg(90), { id: "A1" })],

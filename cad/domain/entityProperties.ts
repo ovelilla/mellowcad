@@ -42,6 +42,9 @@ export type EntityProperty =
   | "endY"
   | "radius"
   | "diameter"
+  /** A circle's, which set its radius (desktop circle/d10). */
+  | "circumference"
+  | "area"
   | "majorRadius"
   | "minorRadius"
   | "centerX"
@@ -268,6 +271,12 @@ function applyCircleProperty(
       return value > 0 ? { ...circle, radius: value } : null
     case "diameter":
       return value > 0 ? { ...circle, radius: value / 2 } : null
+    case "circumference":
+      return value > 0 ? { ...circle, radius: value / (2 * Math.PI) } : null
+    case "area":
+      return value > 0
+        ? { ...circle, radius: Math.sqrt(value / Math.PI) }
+        : null
     case "centerX":
       return { ...circle, center: { x: value, y: circle.center.y } }
     case "centerY":

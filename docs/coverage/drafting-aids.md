@@ -19,7 +19,10 @@ band; Extension prolongs a line, an arc or an open polyline's straight end from 
 passed over (the + marker, OTRACK off too), dashed from that end, a typed distance running along it
 from the end; running Apparent Intersection is the visual crossing of two objects at different
 heights; Perpendicular to lines (past their ends), circles, arcs and polyline segments; Tangent to
-circles, arcs and polyline arcs; Center and Quadrant of polyline arcs; the markers as AutoCAD's dark
+circles, arcs and polyline arcs; Center and Quadrant of polyline arcs; a circle's Quadrants along
+the UCS's X and Y when it lies parallel to the UCS's XY plane (UCS Z 30: circle/p212, p217), its
+OCS's otherwise (**unverified**, not probed), only the snap turning, not the grips (desktop
+circle/d15); an arc's at its OCS's (**unverified** in a rotated UCS); the markers as AutoCAD's dark
 theme draws them, green, 14 px with a 2 px stroke (square, triangle, circle with a cross, diamond,
 ✕, right angle, circle with a bar, hourglass; desktop line/d05, d21); the snap's name in a light grey
 box below and to the right of the cursor (d05, d21), with Polar's reading under it, and the
@@ -263,14 +266,18 @@ hysteresis; a grip drags to a point like a click (the elevation plane, or the
 object's Z under a snap, or its own Z for a typed distance): a line's end takes that Z, a move grip
 moves by it from its object's Z, every other grip stays in its object's plane; a line's grips sit at
 its ends' own heights and their middle, so a vertical line shows three; an end dropped on the other
-end in space is ignored (**unverified**); blue squares 9 px across (GRIPSIZE's default), the one
+end in space is ignored (**unverified**); a circle's centre grip moves it and a quadrant grip sets
+its radius (desktop circle/d08, d09): a number typed while it is hot is the radius, from the centre
+(help GUID-01DE459C, desktop circle/d15), Ortho bends its drag as it bends a pick (**unverified**
+on AutoCAD's side), and in a rotated UCS the grips stay at the circle's own quadrants, where the
+Quadrant snap turns with the UCS (d15); blue squares 9 px across (GRIPSIZE's default), the one
 under the cursor red (d15)
 
 **Missing:** the end grip's hover menu, `Stretch` and `Lengthen` (es `Estirar`, `Longitud`, d15),
 and so Lengthen from a grip; the Length Change field after a Tab (DYNDIVIS) and the angle fields;
 the `** STRETCH **` prompt and its options at the command line; the hover colour apart from the
 dragged one (AutoCAD's hovered grip is pink, GRIPHOVER 11, the dragged one red), Enter (and Space)
-cycling the grip modes — Enter keeps the edit hot, Ortho/tracking-aware radius and angle drag,
+cycling the grip modes — Enter keeps the edit hot, tracking-aware radius and angle drag,
 any grip but move on a tilted object (it keeps only its move grips); a polyline's hover menus (d07)
 — a vertex's `Stretch Vertex`, `Add Vertex`, `Remove Vertex` with its segments' lengths shown, a
 straight segment's `Stretch`, `Add Vertex`, `Convert to Arc`, an arc's `Stretch`, `Add Vertex`,

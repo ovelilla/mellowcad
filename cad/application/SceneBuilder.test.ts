@@ -1,8 +1,11 @@
 import { describe, expect, it } from "vitest"
 import type { ScenePrimitive } from "../scene/types"
-import type { EllipseEntity, Entity } from "../domain/entities"
+import type { CircleEntity, EllipseEntity, Entity } from "../domain/entities"
+import type { Vec3 } from "../geometry/Vec3"
 import {
   assignEntityLinetype,
+  entityAxes,
+  withNormal,
   ellipseEndPoint,
   ellipseStartPoint,
 } from "../domain/entities"
@@ -317,6 +320,197 @@ describe("appearance resolution", () => {
       12.3,
     ])
     expect(along(0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100)).toEqual([100])
+  })
+
+  /**
+   * A circle's drawn dashes as `[from, to]` in degrees of its own parameter
+   * (counter-clockwise from its OCS X about its normal), rebuilt from the
+   * renderer's formula, the view being the plan; `null` when it is drawn as
+   * one solid circle.
+   */
+  function circleDashes(circle: CircleEntity): [number, number][] | null {
+    const cad = createHarness({ entities: [circle] })
+    const drawn = strokes(cad.scene().primitives, THEME.entity)
+    if (drawn.length === 1 && drawn[0].kind === "circle") {
+      expect(drawn[0].stroke?.dash).toBeUndefined()
+      return null
+    }
+    const { x: X, y: Y } = entityAxes(circle)
+    const det = X.x * Y.y - X.y * Y.x
+    const center = {
+      x: X.x * circle.center.x + Y.x * circle.center.y,
+      y: X.y * circle.center.x + Y.y * circle.center.y,
+    }
+    const parameter = (screen: { x: number; y: number }) => {
+      const w = cad.runtime.viewport.screenToWorld(screen)
+      const dx = (w.x - center.x) / circle.radius
+      const dy = (w.y - center.y) / circle.radius
+      const t = Math.atan2(
+        (X.x * dy - X.y * dx) / det,
+        (Y.y * dx - Y.x * dy) / det
+      )
+      return ((t * 180) / Math.PI + 360) % 360
+    }
+    const dashes = drawn.map((piece): [number, number] => {
+      if (piece.kind === "arc") {
+        const at = (angle: number) => ({
+          x: piece.center.x + piece.radius * Math.cos(angle),
+          y: piece.center.y + piece.radius * Math.sin(angle),
+        })
+        return [parameter(at(piece.startAngle)), parameter(at(piece.endAngle))]
+      }
+      if (piece.kind !== "ellipse") throw new Error(piece.kind)
+      const at = (angle: number) => ({
+        x:
+          piece.center.x +
+          piece.radiusX * Math.cos(piece.rotation) * Math.cos(angle) -
+          piece.radiusY * Math.sin(piece.rotation) * Math.sin(angle),
+        y:
+          piece.center.y +
+          piece.radiusX * Math.sin(piece.rotation) * Math.cos(angle) +
+          piece.radiusY * Math.cos(piece.rotation) * Math.sin(angle),
+      })
+      return [parameter(at(piece.startAngle)), parameter(at(piece.endAngle))]
+    })
+    return dashes
+      .map(([from, to]): [number, number] => [
+        +from.toFixed(6) % 360,
+        +(to < from - 1e-9 ? to + 360 : to).toFixed(6),
+      ])
+      .sort((a, b) => a[0] - b[0])
+  }
+
+  const dashedCircle = (radius: number, normal?: Vec3): CircleEntity => {
+    const circle = assignEntityLinetype(
+      circleOf(p(0, 0), radius, { id: "C1" }),
+      "Dashed"
+    ) as CircleEntity
+    return normal ? withNormal(circle, normal) : circle
+  }
+
+  // probe circle/p230, measured on the plot: a DASHED circle of radius 10
+  // (3.3 periods) is three dashes of 80° from its start, counter-clockwise.
+  it("lays a circle's pattern from its start, counter-clockwise, in whole stretched periods", () => {
+    expect(circleDashes(dashedCircle(10))).toEqual([
+      [0, 80],
+      [120, 200],
+      [240, 320],
+    ])
+  })
+
+  // probes circle/p231, p232 (and desktop circle/d14, the screen alike): k
+  // = L / period; n = max(2, round(k)) periods, and under one period solid.
+  it.each([
+    [0.9, null],
+    [0.98, null],
+    [1.02, 2],
+    [1.1, 2],
+    [1.4, 2],
+    [1.98, 2],
+    [2.4, 2],
+    [2.6, 3],
+    [3.3, 3],
+    [3.45, 3],
+    [3.55, 4],
+    [4.45, 4],
+    [4.55, 5],
+  ])("draws a circle of %s periods as %s stretched ones", (k, periods) => {
+    const radius = (k * 19.05) / (2 * Math.PI)
+    const dashes = circleDashes(dashedCircle(radius))
+    if (periods === null) return expect(dashes).toBeNull()
+    expect(dashes).toHaveLength(periods)
+    const sweep = (360 * 12.7) / 19.05 / periods
+    dashes!.forEach(([from, to], i) => {
+      expect(from).toBeCloseTo((360 / periods) * i, 6)
+      expect(to - from).toBeCloseTo(sweep, 6)
+    })
+  })
+
+  // probes circle/p231, p232: a circle drawn with its normal along −Z (UCS X
+  // 180) starts at 180° and runs clockwise in plan.
+  it("lays a flipped circle's pattern clockwise in plan, from 180°", () => {
+    const flipped = dashedCircle(10, { x: 0, y: 0, z: -1 })
+    expect(circleDashes(flipped)).toEqual([
+      [0, 80],
+      [120, 200],
+      [240, 320],
+    ])
+    const cad = createHarness({ entities: [flipped] })
+    const first = strokes(cad.scene().primitives, THEME.entity)[0]
+    if (first.kind !== "ellipse") throw new Error(first.kind)
+    const along = (angle: number) =>
+      cad.runtime.viewport.screenToWorld({
+        x:
+          first.center.x +
+          first.radiusX * Math.cos(first.rotation) * Math.cos(angle) -
+          first.radiusY * Math.sin(first.rotation) * Math.sin(angle),
+        y:
+          first.center.y +
+          first.radiusX * Math.sin(first.rotation) * Math.cos(angle) +
+          first.radiusY * Math.cos(first.rotation) * Math.sin(angle),
+      })
+    const start = along(first.startAngle)
+    const end = along(first.endAngle)
+    expect(start.x).toBeCloseTo(-10, 6)
+    expect(start.y).toBeCloseTo(0, 6)
+    expect((Math.atan2(end.y, end.x) * 180) / Math.PI).toBeCloseTo(100, 6)
+  })
+
+  // probe circle/p233: a circle tilted by UCS Y 45 has its pattern at true
+  // length in its plane, its first dash ending at the parameter's 80°.
+  it("lays a tilted circle's pattern at true length in its plane", () => {
+    const tilted = dashedCircle(10, {
+      x: Math.SQRT1_2,
+      y: 0,
+      z: Math.SQRT1_2,
+    })
+    expect(circleDashes(tilted)).toEqual([
+      [0, 80],
+      [120, 200],
+      [240, 320],
+    ])
+  })
+
+  it("draws a circle's dot as a run as wide as the stroke", () => {
+    // 62.83 / 25.4 = 2.47 periods of DASHDOT: two, stretched by 1.2368.
+    const cad = createHarness({
+      entities: [
+        assignEntityLinetype(circleOf(p(0, 0), 10, { id: "C1" }), "DashDot"),
+      ],
+    })
+    const pieces = strokes(cad.scene().primitives, THEME.entity)
+    expect(pieces.map((piece) => piece.kind)).toEqual([
+      "arc",
+      "arc",
+      "arc",
+      "arc",
+    ])
+    const dot = pieces[1]
+    if (dot.kind !== "arc") return
+    expect(dot.radius * Math.abs(dot.endAngle - dot.startAngle)).toBeCloseTo(
+      dot.stroke.width,
+      6
+    )
+    expect(dot.stroke.dash).toBeUndefined()
+  })
+
+  it("leaves a huge circle's pattern to the renderer, unfitted", () => {
+    // 3298 periods: past MAX_FITTED_PERIODS, one curve rather than thousands.
+    const cad = createHarness({ entities: [dashedCircle(10000)] })
+    const drawn = strokes(cad.scene().primitives, THEME.entity)
+    expect(drawn.map((primitive) => primitive.kind)).toEqual(["circle"])
+    expect(drawn[0].kind === "circle" && drawn[0].stroke?.dash).toEqual([
+      12.7, 6.35,
+    ])
+  })
+
+  it("leaves a circle ghost's own dashes on one circle", () => {
+    const primitives = entityScenePrimitive(
+      createHarness().runtime.viewport,
+      circleOf(p(0, 0), 10),
+      { color: THEME.preview, width: 1, dash: [6, 4] }
+    )
+    expect(primitives.map((primitive) => primitive.kind)).toEqual(["circle"])
   })
 
   it("leaves a ghost's own dashes running from its start", () => {

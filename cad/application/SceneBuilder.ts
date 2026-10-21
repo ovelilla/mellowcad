@@ -4,6 +4,7 @@ import { axesToWorld } from "../geometry/ocs"
 import {
   AttributeDisplay,
   BlockLookup,
+  CircleEntity,
   DimensionEntity,
   EllipseEntity,
   Entity,
@@ -52,6 +53,7 @@ import {
   DEFAULT_LINETYPE_ID,
   centredPattern,
   linetypePattern,
+  loopPattern,
 } from "../domain/linetypes"
 import {
   DEFAULT_LINEWEIGHT,
@@ -877,26 +879,9 @@ function planarPrimitives(
         options
       )
     case "circle":
-      if (isPlaneCamera(camera)) {
-        return [
-          affineEllipse(
-            camera,
-            entity.center,
-            { x: entity.radius, y: 0 },
-            { x: 0, y: entity.radius },
-            null,
-            stroke
-          ),
-        ]
-      }
-      return [
-        {
-          kind: "circle",
-          center: camera.worldToScreen(entity.center),
-          radius: Math.max(camera.worldToScreenDistance(entity.radius), 0.01),
-          stroke,
-        },
-      ]
+      return options.linetype && stroke.dash && stroke.dash.length > 0
+        ? linetypedCircle(camera, entity, stroke)
+        : [circleCurve(camera, entity, stroke)]
     case "arc":
       return [
         arcScenePrimitive(
@@ -1378,6 +1363,83 @@ function linetypedPolyline(
           },
         ]
   )
+}
+
+/**
+ * More periods than this round one circle and its pattern is left to the
+ * renderer on a single curve, unfitted: drawn dash by dash, a huge circle
+ * zoomed into would be tens of thousands of primitives, most off the screen,
+ * and at that count the fit cannot be seen.
+ */
+const MAX_FITTED_PERIODS = 2048
+
+/** A whole circle as one curve: a circle in plan, an ellipse through its plane's camera. */
+function circleCurve(
+  camera: CameraTransform,
+  circle: CircleEntity,
+  stroke: StrokeStyle
+): ScenePrimitive {
+  if (isPlaneCamera(camera)) {
+    return affineEllipse(
+      camera,
+      circle.center,
+      { x: circle.radius, y: 0 },
+      { x: 0, y: circle.radius },
+      null,
+      stroke
+    )
+  }
+  return {
+    kind: "circle",
+    center: camera.worldToScreen(circle.center),
+    radius: Math.max(camera.worldToScreenDistance(circle.radius), 0.01),
+    stroke,
+  }
+}
+
+/**
+ * A circle's linetype laid as AutoCAD lays it ({@link loopPattern}): from its
+ * start, its OCS X, counter-clockwise about its normal, in whole stretched
+ * periods (circle/p230–p233). Each dash is an arc of the circle, so a tilted
+ * one is laid at true length in its plane and both presenters draw it
+ * unpatterned. Under one period it is solid.
+ */
+function linetypedCircle(
+  camera: CameraTransform,
+  circle: CircleEntity,
+  stroke: StrokeStyle
+): ScenePrimitive[] {
+  const pattern = (stroke.dash ?? []).map((run) => run / camera.scale)
+  const layout = loopPattern(pattern, 2 * Math.PI * circle.radius)
+  const solid: StrokeStyle = { color: stroke.color, width: stroke.width }
+  if (!layout) return [circleCurve(camera, circle, solid)]
+  if (layout.periods > MAX_FITTED_PERIODS)
+    return [circleCurve(camera, circle, stroke)]
+  // A dot is drawn as a line draws one (`drawnDash`): a run as long as the
+  // stroke is wide, taken from the gap after it.
+  const dot = stroke.width / camera.scale
+  const { runs } = layout
+  const out: ScenePrimitive[] = []
+  let at = 0
+  for (let period = 0; period < layout.periods; period++) {
+    for (let i = 0; i < runs.length; i++) {
+      if (i % 2 === 0) {
+        const run = runs[i] > 0 ? runs[i] : Math.min(dot, runs[i + 1] ?? dot)
+        out.push(
+          arcScenePrimitive(
+            camera,
+            circle.center,
+            circle.radius,
+            at / circle.radius,
+            (at + run) / circle.radius,
+            solid
+          )
+        )
+      }
+      at += runs[i]
+    }
+  }
+  return out
 }
 
 function pushEntities(

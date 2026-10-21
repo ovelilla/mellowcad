@@ -88,3 +88,24 @@ export function centredPattern(
     ? { offset: first - end, lead: 0 }
     : { offset: 0, lead: end - first }
 }
+
+/**
+ * How a pattern lies round a closed curve of `length`, as AutoCAD lays a
+ * circle's: from its start, a dash first, stretched to `periods` whole
+ * periods, `max(2, round(length / period))` of them (probes circle/p230–p232,
+ * measured on the plot). A curve shorter than one period is drawn solid:
+ * `null`. `runs` is the pattern stretched, in the pattern's units.
+ */
+export function loopPattern(
+  pattern: readonly number[],
+  length: number
+): { readonly runs: readonly number[]; readonly periods: number } | null {
+  const period = pattern.reduce((sum, run) => sum + run, 0)
+  if (pattern.length === 0 || !(period > 0)) return null
+  const ratio = length / period
+  // The tolerance keeps a length of exactly one period from reading solid.
+  if (ratio < 1 - 1e-9) return null
+  const periods = Math.max(2, Math.round(ratio))
+  const stretch = length / (periods * period)
+  return { runs: pattern.map((run) => run * stretch), periods }
+}

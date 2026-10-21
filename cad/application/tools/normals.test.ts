@@ -150,9 +150,9 @@ describe("an object with a normal of its own", () => {
         ["normalX", "0.00"],
         ["normalY", "-1.00"],
         ["normalZ", "0.00"],
-        ["x", "100.00"],
-        ["y", "0.00"],
-        ["z", "50.00"],
+        ["centerX", "100.00"],
+        ["centerY", "0.00"],
+        ["centerZ", "50.00"],
       ])
     )
 

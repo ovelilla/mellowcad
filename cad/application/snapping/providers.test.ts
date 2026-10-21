@@ -91,6 +91,27 @@ describe("quadrant", () => {
     expect(drawn.start).toBeCloseToPoint(p(0, 100), 5)
   })
 
+  // probes circle/p212, p217: in UCS Z 30 a circle's quadrants are along the
+  // UCS's axes, `_QUA` near its X and Y giving (8.660254, 5) and
+  // (−5, 8.660254). Only the snap turns: the grips stay (desktop circle/d15).
+  it.each([
+    ["9.9,0", p(8.660254037844387, 4.999999999999999)],
+    ["0,9.9", p(-4.999999999999998, 8.660254037844387)],
+  ])("snaps to a circle's quadrants along a rotated UCS (%s)", (typed, at) => {
+    const cad = createHarness({
+      entities: [circleOf(p(0, 0), 10, { id: "REF-C" })],
+    })
+    const answer = (...texts: string[]) => {
+      for (const text of texts) {
+        cad.runtime.setCommandLineText(text)
+        cad.runtime.submitCommandLine()
+      }
+    }
+    answer("ZOOM", "W", "-30,-30", "50,40", "UCS", "Z", "30")
+    answer("LINE", "_QUA", typed, "30,30", "")
+    expect(drawnLine(cad).start).toBeCloseToPoint(at, 9)
+  })
+
   it("snaps to an ellipse's axis ends, not the world's cardinals", () => {
     const cad = createHarness({
       // Major axis at 45°, so no quadrant of this ellipse points along +X.

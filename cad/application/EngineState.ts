@@ -962,21 +962,33 @@ function singleEntityInfo(
       }
     }
     case "circle": {
+      const surface = circleArea(entity)
       return {
         title: title("circle"),
         count: 1,
         groups: [
+          // AutoCAD's one Geometry group, in its order; Circumference and
+          // Area set the radius, only the normal is greyed (desktop circle/d10).
           group("geometry", [
+            coordRow("centerX", "centerX", at(entity.center).x),
+            coordRow("centerY", "centerY", at(entity.center).y),
+            coordRow("centerZ", "centerZ", at(entity.center).z),
             lengthRow("radius", "radius", entity.radius),
             lengthRow("diameter", "diameter", entity.radius * 2),
-            row("circumference", length(circleCircumference(entity))),
-            row("area", area(circleArea(entity))),
+            lengthRow(
+              "circumference",
+              "circumference",
+              circleCircumference(entity)
+            ),
+            {
+              ...row("area", area(surface)),
+              edit: {
+                property: "area",
+                text: formatLength(surface, settings),
+                unit: `${unitSuffix(settings.unit)}²`,
+              },
+            },
             ...normalRows(),
-          ]),
-          group("center", [
-            coordRow("x", "centerX", at(entity.center).x),
-            coordRow("y", "centerY", at(entity.center).y),
-            coordRow("z", "centerZ", at(entity.center).z),
           ]),
         ],
       }

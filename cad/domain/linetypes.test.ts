@@ -1,6 +1,11 @@
 import { describe, expect, it } from "vitest"
 import fc from "fast-check"
-import { LINETYPES, centredPattern, linetypePattern } from "./linetypes"
+import {
+  LINETYPES,
+  centredPattern,
+  linetypePattern,
+  loopPattern,
+} from "./linetypes"
 
 describe("centredPattern", () => {
   // probe line/p207, measured on the plot of five lines.
@@ -47,5 +52,23 @@ describe("centredPattern", () => {
         }
       )
     )
+  })
+})
+
+describe("loopPattern", () => {
+  // probes circle/p230–p232, measured on the plot: n = max(2, round(L / P))
+  // whole periods, stretched; under one period solid.
+  it("stretches a circle's pattern to whole periods, two at least", () => {
+    const dashed = linetypePattern("Dashed")
+    expect(loopPattern(dashed, 0.98 * 19.05)).toBeNull()
+    expect(loopPattern(dashed, 19.05)?.periods).toBe(2)
+    expect(loopPattern(dashed, 2.6 * 19.05)?.periods).toBe(3)
+    const fitted = loopPattern(dashed, 62.83185307179586)
+    expect(fitted?.periods).toBe(3)
+    expect(fitted!.runs[0] * 3 + fitted!.runs[1] * 3).toBeCloseTo(
+      62.83185307179586,
+      9
+    )
+    expect(loopPattern([], 100)).toBeNull()
   })
 })
