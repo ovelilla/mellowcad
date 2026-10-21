@@ -32,6 +32,7 @@ import {
   type QuestionInput,
 } from "./Tool"
 import {
+  currentColor,
   withCurrentProperties,
   withCurrentThickness,
 } from "./currentProperties"
@@ -316,18 +317,22 @@ export class ArcTool implements Tool {
 
   buildOverlay(ctx: ToolContext): ScenePrimitive[] {
     const { viewport } = ctx
-    const rubber = { color: THEME.rubberBand, width: 1 }
+    // The arc about to be made, in its colour: red with CECOLOR 1 (desktop
+    // arc/d01–d04).
+    const ghost = { color: currentColor(ctx), width: 1 }
+    // Amber and dashed, as CIRCLE's size line (desktop arc/d02–d04).
+    const rubberLine = (a: Vec2, b: Vec2): ScenePrimitive => ({
+      kind: "segment",
+      a: viewport.worldToScreen(a),
+      b: viewport.worldToScreen(b),
+      stroke: { color: THEME.dashedRubberBand, width: 1, dash: [2, 3] },
+    })
 
     switch (this.state.phase) {
       case "p2":
-        return [
-          {
-            kind: "segment",
-            a: viewport.worldToScreen(this.state.p1),
-            b: viewport.worldToScreen(this.state.cursor),
-            stroke: rubber,
-          },
-        ]
+        // From the start at 3P's second point and SCE's centre, from the
+        // centre at CSE's start.
+        return [rubberLine(this.state.p1, this.state.cursor)]
       case "p3": {
         const { p1, p2, cursor } = this.state
         const arc = this.arcFor(
@@ -337,19 +342,14 @@ export class ArcTool implements Tool {
           ctx.document.getCurrentLayerId(),
           PREVIEW_ID
         )
-        const out: ScenePrimitive[] = []
-        // In the centre modes a spoke from the centre to the cursor shows the
-        // end angle being swept.
-        if (this.active !== "threePoint") {
-          out.push({
-            kind: "segment",
-            a: viewport.worldToScreen(this.centerOf(p1, p2)),
-            b: viewport.worldToScreen(cursor),
-            stroke: rubber,
-          })
-        }
+        // A centre mode's end draws the line from the centre to the cursor;
+        // 3P's the ghost alone (desktop arc/d02).
+        const out: ScenePrimitive[] =
+          this.active === "threePoint"
+            ? []
+            : [rubberLine(this.centerOf(p1, p2), cursor)]
         if (typeof arc === "object") {
-          out.push(...entityScenePrimitive(viewport, arc, rubber))
+          out.push(...entityScenePrimitive(viewport, arc, ghost))
         }
         return out
       }

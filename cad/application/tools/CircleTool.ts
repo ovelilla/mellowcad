@@ -1012,6 +1012,9 @@ export class CircleTool implements Tool {
       elevation: ctx.elevation,
     })
     if (!point) return false
+    // WHY the tool says it: the box reads it from the point before, which is
+    // no base of the runtime's; LASTPOINT is the point given (circle/p164).
+    if (last !== null) ctx.setLastPoint(point)
     this.advanceWithPoint(point, ctx)
     return true
   }

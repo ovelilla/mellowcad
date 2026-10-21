@@ -161,8 +161,8 @@ CELWEIGHT; ByLayer by default, which stores nothing). Every creating command has
 - **FILLET's arc and CHAMFER's bevel**: the lines' shared layer or the current one, ByLayer —
   `carryPlane` alone.
 
-LINE's, PLINE's and CIRCLE's jigs wear `currentColor` (line/d04, pline/d01, circle/d01). No
-HPLAYER, DIMLAYER or TEXTLAYER: all goes on the current layer.
+LINE's, PLINE's, CIRCLE's and ARC's jigs wear `currentColor` (line/d04, pline/d01, circle/d01,
+arc/d01). No HPLAYER, DIMLAYER or TEXTLAYER: all goes on the current layer.
 
 ## Ordering and undo
 

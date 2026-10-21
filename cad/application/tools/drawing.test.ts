@@ -17,7 +17,7 @@ import {
   splineStartPoint,
 } from "../../domain/entities"
 import { COLOR_BYLAYER } from "../../domain/colors"
-import { V } from "../../geometry/Vec2"
+import { type Vec2, V } from "../../geometry/Vec2"
 import { type CadHarness, createHarness } from "../../../test/harness"
 import { circleOf, deg, lineOf, p } from "../../../test/builders"
 import { es } from "../../locales/es"
@@ -31,6 +31,30 @@ function answer(cad: CadHarness, ...answers: string[]): CadHarness {
     cad.runtime.submitCommandLine()
   }
   return cad
+}
+
+/** What is drawn but the grid and the crosshair: kind, colour, dash. */
+const aids = new Set<string>([
+  THEME.crosshair,
+  THEME.gridMinor,
+  THEME.gridMajor,
+  THEME.axisX,
+  THEME.axisY,
+])
+
+/** A command's jig, each primitive as its kind, colour and dash. */
+function jig(cad: CadHarness): string[] {
+  return cad.scene().primitives.flatMap((q) => {
+    const stroke = "stroke" in q ? q.stroke : undefined
+    if (!stroke || aids.has(stroke.color)) return []
+    return [`${q.kind} ${stroke.color}${stroke.dash ? " dashed" : ""}`]
+  })
+}
+
+/** CECOLOR 1, the colour a jig should wear. */
+function red(cad: CadHarness): string {
+  answer(cad, "-COLOR", "1")
+  return cad.runtime.document.getSettings().currentColor as string
 }
 
 /**
@@ -585,24 +609,6 @@ describe("CIRCLE", () => {
   })
 
   describe("its jig, as the desktop draws it", () => {
-    /** What is drawn but the grid and the crosshair: kind, colour, dash. */
-    const aids = new Set<string>([
-      THEME.crosshair,
-      THEME.gridMinor,
-      THEME.gridMajor,
-      THEME.axisX,
-      THEME.axisY,
-    ])
-    const jig = (cad: CadHarness) =>
-      cad.scene().primitives.flatMap((q) => {
-        const stroke = "stroke" in q ? q.stroke : undefined
-        if (!stroke || aids.has(stroke.color)) return []
-        return [`${q.kind} ${stroke.color}${stroke.dash ? " dashed" : ""}`]
-      })
-    const red = (cad: CadHarness) => {
-      answer(cad, "-COLOR", "1")
-      return cad.runtime.document.getSettings().currentColor as string
-    }
     const sizeLine = `segment ${THEME.dashedRubberBand} dashed`
 
     it("draws the ghost in the current colour and the size line amber and dashed", () => {
@@ -664,6 +670,62 @@ describe("CIRCLE", () => {
 })
 
 describe("ARC", () => {
+  describe("its jig, as the desktop draws it", () => {
+    const rubberLine = `segment ${THEME.dashedRubberBand} dashed`
+    /** The amber dashed line runs from `from` to the cursor at `to`. */
+    const runs = (cad: CadHarness, from: Vec2, to: Vec2) =>
+      expect(
+        cad
+          .scene()
+          .primitives.find(
+            (q) => q.kind === "segment" && q.stroke.dash !== undefined
+          )
+      ).toEqual(
+        expect.objectContaining({
+          a: expect.objectContaining(cad.toScreen(from)),
+          b: expect.objectContaining(cad.toScreen(to)),
+          stroke: { color: THEME.dashedRubberBand, width: 1, dash: [2, 3] },
+        })
+      )
+
+    it("draws 3P's line from the start, then the ghost alone", () => {
+      // desktop arc/d01, d02: with CECOLOR 1 the ghost is red; the line from
+      // the start to the cursor at the second point is amber and dashed, and
+      // at the end the ghost is drawn without one.
+      const cad = createHarness()
+      const color = red(cad)
+      cad.command("ARC").click(p(0, 0)).moveTo(p(30, 40))
+      expect(jig(cad)).toEqual([rubberLine])
+      runs(cad, p(0, 0), p(30, 40))
+
+      cad.click(p(30, 40)).moveTo(p(60, 0))
+      expect(jig(cad)).toEqual([`arc ${color}`])
+    })
+
+    it("draws a centre mode's lines and its ghost in the current colour", () => {
+      // desktop arc/d03, d04: SCE's line from the start at the centre prompt,
+      // CSE's from the centre at the start prompt; at the end the line from
+      // the centre to the cursor and the red ghost.
+      const sce = createHarness()
+      const color = red(sce)
+      sce.command("ARCSCE").click(p(100, 0)).moveTo(p(0, 0))
+      expect(jig(sce)).toEqual([rubberLine])
+      runs(sce, p(100, 0), p(0, 0))
+      sce.click(p(0, 0)).moveTo(p(0, 100))
+      expect(jig(sce)).toEqual([rubberLine, `arc ${color}`])
+      runs(sce, p(0, 0), p(0, 100))
+
+      const cse = createHarness()
+      red(cse)
+      cse.command("ARCCSE").click(p(0, 0)).moveTo(p(100, 0))
+      expect(jig(cse)).toEqual([rubberLine])
+      runs(cse, p(0, 0), p(100, 0))
+      cse.click(p(100, 0)).moveTo(p(0, 100))
+      expect(jig(cse)).toEqual([rubberLine, `arc ${color}`])
+      runs(cse, p(0, 0), p(0, 100))
+    })
+  })
+
   it("3-Point sweeps counter-clockwise through the middle pick", () => {
     // probe arc/p01.
     const cad = createHarness()

@@ -328,7 +328,10 @@ properties, taken at its end (p150, p151, p192); an arc that cannot be made says
 collinear, the end on the start (p11, p17, p132, p168–p170), a centre mode's end at the centre or on
 the start's ray (p131, p162, p166, p190, p191), the ray asked before the radius (`@` at CSE's start,
 the end on its ray, p130); a centre on the start with another end says `Radius must be non-zero.`
-first (es `El radio no debe ser cero.`, table 20158; p188, p189)
+first (es `El radio no debe ser cero.`, table 20158; p188, p189); the jig as the desktop draws it:
+the ghost in the current colour at every mode (CECOLOR red, a red ghost; desktop d01–d04), an amber
+dashed line from the start to the cursor at 3P's second point and SCE's centre, from the centre at
+CSE's start and at a centre mode's end, and at 3P's end the ghost alone (d02–d04)
 
 **Missing:** End at the second point, Angle and chord Length at a centre mode's end, and the
 Direction and Radius they lead to (the ribbon's SCA, SCL, SEA, SED, SER, CSA and CSL; those

@@ -73,6 +73,26 @@ describe("LASTPOINT", () => {
     expect(lastPoint(cad)).toBe(" X = 0.00     Y = 10.00     Z = 0.00")
   })
 
+  it("is the point CIRCLE's 2P and 3P box reads from the point before", () => {
+    // probe circle/p164: LASTPOINT is the point given, however it was typed.
+    const two = answer(createHarness(), "CIRCLE", "2P", "10,0")
+    two.type("5,5").enter()
+    expect(two.only<CircleEntity>("circle").center).toBeCloseToPoint(
+      p(12.5, 2.5)
+    )
+    expect(lastPoint(two)).toBe(" X = 15.00     Y = 5.00     Z = 0.00")
+
+    const three = answer(createHarness(), "CIRCLE", "3P", "0,0")
+    three.type("@10,0").enter()
+    answer(three, "'ID", "@")
+    expect(three.commandLog().at(-2)).toBe(
+      " X = 10.00     Y = 0.00     Z = 0.00"
+    )
+    three.type("-10,10").enter()
+    expect(three.only<CircleEntity>("circle").center).toBeCloseToPoint(p(5, 5))
+    expect(lastPoint(three)).toBe(" X = 0.00     Y = 10.00     Z = 0.00")
+  })
+
   it("follows a length typed along the cursor and LINE's Undo, not its Close", () => {
     const cad = createHarness()
     cad.command("LINE").click(p(0, 0)).moveTo(p(50, 0)).type("10").enter()
