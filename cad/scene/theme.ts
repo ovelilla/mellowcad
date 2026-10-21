@@ -42,6 +42,12 @@ export const THEME = {
    * matches {@link THEME.entity} rather than a distinct highlight colour.
    */
   rubberBand: "#e2e8f0",
+  /**
+   * The dashed line PLINE draws from its last vertex at the width prompts and
+   * along its arc's chord: amber beside a white polyline, so not the object's
+   * colour (desktop pline/d03, d06).
+   */
+  dashedRubberBand: "#d7a320",
   preview: "#38bdf8",
   selectionWindowFill: "rgba(64, 140, 255, 0.12)",
   selectionWindowStroke: "#3b82f6",

@@ -1140,6 +1140,33 @@ describe("PLINE", () => {
     expect(cad.only<PolylineEntity>("polyline").vertices).toHaveLength(3)
   })
 
+  // desktop pline/d01: with CECOLOR 1 the rubber band and the segments drawn
+  // so far are red, as the polyline will be; d02: a wide one's band too.
+  it("draws the chain so far and the rubber band in the colour the polyline will wear", () => {
+    const colours = (cad: CadHarness) =>
+      cad
+        .scene()
+        .primitives.flatMap((q) =>
+          q.kind === "path" ? [q.stroke?.color ?? q.fill] : []
+        )
+    const cad = createHarness()
+    cad.runtime.createLayer("Hidden", "#00ffff")
+
+    cad.command("PLINE").click(p(0, 0)).click(p(50, 0)).moveTo(p(80, 40))
+    expect(colours(cad)).toEqual(["#00ffff", "#00ffff"])
+
+    // PLN-06: the polyline keeps the colour current at its start point.
+    answer(cad, "'-COLOR", "1")
+    cad.moveTo(p(80, 30))
+    expect(colours(cad)).toEqual(["#00ffff", "#00ffff"])
+
+    const wide = createHarness()
+    wide.runtime.setCurrentColor("#ff0000")
+    answer(wide, "PLINE", "0,0", "W", "4", "4", "@50,0")
+    wide.moveTo(p(80, 40))
+    expect(new Set(colours(wide))).toEqual(new Set(["#ff0000"]))
+  })
+
   it("discards a chain too short to be geometry", () => {
     const cad = createHarness()
 

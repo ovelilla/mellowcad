@@ -535,7 +535,7 @@ the file named as its regression test, citing its probe.
 | PLINE-D37 | A dashed line from the last vertex at the width prompts | p200, d06 |
 | PLINE-D38 | FILL-off lineweight left until the screen is seen | plot only |
 | PLINE-D40 | PDK-01: the rubber band and the chain wear `currentColor` | d01; LINE's DSK-01 |
-| PLINE-D41 | PDK-02: the dashed chord in arc mode, in the rubber band's colour | d03 |
+| PLINE-D41 | PDK-02: the dashed chord in arc mode, amber as the width prompts' line (POB-09) | d03, d06: amber beside a white polyline, not the object's colour |
 | PLINE-D42 | PLN-24 refuted (§10): Length keeps its measuring line | d06 |
 
 Nothing here needs the owner but the approval itself: no data, publishing or spending.

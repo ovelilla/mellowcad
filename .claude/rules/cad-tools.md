@@ -160,8 +160,8 @@ CELWEIGHT; ByLayer by default, which stores nothing). Every creating command has
 - **FILLET's arc and CHAMFER's bevel**: the lines' shared layer or the current one, ByLayer —
   `carryPlane` alone.
 
-LINE's rubber band wears the line's colour (`currentColor`, desktop line/d04); other ghosts' colours
-are their reviews'. HPLAYER, DIMLAYER and TEXTLAYER do not exist here: everything new is on the
+LINE's and PLINE's rubber bands wear `currentColor` (desktop line/d04, pline/d01); other ghosts'
+colours are their reviews'. HPLAYER, DIMLAYER and TEXTLAYER do not exist: everything new is on the
 current layer.
 
 ## Ordering and undo

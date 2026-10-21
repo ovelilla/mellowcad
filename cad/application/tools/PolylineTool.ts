@@ -38,6 +38,7 @@ import {
 } from "./lastDrawnPoint"
 import {
   type CurrentProperties,
+  currentColor,
   currentProperties,
   withProperties,
 } from "./currentProperties"
@@ -387,7 +388,10 @@ export class PolylineTool implements Tool {
   buildOverlay(ctx: ToolContext): ScenePrimitive[] {
     if (this.state.phase !== "drawing") return []
     const { viewport } = ctx
-    const stroke = { color: THEME.rubberBand, width: 1 }
+    // The chain and the next segment in the colour the polyline will wear,
+    // the one current at its start (desktop pline/d01, PLN-06).
+    const stroke = { color: currentColor(ctx, this.state.properties), width: 1 }
+    const dashed = { color: THEME.dashedRubberBand, width: 1, dash: [2, 3] }
     const out: ScenePrimitive[] = []
 
     // The chain committed so far, drawn as it will look once materialised
@@ -410,7 +414,7 @@ export class PolylineTool implements Tool {
         kind: "segment",
         a: viewport.worldToScreen(this.lastVertex(this.state)),
         b: viewport.worldToScreen(this.state.cursor),
-        stroke: { ...stroke, dash: [2, 3] },
+        stroke: dashed,
       })
       return out
     }
@@ -421,14 +425,17 @@ export class PolylineTool implements Tool {
     const last = this.lastVertex(this.state)
     let end: Vec2
     let bulge: number
+    let chord: boolean
     if (this.arc.active) {
       const segment = this.arc.preview(ctx)
       if (segment === null) return out
       end = segment.end
       bulge = segment.bulge
+      chord = this.arc.endsAtCursor()
     } else {
       end = this.resolveEnd(last, this.state.cursor, ctx)
       bulge = this.pendingBulge(this.state, end) ?? 0
+      chord = this.state.arcMode
     }
     // The next segment, as wide as it will be drawn.
     const next = createPolyline(
@@ -440,6 +447,16 @@ export class PolylineTool implements Tool {
       [this.state.width]
     )
     out.push(...entityScenePrimitive(viewport, next, stroke))
+    if (chord) {
+      // Arc mode's jig: the arc and a dashed line from its start to the
+      // point asked (desktop pline/d03, d06).
+      out.push({
+        kind: "segment",
+        a: viewport.worldToScreen(last),
+        b: viewport.worldToScreen(end),
+        stroke: dashed,
+      })
+    }
     return out
   }
 

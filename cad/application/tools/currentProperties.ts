@@ -87,15 +87,18 @@ function wearing<T extends Entity>(
 
 /**
  * The colour an object drawn from scratch will show: CECOLOR, ByLayer read
- * off the current layer.
+ * off the current layer — or off `properties`, those it took at its start.
  */
-export function currentColor(ctx: ToolContext): string {
-  const { currentColor } = ctx.document.getSettings()
+export function currentColor(
+  ctx: ToolContext,
+  properties: Pick<
+    CurrentProperties,
+    "currentColor" | "layerId"
+  > = currentProperties(ctx)
+): string {
+  const { currentColor, layerId } = properties
   if (currentColor !== COLOR_BYLAYER) return currentColor
-  return (
-    ctx.document.getLayer(ctx.document.getCurrentLayerId())?.color ??
-    DEFAULT_LAYER_COLOR
-  )
+  return ctx.document.getLayer(layerId)?.color ?? DEFAULT_LAYER_COLOR
 }
 
 /** THICKNESS as LINE, CIRCLE, ARC, PLINE and POLYGON give it; RECTANG and TEXT do not. */

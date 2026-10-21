@@ -9,6 +9,7 @@ import {
   type PolylineWidth,
 } from "../../domain/entities"
 import { DEFAULT_LAYER_COLOR } from "../../domain/layers"
+import { THEME } from "../../scene/theme"
 import { es } from "../../locales/es"
 
 // AutoCAD's console is the reference for every prompt, refusal and width
@@ -761,7 +762,9 @@ describe("the width prompts' rubber band", () => {
     (option) => {
       // probe pline/p200 (traced): getdist with the last vertex as its base;
       // desktop pline/d06: the dashed line from the last vertex.
+      // d06-4: amber beside a white polyline, so not the object's colour.
       const cad = createHarness()
+      cad.runtime.setCurrentColor("#ff0000")
       cad.command("PLINE").click(p(0, 0)).click(p(50, 0)).option(option)
       cad.moveTo(p(80, 40))
       const from = cad.toScreen(p(50, 0))
@@ -775,6 +778,7 @@ describe("the width prompts' rubber band", () => {
         expect.objectContaining({
           a: expect.objectContaining({ x: from.x, y: from.y }),
           b: expect.objectContaining({ x: to.x, y: to.y }),
+          stroke: { color: THEME.dashedRubberBand, width: 1, dash: [2, 3] },
         })
       )
       cad.enter()

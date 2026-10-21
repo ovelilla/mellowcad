@@ -272,6 +272,21 @@ export class ArcSegmentInput {
     return true
   }
 
+  /**
+   * The step asks the arc's endpoint and the preview runs to the cursor:
+   * AutoCAD draws the chord from the start point beside the arc (desktop
+   * pline/d06). CEnter's endpoint and Angle's centre end elsewhere, unseen.
+   */
+  endsAtCursor(): boolean {
+    const kind = this.step?.kind
+    return (
+      kind === "angleEnd" ||
+      kind === "directionEnd" ||
+      kind === "radiusEnd" ||
+      kind === "secondEnd"
+    )
+  }
+
   /** The arc as it would be if the cursor answered the step, for the preview. */
   preview(ctx: ToolContext): ArcSegment | null {
     const step = this.step

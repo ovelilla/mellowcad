@@ -4,6 +4,8 @@ import { type CadHarness, createHarness } from "../../../test/harness"
 import { lineOf, p } from "../../../test/builders"
 import type { PolylineEntity } from "../../domain/entities"
 import { es } from "../../locales/es"
+import { THEME } from "../../scene/theme"
+import type { Vec2 } from "../../geometry/Vec2"
 
 /** Typed at the command line and confirmed, as AutoCAD's prompt reads it. */
 function answerLine(cad: CadHarness, ...answers: string[]): CadHarness {
@@ -216,6 +218,34 @@ describe("PLINE's arc mode", () => {
       "Requires valid numeric angle or second point."
     )
     expect(cad.activeToolId()).toBe("polyline")
+  })
+
+  it("draws a dashed chord from the arc's start to its end at the cursor", () => {
+    // desktop pline/d03, d06: the arc's jig and an amber dashed line from its
+    // start point, at the arc prompt as at an option's endpoint.
+    const chord = (cad: CadHarness) =>
+      cad
+        .scene()
+        .primitives.flatMap((q) =>
+          q.kind === "segment" && q.stroke.dash ? [q] : []
+        )
+    const dashed = (cad: CadHarness, from: Vec2, to: Vec2) => [
+      expect.objectContaining({
+        a: expect.objectContaining(cad.toScreen(from)),
+        b: expect.objectContaining(cad.toScreen(to)),
+        stroke: { color: THEME.dashedRubberBand, width: 1, dash: [2, 3] },
+      }),
+    ]
+    const cad = createHarness()
+    cad.command("PLINE").click(p(0, 0)).click(p(50, 0)).moveTo(p(80, 30))
+    expect(chord(cad)).toEqual([])
+
+    cad.option("Arc").moveTo(p(80, 30))
+    expect(chord(cad)).toEqual(dashed(cad, p(50, 0), p(80, 30)))
+
+    answerLine(cad, "R", "40")
+    cad.moveTo(p(90, 20))
+    expect(chord(cad)).toEqual(dashed(cad, p(50, 0), p(90, 20)))
   })
 
   it("is measured by picks, and Ctrl turns the arc the other way", () => {

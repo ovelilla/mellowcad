@@ -95,11 +95,13 @@ zero-length vertex (p17); direct distance along the cursor, 0 a zero-length vert
 one the other way (p195); a Tangent or Perpendicular override at the start point, with nothing to
 measure from, finds nothing (`No found for specified point.`, `Invalid point.`, p29); in the first
 vertex's plane, the others projected onto it; the layer, colour, linetype, lineweight and THICKNESS
-current at the start point, whatever is set during the command (p39, p181–p183); Halfwidth and Width (es `Mitad grosor`, declared `Mitad`, and `Grosor`), in line and
+current at the start point, whatever is set during the command (p39, p181–p183), in whose colour
+the chain so far and the rubber band are drawn (desktop d01), in arc mode with an amber dashed
+chord from the arc's start to the endpoint asked (d03, d06); Halfwidth and Width (es `Mitad grosor`, declared `Mitad`, and `Grosor`), in line and
 arc mode alike: `Specify starting width <0.0000>:` and `Specify ending width <…>:`
 (`Specify starting half-width`, `Specify ending half-width`; es `Precise grosor inicial`,
 `Precise grosor final`, `Precise mitad de grosor inicial`, `Precise mitad de grosor final`), a value
-or a point measured from the last vertex, a dashed line drawn to the cursor from it (p200, d06)
+or a point measured from the last vertex, an amber dashed line drawn to the cursor from it (p200, d06)
 (`Requires numeric distance or second point.`; a negative one `Value must be positive.`, p201), the
 starting width offering the one the next segment would end at,
 the ending one the starting just given; the ending width runs on through the segments after it,
@@ -115,7 +117,12 @@ an arc's band no wider inwards than its radius (p234), a closed one's start mitr
 back to its start square there (p236); its linetype laid segment by segment (PLINEGEN 0, p232);
 its grips and palette rows: `drafting-aids.md` Grips, `properties.md` Properties palette
 
-**Missing:** Spanish declares `Mitadgrosor` at the first segment's prompt (21322; `Mitad` everywhere
+**Missing:** PEDIT, which a double-click on a polyline at `Command:` opens
+(`Enter an option [Close/Join/Width/Edit vertex/Fit/Spline/Decurve/Ltype gen/Reverse/Undo]:`, d10;
+nothing here); a wide band's jig in a dimmer shade (d02; as drawn here); **unverified**: the dashed
+line at Second pt's `Specify second point on arc:`, CEnter's endpoint and Angle's centre (none
+here); Spanish declares
+`Mitadgrosor` at the first segment's prompt (21322; `Mitad` everywhere
 here, **unverified** whether `MITADG` answers there), and `Segundopto` at the first arc prompt
 (21326), where the console takes `SEGUNDOPTO` (p101), refused here (`Segundo` everywhere);
 **unverified**: whether table 21314's angle is the line's heading in the plane (taken here) or 0,
