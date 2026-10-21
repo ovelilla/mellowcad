@@ -45,7 +45,11 @@ import {
 import { polarPoint } from "../geometry/primitives"
 import { Ucs, ucsPointToWorld, worldPointToUcs } from "../domain/ucs"
 import { DEFAULT_LAYER_COLOR, Layer, LayerId } from "../domain/layers"
-import { DEFAULT_LINETYPE_ID, linetypePattern } from "../domain/linetypes"
+import {
+  DEFAULT_LINETYPE_ID,
+  centredPattern,
+  linetypePattern,
+} from "../domain/linetypes"
 import {
   DEFAULT_LINEWEIGHT,
   Lineweight,
@@ -680,6 +684,11 @@ export interface EntityDrawOptions {
   readonly blocks?: BlockLookup
   /** FILLMODE, for a wide polyline; on when absent. */
   readonly fill?: boolean
+  /**
+   * The stroke's dash is the object's linetype, which a line lays centred; a
+   * ghost's dash is the editor's own and runs from the start.
+   */
+  readonly linetype?: boolean
 }
 
 export function entityScenePrimitive(
@@ -695,7 +704,8 @@ export function entityScenePrimitive(
   ) {
     return planarPrimitives(camera, entity, stroke, options)
   }
-  if (entity.type === "line") return linePrimitives(camera, entity, stroke)
+  if (entity.type === "line")
+    return linePrimitives(camera, entity, stroke, options)
   const elevation = entityElevation(entity)
   const thickness = entityThickness(entity)
   const axes = planeAxes(entity)
@@ -727,7 +737,8 @@ export function entityScenePrimitive(
 function linePrimitives(
   camera: CameraTransform,
   line: LineEntity,
-  stroke: StrokeStyle
+  stroke: StrokeStyle,
+  options: EntityDrawOptions
 ): ScenePrimitive[] {
   const startZ = lineStartZ(line)
   const endZ = lineEndZ(line)
@@ -739,23 +750,68 @@ function linePrimitives(
       y: point.y + up.y * lift,
       z: z + up.z * lift,
     })
-  const segment = (a: Vec2, b: Vec2): ScenePrimitive => ({
-    kind: "segment",
-    a,
-    b,
-    stroke,
-  })
+  const segment = (a: Vec2, b: Vec2) =>
+    lineSegments(camera, a, b, stroke, options)
   const bottomStart = at(line.start, startZ)
   const bottomEnd = at(line.end, endZ)
   const bottom = segment(bottomStart, bottomEnd)
-  if (thickness === 0) return [bottom]
+  if (thickness === 0) return bottom
   const topStart = at(line.start, startZ, 1)
   const topEnd = at(line.end, endZ, 1)
   return [
-    bottom,
-    segment(topStart, topEnd),
-    segment(bottomStart, topStart),
-    segment(bottomEnd, topEnd),
+    ...bottom,
+    ...segment(topStart, topEnd),
+    ...segment(bottomStart, topStart),
+    ...segment(bottomEnd, topEnd),
+  ]
+}
+
+/**
+ * A line drawn from `a` to `b` on the screen with its linetype laid as AutoCAD
+ * lays a line's, centred ({@link centredPattern}): the dash phase on the
+ * stroke, and an end dash longer than the pattern's first dash drawn as solid
+ * pieces either side of the pattern.
+ */
+function lineSegments(
+  camera: CameraTransform,
+  a: Vec2,
+  b: Vec2,
+  stroke: StrokeStyle,
+  options: EntityDrawOptions
+): ScenePrimitive[] {
+  const segment = (
+    from: Vec2,
+    to: Vec2,
+    style: StrokeStyle
+  ): ScenePrimitive => ({
+    kind: "segment",
+    a: from,
+    b: to,
+    stroke: style,
+  })
+  if (!options.linetype || !stroke.dash || stroke.dash.length === 0)
+    return [segment(a, b, stroke)]
+  const length = V.distance(a, b)
+  // WHY the length as drawn, not the line's own: the dash array is not
+  // foreshortened off the plan, so only the drawn length centres it there. In
+  // plan the two are the same world length.
+  const layout = centredPattern(
+    stroke.dash.map((run) => run / camera.scale),
+    length / camera.scale
+  )
+  const solid: StrokeStyle = { color: stroke.color, width: stroke.width }
+  if (!layout) return [segment(a, b, solid)]
+  if (layout.lead === 0) {
+    const dashOffset = layout.offset * camera.scale
+    return [segment(a, b, dashOffset > 0 ? { ...stroke, dashOffset } : stroke)]
+  }
+  const t = (layout.lead * camera.scale) / length
+  const start = V.lerp(a, b, t)
+  const end = V.lerp(a, b, 1 - t)
+  return [
+    segment(a, start, solid),
+    segment(start, end, stroke),
+    segment(end, b, solid),
   ]
 }
 
@@ -799,14 +855,13 @@ function planarPrimitives(
 ): ScenePrimitive[] {
   switch (entity.type) {
     case "line":
-      return [
-        {
-          kind: "segment",
-          a: camera.worldToScreen(entity.start),
-          b: camera.worldToScreen(entity.end),
-          stroke,
-        },
-      ]
+      return lineSegments(
+        camera,
+        camera.worldToScreen(entity.start),
+        camera.worldToScreen(entity.end),
+        stroke,
+        options
+      )
     case "circle":
       if (isPlaneCamera(camera)) {
         return [
@@ -1338,6 +1393,7 @@ function pushEntities(
     out.push(
       ...entityScenePrimitive(camera, entity, stroke, {
         fill: fillMode,
+        linetype: true,
         dimStyle:
           entity.type === "dimension"
             ? (dimStyleById.get(entity.styleId) ??

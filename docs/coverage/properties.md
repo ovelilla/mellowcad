@@ -26,7 +26,11 @@ becomes current), the manager's settings dialog
 
 ### Linetypes · `LTSCALE` / `LTS` · `LINETYPE` / `LT` · `-LINETYPE` · es `ESCALATL` / `EC`† · `TIPOLIN` · `-TIPOLIN`
 
-**Implemented:** 6 patterns, ByLayer and ByObject; LTSCALE asks
+**Implemented:** Continuous and acadiso.lin's DASHED, HIDDEN, CENTER, PHANTOM and DASHDOT, the
+metric drawing's file (MEASUREMENT 1, p202), DASHDOT's dash of 0 drawn as a dot; ByLayer and
+ByObject; a line's pattern laid as AutoCAD lays it (p207): centred, beginning and ending on equal
+dashes of `(L − m·period + first dash) / 2` with m whole periods (longer than the first dash when
+the remainder is), and solid under one period; LTSCALE asks
 `Enter new linetype scale factor <current>:` (es
 `Indique nuevo factor de escala del tipo de línea`), offering the current factor at the drawing's
 precision (`<1.00>`, where AutoCAD's LUPREC 4 writes `<1.0000>`); anything but a number
@@ -53,7 +57,10 @@ prompt again; a name it does not have says `Linetype "X" not found in acad.lin.`
 quote); **unverified**: es `PorCapa` as the current linetype's name and acad.lin as Spanish
 AutoCAD's file; per-object ltscale (CELTSCALE), the Linetype Manager (its Details' Global Scale
 Factor is LTSCALE), PSLTSCALE / MSLTSCALE (no paper space), Create and Load (there is no LIN file to
-read or write), ByBlock, the Linetype Manager, the drop-down's Other…
+read or write), ByBlock, the Linetype Manager, the drop-down's Other…; **unverified**: how AutoCAD
+lays a pattern on the other objects (per segment or along a polyline, PLINEGEN, round a circle or
+an arc): theirs runs from the start; a line off the plan is centred on its length as drawn, its
+pattern not foreshortened
 
 ### Lineweights + `LWDISPLAY` · `LWEIGHT` / `LW` · `-LWEIGHT` · es `GROSORLIN` · `-GROSORLIN`
 
@@ -71,7 +78,9 @@ lists ByLayer and the 24 as AutoCAD 2023's console lays them out (six to a line,
 and asks again, Enter keeps it; es `Grosor de línea actual: …`,
 `Indique el grosor de línea por defecto para los nuevos objetos o [?]`; LW is the shortcut guide's
 alias (LINEWEIGHT could not be verified); "wide polylines display lineweights only when displayed
-outside of plan view": in plan their width is drawn, hairline at its edges
+outside of plan view": in plan their width is drawn, hairline at its edges; LWDISPLAY starts on,
+where AutoCAD's starts at 0 (p204) — WHY: with no layouts or plotting here, the screen is the only
+place a lineweight shows
 
 **Missing:** ByBlock and Default (LWDEFAULT; so the `?` listing's first line names ByLayer alone),
 inches, the Lineweight Settings dialog and the drop-down's Lineweight Settings…

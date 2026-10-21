@@ -14,8 +14,10 @@ import { Vec3 } from "../geometry/Vec3"
 export interface StrokeStyle {
   readonly color: string
   readonly width: number
-  /** Dash pattern in pixels; omitted/empty means solid. */
+  /** Dash pattern in pixels; omitted/empty means solid. A run of 0 is a dot. */
   readonly dash?: readonly number[]
+  /** How far into {@link dash} the stroke starts, in pixels; 0 when absent. */
+  readonly dashOffset?: number
 }
 
 export type ScenePrimitive =

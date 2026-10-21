@@ -1,7 +1,8 @@
-import { Scene, ScenePrimitive } from "../scene/types"
+import { Scene, ScenePrimitive, StrokeStyle } from "../scene/types"
 import { DRAWING_FONT } from "../scene/theme"
 import { TEXT_FONT_CAP_RATIO } from "../domain/text"
 import { clipSegment } from "./clipSegment"
+import { dashPhase, drawnDash } from "./dashPattern"
 
 /** Em size the cap-height probe measures at; big enough to be precise. */
 const CAP_PROBE_SIZE = 100
@@ -58,7 +59,7 @@ export class CanvasScenePresenter {
         // of a guide would crawl as the cursor moves its unseen far end.
         if (a !== p.a && p.stroke.dash && p.stroke.dash.length > 0) {
           ctx.lineDashOffset = dashPhase(
-            Math.hypot(a.x - p.a.x, a.y - p.a.y),
+            (p.stroke.dashOffset ?? 0) + Math.hypot(a.x - p.a.x, a.y - p.a.y),
             p.stroke.dash
           )
         }
@@ -66,7 +67,6 @@ export class CanvasScenePresenter {
         ctx.moveTo(a.x, a.y)
         ctx.lineTo(b.x, b.y)
         ctx.stroke()
-        ctx.lineDashOffset = 0
         this.resetDash(ctx, p.stroke.dash)
         break
       }
@@ -219,25 +219,23 @@ export class CanvasScenePresenter {
 
   private applyStroke(
     ctx: CanvasRenderingContext2D,
-    stroke: { color: string; width: number; dash?: readonly number[] }
+    stroke: StrokeStyle
   ): void {
     ctx.strokeStyle = stroke.color
     ctx.lineWidth = stroke.width
-    if (stroke.dash && stroke.dash.length > 0) ctx.setLineDash([...stroke.dash])
+    if (stroke.dash && stroke.dash.length > 0) {
+      ctx.setLineDash(drawnDash(stroke.dash, stroke.width))
+      ctx.lineDashOffset = stroke.dashOffset ?? 0
+    }
   }
 
   private resetDash(
     ctx: CanvasRenderingContext2D,
     dash: readonly number[] | undefined
   ): void {
-    if (dash && dash.length > 0) ctx.setLineDash([])
+    if (dash && dash.length > 0) {
+      ctx.setLineDash([])
+      ctx.lineDashOffset = 0
+    }
   }
-}
-
-/** Where a dash pattern stands `distance` along its stroke, within one period. */
-function dashPhase(distance: number, dash: readonly number[]): number {
-  // An odd-length pattern repeats itself once to alternate dash and gap.
-  const sum = dash.reduce((total, d) => total + d, 0)
-  const period = dash.length % 2 === 0 ? sum : sum * 2
-  return period > 0 ? distance % period : 0
 }

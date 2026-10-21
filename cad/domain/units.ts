@@ -86,6 +86,8 @@ export const DEFAULT_DOCUMENT_SETTINGS: DocumentSettings = {
   // AutoCAD's AUPREC starts at 0 in acadiso.dwt as in acad.dwt: `<90>`.
   anglePrecision: 0,
   ltScale: 1,
+  // WHY on, where AutoCAD's LWDISPLAY starts at 0 (probe line/p204): with no
+  // layouts or plotting here, the screen is the only place a lineweight shows.
   lwDisplay: true,
   attributeDisplay: "normal",
   ucs: WORLD_UCS,

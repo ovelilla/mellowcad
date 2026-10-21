@@ -65,8 +65,11 @@ axes)`): a circle becomes an ellipse (`affineEllipse`), text gets a matrix; when
 
 - **Both clip segments to the frame** (`adapters/clipSegment.ts`): a scene draws alignment paths
   millions of pixels long, which SVG and Chrome's canvas dash end to end unless the line is exactly
-  horizontal or vertical. The canvas keeps the dash phase across the clip (`lineDashOffset`) so the
-  dashes do not crawl as the guide's far end moves.
+  horizontal or vertical. Both keep the dash phase across the clip (`dashPhase`) so the dashes do
+  not crawl as the guide's far end moves.
+- **Where a pattern starts is the builder's**: `centredPattern` lays a line's linetype in world
+  units and the stroke carries the phase (`StrokeStyle.dashOffset`); a presenter applies it and
+  draws a run of 0 as a dot (`drawnDash`), never computes one.
 - **Both draw left to right** whatever the page (`ctx.direction`, `direction="ltr"` on every SVG
   text, anchors spelled out): the drawing never mirrors. And in the command language: `Scene.lang`
   (`EngineText.commandTag`) becomes `ctx.lang` and every SVG text's `lang`, because the page's

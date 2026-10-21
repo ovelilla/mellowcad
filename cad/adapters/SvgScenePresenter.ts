@@ -6,6 +6,7 @@ import {
 } from "../scene/types"
 import { DRAWING_FONT, THEME } from "../scene/theme"
 import { clipSegment } from "./clipSegment"
+import { dashPhase, drawnDash } from "./dashPattern"
 import { TEXT_FONT_CAP_RATIO } from "../domain/text"
 
 /** Chrome labels, as the canvas draws them. */
@@ -167,7 +168,7 @@ export class SvgScenePresenter {
           y1: this.n(a.y),
           x2: this.n(b.x),
           y2: this.n(b.y),
-          ...this.stroke(p.stroke),
+          ...this.stroke(p.stroke, Math.hypot(a.x - p.a.x, a.y - p.a.y)),
           ...extra,
         })
       }
@@ -340,14 +341,24 @@ export class SvgScenePresenter {
       .join("")
   }
 
-  private stroke(stroke: StrokeStyle): Record<string, string | number> {
+  /** `clipped` is how much of a segment's start the frame cut off. */
+  private stroke(
+    stroke: StrokeStyle,
+    clipped = 0
+  ): Record<string, string | number> {
     const dashed = !!stroke.dash && stroke.dash.length > 0
+    const offset = dashed
+      ? dashPhase((stroke.dashOffset ?? 0) + clipped, stroke.dash!)
+      : 0
     return {
       stroke: this.color(stroke.color),
       "stroke-width": this.n(stroke.width),
       ...(dashed && {
-        "stroke-dasharray": stroke.dash!.map((d) => this.n(d)).join(" "),
+        "stroke-dasharray": drawnDash(stroke.dash!, stroke.width)
+          .map((d) => this.n(d))
+          .join(" "),
       }),
+      ...(offset > 0 && { "stroke-dashoffset": this.n(offset) }),
       ...(this.plot && !dashed && { pathLength: 1 }),
     }
   }

@@ -92,6 +92,12 @@ function linetypeLabel(names: EngineNames, id: string): string {
   return names.linetypes[id] ?? id
 }
 
+/**
+ * The sample's scale: acadiso.lin's periods run to 63.5 mm, and at half size
+ * Phantom's still shows whole in the 38 px sample.
+ */
+const PREVIEW_SCALE = 0.5
+
 /** A tiny horizontal line rendered with the linetype's dash pattern. */
 function LinetypePreview({ pattern }: { pattern: readonly number[] }) {
   return (
@@ -110,7 +116,11 @@ function LinetypePreview({ pattern }: { pattern: readonly number[] }) {
         stroke="currentColor"
         strokeWidth={1.25}
         strokeLinecap="round"
-        strokeDasharray={pattern.length > 0 ? pattern.join(" ") : undefined}
+        strokeDasharray={
+          pattern.length > 0
+            ? pattern.map((run) => run * PREVIEW_SCALE).join(" ")
+            : undefined
+        }
       />
     </svg>
   )

@@ -345,6 +345,41 @@ describe("dashes and plotting", () => {
     expect(attribute(svg, "stroke-dasharray")).toBe("20 4 4 4")
   })
 
+  it("starts a line's pattern at the scene's phase and draws its dots", () => {
+    // probes line/p202 (DASHDOT's dot is a dash of 0) and p207 (the phase).
+    const svg = new SvgScenePresenter().elements([
+      {
+        kind: "segment",
+        a: p(0, 0),
+        b: p(100, 0),
+        stroke: {
+          color: "#fff",
+          width: 1.5,
+          dash: [12.7, 6.35, 0, 6.35],
+          dashOffset: 2.5,
+        },
+      },
+    ])
+    expect(attribute(svg, "stroke-dasharray")).toBe("12.7 6.4 1.5 4.9")
+    expect(attribute(svg, "stroke-dashoffset")).toBe("2.5")
+  })
+
+  it("keeps the phase where the frame clips a segment's start", () => {
+    const svg = new SvgScenePresenter({
+      frame: { width: 100, height: 100 },
+    }).elements([
+      {
+        kind: "segment",
+        a: p(-20, 50),
+        b: p(50, 50),
+        stroke: { ...stroke, dash: [7, 6], dashOffset: 3 },
+      },
+    ])
+    // 12 px clipped off, up to the 8 px margin: 3 + 12 − 13.
+    expect(attribute(svg, "x1")).toBe("-8")
+    expect(attribute(svg, "stroke-dashoffset")).toBe("2")
+  })
+
   it("normalises only solid strokes for plotting — a dashed one keeps its pattern", () => {
     const presenter = new SvgScenePresenter({ plot: true })
     const solid = presenter.elements([

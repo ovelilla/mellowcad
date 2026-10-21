@@ -931,3 +931,4 @@ every object snap three ways and the modes in combination:
 | LIN | LIN-01 to LIN-08 | `6a3ba75` |
 | PIN | PIN-01 to PIN-06, LIN-09 | `bb1b4a4` |
 | OSN | OSN-01 to OSN-12 | `e383cc7` |
+| TRK | TRK-01 to TRK-03 | `399a448` |

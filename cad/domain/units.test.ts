@@ -1,5 +1,18 @@
 import { describe, expect, it } from "vitest"
-import { parseAngleDegrees, parseDecimalNumber, parseNumber } from "./units"
+import {
+  DEFAULT_DOCUMENT_SETTINGS,
+  parseAngleDegrees,
+  parseDecimalNumber,
+  parseNumber,
+} from "./units"
+
+describe("DEFAULT_DOCUMENT_SETTINGS", () => {
+  it("shows lineweights from the start, a deviation from AutoCAD", () => {
+    // probe line/p204: a new drawing's LWDISPLAY is 0. On here because there
+    // are no layouts or plotting to see them in (docs/coverage/properties.md).
+    expect(DEFAULT_DOCUMENT_SETTINGS.lwDisplay).toBe(true)
+  })
+})
 
 describe("parseDecimalNumber", () => {
   it("reads decimals, exponents and fractions as AutoCAD does", () => {

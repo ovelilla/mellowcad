@@ -1,9 +1,14 @@
 import { describe, expect, it } from "vitest"
 import type { ScenePrimitive } from "../scene/types"
 import type { EllipseEntity } from "../domain/entities"
-import { ellipseEndPoint, ellipseStartPoint } from "../domain/entities"
+import {
+  assignEntityLinetype,
+  ellipseEndPoint,
+  ellipseStartPoint,
+} from "../domain/entities"
 import { THEME } from "../scene/theme"
 import { createHarness } from "../../test/harness"
+import { entityScenePrimitive } from "./SceneBuilder"
 import {
   arcOf,
   circleOf,
@@ -187,6 +192,115 @@ describe("appearance resolution", () => {
     }
 
     expect(dashAt(2)).toBeCloseTo(dashAt(1) * 2, 6)
+  })
+
+  // probe line/p202: acadiso.lin's definitions, read back with `tblsearch`.
+  it.each([
+    ["Dashed", [12.7, 6.35]],
+    ["Hidden", [6.35, 3.175]],
+    ["Center", [31.75, 6.35, 6.35, 6.35]],
+    ["Phantom", [31.75, 6.35, 6.35, 6.35, 6.35, 6.35]],
+    ["DashDot", [12.7, 6.35, 0, 6.35]],
+  ])("dashes %s as acadiso.lin does", (linetype, pattern) => {
+    const cad = createHarness({
+      entities: [
+        assignEntityLinetype(
+          lineOf(p(-500, 0), p(500, 0), { id: "L1" }),
+          linetype
+        ),
+      ],
+    })
+    const dashed = strokes(cad.scene().primitives, THEME.entity).find(
+      (primitive) => "stroke" in primitive && primitive.stroke?.dash
+    )
+    expect(dashed && "stroke" in dashed ? dashed.stroke?.dash : null).toEqual(
+      pattern
+    )
+  })
+
+  /** A line's drawn runs from its start, dash, gap, dash…, in world units. */
+  function drawnRuns(linetype: string, length: number): number[] {
+    const cad = createHarness({
+      entities: [
+        assignEntityLinetype(
+          lineOf(p(0, 0), p(length, 0), { id: "L1" }),
+          linetype
+        ),
+      ],
+    })
+    const origin = cad.runtime.viewport.worldToScreen(p(0, 0)).x
+    const on: [number, number][] = []
+    for (const piece of strokes(cad.scene().primitives, THEME.entity)) {
+      if (piece.kind !== "segment") continue
+      const from = piece.a.x - origin
+      const to = piece.b.x - origin
+      const { dash, dashOffset = 0 } = piece.stroke
+      if (!dash) {
+        on.push([from, to])
+        continue
+      }
+      for (
+        let at = from - dashOffset, i = 0;
+        at < to;
+        at += dash[i++ % dash.length]
+      ) {
+        const end = at + dash[i % dash.length]
+        if (i % 2 === 0 && end >= from)
+          on.push([Math.max(at, from), Math.min(end, to)])
+      }
+    }
+    on.sort((x, y) => x[0] - y[0])
+    const runs: number[] = []
+    let last = 0
+    for (const [start, end] of on) {
+      if (runs.length > 0 && start - last < 1e-9)
+        runs[runs.length - 1] += end - last
+      else {
+        if (runs.length > 0) runs.push(start - last)
+        runs.push(end - start)
+      }
+      last = end
+    }
+    return runs
+  }
+
+  // probe line/p207, measured on the plot: a line begins and ends on a dash of
+  // the same length, (L − m·period + first dash) / 2 with m whole periods.
+  it("lays a line's pattern centred, its end dashes equal", () => {
+    const hidden = drawnRuns("Hidden", 100)
+    expect(hidden[0]).toBeCloseTo(5.55, 6)
+    expect(hidden.at(-1)).toBeCloseTo(5.55, 6)
+    expect(hidden).toHaveLength(21)
+    expect(drawnRuns("Hidden", 20).map((run) => +run.toFixed(3))).toEqual([
+      3.65, 3.175, 6.35, 3.175, 3.65,
+    ])
+  })
+
+  it("draws an end dash longer than the pattern's first, as AutoCAD does", () => {
+    // probe line/p207: DASHDOT's ends are 18.25 long on a 100-unit line.
+    const runs = drawnRuns("DashDot", 100)
+    expect(runs[0]).toBeCloseTo(18.25, 6)
+    expect(runs.at(-1)).toBeCloseTo(18.25, 6)
+    expect(runs.reduce((sum, run) => sum + run, 0)).toBeCloseTo(100, 6)
+  })
+
+  it("draws a line shorter than one period solid", () => {
+    // probe line/p207: a 5-unit HIDDEN line plots as one stroke.
+    expect(drawnRuns("Hidden", 5)).toEqual([5])
+  })
+
+  it("leaves a ghost's own dashes running from its start", () => {
+    const primitives = entityScenePrimitive(
+      createHarness().runtime.viewport,
+      lineOf(p(0, 0), p(100, 0)),
+      { color: THEME.preview, width: 1, dash: [6, 4] }
+    )
+    expect(primitives).toHaveLength(1)
+    expect(primitives[0].kind === "segment" && primitives[0].stroke).toEqual({
+      color: THEME.preview,
+      width: 1,
+      dash: [6, 4],
+    })
   })
 
   it("draws a heavier lineweight thicker, and only while LWDISPLAY is on", () => {
