@@ -1,0 +1,8 @@
+_ORTHOMODE
+1
+_ARC
+0,0
+10,7
+20,3
+MPDUMP
+-

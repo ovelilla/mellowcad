@@ -1,0 +1,9 @@
+_ARC
+_C
+0,0
+'ORTHOMODE
+1
+10,0
+'_-OSNAP
+_END
+0,10
