@@ -939,8 +939,9 @@ lweight "Lineweight" LW
   command| EL ELLIPSE
 > first axis end
   prompt: ELLIPSE Specify other endpoint of axis:
-  asks: "Other endpoint of axis"
+  asks: "Length" "Angle"
   tip: Specify other endpoint of axis:
+  dyn: "Length"=""|0.00|mm* "Angle"=""||°
   options: -
   prompt| Specify axis endpoint of ellipse or [Arc/Center]:
 > second axis end
@@ -980,8 +981,9 @@ lweight "Lineweight" LW
   prompt| Specify axis endpoint of ellipse or [Arc/Center]: C
 > centre
   prompt: ELLIPSE Specify endpoint of axis:
-  asks: "Endpoint of axis"
+  asks: "Length" "Angle"
   tip: Specify endpoint of axis:
+  dyn: "Length"=""|0.00|mm* "Angle"=""||°
   prompt| Specify center of ellipse:
 > axis end
   prompt: ELLIPSE Specify distance to other axis or [Rotation]:
@@ -1038,8 +1040,9 @@ lweight "Lineweight" LW
   prompt| Specify axis endpoint of ellipse or [Arc/Center]: _a
 > first
   prompt: ELLIPSEARC Specify other endpoint of axis:
-  asks: "Other endpoint of axis"
+  asks: "Length" "Angle"
   tip: Specify other endpoint of axis:
+  dyn: "Length"=""|0.00|mm* "Angle"=""||°
   options: -
 > second
   prompt: ELLIPSEARC Specify distance to other axis or [Rotation]:

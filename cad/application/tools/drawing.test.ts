@@ -57,6 +57,26 @@ function red(cad: CadHarness): string {
   return cad.runtime.document.getSettings().currentColor as string
 }
 
+/** A jig's rubber line, amber and dashed (desktop arc/d02, ellipse/d01). */
+const rubberLine = `segment ${THEME.dashedRubberBand} dashed`
+
+/** The amber dashed line runs from `from` to the cursor at `to`. */
+function runs(cad: CadHarness, from: Vec2, to: Vec2): void {
+  expect(
+    cad
+      .scene()
+      .primitives.find(
+        (q) => q.kind === "segment" && q.stroke.dash !== undefined
+      )
+  ).toEqual(
+    expect.objectContaining({
+      a: expect.objectContaining(cad.toScreen(from)),
+      b: expect.objectContaining(cad.toScreen(to)),
+      stroke: { color: THEME.dashedRubberBand, width: 1, dash: [2, 3] },
+    })
+  )
+}
+
 /**
  * The draw commands. Each is checked through both of its input routes — picking
  * with the pointer and typing exact coordinates — because they take different
@@ -671,23 +691,6 @@ describe("CIRCLE", () => {
 
 describe("ARC", () => {
   describe("its jig, as the desktop draws it", () => {
-    const rubberLine = `segment ${THEME.dashedRubberBand} dashed`
-    /** The amber dashed line runs from `from` to the cursor at `to`. */
-    const runs = (cad: CadHarness, from: Vec2, to: Vec2) =>
-      expect(
-        cad
-          .scene()
-          .primitives.find(
-            (q) => q.kind === "segment" && q.stroke.dash !== undefined
-          )
-      ).toEqual(
-        expect.objectContaining({
-          a: expect.objectContaining(cad.toScreen(from)),
-          b: expect.objectContaining(cad.toScreen(to)),
-          stroke: { color: THEME.dashedRubberBand, width: 1, dash: [2, 3] },
-        })
-      )
-
     it("draws 3P's line from the start, then the ghost alone", () => {
       // desktop arc/d01, d02: with CECOLOR 1 the ghost is red; the line from
       // the start to the cursor at the second point is amber and dashed, and
@@ -2045,6 +2048,151 @@ describe("ELLIPSE", () => {
       ])
       answer(cad, "ELLIPSEARC", "0,0", "100,0", "25", "0", "90")
       expect(isFullEllipse(cad.latest() as EllipseEntity)).toBe(false)
+    })
+  })
+
+  describe("its jig, as the desktop draws it", () => {
+    it("draws only the line from the first point or the centre at the axis's end (d01-1b)", () => {
+      // desktop ellipse/d01-1b: at `Specify other endpoint of axis:` an amber
+      // dashed line from the first point to the cursor and no ghost; the
+      // centre mode's `Specify endpoint of axis:` runs it from the centre.
+      const cad = createHarness()
+      red(cad)
+      cad.command("ELLIPSE").click(p(0, 0)).moveTo(p(100, 20))
+      expect(jig(cad)).toEqual([rubberLine])
+      runs(cad, p(0, 0), p(100, 20))
+
+      const centre = createHarness()
+      red(centre)
+      centre.command("ELLIPSE").option("Center")
+      centre.click(p(50, 50)).moveTo(p(100, 60))
+      expect(jig(centre)).toEqual([rubberLine])
+      runs(centre, p(50, 50), p(100, 60))
+    })
+
+    it("draws the ghost in the current colour and the line from the centre at the distance and Rotation (d01-3b, d01-4, d01-5b)", () => {
+      const cad = createHarness()
+      const color = red(cad)
+      cad.command("ELLIPSE").click(p(-100, 0)).click(p(100, 0))
+      cad.moveTo(p(0, 40))
+      expect(jig(cad)).toEqual([rubberLine, `ellipse ${color}`])
+      runs(cad, p(0, 0), p(0, 40))
+
+      cad.option("Rotation").moveTo(p(40, 40))
+      expect(jig(cad)).toEqual([rubberLine, `ellipse ${color}`])
+      runs(cad, p(0, 0), p(40, 40))
+    })
+
+    it("draws the whole ellipse at the start angle and the arc at the end, each with the line from the centre (d02-1, d02-2)", () => {
+      const cad = createHarness()
+      const color = red(cad)
+      cad.command("ELLIPSE").option("Arc")
+      cad.click(p(-100, 0)).click(p(100, 0)).click(p(0, 40))
+      cad.moveTo(p(-50, 30))
+      expect(jig(cad)).toEqual([rubberLine, `ellipse ${color}`])
+      runs(cad, p(0, 0), p(-50, 30))
+      const whole = cad.scene().primitives.find((q) => q.kind === "ellipse")
+      expect(whole).toMatchObject({ startAngle: 0, endAngle: Math.PI * 2 })
+
+      cad.click(p(-50, 30)).moveTo(p(50, -30))
+      expect(jig(cad)).toEqual([rubberLine, `ellipse ${color}`])
+      runs(cad, p(0, 0), p(50, -30))
+      const arc = cad.scene().primitives.find((q) => q.kind === "ellipse")
+      expect(arc).toMatchObject({ counterclockwise: true })
+    })
+  })
+
+  describe("its dynamic input at the other endpoint", () => {
+    const fields = (cad: CadHarness) =>
+      cad
+        .state()
+        .dynamicInput?.fields.map((f) => [f.id, f.label, f.placeholder])
+
+    it("dimensions the axis with a length and an angle, as LINE's next point (d04-2)", () => {
+      // desktop ellipse/d04-2: DYNMODE 3 at `Specify other endpoint of axis:`
+      // shows the axis's length (20.2871) and its angle (11°).
+      const cad = createHarness()
+      cad.command("ELLIPSE").click(p(0, 0)).moveTo(p(30, 40))
+      expect(fields(cad)).toEqual([
+        ["distance", "Length", "50.00"],
+        ["angle", "Angle", "53"],
+      ])
+      // Shown acute, as LINE's: below the X axis the same 53.
+      cad.moveTo(p(30, -40))
+      expect(fields(cad)).toEqual([
+        ["distance", "Length", "50.00"],
+        ["angle", "Angle", "53"],
+      ])
+
+      const centre = createHarness()
+      centre.command("ELLIPSE").option("Center")
+      centre.click(p(10, 10)).moveTo(p(10, 50))
+      expect(fields(centre)).toEqual([
+        ["distance", "Length", "40.00"],
+        ["angle", "Angle", "90"],
+      ])
+    })
+
+    it("places the endpoint at the length and angle typed from the first point or the centre", () => {
+      const cad = createHarness()
+      cad.command("ELLIPSE").click(p(0, 0)).moveTo(p(40, 30))
+      cad.type("50").type("30", "angle").enter()
+      // LASTPOINT is the endpoint given, as a pick there leaves it.
+      answer(cad, "'ID", "@")
+      expect(cad.commandLog().at(-2)).toBe(
+        " X = 43.30     Y = 25.00     Z = 0.00"
+      )
+      answer(cad, "10")
+      const ellipse = cad.only<EllipseEntity>("ellipse")
+      expect(ellipse.center).toBeCloseToPoint(p(25 * Math.cos(deg(30)), 12.5))
+      expect(ellipseSemiMajor(ellipse)).toBeCloseTo(25)
+      expect(ellipseSemiMinor(ellipse)).toBeCloseTo(10)
+
+      // A length alone runs along the cursor, from the centre in its mode.
+      const centre = createHarness()
+      centre.command("ELLIPSE").option("Center")
+      centre.click(p(10, 10)).moveTo(p(10, 50))
+      centre.type("30").enter()
+      answer(centre, "10")
+      const upright = centre.only<EllipseEntity>("ellipse")
+      expect(upright.center).toBeCloseToPoint(p(10, 10))
+      expect(upright.majorAxis).toBeCloseToPoint(p(0, 30))
+    })
+
+    it("reads the typed angle in the UCS", () => {
+      const cad = answer(createHarness(), "UCS", "Z", "90")
+      cad.command("ELLIPSE").click(p(0, 0)).moveTo(p(-25, 43))
+      cad.type("50").type("30", "angle").enter()
+      answer(cad, "10")
+      const ellipse = cad.only<EllipseEntity>("ellipse")
+      expect(ellipse.center).toBeCloseToPoint(p(-12.5, 25 * Math.sin(deg(120))))
+    })
+
+    it("still takes a point typed in the box or at the command line", () => {
+      const relative = createHarness()
+      relative.command("ELLIPSE").click(p(10, 0)).moveTo(p(50, 50))
+      relative.type("100,0").enter()
+      answer(relative, "20")
+      expect(relative.only<EllipseEntity>("ellipse").center).toBeCloseToPoint(
+        p(60, 0)
+      )
+
+      // A number at the command line is direct distance towards the cursor.
+      const direct = answer(createHarness(), "ELLIPSE", "0,0")
+      direct.moveTo(p(0, 50))
+      answer(direct, "40", "10")
+      expect(direct.only<EllipseEntity>("ellipse").center).toBeCloseToPoint(
+        p(0, 20)
+      )
+
+      // With no cursor to run along, a length in the box runs along X, as
+      // the runtime's direct distance does.
+      const still = answer(createHarness(), "ELLIPSE", "0,0")
+      still.type("40").enter()
+      answer(still, "10")
+      expect(still.only<EllipseEntity>("ellipse").center).toBeCloseToPoint(
+        p(20, 0)
+      )
     })
   })
 

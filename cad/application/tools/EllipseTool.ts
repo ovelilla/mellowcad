@@ -37,10 +37,12 @@ import {
 } from "./Tool"
 import {
   type CurrentProperties,
+  currentColor,
   currentProperties,
   wearingProperties,
 } from "./currentProperties"
-import { headingInUcs } from "./ucsHeading"
+import { pointAlongCursor, pointAtDistance, showRise } from "./directDistance"
+import { acuteHeading, headingInUcs } from "./ucsHeading"
 
 /**
  * How an ellipse is defined — the three entries of AutoCAD's Ellipse dropdown,
@@ -62,7 +64,7 @@ type EllipseToolState =
   /** Awaiting the first point: an axis endpoint, or the centre. */
   | { readonly phase: "first" }
   /** Awaiting the other end of the first axis (or its only end, from the centre). */
-  | { readonly phase: "second"; readonly first: Vec3; readonly cursor: Vec2 }
+  | { readonly phase: "second"; readonly first: Vec3; readonly cursor: Vec3 }
   /**
    * The first axis is fixed; awaiting the half-length of the other one. The
    * centre is at the first point's height, the plane the ellipse lies in. A
@@ -292,6 +294,7 @@ export class EllipseTool implements Tool {
         break
       case "second":
         this.state = { ...this.state, cursor: input.point }
+        this.showAxis(this.state.first, input.point, ctx)
         break
       case "first":
         break
@@ -316,7 +319,7 @@ export class EllipseTool implements Tool {
     switch (this.state.phase) {
       case "first":
         this.state = { phase: "second", first: point, cursor: point }
-        this.openPointInput(ctx, this.secondPrompt(), at)
+        this.openAxisInput(ctx, at)
         break
       case "second":
         this.state = {
@@ -496,35 +499,36 @@ export class EllipseTool implements Tool {
     }
   }
 
+  /**
+   * The amber dashed line from the first point at the axis's other end, no
+   * ghost; from the centre at every later prompt, beside the ghost in the
+   * colour the ellipse will wear (desktop ellipse/d01, d02; the trace's
+   * UseDashedLine at D, S and E, p03).
+   */
   buildOverlay(ctx: ToolContext): ScenePrimitive[] {
     const { viewport } = ctx
-    const rubber = { color: THEME.rubberBand, width: 1 }
-    const guide = (a: Vec2, b: Vec2): ScenePrimitive => ({
+    const ghost = {
+      color: currentColor(ctx, this.properties ?? undefined),
+      width: 1,
+    }
+    const rubberLine = (a: Vec2, b: Vec2): ScenePrimitive => ({
       kind: "segment",
       a: viewport.worldToScreen(a),
       b: viewport.worldToScreen(b),
-      stroke: rubber,
+      stroke: { color: THEME.dashedRubberBand, width: 1, dash: [2, 3] },
     })
 
     switch (this.state.phase) {
       case "second":
-        return [guide(this.state.first, this.state.cursor)]
+        return [rubberLine(this.state.first, this.state.cursor)]
       case "distance":
-      case "rotation": {
-        const preview = this.previewEllipse(ctx)
-        // The guide runs from the centre to the cursor, whose distance from it
-        // *is* the half-length being specified.
-        return [
-          guide(this.state.center, this.state.cursor),
-          ...(preview ? entityScenePrimitive(viewport, preview, rubber) : []),
-        ]
-      }
+      case "rotation":
       case "startAngle":
       case "endAngle": {
         const preview = this.previewEllipse(ctx)
         return [
-          guide(this.state.ellipse.center, this.state.cursor),
-          ...(preview ? entityScenePrimitive(viewport, preview, rubber) : []),
+          rubberLine(this.state.center, this.state.cursor),
+          ...(preview ? entityScenePrimitive(viewport, preview, ghost) : []),
         ]
       }
       default:
@@ -816,10 +820,6 @@ export class EllipseTool implements Tool {
     ctx.endCommand()
   }
 
-  private secondPrompt(): PromptId {
-    return this.centered ? "endpointOfAxis" : "otherAxisEndpoint"
-  }
-
   /**
    * Opens a coordinate session for a point phase. Clicking places the point;
    * typing an AutoCAD coordinate (e.g. `50,20`, `@30,0`, `100<45`) and pressing
@@ -839,10 +839,92 @@ export class EllipseTool implements Tool {
     ctx.dynamicInput.setPosition(screen ?? this.lastScreen ?? { x: 0, y: 0 })
   }
 
-  private commitTypedPoint(ctx: ToolContext): boolean {
-    const text = ctx.dynamicInput.getText("point").trim()
-    if (!isCoordinateExpression(text)) return false
+  /**
+   * The axis's other end, or its end from the centre: the box dimensions the
+   * axis from the first point with its length and angle, as LINE's next point
+   * (desktop ellipse/d04-2; the centre mode's from the centre, unprobed but
+   * the same input). The command line answers the point itself, a number
+   * there direct distance as at any point prompt.
+   */
+  private openAxisInput(ctx: ToolContext, screen: Vec2): void {
+    ctx.dynamicInput.open({
+      fields: [
+        { id: "distance", prompt: "length", kind: "distance" },
+        { id: "angle", prompt: "angle", kind: "angle" },
+      ],
+      commit: (values, commitCtx) => this.commitAxis(values, commitCtx),
+      commitRaw: (commitCtx) => this.commitAxisRaw(commitCtx),
+      commandLinePoint: true,
+    })
+    ctx.dynamicInput.setLive("distance", 0)
+    ctx.dynamicInput.setLive("angle", null)
+    ctx.dynamicInput.setPosition(screen)
+  }
+
+  /** The axis's length and heading, shown acute as every direction's. */
+  private showAxis(first: Vec3, cursor: Vec3, ctx: ToolContext): void {
+    if (showRise(ctx, first, cursor)) return
+    const offset = V.sub(cursor, first)
+    const length = V.length(offset)
+    ctx.dynamicInput.setLive("distance", length)
+    ctx.dynamicInput.setLive(
+      "angle",
+      length > 1e-9 ? acuteHeading(headingInUcs(ctx.ucs, offset)) : null
+    )
+  }
+
+  /**
+   * The box's length and angle: the point that far from the first point, a
+   * typed angle read on the cursor's side as the field shows it, a length
+   * alone along the cursor (LINE's `commitSegment`).
+   */
+  private commitAxis(values: Record<string, number>, ctx: ToolContext): void {
+    if (this.state.phase !== "second") return
+    const { first, cursor } = this.state
+    const { distance, angle } = values
+    if (!Number.isFinite(distance)) return
+    const typedAngle = ctx.dynamicInput.getText("angle").trim() !== ""
+    const point = pointAlongCursor(ctx, first, cursor, {
+      distance,
+      angle: typedAngle && Number.isFinite(angle) ? angle : null,
+    })
+    if (point !== null) this.placeAxisEnd(point, ctx)
+  }
+
+  /**
+   * A coordinate typed in the length field is the point, relative to the
+   * first (DYNPICOORDS). A length with no heading to run along, the cursor
+   * never having left the first point, is direct distance along the UCS's X,
+   * as the runtime's (`pointAtDistance`).
+   */
+  private commitAxisRaw(ctx: ToolContext): boolean {
+    if (this.state.phase !== "second") return false
+    const text = ctx.dynamicInput.getText("distance").trim()
+    if (isCoordinateExpression(text)) return this.commitTypedPoint(ctx, text)
+    const distance = text === "" ? null : parseNumber(text)
+    if (distance === null || !Number.isFinite(distance)) return false
+    this.placeAxisEnd(
+      pointAtDistance(ctx, this.state.first, null, distance),
+      ctx
+    )
+    return true
+  }
+
+  /**
+   * An axis end the box worked out: LASTPOINT is that point, as a pick there
+   * leaves it, not the centre the next prompt measures from.
+   */
+  private placeAxisEnd(point: Vec3, ctx: ToolContext): void {
+    ctx.setLastPoint(point)
+    this.advanceWithPoint(point, ctx)
+  }
+
+  private commitTypedPoint(
+    ctx: ToolContext,
+    text = ctx.dynamicInput.getText("point").trim()
+  ): boolean {
     const last = this.state.phase === "second" ? this.state.first : null
+    if (!isCoordinateExpression(text)) return false
     const point = parseCoordinate(text, {
       lastPoint: last ?? ctx.lastPoint,
       relativeByDefault: last !== null,

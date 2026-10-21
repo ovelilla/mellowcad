@@ -428,14 +428,24 @@ the axis mode's other endpoint is a 2D point (p170). `_TAN` or `_PER` at the fir
 centre measures from LASTPOINT (p266, p267, p295); `<45` at the start or end angle is that angle
 (p181, p292). LASTPOINT is the centre after the ellipse and after `*Invalid*` (p100, p109, p113,
 p166, p171, p178, p184). The current layer and properties are those of when the ellipse is fixed,
-so an elliptical arc keeps them whatever is set at its angles (p249, p253, p257). The rail's Axis,
-End, Center and Elliptical Arc run ELLIPSE as the ribbon's macros do (acad.cuix `^C^C_ellipse`,
-`_ellipse _c`, `_ellipse _a`): echoed `_ellipse`, the mode answered at its first prompt, Enter
-repeating ELLIPSE and U and REDO naming it (p105, p107, p198); ELLIPSEC and ELLIPSEARC, which
-AutoCAD knows not (p05), stay typed names running the same macros. Not transparent (p106). AutoCAD
-2027's console. Axis-End, Center, Arc (start/end angle + Included angle), Rotation; DXF model
-(centre + major-axis vector + ratio + parameters); centre/quadrant/endpoint/nearest snaps; both
-radii editable in the palette
+so an elliptical arc keeps them whatever is set at its angles (p249, p253, p257). The jig as the
+desktop draws it: at the axis's other end (and the centre mode's endpoint of axis) an amber dashed
+line from the first point (the centre) to the cursor, no ghost; at the distance, Rotation and the
+start and end angles the ghost in the current colour (CECOLOR red, a red ghost; the whole ellipse at
+the start angle, the arc at the end) and the dashed line from the centre to the cursor (desktop d01,
+d02). Dynamic input at the axis's other end dimensions it from the first point with LINE's Length
+and Angle, the angle shown acute: `50` Tab `30` puts the end 50 away at 30° in the UCS, LASTPOINT
+there (d04-2); the centre mode's endpoint of axis the same from the centre (**unverified**:
+unprobed, the same input function); a coordinate typed in it is the point, relative to the first,
+and the command line still answers the point, a number there a direct distance. WHY a box like
+LINE's: AutoCAD lays the length field on a dimension along the axis and the angle beside the
+cursor (d04-2). The rail's Axis, End, Center and Elliptical Arc run ELLIPSE as the ribbon's
+macros do (acad.cuix `^C^C_ellipse`, `_ellipse _c`, `_ellipse _a`): echoed `_ellipse`, the mode
+answered at its first prompt, Enter repeating ELLIPSE and U and REDO naming it (p105, p107, p198);
+ELLIPSEC and ELLIPSEARC, which AutoCAD knows not (p05), stay typed names running the same macros.
+Not transparent (p106). AutoCAD 2027's console. Axis-End, Center, Arc (start/end angle + Included
+angle), Rotation; DXF model (centre + major-axis vector + ratio + parameters);
+centre/quadrant/endpoint/nearest snaps; both radii editable in the palette
 
 **Missing:** Isocircle: AutoCAD offers it only under the isometric snap style (SNAPSTYL 1, not built
 here), as `[Arc/Center/Isocircle]`, `Specify center of isocircle:`,

@@ -162,8 +162,8 @@ CELWEIGHT; ByLayer by default, which stores nothing). Every creating command has
 - **FILLET's arc and CHAMFER's bevel**: the lines' shared layer or the current one, ByLayer —
   `carryPlane` alone.
 
-The jigs of LINE, PLINE, CIRCLE, ARC, RECTANG and POLYGON wear `currentColor` (line/d04,
-rectang/d02, else d01). No HPLAYER, DIMLAYER or TEXTLAYER: the current layer.
+The jigs of LINE, PLINE, CIRCLE, ARC, RECTANG, POLYGON and ELLIPSE wear `currentColor` (line/d04,
+rectang/d02, ellipse/d01–d02, else d01). No HPLAYER, DIMLAYER or TEXTLAYER: the current layer.
 
 ## Ordering and undo
 
@@ -211,8 +211,7 @@ One session at a time:
   expressions (`@30,0`, `100<45`, `#x,y`) arrive via `session.commitRaw`, not `resolveValues`;
   the runtime refuses `#` typed at the command line before it reaches the box (`answerPrompt`).
 - **Keyword-only prompt** — `fields: []`: the option chips, focus left on the canvas (MIRROR's
-  Erase, FILLET's and OFFSET's object prompts). A harness test answers it with `press` per key and
-  `Enter`.
+  Erase, FILLET's and OFFSET's object prompts); a test answers it as `testing.md` says.
 - **One value at a time** — a box holds one value (a point's two aside, LINE's and RECTANG's):
   ARRAYRECT's values are prompts its keywords open, CHAMFER's distances two prompts. The offered
   value is the question's `enter`, taken in `commitRaw` when nothing is typed.
