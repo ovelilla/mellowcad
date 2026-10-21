@@ -23,7 +23,10 @@ the other is nearer: arc/p208, p209) and polyline segments; Tangent to
 circles, arcs and polyline arcs; Center and Quadrant of polyline arcs; a circle's Quadrants along
 the UCS's X and Y when it lies parallel to the UCS's XY plane (UCS Z 30: circle/p212, p217), its
 OCS's otherwise (**unverified**, not probed), only the snap turning, not the grips (desktop
-circle/d15), an arc's so too where its sweep passes (arc/p201, p203; tilted, p210, p211); the
+circle/d15), an arc's so too where its sweep passes (arc/p201, p203; tilted, p210, p211); an
+ellipse's Quadrants at its own axis ends whatever the UCS, an elliptical arc's only on its sweep
+(ellipse/p300–p302), its Midpoint halfway along an elliptical arc's length and none on a whole
+ellipse (p303, p304), Nearest on both (p307); the
 markers as AutoCAD's dark
 theme draws them, green, 14 px with a 2 px stroke (square, triangle, circle with a cross, diamond,
 ✕, right angle, circle with a bar, hourglass; desktop line/d05, d21); a Tangent or Perpendicular a
@@ -42,7 +45,7 @@ p321): here they last the session (RECTANG-D46)
 **Missing:** Node and Geometric Center (no POINT object; a dimension's definition points snap as
 Endpoint), deferred Perpendicular and Tangent at the first point of a command other than LINE and
 CIRCLE (refused there as finding nothing, as at PLINE's start, pline/p29),
-Perpendicular and Tangent on ellipses and splines, a polyline arc segment's Quadrant in a rotated
+Intersection on ellipses, Perpendicular and Tangent on ellipses (ellipse/p308–p314) and splines, a polyline arc segment's Quadrant in a rotated
 UCS and Perpendicular off its sweep (**unverified**, left at its OCS's and both feet until PLINE's
 object is probed), extended Intersection and extended Apparent
 Intersection (picked object by object, as an override), Extension from a polyline's arc end, the

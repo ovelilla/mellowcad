@@ -1,4 +1,4 @@
-import { Vec2 } from "../geometry/Vec2"
+import { V, Vec2 } from "../geometry/Vec2"
 import { Vec3, sub3 } from "../geometry/Vec3"
 import { isUpright, worldDirectionToUcs, worldPointToUcs } from "../domain/ucs"
 import { ellipseAngleFromParam, normalizeDegrees } from "../geometry/primitives"
@@ -26,9 +26,11 @@ import {
   arcSweepAngle,
   circleArea,
   circleCircumference,
-  ellipseArea,
+  ellipseEndPoint,
+  ellipseMinorAxis,
   ellipseSemiMajor,
   ellipseSemiMinor,
+  ellipseStartPoint,
   ellipseSweepParams,
   isFullEllipse,
   lineAngleDegrees,
@@ -52,6 +54,7 @@ import {
   mtextPlainText,
   planeAxes,
 } from "../domain/entities"
+import { objectArea } from "../domain/objectArea"
 import { SnapType } from "./snapping/types"
 import { SnapModeType } from "./SnapMode"
 import type { ViewPreset } from "./tools/viewPresets"
@@ -1033,33 +1036,59 @@ function singleEntityInfo(
     case "ellipse": {
       const { start, sweep } = ellipseSweepParams(entity)
       const full = isFullEllipse(entity)
+      const from = at(ellipseStartPoint(entity))
+      const to = at(ellipseEndPoint(entity))
+      // The axes as directions in the UCS, from the centre to their ends.
+      const vector = (axis: Vec2) =>
+        worldDirectionToUcs(
+          settings.ucs,
+          sub3(
+            entityPointToWorld(entity, V.add(entity.center, axis)),
+            entityPointToWorld(entity, entity.center)
+          )
+        )
+      const major = vector(entity.majorAxis)
+      const minor = vector(ellipseMinorAxis(entity))
+      // Measured from the major axis, the frame the stored parameters live in.
       const axisAngle = (param: number) =>
         normalizeDegrees(
           (ellipseAngleFromParam(entity.ratio, param) * 180) / Math.PI
         )
+      const surface = objectArea(entity)?.area ?? 0
       return {
         title: full ? title("ellipse") : text.propertyTitle("ellipticalArc"),
         count: 1,
         groups: [
+          // AutoCAD's one Geometry group, for an ellipse and an arc alike, in
+          // its order; the ends, the axis vectors and Area greyed (desktop
+          // ellipse/d08). A whole ellipse's angles are read-only here: what
+          // retyping one does there is unprobed.
           group("geometry", [
+            row("startX", coord(from.x)),
+            row("startY", coord(from.y)),
+            row("startZ", coord(from.z)),
+            coordRow("centerX", "centerX", at(entity.center).x),
+            coordRow("centerY", "centerY", at(entity.center).y),
+            coordRow("centerZ", "centerZ", at(entity.center).z),
+            row("endX", coord(to.x)),
+            row("endY", coord(to.y)),
+            row("endZ", coord(to.z)),
             lengthRow("majorRadius", "majorRadius", ellipseSemiMajor(entity)),
             lengthRow("minorRadius", "minorRadius", ellipseSemiMinor(entity)),
-            // Derived from the two radii, so retyping it would be a third way
-            // to say the same thing; AutoCAD's own ratio row is a gap here.
-            row("radiusRatio", formatLength(entity.ratio, settings)),
+            coordRow("radiusRatio", "radiusRatio", entity.ratio),
             ...(full
-              ? [row("area", area(ellipseArea(entity)))]
+              ? [row("startAngle", degrees(0)), row("endAngle", degrees(360))]
               : [
-                  // Measured from the major axis, which is the frame the
-                  // stored parameters live in.
-                  row("startAngle", degrees(axisAngle(start))),
-                  row("endAngle", degrees(axisAngle(start + sweep))),
+                  angleRow("startAngle", "startAngle", axisAngle(start)),
+                  angleRow("endAngle", "endAngle", axisAngle(start + sweep)),
                 ]),
-          ]),
-          group("center", [
-            coordRow("x", "centerX", at(entity.center).x),
-            coordRow("y", "centerY", at(entity.center).y),
-            coordRow("z", "centerZ", at(entity.center).z),
+            row("majorAxisVectorX", coord(major.x + 0)),
+            row("majorAxisVectorY", coord(major.y + 0)),
+            row("majorAxisVectorZ", coord(major.z + 0)),
+            row("minorAxisVectorX", coord(minor.x + 0)),
+            row("minorAxisVectorY", coord(minor.y + 0)),
+            row("minorAxisVectorZ", coord(minor.z + 0)),
+            row("area", area(surface)),
           ]),
         ],
       }

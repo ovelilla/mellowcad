@@ -443,16 +443,37 @@ cursor (d04-2). The rail's Axis, End, Center and Elliptical Arc run ELLIPSE as t
 macros do (acad.cuix `^C^C_ellipse`, `_ellipse _c`, `_ellipse _a`): echoed `_ellipse`, the mode
 answered at its first prompt, Enter repeating ELLIPSE and U and REDO naming it (p105, p107, p198);
 ELLIPSEC and ELLIPSEARC, which AutoCAD knows not (p05), stay typed names running the same macros.
-Not transparent (p106). AutoCAD 2027's console. Axis-End, Center, Arc (start/end angle + Included
-angle), Rotation; DXF model (centre + major-axis vector + ratio + parameters);
-centre/quadrant/endpoint/nearest snaps; both radii editable in the palette
+Not transparent (p106). AutoCAD 2027's console. The object is DXF's (centre, major-axis vector,
+ratio and parameters), its range stored as AutoCAD stores it, the start in [0, 2π) and the end
+after it (p134, p148, p154, p179, p180), a whole turn either way a whole ellipse (p152, p153, p220,
+p224, p226, p235, p236), and with both axes equal the first one major (p168). Its snaps: Center
+(p306); Endpoint at an arc's ends, none on a whole ellipse (p305); Quadrant at its own axis ends
+whatever the UCS, on an arc only those its sweep passes (p300–p302); Midpoint halfway along an
+arc's length, none on a whole ellipse (p303, p304); Nearest (p307). Its grips (desktop d07): the
+centre moves it; the four quadrants, kept off an arc's sweep, set that half-axis to the cursor's
+distance from the centre, its direction and the other half kept, the longer staying major (d07-3,
+d07-4); an arc's two ends swing to the cursor's heading from the centre, the ellipse kept (d07-7);
+the ghost in the object's colour, an amber dashed line from the centre, no hover menu. Its
+Properties (desktop d08): one Geometry group for an ellipse and an arc alike, Start X Y Z, Center
+X Y Z, End X Y Z, Major radius, Minor radius, Radius ratio, Start angle, End angle (0 and 360 on a
+whole one), Major axis vector X Y Z, Minor axis vector X Y Z and Area (an arc's the segment its
+chord closes, AREA's, p328); the centre, the radii, the ratio and an arc's angles retyped, the rest
+greyed; Spanish as d08 shows (`Relación del radio`, `Vector de radio mayor X`,
+`Vector de eje menor X`). Its linetype: properties.md; ROTATE, SCALE, STRETCH, BREAK: modify.md
 
 **Missing:** Isocircle: AutoCAD offers it only under the isometric snap style (SNAPSTYL 1, not built
 here), as `[Arc/Center/Isocircle]`, `Specify center of isocircle:`,
 `Specify radius of isocircle or [Diameter]:` and `Specify diameter of isocircle:`; `PELLIPSE` = 1
-(polyline approximation), axis grips (only the centre grips), ratio and angles as palette rows,
-OFFSET / HATCH / boundary / BREAK / JOIN / FILLET / DIM on an ellipse, tangent and perpendicular
-snaps, ellipse intersections; a point with a Z at the distance, which AutoCAD measures in space
+(polyline approximation); an arc's end grips are drawn square, not AutoCAD's arrows (d07-5), and a
+length or an angle typed while a grip is hot is not built; a whole ellipse's Start angle and End
+angle retyped (**unverified**: unprobed, read-only here); the palette's English labels
+(**unverified**: the desktop seen in Spanish only); the start a closed elliptical arc keeps
+(p220: StartParam 0.857072, EndParam 7.140257), which has no field here (ELLIPSE-D21);
+OFFSET / HATCH / boundary / JOIN / FILLET / DIM on an ellipse; the Intersection, Tangent and
+Perpendicular snaps on an ellipse (`_INT` with a line, a circle and another ellipse at
+45.825757,10, 38.186654,16.138304 and 14,24; from 100,60 `_TAN` at −26.144218,21.310091 and
+`_PER` at 45.503239,10.361651, an arc's only on its sweep, −48.836572,−5.361651; p308–p314); a
+mirrored ellipse's normal (modify.md, MIRROR); a point with a Z at the distance, which AutoCAD measures in space
 (`50,25,10` on 0,0 → 100,0: ratio 0.5385, p177; here in plan, 0.5); `<a` at Rotation and Included
 angle (**unverified**: unprobed, so the angle override every prompt with a base point has); Spanish
 from the 2027 Spanish language pack's string table, paired with the English by id

@@ -28,6 +28,7 @@ import {
   planeAxes,
   hatchGeometry,
   insertFlatGeometry,
+  ellipseLengthTable,
   isFullEllipse,
   lineEndZ,
   lineStartZ,
@@ -894,7 +895,9 @@ function planarPrimitives(
         ? linetypedArc(camera, entity, stroke)
         : [arcCurve(camera, entity, stroke)]
     case "ellipse":
-      return [ellipseScenePrimitive(camera, entity, stroke)]
+      return options.linetype && stroke.dash && stroke.dash.length > 0
+        ? linetypedEllipse(camera, entity, stroke)
+        : [ellipseScenePrimitive(camera, entity, stroke)]
     case "spline": {
       // Canvas and SVG have no NURBS, and a degree above 3 fits no Bézier: the
       // curve is chopped finely enough that a chord never strays a quarter of
@@ -1366,8 +1369,8 @@ function linetypedPolyline(
 }
 
 /**
- * More periods than this along one circle or arc and its pattern is left to
- * the renderer on a single curve, unfitted: drawn dash by dash, a huge circle
+ * More periods than this along one circle, arc or ellipse and its pattern is
+ * left to the renderer on a single curve, unfitted: drawn dash by dash, a huge circle
  * zoomed into would be tens of thousands of primitives, most off the screen,
  * and at that count the fit cannot be seen.
  */
@@ -1415,31 +1418,41 @@ function linetypedCircle(
   if (!layout) return [circleCurve(camera, circle, solid)]
   if (layout.periods > MAX_FITTED_PERIODS)
     return [circleCurve(camera, circle, stroke)]
-  // A dot is drawn as a line draws one (`drawnDash`): a run as long as the
-  // stroke is wide, taken from the gap after it.
-  const dot = stroke.width / camera.scale
+  return loopDashes(layout, stroke.width / camera.scale).map(([a, b]) =>
+    arcScenePrimitive(
+      camera,
+      circle.center,
+      circle.radius,
+      a / circle.radius,
+      b / circle.radius,
+      solid
+    )
+  )
+}
+
+/**
+ * Where a loop's dashes lie along it ({@link loopPattern}'s layout), as
+ * `[from, to]` from its start. A dot is drawn as a line draws one
+ * (`drawnDash`): a run as long as the stroke is wide (`dot`), taken from the
+ * gap after it.
+ */
+function loopDashes(
+  layout: { readonly runs: readonly number[]; readonly periods: number },
+  dot: number
+): [number, number][] {
   const { runs } = layout
-  const out: ScenePrimitive[] = []
+  const dashes: [number, number][] = []
   let at = 0
   for (let period = 0; period < layout.periods; period++) {
     for (let i = 0; i < runs.length; i++) {
       if (i % 2 === 0) {
         const run = runs[i] > 0 ? runs[i] : Math.min(dot, runs[i + 1] ?? dot)
-        out.push(
-          arcScenePrimitive(
-            camera,
-            circle.center,
-            circle.radius,
-            at / circle.radius,
-            (at + run) / circle.radius,
-            solid
-          )
-        )
+        dashes.push([at, at + run])
       }
       at += runs[i]
     }
   }
-  return out
+  return dashes
 }
 
 function arcCurve(
@@ -1477,7 +1490,34 @@ function linetypedArc(
   const period = pattern.reduce((sum, run) => sum + run, 0)
   if (length / period > MAX_FITTED_PERIODS)
     return [arcCurve(camera, arc, stroke)]
-  const dot = stroke.width / camera.scale
+  return centredDashes(
+    pattern,
+    length,
+    layout,
+    stroke.width / camera.scale
+  ).map(([a, b]) =>
+    arcScenePrimitive(
+      camera,
+      arc.center,
+      arc.radius,
+      arc.startAngle + a / arc.radius,
+      arc.startAngle + b / arc.radius,
+      solid
+    )
+  )
+}
+
+/**
+ * Where a curve's dashes lie along its `length` when its pattern is centred
+ * ({@link centredPattern}'s layout), as `[from, to]` from its start; a dot
+ * is a run as wide as the stroke (`dot`).
+ */
+function centredDashes(
+  pattern: readonly number[],
+  length: number,
+  layout: { readonly offset: number; readonly lead: number },
+  dot: number
+): [number, number][] {
   const from = layout.lead
   const to = length - layout.lead
   const dashes: [number, number][] = []
@@ -1500,13 +1540,47 @@ function linetypedArc(
     dashes[0][0] = 0
     dashes[dashes.length - 1][1] = length
   }
+  return dashes
+}
+
+/**
+ * An ellipse's linetype laid as AutoCAD lays it (ellipse/p330, measured on
+ * the plot): a whole one as a circle's ({@link loopPattern}), from its start
+ * (parameter 0) counter-clockwise about its normal in whole stretched
+ * periods; an elliptical arc as an arc's, centred over its length
+ * ({@link centredPattern}); solid under one period. Each dash is a piece of
+ * the ellipse, found by its length along it ({@link ellipseLengthTable});
+ * past {@link MAX_FITTED_PERIODS} the pattern is left to the renderer.
+ */
+function linetypedEllipse(
+  camera: CameraTransform,
+  ellipse: EllipseEntity,
+  stroke: StrokeStyle
+): ScenePrimitive[] {
+  const pattern = (stroke.dash ?? []).map((run) => run / camera.scale)
+  const along = ellipseLengthTable(ellipse)
+  const solid: StrokeStyle = { color: stroke.color, width: stroke.width }
+  const dot = stroke.width / camera.scale
+  let dashes: [number, number][]
+  if (isFullEllipse(ellipse)) {
+    const layout = loopPattern(pattern, along.length)
+    if (!layout) return [ellipseScenePrimitive(camera, ellipse, solid)]
+    if (layout.periods > MAX_FITTED_PERIODS)
+      return [ellipseScenePrimitive(camera, ellipse, stroke)]
+    dashes = loopDashes(layout, dot)
+  } else {
+    const layout = centredPattern(pattern, along.length)
+    if (!layout) return [ellipseScenePrimitive(camera, ellipse, solid)]
+    const period = pattern.reduce((sum, run) => sum + run, 0)
+    if (along.length / period > MAX_FITTED_PERIODS)
+      return [ellipseScenePrimitive(camera, ellipse, stroke)]
+    dashes = centredDashes(pattern, along.length, layout, dot)
+  }
+  // A dash is drawn, not stored: its range is no object's.
   return dashes.map(([a, b]) =>
-    arcScenePrimitive(
+    ellipseScenePrimitive(
       camera,
-      arc.center,
-      arc.radius,
-      arc.startAngle + a / arc.radius,
-      arc.startAngle + b / arc.radius,
+      { ...ellipse, startParam: along.paramAt(a), endParam: along.paramAt(b) },
       solid
     )
   )

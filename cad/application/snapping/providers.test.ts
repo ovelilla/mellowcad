@@ -113,6 +113,7 @@ describe("quadrant", () => {
     expect(drawnLine(cad).start).toBeCloseToPoint(at, 9)
   })
 
+  // probe ellipse/p300: a turned ellipse's quadrants are its axis ends.
   it("snaps to an ellipse's axis ends, not the world's cardinals", () => {
     const cad = createHarness({
       // Major axis at 45°, so no quadrant of this ellipse points along +X.
@@ -127,6 +128,7 @@ describe("quadrant", () => {
 })
 
 describe("center", () => {
+  // probe ellipse/p306.
   it("snaps to an ellipse's centre", () => {
     const cad = createHarness({
       entities: [ellipseOf(p(40, 20), p(100, 0), 0.5, { id: "REF-E" })],
@@ -140,6 +142,9 @@ describe("center", () => {
 })
 
 describe("endpoint", () => {
+  // probe ellipse/p305: a whole ellipse has no end, `_END` at its param 0
+  // (100,0 here) refused; an elliptical arc's ends are its start and end
+  // points (p302's StartPoint, EndPoint).
   it("offers an elliptical arc's ends, and a whole ellipse none", () => {
     const cad = createHarness({
       entities: [
@@ -155,6 +160,14 @@ describe("endpoint", () => {
     const drawn = firstPointWith(cad, SnapType.Endpoint, p(3, 47))
 
     expect(drawn.start).toBeCloseToPoint(p(0, 50), 5)
+
+    const whole = createHarness({
+      entities: [ellipseOf(p(0, 0), p(100, 0), 0.5, { id: "REF-E" })],
+      snap: true,
+    })
+    expect(missedWith(whole, SnapType.Endpoint, null, p(99, 2))[0]).toBe(
+      "No Endpoint found for specified point."
+    )
   })
 })
 
@@ -696,5 +709,103 @@ describe("an arc", () => {
     const cad = typed(createHarness(), ...arc, ...ZOOM)
     typed(cad, "LINE", "30,0", "PER", "10<25", "")
     expect(drawnLine(cad).end).toBeCloseToPoint(p(-10, 0), 6)
+  })
+})
+
+describe("an ellipse", () => {
+  function typed(cad: CadHarness, ...texts: string[]): CadHarness {
+    for (const text of texts) {
+      cad.runtime.setCommandLineText(text)
+      cad.runtime.submitCommandLine()
+    }
+    return cad
+  }
+  const ZOOM = ["ZOOM", "W", "-200,-200", "200,200"]
+  /** The ellipse 0,0 → 50,0, 25 of probes ellipse/p300–p307. */
+  const WHOLE = ["ELLIPSE", "C", "0,0", "50,0", "25"]
+  const ARC = (from: number, to: number) => [
+    ...["ELLIPSE", "A", "C", "0,0", "50,0", "25"],
+    ...[String(from), String(to)],
+  ]
+  /** The shapes drawn by `set`, then `then` typed: LINE's first point, in the WCS. */
+  function lineFrom(set: string[], ...then: string[]): number[] {
+    const cad = typed(createHarness(), ...ZOOM, ...set, ...then)
+    const line = cad
+      .entities()
+      .filter((e): e is LineEntity => e.type === "line")
+      .at(-1)!
+    return [line.start.x, line.start.y, lineStartZ(line)].map(
+      (n) => +n.toFixed(4) + 0
+    )
+  }
+  /** What LINE's first prompt says when `snap` at `aim` finds nothing. */
+  function refused(set: string[], snap: string, aim: string): string[] {
+    const cad = typed(createHarness(), ...ZOOM, ...set, "LINE", snap, aim)
+    expect(cad.entities().filter((e) => e.type === "line")).toEqual([])
+    return cad.commandLog().slice(-2)
+  }
+
+  // probe ellipse/p307: `_NEA` at 40,16 → (39.546219, 15.297847).
+  it("snaps Nearest onto a whole ellipse", () => {
+    expect(lineFrom(WHOLE, "LINE", "NEA", "40,16", "@", "")).toEqual([
+      39.5462, 15.2978, 0,
+    ])
+  })
+
+  // The arc 10°→100° of p302: p307's point lies on it; past its start the
+  // nearest point is the start itself.
+  it("snaps Nearest onto an elliptical arc, its nearer end off the sweep", () => {
+    const set = ARC(10, 100)
+    expect(lineFrom(set, "LINE", "NEA", "40,16", "@", "")).toEqual([
+      39.5462, 15.2978, 0,
+    ])
+    expect(lineFrom(set, "LINE", "NEA", "50,5", "@", "")).toEqual([
+      47.1538, 8.3145, 0,
+    ])
+  })
+
+  // probe ellipse/p303: halfway along the quarter arc's length, not at its
+  // middle parameter (35.3553, 17.6777).
+  it("snaps Midpoint halfway along an elliptical arc", () => {
+    expect(lineFrom(ARC(0, 90), "LINE", "MID", "35.36,17.68", "@", "")).toEqual(
+      [29.7236, 20.1029, 0]
+    )
+  })
+
+  // probes ellipse/p304, p305: a whole ellipse has no midpoint and no end.
+  it.each([
+    ["MID", "35.36,17.68", "No Midpoint found for specified point."],
+    ["END", "49.9,1", "No Endpoint found for specified point."],
+  ])("refuses %s on a whole ellipse", (snap, aim, said) => {
+    expect(refused(WHOLE, snap, aim)).toEqual([said, "Invalid point."])
+  })
+
+  // probe ellipse/p306: CEN picked on the curve.
+  it("snaps Center from the curve", () => {
+    expect(lineFrom(WHOLE, "LINE", "CEN", "0,25", "@", "")).toEqual([0, 0, 0])
+  })
+
+  // probe ellipse/p300: the ellipse turned 30°, picked near its world top.
+  it("snaps Quadrant to a turned ellipse's own axis end", () => {
+    const set = ["ELLIPSE", "C", "0,0", "@50<30", "25"]
+    expect(lineFrom(set, "LINE", "QUA", "24.55,33.07", "@", "")).toEqual([
+      43.3013, 25, 0,
+    ])
+  })
+
+  // probe ellipse/p301: in UCS Z 30 the quadrants stay the ellipse's own
+  // axis ends, unlike a circle's (circle/p212).
+  it("keeps an ellipse's own quadrants in a rotated UCS", () => {
+    const set = [...WHOLE, "UCS", "Z", "30"]
+    expect(lineFrom(set, "LINE", "QUA", "*-37.8,16.37", "@", "")).toEqual([
+      -50, 0, 0,
+    ])
+  })
+
+  // probe ellipse/p302: only the quadrants the 10°→100° arc passes.
+  it("snaps Quadrant only on an elliptical arc's sweep", () => {
+    expect(
+      lineFrom(ARC(10, 100), "LINE", "QUA", "47.15,8.31", "@", "")
+    ).toEqual([0, 25, 0])
   })
 })

@@ -1,8 +1,13 @@
 import { describe, expect, it } from "vitest"
 
 import { createHarness } from "../../test/harness"
-import { arcOf, circleOf, deg, lineOf, p } from "../../test/builders"
-import type { ArcEntity, CircleEntity, LineEntity } from "../domain/entities"
+import { arcOf, circleOf, deg, ellipseOf, lineOf, p } from "../../test/builders"
+import type {
+  ArcEntity,
+  CircleEntity,
+  EllipseEntity,
+  LineEntity,
+} from "../domain/entities"
 import { es } from "../locales/es"
 
 describe("the palette panel", () => {
@@ -354,6 +359,145 @@ describe("the Properties palette's object type drop-down", () => {
       "Normal X",
       "Normal Y",
       "Normal Z",
+    ])
+  })
+
+  /** Each row as `label=value`, a `*` where it can be retyped. */
+  const rowsOf = (cad: ReturnType<typeof createHarness>) =>
+    cad
+      .state()
+      .properties.info!.groups.map((g) => [
+        g.title,
+        g.rows.map((r) => `${r.label}=${r.value}${r.edit ? "*" : ""}`),
+      ])
+
+  /**
+   * desktop ellipse/d08-2's arc: centre 30,25, major axis −10,0, ratio 0.4,
+   * from 30° to the end its end grip was dragged to (Fin 31.3839, 28.9615).
+   */
+  const d08Arc = () =>
+    ellipseOf(p(30, 25), p(-10, 0), 0.4, {
+      id: "E1",
+      startParam: Math.atan2(Math.sin(deg(30)) / 0.4, Math.cos(deg(30))),
+      endParam: Math.atan2(-3.9615 / 4, -1.3839 / 10),
+    })
+
+  // desktop ellipse/d08-1, d08-2: one Geometry group for an ellipse and an
+  // elliptical arc alike, in this order; Start, End, the axis vectors and
+  // Area greyed; a whole ellipse's angles 0 and 360.
+  it("lists an elliptical arc's geometry in AutoCAD's order", () => {
+    const cad = createHarness({ entities: [d08Arc()] })
+    cad.select("E1")
+    expect(rowsOf(cad)).toEqual([
+      [
+        "Geometry",
+        [
+          "Start X=24.31",
+          "Start Y=21.71",
+          "Start Z=0.00",
+          "Center X=30.00*",
+          "Center Y=25.00*",
+          "Center Z=0.00*",
+          "End X=31.38",
+          "End Y=28.96",
+          "End Z=0.00",
+          "Major radius=10.00 mm*",
+          "Minor radius=4.00 mm*",
+          "Radius ratio=0.40*",
+          "Start angle=30°*",
+          "End angle=251°*",
+          "Major axis vector X=-10.00",
+          "Major axis vector Y=0.00",
+          "Major axis vector Z=0.00",
+          "Minor axis vector X=0.00",
+          "Minor axis vector Y=-4.00",
+          "Minor axis vector Z=0.00",
+          "Area=81.18 mm²",
+        ],
+      ],
+    ])
+  })
+
+  // desktop ellipse/d08-1: the ellipse its quadrant grips reshaped.
+  it("lists a whole ellipse's rows, its angles 0 and 360", () => {
+    const cad = createHarness({
+      entities: [
+        ellipseOf(p(50, 25), p(14.3133, 0), 8.3149 / 14.3133, { id: "E1" }),
+      ],
+    })
+    cad.select("E1")
+    expect(rowsOf(cad)).toEqual([
+      [
+        "Geometry",
+        [
+          "Start X=64.31",
+          "Start Y=25.00",
+          "Start Z=0.00",
+          "Center X=50.00*",
+          "Center Y=25.00*",
+          "Center Z=0.00*",
+          "End X=64.31",
+          "End Y=25.00",
+          "End Z=0.00",
+          "Major radius=14.31 mm*",
+          "Minor radius=8.31 mm*",
+          "Radius ratio=0.58*",
+          "Start angle=0°",
+          "End angle=360°",
+          "Major axis vector X=14.31",
+          "Major axis vector Y=0.00",
+          "Major axis vector Z=0.00",
+          "Minor axis vector X=0.00",
+          "Minor axis vector Y=8.31",
+          "Minor axis vector Z=0.00",
+          "Area=373.89 mm²",
+        ],
+      ],
+    ])
+  })
+
+  it("retypes an ellipse's radius ratio and an arc's angles", () => {
+    const cad = createHarness({ entities: [d08Arc()] })
+    cad.select("E1")
+    expect(cad.runtime.setSelectionProperty("radiusRatio", "0.5")).toBe(true)
+    const ellipse = cad.byId<EllipseEntity>("E1")
+    expect(ellipse.ratio).toBe(0.5)
+    expect(ellipse.majorAxis).toBeCloseToPoint(p(-10, 0), 12)
+    expect(cad.runtime.setSelectionProperty("startAngle", "90")).toBe(true)
+    expect(cad.runtime.setSelectionProperty("endAngle", "180")).toBe(true)
+    const arc = cad.byId<EllipseEntity>("E1")
+    expect(arc.startParam).toBeCloseTo(Math.PI / 2, 12)
+    expect(arc.endParam).toBeCloseTo(Math.PI, 12)
+  })
+
+  // Spanish as desktop ellipse/d08 shows it (the vectors' labels cut off
+  // there after `Vector de radio may…` and `Vector de eje menor…`).
+  it("names an ellipse's rows in Spanish", () => {
+    const cad = createHarness({ locale: es, entities: [d08Arc()] })
+    cad.select("E1")
+    const rows = cad.state().properties.info!.groups[0].rows
+    expect(rows.map((row) => row.label)).toEqual([
+      "Inicio X",
+      "Inicio Y",
+      "Inicio Z",
+      "Centro X",
+      "Centro Y",
+      "Centro Z",
+      "Fin X",
+      "Fin Y",
+      "Fin Z",
+      "Radio mayor",
+      "Radio menor",
+      "Relación del radio",
+      "Ángulo inicial",
+      "Ángulo final",
+      "Vector de radio mayor X",
+      "Vector de radio mayor Y",
+      "Vector de radio mayor Z",
+      "Vector de eje menor X",
+      "Vector de eje menor Y",
+      "Vector de eje menor Z",
+      "Área",
     ])
   })
 })

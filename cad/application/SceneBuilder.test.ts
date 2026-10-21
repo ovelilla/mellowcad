@@ -7,6 +7,7 @@ import {
   entityAxes,
   withNormal,
   ellipseEndPoint,
+  ellipseLengthTable,
   ellipseStartPoint,
 } from "../domain/entities"
 import { THEME } from "../scene/theme"
@@ -628,6 +629,106 @@ describe("appearance resolution", () => {
       { color: THEME.preview, width: 1, dash: [6, 4] }
     )
     expect(primitives.map((primitive) => primitive.kind)).toEqual(["arc"])
+  })
+
+  /**
+   * An upright ellipse's drawn dashes as `[from, to]` along its length from
+   * its start, rebuilt from the renderer's parameters in plan (the camera's
+   * Y flip negates them); `null` when it is drawn as one solid curve.
+   */
+  function ellipseDashes(ellipse: EllipseEntity): [number, number][] | null {
+    const cad = createHarness({
+      entities: [assignEntityLinetype(ellipse, "Dashed")],
+    })
+    const drawn = strokes(cad.scene().primitives, THEME.entity)
+    const only = drawn[0]
+    if (drawn.length === 1 && only.kind === "ellipse" && !only.stroke.dash)
+      return null
+    const start = ellipse.startParam ?? 0
+    const along = (param: number) =>
+      param - start < 1e-12
+        ? 0
+        : ellipseLengthTable({ ...ellipse, startParam: start, endParam: param })
+            .length
+    return drawn
+      .map((piece): [number, number] => {
+        if (piece.kind !== "ellipse") throw new Error(piece.kind)
+        expect(piece.stroke.dash).toBeUndefined()
+        return [
+          +along(-piece.startAngle).toFixed(2),
+          +along(-piece.endAngle).toFixed(2),
+        ]
+      })
+      .sort((a, b) => a[0] - b[0])
+  }
+
+  // probe ellipse/p330, measured along the plot: a whole ellipse is laid as
+  // a circle, from its start in whole stretched periods (13 round 242.21,
+  // 12.71 periods of DASHED), whether level or turned.
+  it.each([0, 30])("lays a whole ellipse turned %s° as a circle", (turn) => {
+    const ellipse = ellipseOf(
+      p(0, 0),
+      p(50 * Math.cos(deg(turn)), 50 * Math.sin(deg(turn))),
+      0.5,
+      { id: "E1" }
+    )
+    const dashes = ellipseDashes(ellipse)!
+    expect(dashes).toHaveLength(13)
+    const period = 242.2112 / 13
+    dashes.forEach(([from, to], i) => {
+      expect(from).toBeCloseTo(i * period, 1)
+      expect(to - from).toBeCloseTo((period * 12.7) / 19.05, 1)
+    })
+  })
+
+  // probe ellipse/p330: an elliptical arc centred over its length as an arc
+  // is, its ends (L − m·period + 12.7) / 2: 8.05 on the quarter (L 60.55),
+  // 9.75 on the half (121.11), 14.42 from 10° to 200° (130.44).
+  it.each([
+    [
+      0,
+      90,
+      [
+        [0, 8.05],
+        [14.4, 27.1],
+        [33.45, 46.15],
+        [52.5, 60.55],
+      ],
+    ],
+    [0, 180, 9.75],
+    [10, 200, 14.42],
+  ] as const)(
+    "lays an elliptical arc from %s° to %s° centred over its length",
+    (from, to, expected) => {
+      const arc = ellipseOf(p(0, 0), p(50, 0), 0.5, {
+        id: "A1",
+        startParam: Math.atan2(Math.sin(deg(from)) / 0.5, Math.cos(deg(from))),
+        endParam: Math.atan2(Math.sin(deg(to)) / 0.5, Math.cos(deg(to))),
+      })
+      const dashes = ellipseDashes(arc)!
+      if (typeof expected !== "number") {
+        expect(dashes).toEqual(expected)
+        return
+      }
+      const first = dashes[0]
+      const last = dashes[dashes.length - 1]
+      expect(first[1] - first[0]).toBeCloseTo(expected, 1)
+      expect(last[1] - last[0]).toBeCloseTo(expected, 1)
+    }
+  )
+
+  // probe ellipse/p330: an ellipse shorter than one period (14.53) is solid.
+  it("draws an ellipse shorter than its pattern solid", () => {
+    expect(ellipseDashes(ellipseOf(p(0, 0), p(3, 0), 0.5))).toBeNull()
+  })
+
+  it("leaves an ellipse ghost's own dashes on one curve", () => {
+    const primitives = entityScenePrimitive(
+      createHarness().runtime.viewport,
+      ellipseOf(p(0, 0), p(50, 0), 0.5),
+      { color: THEME.preview, width: 1, dash: [6, 4] }
+    )
+    expect(primitives.map((primitive) => primitive.kind)).toEqual(["ellipse"])
   })
 
   it("leaves a circle ghost's own dashes on one circle", () => {

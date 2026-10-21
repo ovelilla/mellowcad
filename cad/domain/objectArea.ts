@@ -1,6 +1,7 @@
 import { Vec2, V } from "../geometry/Vec2"
 import { circleArea, circleCircumference } from "./entityMeasures"
 import {
+  ellipseArcLength,
   ellipseSemiMajor,
   ellipseSemiMinor,
   ellipseSweepParams,
@@ -75,23 +76,6 @@ export function objectArea(entity: Entity): ObjectArea | null {
       return unhandled
     }
   }
-}
-
-/** Simpson's rule on the speed `√(a² sin² t + b² cos² t)`, smooth and periodic. */
-function ellipseArcLength(
-  a: number,
-  b: number,
-  start: number,
-  sweep: number
-): number {
-  const steps = 512
-  const h = sweep / steps
-  const speed = (t: number) => Math.hypot(a * Math.sin(t), b * Math.cos(t))
-  let sum = speed(start) + speed(start + sweep)
-  for (let i = 1; i < steps; i++) {
-    sum += (i % 2 === 0 ? 2 : 4) * speed(start + i * h)
-  }
-  return (sum * h) / 3
 }
 
 /**

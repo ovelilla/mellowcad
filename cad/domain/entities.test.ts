@@ -34,7 +34,10 @@ import {
   dimensionMeasurement,
   dimensionText,
   distanceToEntity,
+  createEllipse,
   ellipseEndPoint,
+  ellipseLengthTable,
+  ellipseMidpoint,
   ellipseQuadrantPoints,
   ellipseSemiMajor,
   ellipseSemiMinor,
@@ -883,6 +886,101 @@ describe("ellipse", () => {
       endParam: Math.PI,
     })
     expect(ellipseQuadrantPoints(half)).toHaveLength(3)
+  })
+
+  // probe ellipse/p303: the quarter arc's Midpoint is halfway along its
+  // length (60.5528 / 2), not at its middle parameter (35.3553, 17.6777).
+  it("puts an elliptical arc's midpoint halfway along its length", () => {
+    const quarter = ellipseOf(ORIGIN, p(50, 0), 0.5, {
+      startParam: 0,
+      endParam: Math.PI / 2,
+    })
+    expect(ellipseMidpoint(quarter)).toBeCloseToPoint(
+      p(29.72359457451975, 20.102909774268873),
+      9
+    )
+  })
+
+  // probe ellipse/p328: AREA's Perimeter 242.2112 and the 10°→100° arc's
+  // Length 56.0148, the lengths the table measures along.
+  it("measures an ellipse along its length", () => {
+    const whole = ellipseLengthTable(ellipseOf(ORIGIN, p(50, 0), 0.5))
+    expect(whole.length).toBeCloseTo(242.2112, 4)
+    expect(whole.paramAt(0)).toBe(0)
+    expect(whole.paramAt(whole.length)).toBeCloseTo(2 * Math.PI, 12)
+    // A quarter of the way round a whole ellipse is its minor axis's end.
+    expect(whole.paramAt(whole.length / 4)).toBeCloseTo(Math.PI / 2, 9)
+    const arc = ellipseLengthTable(
+      ellipseOf(ORIGIN, p(50, 0), 0.5, {
+        startParam: 0.33903719097228474,
+        endParam: 1.6587324508186057,
+      })
+    )
+    expect(arc.length).toBeCloseTo(56.0148, 4)
+    expect(arc.paramAt(-1)).toBe(0.33903719097228474)
+    expect(arc.paramAt(100)).toBe(1.6587324508186057)
+  })
+
+  // probes ellipse/p152, p153, p220, p224, p226, p235, p236: an arc whose end
+  // comes round to its start is a closed ellipse; this app stores it whole
+  // (AutoCAD keeps its start, ELLIPSE-D21).
+  it.each([
+    [0.8570719478501309, 0.8570719478501309],
+    [0.8570719478501309, 0.85707194785013],
+    [0.8570719478501309, 0.8570719478501309 + 2 * Math.PI],
+    [-1, -1 - 2 * Math.PI + 1e-12],
+  ])("stores a whole turn from %s to %s as a whole ellipse", (start, end) => {
+    const turn = createEllipse(ORIGIN, p(50, 0), 0.5, {
+      startParam: start,
+      endParam: end,
+    })
+    expect(turn).not.toHaveProperty("startParam")
+    expect(turn).not.toHaveProperty("endParam")
+  })
+
+  // probes ellipse/p134, p148, p154, p179, p180: the start in [0, 2π), the
+  // end after it, whatever the angles typed.
+  it.each([
+    [-0.8571, 1.8518, 5.4261, 8.135],
+    [0.8571, -1.2898, 0.8571, 4.9934],
+    [0.8571, -2.2845, 0.8571, 3.9987],
+    [-0.7854, 3.1416, 5.4978, 9.4248],
+    [-Math.PI / 2, Math.PI, (3 * Math.PI) / 2, 3 * Math.PI],
+  ])("stores the parameters %s → %s as %s → %s", (start, end, stored, then) => {
+    const arc = createEllipse(ORIGIN, p(50, 0), 0.5, {
+      startParam: start,
+      endParam: end,
+    })
+    expect(arc.startParam).toBeCloseTo(stored, 3)
+    expect(arc.endParam).toBeCloseTo(then, 3)
+  })
+
+  it("keeps parameters already in AutoCAD's form to the bit", () => {
+    const arc = createEllipse(ORIGIN, p(50, 0), 0.5, {
+      startParam: 5.4261,
+      endParam: 8.135,
+    })
+    expect(arc.startParam).toBe(5.4261)
+    expect(arc.endParam).toBe(8.135)
+  })
+
+  it("normalises the range the axis swap turns", () => {
+    const swapped = createEllipse(ORIGIN, p(20, 0), 2, {
+      startParam: 0,
+      endParam: Math.PI / 2,
+    })
+    expect(swapped.startParam).toBeCloseTo((3 * Math.PI) / 2, 12)
+    expect(swapped.endParam).toBeCloseTo(2 * Math.PI, 12)
+  })
+
+  // probe ellipse/p168: with both axes 25 long the first stays the major
+  // one, MajorAxis −23.2033, −9.3062, though the ratio computed is a hair
+  // above 1.
+  it("keeps the first axis major when the two tie", () => {
+    const first = p(-23.20327, -9.30622)
+    const tie = createEllipse(ORIGIN, first, 1 + 2 ** -52)
+    expect(tie.majorAxis).toBeCloseToPoint(first, 9)
+    expect(tie.ratio).toBe(1)
   })
 
   it("retypes one radius while holding the other", () => {

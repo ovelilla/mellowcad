@@ -21,6 +21,26 @@ describe("objectArea", () => {
     })
   })
 
+  // probe ellipse/p328: AREA Object, `Area = 3926.9908, Perimeter =
+  // 242.2112` for the ellipse 50 by 25, `Area = 219.4099, Length = 56.0148`
+  // for its arc from 10° to 100°, the segment its chord closes.
+  it("measures an ellipse as AREA's Object does", () => {
+    expect(objectArea(ellipseOf(p(0, 0), p(50, 0), 0.5))).toEqual({
+      area: expect.closeTo(3926.9908, 4),
+      around: expect.closeTo(242.2112, 4),
+      measured: "perimeter",
+    })
+    const arc = ellipseOf(p(0, 0), p(50, 0), 0.5, {
+      startParam: 0.33903719097228474,
+      endParam: 1.6587324508186057,
+    })
+    expect(objectArea(arc)).toEqual({
+      area: expect.closeTo(219.4099, 4),
+      around: expect.closeTo(56.0148, 4),
+      measured: "length",
+    })
+  })
+
   it("measures an ellipse, and an elliptical arc closed by its chord", () => {
     expect(objectArea(ellipseOf(p(5, 0), p(5, 0), 0.6))).toEqual({
       area: expect.closeTo(47.1239, 4),

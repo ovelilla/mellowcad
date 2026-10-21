@@ -14,9 +14,14 @@ the point typed, then ends — and `Specify second point or <use first point as 
 `Precise punto base o [Desplazamiento] <Desplazamiento>`, `Precise desplazamiento`,
 `Precise segundo punto o <usar primer punto como desplazamiento>`); noun-verb and verb-noun, box
 select, displacement + angle field; the displacement is 3D (`@0,0,5` lifts); Enter at the second
-point uses the first point as the displacement
+point uses the first point as the displacement; a whole ellipse moves with its centre and stays for a quadrant alone
+(ellipse/p326, p331)
 
-**Missing:** the selection modes' gaps (Command line, `Select objects:`)
+**Missing:** the selection modes' gaps (Command line, `Select objects:`); an elliptical arc with an
+end in the window: AutoCAD moves that end and keeps the other, the arc an affine image of itself
+with its parameter sweep kept (ellipse/p324, p333, p336–p338; p332 moved an end lying 0.14 outside
+the window), whose rule no probe has fixed yet (ELLIPSE-D44); here the arc moves whole with its
+centre, else stays
 
 ### `COPY` / `CO` · es `COPIA` / `CP` / `DUP`†
 
@@ -45,7 +50,8 @@ Reference's `Specify the reference angle <0>:` (typed, or two points: `Specify s
 `Precise el nuevo ángulo`); pivot + angle (Enter takes the last angle, 0 in each drawing: per
 drawing, not saved, rectang/p314),
 Copy, Reference; about an axis parallel to the UCS's Z ("the Z axis of the UCS determines the axis
-direction for rotating objects about a point")
+direction for rotating objects about a point"); an elliptical arc keeps its parameters
+(ellipse/p322)
 
 **Missing:** the new angle's `[Points]` and `<default>` (so it asks `Specify the new angle:`; Enter
 there ends ROTATE, **unverified**); defaults written at the drawing's precision (`<0.00>`) where
@@ -66,7 +72,8 @@ drawing (a factor typed leaves them), as AutoCAD 2023's console asks them (es
 `Precise nueva longitud o [Puntos]`); factor (Enter takes the last one, 1 in each drawing — per
 drawing, not saved, rectang/p315 —, though the prompt shows no default, as AutoCAD's 2026 one shows
 none), Copy, Reference; in 3D about
-the base point, elevation, a line's rise and thickness included
+the base point, elevation, a line's rise and thickness included; an elliptical arc keeps its
+parameters and ratio (ellipse/p323)
 
 **Missing:** Enter at Points' `Specify first point:` ends the command unscaled (AutoCAD 2023's
 console scales by a length of its own there)
@@ -79,7 +86,12 @@ console scales by a length of its own there)
 Autodesk's table words the two otherwise —, `¿Borrar objetos de origen? [Sí/No] <No>`); two-point
 axis, erase-source Yes/No prompt; the mirror plane holds the two points and the UCS's Z
 
-**Missing:** MIRRTEXT
+**Missing:** MIRRTEXT; an ellipse's normal: AutoCAD turns a mirrored ellipse over, its normal −Z,
+its parameters kept and its major axis on the mirrored end (ellipse/p320, p321), where this app
+keeps +Z and reflects the range, the same curve — its Start angle and End angle (260° and 350°
+where AutoCAD reads 10° and 100°), and BREAK of it keeping the other piece (p329: AutoCAD keeps
+three quarters, Area 3570.243), differ. WHY not built: an ellipse turned to −Z no longer reads in
+plan here, so TRIM, EXTEND, BREAK, OFFSET, JOIN, HATCH and its grips would refuse it (ELLIPSE-D43)
 
 ### `ARRAYRECT` · es `MATRIZRECTANG` / `MATRIZ`† / `MA`†
 
@@ -582,7 +594,7 @@ start vertex as well, and does nothing at an end or at that start vertex; an obj
 kept as the piece from its start — its handle, its place in the drawing —, the other piece a new
 object, which Last finds, and a circle is kept as the arc left (AutoCAD 2023's console's LIST);
 ellipses, as the console's DXF parameters show them: a whole one loses what runs counter-clockwise
-from the first point to the second and keeps its handle (`@` and BREAKATPOINT on it
+from the first point to the second and keeps its handle (ellipse/p334; `@` and BREAKATPOINT on it
 `Cannot break a closed, periodic curve at only one point.`, es
 `No es posible partir una curva periódica cerrada en un solo punto.`), an elliptical arc what lies
 between the points in its parameter, whichever comes first, split by `@`, untouched at an end; text,
@@ -592,7 +604,8 @@ picked or found by a mode, and `Select object:` again; a line's pieces keep the 
 an object at an angle to the UCS's XY plane is not taken
 
 **Missing:** splines (they do not highlight; AutoCAD breaks them, keeping control points on knots of
-their own, which a spline here, on uniform knots, cannot hold), Group
+their own, which a spline here, on uniform knots, cannot hold), Group; a mirrored whole ellipse,
+which AutoCAD breaks counter-clockwise about its −Z normal (ellipse/p329; MIRROR's entry)
 
 ### `MATCHPROP` / `MA` · es `IGUALARPROP` / `IP`† / `COPARPROP`†
 

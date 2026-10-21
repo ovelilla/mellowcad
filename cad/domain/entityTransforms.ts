@@ -32,7 +32,7 @@ import {
   createInsert,
   nextEntityId,
 } from "./entityFactories"
-import { createEllipse } from "./ellipses"
+import { createEllipse, ellipseWithSpan } from "./ellipses"
 import { mapSplinePoints, splineCopy } from "./splines"
 import { TextOptions, createText } from "./text"
 import { MTextOptions, createMText } from "./mtext"
@@ -985,13 +985,18 @@ function mirrorFlat(entity: Entity, a: Vec2, b: Vec2): Entity {
         endAngle: angles.endAngle,
       }
     }
-    case "ellipse":
-      return {
-        ...entity,
-        center: mirrorPoint(entity.center, a, b),
-        majorAxis: mappedMajorAxis(entity, (p) => mirrorPoint(p, a, b)),
-        ...mirrorEllipseParams(entity),
-      }
+    case "ellipse": {
+      const params = mirrorEllipseParams(entity)
+      return ellipseWithSpan(
+        {
+          ...entity,
+          center: mirrorPoint(entity.center, a, b),
+          majorAxis: mappedMajorAxis(entity, (p) => mirrorPoint(p, a, b)),
+        },
+        params.startParam,
+        params.endParam
+      )
+    }
     case "spline":
       return mapSplinePoints(entity, (p) => mirrorPoint(p, a, b))
     case "polyline":

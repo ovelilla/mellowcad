@@ -1,6 +1,9 @@
 import { Vec2, V } from "../../geometry/Vec2"
 import { planar } from "../../geometry/Vec3"
-import { arcFrom3Points } from "../../geometry/primitives"
+import {
+  arcFrom3Points,
+  ellipseParamFromAngle,
+} from "../../geometry/primitives"
 import {
   ArcEntity,
   arcEndPoint,
@@ -9,6 +12,7 @@ import {
   createCircle,
   carryOverrides,
   DimensionEntity,
+  EllipseEntity,
   Entity,
   MTextEntity,
   mtextAlign,
@@ -16,10 +20,15 @@ import {
   mtextLayout,
   mtextToWorld,
   PolylineEntity,
+  ellipseRotation,
+  ellipseSemiMajor,
+  ellipseSemiMinor,
+  ellipseWithAxes,
+  ellipseWithSpan,
   splineWithPoint,
   stretchPolylineVertices,
 } from "../../domain/entities"
-import { DimensionPoint } from "./selectToolState"
+import { DimensionPoint, EllipseGripRole } from "./selectToolState"
 
 /**
  * The object with its `index`th vertex grip moved to `point`: a polyline's
@@ -149,6 +158,48 @@ export function arcStretchedThrough(
       arc.id
     )
   )
+}
+
+/**
+ * `ellipse` with one of its grips dragged to `point` (desktop ellipse/d07): a
+ * quadrant sets its half-axis to the point's distance from the centre, that
+ * axis's direction and the other half-axis kept, the longer staying major
+ * (d07-3, d07-4); an elliptical arc's end goes to the point's heading from
+ * the centre, measured as its angles are, the ellipse kept (d07-7). `null`
+ * on the centre, or with an end brought round onto the other.
+ */
+export function ellipseGripped(
+  ellipse: EllipseEntity,
+  role: EllipseGripRole,
+  point: Vec2
+): EllipseEntity | null {
+  const offset = V.sub(planar(point), ellipse.center)
+  const reach = V.length(offset)
+  if (reach < 1e-9) return null
+  if (role.kind === "ellipseAxis") {
+    return role.quadrant % 2 === 0
+      ? ellipseWithAxes(
+          ellipse,
+          V.scale(V.normalize(ellipse.majorAxis), reach),
+          ellipseSemiMinor(ellipse) / reach
+        )
+      : ellipseWithAxes(
+          ellipse,
+          ellipse.majorAxis,
+          reach / ellipseSemiMajor(ellipse)
+        )
+  }
+  const { startParam, endParam } = ellipse
+  if (startParam === undefined || endParam === undefined) return null
+  const param = ellipseParamFromAngle(
+    ellipse.ratio,
+    Math.atan2(offset.y, offset.x) - ellipseRotation(ellipse)
+  )
+  const arc =
+    role.end === "start"
+      ? ellipseWithSpan(ellipse, param, endParam)
+      : ellipseWithSpan(ellipse, startParam, param)
+  return arc.startParam === undefined ? null : arc
 }
 
 /** A copy of a circle or arc with a new radius (preserving id); else `null`. */

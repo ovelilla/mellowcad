@@ -40,19 +40,14 @@ export function createEllipse(
     center: { x: center.x, y: center.y },
     majorAxis: axes.majorAxis,
     ratio: axes.ratio,
-    ...(span
-      ? {
-          startParam: span.start + axes.paramShift,
-          endParam: span.end + axes.paramShift,
-        }
-      : {}),
+    ...(span ? storedSpan(span, axes.paramShift) : {}),
   }
 }
 
 /**
  * Returns a copy of `ellipse` (id and overrides intact) reshaped to the given
  * axis and ratio — the path a retyped Properties row takes, and the one a grip
- * drag will take, so both get the major-axis normalisation for free.
+ * drag takes, so both get the major-axis normalisation for free.
  */
 export function ellipseWithAxes(
   ellipse: EllipseEntity,
@@ -60,18 +55,39 @@ export function ellipseWithAxes(
   ratio: number
 ): EllipseEntity {
   const axes = normalizeEllipseAxes(majorAxis, ratio)
+  const span = ellipseSpan(ellipse.startParam, ellipse.endParam)
   return {
     ...ellipse,
     majorAxis: axes.majorAxis,
     ratio: axes.ratio,
-    ...(ellipse.startParam !== undefined && ellipse.endParam !== undefined
-      ? {
-          startParam: ellipse.startParam + axes.paramShift,
-          endParam: ellipse.endParam + axes.paramShift,
-        }
-      : {}),
+    ...(span ? storedSpan(span, axes.paramShift) : {}),
   }
 }
+
+/**
+ * Returns a copy of `ellipse` (id and overrides intact) sweeping from
+ * `startParam` to `endParam`, stored as the factory stores a range: a whole
+ * turn, or no range, makes it a whole ellipse.
+ */
+export function ellipseWithSpan(
+  ellipse: EllipseEntity,
+  startParam: number | undefined,
+  endParam: number | undefined
+): EllipseEntity {
+  const span = ellipseSpan(startParam, endParam)
+  if (span) return { ...ellipse, ...storedSpan(span, 0) }
+  const whole: Record<string, unknown> = { ...ellipse }
+  delete whole.startParam
+  delete whole.endParam
+  return whole as unknown as EllipseEntity
+}
+
+/**
+ * Below this a ratio above 1 is a tie, the two axes equal: the first one
+ * given stays major (ellipse/p168), where a ratio computed a hair above 1
+ * would turn it a quarter.
+ */
+const RATIO_TIE = 1e-9
 
 /**
  * Puts a pair of axes into DXF's form, where the stored vector is the *major*
@@ -88,10 +104,10 @@ function normalizeEllipseAxes(
   readonly paramShift: number
 } {
   const resolved = Number.isFinite(ratio) && ratio > 0 ? ratio : 1
-  if (resolved <= 1) {
+  if (resolved <= 1 + RATIO_TIE) {
     return {
       majorAxis: { x: majorAxis.x, y: majorAxis.y },
-      ratio: resolved,
+      ratio: Math.min(resolved, 1),
       paramShift: 0,
     }
   }
@@ -102,10 +118,15 @@ function normalizeEllipseAxes(
   }
 }
 
+/** Within this of no sweep or of a whole turn, a range is a whole ellipse. */
+const WHOLE_TURN = 1e-9
+
 /**
  * The parameter range to store, or `null` for a full ellipse. A range that
- * sweeps a whole turn is a full ellipse and stores nothing, which is what keeps
- * mirroring one an identity instead of a range that has to be re-normalised.
+ * sweeps no angle or a whole turn either way is a full ellipse and stores
+ * nothing (ellipse/p152, p220, p224, p226, p235, p236: AutoCAD keeps such a
+ * closed arc's start, which has no field here), which also keeps mirroring
+ * one an identity instead of a range that has to be re-normalised.
  */
 function ellipseSpan(
   start: number | undefined,
@@ -113,8 +134,28 @@ function ellipseSpan(
 ): { readonly start: number; readonly end: number } | null {
   if (start === undefined || end === undefined) return null
   if (!Number.isFinite(start) || !Number.isFinite(end)) return null
-  if (normalizeAngle(end - start) < 1e-9) return null
+  const sweep = normalizeAngle(end - start)
+  if (sweep < WHOLE_TURN || sweep > 2 * Math.PI - WHOLE_TURN) return null
   return { start, end }
+}
+
+/**
+ * A range as AutoCAD stores it, turned by `shift`: the start in [0, 2π) and
+ * the end after it (ellipse/p134, p148, p154, p179, p180). One already so is
+ * kept to the bit, so a saved drawing loads and saves the same bytes.
+ */
+function storedSpan(
+  span: { readonly start: number; readonly end: number },
+  shift: number
+): { readonly startParam: number; readonly endParam: number } {
+  const start = span.start + shift
+  const end = span.end + shift
+  const turn = 2 * Math.PI
+  if (start >= 0 && start < turn && end > start && end - start < turn) {
+    return { startParam: start, endParam: end }
+  }
+  const from = normalizeAngle(start)
+  return { startParam: from, endParam: from + normalizeAngle(end - start) }
 }
 
 export function isFullEllipse(ellipse: EllipseEntity): boolean {
@@ -174,14 +215,107 @@ export function ellipseStartPoint(ellipse: EllipseEntity): Vec2 {
   return ellipsePointAt(ellipse, ellipseSweepParams(ellipse).start)
 }
 
+/** Where the curve ends: a whole ellipse's is its start, to the bit. */
 export function ellipseEndPoint(ellipse: EllipseEntity): Vec2 {
+  if (isFullEllipse(ellipse)) return ellipseStartPoint(ellipse)
   const { start, sweep } = ellipseSweepParams(ellipse)
   return ellipsePointAt(ellipse, start + sweep)
 }
 
+/**
+ * The point halfway along the curve's length, not at its middle parameter:
+ * AutoCAD's Midpoint of an elliptical arc (ellipse/p303). A whole ellipse's
+ * is half its length from its start; AutoCAD offers none there (p304).
+ */
 export function ellipseMidpoint(ellipse: EllipseEntity): Vec2 {
+  const along = ellipseLengthTable(ellipse)
+  return ellipsePointAt(ellipse, along.paramAt(along.length / 2))
+}
+
+/** How fast the parametrisation runs at `t`: `√(a² sin² t + b² cos² t)`. */
+function ellipseSpeed(a: number, b: number, t: number): number {
+  return Math.hypot(a * Math.sin(t), b * Math.cos(t))
+}
+
+/**
+ * The length of the ellipse of semi-axes `a` and `b` from parameter `start`
+ * through `sweep`, by Simpson's rule on its speed in `steps` (even) pieces:
+ * an elliptic integral, with no closed form.
+ */
+export function ellipseArcLength(
+  a: number,
+  b: number,
+  start: number,
+  sweep: number,
+  steps = 512
+): number {
+  const h = sweep / steps
+  let sum = ellipseSpeed(a, b, start) + ellipseSpeed(a, b, start + sweep)
+  for (let i = 1; i < steps; i++) {
+    sum += (i % 2 === 0 ? 2 : 4) * ellipseSpeed(a, b, start + i * h)
+  }
+  return (sum * h) / 3
+}
+
+/**
+ * The pieces an ellipse's sweep is tabulated in to find the parameter at a
+ * distance along it. The length has no closed form and neither has its
+ * inverse, and stepping the parameter evenly is no answer: it bunches the
+ * points at the ends of the major axis, where the curve is slow.
+ */
+const ELLIPSE_LENGTH_PIECES = 256
+
+/** Newton's steps refining a parameter read off the table: it starts close. */
+const ELLIPSE_LENGTH_ITERATIONS = 4
+
+/** An ellipse's sweep measured along its length. */
+export interface EllipseLength {
+  /** The length of the swept curve. */
+  readonly length: number
+  /** The parameter at `distance` along the curve from its start, clamped to it. */
+  paramAt(distance: number): number
+}
+
+/**
+ * The curve's length, and the parameter at any distance along it: read off a
+ * table of {@link ELLIPSE_LENGTH_PIECES} pieces, then refined by at most
+ * {@link ELLIPSE_LENGTH_ITERATIONS} Newton steps on the length inside the
+ * piece. Midpoint and the linetype's dashes are laid by length.
+ */
+export function ellipseLengthTable(ellipse: EllipseEntity): EllipseLength {
+  const a = ellipseSemiMajor(ellipse)
+  const b = ellipseSemiMinor(ellipse)
   const { start, sweep } = ellipseSweepParams(ellipse)
-  return ellipsePointAt(ellipse, start + sweep / 2)
+  const h = sweep / ELLIPSE_LENGTH_PIECES
+  const lengths = [0]
+  for (let i = 0; i < ELLIPSE_LENGTH_PIECES; i++) {
+    lengths.push(lengths[i] + ellipseArcLength(a, b, start + i * h, h, 4))
+  }
+  const length = lengths[ELLIPSE_LENGTH_PIECES]
+  return {
+    length,
+    paramAt(distance: number): number {
+      if (!(distance > 0) || !(length > 0)) return start
+      if (distance >= length) return start + sweep
+      let low = 0
+      let high = ELLIPSE_LENGTH_PIECES
+      while (high - low > 1) {
+        const mid = (low + high) >> 1
+        if (lengths[mid] <= distance) low = mid
+        else high = mid
+      }
+      const from = start + low * h
+      const piece = lengths[low + 1] - lengths[low]
+      let t = from + (piece > 0 ? (h * (distance - lengths[low])) / piece : 0)
+      for (let i = 0; i < ELLIPSE_LENGTH_ITERATIONS; i++) {
+        const speed = ellipseSpeed(a, b, t)
+        if (speed < 1e-12) break
+        const reached = lengths[low] + ellipseArcLength(a, b, from, t - from, 4)
+        t = Math.min(Math.max(t - (reached - distance) / speed, from), from + h)
+      }
+      return t
+    },
+  }
 }
 
 /**
@@ -284,7 +418,7 @@ const CUT_EPS = 1e-9
  * What is left of `ellipse` once the part between `from` and `to`, offsets
  * into its sweep (`ellipseParamAt`) with `from` first, is cut out, and that
  * part: a whole ellipse runs on from `to` round to `from`, its end past its
- * start (AutoCAD 2023's console, acc/be1–be3); an elliptical arc keeps what
+ * start (ellipse/p334); an elliptical arc keeps what
  * lies before and after, nothing at an end, and the same offset twice splits
  * it. TRIM and BREAK cut ellipses with it.
  */

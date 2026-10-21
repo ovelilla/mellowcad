@@ -2219,6 +2219,44 @@ describe("ELLIPSE", () => {
     answer(cad, "10,0", "")
     expect(cad.typeCounts()).toEqual({ line: 1 })
   })
+
+  describe("what it stores", () => {
+    const ARC = ["ELLIPSE", "A", "0,0", "100,0", "25"]
+
+    // probes p220 (30, 30), p226 (Included 360), p235 (Parameter 45, 45): a
+    // closed ELLIPSE. AutoCAD keeps its start; this app stores it whole
+    // (ELLIPSE-D21).
+    it.each([
+      ["30", "30"],
+      ["30", "I", "360"],
+      ["P", "45", "45"],
+    ])("stores a whole turn as a whole ellipse (%s %s %s)", (...answers) => {
+      const cad = answer(createHarness(), ...ARC, ...answers)
+      const ellipse = cad.only<EllipseEntity>("ellipse")
+      expect(isFullEllipse(ellipse)).toBe(true)
+      expect(ellipse).not.toHaveProperty("startParam")
+    })
+
+    // probe p148: −30 to 120 stores StartParam 5.4261, EndParam 8.1350.
+    it("stores the start in [0, 2π) and the end after it", () => {
+      const cad = answer(createHarness(), ...ARC, "-30", "120")
+      const ellipse = cad.only<EllipseEntity>("ellipse")
+      expect(ellipse.startParam).toBeCloseTo(5.4261, 4)
+      expect(ellipse.endParam).toBeCloseTo(8.135, 4)
+    })
+
+    // probe p168: 0,0, `50` towards the cursor (46.4067, 18.6123), `25`: a tie,
+    // MajorAxis −23.2033, −9.3062 (to the first point) kept, ratio 1.
+    it("keeps the first axis major when the two are equal", () => {
+      const cad = createHarness()
+      answer(cad, "ELLIPSE", "0,0")
+      cad.moveTo(p(46.4067, 18.6123))
+      answer(cad, "50", "25")
+      const ellipse = cad.only<EllipseEntity>("ellipse")
+      expect(ellipse.majorAxis).toBeCloseToPoint(p(-23.2033, -9.3062), 3)
+      expect(ellipse.ratio).toBe(1)
+    })
+  })
 })
 
 describe("SPLINE", () => {

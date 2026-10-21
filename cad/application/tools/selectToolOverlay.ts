@@ -25,6 +25,7 @@ import {
 } from "./selectToolGrips"
 import {
   arcStretchedThrough,
+  ellipseGripped,
   movedDimension,
   mtextWidthGrip,
   withRadius,
@@ -246,6 +247,37 @@ export function buildArcStretch(
     ...(preview
       ? entityScenePrimitive(viewport, preview, { color, width: 1 })
       : []),
+    ...gripPrimitives(viewport.worldToScreen(state.origin), true),
+  ]
+}
+
+/**
+ * An ellipse reshaped by its quadrant or end grip: the ghost solid in the
+ * object's own colour, an amber dashed line from the centre to the cursor,
+ * the hot grip left where it was taken (desktop ellipse/d07-3, d07-7).
+ */
+export function buildEllipseGripEdit(
+  state: Phase<"ellipseGrip">,
+  ctx: ToolContext
+): ScenePrimitive[] {
+  const { viewport } = ctx
+  const ellipse = ctx.document.get(state.entityId)
+  if (ellipse?.type !== "ellipse") return []
+  const preview = ellipseGripped(ellipse, state.role, state.current)
+  const color =
+    ellipse.color ??
+    ctx.document.getLayer(ellipse.layerId)?.color ??
+    DEFAULT_LAYER_COLOR
+  return [
+    ...(preview
+      ? entityScenePrimitive(viewport, preview, { color, width: 1 })
+      : []),
+    {
+      kind: "segment",
+      a: viewport.worldToScreen(state.center),
+      b: viewport.worldToScreen(state.current),
+      stroke: { color: THEME.dashedRubberBand, width: 1, dash: [2, 3] },
+    },
     ...gripPrimitives(viewport.worldToScreen(state.origin), true),
   ]
 }

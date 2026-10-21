@@ -1,5 +1,5 @@
 import { Vec2, V } from "../geometry/Vec2"
-import { normalizeAngle } from "../geometry/primitives"
+import { ellipseParamFromAngle, normalizeAngle } from "../geometry/primitives"
 import {
   LineEntity,
   CircleEntity,
@@ -19,7 +19,12 @@ import {
   withPolylineClosed,
   withPolylineWidths,
 } from "./polylines"
-import { ellipseSemiMajor, ellipseSemiMinor, ellipseWithAxes } from "./ellipses"
+import {
+  ellipseSemiMajor,
+  ellipseSemiMinor,
+  ellipseWithAxes,
+  ellipseWithSpan,
+} from "./ellipses"
 import {
   MAX_LINE_SPACING_FACTOR,
   MIN_LINE_SPACING_FACTOR,
@@ -47,6 +52,8 @@ export type EntityProperty =
   | "area"
   | "majorRadius"
   | "minorRadius"
+  /** An ellipse's minor radius over its major, the major kept. */
+  | "radiusRatio"
   | "centerX"
   | "centerY"
   | "startAngle"
@@ -340,10 +347,28 @@ function applyEllipseProperty(
             value / ellipseSemiMajor(ellipse)
           )
         : null
+    case "radiusRatio":
+      // The minor over the major: above 1 it would name the other axis.
+      return value > 0 && value <= 1
+        ? ellipseWithAxes(ellipse, ellipse.majorAxis, value)
+        : null
     case "centerX":
       return { ...ellipse, center: { x: value, y: ellipse.center.y } }
     case "centerY":
       return { ...ellipse, center: { x: ellipse.center.x, y: value } }
+    case "startAngle":
+    case "endAngle": {
+      // An arc's angles, from the major axis: a whole ellipse's rows are
+      // read-only, and an arc made whole by its angles is refused.
+      if (ellipse.startParam === undefined || ellipse.endParam === undefined)
+        return null
+      const param = ellipseParamFromAngle(ellipse.ratio, toRadians(value))
+      const arc =
+        property === "startAngle"
+          ? ellipseWithSpan(ellipse, param, ellipse.endParam)
+          : ellipseWithSpan(ellipse, ellipse.startParam, param)
+      return arc.startParam === undefined ? null : arc
+    }
     default:
       return null
   }

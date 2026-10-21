@@ -5,7 +5,11 @@ import {
   arcMidpoint,
   arcStartPoint,
   dimensionGeometry,
+  ellipseEndPoint,
+  ellipsePointAt,
+  ellipseStartPoint,
   entityBounds,
+  isFullEllipse,
   entityPointToWorld,
   lineEndZ,
   lineStartZ,
@@ -91,15 +95,35 @@ export function selectedGrips(ctx: ToolContext): Grip[] {
           world: arcMidpoint(entity),
         })
         break
-      case "ellipse":
-        // Only the centre for now: AutoCAD also grips the four axis endpoints,
-        // which resize the object rather than move it.
+      case "ellipse": {
+        // The centre and the four quadrants, kept off an arc's sweep, and an
+        // arc's two ends; no hover menu on any (desktop ellipse/d07).
         grips.push({
           entityId: id,
           role: { kind: "move" },
           world: entity.center,
         })
+        for (const quadrant of [0, 1, 2, 3] as const) {
+          grips.push({
+            entityId: id,
+            role: { kind: "ellipseAxis", quadrant },
+            world: ellipsePointAt(entity, (quadrant * Math.PI) / 2),
+          })
+        }
+        if (!isFullEllipse(entity)) {
+          grips.push({
+            entityId: id,
+            role: { kind: "ellipseEnd", end: "start" },
+            world: ellipseStartPoint(entity),
+          })
+          grips.push({
+            entityId: id,
+            role: { kind: "ellipseEnd", end: "end" },
+            world: ellipseEndPoint(entity),
+          })
+        }
         break
+      }
       case "spline":
         // Its fit points, or its control vertices, as it was made. AutoCAD's
         // triangular grip that switches between the two is not built.

@@ -4750,9 +4750,9 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0°~, Line space facto
 > select A1
   properties: Arc (1) {Thickness=0.00 mm~} [Geometry: Start X=50.00, Start Y=0.00, Start Z=0.00, Center X=0.00~, Center Y=0.00~, Center Z=0.00~, End X=0.00, End Y=50.00, End Z=0.00, Radius=50.00 mm~, Start angle=0°~, End angle=90°~, Total angle=90°, Arc length=78.54 mm, Area=713.50 mm², Normal X=0.00, Normal Y=0.00, Normal Z=1.00]
 > select E1
-  properties: Ellipse (1) [Geometry: Major radius=100.00 mm~, Minor radius=50.00 mm~, Radius ratio=0.50, Area=15707.96 mm²] [Center: X=0.00~, Y=0.00~, Z=0.00~]
+  properties: Ellipse (1) [Geometry: Start X=100.00, Start Y=0.00, Start Z=0.00, Center X=0.00~, Center Y=0.00~, Center Z=0.00~, End X=100.00, End Y=0.00, End Z=0.00, Major radius=100.00 mm~, Minor radius=50.00 mm~, Radius ratio=0.50~, Start angle=0°, End angle=360°, Major axis vector X=100.00, Major axis vector Y=0.00, Major axis vector Z=0.00, Minor axis vector X=0.00, Minor axis vector Y=50.00, Minor axis vector Z=0.00, Area=15707.96 mm²]
 > select E2
-  properties: Elliptical arc (1) [Geometry: Major radius=100.00 mm~, Minor radius=50.00 mm~, Radius ratio=0.50, Start angle=0°, End angle=180°] [Center: X=0.00~, Y=0.00~, Z=0.00~]
+  properties: Elliptical arc (1) [Geometry: Start X=100.00, Start Y=0.00, Start Z=0.00, Center X=0.00~, Center Y=0.00~, Center Z=0.00~, End X=-100.00, End Y=0.00, End Z=0.00, Major radius=100.00 mm~, Minor radius=50.00 mm~, Radius ratio=0.50~, Start angle=0°~, End angle=180°~, Major axis vector X=100.00, Major axis vector Y=0.00, Major axis vector Z=0.00, Minor axis vector X=0.00, Minor axis vector Y=50.00, Minor axis vector Z=0.00, Area=7853.98 mm²]
 > select P1
   properties: Polyline (1) {Thickness=0.00 mm~} [Geometry: Current Vertex=1~, Vertex X=0.00~, Vertex Y=0.00~, Start segment width=0.00 mm~, End segment width=0.00 mm~, Global width=0.00 mm~, Elevation=0.00~, Area=5000.00 mm², Length=200.00 mm] [Misc: Closed=No~]
 > select P2

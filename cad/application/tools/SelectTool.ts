@@ -26,6 +26,7 @@ import { riseAlongCursor, showRise } from "./directDistance"
 import { KeyInput, PointerInput, Tool, ToolContext } from "./Tool"
 import {
   DimensionPoint,
+  EllipseGripRole,
   Grip,
   LineEnd,
   SelectToolState,
@@ -35,6 +36,7 @@ import {
   movedDimension,
   mtextWidthThrough,
   arcStretchedThrough,
+  ellipseGripped,
   radiusHandle,
   toDegrees,
   withRadius,
@@ -46,6 +48,7 @@ import {
   buildArcStretch,
   buildBulgeEdit,
   buildDimPointEdit,
+  buildEllipseGripEdit,
   buildGripEdit,
   buildGrips,
   buildMoveEdit,
@@ -81,8 +84,10 @@ const DRAG_THRESHOLD_PX = 4
  * Selected objects also show *grips* (small squares). Lines show endpoint grips
  * (stretch) and a midpoint grip (move). Circles show a centre
  * grip (move) and four quadrant grips (resize the radius). Arcs show a centre
- * grip (move), two endpoint grips (swing the sweep) and a midpoint grip (resize
- * the radius). In every case you can drag and click to place, or type the exact
+ * grip (move), two endpoint grips (swing the sweep) and a midpoint grip
+ * (stretch through it). Ellipses show a centre grip (move) and four quadrant
+ * grips (set that half-axis), an elliptical arc two end grips besides (swing
+ * the end). You can drag and click to place, and for most type the exact
  * amount in the dynamic input, exactly like AutoCAD grip editing.
  *
  * Deleting the selection goes through {@link RemoveEntitiesCommand}, so it is
@@ -128,6 +133,10 @@ export class SelectTool implements Tool {
     }
     if (this.state.phase === "arcStretch") {
       this.placeArcStretch(this.state, this.state.current, ctx)
+      return
+    }
+    if (this.state.phase === "ellipseGrip") {
+      this.placeEllipseGrip(this.state, this.state.current, ctx)
       return
     }
     if (this.state.phase === "moveVertex") {
@@ -182,6 +191,10 @@ export class SelectTool implements Tool {
           break
         case "arcMiddle":
           this.beginArcStretch(grip, input.screen, ctx)
+          break
+        case "ellipseAxis":
+        case "ellipseEnd":
+          this.beginEllipseGrip(grip, grip.role, input.screen, ctx)
           break
         case "vertex":
           this.beginVertexMove(grip, grip.role.index, input.screen, ctx)
@@ -269,7 +282,8 @@ export class SelectTool implements Tool {
         ctx.requestRender()
         break
       }
-      case "arcStretch": {
+      case "arcStretch":
+      case "ellipseGrip": {
         this.state = { ...this.state, current: input.point }
         ctx.requestRender()
         break
@@ -436,6 +450,15 @@ export class SelectTool implements Tool {
         if (dragged) this.placeArcStretch(this.state, this.state.current, ctx)
         return
       }
+      case "ellipseGrip": {
+        const dragged =
+          Math.hypot(
+            input.screen.x - this.state.pressScreen.x,
+            input.screen.y - this.state.pressScreen.y
+          ) >= DRAG_THRESHOLD_PX
+        if (dragged) this.placeEllipseGrip(this.state, this.state.current, ctx)
+        return
+      }
       case "moveVertex": {
         const dragged =
           Math.hypot(
@@ -523,7 +546,8 @@ export class SelectTool implements Tool {
       if (
         this.state.phase === "resizeRadius" ||
         this.state.phase === "arcAngle" ||
-        this.state.phase === "arcStretch"
+        this.state.phase === "arcStretch" ||
+        this.state.phase === "ellipseGrip"
       ) {
         // Abort the radius/angle grip edit, leaving the object untouched.
         ctx.dynamicInput.close()
@@ -604,6 +628,7 @@ export class SelectTool implements Tool {
       this.state.phase === "resizeRadius" ||
       this.state.phase === "arcAngle" ||
       this.state.phase === "arcStretch" ||
+      this.state.phase === "ellipseGrip" ||
       this.state.phase === "moveVertex" ||
       this.state.phase === "stretchSegment" ||
       this.state.phase === "bulgeEdit" ||
@@ -655,6 +680,7 @@ export class SelectTool implements Tool {
     if (this.state.phase === "resizeRadius") return this.state.center
     if (this.state.phase === "arcAngle") return this.state.center
     if (this.state.phase === "arcStretch") return this.state.origin
+    if (this.state.phase === "ellipseGrip") return this.state.center
     if (this.state.phase === "moveVertex") return this.state.origin
     if (this.state.phase === "moveDimPoint") return this.state.origin
     if (this.state.phase === "mtextWidth") return this.state.origin
@@ -685,6 +711,8 @@ export class SelectTool implements Tool {
         return buildArcAngleEdit(state, ctx)
       case "arcStretch":
         return buildArcStretch(state, ctx)
+      case "ellipseGrip":
+        return buildEllipseGripEdit(state, ctx)
       case "moveVertex":
         return buildVertexEdit(state, ctx)
       case "stretchSegment":
@@ -845,6 +873,31 @@ export class SelectTool implements Tool {
     this.state = {
       phase: "arcStretch",
       entityId: grip.entityId,
+      origin: grip.world,
+      current: grip.world,
+      pressScreen: screen,
+    }
+    ctx.requestRender()
+  }
+
+  /**
+   * Makes an ellipse's quadrant or end grip hot in Stretch (desktop
+   * ellipse/d07). No value box: a length or an angle typed while hot is not
+   * built.
+   */
+  private beginEllipseGrip(
+    grip: Grip,
+    role: EllipseGripRole,
+    screen: Vec2,
+    ctx: ToolContext
+  ): void {
+    const ellipse = ctx.document.get(grip.entityId)
+    if (ellipse?.type !== "ellipse") return
+    this.state = {
+      phase: "ellipseGrip",
+      entityId: grip.entityId,
+      role,
+      center: ellipse.center,
       origin: grip.world,
       current: grip.world,
       pressScreen: screen,
@@ -1368,6 +1421,26 @@ export class SelectTool implements Tool {
   ): void {
     const arc = ctx.document.get(state.entityId)
     const next = arc?.type === "arc" ? arcStretchedThrough(arc, point) : null
+    if (next) ctx.execute(new UpdateEntityCommand(next))
+    this.state = { phase: "idle" }
+    ctx.requestRender()
+  }
+
+  /**
+   * Reshapes the ellipse as its grip dragged to `point` does, as one undoable
+   * command; onto the centre, or an arc's end onto its other, it is left as
+   * it was.
+   */
+  private placeEllipseGrip(
+    state: Extract<SelectToolState, { phase: "ellipseGrip" }>,
+    point: Vec2,
+    ctx: ToolContext
+  ): void {
+    const ellipse = ctx.document.get(state.entityId)
+    const next =
+      ellipse?.type === "ellipse"
+        ? ellipseGripped(ellipse, state.role, point)
+        : null
     if (next) ctx.execute(new UpdateEntityCommand(next))
     this.state = { phase: "idle" }
     ctx.requestRender()

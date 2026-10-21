@@ -76,6 +76,7 @@ export type { EllipseOptions } from "./ellipses"
 export {
   createEllipse,
   ellipseWithAxes,
+  ellipseWithSpan,
   isFullEllipse,
   ellipseSemiMajor,
   ellipseSemiMinor,
@@ -87,13 +88,14 @@ export {
   ellipseStartPoint,
   ellipseEndPoint,
   ellipseMidpoint,
+  ellipseLengthTable,
   ellipseQuadrantPoints,
   ellipseBounds,
   ellipseArea,
   ellipseParamAt,
   ellipseCut,
 } from "./ellipses"
-export type { EllipsePiece } from "./ellipses"
+export type { EllipseLength, EllipsePiece } from "./ellipses"
 
 export type { SplineOptions } from "./splines"
 export {

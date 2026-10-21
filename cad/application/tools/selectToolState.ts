@@ -24,6 +24,9 @@ export type DimensionPoint = "first" | "second" | "line" | "vertex"
  *   angular one's vertex, or the dimension line itself, which slides the whole
  *   assembly.
  * - `mtextWidth` — a multiline text's width arrow: rewrap it to a new width.
+ * - `ellipseAxis` — an ellipse's quadrant, its axis end at a quarter-turn
+ *   `quadrant` of its parameter: that half-axis to the cursor's distance.
+ * - `ellipseEnd` — an elliptical arc's end: swing it round the ellipse.
  */
 export type GripRole =
   | { readonly kind: "lineEnd"; readonly end: LineEnd }
@@ -36,6 +39,14 @@ export type GripRole =
   | { readonly kind: "bulge"; readonly segmentIndex: number }
   | { readonly kind: "dimPoint"; readonly point: DimensionPoint }
   | { readonly kind: "mtextWidth" }
+  | { readonly kind: "ellipseAxis"; readonly quadrant: 0 | 1 | 2 | 3 }
+  | { readonly kind: "ellipseEnd"; readonly end: LineEnd }
+
+/** The grips that reshape an ellipse (desktop ellipse/d07). */
+export type EllipseGripRole = Extract<
+  GripRole,
+  { kind: "ellipseAxis" } | { kind: "ellipseEnd" }
+>
 
 export interface Grip {
   readonly entityId: EntityId
@@ -136,6 +147,23 @@ export type SelectToolState =
       /** Where the grip was taken: the stretch's base, drawn hot there. */
       readonly origin: Vec2
       /** Live cursor position (the point the arc is bent through). */
+      readonly current: Vec2
+      readonly pressScreen: Vec2
+    }
+  | {
+      /**
+       * An ellipse's quadrant or an elliptical arc's end grip is hot, its
+       * default Stretch reshaping the object from its centre (desktop
+       * ellipse/d07).
+       */
+      readonly phase: "ellipseGrip"
+      readonly entityId: EntityId
+      readonly role: EllipseGripRole
+      /** The ellipse's centre: the dashed line's start and Ortho's base. */
+      readonly center: Vec2
+      /** Where the grip was taken, drawn hot there. */
+      readonly origin: Vec2
+      /** Live cursor position. */
       readonly current: Vec2
       readonly pressScreen: Vec2
     }

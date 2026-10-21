@@ -2,10 +2,12 @@ import { describe, expect, it } from "vitest"
 import type {
   ArcEntity,
   CircleEntity,
+  EllipseEntity,
   Entity,
   LineEntity,
   PolylineEntity,
 } from "../../domain/entities"
+import { isFullEllipse } from "../../domain/entities"
 import { createHarness } from "../../../test/harness"
 import { THEME } from "../../scene/theme"
 import { es } from "../../locales/es"
@@ -1018,6 +1020,55 @@ describe("STRETCH", () => {
     const line = cad.byId<LineEntity>("L1")
     expect(line.start).toBeCloseToPoint(p(0, 50))
     expect(line.end).toBeCloseToPoint(p(200, 50))
+  })
+})
+
+describe("an ellipse transformed", () => {
+  function typed(...texts: string[]) {
+    const cad = createHarness()
+    for (const text of ["ZOOM", "W", "-200,-200", "200,200", ...texts]) {
+      cad.runtime.setCommandLineText(text)
+      cad.runtime.submitCommandLine()
+    }
+    return cad
+  }
+  /** The 10°→100° arc of probes ellipse/p320–p324, its axis at 30°. */
+  const A30 = ["ELLIPSE", "A", "C", "0,0", "@50<30", "25", "10", "100"]
+  const only = (cad: ReturnType<typeof createHarness>) =>
+    cad.entities().find((e): e is EllipseEntity => e.type === "ellipse")!
+
+  // probe ellipse/p322: about 10,10 by 45°, the parameters kept.
+  it("rotates an elliptical arc, its parameters kept", () => {
+    const arc = only(typed(...A30, "ROTATE", "L", "", "10,10", "45"))
+    expect(arc.center).toBeCloseToPoint(p(10, -4.142135623730951), 9)
+    expect(arc.majorAxis).toBeCloseToPoint(
+      p(12.94095225512605, 48.29629131445343),
+      9
+    )
+    expect(arc.startParam).toBeCloseTo(0.339037, 6)
+    expect(arc.endParam).toBeCloseTo(1.658732, 6)
+  })
+
+  // probe ellipse/p323: about 10,10 by 2, the parameters kept.
+  it("scales an elliptical arc, its parameters kept", () => {
+    const arc = only(typed(...A30, "SCALE", "L", "", "10,10", "2"))
+    expect(arc.center).toBeCloseToPoint(p(-10, -10), 9)
+    expect(arc.majorAxis).toBeCloseToPoint(p(86.60254037844388, 50), 9)
+    expect(arc.ratio).toBeCloseTo(0.5, 12)
+    expect(arc.startParam).toBeCloseTo(0.339037, 6)
+    expect(arc.endParam).toBeCloseTo(1.658732, 6)
+  })
+
+  // probes ellipse/p326, p331: STRETCH moves a whole ellipse with its centre
+  // and leaves it for a quadrant alone. An elliptical arc's caught end is
+  // not stretched here (p324, p332, p333, p336–p338: modify.md, Missing).
+  it.each([
+    [["ELLIPSE", "C", "0,0", "50,0", "25"], ["45,-5", "55,5"], p(0, 0)],
+    [["ELLIPSE", "C", "0,0", "5,0", "2.5"], ["-1,-1", "4.8,1"], p(10, 5)],
+  ])("stretches a whole ellipse by its centre only (%s)", (draw, box, at) => {
+    const cad = typed(...draw, "STRETCH", "C", ...box, "", "0,0", "10,5")
+    expect(only(cad).center).toBeCloseToPoint(at, 9)
+    expect(isFullEllipse(only(cad))).toBe(true)
   })
 })
 

@@ -11,6 +11,8 @@ import {
   createBlockDefinition,
   createInsert,
   createMText,
+  ellipseEndPoint,
+  ellipseStartPoint,
 } from "../../domain/entities"
 import { type CadHarness, createHarness } from "../../../test/harness"
 import {
@@ -624,8 +626,8 @@ const ARC = () =>
   })
 const T45 = "85.3553,67.6777"
 
-// AutoCAD 2023's console, each ellipse's handle and DXF 41/42 read after
-// the break (acc/be1–be21).
+// Each ellipse's handle and DXF 41/42 read after the break (AutoCAD 2023's
+// console, acc/be1–be21; 2027 keeps the whole ellipse's rule, ellipse/p334).
 describe("BREAK of an ellipse", () => {
   it("takes from a whole one what runs counter-clockwise from the first point to the second", () => {
     for (const [first, second, kept] of [
@@ -641,6 +643,21 @@ describe("BREAK of an ellipse", () => {
       )
       expect(ellipsePieces(cad)).toEqual([kept])
     }
+  })
+
+  // probe ellipse/p334: the ellipse 0,0 → @50<30, 25 broken from its axis
+  // end to its 120° point keeps π/2 → 2π, Start −12.5,21.650635.
+  it("keeps three quarters of a turned ellipse broken a quarter round", () => {
+    const cad = answer(
+      createHarness(),
+      ...["ELLIPSE", "C", "0,0", "@50<30", "25"],
+      ...["BREAK", "43.30127,25", "-12.5,21.650635"]
+    )
+    const kept = cad.entities()[0] as EllipseEntity
+    expect(kept.startParam).toBeCloseTo(Math.PI / 2, 6)
+    expect(kept.endParam).toBeCloseTo(2 * Math.PI, 6)
+    expect(ellipseStartPoint(kept)).toBeCloseToPoint(p(-12.5, 21.650635), 5)
+    expect(ellipseEndPoint(kept)).toBeCloseToPoint(p(43.30127, 25), 5)
   })
 
   it("refuses to split a whole one in place", () => {

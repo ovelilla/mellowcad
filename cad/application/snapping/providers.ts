@@ -34,6 +34,7 @@ import {
   closestOnEntity,
   dimensionGeometry,
   ellipseEndPoint,
+  ellipseMidpoint,
   ellipseQuadrantPoints,
   ellipseStartPoint,
   entityAxes,
@@ -181,6 +182,11 @@ export const midpointProvider: SnapProvider = {
         candidates.push(
           notable(SnapType.Midpoint, entity, arcMidpoint(entity), touch)
         )
+      } else if (entity.type === "ellipse" && !isFullEllipse(entity)) {
+        // Halfway along its length (ellipse/p303); a whole one has none (p304).
+        candidates.push(
+          notable(SnapType.Midpoint, entity, ellipseMidpoint(entity), touch)
+        )
       } else if (entity.type === "spline" && !entity.closed) {
         candidates.push(
           notable(SnapType.Midpoint, entity, splineMidpoint(entity), touch)
@@ -318,8 +324,9 @@ export const quadrantProvider: SnapProvider = {
           )
         }
       } else if (entity.type === "ellipse") {
-        // An ellipse's quadrants are the endpoints of its two axes, not the
-        // cardinal directions of the world.
+        // WHY not `quadrantTurn`: an ellipse's quadrants are its own axis
+        // ends whatever the UCS (ellipse/p301), unlike a circle's or an
+        // arc's; an arc's only those on its sweep (p302).
         for (const point of ellipseQuadrantPoints(entity)) {
           candidates.push(notable(SnapType.Quadrant, entity, point, touch))
         }
@@ -745,7 +752,9 @@ export const nearestProvider: SnapProvider = {
                   entity.endAngle,
                   cursor
                 )
-              : entity.type === "polyline" || entity.type === "spline"
+              : entity.type === "polyline" ||
+                  entity.type === "spline" ||
+                  entity.type === "ellipse"
                 ? closestOnEntity(entity, cursor)
                 : null
       if (closest && isNear(on(entity, closest.point))) {

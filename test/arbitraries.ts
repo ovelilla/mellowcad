@@ -203,8 +203,12 @@ export const ellipseEntity: fc.Arbitrary<EllipseEntity> = fc
           y: Math.sin(rotation) * semiMajor,
         },
         ratio,
+        // The start as the factory stores it, in [0, 2π).
         ...(params
-          ? { startParam: params[0], endParam: params[0] + params[1] }
+          ? {
+              startParam: params[0] % (2 * Math.PI),
+              endParam: (params[0] % (2 * Math.PI)) + params[1],
+            }
           : {}),
       },
       "ellipse"

@@ -40,7 +40,11 @@ it is left unfitted to the renderer (WHY at `MAX_FITTED_PERIODS`, `SceneBuilder.
 centred over its length as a line's, each dash a piece of the arc, and solid under one period
 (arc/p200 measured on the plot, desktop arc/d10 on the screen alike: r10 0–180° is two dashes of
 71.8°),
-past 2048 periods unfitted as a circle's; LTSCALE asks
+past 2048 periods unfitted as a circle's; an ellipse's laid as a circle's, from its start
+(parameter 0) in whole stretched periods (13 round a 50 by 25 one, level or turned), and an
+elliptical arc's centred over its length as an arc's, each dash a piece of the ellipse found along
+its length, solid under one period (ellipse/p330 on the plot; the screen **unverified**, as the
+arc's was alike); LTSCALE asks
 `Enter new linetype scale factor <current>:` (es
 `Indique nuevo factor de escala del tipo de línea`), offering the current factor at the drawing's
 precision (`<1.00>`, where AutoCAD's LUPREC 4 writes `<1.0000>`); anything but a number
@@ -191,7 +195,13 @@ Radius, Start angle, End angle, Total angle, Arc length, Area (the segment its c
 Normal X, Y and Z, the ends, Total angle, Arc length, Area and the normal read-only (greyed there),
 Thickness under General; es `Ángulo total`, `Longitud de arco` worded from the console's
 `ángulo total` (table 20981) and DIMARC's `longitud de arco` (AcDimRes 5345), the desktop's own
-**unverified**; a polyline's rows and groups as AutoCAD's (desktop pline/d08): Geometry's
+**unverified**; an ellipse's and an elliptical arc's one Geometry group as AutoCAD's (desktop
+ellipse/d08): Start X, Y and Z, Center X, Y and Z, End X, Y and Z, Major radius, Minor radius,
+Radius ratio, Start angle, End angle (0 and 360 on a whole one), Major axis vector X, Y and Z,
+Minor axis vector X, Y and Z and Area, the ends, the vectors and Area read-only (greyed there), the
+ratio (above 0, at most 1) and an arc's angles retyped, a whole ellipse's angles read-only
+(**unverified** what retyping them does there); es `Relación del radio`, `Vector de radio mayor X`,
+`Vector de eje menor X` as d08 shows them, the English labels **unverified**; a polyline's rows and groups as AutoCAD's (desktop pline/d08): Geometry's
 Current Vertex (typed here where AutoCAD steps it with arrows), Vertex X and Y, Start segment width
 and End segment width of the segment it starts (none at an open one's last vertex), Global width,
 which sets every segment's, Elevation, Area (an open one's as if closed) and Length, the last two

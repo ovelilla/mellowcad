@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest"
 import type {
   ArcEntity,
   CircleEntity,
+  EllipseEntity,
   LineEntity,
   PolylineEntity,
   SplineEntity,
@@ -10,6 +11,8 @@ import {
   assignEntityColor,
   closestOnEntity,
   createSpline,
+  ellipseEndPoint,
+  ellipseStartPoint,
   lineEndZ,
   lineStartZ,
   withDeltaZ,
@@ -22,6 +25,7 @@ import {
   arcOf,
   circleOf,
   deg,
+  ellipseOf,
   lineOf,
   p,
   polylineOf,
@@ -483,6 +487,149 @@ describe("grips", () => {
     expect(hot).toBeDefined()
     cad.escape()
     expect(cad.byId("A1")).toEqual(assignEntityColor(d08(), "#ff0000"))
+  })
+
+  /** desktop ellipse/d07's ellipse: centre 50,25, major axis 10,0, minor 5. */
+  const d07Ellipse = () => ellipseOf(p(50, 25), p(10, 0), 0.5, { id: "E1" })
+  /** desktop ellipse/d07's arc: `_ELLIPSE _A 20,25 40,25 4 30 200`. */
+  const d07Arc = () =>
+    ellipseOf(p(30, 25), p(-10, 0), 0.4, {
+      id: "E1",
+      startParam: Math.atan2(Math.sin(deg(30)) / 0.4, Math.cos(deg(30))),
+      endParam: Math.atan2(Math.sin(deg(200)) / 0.4, Math.cos(deg(200))),
+    })
+  /** The grips drawn on the selection, in the world, rounded. */
+  function gripsOf(cad: ReturnType<typeof createHarness>): number[][] {
+    return cad
+      .scene()
+      .primitives.flatMap((q) =>
+        q.kind === "rect" && (q.fill === THEME.grip || q.fill === THEME.gripHot)
+          ? [
+              cad.runtime.viewport.screenToWorld({
+                x: q.min.x + q.width / 2,
+                y: q.min.y + q.height / 2,
+              }),
+            ]
+          : []
+      )
+      .map((w) => [+w.x.toFixed(2) + 0, +w.y.toFixed(2) + 0])
+      .sort((a, b) => a[0] - b[0] || a[1] - b[1])
+  }
+  const zoomed = (entity: EllipseEntity) => {
+    const cad = createHarness({ entities: [entity] })
+    // Zoomed in, so the few units dragged pass the drag threshold.
+    cad.runtime.zoomToBounds({ min: p(15, 10), max: p(70, 40) })
+    cad.select("E1")
+    cad.moveTo(p(68, 38))
+    return cad
+  }
+
+  // desktop ellipse/d07-1: the centre and the four quadrants.
+  it("grips an ellipse at its centre and its four quadrants", () => {
+    expect(gripsOf(zoomed(d07Ellipse()))).toEqual([
+      [40, 25],
+      [50, 20],
+      [50, 25],
+      [50, 30],
+      [60, 25],
+    ])
+  })
+
+  // desktop ellipse/d07-5: an elliptical arc keeps the four quadrants, on
+  // its sweep or off it, and has a grip at each end.
+  it("grips an elliptical arc at its quadrants, on its sweep or off it, and its ends", () => {
+    expect(gripsOf(zoomed(d07Arc()))).toEqual([
+      [20, 25],
+      [24.31, 21.71],
+      [30, 21],
+      [30, 25],
+      [30, 29],
+      [37.4, 27.69],
+      [40, 25],
+    ])
+  })
+
+  // desktop ellipse/d07-3: the minor quadrant at 50,30 dragged to 52,33
+  // makes the minor half-axis the cursor's distance from the centre, √68;
+  // d07-4: then the major quadrant at 60,25 to 64,28, √205, the minor kept.
+  it("sets a half-axis from a quadrant grip, its direction and the other kept", () => {
+    const cad = zoomed(d07Ellipse())
+    cad.drag(p(50, 30), p(52, 33))
+    let ellipse = cad.byId<EllipseEntity>("E1")
+    expect(ellipse.majorAxis).toBeCloseToPoint(p(10, 0), 9)
+    expect(ellipse.ratio).toBeCloseTo(Math.sqrt(68) / 10, 9)
+    expect(ellipse.center).toBeCloseToPoint(p(50, 25), 9)
+
+    cad.drag(p(60, 25), p(64, 28))
+    ellipse = cad.byId<EllipseEntity>("E1")
+    expect(ellipse.majorAxis).toBeCloseToPoint(p(Math.sqrt(205), 0), 9)
+    expect(ellipse.ratio * Math.sqrt(205)).toBeCloseTo(Math.sqrt(68), 9)
+  })
+
+  it("keeps the longer half-axis the major one when a quadrant outgrows it", () => {
+    const cad = zoomed(d07Ellipse())
+    cad.drag(p(50, 20), p(50, 10))
+    const ellipse = cad.byId<EllipseEntity>("E1")
+    expect(ellipse.majorAxis).toBeCloseToPoint(p(0, 15), 9)
+    expect(ellipse.ratio).toBeCloseTo(10 / 15, 9)
+  })
+
+  // desktop ellipse/d07-7: the end grip dragged to 32,31 puts the end on the
+  // cursor's heading from the centre, the ellipse and the start kept.
+  it("moves an elliptical arc's end to the cursor's heading from the centre", () => {
+    const cad = zoomed(d07Arc())
+    cad.drag(p(37.4, 27.69), p(32, 31))
+    const arc = cad.byId<EllipseEntity>("E1")
+    expect(arc.majorAxis).toBeCloseToPoint(p(-10, 0), 12)
+    expect(arc.ratio).toBe(0.4)
+    expect(ellipseStartPoint(arc)).toBeCloseToPoint(
+      ellipseStartPoint(d07Arc()),
+      9
+    )
+    const end = ellipseEndPoint(arc)
+    const heading = Math.atan2(31 - 25, 32 - 30)
+    expect(Math.atan2(end.y - 25, end.x - 30)).toBeCloseToAngle(heading, 9)
+  })
+
+  // desktop ellipse/d07-3, d07-7: the reshaped ghost in the object's colour,
+  // an amber dashed line from the centre to the cursor, the grip hot where
+  // it was taken; Escape leaves the object as it was.
+  it("previews a quadrant's drag from the centre, the grip hot where it was", () => {
+    const red = assignEntityColor(d07Ellipse(), "#ff0000") as EllipseEntity
+    const cad = zoomed(red)
+    cad.click(p(50, 30)).moveTo(p(52, 33))
+
+    const primitives = cad.scene().primitives
+    const ghost = primitives.flatMap((q) =>
+      q.kind === "ellipse" && q.stroke.color === "#ff0000" ? [q] : []
+    )
+    expect(ghost.length).toBeGreaterThan(0)
+    expect(ghost.at(-1)!.radiusY / ghost.at(-1)!.radiusX).toBeCloseTo(
+      Math.sqrt(68) / 10,
+      6
+    )
+    const center = cad.toScreen(p(50, 25))
+    const cursor = cad.toScreen(p(52, 33))
+    const line = primitives.find(
+      (q) =>
+        q.kind === "segment" &&
+        q.stroke.color === THEME.dashedRubberBand &&
+        Math.abs(q.a.x - center.x) < 1e-6 &&
+        Math.abs(q.b.y - cursor.y) < 1e-6
+    )
+    expect(line?.kind === "segment" && line.stroke.dash).toEqual([2, 3])
+    const grip = cad.toScreen(p(50, 30))
+    expect(
+      primitives.find(
+        (q) =>
+          q.kind === "rect" &&
+          q.fill === THEME.gripHot &&
+          Math.abs(q.min.x + q.width / 2 - grip.x) < 1e-6 &&
+          Math.abs(q.min.y + q.height / 2 - grip.y) < 1e-6
+      )
+    ).toBeDefined()
+    cad.escape()
+    expect(cad.byId("E1")).toEqual(red)
   })
 
   it("drags a polyline vertex", () => {
