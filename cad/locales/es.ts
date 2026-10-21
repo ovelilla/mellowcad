@@ -1560,6 +1560,7 @@ export const es: EngineLocale = {
       "viewAngleFromPlane": "Ángulo a partir del plano XY",
       "specifyFirstPoint": "Precise primer punto",
       "specifyNextPointOr": "Precise punto siguiente o",
+      "specifyNextPointOrClose": "Precise siguiente punto o",
       "lengthOfLine": "Longitud de la línea",
       "specifyStartPoint": "Precise punto inicial",
       "specifyEndpointOfArcOr": "Precise punto final del arco (mantenga pulsada la tecla Ctrl para cambiar de dirección) o",
@@ -2855,6 +2856,22 @@ export const es: EngineLocale = {
       "pointingEdgeOn": "No se puede señalar en un SCP visto de canto.",
       "circleDoesNotExist": "El círculo no existe.",
       "noLineOrArcToContinue": "No hay línea o arco que se pueda continuar.",
+      "allLineSegmentsUndone": "Ya están anulados todos los segmentos.",
+      "zeroLengthLineCreated": [
+        "Línea de longitud cero creada en (",
+        [
+          "x"
+        ],
+        ", ",
+        [
+          "y"
+        ],
+        ", ",
+        [
+          "z"
+        ],
+        ")"
+      ],
       "positiveNonzero": "El valor debe ser positivo y diferente de cero.",
       "valueMustBePositive": "El valor debe ser positivo.",
       "lineweightRequired": "Se precisa un grosor en unidades de grosor de línea.",

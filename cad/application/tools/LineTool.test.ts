@@ -1,6 +1,7 @@
 import { describe, expect, it, onTestFinished, vi } from "vitest"
-import type { LineEntity } from "../../domain/entities"
-import { createHarness } from "../../../test/harness"
+import { type LineEntity, lineEndZ, lineStartZ } from "../../domain/entities"
+import { COLOR_BYLAYER } from "../../domain/colors"
+import { type CadHarness, createHarness } from "../../../test/harness"
 import { arcOf, circleOf, deg, lineOf, p } from "../../../test/builders"
 import { SnapType } from "../snapping/types"
 
@@ -13,6 +14,36 @@ import { SnapType } from "../snapping/types"
 
 function lines(entities: readonly { type: string }[]): LineEntity[] {
   return entities.filter((e): e is LineEntity => e.type === "line")
+}
+
+/** Each answer typed at the command line and confirmed, as the console types it. */
+function answer(cad: CadHarness, ...texts: string[]): CadHarness {
+  for (const text of texts) {
+    cad.runtime.setCommandLineText(text)
+    cad.runtime.submitCommandLine()
+  }
+  return cad
+}
+
+/** What answering `texts` writes to the history. */
+function written(cad: CadHarness, ...texts: string[]): string[] {
+  const from = cad.commandLog().length
+  answer(cad, ...texts)
+  return cad.commandLog().slice(from)
+}
+
+/** A line's ends as numbers, Z included: x, y, z of the start, then the end. */
+function ends(line: LineEntity): number[] {
+  const { start, end } = line
+  return [start.x, start.y, lineStartZ(line), end.x, end.y, lineEndZ(line)]
+}
+
+function expectEnds(cad: CadHarness, want: readonly number[][]): void {
+  const got = lines(cad.entities()).map(ends)
+  expect(got).toHaveLength(want.length)
+  got.forEach((row, i) => {
+    row.forEach((value, j) => expect(value).toBeCloseTo(want[i][j], 9))
+  })
 }
 
 describe("LINE", () => {
@@ -51,12 +82,59 @@ describe("LINE", () => {
     expect(cad.entityCount).toBe(1)
   })
 
-  it("ignores a zero-length segment from a double click", () => {
+  it("skips a second pick on the point before, as a double click draws nothing", () => {
+    // desktop line/d17: a double click on one point leaves one segment and no
+    // zero-length line; a zero length typed is drawn (line/p09, p14).
     const cad = createHarness()
 
     cad.command("LINE").click(p(50, 50)).click(p(50, 50)).escape()
 
     expect(cad.entityCount).toBe(0)
+  })
+
+  describe("a zero-length segment typed", () => {
+    it("is drawn from `0` at the next point, said, and counted", () => {
+      // probe line/p09
+      const cad = answer(createHarness(), "LINE", "0,0")
+
+      expect(written(cad, "0")).toEqual([
+        "Specify next point or [Undo]: 0",
+        "Zero length line created at (0.00, 0.00, 0.00)",
+      ])
+      expect(lines(cad.entities())).toHaveLength(1)
+      // probe line/p08: it is a segment, so the next one offers Close.
+      answer(cad, "@10,0")
+      expect(cad.state().commandLine.prompt).toBe(
+        "LINE Specify next point or [Close/Undo]:"
+      )
+    })
+
+    it("is drawn from `@` at the next point, said where it lies", () => {
+      // probe line/p14
+      const cad = answer(createHarness(), "LINE", "5,5")
+
+      expect(written(cad, "@")).toEqual([
+        "Specify next point or [Undo]: @",
+        "Zero length line created at (5.00, 5.00, 0.00)",
+      ])
+      expectEnds(cad, [[5, 5, 0, 5, 5, 0]])
+    })
+
+    it("is drawn from `0` at Continue's length", () => {
+      // probe line/p08: the arc drawn clockwise ends at (100,0).
+      const cad = answer(createHarness(), "ARC", "0,0", "50,50", "100,0")
+      answer(cad, "LINE", "")
+
+      expect(written(cad, "FOO", "0")).toEqual([
+        "Length of line: FOO",
+        "Requires numeric distance or second point.",
+        "Length of line: 0",
+        "Zero length line created at (100.00, 0.00, 0.00)",
+      ])
+      expect(cad.state().commandLine.prompt).toBe(
+        "LINE Specify next point or [Undo]:"
+      )
+    })
   })
 
   describe("typed coordinates", () => {
@@ -170,6 +248,52 @@ describe("LINE", () => {
       expect(drawn[2].start).toBeCloseToPoint(p(100, 100))
       expect(drawn[2].end).toBeCloseToPoint(p(0, 0))
       expect(cad.activeToolId()).toBe("select")
+    })
+
+    it("says All segments already undone. when Undo takes the first point back", () => {
+      // probe line/p02, p103, p108
+      const cad = answer(createHarness(), "LINE", "0,0", "@100,0", "@0,50")
+
+      expect(written(cad, "U", "U", "U")).toEqual([
+        "Specify next point or [Close/Undo]: U",
+        "Specify next point or [Undo]: U",
+        "Specify next point or [Undo]: U",
+        "All segments already undone.",
+      ])
+      expect(cad.state().commandLine.prompt).toBe("LINE Specify first point:")
+      expect(cad.entityCount).toBe(0)
+    })
+
+    it("Undo takes back a transparent command's step with the last segment", () => {
+      // probe line/p117: LTSCALE back to 1, `Regenerating model.` said by the
+      // Undo, and nothing more when LINE ends.
+      const cad = answer(createHarness(), "LINE", "0,0", "@10,0", "@0,10")
+      answer(cad, "'LTSCALE", "2")
+
+      expect(written(cad, "U")).toEqual([
+        "Specify next point or [Close/Undo]: U",
+        "Regenerating model.",
+      ])
+      expect(lines(cad.entities())).toHaveLength(1)
+      expect(cad.runtime.document.getSettings().ltScale).toBe(1)
+      expect(cad.state().commandLine.prompt).toBe(
+        "LINE Specify next point or [Undo]:"
+      )
+      expect(written(cad, "")).toEqual(["Specify next point or [Undo]:"])
+    })
+
+    it("Undo takes back a transparent -COLOR with the last segment", () => {
+      // probe line/p118: CECOLOR back to BYLAYER.
+      const cad = answer(createHarness(), "LINE", "0,0", "@10,0", "@0,10")
+      answer(cad, "'-COLOR", "1", "U", "@5,5")
+
+      expect(lines(cad.entities())).toHaveLength(2)
+      expect(cad.runtime.document.getSettings().currentColor).toBe(
+        COLOR_BYLAYER
+      )
+      expect(cad.state().commandLine.prompt).toBe(
+        "LINE Specify next point or [Close/Undo]:"
+      )
     })
 
     it("Undo removes the last segment but keeps drawing", () => {
@@ -340,6 +464,7 @@ describe("LINE", () => {
     })
 
     it("locks the next point to a typed <angle", () => {
+      // probe line/p18
       const cad = createHarness()
 
       cad.command("LINE").click(p(0, 0)).type("<45").enter()
@@ -365,6 +490,81 @@ describe("LINE", () => {
   })
 
   describe("Continue", () => {
+    it("leaves an arc drawn clockwise from its drawn end", () => {
+      // probe line/p07: the arc is stored counter-clockwise from (100,0).
+      const cad = answer(createHarness(), "ARC", "0,0", "50,50", "100,0")
+      answer(cad, "LINE", "", "30")
+
+      expectEnds(cad, [[100, 0, 0, 100, -30, 0]])
+    })
+
+    it("runs a negative length back along the arc's heading", () => {
+      // probe line/p102
+      const cad = answer(createHarness(), "ARC", "0,0", "50,50", "100,0")
+      answer(cad, "LINE", "", "-30")
+
+      expectEnds(cad, [[100, 0, 0, 100, 30, 0]])
+    })
+
+    it("asks the length from a polyline ending in an arc, tangent to it", () => {
+      // probe line/p116
+      const cad = answer(createHarness(), "PLINE", "0,0", "A", "10,10", "")
+      answer(cad, "LINE", "")
+
+      expect(cad.state().commandLine.prompt).toBe("LINE Length of line:")
+      answer(cad, "5", "")
+      expect(cad.only<LineEntity>("line").end).toBeCloseToPoint(p(10, 15))
+
+      // …and from a closed one's first vertex, asking the next point.
+      answer(cad, "PLINE", "50,0", "@10,0", "@0,10", "C", "LINE", "")
+      expect(cad.state().commandLine.prompt).toBe(
+        "LINE Specify next point or [Undo]:"
+      )
+      answer(cad, "@0,-5", "")
+      expect(lines(cad.entities())[1].start).toBeCloseToPoint(p(50, 0))
+    })
+
+    it("refuses Enter at the length, by the command line or the box", () => {
+      // probe line/p114
+      const cad = answer(createHarness(), "ARC", "0,0", "50,50", "100,0")
+      answer(cad, "LINE", "")
+
+      expect(written(cad, "")).toEqual([
+        "Length of line:",
+        "Requires numeric distance or second point.",
+      ])
+      cad.enter()
+      expect(cad.commandLog().at(-1)).toBe(
+        "Requires numeric distance or second point."
+      )
+      expect(cad.state().commandLine.prompt).toBe("LINE Length of line:")
+      answer(cad, "30")
+      expect(cad.state().commandLine.prompt).toBe(
+        "LINE Specify next point or [Undo]:"
+      )
+    })
+
+    it("Undo of the tangent line asks the length again, where Undo is refused", () => {
+      // probe line/p115
+      const cad = answer(createHarness(), "ARC", "0,0", "50,50", "100,0")
+      answer(cad, "LINE", "", "30", "U")
+
+      expect(cad.entityCount).toBe(1)
+      expect(cad.state().commandLine.prompt).toBe("LINE Length of line:")
+      expect(written(cad, "_U")).toEqual([
+        "Length of line: _U",
+        "Requires numeric distance or second point.",
+      ])
+      answer(cad, "0,0")
+      expect(cad.state().commandLine.prompt).toBe(
+        "LINE Specify next point or [Undo]:"
+      )
+      answer(cad, "@1,0")
+      expect(cad.state().commandLine.prompt).toBe(
+        "LINE Specify next point or [Close/Undo]:"
+      )
+    })
+
     it("leaves the last arc tangent to it, asking only the length", () => {
       const cad = createHarness({ entities: [arcOf(p(0, 0), 50, 0, deg(90))] })
 
@@ -388,6 +588,88 @@ describe("LINE", () => {
       cad.command("LINE").enter().click(p(0, 80)).escape()
 
       expect(cad.only<LineEntity>("line").end).toBeCloseToPoint(p(-30, 50))
+    })
+  })
+
+  describe("the points it is given", () => {
+    it("keeps the Z typed, absolute and relative, polar and * forms", () => {
+      // probe line/p15 (its `#5,5` is the PIN block's)
+      const cad = answer(createHarness(), "LINE", "10,20,30", "@5,0,5")
+      answer(cad, "50<45", "@10<90", "*1,1", "")
+
+      const c = 50 * Math.SQRT1_2
+      expectEnds(cad, [
+        [10, 20, 30, 15, 20, 35],
+        [15, 20, 35, c, c, 0],
+        [c, c, 0, c, c + 10, 0],
+        [c, c + 10, 0, 1, 1, 0],
+      ])
+    })
+
+    it("draws at ELEVATION, a Z typed relative to it", () => {
+      // probe line/p31
+      const cad = answer(createHarness(), "ELEV", "5", "0", "LINE", "0,0")
+      answer(cad, "@10,0", "@0,0,3", "10,10", "")
+
+      expectEnds(cad, [
+        [0, 0, 5, 10, 0, 5],
+        [10, 0, 5, 10, 0, 8],
+        [10, 0, 8, 10, 10, 5],
+      ])
+    })
+
+    it("reads relative polar angles past a turn and negative distances", () => {
+      // probe line/p27
+      const cad = answer(createHarness(), "LINE", "0,0", "@10<-45")
+      answer(cad, "@10<450", "@-10<0", "")
+
+      const ends = lines(cad.entities()).map((line) => line.end)
+      expect(ends[0]).toBeCloseToPoint(p(7.0710678118654, -7.0710678118654))
+      expect(ends[1]).toBeCloseToPoint(p(7.0710678118654, 2.9289321881345))
+      expect(ends[2]).toBeCloseToPoint(p(-2.9289321881345, 2.9289321881345))
+    })
+
+    it("Close draws back to the first point, the lines in order", () => {
+      // probe line/p03
+      const cad = answer(createHarness(), "LINE", "0,0", "@100,0", "@0,50", "C")
+
+      expectEnds(cad, [
+        [0, 0, 0, 100, 0, 0],
+        [100, 0, 0, 100, 50, 0],
+        [100, 50, 0, 0, 0, 0],
+      ])
+    })
+  })
+
+  describe("refusals", () => {
+    it("refuses what each prompt does not take, in its words", () => {
+      // probe line/p09, p23, p103
+      const cad = answer(createHarness(), "LINE")
+
+      expect(written(cad, "FOO", "_C", "_U", "_UNDO")).toEqual([
+        "Specify first point: FOO",
+        "Invalid point.",
+        "Specify first point: _C",
+        "Invalid point.",
+        "Specify first point: _U",
+        "Invalid point.",
+        "Specify first point: _UNDO",
+        "Invalid point.",
+      ])
+      answer(cad, "0,0")
+      expect(written(cad, "FOO", "_CLOSE", "_LINE")).toEqual([
+        "Specify next point or [Undo]: FOO",
+        "Point or option keyword required.",
+        "Specify next point or [Undo]: _CLOSE",
+        "Point or option keyword required.",
+        "Specify next point or [Undo]: _LINE",
+        "Point or option keyword required.",
+      ])
+      answer(cad, "@10,0")
+      expect(written(cad, "_CLOSE")).toEqual([
+        "Specify next point or [Undo]: _CLOSE",
+        "Point or option keyword required.",
+      ])
     })
   })
 
@@ -450,6 +732,7 @@ describe("LINE", () => {
 
   describe("the prompt and its history", () => {
     it("names the command before each question, and the tooltip only asks", () => {
+      // probe line/p01
       const cad = createHarness()
       const asked = () => [
         cad.state().commandLine.prompt,
@@ -525,6 +808,7 @@ describe("LINE", () => {
     })
 
     it("asks Continue's length from an arc as Length of line", () => {
+      // probe line/p07
       const cad = createHarness({ entities: [arcOf(p(0, 0), 50, 0, deg(90))] })
 
       cad.command("LINE").enter()
@@ -551,6 +835,7 @@ describe("LINE", () => {
     })
 
     it("says there is nothing to continue and asks for the first point again", () => {
+      // probe line/p05
       const cad = createHarness()
 
       cad.command("LINE").enter()

@@ -192,8 +192,10 @@ do not exist here: everything new is on the current layer.
 - A tool offering its own **Undo keyword** counts its own edits and refuses when there are none:
   `ctx.undo()` pops the history, which would otherwise back out an earlier command. Offer it from
   the first point a prompt holds. For a looping command, push the tool state before each commit and
-  restore it on Undo **whatever `ctx.undo()` returns** (under UNDO Control None it pops nothing and
-  the console's LINE still steps its prompt back).
+  restore it on Undo **whatever the undo returns** (under UNDO Control None it pops nothing and
+  the console's LINE still steps its prompt back). A transparent command run between two commits
+  ('LTSCALE) is an entry of its own, which the console's Undo takes back with the commit: mark
+  `ctx.historyDepth()` before each commit and take back with `ctx.undoTo(mark)`, as LINE does.
 - **Preview must equal commit**: one resolver shared by `buildOverlay` and the pointer / Enter
   paths, so a typed value locks the click as it locks the rubber band. An expensive preview (a
   hatch's pattern) is built into the state when its inputs change, never per frame.
@@ -260,7 +262,9 @@ asks again at Enter (RECTANG's corners, -PAN's base point) reports its refusal t
   spend a keyword letter on what Enter does.
 - A command that continues from what was drawn (LINE's Continue, DIMBASELINE, DIMCONTINUE) reads
   the drawing through a `lastDrawnPoint`-style helper, not runtime state: document order is the
-  deliberate deviation from AutoCAD's session scope, the one that survives a reload.
+  deliberate deviation from AutoCAD's session scope, the one that survives a reload. Only which end
+  of an arc was drawn last is read off LASTPOINT (`continuePoint`): the arc is stored
+  counter-clockwise whichever way it was drawn.
 - `endCommand()` for single-shot commands; `onEnter()` returning `true` consumes Enter and keeps
   the command running.
 

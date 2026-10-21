@@ -4,26 +4,40 @@
 
 **Implemented:** `LINE Specify first point:` (es `LINEA Precise primer punto:`), then
 `Specify next point or [Undo]:` from it on — its Undo takes that point back — and `[Close/Undo]`
-from the second segment (es `Precise punto siguiente o [desHacer]` / `[Cerrar/desHacer]`); the
-history writes each prompt with its answer (see Command window); Undo steps back one segment at a
-time, Close draws back to the first point and ends; Continue, Enter or a right-click at the first
-point: from the end of the last line, polyline or arc, from an arc tangent to it asking only
-`Length of line:` (es `Longitud de la línea:`; typed, or a pick at that distance), then on, and with
-nothing to continue `No line or arc to continue.` (es `No hay línea o arco que se pueda continuar.`)
-and the first point asked again; direct distance along the cursor (negative: the other way), along
-an OTRACK guide or an Extension measured from the acquired point (still the first point's question);
-the `<angle` override; the length and angle fields, the angle shown acute (0–180°) and a typed one
-read on the cursor's side; `@` at the first point from LASTPOINT; a Tangent or Perpendicular
-override at the first point deferred until the next ("Deferred Tangent", asking for the next point):
-with a plain next point, the tangent from it or the foot of the perpendicular (on a line, a circle
-or an arc), with a second Tangent the line touching both circles — of the four, the one nearest the
-picks — and a Tangent with a Perpendicular to a line the line touching the one square to the other;
-each end at its own point's Z, with THICKNESS; one U undoes the whole command, Ctrl+Z inside it is
-`_u` typed at its prompt (its Undo, `Invalid point.` at the first point)
+from the second segment (es `Precise punto siguiente o [desHacer]` /
+`Precise siguiente punto o [Cerrar/desHacer]`, worded apart as the console words them); the history
+writes each prompt with its answer (see Command window); what each prompt does not take refused in
+its words (`Invalid point.` at the first point, `_U` and `_C` included; `Point or option keyword
+required.` at the next); Undo steps back one segment at a time, taking back with it a transparent
+command run since (`'LTSCALE`, `'-COLOR`), whose queued regeneration it does then; with no segment
+left `All segments already undone.` (es `Ya están anulados todos los segmentos.`) and the first
+point asked again; under UNDO Control None the prompt steps back and the segment stays; Close draws
+back to the first point and ends; Continue, Enter or a right-click at the first point: from the end
+of the last line, polyline or arc — an arc drawn clockwise from the end it was drawn to, the one
+LASTPOINT is on —, from an arc or a polyline ending in an arc tangent to it asking only
+`Length of line:` (es `Longitud de la línea:`; typed, negative the other way, or a pick at that
+distance; Enter, the right button or a keyword refused with
+`Requires numeric distance or second point.`), then on, its Undo going back to `Length of line:`;
+with nothing to continue `No line or arc to continue.` (es
+`No hay línea o arco que se pueda continuar.`) and the first point asked again; direct distance
+along the cursor (negative: the other way), along an OTRACK guide or an Extension measured from the
+acquired point (still the first point's question); a zero-length segment typed (`0`, `@`, `0` at
+`Length of line:`) drawn, counted and said, `Zero length line created at (x, y, z)` (es
+`Línea de longitud cero creada en (…)`) at the drawing's precision, while two picks on one point (a
+double click) draw none, as the desktop does; the `<angle` override; the length and angle fields,
+the angle shown acute (0–180°) and a typed one read on the cursor's side; `@` at the first point
+from LASTPOINT; a Tangent or Perpendicular override at the first point deferred until the next
+("Deferred Tangent", asking for the next point): with a plain next point, the tangent from it or the
+foot of the perpendicular (on a line, a circle or an arc), with a second Tangent the line touching
+both circles — of the four, the one nearest the picks — and a Tangent with a Perpendicular to a line
+the line touching the one square to the other; each end at its own point's Z, with THICKNESS; one U
+undoes the whole command, Ctrl+Z inside it is `_u` typed at its prompt (its Undo, `Invalid point.`
+at the first point)
 
 **Missing:** the deferred marker and its tooltip (only the rubber band shows it), a deferred snap on
-a polyline segment, an ellipse or a spline, two deferred Perpendiculars, a zero-length segment from
-two picks on one point (skipped here; AutoCAD keeps one, **unverified** for a double-click)
+a polyline segment, an ellipse or a spline, two deferred Perpendiculars; a pick whose object snap
+lands on the point before is skipped as a double click is (**unverified**: the console draws a
+zero-length line for an APP or PER typed there, line/p32)
 
 ### `PLINE` / `PL` · es `POL` / `PL`†
 

@@ -398,6 +398,8 @@ export class CadRuntime extends Observable {
    * queued.`): `Regenerating model.` once the command it interrupted ends.
    */
   private regenQueued = false
+  /** The history's depth when the regeneration was queued: see {@link undoTo}. */
+  private regenQueuedAt = 0
   /** LASTPOINT, in the WCS: see {@link keepLastPoint}. */
   private lastPoint: Vec3 = vec3(0, 0, 0)
   /** The point a pick or FROM gave the answer running, in the WCS. */
@@ -567,6 +569,8 @@ export class CadRuntime extends Observable {
       dynamicInput: this.dynamicInput,
       blocks: this.document.blockLookup(),
       undo: () => this.history.undo() !== null,
+      historyDepth: () => this.history.depth,
+      undoTo: (depth) => this.undoTo(depth),
       undoHistory: this.undoHistory,
       pickTolerance: () =>
         this.viewport.screenToWorldDistance(this.snapping.pixelTolerance),
@@ -595,6 +599,7 @@ export class CadRuntime extends Observable {
         }
         this.commandLine.write("info", this.text.message("regenQueued"))
         this.regenQueued = true
+        this.regenQueuedAt = this.history.depth
       },
       answer: (text) => this.answerFound(text),
       previousSelection: () => this.previousSet,
@@ -2038,6 +2043,21 @@ export class CadRuntime extends Observable {
       return
     }
     this.takeBack(1, said)
+  }
+
+  /**
+   * A tool's own Undo ({@link ToolContext.undoTo}). Taking back the change
+   * that queued a regeneration does it there and then, as the console's U
+   * after 'LTSCALE writes `Regenerating model.` and nothing more once LINE
+   * ends (line/p117).
+   */
+  private undoTo(depth: number): boolean {
+    const taken = this.history.undoTo(depth).length > 0
+    if (taken && this.regenQueued && this.regenQueuedAt > depth) {
+      this.regenQueued = false
+      this.commandLine.write("info", this.text.message("regeneratingModel"))
+    }
+    return taken
   }
 
   /**

@@ -1,10 +1,12 @@
 import { Vec2, V } from "../../geometry/Vec2"
 import { segmentExitTangent } from "../../geometry/bulgeArcs"
-import { Vec3, withZ } from "../../geometry/Vec3"
+import { Vec3, length3, sub3, withZ } from "../../geometry/Vec3"
 import { DocumentReader } from "../../domain/Document"
 import {
   ArcEntity,
+  PolylineEntity,
   arcEndPoint,
+  arcStartPoint,
   entityElevation,
   lineEndZ,
 } from "../../domain/entities"
@@ -13,8 +15,8 @@ import {
 export interface ContinuePoint {
   readonly point: Vec3
   /**
-   * The direction of the arc at its end when the last object is an arc lying
-   * in the plan, else `null`.
+   * The direction the arc leaves in when the last object is an arc, or a
+   * polyline ending in an arc segment, lying in the plan; else `null`.
    */
   readonly tangent: Vec2 | null
 }
@@ -32,9 +34,17 @@ export function lastDrawnPoint(document: DocumentReader): Vec3 | null {
 /**
  * {@link lastDrawnPoint} with the tangent LINE's Continue needs: "If the most
  * recently created object is an arc, its endpoint defines the starting point
- * of the line. The line is tangent to the arc."
+ * of the line. The line is tangent to the arc." An arc is stored
+ * counter-clockwise, so one drawn clockwise ends at its stored start: given
+ * `lastPoint` (LASTPOINT, which the arc's last point set), an arc whose start
+ * is there and whose end is not is left from its start, backwards (AutoCAD
+ * 2027's console: `ARC 0,0 50,50 100,0`, then LINE's Continue `30` runs from
+ * (100,0) to (100,-30), line/p07).
  */
-export function continuePoint(document: DocumentReader): ContinuePoint | null {
+export function continuePoint(
+  document: DocumentReader,
+  lastPoint?: Vec3
+): ContinuePoint | null {
   const entities = document.getEntities()
   for (let i = entities.length - 1; i >= 0; i--) {
     const entity = entities[i]
@@ -42,10 +52,7 @@ export function continuePoint(document: DocumentReader): ContinuePoint | null {
       case "line":
         return { point: withZ(entity.end, lineEndZ(entity)), tangent: null }
       case "arc":
-        return {
-          point: withZ(arcEndPoint(entity), entityElevation(entity)),
-          tangent: arcEndTangent(entity),
-        }
+        return arcContinue(entity, lastPoint)
       case "polyline":
         return {
           point: withZ(
@@ -54,7 +61,7 @@ export function continuePoint(document: DocumentReader): ContinuePoint | null {
               : entity.vertices[entity.vertices.length - 1],
             entityElevation(entity)
           ),
-          tangent: null,
+          tangent: entity.closed ? null : polylineEndTangent(entity),
         }
       case "circle":
       case "ellipse":
@@ -122,10 +129,46 @@ export function lastDrawnDirection(document: DocumentReader): Vec2 | null {
   return null
 }
 
+/** Where Continue leaves an arc: its drawn end, along its heading there. */
+function arcContinue(
+  arc: ArcEntity,
+  lastPoint: Vec3 | undefined
+): ContinuePoint {
+  const z = entityElevation(arc)
+  const end = withZ(arcEndPoint(arc), z)
+  const start = withZ(arcStartPoint(arc), z)
+  const tolerance = 1e-9 * Math.max(1, arc.radius)
+  const drawnClockwise =
+    lastPoint !== undefined &&
+    length3(sub3(start, lastPoint)) <= tolerance &&
+    length3(sub3(end, lastPoint)) > tolerance
+  if (!drawnClockwise) return { point: end, tangent: arcEndTangent(arc) }
+  const ahead = inPlan(arc) ? arcTangentAt(arc.startAngle) : null
+  return { point: start, tangent: ahead && V.scale(ahead, -1) }
+}
+
 /** An arc runs counter-clockwise, so at its end it heads a quarter turn on. */
 function arcEndTangent(arc: ArcEntity): Vec2 | null {
-  // WHY plan only: a tilted arc's end and heading are in its own plane, which
-  // a line in this one cannot leave tangent to.
-  if (arc.normal && arc.normal.z < 1 - 1e-9) return null
-  return { x: -Math.sin(arc.endAngle), y: Math.cos(arc.endAngle) }
+  return inPlan(arc) ? arcTangentAt(arc.endAngle) : null
+}
+
+function arcTangentAt(angle: number): Vec2 {
+  return { x: -Math.sin(angle), y: Math.cos(angle) }
+}
+
+/** The heading a polyline's last segment ends in, if that segment is an arc. */
+function polylineEndTangent(polyline: PolylineEntity): Vec2 | null {
+  const { vertices } = polyline
+  const last = vertices.length - 2
+  const bulge = last < 0 ? 0 : (polyline.bulges?.[last] ?? 0)
+  if (bulge === 0 || !inPlan(polyline)) return null
+  return segmentExitTangent(vertices[last], vertices[last + 1], bulge)
+}
+
+/**
+ * WHY plan only: a tilted object's end and heading are in its own plane,
+ * which a line in this one cannot leave tangent to.
+ */
+function inPlan(entity: ArcEntity | PolylineEntity): boolean {
+  return !entity.normal || entity.normal.z >= 1 - 1e-9
 }

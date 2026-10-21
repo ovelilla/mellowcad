@@ -270,12 +270,20 @@ export interface ToolContext {
   execute(command: Command): void
 
   /**
-   * Reverts the most recently executed command, returning whether one existed.
-   * During a continuous command the top of the history is always the tool's own
-   * last step, so this backs out a single segment without leaving the command —
-   * AutoCAD's LINE `Undo` (U) option.
+   * Reverts the most recently executed command, returning whether one existed:
+   * a tool's own last step, unless a transparent command ran since (then
+   * {@link undoTo}).
    */
   undo(): boolean
+  /** Where the undo history stands, for {@link undoTo}. */
+  historyDepth(): number
+  /**
+   * Takes back everything executed since the history stood at `depth`:
+   * LINE's Undo takes a transparent 'LTSCALE or '-COLOR back with its last
+   * segment (AutoCAD 2027's console, line/p117, p118), regenerating if what
+   * it took back had queued a regeneration. Returns whether it took any.
+   */
+  undoTo(depth: number): boolean
   /** UNDO's own operations: its number, Mark, Back, BEgin and End. */
   readonly undoHistory: UndoHistory
 

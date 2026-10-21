@@ -222,8 +222,10 @@ runtime picks for the tool" feature.
 step**, as AutoCAD's U undoes "the effects of the last command": `setActiveTool` opens a group
 (`history.beginGroup`) for every tool but Select and closes it after the old tool's `onDeactivate`,
 which may still commit. Inside the group each command stays its own entry, so a tool's Undo keyword
-steps back one; on close they fold into one. A change set from a palette mid-command joins it.
-`loadDrawing` clears the history.
+steps back one; on close they fold into one. A transparent command's change is an entry of the
+group it interrupts, so a tool's Undo takes back to the depth it marked before its commit
+(`CommandHistory.undoTo`), and a regeneration that change queued is done then. A change set from a
+palette mid-command joins it. `loadDrawing` clears the history.
 
 Settings are split on purpose. What AutoCAD's U undoes goes through a command
 (`UpdateSettingsCommand`, which restores exactly the keys it patched; a patch that changes nothing

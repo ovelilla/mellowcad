@@ -495,6 +495,105 @@ lweight "Lineweight" LW
   options: -
   prompt| Specify next point or [Undo]: *Cancel*
 
+## LINE on nothing
+> start
+  prompt: Command:
+  asks: -
+  tip: -
+  dyn: -
+  options: -
+  canvas: -
+  properties: -
+  cycling: -
+> LINE
+  prompt: LINE Specify first point:
+  asks: ""
+  tip: Specify first point:
+  dyn: "X,Y"=""||*
+  command| LINE
+> Enter continues nothing
+  prompt| Specify first point:
+  error| No line or arc to continue.
+> type first point
+  dyn: "X,Y"="0,0"||*
+> enter
+  prompt: LINE Specify next point or [Undo]:
+  asks: "Length" "Angle"
+  tip: Specify next point or
+  dyn: "Length"=""|0.00|mm* "Angle"=""||°
+  options: [U] Undo
+  prompt| Specify first point: 0,0
+> type 0
+  dyn: "Length"="0"|0.00|mm* "Angle"=""||°
+> enter
+  dyn: "Length"=""|0.00|mm* "Angle"=""||°
+  prompt| Specify next point or [Undo]: 0
+  info| Zero length line created at (0.00, 0.00, 0.00)
+> U
+  prompt| Specify next point or [Undo]: U
+> U at the first point's Undo
+  prompt: LINE Specify first point:
+  asks: ""
+  tip: Specify first point:
+  dyn: "X,Y"=""||*
+  options: -
+  prompt| Specify next point or [Undo]: U
+  error| All segments already undone.
+> escape
+  prompt: Command:
+  asks: -
+  tip: -
+  dyn: -
+  prompt| Specify first point: *Cancel*
+
+## LINE Continue from an arc
+> start
+  prompt: Command:
+  asks: -
+  tip: -
+  dyn: -
+  options: -
+  canvas: -
+  properties: -
+  cycling: -
+> LINE
+  prompt: LINE Specify first point:
+  asks: ""
+  tip: Specify first point:
+  dyn: "X,Y"=""||*
+  command| LINE
+> Enter continues
+  prompt: LINE Length of line:
+  asks: "Length"
+  tip: Length of line:
+  dyn: "Length"=""|50.00|mm*
+  prompt| Specify first point:
+> Enter at the length
+  prompt| Length of line:
+  error| Requires numeric distance or second point.
+> type length
+  dyn: "Length"="40"|50.00|mm*
+> enter
+  prompt: LINE Specify next point or [Undo]:
+  asks: "Length" "Angle"
+  tip: Specify next point or
+  dyn: "Length"=""|64.03|mm* "Angle"=""|51|°
+  options: [U] Undo
+  prompt| Length of line: 40
+> U
+  prompt: LINE Length of line:
+  asks: "Length"
+  tip: Length of line:
+  dyn: "Length"=""|0.00|mm*
+  options: -
+  prompt| Specify next point or [Undo]: U
+> escape
+  prompt: Command:
+  asks: -
+  tip: -
+  dyn: -
+  prompt| Length of line: *Cancel*
+
 ## LINE offset from a tracked point
 > start
   prompt: Command:

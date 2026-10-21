@@ -97,6 +97,8 @@ export class CommandHistory extends Observable {
   /** The start of the group UNDO BEgin opened and End has not closed. */
   private undoGroup: Entry | null = null
   private replayingStep: Replayed | null = null
+  /** Steps dropped off the bottom of the stack, which {@link depth} still counts. */
+  private dropped = 0
   private undoSettings: UndoSettings = {
     auto: true,
     control: "all",
@@ -129,6 +131,7 @@ export class CommandHistory extends Observable {
     if (this.undoSettings.control === "none") return
     this.undoStack.push(entry)
     if (this.undoStack.length > this.capacity) {
+      this.dropped += 1
       if (this.undoStack.shift() === this.undoGroup) this.undoGroup = null
       if (this.groupStart !== null) {
         this.groupStart = Math.max(0, this.groupStart - 1)
@@ -149,6 +152,7 @@ export class CommandHistory extends Observable {
       this.groupStart === null &&
       this.undoStack.length > 1
     ) {
+      this.dropped += this.undoStack.length - 1
       this.undoStack = this.undoStack.slice(-1)
     }
   }
@@ -347,6 +351,28 @@ export class CommandHistory extends Observable {
     return this.replayingStep
   }
 
+  /**
+   * How many steps have been kept: where a tool's own Undo takes back to
+   * ({@link undoTo}). Steps dropped at the capacity still count.
+   */
+  get depth(): number {
+    return this.dropped + this.undoStack.length
+  }
+
+  /**
+   * Takes back every step kept since the history stood at `depth`, newest
+   * first, stopping at an open UNDO group's start: what each took back.
+   */
+  undoTo(depth: number): Step[] {
+    const steps: Step[] = []
+    while (this.depth > depth) {
+      const step = this.undo()
+      if (step === null) break
+      steps.push(step)
+    }
+    return steps
+  }
+
   canUndo(): boolean {
     return this.undoStack.length > 0 && !this.atUndoGroupStart()
   }
@@ -419,6 +445,7 @@ export class CommandHistory extends Observable {
     if (this.groupStart !== null) this.groupStart = 0
     this.undoGroup = null
     if (this.undoStack.length === 0 && this.redoStack.length === 0) return
+    this.dropped += this.undoStack.length
     this.undoStack = []
     this.redoStack = []
     this.emit()

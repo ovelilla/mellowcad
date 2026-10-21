@@ -311,6 +311,31 @@ describe("the engine's English surface", () => {
         .do("Enter continues", (c) => c.enter())
         .do("escape", (c) => c.escape())
     )
+    walk("LINE on nothing", createHarness(), (s) =>
+      s
+        .do("LINE", (c) => c.command("LINE"))
+        .do("Enter continues nothing", (c) => c.enter())
+        .do("type first point", (c) => c.type("0,0"))
+        .do("enter", (c) => c.enter())
+        .do("type 0", (c) => c.type("0"))
+        .do("enter", (c) => c.enter())
+        .do("U", (c) => answer(c, "U"))
+        .do("U at the first point's Undo", (c) => answer(c, "U"))
+        .do("escape", (c) => c.escape())
+    )
+    walk(
+      "LINE Continue from an arc",
+      createHarness({ entities: [arcOf(p(0, 0), 50, 0, Math.PI / 2)] }),
+      (s) =>
+        s
+          .do("LINE", (c) => c.command("LINE"))
+          .do("Enter continues", (c) => c.enter())
+          .do("Enter at the length", (c) => c.enter())
+          .do("type length", (c) => c.type("40"))
+          .do("enter", (c) => c.enter())
+          .do("U", (c) => answer(c, "U"))
+          .do("escape", (c) => c.escape())
+    )
     walk(
       "LINE offset from a tracked point",
       createHarness({ entities: [line()], snap: true }),

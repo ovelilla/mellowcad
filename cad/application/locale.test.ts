@@ -31,6 +31,7 @@ const partial: EngineLocale = {
     prompts: {
       length: "Longitud",
       specifyNextPointOr: compile("Precise punto siguiente o"),
+      specifyNextPointOrClose: compile("Precise siguiente punto o"),
     },
     messages: {
       erased: compile(
@@ -108,10 +109,10 @@ describe("a language laid over English", () => {
     cad.command("L").click(p(0, 0)).click(p(100, 0)).click(p(100, 100))
     const state = cad.state()
     expect(state.commandLine.prompt).toBe(
-      "LINEA Precise punto siguiente o [Cerrar/desHacer]:"
+      "LINEA Precise siguiente punto o [Cerrar/desHacer]:"
     )
     expect(state.commandLine.promptSegments).toEqual([
-      { text: "LINEA Precise punto siguiente o ", keywords: false },
+      { text: "LINEA Precise siguiente punto o ", keywords: false },
       { text: "[Cerrar/desHacer]", keywords: true },
       { text: ":", keywords: false },
     ])
@@ -356,10 +357,15 @@ describe("Spanish AutoCAD's command language", () => {
       "Precise primer punto: *Cancelar*",
       "l LINEA",
     ])
-    cad.click(p(0, 0)).click(p(100, 0)).click(p(100, 100))
+    cad.click(p(0, 0)).click(p(100, 0))
+    // probe line/p01 es-ES: the two prompts are worded apart (table 21157).
+    expect(cad.state().commandLine.prompt).toBe(
+      "LINEA Precise punto siguiente o [desHacer]:"
+    )
+    cad.click(p(100, 100))
     const state = cad.state()
     expect(state.commandLine.prompt).toBe(
-      "LINEA Precise punto siguiente o [Cerrar/desHacer]:"
+      "LINEA Precise siguiente punto o [Cerrar/desHacer]:"
     )
     expect(state.commandOptions.map((option) => option.abbreviation)).toEqual([
       "C",
@@ -372,6 +378,23 @@ describe("Spanish AutoCAD's command language", () => {
     cad.press("Enter")
     expect(cad.entityCount).toBe(3)
     expect(cad.activeToolId()).toBe("select")
+  })
+
+  it("says LINEA's own messages in Spanish AutoCAD's words", () => {
+    // probe line/p02, p09 es-ES: LINE's table 20580, not PLINE's 21294.
+    const cad = createHarness({ locale: es }).command("LINEA")
+    for (const text of ["0,0", "0", "H", "H"]) {
+      cad.runtime.setCommandLineText(text)
+      cad.runtime.submitCommandLine()
+    }
+    expect(cad.commandLog().slice(-5)).toEqual([
+      "Precise punto siguiente o [desHacer]: 0",
+      "Línea de longitud cero creada en (0.00, 0.00, 0.00)",
+      "Precise punto siguiente o [desHacer]: H",
+      "Precise punto siguiente o [desHacer]: H",
+      "Ya están anulados todos los segmentos.",
+    ])
+    expect(cad.state().commandLine.prompt).toBe("LINEA Precise primer punto:")
   })
 
   it("asks LINEA's, POL's, RECTANG's and POLIGONO's questions in Autodesk's Spanish words", () => {

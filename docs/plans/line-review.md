@@ -890,8 +890,12 @@ The blocks depend on nothing outside themselves.
   (the override's order, what an override that finds nothing does), `cad-scene.md` (the dash phase).
 - **Catalogs:** the messages and prompts above, in `en`, `es`, `ar` where they apply; the English
   surface snapshot where English changes.
-- **Roadmap:** row 1 done with this plan's commit once executed; the analogues for PLINE's review
-  (row 2): its Undo after a transparent command, `lastDrawnDirection` from a clockwise arc.
+- **Roadmap:** row 1 done with this plan's commit once executed. Analogues found while executing,
+  for the reviews that own them: the own-Undo of PLINE, OFFSET, COPY (`PlacementTool`), FILLET,
+  CHAMFER, TRIM and EXTEND (`EdgeEditTool`), DIMBASELINE and DIMCONTINUE (`DimensionChainTool`) and
+  TEXTEDIT still call `ctx.undo()`, so a transparent command between two of their commits breaks them
+  as LIN-01 broke LINE (`ctx.undoTo` is the fix); `lastDrawnDirection` (PLINE's first arc) and
+  `lastDrawnPoint` still read a clockwise arc's stored end (LIN-02).
 
 ## 14. Template improvements
 
@@ -920,3 +924,4 @@ every object snap three ways and the modes in combination:
 | ----- | -------- | ------ |
 | CAT | CAT-01 (CAT-02 refuted, p70) | `4f61e91` |
 | UND | UND-01 to UND-03 | `626b283` |
+| CLI | CLI-01 to CLI-03 | `2625477` |

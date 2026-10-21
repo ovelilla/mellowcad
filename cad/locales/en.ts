@@ -1212,6 +1212,7 @@ export const en: EngineCatalog = {
       "viewAngleFromPlane": "Enter angle from XY plane",
       "specifyFirstPoint": "Specify first point",
       "specifyNextPointOr": "Specify next point or",
+      "specifyNextPointOrClose": "Specify next point or",
       "lengthOfLine": "Length of line",
       "specifyStartPoint": "Specify start point",
       "specifyEndpointOfArcOr": "Specify endpoint of arc (hold Ctrl to switch direction) or",
@@ -2508,6 +2509,22 @@ export const en: EngineCatalog = {
       "pointingEdgeOn": "Pointing in edge-on UCS is prohibited.",
       "circleDoesNotExist": "Circle does not exist.",
       "noLineOrArcToContinue": "No line or arc to continue.",
+      "allLineSegmentsUndone": "All segments already undone.",
+      "zeroLengthLineCreated": [
+        "Zero length line created at (",
+        [
+          "x"
+        ],
+        ", ",
+        [
+          "y"
+        ],
+        ", ",
+        [
+          "z"
+        ],
+        ")"
+      ],
       "positiveNonzero": "Value must be positive and nonzero.",
       "valueMustBePositive": "Value must be positive.",
       "lineweightRequired": "A weight in lineweight units is required.",

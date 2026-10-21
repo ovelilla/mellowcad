@@ -1,7 +1,7 @@
 import { describe, expect, it, onTestFinished, vi } from "vitest"
 
 import { createHarness, type CadHarness } from "../../test/harness"
-import { lineOf, p } from "../../test/builders"
+import { arcOf, lineOf, p } from "../../test/builders"
 import type { CircleEntity, LineEntity, MTextEntity } from "../domain/entities"
 import { createTextStyle } from "../domain/textStyles"
 
@@ -40,6 +40,22 @@ describe.each(ENTERS)("Enter from %s with nothing typed", (_, enter) => {
 
     expect(cad.activeToolId()).toBe("select")
     expect(cad.entityCount).toBe(0)
+  })
+
+  it("refuses LINE's Continue length and asks it again", () => {
+    // probe line/p114: `Length of line:` takes no Enter.
+    const cad = createHarness({
+      entities: [arcOf(p(0, 0), 50, 0, Math.PI / 2)],
+    })
+    cad.command("LINE").enter().moveTo(p(-30, 60))
+    enter(cad)
+
+    expect(cad.activeToolId()).toBe("line")
+    expect(cad.entityCount).toBe(1)
+    expect(cad.commandLog().at(-1)).toBe(
+      "Requires numeric distance or second point."
+    )
+    expect(cad.state().commandLine.prompt).toBe("LINE Length of line:")
   })
 
   it("gives CIRCLE the last radius, CIRCLERAD, and ends it with none", () => {
