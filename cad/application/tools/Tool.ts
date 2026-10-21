@@ -362,8 +362,8 @@ export interface ToolContext {
   copyToClipboard(entities: readonly Entity[], basePoint: Vec2 | Vec3): void
 
   /**
-   * Shows or hides the ViewCube (NAVVCUBE). Saved in the drawing but, being
-   * presentation, not a command: no undo step.
+   * Shows or hides the ViewCube (NAVVCUBE). Saved in the drawing, not through a
+   * command: U leaves it, where AutoCAD's puts it back (move/p238).
    */
   setViewCubeVisible(visible: boolean): void
 

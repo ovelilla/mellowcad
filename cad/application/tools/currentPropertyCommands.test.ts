@@ -229,10 +229,12 @@ describe("-COLOR", () => {
     }
   )
 
-  it("keeps the colour with Enter, and is one undo step otherwise", () => {
+  it("keeps the colour with Enter, and is one undo step either way", () => {
     const cad = createHarness()
     cad.command("-COLOR").enter()
-    expect(cad.state().canUndo).toBe(false)
+    // A run that changes nothing is a step U names (move/p235).
+    cad.command("_U")
+    expect(cad.commandLog().at(-1)).toBe("-COLOR")
 
     cad.command("-COLOR").type("2").enter().undo()
 
@@ -402,10 +404,12 @@ describe("-LWEIGHT", () => {
     expect(cad.activeToolId()).toBe("lweight")
   })
 
-  it("keeps the lineweight with Enter, and is one undo step otherwise", () => {
+  it("keeps the lineweight with Enter, and is one undo step either way", () => {
     const cad = createHarness()
     cad.command("-LWEIGHT").enter()
-    expect(cad.state().canUndo).toBe(false)
+    // A run that changes nothing is a step U names (move/p236).
+    cad.command("_U")
+    expect(cad.commandLog().at(-1)).toBe("-LWEIGHT")
 
     cad.command("-LWEIGHT").type("0.7").enter().undo()
 

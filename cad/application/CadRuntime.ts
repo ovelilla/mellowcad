@@ -1049,7 +1049,14 @@ export class CadRuntime extends Observable {
     this.commandStart = this.echoMark ?? this.commandLine.mark()
     this.activeTool = next
     this.startedAs = this.starting
-    if (next.id !== "select") this.history.beginGroup()
+    // A run that changes nothing is a step too (move/p07), but for a view
+    // left where it was and the undo commands' own.
+    if (next.id !== "select") {
+      this.history.beginGroup(
+        !next.changesView &&
+          !UNDO_COMMANDS.has(TOOL_COMMANDS[next.id] ?? next.id)
+      )
+    }
     // A tool started from the rail is its command too.
     if (next.id !== "select" && this.starting === null) {
       this.commandStarts(TOOL_COMMANDS[next.id] ?? next.id)

@@ -247,6 +247,68 @@ describe("U and REDO say what they did", () => {
   })
 })
 
+describe("a command that changed nothing is a step U names", () => {
+  it("U takes back ID and keeps the line (move/p07)", () => {
+    const cad = answer(createHarness(), ...LINE, "_ID", "5,5")
+    expect(written(cad, "_U")).toEqual(["U", "ID"])
+    expect(cad.entityCount).toBe(1)
+  })
+
+  it("U takes back an ERASE of nothing, BORRA in Spanish (move/p07)", () => {
+    const cad = answer(createHarness(), ...LINE, "_ERASE", "")
+    expect(written(cad, "_U")).toEqual(["U", "ERASE"])
+    expect(cad.entityCount).toBe(1)
+
+    const spanish = answer(
+      createHarness({ locale: es }),
+      "_LINE",
+      "0,0",
+      "10,0",
+      "",
+      "_ERASE",
+      ""
+    )
+    expect(written(spanish, "_U")).toEqual(["H", "BORRA"])
+    expect(spanish.entityCount).toBe(1)
+  })
+
+  it("U and REDO name a MOVE with nothing selected (move/p233)", () => {
+    const cad = answer(createHarness(), ...LINE, "_MOVE", "")
+    expect(written(cad, "_U", "_REDO")).toEqual([
+      "U",
+      "MOVE",
+      "REDO",
+      "MOVE",
+      "Everything has been redone",
+    ])
+    expect(written(cad, "_U", "_U")).toEqual(["U", "MOVE", "U", "LINE"])
+    expect(cad.entityCount).toBe(0)
+  })
+
+  it("names a command cancelled before it did anything (move/p237)", () => {
+    const cad = answer(createHarness(), ...LINE, "_ARC")
+    cad.escape()
+    expect(written(cad, "_REDO", "_U", "_REDO")).toEqual([
+      "REDO",
+      "Nothing to redo",
+      "U",
+      "ARC",
+      "REDO",
+      "ARC",
+      "Everything has been redone",
+    ])
+    expect(written(cad, "_U", "_U")).toEqual(["U", "ARC", "U", "LINE"])
+  })
+
+  it("but UNDO and MREDO cancelled make none (move/p239, p240)", () => {
+    for (const undo of ["_UNDO", "_MREDO"]) {
+      const cad = answer(createHarness(), ...LINE, undo)
+      cad.escape()
+      expect(written(cad, "_U")).toEqual(["U", "LINE"])
+    }
+  })
+})
+
 describe("ERASE undone and redone", () => {
   const two = () => [
     lineOf(p(0, 0), p(10, 0), { id: "A" }),

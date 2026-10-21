@@ -1,0 +1,12 @@
+_LINE
+0,0
+100,0
+
+_ARC
+(command)
+_REDO
+_U
+_REDO
+_U
+_U
+(ssget "_X")

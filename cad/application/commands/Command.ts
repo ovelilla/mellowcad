@@ -101,6 +101,8 @@ export class CommandHistory extends Observable {
    * option (LINE's U) still steps back one at a time.
    */
   private groupStart: number | null = null
+  /** Whether the open group is a step even when it executes nothing. */
+  private groupSteps = false
   /** The start of the group UNDO BEgin opened and End has not closed. */
   private undoGroup: Entry | null = null
   private replayingStep: Replayed | null = null
@@ -186,10 +188,13 @@ export class CommandHistory extends Observable {
   /**
    * Opens a group: what executes until {@link endGroup} becomes one undo step,
    * as AutoCAD's U undoes a whole command — "removing all 3 of the lines
-   * created by it". A group already open stays the one.
+   * created by it". A group already open stays the one. `stepsEmpty`: one
+   * that executes nothing is still a step, which U names (move/p07, p233).
    */
-  beginGroup(): void {
-    if (this.groupStart === null) this.groupStart = this.undoStack.length
+  beginGroup(stepsEmpty = false): void {
+    if (this.groupStart !== null) return
+    this.groupStart = this.undoStack.length
+    this.groupSteps = stepsEmpty
   }
 
   /**
@@ -204,7 +209,19 @@ export class CommandHistory extends Observable {
     const regenerated = this.regenerated
     this.groupStart = null
     this.regenerated = false
-    if (start === null || this.undoStack.length === start) return
+    if (start === null) return
+    if (this.undoStack.length === start) {
+      if (this.groupSteps && this.commandName !== null) {
+        this.push({
+          kind: "command",
+          command: null,
+          name: this.commandName,
+          names: [],
+          regenerates: regenerated,
+        })
+      }
+      return
+    }
     const steps = this.undoStack.splice(start)
     if (steps.some((step) => step.kind !== "command")) {
       this.undoStack.push(...steps)
@@ -450,6 +467,8 @@ export class CommandHistory extends Observable {
   /** Drops all history, e.g. after loading a file (a fresh baseline). */
   clear(): void {
     if (this.groupStart !== null) this.groupStart = 0
+    // A run begun before the baseline leaves no empty step after it.
+    this.groupSteps = false
     this.undoGroup = null
     if (this.undoStack.length === 0 && this.redoStack.length === 0) return
     this.dropped += this.undoStack.length

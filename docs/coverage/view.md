@@ -123,10 +123,11 @@ about the selection only, perspective, 3DFORBIT, 3DCORBIT and the rest of 3D nav
 **Implemented:** `Enter an option [ON/OFF] <ON>:` (the current value; es
 `Indique una opción [ACT/DES] <ACT>`; `CUBE` from Autodesk's shortcut guide),
 `Invalid option keyword.` for anything else, as AutoCAD 2023's console says it; saved in the drawing
-as NAVVCUBEDISPLAY 3 or 0; no undo step (**unverified** whether U undoes it)
+as NAVVCUBEDISPLAY 3 or 0; an undo step U and REDO name (move/p238), which takes nothing back
 
 **Missing:** Settings (the ViewCube Settings dialog; not offered, so the prompt lists `[ON/OFF]`),
-NAVVCUBEDISPLAY's 1 and 2 (no visual styles)
+NAVVCUBEDISPLAY's 1 and 2 (no visual styles); U and REDO putting NAVVCUBEDISPLAY back and forth,
+as AutoCAD 2027's console does (move/p238)
 
 ### ViewCube (top right)
 

@@ -178,10 +178,11 @@ layer.
 - **One commit, one command.** A split or a multi-entity edit is one `ReplaceEntitiesCommand` /
   `UpdateEntitiesCommand`. A split keeps the object as the piece from its start (AutoCAD's handle
   stays on it): give that piece the object's id, and only a piece that is no part of it a new id.
-- **A whole run of a command is one undo step, and the runtime makes it**: `setActiveTool` opens a
-  group and closes it after `onDeactivate`. A tool never batches across its own loop; inside the
-  run each commit stays its own entry, which is what lets its Undo keyword take back one. The step
-  is named as the command was echoed (`history.nameCommand`), which U and REDO write.
+- **A whole run of a command is one undo step, even one that does nothing (move/p07), and the
+  runtime makes it**: `setActiveTool` opens a group and closes it after `onDeactivate`. A tool
+  never batches across its own loop; inside the run each commit stays its own entry, which is what
+  lets its Undo keyword take back one. The step is named as the command was echoed
+  (`history.nameCommand`), which U and REDO write.
 - `ctx.execute` takes the result back to the WCS with `Command.mapEntities`: a new `Command`
   implements it (one carrying no entities returns itself), and returns an untouched object as the
   very original so undo is exact.

@@ -346,13 +346,15 @@ describe("the ViewCube in EngineState", () => {
 })
 
 describe("NAVVCUBE", () => {
-  it("hides and shows the ViewCube, saved and not undone", () => {
+  it("hides and shows the ViewCube, saved and a step U names", () => {
     const cad = createHarness()
 
     cad.command("NAVVCUBE").option("OFF")
     expect(cad.state().viewCube.visible).toBe(false)
-    expect(cad.state().canUndo).toBe(false)
     expect(cad.runtime.serializeDrawing()).toMatch(/"navVCubeDisplay": 0/)
+    // move/p238; AutoCAD's U also puts NAVVCUBEDISPLAY back, not done here.
+    cad.command("_U")
+    expect(cad.commandLog().at(-1)).toBe("NAVVCUBE")
 
     cad.command("CUBE")
     expect(cad.state().commandLine.prompt).toBe(

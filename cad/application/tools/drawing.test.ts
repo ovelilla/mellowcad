@@ -1194,7 +1194,8 @@ describe("ARC", () => {
             `${name} ${locale ? "Precise punto inicial del arco o [Centro]:" : start}`
           )
           cad.escape()
-          expect(written(cad, "_U")).toEqual([u, name])
+          // The repeat cancelled is a step of its own (move/p237).
+          expect(written(cad, "_U", "_U")).toEqual([u, name, u, name])
           expect(cad.entityCount).toBe(0)
         }
       }
@@ -2035,7 +2036,8 @@ describe("ELLIPSE", () => {
           answer(cad, "")
           expect(cad.state().commandLine.prompt).toBe(`${name} ${prompt}`)
           cad.escape()
-          expect(written(cad, "_U")).toEqual([u, name])
+          // The repeat cancelled is a step of its own (move/p237).
+          expect(written(cad, "_U", "_U")).toEqual([u, name, u, name])
           expect(cad.entityCount).toBe(0)
         }
       }
@@ -2701,7 +2703,8 @@ describe("SPLINE", () => {
         expect(cad.activeToolId()).toBe("spline")
         expect(cad.commandLog().at(-1)).toMatch(/=VC|=CV/)
         cad.escape()
-        expect(written(cad, "_U")).toEqual([u, "SPLINE"])
+        // The repeat cancelled is a step of its own (move/p237).
+        expect(written(cad, "_U", "_U")).toEqual([u, "SPLINE", u, "SPLINE"])
         expect(cad.entityCount).toBe(0)
       }
     })

@@ -273,7 +273,10 @@ box's chips show each abbreviation
 ### Undo · `U` · `UNDO` · `REDO` · `MREDO` · Ctrl+Z / Ctrl+Y
 
 **Implemented:** one step per command: what a command draws and sets folds into one ("The effects of
-the last command (Line) will be undone, removing all 3 of the lines created by it"); Ctrl+Z inside a
+the last command (Line) will be undone, removing all 3 of the lines created by it"); a command that
+changed nothing is a step too, which U and REDO name and which takes nothing back: ID, an ERASE or
+MOVE of an empty set, -COLOR kept with Enter, a command cancelled (move/p07, p233, p235, p237), but
+not a view left where it was, nor UNDO and MREDO cancelled (p239, p240); Ctrl+Z inside a
 command is acad.cuix's `_u` typed at its prompt and written so
 (`Specify next point or [Close/Undo]: _u`), and the command goes on: LINE's Undo keyword ("only the
 previous line segment is undone because you are still in the Line Command"), a refusal where the
