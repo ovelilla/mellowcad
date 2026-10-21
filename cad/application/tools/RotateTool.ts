@@ -25,6 +25,7 @@ import {
   type QuestionInput,
 } from "./Tool"
 import { ObjectSelector } from "./objectSelection"
+import { selectedInDrawingOrder } from "./drawingOrder"
 
 /**
  * AutoCAD's ROTATE command: select a set of objects, pick a base point (the
@@ -159,6 +160,15 @@ export class RotateTool implements Tool {
       (this.state.phase === "newAngle" && this.state.points)
       ? { refusal: "requiresAngle", values: { points: "two", keyword: "no" } }
       : null
+  }
+
+  /**
+   * `<30` at the rotation angle is that angle, and ROTATE ends (probe
+   * transforms/p123). WHY not at the reference or the new angle: unprobed
+   * there, so they keep the override every prompt has.
+   */
+  answersAngleOverride(): boolean {
+    return this.state.phase === "angle"
   }
 
   onDeactivate(ctx: ToolContext): void {
@@ -403,7 +413,7 @@ export class RotateTool implements Tool {
   }
 
   private enterAngle(base: Vec2, ctx: ToolContext): void {
-    const originals = this.snapshotSelection(ctx)
+    const originals = selectedInDrawingOrder(ctx)
     if (originals.length === 0) {
       // The selection vanished (e.g. undo elsewhere): fall back to picking.
       this.state = { phase: "selecting" }
@@ -531,13 +541,6 @@ export class RotateTool implements Tool {
     }
     ctx.dynamicInput.close()
     ctx.endCommand()
-  }
-
-  private snapshotSelection(ctx: ToolContext): readonly Entity[] {
-    return ctx.selection
-      .toArray()
-      .map((id) => ctx.document.get(id))
-      .filter((entity): entity is Entity => entity !== undefined)
   }
 
   private resolvePivot(rawPoint: Vec2, ctx: ToolContext): Vec2 {

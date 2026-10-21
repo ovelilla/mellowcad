@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest"
 
 import { type CadHarness, createHarness } from "../../../test/harness"
 import { es } from "../../locales/es"
+import { lineOf, p } from "../../../test/builders"
 
 /** Typed at the command line and confirmed, as AutoCAD's prompt reads it. */
 function answer(cad: CadHarness, ...texts: string[]): CadHarness {
@@ -207,6 +208,24 @@ describe("AUPREC asks as AutoCAD 2026", () => {
     cad.command("ROTATE")
     expect(cad.commandLog().at(-1)).toBe(
       "Current positive angle in UCS:  ANGDIR=counterclockwise  ANGBASE=0.00"
+    )
+  })
+
+  // probe transforms/p110: ROTATE's ANGBASE and default at AUPREC 4, and
+  // at 0 the last turn rounded.
+  it("writes ROTATE's ANGBASE and default at its places", () => {
+    const cad = createHarness({ entities: [lineOf(p(0, 0), p(100, 0))] })
+    answer(cad, "AUPREC", "4", "_ROTATE", "_L", "", "0,0")
+    expect(cad.commandLog().slice(-5, -4)).toEqual([
+      "Current positive angle in UCS:  ANGDIR=counterclockwise  ANGBASE=0.0000",
+    ])
+    expect(cad.state().commandLine.prompt).toBe(
+      "ROTATE Specify rotation angle or [Copy/Reference] <0.0000>:"
+    )
+    answer(cad, "0", "AUPREC", "0", "_ROTATE", "_L", "", "0,0", "30.5")
+    answer(cad, "_ROTATE", "_L", "", "0,0")
+    expect(cad.state().commandLine.prompt).toBe(
+      "ROTATE Specify rotation angle or [Copy/Reference] <31>:"
     )
   })
 

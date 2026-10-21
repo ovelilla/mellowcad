@@ -185,6 +185,8 @@ describe("a point at a distance or an angle prompt", () => {
     )
     cad.escape()
 
+    // probe transforms/p118: ROTATE's angle is the point's bearing from the
+    // base.
     const rotate = createHarness({ entities: aLine() })
     rotate.select("A").command("ROTATE")
     answerLine(rotate, "0,0", "10,10")

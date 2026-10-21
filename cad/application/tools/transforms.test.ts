@@ -667,6 +667,8 @@ function armsFromBase(
 }
 
 describe("ROTATE", () => {
+  // probes transforms/p104, p109: Copy said at each Copy and still listed,
+  // the turn the next run's default.
   it("reports its angle settings, then asks as AutoCAD does", () => {
     const cad = createHarness({ entities: [HORIZONTAL] })
 
@@ -913,6 +915,7 @@ describe("ROTATE", () => {
     expect(cad.byId<LineEntity>("L1").end).toBeCloseToPoint(p(100, 0))
   })
 
+  // probe transforms/p105: a new angle of 100 from a reference of 30.
   it("rotates by the difference under the Reference option", () => {
     const cad = createHarness({
       entities: [lineOf(p(0, 0), p(100, 0), { id: "L1" })],
@@ -933,6 +936,81 @@ describe("ROTATE", () => {
       p(100 * Math.cos(deg(70)), 100 * Math.sin(deg(70))),
       5
     )
+  })
+
+  // probe transforms/p123: `<30` at the rotation angle is the angle, no
+  // angle override, and ROTATE ends.
+  it("takes <30 at the rotation angle as the angle", () => {
+    const cad = createHarness({
+      entities: [lineOf(p(0, 0), p(100, 0), { id: "L1" })],
+    })
+    answer(cad, "_ROTATE", "_L", "", "0,0", "<30")
+
+    expect(cad.state().commandLine.prompt).toBe("Command:")
+    expect(cad.commandLog().at(-1)).toBe(
+      "Specify rotation angle or [Copy/Reference] <0>: <30"
+    )
+    expect(cad.byId<LineEntity>("L1").end).toBeCloseToPoint(p(86.6025, 50), 4)
+  })
+
+  // probe transforms/p139: with L picked before H, ERASE Last takes L's copy,
+  // the copy of the object later in the drawing.
+  it("adds Copy's copies in drawing order, whatever the pick order", () => {
+    const cad = createHarness({
+      entities: [
+        lineOf(p(0, 50), p(50, 100), { id: "H" }),
+        lineOf(p(0, 0), p(100, 0), { id: "L" }),
+      ],
+    })
+    answer(cad, "_ROTATE", "50,0", "25,75", "", "0,0", "_C", "90")
+    expect(
+      linesOf(cad.entities())
+        .slice(2)
+        .map((line) => line.start)
+    ).toBeCloseToPoints([p(-50, 0), p(0, 0)])
+
+    answer(cad, "_ERASE", "_L", "")
+    expect(linesOf(cad.entities())).toHaveLength(3)
+    expect(linesOf(cad.entities())[2].end).toBeCloseToPoint(p(-100, 50))
+  })
+
+  // probes transforms/p131–p134: each run is one step U names, a turn by 0
+  // included; a Copy by 0 leaves a duplicate U takes back.
+  it("is one step for U, REDO and MREDO", () => {
+    const drawing = () =>
+      createHarness({
+        entities: [
+          circleOf(p(200, 200), 20),
+          lineOf(p(0, 50), p(50, 100)),
+          lineOf(p(0, 0), p(100, 0), { id: "L1" }),
+        ],
+      })
+    const end = (cad: CadHarness) => cad.byId<LineEntity>("L1").end
+    const turned = p(86.6025, 50)
+
+    const redone = answer(drawing(), "_ROTATE", "_L", "", "0,0", "30", "_U")
+    expect(end(redone)).toBeCloseToPoint(p(100, 0))
+    answer(redone, "_REDO")
+    expect(end(redone)).toBeCloseToPoint(turned, 4)
+    expect(redone.commandLog().slice(-5)).toEqual([
+      "U",
+      "ROTATE",
+      "REDO",
+      "ROTATE",
+      "Everything has been redone",
+    ])
+    answer(redone, "_U", "_MREDO", "1")
+    expect(end(redone)).toBeCloseToPoint(turned, 4)
+
+    const byZero = answer(drawing(), "_ROTATE", "_L", "", "0,0", "0", "_U")
+    expect(byZero.commandLog().at(-1)).toBe("ROTATE")
+    expect(byZero.entityCount).toBe(3)
+
+    const copied = answer(drawing(), "_ROTATE", "_L", "", "0,0", "_C", "0")
+    expect(copied.entityCount).toBe(4)
+    answer(copied, "_U")
+    expect(copied.entityCount).toBe(3)
+    expect(copied.commandLog().at(-1)).toBe("ROTATE")
   })
 })
 

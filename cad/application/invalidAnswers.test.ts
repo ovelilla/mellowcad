@@ -125,6 +125,7 @@ describe("a wrong answer mid-command", () => {
     )
     cad.escape()
 
+    // probes transforms/p113, p158: ROTATE's angle, then its reference.
     cad.select("A").command("ROTATE").click(p(0, 0))
     answerLine(cad, "FOO")
     expect(cad.commandLog().at(-1)).toBe(

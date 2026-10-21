@@ -57,7 +57,7 @@ Array (so the second point's `[Array]` is not offered; the first form still refu
 with Array's keyword's `Point or option keyword required.`, es `Se requiere un punto o una
 opción.`, where MOVE's says `Invalid point.`, p154–p158)
 
-### `ROTATE` / `RO` · es `GIRA` / `GI`†
+### `ROTATE` / `RO` · es `GIRA` / `GI`
 
 **Implemented:** `Current positive angle in UCS:  ANGDIR=counterclockwise  ANGBASE=0` (es
 `Ángulo actual positivo en SCP:  ANGDIR=en sentido horario inverso ANGBASE=0`), `Select objects:`
@@ -73,16 +73,22 @@ angle of the line between them; Enter takes the default;
 `Requires valid numeric angle, second point, or option keyword.`: p105–p107, p135, p154) (es
 `Precise punto base`, `Precise ángulo de rotación o [Copiar/Referencia]`,
 `Precise ángulo de referencia`, `Precise el nuevo ángulo o [Puntos]`, ` Designe segundo punto`,
-p156); pivot + angle; Enter takes the last turn, Reference's prompts the last reference and new
-angle, 0 in each drawing, every run setting the turn (per drawing, not saved: rectang/p314,
-Reference's taken alike, unprobed; p111, p112); LASTPOINT is the base point after Reference's and Points' points (p106, p126, p152, p154);
-Copy, Reference; about an axis parallel to the UCS's Z ("the Z axis of the UCS determines the axis
-direction for rotating objects about a point"); an elliptical arc keeps its parameters
-(ellipse/p322)
+p156); pivot + angle; at the rotation angle a point is its bearing from the base point and `<30`
+is the angle, no angle override (p118, p123); Enter takes the last turn, Reference's prompts the
+last reference and new angle, 0 in each drawing, every run setting the turn (per drawing, not
+saved: rectang/p314, Reference's taken alike, unprobed; p109, p111, p112), each default and
+ANGBASE written at AUPREC (`<0.0000>` at 4, `<31>` at 0 after 30.5, p110); LASTPOINT is the base
+point however the angle is given (p106, p118, p126, p152, p154); Copy's copies go in drawing order
+whatever the pick order, so ERASE Last takes the later one's (p139); each run is one step U names,
+a turn by 0 too, and a Copy by 0 leaves a duplicate U takes back (p131–p134); nothing is left
+selected and the set is Previous, the originals under Copy (p148, p149); about an axis parallel to
+the UCS's Z ("the Z axis of the UCS determines the axis direction for rotating objects about a
+point"), an object's Z kept whatever ELEVATION and the base point's, in a turned or tilted UCS
+(p141–p144); an elliptical arc keeps its parameters (ellipse/p322); `GI` from the Spanish
+`acad.pgp` (p101)
 
 **Missing:** Enter at Points' points ends ROTATE unturned, **unverified** (SCALE's console reads
-its cursor there); defaults written at the drawing's precision (`<0.00>`) where AutoCAD's AUPREC 0
-writes `<0>`
+its cursor there)
 
 ### `SCALE` / `SC` · es `ESCALA` / `ES`
 

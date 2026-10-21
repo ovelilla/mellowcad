@@ -108,6 +108,7 @@ describe.each(ENTERS)("Enter from %s with nothing typed", (_, enter) => {
     expect(cad.activeToolId()).toBe("select")
   })
 
+  // probe transforms/p109.
   it("rotates by the last angle, 0 at first", () => {
     const cad = createHarness({
       entities: [lineOf(p(0, 0), p(100, 0), { id: "A" })],

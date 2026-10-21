@@ -201,6 +201,19 @@ const DERIVED: ReadonlyArray<
         .option("No"),
     [blueLine(0, 100, "L1")],
   ],
+  // probe transforms/p140: the copy wears the source's colour, not CECOLOR.
+  [
+    "ROTATE Copy",
+    (c) =>
+      c
+        .select("L1")
+        .command("ROTATE")
+        .click(p(0, 0))
+        .option("Copy")
+        .type("90")
+        .enter(),
+    [blueLine(0, 100, "L1")],
+  ],
   [
     "ARRAYRECT",
     (c) =>

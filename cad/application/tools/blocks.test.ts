@@ -318,6 +318,7 @@ describe("a block reference in the drawing", () => {
     cad.select("I1").command("MOVE").click(p(0, 0)).click(p(0, 40))
     expect(cad.byId<InsertEntity>("I1").position).toBeCloseToPoint(p(0, 40))
 
+    // transforms/p138: ROTATE turns the reference's rotation.
     cad.select("I1").command("ROTATE").click(p(0, 40)).type("90").enter()
     expect(cad.byId<InsertEntity>("I1").rotation).toBeCloseTo(Math.PI / 2)
 
