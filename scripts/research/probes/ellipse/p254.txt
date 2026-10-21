@@ -1,0 +1,14 @@
+_-LAYER
+_M
+L1
+
+_CLAYER
+0
+_ELLIPSE
+0,0
+'_CLAYER
+L1
+100,0
+25
+MPDUMP
+-

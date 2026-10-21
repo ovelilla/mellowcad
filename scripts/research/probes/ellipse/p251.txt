@@ -1,0 +1,8 @@
+_ELLIPSE
+'_-COLOR
+3
+0,0
+100,0
+25
+MPDUMP
+-

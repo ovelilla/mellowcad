@@ -1,0 +1,12 @@
+_ELLIPSE
+0,0
+100,0
+25
+_ELLIPSE
+_C
+0,0
+50,0
+25
+_U
+_REDO
+(sslength (ssget "_X"))

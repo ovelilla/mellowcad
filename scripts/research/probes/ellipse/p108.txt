@@ -1,0 +1,8 @@
+_ELLIPSE
+C
+0,0
+50,0
+25
+(getvar "LASTPOINT")
+MPDUMP
+-

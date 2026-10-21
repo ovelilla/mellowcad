@@ -1,0 +1,17 @@
+_ELLIPSE
+_A
+0,0
+100,0
+25
+30
+'_ZOOM
+_E
+'_-PAN
+0,0
+5,5
+'ORTHOMODE
+1
+'_-OSNAP
+_END
+'_LINE
+120

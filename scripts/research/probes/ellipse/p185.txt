@@ -1,0 +1,7 @@
+_ELLIPSE
+_C
+0,0
+50
+25
+MPDUMP
+-

@@ -1,0 +1,6 @@
+_ELLIPSE
+10,10
+@
+100,0
+25
+(getvar "LASTPOINT")

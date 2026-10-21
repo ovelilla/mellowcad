@@ -1,0 +1,9 @@
+_UCS
+_X
+90
+_ELLIPSE
+0,0
+100,0
+25
+MPDUMP
+-

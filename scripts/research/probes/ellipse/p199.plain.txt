@@ -1,0 +1,18 @@
+_ELLIPSE
+0,0
+100,0
+25
+_ELLIPSE
+_C
+0,0
+50,0
+25
+_UNDO
+2
+(ssget "_X")
+_MREDO
+1
+(sslength (ssget "_X"))
+_MREDO
+_A
+(sslength (ssget "_X"))

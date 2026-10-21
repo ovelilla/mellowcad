@@ -1,0 +1,5 @@
+_ELLIPSE
+_CENTRE
+0,0
+50,0
+25
