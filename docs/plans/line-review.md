@@ -220,7 +220,6 @@ linetype from the start (RND-02); F4's echo.
 Applied on 2026-10-21 (template §9): subagents probe and run scratch tests in ranges of their own;
 undo-depth probes untraced; a trailing Enter repeats; desktop typing through COM, keystrokes after
 a click; `es-several` and `no-source` per command; pointer gestures, the look, every object snap
-three ways and the modes in combination in the matrix. Proposed for the next review, to confirm:
-execution by one subagent per block, reviewed and committed by the reviewer (thirteen commits
-overnight); and a catalog key a block stops reading stays (a major version otherwise), which two
-blocks decided differently until the reviewer restored the keys.
+three ways and the modes in combination in the matrix. After the execution, confirmed by the owner and applied:
+one subagent per block, the reviewer committing; an unused catalog key stays; every session ends
+with the next one's prompt.

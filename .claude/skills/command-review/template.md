@@ -314,7 +314,10 @@ reproducible scenario stays **unverified** and is never presented as fact.
 
 ## 8. Execution
 
-After the owner approves the plan, block by block:
+After the owner approves the plan, block by block, in the plan's order. Each block is implemented
+by **one subagent**, given the block's findings, decisions, scratch tests and probes, and told not
+to commit; the reviewer reads its diff, runs the gate and commits. Blocks go one after another: they
+share the catalogs and the snapshots.
 
 1. **Fixes**, each with its regression test in the lowest layer that reproduces it, written first
    and seen failing, citing its probe.
@@ -322,13 +325,18 @@ After the owner approves the plan, block by block:
    probe that confirmed them.
 3. **Catalogs**: `en`, `es` and `ar` edited, `npm run locales`, the compiled files committed; the
    English surface snapshot updated with `-u` only where the English was meant to change, its diff
-   read.
+   read. A key no code reads any more **stays**, unused: removing one is a major version
+   (`cad/README.md`, "Versioning").
 4. **Docs**: the coverage entry (what it now does, what it still lacks, nothing left unverified that
    a probe settled), the rules the block taught or proved wrong, the roadmap's review list.
 5. **Close the block** with skill `finish-feature`: the gate, then **one commit per block** citing
    the finding IDs (`fix(engine): LINE review — LIN-01 to LIN-04`). The push waits for the owner.
 6. When the last block lands, the plan shrinks to the summary and the index (§5.1), and the
    roadmap marks the review done with the areas it owns.
+
+**Every session ends with the prompt for the next one**, ready to paste: the review or the blocks
+it takes, its phases, whether it needs the owner's mouse on the desktop (so they grant it when they
+start it), and what the last session left for it.
 
 ## 9. Template improvements
 
@@ -344,6 +352,9 @@ Applied:
   probe's trailing Enter repeats the last command, and typed desktop input goes through COM
   (annex-probes.md); `es-several` and `no-source` are settled per command (annex-catalogs.md);
   sessions sized by blocks, desktop probes apart (§1.4).
+- 2026-10-21, after LINE's execution: one subagent per block, the reviewer committing (thirteen
+  commits overnight); an unused catalog key stays (two blocks had decided otherwise); every session
+  ends with the next one's prompt, at the owner's request (§8).
 - 2026-10-21, at the owner's request: the matrix gained pointer gestures (P), the look (Q, after
   AGENTS.md's rule that a look slowing an AutoCAD user down is a finding), every object snap three
   ways (running, picked, typed) and the modes in combination.

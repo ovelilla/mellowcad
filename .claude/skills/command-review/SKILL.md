@@ -21,9 +21,11 @@ cross-cutting area, is "Command reviews" in `docs/coverage/roadmap.md`.
 2. **One session per group of blocks** (template §1.4), started with the prompt of template §0.
 3. **Every claim about AutoCAD comes from a probe with an id** (annex-probes.md); every claim about
    mellowcad from a harness test, existing or written for the review. Neither is ever from memory.
-4. Subagents are read-only, at most three at once, never nested (template §4.8); the reviewer
-   verifies their high and critical findings in person before they enter the plan.
+4. Subagents, at most three at once and never nested, review with probes and scratch tests of their
+   own (template §4.8); the reviewer verifies their high and critical findings in person. In the
+   execution, one subagent implements each block and the reviewer commits it (template §8).
 5. Findings use the format of template §5.1 with a block prefix no other review has used; once
    executed, the plan shrinks to a summary and an index of IDs and commits.
 6. Every review ends with proposed improvements to the template (template §9), applied only after
    the owner confirms them.
+7. Every session ends with the prompt for the next one (template §8).
