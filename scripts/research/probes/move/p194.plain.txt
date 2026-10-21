@@ -1,0 +1,17 @@
+_LINE
+0,0
+100,0
+
+_ZOOM
+_W
+-50,-50
+700,700
+_MOVE
+50,0
+
+3,4
+13,4
+_U
+(cdr (assoc 10 (entget (entnext))))
+_REDO
+(cdr (assoc 10 (entget (entnext))))

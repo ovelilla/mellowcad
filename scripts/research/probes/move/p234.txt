@@ -1,0 +1,11 @@
+_LINE
+0,0
+100,0
+
+_COPY
+_ALL
+
+20,10
+
+(sslength (ssget "_X"))
+(cdr (assoc 10 (entget (entlast))))

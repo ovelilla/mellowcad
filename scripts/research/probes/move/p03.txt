@@ -1,0 +1,24 @@
+_LINE
+0,0
+100,0
+
+_LINE
+0,50
+100,50
+
+_ZOOM
+_W
+-50,-50
+700,700
+_MOVE
+50,0
+
+_D
+5,5
+(ssget "_I")
+(sssetfirst nil (ssget "_X"))
+_COPY
+_D
+5,5
+(ssget "_I")
+(sslength (ssget "_X"))

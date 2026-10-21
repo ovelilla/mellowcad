@@ -1,0 +1,23 @@
+_LINE
+0,0
+100,0
+
+_ZOOM
+_W
+-50,-50
+700,700
+_COPY
+50,0
+
+3,4
+13,4
+23,4
+33,4
+
+_U
+_REDO
+(sslength (ssget "_X"))
+_U
+_MREDO
+_A
+(sslength (ssget "_X"))

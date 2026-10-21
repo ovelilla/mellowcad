@@ -1,0 +1,11 @@
+_LINE
+0,0
+100,0
+
+_MOVE
+_ALL
+
+0,0
+10,0
+_U
+(cdr (assoc 10 (entget (entlast))))

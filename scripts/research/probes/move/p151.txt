@@ -1,0 +1,19 @@
+_LINE
+0,0
+100,0
+
+_LINE
+0,50
+100,50
+
+_ZOOM
+_W
+-50,-50
+700,700
+_COPY
+50,0
+
+3,4
+
+(progn (setq s (ssget "_X") i 0 r nil) (repeat (sslength s) (setq r (cons (cdr (assoc 10 (entget (ssname s i)))) r) i (1+ i))) r)
+(getvar "LASTPOINT")

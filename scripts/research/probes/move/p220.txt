@@ -1,0 +1,15 @@
+_UCS
+_Y
+45
+_CIRCLE
+10,0
+5
+_UCS
+_W
+_COPY
+_ALL
+
+_D
+10,0,0
+MPDUMP
+-

@@ -1,0 +1,21 @@
+_CIRCLE
+200,200
+20
+_LINE
+0,0
+100,0
+
+_ZOOM
+_W
+-50,-50
+700,700
+_ID
+7,3
+_MOVE
+_L
+
+_D
+<30
+10
+(getvar "LASTPOINT")
+(cdr (assoc 10 (entget (entlast))))

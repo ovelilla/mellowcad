@@ -1,0 +1,38 @@
+_CIRCLE
+0,0
+5
+_-ATTDEF
+
+T1
+P1
+V1
+0,-10
+
+
+_-BLOCK
+B1
+0,0
+_ALL
+
+_-INSERT
+B1
+50,50
+
+
+
+X1
+_ZOOM
+_W
+-50,-50
+700,700
+_COPY
+_ALL
+
+0,0
+100,0
+
+(cdr (assoc 10 (entget (entlast))))
+(cdr (assoc 10 (entget (entnext (entlast)))))
+(cdr (assoc 1 (entget (entnext (entlast)))))
+MPDUMP
+-

@@ -1,0 +1,15 @@
+_LINE
+0,0
+100,0
+
+_LINE
+0,50
+100,50
+
+_MOVE
+_ALL
+
+0,0
+0,0
+_U
+(sslength (ssget "_X"))

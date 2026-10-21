@@ -1,0 +1,21 @@
+_ZOOM
+_W
+-50,-50
+700,700
+_RECTANG
+0,0
+10,10
+_-HATCH
+_S
+_L
+
+
+(foreach g (entget (entlast)) (if (member (car g) (quote (10 43 44 45 46 52 53 98))) (print g)))
+(getpropertyvalue (entlast) "Origin")
+_MOVE
+_L
+
+0,0
+1,0
+(foreach g (entget (entlast)) (if (member (car g) (quote (10 43 44 45 46 52 53 98))) (print g)))
+(getpropertyvalue (entlast) "Origin")

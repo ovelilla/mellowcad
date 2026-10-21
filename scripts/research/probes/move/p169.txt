@@ -1,0 +1,22 @@
+_LINE
+0,0
+100,0
+
+_LINE
+0,50
+100,50
+
+_ZOOM
+_W
+-50,-50
+700,700
+_UCS
+_Z
+30
+_MOVE
+*50,0
+
+0,0
+*10,0
+(cdr (assoc 10 (entget (entnext))))
+(trans (getvar "LASTPOINT") 1 0)

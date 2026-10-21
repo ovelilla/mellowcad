@@ -1,0 +1,21 @@
+_LINE
+0,0
+100,0
+
+_MOVE
+_ALL
+
+0,0
+10,0
+_COPY
+_ALL
+
+0,0
+0,10
+0,20
+0,30
+
+_UNDO
+2
+(sslength (ssget "_X"))
+(cdr (assoc 10 (entget (entlast))))

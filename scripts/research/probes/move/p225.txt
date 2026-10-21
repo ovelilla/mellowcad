@@ -1,0 +1,17 @@
+_LINE
+0,0
+100,0
+
+_ZOOM
+_W
+-50,-50
+700,700
+_MOVE
+_ALL
+
+0,0
+'ELEVATION
+5
+10,0
+MPDUMP
+-

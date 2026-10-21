@@ -1,0 +1,67 @@
+_CIRCLE
+200,200
+20
+_LINE
+0,0
+100,0
+
+_ZOOM
+_W
+-50,-50
+700,700
+_ID
+7,3
+_MOVE
+_L
+
+10,20
+@
+(getvar "LASTPOINT")
+_ID
+7,3
+_MOVE
+_L
+
+10,20,5
+@
+(getvar "LASTPOINT")
+_ID
+7,3
+_MOVE
+_L
+
+@5,5
+@
+(getvar "LASTPOINT")
+_ID
+7,3
+_MOVE
+_L
+
+@
+@
+(getvar "LASTPOINT")
+_ID
+7,3
+_MOVE
+_L
+
+10<30
+@
+(getvar "LASTPOINT")
+_ID
+7,3
+_MOVE
+_L
+
+@10<30
+@
+(getvar "LASTPOINT")
+_ID
+7,3
+_MOVE
+_L
+
+#10,20
+@
+(getvar "LASTPOINT")

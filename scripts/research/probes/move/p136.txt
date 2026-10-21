@@ -1,0 +1,44 @@
+_CIRCLE
+200,200
+20
+_LINE
+0,0
+100,0
+
+_ZOOM
+_W
+-50,-50
+700,700
+_UCS
+_Z
+30
+_ID
+7,3
+_MOVE
+_L
+
+_D
+10,0
+(getvar "LASTPOINT")
+(cdr (assoc 10 (entget (entlast))))
+(trans (getvar "LASTPOINT") 1 0)
+_ID
+7,3
+_MOVE
+_L
+
+_D
+*10,0
+(getvar "LASTPOINT")
+(cdr (assoc 10 (entget (entlast))))
+(trans (getvar "LASTPOINT") 1 0)
+_ID
+7,3
+_MOVE
+_L
+
+_D
+@10,0
+(getvar "LASTPOINT")
+(cdr (assoc 10 (entget (entlast))))
+(trans (getvar "LASTPOINT") 1 0)
