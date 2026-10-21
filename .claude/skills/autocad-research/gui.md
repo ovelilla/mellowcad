@@ -53,8 +53,11 @@ Windows desktop.
   then (2026-10-21). A click at `Command:` on nothing starts a window: press Escape after it.
   What the command line takes goes more simply through `com send`. This profile hides the command
   line (CLISTATE 0); `_COMMANDLINEHIDE` asks to confirm in a task dialog (`acad.sh uia`).
-- **A second instance**: `acad.sh launch [script.scr]` starts one beside the user's (`/b` runs a
-  script). COM will not reach it; type and capture by its window handle.
+- **Launching**: `acad.sh launch [script.scr] [language]` starts acad.exe as the owner's shortcut
+  does, `/product ACAD /language es-ES` (`/b` runs a script; `en-US` for the English profile).
+  Without `/language` it opens the install's default, English, with a profile of its own (three
+  reviews took that for a quirk). Beside the user's instance, COM will not reach it; type and
+  capture by its window handle.
 
 ## What does not work
 

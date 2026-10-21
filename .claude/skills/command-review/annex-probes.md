@@ -89,9 +89,9 @@ dimensional fields are the command's own (RECTANG's other corner shows its sides
 ## 4. The desktop
 
 Rules: `gui.md` of `autocad-research`, always. The owner's AutoCAD may be closed: open it with
-`scripts/research/acad.sh launch` and wait for its window (`acad.sh wins`); with no other
-instance, COM reaches it. A launch may open another language's profile, with settings of its own:
-read and restore them per instance.
+`scripts/research/acad.sh launch` (the Spanish profile, as the owner's shortcut opens it; `launch ""
+en-US` the English one) and wait for its window (`acad.sh wins`); with no other instance, COM
+reaches it. Each language's profile has settings of its own: read and restore them per instance.
 
 - **What is typed at the command line goes through COM** (`com send`): no keystroke, no focus
   needed. d02 of LINE's review answered a whole prompt sequence that way.
@@ -120,8 +120,6 @@ Traps seen on the desktop (PLINE's review, 2026-10-21):
   press Escape and select again between two hovers.
 - A click sent right after typed keys can be lost while AutoCAD still reads them: wait after
   typing.
-- A launched instance may open the English profile (three reviews running): a cell that needs the
-  Spanish labels goes in a session started with the owner's AutoCAD already open in Spanish.
 - A Ctrl held only during a move is not read by the jig; held at the pick it is.
 - `com send` of a command that leaves its own prompt open locks COM (`_MPHIST 6` took `6` as its
   first answer): read the history with `com hist` only. `com set` cannot write a negative value:
@@ -135,7 +133,7 @@ Traps seen on the desktop (PLINE's review, 2026-10-21):
   answer); -LINETYPE's file needs FILEDIA 0, put back after (CIRCLE's review).
 - Escape with dynamic input's Down list open cancels the command, not the list: close it with
   Enter or the arrows mid-probe. The owner's Spanish profile shows only Spanish labels: plan the
-  English ones apart (`ax26res.dll`, or a pass in the English profile) or they stay unverified
+  English ones apart (`ax26res.dll`, or a pass launched with `en-US`) or they stay unverified
   (ELLIPSE's review).
 
 A probe that only reads the raw `initget` (flags, `control`) loads MellowProbe with

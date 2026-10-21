@@ -5,7 +5,7 @@ description: Establish how AutoCAD behaves and words something before building o
 
 # Researching AutoCAD
 
-The AutoCAD installed is **2027** (R26.0) on Windows, with the Spanish language pack only; every
+The AutoCAD installed is **2027** (R26.0) on Windows, in Spanish with the English language pack too; every
 tool runs from WSL through interop. Pick the source by the question:
 
 | Question                                                                   | Source                      | Read       |
