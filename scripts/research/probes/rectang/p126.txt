@@ -1,0 +1,9 @@
+_UCS
+_Z
+30
+_RECTANG
+*5,5
+*15,10
+MPDUMP
+-
+(getvar "LASTPOINT")

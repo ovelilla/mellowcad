@@ -1,0 +1,14 @@
+_ID
+3,3
+_POLYGON
+4
+_E
+1,1
+@10,0
+(getvar "LASTPOINT")
+_POLYGON
+4
+0,0
+_I
+@5,0
+(getvar "LASTPOINT")

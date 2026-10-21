@@ -1,0 +1,17 @@
+(getvar "POLYSIDES")
+_POLYGON
+7
+5,5
+_I
+10
+(getvar "POLYSIDES")
+_POLYSIDES
+9
+(getvar "POLYSIDES")
+_POLYGON
+
+30,5
+
+5
+MPDUMP
+-

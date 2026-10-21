@@ -1,0 +1,8 @@
+_POLYGON
+7
+'_POLYSIDES
+
+5,5
+_I
+10
+(getvar "POLYSIDES")

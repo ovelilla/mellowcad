@@ -1,0 +1,27 @@
+_.SAVEAS
+2018
+kepB
+_OFFSET
+_E
+_Y
+_L
+_C
+2
+
+(getvar "OFFSETDIST")
+_OFFSET
+
+
+_.SAVEAS
+2018
+kepX
+_.OPEN
+kepB
+_OFFSET
+
+
+_.OPEN
+kepX
+_OFFSET
+
+

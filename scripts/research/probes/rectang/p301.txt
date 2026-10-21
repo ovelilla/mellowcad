@@ -1,0 +1,52 @@
+_.SAVEAS
+2018
+kepB
+(getvar "CIRCLERAD")
+(getvar "POLYSIDES")
+(getvar "PLINEWID")
+(getvar "SPLMETHOD")
+(getvar "SPLKNOTS")
+(getvar "SPLDEGREE")
+(getvar "ELEVATION")
+(getvar "THICKNESS")
+(setvar "CIRCLERAD" 3.0)
+(setvar "POLYSIDES" 6)
+(setvar "PLINEWID" 0.5)
+(setvar "SPLMETHOD" 1)
+(setvar "SPLKNOTS" 1)
+(setvar "SPLDEGREE" 5)
+(setvar "ELEVATION" 2.0)
+(setvar "THICKNESS" 1.5)
+(getvar "CIRCLERAD")
+(getvar "POLYSIDES")
+(getvar "PLINEWID")
+(getvar "SPLMETHOD")
+(getvar "SPLKNOTS")
+(getvar "SPLDEGREE")
+(getvar "ELEVATION")
+(getvar "THICKNESS")
+_.SAVEAS
+2018
+kepX
+_.OPEN
+kepB
+(getvar "DWGNAME")
+(getvar "CIRCLERAD")
+(getvar "POLYSIDES")
+(getvar "PLINEWID")
+(getvar "SPLMETHOD")
+(getvar "SPLKNOTS")
+(getvar "SPLDEGREE")
+(getvar "ELEVATION")
+(getvar "THICKNESS")
+_.OPEN
+kepX
+(getvar "DWGNAME")
+(getvar "CIRCLERAD")
+(getvar "POLYSIDES")
+(getvar "PLINEWID")
+(getvar "SPLMETHOD")
+(getvar "SPLKNOTS")
+(getvar "SPLDEGREE")
+(getvar "ELEVATION")
+(getvar "THICKNESS")

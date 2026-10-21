@@ -1,0 +1,12 @@
+(getvar "CIRCLERAD")
+_CIRCLE
+5,5
+3
+(getvar "CIRCLERAD")
+(getvar "DWGNAME")
+_FILEDIA
+0
+_NEW
+.
+(getvar "DWGNAME")
+(getvar "CIRCLERAD")

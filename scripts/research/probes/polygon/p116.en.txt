@@ -1,0 +1,17 @@
+POLYGON
+5
+E
+5,5
+15,5
+POLYGON
+4
+20,5
+C
+5
+POLYGON
+4
+40,5
+I
+5
+MPDUMP
+-

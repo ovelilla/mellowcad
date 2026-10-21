@@ -1,0 +1,29 @@
+(setvar "FILLETRAD" 2.0)
+(setvar "CHAMFERA" 3.0)
+(setvar "CHAMFERB" 4.0)
+(setvar "PLINEWID" 0.4)
+(setvar "ELEVATION" 1.0)
+(setvar "THICKNESS" 2.0)
+_RECTANG
+_F
+
+_C
+
+
+_E
+
+_T
+
+_W
+
+5,5
+15,10
+(getvar "FILLETRAD")
+(getvar "CHAMFERA")
+(getvar "CHAMFERB")
+_RECTANG
+_F
+1.5
+5,5
+15,10
+(getvar "FILLETRAD")

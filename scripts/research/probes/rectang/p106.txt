@@ -1,0 +1,7 @@
+_RECTANG
+_A
+5,5
+_D
+15,10
+MPDUMP
+-

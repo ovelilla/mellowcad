@@ -1,0 +1,16 @@
+_RECTANG
+5,5
+15,10
+_RECTANG
+20,20
+30,25
+_U
+(sslength (ssget "X"))
+_REDO
+(sslength (ssget "X"))
+_UNDO
+2
+(sslength (ssget "X"))
+_MREDO
+_A
+(sslength (ssget "X"))

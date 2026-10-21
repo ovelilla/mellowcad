@@ -1,0 +1,11 @@
+_POLYGON
+'_ZOOM
+_E
+'_ORTHOMODE
+1
+'_-OSNAP
+_END
+5
+5,5
+_I
+10

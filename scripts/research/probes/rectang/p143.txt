@@ -1,0 +1,17 @@
+_UCS
+_X
+90
+_RECTANG
+_E
+2
+5,5
+15,10
+MPDUMP
+-
+_RECTANG
+_E
+0
+30,30,3
+40,40
+MPDUMP
+-

@@ -1,0 +1,9 @@
+_RECTANG
+'_LINE
+_U
+5,5
+_U
+'_LINE
+15,10
+MPDUMP
+-

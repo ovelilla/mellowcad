@@ -1,0 +1,10 @@
+_ID
+3,3
+_POLYGON
+4
+5,5
+_I
+@5,0
+MPDUMP
+-
+(getvar "LASTPOINT")

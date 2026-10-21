@@ -1,0 +1,7 @@
+POLIGONO
+6
+5,5
+_I
+10
+MPDUMP
+-

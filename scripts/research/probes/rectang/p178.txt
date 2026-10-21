@@ -1,0 +1,16 @@
+_UCS
+_O
+0,0,5
+_RECTANG
+_E
+2
+5,5
+15,10
+_ZOOM
+_W
+0,0
+20,20
+_ID
+_END
+15.01,7
+(trans (getvar "LASTPOINT") 1 0)

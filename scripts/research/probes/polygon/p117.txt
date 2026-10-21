@@ -1,0 +1,10 @@
+_POLYGON
+5
+_I
+5,5
+_E
+_C
+_E
+10
+MPDUMP
+-

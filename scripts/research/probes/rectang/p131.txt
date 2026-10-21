@@ -1,0 +1,22 @@
+_RECTANG
+5,5
+_A
+50
+
+5
+(getvar "LASTPOINT")
+_RECTANG
+5,5
+_R
+_P
+1,1
+3,4
+20,20
+(getvar "LASTPOINT")
+_RECTANG
+5,5
+_D
+4
+3
+20,20
+(getvar "LASTPOINT")

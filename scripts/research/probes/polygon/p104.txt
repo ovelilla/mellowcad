@@ -1,0 +1,15 @@
+_UCS
+_Z
+30
+_POLYGON
+6
+5,5
+_I
+10
+_POLYGON
+5
+35,5
+_C
+10
+MPDUMP
+-

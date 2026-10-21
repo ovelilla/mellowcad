@@ -1,0 +1,14 @@
+_RECTANG
+5,5
+_A
+'_ZOOM
+_E
+50
+'ORTHOMODE
+1
+
+'_-OSNAP
+_END
+5
+MPDUMP
+-

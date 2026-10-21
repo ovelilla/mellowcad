@@ -1,0 +1,18 @@
+_POLYGON
+4
+5,5
+_I
+10
+_POLYGON
+5
+30,5
+_C
+10
+_U
+_REDO
+(if (setq s (ssget "_X")) (sslength s) 0)
+_UNDO
+2
+_MREDO
+1
+(if (setq s (ssget "_X")) (sslength s) 0)

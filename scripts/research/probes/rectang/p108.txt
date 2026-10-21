@@ -1,0 +1,9 @@
+_RECTANG
+_F
+-5
+FOO
+2
+5,5
+20,15
+MPDUMP
+-

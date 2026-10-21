@@ -1,0 +1,10 @@
+_RECTANG
+5,5
+'_-COLOR
+3
+'_ELEV
+7
+2
+15,10
+MPDUMP
+-

@@ -1,0 +1,57 @@
+_.SAVEAS
+2018
+kepB
+(getvar "HPNAME")
+(getvar "HPSCALE")
+(getvar "HPANG")
+(getvar "HPDOUBLE")
+(getvar "TEXTSIZE")
+(getvar "INSNAME")
+(getvar "AFLAGS")
+(getvar "DIMSCALE")
+(getvar "PELLIPSE")
+(setvar "HPNAME" "ANSI31")
+(setvar "HPSCALE" 2.0)
+(setvar "HPANG" 0.5)
+(setvar "HPDOUBLE" 1)
+(setvar "TEXTSIZE" 3.5)
+(setvar "INSNAME" "FOO")
+(setvar "AFLAGS" 3)
+(setvar "DIMSCALE" 2.0)
+(setvar "PELLIPSE" 1)
+(getvar "HPNAME")
+(getvar "HPSCALE")
+(getvar "HPANG")
+(getvar "HPDOUBLE")
+(getvar "TEXTSIZE")
+(getvar "INSNAME")
+(getvar "AFLAGS")
+(getvar "DIMSCALE")
+(getvar "PELLIPSE")
+_.SAVEAS
+2018
+kepX
+_.OPEN
+kepB
+(getvar "DWGNAME")
+(getvar "HPNAME")
+(getvar "HPSCALE")
+(getvar "HPANG")
+(getvar "HPDOUBLE")
+(getvar "TEXTSIZE")
+(getvar "INSNAME")
+(getvar "AFLAGS")
+(getvar "DIMSCALE")
+(getvar "PELLIPSE")
+_.OPEN
+kepX
+(getvar "DWGNAME")
+(getvar "HPNAME")
+(getvar "HPSCALE")
+(getvar "HPANG")
+(getvar "HPDOUBLE")
+(getvar "TEXTSIZE")
+(getvar "INSNAME")
+(getvar "AFLAGS")
+(getvar "DIMSCALE")
+(getvar "PELLIPSE")

@@ -1,0 +1,8 @@
+POLIGONO
+5
+Edge
+L
+5,5
+15,5
+MPDUMP
+-

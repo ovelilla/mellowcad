@@ -1,0 +1,5 @@
+_.RECTANG
+5,5
+15,10
+MPDUMP
+-

@@ -1,0 +1,7 @@
+_ID
+5,5
+_RECTANG
+-5
+15,10
+MPDUMP
+-

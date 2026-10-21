@@ -1,0 +1,11 @@
+_RECTANG
+5,5
+@10,5
+(getvar "LASTPOINT")
+_RECTANG
+0,0
+_D
+4
+3
+9,9
+(getvar "LASTPOINT")

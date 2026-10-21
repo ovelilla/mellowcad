@@ -1,0 +1,9 @@
+_POLYGON
+5
+_E
+FOO
+5,5
+FOO
+15,5
+MPDUMP
+-

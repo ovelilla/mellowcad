@@ -1,0 +1,30 @@
+_.SAVEAS
+2018
+kepB
+_FILLET
+_R
+3
+
+(getvar "FILLETRAD")
+_CHAMFER
+_D
+2
+1
+
+(getvar "CHAMFERA")
+(getvar "CHAMFERB")
+_.SAVEAS
+2018
+kepX
+_.OPEN
+kepB
+_FILLET
+
+_CHAMFER
+
+_.OPEN
+kepX
+_FILLET
+
+_CHAMFER
+

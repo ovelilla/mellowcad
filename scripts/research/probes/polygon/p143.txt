@@ -1,0 +1,9 @@
+_POLYGON
+'_POLYSIDES
+7
+
+5,5
+_I
+10
+MPDUMP
+-

@@ -1,0 +1,17 @@
+_CIRCLE
+0,0
+10
+_ZOOM
+_W
+-30,-30
+30,30
+_ID
+30,0
+_POLYGON
+4
+_TAN
+0,10
+_I
+5
+MPDUMP
+-

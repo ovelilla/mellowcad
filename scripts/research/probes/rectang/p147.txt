@@ -1,0 +1,13 @@
+_-LAYER
+_M
+L2
+
+_RECTANG
+'CECOLOR
+3
+'CLAYER
+0
+5,5
+15,10
+MPDUMP
+-

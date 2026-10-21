@@ -1,0 +1,14 @@
+_POLYGON
+FOO
+2
+3.5
+1025
+5
+FOO
+0,0
+FOO
+_I
+FOO
+-5
+0
+5

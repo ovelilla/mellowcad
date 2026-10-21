@@ -1,0 +1,15 @@
+_CIRCLE
+0,0
+10
+_ZOOM
+_W
+-30,-30
+30,30
+_ID
+30,0
+_RECTANG
+_PER
+10,0
+40,40
+MPDUMP
+-

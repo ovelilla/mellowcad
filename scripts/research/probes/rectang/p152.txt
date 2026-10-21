@@ -1,0 +1,14 @@
+_RECTANG
+_F
+3
+5,5
+30,10
+MPDUMP
+-
+_RECTANG
+_F
+2.5
+40,5
+45,10
+MPDUMP
+-

@@ -1,0 +1,36 @@
+_.SAVEAS
+2018
+kepB
+_RECTANG
+_C
+2
+1
+_E
+3
+_T
+1
+_W
+0.5
+5,5
+_R
+30
+15,10
+(getvar "CHAMFERA")
+(getvar "CHAMFERB")
+(getvar "ELEVATION")
+(getvar "THICKNESS")
+(getvar "PLINEWID")
+_.SAVEAS
+2018
+kepX
+_.OPEN
+kepB
+_RECTANG
+5,5
+15,10
+_.QSAVE
+_.OPEN
+kepX
+_RECTANG
+5,5
+15,10
