@@ -225,7 +225,8 @@ deviation without a `WHY` and a coverage note is a finding.
   probes, in an id range each (`p100`–`p149`…), and write scratch tests only in a folder each
   (`research/review/<command>/<letter>/`). They never drive the desktop.
 - Each gets its list of files, the rules to open, the matrix rows and prompts it answers (disjoint:
-  two subagents with the same prompts found ELLIPSE's differences twice), the finding format
+  two subagents with the same prompts found ELLIPSE's differences twice; a case every prompt meets,
+  such as a zero vector, goes to one of them, or MOVE's turned up under three ids), the finding format
   (§5.1), its prefix and a range of decision ids of its own, the order to claim nothing about
   AutoCAD without a probe id the reviewer gave it, and the patterns found earlier in the review
   (with their IDs) to look for analogues.
@@ -390,3 +391,6 @@ Applied:
 - 2026-10-21, after ERASE's review: what a command leaves selected (§4.1); a press and drag with
   the button held between screenshots, a key held across one, and the click tool's jiggle against
   selection cycling (annex-probes.md §4).
+- 2026-10-22, after MOVE's and COPY's review: U after a run that changed nothing, and the order of
+  what a set out of order makes (matrix.md F, H); a case shared by every prompt to one subagent
+  (§4.8); function keys sent as keys, and what a desktop accident leaves (annex-probes.md §4).

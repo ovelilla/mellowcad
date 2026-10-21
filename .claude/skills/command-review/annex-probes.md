@@ -149,6 +149,15 @@ Traps seen on the desktop (PLINE's review, 2026-10-21):
 - `acad.sh click` moves the cursor 3 px off and back before clicking, which restarts selection
   cycling's stack: which candidate a click takes after Shift+Space needs a click without the
   jiggle (ERASE's review).
+- A function key sent with `acad.sh key` (F10 for Polar) can open the ribbon's key tips as Alt does,
+  and the next digit typed runs a Quick Access Toolbar button: a `5` ran Plot, whose dialog was
+  cancelled with WM_COMMAND IDCANCEL. Set the variable through COM instead, for Polar
+  `(setvar "AUTOSNAP" 63)`, for Ortho ORTHOMODE. What such an accident writes lands in AutoCAD's
+  working directory, the repo's root (`plot.log`): look there afterwards (MOVE's review).
+- The harness draws one world unit per pixel: a press within a few units of a short line's end
+  lands on its grip, not on the line, so a drag probed in a scratch test uses long geometry.
+- `drag.ps1` holds Ctrl (`ctrl`) or the right button (`right`) as `scripts/research/probes/move/`'s
+  copy does: Ctrl held from the press is AutoCAD's sub-object pick, not a drag (move/d09).
 
 A probe that only reads the raw `initget` (flags, `control`) loads MellowProbe with
 `acad.sh com netload` and reads `com trace` (`tracing.md`).

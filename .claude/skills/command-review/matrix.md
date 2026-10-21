@@ -65,7 +65,8 @@ and the command's prompt written again on return.
 
 - Inside: the command's Undo keyword (and with nothing to undo), Ctrl+Z, `_U` typed.
 - After: one U undoes the whole command; UNDO `n`; REDO and MREDO; the step's name echoed; undo
-  after an Escape halfway (what was committed stays).
+  after an Escape halfway (what was committed stays); U after a run that changed nothing (an empty
+  set, a zero vector, an inquiry): AutoCAD takes back that run and names it (move/p07).
 
 **G. Ending and cancelling** — Enter, Space and the right button at each prompt (SHORTCUTMENU
 off, and with the menu), Escape (once, twice), another command typed mid-prompt, closing options
@@ -73,7 +74,8 @@ off, and with the menu), Escape (once, twice), another command typed mid-prompt,
 
 **H. What it produces** — read with MPDUMP and with the harness's `latest()`:
 
-- The object type, how many, in which order (handles), its geometry to full precision.
+- The object type, how many, in which order (handles; from a set picked out of drawing order too,
+  move/p201), its geometry to full precision.
 - Layer (CLAYER), colour (CECOLOR), linetype (CELTYPE), lineweight (CELWEIGHT), linetype scale,
   ELEVATION and the Z of each point, THICKNESS, the normal; drawn in a rotated and in a tilted UCS.
 - The same settings changed mid-command, transparently (`'-COLOR`, `'ELEVATION`): AutoCAD fixes
