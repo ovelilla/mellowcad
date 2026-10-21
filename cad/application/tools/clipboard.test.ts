@@ -197,7 +197,7 @@ describe("PASTECLIP", () => {
     expect(cad.entityCount).toBe(2)
   })
 
-  it("leaves the pasted objects selected", async () => {
+  it("leaves the pasted objects selected (erase/p263)", async () => {
     const cad = createHarness({
       entities: [
         lineOf(p(0, 0), p(100, 0), { id: "L1" }),

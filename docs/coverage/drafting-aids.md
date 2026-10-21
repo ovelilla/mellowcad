@@ -270,7 +270,9 @@ selection does; SELECTIONCYCLING lasts the session (a registry variable: see Obj
 ("To remove objects from the set, press SHIFT while selecting"); a window or crossing — dragged, or
 begun by a click on nothing and closed by the next click (PICKAUTO, PICKDRAG 2) — adds what it
 finds, or removes it with Shift held at either corner; a click on nothing never empties the set:
-Escape drops a window under way, and with none the selection; Shift held shows a minus badge beside
+Escape drops a window under way, and with none the selection; a command started with it takes it,
+and its end or Escape drops it (but COPYCLIP's and PASTECLIP's, command-line.md, `Select objects:`;
+erase/p249–p251, desktop d10), while a grip edit, no command, leaves it; Shift held shows a minus badge beside
 the crosshair, here and at a prompt that takes a set (`Select objects:`), never at a single object's
 pick where Shift means something else (TRIM's extend) — **unverified** beyond users' reports:
 Autodesk's help does not describe it; a selected object keeps its colour and glows blue (the

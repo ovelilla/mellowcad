@@ -91,7 +91,7 @@ import {
 import { matchKeywords, resolveKeyword } from "../i18n/keywords"
 import type { EngineLocale, PromptId } from "../locales/types"
 import { EngineText, engineText, promptString } from "./EngineText"
-import { CommandHistory, Step } from "./commands/Command"
+import { Command, CommandHistory, Step } from "./commands/Command"
 import type { UndoHistory } from "./tools/Tool"
 import { UpdateSettingsCommand } from "./commands/settingsCommands"
 import { ViewChangeCommand } from "./commands/viewCommands"
@@ -552,6 +552,8 @@ export class CadRuntime extends Observable {
     readonly tool: Tool
     readonly prompt: PromptId | null
     readonly ids: readonly string[]
+    /** Asked after a global answer (`_S`), which it names in global words. */
+    readonly global: boolean
   } | null = null
 
   private stateSnapshot: EngineState
@@ -744,7 +746,7 @@ export class CadRuntime extends Observable {
         return frame().viewport
       },
       execute: (command) =>
-        this.history.execute(
+        this.executeTool(
           command.mapEntities((entity) => this.frame.entityToWorld(entity))
         ),
       pick: (world, tolerance) => this.pickEntity(world, tolerance),
@@ -775,7 +777,7 @@ export class CadRuntime extends Observable {
           this.atDistance(this.frame.pointToFrame(this.lastPoint), distance)
         ),
       viewport: this.viewport,
-      execute: (command) => this.history.execute(command),
+      execute: (command) => this.executeTool(command),
       pick: (world, tolerance) => {
         const hit = this.pickEntity(
           this.frame.pointToFrame(withZ(world, zOf(world))),
@@ -1002,6 +1004,14 @@ export class CadRuntime extends Observable {
     if (!next || next === this.activeTool) return
     this.macro = null
     this.activeTool.onDeactivate?.(this.toolContext)
+    // WHY: AutoCAD drops the selection as a command ends or is cancelled, so
+    // the next one asks `Select objects:` (erase/p249–p251, desktop d10).
+    if (
+      this.activeTool.id !== "select" &&
+      !this.activeTool.keepsSelection?.()
+    ) {
+      this.selection.clear()
+    }
     if (this.regenQueued) {
       this.regenQueued = false
       this.commandLine.write("info", this.text.message("regeneratingModel"))
@@ -1214,6 +1224,18 @@ export class CadRuntime extends Observable {
     this.dynamicInput.restore(suspended.input)
     this.toolCursor = suspended.cursor
     if (suspended.cursor !== null) this.host.setCursor(suspended.cursor)
+  }
+
+  /**
+   * A tool's change. WHY the Previous set loses what it erases for good:
+   * after U brings an erased set back, `Select objects: P` finds none
+   * (erase/p111, p234), while U of a MOVE leaves its set (p162).
+   */
+  private executeTool(command: Command): void {
+    this.history.execute(command)
+    if (this.previousSet.some((id) => !this.document.has(id))) {
+      this.previousSet = this.previousSet.filter((id) => this.document.has(id))
+    }
   }
 
   /** Ends whatever runs, a command a transparent one interrupted too. */
@@ -1705,8 +1727,12 @@ export class CadRuntime extends Observable {
       return null
     }
     const offered = this.offeredKeywords()
+    // WHY: Spanish AutoCAD asks `SIngle o SUbobject?` after `_S`
+    // (erase/p130, p131).
     return clarifying.ids.flatMap((id) =>
-      offered.filter((keyword) => keyword.id === id).map(({ word }) => word)
+      offered
+        .filter((keyword) => keyword.id === id)
+        .map(({ word, global }) => (clarifying.global ? global : word))
     )
   }
 
@@ -1719,6 +1745,7 @@ export class CadRuntime extends Observable {
     return this.answering(typed.trim(), () => {
       if (ids.length === 1) {
         this.clarifying = null
+        if (this.shortDoesNothing(typed, ids[0])) return true
         return this.invokeOption(ids[0])
       }
       this.commandLine.write("error", this.text.message("ambiguousResponse"))
@@ -1726,10 +1753,22 @@ export class CadRuntime extends Observable {
         tool: this.activeTool,
         prompt: askedPrompt(this.activeTool),
         ids: inDeclaredOrder(this.activeTool, ids),
+        global: typed.trim().startsWith("_"),
       }
       this.invalidateState()
       return true
     })
+  }
+
+  /** Whether `typed` stops short of the capitals of an option it does nothing for. */
+  private shortDoesNothing(typed: string, id: string): boolean {
+    const option = this.activeTool
+      .commandOptions?.()
+      .find((offered) => offered.id === id)
+    return (
+      option?.shortDoesNothing === true &&
+      resolveKeyword(typed, this.offeredKeywords()) !== id
+    )
   }
 
   /**

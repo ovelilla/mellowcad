@@ -93,7 +93,7 @@ probe line/p19, and here is a wrong answer; SETVAR, roadmap row 24), **unverifie
 BLOCKSPALETTE and EATTEDIT transparently (the console does not know them, or hangs on LAYER; refused
 here), **unverified**: the prompt line's head while one runs (`'ZOOM >>Specify first corner:` here;
 the console shows no head) and the dynamic prompt's `>>`, the selection modes `Expects a point or`
-lists but `Select objects:` does not take (Group, Multiple, SUbobject, Object; at a single object's
+lists but `Select objects:` does not take (Group and Multiple; at a single object's
 pick — BREAK's, UCS OBject's, ARRAYPATH's path — the others are taken, one object of what they
 find), the last keyword AutoCAD 2023 leaves out of a single pick's list (`[Exit/Undo]` expects
 `Exit`: an off-by-one, all are listed here); **unverified**: what the history writes for a length and an
@@ -188,8 +188,9 @@ again on its line: `Select objects: Specify opposite corner:`,
 typed there, never listed in its prompt — Window and Crossing whichever way they are drawn and BOX
 by its direction (`Specify first corner:`, `Specify opposite corner:`, picked on one line:
 `Specify first corner: Specify opposite corner: 2 found`; a wrong corner or Enter says
-`Invalid window specification.` and asks the first corner again; a number at a first corner a direct
-distance from LASTPOINT, at an opposite one from the first corner, which `@` is from too), Last (the
+`Invalid window specification.` and asks the first corner again; `@` at a first corner is LASTPOINT
+and a number there a direct distance from it, at an opposite corner both from the first corner,
+LASTPOINT left as it was, erase/p149), Last (the
 last object on a layer that is on), ALL (objects on layers that are off too), Fence
 (`Specify first fence point or pick/drag cursor:`, `Specify next fence point or [Undo]:`), WPolygon
 and CPolygon (`First polygon point or pick/drag cursor:`, `Specify endpoint of line or [Undo]:`;
@@ -198,16 +199,21 @@ and CPolygon (`First polygon point or pick/drag cursor:`, `Specify endpoint of l
 for Enter while the closing edge does — the points kept, Enter refused again until Undo takes the
 last back or a point mends it; a fence's point on the one before refused with the first of them too;
 a number at their points a direct distance, the first from LASTPOINT, the next from the point
-before, which `@` is from too, LASTPOINT left as it was), a fence's or polygon's wrong point
+before, which `@` is from too — `@` at the first is LASTPOINT, p159, p160 —, LASTPOINT left as it
+was), a fence's or polygon's wrong point
 `Invalid response.`, Enter on a fence of one point or a polygon of two ending the selection,
-Previous (the set the last command was given, selected before it too; `No previous selection set.`),
+Previous (the set the last command was given, selected before it too, EXPLODE's the pieces it made,
+p236, p258; what a command erases leaves it for good, U bringing it back or not — after ERASE and
+U, `No previous selection set.`, p111, p234 —, while U of a MOVE keeps it, p162, p240),
 Remove (`Remove objects:`, which refuses as `Select objects:` does) and Add, Undo (the last
-selection back, silently; `All selections have been undone.` with none left), AUto (this prompt's
+selection back, silently, at `Remove objects:` asking `Select objects:` again, p145, p156;
+`All selections have been undone.` with none left), AUto (this prompt's
 own behaviour), SIngle (the first selection that finds anything closes the set), and SUbobject and
 Object where the set takes sub-objects — there `S` says `Ambiguous response, please clarify...` and
 asks `SIngle or SUbobject?`, while in a set of whole objects — MIRROR's, JOIN's, STRETCH's, ZOOM
 Object's, EXPLODE's, COPYCLIP's, the arrays', BLOCK's, whose refusals list no `SUbobject/Object`
-(erase/p02, p138, p223, p251, p259, p260; CUTCLIP's does) — `S` is SIngle and `SU` is refused —: in
+(erase/p02, p138, p223, p251, p259, p260; CUTCLIP's does) — `S` is taken and does nothing, `SI`
+being SIngle (p153, p154, p158; MIRROR's probed), and `SU` is refused —: in
 SUbobject a pick, a window, a fence or a polygon finds `0 found` (no object
 here has sub-objects), Last and ALL are refused with its own list
 (`Window/Crossing/BOX/Fence/…/SIngle/SUbobject/Object`), Previous takes its set, and Object goes
@@ -220,16 +226,24 @@ objects on a locked layer are counted, then left out: `1 was on a locked layer.`
 the command refuses, also left out (EXPLODE's `1 was not able to be exploded.`, p219); at `Remove
 objects:` neither is said (p243, p247). A set selected before the command is counted after its echo
 and sifted the same way; with nothing left the command asks `Select objects:`, closing the set at
-the first selection that adds something (EXPLODE's, p241, p242). Enter on an empty set ends the
+the first selection that adds something (EXPLODE's, p241, p242). The set is dropped as the command
+ends or is cancelled, so the next one asks `Select objects:` — `(ssget "_I")` is nil after MOVE,
+COPY, ROTATE, SCALE, MIRROR, STRETCH, JOIN, ARRAYRECT, EXPLODE, -BLOCK, and LINE, ID and ZOOM started
+with one (p249–p251, p261, p262, p264), nothing selected after Escape (desktop d10) — but by COPYCLIP
+of a preselection (p250; not of a set picked at its prompt, p263) and PASTECLIP, which leaves what it
+pasted selected (p263); **unverified** whether a cancelled noun-verb command keeps its preselection
+(dropped here, no probe reaches it). Enter on an empty set ends the
 command silently, but EXPLODE's says `None found.` (p204, p205); es in Autodesk's table's words
 (`Designe objetos`, `Elimine objetos`,
 `1 encontrados (1 duplicados), 2 total`, `Designe primera esquina`,
 `Designación de ventana no válida.`, `Precise primer punto del borde o designe/arrastre cursor`,
 `Se han anulado todas las designaciones.`, `1 estaba en una capa bloqueada.`; the modes
 Ventana/úLTimo/Captura/MArco/Todos/Borde/polígonOV/polígonOC/Añadir/Eliminar/Previo/desHacer/AUto/úNico/Subobjeto/Objeto,
-so `S` is Subobjeto there)
+so `S` is Subobjeto there; after a global `_S` the question names the global words,
+`SIngle o SUbobject?`, p130, p131)
 
-**Missing:** Group, Multiple and CLass; SUbobject's faces, edges and vertices and the Ctrl+pick that
+**Missing:** Group (`Enter group name:`, `Invalid group name.`, p134) and Multiple (its picks
+counted at Enter, `2 selected, 2 found`, p135); SUbobject's faces, edges and vertices and the Ctrl+pick that
 selects them (no object here has sub-objects); a pick or a typed point on an object on a locked
 layer (here it finds nothing and starts a window; AutoCAD says `1 found` / `1 was on a locked
 layer.`, erase/p211, p257); PICKFIRST (a set selected before the command is always taken; with

@@ -1,7 +1,13 @@
 import { describe, expect, it } from "vitest"
 
 import { type CadHarness, createHarness } from "../../../test/harness"
-import { circleOf, layerOf, lineOf, p } from "../../../test/builders"
+import {
+  circleOf,
+  layerOf,
+  lineOf,
+  p,
+  polylineOf,
+} from "../../../test/builders"
 import { es } from "../../locales/es"
 
 /** Typed at the command line and confirmed, as AutoCAD's prompt reads it. */
@@ -213,6 +219,30 @@ describe("Select objects' modes", () => {
     ])
   })
 
+  it("goes back to Select objects when Undo takes a selection back at Remove objects (erase/p145, p156)", () => {
+    const cad = createHarness({ entities: drawing() })
+    cad.command("ERASE")
+    answer(cad, "_U", "_L", "_R", "_L", "_U")
+    expect(cad.commandLog().slice(1)).toEqual([
+      "Select objects: _U",
+      "All selections have been undone.",
+      "Select objects: _L",
+      "1 found",
+      "Select objects: _R",
+      "Remove objects: _L",
+      "1 found, 1 removed, 0 total",
+      "Remove objects: _U",
+    ])
+    expect(cad.state().commandLine.prompt).toBe("ERASE Select objects:")
+    expect(cad.selectedIds()).toEqual(["C"])
+
+    const window = createHarness({ entities: drawing() })
+    window.command("ERASE")
+    answer(window, "_L", "_W", "-10,-10", "110,60", "_R", "_U")
+    expect(window.state().commandLine.prompt).toBe("ERASE Select objects:")
+    expect(window.selectedIds()).toEqual(["C"])
+  })
+
   it("takes the Previous set again, once a command has been given one", () => {
     const cad = createHarness({ entities: drawing() })
     cad.command("MOVE")
@@ -240,6 +270,49 @@ describe("Select objects' modes", () => {
     cad.escape().command("ERASE")
     answer(cad, "P")
     expect(cad.commandLog().slice(-2)).toEqual(["Select objects: P", "2 found"])
+  })
+
+  it("has no Previous set once U brings an erased one back (erase/p111, p234)", () => {
+    const cad = createHarness({ entities: drawing() })
+    answer(cad, "_ERASE", "_L", "", "_U", "_ERASE", "_P")
+    expect(cad.commandLog().slice(-2)).toEqual([
+      "Select objects: _P",
+      "No previous selection set.",
+    ])
+    expect(cad.entityCount).toBe(3)
+
+    // Nor the set before it: ERASE's replaced it (p234).
+    const after = createHarness({ entities: drawing() })
+    answer(after, "_MOVE", "_W", "-10,-10", "110,60", "", "0,0", "1,0")
+    answer(after, "_ERASE", "_L", "", "_U", "_MOVE", "_P")
+    expect(after.commandLog().at(-1)).toBe("No previous selection set.")
+  })
+
+  it("keeps MOVE's set as the Previous one after its U (erase/p162, p240)", () => {
+    const cad = createHarness({ entities: drawing() })
+    answer(cad, "_MOVE", "_L", "", "0,0", "10,0", "_U", "_ERASE", "_P")
+    expect(cad.commandLog().slice(-2)).toEqual([
+      "Select objects: _P",
+      "1 found",
+    ])
+  })
+
+  it("keeps EXPLODE's pieces as the Previous set, none selected (erase/p236, p258)", () => {
+    const cad = createHarness({
+      entities: [
+        polylineOf([p(0, 100), p(100, 100), p(100, 150)], { id: "P" }),
+      ],
+    })
+    answer(cad, "_EXPLODE", "50,100", "")
+    expect(cad.selectedIds()).toEqual([])
+
+    answer(cad, "_ERASE", "_P", "")
+    expect(cad.commandLog().slice(-3)).toEqual([
+      "Select objects: _P",
+      "2 found",
+      "Select objects:",
+    ])
+    expect(cad.entityCount).toBe(0)
   })
 
   it("selects across a Fence, whose Undo takes back its last point", () => {
@@ -487,10 +560,13 @@ describe("Select objects' modes", () => {
     expect(picked.runtime.selection.isEmpty()).toBe(true)
   })
 
-  it("takes S as SIngle where the set is of whole objects, and refuses SU", () => {
+  // AutoCAD 2027 takes MIRROR's `S` and does nothing, the set left open;
+  // `SI` is SIngle (erase/p153 traced, p158 untraced, p154). Only MIRROR was
+  // probed: every whole-object set takes it so.
+  it("takes S and does nothing where the set is of whole objects, SI being SIngle, and refuses SU", () => {
     const cad = createHarness({ entities: drawing() })
     cad.command("MIRROR")
-    answer(cad, "SU", "S", "L")
+    answer(cad, "SU", "S", "L", "L")
     expect(cad.commandLog().slice(1)).toEqual([
       "Select objects: SU",
       "*Invalid selection*",
@@ -498,10 +574,23 @@ describe("Select objects' modes", () => {
       "Select objects: S",
       "Select objects: L",
       "1 found",
+      "Select objects: L",
+      "1 found (1 duplicate), 1 total",
     ])
-    expect(cad.state().commandLine.prompt).toBe(
-      "MIRROR Specify first point of mirror line:"
-    )
+    expect(cad.state().commandLine.prompt).toBe("MIRROR Select objects:")
+
+    for (const command of ["MIRROR", "COPYCLIP"]) {
+      const single = createHarness({ entities: drawing() })
+      single.command(command)
+      answer(single, "_S", "SI", "L")
+      expect(single.commandLog().slice(1, 3), command).toEqual([
+        "Select objects: _S",
+        "Select objects: SI",
+      ])
+      expect(single.state().commandLine.prompt, command).not.toContain(
+        "Select objects:"
+      )
+    }
   })
 
   it("takes S as Subobjeto in Autodesk's Spanish, whose SIngle is úNico", () => {
@@ -842,6 +931,39 @@ describe("a point typed at Select objects", () => {
       "BORRA Designe esquina opuesta:"
     )
     cad.escape()
+  })
+})
+
+describe("@ at a mode's first point", () => {
+  it("is LASTPOINT at a Window's first corner, which the corners leave (erase/p149)", () => {
+    const cad = createHarness({ entities: drawing() })
+    answer(cad, "_ID", "-10,-10", "_ERASE", "_W", "@", "@120,70")
+    expect(cad.commandLog().slice(-4)).toEqual([
+      "Select objects: _W",
+      "Specify first corner: @",
+      "Specify opposite corner: @120,70",
+      "2 found",
+    ])
+    cad.enter()
+    expect(lastPoint(cad)).toBe(" X = -10.00     Y = -10.00     Z = 0.00")
+  })
+
+  it("is LASTPOINT at a WPolygon's first point (erase/p159)", () => {
+    const cad = createHarness({ entities: drawing() })
+    answer(cad, "_ID", "-10,-10", "_ERASE", "_WP", "@", "@120,0", "@0,30")
+    answer(cad, "@-120,0", "")
+    expect(cad.commandLog().slice(-2)).toEqual([
+      "Specify endpoint of line or [Undo]:",
+      "1 found",
+    ])
+    expect(cad.selectedIds()).toEqual(["A"])
+  })
+
+  it("is LASTPOINT at a Fence's first point (erase/p160)", () => {
+    const cad = createHarness({ entities: drawing() })
+    answer(cad, "_ID", "50,-10", "_ERASE", "_F", "@", "@0,70", "")
+    expect(cad.commandLog().at(-1)).toBe("2 found")
+    expect(cad.selectedIds().sort()).toEqual(["A", "B"])
   })
 })
 

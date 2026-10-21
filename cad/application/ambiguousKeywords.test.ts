@@ -243,6 +243,27 @@ describe("an answer that starts several keywords", () => {
     )
   })
 
+  // AutoCAD 2027's Spanish console lists the global words after a global
+  // answer, joined by its `o` (erase/p130, p131).
+  it("names the global words after a global answer", () => {
+    const cad = createHarness({
+      locale: es,
+      entities: [lineOf(p(0, 0), p(9, 0))],
+    })
+    cad.command("BORRA")
+    answerLine(cad, "_S")
+    expect(cad.commandLog().at(-1)).toBe("Respuesta ambigua, especifique...")
+    expect(cad.state().commandLine.prompt).toBe("BORRA SIngle o SUbobject?")
+    answerLine(cad, "", "_SI", "_L")
+    expect(cad.commandLog().slice(-5)).toEqual([
+      "SIngle o SUbobject?",
+      "Opción no válida.",
+      "SIngle o SUbobject? _SI",
+      "Designe objetos: _L",
+      "1 encontrados",
+    ])
+  })
+
   // AutoCAD 2023's console (acc/k6, k19, k20): an answer that reaches past
   // the capitals of several words is the first of them, and a mode's unlisted
   // word for itself (PLINE's `LIne`, `ARc`) asks the same prompt again.

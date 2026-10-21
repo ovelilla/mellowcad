@@ -221,6 +221,7 @@ lweight "Lineweight" LW
   command| ERASE
 > ERASE one
   prompt: Command:
+  prompt| Select objects: *Cancel*
   command| E ERASE 1 found
 > UNDO
   command| U
@@ -1585,7 +1586,7 @@ lweight "Lineweight" LW
   prompt| Select objects: 1 found
 > enter
   prompt: Command:
-  properties: Block reference (1) [Block: Name=BAR, Scale=1.00~, Rotation=0°~] [Position: X=0.00~, Y=0.00~, Z=0.00~]
+  properties: -
   prompt| Select objects:
 
 ## INSERT
@@ -2507,6 +2508,7 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0°~, Line space facto
   tip: -
   dyn: -
   options: -
+  properties: -
   prompt| Enter value or [Auto] <Auto>: A
 
 ## OFFSET
@@ -2652,10 +2654,9 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0°~, Line space facto
   asks: -
   tip: -
   dyn: -
-  properties: Line (1) {Thickness=0.00 mm~} [Geometry: Start X=50.00~, Start Y=30.00~, Start Z=0.00~, End X=150.00~, End Y=30.00~, End Z=0.00~, Delta X=100.00 mm, Delta Y=0.00 mm, Delta Z=0.00 mm, Length=100.00 mm, Angle=0°]
+  properties: -
   prompt| Specify second point or <use first point as displacement>:
 > escape
-  properties: -
   command| *Cancel*
 
 ## COPY
@@ -2702,6 +2703,7 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0°~, Line space facto
   tip: -
   dyn: -
   options: -
+  properties: -
   prompt| Specify second point or [Exit/Undo] <Exit>: *Cancel*
 
 ## STRETCH
@@ -2742,10 +2744,9 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0°~, Line space facto
   asks: -
   tip: -
   dyn: -
-  properties: Line (1) {Thickness=0.00 mm~} [Geometry: Start X=0.00~, Start Y=0.00~, Start Z=0.00~, End X=150.00~, End Y=30.00~, End Z=0.00~, Delta X=150.00 mm, Delta Y=30.00 mm, Delta Z=0.00 mm, Length=152.97 mm, Angle=11°]
+  properties: -
   prompt| Specify second point or <use first point as displacement>:
 > escape
-  properties: -
   command| *Cancel*
 
 ## ROTATE
@@ -2799,12 +2800,14 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0°~, Line space facto
   asks: -
   tip: -
   dyn: -
+  properties: -
   prompt| Specify the new angle: 90
 > ROTATE by points
   prompt: ROTATE Specify base point:
   asks: "Base point"
   tip: Specify base point:
   dyn: "X,Y"=""||*
+  properties: Line (1) {Thickness=0.00 mm~} [Geometry: Start X=0.00~, Start Y=0.00~, Start Z=0.00~, End X=100.00~, End Y=0.00~, End Z=0.00~, Delta X=100.00 mm, Delta Y=0.00 mm, Delta Z=0.00 mm, Length=100.00 mm, Angle=0°]
   command| ROTATE
   info| Current positive angle in UCS:  ANGDIR=counterclockwise  ANGBASE=0
   info| 1 found
@@ -2839,6 +2842,7 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0°~, Line space facto
   asks: -
   tip: -
   dyn: -
+  properties: -
   prompt| Specify the new angle: *Cancel*
 
 ## SCALE
@@ -2892,12 +2896,14 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0°~, Line space facto
   tip: -
   dyn: -
   options: -
+  properties: -
   prompt| Specify new length or [Points] <1.00>: 50
 > SCALE by points
   prompt: SCALE Specify base point:
   asks: "Base point"
   tip: Specify base point:
   dyn: "X,Y"=""||*
+  properties: Line (1) {Thickness=0.00 mm~} [Geometry: Start X=0.00~, Start Y=0.00~, Start Z=0.00~, End X=100.00~, End Y=0.00~, End Z=0.00~, Delta X=100.00 mm, Delta Y=0.00 mm, Delta Z=0.00 mm, Length=100.00 mm, Angle=0°]
   command| SCALE 1 found
 > base
   prompt: SCALE Specify scale factor or [Copy/Reference]:
@@ -2929,6 +2935,7 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0°~, Line space facto
   tip: -
   dyn: -
   options: -
+  properties: -
   prompt| Specify new length or [Points] <50.00>: *Cancel*
 
 ## MIRROR
@@ -2966,13 +2973,14 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0°~, Line space facto
   tip: -
   dyn: -
   options: -
-  properties: Line (1) {Thickness=0.00 mm~} [Geometry: Start X=0.00~, Start Y=100.00~, Start Z=0.00~, End X=100.00~, End Y=100.00~, End Z=0.00~, Delta X=100.00 mm, Delta Y=0.00 mm, Delta Z=0.00 mm, Length=100.00 mm, Angle=0°]
+  properties: -
   prompt| Erase source objects? [Yes/No] <No>: Y
 > MIRROR N
   prompt: MIRROR Specify first point of mirror line:
   asks: "First point of mirror line"
   tip: Specify first point of mirror line:
   dyn: "X,Y"=""||*
+  properties: Line (1) {Thickness=0.00 mm~} [Geometry: Start X=0.00~, Start Y=100.00~, Start Z=0.00~, End X=100.00~, End Y=100.00~, End Z=0.00~, Delta X=100.00 mm, Delta Y=0.00 mm, Delta Z=0.00 mm, Length=100.00 mm, Angle=0°]
   command| MIRROR 1 found
 > first
   prompt: MIRROR Specify second point of mirror line:
@@ -2992,6 +3000,7 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0°~, Line space facto
   tip: -
   dyn: -
   options: -
+  properties: -
   prompt| Erase source objects? [Yes/No] <No>: N
 
 ## arrays
@@ -3067,12 +3076,14 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0°~, Line space facto
   tip: -
   dyn: -
   options: -
+  properties: -
   prompt| Select grip to edit array or [COUnt/Spacing/COLumns/Rows/eXit] <eXit>:
 > ARRAYPOLAR
   prompt: ARRAYPOLAR Specify center point of array:
   asks: "Center point"
   tip: Specify center point of array:
   dyn: "X,Y"=""||*
+  properties: Circle (1) {Thickness=0.00 mm~} [Geometry: Center X=0.00~, Center Y=0.00~, Center Z=0.00~, Radius=10.00 mm~, Diameter=20.00 mm~, Circumference=62.83 mm~, Area=314.16 mm²~, Normal X=0.00, Normal Y=0.00, Normal Z=1.00]
   command| ARPOLAR ARRAYPOLAR 1 found
   info| Type = Polar  Associative = No
 > centre
@@ -3098,12 +3109,14 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0°~, Line space facto
   tip: -
   dyn: -
   options: -
+  properties: -
   prompt| Select grip to edit array or [Items/Angle between/Fill angle/ROTate items/eXit] <eXit>:
 > ARRAYPATH
   prompt: ARRAYPATH Select path curve:
   asks: 
   tip: Select path curve:
   dyn: 
+  properties: Circle (1) {Thickness=0.00 mm~} [Geometry: Center X=0.00~, Center Y=0.00~, Center Z=0.00~, Radius=10.00 mm~, Diameter=20.00 mm~, Circumference=62.83 mm~, Area=314.16 mm²~, Normal X=0.00, Normal Y=0.00, Normal Z=1.00]
   command| ARPATH ARRAYPATH 1 found
   info| Type = Path  Associative = No
 > path
@@ -3301,23 +3314,19 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0°~, Line space facto
   properties: -
   cycling: -
 > EXPLODE one rejected
-  properties: 4 objects (4) [Selection: Lines=4]
   command| X EXPLODE 2 found
   info| 1 was not able to be exploded.
 > EXPLODE two rejected
   prompt: EXPLODE Select objects:
-  properties: -
   command| X EXPLODE 2 found
   info| 2 were not able to be exploded.
 > escape
   prompt: Command:
   prompt| Select objects: *Cancel*
 > JOIN
-  properties: 2 objects (2) [Selection: Line=1, Circle=1]
   command| J JOIN 2 found
   error| 0 objects joined, 2 objects discarded from the operation
 > escape
-  properties: -
   command| *Cancel*
 
 ## BREAK
@@ -3399,9 +3408,9 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0°~, Line space facto
   prompt| Select objects: 1 found
 > enter
   prompt: Command:
+  properties: -
   prompt| Select objects:
 > CUTCLIP
-  properties: -
   command| CUTCLIP 1 found
 > undo
 > COPYBASE
@@ -3680,6 +3689,7 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0°~, Line space facto
   prompt| Select objects: 1 found
 > enter
   prompt: Command:
+  properties: -
   prompt| Select objects:
   info| Regenerating model.
 > ZOOM W

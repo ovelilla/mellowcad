@@ -1112,3 +1112,101 @@ describe("ERASE", () => {
     expect(cad.entityCount).toBe(1)
   })
 })
+
+// AutoCAD 2027 drops the selection when a command ends or is cancelled:
+// `(ssget "_I")` is nil after each of these, verb-noun and noun-verb, after
+// LINE and ID started with one too; only COPYCLIP keeps it (probes
+// erase/p236, p249–p251, p258, p261; desktop erase/d10).
+describe("what a command leaves selected", () => {
+  const drawing = () => [
+    lineOf(p(0, 0), p(100, 0), { id: "A" }),
+    lineOf(p(100, 0), p(200, 0), { id: "B" }),
+    polylineOf([p(0, 100), p(100, 100), p(100, 150)], { id: "P" }),
+  ]
+
+  it.each<[string, (cad: CadHarness) => void]>([
+    ["MOVE", (cad) => typed(cad, "_MOVE", "50,0", "", "0,0", "1,0")],
+    ["MOVE noun-verb", (cad) => typed(cad.select("A"), "_MOVE", "0,0", "1,0")],
+    ["COPY", (cad) => typed(cad, "_COPY", "50,0", "", "0,0", "0,10", "")],
+    ["ROTATE", (cad) => typed(cad, "_ROTATE", "50,0", "", "0,0", "5")],
+    ["SCALE", (cad) => typed(cad, "_SCALE", "50,0", "", "0,0", "1")],
+    ["MIRROR", (cad) => typed(cad, "_MIRROR", "50,0", "", "0,0", "0,10", "_N")],
+    [
+      "STRETCH",
+      (cad) =>
+        typed(cad, "_STRETCH", "_C", "-20,-20", "20,20", "", "0,0", "0,1"),
+    ],
+    ["JOIN", (cad) => typed(cad, "_JOIN", "50,0", "150,0", "")],
+    ["ARRAYRECT", (cad) => typed(cad, "_ARRAYRECT", "50,0", "", "")],
+    ["EXPLODE", (cad) => typed(cad, "_EXPLODE", "50,100", "")],
+    [
+      "LINE noun-verb",
+      (cad) => typed(cad.select("A"), "_LINE", "0,10", "10,10", ""),
+    ],
+    ["ID noun-verb", (cad) => typed(cad.select("A"), "_ID", "0,0")],
+    ["ZOOM noun-verb", (cad) => typed(cad.select("A"), "_ZOOM", "_E")],
+    ["BLOCK", (cad) => typed(cad, "_BLOCK", "B1", "0,0", "_L", "")],
+    ["COPYCLIP verb-noun", (cad) => typed(cad, "_COPYCLIP", "_L", "")],
+  ])(
+    "leaves nothing selected after %s (erase/p249–p251, p261–p264)",
+    (_, run) => {
+      const cad = createHarness({ entities: drawing() })
+      run(cad)
+
+      expect(cad.activeToolId()).toBe("select")
+      expect(cad.selectedIds()).toEqual([])
+    }
+  )
+
+  it("keeps COPYCLIP's set selected (erase/p250)", () => {
+    const cad = createHarness({ entities: drawing() })
+    cad.select("A").command("COPYCLIP")
+
+    expect(cad.activeToolId()).toBe("select")
+    expect(cad.selectedIds()).toEqual(["A"])
+  })
+
+  it("asks ERASE's Select objects after a MOVE, erasing nothing (erase/p249)", () => {
+    const cad = createHarness({ entities: drawing() })
+    typed(cad, "_MOVE", "50,0", "", "0,0", "1,0")
+    cad.command("ERASE")
+
+    expect(cad.state().commandLine.prompt).toBe("ERASE Select objects:")
+    expect(cad.entityCount).toBe(3)
+  })
+
+  it.each(["ERASE", "MOVE", "EXPLODE", "ROTATE", "STRETCH"])(
+    "leaves nothing selected when Escape ends %s's Select objects after a pick (erase/d10)",
+    (command) => {
+      const cad = createHarness({ entities: drawing() })
+      cad.command(command).click(p(50, 0)).escape()
+
+      expect(cad.selectedIds()).toEqual([])
+      expect(cad.entityCount).toBe(3)
+    }
+  )
+
+  // Unprobed (no console reaches it): a cancelled noun-verb command drops its
+  // preselection as the verb-noun one does (ERASE-D22).
+  it("drops a preselection when Escape cancels the command it started", () => {
+    const cad = createHarness({ entities: drawing() })
+    cad.select("A").command("MOVE").escape()
+
+    expect(cad.selectedIds()).toEqual([])
+  })
+
+  it("keeps a running command's set across a transparent ZOOM (erase/p207)", () => {
+    const cad = createHarness({ entities: drawing() })
+    typed(cad, "_MOVE", "50,0", "'_ZOOM", "_E")
+
+    expect(cad.state().commandLine.prompt).toBe("MOVE Select objects:")
+    expect(cad.selectedIds()).toEqual(["A"])
+  })
+
+  it("keeps what a grip edit leaves selected, which is no command", () => {
+    const cad = createHarness({ entities: drawing() })
+    cad.select("A").click(p(50, 0)).click(p(50, 10))
+
+    expect(cad.selectedIds()).toEqual(["A"])
+  })
+})

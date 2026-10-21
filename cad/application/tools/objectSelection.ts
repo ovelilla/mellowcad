@@ -346,12 +346,21 @@ export class ObjectSelector {
     switch (this.step.kind) {
       case "objects":
       case "pressed":
-      case "dragging":
-        return this.offered().map((id) => ({
+      case "dragging": {
+        const offered = this.offered()
+        // WHY: AutoCAD 2027 takes MIRROR's `S` and does nothing, `SI` being
+        // SIngle (erase/p153, p158, p154). Only MIRROR was probed; every set
+        // of whole objects, which lists no SUbobject, takes it so.
+        const shortDoesNothing = !offered.includes("SUbobject")
+        return offered.map((id) => ({
           id,
           hidden: true,
           prompt: "selectObjects",
+          ...(shortDoesNothing && id === "SIngle"
+            ? { shortDoesNothing: true }
+            : {}),
         }))
+      }
       case "fence":
       case "polygon":
         return this.step.points.length > 0 ? [{ id: "Undo" }] : []
@@ -979,8 +988,12 @@ export class ObjectSelector {
     else ctx.report(ctx.text.message("noObjectFound"))
   }
 
-  /** Undo: the last selection is taken back, or there is none left. */
+  /**
+   * Undo: the last selection is taken back, or there is none left; at
+   * `Remove objects:` it asks `Select objects:` again (erase/p145, p156).
+   */
   private undo(ctx: ToolContext): void {
+    this.removing = false
     const last = this.operations.pop()
     if (!last) {
       ctx.report(ctx.text.message("allSelectionsUndone"))
@@ -1071,21 +1084,22 @@ export class ObjectSelector {
   /**
    * A typed point. A corner that is not one asks for the window again, in
    * AutoCAD's words; a fence's or polygon's point is refused as the prompt's
-   * input (`Invalid response.`).
+   * input (`Invalid response.`). `@` is from the point before, the first
+   * from LASTPOINT (erase/p149, p159, p160).
    */
   private commitTyped(ctx: ToolContext): boolean {
     const text = ctx.dynamicInput.getText("point").trim()
     if (text === "") return false
     const step = this.step
-    const last =
+    const before =
       step.kind === "oppositeCorner"
         ? step.start
         : step.kind === "fence" || step.kind === "polygon"
-          ? (step.points.at(-1) ?? null)
-          : null
+          ? step.points.at(-1)
+          : undefined
     const point = isCoordinateExpression(text)
       ? parseCoordinate(text, {
-          lastPoint: last ? { ...last, z: ctx.elevation } : null,
+          lastPoint: before ? { ...before, z: ctx.elevation } : ctx.lastPoint,
           relativeByDefault: false,
           ucs: ctx.ucs,
           elevation: ctx.elevation,

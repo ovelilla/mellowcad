@@ -1,0 +1,17 @@
+_LINE
+0,0
+100,0
+
+_ZOOM
+_W
+-50,-50
+700,700
+_COPYCLIP
+_L
+
+(ssget "_I")
+_PASTECLIP
+0,200
+(sslength (ssget "_I"))
+(cdr (assoc 10 (entget (ssname (ssget "_I") 0))))
+(sslength (ssget "_X"))

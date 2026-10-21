@@ -32,6 +32,9 @@ export type ClipboardCopyMode = "copy" | "cut" | "base"
 export class CopyClipTool extends SelectionActionTool {
   private base: Vec3 | null = null
   private awaitingBase = false
+  /** Whether it copied a set selected before it, which it then keeps. */
+  private keeps = false
+  private preselected = false
 
   constructor(
     private readonly mode: ClipboardCopyMode,
@@ -42,6 +45,8 @@ export class CopyClipTool extends SelectionActionTool {
 
   onActivate(ctx: ToolContext): void {
     this.base = null
+    this.keeps = false
+    this.preselected = !ctx.selection.isEmpty()
     this.awaitingBase = this.mode === "base"
     if (!this.awaitingBase) {
       super.onActivate(ctx)
@@ -110,12 +115,20 @@ export class CopyClipTool extends SelectionActionTool {
     return this.awaitingBase ? [] : super.commandOptions()
   }
 
+  // WHY COPYCLIP's preselection alone: `(ssget "_I")` still holds it after
+  // the copy (erase/p250), and is nil after a set picked at its prompt
+  // (p263) and after other commands. COPYBASE's was not probed.
+  keepsSelection(): boolean {
+    return this.keeps
+  }
+
   wantsSnap(): boolean {
     return this.awaitingBase || super.wantsSnap()
   }
 
   protected run(entities: readonly Entity[], ctx: ToolContext): void {
     ctx.copyToClipboard(entities, this.base ?? lowerLeft(entities, ctx))
+    this.keeps = this.mode === "copy" && this.preselected
     if (this.mode !== "cut") return
     ctx.execute(new RemoveEntitiesCommand(entities.map((entity) => entity.id)))
     ctx.selection.clear()

@@ -73,7 +73,7 @@ button held between screenshots) in the same folder. Transcripts and screenshots
 | --- | --- |
 | p00–p04 | ACADVER; ERASE's end; a preselection then ERASE, MOVE, EXPLODE; OOPS and U; `'ERASE` |
 | p100–p164 | the modes typed at `Select objects:`: W, C, BOX, L, ALL, F, WP, CP, P, R, A, U, AU, SI, SU, O, G, M, CL, `?`, FOO; their prompts, refusals, counts, `@` and numbers, `_END`, `'ZOOM`, `'ORTHOMODE`; Spanish capitals; MIRROR's `S` |
-| p200–p261 | typed points at `Select objects:`, Enter and Space, transparency, `_U`, locked and off layers; EXPLODE's, JOIN's, DIMSPACE's, HATCH's and ARRAYPATH's filters; preselection for every set command; Previous after each command and U; `(ssget "_I")` after each command; the refusal lists |
+| p200–p264 | typed points at `Select objects:`, Enter and Space, transparency, `_U`, locked and off layers; EXPLODE's, JOIN's, DIMSPACE's, HATCH's and ARRAYPATH's filters; preselection for every set command; Previous after each command and U; `(ssget "_I")` after each command (p262–p264, in the execution: ZOOM, REGEN, COPYCLIP verb-noun, PASTECLIP, -BLOCK); the refusal lists |
 | p300–p331 | ERASE's names and aliases (`DELETE`), repeat, U, REDO, MREDO, OOPS, every type erased, locked objects, `-PURGE` and EXPLODE's reports |
 | d01–d14 | with no command: hover, pick, a clicked window and crossing, the lasso and Space, Fence from the implied window, Shift, Escape; at ERASE's prompt: the cursor, the fade, a lasso, Shift+pick, the right button; Escape after a pick; the Delete key and a preselection's echo; SELECTIONCYCLING's badge, list and Shift+Space; the minus badge |
 

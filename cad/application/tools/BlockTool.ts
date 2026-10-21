@@ -272,7 +272,6 @@ export class BlockTool implements Tool {
         doneCtx
       )
       doneCtx.execute(new CreateBlockCommand(block, ids, reference))
-      doneCtx.selection.set([reference.id])
       doneCtx.endCommand()
     }
     const prompts = new AttributeValuePrompts(block, convert)

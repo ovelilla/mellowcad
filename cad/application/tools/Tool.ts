@@ -85,6 +85,11 @@ export interface CommandOption {
    * selection modes, which every `Select objects:` takes in the same words.
    */
   readonly prompt?: PromptId
+  /**
+   * Typed short of its capitals, where it alone starts so, the answer is
+   * taken and does nothing: `S` at a whole-object set's SIngle (erase/p153).
+   */
+  readonly shortDoesNothing?: true
 }
 
 /**
@@ -586,6 +591,11 @@ export interface Tool {
 
   onActivate?(ctx: ToolContext): void
   onDeactivate?(ctx: ToolContext): void
+  /**
+   * Whether the selection outlives the command, read as it ends: AutoCAD
+   * drops it after every command but COPYCLIP (erase/p249–p251, p261).
+   */
+  keepsSelection?(): boolean
   /**
    * NEW, or a drawing opened: what AutoCAD keeps per drawing without saving it
    * (CIRCLERAD, OFFSETDIST, HPNAME…) goes back to its default (rectang/p301,

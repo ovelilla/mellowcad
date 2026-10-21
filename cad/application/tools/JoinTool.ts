@@ -129,7 +129,6 @@ export class JoinTool extends SelectionActionTool {
     }
 
     ctx.execute(new ReplaceEntitiesCommand(removedIds, added))
-    ctx.selection.set(added.map((polyline) => polyline.id))
   }
 }
 

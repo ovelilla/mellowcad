@@ -115,7 +115,8 @@ export class ExplodeTool extends SelectionActionTool {
     if (pieces.length === 0) return
 
     ctx.execute(new ReplaceEntitiesCommand(removedIds, pieces))
-    // Leave the resulting segments selected, so grips/edits can follow.
-    ctx.selection.set(pieces.map((piece) => piece.id))
+    // WHY the pieces as Previous, none selected: `ERASE _P` after it finds
+    // them (erase/p236, p258).
+    ctx.rememberSelection(pieces.map((piece) => piece.id))
   }
 }

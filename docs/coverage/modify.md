@@ -566,7 +566,8 @@ and kept out of the set and its total: `1 found` / `1 was not able to be explode
 empty set, after everything was refused too, says `None found.` (es `No hallada.`, table 20841;
 p205, p216). A preselection is counted and sifted the same way after the echo; with nothing left
 it asks `Select objects:` and explodes at the first selection that adds something, with no Enter
-(`1 found, 0 total` for a refused one, p241, p242, p254)
+(`1 found, 0 total` for a refused one, p241, p242, p254). It leaves nothing selected and the
+pieces as the Previous set (`ERASE _P` → `2 found`, p236, p258)
 
 **Missing:** ByBlock resolution, non-uniform-scale → ellipse conversion
 

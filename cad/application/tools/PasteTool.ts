@@ -51,6 +51,12 @@ export class PasteTool implements Tool {
     ctx.selection.clear()
   }
 
+  // WHY: `(ssget "_I")` after PASTECLIP is what it pasted (erase/p263); a
+  // command's end drops the selection otherwise.
+  keepsSelection(): boolean {
+    return true
+  }
+
   onDeactivate(ctx: ToolContext): void {
     this.fragment = null
     this.state = { phase: "idle" }

@@ -242,6 +242,10 @@ group it interrupts, so a tool's Undo takes back to the depth it marked before i
 (`CommandHistory.undoTo`), and a regeneration that change queued is done then. A change set from a
 palette mid-command joins it. `loadDrawing` clears the history.
 
+**A command's end or Escape drops the selection** (`switchTool`, erase/p249): a tool never selects
+its result; one whose set AutoCAD keeps says `keepsSelection()` (COPYCLIP, PASTECLIP). What a tool
+erases leaves the Previous set for good (`executeTool`).
+
 Settings are split on purpose. What AutoCAD's U undoes goes through a command
 (`UpdateSettingsCommand`, which restores exactly the keys it patched; a patch that changes nothing
 executes nothing): ATTMODE, the UCS and its table, UCSICON, ELEVATION, THICKNESS, LTSCALE, AUPREC,
