@@ -2,7 +2,7 @@ import { Vec3 } from "../../geometry/Vec3"
 import { Entity, translateEntity } from "../../domain/entities"
 import { UpdateEntitiesCommand } from "../commands/entityCommands"
 import { ToolContext } from "./Tool"
-import { PlacementTool } from "./PlacementTool"
+import { PlacementTool, isZeroDisplacement } from "./PlacementTool"
 
 /**
  * AutoCAD's MOVE command: translate the selected objects once by a base →
@@ -23,6 +23,9 @@ export class MoveTool extends PlacementTool {
     delta: Vec3,
     ctx: ToolContext
   ): void {
+    // A move by nothing changes nothing; its run is still the step U names
+    // (move/p195, p231).
+    if (isZeroDisplacement(delta)) return
     ctx.execute(
       new UpdateEntitiesCommand(
         originals.map((entity) => translateEntity(entity, delta))

@@ -20,7 +20,9 @@ first end point of circle's diameter: 0,0`, desktop circle/d01, d02; ARC's, `_ar
 desktop arc/d03, d04; ELLIPSE's, `_ellipse` and `_c` or `_a`, acad.cuix, probes ellipse/p105,
 p107, p198); the prompt is headed by the
 command typed, a dash one's with its dash (`-LINETYPE Enter an option [?/Set]:`, es `-TIPOLIN`). The history writes each prompt with its
-answer: what was typed (a value, a keyword, `<45`, FROM), bare for a pick or Enter, `*Cancel*` after
+answer: what was typed (a value, a keyword, `<45`, FROM; a coordinate the tooltip reads from the
+prompt's base point, DYNPICOORDS 0, with the `@` it was read with: `5,-12` typed in COPY's tooltip
+is written `@5,-12`, desktop move after d02), bare for a pick or Enter, `*Cancel*` after
 Escape (es `*Cancelado*`; at `Command:` Escape writes `Command: *Cancel*`, es `Comando: *Cancelar*`,
 desktop passes line/d08, d19, d27), and an object snap on the line its pick answers
 (`Specify first point: _endp of`, typed `end of`; FROM's `Base point:` and `<Offset>:` on lines of

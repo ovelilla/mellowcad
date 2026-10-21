@@ -3,13 +3,18 @@ import { createHarness, type CadHarness } from "../../../test/harness"
 import { circleOf, lineOf, p, rectOf } from "../../../test/builders"
 import {
   assignEntityColor,
+  assignEntityLinetype,
+  assignEntityLineweight,
   createBlockDefinition,
   createDimension,
   Entity,
+  entityElevation,
   lineEndZ,
   lineStartZ,
   type LineEntity,
   type PolylineEntity,
+  withElevation,
+  withThickness,
 } from "../../domain/entities"
 
 /**
@@ -325,6 +330,53 @@ describe("CECOLOR, CELTYPE and CELWEIGHT", () => {
     expect(cad.runtime.document.getBlock("BAR")?.entities[0].color).toBe(
       undefined
     )
+  })
+
+  it("leave COPY's copies on the source's layer, height and thickness (move/p204)", () => {
+    const cad = createHarness()
+    const l1 = cad.runtime.createLayer("L1", undefined, false)
+    const dress = (entity: Entity) =>
+      assignEntityLineweight(
+        assignEntityLinetype(assignEntityColor(entity, BLUE), "Dashed"),
+        0.3
+      )
+    cad.runtime.document.load(
+      [
+        dress(withThickness(withElevation(circleOf(p(10, 20), 7.5), 7), 3)),
+        dress(withThickness(withElevation(lineOf(p(0, 0), p(50, 0)), 7), 3)),
+      ].map((entity) => ({ ...entity, layerId: l1 }))
+    )
+    cad.runtime.createLayer("L2")
+    setCurrent(cad).command("ELEV").type("2").enter().type("1").enter()
+
+    cad.selectAll().command("COPY").click(p(0, 0)).click(p(100, 0)).escape()
+
+    const copies = cad.entities().slice(2)
+    expect(copies).toHaveLength(2)
+    for (const copy of copies) {
+      expect(copy).toMatchObject({
+        layerId: l1,
+        color: BLUE,
+        linetype: "Dashed",
+        lineweight: 0.3,
+        thickness: 3,
+      })
+      expect(entityElevation(copy)).toBe(7)
+    }
+  })
+
+  it("leave a copy ByLayer when a colour is set in the middle of COPY (move/p224)", () => {
+    const cad = createHarness({ entities: [lineOf(p(0, 0), p(100, 0))] })
+    cad.selectAll().command("COPY").click(p(0, 0))
+    for (const text of ["'_-COLOR", "1"]) {
+      cad.runtime.setCommandLineText(text)
+      cad.runtime.submitCommandLine()
+    }
+    cad.click(p(100, 0)).escape()
+
+    expect(cad.state().currentColor).toBe(RED)
+    expect(cad.entityCount).toBe(2)
+    expect(cad.latest().color).toBeUndefined()
   })
 
   it("are kept in a saved drawing", () => {

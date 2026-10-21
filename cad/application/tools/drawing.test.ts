@@ -1322,12 +1322,12 @@ describe("ELLIPSE", () => {
     expect(cad.commandLog()).toEqual([
       "ELLIPSE",
       "Specify axis endpoint of ellipse or [Arc/Center]: 0,0",
-      "Specify other endpoint of axis: 200,0",
+      "Specify other endpoint of axis: @200,0",
       "Specify distance to other axis or [Rotation]: 50",
       "ELLIPSE",
       "Specify axis endpoint of ellipse or [Arc/Center]: C",
       "Specify center of ellipse: 0,0",
-      "Specify endpoint of axis: 100,0",
+      "Specify endpoint of axis: @100,0",
       "Specify distance to other axis or [Rotation]: R",
       "Specify rotation around major axis: 60",
     ])

@@ -314,6 +314,19 @@ describe("INSERT with attributes", () => {
     ).at
     expect(cad.toWorld(at)).toBeCloseToPoint(p(300, 10))
   })
+
+  it("copies its attributes with the reference, values kept (move/p212)", () => {
+    const cad = createHarness({ blocks: [taggedBlock()] })
+    insertTag(cad).type("P-7").enter()
+    const source = cad.only<InsertEntity>("insert")
+    cad.select(source.id).command("COPY").type("0,0").enter()
+    cad.type("100,0").enter().enter()
+
+    const copy = cad.latest() as InsertEntity
+    expect(copy.id).not.toBe(source.id)
+    expect(copy.position).toBeCloseToPoint(p(400, 0))
+    expect(copy.attributes).toEqual(source.attributes)
+  })
 })
 
 describe("ATTDISP", () => {

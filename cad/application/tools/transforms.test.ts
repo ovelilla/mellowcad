@@ -7,9 +7,18 @@ import type {
   LineEntity,
   PolylineEntity,
 } from "../../domain/entities"
-import { createSpline, isFullEllipse } from "../../domain/entities"
-import { createHarness } from "../../../test/harness"
+import {
+  assignEntityColor,
+  createBlockDefinition,
+  createInsert,
+  createSpline,
+  isFullEllipse,
+} from "../../domain/entities"
+import { type CadHarness, createHarness } from "../../../test/harness"
 import { THEME } from "../../scene/theme"
+import type { Scene, ScenePrimitive } from "../../scene/types"
+import { DEFAULT_LAYER_COLOR } from "../../domain/layers"
+import { fadedColor } from "../SceneBuilder"
 import { es } from "../../locales/es"
 import {
   arcOf,
@@ -40,7 +49,20 @@ function linesOf(entities: readonly Entity[]): LineEntity[] {
   return entities.filter((e): e is LineEntity => e.type === "line")
 }
 
+/** Each answer typed at the command line and confirmed, as the console types it. */
+function answer(cad: CadHarness, ...texts: string[]): CadHarness {
+  for (const text of texts) {
+    cad.runtime.setCommandLineText(text)
+    cad.runtime.submitCommandLine()
+  }
+  return cad
+}
+
+/** The console's cursor in the move probes, after `_ZOOM _W -50,-50 700,700`. */
+const CONSOLE_CURSOR = p(-336.3515885600009, -49.297753120728885)
+
 describe("MOVE", () => {
+  // The prompts as move/p100 and p150 word them.
   it("writes what each pick at Select objects found", () => {
     const cad = createHarness({
       entities: [HORIZONTAL, lineOf(p(0, 50), p(200, 50), { id: "L2" })],
@@ -82,7 +104,7 @@ describe("MOVE", () => {
     expect(cad.commandLog()).toEqual(["MOVE", "1 found"])
   })
 
-  it("moves by a Displacement typed, or Enter's last one", () => {
+  it("moves by a Displacement typed, or Enter's last one (move/p119, p135)", () => {
     const cad = createHarness({ entities: [HORIZONTAL] })
 
     cad.select("L1").command("MOVE").option("Displacement")
@@ -107,6 +129,44 @@ describe("MOVE", () => {
     ])
   })
 
+  // `Specify displacement` is a point prompt from the UCS origin: a number is
+  // direct distance from it towards the cursor, a snap or a pick the point,
+  // which is the vector the objects go by.
+  it.each([
+    [
+      "10, towards the cursor (move/p138)",
+      ["10"],
+      [-9.894291907, -1.450168146],
+    ],
+    ["-5, away from it (move/p126)", ["-5"], [4.947145954, 0.725084073]],
+    ["0, nothing (move/p125)", ["0"], [0, 0]],
+    ["an object snap (move/p128)", ["_END", "99,1"], [100, 0]],
+  ])("takes %s at Specify displacement", (_, answers, [x, y]) => {
+    const cad = createHarness({
+      entities: [lineOf(p(0, 0), p(100, 0), { id: "L" })],
+    })
+    cad.moveTo(CONSOLE_CURSOR)
+    answer(cad, "MOVE", "L", "", "_D", ...answers)
+
+    expect(cad.byId<LineEntity>("L").start).toBeCloseToPoint(p(x, y))
+    expect(cad.activeToolId()).toBe("select")
+  })
+
+  // The pick: the trace's UseBasePoint from 0,0,0 (move/p135).
+  it("writes an angle override and takes a pick at Specify displacement (move/p139)", () => {
+    const cad = createHarness({ entities: [HORIZONTAL] })
+    answer(cad, "MOVE", "L", "", "_D", "<30")
+    expect(cad.commandLog().slice(-2)).toEqual([
+      "Specify displacement <0.00, 0.00, 0.00>: <30",
+      "Angle Override: 30",
+    ])
+    cad.escape()
+
+    answer(cad, "MOVE", "L", "", "_D")
+    cad.click(p(30, 40))
+    expect(cad.byId<LineEntity>("L1").start).toBeCloseToPoint(p(30, 40))
+  })
+
   it("ends at an empty Select objects on Space, as on Enter", () => {
     const cad = createHarness({ entities: [HORIZONTAL] })
 
@@ -116,7 +176,7 @@ describe("MOVE", () => {
     expect(cad.commandLog()).toEqual(["MOVE", "Select objects:"])
   })
 
-  it("displaces the pre-selected objects and keeps their ids", () => {
+  it("displaces the pre-selected objects and keeps their ids (move/p200)", () => {
     const cad = createHarness({ entities: [HORIZONTAL] })
 
     cad.select("L1").command("MOVE").click(p(0, 0)).click(p(50, 30))
@@ -177,6 +237,7 @@ describe("MOVE", () => {
     expect(cad.byId<LineEntity>("L1").start).toBeCloseToPoint(p(0, 40))
   })
 
+  // Escape halfway: desktop move, after d02.
   it("leaves the drawing untouched when cancelled", () => {
     const cad = createHarness({ entities: [HORIZONTAL] })
 
@@ -185,9 +246,55 @@ describe("MOVE", () => {
     expect(cad.byId<LineEntity>("L1").start).toBeCloseToPoint(p(0, 0))
     expect(cad.activeToolId()).toBe("select")
   })
+
+  // Every point read in a UCS turned 30° about Z: the base point (move/p131),
+  // the second point (p207, p208), the Displacement (p136).
+  it("reads its points in a turned UCS", () => {
+    const turned = () => {
+      const cad = createHarness({
+        entities: [
+          lineOf(p(0, 0), p(100, 0), { id: "A" }),
+          circleOf(p(250, 250), 10, { id: "C" }),
+        ],
+      })
+      return answer(cad, "UCS", "Z", "30")
+    }
+    const along = p(8.660254037844387, 5)
+    const start = (cad: CadHarness) => cad.byId<LineEntity>("A").start
+    const lastPoint = (cad: CadHarness) =>
+      answer(cad, "ID", "@").commandLog().at(-1)
+
+    const moved = answer(turned(), "MOVE", "_ALL", "", "0,0", "10,0")
+    expect(start(moved)).toBeCloseToPoint(along)
+    expect(moved.byId<CircleEntity>("C").center).toBeCloseToPoint(
+      p(258.66025403784437, 255)
+    )
+    const copied = answer(turned(), "COPY", "_ALL", "", "0,0", "10,0", "")
+    expect((copied.entities()[2] as LineEntity).start).toBeCloseToPoint(along)
+
+    const displaced = turned()
+    answer(displaced.select("A"), "MOVE", "_D", "10,0")
+    expect(start(displaced)).toBeCloseToPoint(along)
+    expect(lastPoint(displaced)).toBe(" X = 10.00     Y = 0.00     Z = 0.00")
+    answer(displaced.select("A"), "MOVE", "_D", "*10,0")
+    expect(start(displaced)).toBeCloseToPoint(p(18.660254037844387, 5))
+    answer(displaced.select("A"), "MOVE", "_D", "@10,0")
+    expect(start(displaced)).toBeCloseToPoint(p(27.320508075688775, 10))
+
+    for (const [base, expected] of [
+      ["*10,20", " X = 18.66     Y = 12.32     Z = 0.00"],
+      ["10,20", " X = 10.00     Y = 20.00     Z = 0.00"],
+      ["@5,5", " X = 12.00     Y = 8.00     Z = 0.00"],
+    ]) {
+      const cad = answer(turned(), "ID", "7,3", "MOVE", "_ALL", "", base, "@")
+      expect(start(cad)).toBeCloseToPoint(p(0, 0))
+      expect(lastPoint(cad)).toBe(expected)
+    }
+  })
 })
 
 describe("COPY", () => {
+  // move/p156–p158: Exit and Undo once a copy is placed.
   it("reports its mode, then offers Exit and Undo once a copy is placed", () => {
     const cad = createHarness({ entities: [HORIZONTAL] })
 
@@ -247,7 +354,7 @@ describe("COPY", () => {
     expect(xs).toEqual([0, 10, 20])
   })
 
-  it("gives each copy a fresh id, and one U undoes the whole COPY", () => {
+  it("gives each copy a fresh id, and one U undoes the whole COPY (move/p201, p216)", () => {
     const cad = createHarness({ entities: [HORIZONTAL] })
 
     cad
@@ -263,6 +370,120 @@ describe("COPY", () => {
     expect(cad.entityCount).toBe(1)
     cad.redo()
     expect(cad.entityCount).toBe(3)
+  })
+
+  // A copy by nothing is a copy: AutoCAD leaves the duplicate on top.
+  it.each([
+    ["the second point at the base (move/p193, p228)", ["0,0", "0,0", ""]],
+    ["a Displacement of 0,0,0 (move/p229)", ["_D", "0,0,0"]],
+    [
+      "Enter at the base point and the Displacement (move/p147, p232)",
+      ["", ""],
+    ],
+    ["Enter at the second point, from 0,0 (move/p230)", ["0,0", ""]],
+  ])("duplicates in place by %s", (_, answers) => {
+    const cad = createHarness({ entities: [HORIZONTAL] })
+    answer(cad, "COPY", "L", "", ...answers)
+    cad.escape()
+
+    expect(linesOf(cad.entities()).map((line) => line.start)).toBeCloseToPoints(
+      [p(0, 0), p(0, 0)]
+    )
+    expect(cad.latest().id).not.toBe("L1")
+  })
+
+  it("takes a copy in place back with its Undo (move/p193)", () => {
+    const cad = createHarness({ entities: [HORIZONTAL] })
+    answer(cad, "COPY", "L", "", "3,4", "3,4")
+    expect(cad.state().commandLine.prompt).toBe(
+      "COPY Specify second point or [Exit/Undo] <Exit>:"
+    )
+    expect(cad.entityCount).toBe(2)
+
+    answer(cad, "_U")
+    expect(cad.entityCount).toBe(1)
+    expect(cad.state().commandLine.prompt).toBe(
+      "COPY Specify second point or <use first point as displacement>:"
+    )
+  })
+})
+
+describe("the drag of MOVE and COPY", () => {
+  const segmentsAt = (
+    cad: CadHarness,
+    a: { x: number; y: number },
+    b: { x: number; y: number }
+  ) => {
+    const near = (q: { x: number; y: number }, r: { x: number; y: number }) =>
+      Math.hypot(q.x - r.x, q.y - r.y) < 1e-6
+    const [sa, sb] = [cad.toScreen(a), cad.toScreen(b)]
+    return cad
+      .scene()
+      .primitives.flatMap((prim) =>
+        prim.kind === "segment" && near(prim.a, sa) && near(prim.b, sb)
+          ? [prim.stroke]
+          : []
+      )
+  }
+  const colours = (scene: Scene) =>
+    scene.primitives.flatMap((prim: ScenePrimitive) =>
+      prim.kind === "segment" ? [prim.stroke.color] : []
+    )
+
+  // The set drawn as itself at the cursor, a dashed amber line from the base
+  // point: MOVE fades the originals where they were (desktop move/d01).
+  it("MOVE drags the objects as they are and fades the originals", () => {
+    const cad = createHarness({
+      entities: [lineOf(p(30, 15), p(55, 15), { id: "A" })],
+    })
+    cad.select("A").command("MOVE").click(p(30, 15)).moveTo(p(40, 30))
+
+    expect(segmentsAt(cad, p(40, 30), p(65, 30))).toEqual([
+      { color: DEFAULT_LAYER_COLOR, width: 1 },
+    ])
+    expect(segmentsAt(cad, p(30, 15), p(40, 30))).toEqual([
+      { color: THEME.dashedRubberBand, width: 1, dash: [2, 3] },
+    ])
+    expect(
+      segmentsAt(cad, p(30, 15), p(55, 15)).map((stroke) => stroke.color)
+    ).toEqual([fadedColor(DEFAULT_LAYER_COLOR)])
+    expect(colours(cad.scene())).not.toContain(THEME.selected)
+    expect(colours(cad.scene())).not.toContain(THEME.preview)
+  })
+
+  it("drags a block reference as its block", () => {
+    const block = createBlockDefinition("B1", p(0, 0), [
+      lineOf(p(-30, 0), p(30, 0)),
+    ])
+    const cad = createHarness({
+      entities: [createInsert("B1", p(0, 0), { id: "I" })],
+      blocks: [block],
+    })
+    cad.select("I").command("MOVE").click(p(0, 0)).moveTo(p(200, 0))
+
+    expect(segmentsAt(cad, p(170, 0), p(230, 0))).toEqual([
+      { color: DEFAULT_LAYER_COLOR, width: 1 },
+    ])
+  })
+
+  // COPY's originals keep the selection's glow (desktop move/d11).
+  it("COPY drags the copy as it is and the originals glow", () => {
+    const cad = createHarness({
+      entities: [
+        assignEntityColor(lineOf(p(30, 15), p(55, 15), { id: "A" }), "#ff0000"),
+      ],
+    })
+    cad.select("A").command("COPY").click(p(30, 15)).moveTo(p(40, 30))
+
+    expect(segmentsAt(cad, p(40, 30), p(65, 30))).toEqual([
+      { color: "#ff0000", width: 1 },
+    ])
+    expect(segmentsAt(cad, p(30, 15), p(40, 30))).toEqual([
+      { color: THEME.dashedRubberBand, width: 1, dash: [2, 3] },
+    ])
+    expect(
+      segmentsAt(cad, p(30, 15), p(55, 15)).map((stroke) => stroke.color)
+    ).toEqual(["#ff0000", THEME.selected])
   })
 })
 

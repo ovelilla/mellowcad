@@ -1,0 +1,18 @@
+_LINE
+0,0
+100,0
+
+_ELEVATION
+5
+_MOVE
+_L
+
+_D
+10,5
+(cdr (assoc 10 (entget (entlast))))
+_MOVE
+_L
+
+
+
+(cdr (assoc 10 (entget (entlast))))

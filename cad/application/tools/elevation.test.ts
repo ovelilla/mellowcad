@@ -11,10 +11,13 @@ import type {
 import {
   createDimension,
   entityElevation,
+  entityNormal,
+  entityPointToWorld,
   lineEndZ,
   lineStartZ,
   withDeltaZ,
   withElevation,
+  withNormal,
   withThickness,
 } from "../../domain/entities"
 import { SnapType } from "../snapping/types"
@@ -26,6 +29,15 @@ import { circleOf, lineOf, p, polylineOf, rectOf } from "../../../test/builders"
  * a typed point its own or the plane's, and a flat object lies in the plane of
  * the first point that fixed it.
  */
+
+/** Each answer typed at the command line and confirmed, as the console types it. */
+function answer(cad: CadHarness, ...texts: string[]): CadHarness {
+  for (const text of texts) {
+    cad.runtime.setCommandLineText(text)
+    cad.runtime.submitCommandLine()
+  }
+  return cad
+}
 
 function drawnLine(cad: CadHarness): LineEntity {
   return cad
@@ -218,8 +230,8 @@ describe("flat objects", () => {
   })
 })
 
-describe("MOVE", () => {
-  it("displaces by a typed 3D offset", () => {
+describe("MOVE and COPY", () => {
+  it("displaces by a typed 3D offset (move/p206)", () => {
     const cad = createHarness({
       entities: [lineOf(p(0, 0), p(100, 0), { id: "L1" })],
     })
@@ -242,6 +254,89 @@ describe("MOVE", () => {
     cad.select("L1").command("MOVE").click(p(0, 100)).click(p(100, 0))
 
     expect(lineStartZ(cad.byId<LineEntity>("L1"))).toBe(10)
+  })
+
+  it.each([
+    ["MOVE from 0,0,0 to @0,0,5 (move/p206)", ["_MOVE", "0,0,0", "@0,0,5"], 0],
+    ["COPY's Displacement 0,0,5 (move/p205)", ["_COPY", "_D", "0,0,5"], 3],
+  ])("%s lifts each object to Z 5, flat", (_, [name, ...texts], from) => {
+    const cad = createHarness({
+      entities: [
+        circleOf(p(0, 0), 10),
+        polylineOf([p(20, 0), p(40, 0), p(40, 20)]),
+        lineOf(p(50, 0), p(60, 0)),
+      ],
+    })
+    answer(cad, name, "_ALL", "", ...texts)
+
+    const placed = cad.entities().slice(from)
+    expect(placed).toHaveLength(3)
+    for (const entity of placed) {
+      expect(entityElevation(entity)).toBe(5)
+      expect(entity.normal).toBeUndefined()
+    }
+    expect(lineEndZ(placed[2] as LineEntity)).toBe(5)
+  })
+
+  it("copies a tilted circle along X, its normal kept (move/p220)", () => {
+    const normal = { x: Math.SQRT1_2, y: 0, z: Math.SQRT1_2 }
+    const tilted = withNormal(circleOf(p(0, 0), 5), normal)
+    const cad = answer(
+      createHarness({ entities: [tilted] }),
+      "_COPY",
+      "_ALL",
+      "",
+      "_D",
+      "10,0,0"
+    )
+
+    const copy = cad.latest() as CircleEntity
+    const moved = entityPointToWorld(copy, copy.center)
+    const from = entityPointToWorld(tilted, tilted.center)
+    expect([moved.x - from.x, moved.y - from.y, moved.z - from.z]).toEqual([
+      expect.closeTo(10, 12),
+      expect.closeTo(0, 12),
+      expect.closeTo(0, 12),
+    ])
+    expect(entityNormal(copy)).toEqual(normal)
+  })
+
+  it("reads a point after a transparent 'ELEV on its new plane (move/p225)", () => {
+    const cad = answer(
+      createHarness({ entities: [lineOf(p(0, 0), p(100, 0), { id: "A" })] }),
+      "_MOVE",
+      "_ALL",
+      "",
+      "0,0",
+      "'_ELEV",
+      "5",
+      "",
+      "10,0"
+    )
+
+    const line = cad.byId<LineEntity>("A")
+    expect(line.start).toBeCloseToPoint(p(10, 0))
+    expect(lineStartZ(line)).toBe(5)
+  })
+
+  it("reads a Displacement typed without a Z at the ELEVATION, and keeps it as the default (move/p241)", () => {
+    const cad = answer(
+      createHarness({ entities: [lineOf(p(0, 0), p(100, 0), { id: "A" })] }),
+      "_ELEV",
+      "5",
+      "",
+      "_MOVE",
+      "_ALL",
+      "",
+      "_D",
+      "10,5"
+    )
+    expect(cad.byId<LineEntity>("A").start).toBeCloseToPoint(p(10, 5))
+    expect(lineStartZ(cad.byId<LineEntity>("A"))).toBe(5)
+
+    answer(cad, "_MOVE", "_ALL", "", "", "")
+    expect(cad.byId<LineEntity>("A").start).toBeCloseToPoint(p(20, 10))
+    expect(lineStartZ(cad.byId<LineEntity>("A"))).toBe(10)
   })
 })
 

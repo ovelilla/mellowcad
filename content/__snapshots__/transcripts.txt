@@ -86,7 +86,7 @@ input | Specify first point: | -65,-40
 ## otrack
 command |  | LINE
 input | Specify first point: | 0,0
-input | Specify next point or [Undo]: | 60,0
+input | Specify next point or [Undo]: | @60,0
 command |  | LINE
 input | Specify first point: | 90,20
 input | Specify next point or [Undo]: | @0,40

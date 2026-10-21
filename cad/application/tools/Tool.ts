@@ -695,7 +695,8 @@ export interface Tool {
 
   /**
    * Entities the scene draws faded instead of glowing or highlighted: ERASE's
-   * preview of what it will erase. Defaults to none.
+   * preview of what it will erase, MOVE's originals while the set drags.
+   * Defaults to none.
    */
   fadedEntityIds?(ctx: ToolContext): readonly EntityId[]
 

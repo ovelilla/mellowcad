@@ -96,7 +96,7 @@ describe.each(ENTERS)("Enter from %s with nothing typed", (_, enter) => {
     expect(circle.radius).toBeCloseTo(25)
   })
 
-  it("moves by the first point, <use first point as displacement>", () => {
+  it("moves by the first point, <use first point as displacement> (move/p150)", () => {
     const cad = createHarness({
       entities: [lineOf(p(0, 0), p(100, 0), { id: "A" })],
     })

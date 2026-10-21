@@ -128,11 +128,53 @@ describe("LASTPOINT", () => {
     expect(lastPoint(cad)).toBe(" X = 40.00     Y = 40.00     Z = 0.00")
     answer(cad, "DIST", "10,10", "20,20")
     expect(lastPoint(cad)).toBe(" X = 10.00     Y = 10.00     Z = 0.00")
+    // move/p172, p173: COPY keeps it at the base point, during and after;
+    // MOVE's second point sets it.
     answer(cad, "COPY", "L", "", "3,3", "5,5", "6,6", "")
     expect(lastPoint(cad)).toBe(" X = 3.00     Y = 3.00     Z = 0.00")
     cad.escape()
     answer(cad, "MOVE", "L", "", "3,3", "4,5")
     expect(lastPoint(cad)).toBe(" X = 4.00     Y = 5.00     Z = 0.00")
+  })
+
+  it("reads `@` at each of COPY's points from the base point (move/p172)", () => {
+    const cad = createHarness({
+      entities: [lineOf(p(0, 0), p(100, 0), { id: "A" })],
+    })
+    answer(cad, "COPY", "L", "", "3,4", "@5,0", "@5,0", "@5,0", "")
+    expect(lines(cad).map((line) => line.start)).toBeCloseToPoints([
+      p(0, 0),
+      p(5, 0),
+      p(5, 0),
+      p(5, 0),
+    ])
+    expect(lastPoint(cad)).toBe(" X = 3.00     Y = 4.00     Z = 0.00")
+  })
+
+  it("is the UCS origin as Specify displacement opens, which reads `@` from it", () => {
+    const moved = (cad: CadHarness) => cad.byId<LineEntity>("A").start
+    const cad = createHarness({
+      entities: [lineOf(p(0, 0), p(100, 0), { id: "A" })],
+    })
+    // move/p135: `@10,5` is 10,5, which becomes LASTPOINT.
+    answer(cad, "ID", "7,3", "MOVE", "L", "", "_D", "@10,5")
+    expect(moved(cad)).toBeCloseToPoint(p(10, 5))
+    expect(lastPoint(cad)).toBe(" X = 10.00     Y = 5.00     Z = 0.00")
+    // move/p137: `@` alone is a move by nothing.
+    answer(cad, "ID", "7,3", "MOVE", "L", "", "_D", "@")
+    expect(moved(cad)).toBeCloseToPoint(p(10, 5))
+    expect(cad.activeToolId()).toBe("select")
+    expect(lastPoint(cad)).toBe(" X = 0.00     Y = 0.00     Z = 0.00")
+    // move/p119, p149: Enter at the default moves by it and leaves it there.
+    answer(cad, "MOVE", "L", "", "_D", "10,5", "ID", "7,3")
+    answer(cad, "MOVE", "L", "", "", "")
+    expect(moved(cad)).toBeCloseToPoint(p(30, 15))
+    expect(lastPoint(cad)).toBe(" X = 0.00     Y = 0.00     Z = 0.00")
+    // move/p109: the origin is the UCS's.
+    answer(cad, "UCS", "O", "5,5", "MOVE", "L", "", "_D", "@10,0")
+    expect(moved(cad)).toBeCloseToPoint(p(40, 15))
+    answer(cad, "MOVE", "L", "", "_D", "*10,0")
+    expect(moved(cad)).toBeCloseToPoint(p(45, 10))
   })
 
   it("is what Enter takes at DIST's first point, and its second", () => {

@@ -12,8 +12,8 @@ How prompts, keywords and messages are worded and named: `cad-catalogs.md`.
 
 ## Reuse before writing
 
-- `PlacementTool` — select → base point → second point with ghost preview (Move, Copy, Stretch).
-  Override `place()`, `continuesAfterPlace()`, optionally `transformEntity()` / `onSelectionAdded()`.
+- `PlacementTool` — select → base point → second point or Displacement (MOVE, COPY, STRETCH); its
+  hooks are in its class JSDoc.
 - `EdgeEditTool` — TRIM and EXTEND; its modes, edges, fences and eRase are in its class JSDoc.
   Where no closed form gives a crossing (an ellipse with a circle, anything with a spline),
   `curveCrossings.ts` scans one curve's parameter (`parametricCurve`) for the sign changes of the

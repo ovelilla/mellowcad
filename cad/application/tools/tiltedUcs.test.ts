@@ -342,6 +342,30 @@ describe("the tools in a tilted UCS", () => {
     expect([trimmed.start, trimmed.end]).toBeCloseToPoints([p(0, 0), p(10, 0)])
   })
 
+  it("move and copy along the UCS's Y, up the WCS's Z (move/p209, p210)", () => {
+    const flat = () =>
+      createHarness({
+        entities: [circleOf(p(0, 0), 10), lineOf(p(50, 0), p(60, 0))],
+      })
+    const moved = flat()
+    moved.command("UCS").option("X").type("90").enter()
+    moved.selectAll().command("MOVE").type("0,0").enter().type("0,10").enter()
+    const copied = flat()
+    copied.command("UCS").option("X").type("90").enter()
+    copied.selectAll().command("COPY").option("Displacement")
+    copied.type("0,10").enter()
+
+    for (const [circle, line] of [
+      moved.entities(),
+      copied.entities().slice(2),
+    ] as [CircleEntity, LineEntity][]) {
+      expect(circle.center).toBeCloseToPoint(p(0, 0), 9)
+      expect(circle.normal).toBeUndefined()
+      expect(worldOf(circle, circle.center).z).toBeCloseTo(10, 9)
+      expect(lineStartZ(line)).toBeCloseTo(10, 9)
+    }
+  })
+
   it("read a typed * point in the WCS", () => {
     const cad = front(createHarness())
     cad.command("LINE").type("*10,20,30").enter().type("@0,0,5").enter()

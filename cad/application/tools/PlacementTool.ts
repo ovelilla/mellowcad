@@ -7,7 +7,7 @@ import {
   isCoordinateExpression,
   parseCoordinate,
 } from "../input/coordinateInput"
-import { ScenePrimitive, StrokeStyle } from "../../scene/types"
+import { ScenePrimitive } from "../../scene/types"
 import { entityScenePrimitive } from "../SceneBuilder"
 import { THEME } from "../../scene/theme"
 import {
@@ -25,14 +25,14 @@ import { ObjectSelector } from "./objectSelection"
 import { pointAlongCursor, showRise } from "./directDistance"
 
 /**
- * Shared machinery for AutoCAD's displacement-modify commands (MOVE, COPY):
- * select a set of objects, pick a base point, then place the set at one or more
- * destinations defined by a base → second-point displacement.
+ * Shared machinery for AutoCAD's displacement-modify commands (MOVE, COPY,
+ * STRETCH): select a set of objects, pick a base point, then place the set at
+ * one or more destinations defined by a base → second-point displacement.
  *
  * ```
  *   (empty selection)     Enter/Space           click / type       (COPY loops)
  *  selecting ──────────────────────► basePoint ──────────► secondPoint ──► done
- *   click / box-drag adds objects        │       (dashed ghost drags the set)
+ *   click / box-drag adds objects        │          (the set drags as itself)
  *   └── (skipped when objects are        │ Displacement, or Enter
  *        already selected on activation) └──► displacement ──────────────► done
  * ```
@@ -41,7 +41,8 @@ import { pointAlongCursor, showRise } from "./directDistance"
  * point, with object snap, Ortho/Polar and typed distance/angle/coordinate
  * entry. Subclasses supply what a placement *does* ({@link place}) and whether
  * the command keeps running for more placements ({@link continuesAfterPlace},
- * `true` for COPY's Multiple mode, `false` for MOVE).
+ * `true` for COPY's Multiple mode, `false` for MOVE); every other protected
+ * method is an optional hook, which its own JSDoc describes.
  */
 
 type PlacementState =
@@ -49,8 +50,11 @@ type PlacementState =
   | { readonly phase: "selecting" }
   /** Objects chosen; awaiting the base point of the displacement. */
   | { readonly phase: "basePoint" }
-  /** The base point's Displacement: the displacement typed as a point. */
-  | { readonly phase: "displacement" }
+  /**
+   * The base point's Displacement: a point, read as the vector from the UCS
+   * origin (in the frame) to it.
+   */
+  | { readonly phase: "displacement"; readonly origin: Vec3 }
   /** Base placed; the set drags to the second point (cursor-driven). */
   | {
       readonly phase: "secondPoint"
@@ -72,11 +76,11 @@ export abstract class PlacementTool implements Tool {
   })
   private lastScreen: Vec2 | null = null
   /**
-   * Whether each placement from the current base point added objects (one at
-   * the same point adds none): COPY's Enter is `<Exit>` after one, and its
-   * Undo takes back the last.
+   * The placements made from the current base point, each one entry in the
+   * history: COPY's Enter is `<Exit>` after one, and its Undo takes back the
+   * last.
    */
-  private placements: boolean[] = []
+  private placed = 0
   /**
    * The last Displacement given, the next one's `<default>`: per drawing, not
    * saved (rectang/p315), and each command's own (p314).
@@ -87,7 +91,10 @@ export abstract class PlacementTool implements Tool {
     this.lastDisplacement = { x: 0, y: 0, z: 0 }
   }
 
-  /** Applies one placement of `originals` displaced by `delta` (undoable). */
+  /**
+   * Applies one placement of `originals` displaced by `delta` (undoable), a
+   * zero one too: a copy by nothing is a copy (move/p147, p228).
+   */
   protected abstract place(
     originals: readonly Entity[],
     delta: Vec3,
@@ -103,7 +110,7 @@ export abstract class PlacementTool implements Tool {
   /**
    * How one object follows the displacement. Whole-object translation by
    * default; STRETCH overrides it to move only the points caught by its
-   * crossing frame. Used for the dashed preview, so what drags is what commits.
+   * crossing frame. Used for the drag's preview, so what drags is what commits.
    */
   protected transformEntity(entity: Entity, delta: Vec3): Entity {
     return translateEntity(entity, delta)
@@ -168,7 +175,7 @@ export abstract class PlacementTool implements Tool {
       case "displacement":
         return { id: "specifyDisplacement", enter: this.lastDisplacement }
       case "secondPoint":
-        return this.placements.length > 0
+        return this.placed > 0
           ? this.secondPointQuestion()
           : {
               id: this.secondPointQuestion(),
@@ -187,9 +194,9 @@ export abstract class PlacementTool implements Tool {
   }
 
   /**
-   * COPY's points keep LASTPOINT at the base point, as AutoCAD 2023's
-   * console shows — `@` at the next copy is from the base again —, where
-   * MOVE's second point sets it.
+   * COPY's points keep LASTPOINT at the base point — `@` at the next copy is
+   * from the base again (move/p172, p173) —, where MOVE's second point sets
+   * it.
    */
   setsLastPoint(): boolean | null {
     return this.state.phase === "secondPoint" && this.continuesAfterPlace()
@@ -205,7 +212,7 @@ export abstract class PlacementTool implements Tool {
   commandOptions(): readonly CommandOption[] {
     if (this.state.phase === "selecting") return this.selector.commandOptions()
     if (this.state.phase === "basePoint") return [{ id: "Displacement" }]
-    if (this.state.phase === "secondPoint" && this.placements.length > 0) {
+    if (this.state.phase === "secondPoint" && this.placed > 0) {
       return [{ id: "Exit" }, { id: "Undo" }]
     }
     return []
@@ -213,7 +220,7 @@ export abstract class PlacementTool implements Tool {
 
   defaultOption(): string | null {
     if (this.state.phase === "basePoint") return "Displacement"
-    if (this.state.phase === "secondPoint" && this.placements.length > 0) {
+    if (this.state.phase === "secondPoint" && this.placed > 0) {
       return "Exit"
     }
     return null
@@ -229,7 +236,7 @@ export abstract class PlacementTool implements Tool {
         this.askDisplacement(ctx)
         return "continue"
       case "Exit":
-        return this.state.phase === "secondPoint" && this.placements.length > 0
+        return this.state.phase === "secondPoint" && this.placed > 0
           ? "end"
           : "unhandled"
       case "Undo":
@@ -241,11 +248,9 @@ export abstract class PlacementTool implements Tool {
 
   /** COPY's Undo: the last copy is taken back, and its prompt asked again. */
   private undoPlacement(ctx: ToolContext): boolean {
-    if (this.state.phase !== "secondPoint" || this.placements.length === 0) {
-      return false
-    }
-    const added = this.placements.pop()
-    if (added) ctx.undo()
+    if (this.state.phase !== "secondPoint" || this.placed === 0) return false
+    this.placed -= 1
+    ctx.undo()
     ctx.dynamicInput.clearTexts()
     ctx.requestRender()
     return true
@@ -305,6 +310,9 @@ export abstract class PlacementTool implements Tool {
         this.placeAt(this.state.base, dest, this.state.originals, ctx)
         return
       }
+      case "displacement":
+        this.displaceBy(sub3(input.point, this.state.origin), ctx)
+        return
     }
   }
 
@@ -326,19 +334,36 @@ export abstract class PlacementTool implements Tool {
     return this.state.phase === "selecting" && this.selector.onEnter(ctx)
   }
 
-  getConstraintAnchor(): Vec2 | null {
-    // Ortho/Polar lock the displacement relative to the base point.
-    return this.state.phase === "secondPoint" ? this.state.base : null
+  /**
+   * The base point at the second point; the UCS origin at the Displacement,
+   * where the trace's UseBasePoint is 0,0,0 (move/p135): a number runs from
+   * it towards the cursor and `<a` holds a heading from it (p138, p139).
+   */
+  getConstraintAnchor(): Vec3 | null {
+    switch (this.state.phase) {
+      case "secondPoint":
+        return this.state.base
+      case "displacement":
+        return this.state.origin
+      default:
+        return null
+    }
   }
 
   wantsSnap(): boolean {
-    // Object snaps help place the base and second points precisely; picking
-    // objects (click or box) does not need them.
-    return (
-      this.state.phase === "basePoint" ||
-      this.state.phase === "secondPoint" ||
-      (this.state.phase === "selecting" && this.selector.wantsSnap())
-    )
+    // Picking objects (click or box) needs no snap; every point does.
+    return this.state.phase === "selecting" ? this.selector.wantsSnap() : true
+  }
+
+  /**
+   * MOVE's (and STRETCH's) originals fade where they were while the set
+   * drags; COPY's keep the selection's glow (desktop move/d01, d11).
+   */
+  fadedEntityIds(): readonly EntityId[] {
+    if (this.state.phase !== "secondPoint" || this.continuesAfterPlace()) {
+      return []
+    }
+    return this.state.originals.map((entity) => entity.id)
   }
 
   buildOverlay(ctx: ToolContext): ScenePrimitive[] {
@@ -349,24 +374,25 @@ export abstract class PlacementTool implements Tool {
     const dest = this.resolveSecond(base, current, ctx)
     const delta = sub3(dest, base)
 
-    const ghost: StrokeStyle = { color: THEME.preview, width: 1, dash: [6, 4] }
+    // The set drawn as itself at the cursor, solid in each object's colour,
+    // and an amber dashed line from the base point (desktop move/d01, d11).
     const out: ScenePrimitive[] = []
     for (const entity of originals) {
+      const color = ctx.document.resolveEntityColor(entity)
       out.push(
         ...entityScenePrimitive(
           viewport,
           this.transformEntity(entity, delta),
-          ghost,
+          { color, width: 1 },
           { blocks: ctx.blocks }
         )
       )
     }
-    // The displacement vector from base to destination.
     out.push({
       kind: "segment",
       a: viewport.worldToScreen(base),
       b: viewport.worldToScreen(dest),
-      stroke: { color: THEME.preview, width: 1, dash: [2, 3] },
+      stroke: { color: THEME.dashedRubberBand, width: 1, dash: [2, 3] },
     })
     return out
   }
@@ -426,7 +452,7 @@ export abstract class PlacementTool implements Tool {
     }
 
     this.state = { phase: "secondPoint", base, originals, current: base }
-    this.placements = []
+    this.placed = 0
     this.openSecondPointInput(ctx, screen ?? this.lastScreen ?? base)
   }
 
@@ -457,7 +483,7 @@ export abstract class PlacementTool implements Tool {
     if (this.state.phase !== "secondPoint") return false
     const { base, originals } = this.state
     if (!ctx.dynamicInput.hasTypedText()) {
-      if (this.placements.length > 0) {
+      if (this.placed > 0) {
         ctx.dynamicInput.close()
         ctx.endCommand()
         return true
@@ -482,10 +508,8 @@ export abstract class PlacementTool implements Tool {
     originals: readonly Entity[],
     ctx: ToolContext
   ): void {
-    const delta = sub3(dest, base)
-    const moves = delta.x !== 0 || delta.y !== 0 || delta.z !== 0
-    this.placements.push(moves)
-    if (moves) this.place(originals, delta, ctx)
+    this.placed += 1
+    this.place(originals, sub3(dest, base), ctx)
 
     if (this.continuesAfterPlace()) {
       // Keep the base and selection; reset the typed values for the next copy,
@@ -502,10 +526,14 @@ export abstract class PlacementTool implements Tool {
 
   /**
    * The base point's Displacement: "Specify displacement", a point read as
-   * the vector the objects go by, then the command ends, as COPY's does too.
+   * the vector from the UCS origin to it, then the command ends, as COPY's
+   * does too. It puts LASTPOINT at that origin as it opens, so `@10,5` is
+   * 10,5 and Enter leaves it there (move/p109, p119, p135, p137, p149).
    */
   private askDisplacement(ctx: ToolContext): void {
-    this.state = { phase: "displacement" }
+    const origin = ctx.ucs.origin
+    this.state = { phase: "displacement", origin }
+    ctx.setLastPoint(origin)
     ctx.dynamicInput.open({
       fields: [{ id: "displacement", kind: "coordinate" }],
       commit: () => {},
@@ -515,36 +543,37 @@ export abstract class PlacementTool implements Tool {
     ctx.requestRender()
   }
 
+  /** A coordinate typed at the Displacement, or Enter's `<default>`. */
   private commitDisplacement(ctx: ToolContext): boolean {
     if (this.state.phase !== "displacement") return false
+    const { origin } = this.state
     const text = ctx.dynamicInput.getText("displacement").trim()
-    let delta = this.lastDisplacement
-    if (text !== "") {
-      if (!isCoordinateExpression(text)) return false
-      const read = (typed: string) =>
-        parseCoordinate(typed, {
-          lastPoint: null,
-          relativeByDefault: false,
-          ucs: ctx.ucs,
-          elevation: ctx.elevation,
-        })
-      // A vector, not a place: what the point is from the origin, in the UCS.
-      const point = read(text.replace(/^[@#]/, ""))
-      const origin = read("0,0")
-      if (!point || !origin) return false
-      delta = sub3(point, origin)
+    if (text === "") {
+      this.displaceBy(this.lastDisplacement, ctx)
+      return true
     }
+    if (!isCoordinateExpression(text)) return false
+    const point = parseCoordinate(text, {
+      lastPoint: origin,
+      relativeByDefault: true,
+      ucs: ctx.ucs,
+      elevation: ctx.elevation,
+    })
+    if (!point) return false
+    this.displaceBy(sub3(point, origin), ctx)
+    return true
+  }
+
+  /** Places the set once by the Displacement's `delta`, then ends. */
+  private displaceBy(delta: Vec3, ctx: ToolContext): void {
     this.lastDisplacement = delta
     const originals = ctx.selection
       .toArray()
       .map((entityId) => ctx.document.get(entityId))
       .filter((entity): entity is Entity => entity !== undefined)
-    if (delta.x !== 0 || delta.y !== 0 || delta.z !== 0) {
-      this.place(originals, delta, ctx)
-    }
+    this.place(originals, delta, ctx)
     ctx.dynamicInput.close()
     ctx.endCommand()
-    return true
   }
 
   /** Honours a coordinate typed for the base point (always absolute). */
@@ -623,4 +652,9 @@ function parseField(ctx: ToolContext, id: string): number | null {
   if (text === "") return null
   const value = parseNumber(text)
   return value !== null && Number.isFinite(value) ? value : null
+}
+
+/** Whether a placement's displacement is none at all. */
+export function isZeroDisplacement(delta: Vec3): boolean {
+  return delta.x === 0 && delta.y === 0 && delta.z === 0
 }

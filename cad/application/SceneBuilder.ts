@@ -148,7 +148,7 @@ export interface SceneInput {
   readonly selectedIds: ReadonlySet<EntityId>
   /** Entities the active tool is editing in place and draws itself. */
   readonly hiddenIds: ReadonlySet<EntityId>
-  /** Entities drawn faded, never glowing: what ERASE's prompt will erase. */
+  /** Entities drawn faded, never glowing: what ERASE will erase, what MOVE drags. */
   readonly fadedIds?: ReadonlySet<EntityId>
   readonly gridVisible: boolean
   /**

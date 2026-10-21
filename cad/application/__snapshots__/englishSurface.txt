@@ -465,7 +465,7 @@ lweight "Lineweight" LW
   prompt: LINE Specify next point or [Close/Undo]:
   dyn: "Length"=""|111.80|mm* "Angle"=""|117|°
   options: [C] Close, [U] Undo
-  prompt| Specify next point or [Undo]: 100<90
+  prompt| Specify next point or [Undo]: @100<90
 > click
   dyn: "Length"=""|0.00|mm* "Angle"=""||°
   prompt| Specify next point or [Close/Undo]:
@@ -4113,7 +4113,7 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0°~, Line space facto
   asks: -
   tip: -
   dyn: -
-  prompt| Specify point on positive portion of Z-axis <-0.00,0.00,1.00>: 1,0,0
+  prompt| Specify point on positive portion of Z-axis <-0.00,0.00,1.00>: @1,0,0
 > UCS ZA O
   prompt: UCS Specify origin of UCS or [NAmed/OBject/Previous/View/World/X/Y/Z/ZAxis] <World>:
   asks: "Specify origin of UCS or"

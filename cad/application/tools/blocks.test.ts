@@ -314,6 +314,7 @@ describe("a block reference in the drawing", () => {
 
   it("moves, rotates and scales as one object", () => {
     const cad = placed()
+    // move/p211: MOVE takes the reference whole.
     cad.select("I1").command("MOVE").click(p(0, 0)).click(p(0, 40))
     expect(cad.byId<InsertEntity>("I1").position).toBeCloseToPoint(p(0, 40))
 

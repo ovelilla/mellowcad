@@ -285,6 +285,19 @@ describe("a command that changed nothing is a step U names", () => {
     expect(cad.entityCount).toBe(0)
   })
 
+  it("U takes back a MOVE by nothing and keeps the line (move/p195, p231)", () => {
+    for (const by of [
+      ["0,0", "@"],
+      ["_D", "0,0"],
+      ["0,0", "0,0"],
+    ]) {
+      const cad = answer(createHarness(), ...LINE, "_MOVE", "_L", "", ...by)
+      expect(written(cad, "_U")).toEqual(["U", "MOVE"])
+      expect(cad.entityCount).toBe(1)
+      expect(written(cad, "_U")).toEqual(["U", "LINE"])
+    }
+  })
+
   it("names a command cancelled before it did anything (move/p237)", () => {
     const cad = answer(createHarness(), ...LINE, "_ARC")
     cad.escape()
@@ -306,6 +319,46 @@ describe("a command that changed nothing is a step U names", () => {
       cad.escape()
       expect(written(cad, "_U")).toEqual(["U", "LINE"])
     }
+  })
+})
+
+describe("MOVE and COPY undone and redone", () => {
+  const MOVE = ["_MOVE", "_ALL", "", "0,0", "10,0"]
+  const COPY = ["_COPY", "_ALL", "", "0,0", "0,10", "0,20", "0,30", ""]
+  const line = () => [lineOf(p(0, 0), p(100, 0), { id: "A" })]
+
+  it.each([
+    ["U after MOVE (move/p215)", [...MOVE, "_U"], ["U", "MOVE"], 1],
+    ["U after three copies (move/p216)", [...COPY, "_U"], ["U", "COPY"], 1],
+    [
+      "UNDO 2 after MOVE and COPY (move/p217)",
+      [...MOVE, ...COPY, "_UNDO", "2"],
+      ["COPY MOVE"],
+      1,
+    ],
+    [
+      "REDO after U (move/p218)",
+      [...MOVE, "_U", "_REDO"],
+      ["MOVE", "Everything has been redone"],
+      1,
+    ],
+    [
+      "MREDO All after UNDO 2 (move/p219)",
+      [...MOVE, ...COPY, "_UNDO", "2", "_MREDO", "_A"],
+      ["MOVE COPY", "Everything has been redone"],
+      4,
+    ],
+  ])("%s", (_, texts, tail, count) => {
+    const cad = answer(createHarness({ entities: line() }), ...texts)
+    expect(cad.commandLog().slice(-tail.length)).toEqual(tail)
+    expect(cad.entityCount).toBe(count)
+  })
+
+  it("names them DESPLAZA and COPIA in Spanish (move/p215, p216)", () => {
+    const cad = answer(createHarness({ entities: line(), locale: es }), ...MOVE)
+    expect(written(cad, "_U")).toEqual(["H", "DESPLAZA"])
+    answer(cad, ...COPY)
+    expect(written(cad, "_U")).toEqual(["H", "COPIA"])
   })
 })
 

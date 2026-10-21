@@ -886,6 +886,27 @@ describe("LINE", () => {
     })
   })
 
+  // The tooltip reads `x,y` from the point before (DYNPICOORDS 0), and the
+  // history writes it with that `@` (desktop move, after d02: `5,-12` in
+  // COPY's tooltip echoed `@5,-12`); what is typed with a prefix stays.
+  it("writes a coordinate the tooltip reads relative with its @", () => {
+    const cad = createHarness()
+    cad.command("LINE").type("10,10").enter()
+    cad.type("5,-12").enter()
+    cad.type("#30,30").enter()
+    cad.type("@1,1").enter()
+    cad.type("*40,40").enter()
+
+    expect(cad.commandLog().slice(1)).toEqual([
+      "Specify first point: 10,10",
+      "Specify next point or [Undo]: @5,-12",
+      "Specify next point or [Undo]: #30,30",
+      "Specify next point or [Close/Undo]: @1,1",
+      "Specify next point or [Close/Undo]: *40,40",
+    ])
+    expect(lines(cad.entities())[0].end).toBeCloseToPoint(p(15, -2))
+  })
+
   describe("typed points", () => {
     it("reads @ at the first point from the last point given", () => {
       const cad = createHarness()

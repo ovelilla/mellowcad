@@ -8,7 +8,7 @@ import {
 } from "../../domain/entities"
 import { UpdateEntitiesCommand } from "../commands/entityCommands"
 import { QuestionInput, ToolContext } from "./Tool"
-import { PlacementTool } from "./PlacementTool"
+import { PlacementTool, isZeroDisplacement } from "./PlacementTool"
 
 /** A window or crossing polygon given while selecting: a stretch frame. */
 type Frame = readonly Vec2[]
@@ -28,7 +28,7 @@ type Frame = readonly Vec2[]
  * - **circles and arcs** never deform — they move when their centre is framed.
  *
  * Everything else (select → base → destination, snapping, Ortho/Polar, typed
- * distance/angle, dashed preview) comes from {@link PlacementTool}, so the
+ * distance/angle, the drag's preview) comes from {@link PlacementTool}, so the
  * preview shows the bent result before committing.
  */
 export class StretchTool extends PlacementTool {
@@ -88,6 +88,9 @@ export class StretchTool extends PlacementTool {
     delta: Vec3,
     ctx: ToolContext
   ): void {
+    // By nothing, nothing changes, as MOVE (until the Transforms review
+    // probes STRETCH's own).
+    if (isZeroDisplacement(delta)) return
     ctx.execute(
       new UpdateEntitiesCommand(
         originals.map((entity) => this.transformEntity(entity, delta))

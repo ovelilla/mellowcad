@@ -10,15 +10,28 @@ objects selected before it counted on an alias's echo, `Command: M MOVE 1 found`
 its own after the name typed whole (`Command: MOVE` / `1 found`, desktop erase/d11);
 `Specify base point or [Displacement] <Displacement>:` — Displacement, or Enter, asks
 `Specify displacement <0.0000, 0.0000, 0.0000>:` (the last one given in the drawing, MOVE's own;
-per drawing, not saved, NEW and OPEN putting it back to 0, rectang/p314, p315) and moves by
-the point typed, then ends — and `Specify second point or <use first point as displacement>:` (es
+per drawing, not saved, NEW and OPEN putting it back to 0, rectang/p314, p315), a point read as
+the vector from the UCS origin (move/p109, p135): it makes the origin LASTPOINT as it opens, so
+`@10,5` is 10,5, `@` alone nothing and Enter leaves LASTPOINT there (p119, p137, p149); a number
+runs from the origin towards the cursor (p125, p126, p138), an object snap or a pick is the point
+(p128), `<a` writes `Angle Override:` (p139), a point typed without a Z lies at the ELEVATION
+(p241); then it ends — and
+`Specify second point or <use first point as displacement>:` (es
 `Precise punto base o [Desplazamiento] <Desplazamiento>`, `Precise desplazamiento`,
 `Precise segundo punto o <usar primer punto como desplazamiento>`); noun-verb and verb-noun, box
 select, displacement + angle field; the displacement is 3D (`@0,0,5` lifts); Enter at the second
-point uses the first point as the displacement; a whole ellipse moves with its centre and stays for a quadrant alone
+point uses the first point as the displacement; a move by nothing changes nothing, its run still the
+step U names (p195, p231); the drag draws the set as itself at the cursor, solid in each object's
+colour, the originals faded where they were and an amber dashed line from the base point (desktop
+d01); a whole ellipse moves with its centre and stays for a quadrant alone
 (ellipse/p326, p331)
 
-**Missing:** the selection modes' gaps (Command line, `Select objects:`); an elliptical arc with an
+**Missing:** the selection modes' gaps (Command line, `Select objects:`); the drag's ghost wears
+each object's colour only, not its linetype or lineweight, and a block reference's objects all
+wear the reference's, where AutoCAD drags the set as itself (d01); what the desktop
+draws at `Specify displacement` (no line from the origin here) and what a number does after `<a`
+there are **unverified** (the console ignores it, p139); an elliptical
+arc with an
 end in the window: AutoCAD moves that end and keeps the other, the arc an affine image of itself
 with its parameter sweep kept (ellipse/p324, p333, p336–p338; p332 moved an end lying 0.14 outside
 the window), whose rule no probe has fixed yet (ELLIPSE-D44); here the arc moves whole with its
@@ -33,7 +46,10 @@ centre, else stays
 `Precise el segundo punto o [Salir/desHacer] <Salir>`, with the `el` the program prints and its help
 does not); repeated placement (AutoCAD Multiple behaviour), Undo taking back the last copy;
 Displacement places one copy and ends, its `<default>` COPY's own last one, not MOVE's (rectang/p314),
-back to 0 at NEW and OPEN
+back to 0 at NEW and OPEN; a zero displacement — the second point at the base, a Displacement of
+`0,0,0`, Enter and Enter — leaves a duplicate in place, which Undo takes back like any other
+(p147, p193, p228–p232); the drag as MOVE's, the originals keeping the selection's glow (desktop
+d02, d11)
 
 **Missing:** mOde (COPYMODE is always Multiple, so the base point offers `[Displacement]` alone),
 Array (so the second point's `[Array]` is not offered)

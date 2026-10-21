@@ -3710,9 +3710,25 @@ export class CadRuntime extends Observable {
     if (field && !isContentField(field.kind)) {
       if (this.transparentCommand(this.dynamicInput.getText(field.id))) return
     }
-    this.answering(this.dynamicInput.typedAnswer(), () =>
-      this.commitBox(session, field)
-    )
+    this.answering(this.boxAnswer(field), () => this.commitBox(session, field))
+  }
+
+  /**
+   * The box's answer as the history writes it: as typed, but a coordinate the
+   * box reads from the prompt's base ({@link typedFramePoint}) with the `@` it
+   * was read with — `5,-12` in COPY's tooltip is echoed `@5,-12` (desktop
+   * move, after d02).
+   */
+  private boxAnswer(field: DynamicField | undefined): string {
+    const typed = this.dynamicInput.typedAnswer()
+    const relative =
+      field !== undefined &&
+      !isContentField(field.kind) &&
+      this.dynamicInput.getText(field.id).trim() === typed &&
+      isCoordinateExpression(typed) &&
+      !/^[@#*]/.test(typed) &&
+      (this.fromBase ?? this.toolAnchor()) !== null
+    return relative ? `@${typed}` : typed
   }
 
   /**
