@@ -1,0 +1,37 @@
+_LUPREC
+8
+_QAFLAGS
+2
+_ZOOM
+_W
+-5,-10
+45,25
+_SPLINE
+0,0
+20,0
+20,20
+0,20
+_C
+_AREA
+_O
+_L
+_LIST
+_L
+
+_SPLINE
+_M
+_CV
+0,-5
+5,10
+20,-10
+40,5
+
+_AREA
+_O
+_L
+_LIST
+_L
+
+(vl-load-com)
+(rtos (vlax-curve-getDistAtParam (entlast) (vlax-curve-getEndParam (entlast))) 2 8)
+(vlax-curve-getPointAtDist (entlast) (/ (vlax-curve-getDistAtParam (entlast) (vlax-curve-getEndParam (entlast))) 2))

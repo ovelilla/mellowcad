@@ -1,0 +1,10 @@
+_SPLINE
+0
+10,10
+
+_SPLINE
+-5
+10,10
+
+MPDUMP
+-

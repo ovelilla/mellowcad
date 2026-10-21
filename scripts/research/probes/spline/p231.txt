@@ -1,0 +1,9 @@
+_SPLINE
+0,0
+'_ELEVATION
+5
+10,10
+20,0
+
+MPDUMP
+-

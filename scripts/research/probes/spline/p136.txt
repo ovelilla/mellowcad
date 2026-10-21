@@ -1,0 +1,16 @@
+_SPLINE
+0,0
+_T
+'_ZOOM
+_E
+'_-PAN
+0,0
+5,5
+'ORTHOMODE
+1
+'_-OSNAP
+_END
+'_LINE
+0,10
+10,10
+

@@ -1,0 +1,20 @@
+_ZOOM
+_W
+-10,-10
+50,30
+_SPLINE
+0,0
+10,10
+20,0
+30,10
+
+_STRETCH
+_C
+25,5
+35,15
+
+0,0
+0,5
+MPDUMP
+-
+(entget (entlast))

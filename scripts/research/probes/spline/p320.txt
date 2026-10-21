@@ -1,0 +1,36 @@
+_ZOOM
+_W
+-10,-10
+110,30
+_SPLINE
+0,0
+_T
+3,4
+10,10
+20,0
+30,10
+
+_MIRROR
+_L
+
+50,0
+50,10
+_Y
+(entget (entlast))
+_SPLINE
+_M
+_CV
+0,0
+10,10
+20,0
+30,10
+
+_MIRROR
+_L
+
+50,0
+50,10
+_Y
+(entget (entlast))
+MPDUMP
+-

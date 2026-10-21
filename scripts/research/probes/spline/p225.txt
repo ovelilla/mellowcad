@@ -1,0 +1,11 @@
+_UCS
+_Z
+30
+_SPLINE
+0,0
+@10<0
+20,10
+
+MPDUMP
+-
+(entget (entlast))

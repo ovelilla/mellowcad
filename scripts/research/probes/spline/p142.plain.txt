@@ -1,0 +1,15 @@
+_SPLINE
+0,0
+10,10
+20,0
+
+_SPLINE
+_M
+_CV
+0,50
+10,60
+20,50
+
+_U
+_REDO
+(sslength (ssget "_X"))

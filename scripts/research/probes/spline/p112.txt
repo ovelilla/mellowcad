@@ -1,0 +1,17 @@
+_SPLINE
+_M
+FOO
+0
+_K
+_LINE
+
+_M
+_CV
+_M
+
+_K
+_M
+_F
+0,0
+10,10
+

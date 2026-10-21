@@ -1,0 +1,13 @@
+_SPLINE
+_M
+_CV
+0,0
+FOO
+_U
+_C
+_T
+_L
+_M
+
+MPDUMP
+-

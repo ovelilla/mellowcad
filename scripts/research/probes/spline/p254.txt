@@ -1,0 +1,9 @@
+_ORTHOMODE
+1
+_SPLINE
+0,0
+10,3
+10
+
+MPDUMP
+-

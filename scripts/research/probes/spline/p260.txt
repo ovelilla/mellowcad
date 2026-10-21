@@ -1,0 +1,11 @@
+_SPLINE
+_M
+_CV
+0,0
+10,10
+'_-COLOR
+3
+20,0
+
+MPDUMP
+-

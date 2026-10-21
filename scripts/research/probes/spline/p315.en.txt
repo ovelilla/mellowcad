@@ -1,0 +1,34 @@
+_LUPREC
+8
+_ZOOM
+_W
+-5,-10
+45,20
+_SPLINE
+_M
+_CV
+0,0
+5,15
+20,-5
+40,10
+
+_LINE
+10,-5
+_TAN
+34.5,6.64
+
+(princ (mapcar '(lambda (x) (rtos x 2 8)) (getvar "LASTPOINT")))
+_SPLINE
+_M
+_FIT
+0,30
+10,40
+20,30
+30,40
+
+_LINE
+15,50
+_PER
+15.1,35
+
+(princ (mapcar '(lambda (x) (rtos x 2 8)) (getvar "LASTPOINT")))

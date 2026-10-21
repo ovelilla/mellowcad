@@ -1,0 +1,9 @@
+_SPLINE
+0,0
+_L
+'_ZOOM
+_E
+'_LINE
+
+10,10
+

@@ -1,0 +1,8 @@
+_SPLINE
+_M
+_CV
+0,0
+10,10
+20,0
+_C
+(getvar "LASTPOINT")

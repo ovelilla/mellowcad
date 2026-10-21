@@ -1,0 +1,22 @@
+_LUPREC
+8
+_ZOOM
+_W
+-5,25
+45,55
+_SPLINE
+0,30
+10,40
+20,30
+30,40
+
+_LINE
+15,50
+_PER
+15.1,35
+
+(princ (mapcar '(lambda (x) (rtos x 2 8)) (getvar "LASTPOINT")))
+_ID
+_MID
+10,40
+50,50

@@ -1,0 +1,11 @@
+_SPLINE
+_M
+_CV
+0,0,5
+10,10,9
+@10,-10
+30,10
+
+MPDUMP
+-
+(getvar "LASTPOINT")
