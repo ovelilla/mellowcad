@@ -129,18 +129,35 @@ says `Extremely small scale factor ignored.` (es `Factor de escala demasiado peq
 table 21197, p170): the threshold and what follows are **unverified** (the console read its cursor
 after it); the drag's ghost as MOVE's (each object's colour only)
 
-### `MIRROR` / `MI` · es `SIMETRIA` / `SI`†
+### `MIRROR` / `MI` · es `SIMETRIA` / `SI`
 
 **Implemented:** `Select objects:`, `Specify first point of mirror line:`,
 `Specify second point of mirror line:`, `Erase source objects? [Yes/No] <No>:` (es
 `Precise primer punto de línea de simetría`, `Especifique segundo punto de línea de simetría` —
-Autodesk's table words the two otherwise —, `¿Borrar objetos de origen? [Sí/No] <No>`); two-point
-axis, erase-source Yes/No prompt; the mirror plane holds the two points and the UCS's Z; a
-mirrored spline keeps its +Z normal, as AutoCAD's does (spline/p320), unlike an ellipse; the
-reflection drags as MOVE's set, the originals keeping the selection's glow, the amber dashed line
-from the first point, both still drawn at `Erase source objects?` (desktop d10)
+Autodesk's table words the two otherwise —, `¿Borrar objetos de origen? [Sí/No] <No>`, `S` its
+Yes, p231); both points 2D: FOO, `x,y,z`, `*x,y` and Enter say `Invalid 2D point.` (es
+`Punto 2D no válido.`) and ask again (p226, p228, p229, p233, p234, p241); a number at the second
+point runs from the first towards the cursor (p238); a mirror line of no length (`@`, the first
+point again) says `Points must be distinct.` (es `Los puntos tienen que ser distintos.`, table
+21153) and ends, U naming MIRROR (p235, p236, p248); No's copies go in drawing order whatever the
+pick order, so ERASE Last takes the later one's (p284); LASTPOINT is the second point, No and Yes
+(p239); each run is one step U names (p246, p247); the mirror plane holds the two points and the
+UCS's Z (p286); MIRRTEXT 0's result: a TEXT, MTEXT or ATTDEF keeps reading as it did in the
+reflection of its box, its justification kept — one the reflection reverses (its direction's x
+changes sign, a vertical one's y) turns half round, its point at the image of the box's far end
+along the baseline; one it stands on its head flips across the baseline; MTEXT's attachment swaps
+left and right, or top and bottom (p283, p290–p294); a mirrored spline keeps its +Z normal, as
+AutoCAD's does (spline/p320), unlike an ellipse; the reflection drags as MOVE's set, the originals
+keeping the selection's glow, the amber dashed line from the first point, both still drawn at
+`Erase source objects?` (desktop d10); `SI` from the Spanish `acad.pgp` (p221)
 
-**Missing:** MIRRTEXT; the drag's ghost as MOVE's (each object's colour only); an ellipse's
+**Missing:** MIRRTEXT, the variable: 0 only, never mirrored text; the box a text turns back in is
+the engine's (`measureTextWidth`, the capital height), AutoCAD's its glyphs' extents (p283's Hola
+is 14.628 wide there, 14.356 here; flipped across its baseline it sits 0.08 higher there, p291); a
+text inside a mirrored block reference, which AutoCAD mirrors with the block whatever MIRRTEXT
+(Autodesk's support article), turns back here as a loose one; a mirrored hatch's pattern angle:
+AutoCAD keeps 0° mirrored about the Y axis (p282), here 180°, the rule **unverified** (no hatch at
+another angle probed); the drag's ghost as MOVE's (each object's colour only); an ellipse's
 normal: AutoCAD turns a mirrored ellipse over, its normal −Z, its parameters kept and its major
 axis on the mirrored end (ellipse/p320, p321), where this app keeps +Z and reflects the range, the same curve — its Start angle and End angle (260° and 350°
 where AutoCAD reads 10° and 100°), and BREAK of it keeping the other piece (p329: AutoCAD keeps

@@ -105,12 +105,12 @@ A tool never touches an adapter: what it needs outside the document (`ctx.copyTo
 default reads right: `selectObjects` / `removeObjects` are a set with sub-objects; a box with a
 coordinate field (or a distance and an angle) a point, a lone distance or angle field that, a
 number field a number; with no box, a point when `wantsSnap()`, else a keyword. Declare what the box
-cannot tell: a single object's pick (`"object"`), a 2D point (ARC's, PLINE's, MIRROR's later
+cannot tell: a single object's pick (`"object"`), a 2D point (MIRROR's, ARC's and PLINE's later
 points, CIRCLE's 2P and 3P ones), a keyword prompt that keeps snaps on, a set of whole objects,
 STRETCH's crossing set or BREAK's one object (`"oneObject"`; UCS OBject's `"singleSet"`), a count
 (`"integer"`), and a command's own words (`{ refusal: "requiresRadius" }`; with `values`; a list of ids for several
 lines; `keywords` by id; at a point prompt it refuses a Z and says `setsLastPoint()`, ARC's
-centre end). Type `FOO` at the prompt in AutoCAD's console before declaring one: the words differ
+centre end). Type `FOO` there in AutoCAD's console before declaring one: the words differ
 per input function, and per command at `Select objects:`.
 
 ## Answering, numbers and transparency

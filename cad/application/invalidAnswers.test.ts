@@ -81,6 +81,7 @@ describe("a wrong answer mid-command", () => {
     expect(cad.activeToolId()).toBe("arc")
     cad.escape()
 
+    // probe transforms/p226: MIRROR's points are 2D, its Erase a keyword.
     const mirror = createHarness({ entities: twoLines() })
     mirror.select("A").command("MIRROR")
     answerLine(mirror, "FOO")
@@ -89,6 +90,44 @@ describe("a wrong answer mid-command", () => {
     answerLine(mirror, "FOO")
     expect(mirror.commandLog().at(-1)).toBe("Invalid option keyword.")
   })
+
+  // probes transforms/p228, p229: Enter at either point of the mirror line
+  // is refused as FOO is, and the point asked again; en and es.
+  it.each([
+    [undefined, "Specify first point of mirror line:", "Invalid 2D point."],
+    [es, "Precise primer punto de línea de simetría:", "Punto 2D no válido."],
+  ] as const)(
+    "refuses Enter at MIRROR's mirror-line points (%#)",
+    (locale, firstPrompt, refusal) => {
+      const enters: ReadonlyArray<(cad: CadHarness) => void> = [
+        (cad) => answerLine(cad, ""),
+        (cad) => cad.enter(),
+        (cad) => {
+          cad.rightClick(p(300, 300))
+          if (cad.state().shortcutMenu)
+            cad.runtime.chooseShortcutMenuAction("enter")
+        },
+      ]
+      for (const enter of enters) {
+        const cad = createHarness({
+          entities: twoLines(),
+          ...(locale ? { locale } : {}),
+        })
+        answerLine(cad, "_MIRROR")
+        answerLine(cad, "_L")
+        answerLine(cad, "")
+        enter(cad)
+        expect(cad.commandLog().slice(-2)).toEqual([firstPrompt, refusal])
+        answerLine(cad, "0,0")
+        enter(cad)
+        expect(cad.commandLog().at(-1)).toBe(refusal)
+        expect(cad.activeToolId()).toBe("mirror")
+        answerLine(cad, "0,10")
+        answerLine(cad, "_N")
+        expect(cad.entityCount).toBe(3)
+      }
+    }
+  )
 
   it("asks for a 2D point at CIRCLE's later 2P and 3P points", () => {
     // probes circle/p121, p122 (FOO), p133 (_U), p137 (`<45`, no base point

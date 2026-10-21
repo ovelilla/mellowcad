@@ -124,6 +124,8 @@ describe("a tilted UCS", () => {
     expect(lineEndZ(line)).toBeCloseTo(100, 9)
   })
 
+  // probe transforms/p286 (UCS X 90): the mirror plane holds the two points
+  // and the UCS's Z.
   it("mirrors in a plane holding its Z axis", () => {
     const circle = withNormal(circleOf(p(30, 10), 5), FRONT_Z)
     const cad = front(createHarness({ entities: [circle] }))

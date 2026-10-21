@@ -1513,6 +1513,7 @@
       "invalidPoint2d": "Punto 2D no válido.",
       "pointOrKeywordRequired": "Se requiere un punto o una opción.",
       "point2dOrKeywordRequired": "Se requiere un punto 2D o una opción.",
+      "pointsMustBeDistinct": "Los puntos tienen que ser distintos.",
       "requiresDistance": "Requiere una distancia numérica{keyword, select, yes {{points, select, second {, un segundo punto o una opción.} other {, dos puntos o una opción.}}} other {{points, select, second { o un segundo punto.} other { o dos puntos.}}}}",
       "requiresAngle": "Requiere un ángulo numérico válido{keyword, select, yes {{points, select, second {, un segundo punto o una opción.} other {, dos puntos o una opción.}}} other {{points, select, second { o un segundo punto.} other { o dos puntos.}}}}",
       "requiresNumber": "Requiere un valor numérico{keyword, select, yes { o una opción.} other {.}}",

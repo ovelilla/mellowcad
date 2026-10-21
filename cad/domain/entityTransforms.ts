@@ -1,5 +1,6 @@
 import { Vec2, V } from "../geometry/Vec2"
 import { Vec3, add3, scale3, sub3, withZ, zOf } from "../geometry/Vec3"
+import { normalizeAngle } from "../geometry/primitives"
 import {
   Axes3,
   arbitraryAxis,
@@ -12,6 +13,7 @@ import {
   EllipseEntity,
   TextEntity,
   MTextEntity,
+  MTextAttachment,
   AttributeDefinitionEntity,
   DimensionEntity,
   HatchLoop,
@@ -34,7 +36,13 @@ import {
 } from "./entityFactories"
 import { createEllipse, ellipseWithSpan } from "./ellipses"
 import { mapSplinePoints, splineCopy } from "./splines"
-import { TextOptions, createText } from "./text"
+import {
+  TextOptions,
+  createText,
+  horizontalExtent,
+  measureTextWidth,
+  verticalExtent,
+} from "./text"
 import { MTextOptions, createMText } from "./mtext"
 import { createAttributeDefinition } from "./attributes"
 import {
@@ -130,13 +138,16 @@ function textLike(
 function mtextLike(
   mtext: MTextEntity,
   position: Vec2,
-  overrides: Pick<MTextOptions, "height" | "width" | "rotation"> = {}
+  overrides: Pick<
+    MTextOptions,
+    "height" | "width" | "rotation" | "attachment"
+  > = {}
 ): MTextEntity {
   return createMText(position, mtext.contents, {
     height: overrides.height ?? mtext.height,
     width: overrides.width ?? mtext.width,
     rotation: overrides.rotation ?? mtext.rotation,
-    attachment: mtext.attachment,
+    attachment: overrides.attachment ?? mtext.attachment,
     lineSpacingStyle: mtext.lineSpacingStyle,
     lineSpacingFactor: mtext.lineSpacingFactor,
     styleId: mtext.styleId,
@@ -1007,11 +1018,11 @@ function mirrorFlat(entity: Entity, a: Vec2, b: Vec2): Entity {
         ...(entity.bulges ? { bulges: negateBulges(entity.bulges) } : {}),
       }
     case "text":
-    case "mtext":
+      return { ...entity, ...mirroredText(entity, entity.value, a, b) }
     case "attdef":
-      // Only the insertion point reflects: AutoCAD's MIRRTEXT defaults to 0,
-      // which keeps mirrored text upright and readable.
-      return { ...entity, position: mirrorPoint(entity.position, a, b) }
+      return { ...entity, ...mirroredText(entity, entity.tag, a, b) }
+    case "mtext":
+      return { ...entity, ...mirroredMText(entity, a, b) }
     case "dimension":
       return {
         ...entity,
@@ -1054,6 +1065,92 @@ function mirroredInsert(
     position: mirrorPoint(insert.position, a, b),
     rotation: mirrorAngle(insert.rotation, a, b) + Math.PI,
     mirrored: !insert.mirrored,
+  }
+}
+
+/** Below it a reading direction's component counts as none. */
+const READING_EPSILON = 1e-9
+
+/**
+ * A text's rotation reflected and turned back to read as MIRRTEXT 0 reads it,
+ * the only value here (probes transforms/p283, p290–p294). The reflection
+ * either reverses the text's reading — its direction's x changes sign, a
+ * vertical text's y — and the text turns half round to run back along its
+ * baseline (`backward`), or stands it on its head, and it flips across the
+ * baseline. AutoCAD judges by the world's axes, not the mirror line's: about
+ * x = 0 a text at 100° turns back to 260°, about y = 0 it is left at 260°.
+ */
+function readableMirror(
+  rotation: number,
+  a: Vec2,
+  b: Vec2
+): { readonly rotation: number; readonly backward: boolean } {
+  const reflected = mirrorAngle(rotation, a, b)
+  const backward =
+    Math.abs(Math.cos(rotation)) < READING_EPSILON
+      ? Math.sin(rotation) * Math.sin(reflected) < 0
+      : Math.cos(rotation) * Math.cos(reflected) < -READING_EPSILON
+  return {
+    rotation: normalizeAngle(backward ? reflected + Math.PI : reflected),
+    backward,
+  }
+}
+
+/**
+ * A TEXT or ATTDEF mirrored with MIRRTEXT 0: its box reflects and the text in
+ * it reads as before ({@link readableMirror}), its justification kept, so the
+ * point goes to the image of the box's far end along the baseline, or across
+ * it. AutoCAD's box is the glyphs' extents, this engine's
+ * {@link measureTextWidth} by the capital height: p283's Hola is 14.628 wide
+ * there, 14.356 here, and flipped across its baseline it sits 0.08 higher
+ * there (p291).
+ */
+function mirroredText(
+  text: TextEntity | AttributeDefinitionEntity,
+  shown: string,
+  a: Vec2,
+  b: Vec2
+): Pick<TextEntity, "position" | "rotation"> {
+  const turned = readableMirror(text.rotation, a, b)
+  const cos = Math.cos(text.rotation)
+  const sin = Math.sin(text.rotation)
+  let far: Vec2
+  if (turned.backward) {
+    const [x0, x1] = horizontalExtent(
+      text.justify,
+      measureTextWidth(shown, text.height)
+    )
+    far = { x: (x0 + x1) * cos, y: (x0 + x1) * sin }
+  } else {
+    const [y0, y1] = verticalExtent(text.justify, text.height)
+    far = { x: -(y0 + y1) * sin, y: (y0 + y1) * cos }
+  }
+  return {
+    position: mirrorPoint(V.add(text.position, far), a, b),
+    rotation: turned.rotation,
+  }
+}
+
+/**
+ * An MTEXT mirrored with MIRRTEXT 0: its attachment point reflects and the
+ * attachment swaps sides as a TEXT turns back, left for right or top for
+ * bottom (p283, p290–p292), so the box is the reflection's.
+ */
+function mirroredMText(
+  mtext: MTextEntity,
+  a: Vec2,
+  b: Vec2
+): Pick<MTextEntity, "position" | "rotation" | "attachment"> {
+  const turned = readableMirror(mtext.rotation, a, b)
+  const [row, column] = mtext.attachment
+  const swap = (side: string, one: string, other: string) =>
+    side === one ? other : side === other ? one : side
+  return {
+    position: mirrorPoint(mtext.position, a, b),
+    rotation: turned.rotation,
+    attachment: (turned.backward
+      ? row + swap(column, "l", "r")
+      : swap(row, "t", "b") + column) as MTextAttachment,
   }
 }
 
@@ -1110,12 +1207,23 @@ export function mirrorEntityCopy(entity: Entity, a: Vec2, b: Vec2): Entity {
           undefined,
           entity.widths
         )
-      case "text":
-        return textLike(entity, mirrorPoint(entity.position, a, b))
-      case "mtext":
-        return mtextLike(entity, mirrorPoint(entity.position, a, b))
-      case "attdef":
-        return attdefLike(entity, mirrorPoint(entity.position, a, b))
+      case "text": {
+        const placed = mirroredText(entity, entity.value, a, b)
+        return textLike(entity, placed.position, { rotation: placed.rotation })
+      }
+      case "mtext": {
+        const placed = mirroredMText(entity, a, b)
+        return mtextLike(entity, placed.position, {
+          rotation: placed.rotation,
+          attachment: placed.attachment,
+        })
+      }
+      case "attdef": {
+        const placed = mirroredText(entity, entity.tag, a, b)
+        return attdefLike(entity, placed.position, {
+          rotation: placed.rotation,
+        })
+      }
       case "dimension":
         return dimensionLike(
           entity,

@@ -20,6 +20,7 @@ import {
   type QuestionInput,
 } from "./Tool"
 import { ObjectSelector } from "./objectSelection"
+import { selectedInDrawingOrder } from "./drawingOrder"
 import { transformDrag } from "./transformDrag"
 
 /**
@@ -271,6 +272,12 @@ export class MirrorTool implements Tool {
   }
 
   private commitPointCoordinate(fieldId: string, ctx: ToolContext): boolean {
+    if (!ctx.dynamicInput.hasTypedText()) {
+      // Neither point takes Enter: refused as FOO is, and asked again
+      // (probes transforms/p228, p229).
+      ctx.report(ctx.text.message("invalidPoint2d"), "error")
+      return true
+    }
     const text = ctx.dynamicInput.getText(fieldId).trim()
     if (!isCoordinateExpression(text)) return false
     if (this.state.phase === "first" && fieldId === "first") {
@@ -299,7 +306,7 @@ export class MirrorTool implements Tool {
   }
 
   private enterSecond(first: Vec2, ctx: ToolContext): void {
-    const originals = this.snapshotSelection(ctx)
+    const originals = selectedInDrawingOrder(ctx)
     if (originals.length === 0) {
       // The selection vanished (e.g. undo elsewhere): fall back to picking.
       this.state = { phase: "selecting" }
@@ -313,8 +320,10 @@ export class MirrorTool implements Tool {
 
   private enterErase(first: Vec2, second: Vec2, ctx: ToolContext): void {
     if (this.state.phase !== "second") return
-    // A zero-length mirror line can't reflect: end without changing anything.
+    // A mirror line of no length is said and ends the command, nothing
+    // changed (p235, p236).
     if (V.equals(first, second)) {
+      ctx.report(ctx.text.message("pointsMustBeDistinct"), "error")
       ctx.dynamicInput.close()
       ctx.endCommand()
       return
@@ -358,13 +367,6 @@ export class MirrorTool implements Tool {
     }
     ctx.dynamicInput.close()
     ctx.endCommand()
-  }
-
-  private snapshotSelection(ctx: ToolContext): readonly Entity[] {
-    return ctx.selection
-      .toArray()
-      .map((id) => ctx.document.get(id))
-      .filter((entity): entity is Entity => entity !== undefined)
   }
 
   /** Honours a coordinate typed for a mirror-line point, else uses the cursor. */

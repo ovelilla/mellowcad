@@ -2699,6 +2699,7 @@ export const en: EngineCatalog = {
       "invalidPoint2d": "Invalid 2D point.",
       "pointOrKeywordRequired": "Point or option keyword required.",
       "point2dOrKeywordRequired": "2D point or option keyword required.",
+      "pointsMustBeDistinct": "Points must be distinct.",
       "requiresDistance": [
         "Requires numeric distance",
         [

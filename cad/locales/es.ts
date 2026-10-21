@@ -3047,6 +3047,7 @@ export const es: EngineLocale = {
       "invalidPoint2d": "Punto 2D no válido.",
       "pointOrKeywordRequired": "Se requiere un punto o una opción.",
       "point2dOrKeywordRequired": "Se requiere un punto 2D o una opción.",
+      "pointsMustBeDistinct": "Los puntos tienen que ser distintos.",
       "requiresDistance": [
         "Requiere una distancia numérica",
         [

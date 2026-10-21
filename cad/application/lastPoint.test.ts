@@ -55,7 +55,10 @@ describe("LASTPOINT", () => {
     expect(lastPoint(cad)).toBe(" X = 0.00     Y = 20.00     Z = 0.00")
     answer(cad, "RECTANG", "30,30", "40,45")
     expect(lastPoint(cad)).toBe(" X = 40.00     Y = 45.00     Z = 0.00")
+    // probe transforms/p239: MIRROR's second point, No and Yes alike.
     answer(cad, "MIRROR", "L", "", "20,0", "20,10", "N")
+    expect(lastPoint(cad)).toBe(" X = 20.00     Y = 10.00     Z = 0.00")
+    answer(cad, "ID", "7,8", "MIRROR", "L", "", "20,0", "20,10", "Y")
     expect(lastPoint(cad)).toBe(" X = 20.00     Y = 10.00     Z = 0.00")
   })
 

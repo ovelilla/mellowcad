@@ -1485,6 +1485,7 @@
       "invalidPoint2d": "Invalid 2D point.",
       "pointOrKeywordRequired": "Point or option keyword required.",
       "point2dOrKeywordRequired": "2D point or option keyword required.",
+      "pointsMustBeDistinct": "Points must be distinct.",
       "requiresDistance": "Requires numeric distance{keyword, select, yes {{points, select, second {, second point, or option keyword.} other {, two points, or option keyword.}}} other {{points, select, second { or second point.} other { or two points.}}}}",
       "requiresAngle": "Requires valid numeric angle{keyword, select, yes {{points, select, second {, second point, or option keyword.} other {, two points, or option keyword.}}} other {{points, select, second { or second point.} other { or two points.}}}}",
       "requiresNumber": "Requires numeric value{keyword, select, yes { or option keyword.} other {.}}",

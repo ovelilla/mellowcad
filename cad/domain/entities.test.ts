@@ -24,11 +24,13 @@ import {
   closestOnEntity,
   coplanar,
   copyEntity,
+  createAttributeDefinition,
   createBlockDefinition,
   createDimension,
   createHatch,
   createInsert,
   createLine,
+  createMText,
   createPolyline,
   dimensionAxisAngle,
   dimensionMeasurement,
@@ -125,12 +127,130 @@ describe("text", () => {
     )
   })
 
-  it("stays readable when mirrored (AutoCAD's MIRRTEXT default)", () => {
-    const mirrored = mirrorEntity(note(), p(0, 0), p(0, 1))
-    expect(mirrored.type === "text" && mirrored.rotation).toBeCloseTo(0)
-    expect(mirrored.type === "text" && mirrored.position).toBeCloseToPoint(
-      p(-10, 20)
+  // probes transforms/p283, p290–p294 (MIRRTEXT 0): AutoCAD's rotations. A
+  // text the mirror turned to read the other way (its direction's x changed
+  // sign; a vertical text's y) turns half round and runs back along its
+  // baseline; one it stood on its head flips across the baseline.
+  const sortedPoints = (points: readonly Vec2[]) =>
+    [...points].sort(
+      (u, v) => Math.round((u.x - v.x) * 1e6) || Math.round((u.y - v.y) * 1e6)
     )
+  const MIRROR_LINES = {
+    "x = 0": [p(0, 0), p(0, 10)],
+    "y = 0": [p(0, 0), p(10, 0)],
+    "y = x": [p(0, 0), p(10, 10)],
+  } as const
+  it.each([
+    ["p283", "x = 0", 30, 330],
+    ["p290", "x = 0", 0, 0],
+    ["p290", "x = 0", 100, 260],
+    ["p294", "x = 0", 45, 315],
+    ["p294", "x = 0", 90, 90],
+    ["p294", "x = 0", 135, 225],
+    ["p294", "x = 0", 270, 270],
+    ["p291", "y = 0", 0, 0],
+    ["p291", "y = 0", 100, 260],
+    ["p293", "y = 0", 45, 315],
+    ["p293", "y = 0", 90, 90],
+    ["p293", "y = 0", 135, 225],
+    ["p293", "y = 0", 270, 270],
+    ["p292", "y = x", 0, 90],
+    ["p292", "y = x", 100, 170],
+  ] as const)(
+    "%s: mirrored about %s, a text at %s° reads at %s°, its box mirrored",
+    (_, line, from, to) => {
+      const [a, b] = MIRROR_LINES[line]
+      for (const justify of ["left", "right", "tl", "mc", "br"] as const) {
+        const text = textOf(p(10, 20), "Hola", {
+          height: 5,
+          rotation: deg(from),
+          justify,
+        })
+        const mirrored = mirrorEntity(text, a, b)
+        if (mirrored.type !== "text") throw new Error("not a text")
+        expect(mirrored.rotation).toBeCloseToAngle(deg(to), 9)
+        expect(mirrored.justify).toBe(justify)
+        expect(mirrored.value).toBe("Hola")
+        expect(sortedPoints(textCorners(mirrored))).toBeCloseToPoints(
+          sortedPoints(textCorners(text).map((c) => mirrorPoint(c, a, b))),
+          9
+        )
+        const copy = mirrorEntityCopy(text, a, b)
+        if (copy.type !== "text") throw new Error("not a text")
+        expect(copy.position).toBeCloseToPoint(mirrored.position, 12)
+        expect(copy.rotation).toBeCloseToAngle(mirrored.rotation, 12)
+      }
+    }
+  )
+
+  // probe transforms/p283: Hola, BaseLeft at 10,10, 30°, mirrored about x = 0
+  // starts at the image of its baseline's end: (-22.668, 17.314) by AutoCAD's
+  // width (14.628), its own here; a right-justified one is aligned at the
+  // image of its baseline's start, (-32.527, 40) for Adios.
+  it("lands where AutoCAD's MIRRTEXT 0 puts it, by the engine's widths", () => {
+    const hola = mirrorEntity(
+      textOf(p(10, 10), "Hola", { height: 5, rotation: deg(30) }),
+      p(0, 0),
+      p(0, 10)
+    )
+    const w = measureTextWidth("Hola", 5)
+    expect(hola.type === "text" && hola.position).toBeCloseToPoint(
+      p(-10 - w * Math.cos(deg(30)), 10 + w * Math.sin(deg(30))),
+      9
+    )
+    const adios = mirrorEntity(
+      textOf(p(50, 40), "Adios", { height: 5, justify: "right" }),
+      p(0, 0),
+      p(0, 10)
+    )
+    expect(adios.type === "text" && adios.position.x).toBeCloseTo(-32.527, 1)
+    expect(adios.type === "text" && adios.position.y).toBeCloseTo(40, 9)
+  })
+
+  // probes transforms/p283, p290, p291, p292: MTEXT's attachment point
+  // reflects, and its attachment swaps sides as TEXT turns back: TopLeft
+  // becomes TopRight about x = 0, BottomLeft about y = 0 and y = x.
+  it.each([
+    ["p290", "x = 0", p(-10, 80), "tr", 0],
+    ["p291", "y = 0", p(10, -80), "bl", 0],
+    ["p292", "y = x", p(80, 10), "bl", 90],
+  ] as const)(
+    "%s: an MTEXT mirrored about %s attaches at %s, %s",
+    (_, line, position, attachment, rotation) => {
+      const [a, b] = MIRROR_LINES[line]
+      const mtext = createMText(p(10, 80), "Hola", { height: 5, width: 30 })
+      for (const mirrored of [
+        mirrorEntity(mtext, a, b),
+        mirrorEntityCopy(mtext, a, b),
+      ]) {
+        if (mirrored.type !== "mtext") throw new Error("not an MTEXT")
+        expect(mirrored.position).toBeCloseToPoint(position, 9)
+        expect(mirrored.attachment).toBe(attachment)
+        expect(mirrored.rotation).toBeCloseToAngle(deg(rotation), 9)
+        expect(mirrored.width).toBe(30)
+      }
+    }
+  )
+
+  it("mirrors an attribute definition as a text of its tag", () => {
+    const definition = createAttributeDefinition(p(10, 10), "PART", {
+      height: 5,
+      rotation: deg(30),
+    })
+    const text = mirrorEntity(
+      textOf(p(10, 10), "PART", { height: 5, rotation: deg(30) }),
+      p(0, 0),
+      p(0, 10)
+    )
+    if (text.type !== "text") throw new Error("not a text")
+    for (const mirrored of [
+      mirrorEntity(definition, p(0, 0), p(0, 10)),
+      mirrorEntityCopy(definition, p(0, 0), p(0, 10)),
+    ]) {
+      if (mirrored.type !== "attdef") throw new Error("not a definition")
+      expect(mirrored.position).toBeCloseToPoint(text.position, 9)
+      expect(mirrored.rotation).toBeCloseToAngle(text.rotation, 9)
+    }
   })
 
   it("moves whole when its insertion point is caught by a stretch frame", () => {

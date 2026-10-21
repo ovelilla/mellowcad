@@ -326,6 +326,7 @@ describe("a block reference in the drawing", () => {
     expect(cad.byId<InsertEntity>("I1").scale).toBeCloseTo(2)
   })
 
+  // probe transforms/p282: the reference reflected about the Y axis.
   it("mirrors by reflecting the reference, not just its insertion point", () => {
     const cad = placed()
     cad

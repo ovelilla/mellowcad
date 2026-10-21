@@ -7,15 +7,20 @@ import type {
   Entity,
   HatchEntity,
   LineEntity,
+  MTextEntity,
   PolylineEntity,
+  TextEntity,
 } from "../../domain/entities"
 import {
   assignEntityColor,
   createBlockDefinition,
   createInsert,
+  createMText,
   createSpline,
+  createText,
   dimensionMeasurement,
   isFullEllipse,
+  measureTextWidth,
   scaleEntity,
 } from "../../domain/entities"
 import { type CadHarness, createHarness } from "../../../test/harness"
@@ -1555,6 +1560,8 @@ describe("SCALE", () => {
 })
 
 describe("MIRROR", () => {
+  // probes transforms/p220 (MIRROR, MI, repeated), p226 (its prompts), p230
+  // (Enter at Erase is No).
   it("asks the mirror line, then whether to erase the source, No kept", () => {
     const cad = createHarness({ entities: [HORIZONTAL] })
 
@@ -1592,6 +1599,7 @@ describe("MIRROR", () => {
     expect(reflection?.end).toBeCloseToPoint(p(100, -50))
   })
 
+  // probe transforms/p227: Yes leaves the reflection under the originals' handles.
   it("flips the source in place when Erase is chosen", () => {
     const cad = createHarness({
       entities: [lineOf(p(0, 0), p(100, 50), { id: "L1" })],
@@ -1647,6 +1655,164 @@ describe("MIRROR", () => {
 
     expect(cad.entityCount).toBe(1)
     expect(cad.byId<LineEntity>("L1").end).toBeCloseToPoint(p(100, 50))
+  })
+
+  // probe transforms/p283 (MIRRTEXT 0, mirror line x = 0): each text keeps
+  // reading left to right in its box's reflection. AutoCAD: Hola, BaseLeft
+  // at 10,10, 30°, starts at (-22.668, 17.314), 330°, by its font's width
+  // (14.628; the engine's is measureTextWidth's); Adios, right-justified at
+  // 50,40, is aligned at (-32.527, 40); the MTEXT TopLeft at 10,80 is TopRight
+  // at (-10, 80). Yes flips them so in place.
+  it.each([["_N"], ["_Y"]])(
+    "mirrors TEXT and MTEXT readable, Erase %s",
+    (erase) => {
+      const cad = createHarness({
+        entities: [
+          createText(p(10, 10), "Hola", {
+            id: "T1",
+            height: 5,
+            rotation: deg(30),
+          }),
+          createText(p(50, 40), "Adios", {
+            id: "T2",
+            height: 5,
+            justify: "right",
+          }),
+          createMText(p(10, 80), "Hola", { id: "M", height: 5, width: 30 }),
+        ],
+      })
+      answer(cad, "_MIRROR", "_ALL", "", "0,0", "0,10", erase)
+      const [hola, adios, mtext] = cad.entities().slice(-3) as [
+        TextEntity,
+        TextEntity,
+        MTextEntity,
+      ]
+      const w = measureTextWidth("Hola", 5)
+      expect(hola.position).toBeCloseToPoint(
+        p(-10 - w * Math.cos(deg(30)), 10 + w * Math.sin(deg(30))),
+        9
+      )
+      expect(hola.rotation).toBeCloseToAngle(deg(330), 9)
+      expect(hola.justify).toBe("left")
+      expect(adios.position).toBeCloseToPoint(
+        p(measureTextWidth("Adios", 5) - 50, 40),
+        9
+      )
+      expect(adios.position.x).toBeCloseTo(-32.527, 1)
+      expect(adios.rotation).toBeCloseToAngle(0, 9)
+      expect(adios.justify).toBe("right")
+      expect(mtext.position).toBeCloseToPoint(p(-10, 80), 9)
+      expect(mtext.attachment).toBe("tr")
+      expect(mtext.rotation).toBeCloseToAngle(0, 9)
+      expect(cad.entityCount).toBe(erase === "_Y" ? 3 : 6)
+    }
+  )
+
+  // probes transforms/p235 (`@`), p236 (the first point again): `Points must
+  // be distinct.` and the command ends; p248: U names MIRROR.
+  it.each([["@"], ["0,0"]])(
+    "ends at a mirror line of no length (%s), saying so",
+    (second) => {
+      const cad = createHarness({
+        entities: [lineOf(p(0, 0), p(100, 0), { id: "A" })],
+      })
+      answer(cad, "_MIRROR", "_L", "", "0,0", second)
+      expect(cad.commandLog().slice(-2)).toEqual([
+        `Specify second point of mirror line: ${second}`,
+        "Points must be distinct.",
+      ])
+      expect(cad.activeToolId()).toBe("select")
+      expect(cad.entityCount).toBe(1)
+      answer(cad, "_U")
+      expect(cad.commandLog().at(-1)).toBe("MIRROR")
+      expect(cad.entityCount).toBe(1)
+    }
+  )
+
+  it("says a mirror line of no length in Spanish", () => {
+    const cad = createHarness({
+      locale: es,
+      entities: [lineOf(p(0, 0), p(100, 0), { id: "A" })],
+    })
+    answer(cad, "_MIRROR", "_L", "", "0,0", "@")
+    expect(cad.commandLog().at(-1)).toBe("Los puntos tienen que ser distintos.")
+  })
+
+  // probe transforms/p284: B picked before A, A's copy is appended first, so
+  // ERASE Last takes B's.
+  it("adds its copies in drawing order, whatever the pick order", () => {
+    const cad = createHarness({
+      entities: [
+        lineOf(p(0, 0), p(100, 0), { id: "A" }),
+        lineOf(p(0, 50), p(100, 50), { id: "B" }),
+      ],
+    })
+    answer(cad, "_MIRROR", "50,50", "50,0", "", "0,0", "0,10", "_N")
+    expect(
+      linesOf(cad.entities())
+        .slice(2)
+        .map((line) => line.start.y)
+    ).toEqual([0, 50])
+
+    answer(cad, "_ERASE", "_L", "")
+    expect(linesOf(cad.entities()).map((line) => line.start.y)).toEqual([
+      0, 50, 0,
+    ])
+  })
+
+  // probes transforms/p246 (No), p247 (Yes): U names MIRROR and takes back
+  // only it.
+  it.each([["_N"], ["_Y"]])("is one step for U, Erase %s", (erase) => {
+    const cad = createHarness({
+      entities: [
+        lineOf(p(0, 0), p(100, 0), { id: "A" }),
+        lineOf(p(0, 50), p(100, 50), { id: "B" }),
+      ],
+    })
+    answer(cad, "_MIRROR", "_L", "", "0,0", "0,10", erase, "_U")
+    expect(cad.commandLog().at(-1)).toBe("MIRROR")
+    expect(cad.entityCount).toBe(2)
+    expect(cad.byId<LineEntity>("B").end).toBeCloseToPoint(p(100, 50))
+  })
+
+  // probe transforms/p242: `_END` and `_MID` typed at the mirror line's points.
+  it("takes object snaps typed at the mirror line's points", () => {
+    const cad = createHarness({
+      snap: true,
+      entities: [
+        lineOf(p(0, 0), p(100, 0), { id: "A" }),
+        lineOf(p(0, 50), p(0, 150), { id: "B" }),
+      ],
+    })
+    answer(cad, "_MIRROR", "50,0", "", "_END", "1,51", "_MID", "1,100", "_N")
+    const copy = cad.latest() as LineEntity
+    expect(copy.start).toBeCloseToPoint(p(0, 0), 9)
+    expect(copy.end).toBeCloseToPoint(p(-100, 0), 9)
+  })
+
+  // probe transforms/p238: a number at the second point runs from the first
+  // towards the console's cursor; the copy ends at (95.794, 28.6968).
+  it("reads a number at the second point as a direct distance", () => {
+    const cad = createHarness({
+      entities: [lineOf(p(0, 0), p(100, 0), { id: "A" })],
+    })
+    cad.moveTo(CONSOLE_CURSOR)
+    answer(cad, "_MIRROR", "_L", "", "0,0", "10", "_N")
+    expect((cad.latest() as LineEntity).end).toBeCloseToPoint(
+      p(95.794, 28.6968),
+      3
+    )
+  })
+
+  // probe transforms/p231: Spanish `S` is Sí, the originals erased.
+  it("erases the source at the Spanish S", () => {
+    const cad = createHarness({
+      locale: es,
+      entities: [lineOf(p(0, 0), p(100, 0), { id: "A" })],
+    })
+    answer(cad, "_MIRROR", "_L", "", "0,0", "0,10", "S")
+    expect(cad.entityCount).toBe(1)
+    expect(cad.byId<LineEntity>("A").end).toBeCloseToPoint(p(-100, 0))
   })
 })
 
