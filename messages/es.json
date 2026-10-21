@@ -379,9 +379,7 @@
       "cancel": "Cancelar"
     },
     "SnapOverride": {
-      "point": "Punto",
       "from": "Desde",
-      "objectSnap": "Referencia a objetos",
       "none": "Ninguno"
     },
     "SelectionCycling": {
@@ -399,7 +397,7 @@
       "properties": "Propiedades",
       "enter": "Intro",
       "cancel": "Cancelar",
-      "snapOverrides": "Modificaciones de referencias"
+      "snapOverrides": "Modificaciones de REFENT"
     },
     "Layers": {
       "title": "Capas",

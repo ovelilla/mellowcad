@@ -11,7 +11,6 @@ import {
 } from "../input/coordinateInput"
 import { TrackingResult } from "../tracking/types"
 import { ScenePrimitive } from "../../scene/types"
-import { THEME } from "../../scene/theme"
 import {
   KeyInput,
   PointerInput,
@@ -23,6 +22,7 @@ import { CommandOption, CommandOptionOutcome } from "./Tool"
 import type { PromptId } from "../../locales/types"
 import { continuePoint } from "./lastDrawnPoint"
 import {
+  currentColor,
   withCurrentProperties,
   withCurrentThickness,
 } from "./currentProperties"
@@ -426,7 +426,9 @@ export class LineTool implements Tool {
         kind: "segment",
         a: viewport.worldToScreen(from),
         b: viewport.worldToScreen(to),
-        stroke: { color: THEME.rubberBand, width: 1 },
+        // The line about to be drawn, in its colour: red with CECOLOR 1
+        // (desktop d04).
+        stroke: { color: currentColor(ctx), width: 1 },
       },
     ]
   }

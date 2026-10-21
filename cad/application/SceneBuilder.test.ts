@@ -152,17 +152,21 @@ describe("appearance resolution", () => {
     expect(strokes(cad.scene().primitives, "#00ff00")).toHaveLength(1)
   })
 
-  it("highlights the selection instead of its normal colour", () => {
+  // desktop d15: a selected line keeps its colour and glows blue over it.
+  it("lays the selection's glow over the object in its own colour", () => {
     const cad = createHarness({
       entities: [lineOf(p(0, 0), p(100, 0), { id: "L1" })],
     })
 
     cad.select("L1")
 
-    expect(
-      strokes(cad.scene().primitives, THEME.selected).length
-    ).toBeGreaterThan(0)
-    expect(strokes(cad.scene().primitives, THEME.entity)).toHaveLength(0)
+    const scene = cad.scene().primitives
+    expect(strokes(scene, THEME.entity)).toHaveLength(1)
+    const glow = strokes(scene, THEME.selected)
+    expect(glow).toHaveLength(1)
+    expect(scene.indexOf(glow[0])).toBeGreaterThan(
+      scene.indexOf(strokes(scene, THEME.entity)[0])
+    )
   })
 
   it("dashes a line whose linetype is not continuous", () => {
@@ -389,6 +393,67 @@ describe("frame composition", () => {
 
     cad.runtime.pointerLeave()
     expect(strokes(cad.scene().primitives, THEME.crosshair)).toHaveLength(0)
+  })
+
+  // desktop d03, d05, d20: CURSORSIZE 5's short crosshair; the pick box at
+  // `Command:`, none at a point prompt.
+  it("draws the pick box at Command: and none at a point prompt", () => {
+    const pickBoxes = (cad: ReturnType<typeof createHarness>) =>
+      cad
+        .scene()
+        .primitives.filter(
+          (primitive) =>
+            primitive.kind === "rect" &&
+            primitive.stroke?.color === THEME.crosshair
+        ).length
+    const cad = createHarness({ width: 1000, height: 800 })
+
+    cad.moveTo(p(10, 10))
+    expect(pickBoxes(cad)).toBe(1)
+    const arm = strokes(cad.scene().primitives, THEME.crosshair).find(
+      (primitive) => primitive.kind === "segment"
+    )
+    expect(arm?.kind === "segment" && Math.abs(arm.b.x - arm.a.x)).toBe(50)
+
+    cad.command("LINE").moveTo(p(20, 10))
+    expect(pickBoxes(cad)).toBe(0)
+  })
+
+  // desktop d05, d11, d21: the snap's name sits below and to the right of
+  // the cursor, where the dynamic input's box would; the box goes under it.
+  it("puts the snap's name below and right of the cursor, the box under it", () => {
+    const cad = createHarness({
+      entities: [lineOf(p(0, 0), p(100, 0))],
+      snap: true,
+    })
+
+    cad.command("LINE").moveTo(p(98, 3))
+    const cursor = cad.runtime.viewport.worldToScreen(p(100, 0))
+    const name = cad
+      .scene()
+      .primitives.find(
+        (primitive) =>
+          primitive.kind === "label" && primitive.text === "Endpoint"
+      )
+    expect(name?.kind).toBe("label")
+    if (name?.kind !== "label") return
+    expect(name.at.x).toBeGreaterThan(cursor.x + 15)
+    expect(name.at.y).toBeGreaterThan(cursor.y + 15)
+    expect(cad.state().dynamicInput?.clearance).toBe(22)
+
+    cad.moveTo(p(50, 50))
+    expect(cad.state().dynamicInput?.clearance).toBe(0)
+  })
+
+  // desktop d12: Polar's path runs dashed from the base point out of the view.
+  it("draws Polar's path from the base point outward", () => {
+    const cad = createHarness({ polar: true })
+
+    cad.command("LINE").click(p(0, 0)).moveTo(p(60, 2))
+    const anchor = cad.runtime.viewport.worldToScreen(p(0, 0))
+    const path = strokes(cad.scene().primitives, THEME.polar)
+    expect(path).toHaveLength(1)
+    expect(path[0].kind === "segment" && path[0].a).toBeCloseToPoint(anchor)
   })
 
   it("includes the active tool's preview while a command is running", () => {

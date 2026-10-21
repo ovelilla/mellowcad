@@ -124,7 +124,7 @@ describe("a host's words over a shipped language", () => {
     cad.command("LN").escape().command("DF")
     expect(cad.commandLog().slice(1)).toEqual([
       "LN LINEA",
-      "Precise primer punto: *Cancelar*",
+      "Precise primer punto: *Cancelado*",
       "DF DESFASE",
       "Parámetros actuales: Borrar origen=No  Capa=Origen  OFFSETGAPTYPE=0",
     ])

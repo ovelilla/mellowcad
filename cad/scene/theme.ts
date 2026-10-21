@@ -13,23 +13,28 @@ export const THEME = {
   ucsIconY: "#4ade80",
   entity: "#e2e8f0",
   entityHover: "#cbd5e1",
-  selected: "#f59e0b",
+  /**
+   * The selection's glow, laid over the object as AutoCAD's selection effect
+   * does: blue at the edges, the object's colour paled beneath (desktop d15).
+   */
+  selected: "rgba(59, 130, 246, 0.45)",
   /** Cold selection grip (unselected handle) — AutoCAD's blue square. */
   grip: "#3b82f6",
   /** Hot grip currently being dragged — AutoCAD's red square. */
   gripHot: "#ef4444",
-  snap: "#22d3ee",
-  /** OSNAP tooltip (the little name that appears beside the marker). */
-  snapTooltipBg: "rgba(15, 23, 42, 0.9)",
-  snapTooltipBorder: "rgba(34, 211, 238, 0.35)",
-  snapTooltipText: "#e2e8f0",
-  /** Full-screen magnetic crosshair drawn in place of the OS cursor. */
-  crosshair: "rgba(148, 163, 184, 0.45)",
-  tracking: "rgba(167, 139, 250, 0.9)",
-  trackingSolid: "#a78bfa",
-  /** Polar tracking vector + tooltip border (AutoCAD's POLAR), a green hue. */
-  polar: "rgba(74, 222, 128, 0.9)",
-  polarTooltipBorder: "rgba(74, 222, 128, 0.35)",
+  /** The AutoSnap marker, AutoCAD's green as its dark theme draws it (desktop d05, d21). */
+  snap: "#00a500",
+  /** The cursor's tooltips (a snap's name, Polar's reading): AutoCAD's light grey box. */
+  snapTooltipBg: "#999999",
+  snapTooltipBorder: "#000000",
+  snapTooltipText: "#000000",
+  /** The crosshair drawn in place of the OS cursor, and the tracked point's ✕. */
+  crosshair: "#e4e5e6",
+  /** OTRACK's paths and acquired points, green as Polar's (desktop d13). */
+  tracking: "#049606",
+  trackingSolid: "#049606",
+  /** Polar tracking's path (desktop d12). */
+  polar: "#049606",
   /**
    * The rubber-band line drawn from the last point to the cursor while a draw
    * command is active. AutoCAD renders this in the object/layer colour as a

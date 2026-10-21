@@ -5,7 +5,8 @@
 **Implemented:** Endpoint, Midpoint, Center, Quadrant, Intersection, Extension, Insertion,
 Perpendicular, Tangent, Nearest, Apparent Intersection, Parallel; AutoCAD's running set (OSMODE
 4133: Endpoint, Center, Intersection, Extension); the snap nearest the cursor wins ("a point closest
-to the center of the aperture box"): a point under the aperture, then the one already held (the
+to the center of the aperture box"): a point under the aperture (APERTURE 10: Endpoint engages 10 px
+from its point and not at 11, desktop line/d25), then the one already held within 13 px (the
 magnet), then Extension or Parallel, then Nearest, then Center, Perpendicular or Tangent of any
 object the aperture crosses, however far (the centre from the rim: "the cursor must pass over the
 circumference"), and under an override any snap of the object picked — the crosshair stays on the
@@ -18,8 +19,12 @@ band; Extension prolongs a line, an arc or an open polyline's straight end from 
 passed over (the + marker, OTRACK off too), dashed from that end, a typed distance running along it
 from the end; running Apparent Intersection is the visual crossing of two objects at different
 heights; Perpendicular to lines (past their ends), circles, arcs and polyline segments; Tangent to
-circles, arcs and polyline arcs; Center and Quadrant of polyline arcs; the tooltip above the cursor
-— WHY: the dynamic-input box sits below and to the right of it; F3 turns object snapping on and off,
+circles, arcs and polyline arcs; Center and Quadrant of polyline arcs; the markers as AutoCAD's dark
+theme draws them, green, 14 px with a 2 px stroke (square, triangle, circle with a cross, diamond,
+✕, right angle, circle with a bar, hourglass; desktop line/d05, d21); the snap's name in a light grey
+box below and to the right of the cursor (d05, d21), with Polar's reading under it, and the
+dynamic-input box under both — WHY: AutoCAD puts its dynamic-input box in that same place (d11);
+which gives way with both showing is **unverified**; F3 turns object snapping on and off,
 writing `Command:  <Osnap on>` / ` <Osnap off>` (es ` <Refent activado>` / ` <Refent desactivado>`;
 tables 33112, 33113, desktop passes line/d10, d27)
 
@@ -27,7 +32,8 @@ tables 33112, 33113, desktop passes line/d10, d27)
 Endpoint), deferred Perpendicular and Tangent at the first point of a command other than LINE,
 Perpendicular and Tangent on ellipses and splines, extended Intersection and extended Apparent
 Intersection (picked object by object, as an override), Extension from a polyline's arc end, the
-tooltip's distance and angle (`Extension: 12.00 < 0°`), per-entity opt-in still required for every
+tooltip's distance and angle (`Extension: 12.00 < 0°`), the snapped object's blue glow while Tab
+cycles (d26), APERTURE and AUTOSNAP's settings as variables, per-entity opt-in still required for every
 new entity type (OSOPTIONS-like, deliberate), Intersection between objects in different planes,
 OSMODE as a variable (`'OSMODE`; SETVAR, roadmap row 24), the F-keys' echo inside a command (after
 the prompt asking, `Specify next point or [Undo]:  <Ortho on>`, which stays: **unverified**, the
@@ -37,7 +43,10 @@ here: **unverified** whether AutoCAD's do)
 ### Object snap overrides
 
 **Implemented:** Shift + right-click at a point prompt (on the press), one-shot override: FROM
-and the object snaps, the same entries as the Command menu's Snap Overrides; typed at any point
+and the object snaps in AutoCAD's order and groups for what exists (desktop line/d06): From ·
+Endpoint, Midpoint, Intersection, Apparent Intersection, Extension · Center, Quadrant, Tangent ·
+Perpendicular, Parallel, Insertion, Nearest, None — the same entries as the Command menu's Snap
+Overrides; typed at any point
 prompt, in the box or at the command line, by -OSNAP's words (END, MID, CEN, QUA, INT, EXT, INS,
 PER, TAN, NEA, APP or APPINT, PAR, NON; es FIN, MED, CEN, CUA, INT, EXT, INS, PER, TAN, CER, APP,
 PAR, NIN) or `_` and the global word in any language (`_ENDP`, `_NEAR`, `_APPINT`: 2027 declares
@@ -66,7 +75,9 @@ LINE's Continue at its first point, its end at the next, LASTPOINT left at the b
 line/p34, p154, p164, p211). At `Command:` FROM is an unknown command (p211). Escape at its prompts
 leaves FROM only (**unverified**).
 
-**Missing:** M2P / MTP, TT (the temporary tracking point), the temporary override keys (Shift+A,
+**Missing:** in the menu, Temporary track point, Mid Between 2 Points, Point Filters ▸, 3D Osnap ▸,
+Geometric Center, Node and Osnap Settings… (none built), and its icons; M2P / MTP, TT (the temporary
+tracking point), the temporary override keys (Shift+A,
 Shift+Q, Shift+E…: TEMPOVERRIDES), INT and APPINT on one object asking ` and ` for the second
 (p156, p211; here that pick finds nothing and is refused)
 
@@ -95,7 +106,9 @@ increment ("By default, object snap tracking is set to orthogonal"), the crossin
 / `-Z` guide too (**unverified** that AutoCAD offers it: the help names it for POLARMODE, which also
 governs OTRACK), measured on the screen, a crossing with it taken where it is drawn, on the Z guide,
 and a typed offset running up it; off the plan every guide is measured where it is drawn, at its
-point's height, and two guides cross where they are drawn crossing, on the first
+point's height, and two guides cross where they are drawn crossing, on the first; drawn as
+AutoCAD's dark theme draws it (desktop line/d13): an acquired point a small green `+`, the guide
+green and dashed as Polar's, the point it gives a small ✕
 
 **Missing:** the label of the tracking path (none here, in plan either), tracking with every polar
 angle (POLARMODE), a typed distance along a guide at a later point measured from the acquired point
@@ -110,7 +123,9 @@ axis (the status bar's menu offers POLARANG's 90,
 60, 45, 30, 22.5, 18, 15, 10 and 5, and choosing one turns Polar on), guides, mutually exclusive
 with Ortho, Shift override; in a 3D view the `+Z` / `-Z` guide along the UCS's Z, engaged within the
 same 12 px measured on the screen, the guide drawn nearer the cursor winning against a polar angle,
-the Z on a tie (**unverified** rule); readout `Polar: 50.00mm < +Z` (**unverified** wording)
+the Z on a tie (**unverified** rule); readout `Polar: 50.00mm < +Z` (**unverified** wording); the
+path dashed green from the base point out of the view, a small ✕ on the point, the reading in a
+light grey box below and to the right of the cursor (desktop line/d12)
 
 **Missing:** additional angles list, "track using all polar angles", POLARANG, POLARMODE and
 TRACKPATH as variables (SETVAR, roadmap row 24), the plane's angles measured in plan off the plan
@@ -201,7 +216,8 @@ status bar by default"), and there is no other readout of the cursor here; Custo
 
 ### Selection cycling
 
-**Implemented:** badge, Shift+Space, selection list box
+**Implemented:** badge, Shift+Space, selection list box, the candidate offered glowing blue as a
+selection does
 
 **Missing:** placement options, subobject filtering, type icons in the list, LEGACYCTRLPICK
 
@@ -214,12 +230,20 @@ finds, or removes it with Shift held at either corner; a click on nothing never 
 Escape drops a window under way, and with none the selection; Shift held shows a minus badge beside
 the crosshair, here and at a prompt that takes a set (`Select objects:`), never at a single object's
 pick where Shift means something else (TRIM's extend) — **unverified** beyond users' reports:
-Autodesk's help does not describe it
+Autodesk's help does not describe it; a selected object keeps its colour and glows blue (the
+selection effect, desktop line/d15); the crosshair is CURSORSIZE 5's, 5 % of the screen end to end
+(here of the canvas's longer side), with the pick box at `Command:` and wherever objects are picked,
+none at a point prompt (d03, d20); the rollover tooltip (ROLLOVERTIPS 1): an object hovered at
+`Command:` names its type, Color, Layer and Linetype below and to the right of where the cursor came
+over it (es `Línea`, `Color PorCapa`, `Capa 0`, `Tipo de línea PorCapa`, d20), after half a second
+(**unverified** delay), in the editor's popover style
 
 **Missing:** the command line's `Specify opposite corner or [Fence/WPolygon/CPolygon]:` and its
 lasso options; PICKADD, PICKAUTO and PICKDRAG as variables, and the Properties palette's Toggle
 PICKADD; CURSORBADGE and the other cursor badges (MOVE's, COPY's…); whether a `+` badge shows with
-PICKADD 0 (**unverified**)
+PICKADD 0 (**unverified**); the crosshair hidden at `Select objects:` (AutoCAD shows the pick box
+alone there, **unverified**); the rollover tooltip on a selected object, its other rows (QPMODE's
+properties per type, CUI's Rollover Tooltips), ROLLOVERTIPS and CURSORSIZE as variables
 
 ### Grips
 
@@ -227,8 +251,10 @@ PICKADD 0 (**unverified**)
 multi-select move, MTEXT width, magnetism with capture/release hysteresis; a grip drags to a point
 like a click (the elevation plane, or the object's Z under a snap, or its own Z for a typed
 distance): a line's end takes that Z, a move grip moves by it from its object's Z, every other grip
-stays in its object's plane
+stays in its object's plane; blue squares 9 px across (GRIPSIZE's default), the one under the cursor
+red (d15)
 
-**Missing:** Enter (and Space) cycling the grip modes — Enter keeps the edit hot,
+**Missing:** the hover colour apart from the dragged one (AutoCAD's hovered grip is pink, GRIPHOVER
+11, the dragged one red), Enter (and Space) cycling the grip modes — Enter keeps the edit hot,
 Ortho/tracking-aware radius and angle drag, insert vertex on an arc segment, any grip but move on a
 tilted object (it keeps only its move grips)

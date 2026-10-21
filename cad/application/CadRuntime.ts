@@ -127,16 +127,18 @@ import {
 import { PointResolver } from "./PointResolver"
 import { shareStructure } from "./shareStructure"
 import { AutosaveService } from "./Autosave"
-import { buildScene, PolarGuideInput } from "./SceneBuilder"
+import { buildScene, CURSOR_TOOLTIP_ROW, PolarGuideInput } from "./SceneBuilder"
 import {
   buildBlockInfos,
   buildDimStyleInfos,
   buildDynamicInputUi,
   buildLayerInfos,
+  buildRolloverUi,
   buildSelectionCandidates,
   buildTextStyleInfos,
   CommandOptionUi,
   EngineState,
+  RolloverUi,
   PaletteTab,
   SelectionScope,
   ShortcutMenuAction,
@@ -243,6 +245,13 @@ const WHEEL_BURST_MS = 400
 
 /** Movement past this (screen px) makes a press a drag rather than a click. */
 const DRAG_THRESHOLD_PX = 4
+
+/**
+ * How far from the cursor a pick finds an object (screen px). WHY not the
+ * snap aperture: AutoCAD's pick box is PICKBOX, its own variable, and
+ * APERTURE (10) grew past it.
+ */
+const PICK_TOLERANCE_PX = 8
 
 /**
  * Two clicks of the wheel button closer than this are a double-click. WHY a
@@ -492,6 +501,8 @@ export class CadRuntime extends Observable {
   // The click deferred while the Selection list box asks which of the
   // overlapping objects was meant; replayed once one is chosen.
   private cyclingList: PointerEventData | null = null
+  /** The object the rollover tooltip describes, and where it came up. */
+  private rollover: { readonly id: EntityId; readonly at: Vec2 } | null = null
   // A press held back because it may become that click (see pointerUp).
   private cyclingPress: PointerEventData | null = null
 
@@ -583,7 +594,7 @@ export class CadRuntime extends Observable {
       undoTo: (depth) => this.undoTo(depth),
       undoHistory: this.undoHistory,
       pickTolerance: () =>
-        this.viewport.screenToWorldDistance(this.snapping.pixelTolerance),
+        this.viewport.screenToWorldDistance(PICK_TOLERANCE_PX),
       requestRender: () => this.host.requestRender(),
       setCursor: (cursor) => {
         this.toolCursor = cursor
@@ -899,7 +910,29 @@ export class CadRuntime extends Observable {
     this.tools.set(tool.id, tool)
   }
 
+  /**
+   * Starts `id` as a button does. Its command is echoed as AutoCAD's ribbon
+   * macro `^C^C_line` echoes it, `Command: _line` (desktop d19).
+   */
   setActiveTool(id: string): void {
+    const next = this.tools.get(id)
+    if (next === undefined || id === "select" || next === this.activeTool) {
+      this.switchTool(id)
+      return
+    }
+    this.echoMark = this.commandLine.mark()
+    this.commandLine.write(
+      "command",
+      `_${(TOOL_COMMANDS[id] ?? id).toLowerCase()}`
+    )
+    try {
+      this.switchTool(id)
+    } finally {
+      this.echoMark = null
+    }
+  }
+
+  private switchTool(id: string): void {
     this.optionList = null
     if (this.suspended !== null) {
       // Ending a transparent command resumes the one it interrupted; starting
@@ -1086,7 +1119,7 @@ export class CadRuntime extends Observable {
    * box drag or grip edit keeps you in Select).
    */
   private returnToNeutralTool(): void {
-    this.setActiveTool("select")
+    this.switchTool("select")
   }
 
   /**
@@ -1113,7 +1146,7 @@ export class CadRuntime extends Observable {
    */
   private startTool(id: string): void {
     if (this.activeTool.id === id) this.returnToNeutralTool()
-    this.setActiveTool(id)
+    this.switchTool(id)
   }
 
   /** Replaces the text at the command prompt (typed on the canvas or the box). */
@@ -3048,8 +3081,7 @@ export class CadRuntime extends Observable {
    */
   private pickEntity(world: Vec2, tolerance?: number): Entity | null {
     const worldTolerance =
-      tolerance ??
-      this.viewport.screenToWorldDistance(this.snapping.pixelTolerance)
+      tolerance ?? this.viewport.screenToWorldDistance(PICK_TOLERANCE_PX)
     const hits = this.pickAllAt(world, worldTolerance)
     return this.cycling.isEnabled()
       ? this.cycling.choose(hits)
@@ -3121,9 +3153,7 @@ export class CadRuntime extends Observable {
       this.cycling.clear()
       return
     }
-    const tolerance = this.viewport.screenToWorldDistance(
-      this.snapping.pixelTolerance
-    )
+    const tolerance = this.viewport.screenToWorldDistance(PICK_TOLERANCE_PX)
     this.cycling.observe(this.pickAllAt(this.cursorWorld, tolerance))
   }
 
@@ -3525,7 +3555,7 @@ export class CadRuntime extends Observable {
     }
     this.resetTracking()
     this.snapping.clearOverride()
-    this.answering(this.text.message("cancel"), () => {
+    this.answering(this.text.message("commandCancelled"), () => {
       this.clarifying = null
       this.activeTool.onKeyDown?.(plainKey("Escape"), this.toolContext)
       this.returnToNeutralTool()
@@ -3973,7 +4003,9 @@ export class CadRuntime extends Observable {
         ...(this.activeTool.buildOverlay?.(this.toolContext) ?? []),
         ...this.measuringOverlay(),
       ],
-      cursor: this.crosshairScreen ? { screen: this.crosshairScreen } : null,
+      cursor: this.crosshairScreen
+        ? { screen: this.crosshairScreen, pickbox: !this.wantsPoint() }
+        : null,
       polar: this.buildPolarGuide(),
       fromBase: this.fromBase,
       cyclingBadge: this.cycling.hasStack() ? this.crosshairScreen : null,
@@ -4010,6 +4042,27 @@ export class CadRuntime extends Observable {
    * hovering a stack merely shows the badge, as in AutoCAD, and the tool's own
    * rollover preview keeps answering which object a click would take.
    */
+  /** The rollover tooltip, while its object is still the one hovered at `Command:`. */
+  private rolloverUi(): RolloverUi | null {
+    const rollover = this.rollover
+    if (
+      rollover === null ||
+      this.suspended !== null ||
+      this.activeTool.rolloverEntityId?.() !== rollover.id
+    ) {
+      return null
+    }
+    const entity = this.document.get(rollover.id)
+    return entity
+      ? buildRolloverUi(
+          entity,
+          rollover.at,
+          this.document.getLayers(),
+          this.text
+        )
+      : null
+  }
+
   private cyclingHighlight(): Entity | null {
     if (this.cyclingList === null) return null
     const id = this.cycling.getCurrentId()
@@ -4249,7 +4302,26 @@ export class CadRuntime extends Observable {
     const input = this.buildPointerInput(e)
     this.activeTool.onPointerMove?.(input, this.toolContext)
     this.measureMove(input.point)
+    this.observeRollover()
     this.host.requestRender()
+  }
+
+  /**
+   * Notes the object the rollover tooltip describes, and where the cursor
+   * stood as it came over it: the tooltip stays there while the cursor moves
+   * on the same object.
+   */
+  private observeRollover(): void {
+    const id =
+      this.suspended === null
+        ? (this.activeTool.rolloverEntityId?.() ?? null)
+        : null
+    if (id === (this.rollover?.id ?? null)) return
+    this.rollover =
+      id === null || this.crosshairScreen === null
+        ? null
+        : { id, at: this.crosshairScreen }
+    this.invalidateState()
   }
 
   /**
@@ -4351,14 +4423,14 @@ export class CadRuntime extends Observable {
     if (this.activeTool.id !== "select") return false
     const hit = this.pickEntity(this.screenToWork(e.screen))
     if (hit?.type === "insert" && (hit.attributes?.length ?? 0) > 0) {
-      this.setActiveTool(this.attEdit.id)
+      this.switchTool(this.attEdit.id)
       this.attEdit.beginEdit(hit, this.toolContext)
     } else if (
       hit?.type === "text" ||
       hit?.type === "mtext" ||
       hit?.type === "attdef"
     ) {
-      this.setActiveTool(this.textEdit.id)
+      this.switchTool(this.textEdit.id)
       this.textEdit.beginEdit(hit, this.toolContext)
     } else {
       return false
@@ -4369,6 +4441,7 @@ export class CadRuntime extends Observable {
   }
 
   pointerLeave(): void {
+    this.rollover = null
     this.currentSnap = null
     this.cursorWorld = null
     this.crosshairScreen = null
@@ -4704,15 +4777,22 @@ export class CadRuntime extends Observable {
       return true
     }
     if (key === "Enter" || key === "Escape") {
+      const atRest = this.currentPrompt().command === null
       let consumed = false
       this.answering(
-        key === "Escape" ? this.text.message("cancel") : "",
+        key === "Escape" ? this.text.message("commandCancelled") : "",
         () => {
           this.clarifying = null
           consumed = this.endKey({ ...e, key })
           return true
         }
       )
+      // `Command: *Cancel*` at rest, where es writes `*Cancelar*`, and
+      // `*Cancelado*` inside a command (desktop d08, d19, d27).
+      if (key === "Escape" && atRest) {
+        this.commandLine.write("command", this.text.message("cancel"))
+        this.invalidateState()
+      }
       return consumed
     }
     this.activeTool.onKeyDown?.(e, this.toolContext)
@@ -5168,6 +5248,7 @@ export class CadRuntime extends Observable {
       polarAngleStep: this.constraints.getPolarAngleStep(),
       objectSnapTrackingActive: this.tracking.isActive(),
       acquiredTrackingPoints: this.tracking.getAcquired().length,
+      rollover: this.rolloverUi(),
       selectionCycling: {
         active: this.cycling.isEnabled(),
         showList: this.cycling.showsList(),
@@ -5187,7 +5268,9 @@ export class CadRuntime extends Observable {
         this.dynamicInput,
         settings,
         this.text,
-        prompt.dynamic
+        prompt.dynamic,
+        ((this.currentSnap ? 1 : 0) + (this.buildPolarGuide() ? 1 : 0)) *
+          CURSOR_TOOLTIP_ROW
       ),
       documentUnit: settings.unit,
       documentPrecision: settings.precision,

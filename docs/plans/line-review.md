@@ -934,3 +934,4 @@ every object snap three ways and the modes in combination:
 | TRK | TRK-01 to TRK-03 | `399a448` |
 | RND | RND-01 to RND-03 | `5e4ba72` |
 | CPR | CPR-01 to CPR-03 | `7ba4cc2` |
+| DYN | DYN-01, DYN-02 | `4b15a28` |

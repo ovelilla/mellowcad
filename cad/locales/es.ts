@@ -1927,6 +1927,7 @@ export const es: EngineLocale = {
         "\" desconocido. Pulse F1 para obtener ayuda."
       ],
       "cancel": "*Cancelar*",
+      "commandCancelled": "*Cancelado*",
       "resumingCommand": [
         "Reanudando el comando ",
         [

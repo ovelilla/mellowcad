@@ -400,6 +400,53 @@ describe("selection properties", () => {
   })
 })
 
+// desktop d20: hovering a line at `Comando:` shows `Línea`, Color PorCapa,
+// Capa 0, Tipo de línea PorCapa (ROLLOVERTIPS 1).
+describe("rollover tooltip", () => {
+  it("describes the object under the cursor at Command:", () => {
+    const cad = createHarness({
+      locale: es,
+      entities: [lineOf(p(0, 0), p(100, 0), { id: "L1" })],
+    })
+
+    cad.moveTo(p(40, 1))
+    const rollover = cad.state().rollover
+    expect(rollover).toMatchObject({
+      id: "L1",
+      title: "Línea",
+      color: "PorCapa",
+      layer: "0",
+      linetype: "PorCapa",
+    })
+
+    cad.moveTo(p(60, 1))
+    expect(cad.state().rollover?.at).toEqual(rollover?.at)
+    cad.moveTo(p(40, 200))
+    expect(cad.state().rollover).toBeNull()
+  })
+
+  it("names an object's own colour and linetype, and none inside a command", () => {
+    const cad = createHarness({
+      entities: [
+        {
+          ...lineOf(p(0, 0), p(100, 0), { id: "L1" }),
+          color: "#ff0000",
+          linetype: "Dashed",
+        },
+      ],
+    })
+
+    cad.moveTo(p(40, 1))
+    expect(cad.state().rollover).toMatchObject({
+      color: "Red",
+      swatch: "#ff0000",
+      linetype: "Dashed",
+    })
+    cad.command("LINE").moveTo(p(50, 1))
+    expect(cad.state().rollover).toBeNull()
+  })
+})
+
 describe("document settings", () => {
   it("changes unit and precision", () => {
     const cad = createHarness()

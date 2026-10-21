@@ -665,6 +665,12 @@ export class SelectTool implements Tool {
     return null
   }
 
+  rolloverEntityId(): EntityId | null {
+    return this.state.phase === "idle"
+      ? (this.state.hoverEntityId ?? null)
+      : null
+  }
+
   buildOverlay(ctx: ToolContext): ScenePrimitive[] {
     const state = this.state
     switch (state.phase) {

@@ -1260,6 +1260,7 @@
     "messages": {
       "unknownCommand": "Unknown command \"{name}\".  Press F1 for help.",
       "cancel": "*Cancel*",
+      "commandCancelled": "*Cancel*",
       "resumingCommand": "Resuming {command} command.",
       "readOnlyVariable": "{name} = {value} (read only)",
       "notTransparent": "** That command may not be invoked transparently **",

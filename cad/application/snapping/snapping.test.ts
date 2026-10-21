@@ -45,6 +45,18 @@ describe("running object snaps", () => {
     expect(drawn.start).toBeCloseToPoint(p(100, 0))
   })
 
+  // desktop d25: APERTURE 10 engages Endpoint 10 px from it, not 11.
+  it("engages an endpoint within APERTURE's 10 px and not beyond", () => {
+    const at = (offset: number) => {
+      const cad = createHarness({ entities: [REFERENCE], snap: true })
+      cad.command("LINE").moveTo(p(100 + offset, 0))
+      return cad.state().snap?.point ?? null
+    }
+
+    expect(at(10)).toBeCloseToPoint(p(100, 0))
+    expect(at(11)).toBeNull()
+  })
+
   it("pulls a pick onto a midpoint", () => {
     const cad = createHarness({ entities: [REFERENCE], snap: true })
     cad.runtime.setSnapEnabled(SnapType.Midpoint, true)
@@ -305,17 +317,21 @@ describe("snapping through the object under the cursor", () => {
     cad.command("LINE").moveTo(p(280, 203))
 
     expect(cad.state().snap?.point).toBeCloseToPoint(p(200, 200))
-    // The crosshair's pick box, drawn where the crosshair is.
-    const box = cad
+    // The crosshair's horizontal line, centred where the crosshair is.
+    const arm = cad
       .scene()
       .primitives.find(
-        (s) => s.kind === "rect" && s.stroke?.color === THEME.crosshair
+        (s) =>
+          s.kind === "segment" &&
+          s.stroke.color === THEME.crosshair &&
+          s.a.y === s.b.y
       )
-    expect(box?.kind === "rect" && box.min).toBeTruthy()
-    if (box?.kind !== "rect") return
+    expect(arm?.kind).toBe("segment")
+    if (arm?.kind !== "segment") return
+    // Drawn through the middle of the cursor's pixel.
     const at = cad.runtime.viewport.screenToWorld({
-      x: box.min.x + box.width / 2,
-      y: box.min.y + box.height / 2,
+      x: (arm.a.x + arm.b.x) / 2 - 0.5,
+      y: arm.a.y - 0.5,
     })
     expect(at).toBeCloseToPoint(p(280, 203), 3)
   })

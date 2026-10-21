@@ -35,6 +35,8 @@ import {
   polylineSegmentGeometries,
   splinePolyline,
   TextJustify,
+  measureTextWidth,
+  TEXT_FONT_CAP_RATIO,
 } from "../domain/entities"
 import {
   DEFAULT_DIM_STYLE,
@@ -63,7 +65,7 @@ import {
   TextAlign,
   TextBaseline,
 } from "../scene/types"
-import { THEME } from "../scene/theme"
+import { DRAWING_FONT, THEME } from "../scene/theme"
 import {
   PlaneCamera,
   affineEllipse,
@@ -81,6 +83,11 @@ import { TrackingPoint, TrackingResult } from "./tracking/types"
  */
 export interface CrosshairInput {
   readonly screen: Vec2
+  /**
+   * Whether the pick box shows at its centre: at `Command:` and wherever an
+   * object is picked, not at a point prompt (desktop d03, d20).
+   */
+  readonly pickbox: boolean
 }
 
 /**
@@ -221,9 +228,7 @@ export function buildScene(input: SceneInput): Scene {
     input.entities,
     input.parallelReferenceIds
   )
-  if (input.polar) {
-    pushPolarGuide(primitives, aid, input.polar, input.snap !== null)
-  }
+  if (input.polar) pushPolarGuide(primitives, aid, input.polar)
   if (input.fromBase) {
     pushFromBase(primitives, aid.worldToScreen(input.fromBase), input.cursor)
   }
@@ -233,13 +238,13 @@ export function buildScene(input: SceneInput): Scene {
       ...entityScenePrimitive(
         camera,
         input.cyclingHighlight,
-        { color: THEME.selected, width: 2.5 },
+        { color: THEME.selected, width: GLOW_WIDTH },
         { blocks: input.blocks }
       )
     )
   }
   if (input.cursor) {
-    pushCrosshair(primitives, camera.width, camera.height, input.cursor.screen)
+    pushCrosshair(primitives, camera.width, camera.height, input.cursor)
   }
   if (input.cyclingBadge) pushCyclingBadge(primitives, input.cyclingBadge)
   if (input.removeBadge) {
@@ -247,18 +252,26 @@ export function buildScene(input: SceneInput): Scene {
   }
   if (input.tracking && !input.snap) {
     pushTrackedPointMarker(primitives, aid.worldToScreen(input.tracking.point))
+  } else if (input.polar && !input.snap) {
+    pushTrackedPointMarker(primitives, aid.worldToScreen(input.polar.point))
   }
-  if (input.snap) {
+  const marker = input.snap ? aid.worldToScreen(input.snap.point) : null
+  if (input.snap && marker) {
     if (input.snap.direction) {
       pushAlignmentGuide(primitives, aid, input.snap, input.snap.direction)
     }
     if (input.snap.path) pushSnapPath(primitives, aid, input.snap.path)
-    pushSnapMarker(
-      primitives,
-      aid.worldToScreen(input.snap.point),
-      input.snap,
-      input.snapLabel
-    )
+    pushSnapMarker(primitives, marker, input.snap)
+  }
+  const tooltipAt =
+    input.cursor?.screen ??
+    marker ??
+    (input.polar ? aid.worldToScreen(input.polar.point) : null)
+  if (tooltipAt) {
+    pushCursorTooltips(primitives, tooltipAt, [
+      ...(input.snap ? [input.snapLabel] : []),
+      ...(input.polar ? [input.polar.label] : []),
+    ])
   }
 
   return {
@@ -1370,10 +1383,8 @@ function pushEntities(
       camera.isPlan &&
       !isTilted(entity)
     const stroke: StrokeStyle = {
-      color: isSelected
-        ? THEME.selected
-        : (entity.color ?? layer?.color ?? DEFAULT_LAYER_COLOR),
-      width: widthFor(lineweight, lwDisplay && !wideInPlan, isSelected),
+      color: entity.color ?? layer?.color ?? DEFAULT_LAYER_COLOR,
+      width: widthFor(lineweight, lwDisplay && !wideInPlan),
       ...(dash ? { dash } : {}),
     }
     if (entity.type === "insert") {
@@ -1390,18 +1401,28 @@ function pushEntities(
       }
       return
     }
-    out.push(
-      ...entityScenePrimitive(camera, entity, stroke, {
-        fill: fillMode,
-        linetype: true,
-        dimStyle:
-          entity.type === "dimension"
-            ? (dimStyleById.get(entity.styleId) ??
-              dimStyleById.get(DEFAULT_DIM_STYLE_ID) ??
-              DEFAULT_DIM_STYLE)
-            : undefined,
-      })
-    )
+    const options = {
+      fill: fillMode,
+      linetype: true,
+      dimStyle:
+        entity.type === "dimension"
+          ? (dimStyleById.get(entity.styleId) ??
+            dimStyleById.get(DEFAULT_DIM_STYLE_ID) ??
+            DEFAULT_DIM_STYLE)
+          : undefined,
+    }
+    out.push(...entityScenePrimitive(camera, entity, stroke, options))
+    // AutoCAD's selection effect: the object as it is, glowing blue (d15).
+    if (isSelected) {
+      out.push(
+        ...entityScenePrimitive(
+          camera,
+          entity,
+          { color: THEME.selected, width: stroke.width + GLOW_WIDTH - 1 },
+          { ...options, linetype: false }
+        )
+      )
+    }
   }
 
   for (const entity of ordered) {
@@ -1413,20 +1434,17 @@ function pushEntities(
 /** The hairline width every entity gets before its lineweight is applied. */
 const HAIRLINE_WIDTH = 1.25
 
+/** How wide the selection's blue glow is drawn over a hairline (desktop d15: 5 px). */
+const GLOW_WIDTH = 5
+
 /**
  * The stroke width for an entity: its lineweight rendered at real thickness
- * when LWDISPLAY is on, hairline otherwise. Selected objects always get the
- * same extra weight on top, so selection stays legible at any lineweight.
+ * when LWDISPLAY is on, hairline otherwise.
  */
-function widthFor(
-  lineweight: Lineweight,
-  lwDisplay: boolean,
-  isSelected: boolean
-): number {
-  const width = lwDisplay
+function widthFor(lineweight: Lineweight, lwDisplay: boolean): number {
+  return lwDisplay
     ? lineweightPixels(lineweight, HAIRLINE_WIDTH)
     : HAIRLINE_WIDTH
-  return isSelected ? width + 0.75 : width
 }
 
 /**
@@ -1457,30 +1475,10 @@ function pushTracking(
 ): void {
   if (acquired.length === 0 && !tracking) return
 
-  // Acquired reference markers: a small hollow square with a plus inside.
-  const r = 4
-  const stroke: StrokeStyle = { color: THEME.trackingSolid, width: 1.25 }
+  // An acquired point is a small green plus (desktop d13).
+  const stroke: StrokeStyle = { color: THEME.trackingSolid, width: 1 }
   for (const p of acquired) {
-    const at = camera.worldToScreen(p.origin)
-    out.push({
-      kind: "rect",
-      min: { x: at.x - r, y: at.y - r },
-      width: r * 2,
-      height: r * 2,
-      stroke,
-    })
-    out.push({
-      kind: "segment",
-      a: { x: at.x - r, y: at.y },
-      b: { x: at.x + r, y: at.y },
-      stroke,
-    })
-    out.push({
-      kind: "segment",
-      a: { x: at.x, y: at.y - r },
-      b: { x: at.x, y: at.y + r },
-      stroke,
-    })
+    pushPlus(out, pixelCentre(camera.worldToScreen(p.origin)), 5, stroke)
   }
 
   // Active alignment guides: long dashed lines through the acquired point.
@@ -1488,8 +1486,8 @@ function pushTracking(
     const big = 1e6
     const guideStroke: StrokeStyle = {
       color: THEME.tracking,
-      width: 1.25,
-      dash: [7, 5],
+      width: 1,
+      dash: GUIDE_DASH,
     }
     for (const guide of tracking.guides) {
       if (guide.kind === "z") {
@@ -1582,55 +1580,41 @@ function pushFromBase(
       kind: "segment",
       a: c,
       b: cursor.screen,
-      stroke: { color: THEME.tracking, width: 1.25, dash: [7, 5] },
+      stroke: { color: THEME.tracking, width: 1, dash: GUIDE_DASH },
     })
   }
 }
 
 /**
- * Draws AutoCAD's polar tracking vector: a dashed alignment line through the
- * anchor along the locked polar angle, extended across the viewport, with a
- * "Polar: <dist> < <angle>°" chip beside the resolved point — over the snap's
- * tooltip when the point is a snap found on the path.
+ * Draws AutoCAD's polar tracking path: dashed from the anchor along the locked
+ * polar angle out of the view (desktop d12); its reading is a tooltip at the
+ * cursor.
  */
 function pushPolarGuide(
   out: ScenePrimitive[],
   camera: CameraTransform,
-  polar: PolarGuideInput,
-  aboveSnapTooltip: boolean
+  polar: PolarGuideInput
 ): void {
-  const at = camera.worldToScreen(polar.point)
-  const chipY = aboveSnapTooltip ? -54 : -30
+  const stroke: StrokeStyle = { color: THEME.polar, width: 1, dash: GUIDE_DASH }
   if (polar.alongZ) {
     out.push({
       kind: "segment",
       ...alongZOnScreen(camera, polar.origin),
-      stroke: { color: THEME.polar, width: 1, dash: [6, 6] },
+      stroke,
     })
-    pushChip(
-      out,
-      at.x + 12,
-      at.y + chipY,
-      polar.label,
-      THEME.polarTooltipBorder
-    )
     return
   }
   const d = V.sub(polar.point, polar.origin)
   const len = V.length(d)
   const dir = len > 1e-9 ? V.scale(d, 1 / len) : { x: 1, y: 0 }
-  const big = 1e6
   out.push({
     kind: "segment",
-    a: camera.worldToScreen(
-      withZOf(V.sub(polar.origin, V.scale(dir, big)), polar.origin)
-    ),
+    a: camera.worldToScreen(polar.origin),
     b: camera.worldToScreen(
-      withZOf(V.add(polar.origin, V.scale(dir, big)), polar.origin)
+      withZOf(V.add(polar.origin, V.scale(dir, 1e6)), polar.origin)
     ),
-    stroke: { color: THEME.polar, width: 1, dash: [6, 6] },
+    stroke,
   })
-  pushChip(out, at.x + 12, at.y + chipY, polar.label, THEME.polarTooltipBorder)
 }
 
 /** The UCS's Z through `origin` (in the frame `camera` reads), as a segment across the view. */
@@ -1648,25 +1632,21 @@ function alongZOnScreen(
 
 /**
  * Draws the AutoCAD-style crosshair in place of the OS cursor: two continuous
- * lines that cross at the cursor (no centre gap), sized as a percentage of the
- * viewport like AutoCAD's CURSORSIZE (default 5%), plus a small central pick
- * box (PICKBOX). It sits on the resolved point, so when a snap engages the
- * whole crosshair jumps onto the point and clings there — the visible half of
- * the "sticky" feel. Kept a constant, muted colour (AutoCAD's crosshair never
- * recolours on snap); the snap marker glyph is what signals the lock.
+ * lines that cross at the cursor (no centre gap), CURSORSIZE 5 (5 % of the
+ * screen end to end; the canvas's larger side stands in for the screen), with
+ * the pick box at its centre where one is wanted. It sits on the resolved
+ * point, so when a snap engages the whole crosshair jumps onto the point and
+ * clings there. Its colour never changes: the snap marker signals the lock.
  */
 function pushCrosshair(
   out: ScenePrimitive[],
   width: number,
   height: number,
-  at: Vec2
+  cursor: CrosshairInput
 ): void {
   const stroke: StrokeStyle = { color: THEME.crosshair, width: 1 }
-  // Snap the lines to the pixel grid (+0.5) so they render hairline-crisp.
-  const x = Math.round(at.x) + 0.5
-  const y = Math.round(at.y) + 0.5
-  // CURSORSIZE: 5% of the smaller viewport dimension, continuous through centre.
-  const arm = Math.max(24, Math.round(Math.min(width, height) * 0.05))
+  const { x, y } = pixelCentre(cursor.screen)
+  const arm = Math.max(12, Math.round(Math.max(width, height) * 0.025))
   out.push({
     kind: "segment",
     a: { x: x - arm, y },
@@ -1679,15 +1659,20 @@ function pushCrosshair(
     b: { x, y: y + arm },
     stroke,
   })
-  // Small central pick box (AutoCAD PICKBOX).
+  if (!cursor.pickbox) return
   const s = 4
   out.push({
     kind: "rect",
-    min: { x: at.x - s, y: at.y - s },
+    min: { x: x - s, y: y - s },
     width: s * 2,
     height: s * 2,
     stroke,
   })
+}
+
+/** A screen point moved to the centre of its pixel, where a 1 px line is crisp. */
+function pixelCentre(at: Vec2): Vec2 {
+  return { x: Math.round(at.x) + 0.5, y: Math.round(at.y) + 0.5 }
 }
 
 /**
@@ -1738,35 +1723,23 @@ function pushRemoveBadge(
   })
 }
 
-/** Highlights the point currently resolved along a tracking guide (diamond). */ function pushTrackedPointMarker(
-  out: ScenePrimitive[],
-  at: Vec2
-): void {
-  const s = 5
-  out.push({
-    kind: "path",
-    points: [
-      { x: at.x, y: at.y - s },
-      { x: at.x + s, y: at.y },
-      { x: at.x, y: at.y + s },
-      { x: at.x - s, y: at.y },
-    ],
-    closed: true,
-    stroke: { color: THEME.trackingSolid, width: 1.5 },
-  })
+/** The point a tracking path gives: a small ✕ in the crosshair's colour (desktop d12, d13). */
+function pushTrackedPointMarker(out: ScenePrimitive[], at: Vec2): void {
+  pushCross(out, pixelCentre(at), 6, { color: THEME.crosshair, width: 1 })
 }
 
+/**
+ * The AutoSnap marker of the snap's type, green, 14 px across with a 2 px
+ * stroke as AutoCAD's dark theme draws them (desktop d05, d21).
+ */
 function pushSnapMarker(
   out: ScenePrimitive[],
   at: Vec2,
-  snap: SnapResult,
-  label: string
+  snap: SnapResult
 ): void {
   const s = 6
-  // Pixel-snap the centre so the thin marker strokes render hairline-crisp
-  // instead of blurring across two rows of pixels (the "tosco" look).
-  const c = { x: Math.round(at.x) + 0.5, y: Math.round(at.y) + 0.5 }
-  const stroke: StrokeStyle = { color: THEME.snap, width: 1.5 }
+  const c = { x: Math.round(at.x), y: Math.round(at.y) }
+  const stroke: StrokeStyle = { color: THEME.snap, width: 2 }
 
   // Different glyphs for different snap types, like classic OSNAP markers.
   switch (snap.type) {
@@ -1793,6 +1766,7 @@ function pushSnapMarker(
       break
     case "center":
       out.push({ kind: "circle", center: c, radius: s, stroke })
+      pushPlus(out, pixelCentre(c), 4, { color: THEME.crosshair, width: 1 })
       break
     case "intersection":
       pushCross(out, c, s, stroke)
@@ -1810,7 +1784,7 @@ function pushSnapMarker(
       pushTangent(out, c, s, stroke)
       break
     case "quadrant":
-      pushDiamond(out, c, s, stroke)
+      pushDiamond(out, c, s + 2, stroke)
       break
     case "insertion":
       pushInsertion(out, c, s, stroke)
@@ -1827,8 +1801,6 @@ function pushSnapMarker(
     default:
       out.push({ kind: "circle", center: c, radius: s, stroke })
   }
-
-  pushSnapTooltip(out, c, s, label)
 }
 
 /** Two offset squares — the insertion-point marker. */
@@ -1993,7 +1965,7 @@ function pushAlignmentGuide(
     b: camera.worldToScreen(
       withZOf(V.add(snap.point, V.scale(direction, big)), snap.point)
     ),
-    stroke: { color: THEME.tracking, width: 1, dash: [7, 5] },
+    stroke: { color: THEME.tracking, width: 1, dash: GUIDE_DASH },
   })
 }
 
@@ -2007,7 +1979,7 @@ function pushSnapPath(
     kind: "path",
     points: path.map((point) => camera.worldToScreen(point)),
     closed: false,
-    stroke: { color: THEME.tracking, width: 1, dash: [7, 5] },
+    stroke: { color: THEME.tracking, width: 1, dash: GUIDE_DASH },
   })
 }
 
@@ -2049,51 +2021,64 @@ function pushParallelBars(
   }
 }
 
-/**
- * A compact tooltip beside the marker, AutoCAD-style: the snap name on a dark
- * rounded chip offset to the lower-right of the point, rather than raw text
- * jammed against the glyph.
- */
-function pushSnapTooltip(
-  out: ScenePrimitive[],
-  c: Vec2,
-  s: number,
-  text: string
-): void {
-  // WHY above, where AutoCAD puts it below: the dynamic-input box sits below
-  // and to the right of the cursor and would cover it.
-  pushChip(out, c.x + s + 8, c.y - s - 24, text, THEME.snapTooltipBorder)
-}
+/** The dashes of the tracking paths, Polar's and OTRACK's alike (desktop d12, d13). */
+const GUIDE_DASH = [4, 2]
 
 /**
- * A compact dark rounded chip with a single line of monospace text, drawn with
- * its top-left corner at (x, y). Shared by the OSNAP and polar tooltips.
+ * Where the cursor's tooltips start, below and to the right of it, and how
+ * far apart they stack (desktop d05, d12, d21).
  */
-function pushChip(
+const TOOLTIP_OFFSET: Vec2 = { x: 17, y: 18 }
+const TOOLTIP_HEIGHT = 20
+export const CURSOR_TOOLTIP_ROW = TOOLTIP_HEIGHT + 2
+const TOOLTIP_FONT_PX = 12
+
+/**
+ * The snap's name and Polar's reading, one under the other below and to the
+ * right of the cursor, as AutoCAD places each (desktop d05, d12, d21). WHY a
+ * stack: with dynamic input showing, AutoCAD's tooltip is there too (d11);
+ * the host starts the box under them (`DynamicInputUi.clearance`).
+ */
+function pushCursorTooltips(
+  out: ScenePrimitive[],
+  at: Vec2,
+  labels: readonly string[]
+): void {
+  const { x, y } = pixelCentre(at)
+  labels.forEach((label, row) => {
+    pushTooltip(
+      out,
+      x + TOOLTIP_OFFSET.x,
+      y + TOOLTIP_OFFSET.y + row * CURSOR_TOOLTIP_ROW,
+      label
+    )
+  })
+}
+
+/** A light grey box with a black edge and dark text, AutoCAD's tooltip on its dark theme. */
+function pushTooltip(
   out: ScenePrimitive[],
   x: number,
   y: number,
-  text: string,
-  borderColor: string
+  text: string
 ): void {
-  const padX = 6
-  const padY = 3
-  const charW = 6.4 // ~width of one 11px monospace glyph
-  const lineH = 14
-  const w = Math.ceil(text.length * charW) + padX * 2
+  const padX = 5
+  const width =
+    Math.ceil(measureTextWidth(text, TOOLTIP_FONT_PX * TEXT_FONT_CAP_RATIO)) +
+    padX * 2
   out.push({
     kind: "rect",
     min: { x, y },
-    width: w,
-    height: lineH + padY * 2,
+    width,
+    height: TOOLTIP_HEIGHT,
     fill: THEME.snapTooltipBg,
-    stroke: { color: borderColor, width: 1 },
+    stroke: { color: THEME.snapTooltipBorder, width: 1 },
   })
   out.push({
     kind: "label",
-    at: { x: x + padX, y: y + padY + 11 },
+    at: { x: x + padX, y: y + 14 },
     text,
     color: THEME.snapTooltipText,
-    font: "11px ui-monospace, monospace",
+    font: `${TOOLTIP_FONT_PX}px ${DRAWING_FONT}`,
   })
 }

@@ -10,10 +10,14 @@ where acadiso.dwt starts at 4: a starting precision is the template's choice, no
 behaviour, and every `<…>` and report follows the one the drawing has; the dynamic-input tooltip
 shows the question alone, up to its `or` (its keywords are the chips below it), or with its colon
 when it offers none. An alias is echoed as typed with the name it runs (`Command: l LINE`, es
-`Comando: l LINEA`); the prompt is headed by the command typed, a dash one's with its dash
+`Comando: l LINEA`); a command started from the tool palette is echoed as AutoCAD's ribbon macro
+(`^C^C_line`) echoes it, `Command: _line` (desktop line/d19; every other button's macro is
+**unverified**, and a mode the rail offers as its own entry is echoed by this app's name for it,
+`_circle2p`, where AutoCAD's ribbon runs `_circle` and answers `_2p`); the prompt is headed by the command typed, a dash one's with its dash
 (`-LINETYPE Enter an option [?/Set]:`, es `-TIPOLIN`). The history writes each prompt with its
 answer: what was typed (a value, a keyword, `<45`, FROM), bare for a pick or Enter, `*Cancel*` after
-Escape (es `*Cancelar*`), and an object snap on the line its pick answers
+Escape (es `*Cancelado*`; at `Command:` Escape writes `Command: *Cancel*`, es `Comando: *Cancelar*`,
+desktop passes line/d08, d19, d27), and an object snap on the line its pick answers
 (`Specify first point: _endp of`, typed `end of`; FROM's `Base point:` and `<Offset>:` on lines of
 their own), ahead of what answering it reported
 (`Current line-width is 0.0000`). Mid-command a command name is not run: what is neither a keyword

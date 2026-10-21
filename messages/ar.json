@@ -379,9 +379,7 @@
       "cancel": "إلغاء"
     },
     "SnapOverride": {
-      "point": "نقطة",
       "from": "من نقطة",
-      "objectSnap": "التقاط الكائنات",
       "none": "لا شيء"
     },
     "SelectionCycling": {

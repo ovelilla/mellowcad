@@ -1167,6 +1167,7 @@ lweight "Lineweight" LW
   properties: Spline (1) [Misc: Method=Fit, Degree=3, Knot parameterization=Square root, Closed=No]
 > escape
   properties: -
+  command| *Cancel*
 > SPLINE CV
   prompt: SPLINE Specify first point or [Method/Knots]:
   asks: "First point"
@@ -2657,6 +2658,7 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0°~, Line space facto
   prompt| Specify second point or <use first point as displacement>:
 > escape
   properties: -
+  command| *Cancel*
 
 ## COPY
 > start
@@ -2746,6 +2748,7 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0°~, Line space facto
   prompt| Specify second point or <use first point as displacement>:
 > escape
   properties: -
+  command| *Cancel*
 
 ## ROTATE
 > start
@@ -3312,6 +3315,7 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0°~, Line space facto
   error| 0 objects joined, 2 objects discarded from the operation
 > escape
   properties: -
+  command| *Cancel*
 
 ## BREAK
 > start
@@ -4632,6 +4636,7 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0°~, Line space facto
   properties: Line (1) {Thickness=0.00 mm~} [Geometry: Length=150.00 mm~, Angle=0°~, Δ X=150.00 mm, Δ Y=0.00 mm, Δ Z=0.00 mm] [Endpoints: Start X=0.00~, Start Y=40.00~, Start Z=0.00~, End X=150.00~, End Y=40.00~, End Z=0.00~]
 > escape
   properties: -
+  command| *Cancel*
 > select circle
   properties: Circle (1) {Thickness=0.00 mm~} [Geometry: Radius=50.00 mm~, Diameter=100.00 mm~, Circumference=314.16 mm, Area=7853.98 mm², Normal X=0.00, Normal Y=0.00, Normal Z=1.00] [Center: X=0.00~, Y=300.00~, Z=0.00~]
 > grab quadrant
@@ -4645,6 +4650,7 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0°~, Line space facto
   properties: Circle (1) {Thickness=0.00 mm~} [Geometry: Radius=70.00 mm~, Diameter=140.00 mm~, Circumference=439.82 mm, Area=15393.80 mm², Normal X=0.00, Normal Y=0.00, Normal Z=1.00] [Center: X=0.00~, Y=300.00~, Z=0.00~]
 > escape
   properties: -
+  command| *Cancel*
 > select arc
   properties: Arc (1) {Thickness=0.00 mm~} [Geometry: Radius=50.00 mm~, Length=78.54 mm, Angle=90°~, Start angle=0°~, End angle=90°~, Normal X=0.00, Normal Y=0.00, Normal Z=1.00] [Center: X=300.00~, Y=300.00~, Z=0.00~]
 > grab end
@@ -4658,6 +4664,7 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0°~, Line space facto
   properties: Arc (1) {Thickness=0.00 mm~} [Geometry: Radius=50.00 mm~, Length=46.36 mm, Angle=53°~, Start angle=37°~, End angle=90°~, Normal X=0.00, Normal Y=0.00, Normal Z=1.00] [Center: X=300.00~, Y=300.00~, Z=0.00~]
 > escape
   properties: -
+  command| *Cancel*
 > select polyline
   properties: Polyline (1) {Thickness=0.00 mm~} [Geometry: Vertex=1~, Vertex X=0.00~, Vertex Y=-300.00~, Start segment width=0.00 mm~, End segment width=0.00 mm~, Global width=0.00 mm~, Length=215.91 mm, Vertices=3, Segments=2, Closed=No, Elevation=0.00~]
 > grab vertex
@@ -4680,6 +4687,7 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0°~, Line space facto
   properties: Polyline (1) {Thickness=0.00 mm~} [Geometry: Vertex=1~, Vertex X=0.00~, Vertex Y=-300.00~, Start segment width=0.00 mm~, End segment width=0.00 mm~, Global width=0.00 mm~, Length=244.70 mm, Vertices=4, Segments=3, Closed=No, Elevation=0.00~]
 > escape
   properties: -
+  command| *Cancel*
 > select dimension
   properties: Dimension (1) [Dimension: Measurement=100.00 mm, Text override=—, Type=Linear, Rotation=0°~] [Definition points: First X=300.00, First Y=0.00, Second X=400.00, Second Y=0.00]
 > grab definition point
@@ -4693,6 +4701,7 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0°~, Line space facto
   properties: Dimension (1) [Dimension: Measurement=110.00 mm, Text override=—, Type=Linear, Rotation=0°~] [Definition points: First X=290.00, First Y=0.00, Second X=400.00, Second Y=0.00]
 > escape
   properties: -
+  command| *Cancel*
 
 ## arc segment grip
 > start
@@ -4717,6 +4726,7 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0°~, Line space facto
   properties: Polyline (1) {Thickness=0.00 mm~} [Geometry: Vertex=1~, Vertex X=0.00~, Vertex Y=0.00~, Start segment width=0.00 mm~, End segment width=0.00 mm~, Global width=0.00 mm~, Length=200.97 mm, Vertices=2, Segments=1, Closed=No, Elevation=0.00~]
 > escape
   properties: -
+  command| *Cancel*
 
 ## properties
 > start

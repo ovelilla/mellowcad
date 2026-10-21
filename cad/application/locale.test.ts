@@ -352,9 +352,9 @@ describe("Spanish AutoCAD's command language", () => {
     cad.command("LINEA").escape().command("_LINE").escape().command("l")
     expect(cad.commandLog()).toEqual([
       "LINEA",
-      "Precise primer punto: *Cancelar*",
+      "Precise primer punto: *Cancelado*",
       "LINEA",
-      "Precise primer punto: *Cancelar*",
+      "Precise primer punto: *Cancelado*",
       "l LINEA",
     ])
     cad.click(p(0, 0)).click(p(100, 0))
@@ -378,6 +378,23 @@ describe("Spanish AutoCAD's command language", () => {
     cad.press("Enter")
     expect(cad.entityCount).toBe(3)
     expect(cad.activeToolId()).toBe("select")
+  })
+
+  // desktop d08, d19: `*Cancelado*` inside a command, `*Cancelar*` at
+  // `Comando:`; English writes `*Cancel*` for both (d27).
+  it("writes Escape inside a command and at Comando: apart", () => {
+    const cad = createHarness({ locale: es })
+    cad.command("LINEA").click(p(0, 0)).click(p(10, 0)).escape().escape()
+    expect(cad.commandLog().slice(-2)).toEqual([
+      "Precise punto siguiente o [desHacer]: *Cancelado*",
+      "*Cancelar*",
+    ])
+    const english = createHarness()
+    english.command("LINE").escape().escape()
+    expect(english.commandLog().slice(-2)).toEqual([
+      "Specify first point: *Cancel*",
+      "*Cancel*",
+    ])
   })
 
   it("says LINEA's own messages in Spanish AutoCAD's words", () => {
@@ -866,7 +883,7 @@ describe("Spanish AutoCAD's command language", () => {
     expect(cad.commandLog().slice(-3)).toEqual([
       "Precise primer punto de esquina o [Chaflán/Elevación/eMpalme/Alt-objeto/Grosor]: a",
       "Precise Alt-objeto para rectángulos <0.00>: 3",
-      "Precise primer punto de esquina o [Chaflán/Elevación/eMpalme/Alt-objeto/Grosor]: *Cancelar*",
+      "Precise primer punto de esquina o [Chaflán/Elevación/eMpalme/Alt-objeto/Grosor]: *Cancelado*",
     ])
     cad.command("RECTANG")
     expect(cad.commandLog().at(-1)).toBe(

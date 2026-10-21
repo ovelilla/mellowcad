@@ -57,6 +57,40 @@ describe("LINE", () => {
     expect(line.end).toBeCloseToPoint(p(100, 0))
   })
 
+  // desktop d19: the ribbon's Line runs `^C^C_line`, echoed `Command: _line`.
+  it("echoes a start from the rail as the ribbon's macro", () => {
+    const cad = createHarness()
+    cad.tool("line").click(p(0, 0))
+    expect(cad.state().commandLine.lines).toEqual([
+      { kind: "command", text: "_line" },
+      { kind: "prompt", text: "Specify first point:" },
+    ])
+  })
+
+  // desktop d04: with CECOLOR 1 the rubber band is red, as the line will be.
+  it("draws the rubber band in the colour the line will wear", () => {
+    const band = (cad: CadHarness) =>
+      cad
+        .scene()
+        .primitives.filter(
+          (primitive) =>
+            primitive.kind === "segment" &&
+            primitive.a.x !== primitive.b.x &&
+            primitive.a.y !== primitive.b.y
+        )
+        .map((primitive) => "stroke" in primitive && primitive.stroke?.color)
+    const cad = createHarness()
+    cad.runtime.createLayer("Hidden", "#00ffff")
+
+    cad.command("LINE").click(p(0, 0)).moveTo(p(40, 30))
+    expect(band(cad)).toEqual(["#00ffff"])
+
+    cad.escape()
+    cad.runtime.setCurrentColor("#ff0000")
+    cad.command("LINE").click(p(0, 0)).moveTo(p(40, 30))
+    expect(band(cad)).toEqual(["#ff0000"])
+  })
+
   it("chains segments that share their endpoints", () => {
     const cad = createHarness()
 

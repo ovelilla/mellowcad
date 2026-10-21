@@ -8,7 +8,11 @@ import { useTranslations } from "next-intl"
 import type { CadEngine, ShortcutMenuAction, ShortcutMenuEntry } from "@/cad"
 import type { EditorState } from "@/hooks/useCadEngine"
 
-import { MENU_AT_CURSOR, SnapOverrideItems } from "./snap-override-menu"
+import {
+  MENU_AT_CURSOR,
+  SEPARATOR,
+  SnapOverrideItems,
+} from "./snap-override-menu"
 
 /**
  * AutoCAD's shortcut menus of the drawing area — Default, Edit and Command —
@@ -198,9 +202,7 @@ export function ShortcutMenu({
           >
             {menu?.groups.map((group, index) => (
               <React.Fragment key={entryKey(group[0])}>
-                {index > 0 && (
-                  <Menu.Separator className="-mx-1 my-1 h-px bg-border" />
-                )}
+                {index > 0 && <Menu.Separator className={SEPARATOR} />}
                 {group.map(entry)}
               </React.Fragment>
             ))}

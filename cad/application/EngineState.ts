@@ -63,8 +63,8 @@ import { isCoordinateExpression } from "./input/coordinateInput"
 import { CommandLineEntry, CommandSuggestion } from "./CommandLine"
 import { SaveState } from "./Autosave"
 import { EngineNames, EngineText, PromptSegment } from "./EngineText"
-import { Layer, LayerId } from "../domain/layers"
-import { EntityColor } from "../domain/colors"
+import { DEFAULT_LAYER_COLOR, Layer, LayerId } from "../domain/layers"
+import { EntityColor, STANDARD_COLORS } from "../domain/colors"
 import { LinetypeId } from "../domain/linetypes"
 import { Lineweight } from "../domain/lineweights"
 import { TextStyle, TextStyleId } from "../domain/textStyles"
@@ -185,6 +185,12 @@ export interface DynamicInputUi {
    */
   readonly prompt: string | null
   readonly fields: ReadonlyArray<DynamicInputFieldUi>
+  /**
+   * How far below its place the box starts (CSS pixels): it clears the
+   * tooltips the scene stacks under the cursor, a snap's name and Polar's
+   * reading, which take AutoCAD's place there.
+   */
+  readonly clearance: number
 }
 
 /** Makes a property row typeable, the way AutoCAD's Properties palette is. */
@@ -297,6 +303,24 @@ export interface SelectionCandidateUi {
   readonly id: EntityId
   /** Object type, as AutoCAD's Selection list box names them ("Line"). */
   readonly label: string
+}
+
+/**
+ * AutoCAD's rollover tooltip (ROLLOVERTIPS 1): the object under the cursor at
+ * `Command:`, its type and its Color, Layer and Linetype (desktop d20).
+ */
+export interface RolloverUi {
+  readonly id: EntityId
+  /** Where the cursor stood as it came over the object, in canvas pixels. */
+  readonly at: Vec2
+  /** The object's type, as the palette titles it ("Line"). */
+  readonly title: string
+  /** Its colour's name (ByLayer, Red, or the colour as stored). */
+  readonly color: string
+  /** The colour it shows, for the swatch. */
+  readonly swatch: string
+  readonly layer: string
+  readonly linetype: string
 }
 
 /** Snapshot of selection cycling (AutoCAD's SELECTIONCYCLING) for the UI. */
@@ -419,6 +443,8 @@ export interface EngineState {
   readonly acquiredTrackingPoints: number
   /** Selection cycling: the badge, the candidate list and its settings. */
   readonly selectionCycling: SelectionCyclingUi
+  /** The rollover tooltip, or null when the cursor is over no object at `Command:`. */
+  readonly rollover: RolloverUi | null
   readonly gridVisible: boolean
   /** Snap mode (AutoCAD's SNAP / F9): the cursor is forced onto increments. */
   readonly snapModeActive: boolean
@@ -620,6 +646,35 @@ export function commonStyleId(
   return shared
 }
 
+/** The rollover tooltip of `entity`, worded in the interface language. */
+export function buildRolloverUi(
+  entity: Entity,
+  at: Vec2,
+  layers: ReadonlyArray<Layer>,
+  text: EngineText
+): RolloverUi {
+  const names = text.names()
+  const layer = layers.find((candidate) => candidate.id === entity.layerId)
+  const standard = STANDARD_COLORS.find((color) => color.value === entity.color)
+  return {
+    id: entity.id,
+    at,
+    title: text.entity(entity.type, 1),
+    color:
+      entity.color === undefined
+        ? names.byLayer
+        : standard
+          ? names.colors[standard.id]
+          : entity.color,
+    swatch: entity.color ?? layer?.color ?? DEFAULT_LAYER_COLOR,
+    layer: layer?.name ?? "",
+    linetype:
+      entity.linetype === undefined
+        ? names.byLayer
+        : (names.linetypes[entity.linetype] ?? entity.linetype),
+  }
+}
+
 /**
  * Names the objects under the pick box for the Selection list box, the way
  * AutoCAD lists them: by object type, in pick order (topmost first).
@@ -643,7 +698,8 @@ export function buildDynamicInputUi(
   controller: DynamicInputController,
   settings: DocumentSettings,
   text: EngineText,
-  prompt: string | null = null
+  prompt: string | null = null,
+  clearance = 0
 ): DynamicInputUi | null {
   const session = controller.getSession()
   const screen = controller.getScreen()
@@ -688,6 +744,7 @@ export function buildDynamicInputUi(
     return {
       screen,
       prompt,
+      clearance,
       fields: [
         {
           ...coordinate,
@@ -704,7 +761,7 @@ export function buildDynamicInputUi(
     }
   }
 
-  return { screen, prompt, fields }
+  return { screen, prompt, clearance, fields }
 }
 
 function formatFieldValue(

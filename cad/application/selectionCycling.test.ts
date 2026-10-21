@@ -186,7 +186,7 @@ describe("selection list box", () => {
         (prim) =>
           prim.kind === "segment" &&
           prim.stroke.color === THEME.selected &&
-          prim.stroke.width === 2.5
+          prim.stroke.width === 5
       )
     expect(highlighted.length).toBe(1)
   })

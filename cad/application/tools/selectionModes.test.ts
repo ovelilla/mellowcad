@@ -568,7 +568,7 @@ describe("Select objects' modes", () => {
       "Punto no válido: el segmento del polígono tiene una longitud cero.",
       "Precise punto final de línea o [desHacer]: FOO",
       "Respuesta no válida.",
-      "Precise punto final de línea o [desHacer]: *Cancelar*",
+      "Precise punto final de línea o [desHacer]: *Cancelado*",
       "BORRA",
       "Designe objetos: V",
       "Designe primera esquina: FOO",

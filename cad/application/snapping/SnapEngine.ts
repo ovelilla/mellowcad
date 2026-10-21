@@ -94,15 +94,18 @@ export class SnapEngine extends Observable {
   private providers: SnapProvider[]
   private enabled = new Set<SnapType>()
 
-  /** Pixel radius within which a snap will *engage* (AutoCAD's APERTURE). */
-  pixelTolerance = 8
+  /**
+   * Pixel radius within which a snap will *engage*: AutoCAD's APERTURE, 10 by
+   * default (engaged at 10 px, not at 11: desktop d25).
+   */
+  pixelTolerance = 10
 
   /**
    * Once a snap is engaged the cursor keeps clinging to it until it drifts
    * beyond this larger radius — the magnetic gravity-well that makes notable
    * points feel tacky, exactly like AutoCAD. Must be >= {@link pixelTolerance}.
    */
-  releaseTolerance = 11
+  releaseTolerance = 13
 
   private active = true
 

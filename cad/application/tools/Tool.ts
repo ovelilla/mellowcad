@@ -595,6 +595,12 @@ export interface Tool {
   hiddenEntityIds?(): readonly EntityId[]
 
   /**
+   * The object under the cursor that AutoCAD's rollover tooltip describes
+   * (ROLLOVERTIPS 1): only Select's, at `Command:`.
+   */
+  rolloverEntityId?(): EntityId | null
+
+  /**
    * The tool's transient preview (rubber-band lines, selection boxes, ...) as
    * renderer-agnostic scene primitives in screen coordinates. World points are
    * converted via `ctx.viewport.worldToScreen`.

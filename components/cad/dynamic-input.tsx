@@ -67,7 +67,7 @@ export function DynamicInput({
       dir="ltr"
       lang={state.commandLine.lang}
       className="pointer-events-none absolute z-[5] flex flex-wrap gap-1"
-      style={{ left: di.screen.x + 16, top: di.screen.y + 20 }}
+      style={{ left: di.screen.x + 16, top: di.screen.y + 20 + di.clearance }}
     >
       {/* The dynamic prompt: the question alone, its keywords in the chips. */}
       {di.prompt !== null && (

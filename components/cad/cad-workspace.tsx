@@ -18,6 +18,7 @@ import { ToolRail } from "./tool-rail"
 import { StatusBar } from "./status-bar"
 import { UnitsDialog } from "./units-dialog"
 import { DynamicInput } from "./dynamic-input"
+import { RolloverTooltip } from "./rollover-tooltip"
 import { PalettePanel, PaletteResizeHandle } from "./palette-panel"
 import { ViewCube } from "./view-cube"
 import { NavigationBar } from "./navigation-bar"
@@ -110,7 +111,7 @@ export function CadWorkspace({
       </div>
 
       {/* Whatever is placed in the canvas's pixels — the dynamic input and its
-          option chips — is positioned in this cell, which is exactly the
+          option chips, the rollover tooltip — is positioned in this cell, which is exactly the
           canvas's box; the menus at the cursor convert to the viewport
           (`engine.clientFromScreen`). */}
       <div
@@ -133,6 +134,7 @@ export function CadWorkspace({
               state={state}
               lockedLabel={input("locked")}
             />
+            <RolloverTooltip state={state} />
 
             {/* WHY inset-s and inset-e: no AutoCAD reads right to left, and
                 in a page that does the viewport controls and the ViewCube

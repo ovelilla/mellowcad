@@ -379,9 +379,7 @@
       "cancel": "Cancel"
     },
     "SnapOverride": {
-      "point": "Point",
       "from": "From",
-      "objectSnap": "Object snap",
       "none": "None"
     },
     "SelectionCycling": {

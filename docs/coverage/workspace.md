@@ -139,18 +139,22 @@ command›, Clipboard ▸ (Cut, Copy, Copy with Base Point and Paste, with their
 `&Repeat %s`; Redo runs its macro, `^C^C_mredo 1`, as MREDO 1); Edit: Repeat, Clipboard ▸, Erase,
 Move, Copy Selection, Scale, Rotate, Deselect All, Properties; Command: Enter, Cancel, the prompt's
 options as its brackets word them ("the command's options (keywords within the square brackets) are
-inserted into this menu"), Snap Overrides ▸ (the override menu's entries); an entry that is a
+inserted into this menu"), Snap Overrides ▸ (the override menu's entries), in the 2027 desktop's
+order (Intro, Cancelar, Entrada reciente ▸ · options · Modificaciones de REFENT ▸ · Encuadre, Zoom,
+SteeringWheels · Calculadora rápida, LINE's next point, probe line/d07); an entry that is a
 command runs by its global name, echoed, repeated and undone like it, Deselect All is Escape ("Press
 Esc to deselect all objects"), and an option is answered as typed; Escape or a click outside closes
 the menu, and focus goes back to the drawing; es Repetir, Entrada reciente, Portapapeles, Intro,
-Cancelar, Modificaciones de referencias, Seleccionar similares, Agregar selección (the help's words)
+Cancelar, Seleccionar similares, Agregar selección (the help's words), Modificaciones de REFENT (the
+desktop's, d07: the help says Modificaciones de referencias)
 
 **Missing:** Recent Input (INPUTHISTORYMODE), Isolate, real-time Zoom and the transparent Pan and
 Zoom, SteeringWheels, Action Recorder, Subobject Selection Filter, Quick Select, QuickCalc, Find,
 Options, Draw Order, Add Selected, Select Similar, Quick Properties, Paste as Block, Paste to
-Original Coordinates, the object and command entries merged into them (OBJECT_…, COMMAND_…);
-**unverified**: the order of each menu and the labels Copy Selection and Deselect All (the 2026 help
-lists no menu whole: each entry is confirmed apart, in task pages, and the order is the product's)
+Original Coordinates, the object and command entries merged into them (OBJECT_…, COMMAND_…), the
+Command menu's Pan and Zoom (d07); **unverified**: the order of the Default and Edit menus and the
+labels Copy Selection and Deselect All (the 2026 help lists no menu whole: each entry is confirmed
+apart, in task pages, and the order is the product's)
 
 ### Wheel and wheel button
 

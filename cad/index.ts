@@ -71,6 +71,7 @@ export type {
   PropertyGroup,
   PropertyRow,
   PropertyEdit,
+  RolloverUi,
   SelectionCandidateUi,
   SelectionCyclingUi,
   ShortcutMenuAction,

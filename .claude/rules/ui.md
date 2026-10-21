@@ -215,7 +215,7 @@ Each bar's AutoCAD order is in its component's header comment; touch and phones 
   there is portalled and positioned in the viewport, so its virtual anchor converts with
   `engine.clientFromScreen`; the raw state point lands off by the zones before the canvas.
 - **On the drawing only what AutoCAD puts there**: the viewport controls, the ViewCube with the
-  navigation bar, the dynamic input, the menus at the cursor. A new control finds its zone. What
+  navigation bar, the dynamic input, the rollover tooltip, the menus at the cursor. A new control finds its zone. What
   sits there takes the pointer only where it is drawn: the ViewCube's column and SVG box are
   `pointer-events-none` and only its buttons, zones, compass and triangles set
   `pointer-events-auto` — ZOOM Extents frames up to 40 px from the edge, so a grip can land under
@@ -224,7 +224,7 @@ Each bar's AutoCAD order is in its component's header comment; touch and phones 
   tab, a strip icon, a toggle, a pick in a drop-down — so the next key types a command. Arrow keys
   on tabs keep focus there (`event.detail > 0` tells a click).
 - **Buttons run commands by global name** (`engine.runCommand("_QSAVE")`), as AutoCAD's macros
-  do, so they echo at the prompt.
+  do, so they echo at the prompt. A tool's button is `engine.setActiveTool(id)`, echoing `_line`.
 - **The tool palette** holds only commands that act on the drawing, grouped by meaning, never to
   save room (no "more" menu). Unlisted tools fall into a trailing group, so a tool that belongs
   elsewhere in the chrome (view tools, Select, Match Properties) must be listed in `RAIL_EXCLUDED`.

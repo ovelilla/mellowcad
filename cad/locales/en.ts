@@ -1580,6 +1580,7 @@ export const en: EngineCatalog = {
         "\".  Press F1 for help."
       ],
       "cancel": "*Cancel*",
+      "commandCancelled": "*Cancel*",
       "resumingCommand": [
         "Resuming ",
         [

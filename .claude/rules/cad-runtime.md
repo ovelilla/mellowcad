@@ -183,8 +183,8 @@ runtime picks for the tool" feature.
 
 ## Snapping
 
-- **The snap nearest the cursor wins**, by tier: a point inside `pixelTolerance` (8px) → the point
-  already held, within `releaseTolerance` (11px: keep release ≥ capture) → Extension / Parallel →
+- **The snap nearest the cursor wins**, by tier: a point inside `pixelTolerance` (APERTURE, 10px)
+  → the point already held, within `releaseTolerance` (13px: keep release ≥ capture) → Extension / Parallel →
   Nearest → a notable point of an object the aperture crosses. Provider order in
   `defaultSnapProviders` only breaks ties.
 - **Some snaps are found from anywhere over their object**: `notable(type, entity, point, touch)`

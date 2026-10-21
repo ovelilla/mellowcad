@@ -159,8 +159,9 @@ CELWEIGHT; ByLayer by default, which stores nothing). Every creating command has
 - **FILLET's arc and CHAMFER's bevel**: the lines' shared layer or the current one, ByLayer —
   `carryPlane` alone.
 
-A ghost is drawn in the rubber band's colour whatever it will wear. HPLAYER, DIMLAYER and TEXTLAYER
-do not exist here: everything new is on the current layer.
+LINE's rubber band wears the line's colour (`currentColor`, desktop line/d04); other ghosts' colours
+are their reviews'. HPLAYER, DIMLAYER and TEXTLAYER do not exist here: everything new is on the
+current layer.
 
 ## Ordering and undo
 

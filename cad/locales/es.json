@@ -1291,6 +1291,7 @@
     "messages": {
       "unknownCommand": "Comando \"{name}\" desconocido. Pulse F1 para obtener ayuda.",
       "cancel": "*Cancelar*",
+      "commandCancelled": "*Cancelado*",
       "resumingCommand": "Reanudando el comando {command}.",
       "readOnlyVariable": "{name} = {value} (sólo lectura)",
       "notTransparent": "** Este comando no funciona de forma transparente **",

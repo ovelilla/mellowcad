@@ -7,6 +7,7 @@ import {
   withThickness,
 } from "../../domain/entities"
 import { COLOR_BYLAYER } from "../../domain/colors"
+import { DEFAULT_LAYER_COLOR } from "../../domain/layers"
 import { LINETYPE_BYLAYER } from "../../domain/linetypes"
 import { LINEWEIGHT_BYLAYER } from "../../domain/lineweights"
 import { ToolContext } from "./Tool"
@@ -33,6 +34,19 @@ export function withCurrentProperties<T extends Entity>(
     placed = assignEntityLineweight(placed, currentLineweight)
   }
   return placed as T
+}
+
+/**
+ * The colour an object drawn from scratch will show: CECOLOR, ByLayer read
+ * off the current layer.
+ */
+export function currentColor(ctx: ToolContext): string {
+  const { currentColor } = ctx.document.getSettings()
+  if (currentColor !== COLOR_BYLAYER) return currentColor
+  return (
+    ctx.document.getLayer(ctx.document.getCurrentLayerId())?.color ??
+    DEFAULT_LAYER_COLOR
+  )
 }
 
 /** THICKNESS as LINE, CIRCLE, ARC, PLINE and POLYGON give it; RECTANG and TEXT do not. */

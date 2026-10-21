@@ -28,22 +28,32 @@ type Choice = SnapType | "none"
 export const MENU_AT_CURSOR =
   "min-w-44 origin-(--transform-origin) overflow-hidden rounded-md border bg-popover p-1 text-popover-foreground shadow-md transition-[transform,opacity] outline-none data-ending-style:scale-95 data-ending-style:opacity-0 data-starting-style:scale-95 data-starting-style:opacity-0"
 
-/** The osnaps offered as overrides, in AutoCAD's menu order, plus "None". */
-const CHOICES: readonly Choice[] = [
-  SnapType.Endpoint,
-  SnapType.Midpoint,
-  SnapType.Center,
-  SnapType.Quadrant,
-  SnapType.Intersection,
-  SnapType.ApparentIntersection,
-  SnapType.Perpendicular,
-  SnapType.Tangent,
-  SnapType.Extension,
-  SnapType.Insertion,
-  SnapType.Parallel,
-  SnapType.Nearest,
-  "none",
+/**
+ * The object snaps as AutoCAD's Shift+right-click menu groups them (desktop
+ * d06), for the ones that exist here: Temporary track point, Mid Between 2
+ * Points, Point Filters, 3D Osnap, Geometric Center, Node and Osnap Settings
+ * are left out until they are built.
+ */
+const GROUPS: readonly (readonly Choice[])[] = [
+  [
+    SnapType.Endpoint,
+    SnapType.Midpoint,
+    SnapType.Intersection,
+    SnapType.ApparentIntersection,
+    SnapType.Extension,
+  ],
+  [SnapType.Center, SnapType.Quadrant, SnapType.Tangent],
+  [
+    SnapType.Perpendicular,
+    SnapType.Parallel,
+    SnapType.Insertion,
+    SnapType.Nearest,
+    "none",
+  ],
 ]
+
+/** The rule between a menu's groups: this one's, the shortcut menu's. */
+export const SEPARATOR = "-mx-1 my-1 h-px bg-border"
 
 const ITEM =
   "relative flex cursor-default items-center rounded-sm py-1.5 ps-2 pe-8 text-ui outline-hidden select-none data-highlighted:bg-accent data-highlighted:text-accent-foreground"
@@ -62,28 +72,27 @@ export function SnapOverrideItems({
   const t = useTranslations("Editor.SnapOverride")
   return (
     <>
-      <div className="px-2 py-1.5 text-title text-muted-foreground">
-        {t("point")}
-      </div>
       <Menu.Item onClick={() => engine.startFrom()} className={ITEM}>
         {t("from")}
       </Menu.Item>
-      <div className="px-2 py-1.5 text-title text-muted-foreground">
-        {t("objectSnap")}
-      </div>
-      {CHOICES.map((value) => (
-        <Menu.Item
-          key={value}
-          onClick={() => engine.setSnapOverride(value)}
-          className={ITEM}
-        >
-          {value === "none" ? t("none") : state.names.snaps[value]}
-          {state.snapOverride === value && (
-            <span className="pointer-events-none absolute inset-e-2 flex size-4 items-center justify-center">
-              <CheckIcon className="size-4" />
-            </span>
-          )}
-        </Menu.Item>
+      {GROUPS.map((group) => (
+        <React.Fragment key={group[0]}>
+          <Menu.Separator className={SEPARATOR} />
+          {group.map((value) => (
+            <Menu.Item
+              key={value}
+              onClick={() => engine.setSnapOverride(value)}
+              className={ITEM}
+            >
+              {value === "none" ? t("none") : state.names.snaps[value]}
+              {state.snapOverride === value && (
+                <span className="pointer-events-none absolute inset-e-2 flex size-4 items-center justify-center">
+                  <CheckIcon className="size-4" />
+                </span>
+              )}
+            </Menu.Item>
+          ))}
+        </React.Fragment>
       ))}
     </>
   )
