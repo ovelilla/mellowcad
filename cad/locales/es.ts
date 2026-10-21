@@ -1650,7 +1650,7 @@ export const es: EngineLocale = {
       "specifyEndpointOfTheArcCtrl": "Precise punto final del arco (mantenga pulsada la tecla Ctrl para cambiar de dirección)",
       "specifySecondPointOnArc": "Precise segundo punto en arco",
       "specifyStartPointOfArc": "Precise punto inicial del arco",
-      "specifyEndPointOfArcCtrl": "Precise punto final del arco (mantenga pulsada la tecla Ctrl para cambiar de dirección)",
+      "specifyEndPointOfArcCtrl": "Precise punto final de arco (mantenga pulsada la tecla Ctrl para cambiar de dirección)",
       "selectObjects": "Designe objetos",
       "removeObjects": "Elimine objetos",
       "specifyFirstCorner": "Designe primera esquina",
@@ -2922,6 +2922,7 @@ export const es: EngineLocale = {
       ],
       "pointingEdgeOn": "No se puede señalar en un SCP visto de canto.",
       "circleDoesNotExist": "El círculo no existe.",
+      "radiusMustBeNonZero": "El radio no debe ser cero.",
       "noLineOrArcToContinue": "No hay línea o arco que se pueda continuar.",
       "allLineSegmentsUndone": "Ya están anulados todos los segmentos.",
       "zeroLengthLineCreated": [

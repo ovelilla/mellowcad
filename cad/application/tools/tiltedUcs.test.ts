@@ -493,38 +493,39 @@ describe("curves by three points at different heights", () => {
     expect(circle.radius).toBeCloseTo(Math.sqrt(50), 9)
   })
 
-  it("lays a 3P arc in their plane, from the first point through the second to the third", () => {
+  it("lays a 3P arc in its first point's plane, the others' X and Y", () => {
+    // probe arc/p06: ends snapped at Z 5, 0 and 0 make a flat arc at the
+    // first one's height, centre (5,5,5) r7.0711, normal +Z (a typed Z there
+    // is refused, p07).
     const cad = createHarness()
-    const r = 100 * Math.SQRT1_2
-
-    cad.command("ARC")
-    cad.type("100,0,0").enter().type(`#${r},0,${r}`).enter()
-    cad.type("#0,0,100").enter()
+    for (const typed of [
+      "LINE",
+      "0,0,5",
+      "10,0,5",
+      "",
+      "LINE",
+      "0,10,0",
+      "5,5,0",
+      "",
+      "ARC",
+      "END",
+      "0,0",
+      "END",
+      "0,10",
+      "END",
+      "10,0",
+    ]) {
+      cad.runtime.setCommandLineText(typed)
+      cad.runtime.submitCommandLine()
+    }
 
     const [arc] = only(cad, "arc")
-    const center = worldOf(arc, arc.center)
-    expect(center).toBeCloseToPoint(p(0, 0))
-    expect(center.z).toBeCloseTo(0, 9)
-    expect(arc.radius).toBeCloseTo(100, 9)
-    const ends = [arc.startAngle, arc.endAngle].map((angle) =>
-      worldOf(arc, {
-        x: arc.center.x + 100 * Math.cos(angle),
-        y: arc.center.y + 100 * Math.sin(angle),
-      })
-    )
-    const tops = ends.map((end) => end.z).sort((a, b) => a - b)
-    expect(tops[0]).toBeCloseTo(0, 9)
-    expect(tops[1]).toBeCloseTo(100, 9)
-    const sweep =
-      (((arc.endAngle - arc.startAngle) % (2 * Math.PI)) + 2 * Math.PI) %
-      (2 * Math.PI)
-    const mid = arc.startAngle + sweep / 2
-    const through = worldOf(arc, {
-      x: arc.center.x + 100 * Math.cos(mid),
-      y: arc.center.y + 100 * Math.sin(mid),
-    })
-    expect(through).toBeCloseToPoint(p(r, 0), 9)
-    expect(through.z).toBeCloseTo(r, 9)
+    expect(arc.normal).toBeUndefined()
+    expect(arc.elevation).toBe(5)
+    expect(arc.center).toBeCloseToPoint(p(5, 5))
+    expect(arc.radius).toBeCloseTo(Math.sqrt(50), 9)
+    expect(arc.startAngle).toBeCloseToAngle(5.497787143782138)
+    expect(arc.endAngle).toBeCloseToAngle(3.9269908169872427)
   })
 
   it("keeps a 3P circle through points at one height in the plan", () => {

@@ -61,10 +61,24 @@ describe("a wrong answer mid-command", () => {
   })
 
   it("asks for a 2D point where AutoCAD's later points are 2D", () => {
+    // probes arc/p04 (3P's second), p05 (SCE's centre), p164 (a centre mode's
+    // end, which declares Angle and chord Length though none is offered).
     const cad = createHarness()
     cad.command("ARC").click(p(0, 0))
     answerLine(cad, "FOO")
     expect(cad.commandLog().at(-1)).toBe("2D point or option keyword required.")
+    cad.option("Center")
+    answerLine(cad, "FOO")
+    expect(cad.commandLog().at(-1)).toBe("Invalid 2D point.")
+    cad.click(p(10, 0))
+    for (const typed of ["FOO", "0,10,5", "_U"]) {
+      answerLine(cad, typed)
+      expect(cad.commandLog().slice(-2)).toEqual([
+        `Specify end point of arc (hold Ctrl to switch direction): ${typed}`,
+        "2D point or option keyword required.",
+      ])
+    }
+    expect(cad.activeToolId()).toBe("arc")
     cad.escape()
 
     const mirror = createHarness({ entities: twoLines() })

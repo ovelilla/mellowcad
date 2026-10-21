@@ -46,8 +46,13 @@ describe("LASTPOINT", () => {
       "Specify next point or [Undo]:",
     ])
     expect(lastPoint(cad)).toBe(" X = 10.00     Y = 8.00     Z = 0.00")
+    // probes arc/p141 (3P), p142 (SCE), p143 (CSE): an arc's end point.
     answer(cad, "ARC", "0,0", "5,5", "10,0")
     expect(lastPoint(cad)).toBe(" X = 10.00     Y = 0.00     Z = 0.00")
+    answer(cad, "ARC", "10,0", "C", "0,0", "0,20")
+    expect(lastPoint(cad)).toBe(" X = 0.00     Y = 20.00     Z = 0.00")
+    answer(cad, "ARC", "C", "0,0", "10,0", "0,20")
+    expect(lastPoint(cad)).toBe(" X = 0.00     Y = 20.00     Z = 0.00")
     answer(cad, "RECTANG", "30,30", "40,45")
     expect(lastPoint(cad)).toBe(" X = 40.00     Y = 45.00     Z = 0.00")
     answer(cad, "MIRROR", "L", "", "20,0", "20,10", "N")

@@ -156,6 +156,7 @@ describe("THICKNESS", () => {
 
     cad.command("LINE").click(p(0, 0)).click(p(100, 0)).escape()
     cad.command("CIRCLE").click(p(0, 50)).type("10").enter()
+    // probe arc/p150: THICKNESS 3 on an arc.
     cad.command("ARC").click(p(100, 0)).click(p(0, 100)).click(p(-100, 0))
     cad.command("PLINE").click(p(0, 0)).click(p(50, 50)).enter()
     cad.command("POLYGON").enter().click(p(200, 0)).enter().type("20").enter()

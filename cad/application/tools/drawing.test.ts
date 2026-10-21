@@ -665,6 +665,7 @@ describe("CIRCLE", () => {
 
 describe("ARC", () => {
   it("3-Point sweeps counter-clockwise through the middle pick", () => {
+    // probe arc/p01.
     const cad = createHarness()
 
     cad.command("ARC").click(p(100, 0)).click(p(0, 100)).click(p(-100, 0))
@@ -677,6 +678,7 @@ describe("ARC", () => {
   })
 
   it("Start-Centre-End builds the quarter arc", () => {
+    // probes arc/p03, p171 (the sweep always counter-clockwise).
     const cad = createHarness()
 
     cad.command("ARCSCE").click(p(100, 0)).click(p(0, 0)).click(p(0, 100))
@@ -689,6 +691,7 @@ describe("ARC", () => {
   })
 
   it("Centre-Start-End takes the centre first", () => {
+    // probe arc/p02.
     const cad = createHarness()
 
     cad.command("ARCCSE").click(p(0, 0)).click(p(100, 0)).click(p(0, 100))
@@ -700,6 +703,8 @@ describe("ARC", () => {
   })
 
   it("asks for the centre first with Center at the start point", () => {
+    // probes arc/p02, p118: no `or` where Angle and chord Length are not
+    // offered.
     const cad = createHarness()
 
     cad.command("ARC").option("Center")
@@ -729,6 +734,7 @@ describe("ARC", () => {
   })
 
   it("asks for the centre next with Center at the second point", () => {
+    // probes arc/p03, p01 (3P's end, no keyword).
     const cad = createHarness()
 
     cad.command("ARC").click(p(100, 0))
@@ -746,6 +752,7 @@ describe("ARC", () => {
   })
 
   it("runs clockwise while Ctrl is held at the end point", () => {
+    // desktop arc/d03: Ctrl at the pick makes it clockwise.
     const cad = createHarness()
 
     cad.command("ARCCSE").click(p(0, 0)).click(p(100, 0))
@@ -755,6 +762,389 @@ describe("ARC", () => {
     const arc = cad.only<ArcEntity>("arc")
     expect(arc.startAngle).toBeCloseToAngle(deg(90))
     expect(arc.endAngle).toBeCloseToAngle(0)
+  })
+
+  describe("Enter", () => {
+    // Every later ARC prompt is AllowNone false: Enter is refused in the
+    // prompt's words and asked again, nothing given lost (probes arc/p113–p118,
+    // en and es).
+    const CASES: ReadonlyArray<{
+      prompt: string
+      reach: string[]
+      rest: string[]
+      en: string
+      es: string
+    }> = [
+      {
+        prompt: "Specify second point of arc or [Center]:",
+        reach: ["ARC", "0,0"],
+        rest: ["10,10", "20,0"],
+        en: "2D point or option keyword required.",
+        es: "Se requiere un punto 2D o una opción.",
+      },
+      {
+        prompt: "Specify end point of arc:",
+        reach: ["ARC", "0,0", "10,10"],
+        rest: ["20,0"],
+        en: "Invalid 2D point.",
+        es: "Punto 2D no válido.",
+      },
+      {
+        prompt: "Specify center point of arc:",
+        reach: ["ARC", "10,0", "C"],
+        rest: ["0,0", "0,10"],
+        en: "Invalid 2D point.",
+        es: "Punto 2D no válido.",
+      },
+      {
+        prompt: "Specify center point of arc:",
+        reach: ["ARC", "C"],
+        rest: ["0,0", "10,0", "0,10"],
+        en: "Invalid point.",
+        es: "Punto no válido.",
+      },
+      {
+        prompt: "Specify start point of arc:",
+        reach: ["ARC", "C", "0,0"],
+        rest: ["10,0", "0,10"],
+        en: "Invalid 2D point.",
+        es: "Punto 2D no válido.",
+      },
+      {
+        prompt: "Specify end point of arc (hold Ctrl to switch direction):",
+        reach: ["ARC", "C", "0,0", "10,0"],
+        rest: ["0,10"],
+        en: "2D point or option keyword required.",
+        es: "Se requiere un punto 2D o una opción.",
+      },
+    ]
+
+    it.each(CASES)("refuses it at $prompt and asks again", (c) => {
+      const cad = answer(createHarness(), ...c.reach)
+      const prompt = cad.state().commandLine.prompt
+      answer(cad, "")
+      expect(cad.commandLog().slice(-2)).toEqual([c.prompt, c.en])
+      expect(cad.state().commandLine.prompt).toBe(prompt)
+      cad.enter()
+      expect(cad.commandLog().at(-1)).toBe(c.en)
+      answer(cad, ...c.rest)
+      expect(cad.only<ArcEntity>("arc").radius).toBeCloseTo(10)
+
+      const [, ...given] = c.reach
+      const spanish = answer(createHarness({ locale: es }), "ARCO", ...given)
+      spanish.enter()
+      expect(spanish.commandLog().at(-1)).toBe(c.es)
+      expect(spanish.activeToolId()).toBe("arc")
+    })
+
+    it("at the start, with nothing to continue, says so and ends", () => {
+      // probe arc/p108, en and es.
+      const cad = answer(createHarness(), "ARC", "")
+      expect(cad.commandLog()).toEqual([
+        "ARC",
+        "Specify start point of arc or [Center]:",
+        "No line or arc to continue.",
+        "*Invalid*",
+      ])
+      expect(cad.activeToolId()).toBe("select")
+
+      const spanish = answer(createHarness({ locale: es }), "ARCO", "")
+      expect(spanish.commandLog().slice(-2)).toEqual([
+        "No hay línea o arco que se pueda continuar.",
+        "*No válido*",
+      ])
+      expect(spanish.activeToolId()).toBe("select")
+    })
+
+    it("at the start, after a line, ends: Continue is not built", () => {
+      // probe arc/p109 continues from the line's end (ARC-D4).
+      const cad = answer(createHarness(), "LINE", "0,0", "10,0", "", "ARC", "")
+      expect(cad.commandLog().at(-1)).toBe(
+        "Specify start point of arc or [Center]:"
+      )
+      expect(cad.activeToolId()).toBe("select")
+    })
+  })
+
+  it("asks a centre mode's end in Spanish as table 8423 words it", () => {
+    // probes arc/p02, p118 (es): `de arco`; 405's `del arco` is Continue's.
+    const cad = answer(createHarness({ locale: es }), "ARCO", "C", "0,0")
+    answer(cad, "10,0")
+    expect(cad.state().commandLine.prompt).toBe(
+      "ARCO Precise punto final de arco (mantenga pulsada la tecla Ctrl para cambiar de dirección):"
+    )
+  })
+
+  it("reads `@` at a centre mode's end from the centre", () => {
+    // probes arc/p127, p129 (CSE), p128 (SCE: its centre from the start, the
+    // end from the centre), p126 (3P's end from its second point).
+    for (const typed of [
+      ["ARC", "C", "0,0", "@10,0", "@0,10"],
+      ["ARC", "C", "0,0", "@10<0", "@10<90"],
+      ["ARC", "10,0", "C", "@-10,0", "@0,10"],
+    ]) {
+      const arc = answer(createHarness(), ...typed).only<ArcEntity>("arc")
+      expect(arc.center).toBeCloseToPoint(p(0, 0))
+      expect(arc.radius).toBeCloseTo(10)
+      expect(arc.startAngle).toBeCloseToAngle(0)
+      expect(arc.endAngle).toBeCloseToAngle(deg(90))
+    }
+    const three = answer(createHarness(), "ARC", "0,0", "@10,10", "@10,-10")
+    const arc = three.only<ArcEntity>("arc")
+    expect(arc.center).toBeCloseToPoint(p(10, 0))
+    expect(arc.endAngle).toBeCloseToAngle(deg(180))
+  })
+
+  it("reads its box from the point before, which becomes LASTPOINT", () => {
+    // The trace's base point at 3P's second, its end and CSE's start (probe
+    // arc/p01; desktop arc/d05), though no Ortho base (d06).
+    const cad = answer(createHarness(), "ARC", "5,5")
+    cad.type("10,0").enter()
+    expect(written(cad, "'ID", "@").at(-2)).toBe(
+      " X = 15.00     Y = 5.00     Z = 0.00"
+    )
+    cad.type("10,-10").enter()
+    expect((cad.latest() as ArcEntity).center).toBeCloseToPoint(p(10, -10))
+    expect(lastPoint(cad)).toBe(" X = 25.00     Y = -5.00     Z = 0.00")
+  })
+
+  it("lies flat at its first point's height", () => {
+    // probe arc/p152: ELEVATION 5, a typed `0,0,7` first point → flat at Z 7;
+    // p192: `'ELEV` 5 and 3 mid-ARC → at the first point's Z 0, thickness 3.
+    const typed = answer(createHarness(), "ELEVATION", "5")
+    answer(typed, "ARC", "0,0,7", "10,10", "20,0")
+    const high = typed.only<ArcEntity>("arc")
+    expect(high.elevation).toBe(7)
+    expect(high.normal).toBeUndefined()
+    expect(high.center).toBeCloseToPoint(p(10, 0))
+
+    const elev = answer(createHarness(), "ARC", "0,0", "'ELEV", "5", "3")
+    answer(elev, "10,10", "20,0")
+    const low = elev.only<ArcEntity>("arc")
+    expect(low.elevation).toBeUndefined()
+    expect(low.thickness).toBe(3)
+  })
+
+  describe("a Tangent or Perpendicular", () => {
+    const circle = () => [circleOf(p(0, 0), 10)]
+
+    it("at the first point is measured from LASTPOINT", () => {
+      // probes arc/p14 (start), p16 (CSE's centre): LASTPOINT 30,0, TAN on a
+      // circle r10 → (3.3333, 9.4281); p15: PER on a line from 0,10 → (0,-15).
+      const start = createHarness({ entities: circle() })
+      answer(start, "ID", "30,0", "ARC", "TAN", "0,10", "0,20", "-20,0")
+      const arc = start.latest() as ArcEntity
+      const from = V.add(arc.center, {
+        x: arc.radius * Math.cos(arc.startAngle),
+        y: arc.radius * Math.sin(arc.startAngle),
+      })
+      expect(from).toBeCloseToPoint(p(10 / 3, 9.428090415820636))
+
+      const centre = createHarness({ entities: circle() })
+      answer(centre, "ID", "30,0", "ARC", "C", "TAN", "0,10", "25,25", "20,0")
+      expect((centre.latest() as ArcEntity).center).toBeCloseToPoint(
+        p(10 / 3, 9.428090415820636)
+      )
+
+      const line = createHarness({
+        entities: [lineOf(p(-20, -15), p(20, -15))],
+      })
+      answer(line, "ID", "0,10", "ARC", "PER", "5,-15", "20,20", "-20,0")
+      expect((line.latest() as ArcEntity).center).toBeCloseToPoint(p(1.25, 7.5))
+    })
+
+    it("after it is measured from the point before, or a centre mode's centre", () => {
+      // probe arc/p09: TAN at 3P's second from the start 20,0 → (5, 8.66);
+      // p12: TAN at SCE's end from the centre 15,0 → end angle 2.4119.
+      const second = createHarness({ entities: circle() })
+      answer(second, "ARC", "20,0", "TAN", "0,10", "-20,0")
+      const arc = second.latest() as ArcEntity
+      expect(arc.center).toBeCloseToPoint(p(0, -17.32050807568877))
+      expect(arc.radius).toBeCloseTo(26.457513110645905)
+
+      const end = createHarness({ entities: circle() })
+      answer(end, "ARC", "20,0", "C", "15,0", "TAN", "0,10")
+      expect((end.latest() as ArcEntity).endAngle).toBeCloseToAngle(
+        2.411864997362827
+      )
+    })
+  })
+
+  describe("a degenerate arc", () => {
+    // `*Invalid*` and the end of ARC, no object (es `*No válido*`).
+    const CASES: ReadonlyArray<{ probe: string; typed: string[] }> = [
+      { probe: "p17: three coincident points", typed: ["0,0", "0,0", "0,0"] },
+      { probe: "p168: collinear", typed: ["0,0", "10,0", "20,0"] },
+      { probe: "p169: the end between", typed: ["0,0", "20,0", "10,0"] },
+      { probe: "p170: the end on the start", typed: ["0,0", "10,10", "0,0"] },
+      { probe: "p132: `@` at the second", typed: ["0,0", "@", "10,10"] },
+      {
+        probe: "p162: SCE's end on the start ray",
+        typed: ["10,0", "C", "0,0", "20,0"],
+      },
+      {
+        probe: "p166: CSE's end on the start ray",
+        typed: ["C", "0,0", "10,0", "5,0"],
+      },
+      {
+        probe: "p190: SCE's end at the centre",
+        typed: ["0,10", "C", "0,0", "0,0"],
+      },
+      {
+        probe: "p191: CSE's end at the centre",
+        typed: ["C", "0,0", "0,10", "0,0"],
+      },
+      { probe: "p131: `@` at CSE's end", typed: ["C", "0,0", "10,0", "@"] },
+      {
+        probe: "p130: `@` at CSE's start, the end on its ray",
+        typed: ["C", "0,0", "@", "10,0"],
+      },
+    ]
+
+    it.each(CASES)("is *Invalid* and the end ($probe)", (c) => {
+      const cad = answer(createHarness(), "ARC", ...c.typed)
+      expect(cad.commandLog().at(-1)).toBe("*Invalid*")
+      expect(cad.entityCount).toBe(0)
+      expect(cad.activeToolId()).toBe("select")
+    })
+
+    it("with the centre on the start, says the radius is zero", () => {
+      // probes arc/p188 (SCE), p189 (CSE): the end is asked, then both lines.
+      for (const typed of [
+        ["10,0", "C", "10,0", "0,10"],
+        ["C", "0,0", "0,0", "0,10"],
+      ]) {
+        const cad = answer(createHarness(), "ARC", ...typed)
+        expect(cad.commandLog().slice(-2)).toEqual([
+          "Radius must be non-zero.",
+          "*Invalid*",
+        ])
+        expect(cad.entityCount).toBe(0)
+        expect(cad.activeToolId()).toBe("select")
+      }
+      const spanish = answer(createHarness({ locale: es }), "ARCO", "C")
+      answer(spanish, "0,0", "0,0", "0,10")
+      expect(spanish.commandLog().slice(-2)).toEqual([
+        "El radio no debe ser cero.",
+        "*No válido*",
+      ])
+    })
+  })
+
+  it("bends only a centre mode's end with Ortho, from the centre", () => {
+    // desktop arc/d06: 3P's points, SCE's centre and CSE's start are taken as
+    // picked; the end of a centre mode is bent about the centre.
+    const cad = createHarness()
+    cad.press("F8")
+    const picks = [p(0, 0), p(10, 3), p(20, 1)]
+    cad.command("ARC")
+    for (const pick of picks) cad.click(pick)
+    const three = cad.latest() as ArcEntity
+    for (const pick of picks) {
+      expect(V.distance(three.center, pick)).toBeCloseTo(three.radius)
+    }
+
+    cad.command("ARC").click(p(10, 0)).option("Center").click(p(1, 1))
+    cad.click(p(-3, 12))
+    const sce = cad.latest() as ArcEntity
+    expect(sce.center).toBeCloseToPoint(p(1, 1))
+    expect(sce.endAngle).toBeCloseToAngle(deg(90))
+
+    cad.command("ARC").option("Center").click(p(0, 0)).click(p(10, 2))
+    cad.click(p(2, 20))
+    const cse = cad.latest() as ArcEntity
+    expect(cse.radius).toBeCloseTo(Math.hypot(10, 2))
+    expect(cse.endAngle).toBeCloseToAngle(deg(90))
+  })
+
+  it("takes `<angle` only at a centre mode's end", () => {
+    // probes arc/p136 (3P's second), p07 (3P's end), p137 (SCE's centre),
+    // p139 (CSE's start): no base point, the prompt's refusal; p140: taken
+    // at the end, and a point typed after it is the point typed.
+    const refused = (typed: string[], refusal: string) => {
+      const cad = answer(createHarness(), "ARC", ...typed)
+      expect(cad.commandLog().at(-1)).toBe(refusal)
+      expect(cad.activeToolId()).toBe("arc")
+    }
+    refused(["0,0", "<45"], "2D point or option keyword required.")
+    refused(["0,0", "10,10", "<45"], "Invalid 2D point.")
+    refused(["10,0", "C", "<180"], "Invalid 2D point.")
+    refused(["C", "0,0", "<0"], "Invalid 2D point.")
+
+    const cad = answer(createHarness(), "ARC", "C", "0,0", "10,0", "<90")
+    expect(cad.commandLog().at(-1)).toBe("Angle Override: 90")
+    answer(cad, "5,5")
+    expect(cad.only<ArcEntity>("arc").endAngle).toBeCloseToAngle(deg(45))
+  })
+
+  describe("the rail's entries, the ribbon's macros", () => {
+    // acad.cuix: 3-Point `^C^C_arc`, Start, Center, End `^C^C_arc \_c \`,
+    // Center, Start, End `^C^C_arc _c` (desktop arc/d01, d03, d04); Enter
+    // afterwards repeats ARC, by three points (probes arc/p101, p107).
+    const start = "Specify start point of arc or [Center]:"
+    const end = "Specify end point of arc (hold Ctrl to switch direction):"
+
+    it("echoes `_arc` and answers `_c`", () => {
+      const run = (id: string, ...answers: string[]) => {
+        const cad = createHarness()
+        cad.tool(id)
+        expect(cad.activeToolId()).toBe(id)
+        answer(cad, ...answers)
+        return cad
+      }
+      expect(run("arc", "0,0", "10,10", "20,0").commandLog()).toEqual([
+        "_arc",
+        `${start} 0,0`,
+        "Specify second point of arc or [Center]: 10,10",
+        "Specify end point of arc: 20,0",
+      ])
+      expect(run("arcsce", "10,0", "0,0", "0,10").commandLog()).toEqual([
+        "_arc",
+        `${start} 10,0`,
+        "Specify second point of arc or [Center]: _c Specify center point of arc: 0,0",
+        `${end} 0,10`,
+      ])
+      expect(run("arccse", "0,0", "10,0", "0,10").commandLog()).toEqual([
+        "_arc",
+        `${start} _c Specify center point of arc: 0,0`,
+        "Specify start point of arc: 10,0",
+        `${end} 0,10`,
+      ])
+    })
+
+    it("repeats ARC at Enter and undoes as ARC", () => {
+      // probe arc/p149: U names ARC (es ARCO, its `H`).
+      for (const [locale, u, name] of [
+        [undefined, "U", "ARC"],
+        [es, "H", "ARCO"],
+      ] as const) {
+        for (const id of ["arcsce", "arccse"]) {
+          const cad = createHarness(locale ? { locale } : {})
+          cad.tool(id)
+          answer(cad, "10,0", "0,0", "0,10")
+          expect(cad.entityCount).toBe(1)
+          answer(cad, "")
+          expect(cad.state().commandLine.prompt).toBe(
+            `${name} ${locale ? "Precise punto inicial del arco o [Centro]:" : start}`
+          )
+          cad.escape()
+          expect(written(cad, "_U")).toEqual([u, name])
+          expect(cad.entityCount).toBe(0)
+        }
+      }
+    })
+
+    it("keeps ARCSCE and ARCCSE typable, as the rail runs them", () => {
+      const cad = answer(createHarness(), "ARCSCE", "10,0", "0,0", "0,10")
+      expect(cad.commandLog().slice(0, 3)).toEqual([
+        "ARCSCE",
+        `${start} 10,0`,
+        "Specify second point of arc or [Center]: _c Specify center point of arc: 0,0",
+      ])
+      expect(cad.only<ArcEntity>("arc").endAngle).toBeCloseToAngle(deg(90))
+      answer(cad, "ARCCSE", "0,0", "20,0", "0,20")
+      expect((cad.latest() as ArcEntity).radius).toBeCloseTo(20)
+    })
   })
 })
 

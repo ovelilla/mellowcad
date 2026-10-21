@@ -141,7 +141,8 @@ TRACKPATH as variables (SETVAR, roadmap row 24), the plane's angles measured in 
 ### Ortho (F8)
 
 **Implemented:** constraint to the UCS's axes, from the prompt's base point (none at CIRCLE's 2P
-and 3P later points, whose picks it leaves alone, desktop circle/d12); F8 turns it on and off, writing ` <Ortho on>` /
+and 3P later points, whose picks it leaves alone, desktop circle/d12, nor at ARC's but a centre
+mode's end, bent about the centre, arc/d06); F8 turns it on and off, writing ` <Ortho on>` /
 ` <Ortho off>` (es ` <Orto activado>` / `desactivado`), and turning it on turns Polar off, as Polar
 turns it off (desktop passes line/d10, d27); Shift held toggles it ("To turn Ortho off
 temporarily, hold down the Shift key"; with it off, on), Polar yielding; in a 3D view its Z as a

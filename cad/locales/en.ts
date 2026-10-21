@@ -2576,6 +2576,7 @@ export const en: EngineCatalog = {
       ],
       "pointingEdgeOn": "Pointing in edge-on UCS is prohibited.",
       "circleDoesNotExist": "Circle does not exist.",
+      "radiusMustBeNonZero": "Radius must be non-zero.",
       "noLineOrArcToContinue": "No line or arc to continue.",
       "allLineSegmentsUndone": "All segments already undone.",
       "zeroLengthLineCreated": [

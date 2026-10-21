@@ -192,8 +192,8 @@ where the cursor is drawn along the guide (a snapped object's, under a snap), an
 the base point's plus that length up or down. What LINE
 draws has a Z at each end; a flat object (PLINE, SPLINE, CIRCLE, ARC, ELLIPSE, RECTANG, POLYGON,
 TEXT, MTEXT, ATTDEF, INSERT) lies in the plane of the first point that fixed it,
-and the others are projected onto it — what AutoCAD's PLINE does; CIRCLE 3P and ARC through three
-points at different heights lie in the plane of the three instead, as AutoCAD's do. A dimension
+and the others are projected onto it — what AutoCAD's PLINE does, and its CIRCLE 3P and ARC
+through points at different heights (circle/p189, arc/p06). A dimension
 lies at the height of the point that places its dimension line, whatever its origins': snapped on
 objects above the plane, AutoCAD's is still "created at the current elevation" (Autodesk forum 2016,
 AUGI 2010); DIMBASELINE / DIMCONTINUE take the base dimension's, and a location snapped to an object

@@ -108,8 +108,9 @@ cannot tell: a single object's pick (`"object"`), a 2D point (ARC's, PLINE's, MI
 points, CIRCLE's 2P and 3P ones), a keyword prompt that keeps snaps on, a set of whole objects,
 STRETCH's crossing set or BREAK's one object (`"oneObject"`; UCS OBject's `"singleSet"`), a count
 (`"integer"`), and a command's own words (`{ refusal: "requiresRadius" }`; with `values`; a list of ids for several
-lines; `keywords` by id). Type `FOO` at the prompt in AutoCAD's console before declaring one: the
-words differ per input function, and per command at `Select objects:`.
+lines; `keywords` by id; at a point prompt it refuses a Z and says `setsLastPoint()`, ARC's
+centre end). Type `FOO` at the prompt in AutoCAD's console before declaring one: the words differ
+per input function, and per command at `Select objects:`.
 
 ## Answering, numbers and transparency
 
@@ -301,9 +302,8 @@ base)`, because every `V` helper returns a `Vec2`. Type a state field that feeds
 - **A flat object lies in the plane of the first point that fixed it**: `onPlaneOf(createX(...),
 first)`, later points projected (`withZOf(point, first)`). `createLine` reads both ends' Z. A
   dimension lies at the height of the point placing its dimension line, whatever its origins'.
-- **Three points fix their own plane** (ARC's; not CIRCLE's, circle/p189): `planeThrough`
-  (`threePointPlane.ts`), `null` falling back to the first point's plane. FILLET and CHAMFER
-  resolve two lines with `lineCorner` (`lineCorner.ts`).
+  Three points too (arc/p06, circle/p189). FILLET and CHAMFER resolve two lines with
+  `lineCorner` (`lineCorner.ts`).
 - **A grip drags to a point like any click**; only a line's end grip writes that Z into the
   object, every other grip stores `planar(point)`.
 - **An edit that needs coplanar objects refuses with AutoCAD's message** (`coplanar`,
@@ -326,7 +326,8 @@ first)`, later points projected (`withZOf(point, first)`). `createLine` reads bo
   first: on the `+Z` / `-Z` guide `resolveValues` leaves the angle out, so a commit passes
   `angle: null`.
 - `getConstraintAnchor()` — the base Ortho/Polar restrict against, in every phase defining a
-  direction, with its Z; none where the trace says `UseBasePoint` false (circle/d12, p137).
+  direction, with its Z; none where Ortho leaves the pick alone, whatever `UseBasePoint` says
+  (circle/d12, arc/d06).
 - No hook exposes a preview to the snaps: ghosts are not objects.
 - **A Tangent or Perpendicular that finds nothing** reaches the tool where `defersSnap(kind,
 entity)` says so: it reads `ctx.snapOverride()` and `ctx.pick`, as LINE (`tools/deferredSnap.ts`)

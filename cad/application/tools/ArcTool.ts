@@ -1,20 +1,20 @@
 import { Vec2, V } from "../../geometry/Vec2"
 import { Vec3 } from "../../geometry/Vec3"
-import { arcFrom3Points } from "../../geometry/primitives"
+import { arcFrom3Points, normalizeAngle } from "../../geometry/primitives"
 import {
   ArcEntity,
   EntityId,
   createArc,
   onPlaneOf,
-  withElevation,
-  withNormal,
 } from "../../domain/entities"
 import { LayerId } from "../../domain/layers"
 import { AddEntityCommand } from "../commands/entityCommands"
+import type { MessageId } from "../EngineText"
 import { DynamicInputSession } from "../input/DynamicInput"
 import type { PromptId } from "../../locales/types"
 import {
   isCoordinateExpression,
+  isPlanarCoordinate,
   parseCoordinate,
 } from "../input/coordinateInput"
 import { ScenePrimitive } from "../../scene/types"
@@ -24,7 +24,9 @@ import {
   CommandOption,
   CommandOptionOutcome,
   KeyInput,
+  MACRO_PAUSE,
   PointerInput,
+  type RibbonMacro,
   Tool,
   ToolContext,
   type QuestionInput,
@@ -33,14 +35,15 @@ import {
   withCurrentProperties,
   withCurrentThickness,
 } from "./currentProperties"
-import { planeThrough } from "./threePointPlane"
+import { continuePoint } from "./lastDrawnPoint"
 
 /** The ghost's id, reused every frame so a preview burns no entity ids. */
 const PREVIEW_ID = "arc-preview"
 
 /**
  * How an arc is defined — the top of AutoCAD's ARC dropdown, each surfaced as
- * its own rail entry (a flyout):
+ * its own rail entry (a flyout) that runs ARC as the ribbon's button does
+ * ({@link ArcTool.ribbonMacro}):
  *
  * - `threePoint`: start, a point on the arc, then the end (the default ARC);
  * - `startCenterEnd`: start point, centre, then the end angle;
@@ -50,6 +53,20 @@ const PREVIEW_ID = "arc-preview"
  * parameterised by {@link ArcMode} covers them.
  */
 export type ArcMode = "threePoint" | "startCenterEnd" | "centerStartEnd"
+
+/** The arc three points define, as {@link arcFromCenterStartEnd} gives it. */
+interface SolvedArc {
+  readonly center: Vec2
+  readonly radius: number
+  readonly startAngle: number
+  readonly endAngle: number
+}
+
+/**
+ * Why three points make no arc: AutoCAD's `*Invalid*`, after `Radius must be
+ * non-zero.` for a centre on the start (probes arc/p188, p189).
+ */
+type NoArc = "invalid" | "zeroRadius"
 
 type ArcToolState =
   | { readonly phase: "p1" }
@@ -63,8 +80,9 @@ type ArcToolState =
 
 /**
  * The arc tool — AutoCAD's ARC. One class parameterised by {@link ArcMode},
- * registered once per mode; the start point's and the second point's
- * `[Center]` switch the mode actually running. It never mutates the document:
+ * registered once per mode, every one starting by three points as ARC does;
+ * the start point's and the second point's `[Center]`, which a mode's macro
+ * answers, switch the mode actually running. It never mutates the document:
  * the finished arc is submitted as an {@link AddEntityCommand}, so it is
  * undoable, and the command ends the moment the arc is defined (ARC is
  * single-shot in AutoCAD).
@@ -73,6 +91,7 @@ export class ArcTool implements Tool {
   readonly id: string
   readonly shortcut?: string
 
+  /** The rail's mode: the answers its macro types. */
   private readonly mode: ArcMode
   /** The mode actually running: `[Center]` switches it. */
   private active: ArcMode
@@ -86,21 +105,36 @@ export class ArcTool implements Tool {
 
   constructor(mode: ArcMode, id: string, shortcut?: string) {
     this.mode = mode
-    this.active = mode
+    this.active = "threePoint"
     this.id = id
     this.shortcut = shortcut
+  }
+
+  /**
+   * The ribbon's Arc buttons are ARC answered (acad.cuix): 3-Point
+   * `^C^C_arc`, Start, Center, End `^C^C_arc \_c \`, Center, Start, End
+   * `^C^C_arc _c` (desktop arc/d03, d04). WHY ARCSCE and ARCCSE typed run them
+   * too: they are this app's names for the buttons (ARC-D3).
+   */
+  ribbonMacro(): RibbonMacro {
+    const answers: Record<ArcMode, readonly string[]> = {
+      threePoint: [],
+      startCenterEnd: [MACRO_PAUSE, "_c"],
+      centerStartEnd: ["_c"],
+    }
+    return { command: "ARC", answers: answers[this.mode] }
   }
 
   onActivate(ctx: ToolContext): void {
     ctx.setCursor("crosshair")
     ctx.selection.clear()
-    this.active = this.mode
+    this.active = "threePoint"
     this.state = { phase: "p1" }
     this.openPointInput(ctx, this.promptFor("p1"))
   }
 
   onDeactivate(ctx: ToolContext): void {
-    this.active = this.mode
+    this.active = "threePoint"
     this.state = { phase: "p1" }
     ctx.dynamicInput.close()
   }
@@ -128,9 +162,37 @@ export class ArcTool implements Tool {
     }
   }
 
-  /** Every point after the first is a 2D one, as AutoCAD's console refuses it. */
+  /**
+   * Every point after the first is a 2D one, as AutoCAD's console refuses it
+   * (probes arc/p04, p05, p07, p124, p125). WHY a centre mode's end names a
+   * keyword it does not offer: its `initget` declares Angle and chord Length,
+   * and the console's words are the spec (p164; ARC-D2).
+   */
   takes(): QuestionInput | null {
-    return this.state.phase === "p1" ? null : "point2d"
+    if (this.state.phase === "p1") return null
+    return this.atCentreEnd()
+      ? { refusal: "point2dOrKeywordRequired" }
+      : "point2d"
+  }
+
+  /** The end point given at a centre mode's end is LASTPOINT (arc/p142, p143). */
+  setsLastPoint(): boolean | null {
+    return this.atCentreEnd() ? true : null
+  }
+
+  /**
+   * A Tangent or Perpendicular where the tool has no base measures from
+   * LASTPOINT: at the first point (probes arc/p14, p15) and CSE's centre
+   * (p16), and after them, where LASTPOINT is the point before (p09, p10). At
+   * a centre mode's end the centre is the base (p12, p13).
+   */
+  snapsFromLastPoint(): boolean {
+    return true
+  }
+
+  /** A centre mode's end point: the prompt with a base, and its own refusal. */
+  private atCentreEnd(): boolean {
+    return this.state.phase === "p3" && this.active !== "threePoint"
   }
 
   commandOptions(): readonly CommandOption[] {
@@ -199,27 +261,57 @@ export class ArcTool implements Tool {
     ctx.requestRender()
   }
 
+  /** Enter where the drawing's Enter would end ARC: {@link answerEnter}. */
+  onEnter(ctx: ToolContext): boolean {
+    return this.answerEnter(ctx)
+  }
+
+  /**
+   * Enter at the start continues from what was drawn last, and with nothing
+   * there AutoCAD says so and ARC ends (probe arc/p108). WHY it ends with
+   * something to continue: Continue is not built (ARC-D4, p109). Every later
+   * prompt refuses it in its own words and asks again (p113–p118).
+   */
+  private answerEnter(ctx: ToolContext): boolean {
+    if (this.state.phase === "p1" && this.active !== "centerStartEnd") {
+      if (continuePoint(ctx.document, ctx.lastPoint) !== null) return false
+      ctx.report(ctx.text.message("noLineOrArcToContinue"), "error")
+      ctx.report(ctx.text.message("invalid"), "error")
+      ctx.endCommand()
+      return true
+    }
+    const keyworded =
+      (this.state.phase === "p2" && this.active === "threePoint") ||
+      this.atCentreEnd()
+    const refusal: MessageId =
+      this.state.phase === "p1"
+        ? "invalidPoint"
+        : keyworded
+          ? "point2dOrKeywordRequired"
+          : "invalidPoint2d"
+    ctx.report(ctx.text.message(refusal), "error")
+    return true
+  }
+
   onKeyDown(input: KeyInput, ctx: ToolContext): void {
     if (input.key === "Escape") {
+      this.active = "threePoint"
       this.state = { phase: "p1" }
       ctx.dynamicInput.close()
       ctx.requestRender()
     }
   }
 
-  getConstraintAnchor(): Vec2 | null {
-    switch (this.state.phase) {
-      case "p2":
-        return this.state.p1
-      case "p3":
-        // The end point is measured from the arc's centre in the centre modes,
-        // and from the mid point in the three-point mode.
-        return this.active === "threePoint"
-          ? this.state.p2
-          : this.centerOf(this.state.p1, this.state.p2)
-      default:
-        return null
-    }
+  /**
+   * Only a centre mode's end bends about a base, the centre. WHY none at 3P's
+   * points, SCE's centre or CSE's start, though the trace gives them a base
+   * point: Ortho leaves their picks alone (desktop arc/d06) and `<45` there
+   * is the prompt's wrong answer (probes arc/p07, p136, p137, p139).
+   */
+  getConstraintAnchor(): Vec3 | null {
+    return this.state.phase === "p3" && this.atCentreEnd()
+      ? this.centerOf(this.state.p1, this.state.p2)
+      : null
   }
 
   buildOverlay(ctx: ToolContext): ScenePrimitive[] {
@@ -256,7 +348,9 @@ export class ArcTool implements Tool {
             stroke: rubber,
           })
         }
-        if (arc) out.push(...entityScenePrimitive(viewport, arc, rubber))
+        if (typeof arc === "object") {
+          out.push(...entityScenePrimitive(viewport, arc, rubber))
+        }
         return out
       }
       default:
@@ -270,37 +364,28 @@ export class ArcTool implements Tool {
     return this.active === "startCenterEnd" ? { ...p2, z: p1.z } : p1
   }
 
-  /**
-   * The arc defined by the three points, per mode — or `null` when it is
-   * degenerate (collinear three-point, or a zero-radius centre mode).
-   */
-  private solve(
-    p1: Vec2,
-    p2: Vec2,
-    p3: Vec2
-  ): {
-    center: Vec2
-    radius: number
-    startAngle: number
-    endAngle: number
-  } | null {
+  /** The arc defined by the three points in plan, per mode, or why none. */
+  private solve(p1: Vec2, p2: Vec2, p3: Vec2): SolvedArc | NoArc {
     if (this.active === "threePoint") {
-      return arcFrom3Points(p1, p2, p3)
+      // Coincident or collinear points, the end on the start (probes arc/p17,
+      // p132, p168–p170).
+      const arc = arcFrom3Points(p1, p2, p3)
+      return arc && arc.radius > 0 ? arc : "invalid"
     }
-    // Centre modes: (centre, start, end) triplet resolved per mode.
     const center = this.active === "startCenterEnd" ? p2 : p1
     const start = this.active === "startCenterEnd" ? p1 : p2
     const arc = arcFromCenterStartEnd(center, start, p3)
+    if (typeof arc === "string") return arc
     // Clockwise is counter-clockwise from the end back to the start.
-    return arc && this.reversed
+    return this.reversed
       ? { ...arc, startAngle: arc.endAngle, endAngle: arc.startAngle }
       : arc
   }
 
   /**
-   * The arc the three points make: by three points, in their own plane when
-   * they are at different heights, as AutoCAD's is; in a centre mode, in the
-   * UCS plane through the first point. `null` when degenerate.
+   * The arc the three points make, solved from their X and Y and lying in the
+   * first point's plane, as AutoCAD's 3P does too (probes arc/p06, p152,
+   * p192), or why none.
    */
   private arcFor(
     p1: Vec3,
@@ -308,12 +393,9 @@ export class ArcTool implements Tool {
     p3: Vec3,
     layerId: LayerId,
     id?: EntityId
-  ): ArcEntity | null {
-    const plane = this.active === "threePoint" ? planeThrough(p1, p2, p3) : null
-    const solved = plane
-      ? arcFrom3Points(plane.points[0], plane.points[1], plane.points[2])
-      : this.solve(p1, p2, p3)
-    if (!solved || !(solved.radius > 0)) return null
+  ): ArcEntity | NoArc {
+    const solved = this.solve(p1, p2, p3)
+    if (typeof solved === "string") return solved
     const arc = createArc(
       solved.center,
       solved.radius,
@@ -322,14 +404,23 @@ export class ArcTool implements Tool {
       layerId,
       id
     )
-    return plane
-      ? withNormal(withElevation(arc, plane.points[0].z), plane.normal)
-      : onPlaneOf(arc, p1)
+    return onPlaneOf(arc, p1)
   }
 
+  /**
+   * Adds the arc, or says AutoCAD's `*Invalid*` and ends ARC with nothing
+   * made, LASTPOINT the point last given (probes arc/p17, p162, p188).
+   */
   private commit(p1: Vec3, p2: Vec3, p3: Vec3, ctx: ToolContext): void {
     const arc = this.arcFor(p1, p2, p3, ctx.document.getCurrentLayerId())
-    if (!arc) return // degenerate — keep prompting
+    if (typeof arc === "string") {
+      if (arc === "zeroRadius") {
+        ctx.report(ctx.text.message("radiusMustBeNonZero"), "error")
+      }
+      ctx.report(ctx.text.message("invalid"), "error")
+      ctx.endCommand()
+      return
+    }
     ctx.execute(
       new AddEntityCommand(
         withCurrentProperties(withCurrentThickness(arc, ctx), ctx)
@@ -369,7 +460,11 @@ export class ArcTool implements Tool {
 
   private commitTypedPoint(ctx: ToolContext): boolean {
     const text = ctx.dynamicInput.getText("point").trim()
+    if (text === "") return this.answerEnter(ctx)
     if (!isCoordinateExpression(text)) return false
+    // The runtime refuses a Z or `*` where the question takes "point2d"; a
+    // centre mode's end declares its refusal instead, so it is refused here.
+    if (this.atCentreEnd() && !isPlanarCoordinate(text)) return false
 
     const last = this.previousPoint()
     const point = parseCoordinate(text, {
@@ -379,17 +474,25 @@ export class ArcTool implements Tool {
       elevation: ctx.elevation,
     })
     if (!point) return false
+    // WHY the tool says it: the box reads it from the point before, which is
+    // no base of the runtime's at 3P's points, SCE's centre or CSE's start.
+    if (last !== null) ctx.setLastPoint(point)
     this.advanceWithPoint(point, ctx)
     return true
   }
 
-  /** The point a relative coordinate is measured from, per phase. */
+  /**
+   * The point a relative coordinate is measured from, per phase: the point
+   * before, and at a centre mode's end the centre (probes arc/p126–p129).
+   */
   private previousPoint(): Vec3 | null {
     switch (this.state.phase) {
       case "p2":
         return this.state.p1
       case "p3":
-        return this.state.p2
+        return this.active === "threePoint"
+          ? this.state.p2
+          : this.centerOf(this.state.p1, this.state.p2)
       default:
         return null
     }
@@ -400,21 +503,24 @@ export class ArcTool implements Tool {
  * The arc through `start` that turns about `center` until it reaches the ray to
  * `end` — AutoCAD's Start/Center/End family. The radius comes from the start
  * point; the end point only supplies the angle to stop at, and the sweep is
- * always CCW (the tool's invariant). `null` for a zero radius.
+ * always CCW (the tool's invariant). None for an end at the centre or on the
+ * start's ray, and then for a zero radius: the ray is asked first, a centre on
+ * the start having its ray at 0° (probes arc/p130, p162, p166, p188–p191).
  */
 function arcFromCenterStartEnd(
   center: Vec2,
   start: Vec2,
   end: Vec2
-): {
-  center: Vec2
-  radius: number
-  startAngle: number
-  endAngle: number
-} | null {
-  const radius = V.distance(center, start)
-  if (!(radius > 0)) return null
+): SolvedArc | NoArc {
+  if (!(V.distance(center, end) > 0)) return "invalid"
   const startAngle = Math.atan2(start.y - center.y, start.x - center.x)
   const endAngle = Math.atan2(end.y - center.y, end.x - center.x)
+  const sweep = normalizeAngle(endAngle - startAngle)
+  if (sweep < SAME_RAY || sweep > 2 * Math.PI - SAME_RAY) return "invalid"
+  const radius = V.distance(center, start)
+  if (!(radius > 0)) return "zeroRadius"
   return { center, radius, startAngle, endAngle }
 }
+
+/** Radians within which the end lies on the start's ray: a zero sweep. */
+const SAME_RAY = 1e-10

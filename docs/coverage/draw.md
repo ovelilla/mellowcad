@@ -295,12 +295,47 @@ from LASTPOINT; **unverified**, none here), the rail's Tan, Tan, Tan entry
 `Specify end point of arc (hold Ctrl to switch direction):`, runs clockwise while Ctrl is held (es
 `Precise punto inicial del arco o [Centro]`, `Precise segundo punto de arco o`,
 `Precise punto central del arco`, `Precise punto inicial del arco`, `Precise punto final del arco`,
-`Precise punto final del arco (mantenga pulsada la tecla Ctrl para cambiar de dirección)`); 3-point
-(through points at different heights, in the plane of the three), Start-Center-End, Center-Start-End
-(the rail's ARCSCE and ARCCSE); CCW storage invariant; in the first point's plane, with THICKNESS
+and at a centre mode's end
+`Precise punto final de arco (mantenga pulsada la tecla Ctrl para cambiar de dirección)`, table
+8423, `del arco` being Continue's, 405; probes arc/p01–p03, p109, p118); 3-point, Start-Center-End,
+Center-Start-End, stored counter-clockwise (p01–p03, p171); the rail's 3-Point, Start, Center, End
+and Center, Start, End run the ribbon's macros, `^C^C_arc`, `_arc \_c \`, `_arc _c`: echoed
+`_arc`, the second point or the start answered `_c`, the prompt it opens written on its line
+(desktop d03, d04); Enter afterwards repeats ARC by three points and U names it ARC (es ARCO; p101,
+p107, p149); ARCSCE and ARCCSE, this app's names for those buttons (AutoCAD knows neither, p105),
+run the same macros typed (ARC-D3); Enter at the start with nothing drawn to continue says
+`No line or arc to continue.` and `*Invalid*` and ends (es
+`No hay línea o arco que se pueda continuar.`, `*No válido*`, table 20149; p108); Enter at every
+later prompt is refused in its words and asked again, nothing given lost:
+`2D point or option keyword required.` at 3P's second and a centre mode's end, `Invalid point.` at
+CSE's centre, `Invalid 2D point.` at 3P's end, SCE's centre and CSE's start (es
+`Se requiere un punto 2D o una opción.`, `Punto no válido.`, `Punto 2D no válido.`; p113–p118); a
+word is refused in the same words (p04, p05), at a centre mode's end too, which declares Angle and
+chord Length though they are not offered (p164; ARC-D2); every point after the first is 2D, a Z or
+`*` typed there refused (p07, p124, p125; at a centre mode's end **unverified**, refused here as a
+word); `@` and the box read from the point before, at a centre mode's end from the centre (p126–p129,
+p131), and the point given is LASTPOINT, the end point once ARC is done (p141–p143); a Tangent or
+Perpendicular at the first point or CSE's centre is measured from LASTPOINT (p14–p16), at the later
+points from the point before (p09, p10, p172–p176), at a centre mode's end from the centre (p12,
+p13); only a centre mode's end has a base point: Ortho bends it about the centre and leaves 3P's
+points, SCE's centre and CSE's start as picked (desktop d06), and `<angle` there is the prompt's
+wrong answer (p07, p136, p137, p139), taken at the end (`Angle Override: 90`, a point typed after
+it the point typed; p140); in the first point's plane, the later points by their X and Y, 3P too
+(ends snapped at Z 5, 0 and 0 make a flat arc at Z 5, p06; a typed `0,0,7` with ELEVATION 5 at Z 7,
+p152; `'ELEV` mid-ARC leaves it at the first point's, p192), with THICKNESS and the current
+properties, taken at its end (p150, p151, p192); an arc that cannot be made says `*Invalid*` (es
+`*No válido*`) and ends, nothing made, LASTPOINT the last point given: 3P's points coincident or
+collinear, the end on the start (p11, p17, p132, p168–p170), a centre mode's end at the centre or on
+the start's ray (p131, p162, p166, p190, p191), the ray asked before the radius (`@` at CSE's start,
+the end on its ray, p130); a centre on the start with another end says `Radius must be non-zero.`
+first (es `El radio no debe ser cero.`, table 20158; p188, p189)
 
-**Missing:** End at the second point and Angle / chord Length at the end point (so those questions
-go without the `or` that introduces them), the remaining SCA/SCL/SEA/SED/SER permutations, Continue
+**Missing:** End at the second point, Angle and chord Length at a centre mode's end, and the
+Direction and Radius they lead to (the ribbon's SCA, SCL, SEA, SED, SER, CSA and CSL; those
+prompts go without the `or` that introduces them; ARC-D1); Continue: Enter at the start with a line, a
+polyline or an arc drawn ends ARC (AutoCAD asks the end of an arc tangent from it, p109; ARC-D4);
+the included-angle box dynamic input shows at a centre mode's end, and its Down list's Angle and
+chord Length (desktop d05); Polar at ARC's prompts (**unverified**: assumed to follow Ortho's base)
 
 ### `ELLIPSE` / `EL` · es `ELIPSE` / `EL`†
 

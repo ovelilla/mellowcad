@@ -886,11 +886,11 @@ lweight "Lineweight" LW
   tip: Specify center point of arc:
   options: -
   prompt| Specify start point of arc or [Center]:
+  prompt| Specify second point of arc or [Center]: _c
 > centre
   prompt: ARCSCE Specify end point of arc (hold Ctrl to switch direction):
   asks: "End point"
   tip: Specify end point of arc (hold Ctrl to switch direction):
-  prompt| Specify center point of arc:
 > end
   prompt: Command:
   asks: -
@@ -903,11 +903,11 @@ lweight "Lineweight" LW
   tip: Specify center point of arc:
   dyn: "X,Y"=""||*
   command| ARCCSE
+  prompt| Specify start point of arc or [Center]: _c
 > centre
   prompt: ARCCSE Specify start point of arc:
   asks: "Start point"
   tip: Specify start point of arc:
-  prompt| Specify center point of arc:
 > start
   prompt: ARCCSE Specify end point of arc (hold Ctrl to switch direction):
   asks: "End point"

@@ -16,8 +16,9 @@ when it offers none. An alias is echoed as typed with the name it runs (`Command
 `CIRCULO`; probes circle/p159, p191, p192); the rail's Circle modes run the ribbon's macros, `_circle`
 and the mode answered at its prompt, the prompt that answer opens written on the answer's line as the
 desktop writes it (`Specify center point for circle or [3P/2P/Ttr (tan tan radius)]: _2p Specify
-first end point of circle's diameter: 0,0`, desktop circle/d01, d02), while ARC's and ELLIPSE's
-modes are still echoed by this app's names for them (`_arcsce`); the prompt is headed by the
+first end point of circle's diameter: 0,0`, desktop circle/d01, d02; ARC's, `_arc` and `_c`,
+desktop arc/d03, d04), while ELLIPSE's modes are still echoed by this app's names for them
+(`_ellipsec`); the prompt is headed by the
 command typed, a dash one's with its dash (`-LINETYPE Enter an option [?/Set]:`, es `-TIPOLIN`). The history writes each prompt with its
 answer: what was typed (a value, a keyword, `<45`, FROM), bare for a pick or Enter, `*Cancel*` after
 Escape (es `*Cancelado*`; at `Command:` Escape writes `Command: *Cancel*`, es `Comando: *Cancelar*`,
