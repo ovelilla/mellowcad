@@ -14,7 +14,8 @@ when it offers none. An alias is echoed as typed with the name it runs (`Command
 (`-LINETYPE Enter an option [?/Set]:`, es `-TIPOLIN`). The history writes each prompt with its
 answer: what was typed (a value, a keyword, `<45`, FROM), bare for a pick or Enter, `*Cancel*` after
 Escape (es `*Cancelar*`), and an object snap on the line its pick answers
-(`Specify first point: _endp of`, typed `end of`), ahead of what answering it reported
+(`Specify first point: _endp of`, typed `end of`; FROM's `Base point:` and `<Offset>:` on lines of
+their own), ahead of what answering it reported
 (`Current line-width is 0.0000`). Mid-command a command name is not run: what is neither a keyword
 nor what the question asks — typed at the command line or in the tooltip — is written as its answer
 and refused in the words of the input function behind the question, as AutoCAD 2023's console
@@ -86,8 +87,8 @@ find), the last keyword AutoCAD 2023 leaves out of a single pick's list (`[Exit/
 `Exit`: an off-by-one, all are listed here), SPLINE's degree
 (`Requires an integer between -32768 and 32767, or option keyword.` in the console;
 `Requires an integer value.` here); **unverified**: what the history writes for a length and an
-angle typed in the tooltip's two fields (`100<45` here), the menu's snaps but `_endp`, the `to` of
-Tangent, Perpendicular, Nearest and Parallel, and Spanish's `de` / `a` after a snap
+angle typed in the tooltip's two fields (`100<45` here), and Insertion's `of` (every other snap's
+`of` or `to`, es `de` / `a`, is 2027's: drafting-aids.md, Object snap overrides)
 
 ### Command names
 

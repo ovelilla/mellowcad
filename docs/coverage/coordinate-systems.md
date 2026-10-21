@@ -121,8 +121,8 @@ step once both are answered (Escape at the second changes neither)
 **Missing:** the variables typed by name (no SETVAR yet)
 
 **The last point (LASTPOINT):** 0,0,0 in a new drawing, then the last point a prompt took — picked,
-snapped, typed, given with FROM or as a length along the cursor; LINE's Undo steps it back to the
-vertex before —, and the WCS's origin as UCS starts, which only a point given at its prompts moves
+snapped, typed, FROM's base until its offset is given (Enter at `<Offset>` leaves it there, probe
+line/p164) or a length along the cursor; LINE's Undo steps it back to the vertex before —, and the WCS's origin as UCS starts, which only a point given at its prompts moves
 (after X / Y / Z, View, World, Previous or a restored name it is still there: `ID @` reads `-30,0,0`
 in a UCS at 30,0), while -VIEW's orthographic UCS leaves it; when U takes a UCS back, where it was
 if the UCS was made at its first prompt, else the WCS's origin, REDO putting it again where the UCS

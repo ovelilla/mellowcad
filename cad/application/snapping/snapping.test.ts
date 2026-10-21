@@ -2,11 +2,12 @@ import { describe, expect, it, onTestFinished, vi } from "vitest"
 import type { LineEntity } from "../../domain/entities"
 import type { Vec2 } from "../../geometry/Vec2"
 import { SnapType } from "./types"
-import { createHarness } from "../../../test/harness"
+import { type CadHarness, createHarness } from "../../../test/harness"
 import { CadRuntime } from "../CadRuntime"
 import { createRecordingHost } from "../CadDriver"
 import { circleOf, lineOf, p } from "../../../test/builders"
 import { THEME } from "../../scene/theme"
+import { es } from "../../locales/es"
 
 /**
  * Object snapping decides where a pick *actually* lands, so it is both the most
@@ -18,6 +19,21 @@ import { THEME } from "../../scene/theme"
  */
 
 const REFERENCE = lineOf(p(0, 0), p(100, 0), { id: "REF" })
+
+/** Each answer typed at the command line and confirmed, as the console types it. */
+function answer(cad: CadHarness, ...texts: string[]): CadHarness {
+  for (const text of texts) {
+    cad.runtime.setCommandLineText(text)
+    cad.runtime.submitCommandLine()
+  }
+  return cad
+}
+
+function drawnLines(cad: CadHarness): LineEntity[] {
+  return cad
+    .entities()
+    .filter((e): e is LineEntity => e.type === "line" && e.id !== "REF")
+}
 
 describe("running object snaps", () => {
   it("pulls a pick onto a nearby endpoint", () => {
@@ -129,7 +145,8 @@ describe("running object snaps", () => {
   })
 
   it("ships with polar tracking on, at 90 degrees", () => {
-    // AUTOSNAP 63 includes polar tracking; POLARANG starts at 90.
+    // AUTOSNAP 63 includes polar tracking; POLARANG starts at 90 (probe
+    // line/p166).
     const runtime = new CadRuntime(createRecordingHost(), null, null, null)
 
     expect(runtime.getState().polarActive).toBe(true)
@@ -369,10 +386,15 @@ describe("the line being drawn", () => {
 
     cad.command("LINE").click(p(-100, -350))
     cad.runtime.setSnapOverride(SnapType.Intersection)
-    cad.click(p(204, -170)).escape()
+    cad.click(p(260, -170))
 
-    const drawn = cad.entities().find((e) => e.id !== "REF") as LineEntity
-    expect(drawn.end).toBeCloseToPoint(p(204, -170))
+    // Only the rubber band is under the cursor: nothing to intersect, which
+    // AutoCAD refuses (probe line/p211).
+    expect(cad.commandLog().slice(-2)).toEqual([
+      "No Intersection found for specified point.",
+      "Point or option keyword required.",
+    ])
+    expect(drawnLines(cad)).toEqual([])
   })
 
   it("lets an engaged polar path cross an object, exactly", () => {
@@ -479,6 +501,229 @@ describe("an object snap typed at a point prompt", () => {
   })
 })
 
+describe("an object snap override typed with a point", () => {
+  it("finds the snap at the point typed", () => {
+    // probe line/p25: `_END of 99,1` is 100,0, `_MID of 50,1` 50,0.
+    const cad = answer(
+      createHarness({ entities: [REFERENCE] }),
+      "LINE",
+      "_END",
+      "99,1",
+      "_MID",
+      "50,1",
+      ""
+    )
+
+    const [drawn] = drawnLines(cad)
+    expect(drawn.start).toBeCloseToPoint(p(100, 0))
+    expect(drawn.end).toBeCloseToPoint(p(50, 0))
+    expect(cad.commandLog()).toContain("Specify first point: _END of 99,1")
+  })
+
+  it("defers a Tangent typed at LINE's first point", () => {
+    // probe line/p24: `_TAN to 10,0`, then 30,40.
+    const cad = answer(
+      createHarness({ entities: [circleOf(p(0, 0), 10, { id: "REF" })] }),
+      "LINE",
+      "_TAN",
+      "10,0",
+      "30,40",
+      ""
+    )
+
+    const [drawn] = drawnLines(cad)
+    expect(drawn.start).toBeCloseToPoint(p(9.0384, -4.2788), 3)
+    expect(drawn.end).toBeCloseToPoint(p(30, 40))
+  })
+})
+
+describe("an object snap override that finds nothing", () => {
+  it("refuses the pick in the snap's words and the prompt's", () => {
+    // probe line/p36: `_END of 500,500`, then the first point asked again.
+    const cad = createHarness({ entities: [REFERENCE] })
+    answer(cad, "LINE", "_END")
+    cad.click(p(300, 300))
+
+    expect(cad.commandLog().slice(-3)).toEqual([
+      "Specify first point: _END of",
+      "No Endpoint found for specified point.",
+      "Invalid point.",
+    ])
+    expect(drawnLines(cad)).toEqual([])
+    expect(cad.state().commandLine.prompt).toBe("LINE Specify first point:")
+  })
+
+  it("is gone after refusing, as the console's next point shows", () => {
+    // probe line/p156: `_EXT of 120,0` refused, then `@0,10` taken as typed.
+    const cad = answer(
+      createHarness({ entities: [REFERENCE] }),
+      "LINE",
+      "_EXT",
+      "120,0",
+      "@0,10"
+    )
+
+    expect(cad.state().snapOverride).toBeNull()
+    expect(cad.commandLog().slice(-3)).toEqual([
+      "No found for specified point.",
+      "Invalid point.",
+      "Specify first point: @0,10",
+    ])
+    expect(cad.state().commandLine.prompt).toBe(
+      "LINE Specify next point or [Undo]:"
+    )
+  })
+
+  it("refuses a point typed, at the next point in the prompt's words", () => {
+    // probe line/p156: `_PAR to 50,1` at LINE's next point.
+    const cad = answer(
+      createHarness({ entities: [REFERENCE] }),
+      "LINE",
+      "0,10",
+      "_PAR",
+      "50,1"
+    )
+
+    expect(cad.commandLog().slice(-3)).toEqual([
+      "Specify next point or [Undo]: _PAR to 50,1",
+      "No found for specified point.",
+      "Point or option keyword required.",
+    ])
+    expect(cad.activeToolId()).toBe("line")
+  })
+
+  it("is said in Spanish", () => {
+    // probe line/p36 es.
+    const cad = answer(
+      createHarness({ entities: [REFERENCE], locale: es }),
+      "LINEA",
+      "_MID",
+      "300,300",
+      "_TAN",
+      "300,300"
+    )
+
+    expect(cad.commandLog().slice(-6)).toEqual([
+      "Precise primer punto: _MID de 300,300",
+      "No se ha encontrado puntoMEDio para el punto designado.",
+      "Punto no válido.",
+      "Precise primer punto: _TAN a 300,300",
+      "No se ha encontrado para el punto designado.",
+      "Punto no válido.",
+    ])
+  })
+})
+
+describe("a second object snap override", () => {
+  it("is the wrong answer of the first's `of`, and neither holds", () => {
+    // probe line/p162: `_END of _MID`, `Invalid point.`, then 50,1 as typed.
+    const cad = answer(
+      createHarness({ entities: [REFERENCE] }),
+      "LINE",
+      "_END",
+      "_MID"
+    )
+
+    expect(cad.commandLog().slice(-2)).toEqual([
+      "Specify first point: _END of _MID",
+      "Invalid point.",
+    ])
+    expect(cad.state().snapOverride).toBeNull()
+  })
+})
+
+describe("the echo of an object snap override", () => {
+  it.each([
+    ["_END", "of"],
+    ["_MID", "of"],
+    ["_CEN", "of"],
+    ["_QUA", "of"],
+    ["_INT", "of"],
+    ["_APP", "of"],
+    ["_EXT", "of"],
+    ["_NEA", "to"],
+    ["_PER", "to"],
+    ["_TAN", "to"],
+    ["_PAR", "to"],
+  ])("writes %s %s", (snap, preposition) => {
+    // probes line/p25, p32, p24, p156.
+    const cad = answer(createHarness(), "LINE", "0,0", snap, "500,500")
+
+    expect(cad.commandLog()).toContain(
+      `Specify next point or [Undo]: ${snap} ${preposition} 500,500`
+    )
+  })
+
+  it("writes nothing after NON", () => {
+    // probe line/p32: `_NON` then `7,7`, taken as typed.
+    const cad = answer(
+      createHarness({ entities: [REFERENCE] }),
+      "LINE",
+      "_NON",
+      "99,1"
+    )
+
+    expect(cad.commandLog()).toContain("Specify first point: _NON 99,1")
+  })
+
+  it("takes _ENDP and _NEAR", () => {
+    // probe line/p156.
+    const cad = answer(
+      createHarness({ entities: [REFERENCE] }),
+      "LINE",
+      "_ENDP",
+      "99,1",
+      "_NEAR",
+      "30,1",
+      ""
+    )
+
+    const [drawn] = drawnLines(cad)
+    expect(drawn.start).toBeCloseToPoint(p(100, 0))
+    expect(drawn.end).toBeCloseToPoint(p(30, 0))
+    expect(cad.commandLog()).toContain(
+      "Specify next point or [Undo]: _NEAR to 30,1"
+    )
+  })
+
+  it("takes Apparent Intersection's global word and its own", () => {
+    // probe line/p156: `_APPINT of`; 2027's English declares `Appint`.
+    for (const typed of ["_APPINT", "APPINT"]) {
+      const cad = answer(createHarness(), "LINE", typed)
+      expect(cad.state().snapOverride).toBe(SnapType.ApparentIntersection)
+    }
+  })
+
+  it("is de and a in Spanish, after FIN, MED, CER and NIN", () => {
+    // probe line/p33 es.
+    const cad = answer(
+      createHarness({ entities: [REFERENCE], locale: es }),
+      "LINEA",
+      "FIN",
+      "1,1",
+      "MED",
+      "40,1",
+      "CER",
+      "30,1",
+      "NIN",
+      "7,7",
+      ""
+    )
+
+    const ends = drawnLines(cad).map((line) => line.end)
+    expect(drawnLines(cad)[0].start).toBeCloseToPoint(p(0, 0))
+    expect(ends).toBeCloseToPoints([p(50, 0), p(30, 0), p(7, 7)])
+    expect(cad.commandLog()).toEqual(
+      expect.arrayContaining([
+        "Precise primer punto: FIN de 1,1",
+        "Precise punto siguiente o [desHacer]: MED de 40,1",
+        "Precise punto siguiente o [desHacer]: CER a 30,1",
+        "Precise siguiente punto o [Cerrar/desHacer]: NIN 7,7",
+      ])
+    )
+  })
+})
+
 describe("-OSNAP", () => {
   it("lists the running modes and replaces them with the list typed", () => {
     const cad = createHarness()
@@ -497,15 +742,32 @@ describe("-OSNAP", () => {
     expect(cad.state().activeToolId).toBe("select")
   })
 
-  it("clears them with OFF, and says None", () => {
+  it("clears them with OFF, and lists nothing then", () => {
+    // probes line/p37, p155: no `Current osnap modes` line with none running.
     const cad = createHarness()
 
     cad.command("-OSNAP").type("off").enter()
     cad.command("-OSNAP")
 
-    expect(cad.runtime.commandLine.getLines().at(-1)?.text).toBe(
-      "Current osnap modes: None"
-    )
+    expect(cad.commandLog().slice(-1)).toEqual(["-OSNAP"])
+    expect(cad.commandLog().join("\n")).not.toContain("None")
+  })
+
+  it("clears them at Enter", () => {
+    // probes line/p37, p155: Enter at the list leaves OSMODE 0.
+    const cad = answer(createHarness(), "-OSNAP", "")
+
+    expect(Object.values(cad.state().snapEnabled)).not.toContain(true)
+    expect(cad.activeToolId()).toBe("select")
+  })
+
+  it("takes Apparent Intersection's global word", () => {
+    // probe line/p163: `_APPINT` sets OSMODE 2048.
+    const cad = answer(createHarness(), "-OSNAP", "_APPINT")
+
+    const enabled = cad.state().snapEnabled
+    const on = Object.keys(enabled).filter((type) => enabled[type as SnapType])
+    expect(on).toEqual([SnapType.ApparentIntersection])
   })
 
   it("asks again for a mode it does not know", () => {

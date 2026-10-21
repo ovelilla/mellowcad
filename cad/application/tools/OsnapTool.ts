@@ -1,16 +1,21 @@
 import { Vec2 } from "../../geometry/Vec2"
 import { SnapType } from "../snapping/types"
-import { OSNAP_MODES, OSNAP_MODE_IDS, OSNAP_OFF } from "../snapping/osnapModes"
+import {
+  OSNAP_MODES,
+  OSNAP_MODE_IDS,
+  OSNAP_OFF,
+  osnapGlobalWord,
+} from "../snapping/osnapModes"
 import type { PromptId } from "../../locales/types"
 import { PointerInput, Tool, ToolContext } from "./Tool"
 
 /**
- * AutoCAD's -OSNAP: `Current osnap modes: End,Cen,Int,Ext`, then `Enter list
- * of object snap modes:` — "names of object snap modes separated with commas,
- * or enter none or off", each typed by its capitals (END, MID, CEN…). The
- * list replaces the running set; Enter alone keeps it. A list that names a
- * mode it does not know asks again, as COLOR does with a colour it does not
- * know.
+ * AutoCAD's -OSNAP: `Current osnap modes: End,Cen,Int,Ext` (no line with none
+ * running), then `Enter list of object snap modes:` — "names of object snap
+ * modes separated with commas, or enter none or off", each typed by its
+ * capitals (END, MID, CEN…). The list replaces the running set, and Enter
+ * alone clears it, OSMODE 0 (probes line/p37, p155). A list that names a mode
+ * it does not know asks again, as COLOR does with a colour it does not know.
  */
 export class OsnapTool implements Tool {
   readonly id = "osnap"
@@ -19,11 +24,10 @@ export class OsnapTool implements Tool {
 
   onActivate(ctx: ToolContext): void {
     ctx.setCursor("crosshair")
-    ctx.report(
-      ctx.text.message("currentOsnapModes", {
-        modes: this.modeList(ctx, ctx.runningSnaps.enabled()),
-      })
-    )
+    const modes = this.modeList(ctx, ctx.runningSnaps.enabled())
+    if (modes !== "") {
+      ctx.report(ctx.text.message("currentOsnapModes", { modes }))
+    }
     this.ask(ctx)
   }
 
@@ -56,13 +60,12 @@ export class OsnapTool implements Tool {
 
   private answer(ctx: ToolContext): boolean {
     const typed = ctx.dynamicInput.getText("modes").trim()
-    if (typed === "") {
-      ctx.endCommand()
-      return true
-    }
     const types = new Set<SnapType>()
-    for (const entry of typed.split(",")) {
-      const id = ctx.text.resolveKeyword(entry, [...OSNAP_MODE_IDS, OSNAP_OFF])
+    for (const entry of typed === "" ? [] : typed.split(",")) {
+      const id = ctx.text.resolveKeyword(osnapGlobalWord(entry), [
+        ...OSNAP_MODE_IDS,
+        OSNAP_OFF,
+      ])
       if (id === null) {
         ctx.report(ctx.text.message("invalidOsnapModes"), "error")
         this.ask(ctx)
@@ -76,17 +79,14 @@ export class OsnapTool implements Tool {
     return true
   }
 
-  /** The modes as AutoCAD lists them: `End,Cen,Int,Ext`, or `None`. */
+  /** The modes as AutoCAD lists them, `End,Cen,Int,Ext`; empty for none. */
   private modeList(ctx: ToolContext, enabled: readonly SnapType[]): string {
-    const ids = OSNAP_MODE_IDS.filter((id) => {
+    return OSNAP_MODE_IDS.filter((id) => {
       const mode = OSNAP_MODES[id]
       return mode !== "none" && enabled.includes(mode)
     })
-    const words =
-      ids.length > 0
-        ? ids.map((id) => ctx.text.abbreviation(id))
-        : [ctx.text.keyword("NONe")]
-    return words.map(capitalized).join(",")
+      .map((id) => capitalized(ctx.text.abbreviation(id)))
+      .join(",")
   }
 }
 

@@ -46,6 +46,12 @@ export interface CommandDefinition {
    * questions, or with none it runs in place.
    */
   readonly transparent?: boolean
+  /**
+   * A point modifier (FROM), no command: it answers a point prompt, and at
+   * `Command:` it is an unknown command, as 2027's console says (probe
+   * line/p211).
+   */
+  readonly modifier?: boolean
   readonly run: () => void
 }
 

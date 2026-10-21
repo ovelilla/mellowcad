@@ -42,6 +42,21 @@ describe.each(ENTERS)("Enter from %s with nothing typed", (_, enter) => {
     expect(cad.entityCount).toBe(0)
   })
 
+  it("gives Enter at FROM's <Offset> to the prompt, which ends LINE", () => {
+    // probe line/p164: no segment, LASTPOINT left at the base.
+    const cad = createHarness()
+    cad.command("LINE").click(p(0, 0)).type("FROM").enter()
+    cad.click(p(40, 30)).moveTo(FAR)
+    enter(cad)
+
+    expect(cad.activeToolId()).toBe("select")
+    expect(cad.entityCount).toBe(0)
+    cad.command("ID").type("@").enter()
+    expect(cad.commandLog().at(-1)).toBe(
+      " X = 40.00     Y = 30.00     Z = 0.00"
+    )
+  })
+
   it("refuses LINE's Continue length and asks it again", () => {
     // probe line/p114: `Length of line:` takes no Enter.
     const cad = createHarness({
@@ -212,14 +227,6 @@ describe("Enter with nothing typed", () => {
     const drawn = cad.latest() as LineEntity
     expect(drawn.start).toBeCloseToPoint(p(100, 0))
     expect(drawn.end).toBeCloseToPoint(p(100, 100))
-  })
-
-  it("places FROM's base point itself, <Offset> being none", () => {
-    const cad = createHarness()
-    cad.command("LINE").click(p(0, 0)).command("FROM").click(p(40, 30))
-    cad.enter().escape()
-
-    expect(cad.only<LineEntity>("line").end).toBeCloseToPoint(p(40, 30))
   })
 
   it("keeps a grip edit hot instead of repeating the last command", () => {

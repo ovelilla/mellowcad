@@ -1451,6 +1451,7 @@ export const es: EngineLocale = {
       "dimensionSpacing": "Indique valor",
       "offsetDistance": "Distancia de desfase",
       "basePoint": "Punto base",
+      "fromOffset": "<Desfase>",
       "distance": "Distancia",
       "rotationAngle": "Ángulo de rotación",
       "referenceAngle": "Ángulo de referencia",
@@ -2885,6 +2886,25 @@ export const es: EngineLocale = {
       "invalidTrueColor": "Color no válido. Escriba tres valores separados por comas comprendidos entre 0 y 255.",
       "invalidOsnapModes": "Modos no válidos de referencia a objetos.",
       "invalidPoint": "Punto no válido.",
+      "snapNotFound": [
+        "No se ha encontrado ",
+        [
+          "snap",
+          1,
+          {
+            "endpoint": "ptoFINal ",
+            "midpoint": "puntoMEDio ",
+            "center": "CENtro ",
+            "quadrant": "CUAdrante ",
+            "intersection": "INTersección ",
+            "insertion": "INSerción ",
+            "perpendicular": "PERpendicular ",
+            "nearest": "CERcano ",
+            "other": ""
+          }
+        ],
+        "para el punto designado."
+      ],
       "invalidPoint2d": "Punto 2D no válido.",
       "pointOrKeywordRequired": "Se requiere un punto o una opción.",
       "point2dOrKeywordRequired": "Se requiere un punto 2D o una opción.",

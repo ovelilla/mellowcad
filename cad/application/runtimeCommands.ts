@@ -156,17 +156,7 @@ export function registerCommands(
       )
     },
   })
-  register({
-    id: "FROM",
-    run: () => {
-      if (!runtime.startFrom()) {
-        runtime.commandLine.write(
-          "error",
-          runtime.text.message("fromNeedsPoint")
-        )
-      }
-    },
-  })
+  register({ id: "FROM", modifier: true, run: () => runtime.startFrom() })
   // With no templates here, NEW's Select Template dialog has nothing to offer:
   // both start the blank drawing QNEW starts from the default template.
   register({ id: "NEW", run: () => runtime.newDrawing() })

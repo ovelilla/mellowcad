@@ -5,6 +5,7 @@ import { THEME } from "../scene/theme"
 import { DynamicField, DynamicInputSession } from "./input/DynamicInput"
 import { measuresFromPoints } from "./promptRefusal"
 import type { QuestionInput, Tool } from "./tools/Tool"
+import type { PromptId } from "../locales/types"
 import { Viewport } from "./Viewport"
 
 /**
@@ -51,11 +52,20 @@ export function measuredValue(
  * with no keywords listed.
  */
 export function secondPointQuestion(tool: Tool): Tool {
+  return questionInstead(tool, "secondPointOfDistance")
+}
+
+/**
+ * `prompt` asked under the running command's name with no keywords, in the
+ * place of the command's own question: the second of two measuring points,
+ * FROM's `Base point:` and `<Offset>:`.
+ */
+export function questionInstead(tool: Tool, prompt: PromptId): Tool {
   return {
     id: tool.id,
     runningCommand: tool.runningCommand && (() => tool.runningCommand!()),
     systemVariable: tool.systemVariable && (() => tool.systemVariable!()),
-    question: () => "secondPointOfDistance",
+    question: () => prompt,
   }
 }
 

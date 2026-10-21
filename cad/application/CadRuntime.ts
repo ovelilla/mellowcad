@@ -57,6 +57,7 @@ import {
   OSNAP_MENU_ANSWERS,
   OSNAP_MODES,
   OSNAP_MODE_IDS,
+  osnapGlobalWord,
 } from "./snapping/osnapModes"
 import { ConstraintManager } from "./constraints/ConstraintManager"
 import { ConstraintType } from "./constraints/types"
@@ -100,6 +101,7 @@ import { AttEditTool } from "./tools/AttEditTool"
 import { PasteTool } from "./tools/PasteTool"
 import { directionFromUcsHeading, headingInUcs } from "./tools/ucsHeading"
 import { pointAtDistance } from "./tools/directDistance"
+import { deferredPick } from "./tools/deferredSnap"
 import { ViewPreset, currentViewPreset } from "./tools/viewPresets"
 import {
   CompassLetter,
@@ -165,6 +167,7 @@ import {
   measuredField,
   measuredValue,
   measureOverlay,
+  questionInstead,
   secondPointQuestion,
 } from "./runtimeMeasure"
 import { promptRefusal, questionInput } from "./promptRefusal"
@@ -486,9 +489,9 @@ export class CadRuntime extends Observable {
   // A press held back because it may become that click (see pointerUp).
   private cyclingPress: PointerEventData | null = null
 
-  // AutoCAD's FROM modifier: the next pick becomes a base point, and the point
-  // the tool actually receives is typed as an offset from it. The tool's own
-  // dynamic input is parked while the offset is entered and restored after.
+  // AutoCAD's FROM modifier (startFrom): asking its base point, then the
+  // offset from `fromBase`, in the frame. The tool's own dynamic input is
+  // parked while FROM asks and restored after.
   private fromPending = false
   private fromBase: Vec3 | null = null
   private fromParkedSession: DynamicInputSession | null = null
@@ -1242,16 +1245,20 @@ export class CadRuntime extends Observable {
    * it was refused, which the history writes as an answer.
    */
   private refuse(): boolean {
+    // FROM's questions are its own, with no keywords: `Invalid point.` (probe
+    // line/p211).
+    const asking = this.fromRuns() ? this.asking() : this.activeTool
     const lines = promptRefusal(
       {
-        tool: this.activeTool,
-        prompt: askedPrompt(this.activeTool),
+        tool: asking,
+        prompt: askedPrompt(asking),
         session: this.dynamicInput.isOpen()
           ? this.dynamicInput.getSession()
           : null,
-        keywords: offerOptions(this.activeTool, this.text).map(
-          (option) => option.keyword
-        ),
+        keywords:
+          asking === this.activeTool
+            ? offerOptions(asking, this.text).map((option) => option.keyword)
+            : [],
         // WHY the tool's: at the second of two measuring points the console
         // still requires "two points".
         hasBase: (this.activeTool.getConstraintAnchor?.() ?? null) !== null,
@@ -1389,21 +1396,30 @@ export class CadRuntime extends Observable {
 
   /**
    * The coordinate typed in the box's `field`, in the WCS, read as the
-   * prompt reads it: from the tool's base when it has one, from LASTPOINT
-   * otherwise. Null for anything else.
+   * prompt reads it ({@link typedFramePoint}). Null for anything else.
    */
   private typedPoint(field: DynamicField | undefined): Vec3 | null {
     if (!field || isContentField(field.kind)) return null
-    const text = this.dynamicInput.getText(field.id).trim()
+    const point = this.typedFramePoint(this.dynamicInput.getText(field.id))
+    return point && this.frame.pointToWorld(point)
+  }
+
+  /**
+   * A coordinate typed, in the frame, read as the prompt reads it: from
+   * FROM's base at `<Offset>`, else from the tool's base when it has one,
+   * relative by default (the tooltip's DYNPICOORDS; a bare one typed at the
+   * command line comes with its `#`), from LASTPOINT otherwise.
+   */
+  private typedFramePoint(typed: string): Vec3 | null {
+    const text = typed.trim()
     if (!isCoordinateExpression(text)) return null
-    const base = this.toolAnchor()
-    const point = parseCoordinate(text, {
+    const base = this.fromBase ?? this.toolAnchor()
+    return parseCoordinate(text, {
       lastPoint: base ?? this.frame.pointToFrame(this.lastPoint),
       relativeByDefault: base !== null,
       ucs: this.frame.ucs,
       elevation: this.document.getSettings().elevation,
     })
-    return point && this.frame.pointToWorld(point)
   }
 
   /**
@@ -1458,11 +1474,21 @@ export class CadRuntime extends Observable {
     return measuring.first
   }
 
-  /** The question as the prompt asks it: the second point while measuring. */
+  /**
+   * The question as the prompt asks it: FROM's while it runs, the second
+   * point while measuring.
+   */
   private asking(): Tool {
+    if (this.fromPending) return questionInstead(this.activeTool, "basePoint")
+    if (this.fromBase) return questionInstead(this.activeTool, "fromOffset")
     return this.measuringFrom() === null
       ? this.activeTool
       : secondPointQuestion(this.activeTool)
+  }
+
+  /** Whether FROM is asking its base point or its offset. */
+  private fromRuns(): boolean {
+    return this.fromPending || this.fromBase !== null
   }
 
   /** The prompt as it stands: the question asked, or which keyword was meant. */
@@ -1685,6 +1711,14 @@ export class CadRuntime extends Observable {
   private pointModifier(text: string): boolean {
     if (!this.wantsPoint()) return false
     const mode = this.objectSnapNamed(text)
+    // A second one is the wrong answer of the override's `of`, which takes a
+    // point, and neither holds after it (probe line/p162).
+    if (mode !== null && this.snapping.getOverride() !== null) {
+      return this.answering(text.trim(), () => {
+        this.snapping.clearOverride()
+        return this.refuse()
+      })
+    }
     // Not an answer: AutoCAD writes it on the line the pick that follows
     // answers, "Specify first point: _endp of".
     if (mode !== null) {
@@ -1694,10 +1728,17 @@ export class CadRuntime extends Observable {
     return this.answering(
       text.trim(),
       () =>
-        this.angleOverride(text) ||
-        (this.text.resolveCommand(text.trim().toUpperCase()) === "FROM" &&
-          this.startFrom())
+        this.angleOverride(text) || (this.namesFrom(text) && this.startFrom())
     )
+  }
+
+  /**
+   * Whether `text` is FROM: its name or alias, `_` and its global name, or
+   * `_FRO`, the global word 2027's console takes (probes line/p34, p154).
+   */
+  private namesFrom(text: string): boolean {
+    const typed = text.trim().toUpperCase()
+    return this.text.resolveCommand(typed) === "FROM" || typed === "_FRO"
   }
 
   /**
@@ -1713,7 +1754,10 @@ export class CadRuntime extends Observable {
 
   /** The object snap `text` names (`END`, `_endp`), or null. */
   private objectSnapNamed(text: string): string | null {
-    return resolveKeyword(text, this.text.keywords("-OSNAP", OSNAP_MODE_IDS))
+    return resolveKeyword(
+      osnapGlobalWord(text),
+      this.text.keywords("-OSNAP", OSNAP_MODE_IDS)
+    )
   }
 
   /**
@@ -1767,10 +1811,13 @@ export class CadRuntime extends Observable {
         ? undefined
         : this.variableNamed(typed)
     const command = variable ?? named
-    if (!command) {
+    if (!command || (command.modifier && !this.wantsPoint())) {
+      // Named without its `_` or `.`: `_CEN` is `Unknown command "CEN".`
+      // (probes line/p163, p211).
+      const name = bareCommand(typed).replace(/^[_.]+/, "")
       this.commandLine.write(
         "error",
-        this.text.message("unknownCommand", { name: bareCommand(typed) })
+        this.text.message("unknownCommand", { name })
       )
       this.invalidateState()
       return false
@@ -2433,7 +2480,7 @@ export class CadRuntime extends Observable {
       this.activeTool.id === "select" &&
         !(this.activeTool.wantsSnap?.() ?? false),
       !this.selection.isEmpty(),
-      offerOptions(this.activeTool, this.text).length
+      this.fromRuns() ? 0 : offerOptions(this.activeTool, this.text).length
     )
     if (response === "enter") {
       this.pressEnter()
@@ -2555,10 +2602,13 @@ export class CadRuntime extends Observable {
   }
 
   /**
-   * Starts AutoCAD's FROM modifier: the next pick sets a base point (normally
-   * with an object snap) and the point after it is entered as an offset from
-   * that base, e.g. `@20,0`. Only meaningful while a tool is asking for a point.
-   * It answers that prompt as the menu's macro does, `_from`.
+   * Starts AutoCAD's FROM modifier at a point prompt, answering it as the
+   * menu's macro does, `_from`. FROM asks `Base point:` (picked, typed, or
+   * found by an object snap), then `<Offset>:`, whose point answers the
+   * prompt: `@20,0` from the base, a bare number a direct distance from it, a
+   * bare `x,y` absolute at the command line and from the base in the tooltip
+   * (LINE-D10), a pick where it is. Enter at either is the prompt's own Enter,
+   * LASTPOINT left at the base (probes line/p34, p154, p164, p211).
    */
   startFrom(): boolean {
     if (!this.wantsPoint()) return false
@@ -2568,54 +2618,79 @@ export class CadRuntime extends Observable {
   private beginFrom(): boolean {
     this.snapOverrideMenu = null
     this.shortcutMenu = null
+    this.fromParkedSession = this.dynamicInput.isOpen()
+      ? this.dynamicInput.getSession()
+      : null
     this.fromPending = true
     this.fromBase = null
-    this.commandLine.write("info", this.text.message("fromBase"))
+    this.openFromBox(() => this.commitFromBase())
     this.invalidateState()
     this.host.requestRender()
     this.host.focusSurface()
     return true
   }
 
-  private beginFromOffset(base: Vec3): void {
-    this.fromPending = false
-    this.fromBase = base
-    this.fromParkedSession = this.dynamicInput.getSession()
+  /** FROM's point box, open in the place of the tool's while FROM asks. */
+  private openFromBox(commit: () => boolean, from?: Vec3): void {
     this.dynamicInput.open({
-      fields: [{ id: "offset", kind: "coordinate" }],
+      fields: [{ id: "point", kind: "coordinate" }],
       commit: () => {},
-      commitRaw: () => this.commitFromOffset(),
+      commitRaw: commit,
+      ...(from && { directDistance: from }),
     })
     if (this.lastPointerScreen) {
       this.dynamicInput.setPosition(this.lastPointerScreen)
     }
-    this.commandLine.write("info", this.text.message("fromOffset"))
+  }
+
+  /** FROM's base point, in the frame; LASTPOINT from now on (probe line/p164). */
+  private takeFromBase(base: Vec3): void {
+    this.pointGiven = this.frame.pointToWorld(base)
+    this.fromPending = false
+    this.fromBase = base
+    this.snapping.clearOverride()
+    this.openFromBox(() => this.commitFromOffset(), base)
+  }
+
+  private commitFromBase(): boolean {
+    const typed = this.dynamicInput.getText("point")
+    if (typed.trim() === "") return this.enterThroughFrom()
+    const base = this.typedFramePoint(typed)
+    if (!base) return false
+    this.takeFromBase(base)
+    return true
   }
 
   private commitFromOffset(): boolean {
-    const base = this.fromBase
-    if (!base) return false
-    const typed = this.dynamicInput.getText("offset").trim()
-    // WHY Enter places the base point itself: the `<Offset>` default is no
-    // offset (unverified — the FROM page says nothing of Enter), and handing
-    // Enter to the command instead would leave FROM half-run under it.
-    const point =
-      typed === ""
-        ? base
-        : parseCoordinate(typed, {
-            lastPoint: base,
-            relativeByDefault: true,
-            ucs: this.frame.ucs,
-            elevation: this.document.getSettings().elevation,
-          })
+    const typed = this.dynamicInput.getText("point")
+    if (typed.trim() === "") return this.enterThroughFrom()
+    const point = this.typedFramePoint(typed)
     if (!point) return false
-    this.endFrom()
     this.placePoint(point)
     return true
   }
 
-  /** Feeds a point to the active tool as if it had been picked there. */
+  /**
+   * Enter at `Base point:` or `<Offset>:`: the prompt's own Enter, LINE's
+   * Continue at its first point, its end at the next (probes line/p34, p164,
+   * p211).
+   */
+  private enterThroughFrom(): boolean {
+    this.endFrom()
+    this.pressEnter()
+    return true
+  }
+
+  /**
+   * Feeds a point to the active tool as if it had been picked there, or to
+   * FROM while it asks its base point.
+   */
   private placePoint(point: Vec3, movedThere = false): void {
+    if (this.fromPending) {
+      this.takeFromBase(point)
+      return
+    }
+    this.endFrom()
     this.pointGiven = this.frame.pointToWorld(point)
     const input = this.forTool({
       screen: this.frame.viewport.worldToScreen(point),
@@ -2639,9 +2714,81 @@ export class CadRuntime extends Observable {
     this.host.requestRender()
   }
 
+  /**
+   * A point typed under an object snap override, found there as a pick would
+   * be: `_END of 99,1` is 100,0 (probe line/p25), `_TAN to 10,0` at LINE's
+   * first point defers its circle (p24), nothing there is refused (p36).
+   */
+  private pickTyped(point: Vec3): void {
+    const screen = this.frame.viewport.worldToScreen(point)
+    const pointer = this.lastPointerScreen
+    this.updateSnap(screen)
+    const input = this.buildPointerInput({
+      screen,
+      button: 0,
+      shiftKey: false,
+      ctrlKey: false,
+      altKey: false,
+    })
+    this.pickAnswer(input)
+    this.snapping.clearOverride()
+    if (pointer) this.updateSnap(pointer)
+  }
+
+  /**
+   * What a pick answers: a refusal where an object snap override found
+   * nothing, FROM's base point while it asks one, else the prompt's point.
+   */
+  private pickAnswer(input: PointerInput): boolean {
+    if (this.clarifyingWords() !== null) return this.unclarified(false)
+    const missed = this.overrideMissed(input)
+    if (missed !== null) {
+      this.pointTyped = null
+      this.commandLine.write(
+        "error",
+        this.text.message("snapNotFound", { snap: missed })
+      )
+      return this.refuse()
+    }
+    if (this.fromPending) {
+      this.takeFromBase(
+        this.frame.pointToFrame(this.toolPointToWorld(input.point))
+      )
+      return true
+    }
+    // A pick at `<Offset>` places the point it is on.
+    this.endFrom()
+    this.pointGiven = this.toolPointToWorld(input.point)
+    if (this.measuresPoints()) return this.measurePoint(input.point)
+    this.activeTool.onPointerDown?.(input, this.toolContext)
+    return true
+  }
+
+  /**
+   * The object snap override that found nothing at the pick, which AutoCAD
+   * refuses — `No Endpoint found for specified point.`, then the prompt's own
+   * refusal, the override gone (probes line/p36, p156, p211) —, or null. Not
+   * a Tangent or Perpendicular on an object with no point yet to measure
+   * from: the tool defers it (LINE's first point, p24).
+   */
+  private overrideMissed(input: PointerInput): SnapType | null {
+    const override = this.snapping.getOverride()
+    if (override === null || override === "none" || input.snap !== null) {
+      return null
+    }
+    if (this.toolAnchor() === null && !this.fromRuns()) {
+      const entity = this.toolContext.pick(
+        input.world,
+        this.toolContext.pickTolerance()
+      )
+      if (deferredPick(override, entity, input.world) !== null) return null
+    }
+    return override
+  }
+
   /** Leaves FROM, giving the tool back the dynamic input it had open. */
   private endFrom(): void {
-    if (!this.fromPending && !this.fromBase) return
+    if (!this.fromRuns()) return
     this.fromPending = false
     this.fromBase = null
     if (this.fromParkedSession) this.dynamicInput.open(this.fromParkedSession)
@@ -3174,7 +3321,11 @@ export class CadRuntime extends Observable {
   ): boolean {
     this.pointTyped = this.typedPoint(field)
     const values = this.dynamicInput.resolveValues()
-    if (this.pointTyped !== null && this.pointMeasuredField() !== null) {
+    const override = this.snapping.getOverride()
+    if (this.pointTyped !== null && override !== null && override !== "none") {
+      this.dynamicInput.clearTexts()
+      this.pickTyped(this.frame.pointToFrame(this.pointTyped))
+    } else if (this.pointTyped !== null && this.pointMeasuredField() !== null) {
       // AutoCAD's distance and angle input take a point as a pick there: the
       // radius to `25,20`, OFFSET's first of two points.
       const point = this.frame.pointToFrame(this.pointTyped)
@@ -3220,8 +3371,9 @@ export class CadRuntime extends Observable {
       this.dynamicInput.clearTexts()
     }
     // Committing a value places/edits a point, which consumes any acquired
-    // object-snap-tracking references — just like a click does.
+    // object-snap-tracking references and the override — just like a click.
     this.resetTracking()
+    this.snapping.clearOverride()
     // The point given is the next one's base, so the rubber band, Ortho and
     // Polar measure from it at once, where the cursor still stands: a length
     // typed next, mouse unmoved, runs towards the cursor, not on along the
@@ -3280,6 +3432,9 @@ export class CadRuntime extends Observable {
 
   /** The keywords the active tool offers, in both of their languages. */
   private offeredKeywords() {
+    // FROM's `Base point:` and `<Offset>:` take no keyword: `U` there is an
+    // invalid point (probe line/p211).
+    if (this.fromRuns()) return []
     return optionKeywords(
       this.activeTool,
       this.text,
@@ -3910,20 +4065,6 @@ export class CadRuntime extends Observable {
   }
 
   private dispatchPointerDown(e: PointerEventData): void {
-    // FROM consumes this pick as its base point; the tool will instead receive
-    // the offset point entered next.
-    if (this.fromPending) {
-      this.beginFromOffset(this.buildPointerInput(e).point)
-      this.snapping.clearOverride()
-      this.answerPrefix = null
-      this.invalidateState()
-      this.host.requestRender()
-      return
-    }
-    // Pointing the offset instead of typing it just places that point, so leave
-    // FROM and let the click through unchanged.
-    this.endFrom()
-
     // Seen edge-on the work plane has no point under the cursor: AutoCAD
     // refuses the pick unless an object snap supplies the point.
     if (
@@ -3938,17 +4079,7 @@ export class CadRuntime extends Observable {
     }
 
     const input = this.buildPointerInput(e)
-    this.answering(
-      "",
-      () => {
-        if (this.clarifyingWords() !== null) return this.unclarified(false)
-        this.pointGiven = this.toolPointToWorld(input.point)
-        if (this.measuresPoints()) return this.measurePoint(input.point)
-        this.activeTool.onPointerDown?.(input, this.toolContext)
-        return true
-      },
-      true
-    )
+    this.answering("", () => this.pickAnswer(input), true)
     // A one-shot snap override applies to exactly this pick; consume it now that
     // the point has been placed so the next point uses the running snaps again.
     this.snapping.clearOverride()

@@ -46,6 +46,26 @@ function firstPointWith(
   return drawnLine(cad)
 }
 
+/**
+ * Forces `snap` at the first point, or at the one after `from`, aiming at
+ * where it finds nothing: AutoCAD refuses the pick in the snap's words, then
+ * in the prompt's (probes line/p36, p156). What the history ends with.
+ */
+function missedWith(
+  cad: CadHarness,
+  snap: SnapType,
+  from: { x: number; y: number } | null,
+  aim: { x: number; y: number }
+): string[] {
+  cad.command("LINE")
+  if (from) cad.click(from)
+  cad.runtime.setSnapOverride(snap)
+  cad.click(aim)
+  expect(cad.state().snapOverride).toBeNull()
+  expect(cad.entities().filter((e) => !e.id.startsWith("REF"))).toEqual([])
+  return cad.commandLog().slice(-2)
+}
+
 /** Places the *second* point with `snap` forced, for snaps that need an anchor. */
 function secondPointWith(
   cad: CadHarness,
@@ -174,9 +194,11 @@ describe("tangent", () => {
       snap: true,
     })
 
-    const drawn = secondPointWith(cad, SnapType.Tangent, p(10, 0), p(33, 95))
-
-    expect(drawn.end).toBeCloseToPoint(p(33, 95))
+    // probe line/p36: Tangent's name is left out of the refusal.
+    expect(missedWith(cad, SnapType.Tangent, p(10, 0), p(33, 95))).toEqual([
+      "No found for specified point.",
+      "Point or option keyword required.",
+    ])
   })
 })
 
@@ -280,9 +302,11 @@ describe("extension", () => {
       snap: true,
     })
 
-    const drawn = firstPointWith(cad, SnapType.Extension, p(150, 3))
-
-    expect(drawn.start).toBeCloseToPoint(p(150, 3))
+    // probe line/p156: `_EXT of 120,0` past a line's end.
+    expect(missedWith(cad, SnapType.Extension, null, p(150, 3))).toEqual([
+      "No found for specified point.",
+      "Invalid point.",
+    ])
   })
 
   it("does not fire over the segment itself", () => {
@@ -297,11 +321,10 @@ describe("extension", () => {
       cad.runtime.setSnapEnabled(SnapType.Endpoint, false)
       cad.runtime.setSnapEnabled(SnapType.Midpoint, false)
 
-      cad.command("LINE")
-      cad.runtime.setSnapOverride(SnapType.Extension)
-      cad.click(p(50, 3)).click(p(900, 900)).escape()
-
-      expect(drawnLine(cad).start).toBeCloseToPoint(p(50, 3))
+      expect(missedWith(cad, SnapType.Extension, null, p(50, 3))).toEqual([
+        "No found for specified point.",
+        "Invalid point.",
+      ])
     } finally {
       vi.useRealTimers()
     }
@@ -356,9 +379,9 @@ describe("apparent intersection", () => {
       snap: true,
     })
 
-    const drawn = firstPointWith(cad, SnapType.ApparentIntersection, p(200, 3))
-
-    expect(drawn.start).toBeCloseToPoint(p(200, 3), 5)
+    expect(
+      missedWith(cad, SnapType.ApparentIntersection, null, p(200, 3))
+    ).toEqual(["No found for specified point.", "Invalid point."])
   })
 
   it("crosses an engaged polar alignment path with an edge", () => {
@@ -386,14 +409,12 @@ describe("apparent intersection", () => {
       snap: true,
     })
 
-    const drawn = secondPointWith(
-      cad,
-      SnapType.ApparentIntersection,
-      p(0, 0),
-      p(198, 40)
-    )
-
-    expect(drawn.end).toBeCloseToPoint(p(198, 40), 5)
+    expect(
+      missedWith(cad, SnapType.ApparentIntersection, p(0, 0), p(198, 40))
+    ).toEqual([
+      "No found for specified point.",
+      "Point or option keyword required.",
+    ])
   })
 })
 
@@ -433,14 +454,13 @@ describe("parallel", () => {
       snap: true,
     })
 
-    const drawn = secondPointWith(
-      cad,
-      SnapType.Parallel,
-      p(100, -100),
-      p(297.6, 53.2)
-    )
-
-    expect(drawn.end).toBeCloseToPoint(p(297.6, 53.2), 4)
+    // probe line/p156: `_PAR to 50,1` with nothing acquired.
+    expect(
+      missedWith(cad, SnapType.Parallel, p(100, -100), p(297.6, 53.2))
+    ).toEqual([
+      "No found for specified point.",
+      "Point or option keyword required.",
+    ])
   })
 })
 

@@ -121,9 +121,14 @@ describe("object snaps", () => {
 
     cad.command("LINE")
     cad.runtime.setSnapOverride(SnapType.Intersection)
-    cad.click(p(52, 2)).type("@0,50").enter().escape()
+    cad.click(p(52, 2))
 
-    expect(drawnLine(cad).start).toBeCloseToPoint(p(52, 2))
+    // probe line/p211: an override that finds nothing refuses the pick.
+    expect(cad.commandLog().slice(-2)).toEqual([
+      "No Intersection found for specified point.",
+      "Invalid point.",
+    ])
+    expect(cad.typeCounts()).toEqual({ line: 2 })
   })
 
   it("find the intersection of two objects at the same height, at that height", () => {

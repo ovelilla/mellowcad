@@ -234,8 +234,7 @@ lweight "Lineweight" LW
   command| SNAP
   info| Snap mode off.
 > FROM at Command:
-  command| FRO FROM
-  error| FROM needs a point prompt.
+  error| Unknown command "FRO".  Press F1 for help.
 > QSAVE without files
   command| QSAVE
   error| Saving to a file is not available here.
@@ -5346,11 +5345,14 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0°~, Line space facto
   dyn: "X,Y"=""||*
   command| LINE
 > FROM
+  prompt: LINE Base point:
+  tip: Base point:
   command| FROM
   prompt| Specify first point: _from
-  info| FROM: pick the base point.
 > base
-  info| FROM: offset from the base point.
+  prompt: LINE <Offset>:
+  tip: <Offset>:
+  prompt| Base point:
 > offset
   dyn: "X,Y"="@10,0"||*
 > enter
@@ -5359,7 +5361,7 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0°~, Line space facto
   tip: Specify next point or
   dyn: "Length"=""|10.00|mm* "Angle"=""|180|°
   options: [U] Undo
-  prompt| Specify first point: @10,0
+  prompt| <Offset>: @10,0
 > escape
   prompt: Command:
   asks: -

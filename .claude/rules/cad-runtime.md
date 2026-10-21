@@ -210,8 +210,16 @@ runtime picks for the tool" feature.
   `kind: "extension"` guide (`SnapEngine.extensionLines`), and `updateSnap` drops a sliding snap
   (`SnapEngine.slides`) when `resolver.crossing` finds a crossing under the cursor.
 - An object snap typed at a point prompt (`pointModifier`) is a one-shot override read with
-  -OSNAP's table (`OSNAP_MODES`), after the prompt's own keywords. The `override` runs a single
-  provider, ignoring the running set, and is cleared once the pick is consumed.
+  -OSNAP's table (`OSNAP_MODES`), before the prompt's own keywords (`CEN` at PLINE's arc prompt is
+  the snap). The `override` runs a single provider, ignoring the running set, and is cleared once
+  a point is given or refused.
+- **An override that finds nothing refuses the point** (`overrideMissed`): `snapNotFound`, then
+  the prompt's own refusal, never the cursor's point. A point typed under one is found as a pick
+  there (`pickTyped`), never handed to the tool as typed. Only a Tangent or Perpendicular with no
+  base yet is let through, for the tool to defer.
+- **FROM asks in the place of the tool** (`asking()` gives `questionInstead`): its prompts, no
+  keywords, its box over the tool's. A point given while it asks reaches it through `pickAnswer`
+  and `placePoint`; a new way to give a point goes through them, or FROM is skipped.
 - Providers read `SnapContext.entities`, **not** `document.getEntities()`: the drawing with every
   block reference expanded (AutoCAD snaps inside a block), built once per resolve.
   `insertionProvider` is the exception: it offers the reference's own insertion point.

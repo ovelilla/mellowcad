@@ -31,24 +31,48 @@ new entity type (OSOPTIONS-like, deliberate), Intersection between objects in di
 ### Object snap overrides
 
 **Implemented:** Shift + right-click at a point prompt (on the press), one-shot override: FROM
-(Enter at `<Offset>` takes the base point, **unverified**) and the object snaps, the same entries as
-the Command menu's Snap Overrides; typed at any point prompt, in the box or at the command line, by
--OSNAP's words (END, MID, CEN, QUA, INT, EXT, INS, PER, TAN, NEA, APP, PAR, NON; es FIN, MED, CEN,
-CUA, INT, EXT, INS, PER, TAN, CER, APP, PAR, NIN) or `_` and the global word in any language, read
-before the prompt's keywords (`CEN` at PLINE's arc prompt is the snap, not `CEnter`), as AutoCAD
-2023's console reads them; FROM typed into the box too
+and the object snaps, the same entries as the Command menu's Snap Overrides; typed at any point
+prompt, in the box or at the command line, by -OSNAP's words (END, MID, CEN, QUA, INT, EXT, INS,
+PER, TAN, NEA, APP or APPINT, PAR, NON; es FIN, MED, CEN, CUA, INT, EXT, INS, PER, TAN, CER, APP,
+PAR, NIN) or `_` and the global word in any language (`_ENDP`, `_NEAR`, `_APPINT`: 2027 declares
+`Appint`, table 27409), read before the prompt's keywords (`CEN` at PLINE's arc prompt is the snap,
+not `CEnter`), as AutoCAD 2023's console reads them. The history writes the override with `of`
+(END, MID, CEN, QUA, INT, APP, EXT) or `to` (NEA, PER, TAN, PAR), nothing after NON, es `de` / `a`
+(`Specify first point: _END of 99,1`; probes line/p24, p25, p32, p33, p156; the menu's `_mid de`,
+desktop d22); INS's `of` is **unverified** (the probe hung). A point typed after an override is
+found there as a pick is (`_END of 99,1` is 100,0, p25; a deferred `_TAN to 10,0` at LINE's first
+point, p24). An override that finds nothing refuses the point — `No Endpoint found for specified
+point.`, then the prompt's own refusal (`Invalid point.`, `Point or option keyword required.`) —
+and is gone (p36, p156, p211): Tangent, Extension, Parallel and Apparent Intersection are named by
+nothing, `No found for specified point.`, as 2027 writes it (LINE-D11); es
+`No se ha encontrado ptoFINal para el punto designado.` (puntoMEDio, CENtro, PERpendicular,
+INTersección); Quadrant's, Nearest's and Insertion's names (`Quadrant`, `Nearest`, `Insert`; es
+`CUAdrante`, `CERcano`, `INSerción`) come from table 27408, **unverified**. A second override
+typed at the first's `of` is `Invalid point.`, and neither holds (p162).
 
-**Missing:** M2P / MTP, TT (the temporary tracking point), the `of` echo after an override
-(`_mid of`), the temporary override keys (Shift+A, Shift+Q, Shift+E…: TEMPOVERRIDES)
+FROM, typed at a point prompt (FROM, FRO, `_FRO`) or chosen from the menu, asks `Base point:` and
+then `<Offset>:` (es `Punto base:`, `<Desfase>:`), prompts with no keywords (FOO or U there:
+`Invalid point.`). The base is picked, typed or found by an override; at `<Offset>` `@x,y` runs from
+the base, a number is a direct distance from it towards the cursor, a bare `x,y` is absolute at
+the command line and from the base in the tooltip (LINE-D10: dynamic input's relative default), a
+pick places the point it is on, an override finds its snap. Enter at either is the prompt's own:
+LINE's Continue at its first point, its end at the next, LASTPOINT left at the base (probes
+line/p34, p154, p164, p211). At `Command:` FROM is an unknown command (p211). Escape at its prompts
+leaves FROM only (**unverified**).
+
+**Missing:** M2P / MTP, TT (the temporary tracking point), the temporary override keys (Shift+A,
+Shift+Q, Shift+E…: TEMPOVERRIDES), INT and APPINT on one object asking ` and ` for the second
+(p156, p211; here that pick finds nothing and is refused)
 
 ### `-OSNAP` / `-OS` · es `-REFENT`
 
-**Implemented:** `Current osnap modes: End,Cen,Int,Ext` (`None` when empty), then
+**Implemented:** `Current osnap modes: End,Cen,Int,Ext` (no line when none runs), then
 `Enter list of object snap modes:` — modes by their capitals, separated with commas (es Spanish's,
-from 2026's -REFENT page, CF5780AD), replacing the running set and turning object snapping on; NONe
-or OFF (es NINguno, DES) clears it, Enter keeps it, an unknown mode says
-`Invalid object snap modes.` and asks again (es `Modos refent actuales: …`,
-`Indique lista de modo de referencia a objetos`, `Modos no válidos de referencia a objetos.`)
+from 2026's -REFENT page, CF5780AD), `_APPINT` too, replacing the running set and turning object
+snapping on; NONe, OFF (es NINguno, DES) or Enter clears it, OSMODE 0 (probes line/p37, p155,
+p163); an unknown mode says `Invalid object snap modes.` and asks again (es
+`Modos refent actuales: …`, `Indique lista de modo de referencia a objetos`,
+`Modos no válidos de referencia a objetos.`)
 
 **Missing:** OSNAP / OS (the Drafting Settings dialog; the status bar's Object snap menu stands in),
 GCEnter and NODe in the list, a Spanish alias (none verified)

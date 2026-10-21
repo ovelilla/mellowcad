@@ -26,8 +26,9 @@ export const OSNAP_MODES: Readonly<Record<string, SnapType | "none">> = {
 /**
  * What the object snap menu sends for each snap, as AutoCAD's own menu macros
  * do (`_endp`), and whether the override then asks `of` or `to`: the
- * history reads `Specify first point: _endp of`, `_tan to`. WHY: only
- * `_endp of` is confirmed; the rest follow it and are unverified.
+ * history reads `Specify first point: _endp of`, `_tan to` (es `de`, `a`), as
+ * 2027's console asks them (probes line/p24, p25, p32, p156; the desktop's
+ * menu writes `_mid de`, d22). Insertion's `of` is unverified.
  */
 export const OSNAP_MENU_ANSWERS: Readonly<
   Record<
@@ -48,6 +49,16 @@ export const OSNAP_MENU_ANSWERS: Readonly<
   [SnapType.ApparentIntersection]: { macro: "_appint", to: false },
   [SnapType.Parallel]: { macro: "_par", to: true },
   none: { macro: "_non", to: null },
+}
+
+/**
+ * `typed` with Apparent Intersection's global word read: AutoCAD declares it
+ * `Appint` (table 27409) and its console takes `_APPINT` at a point prompt and
+ * in -OSNAP's list (probes line/p156, p163), where `_` reads the keyword id,
+ * `APParent` here.
+ */
+export function osnapGlobalWord(typed: string): string {
+  return typed.trim().toUpperCase() === "_APPINT" ? "_APParent" : typed
 }
 
 /** The keyword ids of {@link OSNAP_MODES}. */

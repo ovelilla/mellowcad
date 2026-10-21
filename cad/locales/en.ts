@@ -857,6 +857,9 @@ export const en: EngineCatalog = {
       ]
     },
     "keywords": {
+      "-OSNAP": {
+        "APParent": "APPint"
+      },
       "PLINE": {
         "Center": "CEnter"
       },
@@ -1103,6 +1106,7 @@ export const en: EngineCatalog = {
       "dimensionSpacing": "Enter value",
       "offsetDistance": "Offset distance",
       "basePoint": "Base point",
+      "fromOffset": "<Offset>",
       "distance": "Distance",
       "rotationAngle": "Rotation angle",
       "referenceAngle": "Reference angle",
@@ -2538,6 +2542,25 @@ export const en: EngineCatalog = {
       "invalidTrueColor": "Invalid color.  Type three comma separated values from 0 to 255.",
       "invalidOsnapModes": "Invalid object snap modes.",
       "invalidPoint": "Invalid point.",
+      "snapNotFound": [
+        "No ",
+        [
+          "snap",
+          1,
+          {
+            "endpoint": "Endpoint ",
+            "midpoint": "Midpoint ",
+            "center": "Center ",
+            "quadrant": "Quadrant ",
+            "intersection": "Intersection ",
+            "insertion": "Insert ",
+            "perpendicular": "Perpendicular ",
+            "nearest": "Nearest ",
+            "other": ""
+          }
+        ],
+        "found for specified point."
+      ],
       "invalidPoint2d": "Invalid 2D point.",
       "pointOrKeywordRequired": "Point or option keyword required.",
       "point2dOrKeywordRequired": "2D point or option keyword required.",
