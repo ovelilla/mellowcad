@@ -8,7 +8,8 @@ import {
   ToolContext,
 } from "./Tool"
 import type { PromptId } from "../../locales/types"
-import { ObjectSelector, countPreselection } from "./objectSelection"
+import type { MessageId } from "../EngineText"
+import { ObjectSelector, ObjectSelectorOptions } from "./objectSelection"
 
 /**
  * A tool that runs a single action on a *set* of selected objects — AutoCAD's
@@ -28,11 +29,14 @@ export abstract class SelectionActionTool implements Tool {
 
   /** The set being built, read live: JOIN asks differently once it holds one. */
   private selection: ToolContext["selection"] | null = null
+  // WHY methods, not fields: this runs before a subclass's fields are set.
   private readonly selector = new ObjectSelector({
     takes: () => this.selectionInput(),
     done: (ctx) => this.execute(ctx),
     question: () =>
       this.selectionQuestion(!(this.selection?.isEmpty() ?? true)),
+    refuse: this.refusal(),
+    noneFound: this.noneFound(),
   })
 
   /**
@@ -52,16 +56,24 @@ export abstract class SelectionActionTool implements Tool {
 
   /**
    * Enters the "Select objects" prompt — or, with a pre-selection, runs the
-   * action at once (noun→verb, as AutoCAD does). A subclass that must ask
-   * something *before* the set, like COPYBASE's base point, overrides
-   * {@link onActivate} and calls this once it has the answer.
+   * action at once (noun→verb, as AutoCAD does) unless the command refused
+   * all of it. A subclass that must ask something *before* the set, like
+   * COPYBASE's base point, overrides {@link onActivate} and calls this once
+   * it has the answer.
    */
   protected begin(ctx: ToolContext): void {
     this.selector.start()
-    if (!ctx.selection.isEmpty()) {
-      countPreselection(ctx)
-      this.execute(ctx)
-    }
+    if (this.selector.preselect(ctx)) this.execute(ctx)
+  }
+
+  /** What the command refuses at `Select objects:`, said under the count. */
+  protected refusal(): ObjectSelectorOptions["refuse"] {
+    return undefined
+  }
+
+  /** What Enter on an empty set says, if anything. */
+  protected noneFound(): MessageId | undefined {
+    return undefined
   }
 
   /** What the set is asked with, `Select objects` unless the command words it. */

@@ -645,7 +645,9 @@ Gradient dialog, where HATCH sets its properties, do not exist here):
 internal point says `Selecting everything...`, `Selecting everything visible...`,
 `Analyzing the selected data...`, `Analyzing internal islands...` (es `Seleccionándolo todo...` …)
 and traces the area (boundary tracing, Outer island style), Select objects asks `Select objects:`
-(MOVE's counts and modes) and goes back to the internal point, with an empty set too; Undo, which
+(MOVE's counts and modes, of whole objects) and goes back to the internal point, with an empty set
+too; it finds every object, one that closes no area too (`1 found` for an open line, erase/p222),
+which the hatch leaves out, saying nothing (what AutoCAD says of it was not probed); Undo, which
 the prompt declares but does not list (es `desHacer`), takes back the last internal point's
 boundaries without a word and asks again, leaving what Select objects took, and with no internal
 point left says `No boundary to Undo.` (es `Ningún contorno por deshacer.`); Properties asks

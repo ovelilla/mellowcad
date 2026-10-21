@@ -72,7 +72,7 @@ runtime builds the rest: `LINE Specify next point or [Undo]:`, the dynamic promp
 - A report the answer produces is written after the answered prompt by itself. A table string that
   starts with a space (` Specify second point:`) keeps it in `commands.prompts`.
 - Every `Select objects:` is an `ObjectSelector`; a set selected before the command is counted by
-  `countPreselection`, which also keeps it as the Previous set.
+  its `preselect`, which also keeps it as the Previous set.
 
 ## Keywords
 

@@ -30,10 +30,10 @@ How prompts, keywords and messages are worded and named: `cad-catalogs.md`.
   hands it `question`, `takes`, `commandOptions`, `invokeOption`, `answerTyped`, the three pointer
   handlers, `onEnter`, `wantsSnap` and `buildOverlay`. It passes `done`, `takes` when the set takes
   no sub-objects (`takes: () => "wholeObjects"`: what its refusal lists, and so which modes it
-  offers), and where needed `question`, `accept` (what it leaves out is neither counted nor
-  highlighted, and a pick on it starts no window) and `onAdded` (STRETCH's frames). Never
-  re-implement a pick, a box or a mode in a tool. A **single object's pick** that takes the modes
-  (BREAK's `Select object:`, UCS OBject's, ARRAYPATH's path) holds one too, with `modes`
+  offers), and where needed `question`, `accept` (a silent filter), `refuse` and `noneFound`
+  (EXPLODE's lines) and `onAdded` (STRETCH's frames); a preselection goes through `preselect`.
+  Never re-implement a pick, a box or a mode in a tool. A **single object's pick** that takes the
+  modes (BREAK's `Select object:`, UCS OBject's, ARRAYPATH's path) holds one too, with `modes`
   (`ONE_OBJECT_MODES`) and `one` (`take`, told how the mode found it — `ModeFind`; `newest`,
   `pair`, `silent`): it keeps its own pick and Enter and hands the selector the rest while
   `inMode()`. A typed point there reaches `one.pick` through `typedPick`, so a typed point and a
@@ -92,9 +92,9 @@ prominent** pick (path curve, break/trim target, offset source) → `THEME.selec
 (`entityHover` is too close to the entity colour to answer "which one?"); under an implied Tangent
 (Ttr), a marker (`snapMarker`).
 
-When the answer is "that object is not eligible at all", **filter the pick** instead of refusing:
-an object that never highlights needs no wording (DIMSPACE's non-parallel dimensions, HATCH's
-objects that close no area).
+**A set prompt counts all it finds**: refuse under the count (`refuse`) or leave it out when
+acting (HATCH's open objects); `accept` only where AutoCAD's prompt filters too (DIMSPACE,
+erase/p244).
 
 A tool never touches an adapter: what it needs outside the document (`ctx.copyToClipboard`) is a
 `ToolContext` method the runtime wires to the port.

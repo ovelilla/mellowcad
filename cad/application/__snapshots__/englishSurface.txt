@@ -1530,7 +1530,8 @@ lweight "Lineweight" LW
   options: -
   prompt| Specify internal point or [Properties/Select objects]: S
 > pick object
-  prompt| Select objects:
+  properties: Line (1) {Thickness=0.00 mm~} [Geometry: Start X=0.00~, Start Y=0.00~, Start Z=0.00~, End X=100.00~, End Y=0.00~, End Z=0.00~, Delta X=100.00 mm, Delta Y=0.00 mm, Delta Z=0.00 mm, Length=100.00 mm, Angle=0°]
+  prompt| Select objects: 1 found
 > enter
   prompt: HATCH Specify internal point or [Properties/Select objects]:
   asks: ""
@@ -3304,10 +3305,15 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0°~, Line space facto
   command| X EXPLODE 2 found
   info| 1 was not able to be exploded.
 > EXPLODE two rejected
-  properties: 2 objects (2) [Selection: Line=1, Circle=1]
+  prompt: EXPLODE Select objects:
+  properties: -
   command| X EXPLODE 2 found
   info| 2 were not able to be exploded.
+> escape
+  prompt: Command:
+  prompt| Select objects: *Cancel*
 > JOIN
+  properties: 2 objects (2) [Selection: Line=1, Circle=1]
   command| J JOIN 2 found
   error| 0 objects joined, 2 objects discarded from the operation
 > escape

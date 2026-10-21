@@ -120,8 +120,8 @@ interlineado`, `Anchura definida`, `Método`, `Grado`…), the prompts of POL, C
   on it); FILLET's, CHAMFER's, TRIM's, POLYGON's, ELLIPSE's and SPLINE's prompts and reports,
   `*No válido*`, from the string table of Autodesk's AutoCAD 2027 Spanish language pack
   (`es-ES/acadres.dll`, read without installing it), paired with AutoCAD 2023's English by id;
-  EXPLODE's `1 no se ha podido descomponer.` (the 2027 console, erase/p328, p329). ERASE says no
-  count, and an empty set nothing (erase/p00, p304).
+  EXPLODE's `1 no se ha podido descomponer.` and `No hallada.` (the 2027 console, erase/p216,
+  p328, p329). ERASE says no count, and an empty set nothing (erase/p00, p304).
   **Unverified:** PURGE's counts (left to the Blocks review), the file errors, the clipboard and
   FROM notes, `El círculo no existe.`, block, pattern and style not found, `Capa{n}`
   (partial), `Copia de {name}`, `Radio de empalme es demasiado grande`,

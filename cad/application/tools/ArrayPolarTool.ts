@@ -17,7 +17,7 @@ import { ScenePrimitive, StrokeStyle } from "../../scene/types"
 import { entityScenePrimitive } from "../SceneBuilder"
 import { THEME } from "../../scene/theme"
 import { AddEntitiesCommand } from "../commands/entityCommands"
-import { ObjectSelector, countPreselection } from "./objectSelection"
+import { ObjectSelector } from "./objectSelection"
 import type { PromptId } from "../../locales/types"
 import {
   CommandOption,
@@ -93,17 +93,17 @@ export class ArrayPolarTool implements Tool {
 
   private state: ArrayPolarState = { phase: "selecting" }
   private readonly selector = new ObjectSelector({
+    takes: () => "wholeObjects",
     done: (ctx) => this.confirmSelection(ctx),
   })
   private lastScreen: Vec2 | null = null
 
   onActivate(ctx: ToolContext): void {
     ctx.setCursor("crosshair")
-    if (ctx.selection.isEmpty()) {
+    this.selector.start()
+    if (!this.selector.preselect(ctx)) {
       this.state = { phase: "selecting" }
-      this.selector.start()
     } else {
-      countPreselection(ctx)
       this.enterCenter(ctx)
     }
   }

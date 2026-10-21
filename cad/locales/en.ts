@@ -2012,6 +2012,7 @@ export const en: EngineCatalog = {
           "name"
         ]
       ],
+      "noneFound": "None found.",
       "currentUcsName": [
         "Current ucs name:  ",
         [

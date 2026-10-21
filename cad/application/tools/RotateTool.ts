@@ -24,7 +24,7 @@ import {
   ToolQuestion,
   type QuestionInput,
 } from "./Tool"
-import { ObjectSelector, countPreselection } from "./objectSelection"
+import { ObjectSelector } from "./objectSelection"
 
 /**
  * AutoCAD's ROTATE command: select a set of objects, pick a base point (the
@@ -119,11 +119,10 @@ export class RotateTool implements Tool {
     )
     // Pre-selected objects (the common path) skip straight to the base point,
     // matching AutoCAD; otherwise prompt to select the objects first.
-    if (ctx.selection.isEmpty()) {
+    this.selector.start()
+    if (!this.selector.preselect(ctx)) {
       this.state = { phase: "selecting" }
-      this.selector.start()
     } else {
-      countPreselection(ctx)
       this.state = { phase: "pivot" }
       this.openPivotInput(ctx)
     }

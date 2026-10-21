@@ -970,7 +970,17 @@ describe("the engine's English surface", () => {
               )
               .command("X")
           )
-          .do("JOIN", (c) => c.command("J"))
+          .do("escape", (c) => c.escape())
+          .do("JOIN", (c) =>
+            c
+              .select(
+                ...c
+                  .entities()
+                  .slice(0, 2)
+                  .map((e) => e.id)
+              )
+              .command("J")
+          )
           .do("escape", (c) => c.escape())
     )
     walk(

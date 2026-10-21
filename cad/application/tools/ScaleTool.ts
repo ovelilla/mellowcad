@@ -23,7 +23,7 @@ import {
   ToolQuestion,
   type QuestionInput,
 } from "./Tool"
-import { ObjectSelector, countPreselection } from "./objectSelection"
+import { ObjectSelector } from "./objectSelection"
 import type { PromptId } from "../../locales/types"
 
 /**
@@ -113,11 +113,10 @@ export class ScaleTool implements Tool {
     ctx.setCursor("crosshair")
     // Pre-selected objects (the common path) skip straight to the base point,
     // matching AutoCAD; otherwise prompt to select the objects first.
-    if (ctx.selection.isEmpty()) {
+    this.selector.start()
+    if (!this.selector.preselect(ctx)) {
       this.state = { phase: "selecting" }
-      this.selector.start()
     } else {
-      countPreselection(ctx)
       this.state = { phase: "base" }
       this.openBaseInput(ctx)
     }

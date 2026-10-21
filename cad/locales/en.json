@@ -1370,6 +1370,7 @@
       "explodeRejected": "{count, plural, one {# was not able to be exploded.} other {# were not able to be exploded.}}",
       "explodeLostWidth": "Exploding this polyline has lost width information.\nThe UNDO command will restore it.",
       "explodeCannot": "Cannot explode {name}",
+      "noneFound": "None found.",
       "currentUcsName": "Current ucs name:  {kind, select, world {*WORLD*} unnamed {*NO NAME*} top {*TOP*} bottom {*BOTTOM*} front {*FRONT*} back {*BACK*} left {*LEFT*} right {*RIGHT*} other {{name}}}",
       "listedUcsName": "Current ucs name: {kind, select, world {*WORLD*} unnamed {*NO NAME*} top {*TOP*} bottom {*BOTTOM*} front {*FRONT*} back {*BACK*} left {*LEFT*} right {*RIGHT*} other {\"{name}\"}}",
       "savedUcsHeader": "Saved coordinate systems:",

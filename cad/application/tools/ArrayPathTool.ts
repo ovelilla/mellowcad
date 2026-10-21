@@ -14,11 +14,7 @@ import { ScenePrimitive, StrokeStyle } from "../../scene/types"
 import { entityScenePrimitive } from "../SceneBuilder"
 import { THEME } from "../../scene/theme"
 import { ReplaceEntitiesCommand } from "../commands/entityCommands"
-import {
-  ONE_OBJECT_MODES,
-  ObjectSelector,
-  countPreselection,
-} from "./objectSelection"
+import { ONE_OBJECT_MODES, ObjectSelector } from "./objectSelection"
 import type { PromptId } from "../../locales/types"
 import {
   CommandOption,
@@ -97,6 +93,7 @@ export class ArrayPathTool implements Tool {
 
   private state: ArrayPathState = { phase: "selecting" }
   private readonly selector = new ObjectSelector({
+    takes: () => "wholeObjects",
     done: (ctx) => this.confirmSelection(ctx),
   })
   /**
@@ -131,11 +128,10 @@ export class ArrayPathTool implements Tool {
 
   onActivate(ctx: ToolContext): void {
     ctx.setCursor("crosshair")
-    if (ctx.selection.isEmpty()) {
+    this.selector.start()
+    if (!this.selector.preselect(ctx)) {
       this.state = { phase: "selecting" }
-      this.selector.start()
     } else {
-      countPreselection(ctx)
       this.enterPickPath(ctx)
     }
   }

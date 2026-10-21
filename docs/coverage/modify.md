@@ -557,14 +557,18 @@ wide one (es `Al descomponer esta línea se ha perdido información de grosor.` 
 `Se puede restituir con el comando DESHACER.`, the table's), block reference → contents (one nesting
 level), fresh ids, layer-0 reverts to real layer 0, multiline text → one TEXT per line as drawn,
 aligned by the attachment's column (Autodesk documents only "Explodes into text objects"); a
-reference with attributes gives its definitions back and drops the values; anything else counted
-with `1 was not able to be exploded.` (es `1 no se ha podido descomponer.`), but a spline, refused
-by name, each one, after the count: `Cannot explode SPLINE` (es `No se puede descomponer SPLINE`;
-spline/p319, p324)
+reference with attributes gives its definitions back and drops the values. `Select objects:` takes
+whole objects (its refusal lists no `SUbobject/Object`, erase/p02, p138). Anything else is refused
+as it is found, under each selection's count and after the locked layer's line, counted in `found`
+and kept out of the set and its total: `1 found` / `1 was not able to be exploded.` (es
+`1 no se ha podido descomponer.`); at `Remove objects:` nothing is said (erase/p213–p219, p248). A spline passes and is refused by name once the set is closed, each one:
+`Cannot explode SPLINE` (es `No se puede descomponer SPLINE`; spline/p319, p324). Enter on an
+empty set, after everything was refused too, says `None found.` (es `No hallada.`, table 20841;
+p205, p216). A preselection is counted and sifted the same way after the echo; with nothing left
+it asks `Select objects:` and explodes at the first selection that adds something, with no Enter
+(`1 found, 0 total` for a refused one, p241, p242, p254)
 
-**Missing:** ByBlock resolution, non-uniform-scale → ellipse conversion; where the count is said:
-AutoCAD says it as the objects are found, under `2 found` and before the next `Select objects:`
-(spline/p319), here once the set is done
+**Missing:** ByBlock resolution, non-uniform-scale → ellipse conversion
 
 ### `JOIN` / `J` · es `UNIR` / `U`†
 

@@ -2359,6 +2359,7 @@ export const es: EngineLocale = {
           "name"
         ]
       ],
+      "noneFound": "No hallada.",
       "currentUcsName": [
         "Nombre de scp actual:  ",
         [

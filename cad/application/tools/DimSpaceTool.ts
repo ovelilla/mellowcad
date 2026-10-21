@@ -8,7 +8,6 @@ import {
 import {
   DimensionEntity,
   Entity,
-  EntityId,
   dimensionAxisAngle,
   readsInPlan,
 } from "../../domain/entities"
@@ -20,6 +19,7 @@ import { ScenePrimitive } from "../../scene/types"
 import { THEME } from "../../scene/theme"
 import type { PromptId } from "../../locales/types"
 import { ObjectSelector, lastObject } from "./objectSelection"
+import { typedPick } from "./typedPick"
 import {
   CommandOption,
   CommandOptionOutcome,
@@ -67,7 +67,11 @@ export class DimSpaceTool implements Tool {
       if (this.state.phase === "select") this.enterValue(this.state.base, ctx)
     },
     question: () => "selectDimensionsToSpace",
-    accept: (ids, ctx) => this.spaceableOf(ids, ctx),
+    // WHY every dimension: AutoCAD finds one at an angle to the base too
+    // (erase/p221), which spacing then leaves where it is; what is no
+    // dimension is `0 found` (p244, p256).
+    accept: (ids, ctx) =>
+      ids.filter((id) => ctx.document.get(id)?.type === "dimension"),
   })
 
   onActivate(ctx: ToolContext): void {
@@ -114,8 +118,22 @@ export class DimSpaceTool implements Tool {
     ctx.requestRender()
   }
 
+  /**
+   * A point typed at either prompt, which AutoCAD's console takes as a pick
+   * there: the base dimension's too (`Select base dimension:50,-10`,
+   * erase/p221, p256).
+   */
   answerTyped(text: string, ctx: ToolContext): boolean {
-    return this.state.phase === "select" && this.selector.answerTyped(text, ctx)
+    if (this.state.phase === "select") {
+      return this.selector.answerTyped(text, ctx)
+    }
+    if (this.state.phase !== "base") return false
+    const point = typedPick(text, ctx)
+    if (!point) return false
+    const base = this.pickDimension(point, ctx)
+    if (base) this.enterSelect(base, ctx)
+    ctx.requestRender()
+    return true
   }
 
   onPointerUp(input: PointerInput, ctx: ToolContext): void {
@@ -294,20 +312,6 @@ export class DimSpaceTool implements Tool {
   private pickDimension(world: Vec2, ctx: ToolContext): DimensionEntity | null {
     const hit = ctx.pick(world)
     return hit?.type === "dimension" && isSpaceable(hit) ? hit : null
-  }
-
-  /**
-   * The dimensions of `ids` the set can take. Only parallel dimensions can be
-   * spaced, so a non-parallel one simply never highlights — the pick tells the
-   * user what the command can act on.
-   */
-  private spaceableOf(ids: readonly EntityId[], ctx: ToolContext): EntityId[] {
-    if (this.state.phase !== "select") return []
-    const { base } = this.state
-    return ids.filter((id) => {
-      const entity = ctx.document.get(id)
-      return entity !== undefined && spaceable(entity, base)
-    })
   }
 
   private outline(dim: DimensionEntity, ctx: ToolContext): ScenePrimitive[] {

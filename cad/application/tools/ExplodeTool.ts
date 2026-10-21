@@ -11,8 +11,17 @@ import {
   polylineSegmentGeometries,
 } from "../../domain/entities"
 import { ReplaceEntitiesCommand } from "../commands/entityCommands"
+import type { MessageId } from "../EngineText"
+import type { ObjectSelectorOptions } from "./objectSelection"
 import { SelectionActionTool } from "./SelectionActionTool"
-import { ToolContext } from "./Tool"
+import { QuestionInput, ToolContext } from "./Tool"
+
+/** What EXPLODE breaks up. */
+const EXPLODED: ReadonlySet<Entity["type"]> = new Set([
+  "polyline",
+  "insert",
+  "mtext",
+])
 
 /**
  * AutoCAD's EXPLODE. A polyline is replaced by an independent object per
@@ -26,27 +35,38 @@ import { ToolContext } from "./Tool"
  * widths are lost, its pieces following its centreline, and AutoCAD says so
  * for each wide one.
  *
- * Everything else is left untouched and reported, and one undo step reverts the
- * whole explode.
+ * Everything else is refused as `Select objects:` finds it, said under each
+ * count (`1 was not able to be exploded.`, erase/p213–p219), and one undo
+ * step reverts the whole explode.
  */
 export class ExplodeTool extends SelectionActionTool {
   readonly id = "explode"
   readonly shortcut = "x"
 
-  protected run(entities: readonly Entity[], ctx: ToolContext): void {
-    const composite = entities.filter(
-      (e) => e.type === "polyline" || e.type === "insert" || e.type === "mtext"
-    )
-    // AutoCAD accepts any object at the prompt and then says what it could not
-    // do, rather than silently ignoring the picks. A spline passes the
-    // selection and is refused by name, each one (probes spline/p319, p324).
-    const splines = entities.filter((e) => e.type === "spline").length
-    const rejected = entities.length - composite.length - splines
-    if (rejected > 0) {
-      ctx.report(ctx.text.message("explodeRejected", { count: rejected }))
+  protected selectionInput(): QuestionInput {
+    return "wholeObjects"
+  }
+
+  // WHY a spline passes: it is refused by name once the set is closed, each
+  // one (spline/p319, p324).
+  protected refusal(): ObjectSelectorOptions["refuse"] {
+    return {
+      rejects: (entity) =>
+        !EXPLODED.has(entity.type) && entity.type !== "spline",
+      message: "explodeRejected",
     }
-    for (let i = 0; i < splines; i++) {
-      ctx.report(ctx.text.message("explodeCannot", { name: "SPLINE" }))
+  }
+
+  protected noneFound(): MessageId {
+    return "noneFound"
+  }
+
+  protected run(entities: readonly Entity[], ctx: ToolContext): void {
+    const composite = entities.filter((e) => EXPLODED.has(e.type))
+    for (const entity of entities) {
+      if (entity.type === "spline") {
+        ctx.report(ctx.text.message("explodeCannot", { name: "SPLINE" }))
+      }
     }
     if (composite.length === 0) return
 

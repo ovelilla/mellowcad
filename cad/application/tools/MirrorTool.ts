@@ -21,7 +21,7 @@ import {
   ToolContext,
   type QuestionInput,
 } from "./Tool"
-import { ObjectSelector, countPreselection } from "./objectSelection"
+import { ObjectSelector } from "./objectSelection"
 
 /**
  * AutoCAD's MIRROR command: select a set of objects, then reflect them across a
@@ -75,11 +75,10 @@ export class MirrorTool implements Tool {
     ctx.setCursor("crosshair")
     // Pre-selected objects (the common path) skip straight to the mirror line,
     // matching AutoCAD; otherwise prompt to select the objects first.
-    if (ctx.selection.isEmpty()) {
+    this.selector.start()
+    if (!this.selector.preselect(ctx)) {
       this.state = { phase: "selecting" }
-      this.selector.start()
     } else {
-      countPreselection(ctx)
       this.state = { phase: "first" }
       this.openPointInput(ctx, "mirrorFirstPoint")
     }

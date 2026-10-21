@@ -56,8 +56,11 @@ linetype and lineweight
 
 **Implemented:** `Select base dimension:` (es `Designar cota base`) — a pick or `Last`
 (`Selected object is not a dimension.`, es `El objeto designado no es una cota.`;
-`No object selected.`) —, `Select dimensions to space:` with MOVE's counts (es
-`Designe cotas para intervalo`), `Enter value or [Auto] <Auto>:` (es
+`No object selected.`; a point typed there picks, erase/p221, p256) —,
+`Select dimensions to space:` with MOVE's counts (es `Designe cotas para intervalo`), finding every
+dimension, one at an angle to the base too, which spacing leaves where it is, and saying `0 found`
+for what is no dimension, which starts the total (`0 found, 0 total`, erase/p221, p244, p256),
+`Enter value or [Auto] <Auto>:` (es
 `Indique valor o [Auto] <Auto>`; a negative one
 `Invalid spacing value, spacing value cannot be negative.`); Select base dimension, select
 dimensions to space, numeric value, Auto (2×DIMTXT, DIMSCALE-aware), 0 = line up, per-side ranking,

@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest"
 import { createHarness, CadHarness } from "../../../test/harness"
-import { p } from "../../../test/builders"
+import { lineOf, p } from "../../../test/builders"
 import {
   createDimension,
   DimensionEntity,
@@ -32,6 +32,15 @@ function spacing(cad: CadHarness): CadHarness {
     .click(p(150, -60))
     .click(p(250, -100))
     .enter()
+}
+
+/** Typed at the command line and confirmed, as AutoCAD's prompt reads it. */
+function typed(cad: CadHarness, ...texts: string[]): CadHarness {
+  for (const text of texts) {
+    cad.runtime.setCommandLineText(text)
+    cad.runtime.submitCommandLine()
+  }
+  return cad
 }
 
 function lineY(cad: CadHarness, id: string): number {
@@ -192,6 +201,56 @@ describe("DIMSPACE", () => {
       p(-40, 50)
     )
     expect(lineY(cad, "D2")).toBeCloseTo(-50)
+  })
+
+  /** The probes' drawing: a line under two horizontal dimensions and a vertical one. */
+  const probed = () => [
+    lineOf(p(0, 0), p(100, 0), { id: "A" }),
+    createDimension("linear", p(0, 0), p(100, 0), p(50, -10), { id: "H1" }),
+    createDimension("linear", p(0, 0), p(100, 0), p(50, -20), { id: "H2" }),
+    createDimension("linear", p(0, 0), p(0, 50), p(-10, 25), {
+      rotation: Math.PI / 2,
+      id: "V",
+    }),
+  ]
+
+  // dimspace in erase/p244, p256: what is no dimension is counted `0 found`,
+  // and that find starts the total.
+  it("says 0 found for an object that is no dimension, and totals after it", () => {
+    const cad = createHarness({ entities: probed() })
+    typed(cad.command("DIMSPACE"), "50,-10", "50,0", "50,0", "50,-20", "50,0")
+
+    expect(cad.commandLog().slice(1)).toEqual([
+      "Select base dimension: 50,-10",
+      "Select dimensions to space: 50,0",
+      "0 found",
+      "Select dimensions to space: 50,0",
+      "0 found, 0 total",
+      "Select dimensions to space: 50,-20",
+      "1 found, 1 total",
+      "Select dimensions to space: 50,0",
+      "0 found, 1 total",
+    ])
+  })
+
+  // erase/p221: a point typed at the base prompt picks there, and a dimension
+  // at an angle to the base is found, then left where it is.
+  it("takes a typed point as the base's pick, and finds a dimension at an angle to it", () => {
+    const cad = createHarness({ entities: probed() })
+    typed(cad.command("DIMSPACE"), "50,-10", "-10,25", "50,-20")
+    cad.enter().type("10").enter()
+
+    expect(cad.commandLog().slice(1, 6)).toEqual([
+      "Select base dimension: 50,-10",
+      "Select dimensions to space: -10,25",
+      "1 found",
+      "Select dimensions to space: 50,-20",
+      "1 found, 2 total",
+    ])
+    expect(cad.byId<DimensionEntity>("V").linePoint).toBeCloseToPoint(
+      p(-10, 25)
+    )
+    expect(lineY(cad, "H2")).toBeCloseTo(-20)
   })
 
   it("selects the set with a crossing box as well as by clicking", () => {

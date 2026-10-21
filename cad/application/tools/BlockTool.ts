@@ -62,6 +62,7 @@ export class BlockTool implements Tool {
   private name = ""
   private basePoint: Vec3 = { x: 0, y: 0, z: 0 }
   private readonly selector = new ObjectSelector({
+    takes: () => "wholeObjects",
     done: (ctx) => this.commit(ctx),
     // What one selection finds joins the set newest first.
     accept: (ids) => [...ids].reverse(),

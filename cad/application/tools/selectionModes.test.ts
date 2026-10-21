@@ -187,6 +187,32 @@ describe("Select objects' modes", () => {
     expect(cad.selectedIds()).toEqual(["C"])
   })
 
+  // erase/p243, p247: Remove objects counts a locked object and says nothing
+  // of its layer: it never was in the set.
+  it("says nothing of a locked layer at Remove objects", () => {
+    const cad = createHarness()
+    cad.runtime.document.load(
+      [
+        lineOf(p(0, 0), p(100, 0), { id: "A" }),
+        lineOf(p(0, 50), p(100, 50), { id: "LK", layerId: "locked" }),
+      ],
+      { layers: [layerOf("0"), layerOf("locked", { locked: true })] }
+    )
+    cad.command("ERASE")
+    answer(cad, "ALL", "R", "W", "-10,-10", "110,60")
+
+    expect(cad.commandLog().slice(1)).toEqual([
+      "Select objects: ALL",
+      "2 found",
+      "1 was on a locked layer.",
+      "Select objects: R",
+      "Remove objects: W",
+      "Specify first corner: -10,-10",
+      "Specify opposite corner: 110,60",
+      "2 found, 1 removed, 0 total",
+    ])
+  })
+
   it("takes the Previous set again, once a command has been given one", () => {
     const cad = createHarness({ entities: drawing() })
     cad.command("MOVE")
@@ -498,12 +524,61 @@ describe("Select objects' modes", () => {
     for (const command of ["COPY", "ROTATE", "SCALE", "MIRROR", "EXPLODE"]) {
       cad.command(command)
       answer(cad, "L")
-      expect(cad.commandLog().slice(-2), command).toEqual([
-        "Select objects: L",
-        "1 found",
-      ])
+      const log = cad.commandLog()
+      const at = log.lastIndexOf("Select objects: L")
+      expect(log.slice(at), command).toEqual(
+        // EXPLODE refuses the circle under its count (erase/p213).
+        command === "EXPLODE"
+          ? ["Select objects: L", "1 found", "1 was not able to be exploded."]
+          : ["Select objects: L", "1 found"]
+      )
       cad.escape().escape()
     }
+  })
+
+  // erase/p02, p137, p138, p223 and p251 (traced), p259, p260: whether a
+  // command's set takes sub-objects is what its refusal lists.
+  it("lists the modes each command's set takes in its refusal", () => {
+    const whole = `Expects a point or ${SELECTION_MODES.replace("/SUbobject/Object", "")}`
+    const sub = `Expects a point or ${SELECTION_MODES}`
+    const lists: Record<string, string> = {}
+    for (const [command, ...before] of [
+      ["ERASE"],
+      ["MOVE"],
+      ["ROTATE"],
+      ["SCALE"],
+      ["CUTCLIP"],
+      ["EXPLODE"],
+      ["COPYCLIP"],
+      ["ARRAYRECT"],
+      ["ARRAYPOLAR"],
+      ["ARRAYPATH"],
+      ["BLOCK", "BK", "0,0"],
+      ["MIRROR"],
+      ["JOIN"],
+      ["ZOOM", "O"],
+    ]) {
+      const cad = createHarness({ entities: drawing() })
+      cad.command(command)
+      answer(cad, ...before, "FOO")
+      lists[command] = cad.commandLog().at(-1) ?? ""
+    }
+    expect(lists).toEqual({
+      ERASE: sub,
+      MOVE: sub,
+      ROTATE: sub,
+      SCALE: sub,
+      CUTCLIP: sub,
+      EXPLODE: whole,
+      COPYCLIP: whole,
+      ARRAYRECT: whole,
+      ARRAYPOLAR: whole,
+      ARRAYPATH: whole,
+      BLOCK: whole,
+      MIRROR: whole,
+      JOIN: whole,
+      ZOOM: whole,
+    })
   })
 
   it("stretches what a crossing polygon frames", () => {

@@ -21,7 +21,7 @@ import {
 } from "./Tool"
 import type { PromptId } from "../../locales/types"
 import { acuteHeading, headingInUcs } from "./ucsHeading"
-import { ObjectSelector, countPreselection } from "./objectSelection"
+import { ObjectSelector } from "./objectSelection"
 import { pointAlongCursor, showRise } from "./directDistance"
 
 /**
@@ -143,12 +143,11 @@ export abstract class PlacementTool implements Tool {
     // Pre-selected objects (the common path) skip straight to the base point,
     // matching AutoCAD, which counts them first; otherwise prompt to select
     // the objects first.
-    if (ctx.selection.isEmpty()) {
+    this.selector.start()
+    if (!this.selector.preselect(ctx)) {
       this.state = { phase: "selecting" }
-      this.selector.start()
       this.announceSelection(ctx)
     } else {
-      countPreselection(ctx)
       this.state = { phase: "basePoint" }
       this.announceBasePoint(ctx)
       this.openBaseInput(ctx)

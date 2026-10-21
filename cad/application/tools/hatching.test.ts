@@ -288,7 +288,33 @@ describe("HATCH boundary by Select objects", () => {
     expect(hatchOnly(h.entities()).loops).toHaveLength(2)
   })
 
-  it("ignores objects that do not close an area", () => {
+  // -hatch in erase/p222: Select objects finds an open line as it finds the
+  // circle; tracing leaves it out.
+  it("finds an object that closes no area, and leaves it out of the hatch", () => {
+    const h = createHarness({
+      entities: [
+        lineOf(p(0, 0), p(100, 0), { id: "A" }),
+        circleOf(p(250, 250), 10, { id: "C" }),
+      ],
+    })
+    h.command("HATCH").option("Select objects")
+    for (const text of ["50,0", "260,250"]) {
+      h.runtime.setCommandLineText(text)
+      h.runtime.submitCommandLine()
+    }
+    expect(h.commandLog().slice(-4)).toEqual([
+      "Select objects: 50,0",
+      "1 found",
+      "Select objects: 260,250",
+      "1 found, 2 total",
+    ])
+    h.enter().enter()
+
+    expect(hatchOnly(h.entities()).loops).toHaveLength(1)
+    expect(h.typeCounts().line).toBe(1)
+  })
+
+  it("makes nothing of objects that close no area", () => {
     const h = createHarness({ entities: [lineOf(p(0, 0), p(100, 0))] })
     h.command("HATCH").option("Select objects").click(p(50, 0)).enter().enter()
 
@@ -296,7 +322,7 @@ describe("HATCH boundary by Select objects", () => {
     expect(h.activeToolId()).toBe("select")
   })
 
-  it("only rolls over objects it can hatch", () => {
+  it("rolls over what Select objects finds, as any set prompt does", () => {
     const h = createHarness({
       entities: [SQUARE, lineOf(p(0, 200), p(100, 200), { id: "l" })],
     })
@@ -307,8 +333,10 @@ describe("HATCH boundary by Select objects", () => {
         return stroke?.color === THEME.entityHover
       }).length
 
-    h.moveTo(p(50, 200))
+    h.moveTo(p(500, 500))
     expect(hovers()).toBe(0)
+    h.moveTo(p(50, 200))
+    expect(hovers()).toBeGreaterThan(0)
     h.moveTo(p(50, 0))
     expect(hovers()).toBeGreaterThan(0)
   })

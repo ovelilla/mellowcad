@@ -1401,6 +1401,7 @@
       "explodeRejected": "{count, plural, one {# no se ha podido descomponer.} other {# no se han podido descomponer.}}",
       "explodeLostWidth": "Al descomponer esta línea se ha perdido información de grosor.\nSe puede restituir con el comando DESHACER.",
       "explodeCannot": "No se puede descomponer {name}",
+      "noneFound": "No hallada.",
       "currentUcsName": "Nombre de scp actual:  {kind, select, world {*UNIVERSAL*} unnamed {*SIN NOMBRE*} top {*SUPERIOR*} bottom {*INFERIOR*} front {*FRONTAL*} back {*POSTERIOR*} left {*IZQUIERDA*} right {*DERECHA*} other {{name}}}",
       "listedUcsName": "Nombre de scp actual: {kind, select, world {*UNIVERSAL*} unnamed {*SIN NOMBRE*} top {*SUPERIOR*} bottom {*INFERIOR*} front {*FRONTAL*} back {*POSTERIOR*} left {*IZQUIERDA*} right {*DERECHA*} other {\"{name}\"}}",
       "savedUcsHeader": "Sistemas de coordenadas guardados:",

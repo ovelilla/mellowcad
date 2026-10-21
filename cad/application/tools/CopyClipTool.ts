@@ -100,6 +100,12 @@ export class CopyClipTool extends SelectionActionTool {
     return this.awaitingBase ? null : super.takes()
   }
 
+  // WHY COPYCLIP's whole and CUTCLIP's with sub-objects: their refusals list
+  // so (erase/p259). COPYBASE's was not probed: it keeps the default.
+  protected selectionInput(): QuestionInput {
+    return this.mode === "copy" ? "wholeObjects" : super.selectionInput()
+  }
+
   commandOptions(): readonly CommandOption[] {
     return this.awaitingBase ? [] : super.commandOptions()
   }

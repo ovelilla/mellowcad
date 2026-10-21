@@ -79,7 +79,6 @@ export class HatchTool implements Tool {
   private readonly selector = new ObjectSelector({
     takes: () => "wholeObjects",
     done: (ctx) => this.enterPoint(ctx),
-    accept: (ids, ctx) => this.boundaries(ids, ctx),
   })
   private lastScreen: Vec2 | null = null
   private preview: HatchEntity | null = null
@@ -279,25 +278,29 @@ export class HatchTool implements Tool {
   }
 
   /**
-   * The objects of `ids` the boundary set can take. Objects that cannot close
-   * an area never light up, which answers "what can I hatch?" without
-   * inventing a message AutoCAD does not print here.
+   * The boundaries of what Select objects took. It finds every object, one
+   * that closes no area too (`1 found` for an open line, -hatch in
+   * erase/p222), and what cannot bound the hatch is left out here; what
+   * AutoCAD says of it was not probed, so nothing is said.
    */
-  private boundaries(ids: readonly EntityId[], ctx: ToolContext): EntityId[] {
-    let plane = this.plane(ctx)
-    return ids.filter((id) => {
+  private selectedLoops(ctx: ToolContext): HatchLoop[] {
+    let plane = this.pickedPlane
+    const loops: HatchLoop[] = []
+    for (const id of ctx.selection.toArray()) {
       const entity = ctx.document.get(id)
-      if (entity === undefined || !this.canBound(entity, plane)) return false
+      const loop = entity ? hatchLoopFromEntity(entity) : null
+      if (!entity || !loop || !this.canBound(entity, plane)) continue
       plane ??= entityElevation(entity)
-      return true
-    })
+      loops.push(loop)
+    }
+    return loops
   }
 
   /**
    * Whether `entity` closes an area on its own in `plane`: "enclosed areas can
    * be hatched only if they are in a plane parallel to the XY plane of the
-   * current UCS", so an object at an angle to it never highlights, and once
-   * the hatch has a plane an object at another height is not taken either.
+   * current UCS", so an object at an angle to it is left out, and once the
+   * hatch has a plane an object at another height is too.
    */
   private canBound(entity: Entity, plane: number | null): boolean {
     return (
@@ -315,15 +318,14 @@ export class HatchTool implements Tool {
     if (this.pickedPlane !== null) return this.pickedPlane
     for (const id of ctx.selection.toArray()) {
       const entity = ctx.document.get(id)
-      if (entity && hatchLoopFromEntity(entity)) return entityElevation(entity)
+      if (entity && this.canBound(entity, null)) return entityElevation(entity)
     }
     return null
   }
 
   /**
-   * Traces the area around an internal point and adds it to the boundary set.
-   * Reported rather than ignored: unlike an object that simply never highlights,
-   * a point that looks enclosed but is not needs an answer.
+   * Traces the area around an internal point and adds it to the boundary set,
+   * or says that no boundary was found there.
    */
   private addInternalPoint(point: Vec2, ctx: ToolContext): void {
     // What -HATCH says while it gathers the boundary set and traces.
@@ -392,13 +394,7 @@ export class HatchTool implements Tool {
 
   /** Every boundary the command has gathered, by either route. */
   private allLoops(ctx: ToolContext): HatchLoop[] {
-    const loops: HatchLoop[] = []
-    for (const id of ctx.selection.toArray()) {
-      const entity = ctx.document.get(id)
-      const loop = entity ? hatchLoopFromEntity(entity) : null
-      if (loop) loops.push(loop)
-    }
-    return [...loops, ...this.picked.flat()]
+    return [...this.selectedLoops(ctx), ...this.picked.flat()]
   }
 
   /**

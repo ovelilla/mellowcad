@@ -9,6 +9,7 @@ import {
   parseCoordinate,
 } from "../input/coordinateInput"
 import type { PromptId } from "../../locales/types"
+import type { MessageId } from "../EngineText"
 import {
   buildFenceOverlay,
   buildSelectionBoxOverlay,
@@ -134,6 +135,13 @@ export type ModeFind =
 
 const ENCLOSING: ModeFind = { by: "enclosing" }
 
+/** What of a find can join the set, and how many of the rest each filter took. */
+interface Sifted {
+  readonly kept: readonly EntityId[]
+  readonly locked: number
+  readonly refused: number
+}
+
 /** What one selection changed in the set, which `Undo` takes back. */
 interface Operation {
   readonly added: readonly EntityId[]
@@ -154,13 +162,26 @@ export interface ObjectSelectorOptions {
   /** How the command asks for the set, when not `Select objects`. */
   readonly question?: () => PromptId
   /**
-   * The objects of those found the command can take; the rest are neither
-   * counted nor highlighted (DIMSPACE's parallel dimensions, HATCH's areas).
+   * The objects of those found the command can take, silently: the rest are
+   * not counted (a find it empties says `0 found`, and starts the total) nor
+   * highlighted (DIMSPACE's dimensions, erase/p244; ARRAYPATH's path curve).
    */
   readonly accept?: (
     ids: readonly EntityId[],
     ctx: ToolContext
   ) => readonly EntityId[]
+  /**
+   * What the command refuses of what a selection adds, said under its count
+   * after the locked layer's line (`1 was not able to be exploded.`, the
+   * message taking `count`) and kept out of the set: EXPLODE's
+   * (erase/p213–p219). Nothing is said at `Remove objects:` (p215, p248).
+   */
+  readonly refuse?: {
+    readonly rejects: (entity: Entity, ctx: ToolContext) => boolean
+    readonly message: MessageId
+  }
+  /** Said when Enter closes an empty set: EXPLODE's `None found.` (p205). */
+  readonly noneFound?: MessageId
   /**
    * Called as objects join the set, with the outline of the window or
    * polygon that took them, or null (a pick, a fence, Last…): STRETCH's
@@ -220,6 +241,11 @@ export class ObjectSelector {
   private removing = false
   /** SIngle: the first selection that finds anything closes the set. */
   private single = false
+  /**
+   * After a preselection the command refused whole: the first selection that
+   * adds to the set closes it (EXPLODE, erase/p241, p242).
+   */
+  private closesOnAdd = false
   /** SUbobject until Object: what is picked is a sub-object. */
   private subobject = false
   private operations: Operation[] = []
@@ -236,9 +262,45 @@ export class ObjectSelector {
     this.step = { kind: "objects", hover: null }
     this.removing = false
     this.single = false
+    this.closesOnAdd = false
     this.subobject = false
     this.operations = []
     this.counted = false
+  }
+
+  /**
+   * Objects selected before the command, counted after its echo as AutoCAD
+   * counts them (`Command: M MOVE 3 found`) and sifted as a selection is (the
+   * locked layer's line, the command's {@link ObjectSelectorOptions.refuse}):
+   * what is left stays selected and is kept as the Previous set. False when
+   * nothing was selected or nothing is left, the command then asking `Select
+   * objects:` — after a refusal closing at the first selection that adds to
+   * the set (erase/p241, p242).
+   */
+  preselect(ctx: ToolContext): boolean {
+    const all = ctx.selection.toArray()
+    if (all.length === 0) return false
+    const ids = this.options.accept?.(all, ctx) ?? all
+    const sifted = this.sift(ids, ctx)
+    ctx.selection.set(sifted.kept)
+    ctx.answer(
+      ctx.text.message("objectsFound", {
+        found: ids.length,
+        duplicate: 0,
+        removed: 0,
+        total: 0,
+        hasTotal: "no",
+        box: "no",
+      })
+    )
+    this.sayRefused(sifted, ctx)
+    this.counted = true
+    if (sifted.kept.length === 0) {
+      this.closesOnAdd = true
+      return false
+    }
+    ctx.rememberSelection(sifted.kept)
+    return true
   }
 
   question(): PromptId {
@@ -400,12 +462,16 @@ export class ObjectSelector {
       ctx.requestRender()
       return true
     }
-    const hit = this.pickAt(at, ctx)
-    if (hit) {
-      this.select([hit.id], false, null, false, ctx)
-    } else if (this.subobject && ctx.pick(at)) {
-      this.select([], false, null, false, ctx)
-    } else if (!ctx.pick(at)) {
+    const under = ctx.pick(at)
+    if (under) {
+      this.select(
+        this.found(ctx, () => [under.id]),
+        false,
+        null,
+        false,
+        ctx
+      )
+    } else {
       this.startWindow(at, ctx)
     }
     ctx.requestRender()
@@ -494,17 +560,15 @@ export class ObjectSelector {
     const step = this.step
     if (step.kind === "pressed") {
       const under = ctx.pick(input.world)
-      const hit = this.pickAt(input.world, ctx)
-      if (under && this.subobject) {
+      if (under) {
         this.step = { kind: "objects", hover: null }
-        this.select([], step.subtract, null, false, ctx)
-      } else if (under && !hit) {
-        // An object the command cannot take: it never highlighted, and being
-        // under the pick it starts no window either.
-        this.step = { kind: "objects", hover: null }
-      } else if (hit) {
-        this.step = { kind: "objects", hover: null }
-        this.select([hit.id], step.subtract, null, false, ctx)
+        this.select(
+          this.found(ctx, () => [under.id]),
+          step.subtract,
+          null,
+          false,
+          ctx
+        )
         this.step = {
           kind: "objects",
           hover: this.rolloverAt(input.world, ctx),
@@ -783,8 +847,10 @@ export class ObjectSelector {
   /**
    * Adds the objects found to the set — or takes them from it, removing or
    * with Shift — and says so: `2 found (1 duplicate), 3 total`, then how many
-   * were on a locked layer. `dragged` puts the window's own prompt first, on
-   * the line its press answered.
+   * were on a locked layer and what the command refuses, which stay out of
+   * the set (said only when adding, erase/p243, p247). The total follows
+   * what was found, refused or not (`1 found, 0 total`, p241). `dragged` puts
+   * the window's own prompt first, on the line its press answered.
    */
   private select(
     found: readonly EntityId[],
@@ -807,14 +873,9 @@ export class ObjectSelector {
       )
       return
     }
-    const locked = new Set(
-      ids.filter((id) => {
-        const entity = ctx.document.get(id)
-        return entity && ctx.document.getLayer(entity.layerId)?.locked
-      })
-    )
-    const usable = ids.filter((id) => !locked.has(id))
     const removing = this.removing || subtract
+    const sifted = removing ? null : this.sift(ids, ctx)
+    const usable = sifted?.kept ?? ids
     const added: EntityId[] = []
     const removed: EntityId[] = []
     let duplicate = 0
@@ -830,27 +891,57 @@ export class ObjectSelector {
         added.push(id)
       }
     }
-    const hasTotal = this.counted
-    if (ids.length > 0) {
-      this.operations.push({ added, removed })
-      this.counted = true
-    }
+    const hasTotal = this.counted && found.length > 0
+    if (ids.length > 0) this.operations.push({ added, removed })
+    if (found.length > 0) this.counted = true
     ctx.answer(
       ctx.text.message("objectsFound", {
         found: ids.length,
         duplicate,
         removed: removed.length,
         total: ctx.selection.size,
-        hasTotal: hasTotal && ids.length > 0 ? "yes" : "no",
+        hasTotal: hasTotal ? "yes" : "no",
         box: dragged ? "yes" : "no",
       })
     )
-    if (locked.size > 0) {
-      ctx.report(ctx.text.message("onLockedLayer", { count: locked.size }))
-    }
+    if (sifted) this.sayRefused(sifted, ctx)
     if (!removing && usable.length > 0)
       this.options.onAdded?.(usable, frame, ctx)
-    if (this.single && ids.length > 0) this.close(ctx)
+    if (
+      (this.single && ids.length > 0) ||
+      (this.closesOnAdd && added.length > 0)
+    )
+      this.close(ctx)
+  }
+
+  /**
+   * What of `ids` can join the set: not what is on a locked layer, nor what
+   * the command refuses — in that order, as each is said.
+   */
+  private sift(ids: readonly EntityId[], ctx: ToolContext): Sifted {
+    const refuse = this.options.refuse
+    const kept: EntityId[] = []
+    let locked = 0
+    let refused = 0
+    for (const id of ids) {
+      const entity = ctx.document.get(id)
+      if (!entity) continue
+      if (ctx.document.getLayer(entity.layerId)?.locked) locked++
+      else if (refuse?.rejects(entity, ctx)) refused++
+      else kept.push(id)
+    }
+    return { kept, locked, refused }
+  }
+
+  /** The lines under a count: the locked layer's, then the command's. */
+  private sayRefused(sifted: Sifted, ctx: ToolContext): void {
+    if (sifted.locked > 0) {
+      ctx.report(ctx.text.message("onLockedLayer", { count: sifted.locked }))
+    }
+    const refuse = this.options.refuse
+    if (refuse && sifted.refused > 0) {
+      ctx.report(ctx.text.message(refuse.message, { count: sifted.refused }))
+    }
   }
 
   /**
@@ -902,11 +993,17 @@ export class ObjectSelector {
 
   /**
    * Closes the set for the command, which then keeps it as the Previous one;
-   * false when it is empty.
+   * false when it is empty, which the command may say ({@link
+   * ObjectSelectorOptions.noneFound}).
    */
   private close(ctx: ToolContext): boolean {
     this.backToObjects(ctx)
-    if (ctx.selection.isEmpty()) return false
+    if (ctx.selection.isEmpty()) {
+      if (this.options.noneFound) {
+        ctx.report(ctx.text.message(this.options.noneFound))
+      }
+      return false
+    }
     ctx.rememberSelection(ctx.selection.toArray())
     this.options.done(ctx)
     return true
@@ -1048,22 +1145,4 @@ export function lastObject(ctx: ToolContext): Entity | undefined {
   return ctx.document
     .getEntities()
     .findLast((entity) => ctx.document.isEntityVisible(entity))
-}
-
-/**
- * Objects selected before the command, counted after its echo as AutoCAD
- * counts them (`Command: M MOVE 3 found`), and kept as the Previous set.
- */
-export function countPreselection(ctx: ToolContext): void {
-  ctx.rememberSelection(ctx.selection.toArray())
-  ctx.answer(
-    ctx.text.message("objectsFound", {
-      found: ctx.selection.size,
-      duplicate: 0,
-      removed: 0,
-      total: 0,
-      hasTotal: "no",
-      box: "no",
-    })
-  )
 }

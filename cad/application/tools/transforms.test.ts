@@ -15,6 +15,7 @@ import {
   arcOf,
   circleOf,
   deg,
+  layerOf,
   lineOf,
   p,
   polylineOf,
@@ -1278,20 +1279,172 @@ describe("EXPLODE and JOIN", () => {
       expect(mixed.typeCounts()).toEqual({ line: 1, spline: 1 })
     }
   )
+})
 
-  it("EXPLODE says so when an object cannot be exploded", () => {
-    const cad = createHarness({
-      entities: [rectangle, lineOf(p(-500, 0), p(-400, 0), { id: "L1" })],
-    })
+/**
+ * EXPLODE's refusal, said under each selection's count inside `Select
+ * objects:` (AutoCAD 2027's console, erase/p213–p219, p241, p242): a line A,
+ * a polyline P and a circle C away from them.
+ */
+describe("EXPLODE's Select objects", () => {
+  const explodable = () => [
+    lineOf(p(0, 0), p(100, 0), { id: "A" }),
+    polylineOf([p(0, 100), p(100, 100), p(100, 150)], { id: "P" }),
+    circleOf(p(250, 250), 10, { id: "C" }),
+  ]
+  const typed = (cad: ReturnType<typeof createHarness>, ...texts: string[]) => {
+    for (const text of texts) {
+      cad.runtime.setCommandLineText(text)
+      cad.runtime.submitCommandLine()
+    }
+    return cad
+  }
 
-    cad.select("L1").command("EXPLODE")
+  it("says what it cannot explode under each pick's count, kept out of the set (p213)", () => {
+    const cad = createHarness({ entities: explodable() })
+    typed(cad.command("EXPLODE"), "50,0", "50,100", "50,0")
+    cad.enter()
 
-    expect(cad.commandLog()).toContain("1 was not able to be exploded.")
-    expect(cad.entityCount).toBe(2) // the line is left alone
+    expect(cad.commandLog().slice(1)).toEqual([
+      "Select objects: 50,0",
+      "1 found",
+      "1 was not able to be exploded.",
+      "Select objects: 50,100",
+      "1 found, 1 total",
+      "Select objects: 50,0",
+      "1 found, 1 total",
+      "1 was not able to be exploded.",
+      "Select objects:",
+    ])
+    expect(cad.typeCounts()).toEqual({ line: 3, circle: 1 })
+  })
 
-    cad.select("P1", "L1").command("EXPLODE")
+  it("says it under a window's count (p214)", () => {
+    const cad = createHarness({ entities: explodable() })
+    typed(cad.command("EXPLODE"), "W", "-10,-10", "110,160")
 
-    expect(cad.commandLog()).toContain("1 was not able to be exploded.")
-    expect(cad.typeCounts()).toEqual({ line: 5 }) // 4 segments + the untouched line
+    expect(cad.commandLog().slice(-2)).toEqual([
+      "2 found",
+      "1 was not able to be exploded.",
+    ])
+  })
+
+  it("says nothing at Remove objects, and None found. for the set Enter closes empty (p215)", () => {
+    const cad = createHarness({ entities: explodable() })
+    typed(cad.command("EXPLODE"), "ALL", "R", "50,0", "50,100")
+    cad.enter()
+
+    expect(cad.commandLog().slice(1)).toEqual([
+      "Select objects: ALL",
+      "3 found",
+      "2 were not able to be exploded.",
+      "Select objects: R",
+      "Remove objects: 50,0",
+      "1 found, 1 total",
+      "Remove objects: 50,100",
+      "1 found, 1 removed, 0 total",
+      "Remove objects:",
+      "None found.",
+    ])
+    expect(cad.activeToolId()).toBe("select")
+  })
+
+  it("says None found. for an empty set, after everything was refused too (p205, p216)", () => {
+    const cad = createHarness({ entities: explodable() })
+    cad.command("EXPLODE").enter()
+    expect(cad.commandLog()).toEqual([
+      "EXPLODE",
+      "Select objects:",
+      "None found.",
+    ])
+
+    typed(cad.command("EXPLODE"), "50,0")
+    cad.enter()
+    expect(cad.commandLog().slice(-2)).toEqual([
+      "Select objects:",
+      "None found.",
+    ])
+    expect(cad.typeCounts()).toEqual({ line: 1, polyline: 1, circle: 1 })
+  })
+
+  it("says the locked layer's line before its own (p219)", () => {
+    const cad = createHarness()
+    cad.runtime.document.load(
+      [
+        lineOf(p(0, 0), p(100, 0), { id: "A" }),
+        polylineOf([p(0, 100), p(100, 100), p(100, 150)], {
+          id: "P",
+          layerId: "locked",
+        }),
+        lineOf(p(0, 50), p(100, 50), { id: "LK", layerId: "locked" }),
+      ],
+      { layers: [layerOf("0"), layerOf("locked", { locked: true })] }
+    )
+    typed(cad.command("EXPLODE"), "ALL")
+    cad.enter()
+
+    expect(cad.commandLog().slice(1)).toEqual([
+      "Select objects: ALL",
+      "3 found",
+      "2 were on a locked layer.",
+      "1 was not able to be exploded.",
+      "Select objects:",
+      "None found.",
+    ])
+  })
+
+  it("explodes a preselection at once when it can explode one of it (p217)", () => {
+    const cad = createHarness({ entities: explodable() })
+    cad.select("A", "P", "C").command("EXPLODE")
+
+    expect(cad.commandLog()).toEqual([
+      "EXPLODE 3 found",
+      "2 were not able to be exploded.",
+    ])
+    expect(cad.typeCounts()).toEqual({ line: 3, circle: 1 })
+  })
+
+  it("asks again for a preselection it cannot explode, closing at the first selection that adds to the set (p241, p242)", () => {
+    const cad = createHarness({ entities: explodable() })
+    cad.select("A").command("EXPLODE")
+    expect(cad.commandLog()).toEqual([
+      "EXPLODE 1 found",
+      "1 was not able to be exploded.",
+    ])
+    expect(cad.state().commandLine.prompt).toBe("EXPLODE Select objects:")
+
+    typed(cad, "50,0", "50,100")
+    expect(cad.commandLog().slice(2)).toEqual([
+      "Select objects: 50,0",
+      "1 found, 0 total",
+      "1 was not able to be exploded.",
+      "Select objects: 50,100",
+      "1 found, 1 total",
+    ])
+    expect(cad.typeCounts()).toEqual({ line: 3, circle: 1 })
+    expect(cad.activeToolId()).toBe("select")
+
+    const window = createHarness({ entities: explodable() })
+    window.select("A").command("EXPLODE")
+    typed(window, "W", "-10,-10", "110,160")
+    expect(window.commandLog().slice(-2)).toEqual([
+      "2 found, 1 total",
+      "1 was not able to be exploded.",
+    ])
+    expect(window.typeCounts()).toEqual({ line: 3, circle: 1 })
+  })
+
+  it("is said in Autodesk's Spanish (p216)", () => {
+    const cad = createHarness({ locale: es, entities: explodable() })
+    typed(cad.command("DESCOMP"), "50,0")
+    cad.enter()
+
+    expect(cad.commandLog().slice(1)).toEqual([
+      "Designe objetos: 50,0",
+      "1 encontrados",
+      "1 no se ha podido descomponer.",
+      "Designe objetos:",
+      "No hallada.",
+    ])
   })
 })

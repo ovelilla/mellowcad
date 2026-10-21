@@ -205,15 +205,24 @@ Remove (`Remove objects:`, which refuses as `Select objects:` does) and Add, Und
 selection back, silently; `All selections have been undone.` with none left), AUto (this prompt's
 own behaviour), SIngle (the first selection that finds anything closes the set), and SUbobject and
 Object where the set takes sub-objects — there `S` says `Ambiguous response, please clarify...` and
-asks `SIngle or SUbobject?`, while MIRROR's, JOIN's, STRETCH's and ZOOM Object's `S` is SIngle and
-`SU` is refused —: in SUbobject a pick, a window, a fence or a polygon finds `0 found` (no object
+asks `SIngle or SUbobject?`, while in a set of whole objects — MIRROR's, JOIN's, STRETCH's, ZOOM
+Object's, EXPLODE's, COPYCLIP's, the arrays', BLOCK's, whose refusals list no `SUbobject/Object`
+(erase/p02, p138, p223, p251, p259, p260; CUTCLIP's does) — `S` is SIngle and `SU` is refused —: in
+SUbobject a pick, a window, a fence or a polygon finds `0 found` (no object
 here has sub-objects), Last and ALL are refused with its own list
 (`Window/Crossing/BOX/Fence/…/SIngle/SUbobject/Object`), Previous takes its set, and Object goes
 back. Each says what it found on the line AutoCAD says it — after a pick on the prompt's line, after
 a typed answer on a line of its own: `2 found (1 duplicate), 3 total`,
-`1 found, 1 removed, 2 total`, the total once a selection has found anything (after Undo too; never
-after `0 found`, which stands alone); objects on a locked layer are counted, then left out:
-`1 was on a locked layer.` es in Autodesk's table's words (`Designe objetos`, `Elimine objetos`,
+`1 found, 1 removed, 2 total`, the total once a selection has found anything (after Undo too, and
+what was refused counts: `1 found, 0 total`, erase/p241); `0 found` on nothing stands alone, but a
+find a command's filter empties (DIMSPACE's: no dimension) totals (`0 found, 0 total`, p244);
+objects on a locked layer are counted, then left out: `1 was on a locked layer.`, and under it what
+the command refuses, also left out (EXPLODE's `1 was not able to be exploded.`, p219); at `Remove
+objects:` neither is said (p243, p247). A set selected before the command is counted after its echo
+and sifted the same way; with nothing left the command asks `Select objects:`, closing the set at
+the first selection that adds something (EXPLODE's, p241, p242). Enter on an empty set ends the
+command silently, but EXPLODE's says `None found.` (p204, p205); es in Autodesk's table's words
+(`Designe objetos`, `Elimine objetos`,
 `1 encontrados (1 duplicados), 2 total`, `Designe primera esquina`,
 `Designación de ventana no válida.`, `Precise primer punto del borde o designe/arrastre cursor`,
 `Se han anulado todas las designaciones.`, `1 estaba en una capa bloqueada.`; the modes
@@ -221,8 +230,10 @@ Ventana/úLTimo/Captura/MArco/Todos/Borde/polígonOV/polígonOC/Añadir/Eliminar
 so `S` is Subobjeto there)
 
 **Missing:** Group, Multiple and CLass; SUbobject's faces, edges and vertices and the Ctrl+pick that
-selects them (no object here has sub-objects); a pick on an object on a locked layer (not found
-here: AutoCAD finds it and leaves it out); the lasso `pick/drag cursor` offers at a fence's or
+selects them (no object here has sub-objects); a pick or a typed point on an object on a locked
+layer (here it finds nothing and starts a window; AutoCAD says `1 found` / `1 was on a locked
+layer.`, erase/p211, p257); PICKFIRST (a set selected before the command is always taken; with
+PICKFIRST 0 AutoCAD ignores it, erase/p230); the lasso `pick/drag cursor` offers at a fence's or
 polygon's first point; PICKADD, PICKAUTO and PICKDRAG as variables (their defaults are the
 behaviour); the Previous set lasts the session, not the drawing
 
