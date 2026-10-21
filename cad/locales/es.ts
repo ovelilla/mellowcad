@@ -1372,6 +1372,9 @@ export const es: EngineLocale = {
       },
       "specifyFirstCornerPointOr": {
         "Width": "Grosor"
+      },
+      "specifyAxisEndpointOfEllipticalArcOr": {
+        "Centre": "cEntro"
       }
     },
     "prompts": {

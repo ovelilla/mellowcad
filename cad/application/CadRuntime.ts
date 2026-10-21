@@ -1962,6 +1962,11 @@ export class CadRuntime extends Observable {
     if (!match || this.toolAnchor() === null) return false
     const degrees = parseAngleDegrees(match[1])
     if (degrees === null) return false
+    const box = this.loneAngleField()
+    if (box !== null && this.activeTool.answersAngleOverride?.() === true) {
+      this.dynamicInput.setText(box.field.id, match[1])
+      return this.commitBox(box.session, box.field)
+    }
     if (this.resolver.hasAngleOverride()) {
       this.holdAngle(null)
       return this.refuse()
@@ -1972,6 +1977,20 @@ export class CadRuntime extends Observable {
     )
     this.holdAngle(directionFromUcsHeading(this.frame.ucs, degrees))
     return true
+  }
+
+  /** The open box's field when it is one angle alone, or null. */
+  private loneAngleField(): {
+    session: DynamicInputSession
+    field: DynamicField
+  } | null {
+    const session = this.dynamicInput.isOpen()
+      ? this.dynamicInput.getSession()
+      : null
+    const [field, ...rest] = session?.fields ?? []
+    return session && field?.kind === "angle" && rest.length === 0
+      ? { session, field }
+      : null
   }
 
   /** Sets or drops the angle override, the cursor's point read again under it. */

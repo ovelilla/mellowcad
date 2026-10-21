@@ -17,8 +17,8 @@ when it offers none. An alias is echoed as typed with the name it runs (`Command
 and the mode answered at its prompt, the prompt that answer opens written on the answer's line as the
 desktop writes it (`Specify center point for circle or [3P/2P/Ttr (tan tan radius)]: _2p Specify
 first end point of circle's diameter: 0,0`, desktop circle/d01, d02; ARC's, `_arc` and `_c`,
-desktop arc/d03, d04), while ELLIPSE's modes are still echoed by this app's names for them
-(`_ellipsec`); the prompt is headed by the
+desktop arc/d03, d04; ELLIPSE's, `_ellipse` and `_c` or `_a`, acad.cuix, probes ellipse/p105,
+p107, p198); the prompt is headed by the
 command typed, a dash one's with its dash (`-LINETYPE Enter an option [?/Set]:`, es `-TIPOLIN`). The history writes each prompt with its
 answer: what was typed (a value, a keyword, `<45`, FROM), bare for a pick or Enter, `*Cancel*` after
 Escape (es `*Cancelado*`; at `Command:` Escape writes `Command: *Cancel*`, es `Comando: *Cancelar*`,
@@ -29,7 +29,7 @@ their own), ahead of what answering it reported
 nor what the question asks — typed at the command line or in the tooltip — is written as its answer
 and refused in the words of the input function behind the question, as AutoCAD 2023's console
 refuses it, and the question is asked again: `Invalid point.` / `Point or option keyword required.`
-(a 2D point's at ARC's, PLINE's, MIRROR's, ELLIPSE's and POLYGON's Edge's later points and
+(a 2D point's at ARC's, PLINE's, MIRROR's and POLYGON's Edge's later points, ELLIPSE's other endpoint and
 CIRCLE's 2P and 3P ones, which refuse a Z or `*` typed there too, circle/p16, p18, p180),
 `Requires numeric distance, two points, or option keyword.` and its forms (from a base point,
 `second point`), `Requires valid numeric angle…`, `Requires numeric value.`,
@@ -156,7 +156,8 @@ PLAN `Current` (`CURRENTUCS` refused), SPLINE `Square`, HATCH `Select`, ATTDEF `
 `Fill`; es `Atravesar` at `[punto a Atravesar]` (`ATRAV`; `PUNTO` refused), `Actual` at
 `[scp Actual/…]`, `cuaDrada`, `Tangencia`, `Incluido`, `Designar`, `Bloquear`, `Primer`, `Unidad`,
 `ángUlo`, `Relleno`, `Girar`, `ALinear`, `Llenar`. Unlisted declared words: OFFSET's `Thru` (es
-`Pun`), ELLIPSE's `Centre`, and PLINE's `LIne` in line mode and `ARc` in arc mode, which ask the
+`Pun`), ELLIPSE's `Centre` (es `cEntro` at the elliptical arc's first prompt, ellipse/p111) and
+the arc's measure in use, `Angle` or `Parameter` (ellipse/p114, p234), and PLINE's `LIne` in line mode and `ARc` in arc mode, which ask the
 same prompt again. At a point prompt an object snap's name is read before the keywords: `CEN`,
 `CENT`, `CENTER`, `_CEN` at PLINE's arc prompt are the Center snap, not `CEnter`, and `CENTER` at
 ZOOM's first prompt is the snap although it spells `Center` (es `CEN`, `CENTRO` at POL's arc prompt;

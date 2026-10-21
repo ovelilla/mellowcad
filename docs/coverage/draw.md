@@ -396,33 +396,56 @@ chord Length (desktop d05); Polar at ARC's prompts (**unverified**: assumed to f
 `Specify distance to other axis or [Rotation]:` (es `Precise distancia de otro eje o [Rotación]:`),
 Rotation's `Specify rotation around major axis:`; Center's `Specify center of ellipse:` then
 `Specify endpoint of axis:`; Arc's `Specify axis endpoint of elliptical arc or [Center]:` (and
-`Specify center of elliptical arc:` — Center keeps the Arc chosen before it),
-`Specify start angle or [Parameter]:`, `Specify end angle or [Parameter/Included angle]:` and
-`Specify included angle for arc <180>:` (Enter draws half); Parameter asks
-`Specify start parameter or [Angle]:` and `Specify end parameter or [Angle/Included angle]:` (es
-`Precise ángulo inicial o [Parámetro]`, `Precise parámetro inicial o [ángUlo]`,
-`Precise parámetro final o [ángUlo/ángulo Incluido]`), the choice holding from the start to the end
-prompt until Angle; a parameter is u in `p(u) = c + a·cos(u) + b·sin(u)`, a point given there is
-taken by its angle from the major axis as u (`0,25` on 0,0 → 100,0, 25 starts at 5.28,11.18), and
-Included angle sweeps in the end prompt's measure (90 from an angle of 30: to angle 120, or after
-Parameter to u 139.1); the first axis's semi-axis runs to the first endpoint (from a centre, to the
-endpoint given), where angle and parameter 0 lie, and a longer other axis is it turned a quarter
-left — AutoCAD 2023's console, its refusals included
-(`Requires valid numeric angle, second point, or option keyword.`). ELLIPSEC and ELLIPSEARC (the
-ribbon's Center and Elliptical Arc) start at the centre's and the arc's first prompt. A rotation in
-the refused band says `*Invalid*` and ends the command, as AutoCAD's does. Axis-End, Center, Arc
-(start/end angle + Included angle), Rotation (with AutoCAD's 89.4°–90.6° refusal); DXF model (centre
-+ major-axis vector + ratio + parameters); centre/quadrant/endpoint/nearest snaps; both radii
-editable in the palette
+`Specify center of elliptical arc:` — Center keeps the Arc chosen before it; es `E` answers the
+hidden `cEntro` there, p111), `Specify start angle or [Parameter]:`,
+`Specify end angle or [Parameter/Included angle]:` and `Specify included angle for arc <180>:`
+(Enter draws half); Parameter asks `Specify start parameter or [Angle]:` and
+`Specify end parameter or [Angle/Included angle]:` (es `Precise ángulo inicial o [Parámetro]`,
+`Precise parámetro inicial o [ángUlo]`, `Precise parámetro final o [ángUlo/ángulo Incluido]`), the
+choice holding from the start to the end prompt until Angle, the measure in use offered unlisted and
+asking the same prompt again (p114, p115, p234); a parameter is u in
+`p(u) = c + a·cos(u) + b·sin(u)`, a point given there is taken by its angle from the major axis as
+u (`0,25` on 0,0 → 100,0, 25 starts at 5.28,11.18; 2023's console, the angle's alone probed in
+2027, p179), and Included angle sweeps in the end prompt's measure (90 from an angle of 30: to
+angle 120, or after Parameter to u 139.1; p116, p118); the first axis's semi-axis runs to the first endpoint (from a centre, to the endpoint given), where
+angle and parameter 0 lie, and a longer other axis is it turned a quarter left (p01, p184, p232,
+p233). Every prompt but Included angle refuses Enter (and the right button's) in its input
+function's words and asks again, nothing given lost: `Point or option keyword required.` at the
+first prompts, `Invalid point.` at a centre and the centre mode's endpoint of axis,
+`Invalid 2D point.` at the other endpoint, `Requires numeric distance, second point, or option
+keyword.` at the distance, `Requires valid numeric angle or second point.` at Rotation,
+`Requires valid numeric angle, second point, or option keyword.` at the start and end angles and
+parameters (p125–p133, es too; desktop d06); `FOO` the same words (p138–p147). A distance of 0 or
+less, or `@`, says `Value must be positive and nonzero.` and asks again (p136, p137, p173, p202,
+p203); a point there is its distance from the centre (p171, p204). A point at Rotation, or at
+Included angle, is its heading from the centre in the UCS, from its X axis — not from the axis drawn
+—, picked, typed or snapped, in the preview too (Rotation `60,30` on 0,0 → 100,0: ratio 0.316228,
+p178, p219, p294, p298; Included `50,100`: the sweep 90°, p182, p237, p297, p299). A rotation in the
+refused band (89.4°–90.6°, every 180°: p149–p151, p208–p218) says `*Invalid*` and ends the command;
+a zero-length first axis is taken, the distance asked, then `*Invalid*` and the end (p205, p206,
+p166). The centre mode's endpoint of axis takes a Z, dropped onto the centre's plane (p184, p245);
+the axis mode's other endpoint is a 2D point (p170). `_TAN` or `_PER` at the first point or the
+centre measures from LASTPOINT (p266, p267, p295); `<45` at the start or end angle is that angle
+(p181, p292). LASTPOINT is the centre after the ellipse and after `*Invalid*` (p100, p109, p113,
+p166, p171, p178, p184). The current layer and properties are those of when the ellipse is fixed,
+so an elliptical arc keeps them whatever is set at its angles (p249, p253, p257). The rail's Axis,
+End, Center and Elliptical Arc run ELLIPSE as the ribbon's macros do (acad.cuix `^C^C_ellipse`,
+`_ellipse _c`, `_ellipse _a`): echoed `_ellipse`, the mode answered at its first prompt, Enter
+repeating ELLIPSE and U and REDO naming it (p105, p107, p198); ELLIPSEC and ELLIPSEARC, which
+AutoCAD knows not (p05), stay typed names running the same macros. Not transparent (p106). AutoCAD
+2027's console. Axis-End, Center, Arc (start/end angle + Included angle), Rotation; DXF model
+(centre + major-axis vector + ratio + parameters); centre/quadrant/endpoint/nearest snaps; both
+radii editable in the palette
 
 **Missing:** Isocircle: AutoCAD offers it only under the isometric snap style (SNAPSTYL 1, not built
 here), as `[Arc/Center/Isocircle]`, `Specify center of isocircle:`,
 `Specify radius of isocircle or [Diameter]:` and `Specify diameter of isocircle:`; `PELLIPSE` = 1
 (polyline approximation), axis grips (only the centre grips), ratio and angles as palette rows,
 OFFSET / HATCH / boundary / BREAK / JOIN / FILLET / DIM on an ellipse, tangent and perpendicular
-snaps, ellipse intersections; the ribbon's `_c` / `_a` answer in the history of ELLIPSEC and
-ELLIPSEARC, a zero-length first axis (AutoCAD takes it and then says `*Invalid*`); Spanish from the
-2027 Spanish language pack's string table, paired with the English by id
+snaps, ellipse intersections; a point with a Z at the distance, which AutoCAD measures in space
+(`50,25,10` on 0,0 → 100,0: ratio 0.5385, p177; here in plan, 0.5); `<a` at Rotation and Included
+angle (**unverified**: unprobed, so the angle override every prompt with a base point has); Spanish
+from the 2027 Spanish language pack's string table, paired with the English by id
 
 ### `SPLINE` / `SPL` · es `SPLINE` / `SPL`
 

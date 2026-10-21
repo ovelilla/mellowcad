@@ -1025,6 +1025,9 @@ export const en: EngineCatalog = {
       },
       "specifyFirstCornerPointOr": {
         "Width": "Width"
+      },
+      "specifyAxisEndpointOfEllipticalArcOr": {
+        "Centre": "Centre"
       }
     },
     "prompts": {

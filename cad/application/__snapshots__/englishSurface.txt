@@ -1022,12 +1022,12 @@ lweight "Lineweight" LW
   tip: Specify center of ellipse:
   dyn: "X,Y"=""||*
   command| ELLIPSEC
+  prompt| Specify axis endpoint of ellipse or [Arc/Center]: _c
 > escape
   prompt: Command:
   asks: -
   tip: -
   dyn: -
-  prompt| Specify center of ellipse: *Cancel*
 > ELLIPSEARC
   prompt: ELLIPSEARC Specify axis endpoint of elliptical arc or [Center]:
   asks: "Axis endpoint"
@@ -1035,12 +1035,12 @@ lweight "Lineweight" LW
   dyn: "X,Y"=""||*
   options: [C] Center
   command| ELLIPSEARC
+  prompt| Specify axis endpoint of ellipse or [Arc/Center]: _a
 > first
   prompt: ELLIPSEARC Specify other endpoint of axis:
   asks: "Other endpoint of axis"
   tip: Specify other endpoint of axis:
   options: -
-  prompt| Specify axis endpoint of elliptical arc or [Center]:
 > second
   prompt: ELLIPSEARC Specify distance to other axis or [Rotation]:
   asks: "Distance to other axis"

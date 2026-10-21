@@ -46,7 +46,8 @@ object snap  →  object-snap tracking  →  snap mode (lattice)  →  constrain
 - A typed `<angle` (`setAngleOverride`, set by `pointModifier` while the tool has an anchor) comes
   right after the snap: the point slides on the line through the anchor at that heading, at the
   anchor's Z, over tracking, the lattice, Ortho and Polar. `resetTracking` drops it: it holds for
-  one point.
+  one point. Where a probe shows it answering a lone angle box instead (ELLIPSE's start angle,
+  ellipse/p181), the tool says `answersAngleOverride()`.
 - When tracking engages, its point already accounts for the active Ortho ray: returned as-is,
   constraints skipped.
 - Shift held is `orthoOverride`: it **toggles** Ortho and Polar yields to it either way;

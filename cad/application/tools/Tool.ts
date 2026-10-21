@@ -531,6 +531,13 @@ export interface Tool {
    */
   snapsFromLastPoint?(): boolean
   /**
+   * Whether `<angle` typed at the question's lone angle box answers it with
+   * that angle, as ELLIPSE's start angle takes `<45` (probes ellipse/p181,
+   * p292), rather than holding the next point to that heading. False, the
+   * default: the angle override of every other prompt with a base point.
+   */
+  answersAngleOverride?(): boolean
+  /**
    * The override a prompt acts under when none is typed: CIRCLE Ttr's objects
    * are picked as under TAN, so the running snaps show nothing there (desktop
    * circle/d03). Null, the default: the running snaps.

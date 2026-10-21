@@ -61,6 +61,17 @@ export function withProperties<T extends ThickEntity>(
   return withThickness(wearing(entity, properties), properties.thickness)
 }
 
+/**
+ * {@link withProperties} for an object THICKNESS does not reach (ELLIPSE's
+ * arc, which takes them when its ellipse is fixed, ellipse/p253).
+ */
+export function wearingProperties<T extends Entity>(
+  entity: T,
+  properties: CurrentProperties
+): T {
+  return wearing(entity, properties)
+}
+
 function wearing<T extends Entity>(
   entity: T,
   {

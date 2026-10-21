@@ -1386,10 +1386,10 @@ describe("ELLIPSE", () => {
     expect(Math.atan2(end.y, end.x)).toBeCloseToAngle(deg(-135), 5)
   })
 
-  // AutoCAD 2023's console: 0,0 → 100,0 stores Major Axis -50,0, and the arc
-  // at 0 starts on 0,0; from a centre, on the endpoint given; and a longer
-  // other axis is the semi-axis turned a quarter left (0,0 → 40,0, 50:
-  // Major Axis 0,-50).
+  // probes ellipse/p01, p232: 0,0 → 100,0 stores Major Axis -50,0, and the
+  // arc at 0 starts on 0,0; from a centre, on the endpoint given (p184); and a
+  // longer other axis is the semi-axis turned a quarter left (0,0 → 40,0, 50:
+  // Major Axis 0,-50, p232, p233).
   it("measures an arc's angles from the major axis, not from world X", () => {
     const cad = createHarness()
 
@@ -1422,11 +1422,12 @@ describe("ELLIPSE", () => {
     expect(ellipseEndPoint(ellipse)).toBeCloseToPoint(p(0, -50), 5)
   })
 
-  // AutoCAD 2023's console (acc/e1–e7): Parameter asks `Specify start
-  // parameter or [Angle]:` and `Specify end parameter or [Angle/Included
-  // angle]:`, the choice holding until Angle; a point there is taken by its
-  // angle from the major axis as the parameter, and Included angle sweeps in
-  // the end prompt's own measure.
+  // probes ellipse/p03, p116–p118: Parameter asks `Specify start parameter or
+  // [Angle]:` and `Specify end parameter or [Angle/Included angle]:`, the
+  // choice holding until Angle; FOO is refused in the angle's words (p144–p146);
+  // a point is taken by its angle from the major axis (p179), there as the
+  // parameter (AutoCAD 2023's console, unprobed in 2027), and Included angle
+  // sweeps in the end prompt's own measure (p116, p118).
   describe("Parameter", () => {
     /** An arc on 0,0 → 100,0 with the other half-axis 25, at its start. */
     function arc(locale?: typeof es): CadHarness {
@@ -1538,13 +1539,537 @@ describe("ELLIPSE", () => {
     expect(cad.activeToolId()).toBe("select")
   })
 
-  it("rejects a zero second axis and keeps prompting", () => {
+  it("refuses a distance of 0 or less, or `@`, in AutoCAD's words (p136, p137, p173, p202, p203)", () => {
     const cad = createHarness()
 
     cad.command("ELLIPSE").click(p(-100, 0)).click(p(100, 0)).type("0").enter()
-
+    expect(cad.commandLog().at(-1)).toBe("Value must be positive and nonzero.")
     expect(cad.entityCount).toBe(0)
     expect(cad.activeToolId()).toBe("ellipse")
+
+    const typed = answer(createHarness(), "ELLIPSE", "0,0", "100,0")
+    expect(written(typed, "-5", "@", "25")).toEqual([
+      "Specify distance to other axis or [Rotation]: -5",
+      "Value must be positive and nonzero.",
+      "Specify distance to other axis or [Rotation]: @",
+      "Value must be positive and nonzero.",
+      "Specify distance to other axis or [Rotation]: 25",
+    ])
+    expect(typed.only<EllipseEntity>("ellipse").ratio).toBeCloseTo(0.5)
+
+    const spanish = answer(createHarness({ locale: es }), "ELIPSE", "0,0")
+    answer(spanish, "100,0", "0")
+    expect(spanish.commandLog().at(-1)).toBe(
+      "El valor debe ser positivo y diferente de cero."
+    )
+  })
+
+  it("takes a distance equal to the semi-axis, and a point's from the centre (p201, p204)", () => {
+    const equal = answer(createHarness(), "ELLIPSE", "0,0", "100,0", "50")
+    expect(equal.only<EllipseEntity>("ellipse").ratio).toBeCloseTo(1)
+
+    const point = answer(createHarness(), "ELLIPSE", "0,0", "100,0", "60,20")
+    expect(point.only<EllipseEntity>("ellipse").ratio).toBeCloseTo(
+      0.447213595499958
+    )
+  })
+
+  it("takes a zero first axis, asks the distance, then says *Invalid* (p205, p206, p166)", () => {
+    for (const reach of [
+      ["ELLIPSE", "0,0", "0,0"],
+      ["ELLIPSE", "C", "0,0", "0,0"],
+    ]) {
+      const cad = answer(createHarness(), ...reach)
+      expect(cad.state().commandLine.prompt).toBe(
+        "ELLIPSE Specify distance to other axis or [Rotation]:"
+      )
+      expect(written(cad, "25")).toEqual([
+        "Specify distance to other axis or [Rotation]: 25",
+        "*Invalid*",
+      ])
+      expect(cad.entityCount).toBe(0)
+      expect(cad.activeToolId()).toBe("select")
+    }
+
+    const at = answer(createHarness(), "ELLIPSE", "10,10", "@", "100,0")
+    expect(at.commandLog().at(-1)).toBe("*Invalid*")
+    expect(lastPoint(at)).toMatch(/^ X = 10\.00 +Y = 10\.00 /)
+
+    const spanish = answer(createHarness({ locale: es }), "ELIPSE", "0,0")
+    answer(spanish, "0,0", "25")
+    expect(spanish.commandLog().at(-1)).toBe("*No válido*")
+  })
+
+  describe("Enter", () => {
+    // Every ELLIPSE prompt but Included angle is AllowNone false: Enter is
+    // refused in the input function's words and asked again, nothing given
+    // lost (probes ellipse/p125–p133, en and es; the parameter prompts are the
+    // angle ones'; the right button's Enter the same, desktop d06).
+    const arc = ["ELLIPSE", "A", "0,0", "100,0", "25"]
+    const CASES: ReadonlyArray<{
+      prompt: string
+      reach: string[]
+      rest: string[]
+      en: string
+      es: string
+    }> = [
+      {
+        prompt: "Specify axis endpoint of ellipse or [Arc/Center]:",
+        reach: ["ELLIPSE"],
+        rest: ["0,0", "100,0", "25"],
+        en: "Point or option keyword required.",
+        es: "Se requiere un punto o una opción.",
+      },
+      {
+        prompt: "Specify other endpoint of axis:",
+        reach: ["ELLIPSE", "0,0"],
+        rest: ["100,0", "25"],
+        en: "Invalid 2D point.",
+        es: "Punto 2D no válido.",
+      },
+      {
+        prompt: "Specify distance to other axis or [Rotation]:",
+        reach: ["ELLIPSE", "0,0", "100,0"],
+        rest: ["25"],
+        en: "Requires numeric distance, second point, or option keyword.",
+        es: "Requiere una distancia numérica, un segundo punto o una opción.",
+      },
+      {
+        prompt: "Specify rotation around major axis:",
+        reach: ["ELLIPSE", "0,0", "100,0", "R"],
+        rest: ["60"],
+        en: "Requires valid numeric angle or second point.",
+        es: "Requiere un ángulo numérico válido o un segundo punto.",
+      },
+      {
+        prompt: "Specify center of ellipse:",
+        reach: ["ELLIPSE", "C"],
+        rest: ["50,0", "100,0", "25"],
+        en: "Invalid point.",
+        es: "Punto no válido.",
+      },
+      {
+        prompt: "Specify endpoint of axis:",
+        reach: ["ELLIPSE", "C", "50,0"],
+        rest: ["100,0", "25"],
+        en: "Invalid point.",
+        es: "Punto no válido.",
+      },
+      {
+        prompt: "Specify axis endpoint of elliptical arc or [Center]:",
+        reach: ["ELLIPSE", "A"],
+        rest: ["0,0", "100,0", "25", "30", "120"],
+        en: "Point or option keyword required.",
+        es: "Se requiere un punto o una opción.",
+      },
+      {
+        prompt: "Specify center of elliptical arc:",
+        reach: ["ELLIPSE", "A", "C"],
+        rest: ["50,0", "100,0", "25", "30", "120"],
+        en: "Invalid point.",
+        es: "Punto no válido.",
+      },
+      {
+        prompt: "Specify start angle or [Parameter]:",
+        reach: arc,
+        rest: ["30", "120"],
+        en: "Requires valid numeric angle, second point, or option keyword.",
+        es: "Requiere un ángulo numérico válido, un segundo punto o una opción.",
+      },
+      {
+        prompt: "Specify end angle or [Parameter/Included angle]:",
+        reach: [...arc, "30"],
+        rest: ["120"],
+        en: "Requires valid numeric angle, second point, or option keyword.",
+        es: "Requiere un ángulo numérico válido, un segundo punto o una opción.",
+      },
+      {
+        prompt: "Specify start parameter or [Angle]:",
+        reach: [...arc, "P"],
+        rest: ["0", "90"],
+        en: "Requires valid numeric angle, second point, or option keyword.",
+        es: "Requiere un ángulo numérico válido, un segundo punto o una opción.",
+      },
+      {
+        prompt: "Specify end parameter or [Angle/Included angle]:",
+        reach: [...arc, "P", "0"],
+        rest: ["90"],
+        en: "Requires valid numeric angle, second point, or option keyword.",
+        es: "Requiere un ángulo numérico válido, un segundo punto o una opción.",
+      },
+    ]
+
+    it.each(CASES)("refuses it at $prompt and asks again", (c) => {
+      const cad = answer(createHarness(), ...c.reach)
+      const prompt = cad.state().commandLine.prompt
+      answer(cad, "")
+      expect(cad.commandLog().slice(-2)).toEqual([c.prompt, c.en])
+      expect(cad.state().commandLine.prompt).toBe(prompt)
+      cad.enter()
+      expect(cad.commandLog().at(-1)).toBe(c.en)
+      cad.runtime.pressEnter()
+      expect(cad.commandLog().at(-1)).toBe(c.en)
+      answer(cad, ...c.rest)
+      expect(cad.only<EllipseEntity>("ellipse").center).toBeCloseToPoint(
+        p(50, 0)
+      )
+
+      const [, ...given] = c.reach
+      const spanish = answer(createHarness({ locale: es }), "ELIPSE", ...given)
+      spanish.enter()
+      expect(spanish.commandLog().at(-1)).toBe(c.es)
+      expect(spanish.activeToolId()).toBe("ellipse")
+    })
+  })
+
+  describe("LASTPOINT", () => {
+    it("is the centre once the ellipse is added, in every mode (p100, p109, p113, p171, p184)", () => {
+      const picked = createHarness()
+      picked.command("ELLIPSE").click(p(0, 0)).click(p(100, 0)).click(p(50, 25))
+      expect(lastPoint(picked)).toMatch(/^ X = 50\.00 +Y = 0\.00 /)
+
+      for (const answers of [
+        ["ELLIPSE", "0,0", "100,0", "25"],
+        ["ELLIPSE", "0,0", "100,0", "R", "45"],
+        ["ELLIPSE", "0,0", "100,0", "50,25"],
+        ["ELLIPSE", "A", "0,0", "100,0", "25", "0", "90"],
+        ["ELLIPSE", "C", "50,0", "@50,0", "25"],
+      ]) {
+        const cad = answer(createHarness(), ...answers)
+        expect(lastPoint(cad), answers.join(" ")).toMatch(
+          /^ X = 50\.00 +Y = 0\.00 /
+        )
+      }
+
+      const centre = createHarness()
+      centre.command("ELLIPSE").option("Center")
+      centre.click(p(10, 10)).click(p(60, 10)).click(p(10, 30))
+      expect(lastPoint(centre)).toMatch(/^ X = 10\.00 +Y = 10\.00 /)
+    })
+
+    it("is the centre after Rotation's *Invalid* (p178)", () => {
+      const cad = answer(createHarness(), "ELLIPSE", "0,0", "100,0", "R")
+      answer(cad, "50,25")
+      expect(cad.commandLog().at(-1)).toBe("*Invalid*")
+      expect(lastPoint(cad)).toMatch(/^ X = 50\.00 +Y = 0\.00 /)
+    })
+  })
+
+  describe("a point at Rotation", () => {
+    // AutoCAD's getangle from the centre: the point's heading in the UCS,
+    // from its X axis — not from the axis drawn — then the band (probes
+    // ellipse/p178, p219, p298, p294).
+    const ratio = (...answers: string[]) =>
+      answer(createHarness(), "ELLIPSE", ...answers).only<EllipseEntity>(
+        "ellipse"
+      ).ratio
+
+    it("is read by its heading from the centre", () => {
+      expect(ratio("0,0", "100,0", "R", "60,30")).toBeCloseTo(0.316228, 6)
+      expect(ratio("0,0", "0,100", "R", "-30,60")).toBeCloseTo(0.948683, 6)
+      expect(ratio("0,0", "100,0", "R", "100,100")).toBeCloseTo(0.447214, 6)
+
+      const picked = answer(createHarness(), "ELLIPSE", "0,0", "100,0", "R")
+      picked.click(p(60, 30))
+      expect(picked.only<EllipseEntity>("ellipse").ratio).toBeCloseTo(
+        0.316228,
+        6
+      )
+    })
+
+    it("in the band says *Invalid* and ends, whatever the axis's heading", () => {
+      for (const axis of ["100,0", "100,100"]) {
+        const cad = answer(createHarness(), "ELLIPSE", "0,0", axis, "R")
+        answer(cad, axis === "100,0" ? "50,25" : "50,100")
+        expect(cad.commandLog().at(-1)).toBe("*Invalid*")
+        expect(cad.entityCount).toBe(0)
+        expect(cad.activeToolId()).toBe("select")
+      }
+    })
+
+    it("is found by an object snap there (p294)", () => {
+      const cad = createHarness({ entities: [lineOf(p(0, 0), p(100, 0))] })
+      answer(cad, "ELLIPSE", "0,40", "100,40", "R", "_END", "99.6,0.2")
+      expect(cad.only<EllipseEntity>("ellipse").ratio).toBeCloseTo(0.780869, 6)
+    })
+
+    it("reads the cursor's heading in the preview and its reading", () => {
+      const cad = answer(createHarness(), "ELLIPSE", "0,0", "100,0", "R")
+      cad.moveTo(p(60, 30))
+      expect(cad.state().dynamicInput?.fields[0]?.placeholder).toBe("72")
+      const ghost = cad
+        .scene()
+        .primitives.find(
+          (q): q is Extract<ScenePrimitive, { kind: "ellipse" }> =>
+            q.kind === "ellipse"
+        )
+      expect(ghost?.radiusX).toBeCloseTo(50)
+      expect(ghost?.radiusY).toBeCloseTo(50 * 0.316228, 3)
+    })
+  })
+
+  it("keeps AutoCAD's band of rotations (p149–p151, p208–p218)", () => {
+    for (const [rotation, ratio] of [
+      ["0", 1],
+      ["45", 0.707107],
+      ["89.4", 0.010472],
+      ["89.5", null],
+      ["90", null],
+      ["90.6", 0.010472],
+      ["100", 0.173648],
+      ["135", 0.707107],
+      ["180", 1],
+      ["270", null],
+      ["-45", 0.707107],
+      ["400", 0.766044],
+    ] as const) {
+      const cad = answer(createHarness(), "ELLIPSE", "0,0", "100,0", "R")
+      answer(cad, rotation)
+      if (ratio === null) {
+        expect(cad.commandLog().at(-1), rotation).toBe("*Invalid*")
+        expect(cad.entityCount).toBe(0)
+      } else {
+        expect(cad.only<EllipseEntity>("ellipse").ratio, rotation).toBeCloseTo(
+          ratio,
+          6
+        )
+      }
+    }
+  })
+
+  describe("a point at Included angle", () => {
+    // Its heading from the centre in the UCS, from its X axis, is the sweep
+    // (probes ellipse/p182, p237, p297, p299).
+    it("is read by its heading from the centre", () => {
+      const typed = answer(createHarness(), "ELLIPSE", "A", "0,0", "100,0")
+      answer(typed, "25", "30", "I", "50,100")
+      expect(
+        ellipseEndPoint(typed.only<EllipseEntity>("ellipse"))
+      ).toBeCloseToPoint(p(63.8675, -24.0192), 3)
+
+      const picked = answer(createHarness(), "ELLIPSE", "A", "0,0", "100,0")
+      answer(picked, "25", "30", "I")
+      picked.click(p(50, 100))
+      expect(
+        ellipseEndPoint(picked.only<EllipseEntity>("ellipse"))
+      ).toBeCloseToPoint(p(63.8675, -24.0192), 3)
+
+      const turned = answer(createHarness(), "ELLIPSE", "A", "0,0", "100,100")
+      answer(turned, "25", "0", "I", "50,100")
+      expect(
+        ellipseEndPoint(turned.only<EllipseEntity>("ellipse"))
+      ).toBeCloseToPoint(p(67.6777, 32.3223), 3)
+    })
+
+    it("is found by an object snap there (p297)", () => {
+      const cad = createHarness({ entities: [lineOf(p(0, 0), p(100, 0))] })
+      answer(cad, "ELLIPSE", "A", "0,40", "100,40", "20", "0", "I")
+      answer(cad, "_END", "99.6,0.2")
+      expect(
+        ellipseEndPoint(cad.only<EllipseEntity>("ellipse"))
+      ).toBeCloseToPoint(p(27.6393, 57.8885), 3)
+    })
+  })
+
+  it("measures a Tangent or Perpendicular at the first point from LASTPOINT (p266, p267, p295)", () => {
+    const line = () => [lineOf(p(0, 0), p(100, 0))]
+    const per = createHarness({ entities: line() })
+    answer(per, "ID", "30,30", "ELLIPSE", "_PER", "70,0", "130,0", "10")
+    expect(per.only<EllipseEntity>("ellipse").center).toBeCloseToPoint(p(80, 0))
+
+    const tan = createHarness({ entities: [circleOf(p(200, 0), 20)] })
+    answer(tan, "ID", "230,0", "ELLIPSE", "_TAN", "213.33,14.91", "300,0")
+    answer(tan, "10")
+    expect(tan.only<EllipseEntity>("ellipse").center).toBeCloseToPoint(
+      p(256.6667, 7.4536),
+      3
+    )
+
+    const centre = createHarness({ entities: line() })
+    answer(centre, "ID", "30,30", "ELLIPSE", "C", "_PER", "70,0", "130,0")
+    answer(centre, "10")
+    expect(centre.only<EllipseEntity>("ellipse").center).toBeCloseToPoint(
+      p(30, 0)
+    )
+  })
+
+  it("takes a Z at the centre mode's endpoint of axis, onto the centre's plane (p184, p245, p197, p170)", () => {
+    const flat = answer(createHarness(), "ELLIPSE", "C", "0,0", "50,0,7", "25")
+    const ellipse = flat.only<EllipseEntity>("ellipse")
+    expect(ellipse.majorAxis).toBeCloseToPoint(p(50, 0))
+    expect(ellipse.elevation).toBeUndefined()
+
+    const raised = answer(createHarness(), "ELLIPSE", "C", "0,0,7", "50,0,3")
+    answer(raised, "25")
+    expect(raised.only<EllipseEntity>("ellipse").elevation).toBe(7)
+
+    const word = answer(createHarness(), "ELLIPSE", "C", "0,0")
+    expect(written(word, "_U")).toEqual([
+      "Specify endpoint of axis: _U",
+      "Invalid point.",
+    ])
+
+    // The axis mode's other end stays a 2D point (p170).
+    const axis = answer(createHarness(), "ELLIPSE", "0,0")
+    expect(written(axis, "100,0,5")).toEqual([
+      "Specify other endpoint of axis: 100,0,5",
+      "Invalid 2D point.",
+    ])
+  })
+
+  it("answers the start angle with `<45` (p181, p292)", () => {
+    const cad = answer(createHarness(), "ELLIPSE", "A", "0,0", "100,0", "25")
+    expect(written(cad, "<45")).toEqual([
+      "Specify start angle or [Parameter]: <45",
+    ])
+    expect(cad.state().commandLine.prompt).toBe(
+      "ELLIPSE Specify end angle or [Parameter/Included angle]:"
+    )
+    answer(cad, "30")
+    const ellipse = cad.only<EllipseEntity>("ellipse")
+    expect(ellipseStartPoint(ellipse)).toBeCloseToPoint(p(27.6393, -22.3607), 3)
+    expect(ellipseEndPoint(ellipse)).toBeCloseToPoint(p(17.2673, -18.8982), 3)
+  })
+
+  it("offers the current measure's keyword hidden, asking again (p114, p115, p234)", () => {
+    const cad = answer(createHarness(), "ELLIPSE", "A", "0,0", "100,0", "25")
+    expect(written(cad, "A")).toEqual(["Specify start angle or [Parameter]: A"])
+    expect(cad.state().commandLine.prompt).toBe(
+      "ELLIPSE Specify start angle or [Parameter]:"
+    )
+    expect(written(cad, "30", "A")).toEqual([
+      "Specify start angle or [Parameter]: 30",
+      "Specify end angle or [Parameter/Included angle]: A",
+    ])
+    answer(cad, "120")
+    expect(
+      ellipseEndPoint(cad.only<EllipseEntity>("ellipse"))
+    ).toBeCloseToPoint(p(63.8675, -24.0192), 3)
+
+    const parameter = answer(createHarness(), "ELLIPSE", "A", "0,0", "100,0")
+    answer(parameter, "25", "P")
+    expect(written(parameter, "P")).toEqual([
+      "Specify start parameter or [Angle]: P",
+    ])
+    expect(parameter.state().commandLine.prompt).toBe(
+      "ELLIPSE Specify start parameter or [Angle]:"
+    )
+
+    const spanish = answer(createHarness({ locale: es }), "ELIPSE", "A", "0,0")
+    answer(spanish, "100,0", "25")
+    expect(written(spanish, "U")).toEqual([
+      "Precise ángulo inicial o [Parámetro]: U",
+    ])
+    expect(spanish.state().commandLine.prompt).toBe(
+      "ELIPSE Precise ángulo inicial o [Parámetro]:"
+    )
+  })
+
+  it("takes Spanish `E` (cEntro) at the elliptical arc's first prompt (p111)", () => {
+    const cad = answer(createHarness({ locale: es }), "ELIPSE", "A", "E")
+    expect(cad.state().commandLine.prompt).toBe(
+      "ELIPSE Precise centro de arco elíptico:"
+    )
+    answer(cad, "0,0", "50,0", "25", "0", "90")
+    expect(cad.only<EllipseEntity>("ellipse").center).toBeCloseToPoint(p(0, 0))
+  })
+
+  describe("the rail's entries, the ribbon's macros", () => {
+    // acad.cuix: Axis, End `^C^C_ellipse`, Center `^C^C_ellipse _c`,
+    // Elliptical Arc `^C^C_ellipse _a`; Enter afterwards repeats ELLIPSE at
+    // its first prompt (probes ellipse/p105, p107) and U names it (p198).
+    const first = "Specify axis endpoint of ellipse or [Arc/Center]:"
+
+    it("echoes `_ellipse` and answers `_c` or `_a`", () => {
+      const run = (id: string, ...answers: string[]) => {
+        const cad = createHarness()
+        cad.tool(id)
+        expect(cad.activeToolId()).toBe(id)
+        answer(cad, ...answers)
+        return cad
+      }
+      expect(run("ellipse", "0,0", "100,0", "25").commandLog()).toEqual([
+        "_ellipse",
+        `${first} 0,0`,
+        "Specify other endpoint of axis: 100,0",
+        "Specify distance to other axis or [Rotation]: 25",
+      ])
+      expect(run("ellipsecenter", "50,0", "100,0", "25").commandLog()).toEqual([
+        "_ellipse",
+        `${first} _c Specify center of ellipse: 50,0`,
+        "Specify endpoint of axis: 100,0",
+        "Specify distance to other axis or [Rotation]: 25",
+      ])
+      expect(
+        run("ellipsearc", "0,0", "100,0", "25", "0", "90").commandLog()
+      ).toEqual([
+        "_ellipse",
+        `${first} _a Specify axis endpoint of elliptical arc or [Center]: 0,0`,
+        "Specify other endpoint of axis: 100,0",
+        "Specify distance to other axis or [Rotation]: 25",
+        "Specify start angle or [Parameter]: 0",
+        "Specify end angle or [Parameter/Included angle]: 90",
+      ])
+    })
+
+    it("repeats ELLIPSE at Enter and undoes as ELLIPSE", () => {
+      for (const [locale, u, name, prompt] of [
+        [undefined, "U", "ELLIPSE", first],
+        [
+          es,
+          "H",
+          "ELIPSE",
+          "Precise punto final de eje de elipse o [Arco/Centro]:",
+        ],
+      ] as const) {
+        for (const id of ["ellipsecenter", "ellipsearc"]) {
+          const cad = createHarness(locale ? { locale } : {})
+          cad.tool(id)
+          answer(cad, "50,0", "100,0", "25")
+          if (id === "ellipsearc") answer(cad, "0", "90")
+          expect(cad.entityCount).toBe(1)
+          answer(cad, "")
+          expect(cad.state().commandLine.prompt).toBe(`${name} ${prompt}`)
+          cad.escape()
+          expect(written(cad, "_U")).toEqual([u, name])
+          expect(cad.entityCount).toBe(0)
+        }
+      }
+    })
+
+    it("keeps ELLIPSEC and ELLIPSEARC typable, as the rail runs them", () => {
+      const cad = answer(createHarness(), "ELLIPSEC", "50,0", "100,0", "25")
+      expect(cad.commandLog().slice(0, 2)).toEqual([
+        "ELLIPSEC",
+        `${first} _c Specify center of ellipse: 50,0`,
+      ])
+      answer(cad, "ELLIPSEARC", "0,0", "100,0", "25", "0", "90")
+      expect(isFullEllipse(cad.latest() as EllipseEntity)).toBe(false)
+    })
+  })
+
+  it("echoes ELLIPSE at U and REDO (p198)", () => {
+    const cad = answer(createHarness(), "ELLIPSE", "0,0", "100,0", "25")
+    answer(cad, "ELLIPSE", "C", "0,0", "50,0", "25")
+    expect(written(cad, "_U")).toEqual(["U", "ELLIPSE"])
+    expect(cad.entityCount).toBe(1)
+    expect(written(cad, "_REDO")).toEqual([
+      "REDO",
+      "ELLIPSE",
+      "Everything has been redone",
+    ])
+    expect(cad.entityCount).toBe(2)
+  })
+
+  it("may not be invoked transparently (p106)", () => {
+    const cad = answer(createHarness(), "LINE", "0,0")
+    expect(written(cad, "'ELLIPSE")).toEqual([
+      "Specify next point or [Undo]: 'ELLIPSE",
+      "** That command may not be invoked transparently **",
+      "Point or option keyword required.",
+    ])
+    answer(cad, "10,0", "")
+    expect(cad.typeCounts()).toEqual({ line: 1 })
   })
 })
 

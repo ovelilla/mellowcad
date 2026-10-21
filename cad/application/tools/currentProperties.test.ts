@@ -477,4 +477,27 @@ describe("what a new PLINE wears", () => {
       color: cad.runtime.document.getSettings().currentColor,
     })
   })
+
+  it("ELLIPSE's arc keeps those current when its ellipse is fixed (p253, p257, p249)", () => {
+    // `'-COLOR 3` at the start or the end angle leaves the arc ByLayer; at the
+    // other endpoint the whole ellipse is green.
+    const atStart = createHarness()
+    const l1 = atStart.runtime.createLayer("L1", undefined, false)
+    answer(atStart, "ELLIPSE", "A", "0,0", "100,0", "25", "'-COLOR", "3")
+    atStart.runtime.setCurrentLayer(l1)
+    answer(atStart, "30", "120")
+    expect(atStart.latest()).toMatchObject({ type: "ellipse", layerId: "0" })
+    expect(atStart.latest()?.color).toBeUndefined()
+
+    const atEnd = createHarness()
+    answer(atEnd, "ELLIPSE", "A", "0,0", "100,0", "25", "30", "'-COLOR", "3")
+    answer(atEnd, "120")
+    expect(atEnd.latest()?.color).toBeUndefined()
+
+    const whole = createHarness()
+    answer(whole, "ELLIPSE", "0,0", "'-COLOR", "3", "100,0", "25")
+    expect(whole.latest()?.color).toBe(
+      whole.runtime.document.getSettings().currentColor
+    )
+  })
 })

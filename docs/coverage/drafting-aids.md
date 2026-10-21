@@ -230,7 +230,9 @@ any of the forms a typed angle takes (`30d30'`, `0.5r`, `50g`, `N45dE`: coordina
 first point, with no base, it is `Invalid point.`, and at CIRCLE's 2P and 3P later points, which
 have none either, `Invalid 2D point.` (circle/p137; CIRCLE's radius has one, p173); a second `<angle` while one holds is the prompt's
 wrong answer (`Point or option keyword required.`) and drops the first, so a length typed next runs
-towards the cursor (2027's console, p161); **unverified**: the echo of an angle typed in another
+towards the cursor (2027's console, p161). At ELLIPSE's start and end angle (or parameter) it is
+no override but the angle itself, the next prompt following (ellipse/p181, p292; its Rotation and
+Included angle unprobed, so they keep the override); **unverified**: the echo of an angle typed in another
 form than a number (what was typed here, `Angle Override: 50g`)
 
 ### Coordinates (status bar)

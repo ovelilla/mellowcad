@@ -859,7 +859,8 @@
       "selectSecondObjectOrApplyCornerOr": { "Radius": "Radius" },
       "specifyEndpointOfArcOr": { "Close": "CLose", "Arc": "ARc" },
       "specifyNextPointOr": { "Line": "LIne" },
-      "specifyFirstCornerPointOr": { "Width": "Width" }
+      "specifyFirstCornerPointOr": { "Width": "Width" },
+      "specifyAxisEndpointOfEllipticalArcOr": { "Centre": "Centre" }
     },
     "prompts": {
       "length": "Length",
