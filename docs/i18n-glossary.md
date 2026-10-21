@@ -68,6 +68,7 @@ marks a choice between competing terms that a native review should settle first 
 |  | Center, Radius · Center, Diameter · 2-Point · 3-Point | Centro, Radio · Centro, Diámetro · 2 puntos · 3 puntos | دائرة بالمركز ونصف القطر · بالقطر · بنقطتين · بثلاث نقاط (M) | GS 6B8B7254-94CD-42DB-8F27-1339CAECE9ED | yes |
 |  | Start, Center, End · Center, Start, End | Inicio, Centro, Fin · Centro, Inicio, Fin | قوس: بداية، مركز، نهاية · مركز، بداية، نهاية (M) | C C78378FD-4704-4D0A-9D86-82FCBB118097 | yes |
 |  | Rectangle, Polygon, Hatch | Rectángulo, Polígono, Sombreado | مستطيل، مضلع، تهشير (C) | C 377C261F-EEF1-4438-A80D-6760CAE37B81 | yes |
+|  | Spline, Spline Fit, Spline CV | Spline, Ajuste de spline, VC de spline | منحنى شرائحي، منحنى شرائحي بالملاءمة، منحنى شرائحي برؤوس التحكم (L) | the ribbon's tooltips, acad.cuix (Home > Draw) | yes |
 | Modify | Move, Copy, Stretch, Rotate, Mirror, Scale | Desplazar, Copiar, Estirar, Girar, Simetría, Escala | نقل، نسخ، مطّ، تدوير، انعكاس، تحجيم (C) † | GS 29B2169B-01D9-429B-9DCD-5D3552E5E68E | yes |
 |  | Offset, Trim, Extend, Fillet, Chamfer | Desfase, Recortar, Alargar, Empalme, Chaflán | إزاحة متوازية، تشذيب، تمديد، تقويس، شطف (C) † | same, C 696681C1-4B8B-4995-8903-CCE6686179EA | yes |
 |  | Explode, Join, Break, Break at point | Descomponer, Juntar, Partir, Partir en punto | تفكيك، ضمّ، كسر، كسر عند نقطة (C) | C 4DC59885-3B10-4CEE-854B-4B5ADCD1A4EF, MAC D175DCD2-2050-4DA9-9965-1E94462718CA | yes (Partir en punto partial) |

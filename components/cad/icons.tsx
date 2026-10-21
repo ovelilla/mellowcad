@@ -92,6 +92,20 @@ export const EllipseArcIcon = createLucideIcon("EllipseArc", [
   ["circle", { cx: "20", cy: "8.4", ...DOT, key: "end" }],
 ])
 
+/**
+ * Spline CV: the curve under its dashed control frame, a bead at each vertex
+ * (lucide's Spline, beads on the curve, is the fit one).
+ */
+export const SplineCvIcon = createLucideIcon("SplineCv", [
+  ["path", { d: "M3 20 C7 6 17 6 21 20", key: "curve" }],
+  [
+    "path",
+    { d: "M3 20 L7 6 L17 6 L21 20", strokeDasharray: "2 2", key: "frame" },
+  ],
+  ["circle", { cx: "7", cy: "6", ...DOT, key: "v1" }],
+  ["circle", { cx: "17", cy: "6", ...DOT, key: "v2" }],
+])
+
 /** Fillet: two lines meeting at a rounded (arc) corner. */
 export const FilletIcon = createLucideIcon("Fillet", [
   ["path", { d: "M5 21 L5 11 A6 6 0 0 1 11 5 L21 5", key: "corner" }],

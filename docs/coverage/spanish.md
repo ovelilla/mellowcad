@@ -44,9 +44,11 @@ explains):
   `finalizar Tangencia`, `Cerrar`, `desHacer` and the prompts `Precise tangente inicial`,
   `Precise tangente final` and `Indique grado de spline` from aCADemia's 2011 captures of the
   Spanish
-  product. **Unverified:** the capitals of `Cuerda`/`Raíz cuadrada`/`Uniforme` (the help's names),
-  `Precise tangente` at the closure and the palette's `Parametrización de nudos`. In English, the
-  Fit prompts are a 2019 capture's; `Enter spline degree` and `Specify tangent` are not.
+  product; every prompt, keyword capital (`[Cuerda/raíz cuaDrada/Uniforme]`), refusal and the
+  settings line are 2027's console's (spline/p01.es, p02.es, p108, p111.es, p113.es, p125.es,
+  p155.es), which asks no `Precise tangente` at the closure (p124.es). The rail's
+  `Ajuste de spline` and `VC de spline` are the ribbon's tooltips (acad.cuix). **Unverified:** the
+  palette's `Parametrización de nudos`.
 - **UCS:** `SCP` and `SIMBSCP` from the Spanish pages with the English GUIDs, as is `PLANTA`;
   the keywords `gUArdado`, `oBjeto`, `PRev`, `Vista`, `Univ`, `X`, `Y`, `Z`, `ejEZ`, `Objeto`,
   `Rest`,

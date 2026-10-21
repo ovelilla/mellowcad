@@ -490,21 +490,53 @@ from the 2027 Spanish language pack's string table, paired with the English by i
 `Enter next point or [start Tangency]:`, `[end Tangency/Undo]` and `[end Tangency/Undo/Close]` (es
 `Especifique punto siguiente o`, but `Precise el punto siguiente o` at the third point, as
 Autodesk's table words it), CV's `Enter next point:`, `[Undo]` and `[Close/Undo]`,
-`Specify start tangent:` and `Specify end tangent:`. Fit: a cubic through the points (n + 2 control
+`Specify start tangent:` and `Specify end tangent:`. Enter at the first prompt is refused,
+`Point or option keyword required.` (es `Se requiere un punto o una opción.`), and the prompt asked
+again, Fit and CV (p106; desktop d05); CV's `Enter next point:` refuses a word in the same words,
+though it declares no keyword (p127, p138). Fit: a cubic through the points (n + 2 control
 vertices, knots the unnormalised chord sums LIST reports), Knots Chord / Square root / Uniform,
 start Tangency after the first point, end Tangency ending the command, Close from the third point,
-periodic, ending the command (AutoCAD 2023's console asks no tangent there). CV: Degree 1–10,
-lowered to vertices − 1 when fewer, knots 1 apart, Close from the third point (periodic). Undo;
-Method, Knots and Degree kept for the session (SPLMETHOD / SPLKNOTS / SPLDEGREE, Not-saved); Escape
-discards the curve; one undo step; the control frame while drawing CV. Endpoint, Midpoint (halfway
+periodic, ending the command (AutoCAD 2027's console asks no tangent there, p124, p303). CV: Degree
+1–10, lowered to vertices − 1 when fewer, knots 1 apart, Close from the third point (periodic); at
+the Degree prompt `0`, `11` and `-1` are asked again silently, `2.5` or a word refused with
+`Requires an integer between -32768 and 32767, or option keyword.` (es `Requiere un nº entero
+entre -32768 y 32767, o una opción.`), and the unlisted Method, Degree and Object go back to the
+first prompt, the degree unchanged (p111, p153–p155). Undo, down to one point, where the prompt
+stays the second point's (`[end Tangency/Undo]`, es `Precise el punto siguiente o`; CV `[Undo]`):
+start Tangency is gone, Undo there does nothing, silently, and end Tangency asks the same prompt
+again (p125, p128, p146, p152, p156; desktop d12, over the console's p148, which asks the tangent).
+A typed length at a next point is direct distance along the cursor, a negative one backwards, as
+LINE's (p117). Method, Knots and Degree kept for the session (SPLMETHOD / SPLKNOTS / SPLDEGREE,
+Not-saved; p104); Escape discards the curve; one undo step; the control frame while drawing CV. The
+current layer and properties are those of when the spline first holds two points: set at the first
+point, the second or the start tangent they are worn, at the third or the end tangent not, and Undo
+back to one point keeps them (p227–p233, p260, p261, p268, p277). LASTPOINT is the last fit point
+or vertex after the command, also after an end tangent (p210, p219, p220, p221, p276). `_TAN` or
+`_PER` at the first point measures from LASTPOINT (p242, p243, p274); at the end tangent a `_TAN`
+on a circle or an arc is deferred: the end leaves along the circle's tangent where it is nearest
+the spline's end, pointing the pick's way, an end inside the circle taken too (p250, p262, p263,
+p270, p272, p273); the start tangent's is the ordinary one (p249, p267). `<a` at a next point holds
+it to that angle (desktop d03). The rail's Spline Fit and Spline CV run SPLINE as the ribbon's
+macros do (acad.cuix, Home > Draw: `^C^C_^RSPLINE _M _FIT`, `^C^C_^RSPLINE _M _CV`): echoed
+`_spline`, the method answered, Enter repeating SPLINE in it and U naming SPLINE (p104, p142); they
+have no typed name, as AutoCAD's have none. Not transparent (p105). Endpoint, Midpoint (halfway
 along), Nearest and Intersection snaps (against the chords of a tessellation a hundred-thousandth of
 the size off the curve); a grip per fit point or control vertex, with the frame of a CV spline;
 palette rows Method, Degree, Knot parameterization, Closed, Area (read-only); STRETCH moves the
-points in the window; EXPLODE refuses it, as AutoCAD's does. Wording from AutoCAD 2023's console and
-resources and the 2027 Spanish language pack's
+points in the window; EXPLODE refuses it, as AutoCAD's does. Wording from AutoCAD 2027's console
+(p01, p02, p100–p157, en and es) and the 2027 Spanish language pack's
 
 **Missing:** toLerance and Object (not offered: a tolerance above 0 is an approximation Autodesk
-does not document, and there are no spline-fit polylines to convert), the end tangents AutoCAD
+does not document, and there are no spline-fit polylines to convert; AutoCAD asks
+`Specify fit tolerance <0.0000>:`, es `Precise tolerancia de ajuste <0.0000>:`, p115, p131, and
+`Select spline-fit polyline:`, es `Designe polilínea de ajuste de spline:`, whose Enter says
+`None found.` and ends, p114); the 3D spline: AutoCAD 2027 keeps each point's Z (`0,0,5`
+`10,10,5` `20,0,8` `30,10,-3` stay so, p200, p201, p216, p269) and a 2D point takes ELEVATION as it
+then is (p223, p231, p234, p265), where the kernel here has no 3D NURBS and lays every point on the
+first one's plane (SPLINE-D21); the deferred Tangent at the end tangent on a line, an ellipse or a
+spline (unprobed: the ordinary Tangent from the last point here); `<a` at the tangents and at
+CV's next points (**unverified**: the console ignores it, p212, p256, p222, so the angle override
+every prompt with a base point has); the end tangents AutoCAD
 computes when none is given (undocumented; here the parabola through the three end points),
 SPLINEDIT, CVSHOW / CVHIDE, the triangular grip and the multifunction grip menus (add / remove
 point, tangent, refine), weights, palette editing, TRIM / EXTEND of a spline an edge reaches (TRIM's

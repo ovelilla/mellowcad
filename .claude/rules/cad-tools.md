@@ -192,9 +192,10 @@ rectang/d02, ellipse/d01–d02, else d01). No HPLAYER, DIMLAYER or TEXTLAYER: th
   (`ViewChangeCommand`), so a tool never records a view change; a view left where it was makes no
   step unless `viewStep()` says so (-PAN). The wheel, the wheel button's pan and the ViewCube are
   no command and stay out.
-- A tool offering its own **Undo keyword** counts its own edits and refuses when there are none:
-  `ctx.undo()` pops the history, which would otherwise back out an earlier command. Offer it from
-  the first point a prompt holds. A transparent command run since a step ('LTSCALE) goes back with
+- A tool offering its own **Undo keyword** counts its own edits and refuses when there are none
+  (SPLINE's at one point does nothing, spline/p125): `ctx.undo()` pops the history, which would
+  otherwise back out an earlier command. Offer it from the first point a prompt holds. A
+  transparent command run since a step ('LTSCALE) goes back with
   it: mark `ctx.historyDepth()` at each step and take back with `ctx.undoTo(mark)`. A looping
   command restores its state **whatever the undo returns**: under UNDO Control None it pops
   nothing and LINE still steps back, while PLINE, which commits at its end, keeps its chain
@@ -300,10 +301,10 @@ returns `true`; `false` ends the command.
 base)`, because every `V` helper returns a `Vec2`. Type a state field that feeds `lastPoint` or a
   creation as `Vec3`, so a dropped Z fails to compile. A displacement is `sub3(to, from)`.
 - **A flat object lies in the plane of the first point that fixed it**: `onPlaneOf(createX(...),
-first)`, later points projected (`withZOf(point, first)`). `createLine` reads both ends' Z. A
-  dimension lies at the height of the point placing its dimension line, whatever its origins'.
-  Three points too (arc/p06, circle/p189). FILLET and CHAMFER resolve two lines with
-  `lineCorner` (`lineCorner.ts`).
+first)`, later points projected (`withZOf(point, first)`); SPLINE by limitation (spline/p200).
+  `createLine` reads both ends' Z. A dimension lies at the height of the point placing its
+  dimension line, whatever its origins'. Three points too (arc/p06, circle/p189). FILLET and
+  CHAMFER resolve two lines with `lineCorner` (`lineCorner.ts`).
 - **A grip drags to a point like any click**; only a line's end grip writes that Z into the
   object, every other grip stores `planar(point)`.
 - **An edit that needs coplanar objects refuses with AutoCAD's message** (`coplanar`,
@@ -334,5 +335,3 @@ entity)` says so: it reads `ctx.snapOverride()` and `ctx.pick`, as LINE (`tools/
   and CIRCLE (`circlesMeetingThree`, `circleOnDiameter`) do.
 - `retainsTrackingAfterPointerDown()` — true when a click _begins_ an edit, so tracking survives
   the drag.
-- `usesCrosshair()` — false only for view tools that own the cursor (PAN's hand): no crosshair is
-  drawn and `updateSnap` leaves the cursor the tool set.

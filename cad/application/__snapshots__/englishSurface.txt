@@ -121,6 +121,8 @@ ellipse "Ellipse" EL
 ellipsecenter "Center ellipse" ELLIPSEC
 ellipsearc "Elliptical arc" ELLIPSEARC
 spline "Spline" SPL
+splinefit "Spline Fit" -
+splinecv "Spline CV" -
 rectangle "Rectangle" REC
 polygon "Polygon" POL
 hatch "Hatch" H
@@ -1279,7 +1281,7 @@ lweight "Lineweight" LW
   dyn: -
   options: -
   prompt| Enter next point or [end Tangency/Undo/Close]: C
-> enter keeps it periodic
+> enter repeats SPLINE
   prompt: SPLINE Specify first point or [Method/Knots]:
   asks: "First point"
   tip: Specify first point or

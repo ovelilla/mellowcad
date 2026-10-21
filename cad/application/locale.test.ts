@@ -688,6 +688,7 @@ describe("Spanish AutoCAD's command language", () => {
   })
 
   it("asks SPLINE's questions in Spanish AutoCAD's words", () => {
+    // probes spline/p01.es, p108.es, p113.es (the knots' capitals)
     const cad = createHarness({ locale: es })
     const answer = (keyword: string) => {
       for (const char of keyword) cad.press(char)
@@ -712,6 +713,55 @@ describe("Spanish AutoCAD's command language", () => {
     cad.click(p(100, 0))
     expect(cad.state().commandLine.prompt).toBe(
       "SPLINE Precise el punto siguiente o [finalizar Tangencia/desHacer]:"
+    )
+    cad.click(p(200, 50))
+    expect(cad.state().commandLine.prompt).toBe(
+      "SPLINE Especifique punto siguiente o [finalizar Tangencia/desHacer/Cerrar]:"
+    )
+    answer("T")
+    expect(cad.state().commandLine.prompt).toBe(
+      "SPLINE Precise tangente final:"
+    )
+  })
+
+  it("asks SPLINE's CV, Degree and start tangent in Spanish (p02.es, p111.es, p118.es)", () => {
+    const cad = createHarness({ locale: es })
+    const answer = (...texts: string[]) => {
+      for (const text of texts) {
+        cad.runtime.setCommandLineText(text)
+        cad.runtime.submitCommandLine()
+      }
+    }
+    answer("SPLINE", "M", "VC")
+    expect(cad.commandLog().at(-1)).toBe(
+      "Parámetros actuales: Método=VC   Grado=3"
+    )
+    expect(cad.state().commandLine.prompt).toBe(
+      "SPLINE Precise primer punto o [Método/Grado]:"
+    )
+    answer("G")
+    expect(cad.state().commandLine.prompt).toBe(
+      "SPLINE Indique grado de spline <3>:"
+    )
+    answer("2.5")
+    expect(cad.commandLog().at(-1)).toBe(
+      "Requiere un nº entero entre -32768 y 32767, o una opción."
+    )
+    answer("3", "0,0")
+    expect(cad.state().commandLine.prompt).toBe(
+      "SPLINE Especifique punto siguiente:"
+    )
+    answer("10,10")
+    expect(cad.state().commandLine.prompt).toBe(
+      "SPLINE Precise el punto siguiente o [desHacer]:"
+    )
+    answer("20,0")
+    expect(cad.state().commandLine.prompt).toBe(
+      "SPLINE Especifique punto siguiente o [Cerrar/desHacer]:"
+    )
+    answer("", "SPLINE", "M", "A", "0,0", "T")
+    expect(cad.state().commandLine.prompt).toBe(
+      "SPLINE Precise tangente inicial:"
     )
   })
 

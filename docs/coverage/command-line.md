@@ -96,9 +96,7 @@ the console shows no head) and the dynamic prompt's `>>`, the selection modes `E
 lists but `Select objects:` does not take (Group, Multiple, SUbobject, Object; at a single object's
 pick — BREAK's, UCS OBject's, ARRAYPATH's path — the others are taken, one object of what they
 find), the last keyword AutoCAD 2023 leaves out of a single pick's list (`[Exit/Undo]` expects
-`Exit`: an off-by-one, all are listed here), SPLINE's degree
-(`Requires an integer between -32768 and 32767, or option keyword.` in the console;
-`Requires an integer value.` here); **unverified**: what the history writes for a length and an
+`Exit`: an off-by-one, all are listed here); **unverified**: what the history writes for a length and an
 angle typed in the tooltip's two fields (`100<45` here), and Insertion's `of` (every other snap's
 `of` or `to`, es `de` / `a`, is 2027's: drafting-aids.md, Object snap overrides)
 

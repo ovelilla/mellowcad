@@ -360,7 +360,8 @@ describe("an object snap's name at a point prompt", () => {
 // AutoCAD declares some keywords in other words than its prompt lists them
 // (initget `Tangency` at `[start Tangency]`, `Atravesar` at Spanish
 // `[punto a Atravesar]`): the declared word is what is typed, as far as its
-// capitals and on, and the prompt keeps listing the other (acc/k8–k12, k23).
+// capitals and on, and the prompt keeps listing the other (SPLINE's in 2027's
+// console, probes spline/p108–p110, p144–p146; the rest acc/k8–k12, k23).
 describe("a keyword declared otherwise than listed", () => {
   it("is typed as declared, and listed as AutoCAD lists it", () => {
     const spline = createHarness()

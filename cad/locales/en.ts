@@ -19,6 +19,8 @@ export const en: EngineCatalog = {
       "ellipsecenter": "Center ellipse",
       "ellipsearc": "Elliptical arc",
       "spline": "Spline",
+      "splinefit": "Spline Fit",
+      "splinecv": "Spline CV",
       "rectangle": "Rectangle",
       "polygon": "Polygon",
       "hatch": "Hatch",

@@ -471,7 +471,7 @@ describe("the engine's English surface", () => {
         .do("second", (c) => c.click(at(100, 0)))
         .do("third", (c) => c.click(at(50, 80)))
         .do("C", (c) => answer(c, "C"))
-        .do("enter keeps it periodic", (c) => c.enter())
+        .do("enter repeats SPLINE", (c) => c.enter())
     )
     walk("RECTANG and POLYGON", createHarness(), (s) =>
       s

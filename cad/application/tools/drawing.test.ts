@@ -2261,6 +2261,7 @@ describe("ELLIPSE", () => {
 
 describe("SPLINE", () => {
   it("reports its settings and asks AutoCAD's questions", () => {
+    // probes spline/p01, p02, p108, p109 (2027's console, keywords as listed)
     const cad = createHarness()
 
     cad.command("SPLINE")
@@ -2469,6 +2470,412 @@ describe("SPLINE", () => {
       ["closed", "Yes"],
       ["area", expect.stringMatching(/mm²$/)],
     ])
+  })
+
+  describe("Enter at the first point", () => {
+    // AllowNone false at the first prompt, Fit and CV: Enter is refused in
+    // the prompt's words and asked again, its settings kept (probe
+    // spline/p106, en and es; DYNMODE 3 the same, desktop d05).
+    const CASES = [
+      [
+        undefined,
+        "SPLINE Specify first point or [Method/Knots]:",
+        "Point or option keyword required.",
+      ],
+      [
+        es,
+        "SPLINE Precise primer punto o [Método/Nudos]:",
+        "Se requiere un punto o una opción.",
+      ],
+    ] as const
+
+    it("is refused at the command line and in the box, Fit and CV", () => {
+      for (const [locale, prompt, refusal] of CASES) {
+        for (const enter of [
+          (cad: CadHarness) => answer(cad, ""),
+          (cad: CadHarness) => cad.enter(),
+        ]) {
+          const cad = createHarness(locale ? { locale } : {})
+          cad.command("SPLINE")
+          enter(cad)
+          expect(cad.commandLog().at(-1)).toBe(refusal)
+          expect(cad.state().commandLine.prompt).toBe(prompt)
+
+          cad.option("Method").option("CV")
+          enter(cad)
+          expect(cad.commandLog().at(-1)).toBe(refusal)
+          expect(cad.activeToolId()).toBe("spline")
+          cad.click(p(0, 0)).click(p(100, 0)).enter()
+          expect(cad.only<SplineEntity>("spline").method).toBe("cv")
+        }
+      }
+    })
+  })
+
+  describe("Undo back to one point", () => {
+    // AutoCAD keeps the prompt of two points: start Tangency is gone, Undo
+    // at one point is taken and does nothing, silently, and end Tangency
+    // asks the same prompt again (probes spline/p125, p128, p146, p149, p152,
+    // p156; desktop d12, over the console's p148).
+    it("keeps the two-point prompt, Undo a silent no-op there", () => {
+      const cad = answer(createHarness(), "SPLINE", "0,0", "10,10", "20,0")
+      expect(written(cad, "_U", "_U", "_U")).toEqual([
+        "Enter next point or [end Tangency/Undo/Close]: _U",
+        "Enter next point or [end Tangency/Undo]: _U",
+        "Enter next point or [end Tangency/Undo]: _U",
+      ])
+      expect(cad.state().commandLine.prompt).toBe(
+        "SPLINE Enter next point or [end Tangency/Undo]:"
+      )
+      expect(written(cad, "_T")).toEqual([
+        "Enter next point or [end Tangency/Undo]: _T",
+      ])
+      expect(cad.state().commandLine.prompt).toBe(
+        "SPLINE Enter next point or [end Tangency/Undo]:"
+      )
+      answer(cad, "5,5", "")
+      expect(cad.only<SplineEntity>("spline").points).toBeCloseToPoints([
+        p(0, 0),
+        p(5, 5),
+      ])
+    })
+
+    it("words it as the second point's prompt in Spanish (table 57995, p125.es)", () => {
+      const cad = answer(
+        createHarness({ locale: es }),
+        "SPLINE",
+        "0,0",
+        "10,10"
+      )
+      answer(cad, "H")
+      expect(cad.state().commandLine.prompt).toBe(
+        "SPLINE Precise el punto siguiente o [finalizar Tangencia/desHacer]:"
+      )
+    })
+
+    it("draws nothing at Enter, and closes from three points again (p149, p152)", () => {
+      const none = answer(createHarness(), "SPLINE", "0,0", "10,10", "_U", "")
+      expect(none.entityCount).toBe(0)
+      expect(none.activeToolId()).toBe("select")
+
+      const closed = answer(createHarness(), "SPLINE", "0,0", "10,10", "_U")
+      answer(closed, "20,0", "30,10", "_C")
+      const spline = closed.only<SplineEntity>("spline")
+      expect(spline.closed).toBe(true)
+      expect(spline.points).toBeCloseToPoints([p(0, 0), p(20, 0), p(30, 10)])
+    })
+
+    it("keeps CV's `[Undo]`, and refuses a word at its one-point prompt (p128, p127)", () => {
+      const cad = answer(createHarness(), "SPLINE", "M", "CV", "0,0")
+      expect(written(cad, "FOO", "_U")).toEqual([
+        "Enter next point: FOO",
+        "Point or option keyword required.",
+        "Enter next point: _U",
+        "Point or option keyword required.",
+      ])
+      answer(cad, "10,10")
+      expect(written(cad, "_U", "_U", "20,20")).toEqual([
+        "Enter next point or [Undo]: _U",
+        "Enter next point or [Undo]: _U",
+        "Enter next point or [Undo]: 20,20",
+      ])
+      const spanish = answer(createHarness({ locale: es }), "SPLINE", "M")
+      answer(spanish, "VC", "0,0", "FOO")
+      expect(spanish.commandLog().at(-1)).toBe(
+        "Se requiere un punto o una opción."
+      )
+    })
+  })
+
+  describe("the Degree prompt", () => {
+    // `0`, `11` and `-1` are asked again silently; `2.5`, a word and a point
+    // in the input function's words; the hidden Method, Degree and Object go
+    // back to the first prompt, the degree unchanged (probes spline/p111,
+    // p153, p154, p155.es, p318).
+    const refusal =
+      "Requires an integer between -32768 and 32767, or option keyword."
+
+    it("asks again at 0, 11 and -1, and refuses 2.5 and FOO", () => {
+      const cad = answer(createHarness(), "SPLINE", "M", "CV", "D")
+      expect(written(cad, "0", "11", "-1")).toEqual([
+        "Enter degree of spline <3>: 0",
+        "Enter degree of spline <3>: 11",
+        "Enter degree of spline <3>: -1",
+      ])
+      expect(written(cad, "2.5", "FOO")).toEqual([
+        "Enter degree of spline <3>: 2.5",
+        refusal,
+        "Enter degree of spline <3>: FOO",
+        refusal,
+      ])
+      cad.type("2.5").enter()
+      expect(cad.commandLog().at(-1)).toBe(refusal)
+      answer(cad, "10")
+      expect(cad.commandLog().at(-1)).toBe(
+        "Current settings: Method=CV   Degree=10"
+      )
+    })
+
+    it("goes back to the first prompt at Method, Degree and Object", () => {
+      for (const word of ["_M", "_D", "_O"]) {
+        const cad = answer(createHarness(), "SPLINE", "M", "CV", "D")
+        expect(written(cad, word)).toEqual([
+          `Enter degree of spline <3>: ${word}`,
+          "Current settings: Method=CV   Degree=3",
+        ])
+        expect(cad.state().commandLine.prompt).toBe(
+          "SPLINE Specify first point or [Method/Degree]:"
+        )
+      }
+      const spanish = answer(createHarness({ locale: es }), "SPLINE", "M")
+      answer(spanish, "VC", "G", "M")
+      expect(spanish.commandLog().at(-1)).toBe(
+        "Parámetros actuales: Método=VC   Grado=3"
+      )
+    })
+  })
+
+  it("runs a negative direct distance backwards along the cursor, as LINE (p117)", () => {
+    // The console's cursor stood at 289.98397,116.30379; `0` is asked again.
+    const cad = createHarness()
+    cad.moveTo(p(289.98397, 116.30379))
+    answer(cad, "SPLINE", "0,0", "0", "-5", "10,10", "")
+    expect(cad.only<SplineEntity>("spline").points).toBeCloseToPoints([
+      p(0, 0),
+      p(-4.64067, -1.861232),
+      p(10, 10),
+    ])
+  })
+
+  describe("the rail's entries, the ribbon's macros", () => {
+    // acad.cuix, Home > Draw: Spline Fit `^C^C_^RSPLINE _M _FIT`, Spline CV
+    // `^C^C_^RSPLINE _M _CV`; Enter afterwards repeats SPLINE in the method
+    // it left (probe spline/p104) and U names it (p142).
+    it("echoes `_spline` and answers `_m` and the method", () => {
+      const cv = createHarness()
+      cv.tool("splinecv")
+      expect(cv.activeToolId()).toBe("splinecv")
+      expect(cv.commandLog()).toEqual([
+        "_spline",
+        "Current settings: Method=Fit   Knots=Chord",
+        "Specify first point or [Method/Knots]: _m Enter spline creation method [Fit/CV] <Fit>: _cv",
+        "Current settings: Method=CV   Degree=3",
+      ])
+      answer(cv, "0,0", "10,10", "20,0", "")
+      expect(cv.only<SplineEntity>("spline").method).toBe("cv")
+
+      const from = cv.commandLog().length
+      cv.tool("splinefit")
+      answer(cv, "0,0", "10,10", "")
+      expect(cv.commandLog().slice(from, from + 5)).toEqual([
+        "_spline",
+        "Current settings: Method=CV   Degree=3",
+        "Specify first point or [Method/Degree]: _m Enter spline creation method [Fit/CV] <CV>: _fit",
+        "Current settings: Method=Fit   Knots=Chord",
+        "Specify first point or [Method/Knots]: 0,0",
+      ])
+      expect((cv.latest() as SplineEntity).method).toBe("fit")
+    })
+
+    it("repeats SPLINE at Enter in the method it set, and undoes as SPLINE", () => {
+      for (const [locale, u] of [
+        [undefined, "U"],
+        [es, "H"],
+      ] as const) {
+        const cad = createHarness(locale ? { locale } : {})
+        cad.tool("splinecv")
+        answer(cad, "0,0", "10,10", "20,0", "", "")
+        expect(cad.activeToolId()).toBe("spline")
+        expect(cad.commandLog().at(-1)).toMatch(/=VC|=CV/)
+        cad.escape()
+        expect(written(cad, "_U")).toEqual([u, "SPLINE"])
+        expect(cad.entityCount).toBe(0)
+      }
+    })
+  })
+
+  it("measures a Tangent or Perpendicular at the first point from LASTPOINT (p242, p243, p274)", () => {
+    const fixture = () => [lineOf(p(0, 0), p(100, 0)), circleOf(p(200, 0), 20)]
+    const per = createHarness({ entities: fixture() })
+    answer(per, "ID", "30,30", "SPLINE", "_PER", "70,0", "130,50", "")
+    expect(per.only<SplineEntity>("spline").points[0]).toBeCloseToPoint(
+      p(30, 0)
+    )
+
+    const tan = createHarness({ entities: fixture() })
+    answer(tan, "ID", "230,0", "SPLINE", "_TAN", "213.33,14.91", "300,50", "")
+    expect(tan.only<SplineEntity>("spline").points[0]).toBeCloseToPoint(
+      p(213.333333, 14.90712),
+      5
+    )
+
+    const cv = createHarness({ entities: fixture() })
+    answer(cv, "ID", "30,30", "SPLINE", "M", "CV", "_PER", "70,0", "130,50")
+    answer(cv, "")
+    expect(cv.only<SplineEntity>("spline").points[0]).toBeCloseToPoint(p(30, 0))
+  })
+
+  describe("Tangent at the end tangent", () => {
+    // Deferred: the end leaves along the circle's tangent at its point
+    // nearest the spline's end, signed toward the pick, an end inside the
+    // circle accepted (probes spline/p250, p262, p263, p270, p272, p273).
+    const circle = () => [circleOf(p(200, 0), 20)]
+    const endTangent =
+      (...points: string[]) =>
+      (pick: string) => {
+        const cad = createHarness({ entities: circle() })
+        answer(cad, "SPLINE", ...points, "_T", "_TAN", pick)
+        expect(cad.activeToolId()).toBe("select")
+        return V.normalize(cad.only<SplineEntity>("spline").endTangent!)
+      }
+
+    it("runs along the circle where it is nearest the end", () => {
+      const from230 = endTangent("280,40", "260,30", "230,0")
+      expect(from230("213.33,14.91")).toBeCloseToPoint(p(0, 1))
+      expect(from230("213.33,-14.91")).toBeCloseToPoint(p(0, -1))
+      expect(
+        endTangent("280,80", "260,50", "240,30")("213.33,14.91")
+      ).toBeCloseToPoint(p(-0.6, 0.8))
+      expect(
+        endTangent("300,0", "280,20", "260,0")("213.33,14.91")
+      ).toBeCloseToPoint(p(0, 1))
+      expect(
+        endTangent("110,60", "130,30", "150,0")("213.33,14.91")
+      ).toBeCloseToPoint(p(0, 1))
+      expect(
+        endTangent("250,60", "230,30", "205,5")("213.33,14.91")
+      ).toBeCloseToPoint(p(-0.707107, 0.707107))
+    })
+
+    it("is the ordinary Tangent at the start tangent (p249, p267)", () => {
+      const cad = createHarness({ entities: circle() })
+      answer(cad, "SPLINE", "230,0", "_T", "_TAN", "213.33,-14.91")
+      answer(cad, "260,40", "280,0", "")
+      expect(cad.only<SplineEntity>("spline").startTangent).toBeCloseToPoint(
+        p(-16.666667, -14.90712),
+        5
+      )
+    })
+  })
+
+  it("lies on its first point's plane, where AutoCAD 2027 keeps each point's Z (p200, p265)", () => {
+    // A known deviation (SPLINE-D21): AutoCAD's fit points are 0,0,5
+    // 10,10,5 20,0,8 30,10,-3, and with ELEVATION 5 after 0,0,7 the later
+    // points lie at 5; the kernel here has no 3D NURBS.
+    const typed = answer(createHarness(), "SPLINE", "0,0,5", "10,10,5")
+    answer(typed, "20,0,8", "30,10,-3", "")
+    const flat = typed.only<SplineEntity>("spline")
+    expect(flat.elevation).toBe(5)
+    expect(flat.points).toBeCloseToPoints([
+      p(0, 0),
+      p(10, 10),
+      p(20, 0),
+      p(30, 10),
+    ])
+
+    const raised = answer(createHarness(), "ELEV", "5", "0", "SPLINE")
+    answer(raised, "0,0,7", "10,10", "20,0", "")
+    expect(raised.only<SplineEntity>("spline").elevation).toBe(7)
+  })
+
+  describe("point input, as the console takes it", () => {
+    it("takes `@`, `d<a`, LASTPOINT's `@` and a number (p202, p203, p217, p259, p204, p207)", () => {
+      const relative = answer(createHarness(), "SPLINE", "0,0", "@10,10")
+      answer(relative, "@10,-10", "")
+      expect(relative.only<SplineEntity>("spline").points).toBeCloseToPoints([
+        p(0, 0),
+        p(10, 10),
+        p(20, 0),
+      ])
+
+      const polar = answer(createHarness(), "SPLINE", "0,0", "10<45")
+      answer(polar, "@10<-45", "")
+      expect(polar.only<SplineEntity>("spline").points).toBeCloseToPoints([
+        p(0, 0),
+        p(7.071068, 7.071068),
+        p(14.142136, 0),
+      ])
+
+      const fromLast = answer(createHarness(), "ID", "5,5", "SPLINE", "@3,3")
+      answer(fromLast, "20,0", "")
+      expect(fromLast.only<SplineEntity>("spline").points[0]).toBeCloseToPoint(
+        p(8, 8)
+      )
+
+      const at = answer(createHarness(), "SPLINE", "0,0")
+      expect(written(at, "@")).toEqual([
+        "Enter next point or [start Tangency]: @",
+      ])
+      expect(at.state().commandLine.prompt).toBe(
+        "SPLINE Enter next point or [start Tangency]:"
+      )
+
+      const number = createHarness()
+      number.moveTo(p(289.98397, 116.30379))
+      answer(number, "SPLINE", "0,0", "10", "50,-20", "")
+      expect(number.only<SplineEntity>("spline").points[1]).toBeCloseToPoint(
+        p(9.281339, 3.722464),
+        5
+      )
+    })
+
+    it("takes the tangents typed, relative to their own base (p210, p213, p257)", () => {
+      const cad = answer(createHarness(), "SPLINE", "0,0", "_T", "@0,10")
+      answer(cad, "@20,0", "30,10", "")
+      const spline = cad.only<SplineEntity>("spline")
+      expect(spline.points).toBeCloseToPoints([p(0, 0), p(20, 0), p(30, 10)])
+      expect(spline.startTangent).toBeCloseToPoint(p(0, 10))
+
+      const ended = answer(createHarness(), "SPLINE", "0,0", "20,0", "30,10")
+      answer(ended, "_T", "@1,1")
+      expect(
+        V.normalize(ended.only<SplineEntity>("spline").endTangent!)
+      ).toBeCloseToPoint(V.normalize(p(1, 1)))
+
+      const none = answer(createHarness(), "SPLINE", "0,0", "_T", "@")
+      answer(none, "20,0", "30,10", "")
+      expect(none.only<SplineEntity>("spline").startTangent).toBeUndefined()
+    })
+
+    it("takes FROM and the object snaps at its points (p247, p240)", () => {
+      const from = answer(createHarness(), "SPLINE", "_FRO", "100,0", "@10,10")
+      answer(from, "_FRO", "50,0", "@0,20", "150,10", "")
+      expect(from.only<SplineEntity>("spline").points).toBeCloseToPoints([
+        p(110, 10),
+        p(50, 20),
+        p(150, 10),
+      ])
+
+      const snapped = createHarness({
+        entities: [
+          lineOf(p(0, 0), p(100, 0)),
+          lineOf(p(50, -10), p(50, 10)),
+          circleOf(p(200, 0), 20),
+        ],
+      })
+      answer(snapped, "ZOOM", "W", "-50,-100", "300,100", "SPLINE")
+      answer(snapped, "_END", "99.6,0.2", "_MID", "30,0.2", "_CEN", "200,19.8")
+      answer(snapped, "_QUA", "200.3,19.8", "_INT", "50.2,0.2", "_NEA")
+      answer(snapped, "30,0.2", "")
+      expect(snapped.only<SplineEntity>("spline").points).toBeCloseToPoints([
+        p(100, 0),
+        p(50, 0),
+        p(200, 0),
+        p(200, 20),
+        p(50, 0),
+        p(30, 0),
+      ])
+    })
+  })
+
+  it("runs transparent commands at each prompt, as the console does (p132–p140)", () => {
+    const T = ["'_ZOOM", "_E", "'_-PAN", "0,0", "5,5", "'_-OSNAP", "_END"]
+    const cad = answer(createHarness(), "SPLINE", ...T, "0,0", "_T", ...T)
+    answer(cad, "0,10", ...T, "10,10", ...T, "20,0", "_T", ...T, "20,10")
+    const spline = cad.only<SplineEntity>("spline")
+    expect(spline.points).toBeCloseToPoints([p(0, 0), p(10, 10), p(20, 0)])
+    expect(spline.startTangent).toBeCloseToPoint(p(0, 10))
+    expect(cad.activeToolId()).toBe("select")
   })
 })
 

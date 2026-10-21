@@ -194,6 +194,7 @@ describe("a wrong answer mid-command", () => {
     expect(cad.commandLog().at(-1)).toBe(
       "Requires a TAN object-snap and selection of Circle, Arc, or Line."
     )
+    // probe spline/p112
     cad.escape().command("SPLINE").option("Method")
     answerLine(cad, "FOO")
     expect(cad.commandLog().at(-1)).toBe("Invalid option keyword.")

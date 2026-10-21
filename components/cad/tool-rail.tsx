@@ -72,6 +72,7 @@ import {
   InsertIcon,
   OffsetIcon,
   PolylineIcon,
+  SplineCvIcon,
   StretchIcon,
 } from "./icons"
 
@@ -91,6 +92,8 @@ const TOOL_ICONS: Record<string, LucideIcon> = {
   ellipsecenter: EllipseCenterIcon,
   ellipsearc: EllipseArcIcon,
   spline: Spline,
+  splinefit: Spline,
+  splinecv: SplineCvIcon,
   rectangle: Square,
   polygon: Pentagon,
   hatch: HatchIcon,
@@ -152,6 +155,7 @@ type FlyoutId =
   | "circle"
   | "arc"
   | "ellipse"
+  | "spline"
   | "rectangle"
   | "trim"
   | "fillet"
@@ -203,9 +207,9 @@ const PALETTE: readonly PaletteSection[] = [
       flyout("rectangle", ["rectangle", "polygon"]),
       flyout("ellipse", ["ellipse", "ellipsecenter", "ellipsearc"]),
       "hatch",
-      // On the ribbon Spline is in the expanded Draw panel; the palette has
-      // room for it, and a drop-down of one would only add a click.
-      "spline",
+      // On the ribbon Spline Fit and Spline CV are in the expanded Draw
+      // panel; the palette has room for their drop-down.
+      flyout("spline", ["splinefit", "splinecv"]),
     ],
   },
   {
@@ -311,6 +315,8 @@ const RAIL_EXCLUDED = new Set([
   "osnap",
   // SNAP is typed; the status bar's Snap mode button and menu are its chrome.
   "snap",
+  // SPLINE is typed; the rail runs it as the ribbon's Spline Fit and CV.
+  "spline",
   // CECOLOR, CELTYPE and CELWEIGHT are the top bar's property drop-downs.
   "color",
   "linetype",

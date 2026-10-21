@@ -306,6 +306,7 @@
         "circle": "Circle",
         "arc": "Arc",
         "ellipse": "Ellipse",
+        "spline": "Spline",
         "rectangle": "Rectangle",
         "trim": "Trim",
         "fillet": "Fillet",

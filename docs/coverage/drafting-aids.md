@@ -80,7 +80,13 @@ nothing, `No found for specified point.`, as 2027 writes it (LINE-D11); es
 `No se ha encontrado ptoFINal para el punto designado.` (puntoMEDio, CENtro, PERpendicular,
 INTersección); Quadrant's, Nearest's and Insertion's names (`Quadrant`, `Nearest`, `Insert`; es
 `CUAdrante`, `CERcano`, `INSerción`) come from table 27408, **unverified**. A second override
-typed at the first's `of` is `Invalid point.`, and neither holds (p162).
+typed at the first's `of` is `Invalid point.`, and neither holds (p162). A Tangent or Perpendicular
+at a prompt with no base point measures from LASTPOINT where AutoCAD's does — CIRCLE's centre
+(circle/p343, p345), ELLIPSE's first point and centre (ellipse/p266, p267, p295), SPLINE's first
+point, Fit and CV (spline/p242, p243, p274) —, a LASTPOINT inside the circle finding no tangent
+(spline/p252). At SPLINE's end tangent a Tangent on a circle or an arc is deferred: the end leaves
+along the circle where it is nearest the spline's end, pointing the pick's way (spline/p250, p262,
+p263, p272); on other objects it is the ordinary one from the last point (unprobed).
 
 FROM, typed at a point prompt (FROM, FRO, `_FRO`) or chosen from the menu, asks `Base point:` and
 then `<Offset>:` (es `Punto base:`, `<Desfase>:`), prompts with no keywords (FOO or U there:
@@ -206,7 +212,8 @@ side, absolute `#`, relative `@`, `*` for the WCS, `x,y`, `dist<ang` (all in the
 cylindrical `dist<ang,z` / spherical `dist<ang<ang` in the same box, multi-field forms, keyword
 prompts; on the Z guide (or straight above or below the base point) the length reads the height and
 the angle `+Z` / `-Z`, and a typed length runs along it — LINE, MOVE, COPY, STRETCH and a grip move
-go up or down, PLINE and SPLINE keep their plane; a typed angle brings it back to the plane
+go up or down, PLINE keeps its plane and so does SPLINE (by limitation: AutoCAD 2027's keeps each
+point's Z, draw.md, SPLINE); a typed angle brings it back to the plane
 (**unverified**); Enter with nothing typed is the prompt's — a form's defaults or the `<default>`,
 else the end of the command — never the cursor's reading, from the keyboard as from the right button;
 the Down arrow, with nothing typed, in the box or on the drawing, opens the prompt's option list with

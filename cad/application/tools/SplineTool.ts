@@ -3,6 +3,7 @@ import { Vec3, withZOf } from "../../geometry/Vec3"
 import { KnotParameterization } from "../../geometry/nurbs"
 import {
   DEFAULT_SPLINE_DEGREE,
+  type Entity,
   MAX_SPLINE_DEGREE,
   SplineEntity,
   SplineMethod,
@@ -11,6 +12,7 @@ import {
 } from "../../domain/entities"
 import { parseNumber } from "../../domain/units"
 import { AddEntityCommand } from "../commands/entityCommands"
+import { SnapType } from "../snapping/types"
 import { DynamicInputSession } from "../input/DynamicInput"
 import {
   isCoordinateExpression,
@@ -25,6 +27,7 @@ import {
   CommandOptionOutcome,
   KeyInput,
   PointerInput,
+  type RibbonMacro,
   Tool,
   ToolContext,
   ToolQuestion,
@@ -32,17 +35,31 @@ import {
 } from "./Tool"
 import { acuteHeading, headingInUcs } from "./ucsHeading"
 import { pointAlongCursor, showRise } from "./directDistance"
-import { withCurrentProperties } from "./currentProperties"
+import {
+  type CurrentProperties,
+  currentProperties,
+  wearingProperties,
+} from "./currentProperties"
+import { defersOn } from "./deferredSnap"
 
 /**
  * The points picked so far and what has been said about their ends. The points
- * lie on the first one's plane: a SPLINE is flat until the kernel has 3D NURBS.
+ * lie on the first one's plane: a SPLINE is flat until the kernel has 3D NURBS
+ * (AutoCAD 2027 keeps each point's Z, probes spline/p200, p265).
  */
 interface Drawn {
   readonly points: readonly Vec3[]
   readonly startTangent: Vec2 | null
   readonly endTangent: Vec2 | null
   readonly closed: boolean
+  /**
+   * The current layer and properties as they stood when the spline first
+   * held two points, which it wears whatever is set later, Undo back to one
+   * point included (probes spline/p227, p228, p232, p277). Null before: it
+   * also tells the first point's prompt from the one Undo leaves at one
+   * point, which keeps the second point's (p125, p128).
+   */
+  readonly properties: CurrentProperties | null
 }
 
 type SplineToolState =
@@ -55,6 +72,25 @@ type SplineToolState =
   | ({ readonly phase: "endTangent" } & Drawn)
 
 type DrawingState = Extract<SplineToolState, Drawn>
+
+/**
+ * SPLMETHOD, SPLKNOTS and SPLDEGREE: program-wide (rectang/p301), one object
+ * the three SPLINE tools share, so the rail's macros and the typed command
+ * start from the last spline's settings (spline/p104).
+ */
+export interface SplineSettings {
+  method: SplineMethod
+  knots: KnotParameterization
+  degree: number
+}
+
+/** SPLINE's settings as AutoCAD installs them: Fit, Chord, degree 3. */
+export function defaultSplineSettings(): SplineSettings {
+  return { method: "fit", knots: "chord", degree: DEFAULT_SPLINE_DEGREE }
+}
+
+/** The 16-bit range AutoCAD's integer input names at the Degree prompt (spline/p111). */
+const INTEGER_RANGE = { min: -32768, max: 32767 }
 
 const KNOTS_BY_KEYWORD: Record<string, KnotParameterization> = {
   Chord: "chord",
@@ -77,22 +113,54 @@ const FRAME: StrokeStyle = { color: THEME.crosshair, width: 1 }
  * when the command ends — Enter, Close, or the end tangent — so the whole
  * spline is one undo step, and Escape discards it, as AutoCAD's does.
  *
- * Method, Knots and Degree are SPLMETHOD, SPLKNOTS and SPLDEGREE, program-wide
- * (rectang/p301): they live on the tool for the session and the next spline
- * starts from the last one's settings, which `Current settings:` reports at
- * the start and after each change. toLerance and Object are not offered (see
- * `docs/coverage/draw.md`).
+ * Method, Knots and Degree are {@link SplineSettings}, which `Current
+ * settings:` reports at the start and after each change. toLerance and Object
+ * are not offered (see `docs/coverage/draw.md`). The rail's Spline Fit and
+ * Spline CV are this tool run as the ribbon's macros
+ * ({@link SplineTool.ribbonMacro}).
  */
 export class SplineTool implements Tool {
-  readonly id = "spline"
-
-  private method: SplineMethod = "fit"
-  private knots: KnotParameterization = "chord"
-  private degree = DEFAULT_SPLINE_DEGREE
+  readonly id: string
 
   private state: SplineToolState = { phase: "first" }
   private cursor: Vec3 | null = null
+  /** The cursor unsnapped, where a deferred Tangent's object is picked. */
+  private pickWorld: Vec2 | null = null
   private lastScreen: Vec2 | null = null
+
+  constructor(
+    id = "spline",
+    private readonly macroMethod: SplineMethod | null = null,
+    private readonly settings: SplineSettings = defaultSplineSettings()
+  ) {
+    this.id = id
+  }
+
+  private get method(): SplineMethod {
+    return this.settings.method
+  }
+
+  private get knots(): KnotParameterization {
+    return this.settings.knots
+  }
+
+  private get degree(): number {
+    return this.settings.degree
+  }
+
+  /**
+   * The ribbon's Spline Fit and Spline CV (acad.cuix, Home > Draw):
+   * `^C^C_^RSPLINE _M _FIT` and `^C^C_^RSPLINE _M _CV`. WHY no typed names
+   * for them: AutoCAD has none, and the bare SPLINE keeps the method last
+   * used (SPLINE-D7).
+   */
+  ribbonMacro(): RibbonMacro | null {
+    if (this.macroMethod === null) return null
+    return {
+      command: "SPLINE",
+      answers: ["_m", this.macroMethod === "cv" ? "_cv" : "_fit"],
+    }
+  }
 
   onActivate(ctx: ToolContext): void {
     ctx.setCursor("crosshair")
@@ -117,8 +185,11 @@ export class SplineTool implements Tool {
         return { id: "enterDegreeOfSpline", enter: { count: this.degree } }
       case "next":
         // WHY three ids for one English text: Spanish words the question
-        // after two points otherwise (`Precise el punto siguiente o`).
-        if (state.points.length === 2) return "enterThirdPointOr"
+        // after two points otherwise (`Precise el punto siguiente o`, 57995,
+        // CV 57493), which Undo back to one point keeps (p125, p128).
+        if (state.points.length <= 2 && twoGiven(state)) {
+          return "enterThirdPointOr"
+        }
         return this.commandOptions().length > 0
           ? "enterNextPointOr"
           : "enterNextPoint"
@@ -129,17 +200,68 @@ export class SplineTool implements Tool {
     }
   }
 
-  /** The degree is a whole number; the method and the knots, keywords. */
+  /**
+   * The degree is a 16-bit integer (spline/p111); the method and the knots,
+   * keywords. CV's one-point prompt declares no keyword, yet refuses as one
+   * that does (spline/p127, p138).
+   */
   takes(): QuestionInput | null {
-    switch (this.state.phase) {
+    const state = this.state
+    switch (state.phase) {
       case "degree":
-        return "integer"
+        return {
+          refusal: "requiresIntegerBetweenOrKeyword",
+          values: INTEGER_RANGE,
+        }
       case "method":
       case "knots":
         return "keyword"
+      case "next":
+        return this.commandOptions().length === 0
+          ? { refusal: "pointOrKeywordRequired" }
+          : null
       default:
         return null
     }
+  }
+
+  /** CV's one-point prompt is a point prompt for all its own refusal says. */
+  setsLastPoint(): boolean | null {
+    return this.state.phase === "next" && this.commandOptions().length === 0
+      ? true
+      : null
+  }
+
+  /**
+   * A Tangent or Perpendicular at the first point measures from LASTPOINT
+   * (probes spline/p242, p243, p274).
+   */
+  snapsFromLastPoint(): boolean {
+    return this.state.phase === "first"
+  }
+
+  /**
+   * The end tangent's Tangent is deferred on a circle or an arc: the tool
+   * works the direction out ({@link endTangentAt}), an end inside the
+   * circle taken too (probe spline/p272). WHY not on other objects:
+   * unprobed, so they keep the ordinary Tangent from the last point.
+   */
+  defersSnap(
+    kind: SnapType.Tangent | SnapType.Perpendicular,
+    entity: Entity | null
+  ): boolean {
+    return (
+      this.state.phase === "endTangent" &&
+      kind === SnapType.Tangent &&
+      defersOn(kind, entity)
+    )
+  }
+
+  snapMarker(
+    kind: SnapType.Tangent | SnapType.Perpendicular,
+    entity: Entity
+  ): "deferred" | null {
+    return this.defersSnap(kind, entity) ? "deferred" : null
   }
 
   defaultOption(): string | null {
@@ -161,13 +283,22 @@ export class SplineTool implements Tool {
     if (input.key === "Escape") this.state = { phase: "first" }
   }
 
+  /**
+   * The first prompt refuses Enter in its words and asks again (AllowNone
+   * false, probe spline/p106; desktop d05); elsewhere {@link acceptDefault}.
+   */
   onEnter(ctx: ToolContext): boolean {
+    if (this.state.phase === "first") {
+      ctx.report(ctx.text.message("pointOrKeywordRequired"), "error")
+      return true
+    }
     return this.acceptDefault(ctx)
   }
 
   onPointerMove(input: PointerInput, ctx: ToolContext): void {
     this.lastScreen = input.screen
     this.cursor = input.point
+    this.pickWorld = input.world
     const state = this.state
     if (state.phase === "next") {
       const offset = V.sub(input.point, lastPoint(state))
@@ -186,9 +317,18 @@ export class SplineTool implements Tool {
 
   onPointerDown(input: PointerInput, ctx: ToolContext): void {
     if (input.button !== 0) return
+    const state = this.state
+    if (state.phase === "endTangent") {
+      this.endWith(
+        state,
+        this.endTangentAt(state, input.point, input.world, ctx),
+        ctx
+      )
+      return
+    }
     this.placePoint(
-      this.state.phase === "next"
-        ? this.resolveNext(this.state, input.point, ctx)
+      state.phase === "next"
+        ? this.resolveNext(state, input.point, ctx)
         : input.point,
       ctx
     )
@@ -205,16 +345,25 @@ export class SplineTool implements Tool {
         return [{ id: "Fit" }, { id: "CV" }]
       case "knots":
         return Object.keys(KNOTS_BY_KEYWORD).map((id) => ({ id }))
+      case "degree":
+        // Declared, unlisted, each back at the first prompt (spline/p153,
+        // p154, p155): Object too, which is not built.
+        return [
+          { id: "Method", hidden: true },
+          { id: "Degree", hidden: true },
+          { id: "Object", hidden: true },
+        ]
       case "next": {
         const count = state.points.length
+        const second = count >= 2 || twoGiven(state)
         if (this.method === "cv") {
-          if (count < 2) return []
-          return count === 2
+          if (!second) return []
+          return count <= 2
             ? [{ id: "Undo" }]
             : [{ id: "Close" }, { id: "Undo" }]
         }
-        if (count === 1) return [{ id: "start Tangency" }]
-        return count === 2
+        if (!second) return [{ id: "start Tangency" }]
+        return count <= 2
           ? [{ id: "end Tangency" }, { id: "Undo" }]
           : [{ id: "end Tangency" }, { id: "Undo" }, { id: "Close" }]
       }
@@ -230,16 +379,22 @@ export class SplineTool implements Tool {
         return this.invokeFirstOption(id, ctx)
       case "method":
         if (id !== "Fit" && id !== "CV") return "unhandled"
-        this.method = id === "CV" ? "cv" : "fit"
+        this.settings.method = id === "CV" ? "cv" : "fit"
         this.enterFirst(ctx)
         return "continue"
       case "knots": {
         const knots = KNOTS_BY_KEYWORD[id]
         if (!knots) return "unhandled"
-        this.knots = knots
+        this.settings.knots = knots
         this.enterFirst(ctx)
         return "continue"
       }
+      case "degree":
+        if (id !== "Method" && id !== "Degree" && id !== "Object") {
+          return "unhandled"
+        }
+        this.enterFirst(ctx)
+        return "continue"
       case "next":
         return this.invokeNextOption(state, id, ctx)
       default:
@@ -284,17 +439,29 @@ export class SplineTool implements Tool {
         this.openPointInput(ctx, "splineStartTangent")
         return "continue"
       case "end Tangency":
+        // At one point, after Undo, the desktop asks the same prompt again
+        // (spline/d12; the console's p148 asks the tangent).
+        if (state.points.length < 2) {
+          this.openNextInput(ctx)
+          return "continue"
+        }
         this.state = { ...state, phase: "endTangent" }
         this.openPointInput(ctx, "splineEndTangent")
         return "continue"
       case "Undo":
-        this.state = { ...state, points: state.points.slice(0, -1) }
+        // WHY no refusal at one point, against the rule for an Undo keyword:
+        // AutoCAD takes it there and does nothing, silently (spline/p125,
+        // p128, p146).
+        if (state.points.length > 1) {
+          this.state = { ...state, points: state.points.slice(0, -1) }
+        }
         this.openNextInput(ctx)
         ctx.requestRender()
         return "continue"
       case "Close":
-        // Periodic, and the end of the command: AutoCAD 2023 asks no tangent
-        // at the closure, whatever its older `Specify tangent:` suggests.
+        // Periodic, and the end of the command: AutoCAD 2027 asks no tangent
+        // at the closure, whatever its older `Specify tangent:` suggests
+        // (spline/p124, p129, p303).
         this.state = { ...state, closed: true, startTangent: null }
         return "end"
       default:
@@ -374,10 +541,47 @@ export class SplineTool implements Tool {
         )
       case "endTangent":
         return this.splineOf(
-          { ...state, endTangent: V.sub(cursor, lastPoint(state)) },
+          {
+            ...state,
+            endTangent: this.endTangentAt(
+              state,
+              cursor,
+              this.pickWorld ?? cursor,
+              ctx
+            ),
+          },
           ctx
         )
     }
+  }
+
+  /**
+   * The end tangent a point at the end tangent's prompt gives, `world` the
+   * cursor unsnapped. Under a Tangent on a circle or an arc, AutoCAD's
+   * deferred one: the tangent where the circle is nearest the spline's end,
+   * pointing the pick's way (probes spline/p250, p262, p263, p270, p272,
+   * p273); else the point's offset from the end.
+   */
+  private endTangentAt(
+    state: DrawingState,
+    point: Vec3,
+    world: Vec2,
+    ctx: ToolContext
+  ): Vec2 {
+    const end = lastPoint(state)
+    if (ctx.snapOverride() === SnapType.Tangent) {
+      const entity = ctx.pick(world, ctx.pickTolerance())
+      if (defersOn(SnapType.Tangent, entity) && entity.type !== "line") {
+        const radial = V.sub(end, entity.center)
+        if (V.length(radial) > 1e-9) {
+          const along = V.perpendicular(V.normalize(radial))
+          return V.dot(along, V.sub(world, end)) < 0
+            ? V.scale(along, -1)
+            : along
+        }
+      }
+    }
+    return V.sub(point, end)
   }
 
   private splineOf(drawn: Drawn, ctx: ToolContext): SplineEntity {
@@ -388,7 +592,7 @@ export class SplineTool implements Tool {
         closed: drawn.closed,
         startTangent: drawn.startTangent ?? undefined,
         endTangent: drawn.endTangent ?? undefined,
-        layerId: ctx.document.getCurrentLayerId(),
+        layerId: drawn.properties?.layerId ?? ctx.document.getCurrentLayerId(),
       }),
       drawn.points[0]
     )
@@ -405,6 +609,7 @@ export class SplineTool implements Tool {
           startTangent: null,
           endTangent: null,
           closed: false,
+          properties: null,
         }
         this.openNextInput(ctx)
         break
@@ -413,6 +618,7 @@ export class SplineTool implements Tool {
         this.state = {
           ...state,
           points: [...state.points, withZOf(point, state.points[0])],
+          properties: state.properties ?? currentProperties(ctx),
         }
         this.openNextInput(ctx)
         break
@@ -426,18 +632,29 @@ export class SplineTool implements Tool {
         this.openNextInput(ctx)
         break
       }
-      case "endTangent": {
-        const direction = V.sub(point, lastPoint(state))
-        if (V.length(direction) > 1e-9) {
-          this.state = { ...state, endTangent: direction }
-        }
-        ctx.endCommand()
+      case "endTangent":
+        this.endWith(state, V.sub(point, lastPoint(state)), ctx)
         return
-      }
       default:
         return
     }
     ctx.requestRender()
+  }
+
+  /**
+   * The end tangent given, and the end of the command. LASTPOINT stays the
+   * last fit point, not the tangent's (probes spline/p210, p220).
+   */
+  private endWith(
+    state: Extract<SplineToolState, { phase: "endTangent" }>,
+    direction: Vec2,
+    ctx: ToolContext
+  ): void {
+    if (V.length(direction) > 1e-9) {
+      this.state = { ...state, endTangent: direction }
+    }
+    ctx.setLastPoint(lastPoint(state))
+    ctx.endCommand()
   }
 
   /**
@@ -466,8 +683,9 @@ export class SplineTool implements Tool {
     const state = this.state
     if (!("points" in state) || state.points.length < 2) return
     const spline = this.splineOf(state, ctx)
+    const properties = state.properties ?? currentProperties(ctx)
     this.state = { phase: "first" }
-    ctx.execute(new AddEntityCommand(withCurrentProperties(spline, ctx)))
+    ctx.execute(new AddEntityCommand(wearingProperties(spline, properties)))
   }
 
   /** The first point's prompt, after the settings it starts from. */
@@ -494,8 +712,7 @@ export class SplineTool implements Tool {
   private commitTypedPoint(ctx: ToolContext): boolean {
     const text = ctx.dynamicInput.getText("point").trim()
     if (text.length === 0) {
-      if (this.acceptDefault(ctx)) return true
-      ctx.endCommand()
+      if (!this.onEnter(ctx)) ctx.endCommand()
       return true
     }
     if (!isCoordinateExpression(text)) return false
@@ -535,7 +752,9 @@ export class SplineTool implements Tool {
       return
     }
     const { distance, angle } = values
-    if (!(distance > 0)) return
+    // A negative length runs backwards along the cursor, as LINE's
+    // (spline/p117); 0 gives the last point, which is asked again.
+    if (!Number.isFinite(distance)) return
     const last = lastPoint(state)
     const next = pointAlongCursor(ctx, last, this.cursor ?? last, {
       distance,
@@ -618,11 +837,24 @@ export class SplineTool implements Tool {
     ctx.dynamicInput.setPosition(this.lastScreen ?? { x: 0, y: 0 })
   }
 
+  /**
+   * A whole number outside 1–10 is asked again silently; anything else that
+   * is no 16-bit integer refused in its words (spline/p111).
+   */
   private commitDegree(value: number, ctx: ToolContext): void {
-    if (!Number.isInteger(value) || value < 1 || value > MAX_SPLINE_DEGREE) {
+    if (
+      !Number.isInteger(value) ||
+      value < INTEGER_RANGE.min ||
+      value > INTEGER_RANGE.max
+    ) {
+      ctx.report(
+        ctx.text.message("requiresIntegerBetweenOrKeyword", INTEGER_RANGE),
+        "error"
+      )
       return
     }
-    this.degree = value
+    if (value < 1 || value > MAX_SPLINE_DEGREE) return
+    this.settings.degree = value
     this.enterFirst(ctx)
   }
 
@@ -635,6 +867,11 @@ export class SplineTool implements Tool {
 
 function lastPoint(state: Drawn): Vec3 {
   return state.points[state.points.length - 1]
+}
+
+/** Whether a second point was given, whatever Undo took back since. */
+function twoGiven(state: Drawn): boolean {
+  return state.properties !== null
 }
 
 function typedNumber(ctx: ToolContext, id: string): number | null {

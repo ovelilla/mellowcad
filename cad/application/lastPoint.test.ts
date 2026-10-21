@@ -59,6 +59,20 @@ describe("LASTPOINT", () => {
     expect(lastPoint(cad)).toBe(" X = 20.00     Y = 10.00     Z = 0.00")
   })
 
+  it("is SPLINE's last fit point, whatever its tangents (p210, p220, p219, p221, p276)", () => {
+    const cad = createHarness()
+    answer(cad, "SPLINE", "0,0", "_T", "0,10", "20,0", "30,10", "_T", "@1,1")
+    expect(lastPoint(cad)).toBe(" X = 30.00     Y = 10.00     Z = 0.00")
+    answer(cad, "SPLINE", "0,0", "10,10", "20,0", "_T", "25,5")
+    expect(lastPoint(cad)).toBe(" X = 20.00     Y = 0.00     Z = 0.00")
+    answer(cad, "SPLINE", "0,0", "10,10", "20,0", "_C")
+    expect(lastPoint(cad)).toBe(" X = 20.00     Y = 0.00     Z = 0.00")
+    answer(cad, "SPLINE", "_M", "_CV", "0,0", "10,10", "20,0", "_C")
+    expect(lastPoint(cad)).toBe(" X = 20.00     Y = 0.00     Z = 0.00")
+    answer(cad, "SPLINE", "_M", "_F", "280,40", "260,30", "230,0", "_T", "")
+    expect(lastPoint(cad)).toBe(" X = 230.00     Y = 0.00     Z = 0.00")
+  })
+
   it("is a circle's center, not the point its radius is given by", () => {
     // probes circle/p143, p144 (the radius), p138 (2P), p145 (3P's third).
     const cad = createHarness()

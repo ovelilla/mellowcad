@@ -478,6 +478,55 @@ describe("what a new PLINE wears", () => {
     })
   })
 
+  it("SPLINE keeps those current at its second point, through Undo (p227–p233, p260, p261, p268, p277)", () => {
+    // `'-COLOR 3` at the first point, the second or the start tangent makes
+    // it green; at the third or the end tangent it stays ByLayer, and so does
+    // the layer set at the third; after Undo back to one point the first
+    // capture holds.
+    const green = (cad: CadHarness) =>
+      cad.runtime.document.getSettings().currentColor
+    for (const [texts, expected] of [
+      [["SPLINE", "'-COLOR", "3", "0,0", "10,10", "20,0", ""], "green"],
+      [["SPLINE", "0,0", "'-COLOR", "3", "10,10", "20,0", ""], "green"],
+      [["SPLINE", "0,0", "T", "'-COLOR", "3", "0,10", "20,0", ""], "green"],
+      [
+        ["SPLINE", "M", "CV", "0,0", "'-COLOR", "3", "10,10", "20,0", ""],
+        "green",
+      ],
+      [["SPLINE", "0,0", "10,10", "'-COLOR", "3", "20,0", ""], "ByLayer"],
+      [
+        ["SPLINE", "0,0", "10,10", "20,0", "'-COLOR", "3", "30,10", ""],
+        "ByLayer",
+      ],
+      [
+        ["SPLINE", "0,0", "10,10", "20,0", "T", "'-COLOR", "3", "25,5"],
+        "ByLayer",
+      ],
+      [
+        ["SPLINE", "M", "CV", "0,0", "10,10", "'-COLOR", "3", "20,0", ""],
+        "ByLayer",
+      ],
+      [
+        ["SPLINE", "0,0", "10,10", "U", "'-COLOR", "3", "20,0", "30,10", ""],
+        "ByLayer",
+      ],
+    ] as const) {
+      const cad = answer(createHarness(), ...texts)
+      const spline = cad.latest()!
+      expect(spline.type, texts.join(" ")).toBe("spline")
+      expect(spline.color, texts.join(" ")).toBe(
+        expected === "green" ? green(cad) : undefined
+      )
+    }
+
+    const layered = createHarness()
+    const l1 = layered.runtime.createLayer("L1", undefined, false)
+    answer(layered, "SPLINE", "0,0", "10,10")
+    layered.runtime.setCurrentLayer(l1)
+    answer(layered, "20,0", "")
+    expect(layered.latest()).toMatchObject({ type: "spline", layerId: "0" })
+  })
+
   it("ELLIPSE's arc keeps those current when its ellipse is fixed (p253, p257, p249)", () => {
     // `'-COLOR 3` at the start or the end angle leaves the arc ByLayer; at the
     // other endpoint the whole ellipse is green.

@@ -15,6 +15,8 @@
       "ellipsecenter": "Center ellipse",
       "ellipsearc": "Elliptical arc",
       "spline": "Spline",
+      "splinefit": "Spline Fit",
+      "splinecv": "Spline CV",
       "rectangle": "Rectangle",
       "polygon": "Polygon",
       "hatch": "Hatch",
@@ -519,7 +521,8 @@
         "start Tangency": "Tangency",
         "end Tangency": "Tangency",
         "Undo": "Undo",
-        "Close": "Close"
+        "Close": "Close",
+        "Object": "Object"
       },
       "RECTANG": {
         "Chamfer": "Chamfer",

@@ -1065,8 +1065,13 @@ export class CadRuntime extends Observable {
       this.submitText(next)
       // The desktop writes the prompt the answer opens on the answer's line,
       // `…: _2p Specify first end point of circle's diameter:` (desktop
-      // circle/d01, d02).
-      if (this.commandLine.mark() === before + 1) {
+      // circle/d01, d02). Not after a report the answer wrote on a line of
+      // its own: SPLINE's `_fit` amends the open line, then `Current
+      // settings:` stands alone and its prompt starts a line.
+      if (
+        this.commandLine.mark() === before + 1 &&
+        this.commandLine.getLines().at(-1)?.kind === "prompt"
+      ) {
         this.openLine = before + 1
         this.macroOpen = true
       }

@@ -306,6 +306,7 @@
         "circle": "Círculo",
         "arc": "Arco",
         "ellipse": "Elipse",
+        "spline": "Spline",
         "rectangle": "Rectángulo",
         "trim": "Recortar",
         "fillet": "Empalme",

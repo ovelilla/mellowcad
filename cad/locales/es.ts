@@ -19,6 +19,8 @@ export const es: EngineLocale = {
       "ellipsecenter": "Elipse por centro",
       "ellipsearc": "Arco elíptico",
       "spline": "Spline",
+      "splinefit": "Ajuste de spline",
+      "splinecv": "VC de spline",
       "rectangle": "Rectángulo",
       "polygon": "Polígono",
       "hatch": "Sombreado",
@@ -954,7 +956,8 @@ export const es: EngineLocale = {
         "start Tangency": "Tangencia",
         "end Tangency": "Tangencia",
         "Undo": "desHacer",
-        "Close": "Cerrar"
+        "Close": "Cerrar",
+        "Object": "Objeto"
       },
       "RECTANG": {
         "Chamfer": "Chaflán",
