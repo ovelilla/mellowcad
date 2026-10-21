@@ -1,6 +1,7 @@
 # CIRCLE review
 
-> **Status:** plan, waiting for the owner's approval. Third review of the order in
+> **Status:** executing block by block in the review's own session, the owner having waived the
+> wait for approval (2026-10-21). Third review of the order in
 > `docs/coverage/roadmap.md` ("Command reviews"), with skill `command-review`. Phases 0–4 ran in one
 > session (2026-10-21), with three subagents probing the console and two desktop passes with the
 > owner's mouse (d01–d15).

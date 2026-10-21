@@ -16,21 +16,23 @@
 | 1. Inventory   | the command's files, related tools, areas owned and cited (§1)    | nothing                                             | no            |
 | 2. Probes      | AutoCAD's answer to every cell of the matrix, each with an id     | probe inputs (`scripts/research/probes/<command>/`) | no            |
 | 3. Review      | mellowcad's answer to every cell, a report per block, adversarial | nothing (scratch tests are gitignored, §4.3)        | no            |
-| 4. Plan        | `docs/plans/<command>-review.md` (§6), committed alone            | the plan and the probe inputs                       | **yes**       |
+| 4. Plan        | `docs/plans/<command>-review.md` (§6), committed alone            | the plan and the probe inputs                       | no            |
 | 5. Execution   | fixes with their tests, docs, one commit per block (§8)           | code, tests, catalogs, coverage, rules              | push: **yes** |
 
 The plan is committed as soon as it is written (`docs: <COMMAND> review plan`): other sessions
-share the tree and the hook checks it whole, so nothing waits uncommitted. The owner approves or
-corrects it; corrections are a new commit.
+share the tree and the hook checks it whole, so nothing waits uncommitted. The execution does not
+wait for the owner's approval (the owner's word, 2026-10-21): it follows in the same session unless
+a fresh one would do it better — the context is nearly spent, or the blocks need the owner's mouse
+at another time. The owner corrects the plan, or what was executed, with a new commit.
 
 A review runs in **fresh sessions**, one per group of blocks (§1.4), in the order the plan sets.
-Phases 0–4 of a group fit in one session. Its execution follows in the same session when the owner
-approves there and then — each block's subagent starts clean anyway, and the reviewer keeps what
-the plan does not say; otherwise in a new one, from the plan alone. Opening prompt:
+Phases 0–4 of a group fit in one session, and its execution follows there — each block's subagent
+starts clean anyway, and the reviewer keeps what the plan does not say; a new session takes it from
+the plan alone when the reviewer judges that better. Opening prompt:
 
 ```text
 Review of <COMMAND>, blocks <ids>, with the command-review skill.
-Phases 0–4 in this session; stop once the plan is written and wait for my approval.
+Phases 0–5 in this session, unless a new session would do the execution better.
 ```
 
 Each session adds its blocks' section to the plan; the last writes the common part too (§6:
@@ -318,7 +320,7 @@ reproducible scenario stays **unverified** and is never presented as fact.
 
 ## 8. Execution
 
-After the owner approves the plan, block by block, in the plan's order. Each block is implemented
+Once the plan is committed, block by block, in the plan's order. Each block is implemented
 by **one subagent**, given the block's findings, decisions, scratch tests and probes, and told not
 to commit; the reviewer reads its diff, runs the gate and commits. Blocks go one after another: they
 share the catalogs and the snapshots.

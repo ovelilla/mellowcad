@@ -1,6 +1,6 @@
 ---
 name: command-review
-description: Review one implemented command against AutoCAD 2027, tool by tool — its interaction matrix (input forms, drafting aids, transparency, undo, Enter/Esc/right-click, what it produces, grips and properties, save and load, languages, history, render), the tools reviewed with it, probes in the traced console, the desktop, the string tables and the help, its tests, an adversarial pass, and the plan docs/plans/<command>-review.md that waits for approval; then its execution, one commit per block. Use when asked to review or audit a command, or to take the next one in the review order.
+description: Review one implemented command against AutoCAD 2027, tool by tool — its interaction matrix (input forms, drafting aids, transparency, undo, Enter/Esc/right-click, what it produces, grips and properties, save and load, languages, history, render), the tools reviewed with it, probes in the traced console, the desktop, the string tables and the help, its tests, an adversarial pass, and the plan docs/plans/<command>-review.md; then its execution, one commit per block. Use when asked to review or audit a command, or to take the next one in the review order.
 ---
 
 # Reviewing a command
@@ -15,8 +15,9 @@ cross-cutting area, is "Command reviews" in `docs/coverage/roadmap.md`.
    skipped:
    - Phases 0–3 (preparation, inventory, probes, review): nothing in the repo changes but the
      probe inputs (`scripts/research/probes/<command>/`).
-   - Phase 4: write `docs/plans/<command>-review.md` (template §6), commit it alone, and **stop**
-     until the owner approves it.
+   - Phase 4: write `docs/plans/<command>-review.md` (template §6) and commit it alone. The
+     execution follows at once, without waiting for approval, unless a fresh session would do it
+     better (template §0); the owner corrects the plan with a new commit.
    - Phase 5 (execution): one commit per block; the push waits for the owner's word.
 2. **One session per group of blocks** (template §1.4), started with the prompt of template §0.
 3. **Every claim about AutoCAD comes from a probe with an id** (annex-probes.md); every claim about
