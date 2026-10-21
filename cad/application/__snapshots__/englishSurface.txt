@@ -1127,16 +1127,12 @@ lweight "Lineweight" LW
   prompt| Specify first point or [Method/Knots]:
 > T
   prompt: SPLINE Specify start tangent:
-  asks: "Specify start tangent"
   tip: Specify start tangent:
-  dyn: "X,Y"=""||*
   options: -
   prompt| Enter next point or [start Tangency]: T
 > start tangent
   prompt: SPLINE Enter next point or [start Tangency]:
-  asks: "Length" "Angle"
   tip: Enter next point or
-  dyn: "Length"=""|0.00|mm* "Angle"=""||°
   options: [T] start Tangency
   prompt| Specify start tangent:
 > second
@@ -1157,9 +1153,7 @@ lweight "Lineweight" LW
   prompt| Enter next point or [end Tangency/Undo]:
 > T
   prompt: SPLINE Specify end tangent:
-  asks: "Specify end tangent"
   tip: Specify end tangent:
-  dyn: "X,Y"=""||*
   options: -
   prompt| Enter next point or [end Tangency/Undo/Close]: T
 > end tangent

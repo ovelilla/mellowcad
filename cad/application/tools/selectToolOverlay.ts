@@ -68,13 +68,14 @@ export function buildGrips(
   const hover = state.phase === "idle" ? (state.hoverGrip ?? null) : null
   for (const id of ctx.selection.toArray()) {
     const entity = ctx.document.get(id)
-    // A CV spline shows its control frame along with the vertex grips.
+    // A CV spline shows its control frame along with the vertex grips,
+    // dashed as SPLINE draws it (desktop spline/d09-1, SPLINE-D61).
     if (entity?.type === "spline" && entity.method === "cv") {
       out.push({
         kind: "path",
         points: entity.points.map((p) => ctx.viewport.worldToScreen(p)),
         closed: entity.closed,
-        stroke: { color: THEME.crosshair, width: 1 },
+        stroke: { color: THEME.crosshair, width: 1, dash: [2, 3] },
       })
     }
   }

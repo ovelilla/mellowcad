@@ -679,6 +679,31 @@ describe("grips", () => {
     ])
   })
 
+  it("draws a selected CV spline's frame dashed (desktop spline/d09-1)", () => {
+    // WHY the crosshair's grey and not d09's muted red: SPLINE-D61, one frame
+    // look while drawing (d07) and selected.
+    const cad = createHarness({
+      entities: [
+        createSpline("cv", [p(0, 0), p(100, 100), p(200, 0)], { id: "S1" }),
+      ],
+    })
+    cad.select("S1")
+
+    const frames = cad
+      .scene()
+      .primitives.filter(
+        (q) => q.kind === "path" && q.stroke?.color === THEME.crosshair
+      )
+    expect(frames).toEqual([
+      expect.objectContaining({
+        points: [p(0, 0), p(100, 100), p(200, 0)].map((q) =>
+          expect.objectContaining(cad.toScreen(q))
+        ),
+        stroke: { color: THEME.crosshair, width: 1, dash: [2, 3] },
+      }),
+    ])
+  })
+
   /**
    * Desktop pline/d09: `10,60 30,60 A 40,70 L 55,70`, a line, a quarter arc
    * (bulge 0.4142, midpoint 37.0711,62.9289) and a line.

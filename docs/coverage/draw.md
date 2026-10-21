@@ -506,12 +506,19 @@ stays the second point's (`[end Tangency/Undo]`, es `Precise el punto siguiente 
 start Tangency is gone, Undo there does nothing, silently, and end Tangency asks the same prompt
 again (p125, p128, p146, p152, p156; desktop d12, over the console's p148, which asks the tangent).
 A typed length at a next point is direct distance along the cursor, a negative one backwards, as
-LINE's (p117). Method, Knots and Degree kept for the session (SPLMETHOD / SPLKNOTS / SPLDEGREE,
-Not-saved; p104); Escape discards the curve; one undo step; the control frame while drawing CV. The
-current layer and properties are those of when the spline first holds two points: set at the first
-point, the second or the start tangent they are worn, at the third or the end tangent not, and Undo
-back to one point keeps them (p227–p233, p260, p261, p268, p277). LASTPOINT is the last fit point
-or vertex after the command, also after an end tangent (p210, p219, p220, p221, p276). `_TAN` or
+LINE's (p117). Dynamic input at the next points and at both tangents is LINE's Length and Angle
+from the last point (the first at the start tangent; desktop d04-2, d04-4, d04-5, d04-6): the
+tangent is the offset of the point they give, a point typed in it relative to that base. Method,
+Knots and Degree kept for the session (SPLMETHOD / SPLKNOTS / SPLDEGREE, Not-saved; p104); Escape
+discards the curve; one undo step. The jig as the desktop draws it: at every next point and tangent
+prompt an amber dashed line from the last point (the first at the start tangent) to the cursor,
+alone while one point is held; from two points the ghost in the current colour (CECOLOR red, a red
+ghost) through the points and the cursor, following the end tangent at its prompt, and CV's control
+frame finely dashed in grey (desktop d01, d02, d07). The current layer and properties are those of
+when the spline first holds two points: set at the first point, the second or the start tangent
+they are worn, at the third or the end tangent not, and Undo back to one point keeps them
+(p227–p233, p260, p261, p268, p277). LASTPOINT is the last fit point or vertex after the command,
+also after an end tangent (p210, p219, p220, p221, p276). `_TAN` or
 `_PER` at the first point measures from LASTPOINT (p242, p243, p274); at the end tangent a `_TAN`
 on a circle or an arc is deferred: the end leaves along the circle's tangent where it is nearest
 the spline's end, pointing the pick's way, an end inside the circle taken too (p250, p262, p263,
@@ -521,9 +528,10 @@ macros do (acad.cuix, Home > Draw: `^C^C_^RSPLINE _M _FIT`, `^C^C_^RSPLINE _M _C
 `_spline`, the method answered, Enter repeating SPLINE in it and U naming SPLINE (p104, p142); they
 have no typed name, as AutoCAD's have none. Not transparent (p105). Endpoint, Midpoint (halfway
 along), Nearest and Intersection snaps (against the chords of a tessellation a hundred-thousandth of
-the size off the curve); a grip per fit point or control vertex, with the frame of a CV spline;
-palette rows Method, Degree, Knot parameterization, Closed, Area (read-only); STRETCH moves the
-points in the window; EXPLODE refuses it, as AutoCAD's does. Wording from AutoCAD 2027's console
+the size off the curve); a grip per fit point or control vertex, with the frame of a CV spline,
+dashed (grey, where d09 shows it a muted red: one frame drawing and selected, SPLINE-D61); palette
+rows Method, Degree, Knot parameterization, Closed, Area (read-only); STRETCH moves the points in
+the window; EXPLODE refuses it, as AutoCAD's does. Wording from AutoCAD 2027's console
 (p01, p02, p100–p157, en and es) and the 2027 Spanish language pack's
 
 **Missing:** toLerance and Object (not offered: a tolerance above 0 is an approximation Autodesk

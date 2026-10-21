@@ -2877,6 +2877,142 @@ describe("SPLINE", () => {
     expect(spline.startTangent).toBeCloseToPoint(p(0, 10))
     expect(cad.activeToolId()).toBe("select")
   })
+
+  describe("its jig, as the desktop draws it", () => {
+    /** The CV frame, light grey and finely dashed (desktop spline/d07). */
+    const frame = (cad: CadHarness) =>
+      cad
+        .scene()
+        .primitives.filter(
+          (q) => q.kind === "path" && q.stroke?.color === THEME.crosshair
+        )
+
+    it("draws the line alone from the first point, Fit and CV (d01-1, d07-1)", () => {
+      // desktop spline/d01-1, d07-1: one point, an amber dashed line from it
+      // to the cursor and no ghost.
+      const cad = createHarness()
+      red(cad)
+      cad.command("SPLINE").click(p(0, 0)).moveTo(p(50, 30))
+      expect(jig(cad)).toEqual([rubberLine])
+      runs(cad, p(0, 0), p(50, 30))
+
+      const cv = createHarness()
+      red(cv)
+      cv.command("SPLINE").option("Method").option("CV")
+      cv.click(p(0, 0)).moveTo(p(50, 30))
+      expect(jig(cv)).toEqual([rubberLine])
+      expect(frame(cv)).toEqual([])
+      runs(cv, p(0, 0), p(50, 30))
+    })
+
+    it("draws the ghost in the current colour and the line from the last point (d01-2, d01-3)", () => {
+      const cad = createHarness()
+      const color = red(cad)
+      cad.command("SPLINE").click(p(0, 0)).click(p(50, 30))
+      cad.moveTo(p(100, 0))
+      expect(jig(cad)).toEqual([`path ${color}`, rubberLine])
+      runs(cad, p(50, 30), p(100, 0))
+
+      cad.click(p(100, 0)).moveTo(p(150, 40))
+      expect(jig(cad)).toEqual([`path ${color}`, rubberLine])
+      runs(cad, p(100, 0), p(150, 40))
+    })
+
+    it("draws the line from the first or the last point at the tangents, the ghost following the end's (d02-1, d02-3)", () => {
+      const cad = createHarness()
+      const color = red(cad)
+      cad.command("SPLINE").click(p(0, 0)).option("start Tangency")
+      cad.moveTo(p(10, 40))
+      expect(jig(cad)).toEqual([rubberLine])
+      runs(cad, p(0, 0), p(10, 40))
+
+      cad.click(p(10, 40)).click(p(50, 0)).click(p(100, 20))
+      cad.option("end Tangency").moveTo(p(120, -20))
+      expect(jig(cad)).toEqual([`path ${color}`, rubberLine])
+      runs(cad, p(100, 20), p(120, -20))
+      const ghost = () =>
+        cad.scene().primitives.find((q) => q.kind === "path" && !q.stroke?.dash)
+      const before = ghost()
+      cad.moveTo(p(120, 60))
+      expect(ghost()).not.toEqual(before)
+    })
+
+    it("draws a CV spline's frame finely dashed, with the ghost and the line (d07-2)", () => {
+      const cad = createHarness()
+      const color = red(cad)
+      cad.command("SPLINE").option("Method").option("CV")
+      cad.click(p(0, 0)).click(p(50, 30)).moveTo(p(100, 0))
+      expect(jig(cad)).toEqual([`path ${color}`, rubberLine])
+      runs(cad, p(50, 30), p(100, 0))
+      expect(frame(cad)).toEqual([
+        expect.objectContaining({
+          points: [p(0, 0), p(50, 30), p(100, 0)].map((q) =>
+            expect.objectContaining(cad.toScreen(q))
+          ),
+          stroke: { color: THEME.crosshair, width: 1, dash: [2, 3] },
+        }),
+      ])
+    })
+  })
+
+  describe("its dynamic input at the tangents", () => {
+    const fields = (cad: CadHarness) =>
+      cad
+        .state()
+        .dynamicInput?.fields.map((f) => [f.id, f.label, f.placeholder])
+
+    it("asks a length and an angle from the first or the last point, as the next point's (d04-5, d04-6)", () => {
+      // desktop spline/d04-6 `Precise tangente inicial:` 8.5225 < 70°, d04-5
+      // `Precise tangente final:` 12.1573 < 10°, from the first (last) point.
+      const cad = createHarness()
+      cad.command("SPLINE").click(p(0, 0)).option("start Tangency")
+      cad.moveTo(p(30, 40))
+      expect(fields(cad)).toEqual([
+        ["distance", "Length", "50.00"],
+        ["angle", "Angle", "53"],
+      ])
+
+      cad.click(p(30, 40)).click(p(50, 0)).click(p(100, 20))
+      cad.option("end Tangency").moveTo(p(130, -20))
+      expect(fields(cad)).toEqual([
+        ["distance", "Length", "50.00"],
+        ["angle", "Angle", "53"],
+      ])
+    })
+
+    it("takes the tangent as the length and angle typed from its base", () => {
+      const cad = createHarness()
+      cad.command("SPLINE").click(p(0, 0)).option("start Tangency")
+      cad.moveTo(p(10, 40)).type("10").type("90", "angle").enter()
+      cad.click(p(20, 0)).click(p(30, 10))
+      cad.option("end Tangency").moveTo(p(60, 50)).type("10").enter()
+      const spline = cad.only<SplineEntity>("spline")
+      expect(spline.startTangent).toBeCloseToPoint(p(0, 10))
+      expect(spline.endTangent).toBeCloseToPoint(p(6, 8))
+    })
+
+    it("takes a point typed in the box relative to the tangent's base, and Enter as before", () => {
+      const cad = createHarness()
+      cad.command("SPLINE").click(p(10, 10)).option("start Tangency")
+      cad.type("0,10").enter()
+      cad.click(p(30, 10)).click(p(40, 20))
+      cad.option("end Tangency").type("@5,0").enter()
+      const spline = cad.only<SplineEntity>("spline")
+      expect(spline.startTangent).toBeCloseToPoint(p(0, 10))
+      expect(spline.endTangent).toBeCloseToPoint(p(5, 0))
+
+      const skipped = createHarness()
+      skipped.command("SPLINE").click(p(0, 0)).option("start Tangency")
+      skipped.enter()
+      expect(skipped.state().commandLine.prompt).toBe(
+        "SPLINE Enter next point or [start Tangency]:"
+      )
+      skipped.click(p(20, 0)).click(p(30, 10)).option("end Tangency").enter()
+      const computed = skipped.only<SplineEntity>("spline")
+      expect(computed.startTangent).toBeUndefined()
+      expect(computed.endTangent).toBeUndefined()
+    })
+  })
 })
 
 describe("POLYGON", () => {

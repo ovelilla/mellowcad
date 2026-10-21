@@ -18,7 +18,7 @@ import {
   isCoordinateExpression,
   parseCoordinate,
 } from "../input/coordinateInput"
-import { ScenePrimitive, StrokeStyle } from "../../scene/types"
+import { ScenePrimitive } from "../../scene/types"
 import { THEME } from "../../scene/theme"
 import { entityScenePrimitive } from "../SceneBuilder"
 import type { PromptId } from "../../locales/types"
@@ -37,6 +37,7 @@ import { acuteHeading, headingInUcs } from "./ucsHeading"
 import { pointAlongCursor, showRise } from "./directDistance"
 import {
   type CurrentProperties,
+  currentColor,
   currentProperties,
   wearingProperties,
 } from "./currentProperties"
@@ -104,9 +105,6 @@ const KNOTS_PHRASE: Record<KnotParameterization, PromptId> = {
   sqrtChord: "knotsSquareRoot",
   uniform: "knotsUniform",
 }
-
-const RUBBER: StrokeStyle = { color: THEME.rubberBand, width: 1 }
-const FRAME: StrokeStyle = { color: THEME.crosshair, width: 1 }
 
 /**
  * AutoCAD's SPLINE. The curve accumulates in the tool and becomes one object
@@ -300,10 +298,11 @@ export class SplineTool implements Tool {
     this.cursor = input.point
     this.pickWorld = input.world
     const state = this.state
-    if (state.phase === "next") {
-      const offset = V.sub(input.point, lastPoint(state))
+    if ("points" in state) {
+      const base = anchorOf(state)
+      const offset = V.sub(input.point, base)
       const length = V.length(offset)
-      if (!showRise(ctx, lastPoint(state), input.point)) {
+      if (!showRise(ctx, base, input.point)) {
         ctx.dynamicInput.setLive("distance", length)
         ctx.dynamicInput.setLive(
           "angle",
@@ -321,13 +320,18 @@ export class SplineTool implements Tool {
     if (state.phase === "endTangent") {
       this.endWith(
         state,
-        this.endTangentAt(state, input.point, input.world, ctx),
+        this.endTangentAt(
+          state,
+          this.resolveNext(state, input.point, ctx),
+          input.world,
+          ctx
+        ),
         ctx
       )
       return
     }
     this.placePoint(
-      state.phase === "next"
+      "points" in state
         ? this.resolveNext(state, input.point, ctx)
         : input.point,
       ctx
@@ -436,7 +440,7 @@ export class SplineTool implements Tool {
     switch (id) {
       case "start Tangency":
         this.state = { ...state, phase: "startTangent" }
-        this.openPointInput(ctx, "splineStartTangent")
+        this.openNextInput(ctx)
         return "continue"
       case "end Tangency":
         // At one point, after Undo, the desktop asks the same prompt again
@@ -446,7 +450,7 @@ export class SplineTool implements Tool {
           return "continue"
         }
         this.state = { ...state, phase: "endTangent" }
-        this.openPointInput(ctx, "splineEndTangent")
+        this.openNextInput(ctx)
         return "continue"
       case "Undo":
         // WHY no refusal at one point, against the rule for an Undo keyword:
@@ -471,55 +475,52 @@ export class SplineTool implements Tool {
 
   getConstraintAnchor(): Vec2 | null {
     const state = this.state
-    switch (state.phase) {
-      case "next":
-      case "endTangent":
-        return lastPoint(state)
-      case "startTangent":
-        return state.points[0]
-      default:
-        return null
-    }
+    return "points" in state ? anchorOf(state) : null
   }
 
+  /**
+   * An amber dashed line from the anchor to the point being given at every
+   * point and tangent prompt, alone while one point is held; from two, the
+   * ghost in the colour the spline will wear, and a CV spline's frame finely
+   * dashed in grey (desktop spline/d01, d02, d07; UseDashedLine at every next
+   * and tangent prompt, p01, p02).
+   */
   buildOverlay(ctx: ToolContext): ScenePrimitive[] {
     const state = this.state
     const cursor = this.cursor
     if (!cursor || !("points" in state)) return []
+    const { viewport } = ctx
+    const target = this.resolveNext(state, cursor, ctx)
     const out: ScenePrimitive[] = []
-    const segment = (a: Vec2, b: Vec2): ScenePrimitive => ({
+    if (state.points.length >= 2) {
+      const preview = this.previewOf(state, target, ctx)
+      if (this.method === "cv") {
+        out.push({
+          kind: "path",
+          points: preview.points.map((p) => viewport.worldToScreen(p)),
+          closed: false,
+          stroke: { color: THEME.crosshair, width: 1, dash: [2, 3] },
+        })
+      }
+      const ghost = {
+        color: currentColor(ctx, state.properties ?? undefined),
+        width: 1,
+      }
+      out.push(...entityScenePrimitive(viewport, preview, ghost))
+    }
+    out.push({
       kind: "segment",
-      a: ctx.viewport.worldToScreen(a),
-      b: ctx.viewport.worldToScreen(b),
-      stroke: RUBBER,
+      a: viewport.worldToScreen(anchorOf(state)),
+      b: viewport.worldToScreen(target),
+      stroke: { color: THEME.dashedRubberBand, width: 1, dash: [2, 3] },
     })
-    const preview = this.previewOf(state, cursor, ctx)
-    if (this.method === "cv") {
-      const frame = preview.closed
-        ? [...preview.points, preview.points[0]]
-        : preview.points
-      out.push({
-        kind: "path",
-        points: frame.map((p) => ctx.viewport.worldToScreen(p)),
-        closed: false,
-        stroke: FRAME,
-      })
-    }
-    if (preview.points.length >= 2) {
-      out.push(...entityScenePrimitive(ctx.viewport, preview, RUBBER))
-    }
-    if (state.phase === "startTangent") {
-      out.push(segment(state.points[0], cursor))
-    } else if (state.phase === "endTangent") {
-      out.push(segment(lastPoint(state), cursor))
-    }
     return out
   }
 
-  /** What the spline would be if the cursor were the answer to the current prompt. */
+  /** What the spline would be if `target` were the answer to the current prompt. */
   private previewOf(
     state: DrawingState,
-    cursor: Vec3,
+    target: Vec3,
     ctx: ToolContext
   ): SplineEntity {
     switch (state.phase) {
@@ -527,16 +528,13 @@ export class SplineTool implements Tool {
         return this.splineOf(
           {
             ...state,
-            points: [
-              ...state.points,
-              withZOf(this.resolveNext(state, cursor, ctx), state.points[0]),
-            ],
+            points: [...state.points, withZOf(target, state.points[0])],
           },
           ctx
         )
       case "startTangent":
         return this.splineOf(
-          { ...state, startTangent: V.sub(cursor, state.points[0]) },
+          { ...state, startTangent: V.sub(target, state.points[0]) },
           ctx
         )
       case "endTangent":
@@ -545,8 +543,8 @@ export class SplineTool implements Tool {
             ...state,
             endTangent: this.endTangentAt(
               state,
-              cursor,
-              this.pickWorld ?? cursor,
+              target,
+              this.pickWorld ?? target,
               ctx
             ),
           },
@@ -728,7 +726,12 @@ export class SplineTool implements Tool {
     return true
   }
 
-  /** The next point, asked as LINE and PLINE ask it: a length and an angle from the last one. */
+  /**
+   * The next point, asked as LINE and PLINE ask it: a length and an angle
+   * from the last one. The tangents too, from the first or the last point
+   * (desktop spline/d04-5, d04-6): what is typed gives the point whose offset
+   * is the tangent.
+   */
   private openNextInput(ctx: ToolContext): void {
     const session: DynamicInputSession = {
       fields: [
@@ -746,17 +749,17 @@ export class SplineTool implements Tool {
 
   private commitNext(values: Record<string, number>, ctx: ToolContext): void {
     const state = this.state
-    if (state.phase !== "next") return
+    if (!("points" in state)) return
     if (this.nothingTyped(ctx)) {
-      ctx.endCommand()
+      if (!this.onEnter(ctx)) ctx.endCommand()
       return
     }
     const { distance, angle } = values
     // A negative length runs backwards along the cursor, as LINE's
     // (spline/p117); 0 gives the last point, which is asked again.
     if (!Number.isFinite(distance)) return
-    const last = lastPoint(state)
-    const next = pointAlongCursor(ctx, last, this.cursor ?? last, {
+    const base = anchorOf(state)
+    const next = pointAlongCursor(ctx, base, this.cursor ?? base, {
       distance,
       angle: Number.isFinite(angle) ? angle : null,
     })
@@ -765,15 +768,15 @@ export class SplineTool implements Tool {
 
   private commitRawNext(ctx: ToolContext): boolean {
     const state = this.state
-    if (state.phase !== "next") return false
+    if (!("points" in state)) return false
     if (this.nothingTyped(ctx)) {
-      ctx.endCommand()
+      if (!this.onEnter(ctx)) ctx.endCommand()
       return true
     }
     const text = ctx.dynamicInput.getText("distance").trim()
     if (!isCoordinateExpression(text)) return false
     const point = parseCoordinate(text, {
-      lastPoint: lastPoint(state),
+      lastPoint: anchorOf(state),
       relativeByDefault: true,
       ucs: ctx.ucs,
       elevation: ctx.elevation,
@@ -790,13 +793,13 @@ export class SplineTool implements Tool {
     )
   }
 
-  /** The next point with a typed length or angle hard-locking the cursor's, as LINE's does. */
+  /** The point given, a typed length or angle hard-locking the cursor's, as LINE's does. */
   private resolveNext(
     state: DrawingState,
     cursor: Vec3,
     ctx: ToolContext
   ): Vec3 {
-    const start = lastPoint(state)
+    const start = anchorOf(state)
     const text = ctx.dynamicInput.getText("distance").trim()
     if (isCoordinateExpression(text)) {
       return (
@@ -867,6 +870,11 @@ export class SplineTool implements Tool {
 
 function lastPoint(state: Drawn): Vec3 {
   return state.points[state.points.length - 1]
+}
+
+/** What the prompt measures from: the first point at the start tangent, else the last. */
+function anchorOf(state: DrawingState): Vec3 {
+  return state.phase === "startTangent" ? state.points[0] : lastPoint(state)
 }
 
 /** Whether a second point was given, whatever Undo took back since. */
