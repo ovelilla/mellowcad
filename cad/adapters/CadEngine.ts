@@ -415,6 +415,11 @@ export class CadEngine {
     return this.runtime.cycleSnap()
   }
 
+  /** A key typed in the box, for the prompt's option list: whether it took it. */
+  dynamicOptionKey(key: string): boolean {
+    return this.runtime.dynamicOptionKey(key)
+  }
+
   cancelDynamicInput(): void {
     this.runtime.cancelDynamicInput()
   }

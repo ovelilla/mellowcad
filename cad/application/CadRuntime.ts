@@ -135,6 +135,7 @@ import {
   buildLayerInfos,
   buildSelectionCandidates,
   buildTextStyleInfos,
+  CommandOptionUi,
   EngineState,
   PaletteTab,
   SelectionScope,
@@ -255,6 +256,9 @@ const DOUBLE_CLICK_MS = 500
  * what the undos took back for MREDO.
  */
 const UNDO_COMMANDS = new Set(["U", "UNDO", "REDO", "MREDO"])
+
+/** Keys pressed on their way to a combination, which shut no list. */
+const MODIFIER_KEYS = new Set(["Shift", "Control", "Alt", "Meta", "AltGraph"])
 
 /** A key pressed with no modifier, as the shortcut menu presses Enter and Esc. */
 const plainKey = (key: string): KeyEventData => ({
@@ -482,6 +486,8 @@ export class CadRuntime extends Observable {
   // shortcut menu that answer opened.
   private rightPress: Vec2 | null = null
   private shortcutMenu: { mode: ShortcutMenuMode; at: Vec2 } | null = null
+  /** The dynamic prompt's option list: see {@link dynamicOptionKey}. */
+  private optionList: { marked: string | null } | null = null
 
   // The click deferred while the Selection list box asks which of the
   // overlapping objects was meant; replayed once one is chosen.
@@ -894,6 +900,7 @@ export class CadRuntime extends Observable {
   }
 
   setActiveTool(id: string): void {
+    this.optionList = null
     if (this.suspended !== null) {
       // Ending a transparent command resumes the one it interrupted; starting
       // another ends both.
@@ -1301,6 +1308,7 @@ export class CadRuntime extends Observable {
     picked = false
   ): boolean {
     if (this.answeringPrompt) return run()
+    this.optionList = null
     const asking = this.asking()
     const { echo } = this.currentPrompt()
     const prefix = this.answerPrefix
@@ -2550,6 +2558,84 @@ export class CadRuntime extends Observable {
   }
 
   /**
+   * A key for the dynamic prompt's option list, from the drawing or from the
+   * box (whose own keys never reach {@link keyDown}); returns whether the list
+   * took it. As AutoCAD's (desktop d11, and the help's "press the DOWN ARROW
+   * key until a dot is displayed next to the option. Press Enter"): the first
+   * Down opens it with nothing marked, Down and Up move the mark, Enter picks
+   * the marked option as the Command menu does, Escape shuts it. Any other key
+   * shuts it and goes on to its own step.
+   */
+  dynamicOptionKey(key: string): boolean {
+    const options = this.offeredOptions()
+    const list = this.optionList
+    if (list === null) {
+      if (key !== "ArrowDown" || !this.mayListOptions(options)) return false
+      this.optionList = { marked: null }
+    } else if (options.length === 0) {
+      this.optionList = null
+      return false
+    } else if (key === "ArrowDown" || key === "ArrowUp") {
+      const at = options.findIndex((option) => option.id === list.marked)
+      const step = key === "ArrowDown" ? 1 : -1
+      const next =
+        at === -1
+          ? step === 1
+            ? 0
+            : options.length - 1
+          : (at + step + options.length) % options.length
+      this.optionList = { marked: options[next].id }
+    } else if (key === "Enter") {
+      this.optionList = null
+      // WHY nothing on an unmarked Enter: what AutoCAD does there is
+      // unverified, and the prompt's own Enter would end LINE.
+      if (list.marked !== null) this.invokeToolOption(`_${list.marked}`)
+    } else if (key === "Escape") {
+      this.optionList = null
+    } else {
+      if (!MODIFIER_KEYS.has(key)) {
+        this.optionList = null
+        this.invalidateState()
+      }
+      return false
+    }
+    this.invalidateState()
+    this.host.requestRender()
+    return true
+  }
+
+  /** The options the running question offers, as the chips show them. */
+  private offeredOptions(): CommandOptionUi[] {
+    return this.asking() === this.activeTool
+      ? offerOptions(this.activeTool, this.text)
+      : []
+  }
+
+  /**
+   * Whether the Down arrow opens the option list: the box is up with its
+   * chips, nothing is typed in it or at the command line, and no menu holds
+   * the keys. A content field (TEXT's string) keeps its arrows.
+   */
+  private mayListOptions(options: readonly CommandOptionUi[]): boolean {
+    if (
+      options.length === 0 ||
+      !this.dynamicInput.isOpen() ||
+      this.dynamicInput.hasTypedText() ||
+      this.commandLine.getBuffer() !== "" ||
+      this.shortcutMenu !== null ||
+      this.snapOverrideMenu !== null ||
+      this.cyclingList !== null
+    ) {
+      return false
+    }
+    const id = this.dynamicInput.getActiveFieldId()
+    const field = this.dynamicInput
+      .getSession()
+      ?.fields.find((f) => f.id === id)
+    return field === undefined || !isContentField(field.kind)
+  }
+
+  /**
    * Enter at the prompt — a right-click with no menu to show, or the Command
    * menu's Enter: the same Enter as the keyboard's, in the box when it has a
    * field and on the drawing otherwise.
@@ -3244,6 +3330,7 @@ export class CadRuntime extends Observable {
   setDynamicInputText(text: string, fieldId?: string): void {
     const id = fieldId ?? this.dynamicInput.getActiveFieldId()
     if (!id) return
+    this.optionList = null
     this.dynamicInput.setText(id, text)
     // A typed value hard-locks that field, so the tool's preview (rubber-band)
     // must recompute now — not only on the next pointer move — to reflect it.
@@ -4425,6 +4512,9 @@ export class CadRuntime extends Observable {
       return true
     }
 
+    // F12 is not taken: dynamic input cannot be turned off here (DYNMODE is
+    // Missing in docs/coverage/drafting-aids.md), so the key is the browser's.
+
     // Selection cycling. AutoCAD toggles it with Ctrl+W, which browsers reserve
     // for closing the tab and never deliver, so F4 is the shortcut we can
     // actually promise (F4 is free here; AutoCAD spends it on 3D object snap,
@@ -4505,6 +4595,8 @@ export class CadRuntime extends Observable {
     // A keyword is typed and confirmed, as at AutoCAD's prompt: no key runs
     // one on its own. A letter run at once broke the muscle memory of `C`
     // Enter, whose Enter then repeated LINE after Close had ended it.
+    if (!e.ctrlKey && !e.altKey && this.dynamicOptionKey(e.key)) return true
+
     const box = this.typingField()
     // WHY: with a value box up, what is typed on the drawing goes into it, as
     // AutoCAD's dynamic input takes the keyboard wherever the cursor is. The
@@ -5024,10 +5116,8 @@ export class CadRuntime extends Observable {
       .toArray()
       .map((id) => this.document.get(id))
       .filter((entity): entity is Entity => entity !== undefined)
-    const options =
-      this.asking() === this.activeTool
-        ? offerOptions(this.activeTool, this.text)
-        : []
+    const options = this.offeredOptions()
+    const marked = this.optionList?.marked ?? null
     const prompt = this.currentPrompt()
     return {
       activeToolId: this.activeTool.id,
@@ -5152,6 +5242,16 @@ export class CadRuntime extends Observable {
         palette: this.cleanScreenPalette,
       },
       commandOptions: options,
+      commandOptionList:
+        this.optionList !== null &&
+        options.length > 0 &&
+        this.dynamicInput.isOpen()
+          ? {
+              marked: options.some((option) => option.id === marked)
+                ? marked
+                : null,
+            }
+          : null,
       commandLine: {
         visible: this.commandLineVisible,
         historyOpen: this.commandHistoryOpen,

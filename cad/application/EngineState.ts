@@ -503,6 +503,12 @@ export interface EngineState {
    * input; empty when the tool exposes none.
    */
   readonly commandOptions: ReadonlyArray<CommandOptionUi>
+  /**
+   * The dynamic prompt's option list, opened by the Down arrow: null while
+   * shut. `marked` is the option Enter picks (AutoCAD's dot), the id of one of
+   * `commandOptions`, or null before a second Down marks the first.
+   */
+  readonly commandOptionList: { readonly marked: string | null } | null
   /** The command prompt: what is typed, what it suggests and what it logged. */
   readonly commandLine: CommandLineUi
   /**

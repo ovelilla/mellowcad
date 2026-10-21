@@ -163,10 +163,20 @@ prompts; on the Z guide (or straight above or below the base point) the length r
 the angle `+Z` / `-Z`, and a typed length runs along it — LINE, MOVE, COPY, STRETCH and a grip move
 go up or down, PLINE and SPLINE keep their plane; a typed angle brings it back to the plane
 (**unverified**); Enter with nothing typed is the prompt's — a form's defaults or the `<default>`,
-else the end of the command — never the cursor's reading, from the keyboard as from the right button
+else the end of the command — never the cursor's reading, from the keyboard as from the right button;
+the Down arrow, with nothing typed, in the box or on the drawing, opens the prompt's option list with
+nothing marked, each further Down (or Up) moves the mark around it, Enter picks the marked option as
+the Command menu does (echoed `_Close`) and Escape shuts the list, the command going on (desktop d11;
+help: "press the DOWN ARROW key until a dot is displayed next to the option. Press Enter") — WHY the
+options also show as chips under the prompt at all times: they are the always-visible list, the open
+one shown by its brighter chips and the marked one by the selected row's colour
 
 **Missing:** a numeric `<default>` shows only as the box's placeholder (where the box is not reading
-the cursor), not in the prompt
+the cursor), not in the prompt; turning dynamic input off — F12 and DYNMODE (F12 writes no echo in
+AutoCAD, desktop d10, d27; here the key is left to the browser); the Up arrow's recent input (help:
+"Press the Up Arrow key to display recent input"); **unverified**: Enter with the list open and
+nothing marked (it only shuts the list here), whether Up and Down wrap at the list's ends, the
+command-line echo of an option picked from the list
 
 ### Angle override
 

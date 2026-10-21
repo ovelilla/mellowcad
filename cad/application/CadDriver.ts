@@ -291,9 +291,21 @@ export class CadDriver {
     return this
   }
 
+  /**
+   * The Down or Up arrow, routed as the UI routes it: the box's own key when a
+   * field is focused, else the drawing's. Down opens the prompt's option list.
+   */
+  arrow(direction: "up" | "down"): this {
+    const key = direction === "up" ? "ArrowUp" : "ArrowDown"
+    if (this.hasFocusedField()) this.runtime.dynamicOptionKey(key)
+    else this.press(key)
+    return this
+  }
+
   /** Enter: commits dynamic input when open, otherwise goes to the runtime. */
   enter(): this {
     if (this.hasFocusedField()) {
+      if (this.runtime.dynamicOptionKey("Enter")) return this
       this.runtime.commitDynamicInput()
     } else {
       this.press("Enter")
@@ -304,6 +316,7 @@ export class CadDriver {
   /** Escape: cancels dynamic input when open, otherwise goes to the runtime. */
   escape(): this {
     if (this.hasFocusedField()) {
+      if (this.runtime.dynamicOptionKey("Escape")) return this
       this.runtime.cancelDynamicInput()
     } else {
       this.press("Escape")

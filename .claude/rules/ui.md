@@ -234,7 +234,9 @@ Each bar's AutoCAD order is in its component's header comment; touch and phones 
   never reselected when focus comes back. Nor is a value field with text in it: keys typed on the
   drawing before the box had focus went into it. A value field takes Space as Enter, Tab after a
   point's X as its comma, and Ctrl+Z with nothing typed as `_u` at the prompt (`runUndoMacro`) —
-  the drawing's keys, which never reach the runtime from a field. It reclaims focus only where
+  the drawing's keys, which never reach the runtime from a field. Its keys go first to
+  `engine.dynamicOptionKey` (the Down arrow's option list, the chips marked from
+  `state.commandOptionList`), which the drawing's `keyDown` asks too. It reclaims focus only where
   `engine.mayTakeFocus` allows (not while another field is being typed in). The command line's
   Space is Enter whatever is typed.
 - **A dialog** only where AutoCAD has one (UNITS): engine state, opened by the command, applied as

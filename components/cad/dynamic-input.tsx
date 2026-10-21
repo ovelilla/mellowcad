@@ -148,7 +148,15 @@ export function DynamicInput({
                 }
                 onKeyDown={(e) => {
                   const value = field.kind !== "text"
-                  if (e.key === "Enter" || (e.key === " " && value)) {
+                  if (
+                    !e.ctrlKey &&
+                    !e.metaKey &&
+                    !e.altKey &&
+                    engine.dynamicOptionKey(e.key)
+                  ) {
+                    // The Down arrow's option list takes its own keys first.
+                    e.preventDefault()
+                  } else if (e.key === "Enter" || (e.key === " " && value)) {
                     // Space is Enter in a value box, as at AutoCAD's prompt.
                     e.preventDefault()
                     engine.commitDynamicInput()
@@ -230,13 +238,23 @@ export function DynamicInput({
 
       {/* Command-option hints (AutoCAD's [Close/Undo] prompt). Keyboard-driven
           like AutoCAD's dynamic prompt — the box stays pointer-events-none so
-          it never traps the cursor; press the highlighted key to invoke. */}
+          it never traps the cursor: type the letters, or open the list with
+          the Down arrow and mark one with the dot, as AutoCAD's list does. */}
       {state.commandOptions.length > 0 && (
         <div className="flex basis-full flex-wrap gap-1">
           {state.commandOptions.map((option) => (
             <span
               key={option.id}
-              className="flex items-center gap-1 rounded-md border border-border/60 bg-card/95 px-1.5 py-0.5 text-muted-foreground shadow-lg backdrop-blur"
+              data-marked={
+                state.commandOptionList?.marked === option.id || undefined
+              }
+              className={`flex items-center gap-1 rounded-md border px-1.5 py-0.5 shadow-lg backdrop-blur ${
+                state.commandOptionList?.marked === option.id
+                  ? "border-active/60 bg-accent text-foreground"
+                  : state.commandOptionList
+                    ? "border-border/60 bg-card/95 text-foreground"
+                    : "border-border/60 bg-card/95 text-muted-foreground"
+              }`}
             >
               <kbd className="rounded bg-muted px-1 font-mono text-title text-foreground">
                 {option.abbreviation}
