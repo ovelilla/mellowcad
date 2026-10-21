@@ -51,7 +51,16 @@ Writing one (the traps of `console.md` hold; these are the review's):
 What the console cannot answer, and goes to the desktop: the rubber band and jig, dynamic input,
 Escape and the right button, grips, the Properties palette, snap markers and tooltips, the Ctrl
 keys. Its cursor is a fixed pixel (`console.md`): a direct distance or a dragged angle there
-reads that pixel, so the harness test moves its cursor to the same point.
+reads that pixel, so the harness test moves its cursor to the same point. The trace's flags
+predict part of it, so read them first: `UseDashedLine` is a dashed rubber band, `UseBasePoint`
+false a prompt Ortho and Polar leave alone (circle/d12).
+
+A command the ribbon runs in modes has its buttons' macros in `acad.cuix`, a zip (read it with
+Python's `zipfile`; `unzip` is not installed): `^C^C_circle \_d` is what the history echoes.
+
+**Which of several solutions** AutoCAD takes (Ttr, TTT) is a data table: picks varied to separate
+the candidate rules, a script fitting them, and ties kept out of tests, since AutoCAD breaks them
+either way (circle/p323, p378).
 
 ## 3. The standard probe set of a drawing command
 
@@ -110,6 +119,8 @@ Traps seen on the desktop (PLINE's review, 2026-10-21):
 - A launched instance may open the English profile: a cell that needs the Spanish labels goes in
   a session in the owner's profile.
 - A Ctrl held only during a move is not read by the jig; held at the pick it is.
+- `com send` with a space inside a string answer sends it whole (`DASHED acadiso.lin` is one
+  answer); -LINETYPE's file needs FILEDIA 0, put back after (CIRCLE's review).
 
 A probe that only reads the raw `initget` (flags, `control`) loads MellowProbe with
 `acad.sh com netload` and reads `com trace` (`tracing.md`).
@@ -136,5 +147,6 @@ export default defineConfig({
 ```
 
 Run with `npx vitest run --config research/review/vitest.config.mts research/review/<command>`.
+Their `console.log` is swallowed: write what to read to a scratchpad file (Node's appendFileSync).
 Each scratch test names the probe it reproduces; in the execution it moves, as is, into the
 command's test file and its citation stays.

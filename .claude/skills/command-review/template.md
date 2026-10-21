@@ -348,8 +348,8 @@ start it), and what the last session left for it.
 
 At the close of each review, a short list of changes to this template: a row that found nothing,
 a finding that needed a question the template does not ask, a step that cost more than it gave, a
-probe pattern worth reusing. They are proposed in the plan (§6.14) and applied here only after the
-owner confirms, each with its date.
+probe pattern worth reusing. They are proposed in the plan (§6.14) and applied here at the
+review's close (the owner waived the wait for approval on 2026-10-21), each with its date.
 
 Applied:
 
@@ -367,3 +367,6 @@ Applied:
 - 2026-10-21, after PLINE's review: start from the previous review's analogues (§4.1); row H
   asks for properties changed mid-command (matrix.md); the desktop's traps and a probe for one
   locale (annex-probes.md); the execution may follow in the review's session (§0).
+- 2026-10-21, after CIRCLE's review: the trace's flags read before the desktop, the ribbon's
+  macros, solutions as data tables, scratch output to a file, two desktop traps, quitting AutoCAD
+  at the end (annex-probes.md).
