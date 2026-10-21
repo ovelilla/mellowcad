@@ -1,5 +1,5 @@
 import { Vec2, V } from "../../geometry/Vec2"
-import { Vec3, add3, sub3 } from "../../geometry/Vec3"
+import { Vec3, sub3 } from "../../geometry/Vec3"
 import { Entity, EntityId, translateEntity } from "../../domain/entities"
 import { parseNumber } from "../../domain/units"
 import { DynamicInputSession } from "../input/DynamicInput"
@@ -190,7 +190,21 @@ export abstract class PlacementTool implements Tool {
    * not offered.
    */
   takes(): QuestionInput | null {
-    return this.state.phase === "selecting" ? this.selector.takes() : null
+    if (this.state.phase === "selecting") return this.selector.takes()
+    // WHY: COPY's first second point is Array's prompt, a keyword prompt with
+    // no keyword built here; its refusal is that one, MOVE's a point's
+    // (move/p154–p158).
+    if (this.firstCopyPoint()) return { refusal: "pointOrKeywordRequired" }
+    return null
+  }
+
+  /** COPY's second point while nothing is placed from its base. */
+  private firstCopyPoint(): boolean {
+    return (
+      this.state.phase === "secondPoint" &&
+      this.placed === 0 &&
+      this.continuesAfterPlace()
+    )
   }
 
   /**
@@ -246,11 +260,17 @@ export abstract class PlacementTool implements Tool {
     }
   }
 
-  /** COPY's Undo: the last copy is taken back, and its prompt asked again. */
+  /**
+   * COPY's Undo: the last copy is taken back, and its prompt asked again;
+   * the last of all is said (move/p158, p199).
+   */
   private undoPlacement(ctx: ToolContext): boolean {
     if (this.state.phase !== "secondPoint" || this.placed === 0) return false
     this.placed -= 1
     ctx.undo()
+    if (this.placed === 0) {
+      ctx.report(ctx.text.message("commandCompletelyUndone"))
+    }
     ctx.dynamicInput.clearTexts()
     ctx.requestRender()
     return true
@@ -439,10 +459,7 @@ export abstract class PlacementTool implements Tool {
   }
 
   private enterSecondPoint(base: Vec3, ctx: ToolContext, screen?: Vec2): void {
-    const originals = ctx.selection
-      .toArray()
-      .map((id) => ctx.document.get(id))
-      .filter((entity): entity is Entity => entity !== undefined)
+    const originals = selectedInDrawingOrder(ctx)
     if (originals.length === 0) {
       // The selection vanished (e.g. undo elsewhere): fall back to picking.
       this.state = { phase: "selecting" }
@@ -477,18 +494,17 @@ export abstract class PlacementTool implements Tool {
    * Handles a second point confirmed from the dynamic input (Enter). A typed
    * value places at that displacement; an empty Enter accepts the default:
    * `<use first point as displacement>` ("the first point is interpreted as a
-   * relative X,Y,Z displacement"), or `<Exit>` once COPY has placed a copy.
+   * relative X,Y,Z displacement"), which ends COPY too, as the Displacement
+   * does (move/p151, p159, p234); or `<Exit>` once COPY has placed a copy
+   * (p172).
    */
   private commitSecondPoint(ctx: ToolContext): boolean {
     if (this.state.phase !== "secondPoint") return false
     const { base, originals } = this.state
     if (!ctx.dynamicInput.hasTypedText()) {
-      if (this.placed > 0) {
-        ctx.dynamicInput.close()
-        ctx.endCommand()
-        return true
-      }
-      this.placeAt(base, add3(base, base), originals, ctx)
+      if (this.placed === 0) this.place(originals, base, ctx)
+      ctx.dynamicInput.close()
+      ctx.endCommand()
       return true
     }
     // What reads as no point is refused, never placed at the cursor.
@@ -584,11 +600,7 @@ export abstract class PlacementTool implements Tool {
   /** Places the set once by the Displacement's `delta`, then ends. */
   private displaceBy(delta: Vec3, ctx: ToolContext): void {
     this.lastDisplacement = delta
-    const originals = ctx.selection
-      .toArray()
-      .map((entityId) => ctx.document.get(entityId))
-      .filter((entity): entity is Entity => entity !== undefined)
-    this.place(originals, delta, ctx)
+    this.place(selectedInDrawingOrder(ctx), delta, ctx)
     ctx.dynamicInput.close()
     ctx.endCommand()
   }
@@ -639,6 +651,16 @@ export abstract class PlacementTool implements Tool {
       }) ?? rawCursor
     )
   }
+}
+
+/**
+ * The set as the drawing orders it, whatever order it was picked in: COPY
+ * appends its copies so, and ERASE Last takes the last one's (move/p201,
+ * p212, p223).
+ */
+function selectedInDrawingOrder(ctx: ToolContext): Entity[] {
+  const ids = new Set(ctx.selection.toArray())
+  return ctx.document.getEntities().filter((entity) => ids.has(entity.id))
 }
 
 /** Whether the second point's typed text reads as one: a coordinate, a length, an angle. */

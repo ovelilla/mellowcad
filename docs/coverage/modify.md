@@ -40,15 +40,22 @@ there are **unverified** (the console ignores it, p139)
 `Specify second point or <use first point as displacement>:` and once a copy is placed
 `Specify second point or [Exit/Undo] <Exit>:` (es
 `Precise el segundo punto o [Salir/desHacer] <Salir>`, with the `el` the program prints and its help
-does not); repeated placement (AutoCAD Multiple behaviour), Undo taking back the last copy;
-Displacement places one copy and ends, its `<default>` COPY's own last one, not MOVE's (rectang/p314),
+does not); repeated placement (AutoCAD Multiple behaviour), Undo taking back the last copy and,
+for the last of all, saying `Command has been completely undone.` (es `Todos los efectos del
+comando han sido deshechos.`) and asking the first form again (p158, p159, p199); Enter at the first
+form, nothing placed from the base, copies by the base point's coordinates and ends, also once Undo
+took every copy back (p151, p159, p234, p06, desktop d06), and at `<Exit>` ends placing nothing
+(p172); the copies are added in drawing order, whatever order the objects were picked in, so ERASE
+Last takes the last object's copy (p201, p212, p223); Displacement places one copy and ends, its `<default>` COPY's own last one, not MOVE's (rectang/p314),
 back to 0 at NEW and OPEN; a zero displacement — the second point at the base, a Displacement of
 `0,0,0`, Enter and Enter — leaves a duplicate in place, which Undo takes back like any other
 (p147, p193, p228–p232); the drag as MOVE's, the originals keeping the selection's glow (desktop
 d02, d11); `CP` and `DUP` from the Spanish `acad.pgp` (p103)
 
 **Missing:** mOde (COPYMODE is always Multiple, so the base point offers `[Displacement]` alone),
-Array (so the second point's `[Array]` is not offered)
+Array (so the second point's `[Array]` is not offered; the first form still refuses a wrong answer
+with Array's keyword's `Point or option keyword required.`, es `Se requiere un punto o una
+opción.`, where MOVE's says `Invalid point.`, p154–p158)
 
 ### `ROTATE` / `RO` · es `GIRA` / `GI`†
 

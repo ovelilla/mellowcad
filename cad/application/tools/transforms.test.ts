@@ -408,6 +408,159 @@ describe("COPY", () => {
   })
 })
 
+describe("COPY's second point (move/p151–p159, p199)", () => {
+  /** The probes' drawing: two lines, then `_ZOOM _W -50,-50 700,700`. */
+  function drawing(locale?: typeof es): CadHarness {
+    const cad = createHarness({
+      entities: [
+        lineOf(p(0, 0), p(100, 0), { id: "L1" }),
+        lineOf(p(0, 50), p(100, 50), { id: "L2" }),
+      ],
+      locale,
+    })
+    return answer(cad, "ZOOM", "W", "-50,-50", "700,700")
+  }
+
+  const starts = (cad: CadHarness) =>
+    linesOf(cad.entities()).map((line) => line.start)
+
+  it("copies by the base point at Enter, then ends (move/p151, p234)", () => {
+    const cad = drawing()
+    answer(cad, "COPY", "50,0", "", "3,4", "")
+    expect(cad.entityCount).toBe(3)
+    expect(starts(cad)[2]).toBeCloseToPoint(p(3, 4))
+    expect(cad.activeToolId()).toBe("select")
+    expect(answer(cad, "ID", "@").commandLog().at(-1)).toBe(
+      " X = 3.00     Y = 4.00     Z = 0.00"
+    )
+
+    const all = createHarness({ entities: [HORIZONTAL] })
+    answer(all, "_COPY", "_ALL", "", "20,10", "")
+    expect(all.entityCount).toBe(2)
+    expect((all.latest() as LineEntity).start).toBeCloseToPoint(p(20, 10))
+    expect(all.activeToolId()).toBe("select")
+  })
+
+  it("copies by the base point at Enter once its Undo took every copy back (move/p159, p06)", () => {
+    const cad = drawing()
+    answer(cad, "COPY", "50,0", "", "3,4", "13,4", "_U", "")
+    expect(cad.entityCount).toBe(3)
+    expect(starts(cad)[2]).toBeCloseToPoint(p(3, 4))
+    expect(cad.activeToolId()).toBe("select")
+
+    const inPlace = drawing()
+    answer(inPlace, "_COPY", "50,0", "", "0,0", "0,10", "_U", "_U", "")
+    expect(inPlace.selectedIds()).toEqual([])
+    expect(inPlace.entityCount).toBe(3)
+    expect(inPlace.activeToolId()).toBe("select")
+  })
+
+  it("refuses a keyword at the first second point as Array's prompt does (move/p156, p157)", () => {
+    const cad = drawing()
+    answer(cad, "LINE", "0,100", "10,100", "")
+    answer(cad, "COPY", "50,0", "", "3,4", "_U")
+    expect(cad.commandLog().slice(-2)).toEqual([
+      "Specify second point or <use first point as displacement>: _U",
+      "Point or option keyword required.",
+    ])
+    // Nothing placed, nothing backed out: the LINE before stays.
+    expect(cad.entityCount).toBe(3)
+
+    answer(cad, "_E")
+    expect(cad.commandLog().slice(-2)).toEqual([
+      "Specify second point or <use first point as displacement>: _E",
+      "Point or option keyword required.",
+    ])
+    answer(cad, "FOO")
+    expect(cad.commandLog().at(-1)).toBe("Point or option keyword required.")
+
+    answer(cad, "13,4", "_E")
+    expect(cad.commandLog().at(-1)).toBe(
+      "Specify second point or [Exit/Undo] <Exit>: _E"
+    )
+    expect(cad.activeToolId()).toBe("select")
+    expect(cad.entityCount).toBe(4)
+  })
+
+  it("keeps MOVE's second point refusing as a point (move/p154, p155)", () => {
+    const cad = drawing()
+    answer(cad, "MOVE", "50,0", "", "3,4", "FOO", "_D")
+    expect(cad.commandLog().slice(-4)).toEqual([
+      "Specify second point or <use first point as displacement>: FOO",
+      "Invalid point.",
+      "Specify second point or <use first point as displacement>: _D",
+      "Invalid point.",
+    ])
+  })
+
+  it("says the command is undone when its Undo takes the last copy back (move/p158)", () => {
+    const cad = drawing()
+    answer(cad, "COPY", "50,0", "", "3,4", "13,4", "23,4", "_U")
+    expect(cad.commandLog().at(-1)).toBe(
+      "Specify second point or [Exit/Undo] <Exit>: _U"
+    )
+    answer(cad, "_U")
+    expect(cad.commandLog().slice(-2)).toEqual([
+      "Specify second point or [Exit/Undo] <Exit>: _U",
+      "Command has been completely undone.",
+    ])
+    expect(cad.state().commandLine.prompt).toBe(
+      "COPY Specify second point or <use first point as displacement>:"
+    )
+
+    answer(cad, "_U")
+    expect(cad.commandLog().slice(-2)).toEqual([
+      "Specify second point or <use first point as displacement>: _U",
+      "Point or option keyword required.",
+    ])
+    answer(cad, "33,4", "")
+    expect(starts(cad).slice(2)).toBeCloseToPoints([p(30, 0)])
+  })
+
+  it("says so in Spanish, and refuses in its words (move/p199, p156)", () => {
+    const cad = drawing(es)
+    answer(cad, "COPIA", "50,0", "", "3,4", "13,4", "H")
+    expect(cad.commandLog().slice(-2)).toEqual([
+      "Precise el segundo punto o [Salir/desHacer] <Salir>: H",
+      "Todos los efectos del comando han sido deshechos.",
+    ])
+    answer(cad, "_U")
+    expect(cad.commandLog().at(-1)).toBe("Se requiere un punto o una opción.")
+  })
+
+  it("places the copies in drawing order, whatever order they were picked in (move/p201, p223)", () => {
+    const cad = createHarness({
+      entities: [
+        lineOf(p(0, 0), p(100, 0), { id: "A" }),
+        lineOf(p(0, 50), p(100, 50), { id: "B" }),
+      ],
+    })
+    answer(cad, "_COPY", "50,50", "50,0", "", "0,0", "0,200", "0,300", "")
+    expect(linesOf(cad.entities()).map((line) => line.start.y)).toEqual([
+      0, 50, 200, 250, 300, 350,
+    ])
+
+    answer(cad, "_ERASE", "_L", "")
+    expect(
+      linesOf(cad.entities())
+        .map((line) => line.start.y)
+        .sort((a, b) => a - b)
+    ).toEqual([0, 50, 200, 250, 300])
+  })
+
+  it("leaves MOVE's objects where they were in the drawing (move/p226)", () => {
+    const cad = createHarness({
+      entities: [
+        lineOf(p(0, 0), p(100, 0), { id: "A" }),
+        lineOf(p(0, 50), p(100, 50), { id: "B" }),
+      ],
+    })
+    answer(cad, "_MOVE", "50,50", "50,0", "", "0,0", "0,10")
+    expect(cad.entities().map((entity) => entity.id)).toEqual(["A", "B"])
+    expect(cad.byId<LineEntity>("B").start).toBeCloseToPoint(p(0, 60))
+  })
+})
+
 describe("the drag of MOVE and COPY", () => {
   const segmentsAt = (
     cad: CadHarness,

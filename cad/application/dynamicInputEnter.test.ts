@@ -141,6 +141,26 @@ describe.each(ENTERS)("Enter from %s with nothing typed", (_, enter) => {
     enter(cad)
     expect(cad.byId<LineEntity>("A").end).toBeCloseToPoint(p(400, 0))
   })
+
+  // move/p234, desktop d06: COPY's first copy by the first point, and the
+  // end of COPY; once a copy is placed, its <Exit> (p172).
+  it("copies by COPY's first point and ends, or takes <Exit> after a copy", () => {
+    const cad = createHarness({
+      entities: [lineOf(p(0, 0), p(100, 0), { id: "A" })],
+    })
+    cad.command("COPY").click(p(50, 0)).enter()
+    cad.click(p(20, 10)).moveTo(FAR)
+    enter(cad)
+    expect(cad.activeToolId()).toBe("select")
+    expect(cad.entityCount).toBe(2)
+    expect((cad.latest() as LineEntity).start).toBeCloseToPoint(p(20, 10))
+
+    cad.command("COPY").click(p(50, 0)).enter()
+    cad.click(p(0, 0)).click(p(0, 100)).moveTo(FAR)
+    enter(cad)
+    expect(cad.activeToolId()).toBe("select")
+    expect(cad.entityCount).toBe(3)
+  })
 })
 
 describe("Enter with nothing typed", () => {
@@ -151,20 +171,6 @@ describe("Enter with nothing typed", () => {
     cad.select("L1").command("ARRAYRECT").moveTo(FAR).enter()
 
     expect(cad.entityCount).toBe(4 * 3)
-  })
-
-  it("places COPY's first copy by the first point, then takes <Exit>", () => {
-    const cad = createHarness({
-      entities: [lineOf(p(0, 0), p(100, 0), { id: "A" })],
-    })
-    cad.command("COPY").click(p(50, 0)).enter()
-    cad.click(p(20, 10)).moveTo(FAR).enter()
-    expect(cad.activeToolId()).toBe("copy")
-    expect((cad.latest() as LineEntity).start).toBeCloseToPoint(p(20, 10))
-
-    cad.moveTo(p(0, 200)).enter()
-    expect(cad.activeToolId()).toBe("select")
-    expect(cad.entityCount).toBe(2)
   })
 
   it("offsets through a point at first, then by the last distance", () => {
