@@ -137,46 +137,72 @@ band (drawn solid); AutoCAD breaks the arc prompt after its `or`, written here o
 arc segment lays a linetype (from its start here), and a wide band's outline with FILL off, whose
 lineweight the plot draws (p231) and the screen here does not
 
-### `RECTANG` / `REC` · es `RECTANG` / `REC`
+### `RECTANG` / `REC` / `RECTANGLE` · es `RECTANG` / `REC` / `RECTANGLE`
 
 **Implemented:** `Specify first corner point or [Chamfer/Elevation/Fillet/Thickness/Width]:` (es
 `Precise primer punto de esquina o [Chaflán/Elevación/eMpalme/Alt-objeto/Grosor]`) and
 `Specify other corner point or [Area/Dimensions/Rotation]:` (es
-`Precise esquina opuesta o [áRea/Cotas/rOtación]`), neither taking Enter
-(`Point or option keyword required.`); two-corner closed polyline. The first prompt's options ask a
-value offering the one they keep for the session, negative ones too: Chamfer
-`Specify first chamfer distance for rectangles` and `Specify second chamfer distance for rectangles`
-(its `<default>` the last second distance, or with none the first just given), Fillet
-`Specify fillet radius for rectangles` (its default Chamfer's first distance, and it sets both),
-Elevation `Specify the elevation for rectangles` and Thickness `Specify thickness for rectangles`
-(instead of ELEVATION and THICKNESS), and Width `Specify line width for rectangles` (es
+`Precise esquina opuesta o [áRea/Cotas/rOtación]`), neither taking Enter or a word
+(`Point or option keyword required.`; probes rectang/p02, p04); `RECTANGLE` is an alias in both
+(p101); a two-corner closed polyline, one of no area too, its four vertices on a line or at one
+point (p11, p164, `@` p123, Dimensions of 0 p115, a pick Ortho flattens, desktop d01), with Chamfer
+or Fillet eight, doubled and plain (p12). The first prompt's options ask a value offering the one
+they keep for the session: Chamfer `Specify first chamfer distance for rectangles` and
+`Specify second chamfer distance for rectangles` (its `<default>` the last second distance, or with
+none the first just given; p158, p02), Fillet `Specify fillet radius for rectangles` (its default
+Chamfer's first distance, and it sets both; p172), both refusing a negative value with
+`Value must be positive.` (es `El valor debe ser positivo.`; p107, p108), Elevation
+`Specify the elevation for rectangles` and Thickness `Specify thickness for rectangles` (instead of
+ELEVATION and THICKNESS), and Width `Specify line width for rectangles` (es
 `Precise grosor de línea para rectángulos`, its keyword `Grosor` at that prompt only, `Anchura`
-being Area's), a value or two points (`Requires numeric distance or two points.`), never PLINEWID:
-every side and fillet that wide, a negative width listed as typed and drawn as none (acc/w6).
-Chamfer and Fillet replace each other, and 0 (0 x 0) turns them off; each corner is cut the first
-distance back along the side reaching it and the second along the side leaving it, the polyline
-starting where the first corner's cut begins, eight vertices — doubled and plain when the cuts do
-not fit on a side, as the console leaves them.
+being Area's), a value or two points (`Requires numeric distance or two points.`; p111), never
+PLINEWID (p307): every side and fillet that wide, a negative width listed as typed and drawn as none
+(p02, p109). Chamfer and Fillet replace each other, and 0 (0 x 0) turns them off; each corner is cut
+the first distance back along the side reaching it and the second along the side leaving it, the
+polyline starting where the first corner's cut begins, eight vertices — doubled and plain when the
+cuts do not fit on a side, as the console leaves them (p157, p158).
 `Current rectangle modes:  Chamfer=10.00 x 5.00  Elevation=…  Fillet=…  Thickness=…  Width=…  Rotation=30`
 lists the ones not 0 (es
-`Modos de rectángulo actuales:  Chaflán=…  Elevación=…  Empalme=…  Alt-objeto=…  Grosor=…  Rotación=…`).
+`Modos de rectángulo actuales:  Chaflán=…  Elevación=…  Empalme=…  Alt-objeto=…  Grosor=…  Rotación=…`;
+p161, p162, p174).
 Area: `Enter area of rectangle in current units <100.00>:` (`Requires numeric value.`,
-`Value must be positive and nonzero.`),
-`Calculate rectangle dimensions based on [Length/Width] <Length>:`,
+`Value must be positive and nonzero.`, es `El valor debe ser positivo y distinto de cero.`, where
+CIRCLE's and LINE's say `diferente`; p112),
+`Calculate rectangle dimensions based on [Length/Width] <Length>:` (p113),
 `Enter rectangle length <10.00>:` or `Enter rectangle width`, the other side giving the area with
-the chamfers or fillets when they fit, laid along the turned +X and +Y and made at once. Dimensions:
+the chamfers or fillets when they fit (p153, p154), its sign the given side's, so a negative one
+turns both (p159), laid along the turned +X and +Y and made at once. Dimensions:
 `Specify length for rectangles` and `Specify width for rectangles` (the sides Area keeps too, its
 computed one included), then the other corner picks the quadrant — read along the UCS, not along the
-turned sides, as AutoCAD 2023's console reads it (WHY in the tool). Rotation:
+turned sides, as the console reads it (p155, p156; WHY in the tool); Rotation chosen after them
+drops them, the corner a corner again (p177). Rotation:
 `Specify rotation angle or [Pick points] <0>:`, an angle, a point measured from the first corner, or
-Pick points' `Specify first point:` and `Specify second point:` (`Invalid point.`), kept for the
-session. The words are Autodesk's 2027 Spanish string table's. An Elevation other than 0 puts the
-rectangle that high above the UCS's XY plane whatever the corners' Z; at 0 the first corner fixes
-the plane (**unverified**: the help only says it "Specifies the Z-value for the rectangle")
+Pick points' `Specify first point:` and `Specify second point:` (`Invalid point.`; Enter takes the
+cursor, p118–p120), kept for the session (p116, p117). `_TAN` or `_PER` at the first corner is
+measured from LASTPOINT (p05, p06); Ortho bends the other corner about the first (desktop d01, the
+trace's UseBasePoint false notwithstanding; RECTANG-D60), and `<angle` then a distance there runs
+along that angle from the first corner (d03; the console, with no cursor, ignores the override, p08,
+p128). The layer and the current properties are those current at the first corner: set at the
+other corner they do not reach it (p169, p146; at the first, p171, p147). The words are Autodesk's
+2027 Spanish string table's. An Elevation other than 0 is the polyline's own elevation, as typed,
+whatever the corners' Z and the UCS's origin (UCS origin 0,0,5 and Elevation 2: Elevation 2, Z −3
+in the UCS; p145, p178), where ELEVATION, the variable, lies above the UCS's origin (UCS origin
+0,0,5 and ELEVATION 4: Elevation 9, p170); at 0 the first corner fixes the plane (p122, p142, p143,
+p148). The jig as the desktop draws it: the rectangle in
+the current colour, no line from the first corner, nothing at Pick points' second point (desktop
+d01, d04). Dynamic input at the other corner shows the sides' length and width along the turned
+sides, their signs the cursor's quadrant: `10` Tab `4` makes 10 × 4 there; a coordinate typed in it
+is the corner, relative to the first, and LASTPOINT (d05; after the two sides the corner too,
+**unverified**); the command line still answers the corner, a number there a direct distance
+(p08). WHY labelled `Length` and `Width` side by side: AutoCAD lays
+its two fields unlabelled along the sides (d05), here a box like LINE's; the Spanish labels
+`Longitud` and `Anchura` are **unverified** (the desktop ran in English), and so is the box after
+Dimensions (a point's here)
 
-**Missing:** a length of 0 at Area, which here makes nothing (the console a polyline of no size at
-the origin); Enter at Pick points' first point (the console takes its own cursor there; refused here
-as `Invalid point.`)
+**Missing:** a length or width of 0 at Area, which here makes nothing (2027 makes a polyline whose
+vertices but the first are NaN, p114); after a refusal at Rotation's prompt the console writes no
+prompt again (the getangle's message is empty; p116, p135), asked again in full here
+(**unverified** on the desktop; RECTANG-D63)
 
 ### `POLYGON` / `POL` · es `POLIGONO` / `PG`†
 

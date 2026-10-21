@@ -131,6 +131,11 @@ export class PointResolver {
     return this.angleOverride !== null
   }
 
+  /** The heading the angle override holds the next point to, or null. */
+  heldAngle(): Vec2 | null {
+    return this.angleOverride
+  }
+
   /**
    * Where alignment paths cross under the cursor — two OTRACK guides, a guide
    * and an Extension, a guide and the Ortho / Polar line — or `null`. Such a

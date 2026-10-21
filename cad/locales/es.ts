@@ -498,7 +498,8 @@ export const es: EngineLocale = {
       ],
       "RECTANG": [
         "RECTANG",
-        "REC"
+        "REC",
+        "RECTANGLE"
       ],
       "POLYGON": [
         "POLIGONO",
@@ -1375,6 +1376,7 @@ export const es: EngineLocale = {
     },
     "prompts": {
       "length": "Longitud",
+      "width": "Anchura",
       "angle": "Ángulo",
       "trackingOffset": "Desfase",
       "center": "Centro",
@@ -2943,6 +2945,7 @@ export const es: EngineLocale = {
         ")"
       ],
       "positiveNonzero": "El valor debe ser positivo y diferente de cero.",
+      "areaPositiveNonzero": "El valor debe ser positivo y distinto de cero.",
       "valueMustBePositive": "El valor debe ser positivo.",
       "valueMustBeNonzero": "El valor debe ser diferente de cero.",
       "previousDirectionNotUcsParallel": [

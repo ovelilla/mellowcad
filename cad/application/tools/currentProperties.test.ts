@@ -458,4 +458,22 @@ describe("what a new PLINE wears", () => {
       thickness: 3,
     })
   })
+
+  it("RECTANG keeps those current at its first corner (p169, p146, p171, p147)", () => {
+    const cad = createHarness()
+    const l1 = cad.runtime.createLayer("L1", undefined, false)
+    answer(cad, "RECTANG", "5,5", "'-COLOR", "3")
+    cad.runtime.setCurrentLayer(l1)
+    answer(cad, "15,10")
+
+    const late = cad.only<PolylineEntity>("polyline")
+    expect(late.layerId).toBe("0")
+    expect(late.color).toBeUndefined()
+
+    answer(cad, "RECTANG", "'-COLOR", "1", "30,30", "40,40")
+    expect(cad.latest()).toMatchObject({
+      layerId: l1,
+      color: cad.runtime.document.getSettings().currentColor,
+    })
+  })
 })

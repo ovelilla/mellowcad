@@ -220,6 +220,8 @@ describe("RECTANG Elevation and Thickness", () => {
   })
 
   it("set the rectangle's plane and extrusion, whatever the corners' Z", () => {
+    // probe rectang/p145: the Elevation is the polyline's own, as typed,
+    // wherever the UCS's origin lies; ELEVATION, the variable, is not (p170).
     const cad = createHarness()
     cad.command("UCS").type("0,0,3").enter().enter()
 
@@ -228,8 +230,22 @@ describe("RECTANG Elevation and Thickness", () => {
     cad.type("0,0,40").enter().click(p(100, 50))
 
     const rectangle = cad.only<PolylineEntity>("polyline")
-    expect(entityElevation(rectangle)).toBe(8)
+    expect(entityElevation(rectangle)).toBe(5)
     expect(entityThickness(rectangle)).toBe(2)
+  })
+
+  it("is the polyline's elevation in a turned UCS too (p145)", () => {
+    const cad = createHarness()
+    for (const text of ["UCS", "X", "90", "UCS", "0,0,3", "", "RECTANG"]) {
+      cad.runtime.setCommandLineText(text)
+      cad.runtime.submitCommandLine()
+    }
+    cad.option("Elevation").type("2").enter()
+    cad.type("5,5").enter().type("@10,5").enter()
+
+    const rectangle = cad.only<PolylineEntity>("polyline")
+    expect(entityElevation(rectangle)).toBeCloseTo(2, 9)
+    expect(rectangle.normal?.y).toBeCloseTo(-1, 9)
   })
 
   it("are kept for the next RECTANG, which reports them", () => {

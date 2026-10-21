@@ -61,10 +61,11 @@ const back = (): [Vec2, Vec2] => [p(100, 0), p(0, 0)]
 const up = (): [Vec2, Vec2] => [p(30, -20), p(30, 60)]
 const down = (): [Vec2, Vec2] => [p(30, 60), p(30, -20)]
 
-// Every expectation below is AutoCAD 2023's console answering the same input
-// (LIST, AUPREC 4): a line keeps its direction, only its moved end changing.
+// Every expectation below is AutoCAD 2027's console answering the same input
+// (probes rectang/p180–p192, MPDUMP): a line keeps its direction, only its
+// moved end changing.
 describe("FILLET and CHAMFER keep each line's direction", () => {
-  it("FILLET at radius 0, a line drawn either way", () => {
+  it("FILLET at radius 0, a line drawn either way (p180, p181)", () => {
     const cad = run(lines(back(), up()), "FILLET", "R", "0", "30,40", "80,0")
     expectLine(cad, "L1", p(100, 0), p(30, 0))
     expectLine(cad, "L2", p(30, 0), p(30, 60))
@@ -74,7 +75,7 @@ describe("FILLET and CHAMFER keep each line's direction", () => {
     expectLine(forward, "L2", p(30, 0), p(30, 60))
   })
 
-  it("FILLET with a radius, both lines drawn either way", () => {
+  it("FILLET with a radius, both lines drawn either way (p182, p183)", () => {
     const cad = run(lines(along(), up()), "FILLET", "R", "10", "30,40", "80,0")
     expectArc(cad, p(40, 10), 10, 180, 270)
     expectLine(cad, "L1", p(40, 0), p(100, 0))
@@ -93,7 +94,7 @@ describe("FILLET and CHAMFER keep each line's direction", () => {
     expectLine(reversed, "L2", p(30, 60), p(30, 10))
   })
 
-  it("FILLET extending lines that stop short of the corner", () => {
+  it("FILLET extending lines that stop short of the corner (p184, p185)", () => {
     const sharp = run(
       lines([p(20, 0), p(0, 0)], [p(30, 60), p(30, 10)]),
       "FILLET",
@@ -116,7 +117,7 @@ describe("FILLET and CHAMFER keep each line's direction", () => {
     expectLine(round, "L2", p(30, 5), p(30, 60))
   })
 
-  it("CHAMFER, the bevel from the first line's cut to the second's", () => {
+  it("CHAMFER, the bevel from the first line's cut to the second's (p186–p188)", () => {
     const cad = run(
       lines(back(), down()),
       "CHAMFER",
@@ -153,7 +154,7 @@ describe("FILLET and CHAMFER keep each line's direction", () => {
     expectLine(sharp, "L2", p(30, 60), p(30, 0))
   })
 
-  it("FILLET of a line with a circle", () => {
+  it("FILLET of a line with a circle (p189, p190)", () => {
     for (const [start, end] of [along(), back()]) {
       const cad = run(
         [
@@ -172,7 +173,7 @@ describe("FILLET and CHAMFER keep each line's direction", () => {
     }
   })
 
-  it("a line joined to a polyline runs as the one picked first", () => {
+  it("a line joined to a polyline runs as the one picked first (p191, p192)", () => {
     const vertices = (cad: CadHarness) =>
       cad.entities().find((e): e is PolylineEntity => e.type === "polyline")!
     const line = run(
@@ -201,7 +202,7 @@ describe("FILLET and CHAMFER keep each line's direction", () => {
     expect(vertices(poly).bulges?.[1]).toBeCloseTo(0.4142, 4)
   })
 
-  it("does so in Spanish too", () => {
+  it("does so in Spanish too (p183 es-ES)", () => {
     const cad = createHarness({ locale: es, entities: lines(back(), down()) })
     cad.command("EMPALME")
     for (const text of ["RA", "10", "30,40", "80,0"]) {

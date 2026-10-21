@@ -453,6 +453,25 @@ describe("Spanish AutoCAD's command language", () => {
     )
   })
 
+  it("knows RECTANGLE in English and Spanish, and words Area's refusal its own way (p101, p112)", () => {
+    for (const locale of [undefined, es]) {
+      const cad = createHarness(locale && { locale })
+      cad.command("RECTANGLE").type("5,5").enter().type("@10,5").enter()
+      expect(cad.entityCount).toBe(1)
+    }
+
+    // CIRCLE's and LINE's keep «diferente»; RECTANG's Area says «distinto».
+    const cad = createHarness({ locale: es })
+    cad.command("RECTANG").type("5,5").enter()
+    for (const text of ["R", "0"]) {
+      cad.runtime.setCommandLineText(text)
+      cad.runtime.submitCommandLine()
+    }
+    expect(cad.commandLog().at(-1)).toBe(
+      "El valor debe ser positivo y distinto de cero."
+    )
+  })
+
   it("undoes with H at the Command prompt, and joins with U", () => {
     const cad = createHarness({ locale: es })
     cad.command("L").click(p(0, 0)).click(p(100, 0)).escape()

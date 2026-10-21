@@ -161,8 +161,8 @@ CELWEIGHT; ByLayer by default, which stores nothing). Every creating command has
 - **FILLET's arc and CHAMFER's bevel**: the lines' shared layer or the current one, ByLayer —
   `carryPlane` alone.
 
-LINE's, PLINE's, CIRCLE's and ARC's jigs wear `currentColor` (line/d04, pline/d01, circle/d01,
-arc/d01). No HPLAYER, DIMLAYER or TEXTLAYER: all goes on the current layer.
+The jigs of LINE, PLINE, CIRCLE, ARC and RECTANG wear `currentColor` (line/d04, the others'
+d01). No HPLAYER, DIMLAYER or TEXTLAYER: all goes on the current layer.
 
 ## Ordering and undo
 
@@ -212,9 +212,9 @@ One session at a time:
 - **Keyword-only prompt** — `fields: []`: the option chips, focus left on the canvas (MIRROR's
   Erase, FILLET's and OFFSET's object prompts). A harness test answers it with `press` per key and
   `Enter`.
-- **One value at a time** — a box holds one value (a point's length and angle aside): ARRAYRECT's
-  values are prompts its keywords open, CHAMFER's two distances two prompts. The offered value is
-  the question's `enter`, taken in `commitRaw` when nothing is typed.
+- **One value at a time** — a box holds one value (a point's two aside, LINE's and RECTANG's):
+  ARRAYRECT's values are prompts its keywords open, CHAMFER's distances two prompts. The offered
+  value is the question's `enter`, taken in `commitRaw` when nothing is typed.
 - **Free-text prompt** — one `"text"` field: never a value (`resolveValues` refuses it), skipped by
   the coordinate collapse, and **no keyword is dispatched from it**. A name prompt that also offers
   keywords lists them in `commandOptions()` and reads the box with `ctx.text.resolveKeyword(typed,

@@ -504,7 +504,8 @@ export const en: EngineCatalog = {
       ],
       "RECTANG": [
         "RECTANG",
-        "REC"
+        "REC",
+        "RECTANGLE"
       ],
       "POLYGON": [
         "POLYGON",
@@ -1028,6 +1029,7 @@ export const en: EngineCatalog = {
     },
     "prompts": {
       "length": "Length",
+      "width": "Width",
       "angle": "Angle",
       "trackingOffset": "Offset",
       "center": "Center",
@@ -2597,6 +2599,7 @@ export const en: EngineCatalog = {
         ")"
       ],
       "positiveNonzero": "Value must be positive and nonzero.",
+      "areaPositiveNonzero": "Value must be positive and nonzero.",
       "valueMustBePositive": "Value must be positive.",
       "valueMustBeNonzero": "Value must be nonzero.",
       "previousDirectionNotUcsParallel": [

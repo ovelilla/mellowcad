@@ -347,6 +347,8 @@ export class CadRuntime extends Observable {
   private pointerShift = false
   /** Set while the box hands an unanswered Enter on to the drawing. */
   private enterFromBox = false
+  /** A command-line answer is being committed through the box. */
+  private answeringCommandLine = false
   /** Where the running command's lines start, its echo included. */
   private commandStart = 0
   /** The echo's place while `runCommand` starts the command it wrote. */
@@ -1841,7 +1843,12 @@ export class CadRuntime extends Observable {
     const answer = absolute ? `#${text}` : text
     const session = this.dynamicInput.getSession()
     this.dynamicInput.setText(field.id, answer)
-    this.commitDynamicInput()
+    this.answeringCommandLine = true
+    try {
+      this.commitDynamicInput()
+    } finally {
+      this.answeringCommandLine = false
+    }
     // An answer the prompt did not take is dropped, as the command line drops
     // it, rather than left behind in the box.
     if (
@@ -3539,9 +3546,8 @@ export class CadRuntime extends Observable {
     session: DynamicInputSession,
     field: DynamicField | undefined
   ): boolean {
-    if (field?.kind !== "coordinate" || session.fields.length !== 1) {
-      return false
-    }
+    const lone = field?.kind === "coordinate" && session.fields.length === 1
+    if (!field || !(lone || this.commandLinePoint(session))) return false
     const from = session.directDistance
     if (from === "typed") return false
     if (from === undefined && !(this.activeTool.wantsSnap?.() ?? true)) {
@@ -3557,9 +3563,34 @@ export class CadRuntime extends Observable {
         : anchor === null
           ? this.frame.pointToFrame(this.lastPoint)
           : withZ(anchor, zOf(anchor))
+    // Under an angle override the cursor is held to that heading from the
+    // anchor, so the distance runs along it (desktop rectang/d03), as LINE's
+    // length does along its bent cursor.
+    const held = anchor === null ? null : this.resolver.heldAngle()
     this.dynamicInput.clearTexts()
-    this.placePoint(this.atDistance(base, distance), true)
+    this.placePoint(
+      held
+        ? this.alongHeld(base, held, distance)
+        : this.atDistance(base, distance),
+      true
+    )
     return true
+  }
+
+  /** Whether the command line answers `session`'s point rather than its fields. */
+  private commandLinePoint(session: DynamicInputSession): boolean {
+    return this.answeringCommandLine && session.commandLinePoint === true
+  }
+
+  /**
+   * The point `distance` from `base` along `dir`, on the side of the line the
+   * cursor stands, as the resolver holds it there.
+   */
+  private alongHeld(base: Vec3, dir: Vec2, distance: number): Vec3 {
+    const cursor =
+      this.heldCursorScreen && this.screenToWork(this.heldCursorScreen)
+    const side = cursor && V.dot(V.sub(cursor, base), dir) < 0 ? -1 : 1
+    return withZ(V.add(base, V.scale(dir, side * distance)), zOf(base))
   }
 
   /**
@@ -3595,7 +3626,7 @@ export class CadRuntime extends Observable {
       } else {
         this.placePoint(point, true)
       }
-    } else if (values) {
+    } else if (values && !this.commandLinePoint(session)) {
       session.commit(values, this.toolContext)
     } else if (this.directDistance(session, field)) {
       // Given as a pick there, which LASTPOINT and the tool take as any other.

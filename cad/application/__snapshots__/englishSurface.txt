@@ -12,7 +12,7 @@ ELLIPSE ["EL"] "Ellipse"
 ELLIPSEC [] "Center ellipse"
 ELLIPSEARC [] "Elliptical arc"
 SPLINE ["SPL"] "Spline"
-RECTANG ["REC"] "Rectangle"
+RECTANG ["REC","RECTANGLE"] "Rectangle"
 POLYGON ["POL"] "Polygon"
 HATCH ["H","BH"] "Hatch"
 BLOCK ["B"] "Create block"
@@ -1336,8 +1336,9 @@ lweight "Lineweight" LW
   prompt| Specify thickness for rectangles <0.00>: 2
 > first corner
   prompt: RECTANG Specify other corner point or [Area/Dimensions/Rotation]:
-  asks: "Other corner"
+  asks: "Length" "Width"
   tip: Specify other corner point or
+  dyn: "Length"=""|0.00|mm* "Width"=""|0.00|mm
   options: [A] Area, [D] Dimensions, [R] Rotation
   prompt| Specify first corner point or [Chamfer/Elevation/Fillet/Thickness/Width]:
 > other corner

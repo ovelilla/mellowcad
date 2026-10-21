@@ -14,7 +14,8 @@ import { es } from "../../locales/es"
 
 // AutoCAD's console is the reference for every prompt, refusal and width
 // below: what the same answers draw there, read back with MPDUMP — 2027's for
-// PLINE (probes pline/p200–p225), 2023's for the other commands (acc/w6–w24).
+// PLINE (probes pline/p200–p225) and RECTANG (rectang/…), 2023's for the
+// other commands (acc/w8–w24).
 
 /** Typed at the command line and confirmed, as AutoCAD's prompt reads it. */
 function answer(cad: CadHarness, ...answers: string[]): CadHarness {
@@ -397,7 +398,7 @@ describe("PLINE widths with the rest of the object", () => {
 })
 
 describe("RECTANG Width", () => {
-  it("asks the line width, by a value or two points (acc/w6)", () => {
+  it("asks the line width, by a value or two points (rectang/p111, p109, p01)", () => {
     const cad = createHarness()
     cad.command("RECTANG")
     expect(cad.state().commandLine.prompt).toBe(
@@ -424,7 +425,7 @@ describe("RECTANG Width", () => {
     expect(widths(cad)[1]).toEqual(Array(8).fill([50.0899, 50.0899]))
   })
 
-  it("draws every side and fillet that wide, kept for the session (acc/w6)", () => {
+  it("draws every side and fillet that wide, kept for the session (rectang/p02, p162)", () => {
     const cad = createHarness()
     cad.command("RECTANG")
     answer(cad, "F", "2", "W", "1.5", "0,250", "@20,10")
@@ -438,7 +439,7 @@ describe("RECTANG Width", () => {
     )
   })
 
-  it("lists Width after Thickness and before Rotation (acc/w7)", () => {
+  it("lists Width after Thickness and before Rotation (rectang/p162)", () => {
     const cad = createHarness()
     cad.command("RECTANG")
     answer(cad, "E", "1", "T", "2", "F", "1", "W", "2", "0,50", "R", "30")
@@ -449,7 +450,7 @@ describe("RECTANG Width", () => {
     )
   })
 
-  it("does not take PLINEWID (acc/w7)", () => {
+  it("does not take PLINEWID (rectang/p307)", () => {
     const cad = harnessAt(3)
     cad.command("RECTANG")
     answer(cad, "0,0", "@20,10")

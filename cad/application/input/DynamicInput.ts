@@ -77,6 +77,14 @@ export interface DynamicInputSession {
    * tool's anchor, else LASTPOINT, where the tool wants a snapped point.
    */
   readonly directDistance?: Vec3 | "lastPoint" | "typed"
+  /**
+   * The command line answers the prompt's point, not the box's first field:
+   * a number typed there is direct distance from the tool's anchor, as at a
+   * lone coordinate box. RECTANG's other corner, whose box holds the sides'
+   * length and width (desktop rectang/d05) while the command line takes the
+   * corner (rectang/p08, d03).
+   */
+  readonly commandLinePoint?: boolean
 }
 
 interface FieldState {

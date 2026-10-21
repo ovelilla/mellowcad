@@ -1,5 +1,5 @@
 import { Vec2, V } from "../../geometry/Vec2"
-import { Vec3 } from "../../geometry/Vec3"
+import { Vec3, withZOf } from "../../geometry/Vec3"
 import { bulgeOfAngle } from "../../geometry/bulgeArcs"
 import { normalizeDegrees } from "../../geometry/primitives"
 import {
@@ -9,7 +9,7 @@ import {
   withThickness,
 } from "../../domain/entities"
 import type { PolylineEntity } from "../../domain/entities"
-import { formatAngle, formatLength } from "../../domain/units"
+import { formatAngle, formatLength, parseNumber } from "../../domain/units"
 import { ucsPointToWorld, worldPointToUcs } from "../../domain/ucs"
 import { AddEntityCommand } from "../commands/entityCommands"
 import { DynamicInputSession } from "../input/DynamicInput"
@@ -19,7 +19,6 @@ import {
   parseCoordinate,
 } from "../input/coordinateInput"
 import { ScenePrimitive } from "../../scene/types"
-import { THEME } from "../../scene/theme"
 import { entityScenePrimitive } from "../SceneBuilder"
 import {
   CommandOption,
@@ -31,7 +30,12 @@ import {
   ToolContext,
   ToolQuestion,
 } from "./Tool"
-import { withCurrentProperties } from "./currentProperties"
+import {
+  type CurrentProperties,
+  currentColor,
+  currentProperties,
+  withProperties,
+} from "./currentProperties"
 import { headingInUcs } from "./ucsHeading"
 
 /** A value the first prompt's options ask. */
@@ -45,8 +49,8 @@ type Mode =
 type Side = "length" | "width"
 
 /**
- * AutoCAD's RECTANG, as AutoCAD 2023's console answers it (acc/r1–r10 of the
- * RECTANG session): two opposite corners define a rectangle along the UCS
+ * AutoCAD's RECTANG, as AutoCAD 2027's console answers it (probes
+ * rectang/p01–p192): two opposite corners define a rectangle along the UCS
  * turned by Rotation, created as a single closed polyline; Area and
  * Dimensions give its size instead. Single-shot — the command ends once the
  * rectangle is made.
@@ -57,7 +61,7 @@ type RectangleToolState =
   /** Asking a value of the first prompt's options. */
   | { readonly phase: "mode"; readonly mode: Mode }
   /** First corner placed; rubber-banding the opposite corner. */
-  | { readonly phase: "second"; readonly first: Vec3; readonly cursor: Vec2 }
+  | { readonly phase: "second"; readonly first: Vec3; readonly cursor: Vec3 }
   /** Area: the area, the side it is calculated from, and that side. */
   | { readonly phase: "area"; readonly first: Vec3 }
   | { readonly phase: "areaBasis"; readonly first: Vec3 }
@@ -66,12 +70,7 @@ type RectangleToolState =
   | { readonly phase: "dimension"; readonly first: Vec3; readonly side: Side }
   /** Rotation's angle, or its Pick points' two points (`from` the first). */
   | { readonly phase: "rotation"; readonly first: Vec3 }
-  | {
-      readonly phase: "pick"
-      readonly first: Vec3
-      readonly from: Vec3 | null
-      readonly cursor: Vec2
-    }
+  | { readonly phase: "pick"; readonly first: Vec3; readonly from: Vec3 | null }
 
 /** The corners Chamfer or Fillet cut, as the options last set them. */
 interface Corners {
@@ -88,6 +87,14 @@ export class RectangleTool implements Tool {
 
   private state: RectangleToolState = { phase: "first" }
   private lastScreen: Vec2 | null = null
+  /** Where the pointer last stood, which Enter at Pick points takes. */
+  private pointer: Vec3 | null = null
+  /**
+   * The layer and properties current at the first corner, which the
+   * rectangle wears: one set later, at the other corner, does not reach it
+   * (p169, p146; p171, p147 at the first).
+   */
+  private properties: CurrentProperties | null = null
   /**
    * The options' values, kept "until you enter a different value" for the
    * session: Elevation and Thickness (instead of ELEVATION and THICKNESS),
@@ -96,7 +103,7 @@ export class RectangleTool implements Tool {
   private elevation = 0
   private thickness = 0
   private corners: Corners = { kind: null, first: 0, second: 0 }
-  /** Width's line width, negative as typed (acc/w6), drawn as none. */
+  /** Width's line width, negative as typed (p109), drawn as none. */
   private lineWidth = 0
   /** Degrees from the UCS X axis. */
   private rotation = 0
@@ -111,6 +118,7 @@ export class RectangleTool implements Tool {
     ctx.selection.clear()
     this.state = { phase: "first" }
     this.sized = false
+    this.properties = null
     this.reportModes(ctx)
     this.openPointInput(ctx, "firstCorner")
   }
@@ -122,8 +130,10 @@ export class RectangleTool implements Tool {
 
   onPointerMove(input: PointerInput, ctx: ToolContext): void {
     this.lastScreen = input.screen
-    if (this.state.phase === "second" || this.state.phase === "pick") {
+    this.pointer = input.point
+    if (this.state.phase === "second") {
       this.state = { ...this.state, cursor: input.point }
+      if (!this.sized) this.showSides(this.state.first, input.point, ctx)
     }
     ctx.dynamicInput.setPosition(input.screen)
     ctx.requestRender()
@@ -176,9 +186,13 @@ export class RectangleTool implements Tool {
     }
   }
 
-  /** Pick points' two points are bare points (`Invalid point.`). */
+  /**
+   * Pick points' two points are bare points (`Invalid point.`); the other
+   * corner a point whatever its box holds, the sides' two distances.
+   */
   takes(): QuestionInput | null {
-    return this.state.phase === "pick" ? "point" : null
+    const { phase } = this.state
+    return phase === "pick" || phase === "second" ? "point" : null
   }
 
   defaultOption(): string | null {
@@ -223,6 +237,9 @@ export class RectangleTool implements Tool {
           this.askDimension(state.first, "length", ctx)
           return "continue"
         case "Rotation":
+          // The other corner is a corner again: Rotation drops the
+          // Dimensions given before it (p177).
+          this.sized = false
           this.askRotation(state.first, ctx)
           return "continue"
         default:
@@ -234,12 +251,7 @@ export class RectangleTool implements Tool {
       return "continue"
     }
     if (state.phase === "rotation" && id === "Pick") {
-      this.state = {
-        phase: "pick",
-        first: state.first,
-        from: null,
-        cursor: state.first,
-      }
+      this.state = { phase: "pick", first: state.first, from: null }
       this.openPointInput(ctx, "firstPoint")
       return "continue"
     }
@@ -249,6 +261,11 @@ export class RectangleTool implements Tool {
   wantsSnap(): boolean {
     const { phase } = this.state
     return phase === "first" || phase === "second" || phase === "pick"
+  }
+
+  /** `_TAN` or `_PER` at the first corner measures from LASTPOINT (p05, p06). */
+  snapsFromLastPoint(): boolean {
+    return this.state.phase === "first"
   }
 
   /**
@@ -268,25 +285,16 @@ export class RectangleTool implements Tool {
     }
   }
 
+  /**
+   * The rectangle in the colour it will wear and no line from the first
+   * corner; nothing at Pick points' second point (desktop d01, d04).
+   */
   buildOverlay(ctx: ToolContext): ScenePrimitive[] {
     const state = this.state
-    if (state.phase === "pick" && state.from !== null) {
-      return [
-        {
-          kind: "path",
-          points: [state.from, state.cursor].map((point) =>
-            ctx.viewport.worldToScreen(point)
-          ),
-          closed: false,
-          stroke: { color: THEME.rubberBand, width: 1 },
-        },
-      ]
-    }
     if (state.phase !== "second") return []
     const rectangle = this.toCorner(state.first, state.cursor, ctx, PREVIEW_ID)
-    if (rectangle === null) return []
     return entityScenePrimitive(ctx.viewport, rectangle, {
-      color: THEME.rubberBand,
+      color: currentColor(ctx, this.properties ?? undefined),
       width: 1,
     })
   }
@@ -300,17 +308,16 @@ export class RectangleTool implements Tool {
     const at = screen ?? this.lastScreen ?? ctx.viewport.worldToScreen(point)
     switch (state.phase) {
       case "first":
+        this.properties = currentProperties(ctx)
         this.askCorner(point, ctx, at)
         return
-      case "second": {
-        const rectangle = this.toCorner(state.first, point, ctx)
-        // A rectangle with no area is not made: the corner is asked again.
-        if (rectangle !== null) this.commit(rectangle, ctx)
+      case "second":
+        // One of no area too, as AutoCAD makes it (p11, p164; Ortho's, d01).
+        this.commit(this.toCorner(state.first, point, ctx), ctx)
         return
-      }
       case "pick":
         if (state.from === null) {
-          this.state = { ...state, from: point, cursor: point }
+          this.state = { ...state, from: point }
           this.openPointInput(ctx, "secondPoint", at)
           ctx.requestRender()
           return
@@ -323,8 +330,65 @@ export class RectangleTool implements Tool {
 
   private askCorner(first: Vec3, ctx: ToolContext, screen?: Vec2): void {
     this.state = { phase: "second", first, cursor: first }
-    this.openPointInput(ctx, "otherCorner", screen)
+    if (this.sized) this.openPointInput(ctx, "otherCorner", screen)
+    else this.openSidesInput(ctx, screen)
     ctx.requestRender()
+  }
+
+  /**
+   * The other corner's box: the sides' length and width along the turned
+   * sides, as the desktop shows them (d05), their signs the cursor's
+   * quadrant; a coordinate typed in it is the corner, relative to the first.
+   * The command line still answers the corner (`commandLinePoint`).
+   */
+  private openSidesInput(ctx: ToolContext, screen?: Vec2): void {
+    ctx.dynamicInput.open({
+      fields: [
+        { id: "length", prompt: "length", kind: "distance" },
+        { id: "width", prompt: "width", kind: "distance" },
+      ],
+      commit: (values, commitCtx) =>
+        this.takeSides(values.length, values.width, commitCtx),
+      commitRaw: (commitCtx) => this.commitTypedPoint(commitCtx),
+      commandLinePoint: true,
+    })
+    ctx.dynamicInput.setLive("length", 0)
+    ctx.dynamicInput.setLive("width", 0)
+    ctx.dynamicInput.setPosition(screen ?? this.lastScreen ?? { x: 0, y: 0 })
+  }
+
+  /** The cursor's offset from `first` along the turned sides, in the UCS. */
+  private sidesTo(first: Vec3, cursor: Vec2, ctx: ToolContext): Vec2 {
+    const from = worldPointToUcs(ctx.ucs, first)
+    const to = worldPointToUcs(ctx.ucs, cursor)
+    const d = { x: to.x - from.x, y: to.y - from.y }
+    const { u, v } = sides(this.rotation)
+    return { x: V.dot(d, u), y: V.dot(d, v) }
+  }
+
+  private showSides(first: Vec3, cursor: Vec2, ctx: ToolContext): void {
+    const { x, y } = this.sidesTo(first, cursor, ctx)
+    ctx.dynamicInput.setLive("length", Math.abs(x))
+    ctx.dynamicInput.setLive("width", Math.abs(y))
+  }
+
+  /**
+   * The box's length and width, laid in the cursor's quadrant. LASTPOINT is
+   * the corner they give, as a coordinate typed there leaves it (d05).
+   */
+  private takeSides(length: number, width: number, ctx: ToolContext): void {
+    if (this.state.phase !== "second") return
+    const { first, cursor } = this.state
+    const reading = this.sidesTo(first, cursor, ctx)
+    const along = sign(reading.x) * length
+    const across = sign(reading.y) * width
+    const { u, v } = sides(this.rotation)
+    const corner = V.add(
+      worldPointToUcs(ctx.ucs, first),
+      V.add(V.scale(u, along), V.scale(v, across))
+    )
+    ctx.setLastPoint(withZOf(ucsPointToWorld(ctx.ucs, corner), first))
+    this.commit(this.toSize(first, along, across, ctx), ctx)
   }
 
   private modeQuestion(mode: Mode): { id: PromptId; enter: number } {
@@ -349,17 +413,20 @@ export class RectangleTool implements Tool {
   }
 
   /**
-   * A value of the first prompt's options, offering the current one. Negative
-   * values are taken, as AutoCAD takes them: a negative fillet turns the
-   * corners' arcs inside out, and a negative width is listed as typed and
-   * drawn as none (acc/w6).
+   * A value of the first prompt's options, offering the current one. The
+   * chamfers and the fillet refuse a negative one (p107, p108); the others
+   * take it, a negative width listed as typed and drawn as none (p109).
    */
   private askMode(mode: Mode, ctx: ToolContext): void {
     this.state = { phase: "mode", mode }
     const { id, enter } = this.modeQuestion(mode)
-    this.askValue(id, "distance", enter, ctx, (value, commitCtx) =>
+    this.askValue(id, "distance", enter, ctx, (value, commitCtx) => {
+      if (value < 0 && CUTS.has(mode)) {
+        commitCtx.report(commitCtx.text.message("valueMustBePositive"), "error")
+        return
+      }
       this.setMode(mode, value, commitCtx)
-    )
+    })
   }
 
   private setMode(mode: Mode, value: number, ctx: ToolContext): void {
@@ -387,7 +454,7 @@ export class RectangleTool implements Tool {
         break
       case "fillet":
         // WHY both: the next Chamfer offers the radius as each distance
-        // (acc/r3), the first being the very same value.
+        // (p172), the first being the very same value.
         this.corners = {
           kind: value !== 0 ? "fillet" : null,
           first: value,
@@ -409,7 +476,12 @@ export class RectangleTool implements Tool {
       ctx,
       (value, commitCtx) => {
         if (!(value > 0)) {
-          commitCtx.report(commitCtx.text.message("positiveNonzero"), "error")
+          // WHY its own id: Spanish words it «distinto de cero» here, where
+          // CIRCLE's and LINE's say «diferente» (p112 es-ES).
+          commitCtx.report(
+            commitCtx.text.message("areaPositiveNonzero"),
+            "error"
+          )
           return
         }
         this.area = value
@@ -428,13 +500,16 @@ export class RectangleTool implements Tool {
     const prompt = side === "length" ? "rectangleLength" : "rectangleWidth"
     this.askValue(prompt, "distance", this[side], ctx, (value, commitCtx) => {
       this[side] = value
+      // WHY nothing drawn: of a side of 0 AutoCAD 2027 makes a polyline whose
+      // vertices but the first are NaN (p114), no object to keep.
+      if (value === 0) {
+        commitCtx.endCommand()
+        return
+      }
       const other = side === "length" ? "width" : "length"
-      this[other] = this.otherSide(Math.abs(value))
+      this[other] = this.otherSide(value)
       const rectangle = this.toSize(first, this.length, this.width, commitCtx)
-      // WHY nothing drawn: a length of 0 makes AutoCAD's console a polyline
-      // of no size at the origin (acc/r6).
-      if (rectangle !== null) this.commit(rectangle, commitCtx)
-      else commitCtx.endCommand()
+      this.commit(rectangle, commitCtx)
     })
   }
 
@@ -442,19 +517,21 @@ export class RectangleTool implements Tool {
    * The side that gives the area with `given`, "If the Chamfer or Fillet
    * option is active, the area includes the effect of the chamfers or
    * fillets on the corners of the rectangle" — when they fit on it; when
-   * they do not, the rectangle is plain, and so its area (acc/r9).
+   * they do not, the rectangle is plain, and so its area (p153). Its sign is
+   * the given side's: a negative one turns both (p159).
    */
   private otherSide(given: number): number {
-    if (given === 0) return 0
     const { kind, first, second } = this.corners
     const loss =
       kind === "chamfer"
         ? 2 * first * second
         : kind === "fillet"
-          ? (4 - Math.PI) * first * Math.abs(first)
+          ? (4 - Math.PI) * first * first
           : 0
     const other = (this.area + loss) / given
-    return cornersFit(this.corners, given, other) ? other : this.area / given
+    return cornersFit(this.corners, Math.abs(given), Math.abs(other))
+      ? other
+      : this.area / given
   }
 
   private askDimension(first: Vec3, side: Side, ctx: ToolContext): void {
@@ -506,37 +583,45 @@ export class RectangleTool implements Tool {
   }
 
   /**
-   * The rectangle the other corner makes: the two corners' own, or, once
-   * Dimensions is given, its length and width in the quadrant the corner
-   * lies in. WHY that quadrant is read along the UCS, not the turned sides:
-   * AutoCAD's console does so (acc/r8: turned 45°, a corner at -10,50 from
-   * the first lays the length towards -X'), so it is kept.
+   * The rectangle the other corner makes: the two corners' own, a side
+   * typed in the box locked to its value, or, once Dimensions is given, its
+   * length and width in the quadrant the corner lies in. WHY that quadrant
+   * is read along the UCS, not the turned sides: AutoCAD's console does so
+   * (p155: turned 45°, a corner at -10,50 from the first lays the length
+   * towards -X'), so it is kept.
    */
   private toCorner(
     first: Vec3,
     other: Vec2,
     ctx: ToolContext,
     id?: string
-  ): PolylineEntity | null {
-    const from = worldPointToUcs(ctx.ucs, first)
-    const to = worldPointToUcs(ctx.ucs, other)
-    const d = { x: to.x - from.x, y: to.y - from.y }
+  ): PolylineEntity {
     if (this.sized) {
+      const from = worldPointToUcs(ctx.ucs, first)
+      const to = worldPointToUcs(ctx.ucs, other)
       return this.toSize(
         first,
-        (d.x < 0 ? -1 : 1) * Math.abs(this.length),
-        (d.y < 0 ? -1 : 1) * Math.abs(this.width),
+        sign(to.x - from.x) * Math.abs(this.length),
+        sign(to.y - from.y) * Math.abs(this.width),
         ctx,
         id
       )
     }
-    const { u, v } = sides(this.rotation)
-    return this.toSize(first, V.dot(d, u), V.dot(d, v), ctx, id)
+    const { x, y } = this.sidesTo(first, other, ctx)
+    const length = typedSide(ctx, "length")
+    const width = typedSide(ctx, "width")
+    return this.toSize(
+      first,
+      length === null ? x : sign(x) * length,
+      width === null ? y : sign(y) * width,
+      ctx,
+      id
+    )
   }
 
   /**
    * The rectangle from the first corner `length` along the turned X axis and
-   * `width` along its Y, either negative backwards; null when it has no area.
+   * `width` along its Y, either negative backwards.
    */
   private toSize(
     first: Vec3,
@@ -544,8 +629,7 @@ export class RectangleTool implements Tool {
     width: number,
     ctx: ToolContext,
     id?: string
-  ): PolylineEntity | null {
-    if (Math.abs(length) < 1e-9 || Math.abs(width) < 1e-9) return null
+  ): PolylineEntity {
     const origin = worldPointToUcs(ctx.ucs, first)
     const { u, v } = sides(this.rotation)
     const along = V.scale(u, length)
@@ -567,23 +651,28 @@ export class RectangleTool implements Tool {
     const rectangle = createPolyline(
       vertices.map((point) => ucsPointToWorld(ctx.ucs, point)),
       true,
-      ctx.document.getCurrentLayerId(),
+      this.properties?.layerId ?? ctx.document.getCurrentLayerId(),
       bulges,
       id,
       vertices.map(() => [lineWidth, lineWidth])
     )
-    // An Elevation set here puts the rectangle that far above the UCS's XY
-    // plane whatever the corners' Z; at 0 the first corner fixes its plane,
-    // as for any flat object.
+    // An Elevation set here is the polyline's own, as typed, whatever the
+    // corners' Z and the UCS's origin (p145, p178); at 0 the first corner
+    // fixes its plane, as for any flat object (p122, p142).
     const placed =
       this.elevation !== 0
-        ? withElevation(rectangle, ctx.ucs.origin.z + this.elevation)
+        ? withElevation(rectangle, this.elevation)
         : onPlaneOf(rectangle, first)
     return withThickness(placed, this.thickness)
   }
 
   private commit(rectangle: PolylineEntity, ctx: ToolContext): void {
-    ctx.execute(new AddEntityCommand(withCurrentProperties(rectangle, ctx)))
+    const properties = this.properties ?? currentProperties(ctx)
+    ctx.execute(
+      new AddEntityCommand(
+        withProperties(rectangle, { ...properties, thickness: this.thickness })
+      )
+    )
     ctx.endCommand()
   }
 
@@ -633,14 +722,16 @@ export class RectangleTool implements Tool {
 
   /** Places a corner from a typed coordinate (e.g. `50,20` or `@100,50`). */
   private commitTypedPoint(ctx: ToolContext): boolean {
-    const text = ctx.dynamicInput.getText("point").trim()
-    if (text === "") {
-      // The corners take no Enter: AutoCAD asks again (acc/r2, r3). WHY
-      // Pick points' too: the console takes its own cursor there (acc/r10),
-      // which has no counterpart here.
-      const refusal =
-        this.state.phase === "pick" ? "invalidPoint" : "pointOrKeywordRequired"
-      ctx.report(ctx.text.message(refusal), "error")
+    const field = ctx.dynamicInput.getActiveFieldId()
+    const text = field === null ? "" : ctx.dynamicInput.getText(field).trim()
+    if (!ctx.dynamicInput.hasTypedText()) {
+      // Enter at Pick points' points takes the cursor (p118, p119); the
+      // corners take none, AutoCAD asks again (p04).
+      if (this.state.phase === "pick") {
+        this.advanceWithPoint(this.pointer ?? this.state.first, ctx)
+      } else {
+        ctx.report(ctx.text.message("pointOrKeywordRequired"), "error")
+      }
       return true
     }
     if (!isCoordinateExpression(text)) return false
@@ -665,12 +756,32 @@ const FIRST_PROMPT_MODES: Readonly<Record<string, Mode>> = {
   Width: "width",
 }
 
+/** The options whose value cuts the corners, which refuse a negative one. */
+const CUTS: ReadonlySet<Mode> = new Set<Mode>([
+  "chamferFirst",
+  "chamferSecond",
+  "fillet",
+])
+
 /**
  * The second chamfer distance's `<default>`: the last one, or with none the
- * first just given (acc/r1, r3, r5).
+ * first just given (p158, p02).
  */
 function secondDefault(second: number, first: number): number {
   return second !== 0 ? second : first
+}
+
+/** -1 for a negative reading, else 1: a side of 0 lies forwards. */
+function sign(value: number): number {
+  return value < 0 ? -1 : 1
+}
+
+/** A side typed in the other corner's box, which locks it; null if none. */
+function typedSide(ctx: ToolContext, field: "length" | "width"): number | null {
+  const text = ctx.dynamicInput.getText(field).trim()
+  if (text === "" || isCoordinateExpression(text)) return null
+  const value = parseNumber(text)
+  return value !== null && Number.isFinite(value) ? value : null
 }
 
 /** The rectangle's sides turned by `rotation` degrees from the UCS X axis. */
@@ -694,7 +805,7 @@ function cornersFit(corners: Corners, length: number, width: number): boolean {
  * first distance back along the side that reaches it, the second along the
  * side that leaves it —, starting where the first corner's cut begins.
  * AutoCAD keeps the eight vertices when the cuts do not fit, every corner
- * then plain and doubled (acc/r4).
+ * then plain and doubled (p157; of no area, p12).
  */
 function cutCorners(
   corners: readonly Vec2[],
