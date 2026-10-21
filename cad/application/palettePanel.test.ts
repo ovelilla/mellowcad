@@ -1,8 +1,8 @@
 import { describe, expect, it } from "vitest"
 
 import { createHarness } from "../../test/harness"
-import { circleOf, lineOf, p } from "../../test/builders"
-import type { CircleEntity, LineEntity } from "../domain/entities"
+import { arcOf, circleOf, deg, lineOf, p } from "../../test/builders"
+import type { ArcEntity, CircleEntity, LineEntity } from "../domain/entities"
 import { es } from "../locales/es"
 
 describe("the palette panel", () => {
@@ -262,6 +262,98 @@ describe("the Properties palette's object type drop-down", () => {
       "Centro X",
       "Centro Y",
       "Centro Z",
+    ])
+  })
+
+  // desktop arc/d09: one Geometry group, Start X Y Z, Center X Y Z, End X Y
+  // Z, Radius, Start angle, End angle, Total angle, Arc length, Area and
+  // Normal X Y Z, the ends, Total angle, Arc length, Area and the normal
+  // greyed; Area the segment's (r 10.0577 through 167.7° is 137.303 there).
+  it("lists an arc's geometry in AutoCAD's order, the ends and measures read-only", () => {
+    const cad = createHarness({
+      entities: [arcOf(p(10, 20), 10, deg(10), deg(100), { id: "A1" })],
+    })
+    cad.select("A1")
+    const info = cad.state().properties.info!
+    expect(
+      info.groups.map((g) => [
+        g.title,
+        g.rows.map((r) => `${r.label}=${r.value}${r.edit ? "*" : ""}`),
+      ])
+    ).toEqual([
+      [
+        "Geometry",
+        [
+          "Start X=19.85",
+          "Start Y=21.74",
+          "Start Z=0.00",
+          "Center X=10.00*",
+          "Center Y=20.00*",
+          "Center Z=0.00*",
+          "End X=8.26",
+          "End Y=29.85",
+          "End Z=0.00",
+          "Radius=10.00 mm*",
+          "Start angle=10°*",
+          "End angle=100°*",
+          "Total angle=90°",
+          "Arc length=15.71 mm",
+          "Area=28.54 mm²",
+          "Normal X=0.00",
+          "Normal Y=0.00",
+          "Normal Z=1.00",
+        ],
+      ],
+    ])
+    expect(info.general?.map((r) => r.label)).toEqual(["Thickness"])
+  })
+
+  it("measures an arc's segment area as AutoCAD's palette does", () => {
+    // desktop arc/d08's stretched arc, read on d09.
+    const center = p(50, 23.9245)
+    const start = Math.atan2(25 - center.y, 60 - center.x)
+    const end = Math.atan2(25 - center.y, 40 - center.x)
+    const cad = createHarness({
+      entities: [arcOf(center, 10.0577, start, end, { id: "A1" })],
+    })
+    cad.select("A1")
+    const area = cad
+      .state()
+      .properties.info!.groups[0].rows.find((r) => r.id === "area")
+    expect(area?.value).toBe("137.30 mm²")
+    expect(cad.runtime.setSelectionProperty("startAngle", "0")).toBe(true)
+    expect(cad.byId<ArcEntity>("A1").startAngle).toBe(0)
+  })
+
+  // Spanish: worded in Autodesk's style from the console's words (tables
+  // 20460 `ángulo inicial`, 20981 `ángulo total`, AcDimRes 5345 `longitud de
+  // arco`); the desktop's own labels are unverified.
+  it("names an arc's rows in Spanish", () => {
+    const cad = createHarness({
+      locale: es,
+      entities: [arcOf(p(0, 0), 10, 0, deg(90), { id: "A1" })],
+    })
+    cad.select("A1")
+    const rows = cad.state().properties.info!.groups[0].rows
+    expect(rows.map((row) => row.label)).toEqual([
+      "Inicio X",
+      "Inicio Y",
+      "Inicio Z",
+      "Centro X",
+      "Centro Y",
+      "Centro Z",
+      "Fin X",
+      "Fin Y",
+      "Fin Z",
+      "Radio",
+      "Ángulo inicial",
+      "Ángulo final",
+      "Ángulo total",
+      "Longitud de arco",
+      "Área",
+      "Normal X",
+      "Normal Y",
+      "Normal Z",
     ])
   })
 })

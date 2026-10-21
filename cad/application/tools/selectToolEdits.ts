@@ -1,6 +1,10 @@
 import { Vec2, V } from "../../geometry/Vec2"
 import { planar } from "../../geometry/Vec3"
+import { arcFrom3Points } from "../../geometry/primitives"
 import {
+  ArcEntity,
+  arcEndPoint,
+  arcStartPoint,
   createArc,
   createCircle,
   carryOverrides,
@@ -117,6 +121,34 @@ export function radiusHandle(center: Vec2, p: Vec2, radius: number): Vec2 {
   const len = V.length(dir)
   if (len < 1e-9) return { x: center.x + radius, y: center.y }
   return V.add(center, V.scale(dir, radius / len))
+}
+
+/**
+ * An arc stretched by its middle grip: through its start, `point` and its
+ * end, stored counter-clockwise (desktop arc/d08); `null` when the three lie
+ * on one line, which leaves the arc as it was.
+ */
+export function arcStretchedThrough(
+  arc: ArcEntity,
+  point: Vec2
+): ArcEntity | null {
+  const through = arcFrom3Points(
+    arcStartPoint(arc),
+    planar(point),
+    arcEndPoint(arc)
+  )
+  if (!through) return null
+  return carryOverrides(
+    arc,
+    createArc(
+      through.center,
+      through.radius,
+      through.startAngle,
+      through.endAngle,
+      arc.layerId,
+      arc.id
+    )
+  )
 }
 
 /** A copy of a circle or arc with a new radius (preserving id); else `null`. */

@@ -2,6 +2,7 @@ import { Vec2, V } from "../geometry/Vec2"
 import { Vec3, scale3, withZOf, zOf } from "../geometry/Vec3"
 import { axesToWorld } from "../geometry/ocs"
 import {
+  ArcEntity,
   AttributeDisplay,
   BlockLookup,
   CircleEntity,
@@ -14,6 +15,7 @@ import {
   LineEntity,
   PolylineEntity,
   ThickEntity,
+  arcSweepAngle,
   attributeDefinitionText,
   dimensionGeometry,
   entityDrawOrder,
@@ -888,16 +890,9 @@ function planarPrimitives(
         ? linetypedCircle(camera, entity, stroke)
         : [circleCurve(camera, entity, stroke)]
     case "arc":
-      return [
-        arcScenePrimitive(
-          camera,
-          entity.center,
-          entity.radius,
-          entity.startAngle,
-          entity.endAngle,
-          stroke
-        ),
-      ]
+      return options.linetype && stroke.dash && stroke.dash.length > 0
+        ? linetypedArc(camera, entity, stroke)
+        : [arcCurve(camera, entity, stroke)]
     case "ellipse":
       return [ellipseScenePrimitive(camera, entity, stroke)]
     case "spline": {
@@ -1371,8 +1366,8 @@ function linetypedPolyline(
 }
 
 /**
- * More periods than this round one circle and its pattern is left to the
- * renderer on a single curve, unfitted: drawn dash by dash, a huge circle
+ * More periods than this along one circle or arc and its pattern is left to
+ * the renderer on a single curve, unfitted: drawn dash by dash, a huge circle
  * zoomed into would be tens of thousands of primitives, most off the screen,
  * and at that count the fit cannot be seen.
  */
@@ -1445,6 +1440,76 @@ function linetypedCircle(
     }
   }
   return out
+}
+
+function arcCurve(
+  camera: CameraTransform,
+  arc: ArcEntity,
+  stroke: StrokeStyle
+): ScenePrimitive {
+  return arcScenePrimitive(
+    camera,
+    arc.center,
+    arc.radius,
+    arc.startAngle,
+    arc.endAngle,
+    stroke
+  )
+}
+
+/**
+ * An arc's linetype laid as AutoCAD lays it: centred over its length as a
+ * line's is ({@link centredPattern}; arc/p200, desktop arc/d10), so it begins
+ * and ends on a dash of the same length, and solid under one period. Each dash
+ * is a piece of the arc (ARC-D6), true in any view; past
+ * {@link MAX_FITTED_PERIODS} the pattern is left to the renderer on one curve.
+ */
+function linetypedArc(
+  camera: CameraTransform,
+  arc: ArcEntity,
+  stroke: StrokeStyle
+): ScenePrimitive[] {
+  const pattern = (stroke.dash ?? []).map((run) => run / camera.scale)
+  const length = arc.radius * arcSweepAngle(arc)
+  const layout = centredPattern(pattern, length)
+  const solid: StrokeStyle = { color: stroke.color, width: stroke.width }
+  if (!layout) return [arcCurve(camera, arc, solid)]
+  const period = pattern.reduce((sum, run) => sum + run, 0)
+  if (length / period > MAX_FITTED_PERIODS)
+    return [arcCurve(camera, arc, stroke)]
+  const dot = stroke.width / camera.scale
+  const from = layout.lead
+  const to = length - layout.lead
+  const dashes: [number, number][] = []
+  let at = from - layout.offset
+  while (at < to - 1e-9) {
+    for (let i = 0; i < pattern.length && at < to - 1e-9; i++) {
+      if (i % 2 === 0) {
+        const run =
+          pattern[i] > 0 ? pattern[i] : Math.min(dot, pattern[i + 1] ?? dot)
+        const a = Math.max(at, from)
+        const b = Math.min(at + run, to)
+        if (b > a) dashes.push([a, b])
+      }
+      at += pattern[i]
+    }
+  }
+  // An end dash longer than the pattern's first is the pattern's own first
+  // dash with the solid lead before it.
+  if (dashes.length > 0) {
+    dashes[0][0] = 0
+    dashes[dashes.length - 1][1] = length
+  }
+  return dashes.map(([a, b]) =>
+    arcScenePrimitive(
+      camera,
+      arc.center,
+      arc.radius,
+      arc.startAngle + a / arc.radius,
+      arc.startAngle + b / arc.radius,
+      solid
+    )
+  )
 }
 
 function pushEntities(

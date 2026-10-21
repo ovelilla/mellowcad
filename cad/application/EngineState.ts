@@ -20,7 +20,9 @@ import {
   EntityType,
   MTextEntity,
   TextEntity,
+  arcEndPoint,
   arcLength,
+  arcStartPoint,
   arcSweepAngle,
   circleArea,
   circleCircumference,
@@ -996,26 +998,34 @@ function singleEntityInfo(
     case "arc": {
       const deg = (radians: number) =>
         normalizeDegrees((radians * 180) / Math.PI)
+      const sweep = arcSweepAngle(entity)
+      const start = at(arcStartPoint(entity))
+      const end = at(arcEndPoint(entity))
+      // The segment its chord closes: the sector less the triangle.
+      const surface = (entity.radius ** 2 / 2) * (sweep - Math.sin(sweep))
       return {
         title: title("arc"),
         count: 1,
         groups: [
+          // AutoCAD's one Geometry group, in its order; the ends, Total
+          // angle, Arc length, Area and the normal greyed (desktop arc/d09).
           group("geometry", [
+            row("startX", coord(start.x)),
+            row("startY", coord(start.y)),
+            row("startZ", coord(start.z)),
+            coordRow("centerX", "centerX", at(entity.center).x),
+            coordRow("centerY", "centerY", at(entity.center).y),
+            coordRow("centerZ", "centerZ", at(entity.center).z),
+            row("endX", coord(end.x)),
+            row("endY", coord(end.y)),
+            row("endZ", coord(end.z)),
             lengthRow("radius", "radius", entity.radius),
-            row("length", length(arcLength(entity))),
-            angleRow(
-              "angle",
-              "totalAngle",
-              (arcSweepAngle(entity) * 180) / Math.PI
-            ),
             angleRow("startAngle", "startAngle", deg(entity.startAngle)),
             angleRow("endAngle", "endAngle", deg(entity.endAngle)),
+            row("totalAngle", degrees((sweep * 180) / Math.PI)),
+            row("arcLength", length(arcLength(entity))),
+            row("area", area(surface)),
             ...normalRows(),
-          ]),
-          group("center", [
-            coordRow("x", "centerX", at(entity.center).x),
-            coordRow("y", "centerY", at(entity.center).y),
-            coordRow("z", "centerZ", at(entity.center).z),
           ]),
         ],
       }

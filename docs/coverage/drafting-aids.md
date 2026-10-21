@@ -18,11 +18,13 @@ Extension the cursor follows (**unverified**: the help names the polar path only
 band; Extension prolongs a line, an arc or an open polyline's straight end from an end the cursor
 passed over (the + marker, OTRACK off too), dashed from that end, a typed distance running along it
 from the end; running Apparent Intersection is the visual crossing of two objects at different
-heights; Perpendicular to lines (past their ends), circles, arcs and polyline segments; Tangent to
+heights; Perpendicular to lines (past their ends), circles, arcs (only a foot on the sweep, though
+the other is nearer: arc/p208, p209) and polyline segments; Tangent to
 circles, arcs and polyline arcs; Center and Quadrant of polyline arcs; a circle's Quadrants along
 the UCS's X and Y when it lies parallel to the UCS's XY plane (UCS Z 30: circle/p212, p217), its
 OCS's otherwise (**unverified**, not probed), only the snap turning, not the grips (desktop
-circle/d15); an arc's at its OCS's (**unverified** in a rotated UCS); the markers as AutoCAD's dark
+circle/d15), an arc's so too where its sweep passes (arc/p201, p203; tilted, p210, p211); the
+markers as AutoCAD's dark
 theme draws them, green, 14 px with a 2 px stroke (square, triangle, circle with a cross, diamond,
 ✕, right angle, circle with a bar, hourglass; desktop line/d05, d21); a Tangent or Perpendicular a
 command works out itself (LINE's first point, CIRCLE's 2P, 3P and Ttr, whose objects are picked as
@@ -38,7 +40,9 @@ tables 33112, 33113, desktop passes line/d10, d27)
 **Missing:** Node and Geometric Center (no POINT object; a dimension's definition points snap as
 Endpoint), deferred Perpendicular and Tangent at the first point of a command other than LINE and
 CIRCLE (refused there as finding nothing, as at PLINE's start, pline/p29),
-Perpendicular and Tangent on ellipses and splines, extended Intersection and extended Apparent
+Perpendicular and Tangent on ellipses and splines, a polyline arc segment's Quadrant in a rotated
+UCS and Perpendicular off its sweep (**unverified**, left at its OCS's and both feet until PLINE's
+object is probed), extended Intersection and extended Apparent
 Intersection (picked object by object, as an override), Extension from a polyline's arc end, the
 tooltip's distance and angle (`Extension: 12.00 < 0°`), the snapped object's blue glow while Tab
 cycles (d26), APERTURE and AUTOSNAP's settings as variables, per-entity opt-in still required for every
@@ -262,7 +266,12 @@ properties per type, CUI's Rollover Tooltips), ROLLOVERTIPS and CURSORSIZE as va
 resulting length towards the cursor (the first of DYNDIVIS's default two fields, help 2027
 "Dimension Input Settings"); every move grip (a line's midpoint, a centre, an insertion point) moves
 its own object only, whatever else is selected (d15, `** ESTIRAR **` with two lines selected);
-radius, arc end, MTEXT width; a polyline's grips, Stretch their default (desktop pline/d09): a
+radius, MTEXT width; an arc's middle grip, Stretch its default (desktop arc/d07, d08): the arc bent
+through its two ends and the point, stored counter-clockwise (40,25 → 50,30 → 60,25 dragged to its
+middle at 50,33.98 is centre 50,23.9245, radius 10.0577, d09), left as it was, with nothing said,
+on its chord; its ghost solid in the object's colour, the grip hot where it was taken; an arc's end
+grip swings the end round the centre, the radius kept (AutoCAD's Stretch there **unverified**:
+d07 shows its hover menu, Stretch and Lengthen, the drag not seen); a polyline's grips, Stretch their default (desktop pline/d09): a
 vertex moves alone, a straight segment's midpoint moves the segment, both its ends by the drag, an
 arc segment's midpoint bends the arc through the point, and an arc beside a vertex moved bends
 through its old midpoint (0.4142 → 0.1702 on d09's quarter arc), one undo step each; vertex grips
@@ -279,7 +288,9 @@ Quadrant snap turns with the UCS (d15); blue squares 9 px across (GRIPSIZE's def
 under the cursor red (d15)
 
 **Missing:** the end grip's hover menu, `Stretch` and `Lengthen` (es `Estirar`, `Longitud`, d15),
-and so Lengthen from a grip; the Length Change field after a Tab (DYNDIVIS) and the angle fields;
+and so Lengthen from a grip; an arc's hover menus (desktop arc/d07: the middle grip's `Stretch`,
+`Radius`, an end's `Stretch`, `Lengthen`), so Radius and Lengthen from its grips, and a stretch
+typed while its middle grip is hot; the Length Change field after a Tab (DYNDIVIS) and the angle fields;
 the `** STRETCH **` prompt and its options at the command line; the hover colour apart from the
 dragged one (AutoCAD's hovered grip is pink, GRIPHOVER 11, the dragged one red), Enter (and Space)
 cycling the grip modes — Enter keeps the edit hot, tracking-aware radius and angle drag,

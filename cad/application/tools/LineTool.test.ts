@@ -154,6 +154,20 @@ describe("LINE", () => {
       expectEnds(cad, [[5, 5, 0, 5, 5, 0]])
     })
 
+    // probes arc/p201 (UCS Z 30), p210 (UCS X 90): the point is written in
+    // the WCS, whatever the UCS it was given in, `0,10` here in both.
+    it.each([
+      ["Z", "30", "(-5.00, 8.66, 0.00)"],
+      ["X", "90", "(0.00, 0.00, 10.00)"],
+    ])("is said where it lies in the WCS in UCS %s %s", (axis, angle, at) => {
+      const cad = answer(createHarness(), "UCS", axis, angle, "LINE", "0,10")
+
+      expect(written(cad, "@")).toEqual([
+        "Specify next point or [Undo]: @",
+        `Zero length line created at ${at}`,
+      ])
+    })
+
     it("is drawn from `0` at Continue's length", () => {
       // probe line/p08: the arc drawn clockwise ends at (100,0).
       const cad = answer(createHarness(), "ARC", "0,0", "50,50", "100,0")

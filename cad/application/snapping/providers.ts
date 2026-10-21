@@ -266,10 +266,10 @@ export const insertionProvider: SnapProvider = {
 }
 
 /**
- * Where a circle's quadrants start in its own plan: along the UCS's X when it
- * lies parallel to the UCS's XY plane (circle/p212, p217), its OCS X
- * otherwise (**unverified**: a quadrant on a circle tilted to the UCS was not
- * probed). An arc's stay at its OCS's (ARC's review).
+ * Where a circle's or an arc's quadrants start in its own plan: along the
+ * UCS's X when it lies parallel to the UCS's XY plane (circle/p212, p217;
+ * arc/p201, p211), its OCS X otherwise (**unverified**: a quadrant on a curve
+ * tilted to the UCS was not probed).
  */
 function quadrantTurn(circle: Entity, ucs: Ucs): number {
   const axes = entityAxes(circle)
@@ -301,8 +301,10 @@ export const quadrantProvider: SnapProvider = {
           candidates.push(notable(SnapType.Quadrant, entity, point, touch))
         }
       } else if (entity.type === "arc") {
-        // Only the cardinal points the sweep actually passes through.
-        for (const angle of QUADRANT_ANGLES) {
+        // Only the quadrants the sweep actually passes through (arc/p201, p203).
+        const turn = quadrantTurn(entity, document.getSettings().ucs)
+        for (const quadrant of QUADRANT_ANGLES) {
+          const angle = turn + quadrant
           if (!angleWithinSweep(entity.startAngle, entity.endAngle, angle)) {
             continue
           }
@@ -342,8 +344,9 @@ export const quadrantProvider: SnapProvider = {
  * Perpendicular osnap, offered from anywhere over the object. For a line it is
  * the foot on the infinite line (so it engages past the segment's ends, as
  * AutoCAD's does); for a circle or an arc the perpendicular runs through the
- * centre, giving the two radial points; a polyline answers with the segment
- * under the cursor, as a line or an arc. Offered only while an anchor exists.
+ * centre, giving the two radial points (an arc's on its sweep); a polyline
+ * answers with the segment under the cursor, as a line or an arc. Offered
+ * only while an anchor exists.
  */
 export const perpendicularProvider: SnapProvider = {
   type: SnapType.Perpendicular,
@@ -379,7 +382,20 @@ export const perpendicularProvider: SnapProvider = {
         if (len < 1e-9) continue
         const dir = V.scale(radial, 1 / len)
         for (const sign of [1, -1]) {
-          feet.push(V.add(shape.center, V.scale(dir, shape.radius * sign)))
+          const foot = V.add(shape.center, V.scale(dir, shape.radius * sign))
+          // An arc's feet off its sweep are no perpendicular (arc/p208, p209).
+          // A polyline's arc segment keeps both: PLINE's object, unprobed.
+          if (
+            entity.type === "arc" &&
+            !angleWithinSweep(
+              entity.startAngle,
+              entity.endAngle,
+              Math.atan2(foot.y - shape.center.y, foot.x - shape.center.x)
+            )
+          ) {
+            continue
+          }
+          feet.push(foot)
         }
       }
       for (const foot of feet) {

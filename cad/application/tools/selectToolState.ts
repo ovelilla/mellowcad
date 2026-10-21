@@ -11,8 +11,10 @@ export type DimensionPoint = "first" | "second" | "line" | "vertex"
  * What editing a grip does, mirroring AutoCAD's per-object grips:
  * - `lineEnd`  — a line endpoint: stretch it to the cursor.
  * - `move`     — a line midpoint or a circle/arc centre: move its object.
- * - `radius`   — a circle quadrant or an arc's midpoint: resize the radius.
+ * - `radius`   — a circle quadrant: resize the radius.
  * - `arcEnd`   — an arc endpoint: swing it around, changing the sweep.
+ * - `arcMiddle` — an arc's midpoint: stretch the arc through the cursor, its
+ *   ends kept.
  * - `vertex`   — a polyline vertex, or a spline's fit point or control
  *   vertex: stretch it, reshaping the curve.
  * - `stretchSegment` — a straight polyline segment's midpoint: move both its
@@ -28,6 +30,7 @@ export type GripRole =
   | { readonly kind: "move" }
   | { readonly kind: "radius" }
   | { readonly kind: "arcEnd"; readonly end: LineEnd }
+  | { readonly kind: "arcMiddle" }
   | { readonly kind: "vertex"; readonly index: number }
   | { readonly kind: "stretchSegment"; readonly segmentIndex: number }
   | { readonly kind: "bulge"; readonly segmentIndex: number }
@@ -121,6 +124,19 @@ export type SelectToolState =
       /** Live angle (radians) of the grabbed endpoint. */
       readonly angle: number
       /** Screen position where the grip was grabbed (drag vs click-click). */
+      readonly pressScreen: Vec2
+    }
+  | {
+      /**
+       * An arc's middle grip is hot: Stretch, its default, bends the arc
+       * through its two ends and the cursor (desktop arc/d08).
+       */
+      readonly phase: "arcStretch"
+      readonly entityId: EntityId
+      /** Where the grip was taken: the stretch's base, drawn hot there. */
+      readonly origin: Vec2
+      /** Live cursor position (the point the arc is bent through). */
+      readonly current: Vec2
       readonly pressScreen: Vec2
     }
   | {

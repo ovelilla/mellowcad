@@ -373,6 +373,8 @@ export const en: EngineCatalog = {
         "thickness": "Thickness",
         "startAngle": "Start angle",
         "endAngle": "End angle",
+        "totalAngle": "Total angle",
+        "arcLength": "Arc length",
         "majorRadius": "Major radius",
         "minorRadius": "Minor radius",
         "radiusRatio": "Radius ratio",

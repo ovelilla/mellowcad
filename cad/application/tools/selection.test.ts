@@ -7,6 +7,7 @@ import type {
   SplineEntity,
 } from "../../domain/entities"
 import {
+  assignEntityColor,
   closestOnEntity,
   createSpline,
   lineEndZ,
@@ -397,21 +398,91 @@ describe("grips", () => {
     expect(arc.endAngle).toBeCloseToAngle(deg(135), 5)
   })
 
-  it("changes an arc's radius from its midpoint grip", () => {
+  // desktop arc/d08: the middle grip's default is Stretch, the arc bent
+  // through both ends and the cursor; 40,25 → 50,30 → 60,25 dragged up to its
+  // middle at 50,33.9822 is centre 50,23.9245, radius 10.0577 (d09's palette),
+  // stored counter-clockwise from 60,25.
+  const d08 = () =>
+    arcOf(p(50, 17.5), 12.5, Math.atan2(7.5, 10), Math.atan2(7.5, -10), {
+      id: "A1",
+    })
+
+  it("stretches an arc through its middle grip, its ends kept", () => {
+    const cad = createHarness({ entities: [d08()] })
+    // Zoomed in, so the 4-unit drag passes the drag threshold.
+    cad.runtime.zoomToBounds({ min: p(30, 10), max: p(70, 40) })
+    cad.select("A1")
+
+    cad.drag(p(50, 30), p(50, 23.9245 + 10.0577))
+
+    const arc = cad.byId<ArcEntity>("A1")
+    expect(arc.center).toBeCloseToPoint(p(50, 23.9245), 4)
+    expect(arc.radius).toBeCloseTo(10.0577, 4)
+    expect(polarPoint(arc.center, arc.radius, arc.startAngle)).toBeCloseToPoint(
+      p(60, 25),
+      9
+    )
+    expect(polarPoint(arc.center, arc.radius, arc.endAngle)).toBeCloseToPoint(
+      p(40, 25),
+      9
+    )
+  })
+
+  it("stretches an arc to the other side of its chord the long way, still counter-clockwise", () => {
+    const cad = createHarness({ entities: [d08()] })
+    cad.select("A1")
+
+    cad.drag(p(50, 30), p(50, 15))
+
+    const arc = cad.byId<ArcEntity>("A1")
+    expect(polarPoint(arc.center, arc.radius, arc.startAngle)).toBeCloseToPoint(
+      p(40, 25),
+      9
+    )
+    expect(polarPoint(arc.center, arc.radius, arc.endAngle)).toBeCloseToPoint(
+      p(60, 25),
+      9
+    )
+    expect(closestOnEntity(arc, p(50, 15)).distance).toBeLessThan(1e-9)
+  })
+
+  it("leaves an arc stretched onto its chord as it was", () => {
+    const cad = createHarness({ entities: [d08()] })
+    cad.select("A1")
+
+    cad.drag(p(50, 30), p(50, 25))
+
+    expect(cad.byId("A1")).toEqual(d08())
+    expect(cad.commandLog()).toEqual([])
+  })
+
+  // desktop arc/d08: the ghost is the arc through the cursor, solid in the
+  // object's colour, the hot grip left at the middle it was taken from.
+  it("previews an arc's stretch in its own colour, the grip hot where it was", () => {
     const cad = createHarness({
-      entities: [arcOf(p(0, 0), 80, 0, deg(90), { id: "A1" })],
+      entities: [assignEntityColor(d08(), "#ff0000")],
     })
     cad.select("A1")
 
-    cad.drag(
-      polarPoint(p(0, 0), 80, deg(45)),
-      polarPoint(p(0, 0), 110, deg(45))
-    )
+    cad.click(p(50, 30)).moveTo(p(50, 34))
 
-    const arc = cad.byId<ArcEntity>("A1")
-    expect(arc.radius).toBeCloseTo(110, 5)
-    expect(arc.startAngle).toBeCloseToAngle(0)
-    expect(arc.endAngle).toBeCloseToAngle(deg(90))
+    const primitives = cad.scene().primitives
+    const ghost = primitives.flatMap((q) =>
+      q.kind === "arc" && Math.abs(q.radius - 10.0556) < 1e-3 ? [q] : []
+    )
+    expect(ghost).toHaveLength(1)
+    expect(ghost[0].stroke).toEqual({ color: "#ff0000", width: 1 })
+    const grip = cad.toScreen(p(50, 30))
+    const hot = primitives.find(
+      (q) =>
+        q.kind === "rect" &&
+        q.fill === THEME.gripHot &&
+        Math.abs(q.min.x + q.width / 2 - grip.x) < 1e-6 &&
+        Math.abs(q.min.y + q.height / 2 - grip.y) < 1e-6
+    )
+    expect(hot).toBeDefined()
+    cad.escape()
+    expect(cad.byId("A1")).toEqual(assignEntityColor(d08(), "#ff0000"))
   })
 
   it("drags a polyline vertex", () => {

@@ -87,7 +87,7 @@ export function selectedGrips(ctx: ToolContext): Grip[] {
         })
         grips.push({
           entityId: id,
-          role: { kind: "radius" },
+          role: { kind: "arcMiddle" },
           world: arcMidpoint(entity),
         })
         break

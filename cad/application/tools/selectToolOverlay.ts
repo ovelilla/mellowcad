@@ -11,6 +11,7 @@ import {
 import { polarPoint } from "../../geometry/primitives"
 import { ScenePrimitive, StrokeStyle } from "../../scene/types"
 import { THEME } from "../../scene/theme"
+import { DEFAULT_LAYER_COLOR } from "../../domain/layers"
 import { arcScenePrimitive, entityScenePrimitive } from "../SceneBuilder"
 import { buildSelectionBoxOverlay } from "./boxSelection"
 import { PointerInput, ToolContext } from "./Tool"
@@ -23,6 +24,7 @@ import {
   selectedGrips,
 } from "./selectToolGrips"
 import {
+  arcStretchedThrough,
   movedDimension,
   mtextWidthGrip,
   withRadius,
@@ -220,6 +222,31 @@ export function buildArcAngleEdit(
       stroke
     ),
     ...gripPrimitives(viewport.worldToScreen(endpoint), true),
+  ]
+}
+
+/**
+ * The arc bent through the cursor while its middle grip stretches it, solid
+ * in the object's own colour, the hot grip left where it was taken (desktop
+ * arc/d08).
+ */
+export function buildArcStretch(
+  state: Phase<"arcStretch">,
+  ctx: ToolContext
+): ScenePrimitive[] {
+  const { viewport } = ctx
+  const arc = ctx.document.get(state.entityId)
+  if (arc?.type !== "arc") return []
+  const preview = arcStretchedThrough(arc, state.current)
+  const color =
+    arc.color ??
+    ctx.document.getLayer(arc.layerId)?.color ??
+    DEFAULT_LAYER_COLOR
+  return [
+    ...(preview
+      ? entityScenePrimitive(viewport, preview, { color, width: 1 })
+      : []),
+    ...gripPrimitives(viewport.worldToScreen(state.origin), true),
   ]
 }
 

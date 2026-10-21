@@ -504,6 +504,132 @@ describe("appearance resolution", () => {
     ])
   })
 
+  /**
+   * An upright arc's drawn dashes as `[from, to]` in degrees, rebuilt from
+   * the renderer's formula in plan; `null` when it is drawn as one solid arc.
+   */
+  function arcDashes(arc: Entity): [number, number][] | null {
+    if (arc.type !== "arc") throw new Error(arc.type)
+    const cad = createHarness({ entities: [arc] })
+    const drawn = strokes(cad.scene().primitives, THEME.entity)
+    if (drawn.length === 1 && drawn[0].kind === "arc" && !drawn[0].stroke.dash)
+      return null
+    const degrees = (screen: { x: number; y: number }) => {
+      const w = cad.runtime.viewport.screenToWorld(screen)
+      const angle = Math.atan2(w.y - arc.center.y, w.x - arc.center.x)
+      return (((angle * 180) / Math.PI) % 360) + (angle < -1e-9 ? 360 : 0)
+    }
+    return drawn
+      .map((piece): [number, number] => {
+        if (piece.kind !== "arc") throw new Error(piece.kind)
+        expect(piece.stroke.dash).toBeUndefined()
+        const at = (angle: number) => ({
+          x: piece.center.x + piece.radius * Math.cos(angle),
+          y: piece.center.y + piece.radius * Math.sin(angle),
+        })
+        const from = degrees(at(piece.startAngle))
+        const to = degrees(at(piece.endAngle))
+        return [+from.toFixed(2), +(to < from ? to + 360 : to).toFixed(2)]
+      })
+      .sort((a, b) => a[0] - b[0])
+  }
+
+  const dashedArc = (radius: number, from: number, to: number) =>
+    assignEntityLinetype(
+      arcOf(p(0, 0), radius, deg(from), deg(to), { id: "A1" }),
+      "Dashed"
+    )
+
+  // probe arc/p200 (and desktop arc/d10, the screen alike), measured along
+  // the plot: an arc's pattern is centred over its length as a line's is,
+  // each end on a dash of (L − m·period + first dash) / 2; under one period
+  // it is solid.
+  it.each([
+    [
+      10,
+      0,
+      180,
+      [
+        [0, 71.81],
+        [108.19, 180],
+      ],
+    ],
+    [
+      10,
+      0,
+      270,
+      [
+        [0, 62.23],
+        [98.62, 171.38],
+        [207.77, 270],
+      ],
+    ],
+    [
+      30,
+      0,
+      120,
+      [
+        [0, 17.55],
+        [29.68, 53.94],
+        [66.06, 90.32],
+        [102.45, 120],
+      ],
+    ],
+    [
+      20,
+      210,
+      360,
+      [
+        [210, 248.62],
+        [266.81, 303.19],
+        [321.38, 360],
+      ],
+    ],
+    [10, 30, 120, null],
+  ] as const)(
+    "lays an arc of radius %s from %s° to %s° centred over its length",
+    (radius, from, to, dashes) => {
+      expect(arcDashes(dashedArc(radius, from, to))).toEqual(dashes)
+    }
+  )
+
+  it("draws an arc's dot as a run as wide as the stroke", () => {
+    // 62.83 / 25.4: two whole periods of DASHDOT, a dash at each end.
+    const cad = createHarness({
+      entities: [
+        assignEntityLinetype(
+          arcOf(p(0, 0), 30, 0, deg(120), { id: "A1" }),
+          "DashDot"
+        ),
+      ],
+    })
+    const pieces = strokes(cad.scene().primitives, THEME.entity)
+    expect(pieces).toHaveLength(5)
+    const dot = pieces[1]
+    if (dot.kind !== "arc") throw new Error(dot.kind)
+    const sweep = Math.abs(dot.endAngle - dot.startAngle)
+    expect(dot.radius * sweep).toBeCloseTo(dot.stroke.width, 6)
+  })
+
+  it("leaves a huge arc's pattern to the renderer, unfitted", () => {
+    // 3206 periods: past MAX_FITTED_PERIODS, one curve rather than thousands.
+    const cad = createHarness({ entities: [dashedArc(10000, 0, 350)] })
+    const drawn = strokes(cad.scene().primitives, THEME.entity)
+    expect(drawn.map((primitive) => primitive.kind)).toEqual(["arc"])
+    expect(drawn[0].kind === "arc" && drawn[0].stroke.dash).toEqual([
+      12.7, 6.35,
+    ])
+  })
+
+  it("leaves an arc ghost's own dashes on one arc", () => {
+    const primitives = entityScenePrimitive(
+      createHarness().runtime.viewport,
+      arcOf(p(0, 0), 10, 0, deg(180)),
+      { color: THEME.preview, width: 1, dash: [6, 4] }
+    )
+    expect(primitives.map((primitive) => primitive.kind)).toEqual(["arc"])
+  })
+
   it("leaves a circle ghost's own dashes on one circle", () => {
     const primitives = entityScenePrimitive(
       createHarness().runtime.viewport,

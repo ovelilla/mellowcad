@@ -367,6 +367,8 @@ export const es: EngineLocale = {
         "thickness": "Altura de objeto",
         "startAngle": "Ángulo inicial",
         "endAngle": "Ángulo final",
+        "totalAngle": "Ángulo total",
+        "arcLength": "Longitud de arco",
         "majorRadius": "Radio mayor",
         "minorRadius": "Radio menor",
         "radiusRatio": "Relación de radios",

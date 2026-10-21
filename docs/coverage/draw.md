@@ -23,7 +23,8 @@ with nothing to continue `No line or arc to continue.` (es
 along the cursor (negative: the other way), along an OTRACK guide or an Extension measured from the
 acquired point (still the first point's question); a zero-length segment typed (`0`, `@`, `0` at
 `Length of line:`) drawn, counted and said, `Zero length line created at (x, y, z)` (es
-`Línea de longitud cero creada en (…)`) at the drawing's precision, while two picks on one point (a
+`Línea de longitud cero creada en (…)`) at the drawing's precision, the point in the WCS whatever
+the UCS (arc/p201, p210), while two picks on one point (a
 double click) draw none, as the desktop does; the `<angle` override; the length and angle fields,
 the angle shown acute (0–180°) and a typed one read on the cursor's side; `@` at the first point
 from LASTPOINT; a Tangent or Perpendicular override at the first point deferred until the next

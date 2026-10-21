@@ -386,6 +386,8 @@ export const ar: EngineLocale = {
         "thickness": "السماكة",
         "startAngle": "زاوية البداية",
         "endAngle": "زاوية النهاية",
+        "totalAngle": "الزاوية الكلية",
+        "arcLength": "طول القوس",
         "majorRadius": "نصف القطر الأكبر",
         "minorRadius": "نصف القطر الأصغر",
         "radiusRatio": "نسبة نصفي القطرين",

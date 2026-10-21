@@ -36,7 +36,11 @@ dashes either side of a vertex merging (PLINEGEN 0, pline/p232); a circle's laid
 max(2, round(L / period)), and solid under one period (circle/p230–p232 on the plot, desktop
 circle/d14 on the screen alike), so a circle drawn with its normal along −Z runs clockwise in plan
 from 180° and a tilted one is laid at true length in its plane (circle/p233) — past 2048 periods
-it is left unfitted to the renderer (WHY at `MAX_FITTED_PERIODS`, `SceneBuilder.ts`); LTSCALE asks
+it is left unfitted to the renderer (WHY at `MAX_FITTED_PERIODS`, `SceneBuilder.ts`); an arc's
+centred over its length as a line's, each dash a piece of the arc, and solid under one period
+(arc/p200 measured on the plot, desktop arc/d10 on the screen alike: r10 0–180° is two dashes of
+71.8°),
+past 2048 periods unfitted as a circle's; LTSCALE asks
 `Enter new linetype scale factor <current>:` (es
 `Indique nuevo factor de escala del tipo de línea`), offering the current factor at the drawing's
 precision (`<1.00>`, where AutoCAD's LUPREC 4 writes `<1.0000>`); anything but a number
@@ -71,9 +75,9 @@ every language here; per-object ltscale (CELTSCALE), the Linetype Manager (its D
 Factor is LTSCALE), PSLTSCALE / MSLTSCALE (no paper space), Create and Load (there is no LIN file to
 read or write), ByBlock, the Linetype Manager, the drop-down's Other…; PLINEGEN (a polyline lays
 its pattern segment by segment, PLINEGEN 0's; PEDIT's Ltype gen is not built); **unverified**: how
-AutoCAD lays a pattern on the other objects (an arc, a polyline's arc segment): theirs runs from the
-start; a line off the plan is centred on its length as drawn, its pattern not foreshortened; a
-circle's dot is drawn as a line's, a run as long as the stroke is wide
+AutoCAD lays a pattern on a polyline's arc segment: ours runs from its start; a dashed tilted or
+thick arc (not plotted, laid as in plan); a line off the plan is centred on its length as drawn,
+its pattern not foreshortened; a circle's dot is drawn as a line's, a run as long as the stroke is wide
 
 ### Lineweights + `LWDISPLAY` · `LWEIGHT` / `LW` · `-LWEIGHT` · es `GROSORLIN` · `-GROSORLIN`
 
@@ -181,7 +185,13 @@ circle and an arc; a circle's one Geometry group as AutoCAD's (desktop circle/d1
 Z, Radius, Diameter, Circumference, Area, Normal X, Y and Z, only the normal read-only (greyed
 there), Circumference and Area setting the radius (0 or less refused, as Radius refuses it); es
 `Centro X` as Autodesk's Spanish support names the palette's View rows ("Centro X y Centro Y
-dentro de la vista aparecen atenuados en AutoCAD"), the desktop's own **unverified**; a polyline's rows and groups as AutoCAD's (desktop pline/d08): Geometry's
+dentro de la vista aparecen atenuados en AutoCAD"), the desktop's own **unverified**; an arc's one
+Geometry group as AutoCAD's (desktop arc/d09): Start X, Y and Z, Center X, Y and Z, End X, Y and Z,
+Radius, Start angle, End angle, Total angle, Arc length, Area (the segment its chord closes) and
+Normal X, Y and Z, the ends, Total angle, Arc length, Area and the normal read-only (greyed there),
+Thickness under General; es `Ángulo total`, `Longitud de arco` worded from the console's
+`ángulo total` (table 20981) and DIMARC's `longitud de arco` (AcDimRes 5345), the desktop's own
+**unverified**; a polyline's rows and groups as AutoCAD's (desktop pline/d08): Geometry's
 Current Vertex (typed here where AutoCAD steps it with arrows), Vertex X and Y, Start segment width
 and End segment width of the segment it starts (none at an open one's last vertex), Global width,
 which sets every segment's, Elevation, Area (an open one's as if closed) and Length, the last two

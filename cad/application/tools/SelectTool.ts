@@ -34,6 +34,7 @@ import { hitGrip, sameGrip } from "./selectToolGrips"
 import {
   movedDimension,
   mtextWidthThrough,
+  arcStretchedThrough,
   radiusHandle,
   toDegrees,
   withRadius,
@@ -42,6 +43,7 @@ import {
 } from "./selectToolEdits"
 import {
   buildArcAngleEdit,
+  buildArcStretch,
   buildBulgeEdit,
   buildDimPointEdit,
   buildGripEdit,
@@ -124,6 +126,10 @@ export class SelectTool implements Tool {
       this.placeArcAngle(this.state, this.state.angle, ctx)
       return
     }
+    if (this.state.phase === "arcStretch") {
+      this.placeArcStretch(this.state, this.state.current, ctx)
+      return
+    }
     if (this.state.phase === "moveVertex") {
       this.placeVertex(this.state, this.state.current, ctx)
       return
@@ -173,6 +179,9 @@ export class SelectTool implements Tool {
           break
         case "arcEnd":
           this.beginArcAngle(grip, grip.role.end, input.screen, ctx)
+          break
+        case "arcMiddle":
+          this.beginArcStretch(grip, input.screen, ctx)
           break
         case "vertex":
           this.beginVertexMove(grip, grip.role.index, input.screen, ctx)
@@ -257,6 +266,11 @@ export class SelectTool implements Tool {
         this.state = { ...this.state, angle }
         ctx.dynamicInput.setLive("angle", normalizeDegrees(toDegrees(angle)))
         ctx.dynamicInput.setPosition(input.screen)
+        ctx.requestRender()
+        break
+      }
+      case "arcStretch": {
+        this.state = { ...this.state, current: input.point }
         ctx.requestRender()
         break
       }
@@ -413,6 +427,15 @@ export class SelectTool implements Tool {
         if (dragged) this.placeArcAngle(this.state, this.state.angle, ctx)
         return
       }
+      case "arcStretch": {
+        const dragged =
+          Math.hypot(
+            input.screen.x - this.state.pressScreen.x,
+            input.screen.y - this.state.pressScreen.y
+          ) >= DRAG_THRESHOLD_PX
+        if (dragged) this.placeArcStretch(this.state, this.state.current, ctx)
+        return
+      }
       case "moveVertex": {
         const dragged =
           Math.hypot(
@@ -499,7 +522,8 @@ export class SelectTool implements Tool {
       }
       if (
         this.state.phase === "resizeRadius" ||
-        this.state.phase === "arcAngle"
+        this.state.phase === "arcAngle" ||
+        this.state.phase === "arcStretch"
       ) {
         // Abort the radius/angle grip edit, leaving the object untouched.
         ctx.dynamicInput.close()
@@ -579,6 +603,7 @@ export class SelectTool implements Tool {
       this.state.phase === "grip" ||
       this.state.phase === "resizeRadius" ||
       this.state.phase === "arcAngle" ||
+      this.state.phase === "arcStretch" ||
       this.state.phase === "moveVertex" ||
       this.state.phase === "stretchSegment" ||
       this.state.phase === "bulgeEdit" ||
@@ -611,7 +636,8 @@ export class SelectTool implements Tool {
       this.state.phase === "grip" ||
       this.state.phase === "moveLine" ||
       this.state.phase === "moveVertex" ||
-      this.state.phase === "stretchSegment"
+      this.state.phase === "stretchSegment" ||
+      this.state.phase === "arcStretch"
     )
   }
 
@@ -628,6 +654,7 @@ export class SelectTool implements Tool {
     if (this.state.phase === "grip") return this.state.fixed
     if (this.state.phase === "resizeRadius") return this.state.center
     if (this.state.phase === "arcAngle") return this.state.center
+    if (this.state.phase === "arcStretch") return this.state.origin
     if (this.state.phase === "moveVertex") return this.state.origin
     if (this.state.phase === "moveDimPoint") return this.state.origin
     if (this.state.phase === "mtextWidth") return this.state.origin
@@ -656,6 +683,8 @@ export class SelectTool implements Tool {
         return buildRadiusEdit(state, ctx)
       case "arcAngle":
         return buildArcAngleEdit(state, ctx)
+      case "arcStretch":
+        return buildArcStretch(state, ctx)
       case "moveVertex":
         return buildVertexEdit(state, ctx)
       case "stretchSegment":
@@ -804,6 +833,22 @@ export class SelectTool implements Tool {
       pressScreen: screen,
     }
     this.openAngleInput(ctx, screen, normalizeDegrees(toDegrees(angle)))
+    ctx.requestRender()
+  }
+
+  /**
+   * Makes an arc's middle grip hot in Stretch, its default (desktop arc/d08).
+   * No value box: a stretch typed while hot is not built.
+   */
+  private beginArcStretch(grip: Grip, screen: Vec2, ctx: ToolContext): void {
+    if (ctx.document.get(grip.entityId)?.type !== "arc") return
+    this.state = {
+      phase: "arcStretch",
+      entityId: grip.entityId,
+      origin: grip.world,
+      current: grip.world,
+      pressScreen: screen,
+    }
     ctx.requestRender()
   }
 
@@ -1308,6 +1353,22 @@ export class SelectTool implements Tool {
       )
     }
     ctx.dynamicInput.close()
+    this.state = { phase: "idle" }
+    ctx.requestRender()
+  }
+
+  /**
+   * Bends the arc through `point`, its ends kept, as one undoable command;
+   * onto its chord it is left as it was, with nothing said (desktop arc/d08).
+   */
+  private placeArcStretch(
+    state: Extract<SelectToolState, { phase: "arcStretch" }>,
+    point: Vec2,
+    ctx: ToolContext
+  ): void {
+    const arc = ctx.document.get(state.entityId)
+    const next = arc?.type === "arc" ? arcStretchedThrough(arc, point) : null
+    if (next) ctx.execute(new UpdateEntityCommand(next))
     this.state = { phase: "idle" }
     ctx.requestRender()
   }

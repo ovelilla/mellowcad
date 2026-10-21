@@ -3,7 +3,7 @@ import { Vec3, add3, scale3, withZOf } from "../../geometry/Vec3"
 import { Entity, LineEntity, createLine } from "../../domain/entities"
 import { SnapType } from "../snapping/types"
 import { formatLength, parseNumber } from "../../domain/units"
-import { worldPointToUcs } from "../../domain/ucs"
+import { WORLD_UCS, worldPointToUcs } from "../../domain/ucs"
 import { AddEntityCommand } from "../commands/entityCommands"
 import { DynamicInputSession } from "../input/DynamicInput"
 import {
@@ -956,10 +956,13 @@ function samePoint(a: Vec3, b: Vec3): boolean {
   return a.x === b.x && a.y === b.y && a.z === b.z
 }
 
-/** `Zero length line created at (x, y, z)`, in the UCS at LUPREC. */
+/**
+ * `Zero length line created at (x, y, z)`, at LUPREC in the WCS, whatever
+ * the UCS (arc/p201, p210): the frame's point read in the frame's WCS.
+ */
 function reportZeroLength(point: Vec3, ctx: ToolContext): void {
   const settings = ctx.document.getSettings()
-  const at = worldPointToUcs(ctx.ucs, point)
+  const at = worldPointToUcs(ctx.ucs.wcs ?? WORLD_UCS, point)
   const coordinate = (value: number) => formatLength(value, settings)
   ctx.report(
     ctx.text.message("zeroLengthLineCreated", {

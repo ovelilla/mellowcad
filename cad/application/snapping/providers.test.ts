@@ -3,6 +3,7 @@ import type { LineEntity } from "../../domain/entities"
 import {
   closestOnEntity,
   createSpline,
+  lineStartZ,
   withElevation,
 } from "../../domain/entities"
 import { V } from "../../geometry/Vec2"
@@ -548,5 +549,152 @@ describe("a polyline's arc segment", () => {
     const drawn = firstPointWith(cad, SnapType.Quadrant, p(52, -48))
 
     expect(drawn.start).toBeCloseToPoint(p(50, -50), 5)
+  })
+})
+
+describe("an arc", () => {
+  function typed(cad: CadHarness, ...texts: string[]): CadHarness {
+    for (const text of texts) {
+      cad.runtime.setCommandLineText(text)
+      cad.runtime.submitCommandLine()
+    }
+    return cad
+  }
+  const ZOOM = ["ZOOM", "W", "-30,-30", "30,30"]
+  /** The arc drawn by `arc`, then `then` typed: LINE's first point, in the WCS. */
+  function lineFrom(arc: string[], ...then: string[]): number[] {
+    const cad = typed(createHarness(), ...arc, ...ZOOM, ...then)
+    const line = cad
+      .entities()
+      .filter((e): e is LineEntity => e.type === "line")
+      .at(-1)!
+    return [line.start.x, line.start.y, lineStartZ(line)].map(
+      (n) => +n.toFixed(4) + 0
+    )
+  }
+  /** 10° to 170° of radius 10 about the origin (probes arc/p202–p205). */
+  const ARC10 = [
+    "ARC",
+    "C",
+    "0,0",
+    "9.84807753,1.73648178",
+    "-9.84807753,1.73648178",
+  ]
+
+  // probe arc/p202, the console's ID at each snap.
+  it.each([
+    ["END", "7,7", [9.8481, 1.7365, 0]],
+    ["END", "-6,8", [-9.8481, 1.7365, 0]],
+    ["MID", "7,7", [0, 10, 0]],
+    ["CEN", "10<45", [0, 0, 0]],
+    ["NEA", "7,7", [7.0711, 7.0711, 0]],
+  ])("snaps %s of %s as AutoCAD does", (snap, aim, at) => {
+    expect(lineFrom(ARC10, "LINE", snap, aim, "@", "")).toEqual(at)
+  })
+
+  // probe arc/p204: past the arc's start a line it would cross extended.
+  it("finds no intersection beyond the arc's end", () => {
+    const cad = typed(
+      createHarness(),
+      ...ARC10,
+      ...ZOOM,
+      ...["LINE", "9.95,-5", "9.95,5", ""],
+      ...["LINE", "INT", "9.9,1.2"]
+    )
+    expect(cad.commandLog().slice(-2)).toEqual([
+      "No Intersection found for specified point.",
+      "Invalid point.",
+    ])
+  })
+
+  // probe arc/p205: an arc with a line and with another arc.
+  it.each([
+    ["0.1,10", [0, 10, 0]],
+    ["5,8.6", [5, 8.6603, 0]],
+  ])("snaps INT of %s where it crosses", (aim, at) => {
+    const set = [
+      ...ARC10,
+      ...["LINE", "0,0", "0,20", ""],
+      ...["ARC", "C", "10,0", "20,0", "0,0"],
+    ]
+    expect(lineFrom(set, "LINE", "INT", aim, "@", "")).toEqual(at)
+  })
+
+  // probe arc/p207: both tangent points from 30,0 lie off the 300°–60° arc.
+  it("refuses a Tangent whose points lie off the sweep", () => {
+    const cad = typed(
+      createHarness(),
+      ...["ARC", "C", "0,0", "5,-8.66025404", "5,8.66025404"],
+      ...ZOOM,
+      ...["LINE", "30,0", "TAN", "10<-55"]
+    )
+    expect(cad.commandLog().slice(-2)).toEqual([
+      "No found for specified point.",
+      "Point or option keyword required.",
+    ])
+  })
+
+  // probe arc/p203: in the WCS, only the quadrant on the 10°–170° arc.
+  it("snaps to the quadrant its sweep passes through", () => {
+    expect(lineFrom(ARC10, "LINE", "QUA", "10<12", "@", "")).toEqual([0, 10, 0])
+  })
+
+  // probe arc/p201: in UCS Z 30 the quadrants are the UCS's, kept where the
+  // 0°–180° arc passes, so `_QUA` near either end gives the UCS's 90° point.
+  it.each(["9.9<60", "9.9<145"])(
+    "snaps to the UCS's quadrant on the sweep in a rotated UCS (%s)",
+    (aim) => {
+      const arc = ["ARC", "C", "0,0", "10,0", "-10,0", "UCS", "Z", "30"]
+      expect(lineFrom(arc, "LINE", "QUA", aim, "@", "")).toEqual([
+        -5, 8.6603, 0,
+      ])
+    }
+  )
+
+  // probe arc/p210: an arc drawn in UCS X 90, snapped in its plan.
+  const TILTED = ["UCS", "X", "90", "ARC", "C", "0,0", "10,0", "-5,8.66025404"]
+  it.each([
+    ["QUA", "10<80", [0, 0, 10]],
+    ["MID", "10<20", [5, 0, 8.6603]],
+    ["QUA", "10<5", [10, 0, 0]],
+  ])("snaps %s of %s on a tilted arc", (snap, aim, at) => {
+    const set = [...TILTED, "PLAN", "C"]
+    expect(lineFrom(set, "LINE", snap, aim, "@", "")).toEqual(at)
+  })
+
+  // probe arc/p211: the same arc, the UCS then turned 30° about its Z.
+  it("snaps to the UCS's quadrant on a tilted arc", () => {
+    const set = [...TILTED, "UCS", "Z", "30", "PLAN", "C"]
+    expect(lineFrom(set, "LINE", "QUA", "10<55", "@", "")).toEqual([
+      -5, 0, 8.6603,
+    ])
+  })
+
+  // probe arc/p208: from 30,0 both feet (0° and 180°) lie off the 20°–160°
+  // arc, refused in the shared words.
+  it("refuses a Perpendicular whose feet lie off the sweep", () => {
+    const cad = typed(
+      createHarness(),
+      ...["ARC", "C", "0,0", "9.39692621,3.42020143", "-9.39692621,3.42020143"],
+      ...ZOOM,
+      ...["LINE", "30,0", "PER", "10<25"]
+    )
+    expect(cad.commandLog().slice(-2)).toEqual([
+      "No Perpendicular found for specified point.",
+      "Point or option keyword required.",
+    ])
+    expect(cad.entities().filter((e) => e.type === "line")).toEqual([])
+  })
+
+  // probe arc/p209: the foot at 180° lies on the 20°–200° arc, though the one
+  // at 0° is nearer the pick.
+  it("keeps the Perpendicular's foot that lies on the sweep", () => {
+    const arc = [
+      ...["ARC", "C", "0,0", "9.39692621,3.42020143"],
+      "-9.39692621,-3.42020143",
+    ]
+    const cad = typed(createHarness(), ...arc, ...ZOOM)
+    typed(cad, "LINE", "30,0", "PER", "10<25", "")
+    expect(drawnLine(cad).end).toBeCloseToPoint(p(-10, 0), 6)
   })
 })

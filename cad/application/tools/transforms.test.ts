@@ -601,6 +601,25 @@ describe("MIRROR", () => {
     expect(cad.hasFocusedField()).toBe(false)
   })
 
+  // probe arc/p212: a 10°–80° arc mirrored about the Y axis is 100°–170°,
+  // its normal still +Z, counter-clockwise as every arc.
+  it("mirrors an arc into its reflection, counter-clockwise about +Z", () => {
+    const cad = createHarness({
+      entities: [arcOf(p(0, 0), 10, deg(10), deg(80), { id: "A1" })],
+    })
+
+    cad.select("A1").command("MIRROR").click(p(0, 0)).click(p(0, 10))
+    cad.option("No")
+
+    const mirrored = cad
+      .entities()
+      .find((e): e is ArcEntity => e.type === "arc" && e.id !== "A1")!
+    expect(mirrored.center).toBeCloseToPoint(p(0, 0), 9)
+    expect(mirrored.startAngle).toBeCloseToAngle(deg(100), 9)
+    expect(mirrored.endAngle).toBeCloseToAngle(deg(170), 9)
+    expect(mirrored.normal).toBeUndefined()
+  })
+
   it("cancels without committing anything", () => {
     const cad = createHarness({
       entities: [lineOf(p(0, 0), p(100, 50), { id: "L1" })],
