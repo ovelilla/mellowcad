@@ -130,7 +130,8 @@ left it. `@` at a first point is relative to it, and Enter at DIST's first point
 typed for a point, at the command line or in the box, is a direct distance from the prompt's base
 point, from LASTPOINT where it has none (a first point), towards the cursor — the other way when
 negative, LASTPOINT itself at `0` — at every prompt that picks a point, as AutoCAD 2023's console
-takes `5` at LINE's, CIRCLE's, ID's and -PAN's first point and at CIRCLE 2P's second (each prompt
+takes `5` at LINE's, CIRCLE's, ID's and -PAN's first point and at CIRCLE 2P's second (LINE's again
+in 2027's, p159, Ortho not bending it there, p160; each prompt
 refusing what is no number, `FOO`, in its own words), and at a window's corners (ZOOM's,
 `Select objects:`' — the first from LASTPOINT, the opposite one from the first corner) and at a
 fence's and a polygon's points (the first from LASTPOINT, the next from the point before), at
@@ -145,8 +146,9 @@ still from the point before) — AutoCAD 2023's console, each followed by `ID @`
 it, so every command shares it.
 
 **What follows the UCS:** typed coordinates (`x,y`, `x,y,z`, `d<a`, cylindrical `d<a,z`, spherical
-`d<a<b`, `@`, `#` from its origin; `*` for the WCS — absolute, even at a second point the box reads
-relative —, `@*` relative in the WCS), the angle fields of
+`d<a<b`, `@`, `#` from its origin — the tooltip's alone: the command window refuses it, even with
+DYNMODE 3 (desktop d02, console probes line/p15, p28); `*` for the WCS — absolute, even at a second
+point the box reads relative —, `@*` relative in the WCS), the angle fields of
 LINE, PLINE, SPLINE, MOVE, COPY and ROTATE, the
 status readout (X, Y and Z), the Properties palette's coordinate rows (X, Y and Z) and a line's
 deltas (read and retyped), DIST's deltas and angles, ID, Ortho,
@@ -158,10 +160,22 @@ text angle of a dimension (Angle), the default spacing ARRAYRECT offers (from
 world extents), and palette rotations (they stay in the WCS, as AutoCAD's TEXT and INSERT rows do).
 In a tilted UCS all of it works in its XY plane, and so does every command: what is drawn lies in
 it (or above it at ELEVATION), ROTATE turns about the UCS's Z and MIRROR's plane holds it. A WCS
-point typed with `*` and no Z lies on the WCS's XY plane (**unverified**). The commands with flat
+point typed with `*` and no Z lies on the WCS's XY plane in every UCS, turned or tilted, whatever
+ELEVATION (2027's console, probes line/p152, p153, p163). The commands with flat
 geometry — TRIM, EXTEND, BREAK, OFFSET, JOIN, HATCH, ARRAYPATH's path and the dimensions — take
 only objects parallel to the UCS's XY plane (and lines); AutoCAD projects some of the others
 (PROJMODE), which is left out.
+
+**How a typed number and angle are read** (decimal units, AUNITS 0; 2027's console, probes
+line/p150, p151, p165): a number in a point, alone as a direct distance or in a value box as a
+decimal (`.5`, `5.`, `+5`), with an exponent (`1e1`), a fraction (`1/2`) or a whole and a fraction
+(`1-1/2`); `1'6"`, `0x10` and a dangling comma (`5,5,`) are the prompt's wrong answer. An angle —
+after `<` in a point, in the angle override and in the tooltip's angle fields — as a number, in
+degrees and minutes (`30d`, `30d30'`), radians (`0.5r`), grads (`50g`) or a surveyor's bearing
+(`N45dE`, read from +X; the other quadrants `N…W`, `S…E`, `S…W` as the help describes them,
+**unverified** in the console). **Missing:** seconds (`30d30'15"`), a bare bearing (`N`, `E`), the
+other length units' forms (architectural `1'6"`, engineering; UNITS offers decimal only) and the
+angle units AUNITS 1–4 (UNITS offers decimal degrees only).
 
 **Where a point's Z comes from:** an object snap gives the object's Z there (OSNAPZ 0, not exposed;
 a line's is interpolated along it, and Intersection needs the two objects to meet in 3D, while
@@ -170,7 +184,8 @@ help only says it snaps where two objects "do not intersect in 3D space"; object
 planes have no Intersection yet); an OTRACK point the acquired point's (**unverified**), or that
 plus the rise along its `+Z` / `-Z` guide; an
 absolute point typed without a Z, or the bare cursor, ELEVATION above the XY plane of the UCS
-(ELEV and DIST say so; one conceptual page keeps the last Z instead); a relative one, a
+(ELEV and DIST say so; one conceptual page keeps the last Z instead), a `*` one Z 0 in the WCS; a
+relative one (`@*` too), a
 typed length or angle, the last point's. Ortho, Polar and the snap lattice leave it alone, except
 on the `+Z` / `-Z` guide of a 3D view, where the point is the base point's in plan and the height is
 where the cursor is drawn along the guide (a snapped object's, under a snap), and a typed length

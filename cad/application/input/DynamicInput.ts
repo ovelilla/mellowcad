@@ -1,7 +1,7 @@
 import { Observable } from "../../shared/Observable"
 import { Vec2 } from "../../geometry/Vec2"
 import type { Vec3 } from "../../geometry/Vec3"
-import { parseNumber } from "../../domain/units"
+import { parseAngleDegrees, parseNumber } from "../../domain/units"
 import { isCoordinateExpression } from "./coordinateInput"
 import type { ToolContext } from "../tools/Tool"
 import type { PromptId } from "../../locales/types"
@@ -301,7 +301,11 @@ export class DynamicInputController extends Observable {
       const typed = fieldState.text.trim() !== ""
       if (!anyTyped && !fieldState.isDefault) return null
       if (!typed && fieldState.liveText !== null) continue
-      const value = typed ? parseNumber(fieldState.text) : fieldState.live
+      const value = !typed
+        ? fieldState.live
+        : field.kind === "angle"
+          ? parseAngleDegrees(fieldState.text)
+          : parseNumber(fieldState.text)
       if (value === null || !Number.isFinite(value)) return null
       out[field.id] = value
     }

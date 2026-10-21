@@ -925,3 +925,4 @@ every object snap three ways and the modes in combination:
 | CAT | CAT-01 (CAT-02 refuted, p70) | `4f61e91` |
 | UND | UND-01 to UND-03 | `626b283` |
 | CLI | CLI-01 to CLI-03 | `2625477` |
+| LIN | LIN-01 to LIN-08 | `6a3ba75` |

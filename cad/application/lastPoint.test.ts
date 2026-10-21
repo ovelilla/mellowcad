@@ -14,6 +14,10 @@ function answer(cad: CadHarness, ...texts: string[]): CadHarness {
   return cad
 }
 
+function lines(cad: CadHarness): LineEntity[] {
+  return cad.entities().filter((e): e is LineEntity => e.type === "line")
+}
+
 /** What ID @ reports: LASTPOINT. */
 function lastPoint(cad: CadHarness): string | undefined {
   answer(cad, "ID", "@")
@@ -352,11 +356,14 @@ describe("LASTPOINT", () => {
   })
 })
 
-// AutoCAD 2023's console (acc/dd1–dd23): a number typed for a point is a
-// direct distance from LASTPOINT, or the prompt's base, towards the cursor.
-// The console's cursor stands where `100` from 10,0 gives 102.3493,38.3614.
+// AutoCAD 2023's console (acc/dd1–dd23), LINE's first point again in 2027's
+// (probe line/p159): a number typed for a point is a direct distance from
+// LASTPOINT, or the prompt's base, towards the cursor. The console's cursor
+// stands where `100` from 10,0 gives 102.3493,38.3614; p159 to p161 put it at
+// 289.98397,116.30379.
 describe("A number typed for a point", () => {
   const CURSOR = p(102.3493, 38.3614)
+  const CONSOLE = p(289.98397, 116.30379)
   const AHEAD = p(14.6175, 1.9181)
   const BACK = p(5.3825, -1.9181)
 
@@ -439,14 +446,42 @@ describe("A number typed for a point", () => {
   })
 
   it("becomes LASTPOINT, which 0 gives itself", () => {
-    const cad = answer(fromTen(), "LINE", "5", "@10,0", "")
-    expect(cad.entities()[0]).toMatchObject({
-      start: { x: expect.closeTo(14.6175, 4) },
-      end: { x: expect.closeTo(24.6175, 4), y: expect.closeTo(1.9181, 4) },
-    })
-    expect(lastPoint(cad)).toBe(" X = 24.62     Y = 1.92     Z = 0.00")
-    answer(cad, "ID", "10,0", "LINE", "0", "20,20", "")
-    expect(cad.entities()[1]).toMatchObject({ start: { x: 10, y: 0 } })
+    // probe line/p159
+    const cad = answer(createHarness(), "LINE", "10,0", "")
+    cad.moveTo(CONSOLE)
+    answer(cad, "LINE", "5", "@0,10", "")
+    expect(lastPoint(cad)).toBe(" X = 14.62     Y = 11.92     Z = 0.00")
+    answer(cad, "LINE", "-5", "@0,10", "", "LINE", "0", "@0,10", "")
+    const starts = lines(cad).map((line) => line.start)
+    expect(starts[0]).toBeCloseToPoint(p(14.617467, 1.91807), 5)
+    expect(starts[1]).toBeCloseToPoint(p(9.942122, 10.145744), 5)
+    expect(starts[2]).toBeCloseToPoint(p(9.942122, 20.145744), 5)
+  })
+
+  it("is not bent by Ortho at LINE's first point, nor is a typed point", () => {
+    // probe line/p160
+    const cad = answer(createHarness(), "LINE", "0,0", "")
+    cad.press("F8")
+    cad.moveTo(CONSOLE)
+    answer(cad, "LINE", "5", "@0,10", "", "LINE", "0,0", "@10,10", "")
+    const [first, typed] = lines(cad)
+    expect(first.start).toBeCloseToPoint(p(4.64067, 1.861232), 5)
+    expect(typed.end).toBeCloseToPoint(p(10, 10))
+  })
+
+  it("reads 1/2 and 1e1, and refuses 0x10", () => {
+    // probe line/p165: its cursor lies towards -93.0322,-36.6744 from 0,0
+    const cad = createHarness()
+    cad.moveTo(p(-93.0322, -36.6744))
+    answer(cad, "LINE", "0,0", "1/2", "", "LINE", "0,0", "1e1", "")
+    answer(cad, "LINE", "0,0", "0x10")
+    expect(cad.commandLog().slice(-2)).toEqual([
+      "Specify next point or [Undo]: 0x10",
+      "Point or option keyword required.",
+    ])
+    const [half, ten] = lines(cad)
+    expect(half.end).toBeCloseToPoint(p(-0.465161, -0.183372), 5)
+    expect(ten.end).toBeCloseToPoint(p(-9.30322, -3.66744), 5)
   })
 
   it("is measured from the prompt's own base point", () => {

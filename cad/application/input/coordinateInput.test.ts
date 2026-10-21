@@ -66,6 +66,15 @@ describe("parseCoordinate", () => {
       )
     })
 
+    it("reads the numbers AutoCAD reads in decimal units", () => {
+      // probe line/p150
+      expect(parseCoordinate("1e1,0", ABSOLUTE)).toBeCloseToPoint(p(10, 0))
+      expect(parseCoordinate("1/2,0", ABSOLUTE)).toBeCloseToPoint(p(0.5, 0))
+      expect(parseCoordinate("1-1/2,0", ABSOLUTE)).toBeCloseToPoint(p(1.5, 0))
+      expect(parseCoordinate("5.,0", ABSOLUTE)).toBeCloseToPoint(p(5, 0))
+      expect(parseCoordinate("+5,-0.5", ABSOLUTE)).toBeCloseToPoint(p(5, -0.5))
+    })
+
     it("tolerates surrounding whitespace", () => {
       expect(parseCoordinate("  50 , 100  ", ABSOLUTE)).toBeCloseToPoint(
         p(50, 100)
@@ -81,6 +90,35 @@ describe("parseCoordinate", () => {
         p(-100, 0),
         6
       )
+    })
+
+    it("reads the angle forms AutoCAD reads with AUNITS 0", () => {
+      // probe line/p151
+      const at = (degrees: number) =>
+        p(10 * Math.cos(deg(degrees)), 10 * Math.sin(deg(degrees)))
+      for (const [typed, degrees] of [
+        ["10<30d", 30],
+        ["10<30d30'", 30.5],
+        ["10<0.5r", 0.5 / deg(1)],
+        ["10<50g", 45],
+        ["10<N45dE", 45],
+        ["10<1e1", 10],
+      ] as const) {
+        expect(parseCoordinate(typed, ABSOLUTE)).toBeCloseToPoint(
+          at(degrees),
+          9
+        )
+      }
+    })
+
+    it("reads cylindrical and spherical points", () => {
+      // probe line/p151
+      const cylindrical = parseCoordinate("10<30,5", ABSOLUTE)
+      expect(cylindrical).toBeCloseToPoint(p(8.66025, 5), 5)
+      expect(cylindrical?.z).toBe(5)
+      const spherical = parseCoordinate("10<30<45", ABSOLUTE)
+      expect(spherical).toBeCloseToPoint(p(6.12372, 3.53553), 5)
+      expect(spherical?.z).toBeCloseTo(7.07107, 5)
     })
 
     it("accepts a negative angle", () => {
@@ -201,7 +239,18 @@ describe("parseCoordinate", () => {
     it("puts an absolute point typed without a Z on the UCS's XY plane", () => {
       expect(parseCoordinate("1,2", onPlane)).toMatchObject(at(1, 2, 3))
       expect(parseCoordinate("#1,2", fromRaised)).toMatchObject(at(1, 2, 3))
-      expect(parseCoordinate("*1,2", onPlane)).toMatchObject(at(1, 2, 3))
+    })
+
+    it("puts a * point typed without a Z on the WCS's XY plane, whatever ELEVATION", () => {
+      // probes line/p152, p163
+      const elevated = { ...onPlane, elevation: 4 }
+      expect(parseCoordinate("*1,2", onPlane)).toMatchObject(at(1, 2, 0))
+      expect(parseCoordinate("*1,2", elevated)).toMatchObject(at(1, 2, 0))
+      expect(parseCoordinate("*5<0", elevated)).toMatchObject(at(5, 0, 0))
+      expect(parseCoordinate("*1,2,5", elevated)).toMatchObject(at(1, 2, 5))
+      expect(
+        parseCoordinate("@*5,0", { ...fromRaised, elevation: 4 })
+      ).toMatchObject(at(105, 100, 10))
     })
 
     it("puts an absolute point typed without a Z at the elevation", () => {
@@ -258,8 +307,12 @@ describe("parseCoordinate", () => {
       expect(parseCoordinate("abc,def", ABSOLUTE)).toBeNull()
       expect(parseCoordinate("1,2,3,4", ABSOLUTE)).toBeNull()
       expect(parseCoordinate("10<30<45,5", ABSOLUTE)).toBeNull()
-      expect(parseCoordinate("1e5,0", ABSOLUTE)).toBeNull()
       expect(parseCoordinate("Infinity,0", ABSOLUTE)).toBeNull()
+      // probe line/p150: feet and inches in decimal units, hex, a dangling comma
+      expect(parseCoordinate(`1'6",0`, ABSOLUTE)).toBeNull()
+      expect(parseCoordinate("0x10,0", ABSOLUTE)).toBeNull()
+      expect(parseCoordinate("5,5,", ABSOLUTE)).toBeNull()
+      expect(parseCoordinate("10<30x", ABSOLUTE)).toBeNull()
     })
 
     it("treats the comma strictly as the X/Y separator", () => {

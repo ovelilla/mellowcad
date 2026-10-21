@@ -117,7 +117,12 @@ the cursor), not in the prompt
 **Implemented:** `<angle` typed at a point prompt that has a base point, in the box or at the
 command line: `Angle Override: 30` (es `Modo momentáneo de ángulo: 30`), the next point locked to
 that heading from the base point in the UCS, over Ortho, Polar and the snap lattice, object snaps
-and typed coordinates still winning; for that one point
+(`_END`, p165) and typed coordinates (`@10,0`, p161) still winning; for that one point. The angle in
+any of the forms a typed angle takes (`30d30'`, `0.5r`, `50g`, `N45dE`: coordinate-systems.md). At a
+first point, with no base, it is `Invalid point.`; a second `<angle` while one holds is the prompt's
+wrong answer (`Point or option keyword required.`) and drops the first, so a length typed next runs
+towards the cursor (2027's console, p161); **unverified**: the echo of an angle typed in another
+form than a number (what was typed here, `Angle Override: 50g`)
 
 ### Coordinates (status bar)
 

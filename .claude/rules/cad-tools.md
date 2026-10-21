@@ -205,7 +205,8 @@ do not exist here: everything new is on the current layer.
 One session at a time:
 
 - **Coordinate prompt** — one `"coordinate"` field, collapsed to an `X,Y` / `Dist<Ang` box. Typed
-  expressions (`@30,0`, `100<45`, `#x,y`) arrive via `session.commitRaw`, not `resolveValues`.
+  expressions (`@30,0`, `100<45`, `#x,y`) arrive via `session.commitRaw`, not `resolveValues`;
+  the runtime refuses `#` typed at the command line before it reaches the box (`answerPrompt`).
 - **Keyword-only prompt** — `fields: []`: the option chips, focus left on the canvas (MIRROR's
   Erase, FILLET's and OFFSET's object prompts). A harness test answers it with `press` per key and
   `Enter`.
@@ -281,7 +282,9 @@ asks again at Enter (RECTANG's corners, -PAN's base point) reports its refusal t
   TRIM / EXTEND, BREAK, OFFSET, JOIN, HATCH, ARRAYPATH's path, the dimensions and their picks.
   Filter at the pick. FILLET and CHAMFER of polylines work in the polyline's OCS instead.
 - **Everything typed is read in the UCS.** `parseCoordinate` requires `ucs` and `elevation`; `*`
-  reads WCS numbers. An **absolute** angle goes through `headingInUcs` / `directionFromUcsHeading`
+  reads WCS numbers, and without a Z lies at the WCS's Z 0, ELEVATION left out. A typed number is
+  `parseNumber` / `parseDecimalNumber`, an angle `parseAngleDegrees`, never `Number()`. An
+  **absolute** angle goes through `headingInUcs` / `directionFromUcsHeading`
   (`tools/ucsHeading.ts`); a **relative** one (rotation, included angle, sweep) is left alone.
 - **LASTPOINT is the runtime's, never a tool's.** A typed first point passes `lastPoint:
   ctx.lastPoint` with `relativeByDefault: false`; one with a base passes `base ?? ctx.lastPoint`.

@@ -144,12 +144,82 @@ export function unitsSampleOutput(
 
 /**
  * Parses a numeric measurement typed by the user. Accepts an optional leading
- * sign and either a dot or comma as the decimal separator. Returns `null` when
- * the text is empty or not a finite number.
+ * sign and either a dot or comma as the decimal separator, and the forms
+ * {@link parseDecimalNumber} reads. Returns `null` when the text is empty or
+ * not a finite number.
  */
 export function parseNumber(text: string): number | null {
-  const trimmed = text.trim().replace(",", ".")
-  if (trimmed === "") return null
-  const value = Number(trimmed)
+  return parseDecimalNumber(text.trim().replace(",", "."))
+}
+
+const DECIMAL = /^[+-]?(\d+(\.\d*)?|\.\d+)(e[+-]?\d+)?$/i
+const FRACTION = /^([+-]?)(?:(\d+)-)?(\d+)\/(\d+)$/
+
+/**
+ * A number as AutoCAD reads one in decimal units: a decimal (`.5`, `5.`,
+ * `+5`), with an exponent (`1e1`), a fraction (`1/2`) or a whole number and a
+ * fraction (`1-1/2`), probes line/p150, p165. WHY not `Number()`: it also
+ * takes `0x10`, `0b1` and `0o7`, which AutoCAD refuses (p165).
+ */
+export function parseDecimalNumber(text: string): number | null {
+  const t = text.trim()
+  const fraction = FRACTION.exec(t)
+  if (fraction) {
+    const [, sign, whole, numerator, denominator] = fraction
+    const value = Number(whole ?? 0) + Number(numerator) / Number(denominator)
+    if (!Number.isFinite(value)) return null
+    return sign === "-" ? -value : value
+  }
+  if (!DECIMAL.test(t)) return null
+  const value = Number(t)
   return Number.isFinite(value) ? value : null
+}
+
+const UNSIGNED = /^(\d+(\.\d*)?|\.\d+)$/
+const DEGREES_MINUTES = /^([+-]?)(\d+(?:\.\d*)?|\.\d+)d(?:(.+)')?$/i
+const BEARING = /^([NS])(.+)([EW])$/i
+
+/**
+ * An angle typed with AUNITS 0, in degrees: a number (`30`, `1e1`), degrees
+ * and minutes (`30d`, `30d30'`), radians (`0.5r`), grads (`50g`) or a
+ * surveyor's bearing (`N45dE`), the forms AutoCAD 2027 reads (probe
+ * line/p151). A bearing is a direction, counted from +X as any other angle.
+ */
+export function parseAngleDegrees(text: string): number | null {
+  const t = text.trim()
+  const bearing = BEARING.exec(t)
+  if (bearing) {
+    const angle = degreesAndMinutes(bearing[2]) ?? decimal(bearing[2])
+    if (angle === null || angle < 0) return null
+    const north = bearing[1].toUpperCase() === "N"
+    const east = bearing[3].toUpperCase() === "E"
+    return north
+      ? east
+        ? 90 - angle
+        : 90 + angle
+      : east
+        ? 270 + angle
+        : 270 - angle
+  }
+  const unit = t.slice(-1).toLowerCase()
+  if (unit === "r" || unit === "g") {
+    const value = decimal(t.slice(0, -1))
+    if (value === null) return null
+    return unit === "r" ? (value * 180) / Math.PI : value * 0.9
+  }
+  return degreesAndMinutes(t) ?? decimal(t)
+}
+
+function degreesAndMinutes(text: string): number | null {
+  const match = DEGREES_MINUTES.exec(text)
+  if (!match) return null
+  const [, sign, degrees, minutes] = match
+  if (minutes !== undefined && !UNSIGNED.test(minutes)) return null
+  const value =
+    Number(degrees) + (minutes === undefined ? 0 : Number(minutes) / 60)
+  return sign === "-" ? -value : value
+}
+
+function decimal(text: string): number | null {
+  return DECIMAL.test(text.trim()) ? parseDecimalNumber(text) : null
 }

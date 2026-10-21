@@ -3,10 +3,10 @@ import { Vec3, vec3, zOf } from "../../geometry/Vec3"
 import {
   Ucs,
   WORLD_UCS,
-  isUpright,
   ucsDirectionToWorld,
   ucsPointToWorld,
 } from "../../domain/ucs"
+import { parseAngleDegrees, parseDecimalNumber } from "../../domain/units"
 
 /**
  * Parsing of AutoCAD-style coordinate entry — the "classic total precision"
@@ -32,7 +32,9 @@ import {
  *
  * A point typed without a Z takes the Z of the plane it is read on: an
  * absolute one the current elevation (ELEV and DIST say so; one conceptual page
- * says the last Z is kept instead), a relative one the last point's.
+ * says the last Z is kept instead), a relative one the last point's, and a `*`
+ * one the WCS's XY plane, whatever the UCS and ELEVATION (probes line/p152,
+ * p153, p163).
  *
  * When no prefix is given the interpretation depends on the caller: with
  * dynamic input on (our case) the default for the second point onward is
@@ -112,7 +114,8 @@ export function parseCoordinate(
   }
   if (body === "") return null
   let ucs = ctx.ucs
-  if (body.startsWith("*")) {
+  const inWcs = body.startsWith("*")
+  if (inWcs) {
     // WHY absolute unless `@` came first: `*x,y` is a WCS point, `@*x,y`
     // the relative form (AutoCAD 2023's console, acc/bz7: BREAK's second
     // point `*50,0` in a turned UCS).
@@ -135,23 +138,10 @@ export function parseCoordinate(
       zOf(ctx.lastPoint) + step.z
     )
   }
-  if (offset.z === null && ucs !== ctx.ucs && !isUpright(ucs)) {
-    // A WCS point without a Z, read in a tilted UCS's frame: on the WCS's XY plane.
-    return ucsPointToWorld(ucs, offset.xy)
-  }
-  if (!isUpright(ucs)) {
-    return ucsPointToWorld(ucs, { ...offset.xy, z: offset.z ?? ctx.elevation })
-  }
-  const point = ucsPointToWorld(ucs, offset.xy)
-  return vec3(
-    point.x,
-    point.y,
-    offset.z === null
-      ? isUpright(ctx.ucs)
-        ? ctx.ucs.origin.z + ctx.elevation
-        : 0
-      : ucs.origin.z + offset.z
-  )
+  return ucsPointToWorld(ucs, {
+    ...offset.xy,
+    z: offset.z ?? (inWcs ? 0 : ctx.elevation),
+  })
 }
 
 /** The numbers typed, in the UCS they are read in; `z` is null when omitted. */
@@ -163,9 +153,9 @@ interface TypedOffset {
 function parseCartesian(body: string): TypedOffset | null {
   const parts = body.split(",")
   if (parts.length !== 2 && parts.length !== 3) return null
-  const x = parseDecimal(parts[0])
-  const y = parseDecimal(parts[1])
-  const z = parts.length === 3 ? parseDecimal(parts[2]) : null
+  const x = parseDecimalNumber(parts[0])
+  const y = parseDecimalNumber(parts[1])
+  const z = parts.length === 3 ? parseDecimalNumber(parts[2]) : null
   if (x === null || y === null) return null
   if (parts.length === 3 && z === null) return null
   return { xy: vec2(x, y), z }
@@ -183,12 +173,12 @@ function parsePolar(body: string): TypedOffset | null {
   ) {
     return null
   }
-  const distance = parseDecimal(parts[0])
-  const angle = parseDecimal(parts[1])
+  const distance = parseDecimalNumber(parts[0])
+  const angle = parseAngleDegrees(parts[1])
   if (distance === null || angle === null) return null
   const rad = (angle * Math.PI) / 180
   if (spherical) {
-    const rise = parseDecimal(parts[2])
+    const rise = parseAngleDegrees(parts[2])
     if (rise === null) return null
     const up = (rise * Math.PI) / 180
     const inPlane = Math.cos(up) * distance
@@ -197,22 +187,10 @@ function parsePolar(body: string): TypedOffset | null {
       z: Math.sin(up) * distance,
     }
   }
-  const z = cylindrical ? parseDecimal(rest[0]) : null
+  const z = cylindrical ? parseDecimalNumber(rest[0]) : null
   if (cylindrical && z === null) return null
   return {
     xy: vec2(Math.cos(rad) * distance, Math.sin(rad) * distance),
     z,
   }
-}
-
-/**
- * Parses one component of a coordinate. The dot is the sole decimal separator
- * here (see the module note); a comma is never a decimal point in this context.
- * Returns `null` for anything that is not a finite decimal number.
- */
-function parseDecimal(text: string): number | null {
-  const t = text.trim()
-  if (!/^[+-]?(\d+(\.\d*)?|\.\d+)$/.test(t)) return null
-  const value = Number(t)
-  return Number.isFinite(value) ? value : null
 }

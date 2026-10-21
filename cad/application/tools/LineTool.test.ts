@@ -185,6 +185,22 @@ describe("LINE", () => {
       )
     })
 
+    it("reads the angle field's forms as a typed point's angle", () => {
+      // the forms of probe line/p151
+      const cad = createHarness()
+
+      for (const angle of ["50g", "N45dE"]) {
+        cad.command("LINE").click(p(0, 0)).moveTo(p(50, 60))
+        cad.type("100", "distance").type(angle, "angle").enter().escape()
+      }
+
+      const drawn = lines(cad.entities())
+      expect(drawn).toHaveLength(2)
+      for (const line of drawn) {
+        expect(line.end).toBeCloseToPoint(p(50 * Math.SQRT2, 50 * Math.SQRT2))
+      }
+    })
+
     it("hard-locks a typed value so a click cannot override it", () => {
       // AutoCAD's dimensional input: once you type a value the mouse stops
       // deciding it, and clicking commits the typed geometry.
@@ -476,6 +492,54 @@ describe("LINE", () => {
       expect(end.x).toBeCloseTo(50, 9)
     })
 
+    it("refuses <angle at the first point, which has no base", () => {
+      // probe line/p161
+      const cad = answer(createHarness(), "LINE")
+
+      expect(written(cad, "<30")).toEqual([
+        "Specify first point: <30",
+        "Invalid point.",
+      ])
+    })
+
+    it("reads the angle forms in an override", () => {
+      // the forms of probe line/p151
+      const cad = answer(createHarness(), "LINE", "0,0")
+      cad.moveTo(p(100, 0))
+      answer(cad, "<50g", "10", "<N45dE", "10", "")
+
+      const [a, b] = lines(cad.entities())
+      expect(a.end).toBeCloseToPoint(p(5 * Math.SQRT2, 5 * Math.SQRT2))
+      expect(b.end).toBeCloseToPoint(p(10 * Math.SQRT2, 10 * Math.SQRT2))
+    })
+
+    it("refuses a second <angle while one holds, and drops the first", () => {
+      // probe line/p161: the 10 after the refusal runs towards the cursor
+      const cad = answer(createHarness(), "LINE", "0,0", "<30")
+      cad.moveTo(p(289.98397, 116.30379))
+
+      expect(written(cad, "<45")).toEqual([
+        "Specify next point or [Undo]: <45",
+        "Point or option keyword required.",
+      ])
+      answer(cad, "10", "")
+      expect(cad.only<LineEntity>("line").end).toBeCloseToPoint(
+        p(9.2813394, 3.7224642),
+        6
+      )
+    })
+
+    it("lets a typed point or an object snap win over the override", () => {
+      // probe line/p161 (a coordinate), p165 (_END)
+      const cad = answer(createHarness(), "LINE", "0,0", "<30", "@10,0", "")
+      expect(cad.only<LineEntity>("line").end).toBeCloseToPoint(p(10, 0))
+
+      answer(cad, "LINE", "100,0", "0,0", "", "LINE", "0,20", "<30", "_END")
+      cad.click(p(99, 1))
+      answer(cad, "")
+      expect(lines(cad.entities())[2].end).toBeCloseToPoint(p(100, 0))
+    })
+
     it("holds the angle override for one point only", () => {
       const cad = createHarness()
 
@@ -618,6 +682,87 @@ describe("LINE", () => {
       ])
     })
 
+    it("puts a * point without a Z on the WCS's XY plane, whatever ELEVATION", () => {
+      // probe line/p163
+      const cad = answer(createHarness(), "ELEV", "5", "0")
+      answer(cad, "LINE", "0,0", "*1,1", "*2,2,1", "")
+
+      expectEnds(cad, [
+        [0, 0, 5, 1, 1, 0],
+        [1, 1, 0, 2, 2, 1],
+      ])
+    })
+
+    it("reads @*, *d<a and *x,y in a turned UCS with ELEVATION", () => {
+      // probe line/p152
+      const cad = answer(createHarness(), "ELEV", "5", "0", "UCS", "Z", "30")
+      answer(cad, "LINE", "0,0", "@*10,0", "*10<0", "*1,1", "")
+
+      expectEnds(cad, [
+        [0, 0, 5, 10, 0, 5],
+        [10, 0, 5, 10, 0, 0],
+        [10, 0, 0, 1, 1, 0],
+      ])
+    })
+
+    it("puts *x,y on the WCS's XY plane in a tilted UCS", () => {
+      // probe line/p153
+      const cad = answer(createHarness(), "UCS", "X", "90")
+      answer(cad, "LINE", "0,0", "*10,10", "*10,10,3", "")
+
+      expectEnds(cad, [
+        [0, 0, 0, 10, 10, 0],
+        [10, 10, 0, 10, 10, 3],
+      ])
+    })
+
+    it("reads exponents and fractions, and refuses feet, hex and a dangling comma", () => {
+      // probe line/p150
+      const cad = answer(createHarness(), "LINE", "0,0", "1e1,0", "1/2,0")
+      answer(cad, "1-1/2,0", "")
+      expect(lines(cad.entities()).map((line) => line.end.x)).toEqual([
+        10, 0.5, 1.5,
+      ])
+
+      answer(cad, "LINE", "0,0")
+      expect(written(cad, `1'6",0`, "0x10,0", "5,5,")).toEqual([
+        `Specify next point or [Undo]: 1'6",0`,
+        "Point or option keyword required.",
+        "Specify next point or [Undo]: 0x10,0",
+        "Point or option keyword required.",
+        "Specify next point or [Undo]: 5,5,",
+        "Point or option keyword required.",
+      ])
+    })
+
+    it("reads the angle forms after <, and cylindrical and spherical points", () => {
+      // probe line/p151
+      const cad = answer(createHarness(), "LINE", "0,0", "10<30d30'", "")
+      answer(cad, "LINE", "0,0", "10<0.5r", "")
+      answer(cad, "LINE", "0,0", "10<30,5", "")
+      answer(cad, "LINE", "0,0", "10<30<45", "")
+
+      const [a, b, c, d] = lines(cad.entities()).map((line) =>
+        ends(line).slice(3)
+      )
+      expect(a).toEqual([
+        expect.closeTo(8.61629, 5),
+        expect.closeTo(5.07538, 5),
+        0,
+      ])
+      expect(b).toEqual([
+        expect.closeTo(8.77583, 5),
+        expect.closeTo(4.79426, 5),
+        0,
+      ])
+      expect(c).toEqual([expect.closeTo(8.66025, 5), expect.closeTo(5, 5), 5])
+      expect(d).toEqual([
+        expect.closeTo(6.12372, 5),
+        expect.closeTo(3.53553, 5),
+        expect.closeTo(7.07107, 5),
+      ])
+    })
+
     it("reads relative polar angles past a turn and negative distances", () => {
       // probe line/p27
       const cad = answer(createHarness(), "LINE", "0,0", "@10<-45")
@@ -670,6 +815,26 @@ describe("LINE", () => {
         "Specify next point or [Undo]: _CLOSE",
         "Point or option keyword required.",
       ])
+    })
+  })
+
+  describe("# typed at the command line", () => {
+    it("is refused there, as a point the box takes", () => {
+      // probes line/p15, p28; desktop d02 (DYNMODE 3), d11 (the tooltip)
+      const cad = answer(createHarness(), "LINE")
+      expect(written(cad, "#5,5")).toEqual([
+        "Specify first point: #5,5",
+        "Invalid point.",
+      ])
+      answer(cad, "0,0")
+      expect(written(cad, "#5,5")).toEqual([
+        "Specify next point or [Undo]: #5,5",
+        "Point or option keyword required.",
+      ])
+      expect(lines(cad.entities())).toHaveLength(0)
+
+      cad.type("#30,30").enter().escape()
+      expect(cad.only<LineEntity>("line").end).toBeCloseToPoint(p(30, 30))
     })
   })
 

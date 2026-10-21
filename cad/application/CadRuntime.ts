@@ -27,6 +27,7 @@ import {
   formatAngle,
   formatLength,
   LengthUnit,
+  parseAngleDegrees,
   parseNumber,
   unitSuffix,
   ViewCubeSetting,
@@ -1636,9 +1637,12 @@ export class CadRuntime extends Observable {
    * prompt, as in AutoCAD, where a command name there is not a command but a
    * wrong answer. Coordinates typed in the command window are absolute: the
    * relative default is the dynamic-input tooltip's (DYNPICOORDS), so they
-   * reach the box with its `#`.
+   * reach the box with its `#`. A `#` typed here is the prompt's wrong answer:
+   * it is the tooltip's prefix, which the command window refuses even with
+   * DYNMODE 3 (desktop d02, probes line/p15, p28).
    */
   private answerPrompt(text: string): boolean {
+    if (text.startsWith("#") && !this.takesText()) return false
     if (!this.dynamicInputHasField()) {
       const taken =
         this.activeTool.answerTyped?.(text, this.toolContext) ?? false
@@ -1715,24 +1719,34 @@ export class CadRuntime extends Observable {
   /**
    * `<angle` typed at a point prompt that has a base point: AutoCAD's angle
    * override, "Angle Override: 30", locking the next point to that heading
-   * from the base point (in the UCS) until it is given.
+   * from the base point (in the UCS) until it is given. A second one while it
+   * holds is the prompt's wrong answer, and the first is gone after it: the
+   * console's next length runs towards the cursor (probe line/p161).
    */
   private angleOverride(text: string): boolean {
     const match = /^<\s*(\S+)$/.exec(text.trim())
     if (!match || this.toolAnchor() === null) return false
-    const degrees = parseNumber(match[1])
-    if (degrees === null || !Number.isFinite(degrees)) return false
-    const dir = directionFromUcsHeading(this.frame.ucs, degrees)
-    this.resolver.setAngleOverride(dir)
+    const degrees = parseAngleDegrees(match[1])
+    if (degrees === null) return false
+    if (this.resolver.hasAngleOverride()) {
+      this.holdAngle(null)
+      return this.refuse()
+    }
     this.commandLine.write(
       "info",
       this.text.message("angleOverride", { angle: match[1] })
     )
+    this.holdAngle(directionFromUcsHeading(this.frame.ucs, degrees))
+    return true
+  }
+
+  /** Sets or drops the angle override, the cursor's point read again under it. */
+  private holdAngle(dir: Vec2 | null): void {
+    this.resolver.setAngleOverride(dir)
     if (this.lastPointerScreen) this.updateSnap(this.lastPointerScreen)
     this.replayPointerMove()
     this.invalidateState()
     this.host.requestRender()
-    return true
   }
 
   /**

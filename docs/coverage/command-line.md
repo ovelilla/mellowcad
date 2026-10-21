@@ -95,7 +95,9 @@ Tangent, Perpendicular, Nearest and Parallel, and Spanish's `de` / `a` after a s
 `_` plus the global name in every language, English included (`_LINE`); `'` before a transparent
 one mid-command, and an unknown name's refusal (both under Command window); Enter/Space repeats;
 autocomplete. While a command asks for a value or a point, what is typed there answers it —
-coordinates absolute (the relative default is the tooltip's, DYNPICOORDS), `@` relative — and a
+coordinates absolute (the relative default is the tooltip's, DYNPICOORDS), `@` relative, `#` the
+prompt's wrong answer, as the desktop's command window refuses it even with DYNMODE 3 (d02; the
+tooltip takes it, d11) — and a
 command name is no answer: it is not run; Enter or Space with nothing typed is the prompt's Enter. A
 distance or an angle takes a point as well, typed or picked, as AutoCAD's input does: measured from
 the prompt's base point (CIRCLE's radius to `25,20` is the point on the circumference; ROTATE's
