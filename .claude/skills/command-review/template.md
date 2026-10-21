@@ -222,7 +222,8 @@ deviation without a `WHY` and a coverage note is a finding.
 - At most three at once, never nested. They change nothing in the repo but their own console
   probes, in an id range each (`p100`–`p149`…), and write scratch tests only in a folder each
   (`research/review/<command>/<letter>/`). They never drive the desktop.
-- Each gets its list of files, the rules to open, the matrix rows it answers, the finding format
+- Each gets its list of files, the rules to open, the matrix rows and prompts it answers (disjoint:
+  two subagents with the same prompts found ELLIPSE's differences twice), the finding format
   (§5.1), its prefix and a range of decision ids of its own, the order to claim nothing about
   AutoCAD without a probe id the reviewer gave it, and the patterns found earlier in the review
   (with their IDs) to look for analogues.
@@ -378,3 +379,5 @@ Applied:
 - 2026-10-21, after RECTANG's and POLYGON's review: UseBasePoint and `<a` read from the desktop
   where a command draws its own jig, a restored DYNMODE checked with Lisp, a DYNMODE 3 desktop pass
   (annex-probes.md); storage settled by the OPEN test (§1.3).
+- 2026-10-21, after ELLIPSE's review: disjoint prompts per subagent (§4.8); Escape on the Down
+  list and the English labels of a Spanish desktop pass (annex-probes.md §4).

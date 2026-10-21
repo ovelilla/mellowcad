@@ -133,6 +133,10 @@ Traps seen on the desktop (PLINE's review, 2026-10-21):
   `com eval '(getvar "DYNMODE")'` (RECTANG's review).
 - `com send` with a space inside a string answer sends it whole (`DASHED acadiso.lin` is one
   answer); -LINETYPE's file needs FILEDIA 0, put back after (CIRCLE's review).
+- Escape with dynamic input's Down list open cancels the command, not the list: close it with
+  Enter or the arrows mid-probe. The owner's Spanish profile shows only Spanish labels: plan the
+  English ones apart (`ax26res.dll`, or a pass in the English profile) or they stay unverified
+  (ELLIPSE's review).
 
 A probe that only reads the raw `initget` (flags, `control`) loads MellowProbe with
 `acad.sh com netload` and reads `com trace` (`tracing.md`).
