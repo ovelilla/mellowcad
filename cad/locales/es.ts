@@ -866,7 +866,7 @@ export const es: EngineLocale = {
         "Center": "cEntro",
         "Direction": "Dirección",
         "Radius": "Radio",
-        "Second pt": "Segundo pto.",
+        "Second pt": "Segundo",
         "Length": "Longitud"
       },
       "ARC": {
@@ -1193,7 +1193,7 @@ export const es: EngineLocale = {
         "Center": "cEntro",
         "Direction": "Dirección",
         "Radius": "Radio",
-        "Second pt": "Segundo pto."
+        "Second pt": "Segundo"
       },
       "AREA": {
         "Object": "Objeto",
@@ -2937,6 +2937,14 @@ export const es: EngineLocale = {
       ],
       "positiveNonzero": "El valor debe ser positivo y diferente de cero.",
       "valueMustBePositive": "El valor debe ser positivo.",
+      "valueMustBeNonzero": "El valor debe ser diferente de cero.",
+      "previousDirectionNotUcsParallel": [
+        "La dirección anterior no es paralela al SCP; usando ",
+        [
+          "angle"
+        ],
+        "."
+      ],
       "lineweightRequired": "Se precisa un grosor en unidades de grosor de línea.",
       "lineweightRounded": [
         "Grosor de línea redondeado al valor válido más cercano de ",
@@ -3345,10 +3353,12 @@ export const es: EngineLocale = {
         "Ttr": "Ttr (Tangente tangente radio)"
       },
       "PLINE": {
-        "Halfwidth": "Mitad grosor"
+        "Halfwidth": "Mitad grosor",
+        "Second pt": "Segundo pto."
       },
       "DIST": {
-        "Multiple": "puntos Múltiples"
+        "Multiple": "puntos Múltiples",
+        "Second pt": "Segundo pto."
       },
       "RECTANG": {
         "Pick": "Designar puntos"

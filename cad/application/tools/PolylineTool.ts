@@ -10,7 +10,7 @@ import {
   segmentExitTangent,
   tangentArcBulge,
 } from "../../geometry/bulgeArcs"
-import { formatLength, parseNumber } from "../../domain/units"
+import { formatAngle, formatLength, parseNumber } from "../../domain/units"
 import { ucsPointToWorld, WORLD_UCS } from "../../domain/ucs"
 import { AddEntityCommand } from "../commands/entityCommands"
 import { UpdateSettingsCommand } from "../commands/settingsCommands"
@@ -31,7 +31,11 @@ import {
 } from "./Tool"
 import { CommandOption, CommandOptionOutcome } from "./Tool"
 import type { PromptId } from "../../locales/types"
-import { lastDrawnDirection, lastDrawnPoint } from "./lastDrawnPoint"
+import {
+  lastDrawnDirection,
+  lastDrawnPoint,
+  lastDrawnRises,
+} from "./lastDrawnPoint"
 import {
   type CurrentProperties,
   currentProperties,
@@ -43,7 +47,11 @@ import {
   headingInUcs,
 } from "./ucsHeading"
 import { pointAlongCursor, showRise } from "./directDistance"
-import { ARC_SEGMENT_OPTIONS, ArcSegmentInput } from "./arcSegmentInput"
+import {
+  ARC_SEGMENT_OPTIONS,
+  type ArcStart,
+  ArcSegmentInput,
+} from "./arcSegmentInput"
 
 /**
  * The polyline tool draws a single connected chain of straight segments as one
@@ -104,6 +112,11 @@ type PolylineToolState =
        * or polyline drawn ends heading, else along the UCS's X (pline/p161).
        */
       readonly startTangent: Vec2
+      /**
+       * The start tangent is a rising line's, taken in the plane: the first
+       * arc says so (table 21314, pline/p149).
+       */
+      readonly rises: boolean
       /** Whether the chain is to be closed on commit (set by the Close option). */
       readonly closed: boolean
       /** Arc mode: the next segment is a tangent arc rather than a line. */
@@ -133,9 +146,11 @@ export class PolylineTool implements Tool {
   private askingLength = false
   private askingWidth: WidthPrompt | null = null
   private lastScreen: Vec2 | null = null
-  private readonly arc = new ArcSegmentInput((segment, ctx) =>
-    this.appendArc(segment, ctx)
-  )
+  private readonly arc = new ArcSegmentInput({
+    finish: (segment, ctx) => this.appendArc(segment, ctx),
+    back: (ctx) => this.openLengthInput(ctx, this.lastScreen ?? { x: 0, y: 0 }),
+    ctrlAtCenterAngle: true,
+  })
 
   onActivate(ctx: ToolContext): void {
     ctx.setCursor("crosshair")
@@ -344,6 +359,15 @@ export class PolylineTool implements Tool {
 
   private setArcMode(arcMode: boolean, ctx: ToolContext): CommandOptionOutcome {
     if (this.state.phase !== "drawing") return "unhandled"
+    const { rises, startTangent, vertices } = this.state
+    if (arcMode && !this.state.arcMode && rises && vertices.length === 1) {
+      const heading = headingInUcs(ctx.ucs, startTangent)
+      ctx.report(
+        ctx.text.message("previousDirectionNotUcsParallel", {
+          angle: formatAngle(heading, ctx.document.getSettings()),
+        })
+      )
+    }
     this.state = { ...this.state, arcMode }
     ctx.requestRender()
     return "continue"
@@ -451,8 +475,12 @@ export class PolylineTool implements Tool {
     return state.startTangent
   }
 
-  private arcStart(state: Drawing): { point: Vec3; tangent: Vec2 } {
-    return { point: this.lastVertex(state), tangent: this.tangent(state) }
+  private arcStart(state: Drawing): ArcStart {
+    return {
+      point: this.lastVertex(state),
+      tangent: this.tangent(state),
+      offPlane: state.rises && state.vertices.length === 1,
+    }
   }
 
   /** The last (most recent) vertex of the chain being drawn. */
@@ -647,6 +675,7 @@ export class PolylineTool implements Tool {
       startTangent:
         lastDrawnDirection(ctx.document, ctx.lastPoint) ??
         directionFromUcsHeading(ctx.ucs, 0),
+      rises: lastDrawnRises(ctx.document),
       closed: false,
       arcMode: false,
       reversed: false,

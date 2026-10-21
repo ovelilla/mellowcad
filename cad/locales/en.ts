@@ -2591,6 +2591,14 @@ export const en: EngineCatalog = {
       ],
       "positiveNonzero": "Value must be positive and nonzero.",
       "valueMustBePositive": "Value must be positive.",
+      "valueMustBeNonzero": "Value must be nonzero.",
+      "previousDirectionNotUcsParallel": [
+        "Previous direction not UCS parallel, using ",
+        [
+          "angle"
+        ],
+        "."
+      ],
       "lineweightRequired": "A weight in lineweight units is required.",
       "lineweightRounded": [
         "Lineweight rounded to nearest valid value of ",
@@ -2999,10 +3007,12 @@ export const en: EngineCatalog = {
         "Ttr": "Ttr (tan tan radius)"
       },
       "PLINE": {
-        "Halfwidth": "Halfwidth"
+        "Halfwidth": "Halfwidth",
+        "Second pt": "Second pt"
       },
       "DIST": {
-        "Multiple": "Multiple points"
+        "Multiple": "Multiple points",
+        "Second pt": "Second pt"
       },
       "RECTANG": {
         "Pick": "Pick points"

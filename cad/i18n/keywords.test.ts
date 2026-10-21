@@ -104,8 +104,18 @@ describe("resolving what was typed", () => {
     const ellipse = [english("Arc"), english("Center"), english("Centre")]
     expect(matchKeywords("CE", ellipse)).toEqual(["Center"])
     expect(matchKeywords("CENTR", ellipse)).toEqual(["Centre"])
-    expect(matchKeywords("CE", spanishArc)).toEqual(["Center"])
     expect(matchKeywords("c", spanishArc)).toEqual(["Close"])
+  })
+
+  // AutoCAD 2027's console (pline/p104 es): `CE` at `cEntro Cerrar` closes.
+  it("prefers, among the words covered, the one its first capital starts", () => {
+    expect(matchKeywords("CE", spanishArc)).toEqual(["Close"])
+    expect(matchKeywords("CEN", spanishArc)).toEqual(["Center"])
+    const english = [
+      { id: "Center", word: "CEnter", global: "CEnter" },
+      { id: "Close", word: "CLose", global: "CLose" },
+    ]
+    expect(matchKeywords("CE", english)).toEqual(["Center"])
   })
 
   it("hands back the global id however it was typed", () => {

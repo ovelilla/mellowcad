@@ -269,12 +269,13 @@ describe("an answer that starts several keywords", () => {
       "ELLIPSE Specify center of elliptical arc:"
     )
 
+    // 2027's console (pline/p104 es): of `cEntro Cerrar`, the one its
+    // capital starts, closing straight back as `*No válido*`.
     const spanish = createHarness({ locale: es })
     spanish.command("POL")
     answerLine(spanish, "0,0", "10,0", "A", "CE")
-    expect(spanish.state().commandLine.prompt).toBe(
-      "POL Precise punto central del arco:"
-    )
+    expect(spanish.commandLog().at(-1)).toBe("*No válido*")
+    expect(spanish.activeToolId()).toBe("select")
 
     const pline = createHarness()
     pline.command("PLINE")

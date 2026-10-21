@@ -100,6 +100,29 @@ describe("polyline arc segments", () => {
     expect(radiusArcBulge(o, o, 10, false)).toBeNull()
   })
 
+  // probe pline/p122: Radius -10 and a chord of 10, the major arc.
+  it("takes a negative radius as the major arc, either way round", () => {
+    const end = { x: 20, y: 0 }
+    expect(radiusArcBulge({ x: 10, y: 0 }, end, -10, false)).toBeCloseTo(
+      3.7320508075688745,
+      9
+    )
+    expect(radiusArcBulge({ x: 10, y: 0 }, end, -10, true)).toBeCloseTo(
+      -3.7320508075688745,
+      9
+    )
+    expect(radiusArcBulge(o, { x: 30, y: 0 }, -10, false)).toBeNull()
+  })
+
+  // probes pline/p256, p257: a chord's direction reads a negative radius as
+  // its size, after Angle or Radius alike.
+  it("runs a chord of a negative radius its way, as long as the positive", () => {
+    const along = arcAlongChord(o, -10, Math.PI / 2, 0)
+    expect(along.end.x).toBeCloseTo(14.142135623730951, 9)
+    expect(along.end.y).toBeCloseTo(0, 9)
+    expect(along.bulge).toBeCloseTo(0.41421356237309503, 9)
+  })
+
   // AutoCAD 2023's console (acc/f6, f13, f15, f24): CHAMFER's refitted arcs.
   it("refits an arc to new ends at its radius, turn and side", () => {
     const at = (y: number) => ({ x: 100, y })

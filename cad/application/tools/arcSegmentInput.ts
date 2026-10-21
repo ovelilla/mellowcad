@@ -1,5 +1,5 @@
 import { Vec2, V } from "../../geometry/Vec2"
-import { Vec3 } from "../../geometry/Vec3"
+import { Vec3, withZOf } from "../../geometry/Vec3"
 import {
   ArcSegment,
   arcAlongChord,
@@ -12,7 +12,7 @@ import {
   tangentArcBulge,
 } from "../../geometry/bulgeArcs"
 import { normalizeDegrees } from "../../geometry/primitives"
-import { parseNumber } from "../../domain/units"
+import { formatAngle, parseNumber } from "../../domain/units"
 import { DynamicInputSession } from "../input/DynamicInput"
 import {
   isCoordinateExpression,
@@ -34,6 +34,24 @@ import {
 export interface ArcStart {
   readonly point: Vec3
   readonly tangent: Vec2
+  /**
+   * The tangent is a rising line's, taken in the UCS's plane: the chord's
+   * `<default>` says so first (table 21314, pline/p149).
+   */
+  readonly offPlane?: boolean
+}
+
+/** What the command drawing the arcs hands {@link ArcSegmentInput}. */
+export interface ArcSegmentHost {
+  /** The arc the option's answers make. */
+  readonly finish: (segment: ArcSegment, ctx: ToolContext) => void
+  /** The option cancelled at `*Invalid*`: the command asks its arc prompt again. */
+  readonly back: (ctx: ToolContext) => void
+  /**
+   * CEnter's included angle names Ctrl, as PLINE's does; DIST's 2027 prompt
+   * does not (pline/p145).
+   */
+  readonly ctrlAtCenterAngle: boolean
 }
 
 /**
@@ -112,18 +130,21 @@ const QUESTIONS: Record<StepKind, PromptId> = {
  * call while {@link active}, and it hands back the finished {@link
  * ArcSegment}. Its distances and angles are boxes the runtime also measures
  * by points: from the start point (an angle, a chord's length) or by two of
- * their own (the radius), as AutoCAD 2023's console asks them. Ctrl held at
- * the last pick or move turns the arc the other way, as each prompt says.
+ * their own (the radius), as AutoCAD 2027's console asks them (pline/p140,
+ * p141). Ctrl held at the last pick or move turns the arc the other way, as
+ * each prompt says. An answer that makes no arc is `*Invalid*` and the
+ * option is left for the arc prompt, LASTPOINT back at the arc's start
+ * (p118–p125, p250–p255).
  */
 export class ArcSegmentInput {
   private step: Step | null = null
   private from: ArcStart | null = null
   private cursor: Vec3 | null = null
   private clockwise = false
+  /** The chord's `<default>` as first written, which 'AUPREC leaves (p114). */
+  private chordDefault = ""
 
-  constructor(
-    private readonly finish: (segment: ArcSegment, ctx: ToolContext) => void
-  ) {}
+  constructor(private readonly host: ArcSegmentHost) {}
 
   get active(): boolean {
     return this.step !== null
@@ -155,10 +176,10 @@ export class ArcSegmentInput {
     const step = this.step
     if (step === null) return null
     if (step.kind === "chordDirection") {
-      return {
-        id: QUESTIONS[step.kind],
-        enter: { angle: this.tangentDegrees() },
-      }
+      return { id: QUESTIONS[step.kind], enter: { name: this.chordDefault } }
+    }
+    if (step.kind === "centerAngle" && !this.host.ctrlAtCenterAngle) {
+      return "specifyIncludedAngle"
     }
     return QUESTIONS[step.kind]
   }
@@ -273,6 +294,17 @@ export class ArcSegmentInput {
   /** Asks `step`, its box open on a point or on its one value. */
   private ask(step: Step, ctx: ToolContext): void {
     this.step = step
+    if (step.kind === "chordDirection") {
+      const degrees = this.tangentDegrees()
+      this.chordDefault = formatAngle(degrees, ctx.document.getSettings())
+      if (this.from?.offPlane) {
+        ctx.report(
+          ctx.text.message("previousDirectionNotUcsParallel", {
+            angle: this.chordDefault,
+          })
+        )
+      }
+    }
     const at = ctx.dynamicInput.getScreen() ?? { x: 0, y: 0 }
     const session: DynamicInputSession = POINT_STEPS[step.kind]
       ? {
@@ -292,15 +324,19 @@ export class ArcSegmentInput {
           ],
           commit: (values, commitCtx) =>
             this.giveValue(values.value, commitCtx),
-          // The chord's `<default>`, which the cursor's reading overwrites.
+          // The chord's `<default>`, which the cursor's reading overwrites,
+          // and Direction's unshown one, the way the chain heads (p134).
           commitRaw: (commitCtx) => {
-            if (
-              step.kind !== "chordDirection" ||
-              commitCtx.dynamicInput.hasTypedText()
-            ) {
-              return false
+            if (commitCtx.dynamicInput.hasTypedText()) return false
+            if (step.kind === "chordDirection") {
+              this.giveValue(this.tangentDegrees(), commitCtx)
+              return true
             }
-            this.giveValue(this.tangentDegrees(), commitCtx)
+            if (step.kind !== "direction" || this.from === null) return false
+            this.ask(
+              { kind: "directionEnd", tangent: this.from.tangent },
+              commitCtx
+            )
             return true
           },
         }
@@ -309,12 +345,13 @@ export class ArcSegmentInput {
     ctx.requestRender()
   }
 
+  /** `@` is from LASTPOINT: Second pt's end from its second point (p138). */
   private typedPoint(ctx: ToolContext): boolean {
     if (this.from === null) return false
     const text = ctx.dynamicInput.getText("point").trim()
     if (!isCoordinateExpression(text)) return false
     const point = parseCoordinate(text, {
-      lastPoint: this.from.point,
+      lastPoint: ctx.lastPoint,
       relativeByDefault: true,
       ucs: ctx.ucs,
       elevation: ctx.elevation,
@@ -338,13 +375,22 @@ export class ArcSegmentInput {
     this.complete(this.segmentTo(step, point), ctx)
   }
 
-  /** A distance or an angle (degrees) answering the step. */
+  /**
+   * A distance or an angle (degrees) answering the step. An included angle
+   * of a whole turn, the radius and CEnter's chord are refused if 0, `Value
+   * must be nonzero.` (p110, p111, p133, p136); a negative radius is the
+   * major arc (p122), and Angle's radius takes 0 and less (p131, p256).
+   */
   private giveValue(value: number, ctx: ToolContext): void {
     const step = this.step
     if (step === null || !Number.isFinite(value)) return
     const radians = (value * Math.PI) / 180
     switch (step.kind) {
       case "included":
+        if (isWholeTurn(value)) {
+          ctx.report(ctx.text.message("valueMustBeNonzero"), "error")
+          return
+        }
         this.ask({ kind: "angleEnd", included: radians }, ctx)
         return
       case "direction":
@@ -357,17 +403,19 @@ export class ArcSegmentInput {
         )
         return
       case "radius":
-        if (!(value > 0)) {
-          ctx.report(ctx.text.message("positiveNonzero"), "error")
+        if (value === 0) {
+          ctx.report(ctx.text.message("valueMustBeNonzero"), "error")
           return
         }
         this.ask({ kind: "radiusEnd", radius: value }, ctx)
         return
-      case "angleRadius":
-        if (!(value > 0)) {
-          ctx.report(ctx.text.message("positiveNonzero"), "error")
+      case "centerChord":
+        if (value === 0) {
+          ctx.report(ctx.text.message("valueMustBeNonzero"), "error")
           return
         }
+        break
+      case "angleRadius":
         this.ask(
           { kind: "chordDirection", included: step.included, radius: value },
           ctx
@@ -436,6 +484,8 @@ export class ArcSegmentInput {
           radians
         )
       case "centerAngle": {
+        // WHY null: the console's `*Invalid*` for a whole turn (p250, p251).
+        if (isWholeTurn(value)) return null
         const included = turn * radians
         return {
           end: endAround(from.point, step.center, included),
@@ -450,16 +500,21 @@ export class ArcSegmentInput {
   }
 
   /**
-   * Hands back the arc and leaves the steps; one that does not exist is
-   * AutoCAD's `*Invalid*`, and the step is asked again.
+   * Hands back the arc and leaves the steps, LASTPOINT at its end whatever
+   * answered last (a chord, a ray's point: pline/p117, p138); one that does
+   * not exist is AutoCAD's `*Invalid*`, and the arc prompt is asked again.
    */
   private complete(segment: ArcSegment | null, ctx: ToolContext): void {
-    if (segment === null) {
-      ctx.report(ctx.text.message("invalid"), "error")
+    const from = this.from
+    this.cancel()
+    if (segment !== null) {
+      if (from !== null) ctx.setLastPoint(withZOf(segment.end, from.point))
+      this.host.finish(segment, ctx)
       return
     }
-    this.cancel()
-    this.finish(segment, ctx)
+    ctx.report(ctx.text.message("invalid"), "error")
+    if (from !== null) ctx.setLastPoint(from.point)
+    this.host.back(ctx)
   }
 
   /** The start tangent's heading, the chord direction's `<default>`. */
@@ -467,6 +522,12 @@ export class ArcSegmentInput {
     const tangent = this.from?.tangent ?? { x: 1, y: 0 }
     return normalizeDegrees((Math.atan2(tangent.y, tangent.x) * 180) / Math.PI)
   }
+}
+
+/** An angle that turns back where it started (0, 360, -720). */
+function isWholeTurn(degrees: number): boolean {
+  const left = normalizeDegrees(degrees)
+  return left < 1e-9 || 360 - left < 1e-9
 }
 
 function isAngleStep(kind: StepKind): boolean {

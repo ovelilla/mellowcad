@@ -133,6 +133,7 @@ are `[x, y, bulge, startWidth, endWidth]`.
 | p185, p188–p190 | Continue whatever LASTPOINT, after an arc-ended, a closed polyline, a circle |
 | p187 | a long transcript against the history |
 | p192–p195 | END at Length; the first arc in UCS Z 30; es widths' refusal; direct distance 0 and −5 |
+| p250–p258 | block PAC's: CEnter's included 0 and 360 `*Invalid*`; `ID @` after a refused option (the arc's start); a negative radius at the chord, after Angle or Radius; p258 the chord's `<30>` in UCS Z 30 (refuted a suspicion) |
 | p200–p207 | Width and Halfwidth: defaults, refusals, a point, arc mode, Close, PLINEWID, U |
 | p208–p218 | the width's Undo rule, eleven cases (2023's acc/w3–w7 hold) |
 | p219–p227 | THICKNESS and ELEVATION, UCS X 90, back to the start, `@` with a taper, DXF codes, two vertices closed by an arc |

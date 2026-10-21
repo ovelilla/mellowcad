@@ -43,19 +43,19 @@ wording comes from: `autocad-research.md`.
 
 When a command deliberately does nothing, say so with `ctx.report(ctx.text.message(id, values))`:
 silence reads as a bug. The words are AutoCAD's own, in `commands.messages`; if the exact string
-cannot be verified, leave the message out rather than invent one. A report AutoCAD lays out in
+cannot be verified, leave the message out, never invent one. A report AutoCAD lays out in
 columns or lines (ID, DIST, UCS `?`) is one message with its spaces and `\n` kept.
 
 ## Prompts
 
-**A tool names the question it is asking** in `question()`, by an id in `commands.prompts` whose
+**A tool names the question it asks** in `question()`, by an id in `commands.prompts` whose
 text is AutoCAD's prompt up to the keyword list (`Specify next point or`: no list, no colon). The
 runtime builds the rest: `LINE Specify next point or [Undo]:`, the dynamic prompt, the history line.
 
 - **A prompt is never written with `ctx.report`**, with one exception: a prompt the console prints
   again without a new question, written as `ctx.report(text, "prompt")` and left open for the
   answer (`objectSelection.ts`' wrong window corner re-asking `Select objects:`, `PanTool.ts`).
-- Return the question of every state, also those answering the same question (LINE's tracking
+- Return the question of every state, also those answering the same one (LINE's tracking
   offset, the deferred tangent). Convert a command whole: one that names no question shows
   `NAME [keywords]:` and writes no prompt lines.
 - A `ToolQuestion` (`{ id, enter }`) shows what Enter keeps: a length (`<10.0000>`), a point or a
@@ -81,7 +81,7 @@ runtime builds the rest: `LINE Specify next point or [Undo]:`, the dynamic promp
 the value a keyword of the same command). `invokeOption(id)` switches on ids and returns
 `"continue"` or `"end"`. The abbreviation (the capitals; digits count, so `3P` is typed whole; `?`
 is its own) is resolved by the runtime from `commands.keywords.<NAME>`: comparing a key with a
-letter breaks the day the language changes. Every keyword a tool offers is in its command's table.
+letter breaks when the language changes. Every keyword a tool offers is in its command's table.
 
 - A keyword AutoCAD answers with a **sub-prompt** (OFFSET's Erase: `Erase source object after
   offsetting? [Yes/No] <No>:`) is a phase whose `question()` names it, with that answer as
@@ -98,7 +98,7 @@ letter breaks the day the language changes. Every keyword a tool offers is in it
   the declared one, which answers and which `Ambiguous response` names. A language labels only what
   English labels (keep English's label even when equal to the word). Spanish often declares
   otherwise where English does not (`Atravesar`, `Actual`): read both tables' `initget`. The
-  console outranks the table (PLINE keeps `CEnter`).
+  console outranks the table (PLINE keeps `CEnter`, pline/p103).
 - A prompt whose declared order is not the listed one names it in its question (`declared: ["OFF",
   "Normal", "ON"]`), only where two words on offer can be ambiguous.
 - A word the `initget` declares and the list leaves out is a **hidden option**, after the shown

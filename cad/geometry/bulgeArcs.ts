@@ -86,8 +86,8 @@ export function arcAroundToward(
 
 /**
  * CEnter and a chord length: counter-clockwise, the minor arc for a positive
- * length and the major one for a negative, as AutoCAD 2023's console draws
- * them. Null for a chord longer than the diameter.
+ * length and the major one for a negative, as AutoCAD 2027's console draws
+ * them (pline/p117). Null for a chord longer than the diameter.
  */
 export function arcAroundChord(
   start: Vec2,
@@ -109,7 +109,8 @@ export function arcAroundChord(
 
 /**
  * An included angle, a radius and the direction of the chord (radians): the
- * chord runs that way for as long as the angle and radius make it.
+ * chord runs that way for as long as the angle and radius make it, a
+ * negative radius as long as its size (pline/p256, p257).
  */
 export function arcAlongChord(
   start: Vec2,
@@ -117,7 +118,7 @@ export function arcAlongChord(
   included: number,
   direction: number
 ): ArcSegment {
-  const length = 2 * radius * Math.abs(Math.sin(included / 2))
+  const length = 2 * Math.abs(radius) * Math.abs(Math.sin(included / 2))
   return {
     end: V.add(start, {
       x: length * Math.cos(direction),
@@ -128,9 +129,10 @@ export function arcAlongChord(
 }
 
 /**
- * A radius and an endpoint: the minor arc, counter-clockwise or clockwise
- * with Ctrl held (AutoCAD 2023's console draws it so whichever side the end
- * lies). Null when the end is farther than the diameter.
+ * A radius and an endpoint: the minor arc for a positive radius and the major
+ * one for a negative, counter-clockwise or clockwise with Ctrl held, whichever
+ * side the end lies (AutoCAD 2027's console, pline/p121, p122). Null when the
+ * end is farther than the diameter.
  */
 export function radiusArcBulge(
   start: Vec2,
@@ -139,8 +141,10 @@ export function radiusArcBulge(
   clockwise: boolean
 ): number | null {
   const chord = V.distance(start, end)
-  if (chord < EPSILON || chord > 2 * radius + EPSILON) return null
-  const included = 2 * Math.asin(Math.min(1, chord / (2 * radius)))
+  const size = Math.abs(radius)
+  if (chord < EPSILON || chord > 2 * size + EPSILON) return null
+  const minor = 2 * Math.asin(Math.min(1, chord / (2 * size)))
+  const included = radius < 0 ? 2 * Math.PI - minor : minor
   return bulgeOfAngle(clockwise ? -included : included)
 }
 

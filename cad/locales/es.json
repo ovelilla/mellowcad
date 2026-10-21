@@ -440,7 +440,7 @@
         "Center": "cEntro",
         "Direction": "Dirección",
         "Radius": "Radio",
-        "Second pt": "Segundo pto.",
+        "Second pt": "Segundo",
         "Length": "Longitud"
       },
       "ARC": { "Center": "Centro" },
@@ -744,7 +744,7 @@
         "Center": "cEntro",
         "Direction": "Dirección",
         "Radius": "Radio",
-        "Second pt": "Segundo pto."
+        "Second pt": "Segundo"
       },
       "AREA": {
         "Object": "Objeto",
@@ -1452,6 +1452,8 @@
       "zeroLengthLineCreated": "Línea de longitud cero creada en ({x}, {y}, {z})",
       "positiveNonzero": "El valor debe ser positivo y diferente de cero.",
       "valueMustBePositive": "El valor debe ser positivo.",
+      "valueMustBeNonzero": "El valor debe ser diferente de cero.",
+      "previousDirectionNotUcsParallel": "La dirección anterior no es paralela al SCP; usando {angle}.",
       "lineweightRequired": "Se precisa un grosor en unidades de grosor de línea.",
       "lineweightRounded": "Grosor de línea redondeado al valor válido más cercano de {value}",
       "colorRequired": "Se necesita un número o nombre de color normalizado.",
@@ -1547,8 +1549,8 @@
         "Circumscribed": "Circunscrito alrededor del círculo"
       },
       "CIRCLED": { "Ttr": "Ttr (Tangente tangente radio)" },
-      "PLINE": { "Halfwidth": "Mitad grosor" },
-      "DIST": { "Multiple": "puntos Múltiples" },
+      "PLINE": { "Halfwidth": "Mitad grosor", "Second pt": "Segundo pto." },
+      "DIST": { "Multiple": "puntos Múltiples", "Second pt": "Segundo pto." },
       "RECTANG": { "Pick": "Designar puntos" },
       "AREA": { "Add": "Añadir área", "Subtract": "Sustraer área" },
       "TEXT": {

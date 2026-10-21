@@ -1421,6 +1421,8 @@
       "zeroLengthLineCreated": "Zero length line created at ({x}, {y}, {z})",
       "positiveNonzero": "Value must be positive and nonzero.",
       "valueMustBePositive": "Value must be positive.",
+      "valueMustBeNonzero": "Value must be nonzero.",
+      "previousDirectionNotUcsParallel": "Previous direction not UCS parallel, using {angle}.",
       "lineweightRequired": "A weight in lineweight units is required.",
       "lineweightRounded": "Lineweight rounded to nearest valid value of {value}",
       "colorRequired": "A color number or standard color name is required.",
@@ -1516,8 +1518,8 @@
         "Circumscribed": "Circumscribed about circle"
       },
       "CIRCLED": { "Ttr": "Ttr (tan tan radius)" },
-      "PLINE": { "Halfwidth": "Halfwidth" },
-      "DIST": { "Multiple": "Multiple points" },
+      "PLINE": { "Halfwidth": "Halfwidth", "Second pt": "Second pt" },
+      "DIST": { "Multiple": "Multiple points", "Second pt": "Second pt" },
       "RECTANG": { "Pick": "Pick points" },
       "AREA": { "Add": "Add area", "Subtract": "Subtract area" },
       "TEXT": {

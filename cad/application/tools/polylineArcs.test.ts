@@ -30,8 +30,9 @@ const CLOCKWISE_ARC = ["ARC", "0,10", "7.0710678,7.0710678", "10,0"] as const
 const ARC_PROMPT =
   "Specify endpoint of arc (hold Ctrl to switch direction) or [Angle/CEnter/CLose/Direction/Halfwidth/Line/Radius/Second pt/Undo/Width]:"
 
-// AutoCAD 2023's console is the reference for every prompt, refusal and
-// bulge below (its LIST of the polyline drawn by the same answers).
+// AutoCAD 2027's console is the reference for every prompt, refusal and
+// bulge below (pline/p01, p09, p10, p100–p136: its MPDUMP of the polyline
+// drawn by the same answers).
 describe("PLINE's arc mode", () => {
   it("lists AutoCAD's arc options, Close once a segment exists", () => {
     const cad = createHarness()
@@ -245,6 +246,344 @@ describe("PLINE's arc mode", () => {
       "Precise punto final del arco (mantenga pulsada la tecla Ctrl para cambiar de dirección) o [ángUlo/Longitud]: U",
       "Precise ángulo incluido (mantenga pulsada la tecla Ctrl para cambiar de dirección): FOO",
       "Requiere un ángulo numérico válido o un segundo punto.",
+    ])
+  })
+})
+
+/** PLINE from (0,0) to (10,0), in arc mode, then `answers`. */
+function arcFromLine(...answers: string[]): CadHarness {
+  return answerLine(createHarness(), "PLINE", "0,0", "10,0", "A", ...answers)
+}
+
+/** LASTPOINT as `ID @` writes it, once PLINE has ended. */
+function lastPoint(cad: CadHarness): string | undefined {
+  answerLine(cad, "", "ID", "@")
+  return cad.commandLog().at(-1)
+}
+
+// AutoCAD 2027's console, each test citing its probe.
+describe("PLINE's arc options", () => {
+  it("cancel at `*Invalid*` and ask the arc prompt again, LASTPOINT kept", () => {
+    for (const [answers, probe] of [
+      [["CE", "20,0", "L", "100"], "p118, p254"],
+      [["D", "90", "20,10", "D", "0", "10,10"], "p119"],
+      [["D", "0", "30,0"], "p120, p253"],
+      [["R", "10", "50,0"], "p123, p255"],
+      [["S", "15,5", "20,0", "S", "25,0", "30,0"], "p125"],
+      [["CE", "20,0", "A", "0"], "p250"],
+      [["CE", "20,0", "A", "360"], "p251"],
+    ] as const) {
+      const cad = arcFromLine(...answers)
+      expect(cad.commandLog().at(-1), probe).toBe("*Invalid*")
+      expect(cad.state().commandLine.prompt, probe).toBe(`PLINE ${ARC_PROMPT}`)
+    }
+    // pline/p252–p255: the arc's start, whatever the option's points set.
+    for (const answers of [
+      ["CE", "20,0", "L", "100"],
+      ["D", "0", "30,0"],
+      ["R", "10", "50,0"],
+      ["S", "25,0", "30,0"],
+    ]) {
+      expect(lastPoint(arcFromLine(...answers))).toMatch(
+        /^ X = 10\.00 +Y = 0\.00 /
+      )
+    }
+  })
+
+  it("refuse an included angle of 0 or 360 at Angle", () => {
+    // pline/p110, p111
+    const cad = arcFromLine("A", "0", "360")
+    expect(cad.commandLog().slice(-4)).toEqual([
+      "Specify included angle: 0",
+      "Value must be nonzero.",
+      "Specify included angle: 360",
+      "Value must be nonzero.",
+    ])
+    answerLine(cad, "90", "20,0", "")
+    expect(drawn(cad).bulges).toEqual([0, 0.4142])
+
+    const spanish = createHarness({ locale: es })
+    answerLine(spanish, "POL", "0,0", "10,0", "A", "U", "0")
+    expect(spanish.commandLog().at(-1)).toBe(
+      "El valor debe ser diferente de cero."
+    )
+  })
+
+  it("take a negative radius as the major arc, and refuse 0", () => {
+    // pline/p122
+    expect(drawn(arcFromLine("R", "-10", "20,0", "")).bulges).toEqual([
+      0, 3.7321,
+    ])
+    // pline/p136
+    const zero = arcFromLine("R", "0")
+    expect(zero.commandLog().at(-1)).toBe("Value must be nonzero.")
+    expect(zero.state().commandLine.prompt).toBe("PLINE Specify radius of arc:")
+    answerLine(zero, "10", "A", "90", "45", "")
+    expect(drawn(zero)).toEqual({
+      at: ["0,0", "10,0", "20,10"],
+      bulges: [0, 0.4142],
+    })
+  })
+
+  it("take Angle's radius 0, a segment of no length, and a negative one", () => {
+    // pline/p131
+    const cad = arcFromLine("A", "90", "R", "0", "10", "")
+    expect(cad.commandLog()).toContain(
+      "Specify direction of chord for arc (hold Ctrl to switch direction) <0>: 10"
+    )
+    expect(drawn(cad)).toEqual({
+      at: ["0,0", "10,0", "10,0"],
+      bulges: [0, 0.4142],
+    })
+    // pline/p256, p257: a negative one as long as the positive, after Angle
+    // or Radius.
+    for (const answers of [
+      ["A", "90", "R", "-10", "0", ""],
+      ["R", "-10", "A", "90", "0", ""],
+    ]) {
+      expect(drawn(arcFromLine(...answers))).toEqual({
+        at: ["0,0", "10,0", "24.1421,0"],
+        bulges: [0, 0.4142],
+      })
+    }
+  })
+
+  it("refuse CEnter's chord of 0", () => {
+    // pline/p133, p117
+    const cad = arcFromLine("CE", "20,0", "L", "0")
+    expect(cad.commandLog().at(-1)).toBe("Value must be nonzero.")
+    expect(cad.state().commandLine.prompt).toBe(
+      "PLINE Specify length of chord (hold Ctrl to switch direction):"
+    )
+    answerLine(cad, "10", "")
+    expect(drawn(cad)).toEqual({
+      at: ["0,0", "10,0", "15,-8.6603"],
+      bulges: [0, 0.2679],
+    })
+  })
+
+  it("keep the chain's heading at Direction's Enter, no default shown", () => {
+    // pline/p134
+    const cad = createHarness()
+    answerLine(cad, "PLINE", "0,0", "0,10", "A", "D", "", "10,20", "")
+    expect(cad.commandLog()).toContain(
+      "Specify the tangent direction for the start point of arc:"
+    )
+    expect(drawn(cad)).toEqual({
+      at: ["0,0", "0,10", "10,20"],
+      bulges: [0, -0.4142],
+    })
+  })
+
+  it("read a typed point from LASTPOINT", () => {
+    // pline/p138: Second pt's end from its second point.
+    const cad = arcFromLine("S", "@5,5", "@5,-5", "CE", "@10<0", "30,-30")
+    expect(drawn(answerLine(cad, ""))).toEqual({
+      at: ["0,0", "10,0", "20,0", "30,-10"],
+      bulges: [0, -1, 0.4142],
+    })
+    answerLine(cad, "ID", "@")
+    expect(cad.commandLog().at(-1)).toMatch(/^ X = 30\.00 +Y = -10\.00 /)
+  })
+
+  it("write the chord's default again as first written, after 'AUPREC", () => {
+    // pline/p114
+    const cad = createHarness()
+    answerLine(cad, "PLINE", "0,0", "30,20", "A", "A", "90", "R", "10", "")
+    answerLine(cad, "A", "90", "R", "10", "'AUPREC", "4")
+    expect(cad.state().commandLine.prompt).toBe(
+      "PLINE Specify direction of chord for arc (hold Ctrl to switch direction) <79>:"
+    )
+    answerLine(cad, "", "")
+    expect(drawn(cad).at.at(-1)).toBe("44.5405,41.7122")
+  })
+
+  it("say a heading off the UCS's plane is taken in it", () => {
+    // pline/p149: the last line drawn rises.
+    const cad = answerLine(createHarness(), "LINE", "0,0,0", "10,0,10", "")
+    answerLine(cad, "PLINE", "20,0", "A", "A", "90", "R", "10", "")
+    const said = "Previous direction not UCS parallel, using 0."
+    expect(cad.commandLog().filter((line) => line === said)).toHaveLength(2)
+    expect(cad.commandLog().indexOf(said)).toBe(
+      cad
+        .commandLog()
+        .indexOf("Specify next point or [Arc/Halfwidth/Length/Undo/Width]: A") +
+        1
+    )
+    expect(drawn(answerLine(cad, "")).at).toEqual(["20,0", "34.1421,0"])
+  })
+
+  it("declare Spanish `Segundo` for Second pt, listed `Segundo pto.`", () => {
+    // pline/p101, p102: `SEGUNDO` at both arc prompts.
+    const cad = createHarness({ locale: es })
+    answerLine(cad, "POL", "0,0", "A")
+    const second = () =>
+      cad.state().commandOptions.find((option) => option.id === "Second pt")
+    expect(second()).toMatchObject({
+      keyword: "Segundo",
+      label: "Segundo pto.",
+    })
+    answerLine(cad, "SEGUNDO", "5,5", "10,0", "SEGUNDO", "15,-5", "20,0", "")
+    expect(drawn(cad)).toEqual({
+      at: ["0,0", "10,0", "20,0"],
+      bulges: [-1, 1],
+    })
+  })
+
+  it("take Spanish `CE` at the arc prompt as Cerrar, English's as CEnter", () => {
+    // pline/p104 es: straight back, `*No válido*` and a line.
+    const spanish = createHarness({ locale: es })
+    answerLine(spanish, "POL", "0,0", "10,0", "A", "CE")
+    expect(spanish.commandLog().at(-1)).toBe("*No válido*")
+    expect(spanish.only<PolylineEntity>("polyline").closed).toBe(true)
+    // pline/p104 en
+    const english = arcFromLine("CE", "E", "20,0", "20,-30", "")
+    expect(english.commandLog()).toContain("Invalid 2D point.")
+    expect(drawn(english)).toEqual({
+      at: ["0,0", "10,0", "20,-10"],
+      bulges: [0, 0.4142],
+    })
+  })
+})
+
+// AutoCAD 2027's console, each case citing its probe (MPDUMP's bulges).
+describe("PLINE's arc options as the console draws them", () => {
+  it("takes Second pt by its capitals, its start or its word", () => {
+    // pline/p100
+    const cad = arcFromLine("S", "15,5", "20,0", "SE", "25,-5", "30,0")
+    answerLine(cad, "SECOND", "35,5", "40,0", "")
+    expect(drawn(cad)).toEqual({
+      at: ["0,0", "10,0", "20,0", "30,0", "40,0"],
+      bulges: [0, -1, 1, -1],
+    })
+  })
+
+  it("takes Spanish `C` as Cerrar, a hidden ARc, and `_CEN` at CEnter's centre", () => {
+    // pline/p103 es
+    const spanish = createHarness({ locale: es })
+    answerLine(spanish, "POL", "0,0", "10,0", "A", "20,10", "C")
+    expect(spanish.only<PolylineEntity>("polyline").closed).toBe(true)
+    // pline/p108: ARc asks the arc prompt again.
+    const hidden = answerLine(createHarness(), "PLINE", "0,0", "A", "AR")
+    answerLine(hidden, "10,10", "L", "20,10", "")
+    expect(drawn(hidden)).toEqual({
+      at: ["0,0", "10,10", "20,10"],
+      bulges: [0.4142, 0],
+    })
+    // pline/p106, p107: the snaps at the arc prompt's options.
+    const snapped = answerLine(createHarness(), "CIRCLE", "50,20", "5")
+    answerLine(snapped, "ZOOM", "W", "-10,-30", "70,40")
+    answerLine(snapped, "PLINE", "0,0", "10,0", "A", "CE", "_CEN", "55,20")
+    answerLine(snapped, "A", "90", "")
+    expect(drawn(snapped).at).toEqual(["0,0", "10,0", "70,-20"])
+    const spelled = answerLine(createHarness({ locale: es }), "POL", "0,0")
+    answerLine(spelled, "10,0", "A", "CENTER")
+    expect(spelled.commandLog().at(-1)).toBe(
+      "Se requiere un punto 2D o una opción."
+    )
+  })
+
+  it("draws Angle's arcs", () => {
+    // pline/p109
+    expect(drawn(arcFromLine("A", "-90", "20,0", "")).bulges).toEqual([
+      0, -0.4142,
+    ])
+    // pline/p112
+    const center = arcFromLine("A", "90", "CE", "20,10", "A", "-90", "CE")
+    expect(drawn(answerLine(center, "40,-10", ""))).toEqual({
+      at: ["0,0", "10,0", "30,0", "50,0"],
+      bulges: [0, 0.4142, -0.4142],
+    })
+    // pline/p113: the chord's default where the chain heads.
+    const chord = arcFromLine("A", "90", "R", "10", "45", "A", "-90", "R")
+    answerLine(chord, "10")
+    expect(chord.state().commandLine.prompt).toBe(
+      "PLINE Specify direction of chord for arc (hold Ctrl to switch direction) <90>:"
+    )
+    expect(drawn(answerLine(chord, "", ""))).toEqual({
+      at: ["0,0", "10,0", "20,10", "20,24.1421"],
+      bulges: [0, 0.4142, -0.4142],
+    })
+  })
+
+  it("draws CEnter's, Radius's and Second pt's arcs", () => {
+    // pline/p116
+    const ray = arcFromLine("CE", "20,0", "20,-30", "CE", "20,0", "A", "-90")
+    expect(drawn(answerLine(ray, ""))).toEqual({
+      at: ["0,0", "10,0", "20,-10", "10,0"],
+      bulges: [0, 0.4142, -0.4142],
+    })
+    // pline/p117: the second centre `@` from the first arc's end.
+    const chord = arcFromLine("CE", "20,0", "L", "10", "CE", "@10,0", "L")
+    expect(drawn(answerLine(chord, "-10", ""))).toEqual({
+      at: ["0,0", "10,0", "15,-8.6603", "20,0"],
+      bulges: [0, 0.2679, 3.7321],
+    })
+    // pline/p121: the minor arc counter-clockwise, whichever side.
+    const radius = arcFromLine("R", "10", "20,10", "R", "10", "30,0", "")
+    expect(drawn(radius).bulges).toEqual([0, 0.4142, 0.4142])
+    // pline/p124
+    expect(drawn(arcFromLine("R", "10", "A", "90", "45", ""))).toEqual({
+      at: ["0,0", "10,0", "20,10"],
+      bulges: [0, 0.4142],
+    })
+  })
+
+  it("measures an option's angles, radius and chord by points", () => {
+    // pline/p140
+    const angle = arcFromLine("A", "20,10", "R", "0,0", "0,10", "10,20", "")
+    expect(drawn(angle)).toEqual({
+      at: ["0,0", "10,0", "10,7.6537"],
+      bulges: [0, 0.1989],
+    })
+    // pline/p141
+    const chord = arcFromLine("CE", "20,0", "L", "10,10", "D", "15,0", "25,0")
+    expect(drawn(answerLine(chord, ""))).toEqual({
+      at: ["0,0", "10,0", "15,-8.6603", "25,0"],
+      bulges: [0, 0.2679, -0.4569],
+    })
+  })
+
+  it("refuses Enter and FOO at the points, and CLose or `@` at the first arc prompt", () => {
+    // pline/p132
+    const center = arcFromLine("A", "90", "CE", "", "FOO", "20,10", "")
+    expect(
+      center.commandLog().filter((line) => line === "Invalid 2D point.")
+    ).toHaveLength(2)
+    expect(drawn(center).at).toEqual(["0,0", "10,0", "30,0"])
+    // pline/p135
+    const second = arcFromLine("S", "", "FOO", "15,5", "", "FOO", "20,0", "")
+    expect(
+      second.commandLog().filter((line) => line === "Invalid 2D point.")
+    ).toHaveLength(4)
+    expect(drawn(second).bulges).toEqual([0, -1])
+    // pline/p130
+    const first = answerLine(createHarness(), "PLINE", "0,0", "A", "CL", "@")
+    expect(first.commandLog().slice(-3)).toEqual([
+      "2D point or option keyword required.",
+      `${ARC_PROMPT.replace("CLose/", "")} @`,
+      "*Invalid*",
+    ])
+    expect(drawn(answerLine(first, "10,10", "")).bulges).toEqual([0.4142])
+  })
+
+  it("runs a transparent command at a sub-prompt", () => {
+    // pline/p142 ('ORTHOMODE there is TRK-02's, LINE's review)
+    const ltscale = arcFromLine("R", "'LTSCALE", "2", "10", "20,10", "")
+    expect(ltscale.commandLog()).toEqual(
+      expect.arrayContaining([
+        ">>Enter new linetype scale factor <1.00>: 2",
+        "Resuming PLINE command.",
+        "Specify radius of arc: 10",
+      ])
+    )
+    expect(ltscale.runtime.document.getSettings().ltScale).toBe(2)
+    // pline/p143
+    const zoom = arcFromLine("CE", "'ZOOM", "W", "-10,-30", "70,40", "20,0")
+    expect(drawn(answerLine(zoom, "20,-30", "")).at).toEqual([
+      "0,0",
+      "10,0",
+      "20,-10",
     ])
   })
 })

@@ -40,11 +40,12 @@ the last one; Undo takes back a point (`All segments already undone.` at the fir
 PLINE's arc prompt and options, `[Angle/CEnter/CLose/Direction/Line/Radius/Second pt/Undo]` with no
 `<Total>` (es `[ángUlo/cEntro/Cerrar/Dirección/líNea/Radio/Segundo pto./desHacer]`), each arc's
 length added to `Distance = …`, said again on switching to Arc or Line, its refusal
-`2D point or option keyword required.` and the run; its CLose closes with the tangent arc, straight
-and silent where none leaves that way, and Undo goes back to the mode of the segment left last, as
-AutoCAD 2023's console does (the first arc leaves as PLINE's does, the way the last line, arc or
-polyline drawn ends heading — a clockwise arc the way it was drawn, `<270>`, pline/p115 —, else
-east — the chord's `<0>` or `<90>` after Angle and Radius, as the console shows); its
+`2D point or option keyword required.` and the run (Total too, pline/p146); its CLose closes with
+the tangent arc, straight and silent where none leaves that way (p146, p147), and Undo stays in Arc
+whatever the segment left (p148), CEnter's included angle `Specify included angle:` with no Ctrl
+clause (p145), as AutoCAD 2027's console does (the first arc leaves as PLINE's does, the way the
+last line, arc or polyline drawn ends heading — a clockwise arc the way it was drawn, `<270>`,
+p115 —, else east — the chord's `<0>` or `<90>` after Angle and Radius); its
 two points picked or typed (one without a Z at the current elevation), the 3D distance, the angle in
 and from the UCS's XY plane (0–360, as AutoCAD prints them) and ΔX / ΔY / ΔZ in the UCS, on the
 readout while the second point is picked and then at the command prompt in AutoCAD's words
@@ -57,8 +58,9 @@ does
 **Missing:** pick-an-existing-object modes, Radius, Angle, Volume, Arc and Length at its next point
 and its green fill, an object at an angle to the UCS (not highlighted here; AutoCAD says
 `Object not parallel with UCS.`), a hatch's islands (**unverified**: the console checked one loop),
-angles at the drawing's precision (`53.13`, where AUPREC 0 writes `53`), the Spanish report in the
-table's words (`Distancia = …, Ángulo en el plano XY = …, Ángulo a partir del plano XY = …` /
+angles at the drawing's precision (`53.13`, where AUPREC 0 writes `53`), Arc's CEnter → Angle
+reading a number as a point (2027's console asks it as a point, `90` there a distance along the
+cursor, p145: degrees here, until the desktop shows it), the Spanish report in the table's words (`Distancia = …, Ángulo en el plano XY = …, Ángulo a partir del plano XY = …` /
 `Incremento X = …, Incremento Y = …,   Incremento Z = …`)
 
 ### `ID` · es `ID`

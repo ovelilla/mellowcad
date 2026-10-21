@@ -135,9 +135,11 @@ export class MeasureTool implements Tool {
   /** The last measurement in the mode and the total then, said again at its first corner. */
   private shown: (AreaReport & { readonly total: string }) | null = null
   /** Multiple points' Arc options, the prompts PLINE's ask. */
-  private readonly arc = new ArcSegmentInput((segment, ctx) =>
-    this.arcDone(segment, ctx)
-  )
+  private readonly arc = new ArcSegmentInput({
+    finish: (segment, ctx) => this.arcDone(segment, ctx),
+    back: (ctx) => this.askPoint(ctx),
+    ctrlAtCenterAngle: false,
+  })
 
   /** The last area AREA measured, 0 until it has. */
   lastArea(): number {
@@ -270,7 +272,8 @@ export class MeasureTool implements Tool {
 
   /**
    * Multiple points' run so far, then its next point: `Distance = …` once
-   * it has a segment, as AutoCAD 2023's console writes it before each.
+   * it has a segment, as AutoCAD 2027's console writes it before each
+   * (pline/p145, p148).
    */
   private walk(run: RunPath, ctx: ToolContext): void {
     const { points, bulges, arcMode } = run
@@ -516,7 +519,8 @@ export class MeasureTool implements Tool {
 
   /**
    * AREA's object is one pick, and Multiple points' next point says the run
-   * so far again after its refusal, as AutoCAD 2023's console refuses them.
+   * so far again after its refusal, as AutoCAD 2027's console refuses them
+   * (pline/p145).
    */
   takes(): QuestionInput | null {
     if (this.state.phase === "areaObject") return "objectOrLast"
@@ -740,13 +744,13 @@ export class MeasureTool implements Tool {
         if (state.points.length === 1) {
           ctx.report(ctx.text.message("allSegmentsUndone"))
         } else {
-          // On as the segment left last was drawn, as PLINE's Undo goes.
-          const bulges = state.bulges.slice(0, -1)
+          // WHY the mode kept: 2027's DIST stays in Arc (pline/p148), where
+          // PLINE's goes on as the segment left was drawn (p128).
           this.walk(
             {
               points: state.points.slice(0, -1),
-              bulges,
-              arcMode: (bulges[bulges.length - 1] ?? 0) !== 0,
+              bulges: state.bulges.slice(0, -1),
+              arcMode: state.arcMode,
             },
             ctx
           )

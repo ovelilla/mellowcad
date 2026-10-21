@@ -96,8 +96,9 @@ export function resolveKeyword(
 /**
  * The ids of the keywords on offer at a prompt that `input` names: the one
  * whose abbreviation or whole word it is, else the first whose word it starts
- * past all of its capitals (`TH` for `Through`, before the hidden `Thru`),
- * else every one whose word it starts, as far as the word's first capital and
+ * past all of its capitals (`TH` for `Through`, before the hidden `Thru`) —
+ * one its capital starts before the rest (Spanish `CE` for `Cerrar`, not
+ * `cEntro`) —, else every one whose word it starts, as far as the word's first capital and
  * on — `C` for `CEnter`, but `C` for both `CEnter` and `CLose`, which AutoCAD
  * 2023's console answers `Ambiguous response, please clarify...`. `E` is not
  * `eXit`'s start, and a number is no keyword's: `3` at CIRCLE's first prompt
@@ -126,13 +127,16 @@ export function matchKeywords(
   // WHY the first whose capitals are all typed, not a question: AutoCAD 2023's
   // console takes `TH` at OFFSET's `Through Thru` and `CE` at ELLIPSE's
   // `Center Centre` as the first, and asks only when the input stops short of
-  // each word's capitals (`C` at `CEnter CLose`).
-  const covered = started.find((keyword) => {
+  // each word's capitals (`C` at `CEnter CLose`). One whose capitals start
+  // the word goes first: 2027's takes Spanish `CE` at `cEntro Cerrar` as
+  // Cerrar (pline/p104).
+  const covered = started.filter((keyword) => {
     const word = wordOf(keyword)
     const abbreviation = abbreviationOf(word)
     return typed.length >= word.indexOf(abbreviation) + abbreviation.length
   })
-  if (covered) return [covered.id]
+  const leading = covered.find((keyword) => isCapital([...wordOf(keyword)][0]))
+  if (covered.length > 0) return [(leading ?? covered[0]).id]
   return [...new Set(started.map((keyword) => keyword.id))]
 }
 

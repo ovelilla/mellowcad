@@ -330,7 +330,8 @@ describe("DIST's Multiple points", () => {
     )
   })
 
-  // PLINE's arc options, as AutoCAD 2023's console asks them in DIST.
+  // PLINE's arc options, as AutoCAD 2027's console asks them in DIST
+  // (pline/p145).
   it("Arc adds the arcs' lengths to the run", () => {
     const cad = createHarness()
     cad.command("DIST")
@@ -372,14 +373,24 @@ describe("DIST's Multiple points", () => {
     ])
   })
 
-  it("Arc's Undo goes back to the line, and CLose closes straight where no arc can", () => {
+  it("Arc's Undo stays in Arc, and CLose closes straight where no arc can", () => {
+    // probe pline/p148: unlike PLINE's (p128), which goes on as the segment
+    // left was drawn.
     const undo = createHarness()
-    undo.command("DIST")
-    answer(undo, "0,0", "M", "10,0", "A", "U")
+    answer(undo, "DIST", "0,0", "M", "10,0", "A", "20,10", "U")
+    expect(undo.commandLog().slice(-2)).toEqual([
+      "Specify endpoint of arc (hold Ctrl to switch direction) or [Angle/CEnter/CLose/Direction/Line/Radius/Second pt/Undo]: U",
+      "Distance = 10.00",
+    ])
+    expect(undo.state().commandLine.prompt).toBe(
+      "DIST Specify endpoint of arc (hold Ctrl to switch direction) or [Angle/CEnter/CLose/Direction/Line/Radius/Second pt/Undo]:"
+    )
+    answer(undo, "L", "U")
     expect(undo.state().commandLine.prompt).toBe(
       "DIST Specify next point or [Arc/Length/Undo/Total] <Total>:"
     )
 
+    // probe pline/p147
     const close = createHarness()
     close.command("DIST")
     answer(close, "0,0", "M", "10,0", "A", "CL")
@@ -389,9 +400,29 @@ describe("DIST's Multiple points", () => {
     ])
   })
 
-  // AutoCAD 2023's console (acc/d1–d4): the first arc leaves as PLINE's
-  // does, along the last line or polyline drawn, else east — the chord's
-  // default after an included angle of 90 and a radius.
+  it("Arc refuses Total, and CLose closes with the tangent arc", () => {
+    // probe pline/p146
+    const cad = createHarness()
+    answer(cad, "DIST", "0,0", "M", "10,0", "A", "20,10", "T", "CL")
+    expect(cad.commandLog().slice(-5)).toEqual([
+      "Specify endpoint of arc (hold Ctrl to switch direction) or [Angle/CEnter/CLose/Direction/Line/Radius/Second pt/Undo]: T",
+      "2D point or option keyword required.",
+      "Distance = 25.71",
+      "Specify endpoint of arc (hold Ctrl to switch direction) or [Angle/CEnter/CLose/Direction/Line/Radius/Second pt/Undo]: CL",
+      "Distance = 76.57",
+    ])
+  })
+
+  it("Arc's CEnter asks its included angle without Ctrl", () => {
+    // probe pline/p145: PLINE's says `(hold Ctrl to switch direction)`.
+    const cad = createHarness()
+    answer(cad, "DIST", "0,0", "M", "10,0", "A", "CE", "30,10", "A")
+    expect(cad.state().commandLine.prompt).toBe("DIST Specify included angle:")
+  })
+
+  // The first arc leaves as PLINE's does (pline/p09), along the last line or
+  // polyline drawn, else east — the chord's default after an included angle
+  // of 90 and a radius.
   it("Arc's first arc leaves along what was drawn last, else east", () => {
     for (const [drawn, chord] of [
       [[], "<0>"],

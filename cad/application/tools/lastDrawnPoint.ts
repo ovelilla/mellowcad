@@ -9,6 +9,7 @@ import {
   arcStartPoint,
   entityElevation,
   lineEndZ,
+  lineStartZ,
 } from "../../domain/entities"
 
 /** Where a draw command's Continue starts, and the arc it must leave tangent to. */
@@ -136,6 +137,23 @@ export function lastDrawnDirection(
     }
   }
   return null
+}
+
+/**
+ * Whether the last line, arc or polyline drawn, whose heading {@link
+ * lastDrawnDirection} reads, is a line rising off the plane: AutoCAD takes
+ * its heading in the plane and says so (table 21314, pline/p149).
+ */
+export function lastDrawnRises(document: DocumentReader): boolean {
+  const entities = document.getEntities()
+  for (let i = entities.length - 1; i >= 0; i--) {
+    const entity = entities[i]
+    if (entity.type === "line") {
+      return Math.abs(lineEndZ(entity) - lineStartZ(entity)) > 1e-9
+    }
+    if (entity.type === "arc" || entity.type === "polyline") return false
+  }
+  return false
 }
 
 /** Where Continue leaves an arc: its drawn end, along its heading there. */
