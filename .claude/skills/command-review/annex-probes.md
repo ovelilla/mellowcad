@@ -115,7 +115,9 @@ Then, per desktop probe:
 Traps seen on the desktop (PLINE's review, 2026-10-21):
 
 - Ctrl+1 docks the Properties palette and shifts the drawing area: capture the palette last, or
-  read the view again after closing it.
+  read the view again after closing it. When Ctrl+1 does not reach AutoCAD, `com send
+  "_PROPERTIES\n"`; the palette may float on another monitor: capture it by its handle
+  (`acad.sh wins`, `acad.sh shot <hwnd>`) (SPLINE's review).
 - A grip's hover menu stays open until Escape, and the cursor moved meanwhile shows nothing new:
   press Escape and select again between two hovers.
 - A click sent right after typed keys can be lost while AutoCAD still reads them: wait after
@@ -135,6 +137,10 @@ Traps seen on the desktop (PLINE's review, 2026-10-21):
   Enter or the arrows mid-probe. The owner's Spanish profile shows only Spanish labels: plan the
   English ones apart (`ax26res.dll`, or a pass launched with `en-US`) or they stay unverified
   (ELLIPSE's review).
+- The console's answer at a jig prompt to Enter or a keyword can be its artefact: SPLINE's p118
+  took the fixed cursor as a tangent and p148 asked a tangent the desktop refuses (d11, d12). Check
+  it on the desktop through COM alone, with no mouse; COM's space is an Enter, so `_T \n` is two
+  answers (SPLINE's review).
 
 A probe that only reads the raw `initget` (flags, `control`) loads MellowProbe with
 `acad.sh com netload` and reads `com trace` (`tracing.md`).

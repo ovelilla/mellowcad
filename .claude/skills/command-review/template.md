@@ -227,7 +227,8 @@ deviation without a `WHY` and a coverage note is a finding.
   (§5.1), its prefix and a range of decision ids of its own, the order to claim nothing about
   AutoCAD without a probe id the reviewer gave it, and the patterns found earlier in the review
   (with their IDs) to look for analogues.
-- They return the cells they answered, what they could not check, and the tests they read.
+- They return the cells they answered, what they could not check, and the tests they read, as
+  text: a subagent cannot write a report file, so the reviewer keeps it in the scratchpad.
 - Their high and critical findings are verified by the reviewer, in person, before the plan.
 
 ## 5. Evidence
@@ -381,3 +382,6 @@ Applied:
   (annex-probes.md); storage settled by the OPEN test (§1.3).
 - 2026-10-21, after ELLIPSE's review: disjoint prompts per subagent (§4.8); Escape on the Down
   list and the English labels of a Spanish desktop pass (annex-probes.md §4).
+- 2026-10-21, after SPLINE's review: the launcher opens the Spanish profile (`/language es-ES`, the
+  trap that blamed launching went); subagents return their reports as text (§4.8); the palette on
+  a second monitor, and a console answer at a jig checked through COM (annex-probes.md §4).
