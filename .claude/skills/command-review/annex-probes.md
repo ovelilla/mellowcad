@@ -96,6 +96,8 @@ Then, per desktop probe:
 3. Show the command line if keys are typed (`com send "_COMMANDLINE\n"`), draw, `type`, `cursor`,
    `shot`; copy each screenshot to `research/probes/<command>/<id>-<n>.png`.
 4. Restore the settings, hide the command line again (`_COMMANDLINEHIDE`), `acad.sh com close`.
+5. When the session's last desktop probe is done, quit AutoCAD (`gui.md`): the closed window tells
+   the owner the mouse is free.
 
 Traps seen on the desktop (PLINE's review, 2026-10-21):
 

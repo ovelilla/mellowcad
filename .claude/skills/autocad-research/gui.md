@@ -12,6 +12,9 @@ Windows desktop.
   (closes without saving). Never type into, save or close a drawing you did not create.
 - **Leave settings as found.** `com netload` restores SECURELOAD itself; anything else you change
   (COMMANDLINE shown, DYNMODE, OSMODE…) you set back. Their profile persists in the registry.
+- **Close AutoCAD when the desktop work is done** (`com send "_QUIT\n"`, once `com info` shows only
+  untouched drawings): its window closing is how the owner knows the mouse is theirs again. An
+  instance the owner had open before stays open; say so instead.
 - **Never press Alt** (nor send keys while the ribbon's key tips show): it opens the key tips, and
   the next digit runs a Quick Access Toolbar button — a probe once saved the user's drawing
   that way. `type.ps1` brings AutoCAD forward without it.
