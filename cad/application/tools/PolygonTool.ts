@@ -44,8 +44,9 @@ const MAX_SIDES = 1024
  * midpoints. A pointed radius sets the size and the rotation at once; a typed
  * one draws the bottom edge level. Edge builds the polygon counterclockwise from
  * its first edge. The side count (POLYSIDES) and the last option are the next
- * run's defaults, for the session. As AutoCAD 2027's console answers it
- * (probes polygon/p01–p153).
+ * run's defaults, per drawing and not saved (rectang/p309); U leaves them,
+ * where AutoCAD's puts POLYSIDES back (p317). As AutoCAD 2027's console
+ * answers it (probes polygon/p01–p153).
  */
 type PolygonToolState =
   /** Awaiting the number of sides. */
@@ -82,6 +83,12 @@ export class PolygonTool implements Tool {
   private sides = 4
   /** The option Enter keeps at `Enter an option`, the last one chosen. */
   private circumscribed = false
+
+  /** Both per drawing, not saved (rectang/p309). */
+  onNewDrawing(): void {
+    this.sides = 4
+    this.circumscribed = false
+  }
 
   onActivate(ctx: ToolContext): void {
     ctx.setCursor("crosshair")

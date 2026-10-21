@@ -18,7 +18,10 @@ a blank drawing — layer 0, the Standard styles, the default settings and view 
 command ends first; QNEW without a template (None, its default) shows the Select Template dialog as
 NEW does, and there are no templates here, so both are the same; one undo step brings the previous
 drawing back (WHY: AutoCAD opens the new drawing in a tab of its own and keeps the old one open;
-there is one drawing here)
+there is one drawing here), though not the values AutoCAD keeps per drawing unsaved (CIRCLERAD,
+OFFSETDIST, HPNAME, UNDO Control…), which NEW, like OPEN, puts back to their defaults
+(rectang/p301–p315, p321; RECTANG-D41, D42); what the drawing saves — FILLETRAD, CHAMFERA/B,
+TEXTSIZE, ORTHOMODE, SNAPMODE, SNAPUNIT, GRIDMODE… — comes with the drawing
 
 **Missing:** templates and the Select Template dialog, file tabs (several drawings open), STARTUP's
 Create New Drawing, Ctrl+N (the browser keeps it for a new window)
@@ -26,7 +29,10 @@ Create New Drawing, Ctrl+N (the browser keeps it for a new window)
 ### `QSAVE` / `SAVEAS` / `OPEN` (Ctrl+S / Ctrl+O) · es `GUARDARR` / `GUARDAR` / `GUARDARCOMO` · `ABRE`
 
 **Implemented:** `FileTransport` port, versioned tolerant JSON, transparent autosave behind the
-`DrawingStore` port (this device's localStorage), its state in the top bar; SAVEAS writes the same
+`DrawingStore` port (this device's localStorage), its state in the top bar; the file keeps what
+AutoCAD saves in the drawing (FILLETRAD, CHAMFERA/B, TEXTSIZE and TEXT's justification, ORTHOMODE,
+SNAPMODE, SNAPUNIT, GRIDMODE: rectang/p302, p304, p311, p316, p321), and OPEN puts what it keeps
+per drawing unsaved back to its defaults, as NEW does; SAVEAS writes the same
 download as QSAVE, since a browser download always names the file, so saving over the current name
 and prompting for a new one cannot be told apart
 

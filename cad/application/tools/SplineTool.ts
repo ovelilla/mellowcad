@@ -77,10 +77,10 @@ const FRAME: StrokeStyle = { color: THEME.crosshair, width: 1 }
  * when the command ends — Enter, Close, or the end tangent — so the whole
  * spline is one undo step, and Escape discards it, as AutoCAD's does.
  *
- * Method, Knots and Degree are SPLMETHOD, SPLKNOTS and SPLDEGREE: "Not-saved",
- * so they live on the tool for the session and the next spline starts from the
- * last one's settings, which `Current settings:` reports at the start and
- * after each change. toLerance and Object are not offered (see
+ * Method, Knots and Degree are SPLMETHOD, SPLKNOTS and SPLDEGREE, program-wide
+ * (rectang/p301): they live on the tool for the session and the next spline
+ * starts from the last one's settings, which `Current settings:` reports at
+ * the start and after each change. toLerance and Object are not offered (see
  * `docs/coverage/draw.md`).
  */
 export class SplineTool implements Tool {

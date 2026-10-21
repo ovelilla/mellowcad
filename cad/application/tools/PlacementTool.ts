@@ -77,8 +77,15 @@ export abstract class PlacementTool implements Tool {
    * Undo takes back the last.
    */
   private placements: boolean[] = []
-  /** The last Displacement given, the next one's `<default>`, for the session. */
+  /**
+   * The last Displacement given, the next one's `<default>`: per drawing, not
+   * saved (rectang/p315), and each command's own (p314).
+   */
   private lastDisplacement: Vec3 = { x: 0, y: 0, z: 0 }
+
+  onNewDrawing(): void {
+    this.lastDisplacement = { x: 0, y: 0, z: 0 }
+  }
 
   /** Applies one placement of `originals` displaced by `delta` (undoable). */
   protected abstract place(

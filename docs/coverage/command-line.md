@@ -284,7 +284,8 @@ kept (no ZOOMs joined) and UNDO asks `Enter an option [Control] <1>:`
 `¿Combinar operaciones de cuadro de diálogo de capa?`), and with Combine No each ZOOM is its own
 step; Auto's `Enter UNDO Auto mode [ON/OFF] <On>:` offers the setting (es
 `Indique modo automático de DESHACER [ACT/DES] <ACT>`); the settings line says them all (es
-`Auto = Des, Control = Ninguna, Combinar = No, Capa = Sí`); once None or One has dropped the steps
+`Auto = Des, Control = Ninguna, Combinar = No, Capa = Sí`), per drawing and not saved, so NEW and
+OPEN bring `Auto = On, Control = All, Combine = Yes, Layer = Yes` back (UNDOCTL, rectang/p305); once None or One has dropped the steps
 AutoCAD's own start puts beneath the first command, taking back the last one says
 `Everything has been undone` at once; a U that finds nothing leaves REDO the undo before it; REDO
 does the whole last undo again; MREDO (es `MREHACER`) asks `Enter number of actions or [All/Last]:`

@@ -26,6 +26,7 @@ import { TextStyle, TextStyleId } from "../domain/textStyles"
 import { LINEWEIGHT_BYLAYER, Lineweight } from "../domain/lineweights"
 import { Ucs, isWorldUcs, worldPointToUcs } from "../domain/ucs"
 import {
+  DraftingModes,
   formatAngle,
   formatLength,
   LengthUnit,
@@ -456,7 +457,8 @@ export class CadRuntime extends Observable {
   // the mouse is over the command line.
   private heldCursorScreen: Vec2 | null = null
 
-  private gridVisible = true
+  /** While the aids are being set from the drawing, which they then already match. */
+  private applyingDraftingModes = false
   /** Whether this host shows the UCS icon at all; UCSICON decides where. */
   private ucsIconShown = true
   // Which style table the Styles palette shows.
@@ -647,6 +649,7 @@ export class CadRuntime extends Observable {
         this.previousSet = [...ids]
       },
       setViewCubeVisible: (visible) => this.setViewCubeVisible(visible),
+      setCurrentTextStyle: (id) => this.setCurrentTextStyle(id),
       snapOverride: () => this.snapping.getOverride(),
       runningSnaps: {
         enabled: () => this.snapping.enabledTypes(),
@@ -659,9 +662,21 @@ export class CadRuntime extends Observable {
       },
       snapMode: {
         spacing: () => this.snapMode.getSpacing(),
+        // SNAP's change is the command's, which U takes back, as it takes
+        // ORTHO's (rectang/p317).
         set: (on, spacing) => {
-          if (spacing) this.snapMode.setSpacing(spacing.x, spacing.y)
-          this.snapMode.setActive(on)
+          const settings = this.document.getSettings()
+          const moved =
+            spacing !== undefined &&
+            (spacing.x !== settings.snapUnit.x ||
+              spacing.y !== settings.snapUnit.y)
+          const patch: Partial<DraftingModes> = {
+            ...(on !== settings.snapMode ? { snapMode: on } : {}),
+            ...(moved ? { snapUnit: { x: spacing.x, y: spacing.y } } : {}),
+          }
+          if (Object.keys(patch).length > 0) {
+            this.history.execute(new UpdateSettingsCommand(patch))
+          }
           this.refreshSnapAtCursor()
         },
       },
@@ -803,6 +818,20 @@ export class CadRuntime extends Observable {
     }
     // AUTOSNAP 63 turns polar tracking on, at POLARANG's 90.
     this.constraints.setEnabled(ConstraintType.Polar, true)
+    // ORTHOMODE, SNAPMODE and SNAPUNIT are the drawing's (rectang/p304): the
+    // aids follow a drawing opened, NEW and U, and what an F key, the status
+    // bar or Polar turning Ortho off changes is written back.
+    this.document.subscribe(() => this.applyDraftingModes())
+    const keepDraftingModes = () => {
+      if (this.applyingDraftingModes) return
+      this.document.setDraftingModes({
+        orthoMode: this.constraints.isEnabled(ConstraintType.Ortho),
+        snapMode: this.snapMode.isActive(),
+        snapUnit: this.snapMode.getSpacing(),
+      })
+    }
+    this.constraints.subscribe(keepDraftingModes)
+    this.snapMode.subscribe(keepDraftingModes)
 
     // Rebuild the UI snapshot and redraw whenever any sub-model changes.
     const onModelChange = () => {
@@ -2247,8 +2276,22 @@ export class CadRuntime extends Observable {
     this.selection.clear()
     this.resetTracking()
     this.history.execute(new NewDrawingCommand())
+    // WHY outside the command: AutoCAD's NEW opens another document, so
+    // nothing takes the old one's unsaved values back, and undoing NEW here
+    // brings the drawing back without them (RECTANG-D42).
+    this.startDrawingValues()
     this.viewport.pushHistory()
     this.viewport.reset()
+  }
+
+  /**
+   * What AutoCAD keeps per drawing without saving it (CIRCLERAD, OFFSETDIST,
+   * HPNAME, UNDOCTL…) starts again with the drawing NEW makes or a file
+   * opened (rectang/p301, p305, p309–p311, p314, p315; RECTANG-D41).
+   */
+  private startDrawingValues(): void {
+    this.history.resetSettings()
+    for (const tool of this.tools.values()) tool.onNewDrawing?.()
   }
 
   /**
@@ -3064,9 +3107,21 @@ export class CadRuntime extends Observable {
   }
 
   toggleGrid(): void {
-    this.gridVisible = !this.gridVisible
-    this.invalidateState()
-    this.host.requestRender()
+    const { gridMode } = this.document.getSettings()
+    this.document.setDraftingModes({ gridMode: !gridMode })
+  }
+
+  /** The aids as the drawing has them: every one set before any writes back. */
+  private applyDraftingModes(): void {
+    const { orthoMode, snapMode, snapUnit } = this.document.getSettings()
+    this.applyingDraftingModes = true
+    try {
+      this.constraints.setEnabled(ConstraintType.Ortho, orthoMode)
+      this.snapMode.setSpacing(snapUnit.x, snapUnit.y)
+      this.snapMode.setActive(snapMode)
+    } finally {
+      this.applyingDraftingModes = false
+    }
   }
 
   /**
@@ -4074,6 +4129,7 @@ export class CadRuntime extends Observable {
     applyDrawingFile(this.document, parsed)
     this.lastPoint = vec3(0, 0, 0)
     this.history.clear() // a loaded file is a fresh undo baseline
+    this.startDrawingValues()
     this.undoing = null
     this.zoomToFit()
     this.autosave.saveNow() // mirror the opened file into this device's store
@@ -4116,7 +4172,7 @@ export class CadRuntime extends Observable {
       blocks: this.document.blockLookup(),
       selectedIds: new Set(this.selection.toArray()),
       hiddenIds: new Set(this.activeTool.hiddenEntityIds?.() ?? []),
-      gridVisible: this.gridVisible,
+      gridVisible: this.document.getSettings().gridMode,
       gridSpacing: this.snapMode.displaySpacing(),
       ucs: frame.ucs,
       ucsIcon:
@@ -5466,7 +5522,7 @@ export class CadRuntime extends Observable {
         currentId: this.cycling.getCurrentId(),
         listAt: this.cyclingList?.screen ?? null,
       },
-      gridVisible: this.gridVisible,
+      gridVisible: this.document.getSettings().gridMode,
       snapModeActive: this.snapMode.isActive(),
       snapModeType: this.snapMode.getType(),
       snapSpacing: this.snapMode.getSpacing(),

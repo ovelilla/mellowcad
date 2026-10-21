@@ -113,7 +113,7 @@ import { DRAWING_FILE_TYPE } from "./drawingSummary"
 export { DRAWING_FILE_TYPE }
 
 /** Current schema version written by {@link serializeDrawing}. */
-export const DRAWING_FILE_VERSION = 27
+export const DRAWING_FILE_VERSION = 28
 
 /** MIME type a serialised drawing is handed to the host as. */
 export const DRAWING_FILE_MIME_TYPE = "application/json"
@@ -140,10 +140,13 @@ export interface DrawingSnapshot {
  * Home view, so a drawing that never touched them reads as before 24, and a
  * current colour, linetype or lineweight that is ByLayer, as before 25, and a
  * UCS set as no orthographic one, as before 26, and FILLMODE on and PLINEWID 0,
- * as before 27.
+ * as before 27, and FILLETRAD, CHAMFERA, CHAMFERB, TEXTSIZE, TEXT's
+ * justification, ORTHOMODE, SNAPMODE, SNAPUNIT and GRIDMODE at acadiso's,
+ * as before 28.
  */
 export type StoredSettings = Omit<
   DocumentSettings,
+  | SavedCommandSetting
   | "fillMode"
   | "polylineWidth"
   | "anglePrecision"
@@ -167,7 +170,8 @@ export type StoredSettings = Omit<
       | "currentLinetype"
       | "currentLineweight"
     >
-  > & {
+  > &
+  Partial<Pick<DocumentSettings, SavedCommandSetting>> & {
     readonly ucsOrthographic?: OrthographicUcs
     readonly fillMode?: false
     readonly polylineWidth?: number
@@ -176,6 +180,18 @@ export type StoredSettings = Omit<
     readonly navVCubeDisplay?: 0
     readonly homeView?: SavedView
   }
+
+/** The command settings AutoCAD saves in the drawing, written only when not the default. */
+type SavedCommandSetting =
+  | "filletRadius"
+  | "chamferDistance1"
+  | "chamferDistance2"
+  | "textSize"
+  | "textJustify"
+  | "orthoMode"
+  | "snapMode"
+  | "snapUnit"
+  | "gridMode"
 
 /** A level UCS is written as before 23, its X axis in plan; a tilted one gives both axes. */
 export type StoredUcs =
@@ -590,6 +606,15 @@ function cloneLayer(layer: Layer): Layer {
 
 function storedSettings(settings: DocumentSettings): StoredSettings {
   const {
+    filletRadius,
+    chamferDistance1,
+    chamferDistance2,
+    textSize,
+    textJustify,
+    orthoMode,
+    snapMode,
+    snapUnit,
+    gridMode,
     fillMode,
     polylineWidth,
     anglePrecision,
@@ -620,6 +645,18 @@ function storedSettings(settings: DocumentSettings): StoredSettings {
     ...(thickness ? { thickness } : {}),
     ...(fillMode ? {} : { fillMode: false as const }),
     ...(polylineWidth ? { polylineWidth } : {}),
+    ...(filletRadius ? { filletRadius } : {}),
+    ...(chamferDistance1 ? { chamferDistance1 } : {}),
+    ...(chamferDistance2 ? { chamferDistance2 } : {}),
+    ...(textSize !== DEFAULT_DOCUMENT_SETTINGS.textSize ? { textSize } : {}),
+    ...(textJustify !== "left" ? { textJustify } : {}),
+    ...(orthoMode ? { orthoMode } : {}),
+    ...(snapMode ? { snapMode } : {}),
+    ...(snapUnit.x !== DEFAULT_DOCUMENT_SETTINGS.snapUnit.x ||
+    snapUnit.y !== DEFAULT_DOCUMENT_SETTINGS.snapUnit.y
+      ? { snapUnit: { x: snapUnit.x, y: snapUnit.y } }
+      : {}),
+    ...(gridMode ? {} : { gridMode }),
     ...(viewCube.visible ? {} : { navVCubeDisplay: 0 as const }),
     ...(viewCube.home
       ? {
@@ -720,7 +757,34 @@ function parseSettings(value: unknown): DocumentSettings {
       isFiniteNumber(value.polylineWidth) && value.polylineWidth > 0
         ? value.polylineWidth
         : 0,
+    // A drawing from before 28 has acadiso's.
+    filletRadius: nonNegative(value.filletRadius),
+    chamferDistance1: nonNegative(value.chamferDistance1),
+    chamferDistance2: nonNegative(value.chamferDistance2),
+    textSize:
+      isFiniteNumber(value.textSize) && value.textSize > 0
+        ? value.textSize
+        : DEFAULT_DOCUMENT_SETTINGS.textSize,
+    textJustify:
+      TEXT_JUSTIFICATIONS.find((justify) => justify === value.textJustify) ??
+      DEFAULT_DOCUMENT_SETTINGS.textJustify,
+    orthoMode: value.orthoMode === true,
+    snapMode: value.snapMode === true,
+    snapUnit: parseSnapUnit(value.snapUnit),
+    gridMode: value.gridMode !== false,
   }
+}
+
+function nonNegative(value: unknown): number {
+  return isFiniteNumber(value) && value > 0 ? value : 0
+}
+
+/** A spacing not above zero is no lattice, and the default stands. */
+function parseSnapUnit(value: unknown): Vec2 {
+  const unit = parseVec2(value)
+  return unit && unit.x > 0 && unit.y > 0
+    ? unit
+    : DEFAULT_DOCUMENT_SETTINGS.snapUnit
 }
 
 /** A Home view whose two directions are not unit and square is no view, and the default stands. */

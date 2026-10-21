@@ -806,7 +806,12 @@ describe("Spanish AutoCAD's command language", () => {
     expect(cad.state().commandLine.prompt).toBe(
       "TEXTOM Indique el tipo de interlineado [Al menos/Exactamente] <Al menos>:"
     )
+    // Enter takes `<Al menos>` and asks the factor (rectang/p312).
     cad.press("Enter")
+    expect(cad.state().commandLine.prompt).toBe(
+      "TEXTOM Indique el factor de interlineado o distancia <1x>:"
+    )
+    cad.enter()
     for (const key of ["n", "Enter"]) cad.press(key)
     expect(cad.state().commandLine.prompt).toBe("TEXTOM Indique la anchura:")
     cad.escape().command("TEXTOM").click(p(0, 0))

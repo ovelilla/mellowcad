@@ -260,6 +260,38 @@ describe("-MTEXT", () => {
     expect(cad.only<MTextEntity>("mtext").contents).toBe("ONE\\PTWO")
     expect(cad.activeToolId()).toBe("select")
   })
+
+  // The second -MTEXT offers `<4>`, then `<TL>`, `<0>`, `<At least>`, `<1x>`:
+  // the height is TEXTSIZE, the rest start again every run (rectang/p312).
+  it("starts Justify, Rotation and Line spacing again every run; the height stays", () => {
+    const cad = createHarness()
+    const answer = (...texts: string[]) => {
+      for (const text of texts) {
+        cad.runtime.setCommandLineText(text)
+        cad.runtime.submitCommandLine()
+      }
+    }
+    answer("_-MTEXT", "5,5", "_H", "4", "_J", "_MC", "_R", "20", "_L", "_E")
+    answer("2", "25,25", "A", "")
+    const from = cad.commandLog().length
+    answer("_-MTEXT", "5,5", "_H", "", "_J", "", "_R", "", "_L", "")
+
+    expect(
+      cad
+        .commandLog()
+        .slice(from)
+        .filter((line) => /<.*>:$/.test(line))
+    ).toEqual([
+      "Specify height <4.00>:",
+      "Enter justification [TL/TC/TR/ML/MC/MR/BL/BC/BR] <TL>:",
+      "Specify rotation angle <0>:",
+      "Enter line spacing type [At least/Exactly] <At least>:",
+    ])
+    expect(cad.state().commandLine.prompt).toBe(
+      "-MTEXT Enter line spacing factor or distance <1x>:"
+    )
+    cad.escape()
+  })
 })
 
 describe("editing MTEXT", () => {

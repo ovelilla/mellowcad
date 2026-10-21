@@ -16,9 +16,9 @@ const MIN_SPACING = 1e-6
  * point land on a regular increment, so drawing to round dimensions needs no
  * typing at all. Object snaps still win over it — geometry beats the lattice.
  *
- * Like Ortho, Polar and the grid display, this is session state: it describes
- * how the pointer behaves, not what the drawing contains, so it is not stored
- * in the drawing file.
+ * SNAPMODE and SNAPUNIT are the drawing's, as ORTHOMODE and GRIDMODE are
+ * (rectang/p304): the runtime keeps this in step with its settings. SNAPTYPE
+ * and the polar distance stay for the session.
  */
 export class SnapMode extends Observable {
   private active = false

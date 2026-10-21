@@ -65,9 +65,14 @@ export class InsertTool implements Tool {
 
   private state: InsertState = { phase: "name" }
   private lastScreen: Vec2 | null = null
+  /** INSNAME: per drawing, not saved (rectang/p303). */
   private blockId = ""
   private scale = 1
   private rotation = 0
+
+  onNewDrawing(): void {
+    this.blockId = ""
+  }
 
   onActivate(ctx: ToolContext): void {
     ctx.setCursor("crosshair")

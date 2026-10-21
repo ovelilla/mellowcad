@@ -147,7 +147,7 @@ lineweight the plot draws (p231) and the screen here does not
 (p101); a two-corner closed polyline, one of no area too, its four vertices on a line or at one
 point (p11, p164, `@` p123, Dimensions of 0 p115, a pick Ortho flattens, desktop d01), with Chamfer
 or Fillet eight, doubled and plain (p12). The first prompt's options ask a value offering the one
-they keep for the session: Chamfer `Specify first chamfer distance for rectangles` and
+they keep for the session (program-wide in AutoCAD: NEW and OPEN leave them, p306, p308): Chamfer `Specify first chamfer distance for rectangles` and
 `Specify second chamfer distance for rectangles` (its `<default>` the last second distance, or with
 none the first just given; p158, p02), Fillet `Specify fillet radius for rectangles` (its default
 Chamfer's first distance, and it sets both; p172), both refusing a negative value with
@@ -215,7 +215,9 @@ asked again (probes polygon/p08, p118, p153); `Specify center of polygon or [Edg
 `Enter an option [Inscribed in circle/Circumscribed about circle] <I>:` (es
 `Indique una opción [Inscrito en el círculo/Circunscrito alrededor del círculo] <I>:`), then
 `Specify radius of circle:` (es `Precise radio de círculo:`); the count (POLYSIDES) and the option
-are the next run's `<default>`, for the session (p01, p111); Inscribed puts the vertices on the
+are the next run's `<default>` (p01, p111), per drawing and not saved: NEW and OPEN bring `<4>` and
+`<I>` back (rectang/p309); U leaves them, where AutoCAD's puts POLYSIDES back (rectang/p317,
+RECTANG-D48); Inscribed puts the vertices on the
 radius, Circumscribed the edges' midpoints; a point at the radius, picked or typed (`@5,0` from the
 centre), sizes and turns it, a vertex there (Inscribed) or an edge's midpoint (Circumscribed),
 LASTPOINT left at the centre (p06, p102, p123); a typed radius draws the bottom edge level in the UCS
@@ -303,7 +305,9 @@ lost: `Point or option keyword required.` at the centre,
 `Requires a TAN object-snap and selection of Circle, Arc, or Line.` at Ttr's objects and
 `Requires numeric distance or two points.` at its radius (es `Se requiere un punto o una opción.`…;
 p109, p114, p119, p126–p130, p306, p309, p310, p376, p377); Enter at the radius or diameter takes
-the last circle's (CIRCLERAD: per session, whichever mode made it, p162); a radius or diameter
+the last circle's (CIRCLERAD, whichever mode made it, p162; per drawing and not saved, NEW and OPEN
+putting it back to 0, rectang/p301; U leaves it, where AutoCAD's puts it back, rectang/p317,
+RECTANG-D48); a radius or diameter
 given by a point is its distance from the centre in space (`3,4,12` from the origin r13, p17, p148,
 p184); in the plane of the centre or of the first 2P or 3P point, with THICKNESS: 2P's and 3P's
 later points are 2D prompts, taken by their X and Y in that plane (a snapped point at another
@@ -467,7 +471,11 @@ asks the middle point at once) —, Style's `Enter style name or [?] <Standard>:
 `Cannot find text style "NAME".`, es `No se puede encontrar estilo de texto "NAME".`; `?` lists the
 styles as the console lists them, `Text styles:` … `Current text style: "Standard"`),
 `Specify height <2.50>:`, `Specify rotation angle of text <0.00>:`, then `Enter text:` (es
-`Escriba el texto`) a line at a time
+`Escriba el texto`) a line at a time; the height is TEXTSIZE, which MTEXT and ATTDEF share, and it
+and the justification are saved in the drawing and set inside the run, so U takes them back
+(rectang/p311, p313, p317); the rotation is per drawing, not saved, `<0>` again at NEW and OPEN
+(p311); Style makes the style current (TEXTSTYLE), which MTEXT and ATTDEF then list (p313) — a
+style table edit here, so U leaves it (**unverified** in AutoCAD)
 
 **Missing:** Align and Fit justifications, `?`'s `Enter text style(s) to list <*>:` and its pages,
 in-place caret editing (the text is typed in the box: `Enter text:` is DTEXT's command-line prompt),
@@ -485,7 +493,10 @@ attachments; the box hangs off the attachment point however it was dragged),
 `Enter line spacing factor or distance <1x>:` (a factor `nx` or a distance, 0.25x–4x, else
 `Please specify a line spacing value between 1.04 (0.25x) and 16.67 (4x), inclusive.`),
 `Specify rotation angle <0.00>:` and `Enter style name or [?] <Standard>:` (`Invalid style name`)
-looping back to the corner, Width's `Specify width:`; es from Autodesk's MTEXT table
+looping back to the corner, Width's `Specify width:`; the height is TEXT's TEXTSIZE, saved in the
+drawing, Style makes the style current, and Justify, Rotation and Line spacing start again at
+`<TL>`, `<0>`, `<At least>` and `<1x>` every run, Enter at the spacing type asking the factor
+(rectang/p312, p313); es from Autodesk's MTEXT table
 (`Precise la primera esquina`, `Indique la esquina opuesta o`, `Indique la altura`,
 `Indique la justificación`, `Indique el tipo de interlineado [Al menos/Exactamente]`,
 `Indique el ángulo de rotación`, `Indique la anchura`, `Nombre de estilo no válido`); word wrap from
@@ -526,7 +537,9 @@ its boundary: the object nearest an internal point (-HATCH's Nearest ray casting
 object selected fixes it, and objects at another height are neither traced nor taken ("enclosed
 areas can be hatched only if they are in a plane parallel to the XY plane of the current UCS";
 objects "not all at the same elevation" give `Valid hatch boundary not found.`); which object fixes
-the plane is **unverified**; objects at an angle to the UCS's XY plane are not taken
+the plane is **unverified**; objects at an angle to the UCS's XY plane are not taken; the pattern,
+scale and angle given are the next hatch's, per drawing and not saved (HPNAME, HPSCALE, HPANG: NEW
+and OPEN bring the defaults back, rectang/p303)
 
 **Missing:** the metric pattern file (acadiso.pat defines ANSI31 at 3.175 spacing; the imperial
 0.125 is used, so a millimetre drawing needs HPSCALE ≈ 25), chained open-object boundaries,
@@ -555,7 +568,8 @@ they were, as AutoCAD does)
 ### `INSERT` / `I` / `-INSERT` · es `INSERT` / `IN`†
 
 **Implemented:** -INSERT's command line: `Enter block name or [?] <B1>:` (the last block inserted,
-or else the last defined, INSNAME's), `Specify insertion point or [Scale/Rotate]:`, Scale's
+or else the last defined, INSNAME's: per drawing, not saved, so NEW and OPEN forget the block
+inserted, rectang/p303), `Specify insertion point or [Scale/Rotate]:`, Scale's
 `Specify scale factor for XYZ axes <1.00>:` (uniform; `Requires numeric distance or two points.`)
 and Rotate's `Specify rotation angle <0.00>:` (`Requires valid numeric angle or two points.`), each
 back to the point (es `Indique nombre de bloque o [?]`,
@@ -593,7 +607,8 @@ per session, initially Lock position), `Enter attribute tag name:` (uppercased; 
 `Current text style:  "Standard"  Text height:  2.50  Justify:  Left` (es
 `Estilo de texto actual:  "Standard"  Altura del texto: …`) and TEXT's prompts in TEXT's words and
 refusals (Justify, Style, start point, height, rotation) with Enter at the start point stacking
-below the previous definition; a loose definition shows its tag, always (ATTMODE governs references
+below the previous definition, the height TEXT's TEXTSIZE and Style making the style current
+(rectang/p313); a loose definition shows its tag, always (ATTMODE governs references
 only), has Insertion snap, palette rows and TEXTEDIT / double-click for Tag, Prompt and Default
 
 **Missing:** Multiple lines (ATTMULTI) and Annotative (not offered), fields, Align/Fit (as TEXT),

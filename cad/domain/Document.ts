@@ -31,6 +31,7 @@ import {
 import {
   DEFAULT_DOCUMENT_SETTINGS,
   DocumentSettings,
+  DraftingModes,
   LengthUnit,
   ViewCubeSetting,
 } from "./units"
@@ -186,6 +187,24 @@ export class CadDocument extends Observable implements DocumentReader {
       return
     }
     this.settings = { ...this.settings, viewCube }
+    this.emit()
+  }
+
+  /**
+   * ORTHOMODE, SNAPMODE, SNAPUNIT and GRIDMODE as F8, F9 and F7 set them:
+   * saved in the drawing (rectang/p304), but no command (RECTANG-D44).
+   */
+  setDraftingModes(modes: Partial<DraftingModes>): void {
+    const current = this.settings
+    const changed = (Object.keys(modes) as (keyof DraftingModes)[]).some(
+      (key) =>
+        key === "snapUnit"
+          ? modes.snapUnit!.x !== current.snapUnit.x ||
+            modes.snapUnit!.y !== current.snapUnit.y
+          : modes[key] !== current[key]
+    )
+    if (!changed) return
+    this.settings = { ...current, ...modes }
     this.emit()
   }
 

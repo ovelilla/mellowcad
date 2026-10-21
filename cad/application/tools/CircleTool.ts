@@ -78,8 +78,9 @@ type ActiveMode = "center" | "twoPoint" | "threePoint" | "ttr"
 
 /**
  * AutoCAD's CIRCLERAD, shared by every mode of one runtime: the last circle's
- * radius, the radius prompt's `<default>` ("A zero indicates no default"). Not
- * saved in the drawing, as CIRCLERAD is not.
+ * radius, the radius prompt's `<default>` ("A zero indicates no default"). Per
+ * drawing and not saved (rectang/p301): {@link CircleTool.onNewDrawing}. U
+ * leaves it, where AutoCAD's puts it back (p317; RECTANG-D48).
  */
 export interface CircleRadiusDefault {
   radius: number
@@ -196,6 +197,11 @@ export class CircleTool implements Tool {
       threePoint: ["_3p"],
     }
     return { command: "CIRCLE", answers: answers[this.mode] }
+  }
+
+  /** CIRCLERAD, which every CIRCLE mode shares, per drawing (rectang/p301). */
+  onNewDrawing(): void {
+    this.lastRadius.radius = 0
   }
 
   onActivate(ctx: ToolContext): void {

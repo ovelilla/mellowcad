@@ -203,11 +203,52 @@ describe("round trip", () => {
       currentLineweight: 0.5,
       fillMode: false,
       polylineWidth: 4,
+      filletRadius: 3,
+      chamferDistance1: 2,
+      chamferDistance2: 1,
+      textSize: 3.5,
+      textJustify: "mc" as const,
+      orthoMode: true,
+      snapMode: true,
+      snapUnit: { x: 5, y: 2.5 },
+      gridMode: false,
     }
     const parsed = parseDrawingFile(
       serializeDrawing(snapshotOf([], { settings }))
     )
     expect(parsed.settings).toEqual(settings)
+  })
+
+  // What AutoCAD saves in the drawing, read back after OPEN (rectang/p302,
+  // p304, p311, p316, p321), each left out of the file at its default.
+  it("keeps FILLETRAD, CHAMFERA/B, TEXTSIZE, the justification and the drafting modes out at their defaults, as before 28", () => {
+    const text = serializeDrawing(snapshotOf([]))
+    expect(text).not.toMatch(
+      /filletRadius|chamferDistance|textSize|textJustify|orthoMode|snapMode|snapUnit|gridMode/
+    )
+  })
+
+  it("reads damaged saved command settings as their defaults", () => {
+    const parsed = parseDrawingFile(
+      serializeDrawing(snapshotOf([])).replace(
+        '"namedUcs": []',
+        `"namedUcs": [], "filletRadius": -1, "chamferDistance1": "2",
+        "chamferDistance2": null, "textSize": 0, "textJustify": "sideways",
+        "orthoMode": 1, "snapMode": "yes", "snapUnit": { "x": 0, "y": 5 },
+        "gridMode": 0`
+      )
+    ).settings
+    expect(parsed).toMatchObject({
+      filletRadius: 0,
+      chamferDistance1: 0,
+      chamferDistance2: 0,
+      textSize: DEFAULT_DOCUMENT_SETTINGS.textSize,
+      textJustify: "left",
+      orthoMode: false,
+      snapMode: false,
+      snapUnit: { x: 10, y: 10 },
+      gridMode: true,
+    })
   })
 
   it("writes a ByLayer CECOLOR, CELTYPE and CELWEIGHT as before 25", () => {
@@ -980,6 +1021,28 @@ describe("opens drawings written by every earlier schema", () => {
     expect(polyline.type === "polyline" && polyline.widths).toBeUndefined()
     expect(parsed.settings.fillMode).toBe(true)
     expect(parsed.settings.polylineWidth).toBe(0)
+  })
+
+  it("version 27 — a drawing from before saved command settings gets acadiso's", () => {
+    const parsed = parseDrawingFile(
+      JSON.stringify({
+        type: DRAWING_FILE_TYPE,
+        version: 27,
+        settings: { unit: "mm", precision: 2 },
+        entities: [],
+      })
+    )
+    expect(parsed.settings).toMatchObject({
+      filletRadius: 0,
+      chamferDistance1: 0,
+      chamferDistance2: 0,
+      textSize: 2.5,
+      textJustify: "left",
+      orthoMode: false,
+      snapMode: false,
+      snapUnit: { x: 10, y: 10 },
+      gridMode: true,
+    })
   })
 
   it("version 21 — a drawing from before Z lies flat", () => {

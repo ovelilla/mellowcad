@@ -66,6 +66,7 @@ import {
   typedCornerPick,
 } from "./cornerObjects"
 import { ModeFind, ObjectSelector } from "./objectSelection"
+import { setCommandSettings } from "./commandSettings"
 import { filletRound } from "./roundFillets"
 import {
   curveCrossing,
@@ -103,7 +104,8 @@ import {
  * does (`Cannot fillet between these two entities.` where they do not). An
  * ARC or a CIRCLE is an object too, rounded against a line or another of
  * them by {@link filletRound} (a circle never trimmed). Shift on the second pick applies a
- * corner instead, as a radius of 0 does. The radius is kept for the session.
+ * corner instead, as a radius of 0 does. The radius is FILLETRAD, saved in the
+ * drawing, set inside the command's run so U takes it back (rectang/p316, p317).
  * Multiple keeps asking for the next pair until Enter, and Undo takes back the
  * last fillet made in the command. Each fillet is one command — a
  * {@link ReplaceEntitiesCommand} for two lines, an {@link UpdateEntityCommand}
@@ -136,16 +138,18 @@ export class FilletTool implements Tool {
   readonly shortcut = "f"
 
   private state: FilletState = { phase: "first", hover: null }
-  /** FILLETRAD, kept for the session (Not-saved). */
+  /** FILLETRAD as the command found it or set it. */
   private radius = 0
   /** True while the radius sub-prompt's input is open (object picks paused). */
   private askingRadius = false
   private multiple = false
   /**
    * What Undo takes back, newest last: a fillet, or a radius given in the
-   * command (the radius it replaced).
+   * command (the radius it replaced and the history's depth before it).
    */
-  private steps: ({ readonly radius: number } | "fillet")[] = []
+  private steps: (
+    { readonly radius: number; readonly depth: number } | "fillet"
+  )[] = []
   private lastScreen: Vec2 | null = null
   /**
    * The selection modes typed at the object prompts. The second prompt and
@@ -180,6 +184,7 @@ export class FilletTool implements Tool {
     ctx.setCursor("crosshair")
     ctx.selection.clear()
     this.reset()
+    this.radius = ctx.document.getSettings().filletRadius
     // TRIMMODE is always 1 here: the lines are trimmed to the arc.
     ctx.report(
       ctx.text.message("filletSettings", {
@@ -937,7 +942,11 @@ export class FilletTool implements Tool {
   private undoStep(ctx: ToolContext): void {
     const step = this.steps.pop()
     if (step === "fillet") ctx.undo()
-    else if (step) this.radius = step.radius
+    else if (step) {
+      ctx.undoTo(step.depth)
+      // Set back by hand where UNDO Control None kept nothing to take back.
+      this.writeRadius(step.radius, ctx)
+    }
     if (this.steps.length === 0) {
       ctx.report(ctx.text.message("commandCompletelyUndone"))
     }
@@ -970,13 +979,18 @@ export class FilletTool implements Tool {
 
   /** The radius, then the prompt Radius was chosen at, asked again. */
   private setRadius(value: number, ctx: ToolContext): void {
-    if (Number.isFinite(value) && value >= 0) {
-      this.steps.push({ radius: this.radius })
-      this.radius = value
-    }
     this.askingRadius = false
+    if (Number.isFinite(value) && value >= 0) {
+      this.steps.push({ radius: this.radius, depth: ctx.historyDepth() })
+      this.writeRadius(value, ctx)
+    }
     this.openKeywordPrompt(ctx)
     ctx.requestRender()
+  }
+
+  private writeRadius(value: number, ctx: ToolContext): void {
+    this.radius = value
+    setCommandSettings({ filletRadius: value }, ctx)
   }
 }
 

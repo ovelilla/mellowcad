@@ -38,6 +38,7 @@ import {
   ToolQuestion,
 } from "./Tool"
 import { withCurrentProperties } from "./currentProperties"
+import { setCommandSettings } from "./commandSettings"
 
 /** The modes a keyword toggles, keyed by AutoCAD's global keyword. */
 const MODE_BY_KEYWORD: Readonly<Record<string, keyof AttributeModes>> = {
@@ -95,10 +96,10 @@ export class AttDefTool implements Tool {
   private tag = ""
   private prompt = ""
   private value = ""
+  /** TEXTSIZE, which TEXT and MTEXT share (rectang/p313). */
   private height = DEFAULT_TEXT_HEIGHT
   private rotation = 0
   private justify: TextJustify = "left"
-  private styleId: TextStyleId | null = null
   /** The current style's name, offered as Style's `<default>`. */
   private styleName = ""
   private previous: AttributeDefinitionEntity | null = null
@@ -108,6 +109,7 @@ export class AttDefTool implements Tool {
     ctx.setCursor("crosshair")
     ctx.selection.clear()
     this.state = { phase: "modes" }
+    this.height = ctx.document.getSettings().textSize
     this.reportModes(ctx)
     ctx.dynamicInput.open({ fields: [], commit: () => {} })
   }
@@ -368,7 +370,7 @@ export class AttDefTool implements Tool {
             this.enterStyle(ctx)
             return true
           }
-          this.styleId = style.id
+          ctx.setCurrentTextStyle(style.id)
         }
         this.enterStart(ctx, true)
         return true
@@ -408,8 +410,13 @@ export class AttDefTool implements Tool {
       const previous = this.previous
       if (!previous) return true
       this.justify = previous.justify
-      this.styleId = previous.styleId
-      this.finish(lineBelow(previous), previous.height, previous.rotation, ctx)
+      this.finish(
+        lineBelow(previous),
+        previous.height,
+        previous.rotation,
+        ctx,
+        previous.styleId
+      )
       return true
     }
     if (!isCoordinateExpression(typed)) return false
@@ -425,7 +432,7 @@ export class AttDefTool implements Tool {
   }
 
   private currentStyleId(ctx: ToolContext): TextStyleId {
-    return this.styleId ?? ctx.document.getCurrentTextStyleId()
+    return ctx.document.getCurrentTextStyleId()
   }
 
   /** The height prompt is skipped when the style fixes one, as TEXT's is. */
@@ -454,6 +461,7 @@ export class AttDefTool implements Tool {
   ): void {
     this.height = height
     this.state = { phase: "rotation", position, height, cursor: position }
+    setCommandSettings({ textSize: height }, ctx)
     ctx.dynamicInput.open({
       fields: [{ id: "rotation", prompt: "textRotation", kind: "angle" }],
       commit: (values, commitCtx) => {
@@ -473,12 +481,16 @@ export class AttDefTool implements Tool {
     ctx.dynamicInput.setPosition(this.lastScreen ?? { x: 0, y: 0 })
   }
 
-  /** `rotation` is the object's own, in the WCS; the next prompt offers it from the UCS X axis. */
+  /**
+   * `rotation` is the object's own, in the WCS; the next prompt offers it from
+   * the UCS X axis. Aligned below the previous one, its style goes on.
+   */
   private finish(
     position: Vec3,
     height: number,
     rotation: number,
-    ctx: ToolContext
+    ctx: ToolContext,
+    styleId = this.currentStyleId(ctx)
   ): void {
     this.rotation = worldAngleToUcs(ctx.ucs, rotation)
     const definition = withCurrentProperties(
@@ -490,7 +502,7 @@ export class AttDefTool implements Tool {
           height,
           rotation,
           justify: this.justify,
-          styleId: this.currentStyleId(ctx),
+          styleId,
           layerId: ctx.document.getCurrentLayerId(),
         }),
         position

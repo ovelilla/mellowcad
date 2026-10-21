@@ -79,6 +79,13 @@ export interface UndoSettings {
   readonly layer: boolean
 }
 
+const DEFAULT_UNDO_SETTINGS: UndoSettings = {
+  auto: true,
+  control: "all",
+  combine: true,
+  layer: true,
+}
+
 /**
  * Executes commands against the document and keeps linear undo/redo stacks.
  * Executing a new command clears the redo stack (standard editor semantics).
@@ -99,12 +106,7 @@ export class CommandHistory extends Observable {
   private replayingStep: Replayed | null = null
   /** Steps dropped off the bottom of the stack, which {@link depth} still counts. */
   private dropped = 0
-  private undoSettings: UndoSettings = {
-    auto: true,
-    control: "all",
-    combine: true,
-    layer: true,
-  }
+  private undoSettings: UndoSettings = DEFAULT_UNDO_SETTINGS
 
   constructor(
     private readonly document: CadDocument,
@@ -159,6 +161,11 @@ export class CommandHistory extends Observable {
 
   get settings(): UndoSettings {
     return this.undoSettings
+  }
+
+  /** UNDOCTL as a drawing starts it: per drawing, not saved (rectang/p305). */
+  resetSettings(): void {
+    this.undoSettings = DEFAULT_UNDO_SETTINGS
   }
 
   /**

@@ -2241,8 +2241,8 @@ describe("FILLET", () => {
   })
 
   it("remembers the radius between invocations", () => {
-    // AutoCAD keeps FILLETRAD for the session; re-picking the command should
-    // not silently reset it to zero.
+    // FILLETRAD is the drawing's (rectang/p316); re-picking the command
+    // should not silently reset it to zero.
     const cad = createHarness({ entities: corner })
 
     cad.command("FILLET").option("Radius").type("50").enter().escape()

@@ -31,6 +31,7 @@ import {
   ToolQuestion,
 } from "./Tool"
 import { withCurrentProperties } from "./currentProperties"
+import { setCommandSettings } from "./commandSettings"
 
 /**
  * AutoCAD's TEXT / DTEXT: single-line text, one object per line.
@@ -61,20 +62,16 @@ export class TextTool implements Tool {
   private styleName: string | null = null
 
   /**
-   * Last height and rotation used, offered as the `<default>` of their prompts.
-   * They live on the instance, like FILLET's radius: AutoCAD carries them from
-   * one invocation to the next (its TEXTSIZE) rather than resetting each time.
-   * The rotation is kept from the UCS X axis, as it is asked.
+   * TEXTSIZE and the justification, saved in the drawing (rectang/p311), as
+   * the command found them or set them.
    */
   private height = DEFAULT_TEXT_HEIGHT
-  private rotation = 0
   private justify: TextJustify = "left"
   /**
-   * Style chosen with the Style keyword; null follows the drawing's current
-   * one. The choice is the command's, not the document's — there is no style
-   * manager yet, so nothing else would observe a change to the drawing.
+   * The last rotation, the next one's `<default>`: per drawing, not saved
+   * (rectang/p311). Kept from the UCS X axis, as it is asked.
    */
-  private styleId: TextStyleId | null = null
+  private rotation = 0
 
   /** The last line written, so Enter at the start prompt continues below it. */
   private lastLine: TextEntity | null = null
@@ -83,6 +80,9 @@ export class TextTool implements Tool {
   onActivate(ctx: ToolContext): void {
     ctx.setCursor("crosshair")
     ctx.selection.clear()
+    const settings = ctx.document.getSettings()
+    this.height = settings.textSize
+    this.justify = settings.textJustify
     const style = ctx.document.getTextStyle(this.currentStyleId(ctx))
     ctx.report(
       ctx.text.message("currentTextStyle", {
@@ -124,6 +124,10 @@ export class TextTool implements Tool {
   /** Justify's answer is a keyword; the text and the style name are content. */
   takes(): QuestionInput | null {
     return this.state.phase === "justify" ? "keyword" : null
+  }
+
+  onNewDrawing(): void {
+    this.rotation = 0
   }
 
   onDeactivate(ctx: ToolContext): void {
@@ -208,6 +212,7 @@ export class TextTool implements Tool {
       this.justify = justify
       // The point the justification names, asked without the keywords.
       this.state = { phase: "start", keywords: false }
+      setCommandSettings({ textJustify: justify }, ctx)
       this.openStartInput(ctx)
       return "continue"
     }
@@ -304,7 +309,7 @@ export class TextTool implements Tool {
   }
 
   private currentStyleId(ctx: ToolContext): TextStyleId {
-    return this.styleId ?? ctx.document.getCurrentTextStyleId()
+    return ctx.document.getCurrentTextStyleId()
   }
 
   private enterRotation(
@@ -314,6 +319,7 @@ export class TextTool implements Tool {
   ): void {
     this.height = height
     this.state = { phase: "rotation", position, height, cursor: position }
+    setCommandSettings({ textSize: height }, ctx)
     this.openRotationInput(ctx)
   }
 
@@ -501,7 +507,7 @@ export class TextTool implements Tool {
         this.openStyleInput(ctx)
         return true
       }
-      this.styleId = style.id
+      ctx.setCurrentTextStyle(style.id)
     }
     this.state = { phase: "start", keywords: true }
     this.openStartInput(ctx)

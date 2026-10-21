@@ -151,15 +151,21 @@ export class OffsetTool implements Tool {
 
   /**
    * Erase source and Layer, which the next OFFSET reports in its `Current
-   * settings:` as it was left, for the session.
+   * settings:` as it was left: program-wide, so for the session here, NEW and
+   * OPEN leaving them (rectang/p310).
    */
   private erase = false
   private offsetLayer: "source" | "current" = "source"
   /**
    * AutoCAD's OFFSETDIST, the distance prompt's `<default>`: the last distance,
-   * or Through while negative (initially -1, and not saved).
+   * or Through while negative; -1 in each drawing opened, not saved
+   * (rectang/p310).
    */
   private offsetDist = -1
+
+  onNewDrawing(): void {
+    this.offsetDist = -1
+  }
 
   onActivate(ctx: ToolContext): void {
     ctx.setCursor("crosshair")

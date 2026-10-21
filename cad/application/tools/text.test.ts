@@ -248,6 +248,79 @@ describe("TEXT", () => {
   })
 })
 
+// TEXT, MTEXT and ATTDEF share TEXTSIZE and TEXTSTYLE: after `-TEXT _S S2 …
+// 3`, -MTEXT lists `"S2"  Text height:  3` and -ATTDEF `"S2"  Text height:
+// 3.0000` (rectang/p313); MTEXT's Height 4 makes TEXTSIZE 4 (p312).
+describe("TEXTSIZE and TEXTSTYLE, shared by TEXT, MTEXT and ATTDEF", () => {
+  /** What -ATTDEF writes once its tag, prompt and value are given. */
+  function attdefStyle(cad: CadHarness): string | undefined {
+    const from = cad.commandLog().length
+    answer(cad, "_-ATTDEF", "", "T1", "P1", "V1")
+    const line = cad
+      .commandLog()
+      .slice(from)
+      .find((text) => text.startsWith("Current text style:"))
+    cad.escape()
+    return line
+  }
+
+  function mtextStyle(cad: CadHarness): string | undefined {
+    const from = cad.commandLog().length
+    answer(cad, "_-MTEXT")
+    const line = cad.commandLog()[from + 1]
+    cad.escape()
+    return line
+  }
+
+  it("TEXT's height is the one MTEXT and ATTDEF offer (rectang/p313)", () => {
+    const cad = createHarness()
+    answer(cad, "_TEXT", "5,5", "3", "0", "A", "")
+
+    expect(mtextStyle(cad)).toBe(
+      'Current text style:  "Standard"  Text height:  3.00  Annotative:  No'
+    )
+    expect(attdefStyle(cad)).toBe(
+      'Current text style:  "Standard"  Text height:  3.00  Justify:  Left'
+    )
+  })
+
+  it("MTEXT's Height is the one TEXT offers next (rectang/p312)", () => {
+    const cad = createHarness()
+    answer(cad, "_-MTEXT", "5,5", "_H", "4", "25,25", "A", "")
+    answer(cad, "_TEXT", "5,5")
+
+    expect(cad.state().commandLine.prompt).toBe("TEXT Specify height <4.00>:")
+    cad.escape()
+  })
+
+  it("TEXT's Style makes the style current, which MTEXT and ATTDEF list (rectang/p313)", () => {
+    const cad = createHarness()
+    cad.runtime.createTextStyle("S2", undefined, false)
+    answer(cad, "_TEXT", "_S", "S2", "5,5", "3", "0", "A", "")
+
+    expect(cad.runtime.document.getCurrentTextStyleId()).toBe("S2")
+    expect(mtextStyle(cad)).toBe(
+      'Current text style:  "S2"  Text height:  3.00  Annotative:  No'
+    )
+    expect(attdefStyle(cad)).toBe(
+      'Current text style:  "S2"  Text height:  3.00  Justify:  Left'
+    )
+  })
+
+  it("MTEXT's and ATTDEF's Style make the style current too", () => {
+    const cad = createHarness()
+    cad.runtime.createTextStyle("S2", undefined, false)
+    cad.runtime.createTextStyle("S3", undefined, false)
+    answer(cad, "_-MTEXT", "5,5", "_S", "S2")
+    cad.escape()
+    expect(cad.runtime.document.getCurrentTextStyleId()).toBe("S2")
+
+    answer(cad, "_-ATTDEF", "", "T1", "P1", "V1", "_S", "S3")
+    cad.escape()
+    expect(cad.runtime.document.getCurrentTextStyleId()).toBe("S3")
+  })
+})
+
 describe("TEXTEDIT", () => {
   /** A drawing with one text object and one line, to test the pick filter. */
   const withText = () =>

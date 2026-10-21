@@ -2,6 +2,7 @@ import { Vec2 } from "../../geometry/Vec2"
 import { Vec3 } from "../../geometry/Vec3"
 import { DocumentReader } from "../../domain/Document"
 import { Entity, EntityId, BlockLookup } from "../../domain/entities"
+import type { TextStyleId } from "../../domain/textStyles"
 import { Ucs } from "../../domain/ucs"
 import { Viewport } from "../Viewport"
 import { Selection } from "../Selection"
@@ -361,6 +362,12 @@ export interface ToolContext {
   setViewCubeVisible(visible: boolean): void
 
   /**
+   * Makes a text style current (TEXTSTYLE), as TEXT's, MTEXT's and ATTDEF's
+   * Style do (rectang/p313). A style table edit, so no undo step.
+   */
+  setCurrentTextStyle(id: TextStyleId): void
+
+  /**
    * The running object snaps (OSMODE), which -OSNAP reads and sets. Setting a
    * list turns object snapping on; an empty one leaves no snap running.
    */
@@ -572,6 +579,12 @@ export interface Tool {
 
   onActivate?(ctx: ToolContext): void
   onDeactivate?(ctx: ToolContext): void
+  /**
+   * NEW, or a drawing opened: what AutoCAD keeps per drawing without saving it
+   * (CIRCLERAD, OFFSETDIST, HPNAME…) goes back to its default (rectang/p301,
+   * p303, p305, p309–p311, p314, p315, p321).
+   */
+  onNewDrawing?(): void
 
   onPointerDown?(input: PointerInput, ctx: ToolContext): void
   onPointerMove?(input: PointerInput, ctx: ToolContext): void

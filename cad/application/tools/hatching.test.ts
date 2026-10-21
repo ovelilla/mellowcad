@@ -492,7 +492,7 @@ describe("HATCH Properties", () => {
     expect(hatch.patternAngle).toBeCloseToAngle(deg(30))
   })
 
-  it("keeps the settings for the next hatch (HPNAME/HPSCALE/HPANG last a session)", () => {
+  it("keeps the settings for the next hatch in the drawing (HPNAME/HPSCALE/HPANG, rectang/p303)", () => {
     const h = createHarness({
       entities: [SQUARE, rectOf(p(200, 0), p(300, 100), { id: "sq2" })],
     })

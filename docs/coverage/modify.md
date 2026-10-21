@@ -8,7 +8,8 @@ Shift's `1 found, 1 removed, 1 total` (es `1 encontrados`, `1 encontrados, elimi
 `Designe esquina opuesta:`) — with the selection modes (Command line, `Select objects:`), and
 objects selected before it counted after the command's echo, `Command: M MOVE 1 found`;
 `Specify base point or [Displacement] <Displacement>:` — Displacement, or Enter, asks
-`Specify displacement <0.0000, 0.0000, 0.0000>:` (the last one given, for the session) and moves by
+`Specify displacement <0.0000, 0.0000, 0.0000>:` (the last one given in the drawing, MOVE's own;
+per drawing, not saved, NEW and OPEN putting it back to 0, rectang/p314, p315) and moves by
 the point typed, then ends — and `Specify second point or <use first point as displacement>:` (es
 `Precise punto base o [Desplazamiento] <Desplazamiento>`, `Precise desplazamiento`,
 `Precise segundo punto o <usar primer punto como desplazamiento>`); noun-verb and verb-noun, box
@@ -25,7 +26,8 @@ point uses the first point as the displacement
 `Specify second point or [Exit/Undo] <Exit>:` (es
 `Precise el segundo punto o [Salir/desHacer] <Salir>`, with the `el` the program prints and its help
 does not); repeated placement (AutoCAD Multiple behaviour), Undo taking back the last copy;
-Displacement places one copy and ends
+Displacement places one copy and ends, its `<default>` COPY's own last one, not MOVE's (rectang/p314),
+back to 0 at NEW and OPEN
 
 **Missing:** mOde (COPYMODE is always Multiple, so the base point offers `[Displacement]` alone),
 Array (so the second point's `[Array]` is not offered)
@@ -40,7 +42,8 @@ says `Rotating a copy of the selected objects.` (es
 Reference's `Specify the reference angle <0>:` (typed, or two points: `Specify second point:`) and
 `Specify the new angle:` (es `Precise punto base`,
 `Precise ángulo de rotación o [Copiar/Referencia]`, `Precise ángulo de referencia`,
-`Precise el nuevo ángulo`); pivot + angle (Enter takes the last angle, 0 at first, per session),
+`Precise el nuevo ángulo`); pivot + angle (Enter takes the last angle, 0 in each drawing: per
+drawing, not saved, rectang/p314),
 Copy, Reference; about an axis parallel to the UCS's Z ("the Z axis of the UCS determines the axis
 direction for rotating objects about a point")
 
@@ -57,11 +60,12 @@ then Reference's `Specify reference length <1.0000>:` (typed, or two points) and
 `Specify new length or [Points] <1.0000>:` (typed, or a point measured from the base point; Points
 asks `Specify first point:` and the second, the length between them;
 `Requires numeric distance, second point, or option keyword.`, at Points
-`Requires numeric distance or two points.`), both defaults the last lengths given, 1 at first, per
-session (a factor typed leaves them), as AutoCAD 2023's console asks them (es
+`Requires numeric distance or two points.`), both defaults the last lengths given, 1 in each
+drawing (a factor typed leaves them), as AutoCAD 2023's console asks them (es
 `Precise factor de escala o [Copiar/Referencia]`, `Precise longitud de referencia`,
-`Precise nueva longitud o [Puntos]`); factor (Enter takes the last one, 1 at first, per session,
-though the prompt shows no default, as AutoCAD's 2026 one shows none), Copy, Reference; in 3D about
+`Precise nueva longitud o [Puntos]`); factor (Enter takes the last one, 1 in each drawing — per
+drawing, not saved, rectang/p315 —, though the prompt shows no default, as AutoCAD's 2026 one shows
+none), Copy, Reference; in 3D about
 the base point, elevation, a line's rise and thickness included
 
 **Missing:** Enter at Points' `Specify first point:` ends the command unscaled (AutoCAD 2023's
@@ -295,12 +299,14 @@ translations), and that a Shift-trim inside EXTEND deletes as TRIM's does
 `Parámetros actuales: Borrar origen=No  Capa=Origen  OFFSETGAPTYPE=0`), then
 `Specify offset distance or [Through/Erase/Layer] <Through>:` (es
 `Precise distancia de desfase o [punto a Atravesar/Borrar/Capa] <punto a Atravesar>:`) — Enter takes
-OFFSETDIST, `<Through>` at first, then the last distance (per session), and two picks measure it
+OFFSETDIST, `<Through>` in each drawing, then the last distance (per drawing, not saved: NEW and
+OPEN bring `<Through>` back, rectang/p310), and two picks measure it
 (`Specify second point:`); Erase asks `Erase source object after offsetting? [Yes/No] <No>:` (es
 `¿Borrar objeto de origen tras desfase?`) and Layer
 `Enter layer option for offset objects [Current/Source] <Source>:` (es
-`Indique opción de capa para objetos desfasados [Actual/Origen]`), both kept for the session and
-reported by the next OFFSET; `Select object to offset or [Exit/Undo] <Exit>:` (es
+`Indique opción de capa para objetos desfasados [Actual/Origen]`), both program-wide, so kept for
+the session and across NEW and OPEN, and reported by the next OFFSET (es `Borrar origen=Sí
+Capa=Actual`, p310); `Select object to offset or [Exit/Undo] <Exit>:` (es
 `Designe objeto a desplazar o [Salir/Deshacer] <Salir>:`),
 `Specify point on side to offset or [Exit/Multiple/Undo] <Exit>:` (es
 `Precise punto en lado de desplazamiento o [Salir/Múltiple/Deshacer] <Salir>:`) and Through's
@@ -313,8 +319,8 @@ an angle to the UCS's XY plane does not highlight
 **Missing:** OFFSETGAPTYPE, ellipses and splines (an ellipse's parallel curve is a spline, and
 offsetting a spline is not built, so neither highlights, and `Cannot offset that object.` — es
 `Imposible transponer este objeto.` — is never needed), what Undo says with nothing left to undo
-(nothing here), Erase and Layer kept past the session; **unverified**: the values `Sí` and `Actual`
-in es `Parámetros actuales`
+(nothing here), Erase and Layer kept past the session (OPEN leaves them, p310; a restart is
+unprobed)
 
 ### `FILLET` / `F` · es `EMPALME` / `MP`†
 
@@ -325,7 +331,9 @@ in es `Parámetros actuales`
 `Select second object or shift-select to apply corner or [Radius]:` (es
 `Designe el segundo objeto o use la tecla Mayús para aplicar esquina o [Radio]:`) — Shift on the
 second pick applies a corner, as radius 0 does — and `Specify fillet radius <0.0000>:` (es
-`Precise radio de empalme <0.0000>:`), the radius kept for the session; two lines, or two straight
+`Precise radio de empalme <0.0000>:`), the radius FILLETRAD, saved in the drawing (NEW and a drawing
+opened bring theirs, rectang/p302, p316) and set inside the run, so U takes it back and a FILLET
+that only set it is an undo step (p317); two lines, or two straight
 segments of one polyline — adjacent, or one apart (the segment between, line or arc, is replaced by
 the fillet), an open polyline's first and last closing it — rounded within it; one two or more away
 says `Lines belonging to polylines must be consecutive or separated by one segment` (es
@@ -448,7 +456,8 @@ Autodesk's double space kept), `Select first line or [Undo/Polyline/Distance/Mul
 second pick applies a corner, as both distances 0 do — and Distance's
 `Specify first chamfer distance <0.0000>:` then `Specify second chamfer distance <…>:`, whose
 default is the first just given (es `Precise  primera distancia de chaflán`,
-`Precise  segunda distancia de chaflán`, double space and all), both kept for the session; distance
+`Precise  segunda distancia de chaflán`, double space and all), both CHAMFERA and CHAMFERB, saved in
+the drawing (rectang/p302, p316) and set inside the run, so U takes them back (p317); distance
 chamfer between two lines, or two straight segments of one polyline (as FILLET's: adjacent, one
 apart, an open one's ends; the first distance on the one picked first), a line and a polyline's
 straight segment, or segments of two polylines, joined into one polyline by the bevel as FILLET

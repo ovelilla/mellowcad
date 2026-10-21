@@ -65,9 +65,8 @@ const PREVIEW_ID: EntityId = "__hatch_preview__"
  *
  * The other option is **Properties**, which sets the pattern name and then, for
  * a real pattern, its scale and angle — the HPNAME / HPSCALE / HPANG system
- * variables. All three are "Not-saved" in AutoCAD, i.e. they last for the
- * session, which is exactly what an instance field on a tool the runtime owns
- * gives us.
+ * variables, which AutoCAD keeps per drawing without saving them: fields on
+ * the tool, back to their defaults at NEW and OPEN (rectang/p303).
  *
  * Several boundaries make **one** hatch (HPSEPARATE's initial value is 0) and
  * the fill is **not associative** (a documented deviation from HPASSOC 1 — see
@@ -91,11 +90,17 @@ export class HatchTool implements Tool {
   /** The plane before each internal point, for its Undo. */
   private planesBefore: (number | null)[] = []
 
-  // HPNAME / HPSCALE / HPANG: session defaults, so the next hatch starts from
-  // the settings of the last one.
+  // HPNAME / HPSCALE / HPANG: the next hatch starts from the settings of the
+  // last one in the drawing, which AutoCAD does not save (rectang/p303).
   private patternId: HatchPatternId = DEFAULT_HATCH_PATTERN_ID
   private patternScale = DEFAULT_HATCH_SCALE
   private patternAngle = DEFAULT_HATCH_ANGLE
+
+  onNewDrawing(): void {
+    this.patternId = DEFAULT_HATCH_PATTERN_ID
+    this.patternScale = DEFAULT_HATCH_SCALE
+    this.patternAngle = DEFAULT_HATCH_ANGLE
+  }
 
   onActivate(ctx: ToolContext): void {
     ctx.setCursor("default")

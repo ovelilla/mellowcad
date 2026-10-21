@@ -54,6 +54,7 @@ import {
   typedCornerPick,
 } from "./cornerObjects"
 import { ModeFind, ObjectSelector } from "./objectSelection"
+import { setCommandSettings } from "./commandSettings"
 import {
   CommandOption,
   CommandOptionOutcome,
@@ -83,7 +84,9 @@ import {
  * chord, what is left of it keeping its radius, as AutoCAD 2023's console
  * cuts it —, and a line with a polyline's straight segment, or straight
  * segments of two polylines, are joined into one polyline; an arc segment
- * there is `Cannot chamfer polyline arc segments.` The distances persist for the tool's session, like AutoCAD's, and both being 0 simply joins the lines
+ * there is `Cannot chamfer polyline arc segments.` The distances are CHAMFERA
+ * and CHAMFERB, saved in the drawing and set inside the command's run so U
+ * takes them back (rectang/p316, p317); both 0 simply join the lines
  * at their intersection — as Shift on the second pick does (apply corner).
  * Multiple keeps asking until Enter, and Undo takes back the last chamfer made
  * in the command; each is one command, folded into the command's undo step.
@@ -112,7 +115,7 @@ export class ChamferTool implements Tool {
   readonly id = "chamfer"
 
   private state: ChamferState = { phase: "first", hover: null }
-  /** CHAMFERA and CHAMFERB, kept for the session. */
+  /** CHAMFERA and CHAMFERB as the command found them or is setting them. */
   private distance1 = 0
   private distance2 = 0
   /** Which distance Distance is asking (object picks paused), or null. */
@@ -120,9 +123,9 @@ export class ChamferTool implements Tool {
   private multiple = false
   /**
    * What Undo takes back, newest last: a chamfer, or distances given in the
-   * command (the ones they replaced).
+   * command (the ones they replaced and the history's depth before them).
    */
-  private steps: (Distances | "chamfer")[] = []
+  private steps: ((Distances & { readonly depth: number }) | "chamfer")[] = []
   /** The distances when Distance was chosen, until both are given. */
   private replaced: Distances = { distance1: 0, distance2: 0 }
   private lastScreen: Vec2 | null = null
@@ -149,6 +152,8 @@ export class ChamferTool implements Tool {
     this.reset()
     // TRIMMODE is always 1 and CHAMMODE 0 (Distance) here.
     const settings = ctx.document.getSettings()
+    this.distance1 = settings.chamferDistance1
+    this.distance2 = settings.chamferDistance2
     ctx.report(
       ctx.text.message("chamferSettings", {
         dist1: formatLength(this.distance1, settings),
@@ -795,8 +800,11 @@ export class ChamferTool implements Tool {
   private undoStep(ctx: ToolContext): void {
     const step = this.steps.pop()
     if (step === "chamfer") ctx.undo()
-    else if (step)
-      ({ distance1: this.distance1, distance2: this.distance2 } = step)
+    else if (step) {
+      ctx.undoTo(step.depth)
+      // Set back by hand where UNDO Control None kept nothing to take back.
+      this.writeDistances(step, ctx)
+    }
     if (this.steps.length === 0) {
       ctx.report(ctx.text.message("commandCompletelyUndone"))
     }
@@ -893,11 +901,29 @@ export class ChamferTool implements Tool {
       this.askDistance("second", ctx)
       return
     }
-    if (valid) this.distance2 = value
-    this.steps.push(this.replaced)
     this.askingDistance = null
+    this.steps.push({ ...this.replaced, depth: ctx.historyDepth() })
+    this.writeDistances(
+      {
+        distance1: this.distance1,
+        distance2: valid ? value : this.distance2,
+      },
+      ctx
+    )
     this.openKeywordPrompt(ctx)
     ctx.requestRender()
+  }
+
+  private writeDistances(distances: Distances, ctx: ToolContext): void {
+    this.distance1 = distances.distance1
+    this.distance2 = distances.distance2
+    setCommandSettings(
+      {
+        chamferDistance1: distances.distance1,
+        chamferDistance2: distances.distance2,
+      },
+      ctx
+    )
   }
 }
 

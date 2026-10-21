@@ -41,6 +41,7 @@ import {
   ToolQuestion,
 } from "./Tool"
 import { withCurrentProperties } from "./currentProperties"
+import { setCommandSettings } from "./commandSettings"
 
 /**
  * AutoCAD's MTEXT: a box from two corners, then the text, which wraps to the
@@ -67,18 +68,18 @@ export class MTextTool implements Tool {
 
   private state: MTextToolState = { phase: "corner" }
 
-  /** TEXTSIZE and the other settings MTEXT carries from one run to the next. */
+  /** TEXTSIZE, saved in the drawing, as the command found it or set it. */
   private height = DEFAULT_TEXT_HEIGHT
-  /** Radians from the UCS X axis, as the Rotation option asks it. */
+  /**
+   * Radians from the UCS X axis, as the Rotation option asks it. It, the
+   * justification and the line spacing start again every run (rectang/p312).
+   */
   private rotation = 0
   /** The UCS's own rotation for this run: the box squares up to its axes. */
   private ucsTurn = 0
   private attachment: MTextAttachment = "tl"
   private lineSpacingStyle: LineSpacingStyle = "atLeast"
   private lineSpacingFactor = 1
-  /** Chosen with the Style keyword; null follows the drawing's current style. */
-  private styleId: TextStyleId | null = null
-
   /** The height and the style Height and Style offer as their `<default>`. */
   private heightOffered = DEFAULT_TEXT_HEIGHT
   private styleOffered = ""
@@ -98,6 +99,11 @@ export class MTextTool implements Tool {
     ctx.selection.clear()
     this.atCommandLine = false
     this.ucsTurn = ucsRotation(ctx.ucs)
+    this.height = ctx.document.getSettings().textSize
+    this.rotation = 0
+    this.attachment = "tl"
+    this.lineSpacingStyle = "atLeast"
+    this.lineSpacingFactor = 1
     ctx.report(
       ctx.text.message("currentMTextStyle", {
         style: this.styleNameOf(ctx),
@@ -177,9 +183,12 @@ export class MTextTool implements Tool {
   onEnter(ctx: ToolContext): boolean {
     switch (this.state.phase) {
       case "justify":
-      case "spacingType":
         // Enter takes the `<default>`, which is the current setting.
         this.enterOpposite(this.state.first, ctx)
+        return true
+      case "spacingType":
+        // The `<default>` taken, the factor is asked (rectang/p312).
+        this.invokeOption(this.defaultOption() ?? "At least", ctx)
         return true
       case "edit":
         return true
@@ -216,6 +225,7 @@ export class MTextTool implements Tool {
         const height = V.distance(state.first, input.point)
         if (height > 0) this.height = height
         this.enterOpposite(state.first, ctx)
+        setCommandSettings({ textSize: this.height }, ctx)
         break
       }
       case "rotation":
@@ -487,7 +497,7 @@ export class MTextTool implements Tool {
   }
 
   private currentStyleId(ctx: ToolContext): TextStyleId {
-    return this.styleId ?? ctx.document.getCurrentTextStyleId()
+    return ctx.document.getCurrentTextStyleId()
   }
 
   /**
@@ -638,6 +648,9 @@ export class MTextTool implements Tool {
         if (state.phase === "rotation" || state.phase === "height") {
           if (state.phase === "height") this.height = this.heightOffered
           this.enterOpposite(state.first, commitCtx)
+          if (state.phase === "height") {
+            setCommandSettings({ textSize: this.height }, commitCtx)
+          }
           return true
         }
         return false
@@ -654,6 +667,7 @@ export class MTextTool implements Tool {
         if (!(value > 0)) return
         this.height = value
         this.enterOpposite(state.first, ctx)
+        setCommandSettings({ textSize: value }, ctx)
         return
       case "rotation":
         this.rotation = (value * Math.PI) / 180
@@ -713,7 +727,7 @@ export class MTextTool implements Tool {
           this.openTextInput(ctx, "styleName")
           return true
         }
-        this.styleId = style.id
+        ctx.setCurrentTextStyle(style.id)
       }
       this.enterOpposite(state.first, ctx)
       return true
@@ -723,7 +737,7 @@ export class MTextTool implements Tool {
 
   /** The style's name as the prompts offer it. */
   private styleNameOf(ctx: ToolContext): string {
-    const id = this.styleId ?? ctx.document.getCurrentTextStyleId()
+    const id = ctx.document.getCurrentTextStyleId()
     return ctx.document.getTextStyle(id)?.name ?? id
   }
 

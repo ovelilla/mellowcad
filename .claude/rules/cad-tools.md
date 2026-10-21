@@ -140,11 +140,12 @@ whose name is a non-transparent command's ('AREA, 'UCSICON) is a `variable(…)`
 `registerCommands`, never a command; a read-only one says `readOnlyVariable`. An angle is written
 with `formatAngle` (AUPREC), a length with `formatLength` (LUPREC): never one precision for both.
 
-A variable AutoCAD saves "Not-saved" is a **private field on the tool instance**, which lives for
-the session: FILLET's radius, CHAMFER's distances, HATCH's HPNAME / HPSCALE / HPANG. Do not reset
-it in `onActivate`. One saved in the drawing belongs on the document (LTSCALE) or a style table
-(DIMSCALE). One several tools read (CIRCLERAD, TRIMEXTENDMODE) is one object `defaultTools` hands
-each; one AutoCAD keeps in the registry lasts the session here, noted in the coverage entry.
+Where a value lives is the console's OPEN test, never the help's "Saved in:" (RECTANG-D40).
+**Saved in the drawing** (FILLETRAD): a `DocumentSettings` field, set in the run by
+`setCommandSettings` so U undoes it. **Per drawing, unsaved** (CIRCLERAD): a tool field
+`onNewDrawing` resets. **Program-wide** or **registry** (OSMODE): a tool field for the session,
+noted in the coverage entry. `onActivate` resets none AutoCAD keeps; a shared one is one object
+`defaultTools` hands each.
 
 ## What a new object wears
 

@@ -1,8 +1,10 @@
-import type { AttributeDisplay } from "./entityTypes"
+import type { AttributeDisplay, TextJustify } from "./entityTypes"
 import { COLOR_BYLAYER, EntityColor } from "./colors"
 import { LINETYPE_BYLAYER, LinetypeId } from "./linetypes"
 import { LINEWEIGHT_BYLAYER, Lineweight } from "./lineweights"
 import { NamedUcs, OrthographicUcs, Ucs, WORLD_UCS } from "./ucs"
+import { DEFAULT_TEXT_HEIGHT } from "./textStyles"
+import { Vec2 } from "../geometry/Vec2"
 import { Vec3 } from "../geometry/Vec3"
 
 /**
@@ -54,7 +56,31 @@ export interface DocumentSettings {
   readonly fillMode: boolean
   /** PLINEWID: the width PLINE starts with, the last one it was left at. */
   readonly polylineWidth: number
+  /** FILLETRAD: the radius FILLET rounds with. */
+  readonly filletRadius: number
+  /** CHAMFERA: CHAMFER's first distance. */
+  readonly chamferDistance1: number
+  /** CHAMFERB: CHAMFER's second distance. */
+  readonly chamferDistance2: number
+  /** TEXTSIZE: the height TEXT, MTEXT and ATTDEF offer, the last one given. */
+  readonly textSize: number
+  /** TEXT's justification, the last one chosen, which AutoCAD saves too (rectang/p311). */
+  readonly textJustify: TextJustify
+  /** ORTHOMODE (F8). */
+  readonly orthoMode: boolean
+  /** SNAPMODE (F9). */
+  readonly snapMode: boolean
+  /** SNAPUNIT: the snap lattice's X and Y spacing. */
+  readonly snapUnit: Vec2
+  /** GRIDMODE (F7). */
+  readonly gridMode: boolean
 }
+
+/** The drafting aids AutoCAD saves in the drawing. */
+export type DraftingModes = Pick<
+  DocumentSettings,
+  "orthoMode" | "snapMode" | "snapUnit" | "gridMode"
+>
 
 export interface UcsIconSetting {
   readonly visible: boolean
@@ -103,6 +129,17 @@ export const DEFAULT_DOCUMENT_SETTINGS: DocumentSettings = {
   currentLineweight: LINEWEIGHT_BYLAYER,
   fillMode: true,
   polylineWidth: 0,
+  // acadiso.dwt's FILLETRAD, CHAMFERA, CHAMFERB, TEXTSIZE, SNAPUNIT and
+  // GRIDMODE (rectang/p302, p303, p304).
+  filletRadius: 0,
+  chamferDistance1: 0,
+  chamferDistance2: 0,
+  textSize: DEFAULT_TEXT_HEIGHT,
+  textJustify: "left",
+  orthoMode: false,
+  snapMode: false,
+  snapUnit: { x: 10, y: 10 },
+  gridMode: true,
 }
 
 export const LENGTH_UNITS: LengthUnit[] = [

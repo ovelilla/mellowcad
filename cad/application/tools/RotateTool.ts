@@ -100,9 +100,14 @@ export class RotateTool implements Tool {
   private lastScreen: Vec2 | null = null
   /**
    * The rotation angle's `<default>`: AutoCAD "knows the last rotation angle
-   * and offers it as default", per document and not saved; 0 at first.
+   * and offers it as default", per drawing and not saved; 0 at first
+   * (rectang/p314).
    */
   private lastAngle = 0
+
+  onNewDrawing(): void {
+    this.lastAngle = 0
+  }
 
   onActivate(ctx: ToolContext): void {
     ctx.setCursor("crosshair")

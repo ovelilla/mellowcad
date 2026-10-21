@@ -35,7 +35,9 @@ the snap's name in a light grey box below and to the right of the cursor (d05, d
 dynamic-input box under both — WHY: AutoCAD puts its dynamic-input box in that same place (d11);
 which gives way with both showing is **unverified**; F3 turns object snapping on and off,
 writing `Command:  <Osnap on>` / ` <Osnap off>` (es ` <Refent activado>` / ` <Refent desactivado>`;
-tables 33112, 33113, desktop passes line/d10, d27)
+tables 33112, 33113, desktop passes line/d10, d27); OSMODE and AUTOSNAP, as POLARMODE, POLARANG,
+DYNMODE and SELECTIONCYCLING, are registry variables, which a drawing opened leaves (rectang/p304,
+p321): here they last the session (RECTANG-D46)
 
 **Missing:** Node and Geometric Center (no POINT object; a dimension's definition points snap as
 Endpoint), deferred Perpendicular and Tangent at the first point of a command other than LINE and
@@ -139,8 +141,8 @@ the Z on a tie (**unverified** rule); readout `Polar: 50.00mm < +Z` (**unverifie
 path dashed green from the base point out of the view, a small ✕ on the point, the reading in a
 light grey box below and to the right of the cursor (desktop line/d12)
 
-**Missing:** additional angles list, "track using all polar angles", POLARANG, POLARMODE and
-TRACKPATH as variables (SETVAR, roadmap row 24), the plane's angles measured in plan off the plan
+**Missing:** additional angles list, "track using all polar angles", POLARANG, POLARMODE (registry
+variables, for the session here: see Object snaps) and TRACKPATH as variables (SETVAR, roadmap row 24), the plane's angles measured in plan off the plan
 
 ### Ortho (F8)
 
@@ -151,7 +153,9 @@ mode's end, bent about the centre, arc/d06); F8 turns it on and off, writing ` <
 turns it off (desktop passes line/d10, d27); Shift held toggles it ("To turn Ortho off
 temporarily, hold down the Shift key"; with it off, on), Polar yielding; in a 3D view its Z as a
 third axis, the one drawn nearest the cursor winning (**unverified**: AutoCAD does not publish the
-rule)
+rule); ORTHOMODE is saved in the drawing, NEW and a drawing opened bringing theirs (rectang/p304,
+p321), Polar turning it off too; F8 is no undo step (RECTANG-D44: unprobed whether U takes an F8
+back; it takes back the ORTHO command, p317, which is not built here)
 
 **Missing:** ORTHOMODE as a variable — `'ORTHOMODE` at LINE's prompt asks
 `>>Enter new value for ORTHOMODE <0>:` (probe line/p19) and here is a wrong answer (SETVAR, roadmap
@@ -172,13 +176,22 @@ horizontal`, `Precise intervalo vertical`) and turns it on, after which the defa
 `Requires numeric distance or two points.`), 0 and −5 `Value must be positive and nonzero.`, and the
 prompt stays; transparently its prompts are headed `>>` and `Resuming LINE command.` follows (2027's
 console, probes line/p38, p158, p212, p213). F9 toggles it, writing ` <Snap on>` / ` <Snap off>`
-(es ` <Forzcursor activado>` / `desactivado`; desktop passes line/d10, d27)
+(es ` <Forzcursor activado>` / `desactivado`; desktop passes line/d10, d27). SNAPMODE and SNAPUNIT
+are saved in the drawing (rectang/p304, p321); U takes SNAP back, as it takes ORTHO back (p317), and
+not an F9 (RECTANG-D44)
 
 **Missing:** Legacy, Style (isometric snap) and Type (grid or polar: the status bar's Snap menu
 chooses it here) — not listed, as they are not built (WHY: the prompt lists what is, as TRIM's
 leaves out Project) —, the unlisted Rotate (SNAPANG), SNAPBASE, SNAPMODE and SNAPUNIT as variables
-(SETVAR, roadmap row 24), persistence in the file and U taking SNAP back (session state here;
-**unverified** in AutoCAD)
+(SETVAR, roadmap row 24)
+
+### Grid (F7)
+
+**Implemented:** F7 shows and hides the grid, which follows the lattice while grid snap is on;
+GRIDMODE is saved in the drawing (rectang/p304, p321), and F7 is no undo step (RECTANG-D44)
+
+**Missing:** GRID, GRIDUNIT (the spacing is the lattice's or the zoom's here), GRIDMODE as a
+variable, F7's echo
 
 ### Dynamic input (DYN)
 
@@ -232,7 +245,7 @@ status bar by default"), and there is no other readout of the cursor here; Custo
 ### Selection cycling
 
 **Implemented:** badge, Shift+Space, selection list box, the candidate offered glowing blue as a
-selection does
+selection does; SELECTIONCYCLING lasts the session (a registry variable: see Object snaps)
 
 **Missing:** placement options, subobject filtering, type icons in the list, LEGACYCTRLPICK
 

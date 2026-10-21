@@ -94,11 +94,20 @@ export class ScaleTool implements Tool {
     done: (ctx) => this.confirmSelection(ctx),
   })
   private lastScreen: Vec2 | null = null
-  /** The scale factor's `<default>`: the last one used, 1 at first; not saved. */
+  /**
+   * The scale factor's `<default>`: the last one used, 1 in each drawing
+   * opened; not saved (rectang/p315).
+   */
   private lastFactor = 1
   /** Reference's `<default>`s, the last ones given, 1 at first; not saved. */
   private lastReference = 1
   private lastNewLength = 1
+
+  onNewDrawing(): void {
+    this.lastFactor = 1
+    this.lastReference = 1
+    this.lastNewLength = 1
+  }
 
   onActivate(ctx: ToolContext): void {
     ctx.setCursor("crosshair")
