@@ -1,6 +1,11 @@
 import { Vec2, V } from "../../geometry/Vec2"
 import { headingInUcs } from "./ucsHeading"
-import { Entity, rotateEntity, rotateEntityCopy } from "../../domain/entities"
+import {
+  Entity,
+  EntityId,
+  rotateEntity,
+  rotateEntityCopy,
+} from "../../domain/entities"
 import { formatAngle, parseNumber } from "../../domain/units"
 import { DynamicInputSession } from "../input/DynamicInput"
 import type { PromptId } from "../../locales/types"
@@ -8,9 +13,7 @@ import {
   isCoordinateExpression,
   parseCoordinate,
 } from "../input/coordinateInput"
-import { ScenePrimitive, StrokeStyle } from "../../scene/types"
-import { entityScenePrimitive } from "../SceneBuilder"
-import { THEME } from "../../scene/theme"
+import { ScenePrimitive } from "../../scene/types"
 import {
   AddEntitiesCommand,
   UpdateEntitiesCommand,
@@ -26,6 +29,7 @@ import {
 } from "./Tool"
 import { ObjectSelector } from "./objectSelection"
 import { selectedInDrawingOrder } from "./drawingOrder"
+import { transformDrag } from "./transformDrag"
 
 /**
  * AutoCAD's ROTATE command: select a set of objects, pick a base point (the
@@ -34,7 +38,7 @@ import { selectedInDrawingOrder } from "./drawingOrder"
  * ```
  *   (empty selection)    Enter/Space      click / type       [Copy]  keeps original
  *  selecting ─────────────────────► pivot ──────────► angle ──────────► done
- *   click / box-drag adds objects       (dashed ghost spins live)   [Reference]
+ *   click / box-drag adds objects       (the set spins as itself)   [Reference]
  *                                                                        │
  *                                          refP1 ─► newAngle ─► [Points]┘
  * ```
@@ -187,30 +191,12 @@ export class RotateTool implements Tool {
       case "pivot":
         ctx.dynamicInput.setPosition(input.screen)
         break
-      case "angle": {
-        this.state = { ...this.state, current: input.point }
-        ctx.dynamicInput.setLive(
-          "angle",
-          bearing(this.state.base, input.point, ctx)
-        )
-        ctx.dynamicInput.setPosition(input.screen)
-        break
-      }
+      case "angle":
       case "refP1":
+      case "newAngle":
         this.state = { ...this.state, current: input.point }
         ctx.dynamicInput.setPosition(input.screen)
         break
-      case "newAngle": {
-        this.state = { ...this.state, current: input.point }
-        if (!this.state.points) {
-          ctx.dynamicInput.setLive(
-            "newAngle",
-            bearing(this.state.base, input.point, ctx)
-          )
-        }
-        ctx.dynamicInput.setPosition(input.screen)
-        break
-      }
     }
 
     ctx.requestRender()
@@ -304,7 +290,7 @@ export class RotateTool implements Tool {
     }
     if (id === "Points" && this.state.phase === "newAngle") {
       this.state = { ...this.state, points: true }
-      this.openAngleInput(ctx, "newAngle", "newAngle")
+      this.openAngleInput(ctx, "newAngle", "newAngle", null)
       ctx.requestRender()
       return "continue"
     }
@@ -336,49 +322,51 @@ export class RotateTool implements Tool {
     )
   }
 
+  /**
+   * The originals fade where they were while the set drags turned, but not
+   * under Copy (desktop transforms/d01, d03).
+   */
+  fadedEntityIds(): readonly EntityId[] {
+    const state = this.dragged()
+    return state && !state.copy
+      ? state.originals.map((entity) => entity.id)
+      : []
+  }
+
+  /** The base point given, the set no longer glows (desktop transforms/d03, d04-1). */
+  selectionGlows(): boolean {
+    return this.state.phase === "selecting" || this.state.phase === "pivot"
+  }
+
   buildOverlay(ctx: ToolContext): ScenePrimitive[] {
     if (this.state.phase === "selecting") return this.selector.buildOverlay(ctx)
-    const { viewport } = ctx
+    const state = this.dragged()
+    if (state === null) return []
+    const { base, originals, current } = state
+    const rotation =
+      state.phase === "angle"
+        ? this.resolveDirectRotation(base, current, ctx)
+        : this.resolveNewAngle(state, current, ctx) - state.reference
+    const rad = (rotation * Math.PI) / 180
+    return transformDrag(
+      ctx,
+      originals,
+      (entity) => rotateEntity(entity, base, rad),
+      base,
+      current
+    )
+  }
 
-    const out: ScenePrimitive[] = []
-    const arm: StrokeStyle = { color: THEME.preview, width: 1, dash: [2, 3] }
-
-    switch (this.state.phase) {
-      case "angle": {
-        const rotation = this.resolveDirectRotation(
-          this.state.base,
-          this.state.current,
-          ctx
-        )
-        pushGhost(
-          out,
-          viewport,
-          this.state.originals,
-          this.state.base,
-          rotation,
-          ctx.blocks
-        )
-        pushArm(out, viewport, this.state.base, this.state.current, arm)
-        break
-      }
-      case "newAngle": {
-        if (this.state.points) break
-        const rotation =
-          this.resolveNewAngle(this.state, this.state.current, ctx) -
-          this.state.reference
-        pushGhost(
-          out,
-          viewport,
-          this.state.originals,
-          this.state.base,
-          rotation,
-          ctx.blocks
-        )
-        pushArm(out, viewport, this.state.base, this.state.current, arm)
-        break
-      }
-    }
-    return out
+  /** The state while the set drags turned: the rotation angle and the new one. */
+  private dragged(): Extract<
+    RotateState,
+    { phase: "angle" | "newAngle" }
+  > | null {
+    const { state } = this
+    return state.phase === "angle" ||
+      (state.phase === "newAngle" && !state.points)
+      ? state
+      : null
   }
 
   private confirmSelection(ctx: ToolContext): void {
@@ -422,13 +410,18 @@ export class RotateTool implements Tool {
       return
     }
     this.state = { phase: "angle", base, originals, copy: false, current: base }
-    this.openAngleInput(ctx, "angle", "rotationAngle")
+    this.openAngleInput(ctx, "angle", "rotationAngle", this.lastAngle)
   }
 
+  /**
+   * The field holds the prompt's `<default>`, not the dragged angle (desktop
+   * transforms/d01, d04-3); Points' points hold nothing.
+   */
   private openAngleInput(
     ctx: ToolContext,
     fieldId: string,
-    prompt: PromptId
+    prompt: PromptId,
+    enter: number | null
   ): void {
     const session: DynamicInputSession = {
       fields: [{ id: fieldId, prompt, kind: "angle" }],
@@ -436,7 +429,8 @@ export class RotateTool implements Tool {
       commitRaw: (commitCtx) => this.commitAngle(commitCtx),
     }
     ctx.dynamicInput.open(session)
-    ctx.dynamicInput.setLive(fieldId, null)
+    if (enter === null) ctx.dynamicInput.setLive(fieldId, null)
+    else ctx.dynamicInput.setDefault(fieldId, enter)
     ctx.dynamicInput.setPosition(this.lastScreen ?? { x: 0, y: 0 })
   }
 
@@ -473,7 +467,8 @@ export class RotateTool implements Tool {
       commitRaw: (commitCtx) => this.commitReference(commitCtx),
     }
     ctx.dynamicInput.open(session)
-    ctx.dynamicInput.setLive("reference", null)
+    // Its default, as the rotation angle's (desktop transforms/d04-1).
+    ctx.dynamicInput.setDefault("reference", this.lastReference)
     ctx.dynamicInput.setPosition(this.lastScreen ?? { x: 0, y: 0 })
   }
 
@@ -502,7 +497,7 @@ export class RotateTool implements Tool {
       current: this.state.current,
       points: false,
     }
-    this.openAngleInput(ctx, "newAngle", "newAngle")
+    this.openAngleInput(ctx, "newAngle", "newAngle", this.lastNewAngle)
   }
 
   /** Turns by `newAngle − reference`, the new angle kept as the default. */
@@ -584,43 +579,6 @@ export class RotateTool implements Tool {
     const typed = parseField(ctx, "newAngle")
     return typed ?? bearing(state.base, cursor, ctx) ?? state.reference
   }
-}
-
-function pushGhost(
-  out: ScenePrimitive[],
-  viewport: ToolContext["viewport"],
-  originals: readonly Entity[],
-  base: Vec2,
-  rotationDeg: number,
-  blocks: ToolContext["blocks"]
-): void {
-  const rad = (rotationDeg * Math.PI) / 180
-  const ghost: StrokeStyle = { color: THEME.preview, width: 1, dash: [6, 4] }
-  for (const entity of originals) {
-    out.push(
-      ...entityScenePrimitive(
-        viewport,
-        rotateEntity(entity, base, rad),
-        ghost,
-        { blocks }
-      )
-    )
-  }
-}
-
-function pushArm(
-  out: ScenePrimitive[],
-  viewport: ToolContext["viewport"],
-  from: Vec2,
-  to: Vec2,
-  stroke: StrokeStyle
-): void {
-  out.push({
-    kind: "segment",
-    a: viewport.worldToScreen(from),
-    b: viewport.worldToScreen(to),
-    stroke,
-  })
 }
 
 /**

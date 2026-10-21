@@ -72,7 +72,10 @@ export function questionInstead(tool: Tool, prompt: PromptId): Tool {
   }
 }
 
-/** The rubber band from the first point to the cursor. */
+/**
+ * The amber dashed line from the first point to the cursor, as the desktop's
+ * ROTATE and SCALE draw it (transforms/d04-2, d05-2, d08-2).
+ */
 export function measureOverlay(
   viewport: Viewport,
   from: Vec3,
@@ -83,7 +86,7 @@ export function measureOverlay(
       kind: "segment",
       a: viewport.worldToScreen(from),
       b: viewport.worldToScreen(to),
-      stroke: { color: THEME.rubberBand, width: 1 },
+      stroke: { color: THEME.dashedRubberBand, width: 1, dash: [2, 3] },
     },
   ]
 }

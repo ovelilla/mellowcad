@@ -2,6 +2,7 @@ import { Vec2, V } from "../../geometry/Vec2"
 import { Vec3 } from "../../geometry/Vec3"
 import {
   Entity,
+  EntityId,
   entitiesBounds,
   scaleEntity,
   scaleEntityCopy,
@@ -12,9 +13,7 @@ import {
   isCoordinateExpression,
   parseCoordinate,
 } from "../input/coordinateInput"
-import { ScenePrimitive, StrokeStyle } from "../../scene/types"
-import { entityScenePrimitive } from "../SceneBuilder"
-import { THEME } from "../../scene/theme"
+import { ScenePrimitive } from "../../scene/types"
 import {
   AddEntitiesCommand,
   UpdateEntitiesCommand,
@@ -30,6 +29,7 @@ import {
 } from "./Tool"
 import { ObjectSelector } from "./objectSelection"
 import { selectedInDrawingOrder } from "./drawingOrder"
+import { transformDrag } from "./transformDrag"
 import type { PromptId } from "../../locales/types"
 
 /**
@@ -39,7 +39,7 @@ import type { PromptId } from "../../locales/types"
  * ```
  *   (empty selection)    Enter/Space      click / type       [Copy]  keeps original
  *  selecting ─────────────────────► base ──────────► factor ──────────► done
- *   click / box-drag adds objects       (dashed ghost scales live)  [Reference]
+ *   click / box-drag adds objects       (the set scales as itself)  [Reference]
  *                                                                        │
  *                                          refP1 ─► newLength ─► [Points]┘
  * ```
@@ -202,19 +202,10 @@ export class ScaleTool implements Tool {
         break
       }
       case "refP1":
+      case "newLength":
         this.state = { ...this.state, current: input.point }
         ctx.dynamicInput.setPosition(input.screen)
         break
-      case "newLength": {
-        this.state = { ...this.state, current: input.point }
-        if (this.state.points) break
-        ctx.dynamicInput.setLive(
-          "newLength",
-          distanceFrom(this.state.base, input.point)
-        )
-        ctx.dynamicInput.setPosition(input.screen)
-        break
-      }
     }
 
     ctx.requestRender()
@@ -338,49 +329,51 @@ export class ScaleTool implements Tool {
     )
   }
 
+  /**
+   * The originals fade where they were while the set drags scaled, but not
+   * under Copy, as ROTATE's (desktop transforms/d06, d08-3; d03).
+   */
+  fadedEntityIds(): readonly EntityId[] {
+    const state = this.dragged()
+    return state && !state.copy
+      ? state.originals.map((entity) => entity.id)
+      : []
+  }
+
+  /** The base point given, the set no longer glows (desktop transforms/d08-1). */
+  selectionGlows(): boolean {
+    return this.state.phase === "selecting" || this.state.phase === "base"
+  }
+
   buildOverlay(ctx: ToolContext): ScenePrimitive[] {
     if (this.state.phase === "selecting") return this.selector.buildOverlay(ctx)
-    const { viewport } = ctx
+    const state = this.dragged()
+    if (state === null) return []
+    const { base, originals, current } = state
+    const factor =
+      state.phase === "factor"
+        ? this.resolveDirectFactor(state, current, ctx)
+        : this.resolveNewLength(base, current, ctx) / state.reference
+    const safe = Number.isFinite(factor) && factor > 0 ? factor : 1
+    return transformDrag(
+      ctx,
+      originals,
+      (entity) => scaleEntity(entity, base, safe),
+      base,
+      current
+    )
+  }
 
-    const out: ScenePrimitive[] = []
-    const arm: StrokeStyle = { color: THEME.preview, width: 1, dash: [2, 3] }
-
-    switch (this.state.phase) {
-      case "factor": {
-        const factor = this.resolveDirectFactor(
-          this.state,
-          this.state.current,
-          ctx
-        )
-        pushGhost(
-          out,
-          viewport,
-          this.state.originals,
-          this.state.base,
-          factor,
-          ctx.blocks
-        )
-        pushArm(out, viewport, this.state.base, this.state.current, arm)
-        break
-      }
-      case "newLength": {
-        if (this.state.points) break
-        const factor =
-          this.resolveNewLength(this.state.base, this.state.current, ctx) /
-          this.state.reference
-        pushGhost(
-          out,
-          viewport,
-          this.state.originals,
-          this.state.base,
-          factor,
-          ctx.blocks
-        )
-        pushArm(out, viewport, this.state.base, this.state.current, arm)
-        break
-      }
-    }
-    return out
+  /** The state while the set drags scaled: the factor and the new length. */
+  private dragged(): Extract<
+    ScaleState,
+    { phase: "factor" | "newLength" }
+  > | null {
+    const { state } = this
+    return state.phase === "factor" ||
+      (state.phase === "newLength" && !state.points)
+      ? state
+      : null
   }
 
   private confirmSelection(ctx: ToolContext): void {
@@ -485,7 +478,8 @@ export class ScaleTool implements Tool {
       commitRaw: (commitCtx) => this.commitReference(commitCtx),
     }
     ctx.dynamicInput.open(session)
-    ctx.dynamicInput.setLive("reference", null)
+    // Its default, as the new length's (desktop transforms/d08-1).
+    ctx.dynamicInput.setDefault("reference", this.lastReference)
     ctx.dynamicInput.setPosition(this.lastScreen ?? { x: 0, y: 0 })
   }
 
@@ -529,7 +523,13 @@ export class ScaleTool implements Tool {
       commitRaw: (commitCtx) => this.commitFactor(commitCtx),
     }
     ctx.dynamicInput.open(session)
-    ctx.dynamicInput.setLive("newLength", null)
+    // The new length's field holds its default, not the dragged distance;
+    // Points' points hold nothing (desktop transforms/d08-3).
+    if (this.state.phase === "newLength" && this.state.points) {
+      ctx.dynamicInput.setLive("newLength", null)
+    } else {
+      ctx.dynamicInput.setDefault("newLength", this.lastNewLength)
+    }
     ctx.dynamicInput.setPosition(this.lastScreen ?? { x: 0, y: 0 })
   }
 
@@ -651,43 +651,6 @@ function pointFactor(
   point: Vec2
 ): number {
   return distanceFrom(state.base, point) / state.unit
-}
-
-function pushGhost(
-  out: ScenePrimitive[],
-  viewport: ToolContext["viewport"],
-  originals: readonly Entity[],
-  base: Vec2,
-  factor: number,
-  blocks: ToolContext["blocks"]
-): void {
-  const safe = Number.isFinite(factor) && factor > 0 ? factor : 1
-  const ghost: StrokeStyle = { color: THEME.preview, width: 1, dash: [6, 4] }
-  for (const entity of originals) {
-    out.push(
-      ...entityScenePrimitive(
-        viewport,
-        scaleEntity(entity, base, safe),
-        ghost,
-        { blocks }
-      )
-    )
-  }
-}
-
-function pushArm(
-  out: ScenePrimitive[],
-  viewport: ToolContext["viewport"],
-  from: Vec2,
-  to: Vec2,
-  stroke: StrokeStyle
-): void {
-  out.push({
-    kind: "segment",
-    a: viewport.worldToScreen(from),
-    b: viewport.worldToScreen(to),
-    stroke,
-  })
 }
 
 /**

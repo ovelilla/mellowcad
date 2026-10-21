@@ -4344,7 +4344,11 @@ export class CadRuntime extends Observable {
       layers: this.document.getLayers(),
       dimStyles: this.document.getDimStyles(),
       blocks: this.document.blockLookup(),
-      selectedIds: new Set(this.selection.toArray()),
+      selectedIds: new Set(
+        this.activeTool.selectionGlows?.() === false
+          ? []
+          : this.selection.toArray()
+      ),
       hiddenIds: new Set(this.activeTool.hiddenEntityIds?.() ?? []),
       fadedIds: new Set(
         this.activeTool.fadedEntityIds?.(this.toolContext) ?? []

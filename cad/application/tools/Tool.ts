@@ -706,6 +706,12 @@ export interface Tool {
   fadedEntityIds?(ctx: ToolContext): readonly EntityId[]
 
   /**
+   * Whether the selected objects glow: not once ROTATE or SCALE has its base
+   * point, where AutoCAD draws them as they are. Defaults to `true`.
+   */
+  selectionGlows?(): boolean
+
+  /**
    * The object under the cursor that AutoCAD's rollover tooltip describes
    * (ROLLOVERTIPS 1): only Select's, at `Command:`.
    */

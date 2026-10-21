@@ -568,28 +568,34 @@ describe("COPY's second point (move/p151–p159, p199)", () => {
   })
 })
 
-describe("the drag of MOVE and COPY", () => {
-  const segmentsAt = (
-    cad: CadHarness,
-    a: { x: number; y: number },
-    b: { x: number; y: number }
-  ) => {
-    const near = (q: { x: number; y: number }, r: { x: number; y: number }) =>
-      Math.hypot(q.x - r.x, q.y - r.y) < 1e-6
-    const [sa, sb] = [cad.toScreen(a), cad.toScreen(b)]
-    return cad
-      .scene()
-      .primitives.flatMap((prim) =>
-        prim.kind === "segment" && near(prim.a, sa) && near(prim.b, sb)
-          ? [prim.stroke]
-          : []
-      )
-  }
-  const colours = (scene: Scene) =>
-    scene.primitives.flatMap((prim: ScenePrimitive) =>
-      prim.kind === "segment" ? [prim.stroke.color] : []
+/** The strokes of the segments drawn from `a` to `b` on the screen. */
+function segmentsAt(
+  cad: CadHarness,
+  a: { x: number; y: number },
+  b: { x: number; y: number }
+) {
+  const near = (q: { x: number; y: number }, r: { x: number; y: number }) =>
+    Math.hypot(q.x - r.x, q.y - r.y) < 1e-6
+  const [sa, sb] = [cad.toScreen(a), cad.toScreen(b)]
+  return cad
+    .scene()
+    .primitives.flatMap((prim) =>
+      prim.kind === "segment" && near(prim.a, sa) && near(prim.b, sb)
+        ? [prim.stroke]
+        : []
     )
+}
 
+function colours(scene: Scene): string[] {
+  return scene.primitives.flatMap((prim: ScenePrimitive) =>
+    prim.kind === "segment" ? [prim.stroke.color] : []
+  )
+}
+
+/** The amber dashed line a transform's drag draws from its base point. */
+const DRAG_LINE = { color: THEME.dashedRubberBand, width: 1, dash: [2, 3] }
+
+describe("the drag of MOVE and COPY", () => {
   // The set drawn as itself at the cursor, a dashed amber line from the base
   // point: MOVE fades the originals where they were (desktop move/d01).
   it("MOVE drags the objects as they are and fades the originals", () => {
@@ -644,6 +650,138 @@ describe("the drag of MOVE and COPY", () => {
     expect(
       segmentsAt(cad, p(30, 15), p(55, 15)).map((stroke) => stroke.color)
     ).toEqual(["#ff0000", THEME.selected])
+  })
+})
+
+describe("the drag of ROTATE, SCALE and MIRROR", () => {
+  const red = () =>
+    createHarness({
+      entities: [
+        assignEntityColor(lineOf(p(0, 0), p(100, 0), { id: "A" }), "#ff0000"),
+      ],
+    })
+  const originals = (cad: CadHarness) =>
+    segmentsAt(cad, p(0, 0), p(100, 0)).map((stroke) => stroke.color)
+  const placeholder = (cad: CadHarness) =>
+    cad.state().dynamicInput?.fields[0]?.placeholder
+
+  // desktop transforms/d01, d02: the set turned, drawn as itself; the
+  // originals faded where they were; an amber dashed line from the base; the
+  // field holds the default 0, not the dragged angle.
+  it("ROTATE drags the set turned as itself and fades the originals", () => {
+    const cad = red()
+    cad.select("A").command("ROTATE").click(p(0, 0)).moveTo(p(0, 50))
+
+    expect(segmentsAt(cad, p(0, 0), p(0, 100))).toEqual([
+      { color: "#ff0000", width: 1 },
+    ])
+    expect(segmentsAt(cad, p(0, 0), p(0, 50))).toEqual([DRAG_LINE])
+    expect(originals(cad)).toEqual([fadedColor("#ff0000")])
+    expect(colours(cad.scene())).not.toContain(THEME.selected)
+    expect(colours(cad.scene())).not.toContain(THEME.preview)
+    expect(placeholder(cad)).toBe("0")
+  })
+
+  // desktop transforms/d03: under Copy the originals are drawn as they are,
+  // neither faded nor glowing.
+  it("ROTATE's Copy leaves the originals as they are", () => {
+    const cad = red()
+    cad.select("A").command("ROTATE").click(p(0, 0)).option("Copy")
+    cad.moveTo(p(0, 50))
+
+    expect(segmentsAt(cad, p(0, 0), p(0, 100))).toEqual([
+      { color: "#ff0000", width: 1 },
+    ])
+    expect(originals(cad)).toEqual(["#ff0000"])
+  })
+
+  // desktop transforms/d04-1, d04-2, d04-3: nothing at the reference angle
+  // but its field's default; at its second point the runtime's amber dashed
+  // line from the first, no set; the new angle drags the set turned by it
+  // less the reference, its field the default.
+  it("ROTATE's Reference draws the measure line, then drags the set", () => {
+    const cad = red()
+    cad.select("A").command("ROTATE").click(p(0, 0)).option("Reference")
+    cad.moveTo(p(40, 50))
+    expect(placeholder(cad)).toBe("0")
+    expect(originals(cad)).toEqual(["#ff0000"])
+
+    cad.click(p(10, 10)).moveTo(p(40, 50))
+    expect(segmentsAt(cad, p(10, 10), p(40, 50))).toEqual([DRAG_LINE])
+    expect(colours(cad.scene()).filter((c) => c === "#ff0000")).toHaveLength(1)
+
+    cad.click(p(110, 10)).moveTo(p(0, 50))
+    expect(cad.state().commandLine.prompt).toBe(
+      "ROTATE Specify the new angle or [Points] <0>:"
+    )
+    expect(segmentsAt(cad, p(0, 0), p(0, 100))).toEqual([
+      { color: "#ff0000", width: 1 },
+    ])
+    expect(segmentsAt(cad, p(0, 0), p(0, 50))).toEqual([DRAG_LINE])
+    expect(originals(cad)).toEqual([fadedColor("#ff0000")])
+    expect(placeholder(cad)).toBe("0")
+  })
+
+  // desktop transforms/d06: the set scaled, drawn as itself, the originals
+  // faded, the line from the base; the field the dragged factor.
+  it("SCALE drags the set scaled as itself and fades the originals", () => {
+    const cad = red()
+    cad.select("A").command("SCALE").click(p(0, 0)).moveTo(p(0, 100))
+
+    expect(segmentsAt(cad, p(0, 0), p(200, 0))).toEqual([
+      { color: "#ff0000", width: 1 },
+    ])
+    expect(segmentsAt(cad, p(0, 0), p(0, 100))).toEqual([DRAG_LINE])
+    expect(originals(cad)).toEqual([fadedColor("#ff0000")])
+    expect(colours(cad.scene())).not.toContain(THEME.selected)
+    expect(colours(cad.scene())).not.toContain(THEME.preview)
+    expect(placeholder(cad)).toBe("2")
+  })
+
+  // desktop transforms/d08-1, d08-2, d08-3: the reference length draws
+  // nothing, its field the default; its second point the runtime's line; the
+  // new length drags the set, its field the default 1.
+  it("SCALE's Reference draws the measure line, then drags the set", () => {
+    const cad = red()
+    cad.select("A").command("SCALE").click(p(0, 0)).option("Reference")
+    cad.moveTo(p(40, 50))
+    expect(placeholder(cad)).toBe("1.00")
+    expect(originals(cad)).toEqual(["#ff0000"])
+
+    cad.click(p(10, 10)).moveTo(p(40, 50))
+    expect(segmentsAt(cad, p(10, 10), p(40, 50))).toEqual([DRAG_LINE])
+
+    cad.click(p(110, 10)).moveTo(p(0, 50))
+    expect(segmentsAt(cad, p(0, 0), p(50, 0))).toEqual([
+      { color: "#ff0000", width: 1 },
+    ])
+    expect(segmentsAt(cad, p(0, 0), p(0, 50))).toEqual([DRAG_LINE])
+    expect(originals(cad)).toEqual([fadedColor("#ff0000")])
+    expect(placeholder(cad)).toBe("1.00")
+  })
+
+  // desktop transforms/d10-2, d10-3: the reflection drawn as itself, the
+  // originals keeping the selection's glow, an amber dashed line from the
+  // first point; both still drawn at `Erase source objects?`.
+  it("MIRROR drags the reflection as itself and keeps it at Erase", () => {
+    const cad = red()
+    cad.select("A").command("MIRROR").click(p(150, -50)).moveTo(p(150, 50))
+
+    expect(segmentsAt(cad, p(300, 0), p(200, 0))).toEqual([
+      { color: "#ff0000", width: 1 },
+    ])
+    expect(segmentsAt(cad, p(150, -50), p(150, 50))).toEqual([DRAG_LINE])
+    expect(originals(cad)).toEqual(["#ff0000", THEME.selected])
+    expect(colours(cad.scene())).not.toContain(THEME.preview)
+
+    cad.click(p(150, 50)).moveTo(p(120, 20))
+    expect(cad.state().commandLine.prompt).toBe(
+      "MIRROR Erase source objects? [Yes/No] <No>:"
+    )
+    expect(segmentsAt(cad, p(300, 0), p(200, 0))).toEqual([
+      { color: "#ff0000", width: 1 },
+    ])
+    expect(segmentsAt(cad, p(150, -50), p(150, 50))).toEqual([DRAG_LINE])
   })
 })
 

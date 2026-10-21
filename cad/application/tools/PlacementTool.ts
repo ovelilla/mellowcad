@@ -8,8 +8,6 @@ import {
   parseCoordinate,
 } from "../input/coordinateInput"
 import { ScenePrimitive } from "../../scene/types"
-import { entityScenePrimitive } from "../SceneBuilder"
-import { THEME } from "../../scene/theme"
 import {
   CommandOption,
   CommandOptionOutcome,
@@ -24,6 +22,7 @@ import { acuteHeading, headingInUcs } from "./ucsHeading"
 import { ObjectSelector } from "./objectSelection"
 import { pointAlongCursor, showRise } from "./directDistance"
 import { selectedInDrawingOrder } from "./drawingOrder"
+import { transformDrag } from "./transformDrag"
 
 /**
  * Shared machinery for AutoCAD's displacement-modify commands (MOVE, COPY,
@@ -390,32 +389,16 @@ export abstract class PlacementTool implements Tool {
   buildOverlay(ctx: ToolContext): ScenePrimitive[] {
     if (this.state.phase === "selecting") return this.selector.buildOverlay(ctx)
     if (this.state.phase !== "secondPoint") return []
-    const { viewport } = ctx
     const { base, originals, current } = this.state
     const dest = this.resolveSecond(base, current, ctx)
     const delta = sub3(dest, base)
-
-    // The set drawn as itself at the cursor, solid in each object's colour,
-    // and an amber dashed line from the base point (desktop move/d01, d11).
-    const out: ScenePrimitive[] = []
-    for (const entity of originals) {
-      const color = ctx.document.resolveEntityColor(entity)
-      out.push(
-        ...entityScenePrimitive(
-          viewport,
-          this.transformEntity(entity, delta),
-          { color, width: 1 },
-          { blocks: ctx.blocks }
-        )
-      )
-    }
-    out.push({
-      kind: "segment",
-      a: viewport.worldToScreen(base),
-      b: viewport.worldToScreen(dest),
-      stroke: { color: THEME.dashedRubberBand, width: 1, dash: [2, 3] },
-    })
-    return out
+    return transformDrag(
+      ctx,
+      originals,
+      (entity) => this.transformEntity(entity, delta),
+      base,
+      dest
+    )
   }
 
   /** Goes on from the set `Select objects:` closed to the base point. */

@@ -84,11 +84,13 @@ a turn by 0 too, and a Copy by 0 leaves a duplicate U takes back (p131–p134); 
 selected and the set is Previous, the originals under Copy (p148, p149); about an axis parallel to
 the UCS's Z ("the Z axis of the UCS determines the axis direction for rotating objects about a
 point"), an object's Z kept whatever ELEVATION and the base point's, in a turned or tilted UCS
-(p141–p144); an elliptical arc keeps its parameters (ellipse/p322); `GI` from the Spanish
-`acad.pgp` (p101)
+(p141–p144); an elliptical arc keeps its parameters (ellipse/p322); the drag as MOVE's, the set
+turned, the originals faded but under Copy, drawn without the selection's glow from the base point
+on, and the angle fields hold their defaults, not the dragged angle (desktop d01–d05); `GI` from the
+Spanish `acad.pgp` (p101)
 
 **Missing:** Enter at Points' points ends ROTATE unturned, **unverified** (SCALE's console reads
-its cursor there)
+its cursor there); the drag's ghost as MOVE's (each object's colour only)
 
 ### `SCALE` / `SC` · es `ESCALA` / `ES`
 
@@ -118,13 +120,14 @@ is given (p176, p182, p191–p196); each run is one step U names, a scale by 1 t
 nothing is left selected and the set is Previous (p217); in 3D about the base point, elevation, a
 line's rise and thickness included (p214), in a turned or tilted UCS (p215, p216); a hatch's
 pattern scale and a dimension's measurement scale (p212); an elliptical arc keeps its parameters
-and ratio (ellipse/p323); `ES` from the Spanish `acad.pgp` (p161)
+and ratio (ellipse/p323); the drag as ROTATE's, scaled, Reference's fields holding their defaults
+(desktop d06, d08; under Copy unprobed); `ES` from the Spanish `acad.pgp` (p161)
 
 **Missing:** Enter at Points' `Specify first point:` or ` Specify second point:` ends the command
 unscaled (AutoCAD's console scales by its cursor's reading there, p183, p184); a tiny factor is applied in silence, where AutoCAD
 says `Extremely small scale factor ignored.` (es `Factor de escala demasiado pequeño ignorado.`,
 table 21197, p170): the threshold and what follows are **unverified** (the console read its cursor
-after it)
+after it); the drag's ghost as MOVE's (each object's colour only)
 
 ### `MIRROR` / `MI` · es `SIMETRIA` / `SI`†
 
@@ -133,11 +136,13 @@ after it)
 `Precise primer punto de línea de simetría`, `Especifique segundo punto de línea de simetría` —
 Autodesk's table words the two otherwise —, `¿Borrar objetos de origen? [Sí/No] <No>`); two-point
 axis, erase-source Yes/No prompt; the mirror plane holds the two points and the UCS's Z; a
-mirrored spline keeps its +Z normal, as AutoCAD's does (spline/p320), unlike an ellipse
+mirrored spline keeps its +Z normal, as AutoCAD's does (spline/p320), unlike an ellipse; the
+reflection drags as MOVE's set, the originals keeping the selection's glow, the amber dashed line
+from the first point, both still drawn at `Erase source objects?` (desktop d10)
 
-**Missing:** MIRRTEXT; an ellipse's normal: AutoCAD turns a mirrored ellipse over, its normal −Z,
-its parameters kept and its major axis on the mirrored end (ellipse/p320, p321), where this app
-keeps +Z and reflects the range, the same curve — its Start angle and End angle (260° and 350°
+**Missing:** MIRRTEXT; the drag's ghost as MOVE's (each object's colour only); an ellipse's
+normal: AutoCAD turns a mirrored ellipse over, its normal −Z, its parameters kept and its major
+axis on the mirrored end (ellipse/p320, p321), where this app keeps +Z and reflects the range, the same curve — its Start angle and End angle (260° and 350°
 where AutoCAD reads 10° and 100°), and BREAK of it keeping the other piece (p329: AutoCAD keeps
 three quarters, Area 3570.243), differ. WHY not built: an ellipse turned to −Z no longer reads in
 plan here, so TRIM, EXTEND, BREAK, OFFSET, JOIN, HATCH and its grips would refuse it (ELLIPSE-D43)

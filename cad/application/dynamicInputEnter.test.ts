@@ -168,6 +168,18 @@ describe.each(ENTERS)("Enter from %s with nothing typed", (_, enter) => {
     expect(cad.byId<LineEntity>("A").end).toBeCloseToPoint(p(0, -100), 4)
   })
 
+  // probe transforms/p172, desktop transforms/d08-3: the new length's field
+  // holds its <1.0000>, which Enter takes, never the dragged distance.
+  it("scales by Reference's new length default after the drag", () => {
+    const cad = createHarness({
+      entities: [lineOf(p(0, 0), p(100, 0), { id: "A" })],
+    })
+    cad.select("A").command("SCALE").click(p(0, 0)).option("Reference")
+    cad.type("2").enter().moveTo(FAR)
+    enter(cad)
+    expect(cad.byId<LineEntity>("A").end).toBeCloseToPoint(p(50, 0))
+  })
+
   // probe transforms/p188: a Reference run's factor is the next default too.
   it("scales by the factor a Reference run made", () => {
     const cad = createHarness({

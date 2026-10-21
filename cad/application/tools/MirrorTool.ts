@@ -6,9 +6,7 @@ import {
   isCoordinateExpression,
   parseCoordinate,
 } from "../input/coordinateInput"
-import { ScenePrimitive, StrokeStyle } from "../../scene/types"
-import { entityScenePrimitive } from "../SceneBuilder"
-import { THEME } from "../../scene/theme"
+import { ScenePrimitive } from "../../scene/types"
 import {
   AddEntitiesCommand,
   UpdateEntitiesCommand,
@@ -22,6 +20,7 @@ import {
   type QuestionInput,
 } from "./Tool"
 import { ObjectSelector } from "./objectSelection"
+import { transformDrag } from "./transformDrag"
 
 /**
  * AutoCAD's MIRROR command: select a set of objects, then reflect them across a
@@ -30,7 +29,7 @@ import { ObjectSelector } from "./objectSelection"
  * ```
  *   (empty selection)   Enter/Space    click / type    click / type    [No] keep source
  *  selecting ───────────────────► first ──────────► second ──────────► erase? ──► done
- *   click / box-drag adds objects        (dashed mirrored ghost tracks)   [Yes] flip in place
+ *   click / box-drag adds objects        (the reflection drags)          [Yes] flip in place
  * ```
  *
  * After the two mirror-line points, AutoCAD asks "Erase source objects?
@@ -234,23 +233,24 @@ export class MirrorTool implements Tool {
     )
   }
 
+  /**
+   * The reflection drawn as itself and an amber dashed line from the first
+   * point, both kept at `Erase source objects?`; the originals keep the
+   * selection's glow (desktop transforms/d10-2, d10-3).
+   */
   buildOverlay(ctx: ToolContext): ScenePrimitive[] {
     if (this.state.phase === "selecting") return this.selector.buildOverlay(ctx)
-    const { viewport } = ctx
-
-    const out: ScenePrimitive[] = []
-    if (this.state.phase === "second") {
-      const { first, current, originals } = this.state
-      // The mirror line (axis) and the reflected ghost of the selection.
-      out.push({
-        kind: "segment",
-        a: viewport.worldToScreen(first),
-        b: viewport.worldToScreen(current),
-        stroke: { color: THEME.selected, width: 1, dash: [6, 4] },
-      })
-      pushGhost(out, viewport, originals, first, current, ctx.blocks)
-    }
-    return out
+    if (this.state.phase === "first") return []
+    const { first, originals } = this.state
+    const second =
+      this.state.phase === "second" ? this.state.current : this.state.second
+    return transformDrag(
+      ctx,
+      originals,
+      (entity) => mirrorEntity(entity, first, second),
+      first,
+      second
+    )
   }
 
   private confirmSelection(ctx: ToolContext): void {
@@ -385,23 +385,5 @@ export class MirrorTool implements Tool {
       if (point) return point
     }
     return rawPoint
-  }
-}
-
-function pushGhost(
-  out: ScenePrimitive[],
-  viewport: ToolContext["viewport"],
-  originals: readonly Entity[],
-  a: Vec2,
-  b: Vec2,
-  blocks: ToolContext["blocks"]
-): void {
-  const ghost: StrokeStyle = { color: THEME.preview, width: 1, dash: [6, 4] }
-  for (const entity of originals) {
-    out.push(
-      ...entityScenePrimitive(viewport, mirrorEntity(entity, a, b), ghost, {
-        blocks,
-      })
-    )
   }
 }

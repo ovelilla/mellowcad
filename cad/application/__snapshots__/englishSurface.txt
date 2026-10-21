@@ -2775,7 +2775,7 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0°~, Line space facto
   prompt: ROTATE Specify rotation angle or [Copy/Reference] <0>:
   asks: "Rotation angle"
   tip: Specify rotation angle or
-  dyn: "Rotation angle"=""||°*
+  dyn: "Rotation angle"=""|0|°*
   options: [C] Copy, [R] Reference
   prompt| Specify base point:
 > C
@@ -2785,20 +2785,20 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0°~, Line space facto
   prompt: ROTATE Specify the reference angle <0>:
   asks: "Reference angle"
   tip: Specify the reference angle
-  dyn: "Reference angle"=""||°*
+  dyn: "Reference angle"=""|0|°*
   options: -
   prompt| Specify rotation angle or [Copy/Reference] <0>: R
 > reference
-  dyn: "Reference angle"="0"||°*
+  dyn: "Reference angle"="0"|0|°*
 > enter
   prompt: ROTATE Specify the new angle or [Points] <0>:
   asks: "New angle"
   tip: Specify the new angle or
-  dyn: "New angle"=""||°*
+  dyn: "New angle"=""|0|°*
   options: [P] Points
   prompt| Specify the reference angle <0>: 0
 > new angle
-  dyn: "New angle"="90"||°*
+  dyn: "New angle"="90"|0|°*
 > enter
   prompt: Command:
   asks: -
@@ -2820,14 +2820,14 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0°~, Line space facto
   prompt: ROTATE Specify rotation angle or [Copy/Reference] <90>:
   asks: "Rotation angle"
   tip: Specify rotation angle or
-  dyn: "Rotation angle"=""||°*
+  dyn: "Rotation angle"=""|90|°*
   options: [C] Copy, [R] Reference
   prompt| Specify base point:
 > R
   prompt: ROTATE Specify the reference angle <0>:
   asks: "Reference angle"
   tip: Specify the reference angle
-  dyn: "Reference angle"=""||°*
+  dyn: "Reference angle"=""|0|°*
   options: -
   prompt| Specify rotation angle or [Copy/Reference] <90>: R
 > first reference point
@@ -2880,20 +2880,20 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0°~, Line space facto
   prompt: SCALE Specify reference length <1.00>:
   asks: "Reference length"
   tip: Specify reference length
-  dyn: "Reference length"=""||mm*
+  dyn: "Reference length"=""|1.00|mm*
   options: -
   prompt| Specify scale factor or [Copy/Reference]: R
 > reference
-  dyn: "Reference length"="100"||mm*
+  dyn: "Reference length"="100"|1.00|mm*
 > enter
   prompt: SCALE Specify new length or [Points] <1.00>:
   asks: "New length"
   tip: Specify new length or
-  dyn: "New length"=""|0.00|mm*
+  dyn: "New length"=""|1.00|mm*
   options: [P] Points
   prompt| Specify reference length <1.00>: 100
 > new length
-  dyn: "New length"="50"|0.00|mm*
+  dyn: "New length"="50"|1.00|mm*
 > enter
   prompt: Command:
   asks: -
@@ -2921,7 +2921,7 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0°~, Line space facto
   prompt: SCALE Specify reference length <100.00>:
   asks: "Reference length"
   tip: Specify reference length
-  dyn: "Reference length"=""||mm*
+  dyn: "Reference length"=""|100.00|mm*
   options: -
   prompt| Specify scale factor or [Copy/Reference]: R
 > first reference point
@@ -2932,7 +2932,7 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0°~, Line space facto
   prompt: SCALE Specify new length or [Points] <50.00>:
   asks: "New length"
   tip: Specify new length or
-  dyn: "New length"=""|100.00|mm*
+  dyn: "New length"=""|50.00|mm*
   options: [P] Points
 > escape
   prompt: Command:
