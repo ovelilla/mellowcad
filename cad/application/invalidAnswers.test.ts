@@ -149,6 +149,36 @@ describe("a wrong answer mid-command", () => {
     )
   })
 
+  // probe transforms/p135: ROTATE's reference, then its new angle, which
+  // offers Points.
+  it.each([
+    [
+      undefined,
+      "Requires valid numeric angle or two points.",
+      "Requires valid numeric angle, second point, or option keyword.",
+    ],
+    [
+      es,
+      "Requiere un ángulo numérico válido o dos puntos.",
+      "Requiere un ángulo numérico válido, un segundo punto o una opción.",
+    ],
+  ])(
+    "names what ROTATE's Reference angles take (%#)",
+    (locale, ...refusals) => {
+      const cad = createHarness({
+        entities: twoLines(),
+        ...(locale ? { locale } : {}),
+      })
+      for (const typed of ["_ROTATE", "_L", "", "0,0", "_R", "_LINE"])
+        answerLine(cad, typed)
+      expect(cad.commandLog().at(-1)).toBe(refusals[0])
+      for (const typed of ["0", "_LINE"]) answerLine(cad, typed)
+      expect(cad.commandLog().at(-1)).toBe(refusals[1])
+      answerLine(cad, "90")
+      expect(cad.activeToolId()).toBe("select")
+    }
+  )
+
   it("never reads it off the cursor as a value", () => {
     const cad = createHarness({ entities: twoLines() })
     const drawing = () => JSON.stringify(cad.runtime.document.getEntities())

@@ -322,10 +322,10 @@ first)`, later points projected (`withZOf(point, first)`); SPLINE by limitation 
 - **A distance or an angle takes a point too.** A lone `distance` / `length` / `angle` box gets it
   one of two ways, and `wantsSnap()` says which. True: the tool measures its own pick
   (CIRCLE's radius, POLYGON's, TEXT's height; SCALE's factor is the distance over half the set's
-  extents). False: the runtime measures it
-  (`runtimeMeasure.ts`) from `getConstraintAnchor()` or asks ` Specify second point:` itself, and
-  answers the box as if typed. Never write a two-point distance in a tool; check in the console
-  which a prompt is (`0,0` then `ID @`, or the ` Specify second point:` it asks).
+  extents). False: the runtime measures it (`runtimeMeasure.ts`) from `getConstraintAnchor()` or
+  asks ` Specify second point:` itself, and answers the box as if typed. Never write a two-point
+  distance or angle in a tool; the console tells which a prompt is (`0,0` then `ID @`, or its
+  ` Specify second point:`).
 - **A typed length is direct distance: `pointAlongCursor`** (`tools/directDistance.ts`), never
   rebuilt from `directionFromUcsHeading`. Feed the live fields with `showRise(ctx, base, point)`
   first: on the `+Z` / `-Z` guide `resolveValues` leaves the angle out, so a commit passes

@@ -1142,7 +1142,8 @@ export const es: EngineLocale = {
       },
       "ROTATE": {
         "Copy": "Copiar",
-        "Reference": "Referencia"
+        "Reference": "Referencia",
+        "Points": "Puntos"
       },
       "SCALE": {
         "Copy": "Copiar",
@@ -1709,6 +1710,7 @@ export const es: EngineLocale = {
       "specifyRotationAngleOr": "Precise ángulo de rotación o",
       "specifyTheReferenceAngle": "Precise ángulo de referencia",
       "specifyTheNewAngle": "Precise el nuevo ángulo",
+      "specifyTheNewAngleOr": "Precise el nuevo ángulo o",
       "specifyScaleFactorOr": "Precise factor de escala o",
       "specifyReferenceLength": "Precise longitud de referencia",
       "specifyNewLengthOr": "Precise nueva longitud o",

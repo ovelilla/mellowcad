@@ -113,14 +113,20 @@ describe.each(RESETS)("after %s", (_, reset) => {
     cad.escape()
   })
 
+  // Reference's defaults, set by the same runs (transforms/p111), are taken
+  // to go as the turn's: unprobed across OPEN.
   it("ROTATE offers 0 (rectang/p314)", () => {
-    const cad = answer(session(), "_ROTATE", "_L", "", "5,5", "30")
+    const cad = answer(session(), "_ROTATE", "_L", "", "5,5", "_R", "30", "40")
     reset(cad)
     line(cad)
     answer(cad, "_ROTATE", "_L", "", "5,5")
     expect(prompt(cad)).toBe(
       "ROTATE Specify rotation angle or [Copy/Reference] <0>:"
     )
+    answer(cad, "_R")
+    expect(prompt(cad)).toBe("ROTATE Specify the reference angle <0>:")
+    answer(cad, "")
+    expect(prompt(cad)).toBe("ROTATE Specify the new angle or [Points] <0>:")
     cad.escape()
   })
 

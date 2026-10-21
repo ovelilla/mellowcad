@@ -540,15 +540,10 @@ export class CadRuntime extends Observable {
    * The first of the two points a distance or an angle is measured by, at a
    * question whose tool takes no point itself (FILLET's radius), in the
    * tool's coordinates: AutoCAD's input then asks ` Specify second point:`.
-   * Only while that tool asks that question in that box.
+   * Only while that tool asks that question in that box; kept across a
+   * transparent command. `first` null: an angle's two points started over.
    */
-  private measuring: {
-    readonly tool: Tool
-    readonly session: DynamicInputSession
-    readonly prompt: PromptId | null
-    readonly first: Vec3
-    cursor: Vec3
-  } | null = null
+  private measuring: Measuring | null = null
   /**
    * The keywords AutoCAD asks to choose from (`CEnter or CLose?`) after an
    * answer that starts them all. Only while that tool asks that question.
@@ -1177,10 +1172,14 @@ export class CadRuntime extends Observable {
       previousSet: this.previousSet,
       cursor: this.toolCursor,
       lastPoint: this.lastPoint,
+      measuring: this.measuring,
     }
     // WHY a set of its own: ZOOM Object asks `>>Select objects:` and
     // AutoCAD's MOVE still moves its own set after it.
     this.selection.clear()
+    // WHY kept in `suspended`: `Resuming SCALE command.` asks the second of
+    // two measuring points again, from the first (probe transforms/p204).
+    this.measuring = null
     this.dynamicInput.close()
     this.commandStart = this.commandLine.mark()
     this.activeTool = tool
@@ -1250,6 +1249,7 @@ export class CadRuntime extends Observable {
     // WHY: AutoCAD 2023's console keeps LASTPOINT across a transparent
     // command — `@` after 'ID or 'DIST is still from the point before it.
     this.lastPoint = suspended.lastPoint
+    this.measuring = suspended.measuring
     this.dynamicInput.restore(suspended.input)
     this.toolCursor = suspended.cursor
     if (suspended.cursor !== null) this.host.setCursor(suspended.cursor)
@@ -1512,8 +1512,21 @@ export class CadRuntime extends Observable {
     )
     if (lines === null) return false
     for (const line of lines) this.commandLine.write("error", line)
+    this.restartAngleMeasure()
     this.invalidateState()
     return true
+  }
+
+  /**
+   * WHY: an angle's two points start over after a refusal at the second,
+   * still asked ` Specify second point:`, where a number is the angle (probes
+   * transforms/p136, p158). A distance keeps its first point: unprobed.
+   */
+  private restartAngleMeasure(): void {
+    const measuring = this.measuring
+    if (this.measuringFrom() === null || measuring === null) return
+    if (this.pointMeasuredField()?.kind !== "angle") return
+    this.measuring = { ...measuring, first: null }
   }
 
   /**
@@ -1705,17 +1718,22 @@ export class CadRuntime extends Observable {
 
   /** The first of two measuring points, while its question stands. */
   private measuringFrom(): Vec3 | null {
+    return this.measuringStands() ? (this.measuring?.first ?? null) : null
+  }
+
+  /** Whether ` Specify second point:` stands, its first point or not. */
+  private measuringStands(): boolean {
     const measuring = this.measuring
-    if (measuring === null) return null
+    if (measuring === null) return false
     if (
       measuring.tool !== this.activeTool ||
       measuring.session !== this.dynamicInput.getSession() ||
       measuring.prompt !== askedPrompt(this.activeTool)
     ) {
       this.measuring = null
-      return null
+      return false
     }
-    return measuring.first
+    return true
   }
 
   /**
@@ -1725,9 +1743,9 @@ export class CadRuntime extends Observable {
   private asking(): Tool {
     if (this.fromPending) return questionInstead(this.activeTool, "basePoint")
     if (this.fromBase) return questionInstead(this.activeTool, "fromOffset")
-    return this.measuringFrom() === null
-      ? this.activeTool
-      : secondPointQuestion(this.activeTool)
+    return this.measuringStands()
+      ? secondPointQuestion(this.activeTool)
+      : this.activeTool
   }
 
   /** Whether FROM is asking its base point or its offset. */
@@ -1853,7 +1871,7 @@ export class CadRuntime extends Observable {
     this.measuring = null
     this.dynamicInput.setText(
       field.id,
-      String(measuredValue(field, from, point))
+      String(measuredValue(field, from, point, this.toolContext.ucs))
     )
     return this.commitBox(session, field)
   }
@@ -1874,7 +1892,10 @@ export class CadRuntime extends Observable {
     const field = this.pointMeasuredField()
     if (from === null || field === null || this.measuring === null) return
     this.measuring.cursor = point
-    this.dynamicInput.setLive(field.id, measuredValue(field, from, point))
+    this.dynamicInput.setLive(
+      field.id,
+      measuredValue(field, from, point, this.toolContext.ucs)
+    )
   }
 
   /** A point of the active tool's input, in the WCS. */
@@ -5804,4 +5825,13 @@ interface SuspendedCommand {
   readonly previousSet: readonly EntityId[]
   readonly cursor: string | null
   readonly lastPoint: Vec3
+  readonly measuring: Measuring | null
+}
+
+interface Measuring {
+  readonly tool: Tool
+  readonly session: DynamicInputSession
+  readonly prompt: PromptId | null
+  readonly first: Vec3 | null
+  cursor: Vec3
 }

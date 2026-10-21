@@ -647,6 +647,25 @@ describe("the drag of MOVE and COPY", () => {
   })
 })
 
+/** The segments drawn from `base` to `cursor`, either way round, on the screen. */
+function armsFromBase(
+  cad: CadHarness,
+  base: { x: number; y: number },
+  cursor: { x: number; y: number }
+): ScenePrimitive[] {
+  const near = (q: { x: number; y: number }, r: { x: number; y: number }) =>
+    Math.hypot(q.x - r.x, q.y - r.y) < 1e-6
+  const [a, b] = [cad.toScreen(base), cad.toScreen(cursor)]
+  return cad
+    .scene()
+    .primitives.filter(
+      (prim) =>
+        prim.kind === "segment" &&
+        ((near(prim.a, a) && near(prim.b, b)) ||
+          (near(prim.a, b) && near(prim.b, a)))
+    )
+}
+
 describe("ROTATE", () => {
   it("reports its angle settings, then asks as AutoCAD does", () => {
     const cad = createHarness({ entities: [HORIZONTAL] })
@@ -678,18 +697,179 @@ describe("ROTATE", () => {
     )
   })
 
-  it("asks the reference and the new angle, which offers no Copy", () => {
-    const cad = createHarness({ entities: [HORIZONTAL] })
+  // probes transforms/p105, p106: the reference by two points the runtime
+  // measures, the new angle with Points, LASTPOINT left at the base.
+  it("asks the reference and the new angle, which offers Points", () => {
+    const cad = createHarness({ entities: [lineOf(p(0, 0), p(100, 0))] })
 
-    cad.select("L1").command("ROTATE").click(p(0, 0)).option("Reference")
+    answer(cad, "_ROTATE", "_L", "", "0,0", "_R")
     expect(cad.state().commandLine.prompt).toBe(
       "ROTATE Specify the reference angle <0>:"
     )
-    cad.click(p(0, 0))
+    answer(cad, "0,0")
     expect(cad.state().commandLine.prompt).toBe("ROTATE Specify second point:")
-    cad.click(p(100, 0))
-    expect(cad.state().commandLine.prompt).toBe("ROTATE Specify the new angle:")
+    answer(cad, "100,100")
+    expect(cad.state().commandLine.prompt).toBe(
+      "ROTATE Specify the new angle or [Points] <0>:"
+    )
+    expect(cad.optionIds()).toEqual(["Points"])
+    answer(cad, "_P")
+    expect(cad.state().commandLine.prompt).toBe("ROTATE Specify first point:")
     expect(cad.optionIds()).toEqual([])
+    answer(cad, "0,0", "0,100")
+
+    expect(cad.commandLog().slice(-6)).toEqual([
+      "Specify rotation angle or [Copy/Reference] <0>: _R",
+      "Specify the reference angle <0>: 0,0",
+      " Specify second point: 100,100",
+      "Specify the new angle or [Points] <0>: _P",
+      "Specify first point: 0,0",
+      " Specify second point: 0,100",
+    ])
+    const half = 100 / Math.SQRT2
+    expect((cad.latest() as LineEntity).end).toBeCloseToPoint(p(half, half))
+    answer(cad, "_ID", "@")
+    expect(cad.commandLog().at(-1)).toBe(" X = 0.00     Y = 0.00     Z = 0.00")
+  })
+
+  // probe transforms/p154: the new angle is the line from Points' first point
+  // to its second, whatever the base.
+  it("turns to the new angle Points measures, from any base", () => {
+    const cad = createHarness({ entities: [lineOf(p(0, 0), p(100, 0))] })
+    answer(cad, "_ROTATE", "_L", "", "10,10", "_R", "0", "_P", "20,20", "30,40")
+
+    expect((cad.latest() as LineEntity).end).toBeCloseToPoint(
+      p(59.1935, 86.0263),
+      4
+    )
+    answer(cad, "_ID", "@")
+    expect(cad.commandLog().at(-1)).toBe(
+      " X = 10.00     Y = 10.00     Z = 0.00"
+    )
+  })
+
+  // probe transforms/p143: in a UCS turned 30°, a reference by WCS points
+  // along the WCS's X is −30° in the UCS.
+  it("measures the reference's two points in the UCS", () => {
+    const cad = createHarness({ entities: [lineOf(p(0, 0), p(100, 0))] })
+    answer(cad, "_UCS", "_Z", "30")
+    answer(cad, "_ROTATE", "_L", "", "0,0", "_R", "*0,0", "*100,0", "0")
+
+    expect((cad.latest() as LineEntity).end).toBeCloseToPoint(p(86.6025, 50), 4)
+  })
+
+  // probe transforms/p107: Enter at the new angle takes its <0>, a turn by
+  // 0 − 30.
+  it("turns by the new angle's default less the reference at Enter", () => {
+    const cad = createHarness({ entities: [lineOf(p(0, 0), p(100, 0))] })
+    answer(cad, "_ROTATE", "_L", "", "0,0", "_R", "30", "")
+
+    expect((cad.latest() as LineEntity).end).toBeCloseToPoint(
+      p(86.6025, -50),
+      4
+    )
+  })
+
+  // probes transforms/p111, p112: a Reference run leaves its turn, its
+  // reference and its new angle as the next run's defaults.
+  it("offers the last run's turn, reference and new angle", () => {
+    const cad = createHarness({ entities: [lineOf(p(0, 0), p(100, 0))] })
+    answer(cad, "_ROTATE", "_L", "", "0,0", "_R", "12.5", "40")
+    answer(cad, "_ROTATE", "_L", "", "0,0")
+    expect(cad.state().commandLine.prompt).toBe(
+      "ROTATE Specify rotation angle or [Copy/Reference] <28>:"
+    )
+    answer(cad, "_R")
+    expect(cad.state().commandLine.prompt).toBe(
+      "ROTATE Specify the reference angle <13>:"
+    )
+    answer(cad, "")
+    expect(cad.state().commandLine.prompt).toBe(
+      "ROTATE Specify the new angle or [Points] <40>:"
+    )
+    answer(cad, "")
+    expect((cad.latest() as LineEntity).end).toBeCloseToPoint(
+      p(57.3576, 81.9152),
+      4
+    )
+
+    answer(cad, "_ROTATE", "_L", "", "0,0", "")
+    expect((cad.latest() as LineEntity).end).toBeCloseToPoint(
+      p(13.0526, 99.1445),
+      4
+    )
+  })
+
+  // probe transforms/p157: Enter at the reference's second point goes on.
+  it("goes on to the new angle at Enter at the reference's second point", () => {
+    const cad = createHarness({ entities: [lineOf(p(0, 0), p(100, 0))] })
+    answer(cad, "_ROTATE", "_L", "", "0,0", "_R", "0,0", "")
+
+    expect(cad.state().commandLine.prompt).toBe(
+      "ROTATE Specify the new angle or [Points] <0>:"
+    )
+    answer(cad, "100,0")
+    expect((cad.latest() as LineEntity).end).toBeCloseToPoint(p(100, 0))
+  })
+
+  // probes transforms/p158, p136: a refusal at the second point starts the
+  // two points over under the same words, where a number is the angle.
+  it("starts the reference's two points over after a refusal", () => {
+    const cad = createHarness({ entities: [lineOf(p(0, 0), p(100, 0))] })
+    answer(cad, "_ROTATE", "_L", "", "0,0", "_R", "0,0", "FOO", "100,100")
+
+    expect(cad.commandLog().slice(-3)).toEqual([
+      " Specify second point: FOO",
+      "Requires valid numeric angle or two points.",
+      " Specify second point: 100,100",
+    ])
+    expect(cad.state().commandLine.prompt).toBe("ROTATE Specify second point:")
+    answer(cad, "_LINE")
+    expect(cad.commandLog().at(-1)).toBe(
+      "Requires valid numeric angle or two points."
+    )
+    answer(cad, "90")
+    expect(cad.state().commandLine.prompt).toBe(
+      "ROTATE Specify the new angle or [Points] <0>:"
+    )
+    answer(cad, "180")
+    expect((cad.latest() as LineEntity).end).toBeCloseToPoint(p(0, 100))
+  })
+
+  // probes transforms/p106, p156 (es-ES): `Puntos`, `P`, and the runtime's
+  // ` Designe segundo punto:`.
+  it("asks Points in Spanish", () => {
+    const cad = createHarness({
+      locale: es,
+      entities: [lineOf(p(0, 0), p(100, 0))],
+    })
+    answer(cad, "GIRA", "_L", "", "0,0", "C", "R", "0,0", "100,100")
+    expect(cad.state().commandLine.prompt).toBe(
+      "GIRA Precise el nuevo ángulo o [Puntos] <0>:"
+    )
+    answer(cad, "P", "0,0", "0,10")
+    expect(cad.commandLog().slice(-5)).toEqual([
+      "Precise ángulo de referencia <0>: 0,0",
+      " Designe segundo punto: 100,100",
+      "Precise el nuevo ángulo o [Puntos] <0>: P",
+      "Precise primer punto: 0,0",
+      " Designe segundo punto: 0,10",
+    ])
+    const half = 100 / Math.SQRT2
+    expect((cad.latest() as LineEntity).end).toBeCloseToPoint(p(half, half))
+  })
+
+  // desktop d04-1, d05-1: nothing is drawn at the reference angle nor at
+  // Points' first point; the second point's line is the runtime's.
+  it("draws nothing at the reference's and Points' first point", () => {
+    const cad = createHarness({ entities: [lineOf(p(0, 0), p(100, 0))] })
+    const segments = () => armsFromBase(cad, p(0, 0), p(300, 300))
+    answer(cad, "_ROTATE", "_L", "", "0,0", "_R")
+    cad.moveTo(p(300, 300))
+    expect(segments()).toEqual([])
+    answer(cad, "0", "_P")
+    cad.moveTo(p(300, 300))
+    expect(segments()).toEqual([])
   })
 
   it("turns the selection about the picked pivot", () => {
@@ -1019,6 +1199,45 @@ describe("SCALE", () => {
     expect(cad.state().commandLine.prompt).toBe(
       "ESCALA Precise factor de escala o [Copiar/Referencia]:"
     )
+  })
+
+  // probes transforms/p174, p175 (the reference length), p178, p179 (the new
+  // length): refused and asked again, the default kept.
+  it.each([
+    ["the reference length", ["0"], "Specify reference length <1.00>:"],
+    ["the reference length", ["-5"], "Specify reference length <1.00>:"],
+    ["the new length", ["10", "0"], "Specify new length or [Points] <1.00>:"],
+    ["the new length", ["10", "-5"], "Specify new length or [Points] <1.00>:"],
+  ])("refuses %s %j and asks again", (_, answers, asked) => {
+    const cad = createHarness({
+      entities: [lineOf(p(0, 0), p(100, 0), { id: "L1" })],
+    })
+    answer(cad, "_SCALE", "_L", "", "0,0", "_R", ...answers)
+
+    expect(cad.commandLog().slice(-2)).toEqual([
+      `${asked} ${answers.at(-1)}`,
+      "Value must be positive and nonzero.",
+    ])
+    expect(cad.state().commandLine.prompt).toBe(`SCALE ${asked}`)
+    answer(cad, ...(answers.length === 1 ? ["10", "20"] : ["20"]))
+    expect(cad.byId<LineEntity>("L1").end).toBeCloseToPoint(p(200, 0))
+    cad.select("L1").command("SCALE").click(p(0, 0)).option("Reference")
+    expect(cad.state().commandLine.prompt).toBe(
+      "SCALE Specify reference length <10.00>:"
+    )
+  })
+
+  // desktop d08-1: nothing is drawn at the reference length nor at Points'
+  // first point; the second point's line is the runtime's.
+  it("draws nothing at the reference length's and Points' first point", () => {
+    const cad = createHarness({ entities: [lineOf(p(0, 0), p(100, 0))] })
+    const segments = () => armsFromBase(cad, p(0, 0), p(300, 300))
+    answer(cad, "_SCALE", "_L", "", "0,0", "_R")
+    cad.moveTo(p(300, 300))
+    expect(segments()).toEqual([])
+    answer(cad, "10", "_P")
+    cad.moveTo(p(300, 300))
+    expect(segments()).toEqual([])
   })
 
   // probe transforms/p213: the copy of the object earlier in the drawing is

@@ -1,10 +1,11 @@
-import { normalizeDegrees } from "../geometry/primitives"
 import { Vec3 } from "../geometry/Vec3"
+import type { Ucs } from "../domain/ucs"
 import { ScenePrimitive } from "../scene/types"
 import { THEME } from "../scene/theme"
 import { DynamicField, DynamicInputSession } from "./input/DynamicInput"
 import { measuresFromPoints } from "./promptRefusal"
 import type { QuestionInput, Tool } from "./tools/Tool"
+import { headingInUcs } from "./tools/ucsHeading"
 import type { PromptId } from "../locales/types"
 import { Viewport } from "./Viewport"
 
@@ -33,18 +34,19 @@ export function measuredField(
 /**
  * What two points measure for `field`: the distance between them, in space as
  * AutoCAD's is (a diameter to `100,0,5` from the origin is 100.125), or the
- * angle of the line from the first, in the plane, 0 to 360.
+ * heading of the line from the first in `ucs`, 0 to 360 (a reference by WCS
+ * points in a UCS turned 30°, probe transforms/p143).
  */
 export function measuredValue(
   field: DynamicField,
   from: Vec3,
-  to: Vec3
+  to: Vec3,
+  ucs: Ucs
 ): number {
   const dx = to.x - from.x
   const dy = to.y - from.y
   if (field.kind !== "angle") return Math.hypot(dx, dy, to.z - from.z)
-  const degrees = (Math.atan2(dy, dx) * 180) / Math.PI
-  return normalizeDegrees(degrees)
+  return headingInUcs(ucs, { x: dx, y: dy })
 }
 
 /**

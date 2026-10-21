@@ -1361,6 +1361,7 @@ export const en: EngineCatalog = {
       "specifyRotationAngleOr": "Specify rotation angle or",
       "specifyTheReferenceAngle": "Specify the reference angle",
       "specifyTheNewAngle": "Specify the new angle",
+      "specifyTheNewAngleOr": "Specify the new angle or",
       "specifyScaleFactorOr": "Specify scale factor or",
       "specifyReferenceLength": "Specify reference length",
       "specifyNewLengthOr": "Specify new length or",

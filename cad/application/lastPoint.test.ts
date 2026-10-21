@@ -173,6 +173,29 @@ describe("LASTPOINT", () => {
     expect(lastPoint(cad)).toBe(` X = ${x}.00     Y = ${y}.00     Z = 0.00`)
   })
 
+  // probes transforms/p106, p126, p152, p154: ROTATE's too, after the
+  // reference's points and Points', typed or snapped.
+  it.each<[string, string[]]>([
+    ["a reference by points", ["0,0", "_R", "0,0", "100,100", "90"]],
+    [
+      "a reference by snaps",
+      ["0,0", "_R", "_END", "99,1", "_END", "49,99", "90"],
+    ],
+    ["a reference from another base", ["10,10", "_R", "20,20", "30,30", "90"]],
+    ["Points", ["10,10", "_R", "0", "_P", "20,20", "30,40"]],
+  ])("is ROTATE's base point after %s", (_, answers) => {
+    const cad = createHarness({
+      entities: [
+        lineOf(p(0, 50), p(50, 100)),
+        lineOf(p(0, 0), p(100, 0), { id: "A" }),
+      ],
+    })
+    answer(cad, "ROTATE", "L", "", ...answers)
+    expect(cad.activeToolId()).toBe("select")
+    const [x, y] = answers[0].split(",")
+    expect(lastPoint(cad)).toBe(` X = ${x}.00     Y = ${y}.00     Z = 0.00`)
+  })
+
   it("is the UCS origin as Specify displacement opens, which reads `@` from it", () => {
     const moved = (cad: CadHarness) => cad.byId<LineEntity>("A").start
     const cad = createHarness({

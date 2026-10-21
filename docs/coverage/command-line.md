@@ -120,9 +120,12 @@ line of its own after a typed first point, on the picked one's line after a pick
 (`Specify fillet radius <0.0000>:  Specify second point:`), as the table's string has no new line —
 (FILLET's radius, CHAMFER's distances, OFFSET's distance, RECTANG's and ELEV's elevation and
 thickness, ARRAYRECT's spacings, ARRAYPOLAR's angles, DIMLINEAR's Rotated and every dimension's text
-Angle, SCALE's reference length and Points' new length), where a number or a keyword still answers
-the question and a wrong answer gets the question's own refusal
-(`Requires numeric distance or two points.`) — AutoCAD 2023's console
+Angle, SCALE's reference length and Points' new length, ROTATE's reference angle and Points' new
+angle), where a number or a keyword still answers the question and a wrong answer gets the
+question's own refusal (`Requires numeric distance or two points.`) — AutoCAD 2023's console; after
+a refusal at the second point an angle's two points start over under the same words, a distance
+keeping its first (unprobed; transforms/p136, p158); an angle is the line's heading in the UCS
+(transforms/p143); a transparent command at the second point keeps the first (transforms/p204)
 
 **Missing:** the `.` prefix (`._LINE`, `_.ERASE`, which the 2027 console runs, erase/p04: refused
 here as an unknown command, since nothing can be redefined), `_`

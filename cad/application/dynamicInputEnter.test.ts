@@ -143,6 +143,30 @@ describe.each(ENTERS)("Enter from %s with nothing typed", (_, enter) => {
     expect(cad.byId<LineEntity>("A").end).toBeCloseToPoint(p(400, 0))
   })
 
+  // probes transforms/p107, p157, p111: Enter takes the new angle's <0>, and
+  // the reference's at its second point; each run's turn is the next default.
+  it("turns by Reference's defaults, and by its turn next time", () => {
+    const cad = createHarness({
+      entities: [lineOf(p(0, 0), p(100, 0), { id: "A" })],
+    })
+    cad.select("A").command("ROTATE").click(p(0, 0)).option("Reference")
+    cad.type("30").enter().moveTo(FAR)
+    enter(cad)
+    expect(cad.byId<LineEntity>("A").end).toBeCloseToPoint(p(86.6025, -50), 4)
+
+    cad.select("A").command("ROTATE").click(p(0, 0)).option("Reference")
+    cad.click(p(0, 0)).moveTo(FAR)
+    enter(cad)
+    expect(cad.state().commandLine.prompt).toBe(
+      "ROTATE Specify the new angle or [Points] <0>:"
+    )
+    enter(cad)
+    expect(cad.byId<LineEntity>("A").end).toBeCloseToPoint(p(50, -86.6025), 4)
+    cad.select("A").command("ROTATE").click(p(0, 0)).moveTo(FAR)
+    enter(cad)
+    expect(cad.byId<LineEntity>("A").end).toBeCloseToPoint(p(0, -100), 4)
+  })
+
   // probe transforms/p188: a Reference run's factor is the next default too.
   it("scales by the factor a Reference run made", () => {
     const cad = createHarness({

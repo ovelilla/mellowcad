@@ -3,6 +3,7 @@ import { describe, expect, it } from "vitest"
 import { type CadHarness, createHarness } from "../../test/harness"
 import { lineOf, p } from "../../test/builders"
 import { es } from "../locales/es"
+import type { LineEntity } from "../domain/entities"
 
 /** Typed at the command line and confirmed, as AutoCAD's prompt reads it. */
 function answerLine(cad: CadHarness, text: string): CadHarness {
@@ -300,6 +301,26 @@ describe("a transparent command", () => {
     expect(cad.entities().find((entity) => entity.id === "B")).toMatchObject({
       start: { x: 0, y: 50 },
     })
+  })
+
+  // probe transforms/p204: at the second of two points the runtime measures,
+  // the first is kept for after it.
+  it("keeps the first of two measuring points", () => {
+    const cad = createHarness({
+      entities: [lineOf(p(0, 0), p(100, 0), { id: "A" })],
+    })
+    for (const typed of ["SCALE", "L", "", "0,0", "R", "10", "P", "10,0"])
+      answerLine(cad, typed)
+    answerLine(cad, "'ZOOM")
+    answerLine(cad, "E")
+    expect(cad.commandLog().slice(-2)).toEqual([
+      `${ZOOM_PROMPT} E`,
+      "Resuming SCALE command.",
+    ])
+    expect(cad.state().commandLine.prompt).toBe("SCALE Specify second point:")
+    answerLine(cad, "30,0")
+    expect(cad.commandLog().at(-1)).toBe(" Specify second point: 30,0")
+    expect(cad.byId<LineEntity>("A").end).toBeCloseToPoint(p(200, 0))
   })
 
   // AutoCAD's transparent ZOOM cannot regenerate: it zooms without a word

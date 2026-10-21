@@ -363,9 +363,6 @@ export class ScaleTool implements Tool {
         pushArm(out, viewport, this.state.base, this.state.current, arm)
         break
       }
-      case "refP1":
-        pushArm(out, viewport, this.state.base, this.state.current, arm)
-        break
       case "newLength": {
         if (this.state.points) break
         const factor =
@@ -492,12 +489,20 @@ export class ScaleTool implements Tool {
     ctx.dynamicInput.setPosition(this.lastScreen ?? { x: 0, y: 0 })
   }
 
-  /** A typed reference length skips the two-point measure and asks the new one. */
+  /**
+   * The reference length, typed or measured by the runtime's two points, or
+   * Enter's default, asks the new one; 0 and negatives are refused and asked
+   * again (probes transforms/p174, p175).
+   */
   private commitReference(ctx: ToolContext): boolean {
     if (this.state.phase !== "refP1") return false
     const typed = parseField(ctx, "reference")
     if (typed === null && ctx.dynamicInput.hasTypedText()) return false
-    const reference = typed !== null && typed > 0 ? typed : this.lastReference
+    const reference = typed ?? this.lastReference
+    if (!(reference > 0)) {
+      ctx.report(ctx.text.message("positiveNonzero"), "error")
+      return true
+    }
     this.lastReference = reference
     this.enterNewLength(reference, ctx)
     return true
@@ -528,13 +533,20 @@ export class ScaleTool implements Tool {
     ctx.dynamicInput.setPosition(this.lastScreen ?? { x: 0, y: 0 })
   }
 
-  /** Scales to `newLength / reference`, the new length kept as the default. */
+  /**
+   * Scales to `newLength / reference`, the new length kept as the default; 0
+   * and negatives are refused and asked again (probes transforms/p178, p179).
+   */
   private commitNewLength(
     state: Extract<ScaleState, { phase: "newLength" }>,
     newLength: number,
     ctx: ToolContext
   ): void {
-    if (newLength > 0) this.lastNewLength = newLength
+    if (!(newLength > 0)) {
+      ctx.report(ctx.text.message("positiveNonzero"), "error")
+      return
+    }
+    this.lastNewLength = newLength
     this.commit(state, newLength / state.reference, ctx)
   }
 
@@ -563,22 +575,19 @@ export class ScaleTool implements Tool {
     factor: number,
     ctx: ToolContext
   ): void {
-    // AutoCAD rejects a non-positive factor; treat it as a no-op that ends.
-    if (Number.isFinite(factor) && factor > 0) {
-      this.lastFactor = factor
-      if (state.copy) {
-        ctx.execute(
-          new AddEntitiesCommand(
-            state.originals.map((e) => scaleEntityCopy(e, state.base, factor))
-          )
+    this.lastFactor = factor
+    if (state.copy) {
+      ctx.execute(
+        new AddEntitiesCommand(
+          state.originals.map((e) => scaleEntityCopy(e, state.base, factor))
         )
-      } else if (Math.abs(factor - 1) > 1e-9) {
-        ctx.execute(
-          new UpdateEntitiesCommand(
-            state.originals.map((e) => scaleEntity(e, state.base, factor))
-          )
+      )
+    } else if (Math.abs(factor - 1) > 1e-9) {
+      ctx.execute(
+        new UpdateEntitiesCommand(
+          state.originals.map((e) => scaleEntity(e, state.base, factor))
         )
-      }
+      )
     }
     ctx.dynamicInput.close()
     ctx.endCommand()

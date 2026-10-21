@@ -64,18 +64,25 @@ opción.`, where MOVE's says `Invalid point.`, p154–p158)
 (MOVE's counts), `Specify base point:`, `Specify rotation angle or [Copy/Reference] <0>:` — Copy
 says `Rotating a copy of the selected objects.` (es
 `Girando una copia de los objetos seleccionados.`), again at each Copy, and stays listed — then
-Reference's `Specify the reference angle <0>:` (typed, or two points: `Specify second point:`) and
-`Specify the new angle:` (es `Precise punto base`,
-`Precise ángulo de rotación o [Copiar/Referencia]`, `Precise ángulo de referencia`,
-`Precise el nuevo ángulo`); pivot + angle (Enter takes the last angle, 0 in each drawing: per
-drawing, not saved, rectang/p314),
+Reference's `Specify the reference angle <0>:` (typed, or two points the runtime measures in the
+UCS, its ` Specify second point:` on the prompt's line after a pick; a refusal there starts the two
+points over under the same words, where a number is the angle; Enter there takes the default:
+p106, p126, p136, p143, p157, p158) and `Specify the new angle or [Points] <0>:` (typed, a point
+measured from the base point, or Points' `Specify first point:` and ` Specify second point:`, the
+angle of the line between them; Enter takes the default;
+`Requires valid numeric angle, second point, or option keyword.`: p105–p107, p135, p154) (es
+`Precise punto base`, `Precise ángulo de rotación o [Copiar/Referencia]`,
+`Precise ángulo de referencia`, `Precise el nuevo ángulo o [Puntos]`, ` Designe segundo punto`,
+p156); pivot + angle; Enter takes the last turn, Reference's prompts the last reference and new
+angle, 0 in each drawing, every run setting the turn (per drawing, not saved: rectang/p314,
+Reference's taken alike, unprobed; p111, p112); LASTPOINT is the base point after Reference's and Points' points (p106, p126, p152, p154);
 Copy, Reference; about an axis parallel to the UCS's Z ("the Z axis of the UCS determines the axis
 direction for rotating objects about a point"); an elliptical arc keeps its parameters
 (ellipse/p322)
 
-**Missing:** the new angle's `[Points]` and `<default>` (so it asks `Specify the new angle:`; Enter
-there ends ROTATE, **unverified**); defaults written at the drawing's precision (`<0.00>`) where
-AutoCAD's AUPREC 0 writes `<0>`
+**Missing:** Enter at Points' points ends ROTATE unturned, **unverified** (SCALE's console reads
+its cursor there); defaults written at the drawing's precision (`<0.00>`) where AutoCAD's AUPREC 0
+writes `<0>`
 
 ### `SCALE` / `SC` · es `ESCALA` / `ES`
 
@@ -92,7 +99,9 @@ then Reference's `Specify reference length <1.0000>:` (typed, or two points) and
 `Specify new length or [Points] <1.0000>:` (typed, or a point measured from the base point; Points
 asks `Specify first point:` and the second, the length between them;
 `Requires numeric distance, second point, or option keyword.`, at Points
-`Requires numeric distance or two points.`), both defaults the last lengths given, 1 in each
+`Requires numeric distance or two points.`; 0 or a negative at either length
+`Value must be positive and nonzero.` and the prompt again, p174, p175, p178, p179; `'ZOOM` at the
+second of two points keeps the first, p204), both defaults the last lengths given, 1 in each
 drawing (a factor typed leaves them), as AutoCAD's console asks them (p172, p176, p182, p187; es
 `Precise factor de escala o [Copiar/Referencia]`, `Precise longitud de referencia`,
 `Precise nueva longitud o [Puntos]`); Enter at the factor takes the last one any run scaled by,
@@ -105,8 +114,8 @@ line's rise and thickness included (p214), in a turned or tilted UCS (p215, p216
 pattern scale and a dimension's measurement scale (p212); an elliptical arc keeps its parameters
 and ratio (ellipse/p323); `ES` from the Spanish `acad.pgp` (p161)
 
-**Missing:** Enter at Points' `Specify first point:` ends the command unscaled (AutoCAD 2023's
-console scales by a length of its own there); a tiny factor is applied in silence, where AutoCAD
+**Missing:** Enter at Points' `Specify first point:` or ` Specify second point:` ends the command
+unscaled (AutoCAD's console scales by its cursor's reading there, p183, p184); a tiny factor is applied in silence, where AutoCAD
 says `Extremely small scale factor ignored.` (es `Factor de escala demasiado pequeño ignorado.`,
 table 21197, p170): the threshold and what follows are **unverified** (the console read its cursor
 after it)

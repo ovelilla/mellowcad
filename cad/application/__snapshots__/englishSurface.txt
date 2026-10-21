@@ -2791,10 +2791,11 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0°~, Line space facto
 > reference
   dyn: "Reference angle"="0"||°*
 > enter
-  prompt: ROTATE Specify the new angle:
+  prompt: ROTATE Specify the new angle or [Points] <0>:
   asks: "New angle"
-  tip: Specify the new angle:
+  tip: Specify the new angle or
   dyn: "New angle"=""||°*
+  options: [P] Points
   prompt| Specify the reference angle <0>: 0
 > new angle
   dyn: "New angle"="90"||°*
@@ -2803,8 +2804,9 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0°~, Line space facto
   asks: -
   tip: -
   dyn: -
+  options: -
   properties: -
-  prompt| Specify the new angle: 90
+  prompt| Specify the new angle or [Points] <0>: 90
 > ROTATE by points
   prompt: ROTATE Specify base point:
   asks: "Base point"
@@ -2815,7 +2817,7 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0°~, Line space facto
   info| Current positive angle in UCS:  ANGDIR=counterclockwise  ANGBASE=0
   info| 1 found
 > base
-  prompt: ROTATE Specify rotation angle or [Copy/Reference] <0>:
+  prompt: ROTATE Specify rotation angle or [Copy/Reference] <90>:
   asks: "Rotation angle"
   tip: Specify rotation angle or
   dyn: "Rotation angle"=""||°*
@@ -2827,26 +2829,25 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0°~, Line space facto
   tip: Specify the reference angle
   dyn: "Reference angle"=""||°*
   options: -
-  prompt| Specify rotation angle or [Copy/Reference] <0>: R
+  prompt| Specify rotation angle or [Copy/Reference] <90>: R
 > first reference point
   prompt: ROTATE Specify second point:
-  asks: "Second point"
   tip: Specify second point:
-  dyn: "X,Y"=""||*
   prompt| Specify the reference angle <0>:
 > second reference point
-  prompt: ROTATE Specify the new angle:
+  prompt: ROTATE Specify the new angle or [Points] <90>:
   asks: "New angle"
-  tip: Specify the new angle:
-  dyn: "New angle"=""||°*
-  prompt| Specify second point:
+  tip: Specify the new angle or
+  dyn: "New angle"=""|90|°*
+  options: [P] Points
 > escape
   prompt: Command:
   asks: -
   tip: -
   dyn: -
+  options: -
   properties: -
-  prompt| Specify the new angle: *Cancel*
+  prompt| Specify the new angle or [Points] <90>: *Cancel*
 
 ## SCALE
 > start

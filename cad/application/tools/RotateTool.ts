@@ -35,14 +35,15 @@ import { ObjectSelector } from "./objectSelection"
  *  selecting ─────────────────────► pivot ──────────► angle ──────────► done
  *   click / box-drag adds objects       (dashed ghost spins live)   [Reference]
  *                                                                        │
- *                                              refP1 ─► refP2 ─► newAngle┘
+ *                                          refP1 ─► newAngle ─► [Points]┘
  * ```
  *
  * The rotation angle is measured counter-clockwise from the +X axis (AutoCAD's
  * default reference of 0°), so pointing east rotates by 0 and pointing north by
  * 90. Two keywords match AutoCAD: **Copy** leaves the originals in place and
- * rotates a fresh duplicate; **Reference** rotates from a measured reference
- * direction to a new one (`rotation = new − reference`). Works on any selection
+ * rotates a fresh duplicate; **Reference** rotates from a reference angle,
+ * typed or two points, to a new one, typed, a point from the base or Points'
+ * two (`rotation = new − reference`). Works on any selection
  * — lines and circles alike (a circle only moves its centre) — with object
  * snap, Ortho/Polar locking the arm, and typed angle or coordinate entry.
  */
@@ -61,7 +62,7 @@ type RotateState =
       readonly copy: boolean
       readonly current: Vec2
     }
-  /** Reference mode: measuring the first point of the reference direction. */
+  /** Reference mode: the reference angle, typed or two points the runtime measures. */
   | {
       readonly phase: "refP1"
       readonly base: Vec2
@@ -69,16 +70,10 @@ type RotateState =
       readonly copy: boolean
       readonly current: Vec2
     }
-  /** Reference mode: measuring the second point of the reference direction. */
-  | {
-      readonly phase: "refP2"
-      readonly base: Vec2
-      readonly originals: readonly Entity[]
-      readonly copy: boolean
-      readonly p1: Vec2
-      readonly current: Vec2
-    }
-  /** Reference mode: the set spins to the new absolute angle. */
+  /**
+   * Reference mode: the set spins to the new absolute angle, from the base
+   * point, or by two points the runtime measures once Points is chosen.
+   */
   | {
       readonly phase: "newAngle"
       readonly base: Vec2
@@ -87,6 +82,7 @@ type RotateState =
       /** Reference angle (degrees) the new angle is measured against. */
       readonly reference: number
       readonly current: Vec2
+      readonly points: boolean
     }
 
 export class RotateTool implements Tool {
@@ -104,9 +100,14 @@ export class RotateTool implements Tool {
    * (rectang/p314).
    */
   private lastAngle = 0
+  /** Reference's `<default>`s, the last ones given, 0 at first (p111). */
+  private lastReference = 0
+  private lastNewAngle = 0
 
   onNewDrawing(): void {
     this.lastAngle = 0
+    this.lastReference = 0
+    this.lastNewAngle = 0
   }
 
   onActivate(ctx: ToolContext): void {
@@ -128,10 +129,6 @@ export class RotateTool implements Tool {
     }
   }
 
-  /**
-   * WHY the new angle names no `[Points]` and no `<default>`: neither is
-   * offered here.
-   */
   question(): PromptId | ToolQuestion {
     switch (this.state.phase) {
       case "selecting":
@@ -144,18 +141,22 @@ export class RotateTool implements Tool {
           enter: { angle: this.lastAngle },
         }
       case "refP1":
-        return { id: "specifyTheReferenceAngle", enter: { angle: 0 } }
-      case "refP2":
-        return "specifySecondPoint"
+        return {
+          id: "specifyTheReferenceAngle",
+          enter: { angle: this.lastReference },
+        }
       case "newAngle":
-        return "specifyTheNewAngle"
+        return this.state.points
+          ? "specifyFirstPoint"
+          : { id: "specifyTheNewAngleOr", enter: { angle: this.lastNewAngle } }
     }
   }
 
-  /** The reference angle is measured by two points of its own. */
+  /** The reference angle and Points' new angle are two points the runtime measures. */
   takes(): QuestionInput | null {
     if (this.state.phase === "selecting") return this.selector.takes()
-    return this.state.phase === "refP1"
+    return this.state.phase === "refP1" ||
+      (this.state.phase === "newAngle" && this.state.points)
       ? { refusal: "requiresAngle", values: { points: "two", keyword: "no" } }
       : null
   }
@@ -189,16 +190,14 @@ export class RotateTool implements Tool {
         this.state = { ...this.state, current: input.point }
         ctx.dynamicInput.setPosition(input.screen)
         break
-      case "refP2":
-        this.state = { ...this.state, current: input.point }
-        ctx.dynamicInput.setPosition(input.screen)
-        break
       case "newAngle": {
         this.state = { ...this.state, current: input.point }
-        ctx.dynamicInput.setLive(
-          "newAngle",
-          bearing(this.state.base, input.point, ctx)
-        )
+        if (!this.state.points) {
+          ctx.dynamicInput.setLive(
+            "newAngle",
+            bearing(this.state.base, input.point, ctx)
+          )
+        }
         ctx.dynamicInput.setPosition(input.screen)
         break
       }
@@ -228,26 +227,13 @@ export class RotateTool implements Tool {
         this.commit(this.state, rotation, ctx)
         return
       }
-      case "refP1": {
-        this.state = { ...this.state, phase: "refP2", p1: input.point }
-        this.openReferenceSecondInput(ctx)
-        return
-      }
-      case "refP2": {
-        const reference = bearing(this.state.p1, input.point, ctx) ?? 0
-        this.enterNewAngle(reference, ctx)
-        return
-      }
-      case "newAngle": {
-        const rotation = this.resolveNewRotation(
-          this.state.base,
-          input.point,
-          this.state.reference,
+      case "newAngle":
+        this.commitNewAngle(
+          this.state,
+          this.resolveNewAngle(this.state, input.point, ctx),
           ctx
         )
-        this.commit(this.state, rotation, ctx)
         return
-      }
     }
   }
 
@@ -271,10 +257,13 @@ export class RotateTool implements Tool {
 
   /**
    * `[Copy/Reference]` at the rotation angle, as AutoCAD keeps listing them
-   * once Copy is chosen; the new angle offers neither.
+   * once Copy is chosen; `[Points]` at the new angle (p105).
    */
   commandOptions(): readonly CommandOption[] {
     if (this.state.phase === "selecting") return this.selector.commandOptions()
+    if (this.state.phase === "newAngle" && !this.state.points) {
+      return [{ id: "Points" }]
+    }
     return this.state.phase === "angle"
       ? [{ id: "Copy" }, { id: "Reference" }]
       : []
@@ -303,18 +292,23 @@ export class RotateTool implements Tool {
       ctx.requestRender()
       return "continue"
     }
+    if (id === "Points" && this.state.phase === "newAngle") {
+      this.state = { ...this.state, points: true }
+      this.openAngleInput(ctx, "newAngle", "newAngle")
+      ctx.requestRender()
+      return "continue"
+    }
     return "unhandled"
   }
 
   getConstraintAnchor(): Vec2 | null {
-    // Ortho/Polar lock the arm: from the pivot while setting the rotation, from
-    // the first reference point while measuring the reference direction.
+    // Ortho/Polar lock the arm from the pivot while setting the rotation; the
+    // runtime's two points have their own.
     switch (this.state.phase) {
       case "angle":
-      case "newAngle":
         return this.state.base
-      case "refP2":
-        return this.state.p1
+      case "newAngle":
+        return this.state.points ? null : this.state.base
       default:
         return null
     }
@@ -322,13 +316,12 @@ export class RotateTool implements Tool {
 
   wantsSnap(): boolean {
     // Object snaps help place every point precisely; picking objects (click or
-    // box) in the selecting phase does not need them.
+    // box) in the selecting phase does not need them, and the reference's and
+    // Points' two points are the runtime's to measure.
     return (
       this.state.phase === "pivot" ||
       this.state.phase === "angle" ||
-      this.state.phase === "refP1" ||
-      this.state.phase === "refP2" ||
-      this.state.phase === "newAngle" ||
+      (this.state.phase === "newAngle" && !this.state.points) ||
       (this.state.phase === "selecting" && this.selector.wantsSnap())
     )
   }
@@ -358,23 +351,11 @@ export class RotateTool implements Tool {
         pushArm(out, viewport, this.state.base, this.state.current, arm)
         break
       }
-      case "refP1":
-        pushArm(out, viewport, this.state.base, this.state.current, arm)
-        break
-      case "refP2":
-        pushArm(out, viewport, this.state.p1, this.state.current, {
-          color: THEME.selected,
-          width: 1,
-          dash: [6, 4],
-        })
-        break
       case "newAngle": {
-        const rotation = this.resolveNewRotation(
-          this.state.base,
-          this.state.current,
-          this.state.reference,
-          ctx
-        )
+        if (this.state.points) break
+        const rotation =
+          this.resolveNewAngle(this.state, this.state.current, ctx) -
+          this.state.reference
         pushGhost(
           out,
           viewport,
@@ -462,14 +443,14 @@ export class RotateTool implements Tool {
       this.commit(this.state, rotation, ctx)
       return true
     }
-    if (this.state.phase === "newAngle" && typed) {
-      const rotation = this.resolveNewRotation(
-        this.state.base,
-        this.state.current,
-        this.state.reference,
-        ctx
-      )
-      this.commit(this.state, rotation, ctx)
+    if (this.state.phase === "newAngle") {
+      // Enter at Points' points ends unturned, as SCALE's: unprobed here, and
+      // SCALE's console reads its cursor there (transforms/p183, p184).
+      if (this.state.points && !typed) return false
+      const newAngle = typed
+        ? this.resolveNewAngle(this.state, this.state.current, ctx)
+        : this.lastNewAngle
+      this.commitNewAngle(this.state, newAngle, ctx)
       return true
     }
     return false
@@ -486,44 +467,22 @@ export class RotateTool implements Tool {
     ctx.dynamicInput.setPosition(this.lastScreen ?? { x: 0, y: 0 })
   }
 
-  /** A typed reference angle skips the two-point measure and asks the new one. */
+  /**
+   * The reference angle, typed or measured by the runtime's two points, or
+   * Enter's default, asks the new one.
+   */
   private commitReference(ctx: ToolContext): boolean {
     if (this.state.phase !== "refP1") return false
-    const reference = parseField(ctx, "reference")
-    if (reference === null && ctx.dynamicInput.hasTypedText()) return false
-    this.enterNewAngle(reference ?? 0, ctx)
-    return true
-  }
-
-  private openReferenceSecondInput(ctx: ToolContext): void {
-    const session: DynamicInputSession = {
-      fields: [{ id: "second", prompt: "secondPoint", kind: "coordinate" }],
-      commit: () => {},
-      commitRaw: (commitCtx) => this.commitReferenceSecond(commitCtx),
-    }
-    ctx.dynamicInput.open(session)
-    ctx.dynamicInput.setPosition(this.lastScreen ?? { x: 0, y: 0 })
-  }
-
-  /** A typed second point completes the two-point reference direction. */
-  private commitReferenceSecond(ctx: ToolContext): boolean {
-    if (this.state.phase !== "refP2") return false
-    const text = ctx.dynamicInput.getText("second").trim()
-    if (!isCoordinateExpression(text)) return false
-    const p2 = parseCoordinate(text, {
-      lastPoint: this.state.p1,
-      relativeByDefault: true,
-      ucs: ctx.ucs,
-      elevation: ctx.elevation,
-    })
-    if (!p2) return false
-    const reference = bearing(this.state.p1, p2, ctx) ?? 0
+    const typed = parseField(ctx, "reference")
+    if (typed === null && ctx.dynamicInput.hasTypedText()) return false
+    const reference = typed ?? this.lastReference
+    this.lastReference = reference
     this.enterNewAngle(reference, ctx)
     return true
   }
 
   private enterNewAngle(reference: number, ctx: ToolContext): void {
-    if (this.state.phase !== "refP1" && this.state.phase !== "refP2") return
+    if (this.state.phase !== "refP1") return
     this.state = {
       phase: "newAngle",
       base: this.state.base,
@@ -531,17 +490,31 @@ export class RotateTool implements Tool {
       copy: this.state.copy,
       reference,
       current: this.state.current,
+      points: false,
     }
     this.openAngleInput(ctx, "newAngle", "newAngle")
   }
 
-  /** Applies the rotation (in place, or as a fresh copy) and ends the command. */
+  /** Turns by `newAngle − reference`, the new angle kept as the default. */
+  private commitNewAngle(
+    state: Extract<RotateState, { phase: "newAngle" }>,
+    newAngle: number,
+    ctx: ToolContext
+  ): void {
+    this.lastNewAngle = newAngle
+    this.commit(state, newAngle - state.reference, ctx)
+  }
+
+  /**
+   * Applies the rotation (in place, or as a fresh copy) and ends the command;
+   * the turn, however reached, is the next one's `<default>` (p111).
+   */
   private commit(
     state: Extract<RotateState, { phase: "angle" | "newAngle" }>,
     rotationDeg: number,
     ctx: ToolContext
   ): void {
-    if (state.phase === "angle") this.lastAngle = rotationDeg
+    this.lastAngle = rotationDeg
     const rad = (rotationDeg * Math.PI) / 180
     if (state.copy) {
       ctx.execute(
@@ -597,18 +570,16 @@ export class RotateTool implements Tool {
   }
 
   /**
-   * Reference-mode rotation in degrees: `new − reference`, where the new angle
-   * is a typed absolute angle (hard-locked) or the base → cursor bearing.
+   * Reference mode's new angle in degrees: a typed absolute angle (hard-locked,
+   * also what the runtime measured by Points) or the base → cursor bearing.
    */
-  private resolveNewRotation(
-    base: Vec2,
+  private resolveNewAngle(
+    state: Extract<RotateState, { phase: "newAngle" }>,
     cursor: Vec2,
-    reference: number,
     ctx: ToolContext
   ): number {
     const typed = parseField(ctx, "newAngle")
-    const newAngle = typed ?? bearing(base, cursor, ctx) ?? reference
-    return newAngle - reference
+    return typed ?? bearing(state.base, cursor, ctx) ?? state.reference
   }
 }
 
