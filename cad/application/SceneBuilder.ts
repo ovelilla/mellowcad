@@ -1,6 +1,7 @@
 import { Vec2, V } from "../geometry/Vec2"
 import { Vec3, scale3, withZOf, zOf } from "../geometry/Vec3"
 import { axesToWorld } from "../geometry/ocs"
+import { bsplinePoint, bsplineTessellation } from "../geometry/nurbs"
 import {
   ArcEntity,
   AttributeDisplay,
@@ -8,6 +9,8 @@ import {
   CircleEntity,
   DimensionEntity,
   EllipseEntity,
+  SplineEntity,
+  SplineLength,
   Entity,
   EntityId,
   HatchEntity,
@@ -38,6 +41,7 @@ import {
   polylineOutline,
   PolylineSegmentGeometry,
   polylineSegmentGeometries,
+  splineLengthTable,
   splinePolyline,
   TextJustify,
   measureTextWidth,
@@ -898,22 +902,10 @@ function planarPrimitives(
       return options.linetype && stroke.dash && stroke.dash.length > 0
         ? linetypedEllipse(camera, entity, stroke)
         : [ellipseScenePrimitive(camera, entity, stroke)]
-    case "spline": {
-      // Canvas and SVG have no NURBS, and a degree above 3 fits no Bézier: the
-      // curve is chopped finely enough that a chord never strays a quarter of
-      // a pixel from it, at whatever zoom.
-      const tolerance = 0.25 / camera.worldToScreenDistance(1)
-      return [
-        {
-          kind: "path",
-          points: splinePolyline(entity, tolerance).map((p) =>
-            camera.worldToScreen(p)
-          ),
-          closed: false,
-          stroke,
-        },
-      ]
-    }
+    case "spline":
+      return options.linetype && stroke.dash && stroke.dash.length > 0
+        ? linetypedSpline(camera, entity, stroke)
+        : [splineCurvePath(camera, entity, stroke)]
     case "polyline":
       if (isWidePolyline(entity)) {
         // Filled only seen square on, as AutoCAD fills one only "parallel
@@ -1584,6 +1576,107 @@ function linetypedEllipse(
       solid
     )
   )
+}
+
+/**
+ * Canvas and SVG have no NURBS, and a degree above 3 fits no Bézier: the
+ * curve is chopped finely enough that a chord never strays a quarter of a
+ * pixel from it, at whatever zoom.
+ */
+function splineTolerance(camera: CameraTransform): number {
+  return 0.25 / camera.worldToScreenDistance(1)
+}
+
+function splineCurvePath(
+  camera: CameraTransform,
+  spline: SplineEntity,
+  stroke: StrokeStyle
+): ScenePrimitive {
+  return {
+    kind: "path",
+    points: splinePolyline(spline, splineTolerance(camera)).map((p) =>
+      camera.worldToScreen(p)
+    ),
+    closed: false,
+    stroke,
+  }
+}
+
+/**
+ * A spline's linetype laid as AutoCAD lays it (spline/p328, measured on the
+ * plot): centred over its length as a line's is ({@link centredPattern}),
+ * open or closed — a closed one is no circle, and one dash runs across its
+ * start — and solid under one period. Each dash is a piece of the curve,
+ * found by its length along it ({@link splineLengthTable}) and tessellated
+ * as the whole curve is; past {@link MAX_FITTED_PERIODS} the pattern is left
+ * to the renderer.
+ */
+function linetypedSpline(
+  camera: CameraTransform,
+  spline: SplineEntity,
+  stroke: StrokeStyle
+): ScenePrimitive[] {
+  const pattern = (stroke.dash ?? []).map((run) => run / camera.scale)
+  const along = splineLengthOf(spline)
+  const solid: StrokeStyle = { color: stroke.color, width: stroke.width }
+  const layout = centredPattern(pattern, along.length)
+  if (!layout) return [splineCurvePath(camera, spline, solid)]
+  const period = pattern.reduce((sum, run) => sum + run, 0)
+  if (along.length / period > MAX_FITTED_PERIODS)
+    return [splineCurvePath(camera, spline, stroke)]
+  const dashes = centredDashes(
+    pattern,
+    along.length,
+    layout,
+    stroke.width / camera.scale
+  )
+  const { curve } = along
+  const { params, points } = bsplineTessellation(curve, splineTolerance(camera))
+  const piece = (from: number, to: number): Vec2[] => {
+    const run = [bsplinePoint(curve, from)]
+    let i = firstAbove(params, from)
+    for (; i < params.length && params[i] < to; i++) run.push(points[i])
+    run.push(bsplinePoint(curve, to))
+    return run
+  }
+  const runs = dashes.map(([a, b]) => piece(along.paramAt(a), along.paramAt(b)))
+  // The dashes at either end of a closed one are one dash across its start.
+  if (spline.closed && runs.length > 1) {
+    const last = runs.pop()!
+    runs[0] = [...last, ...runs[0].slice(1)]
+  }
+  return runs.map((run) => ({
+    kind: "path",
+    points: run.map((p) => camera.worldToScreen(p)),
+    closed: false,
+    stroke: solid,
+  }))
+}
+
+/**
+ * Cached as a hatch's geometry is: measuring the curve is the costly part of
+ * its dashes and depends only on the (immutable) entity, not on the camera.
+ */
+const splineLengthCache = new WeakMap<SplineEntity, SplineLength>()
+
+function splineLengthOf(spline: SplineEntity): SplineLength {
+  const cached = splineLengthCache.get(spline)
+  if (cached) return cached
+  const along = splineLengthTable(spline)
+  splineLengthCache.set(spline, along)
+  return along
+}
+
+/** The index of the first of the ascending `values` above `value`. */
+function firstAbove(values: readonly number[], value: number): number {
+  let low = 0
+  let high = values.length
+  while (low < high) {
+    const mid = (low + high) >> 1
+    if (values[mid] <= value) low = mid + 1
+    else high = mid
+  }
+  return low
 }
 
 function pushEntities(

@@ -113,7 +113,7 @@ import { DRAWING_FILE_TYPE } from "./drawingSummary"
 export { DRAWING_FILE_TYPE }
 
 /** Current schema version written by {@link serializeDrawing}. */
-export const DRAWING_FILE_VERSION = 28
+export const DRAWING_FILE_VERSION = 29
 
 /** MIME type a serialised drawing is handed to the host as. */
 export const DRAWING_FILE_MIME_TYPE = "application/json"
@@ -302,9 +302,9 @@ export function parseDrawingData(data: unknown): ParsedDrawing {
     throw new DrawingFileError("newerVersion")
   }
 
-  const blocks = parseBlocks(data.blocks)
+  const blocks = parseBlocks(data.blocks, version)
   const defined = new Set(blocks.map((block) => block.id))
-  const entities = parseEntities(data.entities)
+  const entities = parseEntities(data.entities, version)
 
   return {
     settings: parseSettings(data.settings),
@@ -556,7 +556,7 @@ function cloneBlock(block: BlockDefinition): BlockDefinition {
  * The block table. A definition needs a name (which is its identity) and at
  * least one object; anything else is skipped, like a malformed entity.
  */
-function parseBlocks(value: unknown): BlockDefinition[] {
+function parseBlocks(value: unknown, version: number): BlockDefinition[] {
   if (!Array.isArray(value)) return []
   const blocks: BlockDefinition[] = []
   const seen = new Set<string>()
@@ -569,7 +569,7 @@ function parseBlocks(value: unknown): BlockDefinition[] {
           ? raw.id
           : null
     if (!name || seen.has(name)) continue
-    const entities = parseEntities(raw.entities)
+    const entities = parseEntities(raw.entities, version)
     if (entities.length === 0) continue
     seen.add(name)
     blocks.push(
@@ -834,18 +834,18 @@ function parseNamedUcs(value: unknown): NamedUcs[] {
   return table
 }
 
-function parseEntities(value: unknown): Entity[] {
+function parseEntities(value: unknown, version: number): Entity[] {
   if (!Array.isArray(value)) return []
   const entities: Entity[] = []
   for (const raw of value) {
-    const entity = parseEntity(raw)
+    const entity = parseEntity(raw, version)
     if (entity) entities.push(entity)
   }
   return entities
 }
 
-function parseEntity(raw: unknown): Entity | null {
-  const shape = parseEntityShape(raw)
+function parseEntity(raw: unknown, version: number): Entity | null {
+  const shape = parseEntityShape(raw, version)
   return shape && isRecord(raw) ? parsePlane(raw, shape) : shape
 }
 
@@ -876,7 +876,21 @@ function parseVec3(value: unknown): Vec3 | null {
     : null
 }
 
-function parseEntityShape(raw: unknown): Entity | null {
+/**
+ * A spline's end tangent is the curve's derivative there, which SPLINE gives
+ * unit (spline/p306). Before 29 it was only a direction, stored at the length
+ * picked: read as AutoCAD would have stored that pick.
+ */
+function endTangentOf(value: unknown, version: number): Vec2 | undefined {
+  const tangent = parseVec2(value)
+  if (!tangent || version >= 29) return tangent ?? undefined
+  const length = Math.hypot(tangent.x, tangent.y)
+  return length > 0
+    ? { x: tangent.x / length, y: tangent.y / length }
+    : undefined
+}
+
+function parseEntityShape(raw: unknown, version: number): Entity | null {
   if (!isRecord(raw)) return null
   const id =
     typeof raw.id === "string" && raw.id.length > 0 ? raw.id : nextEntityId()
@@ -972,7 +986,7 @@ function parseEntityShape(raw: unknown): Entity | null {
           knots,
           closed: raw.closed === true,
           startTangent: parseVec2(raw.startTangent) ?? undefined,
-          endTangent: parseVec2(raw.endTangent) ?? undefined,
+          endTangent: endTangentOf(raw.endTangent, version),
           layerId,
           id,
         }),

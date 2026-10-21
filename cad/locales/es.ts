@@ -338,6 +338,7 @@ export const es: EngineLocale = {
         "block": "Bloque",
         "attributes": "Atributos",
         "misc": "Varios",
+        "dataPoints": "Puntos auxiliares",
         "selection": "Selección"
       },
       "row": {
@@ -419,7 +420,28 @@ export const es: EngineLocale = {
         "lockPosition": "Bloquear posición",
         "method": "Método",
         "degree": "Grado",
-        "knotParameterization": "Parametrización de nudos"
+        "knotParameterization": "Parametrización de nudos",
+        "numberOfFitPoints": "Número de puntos de ajuste",
+        "currentFitPoint": "Punto de ajuste actual",
+        "fitPointX": "Punto de ajuste X",
+        "fitPointY": "Punto de ajuste Y",
+        "fitPointZ": "Punto de ajuste Z",
+        "numberOfControlPoints": "Número de puntos de apoyo",
+        "currentControlPoint": "Punto de apoyo actual",
+        "controlPointX": "Punto de apoyo X",
+        "controlPointY": "Punto de apoyo Y",
+        "controlPointZ": "Punto de apoyo Z",
+        "weight": "Peso",
+        "cvFrame": "Marco de vértices de control",
+        "periodic": "Periódica",
+        "planar": "Plana",
+        "startTangentVectorX": "Inicio vector de tangente X",
+        "startTangentVectorY": "Inicio vector de tangente Y",
+        "startTangentVectorZ": "Inicio vector de tangente Z",
+        "endTangentVectorX": "Vector de tangente final X",
+        "endTangentVectorY": "Vector de tangente final Y",
+        "endTangentVectorZ": "Vector de tangente final Z",
+        "fitTolerance": "Ajustar tolerancia"
       },
       "value": {
         "yes": "Sí",
@@ -428,10 +450,12 @@ export const es: EngineLocale = {
         "atLeast": "Al menos",
         "exactly": "Exactamente",
         "fitPoints": "Ajustar",
-        "controlVertices": "VC",
+        "controlVertices": "Vértices de control",
         "chord": "Cuerda",
-        "sqrtChord": "Raíz cuadrada",
-        "uniform": "Uniforme"
+        "sqrtChord": "RaízcuadradaCuerda",
+        "uniform": "Uniforme",
+        "show": "Mostrar",
+        "hide": "Ocultar"
       },
       "justify": {
         "left": "Izquierda",
@@ -2328,6 +2352,12 @@ export const es: EngineLocale = {
         ]
       ],
       "explodeLostWidth": "Al descomponer esta línea se ha perdido información de grosor.\nSe puede restituir con el comando DESHACER.",
+      "explodeCannot": [
+        "No se puede descomponer ",
+        [
+          "name"
+        ]
+      ],
       "currentUcsName": [
         "Nombre de scp actual:  ",
         [

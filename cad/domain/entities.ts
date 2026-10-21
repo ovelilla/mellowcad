@@ -97,7 +97,7 @@ export {
 } from "./ellipses"
 export type { EllipseLength, EllipsePiece } from "./ellipses"
 
-export type { SplineOptions } from "./splines"
+export type { SplineLength, SplineOptions } from "./splines"
 export {
   MAX_SPLINE_DEGREE,
   DEFAULT_SPLINE_DEGREE,
@@ -105,12 +105,14 @@ export {
   mapSplinePoints,
   splineCopy,
   splineWithPoint,
+  splineDataPoints,
   splineCurve,
-  splineControlFrame,
   splinePolyline,
+  splineChords,
   splineStartPoint,
   splineEndPoint,
   splineLength,
+  splineLengthTable,
   splineMidpoint,
   splineArea,
   splineBounds,

@@ -17,6 +17,7 @@ import {
   planeAxes,
   translateEntity,
   withLineZ,
+  splineDataPoints,
 } from "../domain/entities"
 import { COLOR_BYLAYER, EntityColor, normalizeColor } from "../domain/colors"
 import { LayerId } from "../domain/layers"
@@ -253,11 +254,14 @@ function applyInUcs(
   vertex: number
 ): Entity | null {
   if (
-    entity.type === "polyline" &&
+    (entity.type === "polyline" || entity.type === "spline") &&
     (property === "vertexX" || property === "vertexY")
   ) {
-    // The vertex moves along that UCS axis, and stays in the polyline's plane.
-    const at = entity.vertices[vertex]
+    // The vertex moves along that UCS axis, and stays in the object's plane.
+    const at =
+      entity.type === "polyline"
+        ? entity.vertices[vertex]
+        : splineDataPoints(entity)[vertex]
     if (!at) return null
     const target = ucsPointToWorld(ucs, {
       ...worldPointToUcs(ucs, entityPointToWorld(entity, at)),

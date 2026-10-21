@@ -53,7 +53,11 @@ export interface Grip {
   readonly role: GripRole
   /** In the WCS, on its object: at its height there and in its plane. */
   readonly world: Vec3
+  /** How it is drawn: round at a CV spline's vertices, else a square. */
+  readonly shape?: GripShape
 }
+
+export type GripShape = "square" | "round"
 
 export type SelectToolState =
   | {

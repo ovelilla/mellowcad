@@ -13,6 +13,7 @@ import {
   ellipseSemiMinor,
   ellipseStartPoint,
   isFullEllipse,
+  splineCurve,
   splineEndPoint,
   splineStartPoint,
 } from "../../domain/entities"
@@ -2450,13 +2451,16 @@ describe("SPLINE", () => {
     )
     cad.option("Close")
 
+    // Three vertices keep degree 3 closed, where open they would drop to 2
+    // (probes spline/p129, p305).
     const spline = cad.only<SplineEntity>("spline")
     expect(spline.closed).toBe(true)
-    expect(spline.degree).toBe(2)
+    expect(spline.degree).toBe(3)
     expect(cad.activeToolId()).toBe("select")
   })
 
-  it("shows its method, degree, knots and closure in the palette", () => {
+  // desktop spline/d10-3: what Close leaves, in the palette's two groups.
+  it("shows its fit points, method, degree, knots and closure in the palette", () => {
     const cad = createHarness()
 
     cad.command("SPLINE").click(p(0, 0)).click(p(100, 0)).click(p(50, 80))
@@ -2464,10 +2468,19 @@ describe("SPLINE", () => {
 
     const rows = cad.state().properties.info!.groups.flatMap((g) => g.rows)
     expect(rows.map((row) => [row.id, row.value])).toEqual([
+      ["numberOfFitPoints", "4"],
+      ["currentFitPoint", "1"],
+      ["fitPointX", "0.00"],
+      ["fitPointY", "0.00"],
+      ["fitPointZ", "0.00"],
+      ["knotParameterization", "Chord"],
+      ["cvFrame", "Hide"],
       ["method", "Fit"],
       ["degree", "3"],
-      ["knotParameterization", "Chord"],
       ["closed", "Yes"],
+      ["periodic", "Yes"],
+      ["planar", "Yes"],
+      ["fitTolerance", "0.00"],
       ["area", expect.stringMatching(/mm²$/)],
     ])
   })
@@ -2828,13 +2841,119 @@ describe("SPLINE", () => {
 
       const ended = answer(createHarness(), "SPLINE", "0,0", "20,0", "30,10")
       answer(ended, "_T", "@1,1")
-      expect(
-        V.normalize(ended.only<SplineEntity>("spline").endTangent!)
-      ).toBeCloseToPoint(V.normalize(p(1, 1)))
+      expect(ended.only<SplineEntity>("spline").endTangent).toBeCloseToPoint(
+        V.normalize(p(1, 1))
+      )
 
       const none = answer(createHarness(), "SPLINE", "0,0", "_T", "@")
       answer(none, "20,0", "30,10", "")
       expect(none.only<SplineEntity>("spline").startTangent).toBeUndefined()
+    })
+
+    // probes spline/p302, p306: the start tangent kept as typed from the
+    // first point, the end one unit, however far its point; MPDUMP's control
+    // points of the curve they make.
+    it.each([
+      [
+        "p302#1",
+        ["0,0", "_T", "100,0", "10,10", "20,0", "30,10", ""],
+        p(100, 0),
+        undefined,
+        [
+          p(0, 0),
+          p(471.404520791, 0),
+          p(-206.03285575, 19.230769231),
+          p(74.008213937, -7.307692308),
+          p(44.669404646, 4.230769231),
+          p(30, 10),
+        ],
+      ],
+      [
+        "p302#3",
+        ["0,0", "_T", "0,5", "10,10", "20,0", "30,10", "_T", "30,15"],
+        p(0, 5),
+        p(0, 1),
+        [
+          p(0, 0),
+          p(0, 23.57022604),
+          p(12, 8.37202182),
+          p(18, -4.657415431),
+          p(30, 5.285954792),
+          p(30, 10),
+        ],
+      ],
+      [
+        "p306#0",
+        ["0,0", "10,10", "20,0", "30,10", "_T", "130,10"],
+        undefined,
+        p(1, 0),
+        [
+          p(0, 0),
+          p(3.28022903, 5.769230769),
+          p(9.840687091, 17.307692308),
+          p(20.637251634, -9.230769231),
+          p(25.285954792, 10),
+          p(30, 10),
+        ],
+      ],
+      [
+        "p306#2",
+        [
+          "_K",
+          "_S",
+          "0,0",
+          "_T",
+          "2,0",
+          "10,10",
+          "20,0",
+          "30,10",
+          "_T",
+          "30,8",
+        ],
+        p(2, 0),
+        p(0, -1),
+        [
+          p(0, 0),
+          p(2.507068729, 0),
+          p(10.830034593, 20.167137915),
+          p(18.33427583, -10.584982703),
+          p(30, 11.253534364),
+          p(30, 10),
+        ],
+      ],
+    ])(
+      "stores %s's tangents as AutoCAD does",
+      (_, answers, start, end, controlPoints) => {
+        const cad = answer(createHarness(), "SPLINE", ...answers)
+        const spline = cad.only<SplineEntity>("spline")
+        if (start) expect(spline.startTangent).toBeCloseToPoint(start, 12)
+        else expect(spline.startTangent).toBeUndefined()
+        if (end) expect(spline.endTangent).toBeCloseToPoint(end, 12)
+        else expect(spline.endTangent).toBeUndefined()
+        expect(splineCurve(spline).controlPoints).toBeCloseToPoints(
+          controlPoints,
+          8
+        )
+      }
+    )
+
+    // probe spline/p01: four fit points ended by Enter, free at both ends.
+    it("draws p01's curve, free at both ends", () => {
+      const cad = answer(createHarness(), "SPLINE", "0,0", "10,10", "20,0")
+      answer(cad, "30,10", "")
+      expect(
+        splineCurve(cad.only<SplineEntity>("spline")).controlPoints
+      ).toBeCloseToPoints(
+        [
+          p(0, 0),
+          p(3.333333333, 5.555555556),
+          p(10, 16.666666667),
+          p(20, -6.666666667),
+          p(26.666666667, 4.444444444),
+          p(30, 10),
+        ],
+        8
+      )
     })
 
     it("takes FROM and the object snaps at its points (p247, p240)", () => {
@@ -2986,9 +3105,10 @@ describe("SPLINE", () => {
       cad.moveTo(p(10, 40)).type("10").type("90", "angle").enter()
       cad.click(p(20, 0)).click(p(30, 10))
       cad.option("end Tangency").moveTo(p(60, 50)).type("10").enter()
+      // The end tangent stored unit, its length dropped (spline/p306).
       const spline = cad.only<SplineEntity>("spline")
       expect(spline.startTangent).toBeCloseToPoint(p(0, 10))
-      expect(spline.endTangent).toBeCloseToPoint(p(6, 8))
+      expect(spline.endTangent).toBeCloseToPoint(p(0.6, 0.8))
     })
 
     it("takes a point typed in the box relative to the tangent's base, and Enter as before", () => {
@@ -2999,7 +3119,7 @@ describe("SPLINE", () => {
       cad.option("end Tangency").type("@5,0").enter()
       const spline = cad.only<SplineEntity>("spline")
       expect(spline.startTangent).toBeCloseToPoint(p(0, 10))
-      expect(spline.endTangent).toBeCloseToPoint(p(5, 0))
+      expect(spline.endTangent).toBeCloseToPoint(p(1, 0))
 
       const skipped = createHarness()
       skipped.command("SPLINE").click(p(0, 0)).option("start Tangency")

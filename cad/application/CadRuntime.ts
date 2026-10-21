@@ -12,6 +12,7 @@ import {
   EntityType,
   closestOnEntity,
   entityPointToWorld,
+  splineDataPoints,
 } from "../domain/entities"
 import { COLOR_BYLAYER, EntityColor } from "../domain/colors"
 import {
@@ -3536,16 +3537,22 @@ export class CadRuntime extends Observable {
   }
 
   /**
-   * The polyline vertex the palette's Vertex row shows, as AutoCAD's palette
-   * steps through them: a number from 1 to the vertex count. No geometry
-   * changes, so nothing is undone.
+   * The polyline vertex the palette's Vertex row shows, or the spline's fit
+   * or control point, as AutoCAD's palette steps through them: a number from
+   * 1 to their count. No geometry changes, so nothing is undone.
    */
   private setPaletteVertex(ids: readonly EntityId[], text: string): boolean {
     const entity = ids.length === 1 ? this.document.get(ids[0]) : undefined
     const value = parseNumber(text)
-    if (entity?.type !== "polyline" || value === null) return false
+    const count =
+      entity?.type === "polyline"
+        ? entity.vertices.length
+        : entity?.type === "spline"
+          ? splineDataPoints(entity).length
+          : 0
+    if (value === null) return false
     const index = Math.round(value) - 1
-    if (index < 0 || index >= entity.vertices.length) return false
+    if (index < 0 || index >= count) return false
     this.paletteVertex = index
     this.invalidateState()
     return true

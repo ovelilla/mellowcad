@@ -357,6 +357,7 @@ export const ar: EngineLocale = {
         "block": "الكتلة",
         "attributes": "السمات",
         "misc": "متفرقات",
+        "dataPoints": "نقاط البيانات",
         "selection": "التحديد"
       },
       "row": {
@@ -438,7 +439,28 @@ export const ar: EngineLocale = {
         "lockPosition": "قفل الموضع",
         "method": "الطريقة",
         "degree": "الدرجة",
-        "knotParameterization": "توزيع العُقد"
+        "knotParameterization": "توزيع العُقد",
+        "numberOfFitPoints": "عدد نقاط الملاءمة",
+        "currentFitPoint": "نقطة الملاءمة الحالية",
+        "fitPointX": "نقطة الملاءمة X",
+        "fitPointY": "نقطة الملاءمة Y",
+        "fitPointZ": "نقطة الملاءمة Z",
+        "numberOfControlPoints": "عدد نقاط التحكم",
+        "currentControlPoint": "نقطة التحكم الحالية",
+        "controlPointX": "نقطة التحكم X",
+        "controlPointY": "نقطة التحكم Y",
+        "controlPointZ": "نقطة التحكم Z",
+        "weight": "الوزن",
+        "cvFrame": "إطار رؤوس التحكم",
+        "periodic": "دوري",
+        "planar": "مستوٍ",
+        "startTangentVectorX": "متجه مماس البداية X",
+        "startTangentVectorY": "متجه مماس البداية Y",
+        "startTangentVectorZ": "متجه مماس البداية Z",
+        "endTangentVectorX": "متجه مماس النهاية X",
+        "endTangentVectorY": "متجه مماس النهاية Y",
+        "endTangentVectorZ": "متجه مماس النهاية Z",
+        "fitTolerance": "تفاوت الملاءمة"
       },
       "value": {
         "yes": "نعم",
@@ -449,8 +471,10 @@ export const ar: EngineLocale = {
         "fitPoints": "ملاءمة",
         "controlVertices": "رؤوس التحكم",
         "chord": "الوتر",
-        "sqrtChord": "الجذر التربيعي",
-        "uniform": "منتظم"
+        "sqrtChord": "الجذر التربيعي للوتر",
+        "uniform": "منتظم",
+        "show": "إظهار",
+        "hide": "إخفاء"
       },
       "justify": {
         "left": "يسار",

@@ -38,10 +38,15 @@ export class ExplodeTool extends SelectionActionTool {
       (e) => e.type === "polyline" || e.type === "insert" || e.type === "mtext"
     )
     // AutoCAD accepts any object at the prompt and then says what it could not
-    // do, rather than silently ignoring the picks.
-    const rejected = entities.length - composite.length
+    // do, rather than silently ignoring the picks. A spline passes the
+    // selection and is refused by name, each one (probes spline/p319, p324).
+    const splines = entities.filter((e) => e.type === "spline").length
+    const rejected = entities.length - composite.length - splines
     if (rejected > 0) {
       ctx.report(ctx.text.message("explodeRejected", { count: rejected }))
+    }
+    for (let i = 0; i < splines; i++) {
+      ctx.report(ctx.text.message("explodeCannot", { name: "SPLINE" }))
     }
     if (composite.length === 0) return
 

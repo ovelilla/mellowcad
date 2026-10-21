@@ -38,6 +38,7 @@ import {
   withElevation,
   withThickness,
 } from "./elevation"
+import { splineDataPoints, splineWithPoint } from "./splines"
 
 /** A geometry value that can be retyped directly on a selected entity. */
 export type EntityProperty =
@@ -70,7 +71,7 @@ export type EntityProperty =
   | "patternScale"
   | "patternAngle"
   | "insertScale"
-  /** The palette's current vertex of a polyline, 1-based: the runtime's, no geometry. */
+  /** The palette's current vertex of a polyline, or point of a spline, 1-based: the runtime's, no geometry. */
   | "vertex"
   | "vertexX"
   | "vertexY"
@@ -156,8 +157,19 @@ export function applyEntityProperty(
       return null
     case "polyline":
       return applyPolylineProperty(entity, property, value, vertex)
-    case "spline":
-      return null
+    case "spline": {
+      // The palette's current fit point or control point; the rest is
+      // SPLINEDIT's, which is not built.
+      if (property !== "vertexX" && property !== "vertexY") return null
+      const count = entity.points.length
+      if (vertex < 0 || vertex >= splineDataPoints(entity).length) return null
+      const at = entity.points[vertex % count]
+      return splineWithPoint(
+        entity,
+        vertex % count,
+        property === "vertexX" ? { x: value, y: at.y } : { x: at.x, y: value }
+      )
+    }
     case "insert":
       return applyInsertProperty(entity, property, value)
   }

@@ -183,6 +183,269 @@ function distanceToChord(p: Vec2, a: Vec2, b: Vec2): number {
 }
 
 /**
+ * The 16-point Gauss–Legendre rule on [−1, 1]: exact for a polynomial up to
+ * degree 31, so for the area swept by a polynomial piece of any degree
+ * SPLINE takes (2 × 10 − 1). Nodes by Newton on P₁₆ from Chebyshev's guesses.
+ */
+const GAUSS = ((n: number) => {
+  const nodes: number[] = []
+  const weights: number[] = []
+  for (let i = 0; i < n; i++) {
+    let x = Math.cos((Math.PI * (i + 0.75)) / (n + 0.5))
+    let slope = 1
+    for (let step = 0; step < 100; step++) {
+      let p0 = 1
+      let p1 = x
+      for (let k = 2; k <= n; k++) {
+        const p2 = ((2 * k - 1) * x * p1 - (k - 1) * p0) / k
+        p0 = p1
+        p1 = p2
+      }
+      slope = (n * (x * p1 - p0)) / (x * x - 1)
+      const next = x - p1 / slope
+      const done = Math.abs(next - x) < 1e-16
+      x = next
+      if (done) break
+    }
+    nodes.push(x)
+    weights.push(2 / ((1 - x * x) * slope * slope))
+  }
+  return { nodes, weights }
+})(16)
+
+/** `∫ f` over `[a, b]` by {@link GAUSS}. */
+function gauss(f: (u: number) => number, a: number, b: number): number {
+  const half = (b - a) / 2
+  const middle = (a + b) / 2
+  let sum = 0
+  for (let i = 0; i < GAUSS.nodes.length; i++) {
+    sum += GAUSS.weights[i] * f(middle + half * GAUSS.nodes[i])
+  }
+  return sum * half
+}
+
+/** The pieces of `[from, to]` that lie on one polynomial piece of the curve each. */
+function pieces(curve: BSplineCurve, from: number, to: number): number[] {
+  const cuts = [from]
+  for (const knot of bsplineBreakpoints(curve)) {
+    if (knot > from && knot < to) cuts.push(knot)
+  }
+  cuts.push(to)
+  return cuts
+}
+
+/**
+ * The length of the curve from `from` to `to`, by Gauss on each polynomial
+ * piece, halved until the halves agree. The speed is a square root, no
+ * polynomial, so no rule is exact; a cusp (zero speed) converges slowly,
+ * hence the cap.
+ */
+export function bsplineLength(
+  curve: BSplineCurve,
+  from = bsplineDomain(curve).start,
+  to = bsplineDomain(curve).end
+): number {
+  if (!(to > from)) return 0
+  const hodograph = bsplineDerivativeCurve(curve)
+  const speed = (u: number) => V.length(bsplinePoint(hodograph, u))
+  const adaptive = (
+    a: number,
+    b: number,
+    whole: number,
+    depth: number
+  ): number => {
+    const m = (a + b) / 2
+    const left = gauss(speed, a, m)
+    const right = gauss(speed, m, b)
+    if (
+      depth >= MAX_LENGTH_HALVINGS ||
+      Math.abs(left + right - whole) <= 1e-14 * Math.max(whole, 1e-300)
+    ) {
+      return left + right
+    }
+    return adaptive(a, m, left, depth + 1) + adaptive(m, b, right, depth + 1)
+  }
+  const cuts = pieces(curve, from, to)
+  let length = 0
+  for (let i = 1; i < cuts.length; i++) {
+    const a = cuts[i - 1]
+    const b = cuts[i]
+    length += adaptive(a, b, gauss(speed, a, b), 0)
+  }
+  return length
+}
+
+/** Halvings of one polynomial piece when measuring its length: 2¹⁰ sub-pieces is past a double's precision but for a cusp. */
+const MAX_LENGTH_HALVINGS = 10
+
+/**
+ * The parameter `length` along the curve from its start, clamped to the
+ * domain: Newton on the arc length within the piece that holds it, kept
+ * inside a shrinking bracket.
+ */
+export function bsplineParamAtLength(
+  curve: BSplineCurve,
+  length: number
+): number {
+  const { start, end } = bsplineDomain(curve)
+  if (!(length > 0)) return start
+  const hodograph = bsplineDerivativeCurve(curve)
+  const cuts = pieces(curve, start, end)
+  let walked = 0
+  for (let i = 1; i < cuts.length; i++) {
+    const a = cuts[i - 1]
+    const b = cuts[i]
+    const piece = bsplineLength(curve, a, b)
+    if (walked + piece < length && i < cuts.length - 1) {
+      walked += piece
+      continue
+    }
+    const target = length - walked
+    if (target >= piece) return b
+    let low = a
+    let high = b
+    let u = a + ((b - a) * target) / piece
+    for (let step = 0; step < MAX_LENGTH_STEPS; step++) {
+      const miss = bsplineLength(curve, a, u) - target
+      if (Math.abs(miss) <= 1e-13 * Math.max(piece, 1e-300)) break
+      if (miss > 0) high = u
+      else low = u
+      const speed = V.length(bsplinePoint(hodograph, u))
+      const next = speed > 0 ? u - miss / speed : NaN
+      u = next > low && next < high ? next : (low + high) / 2
+    }
+    return u
+  }
+  return end
+}
+
+/** Newton converges in a handful of steps; the rest are bisections near a cusp. */
+const MAX_LENGTH_STEPS = 60
+
+/**
+ * The curve's length, and the parameter at any distance along it, for many
+ * distances at once: a table of each polynomial piece cut in
+ * {@link LENGTH_TABLE_PARTS} parts, each measured as {@link bsplineLength}
+ * does; inside the part that holds a distance, at most
+ * {@link LENGTH_TABLE_STEPS} Newton steps on {@link GAUSS}'s length from the
+ * part's start, which on so short a stretch is exact to the double's
+ * precision but near a cusp.
+ */
+export function bsplineLengthTable(curve: BSplineCurve): {
+  readonly length: number
+  /** The parameter at `distance` along the curve from its start, clamped to it. */
+  paramAt(distance: number): number
+} {
+  const hodograph = bsplineDerivativeCurve(curve)
+  const speed = (u: number) => V.length(bsplinePoint(hodograph, u))
+  const breaks = bsplineBreakpoints(curve)
+  const cuts = [breaks[0]]
+  for (let i = 1; i < breaks.length; i++) {
+    const h = (breaks[i] - breaks[i - 1]) / LENGTH_TABLE_PARTS
+    for (let k = 1; k < LENGTH_TABLE_PARTS; k++) {
+      cuts.push(breaks[i - 1] + k * h)
+    }
+    cuts.push(breaks[i])
+  }
+  const lengths = [0]
+  for (let i = 1; i < cuts.length; i++) {
+    lengths.push(lengths[i - 1] + bsplineLength(curve, cuts[i - 1], cuts[i]))
+  }
+  const length = lengths[lengths.length - 1]
+  return {
+    length,
+    paramAt(distance: number): number {
+      if (!(distance > 0) || !(length > 0)) return cuts[0]
+      if (distance >= length) return cuts[cuts.length - 1]
+      let low = 0
+      let high = cuts.length - 1
+      while (high - low > 1) {
+        const mid = (low + high) >> 1
+        if (lengths[mid] <= distance) low = mid
+        else high = mid
+      }
+      const from = cuts[low]
+      const to = cuts[low + 1]
+      const part = lengths[low + 1] - lengths[low]
+      const target = distance - lengths[low]
+      let u = from + (part > 0 ? ((to - from) * target) / part : 0)
+      for (let step = 0; step < LENGTH_TABLE_STEPS; step++) {
+        const miss = gauss(speed, from, u) - target
+        if (Math.abs(miss) <= 1e-12 * Math.max(part, 1e-300)) break
+        const rate = speed(u)
+        if (!(rate > 0)) break
+        u = Math.min(Math.max(u - miss / rate, from), to)
+      }
+      return u
+    },
+  }
+}
+
+/** Parts of each polynomial piece in {@link bsplineLengthTable}: the speed varies little across one, so Newton starts close. */
+const LENGTH_TABLE_PARTS = 8
+/** Newton converges quadratically from the part's linear guess; near a cusp it stops where it got. */
+const LENGTH_TABLE_STEPS = 6
+
+/**
+ * Half `∫ (x y′ − y x′) du` from `from` to `to`: the signed area the curve
+ * sweeps about the origin. Each piece is a polynomial of degree at most
+ * 2 × degree − 1, which {@link GAUSS} integrates exactly.
+ */
+export function bsplineSweptArea(
+  curve: BSplineCurve,
+  from: number,
+  to: number
+): number {
+  if (to === from) return 0
+  if (to < from) return -bsplineSweptArea(curve, to, from)
+  const hodograph = bsplineDerivativeCurve(curve)
+  const integrand = (u: number) =>
+    V.cross(bsplinePoint(curve, u), bsplinePoint(hodograph, u))
+  const cuts = pieces(curve, from, to)
+  let twice = 0
+  for (let i = 1; i < cuts.length; i++) {
+    twice += gauss(integrand, cuts[i - 1], cuts[i])
+  }
+  return twice / 2
+}
+
+/**
+ * Where two curves meet near `u` on the first and `v` on the second: Newton
+ * on `C₁(u) − C₂(v) = 0`, each parameter clamped to its domain. Null when it
+ * does not converge — the curves only came close there, or touch.
+ */
+export function bsplinesMeeting(
+  first: BSplineCurve,
+  u: number,
+  second: BSplineCurve,
+  v: number
+): { readonly u: number; readonly v: number } | null {
+  const d1 = bsplineDerivativeCurve(first)
+  const d2 = bsplineDerivativeCurve(second)
+  const one = bsplineDomain(first)
+  const two = bsplineDomain(second)
+  const size = Math.max(
+    1,
+    ...first.controlPoints.map((p) => Math.abs(p.x) + Math.abs(p.y))
+  )
+  for (let step = 0; step < MEETING_STEPS; step++) {
+    const gap = V.sub(bsplinePoint(first, u), bsplinePoint(second, v))
+    if (V.length(gap) <= 1e-13 * size) return { u, v }
+    const a = bsplinePoint(d1, u)
+    const b = V.scale(bsplinePoint(d2, v), -1)
+    const det = V.cross(a, b)
+    if (Math.abs(det) < 1e-300) return null
+    u = Math.min(one.end, Math.max(one.start, u - V.cross(gap, b) / det))
+    v = Math.min(two.end, Math.max(two.start, v - V.cross(a, gap) / det))
+  }
+  const gap = V.sub(bsplinePoint(first, u), bsplinePoint(second, v))
+  return V.length(gap) <= 1e-9 * size ? { u, v } : null
+}
+
+/** Newton converges quadratically from a chord's crossing; a dozen steps are plenty. */
+const MEETING_STEPS = 12
+
+/**
  * The parameter of each fit point, starting at 0 and **not normalised** — the
  * range AutoCAD's LIST reports is the sum of the chords. A closed set gets one
  * more value, for the closing chord back to the first point.
@@ -204,68 +467,71 @@ export function fitParameters(
 }
 
 /**
- * The cubic through `points` at `params`, with the given derivatives at its two
- * ends (Piegl & Tiller §9.2.2): n + 1 points give n + 3 control points, the
- * count AutoCAD's LIST reports for a fit spline.
+ * The cubic through `points` at `params` (Piegl & Tiller §9.2.2): n + 1 points
+ * give n + 3 control points, the count AutoCAD's LIST reports for a fit
+ * spline. Each end takes the derivative given, or, with `null`, no curvature
+ * (C″ = 0): AutoCAD's free end, which reproduces its control points to the
+ * last decimal where Bessel's parabola is a third off (probes spline/p01,
+ * p300, p301).
  */
 export function interpolateCubic(
   points: readonly Vec2[],
   params: readonly number[],
-  startDerivative: Vec2,
-  endDerivative: Vec2
+  startDerivative: Vec2 | null,
+  endDerivative: Vec2 | null
 ): BSplineCurve {
   const n = points.length - 1
   const u0 = params[0]
   const un = params[n]
   const knots = [u0, u0, u0, u0, ...params.slice(1, n), un, un, un, un]
-  const first = points[0]
-  const last = points[n]
-  const second = V.add(first, V.scale(startDerivative, (params[1] - u0) / 3))
-  const beforeLast = V.sub(
-    last,
-    V.scale(endDerivative, (un - params[n - 1]) / 3)
-  )
-  const unknowns = n - 1
-  if (unknowns <= 0) {
-    return {
-      degree: 3,
-      knots,
-      controlPoints: [first, second, beforeLast, last],
-    }
-  }
   const draft: BSplineCurve = {
     degree: 3,
     knots,
     controlPoints: Array.from({ length: n + 3 }, () => V.zero()),
   }
-  const known = new Map<number, Vec2>([
-    [0, first],
-    [1, second],
-    [n + 1, beforeLast],
-    [n + 2, last],
-  ])
   const matrix: number[][] = []
   const rhs: Vec2[] = []
-  for (let k = 1; k < n; k++) {
-    const row = new Array<number>(unknowns).fill(0)
-    let target = points[k]
-    const span = findSpan(draft, params[k])
-    const basis = basisFunctions(draft, span, params[k])
-    for (let j = 0; j <= 3; j++) {
-      const index = span - 3 + j
-      const fixed = known.get(index)
-      if (fixed) target = V.sub(target, V.scale(fixed, basis[j]))
-      else row[index - 2] += basis[j]
+  for (let k = 0; k <= n; k++) {
+    matrix.push(basisRow(draft, params[k], 0))
+    rhs.push(points[k])
+  }
+  for (const [u, derivative] of [
+    [u0, startDerivative],
+    [un, endDerivative],
+  ] as const) {
+    matrix.push(basisRow(draft, u, derivative ? 1 : 2))
+    rhs.push(derivative ?? V.zero())
+  }
+  return { degree: 3, knots, controlPoints: solveLinear(matrix, rhs) }
+}
+
+/**
+ * The weight of each control point in the curve's `order`th derivative at
+ * `u`: one row of an interpolation system. A derivative is read off the
+ * hodograph of a curve whose only non-zero control point is the one weighed.
+ */
+function basisRow(curve: BSplineCurve, u: number, order: number): number[] {
+  const count = curve.controlPoints.length
+  const row = new Array<number>(count).fill(0)
+  const span = findSpan(curve, u)
+  if (order === 0) {
+    const basis = basisFunctions(curve, span, u)
+    for (let j = 0; j <= curve.degree; j++) {
+      row[span - curve.degree + j] = basis[j]
     }
-    matrix.push(row)
-    rhs.push(target)
+    return row
   }
-  const solved = solveLinear(matrix, rhs)
-  return {
-    degree: 3,
-    knots,
-    controlPoints: [first, second, ...solved, beforeLast, last],
+  for (let i = span - curve.degree; i <= span; i++) {
+    let unit: BSplineCurve = {
+      ...curve,
+      controlPoints: curve.controlPoints.map((_, j) =>
+        j === i ? { x: 1, y: 0 } : V.zero()
+      ),
+    }
+    for (let d = 0; d < order; d++) unit = bsplineDerivativeCurve(unit)
+    row[i] = bsplinePoint(unit, u).x
   }
+  return row
 }
 
 /**
@@ -304,38 +570,6 @@ export function interpolatePeriodicCubic(
     knots,
     controlPoints: [...solved, solved[0], solved[1], solved[2]],
   }
-}
-
-/**
- * The derivative at the start of a fit that has no tangent given: that of the
- * parabola through the first three points (Bessel's end condition), or of the
- * chord when there are only two.
- */
-export function besselStartDerivative(
-  points: readonly Vec2[],
-  params: readonly number[]
-): Vec2 {
-  const d1 = V.scale(V.sub(points[1], points[0]), 1 / (params[1] - params[0]))
-  if (points.length < 3) return d1
-  const d2 = V.scale(V.sub(points[2], points[1]), 1 / (params[2] - params[1]))
-  const a = params[1] - params[0]
-  const b = params[2] - params[1]
-  const middle = V.scale(V.add(V.scale(d1, b), V.scale(d2, a)), 1 / (a + b))
-  return V.sub(V.scale(d1, 2), middle)
-}
-
-/** {@link besselStartDerivative} at the other end, pointing along the curve. */
-export function besselEndDerivative(
-  points: readonly Vec2[],
-  params: readonly number[]
-): Vec2 {
-  const last = points.length - 1
-  const reversedPoints = [...points].reverse()
-  const reversedParams = params
-    .slice(0, last + 1)
-    .map((u) => params[last] - u)
-    .reverse()
-  return V.scale(besselStartDerivative(reversedPoints, reversedParams), -1)
 }
 
 /**

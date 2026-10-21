@@ -5,6 +5,7 @@ import {
   arcMidpoint,
   arcStartPoint,
   dimensionGeometry,
+  Entity,
   ellipseEndPoint,
   ellipsePointAt,
   ellipseStartPoint,
@@ -21,7 +22,7 @@ import { normalizeAngle, polarPoint } from "../../geometry/primitives"
 import { ScenePrimitive } from "../../scene/types"
 import { THEME } from "../../scene/theme"
 import { ToolContext } from "./Tool"
-import { Grip } from "./selectToolState"
+import { Grip, GripShape } from "./selectToolState"
 import { mtextWidthGrip } from "./selectToolEdits"
 
 /** Half-size (screen pixels) of the small square grips drawn on a selection. */
@@ -132,6 +133,7 @@ export function selectedGrips(ctx: ToolContext): Grip[] {
             entityId: id,
             role: { kind: "vertex", index },
             world: point,
+            shape: vertexGripShape(entity),
           })
         })
         break
@@ -252,6 +254,11 @@ export function selectedGrips(ctx: ToolContext): Grip[] {
   return lifted
 }
 
+/** A vertex grip's shape: round at a CV spline's (desktop spline/d09-1), square at a fit spline's (d08-1) and a polyline's. */
+export function vertexGripShape(entity: Entity): GripShape {
+  return entity.type === "spline" && entity.method === "cv" ? "round" : "square"
+}
+
 /** The selected-object grip under `screen`, if any (nearest wins). */
 export function hitGrip(screen: Vec2, ctx: ToolContext): Grip | null {
   let best: Grip | null = null
@@ -286,9 +293,28 @@ function segmentGripPoint(seg: PolylineSegmentGeometry): Vec2 {
   return polarPoint(seg.center, seg.radius, seg.startAngle + sweep / 2)
 }
 
-/** The scene primitives for one grip: a filled square in cold/hot colour. */
-export function gripPrimitives(at: Vec2, hot: boolean): ScenePrimitive[] {
+/**
+ * The scene primitives for one grip: a filled square in cold/hot colour, or
+ * a disc as wide where AutoCAD draws one round (a CV spline's vertices,
+ * desktop spline/d09-1).
+ */
+export function gripPrimitives(
+  at: Vec2,
+  hot: boolean,
+  shape: GripShape = "square"
+): ScenePrimitive[] {
   const color = hot ? THEME.gripHot : THEME.grip
+  if (shape === "round") {
+    return [
+      {
+        kind: "circle",
+        center: at,
+        radius: GRIP_HALF_PX,
+        fill: color,
+        stroke: { color: "#ffffff", width: 1 },
+      },
+    ]
+  }
   return [
     {
       kind: "rect",
@@ -301,9 +327,14 @@ export function gripPrimitives(at: Vec2, hot: boolean): ScenePrimitive[] {
   ]
 }
 
-/** Appends a small square grip marker centred at a screen point. */
-export function pushGrip(out: ScenePrimitive[], at: Vec2, hot: boolean): void {
-  out.push(...gripPrimitives(at, hot))
+/** Appends a small grip marker centred at a screen point. */
+export function pushGrip(
+  out: ScenePrimitive[],
+  at: Vec2,
+  hot: boolean,
+  shape?: GripShape
+): void {
+  out.push(...gripPrimitives(at, hot, shape))
 }
 
 /**

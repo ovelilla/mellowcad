@@ -679,6 +679,40 @@ describe("grips", () => {
     ])
   })
 
+  // desktop spline/d09-1, d09-3: round grips at a CV spline's vertices;
+  // d08-1: squares at a fit spline's fit points.
+  it.each([
+    ["cv", "circle"],
+    ["fit", "rect"],
+  ] as const)("draws a %s spline's grips as %s", (method, kind) => {
+    const cad = createHarness({
+      entities: [
+        createSpline(method, [p(0, 0), p(100, 100), p(200, 0)], { id: "S1" }),
+      ],
+    })
+    cad.select("S1").moveTo(p(500, 500))
+
+    const grips = cad
+      .scene()
+      .primitives.filter(
+        (q) =>
+          "fill" in q && (q.fill === THEME.grip || q.fill === THEME.gripHot)
+      )
+    expect(grips.map((grip) => grip.kind)).toEqual([kind, kind, kind])
+
+    // The grip under the cursor, and the one dragged, keep the shape.
+    cad.moveTo(p(100, 100))
+    const hot = cad
+      .scene()
+      .primitives.filter((q) => "fill" in q && q.fill === THEME.gripHot)
+    expect(hot.map((grip) => grip.kind)).toEqual([kind])
+    cad.click(p(100, 100)).moveTo(p(100, 60))
+    const dragged = cad
+      .scene()
+      .primitives.filter((q) => "fill" in q && q.fill === THEME.gripHot)
+    expect(dragged.map((grip) => grip.kind)).toEqual([kind])
+  })
+
   it("draws a selected CV spline's frame dashed (desktop spline/d09-1)", () => {
     // WHY the crosshair's grey and not d09's muted red: SPLINE-D61, one frame
     // look while drawing (d07) and selected.

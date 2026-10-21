@@ -40,6 +40,7 @@ import {
   polylineConstantWidth,
   polylineWidth,
   splineArea,
+  splineDataPoints,
   dimensionMeasurement,
   dimensionMeasurementUnit,
   entityElevation,
@@ -1156,24 +1157,72 @@ function singleEntityInfo(
       }
     }
     case "spline": {
-      // Read-only: retyping the degree or closing it is SPLINEDIT's work, and
-      // SPLINEDIT is not built.
+      // AutoCAD's two groups and rows, in its order (desktop spline/d10-1 to
+      // d10-3). Only the current point moves, as the polyline's vertex does:
+      // the method, degree, knots, closure and frame are SPLINEDIT's and
+      // CVSHOW's, not built; no toLerance and no weights are, so Fit
+      // tolerance reads 0 and Weight −1, as d10 shows them.
+      const fit = entity.method === "fit"
+      const points = splineDataPoints(entity)
+      const current = Math.min(vertex, points.length - 1)
+      const point = at(points[current])
+      const yesNo = (yes: boolean) => text.propertyValue(yes ? "yes" : "no")
+      const origin = entityPointToWorld(entity, V.zero())
+      const vector = (v: Vec2 | undefined) =>
+        v
+          ? worldDirectionToUcs(
+              settings.ucs,
+              sub3(entityPointToWorld(entity, v), origin)
+            )
+          : { x: 0, y: 0, z: 0 }
+      const tangentRows = (): PropertyRow[] => {
+        const start = vector(entity.startTangent)
+        const end = vector(entity.endTangent)
+        return [
+          row("startTangentVectorX", coord(start.x + 0)),
+          row("startTangentVectorY", coord(start.y + 0)),
+          row("startTangentVectorZ", coord(start.z + 0)),
+          row("endTangentVectorX", coord(end.x + 0)),
+          row("endTangentVectorY", coord(end.y + 0)),
+          row("endTangentVectorZ", coord(end.z + 0)),
+        ]
+      }
       return {
         title: title("spline"),
         count: 1,
         groups: [
+          group("dataPoints", [
+            row(
+              fit ? "numberOfFitPoints" : "numberOfControlPoints",
+              String(points.length)
+            ),
+            {
+              ...row(
+                fit ? "currentFitPoint" : "currentControlPoint",
+                String(current + 1)
+              ),
+              edit: { property: "vertex", text: String(current + 1), unit: "" },
+            },
+            coordRow(fit ? "fitPointX" : "controlPointX", "vertexX", point.x),
+            coordRow(fit ? "fitPointY" : "controlPointY", "vertexY", point.y),
+            row(fit ? "fitPointZ" : "controlPointZ", coord(point.z)),
+            fit
+              ? row("knotParameterization", text.propertyValue(entity.knots))
+              : row("weight", "-1"),
+            row("cvFrame", text.propertyValue("hide")),
+          ]),
           group("misc", [
             row(
               "method",
-              text.propertyValue(
-                entity.method === "fit" ? "fitPoints" : "controlVertices"
-              )
+              text.propertyValue(fit ? "fitPoints" : "controlVertices")
             ),
             row("degree", String(entity.degree)),
-            ...(entity.method === "fit"
-              ? [row("knotParameterization", text.propertyValue(entity.knots))]
-              : []),
-            row("closed", text.propertyValue(entity.closed ? "yes" : "no")),
+            row("closed", yesNo(entity.closed)),
+            // A closed fit spline a file gave a closure tangent is not periodic.
+            row("periodic", yesNo(entity.closed && !entity.startTangent)),
+            row("planar", yesNo(true)),
+            ...(fit && !entity.closed ? tangentRows() : []),
+            ...(fit ? [row("fitTolerance", coord(0))] : []),
             ...(entity.closed ? [row("area", area(splineArea(entity)))] : []),
           ]),
         ],

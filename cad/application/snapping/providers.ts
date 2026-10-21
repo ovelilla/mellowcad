@@ -10,6 +10,11 @@ import {
   zOf,
 } from "../../geometry/Vec3"
 import { axesToWorld } from "../../geometry/ocs"
+import {
+  BSplineCurve,
+  bsplinePoint,
+  bsplinesMeeting,
+} from "../../geometry/nurbs"
 import { CameraTransform } from "../../scene/types"
 import { Ucs, ucsZAxis } from "../../domain/ucs"
 import {
@@ -25,6 +30,7 @@ import {
   segmentArcIntersection,
   segmentCircleIntersection,
   segmentSegmentIntersection,
+  signChanges,
   tangentPointsFromPoint,
 } from "../../geometry/primitives"
 import {
@@ -47,8 +53,8 @@ import {
   polylineSegmentGeometries,
   sameNormal,
   splineEndPoint,
+  splineChords,
   splineMidpoint,
-  splinePolyline,
   splineStartPoint,
   worldToEntity,
   Entity,
@@ -187,7 +193,8 @@ export const midpointProvider: SnapProvider = {
         candidates.push(
           notable(SnapType.Midpoint, entity, ellipseMidpoint(entity), touch)
         )
-      } else if (entity.type === "spline" && !entity.closed) {
+      } else if (entity.type === "spline") {
+        // Halfway along from its start, a closed one's too (spline/p311).
         candidates.push(
           notable(SnapType.Midpoint, entity, splineMidpoint(entity), touch)
         )
@@ -808,7 +815,8 @@ export const intersectionProvider: SnapProvider = {
         // Two alignment paths crossing is tracking's point, not an object's.
         if (a.fromConstruction && b.fromConstruction) continue
         if (!sameFrame(a, b)) continue
-        for (const point of intersectShapes(shapes[i], shapes[j])) {
+        for (const crossing of intersectShapes(shapes[i], shapes[j])) {
+          const point = onCurves(a, b, crossing)
           const at = meetingPoint(a, b, point)
           if (at === null) continue
           // Coarse pre-filter around the cursor; the engine judges exactly.
@@ -994,6 +1002,12 @@ type SegmentShape = {
   readonly source: Entity | null
   /** The spline this is a chord of. */
   readonly curveId?: EntityId
+  /** Its curve and the parameters the chord spans, to refine a crossing onto. */
+  readonly chordOf?: {
+    readonly curve: BSplineCurve
+    readonly from: number
+    readonly to: number
+  }
 }
 
 type CircleShape = {
@@ -1063,9 +1077,10 @@ function meetingPoint(a: SnapShape, b: SnapShape, point: Vec2): Vec3 | null {
  * uniform shape list, tagging construction geometry so downstream candidates
  * can be marked {@link SnapCandidate.transient}.
  *
- * A spline enters as the chords of its tessellation (a hundred-thousandth of
- * its size off the curve), and only those within `near.reach` of the cursor:
- * a whole tessellation would make the pairwise search quadratic in chords.
+ * A spline enters as the chords of its tessellation, each with the span of
+ * the curve it stands for (a crossing on one is refined onto the curve,
+ * `onCurves`), and only those within `near.reach` of the cursor: a whole
+ * tessellation would make the pairwise search quadratic in chords.
  */
 function collectShapes(
   document: SnapContext["document"],
@@ -1078,7 +1093,7 @@ function collectShapes(
     if (!document.isEntityVisible(entity)) continue
     if (entity.type === "spline") {
       if (!near) continue
-      const points = splinePolyline(entity)
+      const { curve, params, points } = splineChords(entity)
       const cursor = near.cursorOn(entity)
       for (let i = 1; i < points.length; i++) {
         const a = points[i - 1]
@@ -1093,6 +1108,7 @@ function collectShapes(
           fromConstruction: false,
           source: entity,
           curveId: entity.id,
+          chordOf: { curve, from: params[i - 1], to: params[i] },
         })
       }
     } else if (entity.type === "line") {
@@ -1163,6 +1179,63 @@ function collectShapes(
     }
   }
   return shapes
+}
+
+/**
+ * A crossing found on a spline's chords, moved onto the curve: bisected
+ * along the chord's span against the other shape's edge, or, two splines,
+ * met by Newton from where their chords cross (probes spline/p310, p313).
+ * The chord's point is kept where neither settles.
+ */
+function onCurves(a: SnapShape, b: SnapShape, point: Vec2): Vec2 {
+  const one = isSplineChord(a) ? a : null
+  const two = isSplineChord(b) ? b : null
+  if (one && two) {
+    const met = bsplinesMeeting(
+      one.chordOf.curve,
+      chordParam(one, point),
+      two.chordOf.curve,
+      chordParam(two, point)
+    )
+    return met ? bsplinePoint(one.chordOf.curve, met.u) : point
+  }
+  const chord = one ?? two
+  if (!chord) return point
+  const { curve, from, to } = chord.chordOf
+  const edge = edgeFunction(one ? b : a)
+  const [u] = signChanges(
+    (t) => edge(bsplinePoint(curve, t)),
+    from,
+    to - from,
+    1
+  )
+  return u === undefined ? point : bsplinePoint(curve, u)
+}
+
+type SplineChord = SegmentShape & {
+  readonly chordOf: NonNullable<SegmentShape["chordOf"]>
+}
+
+function isSplineChord(shape: SnapShape): shape is SplineChord {
+  return shape.kind === "segment" && shape.chordOf !== undefined
+}
+
+/** The parameter a chord's point stands for, by its fraction along the chord. */
+function chordParam(chord: SplineChord, point: Vec2): number {
+  const along = V.sub(chord.b, chord.a)
+  const lengthSq = V.lengthSq(along)
+  const t = lengthSq > 0 ? V.dot(V.sub(point, chord.a), along) / lengthSq : 0
+  const { from, to } = chord.chordOf
+  return from + (to - from) * Math.min(1, Math.max(0, t))
+}
+
+/** Signed: negative on one side of the shape's edge, positive on the other. */
+function edgeFunction(shape: SnapShape): (point: Vec2) => number {
+  if (shape.kind === "segment") {
+    const along = V.sub(shape.b, shape.a)
+    return (point) => V.cross(along, V.sub(point, shape.a))
+  }
+  return (point) => V.distance(point, shape.center) - shape.radius
 }
 
 /** The CCW sweep (radians, in `(0, 2π]`) from `start` to `end`. */

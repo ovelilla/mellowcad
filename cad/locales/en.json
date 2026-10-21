@@ -203,6 +203,7 @@
         "block": "Block",
         "attributes": "Attributes",
         "misc": "Misc",
+        "dataPoints": "Data Points",
         "selection": "Selection"
       },
       "row": {
@@ -284,7 +285,28 @@
         "lockPosition": "Lock position",
         "method": "Method",
         "degree": "Degree",
-        "knotParameterization": "Knot parameterization"
+        "knotParameterization": "Knot parameterization",
+        "numberOfFitPoints": "Number of fit points",
+        "currentFitPoint": "Current Fit point",
+        "fitPointX": "Fit point X",
+        "fitPointY": "Fit point Y",
+        "fitPointZ": "Fit point Z",
+        "numberOfControlPoints": "Number of control points",
+        "currentControlPoint": "Current Control point",
+        "controlPointX": "Control point X",
+        "controlPointY": "Control point Y",
+        "controlPointZ": "Control point Z",
+        "weight": "Weight",
+        "cvFrame": "CV frame",
+        "periodic": "Periodic",
+        "planar": "Planar",
+        "startTangentVectorX": "Start tangent vector X",
+        "startTangentVectorY": "Start tangent vector Y",
+        "startTangentVectorZ": "Start tangent vector Z",
+        "endTangentVectorX": "End tangent vector X",
+        "endTangentVectorY": "End tangent vector Y",
+        "endTangentVectorZ": "End tangent vector Z",
+        "fitTolerance": "Fit tolerance"
       },
       "value": {
         "yes": "Yes",
@@ -293,10 +315,12 @@
         "atLeast": "At least",
         "exactly": "Exactly",
         "fitPoints": "Fit",
-        "controlVertices": "CV",
+        "controlVertices": "Control Vertices",
         "chord": "Chord",
-        "sqrtChord": "Square root",
-        "uniform": "Uniform"
+        "sqrtChord": "SqrtChord",
+        "uniform": "Uniform",
+        "show": "Show",
+        "hide": "Hide"
       },
       "justify": {
         "left": "Left",
@@ -1345,6 +1369,7 @@
       "verifyAttributeValues": "Verify attribute values",
       "explodeRejected": "{count, plural, one {# was not able to be exploded.} other {# were not able to be exploded.}}",
       "explodeLostWidth": "Exploding this polyline has lost width information.\nThe UNDO command will restore it.",
+      "explodeCannot": "Cannot explode {name}",
       "currentUcsName": "Current ucs name:  {kind, select, world {*WORLD*} unnamed {*NO NAME*} top {*TOP*} bottom {*BOTTOM*} front {*FRONT*} back {*BACK*} left {*LEFT*} right {*RIGHT*} other {{name}}}",
       "listedUcsName": "Current ucs name: {kind, select, world {*WORLD*} unnamed {*NO NAME*} top {*TOP*} bottom {*BOTTOM*} front {*FRONT*} back {*BACK*} left {*LEFT*} right {*RIGHT*} other {\"{name}\"}}",
       "savedUcsHeader": "Saved coordinate systems:",

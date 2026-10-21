@@ -208,7 +208,10 @@ which sets every segment's, Elevation, Area (an open one's as if closed) and Len
 read-only; Misc's Closed, Yes or No, which closes with a straight segment and no vertex or opens
 it (help GUID-94C065AB), one undo step (es `Vértice actual`, `Vértice X`, `Varios`, `Cerrado`,
 `Sí` from that page; `Anchura inicial del segmento`, `Anchura final del segmento`, `Grosor global`,
-Autodesk's 2027 resources)
+Autodesk's 2027 resources); a spline's Data Points and Misc groups as AutoCAD's (desktop
+spline/d10-1–d10-3; the rows and their order in draw.md, SPLINE), its current fit or control point
+stepped and moved as a polyline's current vertex, the rest read-only, the English labels
+`ax26res.dll`'s by id, the Spanish d10's
 
 **Missing:** General's Linetype scale, Plot style, Transparency and Hyperlink and 3D Visualization's
 Material (d16); a polyline's Misc Linetype generation (`Disabled`, d08; PLINEGEN is not built, and
@@ -218,7 +221,7 @@ widths, which nothing stores here); the Spanish desktop's own labels (**unverifi
 page read); the current vertex's marker in the drawing, what Global width shows where the widths
 vary (blank here, **unverified**), the geometry rows of several objects of one type (`*VARIES*`),
 text content, editing attribute values, MTEXT's rotation in the UCS
-(AutoCAD shows that one row there), a spline's and a dimension's Z, the Normal rows on the other
+(AutoCAD shows that one row there), a dimension's Z, the Normal rows on the other
 types (**unverified** which ones AutoCAD shows), the drop-down's order of types and its wording for
 a single object (**unverified**: `All (n)` and `Line (5)` are only in the help's screenshots), Quick
 Select, Toggle PICKADD, the Auto-hide and Allow Docking options, floating the palette

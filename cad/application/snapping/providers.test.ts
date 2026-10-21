@@ -565,6 +565,99 @@ describe("a polyline's arc segment", () => {
   })
 })
 
+describe("a spline, as the console snaps it", () => {
+  function typed(cad: CadHarness, ...texts: string[]): CadHarness {
+    for (const text of texts) {
+      cad.runtime.setCommandLineText(text)
+      cad.runtime.submitCommandLine()
+    }
+    return cad
+  }
+  /** `set` drawn in the probe's window, then LINE's first point snapped. */
+  function snapped(
+    window: [string, string],
+    set: string[],
+    snap: string,
+    aim: string
+  ) {
+    const cad = typed(createHarness(), "ZOOM", "W", ...window, ...set)
+    typed(cad, "LINE", snap, aim, "@", "")
+    return cad
+      .entities()
+      .filter((e): e is LineEntity => e.type === "line")
+      .at(-1)!.start
+  }
+  const CV = ["SPLINE", "_M", "_CV", "0,0", "5,15", "20,-5", "40,10", ""]
+  const WIDE: [string, string] = ["-5,-10", "45,20"]
+
+  // probe spline/p310: the open CV spline and the line 0,10 40,0.
+  it.each([
+    ["_NEA", "15,5.3", p(14.9287054, 4.90021635)],
+    ["_INT", "23.6,4.1", p(23.73737697, 4.06565576)],
+    ["_END", "39.8,9.9", p(40, 10)],
+  ])("snaps %s of %s on the CV spline of p310", (snap, aim, at) => {
+    const set = [...CV, "LINE", "0,10", "40,0", ""]
+    expect(snapped(WIDE, set, snap, aim)).toBeCloseToPoint(at, 8)
+  })
+
+  // probe spline/p313: with the circle 20,5 radius 6 and the fit spline
+  // 0,10 15,-10 25,20 40,0.
+  it.each([
+    ["14.2,5.0", p(14.00038988, 5.06839918)],
+    ["25.7,3.9", p(25.94795735, 4.21145489)],
+  ])("snaps INT of %s on the curves of p313", (aim, at) => {
+    const set = [
+      ...CV,
+      ...["CIRCLE", "20,5", "6"],
+      ...["SPLINE", "_M", "_F", "0,10", "15,-10", "25,20", "40,0", ""],
+    ]
+    expect(snapped(["-5,-12", "45,22"], set, "_INT", aim)).toBeCloseToPoint(
+      at,
+      8
+    )
+  })
+
+  // probe spline/p312: the fit spline 0,0 4,8 20,0 40,10, free at its ends.
+  it("snaps NEA on the fit spline of p312", () => {
+    const set = ["SPLINE", "0,0", "4,8", "20,0", "40,10", ""]
+    expect(snapped(WIDE, set, "_NEA", "20.1,0.2")).toBeCloseToPoint(
+      p(20.02458355, -0.00890712),
+      8
+    )
+  })
+
+  // probes spline/p310, p312: AutoCAD's midpoints, 19.15356356,4.27082073
+  // and 18.25785084,0.77956010, are halfway by its long measure (p332); the
+  // curve's own halfway points are within a few ten-thousandths.
+  it.each([
+    [CV, "7.065,5.94", p(19.15356356, 4.27082073)],
+    [
+      ["SPLINE", "0,0", "4,8", "20,0", "40,10", ""],
+      "4.1,8",
+      p(18.25785084, 0.7795601),
+    ],
+  ])("snaps MID near AutoCAD's (%#)", (set, aim, at) => {
+    expect(snapped(WIDE, set, "_MID", aim)).toBeCloseToPoint(at, 3)
+  })
+
+  // probe spline/p311: the closed fit square 0,0 20,0 20,20 0,20 and the
+  // closed CV square 30,0 50,0 50,20 30,20: the CV one's end where AutoCAD's
+  // starts, from either side, and both midpoints halfway along.
+  it.each([
+    ["_END", "0.1,0.1", p(0, 0)],
+    ["_END", "46.6,16.6", p(46.66666667, 16.66666667)],
+    ["_END", "46.6,3.4", p(46.66666667, 16.66666667)],
+    ["_MID", "4.53,-2.81", p(20, 20)],
+    ["_MID", "49.17,10", p(33.33333333, 3.33333333)],
+  ])("snaps %s of %s on the closed squares of p311", (snap, aim, at) => {
+    const set = [
+      ...["SPLINE", "0,0", "20,0", "20,20", "0,20", "_C"],
+      ...["SPLINE", "_M", "_CV", "30,0", "50,0", "50,20", "30,20", "_C"],
+    ]
+    expect(snapped(["-5,-10", "55,30"], set, snap, aim)).toBeCloseToPoint(at, 8)
+  })
+})
+
 describe("an arc", () => {
   function typed(cad: CadHarness, ...texts: string[]): CadHarness {
     for (const text of texts) {

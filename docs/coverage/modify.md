@@ -84,7 +84,8 @@ console scales by a length of its own there)
 `Specify second point of mirror line:`, `Erase source objects? [Yes/No] <No>:` (es
 `Precise primer punto de línea de simetría`, `Especifique segundo punto de línea de simetría` —
 Autodesk's table words the two otherwise —, `¿Borrar objetos de origen? [Sí/No] <No>`); two-point
-axis, erase-source Yes/No prompt; the mirror plane holds the two points and the UCS's Z
+axis, erase-source Yes/No prompt; the mirror plane holds the two points and the UCS's Z; a
+mirrored spline keeps its +Z normal, as AutoCAD's does (spline/p320), unlike an ellipse
 
 **Missing:** MIRRTEXT; an ellipse's normal: AutoCAD turns a mirrored ellipse over, its normal −Z,
 its parameters kept and its major axis on the mirrored end (ellipse/p320, p321), where this app
@@ -548,9 +549,14 @@ wide one (es `Al descomponer esta línea se ha perdido información de grosor.` 
 `Se puede restituir con el comando DESHACER.`, the table's), block reference → contents (one nesting
 level), fresh ids, layer-0 reverts to real layer 0, multiline text → one TEXT per line as drawn,
 aligned by the attachment's column (Autodesk documents only "Explodes into text objects"); a
-reference with attributes gives its definitions back and drops the values
+reference with attributes gives its definitions back and drops the values; anything else counted
+with `1 was not able to be exploded.` (es `1 no se ha podido descomponer.`), but a spline, refused
+by name, each one, after the count: `Cannot explode SPLINE` (es `No se puede descomponer SPLINE`;
+spline/p319, p324)
 
-**Missing:** ByBlock resolution, non-uniform-scale → ellipse conversion
+**Missing:** ByBlock resolution, non-uniform-scale → ellipse conversion; where the count is said:
+AutoCAD says it as the objects are found, under `2 found` and before the next `Select objects:`
+(spline/p319), here once the set is done
 
 ### `JOIN` / `J` · es `UNIR` / `U`†
 
@@ -603,8 +609,10 @@ MTEXT, attribute definitions, dimensions and hatches `Object can't be broken` (e
 picked or found by a mode, and `Select object:` again; a line's pieces keep the Z along its slope;
 an object at an angle to the UCS's XY plane is not taken
 
-**Missing:** splines (they do not highlight; AutoCAD breaks them, keeping control points on knots of
-their own, which a spline here, on uniform knots, cannot hold), Group; a mirrored whole ellipse,
+**Missing:** splines (they do not highlight; AutoCAD breaks a CV spline into pieces on control
+points and knots of their own, which a spline here, on uniform knots, cannot hold, spline/p325, and
+a fit spline broken at two fit points into fit splines whose end tangents are the curve's
+derivatives there, p326), Group; a mirrored whole ellipse,
 which AutoCAD breaks counter-clockwise about its −Z normal (ellipse/p329; MIRROR's entry)
 
 ### `MATCHPROP` / `MA` · es `IGUALARPROP` / `IP`† / `COPARPROP`†

@@ -149,18 +149,19 @@ export interface SplineEntity extends BaseEntity {
   readonly type: "spline"
   readonly method: SplineMethod
   readonly points: readonly Vec2[]
-  /** 3 for a fit spline; for a CV spline, already lowered to `points.length − 1` when fewer. */
+  /** 3 for a fit spline; for a CV spline, already lowered to `points.length − 1` when fewer (`points.length` closed). */
   readonly degree: number
   /** How a fit spline spaces its knots; ignored by a CV spline. */
   readonly knots: KnotParameterization
   /** Closed splines are periodic (SPLPERIODIC 1) unless a fit spline was given a closure tangent. */
   readonly closed: boolean
   /**
-   * Direction of a fit spline at its start, absent when AutoCAD computes it. On
-   * a closed fit spline it is the one tangent at the closure.
+   * A fit spline's derivative at its start by the raw knot parameter, as typed
+   * from the first point; absent, the end is free (no curvature). On a closed
+   * fit spline, which only a file holds, the one tangent at the closure.
    */
   readonly startTangent?: Vec2
-  /** Direction of an open fit spline at its end, absent when computed. */
+  /** An open fit spline's derivative at its end, unit as SPLINE gives it; absent, free. */
   readonly endTangent?: Vec2
 }
 

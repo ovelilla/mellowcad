@@ -1976,7 +1976,7 @@ describe("TRIM and EXTEND an ellipse", () => {
 
 // AutoCAD 2023's console (acc/b1, p1, p4, q1–q6, c3, s4, t2, t6, o3,
 // p12 of the elliptical arcs session), read with LIST at AUPREC 4. The values
-// are a CV spline's: a fit spline's end tangents are not AutoCAD's here.
+// are the CV spline's, the one that session measured.
 describe("TRIM and EXTEND with an ellipse or a spline", () => {
   const ellipse = ellipseOf(p(0, 0), p(100, 0), 0.5, { id: "E" })
   const spline = createSpline(

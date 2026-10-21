@@ -1163,7 +1163,7 @@ lweight "Lineweight" LW
   dyn: -
   prompt| Specify end tangent:
 > select it
-  properties: Spline (1) [Misc: Method=Fit, Degree=3, Knot parameterization=Square root, Closed=No]
+  properties: Spline (1) [Data Points: Number of fit points=3, Current Fit point=1~, Fit point X=0.00~, Fit point Y=0.00~, Fit point Z=0.00, Knot parameterization=SqrtChord, CV frame=Hide] [Misc: Method=Fit, Degree=3, Closed=No, Periodic=No, Planar=Yes, Start tangent vector X=0.00, Start tangent vector Y=50.00, Start tangent vector Z=0.00, End tangent vector X=0.00, End tangent vector Y=-1.00, End tangent vector Z=0.00, Fit tolerance=0.00]
 > escape
   properties: -
   command| *Cancel*

@@ -20,6 +20,7 @@ import {
   gripPrimitives,
   pushGrip,
   pushSegmentGrip,
+  vertexGripShape,
   sameGrip,
   selectedGrips,
 } from "./selectToolGrips"
@@ -90,7 +91,7 @@ export function buildGrips(
       const along = segmentOnScreen(entity, grip.role.segmentIndex, ctx)
       pushSegmentGrip(out, at, along, hot)
     } else {
-      pushGrip(out, at, hot)
+      pushGrip(out, at, hot, grip.shape)
     }
   }
   return out
@@ -295,7 +296,11 @@ export function buildVertexEdit(
   const stroke: StrokeStyle = { color: THEME.preview, width: 1, dash: [6, 4] }
   return [
     ...entityScenePrimitive(viewport, preview, stroke),
-    ...gripPrimitives(viewport.worldToScreen(state.current), true),
+    ...gripPrimitives(
+      viewport.worldToScreen(state.current),
+      true,
+      vertexGripShape(entity)
+    ),
   ]
 }
 

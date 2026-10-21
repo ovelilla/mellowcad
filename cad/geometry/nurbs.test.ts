@@ -2,11 +2,16 @@ import { describe, expect, it } from "vitest"
 import fc from "fast-check"
 import { V, type Vec2 } from "./Vec2"
 import {
-  besselStartDerivative,
   bsplineDerivative,
+  bsplineDerivativeCurve,
   bsplineDomain,
+  bsplineLength,
+  bsplineLengthTable,
+  bsplineParamAtLength,
   bsplinePoint,
+  bsplineSweptArea,
   bsplineTessellation,
+  bsplinesMeeting,
   clampedUniformCurve,
   fitParameters,
   interpolateCubic,
@@ -41,12 +46,7 @@ describe("fit parameters", () => {
 describe("cubic interpolation", () => {
   it("passes through every fit point with n + 2 control points", () => {
     const params = fitParameters(ZIGZAG, "chord", false)
-    const curve = interpolateCubic(
-      ZIGZAG,
-      params,
-      besselStartDerivative(ZIGZAG, params),
-      p(1, 0)
-    )
+    const curve = interpolateCubic(ZIGZAG, params, null, p(1, 0))
     expect(curve.degree).toBe(3)
     expect(curve.controlPoints).toHaveLength(ZIGZAG.length + 2)
     ZIGZAG.forEach((q, i) => {
@@ -54,11 +54,34 @@ describe("cubic interpolation", () => {
     })
   })
 
-  it("leaves along the given start derivative", () => {
+  it("takes each given derivative as it is, length and all", () => {
     const params = fitParameters(ZIGZAG, "chord", false)
-    const curve = interpolateCubic(ZIGZAG, params, p(0, 1), p(1, 0))
-    const d = bsplineDerivative(curve, params[0])
-    expect(V.normalize(d)).toBeCloseToPoint(p(0, 1), 6)
+    const curve = interpolateCubic(ZIGZAG, params, p(0, 3), p(2, -1))
+    expect(bsplineDerivative(curve, params[0])).toBeCloseToPoint(p(0, 3), 9)
+    expect(
+      bsplineDerivative(curve, params[ZIGZAG.length - 1])
+    ).toBeCloseToPoint(p(2, -1), 9)
+  })
+
+  it("has no curvature at an end given no derivative", () => {
+    const params = fitParameters(ZIGZAG, "chord", false)
+    const curve = interpolateCubic(ZIGZAG, params, null, null)
+    const second = bsplineDerivativeCurve(bsplineDerivativeCurve(curve))
+    const { start, end } = bsplineDomain(curve)
+    expect(bsplinePoint(second, start)).toBeCloseToPoint(p(0, 0), 9)
+    expect(bsplinePoint(second, end)).toBeCloseToPoint(p(0, 0), 9)
+  })
+
+  // probe spline/p300 (and d03): two fit points are a straight cubic at an
+  // even pace, its control points a third of the way apart.
+  it("is a line through two points, run at an even pace", () => {
+    const points = [p(0, 0), p(10, 5)]
+    const params = fitParameters(points, "chord", false)
+    const curve = interpolateCubic(points, params, null, null)
+    expect(curve.controlPoints).toBeCloseToPoints(
+      [p(0, 0), p(10 / 3, 5 / 3), p(20 / 3, 10 / 3), p(10, 5)],
+      12
+    )
   })
 
   it("is a straight line through two points with the chord as both derivatives", () => {
@@ -79,7 +102,7 @@ describe("cubic interpolation", () => {
         const curve = interpolateCubic(
           points,
           params,
-          besselStartDerivative(points, params),
+          null,
           V.sub(points[points.length - 1], points[points.length - 2])
         )
         points.forEach((q, i) => {
@@ -152,12 +175,7 @@ describe("control-vertex curves", () => {
 describe("tessellation", () => {
   it("keeps every chord within the tolerance of the curve", () => {
     const params = fitParameters(ZIGZAG, "chord", false)
-    const curve = interpolateCubic(
-      ZIGZAG,
-      params,
-      besselStartDerivative(ZIGZAG, params),
-      p(1, 0)
-    )
+    const curve = interpolateCubic(ZIGZAG, params, null, p(1, 0))
     const tolerance = 0.01
     const { params: us, points } = bsplineTessellation(curve, tolerance)
     for (let i = 1; i < points.length; i++) {
@@ -166,6 +184,71 @@ describe("tessellation", () => {
         tolerance * 1.5
       )
     }
+  })
+})
+
+describe("measures by quadrature", () => {
+  // A parabola: its speed is no polynomial, its length has a closed form.
+  const ARCH = clampedUniformCurve([p(0, 0), p(1, 2), p(2, 0)], 2)
+
+  it("measures a parabola's length to the closed form", () => {
+    // C′(t) = (2, 4 − 8t): |C′| = 2√(1 + (2 − 4t)²), integrated exactly.
+    const half = (x: number) => (x * Math.sqrt(1 + x * x) + Math.asinh(x)) / 2
+    const exact = (2 * (half(2) - half(-2))) / 4
+    expect(bsplineLength(ARCH)).toBeCloseTo(exact, 13)
+    expect(bsplineLength(ARCH, 0, 0.5)).toBeCloseTo(exact / 2, 13)
+  })
+
+  it("finds the parameter at a length, the inverse of the length", () => {
+    const total = bsplineLength(ARCH)
+    for (const f of [0, 0.1, 0.5, 0.9, 1]) {
+      const u = bsplineParamAtLength(ARCH, f * total)
+      expect(bsplineLength(ARCH, 0, u)).toBeCloseTo(f * total, 12)
+    }
+    expect(bsplineParamAtLength(ARCH, -1)).toBe(0)
+    expect(bsplineParamAtLength(ARCH, 2 * total)).toBe(1)
+  })
+
+  it("sweeps a closed curve's area exactly", () => {
+    const square = [p(0, 0), p(10, 0), p(10, 10), p(0, 10)]
+    const loop = periodicUniformCurve(square, 1)
+    const { start, end } = bsplineDomain(loop)
+    expect(bsplineSweptArea(loop, start, end)).toBeCloseTo(100, 12)
+    expect(bsplineSweptArea(loop, end, start)).toBeCloseTo(-100, 12)
+  })
+
+  it("meets another curve where they cross", () => {
+    const line = clampedUniformCurve([p(0, 0.5), p(2, 0.5)], 1)
+    const met = bsplinesMeeting(ARCH, 0.1, line, 0.1)
+    expect(met).not.toBeNull()
+    expect(bsplinePoint(ARCH, met!.u)).toBeCloseToPoint(
+      bsplinePoint(line, met!.v),
+      12
+    )
+    const above = clampedUniformCurve([p(0, 5), p(2, 5)], 1)
+    expect(bsplinesMeeting(ARCH, 0.5, above, 0.5)).toBeNull()
+  })
+})
+
+describe("a curve's length table", () => {
+  // The dashes of a linetype are laid by it: each distance where the one
+  // search finds it, the whole length the quadrature's.
+  it("finds every distance where the one search does", () => {
+    const curve = clampedUniformCurve(ZIGZAG, 3)
+    const table = bsplineLengthTable(curve)
+    expect(table.length).toBeCloseTo(bsplineLength(curve), 9)
+    fc.assert(
+      fc.property(fc.double({ min: 0, max: 1, noNaN: true }), (f) => {
+        const distance = f * table.length
+        expect(table.paramAt(distance)).toBeCloseTo(
+          bsplineParamAtLength(curve, distance),
+          9
+        )
+      })
+    )
+    const { start, end } = bsplineDomain(curve)
+    expect(table.paramAt(-1)).toBe(start)
+    expect(table.paramAt(table.length + 1)).toBe(end)
   })
 })
 

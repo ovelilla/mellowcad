@@ -7,7 +7,9 @@ import type {
   CircleEntity,
   EllipseEntity,
   LineEntity,
+  SplineEntity,
 } from "../domain/entities"
+import { createSpline } from "../domain/entities"
 import { es } from "../locales/es"
 
 describe("the palette panel", () => {
@@ -500,4 +502,281 @@ describe("the Properties palette's object type drop-down", () => {
       "Área",
     ])
   })
+})
+
+describe("a spline's rows in the Properties palette", () => {
+  /** Each row as `label=value`, a `*` where it can be retyped. */
+  const rowsOf = (cad: ReturnType<typeof createHarness>) =>
+    cad
+      .state()
+      .properties.info!.groups.map((g) => [
+        g.title,
+        g.rows.map((r) => `${r.label}=${r.value}${r.edit ? "*" : ""}`),
+      ])
+
+  // desktop spline/d08-d10's three splines: the fit one with its second fit
+  // point dragged by d08-6, the CV one with its second vertex by d09-2.
+  const fit = () =>
+    createSpline(
+      "fit",
+      [p(30, 20), p(42.0524, 34.0059), p(50, 15), p(60, 28)],
+      {
+        id: "S1",
+      }
+    )
+  const cv = () =>
+    createSpline("cv", [p(30, 35), p(41.0324, 48.0246), p(50, 35), p(60, 45)], {
+      id: "S2",
+    })
+  const closedFit = () =>
+    createSpline("fit", [p(70, 20), p(80, 30), p(75, 40)], {
+      id: "S3",
+      closed: true,
+    })
+
+  // desktop spline/d10-1: Data Points, then Misc; the count, Z, Degree,
+  // Periodic and Planar greyed; no tangent given reads 0.
+  it("lists an open fit spline's groups and rows in AutoCAD's order", () => {
+    const cad = createHarness({ entities: [fit()] })
+    cad.select("S1")
+    expect(rowsOf(cad)).toEqual([
+      [
+        "Data Points",
+        [
+          "Number of fit points=4",
+          "Current Fit point=1*",
+          "Fit point X=30.00*",
+          "Fit point Y=20.00*",
+          "Fit point Z=0.00",
+          "Knot parameterization=Chord",
+          "CV frame=Hide",
+        ],
+      ],
+      [
+        "Misc",
+        [
+          "Method=Fit",
+          "Degree=3",
+          "Closed=No",
+          "Periodic=No",
+          "Planar=Yes",
+          "Start tangent vector X=0.00",
+          "Start tangent vector Y=0.00",
+          "Start tangent vector Z=0.00",
+          "End tangent vector X=0.00",
+          "End tangent vector Y=0.00",
+          "End tangent vector Z=0.00",
+          "Fit tolerance=0.00",
+        ],
+      ],
+    ])
+  })
+
+  // desktop spline/d10-2: a CV spline's points are control points, each of
+  // weight −1; no tangents, no tolerance.
+  it("lists a CV spline's rows", () => {
+    const cad = createHarness({ entities: [cv()] })
+    cad.select("S2")
+    expect(rowsOf(cad)).toEqual([
+      [
+        "Data Points",
+        [
+          "Number of control points=4",
+          "Current Control point=1*",
+          "Control point X=30.00*",
+          "Control point Y=35.00*",
+          "Control point Z=0.00",
+          "Weight=-1",
+          "CV frame=Hide",
+        ],
+      ],
+      [
+        "Misc",
+        [
+          "Method=Control Vertices",
+          "Degree=3",
+          "Closed=No",
+          "Periodic=No",
+          "Planar=Yes",
+        ],
+      ],
+    ])
+  })
+
+  // desktop spline/d10-3: closed, it counts its first fit point again at the
+  // end, drops the tangents and shows its Area (171.7835 there).
+  it("lists a closed fit spline's rows, its Area last", () => {
+    const cad = createHarness({ entities: [closedFit()] })
+    cad.select("S3")
+    expect(rowsOf(cad)).toEqual([
+      [
+        "Data Points",
+        [
+          "Number of fit points=4",
+          "Current Fit point=1*",
+          "Fit point X=70.00*",
+          "Fit point Y=20.00*",
+          "Fit point Z=0.00",
+          "Knot parameterization=Chord",
+          "CV frame=Hide",
+        ],
+      ],
+      [
+        "Misc",
+        [
+          "Method=Fit",
+          "Degree=3",
+          "Closed=Yes",
+          "Periodic=Yes",
+          "Planar=Yes",
+          "Fit tolerance=0.00",
+          "Area=171.78 mm²",
+        ],
+      ],
+    ])
+    cad.runtime.setDocumentPrecision(4)
+    expect(rowsOf(cad)[1][1].at(-1)).toBe("Area=171.7835 mm²")
+  })
+
+  // The tangents as SPLINE stores them: the start as typed from the first
+  // point, the end a unit vector (probes spline/p306, p308).
+  it("shows a fit spline's tangents as stored", () => {
+    const spline = createSpline("fit", [p(0, 0), p(10, 10), p(20, 0)], {
+      id: "S1",
+      startTangent: p(3, 4),
+      endTangent: p(0.6, -0.8),
+    })
+    const cad = createHarness({ entities: [spline] })
+    cad.select("S1")
+    expect(rowsOf(cad)[1][1].slice(5, 11)).toEqual([
+      "Start tangent vector X=3.00",
+      "Start tangent vector Y=4.00",
+      "Start tangent vector Z=0.00",
+      "End tangent vector X=0.60",
+      "End tangent vector Y=-0.80",
+      "End tangent vector Z=0.00",
+    ])
+  })
+
+  // As the polyline's current vertex: the stepper shows a point, its X and Y
+  // move it, one undo step each.
+  it("steps through the points and moves the current one", () => {
+    const cad = createHarness({ entities: [fit()] })
+    cad.select("S1")
+    expect(cad.runtime.setSelectionProperty("vertex", "2")).toBe(true)
+    expect(rowsOf(cad)[0][1].slice(1, 4)).toEqual([
+      "Current Fit point=2*",
+      "Fit point X=42.05*",
+      "Fit point Y=34.01*",
+    ])
+    expect(cad.runtime.setSelectionProperty("vertex", "5")).toBe(false)
+    expect(cad.runtime.setSelectionProperty("vertex", "0")).toBe(false)
+    expect(cad.runtime.setSelectionProperty("vertexX", "45")).toBe(true)
+    expect(cad.runtime.setSelectionProperty("vertexY", "30")).toBe(true)
+    const moved = cad.byId<SplineEntity>("S1")
+    expect(moved.points[1]).toBeCloseToPoint(p(45, 30), 12)
+    expect(moved.points[0]).toBeCloseToPoint(p(30, 20), 12)
+    cad.undo()
+    expect(cad.byId<SplineEntity>("S1").points[1]).toBeCloseToPoint(
+      p(45, 34.0059),
+      12
+    )
+  })
+
+  // The fourth fit point of a closed one is its first again (d10-3's count).
+  it("moves a closed fit spline's first point from its last", () => {
+    const cad = createHarness({ entities: [closedFit()] })
+    cad.select("S3")
+    expect(cad.runtime.setSelectionProperty("vertex", "4")).toBe(true)
+    expect(rowsOf(cad)[0][1][2]).toBe("Fit point X=70.00*")
+    expect(cad.runtime.setSelectionProperty("vertexX", "71")).toBe(true)
+    const moved = cad.byId<SplineEntity>("S3")
+    expect(moved.points).toHaveLength(3)
+    expect(moved.points[0]).toBeCloseToPoint(p(71, 20), 12)
+  })
+
+  it("reads and moves the current point in the UCS", () => {
+    const cad = createHarness({ entities: [cv()] })
+    cad.command("UCS").type("10,5").enter().enter()
+    cad.select("S2")
+    expect(rowsOf(cad)[0][1].slice(2, 4)).toEqual([
+      "Control point X=20.00*",
+      "Control point Y=30.00*",
+    ])
+    expect(cad.runtime.setSelectionProperty("vertexX", "0")).toBe(true)
+    expect(cad.byId<SplineEntity>("S2").points[0]).toBeCloseToPoint(
+      p(10, 35),
+      12
+    )
+  })
+
+  // Spanish as desktop spline/d10 shows it.
+  it.each([
+    [
+      fit,
+      "S1",
+      [
+        "Puntos auxiliares",
+        [
+          "Número de puntos de ajuste",
+          "Punto de ajuste actual",
+          "Punto de ajuste X",
+          "Punto de ajuste Y",
+          "Punto de ajuste Z",
+          "Parametrización de nudos",
+          "Marco de vértices de control",
+        ],
+      ],
+      [
+        "Varios",
+        [
+          "Método",
+          "Grado",
+          "Cerrado",
+          "Periódica",
+          "Plana",
+          "Inicio vector de tangente X",
+          "Inicio vector de tangente Y",
+          "Inicio vector de tangente Z",
+          "Vector de tangente final X",
+          "Vector de tangente final Y",
+          "Vector de tangente final Z",
+          "Ajustar tolerancia",
+        ],
+      ],
+      ["Ajustar", "Cuerda", "Ocultar", "No", "Sí"],
+    ],
+    [
+      cv,
+      "S2",
+      [
+        "Puntos auxiliares",
+        [
+          "Número de puntos de apoyo",
+          "Punto de apoyo actual",
+          "Punto de apoyo X",
+          "Punto de apoyo Y",
+          "Punto de apoyo Z",
+          "Peso",
+          "Marco de vértices de control",
+        ],
+      ],
+      ["Varios", ["Método", "Grado", "Cerrado", "Periódica", "Plana"]],
+      ["Vértices de control", "Ocultar"],
+    ],
+  ] as const)(
+    "names a spline's rows in Spanish (%#)",
+    (make, id, data, misc, values) => {
+      const cad = createHarness({ locale: es, entities: [make()] })
+      cad.select(id)
+      const groups = cad.state().properties.info!.groups
+      expect(
+        groups.map((group) => [group.title, group.rows.map((row) => row.label)])
+      ).toEqual([data, misc])
+      const shown = groups.flatMap((group) =>
+        group.rows.map((row) => row.value)
+      )
+      for (const value of values) expect(shown).toContain(value)
+    }
+  )
 })

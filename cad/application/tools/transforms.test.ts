@@ -7,7 +7,7 @@ import type {
   LineEntity,
   PolylineEntity,
 } from "../../domain/entities"
-import { isFullEllipse } from "../../domain/entities"
+import { createSpline, isFullEllipse } from "../../domain/entities"
 import { createHarness } from "../../../test/harness"
 import { THEME } from "../../scene/theme"
 import { es } from "../../locales/es"
@@ -1242,6 +1242,42 @@ describe("EXPLODE and JOIN", () => {
     cad.moveTo(p(1000, 1000))
     expect(previews()).toHaveLength(0)
   })
+
+  // probes spline/p324 (two splines: no count, each named once the set is
+  // done) and p319 (a line beside it: the line counted, the spline named).
+  it.each([
+    [undefined, "1 was not able to be exploded.", "Cannot explode SPLINE"],
+    [es, "1 no se ha podido descomponer.", "No se puede descomponer SPLINE"],
+  ] as const)(
+    "EXPLODE names each spline it cannot explode (%#)",
+    (locale, counted, named) => {
+      const fit = createSpline("fit", [p(0, 5), p(10, 10), p(20, 5)], {
+        id: "S1",
+      })
+      const cv = createSpline(
+        "cv",
+        [p(0, 20), p(10, 30), p(20, 20), p(30, 30)],
+        { id: "S2" }
+      )
+      const splines = createHarness({ locale, entities: [fit, cv] })
+      splines.select("S1", "S2").command("_EXPLODE")
+      const log = splines.commandLog()
+      expect(log.filter((line) => line === named)).toHaveLength(2)
+      expect(log.some((line) => /not able|no se ha/.test(line))).toBe(false)
+      expect(splines.typeCounts()).toEqual({ spline: 2 })
+
+      const mixed = createHarness({
+        locale,
+        entities: [lineOf(p(0, 0), p(10, 0), { id: "L1" }), fit],
+      })
+      mixed.select("L1", "S1").command("_EXPLODE")
+      const lines = mixed.commandLog()
+      const at = lines.indexOf(counted)
+      expect(at).toBeGreaterThanOrEqual(0)
+      expect(lines.slice(at + 1)).toEqual([named])
+      expect(mixed.typeCounts()).toEqual({ line: 1, spline: 1 })
+    }
+  )
 
   it("EXPLODE says so when an object cannot be exploded", () => {
     const cad = createHarness({

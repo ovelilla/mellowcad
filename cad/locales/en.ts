@@ -344,6 +344,7 @@ export const en: EngineCatalog = {
         "block": "Block",
         "attributes": "Attributes",
         "misc": "Misc",
+        "dataPoints": "Data Points",
         "selection": "Selection"
       },
       "row": {
@@ -425,7 +426,28 @@ export const en: EngineCatalog = {
         "lockPosition": "Lock position",
         "method": "Method",
         "degree": "Degree",
-        "knotParameterization": "Knot parameterization"
+        "knotParameterization": "Knot parameterization",
+        "numberOfFitPoints": "Number of fit points",
+        "currentFitPoint": "Current Fit point",
+        "fitPointX": "Fit point X",
+        "fitPointY": "Fit point Y",
+        "fitPointZ": "Fit point Z",
+        "numberOfControlPoints": "Number of control points",
+        "currentControlPoint": "Current Control point",
+        "controlPointX": "Control point X",
+        "controlPointY": "Control point Y",
+        "controlPointZ": "Control point Z",
+        "weight": "Weight",
+        "cvFrame": "CV frame",
+        "periodic": "Periodic",
+        "planar": "Planar",
+        "startTangentVectorX": "Start tangent vector X",
+        "startTangentVectorY": "Start tangent vector Y",
+        "startTangentVectorZ": "Start tangent vector Z",
+        "endTangentVectorX": "End tangent vector X",
+        "endTangentVectorY": "End tangent vector Y",
+        "endTangentVectorZ": "End tangent vector Z",
+        "fitTolerance": "Fit tolerance"
       },
       "value": {
         "yes": "Yes",
@@ -434,10 +456,12 @@ export const en: EngineCatalog = {
         "atLeast": "At least",
         "exactly": "Exactly",
         "fitPoints": "Fit",
-        "controlVertices": "CV",
+        "controlVertices": "Control Vertices",
         "chord": "Chord",
-        "sqrtChord": "Square root",
-        "uniform": "Uniform"
+        "sqrtChord": "SqrtChord",
+        "uniform": "Uniform",
+        "show": "Show",
+        "hide": "Hide"
       },
       "justify": {
         "left": "Left",
@@ -1981,6 +2005,12 @@ export const en: EngineCatalog = {
         ]
       ],
       "explodeLostWidth": "Exploding this polyline has lost width information.\nThe UNDO command will restore it.",
+      "explodeCannot": [
+        "Cannot explode ",
+        [
+          "name"
+        ]
+      ],
       "currentUcsName": [
         "Current ucs name:  ",
         [

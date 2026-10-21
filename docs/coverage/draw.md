@@ -494,10 +494,15 @@ Autodesk's table words it), CV's `Enter next point:`, `[Undo]` and `[Close/Undo]
 `Point or option keyword required.` (es `Se requiere un punto o una opción.`), and the prompt asked
 again, Fit and CV (p106; desktop d05); CV's `Enter next point:` refuses a word in the same words,
 though it declares no keyword (p127, p138). Fit: a cubic through the points (n + 2 control
-vertices, knots the unnormalised chord sums LIST reports), Knots Chord / Square root / Uniform,
-start Tangency after the first point, end Tangency ending the command, Close from the third point,
-periodic, ending the command (AutoCAD 2027's console asks no tangent there, p124, p303). CV: Degree
-1–10, lowered to vertices − 1 when fewer, knots 1 apart, Close from the third point (periodic); at
+vertices, knots the unnormalised chord sums LIST reports), Knots Chord / Square root / Uniform; a
+free end has no curvature (natural: the control points of 21 open fit splines of p01, p300–p302,
+p306, p308 to six decimals); start Tangency after the first point, end Tangency ending the command,
+each the curve's derivative there by the raw knot parameter, stored as AutoCAD stores it: the start
+as typed from the first point (p302, p308), the end a unit vector (p306, p210, p123); SCALE keeps
+the scaled curve (p321). Close from the third point, periodic, ending the command and dropping a
+start tangent (AutoCAD 2027's console asks no tangent there, p124, p303, p307). CV: Degree 1–10,
+lowered to vertices − 1 when fewer, and to the vertex count when closed (p305, p129, p146), knots 1
+apart, Close from the third point (periodic, starting where AutoCAD's does, p305, p311); at
 the Degree prompt `0`, `11` and `-1` are asked again silently, `2.5` or a word refused with
 `Requires an integer between -32768 and 32767, or option keyword.` (es `Requiere un nº entero
 entre -32768 y 32767, o una opción.`), and the unlisted Method, Degree and Object go back to the
@@ -526,13 +531,32 @@ p270, p272, p273); the start tangent's is the ordinary one (p249, p267). `<a` at
 it to that angle (desktop d03). The rail's Spline Fit and Spline CV run SPLINE as the ribbon's
 macros do (acad.cuix, Home > Draw: `^C^C_^RSPLINE _M _FIT`, `^C^C_^RSPLINE _M _CV`): echoed
 `_spline`, the method answered, Enter repeating SPLINE in it and U naming SPLINE (p104, p142); they
-have no typed name, as AutoCAD's have none. Not transparent (p105). Endpoint, Midpoint (halfway
-along), Nearest and Intersection snaps (against the chords of a tessellation a hundred-thousandth of
-the size off the curve); a grip per fit point or control vertex, with the frame of a CV spline,
-dashed (grey, where d09 shows it a muted red: one frame drawing and selected, SPLINE-D61); palette
-rows Method, Degree, Knot parameterization, Closed, Area (read-only); STRETCH moves the points in
-the window; EXPLODE refuses it, as AutoCAD's does. Wording from AutoCAD 2027's console
-(p01, p02, p100–p157, en and es) and the 2027 Spanish language pack's
+have no typed name, as AutoCAD's have none. Not transparent (p105). The object: Endpoint; Midpoint halfway along from its start, a closed one's too (p310–p312);
+Nearest and Intersection on the curve, a crossing found on a tessellation's chords and refined onto
+it (p310, p313; none with itself, p331). Length, AREA and Midpoint measure the true curve by
+quadrature, where AutoCAD's integrator runs slightly long (p332: a straight 30-long CV spline
+measures `30.00062816`; p327's open CV `44.39570038` against the true 44.39441982), so their
+decimals past the fourth or so differ from AutoCAD's (which integrator it uses is
+**unverified**). AREA closes it with its chord and adds the loops the curve makes with the chord or
+itself (p327 `85.84165405`, two loops of an open CV; p317 `39.7222`, a closed bowtie). A linetype is
+laid as a line's, centred over the length, open or closed — one dash across a closed one's start —,
+solid under one period (p328, measured on the plot). Grips: squares at a fit spline's fit points
+(desktop d08-1), round at a CV spline's vertices (d09-1, d09-3), with its frame dashed (grey, where
+d09 shows it a muted red: one frame drawing and selected, SPLINE-D61). The Properties palette has
+AutoCAD's groups and rows (d10-1–d10-3): Data Points — Number of fit points (a closed fit spline
+counts its first again at the end), Current Fit point, Fit point X, Y, Z, Knot parameterization, CV
+frame; Misc — Method, Degree, Closed, Periodic, Planar, an open fit spline's Start and End tangent
+vector X, Y, Z as stored, Fit tolerance, a closed one's Area; a CV spline's Number of control
+points, Current Control point, Control point X, Y, Z and Weight instead, no tangents and no
+tolerance. The current point steps through them and its X and Y move it, one undo step each, as a
+polyline's current vertex; the rest is read-only; Fit tolerance reads 0 and Weight −1, as d10 shows
+them. The English labels are `ax26res.dll`'s by id, the Spanish d10's; the CV frame row's English is
+**unverified** (the Spanish row is cut at `Marco de vértices d…`: id 912 `CV frame` taken over 1248
+`Display CV frame`). STRETCH moves the points in the window (p322, p323); MIRROR keeps its +Z
+(p320); EXPLODE refuses it by name (`Cannot explode SPLINE`, modify.md). The drawing file holds the
+end tangent as the derivative from version 29; an older file's, a direction at the length picked,
+is read as unit. Wording from AutoCAD 2027's console (p01, p02, p100–p157, p300–p332, en and es) and
+the 2027 Spanish language pack's
 
 **Missing:** toLerance and Object (not offered: a tolerance above 0 is an approximation Autodesk
 does not document, and there are no spline-fit polylines to convert; AutoCAD asks
@@ -544,12 +568,15 @@ then is (p223, p231, p234, p265), where the kernel here has no 3D NURBS and lays
 first one's plane (SPLINE-D21); the deferred Tangent at the end tangent on a line, an ellipse or a
 spline (unprobed: the ordinary Tangent from the last point here); `<a` at the tangents and at
 CV's next points (**unverified**: the console ignores it, p212, p256, p222, so the angle override
-every prompt with a base point has); the end tangents AutoCAD
-computes when none is given (undocumented; here the parabola through the three end points),
-SPLINEDIT, CVSHOW / CVHIDE, the triangular grip and the multifunction grip menus (add / remove
-point, tangent, refine), weights, palette editing, TRIM / EXTEND of a spline an edge reaches (TRIM's
-row), BREAK / JOIN / OFFSET / FILLET / HATCH / DIM on a spline or against one, Perpendicular /
-Tangent / Geometric Center snaps, PEDIT Spline, BLEND
+every prompt with a base point has); SPLINEDIT, CVSHOW / CVHIDE, the triangular grip and the
+multifunction grip menus (Stretch / Add / Remove fit point and Tangent direction on a fit point,
+d08-2, d08-3; Stretch / Insert / Refine / Remove vertex on a CV, d09-4), weights, editing the
+palette's Method, Degree, Knot parameterization, Closed and CV frame; how many control points
+AutoCAD's palette counts on a closed CV spline, and its Area of a self-crossing one
+(**unverified**); TRIM / EXTEND of a spline an edge reaches (TRIM's row), BREAK (modify.md),
+JOIN / OFFSET / FILLET / HATCH / DIM on a spline or against one; Geometric Center (a closed
+spline's, p311: 10,10 and 40,10; none on an open one, p310, p312), Perpendicular and Tangent on a
+spline (p313, p315, p316) (SPLINE-D51); PEDIT Spline, BLEND
 
 ### `TEXT` / `DTEXT` / `DT` · es `TEXTO` / `T`†
 

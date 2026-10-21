@@ -558,7 +558,9 @@ export class SplineTool implements Tool {
    * cursor unsnapped. Under a Tangent on a circle or an arc, AutoCAD's
    * deferred one: the tangent where the circle is nearest the spline's end,
    * pointing the pick's way (probes spline/p250, p262, p263, p270, p272,
-   * p273); else the point's offset from the end.
+   * p273); else the direction to the point. AutoCAD stores it unit, however
+   * far the point (spline/p306, p210), where the start tangent keeps the
+   * length it was given: each is the curve's derivative there.
    */
   private endTangentAt(
     state: DrawingState,
@@ -579,7 +581,8 @@ export class SplineTool implements Tool {
         }
       }
     }
-    return V.sub(point, end)
+    const offset = V.sub(point, end)
+    return V.length(offset) > 1e-9 ? V.normalize(offset) : offset
   }
 
   private splineOf(drawn: Drawn, ctx: ToolContext): SplineEntity {
@@ -649,7 +652,7 @@ export class SplineTool implements Tool {
     ctx: ToolContext
   ): void {
     if (V.length(direction) > 1e-9) {
-      this.state = { ...state, endTangent: direction }
+      this.state = { ...state, endTangent: V.normalize(direction) }
     }
     ctx.setLastPoint(lastPoint(state))
     ctx.endCommand()

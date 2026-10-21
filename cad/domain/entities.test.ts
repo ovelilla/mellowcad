@@ -360,15 +360,13 @@ function expectSameShape(actual: Entity, expected: Entity, precision = 6) {
     expect(actual.degree).toBe(expected.degree)
     expect(actual.knots).toBe(expected.knots)
     expect(actual.closed).toBe(expected.closed)
-    // Optional, so a transform can drop one without TypeScript noticing; only
-    // the direction is meaningful.
+    // Optional, so a transform can drop one without TypeScript noticing; its
+    // length is part of the curve (the derivative itself, spline/p302).
     for (const key of ["startTangent", "endTangent"] as const) {
       const a = actual[key]
       const e = expected[key]
       expect(a !== undefined).toBe(e !== undefined)
-      if (a && e) {
-        expect(V.normalize(a)).toBeCloseToPoint(V.normalize(e), precision)
-      }
+      if (a && e) expect(a).toBeCloseToPoint(e, precision)
     }
   } else if (actual.type === "polyline" && expected.type === "polyline") {
     expect(actual.vertices).toBeCloseToPoints(expected.vertices, precision)

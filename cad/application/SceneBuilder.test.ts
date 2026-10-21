@@ -1,9 +1,21 @@
 import { describe, expect, it } from "vitest"
 import type { ScenePrimitive } from "../scene/types"
-import type { CircleEntity, EllipseEntity, Entity } from "../domain/entities"
+import type {
+  CircleEntity,
+  EllipseEntity,
+  Entity,
+  SplineEntity,
+} from "../domain/entities"
 import type { Vec3 } from "../geometry/Vec3"
+import { V, type Vec2 } from "../geometry/Vec2"
+import { bsplineDomain, bsplineLength } from "../geometry/nurbs"
 import {
   assignEntityLinetype,
+  closestPointOnSpline,
+  createSpline,
+  splineCurve,
+  splineLength,
+  splineStartPoint,
   entityAxes,
   withNormal,
   ellipseEndPoint,
@@ -720,6 +732,128 @@ describe("appearance resolution", () => {
   // probe ellipse/p330: an ellipse shorter than one period (14.53) is solid.
   it("draws an ellipse shorter than its pattern solid", () => {
     expect(ellipseDashes(ellipseOf(p(0, 0), p(3, 0), 0.5))).toBeNull()
+  })
+
+  /**
+   * A dashed spline's drawn dashes as `[from, to]` along its length from its
+   * start, each path's ends found on the curve, at LTSCALE 3 as p328 drew
+   * them; `null` when it is drawn as one solid path.
+   */
+  function splineDashes(spline: SplineEntity): [number, number][] | null {
+    const cad = createHarness({
+      entities: [assignEntityLinetype(spline, "Dashed")],
+    })
+    cad.runtime.setLtScale(3)
+    const camera = cad.runtime.viewport
+    const drawn = strokes(cad.scene().primitives, THEME.entity)
+    const only = drawn[0]
+    if (drawn.length === 1 && only.kind === "path" && !only.stroke?.dash)
+      return null
+    const curve = splineCurve(spline)
+    const { start, end } = bsplineDomain(curve)
+    const along = (screen: Vec2) => {
+      const { t } = closestPointOnSpline(spline, camera.screenToWorld(screen))
+      return bsplineLength(curve, start, start + t * (end - start))
+    }
+    return drawn.map((piece): [number, number] => {
+      if (piece.kind !== "path") throw new Error(piece.kind)
+      expect(piece.stroke?.dash).toBeUndefined()
+      return [along(piece.points[0]), along(piece.points.at(-1)!)]
+    })
+  }
+
+  // probe spline/p328, measured on the plot (DASHED at LTSCALE 3, 38.1 on,
+  // 19.05 off): laid as a line is, centred over the length, each run a piece
+  // of the curve. The plot's runs are each about half a unit longer at both
+  // ends (the pen's width).
+  it.each([
+    [
+      "an open fit spline",
+      createSpline("fit", [p(0, 0), p(40, 40), p(80, 0), p(120, 40)]),
+      [
+        [0, 22.5],
+        [40.5, 79.5],
+        [97.5, 136.8],
+        [154.8, 177],
+      ],
+    ],
+    [
+      "an open CV spline",
+      createSpline("cv", [p(60, 60), p(80, 120), p(100, 40), p(140, 100)]),
+      [
+        [0, 43],
+        [61, 104],
+      ],
+    ],
+  ] as const)("lays %s's dashes centred over its length", (_, spline, plot) => {
+    const dashes = splineDashes(spline)!
+    expect(dashes).toHaveLength(plot.length)
+    dashes.forEach(([from, to], i) => {
+      expect(Math.abs(from - plot[i][0])).toBeLessThan(1)
+      expect(Math.abs(to - plot[i][1])).toBeLessThan(1)
+    })
+    // Its end runs are the same length, as a line's.
+    const length = splineLength(spline)
+    const first = dashes[0][1] - dashes[0][0]
+    expect(length - dashes.at(-1)![0]).toBeCloseTo(first, 3)
+  })
+
+  // probe spline/p328: a closed spline is centred too, not laid as a circle,
+  // so one dash runs across its start.
+  it.each([
+    [
+      "fit",
+      createSpline("fit", [p(0, 60), p(40, 60), p(40, 100), p(0, 100)], {
+        closed: true,
+      }),
+    ],
+    [
+      "CV",
+      createSpline("cv", [p(160, 60), p(200, 60), p(200, 100), p(160, 100)], {
+        closed: true,
+      }),
+    ],
+  ] as const)(
+    "runs one dash across a closed %s spline's start",
+    (_, spline) => {
+      const cad = createHarness({
+        entities: [assignEntityLinetype(spline, "Dashed")],
+      })
+      cad.runtime.setLtScale(3)
+      const drawn = strokes(cad.scene().primitives, THEME.entity)
+      const length = splineLength(spline)
+      const period = 57.15
+      const periods = Math.floor(length / period)
+      expect(drawn).toHaveLength(periods)
+      const startOnScreen = cad.runtime.viewport.worldToScreen(
+        splineStartPoint(spline)
+      )
+      const across = drawn.filter(
+        (piece) =>
+          piece.kind === "path" &&
+          piece.points
+            .slice(1, -1)
+            .some((point) => V.distance(point, startOnScreen) < 1e-6)
+      )
+      expect(across).toHaveLength(1)
+    }
+  )
+
+  // probe spline/p328: the fit spline 150,0 155,5 160,0, shorter than one
+  // period, is solid.
+  it("draws a spline shorter than its pattern solid", () => {
+    expect(
+      splineDashes(createSpline("fit", [p(150, 0), p(155, 5), p(160, 0)]))
+    ).toBeNull()
+  })
+
+  it("leaves a spline ghost's own dashes on one path", () => {
+    const primitives = entityScenePrimitive(
+      createHarness().runtime.viewport,
+      createSpline("fit", [p(0, 0), p(40, 40), p(80, 0), p(120, 40)]),
+      { color: THEME.preview, width: 1, dash: [6, 4] }
+    )
+    expect(primitives.map((primitive) => primitive.kind)).toEqual(["path"])
   })
 
   it("leaves an ellipse ghost's own dashes on one curve", () => {
