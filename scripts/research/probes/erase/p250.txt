@@ -1,0 +1,50 @@
+_LINE
+0,0
+100,0
+
+_LINE
+0,50
+100,50
+
+_CIRCLE
+250,250
+10
+_ZOOM
+_W
+-50,-50
+700,700
+(sssetfirst nil (ssget "_X"))
+_MOVE
+0,0
+1,0
+(ssget "_I")
+_ROTATE
+50,0
+
+0,0
+5
+(ssget "_I")
+_SCALE
+50,0
+
+0,0
+1
+(ssget "_I")
+_MIRROR
+50,0
+
+0,0
+0,10
+_N
+(ssget "_I")
+_STRETCH
+_C
+-20,-20
+20,20
+
+0,0
+0,1
+(ssget "_I")
+(sssetfirst nil (ssget "_X"))
+_COPYCLIP
+(ssget "_I")

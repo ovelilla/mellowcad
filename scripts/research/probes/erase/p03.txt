@@ -1,0 +1,16 @@
+_LINE
+0,0
+10,0
+
+_ERASE
+_L
+
+_OOPS
+_ERASE
+_L
+
+_U
+_ERASE
+_L
+
+_REDO

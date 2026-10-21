@@ -1,0 +1,18 @@
+_LINE
+0,0
+10,0
+
+_LINE
+0,5
+10,5
+
+_ERASE
+_L
+
+_CIRCLE
+0,0
+3
+_OOPS
+(sslength (ssget "_X"))
+_U
+(sslength (ssget "_X"))

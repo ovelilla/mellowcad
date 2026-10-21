@@ -1,0 +1,15 @@
+_LINE
+0,0
+100,0
+
+_LINE
+100,0
+200,0
+
+_ZOOM
+_W
+-50,-50
+700,700
+(sssetfirst nil (ssget "_X"))
+_JOIN
+(sslength (ssget "_X"))

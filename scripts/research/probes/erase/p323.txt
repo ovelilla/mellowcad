@@ -1,0 +1,24 @@
+_LINE
+0,0
+10,0
+
+_-BLOCK
+B1
+0,0
+_L
+
+_-TEXT
+80,0
+2.5
+0
+Hola
+_-MTEXT
+90,0
+100,-5
+Hola
+
+(sslength (ssget "_X"))
+_ERASE
+_ALL
+
+(ssget "_X")

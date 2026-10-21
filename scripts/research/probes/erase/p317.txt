@@ -1,0 +1,13 @@
+_LINE
+0,0
+10,0
+
+_LINE
+0,0
+10,0
+
+_-OVERKILL
+_ALL
+
+
+(sslength (ssget "_X"))

@@ -1,0 +1,19 @@
+_LINE
+0,0
+10,0
+
+_LINE
+0,5
+10,5
+
+_LINE
+0,9
+10,9
+
+_ERASE
+_ALL
+
+_U
+(sslength (ssget "_X"))
+_REDO
+(ssget "_X")

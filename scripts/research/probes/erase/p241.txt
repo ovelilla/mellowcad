@@ -1,0 +1,21 @@
+_LINE
+0,0
+100,0
+
+_PLINE
+0,100
+100,100
+100,150
+
+_ZOOM
+_W
+-50,-50
+700,700
+(sssetfirst nil (ssget "_X"))
+(ssget "_I")
+(sssetfirst nil nil)
+(sssetfirst nil (ssget "_X" (list (cons 0 "LINE"))))
+_EXPLODE
+50,0
+50,100
+(sslength (ssget "_X"))

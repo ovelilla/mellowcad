@@ -1,0 +1,18 @@
+_ZOOM
+_W
+-5,-5
+15,15
+_RECTANG
+0,0
+10,10
+_-HATCH
+_S
+_L
+
+
+(cdr (assoc 71 (entget (entlast))))
+_ERASE
+5,0
+
+(sslength (ssget "_X"))
+(cdr (assoc 71 (entget (ssname (ssget "_X") 0))))

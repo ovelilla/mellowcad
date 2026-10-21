@@ -1,0 +1,11 @@
+_LINE
+0,0
+10,0
+
+_CIRCLE
+0,0
+3
+'_ERASE
+_.ERASE
+_L
+

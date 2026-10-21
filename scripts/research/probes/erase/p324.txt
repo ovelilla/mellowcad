@@ -1,0 +1,4 @@
+_CIRCLE
+0,0
+'_ERASE
+3

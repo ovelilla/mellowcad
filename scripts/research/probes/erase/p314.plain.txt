@@ -1,0 +1,15 @@
+_LINE
+0,0
+10,0
+
+(cdr (assoc 5 (entget (entlast))))
+_ERASE
+_L
+
+_U
+(cdr (assoc 5 (entget (entlast))))
+_LINE
+0,5
+10,5
+
+(cdr (assoc 5 (entget (entlast))))

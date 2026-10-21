@@ -1,0 +1,21 @@
+_-LAYER
+_M
+LK
+
+_LINE
+0,0
+10,0
+
+_-LAYER
+_S
+0
+_LO
+LK
+
+_LINE
+0,5
+10,5
+
+(sssetfirst nil (ssget "_X"))
+_ERASE
+(sslength (ssget "_X"))

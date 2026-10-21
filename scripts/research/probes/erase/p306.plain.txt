@@ -1,0 +1,17 @@
+_LINE
+0,0
+10,0
+
+_LINE
+0,5
+10,5
+
+_ERASE
+_ALL
+
+_UNDO
+1
+(sslength (ssget "_X"))
+_MREDO
+1
+(ssget "_X")

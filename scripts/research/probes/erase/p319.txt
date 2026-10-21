@@ -1,0 +1,12 @@
+_LINE
+0,0
+10,0
+
+_-TEXT
+0,5
+2.5
+0
+X
+_-PURGE
+_E
+(sslength (ssget "_X"))

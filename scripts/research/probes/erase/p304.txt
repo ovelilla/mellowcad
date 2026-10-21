@@ -1,0 +1,7 @@
+_LINE
+0,0
+10,0
+
+_ERASE
+
+(sslength (ssget "_X"))

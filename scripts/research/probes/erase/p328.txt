@@ -1,0 +1,14 @@
+_LINE
+0,0
+10,0
+
+_LINE
+0,5
+10,5
+
+_CIRCLE
+0,0
+3
+_EXPLODE
+_ALL
+

@@ -1,0 +1,9 @@
+(getvar "ACADVER")
+(getvar "_VERNUM")
+_LINE
+0,0
+10,0
+
+_ERASE
+_L
+

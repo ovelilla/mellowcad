@@ -1,0 +1,14 @@
+_LINE
+0,0
+10,0
+
+_LINE
+0,5
+10,5
+
+(sssetfirst nil (ssget "_X"))
+_MOVE
+0,0
+1,1
+(sssetfirst nil (ssget "_X"))
+_EXPLODE
