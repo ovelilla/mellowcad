@@ -1393,6 +1393,7 @@
       "markEncountered": "Mark encountered",
       "startOfGroup": "Start of Group encountered.\nMust enter UNDO END to go back further.",
       "undoGroup": "GROUP",
+      "dropGeometryStep": "DROPGEOM GROUP",
       "uDisabled": "U command disabled.  Use UNDO command to turn it on",
       "redoDisabled": "{command, select, mredo {REDO and MREDO commands disabled} other {REDO command disabled}}. Use UNDO C to turn it on.",
       "requiresIntegerValueOrKeyword": "Requires an integer value {value}, or option keyword.",

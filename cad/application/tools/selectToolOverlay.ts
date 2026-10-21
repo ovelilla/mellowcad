@@ -166,13 +166,28 @@ export function buildGripEdit(
   ]
 }
 
-/** The rubber-band preview and hot grip while moving an object or the selection. */
+/**
+ * The preview while a move grip or the selection drags: the selection as
+ * itself, solid in each object's colour, with no grip and no rubber band
+ * (desktop move/d08-1, MOVE-D8); a grip's object dashed, its grips and the hot
+ * one.
+ */
 export function buildMoveEdit(
   state: Phase<"moveLine">,
   ctx: ToolContext
 ): ScenePrimitive[] {
   const { viewport } = ctx
   const delta = V.sub(state.current, state.origMid)
+  if (state.dragsSelection) {
+    return state.originals.flatMap((entity) =>
+      entityScenePrimitive(
+        viewport,
+        translateEntity(entity, delta),
+        { color: ctx.document.resolveEntityColor(entity), width: 1 },
+        { blocks: ctx.blocks }
+      )
+    )
+  }
   const out: ScenePrimitive[] = []
   const stroke: StrokeStyle = { color: THEME.preview, width: 1, dash: [6, 4] }
   for (const entity of state.originals) {

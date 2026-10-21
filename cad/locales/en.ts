@@ -2203,6 +2203,7 @@ export const en: EngineCatalog = {
       "markEncountered": "Mark encountered",
       "startOfGroup": "Start of Group encountered.\nMust enter UNDO END to go back further.",
       "undoGroup": "GROUP",
+      "dropGeometryStep": "DROPGEOM GROUP",
       "uDisabled": "U command disabled.  Use UNDO command to turn it on",
       "redoDisabled": [
         [

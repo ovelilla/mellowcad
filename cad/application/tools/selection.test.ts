@@ -23,6 +23,7 @@ import {
   withElevation,
 } from "../../domain/entities"
 import { polarPoint } from "../../geometry/primitives"
+import type { Vec2 } from "../../geometry/Vec2"
 import { THEME } from "../../scene/theme"
 import { DEFAULT_LAYER_COLOR } from "../../domain/layers"
 import { fadedColor } from "../SceneBuilder"
@@ -438,6 +439,90 @@ describe("what a window or a lasso would take", () => {
     cad.mouseDown(p(200, 400)).moveTo(p(-50, 400)).moveTo(p(-50, 250))
     cad.moveTo(p(200, 250))
     expect(glowing(cad)).toEqual([300])
+  })
+})
+
+// AutoCAD 2027 desktop move/d08: with no command, a press on a selected line
+// off its grips, dragged, drags the line as itself and moves it by the drag.
+// Long lines: the harness is 1 px a unit, and a press a few units from a short
+// line's end lands on its grip.
+describe("a selection dragged with no command", () => {
+  const long = () => [
+    lineOf(p(0, 0), p(200, 0), { id: "A" }),
+    lineOf(p(0, 300), p(10, 300), { id: "B" }),
+  ]
+  const segmentsAt = (cad: CadHarness, a: Vec2, b: Vec2) => {
+    const near = (q: Vec2, r: Vec2) => Math.hypot(q.x - r.x, q.y - r.y) < 1e-6
+    const [sa, sb] = [cad.toScreen(a), cad.toScreen(b)]
+    return cad
+      .scene()
+      .primitives.flatMap((prim) =>
+        prim.kind === "segment" && near(prim.a, sa) && near(prim.b, sb)
+          ? [prim.stroke]
+          : []
+      )
+  }
+
+  it("moves it by the drag, writes nothing and drops the set (desktop move/d08)", () => {
+    const cad = createHarness({ entities: long() })
+    cad.click(p(60, 0)).moveTo(p(80, 80))
+    const before = cad.commandLog().length
+
+    cad.drag(p(60, 0), p(90, 40))
+
+    expect(cad.byId<LineEntity>("A").start).toBeCloseToPoint(p(30, 40))
+    expect(cad.byId<LineEntity>("A").end).toBeCloseToPoint(p(230, 40))
+    expect(cad.commandLog().slice(before)).toEqual([])
+    expect(cad.selectedIds()).toEqual([])
+  })
+
+  it("drags each object as itself, the original faded, no grips (desktop move/d08-1)", () => {
+    const cad = createHarness({
+      entities: [
+        assignEntityColor(lineOf(p(0, 0), p(200, 0), { id: "A" }), "#ff0000"),
+      ],
+    })
+    cad.click(p(60, 0)).moveTo(p(80, 80))
+
+    cad.mouseDown(p(60, 0)).moveTo(p(75, 20)).moveTo(p(90, 40))
+
+    expect(segmentsAt(cad, p(30, 40), p(230, 40))).toEqual([
+      { color: "#ff0000", width: 1 },
+    ])
+    expect(
+      segmentsAt(cad, p(0, 0), p(200, 0)).map((stroke) => stroke.color)
+    ).toEqual([fadedColor("#ff0000")])
+    const primitives = cad.scene().primitives
+    // No rubber band, no grip, no glow, no dashed ghost.
+    expect(segmentsAt(cad, p(60, 0), p(90, 40))).toEqual([])
+    expect(primitives.some((prim) => prim.kind === "rect")).toBe(false)
+    expect(
+      primitives.some(
+        (prim) =>
+          "stroke" in prim &&
+          (prim.stroke?.color === THEME.selected ||
+            prim.stroke?.color === THEME.preview)
+      )
+    ).toBe(false)
+    expect(cad.state().dynamicInput).toBeNull()
+  })
+
+  it("leaves a move grip's drag as it was: its own object, the set kept", () => {
+    const cad = createHarness({ entities: long() })
+    cad.select("A", "B")
+
+    cad.mouseDown(p(100, 0)).moveTo(p(125, 25)).moveTo(p(150, 50))
+    const primitives = cad.scene().primitives
+    expect(
+      primitives.some(
+        (prim) => prim.kind === "rect" && prim.fill === THEME.gripHot
+      )
+    ).toBe(true)
+    cad.mouseUp(p(150, 50))
+
+    expect(cad.byId<LineEntity>("A").start).toBeCloseToPoint(p(50, 50))
+    expect(cad.byId<LineEntity>("B").start).toBeCloseToPoint(p(0, 300))
+    expect(cad.selectedIds()).toEqual(["A", "B"])
   })
 })
 

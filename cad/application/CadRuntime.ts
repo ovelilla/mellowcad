@@ -766,9 +766,10 @@ export class CadRuntime extends Observable {
       get viewport() {
         return frame().viewport
       },
-      execute: (command) =>
+      execute: (command, step) =>
         this.executeTool(
-          command.mapEntities((entity) => this.frame.entityToWorld(entity))
+          command.mapEntities((entity) => this.frame.entityToWorld(entity)),
+          step
         ),
       pick: (world, tolerance) => this.pickEntity(world, tolerance),
       copyToClipboard: (entities, basePoint) =>
@@ -798,7 +799,7 @@ export class CadRuntime extends Observable {
           this.atDistance(this.frame.pointToFrame(this.lastPoint), distance)
         ),
       viewport: this.viewport,
-      execute: (command) => this.executeTool(command),
+      execute: (command, step) => this.executeTool(command, step),
       pick: (world, tolerance) => {
         const hit = this.pickEntity(
           this.frame.pointToFrame(withZ(world, zOf(world))),
@@ -1259,8 +1260,16 @@ export class CadRuntime extends Observable {
    * after U brings an erased set back, `Select objects: P` finds none
    * (erase/p111, p234), while U of a MOVE leaves its set (p162).
    */
-  private executeTool(command: Command): void {
-    this.history.execute(command)
+  private executeTool(command: Command, step?: string): void {
+    if (step === undefined) this.history.execute(command)
+    else {
+      this.history.nameCommand(step)
+      try {
+        this.history.execute(command)
+      } finally {
+        this.history.nameCommand(null)
+      }
+    }
     if (this.previousSet.some((id) => !this.document.has(id))) {
       this.previousSet = this.previousSet.filter((id) => this.document.has(id))
     }
@@ -2655,7 +2664,8 @@ export class CadRuntime extends Observable {
   /**
    * How U and REDO name a step: its command (`LINE`), consecutive ZOOMs or
    * a group with its commands, last first when taken back (`ZOOM 'ZOOM`,
-   * `GROUP CIRCLE LINE`); a mark, or an edit made with no command, nothing.
+   * `GROUP CIRCLE LINE`); a mark, or an edit made with no command, nothing,
+   * but a selection dragged (`DROPGEOM GROUP`).
    */
   private stepName(step: Step, undone: boolean): string | null {
     if (step.kind === "mark") return null

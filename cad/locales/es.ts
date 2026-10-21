@@ -2550,6 +2550,7 @@ export const es: EngineLocale = {
       "markEncountered": "Marca encontrada",
       "startOfGroup": "Se ha encontrado el comienzo del Grupo.\nPara retroceder aún más, utilice DESHACER FIN.",
       "undoGroup": "GRUPO",
+      "dropGeometryStep": "SOLTARGEOM GRUPO",
       "uDisabled": "Comando H desactivado. Utilice el comando DESHACER para activarlo",
       "redoDisabled": [
         [

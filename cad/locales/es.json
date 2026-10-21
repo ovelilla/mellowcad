@@ -1424,6 +1424,7 @@
       "markEncountered": "Marca encontrada",
       "startOfGroup": "Se ha encontrado el comienzo del Grupo.\nPara retroceder aún más, utilice DESHACER FIN.",
       "undoGroup": "GRUPO",
+      "dropGeometryStep": "SOLTARGEOM GRUPO",
       "uDisabled": "Comando H desactivado. Utilice el comando DESHACER para activarlo",
       "redoDisabled": "{command, select, mredo {Comandos REHACER y MREHACER desactivados} other {Comando REHACER desactivado}}. Usar DESHACER C para activarlo.",
       "requiresIntegerValueOrKeyword": "Requiere un valor {value} entero, o una opción.",

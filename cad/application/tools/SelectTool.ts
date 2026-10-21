@@ -739,6 +739,12 @@ export class SelectTool implements Tool {
     return null
   }
 
+  /** A selection dragged fades where it was, as MOVE's does (desktop move/d08-1). */
+  fadedEntityIds(): readonly EntityId[] {
+    if (this.state.phase !== "moveLine" || !this.state.dragsSelection) return []
+    return this.state.originals.map((entity) => entity.id)
+  }
+
   rolloverEntityId(): EntityId | null {
     return this.state.phase === "idle"
       ? (this.state.hoverEntityId ?? null)
@@ -840,10 +846,9 @@ export class SelectTool implements Tool {
 
   /**
    * Starts moving the whole selection from `base` — the point that was pressed,
-   * on the elevation plane like any unsnapped cursor point.
-   * Reuses the move-grip machinery, so the drag gets the same dashed preview,
-   * object snap, Ortho lock and typed-distance entry, and commits as one
-   * undoable step on release.
+   * on the elevation plane like any unsnapped cursor point. Reuses the
+   * move-grip machinery for the snaps and Ortho; AutoCAD shows no tooltip
+   * there (desktop move/d08-1), so no box opens.
    */
   private beginSelectionDrag(base: Vec2, screen: Vec2, ctx: ToolContext): void {
     const originals = ctx.selection
@@ -858,8 +863,9 @@ export class SelectTool implements Tool {
       origMid: origin,
       current: origin,
       pressScreen: screen,
+      dragsSelection: true,
     }
-    this.openMoveInput(ctx, screen)
+    ctx.requestRender()
   }
 
   /**
@@ -878,6 +884,7 @@ export class SelectTool implements Tool {
       origMid: base,
       current: base,
       pressScreen: screen,
+      dragsSelection: false,
     }
     this.openMoveInput(ctx, screen)
     ctx.requestRender()
@@ -1282,22 +1289,31 @@ export class SelectTool implements Tool {
 
   /**
    * Translates what is being moved so the base point lands on `newMid`, Z
-   * included, through a single undoable command, then returns to idle.
+   * included, through a single undoable command, then returns to idle. A
+   * selection dragged drops the set, and U names its step `DROPGEOM GROUP`
+   * (desktop move/d08; string table 52629 and 52656), where a grip edit's
+   * names nothing and keeps the set.
    */
   private placeMove(
     state: Extract<SelectToolState, { phase: "moveLine" }>,
     newMid: Vec3,
     ctx: ToolContext
   ): void {
+    ctx.dynamicInput.close()
+    this.state = { phase: "idle" }
+    if (state.dragsSelection) ctx.selection.clear()
     const delta = sub3(newMid, state.origMid)
     if (!V.equals(delta, V.zero()) || delta.z !== 0) {
       const moved = state.originals.map((entity) =>
         translateEntity(entity, delta)
       )
-      if (moved.length > 0) ctx.execute(new UpdateEntitiesCommand(moved))
+      const step = state.dragsSelection
+        ? ctx.text.message("dropGeometryStep")
+        : undefined
+      if (moved.length > 0) {
+        ctx.execute(new UpdateEntitiesCommand(moved), step)
+      }
     }
-    ctx.dynamicInput.close()
-    this.state = { phase: "idle" }
     ctx.requestRender()
   }
 

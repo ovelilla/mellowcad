@@ -272,8 +272,13 @@ export interface ToolContext {
    */
   pointAtDistance(distance: number): Vec3
 
-  /** Executes a reversible command against the document (the only write-path). */
-  execute(command: Command): void
+  /**
+   * Executes a reversible command against the document (the only
+   * write-path). `step`: the name U and REDO give an edit made with no
+   * command running, which otherwise names nothing (a selection dragged,
+   * `DROPGEOM GROUP`).
+   */
+  execute(command: Command, step?: string): void
 
   /**
    * Reverts the most recently executed command, returning whether one existed:

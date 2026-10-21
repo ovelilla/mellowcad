@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest"
 
 import { type CadHarness, createHarness } from "../../test/harness"
 import { lineOf, p } from "../../test/builders"
+import type { LineEntity } from "../domain/entities"
 import { es } from "../locales/es"
 
 /** Each answer typed at the command line and confirmed, as the console types it. */
@@ -360,6 +361,24 @@ describe("MOVE and COPY undone and redone", () => {
     answer(cad, ...COPY)
     expect(written(cad, "_U")).toEqual(["H", "COPIA"])
   })
+
+  // A selected line dragged with no command: U writes `SOLTARGEOM GRUPO`
+  // (desktop move/d08), the string table's 52629 DROPGEOM / SOLTARGEOM and
+  // 52656 GROUP / GRUPO; REDO the same.
+  it.each([
+    ["en", undefined, ["U", "DROPGEOM GROUP"], ["REDO", "DROPGEOM GROUP"]],
+    ["es", es, ["H", "SOLTARGEOM GRUPO"], ["REHACER", "SOLTARGEOM GRUPO"]],
+  ])(
+    "names a selection dragged DROPGEOM GROUP, %s (desktop move/d08)",
+    (_, locale, undone, redone) => {
+      const cad = createHarness({ entities: line(), locale })
+      cad.click(p(75, 0)).moveTo(p(80, 80)).drag(p(75, 0), p(105, 40))
+      expect(written(cad, "_U").slice(0, 2)).toEqual(undone)
+      expect(cad.byId<LineEntity>("A").start).toBeCloseToPoint(p(0, 0))
+      expect(written(cad, "_REDO").slice(0, 2)).toEqual(redone)
+      expect(cad.byId<LineEntity>("A").start).toBeCloseToPoint(p(30, 40))
+    }
+  )
 })
 
 describe("ERASE undone and redone", () => {

@@ -280,7 +280,11 @@ Shift held at either corner or at the press, and what it would take glows as it 
 (SELECTIONPREVIEW 3, d02-1); a click on nothing never empties the set:
 Escape drops a window under way, and with none the selection; a command started with it takes it,
 and its end or Escape drops it (but COPYCLIP's and PASTECLIP's, command-line.md, `Select objects:`;
-erase/p249–p251, desktop d10), while a grip edit, no command, leaves it; Shift held over a selected
+erase/p249–p251, desktop d10), while a grip edit, no command, leaves it; a press on a selected
+object off its grips, dragged, drags the set as itself, solid in its colours, the originals faded
+where they were, with no grip, rubber band or tooltip (desktop move/d08-1), and released moves it
+by the drag, writes nothing and drops the set, one step U and REDO name `DROPGEOM GROUP` (es
+`SOLTARGEOM GRUPO`, d08); Shift held over a selected
 object shows a minus badge beside the crosshair, and only there: none over nothing or an object not
 selected, none at `Select objects:` (desktop erase/d14-1 to d14-6); a selected object keeps its colour and glows blue (the
 selection effect, desktop line/d15); the crosshair is CURSORSIZE 5's, 5 % of the screen end to end
@@ -295,7 +299,9 @@ lasso options; PICKADD, PICKAUTO and PICKDRAG as variables, and the Properties p
 PICKADD; CURSORBADGE and the other cursor badges (MOVE's, COPY's…); whether a `+` badge shows with
 PICKADD 0 (**unverified**); the crosshair hidden at `Select objects:` (AutoCAD shows the pick box
 alone there, desktop erase/d09-1); the rollover tooltip on a selected object, its other rows (QPMODE's
-properties per type, CUI's Rollover Tooltips), ROLLOVERTIPS and CURSORSIZE as variables
+properties per type, CUI's Rollover Tooltips), ROLLOVERTIPS and CURSORSIZE as variables; a copy by
+a selection dragged with Ctrl (**unverified**: Ctrl held from the press drags nothing, it is the
+sub-object pick, desktop move/d09); the right-button drag's menu (workspace.md)
 
 ### Grips
 **Implemented:** a line's end grip stretches the end to the point given, off the line's axis too

@@ -127,6 +127,11 @@ export type SelectToolState =
       readonly current: Vec3
       /** Screen position where the grip was grabbed (drag vs click-click). */
       readonly pressScreen: Vec2
+      /**
+       * Begun on the selection, not on a move grip: AutoCAD's drag and drop
+       * (DROPGEOM), which draws, names and ends otherwise (desktop move/d08).
+       */
+      readonly dragsSelection: boolean
     }
   | {
       /** A radius grip is hot: a circle or arc is being resized about its centre. */
