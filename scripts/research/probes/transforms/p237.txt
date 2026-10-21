@@ -1,0 +1,29 @@
+_LINE
+0,0
+100,0
+
+_ZOOM
+_W
+-50,-50
+700,700
+_MIRROR
+_L
+
+10,0
+@0,10
+_N
+(cdr (assoc 11 (entget (entlast))))
+_MIRROR
+_L
+
+0,0
+10<90
+_N
+(cdr (assoc 11 (entget (entlast))))
+_MIRROR
+_L
+
+20,0
+@10<90
+_N
+(cdr (assoc 11 (entget (entlast))))

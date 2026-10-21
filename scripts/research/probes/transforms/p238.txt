@@ -1,0 +1,17 @@
+_LINE
+0,0
+100,0
+
+_ZOOM
+_W
+-50,-50
+700,700
+_MIRROR
+_L
+
+0,0
+10
+_N
+(getvar "LASTPOINT")
+(cdr (assoc 10 (entget (entlast))))
+(cdr (assoc 11 (entget (entlast))))

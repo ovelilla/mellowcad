@@ -1,0 +1,16 @@
+_LINE
+0,0
+100,0
+
+_LINE
+0,50
+100,50
+
+_MIRROR
+_L
+
+0,0
+0,10
+_N
+_U
+(sslength (ssget "_X"))

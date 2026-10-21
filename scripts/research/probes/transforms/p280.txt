@@ -1,0 +1,32 @@
+_ZOOM
+_W
+-50,-50
+700,700
+HPASSOC
+0
+_RECTANG
+0,0
+100,100
+_-HATCH
+_S
+_L
+
+
+(setq h1 (entlast))
+_RECTANG
+95,200
+105,210
+_-HATCH
+_S
+_L
+
+
+_STRETCH
+_C
+90,-10
+110,220
+
+0,0
+10,5
+(foreach g (entget h1) (if (= (car g) 10) (print g)))
+(foreach g (entget (entlast)) (if (= (car g) 10) (print g)))

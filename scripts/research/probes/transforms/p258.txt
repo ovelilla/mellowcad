@@ -1,0 +1,17 @@
+_LINE
+0,0
+100,0
+
+_ZOOM
+_W
+-50,-50
+700,700
+_STRETCH
+FOO
+_C
+90,-10
+110,10
+
+0,0
+10,0
+(cdr (assoc 11 (entget (entlast))))

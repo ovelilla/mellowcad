@@ -1,0 +1,51 @@
+_LINE
+0,0
+100,0
+
+_LINE
+0,50
+100,50
+
+_CIRCLE
+250,250
+10
+_ZOOM
+_W
+-50,-50
+700,700
+_MIRROR
+50,0
+
+0,0
+0,10
+_N
+(ssget "_I")
+(sslength (ssget "_P"))
+(cdr (assoc 5 (entget (ssname (ssget "_P") 0))))
+_MIRROR
+50,50
+
+0,0
+0,10
+_Y
+(ssget "_I")
+(sslength (ssget "_P"))
+(cdr (assoc 5 (entget (ssname (ssget "_P") 0))))
+_STRETCH
+_C
+90,-10
+110,10
+
+0,0
+10,0
+(ssget "_I")
+(sslength (ssget "_P"))
+(cdr (assoc 5 (entget (ssname (ssget "_P") 0))))
+_MIRROR
+250,260
+
+0,0
+0,0
+(ssget "_I")
+(sslength (ssget "_P"))
+(cdr (assoc 5 (entget (ssname (ssget "_P") 0))))

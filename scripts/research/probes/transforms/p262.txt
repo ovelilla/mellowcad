@@ -1,0 +1,15 @@
+_LINE
+0,0
+100,0
+
+_ZOOM
+_W
+-50,-50
+700,700
+_STRETCH
+50,0
+
+0,0
+10,5
+(cdr (assoc 10 (entget (entnext))))
+(cdr (assoc 11 (entget (entnext))))

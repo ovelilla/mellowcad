@@ -1,0 +1,20 @@
+_LINE
+0,0
+100,0
+
+_ZOOM
+_W
+-50,-50
+700,700
+_MIRROR
+_L
+
+'_ZOOM
+_E
+0,0
+'ORTHOMODE
+1
+0,10
+_N
+(getvar "ORTHOMODE")
+(cdr (assoc 11 (entget (entlast))))

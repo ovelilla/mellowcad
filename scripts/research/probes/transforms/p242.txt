@@ -1,0 +1,22 @@
+_LINE
+0,0
+100,0
+
+_LINE
+0,50
+0,150
+
+_ZOOM
+_W
+-50,-50
+700,700
+_MIRROR
+50,0
+
+_END
+1,51
+_MID
+1,100
+_N
+(cdr (assoc 10 (entget (entlast))))
+(cdr (assoc 11 (entget (entlast))))

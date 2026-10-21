@@ -1,0 +1,26 @@
+_CIRCLE
+200,200
+20
+_LINE
+0,50
+50,100
+
+_LINE
+0,0
+100,0
+
+_ZOOM
+_W
+-50,-50
+700,700
+GIRA
+_L
+
+0,0
+C
+R
+0
+P
+0,0
+0,10
+(cdr (assoc 11 (entget (entlast))))

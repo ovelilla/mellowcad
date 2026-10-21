@@ -1,0 +1,29 @@
+_LINE
+0,0
+100,0
+
+_ZOOM
+_W
+-50,-50
+700,700
+_ID
+7,8
+_STRETCH
+_C
+90,-10
+110,10
+
+3,4
+@5,0
+(getvar "LASTPOINT")
+_STRETCH
+_C
+100,-10
+110,10
+
+3,4
+13,6
+(getvar "LASTPOINT")
+_ID
+@
+(cdr (assoc 11 (entget (entlast))))

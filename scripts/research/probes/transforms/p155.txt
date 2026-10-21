@@ -1,0 +1,26 @@
+_CIRCLE
+200,200
+20
+_LINE
+0,50
+50,100
+
+_LINE
+0,0
+100,0
+
+_ZOOM
+_W
+-50,-50
+700,700
+ANGBASE
+90
+_ROTATE
+_L
+
+0,0
+_R
+0,0
+100,0
+90
+(cdr (assoc 11 (entget (entlast))))

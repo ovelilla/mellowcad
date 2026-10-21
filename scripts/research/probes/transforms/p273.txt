@@ -1,0 +1,17 @@
+_ZOOM
+_W
+-50,-50
+700,700
+_DIMLINEAR
+0,300
+100,300
+50,320
+(foreach g (entget (entlast)) (if (member (car g) (quote (10 11 13 14))) (print g)))
+_STRETCH
+_C
+90,290
+110,310
+
+0,0
+10,5
+(foreach g (entget (entlast)) (if (member (car g) (quote (10 11 13 14 42))) (print g)))

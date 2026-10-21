@@ -1,0 +1,36 @@
+_LINE
+0,0
+100,0
+
+_LINE
+0,50
+100,50
+
+_ZOOM
+_W
+-50,-50
+700,700
+_STRETCH
+_CP
+90,-10
+110,-10
+110,10
+90,10
+
+
+0,0
+10,5
+(cdr (assoc 10 (entget (entnext))))
+(cdr (assoc 11 (entget (entnext))))
+_STRETCH
+_WP
+-10,40
+110,40
+110,60
+-10,60
+
+
+0,0
+10,5
+(cdr (assoc 10 (entget (entlast))))
+(cdr (assoc 11 (entget (entlast))))

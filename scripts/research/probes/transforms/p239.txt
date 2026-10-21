@@ -1,0 +1,26 @@
+_LINE
+0,0
+100,0
+
+_ZOOM
+_W
+-50,-50
+700,700
+_ID
+7,8
+_MIRROR
+_L
+
+20,0
+20,10
+_N
+(getvar "LASTPOINT")
+_ID
+7,8
+_MIRROR
+_L
+
+20,0
+20,10
+_Y
+(getvar "LASTPOINT")
