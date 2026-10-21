@@ -161,15 +161,15 @@ CELWEIGHT; ByLayer by default, which stores nothing). Every creating command has
 - **FILLET's arc and CHAMFER's bevel**: the lines' shared layer or the current one, ByLayer —
   `carryPlane` alone.
 
-The jigs of LINE, PLINE, CIRCLE, ARC and RECTANG wear `currentColor` (line/d04, the others'
-d01). No HPLAYER, DIMLAYER or TEXTLAYER: all goes on the current layer.
+The jigs of LINE, PLINE, CIRCLE, ARC, RECTANG and POLYGON wear `currentColor` (line/d04,
+rectang/d02, else d01). No HPLAYER, DIMLAYER or TEXTLAYER: the current layer.
 
 ## Ordering and undo
 
 - **Update the tool's own state _before_ `ctx.execute(...)`**: executing synchronously rebuilds
   `EngineState`, `commandOptions()` included, so state bumped afterwards lags by one action.
 - **Never clear accumulated state in `onKeyDown`** when `onDeactivate` is the commit point: the
-  runtime calls `onKeyDown` first, so Escape would discard the work. Exceptions, on purpose: an
+  runtime calls `onKeyDown` first, so Escape would discard it. Exceptions, on purpose: an
   editor whose Escape _is_ discard (MTEXT's, TEXTEDIT on an MTEXT) and SPLINE, whose Escape
   cancels the whole curve.
 - **One commit, one command.** A split or a multi-entity edit is one `ReplaceEntitiesCommand` /

@@ -204,29 +204,47 @@ vertices but the first are NaN, p114); after a refusal at Rotation's prompt the 
 prompt again (the getangle's message is empty; p116, p135), asked again in full here
 (**unverified** on the desktop; RECTANG-D63)
 
-### `POLYGON` / `POL` · es `POLIGONO` / `PG`†
+### `POLYGON` / `POL` · es `POLIGONO` / `PG`
 
 **Implemented:** `Enter number of sides <4>:` (es `Indique número de lados <4>:`), a count outside
-3–1024 or not whole refused with `Requires an integer between 3 and 1024.` (es
-`Requiere un nº entero entre 3 y 1024.`, the table's `Requires an integer between %d and %d` with
-the period AutoCAD's input functions end it with) and asked again;
-`Specify center of polygon or [Edge]:` (es `Precise centro de polígono o [Lado]:`),
+3–1024 or not written as an integer (`3.5`, `3.0`, `1e1`; `+5` taken) refused with
+`Requires an integer between 3 and 1024.` (es `Requiere un nº entero entre 3 y 1024.`, the table's
+`Requires an integer between %d and %d` with the period AutoCAD's input functions end it with) and
+asked again (probes polygon/p08, p118, p153); `Specify center of polygon or [Edge]:` (es
+`Precise centro de polígono o [Lado]:`),
 `Enter an option [Inscribed in circle/Circumscribed about circle] <I>:` (es
 `Indique una opción [Inscrito en el círculo/Circunscrito alrededor del círculo] <I>:`), then
 `Specify radius of circle:` (es `Precise radio de círculo:`); the count (POLYSIDES) and the option
-are the next run's `<default>`, for the session; Inscribed puts the vertices on the radius,
-Circumscribed the edges' midpoints; a picked radius sizes and turns it, a typed one draws the bottom
-edge level in the UCS ("Specifying the radius draws the bottom edge of the polygon at the current
-snap rotation angle"); Edge's `Specify first endpoint of edge:` and
-`Specify second endpoint of edge:` (es `Precise primer punto final de lado:`,
-`Precise segundo punto final de lado:`) build it counterclockwise from that edge; a closed polyline
-in the plane of its centre or first endpoint, with THICKNESS. English wording and geometry from
-AutoCAD 2023's own console, Spanish from the 2027 Spanish language pack's string table, paired with
-the English by id
+are the next run's `<default>`, for the session (p01, p111); Inscribed puts the vertices on the
+radius, Circumscribed the edges' midpoints; a point at the radius, picked or typed (`@5,0` from the
+centre), sizes and turns it, a vertex there (Inscribed) or an edge's midpoint (Circumscribed),
+LASTPOINT left at the centre (p06, p102, p123); a typed radius draws the bottom edge level in the UCS
+("Specifying the radius draws the bottom edge of the polygon at the current snap rotation angle"),
+its first vertex on the UCS's Y axis, or half a side past it for an even count, then
+counterclockwise (p100, p101, p104); a radius of 0 or less, `@` included, refused with
+`Value must be positive and nonzero.` (es `El valor debe ser positivo y diferente de cero.`; p08,
+p124). Edge's `Specify first endpoint of edge:` and `Specify second endpoint of edge:` (es
+`Precise primer punto final de lado:`, `Precise segundo punto final de lado:`) build it
+counterclockwise from that edge (p03, p103), the second a 2D point (a Z or `*` is
+`Invalid 2D point.`, p132, p133); a zero-length edge makes the polygon of every vertex on one point
+and ends (p125; RECTANG-D64). Enter is refused at each point prompt and asked again:
+`Point or option keyword required.` at the centre (es `Se requiere un punto o una opción.`),
+`Invalid point.` and `Invalid 2D point.` at Edge's endpoints (es `Punto no válido.`,
+`Punto 2D no válido.`), `Requires numeric distance or second point.` at the radius (es
+`Requiere una distancia numérica o un segundo punto.`; p02, p03). `_TAN` at the centre or Edge's
+first endpoint is measured from LASTPOINT (p04, p05); Ortho bends the radius about the centre and
+Edge's end about the first endpoint (desktop rectang/d02; RECTANG-D60), and `<angle` then a distance
+at Edge's end runs along that angle (RECTANG's d03 path; the console ignores the override, p09). A
+closed polyline in the plane of its centre or first endpoint, their Z kept (p131, p132), in a
+tilted UCS too (p135), with the current layer and properties, ELEVATION and THICKNESS, never
+PLINEWID (p136, p137). The jig as the desktop draws it: the polygon in the current colour, at the
+radius an amber dashed line from the centre to the cursor, at Edge's end the ghost alone (d02).
+Wording and geometry from AutoCAD 2027's console in both languages (p01–p153); `PG` runs it in
+Spanish (p108)
 
-**Missing:** a point at `Specify radius of circle:` typed as a coordinate (a distance only here),
-SNAPANG (no rotated snap here: a typed radius levels the bottom edge with the UCS), POLYSIDES as a
-variable
+**Missing:** SNAPANG (no rotated snap here: a typed radius levels the bottom edge with the UCS,
+where AutoCAD turns it by SNAPANG, p105), POLYSIDES as a variable; `<angle` then a distance at
+Edge's end is unprobed on the desktop (RECTANG-D65)
 
 ### `CIRCLE` / `C` · es `CIRCULO` / `C`
 

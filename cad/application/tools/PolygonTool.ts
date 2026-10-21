@@ -23,6 +23,7 @@ import {
   type QuestionInput,
 } from "./Tool"
 import {
+  currentColor,
   withCurrentProperties,
   withCurrentThickness,
 } from "./currentProperties"
@@ -43,7 +44,8 @@ const MAX_SIDES = 1024
  * midpoints. A pointed radius sets the size and the rotation at once; a typed
  * one draws the bottom edge level. Edge builds the polygon counterclockwise from
  * its first edge. The side count (POLYSIDES) and the last option are the next
- * run's defaults, for the session.
+ * run's defaults, for the session. As AutoCAD 2027's console answers it
+ * (probes polygon/p01–p153).
  */
 type PolygonToolState =
   /** Awaiting the number of sides. */
@@ -210,6 +212,12 @@ export class PolygonTool implements Tool {
     return "unhandled"
   }
 
+  /** `_TAN` at the centre or Edge's first endpoint measures from LASTPOINT (p04, p05). */
+  snapsFromLastPoint(): boolean {
+    const { phase } = this.state
+    return phase === "center" || phase === "edgeStart"
+  }
+
   getConstraintAnchor(): Vec2 | null {
     switch (this.state.phase) {
       case "radius":
@@ -221,9 +229,13 @@ export class PolygonTool implements Tool {
     }
   }
 
+  /**
+   * The polygon in the colour it will wear; at the radius an amber dashed
+   * line from the centre to the cursor, at Edge's end the ghost alone
+   * (desktop rectang/d02).
+   */
   buildOverlay(ctx: ToolContext): ScenePrimitive[] {
     const { viewport } = ctx
-    const rubber = { color: THEME.rubberBand, width: 1 }
     const state = this.state
     if (state.phase !== "radius" && state.phase !== "edgeEnd") return []
     const vertices =
@@ -231,21 +243,20 @@ export class PolygonTool implements Tool {
         ? this.resolvePolygon(ctx, state.cursor)
         : edgePolygon(state.start, state.cursor, state.sides)
     const out: ScenePrimitive[] = []
+    if (state.phase === "radius") {
+      out.push({
+        kind: "segment",
+        a: viewport.worldToScreen(state.center),
+        b: viewport.worldToScreen(state.cursor),
+        stroke: { color: THEME.dashedRubberBand, width: 1, dash: [2, 3] },
+      })
+    }
     if (vertices) {
       out.push({
         kind: "path",
         points: vertices.map((v) => viewport.worldToScreen(v)),
         closed: true,
-        stroke: rubber,
-      })
-    }
-    if (state.phase === "radius") {
-      // A guide from the centre to the cursor shows the size and orientation.
-      out.push({
-        kind: "segment",
-        a: viewport.worldToScreen(state.center),
-        b: viewport.worldToScreen(state.cursor),
-        stroke: rubber,
+        stroke: { color: currentColor(ctx), width: 1 },
       })
     }
     return out
@@ -261,10 +272,20 @@ export class PolygonTool implements Tool {
     ctx.dynamicInput.setPosition(this.lastScreen ?? { x: 0, y: 0 })
   }
 
-  /** A count outside 3–1024, or not whole, is refused and asked again. */
+  /**
+   * A count outside 3–1024, or not written as an integer, is refused and
+   * asked again: `3.0` and `1e1` too, `+5` taken (p08, p153).
+   */
   private commitSides(value: number, ctx: ToolContext): void {
     if (this.state.phase !== "sides") return
-    if (!Number.isInteger(value) || value < MIN_SIDES || value > MAX_SIDES) {
+    const typed = ctx.dynamicInput.getText("sides").trim()
+    const written = typed === "" || /^[+-]?\d+$/.test(typed)
+    if (
+      !written ||
+      !Number.isInteger(value) ||
+      value < MIN_SIDES ||
+      value > MAX_SIDES
+    ) {
       ctx.report(
         ctx.text.message("requiresIntegerBetween", {
           min: MIN_SIDES,
@@ -292,6 +313,18 @@ export class PolygonTool implements Tool {
 
   private commitTypedPoint(ctx: ToolContext): boolean {
     const state = this.state
+    if (!ctx.dynamicInput.hasTypedText()) {
+      // The point prompts take no Enter: each asks again in its words (p02,
+      // p03), the edge's end being a 2D point.
+      const refusal =
+        state.phase === "center"
+          ? "pointOrKeywordRequired"
+          : state.phase === "edgeStart"
+            ? "invalidPoint"
+            : "invalidPoint2d"
+      ctx.report(ctx.text.message(refusal), "error")
+      return true
+    }
     const text = ctx.dynamicInput.getText("point").trim()
     if (!isCoordinateExpression(text)) return false
     const last = state.phase === "edgeEnd" ? state.start : null
@@ -339,8 +372,18 @@ export class PolygonTool implements Tool {
     const session: DynamicInputSession = {
       fields: [{ id: "radius", prompt: "radius", kind: "distance" }],
       commit: (_values, commitCtx) => this.commitPolygon(commitCtx, null),
-      // The radius has no default: Enter alone asks it again.
-      commitRaw: (commitCtx) => !commitCtx.dynamicInput.hasTypedText(),
+      commitRaw: (commitCtx) => {
+        if (commitCtx.dynamicInput.hasTypedText()) return false
+        // The radius has no default: Enter is refused and asked again (p02).
+        commitCtx.report(
+          commitCtx.text.message("requiresDistance", {
+            points: "second",
+            keyword: "no",
+          }),
+          "error"
+        )
+        return true
+      },
     }
     ctx.dynamicInput.open(session)
     ctx.dynamicInput.setLive("radius", 0)
@@ -348,11 +391,17 @@ export class PolygonTool implements Tool {
     ctx.requestRender()
   }
 
-  /** The radius prompt answered: by a pick at `point`, or by the typed value. */
+  /**
+   * The radius prompt answered: by a pick at `point`, or by the typed value.
+   * One of 0 or less, a pick on the centre (`@`) too, is refused (p08, p124).
+   */
   private commitPolygon(ctx: ToolContext, point: Vec2 | null): void {
     if (this.state.phase !== "radius") return
     const vertices = this.resolvePolygon(ctx, point ?? this.state.cursor)
-    if (!vertices) return
+    if (!vertices) {
+      ctx.report(ctx.text.message("positiveNonzero"), "error")
+      return
+    }
     this.add(vertices, this.state.center, ctx)
   }
 
@@ -370,8 +419,11 @@ export class PolygonTool implements Tool {
 
   private commitEdge(end: Vec2, ctx: ToolContext): void {
     if (this.state.phase !== "edgeEnd") return
-    const vertices = edgePolygon(this.state.start, end, this.state.sides)
-    if (vertices) this.add(vertices, this.state.start, ctx)
+    this.add(
+      edgePolygon(this.state.start, end, this.state.sides),
+      this.state.start,
+      ctx
+    )
   }
 
   private add(vertices: Vec2[], plane: Vec3, ctx: ToolContext): void {
@@ -396,7 +448,8 @@ export class PolygonTool implements Tool {
    * The polygon the radius prompt would draw: a typed radius with its bottom
    * edge level in the UCS ("Specifying the radius draws the bottom edge of the
    * polygon at the current snap rotation angle"), else sized and turned by the
-   * cursor. Shared by the preview and the commit.
+   * cursor: a vertex at it (Inscribed), or an edge's midpoint (Circumscribed).
+   * Shared by the preview and the commit.
    */
   private resolvePolygon(ctx: ToolContext, cursor: Vec2): Vec2[] | null {
     if (this.state.phase !== "radius") return null
@@ -404,36 +457,34 @@ export class PolygonTool implements Tool {
     const typed = parseField(ctx, "radius")
     const radius = typed ?? V.distance(center, cursor)
     if (!(radius > 0)) return null
-    const angle =
+    const first =
       typed !== null
-        ? levelAngle(sides, circumscribed, ctx)
-        : Math.atan2(cursor.y - center.y, cursor.x - center.x)
-    return polygonVertices(center, sides, radius, angle, circumscribed)
+        ? topVertexAngle(sides, ctx)
+        : Math.atan2(cursor.y - center.y, cursor.x - center.x) +
+          (circumscribed ? Math.PI / sides : 0)
+    return polygonVertices(center, sides, radius, first, circumscribed)
   }
 }
 
 /**
- * The vertices of a regular polygon. `angle` orients the figure: it points at
- * the first vertex when inscribed, or at the midpoint of the first edge when
- * circumscribed (so the specified radius runs to an edge, matching AutoCAD).
- * The circumscribed radius is the apothem, so the circumradius is scaled up by
- * `1 / cos(π/n)`.
+ * The vertices of a regular polygon, counterclockwise from the one at angle
+ * `first`. The circumscribed radius is the apothem, so the circumradius is
+ * scaled up by `1 / cos(π/n)`.
  */
 function polygonVertices(
   center: Vec2,
   sides: number,
   radius: number,
-  angle: number,
+  first: number,
   circumscribed: boolean
 ): Vec2[] {
   const step = (Math.PI * 2) / sides
   const circumradius = circumscribed
     ? radius / Math.cos(Math.PI / sides)
     : radius
-  const start = circumscribed ? angle + Math.PI / sides : angle
   const vertices: Vec2[] = []
   for (let k = 0; k < sides; k++) {
-    const a = start + k * step
+    const a = first + k * step
     vertices.push(
       V.add(center, V.scale(vec2(Math.cos(a), Math.sin(a)), circumradius))
     )
@@ -442,26 +493,23 @@ function polygonVertices(
 }
 
 /**
- * The orientation that draws the bottom edge level in the UCS: a vertex half a
- * step past straight down, or for Circumscribed an edge's midpoint straight
- * down.
+ * Where a typed radius puts the first vertex, Inscribed or Circumscribed: on
+ * the UCS's Y axis, or half a step past it for an even count, so the bottom
+ * edge is level (p100, p101, p104). WHY it matters for one figure: it is the
+ * polyline's start point, LIST's and EXPLODE's order, a linetype's phase.
  */
-function levelAngle(
-  sides: number,
-  circumscribed: boolean,
-  ctx: ToolContext
-): number {
-  const down = ucsRotation(ctx.ucs) - Math.PI / 2
-  return circumscribed ? down : down + Math.PI / sides
+function topVertexAngle(sides: number, ctx: ToolContext): number {
+  const up = ucsRotation(ctx.ucs) + Math.PI / 2
+  return sides % 2 === 0 ? up + Math.PI / sides : up
 }
 
 /**
  * Edge: the polygon whose first edge runs from `start` to `end`, the rest
- * turning counterclockwise from it, as AutoCAD's does; `null` for a zero edge.
+ * turning counterclockwise from it, as AutoCAD's does; of a zero edge, every
+ * vertex on `start`, as AutoCAD makes it (p125).
  */
-function edgePolygon(start: Vec2, end: Vec2, sides: number): Vec2[] | null {
+function edgePolygon(start: Vec2, end: Vec2, sides: number): Vec2[] {
   const edge = V.sub(end, start)
-  if (V.length(edge) < 1e-9) return null
   const vertices: Vec2[] = [vec2(start.x, start.y)]
   let at = vec2(end.x, end.y)
   let heading = Math.atan2(edge.y, edge.x)

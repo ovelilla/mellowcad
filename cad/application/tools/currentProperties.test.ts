@@ -73,6 +73,7 @@ const FROM_SCRATCH: ReadonlyArray<
         .enter(),
   ],
   ["RECTANG", (c) => c.command("RECTANG").click(p(0, 0)).click(p(100, 50))],
+  // probe polygon/p136: the current layer and properties, both modes.
   [
     "POLYGON",
     (c) =>

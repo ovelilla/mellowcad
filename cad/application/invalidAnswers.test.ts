@@ -169,7 +169,8 @@ describe("a wrong answer mid-command", () => {
   })
 
   it("keeps CIRCLE's and POLYGON's own words", () => {
-    // probes circle/p113 (the radius), p118 (the diameter), p194 (Ttr).
+    // probes circle/p113 (the radius), p118 (the diameter), p194 (Ttr);
+    // polygon/p08 (the side count).
     const cad = createHarness()
     cad.command("CIRCLE").click(p(0, 0))
     answerLine(cad, "FOO")

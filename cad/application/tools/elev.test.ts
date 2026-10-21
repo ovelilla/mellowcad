@@ -159,6 +159,7 @@ describe("THICKNESS", () => {
     // probe arc/p150: THICKNESS 3 on an arc.
     cad.command("ARC").click(p(100, 0)).click(p(0, 100)).click(p(-100, 0))
     cad.command("PLINE").click(p(0, 0)).click(p(50, 50)).enter()
+    // probe polygon/p136: THICKNESS 3 on both of POLYGON's modes.
     cad.command("POLYGON").enter().click(p(200, 0)).enter().type("20").enter()
 
     expect(entityThickness(cad.only<LineEntity>("line"))).toBe(4)

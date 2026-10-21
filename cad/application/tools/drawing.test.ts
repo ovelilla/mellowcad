@@ -1763,6 +1763,7 @@ describe("SPLINE", () => {
 
 describe("POLYGON", () => {
   it("asks AutoCAD's questions in turn, and keeps the count and option", () => {
+    // probes polygon/p01 (the prompts), p111 (the count and option kept).
     const cad = createHarness()
 
     cad.command("POLYGON")
@@ -1802,46 +1803,129 @@ describe("POLYGON", () => {
     )
   })
 
-  it("inscribes a typed radius with its bottom edge level", () => {
-    const cad = createHarness()
-
-    cad.command("POLYGON").type("6").enter().type("0,0").enter()
-    cad.enter().type("100").enter()
-
-    const polygon = cad.only<PolylineEntity>("polyline")
-    expect(polygon.closed).toBe(true)
-    expect(polygon.vertices).toHaveLength(6)
-    for (const vertex of polygon.vertices) {
-      expect(V.length(vertex)).toBeCloseTo(100, 5)
+  it("starts a typed radius at the top, or half a side past it for an even count (p100, p101)", () => {
+    // Six polygons of radius 10, n = 3–8, centred 30 apart from 5,5: the
+    // first vertex at 90°, or 90° + 180°/n for an even n, then
+    // counterclockwise, Inscribed and Circumscribed alike.
+    const typed = (option: string) => {
+      const cad = createHarness()
+      for (let n = 3; n <= 8; n++) {
+        answer(cad, "POLYGON", `${n}`, `${5 + 30 * (n - 3)},5`, option, "10")
+      }
+      return cad.entities() as PolylineEntity[]
     }
-    // As AutoCAD 2023 lists it: a vertex at 0°, the bottom edge at y = -86.6.
-    const ys = polygon.vertices.map((v) => v.y)
-    expect(Math.min(...ys)).toBeCloseTo(-86.6025, 3)
-    expect(polygon.vertices.some((v) => V.distance(v, p(100, 0)) < 1e-6)).toBe(
-      true
+    const inscribed = typed("I")
+    expect(inscribed.map((e) => e.closed)).toEqual(Array(6).fill(true))
+    const [i3, i4, i5, i6, i7, i8] = inscribed.map((e) => e.vertices)
+    expect(i3).toBeCloseToPoints([p(5, 15), p(-3.6603, 0), p(13.6603, 0)], 4)
+    expect(i4).toBeCloseToPoints(
+      [
+        p(27.9289, 12.0711),
+        p(27.9289, -2.0711),
+        p(42.0711, -2.0711),
+        p(42.0711, 12.0711),
+      ],
+      4
     )
-  })
+    expect(i5).toBeCloseToPoints(
+      [
+        p(65, 15),
+        p(55.4894, 8.0902),
+        p(59.1221, -3.0902),
+        p(70.8779, -3.0902),
+        p(74.5106, 8.0902),
+      ],
+      4
+    )
+    expect(i6).toBeCloseToPoints(
+      [
+        p(90, 13.6603),
+        p(85, 5),
+        p(90, -3.6603),
+        p(100, -3.6603),
+        p(105, 5),
+        p(100, 13.6603),
+      ],
+      4
+    )
+    expect(i7).toBeCloseToPoints(
+      [
+        p(125, 15),
+        p(117.1817, 11.2349),
+        p(115.2507, 2.7748),
+        p(120.6612, -4.0097),
+        p(129.3388, -4.0097),
+        p(134.7493, 2.7748),
+        p(132.8183, 11.2349),
+      ],
+      4
+    )
+    expect(i8).toBeCloseToPoints(
+      [
+        p(151.1732, 14.2388),
+        p(145.7612, 8.8268),
+        p(145.7612, 1.1732),
+        p(151.1732, -4.2388),
+        p(158.8268, -4.2388),
+        p(164.2388, 1.1732),
+        p(164.2388, 8.8268),
+        p(158.8268, 14.2388),
+      ],
+      4
+    )
 
-  it("puts the radius on the edge midpoints when circumscribed", () => {
-    const cad = createHarness()
-
-    cad.command("POLYGON").type("5").enter().type("0,0").enter()
-    cad.option("Circumscribed").type("100").enter()
-
-    const polygon = cad.only<PolylineEntity>("polyline")
-    expect(polygon.vertices).toHaveLength(5)
-    // Circumscribed: the radius is the apothem, so vertices sit further out,
-    // and a typed one leaves a vertex straight up.
-    for (const vertex of polygon.vertices) {
-      expect(V.length(vertex)).toBeCloseTo(100 / Math.cos(Math.PI / 5), 5)
-    }
-    expect(
-      polygon.vertices.some(
-        (v) => V.distance(v, p(0, 100 / Math.cos(Math.PI / 5))) < 1e-6
-      )
-    ).toBe(true)
-    const edgeMidpoint = V.midpoint(polygon.vertices[0], polygon.vertices[1])
-    expect(V.length(edgeMidpoint)).toBeCloseTo(100, 5)
+    const [c3, c4, c5, c6, c7, c8] = typed("C").map((e) => e.vertices)
+    expect(c3).toBeCloseToPoints([p(5, 25), p(-12.3205, -5), p(22.3205, -5)], 4)
+    expect(c4).toBeCloseToPoints(
+      [p(25, 15), p(25, -5), p(45, -5), p(45, 15)],
+      4
+    )
+    expect(c5).toBeCloseToPoints(
+      [
+        p(65, 17.3607),
+        p(53.2443, 8.8197),
+        p(57.7346, -5),
+        p(72.2654, -5),
+        p(76.7557, 8.8197),
+      ],
+      4
+    )
+    expect(c6).toBeCloseToPoints(
+      [
+        p(89.2265, 15),
+        p(83.453, 5),
+        p(89.2265, -5),
+        p(100.7735, -5),
+        p(106.547, 5),
+        p(100.7735, 15),
+      ],
+      4
+    )
+    expect(c7).toBeCloseToPoints(
+      [
+        p(125, 16.0992),
+        p(116.3223, 11.9202),
+        p(114.1791, 2.5302),
+        p(120.1843, -5),
+        p(129.8157, -5),
+        p(135.8209, 2.5302),
+        p(133.6777, 11.9202),
+      ],
+      4
+    )
+    expect(c8).toBeCloseToPoints(
+      [
+        p(150.8579, 15),
+        p(145, 9.1421),
+        p(145, 0.8579),
+        p(150.8579, -5),
+        p(159.1421, -5),
+        p(165, 0.8579),
+        p(165, 9.1421),
+        p(159.1421, 15),
+      ],
+      4
+    )
   })
 
   it("turns the polygon to a picked radius", () => {
@@ -1854,7 +1938,73 @@ describe("POLYGON", () => {
     expect(polygon.vertices[0]).toBeCloseToPoint(p(0, 50))
   })
 
+  it("takes a point at the radius, picked or typed, from the pick (p102, p06, p123)", () => {
+    // A vertex at the point (Inscribed) or an edge's midpoint (Circumscribed);
+    // LASTPOINT stays the centre (p102, p06).
+    const picked = createHarness()
+    answer(picked, "POLYGON", "4", "5,5", "I")
+    picked.click(p(15, 10))
+    answer(picked, "POLYGON", "5", "35,5", "I")
+    picked.click(p(45, 10))
+    answer(picked, "POLYGON", "5", "65,5", "C")
+    picked.click(p(75, 10))
+    const [square, inscribed, circumscribed] = picked
+      .entities()
+      .map((e) => (e as PolylineEntity).vertices)
+    expect(square).toBeCloseToPoints(
+      [p(15, 10), p(0, 15), p(-5, 0), p(10, -5)],
+      4
+    )
+    expect(inscribed).toBeCloseToPoints(
+      [
+        p(45, 10),
+        p(33.3349, 16.0557),
+        p(23.9709, 6.8328),
+        p(29.8488, -4.9229),
+        p(42.8455, -2.9655),
+      ],
+      4
+    )
+    expect(circumscribed).toBeCloseToPoints(
+      [
+        p(71.3673, 17.2654),
+        p(55.3025, 14.8459),
+        p(52.6393, -1.1803),
+        p(67.0582, -8.6655),
+        p(78.6327, 2.7346),
+      ],
+      4
+    )
+    expect(answer(picked, "ID", "@").commandLog().at(-1)).toBe(
+      " X = 65.00     Y = 5.00     Z = 0.00"
+    )
+
+    const typed = answer(createHarness(), "POLYGON", "4", "0,0", "C", "10,5")
+    expect(typed.only<PolylineEntity>("polyline").vertices).toBeCloseToPoints(
+      [p(5, 15), p(-15, 5), p(-5, -15), p(15, -5)],
+      4
+    )
+    expect(answer(typed, "ID", "@").commandLog().at(-1)).toBe(
+      " X = 0.00     Y = 0.00     Z = 0.00"
+    )
+
+    const relative = answer(
+      createHarness(),
+      "ID",
+      "2,2",
+      "POLYGON",
+      "4",
+      "@3,4",
+      "I",
+      "@5,0"
+    )
+    expect(
+      relative.only<PolylineEntity>("polyline").vertices
+    ).toBeCloseToPoints([p(10, 6), p(5, 11), p(0, 6), p(5, 1)], 4)
+  })
+
   it("refuses a side count outside 3–1024 and asks again", () => {
+    // probes polygon/p08, p118 (0 and -3 too).
     const cad = createHarness()
 
     cad.command("POLYGON").type("2").enter()
@@ -1894,6 +2044,298 @@ describe("POLYGON", () => {
       p(10, 10),
       p(0, 10),
     ])
+  })
+
+  it("refuses Enter at its point prompts in their words and asks again (p02, p03)", () => {
+    const cad = answer(createHarness(), "POLYGON", "", "", "0,0", "", "", "")
+    expect(cad.commandLog()).toEqual([
+      "POLYGON",
+      "Enter number of sides <4>:",
+      "Specify center of polygon or [Edge]:",
+      "Point or option keyword required.",
+      "Specify center of polygon or [Edge]: 0,0",
+      "Enter an option [Inscribed in circle/Circumscribed about circle] <I>:",
+      "Specify radius of circle:",
+      "Requires numeric distance or second point.",
+      "Specify radius of circle:",
+      "Requires numeric distance or second point.",
+    ])
+    answer(cad, "10")
+    expect(cad.entityCount).toBe(1)
+
+    const edge = answer(createHarness(), "POLYGON", "5", "E", "", "0,0", "")
+    expect(edge.commandLog().slice(-5)).toEqual([
+      "Specify first endpoint of edge:",
+      "Invalid point.",
+      "Specify first endpoint of edge: 0,0",
+      "Specify second endpoint of edge:",
+      "Invalid 2D point.",
+    ])
+    answer(edge, "10,0")
+    expect(edge.only<PolylineEntity>("polyline").vertices).toBeCloseToPoints(
+      [
+        p(0, 0),
+        p(10, 0),
+        p(13.0902, 9.5106),
+        p(5, 15.3884),
+        p(-3.0902, 9.5106),
+      ],
+      4
+    )
+
+    const spanish = createHarness({ locale: es })
+    answer(spanish, "POLIGONO", "", "", "0,0", "", "")
+    answer(spanish, "10", "POLIGONO", "5", "L", "", "0,0", "")
+    expect(spanish.commandLog().filter((line) => !line.includes(":"))).toEqual([
+      "POLIGONO",
+      "Se requiere un punto o una opción.",
+      "Requiere una distancia numérica o un segundo punto.",
+      "POLIGONO",
+      "Punto no válido.",
+      "Punto 2D no válido.",
+    ])
+    expect(spanish.activeToolId()).toBe("polygon")
+  })
+
+  it("measures TAN at the centre and Edge's first endpoint from LASTPOINT (p04, p05)", () => {
+    const circle = () => [circleOf(p(0, 0), 10)]
+    const centre = createHarness({ entities: circle() })
+    answer(centre, "ID", "30,0", "POLYGON", "4", "TAN", "0,10", "I", "5")
+    expect(centre.latest()).toMatchObject({ type: "polyline" })
+    expect((centre.latest() as PolylineEntity).vertices).toBeCloseToPoints(
+      [
+        p(-0.2022, 12.9636),
+        p(-0.2022, 5.8926),
+        p(6.8689, 5.8926),
+        p(6.8689, 12.9636),
+      ],
+      4
+    )
+
+    const edge = createHarness({ entities: circle() })
+    answer(edge, "ID", "30,0", "POLYGON", "4", "E", "TAN", "0,10", "40,0")
+    expect(edge.latest()).toMatchObject({ type: "polyline" })
+    expect((edge.latest() as PolylineEntity).vertices).toBeCloseToPoints(
+      [p(3.3333, 9.4281), p(40, 0), p(49.4281, 36.6667), p(12.7614, 46.0948)],
+      4
+    )
+  })
+
+  it("refuses a radius of 0 or less in AutoCAD's words (p08, p124)", () => {
+    const cad = answer(createHarness(), "POLYGON", "5", "0,0", "I")
+    answer(cad, "-5", "0")
+    expect(cad.commandLog().slice(-4)).toEqual([
+      "Specify radius of circle: -5",
+      "Value must be positive and nonzero.",
+      "Specify radius of circle: 0",
+      "Value must be positive and nonzero.",
+    ])
+    expect(cad.entityCount).toBe(0)
+
+    // `@` at the radius is the centre itself.
+    const at = answer(createHarness(), "ID", "3,3", "POLYGON", "4", "@", "I")
+    answer(at, "@")
+    expect(at.commandLog().slice(-2)).toEqual([
+      "Specify radius of circle: @",
+      "Value must be positive and nonzero.",
+    ])
+    answer(at, "10")
+    expect(at.only<PolylineEntity>("polyline").vertices).toBeCloseToPoints(
+      [
+        p(-4.0711, 10.0711),
+        p(-4.0711, -4.0711),
+        p(10.0711, -4.0711),
+        p(10.0711, 10.0711),
+      ],
+      4
+    )
+  })
+
+  it("makes a zero-length Edge's polygon, every vertex on one point (p125)", () => {
+    const cad = answer(
+      createHarness(),
+      "ID",
+      "3,3",
+      "POLYGON",
+      "4",
+      "E",
+      "@",
+      "@"
+    )
+
+    expect(cad.activeToolId()).not.toBe("polygon")
+    expect(cad.only<PolylineEntity>("polyline").vertices).toBeCloseToPoints([
+      p(3, 3),
+      p(3, 3),
+      p(3, 3),
+      p(3, 3),
+    ])
+  })
+
+  it("takes the side count only as an integer, a sign allowed (p153)", () => {
+    const cad = answer(createHarness(), "POLYGON", "3.0", "1e1", "+5")
+    expect(cad.commandLog()).toEqual([
+      "POLYGON",
+      "Enter number of sides <4>: 3.0",
+      "Requires an integer between 3 and 1024.",
+      "Enter number of sides <4>: 1e1",
+      "Requires an integer between 3 and 1024.",
+      "Enter number of sides <4>: +5",
+    ])
+    answer(cad, "5,5", "I", "10")
+    expect(cad.only<PolylineEntity>("polyline").vertices).toHaveLength(5)
+  })
+
+  it("runs a distance typed after an angle override along it at Edge's end (desktop rectang/d03)", () => {
+    // WHY the desktop's RECTANG: the console ignores the override (p09) and
+    // the desktop is unprobed at this prompt; RECTANG's other corner honours it.
+    const cad = answer(createHarness(), "POLYGON", "4", "E", "5,5")
+    cad.moveTo(p(20, 15))
+    answer(cad, "<45")
+    cad.moveTo(p(20, 15))
+    answer(cad, "10")
+
+    expect(cad.commandLog()).toContain("Angle Override: 45")
+    expect(cad.only<PolylineEntity>("polyline").vertices[1]).toBeCloseToPoint(
+      p(12.0711, 12.0711),
+      4
+    )
+  })
+
+  it("lies at the centre's Z, which LASTPOINT keeps (p131)", () => {
+    const cad = answer(createHarness(), "POLYGON", "5", "5,5,3", "I", "10")
+
+    const polygon = cad.only<PolylineEntity>("polyline")
+    expect(polygon.elevation).toBe(3)
+    expect(polygon.vertices[0]).toBeCloseToPoint(p(5, 15))
+    expect(answer(cad, "ID", "@").commandLog().at(-1)).toBe(
+      " X = 5.00     Y = 5.00     Z = 3.00"
+    )
+  })
+
+  it("refuses a Z or `*` at Edge's second endpoint, lying at the first's Z (p132, p133)", () => {
+    const cad = answer(createHarness(), "POLYGON", "4", "E", "30,5,4")
+    answer(cad, "40,5,4", "40,5,0", "*40,5")
+    expect(cad.commandLog().slice(-6)).toEqual([
+      "Specify second endpoint of edge: 40,5,4",
+      "Invalid 2D point.",
+      "Specify second endpoint of edge: 40,5,0",
+      "Invalid 2D point.",
+      "Specify second endpoint of edge: *40,5",
+      "Invalid 2D point.",
+    ])
+    answer(cad, "40,5")
+
+    const polygon = cad.only<PolylineEntity>("polyline")
+    expect(polygon.elevation).toBe(4)
+    expect(polygon.vertices).toBeCloseToPoints([
+      p(30, 5),
+      p(40, 5),
+      p(40, 15),
+      p(30, 15),
+    ])
+  })
+
+  it("levels a typed radius with the UCS, and lies in a tilted one (p104, p135)", () => {
+    const turned = answer(createHarness(), "UCS", "Z", "30")
+    answer(turned, "POLYGON", "6", "5,5", "I", "10")
+    answer(turned, "POLYGON", "5", "35,5", "C", "10")
+    const [hexagon, pentagon] = turned
+      .entities()
+      .map((e) => (e as PolylineEntity).vertices)
+    expect(hexagon).toBeCloseToPoints(
+      [
+        p(-6.8301, 11.8301),
+        p(-6.8301, 1.8301),
+        p(1.8301, -3.1699),
+        p(10.4904, 1.8301),
+        p(10.4904, 11.8301),
+        p(1.8301, 16.8301),
+      ],
+      4
+    )
+    expect(pentagon).toBeCloseToPoints(
+      [
+        p(21.6305, 32.5348),
+        p(15.7203, 19.2602),
+        p(26.5188, 9.5372),
+        p(39.1029, 16.8026),
+        p(36.0818, 31.0159),
+      ],
+      4
+    )
+
+    // In the OCS of a normal along -Y, as AutoCAD lists them.
+    const tilted = answer(createHarness(), "UCS", "X", "90")
+    answer(tilted, "POLYGON", "4", "5,5", "I", "10")
+    answer(tilted, "POLYGON", "4", "E", "30,5", "40,5")
+    const [square, edged] = tilted.entities() as PolylineEntity[]
+    expect(square.normal?.y).toBeCloseTo(-1, 9)
+    expect(square.vertices).toBeCloseToPoints(
+      [
+        p(-2.0711, 12.0711),
+        p(-2.0711, -2.0711),
+        p(12.0711, -2.0711),
+        p(12.0711, 12.0711),
+      ],
+      4
+    )
+    expect(edged.normal?.y).toBeCloseTo(-1, 9)
+    expect(edged.vertices).toBeCloseToPoints(
+      [p(30, 5), p(40, 5), p(40, 15), p(30, 15)],
+      4
+    )
+  })
+
+  it("runs as PG in Spanish (p108)", () => {
+    const cad = createHarness({ locale: es })
+    answer(cad, "PG")
+    expect(cad.state().commandLine.prompt).toBe(
+      "POLIGONO Indique número de lados <4>:"
+    )
+    answer(cad, "6", "5,5", "", "10")
+    expect(cad.only<PolylineEntity>("polyline").vertices).toHaveLength(6)
+  })
+
+  it("leaves PLINEWID out (p136)", () => {
+    const cad = createHarness()
+    cad.runtime.document.updateSettings({ polylineWidth: 0.5 })
+    answer(cad, "POLYGON", "5", "5,5", "I", "10")
+    answer(cad, "POLYGON", "4", "E", "30,5", "40,5")
+
+    for (const polygon of cad.entities() as PolylineEntity[]) {
+      expect(polygon.widths).toBeUndefined()
+    }
+  })
+
+  describe("its jig, as the desktop draws it", () => {
+    it("draws the ghost in the current colour, the radius line amber and dashed (d02)", () => {
+      // desktop rectang/d02: with CECOLOR 1 the polygon is red at the radius,
+      // with an amber dashed line from the centre to the cursor; at Edge's
+      // second endpoint the ghost alone.
+      const cad = createHarness()
+      const color = red(cad)
+      answer(cad, "POLYGON", "5", "0,0", "I")
+      cad.moveTo(p(30, 40))
+      expect(jig(cad)).toEqual([
+        `segment ${THEME.dashedRubberBand} dashed`,
+        `path ${color}`,
+      ])
+      const line = (q: ScenePrimitive) =>
+        q.kind === "segment" && q.stroke.dash !== undefined
+      expect(cad.scene().primitives.find(line)).toEqual(
+        expect.objectContaining({
+          a: expect.objectContaining(cad.toScreen(p(0, 0))),
+          b: expect.objectContaining(cad.toScreen(p(30, 40))),
+          stroke: { color: THEME.dashedRubberBand, width: 1, dash: [2, 3] },
+        })
+      )
+
+      cad.escape()
+      answer(cad, "POLYGON", "5", "E", "0,0")
+      cad.moveTo(p(30, 40))
+      expect(jig(cad)).toEqual([`path ${color}`])
+    })
   })
 })
 

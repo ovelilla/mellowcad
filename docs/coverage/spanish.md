@@ -122,10 +122,9 @@ interlineado`, `Anchura definida`, `Método`, `Grado`…), the prompts of POL, C
   the file errors, the clipboard and FROM notes, `El círculo no existe.`, block, pattern and style
   not found, `Capa{n}`
   (partial), `Copia de {name}`, `Radio de empalme es demasiado grande`,
-  `Distancia de chaflán es demasiado grande`, `Todos los efectos del comando han sido deshechos.`,
-  POLYGON's `Requiere un número entero entre 3 y 1024.` and JOIN's
-  `0 objetos unidos, n objetos descartados de la operación`
-  (a user's quote of AutoCAD 2020).
+  `Distancia de chaflán es demasiado grande`, `Todos los efectos del comando han sido deshechos.`
+  and JOIN's `0 objetos unidos, n objetos descartados de la operación`
+  (a user's quote of AutoCAD 2020). POLYGON's refusals are the 2027 console's (polygon/p02, p08).
 - **Sources beyond the help pages:** the Spanish alias guides
   ([2022 Product
   Insights](https://help.autodesk.com/cloudhelp/2022/ESP/AutoCAD-Product-Insights/files/GUID-DB0E87C4-2223-49ED-84F9-FBB3B6BA65A9.htm),
