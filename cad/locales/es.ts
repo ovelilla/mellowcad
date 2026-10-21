@@ -2530,7 +2530,7 @@ export const es: EngineLocale = {
         [
           "name"
         ],
-        "\" no encontrado en acad.lin.\nPuede utilizar la opción \"Cargar\" para cargarlo desde otro archivo."
+        "\" no encontrado en acadiso.lin.\nPuede utilizar la opción \"Cargar\" para cargarlo desde otro archivo."
       ],
       "loadedLinetypes": "porCapa, porBloque o uno de estos tipos de línea cargados:",
       "linetypeColumns": "      Nombre         Descripción\n---------------- ------------------",

@@ -41,21 +41,27 @@ changes; CELTYPE, the linetype new objects take (saved in the drawing, initial B
 step, as UNDO steps past "the command or system variable"): -LINETYPE, which LINETYPE runs too (WHY:
 the Linetype Manager does not exist), opens with `Current line type:  "ByLayer"` and asks
 `Enter an option [?/Set]:` again after each answer until Enter (`Invalid option keyword.`), as
-AutoCAD 2023's console does; its `?` lists acad.lin's linetypes as AutoCAD lays them out
-(`Linetypes defined in file acad.lin:`, `Name` / `Description` columns), without asking the file's
-name (every linetype this build ships is loaded); Set asks `Specify linetype name or [?] <ByLayer>:`
+AutoCAD 2027's console does (p205); its `?` lists acadiso.lin's linetypes, a metric drawing's file,
+as AutoCAD lays them out (`Linetypes defined in file acadiso.lin:`, where AutoCAD writes the file's
+full path; `Name` / `Description` columns), without asking the file's name (every linetype this
+build ships is loaded); Set asks `Specify linetype name or [?] <ByLayer>:`
 and takes a linetype's name or `BYLayer`, its `?` asks `Enter linetype name(s) to list <*>:` and
 lists `ByLayer, ByBlock, or one of these loaded linetypes:` with their columns, then the option
-prompt again; a name it does not have says `Linetype "X" not found in acad.lin.` /
+prompt again; a name it does not have says `Linetype "X" not found in acadiso.lin.` /
 `You can use the "Load" option to load it from another file.` and asks the option again; es
 `Tipo de línea actual: "PorCapa"`, `Indique una opción [?/Definir]`,
 `Precise nombre de tipo de línea o [?] <PorCapa>`, `porCapa`,
-`Tipo de línea "X" no encontrado en acad.lin.`; LT is the shortcut guide's alias (LTYPE, -LT and
+`Tipo de línea "X" no encontrado en acadiso.lin.`; LT is the shortcut guide's alias (LTYPE, -LT and
 -LTYPE could not be verified; es none)
 
-**Missing:** the listings' descriptions but Continuous's `Solid line` (acad.lin's are not shipped to
-quote); **unverified**: es `PorCapa` as the current linetype's name and acad.lin as Spanish
-AutoCAD's file; per-object ltscale (CELTSCALE), the Linetype Manager (its Details' Global Scale
+**Missing:** the listings' descriptions but Continuous's `Solid line` (acadiso.lin's are not
+shipped to quote); the first `?`'s `Enter name of linetype file to list <acadiso.lin>:` (es
+`Indique nombre de archivo de tipos de líneas que se van a enumerar <acadiso.lin>`) and the
+listing's pages, `Press ENTER to continue:` (es `Pulse INTRO para continuar:`, p205); the other
+linetypes of acadiso.lin, which Set finds there (the refusal names the file searched, table
+20995); Spanish AutoCAD's acadiso.lin, whose linetypes are named in Spanish (`LÍNEAS_OCULTAS`,
+`CENTRO`, `TRAZOS`, `TRAZO_Y_PUNTO`, `VALS`, p205): a linetype's name is drawing data, English in
+every language here; per-object ltscale (CELTSCALE), the Linetype Manager (its Details' Global Scale
 Factor is LTSCALE), PSLTSCALE / MSLTSCALE (no paper space), Create and Load (there is no LIN file to
 read or write), ByBlock, the Linetype Manager, the drop-down's Other…; **unverified**: how AutoCAD
 lays a pattern on the other objects (per segment or along a polyline, PLINEGEN, round a circle or
@@ -113,10 +119,13 @@ says `A color number or standard color name is required.` (es
 (es `Número de color no válido.`), a bad true colour
 `Invalid color.  Type three comma separated values from 0 to 255.` (es
 `Color no válido. Escriba tres valores separados por comas comprendidos entre 0 y 255.`), and asks
-again; Enter keeps it; **unverified**: es `PORCAPA` and `1 (rojo)` as the offered value; COL is the
+again; Enter keeps it; es offers `<PORCAPA>` (p200); **unverified**: es `1 (rojo)`; COL is the
 shortcut guide's alias (COLOUR could not be verified)
 
 **Missing:** the index colours 8–255 (their RGB values are not in the help), ByBlock (not modelled),
+a true colour apart from the index colour of its RGB (`Truecolor` 255,0,0 reads back as `1 (red)`,
+where AutoCAD keeps `255,0,0` on the object and in -COLOR's `<255,0,0>`, p200: an object stores one
+RGB here),
 Colorbook, CECOLOR's `RGB:` and HSL forms, the Select Color dialog, typing CECOLOR, CELTYPE or
 CELWEIGHT as a system variable (no SETVAR), the per-type defaults HPLAYER and HPCOLOR, DIMLAYER,
 TEXTLAYER (all "use current" initially, which is what everything does here), CETRANSPARENCY

@@ -179,6 +179,29 @@ describe("THICKNESS", () => {
   })
 })
 
+describe("ELEVATION and a LINE's points", () => {
+  it("puts a 2D point typed after a 3D one back at the elevation", () => {
+    // probe line/p31: ELEVATION 5; 0,0 @10,0 @0,0,3 10,10 gives
+    // [0,0,5]-[10,0,5], [10,0,5]-[10,0,8], [10,0,8]-[10,10,5]; `#` because
+    // dynamic input reads a bare 10,10 there as relative
+    const cad = createHarness()
+    elev(cad, "5", "0")
+
+    cad.command("LINE").type("0,0").enter().type("@10,0").enter()
+    cad.type("@0,0,3").enter().type("#10,10").enter().enter()
+
+    const lines = cad
+      .entities()
+      .filter((e): e is LineEntity => e.type === "line")
+    expect(lines.map((l) => [lineStartZ(l), lineEndZ(l)])).toEqual([
+      [5, 5],
+      [5, 8],
+      [8, 5],
+    ])
+    expect(lines[2].end).toBeCloseToPoint(p(10, 10))
+  })
+})
+
 describe("RECTANG Elevation and Thickness", () => {
   it("are offered at the first corner, in AutoCAD's order", () => {
     const cad = createHarness()

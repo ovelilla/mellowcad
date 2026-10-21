@@ -4375,7 +4375,7 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0°~, Line space facto
   info| Current line type:  "ByLayer"
   prompt| Enter an option [?/Set]: S
   prompt| Specify linetype name or [?] <ByLayer>: NOPE
-  info| Linetype "NOPE" not found in acad.lin.
+  info| Linetype "NOPE" not found in acadiso.lin.
         You can use the "Load" option to load it from another file.
 
 ## -LWEIGHT

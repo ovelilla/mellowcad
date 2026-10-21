@@ -281,9 +281,10 @@ describe("-LINETYPE", () => {
   it("lists the linetypes with ? at either prompt", () => {
     const cad = createHarness()
 
+    // probe line/p205: a metric drawing's file is acadiso.lin
     cad.command("LT").option("?")
     expect(cad.commandLog().at(-1)).toContain(
-      'Linetypes defined in file acad.lin:\n\n      Name          Description\n---------------- -------------------\n"Continuous"     Solid line\n"Dashed"'
+      'Linetypes defined in file acadiso.lin:\n\n      Name          Description\n---------------- -------------------\n"Continuous"     Solid line\n"Dashed"'
     )
     cad.option("Set").option("?")
     expect(cad.state().commandLine.prompt).toBe(
@@ -298,13 +299,15 @@ describe("-LINETYPE", () => {
     )
   })
 
-  it("says a linetype it does not have is not in acad.lin, and asks the option again", () => {
+  it("says a linetype it does not have is not in acadiso.lin, and asks the option again", () => {
     const cad = createHarness()
 
-    cad.command("LINETYPE").option("Set").type("ZIGZAG").enter()
+    // table 20995 names the file, acadiso.lin in a metric drawing (p205),
+    // which has no FOO
+    cad.command("LINETYPE").option("Set").type("FOO").enter()
 
     expect(cad.commandLog().at(-1)).toBe(
-      'Linetype "ZIGZAG" not found in acad.lin.\nYou can use the "Load" option to load it from another file.'
+      'Linetype "FOO" not found in acadiso.lin.\nYou can use the "Load" option to load it from another file.'
     )
     expect(cad.activeToolId()).toBe("linetype")
     expect(cad.state().currentLinetype).toBe("ByLayer")

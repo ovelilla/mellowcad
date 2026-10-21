@@ -6,6 +6,9 @@ import {
   createBlockDefinition,
   createDimension,
   Entity,
+  lineEndZ,
+  lineStartZ,
+  type LineEntity,
 } from "../../domain/entities"
 
 /**
@@ -342,5 +345,59 @@ describe("CECOLOR, CELTYPE and CELWEIGHT", () => {
       currentLinetype: "ByLayer",
       currentLineweight: "ByLayer",
     })
+  })
+})
+
+describe("what a new LINE wears", () => {
+  it("takes the current layer, colour, linetype, lineweight, elevation and thickness", () => {
+    // probe line/p21 (en-US: Spanish acadiso.lin has no HIDDEN): Layer L1,
+    // ColorIndex 1, HIDDEN, LineWeight050, StartPoint [0,0,5], EndPoint
+    // [10,0,5], Thickness 3, Normal [0,0,1]. CELTSCALE is not built.
+    const cad = createHarness()
+    const l1 = cad.runtime.createLayer("L1", undefined, true)
+    cad.command("-COLOR").type("1").enter()
+    cad.command("-LINETYPE").option("Set").type("HIDDEN").enter().enter()
+    cad.command("-LWEIGHT").type("0.5").enter()
+    cad.command("ELEV").type("5").enter().type("3").enter()
+
+    cad.command("LINE").type("0,0").enter().type("@10,0").enter().enter()
+
+    const line = cad.only<LineEntity>("line")
+    expect(line).toMatchObject({
+      layerId: l1,
+      color: RED,
+      linetype: "Hidden",
+      lineweight: 0.5,
+      thickness: 3,
+    })
+    expect([lineStartZ(line), lineEndZ(line)]).toEqual([5, 5])
+    expect(line.normal).toBeUndefined()
+  })
+
+  it("lies on the layer made current, ByLayer otherwise", () => {
+    // probe line/p45: after -LAYER Make L2, the second line is on L2, ByLayer
+    const cad = createHarness()
+    cad.command("LINE").type("0,0").enter().type("@10,0").enter().enter()
+    const l2 = cad.runtime.createLayer("L2", undefined, true)
+    cad.command("LINE").type("0,0").enter().type("@0,10").enter().enter()
+
+    const [first, second] = cad
+      .entities()
+      .filter((e): e is LineEntity => e.type === "line")
+    expect(first.layerId).toBe("0")
+    expect(second.layerId).toBe(l2)
+    expect(second.color).toBeUndefined()
+    expect(second.linetype).toBeUndefined()
+    expect(second.lineweight).toBeUndefined()
+  })
+
+  it("is drawn on a locked current layer", () => {
+    // probe line/p201: -LAYER LOck 0, then LINE draws on layer 0
+    const cad = createHarness()
+    cad.runtime.updateLayer("0", { locked: true })
+
+    cad.command("LINE").type("0,0").enter().type("@10,0").enter().enter()
+
+    expect(cad.only<LineEntity>("line").layerId).toBe("0")
   })
 })

@@ -44,7 +44,7 @@ describe("the settings commands ask as AutoCAD 2026", () => {
       "Invalid option keyword.",
       "Enter an option [?/Set]: S",
       "Specify linetype name or [?] <ByLayer>: FOO",
-      'Linetype "FOO" not found in acad.lin.\nYou can use the "Load" option to load it from another file.',
+      'Linetype "FOO" not found in acadiso.lin.\nYou can use the "Load" option to load it from another file.',
     ])
     expect(cad.state().commandLine.prompt).toBe(
       "-LINETYPE Enter an option [?/Set]:"
@@ -123,7 +123,7 @@ describe("the settings commands ask as AutoCAD 2026", () => {
       'Tipo de línea actual: "PorCapa"',
       "Indique una opción [?/Definir]: D",
       "Precise nombre de tipo de línea o [?] <PorCapa>: FOO",
-      'Tipo de línea "FOO" no encontrado en acad.lin.\nPuede utilizar la opción "Cargar" para cargarlo desde otro archivo.',
+      'Tipo de línea "FOO" no encontrado en acadiso.lin.\nPuede utilizar la opción "Cargar" para cargarlo desde otro archivo.',
     ])
     cad.escape()
     cad.command("-GROSORLIN")

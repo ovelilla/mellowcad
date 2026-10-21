@@ -25,11 +25,12 @@ const NAME_COLUMN = 17
  * objects take, saved in the drawing and undone with U: a linetype's name,
  * or `bylayer`; its `?` lists the loaded linetypes. Every linetype this build
  * ships is loaded, so `?` at the first prompt — the linetypes of a LIN file,
- * acad.lin's — lists the same ones. A name that is not one of them says it is
- * not in acad.lin and asks for the option again, as AutoCAD 2023's console
- * does.
+ * acadiso.lin's, a metric drawing's (probe line/p205) — lists the same ones. A
+ * name that is not one of them says it is not in acadiso.lin (table 20995)
+ * and asks for the option again.
  *
- * Not done: Create and Load (there is no LIN file to read or write), ByBlock.
+ * Not done: Create and Load (there is no LIN file to read or write), ByBlock,
+ * the file `?` asks for and its paging (`Press ENTER to continue:`, p205).
  */
 export class LinetypeTool implements Tool {
   readonly id = "linetype"
@@ -178,11 +179,11 @@ export class LinetypeTool implements Tool {
     )
   }
 
-  /** The first prompt's `?`: acad.lin's linetypes, every one of them loaded. */
+  /** The first prompt's `?`: acadiso.lin's linetypes, every one of them loaded. */
   private listFile(ctx: ToolContext): void {
     ctx.report(
       [
-        ctx.text.message("linetypesInFile", { file: "acad.lin" }),
+        ctx.text.message("linetypesInFile", { file: "acadiso.lin" }),
         "",
         ctx.text.message("fileLinetypeColumns"),
         ...this.rows(LINETYPES, ctx),
@@ -192,7 +193,7 @@ export class LinetypeTool implements Tool {
 
   /**
    * `"Continuous"     Solid line`. WHY no description but Continuous's: the
-   * others are acad.lin's, which is not shipped to quote them from.
+   * others are acadiso.lin's, which is not shipped to quote them from.
    */
   private rows(
     entries: readonly (typeof LINETYPES)[number][],

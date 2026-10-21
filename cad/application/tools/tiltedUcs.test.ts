@@ -6,6 +6,7 @@ import {
   type Entity,
   type LineEntity,
   entityNormal,
+  entityThickness,
   entityPointToWorld,
   lineEndZ,
   lineStartZ,
@@ -510,5 +511,40 @@ describe("curves by three points at different heights", () => {
     const [circle] = only(cad, "circle")
     expect(circle.normal).toBeUndefined()
     expect(circle.elevation).toBe(5)
+  })
+})
+
+describe("LINE in a tilted UCS", () => {
+  it("stores the UCS's Z as each line's normal", () => {
+    // probe line/p22: UCS X 90, LINE 0,0 @10,0 @0,10 Close: three lines,
+    // Normal [0,-1,-2.2e-16], WCS points [0,0,0]-[10,0,0]-[10,0,10]
+    const cad = createHarness()
+    cad.command("UCS").option("X").type("90").enter()
+
+    cad.command("LINE").type("0,0").enter().type("@10,0").enter()
+    cad.type("@0,10").enter().option("Close")
+
+    const lines = only(cad, "line")
+    expect(lines).toHaveLength(3)
+    expect(lines[1].end).toBeCloseToPoint(p(10, 0))
+    expect(lineEndZ(lines[1])).toBeCloseTo(10, 9)
+    for (const line of lines) {
+      expect(entityNormal(line)).toBeCloseToPoint(FRONT_Z)
+      expect(entityNormal(line).z).toBeCloseTo(0, 9)
+    }
+  })
+
+  it("extrudes THICKNESS along the UCS's Z", () => {
+    // probe line/p44: UCS X 90, THICKNESS 3, LINE 0,0 @10,0: Thickness 3,
+    // Normal [0,-1,-2.2e-16]
+    const cad = createHarness()
+    cad.command("UCS").option("X").type("90").enter()
+    cad.command("ELEV").type("0").enter().type("3").enter()
+
+    cad.command("LINE").type("0,0").enter().type("@10,0").enter().enter()
+
+    const [line] = only(cad, "line")
+    expect(entityThickness(line)).toBe(3)
+    expect(entityNormal(line)).toBeCloseToPoint(FRONT_Z)
   })
 })
