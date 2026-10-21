@@ -107,6 +107,8 @@ is **owned by the first review whose command uses it**, in the roadmap's order:
   where the command has its own handling (its own `takes()`, its own Enter, its own snap filter).
 - A difference found later in an owned area is a finding of the current review, under its own
   prefix, naming the area and the owner's plan. It reopens the area only with new evidence.
+- An area of every command's (the options kept for the session) settles storage with the
+  console's OPEN test, since the console has no NEW (rectang/p300).
 - The **catalog sweep** (annex-catalogs.md) is an area too: owned by the first review for all
   commands at once; each later review reruns it for its command's ids only.
 
@@ -373,3 +375,6 @@ Applied:
 - 2026-10-21, after ARC's review: two desktop traps (a command left open by `com send`, a
   negative DYNMODE), a grip's default drag probed apart from its menu, the Spanish profile planned
   with the owner (annex-probes.md §4).
+- 2026-10-21, after RECTANG's and POLYGON's review: UseBasePoint and `<a` read from the desktop
+  where a command draws its own jig, a restored DYNMODE checked with Lisp, a DYNMODE 3 desktop pass
+  (annex-probes.md); storage settled by the OPEN test (§1.3).

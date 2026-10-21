@@ -53,7 +53,10 @@ Escape and the right button, grips, the Properties palette, snap markers and too
 keys. Its cursor is a fixed pixel (`console.md`): a direct distance or a dragged angle there
 reads that pixel, so the harness test moves its cursor to the same point. The trace's flags
 predict part of it, so read them first: `UseDashedLine` is a dashed rubber band, `UseBasePoint`
-false a prompt Ortho and Polar leave alone (circle/d12).
+false a prompt Ortho and Polar leave alone (circle/d12). The flag says where to look, the desktop decides:
+where the command draws its own jig, Ortho bends a prompt the trace marks UseBasePoint false
+(RECTANG's corner, POLYGON's edge: rectang/d01, d02), and `<a` then a number there, ignored by the
+console, is honoured on the desktop (rectang/p08, d03).
 
 A command the ribbon runs in modes has its buttons' macros in `acad.cuix`, a zip (read it with
 Python's `zipfile`; `unzip` is not installed): `^C^C_circle \_d` is what the history echoes.
@@ -80,7 +83,8 @@ The minimum per prompt of the command, adapted and numbered in the plan:
 | L   | the transcript itself is the history: compared line by line with the harness's `commandLog()`                                                                                                    |
 
 Rows I, M, P and Q, the keys of G (Escape, the right button, SHORTCUTMENU), the tooltip of D and
-the modes in combination (matrix.md) are desktop probes.
+the modes in combination (matrix.md) are desktop probes. So is a pass with DYNMODE 3 at every point prompt: the
+dimensional fields are the command's own (RECTANG's other corner shows its sides, rectang/d05).
 
 ## 4. The desktop
 
@@ -125,6 +129,8 @@ Traps seen on the desktop (PLINE's review, 2026-10-21):
   `com eval '(setvar "DYNMODE" -1)'` (ARC's review).
 - A grip's default drag is a probe of its own: the hover menu does not show what a plain drag does
   (arc/d07 against d08).
+- `com get DYNMODE` read 3 where Lisp read −1 after a restore: check a restored DYNMODE with
+  `com eval '(getvar "DYNMODE")'` (RECTANG's review).
 - `com send` with a space inside a string answer sends it whole (`DASHED acadiso.lin` is one
   answer); -LINETYPE's file needs FILEDIA 0, put back after (CIRCLE's review).
 
