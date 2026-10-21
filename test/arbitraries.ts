@@ -252,8 +252,7 @@ export const polylineEntity: fc.Arbitrary<PolylineEntity> = fc
   )
   .map(([vertices, closed, bulges, widthList]) => {
     // One width pair per segment, as the factory and the file keep them.
-    const segments =
-      closed && vertices.length > 2 ? vertices.length : vertices.length - 1
+    const segments = closed ? vertices.length : vertices.length - 1
     const widths = widthList?.slice(0, segments)
     const entity: PolylineEntity = {
       id: "polyline",

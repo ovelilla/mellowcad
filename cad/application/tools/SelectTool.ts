@@ -6,11 +6,9 @@ import {
   createArc,
   createLine,
   carryOverrides,
-  insertPolylineVertex,
   lineEndZ,
   lineStartZ,
   polylineSegmentGeometries,
-  removePolylineVertex,
   setPolylineBulge,
   translateEntity,
   withLineZ,
@@ -39,6 +37,7 @@ import {
   radiusHandle,
   toDegrees,
   withRadius,
+  withSegmentStretched,
   withVertexAt,
 } from "./selectToolEdits"
 import {
@@ -47,10 +46,10 @@ import {
   buildDimPointEdit,
   buildGripEdit,
   buildGrips,
-  buildInsertEdit,
   buildMoveEdit,
   buildMTextWidthEdit,
   buildRadiusEdit,
+  buildSegmentStretch,
   buildSelectionBox,
   buildVertexEdit,
   pickRolloverEntity,
@@ -129,8 +128,8 @@ export class SelectTool implements Tool {
       this.placeVertex(this.state, this.state.current, ctx)
       return
     }
-    if (this.state.phase === "insertVertex") {
-      this.placeInsert(this.state, this.state.current, ctx)
+    if (this.state.phase === "stretchSegment") {
+      this.placeSegmentStretch(this.state, this.state.current, ctx)
       return
     }
     if (this.state.phase === "bulgeEdit") {
@@ -176,16 +175,10 @@ export class SelectTool implements Tool {
           this.beginArcAngle(grip, grip.role.end, input.screen, ctx)
           break
         case "vertex":
-          // Ctrl-click removes the vertex (AutoCAD's multifunction-grip "Remove
-          // Vertex"); a plain click grabs it to stretch.
-          if (input.ctrlKey) {
-            this.removeVertexAt(grip.entityId, grip.role.index, ctx)
-          } else {
-            this.beginVertexMove(grip, grip.role.index, input.screen, ctx)
-          }
+          this.beginVertexMove(grip, grip.role.index, input.screen, ctx)
           break
-        case "addVertex":
-          this.beginInsertVertex(
+        case "stretchSegment":
+          this.beginSegmentStretch(
             grip,
             grip.role.segmentIndex,
             input.screen,
@@ -301,9 +294,8 @@ export class SelectTool implements Tool {
         ctx.requestRender()
         break
       }
-      case "insertVertex": {
-        // The new vertex follows the cursor; both halves of the split segment
-        // rubber-band to it.
+      case "stretchSegment": {
+        // The midpoint follows the cursor, the segment moving with it.
         const current = input.point
         this.state = { ...this.state, current }
         ctx.dynamicInput.setLive(
@@ -448,13 +440,15 @@ export class SelectTool implements Tool {
         if (dragged) this.placeMTextWidth(this.state, this.state.width, ctx)
         return
       }
-      case "insertVertex": {
+      case "stretchSegment": {
         const dragged =
           Math.hypot(
             input.screen.x - this.state.pressScreen.x,
             input.screen.y - this.state.pressScreen.y
           ) >= DRAG_THRESHOLD_PX
-        if (dragged) this.placeInsert(this.state, this.state.current, ctx)
+        if (dragged) {
+          this.placeSegmentStretch(this.state, this.state.current, ctx)
+        }
         return
       }
       case "bulgeEdit": {
@@ -531,10 +525,10 @@ export class SelectTool implements Tool {
         return
       }
       if (
-        this.state.phase === "insertVertex" ||
+        this.state.phase === "stretchSegment" ||
         this.state.phase === "bulgeEdit"
       ) {
-        // Abort the add-vertex / curvature edit, leaving the polyline untouched.
+        // Abort the segment stretch / curvature edit, leaving the polyline untouched.
         ctx.dynamicInput.close()
         this.state = { phase: "idle" }
         ctx.requestRender()
@@ -586,7 +580,7 @@ export class SelectTool implements Tool {
       this.state.phase === "resizeRadius" ||
       this.state.phase === "arcAngle" ||
       this.state.phase === "moveVertex" ||
-      this.state.phase === "insertVertex" ||
+      this.state.phase === "stretchSegment" ||
       this.state.phase === "bulgeEdit" ||
       this.state.phase === "moveDimPoint" ||
       this.state.phase === "mtextWidth"
@@ -617,7 +611,7 @@ export class SelectTool implements Tool {
       this.state.phase === "grip" ||
       this.state.phase === "moveLine" ||
       this.state.phase === "moveVertex" ||
-      this.state.phase === "insertVertex"
+      this.state.phase === "stretchSegment"
     )
   }
 
@@ -637,7 +631,7 @@ export class SelectTool implements Tool {
     if (this.state.phase === "moveVertex") return this.state.origin
     if (this.state.phase === "moveDimPoint") return this.state.origin
     if (this.state.phase === "mtextWidth") return this.state.origin
-    if (this.state.phase === "insertVertex") return this.state.origin
+    if (this.state.phase === "stretchSegment") return this.state.origin
     if (this.state.phase === "bulgeEdit")
       return V.midpoint(this.state.a, this.state.b)
     return null
@@ -664,8 +658,8 @@ export class SelectTool implements Tool {
         return buildArcAngleEdit(state, ctx)
       case "moveVertex":
         return buildVertexEdit(state, ctx)
-      case "insertVertex":
-        return buildInsertEdit(state, ctx)
+      case "stretchSegment":
+        return buildSegmentStretch(state, ctx)
       case "bulgeEdit":
         return buildBulgeEdit(state, ctx)
       case "moveDimPoint":
@@ -892,8 +886,8 @@ export class SelectTool implements Tool {
     ctx.requestRender()
   }
 
-  /** Makes a straight-segment midpoint grip hot to insert a new vertex. */
-  private beginInsertVertex(
+  /** Makes a straight segment's midpoint grip hot to stretch the segment. */
+  private beginSegmentStretch(
     grip: Grip,
     segmentIndex: number,
     screen: Vec2,
@@ -902,14 +896,14 @@ export class SelectTool implements Tool {
     const poly = ctx.document.get(grip.entityId)
     if (poly?.type !== "polyline") return
     this.state = {
-      phase: "insertVertex",
+      phase: "stretchSegment",
       entityId: grip.entityId,
       segmentIndex,
       origin: grip.world,
       current: grip.world,
       pressScreen: screen,
     }
-    this.openInsertInput(ctx, screen)
+    this.openSegmentInput(ctx, screen)
     ctx.requestRender()
   }
 
@@ -938,18 +932,6 @@ export class SelectTool implements Tool {
     ctx.requestRender()
   }
 
-  /** Removes vertex `index` from a polyline through an undoable command. */
-  private removeVertexAt(
-    entityId: EntityId,
-    index: number,
-    ctx: ToolContext
-  ): void {
-    const poly = ctx.document.get(entityId)
-    if (poly?.type !== "polyline") return
-    const next = removePolylineVertex(poly, index)
-    if (next) ctx.execute(new UpdateEntityCommand(next))
-    ctx.requestRender()
-  }
   /**
    * Opens the box of a stretched line's resulting length: DYNDIVIS's default
    * shows it first, Length Change after a Tab (help 2027, Dimension Input
@@ -1006,12 +988,12 @@ export class SelectTool implements Tool {
     ctx.dynamicInput.setPosition(screen)
   }
 
-  /** Opens the dynamic-input session offering the new vertex distance. */
-  private openInsertInput(ctx: ToolContext, screen: Vec2): void {
+  /** Opens the dynamic-input session offering the segment's stretch distance. */
+  private openSegmentInput(ctx: ToolContext, screen: Vec2): void {
     const session: DynamicInputSession = {
       fields: [{ id: "distance", prompt: "move", kind: "distance" }],
       commit: (values, commitCtx) =>
-        this.commitInsert(values.distance, commitCtx),
+        this.commitSegmentStretch(values.distance, commitCtx),
     }
     ctx.dynamicInput.open(session)
     ctx.dynamicInput.setLive("distance", 0)
@@ -1291,33 +1273,37 @@ export class SelectTool implements Tool {
 
   /**
    * Applies a typed distance along the pointing direction (from the segment
-   * midpoint towards the cursor) for the inserted vertex, then commits. Without
-   * a direction (the cursor has not moved) there is nothing to apply.
+   * midpoint towards the cursor), then commits. Without a direction (the
+   * cursor has not moved) there is nothing to apply.
    */
-  private commitInsert(distance: number, ctx: ToolContext): void {
-    if (this.state.phase !== "insertVertex") return
+  private commitSegmentStretch(distance: number, ctx: ToolContext): void {
+    if (this.state.phase !== "stretchSegment") return
     const offset = V.sub(this.state.current, this.state.origin)
     const length = V.length(offset)
     if (length < 1e-9) return
     const dir = V.scale(offset, 1 / length)
     const point = V.add(this.state.origin, V.scale(dir, distance))
-    this.placeInsert(this.state, point, ctx)
+    this.placeSegmentStretch(this.state, point, ctx)
   }
 
   /**
-   * Inserts a new vertex at `point`, splitting the grabbed segment, through an
-   * undoable command, then returns to idle.
+   * Moves the grabbed segment so its midpoint lands on `point`, through an
+   * undoable command, then returns to idle. A no-op move is skipped.
    */
-  private placeInsert(
-    state: Extract<SelectToolState, { phase: "insertVertex" }>,
+  private placeSegmentStretch(
+    state: Extract<SelectToolState, { phase: "stretchSegment" }>,
     point: Vec2,
     ctx: ToolContext
   ): void {
     const poly = ctx.document.get(state.entityId)
-    if (poly?.type === "polyline") {
+    if (poly?.type === "polyline" && !V.equals(point, state.origin)) {
       ctx.execute(
         new UpdateEntityCommand(
-          insertPolylineVertex(poly, state.segmentIndex, point)
+          withSegmentStretched(
+            poly,
+            state.segmentIndex,
+            V.sub(point, state.origin)
+          )
         )
       )
     }

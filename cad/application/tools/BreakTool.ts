@@ -711,8 +711,7 @@ function breakPolyline(
     if (ta < PARAM_EPS || ta > count - PARAM_EPS) return null
     return { kept: [span(0, ta), span(ta, count)], removed: null }
   }
-  // Two vertices make one segment, closed or not (`polylineSegments`).
-  if (poly.closed && poly.vertices.length > 2) {
+  if (poly.closed) {
     const rest = ta + count - tb
     return {
       kept: rest > PARAM_EPS ? [span(tb, ta + count)] : [],

@@ -87,7 +87,7 @@ marks a choice between competing terms that a native review should settle first 
 |  | Color, Layer, Linetype, Lineweight, Dim style | Color, Capa, Tipo de línea, Grosor de línea, Estilo de cota | اللون، الطبقة، نوع الخط، وزن الخط، نمط البُعد (C) | C 99AFB412-CEE2-4C12-B7AD-E11E9389BBF9 | yes |
 |  | ByLayer, ByBlock | PorCapa, PorBloque | بالطبقة، بالكتلة (L) † — حسب الطبقة is the usual phrase, too wide for the palette's colour picker | same | yes |
 |  | \*VARIES\* | \*VARIOS\* | متنوع (L) | DYK 94C065AB-FF9E-4752-B778-23D2FBB87E18 | yes |
-|  | Start X, End X, Closed, Vertex X | Inicio X, Fin X, Cerrado, Vértice X | بداية X، نهاية X، مغلق، الرأس X (M) | same | partial |
+|  | Start X, End X, Closed, Vertex X, Current Vertex | Inicio X, Fin X, Cerrado, Vértice X, Vértice actual | بداية X، نهاية X، مغلق، الرأس X، الرأس الحالي (M) | same | partial |
 |  | Height, Rotation, Scale, Pattern | Altura, Rotación, Escala, Patrón | الارتفاع، الدوران، المقياس، النقش (M) † | C AAD65B06-E480-49EA-B97D-57DDEA36783C | yes |
 |  | Justify; Middle center | Justificar; Medio centro | المحاذاة؛ منتصف الوسط (L) | C D1C664DD-63D9-467E-8EC1-2F5A1777A924 | partial |
 |  | Measurement, Text override | Medidas, Modificar texto | القياس، نص بديل (L) | a-cad-emia.blogspot.com/2013/10/acotacion20.html (AutoCAD 2013) | partial |

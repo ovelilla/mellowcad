@@ -1351,7 +1351,7 @@ function parseWidths(
   vertexCount: number,
   closed: boolean
 ): PolylineWidth[] | undefined {
-  const count = closed && vertexCount > 2 ? vertexCount : vertexCount - 1
+  const count = closed && vertexCount > 1 ? vertexCount : vertexCount - 1
   const width = (value: unknown) =>
     isFiniteNumber(value) && value > 0 ? value : 0
   let widths: PolylineWidth[]

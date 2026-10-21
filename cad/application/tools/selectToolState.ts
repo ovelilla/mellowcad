@@ -15,7 +15,8 @@ export type DimensionPoint = "first" | "second" | "line" | "vertex"
  * - `arcEnd`   — an arc endpoint: swing it around, changing the sweep.
  * - `vertex`   — a polyline vertex, or a spline's fit point or control
  *   vertex: stretch it, reshaping the curve.
- * - `addVertex`— a straight polyline segment's midpoint: insert a new vertex.
+ * - `stretchSegment` — a straight polyline segment's midpoint: move both its
+ *   ends by the drag.
  * - `bulge`    — an arc polyline segment's midpoint: change its curvature.
  * - `dimPoint` — a dimension's definition point: an extension-line origin, an
  *   angular one's vertex, or the dimension line itself, which slides the whole
@@ -28,7 +29,7 @@ export type GripRole =
   | { readonly kind: "radius" }
   | { readonly kind: "arcEnd"; readonly end: LineEnd }
   | { readonly kind: "vertex"; readonly index: number }
-  | { readonly kind: "addVertex"; readonly segmentIndex: number }
+  | { readonly kind: "stretchSegment"; readonly segmentIndex: number }
   | { readonly kind: "bulge"; readonly segmentIndex: number }
   | { readonly kind: "dimPoint"; readonly point: DimensionPoint }
   | { readonly kind: "mtextWidth" }
@@ -157,15 +158,15 @@ export type SelectToolState =
     }
   | {
       /**
-       * A straight segment's midpoint grip is hot: dragging it inserts a new
-       * vertex there, bending the segment in two (AutoCAD's "add vertex").
+       * A straight segment's midpoint grip is hot: the segment moves with it,
+       * its neighbours stretching (AutoCAD's Stretch, the grip's default).
        */
-      readonly phase: "insertVertex"
+      readonly phase: "stretchSegment"
       readonly entityId: EntityId
       readonly segmentIndex: number
-      /** The segment midpoint (the insertion's base / constraint anchor). */
+      /** The segment midpoint (the stretch's base / constraint anchor). */
       readonly origin: Vec2
-      /** Live position of the new vertex (follows the cursor). */
+      /** Live position of the midpoint (follows the cursor). */
       readonly current: Vec2
       readonly pressScreen: Vec2
     }

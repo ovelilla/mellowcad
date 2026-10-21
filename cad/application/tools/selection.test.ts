@@ -421,23 +421,76 @@ describe("grips", () => {
     ])
   })
 
-  it("adds a vertex from a straight segment's midpoint grip", () => {
-    const cad = createHarness({
-      entities: [polylineOf([p(0, 0), p(100, 0), p(100, 100)], { id: "P1" })],
+  /**
+   * Desktop pline/d09: `10,60 30,60 A 40,70 L 55,70`, a line, a quarter arc
+   * (bulge 0.4142, midpoint 37.0711,62.9289) and a line.
+   */
+  const lineArcLine = () =>
+    polylineOf([p(10, 60), p(30, 60), p(40, 70), p(55, 70)], {
+      id: "P1",
+      bulges: [0, Math.tan(Math.PI / 8), 0],
     })
+
+  it("stretches a straight segment from its midpoint grip, the next arc through its old midpoint", () => {
+    // d09: the grip (20,60) to (20,55.0257) moves both vertices by the drag
+    // and re-bulges the arc after it from 0.4142 to 0.1702.
+    const cad = createHarness({ entities: [lineArcLine()] })
     cad.select("P1")
 
-    cad.drag(p(50, 0), p(50, 40))
+    cad.click(p(20, 60)).moveTo(p(20, 55.0257))
+    const preview = cad
+      .scene()
+      .primitives.filter(
+        (q) => "stroke" in q && q.stroke?.color === THEME.preview
+      )
+    expect(preview.length).toBeGreaterThan(0)
+    cad.click(p(20, 55.0257))
 
-    expect(cad.byId<PolylineEntity>("P1").vertices).toBeCloseToPoints([
-      p(0, 0),
-      p(50, 40),
-      p(100, 0),
-      p(100, 100),
+    const poly = cad.byId<PolylineEntity>("P1")
+    expect(poly.vertices).toBeCloseToPoints([
+      p(10, 55.0257),
+      p(30, 55.0257),
+      p(40, 70),
+      p(55, 70),
     ])
+    expect(poly.bulges?.[1]).toBeCloseTo(0.1702, 4)
+    expect(closestOnEntity(poly, p(37.0711, 62.9289)).distance).toBeLessThan(
+      1e-4
+    )
+
+    cad.escape().command("U")
+    expect(cad.byId<PolylineEntity>("P1")).toEqual(lineArcLine())
   })
 
-  it("removes a vertex with Ctrl+click", () => {
+  it("re-bends the arc beside a dragged vertex through its old midpoint", () => {
+    // d09: vertex (30,60) to (30,55.0257): only it moves, the arc to 0.1702.
+    const cad = createHarness({ entities: [lineArcLine()] })
+    cad.select("P1")
+
+    cad.click(p(30, 60)).click(p(30, 55.0257))
+
+    const poly = cad.byId<PolylineEntity>("P1")
+    expect(poly.vertices).toBeCloseToPoints([
+      p(10, 60),
+      p(30, 55.0257),
+      p(40, 70),
+      p(55, 70),
+    ])
+    expect(poly.bulges?.[1]).toBeCloseTo(0.1702, 4)
+  })
+
+  it("bends an arc segment through the point its midpoint grip is dragged to", () => {
+    // d09: the arc's midpoint grip to (36,64) gives bulge 0.2001.
+    const cad = createHarness({ entities: [lineArcLine()] })
+    cad.select("P1")
+
+    cad.click(p(37.0711, 62.9289)).click(p(36, 64))
+
+    expect(cad.byId<PolylineEntity>("P1").bulges?.[1]).toBeCloseTo(0.2001, 3)
+  })
+
+  it("takes a Ctrl+click on a vertex grip as a click: Remove Vertex is the grip menu's", () => {
+    // d07: AutoCAD removes a vertex from the vertex grip's hover menu only.
     const cad = createHarness({
       entities: [
         polylineOf([p(0, 0), p(50, 40), p(100, 0), p(100, 100)], { id: "P1" }),
@@ -445,10 +498,11 @@ describe("grips", () => {
     })
     cad.select("P1")
 
-    cad.click(p(50, 40), { ctrlKey: true })
+    cad.click(p(50, 40), { ctrlKey: true }).click(p(50, 60))
 
     expect(cad.byId<PolylineEntity>("P1").vertices).toBeCloseToPoints([
       p(0, 0),
+      p(50, 60),
       p(100, 0),
       p(100, 100),
     ])

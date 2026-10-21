@@ -251,8 +251,12 @@ properties per type, CUI's Rollover Tooltips), ROLLOVERTIPS and CURSORSIZE as va
 resulting length towards the cursor (the first of DYNDIVIS's default two fields, help 2027
 "Dimension Input Settings"); every move grip (a line's midpoint, a centre, an insertion point) moves
 its own object only, whatever else is selected (d15, `** ESTIRAR **` with two lines selected);
-radius, arc end, polyline insert/remove vertex, curvature, MTEXT width, magnetism with
-capture/release hysteresis; a grip drags to a point like a click (the elevation plane, or the
+radius, arc end, MTEXT width; a polyline's grips, Stretch their default (desktop pline/d09): a
+vertex moves alone, a straight segment's midpoint moves the segment, both its ends by the drag, an
+arc segment's midpoint bends the arc through the point, and an arc beside a vertex moved bends
+through its old midpoint (0.4142 → 0.1702 on d09's quarter arc), one undo step each; vertex grips
+squares, midpoint grips thin rectangles along their segment (d07); magnetism with capture/release
+hysteresis; a grip drags to a point like a click (the elevation plane, or the
 object's Z under a snap, or its own Z for a typed distance): a line's end takes that Z, a move grip
 moves by it from its object's Z, every other grip stays in its object's plane; a line's grips sit at
 its ends' own heights and their middle, so a vertical line shows three; an end dropped on the other
@@ -264,4 +268,9 @@ and so Lengthen from a grip; the Length Change field after a Tab (DYNDIVIS) and 
 the `** STRETCH **` prompt and its options at the command line; the hover colour apart from the
 dragged one (AutoCAD's hovered grip is pink, GRIPHOVER 11, the dragged one red), Enter (and Space)
 cycling the grip modes — Enter keeps the edit hot, Ortho/tracking-aware radius and angle drag,
-insert vertex on an arc segment, any grip but move on a tilted object (it keeps only its move grips)
+any grip but move on a tilted object (it keeps only its move grips); a polyline's hover menus (d07)
+— a vertex's `Stretch Vertex`, `Add Vertex`, `Remove Vertex` with its segments' lengths shown, a
+straight segment's `Stretch`, `Add Vertex`, `Convert to Arc`, an arc's `Stretch`, `Add Vertex`,
+`Convert to Line` with its radius — and Ctrl after a grip is hot cycling them (help GUID-BBEA1F71),
+so adding or removing a vertex from a grip; U after a grip edit echoes `Grip Edit` (d09), here
+nothing

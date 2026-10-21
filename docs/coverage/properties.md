@@ -30,7 +30,8 @@ becomes current), the manager's settings dialog
 metric drawing's file (MEASUREMENT 1, p202), DASHDOT's dash of 0 drawn as a dot; ByLayer and
 ByObject; a line's pattern laid as AutoCAD lays it (p207): centred, beginning and ending on equal
 dashes of `(L − m·period + first dash) / 2` with m whole periods (longer than the first dash when
-the remainder is), and solid under one period; LTSCALE asks
+the remainder is), and solid under one period; a polyline's straight segments each laid so, the
+dashes either side of a vertex merging (PLINEGEN 0, pline/p232); LTSCALE asks
 `Enter new linetype scale factor <current>:` (es
 `Indique nuevo factor de escala del tipo de línea`), offering the current factor at the drawing's
 precision (`<1.00>`, where AutoCAD's LUPREC 4 writes `<1.0000>`); anything but a number
@@ -63,10 +64,11 @@ linetypes of acadiso.lin, which Set finds there (the refusal names the file sear
 `CENTRO`, `TRAZOS`, `TRAZO_Y_PUNTO`, `VALS`, p205): a linetype's name is drawing data, English in
 every language here; per-object ltscale (CELTSCALE), the Linetype Manager (its Details' Global Scale
 Factor is LTSCALE), PSLTSCALE / MSLTSCALE (no paper space), Create and Load (there is no LIN file to
-read or write), ByBlock, the Linetype Manager, the drop-down's Other…; **unverified**: how AutoCAD
-lays a pattern on the other objects (per segment or along a polyline, PLINEGEN, round a circle or
-an arc): theirs runs from the start; a line off the plan is centred on its length as drawn, its
-pattern not foreshortened
+read or write), ByBlock, the Linetype Manager, the drop-down's Other…; PLINEGEN (a polyline lays
+its pattern segment by segment, PLINEGEN 0's; PEDIT's Ltype gen is not built); **unverified**: how
+AutoCAD lays a pattern on the other objects (round a circle or an arc, a polyline's arc segment):
+theirs runs from the start; a line off the plan is centred on its length as drawn, its pattern not
+foreshortened
 
 ### Lineweights + `LWDISPLAY` · `LWEIGHT` / `LW` · `-LWEIGHT` · es `GROSORLIN` · `-GROSORLIN`
 
@@ -170,14 +172,21 @@ retyped alone) and Delta Z (read-only, like Delta X and Y), Center Z (circle, ar
 Position Z (text, multiline text, attribute definition, reference) and Elevation (polyline, hatch),
 all read and retyped above the UCS's XY plane; a line's Length is its 3D one; with a tilted UCS or
 object the position rows are read and moved as points in space; Normal X / Y / Z (read-only) on a
-circle and an arc; a polyline's Vertex (the current one, typed here where AutoCAD steps it with
-arrows), Vertex X and Y, Start segment width and End segment width of the segment it starts (none at
-an open one's last vertex) and Global width, which sets every segment's (es `Vértice`,
-`Anchura inicial del segmento`, `Anchura final del segmento`, `Grosor global`, Autodesk's 2027
-resources)
+circle and an arc; a polyline's rows and groups as AutoCAD's (desktop pline/d08): Geometry's
+Current Vertex (typed here where AutoCAD steps it with arrows), Vertex X and Y, Start segment width
+and End segment width of the segment it starts (none at an open one's last vertex), Global width,
+which sets every segment's, Elevation, Area (an open one's as if closed) and Length, the last two
+read-only; Misc's Closed, Yes or No, which closes with a straight segment and no vertex or opens
+it (help GUID-94C065AB), one undo step (es `Vértice actual`, `Vértice X`, `Varios`, `Cerrado`,
+`Sí` from that page; `Anchura inicial del segmento`, `Anchura final del segmento`, `Grosor global`,
+Autodesk's 2027 resources)
 
 **Missing:** General's Linetype scale, Plot style, Transparency and Hyperlink and 3D Visualization's
-Material (d16); the current vertex's marker in the drawing, what Global width shows where the widths
+Material (d16); a polyline's Misc Linetype generation (`Disabled`, d08; PLINEGEN is not built, and
+a row is shown only where it can be changed as there); the width a closing segment takes from Closed
+(the polyline's constant width here, else none; **unverified**: AutoCAD keeps the last vertex's
+widths, which nothing stores here); the Spanish desktop's own labels (**unverified**, only the help
+page read); the current vertex's marker in the drawing, what Global width shows where the widths
 vary (blank here, **unverified**), the geometry rows of several objects of one type (`*VARIES*`),
 Area/Circumference rows, text content, editing attribute values, MTEXT's rotation in the UCS
 (AutoCAD shows that one row there), a spline's and a dimension's Z, the Normal rows on the other

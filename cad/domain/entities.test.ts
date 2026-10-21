@@ -62,6 +62,7 @@ import {
   mirrorPoint,
   polylineArea,
   polylineBulge,
+  polylineConstantWidth,
   polylineLength,
   polylineSegmentGeometries,
   polylineSegments,
@@ -75,6 +76,7 @@ import {
   scaleEntityCopy,
   scalePoint,
   setPolylineBulge,
+  stretchPolylineVertices,
   splineEndPoint,
   splineStartPoint,
   stretchEntity,
@@ -1059,15 +1061,18 @@ describe("polyline structure", () => {
     expect(poly.vertices[0]).toBeCloseToPoint(ORIGIN)
   })
 
-  it("adds the closing segment only for a closed polyline of 3+ vertices", () => {
+  it("adds the closing segment to any closed polyline, two vertices too", () => {
     const open = polylineOf([ORIGIN, p(10, 0), p(10, 10)])
     const closed = polylineOf([ORIGIN, p(10, 0), p(10, 10)], { closed: true })
     const twoPointClosed = polylineOf([ORIGIN, p(10, 0)], { closed: true })
 
     expect(polylineSegments(open)).toHaveLength(2)
     expect(polylineSegments(closed)).toHaveLength(3)
-    // A two-vertex loop has no representable closing segment.
-    expect(polylineSegments(twoPointClosed)).toHaveLength(1)
+    // probe pline/p04: Close after one segment closes there and back.
+    expect(polylineSegments(twoPointClosed)).toEqual([
+      [ORIGIN, p(10, 0)],
+      [p(10, 0), ORIGIN],
+    ])
   })
 
   it("resolves each segment as a line or an arc", () => {
@@ -1109,6 +1114,34 @@ describe("polyline measurement", () => {
     expect(polylineArea(shape)).toBeCloseTo(10_000 + (Math.PI * 50 * 50) / 2, 6)
   })
 
+  it("measures a closed polyline of two vertices with its closing segment", () => {
+    // probe pline/p04: `0,0 10,0 C` is closed, Length 20.
+    expect(
+      polylineLength(polylineOf([ORIGIN, p(10, 0)], { closed: true }))
+    ).toBeCloseTo(20, 9)
+    // probe pline/p227: `0,0 W 2 / A 10,10 / W 4 / CL`, a whole circle:
+    // Length 62.8319, Area 314.1593, widths 2 and 4 (DXF 43 none).
+    const circle = polylineOf([ORIGIN, p(10, 10)], {
+      closed: true,
+      bulges: [Math.tan(Math.PI / 8), Math.tan((3 * Math.PI) / 8)],
+      widths: [
+        [2, 2],
+        [4, 4],
+      ],
+    })
+    expect(polylineLength(circle)).toBeCloseTo(20 * Math.PI, 9)
+    expect(polylineArea(circle)).toBeCloseTo(100 * Math.PI, 9)
+    expect(polylineConstantWidth(circle)).toBeNull()
+    // The 270° band, half-width 2, round the centre (0, 10).
+    const { min, max } = entityBounds(circle)
+    expect([min.x, min.y, max.x, max.y]).toEqual([
+      expect.closeTo(-12, 2),
+      expect.closeTo(-2, 2),
+      expect.closeTo(12, 2),
+      expect.closeTo(22, 2),
+    ])
+  })
+
   it("reports no area for a degenerate polyline", () => {
     expect(polylineArea(polylineOf([ORIGIN, p(10, 0)]))).toBe(0)
   })
@@ -1128,6 +1161,36 @@ describe("polyline vertex editing", () => {
     const result = replacePolylineVertex(poly, 1, p(50, 50))
     expect(result.vertices).toBeCloseToPoints([ORIGIN, p(50, 50), p(100, 100)])
     expect(result.id).toBe("P1")
+  })
+
+  it("stretches vertices, an arc with one end moved bent through its old midpoint", () => {
+    // desktop pline/d09: a quarter arc after a line, re-bulged 0.4142 → 0.1702.
+    const chain = polylineOf([p(10, 60), p(30, 60), p(40, 70), p(55, 70)], {
+      bulges: [0, Math.tan(Math.PI / 8), 0],
+      id: "P1",
+    })
+    const moved = stretchPolylineVertices(
+      chain,
+      new Map([
+        [0, p(10, 55.0257)],
+        [1, p(30, 55.0257)],
+      ])
+    )
+    expect(moved.bulges?.[1]).toBeCloseTo(0.1702, 4)
+    expect(moved.id).toBe("P1")
+    // Both ends moved: the arc keeps its bulge, round a closed one too.
+    const circle = polylineOf([ORIGIN, p(10, 0)], {
+      closed: true,
+      bulges: [1, 1],
+    })
+    const shifted = stretchPolylineVertices(
+      circle,
+      new Map([
+        [0, p(0, 5)],
+        [1, p(10, 5)],
+      ])
+    )
+    expect(shifted.bulges).toEqual([1, 1])
   })
 
   it("inserts a vertex, splitting the segment into two straight halves", () => {
@@ -1480,6 +1543,12 @@ describe("hatch", () => {
     expect(
       hatchLoopFromEntity(polylineOf([p(0, 0), p(1, 0)], { closed: true }))
     ).toBeNull()
+    // probe pline/p227: with them they are a whole circle.
+    expect(
+      hatchLoopFromEntity(
+        polylineOf([p(0, 0), p(10, 10)], { closed: true, bulges: [0.5, 2] })
+      )
+    ).not.toBeNull()
     expect(hatchLoopFromEntity(lineOf(ORIGIN, p(1, 0)))).toBeNull()
     expect(hatchLoopFromEntity(arcOf(ORIGIN, 10, 0, 1))).toBeNull()
     expect(hatchLoopFromEntity(textOf(ORIGIN, "hi"))).toBeNull()

@@ -369,6 +369,7 @@ export const es: EngineLocale = {
         "radiusRatio": "Relación de radios",
         "vertices": "Vértices",
         "segments": "Segmentos",
+        "currentVertex": "Vértice actual",
         "vertex": "Vértice",
         "startSegmentWidth": "Anchura inicial del segmento",
         "endSegmentWidth": "Anchura final del segmento",

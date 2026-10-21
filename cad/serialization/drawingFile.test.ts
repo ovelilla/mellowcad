@@ -636,6 +636,46 @@ describe("polyline widths", () => {
     expect(parseDrawingFile(text).entities).toEqual([poly])
   })
 
+  it("keeps the closing width of a closed polyline of two vertices", () => {
+    // probe pline/p227: bulges 0.4142 and 2.4142, widths 2 and 4.
+    const poly = polylineOf([p(0, 0), p(10, 10)], {
+      id: "P",
+      closed: true,
+      bulges: [Math.tan(Math.PI / 8), Math.tan((3 * Math.PI) / 8)],
+      widths: [
+        [2, 2],
+        [4, 4],
+      ],
+    })
+    const text = serializeDrawing(snapshotOf([poly]))
+    expect(parseDrawingFile(text).entities).toEqual([poly])
+    const even = polylineOf([p(0, 0), p(10, 0)], {
+      id: "Q",
+      closed: true,
+      widths: [
+        [3, 3],
+        [3, 3],
+      ],
+    })
+    const evenText = serializeDrawing(snapshotOf([even]))
+    expect(evenText).toMatch(/"constantWidth": 3/)
+    expect(parseDrawingFile(evenText).entities).toEqual([even])
+  })
+
+  it("keeps widths and bulges together, segment by segment", () => {
+    const poly = polylineOf([p(0, 0), p(10, 0), p(20, 10), p(30, 10)], {
+      id: "P",
+      bulges: [0, 0.41421356, -2],
+      widths: [
+        [0, 2],
+        [2, 2],
+        [1, 3],
+      ],
+    })
+    const text = serializeDrawing(snapshotOf([poly]))
+    expect(parseDrawingFile(text).entities).toEqual([poly])
+  })
+
   it("writes no widths for a polyline with none", () => {
     const text = serializeDrawing(snapshotOf([polylineOf([p(0, 0), p(1, 0)])]))
     expect(text).not.toMatch(/idth/)

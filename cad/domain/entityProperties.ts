@@ -16,6 +16,7 @@ import {
   polylineSegments,
   polylineWidth,
   replacePolylineVertex,
+  withPolylineClosed,
   withPolylineWidths,
 } from "./polylines"
 import { ellipseSemiMajor, ellipseSemiMinor, ellipseWithAxes } from "./ellipses"
@@ -66,6 +67,8 @@ export type EntityProperty =
   | "startSegmentWidth"
   | "endSegmentWidth"
   | "globalWidth"
+  /** A polyline's Closed, a choice: 1 Yes, 0 No. */
+  | "closed"
   | ZProperty
 
 /** The rows that write an object's Z, all in the WCS here. */
@@ -194,6 +197,10 @@ function applyPolylineProperty(
         poly,
         polylineSegments(poly).map(() => [value, value])
       )
+    case "closed":
+      return value === 0 || value === 1
+        ? withPolylineClosed(poly, value === 1)
+        : null
     default:
       return null
   }

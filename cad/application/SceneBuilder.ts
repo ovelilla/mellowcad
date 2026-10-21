@@ -32,6 +32,7 @@ import {
   mtextToWorld,
   isWidePolyline,
   polylineOutline,
+  PolylineSegmentGeometry,
   polylineSegmentGeometries,
   splinePolyline,
   TextJustify,
@@ -936,6 +937,9 @@ function planarPrimitives(
           camera.isPlan && (options.fill ?? true)
         )
       }
+      if (options.linetype && stroke.dash && stroke.dash.length > 0) {
+        return linetypedPolyline(camera, entity, stroke, options)
+      }
       // A straight polyline is one crisp path (mitred corners). One that
       // carries arc bulges is tessellated finely into the same path, so arcs
       // render everywhere a polyline is drawn — including transient ghosts.
@@ -1323,20 +1327,57 @@ function polylinePathPoints(
       points.push(camera.worldToScreen(seg.b))
       continue
     }
-    const theta = 4 * Math.atan(seg.bulge) // signed sweep from a to b
-    const startAngle = Math.atan2(
-      seg.a.y - seg.center.y,
-      seg.a.x - seg.center.x
-    )
-    const steps = Math.max(2, Math.ceil(Math.abs(theta) / (Math.PI / 16)))
-    for (let i = 1; i <= steps; i++) {
-      const angle = startAngle + theta * (i / steps)
-      points.push(
-        camera.worldToScreen(polarPoint(seg.center, seg.radius, angle))
-      )
-    }
+    points.push(...arcSegmentPoints(camera, seg).slice(1))
   }
   return points
+}
+
+/** An arc segment's points on the screen, from its start to its end. */
+function arcSegmentPoints(
+  camera: CameraTransform,
+  seg: Extract<PolylineSegmentGeometry, { kind: "arc" }>
+): Vec2[] {
+  const theta = 4 * Math.atan(seg.bulge) // signed sweep from a to b
+  const startAngle = Math.atan2(seg.a.y - seg.center.y, seg.a.x - seg.center.x)
+  const steps = Math.max(2, Math.ceil(Math.abs(theta) / (Math.PI / 16)))
+  const points: Vec2[] = []
+  for (let i = 0; i <= steps; i++) {
+    const angle = startAngle + theta * (i / steps)
+    points.push(camera.worldToScreen(polarPoint(seg.center, seg.radius, angle)))
+  }
+  return points
+}
+
+/**
+ * A polyline with its linetype, PLINEGEN 0 (PEDIT's Ltype gen off, help
+ * GUID-648BDC21): each straight segment laid as a line of its length is,
+ * centred, the dashes either side of a vertex merging (probe pline/p232); an
+ * arc segment runs its pattern from its start (**unverified**).
+ */
+function linetypedPolyline(
+  camera: CameraTransform,
+  poly: PolylineEntity,
+  stroke: StrokeStyle,
+  options: EntityDrawOptions
+): ScenePrimitive[] {
+  return polylineSegmentGeometries(poly).flatMap((seg): ScenePrimitive[] =>
+    seg.kind === "line"
+      ? lineSegments(
+          camera,
+          camera.worldToScreen(seg.a),
+          camera.worldToScreen(seg.b),
+          stroke,
+          options
+        )
+      : [
+          {
+            kind: "path",
+            points: arcSegmentPoints(camera, seg),
+            closed: false,
+            stroke,
+          },
+        ]
+  )
 }
 
 function pushEntities(

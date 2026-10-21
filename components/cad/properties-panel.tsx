@@ -236,7 +236,11 @@ function PropertyRowView({
   return (
     <div className="flex min-h-7 items-center justify-between gap-2">
       <dt className="text-muted-foreground">{row.label}</dt>
-      {row.edit ? (
+      {row.edit?.choices ? (
+        <dd>
+          <PropertyChoice engine={engine} label={row.label} edit={row.edit} />
+        </dd>
+      ) : row.edit ? (
         // A technical value with its unit: one LTR island, so -12.5 never
         // reads 12.5- and the unit stays after the number.
         <dd dir="ltr" className="flex items-center gap-1 font-mono">
@@ -304,6 +308,46 @@ function PropertyInput({
       }}
       className="w-20 rounded-sm border border-transparent bg-transparent px-1 py-0.5 text-end text-foreground tabular-nums hover:border-border focus:border-ring focus:bg-background focus:outline-none"
     />
+  )
+}
+
+/** A value picked from a list, as AutoCAD's palette offers a polyline's Closed. */
+function PropertyChoice({
+  engine,
+  label,
+  edit,
+}: {
+  engine: CadEngine
+  label: string
+  edit: PropertyEdit
+}) {
+  const choices = edit.choices ?? []
+  return (
+    <Select
+      items={Object.fromEntries(
+        choices.map((choice) => [choice.value, choice.label])
+      )}
+      value={edit.text}
+      onValueChange={(value) => {
+        if (value == null) return
+        engine.setSelectionProperty(edit.property, value as string)
+        engine.focusSurface()
+      }}
+    >
+      <SelectTrigger
+        aria-label={label}
+        className="w-36 bg-background dark:bg-background"
+      >
+        <SelectValue />
+      </SelectTrigger>
+      <SelectContent>
+        {choices.map((choice) => (
+          <SelectItem key={choice.value} value={choice.value}>
+            {choice.label}
+          </SelectItem>
+        ))}
+      </SelectContent>
+    </Select>
   )
 }
 

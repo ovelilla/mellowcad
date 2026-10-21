@@ -119,16 +119,16 @@ export function selectedGrips(ctx: ToolContext): Grip[] {
             world: vertex,
           })
         })
-        // A midpoint grip per segment: on a straight segment it inserts a new
-        // vertex, on an arc segment it edits the curvature (AutoCAD's
-        // multifunction midpoint grip).
+        // A midpoint grip per segment, whose default is Stretch: a straight
+        // segment moves, an arc bends through the point (desktop pline/d09).
+        // The hover menus' Add Vertex, Convert to Arc / Line are not built.
         polylineSegmentGeometries(entity).forEach((seg, segmentIndex) => {
           grips.push({
             entityId: id,
             role:
               seg.kind === "arc"
                 ? { kind: "bulge", segmentIndex }
-                : { kind: "addVertex", segmentIndex },
+                : { kind: "stretchSegment", segmentIndex },
             world: segmentGripPoint(seg),
           })
         })
@@ -282,16 +282,30 @@ export function pushGrip(out: ScenePrimitive[], at: Vec2, hot: boolean): void {
   out.push(...gripPrimitives(at, hot))
 }
 
-/** Appends a small round grip marker (segment midpoint) at a screen point. */
+/**
+ * Appends a segment's midpoint grip at a screen point: a thin rectangle lying
+ * along `along` (a screen direction), as AutoCAD draws a polyline's (desktop
+ * pline/d07).
+ */
 export function pushSegmentGrip(
   out: ScenePrimitive[],
   at: Vec2,
+  along: Vec2,
   hot: boolean
 ): void {
+  const length = V.length(along)
+  const u = length > 0 ? V.scale(along, 1 / length) : { x: 1, y: 0 }
+  const long = V.scale(u, GRIP_HALF_PX * 2)
+  const across = V.scale(V.perpendicular(u), GRIP_HALF_PX * 0.625)
   out.push({
-    kind: "circle",
-    center: at,
-    radius: GRIP_HALF_PX,
+    kind: "path",
+    points: [
+      V.add(V.add(at, long), across),
+      V.add(V.sub(at, long), across),
+      V.sub(V.sub(at, long), across),
+      V.sub(V.add(at, long), across),
+    ],
+    closed: true,
     fill: hot ? THEME.gripHot : THEME.grip,
     stroke: { color: "#ffffff", width: 1 },
   })

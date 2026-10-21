@@ -4666,7 +4666,7 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0°~, Line space facto
   properties: -
   command| *Cancel*
 > select polyline
-  properties: Polyline (1) {Thickness=0.00 mm~} [Geometry: Vertex=1~, Vertex X=0.00~, Vertex Y=-300.00~, Start segment width=0.00 mm~, End segment width=0.00 mm~, Global width=0.00 mm~, Length=215.91 mm, Vertices=3, Segments=2, Closed=No, Elevation=0.00~]
+  properties: Polyline (1) {Thickness=0.00 mm~} [Geometry: Current Vertex=1~, Vertex X=0.00~, Vertex Y=-300.00~, Start segment width=0.00 mm~, End segment width=0.00 mm~, Global width=0.00 mm~, Elevation=0.00~, Area=6747.25 mm², Length=215.91 mm] [Misc: Closed=No~]
 > grab vertex
   asks: "Move"
   dyn: "Move"=""|0.00|mm*
@@ -4675,7 +4675,7 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0°~, Line space facto
 > release
   asks: -
   dyn: -
-  properties: Polyline (1) {Thickness=0.00 mm~} [Geometry: Vertex=1~, Vertex X=0.00~, Vertex Y=-300.00~, Start segment width=0.00 mm~, End segment width=0.00 mm~, Global width=0.00 mm~, Length=238.21 mm, Vertices=3, Segments=2, Closed=No, Elevation=0.00~]
+  properties: Polyline (1) {Thickness=0.00 mm~} [Geometry: Current Vertex=1~, Vertex X=0.00~, Vertex Y=-300.00~, Start segment width=0.00 mm~, End segment width=0.00 mm~, Global width=0.00 mm~, Elevation=0.00~, Area=7019.68 mm², Length=227.58 mm] [Misc: Closed=No~]
 > grab straight midpoint
   asks: "Move"
   dyn: "Move"=""|0.00|mm*
@@ -4684,7 +4684,7 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0°~, Line space facto
 > release
   asks: -
   dyn: -
-  properties: Polyline (1) {Thickness=0.00 mm~} [Geometry: Vertex=1~, Vertex X=0.00~, Vertex Y=-300.00~, Start segment width=0.00 mm~, End segment width=0.00 mm~, Global width=0.00 mm~, Length=244.70 mm, Vertices=4, Segments=3, Closed=No, Elevation=0.00~]
+  properties: Polyline (1) {Thickness=0.00 mm~} [Geometry: Current Vertex=1~, Vertex X=0.00~, Vertex Y=-320.00~, Start segment width=0.00 mm~, End segment width=0.00 mm~, Global width=0.00 mm~, Elevation=0.00~, Area=8586.77 mm², Length=247.78 mm] [Misc: Closed=No~]
 > escape
   properties: -
   command| *Cancel*
@@ -4714,7 +4714,7 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0°~, Line space facto
   properties: -
   cycling: -
 > select
-  properties: Polyline (1) {Thickness=0.00 mm~} [Geometry: Vertex=1~, Vertex X=0.00~, Vertex Y=0.00~, Start segment width=0.00 mm~, End segment width=0.00 mm~, Global width=0.00 mm~, Length=157.08 mm, Vertices=2, Segments=1, Closed=No, Elevation=0.00~]
+  properties: Polyline (1) {Thickness=0.00 mm~} [Geometry: Current Vertex=1~, Vertex X=0.00~, Vertex Y=0.00~, Start segment width=0.00 mm~, End segment width=0.00 mm~, Global width=0.00 mm~, Elevation=0.00~, Area=3926.99 mm², Length=157.08 mm] [Misc: Closed=No~]
 > grab arc middle
   asks: "Bulge"
   dyn: "Bulge"=""|1|*
@@ -4723,7 +4723,7 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0°~, Line space facto
 > release
   asks: -
   dyn: -
-  properties: Polyline (1) {Thickness=0.00 mm~} [Geometry: Vertex=1~, Vertex X=0.00~, Vertex Y=0.00~, Start segment width=0.00 mm~, End segment width=0.00 mm~, Global width=0.00 mm~, Length=200.97 mm, Vertices=2, Segments=1, Closed=No, Elevation=0.00~]
+  properties: Polyline (1) {Thickness=0.00 mm~} [Geometry: Current Vertex=1~, Vertex X=0.00~, Vertex Y=0.00~, Start segment width=0.00 mm~, End segment width=0.00 mm~, Global width=0.00 mm~, Elevation=0.00~, Area=6168.57 mm², Length=200.97 mm] [Misc: Closed=No~]
 > escape
   properties: -
   command| *Cancel*
@@ -4750,9 +4750,9 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0°~, Line space facto
 > select E2
   properties: Elliptical arc (1) [Geometry: Major radius=100.00 mm~, Minor radius=50.00 mm~, Radius ratio=0.50, Start angle=0°, End angle=180°] [Center: X=0.00~, Y=0.00~, Z=0.00~]
 > select P1
-  properties: Polyline (1) {Thickness=0.00 mm~} [Geometry: Vertex=1~, Vertex X=0.00~, Vertex Y=0.00~, Start segment width=0.00 mm~, End segment width=0.00 mm~, Global width=0.00 mm~, Length=200.00 mm, Vertices=3, Segments=2, Closed=No, Elevation=0.00~]
+  properties: Polyline (1) {Thickness=0.00 mm~} [Geometry: Current Vertex=1~, Vertex X=0.00~, Vertex Y=0.00~, Start segment width=0.00 mm~, End segment width=0.00 mm~, Global width=0.00 mm~, Elevation=0.00~, Area=5000.00 mm², Length=200.00 mm] [Misc: Closed=No~]
 > select P2
-  properties: Polyline (1) {Thickness=0.00 mm~} [Geometry: Vertex=1~, Vertex X=0.00~, Vertex Y=0.00~, Start segment width=0.00 mm~, End segment width=0.00 mm~, Global width=0.00 mm~, Length=400.00 mm, Area=10000.00 mm², Vertices=4, Segments=4, Closed=Yes, Elevation=0.00~]
+  properties: Polyline (1) {Thickness=0.00 mm~} [Geometry: Current Vertex=1~, Vertex X=0.00~, Vertex Y=0.00~, Start segment width=0.00 mm~, End segment width=0.00 mm~, Global width=0.00 mm~, Elevation=0.00~, Area=10000.00 mm², Length=400.00 mm] [Misc: Closed=Yes~]
 > select T-left
   properties: Text (1) [Text: Contents=NOTE, Justify=Left, Height=2.50 mm~, Rotation=0°~] [Position: X=0.00~, Y=0.00~, Z=0.00~]
 > select T-center

@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest"
 import type { ScenePrimitive } from "../scene/types"
-import type { EllipseEntity } from "../domain/entities"
+import type { EllipseEntity, Entity } from "../domain/entities"
 import {
   assignEntityLinetype,
   ellipseEndPoint,
@@ -224,14 +224,17 @@ describe("appearance resolution", () => {
 
   /** A line's drawn runs from its start, dash, gap, dash…, in world units. */
   function drawnRuns(linetype: string, length: number): number[] {
-    const cad = createHarness({
-      entities: [
-        assignEntityLinetype(
-          lineOf(p(0, 0), p(length, 0), { id: "L1" }),
-          linetype
-        ),
-      ],
-    })
+    return runsOf(
+      assignEntityLinetype(
+        lineOf(p(0, 0), p(length, 0), { id: "L1" }),
+        linetype
+      )
+    )
+  }
+
+  /** The drawn runs of an object lying along the X axis from 0. */
+  function runsOf(entity: Entity): number[] {
+    const cad = createHarness({ entities: [entity] })
     const origin = cad.runtime.viewport.worldToScreen(p(0, 0)).x
     const on: [number, number][] = []
     for (const piece of strokes(cad.scene().primitives, THEME.entity)) {
@@ -291,6 +294,29 @@ describe("appearance resolution", () => {
   it("draws a line shorter than one period solid", () => {
     // probe line/p207: a 5-unit HIDDEN line plots as one stroke.
     expect(drawnRuns("Hidden", 5)).toEqual([5])
+  })
+
+  // probe pline/p232, PLINEGEN 0: each segment laid as a line of its
+  // length, the dashes either side of a vertex merging; segments shorter than
+  // a period solid.
+  it("lays a polyline's pattern segment by segment", () => {
+    const along = (...xs: number[]) =>
+      runsOf(
+        assignEntityLinetype(
+          polylineOf(
+            xs.map((x) => p(x, 0)),
+            { id: "P1" }
+          ),
+          "Dashed"
+        )
+      )
+    const runs = along(0, 50, 100, 150)
+    // (50 − 2·19.05 + 12.7) / 2 = 12.3 at each end of each segment.
+    expect(runs.map((run) => +run.toFixed(3))).toEqual([
+      12.3, 6.35, 12.7, 6.35, 24.6, 6.35, 12.7, 6.35, 24.6, 6.35, 12.7, 6.35,
+      12.3,
+    ])
+    expect(along(0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100)).toEqual([100])
   })
 
   it("leaves a ghost's own dashes running from its start", () => {

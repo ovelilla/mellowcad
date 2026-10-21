@@ -356,7 +356,17 @@ export class PolylineTool implements Tool {
       )
       out.push(...entityScenePrimitive(viewport, committed, stroke))
     }
-    if (this.askingWidth) return out
+    if (this.askingWidth) {
+      // A width is measured from the last vertex: AutoCAD's base-point rubber
+      // band, dashed (probe pline/p200, desktop pline/d06).
+      out.push({
+        kind: "segment",
+        a: viewport.worldToScreen(this.lastVertex(this.state)),
+        b: viewport.worldToScreen(this.state.cursor),
+        stroke: { ...stroke, dash: [2, 3] },
+      })
+      return out
+    }
 
     // The rubber-band from the last vertex to the effective next point — an arc
     // in arc mode (tangent to the previous segment), otherwise a line; an arc

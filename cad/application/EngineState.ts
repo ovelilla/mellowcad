@@ -200,6 +200,14 @@ export interface PropertyEdit {
   readonly text: string
   /** Unit shown after the input, e.g. `mm` or `°`. */
   readonly unit: string
+  /**
+   * A value picked from a list (a polyline's Closed) rather than typed: each
+   * choice's `value` is the text handed back, `text` the current one.
+   */
+  readonly choices?: ReadonlyArray<{
+    readonly value: string
+    readonly label: string
+  }>
 }
 
 /** A single label/value line shown in the properties panel. */
@@ -1035,11 +1043,15 @@ function singleEntityInfo(
       }
     }
     case "polyline": {
-      // AutoCAD's current vertex, its point and the segment it starts.
+      // AutoCAD's rows and groups (desktop pline/d08): the current vertex, its
+      // point and the segment it starts; Area and Length read-only, greyed
+      // there; Closed a Yes / No choice under Misc.
       const current = Math.min(vertex, entity.vertices.length - 1)
       const segments = polylineSegments(entity).length
       const [start, end] = polylineWidth(entity, current)
       const constant = polylineConstantWidth(entity)
+      const yesNo = (closed: boolean) =>
+        text.propertyValue(closed ? "yes" : "no")
       return {
         title: title("polyline"),
         count: 1,
@@ -1047,6 +1059,7 @@ function singleEntityInfo(
           group("geometry", [
             {
               ...row("vertex", String(current + 1)),
+              label: text.propertyRow("currentVertex"),
               edit: { property: "vertex", text: String(current + 1), unit: "" },
             },
             coordRow("vertexX", "vertexX", at(entity.vertices[current]).x),
@@ -1069,12 +1082,24 @@ function singleEntityInfo(
                   },
                 }
               : lengthRow("globalWidth", "globalWidth", constant),
-            row("length", length(polylineLength(entity))),
-            ...(entity.closed ? [row("area", area(polylineArea(entity)))] : []),
-            row("vertices", String(entity.vertices.length)),
-            row("segments", String(polylineSegments(entity).length)),
-            row("closed", text.propertyValue(entity.closed ? "yes" : "no")),
             planeRow("elevation", "elevation"),
+            // An open one's too, as if closed (d08: 104.8748 for an open one).
+            row("area", area(polylineArea(entity))),
+            row("length", length(polylineLength(entity))),
+          ]),
+          group("misc", [
+            {
+              ...row("closed", yesNo(entity.closed)),
+              edit: {
+                property: "closed",
+                text: entity.closed ? "1" : "0",
+                unit: "",
+                choices: [
+                  { value: "1", label: yesNo(true) },
+                  { value: "0", label: yesNo(false) },
+                ],
+              },
+            },
           ]),
         ],
       }

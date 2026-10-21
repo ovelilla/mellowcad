@@ -2,12 +2,18 @@ import { describe, expect, it } from "vitest"
 
 import { type CadHarness, createHarness } from "../../../test/harness"
 import { lineOf, p, polylineOf } from "../../../test/builders"
-import type { PolylineEntity, PolylineWidth } from "../../domain/entities"
+import {
+  entityElevation,
+  entityThickness,
+  type PolylineEntity,
+  type PolylineWidth,
+} from "../../domain/entities"
 import { DEFAULT_LAYER_COLOR } from "../../domain/layers"
 import { es } from "../../locales/es"
 
-// AutoCAD 2023's console is the reference for every prompt, refusal and width
-// below: LIST of what the same answers draw there (acc/w1–w24).
+// AutoCAD's console is the reference for every prompt, refusal and width
+// below: what the same answers draw there, read back with MPDUMP — 2027's for
+// PLINE (probes pline/p200–p225), 2023's for the other commands (acc/w6–w24).
 
 /** Typed at the command line and confirmed, as AutoCAD's prompt reads it. */
 function answer(cad: CadHarness, ...answers: string[]): CadHarness {
@@ -44,7 +50,7 @@ const WIDE: PolylineWidth[] = [
   [2, 2],
 ]
 
-/** acc/w9: 0,0 → 100,0 tapering from 0 to 10, then 2 wide up to 100,50. */
+/** 0,0 → 100,0 tapering from 0 to 10, then 2 wide up to 100,50 (acc/w9). */
 function tapered(): PolylineEntity {
   return polylineOf([p(0, 0), p(100, 0), p(100, 50)], {
     id: "P",
@@ -53,7 +59,7 @@ function tapered(): PolylineEntity {
 }
 
 describe("PLINE Width and Halfwidth", () => {
-  it("asks the starting and ending widths, the ending going on (acc/w1)", () => {
+  it("asks the starting and ending widths, the ending going on (p200, p201)", () => {
     const cad = createHarness()
     cad.command("PLINE")
     answer(cad, "0,0", "W", "", "5", "10,0", "20,0", "H", "1", "", "30,0")
@@ -95,7 +101,7 @@ describe("PLINE Width and Halfwidth", () => {
     expect(plineWid(cad)).toBe(4)
   })
 
-  it("starts at PLINEWID and measures a width from the last vertex (acc/w1)", () => {
+  it("starts at PLINEWID and measures a width from the last vertex (p202)", () => {
     const cad = harnessAt(4)
     cad.command("PLINE")
     answer(cad, "0,50", "W", "2,50", "@0,7", "@10,0", "")
@@ -109,7 +115,7 @@ describe("PLINE Width and Halfwidth", () => {
     expect(plineWid(cad)).toBe(7)
   })
 
-  it("offers them in arc mode too, the arcs as wide (acc/w2)", () => {
+  it("offers them in arc mode too, the arcs as wide (p203)", () => {
     const cad = createHarness()
     cad.command("PLINE")
     answer(cad, "0,0", "W", "1", "2", "10,0", "A", "W", "3", "", "H")
@@ -128,7 +134,7 @@ describe("PLINE Width and Halfwidth", () => {
     ])
   })
 
-  it("closes at the current width, Close and arc CLose alike (acc/w2)", () => {
+  it("closes at the current width, Close and arc CLose alike (p204, p205)", () => {
     const lines = createHarness()
     lines.command("PLINE")
     answer(lines, "0,50", "10,50", "W", "2", "", "20,60", "C")
@@ -151,7 +157,7 @@ describe("PLINE Width and Halfwidth", () => {
     ])
   })
 
-  it("sets PLINEWID even when no polyline is drawn (acc/w2)", () => {
+  it("sets PLINEWID even when no polyline is drawn (p206)", () => {
     const cad = createHarness()
     cad.command("PLINE")
     answer(cad, "0,100", "W", "3", "", "")
@@ -176,7 +182,7 @@ describe("PLINE Width and Halfwidth", () => {
 describe("PLINE Undo and the width", () => {
   // The width after Undo is PLINEWID as the command started when every
   // segment left has it, else 0 — whatever was set before.
-  it("goes back to 0 after widths of their own (acc/w3)", () => {
+  it("goes back to 0 after widths of their own (p208)", () => {
     const cad = createHarness()
     cad.command("PLINE")
     answer(cad, "0,0", "W", "2", "", "10,0", "W", "5", "", "20,0", "U")
@@ -190,7 +196,7 @@ describe("PLINE Undo and the width", () => {
     expect(plineWid(cad)).toBe(0)
   })
 
-  it("goes back to 0 back at the start, and offers it (acc/w3)", () => {
+  it("goes back to 0 back at the start, and offers it (p209)", () => {
     const cad = createHarness()
     cad.command("PLINE")
     answer(cad, "0,50", "W", "1", "", "10,50", "W", "4", "", "U", "20,50", "W")
@@ -206,7 +212,7 @@ describe("PLINE Undo and the width", () => {
     ])
   })
 
-  it("keeps PLINEWID's width while every segment has it (acc/w4–w7)", () => {
+  it("keeps PLINEWID's width while every segment has it (p210–p213)", () => {
     const plain = harnessAt(3)
     plain.command("PLINE")
     answer(plain, "0,0", "10,0", "20,0", "U", "30,0", "")
@@ -216,7 +222,7 @@ describe("PLINE Undo and the width", () => {
         [3, 3],
       ],
     ])
-    // A width set but no segment drawn with it (acc/w5).
+    // A width set but no segment drawn with it (p211).
     const unused = harnessAt(3)
     unused.command("PLINE")
     answer(unused, "0,50", "10,50", "20,50", "W", "5", "5", "U", "30,50", "")
@@ -226,7 +232,7 @@ describe("PLINE Undo and the width", () => {
         [3, 3],
       ],
     ])
-    // The segment of another width undone (acc/w6), or the only one (acc/w7).
+    // The segment of another width undone (p212), or the only one (p213).
     const undone = harnessAt(3)
     undone.command("PLINE")
     answer(undone, "0,0", "10,0", "W", "5", "", "20,0", "U", "30,0", "")
@@ -242,7 +248,7 @@ describe("PLINE Undo and the width", () => {
     expect(widths(only)).toEqual([[[3, 3]]])
   })
 
-  it("goes back to 0 where a segment left has another width (acc/w4–w7)", () => {
+  it("goes back to 0 where a segment left has another width (p214–p216)", () => {
     const set = harnessAt(3)
     set.command("PLINE")
     answer(set, "0,50", "W", "2", "", "10,50", "20,50", "30,50", "U", "40,50")
@@ -278,12 +284,114 @@ describe("PLINE Undo and the width", () => {
     ])
   })
 
-  it("keeps the width with nothing to undo (acc/w3)", () => {
+  it("keeps the width with nothing to undo (p217)", () => {
     const cad = harnessAt(7)
     cad.command("PLINE")
     answer(cad, "0,100", "W", "6", "", "U", "10,100", "")
     expect(cad.commandLog()).toContain("All segments already undone.")
     expect(widths(cad)).toEqual([[[6, 6]]])
+  })
+})
+
+describe("PLINE widths with the rest of the object", () => {
+  it("goes back to 0 at each Undo past a width of its own (p218)", () => {
+    const cad = createHarness()
+    cad.command("PLINE")
+    answer(cad, "0,0", "W", "0", "4", "10,0", "W", "6", "8", "20,0", "U", "W")
+    expect(cad.state().commandLine.prompt).toBe(
+      "PLINE Specify starting width <0.00>:"
+    )
+    answer(cad, "", "", "30,0", "U", "U", "W", "", "", "40,0", "")
+    expect(widths(cad)).toEqual([[]])
+    expect(cad.only<PolylineEntity>("polyline").vertices).toBeCloseToPoints([
+      p(0, 0),
+      p(40, 0),
+    ])
+    expect(plineWid(cad)).toBe(0)
+  })
+
+  it("refuses Halfwidth's answers as Width's, in Spanish too (p201)", () => {
+    const cad = createHarness()
+    cad.command("PLINE")
+    answer(cad, "0,0", "10,0", "H", "-1", "FOO", "1.5", "-3", "FOO", "0")
+    expect(cad.commandLog().slice(-11)).toEqual([
+      "Specify next point or [Arc/Close/Halfwidth/Length/Undo/Width]: H",
+      "Specify starting half-width <0.00>: -1",
+      "Value must be positive.",
+      "Specify starting half-width <0.00>: FOO",
+      "Requires numeric distance or second point.",
+      "Specify starting half-width <0.00>: 1.5",
+      "Specify ending half-width <1.50>: -3",
+      "Value must be positive.",
+      "Specify ending half-width <1.50>: FOO",
+      "Requires numeric distance or second point.",
+      "Specify ending half-width <1.50>: 0",
+    ])
+    answer(cad, "20,0", "")
+    expect(widths(cad)).toEqual([
+      [
+        [0, 0],
+        [3, 0],
+      ],
+    ])
+    const spanish = createHarness({ locale: es })
+    spanish.command("POL")
+    answer(spanish, "0,0", "M", "-1", "FOO")
+    expect(spanish.commandLog().slice(-4)).toEqual([
+      "Precise mitad de grosor inicial <0.00>: -1",
+      "El valor debe ser positivo.",
+      "Precise mitad de grosor inicial <0.00>: FOO",
+      "Requiere una distancia numérica o un segundo punto.",
+    ])
+  })
+
+  it("keeps its widths with THICKNESS and ELEVATION (p219)", () => {
+    const cad = createHarness()
+    // ELEV sets both, as THICKNESS 3 and ELEVATION 5 do there.
+    cad.command("ELEV")
+    answer(cad, "5", "3")
+    cad.command("PLINE")
+    answer(cad, "0,0", "W", "2")
+    answer(cad, "", "10,0", "A", "20,10", "")
+    const poly = cad.only<PolylineEntity>("polyline")
+    expect(widths(cad)).toEqual([
+      [
+        [2, 2],
+        [2, 2],
+      ],
+    ])
+    expect(poly.bulges?.[1]).toBeCloseTo(0.41421356, 8)
+    expect([entityElevation(poly), entityThickness(poly)]).toEqual([5, 3])
+  })
+
+  it("keeps its widths in a UCS turned about X (p220)", () => {
+    const cad = createHarness()
+    cad.command("UCS")
+    answer(cad, "X", "90")
+    cad.command("PLINE")
+    answer(cad, "0,0", "W", "1", "2", "10,0", "A")
+    answer(cad, "20,10", "")
+    const poly = cad.only<PolylineEntity>("polyline")
+    expect(widths(cad)).toEqual([
+      [
+        [1, 2],
+        [2, 2],
+      ],
+    ])
+    expect(poly.normal?.y).toBeCloseTo(-1, 9)
+    expect(poly.bulges?.[1]).toBeCloseTo(0.41421356, 8)
+  })
+
+  it("tapers a zero-length segment typed with @ (p225)", () => {
+    const cad = createHarness()
+    cad.command("PLINE")
+    answer(cad, "0,0", "W", "1", "3", "@", "10,0", "")
+    expect(widths(cad)).toEqual([
+      [
+        [1, 3],
+        [3, 3],
+      ],
+    ])
   })
 })
 
@@ -647,6 +755,41 @@ describe("what the editing commands do with the widths", () => {
   })
 })
 
+describe("the width prompts' rubber band", () => {
+  it.each(["Width", "Halfwidth"])(
+    "draws a dashed line from the last vertex to the cursor at %s's prompts",
+    (option) => {
+      // probe pline/p200 (traced): getdist with the last vertex as its base;
+      // desktop pline/d06: the dashed line from the last vertex.
+      const cad = createHarness()
+      cad.command("PLINE").click(p(0, 0)).click(p(50, 0)).option(option)
+      cad.moveTo(p(80, 40))
+      const from = cad.toScreen(p(50, 0))
+      const to = cad.toScreen(p(80, 40))
+      const dashed = cad
+        .scene()
+        .primitives.filter(
+          (q) => q.kind === "segment" && q.stroke.dash && q.stroke.dash.length
+        )
+      expect(dashed).toContainEqual(
+        expect.objectContaining({
+          a: expect.objectContaining({ x: from.x, y: from.y }),
+          b: expect.objectContaining({ x: to.x, y: to.y }),
+        })
+      )
+      cad.enter()
+      cad.moveTo(p(90, 40))
+      expect(
+        cad
+          .scene()
+          .primitives.filter(
+            (q) => q.kind === "segment" && q.stroke.dash && q.stroke.dash.length
+          )
+      ).toHaveLength(1)
+    }
+  )
+})
+
 describe("the Properties palette", () => {
   const rows = (cad: CadHarness) =>
     Object.fromEntries(
@@ -677,6 +820,60 @@ describe("the Properties palette", () => {
     expect(cad.runtime.setSelectionProperty("vertex", "3")).toBe(true)
     expect(rows(cad).startSegmentWidth).toBeUndefined()
     expect(cad.runtime.setSelectionProperty("vertex", "4")).toBe(false)
+  })
+
+  it("lists AutoCAD's rows: Geometry, then Misc with Closed (desktop pline/d08)", () => {
+    const cad = createHarness({ entities: [tapered()] })
+    cad.select("P")
+    const groups = cad.state().properties.info!.groups
+    expect(
+      groups.map((group) => [group.id, group.rows.map((row) => row.label)])
+    ).toEqual([
+      [
+        "geometry",
+        [
+          "Current Vertex",
+          "Vertex X",
+          "Vertex Y",
+          "Start segment width",
+          "End segment width",
+          "Global width",
+          "Elevation",
+          "Area",
+          "Length",
+        ],
+      ],
+      ["misc", ["Closed"]],
+    ])
+    // Area and Length read-only, greyed there; Closed a Yes / No choice.
+    const closed = groups[1].rows[0]
+    expect(closed.value).toBe("No")
+    expect(closed.edit?.choices?.map((choice) => choice.label)).toEqual([
+      "Yes",
+      "No",
+    ])
+  })
+
+  it("closes and opens a polyline from Closed, one undo step each", () => {
+    const cad = createHarness({ entities: [tapered()] })
+    cad.select("P")
+    expect(cad.runtime.setSelectionProperty("closed", "1")).toBe(true)
+    const closed = cad.only<PolylineEntity>("polyline")
+    expect(closed.closed).toBe(true)
+    expect(closed.vertices).toHaveLength(3)
+    expect(rows(cad).closed).toBe("Yes")
+    expect(cad.runtime.setSelectionProperty("closed", "0")).toBe(true)
+    expect(cad.only<PolylineEntity>("polyline")).toEqual(tapered())
+    cad.undo()
+    expect(cad.only<PolylineEntity>("polyline").closed).toBe(true)
+  })
+
+  it("measures a closed polyline of two vertices there and back (p04)", () => {
+    const cad = createHarness({
+      entities: [polylineOf([p(0, 0), p(10, 0)], { id: "P", closed: true })],
+    })
+    cad.select("P")
+    expect(rows(cad).length).toBe("20.00 mm")
   })
 
   it("retypes a segment's widths, the Global width and a vertex, one undo step each", () => {

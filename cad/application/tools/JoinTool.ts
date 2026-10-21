@@ -101,8 +101,7 @@ export class JoinTool extends SelectionActionTool {
       // drawing; a component from a single object stays as it was.
       if (chain.sources.size < 2) continue
       // A lens (two objects sharing both endpoints) would close to just two
-      // vertices, which the polyline model can't represent as a closed loop —
-      // leave those unmerged for now.
+      // vertices: left unmerged, a gap in JOIN's coverage entry.
       if (chain.closed && chain.vertices.length < 3) continue
       for (const id of chain.sources) removedIds.push(id)
       // The result is the source object grown, so it keeps that one's properties.

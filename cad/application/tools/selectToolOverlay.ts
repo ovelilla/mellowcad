@@ -1,8 +1,10 @@
-import { V } from "../../geometry/Vec2"
+import { V, Vec2 } from "../../geometry/Vec2"
 import {
   Entity,
   EntityId,
-  insertPolylineVertex,
+  entityPointToWorld,
+  PolylineEntity,
+  polylineSegmentGeometries,
   setPolylineBulge,
   translateEntity,
 } from "../../domain/entities"
@@ -24,6 +26,7 @@ import {
   movedDimension,
   mtextWidthGrip,
   withRadius,
+  withSegmentStretched,
   withVertexAt,
 } from "./selectToolEdits"
 
@@ -75,10 +78,13 @@ export function buildGrips(
   for (const grip of selectedGrips(ctx)) {
     const at = ctx.viewport.worldToScreen(grip.world)
     const hot = sameGrip(grip, hover)
-    // Segment-midpoint grips (add-vertex / curvature) read as small circles so
-    // they're distinguishable from the square vertex/endpoint grips.
-    if (grip.role.kind === "addVertex" || grip.role.kind === "bulge") {
-      pushSegmentGrip(out, at, hot)
+    const entity = ctx.document.get(grip.entityId)
+    if (
+      entity?.type === "polyline" &&
+      (grip.role.kind === "stretchSegment" || grip.role.kind === "bulge")
+    ) {
+      const along = segmentOnScreen(entity, grip.role.segmentIndex, ctx)
+      pushSegmentGrip(out, at, along, hot)
     } else {
       pushGrip(out, at, hot)
     }
@@ -233,20 +239,44 @@ export function buildVertexEdit(
   ]
 }
 
-/** The reshaped polyline preview and hot grip while inserting a vertex. */
-export function buildInsertEdit(
-  state: Phase<"insertVertex">,
+/** The stretched polyline preview and hot grip while a segment moves. */
+export function buildSegmentStretch(
+  state: Phase<"stretchSegment">,
   ctx: ToolContext
 ): ScenePrimitive[] {
   const { viewport } = ctx
   const poly = ctx.document.get(state.entityId)
   if (poly?.type !== "polyline") return []
-  const preview = insertPolylineVertex(poly, state.segmentIndex, state.current)
+  const preview = withSegmentStretched(
+    poly,
+    state.segmentIndex,
+    V.sub(state.current, state.origin)
+  )
   const stroke: StrokeStyle = { color: THEME.preview, width: 1, dash: [6, 4] }
-  return [
-    ...entityScenePrimitive(viewport, preview, stroke),
-    ...gripPrimitives(viewport.worldToScreen(state.current), true),
-  ]
+  const out = entityScenePrimitive(viewport, preview, stroke)
+  pushSegmentGrip(
+    out,
+    viewport.worldToScreen(state.current),
+    segmentOnScreen(poly, state.segmentIndex, ctx),
+    true
+  )
+  return out
+}
+
+/**
+ * The screen direction a polyline segment's midpoint grip lies along: its
+ * chord, which an arc's tangent at its midpoint runs parallel to.
+ */
+function segmentOnScreen(
+  poly: PolylineEntity,
+  segmentIndex: number,
+  ctx: ToolContext
+): Vec2 {
+  const { a, b } = polylineSegmentGeometries(poly)[segmentIndex]
+  return V.sub(
+    ctx.viewport.worldToScreen(entityPointToWorld(poly, b)),
+    ctx.viewport.worldToScreen(entityPointToWorld(poly, a))
+  )
 }
 
 /** The re-curved polyline preview and hot grip while editing a bulge. */
@@ -259,10 +289,14 @@ export function buildBulgeEdit(
   if (poly?.type !== "polyline") return []
   const preview = setPolylineBulge(poly, state.segmentIndex, state.bulge)
   const stroke: StrokeStyle = { color: THEME.preview, width: 1, dash: [6, 4] }
-  return [
-    ...entityScenePrimitive(viewport, preview, stroke),
-    ...gripPrimitives(viewport.worldToScreen(state.current), true),
-  ]
+  const out = entityScenePrimitive(viewport, preview, stroke)
+  pushSegmentGrip(
+    out,
+    viewport.worldToScreen(state.current),
+    segmentOnScreen(poly, state.segmentIndex, ctx),
+    true
+  )
+  return out
 }
 
 /** The rewrapped text and its hot width grip while the width is dragged. */

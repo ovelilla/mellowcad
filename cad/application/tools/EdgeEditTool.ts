@@ -2250,7 +2250,7 @@ function planTrimPolylinePath(
     ).map((f) => j + f)
   )
   if (crossings.length === 0) return null
-  const closed = poly.closed && poly.vertices.length > 2
+  const closed = poly.closed
   if (closed && crossings.length === 1) {
     return { kind: "refuse", message: "curveMustIntersectTwice" }
   }
@@ -2289,8 +2289,7 @@ function trimPolylinePieces(
     to - from > PARAM_EPS
       ? [{ kind: "polyline", ...polylineSpan(poly, from, to), closed: false }]
       : []
-  // Two vertices make one segment, closed or not (`polylineSegments`).
-  if (poly.closed && poly.vertices.length > 2) {
+  if (poly.closed) {
     return piece(si + tb, si + ta + count)
   }
   return [...piece(0, si + ta), ...piece(si + tb, count)]

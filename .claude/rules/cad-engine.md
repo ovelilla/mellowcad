@@ -74,9 +74,8 @@ capability the app has belongs to the engine, behind a port; only the _mechanism
   the width before it to the width after, `cornerObjects.ts`' `joinAtCut`). A wide polyline is an area:
   `polylineOutline` gives its bands, which drawing, bounds, window crossing and `closestOnEntity`
   read. Never derive the edges in a caller.
-- `polylineSegmentGeometries()` is the single source of how a polyline is shaped. A hatch loop
-  (`hatchLoopSegments()`) **always closes**, even on the two vertices a circle becomes, which is
-  why it does not borrow `polylineSegments`, whose closing segment needs three.
+- `polylineSegmentGeometries()` is the single source of how a polyline is shaped; a closed one
+  closes from two vertices too (pline/p227): count segments with `polylineSegments`.
 - Paint order is `entityDrawOrder()` (only hatches move, behind everything, HPDRAWORDER 3), and
   `pickAll()` sorts by it reversed, so what is drawn on top is what a click takes. `pick()` is
   `pickAll()[0]`; selection cycling depends on that. A type that must sit behind another changes

@@ -184,6 +184,7 @@ export {
   polylineLength,
   polylineArea,
   replacePolylineVertex,
+  stretchPolylineVertices,
   insertPolylineVertex,
   removePolylineVertex,
   setPolylineBulge,

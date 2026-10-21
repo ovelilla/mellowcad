@@ -388,6 +388,7 @@ export const ar: EngineLocale = {
         "radiusRatio": "نسبة نصفي القطرين",
         "vertices": "الرؤوس",
         "segments": "المقاطع",
+        "currentVertex": "الرأس الحالي",
         "vertex": "الرأس",
         "startSegmentWidth": "عرض بداية المقطع",
         "endSegmentWidth": "عرض نهاية المقطع",

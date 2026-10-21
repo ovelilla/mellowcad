@@ -28,7 +28,11 @@ export function hatchLoopFromEntity(entity: Entity): HatchLoop | null {
         bulges: [1, 1],
       }
     case "polyline":
-      if (!entity.closed || entity.vertices.length < 3) return null
+      // Two vertices enclose an area only round their arcs (p227's circle).
+      const curved = entity.bulges?.some((b) => b !== 0) ?? false
+      if (!entity.closed || entity.vertices.length < (curved ? 2 : 3)) {
+        return null
+      }
       return {
         vertices: entity.vertices.map((v) => ({ x: v.x, y: v.y })),
         ...(entity.bulges ? { bulges: entity.bulges.slice() } : {}),
@@ -53,8 +57,7 @@ export function hatchLoopFromEntity(entity: Entity): HatchLoop | null {
 
 /**
  * The concrete geometry of a boundary loop, segment by segment. A loop always
- * closes, including the two-vertex ring a circle becomes — which is why it does
- * not go through {@link polylineSegments}, whose closing segment needs three.
+ * closes, including the two-vertex ring a circle becomes.
  */
 export function hatchLoopSegments(loop: HatchLoop): PolylineSegmentGeometry[] {
   const v = loop.vertices

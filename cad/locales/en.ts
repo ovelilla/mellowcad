@@ -375,6 +375,7 @@ export const en: EngineCatalog = {
         "radiusRatio": "Radius ratio",
         "vertices": "Vertices",
         "segments": "Segments",
+        "currentVertex": "Current Vertex",
         "vertex": "Vertex",
         "startSegmentWidth": "Start segment width",
         "endSegmentWidth": "End segment width",

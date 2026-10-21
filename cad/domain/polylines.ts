@@ -6,6 +6,7 @@ import {
   normalizeAngle,
   polarPoint,
 } from "../geometry/primitives"
+import { arcThroughBulge } from "../geometry/bulgeArcs"
 import { PolylineEntity, PolylineWidth } from "./entityTypes"
 import { createPolyline } from "./entityFactories"
 
@@ -49,6 +50,31 @@ export function withPolylineWidths(
   widths: readonly PolylineWidth[] | undefined
 ): PolylineEntity {
   return reshaped(poly, poly.vertices, poly.bulges, widths)
+}
+
+/**
+ * `poly` closed or opened, as the palette's Closed does: closing adds a
+ * straight segment from the last vertex to the first and no vertex ("se crea
+ * un segmento de línea", help GUID-94C065AB), opening drops it. The closing
+ * segment takes the polyline's constant width, if it has one, else none
+ * (**unverified**).
+ */
+export function withPolylineClosed(
+  poly: PolylineEntity,
+  closed: boolean
+): PolylineEntity {
+  if (poly.closed === closed) return poly
+  const bulges = polylineSegments(poly).map((_, i) => polylineBulge(poly, i))
+  const widths = padWidths(poly)
+  if (closed) {
+    const constant = polylineConstantWidth(poly) ?? 0
+    bulges.push(0)
+    widths.push([constant, constant])
+  } else {
+    bulges.pop()
+    widths.pop()
+  }
+  return reshaped({ ...poly, closed }, poly.vertices, bulges, widths)
 }
 
 /** The width segment `index` has a fraction `f` along it. */
@@ -121,7 +147,8 @@ export function polylineSegments(poly: PolylineEntity): [Vec2, Vec2][] {
   for (let i = 0; i < vertices.length - 1; i++) {
     segments.push([vertices[i], vertices[i + 1]])
   }
-  if (poly.closed && vertices.length > 2) {
+  // Two vertices close too: there and back, or a whole circle (p04, p227).
+  if (poly.closed && vertices.length > 1) {
     segments.push([vertices[vertices.length - 1], vertices[0]])
   }
   return segments
@@ -281,7 +308,7 @@ export function polylineLength(poly: PolylineEntity): number {
 export function polylineArea(poly: PolylineEntity): number {
   const v = poly.vertices
   const n = v.length
-  if (n < 3) return 0
+  if (n < 2) return 0
   let signed = 0
   for (let i = 0; i < n; i++) {
     const a = v[i]
@@ -307,7 +334,8 @@ export function polylineArea(poly: PolylineEntity): number {
 
 /**
  * Returns a copy of `poly` with the vertex at `index` moved to `point`
- * (preserves its id) — the building block of polyline vertex grip editing.
+ * (preserves its id), every bulge kept: the palette's Vertex X and Y. A grip
+ * stretches it with {@link stretchPolylineVertices}.
  */
 export function replacePolylineVertex(
   poly: PolylineEntity,
@@ -321,10 +349,36 @@ export function replacePolylineVertex(
 }
 
 /**
+ * `poly` with some vertices moved (index → point), as its grips stretch it:
+ * an arc segment with one end moved bends through its old midpoint, one with
+ * both ends moved keeps its bulge (desktop pline/d09: a vertex beside a
+ * quarter arc, or the straight segment before it stretched, re-bulge the arc
+ * from 0.4142 to 0.1702, the arc through its old midpoint).
+ */
+export function stretchPolylineVertices(
+  poly: PolylineEntity,
+  moves: ReadonlyMap<number, Vec2>
+): PolylineEntity {
+  const n = poly.vertices.length
+  const vertices = poly.vertices.map((v, i) => {
+    const to = moves.get(i)
+    return to ? { x: to.x, y: to.y } : v
+  })
+  const bulges = polylineSegmentGeometries(poly).map((segment, i) => {
+    if (segment.kind === "line") return 0
+    const j = (i + 1) % n
+    if (moves.has(i) === moves.has(j)) return segment.bulge
+    const through = pointAlongSegment(segment, 0.5)
+    return arcThroughBulge(vertices[i], through, vertices[j]) ?? 0
+  })
+  return reshaped(poly, vertices, bulges, poly.widths)
+}
+
+/**
  * Returns a copy of `poly` with a new vertex inserted at `point`, splitting
- * segment `segmentIndex` in two (preserves its id) — the building block of the
- * "add vertex" midpoint grip. Both resulting sub-segments are straight, which
- * is why the grip only offers this on straight segments.
+ * segment `segmentIndex` in two (preserves its id) — the building block of
+ * the grip menus' Add Vertex (not built). Both resulting sub-segments are
+ * straight.
  */
 export function insertPolylineVertex(
   poly: PolylineEntity,
@@ -360,9 +414,10 @@ export function insertPolylineVertex(
 
 /**
  * Returns a copy of `poly` with the vertex at `index` removed, merging its two
- * adjacent segments into one straight segment (preserves its id). Returns
- * `null` when the removal would leave too few vertices — an open polyline needs
- * at least two, a closed one at least three.
+ * adjacent segments into one straight segment (preserves its id): the grip
+ * menu's Remove Vertex (not built). Returns `null` when the removal would
+ * leave too few vertices — an open polyline needs at least two, a closed one
+ * at least three.
  */
 export function removePolylineVertex(
   poly: PolylineEntity,

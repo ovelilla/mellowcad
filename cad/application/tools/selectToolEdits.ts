@@ -11,15 +11,17 @@ import {
   mtextFromWorld,
   mtextLayout,
   mtextToWorld,
-  replacePolylineVertex,
+  PolylineEntity,
   splineWithPoint,
+  stretchPolylineVertices,
 } from "../../domain/entities"
 import { DimensionPoint } from "./selectToolState"
 
 /**
  * The object with its `index`th vertex grip moved to `point`: a polyline's
- * vertex, or a spline's fit point or control vertex (whichever it was made
- * with). `null` for anything else.
+ * vertex, the arcs beside it bent through their old midpoints, or a spline's
+ * fit point or control vertex (whichever it was made with). `null` for
+ * anything else.
  */
 export function withVertexAt(
   entity: Entity,
@@ -27,10 +29,27 @@ export function withVertexAt(
   point: Vec2
 ): Entity | null {
   if (entity.type === "polyline") {
-    return replacePolylineVertex(entity, index, point)
+    return stretchPolylineVertices(entity, new Map([[index, point]]))
   }
   if (entity.type === "spline") return splineWithPoint(entity, index, point)
   return null
+}
+
+/**
+ * `poly` with segment `segmentIndex` moved by `delta`, both its ends: its
+ * midpoint grip's Stretch (desktop pline/d09).
+ */
+export function withSegmentStretched(
+  poly: PolylineEntity,
+  segmentIndex: number,
+  delta: Vec2
+): PolylineEntity {
+  const n = poly.vertices.length
+  const ends = [segmentIndex, (segmentIndex + 1) % n]
+  return stretchPolylineVertices(
+    poly,
+    new Map(ends.map((i) => [i, V.add(poly.vertices[i], delta)]))
+  )
 }
 
 /**

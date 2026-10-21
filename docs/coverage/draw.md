@@ -69,17 +69,28 @@ with THICKNESS; Halfwidth and Width (es `Mitad grosor`, declared `Mitad`, and `G
 arc mode alike: `Specify starting width <0.0000>:` and `Specify ending width <…>:`
 (`Specify starting half-width`, `Specify ending half-width`; es `Precise grosor inicial`,
 `Precise grosor final`, `Precise mitad de grosor inicial`, `Precise mitad de grosor final`), a value
-or a point measured from the last vertex (`Requires numeric distance or second point.`; a negative
-one `Value must be positive.`), the starting width offering the one the next segment would end at,
+or a point measured from the last vertex, a dashed line drawn to the cursor from it (p200, d06)
+(`Requires numeric distance or second point.`; a negative one `Value must be positive.`, p201), the
+starting width offering the one the next segment would end at,
 the ending one the starting just given; the ending width runs on through the segments after it,
 Close and arc CLose included, and is PLINEWID when the command ends — drawn or not, with the
 polyline's undo step — and `Current line-width is` the next PLINE's start; Undo takes the width back
 to PLINEWID's as the command started where every segment left has it, else to 0, whatever it was set
-to, as AutoCAD 2023's console does (acc/w3–w7)
+to, as AutoCAD 2027's console does (p208–p218). The object: Close after one segment, or arc CLose
+after one arc, closes on two vertices — there and back (Length 20, p04), a whole circle (p227) —,
+measured, drawn, picked and saved with its closing segment; a wide one's bands mitred where their
+edges meet within 4 half-widths of the vertex (a corner of 29°, not of 28°), square and overlapping
+beyond (p230, p233, p235), a line meeting an arc at an angle cut along the arc's radius there (p236),
+an arc's band no wider inwards than its radius (p234), a closed one's start mitred and one drawn
+back to its start square there (p236); its linetype laid segment by segment (PLINEGEN 0, p232);
+its grips and palette rows: `drafting-aids.md` Grips, `properties.md` Properties palette
 
 **Missing:** Spanish declares `Mitadgrosor` at the first segment's prompt (21322; `Mitad` everywhere
-here, **unverified** whether `MITADG` answers there); PLINEGEN and a linetype's dashes along a wide
-band (drawn solid); AutoCAD breaks the arc prompt after its `or`, written here on one line
+here, **unverified** whether `MITADG` answers there); PLINEGEN 1 and a linetype's dashes along a wide
+band (drawn solid); AutoCAD breaks the arc prompt after its `or`, written here on one line;
+**unverified**: where two wide arcs meet at an angle (a wedge closes the outer corner here), how an
+arc segment lays a linetype (from its start here), and a wide band's outline with FILL off, whose
+lineweight the plot draws (p231) and the screen here does not
 
 ### `RECTANG` / `REC` · es `RECTANG` / `REC`
 

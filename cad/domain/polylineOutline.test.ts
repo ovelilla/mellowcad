@@ -48,17 +48,86 @@ describe("polylineOutline", () => {
     expect(band[band.length - 1]).toBeCloseToPoint(p(-1, 0))
   })
 
-  it("closes the outer corner where an arc meets a line at an angle", () => {
-    const poly = polylineOf([p(0, 0), p(10, 0), p(20, 0)], {
-      bulges: [0, 1],
+  it("cuts a line's band along the arc's end radius where they meet at an angle", () => {
+    // probe pline/p236: `0,-100 W 6`, arc CEnter 25,-100 Angle 180, Line
+    // 0,-50: no wedge, the line's band starting along the horizontal radius.
+    const poly = polylineOf([p(0, -100), p(50, -100), p(0, -50)], {
+      bulges: [1, 0],
       widths: [
-        [2, 2],
-        [2, 2],
+        [6, 6],
+        [6, 6],
       ],
     })
-    const { wedges } = polylineOutline(poly, 0.01)
-    expect(wedges).toHaveLength(1)
-    expect(wedges[0][0]).toBeCloseToPoint(p(10, 0))
+    const { bands, wedges } = polylineOutline(poly, 0.01)
+    expect(wedges).toEqual([])
+    const line = bands[1]
+    expect(line[0]).toBeCloseToPoint(p(50 - 3 * Math.SQRT2, -100))
+    expect(line[line.length - 1]).toBeCloseToPoint(p(50 + 3 * Math.SQRT2, -100))
+  })
+
+  it("mitres a corner of 29° and ends both bands square at one of 28° (p235)", () => {
+    // The mitre's tip lies 1/sin(θ/2) half-widths out: 3.99 at 29°, 4.13 at 28°.
+    const corner = (degrees: number) => {
+      const r = ((180 - degrees) * Math.PI) / 180
+      return polylineOf(
+        [p(0, 0), p(60, 0), p(60 + 60 * Math.cos(r), 60 * Math.sin(r))],
+        {
+          widths: [
+            [6, 6],
+            [6, 6],
+          ],
+        }
+      )
+    }
+    const maxX = (degrees: number) => {
+      const { bands, wedges } = polylineOutline(corner(degrees), 0.01)
+      expect(wedges).toEqual([])
+      return Math.max(...bands.flat().map((q) => q.x))
+    }
+    expect(maxX(29)).toBeCloseTo(60 + 3 / Math.tan((14.5 * Math.PI) / 180), 6)
+    // Square at the vertex, overlapping: the second band's corner reaches
+    // past it by 3·sin(28°) (p230, p233, d12).
+    expect(maxX(28)).toBeCloseTo(60 + 3 * Math.sin((28 * Math.PI) / 180), 6)
+  })
+
+  it("mitres the start of a polyline closed by Close, not one drawn back to its start (p236)", () => {
+    const square = [p(0, 0), p(50, 0), p(50, 50), p(0, 50)]
+    const widths = Array(4).fill([6, 6])
+    const closed = polylineOf(square, { closed: true, widths })
+    const xs = polylineOutline(closed, 0.01)
+      .bands.flat()
+      .map((q) => q.x)
+    expect(Math.min(...xs)).toBeCloseTo(-3, 9)
+    const back = polylineOf([...square, p(0, 0)], { widths })
+    expect(polylineOutline(back, 0.01).bands[0][0]).toBeCloseToPoint(p(0, 3))
+  })
+
+  it("stops an arc's band at its centre, however wide (p234)", () => {
+    // `0,0 W 24 @0,10 A @20,0`: radius 10, the band 2r out, none past the centre.
+    const poly = polylineOf([p(0, 0), p(0, 10), p(20, 10)], {
+      bulges: [0, -1],
+      widths: [
+        [24, 24],
+        [24, 24],
+      ],
+    })
+    const arc = polylineOutline(poly, 0.01).bands[1]
+    const reach = arc.map((q) => Math.hypot(q.x - 10, q.y - 10))
+    expect(Math.max(...reach)).toBeCloseTo(20, 9)
+    expect(Math.min(...reach)).toBeCloseTo(0, 9)
+  })
+
+  it("draws both bands of a closed polyline of two vertices", () => {
+    // probe pline/p227: an arc CLose after one arc is a whole circle.
+    const circle = polylineOf([p(0, 0), p(10, 10)], {
+      closed: true,
+      bulges: [Math.tan(Math.PI / 8), Math.tan((3 * Math.PI) / 8)],
+      widths: [
+        [2, 2],
+        [4, 4],
+      ],
+    })
+    expect(polylineOutline(circle, 0.01).bands).toHaveLength(2)
   })
 
   it("draws a segment of no width as its centreline", () => {

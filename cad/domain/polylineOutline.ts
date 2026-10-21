@@ -15,8 +15,8 @@ export interface PolylineOutline {
   /** A closed ring per segment with a width, filled on its own. */
   readonly bands: readonly (readonly Vec2[])[]
   /**
-   * The corners filled where a wide arc meets another band at an angle: the
-   * vertex, then the outer corner from one band's edge to the other's.
+   * The corners filled where two wide arcs meet at an angle: the vertex, then
+   * the outer corner from one band's edge to the other's.
    */
   readonly wedges: readonly (readonly Vec2[])[]
   /** The segments of no width, drawn as their centreline. */
@@ -24,18 +24,20 @@ export interface PolylineOutline {
 }
 
 /**
- * How far a mitred corner may reach past its vertex, in half-widths. Two
- * segments folding back on themselves meet ever further away; past this the
- * corner is bevelled instead. A guard against a spike reaching across the
- * drawing, not a rule of AutoCAD's, which mitres every corner it draws.
+ * How far a mitred corner may reach past its vertex, in half-widths of the
+ * wider band there: AutoCAD mitres a corner of 29° and not one of 28° (probe
+ * pline/p235), whose tips lie 1/sin(θ/2) half-widths out, 3.99 and 4.13.
+ * Past it each band ends square at the vertex, overlapping (p230, p233, d12).
  */
-const MITRE_LIMIT = 50
+const MITRE_LIMIT = 4
 
 /** One wide segment: its two edges, left and right of the way it runs. */
 interface Band {
   readonly left: Vec2[]
   readonly right: Vec2[]
   readonly line: boolean
+  /** An arc's centre. */
+  readonly center?: Vec2
   /** Unit tangent where it starts and where it ends. */
   readonly entry: Vec2
   readonly exit: Vec2
@@ -45,12 +47,15 @@ interface Band {
 
 /**
  * The outline of `poly`'s widths: each segment's band — the width running
- * from its starting to its ending one along it, an arc's along its sweep —,
- * two straight bands meeting at a mitre, as AutoCAD joins them (a rectangle
- * of width 2 has square outer corners), and an arc meeting another band at an
- * angle closing the outer corner with a wedge reaching where their edges'
- * tangents meet. `tolerance` is the furthest an arc's chords may stray from
- * it, in drawing units.
+ * from its starting to its ending one along it, an arc's along its sweep, at
+ * most its radius (p234) —, two straight bands meeting at a mitre within
+ * {@link MITRE_LIMIT}, square beyond (a rectangle of width 2 has square outer
+ * corners; p230, p235), a line meeting an arc at an angle cut along the arc's
+ * radius there (p236), and two arcs meeting at an angle closing the outer
+ * corner with a wedge reaching where their edges' tangents meet
+ * (**unverified**). Only a closing segment joins the start: one drawn back to
+ * it ends square there (p236). `tolerance` is the furthest an arc's chords
+ * may stray from it, in drawing units.
  */
 export function polylineOutline(
   poly: PolylineEntity,
@@ -82,27 +87,38 @@ export function polylineOutline(
 }
 
 /**
- * Joins two bands meeting at `vertex`. Two straight ones meet where their
- * edges do, both edges moved there; anything else that turns gets the wedge
- * it returns. Tangent bands (a line into its tangent arc) need neither.
+ * Joins two bands meeting at `vertex`, moving their edges' ends; two arcs
+ * that turn get the wedge it returns. Tangent bands (a line into its tangent
+ * arc) need nothing.
  */
 function join(vertex: Vec2, a: Band, b: Band): Vec2[] | null {
   const turn = V.cross(a.exit, b.entry)
   if (Math.abs(turn) < 1e-9 && V.dot(a.exit, b.entry) > 0) return null
   const reach = MITRE_LIMIT * Math.max(a.endHalf, b.startHalf)
+  const near = (q: Vec2 | null): q is Vec2 =>
+    q !== null && V.distance(q, vertex) <= reach
   if (a.line && b.line) {
     const left = edgeMeeting(a.left, b.left)
     const right = edgeMeeting(a.right, b.right)
-    if (
-      left &&
-      right &&
-      V.distance(left, vertex) <= reach &&
-      V.distance(right, vertex) <= reach
-    ) {
+    if (near(left) && near(right)) {
       a.left[1] = b.left[0] = left
       a.right[1] = b.right[0] = right
-      return null
     }
+    return null
+  }
+  const arc = a.line ? b.center : a.center
+  if (a.line !== b.line && arc) {
+    // The line's band ends along the arc's radius, as the arc's band does.
+    const radius = [vertex, V.add(vertex, V.sub(vertex, arc))]
+    const end = a.line ? 1 : 0
+    const line = a.line ? a : b
+    const left = edgeMeeting(line.left, radius)
+    const right = edgeMeeting(line.right, radius)
+    if (near(left) && near(right)) {
+      line.left[end] = left
+      line.right[end] = right
+    }
+    return null
   }
   // Turning left opens the corner on the right.
   const [from, to] =
@@ -170,7 +186,7 @@ function segmentBand(
   for (let k = 0; k <= steps; k++) {
     const f = k / steps
     const angle = from + sweep * f
-    const half = startHalf + (endHalf - startHalf) * f
+    const half = Math.min(startHalf + (endHalf - startHalf) * f, segment.radius)
     // Left of the way a counter-clockwise arc runs is towards its centre.
     const inward = segment.radius - turn * half
     const outward = segment.radius + turn * half
@@ -183,6 +199,7 @@ function segmentBand(
     left,
     right,
     line: false,
+    center: segment.center,
     entry: tangent(from),
     exit: tangent(from + sweep),
     startHalf,
