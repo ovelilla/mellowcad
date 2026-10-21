@@ -9,8 +9,8 @@ export type DimensionPoint = "first" | "second" | "line" | "vertex"
 
 /**
  * What editing a grip does, mirroring AutoCAD's per-object grips:
- * - `lineEnd`  — a line endpoint: lengthen/shorten along the line's own axis.
- * - `move`     — a line midpoint or a circle/arc centre: move the selection.
+ * - `lineEnd`  — a line endpoint: stretch it to the cursor.
+ * - `move`     — a line midpoint or a circle/arc centre: move its object.
  * - `radius`   — a circle quadrant or an arc's midpoint: resize the radius.
  * - `arcEnd`   — an arc endpoint: swing it around, changing the sweep.
  * - `vertex`   — a polyline vertex, or a spline's fit point or control
@@ -72,25 +72,24 @@ export type SelectToolState =
       readonly subtract: boolean
     }
   | {
-      /** An endpoint grip is hot: the line is being lengthened along its axis. */
+      /** An endpoint grip is hot: the line's end is being stretched. */
       readonly phase: "grip"
       readonly entityId: EntityId
       readonly end: LineEnd
-      /** The endpoint that stays put (the far end of the line). */
-      readonly fixed: Vec2
-      /** Unit direction from `fixed` towards the moving endpoint. */
-      readonly dir: Vec2
-      /** Original line length, so typed input is a *delta* lengthening. */
-      readonly origLength: number
-      /** Live position of the moving endpoint (projected onto the axis), with the Z it will take. */
+      /** The endpoint that stays put (the far end of the line), at its Z. */
+      readonly fixed: Vec3
+      /** Live position of the moving endpoint, with the Z it will take. */
       readonly moving: Vec3
       /** Screen position where the grip was grabbed (drag vs click-click). */
       readonly pressScreen: Vec2
     }
   | {
-      /** The midpoint grip is hot: the whole selection is being translated. */
+      /**
+       * A move grip is hot, its object being translated; or a drag begun on
+       * the selection, translating all of it.
+       */
       readonly phase: "moveLine"
-      /** Snapshot of every entity being moved (the whole selection). */
+      /** Snapshot of every entity being moved. */
       readonly originals: readonly Entity[]
       /** The base point (grabbed line's midpoint) that anchors the move, at its object's Z. */
       readonly origMid: Vec3

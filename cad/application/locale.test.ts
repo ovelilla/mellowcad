@@ -222,16 +222,19 @@ describe("the palettes", () => {
     })
     cad.select("L")
     const info = cad.state().properties.info!
-    expect(info.groups.map((group) => group.id)).toEqual([
-      "geometry",
-      "endpoints",
-    ])
+    expect(info.groups.map((group) => group.id)).toEqual(["geometry"])
     expect(info.groups[0].rows.map((row) => row.id)).toEqual([
-      "length",
-      "angle",
+      "startX",
+      "startY",
+      "startZ",
+      "endX",
+      "endY",
+      "endZ",
       "deltaX",
       "deltaY",
       "deltaZ",
+      "length",
+      "angle",
     ])
   })
 
@@ -977,7 +980,8 @@ describe("Spanish AutoCAD's command language", () => {
     ])
   })
 
-  it("names the palette's Z rows as Spanish AutoCAD does", () => {
+  // desktop line/d16: General's Altura de objeto, then one Geometría group.
+  it("names a line's palette rows as Spanish AutoCAD does", () => {
     const cad = createHarness({
       locale: es,
       entities: [lineOf(p(0, 0), p(100, 0), { id: "L" })],
@@ -986,8 +990,28 @@ describe("Spanish AutoCAD's command language", () => {
     const info = cad.state().properties.info!
     expect(info.general.map((row) => row.label)).toEqual(["Altura de objeto"])
     expect(
-      info.groups.flatMap((group) => group.rows).map((row) => row.label)
-    ).toEqual(expect.arrayContaining(["Delta Z", "Inicio Z", "Fin Z"]))
+      info.groups.map((group) => [
+        group.title,
+        group.rows.map((row) => row.label),
+      ])
+    ).toEqual([
+      [
+        "Geometría",
+        [
+          "Inicio X",
+          "Inicio Y",
+          "Inicio Z",
+          "Fin X",
+          "Fin Y",
+          "Fin Z",
+          "Incremento X",
+          "Incremento Y",
+          "Incremento Z",
+          "Longitud",
+          "Ángulo",
+        ],
+      ],
+    ])
   })
 
   it("lists the commands by their Spanish names, described in Spanish", () => {

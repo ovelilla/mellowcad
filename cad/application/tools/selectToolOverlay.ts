@@ -122,7 +122,7 @@ function pushRolloverHighlight(
   )
 }
 
-/** The rubber-band preview and hot grip while lengthening a line. */
+/** The rubber-band preview and hot grip while stretching a line's end. */
 export function buildGripEdit(
   state: Phase<"grip">,
   ctx: ToolContext
@@ -143,7 +143,7 @@ export function buildGripEdit(
   ]
 }
 
-/** The rubber-band preview and hot grip while moving the selection. */
+/** The rubber-band preview and hot grip while moving an object or the selection. */
 export function buildMoveEdit(
   state: Phase<"moveLine">,
   ctx: ToolContext

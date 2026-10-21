@@ -286,7 +286,7 @@ describe("dimension", () => {
     })
     const aligned = createDimension("aligned", p(0, 0), p(60, 80), p(-40, 60))
     expect(applyEntityProperty(aligned, "dimensionRotation", 90)).toBeNull()
-    expect(applyEntityProperty(dim(), "length", 10)).toBeNull()
+    expect(applyEntityProperty(dim(), "startX", 10)).toBeNull()
   })
 
   it("carries its ByObject overrides onto a copy", () => {
@@ -1372,25 +1372,6 @@ describe("measurement helpers", () => {
 })
 
 describe("property editing", () => {
-  it("keeps the start point and direction when the length is retyped", () => {
-    const line = lineOf(p(10, 10), p(20, 10))
-
-    const edited = applyEntityProperty(line, "length", 50) as LineEntity
-
-    expect(edited.start).toBeCloseToPoint(p(10, 10))
-    expect(edited.end).toBeCloseToPoint(p(60, 10))
-    expect(edited.id).toBe(line.id)
-  })
-
-  it("keeps the start point and length when the angle is retyped", () => {
-    const line = lineOf(p(0, 0), p(100, 0))
-
-    const edited = applyEntityProperty(line, "angle", 90) as LineEntity
-
-    expect(edited.start).toBeCloseToPoint(p(0, 0))
-    expect(edited.end).toBeCloseToPoint(p(0, 100))
-  })
-
   it("moves a single endpoint coordinate", () => {
     const line = lineOf(p(0, 0), p(100, 0))
 
@@ -1403,13 +1384,16 @@ describe("property editing", () => {
   })
 
   it("refuses values that would degenerate the entity", () => {
-    const line = lineOf(p(0, 0), p(100, 0))
-    expect(applyEntityProperty(line, "length", 0)).toBeNull()
-    // Collapsing the end onto the start would leave a zero-length line.
-    expect(applyEntityProperty(line, "endX", 0)).toBeNull()
-    expect(applyEntityProperty(line, "length", Number.NaN)).toBeNull()
-
     expect(applyEntityProperty(circleOf(ORIGIN, 10), "radius", -1)).toBeNull()
+    expect(applyEntityProperty(circleOf(ORIGIN, 10), "radius", 0)).toBeNull()
+  })
+
+  // LINE keeps a zero-length line typed (line/p08); the palette lets one be.
+  it("lets a line's end be retyped onto its start", () => {
+    const line = lineOf(p(0, 0), p(100, 0))
+    expect(
+      (applyEntityProperty(line, "endX", 0) as LineEntity).end
+    ).toBeCloseToPoint(p(0, 0))
   })
 
   it("preserves the id and every ByObject override", () => {
@@ -1418,7 +1402,7 @@ describe("property editing", () => {
       "Dashed"
     )
 
-    const edited = applyEntityProperty(line, "length", 20) as LineEntity
+    const edited = applyEntityProperty(line, "endX", 20) as LineEntity
 
     expect(edited.id).toBe(line.id)
     expect(edited.color).toBe("#ff0000")
@@ -1446,11 +1430,11 @@ describe("property editing", () => {
   })
 
   it("ignores properties that do not apply to the entity", () => {
-    expect(applyEntityProperty(circleOf(ORIGIN, 10), "length", 5)).toBeNull()
+    expect(applyEntityProperty(circleOf(ORIGIN, 10), "endX", 5)).toBeNull()
     expect(applyEntityProperty(lineOf(ORIGIN, p(1, 0)), "radius", 5)).toBeNull()
     // Polyline vertices are edited with grips, not the properties palette.
     expect(
-      applyEntityProperty(polylineOf([ORIGIN, p(1, 0)]), "length", 5)
+      applyEntityProperty(polylineOf([ORIGIN, p(1, 0)]), "endX", 5)
     ).toBeNull()
   })
 })

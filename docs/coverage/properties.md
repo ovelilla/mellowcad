@@ -144,7 +144,6 @@ linetype list's Other… and the lineweight list's Lineweight Settings…, ByBlo
 lists, Transparency, the List drop-down
 
 ### Properties palette · `PROPERTIES` / `PR` / `CH` / `MO` · `PROPERTIESCLOSE` · es `PROPIEDADES` / `PR` · `CERPROP`
-
 **Implemented:** PROPERTIES opens the Properties palette, a tab of the modeless palette panel, and
 PROPERTIESCLOSE closes it while it is the tab shown (as LAYERCLOSE); PR, CH and MO are the aliases
 of Autodesk's shortcut guide (the 2026 help names only PR, in both languages; in Spanish CH is
@@ -158,21 +157,27 @@ time") and keeps the selection; it goes back to All when the selection changes; 
 without one, when General shows the current settings ("When no objects are selected, only the
 current settings of general properties are displayed"): the current layer, which can be changed
 there, and the current colour, linetype and lineweight, each set there too ("you can view and change
-the current properties to be used for all new objects"), one undo step; geometry rows per entity
+the current properties to be used for all new objects"), one undo step; General's Color, Layer,
+Linetype, Lineweight and Thickness in AutoCAD's order (desktop line/d16); geometry rows per entity
 type, editable (retype a value), coordinates read and retyped in the current UCS, closed-polyline
-area; an attribute definition's tag, prompt, default and modes, a reference's attributes by tag
-(read-only); the Z: Thickness under General (line, circle, arc, polyline), a line's Start Z and End
-Z (each retyped alone) and Delta Z (read-only, like Delta X and Y), Center Z (circle, arc, ellipse),
+area; a line's one Geometry group in AutoCAD's order, Start X, Y, Z and End X, Y, Z retyped, Delta
+X, Y, Z, Length and Angle read-only (greyed there; es `Inicio X`, `Fin X`, `Incremento X`,
+`Longitud`, `Ángulo`, d16); an end retyped onto the other in plan stands a rising line vertical, and
+onto it in space leaves a zero-length line, as LINE draws one (**unverified** in the palette); an
+attribute definition's tag, prompt, default and modes, a reference's attributes by tag (read-only);
+the Z: Thickness under General (line, circle, arc, polyline), a line's Start Z and End Z (each
+retyped alone) and Delta Z (read-only, like Delta X and Y), Center Z (circle, arc, ellipse),
 Position Z (text, multiline text, attribute definition, reference) and Elevation (polyline, hatch),
-all read and retyped above the UCS's XY plane; a line's Length is its 3D one and keeps the slope
-when retyped; with a tilted UCS or object the position rows are read and moved as points in space;
-Normal X / Y / Z (read-only) on a circle and an arc; a polyline's Vertex (the current one, typed
-here where AutoCAD steps it with arrows), Vertex X and Y, Start segment width and End segment width
-of the segment it starts (none at an open one's last vertex) and Global width, which sets every
-segment's (es `Vértice`, `Anchura inicial del segmento`, `Anchura final del segmento`,
-`Grosor global`, Autodesk's 2027 resources)
+all read and retyped above the UCS's XY plane; a line's Length is its 3D one; with a tilted UCS or
+object the position rows are read and moved as points in space; Normal X / Y / Z (read-only) on a
+circle and an arc; a polyline's Vertex (the current one, typed here where AutoCAD steps it with
+arrows), Vertex X and Y, Start segment width and End segment width of the segment it starts (none at
+an open one's last vertex) and Global width, which sets every segment's (es `Vértice`,
+`Anchura inicial del segmento`, `Anchura final del segmento`, `Grosor global`, Autodesk's 2027
+resources)
 
-**Missing:** the current vertex's marker in the drawing, what Global width shows where the widths
+**Missing:** General's Linetype scale, Plot style, Transparency and Hyperlink and 3D Visualization's
+Material (d16); the current vertex's marker in the drawing, what Global width shows where the widths
 vary (blank here, **unverified**), the geometry rows of several objects of one type (`*VARIES*`),
 Area/Circumference rows, text content, editing attribute values, MTEXT's rotation in the UCS
 (AutoCAD shows that one row there), a spline's and a dimension's Z, the Normal rows on the other

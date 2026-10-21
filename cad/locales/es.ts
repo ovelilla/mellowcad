@@ -341,9 +341,9 @@ export const es: EngineLocale = {
       "row": {
         "length": "Longitud",
         "angle": "Ángulo",
-        "deltaX": "Delta X",
-        "deltaY": "Delta Y",
-        "deltaZ": "Delta Z",
+        "deltaX": "Incremento X",
+        "deltaY": "Incremento Y",
+        "deltaZ": "Incremento Z",
         "startX": "Inicio X",
         "startY": "Inicio Y",
         "startZ": "Inicio Z",

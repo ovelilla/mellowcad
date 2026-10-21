@@ -935,21 +935,20 @@ function singleEntityInfo(
         title: title("line"),
         count: 1,
         groups: [
+          // AutoCAD's one Geometry group, in its order; the deltas, Length and
+          // Angle are read-only, greyed there (desktop line/d16).
           group("geometry", [
-            lengthRow("length", "length", lineLength3d(entity)),
-            angleRow("angle", "angle", lineAngleDegrees(entity)),
-            row("deltaX", length(delta.x)),
-            row("deltaY", length(delta.y)),
-            // Read-only, like Delta X and Y: the ends are what is retyped.
-            row("deltaZ", length(delta.z)),
-          ]),
-          group("endpoints", [
             coordRow("startX", "startX", from.x),
             coordRow("startY", "startY", from.y),
             coordRow("startZ", "startZ", from.z),
             coordRow("endX", "endX", to.x),
             coordRow("endY", "endY", to.y),
             coordRow("endZ", "endZ", to.z),
+            row("deltaX", length(delta.x)),
+            row("deltaY", length(delta.y)),
+            row("deltaZ", length(delta.z)),
+            row("length", length(lineLength3d(entity))),
+            row("angle", degrees(lineAngleDegrees(entity))),
           ]),
         ],
       }

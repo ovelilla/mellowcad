@@ -6,7 +6,14 @@ import type {
   PolylineEntity,
   SplineEntity,
 } from "../../domain/entities"
-import { closestOnEntity, createSpline } from "../../domain/entities"
+import {
+  closestOnEntity,
+  createSpline,
+  lineEndZ,
+  lineStartZ,
+  withDeltaZ,
+  withElevation,
+} from "../../domain/entities"
 import { polarPoint } from "../../geometry/primitives"
 import { THEME } from "../../scene/theme"
 import { createHarness } from "../../../test/harness"
@@ -238,6 +245,73 @@ describe("grips", () => {
     const line = cad.byId<LineEntity>("L1")
     expect(line.start).toBeCloseToPoint(p(0, 0))
     expect(line.end).toBeCloseToPoint(p(150, 0))
+  })
+
+  // desktop line/d15: an end grip clicked, the cursor moved off the line and
+  // clicked, the end lands on the cursor (STRETCH, the default grip mode).
+  it("stretches a line's end to the cursor, off the line's axis too", () => {
+    const cad = createHarness({ entities: [SHORT] })
+    cad.select("L1")
+
+    cad.drag(p(100, 0), p(150, 50))
+
+    const line = cad.byId<LineEntity>("L1")
+    expect(line.start).toBeCloseToPoint(p(0, 0))
+    expect(line.end).toBeCloseToPoint(p(150, 50))
+  })
+
+  // DSETTINGS' Dimension Input (help 2027, GUID-65DF3E4D): with DYNDIVIS's
+  // default the first field is the resulting dimension, so a number typed
+  // while stretching is the line's new length, towards the cursor.
+  it("takes a number typed at a hot end grip as the line's resulting length", () => {
+    const cad = createHarness({ entities: [SHORT] })
+    cad.select("L1")
+
+    cad.click(p(100, 0)).moveTo(p(60, 80)).type("50").enter()
+
+    const line = cad.byId<LineEntity>("L1")
+    expect(line.start).toBeCloseToPoint(p(0, 0))
+    expect(line.end).toBeCloseToPoint(p(30, 40))
+  })
+
+  // desktop line/d15: `** ESTIRAR **`, two lines selected, the midpoint grip
+  // moved only its own line.
+  it("moves only its own line from a midpoint grip, whatever else is selected", () => {
+    const cad = createHarness({ entities: [SHORT, FAR] })
+    cad.select("L1", "L2")
+
+    cad.drag(p(50, 0), p(50, 50))
+
+    expect(cad.byId<LineEntity>("L1").start).toBeCloseToPoint(p(0, 50))
+    expect(cad.byId<LineEntity>("L2").start).toBeCloseToPoint(p(400, 400))
+  })
+
+  it("puts a vertical line's grips at their own heights, and its end grip stretches", () => {
+    const up = withDeltaZ(
+      withElevation(lineOf(p(10, 20), p(10, 20), { id: "V" }), 5),
+      30
+    )
+    const cad = createHarness({ entities: [up] })
+    cad.command("VPOINT").type("1,-1,1").enter()
+    cad.select("V")
+    cad.moveTo(p(400, 400))
+
+    const grips = cad
+      .scene()
+      .primitives.filter(
+        (q) => q.kind === "rect" && "fill" in q && q.fill === THEME.grip
+      )
+    const heights = new Set(
+      grips.map((g) => (g.kind === "rect" ? Math.round(g.min.y) : 0))
+    )
+    expect(grips).toHaveLength(3)
+    expect(heights.size).toBe(3)
+
+    cad.drag({ x: 10, y: 20, z: 35 }, p(60, 20))
+    const line = cad.byId<LineEntity>("V")
+    expect(line.start).toBeCloseToPoint(p(10, 20))
+    expect(line.end).toBeCloseToPoint(p(60, 20))
+    expect([lineStartZ(line), lineEndZ(line)]).toEqual([5, 0])
   })
 
   it("moves the whole line from its midpoint grip", () => {

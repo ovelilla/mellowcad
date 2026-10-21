@@ -492,7 +492,7 @@ describe("property editing", () => {
     })
     cad.select("L1")
 
-    expect(cad.runtime.setSelectionProperty("length", "250")).toBe(true)
+    expect(cad.runtime.setSelectionProperty("endX", "250")).toBe(true)
     expect(cad.byId<LineEntity>("L1").end).toBeCloseToPoint(p(250, 0))
 
     cad.undo()
@@ -507,23 +507,57 @@ describe("property editing", () => {
       ],
     })
 
-    expect(cad.runtime.setSelectionProperty("length", "250")).toBe(false)
+    expect(cad.runtime.setSelectionProperty("endX", "250")).toBe(false)
 
     cad.select("L1", "L2")
-    expect(cad.runtime.setSelectionProperty("length", "250")).toBe(false)
+    expect(cad.runtime.setSelectionProperty("endX", "250")).toBe(false)
     expect(cad.byId<LineEntity>("L1").end).toBeCloseToPoint(p(100, 0))
   })
 
   it("rejects text that is not a number or would degenerate the object", () => {
     const cad = createHarness({
-      entities: [lineOf(p(0, 0), p(100, 0), { id: "L1" })],
+      entities: [circleOf(p(0, 0), 10, { id: "C1" })],
+    })
+    cad.select("C1")
+
+    expect(cad.runtime.setSelectionProperty("radius", "")).toBe(false)
+    expect(cad.runtime.setSelectionProperty("radius", "abc")).toBe(false)
+    expect(cad.runtime.setSelectionProperty("radius", "0")).toBe(false)
+    expect(cad.byId<CircleEntity>("C1").radius).toBe(10)
+  })
+
+  // desktop line/d16: one Geometría group, Inicio X Y Z, Fin X Y Z,
+  // Incremento X Y Z, Longitud, Ángulo, the last five greyed (read-only).
+  it("lists a line's geometry in AutoCAD's order, Delta, Length and Angle read-only", () => {
+    const cad = createHarness({
+      entities: [lineOf(p(0, 0), p(30, 40), { id: "L1" })],
     })
     cad.select("L1")
 
-    expect(cad.runtime.setSelectionProperty("length", "")).toBe(false)
-    expect(cad.runtime.setSelectionProperty("length", "abc")).toBe(false)
-    expect(cad.runtime.setSelectionProperty("length", "0")).toBe(false)
-    expect(cad.byId<LineEntity>("L1").end).toBeCloseToPoint(p(100, 0))
+    const groups = cad.state().properties.info!.groups
+    expect(
+      groups.map((g) => [
+        g.title,
+        g.rows.map((r) => `${r.label}=${r.value}${r.edit ? "*" : ""}`),
+      ])
+    ).toEqual([
+      [
+        "Geometry",
+        [
+          "Start X=0.00*",
+          "Start Y=0.00*",
+          "Start Z=0.00*",
+          "End X=30.00*",
+          "End Y=40.00*",
+          "End Z=0.00*",
+          "Delta X=30.00 mm",
+          "Delta Y=40.00 mm",
+          "Delta Z=0.00 mm",
+          "Length=50.00 mm",
+          "Angle=53°",
+        ],
+      ],
+    ])
   })
 
   it("offers the editable rows in the selection info", () => {
@@ -536,8 +570,6 @@ describe("property editing", () => {
       cad.state().properties.info?.groups.flatMap((g) => g.rows) ?? []
     const editable = rows.filter((row) => row.edit)
     expect(editable.map((row) => row.edit?.property)).toEqual([
-      "length",
-      "angle",
       "startX",
       "startY",
       "startZ",
@@ -546,8 +578,8 @@ describe("property editing", () => {
       "endZ",
     ])
     // The box is seeded with a bare number, the unit is rendered beside it.
-    expect(editable[0].edit?.text).toBe("100.00")
-    expect(editable[0].edit?.unit).toBe("mm")
+    expect(editable[3].edit?.text).toBe("100.00")
+    expect(editable[3].edit?.unit).toBe("")
     expect(cad.state().properties.info?.general.map((row) => row.id)).toEqual([
       "thickness",
     ])
@@ -598,17 +630,23 @@ describe("the palette's Z", () => {
     expect(lineEndZ(cad.byId<LineEntity>("L"))).toBe(5)
   })
 
-  it("reads a sloped line's length in 3D and keeps its slope when it is retyped", () => {
+  it("reads a sloped line's length in 3D", () => {
     const sloped = withDeltaZ(lineOf(p(0, 0), p(30, 40), { id: "L" }), 120)
     const cad = createHarness({ entities: [sloped] })
     cad.select("L")
 
     expect(rows(cad).get("length")?.value).toBe("130.00 mm")
-    cad.runtime.setSelectionProperty("length", "260")
+  })
 
+  it("brings a rising line's ends together in plan: it stands vertical", () => {
+    const rising = withDeltaZ(lineOf(p(0, 0), p(10, 0), { id: "L" }), 5)
+    const cad = createHarness({ entities: [rising] })
+    cad.select("L")
+
+    expect(cad.runtime.setSelectionProperty("endX", "0")).toBe(true)
     const line = cad.byId<LineEntity>("L")
-    expect(line.end).toBeCloseToPoint(p(60, 80))
-    expect(line.deltaZ).toBeCloseTo(240)
+    expect(line.end).toBeCloseToPoint(p(0, 0))
+    expect([lineStartZ(line), lineEndZ(line)]).toEqual([0, 5])
   })
 
   it("gives each flat type its plane row, read and written in the UCS", () => {

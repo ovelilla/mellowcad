@@ -347,9 +347,9 @@ export const en: EngineCatalog = {
       "row": {
         "length": "Length",
         "angle": "Angle",
-        "deltaX": "Δ X",
-        "deltaY": "Δ Y",
-        "deltaZ": "Δ Z",
+        "deltaX": "Delta X",
+        "deltaY": "Delta Y",
+        "deltaZ": "Delta Z",
         "startX": "Start X",
         "startY": "Start Y",
         "startZ": "Start Z",

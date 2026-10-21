@@ -422,7 +422,7 @@ lweight "Lineweight" LW
   asks: -
   tip: -
   dyn: -
-  properties: Line (1) {Thickness=0.00 mm~} [Geometry: Length=100.00 mm~, Angle=0°~, Δ X=100.00 mm, Δ Y=0.00 mm, Δ Z=0.00 mm] [Endpoints: Start X=50.00~, Start Y=50.00~, Start Z=0.00~, End X=150.00~, End Y=50.00~, End Z=0.00~]
+  properties: Line (1) {Thickness=0.00 mm~} [Geometry: Start X=50.00~, Start Y=50.00~, Start Z=0.00~, End X=150.00~, End Y=50.00~, End Z=0.00~, Delta X=100.00 mm, Delta Y=0.00 mm, Delta Z=0.00 mm, Length=100.00 mm, Angle=0°]
   prompt| Specify insertion point:
 
 ## LINE
@@ -1582,7 +1582,7 @@ lweight "Lineweight" LW
   dyn: -
   prompt| Specify insertion base point:
 > pick
-  properties: Line (1) {Thickness=0.00 mm~} [Geometry: Length=100.00 mm~, Angle=0°~, Δ X=100.00 mm, Δ Y=0.00 mm, Δ Z=0.00 mm] [Endpoints: Start X=0.00~, Start Y=0.00~, Start Z=0.00~, End X=100.00~, End Y=0.00~, End Z=0.00~]
+  properties: Line (1) {Thickness=0.00 mm~} [Geometry: Start X=0.00~, Start Y=0.00~, Start Z=0.00~, End X=100.00~, End Y=0.00~, End Z=0.00~, Delta X=100.00 mm, Delta Y=0.00 mm, Delta Z=0.00 mm, Length=100.00 mm, Angle=0°]
   prompt| Select objects: 1 found
 > enter
   prompt: Command:
@@ -2631,7 +2631,7 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0°~, Line space facto
   prompt: MOVE Select objects:
   command| M MOVE
 > pick
-  properties: Line (1) {Thickness=0.00 mm~} [Geometry: Length=100.00 mm~, Angle=0°~, Δ X=100.00 mm, Δ Y=0.00 mm, Δ Z=0.00 mm] [Endpoints: Start X=0.00~, Start Y=0.00~, Start Z=0.00~, End X=100.00~, End Y=0.00~, End Z=0.00~]
+  properties: Line (1) {Thickness=0.00 mm~} [Geometry: Start X=0.00~, Start Y=0.00~, Start Z=0.00~, End X=100.00~, End Y=0.00~, End Z=0.00~, Delta X=100.00 mm, Delta Y=0.00 mm, Delta Z=0.00 mm, Length=100.00 mm, Angle=0°]
   prompt| Select objects: 1 found
 > enter
   prompt: MOVE Specify base point or [Displacement] <Displacement>:
@@ -2654,7 +2654,7 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0°~, Line space facto
   asks: -
   tip: -
   dyn: -
-  properties: Line (1) {Thickness=0.00 mm~} [Geometry: Length=100.00 mm~, Angle=0°~, Δ X=100.00 mm, Δ Y=0.00 mm, Δ Z=0.00 mm] [Endpoints: Start X=50.00~, Start Y=30.00~, Start Z=0.00~, End X=150.00~, End Y=30.00~, End Z=0.00~]
+  properties: Line (1) {Thickness=0.00 mm~} [Geometry: Start X=50.00~, Start Y=30.00~, Start Z=0.00~, End X=150.00~, End Y=30.00~, End Z=0.00~, Delta X=100.00 mm, Delta Y=0.00 mm, Delta Z=0.00 mm, Length=100.00 mm, Angle=0°]
   prompt| Specify second point or <use first point as displacement>:
 > escape
   properties: -
@@ -2674,7 +2674,7 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0°~, Line space facto
   prompt: COPY Select objects:
   command| CO COPY
 > pick
-  properties: Line (1) {Thickness=0.00 mm~} [Geometry: Length=100.00 mm~, Angle=0°~, Δ X=100.00 mm, Δ Y=0.00 mm, Δ Z=0.00 mm] [Endpoints: Start X=0.00~, Start Y=0.00~, Start Z=0.00~, End X=100.00~, End Y=0.00~, End Z=0.00~]
+  properties: Line (1) {Thickness=0.00 mm~} [Geometry: Start X=0.00~, Start Y=0.00~, Start Z=0.00~, End X=100.00~, End Y=0.00~, End Z=0.00~, Delta X=100.00 mm, Delta Y=0.00 mm, Delta Z=0.00 mm, Length=100.00 mm, Angle=0°]
   prompt| Select objects: 1 found
 > enter
   prompt: COPY Specify base point or [Displacement] <Displacement>:
@@ -2721,7 +2721,7 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0°~, Line space facto
   command| S STRETCH
   info| Select objects to stretch by crossing-window or crossing-polygon...
 > pick
-  properties: Line (1) {Thickness=0.00 mm~} [Geometry: Length=100.00 mm~, Angle=0°~, Δ X=100.00 mm, Δ Y=0.00 mm, Δ Z=0.00 mm] [Endpoints: Start X=0.00~, Start Y=0.00~, Start Z=0.00~, End X=100.00~, End Y=0.00~, End Z=0.00~]
+  properties: Line (1) {Thickness=0.00 mm~} [Geometry: Start X=0.00~, Start Y=0.00~, Start Z=0.00~, End X=100.00~, End Y=0.00~, End Z=0.00~, Delta X=100.00 mm, Delta Y=0.00 mm, Delta Z=0.00 mm, Length=100.00 mm, Angle=0°]
   prompt| Select objects: Specify opposite corner: 1 found
 > enter
   prompt: STRETCH Specify base point or [Displacement] <Displacement>:
@@ -2744,7 +2744,7 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0°~, Line space facto
   asks: -
   tip: -
   dyn: -
-  properties: Line (1) {Thickness=0.00 mm~} [Geometry: Length=152.97 mm~, Angle=11°~, Δ X=150.00 mm, Δ Y=30.00 mm, Δ Z=0.00 mm] [Endpoints: Start X=0.00~, Start Y=0.00~, Start Z=0.00~, End X=150.00~, End Y=30.00~, End Z=0.00~]
+  properties: Line (1) {Thickness=0.00 mm~} [Geometry: Start X=0.00~, Start Y=0.00~, Start Z=0.00~, End X=150.00~, End Y=30.00~, End Z=0.00~, Delta X=150.00 mm, Delta Y=30.00 mm, Delta Z=0.00 mm, Length=152.97 mm, Angle=11°]
   prompt| Specify second point or <use first point as displacement>:
 > escape
   properties: -
@@ -2765,7 +2765,7 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0°~, Line space facto
   asks: "Base point"
   tip: Specify base point:
   dyn: "X,Y"=""||*
-  properties: Line (1) {Thickness=0.00 mm~} [Geometry: Length=100.00 mm~, Angle=0°~, Δ X=100.00 mm, Δ Y=0.00 mm, Δ Z=0.00 mm] [Endpoints: Start X=0.00~, Start Y=0.00~, Start Z=0.00~, End X=100.00~, End Y=0.00~, End Z=0.00~]
+  properties: Line (1) {Thickness=0.00 mm~} [Geometry: Start X=0.00~, Start Y=0.00~, Start Z=0.00~, End X=100.00~, End Y=0.00~, End Z=0.00~, Delta X=100.00 mm, Delta Y=0.00 mm, Delta Z=0.00 mm, Length=100.00 mm, Angle=0°]
   command| RO ROTATE
   info| Current positive angle in UCS:  ANGDIR=counterclockwise  ANGBASE=0
   info| 1 found
@@ -2858,7 +2858,7 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0°~, Line space facto
   asks: "Base point"
   tip: Specify base point:
   dyn: "X,Y"=""||*
-  properties: Line (1) {Thickness=0.00 mm~} [Geometry: Length=100.00 mm~, Angle=0°~, Δ X=100.00 mm, Δ Y=0.00 mm, Δ Z=0.00 mm] [Endpoints: Start X=0.00~, Start Y=0.00~, Start Z=0.00~, End X=100.00~, End Y=0.00~, End Z=0.00~]
+  properties: Line (1) {Thickness=0.00 mm~} [Geometry: Start X=0.00~, Start Y=0.00~, Start Z=0.00~, End X=100.00~, End Y=0.00~, End Z=0.00~, Delta X=100.00 mm, Delta Y=0.00 mm, Delta Z=0.00 mm, Length=100.00 mm, Angle=0°]
   command| SC SCALE 1 found
 > base
   prompt: SCALE Specify scale factor or [Copy/Reference]:
@@ -2948,7 +2948,7 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0°~, Line space facto
   asks: "First point of mirror line"
   tip: Specify first point of mirror line:
   dyn: "X,Y"=""||*
-  properties: Line (1) {Thickness=0.00 mm~} [Geometry: Length=100.00 mm~, Angle=0°~, Δ X=100.00 mm, Δ Y=0.00 mm, Δ Z=0.00 mm] [Endpoints: Start X=0.00~, Start Y=0.00~, Start Z=0.00~, End X=100.00~, End Y=0.00~, End Z=0.00~]
+  properties: Line (1) {Thickness=0.00 mm~} [Geometry: Start X=0.00~, Start Y=0.00~, Start Z=0.00~, End X=100.00~, End Y=0.00~, End Z=0.00~, Delta X=100.00 mm, Delta Y=0.00 mm, Delta Z=0.00 mm, Length=100.00 mm, Angle=0°]
   command| MI MIRROR 1 found
 > first
   prompt: MIRROR Specify second point of mirror line:
@@ -2968,7 +2968,7 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0°~, Line space facto
   tip: -
   dyn: -
   options: -
-  properties: Line (1) {Thickness=0.00 mm~} [Geometry: Length=100.00 mm~, Angle=0°~, Δ X=100.00 mm, Δ Y=0.00 mm, Δ Z=0.00 mm] [Endpoints: Start X=0.00~, Start Y=100.00~, Start Z=0.00~, End X=100.00~, End Y=100.00~, End Z=0.00~]
+  properties: Line (1) {Thickness=0.00 mm~} [Geometry: Start X=0.00~, Start Y=100.00~, Start Z=0.00~, End X=100.00~, End Y=100.00~, End Z=0.00~, Delta X=100.00 mm, Delta Y=0.00 mm, Delta Z=0.00 mm, Length=100.00 mm, Angle=0°]
   prompt| Erase source objects? [Yes/No] <No>: Y
 > MIRROR N
   prompt: MIRROR Specify first point of mirror line:
@@ -3392,7 +3392,7 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0°~, Line space facto
   prompt: COPYCLIP Select objects:
   command| COPYCLIP
 > pick
-  properties: Line (1) {Thickness=0.00 mm~} [Geometry: Length=100.00 mm~, Angle=0°~, Δ X=100.00 mm, Δ Y=0.00 mm, Δ Z=0.00 mm] [Endpoints: Start X=0.00~, Start Y=0.00~, Start Z=0.00~, End X=100.00~, End Y=0.00~, End Z=0.00~]
+  properties: Line (1) {Thickness=0.00 mm~} [Geometry: Start X=0.00~, Start Y=0.00~, Start Z=0.00~, End X=100.00~, End Y=0.00~, End Z=0.00~, Delta X=100.00 mm, Delta Y=0.00 mm, Delta Z=0.00 mm, Length=100.00 mm, Angle=0°]
   prompt| Select objects: 1 found
 > enter
   prompt: Command:
@@ -3673,7 +3673,7 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0°~, Line space facto
   options: -
   prompt| Specify corner of window, enter a scale factor (nX or nXP), or [All/Extents/Previous/Scale/Window/Object]: O
 > pick
-  properties: Line (1) {Thickness=0.00 mm~} [Geometry: Length=100.00 mm~, Angle=0°~, Δ X=100.00 mm, Δ Y=0.00 mm, Δ Z=0.00 mm] [Endpoints: Start X=0.00~, Start Y=0.00~, Start Z=0.00~, End X=100.00~, End Y=0.00~, End Z=0.00~]
+  properties: Line (1) {Thickness=0.00 mm~} [Geometry: Start X=0.00~, Start Y=0.00~, Start Z=0.00~, End X=100.00~, End Y=0.00~, End Z=0.00~, Delta X=100.00 mm, Delta Y=0.00 mm, Delta Z=0.00 mm, Length=100.00 mm, Angle=0°]
   prompt| Select objects: 1 found
 > enter
   prompt: Command:
@@ -4615,16 +4615,16 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0°~, Line space facto
   properties: -
   cycling: -
 > select line
-  properties: Line (1) {Thickness=0.00 mm~} [Geometry: Length=100.00 mm~, Angle=0°~, Δ X=100.00 mm, Δ Y=0.00 mm, Δ Z=0.00 mm] [Endpoints: Start X=0.00~, Start Y=0.00~, Start Z=0.00~, End X=100.00~, End Y=0.00~, End Z=0.00~]
+  properties: Line (1) {Thickness=0.00 mm~} [Geometry: Start X=0.00~, Start Y=0.00~, Start Z=0.00~, End X=100.00~, End Y=0.00~, End Z=0.00~, Delta X=100.00 mm, Delta Y=0.00 mm, Delta Z=0.00 mm, Length=100.00 mm, Angle=0°]
 > grab end
-  asks: "Lengthen"
-  dyn: "Lengthen"=""|0.00|mm*
+  asks: "Length"
+  dyn: "Length"=""|100.00|mm*
 > drag
-  dyn: "Lengthen"=""|50.00|mm*
+  dyn: "Length"=""|150.00|mm*
 > release
   asks: -
   dyn: -
-  properties: Line (1) {Thickness=0.00 mm~} [Geometry: Length=150.00 mm~, Angle=0°~, Δ X=150.00 mm, Δ Y=0.00 mm, Δ Z=0.00 mm] [Endpoints: Start X=0.00~, Start Y=0.00~, Start Z=0.00~, End X=150.00~, End Y=0.00~, End Z=0.00~]
+  properties: Line (1) {Thickness=0.00 mm~} [Geometry: Start X=0.00~, Start Y=0.00~, Start Z=0.00~, End X=150.00~, End Y=0.00~, End Z=0.00~, Delta X=150.00 mm, Delta Y=0.00 mm, Delta Z=0.00 mm, Length=150.00 mm, Angle=0°]
 > grab middle
   asks: "Move"
   dyn: "Move"=""|0.00|mm*
@@ -4633,7 +4633,7 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0°~, Line space facto
 > release
   asks: -
   dyn: -
-  properties: Line (1) {Thickness=0.00 mm~} [Geometry: Length=150.00 mm~, Angle=0°~, Δ X=150.00 mm, Δ Y=0.00 mm, Δ Z=0.00 mm] [Endpoints: Start X=0.00~, Start Y=40.00~, Start Z=0.00~, End X=150.00~, End Y=40.00~, End Z=0.00~]
+  properties: Line (1) {Thickness=0.00 mm~} [Geometry: Start X=0.00~, Start Y=40.00~, Start Z=0.00~, End X=150.00~, End Y=40.00~, End Z=0.00~, Delta X=150.00 mm, Delta Y=0.00 mm, Delta Z=0.00 mm, Length=150.00 mm, Angle=0°]
 > escape
   properties: -
   command| *Cancel*
@@ -4740,7 +4740,7 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0°~, Line space facto
   cycling: -
 > park the cursor
 > select L1
-  properties: Line (1) {Thickness=0.00 mm~} [Geometry: Length=100.00 mm~, Angle=0°~, Δ X=100.00 mm, Δ Y=0.00 mm, Δ Z=0.00 mm] [Endpoints: Start X=0.00~, Start Y=0.00~, Start Z=0.00~, End X=100.00~, End Y=0.00~, End Z=0.00~]
+  properties: Line (1) {Thickness=0.00 mm~} [Geometry: Start X=0.00~, Start Y=0.00~, Start Z=0.00~, End X=100.00~, End Y=0.00~, End Z=0.00~, Delta X=100.00 mm, Delta Y=0.00 mm, Delta Z=0.00 mm, Length=100.00 mm, Angle=0°]
 > select C1
   properties: Circle (1) {Thickness=0.00 mm~} [Geometry: Radius=50.00 mm~, Diameter=100.00 mm~, Circumference=314.16 mm, Area=7853.98 mm², Normal X=0.00, Normal Y=0.00, Normal Z=1.00] [Center: X=0.00~, Y=0.00~, Z=0.00~]
 > select A1
@@ -4797,7 +4797,7 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0°~, Line space facto
   properties: Block reference (1) [Block: Name=BAR, Scale=1.00~, Rotation=0°~] [Position: X=0.00~, Y=0.00~, Z=0.00~]
 > select I2
 > select L2
-  properties: Line (1) {Thickness=0.00 mm~} [Geometry: Length=14.14 mm~, Angle=45°~, Δ X=10.00 mm, Δ Y=10.00 mm, Δ Z=0.00 mm] [Endpoints: Start X=0.00~, Start Y=0.00~, Start Z=0.00~, End X=10.00~, End Y=10.00~, End Z=0.00~]
+  properties: Line (1) {Thickness=0.00 mm~} [Geometry: Start X=0.00~, Start Y=0.00~, Start Z=0.00~, End X=10.00~, End Y=10.00~, End Z=0.00~, Delta X=10.00 mm, Delta Y=10.00 mm, Delta Z=0.00 mm, Length=14.14 mm, Angle=45°]
 > select C2
   properties: Circle (1) {Thickness=0.00 mm~} [Geometry: Radius=5.00 mm~, Diameter=10.00 mm~, Circumference=31.42 mm, Area=78.54 mm², Normal X=0.00, Normal Y=0.00, Normal Z=1.00] [Center: X=0.00~, Y=0.00~, Z=0.00~]
 > select A2

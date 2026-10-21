@@ -1,5 +1,5 @@
 import { Vec2, V } from "../geometry/Vec2"
-import { normalizeAngle, polarPoint } from "../geometry/primitives"
+import { normalizeAngle } from "../geometry/primitives"
 import {
   LineEntity,
   CircleEntity,
@@ -19,7 +19,6 @@ import {
   withPolylineWidths,
 } from "./polylines"
 import { ellipseSemiMajor, ellipseSemiMinor, ellipseWithAxes } from "./ellipses"
-import { lineLength, lineAngleDegrees } from "./entityMeasures"
 import {
   MAX_LINE_SPACING_FACTOR,
   MIN_LINE_SPACING_FACTOR,
@@ -28,7 +27,6 @@ import {
 import {
   hasThickness,
   lineEndZ,
-  lineLength3d,
   lineStartZ,
   withDeltaZ,
   withElevation,
@@ -37,8 +35,6 @@ import {
 
 /** A geometry value that can be retyped directly on a selected entity. */
 export type EntityProperty =
-  | "length"
-  | "angle"
   | "startX"
   | "startY"
   | "endX"
@@ -233,31 +229,15 @@ function applyLineProperty(
   property: EntityProperty,
   value: number
 ): LineEntity | null {
-  const moved = (start: Vec2, end: Vec2): LineEntity | null =>
-    V.equals(start, end) ? null : { ...line, start, end }
+  // LINE keeps a zero-length line typed (line/p08), so an end retyped onto
+  // the other is let be too: a rising line stands vertical.
+  const moved = (start: Vec2, end: Vec2): LineEntity => ({
+    ...line,
+    start,
+    end,
+  })
 
   switch (property) {
-    case "length": {
-      // AutoCAD's Length is the 3D one, so a sloped line keeps its slope.
-      const factor = value / lineLength3d(line)
-      if (!(value > 0) || !Number.isFinite(factor)) return null
-      return withDeltaZ(
-        {
-          ...line,
-          end: polarPoint(
-            line.start,
-            lineLength(line) * factor,
-            toRadians(lineAngleDegrees(line))
-          ),
-        },
-        (line.deltaZ ?? 0) * factor
-      )
-    }
-    case "angle":
-      return {
-        ...line,
-        end: polarPoint(line.start, lineLength(line), toRadians(value)),
-      }
     case "startX":
       return moved({ x: value, y: line.start.y }, line.end)
     case "startY":

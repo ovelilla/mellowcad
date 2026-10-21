@@ -1,4 +1,5 @@
 import { Vec2, V } from "../../geometry/Vec2"
+import { Vec3, withZ } from "../../geometry/Vec3"
 import {
   arcEndPoint,
   arcMidpoint,
@@ -6,6 +7,8 @@ import {
   dimensionGeometry,
   entityBounds,
   entityPointToWorld,
+  lineEndZ,
+  lineStartZ,
   planeAxes,
   PolylineSegmentGeometry,
   polylineSegmentGeometries,
@@ -25,28 +28,33 @@ export const GRIP_PICK_PX = 6
 
 /** Every grip of the current selection (per object type). */
 export function selectedGrips(ctx: ToolContext): Grip[] {
-  const grips: (Omit<Grip, "world"> & { readonly world: Vec2 })[] = []
+  // A line's grips carry their Z already (`Vec3`): its ends are read by their
+  // own heights, which in plan a vertical line cannot tell apart.
+  const grips: (Omit<Grip, "world"> & { readonly world: Vec2 | Vec3 })[] = []
   for (const id of ctx.selection.toArray()) {
     const entity = ctx.document.get(id)
     if (!entity) continue
     switch (entity.type) {
-      case "line":
+      case "line": {
+        const start = withZ(entity.start, lineStartZ(entity))
+        const end = withZ(entity.end, lineEndZ(entity))
         grips.push({
           entityId: id,
           role: { kind: "lineEnd", end: "start" },
-          world: entity.start,
+          world: start,
         })
         grips.push({
           entityId: id,
           role: { kind: "lineEnd", end: "end" },
-          world: entity.end,
+          world: end,
         })
         grips.push({
           entityId: id,
           role: { kind: "move" },
-          world: V.midpoint(entity.start, entity.end),
+          world: withZ(V.midpoint(start, end), (start.z + end.z) / 2),
         })
         break
+      }
       case "circle":
         grips.push({
           entityId: id,
@@ -209,7 +217,13 @@ export function selectedGrips(ctx: ToolContext): Grip[] {
     if (!entity) continue
     // WHY: edit grips read the work plane, not the object's; such objects only move whole.
     if (planeAxes(entity) && grip.role.kind !== "move") continue
-    lifted.push({ ...grip, world: entityPointToWorld(entity, grip.world) })
+    lifted.push({
+      ...grip,
+      world:
+        entity.type === "line" && "z" in grip.world
+          ? grip.world
+          : entityPointToWorld(entity, grip.world),
+    })
   }
   return lifted
 }
@@ -232,7 +246,11 @@ export function hitGrip(screen: Vec2, ctx: ToolContext): Grip | null {
 /** Whether two grip references point at the same handle (entity + position). */
 export function sameGrip(a: Grip | null, b: Grip | null): boolean {
   if (a === null || b === null) return a === b
-  return a.entityId === b.entityId && V.equals(a.world, b.world)
+  return (
+    a.entityId === b.entityId &&
+    V.equals(a.world, b.world) &&
+    a.world.z === b.world.z
+  )
 }
 
 /** The midpoint of a polyline segment: the chord midpoint of a straight one, or

@@ -78,7 +78,7 @@ const DRAG_THRESHOLD_PX = 4
  *   green *crossing* window). It adds what it finds, or removes it with Shift.
  *
  * Selected objects also show *grips* (small squares). Lines show endpoint grips
- * (lengthen along the axis) and a midpoint grip (move). Circles show a centre
+ * (stretch) and a midpoint grip (move). Circles show a centre
  * grip (move) and four quadrant grips (resize the radius). Arcs show a centre
  * grip (move), two endpoint grips (swing the sweep) and a midpoint grip (resize
  * the radius). In every case you can drag and click to place, or type the exact
@@ -220,34 +220,12 @@ export class SelectTool implements Tool {
   onPointerMove(input: PointerInput, ctx: ToolContext): void {
     switch (this.state.phase) {
       case "grip": {
-        // The resolver already folds snap → tracking → Ortho into `input.point`
-        // relative to the fixed end (our constraint anchor), so an osnap, an
-        // acquired tracking alignment or an Ortho lock all drive the endpoint —
-        // and Ortho combines with tracking (the point lands on the Ortho×guide
-        // intersection). Only when nothing has moved the raw cursor do we fall
-        // back to sliding along the line's own axis (a plain collinear
-        // lengthen/shorten that keeps the line's direction). Either way the
-        // point's Z is the resolver's: the object's under a snap, else the
-        // elevation plane, as for a click.
-        const moving = V.equals(input.point, input.world)
-          ? withZOf(
-              V.add(
-                this.state.fixed,
-                V.scale(
-                  this.state.dir,
-                  V.dot(V.sub(input.world, this.state.fixed), this.state.dir)
-                )
-              ),
-              input.point
-            )
-          : input.point
+        // STRETCH, the default grip mode: the end goes where a click would
+        // (desktop line/d15), Z included. Lengthen is the hover menu's other
+        // entry, not built.
+        const moving = input.point
         this.state = { ...this.state, moving }
-        // The typed field is a *magnitude*; its direction (lengthen vs shorten)
-        // is inferred from where the cursor is, so no sign is ever needed.
-        ctx.dynamicInput.setLive(
-          "lengthen",
-          Math.abs(V.distance(this.state.fixed, moving) - this.state.origLength)
-        )
+        ctx.dynamicInput.setLive("length", V.distance(this.state.fixed, moving))
         ctx.dynamicInput.setPosition(input.screen)
         ctx.requestRender()
         break
@@ -405,7 +383,7 @@ export class SelectTool implements Tool {
       case "grip": {
         // Support both AutoCAD grip gestures: a press-drag places the endpoint
         // on release, while a plain click keeps the grip hot for a second click
-        // (which also frees the mouse to type an exact lengthening).
+        // (which also frees the mouse to type an exact length).
         const dragged =
           Math.hypot(
             input.screen.x - this.state.pressScreen.x,
@@ -721,7 +699,7 @@ export class SelectTool implements Tool {
     return true
   }
 
-  /** Makes an endpoint grip hot and opens the lengthen dynamic input. */
+  /** Makes an endpoint grip hot and opens the length dynamic input. */
   private beginGrip(
     grip: Grip,
     end: LineEnd,
@@ -730,27 +708,17 @@ export class SelectTool implements Tool {
   ): void {
     const line = ctx.document.get(grip.entityId)
     if (line?.type !== "line") return
-
-    const moving = end === "start" ? line.start : line.end
-    const fixed = end === "start" ? line.end : line.start
-    const axis = V.sub(moving, fixed)
-    const origLength = V.length(axis)
-    if (origLength < 1e-9) return // a degenerate line has no axis to lengthen
-
+    const start = withZ(line.start, lineStartZ(line))
+    const finish = withZ(line.end, lineEndZ(line))
     this.state = {
       phase: "grip",
       entityId: grip.entityId,
       end,
-      fixed,
-      dir: V.scale(axis, 1 / origLength),
-      origLength,
-      moving: withZ(
-        moving,
-        end === "start" ? lineStartZ(line) : lineEndZ(line)
-      ),
+      fixed: end === "start" ? finish : start,
+      moving: end === "start" ? start : finish,
       pressScreen: screen,
     }
-    this.openLengthenInput(ctx, screen)
+    this.openLengthInput(ctx, screen)
     ctx.requestRender()
   }
 
@@ -785,14 +753,15 @@ export class SelectTool implements Tool {
     this.openMoveInput(ctx, screen)
   }
 
-  /** Makes a move grip (line midpoint / circle-arc centre) hot and starts a move. */
+  /**
+   * Makes a move grip (line midpoint / circle-arc centre) hot and moves its
+   * own object: in STRETCH mode only the hot grip's object changes (desktop
+   * line/d15), whatever else is selected.
+   */
   private beginMove(grip: Grip, screen: Vec2, ctx: ToolContext): void {
-    // Move the whole selection together, anchored on the grabbed grip.
-    const originals = ctx.selection
-      .toArray()
-      .map((id) => ctx.document.get(id))
-      .filter((e): e is Entity => e !== undefined)
-    if (originals.length === 0) return
+    const entity = ctx.document.get(grip.entityId)
+    if (!entity) return
+    const originals = [entity]
     const base = grip.world
     this.state = {
       phase: "moveLine",
@@ -981,14 +950,23 @@ export class SelectTool implements Tool {
     if (next) ctx.execute(new UpdateEntityCommand(next))
     ctx.requestRender()
   }
-  private openLengthenInput(ctx: ToolContext, screen: Vec2): void {
+  /**
+   * Opens the box of a stretched line's resulting length: DYNDIVIS's default
+   * shows it first, Length Change after a Tab (help 2027, Dimension Input
+   * Settings); this box holds the first only.
+   */
+  private openLengthInput(ctx: ToolContext, screen: Vec2): void {
+    if (this.state.phase !== "grip") return
     const session: DynamicInputSession = {
-      fields: [{ id: "lengthen", prompt: "lengthen", kind: "length" }],
+      fields: [{ id: "length", prompt: "length", kind: "length" }],
       commit: (values, commitCtx) =>
-        this.commitLengthen(values.lengthen, commitCtx),
+        this.commitLength(values.length, commitCtx),
     }
     ctx.dynamicInput.open(session)
-    ctx.dynamicInput.setLive("lengthen", 0)
+    ctx.dynamicInput.setLive(
+      "length",
+      V.distance(this.state.fixed, this.state.moving)
+    )
     ctx.dynamicInput.setPosition(screen)
   }
 
@@ -1083,22 +1061,19 @@ export class SelectTool implements Tool {
     ctx.dynamicInput.setPosition(screen)
   }
 
-  /** Applies a typed lengthening magnitude along the line's axis, then commits. */
-  private commitLengthen(amount: number, ctx: ToolContext): void {
+  /**
+   * Applies a typed resulting length from the fixed end towards the cursor,
+   * then commits. With the cursor on the fixed end there is no direction yet.
+   */
+  private commitLength(length: number, ctx: ToolContext): void {
     if (this.state.phase !== "grip") return
-    // Infer the direction from the current drag: if the cursor is pulling the
-    // endpoint back past its original spot the value shortens, otherwise it
-    // lengthens — so the user never has to type a sign.
-    const currentLength = V.dot(
-      V.sub(this.state.moving, this.state.fixed),
-      this.state.dir
-    )
-    const sign = currentLength < this.state.origLength ? -1 : 1
-    const newLength = this.state.origLength + sign * Math.abs(amount)
-    // A typed length runs from the grip's own place, so it keeps its Z.
+    const offset = V.sub(this.state.moving, this.state.fixed)
+    const reach = V.length(offset)
+    if (reach < 1e-9) return
+    // A typed length keeps the end at its own height, as the line has it.
     const line = ctx.document.get(this.state.entityId)
     const point = withZ(
-      V.add(this.state.fixed, V.scale(this.state.dir, newLength)),
+      V.add(this.state.fixed, V.scale(offset, length / reach)),
       line?.type !== "line"
         ? 0
         : this.state.end === "start"
@@ -1110,9 +1085,9 @@ export class SelectTool implements Tool {
 
   /**
    * Writes the moving endpoint to `point` through an undoable command, keeping
-   * the line's other end fixed, then returns to idle. Zero-length results are
-   * ignored so a line can never collapse onto a single point. The grabbed end
-   * takes the point's Z and the other keeps its own.
+   * the line's other end fixed, then returns to idle. An end dropped on the
+   * other end in space is ignored; one above or below it stands the line
+   * vertical. The grabbed end takes the point's Z and the other keeps its own.
    */
   private placeGrip(
     state: Extract<SelectToolState, { phase: "grip" }>,
@@ -1131,7 +1106,10 @@ export class SelectTool implements Tool {
         state.end === "start"
           ? withLineZ(moved, point.z, lineEndZ(line))
           : withLineZ(moved, lineStartZ(line), point.z)
-      if (!V.equals(next.start, next.end)) {
+      if (
+        !V.equals(next.start, next.end) ||
+        lineStartZ(next) !== lineEndZ(next)
+      ) {
         ctx.execute(new UpdateEntityCommand(next))
       }
     }
@@ -1165,7 +1143,7 @@ export class SelectTool implements Tool {
   }
 
   /**
-   * Translates the whole selection so the base point lands on `newMid`, Z
+   * Translates what is being moved so the base point lands on `newMid`, Z
    * included, through a single undoable command, then returns to idle.
    */
   private placeMove(
