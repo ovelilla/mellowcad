@@ -1,0 +1,12 @@
+_PLINE
+0,0
+_A
+SEGUNDO
+5,5
+10,0
+SEGUNDO
+15,-5
+20,0
+
+MPDUMP
+-

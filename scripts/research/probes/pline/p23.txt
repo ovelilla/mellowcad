@@ -1,0 +1,13 @@
+_PLINE
+0,0
+'_ZOOM
+_E
+@10,0
+'ORTHOMODE
+1
+@5,5
+'_-OSNAP
+_END
+@1,1
+'_CIRCLE
+

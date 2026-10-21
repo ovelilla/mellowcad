@@ -1,0 +1,17 @@
+_-LAYER
+_M
+L1
+
+_CLAYER
+0
+_PLINE
+0,0
+@10,0
+'_-LAYER
+_S
+L1
+
+@0,10
+
+MPDUMP
+-

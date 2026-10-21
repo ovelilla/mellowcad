@@ -1,0 +1,6 @@
+_PLINE
+0,0
+_A
+@10,0
+
+(getvar "LASTPOINT")

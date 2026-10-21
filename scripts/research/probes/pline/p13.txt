@@ -1,0 +1,8 @@
+POL
+0,0
+MITAD
+1
+2
+@10,0
+MITADG
+

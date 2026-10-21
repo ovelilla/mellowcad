@@ -1,0 +1,14 @@
+_PLINE
+0,0
+10,0
+_A
+_R
+'_LTSCALE
+2
+10
+20,10
+_U
+
+(getvar "LTSCALE")
+MPDUMP
+-

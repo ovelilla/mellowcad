@@ -1,0 +1,12 @@
+_PLINE
+0,100
+_W
+3
+
+
+(getvar "PLINEWID")
+_PLINE
+0,0
+10,0
+
+(getvar "PLINEWID")

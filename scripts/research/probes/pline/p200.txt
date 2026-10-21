@@ -1,0 +1,19 @@
+_PLINE
+0,0
+_W
+
+5
+10,0
+20,0
+_H
+1
+
+30,0
+_W
+3
+4
+40,0
+
+MPDUMP
+-
+(getvar "PLINEWID")

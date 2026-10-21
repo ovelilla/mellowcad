@@ -1,0 +1,9 @@
+_UCS
+5,5
+
+_PLINE
+
+@5,0
+
+MPDUMP
+-

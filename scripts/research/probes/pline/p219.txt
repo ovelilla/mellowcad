@@ -1,0 +1,15 @@
+_THICKNESS
+3
+_ELEVATION
+5
+_PLINE
+0,0
+_W
+2
+
+10,0
+_A
+20,10
+
+MPDUMP
+-

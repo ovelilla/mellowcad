@@ -1,0 +1,9 @@
+_CIRCLE
+30,30
+5
+_PLINE
+
+@5,0
+
+MPDUMP
+-

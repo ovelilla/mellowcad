@@ -1,0 +1,7 @@
+_PLINE
+0,0
+@10,0
+@0,10
+_C
+_U
+(if (ssget "X") (sslength (ssget "X")) 0)

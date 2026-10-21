@@ -1,0 +1,10 @@
+_ELEVATION
+5
+_PLINE
+0,0
+@10,0
+
+_ID
+@
+MPDUMP
+-

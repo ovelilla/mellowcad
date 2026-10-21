@@ -1,0 +1,14 @@
+_PLINE
+0,0
+10,0
+_A
+_S
+@5,5
+@5,-5
+_CE
+@10<0
+30,-30
+
+MPDUMP
+-
+(getvar "LASTPOINT")

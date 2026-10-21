@@ -1,0 +1,16 @@
+_PLINE
+0,0
+10,0
+_A
+_A
+'ORTHOMODE
+1
+90
+_R
+'_LTSCALE
+2
+10
+
+
+MPDUMP
+-

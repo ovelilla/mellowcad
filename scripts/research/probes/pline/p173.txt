@@ -1,0 +1,12 @@
+_CIRCLE
+50,0
+10
+_ZOOM
+_E
+_PLINE
+0,0
+_TAN
+50,10
+
+MPDUMP
+-
