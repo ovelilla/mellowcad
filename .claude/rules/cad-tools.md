@@ -89,7 +89,7 @@ A prompt that asks "which object?" owes a rollover highlight in `buildOverlay` (
 only when the hovered id changes): a **set** prompt → `THEME.entityHover`, width 2, skipping
 objects already in the set; a **single prominent** pick (path curve, break/trim target, offset
 source) → `THEME.selected`, width 2–2.5 (`entityHover` is too close to the entity colour to answer
-"which one?").
+"which one?"); under an implied Tangent (Ttr), a marker (`snapMarker`).
 
 When the answer is "that object is not eligible at all", **filter the pick** instead of refusing:
 an object that never highlights needs no wording (DIMSPACE's non-parallel dimensions, HATCH's
@@ -152,17 +152,16 @@ CELWEIGHT; ByLayer by default, which stores nothing). Every creating command has
 `FROM_SCRATCH` or `DERIVED` of `currentProperties.test.ts`, which pins which it is:
 
 - **Drawn from scratch**: wrap it in `withCurrentProperties(entity, ctx)`
-  (`tools/currentProperties.ts`), on the current layer; one added at the command's end wears the
-  `currentProperties` of its start (PLINE, pline/p39). DIMBASELINE and DIMCONTINUE use the base
-  dimension's layer and style.
+  (`tools/currentProperties.ts`), on the current layer; one added at its end wears its start's
+  `currentProperties` (PLINE, pline/p39; CIRCLE the end's, circle/p11). DIMBASELINE and
+  DIMCONTINUE use the base dimension's layer and style.
 - **Made from another**: the source's, through `carryOverrides` / `carryPiece` / the copy helpers;
   never the current ones.
 - **FILLET's arc and CHAMFER's bevel**: the lines' shared layer or the current one, ByLayer —
   `carryPlane` alone.
 
-LINE's and PLINE's rubber bands wear `currentColor` (desktop line/d04, pline/d01); other ghosts'
-colours are their reviews'. HPLAYER, DIMLAYER and TEXTLAYER do not exist: everything new is on the
-current layer.
+LINE's, PLINE's and CIRCLE's jigs wear `currentColor` (line/d04, pline/d01, circle/d01). No
+HPLAYER, DIMLAYER or TEXTLAYER: all goes on the current layer.
 
 ## Ordering and undo
 
@@ -297,10 +296,10 @@ returns `true`; `false` ends the command.
   as it starts (`UcsTool.onActivate`).
 - **A point has a Z; keep it.** `input.point` and `parseCoordinate` give a `Vec3`. A point computed
   in the plane from another (`V.add(start, dir * length)`) keeps the base's Z: `withZOf(point,
-  base)`, because every `V` helper returns a `Vec2`. Type a state field that feeds `lastPoint` or a
+base)`, because every `V` helper returns a `Vec2`. Type a state field that feeds `lastPoint` or a
   creation as `Vec3`, so a dropped Z fails to compile. A displacement is `sub3(to, from)`.
 - **A flat object lies in the plane of the first point that fixed it**: `onPlaneOf(createX(...),
-  first)`, later points projected (`withZOf(point, first)`). `createLine` reads both ends' Z. A
+first)`, later points projected (`withZOf(point, first)`). `createLine` reads both ends' Z. A
   dimension lies at the height of the point placing its dimension line, whatever its origins'.
 - **Three points fix their own plane** (ARC's; not CIRCLE's, circle/p189): `planeThrough`
   (`threePointPlane.ts`), `null` falling back to the first point's plane. FILLET and CHAMFER
@@ -330,7 +329,7 @@ returns `true`; `false` ends the command.
   direction, with its Z; none where the trace says `UseBasePoint` false (circle/d12, p137).
 - No hook exposes a preview to the snaps: ghosts are not objects.
 - **A Tangent or Perpendicular that finds nothing** reaches the tool where `defersSnap(kind,
-  entity)` says so: it reads `ctx.snapOverride()` and `ctx.pick`, as LINE (`tools/deferredSnap.ts`)
+entity)` says so: it reads `ctx.snapOverride()` and `ctx.pick`, as LINE (`tools/deferredSnap.ts`)
   and CIRCLE (`circlesMeetingThree`, `circleOnDiameter`) do.
 - `retainsTrackingAfterPointerDown()` — true when a click _begins_ an edit, so tracking survives
   the drag.

@@ -1500,6 +1500,8 @@
         "quadrant": "Quadrant",
         "nearest": "Nearest"
       },
+      "deferredTangent": "Deferred Tangent",
+      "deferredPerpendicular": "Deferred Perpendicular",
       "polar": "Polar: {distance}{unit} < {angle}°",
       "polarZ": "Polar: {distance}{unit} < {axis}",
       "zPositive": "+Z",

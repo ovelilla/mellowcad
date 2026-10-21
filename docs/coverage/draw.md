@@ -27,17 +27,19 @@ acquired point (still the first point's question); a zero-length segment typed (
 double click) draw none, as the desktop does; the `<angle` override; the length and angle fields,
 the angle shown acute (0–180°) and a typed one read on the cursor's side; `@` at the first point
 from LASTPOINT; a Tangent or Perpendicular override at the first point deferred until the next
-("Deferred Tangent", asking for the next point): with a plain next point, the tangent from it or the
-foot of the perpendicular (on a line, a circle or an arc), with a second Tangent the line touching
+(over a circle or an arc, and a Perpendicular's line, the green Deferred Tangent or Deferred
+Perpendicular marker, the tangent or right-angle glyph trailing three dots, with its tooltip, es
+`Tangente diferida`, `Perpendicular diferida`, tables 85, 86 — CIRCLE's, desktop circle/d03; then
+asking for the next point): with a plain next point, the tangent from it or the foot of the
+perpendicular (on a line, a circle or an arc), with a second Tangent the line touching
 both circles — of the four, the one nearest the picks — and a Tangent with a Perpendicular to a line
 the line touching the one square to the other; each end at its own point's Z, with THICKNESS; one U
 undoes the whole command, Ctrl+Z inside it is `_u` typed at its prompt (its Undo, `Invalid point.`
 at the first point)
 
-**Missing:** the deferred marker and its tooltip (only the rubber band shows it), a deferred snap on
-a polyline segment, an ellipse or a spline, two deferred Perpendiculars; a pick whose object snap
-lands on the point before is skipped as a double click is (**unverified**: the console draws a
-zero-length line for an APP or PER typed there, line/p32)
+**Missing:** a deferred snap on a polyline segment, an ellipse or a spline, two deferred
+Perpendiculars; a pick whose object snap lands on the point before is skipped as a double click is
+(**unverified**: the console draws a zero-length line for an APP or PER typed there, line/p32)
 
 ### `PLINE` / `PL` · es `POL` / `PL`†
 
@@ -263,10 +265,26 @@ later points are 2D prompts, taken by their X and Y in that plane (a snapped poi
 height flattened, p185, p189, p190) and refusing a Z, `*` or `<angle` typed there with
 `Invalid 2D point.` (es `Punto 2D no válido.`; p16, p18, p20, p137, p180, p181); they have no base
 point, so Ortho and Polar bend only the radius's pick (desktop d12); 2P on one point or 3P on one
-line says `*Invalid*` (es `*No válido*`) and ends, LASTPOINT the last point given (p123–p125, p164)
+line says `*Invalid*` (es `*No válido*`) and ends, LASTPOINT the last point given (p123–p125, p164);
+the jig as the desktop draws it: the ghost in the current colour (CECOLOR red, a red ghost, at every
+mode), from the centre to the cursor an amber dashed size line, out past the rim at the diameter
+(desktop d01, d05; the trace's UseDashedLine); at 2P the ghost alone, no chord, and at 3P nothing
+after the first point, then the ghost through the two points and the cursor (d02); nothing at
+Ttr's radius until it is given (d03); Ttr's objects picked as under TAN: the running snaps silent,
+the object not highlighted, and over a line, a circle or an arc the green Deferred Tangent marker,
+the tangent glyph trailing three dots, on the object with the crosshair left on the pointer, with
+the tooltip `Deferred Tangent` (es `Tangente diferida`, table 85; d03), over an ellipse or a spline
+the plain Tangent marker and `Tangent`, the click then refused (d13); the same deferred marker, or
+`Deferred Perpendicular` (es `Perpendicular diferida`, table 86), where 2P and 3P will defer a
+Tangent or Perpendicular typed
 
 **Missing:** Ttr on polyline segments (AutoCAD takes them, p313; refused here with the starred
-words), the rail's Tan, Tan, Tan entry (`_circle _3p _tan \_tan \_tan \`; typed it works)
+words, and no marker shows over them), Quick Properties on a double-click of a circle at `Command:`
+(desktop d11; Quick Properties is workspace.md's Missing, Palette panel), where on an ellipse the
+plain Tangent marker sits at Ttr (**unverified**: d13 shows it at the ellipse's top with the cursor
+at its end; here the point nearest the cursor), the marker at 2P's Perpendicular on a line (the foot
+from LASTPOINT; **unverified**, none here), the rail's Tan, Tan, Tan entry
+(`_circle _3p _tan \_tan \_tan \`; typed it works)
 
 ### `ARC` / `A` · es `ARCO` / `A`
 

@@ -10,6 +10,8 @@ import {
   EntityId,
   EntityProperty,
   EntityType,
+  closestOnEntity,
+  entityPointToWorld,
 } from "../domain/entities"
 import { COLOR_BYLAYER, EntityColor } from "../domain/colors"
 import {
@@ -332,6 +334,8 @@ export class CadRuntime extends Observable {
   private language: EngineText
 
   private currentSnap: SnapResult | null = null
+  /** The marker a Tangent or Perpendicular finding nothing shows (`Tool.snapMarker`). */
+  private snapMarker: { snap: SnapResult; deferred: boolean } | null = null
   private lastTracking: TrackingResult | null = null
   /** The tracking guides and Extensions the cursor was last on, for a snap found on them. */
   private pathGuides: readonly TrackingGuide[] = []
@@ -4097,10 +4101,9 @@ export class CadRuntime extends Observable {
       lwDisplay: settings.lwDisplay,
       fillMode: settings.fillMode,
       attributeDisplay: settings.attributeDisplay,
-      snap: this.currentSnap,
-      snapLabel: this.currentSnap
-        ? this.text.snapFeedback(this.currentSnap.type)
-        : "",
+      snap: this.currentSnap ?? this.snapMarker?.snap ?? null,
+      snapDeferred: this.snapMarker?.deferred ?? false,
+      snapLabel: this.snapLabel(),
       acquiredTrackingPoints: this.tracking.getAcquired(),
       tracking: this.sceneTracking(),
       parallelReferenceIds: this.parallelRefs.getAcquired(),
@@ -4548,6 +4551,7 @@ export class CadRuntime extends Observable {
   pointerLeave(): void {
     this.rollover = null
     this.currentSnap = null
+    this.snapMarker = null
     this.cursorWorld = null
     this.crosshairScreen = null
     this.lastPointerScreen = null
@@ -5113,6 +5117,48 @@ export class CadRuntime extends Observable {
     this.lastTracking = null
   }
 
+  /**
+   * The marker a Tangent or Perpendicular that found nothing shows over the
+   * object under the cursor, as the tool says (`Tool.snapMarker`), on the
+   * object's point nearest the cursor: AutoCAD's Deferred Tangent where the
+   * tool works it out (desktop circle/d03). The crosshair stays on the
+   * pointer, as there.
+   */
+  private markerOver(
+    kind: SnapType | "none" | null,
+    cursor: Vec3
+  ): { snap: SnapResult; deferred: boolean } | null {
+    if (kind !== SnapType.Tangent && kind !== SnapType.Perpendicular) {
+      return null
+    }
+    if (this.currentSnap || this.fromRuns()) return null
+    const entity = this.pickEntity(cursor)
+    const shown = entity && this.activeTool.snapMarker?.(kind, entity)
+    if (!entity || !shown) return null
+    const blocks = this.frame.document.blockLookup()
+    const point = entityPointToWorld(
+      entity,
+      closestOnEntity(entity, cursor, blocks).point
+    )
+    return {
+      snap: { type: kind, point, screenDistance: 0 },
+      deferred: shown === "deferred",
+    }
+  }
+
+  /** The tooltip beside the snap marker: AutoCAD's `Deferred Tangent` for a deferred one (table 85). */
+  private snapLabel(): string {
+    if (this.currentSnap) return this.text.snapFeedback(this.currentSnap.type)
+    if (!this.snapMarker) return ""
+    const { snap, deferred } = this.snapMarker
+    if (!deferred) return this.text.snapFeedback(snap.type)
+    return this.text.feedback(
+      snap.type === SnapType.Tangent
+        ? "deferredTangent"
+        : "deferredPerpendicular"
+    )
+  }
+
   private updateSnap(screen: Vec2): void {
     const cursor = this.screenToWork(screen)
     this.cursorWorld = cursor
@@ -5132,22 +5178,30 @@ export class CadRuntime extends Observable {
       // Parallel osnap: acquire the line under the cursor (by dwell) so only
       // lines the user points at are offered as parallels — AutoCAD's workflow.
       this.updateParallelAcquisition(anchor)
-      const override = this.snapping.getOverride()
+      const typed = this.snapping.getOverride()
+      const implied =
+        typed === null ? (this.activeTool.impliedSnap?.() ?? null) : null
+      const override = typed ?? implied
       const measuredFrom = anchor ?? this.snapBase(override)
       this.tracking.acquireEndpoints =
         override === SnapType.Extension ||
         (override === null &&
           this.snapping.isActive() &&
           this.snapping.isEnabled(SnapType.Extension))
-      this.currentSnap = this.snapping.resolve(
-        screen,
-        frame.document,
-        frame.viewport,
-        construction,
-        measuredFrom,
-        this.parallelRefs.getAcquired(),
-        this.tracking.getAcquired()
-      )
+      // An implied Tangent has no point to measure from: it finds nothing,
+      // and the running snaps stay silent (desktop circle/d03).
+      this.currentSnap =
+        implied !== null
+          ? null
+          : this.snapping.resolve(
+              screen,
+              frame.document,
+              frame.viewport,
+              construction,
+              measuredFrom,
+              this.parallelRefs.getAcquired(),
+              this.tracking.getAcquired()
+            )
       // Followed along one path to where another crosses it, the crossing is
       // the point, not the snap sliding with the cursor (Extension, Nearest…).
       if (
@@ -5157,6 +5211,7 @@ export class CadRuntime extends Observable {
       ) {
         this.currentSnap = null
       }
+      this.snapMarker = this.markerOver(override, cursor)
 
       // Feed object snap tracking: acquire by hover, drop stale references.
       const epsilon = this.viewport.screenToWorldDistance(
@@ -5178,6 +5233,7 @@ export class CadRuntime extends Observable {
       this.tracking.removeFarFrom(cursor, maxWorld)
     } else {
       this.currentSnap = null
+      this.snapMarker = null
       this.tracking.observeHover(null, 0)
       this.parallelRefs.clear()
     }
@@ -5389,7 +5445,8 @@ export class CadRuntime extends Observable {
         settings,
         this.text,
         prompt.dynamic,
-        ((this.currentSnap ? 1 : 0) + (this.buildPolarGuide() ? 1 : 0)) *
+        ((this.currentSnap || this.snapMarker ? 1 : 0) +
+          (this.buildPolarGuide() ? 1 : 0)) *
           CURSOR_TOOLTIP_ROW
       ),
       documentUnit: settings.unit,

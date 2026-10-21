@@ -1531,6 +1531,8 @@
         "quadrant": "Cuadrante",
         "nearest": "Cercano"
       },
+      "deferredTangent": "Tangente diferida",
+      "deferredPerpendicular": "Perpendicular diferida",
       "polar": "Polar: {distance}{unit} < {angle}°",
       "polarZ": "Polar: {distance}{unit} < {axis}",
       "zPositive": "+Z",

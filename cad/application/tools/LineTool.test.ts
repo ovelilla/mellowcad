@@ -1079,6 +1079,24 @@ describe("LINE", () => {
       expect(cad.commandLog()).toEqual(["LINE", "Specify first point: tan to"])
     })
 
+    it("shows the Deferred Tangent marker where the first point will defer", () => {
+      // desktop circle/d03's glyph and tooltip (table 85), over a circle at
+      // LINE's first point under TAN (probe line/p24 defers it); nothing over
+      // a line, where a Tangent finds nothing.
+      const tooltips = (cad: CadHarness) =>
+        cad
+          .scene()
+          .primitives.flatMap((q) => (q.kind === "label" ? [q.text] : []))
+      const cad = createHarness({
+        entities: [circleOf(p(0, 0), 20), lineOf(p(40, 0), p(80, 0))],
+      })
+
+      cad.command("LINE").type("tan").enter().moveTo(p(-5, 19.5))
+      expect(tooltips(cad)).toEqual(["Deferred Tangent"])
+      cad.moveTo(p(60, 0.5))
+      expect(tooltips(cad)).toEqual([])
+    })
+
     it("writes an object snap on the line its pick answers", () => {
       const cad = createHarness({ entities: [lineOf(p(0, 0), p(50, 0))] })
 

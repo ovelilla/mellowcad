@@ -523,6 +523,24 @@ export interface Tool {
    * base there.
    */
   snapsFromLastPoint?(): boolean
+  /**
+   * The override a prompt acts under when none is typed: CIRCLE Ttr's objects
+   * are picked as under TAN, so the running snaps show nothing there (desktop
+   * circle/d03). Null, the default: the running snaps.
+   */
+  impliedSnap?(): SnapType.Tangent | null
+  /**
+   * The marker a Tangent or Perpendicular finding nothing shows over `entity`
+   * (on the object, the crosshair left on the pointer): `"deferred"`,
+   * AutoCAD's glyph with three dots and `Deferred Tangent`, where the tool
+   * works it out ({@link defersSnap}; desktop circle/d03); `"plain"`, the
+   * snap's own, where the pick is then refused (Ttr over an ellipse, d13);
+   * null, the default, none.
+   */
+  snapMarker?(
+    kind: SnapType.Tangent | SnapType.Perpendicular,
+    entity: Entity
+  ): "deferred" | "plain" | null
 
   /**
    * An answer typed at a prompt with no box to take it — a point at `Select

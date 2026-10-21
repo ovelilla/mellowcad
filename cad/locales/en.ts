@@ -2906,6 +2906,8 @@ export const en: EngineCatalog = {
         "quadrant": "Quadrant",
         "nearest": "Nearest"
       },
+      "deferredTangent": "Deferred Tangent",
+      "deferredPerpendicular": "Deferred Perpendicular",
       "polar": [
         "Polar: ",
         [

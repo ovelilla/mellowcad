@@ -24,8 +24,12 @@ the UCS's X and Y when it lies parallel to the UCS's XY plane (UCS Z 30: circle/
 OCS's otherwise (**unverified**, not probed), only the snap turning, not the grips (desktop
 circle/d15); an arc's at its OCS's (**unverified** in a rotated UCS); the markers as AutoCAD's dark
 theme draws them, green, 14 px with a 2 px stroke (square, triangle, circle with a cross, diamond,
-✕, right angle, circle with a bar, hourglass; desktop line/d05, d21); the snap's name in a light grey
-box below and to the right of the cursor (d05, d21), with Polar's reading under it, and the
+✕, right angle, circle with a bar, hourglass; desktop line/d05, d21); a Tangent or Perpendicular a
+command works out itself (LINE's first point, CIRCLE's 2P, 3P and Ttr, whose objects are picked as
+under TAN with the running snaps silent) marked on the object under the cursor by its glyph trailing
+three dots and `Deferred Tangent` / `Deferred Perpendicular` (es `Tangente diferida`,
+`Perpendicular diferida`, tables 85, 86), the crosshair left on the pointer (desktop circle/d03);
+the snap's name in a light grey box below and to the right of the cursor (d05, d21), with Polar's reading under it, and the
 dynamic-input box under both — WHY: AutoCAD puts its dynamic-input box in that same place (d11);
 which gives way with both showing is **unverified**; F3 turns object snapping on and off,
 writing `Command:  <Osnap on>` / ` <Osnap off>` (es ` <Refent activado>` / ` <Refent desactivado>`;

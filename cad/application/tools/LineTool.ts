@@ -408,6 +408,14 @@ export class LineTool implements Tool {
     )
   }
 
+  /** Deferred Tangent or Perpendicular where the first point defers it (desktop circle/d03). */
+  snapMarker(
+    kind: SnapType.Tangent | SnapType.Perpendicular,
+    entity: Entity
+  ): "deferred" | null {
+    return this.defersSnap(kind, entity) ? "deferred" : null
+  }
+
   getConstraintAnchor(): Vec2 | null {
     return this.state.phase === "drawing" ? this.state.start : null
   }

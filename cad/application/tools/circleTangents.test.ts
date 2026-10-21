@@ -4,6 +4,7 @@ import { withElevation } from "../../domain/entities"
 import { type CadHarness, createHarness } from "../../../test/harness"
 import { circleOf, ellipseOf, lineOf, p } from "../../../test/builders"
 import { es } from "../../locales/es"
+import { THEME } from "../../scene/theme"
 
 /** Typed at the command line and confirmed, as AutoCAD's prompt reads it. */
 function answer(cad: CadHarness, ...answers: string[]): CadHarness {
@@ -552,5 +553,113 @@ describe("CIRCLE Ttr", () => {
     expect(at(3, 3, 0)).toBe(3)
     expect(at(0, 0, 5)).toBe(0)
     expect(at(3, 7, 5)).toBe(5)
+  })
+})
+
+describe("the Deferred Tangent marker", () => {
+  /** The cursor's tooltips and what the scene draws in the snap's green or the highlight's blue. */
+  function marks(cad: CadHarness) {
+    const primitives = cad.scene().primitives
+    const stroked = (color: string) =>
+      primitives.filter(
+        (q) =>
+          ("stroke" in q && q.stroke?.color === color) ||
+          ("fill" in q && q.fill === color)
+      ).length
+    return {
+      tooltips: primitives.flatMap((q) => (q.kind === "label" ? [q.text] : [])),
+      glyph: stroked(THEME.snap),
+      highlight: stroked(THEME.selected),
+    }
+  }
+  /** The tangent glyph (a circle with a bar on top) and the three dots after it. */
+  const DEFERRED_GLYPH = 2 + 3
+
+  it("shows at Ttr's objects over a line or a circle, the object not highlighted", () => {
+    // desktop circle/d03: the green glyph with its dots and `Deferred
+    // Tangent`, the running snaps silent (an Endpoint under the cursor), no
+    // highlight; nothing over nothing.
+    const cad = createHarness({
+      snap: true,
+      entities: [lineOf(p(-20, 40), p(60, 40)), circleOf(p(0, 0), 10)],
+    })
+    answer(cad, "CIRCLE", "T")
+    cad.moveTo(p(58, 40.5))
+    expect(marks(cad)).toEqual({
+      tooltips: ["Deferred Tangent"],
+      glyph: DEFERRED_GLYPH,
+      highlight: 0,
+    })
+    cad.click(p(58, 40.5)).moveTo(p(0.5, 10))
+    expect(marks(cad)).toEqual({
+      tooltips: ["Deferred Tangent"],
+      glyph: DEFERRED_GLYPH,
+      highlight: 0,
+    })
+    cad.moveTo(p(30, 20))
+    expect(marks(cad)).toEqual({ tooltips: [], glyph: 0, highlight: 0 })
+  })
+
+  it("puts the glyph on the object, the crosshair left on the pointer", () => {
+    // desktop circle/d03: the crosshair stays where the mouse is.
+    const cad = createHarness({ entities: [lineOf(p(-20, 40), p(60, 40))] })
+    answer(cad, "CIRCLE", "T")
+    cad.moveTo(p(20, 42))
+    const glyph = cad
+      .scene()
+      .primitives.find(
+        (q) => q.kind === "circle" && q.stroke?.color === THEME.snap
+      )
+    const on = cad.toScreen(p(20, 40))
+    expect(glyph).toEqual(
+      expect.objectContaining({
+        center: { x: Math.round(on.x), y: Math.round(on.y) },
+      })
+    )
+  })
+
+  it("shows the plain Tangent over an ellipse at Ttr, which the pick refuses", () => {
+    // desktop circle/d13.
+    const cad = createHarness({
+      entities: [ellipseOf(p(0, 0), p(20, 0), 0.25)],
+    })
+    answer(cad, "CIRCLE", "T")
+    cad.moveTo(p(0, 5.5))
+    expect(marks(cad)).toEqual({
+      tooltips: ["Tangent"],
+      glyph: 2,
+      highlight: 0,
+    })
+  })
+
+  it("names it in the command language", () => {
+    // table 85: es `Tangente diferida`; 86 `Perpendicular diferida`.
+    const cad = createHarness({
+      locale: es,
+      entities: [circleOf(p(0, 0), 10), lineOf(p(-20, 40), p(60, 40))],
+    })
+    answer(cad, "CIRCULO", "T")
+    cad.moveTo(p(0, 10.5))
+    expect(marks(cad).tooltips).toEqual(["Tangente diferida"])
+    cad.escape()
+    answer(cad, "CIRCULO", "3P", "_PER")
+    cad.moveTo(p(20, 40.5))
+    expect(marks(cad).tooltips).toEqual(["Perpendicular diferida"])
+  })
+
+  it("shows where 2P's and 3P's Tangent or Perpendicular will be deferred", () => {
+    // desktop circle/d03's marker, at the points the console defers (probes
+    // circle/p01, p08, p337c); a Perpendicular on a circle at 3P is refused
+    // (p337f), so nothing shows there.
+    const cad = probeSetup()
+    answer(cad, "CIRCLE", "2P", "_TAN")
+    cad.moveTo(p(0, 10.2))
+    expect(marks(cad).tooltips).toEqual(["Deferred Tangent"])
+    cad.escape()
+    answer(cad, "CIRCLE", "3P", "1,1", "_PER")
+    cad.moveTo(p(20, -14.8))
+    expect(marks(cad).tooltips).toEqual(["Deferred Perpendicular"])
+    cad.moveTo(p(40, 10.2))
+    expect(marks(cad).tooltips).toEqual([])
   })
 })

@@ -164,6 +164,11 @@ export interface SceneInput {
   readonly attributeDisplay?: AttributeDisplay
   readonly snap: SnapResult | null
   /**
+   * The snap is a Tangent or Perpendicular deferred, found nowhere yet: its
+   * glyph with three dots after it (desktop circle/d03).
+   */
+  readonly snapDeferred?: boolean
+  /**
    * The object snap's name for the tooltip beside its marker, in the command
    * language — the scene describes what to draw, not which language it speaks.
    */
@@ -264,7 +269,7 @@ export function buildScene(input: SceneInput): Scene {
       pushAlignmentGuide(primitives, aid, input.snap, input.snap.direction)
     }
     if (input.snap.path) pushSnapPath(primitives, aid, input.snap.path)
-    pushSnapMarker(primitives, marker, input.snap)
+    pushSnapMarker(primitives, marker, input.snap, input.snapDeferred)
   }
   const tooltipAt =
     input.cursor?.screen ??
@@ -1833,12 +1838,14 @@ function pushTrackedPointMarker(out: ScenePrimitive[], at: Vec2): void {
 
 /**
  * The AutoSnap marker of the snap's type, green, 14 px across with a 2 px
- * stroke as AutoCAD's dark theme draws them (desktop d05, d21).
+ * stroke as AutoCAD's dark theme draws them (desktop d05, d21); a deferred
+ * one trails three dots, as an apparent intersection does (circle/d03).
  */
 function pushSnapMarker(
   out: ScenePrimitive[],
   at: Vec2,
-  snap: SnapResult
+  snap: SnapResult,
+  deferred = false
 ): void {
   const s = 6
   const c = { x: Math.round(at.x), y: Math.round(at.y) }
@@ -1903,6 +1910,9 @@ function pushSnapMarker(
       break
     default:
       out.push({ kind: "circle", center: c, radius: s, stroke })
+  }
+  if (deferred) {
+    pushEllipsis(out, { x: c.x + s + 2, y: c.y + s + 2 }, stroke.color)
   }
 }
 

@@ -47,6 +47,7 @@ import {
   type QuestionInput,
 } from "./Tool"
 import {
+  currentColor,
   withCurrentProperties,
   withCurrentThickness,
 } from "./currentProperties"
@@ -132,13 +133,9 @@ type CircleToolState =
       readonly cursor: Vec3
     }
   /** Ttr: awaiting the object of the first tangent. */
-  | { readonly phase: "tangentFirst"; readonly hover: Entity | null }
+  | { readonly phase: "tangentFirst" }
   /** Ttr: awaiting the object of the second tangent. */
-  | {
-      readonly phase: "tangentSecond"
-      readonly first: Tangency
-      readonly hover: Entity | null
-    }
+  | { readonly phase: "tangentSecond"; readonly first: Tangency }
   /**
    * Ttr: awaiting the radius, typed or as the distance between two points,
    * which the runtime measures.
@@ -303,7 +300,7 @@ export class CircleTool implements Tool {
       }
       if (id === "Ttr") {
         this.active = "ttr"
-        this.state = { phase: "tangentFirst", hover: null }
+        this.state = { phase: "tangentFirst" }
         this.openTangentInput(ctx)
         ctx.requestRender()
         return "continue"
@@ -370,6 +367,58 @@ export class CircleTool implements Tool {
   }
 
   /**
+   * Ttr's objects are picked as under TAN: the running snaps show nothing and
+   * the object is not highlighted (desktop circle/d03).
+   */
+  impliedSnap(): SnapType.Tangent | null {
+    const { phase } = this.state
+    return phase === "tangentFirst" || phase === "tangentSecond"
+      ? SnapType.Tangent
+      : null
+  }
+
+  /**
+   * Deferred Tangent where the pick will be taken: Ttr's line, circle or arc
+   * (desktop circle/d03) and what 2P and 3P defer. Over an ellipse or a
+   * spline Ttr shows the plain Tangent, and its pick is refused (d13). None
+   * at 2P's Perpendicular on a line, the foot from LASTPOINT, an ordinary
+   * point (p335): what AutoCAD shows there is unverified.
+   */
+  snapMarker(
+    kind: SnapType.Tangent | SnapType.Perpendicular,
+    entity: Entity
+  ): "deferred" | "plain" | null {
+    switch (this.state.phase) {
+      case "p1":
+      case "p2":
+      case "p3":
+        if (
+          this.active === "twoPoint" &&
+          kind === SnapType.Perpendicular &&
+          entity.type === "line"
+        ) {
+          return null
+        }
+        return this.defersSnap(kind, entity) ? "deferred" : null
+      case "tangentFirst":
+      case "tangentSecond":
+        if (kind !== SnapType.Tangent || !readsInPlan(entity)) return null
+        if (
+          entity.type === "line" ||
+          entity.type === "circle" ||
+          entity.type === "arc"
+        ) {
+          return "deferred"
+        }
+        return entity.type === "ellipse" || entity.type === "spline"
+          ? "plain"
+          : null
+      default:
+        return null
+    }
+  }
+
+  /**
    * The centre's Tangent and Perpendicular are measured from LASTPOINT, the
    * answer nearer the pick (probes circle/p343–p347; CIRCLE-D32).
    */
@@ -394,14 +443,6 @@ export class CircleTool implements Tool {
       case "p3":
         this.state = { ...this.state, cursor: input.point }
         break
-      case "tangentFirst":
-      case "tangentSecond": {
-        const hover = this.pickTangent(input.world, ctx)?.entity ?? null
-        if (hover?.id !== this.state.hover?.id) {
-          this.state = { ...this.state, hover }
-        }
-        break
-      }
     }
     ctx.dynamicInput.setPosition(input.screen)
     ctx.requestRender()
@@ -433,7 +474,7 @@ export class CircleTool implements Tool {
           z: entityElevation(picked.entity),
         }
         if (state.phase === "tangentFirst") {
-          this.state = { phase: "tangentSecond", first: tangency, hover: null }
+          this.state = { phase: "tangentSecond", first: tangency }
         } else {
           this.state = {
             phase: "ttrRadius",
@@ -685,27 +726,30 @@ export class CircleTool implements Tool {
 
   buildOverlay(ctx: ToolContext): ScenePrimitive[] {
     const { viewport } = ctx
-    const rubber = { color: THEME.rubberBand, width: 1 }
+    // The circle about to be made, in its colour: red with CECOLOR 1 (desktop
+    // circle/d01, d02, d05).
+    const rubber = { color: currentColor(ctx), width: 1 }
     const layer = ctx.document.getCurrentLayerId()
     const ghost = (circle: CircleEntity | null): ScenePrimitive[] =>
       circle ? entityScenePrimitive(viewport, circle, rubber) : []
-    const segment = (a: Vec2, b: Vec2): ScenePrimitive => ({
-      kind: "segment",
-      a: viewport.worldToScreen(a),
-      b: viewport.worldToScreen(b),
-      stroke: rubber,
-    })
 
     switch (this.state.phase) {
       case "radius": {
         const { center, cursor } = this.state
         const radius = this.resolveRadius(ctx)
-        // AutoCAD draws the size line from the centre to the cursor. In diameter
-        // mode the cursor sits at the diameter distance (2× the radius), so the
-        // line runs out past the rim — its length is the diameter, which is the
-        // visual cue that the diameter (not the radius) is being specified.
+        // AutoCAD draws the size line from the centre to the cursor, amber and
+        // dashed (desktop circle/d01, d05; the trace's UseDashedLine). In
+        // diameter mode the cursor sits at the diameter distance (2× the
+        // radius), so the line runs out past the rim — its length is the
+        // diameter, which is the visual cue that the diameter (not the radius)
+        // is being specified.
         return [
-          segment(center, cursor),
+          {
+            kind: "segment",
+            a: viewport.worldToScreen(center),
+            b: viewport.worldToScreen(cursor),
+            stroke: { color: THEME.dashedRubberBand, width: 1, dash: [2, 3] },
+          },
           ...ghost(circleAt(center, radius, center, layer, PREVIEW_ID)),
         ]
       }
@@ -725,13 +769,10 @@ export class CircleTool implements Tool {
             )
           )
         }
-        const chord = segment(first.point, cursor)
-        // Three-point: only two points so far — show the chord.
-        if (this.active !== "twoPoint") return [chord]
-        return [
-          chord,
-          ...ghost(twoPointCircle(first.point, cursor, layer, PREVIEW_ID)),
-        ]
+        // No chord: 2P shows the circle alone, 3P nothing until two points
+        // fix it (desktop circle/d02).
+        if (this.active !== "twoPoint") return []
+        return ghost(twoPointCircle(first.point, cursor, layer, PREVIEW_ID))
       }
       case "p3": {
         const [first, second] = this.state.given
@@ -756,16 +797,6 @@ export class CircleTool implements Tool {
             PREVIEW_ID
           )
         )
-      }
-      case "tangentFirst":
-      case "tangentSecond": {
-        const { hover } = this.state
-        return hover
-          ? entityScenePrimitive(viewport, hover, {
-              color: THEME.selected,
-              width: 2,
-            })
-          : []
       }
       case "ttrRadius": {
         const radius = this.resolveTtrRadius(ctx)

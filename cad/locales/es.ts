@@ -3252,6 +3252,8 @@ export const es: EngineLocale = {
         "quadrant": "Cuadrante",
         "nearest": "Cercano"
       },
+      "deferredTangent": "Tangente diferida",
+      "deferredPerpendicular": "Perpendicular diferida",
       "polar": [
         "Polar: ",
         [

@@ -21,6 +21,8 @@ import { V } from "../../geometry/Vec2"
 import { type CadHarness, createHarness } from "../../../test/harness"
 import { circleOf, deg, lineOf, p } from "../../../test/builders"
 import { es } from "../../locales/es"
+import { THEME } from "../../scene/theme"
+import type { ScenePrimitive } from "../../scene/types"
 
 /** Typed at the command line and confirmed, as AutoCAD's prompt reads it. */
 function answer(cad: CadHarness, ...answers: string[]): CadHarness {
@@ -579,6 +581,84 @@ describe("CIRCLE", () => {
       const circle = cad.only<CircleEntity>("circle")
       expect(circle.center).toBeCloseToPoint(p(0, 0))
       expect(circle.radius).toBe(5)
+    })
+  })
+
+  describe("its jig, as the desktop draws it", () => {
+    /** What is drawn but the grid and the crosshair: kind, colour, dash. */
+    const aids = new Set<string>([
+      THEME.crosshair,
+      THEME.gridMinor,
+      THEME.gridMajor,
+      THEME.axisX,
+      THEME.axisY,
+    ])
+    const jig = (cad: CadHarness) =>
+      cad.scene().primitives.flatMap((q) => {
+        const stroke = "stroke" in q ? q.stroke : undefined
+        if (!stroke || aids.has(stroke.color)) return []
+        return [`${q.kind} ${stroke.color}${stroke.dash ? " dashed" : ""}`]
+      })
+    const red = (cad: CadHarness) => {
+      answer(cad, "-COLOR", "1")
+      return cad.runtime.document.getSettings().currentColor as string
+    }
+    const sizeLine = `segment ${THEME.dashedRubberBand} dashed`
+
+    it("draws the ghost in the current colour and the size line amber and dashed", () => {
+      // desktop circle/d01, d05: with CECOLOR 1 the ghost is red at the radius
+      // and the diameter, the line from the centre to the cursor amber and
+      // dashed (the trace's UseDashedLine), past the rim at the diameter.
+      const cad = createHarness()
+      const color = red(cad)
+      cad.command("CIRCLE").click(p(0, 0)).moveTo(p(30, 40))
+      expect(jig(cad)).toEqual([sizeLine, `circle ${color}`])
+      const line = (q: ScenePrimitive) =>
+        q.kind === "segment" && q.stroke.dash !== undefined
+      expect(cad.scene().primitives.find(line)).toEqual(
+        expect.objectContaining({
+          a: expect.objectContaining(cad.toScreen(p(0, 0))),
+          b: expect.objectContaining(cad.toScreen(p(30, 40))),
+          stroke: { color: THEME.dashedRubberBand, width: 1, dash: [2, 3] },
+        })
+      )
+
+      cad.option("Diameter").moveTo(p(30, 40))
+      expect(jig(cad)).toEqual([sizeLine, `circle ${color}`])
+      const ghost = cad.scene().primitives.find((q) => q.kind === "circle")
+      expect(ghost).toEqual(expect.objectContaining({ radius: 25 }))
+      expect(cad.scene().primitives.find(line)).toEqual(
+        expect.objectContaining({
+          b: expect.objectContaining(cad.toScreen(p(30, 40))),
+        })
+      )
+    })
+
+    it("draws no chord at 2P and nothing at 3P's second point", () => {
+      // desktop circle/d02: 2P shows only the ghost; 3P nothing after its
+      // first point, then the ghost through the two points and the cursor.
+      const cad = createHarness()
+      const color = red(cad)
+      cad.command("CIRCLE").option("2P").click(p(0, 0)).moveTo(p(30, 40))
+      expect(jig(cad)).toEqual([`circle ${color}`])
+
+      cad.escape().command("CIRCLE").option("3P").click(p(0, 0))
+      cad.moveTo(p(30, 40))
+      expect(jig(cad)).toEqual([])
+      cad.click(p(30, 40)).moveTo(p(60, 0))
+      expect(jig(cad)).toEqual([`circle ${color}`])
+    })
+
+    it("draws Ttr's ghost in the current colour", () => {
+      // desktop circle/d03 (nothing at the radius until it is given) and d01.
+      const cad = createHarness({
+        entities: [lineOf(p(-20, 40), p(60, 40)), circleOf(p(0, 0), 10)],
+      })
+      const color = red(cad)
+      cad.command("CIRCLE").option("Ttr").click(p(30, 40)).click(p(0, 10))
+      const objects = jig(cad)
+      cad.type("20")
+      expect(jig(cad)).toEqual([...objects, `circle ${color}`])
     })
   })
 })
