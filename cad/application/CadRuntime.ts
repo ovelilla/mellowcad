@@ -95,10 +95,7 @@ import { CommandHistory, Step } from "./commands/Command"
 import type { UndoHistory } from "./tools/Tool"
 import { UpdateSettingsCommand } from "./commands/settingsCommands"
 import { ViewChangeCommand } from "./commands/viewCommands"
-import {
-  NewDrawingCommand,
-  RemoveEntitiesCommand,
-} from "./commands/entityCommands"
+import { NewDrawingCommand } from "./commands/entityCommands"
 import { MACRO_PAUSE, PointerInput, Tool, ToolContext } from "./tools/Tool"
 import { InsertTool } from "./tools/InsertTool"
 import { TextEditTool } from "./tools/TextEditTool"
@@ -2284,10 +2281,22 @@ export class CadRuntime extends Observable {
     this.setCleanScreen(!this.cleanScreen)
   }
 
+  /**
+   * acad.cuix's Delete key, `^C^C_erase;`: objects selected at the Command
+   * prompt are erased by ERASE run as typed, so its echo carries the count, U
+   * names it and Enter repeats it (desktop erase/d11). A grip edit under way
+   * is a command, as for the right button, and keeps the key.
+   */
   deleteSelection(): void {
-    if (this.selection.isEmpty()) return
-    this.history.execute(new RemoveEntitiesCommand(this.selection.toArray()))
-    this.selection.clear()
+    if (this.deletes()) this.runCommand("_ERASE")
+  }
+
+  private deletes(): boolean {
+    return (
+      !this.selection.isEmpty() &&
+      this.activeTool.id === "select" &&
+      !(this.activeTool.wantsSnap?.() ?? false)
+    )
   }
 
   /**
@@ -4119,8 +4128,8 @@ export class CadRuntime extends Observable {
       this.clipboardFallback
     )
     if (!fragment) {
-      // Not AutoCAD's wording (it pastes foreign text as an MTEXT object, which
-      // this paste does not do yet); phrased like ERASE's "Nothing selected.".
+      // Not AutoCAD's wording: it pastes foreign text as an MTEXT object,
+      // which this paste does not do yet, so there is no message to copy.
       this.commandLine.write("info", this.text.message("clipboardEmpty"))
       this.commandLineVisible = true
       this.invalidateState()
@@ -4203,6 +4212,9 @@ export class CadRuntime extends Observable {
       blocks: this.document.blockLookup(),
       selectedIds: new Set(this.selection.toArray()),
       hiddenIds: new Set(this.activeTool.hiddenEntityIds?.() ?? []),
+      fadedIds: new Set(
+        this.activeTool.fadedEntityIds?.(this.toolContext) ?? []
+      ),
       gridVisible: this.document.getSettings().gridMode,
       gridSpacing: this.snapMode.displaySpacing(),
       ucs: frame.ucs,
@@ -4982,6 +4994,13 @@ export class CadRuntime extends Observable {
       // running command, so a typo never costs you the command in progress.
       if (e.key === "Escape" && typed !== "") {
         this.setCommandLineText("")
+        return true
+      }
+
+      // WHY Backspace too: a Mac's Delete key reaches the browser as
+      // Backspace, and with nothing typed it has nothing else to do here.
+      if ((e.key === "Delete" || e.key === "Backspace") && this.deletes()) {
+        this.deleteSelection()
         return true
       }
     }

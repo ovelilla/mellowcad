@@ -23,7 +23,9 @@ const drawing = () => [
 const SELECTION_MODES =
   "Window/Last/Crossing/BOX/ALL/Fence/WPolygon/CPolygon/Group/Add/Remove/Multiple/Previous/Undo/AUto/SIngle/SUbobject/Object"
 
-// Every transcript below is AutoCAD 2023's console answering the same input.
+// Every transcript below is AutoCAD's console answering the same input: 2023's
+// where a test cites `acc/…` or nothing, 2027's where it cites a probe of
+// `erase/`.
 describe("Select objects' modes", () => {
   it("counts Last, a duplicate, a Window, Remove and Undo as AutoCAD does", () => {
     const cad = createHarness({ entities: drawing() })
@@ -81,6 +83,7 @@ describe("Select objects' modes", () => {
     ])
   })
 
+  // ERASE says nothing once the set closes (erase/p00, p101).
   it("writes picked corners on one line, as the opposite corner follows the first", () => {
     const cad = createHarness({ entities: drawing() })
     cad.command("ERASE")
@@ -92,7 +95,6 @@ describe("Select objects' modes", () => {
       "Select objects: W",
       "Specify first corner: Specify opposite corner: 2 found",
       "Select objects:",
-      "2 objects erased.",
     ])
     expect(cad.entities().map((e) => e.id)).toEqual(["C"])
   })
@@ -396,7 +398,8 @@ describe("Select objects' modes", () => {
   })
 
   // AutoCAD 2023's console (acc/u1–u17, v1–v7): `S` starts SIngle and the
-  // hidden SUbobject alike where the set takes sub-objects.
+  // hidden SUbobject alike where the set takes sub-objects; 2027's ERASE
+  // ends there with no count of its own (erase/p130).
   it("asks SIngle or SUbobject? for S, as the console does", () => {
     const cad = createHarness({ entities: drawing() })
     cad.command("ERASE")
@@ -409,7 +412,6 @@ describe("Select objects' modes", () => {
       "SIngle or SUbobject? SI",
       "Select objects: L",
       "1 found",
-      "1 object erased.",
     ])
     expect(cad.entityCount).toBe(2)
 

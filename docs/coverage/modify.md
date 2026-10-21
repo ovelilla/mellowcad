@@ -533,13 +533,21 @@ as the displacement
 
 **Missing:** the selection modes' gaps (Command line, `Select objects:`)
 
-### `ERASE` / `E` · es `BORRA` / `B`
+### `ERASE` / `E` / `DELETE` · es `BORRA` / `B` / `DELETE`
 
 **Implemented:** noun-verb and verb-noun (MOVE's `Select objects:` and its modes; Enter or Space
-erases, Escape erases nothing), one undo step, `n objects erased.`; the Delete key erases the
-selection
+erases, Escape erases nothing), one undo step that U names `ERASE`; nothing said once the set
+closes, the history ending at `Select objects:` or a preselection's count, and Enter on an empty set
+silent (erase/p00, p01, p304, desktop d09); `DELETE` from both `acad.pgp` files (erase/p302). At its
+`Select objects:` the object under the cursor and the set draw faded in their own colour, AutoCAD's
+erase preview, where other commands glow (desktop d09-2, d09-4). The Delete key with objects
+selected at `Command:` runs ERASE as acad.cuix's `^C^C_erase;` does: echoed with its count, U names
+it, Enter repeats it (desktop d11; the echo is the runtime's `ERASE`, not the macro's `_.erase`).
+Backspace does the same: a Mac's Delete key reaches the browser as Backspace (AutoCAD's own
+Backspace there is unverified)
 
-**Missing:** OOPS
+**Missing:** OOPS, which in 2027 brings back the last set ERASE erased even after other commands, as
+a step U names `OOPS`, and with nothing to bring back says nothing (erase/p307, p309)
 
 ### `EXPLODE` / `X` · es `DESCOMP` / `DP`†
 

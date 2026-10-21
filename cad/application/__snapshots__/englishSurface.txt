@@ -45,7 +45,7 @@ TRIM ["TR"] "Trim"
 EXTEND ["EX"] "Extend"
 FILLET ["F"] "Fillet"
 CHAMFER ["CHA"] "Chamfer"
-ERASE ["E"] "Erase"
+ERASE ["E","DELETE"] "Erase"
 EXPLODE ["X"] "Explode"
 JOIN ["J"] "Join"
 BREAK ["BR"] "Break"
@@ -222,7 +222,6 @@ lweight "Lineweight" LW
 > ERASE one
   prompt: Command:
   command| E ERASE 1 found
-  info| 1 object erased.
 > UNDO
   command| U
   info| ERASE
@@ -281,7 +280,6 @@ lweight "Lineweight" LW
   cycling: -
 > ERASE two
   command| ERASE 2 found
-  info| 2 objects erased.
 
 ## purge
 > start
@@ -2467,7 +2465,6 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0°~, Line space facto
   tip: Select base dimension:
   dyn: 
   command| ERASE 1 found
-  info| 1 object erased.
   command| DIMBASELINE
 
 ## DIMSPACE

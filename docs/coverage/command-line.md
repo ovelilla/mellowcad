@@ -122,7 +122,8 @@ Angle, SCALE's reference length and Points' new length), where a number or a key
 the question and a wrong answer gets the question's own refusal
 (`Requires numeric distance or two points.`) — AutoCAD 2023's console
 
-**Missing:** the `.` prefix (`._LINE`: nothing can be redefined here), `_`
+**Missing:** the `.` prefix (`._LINE`, `_.ERASE`, which the 2027 console runs, erase/p04: refused
+here as an unknown command, since nothing can be redefined), `_`
 with a global alias (`_` selects global command names; aliases belong to each language's acad.pgp)
 
 ### Keywords

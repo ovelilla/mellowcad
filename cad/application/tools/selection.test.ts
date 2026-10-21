@@ -10,6 +10,10 @@ import type {
 import {
   assignEntityColor,
   closestOnEntity,
+  createBlockDefinition,
+  createDimension,
+  createInsert,
+  createMText,
   createSpline,
   ellipseEndPoint,
   ellipseStartPoint,
@@ -20,15 +24,21 @@ import {
 } from "../../domain/entities"
 import { polarPoint } from "../../geometry/primitives"
 import { THEME } from "../../scene/theme"
-import { createHarness } from "../../../test/harness"
+import { DEFAULT_LAYER_COLOR } from "../../domain/layers"
+import { fadedColor } from "../SceneBuilder"
+import { es } from "../../locales/es"
+import { type CadHarness, createHarness } from "../../../test/harness"
 import {
   arcOf,
   circleOf,
   deg,
   ellipseOf,
+  hatchOf,
   lineOf,
+  loopOf,
   p,
   polylineOf,
+  textOf,
 } from "../../../test/builders"
 
 /**
@@ -39,6 +49,14 @@ import {
  */
 
 const SHORT = lineOf(p(0, 0), p(100, 0), { id: "L1" })
+
+/** Each answer typed at the command line and confirmed, as the console types it. */
+function typed(cad: CadHarness, ...texts: string[]): void {
+  for (const text of texts) {
+    cad.runtime.setCommandLineText(text)
+    cad.runtime.submitCommandLine()
+  }
+}
 const FAR = lineOf(p(400, 400), p(500, 400), { id: "L2" })
 
 describe("picking", () => {
@@ -906,12 +924,14 @@ describe("ERASE", () => {
 
     expect(cad.entities().map((e) => e.id)).toEqual(["L2"])
     expect(cad.activeToolId()).toBe("select")
-    expect(cad.commandLog()).toContain("1 object erased.")
     cad.undo()
     expect(cad.entityCount).toBe(2)
   })
 
-  it("asks Select objects and writes what each pick found", () => {
+  // AutoCAD 2027 writes nothing once ERASE closes its set: the history ends at
+  // `Select objects:`, and a preselection at its count (probes erase/p00,
+  // p01, p03; desktop erase/d09).
+  it("writes what each pick found and nothing after the set (erase/p00, p01)", () => {
     const cad = createHarness({ entities: [SHORT, FAR] })
 
     cad.command("E")
@@ -923,13 +943,168 @@ describe("ERASE", () => {
       "E ERASE",
       "Select objects: 1 found",
       "Select objects:",
-      "1 object erased.",
       "ERASE 1 found",
-      "1 object erased.",
     ])
+    expect(cad.entityCount).toBe(0)
   })
 
-  it("erases nothing when Escape ends the prompt", () => {
+  it("is BORRA and B in Spanish, and Enter at Command: repeats it (erase/p300, p303)", () => {
+    const cad = createHarness({
+      locale: es,
+      entities: [SHORT, FAR, lineOf(p(0, 50), p(100, 50))],
+    })
+    typed(cad, "BORRA", "_L", "", "B", "_L", "", "", "_L", "")
+
+    expect(cad.commandLog()).toEqual([
+      "BORRA",
+      "Designe objetos: _L",
+      "1 encontrados",
+      "Designe objetos:",
+      "B BORRA",
+      "Designe objetos: _L",
+      "1 encontrados",
+      "Designe objetos:",
+      "BORRA",
+      "Designe objetos: _L",
+      "1 encontrados",
+      "Designe objetos:",
+    ])
+    expect(cad.entityCount).toBe(0)
+  })
+
+  it("ends silently on Enter with nothing selected (erase/p304)", () => {
+    const cad = createHarness({ entities: [SHORT] })
+    typed(cad, "_ERASE", "")
+
+    expect(cad.commandLog()).toEqual(["ERASE", "Select objects:"])
+    expect(cad.activeToolId()).toBe("select")
+    expect(cad.entityCount).toBe(1)
+  })
+
+  it("is refused transparently, at Command:, a point and its own set (erase/p04, p324, p325)", () => {
+    const cad = createHarness({ entities: [SHORT] })
+    typed(cad, "'_ERASE")
+    expect(cad.commandLog()).toEqual([
+      "'ERASE",
+      "** That command may not be invoked transparently **",
+    ])
+
+    typed(cad, "_CIRCLE", "0,0", "'_ERASE")
+    expect(cad.commandLog().slice(-2)).toEqual([
+      "** That command may not be invoked transparently **",
+      'Requires numeric radius, point on circumference, or "D".',
+    ])
+
+    cad.escape()
+    typed(cad, "_ERASE", "'_ERASE")
+    expect(cad.commandLog().slice(-3)).toEqual([
+      "** That command may not be invoked transparently **",
+      "*Invalid selection*",
+      "Expects a point or Window/Last/Crossing/BOX/ALL/Fence/WPolygon/CPolygon/Group/Add/Remove/Multiple/Previous/Undo/AUto/SIngle/SUbobject/Object",
+    ])
+    expect(cad.activeToolId()).toBe("erase")
+  })
+
+  it("erases every type of object ALL finds (erase/p310, p323)", () => {
+    const block = createBlockDefinition("B1", p(0, 0), [
+      lineOf(p(0, 0), p(1, 0)),
+    ])
+    const cad = createHarness({
+      blocks: [block],
+      entities: [
+        lineOf(p(0, 0), p(10, 0)),
+        circleOf(p(20, 0), 3),
+        arcOf(p(33, 0), 3, 0, Math.PI),
+        polylineOf([p(40, 0), p(50, 0), p(50, 5)]),
+        createSpline("fit", [p(60, 0), p(65, 5), p(70, 0)]),
+        textOf(p(80, 0), "Hola"),
+        createMText(p(90, 0), "Hola"),
+        createDimension("linear", p(0, 0), p(10, 0), p(0, -5)),
+        createInsert("B1", p(0, 20)),
+        hatchOf([loopOf(p(0, 30), p(10, 40))]),
+      ],
+    })
+    typed(cad, "_ERASE", "ALL", "")
+
+    expect(cad.commandLog().slice(-2)).toEqual(["10 found", "Select objects:"])
+    expect(cad.entityCount).toBe(0)
+  })
+
+  it("is DELETE too, in English and Spanish (erase/p302)", () => {
+    const en = createHarness({ entities: [SHORT, FAR] })
+    en.command("DELETE")
+    expect(en.activeToolId()).toBe("erase")
+    expect(en.commandLog()).toEqual(["DELETE ERASE"])
+
+    const spanish = createHarness({ locale: es, entities: [SHORT, FAR] })
+    spanish.command("DELETE")
+    expect(spanish.activeToolId()).toBe("erase")
+    expect(spanish.commandLog()).toEqual(["DELETE BORRA"])
+  })
+
+  // acad.cuix's Delete key is `^C^C_erase;`: echoed like a typed ERASE with
+  // its count, named ERASE by U, repeated by Enter (desktop erase/d11).
+  it("runs ERASE from the Delete key with a selection (erase/d11)", () => {
+    const cad = createHarness({ entities: [SHORT, FAR] })
+    cad.command("LINE").escape()
+
+    cad.select("L1")
+    expect(cad.press("Delete")).toBe(true)
+    expect(cad.entities().map((e) => e.id)).toEqual(["L2"])
+    expect(cad.commandLog().slice(-1)).toEqual(["ERASE 1 found"])
+
+    cad.command("U")
+    expect(cad.commandLog().slice(-2)).toEqual(["U", "ERASE"])
+    expect(cad.entityCount).toBe(2)
+
+    cad.command("LINE").escape()
+    cad.select("L1").press("Delete")
+    cad.press("Enter")
+    expect(cad.activeToolId()).toBe("erase")
+    expect(cad.state().commandLine.prompt).toBe("ERASE Select objects:")
+  })
+
+  // WHY Backspace too: a Mac's Delete key reaches the browser as Backspace.
+  it("runs ERASE from Backspace as from Delete, and neither does a thing with no selection", () => {
+    const cad = createHarness({ entities: [SHORT, FAR] })
+
+    expect(cad.press("Delete")).toBe(false)
+    expect(cad.commandLog()).toEqual([])
+
+    cad.select("L1").press("Backspace")
+    expect(cad.entities().map((e) => e.id)).toEqual(["L2"])
+    expect(cad.commandLog()).toEqual(["ERASE 1 found"])
+  })
+
+  // AutoCAD's erase preview: at ERASE's `Select objects:` the object under
+  // the cursor and those already in the set draw faded in their own colour,
+  // where every other command's glow (desktop erase/d09-2, d09-4).
+  it("draws the hovered object and the set faded at its prompt (erase/d09)", () => {
+    const colours = (cad: ReturnType<typeof createHarness>) =>
+      cad
+        .scene()
+        .primitives.flatMap((prim) =>
+          prim.kind === "segment" ? [prim.stroke.color] : []
+        )
+    const erase = createHarness({ entities: [SHORT, FAR] })
+    erase.command("ERASE").click(p(50, 0)).moveTo(p(450, 400))
+
+    const faded = colours(erase)
+    expect(faded).not.toContain(THEME.selected)
+    expect(faded).not.toContain(THEME.entityHover)
+    expect(faded).not.toContain(DEFAULT_LAYER_COLOR)
+    expect(
+      faded.filter((colour) => colour === fadedColor(DEFAULT_LAYER_COLOR))
+    ).toHaveLength(2)
+
+    const move = createHarness({ entities: [SHORT, FAR] })
+    move.command("MOVE").click(p(50, 0)).moveTo(p(450, 400))
+    expect(colours(move)).toContain(THEME.selected)
+    expect(colours(move)).toContain(THEME.entityHover)
+    expect(colours(move)).not.toContain(fadedColor(DEFAULT_LAYER_COLOR))
+  })
+
+  it("erases nothing when Escape ends the prompt (erase/d10)", () => {
     const cad = createHarness({ entities: [SHORT] })
 
     cad.command("ERASE").click(p(50, 0)).escape()

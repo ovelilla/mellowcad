@@ -738,7 +738,8 @@ export const en: EngineCatalog = {
       ],
       "ERASE": [
         "ERASE",
-        "E"
+        "E",
+        "DELETE"
       ],
       "U": [
         "U"

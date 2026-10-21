@@ -399,7 +399,7 @@
       "ZOOM": ["ZOOM", "Z"],
       "PAN": ["ENCUADRE", "E"],
       "-PAN": ["-ENCUADRE"],
-      "ERASE": ["BORRA", "B"],
+      "ERASE": ["BORRA", "B", "DELETE"],
       "U": ["H"],
       "UNDO": ["DESHACER"],
       "REDO": ["REHACER"],

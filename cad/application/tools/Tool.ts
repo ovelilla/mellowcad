@@ -676,6 +676,12 @@ export interface Tool {
   hiddenEntityIds?(): readonly EntityId[]
 
   /**
+   * Entities the scene draws faded instead of glowing or highlighted: ERASE's
+   * preview of what it will erase. Defaults to none.
+   */
+  fadedEntityIds?(ctx: ToolContext): readonly EntityId[]
+
+  /**
    * The object under the cursor that AutoCAD's rollover tooltip describes
    * (ROLLOVERTIPS 1): only Select's, at `Command:`.
    */

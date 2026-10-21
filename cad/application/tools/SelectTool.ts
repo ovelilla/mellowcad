@@ -14,7 +14,6 @@ import {
   withLineZ,
 } from "../../domain/entities"
 import {
-  RemoveEntitiesCommand,
   UpdateEntitiesCommand,
   UpdateEntityCommand,
 } from "../commands/entityCommands"
@@ -90,8 +89,8 @@ const DRAG_THRESHOLD_PX = 4
  * the end). You can drag and click to place, and for most type the exact
  * amount in the dynamic input, exactly like AutoCAD grip editing.
  *
- * Deleting the selection goes through {@link RemoveEntitiesCommand}, so it is
- * undoable like any other document change.
+ * The Delete key is not the tool's: the runtime runs ERASE on the selection
+ * (`CadRuntime.deleteSelection`).
  */
 export class SelectTool implements Tool {
   readonly id = "select"
@@ -595,12 +594,6 @@ export class SelectTool implements Tool {
         ctx.requestRender()
       }
       return
-    }
-    if (input.key === "Delete" || input.key === "Backspace") {
-      if (ctx.selection.isEmpty()) return
-      ctx.execute(new RemoveEntitiesCommand(ctx.selection.toArray()))
-      ctx.selection.clear()
-      ctx.requestRender()
     }
   }
 

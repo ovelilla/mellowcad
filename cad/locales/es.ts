@@ -725,7 +725,8 @@ export const es: EngineLocale = {
       ],
       "ERASE": [
         "BORRA",
-        "B"
+        "B",
+        "DELETE"
       ],
       "U": [
         "H"

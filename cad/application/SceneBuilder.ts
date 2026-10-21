@@ -56,6 +56,7 @@ import {
 import { polarPoint } from "../geometry/primitives"
 import { Ucs, ucsPointToWorld, worldPointToUcs } from "../domain/ucs"
 import { DEFAULT_LAYER_COLOR, Layer, LayerId } from "../domain/layers"
+import { normalizeColor } from "../domain/colors"
 import {
   DEFAULT_LINETYPE_ID,
   centredPattern,
@@ -147,6 +148,8 @@ export interface SceneInput {
   readonly selectedIds: ReadonlySet<EntityId>
   /** Entities the active tool is editing in place and draws itself. */
   readonly hiddenIds: ReadonlySet<EntityId>
+  /** Entities drawn faded, never glowing: what ERASE's prompt will erase. */
+  readonly fadedIds?: ReadonlySet<EntityId>
   readonly gridVisible: boolean
   /**
    * Lattice the grid must align to (the SNAP spacing), so every drawn
@@ -228,6 +231,7 @@ export function buildScene(input: SceneInput): Scene {
     input.blocks,
     input.selectedIds,
     input.hiddenIds,
+    input.fadedIds ?? NONE,
     input.ltScale,
     input.lwDisplay,
     input.attributeDisplay ?? "normal",
@@ -1688,6 +1692,7 @@ function pushEntities(
   blocks: BlockLookup,
   selectedIds: ReadonlySet<EntityId>,
   hiddenIds: ReadonlySet<EntityId>,
+  fadedIds: ReadonlySet<EntityId>,
   ltScale: number,
   lwDisplay: boolean,
   attributeDisplay: AttributeDisplay,
@@ -1704,7 +1709,7 @@ function pushEntities(
     (a, b) => entityDrawOrder(a) - entityDrawOrder(b)
   )
 
-  const draw = (entity: Entity, isSelected: boolean) => {
+  const draw = (entity: Entity, isSelected: boolean, isFaded: boolean) => {
     const layer = layerById.get(entity.layerId)
     // Entities on a hidden (Off) layer are not drawn at all.
     if (layer && !layer.visible) return
@@ -1722,8 +1727,9 @@ function pushEntities(
       isWidePolyline(entity) &&
       camera.isPlan &&
       !isTilted(entity)
+    const color = entity.color ?? layer?.color ?? DEFAULT_LAYER_COLOR
     const stroke: StrokeStyle = {
-      color: entity.color ?? layer?.color ?? DEFAULT_LAYER_COLOR,
+      color: isFaded ? fadedColor(color) : color,
       width: widthFor(lineweight, lwDisplay && !wideInPlan),
       ...(dash ? { dash } : {}),
     }
@@ -1737,7 +1743,7 @@ function pushEntities(
         blocks,
         attributeDisplay
       )) {
-        draw(nested, isSelected)
+        draw(nested, isSelected, isFaded)
       }
       return
     }
@@ -1753,7 +1759,7 @@ function pushEntities(
     }
     out.push(...entityScenePrimitive(camera, entity, stroke, options))
     // AutoCAD's selection effect: the object as it is, glowing blue (d15).
-    if (isSelected) {
+    if (isSelected && !isFaded) {
       out.push(
         ...entityScenePrimitive(
           camera,
@@ -1767,8 +1773,26 @@ function pushEntities(
 
   for (const entity of ordered) {
     if (hiddenIds.has(entity.id)) continue
-    draw(entity, selectedIds.has(entity.id))
+    draw(entity, selectedIds.has(entity.id), fadedIds.has(entity.id))
   }
+}
+
+const NONE: ReadonlySet<EntityId> = new Set()
+
+/**
+ * How much of an object's colour AutoCAD's erase preview keeps: its faded line
+ * peaks at 69 over the background's 33 where a plain one reaches 201 (desktop
+ * erase/d09-2), about a fifth.
+ */
+const FADED_OPACITY = 0.22
+
+/** An object's colour as ERASE's preview fades it. */
+export function fadedColor(color: string): string {
+  const hex = normalizeColor(color) ?? DEFAULT_LAYER_COLOR
+  const [r, g, b] = [1, 3, 5].map((at) =>
+    Number.parseInt(hex.slice(at, at + 2), 16)
+  )
+  return `rgba(${r}, ${g}, ${b}, ${FADED_OPACITY})`
 }
 
 /** The hairline width every entity gets before its lineweight is applied. */

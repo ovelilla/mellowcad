@@ -604,6 +604,11 @@ export class ObjectSelector {
     }
   }
 
+  /** The object the rollover highlights at `Select objects:`, or null. */
+  hovered(): Entity | null {
+    return this.step.kind === "objects" ? this.step.hover : null
+  }
+
   /** Whether a mode's own prompt is asking: a window's corner, a fence's point. */
   inMode(): boolean {
     const kind = this.step.kind

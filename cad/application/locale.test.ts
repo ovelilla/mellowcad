@@ -2,7 +2,7 @@ import compile from "icu-minify/compile"
 import { describe, expect, it } from "vitest"
 
 import { createHarness } from "../../test/harness"
-import { arcOf, lineOf, p, polylineOf } from "../../test/builders"
+import { arcOf, layerOf, lineOf, p, polylineOf } from "../../test/builders"
 import { ar } from "../locales/ar"
 import { es } from "../locales/es"
 import type { EngineLocale } from "../locales/types"
@@ -34,8 +34,8 @@ const partial: EngineLocale = {
       specifyNextPointOrClose: compile("Precise siguiente punto o"),
     },
     messages: {
-      erased: compile(
-        "{count, plural, one {# objeto borrado.} other {# objetos borrados.}}"
+      onLockedLayer: compile(
+        "{count, plural, one {# estaba en una capa bloqueada.} other {# estaban en una capa bloqueada.}}"
       ),
     },
   },
@@ -162,13 +162,19 @@ describe("a language laid over English", () => {
   })
 
   it("formats its messages, with plurals of its own", () => {
-    const cad = createHarness({
-      locale: partial,
-      entities: [lineOf(p(0, 0), p(1, 0), { id: "A" })],
-    })
+    const cad = createHarness({ locale: partial })
+    cad.runtime.document.load(
+      [
+        lineOf(p(0, 0), p(1, 0), { layerId: "locked" }),
+        lineOf(p(0, 5), p(1, 5), { layerId: "locked" }),
+      ],
+      { layers: [layerOf("0"), layerOf("locked", { locked: true })] }
+    )
     // ERASE is not in its names, so it keeps its global name and no alias.
-    cad.select("A").command("ERASE")
-    expect(cad.commandLog().at(-1)).toBe("1 objeto borrado.")
+    cad.command("ERASE")
+    cad.runtime.setCommandLineText("ALL")
+    cad.runtime.submitCommandLine()
+    expect(cad.commandLog().at(-1)).toBe("2 estaban en una capa bloqueada.")
   })
 
   it("rewords an open prompt when the language changes, and leaves the scrollback", () => {

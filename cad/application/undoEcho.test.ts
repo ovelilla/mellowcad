@@ -246,3 +246,74 @@ describe("U and REDO say what they did", () => {
     ])
   })
 })
+
+describe("ERASE undone and redone", () => {
+  const two = () => [
+    lineOf(p(0, 0), p(10, 0), { id: "A" }),
+    lineOf(p(0, 5), p(10, 5), { id: "B" }),
+  ]
+
+  it("U and REDO name ERASE, in English and Spanish (erase/p320)", () => {
+    const cad = answer(createHarness({ entities: two() }), "_ERASE", "ALL", "")
+    expect(written(cad, "_U", "_REDO")).toEqual([
+      "U",
+      "ERASE",
+      "REDO",
+      "ERASE",
+      "Everything has been redone",
+    ])
+    expect(cad.entityCount).toBe(0)
+
+    const spanish = answer(
+      createHarness({ locale: es, entities: two() }),
+      "_ERASE",
+      "_ALL",
+      ""
+    )
+    expect(written(spanish, "_U").at(-1)).toBe("BORRA")
+    expect(written(spanish, "_REDO").slice(1)).toEqual([
+      "BORRA",
+      "Todo repetido",
+    ])
+  })
+
+  it("MREDO 1 redoes it, and U steps back one command at a time (erase/p321, p322)", () => {
+    const cad = answer(createHarness({ entities: two() }), "_ERASE", "ALL", "")
+    answer(cad, "_U")
+    expect(written(cad, "_MREDO", "1").slice(-2)).toEqual([
+      "ERASE",
+      "Everything has been redone",
+    ])
+    expect(cad.entityCount).toBe(0)
+
+    const steps = answer(
+      createHarness(),
+      ...LINE,
+      "_LINE",
+      "0,5",
+      "10,5",
+      "",
+      "_ERASE",
+      "L",
+      "",
+      "_ERASE",
+      "L",
+      ""
+    )
+    expect(written(steps, "_U", "_U")).toEqual(["U", "ERASE", "U", "ERASE"])
+    expect(steps.entityCount).toBe(2)
+    expect(written(steps, "_U")).toEqual(["U", "LINE"])
+    expect(steps.entityCount).toBe(1)
+  })
+
+  it("gives the erased objects their ids back (erase/p314)", () => {
+    const cad = answer(
+      createHarness({ entities: two() }),
+      "_ERASE",
+      "L",
+      "",
+      "_U"
+    )
+    expect(cad.entities().map((entity) => entity.id)).toEqual(["A", "B"])
+  })
+})

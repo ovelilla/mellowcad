@@ -87,9 +87,10 @@ How prompts, keywords and messages are worded and named: `cad-catalogs.md`.
 
 A prompt that asks "which object?" owes a rollover highlight in `buildOverlay` (update the state
 only when the hovered id changes): a **set** prompt → `THEME.entityHover`, width 2, skipping
-objects already in the set; a **single prominent** pick (path curve, break/trim target, offset
-source) → `THEME.selected`, width 2–2.5 (`entityHover` is too close to the entity colour to answer
-"which one?"); under an implied Tangent (Ttr), a marker (`snapMarker`).
+objects already in the set (ERASE's fades it and the set instead, `fadedEntityIds`); a **single
+prominent** pick (path curve, break/trim target, offset source) → `THEME.selected`, width 2–2.5
+(`entityHover` is too close to the entity colour to answer "which one?"); under an implied Tangent
+(Ttr), a marker (`snapMarker`).
 
 When the answer is "that object is not eligible at all", **filter the pick** instead of refusing:
 an object that never highlights needs no wording (DIMSPACE's non-parallel dimensions, HATCH's

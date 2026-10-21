@@ -411,7 +411,7 @@
       "ZOOM": ["ZOOM", "Z"],
       "PAN": ["PAN", "P"],
       "-PAN": ["-PAN"],
-      "ERASE": ["ERASE", "E"],
+      "ERASE": ["ERASE", "E", "DELETE"],
       "U": ["U"],
       "UNDO": ["UNDO"],
       "REDO": ["REDO"],

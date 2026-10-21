@@ -1,4 +1,4 @@
-import { Entity } from "../../domain/entities"
+import { Entity, EntityId } from "../../domain/entities"
 import { ScenePrimitive } from "../../scene/types"
 import {
   CommandOption,
@@ -34,6 +34,12 @@ export abstract class SelectionActionTool implements Tool {
     question: () =>
       this.selectionQuestion(!(this.selection?.isEmpty() ?? true)),
   })
+
+  /**
+   * Whether the set and the object under the cursor draw faded rather than
+   * glowing, as AutoCAD previews what ERASE will erase (desktop erase/d09).
+   */
+  protected readonly fadesSet: boolean = false
 
   /** Runs the action on the selected `entities`; may reset the selection. */
   protected abstract run(entities: readonly Entity[], ctx: ToolContext): void
@@ -117,7 +123,15 @@ export abstract class SelectionActionTool implements Tool {
   }
 
   buildOverlay(ctx: ToolContext): ScenePrimitive[] {
+    if (this.fadesSet && this.selector.hovered() !== null) return []
     return this.selector.buildOverlay(ctx)
+  }
+
+  fadedEntityIds(ctx: ToolContext): readonly EntityId[] {
+    if (!this.fadesSet) return []
+    const hovered = this.selector.hovered()
+    const set = ctx.selection.toArray()
+    return hovered === null ? set : [...set, hovered.id]
   }
 
   /** Runs the action on the current selection, then ends the command. */
