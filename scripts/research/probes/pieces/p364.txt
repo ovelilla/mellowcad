@@ -1,0 +1,13 @@
+_LINE
+0,0
+50,0
+100,50
+
+_ZOOM
+_W
+-200,-200
+200,200
+(sssetfirst nil (ssget "_L"))
+_JOIN
+
+(ssget "_I")

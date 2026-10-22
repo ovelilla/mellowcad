@@ -1,0 +1,26 @@
+(entmake (list (cons 0 "ATTDEF") (cons 100 "AcDbEntity") (cons 100 "AcDbText") (list 10 0.0 10.0 0.0) (cons 40 5.0) (cons 1 "X-0") (cons 100 "AcDbAttributeDefinition") (cons 3 "PART") (cons 2 "PART") (cons 70 0)))
+_LINE
+0,0
+20,0
+
+_-BLOCK
+TAG
+0,0
+_ALL
+
+_-INSERT
+TAG
+0,0
+1
+1
+0
+P-7
+_ZOOM
+_W
+-300,-300
+300,300
+_EXPLODE
+_L
+
+MPDUMP
+-

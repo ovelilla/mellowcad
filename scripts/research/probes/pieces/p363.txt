@@ -1,0 +1,15 @@
+_LINE
+0,0
+50,0
+100,50
+
+_ZOOM
+_W
+-200,-200
+200,200
+(sssetfirst nil (ssget "_X"))
+_JOIN
+MPDUMP
+-
+(ssget "_I")
+(ssget "_P")

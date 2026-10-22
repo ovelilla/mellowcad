@@ -1,0 +1,22 @@
+_PLINE
+0,0
+100,0
+100,100
+
+_LINE
+0,200
+100,200
+
+_ZOOM
+_W
+-300,-300
+300,300
+_EXPLODE
+50,0
+
+_U
+(progn (setq e (entnext)) (while e (setq d (entget e)) (terpri) (princ (list (cdr (assoc 5 d)) (cdr (assoc 0 d)))) (setq e (entnext e))) (princ))
+_ERASE
+_L
+
+(progn (setq e (entnext)) (while e (setq d (entget e)) (terpri) (princ (list (cdr (assoc 5 d)) (cdr (assoc 0 d)))) (setq e (entnext e))) (princ))

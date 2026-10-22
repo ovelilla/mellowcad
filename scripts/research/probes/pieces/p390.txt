@@ -1,0 +1,18 @@
+_LINE
+0,0
+50,0
+
+_LINE
+50,0
+50,50
+
+_LINE
+50,50
+100,50
+
+_ZOOM
+_W
+-200,-200
+200,200
+(progn (setq ss (ssget "_C" (list -120 -120) (list 120 120)) i 0) (repeat (sslength ss) (princ (cdr (assoc 5 (entget (ssname ss i))))) (princ " ") (setq i (1+ i))) (princ))
+(progn (setq ss (ssget "_W" (list -120 -120) (list 120 120)) i 0) (repeat (sslength ss) (princ (cdr (assoc 5 (entget (ssname ss i))))) (princ " ") (setq i (1+ i))) (princ))

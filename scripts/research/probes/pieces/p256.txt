@@ -1,0 +1,10 @@
+(entmake (list (cons 0 "MTEXT") (cons 100 "AcDbEntity") (cons 8 "L1") (cons 62 1) (cons 100 "AcDbMText") (list 10 10.0 50.0 0.0) (cons 40 10.0) (cons 41 0.0) (cons 71 5) (cons 1 "OLD\\PLINES")))
+_ZOOM
+_W
+-300,-300
+300,300
+_EXPLODE
+_L
+
+MPDUMP
+-

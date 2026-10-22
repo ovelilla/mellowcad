@@ -1,0 +1,5 @@
+(getvar "ACADVER")
+(getvar "_VERNUM")
+(getvar "PICKFIRST")
+(getvar "PEDITACCEPT")
+(getvar "OSMODE")

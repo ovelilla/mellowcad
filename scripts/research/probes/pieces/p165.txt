@@ -1,0 +1,25 @@
+_ZOOM
+_W
+-200,-200
+200,200
+_LINE
+0,0
+100,0
+
+_ID
+5,5
+_BREAKATPOINT
+30,0
+'_ZOOM
+_E
+'ORTHOMODE
+1
+'_-OSNAP
+_END
+'_LINE
+'_-PAN
+0,0
+0,0
+50,0
+(getvar "LASTPOINT")
+(progn (setq ss (ssget "_X") i 0) (if ss (repeat (sslength ss) (setq e (entget (ssname ss i))) (terpri) (princ (list (cdr (assoc 5 e)) (cdr (assoc 0 e)) (cdr (assoc 8 e)))) (foreach x e (if (member (car x) (quote (10 11 40 42 50 51))) (princ x))) (setq i (1+ i)))) (princ))

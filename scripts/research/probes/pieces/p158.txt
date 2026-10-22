@@ -1,0 +1,11 @@
+_LINE
+-269.985,-116.3034
+289.985,116.3034
+
+_ID
+10,0
+_BREAK
+5
+@
+(getvar "LASTPOINT")
+(progn (setq ss (ssget "_X") i 0) (if ss (repeat (sslength ss) (setq e (entget (ssname ss i))) (terpri) (princ (list (cdr (assoc 5 e)) (cdr (assoc 0 e)) (cdr (assoc 8 e)))) (foreach x e (if (member (car x) (quote (10 11 40 42 50 51))) (princ x))) (setq i (1+ i)))) (princ))
