@@ -2,8 +2,8 @@
 
 > **Status:** plan, 2026-10-22 — phases 0–4 in one session with skill `command-review`, the
 > fifteenth review of `docs/coverage/roadmap.md`'s order. It owns **the array object**. Executed
-> in the same session: ARR `ef58183`, APO `566528d`, APA `4dbdb66`, AYJ `d940a70` (§12a). Left:
-> AYO (the array object) and AYG (its grips and palette), each in a fresh session (§12).
+> in the same session: ARR `ef58183`, APO `566528d`, APA `4dbdb66`, AYJ `d940a70`; AYO `b6b2317`
+> in a second session (§12a). Left: AYG (the grips and palette), in a fresh session (§12).
 
 ## 1. Summary
 
@@ -629,6 +629,7 @@ Blocks 1–4 share the catalogs and snapshots: one after another.
 | APO | `566528d` | APO-02 to APO-12 fixed; counts to 32767 for all three (`arrayCounts.ts`), the preview capped at 1000 items with a WHY; a Fill of 720 taken as a full turn, −400 as 40° clockwise: unverified; APO-13 to APO-15 recorded and tested |
 | APA | `4dbdb66` | APA-01 to APA-13, APA-15 to APA-18 fixed; the three layouts in `cad/domain/arrays.ts` (ARRAYS-D2); `ModeFind.last`, `one.lockedAsksAgain`, `one.named`, `Tool.onAskAgain` added; a closed polyline's start and direction unverified; ARRAYPATH's copies keep the selection's order (D16 was ARRAYRECT's) |
 | AYJ | `d940a70` | AYJ-01 and AYJ-02 fixed (Escape commits; the items drawn plain); ARRAYPOLAR's Escape and Escape at a value's prompt unverified; AYJ-03 recorded |
+| AYO | `b6b2317` | AYO-01 fixed: one array object by default (an `insert` of an anonymous `*U<n>` block, its parameters in the block's coordinates, ARRAYS-D8), ASsociative kept for the session (p422: the registry, ARRAYS-D3), the source hidden as item 1 in the preview (D5); the path association Missing (ARRAYS-D9); unreferenced anonymous blocks left out on save and the `<No>` default of a second run unverified; no cap on the derived items (a WHY in `blocks.ts`) |
 
 ## 13. Changes the execution makes
 
