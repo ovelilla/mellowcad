@@ -1368,7 +1368,10 @@ describe("TRIM and EXTEND's Enter, Undo and preselection", () => {
   // probes trim/p163, p164: U takes the trim and LTSCALE back.
   it("takes a transparent command back with the edit before it", () => {
     const cad = typed(drawing(), "TRIM", "50,0", "'LTSCALE", "2", "U")
-    expect(cad.commandLog().at(-1)).toBe("Command has been completely undone.")
+    expect(cad.commandLog().slice(-2)).toEqual([
+      "Command has been completely undone.",
+      "Regenerating model.",
+    ])
     expect(cad.entityCount).toBe(4)
     expect(cad.state().ltScale).toBe(1)
   })
@@ -5271,6 +5274,358 @@ describe("CHAMFER", () => {
     expect(cad.activeToolId()).toBe("select")
     cad.undo()
     expect(cad.entityCount).toBe(4)
+  })
+})
+
+// AutoCAD 2027's console answering the same input (probes corners/p100–p169):
+// its drawing B, two lines meeting at 100,0.
+describe("FILLET's and CHAMFER's command line", () => {
+  const B = (): Entity[] => [
+    lineOf(p(0, 0), p(80, 0), { id: "L1" }),
+    lineOf(p(100, 20), p(100, 100), { id: "L2" }),
+  ]
+  const B2 = (): Entity[] => [
+    ...B(),
+    lineOf(p(200, 0), p(280, 0), { id: "L3" }),
+    lineOf(p(300, 20), p(300, 100), { id: "L4" }),
+  ]
+  const FIRST = "FILLET Select first object or [Undo/Polyline/Radius/Multiple]:"
+  const RADIUS = "FILLET Specify fillet radius <0.00>:"
+
+  /** Typed at the command line and confirmed, as the console reads it. */
+  function answer(cad: CadHarness, ...texts: string[]): CadHarness {
+    for (const text of texts) {
+      cad.runtime.setCommandLineText(text)
+      cad.runtime.submitCommandLine()
+    }
+    return cad
+  }
+  function run(entities: Entity[], ...texts: string[]): CadHarness {
+    return answer(createHarness({ entities }), ...texts)
+  }
+  function inSpanish(entities: Entity[], ...texts: string[]): CadHarness {
+    return answer(createHarness({ entities, locale: es }), ...texts)
+  }
+  const ends = (cad: CadHarness, id: string) => {
+    const { start, end } = cad.byId<LineEntity>(id)
+    return [start, end]
+  }
+
+  it("refuses a negative radius in the console's words and asks it again; 0 is taken (p116)", () => {
+    const cad = run(B(), "_FILLET", "_R", "FOO", "-5")
+    expect(cad.commandLog().slice(-4)).toEqual([
+      "Specify fillet radius <0.00>: FOO",
+      "Requires numeric distance or two points.",
+      "Specify fillet radius <0.00>: -5",
+      "Value must be positive.",
+    ])
+    expect(cad.state().commandLine.prompt).toBe(RADIUS)
+    const zero = run(B(), "_FILLET", "_R", "5", "_R", "0")
+    expect(zero.state().commandLine.prompt).toBe(FIRST)
+    expect(zero.runtime.document.getSettings().filletRadius).toBe(0)
+
+    const spanish = inSpanish(B(), "_FILLET", "_R", "-5")
+    expect(spanish.commandLog().at(-1)).toBe("El valor debe ser positivo.")
+  })
+
+  it("refuses a negative chamfer distance at either prompt; 0 is taken (p119)", () => {
+    const cad = run(B(), "_CHAMFER", "_D", "FOO", "-5")
+    expect(cad.commandLog().slice(-4)).toEqual([
+      "Specify first chamfer distance <0.00>: FOO",
+      "Requires numeric distance or two points.",
+      "Specify first chamfer distance <0.00>: -5",
+      "Value must be positive.",
+    ])
+    answer(cad, "0", "FOO", "-5")
+    expect(cad.commandLog().slice(-5)).toEqual([
+      "Specify first chamfer distance <0.00>: 0",
+      "Specify second chamfer distance <0.00>: FOO",
+      "Requires numeric distance or two points.",
+      "Specify second chamfer distance <0.00>: -5",
+      "Value must be positive.",
+    ])
+    expect(cad.state().commandLine.prompt).toBe(
+      "CHAMFER Specify second chamfer distance <0.00>:"
+    )
+    answer(cad, "0,0", "10,0")
+    expect(cad.commandLog().slice(-2)).toEqual([
+      "Specify second chamfer distance <0.00>: 0,0",
+      " Specify second point: 10,0",
+    ])
+    expect(cad.runtime.document.getSettings()).toMatchObject({
+      chamferDistance1: 0,
+      chamferDistance2: 10,
+    })
+  })
+
+  it("defaults the second distance to the first typed, else to CHAMFERB (p110, p111, p137)", () => {
+    const cad = run(B(), "_CHAMFER", "_D", "10", "5", "_D", "")
+    expect(cad.state().commandLine.prompt).toBe(
+      "CHAMFER Specify second chamfer distance <5.00>:"
+    )
+    answer(cad, "")
+    expect(cad.runtime.document.getSettings()).toMatchObject({
+      chamferDistance1: 10,
+      chamferDistance2: 5,
+    })
+    const again = run(B(), "_CHAMFER", "_D", "10", "5", "_D", "7")
+    expect(again.state().commandLine.prompt).toBe(
+      "CHAMFER Specify second chamfer distance <7.00>:"
+    )
+  })
+
+  it("takes back a transparent 'LTSCALE with the fillet or chamfer before it (p156)", () => {
+    for (const name of ["_FILLET", "_CHAMFER"]) {
+      const cad = run(B(), name, "_M", "40,0", "100,60", "'_LTSCALE", "2")
+      answer(cad, "_U")
+      expect(ends(cad, "L1")).toBeCloseToPoints([p(0, 0), p(80, 0)])
+      expect(ends(cad, "L2")).toBeCloseToPoints([p(100, 20), p(100, 100)])
+      expect(cad.runtime.document.getSettings().ltScale).toBe(1)
+      expect(cad.commandLog().slice(-2)).toEqual([
+        "Command has been completely undone.",
+        "Regenerating model.",
+      ])
+    }
+  })
+
+  it("reads Spanish R at EMPALME's first prompt as Recortar, refused here, and RA as RAdio (p165, p168)", () => {
+    const cad = inSpanish(B(), "EMPALME", "R")
+    expect(cad.commandLog().slice(-2)).toEqual([
+      "*Designación no válida*",
+      "Requiere un punto o Ventana/úLTimo/Captura/MArco/Borde/polígonOV/polígonOC/Deshacer/Polilínea/RAdio",
+    ])
+    answer(cad, "RA")
+    expect(cad.state().commandLine.prompt).toBe(
+      "EMPALME Precise radio de empalme <0.00>:"
+    )
+    const english = run(B(), "_FILLET", "T")
+    expect(english.commandLog().slice(-2)).toEqual([
+      "*Invalid selection*",
+      "Expects a point or Window/Last/Crossing/BOX/Fence/WPolygon/CPolygon/Undo/Polyline/Radius",
+    ])
+    expect(english.state().commandLine.prompt).toBe(FIRST)
+  })
+
+  it("says Undo with nothing to take back has undone it all, and goes on (p148, p149, p165)", () => {
+    for (const name of ["_FILLET", "_CHAMFER"]) {
+      const cad = run(B(), name, "_U", "_U")
+      expect(cad.commandLog().slice(-4)).toEqual([
+        expect.stringMatching(/: _U$/),
+        "Command has been completely undone.",
+        expect.stringMatching(/: _U$/),
+        "Command has been completely undone.",
+      ])
+      answer(cad, "40,0", "100,60")
+      expect(ends(cad, "L1")).toBeCloseToPoints([p(0, 0), p(100, 0)])
+    }
+    for (const [name, undo] of [
+      ["EMPALME", "D"],
+      ["CHAFLAN", "H"],
+    ]) {
+      expect(inSpanish(B(), name, undo).commandLog().at(-1)).toBe(
+        "Todos los efectos del comando han sido deshechos."
+      )
+    }
+  })
+
+  it("counts no refusal, miss or Multiple as a step (p152)", () => {
+    const cad = run(B(), "_FILLET", "FOO", "_U", "50,50", "_U", "_M", "_U")
+    const undone = "Command has been completely undone."
+    expect(cad.commandLog().filter((line) => line === undone)).toHaveLength(3)
+    answer(cad, "40,0", "100,60")
+    expect(cad.activeToolId()).toBe("fillet")
+  })
+
+  it("takes back a radius or the distances given in the command (p150, p154)", () => {
+    const cad = run(B(), "_FILLET", "_R", "5", "_U")
+    expect(cad.commandLog().at(-1)).toBe("Command has been completely undone.")
+    expect(cad.runtime.document.getSettings().filletRadius).toBe(0)
+    answer(cad, "_R")
+    expect(cad.state().commandLine.prompt).toBe(RADIUS)
+
+    const chamfer = run(B(), "_CHAMFER", "_D", "10", "5", "_U")
+    expect(chamfer.commandLog().at(-1)).toBe(
+      "Command has been completely undone."
+    )
+    expect(chamfer.runtime.document.getSettings()).toMatchObject({
+      chamferDistance1: 0,
+      chamferDistance2: 0,
+    })
+  })
+
+  it("takes back a Polyline run in Multiple, then the radius before it (p153)", () => {
+    const cad = run(
+      [
+        polylineOf([p(0, 200), p(100, 200), p(100, 260), p(0, 260)], {
+          id: "PL",
+          closed: true,
+        }),
+      ],
+      "_FILLET",
+      "_R",
+      "5",
+      "_M",
+      "_P",
+      "50,200"
+    )
+    expect(cad.commandLog().at(-1)).toBe("4 lines were filleted")
+    expect(cad.byId<PolylineEntity>("PL").vertices).toHaveLength(8)
+    answer(cad, "_U")
+    expect(cad.byId<PolylineEntity>("PL").vertices).toHaveLength(4)
+    expect(cad.commandLog().at(-1)).toMatch(/: _U$/)
+    answer(cad, "_U")
+    expect(cad.commandLog().at(-1)).toBe("Command has been completely undone.")
+  })
+
+  it("counts Enter at the radius as a step of its own (p169)", () => {
+    const cad = run(B2(), "_FILLET", "_M", "_R", "5", "40,0", "100,60")
+    answer(cad, "_R", "2", "240,0", "300,60", "_U")
+    answer(cad, "_R", "", "_U", "_R", "", "_U", "_R", "", "_U", "_U", "")
+    expect(cad.runtime.document.getSettings().filletRadius).toBe(5)
+    expect(ends(cad, "L1")).toBeCloseToPoints([p(0, 0), p(95, 0)])
+    expect(ends(cad, "L3")).toBeCloseToPoints([p(200, 0), p(280, 0)])
+    expect(cad.commandLog()).not.toContain(
+      "Command has been completely undone."
+    )
+  })
+
+  it("picks at a number's distance from LASTPOINT at the object prompts, a negative too (p120)", () => {
+    const cad = run(
+      [lineOf(p(0, 0), p(80, 0), { id: "L1" })],
+      "_LINE",
+      "100,20",
+      "100,100",
+      "",
+      "_FILLET",
+      "0"
+    )
+    expect(cad.state().commandLine.prompt).toBe(
+      "FILLET Select second object or shift-select to apply corner or [Radius]:"
+    )
+    const l2 = cad.entities().find((entity) => entity.id !== "L1")!.id
+    // A negative one picks on nothing there: asked again, nothing said.
+    answer(cad, "-5")
+    expect(cad.commandLog().at(-1)).toBe(
+      "Select second object or shift-select to apply corner or [Radius]: -5"
+    )
+    answer(cad, "40,0")
+    expect(ends(cad, "L1")).toBeCloseToPoints([p(0, 0), p(100, 0)])
+    expect(ends(cad, l2)).toBeCloseToPoints([p(100, 0), p(100, 100)])
+  })
+
+  it("repeats on an empty line, the name echoed, and is no transparent command (p105, p106)", () => {
+    for (const [name, echoed] of [
+      ["_FILLET", "FILLET"],
+      ["_CHAMFER", "CHAMFER"],
+    ]) {
+      const cad = run(B2(), name, "40,0", "100,60", "")
+      expect(cad.commandLog().at(-2)).toBe(echoed)
+      answer(cad, "240,0", "300,60")
+      expect(ends(cad, "L3")).toBeCloseToPoints([p(200, 0), p(300, 0)])
+
+      const line = run(B(), "_LINE", "0,150", `'${name}`)
+      expect(line.commandLog().slice(-2)).toEqual([
+        "** That command may not be invoked transparently **",
+        "Point or option keyword required.",
+      ])
+      expect(line.activeToolId()).toBe("line")
+    }
+  })
+
+  it("refuses a command or a transparent 'LINE typed at an object prompt as a selection (p138, p139, p144, p147)", () => {
+    const cad = run(B(), "_FILLET", "_LINE")
+    expect(cad.commandLog().slice(-2)).toEqual([
+      "*Invalid selection*",
+      "Expects a point or Window/Last/Crossing/BOX/Fence/WPolygon/CPolygon/Undo/Polyline/Radius",
+    ])
+    expect(cad.activeToolId()).toBe("fillet")
+    answer(cad, "40,0", "'_LINE")
+    expect(cad.commandLog().slice(-3)).toEqual([
+      "** That command may not be invoked transparently **",
+      "*Invalid selection*",
+      "Expects a point or Window/Last/Crossing/BOX/Fence/WPolygon/CPolygon/Radius]:",
+    ])
+
+    const chamfer = run(B(), "_CHAMFER", "40,0", "_LINE")
+    expect(chamfer.commandLog().slice(-2)).toEqual([
+      "*Invalid selection*",
+      "Expects a point or Window/Last/Crossing/BOX/Fence/WPolygon/CPolygon/Distance",
+    ])
+    answer(chamfer, "100,60")
+    expect(ends(chamfer, "L1")).toBeCloseToPoints([p(0, 0), p(100, 0)])
+  })
+
+  it("resumes its prompt after 'ZOOM, '-PAN and '-OSNAP (p140, p141, p143, p145, p146)", () => {
+    const cad = run(B(), "_FILLET", "_R", "'_-PAN", "0,0", "0,0")
+    expect(cad.commandLog().slice(-2)).toEqual([
+      ">> Specify second point: 0,0",
+      "Resuming FILLET command.",
+    ])
+    expect(cad.state().commandLine.prompt).toBe(RADIUS)
+    const osnap = run(B(), "_FILLET", "'_-OSNAP", "_END", "40,0")
+    answer(osnap, "'_-OSNAP", "_NONE", "100,60")
+    expect(osnap.commandLog()).toContain("Resuming FILLET command.")
+    expect(ends(osnap, "L1")).toBeCloseToPoints([p(0, 0), p(100, 0)])
+    const chamfer = run(B(), "_CHAMFER", "_D", "10", "'_ZOOM", "_E")
+    expect(chamfer.commandLog().at(-1)).toBe("Resuming CHAMFER command.")
+    expect(chamfer.state().commandLine.prompt).toBe(
+      "CHAMFER Specify second chamfer distance <10.00>:"
+    )
+  })
+
+  it("drops a preselection and leaves nothing selected (p162–p164)", () => {
+    for (const name of ["_FILLET", "_CHAMFER"]) {
+      const cad = createHarness({ entities: B() })
+      cad.select("L1", "L2")
+      answer(cad, name)
+      expect(cad.selectedIds()).toEqual([])
+      expect(cad.state().commandLine.prompt).toMatch(
+        /Select first (object|line) or/
+      )
+      answer(cad, "40,0", "100,60")
+      expect(cad.selectedIds()).toEqual([])
+      expect(ends(cad, "L1")).toBeCloseToPoints([p(0, 0), p(100, 0)])
+    }
+  })
+
+  it("is one step of U, REDO, UNDO and MREDO, named as echoed (p157, p158, p161)", () => {
+    const cad = run(B2(), "_FILLET", "40,0", "100,60")
+    answer(cad, "_CHAMFER", "240,0", "300,60", "_U", "_REDO")
+    answer(cad, "_UNDO", "2", "_MREDO", "2")
+    expect(cad.commandLog().slice(-13)).toEqual([
+      "U",
+      "CHAMFER",
+      "REDO",
+      "CHAMFER",
+      "Everything has been redone",
+      "UNDO",
+      "Current settings: Auto = On, Control = All, Combine = Yes, Layer = Yes",
+      "Enter the number of operations to undo or [Auto/Control/BEgin/End/Mark/Back] <1>: 2",
+      "CHAMFER FILLET",
+      "MREDO",
+      "Enter number of actions or [All/Last]: 2",
+      "FILLET CHAMFER",
+      "Everything has been redone",
+    ])
+
+    const multiple = run(B2(), "_FILLET", "_M", "40,0", "100,60", "_U")
+    answer(multiple, "240,0", "300,60", "", "_U")
+    expect(ends(multiple, "L1")).toBeCloseToPoints([p(0, 0), p(80, 0)])
+    expect(ends(multiple, "L3")).toBeCloseToPoints([p(200, 0), p(280, 0)])
+  })
+
+  it("is a step of U though the run changed nothing (p159, p160)", () => {
+    for (const texts of [
+      ["_FILLET", ""],
+      ["_FILLET", "FOO", ""],
+      ["_CHAMFER", ""],
+    ]) {
+      const cad = run(B(), ...texts, "_U")
+      expect(cad.commandLog().slice(-2)).toEqual(["U", texts[0].slice(1)])
+    }
+    const radius = run(B(), "_FILLET", "_R", "5", "", "_U")
+    expect(radius.commandLog().slice(-2)).toEqual(["U", "FILLET"])
+    expect(radius.runtime.document.getSettings().filletRadius).toBe(0)
   })
 })
 

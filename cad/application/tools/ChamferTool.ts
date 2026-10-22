@@ -120,12 +120,16 @@ export class ChamferTool implements Tool {
   private distance2 = 0
   /** Which distance Distance is asking (object picks paused), or null. */
   private askingDistance: "first" | "second" | null = null
+  /** The second distance's `<default>` while it is asked. */
+  private secondDefault = 0
   private multiple = false
   /**
-   * What Undo takes back, newest last: a chamfer, or distances given in the
-   * command (the ones they replaced and the history's depth before them).
+   * What Undo takes back, newest last: everything since the history stood at
+   * `depth`, a transparent 'LTSCALE with it (as probe corners/p156) — a
+   * chamfer, or distances given in the command, with the ones they replaced.
    */
-  private steps: ((Distances & { readonly depth: number }) | "chamfer")[] = []
+  private steps: { readonly depth: number; readonly distances?: Distances }[] =
+    []
   /** The distances when Distance was chosen, until both are given. */
   private replaced: Distances = { distance1: 0, distance2: 0 }
   private lastScreen: Vec2 | null = null
@@ -172,7 +176,7 @@ export class ChamferTool implements Tool {
       return { id: "specifyFirstChamferDistance", enter: this.distance1 }
     }
     if (this.askingDistance === "second") {
-      return { id: "specifySecondChamferDistance", enter: this.distance1 }
+      return { id: "specifySecondChamferDistance", enter: this.secondDefault }
     }
     if (this.modes.inMode()) return this.modes.question()
     switch (this.state.phase) {
@@ -284,10 +288,10 @@ export class ChamferTool implements Tool {
   }
 
   /**
-   * Enter in a mode's prompt is the mode's; at Polyline's in Multiple it asks
-   * the first prompt again (acc/k6, l3); at the second prompt it asks that
-   * again, Multiple or not, as AutoCAD 2023's console does; at the first it
-   * ends.
+   * Enter in a mode's prompt is the mode's; at Polyline's it ends, in
+   * Multiple asks the first prompt again (probes corners/p134, p135); at the
+   * second prompt it asks that again, Multiple or not (p129, p130); at the
+   * first it ends (p131, p132).
    */
   onEnter(ctx: ToolContext): boolean {
     if (this.askingDistance) return false
@@ -312,7 +316,7 @@ export class ChamferTool implements Tool {
   private ownOptions(): readonly CommandOption[] {
     switch (this.state.phase) {
       case "first":
-        // WHY Multiple still listed once on: AutoCAD 2023 console lists it.
+        // Multiple still listed once on (probe corners/p127).
         return [
           { id: "Undo" },
           { id: "Polyline" },
@@ -781,7 +785,7 @@ export class ChamferTool implements Tool {
     command: ReplaceEntitiesCommand | UpdateEntityCommand | null,
     ctx: ToolContext
   ): void {
-    if (command) this.steps.push("chamfer")
+    if (command) this.steps.push({ depth: ctx.historyDepth() })
     if (this.multiple) {
       this.state = { phase: "first", hover: null }
       if (command) ctx.execute(command)
@@ -794,20 +798,20 @@ export class ChamferTool implements Tool {
   }
 
   /**
-   * Undo takes back the last chamfer or distances of this command, and only
-   * those; back at its start AutoCAD says so.
+   * Undo takes back the last chamfer or distances of this command and what
+   * followed it; back at its start AutoCAD says so (probes corners/p149,
+   * p154, as p156).
    */
   private undoStep(ctx: ToolContext): void {
     const step = this.steps.pop()
-    if (step === "chamfer") ctx.undo()
-    else if (step) {
-      ctx.undoTo(step.depth)
-      // Set back by hand where UNDO Control None kept nothing to take back.
-      this.writeDistances(step, ctx)
-    }
+    // WHY said first: the console writes `Regenerating model.` after it,
+    // when what goes back had queued one (p156).
     if (this.steps.length === 0) {
       ctx.report(ctx.text.message("commandCompletelyUndone"))
     }
+    if (step) ctx.undoTo(step.depth)
+    // Set back by hand where UNDO Control None kept nothing to take back.
+    if (step?.distances) this.writeDistances(step.distances, ctx)
     ctx.requestRender()
   }
 
@@ -868,7 +872,8 @@ export class ChamferTool implements Tool {
 
   /**
    * Distance asks the first distance, then the second, whose `<default>` is
-   * the first one just given, as AutoCAD's is.
+   * the first one when it was typed, CHAMFERB when Enter kept it (probes
+   * corners/p110, p111, p137).
    */
   private askDistance(which: "first" | "second", ctx: ToolContext): void {
     this.askingDistance = which
@@ -884,25 +889,37 @@ export class ChamferTool implements Tool {
         this.setDistance(which, values.distance, commitCtx),
     }
     ctx.dynamicInput.open(session)
-    ctx.dynamicInput.setDefault("distance", this.distance1)
+    ctx.dynamicInput.setDefault(
+      "distance",
+      which === "first" ? this.distance1 : this.secondDefault
+    )
     ctx.dynamicInput.setPosition(this.lastScreen ?? { x: 0, y: 0 })
     ctx.requestRender()
   }
 
-  /** Then the prompt Distance was chosen at, asked again. */
+  /**
+   * Then the prompt Distance was chosen at, asked again; a negative distance
+   * is refused and the same distance asked again (probe corners/p119).
+   */
   private setDistance(
     which: "first" | "second",
     value: number,
     ctx: ToolContext
   ): void {
-    const valid = Number.isFinite(value) && value >= 0
+    if (value < 0) {
+      ctx.report(ctx.text.message("valueMustBePositive"), "error")
+      return
+    }
+    const valid = Number.isFinite(value)
     if (which === "first") {
+      this.secondDefault =
+        valid && ctx.dynamicInput.hasTypedText() ? value : this.distance2
       if (valid) this.distance1 = value
       this.askDistance("second", ctx)
       return
     }
     this.askingDistance = null
-    this.steps.push({ ...this.replaced, depth: ctx.historyDepth() })
+    this.steps.push({ distances: this.replaced, depth: ctx.historyDepth() })
     this.writeDistances(
       {
         distance1: this.distance1,

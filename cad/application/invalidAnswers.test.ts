@@ -354,6 +354,8 @@ describe("a wrong answer mid-command", () => {
       "*Invalid selection*",
       "Expects a point or Exit",
     ])
+    // probe corners/p113: FILLET's leaves out its last word, Multiple (and
+    // Trim, which is not built).
     cad.escape().command("FILLET")
     answerLine(cad, "FOO")
     expect(cad.commandLog().at(-1)).toBe(

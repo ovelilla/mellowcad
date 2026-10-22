@@ -176,6 +176,7 @@ describe("FILLET's and CHAMFER's Polyline say what is no 2D polyline", () => {
     )
   })
 
+  // probes corners/p134, p135.
   it("goes back to the first prompt on Enter in Multiple, else ends", () => {
     const cad = run(cross(), "FILLET", "M", "P", "", "FOO")
     expect(cad.commandLog().slice(-4, -1)).toEqual([
@@ -198,7 +199,7 @@ describe("FILLET's and CHAMFER's Polyline say what is no 2D polyline", () => {
   })
 })
 
-// AutoCAD 2023's console, acc/u1–u3 of 2026-10-14.
+// AutoCAD 2027's console, probes corners/p129, p130, p133.
 describe("FILLET's and CHAMFER's second prompt on Enter", () => {
   it("is asked again without a word, in Multiple or not", () => {
     for (const multiple of [[], ["M"]]) {
@@ -217,6 +218,17 @@ describe("FILLET's and CHAMFER's second prompt on Enter", () => {
         "Select second line or shift-select to apply corner or [Distance]: 80,0",
       ])
     }
+  })
+
+  it("is asked again on Space too", () => {
+    const cad = run(cross(), "FILLET", "30,40")
+    cad.press(" ")
+    expect(cad.state().commandLine.prompt).toBe(
+      "FILLET Select second object or shift-select to apply corner or [Radius]:"
+    )
+    answer(cad, "10,0")
+    expect(cad.typeCounts()).toEqual({ line: 2 })
+    expect(cad.activeToolId()).toBe("select")
   })
 
   it("is asked again in Spanish too", () => {
@@ -442,9 +454,10 @@ describe("FILLET of an ARC or a CIRCLE out of the other's plane", () => {
   })
 })
 
-// AutoCAD 2023's console, acc/x1–x9, y1–y6, z1–z3 of 2026-10-14: the table
-// declares the first prompt's words beside the second's (20626, 20628), but
-// the second prompt refuses every one of them.
+// AutoCAD 2027's console, probes corners/p121, p122: the second prompt
+// declares the modes and Radius (CHAMFER's Distance, Angle and Method) alone,
+// so every first-prompt word is refused there; `M` at CHAMFER's is Method,
+// not built here, so it is not typed.
 describe("FILLET's and CHAMFER's second prompt takes no first-prompt word", () => {
   it("refuses Polyline, Multiple, Undo and Trim as any answer, in Multiple too", () => {
     for (const word of [

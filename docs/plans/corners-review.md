@@ -6,11 +6,11 @@
 
 ## 1. Summary
 
-2 high, 15 medium and 7 low findings over four blocks.
+2 high, 15 medium and 8 low findings over four blocks.
 
 | Block | What | High | Medium | Low |
 | --- | --- | --- | --- | --- |
-| CRS | the command line: values refused, defaults, Undo after a transparent command, Spanish letters | 0 | 3 | 4 |
+| CRS | the command line: values refused, defaults, Undo after a transparent command, Spanish letters | 0 | 3 | 5 |
 | CRP | the picks: typed object snaps, locked layers, a mode's find | 1 | 2 | 0 |
 | CRG | what it produces: the new object's properties, polyline corners, refusals per type | 1 | 6 | 2 |
 | CRJ | the look: the ghost, the rollover, Polyline's preview, the refusal at the cursor | 0 | 4 | 1 |
@@ -408,6 +408,14 @@ and second object), FR (Radius), FP (FILLET's Polyline); C1, C2, CD (Distance's 
   second prompt is Method in 2027, p122); `cornerModes.test.ts` (acc → p240–p308), `parallelFillet.test.ts`
   (acc/c*–h* → p175, p176), `editing.test.ts`' acc citations (→ p199–p227), `polylineWidths.test.ts`
   (acc/w19–w23 → p206–p208), `lastPoint.test.ts` (acc/dd* → p247, p249).
+
+#### CRS-08 — TRIM's Undo after a transparent command says all undone after `Regenerating model.`
+
+- **Severity:** low · **Row:** L · **Status:** verified (found executing CRS-03: TRIM's area,
+  `docs/plans/trim-review.md`)
+- **AutoCAD:** trim/p164: `Command has been completely undone.` then `Regenerating model.`.
+- **mellowcad:** `editing.test.ts`' TRIM case asserted the last line only; the message came last.
+- **Fix:** the message before `ctx.undoTo`, as CRS-03's. **Regression test:** that case, both lines.
 
 #### CRG-08 — The fillet between a normal −Z ARC and a line comes out at −Z
 

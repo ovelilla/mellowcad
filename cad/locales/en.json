@@ -736,7 +736,8 @@
         "Undo": "Undo",
         "Polyline": "Polyline",
         "Radius": "Radius",
-        "Multiple": "Multiple"
+        "Multiple": "Multiple",
+        "Trim": "Trim"
       },
       "CHAMFER": {
         "Undo": "Undo",

@@ -1213,7 +1213,8 @@ export const es: EngineLocale = {
         "Undo": "Deshacer",
         "Polyline": "Polilínea",
         "Radius": "RAdio",
-        "Multiple": "múLtiple"
+        "Multiple": "múLtiple",
+        "Trim": "Recortar"
       },
       "CHAMFER": {
         "Undo": "desHacer",

@@ -1010,13 +1010,15 @@ export abstract class EdgeEditTool implements Tool {
     if (this.edgeBefore !== null) this.mode.edgeExtend = this.edgeBefore
     this.edgeBefore = null
     const step = this.steps.pop()
-    if (step) ctx.undoTo(step.depth)
-    if (step?.edgeExtend !== undefined) this.mode.edgeExtend = step.edgeExtend
-    this.enterSpent = true
+    // WHY said first: the console writes `Regenerating model.` after it,
+    // when what goes back had queued one (p164).
     if (this.steps.length === 0) {
       this.answered = false
       ctx.report(ctx.text.message("commandCompletelyUndone"))
     }
+    if (step) ctx.undoTo(step.depth)
+    if (step?.edgeExtend !== undefined) this.mode.edgeExtend = step.edgeExtend
+    this.enterSpent = true
     if (!this.window) {
       this.preview = this.lastInput && this.planFor(this.lastInput, ctx)
     }

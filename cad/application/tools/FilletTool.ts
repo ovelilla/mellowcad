@@ -144,12 +144,11 @@ export class FilletTool implements Tool {
   private askingRadius = false
   private multiple = false
   /**
-   * What Undo takes back, newest last: a fillet, or a radius given in the
-   * command (the radius it replaced and the history's depth before it).
+   * What Undo takes back, newest last: everything since the history stood at
+   * `depth`, a transparent 'LTSCALE with it (probe corners/p156) — a fillet,
+   * or a radius given in the command, with the radius it replaced.
    */
-  private steps: (
-    { readonly radius: number; readonly depth: number } | "fillet"
-  )[] = []
+  private steps: { readonly depth: number; readonly radius?: number }[] = []
   private lastScreen: Vec2 | null = null
   /**
    * The selection modes typed at the object prompts. The second prompt and
@@ -194,7 +193,7 @@ export class FilletTool implements Tool {
     this.openKeywordPrompt(ctx)
   }
 
-  /** WHY no Trim: TRIMMODE is always 1 here, so it is not offered. */
+  /** WHY no Trim listed: TRIMMODE is always 1 here (see {@link ownOptions}). */
   question(): PromptId | ToolQuestion {
     if (this.askingRadius) {
       return { id: "specifyFilletRadius", enter: this.radius }
@@ -312,10 +311,10 @@ export class FilletTool implements Tool {
   }
 
   /**
-   * Enter in a mode's prompt is the mode's; at Polyline's in Multiple it asks
-   * the first prompt again (acc/k6, l3); at the second prompt it asks that
-   * again, Multiple or not, as AutoCAD 2023's console does; at the first it
-   * ends.
+   * Enter in a mode's prompt is the mode's; at Polyline's it ends, in
+   * Multiple asks the first prompt again (probes corners/p134, p135); at the
+   * second prompt it asks that again, Multiple or not (p129, p130); at the
+   * first it ends (p131, p132).
    */
   onEnter(ctx: ToolContext): boolean {
     if (this.askingRadius) return false
@@ -340,12 +339,15 @@ export class FilletTool implements Tool {
   private ownOptions(): readonly CommandOption[] {
     switch (this.state.phase) {
       case "first":
-        // WHY Multiple still listed once on: AutoCAD 2023 console lists it.
+        // Multiple still listed once on (probe corners/p126). WHY Trim
+        // hidden: TRIMMODE is always 1 here, so its prompt is not built, but
+        // Spanish `R` is Recortar there, never RAdio (p165, p168).
         return [
           { id: "Undo" },
           { id: "Polyline" },
           { id: "Radius" },
           { id: "Multiple" },
+          { id: "Trim", hidden: true },
         ]
       case "second":
       case "polyline":
@@ -354,7 +356,7 @@ export class FilletTool implements Tool {
   }
 
   invokeOption(id: string, ctx: ToolContext): CommandOptionOutcome {
-    if (this.askingRadius) return "unhandled"
+    if (this.askingRadius || id === "Trim") return "unhandled"
     if (!this.modes.inMode() && this.ownOptions().some((o) => o.id === id)) {
       this.invokeOwn(id, ctx)
       return "continue"
@@ -923,7 +925,7 @@ export class FilletTool implements Tool {
     command: ReplaceEntitiesCommand | UpdateEntityCommand | null,
     ctx: ToolContext
   ): void {
-    if (command) this.steps.push("fillet")
+    if (command) this.steps.push({ depth: ctx.historyDepth() })
     if (this.multiple) {
       this.state = { phase: "first", hover: null }
       if (command) ctx.execute(command)
@@ -936,20 +938,20 @@ export class FilletTool implements Tool {
   }
 
   /**
-   * Undo takes back the last fillet or radius of this command, and only
-   * those; back at its start AutoCAD says so.
+   * Undo takes back the last fillet or radius of this command and what
+   * followed it; back at its start AutoCAD says so (probes corners/p148,
+   * p150, p156).
    */
   private undoStep(ctx: ToolContext): void {
     const step = this.steps.pop()
-    if (step === "fillet") ctx.undo()
-    else if (step) {
-      ctx.undoTo(step.depth)
-      // Set back by hand where UNDO Control None kept nothing to take back.
-      this.writeRadius(step.radius, ctx)
-    }
+    // WHY said first: the console writes `Regenerating model.` after it,
+    // when what goes back had queued one (p156).
     if (this.steps.length === 0) {
       ctx.report(ctx.text.message("commandCompletelyUndone"))
     }
+    if (step) ctx.undoTo(step.depth)
+    // Set back by hand where UNDO Control None kept nothing to take back.
+    if (step?.radius !== undefined) this.writeRadius(step.radius, ctx)
     ctx.requestRender()
   }
 
@@ -977,10 +979,17 @@ export class FilletTool implements Tool {
     ctx.requestRender()
   }
 
-  /** The radius, then the prompt Radius was chosen at, asked again. */
+  /**
+   * The radius, then the prompt Radius was chosen at, asked again; a
+   * negative one is refused and the radius asked again (probe corners/p116).
+   */
   private setRadius(value: number, ctx: ToolContext): void {
+    if (value < 0) {
+      ctx.report(ctx.text.message("valueMustBePositive"), "error")
+      return
+    }
     this.askingRadius = false
-    if (Number.isFinite(value) && value >= 0) {
+    if (Number.isFinite(value)) {
       this.steps.push({ radius: this.radius, depth: ctx.historyDepth() })
       this.writeRadius(value, ctx)
     }

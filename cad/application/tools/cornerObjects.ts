@@ -215,11 +215,11 @@ export const CORNER_OBJECT_MODES = ONE_OBJECT_MODES.filter(
 
 /**
  * How FILLET's and CHAMFER's object prompts refuse an answer, in AutoCAD
- * 2023's console's words: the modes, then the keywords `set` names. The
- * console lists the prompt's own words but the last (FILLET's first prompt
- * leaves out Multiple), and a prompt with one word that word and the end of
- * the prompt (`Radius]:`); the words this command does not offer (Trim,
- * Angle, mEthod) are left out with it.
+ * 2027's console's words (probes corners/p113, p117, p121–p125): the modes,
+ * then the keywords `set` names. The console lists the prompt's own words but
+ * the last (FILLET's first prompt leaves out Multiple), and a prompt with one
+ * word that word and the end of the prompt (`Radius]:`); the words this
+ * command does not offer (Trim, Angle, mEthod) are left out with it.
  */
 export function cornerObjectRefusal(
   set: "fillet" | "filletRadius" | "chamfer" | "chamferDistance"
