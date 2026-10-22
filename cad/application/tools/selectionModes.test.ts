@@ -8,6 +8,7 @@ import {
   p,
   polylineOf,
 } from "../../../test/builders"
+import type { LineEntity } from "../../domain/entities"
 import { es } from "../../locales/es"
 
 /** Typed at the command line and confirmed, as AutoCAD's prompt reads it. */
@@ -670,6 +671,7 @@ describe("Select objects' modes", () => {
     })
   })
 
+  // probe transforms/p269: CP stretches the end it frames.
   it("stretches what a crossing polygon frames", () => {
     const cad = createHarness({
       entities: [lineOf(p(0, 0), p(100, 0), { id: "A" })],
@@ -679,11 +681,8 @@ describe("Select objects' modes", () => {
     cad.enter().enter()
     answer(cad, "0,0", "20,0")
 
-    const line = cad.entities()[0]
-    expect(line.type === "line" && [line.start, line.end]).toEqual([
-      { x: 0, y: 0 },
-      { x: 120, y: 0 },
-    ])
+    const line = cad.entities()[0] as LineEntity
+    expect([line.start, line.end]).toBeCloseToPoints([p(0, 0), p(120, 0)])
   })
 
   it("asks and counts in Autodesk's Spanish", () => {

@@ -366,13 +366,21 @@ describe("dimension", () => {
     expect(mirrored.rotation).toBeCloseTo((3 * Math.PI) / 4)
   })
 
+  // probes transforms/p273, p274: the line follows its own point, DXF 10.
   it("restates the measurement when a stretch frame catches one origin", () => {
     const stretched = asDimension(
-      stretchEntity(dim(), p(40, 0), (point) => point.x > 50)
+      stretchEntity(dim(), p(40, 0), (point) => point.x > 50 && point.y < 20)
     )
     expect(dimensionMeasurement(stretched)).toBeCloseTo(140)
     // Only one origin moved, so the dimension line stays where it was placed.
     expect(stretched.linePoint).toBeCloseToPoint(p(50, 40))
+    // Its own point on the line, at the second extension line, caught too:
+    // the line follows.
+    const raised = asDimension(
+      stretchEntity(dim(), p(40, 10), (point) => point.x > 50)
+    )
+    expect(raised.second).toBeCloseToPoint(p(140, 10))
+    expect(raised.linePoint).toBeCloseToPoint(p(90, 50))
   })
 
   it("slides whole when the frame catches both origins", () => {
@@ -685,6 +693,14 @@ describe("in-place transforms", () => {
         expectSameShape(round, entity, 5)
       })
     )
+  })
+
+  // fast-check's counterexample: a vertical text reflected a hair off the
+  // vertical came back judged by an x of 0.
+  it("mirrors a vertical text back across a line a hair off horizontal", () => {
+    const text = textOf(p(0, 0), " ", { height: 0.01, rotation: deg(90) })
+    const [a, b] = [p(0, 0), p(0.01, 5e-12)]
+    expectSameShape(mirrorEntity(mirrorEntity(text, a, b), a, b), text, 5)
   })
 
   it("translation and rotation are isometries; scaling is a similarity", () => {
@@ -1243,16 +1259,38 @@ describe("stretchEntity", () => {
     expect(stretchEntity(outside, p(0, 10), insideRightHalf)).toBe(outside)
   })
 
-  it("bends a polyline while preserving its arc bulges", () => {
+  // probes transforms/p271, p281: an arc segment with one end moved keeps
+  // its chord height, one with both its bulge.
+  it("bends a polyline, an arc segment's chord height kept", () => {
     const poly = polylineOf([ORIGIN, p(100, 0), p(200, 0)], {
-      bulges: [0, 0.5],
+      bulges: [0.5, 0.5],
       id: "P1",
     })
-    const result = stretchEntity(poly, p(0, 30), (q) => q.x >= 200)
+    const result = stretchEntity(poly, p(0, 30), (q) => q.x >= 100)
     expect(result.type).toBe("polyline")
     if (result.type !== "polyline") return
-    expect(result.vertices).toBeCloseToPoints([ORIGIN, p(100, 0), p(200, 30)])
-    expect(result.bulges).toEqual([0, 0.5])
+    expect(result.vertices).toBeCloseToPoints([ORIGIN, p(100, 30), p(200, 30)])
+    const height = (0.5 * 100) / 2
+    expect(result.bulges?.[0]).toBeCloseTo(height / (Math.hypot(100, 30) / 2))
+    expect(result.bulges?.[1]).toBe(0.5)
+  })
+
+  // probe transforms/p271: an arc's ends are its stretch points.
+  it("refits an arc caught at one end, still counter-clockwise, and leaves one caught at its centre", () => {
+    const quarter = arcOf(p(0, 0), 10, 0, Math.PI / 2, { id: "A1" })
+    const bent = stretchEntity(quarter, p(0, 5), (q) => q.x > 5)
+    if (bent.type !== "arc") throw new Error("not an arc")
+    expect(bent.id).toBe("A1")
+    expect(arcStartPoint(bent)).toBeCloseToPoint(p(10, 5), 9)
+    expect(arcEndPoint(bent)).toBeCloseToPoint(p(0, 10), 9)
+    const chord = Math.hypot(10, 5)
+    const sagitta = bent.radius - Math.sqrt(bent.radius ** 2 - (chord / 2) ** 2)
+    expect(sagitta).toBeCloseTo(10 - 10 * Math.cos(Math.PI / 4), 9)
+    expect(stretchEntity(quarter, p(0, 5), (q) => q.x < 1 && q.y < 1)).toBe(
+      quarter
+    )
+    // The ends meeting leave it as it was.
+    expect(stretchEntity(quarter, p(-10, 10), (q) => q.x > 5)).toBe(quarter)
   })
 })
 

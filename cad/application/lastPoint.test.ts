@@ -673,6 +673,57 @@ describe("A number typed for a point", () => {
     expect(lastPoint(cad)).toBe(" X = -6.88     Y = 2.45     Z = 0.00")
   })
 
+  // probes transforms/p249–p261: after `ID 7,8`, LASTPOINT is STRETCH's
+  // second point however given and its base at Enter, as MOVE's; but its
+  // Displacement keeps LASTPOINT (MOVE's puts it at the UCS origin), so `@`
+  // and a number run from 7,8 and Enter leaves it there (p251's trace:
+  // UseBasePoint false), and `_D` there asks the second point from the
+  // origin (p261).
+  it.each([
+    [
+      "p249 the second point on the base",
+      ["3,4", "3,4"],
+      "3.00",
+      "4.00",
+      p(100, 0),
+    ],
+    ["p250 _D 0,0,0", ["_D", "0,0,0"], "0.00", "0.00", p(100, 0)],
+    ["p251 Enter, Enter", ["", ""], "7.00", "8.00", p(100, 0)],
+    ["p254 Enter at the second point", ["3,4", ""], "3.00", "4.00", p(103, 4)],
+    ["p255 _D 3,4", ["_D", "3,4"], "3.00", "4.00", p(103, 4)],
+    ["p256 @", ["3,4", "@"], "3.00", "4.00", p(100, 0)],
+    ["p257 @5,0", ["3,4", "@5,0"], "8.00", "4.00", p(105, 0)],
+    ["p259 _D @10,5", ["_D", "@10,5"], "17.00", "13.00", p(117, 13)],
+    ["p260 _D 10", ["_D", "10"], "-2.86", "6.35", p(97.1364, 6.35398)],
+    ["p261 _D _D 3,4", ["_D", "_D", "3,4"], "3.00", "4.00", p(103, 4)],
+  ] as const)("is STRETCH's: %s", (_, answers, x, y, end) => {
+    const cad = createHarness({
+      entities: [lineOf(p(0, 0), p(100, 0), { id: "A" })],
+    })
+    // The console's cursor, towards which p260's `10` runs from 7,8.
+    cad.moveTo(p(-336.3515885600009, -49.297753120728885))
+    answer(cad, "ID", "7,8", "STRETCH", "C", "90,-10", "110,10", "")
+    answer(cad, ...answers)
+    expect(cad.byId<LineEntity>("A").end).toBeCloseToPoint(end, 4)
+    expect(lastPoint(cad)).toBe(` X = ${x}     Y = ${y}     Z = 0.00`)
+  })
+
+  // probe transforms/p261: `_D` at STRETCH's Displacement asks the second
+  // point, the history writing what it was asked.
+  it("asks STRETCH's second point at the Displacement's Displacement", () => {
+    const cad = createHarness({
+      entities: [lineOf(p(0, 0), p(100, 0), { id: "A" })],
+    })
+    answer(cad, "STRETCH", "C", "90,-10", "110,10", "", "_D", "_D")
+    expect(cad.state().commandLine.prompt).toBe(
+      "STRETCH Specify second point or <use first point as displacement>:"
+    )
+    expect(cad.commandLog().slice(-2)).toEqual([
+      "Specify base point or [Displacement] <Displacement>: _D",
+      "Specify displacement <0.00, 0.00, 0.00>: _D",
+    ])
+  })
+
   it("keeps the cursor's heading off the drawing, and runs along X from a cursor on LASTPOINT", () => {
     const off = fromTen()
     off.runtime.pointerLeave()

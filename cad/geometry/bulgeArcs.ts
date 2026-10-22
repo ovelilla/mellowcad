@@ -170,6 +170,20 @@ export function refitArcBulge(
 }
 
 /**
+ * The bulge of an arc of bulge `bulge` on a chord `chord` long once its chord
+ * is `newChord` long, its chord height kept on the same side, as AutoCAD's
+ * STRETCH refits an arc caught at one end (transforms/p271, p281): the height
+ * is half the chord times the bulge. Kept as it was on a chord of no length.
+ */
+export function sameHeightBulge(
+  bulge: number,
+  chord: number,
+  newChord: number
+): number {
+  return newChord < EPSILON ? bulge : (bulge * chord) / newChord
+}
+
+/**
  * The bulge of the arc from `start` through `second` to `end`. Null when the
  * three lie on one line.
  */

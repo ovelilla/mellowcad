@@ -19,7 +19,7 @@ import {
 } from "./Tool"
 import type { PromptId } from "../../locales/types"
 import { acuteHeading, headingInUcs } from "./ucsHeading"
-import { ObjectSelector } from "./objectSelection"
+import { AddedBy, ObjectSelector } from "./objectSelection"
 import { pointAlongCursor, showRise } from "./directDistance"
 import { selectedInDrawingOrder } from "./drawingOrder"
 import { transformDrag } from "./transformDrag"
@@ -72,7 +72,7 @@ export abstract class PlacementTool implements Tool {
   private readonly selector = new ObjectSelector({
     takes: () => this.selectionInput(),
     done: (ctx) => this.confirmSelection(ctx),
-    onAdded: (ids, frame) => this.onSelectionAdded(ids, frame),
+    onAdded: (ids, added) => this.onSelectionAdded(ids, added),
   })
   private lastScreen: Vec2 | null = null
   /**
@@ -117,16 +117,24 @@ export abstract class PlacementTool implements Tool {
   }
 
   /**
-   * Called as objects join the set: `frame` is the outline of the window or
-   * crossing polygon that took them, or null (a pick, a fence, Last…).
-   * STRETCH uses it to remember which frames were given.
+   * Called as objects join the set, with how they were found: STRETCH keeps
+   * each object's first.
    */
-  protected onSelectionAdded(
-    ids: readonly EntityId[],
-    frame: readonly Vec2[] | null
-  ): void {
+  protected onSelectionAdded(ids: readonly EntityId[], added: AddedBy): void {
     void ids
-    void frame
+    void added
+  }
+
+  /**
+   * Whether the base point's Displacement reads from LASTPOINT. STRETCH's
+   * leaves LASTPOINT where it was, so `@` and a number run from it and Enter
+   * keeps it, Ortho has no base there, and its own hidden Displacement asks
+   * the second point from the UCS origin (transforms/p251's trace:
+   * UseBasePoint false; p259–p261). MOVE's and COPY's put LASTPOINT at the
+   * UCS origin, their base (move/p135).
+   */
+  protected displacementFromLastPoint(): boolean {
+    return false
   }
 
   /**
@@ -226,6 +234,12 @@ export abstract class PlacementTool implements Tool {
   commandOptions(): readonly CommandOption[] {
     if (this.state.phase === "selecting") return this.selector.commandOptions()
     if (this.state.phase === "basePoint") return [{ id: "Displacement" }]
+    if (
+      this.state.phase === "displacement" &&
+      this.displacementFromLastPoint()
+    ) {
+      return [{ id: "Displacement", hidden: true }]
+    }
     if (this.state.phase === "secondPoint" && this.placed > 0) {
       return [{ id: "Exit" }, { id: "Undo" }]
     }
@@ -246,6 +260,11 @@ export abstract class PlacementTool implements Tool {
     }
     switch (id) {
       case "Displacement":
+        if (this.state.phase === "displacement") {
+          if (!this.displacementFromLastPoint()) return "unhandled"
+          this.enterSecondPoint(this.state.origin, ctx)
+          return "continue"
+        }
         if (this.state.phase !== "basePoint") return "unhandled"
         this.askDisplacement(ctx)
         return "continue"
@@ -355,16 +374,17 @@ export abstract class PlacementTool implements Tool {
   }
 
   /**
-   * The base point at the second point; the UCS origin at the Displacement,
-   * where the trace's UseBasePoint is 0,0,0 (move/p135): a number runs from
-   * it towards the cursor and `<a` holds a heading from it (p138, p139).
+   * The base point at the second point; the UCS origin at MOVE's
+   * Displacement, where the trace's UseBasePoint is 0,0,0 (move/p135): a
+   * number runs from it towards the cursor and `<a` holds a heading from it
+   * (p138, p139). None at STRETCH's, which reads from LASTPOINT.
    */
   getConstraintAnchor(): Vec3 | null {
     switch (this.state.phase) {
       case "secondPoint":
         return this.state.base
       case "displacement":
-        return this.state.origin
+        return this.displacementFromLastPoint() ? null : this.state.origin
       default:
         return null
     }
@@ -545,12 +565,13 @@ export abstract class PlacementTool implements Tool {
    * The base point's Displacement: "Specify displacement", a point read as
    * the vector from the UCS origin to it, then the command ends, as COPY's
    * does too. It puts LASTPOINT at that origin as it opens, so `@10,5` is
-   * 10,5 and Enter leaves it there (move/p109, p119, p135, p137, p149).
+   * 10,5 and Enter leaves it there (move/p109, p119, p135, p137, p149) —
+   * but STRETCH's ({@link displacementFromLastPoint}).
    */
   private askDisplacement(ctx: ToolContext): void {
     const origin = ctx.ucs.origin
     this.state = { phase: "displacement", origin }
-    ctx.setLastPoint(origin)
+    if (!this.displacementFromLastPoint()) ctx.setLastPoint(origin)
     ctx.dynamicInput.open({
       fields: [{ id: "displacement", kind: "coordinate" }],
       commit: () => {},
@@ -570,9 +591,10 @@ export abstract class PlacementTool implements Tool {
       return true
     }
     if (!isCoordinateExpression(text)) return false
+    const fromLastPoint = this.displacementFromLastPoint()
     const point = parseCoordinate(text, {
-      lastPoint: origin,
-      relativeByDefault: true,
+      lastPoint: fromLastPoint ? ctx.lastPoint : origin,
+      relativeByDefault: !fromLastPoint,
       ucs: ctx.ucs,
       elevation: ctx.elevation,
     })

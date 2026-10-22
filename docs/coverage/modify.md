@@ -591,22 +591,45 @@ listed, nor the second prompt's Angle and Method); **unverified**:
 `Las líneas colineales no pueden ser unidos con chaflán.` (the table's 20686 with 20639's
 `unidos con chaflán`)
 
-### `STRETCH` / `S` · es `ESTIRA` / `EI`†
+### `STRETCH` / `S` · es `ESTIRA` / `EI`
 
 **Implemented:** `Select objects to stretch by crossing-window or crossing-polygon...` (es
-`Designe objetos que estirar mediante ventana o polígono...`), then MOVE's selection, base point and
-second point; crossing-window stretch via `PlacementTool`, a crossing polygon (CPolygon) framing as
-a crossing window does, and what a pick, Last or a Fence takes moving whole; a 3D displacement moves
-whole (Z included) what the window catches whole, and a line's caught end in Z; a polyline, spline,
-hatch or dimension caught in part stays in its plane; Enter at the second point uses the first point
-as the displacement; a whole ellipse moves with its centre in the window and stays for a quadrant
-alone (ellipse/p326, p331)
+`Designe objetos que estirar mediante ventana o polígono...`), then MOVE's selection, its modes
+without Group (p258), base point and second point (transforms/p223, p224). Each object stretches as
+it was first added, a duplicate window or pick changing nothing (`1 found (1 duplicate)`, p265,
+p279): one a crossing window, a crossing polygon (CPolygon) or a crossing lasso found is stretched
+by that frame alone, two windows each stretching their own (p264, p269); one a pick, Window,
+WPolygon or Fence found moves whole (p262, p263, p267, p269); one Last or ALL found neither
+stretches nor moves (p268); Remove takes out (p270). What a frame catches: a line's ends, a
+polyline's vertices, a spline's fit points or control vertices (p278); an arc's ends, one caught
+refitting the arc through the moved and the fixed end with its chord height kept on the same side,
+both moving it whole, its centre alone nothing; a polyline's arc segment with one end moved keeps
+its chord height, with both its bulge (p271, p281); a circle by its centre, TEXT, MTEXT and a block
+reference by their insertion point (p272); a linear or aligned dimension's origins one by one,
+restating the measurement, and its line with its own point, DXF 10 where it meets the second
+extension line (p273, p274); a hatch's loop vertices, as AutoCAD's associative hatch, the default
+(p276). A 3D displacement moves whole (Z included) what the window catches whole, and a line's
+caught end in Z; anything else caught in part stays in its plane. Enter at the second point uses
+the first point as the displacement; the Displacement keeps LASTPOINT where it was, so `@10,5` and
+a number run from it and Enter leaves it there, the point still read as the displacement from the
+UCS origin (p251, p259, p260), and its hidden `Displacement` asks
+`Specify second point or <use first point as displacement>:` from the origin (p261); LASTPOINT is
+the second point however given and the base at Enter (p249, p250, p254–p257). A stretch by nothing
+changes nothing, its run the step U names (MOVE-D3: p249–p253); the drag is MOVE's (desktop d09);
+a whole ellipse moves with its centre in the window and stays for a quadrant alone (ellipse/p326,
+p331)
 
 **Missing:** the selection modes' gaps (Command line, `Select objects:`); an elliptical arc with an
 end in the window: AutoCAD moves that end and keeps the other, the arc an affine image of itself
 with its parameter sweep kept (ellipse/p324, p333, p336–p338; p332 moved an end lying 0.14 outside
 the window), whose rule no probe has fixed yet (ELLIPSE-D44); here the arc moves whole with its
-centre in the window, else stays
+centre in the window, else stays. A dimension's text position (DXF 11), which a window over the
+text alone moves with the line (p275), is not modelled. A non-associative hatch caught in part
+stays in AutoCAD (p277): associativity is not modelled (MOVE-D11). **Unverified:** Previous, which
+stretches nothing here as Last; a preselection, which moves whole (p289 runs noun-verb STRETCH, not
+its geometry); a dimension with both origins caught and its own point out (its line stays); an
+angular or radial dimension's line (it follows when both origins move); Enter at the
+Displacement's second point; a hatch loop's arc segments, which keep their bulges
 
 ### `ERASE` / `E` / `DELETE` · es `BORRA` / `B` / `DELETE`
 

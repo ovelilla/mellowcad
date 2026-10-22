@@ -304,6 +304,7 @@ describe("a wrong answer mid-command", () => {
     expect(cad.commandLog().at(-1)).toBe(
       `Expects a point or ${SELECTION_MODES}`
     )
+    // probe transforms/p258: STRETCH's lists no Group.
     cad.escape().command("STRETCH")
     answerLine(cad, "FOO")
     expect(cad.commandLog().at(-1)).toBe(

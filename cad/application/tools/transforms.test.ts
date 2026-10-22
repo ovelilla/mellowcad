@@ -6,14 +6,17 @@ import type {
   EllipseEntity,
   Entity,
   HatchEntity,
+  InsertEntity,
   LineEntity,
   MTextEntity,
   PolylineEntity,
+  SplineEntity,
   TextEntity,
 } from "../../domain/entities"
 import {
   assignEntityColor,
   createBlockDefinition,
+  createDimension,
   createInsert,
   createMText,
   createSpline,
@@ -2164,6 +2167,279 @@ describe("ARRAYPOLAR's questions", () => {
 })
 
 describe("STRETCH", () => {
+  /** Each answer typed at the command line and confirmed, as the console types it. */
+  function typed(cad: CadHarness, ...texts: string[]): CadHarness {
+    for (const text of texts) {
+      cad.runtime.setCommandLineText(text)
+      cad.runtime.submitCommandLine()
+    }
+    return cad
+  }
+  const A = () => lineOf(p(0, 0), p(100, 0), { id: "A" })
+  const B = () => lineOf(p(0, 50), p(100, 50), { id: "B" })
+  const ends = (cad: CadHarness, id: string) => {
+    const line = cad.byId<LineEntity>(id)
+    return [line.start, line.end]
+  }
+  /** STRETCH with these answers at `Select objects:`, then 0,0 to 10,5. */
+  const stretched = (cad: CadHarness, ...selection: string[]) =>
+    typed(cad, "_STRETCH", ...selection, "", "0,0", "10,5")
+
+  // probes transforms/p223 (STRETCH, S, repeated), p224 (ESTIRA, EI).
+  it.each([
+    ["en", undefined, "STRETCH", "S"],
+    ["es", es, "ESTIRA", "EI"],
+  ] as const)(
+    "runs by its name, alias and Enter (%s)",
+    (_, locale, name, alias) => {
+      const cad = createHarness({ locale, entities: [A()] })
+      const by = (x: number) => [
+        "_C",
+        `${x},-10`,
+        `${x + 20},10`,
+        "",
+        "0,0",
+        "10,0",
+      ]
+      typed(cad, name, ...by(90), alias, ...by(100), "", ...by(110))
+      expect(cad.byId<LineEntity>("A").end).toBeCloseToPoint(p(130, 0))
+    }
+  )
+
+  // probes transforms/p262 (a pick), p263 (W), p267 (Fence), p269 (WP):
+  // each moves its objects whole.
+  it.each([
+    ["a pick", ["50,0"]],
+    ["W", ["_W", "-10,-10", "110,10"]],
+    ["Fence", ["_F", "50,-10", "50,10", ""]],
+    ["WP", ["_WP", "-10,-10", "110,-10", "110,10", "-10,10", ""]],
+  ])("moves what %s takes whole", (_, selection) => {
+    const cad = stretched(createHarness({ entities: [A(), B()] }), ...selection)
+    expect(ends(cad, "A")).toBeCloseToPoints([p(10, 5), p(110, 5)])
+    expect(ends(cad, "B")).toBeCloseToPoints([p(0, 50), p(100, 50)])
+  })
+
+  // probe transforms/p264: two crossing windows on two lines stretch each by
+  // its own; p266: a pick and a window over another.
+  it("stretches each object by the window that found it", () => {
+    const two = stretched(
+      createHarness({ entities: [A(), B()] }),
+      ...["_C", "90,-10", "110,10", "_C", "-10,40", "10,60"]
+    )
+    expect(ends(two, "A")).toBeCloseToPoints([p(0, 0), p(110, 5)])
+    expect(ends(two, "B")).toBeCloseToPoints([p(10, 55), p(100, 50)])
+
+    const mixed = stretched(
+      createHarness({ entities: [A(), B()] }),
+      ...["50,0", "_C", "90,40", "110,60"]
+    )
+    expect(ends(mixed, "A")).toBeCloseToPoints([p(10, 5), p(110, 5)])
+    expect(ends(mixed, "B")).toBeCloseToPoints([p(0, 50), p(110, 55)])
+  })
+
+  // probes transforms/p265 (a window, then another over the other end),
+  // p279 (a window, then a pick): `1 found (1 duplicate)`, and the object
+  // stretches as it was first added.
+  it.each([
+    [
+      ["_C", "-10,-10", "10,10", "_C", "90,-10", "110,10"],
+      [p(10, 5), p(100, 0)],
+    ],
+    [
+      ["_C", "90,-10", "110,10", "50,0"],
+      [p(0, 0), p(110, 5)],
+    ],
+  ])("keeps how an object was first added (%s)", (selection, after) => {
+    const cad = stretched(createHarness({ entities: [A()] }), ...selection)
+    expect(cad.commandLog().join("\n")).toContain(
+      "1 found (1 duplicate), 1 total"
+    )
+    expect(ends(cad, "A")).toBeCloseToPoints(after)
+  })
+
+  // probe transforms/p268: Last and ALL find their objects, and STRETCH
+  // neither stretches nor moves them.
+  it.each([["_L"], ["_ALL"]])("stretches nothing %s finds", (mode) => {
+    const cad = stretched(createHarness({ entities: [A(), B()] }), mode)
+    expect(ends(cad, "A")).toBeCloseToPoints([p(0, 0), p(100, 0)])
+    expect(ends(cad, "B")).toBeCloseToPoints([p(0, 50), p(100, 50)])
+  })
+
+  // probe transforms/p270: Remove takes an object out of the window's set.
+  it("leaves what Remove takes out", () => {
+    const cad = stretched(
+      createHarness({ entities: [A(), B()] }),
+      ...["_C", "90,-10", "110,60", "_R", "50,50"]
+    )
+    expect(ends(cad, "A")).toBeCloseToPoints([p(0, 0), p(110, 5)])
+    expect(ends(cad, "B")).toBeCloseToPoints([p(0, 50), p(100, 50)])
+  })
+
+  // probe transforms/p271, a window over x 90..110: the arc's caught start
+  // moves and its end stays, the chord height (14.645) kept on its side; an
+  // arc with only its centre caught stays; a circle moves by its centre; a
+  // polyline's arc segment with one end moved keeps its height too (bulge 1
+  // → 0.908153).
+  it("refits an arc and an arc segment caught at one end, their chord height kept", () => {
+    const cad = stretched(
+      createHarness({
+        entities: [
+          arcOf(p(50, 100), 50, 0, Math.PI / 2, { id: "ARC1" }),
+          arcOf(p(100, 200), 30, 0, Math.PI, { id: "ARC2" }),
+          circleOf(p(80, 260), 20, { id: "C1" }),
+          circleOf(p(100, 320), 30, { id: "C2" }),
+          polylineOf([p(0, 380), p(100, 380)], { id: "P3", bulges: [1, 0] }),
+          polylineOf([p(0, 20), p(100, 20), p(100, 40), p(0, 40)], {
+            id: "P1",
+          }),
+        ],
+      }),
+      ...["_C", "90,-10", "110,400"]
+    )
+    const arc = cad.byId<ArcEntity>("ARC1")
+    expect(arc.center).toBeCloseToPoint(p(55.585971, 94.947962), 6)
+    expect(arc.radius).toBeCloseTo(55.334709, 6)
+    const start = (a: ArcEntity) =>
+      p(
+        a.center.x + a.radius * Math.cos(a.startAngle),
+        a.center.y + a.radius * Math.sin(a.startAngle)
+      )
+    const end = (a: ArcEntity) =>
+      p(
+        a.center.x + a.radius * Math.cos(a.endAngle),
+        a.center.y + a.radius * Math.sin(a.endAngle)
+      )
+    expect(start(arc)).toBeCloseToPoint(p(110, 105), 9)
+    expect(end(arc)).toBeCloseToPoint(p(50, 150), 9)
+    expect(cad.byId<ArcEntity>("ARC2").center).toBeCloseToPoint(p(100, 200))
+    expect(cad.byId<CircleEntity>("C1").center).toBeCloseToPoint(p(80, 260))
+    expect(cad.byId<CircleEntity>("C2").center).toBeCloseToPoint(p(110, 325))
+    expect(cad.byId<PolylineEntity>("P3").bulges?.[0]).toBeCloseTo(0.908153, 6)
+    expect(cad.byId<PolylineEntity>("P1").vertices).toBeCloseToPoints([
+      p(0, 20),
+      p(110, 25),
+      p(110, 45),
+      p(0, 40),
+    ])
+  })
+
+  // probe transforms/p281: bulge -1 with its end 100,0 → 110,5 becomes
+  // -0.908153 (the chord height 50 kept); both ends caught, it moves whole.
+  it("keeps a clockwise arc segment's chord height, and its bulge when both ends move", () => {
+    const poly = () =>
+      polylineOf([p(0, 0), p(100, 0)], { id: "P", bulges: [-1, 0] })
+    const one = stretched(
+      createHarness({ entities: [poly()] }),
+      ...["_C", "90,-10", "110,10"]
+    )
+    expect(one.byId<PolylineEntity>("P").bulges?.[0]).toBeCloseTo(-0.908153, 6)
+    const both = stretched(
+      createHarness({ entities: [poly()] }),
+      ...["_C", "-10,-10", "110,10"]
+    )
+    expect(both.byId<PolylineEntity>("P").bulges?.[0]).toBe(-1)
+  })
+
+  // probes transforms/p273 (the second origin caught: the line stays at 320)
+  // and p274 (the dimension line's own point, at 100,320, caught too: DXF 10
+  // goes to 110,325, the line with it).
+  it.each([
+    ["90,290", "110,310", 320],
+    ["90,290", "110,330", 325],
+  ])("stretches a dimension's line by its own point (%s to %s)", (a, b, y) => {
+    const cad = stretched(
+      createHarness({
+        entities: [
+          createDimension("linear", p(0, 300), p(100, 300), p(50, 320), {
+            id: "D",
+          }),
+        ],
+      }),
+      ...["_C", a, b]
+    )
+    const dimension = cad.byId<DimensionEntity>("D")
+    expect(dimension.first).toBeCloseToPoint(p(0, 300))
+    expect(dimension.second).toBeCloseToPoint(p(110, 305))
+    expect(dimension.linePoint.y).toBeCloseTo(y, 9)
+    expect(dimensionMeasurement(dimension)).toBeCloseTo(110, 9)
+  })
+
+  // probe transforms/p272: text, MTEXT and a block reference move whole with
+  // their insertion point, and stay without it.
+  it("moves text, MTEXT and a reference by their insertion point", () => {
+    const bar = createBlockDefinition("B1", p(0, 0), [
+      lineOf(p(0, 0), p(20, 0)),
+    ])
+    const cad = stretched(
+      createHarness({
+        blocks: [bar],
+        entities: [
+          createText(p(100, 0), "Hola", { id: "T1", height: 5 }),
+          createText(p(75, 20), "HolaHolaHola", { id: "T2", height: 5 }),
+          createMText(p(100, 50), "Hola", { id: "M1", height: 2.5, width: 30 }),
+          createMText(p(70, 80), "Hola", { id: "M2", height: 2.5, width: 35 }),
+          createInsert(bar.id, p(100, 150), { id: "I1" }),
+          createInsert(bar.id, p(80, 180), { id: "I2" }),
+        ],
+      }),
+      ...["_C", "90,-10", "110,240"]
+    )
+    const at = (id: string) =>
+      (cad.byId(id) as TextEntity | MTextEntity | InsertEntity).position
+    expect(at("T1")).toBeCloseToPoint(p(110, 5))
+    expect(at("T2")).toBeCloseToPoint(p(75, 20))
+    expect(at("M1")).toBeCloseToPoint(p(110, 55))
+    expect(at("M2")).toBeCloseToPoint(p(70, 80))
+    expect(at("I1")).toBeCloseToPoint(p(110, 155))
+    expect(at("I2")).toBeCloseToPoint(p(80, 180))
+  })
+
+  // probe transforms/p278: a fit spline's and a CV spline's caught point
+  // moves, the others stay.
+  it("moves a spline's caught fit point or control vertex", () => {
+    const cad = stretched(
+      createHarness({
+        entities: [
+          createSpline("fit", [p(0, 200), p(50, 250), p(100, 200)], {
+            id: "SF",
+          }),
+          createSpline("cv", [p(0, 300), p(50, 350), p(100, 300)], {
+            id: "SC",
+            degree: 2,
+          }),
+        ],
+      }),
+      ...["_C", "90,190", "110,310"]
+    )
+    expect(cad.byId<SplineEntity>("SF").points).toBeCloseToPoints([
+      p(0, 200),
+      p(50, 250),
+      p(110, 205),
+    ])
+    expect(cad.byId<SplineEntity>("SC").points).toBeCloseToPoints([
+      p(0, 300),
+      p(50, 350),
+      p(110, 305),
+    ])
+  })
+
+  // probes transforms/p252 (the second point on the base), p253 (a
+  // Displacement of 0,0,0; Enter twice): nothing changes, and the run is
+  // still the step U names (MOVE-D3).
+  it.each([
+    ["the second point on the base", ["3,4", "3,4"]],
+    ["a Displacement of 0,0,0", ["_D", "0,0,0"]],
+    ["Enter twice", ["", ""]],
+  ])("changes nothing by %s, a step U names", (_, answers) => {
+    const cad = createHarness({ entities: [A(), B()] })
+    typed(cad, "_STRETCH", "_C", "90,40", "110,60", "", ...answers)
+    expect(ends(cad, "B")).toBeCloseToPoints([p(0, 50), p(100, 50)])
+    typed(cad, "_U")
+    expect(cad.commandLog().at(-1)).toBe("STRETCH")
+    expect(cad.entityCount).toBe(2)
+  })
+
+  // probe transforms/p271: a line's caught end follows, the other stays.
   it("drags only the vertices caught by the crossing box", () => {
     const cad = createHarness({ entities: [HORIZONTAL] })
 
@@ -2179,6 +2455,7 @@ describe("STRETCH", () => {
     expect(line.end).toBeCloseToPoint(p(300, 0))
   })
 
+  // probe transforms/p271: a polyline's caught vertices follow.
   it("bends a polyline instead of moving it whole", () => {
     const cad = createHarness({
       entities: [polylineOf([p(0, 0), p(200, 0), p(200, 200)], { id: "P1" })],
@@ -2195,6 +2472,8 @@ describe("STRETCH", () => {
     expect(poly.vertices).toBeCloseToPoints([p(0, 0), p(200, 0), p(320, 200)])
   })
 
+  // probe transforms/p289 runs STRETCH noun-verb, its geometry unprobed:
+  // moved whole, **unverified**.
   it("moves a pre-selected object whole, since it has no frame", () => {
     const cad = createHarness({ entities: [HORIZONTAL] })
 

@@ -1,6 +1,7 @@
 import { Vec2, V } from "../geometry/Vec2"
 import { Vec3, add3, scale3, sub3, withZ, zOf } from "../geometry/Vec3"
-import { normalizeAngle } from "../geometry/primitives"
+import { bulgeToArc, normalizeAngle } from "../geometry/primitives"
+import { sameHeightBulge } from "../geometry/bulgeArcs"
 import {
   Axes3,
   arbitraryAxis,
@@ -49,8 +50,10 @@ import {
   DimensionOptions,
   createDimension,
   DimensionPoints,
+  dimensionGeometry,
   mapDimensionPoints,
 } from "./dimensions"
+import { arcEndPoint, arcStartPoint } from "./entityMeasures"
 import { carryOverrides } from "./entityOverrides"
 import {
   entityAxes,
@@ -316,10 +319,12 @@ function translatePlanar(entity: Entity, delta: Vec2): Entity {
  * so an endpoint or vertex caught by the frame follows the cursor while the
  * rest of the object stays put, bending the geometry.
  *
- * Circles and arcs are *not* deformed (their shape has no free vertices): they
- * move rigidly when their centre is inside the frame, matching how AutoCAD
- * treats circles. Polyline bulges are preserved, so an arc segment whose ends
- * move keeps its curvature ratio.
+ * An arc's stretch points are its ends: one caught refits the arc through the
+ * moved and the fixed end with its chord height kept on the same side, as a
+ * polyline's arc segment with one end moved is refitted; both caught move it
+ * whole, its centre alone nothing (transforms/p271, p281). A circle, an
+ * ellipse, text and a reference move whole with their centre or insertion
+ * point, else stay.
  *
  * A Z in `delta` moves what moves whole, and a line's caught end; an object
  * with several vertices in one plane cannot tilt, so caught in part it ignores
@@ -358,13 +363,13 @@ export function stretchEntity(
       )
     }
     case "circle":
-    case "arc":
     case "ellipse":
     case "text":
     case "mtext":
     case "attdef":
     case "insert":
       return shiftEntityZ(planar, dz)
+    case "arc":
     case "polyline":
     case "spline":
     case "dimension":
@@ -378,18 +383,24 @@ function stretchVertices(entity: Entity): readonly Vec2[] {
   switch (entity.type) {
     case "line":
       return [entity.start, entity.end]
+    case "arc":
+      return [arcStartPoint(entity), arcEndPoint(entity)]
     case "polyline":
       return entity.vertices
     case "spline":
       return entity.points
-    case "dimension":
-      return entity.vertex
-        ? [entity.first, entity.second, entity.vertex]
-        : [entity.first, entity.second]
+    case "dimension": {
+      const line = dimensionLinePoint(entity)
+      return [
+        entity.first,
+        entity.second,
+        ...(entity.vertex ? [entity.vertex] : []),
+        ...(line ? [line] : []),
+      ]
+    }
     case "hatch":
       return entity.loops.flatMap((loop) => loop.vertices)
     case "circle":
-    case "arc":
     case "ellipse":
     case "text":
     case "mtext":
@@ -410,7 +421,6 @@ function stretchVertices(entity: Entity): readonly Vec2[] {
 function stretchAnchors(entity: Entity): readonly Vec2[] {
   switch (entity.type) {
     case "circle":
-    case "arc":
     case "ellipse":
       return [entity.center]
     case "text":
@@ -419,6 +429,7 @@ function stretchAnchors(entity: Entity): readonly Vec2[] {
     case "insert":
       return [entity.position]
     case "line":
+    case "arc":
     case "polyline":
     case "spline":
     case "dimension":
@@ -443,17 +454,34 @@ function stretchPlanar(
     case "line":
       return { ...entity, start: shift(entity.start), end: shift(entity.end) }
     case "circle":
-    case "arc":
     case "ellipse":
       return inFrame(entity.center)
         ? { ...entity, center: V.add(entity.center, delta) }
         : entity
+    case "arc":
+      return stretchArc(entity, delta, inFrame)
     case "spline":
       // Its fit points or control vertices are its free vertices, as a
       // polyline's are; the tangents keep their direction.
       return { ...entity, points: entity.points.map(shift) }
-    case "polyline":
-      return { ...entity, vertices: entity.vertices.map(shift) }
+    case "polyline": {
+      const vertices = entity.vertices.map(shift)
+      const n = vertices.length
+      // An arc segment with one end moved keeps its chord height (p281), one
+      // with both its bulge.
+      const bulges = entity.bulges?.map((bulge, i) => {
+        const j = (i + 1) % n
+        if (bulge === 0 || (j === 0 && !entity.closed)) return bulge
+        const from = entity.vertices
+        if (inFrame(from[i]) === inFrame(from[j])) return bulge
+        return sameHeightBulge(
+          bulge,
+          V.distance(from[i], from[j]),
+          V.distance(vertices[i], vertices[j])
+        )
+      })
+      return { ...entity, vertices, ...(bulges ? { bulges } : {}) }
+    }
     case "text":
     case "mtext":
     case "attdef":
@@ -464,24 +492,28 @@ function stretchPlanar(
         : entity
     case "dimension": {
       // Each measured origin follows the frame on its own, so stretching the
-      // geometry restates the measurement. The dimension line rides along only
-      // when both origins move, otherwise it stays where it was placed.
+      // geometry restates the measurement. A linear or aligned dimension's
+      // line follows its own point, DXF 10 at the second extension line
+      // (p273, p274); the other kinds' when both origins move (unprobed).
       const moved = mapDimensionPoints(entity, shift)
-      const bothMoved =
-        !V.equals(moved.first, entity.first) &&
-        !V.equals(moved.second, entity.second)
+      const line = dimensionLinePoint(entity)
+      const lineMoves = line
+        ? inFrame(line)
+        : !V.equals(moved.first, entity.first) &&
+          !V.equals(moved.second, entity.second)
       return {
         ...entity,
         ...moved,
-        linePoint: bothMoved
+        linePoint: lineMoves
           ? V.add(entity.linePoint, delta)
           : entity.linePoint,
       }
     }
     case "hatch":
-      // A boundary loop is a vertex chain like a polyline's, and the objects it
-      // was traced from are being stretched by the same gesture, so following
-      // the frame keeps the fill on the area the user is dragging.
+      // WHY its caught vertices follow the frame: AutoCAD's associative hatch,
+      // the default, stretches its loop with the objects it was traced from
+      // (p276), a non-associative one stays (p277), and associativity is not
+      // modelled (MOVE-D11). Its loops' bulges are kept (unprobed).
       return { ...entity, loops: mapHatchLoops(entity, shift) }
     case "insert":
       // A reference has no free vertices to bend: it rides along whole when the
@@ -490,6 +522,50 @@ function stretchPlanar(
         ? { ...entity, position: V.add(entity.position, delta) }
         : entity
   }
+}
+
+/**
+ * An arc stretched by its ends (p271): one caught, the arc through the moved
+ * end and the fixed one with the same chord height on the same side, still
+ * counter-clockwise; neither, as it was. Both caught it has moved whole.
+ */
+function stretchArc(
+  arc: ArcEntity,
+  delta: Vec2,
+  inFrame: (point: Vec2) => boolean
+): ArcEntity {
+  const start = arcStartPoint(arc)
+  const end = arcEndPoint(arc)
+  const startMoves = inFrame(start)
+  if (startMoves === inFrame(end)) return arc
+  const from = startMoves ? V.add(start, delta) : start
+  const to = startMoves ? end : V.add(end, delta)
+  const chord = V.distance(from, to)
+  // WHY left as it was: the ends meeting leave no arc to draw (unprobed).
+  if (chord < 1e-9) return arc
+  const sweep = normalizeAngle(arc.endAngle - arc.startAngle)
+  const bulge = sameHeightBulge(
+    Math.tan(sweep / 4),
+    V.distance(start, end),
+    chord
+  )
+  const { center, radius, startAngle, endAngle } = bulgeToArc(from, to, bulge)
+  return {
+    ...arc,
+    center,
+    radius,
+    startAngle: normalizeAngle(startAngle),
+    endAngle: normalizeAngle(endAngle),
+  }
+}
+
+/**
+ * A linear or aligned dimension's own point on its line, DXF 10: where the
+ * line meets the second extension line. Null for the other kinds.
+ */
+function dimensionLinePoint(dim: DimensionEntity): Vec2 | null {
+  if (dim.kind !== "linear" && dim.kind !== "aligned") return null
+  return dimensionGeometry(dim).lineEnd
 }
 
 /**
@@ -1086,10 +1162,14 @@ function readableMirror(
   b: Vec2
 ): { readonly rotation: number; readonly backward: boolean } {
   const reflected = mirrorAngle(rotation, a, b)
-  const backward =
-    Math.abs(Math.cos(rotation)) < READING_EPSILON
-      ? Math.sin(rotation) * Math.sin(reflected) < 0
-      : Math.cos(rotation) * Math.cos(reflected) < -READING_EPSILON
+  // Vertical before or after, so that mirroring back undoes it: a text
+  // reflected onto the vertical would otherwise be judged by an x of 0.
+  const vertical =
+    Math.abs(Math.cos(rotation)) < READING_EPSILON ||
+    Math.abs(Math.cos(reflected)) < READING_EPSILON
+  const backward = vertical
+    ? Math.sin(rotation) * Math.sin(reflected) < 0
+    : Math.cos(rotation) * Math.cos(reflected) < -READING_EPSILON
   return {
     rotation: normalizeAngle(backward ? reflected + Math.PI : reflected),
     backward,

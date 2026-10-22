@@ -143,6 +143,21 @@ export type ModeFind =
 
 const ENCLOSING: ModeFind = { by: "enclosing" }
 
+/**
+ * How objects joined the set, as STRETCH tells them apart (transforms/p262–
+ * p269): inside a crossing frame — a crossing window, CPolygon, a crossing
+ * lasso — with its outline; by a pick or a mode with no crossing frame
+ * (Window, WPolygon, Fence); or by name, with no geometry (Last, ALL,
+ * Previous).
+ */
+export type AddedBy =
+  | { readonly by: "frame"; readonly frame: readonly Vec2[] }
+  | { readonly by: "pick" }
+  | { readonly by: "name" }
+
+const PICKED: AddedBy = { by: "pick" }
+const NAMED: AddedBy = { by: "name" }
+
 /** What of a find can join the set, and how many of the rest each filter took. */
 interface Sifted {
   readonly kept: readonly EntityId[]
@@ -191,13 +206,12 @@ export interface ObjectSelectorOptions {
   /** Said when Enter closes an empty set: EXPLODE's `None found.` (p205). */
   readonly noneFound?: MessageId
   /**
-   * Called as objects join the set, with the outline of the window or
-   * polygon that took them, or null (a pick, a fence, Last…): STRETCH's
-   * frames.
+   * Called as objects join the set, a duplicate not among them, with how they
+   * were found: STRETCH's frames.
    */
   readonly onAdded?: (
     ids: readonly EntityId[],
-    frame: readonly Vec2[] | null,
+    added: AddedBy,
     ctx: ToolContext
   ) => void
   /** The modes the prompt takes; by default those {@link takes} lists. */
@@ -415,14 +429,14 @@ export class ObjectSelector {
         return true
       case "Last": {
         const last = lastObject(ctx)
-        this.select(last ? [last.id] : [], false, null, ctx)
+        this.select(last ? [last.id] : [], false, NAMED, ctx)
         return true
       }
       case "ALL":
         this.select(
           ctx.document.getEntities().map((entity) => entity.id),
           false,
-          null,
+          NAMED,
           ctx
         )
         return true
@@ -433,7 +447,7 @@ export class ObjectSelector {
         if (previous.length === 0) {
           ctx.report(ctx.text.message("noPreviousSelection"))
         } else {
-          this.select(previous, false, null, ctx)
+          this.select(previous, false, NAMED, ctx)
         }
         return true
       }
@@ -483,7 +497,7 @@ export class ObjectSelector {
       this.select(
         this.found(ctx, () => [under.id]),
         false,
-        null,
+        PICKED,
         ctx
       )
     } else {
@@ -600,7 +614,7 @@ export class ObjectSelector {
         this.select(
           this.found(ctx, () => [under.id]),
           step.subtract,
-          null,
+          PICKED,
           ctx
         )
         this.step = {
@@ -632,7 +646,7 @@ export class ObjectSelector {
           lassoSelect(ctx.document, lasso, ctx.viewport, include)
         ),
         step.subtract,
-        mode === "crossing" ? path : null,
+        mode === "crossing" ? { by: "frame", frame: path } : PICKED,
         ctx,
         mode === "fence"
           ? { by: "fence", points: path }
@@ -686,7 +700,7 @@ export class ObjectSelector {
             objectsOnFence(ctx.document, step.points, ctx.viewport, include)
           ),
           false,
-          null,
+          PICKED,
           ctx,
           { by: "fence", points: step.points }
         )
@@ -713,7 +727,7 @@ export class ObjectSelector {
             )
           ),
           false,
-          step.crossing ? step.points : null,
+          step.crossing ? { by: "frame", frame: step.points } : PICKED,
           ctx,
           step.crossing ? { by: "crossing", outline: step.points } : ENCLOSING
         )
@@ -877,7 +891,7 @@ export class ObjectSelector {
     this.select(
       found,
       subtract,
-      frame,
+      crossing ? { by: "frame", frame } : PICKED,
       ctx,
       crossing ? { by: "crossing", outline } : ENCLOSING,
       implied
@@ -976,7 +990,7 @@ export class ObjectSelector {
   private select(
     found: readonly EntityId[],
     subtract: boolean,
-    frame: readonly Vec2[] | null,
+    how: AddedBy,
     ctx: ToolContext,
     find: ModeFind = ENCLOSING,
     implied = false
@@ -1025,8 +1039,7 @@ export class ObjectSelector {
       })
     )
     if (sifted) this.sayRefused(sifted, ctx)
-    if (!removing && usable.length > 0)
-      this.options.onAdded?.(usable, frame, ctx)
+    if (added.length > 0) this.options.onAdded?.(added, how, ctx)
     if (
       (this.single && ids.length > 0) ||
       (this.closesOnAdd && added.length > 0)

@@ -9,6 +9,7 @@ import {
   bulgeOfAngle,
   radiusArcBulge,
   refitArcBulge,
+  sameHeightBulge,
   segmentExitTangent,
   tangentArcBulge,
 } from "./bulgeArcs"
@@ -121,6 +122,26 @@ describe("polyline arc segments", () => {
     expect(along.end.x).toBeCloseTo(14.142135623730951, 9)
     expect(along.end.y).toBeCloseTo(0, 9)
     expect(along.bulge).toBeCloseTo(0.41421356237309503, 9)
+  })
+
+  // probe transforms/p281: STRETCH's -1 on a chord of 100 grown to 110.1136.
+  it("keeps an arc's chord height on a new chord", () => {
+    expect(sameHeightBulge(-1, 100, Math.hypot(110, 5))).toBeCloseTo(
+      -0.908153,
+      6
+    )
+    expect(sameHeightBulge(0.5, 10, 0)).toBe(0.5)
+    fc.assert(
+      fc.property(
+        fc.double({ min: -4, max: 4, noNaN: true }),
+        fc.double({ min: 1, max: 100, noNaN: true }),
+        fc.double({ min: 1, max: 100, noNaN: true }),
+        (bulge, chord, newChord) => {
+          const after = sameHeightBulge(bulge, chord, newChord)
+          expect((after * newChord) / 2).toBeCloseTo((bulge * chord) / 2, 9)
+        }
+      )
+    )
   })
 
   // AutoCAD 2023's console (acc/f6, f13, f15, f24): CHAMFER's refitted arcs.

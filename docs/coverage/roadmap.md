@@ -83,6 +83,6 @@ with the area. The order puts first the commands whose review settles what the l
 
 A review's state is `plan` while its plan runs, and `done` once executed, its plan reduced to an
 index (LINE's: `docs/plans/line-review.md`); a command added later takes the place its area gives
-it. Transforms is next: it checks STRETCH's own look, zero displacement and LASTPOINT, which
-follow MOVE's until probed (MOVE-D3, D6: `docs/plans/move-review.md`). The Blocks review takes PURGE's report words from ERASE's
+it. Transforms found STRETCH's look and zero displacement MOVE's (MOVE-D3, D6 hold) and the
+LASTPOINT of its Displacement its own (STR-05: `docs/plans/transforms-review.md`). The Blocks review takes PURGE's report words from ERASE's
 (ERA-06: `docs/plans/erase-review.md`).

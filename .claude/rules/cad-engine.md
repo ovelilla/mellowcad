@@ -190,9 +190,8 @@ is never stored (`withNormal`, `withElevation`), so a flat drawing's file is unc
   keeps Z takes the 2D path. Give a line's ends their Z explicitly (`lineStartZ` / `lineEndZ`): in
   plan a vertical line's ends are one point.
 - **Transforms take `Vec2 | Vec3`**, a 2D delta or base being Z = 0. `stretchEntity` moves whole an
-  object whose every point is caught, else the Z of a rigid object and of a line's caught end — a
-  polyline, spline, hatch or dimension caught in part cannot tilt. A tilted object goes to
-  `transformEntity`.
+  object whose every point is caught, else the Z of a rigid object and of a line's caught end —
+  nothing else caught in part can tilt. A tilted object goes to `transformEntity`.
 - **Rebuilding an object from another goes through `carryOverrides`** (overrides _and_ plane and
   thickness; `carryPlane` for a new object sharing only the plane). `createX(..., source.layerId,
 source.id)` alone is the bug: it drops colour, linetype, lineweight and Z.
