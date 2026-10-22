@@ -1522,7 +1522,7 @@ export class CadRuntime extends Observable {
   /**
    * WHY: an angle's two points start over after a refusal at the second,
    * still asked ` Specify second point:`, where a number is the angle (probes
-   * transforms/p136, p158). A distance keeps its first point: unprobed.
+   * transforms/p136, p158). A distance keeps its first point (offset/p144).
    */
   private restartAngleMeasure(): void {
     const measuring = this.measuring
@@ -1870,12 +1870,25 @@ export class CadRuntime extends Observable {
       this.invalidateState()
       return true
     }
+    const measuring = this.measuringFrom() === null ? null : this.measuring
     this.measuring = null
     this.dynamicInput.setText(
       field.id,
       String(measuredValue(field, from, point, this.toolContext.ucs))
     )
-    return this.commitBox(session, field)
+    const took = this.commitBox(session, field)
+    // WHY: a value the tool refused in its own words (OFFSET's zero, probe
+    // offset/p140) asks ` Specify second point:` again from the same first.
+    if (
+      measuring !== null &&
+      this.activeTool === measuring.tool &&
+      this.dynamicInput.getSession() === session &&
+      askedPrompt(this.activeTool) === measuring.prompt
+    ) {
+      this.measuring = { ...measuring, cursor: point }
+      this.restartAngleMeasure()
+    }
+    return took
   }
 
   private measuringOverlay(): ScenePrimitive[] {

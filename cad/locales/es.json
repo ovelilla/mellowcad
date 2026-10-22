@@ -1477,6 +1477,7 @@
       "splineSettingsCv": "Parámetros actuales: Método=VC   Grado={degree}",
       "requiresIntegerBetween": "Requiere un nº entero entre {min} y {max}.",
       "commandCompletelyUndone": "Todos los efectos del comando han sido deshechos.",
+      "commandCompletelyUndoneShort": "Comando deshecho totalmente.",
       "linesParallel": "Las líneas son paralelas",
       "linesDiverge": "Las líneas son divergentes",
       "filletRadiusTooLarge": "Radio de empalme es demasiado grande",

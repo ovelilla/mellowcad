@@ -34,7 +34,9 @@ distance<angle,Z, at the chosen precision, the angle at AUPREC's); OK as one und
 (**unverified**: no page says whether U undoes UNITS; it undoes what other commands set), Cancel or
 Escape changing nothing
 
-**Missing:** the other length types (Architectural, Engineering, Fractional, Scientific), the Angle
+**Missing:** the other length types (Architectural, Engineering, Fractional, Scientific), Decimal's
+scientific notation for a huge length (`<1.0000E+20>` at OFFSET's distance, offset/p118; from what
+size is unprobed), the Angle
 group (AUNITS, its Precision list, ANGDIR: angles are decimal degrees, counterclockwise, at AUPREC,
 which is typed), INSUNITS' other values (Unitless, Inches…), Lighting (LIGHTINGUNITS), Direction
 (ANGBASE), Help, -UNITS; the list's own label, "Units to scale inserted content" (**unverified** in

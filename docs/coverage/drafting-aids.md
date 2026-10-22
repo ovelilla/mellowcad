@@ -45,8 +45,9 @@ DYNMODE and SELECTIONCYCLING, are registry variables, which a drawing opened lea
 p321): here they last the session (RECTANG-D46)
 
 **Missing:** Node and Geometric Center (no POINT object; a dimension's definition points snap as
-Endpoint), deferred Perpendicular and Tangent at the first point of a command other than LINE and
-CIRCLE (refused there as finding nothing, as at PLINE's start, pline/p29),
+Endpoint; Spanish `PUN` and `PUNTO` at OFFSET's distance are Node, `de`, where here PUNTO is refused
+and PUN is Thru, offset/p109, p110), deferred Perpendicular and Tangent at the first point of a
+command other than LINE and CIRCLE (refused there as finding nothing, as at PLINE's start, pline/p29),
 Intersection on ellipses, Perpendicular and Tangent on ellipses (ellipse/p308–p314) and splines
 (spline/p313, p315, p316), a closed spline's Geometric Center (spline/p311), a polyline arc segment's Quadrant in a rotated
 UCS and Perpendicular off its sweep (**unverified**, left at its OCS's and both feet until PLINE's

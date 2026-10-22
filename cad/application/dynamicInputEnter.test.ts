@@ -225,6 +225,7 @@ describe("Enter with nothing typed", () => {
   })
 
   it("offsets through a point at first, then by the last distance", () => {
+    // probes offset/p112 (`<Through>`), p106 (the last distance).
     const cad = createHarness({
       entities: [lineOf(p(0, 0), p(100, 0), { id: "A" })],
     })

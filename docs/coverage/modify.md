@@ -376,7 +376,7 @@ starts with a zero-length segment; **unverified**: the reasons when TRIM's Shift
 the same code here), `Todos los efectos del comando han sido deshechos.` (one of the table's two
 translations), and that a Shift-trim inside EXTEND deletes as TRIM's does
 
-### `OFFSET` / `O` · es `DESFASE` / `DF`† / `EQ`†
+### `OFFSET` / `O` · es `DESFASE` / `DF` / `EQ`
 
 **Implemented:** `Current settings: Erase source=No  Layer=Source  OFFSETGAPTYPE=0` (es
 `Parámetros actuales: Borrar origen=No  Capa=Origen  OFFSETGAPTYPE=0`), then
@@ -384,12 +384,18 @@ translations), and that a Shift-trim inside EXTEND deletes as TRIM's does
 `Precise distancia de desfase o [punto a Atravesar/Borrar/Capa] <punto a Atravesar>:`) — Enter takes
 OFFSETDIST, `<Through>` in each drawing, then the last distance (per drawing, not saved: NEW and
 OPEN bring `<Through>` back, rectang/p310), and two picks measure it
-(`Specify second point:`); Erase asks `Erase source object after offsetting? [Yes/No] <No>:` (es
+(`Specify second point:`, asked again from the same first point when they measure zero, p140); 0
+or a negative distance says `Value must be positive and nonzero.` (es
+`El valor debe ser positivo y diferente de cero.`) and asks again (p113, p114); Erase asks
+`Erase source object after offsetting? [Yes/No] <No>:` (es
 `¿Borrar objeto de origen tras desfase?`) and Layer
 `Enter layer option for offset objects [Current/Source] <Source>:` (es
 `Indique opción de capa para objetos desfasados [Actual/Origen]`), both program-wide, so kept for
 the session and across NEW and OPEN, and reported by the next OFFSET (es `Borrar origen=Sí
-Capa=Actual`, p310); `Select object to offset or [Exit/Undo] <Exit>:` (es
+Capa=Actual`, p310); one object selected before OFFSET, of a type it offsets, is the first one:
+the selection is dropped as it starts and the side or through point asked once the distance or
+Through is given, Erase and Layer between (p165, p251, p290); several are dropped and the object
+asked (p167, p287); `Select object to offset or [Exit/Undo] <Exit>:` (es
 `Designe objeto a desplazar o [Salir/Deshacer] <Salir>:`),
 `Specify point on side to offset or [Exit/Multiple/Undo] <Exit>:` (es
 `Precise punto en lado de desplazamiento o [Salir/Múltiple/Deshacer] <Salir>:`) and Through's
@@ -405,14 +411,17 @@ object snaps, Perpendicular measured from the pick (p253–p276, p285); a throug
 `Punto a atravesar no válido.`) and at a circle's centre `Cannot offset that object.` (es
 `Imposible transponer este objeto.`), then asks for the next object (p273, p277, p278, p295, p296);
 Multiple asks `… [Exit/Undo] <next object>:` (es `<siguiente objeto>`), Through's too and steps out
-from the last copy, Undo takes back the last copy; line/circle/arc/polyline (straight and arc
-bulges, with corner joins); the copy keeps the source's elevation, rise and thickness; an object at
-an angle to the UCS's XY plane does not highlight
+from the last copy, Multiple typed again there taken in silence (p131, p137); Undo takes back the
+last copy, whichever object it came from, and asks for the object in the run's mode, out of
+Multiple, and with no copy left says `Command has been completely undone.` (es
+`Comando deshecho totalmente.`, table 22415) (p125, p132, p138, p157, p158, p166);
+line/circle/arc/polyline (straight and arc bulges, with corner joins); the copy keeps the source's
+elevation, rise and thickness; an object at an angle to the UCS's XY plane does not highlight
 
 **Missing:** OFFSETGAPTYPE, ellipses and splines (an ellipse's parallel curve is a spline, and
-offsetting a spline is not built, so neither highlights), what Undo says with nothing left to undo
-(nothing here), Erase and Layer kept past the session (OPEN leaves them, p310; a restart is
-unprobed)
+offsetting a spline is not built, so neither highlights), Erase and Layer kept past the session
+(OPEN leaves them, p310; a restart is unprobed); **unverified**: one object preselected on a locked
+layer, dropped here and the object asked
 
 ### `FILLET` / `F` · es `EMPALME` / `MP`†
 

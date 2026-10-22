@@ -66,7 +66,9 @@ import { typedPick } from "./typedPick"
  * repeatedly pick an object and the side to offset towards. In *through* mode
  * (AutoCAD's Through option) you pick an object and then a point the copy must
  * pass through — the distance is whatever makes the copy land on that point.
- * Both loop until Exit (Enter) or Escape; Undo takes back the last copy.
+ * One object selected before the command is the first one, its side or
+ * through point asked as soon as the distance is set. Both loop until Exit
+ * (Enter) or Escape; Undo takes back the last copy and asks for the object.
  *
  * Lines offset to a parallel line; circles and arcs to a concentric one. Erase
  * and Layer are AutoCAD's own sub-prompts at the distance prompt, reported in
@@ -138,14 +140,6 @@ type OffsetToolState =
       readonly cursor: Vec2
     }
 
-/** What one copy changed, for Undo to put back. */
-interface OffsetStep {
-  /** The original the copy was made from, and its source before the copy. */
-  readonly original: Entity
-  readonly source: Entity
-  readonly erasedOriginal: boolean
-}
-
 export class OffsetTool implements Tool {
   readonly id = "offset"
   readonly shortcut = "o"
@@ -153,8 +147,13 @@ export class OffsetTool implements Tool {
   private state: OffsetToolState = { phase: "distance" }
   /** Last known screen position, used to place dynamic input on open. */
   private lastScreen: Vec2 | null = null
-  /** The copies made since the command started, newest last (Undo). */
-  private steps: OffsetStep[] = []
+  /** The copies made since the command started, for Undo to count. */
+  private copies = 0
+  /**
+   * The one object selected before the command, offset once the distance is
+   * set (probes offset/p165, p251, p290).
+   */
+  private preselected: Entity | null = null
 
   /**
    * Erase source and Layer, which the next OFFSET reports in its `Current
@@ -176,8 +175,10 @@ export class OffsetTool implements Tool {
 
   onActivate(ctx: ToolContext): void {
     ctx.setCursor("crosshair")
+    this.preselected = this.preselectedSource(ctx)
+    // Cleared at once, one object or several (probes offset/p165, p167).
     ctx.selection.clear()
-    this.steps = []
+    this.copies = 0
     // OFFSETGAPTYPE is always 0 here: corners are extended to meet.
     ctx.report(
       ctx.text.message("offsetSettings", {
@@ -191,7 +192,8 @@ export class OffsetTool implements Tool {
 
   onDeactivate(ctx: ToolContext): void {
     this.state = { phase: "distance" }
-    this.steps = []
+    this.copies = 0
+    this.preselected = null
     ctx.dynamicInput.close()
   }
 
@@ -353,8 +355,10 @@ export class OffsetTool implements Tool {
         return [{ id: "Exit" }, { id: "Undo" }]
       case "side":
       case "throughPoint":
+        // Multiple again in Multiple is taken in silence: its initget still
+        // declares it (probes offset/p131, p137).
         return this.state.multiple
-          ? [{ id: "Exit" }, { id: "Undo" }]
+          ? [{ id: "Exit" }, { id: "Undo" }, { id: "Multiple", hidden: true }]
           : [{ id: "Exit" }, { id: "Multiple" }, { id: "Undo" }]
     }
   }
@@ -389,11 +393,7 @@ export class OffsetTool implements Tool {
         return "continue"
       }
     }
-    if (
-      (phase === "side" || phase === "throughPoint") &&
-      id === "Multiple" &&
-      !this.state.multiple
-    ) {
+    if ((phase === "side" || phase === "throughPoint") && id === "Multiple") {
       this.state = { ...this.state, multiple: true }
       ctx.requestRender()
       return "continue"
@@ -589,25 +589,69 @@ export class OffsetTool implements Tool {
       }
       return
     }
+    this.takeSource(hit, this.state.distance, input.point, ctx)
+  }
+
+  /**
+   * The side point next, or the through point with no distance: after a
+   * pick, or at once for the object selected before the command.
+   */
+  private takeSource(
+    source: Entity,
+    distance: number | null,
+    cursor: Vec2,
+    ctx: ToolContext
+  ): void {
     this.state =
-      this.state.distance === null
+      distance === null
         ? {
             phase: "throughPoint",
-            source: hit,
+            source,
             erasedOriginal: false,
             multiple: false,
-            cursor: input.point,
+            cursor,
           }
         : {
             phase: "side",
-            distance: this.state.distance,
-            source: hit,
-            original: hit,
+            distance,
+            source,
+            original: source,
             erasedOriginal: false,
             multiple: false,
-            cursor: input.point,
+            cursor,
           }
     this.openPointInput(ctx)
+  }
+
+  /**
+   * The object selected before the command, if it is one and OFFSET takes it;
+   * none for several (probes offset/p165, p167). LASTPOINT stays where it was:
+   * nothing picked it.
+   */
+  private preselectedSource(ctx: ToolContext): Entity | null {
+    const ids = ctx.selection.toArray()
+    if (ids.length !== 1) return null
+    const entity = ctx.document.get(ids[0])
+    if (!entity || !readsInPlan(entity) || !entityAsGeom(entity)) return null
+    return ctx.document.getLayer(entity.layerId)?.locked ? null : entity
+  }
+
+  /**
+   * After the distance or Through: the object selected before the command,
+   * else `Select object to offset`.
+   */
+  private toFirstObject(distance: number | null, ctx: ToolContext): void {
+    const source = this.preselected
+    this.preselected = null
+    if (source) {
+      const cursor = this.lastScreen
+        ? ctx.viewport.screenToWorld(this.lastScreen)
+        : ctx.lastPoint
+      this.takeSource(source, distance, cursor, ctx)
+      return
+    }
+    this.state = { phase: "select", distance, hover: null }
+    this.openKeywordPrompt(ctx)
   }
 
   private backToDistance(ctx: ToolContext): void {
@@ -619,22 +663,27 @@ export class OffsetTool implements Tool {
   /** Fixes the offset distance and advances to selecting the object. */
   private setDistance(distance: number, ctx: ToolContext): void {
     if (this.state.phase !== "distance") return
-    if (!(distance > 0)) return
+    if (!(distance > 0)) {
+      // probes offset/p113, p114: said, and the distance asked again.
+      ctx.report(ctx.text.message("positiveNonzero"), "error")
+      return
+    }
     this.offsetDist = distance
-    this.state = { phase: "select", distance, hover: null }
-    this.openKeywordPrompt(ctx)
+    this.toFirstObject(distance, ctx)
   }
 
   /** Switches to Through mode: pick an object, then a point to pass through. */
   private enterThrough(ctx: ToolContext): void {
     this.offsetDist = -1
-    this.state = { phase: "select", distance: null, hover: null }
-    this.openKeywordPrompt(ctx)
+    this.toFirstObject(null, ctx)
   }
 
   /** Back to `Select object to offset`, in the mode the command is in. */
   private selectNext(ctx: ToolContext): void {
-    const distance = this.state.phase === "side" ? this.state.distance : null
+    const distance =
+      this.state.phase === "side" || this.state.phase === "select"
+        ? this.state.distance
+        : null
     this.state = { phase: "select", distance, hover: null }
     this.openKeywordPrompt(ctx)
   }
@@ -706,27 +755,18 @@ export class OffsetTool implements Tool {
   }
 
   /**
-   * Undo takes back the last copy and asks the same question again; in
-   * Multiple mode the next copy steps out from the one before it again.
+   * Undo takes back the last copy, from whichever object, and asks for the
+   * object in the run's mode, out of Multiple; with no copy left it says so
+   * (probes offset/p125, p132, p138, p157, p158, p166).
    */
   private undoStep(ctx: ToolContext): void {
-    const step = this.steps.pop()
-    if (!step) return
-    ctx.undo()
-    const state = this.state
-    if (
-      (state.phase === "side" && state.original.id === step.original.id) ||
-      (state.phase === "throughPoint" && state.source.id === step.source.id)
-    ) {
-      this.state =
-        state.phase === "side"
-          ? {
-              ...state,
-              source: step.source,
-              erasedOriginal: step.erasedOriginal,
-            }
-          : { ...state, erasedOriginal: step.erasedOriginal }
+    if (this.copies === 0) {
+      ctx.report(ctx.text.message("commandCompletelyUndoneShort"))
+    } else {
+      this.copies--
+      ctx.undo()
     }
+    this.selectNext(ctx)
     ctx.requestRender()
   }
 
@@ -762,7 +802,7 @@ export class OffsetTool implements Tool {
       source,
       offsetToEntity(geom, this.copyLayer(source, ctx))
     )
-    this.steps.push({ original, source, erasedOriginal })
+    this.copies++
     if (this.erase && !erasedOriginal) {
       ctx.execute(new ReplaceEntitiesCommand([original.id], [copy]))
       return true

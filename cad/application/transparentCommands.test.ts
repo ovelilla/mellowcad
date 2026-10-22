@@ -323,6 +323,36 @@ describe("a transparent command", () => {
     expect(cad.byId<LineEntity>("A").end).toBeCloseToPoint(p(200, 0))
   })
 
+  // probes offset/p150–p153: OFFSET's Erase, Layer, object and side prompts.
+  it("resumes OFFSET at the prompt it interrupted", () => {
+    for (const [answers, prompt] of [
+      [["E"], "Erase source object after offsetting? [Yes/No] <No>:"],
+      [
+        ["L"],
+        "Enter layer option for offset objects [Current/Source] <Source>:",
+      ],
+      [["10"], "Select object to offset or [Exit/Undo] <Exit>:"],
+      [
+        ["10", "50,0"],
+        "Specify point on side to offset or [Exit/Multiple/Undo] <Exit>:",
+      ],
+    ] as const) {
+      const cad = createHarness({
+        entities: [lineOf(p(0, 0), p(100, 0), { id: "A" })],
+      })
+      cad.command("OFFSET")
+      for (const typed of answers) answerLine(cad, typed)
+      answerLine(cad, "'ZOOM")
+      answerLine(cad, "E")
+      expect(cad.commandLog().slice(-3)).toEqual([
+        `${prompt} 'ZOOM`,
+        `${ZOOM_PROMPT} E`,
+        "Resuming OFFSET command.",
+      ])
+      expect(cad.state().commandLine.prompt).toBe(`OFFSET ${prompt}`)
+    }
+  })
+
   // AutoCAD's transparent ZOOM cannot regenerate: it zooms without a word
   // when it needs no regeneration, which here is whenever something is drawn
   // (probe line/p112).

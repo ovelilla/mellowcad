@@ -1449,6 +1449,7 @@
       "splineSettingsCv": "Current settings: Method=CV   Degree={degree}",
       "requiresIntegerBetween": "Requires an integer between {min} and {max}.",
       "commandCompletelyUndone": "Command has been completely undone.",
+      "commandCompletelyUndoneShort": "Command has been completely undone.",
       "linesParallel": "Lines are parallel",
       "linesDiverge": "Lines diverge",
       "filletRadiusTooLarge": "Fillet radius is too large",

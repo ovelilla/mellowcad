@@ -406,31 +406,44 @@ describe("a keyword declared otherwise than listed", () => {
   })
 
   it("is typed as declared in Spanish", () => {
-    const offset = createHarness({ locale: es })
-    offset.command("DESFASE")
-    expect(offset.state().commandLine.prompt).toBe(
-      "DESFASE Precise distancia de desfase o [punto a Atravesar/Borrar/Capa] <punto a Atravesar>:"
-    )
-    answerLine(offset, "PUNTO")
-    expect(offset.commandLog().slice(-2)).toEqual([
-      "Precise distancia de desfase o [punto a Atravesar/Borrar/Capa] <punto a Atravesar>: PUNTO",
-      "Requiere una distancia numérica, dos puntos o una opción.",
-    ])
-    answerLine(offset, "ATRAV")
-    expect(offset.state().commandLine.prompt).toBe(
-      "DESFASE Designe objeto a desplazar o [Salir/Deshacer] <Salir>:"
-    )
-    offset.command("DESFASE")
-    answerLine(offset, "PUN")
-    expect(offset.state().commandLine.prompt).toBe(
-      "DESFASE Designe objeto a desplazar o [Salir/Deshacer] <Salir>:"
-    )
+    // probe offset/p111: `A` is Atravesar.
+    for (const typed of ["A", "ATRAV"]) {
+      const offset = createHarness({ locale: es })
+      offset.command("DESFASE")
+      expect(offset.state().commandLine.prompt).toBe(
+        "DESFASE Precise distancia de desfase o [punto a Atravesar/Borrar/Capa] <punto a Atravesar>:"
+      )
+      answerLine(offset, typed)
+      expect(offset.state().commandLine.prompt).toBe(
+        "DESFASE Designe objeto a desplazar o [Salir/Deshacer] <Salir>:"
+      )
+    }
 
     const spline = createHarness({ locale: es })
     spline.command("SPLINE")
     answerLine(spline, "0,0", "TANGENCIA")
     expect(spline.state().commandLine.prompt).toBe(
       "SPLINE Precise tangente inicial:"
+    )
+  })
+})
+
+// On 2027 Spanish `PUN` and `PUNTO` at OFFSET's distance are the Node object
+// snap, which asks `de` (probes offset/p109, p110). Node is not built
+// (drafting-aids.md), so here PUNTO is refused and PUN is still the hidden
+// `Pun` AutoCAD 2023 declared for Thru.
+describe("OFFSET's Spanish PUN and PUNTO, with no Node snap", () => {
+  it("refuses PUNTO and takes PUN as Thru", () => {
+    const offset = createHarness({ locale: es })
+    offset.command("DESFASE")
+    answerLine(offset, "PUNTO")
+    expect(offset.commandLog().slice(-2)).toEqual([
+      "Precise distancia de desfase o [punto a Atravesar/Borrar/Capa] <punto a Atravesar>: PUNTO",
+      "Requiere una distancia numérica, dos puntos o una opción.",
+    ])
+    answerLine(offset, "PUN")
+    expect(offset.state().commandLine.prompt).toBe(
+      "DESFASE Designe objeto a desplazar o [Salir/Deshacer] <Salir>:"
     )
   })
 })

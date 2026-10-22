@@ -3834,7 +3834,26 @@ describe("CHAMFER", () => {
 })
 
 describe("OFFSET", () => {
+  /** The console's line (offset/p100–p298). */
+  const L1 = () => lineOf(p(0, 0), p(100, 0), { id: "L1" })
+  const SELECT = "Select object to offset or [Exit/Undo] <Exit>:"
+
+  function answer(cad: CadHarness, ...texts: string[]): CadHarness {
+    for (const text of texts) {
+      cad.runtime.setCommandLineText(text)
+      cad.runtime.submitCommandLine()
+    }
+    return cad
+  }
+  const copyOf = (cad: CadHarness) =>
+    linesOf(cad.entities()).find((line) => !/^L\d$/.test(line.id))
+  function lastPoint(cad: CadHarness): string {
+    answer(cad, "ID", "@")
+    return cad.commandLog().at(-1)!.trim()
+  }
+
   it("keeps the source's colour, plane and thickness", () => {
+    // probes offset/p171, p218.
     const cad = createHarness({
       entities: [
         {
@@ -3852,6 +3871,7 @@ describe("OFFSET", () => {
     expect(copy).toMatchObject({ color: "#ff0000", elevation: 8, thickness: 2 })
   })
   it("copies a line parallel at the typed distance, on the picked side", () => {
+    // probe offset/p170.
     const cad = createHarness({
       entities: [lineOf(p(-100, 0), p(100, 0), { id: "L1" })],
     })
@@ -3896,6 +3916,7 @@ describe("OFFSET", () => {
   })
 
   it("makes a circle concentric, outward or inward", () => {
+    // probe offset/p177.
     const cad = createHarness({
       entities: [circleOf(p(0, 0), 80, { id: "C1" })],
     })
@@ -3919,6 +3940,7 @@ describe("OFFSET", () => {
   })
 
   it("keeps an arc's angles when offsetting it", () => {
+    // probe offset/p172.
     const cad = createHarness({
       entities: [arcOf(p(0, 0), 80, 0, deg(120), { id: "A1" })],
     })
@@ -3940,6 +3962,7 @@ describe("OFFSET", () => {
   })
 
   it("offsets a polyline as a parallel chain with re-joined corners", () => {
+    // probe offset/p178.
     const cad = createHarness({
       entities: [
         polylineOf([p(-100, 0), p(100, 0), p(100, 100)], { id: "P1" }),
@@ -3981,6 +4004,7 @@ describe("OFFSET", () => {
   })
 
   it("Through places the copy on a picked point", () => {
+    // probe offset/p208.
     const cad = createHarness({
       entities: [lineOf(p(-80, 0), p(80, 0), { id: "L1" })],
     })
@@ -3997,6 +4021,7 @@ describe("OFFSET", () => {
   })
 
   it("Multiple steps cumulatively away from the source", () => {
+    // probe offset/p213.
     const cad = createHarness({
       entities: [lineOf(p(-80, 0), p(80, 0), { id: "L1" })],
     })
@@ -4019,6 +4044,7 @@ describe("OFFSET", () => {
   })
 
   it("Erase replaces the source with the copy in one undo step", () => {
+    // probe offset/p159.
     const cad = createHarness({
       entities: [lineOf(p(-80, 0), p(80, 0), { id: "L1" })],
     })
@@ -4061,6 +4087,7 @@ describe("OFFSET", () => {
   })
 
   it("asks AutoCAD's questions and writes each with its answer", () => {
+    // probes offset/p100, p106 (the last distance at the next OFFSET).
     const cad = createHarness({
       entities: [lineOf(p(-100, 0), p(100, 0), { id: "L1" })],
     })
@@ -4095,6 +4122,7 @@ describe("OFFSET", () => {
   })
 
   it("asks Erase and Layer as their own questions, and reports them next time", () => {
+    // probes offset/p119, p122.
     const cad = createHarness({
       entities: [lineOf(p(-100, 0), p(100, 0), { id: "L1" })],
     })
@@ -4149,35 +4177,40 @@ describe("OFFSET", () => {
     expect(copy.layerId).toBe(other)
   })
 
-  it("Multiple asks for the next object on Enter, and Undo takes a step back", () => {
-    const cad = createHarness({
-      entities: [lineOf(p(-80, 0), p(80, 0), { id: "L1" })],
-    })
-
-    cad.command("OFFSET").type("20").enter().click(p(0, 0)).option("Multiple")
-    expect(cad.state().commandLine.prompt).toBe(
-      "OFFSET Specify point on side to offset or [Exit/Undo] <next object>:"
+  it("Undo in Multiple takes back the last copy and asks for the object", () => {
+    // probe offset/p157: two copies in Multiple, then three `_U`.
+    const cad = answer(
+      createHarness({ entities: [L1()] }),
+      "OFFSET",
+      "10",
+      "50,0",
+      "_M",
+      "50,50",
+      "50,50",
+      "_U"
     )
-    cad.click(p(0, 30)).click(p(0, 60)).option("Undo").click(p(0, 60))
-    cad.enter()
-    expect(cad.state().commandLine.prompt).toBe(
-      "OFFSET Select object to offset or [Exit/Undo] <Exit>:"
-    )
-    cad.option("Undo").enter()
-
-    const ys = linesOf(cad.entities())
-      .map((line) => line.start.y)
-      .sort((a, b) => a - b)
-    expect(ys).toEqual([0, 20])
-    expect(cad.commandLog().slice(-4)).toEqual([
-      "Specify point on side to offset or [Exit/Undo] <next object>:",
-      "Specify point on side to offset or [Exit/Undo] <next object>:",
-      "Select object to offset or [Exit/Undo] <Exit>: U",
-      "Select object to offset or [Exit/Undo] <Exit>:",
+    expect(cad.entityCount).toBe(2)
+    expect(cad.state().commandLine.prompt).toBe(`OFFSET ${SELECT}`)
+    answer(cad, "_U")
+    expect(cad.entityCount).toBe(1)
+    answer(cad, "_U")
+    expect(cad.entityCount).toBe(1)
+    expect(cad.commandLog().slice(-9)).toEqual([
+      "Specify offset distance or [Through/Erase/Layer] <Through>: 10",
+      `${SELECT} 50,0`,
+      "Specify point on side to offset or [Exit/Multiple/Undo] <Exit>: _M",
+      "Specify point on side to offset or [Exit/Undo] <next object>: 50,50",
+      "Specify point on side to offset or [Exit/Undo] <next object>: 50,50",
+      "Specify point on side to offset or [Exit/Undo] <next object>: _U",
+      `${SELECT} _U`,
+      `${SELECT} _U`,
+      "Command has been completely undone.",
     ])
+    expect(cad.state().commandLine.prompt).toBe(`OFFSET ${SELECT}`)
   })
 
   it("asks Through's point, and Multiple through further points", () => {
+    // probes offset/p112 (Enter at <Through>), p137.
     const cad = createHarness({
       entities: [lineOf(p(-80, 0), p(80, 0), { id: "L1" })],
     })
@@ -4204,6 +4237,7 @@ describe("OFFSET", () => {
   })
 
   it("measures the distance between two points, asking the second", () => {
+    // probe offset/p139.
     const cad = createHarness({
       entities: [lineOf(p(-80, 0), p(80, 0), { id: "L1" })],
     })
@@ -4217,7 +4251,6 @@ describe("OFFSET", () => {
   })
 
   describe("its picks and points", () => {
-    const L1 = () => lineOf(p(0, 0), p(100, 0), { id: "L1" })
     const C1 = () => circleOf(p(200, 100), 30, { id: "C1" })
     /** The console's drawing: the line, two more, the circle (offset/p263). */
     const drawing = () => [
@@ -4226,21 +4259,6 @@ describe("OFFSET", () => {
       lineOf(p(60, 30), p(100, -10), { id: "L3" }),
       C1(),
     ]
-    const SELECT = "Select object to offset or [Exit/Undo] <Exit>:"
-
-    function answer(cad: CadHarness, ...texts: string[]): CadHarness {
-      for (const text of texts) {
-        cad.runtime.setCommandLineText(text)
-        cad.runtime.submitCommandLine()
-      }
-      return cad
-    }
-    const copyOf = (cad: CadHarness) =>
-      linesOf(cad.entities()).find((line) => !/^L\d$/.test(line.id))
-    function lastPoint(cad: CadHarness): string {
-      answer(cad, "ID", "@")
-      return cad.commandLog().at(-1)!.trim()
-    }
 
     it("picks the object at a point typed, and on nothing asks again in silence", () => {
       // probes offset/p240, p241: `50,30` asks again, LASTPOINT 50,30; `50,0`
@@ -4422,6 +4440,221 @@ describe("OFFSET", () => {
       expect(cad.commandLog().at(-1)!.trim()).toBe(
         "X = 40.00     Y = 40.00     Z = 0.00"
       )
+    })
+  })
+
+  describe("its command line", () => {
+    const SIDE =
+      "Specify point on side to offset or [Exit/Multiple/Undo] <Exit>:"
+    const THROUGH = "Specify through point or [Exit/Multiple/Undo] <Exit>:"
+
+    it("goes on to the side of the one object selected before it", () => {
+      // probes offset/p165, p251: nothing left selected once it starts, the
+      // side asked at once, the copy made at y=10.
+      const cad = createHarness({ entities: [L1()] }).select("L1")
+      answer(cad, "_OFFSET")
+      expect(cad.selectedIds()).toEqual([])
+      answer(cad, "10")
+      expect(cad.state().commandLine.prompt).toBe(`OFFSET ${SIDE}`)
+      answer(cad, "50,50")
+      expect(copyOf(cad)?.start.y).toBeCloseTo(10)
+      expect(cad.state().commandLine.prompt).toBe(`OFFSET ${SELECT}`)
+      // probe offset/p290: Through asks its through point at once.
+      const through = createHarness({ entities: [L1()] }).select("L1")
+      answer(through, "_OFFSET", "_T")
+      expect(through.state().commandLine.prompt).toBe(`OFFSET ${THROUGH}`)
+      answer(through, "30,20")
+      expect(copyOf(through)?.start.y).toBeCloseTo(20)
+    })
+
+    it("keeps the object selected before it through Erase and Layer", () => {
+      const cad = createHarness({ entities: [L1()] }).select("L1")
+      answer(cad, "_OFFSET", "_E", "_N", "_L", "_S", "10")
+      expect(cad.state().commandLine.prompt).toBe(`OFFSET ${SIDE}`)
+    })
+
+    it("asks for the object when several were selected before it", () => {
+      // probes offset/p167, p287: two lines, both left unselected.
+      const cad = createHarness({
+        entities: [L1(), lineOf(p(0, 40), p(100, 40), { id: "L2" })],
+      }).select("L1", "L2")
+      answer(cad, "_OFFSET", "10")
+      expect(cad.selectedIds()).toEqual([])
+      expect(cad.state().commandLine.prompt).toBe(`OFFSET ${SELECT}`)
+    })
+
+    it("leaves nothing selected", () => {
+      // probe offset/p252: LASTPOINT at the side point.
+      const cad = answer(
+        createHarness({ entities: [L1()] }),
+        "_OFFSET",
+        "10",
+        "50,0",
+        "50,50",
+        ""
+      )
+      expect(cad.selectedIds()).toEqual([])
+      expect(lastPoint(cad)).toBe("X = 50.00     Y = 50.00     Z = 0.00")
+    })
+
+    it("Undo at the next object's point takes back the copy before", () => {
+      // probe offset/p158: the side point.
+      const cad = answer(
+        createHarness({ entities: [L1()] }),
+        "_OFFSET",
+        "10",
+        "50,0",
+        "50,50",
+        "50,0",
+        "_U"
+      )
+      expect(cad.entityCount).toBe(1)
+      expect(cad.commandLog().at(-1)).toBe(`${SIDE} _U`)
+      expect(cad.state().commandLine.prompt).toBe(`OFFSET ${SELECT}`)
+      // probe offset/p166: Through's point.
+      const through = answer(
+        createHarness({ entities: [L1()] }),
+        "_OFFSET",
+        "_T",
+        "50,0",
+        "50,30",
+        "50,0",
+        "_U"
+      )
+      expect(through.entityCount).toBe(1)
+      expect(through.commandLog().at(-1)).toBe(`${THROUGH} _U`)
+      expect(through.state().commandLine.prompt).toBe(`OFFSET ${SELECT}`)
+    })
+
+    it("Undo puts back the source Erase took", () => {
+      // probe offset/p159.
+      const cad = answer(
+        createHarness({ entities: [L1()] }),
+        "_OFFSET",
+        "_E",
+        "_Y",
+        "10",
+        "50,0",
+        "50,50",
+        "_U"
+      )
+      expect(cad.entities()).toHaveLength(1)
+      expect(cad.byId<LineEntity>("L1").start).toBeCloseToPoint(p(0, 0))
+      expect(cad.state().commandLine.prompt).toBe(`OFFSET ${SELECT}`)
+    })
+
+    it("says Undo has nothing left, and asks for the object", () => {
+      // probe offset/p125: at the object.
+      const cad = answer(
+        createHarness({ entities: [L1()] }),
+        "_OFFSET",
+        "10",
+        "_U"
+      )
+      expect(cad.commandLog().slice(-2)).toEqual([
+        `${SELECT} _U`,
+        "Command has been completely undone.",
+      ])
+      expect(cad.state().commandLine.prompt).toBe(`OFFSET ${SELECT}`)
+      // probes offset/p132, p138: at the side and through points.
+      for (const [distance, prompt] of [
+        ["10", SIDE],
+        ["_T", THROUGH],
+      ]) {
+        const at = answer(
+          createHarness({ entities: [L1()] }),
+          "_OFFSET",
+          distance,
+          "50,0",
+          "_U"
+        )
+        expect(at.commandLog().slice(-2)).toEqual([
+          `${prompt} _U`,
+          "Command has been completely undone.",
+        ])
+        expect(at.state().commandLine.prompt).toBe(`OFFSET ${SELECT}`)
+      }
+    })
+
+    it("says Undo has nothing left in Spanish, in table 22415's words", () => {
+      // probe offset/p125: not 13314's `Todos los efectos del comando…`.
+      const cad = answer(
+        createHarness({ entities: [L1()], locale: es }),
+        "_OFFSET",
+        "10",
+        "_U"
+      )
+      expect(cad.commandLog().slice(-2)).toEqual([
+        "Designe objeto a desplazar o [Salir/Deshacer] <Salir>: _U",
+        "Comando deshecho totalmente.",
+      ])
+    })
+
+    it("takes Multiple again in Multiple in silence", () => {
+      // probes offset/p131, p137: the same prompt again, no refusal.
+      for (const [distance, prompt] of [
+        ["10", "Specify point on side to offset or [Exit/Undo] <next object>:"],
+        ["_T", "Specify through point or [Exit/Undo] <next object>:"],
+      ]) {
+        const cad = answer(
+          createHarness({ entities: [L1()] }),
+          "_OFFSET",
+          distance,
+          "50,0",
+          "_M",
+          "_M"
+        )
+        expect(cad.commandLog().at(-1)).toBe(`${prompt} _M`)
+        expect(cad.state().commandLine.prompt).toBe(`OFFSET ${prompt}`)
+        answer(cad, "")
+        expect(cad.state().commandLine.prompt).toBe(`OFFSET ${SELECT}`)
+      }
+    })
+
+    it("is DESFASE's DF and EQ in Spanish, and Enter repeats it", () => {
+      // probes offset/p101, p102.
+      for (const alias of ["DF", "EQ"]) {
+        const cad = answer(createHarness({ locale: es }), alias)
+        expect(cad.commandLog()[0]).toBe(`${alias} DESFASE`)
+      }
+      // probe offset/p106: repeated with the last distance as its default.
+      const cad = answer(createHarness({ entities: [L1()] }), "_OFFSET", "10")
+      cad.enter().enter()
+      expect(cad.state().commandLine.prompt).toBe(
+        "OFFSET Specify offset distance or [Through/Erase/Layer] <10.00>:"
+      )
+    })
+
+    it("takes Enter at the second point as Through", () => {
+      // probe offset/p04: `0,10`, Enter, then `50,50` through the line.
+      const cad = answer(
+        createHarness({ entities: [L1()] }),
+        "_OFFSET",
+        "0,10",
+        ""
+      )
+      expect(cad.state().commandLine.prompt).toBe(`OFFSET ${SELECT}`)
+      answer(cad, "50,0")
+      expect(cad.state().commandLine.prompt).toBe(`OFFSET ${THROUGH}`)
+      answer(cad, "50,50")
+      expect(copyOf(cad)?.start.y).toBeCloseTo(50)
+    })
+
+    it("keeps the copies at Escape, which U takes back as one", () => {
+      // desktop offset/d06.
+      const cad = answer(
+        createHarness({ entities: [L1()] }),
+        "_OFFSET",
+        "10",
+        "50,0",
+        "50,50",
+        "50,0",
+        "50,-50"
+      )
+      cad.escape()
+      expect(cad.entityCount).toBe(3)
+      cad.undo()
+      expect(cad.entityCount).toBe(1)
     })
   })
 })

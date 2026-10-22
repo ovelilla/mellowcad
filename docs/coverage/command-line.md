@@ -123,9 +123,10 @@ thickness, ARRAYRECT's spacings, ARRAYPOLAR's angles, DIMLINEAR's Rotated and ev
 Angle, SCALE's reference length and Points' new length, ROTATE's reference angle and Points' new
 angle), where a number or a keyword still answers the question and a wrong answer gets the
 question's own refusal (`Requires numeric distance or two points.`) — AutoCAD 2023's console; after
-a refusal at the second point an angle's two points start over under the same words, a distance
-keeping its first (unprobed; transforms/p136, p158); an angle is the line's heading in the UCS
-(transforms/p143); a transparent command at the second point keeps the first (transforms/p204); the
+a refusal at the second point an angle's two points start over under the same words
+(transforms/p136, p158), a distance keeping its first, also where the command refuses what the two
+measure in its own words (OFFSET's zero: offset/p140, p144); an angle is the line's heading in the
+UCS (transforms/p143); a transparent command at the second point keeps the first (transforms/p204); the
 line to the second point is amber and dashed, as ROTATE's and SCALE's on the desktop (transforms/d04-2,
 d08-2), the other commands' **unverified**
 

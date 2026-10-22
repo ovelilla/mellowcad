@@ -2898,6 +2898,7 @@ export const es: EngineLocale = {
         "."
       ],
       "commandCompletelyUndone": "Todos los efectos del comando han sido deshechos.",
+      "commandCompletelyUndoneShort": "Comando deshecho totalmente.",
       "linesParallel": "Las líneas son paralelas",
       "linesDiverge": "Las líneas son divergentes",
       "filletRadiusTooLarge": "Radio de empalme es demasiado grande",

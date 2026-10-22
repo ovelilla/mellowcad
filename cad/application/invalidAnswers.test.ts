@@ -155,7 +155,35 @@ describe("a wrong answer mid-command", () => {
     }
   })
 
+  it("refuses OFFSET's zero or negative distance in its own words", () => {
+    // probes offset/p113, p114: said, and the distance asked again.
+    for (const [locale, prompt, refusal] of [
+      [
+        undefined,
+        "Specify offset distance or [Through/Erase/Layer] <Through>:",
+        "Value must be positive and nonzero.",
+      ],
+      [
+        es,
+        "Precise distancia de desfase o [punto a Atravesar/Borrar/Capa] <punto a Atravesar>:",
+        "El valor debe ser positivo y diferente de cero.",
+      ],
+    ] as const) {
+      const cad = createHarness({ entities: twoLines(), locale })
+      answerLine(cad, "_OFFSET")
+      for (const typed of ["0", "-5"]) {
+        answerLine(cad, typed)
+        expect(cad.commandLog().slice(-2)).toEqual([
+          `${prompt} ${typed}`,
+          refusal,
+        ])
+      }
+      expect(cad.state().commandLine.prompt).toContain(prompt)
+    }
+  })
+
   it("names what a distance or an angle takes, from a base point or not", () => {
+    // probe offset/p115: OFFSET's distance.
     const cad = createHarness({ entities: twoLines() })
     cad.command("OFFSET")
     answerLine(cad, "FOO")

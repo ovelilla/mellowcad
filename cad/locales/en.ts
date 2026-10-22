@@ -2550,6 +2550,7 @@ export const en: EngineCatalog = {
         "."
       ],
       "commandCompletelyUndone": "Command has been completely undone.",
+      "commandCompletelyUndoneShort": "Command has been completely undone.",
       "linesParallel": "Lines are parallel",
       "linesDiverge": "Lines diverge",
       "filletRadiusTooLarge": "Fillet radius is too large",

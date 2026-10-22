@@ -145,6 +145,7 @@ describe("a point at a distance or an angle prompt", () => {
   })
 
   it("keeps the question's own refusal and keywords at the second point", () => {
+    // probe offset/p144.
     const cad = createHarness({ entities: aLine() })
     cad.command("OFFSET")
     answerLine(cad, "10,0", "FOO", "20,5")
@@ -160,6 +161,51 @@ describe("a point at a distance or an angle prompt", () => {
     cad.escape().command("OFFSET")
     expect(cad.state().commandLine.prompt).toBe(
       "OFFSET Specify offset distance or [Through/Erase/Layer] <11.18>:"
+    )
+  })
+
+  it("keeps the first point when the command refuses what the two measure", () => {
+    // probe offset/p140: `@` is the first point again, a distance of zero;
+    // a number is then the distance.
+    const cad = createHarness({ entities: aLine() })
+    cad.command("OFFSET")
+    answerLine(cad, "10,10", "@")
+    expect(cad.commandLog().slice(-2)).toEqual([
+      " Specify second point: @",
+      "Value must be positive and nonzero.",
+    ])
+    expect(cad.state().commandLine.prompt).toBe("OFFSET Specify second point:")
+    answerLine(cad, "10")
+    expect(cad.state().commandLine.prompt).toBe(
+      "OFFSET Select object to offset or [Exit/Undo] <Exit>:"
+    )
+    cad.escape().command("OFFSET")
+    expect(cad.state().commandLine.prompt).toBe(
+      "OFFSET Specify offset distance or [Through/Erase/Layer] <10.00>:"
+    )
+    // From the same first point: `10,40` is 30 from 10,10.
+    const again = createHarness({ entities: aLine() })
+    again.command("OFFSET")
+    answerLine(again, "10,10", "@", "10,40")
+    again.escape().command("OFFSET")
+    expect(again.state().commandLine.prompt).toBe(
+      "OFFSET Specify offset distance or [Through/Erase/Layer] <30.00>:"
+    )
+  })
+
+  it("leaves LASTPOINT where it was", () => {
+    // probe offset/p139: `0,0`, `@30,40` is 50 from the first; LASTPOINT
+    // is still the line's end, 100,0.
+    const cad = createHarness()
+    answerLine(cad, "LINE", "0,0", "100,0", "", "OFFSET", "0,0", "@30,40")
+    cad.escape()
+    answerLine(cad, "ID", "@")
+    expect(cad.commandLog().at(-1)!.trim()).toBe(
+      "X = 100.00     Y = 0.00     Z = 0.00"
+    )
+    cad.command("OFFSET")
+    expect(cad.state().commandLine.prompt).toBe(
+      "OFFSET Specify offset distance or [Through/Erase/Layer] <50.00>:"
     )
   })
 
