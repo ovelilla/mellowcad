@@ -984,6 +984,31 @@ describe("the engine's English surface", () => {
           .do("escape", (c) => c.escape())
     )
     walk(
+      "JOIN made",
+      createHarness({
+        entities: [
+          lineOf(p(0, 0), p(50, 0), { id: "J1" }),
+          lineOf(p(50, 0), p(100, 0), { id: "J2" }),
+          arcOf(p(0, 300), 50, 0, Math.PI / 2, { id: "R1" }),
+          arcOf(p(0, 300), 50, -Math.PI / 2, 0, { id: "R2" }),
+          arcOf(p(300, 300), 50, 0, Math.PI / 2, { id: "R3" }),
+          arcOf(p(300, 300), 50, Math.PI, 1.5 * Math.PI, { id: "R4" }),
+          polylineOf([p(300, 0), p(350, 0)], { id: "P1" }),
+          lineOf(p(350, 0), p(350, 50), { id: "J3" }),
+          lineOf(p(0, -300), p(50, -300), { id: "J4" }),
+          lineOf(p(50, -300), p(50, -250), { id: "J5" }),
+        ],
+      }),
+      (s) =>
+        s
+          .do("lines", (c) => c.select("J1", "J2").command("J"))
+          .do("arcs", (c) => c.select("R3", "R4").command("J"))
+          .do("circle", (c) => c.select("R1", "R2").command("J"))
+          .do("enter", (c) => c.enter())
+          .do("polyline", (c) => c.select("P1", "J3").command("J"))
+          .do("new polyline", (c) => c.select("J4", "J5").command("J"))
+    )
+    walk(
       "BREAK",
       createHarness({ entities: [lineOf(p(-100, 0), p(100, 0))] }),
       (s) =>

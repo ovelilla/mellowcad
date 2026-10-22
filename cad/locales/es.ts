@@ -1154,6 +1154,10 @@ export const es: EngineLocale = {
         "Yes": "Sí",
         "No": "No"
       },
+      "JOIN": {
+        "Yes": "Sí",
+        "No": "No"
+      },
       "ARRAYRECT": {
         "COUnt": "COntar",
         "Spacing": "Espaciado",
@@ -1722,6 +1726,7 @@ export const es: EngineLocale = {
       "eraseSourceObjects": "¿Borrar objetos de origen?",
       "selectSourceOrMultipleToJoin": "Designe un objeto de origen o varios objetos para unirlos a la vez",
       "selectObjectsToJoin": "Seleccione objetos para unir",
+      "convertCombinedArcsToCircle": "Los segmentos de arco combinados forman un círculo. ¿Convertir en círculo?",
       "specifyOffsetDistanceOr": "Precise distancia de desfase o",
       "selectObjectToOffsetOr": "Designe objeto a desplazar o",
       "specifyPointOnSideToOffsetOr": "Precise punto en lado de desplazamiento o",
@@ -2972,6 +2977,150 @@ export const es: EngineLocale = {
           }
         ],
         " de la operación"
+      ],
+      "linesJoined": [
+        [
+          "count"
+        ],
+        " líneas unidas en 1 línea",
+        [
+          "discarded",
+          2,
+          {
+            "=0": "",
+            "one": [
+              ", ",
+              0,
+              " objeto descartado de la operación"
+            ],
+            "other": [
+              ", ",
+              0,
+              " objetos descartados de la operación"
+            ]
+          }
+        ]
+      ],
+      "arcsJoined": [
+        [
+          "count"
+        ],
+        " arcos unidos en 1 arco",
+        [
+          "discarded",
+          2,
+          {
+            "=0": "",
+            "one": [
+              ", ",
+              0,
+              " objeto descartado de la operación"
+            ],
+            "other": [
+              ", ",
+              0,
+              " objetos descartados de la operación"
+            ]
+          }
+        ]
+      ],
+      "arcsJoinedIntoCircle": [
+        [
+          "count"
+        ],
+        " arcos unidos y convertidos a círculo",
+        [
+          "discarded",
+          2,
+          {
+            "=0": "",
+            "one": [
+              ", ",
+              0,
+              " objeto descartado de la operación"
+            ],
+            "other": [
+              ", ",
+              0,
+              " objetos descartados de la operación"
+            ]
+          }
+        ]
+      ],
+      "objectsConvertedToPolylines": [
+        [
+          "polylines",
+          2,
+          {
+            "one": [
+              [
+                "count"
+              ],
+              " objetos convertidos en ",
+              0,
+              " polilínea"
+            ],
+            "other": [
+              [
+                "count"
+              ],
+              " objetos convertidos a ",
+              0,
+              " polilíneas"
+            ]
+          }
+        ],
+        [
+          "discarded",
+          2,
+          {
+            "=0": "",
+            "one": [
+              ", ",
+              0,
+              " objeto descartado de la operación"
+            ],
+            "other": [
+              ", ",
+              0,
+              " objetos descartados de la operación"
+            ]
+          }
+        ]
+      ],
+      "segmentsJoinedIntoPolyline": [
+        [
+          "count",
+          2,
+          {
+            "one": [
+              0,
+              " segmento unido"
+            ],
+            "other": [
+              0,
+              " segmentos unidos"
+            ]
+          }
+        ],
+        " en 1 polilínea",
+        [
+          "discarded",
+          2,
+          {
+            "=0": "",
+            "one": [
+              ", ",
+              0,
+              " objeto descartado de la operación"
+            ],
+            "other": [
+              ", ",
+              0,
+              " objetos descartados de la operación"
+            ]
+          }
+        ]
       ],
       "panExit": "Pulse Esc o Intro para salir, o haga clic con el botón derecho para activar el menú contextual.",
       "requiresTwoPointsOrDisplacement": "Requiere dos puntos o un desplazamiento seguido por INTRO.",

@@ -2,6 +2,7 @@ import { Entity, EntityId } from "../../domain/entities"
 import { ScenePrimitive } from "../../scene/types"
 import {
   CommandOption,
+  CommandOptionOutcome,
   PointerInput,
   QuestionInput,
   Tool,
@@ -9,7 +10,12 @@ import {
 } from "./Tool"
 import type { PromptId } from "../../locales/types"
 import type { MessageId } from "../EngineText"
-import { ObjectSelector, ObjectSelectorOptions } from "./objectSelection"
+import {
+  type AddedBy,
+  type ModeFind,
+  ObjectSelector,
+  ObjectSelectorOptions,
+} from "./objectSelection"
 
 /**
  * A tool that runs a single action on a *set* of selected objects — AutoCAD's
@@ -37,6 +43,7 @@ export abstract class SelectionActionTool implements Tool {
       this.selectionQuestion(!(this.selection?.isEmpty() ?? true)),
     refuse: this.refusal(),
     noneFound: this.noneFound(),
+    onAdded: (ids, added, _ctx, find) => this.selectionAdded(ids, added, find),
   })
 
   /**
@@ -45,8 +52,15 @@ export abstract class SelectionActionTool implements Tool {
    */
   protected readonly fadesSet: boolean = false
 
-  /** Runs the action on the selected `entities`; may reset the selection. */
-  protected abstract run(entities: readonly Entity[], ctx: ToolContext): void
+  /**
+   * Runs the action on the selected `entities`; may reset the selection.
+   * True keeps the command for a question of its own after the set (JOIN's
+   * `Convert to circle?`), which ends it.
+   */
+  protected abstract run(
+    entities: readonly Entity[],
+    ctx: ToolContext
+  ): boolean | void
 
   onActivate(ctx: ToolContext): void {
     this.selection = ctx.selection
@@ -69,6 +83,17 @@ export abstract class SelectionActionTool implements Tool {
   /** What the command refuses at `Select objects:`, said under the count. */
   protected refusal(): ObjectSelectorOptions["refuse"] {
     return undefined
+  }
+
+  /** Objects that joined the set at `Select objects:`, and how they were found. */
+  protected selectionAdded(
+    ids: readonly EntityId[],
+    added: AddedBy,
+    find: ModeFind
+  ): void {
+    void ids
+    void added
+    void find
   }
 
   /** What Enter on an empty set says, if anything. */
@@ -99,7 +124,7 @@ export abstract class SelectionActionTool implements Tool {
     return this.selector.commandOptions()
   }
 
-  invokeOption(id: string, ctx: ToolContext): "continue" | "unhandled" {
+  invokeOption(id: string, ctx: ToolContext): CommandOptionOutcome {
     return this.selector.invokeOption(id, ctx) ? "continue" : "unhandled"
   }
 
@@ -153,7 +178,7 @@ export abstract class SelectionActionTool implements Tool {
       .toArray()
       .map((id) => ctx.document.get(id))
       .filter((entity): entity is Entity => entity !== undefined)
-    if (entities.length > 0) this.run(entities, ctx)
+    if (entities.length > 0 && this.run(entities, ctx) === true) return
     ctx.endCommand()
   }
 }

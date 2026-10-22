@@ -3343,6 +3343,46 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0°~, Line space facto
 > escape
   command| *Cancel*
 
+## JOIN made
+> start
+  prompt: Command:
+  asks: -
+  tip: -
+  dyn: -
+  options: -
+  canvas: -
+  properties: -
+  cycling: -
+> lines
+  command| J JOIN 2 found
+  info| 2 lines joined into 1 line
+> arcs
+  command| J JOIN 2 found
+  info| 2 arcs joined into 1 arc
+> circle
+  prompt: JOIN Combined arc segments form a circle.  Convert to circle? [Yes/No] <Yes>:
+  asks: 
+  tip: Combined arc segments form a circle.  Convert to circle?
+  dyn: 
+  options: [Y] Yes, [N] No
+  properties: 2 objects (2) [Selection: Arcs=2]
+  command| J JOIN 2 found
+> enter
+  prompt: Command:
+  asks: -
+  tip: -
+  dyn: -
+  options: -
+  properties: -
+  prompt| Combined arc segments form a circle.  Convert to circle? [Yes/No] <Yes>:
+  info| 2 arcs joined and converted to circle
+> polyline
+  command| J JOIN 2 found
+  info| 1 segment joined into 1 polyline
+> new polyline
+  command| J JOIN 2 found
+  info| 2 objects converted to 1 polyline
+
 ## BREAK
 > start
   prompt: Command:

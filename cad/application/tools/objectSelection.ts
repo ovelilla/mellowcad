@@ -207,12 +207,13 @@ export interface ObjectSelectorOptions {
   readonly noneFound?: MessageId
   /**
    * Called as objects join the set, a duplicate not among them, with how they
-   * were found: STRETCH's frames.
+   * were found: STRETCH's frames, JOIN's order.
    */
   readonly onAdded?: (
     ids: readonly EntityId[],
     added: AddedBy,
-    ctx: ToolContext
+    ctx: ToolContext,
+    find: ModeFind
   ) => void
   /** The modes the prompt takes; by default those {@link takes} lists. */
   readonly modes?: readonly SelectionMode[]
@@ -1045,7 +1046,7 @@ export class ObjectSelector {
       })
     )
     if (sifted) this.sayRefused(sifted, ctx)
-    if (added.length > 0) this.options.onAdded?.(added, how, ctx)
+    if (added.length > 0) this.options.onAdded?.(added, how, ctx, find)
     if (
       (this.single && ids.length > 0) ||
       (this.closesOnAdd && added.length > 0)

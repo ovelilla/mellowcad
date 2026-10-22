@@ -648,7 +648,7 @@ describe("editing commands", () => {
   })
 
   describe("JOIN", () => {
-    it("joins touching objects in one plane into a polyline at that height", () => {
+    it("joins touching objects in one plane into a polyline at that height (pieces/p345)", () => {
       const cad = createHarness({
         entities: [
           withElevation(lineOf(p(0, 0), p(100, 0), { id: "J1" }), 7),
@@ -661,7 +661,7 @@ describe("editing commands", () => {
       expect(entityElevation(cad.only<PolylineEntity>("polyline"))).toBe(7)
     })
 
-    it("does not join objects that touch in plan at different heights", () => {
+    it("does not join objects that touch in plan at different heights (pieces/p346)", () => {
       const cad = createHarness({
         entities: [
           withElevation(lineOf(p(0, 0), p(100, 0), { id: "J1" }), 7),
@@ -677,6 +677,8 @@ describe("editing commands", () => {
       )
     })
 
+    // WHY a deviation: AutoCAD 2027 flattens this one into a level polyline,
+    // its rise lost (pieces/p347), yet joins nothing off Z 0 (p358): PIECES-D24.
     it("leaves a rising line out", () => {
       const cad = createHarness({
         entities: [

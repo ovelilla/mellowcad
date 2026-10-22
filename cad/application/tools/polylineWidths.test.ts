@@ -763,7 +763,8 @@ describe("what the editing commands do with the widths", () => {
     ])
   })
 
-  it("JOIN gives a line the widths of the polyline it joins (acc/w11, w22)", () => {
+  // 2023's acc/w11 and w22 hold on 2027.
+  it("JOIN gives a line the widths of the polyline it joins (pieces/p354–p356)", () => {
     const cad = createHarness({
       entities: [
         tapered(),

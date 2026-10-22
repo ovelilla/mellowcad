@@ -703,6 +703,10 @@
         "Yes": "Sí",
         "No": "No"
       },
+      "JOIN": {
+        "Yes": "Sí",
+        "No": "No"
+      },
       "ARRAYRECT": {
         "COUnt": "COntar",
         "Spacing": "Espaciado",
@@ -1217,6 +1221,7 @@
       "eraseSourceObjects": "¿Borrar objetos de origen?",
       "selectSourceOrMultipleToJoin": "Designe un objeto de origen o varios objetos para unirlos a la vez",
       "selectObjectsToJoin": "Seleccione objetos para unir",
+      "convertCombinedArcsToCircle": "Los segmentos de arco combinados forman un círculo. ¿Convertir en círculo?",
       "specifyOffsetDistanceOr": "Precise distancia de desfase o",
       "selectObjectToOffsetOr": "Designe objeto a desplazar o",
       "specifyPointOnSideToOffsetOr": "Precise punto en lado de desplazamiento o",
@@ -1505,6 +1510,11 @@
       "linesChamfered": "{count, plural, one {# línea resulta unida(s) con chaflán} other {# líneas resultan unida(s) con chaflán}}",
       "linesFilleted": "{count, plural, one {# línea resulta unida(s) con empalme} other {# líneas resultan unida(s) con empalme}}",
       "nothingJoined": "0 objetos unidos, {count, plural, one {# objeto descartado} other {# objetos descartados}} de la operación",
+      "linesJoined": "{count} líneas unidas en 1 línea{discarded, plural, =0 {} one {, # objeto descartado de la operación} other {, # objetos descartados de la operación}}",
+      "arcsJoined": "{count} arcos unidos en 1 arco{discarded, plural, =0 {} one {, # objeto descartado de la operación} other {, # objetos descartados de la operación}}",
+      "arcsJoinedIntoCircle": "{count} arcos unidos y convertidos a círculo{discarded, plural, =0 {} one {, # objeto descartado de la operación} other {, # objetos descartados de la operación}}",
+      "objectsConvertedToPolylines": "{polylines, plural, one {{count} objetos convertidos en # polilínea} other {{count} objetos convertidos a # polilíneas}}{discarded, plural, =0 {} one {, # objeto descartado de la operación} other {, # objetos descartados de la operación}}",
+      "segmentsJoinedIntoPolyline": "{count, plural, one {# segmento unido} other {# segmentos unidos}} en 1 polilínea{discarded, plural, =0 {} one {, # objeto descartado de la operación} other {, # objetos descartados de la operación}}",
       "panExit": "Pulse Esc o Intro para salir, o haga clic con el botón derecho para activar el menú contextual.",
       "requiresTwoPointsOrDisplacement": "Requiere dos puntos o un desplazamiento seguido por INTRO.",
       "currentViewDirection": "Dirección de vista actual:  VIEWDIR={x},{y},{z}",

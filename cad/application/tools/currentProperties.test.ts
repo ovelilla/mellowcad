@@ -259,9 +259,13 @@ const DERIVED: ReadonlyArray<
     ],
   ],
   [
+    // A new polyline, not the source LINE collinear lines grow (pieces/p300).
     "JOIN",
     (c) => c.selectAll().command("JOIN"),
-    [blueLine(0, 100, "L1"), blueLine(100, 200, "L2")],
+    [
+      blueLine(0, 100, "L1"),
+      blue(lineOf(p(100, 0), p(100, 100), { id: "L2" })),
+    ],
   ],
   [
     "PASTECLIP",

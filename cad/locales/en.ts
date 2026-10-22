@@ -1370,6 +1370,7 @@ export const en: EngineCatalog = {
       "eraseSourceObjects": "Erase source objects?",
       "selectSourceOrMultipleToJoin": "Select source object or multiple objects to join at once",
       "selectObjectsToJoin": "Select objects to join",
+      "convertCombinedArcsToCircle": "Combined arc segments form a circle.  Convert to circle?",
       "specifyOffsetDistanceOr": "Specify offset distance or",
       "eraseSourceObjectAfterOffsetting": "Erase source object after offsetting?",
       "enterLayerOptionForOffsetObjects": "Enter layer option for offset objects",
@@ -2621,6 +2622,146 @@ export const en: EngineCatalog = {
           }
         ],
         " discarded from the operation"
+      ],
+      "linesJoined": [
+        [
+          "count"
+        ],
+        " lines joined into 1 line",
+        [
+          "discarded",
+          2,
+          {
+            "=0": "",
+            "one": [
+              ", ",
+              0,
+              " object discarded from the operation"
+            ],
+            "other": [
+              ", ",
+              0,
+              " objects discarded from the operation"
+            ]
+          }
+        ]
+      ],
+      "arcsJoined": [
+        [
+          "count"
+        ],
+        " arcs joined into 1 arc",
+        [
+          "discarded",
+          2,
+          {
+            "=0": "",
+            "one": [
+              ", ",
+              0,
+              " object discarded from the operation"
+            ],
+            "other": [
+              ", ",
+              0,
+              " objects discarded from the operation"
+            ]
+          }
+        ]
+      ],
+      "arcsJoinedIntoCircle": [
+        [
+          "count"
+        ],
+        " arcs joined and converted to circle",
+        [
+          "discarded",
+          2,
+          {
+            "=0": "",
+            "one": [
+              ", ",
+              0,
+              " object discarded from the operation"
+            ],
+            "other": [
+              ", ",
+              0,
+              " objects discarded from the operation"
+            ]
+          }
+        ]
+      ],
+      "objectsConvertedToPolylines": [
+        [
+          "count"
+        ],
+        " objects converted to ",
+        [
+          "polylines",
+          2,
+          {
+            "one": [
+              0,
+              " polyline"
+            ],
+            "other": [
+              0,
+              " polylines"
+            ]
+          }
+        ],
+        [
+          "discarded",
+          2,
+          {
+            "=0": "",
+            "one": [
+              ", ",
+              0,
+              " object discarded from the operation"
+            ],
+            "other": [
+              ", ",
+              0,
+              " objects discarded from the operation"
+            ]
+          }
+        ]
+      ],
+      "segmentsJoinedIntoPolyline": [
+        [
+          "count",
+          2,
+          {
+            "one": [
+              0,
+              " segment"
+            ],
+            "other": [
+              0,
+              " segments"
+            ]
+          }
+        ],
+        " joined into 1 polyline",
+        [
+          "discarded",
+          2,
+          {
+            "=0": "",
+            "one": [
+              ", ",
+              0,
+              " object discarded from the operation"
+            ],
+            "other": [
+              ", ",
+              0,
+              " objects discarded from the operation"
+            ]
+          }
+        ]
       ],
       "currentViewDirection": [
         "Current view direction:  VIEWDIR=",

@@ -857,18 +857,55 @@ pieces as the Previous set (`ERASE _P` → `2 found`, p236, p258)
 **Implemented:** `Select source object or multiple objects to join at once:`, then
 `Select objects to join:` once one is picked (es
 `Designe un objeto de origen o varios objetos para unirlos a la vez`,
-`Seleccione objetos para unir`, a real history's), with MOVE's counts; lines + arcs + polylines
-merged into one polyline at their elevation, arcs become bulges, a polyline's segments keep their
-widths and a line or an arc joined after its end takes the width it ends at, before its start its
-first segment's widths, as AutoCAD 2023's console joins them (acc/w11, w22); only objects in one
-plane chain, and none at an angle to the UCS's XY plane is taken; nothing joined gives
-`0 objects joined, n objects discarded from the operation` (forum captures; es
-`0 objetos unidos, n objetos descartados de la operación`, a real history's)
+`Seleccione objetos para unir`; pieces/p300, p301), with MOVE's counts, Enter at the first prompt
+ending silently (p309). The set is read in its order, a window's or a crossing's find newest first
+(`ssget`'s order, p390, p341; a polygon's and a lasso's too, unprobed), and makes:
 
-**Missing:** a single source's own step (`Select lines to join to source:`: here the source and the
-rest are one set), the result counts (`9 segments joined into 3 polylines`), 2-vertex closed "lens"
-case, collinear-gap joining, a rising line or objects in different planes (AutoCAD makes a 3D
-polyline: left out here)
+- **collinear lines** — touching, with gaps, overlapping, rising along one line in space — the
+  source LINE, the set's first, stretched to the farthest ends along its own direction, its handle
+  and properties kept: `2 lines joined into 1 line` (es `2 líneas unidas en 1 línea`; p300, p328,
+  p329, p342, p349);
+- **arcs of one circle** the source ARC, counter-clockwise from its start over every gap to the
+  farthest end: `2 arcs joined into 1 arc` (es `2 arcos unidos en 1 arco`; p327, p344); arcs that
+  reach back to its start ask
+  `Combined arc segments form a circle.  Convert to circle? [Yes/No] <Yes>:` (es
+  `Los segmentos de arco combinados forman un círculo. ¿Convertir en círculo? [Sí/No] <Sí>`), Yes or
+  Enter a new CIRCLE with the source's properties, `2 arcs joined and converted to circle` (es
+  `2 arcos unidos y convertidos a círculo`), No nothing, silently (p326, p382, p385–p387);
+- **anything else** polylines, one per chain, each grown from a source — the set's first polyline,
+  which keeps its handle, properties and widths (`1 segment joined into 1 polyline`,
+  `2 segments joined into 1 polyline`, counting the segments added; es
+  `1 segmento unido en 1 polilínea`; p322, p343, p356, p378–p380), else its first object, whose
+  properties a new polyline wears (`2 objects converted to 1 polyline`,
+  `4 objects converted to 2 polylines`; es `2 objetos convertidos en 1 polilínea`,
+  `4 objetos convertidos a 2 polilíneas`; p319, p321, p333, p339, p340) — over whole objects that
+  meet one of its ends in its plane, in the set's order and scanned again after each, until none
+  fits or it closes (p324, p338, p377, p384); a lens closes in two vertices (p325); a polyline joins
+  only by its ends and a closed one never (p373, p388, p389); arcs become bulges; a line or an arc
+  after the polyline's end takes the width it ends at, before its start its first segment's widths
+  (p354–p356); at the plane's elevation (p345), what touches in plan at another height discarded
+  (p346).
+
+What no result takes is counted after it, `, 1 object discarded from the operation` (es
+`, 1 objeto descartado de la operación`; p319, p377); with nothing joined
+`0 objects joined, 2 objects discarded from the operation` (es
+`0 objetos unidos, 2 objetos descartados de la operación`; p334). One undo step, named JOIN / UNIR
+(p360–p362).
+
+**Missing:** a single source's own step (`Select lines to join to source:`, es
+`Designe líneas que unir al origen`, and its `1 line joined to source` counts; p310, p311,
+p348, p372, p383): here a source alone and Enter is a set of one,
+`0 objects joined, 1 object discarded from the operation`; splines, elliptical arcs and helixes,
+discarded here (AutoCAD: `2 objects joined into 1 spline`, p331, p374;
+`2 elliptical arcs joined into 1 arc`, p332; an arc and an elliptical arc
+`2 objects converted to 1 spline`, p375; cLose `Ellipse successfully closed.`, p369); objects
+under a −Z normal, discarded (AutoCAD: a 3D polyline from such a polyline and a line, p353, a
+spline from such an arc and a line, p352) and objects in a tilted plane (AutoCAD joins lines
+drawn in UCS X 90 into a polyline of that normal, p351); a rising line is left out, where AutoCAD
+2027 flattens one into the level polyline, its rise lost (p347, p330), yet joins nothing when the
+level line is off Z 0 (p358) — neither copied (PIECES-D24); the order of a fence's and the named
+modes' finds (the drawing's here, unprobed); a run that both grows a polyline and makes new ones
+words its count as new polylines (unprobed)
 
 ### `BREAK` / `BR` / `BREAKATPOINT` · es `PARTE` / `P`† · `PARTIRENPUNTO`
 

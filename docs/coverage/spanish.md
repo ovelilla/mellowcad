@@ -122,13 +122,13 @@ interlineado`, `Anchura definida`, `Método`, `Grado`…), the prompts of POL, C
   `*No válido*`, from the string table of Autodesk's AutoCAD 2027 Spanish language pack
   (`es-ES/acadres.dll`, read without installing it), paired with AutoCAD 2023's English by id;
   EXPLODE's `1 no se ha podido descomponer.` and `No hallada.` (the 2027 console, erase/p216,
-  p328, p329). ERASE says no count, and an empty set nothing (erase/p00, p304).
+  p328, p329); JOIN's prompts, `Convert to circle?` and its counts (the 2027 console,
+  pieces/p300–p387). ERASE says no count, and an empty set nothing (erase/p00, p304).
   **Unverified:** PURGE's counts (left to the Blocks review), the file errors, the clipboard and
   FROM notes, `El círculo no existe.`, block, pattern and style not found, `Capa{n}`
   (partial), `Copia de {name}`, `Radio de empalme es demasiado grande`,
-  `Distancia de chaflán es demasiado grande`, `Todos los efectos del comando han sido deshechos.`
-  and JOIN's `0 objetos unidos, n objetos descartados de la operación`
-  (a user's quote of AutoCAD 2020). POLYGON's refusals are the 2027 console's (polygon/p02, p08).
+  `Distancia de chaflán es demasiado grande` and
+  `Todos los efectos del comando han sido deshechos.`. POLYGON's refusals are the 2027 console's (polygon/p02, p08).
 - **Sources beyond the help pages:** the Spanish alias guides
   ([2022 Product
   Insights](https://help.autodesk.com/cloudhelp/2022/ESP/AutoCAD-Product-Insights/files/GUID-DB0E87C4-2223-49ED-84F9-FBB3B6BA65A9.htm),

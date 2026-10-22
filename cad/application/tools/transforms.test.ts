@@ -2534,32 +2534,7 @@ describe("an ellipse transformed", () => {
   })
 })
 
-describe("EXPLODE and JOIN", () => {
-  it("asks JOIN's source or several objects, then the objects to join", () => {
-    const cad = createHarness({
-      entities: [
-        lineOf(p(0, 0), p(50, 0), { id: "A" }),
-        lineOf(p(50, 0), p(100, 0), { id: "B" }),
-      ],
-    })
-
-    cad.command("JOIN")
-    expect(cad.state().commandLine.prompt).toBe(
-      "JOIN Select source object or multiple objects to join at once:"
-    )
-    cad.click(p(25, 0))
-    expect(cad.state().commandLine.prompt).toBe("JOIN Select objects to join:")
-    cad.click(p(75, 0)).enter()
-
-    expect(cad.commandLog().slice(0, 4)).toEqual([
-      "JOIN",
-      "Select source object or multiple objects to join at once: 1 found",
-      "Select objects to join: 1 found, 2 total",
-      "Select objects to join:",
-    ])
-    expect(cad.entityCount).toBe(1)
-  })
-
+describe("EXPLODE", () => {
   const rectangle = polylineOf([p(0, 0), p(200, 0), p(200, 120), p(0, 120)], {
     id: "P1",
     closed: true,
@@ -2580,36 +2555,6 @@ describe("EXPLODE and JOIN", () => {
     expect(closing?.end).toBeCloseToPoint(p(0, 0))
   })
 
-  it("JOIN rebuilds the polyline from the exploded segments", () => {
-    const cad = createHarness({ entities: [rectangle] })
-
-    cad.select("P1").command("EXPLODE")
-    cad.selectAll().command("JOIN")
-
-    const poly = cad.only<PolylineEntity>("polyline")
-    expect(poly.closed).toBe(true)
-    expect(poly.vertices).toBeCloseToPoints([
-      p(0, 0),
-      p(200, 0),
-      p(200, 120),
-      p(0, 120),
-    ])
-  })
-
-  it("each is a single undo step", () => {
-    const cad = createHarness({ entities: [rectangle] })
-
-    cad.select("P1").command("EXPLODE")
-    cad.selectAll().command("JOIN")
-    expect(cad.entityCount).toBe(1)
-
-    cad.undo()
-    expect(cad.entityCount).toBe(4)
-    cad.undo()
-    expect(cad.entityCount).toBe(1)
-    expect(cad.only<PolylineEntity>("polyline").closed).toBe(true)
-  })
-
   it("EXPLODE emits an arc for a bulged segment", () => {
     const cad = createHarness({
       entities: [
@@ -2626,62 +2571,6 @@ describe("EXPLODE and JOIN", () => {
     const arc = cad.only<ArcEntity>("arc")
     expect(arc.center).toBeCloseToPoint(p(100, 50))
     expect(arc.radius).toBeCloseTo(50)
-  })
-
-  it("JOIN keeps an arc's curvature as a bulge", () => {
-    const cad = createHarness({
-      entities: [
-        lineOf(p(0, 0), p(100, 0), { id: "L1" }),
-        arcOf(p(0, 0), 100, 0, deg(90), { id: "A1" }),
-      ],
-    })
-
-    cad.selectAll().command("JOIN")
-
-    const poly = cad.only<PolylineEntity>("polyline")
-    expect(poly.vertices).toBeCloseToPoints([p(0, 0), p(100, 0), p(0, 100)], 5)
-    // A 90° arc is tan(90°/4) = tan(22.5°).
-    expect(poly.bulges?.[1]).toBeCloseTo(Math.tan(deg(22.5)), 6)
-  })
-
-  it("JOIN leaves unrelated objects alone", () => {
-    const cad = createHarness({
-      entities: [
-        lineOf(p(0, 0), p(100, 0), { id: "L1" }),
-        lineOf(p(500, 500), p(600, 500), { id: "L2" }),
-      ],
-    })
-
-    cad.selectAll().command("JOIN")
-
-    expect(cad.entityCount).toBe(2)
-    expect(cad.typeCounts()).toEqual({ line: 2 })
-  })
-
-  it("the pieces and the joined polyline keep colour, plane and thickness", () => {
-    const raised: PolylineEntity = {
-      ...rectangle,
-      color: "#ff0000",
-      elevation: 12,
-      thickness: 3,
-    }
-    const cad = createHarness({ entities: [raised] })
-
-    cad.select("P1").command("EXPLODE")
-    for (const piece of linesOf(cad.entities())) {
-      expect(piece).toMatchObject({
-        color: "#ff0000",
-        elevation: 12,
-        thickness: 3,
-      })
-    }
-
-    cad.selectAll().command("JOIN")
-    expect(cad.only<PolylineEntity>("polyline")).toMatchObject({
-      color: "#ff0000",
-      elevation: 12,
-      thickness: 3,
-    })
   })
 
   it("previews the object under the cursor while selecting", () => {

@@ -94,4 +94,6 @@ FILLET's, CHAMFER's and BREAK's picks are checked for the same, and for their re
 FILLET's and CHAMFER's took them too, and no single object's pick takes a locked find any more,
 BREAK's included, which says nothing for one yet (CRP-01, CRP-03: `docs/plans/corners-review.md`):
 the Pieces review probes BREAK's words, and the Properties review the locked layers' fade and
-padlock the corners' desktop showed (d04-4).
+padlock the corners' desktop showed (d04-4). JOIN reads a window's or a crossing's find newest first, `ssget`'s
+order (pieces/p390); every other set keeps the drawing's, which `Select objects:` checks per
+command (JNG-05: `docs/plans/pieces-review.md`).
