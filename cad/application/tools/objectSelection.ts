@@ -240,9 +240,11 @@ export interface ObjectSelectorOptions {
     /** Finding none says nothing: the prompt is asked again (FILLET's). */
     readonly silent?: boolean
     /**
-     * Said where the mode found objects on locked layers alone, which are
-     * never taken (FILLET's `The object is on a locked layer.`, probe
-     * corners/p274); without it nothing is said.
+     * Said once for each object on a locked layer the mode found, whatever
+     * else it found, before what is taken (FILLET's and BREAK's `The object
+     * is on a locked layer.`, probes corners/p274, pieces/p102, p178, p395);
+     * locked objects are never taken. Without it nothing is said, nor where
+     * every one found is locked.
      */
     readonly locked?: MessageId
     /**
@@ -1086,12 +1088,11 @@ export class ObjectSelector {
 
   /**
    * One of `ids` for a single object's pick, or two for a {@link pair}, never
-   * one on a locked layer: of the rest, and only locked ones found say the
-   * command's {@link locked} (probe corners/p274). With none, how
-   * many the command left out (`1 was filtered out`, ARRAYPATH's source at
-   * its path curve in AutoCAD 2023's console) or that nothing was found,
-   * unless the command says nothing — nor does a window a pick on nothing
-   * started (acc/bk20, bk48).
+   * one on a locked layer, each of which says the command's {@link locked}
+   * first. With none, how many the command left out (`1 was filtered out`,
+   * ARRAYPATH's source at its path curve in AutoCAD 2023's console) or that
+   * nothing was found (pieces/p101, p104), unless the command says nothing —
+   * nor does a window a pick on nothing started (acc/bk20, bk48).
    */
   private takeOne(
     ids: readonly EntityId[],
@@ -1108,9 +1109,12 @@ export class ObjectSelector {
     const inOrder = all.filter(
       (entity) => !ctx.document.getLayer(entity.layerId)?.locked
     )
-    if (inOrder.length === 0 && all.length > 0) {
-      if (one.locked) ctx.report(ctx.text.message(one.locked), "error")
-      else ctx.requestRender()
+    if (one.locked) {
+      for (let i = inOrder.length; i < all.length; i++) {
+        ctx.report(ctx.text.message(one.locked), "error")
+      }
+    } else if (inOrder.length === 0 && all.length > 0) {
+      ctx.requestRender()
       return
     }
     const taken = one.newest ? inOrder.at(-1) : inOrder[0]

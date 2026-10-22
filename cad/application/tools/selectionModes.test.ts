@@ -742,8 +742,9 @@ describe("Select objects' modes", () => {
   })
 })
 
-// AutoCAD 2023's console: a mode at a single object's pick takes one of what
-// it finds — BREAK the oldest, UCS and ARRAYPATH the newest.
+// AutoCAD's console: a mode at a single object's pick takes one of what it
+// finds — BREAK the oldest (2027's, probes pieces/p125–p132, p144), UCS and
+// ARRAYPATH the newest (2023's).
 describe("a single object's pick takes the modes", () => {
   it("BREAK takes the oldest object a mode finds, and asks its first point", () => {
     const cad = createHarness({ entities: drawing() })
@@ -775,6 +776,38 @@ describe("a single object's pick takes the modes", () => {
       "Expects a point or Window/Last/Crossing/BOX/ALL/Fence/WPolygon/CPolygon",
     ])
     cad.escape()
+  })
+
+  it("BREAK takes the oldest by every mode, whatever its place (p125–p132)", () => {
+    for (const [probe, ...mode] of [
+      ["p125", "W", "-10,-10", "110,60"],
+      ["p126", "C", "-10,-10", "50,60"],
+      ["p127", "ALL"],
+      ["p128", "F", "50,-10", "50,60", ""],
+      ["p129", "WP", "-10,-10", "110,-10", "110,60", "-10,60", ""],
+      ["p130", "CP", "40,-10", "60,-10", "60,60", "40,60", ""],
+      ["p131", "BOX", "110,60", "-10,-10"],
+    ]) {
+      const cad = createHarness({ entities: drawing().slice(0, 2) })
+      answer(cad, "BREAK", ...mode, "20,0", "40,0")
+      expect(lineEnds(cad), probe).toEqual([
+        [
+          [0, 0],
+          [20, 0],
+        ],
+        [
+          [0, 50],
+          [100, 50],
+        ],
+        [
+          [40, 0],
+          [100, 0],
+        ],
+      ])
+    }
+    const older = createHarness({ entities: drawing().slice(0, 2).reverse() })
+    answer(older, "BREAK", "W", "-10,-10", "110,60", "20,0", "40,0")
+    expect(older.byId("B")).toMatchObject({ end: { x: 20, y: 50 } })
   })
 
   it("UCS OBject takes the newest, read at its start", () => {
@@ -1003,8 +1036,9 @@ function lineEnds(cad: CadHarness): [number, number][][] {
     ) as [number, number][][]
 }
 
-// AutoCAD 2023's console (acc/bk1–bk60): a point typed at a single object's
-// pick is a pick there, of the newest object under it.
+// AutoCAD's console: a point typed at a single object's pick is a pick there,
+// of the newest object under it — BREAK's in 2027's (probes pieces/p100,
+// p122, p123, p144, p161, p179), UCS's and ARRAYPATH's in 2023's (acc/bk).
 describe("a point typed at a single object's pick", () => {
   it("is BREAK's pick and first break point; on nothing No object found", () => {
     for (const [locale, command, select, second, none, invalid, expects] of [
@@ -1041,7 +1075,7 @@ describe("a point typed at a single object's pick", () => {
         `${select} 50,0.2`,
         `${second} 70,0`,
       ])
-      // The first point is the typed one, pulled onto the line (bk33).
+      // The first point is the typed one, pulled onto the line (p123).
       expect(lineEnds(cad)).toEqual([
         [
           [0, 0],
@@ -1060,7 +1094,31 @@ describe("a point typed at a single object's pick", () => {
     }
   })
 
-  it("is BREAK's from LASTPOINT with @, on the newest object there", () => {
+  it("is BREAK's of the newer line under it, though nearer the older (p122, p123)", () => {
+    const cad = createHarness({
+      entities: [
+        lineOf(p(0, 0), p(100, 0), { id: "A" }),
+        lineOf(p(0, 2), p(100, 2), { id: "E" }),
+      ],
+    })
+    answer(cad, "BREAK", "80,0.3", "90,0.3")
+    expect(lineEnds(cad)).toEqual([
+      [
+        [0, 0],
+        [100, 0],
+      ],
+      [
+        [0, 2],
+        [80, 2],
+      ],
+      [
+        [90, 2],
+        [100, 2],
+      ],
+    ])
+  })
+
+  it("is BREAK's from LASTPOINT with @, on the newest object there (p179)", () => {
     const cad = createHarness({
       entities: [
         lineOf(p(0, 0), p(100, 0), { id: "A" }),

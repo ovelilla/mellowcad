@@ -3,6 +3,7 @@ import type {
   ArcEntity,
   CircleEntity,
   EllipseEntity,
+  Entity,
   LineEntity,
   PolylineEntity,
 } from "../../domain/entities"
@@ -21,6 +22,7 @@ import {
   deg,
   ellipseOf,
   hatchOf,
+  layerOf,
   lineOf,
   loopOf,
   p,
@@ -28,6 +30,7 @@ import {
   textOf,
 } from "../../../test/builders"
 import { es } from "../../locales/es"
+import { SnapType } from "../snapping/types"
 
 /**
  * BREAK removes the piece of an object between two picked points;
@@ -113,6 +116,8 @@ describe("BREAK", () => {
     expect(line.end).toBeCloseToPoint(p(200, 0))
   })
 
+  // AutoCAD 2027's console, en-US and es-ES (probes pieces/p100, p117,
+  // p150, p171).
   it("asks AutoCAD's questions and writes them with their answers", () => {
     const cad = createHarness({
       entities: [lineOf(p(-200, 0), p(200, 0))],
@@ -130,11 +135,12 @@ describe("BREAK", () => {
     expect(cad.state().commandLine.prompt).toBe(
       "BREAK Specify first break point:"
     )
-    cad.click(p(0, 0))
+    cad.click(p(20, 0))
     expect(cad.state().commandLine.prompt).toBe(
       "BREAK Specify second break point:"
     )
     expect(cad.optionIds()).toEqual([])
+    // Absolute in the box, not from the first point (desktop pieces/d10-2).
     cad.type("100,0").enter()
 
     expect(cad.commandLog()).toEqual([
@@ -189,6 +195,9 @@ describe("BREAK", () => {
     expect(cad.state().commandLine.prompt).toBe(
       "PARTIRENPUNTO Especifique el punto de interrupción:"
     )
+    // pieces/p140: P, the alias, in AutoCAD 2027's Spanish console.
+    answer(cad.escape(), "P")
+    expect(cad.state().commandLine.prompt).toBe("PARTE Designe objeto:")
   })
 
   it("re-specifies the first point with the First point keyword", () => {
@@ -801,5 +810,547 @@ describe("BREAKATPOINT", () => {
 
     expect(cad.only<LineEntity>("line").id).toBe("l1")
     expect(cad.entityCount).toBe(1)
+  })
+})
+
+/** The lines left, `id start end` in drawing order, a new piece's id `*`. */
+function lineList(cad: CadHarness, ...ids: string[]): string[] {
+  const round = (value: number) => Math.round(value * 1e4) / 1e4 + 0
+  return cad.entities().map((entity) => {
+    const id = ids.includes(entity.id) ? entity.id : "*"
+    if (entity.type !== "line") return `${id} ${entity.type}`
+    const { start, end } = entity
+    return `${id} ${round(start.x)},${round(start.y)} ${round(end.x)},${round(end.y)}`
+  })
+}
+
+/** LASTPOINT, as `ID @` says it, the running command ended first. */
+function lastPointOf(cad: CadHarness): string | undefined {
+  if (cad.activeToolId() !== "select") cad.escape()
+  answer(cad, "ID", "@")
+  return cad.commandLog().at(-1)
+}
+
+const lineA = () => lineOf(p(0, 0), p(100, 0), { id: "A" })
+
+/** The keyboard's Enter, the command line's and the right button's. */
+const ENTERS: ReadonlyArray<[string, (cad: CadHarness) => void]> = [
+  ["the keyboard", (cad) => cad.enter()],
+  ["the command line", (cad) => answer(cad, "")],
+  [
+    "the right button",
+    (cad) => {
+      cad.rightClick(p(300, 300))
+      if (cad.state().shortcutMenu) {
+        cad.runtime.chooseShortcutMenuAction("enter")
+      }
+    },
+  ],
+]
+
+// AutoCAD 2027's console, en-US and es-ES, and the desktop through COM alone
+// (probes pieces/p146, p149–p151, d15): every break point refuses Enter in
+// its own words and is asked again.
+describe.each(ENTERS)("Enter from %s at BREAK's break points", (_, enter) => {
+  it("is refused, and each prompt asked again", () => {
+    for (const [locale, command, atPoint, required, invalid] of [
+      [
+        undefined,
+        "BREAK",
+        "BREAKATPOINT",
+        "Point or option keyword required.",
+        "Invalid point.",
+      ],
+      [
+        es,
+        "PARTE",
+        "PARTIRENPUNTO",
+        "Se requiere un punto o una opción.",
+        "Punto no válido.",
+      ],
+    ] as const) {
+      const cad = createHarness({ locale, entities: [lineA()] })
+      answer(cad, command, "30,0")
+      const second = cad.state().commandLine.prompt
+      enter(cad)
+      expect(cad.commandLog().at(-1)).toBe(required)
+      expect(cad.state().commandLine.prompt).toBe(second)
+
+      cad.option("First point")
+      const first = cad.state().commandLine.prompt
+      enter(cad)
+      expect(cad.commandLog().at(-1)).toBe(invalid)
+      expect(cad.state().commandLine.prompt).toBe(first)
+
+      answer(cad, "50,0")
+      const again = cad.state().commandLine.prompt
+      enter(cad)
+      expect(cad.commandLog().at(-1)).toBe(required)
+      expect(cad.state().commandLine.prompt).toBe(again)
+      answer(cad, "80,0")
+      expect(lineList(cad, "A")).toEqual(["A 0,0 50,0", "* 80,0 100,0"])
+
+      answer(cad, atPoint, "20,0")
+      const point = cad.state().commandLine.prompt
+      enter(cad)
+      expect(cad.commandLog().at(-1)).toBe(invalid)
+      expect(cad.state().commandLine.prompt).toBe(point)
+      answer(cad, "10,0")
+      expect(lineList(cad, "A")).toEqual([
+        "A 0,0 10,0",
+        "* 80,0 100,0",
+        "* 10,0 50,0",
+      ])
+    }
+  })
+})
+
+// AutoCAD 2027's console, en-US and es-ES (probes pieces/p150, p171): First
+// point is still declared at the second break point it asks, unlisted, and
+// typed there ends BREAK, changing nothing, U naming it.
+describe("First point typed again after First point", () => {
+  it("ends BREAK, changing nothing", () => {
+    for (const [locale, command, first, undo] of [
+      [undefined, "BREAK", "F", "U"],
+      [es, "PARTE", "P", "H"],
+    ] as const) {
+      const cad = createHarness({ locale, entities: [lineA()] })
+      answer(cad, "ID", "5,5", command, "30,0", first, "50,0")
+      expect(cad.optionIds()).toEqual([])
+      answer(cad, first)
+      expect(cad.activeToolId()).toBe("select")
+      expect(lineList(cad, "A")).toEqual(["A 0,0 100,0"])
+      answer(cad, undo)
+      expect(cad.commandLog().at(-1)).toBe(command)
+      expect(lastPointOf(cad)).toMatch(/50[.,]00 .* 0[.,]00 /)
+    }
+    const global = answer(
+      createHarness({ entities: [lineA()] }),
+      "BREAK",
+      "30,0",
+      "_F",
+      "50,0",
+      "_F"
+    )
+    expect(global.activeToolId()).toBe("select")
+  })
+})
+
+// AutoCAD 2027's desktop (pieces/d10-2, d10-4): the break points' pointer
+// input shows the cursor's absolute X and Y, and their prompts have no base
+// point (UseBasePoint false in the trace of p117), so a point typed in the box
+// is absolute there, `@` from LASTPOINT — which the first point set.
+describe("A point typed in the box at a break point", () => {
+  it("is absolute, @ from the first point", () => {
+    const box = createHarness({ entities: [lineA()] })
+    box.command("BREAK").click(p(30, 0)).type("60,0").enter()
+    expect(lineList(box, "A")).toEqual(["A 0,0 30,0", "* 60,0 100,0"])
+
+    const relative = createHarness({ entities: [lineA()] })
+    relative.command("BREAK").click(p(30, 0)).type("@20,0").enter()
+    expect(lineList(relative, "A")).toEqual(["A 0,0 30,0", "* 50,0 100,0"])
+
+    const after = createHarness({ entities: [lineA()] })
+    after.command("BREAK").click(p(10, 0)).option("First point")
+    after.type("40,0").enter().type("70,0").enter()
+    expect(lineList(after, "A")).toEqual(["A 0,0 40,0", "* 70,0 100,0"])
+
+    const atPoint = createHarness({ entities: [lineA()] })
+    atPoint.command("BREAKATPOINT").click(p(30, 0)).type("60,0").enter()
+    expect(lineList(atPoint, "A")).toEqual(["A 0,0 60,0", "* 60,0 100,0"])
+  })
+})
+
+// AutoCAD 2027's console, en-US and es-ES (probes pieces/p108–p115, p177): an
+// object snap typed at `Select object:` picks at the point it finds, which is
+// BREAK's first break point and LASTPOINT; one finding nothing says so, and
+// the prompt refuses it, LASTPOINT kept.
+describe("An object snap typed at BREAK's Select object", () => {
+  const breaks = (entities: Entity[], ...answers: string[]) =>
+    answer(createHarness({ entities }), "ID", "5,5", "BREAK", ...answers)
+
+  it("picks at the point found, the first break point and LASTPOINT", () => {
+    const end = breaks([lineA()], "_END", "99,1")
+    expect(lastPointOf(end)).toMatch(/100[.,]00 .* 0[.,]00 /)
+    const ended = breaks([lineA()], "_END", "99,1", "50,0")
+    expect(lineList(ended, "A")).toEqual(["A 0,0 50,0"])
+
+    const mid = breaks([lineA()], "_MID", "60,1", "80,0")
+    expect(lineList(mid, "A")).toEqual(["A 0,0 50,0", "* 80,0 100,0"])
+
+    const near = breaks([lineA()], "_NEA", "30,2", "@")
+    expect(lineList(near, "A")).toEqual(["A 0,0 30,0", "* 30,0 100,0"])
+    expect(lastPointOf(near)).toMatch(/30[.,]00 .* 0[.,]00 /)
+
+    const quadrant = breaks([circleOf(p(0, 0), 50, { id: "C" })], "_QUA")
+    answer(quadrant, "1,49", "-50,0")
+    const arc = quadrant.only<ArcEntity>("arc")
+    expect(arc.startAngle).toBeCloseToAngle(Math.PI)
+    expect(arc.endAngle).toBeCloseToAngle(Math.PI / 2)
+  })
+
+  it("measures Perpendicular from LASTPOINT (p113)", () => {
+    const cad = answer(
+      createHarness({ entities: [lineA()] }),
+      "ID",
+      "50,40",
+      "BREAK",
+      "_PER",
+      "30,1",
+      "80,0"
+    )
+    expect(lineList(cad, "A")).toEqual(["A 0,0 50,0", "* 80,0 100,0"])
+  })
+
+  it("picks the newer object at an intersection (p111)", () => {
+    const cad = breaks(
+      [lineA(), lineOf(p(30, -20), p(30, 60), { id: "V" })],
+      "_INT",
+      "31,1",
+      "60,0"
+    )
+    // The second point, off V, is pulled onto it at its end 30,0.
+    expect(lineList(cad, "A", "V")).toEqual([
+      "A 0,0 100,0",
+      "V 30,-20 30,0",
+      "* 30,0 30,60",
+    ])
+  })
+
+  it("finds no object at a circle's centre, LASTPOINT there (p112)", () => {
+    const cad = breaks([circleOf(p(0, 0), 50, { id: "C" })], "_CEN", "49,1")
+    expect(cad.commandLog().at(-1)).toBe("No object found")
+    expect(cad.state().commandLine.prompt).toBe("BREAK Select object:")
+    expect(lastPointOf(cad)).toMatch(/ 0[.,]00 .* 0[.,]00 /)
+  })
+
+  it("says what it does not find, and the prompt refuses it (p115)", () => {
+    for (const [locale, command, lines] of [
+      [
+        undefined,
+        "BREAK",
+        [
+          "No Center found for specified point.",
+          "*Invalid selection*",
+          "Expects a point or Window/Last/Crossing/BOX/ALL/Fence/WPolygon/CPolygon",
+        ],
+      ],
+      [
+        es,
+        "PARTE",
+        [
+          "No se ha encontrado CENtro para el punto designado.",
+          "*Designación no válida*",
+          "Requiere un punto o Ventana/úLTimo/Captura/MArco/Todos/Borde/polígonOV/polígonOC",
+        ],
+      ],
+    ] as const) {
+      const cad = createHarness({ locale, entities: [lineA()] })
+      answer(cad, "ID", "5,5", command, "_CEN", "50,1")
+      expect(cad.commandLog().slice(-3)).toEqual(lines)
+      expect(lastPointOf(cad)).toMatch(/ 5[.,]00 .* 5[.,]00 /)
+    }
+  })
+
+  it("is BREAKATPOINT's pick too, which asks its break point (p177)", () => {
+    const cad = answer(
+      createHarness({ entities: [lineA()] }),
+      "BREAKATPOINT",
+      "_MID",
+      "60,1"
+    )
+    expect(cad.commandLog()).not.toContain("*Invalid selection*")
+    expect(cad.state().commandLine.prompt).toBe(
+      "BREAKATPOINT Specify break point:"
+    )
+    answer(cad, "80,0")
+    expect(lineList(cad, "A")).toEqual(["A 0,0 80,0", "* 80,0 100,0"])
+  })
+
+  it("picks where a clicked override finds its point", () => {
+    const cad = createHarness({ entities: [lineA()] })
+    cad.command("BREAK").moveTo(p(60, 1))
+    cad.runtime.setSnapOverride(SnapType.Midpoint)
+    cad.click(p(60, 1)).click(p(80, 0))
+    expect(lineList(cad, "A")).toEqual(["A 0,0 50,0", "* 80,0 100,0"])
+  })
+})
+
+// AutoCAD 2027's console, en-US and es-ES, and the desktop (probes
+// pieces/p100–p107, p124, p178, d06): the newest object under the pick box is
+// tested, locked or not, and each object on a locked layer a pick or a mode
+// finds is said; with nothing else found, `No object found` and the prompt
+// again, else the oldest unlocked object is taken.
+describe("Objects on a locked layer at BREAK's Select object", () => {
+  const locked = (entities: Entity[], locale?: typeof es) => {
+    const cad = createHarness({ locale })
+    cad.runtime.document.load(entities, {
+      layers: [layerOf("0"), layerOf("LK", { locked: true })],
+    })
+    return answer(cad, "ID", "5,5")
+  }
+  const lockedLine = (id = "K", x = 30) =>
+    lineOf(p(x, -20), p(x, 60), { id, layerId: "LK" })
+
+  it("refuses a pick on one, LASTPOINT moved there (p100, p106)", () => {
+    for (const [locale, command, atPoint, lines] of [
+      [
+        undefined,
+        "BREAK",
+        "BREAKATPOINT",
+        ["The object is on a locked layer.", "No object found"],
+      ],
+      [
+        es,
+        "PARTE",
+        "PARTIRENPUNTO",
+        [
+          "El objeto está en una capa bloqueada.",
+          "No se ha encontrado ningún objeto",
+        ],
+      ],
+    ] as const) {
+      const cad = locked([lineA(), lockedLine()], locale)
+      answer(cad, command, "30,40")
+      expect(cad.commandLog().slice(-2)).toEqual(lines)
+      expect(cad.state().commandLine.prompt).toMatch(/:$/)
+      expect(lastPointOf(cad)).toMatch(/30[.,]00 .* 40[.,]00 /)
+
+      const clicked = locked([lineA(), lockedLine()], locale)
+      clicked.command(atPoint).click(p(30, 40))
+      expect(clicked.commandLog().slice(-2)).toEqual(lines)
+    }
+  })
+
+  it("tests the newest under the pick box, locked or not (p105, p124)", () => {
+    const newer = locked([lineA(), lockedLine()])
+    answer(newer, "BREAK", "30,0")
+    expect(newer.commandLog().slice(-2)).toEqual([
+      "The object is on a locked layer.",
+      "No object found",
+    ])
+    answer(newer, "60,0")
+    expect(newer.state().commandLine.prompt).toBe(
+      "BREAK Specify second break point or [First point]:"
+    )
+
+    const older = locked([lockedLine(), lineA()])
+    answer(older, "BREAK", "30,0", "60,0")
+    expect(older.commandLog()).not.toContain("The object is on a locked layer.")
+    expect(lineList(older, "A", "K")).toEqual([
+      "K 30,-20 30,60",
+      "A 0,0 30,0",
+      "* 60,0 100,0",
+    ])
+  })
+
+  it("says each one a mode finds, then takes the oldest unlocked (p102, p103, p107, p178)", () => {
+    for (const [probe, entities, mode] of [
+      ["p102", [lineA(), lockedLine()], ["W", "-10,-30", "110,70"]],
+      ["p103", [lockedLine(), lineA()], ["W", "-10,-30", "110,70"]],
+      ["p107", [lineA(), lockedLine()], ["C", "25,-5", "35,5"]],
+    ] as const) {
+      const cad = locked([...entities])
+      answer(cad, "BREAK", ...mode)
+      expect(cad.commandLog().at(-1), probe).toBe(
+        "The object is on a locked layer."
+      )
+      answer(cad, "60,0", "80,0")
+      expect(lineList(cad, "A", "K"), probe).toContain("A 0,0 60,0")
+    }
+
+    const two = locked([lineA(), lockedLine(), lockedLine("K2", 60)])
+    answer(two, "BREAK", "W", "-10,-30", "110,70")
+    expect(two.commandLog().slice(-3)).toEqual([
+      "Specify opposite corner: 110,70",
+      "The object is on a locked layer.",
+      "The object is on a locked layer.",
+    ])
+    expect(two.state().commandLine.prompt).toBe(
+      "BREAK Specify first break point:"
+    )
+  })
+
+  it("says No object found where a mode finds only locked ones (p101, p104)", () => {
+    for (const mode of [["W", "20,-30", "40,70"], ["L"]]) {
+      const cad = locked([lineA(), lockedLine()])
+      answer(cad, "BREAK", ...mode)
+      expect(cad.commandLog().slice(-2)).toEqual([
+        "The object is on a locked layer.",
+        "No object found",
+      ])
+      expect(cad.state().commandLine.prompt).toBe("BREAK Select object:")
+      expect(lastPointOf(cad)).toMatch(/ 5[.,]00 .* 5[.,]00 /)
+    }
+  })
+})
+
+// AutoCAD 2027's console, the default figure: line A 0,0 → 100,0 and
+// LASTPOINT at 5,5 before BREAK (probes pieces/p116–p121, p147, p148,
+// p153–p157, p160, p161).
+describe("The points of BREAK's prompts", () => {
+  const breaks = (...answers: string[]) =>
+    answer(createHarness({ entities: [lineA()] }), "ID", "5,5", ...answers)
+
+  it("take object snaps and FROM at each break point (p116–p118, p121)", () => {
+    // M2P (p119) is not built: drafting-aids.md's Missing.
+    const end = breaks("BREAK", "30,0", "_END", "99,1")
+    expect(lineList(end, "A")).toEqual(["A 0,0 30,0"])
+    expect(lastPointOf(end)).toMatch(/100[.,]00 .* 0[.,]00 /)
+    const first = breaks("BREAK", "30,0", "_F", "_MID", "60,1", "80,0")
+    expect(lineList(first, "A")).toEqual(["A 0,0 50,0", "* 80,0 100,0"])
+    const from = breaks("BREAK", "30,0", "_FRO", "100,0", "@-20,0")
+    expect(lineList(from, "A")).toEqual(["A 0,0 30,0", "* 80,0 100,0"])
+    const atPoint = breaks("BREAKATPOINT", "30,0", "_MID", "60,1")
+    expect(lineList(atPoint, "A")).toEqual(["A 0,0 50,0", "* 50,0 100,0"])
+  })
+
+  it("is not bent by Ortho where typed (p120)", () => {
+    const cad = createHarness({ entities: [circleOf(p(0, 0), 50)] })
+    cad.press("F8")
+    answer(cad, "BREAK", "50,0", "-10,40")
+    const arc = cad.only<ArcEntity>("arc")
+    expect(arc.startAngle).toBeCloseTo(1.81577, 4)
+    expect(arc.endAngle).toBeCloseToAngle(0)
+  })
+
+  it("read a number from the pick towards the cursor (p147, p148)", () => {
+    for (const [distance, kept] of [
+      ["10", ["A 0,0 21.1336,0", "* 30,0 100,0"]],
+      ["-5", ["A 0,0 30,0", "* 34.4332,0 100,0"]],
+    ] as const) {
+      const cad = createHarness({ entities: [lineA()] })
+      // Where the console's cursor stood: LASTPOINT 21.1336,-4.62466 after 10.
+      cad.moveTo(p(-58.664, -46.2466))
+      answer(cad, "BREAK", "30,0", distance)
+      expect(lineList(cad, "A"), distance).toEqual(kept)
+    }
+  })
+
+  it("keep a Z typed, read @ and polar points from the pick (p153–p155)", () => {
+    const z = breaks("BREAK", "30,0,5", "60,0,5")
+    expect(lineList(z, "A")).toEqual(["A 0,0 30,0", "* 60,0 100,0"])
+    expect(lastPointOf(z)).toMatch(/60[.,]00 .* 0[.,]00 .* 5[.,]00/)
+    for (const run of [
+      ["@25,-5", "@30,0"],
+      ["30<0", "@30<0"],
+    ]) {
+      const cad = breaks("BREAK", ...run)
+      expect(lineList(cad, "A"), run[0]).toEqual(["A 0,0 30,0", "* 60,0 100,0"])
+    }
+  })
+
+  it("are read in the UCS, `*` in the WCS, `#` refused at the pick (p156, p157)", () => {
+    const cad = answer(
+      createHarness({ entities: [lineA()] }),
+      "UCS",
+      "Z",
+      "30",
+      "BREAK",
+      "#30,0"
+    )
+    expect(cad.commandLog().slice(-2)).toEqual([
+      "*Invalid selection*",
+      "Expects a point or Window/Last/Crossing/BOX/ALL/Fence/WPolygon/CPolygon",
+    ])
+    answer(cad, "*30,0", "60,0")
+    expect(lineList(cad, "A")).toEqual(["A 0,0 30,0", "* 51.9615,0 100,0"])
+  })
+
+  it("take @ as the pick at the first break point and BREAKATPOINT's (p160, p161)", () => {
+    const first = breaks("BREAK", "30,0", "_F", "@", "@20,0")
+    expect(lineList(first, "A")).toEqual(["A 0,0 30,0", "* 50,0 100,0"])
+    const atPoint = breaks("BREAKATPOINT", "30,0", "@")
+    expect(lineList(atPoint, "A")).toEqual(["A 0,0 30,0", "* 30,0 100,0"])
+  })
+})
+
+// AutoCAD 2027's console, en-US and es-ES (probes pieces/p166–p171): a run
+// of BREAK is one step, named as the command was, even one that changed
+// nothing.
+describe("BREAK and U", () => {
+  it("undoes and redoes the break in one step (p166, p167)", () => {
+    for (const [locale, command, undo, redo] of [
+      [undefined, "BREAK", "U", "REDO"],
+      [es, "PARTE", "H", "REHACER"],
+    ] as const) {
+      const cad = createHarness({ locale, entities: [lineA()] })
+      answer(cad, command, "30,0", "60,0", undo)
+      expect(cad.commandLog().at(-1)).toBe(command)
+      expect(lineList(cad, "A")).toEqual(["A 0,0 100,0"])
+      answer(cad, redo)
+      expect(lineList(cad, "A")).toEqual(["A 0,0 30,0", "* 60,0 100,0"])
+    }
+    const two = answer(
+      createHarness({ entities: [lineA()] }),
+      "_BREAK",
+      "30,0",
+      "60,0",
+      "_LINE",
+      "0,10",
+      "100,10",
+      "",
+      "_UNDO",
+      "2",
+      "_MREDO",
+      "1"
+    )
+    expect(lineList(two, "A")).toEqual(["A 0,0 30,0", "* 60,0 100,0"])
+  })
+
+  it("names a run that changed nothing (p168–p171)", () => {
+    for (const [locale, gap, atPoint] of [
+      [undefined, "BREAK", "BREAKATPOINT"],
+      [es, "PARTE", "PARTIRENPUNTO"],
+    ] as const) {
+      for (const [command, name, ...run] of [
+        ["_BREAK", gap, "0,0", "@"],
+        ["_BREAK", gap, ""],
+        ["_BREAKATPOINT", atPoint, "30,0", "30,0"],
+        ["_BREAK", gap, "30,0", "_F", "50,0", "_F"],
+      ]) {
+        const cad = createHarness({ locale, entities: [lineA()] })
+        answer(cad, command, ...run, "_U")
+        expect(cad.commandLog().at(-1), run.join(" ")).toBe(name)
+        expect(lineList(cad, "A")).toEqual(["A 0,0 100,0"])
+      }
+    }
+  })
+})
+
+// AutoCAD 2027's console (probes pieces/p172–p175): BREAK asks its object
+// whatever is selected, and leaves nothing selected nor a Previous set.
+describe("BREAK and the selection", () => {
+  it("asks its object over a preselection, which it drops (p172, p173)", () => {
+    const cad = createHarness({
+      entities: [lineA(), lineOf(p(0, 50), p(100, 50), { id: "B" })],
+    })
+    cad.select("B").command("BREAK")
+    expect(cad.state().commandLine.prompt).toBe("BREAK Select object:")
+    answer(cad, "30,0", "60,0")
+    expect(lineList(cad, "A", "B")).toEqual([
+      "A 0,0 30,0",
+      "B 0,50 100,50",
+      "* 60,0 100,0",
+    ])
+    expect(cad.selectedIds()).toEqual([])
+  })
+
+  it("leaves no Previous set, found by a mode or ended by Enter (p174, p175)", () => {
+    const cad = answer(
+      createHarness({ entities: [lineA()] }),
+      "BREAK",
+      "W",
+      "-10,-10",
+      "110,10",
+      "20,0",
+      "40,0",
+      "ERASE",
+      "P"
+    )
+    expect(cad.commandLog().at(-1)).toBe("No previous selection set.")
+    const ended = answer(createHarness({ entities: [lineA()] }), "BREAK", "")
+    expect(ended.selectedIds()).toEqual([])
+    expect(ended.activeToolId()).toBe("select")
   })
 })

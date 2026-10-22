@@ -96,4 +96,9 @@ BREAK's included, which says nothing for one yet (CRP-01, CRP-03: `docs/plans/co
 the Pieces review probes BREAK's words, and the Properties review the locked layers' fade and
 padlock the corners' desktop showed (d04-4). JOIN reads a window's or a crossing's find newest first, `ssget`'s
 order (pieces/p390); every other set keeps the drawing's, which `Select objects:` checks per
-command (JNG-05: `docs/plans/pieces-review.md`).
+command (JNG-05: `docs/plans/pieces-review.md`). A single object's pick tests the newest object
+under the pick box, locked or not, and a command passing `locked` says it once per locked object
+a pick or a mode finds (BRP-01, BRP-02, BRP-05: FILLET's and BREAK's); UCS OBject's and ARRAYPATH's
+pass none and still say nothing of one: the UCS and Arrays reviews probe their words. A point typed
+at `Select objects:` or a single object's pick off the screen still finds (BRP-04, pieces/p158):
+for the `Select objects:` area.

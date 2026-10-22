@@ -907,20 +907,40 @@ level line is off Z 0 (p358) — neither copied (PIECES-D24); the order of a fen
 modes' finds (the drawing's here, unprobed); a run that both grows a polyline and makes new ones
 words its count as new polylines (unprobed)
 
-### `BREAK` / `BR` / `BREAKATPOINT` · es `PARTE` / `P`† · `PARTIRENPUNTO`
+### `BREAK` / `BR` / `BREAKATPOINT` · es `PARTE` / `P` · `PARTIRENPUNTO`
 
 **Implemented:** `Select object:` (es `Designe objeto:`; nothing there: `No object found`, es
 `No se ha encontrado ningún objeto`), whose pick is the first point — a point typed there is one, of
-the newest object under it (`@` from LASTPOINT, a number its direct distance, the point LASTPOINT
-after; BREAKATPOINT then asks its break point) —, or a selection mode typed there (Window, Last,
-Crossing, BOX, ALL, Fence, WPolygon, CPolygon) taking the oldest object it finds and asking
-`Specify first break point:`, as AutoCAD 2023's console does; then
+the newest object under it though nearer the older (`@` from LASTPOINT, a number its direct
+distance, the point LASTPOINT after, found or not; BREAKATPOINT then asks its break point; p100,
+p122, p123, p145, p176, p179) —, or a selection mode typed there (Window, Last, Crossing, BOX, ALL,
+Fence, WPolygon, CPolygon; no Group, p115, p144) taking the oldest object it finds and asking
+`Specify first break point:` (p125–p132); an object snap override typed or chosen there picks at
+the point it finds, which is BREAK's first break point and LASTPOINT (`_END`, `_MID`, `_NEA`,
+`_PER` from LASTPOINT, `_QUA`; `_INT` the newer object at the crossing; `_CEN` of a circle finds no
+object at its centre, LASTPOINT there; p108–p114, p177), one finding nothing says so
+(`No Center found for specified point.`) and the prompt refuses it, `*Invalid selection*` and its
+Expects line, LASTPOINT kept (p115); the newest object under the pick is tested locked or not, one
+on a locked layer saying `The object is on a locked layer.` (es
+`El objeto está en una capa bloqueada.`) and `No object found` (p100, p105, p106, p124, desktop
+d06), and a mode says that line once for each locked object it finds, then takes the oldest
+unlocked one, or with none says `No object found` (p101–p104, p107, p178); a preselection is not
+taken, and nothing is left selected nor a Previous set (p172–p175); then
 `Specify second break point or [First point]:` (es
 `Precise segundo punto de ruptura o [Primer punto]`), First point asking
 `Specify first break point:` and `Specify second break point:` (es
-`Precise primer punto de ruptura`, `Precise segundo punto de ruptura`); BREAKATPOINT's
-`Specify break point:` (es `Especifique el punto de interrupción`); the points picked or typed, `@`
-at the second splitting at the first, the second becoming LASTPOINT; line/arc/circle (`@` and
+`Precise primer punto de ruptura`, `Precise segundo punto de ruptura`), where First point, unlisted,
+ends BREAK changing nothing (p150, p171); BREAKATPOINT's `Specify break point:` (es
+`Especifique el punto de interrupción`); Enter (keyboard or right button) at a break point is
+refused and the prompt asked again, `Point or option keyword required.` (es
+`Se requiere un punto o una opción.`) at the second break points, `Invalid point.` (es
+`Punto no válido.`) at the first and BREAKATPOINT's (p146, p149–p151, desktop d15); the points
+picked or typed — object snaps, FROM and Ortho as at any point prompt (p116–p118, p120, p121), a
+number a direct distance from the pick (p147, p148), a Z kept, `#` refused at `Select object:`
+and `*` read in the WCS (p153–p157), a point typed in the box absolute, as the desktop's pointer
+input shows it (d10-2, d10-4), `@` from the first point (p154, p160, p161) —, `@` at the second
+splitting at the first, the second becoming LASTPOINT; one undo step named BREAK or BREAKATPOINT
+(es PARTE, PARTIRENPUNTO), a run that changed nothing too (p166–p171); line/arc/circle (`@` and
 BREAKATPOINT at a line's or an arc's end doing nothing, silently), CCW circle break, a circle's same
 point twice refused with `Arc cannot be full 360 degrees` (es `Un arco no puede tener 360 grados`);
 polylines, as the console's LIST shows them: an open one loses the part between the two points, a
@@ -943,7 +963,8 @@ an object at an angle to the UCS's XY plane is not taken
 **Missing:** splines (they do not highlight; AutoCAD breaks a CV spline into pieces on control
 points and knots of their own, which a spline here, on uniform knots, cannot hold, spline/p325, and
 a fit spline broken at two fit points into fit splines whose end tangents are the curve's
-derivatives there, p326), Group; a mirrored whole ellipse,
+derivatives there, p326); a point typed off the screen at `Select object:` (command-line.md's
+`Select objects:` Missing); a mirrored whole ellipse,
 which AutoCAD breaks counter-clockwise about its −Z normal (ellipse/p329; MIRROR's entry)
 
 ### `MATCHPROP` / `MA` · es `IGUALARPROP` / `IP`† / `COPARPROP`†

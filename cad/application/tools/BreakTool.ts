@@ -1,4 +1,5 @@
 import { Vec2, V } from "../../geometry/Vec2"
+import { Vec3 } from "../../geometry/Vec3"
 import {
   arcSweepAngle,
   ArcEntity,
@@ -41,6 +42,7 @@ import {
   parseCoordinate,
 } from "../input/coordinateInput"
 import type { PromptId } from "../../locales/types"
+import { lockedObjectAt } from "./lockedPick"
 import { ONE_OBJECT_MODES, ObjectSelector } from "./objectSelection"
 import {
   CommandOption,
@@ -120,8 +122,9 @@ export class BreakTool implements Tool {
   private state: BreakState = { phase: "select", hover: null }
   /**
    * The selection modes typed at `Select object:`. What one finds has no pick
-   * point, so the first break point is asked for; AutoCAD 2023's console takes
-   * the oldest object found.
+   * point, so the first break point is asked for; AutoCAD 2027's console takes
+   * the oldest unlocked object found, after a line for each locked one
+   * (probes pieces/p101–p104, p107, p125–p132, p178).
    */
   private readonly modes = new ObjectSelector({
     takes: () => "oneObject",
@@ -141,6 +144,7 @@ export class BreakTool implements Tool {
         if (!this.refuse(entity, ctx)) this.askFirst(entity, ctx)
       },
       newest: false,
+      locked: "objectOnLockedLayer",
       pick: (point, ctx) => this.pickObject(point, ctx),
     },
   })
@@ -197,6 +201,20 @@ export class BreakTool implements Tool {
     return this.state.phase === "second" ? true : null
   }
 
+  /**
+   * WHY at `Select object:`: a typed or chosen object snap picks there, its
+   * point the first break point and LASTPOINT (probes pieces/p108–p115,
+   * p177), its Perpendicular from LASTPOINT (p113); a mode's points are
+   * points already.
+   */
+  takesSnapOverride(): boolean {
+    return this.state.phase === "select" && !this.modes.inMode()
+  }
+
+  snapsFromLastPoint(): boolean {
+    return this.takesSnapOverride()
+  }
+
   /** Object picking is by proximity; the break points themselves snap. */
   wantsSnap(): boolean {
     return this.state.phase !== "select" || this.modes.wantsSnap()
@@ -229,7 +247,8 @@ export class BreakTool implements Tool {
           this.modes.onPointerDown(input, ctx)
           return
         }
-        this.pickObject(input.world, ctx)
+        if (input.snap) ctx.setLastPoint(input.point)
+        this.pickObject(input.snap ? input.point : input.world, ctx)
         return
       }
       case "first":
@@ -257,23 +276,29 @@ export class BreakTool implements Tool {
     return this.state.phase === "select" && this.modes.answerTyped(text, ctx)
   }
 
+  /**
+   * First point, listed at the second break point it asks first; at the one
+   * it asks after First point it is still declared, unlisted, and ends BREAK
+   * changing nothing (probes pieces/p150, p171).
+   */
   commandOptions(): readonly CommandOption[] {
     if (this.state.phase === "select") return this.modes.commandOptions()
-    if (this.state.phase !== "second" || this.state.respecified) return []
-    return [{ id: "First point" }]
+    if (this.state.phase !== "second") return []
+    return [
+      this.state.respecified
+        ? { id: "First point", hidden: true }
+        : { id: "First point" },
+    ]
   }
 
   invokeOption(id: string, ctx: ToolContext): CommandOptionOutcome {
     if (this.state.phase === "select") {
       return this.modes.invokeOption(id, ctx) ? "continue" : "unhandled"
     }
-    if (
-      id !== "First point" ||
-      this.state.phase !== "second" ||
-      this.state.respecified
-    ) {
+    if (id !== "First point" || this.state.phase !== "second") {
       return "unhandled"
     }
+    if (this.state.respecified) return "end"
     this.askFirst(this.state.target, ctx)
     return "continue"
   }
@@ -328,17 +353,27 @@ export class BreakTool implements Tool {
   }
 
   /**
-   * The pick at `Select object:`, clicked or typed — AutoCAD 2023's console
-   * takes a typed point as a pick there (acc/bk1–bk11, bk31–bk38): on nothing
-   * `No object found` and the prompt again; BREAK's pick is its first break
-   * point, BREAKATPOINT asks for its break point separately.
+   * The pick at `Select object:`, clicked, typed or snapped — AutoCAD 2027's
+   * console takes a typed point as a pick there (probes pieces/p100, p122,
+   * p144, p176, p179): on nothing `No object found` and the prompt again, as
+   * on an object on a locked layer, which is said first, the newest under
+   * the pick box tested, locked or not (p100, p105, p106, p124); BREAK's
+   * pick is its first break point, BREAKATPOINT asks for its break point
+   * separately.
    */
-  private pickObject(world: Vec2, ctx: ToolContext): void {
-    const hit = this.pick(world, ctx)
+  private pickObject(world: Vec2 | Vec3, ctx: ToolContext): void {
+    const at = { x: world.x, y: world.y }
+    const screen = ctx.viewport.worldToScreen(world)
+    if (lockedObjectAt(screen, ctx, ctx.pick(at))) {
+      ctx.report(ctx.text.message("objectOnLockedLayer"), "error")
+      ctx.report(ctx.text.message("noObjectFound"))
+      return
+    }
+    const hit = this.pick(at, ctx)
     if (!hit) ctx.report(ctx.text.message("noObjectFound"))
     else if (this.refuse(hit, ctx)) ctx.requestRender()
     else if (this.mode === "atPoint") this.askFirst(hit, ctx)
-    else this.askSecond(hit, { x: world.x, y: world.y }, false, ctx)
+    else this.askSecond(hit, at, false, ctx)
   }
 
   private askFirst(target: Entity, ctx: ToolContext): void {
@@ -375,13 +410,28 @@ export class BreakTool implements Tool {
     ctx.requestRender()
   }
 
+  /**
+   * A break point typed, or Enter, which every break point refuses in its
+   * own words and asks again (probes pieces/p146, p149–p151, desktop d15).
+   * WHY absolute in the box too: the prompts have no base point and their
+   * pointer input shows the cursor's X and Y (desktop d10-2, d10-4); `@` is
+   * from the first point, LASTPOINT there.
+   */
   private commitTypedPoint(ctx: ToolContext): boolean {
     const text = ctx.dynamicInput.getText("point").trim()
+    if (text === "") {
+      const refusal =
+        this.state.phase === "second"
+          ? "pointOrKeywordRequired"
+          : "invalidPoint"
+      ctx.report(ctx.text.message(refusal), "error")
+      return true
+    }
     if (!isCoordinateExpression(text)) return false
-    const last = this.state.phase === "second" ? this.state.first : null
     const point = parseCoordinate(text, {
-      lastPoint: last ?? ctx.lastPoint,
-      relativeByDefault: last !== null,
+      lastPoint:
+        this.state.phase === "second" ? this.state.first : ctx.lastPoint,
+      relativeByDefault: false,
       ucs: ctx.ucs,
       elevation: ctx.elevation,
     })

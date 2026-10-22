@@ -738,7 +738,24 @@ describe("a mode at FILLET's and CHAMFER's object prompts never takes a locked o
     expect(shapes(last)).toContain("LINE K 30,-20 30,60")
   })
 
-  it("takes the newest unlocked one of a find, saying nothing of the locked", () => {
+  // pieces/p395: a Window over an unlocked line and a locked one says the
+  // locked one and takes the other.
+  it("says each locked one a find holds, then takes the unlocked (p395)", () => {
+    const cad = withLayers(
+      [...cross(), lineOf(p(10, 20), p(60, 20), { id: "L3", layerId: "K" })],
+      { locked: true }
+    )
+    t(cad, "FILLET", "_W", "5,-30", "70,65")
+    expect(cad.commandLog().slice(-2)).toEqual([
+      "Specify opposite corner: 70,65",
+      "The object is on a locked layer.",
+    ])
+    expect(cad.state().commandLine.prompt).toBe(FILLET2)
+    t(cad, "80,0")
+    expect(shapes(cad)).toEqual([...CORNERED, "LINE K 10,20 60,20"])
+  })
+
+  it("takes the newest unlocked one of a find, once said each locked one", () => {
     const cad = withLayers(
       [
         ...onK(),
@@ -748,7 +765,9 @@ describe("a mode at FILLET's and CHAMFER's object prompts never takes a locked o
       { locked: true }
     )
     t(cad, "FILLET", "10,0", "_W", "20,-30", "60,70")
-    expect(cad.commandLog()).not.toContain("The object is on a locked layer.")
+    expect(
+      cad.commandLog().filter((l) => l === "The object is on a locked layer.")
+    ).toHaveLength(2)
     expectLine(cad, "L1", p(0, 0), p(50, 0))
     expectLine(cad, "L3", p(50, 0), p(50, 60))
   })

@@ -363,6 +363,7 @@ describe("a wrong answer mid-command", () => {
     )
   })
 
+  // probes pieces/p144, p146, p149 (AutoCAD 2027's console).
   it("expects BREAK's set of one object, and a point or First point after", () => {
     const cad = createHarness({ entities: twoLines() })
     cad.command("BREAK")

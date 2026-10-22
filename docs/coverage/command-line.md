@@ -266,7 +266,9 @@ so `S` is Subobjeto there; after a global `_S` the question names the global wor
 counted at Enter, `2 selected, 2 found`, p135); SUbobject's faces, edges and vertices and the Ctrl+pick that
 selects them (no object here has sub-objects); a pick or a typed point on an object on a locked
 layer (here it finds nothing and starts a window; AutoCAD says `1 found` / `1 was on a locked
-layer.`, erase/p211, p257); PICKFIRST (a set selected before the command is always taken; with
+layer.`, erase/p211, p257); a point typed there or at a single object's pick tests the whole
+drawing, where AutoCAD tests only what the view shows (`No object found` off the screen, LASTPOINT
+moved all the same: pieces/p158, p159; on it, p176); PICKFIRST (a set selected before the command is always taken; with
 PICKFIRST 0 AutoCAD ignores it, erase/p230); the lasso `pick/drag cursor` offers at a fence's or
 polygon's first point; PICKADD, PICKAUTO, PICKDRAG and SELECTIONPREVIEW as variables (their
 defaults are the behaviour); the Previous set lasts the session, not the drawing

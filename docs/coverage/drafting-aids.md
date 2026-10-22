@@ -68,8 +68,9 @@ and the object snaps in AutoCAD's order and groups for what exists (desktop line
 Endpoint, Midpoint, Intersection, Apparent Intersection, Extension · Center, Quadrant, Tangent ·
 Perpendicular, Parallel, Insertion, Nearest, None — the same entries as the Command menu's Snap
 Overrides; typed at any point
-prompt, in the box or at the command line, and at TRIM's and EXTEND's object prompt and FILLET's
-and CHAMFER's, whose pick is the point found (trim/p259–p264, corners/p257–p269; modify.md), by
+prompt, in the box or at the command line, and at TRIM's and EXTEND's object prompt, FILLET's
+and CHAMFER's and BREAK's `Select object:`, whose pick is the point found (trim/p259–p264,
+corners/p257–p269, pieces/p108–p115, p177; modify.md), by
 -OSNAP's words (END, MID, CEN, QUA, INT, EXT, INS, PER, TAN, NEA, APP or APPINT, PAR, NON; es
 FIN, MED, CEN, CUA, INT, EXT, INS, PER, TAN, CER, APP, PAR, NIN) or `_` and the global word in any language (`_ENDP`, `_NEAR`, `_APPINT`: 2027 declares
 `Appint`, table 27409), read before the prompt's keywords (`CEN` at PLINE's arc prompt is the snap,
