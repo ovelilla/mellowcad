@@ -15,6 +15,12 @@ import { entityScenePrimitive } from "../SceneBuilder"
 import { THEME } from "../../scene/theme"
 import { ReplaceEntitiesCommand } from "../commands/entityCommands"
 import { ONE_OBJECT_MODES, ObjectSelector } from "./objectSelection"
+import {
+  MAX_ARRAY_COUNT,
+  MAX_PREVIEW_ITEMS,
+  refusesCount,
+  takesCount,
+} from "./arrayCounts"
 import type { PromptId } from "../../locales/types"
 import {
   CommandOption,
@@ -45,8 +51,6 @@ import {
  * WHY Associative = No: as ARRAYRECT's. Base point, Tangent direction, Rows,
  * Levels and Z direction are not offered.
  */
-
-const MAX_ITEMS = 1000
 
 /** A curve the array runs along, parameterised by arc length. */
 interface PathCurve {
@@ -455,7 +459,10 @@ export class ArrayPathTool implements Tool {
     })
 
     const layout = this.previewLayout(ctx, state.layout, state.step)
-    const placements = placementsOf(config.path, layout)
+    const placements = placementsOf(config.path, layout).slice(
+      0,
+      MAX_PREVIEW_ITEMS
+    )
     const ghost: StrokeStyle = { color: THEME.preview, width: 1, dash: [6, 4] }
     const t0 = placements.length > 0 ? placements[0].tangentDeg : 0
     for (const pl of placements) {
@@ -559,15 +566,8 @@ export class ArrayPathTool implements Tool {
     const state = this.state
     if (state.phase !== "edit") return
     const { step, layout, config } = state
-    if (value !== null && step !== "spacing") {
-      if (value <= 0) {
-        ctx.report(ctx.text.message("positiveNonzero"), "error")
-        return
-      }
-      if (!Number.isInteger(value) || value > MAX_ITEMS) {
-        ctx.report(ctx.text.message("requiresPositiveInteger"), "error")
-        return
-      }
+    if (value !== null && step !== "spacing" && refusesCount(value, ctx)) {
+      return
     }
     if (value !== null && step === "spacing" && value <= 0) {
       ctx.report(ctx.text.message("positiveNonzero"), "error")
@@ -606,8 +606,8 @@ export class ArrayPathTool implements Tool {
     const typed = parseNumber(ctx.dynamicInput.getText("value").trim())
     if (typed === null || !Number.isFinite(typed) || typed <= 0) return layout
     if (step === "spacing") return { ...layout, spacing: typed }
-    if (!Number.isInteger(typed)) return layout
-    return { ...layout, items: Math.min(typed, MAX_ITEMS) }
+    if (!takesCount(typed)) return layout
+    return { ...layout, items: typed }
   }
 
   private create(ctx: ToolContext): void {
@@ -639,7 +639,7 @@ export class ArrayPathTool implements Tool {
 function maxItems(path: PathCurve, spacing: number): number {
   if (!(spacing > 0)) return 1
   const fit = Math.floor((path.length + 1e-6) / spacing)
-  return Math.max(1, Math.min(MAX_ITEMS, path.closed ? fit : fit + 1))
+  return Math.max(1, Math.min(MAX_ARRAY_COUNT, path.closed ? fit : fit + 1))
 }
 
 /** Divide's step: the path shared evenly, its ends both items when open. */

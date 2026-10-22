@@ -210,7 +210,9 @@ and the distance of the columns, Rows those of the rows and
 `Indique el número de columnas`, `Especificar la distancia entre columnas` (Spacing's; COLumns'
 `Especifique…`), `Especifique la elevación incremental entre filas`; a count refuses 0
 (`Value must be positive and nonzero.`, p111) and a fraction
-(`Requires a positive nonzero integer or option keyword.`, p113); a distance refuses 0 with
+(`Requires a positive nonzero integer or option keyword.`, p113) and more than 32767
+(`Requires an integer between 1 and 32767, or option keyword.`, as ARRAYPOLAR's, p279); the
+preview draws the first 1000 cells (as ARRAYPOLAR's); a distance refuses 0 with
 `Value must be nonzero.` (es `El valor debe ser diferente de cero.`) and asks again, where the
 elevation takes it (p117, p120, p135); `FOO` at Spacing's rows says
 `Requires numeric distance or two points.` (es `Requiere una distancia numérica o dos puntos.`),
@@ -246,21 +248,60 @@ fraction with `Requires an integer between 1 an 32767, or option keyword.`)
 
 ### `ARRAYPOLAR` · es `MATRIZPOLAR`
 
-**Implemented:** `Select objects:`, `Type = Polar  Associative = No`,
-`Specify center point of array:` (es `Precise el punto central de la matriz`), then
-`Select grip to edit array or [Items/Angle between/Fill angle/ROTate items/eXit] <eXit>:` (es
+**Implemented:** `Select objects:` (MOVE's counts; ARRAY's set), `Type = Polar  Associative = No`
+(es `Tipo = Polar  Asociativa = No`), `Specify center point of array:` (es
+`Especifique el punto central de la matriz`, arrays/p201), where Enter says
+`Point or option keyword required.` (es `Se requiere un punto o una opción.`) and asks again (p206);
+then `Select grip to edit array or [Items/Angle between/Fill angle/ROTate items/eXit] <eXit>:` (es
 `[Elementos/ángUlo entre/ángulo de Relleno/Girar objetos/Salir] <Salir>`) over a live preview, 6
-items over 360° at first: Items `Enter number of items in array <6>:`, Angle between
-`Specify angle between items <60.00>:` (the fill becomes that many steps), Fill angle
-`Specify the angle to fill (+=ccw, -=cw) <360.00>:` (a whole turn spaces the items fill / count, any
-other fill / (count − 1)), ROTate items `Rotate arrayed items? [Yes/No] <Yes>:` (es
-`Indique el número de elementos de la matriz`, `Indique el ángulo entre elementos`,
+items over 360° at first; a point or a number typed there is taken and the prompt asked again
+without a word (p208, p209); `R` asks `ROWs or ROTate?`, as AutoCAD's declared ROWs makes it
+(p210). Items `Enter number of items in array <6>:` refuses 0 or less with
+`Value must be positive and nonzero.`, a fraction with
+`Requires a positive nonzero integer or option keyword.` and more than 32767 with
+`Requires an integer between 1 and 32767, or option keyword.` (es
+`Requiere un nº entero entre 1 y 32767, o una opción.`; p212, p278, p279); Angle between
+`Specify angle between items <60>:` refuses 0 or less with `Value must be positive and nonzero.`
+(es `El valor debe ser positivo y diferente de cero.`, p214) and makes the fill that many steps,
+the ring's direction kept, and a full turn once they reach 360°, asking nothing (p267–p271); Fill
+angle `Specify the angle to fill (+=ccw, -=cw) <360>:` keeps the count, its sign the ring's
+direction, which Enter keeps (p216, p274, p276, p277), refuses 0 with
+`The parameter cannot be set to 0.  Enter a non-zero number or expression.` (es
+`El parámetro no se puede establecer en 0. Introduzca un número distinto de cero o una expresión.`,
+p219) and takes one beyond a turn as its remainder (400 is 40°, p217; 720 and −400
+**unverified**: here a whole number of turns is a full one, −400 is 40° clockwise); a whole turn
+spaces the items fill / count, any other fill / (count − 1); both angles take two points (p265)
+and show their defaults unsigned, without trailing zeros, at the drawing's precision (`<60>`,
+`<33.33>`, `<100>` at AUPREC 2, p264, p275); ROTate items `Rotate arrayed items? [Yes/No] <Yes>:`
+(es `Indique el número de elementos de la matriz`, `Indique el ángulo entre elementos`,
 `Precise el ángulo que se debe rellenar (+ =antihorario, -=horario)`,
-`¿Girar elementos de la matriz?`); eXit or Enter makes the copies
+`¿Girar elementos de la matriz?`); eXit or Enter makes the copies with the source's layer and
+colour (p249), one undo step; the preview draws the first 1000 items (WHY: a count of thousands
+redrawn on every move would hang the page), the commit all of them
 
-**Missing:** associative (as ARRAYRECT's), Base point, Axis of rotation, ROWs, Levels, Expression
-(as ARRAYRECT's), the grips, the 360° overrun question
-(`Adjust angle between to fit items to 360 degrees?`)
+**Missing:** associative (as ARRAYRECT's), the grips; Base point, at the centre and the main
+prompt (`Specify base point or [Key point] <centroid>:`, es
+`Especifique un punto base o [punto Clave] <centro de gravedad>:`, p253, p255); Axis of rotation
+(`Specify first point on axis of rotation:`, `Specify second point on axis of rotation:`, es
+`Especifique el primer punto en el eje de rotación:`,
+`Especifique el segundo punto en el eje de rotación:`, p254); ROWs, declared here only so `R` is
+ambiguous and refused when typed (es `Filas`; `Enter the number of rows or [Expression] <1>:`,
+`Specify the distance between rows or [Total/Expression] <6>:`,
+`Specify the incrementing elevation between rows or [Expresson] <0>:`, es
+`Indique el número de filas o [Expresión] <1>:`,
+`Especifique la distancia entre filas o [Total/Expresión] <6>:`,
+`Especifique la elevación incremental entre filas o [Expresión] <0>:`, p256); Levels
+(`Enter the number of levels or [Expression] <1>:`,
+`Specify the distance between levels or [Total/Expression] <1>:`, es
+`Indique el número de niveles o [Expresión] <1>:`,
+`Especifique la distancia entre niveles o [Total/Expresión] <1>:`, p257); the hidden clicK (an
+integer asked with no prompt, `Requires a positive nonzero integer.`, es
+`Requiere un nº entero positivo que no sea cero.`, p258) and UPdate (the main prompt asked again,
+p259); Expression (`Enter expression<6>:`, es `Introduzca la expresión<6>:`, p260; WHY not built:
+as ARRAYRECT's) and the `[Expression]`, `[EXpression]` the value prompts list; English's
+`…/eXit]<eXit>:` with no space before the default (p05; as ARRAYRECT's); the 360° overrun question
+(`Adjust angle between to fit items to 360 degrees?`, table 5669), which the console never asks
+(p267): whether the desktop does is **unverified**
 
 ### `ARRAYPATH` · es `MATRIZCAMINO`
 
@@ -276,7 +317,8 @@ nothing), then `Select grip to edit array or [Method/Items/Align items/eXit] <eX
 `[Método/Elementos/ALinear elementos/Salir] <Salir>`) over a live preview: Method
 `Enter path method [Divide/Measure] <Measure>:`, Items by Divide `Enter number of items along path`,
 by Measure `Specify the distance between items along path`, `Maximum items = 11` and
-`Specify number of items or [Fill entire path] <5>:`, Align items
+`Specify number of items or [Fill entire path] <5>:` — a count up to 32767, as ARRAYPOLAR's (p279),
+the preview the first 1000 items —, Align items
 `Align arrayed items to path? [Yes/No] <Yes>:` (es from the table); Measure at first, the items one
 and a half times the selection's size apart and filling the path; the source is consumed into the
 array, the path left in place

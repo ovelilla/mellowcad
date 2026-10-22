@@ -166,7 +166,8 @@ PLAN `Current` (`CURRENTUCS` refused), SPLINE `Square`, HATCH `Select`, ATTDEF `
 `ángUlo`, `Relleno`, `Girar`, `ALinear`, `Llenar`. Unlisted declared words: OFFSET's `Thru` (es
 `Pun`), ELLIPSE's `Centre` (es `cEntro` at the elliptical arc's first prompt, ellipse/p111) and
 the arc's measure in use, `Angle` or `Parameter` (ellipse/p114, p234), and PLINE's `LIne` in line mode and `ARc` in arc mode, which ask the
-same prompt again. At a point prompt an object snap's name is read before the keywords: `CEN`,
+same prompt again; ARRAYPOLAR's `ROWs` (es `Filas`), not built and so refused, keeps `R` asking
+`ROWs or ROTate?` (arrays/p210). At a point prompt an object snap's name is read before the keywords: `CEN`,
 `CENT`, `CENTER`, `_CEN` at PLINE's arc prompt are the Center snap, not `CEnter`, and `CENTER` at
 ZOOM's first prompt is the snap although it spells `Center` (es `CEN`, `CENTRO` at POL's arc prompt;
 `E` names `cEntro`). AutoCAD 2023's console; the Spanish words from Autodesk's table, the Spanish
@@ -177,7 +178,7 @@ asks `CEnter or CLose?` although the table declares `CE` and `Second` (es `Segun
 **unverified**); FILLET's Spanish `[Radio]` at `Designe una polilínea 2D o` and the second object's
 prompt keeps the listed word, which AutoCAD declares `RAdio` (only `R` differs, its hidden Trim's
 there); a declared order other than the listed one is kept only where two offered words can be
-ambiguous (TEXT, ATTDEF, ATTDISP) — CIRCLE's `2P 3P Ttr`, ZOOM's, ROTATE's `Reference Copy`,
+ambiguous (TEXT, ATTDEF, ATTDISP, ARRAYPOLAR) — CIRCLE's `2P 3P Ttr`, ZOOM's, ROTATE's `Reference Copy`,
 FILLET's and CHAMFER's orders have no such pair; unlisted declared words of options not built here:
 HATCH `Undo`, VPOINT `Tripod`, FILLET's and CHAMFER's second-object
 `Polyline`/`mUltiple`/`uNdo`/`Trim`, AREA `Entity`

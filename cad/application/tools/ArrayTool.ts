@@ -18,6 +18,7 @@ import {
 } from "../input/coordinateInput"
 import { ObjectSelector } from "./objectSelection"
 import { selectedInDrawingOrder } from "./drawingOrder"
+import { MAX_PREVIEW_ITEMS, refusesCount, takesCount } from "./arrayCounts"
 import type { PromptId } from "../../locales/types"
 import {
   CommandOption,
@@ -49,8 +50,6 @@ import {
 
 const DEFAULT_COLUMNS = 4
 const DEFAULT_ROWS = 3
-/** Guards against a runaway preview/commit from an accidental huge count. */
-const MAX_COUNT = 1000
 
 /** The grid the prompts edit, the preview shows and eXit creates. */
 interface Grid {
@@ -360,7 +359,7 @@ export class ArrayTool implements Tool {
         ? withCell(this.state.grid, corner, cursor, ctx.ucs)
         : null
     const grid = cell ?? this.previewGrid(ctx, this.state.grid, this.state.step)
-    const copies = cells(grid, ctx).flatMap((delta) =>
+    const copies = cells(grid, ctx, MAX_PREVIEW_ITEMS).flatMap((delta) =>
       this.state.phase === "edit"
         ? this.state.originals.flatMap((entity) =>
             entityScenePrimitive(
@@ -549,16 +548,7 @@ export class ArrayTool implements Tool {
   private answer(value: number | null, ctx: ToolContext): void {
     if (this.state.phase !== "edit") return
     const { step, grid } = this.state
-    if (value !== null && isCount(step)) {
-      if (value <= 0) {
-        ctx.report(ctx.text.message("positiveNonzero"), "error")
-        return
-      }
-      if (!Number.isInteger(value) || value > MAX_COUNT) {
-        ctx.report(ctx.text.message("requiresPositiveInteger"), "error")
-        return
-      }
-    }
+    if (value !== null && isCount(step) && refusesCount(value, ctx)) return
     // The four distances refuse 0 and ask again; the elevation takes it
     // (probes arrays/p117, p120, p135: AllowZero 0, and 1 at the elevation).
     if (value === 0 && !isCount(step) && step !== "rowsElevation") {
@@ -576,8 +566,8 @@ export class ArrayTool implements Tool {
     if (step === "main") return grid
     const typed = parseNumber(ctx.dynamicInput.getText("value").trim())
     if (typed === null || !Number.isFinite(typed)) return grid
-    if (isCount(step) && (!Number.isInteger(typed) || typed <= 0)) return grid
-    return withValue(grid, step, Math.min(typed, MAX_COUNT))
+    if (isCount(step) && !takesCount(typed)) return grid
+    return withValue(grid, step, typed)
   }
 
   private create(ctx: ToolContext): void {
@@ -651,11 +641,14 @@ function withValue(grid: Grid, step: Step, value: number): Grid {
   }
 }
 
-/** Where each copy goes, in the WCS: every cell but the source's (0, 0). */
-function cells(grid: Grid, ctx: ToolContext) {
+/**
+ * Where each copy goes, in the WCS: every cell but the source's (0, 0), or
+ * the first `limit` of them.
+ */
+function cells(grid: Grid, ctx: ToolContext, limit = Infinity) {
   const out: ReturnType<typeof ucsDirectionToWorld>[] = []
-  for (let i = 0; i < grid.columns; i++) {
-    for (let j = 0; j < grid.rows; j++) {
+  for (let i = 0; i < grid.columns && out.length < limit; i++) {
+    for (let j = 0; j < grid.rows && out.length < limit; j++) {
       if (i === 0 && j === 0) continue
       out.push(
         ucsDirectionToWorld(ctx.ucs, {

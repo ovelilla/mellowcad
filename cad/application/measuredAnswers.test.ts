@@ -223,6 +223,7 @@ describe("a point at a distance or an angle prompt", () => {
   })
 
   it("is an angle measured by two points, or from the base point", () => {
+    // probe arrays/p265: Fill by 0,0 and 0,10 is 90°, 18° between 6 items.
     const cad = createHarness({ entities: aLine() })
     cad.command("ARRAYPOLAR")
     answerLine(cad, "L", "", "0,0", "F", "0,0", "0,10", "A")

@@ -665,12 +665,10 @@ export const en: EngineCatalog = {
         "ARRAYRECT"
       ],
       "ARRAYPOLAR": [
-        "ARRAYPOLAR",
-        "ARPOLAR"
+        "ARRAYPOLAR"
       ],
       "ARRAYPATH": [
-        "ARRAYPATH",
-        "ARPATH"
+        "ARRAYPATH"
       ],
       "TRIM": [
         "TRIM",
@@ -2820,6 +2818,7 @@ export const en: EngineCatalog = {
         ")"
       ],
       "positiveNonzero": "Value must be positive and nonzero.",
+      "parameterCannotBeZero": "The parameter cannot be set to 0.  Enter a non-zero number or expression.",
       "areaPositiveNonzero": "Value must be positive and nonzero.",
       "valueMustBePositive": "Value must be positive.",
       "valueMustBeNonzero": "Value must be nonzero.",

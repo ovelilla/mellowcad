@@ -40,8 +40,8 @@ SCALE ["SC"] "Scale"
 MIRROR ["MI"] "Mirror"
 ARRAY ["AR"] "Array"
 ARRAYRECT [] "Rectangular array"
-ARRAYPOLAR ["ARPOLAR"] "Polar array"
-ARRAYPATH ["ARPATH"] "Path array"
+ARRAYPOLAR [] "Polar array"
+ARRAYPATH [] "Path array"
 TRIM ["TR"] "Trim"
 EXTEND ["EX"] "Extend"
 FILLET ["F"] "Fillet"
@@ -152,8 +152,8 @@ scale "Scale" SC
 mirror "Mirror" MI
 arraycommand "Array" AR
 array "Rectangular array" ARRAYRECT
-arraypolar "Polar array" ARPOLAR
-arraypath "Path array" ARPATH
+arraypolar "Polar array" ARRAYPOLAR
+arraypath "Path array" ARRAYPATH
 trim "Trim" TR
 extend "Extend" EX
 fillet "Fillet" F
@@ -3135,7 +3135,8 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0°~, Line space facto
   tip: Specify center point of array:
   dyn: "X,Y"=""||*
   properties: Circle (1) {Thickness=0.00 mm~} [Geometry: Center X=0.00~, Center Y=0.00~, Center Z=0.00~, Radius=10.00 mm~, Diameter=20.00 mm~, Circumference=62.83 mm~, Area=314.16 mm²~, Normal X=0.00, Normal Y=0.00, Normal Z=1.00]
-  command| ARPOLAR ARRAYPOLAR 1 found
+  command| ARRAYPOLAR
+  info| 1 found
   info| Type = Polar  Associative = No
 > centre
   prompt: ARRAYPOLAR Select grip to edit array or [Items/Angle between/Fill angle/ROTate items/eXit] <eXit>:
@@ -3145,10 +3146,15 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0°~, Line space facto
   options: [I] Items, [A] Angle between, [F] Fill angle, [ROT] ROTate items, [X] eXit
   prompt| Specify center point of array:
 > R
+  prompt: ARRAYPOLAR ROWs or ROTate?
+  tip: ROWs or ROTate?
+  prompt| Select grip to edit array or [Items/Angle between/Fill angle/ROTate items/eXit] <eXit>: R
+  error| Ambiguous response, please clarify...
+> ROT
   prompt: ARRAYPOLAR Rotate arrayed items? [Yes/No] <Yes>:
   tip: Rotate arrayed items?
   options: [Y] Yes, [N] No
-  prompt| Select grip to edit array or [Items/Angle between/Fill angle/ROTate items/eXit] <eXit>: R
+  prompt| ROWs or ROTate? ROT
 > enter
   prompt: ARRAYPOLAR Select grip to edit array or [Items/Angle between/Fill angle/ROTate items/eXit] <eXit>:
   tip: Select grip to edit array or
@@ -3168,7 +3174,8 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0°~, Line space facto
   tip: Select path curve:
   dyn: 
   properties: Circle (1) {Thickness=0.00 mm~} [Geometry: Center X=0.00~, Center Y=0.00~, Center Z=0.00~, Radius=10.00 mm~, Diameter=20.00 mm~, Circumference=62.83 mm~, Area=314.16 mm²~, Normal X=0.00, Normal Y=0.00, Normal Z=1.00]
-  command| ARPATH ARRAYPATH 1 found
+  command| ARRAYPATH
+  info| 1 found
   info| Type = Path  Associative = No
 > path
   prompt: ARRAYPATH Select grip to edit array or [Method/Items/Align items/eXit] <eXit>:

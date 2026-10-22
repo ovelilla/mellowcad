@@ -230,6 +230,30 @@ const DERIVED: ReadonlyArray<
         .enter(),
     [blueLine(0, 100, "L1")],
   ],
+  // probe arrays/p249: the polar copies wear the source's, not CLAYER's or
+  // CECOLOR's.
+  [
+    "ARRAYPOLAR",
+    (c) =>
+      c
+        .select("L1")
+        .command("ARRAYPOLAR")
+        .click(p(0, 50))
+        .option("Items")
+        .type("4")
+        .enter()
+        .enter(),
+    [blueLine(0, 100, "L1")],
+  ],
+  // probe arrays/p316: so do the path's items.
+  [
+    "ARRAYPATH",
+    (c) => c.select("L1").command("ARRAYPATH").click(p(50, 200)).enter(),
+    [
+      blueLine(0, 100, "L1"),
+      blue(lineOf(p(0, 200), p(300, 200), { id: "P1" })),
+    ],
+  ],
   [
     "OFFSET",
     (c) =>
