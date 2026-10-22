@@ -1,0 +1,24 @@
+_ZOOM
+_W
+-200,-200
+200,200
+_LINE
+0,0
+100,0
+
+_LINE
+50,-50
+50,50
+
+_LINE
+0,20
+100,20
+
+_ID
+1,1
+_TRIM
+70,30
+70,-20
+
+(getvar "LASTPOINT")
+(progn (setq ss (ssget "_X") i 0) (if ss (repeat (sslength ss) (setq e (entget (ssname ss i))) (print (list (cdr (assoc 5 e)) (cdr (assoc 0 e)) (cdr (assoc 8 e)) (cdr (assoc 10 e)) (cdr (assoc 11 e)) (cdr (assoc 40 e)) (cdr (assoc 50 e)) (cdr (assoc 51 e)))) (setq i (1+ i)))) (princ))

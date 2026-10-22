@@ -1,0 +1,39 @@
+_ZOOM
+_W
+-200,-200
+200,200
+_-TEXT
+20,40
+5
+270
+A270
+_-TEXT
+60,30
+5
+90
+B90
+_-TEXT
+30,70
+5
+0
+C0
+_-TEXT
+80,60
+5
+180
+D180
+(progn (setq ss (ssget "_X" (list (cons 0 "TEXT"))) i 0) (repeat (sslength ss) (setq e (entget (ssname ss i))) (print (list (cdr (assoc 1 e)) (* 180 (/ (cdr (assoc 50 e)) pi)) (cdr (assoc 10 e)) (cdr (assoc 72 e)))) (setq i (1+ i))) (princ))
+_MIRROR
+_ALL
+
+0,0
+10,10
+_Y
+(progn (setq ss (ssget "_X" (list (cons 0 "TEXT"))) i 0) (repeat (sslength ss) (setq e (entget (ssname ss i))) (print (list (cdr (assoc 1 e)) (* 180 (/ (cdr (assoc 50 e)) pi)) (cdr (assoc 10 e)) (cdr (assoc 72 e)))) (setq i (1+ i))) (princ))
+_MIRROR
+_ALL
+
+0,0
+10,10
+_Y
+(progn (setq ss (ssget "_X" (list (cons 0 "TEXT"))) i 0) (repeat (sslength ss) (setq e (entget (ssname ss i))) (print (list (cdr (assoc 1 e)) (* 180 (/ (cdr (assoc 50 e)) pi)) (cdr (assoc 10 e)) (cdr (assoc 72 e)))) (setq i (1+ i))) (princ))

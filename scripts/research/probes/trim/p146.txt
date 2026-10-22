@@ -1,0 +1,7 @@
+_EDGEMODE
+1
+_TRIM
+_O
+_S
+_E
+

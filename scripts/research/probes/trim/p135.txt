@@ -1,0 +1,29 @@
+_LINE
+0,0
+100,0
+
+_LINE
+0,10
+100,10
+
+_LINE
+30,-20
+30,20
+
+_LINE
+70,-20
+70,20
+
+_ZOOM
+_W
+-50,-50
+150,50
+(setvar "TRIMEXTENDMODE" 0)
+_TRIM
+
+_E
+_E
+_U
+_U
+
+(getvar "EDGEMODE")

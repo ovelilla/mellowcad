@@ -1,0 +1,21 @@
+_.SAVEAS
+2018
+kepB
+(setvar "TRIMEXTENDMODE" 0)
+(setvar "EDGEMODE" 1)
+(setvar "PROJMODE" 2)
+_.SAVEAS
+2018
+kepX
+_.OPEN
+kepB
+(getvar "DWGNAME")
+(getvar "TRIMEXTENDMODE")
+(getvar "EDGEMODE")
+(getvar "PROJMODE")
+_.OPEN
+kepX
+(getvar "DWGNAME")
+(getvar "TRIMEXTENDMODE")
+(getvar "EDGEMODE")
+(getvar "PROJMODE")

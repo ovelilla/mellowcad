@@ -1,0 +1,14 @@
+(getvar "TRIMEXTENDMODE")
+(getvar "EDGEMODE")
+(getvar "PROJMODE")
+_TRIMEXTENDMODE
+FOO
+2
+0
+_EDGEMODE
+1
+_PROJMODE
+2
+_TRIM
+
+

@@ -1,0 +1,2 @@
+(getvar "ACADVER")
+(getvar "_VERNUM")
