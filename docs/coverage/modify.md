@@ -594,8 +594,9 @@ and so is a polyline in a tilted plane with the UCS left as it was — two of it
 a line or a polyline lying in its plane, joined there; one off it is
 `Line and polyline are non coplanar.` / `Two entities are non coplanar.`, as the console says. The
 object prompts take the selection modes Window, Last, Crossing, BOX, Fence, WPolygon and CPolygon
-(not ALL), read as the console reads them: a fence picks where it crosses; a line, an arc or a
-circle found otherwise stands picked at its middle (a line keeps its longer side, an arc at radius 0
+(not ALL, Previous, Group, AUto, SIngle, Add nor Remove: `*Invalid selection*`, corners/p289–p296),
+read as the console reads them: a fence picks where it crosses; a line, an arc or a circle found
+otherwise stands picked at its middle (a line keeps its longer side, an arc at radius 0
 the part its middle lies on); a polyline crossed by a window or polygon is taken at the first
 segment crossed, kept from its first vertex wherever the window lies; one found whole (a window
 round it, Last) is taken but nothing is made of it, without a word; of several found the newest is
@@ -605,10 +606,23 @@ other than a fence is capped from its end nearer the origin, as the console read
 asks again without a word; the first object found again — the segment a crossing window or a fence
 finds of its polyline too — says `Cannot fillet an entity with itself.` (es
 `No se puede empalmar un objeto consigo mismo.`) and ends, in Multiple too, and a segment of its
-polyline two or more away is refused as a pick on it is. A point typed at any of the three prompts
-is a pick there (`30,40`), the side it lies on kept, `@` from LASTPOINT, a number a direct distance
-from it towards the cursor, which it becomes; on nothing the prompt is asked again without a word. A
-wrong answer is refused `*Invalid selection*` then
+polyline two or more away is refused as a pick on it is; a mode never takes an object on a locked
+layer — of what it finds the newest unlocked is taken, and finding only locked ones it says
+`The object is on a locked layer.` (es `El objeto está en una capa bloqueada.`) and asks again
+(p274). A point typed at any of the three prompts is a pick there (`30,40`), the side it lies on
+kept, read as a first point is — `@` from LASTPOINT, a polar point, `*` in the WCS, its Z kept, a
+number a direct distance from LASTPOINT towards the cursor; `#` refused (p240–p248) —, and it
+becomes LASTPOINT, on nothing too, where the prompt is asked again without a word (p249, p250,
+p252); ORTHOMODE and the running snaps leave it as typed (p265, p266). An object snap override
+typed at any of them (`_END`, `_MID`, `_INT`, `_NEA`, `_PER` from LASTPOINT, `_CEN`) picks at the
+point it finds, which becomes LASTPOINT (p257–p263, p269, p309) — `_INT` at the second prompt takes
+the newer there, the first object again (p260) —, and one finding nothing says
+`No Endpoint found for specified point.` (es `No se ha encontrado ptoFINal para el punto designado.`)
+then the prompt's refusal (p264); at Radius's prompt and a mode's points it is a point. Of two
+objects under a pick the newer is taken, whichever is nearer (p277–p281). A pick on nothing but an
+object on a locked layer says `The object is on a locked layer.` and asks the same prompt again
+(p270, p271, p276); one on a layer that is off is not found (p272). A wrong answer is refused
+`*Invalid selection*` then
 `Expects a point or Window/Last/Crossing/BOX/Fence/WPolygon/CPolygon/Undo/Polyline/Radius` — the
 console's list of the prompt's words leaves out the last, Multiple (and Trim, not offered here) —,
 at the second prompt and Polyline's `…/CPolygon/Radius]:`, stray bracket and all — the first
@@ -620,17 +634,17 @@ cannot be (`'LINE`) says `** That command may not be invoked transparently **` f
 'ZOOM, '-PAN and '-OSNAP run at every prompt and resume it (p140–p146). A selection made
 before the command is dropped, and nothing is left selected after (p162–p164); Enter at `Command:`
 repeats it, and `'FILLET` is refused as no transparent command (p105, p106). Wording, English and
-Spanish, from AutoCAD 2027's console (corners/p100–p169, p166, p174, p176, p323) and its string
-tables
+Spanish, from AutoCAD 2027's console (corners/p100–p169, p174, p176, p240–p309, p323) and its
+string tables
 
 **Missing:** Trim (TRIMMODE is always 1, so it is not listed; `T`, es `R`, is taken as its word and
 refused as a wrong answer, so Spanish `R` never opens RAdio, p165, p168), the console's choice
 between two fillets of an ARC or a CIRCLE equally near a line's pick (a figure symmetric about it:
 the right one at radius 15, the left at 200, acc/b1, b4 — here the first found), the zero-length arc
 the console leaves at the origin where a cap would turn the second line back, `out of limits`; the
-double space Autodesk's Spanish puts before `[Radio]` at the second prompt; **unverified**: where a
-circle a mode finds stands picked (half way round from its angle 0: the console settles only the
-side of a line it lies on)
+double space Autodesk's Spanish puts before `[Radio]` at the second prompt; **unverified**: whether
+a circle a mode finds stands picked at its angle 0 or at 180° (here 180°, which p303–p305 match:
+the console settles only that it is one of them)
 
 ### `CHAMFER` / `CHA` · es `CHAFLAN` / `CH`
 
@@ -679,9 +693,10 @@ two lines sloping in one tilted plane chamfered in it, and a polyline in a tilte
 works it; a line trimmed or extended keeps its direction, only its cut end moving, and the bevel
 runs from the first line's cut to the second's; the bevel takes the first line's elevation and
 thickness, and lies on the lines' layer when they share one, else on the current layer, ByLayer (as
-FILLET's arc). The object prompts take FILLET's selection modes and typed points, read as FILLET
-reads them, but the first prompt too takes the newest found and asks the second; an ARC or a CIRCLE
-found says `Chamfer requires 2 lines (not arc segments).`, the first line found or picked again — or
+FILLET's arc). The object prompts take FILLET's selection modes, typed points and object snap
+overrides (corners/p253–p256, p267, p268, p281, p307), read as FILLET reads them, and refuse a
+locked object as FILLET's do (p275), but the first prompt too takes the newest found and asks the
+second; an ARC or a CIRCLE found says `Chamfer requires 2 lines (not arc segments).`, the first line found or picked again — or
 its polyline's segment — `Cannot chamfer an entity with itself.` (es
 `No se puede achaflanar un objeto consigo mismo.`) and ends, in Multiple too, and segments of one
 polyline two or more apart are refused in FILLET's words; a wrong answer is refused

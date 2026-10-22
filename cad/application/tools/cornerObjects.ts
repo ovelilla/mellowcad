@@ -40,7 +40,8 @@ import { entityScreenOutline } from "../viewOutline"
 import { cursorInPlane } from "../viewPick"
 import { bulgeBetween, segmentsPair } from "./polylineCorners"
 import type { RoundObject, RoundPartner } from "./roundFillets"
-import { QuestionInput, ToolContext } from "./Tool"
+import { PointerInput, QuestionInput, ToolContext } from "./Tool"
+import { lockedObjectAt } from "./lockedPick"
 import { typedPick } from "./typedPick"
 
 /** A segment of a polyline, picked as one of FILLET's two objects. */
@@ -232,18 +233,45 @@ export function cornerObjectRefusal(
 
 /**
  * A point typed at FILLET's and CHAMFER's object prompts, a pick there as
- * AutoCAD 2023's console takes it: `30,40` picks what passes through it, and
- * on nothing the prompt is asked again ({@link typedPick}). Null for
- * anything but a coordinate.
+ * AutoCAD 2027's console takes it: `30,40` picks what passes through it, and
+ * on nothing the prompt is asked again, LASTPOINT moved there all the same
+ * (probes corners/p240–p256, p307; {@link typedPick}). Null for anything but
+ * a coordinate.
  */
 export function typedCornerPick(
   text: string,
   ctx: ToolContext
 ): LinePick | null {
   const point = typedPick(text, ctx)
-  return (
-    point && { world: planar(point), screen: ctx.viewport.worldToScreen(point) }
-  )
+  return point && pickAtPoint(point, ctx)
+}
+
+/**
+ * Where a click picks at FILLET's and CHAMFER's object prompts: at the point
+ * an object snap override found, which becomes LASTPOINT (probes
+ * corners/p257–p262, p269), else under the cursor.
+ */
+export function cornerPickOf(input: PointerInput, ctx: ToolContext): LinePick {
+  if (!input.snap) return { world: input.world, screen: input.screen }
+  ctx.setLastPoint(input.point)
+  return pickAtPoint(input.point, ctx)
+}
+
+function pickAtPoint(point: Vec3, ctx: ToolContext): LinePick {
+  return { world: planar(point), screen: ctx.viewport.worldToScreen(point) }
+}
+
+/**
+ * Whether a pick at FILLET's and CHAMFER's object prompts found nothing but
+ * an object on a locked layer, which is said (`The object is on a locked
+ * layer.`, OFFSET's words) and the same prompt asked again (probes
+ * corners/p270, p271, p275, p276). WHY only with nothing else there: a
+ * locked and an unlocked object under one pick was not probed (CORNERS-D42).
+ */
+export function refusesLockedPick(ctx: ToolContext, pick: LinePick): boolean {
+  if (ctx.pick(pick.world) || !lockedObjectAt(pick.screen, ctx)) return false
+  ctx.report(ctx.text.message("objectOnLockedLayer"), "error")
+  return true
 }
 
 /** Whether a mode's find is an object FILLET or CHAMFER takes. */

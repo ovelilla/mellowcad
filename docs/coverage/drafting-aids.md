@@ -68,10 +68,10 @@ and the object snaps in AutoCAD's order and groups for what exists (desktop line
 Endpoint, Midpoint, Intersection, Apparent Intersection, Extension · Center, Quadrant, Tangent ·
 Perpendicular, Parallel, Insertion, Nearest, None — the same entries as the Command menu's Snap
 Overrides; typed at any point
-prompt, in the box or at the command line, and at TRIM's and EXTEND's object prompt, whose pick is
-the point found (trim/p259–p264; modify.md), by -OSNAP's words (END, MID, CEN, QUA, INT, EXT, INS,
-PER, TAN, NEA, APP or APPINT, PAR, NON; es FIN, MED, CEN, CUA, INT, EXT, INS, PER, TAN, CER, APP,
-PAR, NIN) or `_` and the global word in any language (`_ENDP`, `_NEAR`, `_APPINT`: 2027 declares
+prompt, in the box or at the command line, and at TRIM's and EXTEND's object prompt and FILLET's
+and CHAMFER's, whose pick is the point found (trim/p259–p264, corners/p257–p269; modify.md), by
+-OSNAP's words (END, MID, CEN, QUA, INT, EXT, INS, PER, TAN, NEA, APP or APPINT, PAR, NON; es
+FIN, MED, CEN, CUA, INT, EXT, INS, PER, TAN, CER, APP, PAR, NIN) or `_` and the global word in any language (`_ENDP`, `_NEAR`, `_APPINT`: 2027 declares
 `Appint`, table 27409), read before the prompt's keywords (`CEN` at PLINE's arc prompt is the snap,
 not `CEnter`), as AutoCAD 2023's console reads them. The history writes the override with `of`
 (END, MID, CEN, QUA, INT, APP, EXT) or `to` (NEA, PER, TAN, PAR), nothing after NON, es `de` / `a`

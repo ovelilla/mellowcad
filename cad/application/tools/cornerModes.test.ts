@@ -12,6 +12,7 @@ import {
   arcOf,
   circleOf,
   deg,
+  layerOf,
   lineOf,
   p,
   polylineOf,
@@ -26,7 +27,10 @@ function answer(cad: CadHarness, ...texts: string[]): CadHarness {
   return cad
 }
 
-/** A long line, and a short one standing over it at 30 (acc/p*, t*). */
+/**
+ * A long line, and a short one standing over it at 30: the modes read it as
+ * 2027's console reads the crossing pair of probes corners/p282–p288.
+ */
 const corner = (): Entity[] => [
   lineOf(p(0, 0), p(100, 0), { id: "L1" }),
   lineOf(p(30, 10), p(30, 60), { id: "L2" }),
@@ -49,8 +53,11 @@ const expectLine = (cad: CadHarness, id: string, a: Vec2, b: Vec2) => {
 const filletArc = (cad: CadHarness): ArcEntity =>
   cad.entities().find((e): e is ArcEntity => e.type === "arc" && e.radius < 20)!
 
-// Every expectation below is AutoCAD 2023's console answering the same input
-// (LIST, AUPREC 4): acc/m*, n*, p*–w*, x* in the research notes.
+// Every expectation below is AutoCAD 2027's console answering the same input
+// (probes corners/p113, p282–p289, p296–p298, p302–p305, p308), or
+// 2023's where 2027 was not asked (LIST, AUPREC 4: acc/m*, n*, p*–w*, x*): a
+// mode finding nothing, a crossed polyline, CHAMFER's two found at the first
+// prompt, Polyline's window over two.
 describe("FILLET's object prompts take the selection modes", () => {
   it("refuses an answer listing the modes and its words, as the console does", () => {
     const cad = createHarness({ entities: corner() })
@@ -421,7 +428,7 @@ describe("CHAMFER's object prompts take the selection modes", () => {
   })
 })
 
-/** Two lines crossing at 30,0 (acc/a1–a9). */
+/** Two lines crossing at 30,0, the probes' (corners/p240–p309). */
 const cross = (): Entity[] => [
   lineOf(p(0, 0), p(100, 0), { id: "L1" }),
   lineOf(p(30, -20), p(30, 60), { id: "L2" }),
@@ -528,5 +535,381 @@ describe("a point typed at FILLET's and CHAMFER's object prompts picks there", (
       "Designe la segunda línea o use la tecla Mayús para aplicar esquina o [Distancia]: 80,0",
     ])
     expectLine(chamfer, "L1", p(30, 0), p(100, 0))
+  })
+})
+
+/** Each answer confirmed at the command line, an empty one as Enter. */
+const t = (cad: CadHarness, ...texts: string[]): CadHarness => {
+  for (const text of texts) {
+    if (text === "") cad.enter()
+    else answer(cad, text)
+  }
+  return cad
+}
+const crossed = () => createHarness({ entities: cross() })
+const POLY = (layerId = "0") =>
+  polylineOf([p(0, 0), p(100, 0), p(100, 100)], { id: "P", layerId })
+/** The drawing loaded with layer K beside 0, as `-LAYER` made it. */
+const withLayers = (
+  entities: Entity[],
+  layer: Parameters<typeof layerOf>[1],
+  locale?: typeof es
+) => {
+  const cad = createHarness({ locale })
+  cad.runtime.document.load(entities, {
+    layers: [layerOf("0"), layerOf("K", layer)],
+  })
+  return cad
+}
+const onK = (): Entity[] => [cross()[0], { ...cross()[1], layerId: "K" }]
+
+/** LASTPOINT, as `ID @` echoes it. */
+function lastPoint(cad: CadHarness): string | undefined {
+  answer(cad, "ID", "@")
+  return cad.commandLog().at(-1)
+}
+const lp = (x: string, y: string, z = "0.00") =>
+  ` X = ${x}     Y = ${y}     Z = ${z}`
+
+const round = (v: number) => {
+  const r = Math.round(v * 1000) / 1000
+  return Object.is(r, -0) ? "0" : String(r)
+}
+/** The drawing as the console's dump reads it, sorted. */
+function shapes(cad: CadHarness): string[] {
+  return cad
+    .entities()
+    .map((e) => {
+      switch (e.type) {
+        case "line":
+          return `LINE ${e.layerId} ${round(e.start.x)},${round(e.start.y)} ${round(e.end.x)},${round(e.end.y)}`
+        case "polyline":
+          return `LWPOLYLINE ${e.layerId} ${e.vertices
+            .map(
+              (v, i) =>
+                `${round(v.x)},${round(v.y)}@${round(e.bulges?.[i] ?? 0)}`
+            )
+            .join(" ")}`
+        default:
+          return `${e.type.toUpperCase()} ${e.layerId}`
+      }
+    })
+    .sort()
+}
+
+const FILLET1 = "FILLET Select first object or [Undo/Polyline/Radius/Multiple]:"
+const FILLET2 =
+  "FILLET Select second object or shift-select to apply corner or [Radius]:"
+const CORNERED = ["LINE 0 30,0 100,0", "LINE 0 30,0 30,60"]
+
+// AutoCAD 2027's console, en-US and es-ES (probes corners/p257–p269, p309):
+// a typed object snap override picks where it finds its point, which becomes
+// LASTPOINT; one finding nothing is refused as at a point prompt.
+describe("an object snap override typed at FILLET's and CHAMFER's object prompts", () => {
+  it("picks the second object at the point found (p257, p259, p261)", () => {
+    const cad = t(crossed(), "ID", "5,5", "FILLET", "30,40", "_END", "99,1")
+    expect(cad.commandLog()).not.toContain("*Invalid selection*")
+    expect(shapes(cad)).toEqual(CORNERED)
+    expect(lastPoint(cad)).toBe(lp("100.00", "0.00"))
+    const mid = t(crossed(), "ID", "5,5", "FILLET", "30,40", "_MID", "51,1")
+    expect(lastPoint(mid)).toBe(lp("50.00", "0.00"))
+    const near = t(crossed(), "ID", "5,5", "FILLET", "30,40", "_NEA", "80,1")
+    expect(lastPoint(near)).toBe(lp("80.00", "0.00"))
+  })
+
+  it("picks the first object, and `@` is from the point found (p258)", () => {
+    const cad = t(crossed(), "ID", "5,5", "FILLET", "_END", "29,59", "@50,-60")
+    expect(shapes(cad)).toEqual(CORNERED)
+    expect(lastPoint(cad)).toBe(lp("80.00", "0.00"))
+  })
+
+  it("takes the newer at a crossing: the first again at the second prompt (p260, p309)", () => {
+    const cad = t(crossed(), "ID", "5,5", "FILLET", "30,40", "_INT", "31,1")
+    expect(cad.commandLog().at(-1)).toBe("Cannot fillet an entity with itself.")
+    expect(lastPoint(cad)).toBe(lp("30.00", "0.00"))
+    const first = t(crossed(), "ID", "5,5", "FILLET", "_INT", "31,1", "80,0")
+    expect(shapes(first)).toEqual(CORNERED)
+    expect(lastPoint(first)).toBe(lp("80.00", "0.00"))
+  })
+
+  it("keeps the side of a Perpendicular from LASTPOINT (p262)", () => {
+    const cad = t(crossed(), "ID", "80,10", "FILLET", "_PER", "1,1", "30,40")
+    expect(shapes(cad)).toEqual(CORNERED)
+  })
+
+  it("asks again, saying nothing, where the point found is on nothing (p263)", () => {
+    const cad = createHarness({
+      entities: [cross()[0], circleOf(p(50, 40), 20, { id: "C" })],
+    })
+    t(cad, "FILLET", "_R", "5", "_CEN", "50,61")
+    expect(cad.commandLog().at(-1)).toBe(
+      "Select first object or [Undo/Polyline/Radius/Multiple]: _CEN of 50,61"
+    )
+    expect(cad.state().commandLine.prompt).toBe(FILLET1)
+  })
+
+  it("refuses where it finds nothing: its words, then the prompt's (p264)", () => {
+    const cad = t(crossed(), "ID", "5,5", "FILLET", "_END", "60,40")
+    expect(cad.commandLog().slice(-3)).toEqual([
+      "No Endpoint found for specified point.",
+      "*Invalid selection*",
+      "Expects a point or Window/Last/Crossing/BOX/Fence/WPolygon/CPolygon/Undo/Polyline/Radius",
+    ])
+    expect(cad.state().commandLine.prompt).toBe(FILLET1)
+    t(cad, "30,40", "80,0")
+    expect(shapes(cad)).toEqual(CORNERED)
+  })
+
+  it("picks CHAMFER's lines too (p267, p268)", () => {
+    const end = t(crossed(), "ID", "5,5", "CHAMFER", "30,40", "_END", "99,1")
+    expect(shapes(end)).toEqual(CORNERED)
+    expect(lastPoint(end)).toBe(lp("100.00", "0.00"))
+    const per = t(crossed(), "ID", "80,10", "CHAMFER", "_PER", "1,1", "30,40")
+    expect(shapes(per)).toEqual(CORNERED)
+  })
+
+  it("picks Polyline's polyline (p269)", () => {
+    const cad = createHarness({ entities: [POLY()] })
+    t(cad, "ID", "5,5", "FILLET", "_R", "10", "_P", "_END", "99,1")
+    expect(cad.commandLog().at(-1)).toBe("1 line was filleted")
+    expect(lastPoint(cad)).toBe(lp("100.00", "0.00"))
+  })
+
+  it("is read in Autodesk's Spanish too", () => {
+    const cad = createHarness({ locale: es, entities: cross() })
+    t(cad, "EMPALME", "30,40", "_END", "99,1")
+    expect(cad.commandLog()).not.toContain("*Designación no válida*")
+    expect(shapes(cad)).toEqual(CORNERED)
+    const missed = createHarness({ locale: es, entities: cross() })
+    t(missed, "EMPALME", "_END", "60,40")
+    expect(missed.commandLog().slice(-3)).toEqual([
+      "No se ha encontrado ptoFINal para el punto designado.",
+      "*Designación no válida*",
+      "Requiere un punto o Ventana/úLTimo/Captura/MArco/Borde/polígonOV/polígonOC/Deshacer/Polilínea/RAdio",
+    ])
+  })
+
+  it("is the point Radius and a mode's corner ask, not a pick", () => {
+    const radius = t(crossed(), "FILLET", "_R", "_END", "99,1")
+    expect(radius.state().commandLine.prompt).toBe(
+      "FILLET Specify second point:"
+    )
+    t(radius, "100,10")
+    expect(radius.state().commandLine.prompt).toBe(FILLET1)
+    expect(radius.runtime.document.getSettings().filletRadius).toBeCloseTo(
+      10,
+      6
+    )
+    const window = t(crossed(), "FILLET", "_W", "_END", "29,59")
+    expect(window.commandLog()).not.toContain("*Invalid selection*")
+    expect(window.state().commandLine.prompt).toBe(
+      "FILLET Specify opposite corner:"
+    )
+  })
+})
+
+// AutoCAD 2027's console (probe corners/p274): a mode finding only an object
+// on a locked layer says so and asks again, the object left as it is.
+describe("a mode at FILLET's and CHAMFER's object prompts never takes a locked object", () => {
+  it("says so and asks again where a window finds only one (p274)", () => {
+    const cad = withLayers(onK(), { locked: true })
+    t(cad, "ID", "5,5", "FILLET", "_W", "20,-30", "40,70")
+    expect(cad.commandLog().at(-1)).toBe("The object is on a locked layer.")
+    expect(cad.state().commandLine.prompt).toBe(FILLET1)
+    t(cad, "")
+    expect(shapes(cad)).toEqual(["LINE 0 0,0 100,0", "LINE K 30,-20 30,60"])
+    expect(lastPoint(cad)).toBe(lp("5.00", "5.00"))
+  })
+
+  it("leaves the locked line as it is, by FILLET, CHAMFER, Polyline and Last", () => {
+    for (const command of ["FILLET", "CHAMFER"]) {
+      const cad = withLayers(onK(), { locked: true })
+      t(cad, command, "_W", "20,-30", "40,70", "80,0")
+      expect(shapes(cad)).toContain("LINE K 30,-20 30,60")
+    }
+    const poly = withLayers([POLY("K")], { locked: true })
+    t(poly, "FILLET", "_R", "10", "_P", "_W", "-10,-10", "110,110")
+    expect(poly.commandLog().at(-1)).toBe("The object is on a locked layer.")
+    expect(shapes(poly)).toEqual(["LWPOLYLINE K 0,0@0 100,0@0 100,100@0"])
+    const last = withLayers(onK(), { locked: true })
+    t(last, "FILLET", "80,0", "_L")
+    expect(last.commandLog().at(-1)).toBe("The object is on a locked layer.")
+    expect(last.state().commandLine.prompt).toBe(FILLET2)
+    expect(shapes(last)).toContain("LINE K 30,-20 30,60")
+  })
+
+  it("takes the newest unlocked one of a find, saying nothing of the locked", () => {
+    const cad = withLayers(
+      [
+        ...onK(),
+        lineOf(p(50, 10), p(50, 60), { id: "L3" }),
+        lineOf(p(40, 10), p(40, 60), { id: "L4", layerId: "K" }),
+      ],
+      { locked: true }
+    )
+    t(cad, "FILLET", "10,0", "_W", "20,-30", "60,70")
+    expect(cad.commandLog()).not.toContain("The object is on a locked layer.")
+    expectLine(cad, "L1", p(0, 0), p(50, 0))
+    expectLine(cad, "L3", p(50, 0), p(50, 60))
+  })
+
+  it("is said in Autodesk's Spanish", () => {
+    const cad = withLayers(onK(), { locked: true }, es)
+    t(cad, "CHAFLAN", "_W", "20,-30", "40,70")
+    expect(cad.commandLog().at(-1)).toBe(
+      "El objeto está en una capa bloqueada."
+    )
+  })
+})
+
+// AutoCAD 2027's console, en-US and es-ES (probes corners/p240–p256, p265,
+// p266, p307): a point typed at the object prompts is a pick, read as a first
+// point is, and becomes LASTPOINT, hit or miss.
+describe("a point typed at FILLET's and CHAMFER's object prompts, and LASTPOINT", () => {
+  it("is the point picked, its Z kept (p240, p241)", () => {
+    const cad = t(crossed(), "ID", "5,5", "FILLET", "30,40,7", "80,0,3")
+    expect(shapes(cad)).toEqual(CORNERED)
+    expect(lastPoint(cad)).toBe(lp("80.00", "0.00", "3.00"))
+  })
+
+  it("reads `@`, a polar point and `*` as a first point is (p242–p244, p246)", () => {
+    for (const [first, second] of [
+      ["@25,35", "@50,-40"],
+      ["50<53.130102354", "80<0"],
+      ["*30,40", "*80,0"],
+    ]) {
+      const cad = t(crossed(), "ID", "5,5", "FILLET", first, second)
+      expect(shapes(cad), first).toEqual(CORNERED)
+      expect(lastPoint(cad), first).toBe(lp("80.00", "0.00"))
+    }
+    const at = t(crossed(), "ID", "30,40", "FILLET", "@", "80,0")
+    expect(shapes(at)).toEqual(CORNERED)
+  })
+
+  it("refuses `#`, LASTPOINT kept (p245)", () => {
+    const cad = t(crossed(), "ID", "5,5", "FILLET", "#30,40")
+    expect(cad.commandLog().slice(-2)).toEqual([
+      "*Invalid selection*",
+      "Expects a point or Window/Last/Crossing/BOX/Fence/WPolygon/CPolygon/Undo/Polyline/Radius",
+    ])
+    t(cad, "")
+    expect(lastPoint(cad)).toBe(lp("5.00", "5.00"))
+  })
+
+  // The console's cursor after `_ZOOM _W -200,-200 200,200`, solved from p247's
+  // and p248's answers: 80,10 + 22.9 is 59.3909,0.0162; 30,10 + 22.937 is
+  // 9.88293,-1.0186.
+  const CURSOR = p(-352.66, -199.6)
+  it("reads a number as a direct distance from LASTPOINT towards the cursor (p247, p248, p256)", () => {
+    for (const command of ["FILLET", "CHAMFER"]) {
+      const cad = t(crossed(), "ID", "80,10")
+      cad.moveTo(CURSOR)
+      t(cad, command, "22.9")
+      cad.moveTo(CURSOR)
+      t(cad, "30,40")
+      expect(shapes(cad), command).toEqual(CORNERED)
+      expect(lastPoint(cad), command).toBe(lp("30.00", "40.00"))
+    }
+    const second = t(crossed(), "ID", "5,5", "FILLET", "30,10")
+    second.moveTo(CURSOR)
+    t(second, "22.937")
+    expect(shapes(second)).toEqual(["LINE 0 0,0 30,0", "LINE 0 30,0 30,60"])
+    expect(lastPoint(second)).toBe(lp("9.88", "-1.02"))
+  })
+
+  it("is LASTPOINT after a miss, at each prompt (p249, p250, p252, p254, p255, p307)", () => {
+    for (const command of ["FILLET", "CHAMFER"]) {
+      const first = t(crossed(), "ID", "5,5", command, "60,40", "")
+      expect(lastPoint(first), command).toBe(lp("60.00", "40.00"))
+      const second = t(crossed(), "ID", "5,5", command, "30,40", "60,40")
+      t(second, "@20,-40")
+      expect(shapes(second), command).toEqual(CORNERED)
+      expect(lastPoint(second), command).toBe(lp("80.00", "0.00"))
+    }
+    for (const [command, radius] of [
+      ["FILLET", ["_R", "10"]],
+      ["CHAMFER", []],
+    ] as const) {
+      const cad = createHarness({ entities: [POLY()] })
+      t(cad, "ID", "5,5", command, ...radius, "_P", "50,50", "@50,-5")
+      expect(cad.commandLog().at(-1)).toMatch(/^1 line was (fillet|chamfer)ed$/)
+      expect(lastPoint(cad), command).toBe(lp("100.00", "45.00"))
+    }
+  })
+
+  it("is taken as typed, ORTHOMODE on or running snaps on (p265, p266)", () => {
+    const ortho = crossed()
+    ortho.press("F8")
+    t(ortho, "ID", "5,5", "FILLET", "@25,35", "80,0")
+    expect(shapes(ortho)).toEqual(CORNERED)
+    const snaps = createHarness({ entities: cross(), snap: true })
+    t(snaps, "ID", "5,5", "FILLET", "30,40", "99,1")
+    expect(lastPoint(snaps)).toBe(lp("99.00", "1.00"))
+  })
+})
+
+// AutoCAD 2027's console (probes corners/p277–p281): of two objects under a
+// pick the newer is taken, whichever is nearer.
+describe("a pick at FILLET's and CHAMFER's object prompts over two objects", () => {
+  const twoLines = () =>
+    createHarness({
+      entities: [
+        lineOf(p(0, 0), p(100, 0), { id: "L1" }),
+        lineOf(p(0, 2), p(100, 2), { id: "L1B" }),
+        lineOf(p(30, -20), p(30, 60), { id: "L2" }),
+      ],
+    })
+  const TWO = ["LINE 0 0,0 100,0", "LINE 0 30,2 100,2", "LINE 0 30,2 30,60"]
+
+  it("takes the newer line, at either prompt (p277, p278, p281)", () => {
+    expect(shapes(t(twoLines(), "FILLET", "30,40", "80,0.3"))).toEqual(TWO)
+    expect(shapes(t(twoLines(), "FILLET", "80,0.3", "30,40"))).toEqual(TWO)
+    expect(shapes(t(twoLines(), "CHAMFER", "30,40", "80,0.3"))).toEqual(TWO)
+  })
+
+  it("takes the newer of an arc and a line (p279, p280)", () => {
+    const arc = () => arcOf(p(80, 20), 19.7, deg(270), 0, { id: "A" })
+    const line = lineOf(p(0, 0), p(100, 0), { id: "L1" })
+    const upright = lineOf(p(60, -20), p(60, 60), { id: "L2" })
+    const arcNewer = createHarness({ entities: [line, upright, arc()] })
+    t(arcNewer, "FILLET", "60,40", "80,0.4")
+    expect(arcNewer.commandLog().at(-1)).toBe(
+      "No valid fillet with radius 0.00"
+    )
+    const lineNewer = createHarness({ entities: [arc(), line, upright] })
+    t(lineNewer, "FILLET", "60,40", "80,0.4")
+    expectLine(lineNewer, "L1", p(60, 0), p(100, 0))
+    expectLine(lineNewer, "L2", p(60, 0), p(60, 60))
+  })
+})
+
+// AutoCAD 2027's console (probes corners/p289–p296): the modes a set takes
+// but a single object's pick does not are refused, the prompt asked again.
+describe("FILLET's object prompts refuse the modes of a set", () => {
+  const REFUSAL = [
+    "*Invalid selection*",
+    "Expects a point or Window/Last/Crossing/BOX/Fence/WPolygon/CPolygon/Undo/Polyline/Radius",
+  ]
+  it("refuses Previous, a previous set there (p290)", () => {
+    const cad = t(crossed(), "SELECT", "ALL", "", "FILLET", "_PREVIOUS")
+    expect(cad.commandLog().slice(-2)).toEqual(REFUSAL)
+  })
+
+  it("refuses ALL, Group, AUto, SIngle, Add and Remove (p289, p291–p295)", () => {
+    for (const word of ["_ALL", "_G", "_AU", "_SI", "_A", "_REMOVE"]) {
+      const cad = t(crossed(), "FILLET", word)
+      expect(cad.commandLog().slice(-2), word).toEqual(REFUSAL)
+      expect(cad.state().commandLine.prompt).toBe(FILLET1)
+    }
+  })
+
+  it("refuses ALL at the second prompt (p296)", () => {
+    const cad = t(crossed(), "FILLET", "30,40", "_ALL")
+    expect(cad.commandLog().slice(-2)).toEqual([
+      "*Invalid selection*",
+      "Expects a point or Window/Last/Crossing/BOX/Fence/WPolygon/CPolygon/Radius]:",
+    ])
+    t(cad, "80,0")
+    expect(shapes(cad)).toEqual(CORNERED)
   })
 })

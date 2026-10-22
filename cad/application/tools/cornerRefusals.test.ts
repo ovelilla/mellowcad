@@ -1,11 +1,12 @@
 import { describe, expect, it } from "vitest"
-import type { Entity } from "../../domain/entities"
+import type { Entity, LineEntity } from "../../domain/entities"
 import { type CadHarness, createHarness } from "../../../test/harness"
 import { es } from "../../locales/es"
 import {
   arcOf,
   circleOf,
   deg,
+  layerOf,
   lineOf,
   p,
   polylineOf,
@@ -484,6 +485,101 @@ describe("FILLET's and CHAMFER's second prompt takes no first-prompt word", () =
         "Expects a point or Window/Last/Crossing/BOX/Fence/WPolygon/CPolygon/Distance",
       ])
       expect(chamfer.activeToolId()).toBe("chamfer")
+    }
+  })
+})
+
+/** {@link cross} with its second line on layer K, as `-LAYER` left it. */
+function onK(layer: Parameters<typeof layerOf>[1], locale?: typeof es) {
+  const cad = createHarness({ locale })
+  const [l1, l2] = cross()
+  cad.runtime.document.load([l1, { ...l2, layerId: "K" }], {
+    layers: [layerOf("0"), layerOf("K", layer)],
+  })
+  return cad
+}
+
+/** What `ID @` says LASTPOINT is. */
+function lastPoint(cad: CadHarness): string | undefined {
+  answer(cad, "ID", "@")
+  return cad.commandLog().at(-1)
+}
+
+// AutoCAD 2027's console, en-US and es-ES (probes corners/p270–p276): a pick
+// on a locked object alone is said, and the same prompt asked again;
+// LASTPOINT is the pick, as on nothing.
+describe("FILLET and CHAMFER refuse an object on a locked layer picked", () => {
+  const LOCKED = "The object is on a locked layer."
+
+  it("says so at the first prompt and asks it again (p270, p275)", () => {
+    for (const [command, prompt] of [
+      [
+        "FILLET",
+        "FILLET Select first object or [Undo/Polyline/Radius/Multiple]:",
+      ],
+      [
+        "CHAMFER",
+        "CHAMFER Select first line or [Undo/Polyline/Distance/Multiple]:",
+      ],
+    ]) {
+      const cad = onK({ locked: true })
+      answer(cad, "ID", "5,5", command, "30,40")
+      expect(cad.commandLog().at(-1), command).toBe(LOCKED)
+      expect(cad.state().commandLine.prompt).toBe(prompt)
+      cad.enter()
+      expect(lastPoint(cad)).toBe(" X = 30.00     Y = 40.00     Z = 0.00")
+      expect(cad.byId<LineEntity>("L2").start).toBeCloseToPoint(p(30, -20), 6)
+    }
+  })
+
+  it("says so at the second prompt and asks it again (p271)", () => {
+    const cad = onK({ locked: true })
+    cad.command("FILLET")
+    answer(cad, "80,0", "30,40")
+    expect(cad.commandLog().at(-1)).toBe(LOCKED)
+    expect(cad.state().commandLine.prompt).toBe(
+      "FILLET Select second object or shift-select to apply corner or [Radius]:"
+    )
+    answer(cad, "80,0")
+    expect(cad.commandLog().at(-1)).toBe("Cannot fillet an entity with itself.")
+  })
+
+  it("says so at Polyline's prompt and asks it again (p276)", () => {
+    const cad = createHarness()
+    cad.runtime.document.load(
+      [
+        polylineOf([p(0, 0), p(100, 0), p(100, 100)], {
+          id: "P",
+          layerId: "K",
+        }),
+      ],
+      { layers: [layerOf("0"), layerOf("K", { locked: true })] }
+    )
+    cad.command("FILLET")
+    answer(cad, "P", "50,0")
+    expect(cad.commandLog().at(-1)).toBe(LOCKED)
+    expect(cad.state().commandLine.prompt).toBe(
+      "FILLET Select 2D polyline or [Radius]:"
+    )
+  })
+
+  it("says nothing of a line on a layer that is off (p272)", () => {
+    const cad = onK({ visible: false })
+    answer(cad, "ID", "5,5", "FILLET", "30,40")
+    expect(cad.commandLog().at(-1)).toBe(
+      "Select first object or [Undo/Polyline/Radius/Multiple]: 30,40"
+    )
+    cad.enter()
+    expect(lastPoint(cad)).toBe(" X = 30.00     Y = 40.00     Z = 0.00")
+  })
+
+  it("is said in Autodesk's Spanish", () => {
+    for (const command of ["EMPALME", "CHAFLAN"]) {
+      const cad = onK({ locked: true }, es)
+      answer(cad, command, "30,40")
+      expect(cad.commandLog().at(-1), command).toBe(
+        "El objeto está en una capa bloqueada."
+      )
     }
   })
 })

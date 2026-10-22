@@ -545,8 +545,9 @@ export interface Tool {
   /**
    * Whether an object snap override, typed or chosen, answers a question
    * that takes no point ({@link wantsSnap} false): TRIM's and EXTEND's object
-   * prompt, whose pick is then the snapped point, given as `input.point` with
-   * `input.snap` (probes trim/p259–p263). The running snaps stay off there,
+   * prompt, FILLET's and CHAMFER's, whose pick is then the snapped point,
+   * given as `input.point` with `input.snap` (probes trim/p259–p263,
+   * corners/p257–p269). The running snaps stay off there,
    * so a click is never moved and selection cycling still works.
    */
   takesSnapOverride?(): boolean

@@ -239,6 +239,12 @@ export interface ObjectSelectorOptions {
     /** Finding none says nothing: the prompt is asked again (FILLET's). */
     readonly silent?: boolean
     /**
+     * Said where the mode found objects on locked layers alone, which are
+     * never taken (FILLET's `The object is on a locked layer.`, probe
+     * corners/p274); without it nothing is said.
+     */
+    readonly locked?: MessageId
+    /**
      * A point typed at the prompt, read as {@link typedPick} reads it (`@`,
      * a number), which AutoCAD 2023's console takes as a pick there: the
      * command's own, which says what a pick on nothing does — unless the
@@ -1078,11 +1084,13 @@ export class ObjectSelector {
   }
 
   /**
-   * One of `ids` for a single object's pick, or two for a {@link pair}; with
-   * none, how many the command left out (`1 was filtered out`, ARRAYPATH's
-   * source at its path curve in AutoCAD 2023's console) or that nothing was
-   * found, unless the command says nothing — nor does a window a pick on
-   * nothing started (acc/bk20, bk48).
+   * One of `ids` for a single object's pick, or two for a {@link pair}, never
+   * one on a locked layer: of the rest, and only locked ones found say the
+   * command's {@link locked} (probe corners/p274). With none, how
+   * many the command left out (`1 was filtered out`, ARRAYPATH's source at
+   * its path curve in AutoCAD 2023's console) or that nothing was found,
+   * unless the command says nothing — nor does a window a pick on nothing
+   * started (acc/bk20, bk48).
    */
   private takeOne(
     ids: readonly EntityId[],
@@ -1093,9 +1101,17 @@ export class ObjectSelector {
     ctx: ToolContext
   ): void {
     const found = new Set(ids)
-    const inOrder = ctx.document
+    const all = ctx.document
       .getEntities()
       .filter((entity) => found.has(entity.id))
+    const inOrder = all.filter(
+      (entity) => !ctx.document.getLayer(entity.layerId)?.locked
+    )
+    if (inOrder.length === 0 && all.length > 0) {
+      if (one.locked) ctx.report(ctx.text.message(one.locked), "error")
+      else ctx.requestRender()
+      return
+    }
     const taken = one.newest ? inOrder.at(-1) : inOrder[0]
     if (one.pair && inOrder.length > 1) {
       one.pair(

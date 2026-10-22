@@ -51,7 +51,9 @@ import {
   joinAtCut,
   joinRefusal,
   pickCornerObject,
+  refusesLockedPick,
   typedCornerPick,
+  cornerPickOf,
 } from "./cornerObjects"
 import { ModeFind, ObjectSelector } from "./objectSelection"
 import { setCommandSettings } from "./commandSettings"
@@ -147,6 +149,7 @@ export class ChamferTool implements Tool {
       take: (entity, ctx, find) => this.takeFound(entity, find, ctx),
       newest: true,
       silent: true,
+      locked: "objectOnLockedLayer",
     },
   })
 
@@ -245,11 +248,7 @@ export class ChamferTool implements Tool {
       this.modes.onPointerDown(input, ctx)
       return
     }
-    this.pickAt(
-      { world: input.world, screen: input.screen },
-      input.shiftKey,
-      ctx
-    )
+    this.pickAt(cornerPickOf(input, ctx), input.shiftKey, ctx)
   }
 
   /** A point typed at an object prompt picks there, as at FILLET's. */
@@ -260,7 +259,13 @@ export class ChamferTool implements Tool {
     return pick !== null
   }
 
+  /**
+   * A pick at an object prompt, clicked, typed or snapped; nothing but a
+   * locked object there is said and asked again (see
+   * {@link refusesLockedPick}).
+   */
   private pickAt(pick: LinePick, shift: boolean, ctx: ToolContext): void {
+    if (refusesLockedPick(ctx, pick)) return
     switch (this.state.phase) {
       case "first": {
         if (this.refusesRound(ctx.pick(pick.world), ctx)) return
@@ -354,6 +359,15 @@ export class ChamferTool implements Tool {
       case "Multiple":
         this.multiple = true
     }
+  }
+
+  /** As FILLET's (probes corners/p267, p268). */
+  takesSnapOverride(): boolean {
+    return !this.askingDistance && !this.modes.inMode()
+  }
+
+  snapsFromLastPoint(): boolean {
+    return this.takesSnapOverride()
   }
 
   wantsSnap(): boolean {

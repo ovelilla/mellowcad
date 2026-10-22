@@ -87,6 +87,7 @@ import {
   implicitEdges,
   parametricCurve,
 } from "./curveCrossings"
+import { lockedObjectAt } from "./lockedPick"
 import { typedPick } from "./typedPick"
 import { ObjectSelector } from "./objectSelection"
 import {
@@ -652,7 +653,10 @@ export abstract class EdgeEditTool implements Tool {
       if (!ctx.pick(pick.world)) {
         // WHY said, then the fence: a locked object is no pick, and the
         // console says why (probe trim/p251).
-        if (this.lockedAt(pick.world, ctx)) {
+        const screen = pick.snap
+          ? ctx.viewport.worldToScreen(pick.point)
+          : pick.screen
+        if (lockedObjectAt(screen, ctx)) {
           ctx.report(ctx.text.message("onLockedLayer", { count: 1 }))
         }
         if (this.mode.standard) this.startWindow(pick.point, ctx)
@@ -1344,20 +1348,6 @@ export abstract class EdgeEditTool implements Tool {
         ctx.document.isEntityVisible(e)
           ? footprint(e)
           : []
-      )
-  }
-
-  /** Whether an object on a locked layer lies under the pick box at `world`. */
-  private lockedAt(world: Vec2, ctx: ToolContext): boolean {
-    const { document } = ctx
-    const tolerance = ctx.pickTolerance()
-    return document
-      .getEntities()
-      .some(
-        (entity) =>
-          document.getLayer(entity.layerId)?.locked === true &&
-          document.isEntityVisible(entity) &&
-          distanceToEntity(entity, world, ctx.blocks) <= tolerance
       )
   }
 

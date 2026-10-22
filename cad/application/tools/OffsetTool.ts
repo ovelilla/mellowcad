@@ -35,7 +35,6 @@ import {
   parseCoordinate,
 } from "../input/coordinateInput"
 import type { MessageId } from "../EngineText"
-import { screenDistanceToEntity } from "../viewPick"
 import type { Viewport } from "../Viewport"
 import type { PromptId } from "../../locales/types"
 import { ScenePrimitive, StrokeStyle } from "../../scene/types"
@@ -50,6 +49,7 @@ import {
   ToolQuestion,
   type QuestionInput,
 } from "./Tool"
+import { lockedObjectAt } from "./lockedPick"
 import { typedPick } from "./typedPick"
 
 /**
@@ -887,23 +887,6 @@ export class OffsetTool implements Tool {
         : new AddEntitiesCommand(copies)
     )
   }
-}
-
-/**
- * Whether an object on a locked layer is under `screen`, which `ctx.pick`
- * passes over: AutoCAD's pick finds it to refuse it (probe offset/p250).
- */
-function lockedObjectAt(screen: Vec2, ctx: ToolContext): boolean {
-  const { document, viewport } = ctx
-  const pixels = viewport.worldToScreenDistance(ctx.pickTolerance())
-  return document
-    .getEntities()
-    .some(
-      (entity) =>
-        document.getLayer(entity.layerId)?.locked === true &&
-        document.isEntityVisible(entity) &&
-        screenDistanceToEntity(viewport, entity, screen, ctx.blocks) <= pixels
-    )
 }
 
 /** The bare shape of an entity, for drawing highlights without an offset. */

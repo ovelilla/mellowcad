@@ -63,7 +63,9 @@ import {
   joinAtCut,
   joinRefusal,
   pickFilletObject,
+  refusesLockedPick,
   typedCornerPick,
+  cornerPickOf,
 } from "./cornerObjects"
 import { ModeFind, ObjectSelector } from "./objectSelection"
 import { setCommandSettings } from "./commandSettings"
@@ -176,6 +178,7 @@ export class FilletTool implements Tool {
         }
       },
       silent: true,
+      locked: "objectOnLockedLayer",
     },
   })
 
@@ -265,11 +268,7 @@ export class FilletTool implements Tool {
       this.modes.onPointerDown(input, ctx)
       return
     }
-    this.pickAt(
-      { world: input.world, screen: input.screen },
-      input.shiftKey,
-      ctx
-    )
+    this.pickAt(cornerPickOf(input, ctx), input.shiftKey, ctx)
   }
 
   /** A point typed at an object prompt picks there (see {@link typedCornerPick}). */
@@ -280,7 +279,13 @@ export class FilletTool implements Tool {
     return pick !== null
   }
 
+  /**
+   * A pick at an object prompt, clicked, typed or snapped; nothing but a
+   * locked object there is said and asked again (see
+   * {@link refusesLockedPick}).
+   */
   private pickAt(pick: LinePick, shift: boolean, ctx: ToolContext): void {
+    if (refusesLockedPick(ctx, pick)) return
     switch (this.state.phase) {
       case "first": {
         const hit = pickFilletObject(ctx, pick, null)
@@ -379,6 +384,19 @@ export class FilletTool implements Tool {
       case "Multiple":
         this.multiple = true
     }
+  }
+
+  /**
+   * WHY at the object prompts: a typed or chosen object snap picks there
+   * (probes corners/p257–p264, p269, p309), its Perpendicular from LASTPOINT
+   * (p262); Radius's prompt and a mode's points are points already.
+   */
+  takesSnapOverride(): boolean {
+    return !this.askingRadius && !this.modes.inMode()
+  }
+
+  snapsFromLastPoint(): boolean {
+    return this.takesSnapOverride()
   }
 
   wantsSnap(): boolean {

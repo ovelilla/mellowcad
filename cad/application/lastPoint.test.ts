@@ -880,6 +880,9 @@ describe("A number typed at a window's corner or where objects are picked", () =
     }
   })
 
+  // FILLET's part is 2027's console too: a number picks from LASTPOINT
+  // towards the cursor (probe corners/p247), and a pick on nothing moves
+  // LASTPOINT there all the same (p249).
   it("is a pick where TRIM and FILLET pick objects", () => {
     for (const [locale, trim, fillet] of [
       [undefined, "TRIM", "FILLET"],
