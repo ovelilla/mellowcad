@@ -14,14 +14,12 @@ import {
 } from "../../domain/arrays"
 import { parseNumber } from "../../domain/units"
 import type { EntityId } from "../../domain/entities"
-import { ScenePrimitive, StrokeStyle } from "../../scene/types"
-import { entityScenePrimitive } from "../SceneBuilder"
-import { THEME } from "../../scene/theme"
+import { ScenePrimitive } from "../../scene/types"
 import { AddEntitiesCommand } from "../commands/entityCommands"
 import { isCoordinateExpression } from "../input/coordinateInput"
 import { ONE_OBJECT_MODES, ObjectSelector } from "./objectSelection"
 import { lockedObjectAt } from "./lockedPick"
-import { rollover } from "./ghostLook"
+import { drawn, rollover } from "./ghostLook"
 import {
   MAX_ARRAY_COUNT,
   MAX_PREVIEW_ITEMS,
@@ -53,7 +51,8 @@ import {
  * and a half times the selection's size apart and fill the path. The source
  * stays where it is as item 1, the rest stepped from it along the path from
  * the end nearer the pick (`domain/arrays.ts`); the path is left in place.
- * eXit or Enter makes the copies, one undo step; Escape makes none.
+ * eXit or Enter makes the copies, one undo step; so does Escape once the path
+ * is picked (desktop arrays/d08c), before it nothing.
  *
  * WHY Associative = No: as ARRAYRECT's. Base point, Tangent direction, Rows,
  * Levels and Z direction are not offered.
@@ -137,7 +136,9 @@ export class ArrayPathTool implements Tool {
     this.enterPickPath(ctx)
   }
 
+  /** WHY the commit point: Escape keeps the array, as ARRAYRECT's (d08c). */
   onDeactivate(ctx: ToolContext): void {
+    this.create(ctx)
     this.state = { phase: "selecting" }
     this.selector.start()
     ctx.dynamicInput.close()
@@ -453,8 +454,8 @@ export class ArrayPathTool implements Tool {
 
   /**
    * The path pick's rollover is the shared one (desktop arrays/d03-1); the
-   * edit's preview draws the items, the path left as the drawing draws it
-   * (d03-2).
+   * edit's preview draws the items as the drawing will, the path left as it
+   * is (d03-2).
    */
   buildOverlay(ctx: ToolContext): ScenePrimitive[] {
     const state = this.state
@@ -467,16 +468,10 @@ export class ArrayPathTool implements Tool {
     }
 
     const layout = this.previewLayout(ctx, state.layout, state.step)
-    const ghost: StrokeStyle = { color: THEME.preview, width: 1, dash: [6, 4] }
     return pathArrayItems(state.path, layout, MAX_PREVIEW_ITEMS).flatMap(
       (item) =>
         state.originals.flatMap((entity) =>
-          entityScenePrimitive(
-            ctx.viewport,
-            placeArrayItem(entity, item),
-            ghost,
-            { blocks: ctx.blocks }
-          )
+          drawn(ctx, placeArrayItem(entity, item), "plain")
         )
     )
   }
@@ -633,6 +628,8 @@ export class ArrayPathTool implements Tool {
   private create(ctx: ToolContext): void {
     const state = this.state
     if (state.phase !== "edit") return
+    // Left first: the command's end deactivates the tool, which commits too.
+    this.state = { phase: "selecting" }
     const copies = pathArrayItems(state.path, state.layout).flatMap((item) =>
       state.originals.map((entity) => arrayItemCopy(entity, item))
     )

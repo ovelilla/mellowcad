@@ -12,12 +12,11 @@ import {
   isCoordinateExpression,
   parseCoordinate,
 } from "../input/coordinateInput"
-import { ScenePrimitive, StrokeStyle } from "../../scene/types"
-import { entityScenePrimitive } from "../SceneBuilder"
-import { THEME } from "../../scene/theme"
+import { ScenePrimitive } from "../../scene/types"
 import { AddEntitiesCommand } from "../commands/entityCommands"
 import { ObjectSelector } from "./objectSelection"
 import { MAX_PREVIEW_ITEMS, refusesCount, takesCount } from "./arrayCounts"
+import { drawn } from "./ghostLook"
 import type { PromptId } from "../../locales/types"
 import {
   CommandOption,
@@ -42,7 +41,8 @@ import {
  * and an angle between makes the fill that many steps, a full turn once they
  * reach 360°. The ring keeps its direction apart from its size, which the
  * defaults show. eXit or Enter makes the copies, one undo step with the source
- * as item 1. Escape makes none.
+ * as item 1; so does Escape once the centre is given (**unverified**: d08c's
+ * polar run was inconclusive), before it nothing.
  *
  * WHY Associative = No: as ARRAYRECT's. Base point, Axis of rotation, ROWs and
  * Levels are not offered; ROWs is declared, so that `R` asks which.
@@ -118,7 +118,9 @@ export class ArrayPolarTool implements Tool {
     this.enterCenter(ctx)
   }
 
+  /** WHY the commit point: Escape keeps the array, as ARRAYRECT's (d08). */
   onDeactivate(ctx: ToolContext): void {
+    this.create(ctx)
     this.state = { phase: "selecting" }
     this.selector.start()
     ctx.dynamicInput.close()
@@ -331,32 +333,24 @@ export class ArrayPolarTool implements Tool {
     )
   }
 
+  /**
+   * The items as the drawing will draw them, nothing at the centre, and no
+   * ghost while the centre is asked (desktop arrays/d02-1, d02-2).
+   */
   buildOverlay(ctx: ToolContext): ScenePrimitive[] {
     const state = this.state
     if (state.phase === "selecting") return this.selector.buildOverlay(ctx)
     if (state.phase !== "edit") return []
 
-    const ghost: StrokeStyle = { color: THEME.preview, width: 1, dash: [6, 4] }
     const ring = this.previewRing(ctx, state.ring, state.step)
-    const out: ScenePrimitive[] = []
-    const items = polarArrayItems(
+    return polarArrayItems(
       { ...state.config, ...ring },
       MAX_PREVIEW_ITEMS
+    ).flatMap((item) =>
+      state.config.originals.flatMap((entity) =>
+        drawn(ctx, placeArrayItem(entity, item), "plain")
+      )
     )
-    for (const item of items) {
-      for (const entity of state.config.originals) {
-        out.push(
-          ...entityScenePrimitive(
-            ctx.viewport,
-            placeArrayItem(entity, item),
-            ghost,
-            { blocks: ctx.blocks }
-          )
-        )
-      }
-    }
-    pushCenterMarker(out, ctx.viewport.worldToScreen(state.config.center))
-    return out
   }
 
   /** Goes on from the set `Select objects:` closed to the center point. */
@@ -498,6 +492,8 @@ export class ArrayPolarTool implements Tool {
   private create(ctx: ToolContext): void {
     const state = this.state
     if (state.phase !== "edit") return
+    // Left first: the command's end deactivates the tool, which commits too.
+    this.state = { phase: "selecting" }
     const copies = polarArrayItems({ ...state.config, ...state.ring }).flatMap(
       (item) =>
         state.config.originals.map((entity) => arrayItemCopy(entity, item))
@@ -539,23 +535,6 @@ function withinTurn(fill: number): number {
   if (size <= FULL_TURN) return size
   const rest = size % FULL_TURN
   return rest < 1e-9 ? FULL_TURN : rest
-}
-
-function pushCenterMarker(out: ScenePrimitive[], at: Vec2): void {
-  const r = 6
-  const stroke: StrokeStyle = { color: THEME.selected, width: 1 }
-  out.push({
-    kind: "segment",
-    a: { x: at.x - r, y: at.y },
-    b: { x: at.x + r, y: at.y },
-    stroke,
-  })
-  out.push({
-    kind: "segment",
-    a: { x: at.x, y: at.y - r },
-    b: { x: at.x, y: at.y + r },
-    stroke,
-  })
 }
 
 /** Centroid of the selection's combined bounding box. */

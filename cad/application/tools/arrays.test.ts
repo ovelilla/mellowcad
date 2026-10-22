@@ -39,6 +39,20 @@ function hasCentre(cad: CadHarness, x: number, y: number): boolean {
   )
 }
 
+/**
+ * The circles the scene draws but the probes' source at 10,10 (drawn, and
+ * glowing while selected): the items, previewed or made.
+ */
+function itemCircles(cad: CadHarness): { centre: string; stroke: unknown }[] {
+  return cad.scene().primitives.flatMap((prim) => {
+    if (prim.kind !== "circle") return []
+    const c = cad.runtime.viewport.screenToWorld(prim.center)
+    return Math.abs(c.x - 10) < 1e-4 && Math.abs(c.y - 10) < 1e-4
+      ? []
+      : [{ centre: `${round4(c.x)},${round4(c.y)}`, stroke: prim.stroke }]
+  })
+}
+
 /** Each answer typed at the command line and confirmed, as the console types it. */
 function answer(cad: CadHarness, ...texts: string[]): CadHarness {
   for (const text of texts) {
@@ -221,7 +235,11 @@ describe("ARRAYRECT", () => {
     expect(cad.state().commandLine.prompt).toBe(
       "ARRAYRECT Specify the distance between columns or [Unit cell] <30>:"
     )
-    cad.escape().select("L1").command("ARRAYRECT")
+    // Escape there keeps the cell given before it (ARRAYS-D4); U takes it back.
+    cad.escape()
+    expect(cad.entityCount).toBe(12)
+    answer("_U")
+    cad.select("L1").command("ARRAYRECT")
     answer("S")
     answer("U")
     cad.click(p(0, 0)).click(p(-30, -20))
@@ -298,16 +316,6 @@ describe("ARRAYRECT", () => {
       expect(cad.entityCount).toBe(1)
       expect(cad.commandLog().at(-1)).toBe(named)
     }
-  })
-
-  it("cancels without creating anything", () => {
-    const cad = createHarness({
-      entities: [lineOf(p(0, 0), p(40, 0), { id: "L1" })],
-    })
-
-    cad.select("L1").command("ARRAYRECT").escape()
-
-    expect(cad.entityCount).toBe(1)
   })
 })
 
@@ -969,12 +977,7 @@ describe("ARRAYPOLAR's answers", () => {
   // WHY: the preview is capped (arrayCounts.ts); the commit is not.
   it("previews no more than a thousand items but makes them all", () => {
     const cad = polar()
-    const ghosts = () =>
-      cad.scene().primitives.filter((prim) => {
-        const stroke = (prim as { stroke?: { dash?: readonly number[] } })
-          .stroke
-        return stroke?.dash?.[0] === 6
-      }).length
+    const ghosts = () => itemCircles(cad).length
 
     answer(cad, "0,0", "_I")
     cad.type("5000")
@@ -1501,15 +1504,6 @@ describe("ARRAYPATH", () => {
       "MATRIZCAMINO ¿Alinear elementos de matriz con el camino? [Sí/No] <Sí>:"
     )
   })
-
-  it("cancels without touching the drawing", () => {
-    const cad = createHarness({ entities: [path, source] })
-
-    cad.select("SRC").command("ARRAYPATH").click(p(50, 0)).escape()
-
-    expect(cad.entityCount).toBe(2)
-    expect(cad.runtime.document.has("SRC")).toBe(true)
-  })
 })
 
 describe("where ARRAYPATH puts the items", () => {
@@ -1649,14 +1643,8 @@ describe("where ARRAYPATH puts the items", () => {
 
   it("previews the very items it makes (BRJ-01's analogue)", () => {
     const cad = pathArray()
-    const ghosts = cad
-      .scene()
-      .primitives.flatMap((prim) =>
-        prim.kind === "circle" && prim.stroke?.color === THEME.preview
-          ? [cad.runtime.viewport.screenToWorld(prim.center)]
-          : []
-      )
-      .map((c) => `${round4(c.x)},${round4(c.y)}`)
+    const ghosts = itemCircles(cad)
+      .map((item) => item.centre)
       .sort()
     answer(cad, "_X")
     const made = centres(cad)
@@ -1950,5 +1938,188 @@ describe("ARRAYPATH's prompts", () => {
     ])
     answer(cad, "5", "_X")
     expect(centres(cad)).toHaveLength(5)
+  })
+})
+
+describe("the arrays' Escape", () => {
+  const rect = (locale?: typeof es) =>
+    answer(
+      createHarness({ locale, entities: [circle()] }),
+      locale ? "MATRIZRECTANG" : "_ARRAYRECT",
+      "_L",
+      ""
+    )
+  const runs = [
+    ["ARRAYRECT", () => rect(), 1],
+    [
+      "ARRAY",
+      () => answer(createHarness({ entities: [circle()] }), "AR", "_L", "", ""),
+      1,
+    ],
+    // WHY ARRAYPOLAR too: d08c's polar run was inconclusive (ARRAYS-D4).
+    ["ARRAYPOLAR", () => answer(polar(), "0,0"), 1],
+    ["ARRAYPATH", () => pathArray(), 2],
+  ] as const
+
+  // desktop arrays/d08 (the array kept, `*Cancelado*`), d08b (ASsociative
+  // No: the source and its 11 copies), d08c (ARRAYPATH's copies kept).
+  it("makes at the main prompt what Enter makes, in one undo step (desktop arrays/d08, d08b, d08c)", () => {
+    for (const [name, run, before] of runs) {
+      const entered = answer(run(), "")
+      const cad = run()
+      cad.escape()
+      expect(cad.commandLog().at(-1), name).toMatch(/<eXit>: \*Cancel\*$/)
+      expect(centres(cad).length, name).toBeGreaterThan(1)
+      expect(centres(cad), name).toEqual(centres(entered))
+      answer(cad, "_U")
+      expect(cad.commandLog().at(-1), name).toBe(name)
+      expect(cad.entityCount, name).toBe(before)
+    }
+    const es_ = rect(es)
+    es_.escape()
+    expect(es_.commandLog().at(-1)).toMatch(/<Salir>: \*Cancelado\*$/)
+    expect(centres(es_)).toHaveLength(12)
+  })
+
+  // ARRAYS-D4, unverified: the desktop showed Escape at the main prompt only.
+  it("keeps at a value's prompt the values given before it", () => {
+    const cad = rect()
+    answer(cad, "_COU", "2")
+    expect(cad.state().commandLine.prompt).toBe(
+      "ARRAYRECT Enter the number of rows <3>:"
+    )
+    cad.type("5").escape()
+    expect(centres(cad)).toHaveLength(6)
+
+    const ring = answer(polar(), "0,0", "_I", "4", "_ROT")
+    ring.escape()
+    expect(centres(ring)).toHaveLength(4)
+
+    const entered = answer(pathArray(), "_I", "20", "", "")
+    const along = answer(pathArray(), "_I", "20")
+    expect(along.state().commandLine.prompt).toMatch(/Fill entire path/)
+    along.escape()
+    expect(centres(along)).toEqual(centres(entered))
+  })
+
+  it("makes nothing before the main prompt", () => {
+    const selecting = answer(
+      createHarness({ entities: [circle()] }),
+      "_ARRAYRECT",
+      "_L"
+    )
+    const typing = answer(
+      createHarness({ entities: [circle()] }),
+      "AR",
+      "_L",
+      ""
+    )
+    const centring = polar()
+    const picking = createHarness({ entities: [pathLine(), circle()] })
+    picking.select("C").command("ARRAYPATH")
+    for (const [cad, before] of [
+      [selecting, 1],
+      [typing, 1],
+      [centring, 1],
+      [picking, 2],
+    ] as const) {
+      cad.escape()
+      expect(cad.entityCount).toBe(before)
+      expect(cad.activeToolId()).toBe("select")
+    }
+  })
+})
+
+describe("the arrays' preview", () => {
+  /** The probes' circle, red and 0.5 mm. */
+  const worn = (): Entity => ({
+    ...circle(),
+    color: "#ff0000",
+    lineweight: 0.5,
+  })
+  const runs = [
+    [
+      "ARRAYRECT",
+      () =>
+        answer(createHarness({ entities: [worn()] }), "_ARRAYRECT", "_L", ""),
+    ],
+    [
+      "ARRAYPOLAR",
+      () =>
+        answer(
+          createHarness({ entities: [worn()] }),
+          "_ARRAYPOLAR",
+          "_L",
+          "",
+          "0,0"
+        ),
+    ],
+    [
+      "ARRAYPATH",
+      () => {
+        const cad = createHarness({ entities: [pathLine(), worn()] })
+        cad.select("C")
+        return answer(cad, "ARRAYPATH", "30,0")
+      },
+    ],
+  ] as const
+
+  // desktop arrays/d01-1, d02-2, d03-2: the items solid, in their own colour.
+  it("draws the items as the drawing draws them (desktop arrays/d01-1, d02-2, d03-2)", () => {
+    for (const [name, run] of runs) {
+      const cad = run().moveTo(p(500, 500))
+      const previewed = itemCircles(cad)
+      expect(previewed.length, name).toBeGreaterThan(0)
+      for (const { stroke } of previewed) {
+        expect(stroke, name).toMatchObject({ color: "#ff0000" })
+        expect(stroke, name).not.toHaveProperty("dash")
+      }
+      answer(cad, "")
+      cad.moveTo(p(500, 500))
+      const sorted = (items: ReturnType<typeof itemCircles>) =>
+        [...items].sort((a, b) => a.centre.localeCompare(b.centre))
+      expect(sorted(previewed), name).toEqual(sorted(itemCircles(cad)))
+    }
+  })
+
+  it("draws nothing at the polar centre (desktop arrays/d02-1, d02-2)", () => {
+    const cad = polar().moveTo(p(0, 0))
+    expect(itemCircles(cad)).toEqual([])
+    answer(cad, "0,0")
+    // The grid, the axes and the crosshair are segments too: the cross was
+    // the selection's colour.
+    const cross = cad
+      .scene()
+      .primitives.filter(
+        (prim) =>
+          prim.kind === "segment" &&
+          (prim.stroke.color === THEME.selected ||
+            prim.stroke.color === THEME.preview)
+      )
+    expect(cross).toEqual([])
+    expect(itemCircles(cad)).toHaveLength(5)
+  })
+
+  // AYJ-03, unverified: the trace's UseDashedLine 1 (probe arrays/p123) is
+  // not yet seen on the desktop, so Unit cell's rubber band stays solid.
+  it("keeps Unit cell's rubber band solid", () => {
+    const cad = answer(
+      createHarness({ entities: [circle()] }),
+      "_ARRAYRECT",
+      "_L",
+      "",
+      "_S",
+      "_U",
+      "0,0"
+    ).moveTo(p(30, 20))
+    const band = cad
+      .scene()
+      .primitives.flatMap((prim) =>
+        prim.kind === "segment" && prim.stroke.color === THEME.rubberBand
+          ? [prim.stroke]
+          : []
+      )
+    expect(band).toHaveLength(4)
+    for (const stroke of band) expect(stroke).not.toHaveProperty("dash")
   })
 })

@@ -11,7 +11,6 @@ import {
 import { parseNumber } from "../../domain/units"
 import { Ucs, ucsDirectionToWorld, worldDirectionToUcs } from "../../domain/ucs"
 import { ScenePrimitive, StrokeStyle } from "../../scene/types"
-import { entityScenePrimitive } from "../SceneBuilder"
 import { THEME } from "../../scene/theme"
 import { AddEntitiesCommand } from "../commands/entityCommands"
 import {
@@ -21,6 +20,7 @@ import {
 import { ObjectSelector } from "./objectSelection"
 import { selectedInDrawingOrder } from "./drawingOrder"
 import { MAX_PREVIEW_ITEMS, refusesCount, takesCount } from "./arrayCounts"
+import { drawn } from "./ghostLook"
 import type { PromptId } from "../../locales/types"
 import {
   CommandOption,
@@ -43,7 +43,8 @@ import {
  * distances — and between rows, COLumns the number of columns and their
  * distance, Rows the number of rows, their distance and the elevation each row
  * rises by; eXit or Enter makes the copies, one undo step with the source as
- * item 1,1. Escape makes none.
+ * item 1,1. Escape makes them too, with the values given so far (desktop
+ * arrays/d08, d08b); before the main prompt it makes nothing.
  *
  * WHY Associative = No: an associative array is one object here neither
  * models nor edits, so the copies are plain geometry, as AutoCAD's are with
@@ -138,7 +139,13 @@ export class ArrayTool implements Tool {
     this.beginEdit(ctx)
   }
 
+  /**
+   * WHY the commit point: Escape at the main prompt keeps the array, as eXit
+   * makes it (desktop arrays/d08, d08b); at a value's prompt the values given
+   * before it stay (**unverified**: the desktop showed only the main prompt).
+   */
   onDeactivate(ctx: ToolContext): void {
+    this.create(ctx)
     this.state = { phase: "selecting" }
     this.selector.start()
     ctx.dynamicInput.close()
@@ -343,11 +350,11 @@ export class ArrayTool implements Tool {
       : null
   }
 
+  /** The items as the drawing will draw them (desktop arrays/d01-1). */
   buildOverlay(ctx: ToolContext): ScenePrimitive[] {
     if (this.state.phase === "selecting") return this.selector.buildOverlay(ctx)
     if (this.state.phase !== "edit") return []
 
-    const ghost: StrokeStyle = { color: THEME.preview, width: 1, dash: [6, 4] }
     const { corner, cursor } = this.state
     const cell =
       this.state.step === "unitCellOpposite" && corner && cursor
@@ -361,15 +368,12 @@ export class ArrayTool implements Tool {
       MAX_PREVIEW_ITEMS
     ).flatMap((item) =>
       originals.flatMap((entity) =>
-        entityScenePrimitive(
-          ctx.viewport,
-          placeArrayItem(entity, item),
-          ghost,
-          { blocks: ctx.blocks }
-        )
+        drawn(ctx, placeArrayItem(entity, item), "plain")
       )
     )
     if (cell === null || !corner || !cursor) return copies
+    // WHY solid: the trace says UseDashedLine 1 (probe arrays/p123), which
+    // no desktop pass has shown yet (ARRAYS-D7).
     const rubber: StrokeStyle = { color: THEME.rubberBand, width: 1 }
     // The cell's sides run along the UCS's axes.
     const along = (x: number, y: number) =>
@@ -570,9 +574,11 @@ export class ArrayTool implements Tool {
 
   private create(ctx: ToolContext): void {
     if (this.state.phase !== "edit") return
-    const { originals } = this.state
-    const copies = rectangularArrayItems(this.state.grid, ctx.ucs).flatMap(
-      (item) => originals.map((entity) => arrayItemCopy(entity, item))
+    const { originals, grid } = this.state
+    // Left first: the command's end deactivates the tool, which commits too.
+    this.state = { phase: "selecting" }
+    const copies = rectangularArrayItems(grid, ctx.ucs).flatMap((item) =>
+      originals.map((entity) => arrayItemCopy(entity, item))
     )
     if (copies.length > 0) ctx.execute(new AddEntitiesCommand(copies))
     ctx.dynamicInput.close()
