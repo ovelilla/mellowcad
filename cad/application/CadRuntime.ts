@@ -128,7 +128,12 @@ import {
 import { PointResolver } from "./PointResolver"
 import { shareStructure } from "./shareStructure"
 import { AutosaveService } from "./Autosave"
-import { buildScene, CURSOR_TOOLTIP_ROW, PolarGuideInput } from "./SceneBuilder"
+import {
+  buildScene,
+  CURSOR_TOOLTIP_ROW,
+  PICK_BOX_PX,
+  PolarGuideInput,
+} from "./SceneBuilder"
 import {
   buildBlockInfos,
   buildDimStyleInfos,
@@ -248,11 +253,13 @@ const WHEEL_BURST_MS = 400
 const DRAG_THRESHOLD_PX = 4
 
 /**
- * How far from the cursor a pick finds an object (screen px). WHY not the
- * snap aperture: AutoCAD's pick box is PICKBOX, its own variable, and
- * APERTURE (10) grew past it.
+ * How far from the cursor a pick finds an object (screen px): the pick box
+ * drawn. WHY no further: of what it finds a pick takes the newest, however
+ * near the others lie (probes trim/p400–p403), so an object beyond the box
+ * would be taken over the one under it. WHY not the snap aperture: AutoCAD's
+ * pick box is PICKBOX, its own variable, and APERTURE (10) grew past it.
  */
-const PICK_TOLERANCE_PX = 8
+const PICK_TOLERANCE_PX = PICK_BOX_PX
 
 /**
  * Two clicks of the wheel button closer than this are a double-click. WHY a
@@ -1713,9 +1720,28 @@ export class CadRuntime extends Observable {
     )
   }
 
-  /** Whether the question takes a point: the tool's, or one measured. */
+  /**
+   * Whether the question takes a point: the tool's, one measured, or the
+   * pick an object snap override answers ({@link overridePicks}).
+   */
   private wantsPoint(): boolean {
-    return (this.activeTool.wantsSnap?.() ?? true) || this.measuresPoints()
+    return (
+      (this.activeTool.wantsSnap?.() ?? true) ||
+      this.measuresPoints() ||
+      this.overridePicks()
+    )
+  }
+
+  /**
+   * Whether an object snap override holds at a question that takes no point
+   * but takes one for its pick (`takesSnapOverride`: TRIM's object prompt,
+   * probes trim/p259–p263), which then snaps as a point prompt does.
+   */
+  private overridePicks(): boolean {
+    return (
+      this.snapping.getOverride() !== null &&
+      (this.activeTool.takesSnapOverride?.() ?? false)
+    )
   }
 
   /** The first of two measuring points, while its question stands. */
@@ -1971,6 +1997,13 @@ export class CadRuntime extends Observable {
     if (text.startsWith("#") && !this.takesText()) return false
     if (this.refusesOffPlane(text)) return false
     if (!this.dynamicInputHasField()) {
+      // A point typed under an override found at a pick, as a box's is.
+      const point = this.overridePicks() ? this.typedFramePoint(text) : null
+      if (point !== null) {
+        this.pickTyped(point)
+        this.invalidateState()
+        return true
+      }
       const taken =
         this.activeTool.answerTyped?.(text, this.toolContext) ?? false
       if (taken) this.invalidateState()
@@ -2015,8 +2048,16 @@ export class CadRuntime extends Observable {
    * `CENTER` at ZOOM's as the snap, although it spells the `Center` keyword.
    */
   private pointModifier(text: string): boolean {
-    if (!this.wantsPoint()) return false
     const mode = this.objectSnapNamed(text)
+    if (!this.wantsPoint()) {
+      // An object snap alone where it answers a pick (TRIM's object prompt);
+      // FROM and `<angle` have no point to give there.
+      if (mode === null || !(this.activeTool.takesSnapOverride?.() ?? false)) {
+        return false
+      }
+      this.setSnapOverride(OSNAP_MODES[mode], text.trim())
+      return true
+    }
     // A second one is the wrong answer of the override's `of`, which takes a
     // point, and neither holds after it (probe line/p162).
     if (mode !== null && this.snapping.getOverride() !== null) {

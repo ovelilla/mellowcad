@@ -15,6 +15,7 @@ import {
   type LineEntity,
   type PolylineEntity,
 } from "../../domain/entities"
+import type { Layer } from "../../domain/layers"
 import { ellipseParamFromAngle } from "../../geometry/primitives"
 import type { Vec2 } from "../../geometry/Vec2"
 import { THEME } from "../../scene/theme"
@@ -726,8 +727,7 @@ describe("EXTEND", () => {
   })
 })
 
-// AutoCAD 2027's console (probe trim/p105) and 2023's (acc/v1–v7 of the
-// hidden UCS words session).
+// AutoCAD 2027's console (probes trim/p105, p240–p242, p289–p299).
 describe("TRIM and EXTEND answer what is typed", () => {
   const drawing = () =>
     createHarness({
@@ -769,8 +769,7 @@ describe("TRIM and EXTEND answer what is typed", () => {
     )
   })
 
-  // AutoCAD 2023's console (acc/tf1–tf19, tg1–tg7): its "pick two empty
-  // locations".
+  // probes trim/p241, p248, p297–p299: its "pick two empty locations".
   it("starts a fence on nothing, which its next point closes, as one step", () => {
     const cad = typed(drawing(), "ID", "1,1", "TRIM", "70,30", "70,-20")
     expect(cad.commandLog().slice(-2)).toEqual([
@@ -822,7 +821,7 @@ describe("TRIM and EXTEND answer what is typed", () => {
     expect(ended.activeToolId()).toBe("select")
     expect(endpoints(ended.byId<LineEntity>("A"))[1]).toEqual(p(100, 0))
 
-    // A second point on an object is the fence's (acc/tg5).
+    // A second point on an object is the fence's (probe trim/p404).
     const onto = typed(drawing(), "TRIM", "70,10", "50,5")
     expect(endpoints(onto.byId<LineEntity>("V"))).toEqual([
       p(50, -50),
@@ -886,6 +885,274 @@ describe("TRIM and EXTEND answer what is typed", () => {
       "*Designación no válida*",
       "Requiere un punto o Borde/aristas de COrte/Captura/MOdo/bOrrar",
     ])
+  })
+})
+
+// AutoCAD 2027's console (probes trim/p240–p264): the object prompt's every
+// point form, LASTPOINT after each answer, locked and Off layers, two objects
+// in the pick box, typed object snaps.
+describe("TRIM and EXTEND's picks", () => {
+  const drawing = (locale?: typeof es, ...more: Entity[]) =>
+    createHarness({
+      locale,
+      entities: [
+        lineOf(p(0, 0), p(100, 0), { id: "A" }),
+        lineOf(p(50, -50), p(50, 50), { id: "V" }),
+        lineOf(p(0, 20), p(100, 20), { id: "B" }),
+        ...more,
+      ],
+    })
+  const typed = (cad: CadHarness, ...texts: string[]) => {
+    for (const text of texts) {
+      if (text === "") cad.enter()
+      else {
+        cad.runtime.setCommandLineText(text)
+        cad.runtime.submitCommandLine()
+      }
+    }
+    return cad
+  }
+  const lastPoint = (cad: CadHarness) => {
+    if (cad.activeToolId() !== "select") cad.escape()
+    typed(cad, "ID", "@")
+    return cad.commandLog().at(-1)
+  }
+  const onLayer = (layer: Partial<Layer>, ...more: Entity[]) => {
+    const cad = createHarness()
+    cad.runtime.document.load(
+      [
+        lineOf(p(0, 0), p(100, 0), { id: "A" }),
+        lineOf(p(50, -50), p(50, 50), { id: "V" }),
+        ...more,
+      ],
+      { layers: [layerOf("0"), layerOf("LK", layer)] }
+    )
+    return cad
+  }
+
+  it("takes `@`, a polar point, `*x,y` and a number as points, and refuses `#` (p243–p247)", () => {
+    const at = typed(drawing(), "ID", "80,0", "TRIM", "@")
+    expect(endpoints(at.byId<LineEntity>("A"))).toEqual([p(0, 0), p(50, 0)])
+    expect(lastPoint(at)).toBe(" X = 80.00     Y = 0.00     Z = 0.00")
+
+    const polar = typed(drawing(), "ID", "50,0", "TRIM", "@30<0", "20<90")
+    expect(endpoints(polar.byId<LineEntity>("A"))).toEqual([p(0, 0), p(50, 0)])
+    expect(endpoints(polar.byId<LineEntity>("B"))).toEqual([
+      p(50, 20),
+      p(100, 20),
+    ])
+    expect(lastPoint(polar)).toBe(" X = 0.00     Y = 20.00     Z = 0.00")
+
+    // In a UCS turned 30°, `*80,0` is the WCS's 80,0, and LASTPOINT reads
+    // 69.282,-40 in the UCS (p245).
+    const world = typed(drawing(), "UCS", "Z", "30", "TRIM", "*80,0")
+    expect(endpoints(world.byId<LineEntity>("A"))).toEqual([p(0, 0), p(50, 0)])
+    expect(lastPoint(world)).toBe(" X = 69.28     Y = -40.00     Z = 0.00")
+
+    const tooltip = typed(drawing(), "TRIM", "#80,0")
+    expect(tooltip.commandLog().slice(-2)).toEqual([
+      "*Invalid selection*",
+      "Expects a point or Fence/cuTting edges/Crossing/mOde",
+    ])
+
+    // A number: its direct distance from LASTPOINT towards the cursor (p247).
+    const distance = typed(drawing(), "ID", "80,10")
+    distance.moveTo(p(80, -100))
+    typed(distance, "TRIM", "10")
+    expect(endpoints(distance.byId<LineEntity>("A"))).toEqual([
+      p(0, 0),
+      p(50, 0),
+    ])
+    expect(lastPoint(distance)).toBe(" X = 80.00     Y = 0.00     Z = 0.00")
+  })
+
+  it("leaves LASTPOINT at the pick after a hit, a miss and a refusal (p240, p248–p250)", () => {
+    const hit = typed(drawing(), "ID", "5,5", "TRIM", "80,0")
+    expect(lastPoint(hit)).toBe(" X = 80.00     Y = 0.00     Z = 0.00")
+
+    const miss = typed(drawing(), "ID", "1,1", "TRIM", "70,30", "")
+    expect(miss.activeToolId()).toBe("select")
+    expect(lastPoint(miss)).toBe(" X = 70.00     Y = 30.00     Z = 0.00")
+
+    const extend = typed(drawing(), "ID", "1,1", "EXTEND", "50,40")
+    expect(extend.commandLog().at(-1)).toBe(
+      "Path does not intersect with the bounding edge."
+    )
+    expect(lastPoint(extend)).toBe(" X = 50.00     Y = 40.00     Z = 0.00")
+
+    const standard = typed(
+      drawing(undefined, lineOf(p(200, 0), p(300, 0))),
+      "ID",
+      "1,1",
+      "TRIM",
+      "O",
+      "S",
+      "250,0"
+    )
+    expect(standard.commandLog().at(-1)).toBe(
+      "Does not intersect with the cutting edge."
+    )
+    expect(lastPoint(standard)).toBe(" X = 250.00     Y = 0.00     Z = 0.00")
+  })
+
+  it("says a locked object picked was on a locked layer, then starts the fence (p251)", () => {
+    const locked = lineOf(p(0, -10), p(100, -10), { id: "K", layerId: "LK" })
+    const cad = typed(onLayer({ locked: true }, locked), "ID", "1,1")
+    typed(cad, "TRIM", "80,-10")
+    expect(cad.commandLog().slice(-2)).toEqual([
+      "Select object to trim or shift-select to extend or [cuTting edges/Crossing/mOde/eRase]: 80,-10",
+      "1 was on a locked layer.",
+    ])
+    expect(cad.state().commandLine.prompt).toBe(
+      "TRIM Specify next fence point or [Undo]:"
+    )
+    expect(lastPoint(cad)).toBe(" X = 80.00     Y = -10.00     Z = 0.00")
+
+    const spanish = createHarness({ locale: es })
+    spanish.runtime.document.load([locked], {
+      layers: [layerOf("0"), layerOf("LK", { locked: true })],
+    })
+    typed(spanish, "RECORTA", "80,-10")
+    expect(spanish.commandLog().at(-1)).toBe("1 estaba en una capa bloqueada.")
+  })
+
+  it("starts the fence in silence at an object on an Off layer, which is no edge (p252–p254)", () => {
+    const off = typed(
+      onLayer(
+        { visible: false },
+        lineOf(p(0, -10), p(100, -10), { id: "K", layerId: "LK" })
+      ),
+      "TRIM",
+      "80,-10"
+    )
+    expect(off.commandLog().at(-1)).toBe(
+      "Select object to trim or shift-select to extend or [cuTting edges/Crossing/mOde/eRase]: 80,-10"
+    )
+    expect(off.state().commandLine.prompt).toBe(
+      "TRIM Specify next fence point or [Undo]:"
+    )
+
+    const edge = lineOf(p(80, -50), p(80, 50), { id: "K", layerId: "LK" })
+    const noEdge = typed(onLayer({ visible: false }, edge), "TRIM", "90,0")
+    expect(endpoints(noEdge.byId<LineEntity>("A"))).toEqual([p(0, 0), p(50, 0)])
+    // A locked one cuts (p255).
+    const lockedEdge = typed(onLayer({ locked: true }, edge), "TRIM", "90,0")
+    expect(endpoints(lockedEdge.byId<LineEntity>("A"))).toEqual([
+      p(0, 0),
+      p(80, 0),
+    ])
+  })
+
+  it("takes the newer of two objects in the pick box, though the older is nearer (p256, p257, p402)", () => {
+    const pair = (older: number, newer: number) =>
+      createHarness({
+        entities: [
+          lineOf(p(0, older), p(100, older), { id: "OLDER" }),
+          lineOf(p(0, newer), p(100, newer), { id: "NEWER" }),
+          lineOf(p(50, -50), p(50, 50), { id: "V" }),
+        ],
+      })
+    const below = typed(pair(0, 2), "TRIM", "80,0.3")
+    expect(endpoints(below.byId<LineEntity>("OLDER"))[1]).toEqual(p(100, 0))
+    expect(endpoints(below.byId<LineEntity>("NEWER"))[1]).toEqual(p(50, 2))
+    const above = typed(pair(2, 0), "TRIM", "80,1.7")
+    expect(endpoints(above.byId<LineEntity>("OLDER"))[1]).toEqual(p(100, 2))
+    expect(endpoints(above.byId<LineEntity>("NEWER"))[1]).toEqual(p(50, 0))
+  })
+
+  it("takes a typed object snap's point as the pick and LASTPOINT (p259–p263)", () => {
+    const end = typed(drawing(), "ID", "5,5", "TRIM", "_END", "99,1")
+    expect(end.commandLog().at(-1)).toBe(
+      "Select object to trim or shift-select to extend or [cuTting edges/Crossing/mOde/eRase]: _END of 99,1"
+    )
+    expect(endpoints(end.byId<LineEntity>("A"))).toEqual([p(0, 0), p(50, 0)])
+    expect(end.state().commandLine.prompt).toBe(
+      "TRIM Select object to trim or shift-select to extend or [cuTting edges/Crossing/mOde/eRase/Undo]:"
+    )
+    expect(lastPoint(end)).toBe(" X = 100.00     Y = 0.00     Z = 0.00")
+
+    // Midpoint finds the line under 80,-30's midpoint, which Quick deletes.
+    const mid = typed(
+      drawing(undefined, lineOf(p(60, -30), p(100, -30), { id: "M" })),
+      "TRIM",
+      "_MID",
+      "90,-29"
+    )
+    expect(mid.runtime.document.has("M")).toBe(false)
+    expect(lastPoint(mid)).toBe(" X = 80.00     Y = -30.00     Z = 0.00")
+
+    // Intersection's point is on V, the newer, and its own crossing there
+    // no bound: V goes from its end up to B (p261).
+    const int = typed(drawing(), "TRIM", "_INT", "51,1")
+    expect(endpoints(int.byId<LineEntity>("V"))).toEqual([p(50, 20), p(50, 50)])
+    expect(endpoints(int.byId<LineEntity>("A"))).toEqual([p(0, 0), p(100, 0)])
+    expect(lastPoint(int)).toBe(" X = 50.00     Y = 0.00     Z = 0.00")
+
+    const near = typed(drawing(), "TRIM", "_NEA", "80,1")
+    expect(near.commandLog().at(-1)).toBe(
+      "Select object to trim or shift-select to extend or [cuTting edges/Crossing/mOde/eRase]: _NEA to 80,1"
+    )
+    expect(endpoints(near.byId<LineEntity>("A"))).toEqual([p(0, 0), p(50, 0)])
+    expect(lastPoint(near)).toBe(" X = 80.00     Y = 0.00     Z = 0.00")
+
+    // Perpendicular from LASTPOINT: 5,0 on A, whose left piece goes.
+    const per = typed(drawing(), "ID", "5,5", "TRIM", "_PER", "80,1")
+    expect(endpoints(per.byId<LineEntity>("A"))).toEqual([p(50, 0), p(100, 0)])
+    expect(lastPoint(per)).toBe(" X = 5.00     Y = 0.00     Z = 0.00")
+
+    const spanish = typed(drawing(es), "RECORTA", "FIN", "99,1")
+    expect(spanish.commandLog().at(-1)).toBe(
+      "Seleccione un objeto que recortar o use la tecla Mayús y seleccione para alargar, o [aristas de COrte/Captura/MOdo/bOrrar]: FIN de 99,1"
+    )
+    expect(endpoints(spanish.byId<LineEntity>("A"))).toEqual([
+      p(0, 0),
+      p(50, 0),
+    ])
+  })
+
+  it("takes Enter at an override's `of` as the prompt's own Enter (p264)", () => {
+    const cad = typed(drawing(), "TRIM", "_END", "")
+    expect(cad.activeToolId()).toBe("trim")
+    expect(cad.state().commandLine.prompt).toBe(
+      "TRIM Select object to trim or shift-select to extend or [cuTting edges/Crossing/mOde/eRase/Undo]:"
+    )
+    typed(cad, "")
+    expect(cad.activeToolId()).toBe("select")
+    typed(cad, "ID", "40,40")
+    expect(cad.commandLog().at(-1)).toBe(
+      " X = 40.00     Y = 40.00     Z = 0.00"
+    )
+    // A click after it is a plain pick again, running snaps or not.
+    const after = typed(drawing(), "TRIM", "_END", "", "")
+    after.command("TRIM").click(p(80, 1))
+    expect(endpoints(after.byId<LineEntity>("A"))).toEqual([p(0, 0), p(50, 0)])
+  })
+
+  // probe trim/p140: nothing is left selected, in either mode.
+  it("leaves nothing selected", () => {
+    const quick = typed(drawing(), "TRIM", "80,0", "")
+    expect(quick.selectedIds()).toEqual([])
+    const standard = typed(drawing(), "TRIM", "O", "S", "")
+    typed(standard, "TRIM", "50,30", "", "80,0", "")
+    expect(standard.selectedIds()).toEqual([])
+  })
+
+  // Desktop trim/d07, probe p265: Ortho has no base point there.
+  it("lets Ortho leave an implied fence's next point alone", () => {
+    const cad = drawing()
+    cad.press("F8")
+    cad.command("TRIM").click(p(70, 30)).click(p(40, -10))
+    expect(endpoints(cad.byId<LineEntity>("B"))).toEqual([p(0, 20), p(50, 20)])
+    expect(endpoints(cad.byId<LineEntity>("A"))).toEqual([p(50, 0), p(100, 0)])
+    expect(endpoints(cad.byId<LineEntity>("V"))).toEqual([p(50, -50), p(50, 0)])
+  })
+
+  // Desktop trim/d02-2: Shift's trim inside EXTEND is TRIM's, Quick's delete
+  // too.
+  it("deletes under Shift in EXTEND a line no edge crosses", () => {
+    const cad = drawing(undefined, lineOf(p(200, 0), p(300, 0), { id: "F" }))
+    cad.command("EXTEND").click(p(250, 0), { shiftKey: true })
+    expect(cad.runtime.document.has("F")).toBe(false)
   })
 })
 
@@ -1151,8 +1418,7 @@ describe("TRIM and EXTEND's Enter, Undo and preselection", () => {
   })
 })
 
-// AutoCAD 2023's console (acc/ta1–ta18, tb1–tb16, tc1–tc10, td1–td4,
-// te1–te6, th1–th6 of the TRIM options session).
+// AutoCAD 2027's console (probes trim/p289–p307, p380–p382).
 describe("TRIM and EXTEND's Fence and Crossing", () => {
   const drawing = () =>
     createHarness({
@@ -1351,7 +1617,8 @@ describe("TRIM and EXTEND's Fence and Crossing", () => {
       "new 70,0 100,0",
     ])
 
-    // A circle loses the arc in the window.
+    // A circle loses the arc in the window (AutoCAD 2023's console, not
+    // probed again).
     const circle = typed(
       createHarness({
         entities: [
@@ -1494,7 +1761,8 @@ describe("TRIM and EXTEND's Fence and Crossing", () => {
       "T 0,10 30,10",
     ])
 
-    // One it could not extend says why, and nothing more.
+    // One it could not extend says why, and nothing more (AutoCAD 2023's
+    // console, not probed again).
     const none = typed(
       createHarness({
         entities: [
@@ -1536,6 +1804,7 @@ describe("TRIM and EXTEND's Fence and Crossing", () => {
     expect(spanish.commandLog().at(-1)).toBe("No hay límite en esta dirección.")
   })
 
+  // AutoCAD 2023's console, not probed again.
   it("says once why a fence leaves an object", () => {
     const cad = typed(
       createHarness({
@@ -1829,6 +2098,21 @@ describe("TRIM and EXTEND's mOde and cuTting edges", () => {
     expect(prompt(again)).toBe(
       "TRIM Select object to trim or shift-select to extend or [cuTting edges/Crossing/mOde/eRase]:"
     )
+
+    // Once the set holds something mOde is `*Invalid*`, and nothing more
+    // (probes trim/p283, p389).
+    const held = typed(drawing(), "TRIM", "O", "S", "", "TRIM", "30,10", "O")
+    expect(held.commandLog().slice(-2)).toEqual([
+      "Select objects: O",
+      "*Invalid*",
+    ])
+    expect(prompt(held)).toBe("TRIM Select objects:")
+    const spanish = typed(drawing(es), "RECORTA", "MO", "E", "", "RECORTA")
+    typed(spanish, "30,10", "MO")
+    expect(spanish.commandLog().slice(-2)).toEqual([
+      "Designe objetos: MO",
+      "*No válido*",
+    ])
 
     const extend = typed(
       createHarness({
@@ -3475,7 +3759,7 @@ describe("FILLET", () => {
     })
 
     it("never trims a circle, and keeps a line on the side it runs on", () => {
-      const right = fillet([line(), circle()], "5", p(75, 0), p(20, 20))
+      const right = fillet([line(), circle()], "5", p(90, 0), p(20, 20))
       expect(right.byId<CircleEntity>("C1")).toEqual(circle())
       expect(right.byId<LineEntity>("L1")).toMatchObject({ end: p(100, 0) })
       expect(right.byId<LineEntity>("L1").start).toBeCloseToPoint(

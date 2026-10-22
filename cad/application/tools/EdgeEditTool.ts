@@ -177,8 +177,8 @@ type EdgeEditPlan =
 
 /**
  * A fence: the one a pick on nothing starts, AutoCAD's "pick two empty
- * locations", which its second point closes (acc/tf1–tf19, tg1–tg7), or
- * Fence's, typed, whose points Enter ends (ta1–ta7, te3).
+ * locations", which its second point closes (probes trim/p241, p297, p404),
+ * or Fence's, typed, whose points Enter ends (p289–p293).
  */
 interface EdgeEditFence {
   readonly points: readonly Vec2[]
@@ -240,7 +240,7 @@ export abstract class EdgeEditTool implements Tool {
   private edgeBefore: boolean | null = null
   private lastInput: PointerInput | null = null
   private fence: EdgeEditFence | null = null
-  /** Crossing's window, its first corner once given (acc/ta8–ta18, tb1–tb16). */
+  /** Crossing's window, its first corner once given (probes trim/p301–p307). */
   private window: {
     readonly start: Vec2 | null
     readonly cursor: Vec2 | null
@@ -377,7 +377,7 @@ export abstract class EdgeEditTool implements Tool {
 
   /**
    * WHY: Crossing's first corner becomes LASTPOINT, its opposite one and a
-   * fence's points do not (AutoCAD 2023's console, acc/th1, th2, th6).
+   * fence's points do not (probes trim/p292, p299, p301).
    */
   setsLastPoint(): boolean | null {
     if (this.asking) return null
@@ -394,14 +394,16 @@ export abstract class EdgeEditTool implements Tool {
     if (this.asking === "edge") return [{ id: "Extend" }, { id: "Noextend" }]
     const selector = this.selector()
     if (selector) {
-      // WHY mOde only as the command starts, the set empty (probes
-      // trim/p119, p152, p284).
-      const mode =
-        this.asking === "edges" &&
-        this.starting &&
-        (this.selection?.isEmpty() ?? true) &&
-        !selector.inMode()
-      return [...(mode ? [{ id: "mOde" }] : []), ...selector.commandOptions()]
+      // WHY mOde only as the command starts, listed while the set is empty
+      // and refused once it is not (probes trim/p119, p152, p283–p285).
+      if (this.asking !== "edges" || !this.starting || selector.inMode()) {
+        return selector.commandOptions()
+      }
+      const mode: CommandOption =
+        (this.selection?.isEmpty() ?? true)
+          ? { id: "mOde" }
+          : { id: "mOde", hidden: true }
+      return [mode, ...selector.commandOptions()]
     }
     if (this.fence) {
       return !this.fence.typed || this.fence.points.length > 0
@@ -435,6 +437,11 @@ export abstract class EdgeEditTool implements Tool {
     const selector = this.selector()
     if (selector) {
       if (id === "mOde" && this.asking === "edges") {
+        // `*Invalid*` alone once the set holds something (p283, p389).
+        if (!(this.selection?.isEmpty() ?? true)) {
+          ctx.report(ctx.text.message("invalid"), "error")
+          return "continue"
+        }
         this.asking = "mode"
         this.modeFromEdges = true
         return "continue"
@@ -444,8 +451,8 @@ export abstract class EdgeEditTool implements Tool {
     const fence = this.fence
     if (fence) {
       if (id !== "Undo") return "unhandled"
-      // WHY the first point kept: AutoCAD 2023's console asks again (acc/tg1,
-      // tg7); Fence's own drops its last point (ta4, te3).
+      // WHY the first point kept: the console asks again (probe trim/p297);
+      // Fence's own drops its last point (p289).
       if (fence.typed) {
         this.fence = { ...fence, points: fence.points.slice(0, -1) }
         this.openFenceInput(ctx)
@@ -534,15 +541,15 @@ export abstract class EdgeEditTool implements Tool {
       ctx.requestRender()
       return
     }
-    this.lastInput = input
-    this.preview = this.planFor(input, ctx)
+    this.lastInput = snappedPick(input)
+    this.preview = this.planFor(this.lastInput, ctx)
     ctx.requestRender()
   }
 
   /**
-   * A point typed at the prompt picks there (AutoCAD 2023's console, acc/v1,
-   * v3, v4 of the hidden UCS words session), and on nothing starts the
-   * fence, or Standard's window, as a click does.
+   * A point typed at the prompt picks there (probes trim/p240–p247), and on
+   * nothing starts the fence, or Standard's window, as a click does (p248,
+   * p308).
    */
   answerTyped(text: string, ctx: ToolContext): boolean {
     if (this.asking) return this.selector()?.answerTyped(text, ctx) ?? false
@@ -581,14 +588,24 @@ export abstract class EdgeEditTool implements Tool {
       this.cornerPoint(input.point, ctx)
       return
     }
-    this.lastInput = input
+    // An override's point is the pick, and LASTPOINT (probe trim/p259).
+    if (input.snap) ctx.setLastPoint(input.point)
+    const pick = snappedPick(input)
+    this.lastInput = pick
     this.answered = true
     this.enterSpent = true
-    const plan = this.planFor(input, ctx)
+    const plan = this.planFor(pick, ctx)
     if (!plan) {
-      if (ctx.pick(input.world)) this.refuseExtend(input, ctx)
-      else if (this.mode.standard) this.startWindow(input.point, ctx)
-      else this.startFence(input.point, ctx)
+      if (ctx.pick(pick.world)) this.refuseExtend(pick, ctx)
+      else {
+        // WHY said, then the fence: a locked object is no pick, and the
+        // console says why (probe trim/p251).
+        if (this.lockedAt(pick.world, ctx)) {
+          ctx.report(ctx.text.message("onLockedLayer", { count: 1 }))
+        }
+        if (this.mode.standard) this.startWindow(pick.point, ctx)
+        else this.startFence(pick.point, ctx)
+      }
       ctx.requestRender()
       return
     }
@@ -601,7 +618,7 @@ export abstract class EdgeEditTool implements Tool {
     this.commit(plan, ctx)
     // Loop like AutoCAD: recompute the preview against the now-updated drawing
     // so a follow-up click continues trimming/extending from the same spot.
-    this.preview = this.planFor(input, ctx)
+    this.preview = this.planFor(pick, ctx)
     ctx.requestRender()
   }
 
@@ -659,6 +676,19 @@ export abstract class EdgeEditTool implements Tool {
     this.answered = true
     ctx.requestRender()
     return true
+  }
+
+  /**
+   * WHY at the object prompt: a typed or chosen object snap picks there
+   * (probes trim/p259–p263), its Perpendicular from LASTPOINT (p263); the
+   * running snaps stay off ({@link wantsSnap}).
+   */
+  takesSnapOverride(): boolean {
+    return this.asking === null && this.fence === null && this.window === null
+  }
+
+  snapsFromLastPoint(): boolean {
+    return this.takesSnapOverride()
   }
 
   wantsSnap(): boolean {
@@ -955,8 +985,8 @@ export abstract class EdgeEditTool implements Tool {
   }
 
   /**
-   * The fence's point box: `@` and a number from the point before, the
-   * first's from LASTPOINT (acc/th6).
+   * The fence's point box: `@` and a number from the point before (probes
+   * trim/p293, p299), the first's from LASTPOINT.
    */
   private openFenceInput(ctx: ToolContext): void {
     const last = this.fence?.points.at(-1)
@@ -1027,7 +1057,7 @@ export abstract class EdgeEditTool implements Tool {
 
   /**
    * WHY the object prompt again: AutoCAD asks the opposite corner on it,
-   * `…or [Crossing]: Specify opposite corner:` (acc/ta8, tb10).
+   * `…or [Crossing]: Specify opposite corner:` (probe trim/p301).
    */
   private reportObjectPrompt(ctx: ToolContext): void {
     ctx.report(
@@ -1042,13 +1072,13 @@ export abstract class EdgeEditTool implements Tool {
   /**
    * A fence's edit, or Crossing's — its window's outline, walked clockwise
    * from its first corner as AutoCAD follows it, an object inside it left
-   * alone (acc/ta17, tb1–tb4, tc1). At each place it meets an object, in its
+   * alone (probes trim/p304–p306). At each place it meets an object, in its
    * order, the object as it now is is trimmed or extended as if picked
-   * there, against the drawing as it now is (ta3, ta10): EXTEND takes an
-   * object at its first only and says `No edge in that direction.` at the
-   * next (td1–td3, te1), and an object refused is left alone at the rest
-   * (te5, th4). One Undo step, and none where it changes nothing, Undo
-   * listed all the same (probes trim/p290, p303, p380, p381).
+   * there, against the drawing as it now is (p294): EXTEND takes an object
+   * at its first only and says `No edge in that direction.` at the next
+   * (p295, p300), and an object refused is left alone at the rest. One Undo
+   * step, and none where it changes nothing, Undo listed all the same
+   * (p290, p303, p380, p381).
    */
   private editAcross(
     points: readonly Vec2[],
@@ -1140,6 +1170,20 @@ export abstract class EdgeEditTool implements Tool {
       .filter((e) => ctx.document.isEntityVisible(e) && readsInPlan(e))
   }
 
+  /** Whether an object on a locked layer lies under the pick box at `world`. */
+  private lockedAt(world: Vec2, ctx: ToolContext): boolean {
+    const { document } = ctx
+    const tolerance = ctx.pickTolerance()
+    return document
+      .getEntities()
+      .some(
+        (entity) =>
+          document.getLayer(entity.layerId)?.locked === true &&
+          document.isEntityVisible(entity) &&
+          distanceToEntity(entity, world, ctx.blocks) <= tolerance
+      )
+  }
+
   private pickFor(input: PointerInput, ctx: ToolContext): Entity | null {
     const hit = ctx.pick(input.world)
     return hit && readsInPlan(hit) ? hit : null
@@ -1219,6 +1263,11 @@ export abstract class EdgeEditTool implements Tool {
       ),
     }
   }
+}
+
+/** A pick where an object snap override found its point: there. */
+function snappedPick(input: PointerInput): PointerInput {
+  return input.snap ? { ...input, world: input.point } : input
 }
 
 /**
@@ -1633,10 +1682,15 @@ function planTrimLine(
   click: Vec2,
   others: readonly Entity[]
 ): EdgeEditPlan | null {
-  const crossings = trimCrossParams(line, others)
+  const tc = Math.max(0, Math.min(1, paramOnLine(line, click)))
+  // WHY a crossing at the pick bounds nothing: Intersection's point picks
+  // there, and the console cuts back to the crossings either side of it
+  // (probe trim/p261).
+  const crossings = trimCrossParams(line, others).filter(
+    (t) => Math.abs(t - tc) > PARAM_EPS
+  )
   if (crossings.length === 0) return null
 
-  const tc = Math.max(0, Math.min(1, paramOnLine(line, click)))
   const bounds = [0, ...crossings, 1]
   let i = 0
   while (i < bounds.length - 1 && !(tc >= bounds[i] && tc <= bounds[i + 1])) i++

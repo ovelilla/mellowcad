@@ -283,7 +283,8 @@ lists Fence and Edge (`[cuTting edges/Fence/Crossing/mOde/Edge/eRase]`, EXTEND
 `Seleccione las aristas de contorno...`) and `Select objects or [mOde] <select all>:` (es
 `Seleccione objetos o [MOdo] <seleccionar todo>:`), then `Select objects:` as its set holds
 something — Enter with none takes every object, mOde there back to Standard asks it again, to Quick
-takes every object —, leaves an object no edge crosses, saying
+takes every object, and once the set holds something mOde is `*Invalid*` (es `*No válido*`) and no
+more (p283, p389) —, leaves an object no edge crosses, saying
 `Does not intersect with the cutting edge.` (es `No se interseca con la arista de corte.`), and
 starts a crossing window at a pick on nothing, however it is drawn, its opposite corner asked on the
 prompt; switched to mid-command, every object is an edge until some are
@@ -304,13 +305,23 @@ curve, an open polyline from its ends along its end segments (an arc end segment
 **unverified**) —, never in Quick mode; a choice is
 an Undo step joined to the edit after it, and a U right after it takes it back with the edit before
 it, as the console does; a point typed picks there, as the console takes it (`@` from LASTPOINT, a
-number a direct distance from it towards the cursor, which it then is), and a point on nothing,
+polar point, `*x,y` in the WCS, a number a direct distance from it towards the cursor, which it then
+is, hit, missed or refused; `#x,y` at the command line refused as anything else typed is: probes
+trim/p240–p250), and so does an object snap typed there, its point the pick and LASTPOINT
+(`_END of 99,1` trims at 100,0; Perpendicular from LASTPOINT; a crossing at the point is no bound
+of a line; Enter at its `of` is the prompt's own: p259–p264) — the running snaps stay off there
+and the Command menu offers no Snap Overrides (desktop d05-1); of two objects in the pick box the
+newer is taken, however near the older lies, as at `Select objects:` (p256, p257, p402); an object on
+a locked layer is no pick, `1 was on a locked layer.` (es `1 estaba en una capa bloqueada.`) and
+then what a pick on nothing does (p251), yet it is an edge (p255); one on a layer that is off is
+neither, in silence (p252–p254); nothing is left selected (p140); a point on nothing,
 clicked or typed, starts AutoCAD's crossing fence of two points
 (`Specify next fence point or [Undo]:`, es `Precise punto del borde o [desHacer]`): its next point —
-`@` and a number from the first, which stays LASTPOINT — closes it; Undo there keeps the first point
+`@` and a number from the first, which stays LASTPOINT, Ortho leaving it alone (no base point, desktop
+d07) — closes it; Undo there keeps the first point
 and asks again, Enter ends the command, the same point is
-`Invalid point, polygon segment is zero length.` and anything else `Invalid response.`, as AutoCAD
-2023's console has it (it also echoes the prompts once more, bare, around the fence, a jig's echo);
+`Invalid point, polygon segment is zero length.` and anything else `Invalid response.`, as the
+console has it (p297; it also echoes the prompts once more, bare, around the fence, a jig's echo);
 Fence (`F`, es `B`, unlisted) asks `Specify first fence point or pick/drag cursor:` (es
 `Precise primer punto del borde o designe/arrastre cursor:`), then the next point until Enter — with
 no point or one too —, Undo dropping the last point and refused at the first (`Invalid response.`),
@@ -337,7 +348,8 @@ mOde, Undo once listed — of those built
 `Requiere un punto o Borde/aristas de COrte/Captura/MOdo/bOrrar`; EXTEND's
 `Expects a point or Fence/Boundary edges/Crossing/mOde`), at Crossing's first corner every word
 declared but Undo; Quick mode over line/circle/arc/polyline (straight and arc segments)/ellipse
-(whole or an arc of one), each an edge for the others and so is a spline, Shift to swap mode; a
+(whole or an arc of one), each an edge for the others and so is a spline, Shift to swap mode (Shift's
+trim inside EXTEND deletes what no edge crosses, as TRIM's Quick does: desktop d02); a
 spline no edge crosses is deleted too, a closed one cut once refused as a whole ellipse is, and a
 closed one EXTEND refuses as a closed polyline; an elliptical arc grows round its ellipse from the
 end its pick lies nearer in the ellipse's parameter (not along the curve, nor in a straight line),
@@ -374,8 +386,7 @@ neither an edge nor trimmed (it does not highlight). English wording from AutoCA
 as Edge's, and the settings saying `Projection=None` or `View`: None cuts only where objects meet in
 3D (an edge at another height cuts nothing, and Quick mode then deletes what no longer crosses one),
 View projects along the line of sight; everything here is worked out projected on the UCS's XY
-plane, which is Ucs, so `P` is refused as an option not built —, mOde at `Select objects:` once the
-edges' set holds something (not offered here), the fence dragged
+plane, which is Ucs, so `P` is refused as an option not built —, the fence dragged
 (`pick/drag cursor`), Shift held for a fence or a window (the console has no Shift: **unverified**),
 PROJMODE, EDGEMODE and TRIMEXTENDMODE as variables (and across sessions, as AutoCAD keeps them in
 the registry), a spline as an edge running on, projecting objects at an angle to the UCS onto its XY
@@ -385,7 +396,8 @@ piece along its end tangent behind a triple knot, a CV spline by a curved one �
 here, fit points or control vertices on uniform knots, cannot hold; so neither an open spline's
 `Object does not intersect an edge.`); the piece after a polyline's own crossing, which the console
 starts with a zero-length segment; **unverified**: the reasons when TRIM's Shift extends (EXTEND's,
-the same code here), and that a Shift-trim inside EXTEND deletes as TRIM's does
+the same code here), and whether a crossing at the pick bounds the trim of an arc, a circle or a
+polyline (a line's does not, p261; here theirs does)
 
 ### `OFFSET` / `O` · es `DESFASE` / `DF` / `EQ`
 

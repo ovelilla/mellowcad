@@ -1994,6 +1994,9 @@ function alongZOnScreen(
   }
 }
 
+/** Half the side of the pick box the crosshair carries (screen px). */
+export const PICK_BOX_PX = 4
+
 /**
  * Draws the AutoCAD-style crosshair in place of the OS cursor: two continuous
  * lines that cross at the cursor (no centre gap), CURSORSIZE 5 (5 % of the
@@ -2024,7 +2027,7 @@ function pushCrosshair(
     stroke,
   })
   if (!cursor.pickbox) return
-  const s = 4
+  const s = PICK_BOX_PX
   out.push({
     kind: "rect",
     min: { x: x - s, y: y - s },

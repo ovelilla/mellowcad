@@ -164,7 +164,7 @@ export const filesGroup = demo({
   .type("0,0")
   .enter()
   .click(16, 0)
-  .click(-16, 0)
+  .click(-8, 0)
   .enter()
   .command("_PASTECLIP")
   .moveTo(52, 0)

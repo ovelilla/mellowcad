@@ -10,18 +10,21 @@ import { THEME } from "../scene/theme"
  * Shift+Space or by choosing from the Selection list box.
  */
 
-/** Two nearly coincident lines: a click at the origin covers both. */
+/**
+ * Two nearly coincident lines: a click at the origin covers both, and takes
+ * the one drawn last, nearer or not (probes trim/p400–p403).
+ */
 function stacked() {
   return createHarness({
     entities: [
-      lineOf(p(-100, 0), p(100, 0), { id: "TOP" }),
       lineOf(p(-100, 2), p(100, 2), { id: "UNDER" }),
+      lineOf(p(-100, 0), p(100, 0), { id: "TOP" }),
     ],
   })
 }
 
 describe("selection cycling", () => {
-  it("is off by default: a click takes the nearest object and Shift+Space does nothing", () => {
+  it("is off by default: a click takes the topmost object and Shift+Space does nothing", () => {
     const cad = stacked()
 
     expect(cad.state().selectionCycling.active).toBe(false)

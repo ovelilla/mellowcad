@@ -831,6 +831,26 @@ describe("a single object's pick takes the modes", () => {
 
 // AutoCAD 2023's console answering the same input.
 describe("a point typed at Select objects", () => {
+  // probes trim/p400, p401 (en, es): of two lines in the pick box the newer,
+  // though the pick is nearer the older.
+  it("takes the newest object in the pick box", () => {
+    for (const [older, newer, at] of [
+      [0, 2, "80,0.3"],
+      [2, 0, "80,1.7"],
+    ] as const) {
+      const cad = createHarness({
+        entities: [
+          lineOf(p(0, older), p(100, older), { id: "OLDER" }),
+          lineOf(p(0, newer), p(100, newer), { id: "NEWER" }),
+        ],
+      })
+      cad.command("ERASE")
+      answer(cad, at)
+      cad.enter()
+      expect(cad.entities().map((e) => e.id)).toEqual(["OLDER"])
+    }
+  })
+
   it("picks there, and on nothing starts a window", () => {
     const cad = createHarness({ entities: drawing() })
     cad.command("ERASE")

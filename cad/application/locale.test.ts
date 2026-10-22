@@ -529,8 +529,9 @@ describe("Spanish AutoCAD's command language", () => {
     expect(cad.state().commandLine.prompt).toBe(
       "DESFASE Precise punto en lado de desplazamiento o [Salir/Deshacer] <siguiente objeto>:"
     )
+    // The source erased, its offset at y=5 is what is left to pick.
     cad.click(p(50, 10)).enter().escape()
-    cad.command("DESFASE").type("A").enter().click(p(50, 0))
+    cad.command("DESFASE").type("A").enter().click(p(50, 5))
     expect(cad.state().commandLine.prompt).toBe(
       "DESFASE Precise punto a atravesar o [Salir/Múltiple/Deshacer] <Salir>:"
     )

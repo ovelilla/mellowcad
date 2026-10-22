@@ -184,7 +184,8 @@ HATCH `Undo`, VPOINT `Tripod`, FILLET's and CHAMFER's second-object
 ### `Select objects:` · selection modes
 
 **Implemented:** what every command that takes a set asks it with (`tools/objectSelection.ts`),
-answered as AutoCAD 2023's console answers: a pick (`1 found`), Shift+pick removing, a window
+answered as AutoCAD 2023's console answers: a pick (`1 found`; of what lies in the pick box the
+newest, however near the others: 2027's ERASE and TRIM, probes trim/p400–p403), Shift+pick removing, a window
 clicked from a point on nothing (`Select objects: Specify opposite corner: 2 found`; left→right a
 window, right→left a crossing), a press dragged on nothing a lasso, as 2027's PICKAUTO 5 draws it —
 the dragged path closed, a window lasso if it sets off rightwards and a crossing lasso leftwards,

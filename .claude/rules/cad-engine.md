@@ -76,10 +76,10 @@ capability the app has belongs to the engine, behind a port; only the _mechanism
   read. Never derive the edges in a caller.
 - `polylineSegmentGeometries()` is the single source of how a polyline is shaped; a closed one
   closes from two vertices too (pline/p227): count segments with `polylineSegments`.
-- Paint order is `entityDrawOrder()` (only hatches move, behind everything, HPDRAWORDER 3), and
-  `pickAll()` sorts by it reversed, so what is drawn on top is what a click takes. `pick()` is
-  `pickAll()[0]`; selection cycling depends on that. A type that must sit behind another changes
-  that one function only.
+- Paint order is `entityDrawOrder()` (only hatches move, behind, HPDRAWORDER 3); `pickAll()`
+  sorts by it reversed, then newest first, never nearest (trim/p400): what is on top is what a
+  click takes. `pick()` is `pickAll()[0]`; selection cycling relies on it. A type set behind
+  another changes that function only.
 - **The UCS is only how points and angles are read; it never changes what is stored.** A `Ucs`
   can tilt; `isUpright` guards the 2D formulas, which stay bit-identical for it. Convert at the
   boundary (`ucsPointToWorld` / `worldPointToUcs` and their twins); nothing in `domain/` reads the

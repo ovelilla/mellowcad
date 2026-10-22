@@ -115,13 +115,17 @@ describe("picking", () => {
     expect(document.pick(p(50, 200), 8)).toBeNull()
   })
 
-  it("prefers the closest candidate", () => {
+  // AutoCAD 2027's console: ERASE's `Select objects:` and TRIM's object
+  // prompt take the newer of two lines in the pick box, though the pick is
+  // nearer the older (probes trim/p400–p403, p257, p402).
+  it("prefers the most recently drawn candidate, nearer or not", () => {
     const document = documentWith([
-      lineOf(p(0, 0), p(100, 0), { id: "FAR" }),
-      lineOf(p(0, 5), p(100, 5), { id: "NEAR" }),
+      lineOf(p(0, 0), p(100, 0), { id: "OLDER" }),
+      lineOf(p(0, 5), p(100, 5), { id: "NEWER" }),
     ])
 
-    expect(document.pick(p(50, 4), 8)?.id).toBe("NEAR")
+    expect(document.pick(p(50, 1), 8)?.id).toBe("NEWER")
+    expect(document.pick(p(50, 4), 8)?.id).toBe("NEWER")
   })
 
   it("prefers the most recently drawn entity on a tie", () => {
@@ -152,16 +156,16 @@ describe("picking", () => {
 })
 
 describe("pickAll (selection cycling candidates)", () => {
-  it("lists every entity under the pick box, nearest first", () => {
+  it("lists every entity under the pick box, newest first", () => {
     const document = documentWith([
-      lineOf(p(0, 5), p(100, 5), { id: "FAR" }),
       lineOf(p(0, 0), p(100, 0), { id: "NEAR" }),
+      lineOf(p(0, 5), p(100, 5), { id: "FAR" }),
       lineOf(p(0, 500), p(100, 500), { id: "AWAY" }),
     ])
 
     expect(document.pickAll(p(50, 0), 8).map((e) => e.id)).toEqual([
-      "NEAR",
       "FAR",
+      "NEAR",
     ])
   })
 

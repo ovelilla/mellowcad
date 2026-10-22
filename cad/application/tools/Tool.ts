@@ -542,6 +542,14 @@ export interface Tool {
    */
   snapsFromLastPoint?(): boolean
   /**
+   * Whether an object snap override, typed or chosen, answers a question
+   * that takes no point ({@link wantsSnap} false): TRIM's and EXTEND's object
+   * prompt, whose pick is then the snapped point, given as `input.point` with
+   * `input.snap` (probes trim/p259–p263). The running snaps stay off there,
+   * so a click is never moved and selection cycling still works.
+   */
+  takesSnapOverride?(): boolean
+  /**
    * Whether `<angle` typed at the question's lone angle box answers it with
    * that angle, as ELLIPSE's start angle takes `<45` (probes ellipse/p181,
    * p292), rather than holding the next point to that heading. False, the

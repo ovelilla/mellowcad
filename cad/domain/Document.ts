@@ -624,8 +624,8 @@ export class CadDocument extends Observable implements DocumentReader {
   }
 
   /**
-   * Finds the entity whose outline is closest to `point`, within `tolerance`
-   * world units, or `null` when nothing is close enough. Delegates to
+   * Finds the entity on top of those whose outline is within `tolerance`
+   * world units of `point`, or `null` when nothing is close enough. Delegates to
    * {@link pickAll} so the two can never disagree about which object is on top.
    */
   pick(point: Vec2, tolerance: number): Entity | null {
@@ -634,9 +634,12 @@ export class CadDocument extends Observable implements DocumentReader {
 
   /**
    * Every pickable entity whose outline is within `tolerance` of `point`,
-   * ordered exactly the way {@link pick} chooses: nearest first, then whatever
-   * is drawn in front (a hatch is behind its boundary), and on a tie the most
-   * recently drawn one. This is the candidate list selection cycling walks.
+   * ordered exactly the way {@link pick} chooses: whatever is drawn in front
+   * first (a hatch is behind its boundary), then the most recently drawn,
+   * however near the others lie — AutoCAD's `Select objects:` and TRIM take
+   * the newer of two lines in the pick box though the pick is nearer the
+   * older (probes trim/p257, p400–p403). This is the candidate list selection
+   * cycling walks.
    */
   pickAll(point: Vec2, tolerance: number): Entity[] {
     return this.pickAllBy(
@@ -649,17 +652,15 @@ export class CadDocument extends Observable implements DocumentReader {
     distanceOf: (entity: Entity) => number,
     tolerance: number
   ): Entity[] {
-    const hits: { entity: Entity; distance: number; order: number }[] = []
+    const hits: { entity: Entity; order: number }[] = []
     let order = 0
     for (const entity of this.entities.values()) {
       order += 1
       if (!this.isEntitySelectable(entity)) continue
-      const distance = distanceOf(entity)
-      if (distance <= tolerance) hits.push({ entity, distance, order })
+      if (distanceOf(entity) <= tolerance) hits.push({ entity, order })
     }
     hits.sort(
       (a, b) =>
-        a.distance - b.distance ||
         entityDrawOrder(b.entity) - entityDrawOrder(a.entity) ||
         b.order - a.order
     )

@@ -735,11 +735,11 @@ describe("BREAK of an ellipse", () => {
       ],
     ] as const) {
       const cad = createHarness({ locale, blocks, entities: entities() })
-      answer(cad, command, "20,5", "20,105", "250,0", last)
+      answer(cad, command, "20,5", "20,95", "250,0", last)
       expect(cad.commandLog().slice(1)).toEqual([
         `${prompt} 20,5`,
         cannot,
-        `${prompt} 20,105`,
+        `${prompt} 20,95`,
         cannot,
         `${prompt} 250,0`,
         block,
