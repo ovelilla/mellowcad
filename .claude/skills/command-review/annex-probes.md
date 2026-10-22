@@ -132,7 +132,9 @@ Traps seen on the desktop (PLINE's review, 2026-10-21):
 - `com get DYNMODE` read 3 where Lisp read −1 after a restore: check a restored DYNMODE with
   `com eval '(getvar "DYNMODE")'` (RECTANG's review).
 - `com send` with a space inside a string answer sends it whole (`DASHED acadiso.lin` is one
-  answer); -LINETYPE's file needs FILEDIA 0, put back after (CIRCLE's review).
+  answer); -LINETYPE's file needs FILEDIA 0, put back after (CIRCLE's review). A prompt that takes
+  spaces (-LAYER's name list) swallows the rest: each answer on a line of its own (`\n`), and a
+  Spanish desktop types keywords in their global form (`_R`: FILLET's `R` is Recortar) (Corners).
 - Escape with dynamic input's Down list open cancels the command, not the list: close it with
   Enter or the arrows mid-probe. The owner's Spanish profile shows only Spanish labels: plan the
   English ones apart (`ax26res.dll`, or a pass launched with `en-US`) or they stay unverified
@@ -201,5 +203,7 @@ export default defineConfig({
 
 Run with `npx vitest run --config research/review/vitest.config.mts research/review/<command>`.
 Their `console.log` is swallowed: write what to read to a scratchpad file (Node's appendFileSync).
-Each scratch test names the probe it reproduces; in the execution it moves, as is, into the
+A harness option the config does not know is dropped in silence (`layers` locked nothing, and a
+`differs` went into the Corners plan): read a scratch test's setup back before trusting it. Each
+scratch test names the probe it reproduces; in the execution it moves, as is, into the
 command's test file and its citation stays.

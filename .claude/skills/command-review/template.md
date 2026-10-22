@@ -222,8 +222,8 @@ deviation without a `WHY` and a coverage note is a finding.
 ### 4.8 Subagents
 
 - At most three at once, never nested. They change nothing in the repo but their own console
-  probes, in an id range each (`p100`–`p149`…; 70 for a command with options, or the last
-  questions go unasked), and write scratch tests only in a folder each
+  probes, in an id range each (`p100`–`p149`…; 70 for a command with options, 100 for two
+  commands' results, or the last go unasked), and write scratch tests only in a folder each
   (`research/review/<command>/<letter>/`) and scratch files only in a scratchpad folder each (two
   overwrote a shared helper). They never drive the desktop.
 - Each gets its list of files, the rules to open, the matrix rows and prompts it answers (disjoint:
@@ -403,6 +403,6 @@ Applied:
 - 2026-10-22, after OFFSET's review: a desktop variable read before trusting a default, each
   desktop Enter planned against its prompt (annex-probes.md §4); the preselection and the existing
   tests to one subagent by name (§4.8).
-- 2026-10-22, after TRIM's and EXTEND's review: a desktop setting and a held key reach the
-  console's runs, an Enter checked through COM alone (annex-probes.md §4); the Undo keyword's
-  listing and steps to one subagent across every prompt (§4.8).
+- 2026-10-22, after TRIM's review: desktop settings and keys reach the console, an Enter through
+  COM (annex-probes.md §4); the Undo keyword to one subagent (§4.8).
+- 2026-10-22, after the Corners review: ranges by weight (§4.8); matrix.md Q; annex §4, §5.

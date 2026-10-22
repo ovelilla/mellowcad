@@ -108,8 +108,9 @@ a drag, the wheel's zoom and pan and the middle button mid-command, Shift with t
 **Q. Look** — what an AutoCAD user sees and must recognise on sight (AGENTS.md: a look that slows
 them down is a finding): the cursor and pickbox, the snap markers' shapes, the tooltips, the
 dynamic-input boxes, the rubber band, grips and their colours, the command line's prompt, where the
-command sits in the rail. Compared with the desktop's screenshot; styling may differ, recognition
-may not.
+command sits in the rail; every refusal hovered before its click (a refused pair shows a badge and
+its words at the cursor, corners/d06-1). Compared with the desktop's screenshot; styling may
+differ, recognition may not.
 
 ## Modes in combination
 
