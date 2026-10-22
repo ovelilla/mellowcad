@@ -716,7 +716,8 @@
         "Standard": "Standard",
         "Edge": "Edge",
         "Extend": "Extend",
-        "No extend": "No extend"
+        "No extend": "No extend",
+        "Noextend": "Noextend"
       },
       "EXTEND": {
         "Undo": "Undo",
@@ -728,7 +729,8 @@
         "Standard": "Standard",
         "Edge": "Edge",
         "Extend": "Extend",
-        "No extend": "No extend"
+        "No extend": "No extend",
+        "Noextend": "Noextend"
       },
       "FILLET": {
         "Undo": "Undo",
@@ -1572,8 +1574,8 @@
     },
     "keywordLabels": {
       "CIRCLE": { "Ttr": "Ttr (tan tan radius)" },
-      "TRIM": { "cuTting": "cuTting edges" },
-      "EXTEND": { "Boundary": "Boundary edges" },
+      "TRIM": { "cuTting": "cuTting edges", "Noextend": "No extend" },
+      "EXTEND": { "Boundary": "Boundary edges", "Noextend": "No extend" },
       "POLYGON": {
         "Inscribed": "Inscribed in circle",
         "Circumscribed": "Circumscribed about circle"

@@ -428,9 +428,9 @@ describe("a wrong answer mid-command", () => {
     expect(cad.commandLog().at(-1)).toBe("Expects a point or Last")
   })
 
-  // WHY no refusal: AutoCAD 2023's console takes it, saying nothing (acc/th3
-  // of the TRIM options session).
-  it("leaves U to TRIM's prompt, which takes it with nothing to undo", () => {
+  // WHY the prompt's words: AutoCAD 2027's console refuses Undo before any
+  // answer (probe trim/p114), never backing out the command before.
+  it("leaves U to TRIM's prompt, which refuses it with nothing to undo", () => {
     const cad = createHarness({
       entities: [...twoLines(), lineOf(p(50, -50), p(50, 50), { id: "C" })],
     })
@@ -440,9 +440,10 @@ describe("a wrong answer mid-command", () => {
     cad.command("TRIM")
     answerLine(cad, "U")
 
-    expect(cad.commandLog().slice(-2)).toEqual([
-      "Current settings: Projection=UCS, Edge=None, Mode=Quick",
+    expect(cad.commandLog().slice(-3)).toEqual([
       "Select object to trim or shift-select to extend or [cuTting edges/Crossing/mOde/eRase]: U",
+      "*Invalid selection*",
+      "Expects a point or Fence/cuTting edges/Crossing/mOde",
     ])
     expect(cad.entityCount).toBe(entities)
     expect(cad.activeToolId()).toBe("trim")

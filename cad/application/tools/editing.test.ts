@@ -543,6 +543,7 @@ describe("EXTEND", () => {
     ])
   })
 
+  // probe trim/p143: the other end's boundary is named so.
   it("does nothing when no boundary lies that way", () => {
     const cad = createHarness({
       entities: [
@@ -557,15 +558,14 @@ describe("EXTEND", () => {
       p(-200, 0),
       p(-100, 0),
     ])
-    expect(cad.commandLog().at(-1)).toBe(
-      "Path does not intersect with the bounding edge."
-    )
+    expect(cad.commandLog().at(-1)).toBe("No edge in that direction.")
   })
 
   // AutoCAD 2023's console (acc/x1, x5, x6, x8, x12, x15 of the arcs session):
-  // each object EXTEND cannot reach an edge with has its words, and Undo
-  // counts the pick of a line, an arc or a polyline, not a circle's.
-  it("says why an object reaches no edge, and counts it as Undo does", () => {
+  // each object EXTEND cannot reach an edge with has its words; Undo is
+  // listed after each, and takes back the edit before it (probes trim/p195,
+  // p204, p208, p388).
+  it("says why an object reaches no edge, listing Undo", () => {
     const boundary = lineOf(p(100, -50), p(100, 50), { id: "B" })
     for (const [locale, name, said] of [
       [
@@ -606,19 +606,18 @@ describe("EXTEND", () => {
       expect(cad.commandLog().at(-1)).toBe(said[1])
       cad.click(p(25, 60))
       expect(cad.commandLog().at(-1)).toBe(said[2])
-      cad.option("Undo").option("Undo")
+      cad.option("Undo")
 
       cad.click(p(40, -40))
       expect(cad.commandLog().at(-1)).toBe(said[2])
-      expect(cad.optionIds()).toEqual(["Boundary", "Crossing", "mOde"])
+      expect(cad.optionIds()).toEqual(["Boundary", "Crossing", "mOde", "Undo"])
       expect(cad.entities()).toEqual(entities)
 
       cad.click(p(40, 0)).click(p(40, 0))
       expect(cad.commandLog().at(-1)).toBe(said[0])
       expect(cad.byId<LineEntity>("L").end).toEqual(p(100, 0))
       cad.option("Undo")
-      expect(cad.byId<LineEntity>("L").end).toEqual(p(100, 0))
-      cad.option("Undo")
+      expect(cad.commandLog().at(-1)).toMatch(/^(Command|Todos)/)
       expect(cad.byId<LineEntity>("L").end).toEqual(p(50, 0))
     }
   })
@@ -727,7 +726,8 @@ describe("EXTEND", () => {
   })
 })
 
-// AutoCAD 2023's console (acc/t1–t5, v1–v7 of the hidden UCS words session).
+// AutoCAD 2027's console (probe trim/p105) and 2023's (acc/v1–v7 of the
+// hidden UCS words session).
 describe("TRIM and EXTEND answer what is typed", () => {
   const drawing = () =>
     createHarness({
@@ -853,8 +853,9 @@ describe("TRIM and EXTEND answer what is typed", () => {
     expect(endpoints(cad.byId<LineEntity>("S"))).toEqual([p(0, 0), p(50, 0)])
   })
 
-  // WHY Fence: the console names its unlisted word first, then the
-  // prompt's but the last (acc/t1, tf18, ta7, tb5).
+  // WHY Fence: the console names its unlisted word first, then the words
+  // declared but the last, Project the last before Undo (probes trim/p105,
+  // p113).
   it("refuses anything else with *Invalid selection* and the words it expects", () => {
     const cad = typed(drawing(), "TRIM", "FOO", "80,0", "FOO")
     expect(cad.commandLog().slice(2)).toEqual([
@@ -871,7 +872,7 @@ describe("TRIM and EXTEND answer what is typed", () => {
     expect(cad.commandLog().slice(-3)).toEqual([
       "Select object to extend or shift-select to trim or [Boundary edges/Crossing/mOde]: FOO",
       "*Invalid selection*",
-      "Expects a point or Fence/Boundary edges/Crossing",
+      "Expects a point or Fence/Boundary edges/Crossing/mOde",
     ])
 
     const spanish = createHarness({
@@ -884,6 +885,268 @@ describe("TRIM and EXTEND answer what is typed", () => {
       "Seleccione un objeto que recortar o use la tecla Mayús y seleccione para alargar, o [aristas de COrte/Captura/MOdo/bOrrar/desHacer]: FOO",
       "*Designación no válida*",
       "Requiere un punto o Borde/aristas de COrte/Captura/MOdo/bOrrar",
+    ])
+  })
+})
+
+// AutoCAD 2027's console: what Enter does at the object prompt, when Undo is
+// listed and what it takes back, and the objects selected before the command.
+describe("TRIM and EXTEND's Enter, Undo and preselection", () => {
+  const drawing = (locale?: typeof es, ...more: Entity[]) =>
+    createHarness({
+      locale,
+      entities: [
+        lineOf(p(0, 0), p(100, 0), { id: "A" }),
+        lineOf(p(0, 10), p(100, 10), { id: "B" }),
+        lineOf(p(30, -20), p(30, 20), { id: "V1" }),
+        lineOf(p(70, -20), p(70, 20), { id: "V2" }),
+        ...more,
+      ],
+    })
+  const typed = (cad: CadHarness, ...texts: string[]) => {
+    for (const text of texts) {
+      if (text === "") cad.enter()
+      else {
+        cad.runtime.setCommandLineText(text)
+        cad.runtime.submitCommandLine()
+      }
+    }
+    return cad
+  }
+  const prompt = (cad: CadHarness) => cad.state().commandLine.prompt
+  const QUICK =
+    "Select object to trim or shift-select to extend or [cuTting edges/Crossing/mOde/eRase]:"
+  const QUICK_UNDO =
+    "Select object to trim or shift-select to extend or [cuTting edges/Crossing/mOde/eRase/Undo]:"
+  const STANDARD =
+    "Select object to trim or shift-select to extend or [cuTting edges/Fence/Crossing/mOde/Edge/eRase]:"
+  const STANDARD_UNDO =
+    "Select object to trim or shift-select to extend or [cuTting edges/Fence/Crossing/mOde/Edge/eRase/Undo]:"
+  const ends = (cad: CadHarness) => {
+    typed(cad, "")
+    return cad.activeToolId() === "select"
+  }
+
+  // probes trim/p100, p116, p118, p120: the old `TR ⏎ ⏎` still trims.
+  it("takes Quick's first Enter at the object prompt once, as an answer", () => {
+    const cad = typed(drawing(), "TRIM", "")
+    expect(cad.activeToolId()).toBe("trim")
+    expect(prompt(cad)).toBe(`TRIM ${QUICK_UNDO}`)
+    typed(cad, "50,0")
+    expect(cad.entityCount).toBe(5)
+    expect(ends(cad)).toBe(true)
+
+    const undone = typed(drawing(), "TRIM", "", "U")
+    expect(undone.commandLog().slice(-2)).toEqual([
+      `${QUICK_UNDO} U`,
+      "Command has been completely undone.",
+    ])
+    expect(prompt(undone)).toBe(`TRIM ${QUICK}`)
+    expect(ends(undone)).toBe(true)
+
+    const extend = typed(drawing(), "EXTEND", "")
+    expect(prompt(extend)).toBe(
+      "EXTEND Select object to extend or shift-select to trim or [Boundary edges/Crossing/mOde/Undo]:"
+    )
+    expect(ends(extend)).toBe(true)
+  })
+
+  it("ends at the first Enter once the run has its edges", () => {
+    // After an edit (p117), cuTting edges chosen (p152), a typed fence (p290),
+    // a U (p158) and in Standard mode (p119, p273), Enter ends.
+    expect(ends(typed(drawing(), "TRIM", "50,0"))).toBe(true)
+    expect(ends(typed(drawing(), "TRIM", "T", "30,15", ""))).toBe(true)
+    expect(ends(typed(drawing(), "TRIM", "F", ""))).toBe(true)
+    expect(ends(typed(drawing(), "TRIM", "O", "S", "O", "Q", "U"))).toBe(true)
+    expect(ends(typed(drawing(), "TRIM", "O", "S"))).toBe(true)
+    expect(ends(typed(drawing(), "TRIM", "", "TRIM"))).toBe(true)
+    // A refused answer or a mode leaves it to take (p246, p271, p107, p284).
+    expect(ends(typed(drawing(), "TRIM", "FOO"))).toBe(false)
+    expect(ends(typed(drawing(), "TRIM", "O", ""))).toBe(false)
+    const fromEdges = typed(drawing(), "TRIM", "O", "S", "", "TRIM", "O", "Q")
+    expect(prompt(fromEdges)).toBe(`TRIM ${QUICK}`)
+    expect(ends(fromEdges)).toBe(false)
+  })
+
+  // probes trim/p114, p115, p135: the prompt's own words, as for FOO.
+  it("refuses Undo until the run has an answer", () => {
+    const cad = typed(drawing(), "TRIM", "U")
+    expect(cad.commandLog().slice(-3)).toEqual([
+      `${QUICK} U`,
+      "*Invalid selection*",
+      "Expects a point or Fence/cuTting edges/Crossing/mOde",
+    ])
+    typed(cad, "50,0", "50,10", "U")
+    expect(prompt(cad)).toBe(`TRIM ${QUICK_UNDO}`)
+    typed(cad, "U")
+    expect(cad.commandLog().at(-1)).toBe("Command has been completely undone.")
+    expect(cad.entityCount).toBe(4)
+    typed(cad, "U")
+    expect(cad.commandLog().slice(-2)).toEqual([
+      "*Invalid selection*",
+      "Expects a point or Fence/cuTting edges/Crossing/mOde",
+    ])
+
+    const spanish = typed(drawing(es), "RECORTA", "H")
+    expect(spanish.commandLog().slice(-2)).toEqual([
+      "*Designación no válida*",
+      "Requiere un punto o Borde/aristas de COrte/Captura/MOdo",
+    ])
+  })
+
+  // probes trim/p107, p136, p157–p162: listed after any answer there, U then
+  // completely undone, the mode kept and EDGEMODE back.
+  it("lists Undo after a mode or Edge answer, which it takes back saying all is", () => {
+    const mode = typed(drawing(), "TRIM", "O", "S")
+    expect(prompt(mode)).toBe(`TRIM ${STANDARD_UNDO}`)
+    typed(mode, "U")
+    expect(mode.commandLog().at(-1)).toBe("Command has been completely undone.")
+    expect(prompt(mode)).toBe(`TRIM ${STANDARD}`)
+    typed(mode, "O", "")
+    expect(prompt(mode)).toBe(`TRIM ${STANDARD_UNDO}`)
+
+    const kept = typed(drawing(), "TRIM", "O", "")
+    expect(prompt(kept)).toBe(`TRIM ${QUICK_UNDO}`)
+
+    const edge = typed(drawing(), "TRIM", "O", "S", "", "TRIM", "", "E", "")
+    expect(prompt(edge)).toBe(`TRIM ${STANDARD_UNDO}`)
+
+    const alone = typed(drawing(), "TRIM", "O", "S", "", "TRIM", "", "E", "E")
+    typed(alone, "U")
+    expect(alone.commandLog().at(-1)).toBe(
+      "Command has been completely undone."
+    )
+    typed(alone, "U")
+    expect(alone.commandLog().slice(-2)).toEqual([
+      "*Invalid selection*",
+      "Expects a point or Fence/cuTting edges/Crossing/mOde/Edge",
+    ])
+    typed(alone, "E")
+    expect(prompt(alone)).toContain("<No extend>:")
+  })
+
+  // probes trim/p380–p383, p388, p301, p303: only an edit is a step, and what
+  // changes nothing lists Undo and goes back with the edit before it.
+  it("takes back the last edit whatever answers followed it", () => {
+    const fence = typed(drawing(), "TRIM", "80,0", "200,200", "210,210")
+    expect(prompt(fence)).toBe(`TRIM ${QUICK_UNDO}`)
+    typed(fence, "U")
+    expect(fence.commandLog().at(-1)).toBe(
+      "Command has been completely undone."
+    )
+    expect(fence.byId<LineEntity>("A").end).toEqual(p(100, 0))
+    expect(fence.optionIds()).not.toContain("Undo")
+
+    const empty = typed(drawing(), "TRIM", "200,200", "210,210")
+    expect(prompt(empty)).toBe(`TRIM ${QUICK_UNDO}`)
+
+    const refused = typed(
+      drawing(undefined, lineOf(p(200, 0), p(300, 0), { id: "F" })),
+      "TRIM",
+      "O",
+      "S",
+      "",
+      "TRIM",
+      "",
+      "80,0",
+      "250,0"
+    )
+    expect(refused.commandLog().at(-1)).toBe(
+      "Does not intersect with the cutting edge."
+    )
+    expect(prompt(refused)).toBe(`TRIM ${STANDARD_UNDO}`)
+    typed(refused, "U")
+    expect(refused.commandLog().at(-1)).toBe(
+      "Command has been completely undone."
+    )
+    expect(refused.byId<LineEntity>("A").end).toEqual(p(100, 0))
+
+    const window = typed(drawing(), "TRIM", "C", "200,200", "210,210")
+    expect(window.commandLog().slice(-2)).toEqual([
+      `${QUICK_UNDO} Specify opposite corner: 210,210`,
+      "No objects crossed by crossing window.",
+    ])
+    expect(prompt(window)).toBe(`TRIM ${QUICK_UNDO}`)
+    typed(window, "U")
+    expect(window.commandLog().at(-1)).toBe(
+      "Command has been completely undone."
+    )
+
+    // Standard's window started on nothing (p382).
+    const implied = typed(
+      drawing(),
+      "TRIM",
+      "O",
+      "S",
+      "",
+      "TRIM",
+      "",
+      "200,200",
+      "210,210"
+    )
+    expect(implied.commandLog().slice(-2)).toEqual([
+      `${STANDARD_UNDO} Specify opposite corner: 210,210`,
+      "No objects crossed by crossing window.",
+    ])
+  })
+
+  // probes trim/p163, p164: U takes the trim and LTSCALE back.
+  it("takes a transparent command back with the edit before it", () => {
+    const cad = typed(drawing(), "TRIM", "50,0", "'LTSCALE", "2", "U")
+    expect(cad.commandLog().at(-1)).toBe("Command has been completely undone.")
+    expect(cad.entityCount).toBe(4)
+    expect(cad.state().ltScale).toBe(1)
+  })
+
+  // probes trim/p141–p144: the only edges, Standard's prompt skipped, nothing
+  // left selected.
+  it("makes the objects selected before it the only edges", () => {
+    const cad = drawing()
+    cad.select("V1")
+    typed(cad, "TRIM")
+    expect(cad.commandLog()).toEqual([
+      "TRIM",
+      "Current settings: Projection=UCS, Edge=None, Mode=Quick",
+      "Select cutting edges ...",
+      "1 found",
+    ])
+    expect(cad.selectedIds()).toEqual([])
+    expect(prompt(cad)).toBe(`TRIM ${QUICK}`)
+    typed(cad, "50,0")
+    expect(endpoints(cad.byId<LineEntity>("A"))).toEqual([p(0, 0), p(30, 0)])
+    expect(cad.entityCount).toBe(4)
+    expect(ends(cad)).toBe(true)
+
+    const standard = typed(drawing(), "TRIM", "O", "S", "")
+    standard.select("V1")
+    typed(standard, "TRIM")
+    expect(standard.commandLog().slice(-3)).toEqual([
+      "Current settings: Projection=UCS, Edge=None, Mode=Standard",
+      "Select cutting edges ...",
+      "1 found",
+    ])
+    expect(prompt(standard)).toBe(`TRIM ${STANDARD}`)
+
+    const extend = drawing(
+      undefined,
+      lineOf(p(40, -10), p(60, -10), { id: "S" })
+    )
+    extend.select("V1")
+    typed(extend, "EXTEND", "58,-10")
+    expect(extend.commandLog().slice(2)).toEqual([
+      "Select boundary edges ...",
+      "1 found",
+      "Select object to extend or shift-select to trim or [Boundary edges/Crossing/mOde]: 58,-10",
+      "No edge in that direction.",
+    ])
+    expect(extend.byId<LineEntity>("S").end).toEqual(p(60, -10))
+
+    const spanish = drawing(es)
+    spanish.select("V1")
+    typed(spanish, "ALARGA")
+    expect(spanish.commandLog().slice(-2)).toEqual([
+      "Seleccione las aristas de contorno...",
+      "1 encontrados",
     ])
   })
 })
@@ -1038,7 +1301,7 @@ describe("TRIM and EXTEND's Fence and Crossing", () => {
     expect(cad.commandLog().slice(2)).toEqual([
       "Select object to trim or shift-select to extend or [cuTting edges/Crossing/mOde/eRase]: C",
       "Specify first corner: 75,10",
-      "Select object to trim or shift-select to extend or [cuTting edges/Crossing/mOde/eRase]: Specify opposite corner: 95,-10",
+      "Select object to trim or shift-select to extend or [cuTting edges/Crossing/mOde/eRase/Undo]: Specify opposite corner: 95,-10",
     ])
     expect(drawn(cad, "A", "L", "R")[0]).toBe("A 0,0 70,0")
     typed(cad, "U")
@@ -1115,11 +1378,11 @@ describe("TRIM and EXTEND's Fence and Crossing", () => {
       "*Invalid selection*",
       "Expects a point or Fence/cuTting/Crossing/mOde/eRase",
       "Specify first corner: 60,10",
-      "Select object to trim or shift-select to extend or [cuTting edges/Crossing/mOde/eRase]: Specify opposite corner: FOO",
+      "Select object to trim or shift-select to extend or [cuTting edges/Crossing/mOde/eRase/Undo]: Specify opposite corner: FOO",
       "Invalid window specification.",
-      "Select object to trim or shift-select to extend or [cuTting edges/Crossing/mOde/eRase]: Specify opposite corner:",
+      "Select object to trim or shift-select to extend or [cuTting edges/Crossing/mOde/eRase/Undo]: Specify opposite corner:",
       "Invalid window specification.",
-      "Select object to trim or shift-select to extend or [cuTting edges/Crossing/mOde/eRase]: Specify opposite corner: 90,-10",
+      "Select object to trim or shift-select to extend or [cuTting edges/Crossing/mOde/eRase/Undo]: Specify opposite corner: 90,-10",
     ])
     expect(drawn(cad, "A", "L", "R")[0]).toBe("A 0,0 30,0")
     // Its first corner is LASTPOINT.
@@ -1129,15 +1392,21 @@ describe("TRIM and EXTEND's Fence and Crossing", () => {
     )
 
     // Enter at the first corner ends the command; a window that crosses
-    // nothing says so, and is no step.
+    // nothing says so, and is no step, Undo listed (probes trim/p302, p303).
     const ended = typed(drawing(), "TRIM", "C", "")
     expect(ended.activeToolId()).toBe("select")
     const empty = typed(drawing(), "TRIM", "C", "200,200", "210,210")
     expect(empty.commandLog().slice(-2)).toEqual([
-      "Select object to trim or shift-select to extend or [cuTting edges/Crossing/mOde/eRase]: Specify opposite corner: 210,210",
+      "Select object to trim or shift-select to extend or [cuTting edges/Crossing/mOde/eRase/Undo]: Specify opposite corner: 210,210",
       "No objects crossed by crossing window.",
     ])
-    expect(empty.optionIds()).toEqual(["cuTting", "Crossing", "mOde", "eRase"])
+    expect(empty.optionIds()).toEqual([
+      "cuTting",
+      "Crossing",
+      "mOde",
+      "eRase",
+      "Undo",
+    ])
 
     // The first corner takes the prompt's words.
     const words = typed(drawing(), "TRIM", "75,0", "C", "U", "F")
@@ -1156,15 +1425,17 @@ describe("TRIM and EXTEND's Fence and Crossing", () => {
       locale: es,
       entities: [lineOf(p(0, 0), p(100, 0)), lineOf(p(50, -50), p(50, 50))],
     })
+    // WHY desHacer listed: as the English console (p301); the Spanish runs
+    // disagree among themselves (p241, p382 list it, p298, p301 do not).
     typed(spanish, "RECORTA", "C", "FOO", "60,10", "FOO", "300,300")
     expect(spanish.commandLog().slice(3)).toEqual([
       "Designe primera esquina: FOO",
       "*Designación no válida*",
       "Requiere un punto o Borde/COrte/Captura/MOdo/bOrrar",
       "Designe primera esquina: 60,10",
-      "Seleccione un objeto que recortar o use la tecla Mayús y seleccione para alargar, o [aristas de COrte/Captura/MOdo/bOrrar]: Designe esquina opuesta: FOO",
+      "Seleccione un objeto que recortar o use la tecla Mayús y seleccione para alargar, o [aristas de COrte/Captura/MOdo/bOrrar/desHacer]: Designe esquina opuesta: FOO",
       "Designación de ventana no válida.",
-      "Seleccione un objeto que recortar o use la tecla Mayús y seleccione para alargar, o [aristas de COrte/Captura/MOdo/bOrrar]: Designe esquina opuesta: 300,300",
+      "Seleccione un objeto que recortar o use la tecla Mayús y seleccione para alargar, o [aristas de COrte/Captura/MOdo/bOrrar/desHacer]: Designe esquina opuesta: 300,300",
       "No hay objetos intersecados en la ventana de captura.",
     ])
   })
@@ -1286,7 +1557,7 @@ describe("TRIM and EXTEND's Fence and Crossing", () => {
     expect(cad.byId<CircleEntity>("O").type).toBe("circle")
   })
 })
-// AutoCAD 2023's console (acc/ri1–ri12 of the TRIM options session).
+// AutoCAD 2027's console (probes trim/p111, p112, p153).
 describe("TRIM's eRase", () => {
   const drawing = (locale?: typeof es) =>
     createHarness({
@@ -1359,11 +1630,11 @@ describe("TRIM's eRase", () => {
       "TRIM Select objects to erase or <exit>:"
     )
 
-    // EXTEND has none.
+    // EXTEND has none (probe trim/p113).
     const extend = typed(drawing(), "EXTEND", "R")
     expect(extend.commandLog().slice(-2)).toEqual([
       "*Invalid selection*",
-      "Expects a point or Fence/Boundary edges/Crossing",
+      "Expects a point or Fence/Boundary edges/Crossing/mOde",
     ])
 
     const spanish = typed(drawing(es), "RECORTA", "O", "LT", "")
@@ -1376,8 +1647,7 @@ describe("TRIM's eRase", () => {
     expect(ids(spanish)).toEqual(["A", "L"])
   })
 })
-// AutoCAD 2023's console (acc/sm1–sm12, sn1–sn12, sp1–sp4 of the TRIM
-// options session).
+// AutoCAD 2027's console (probes trim/p107, p109, p136).
 describe("TRIM and EXTEND's mOde and cuTting edges", () => {
   const drawing = (locale?: typeof es, ...more: Entity[]) =>
     createHarness({
@@ -1423,7 +1693,7 @@ describe("TRIM and EXTEND's mOde and cuTting edges", () => {
     // Standard now, every object an edge, as none was chosen.
     typed(cad, "O", "S")
     expect(prompt(cad)).toBe(
-      "TRIM Select object to trim or shift-select to extend or [cuTting edges/Fence/Crossing/mOde/Edge/eRase]:"
+      "TRIM Select object to trim or shift-select to extend or [cuTting edges/Fence/Crossing/mOde/Edge/eRase/Undo]:"
     )
     typed(cad, "50,0")
     expect(drawn(cad, "A", "L", "R", "F")).toEqual([
@@ -1479,16 +1749,17 @@ describe("TRIM and EXTEND's mOde and cuTting edges", () => {
       "1 found",
       "Select objects:",
     ])
-    // Standard deletes nothing, and Undo does not count it.
+    // Standard deletes nothing, Undo listed (probes trim/p273, p383).
     typed(cad, "250,0")
     expect(cad.commandLog().at(-1)).toBe(
       "Does not intersect with the cutting edge."
     )
-    expect(cad.optionIds()).not.toContain("Undo")
+    expect(cad.optionIds()).toContain("Undo")
     typed(cad, "50,0")
     expect(drawn(cad, "A", "L", "R", "F")[0]).toBe("A 0,0 30,0")
 
-    // A pick on nothing starts a crossing window, either way.
+    // A pick on nothing starts a crossing window, either way, Undo listed
+    // (probes trim/p308, p382).
     for (const [first, opposite] of [
       ["85,10", "95,-10"],
       ["95,-10", "85,10"],
@@ -1497,7 +1768,7 @@ describe("TRIM and EXTEND's mOde and cuTting edges", () => {
       typed(window, first, opposite)
       expect(window.commandLog().slice(-2)).toEqual([
         `Select object to trim or shift-select to extend or [cuTting edges/Fence/Crossing/mOde/Edge/eRase]: ${first}`,
-        `Select object to trim or shift-select to extend or [cuTting edges/Fence/Crossing/mOde/Edge/eRase]: Specify opposite corner: ${opposite}`,
+        `Select object to trim or shift-select to extend or [cuTting edges/Fence/Crossing/mOde/Edge/eRase/Undo]: Specify opposite corner: ${opposite}`,
       ])
       expect(drawn(window, "A", "L", "R", "F")[0]).toBe("A 0,0 70,0")
     }
@@ -1608,7 +1879,7 @@ describe("TRIM and EXTEND's mOde and cuTting edges", () => {
       "No se interseca con la arista de corte."
     )
     expect(prompt(cad)).toBe(
-      "RECORTA Seleccione un objeto que recortar o use la tecla Mayús y seleccione para alargar, o [aristas de COrte/Borde/Captura/MOdo/Arista/bOrrar]:"
+      "RECORTA Seleccione un objeto que recortar o use la tecla Mayús y seleccione para alargar, o [aristas de COrte/Borde/Captura/MOdo/Arista/bOrrar/desHacer]:"
     )
     typed(cad, "", "ALARGA")
     expect(cad.commandLog().at(-1)).toBe(
@@ -1616,8 +1887,7 @@ describe("TRIM and EXTEND's mOde and cuTting edges", () => {
     )
   })
 })
-// AutoCAD 2023's console (acc/eg1–eg9, eh1–eh7, ei1–ei5, ej1–ej4 of the
-// TRIM options session).
+// AutoCAD 2027's console (probes trim/p125, p135, p137, p138, p146).
 describe("TRIM and EXTEND's Edge", () => {
   const typed = (cad: CadHarness, ...texts: string[]) => {
     for (const text of texts) {
@@ -1659,8 +1929,9 @@ describe("TRIM and EXTEND's Edge", () => {
       "Invalid option keyword.",
       "Enter an implied edge extension mode [Extend/No extend] <No extend>:",
     ])
-    expect(cad.optionIds()).not.toContain("Undo")
-    // A choice is a step; the short edge now cuts as if it ran on.
+    // Its Enter lists Undo (probe trim/p161).
+    expect(cad.optionIds()).toContain("Undo")
+    // A choice joins the next edit; the short edge now cuts as if it ran on.
     typed(cad, "E", "E")
     expect(prompt(cad)).toBe(
       "TRIM Select object to trim or shift-select to extend or [cuTting edges/Fence/Crossing/mOde/Edge/eRase/Undo]:"
@@ -1683,8 +1954,9 @@ describe("TRIM and EXTEND's Edge", () => {
       "*Invalid selection*",
       "Expects a point or Fence/cuTting edges/Crossing/mOde",
     ])
+    // Quick from the edges' prompt takes its first Enter (probe trim/p284).
     const quick = standard(short(lineOf(p(70, -50), p(70, 50), { id: "R" })))
-    typed(quick, "E", "E", "", "TRIM", "O", "Q", "", "TRIM")
+    typed(quick, "E", "E", "", "TRIM", "O", "Q", "", "", "TRIM")
     expect(quick.commandLog().at(-1)).toBe(
       "Current settings: Projection=UCS, Edge=None, Mode=Quick"
     )
@@ -1714,6 +1986,24 @@ describe("TRIM and EXTEND's Edge", () => {
     typed(spanish, "A", "", "RECORTA")
     expect(spanish.commandLog().at(-2)).toBe(
       "Parámetros actuales: Proyección=SCP, Arista=Alargar, Modo=Estándar"
+    )
+  })
+
+  // probes trim/p125, p151: declared `Noextend` (es `No`), listed `No extend`.
+  it("takes No extend by its declared word", () => {
+    const cad = standard(short())
+    typed(cad, "E", "E", "E", "Noextend", "E")
+    expect(prompt(cad)).toBe(
+      "TRIM Enter an implied edge extension mode [Extend/No extend] <No extend>:"
+    )
+    const spanish = createHarness({
+      locale: es,
+      entities: [lineOf(p(0, 0), p(100, 0)), lineOf(p(30, 10), p(30, 50))],
+    })
+    typed(spanish, "RECORTA", "MO", "E", "", "RECORTA", "", "A", "A")
+    typed(spanish, "A", "No", "A")
+    expect(prompt(spanish)).toBe(
+      "RECORTA Indique modo de alargamiento de arista implícito [Alargar/No alargar] <No alargar>:"
     )
   })
 
@@ -1753,8 +2043,9 @@ describe("TRIM and EXTEND's Edge", () => {
     )
   })
 
-  // WHY refused: AutoCAD 2023's console asks `Enter a projection option
-  // [None/Ucs/View] <Ucs>:` (acc/pr1–pr5), whose None and View are not built.
+  // WHY refused: AutoCAD 2027's console asks `Enter a projection option
+  // [None/Ucs/View] <Ucs>:` (probes trim/p106, p127), whose None and View
+  // are not built.
   it("refuses Project, an option not built", () => {
     const cad = typed(short(), "TRIM", "P")
     expect(cad.commandLog().slice(-3)).toEqual([
@@ -1862,7 +2153,7 @@ describe("TRIM and EXTEND an ellipse", () => {
     }
   })
 
-  it("says why it reaches no edge, and Undo counts the pick", () => {
+  it("says why it reaches no edge, and Undo takes it back", () => {
     for (const [locale, name, said] of [
       [
         undefined,
@@ -1888,7 +2179,7 @@ describe("TRIM and EXTEND an ellipse", () => {
       expect(cad.commandLog().at(-1)).toBe(said[0])
       cad.click(p(-100, 300))
       expect(cad.commandLog().at(-1)).toBe(said[1])
-      cad.option("Undo").option("Undo")
+      cad.option("Undo")
       expect(cad.commandLog().at(-1)).toMatch(/^(Command|Todos)/)
       expect(cad.optionIds()).toEqual(["Boundary", "Crossing", "mOde"])
       expect(cad.entities()).toEqual(entities)
@@ -2097,7 +2388,13 @@ describe("TRIM and EXTEND with an ellipse or a spline", () => {
     const cut = createHarness({ entities })
     cut.command("TRIM").click(p(0, 0))
     expect(cut.entities()).toEqual(entities)
-    expect(cut.optionIds()).toEqual(["cuTting", "Crossing", "mOde", "eRase"])
+    expect(cut.optionIds()).toEqual([
+      "cuTting",
+      "Crossing",
+      "mOde",
+      "eRase",
+      "Undo",
+    ])
   })
 
   it("refuses a closed spline cut once, or extended", () => {

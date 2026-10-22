@@ -742,7 +742,8 @@
         "Standard": "Estándar",
         "Edge": "Arista",
         "Extend": "Alargar",
-        "No extend": "No alargar"
+        "No extend": "No alargar",
+        "Noextend": "No"
       },
       "EXTEND": {
         "Undo": "desHacer",
@@ -754,7 +755,8 @@
         "Standard": "Estándar",
         "Edge": "Arista",
         "Extend": "Alargar",
-        "No extend": "No alargar"
+        "No extend": "No alargar",
+        "Noextend": "No"
       },
       "FILLET": {
         "Undo": "Deshacer",
@@ -1600,8 +1602,8 @@
     },
     "keywordLabels": {
       "CIRCLE": { "Ttr": "Ttr (Tangente tangente radio)" },
-      "TRIM": { "cuTting": "aristas de COrte" },
-      "EXTEND": { "Boundary": "aristas de COrte" },
+      "TRIM": { "cuTting": "aristas de COrte", "Noextend": "No alargar" },
+      "EXTEND": { "Boundary": "aristas de COrte", "Noextend": "No alargar" },
       "POLYGON": {
         "Inscribed": "Inscrito en el círculo",
         "Circumscribed": "Circunscrito alrededor del círculo"

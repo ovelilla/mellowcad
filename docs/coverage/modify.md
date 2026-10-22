@@ -243,7 +243,7 @@ array, the path left in place
 **Missing:** multi-segment polyline path, associative (as ARRAYRECT's), Base point, Tangent
 direction, Rows, Levels, Z direction, Expression (as ARRAYRECT's), the grips
 
-### `TRIM` / `EXTEND` · es `RECORTA` / `RR`† · `ALARGA` / `AL`†
+### `TRIM` / `EXTEND` · es `RECORTA` / `RR` · `ALARGA` / `AL`
 
 **Implemented:** `Current settings: Projection=UCS, Edge=None, Mode=Quick` (es
 `Parámetros actuales: Proyección=SCP, Arista=Ninguno, Modo=Rápido`; `Mode=Standard`, es
@@ -251,13 +251,22 @@ direction, Rows, Levels, Z direction, Expression (as ARRAYRECT's), the grips
 `Select object to trim or shift-select to extend or [cuTting edges/Crossing/mOde/eRase]:` (es
 `Seleccione un objeto que recortar o use la tecla Mayús y seleccione para alargar, o [aristas de COrte/Captura/MOdo/bOrrar]:`)
 and EXTEND's `Select object to extend or shift-select to trim or [Boundary edges/Crossing/mOde]:` —
-AutoCAD's words but Project, Fence unlisted as there; after the first edit `…/eRase/Undo]:` (es
+AutoCAD's words but Project, Fence unlisted as there; objects selected before the command are its
+only edges — `Select cutting edges ...` (`Select boundary edges ...`) and `1 found` after the
+settings, Standard's edges' prompt skipped, nothing left selected; once the object prompt has had an
+answer — a pick, hit, missed or refused, a fence, a window's first corner, a mOde or Edge answer,
+Enter at their prompts included — it lists Undo, `…/eRase/Undo]:` (es
 `…para alargar, o [aristas de COrte/Captura/MOdo/bOrrar/desHacer]:`, EXTEND
-`Seleccione un objeto que alargar o use la tecla Mayús y seleccione para recortar, o [aristas de COrte/Captura/MOdo/desHacer]:`,
-as the 2027 Spanish language pack's string table, paired with the English by id words them), whose
-Undo takes back the command's last edit and, back at its start, says
-`Command has been completely undone.` and is offered no more (typed with nothing to take back, it is
-taken saying nothing, as the console does); TRIM's eRase (`R`, es `O`) asks
+`Seleccione un objeto que alargar o use la tecla Mayús y seleccione para recortar, o [aristas de COrte/Captura/MOdo/desHacer]:`),
+which before it is refused as anything else typed is; Undo takes back the command's last edit with
+whatever followed it — a refusal, a fence or a window that changed nothing, a transparent
+'LTSCALE —, and with no edit left says `Command has been completely undone.` (es
+`Todos los efectos del comando han sido deshechos.`) and is listed no more, the trim mode kept and
+the edge mode back (the Spanish console's runs disagree among themselves on Undo listed after a
+miss and Crossing's window, p298, p301, p303, p308 against p241, p382: the English is followed);
+Enter at the object prompt ends the command, but in Quick mode the first one, until an object is
+picked or missed, a fence or a window drawn, edges chosen or U taken, is such an answer and asks
+again, so the old `TR ⏎ ⏎` still trims; TRIM's eRase (`R`, es `O`) asks
 `Select objects to erase or <exit>:` (es `Designe objetos que borrar o <salir>:`),
 `Select objects to erase:` (es `Designe objetos que borrar:`) once its set holds something, as
 `Select objects:` asks a set of whole objects (its modes, counts and refusal), Enter erasing the set
@@ -275,9 +284,9 @@ lists Fence and Edge (`[cuTting edges/Fence/Crossing/mOde/Edge/eRase]`, EXTEND
 `Seleccione objetos o [MOdo] <seleccionar todo>:`), then `Select objects:` as its set holds
 something — Enter with none takes every object, mOde there back to Standard asks it again, to Quick
 takes every object —, leaves an object no edge crosses, saying
-`Does not intersect with the cutting edge.` (es `No se interseca con la arista de corte.`), which
-Undo does not count, and starts a crossing window at a pick on nothing, however it is drawn, its
-opposite corner asked on the prompt; switched to mid-command, every object is an edge until some are
+`Does not intersect with the cutting edge.` (es `No se interseca con la arista de corte.`), and
+starts a crossing window at a pick on nothing, however it is drawn, its opposite corner asked on the
+prompt; switched to mid-command, every object is an edge until some are
 chosen; cuTting edges (`T`, es `CO`; EXTEND's Boundary edges `B`) says the settings again,
 `Select cutting edges ...` and `Select objects or <select all>:` (es
 `Seleccione objetos o <seleccionar todo>:`), in either mode, which stays: the objects chosen are the
@@ -287,11 +296,12 @@ along it, past them, back to the nearest crossings (a closed one cut once refuse
 `Curve must intersect cutting edges at least twice.`, **unverified**); Edge (`E`, es `A`, Standard's
 alone — Quick refuses it) asks
 `Enter an implied edge extension mode [Extend/No extend] <No extend>:` (es
-`Indique modo de alargamiento de arista implícito [Alargar/No alargar] <No alargar>:`), the mode in
-force its default, Enter keeping it; with Extend (EDGEMODE 1, shared and lasting the session as the
-trim mode does) an edge cuts, and bounds an extension, where it would run on — a line both ways, an
-arc and an elliptical arc round their whole curve, an open polyline from its ends along its end
-segments (an arc end segment round its circle, **unverified**) —, never in Quick mode; a choice is
+`Indique modo de alargamiento de arista implícito [Alargar/No alargar] <No alargar>:`, No extend
+declared `Noextend`, es `No`), the mode in force its default, Enter keeping it; with Extend
+(EDGEMODE 1, shared and lasting the session as the trim mode does) an edge cuts, and bounds an
+extension, where it would run on — a line both ways, an arc and an elliptical arc round their whole
+curve, an open polyline from its ends along its end segments (an arc end segment round its circle,
+**unverified**) —, never in Quick mode; a choice is
 an Undo step joined to the edit after it, and a U right after it takes it back with the edit before
 it, as the console does; a point typed picks there, as the console takes it (`@` from LASTPOINT, a
 number a direct distance from it towards the cursor, which it then is), and a point on nothing,
@@ -316,22 +326,24 @@ the drawing as it then is — so a line's pieces go one by one, and the piece le
 as the console's handles show —; EXTEND extends an object at the first place only, and says
 `No edge in that direction.` (es `No hay límite en esta dirección.`) once if it meets it again; an
 object refused at its first place (`Circle must intersect twice.`,
-`Path does not intersect with the bounding edge.`) is said once and left; all as one Undo step, a
-fence's counted even when it crosses nothing, a window that crosses nothing
+`Path does not intersect with the bounding edge.`) is said once and left; all as one Undo step,
+none where nothing changes, a window that crosses nothing saying
 `No objects crossed by crossing window.` (es
-`No hay objetos intersecados en la ventana de captura.`) and no step; anything else typed is
+`No hay objetos intersecados en la ventana de captura.`); anything else typed is
 `*Invalid selection*` (es `*Designación no válida*`) and the words it expects as the console's
-second line names them, Fence and then the prompt's words but its last
-(`Expects a point or Fence/cuTting edges/Crossing/mOde/eRase` with Undo on offer, es
-`Requiere un punto o Borde/aristas de COrte/Captura/MOdo/bOrrar`), at Crossing's first corner every
-word declared but Undo; Quick mode over line/circle/arc/polyline (straight and arc segments)/ellipse
+second line names them, the words the prompt declares but its last — Fence first, Project after
+mOde, Undo once listed — of those built
+(`Expects a point or Fence/cuTting edges/Crossing/mOde/eRase` with Undo listed, es
+`Requiere un punto o Borde/aristas de COrte/Captura/MOdo/bOrrar`; EXTEND's
+`Expects a point or Fence/Boundary edges/Crossing/mOde`), at Crossing's first corner every word
+declared but Undo; Quick mode over line/circle/arc/polyline (straight and arc segments)/ellipse
 (whole or an arc of one), each an edge for the others and so is a spline, Shift to swap mode; a
 spline no edge crosses is deleted too, a closed one cut once refused as a whole ellipse is, and a
 closed one EXTEND refuses as a closed polyline; an elliptical arc grows round its ellipse from the
 end its pick lies nearer in the ellipse's parameter (not along the curve, nor in a straight line),
 and trims as an arc does, a whole ellipse as a circle, into an elliptical arc — cut once, it is left
 as it is, `Curve must intersect cutting edges at least twice.` (es
-`La curva debe intersecar las aristas de corte al menos dos veces.`), the pick counted for Undo; an
+`La curva debe intersecar las aristas de corte al menos dos veces.`); an
 open polyline picked at any segment grows the end its pick lies nearer in the polyline's parameter
 (the segment's index and how far along it: from the first half of the segments the start, so an end
 segment's own end), straight or round an arc, and only that end
@@ -345,18 +357,17 @@ new object, which Last finds, U putting the object back whole (the console's LIS
 polyline and elliptical arc alike); a trim of an object no edge crosses deletes it ("In Quick mode,
 selecting an object that doesn't cross a boundary deletes the object instead"), a polyline of one
 segment too, but a circle one edge crosses once is left as it is, `Circle must intersect twice.` (es
-`Se requieren dos intersecciones para el círculo.`), the pick counted for Undo; an extend that
-reaches no edge says why, as the console does — a line or an arc
+`Se requieren dos intersecciones para el círculo.`); an extend that
+reaches no edge says why, as the console does — a line whose other end would reach one
+`No edge in that direction.`, else a line or an arc
 `Path does not intersect with the bounding edge.` (es
 `La trayectoria no se interseca con la arista de contorno.`), an open polyline's end
 `Object does not intersect an edge.` (es `El objeto no se interseca con ninguna arista.`), an
 elliptical arc too, a closed polyline, a whole ellipse or a circle `Cannot EXTEND this object.` (es
-`Objeto no procesado por ALARGA.`), a dimension the path's — and Undo counts the pick, not a
-circle's or a dimension's, then takes it back changing nothing
-(`Command has been completely undone.` once none is left); worked out in the UCS's XY plane
+`Objeto no procesado por ALARGA.`), a dimension the path's; worked out in the UCS's XY plane
 (PROJMODE 1), a line's new end at the Z along its own slope; an object at an angle to that plane is
-neither an edge nor trimmed (it does not highlight). English wording from AutoCAD 2023's own console
-and the 2026 help
+neither an edge nor trimmed (it does not highlight). English wording from AutoCAD 2027's console
+(probes trim/p100–p389) and the 2026 help
 
 **Missing:** Project — AutoCAD's `Enter a projection option [None/Ucs/View] <Ucs>:` (es
 `Indique opción de proyección [Ninguna/SCP/Vista] <SCP>:`), in both modes, its choice an Undo step
@@ -364,8 +375,7 @@ as Edge's, and the settings saying `Projection=None` or `View`: None cuts only w
 3D (an edge at another height cuts nothing, and Quick mode then deletes what no longer crosses one),
 View projects along the line of sight; everything here is worked out projected on the UCS's XY
 plane, which is Ucs, so `P` is refused as an option not built —, mOde at `Select objects:` once the
-edges' set holds something (not offered here), the Spanish declared word of cuTting edges and
-Boundary edges (`COrte` here, which the tables do not settle: **unverified**), the fence dragged
+edges' set holds something (not offered here), the fence dragged
 (`pick/drag cursor`), Shift held for a fence or a window (the console has no Shift: **unverified**),
 PROJMODE, EDGEMODE and TRIMEXTENDMODE as variables (and across sessions, as AutoCAD keeps them in
 the registry), a spline as an edge running on, projecting objects at an angle to the UCS onto its XY
@@ -375,8 +385,7 @@ piece along its end tangent behind a triple knot, a CV spline by a curved one �
 here, fit points or control vertices on uniform knots, cannot hold; so neither an open spline's
 `Object does not intersect an edge.`); the piece after a polyline's own crossing, which the console
 starts with a zero-length segment; **unverified**: the reasons when TRIM's Shift extends (EXTEND's,
-the same code here), `Todos los efectos del comando han sido deshechos.` (one of the table's two
-translations), and that a Shift-trim inside EXTEND deletes as TRIM's does
+the same code here), and that a Shift-trim inside EXTEND deletes as TRIM's does
 
 ### `OFFSET` / `O` · es `DESFASE` / `DF` / `EQ`
 

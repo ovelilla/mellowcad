@@ -3070,10 +3070,12 @@ export const en: EngineCatalog = {
         "Ttr": "Ttr (tan tan radius)"
       },
       "TRIM": {
-        "cuTting": "cuTting edges"
+        "cuTting": "cuTting edges",
+        "Noextend": "No extend"
       },
       "EXTEND": {
-        "Boundary": "Boundary edges"
+        "Boundary": "Boundary edges",
+        "Noextend": "No extend"
       },
       "POLYGON": {
         "Inscribed": "Inscribed in circle",

@@ -1193,7 +1193,8 @@ export const es: EngineLocale = {
         "Standard": "Estándar",
         "Edge": "Arista",
         "Extend": "Alargar",
-        "No extend": "No alargar"
+        "No extend": "No alargar",
+        "Noextend": "No"
       },
       "EXTEND": {
         "Undo": "desHacer",
@@ -1205,7 +1206,8 @@ export const es: EngineLocale = {
         "Standard": "Estándar",
         "Edge": "Arista",
         "Extend": "Alargar",
-        "No extend": "No alargar"
+        "No extend": "No alargar",
+        "Noextend": "No"
       },
       "FILLET": {
         "Undo": "Deshacer",
@@ -3418,10 +3420,12 @@ export const es: EngineLocale = {
         "Ttr": "Ttr (Tangente tangente radio)"
       },
       "TRIM": {
-        "cuTting": "aristas de COrte"
+        "cuTting": "aristas de COrte",
+        "Noextend": "No alargar"
       },
       "EXTEND": {
-        "Boundary": "aristas de COrte"
+        "Boundary": "aristas de COrte",
+        "Noextend": "No alargar"
       },
       "POLYGON": {
         "Inscribed": "Inscrito en el círculo",

@@ -172,12 +172,8 @@ type EdgeEditPlan =
     }
   /** Quick mode's trim of an object no edge cuts: it is deleted. */
   | { readonly kind: "erase"; readonly target: Entity }
-  /** A pick TRIM refuses, in the console's words; Undo counts it, or not. */
-  | {
-      readonly kind: "refuse"
-      readonly message: MessageId
-      readonly uncounted?: true
-    }
+  /** A pick TRIM refuses, in the console's words. */
+  | { readonly kind: "refuse"; readonly message: MessageId }
 
 /**
  * A fence: the one a pick on nothing starts, AutoCAD's "pick two empty
@@ -202,12 +198,12 @@ export interface TrimExtendMode {
 }
 
 /**
- * A step Undo takes back: an edit (`edited`), or a pick the console still
- * counts; with the edge mode an Edge choice before it changed, which goes
- * back with it (acc/ej1–ej3).
+ * An edit Undo takes back, everything since the history stood at `depth`
+ * (a transparent 'LTSCALE with it, probe trim/p164), with the edge mode an
+ * Edge choice before it changed, which goes back with it (p137).
  */
 interface EditStep {
-  readonly edited: boolean
+  readonly depth: number
   readonly edgeExtend?: boolean
 }
 
@@ -220,10 +216,26 @@ export abstract class EdgeEditTool implements Tool {
 
   private preview: EdgeEditPlan | null = null
   /**
-   * What Undo takes back since the command started, newest last: an edit
-   * (`true`), or a pick EXTEND refused that the console still counts.
+   * What Undo takes back since the command started, newest last: the edits
+   * alone, so a refusal, a fence or a window that changes nothing goes back
+   * with the edit before it (probes trim/p381, p388).
    */
   private steps: EditStep[] = []
+  /**
+   * Whether Undo is listed: since the start, or since U said all was undone,
+   * the object prompt had an answer — a pick, hit, missed or refused, a
+   * fence, a window's first corner, a mode or Edge answer, Enter there
+   * included, Quick's first Enter (p100, p107, p161, p241, p301, p383);
+   * before it Undo is refused in the prompt's words (p114).
+   */
+  private answered = false
+  /**
+   * Whether Quick's Enter at the object prompt ends the command. Until an
+   * object is picked or missed, a fence or window drawn, edges chosen or U
+   * taken, the first is taken as an answer, not a mode's or a refused one
+   * (p100, p107, p117, p152, p158, p246, p284, p290).
+   */
+  private enterSpent = false
   /** The edge mode an Edge choice changed, which no step has taken yet. */
   private edgeBefore: boolean | null = null
   private lastInput: PointerInput | null = null
@@ -234,9 +246,9 @@ export abstract class EdgeEditTool implements Tool {
     readonly cursor: Vec2 | null
   } | null = null
   /**
-   * What the command asks besides its object: eRase's set (acc/ri1–ri12),
-   * cuTting edges' (Boundary edges') or mOde's option (sm1–sm12, sn1–sn12,
-   * sp1–sp4).
+   * What the command asks besides its object: eRase's set (probes
+   * trim/p111, p112, p153), cuTting edges' (Boundary edges') or mOde's
+   * option (p107, p119, p136, p152), Edge's (p109, p125, p135).
    */
   private asking: "erase" | "edges" | "mode" | "edge" | null = null
   /** Whether the edges are asked as the command starts, which offers mOde. */
@@ -268,7 +280,6 @@ export abstract class EdgeEditTool implements Tool {
 
   onActivate(ctx: ToolContext): void {
     ctx.setCursor("crosshair")
-    ctx.selection.clear()
     this.selection = ctx.selection
     this.preview = null
     this.fence = null
@@ -277,9 +288,26 @@ export abstract class EdgeEditTool implements Tool {
     this.edges = null
     this.steps = []
     this.edgeBefore = null
+    this.answered = false
+    this.enterSpent = false
     // PROJMODE 1 is fixed here.
     this.reportSettings(ctx)
-    if (this.mode.standard) this.askEdges(true, ctx)
+    if (ctx.selection.isEmpty()) {
+      if (this.mode.standard) this.askEdges(true, ctx)
+      return
+    }
+    // The objects selected before the command are its only edges, counted
+    // after the edges' words, Standard's prompt skipped and nothing left
+    // selected (probes trim/p141–p144).
+    this.reportEdgesPrompt(ctx)
+    this.edgeSelector.start()
+    if (this.edgeSelector.preselect(ctx)) {
+      this.edges = new Set(ctx.selection.toArray())
+      this.enterSpent = true
+    } else if (this.mode.standard) {
+      this.askEdges(true, ctx, false)
+    }
+    ctx.selection.clear()
   }
 
   /**
@@ -306,22 +334,23 @@ export abstract class EdgeEditTool implements Tool {
     return this.fence || this.window ? this.boxPrompt() : this.objectQuestion()
   }
 
-  /**
-   * WHY these words: the console's second line lists the prompt's words but
-   * its last, after the unlisted Fence (`Expects a point or Fence/cuTting
-   * edges/Crossing/mOde/Project`, acc/t1, tf18, ta7, tb5), and at Crossing's
-   * first corner every word declared but Undo (`Fence/cuTting/Crossing/…`,
-   * ta12, tb9) — of those built here.
-   */
   /** mOde's `<Quick>`: the current mode, which Enter keeps. */
   defaultOption(): string | null {
     if (this.asking === "edge") {
-      return this.mode.edgeExtend ? "Extend" : "No extend"
+      return this.mode.edgeExtend ? "Extend" : "Noextend"
     }
     if (this.asking !== "mode") return null
     return this.mode.standard ? "Standard" : "Quick"
   }
 
+  /**
+   * WHY these words: the console's second line names the words the prompt
+   * declares but its last — Fence first, Project after mOde, Undo once
+   * listed — of those built here (`Expects a point or Fence/cuTting
+   * edges/Crossing/mOde`, EXTEND's `…/Crossing/mOde`: probes trim/p105,
+   * p113, p135), and at Crossing's first corner every word declared but
+   * Undo (`Fence/cuTting/Crossing/…`, p301, p302).
+   */
   takes(): QuestionInput {
     if (this.asking === "mode" || this.asking === "edge") return "keyword"
     const selector = this.selector()
@@ -335,10 +364,15 @@ export abstract class EdgeEditTool implements Tool {
         keywords: { ids: ["Fence", ...this.unfenced()], declared: true },
       }
     }
-    const listed = this.listed()
-      .map((option) => option.id)
-      .filter((id) => id !== "Fence")
-    return { refusal, keywords: { ids: ["Fence", ...listed].slice(0, -1) } }
+    const declared = [
+      "Fence",
+      ...this.unfenced().flatMap((id) =>
+        id === "mOde" ? [id, "Project"] : [id]
+      ),
+      ...(this.answered ? ["Undo"] : []),
+    ]
+    const ids = declared.slice(0, -1).filter((id) => id !== "Project")
+    return { refusal, keywords: { ids } }
   }
 
   /**
@@ -352,16 +386,16 @@ export abstract class EdgeEditTool implements Tool {
   }
 
   /**
-   * WHY Undo hidden before the first edit: the console takes it, saying
-   * nothing (acc/th3), and Crossing's first corner the prompt's words,
-   * unlisted (tc6, tc7, th5).
+   * WHY Crossing's first corner takes the prompt's words unlisted, Undo once
+   * the object prompt lists it (probes trim/p301, p307).
    */
   commandOptions(): readonly CommandOption[] {
     if (this.asking === "mode") return [{ id: "Quick" }, { id: "Standard" }]
-    if (this.asking === "edge") return [{ id: "Extend" }, { id: "No extend" }]
+    if (this.asking === "edge") return [{ id: "Extend" }, { id: "Noextend" }]
     const selector = this.selector()
     if (selector) {
-      // WHY mOde only as the command starts, the set empty (acc/sm3, sm5, sp2).
+      // WHY mOde only as the command starts, the set empty (probes
+      // trim/p119, p152, p284).
       const mode =
         this.asking === "edges" &&
         this.starting &&
@@ -376,7 +410,7 @@ export abstract class EdgeEditTool implements Tool {
     }
     if (this.window) {
       if (this.window.start) return []
-      return ["Fence", ...this.unfenced(), "Undo"].map((id) => ({
+      return ["Fence", ...this.unfenced(), ...this.undoWord()].map((id) => ({
         id,
         hidden: true,
       }))
@@ -384,17 +418,17 @@ export abstract class EdgeEditTool implements Tool {
     return [
       ...this.listed(),
       ...(this.mode.standard ? [] : [{ id: "Fence", hidden: true } as const]),
-      ...(this.undoable() ? [] : [{ id: "Undo", hidden: true } as const]),
     ]
   }
 
   invokeOption(id: string, ctx: ToolContext): CommandOptionOutcome {
     if (this.asking === "mode") return this.chooseMode(id, ctx)
     if (this.asking === "edge") {
-      if (id !== "Extend" && id !== "No extend") return "unhandled"
+      if (id !== "Extend" && id !== "Noextend") return "unhandled"
       this.edgeBefore ??= this.mode.edgeExtend
       this.mode.edgeExtend = id === "Extend"
       this.asking = null
+      this.answered = true
       ctx.requestRender()
       return "continue"
     }
@@ -447,7 +481,8 @@ export abstract class EdgeEditTool implements Tool {
         this.window = null
         this.preview = null
         ctx.dynamicInput.close()
-        // WHY the settings again: the console says them first (acc/sm5, sm7).
+        // WHY the settings again: the console says them first (probe
+        // trim/p152).
         this.reportSettings(ctx)
         this.askEdges(false, ctx)
         break
@@ -547,20 +582,22 @@ export abstract class EdgeEditTool implements Tool {
       return
     }
     this.lastInput = input
+    this.answered = true
+    this.enterSpent = true
     const plan = this.planFor(input, ctx)
     if (!plan) {
       if (ctx.pick(input.world)) this.refuseExtend(input, ctx)
       else if (this.mode.standard) this.startWindow(input.point, ctx)
       else this.startFence(input.point, ctx)
+      ctx.requestRender()
       return
     }
     if (plan.kind === "refuse") {
       ctx.report(ctx.text.message(plan.message), "error")
-      if (!plan.uncounted) this.pushStep(false)
       ctx.requestRender()
       return
     }
-    this.pushStep(true)
+    this.pushStep(ctx)
     this.commit(plan, ctx)
     // Loop like AutoCAD: recompute the preview against the now-updated drawing
     // so a follow-up click continues trimming/extending from the same spot.
@@ -577,15 +614,17 @@ export abstract class EdgeEditTool implements Tool {
   }
 
   /**
-   * Enter: Fence's ends it, whatever its points (acc/ta1, ta2), and a
-   * window's opposite corner refuses it; at the prompt and Crossing's first
-   * corner it ends the command (ta12), as at a pick on nothing's fence and
-   * at eRase's with nothing in its set (ri2, ri3, ri12); at the edges' it
-   * takes every object (sm2, sn8, sn10), and at mOde's it keeps the mode.
+   * Enter: Fence's ends it, whatever its points (probes trim/p290, p291),
+   * and a window's opposite corner refuses it (p301); at the prompt it ends
+   * the command, but Quick's first (`enterSpent`, p100, p118), as at
+   * Crossing's first corner (p302), at a pick on nothing's fence and at
+   * eRase's with nothing in its set (p111); at the edges' it takes every
+   * object (p119), and at mOde's and Edge's it keeps the mode (p107, p161).
    */
   onEnter(ctx: ToolContext): boolean {
     if (this.asking === "edge") {
       this.asking = null
+      this.answered = true
       return true
     }
     if (this.asking === "mode") {
@@ -599,6 +638,7 @@ export abstract class EdgeEditTool implements Tool {
     ) {
       this.asking = null
       this.edges = null
+      this.enterSpent = true
       ctx.requestRender()
       return true
     }
@@ -612,7 +652,13 @@ export abstract class EdgeEditTool implements Tool {
       this.refuseCorner(ctx)
       return true
     }
-    return false
+    if (this.fence || this.window || this.mode.standard || this.enterSpent) {
+      return false
+    }
+    this.enterSpent = true
+    this.answered = true
+    ctx.requestRender()
+    return true
   }
 
   wantsSnap(): boolean {
@@ -733,14 +779,22 @@ export abstract class EdgeEditTool implements Tool {
     ctx.report(
       ctx.text.message("trimExtendSettings", {
         mode: this.mode.standard ? "standard" : "quick",
-        // WHY None in Quick mode: its edges never run on (acc/eg3, eg9).
+        // WHY None in Quick mode: its edges never run on (probe trim/p146).
         edge: this.mode.standard && this.mode.edgeExtend ? "extend" : "none",
       })
     )
   }
 
   /** `Select cutting edges ...` (`Select boundary edges ...`) and the set. */
-  private askEdges(starting: boolean, ctx: ToolContext): void {
+  private askEdges(starting: boolean, ctx: ToolContext, said = true): void {
+    if (said) this.reportEdgesPrompt(ctx)
+    this.asking = "edges"
+    this.starting = starting
+    ctx.selection.clear()
+    this.edgeSelector.start()
+  }
+
+  private reportEdgesPrompt(ctx: ToolContext): void {
     ctx.report(
       ctx.text.message(
         this.defaultMode === "trim"
@@ -748,22 +802,20 @@ export abstract class EdgeEditTool implements Tool {
           : "selectBoundaryEdges"
       )
     )
-    this.asking = "edges"
-    this.starting = starting
-    ctx.selection.clear()
-    this.edgeSelector.start()
   }
 
   private takeEdges(ctx: ToolContext): void {
     this.edges = new Set(ctx.selection.toArray())
     ctx.selection.clear()
     this.asking = null
+    this.enterSpent = true
     ctx.requestRender()
   }
 
   /**
-   * mOde's answer, or Enter keeping it: the object prompt again, or the
-   * edges' prompt it was asked at while Standard (acc/sm9, sp2).
+   * mOde's answer, or Enter keeping it: the object prompt again, listing
+   * Undo, or the edges' prompt it was asked at while Standard, which lists
+   * nothing more (probes trim/p107, p136, p284).
    */
   private chooseMode(
     id: string | null,
@@ -771,6 +823,7 @@ export abstract class EdgeEditTool implements Tool {
   ): CommandOptionOutcome {
     if (id !== null && id !== "Quick" && id !== "Standard") return "unhandled"
     if (id !== null) this.mode.standard = id === "Standard"
+    if (!this.modeFromEdges) this.answered = true
     this.asking = this.modeFromEdges && this.mode.standard ? "edges" : null
     ctx.requestRender()
     return "continue"
@@ -780,7 +833,7 @@ export abstract class EdgeEditTool implements Tool {
     return this.edges === null || this.edges.has(id)
   }
 
-  /** An edge's pieces are edges too (acc/sp1). */
+  /** An edge's pieces are edges too (probe trim/p288). */
   private keepEdges(id: EntityId, added: readonly Entity[]): void {
     if (!this.edges?.has(id)) return
     for (const entity of added) this.edges.add(entity.id)
@@ -788,26 +841,31 @@ export abstract class EdgeEditTool implements Tool {
 
   /** The words the object prompt lists. */
   private listed(): CommandOption[] {
-    return [
-      ...this.words().map((id) => ({ id })),
-      ...(this.undoable() ? [{ id: "Undo" }] : []),
-    ]
+    return [...this.words(), ...this.undoWord()].map((id) => ({ id }))
+  }
+
+  private undoWord(): readonly string[] {
+    return this.answered ? ["Undo"] : []
   }
 
   /**
-   * Undo takes back the last edit of this command, and only those; back at
-   * its start AutoCAD says so, and Undo is no longer offered.
+   * Undo takes back the last edit of this command and what followed it, a
+   * transparent command too (probes trim/p115, p164); with none left it says
+   * the command completely undone, the edge mode back and the trim mode kept,
+   * and is listed no more (p135, p136, p381, p388). It spends Quick's first
+   * Enter (p116, p158).
    */
   private undoEdit(ctx: ToolContext): void {
-    if (!this.undoable()) return
-    // WHY the step before too: the console's U right after an Edge choice
-    // takes both back (acc/ej4, ei1).
+    // WHY the Edge choice after the edit too: the console's U takes both
+    // back (p138).
     if (this.edgeBefore !== null) this.mode.edgeExtend = this.edgeBefore
     this.edgeBefore = null
     const step = this.steps.pop()
-    if (step?.edited) ctx.undo()
+    if (step) ctx.undoTo(step.depth)
     if (step?.edgeExtend !== undefined) this.mode.edgeExtend = step.edgeExtend
+    this.enterSpent = true
     if (this.steps.length === 0) {
+      this.answered = false
       ctx.report(ctx.text.message("commandCompletelyUndone"))
     }
     if (!this.window) {
@@ -817,42 +875,53 @@ export abstract class EdgeEditTool implements Tool {
 
   /**
    * eRase's set, erased as one Undo step of the command's, which asks its
-   * object again (acc/ri1, ri4, ri9).
+   * object again (probes trim/p112, p153).
    */
   private eraseSet(ctx: ToolContext): void {
+    this.pushStep(ctx)
     ctx.execute(new RemoveEntitiesCommand(ctx.selection.toArray()))
     ctx.selection.clear()
     this.asking = null
-    this.pushStep(true)
     ctx.requestRender()
   }
 
-  private undoable(): boolean {
-    return this.steps.length > 0 || this.edgeBefore !== null
-  }
-
-  private pushStep(edited: boolean): void {
+  /** An edit about to be executed, as Undo's step, the Edge choice joined. */
+  private pushStep(ctx: ToolContext): void {
+    const depth = ctx.historyDepth()
     const edge = this.edgeBefore
-    this.steps.push(edge === null ? { edited } : { edited, edgeExtend: edge })
+    this.steps.push(edge === null ? { depth } : { depth, edgeExtend: edge })
     this.edgeBefore = null
+    this.answered = true
+    this.enterSpent = true
   }
 
   /**
-   * An object EXTEND reaches no edge with, said in AutoCAD 2023's console's
-   * words (acc/x1, x5, x6, x8, x12, x15 of the arcs session), the pick
-   * counted for Undo where the console counts it.
+   * An object EXTEND reaches no edge with, said in the console's words: a
+   * line whose other end would reach one `No edge in that direction.`
+   * (probe trim/p143), else its type's (`extendRefusal`; p195, p204, p210).
    */
   private refuseExtend(input: PointerInput, ctx: ToolContext): void {
     const hit = this.pickFor(input, ctx)
     if (!hit || this.modeFor(input) !== "extend") return
-    const refusal = extendRefusal(hit)
-    if (!refusal) return
-    ctx.report(ctx.text.message(refusal.message), "error")
-    if (refusal.counts) this.pushStep(false)
-    ctx.requestRender()
+    const message = extendRefusal(hit)
+    if (!message) return
+    const otherEnd =
+      hit.type === "line" &&
+      planExtendLine(
+        hit,
+        pointOnLine(hit, 1 - paramOnLine(hit, input.world)),
+        this.boundsFor(hit, this.drawing(ctx))
+      ) !== null
+    ctx.report(
+      ctx.text.message(otherEnd ? "noEdgeInThatDirection" : message),
+      "error"
+    )
   }
 
-  /** Standard mode's crossing window, a pick on nothing its first corner (acc/sm4, sn1, sn2). */
+  /**
+   * Standard mode's crossing window, a pick on nothing its first corner
+   * (probes trim/p308, p309, p382).
+   */
   private startWindow(start: Vec2, ctx: ToolContext): void {
     this.window = { start: null, cursor: null }
     this.preview = null
@@ -934,6 +1003,9 @@ export abstract class EdgeEditTool implements Tool {
   private cornerPoint(point: Vec2, ctx: ToolContext): void {
     const start = this.window?.start
     if (!start) {
+      // WHY before the prompt said again: it lists Undo (probe trim/p301).
+      this.answered = true
+      this.enterSpent = true
       this.window = { start: point, cursor: point }
       this.reportObjectPrompt(ctx)
       this.openWindowInput(ctx)
@@ -975,8 +1047,8 @@ export abstract class EdgeEditTool implements Tool {
    * there, against the drawing as it now is (ta3, ta10): EXTEND takes an
    * object at its first only and says `No edge in that direction.` at the
    * next (td1–td3, te1), and an object refused is left alone at the rest
-   * (te5, th4). One Undo step, counted for a fence even when it crosses
-   * nothing (ta1, ta2); a window that crosses nothing is none (tb11, tb12).
+   * (te5, th4). One Undo step, and none where it changes nothing, Undo
+   * listed all the same (probes trim/p290, p303, p380, p381).
    */
   private editAcross(
     points: readonly Vec2[],
@@ -985,6 +1057,8 @@ export abstract class EdgeEditTool implements Tool {
   ): void {
     this.fence = null
     this.window = null
+    this.answered = true
+    this.enterSpent = true
     ctx.dynamicInput.close()
     const view = ctx.viewport
     const originals = this.drawing(ctx)
@@ -1023,8 +1097,8 @@ export abstract class EdgeEditTool implements Tool {
           plan?.kind === "refuse"
             ? plan.message
             : this.defaultMode === "extend"
-              ? extendRefusal(target)?.message
-              : undefined
+              ? extendRefusal(target)
+              : null
         if (message) ctx.report(ctx.text.message(message), "error")
         left.add(source)
         continue
@@ -1040,6 +1114,7 @@ export abstract class EdgeEditTool implements Tool {
     const ids = [...pieces.keys()]
     const kept = new Set([...pieces.values()].flat())
     if (ids.length > 0) {
+      this.pushStep(ctx)
       ctx.execute(
         new ReplaceEntitiesCommand(
           ids,
@@ -1047,7 +1122,6 @@ export abstract class EdgeEditTool implements Tool {
         )
       )
     }
-    this.pushStep(ids.length > 0)
     ctx.requestRender()
   }
 
@@ -1084,24 +1158,27 @@ export abstract class EdgeEditTool implements Tool {
     mode: EdgeEditMode,
     drawing: readonly Entity[]
   ): EdgeEditPlan | null {
-    const edges = drawing.filter((e) => e.id !== hit.id && this.isEdge(e.id))
-    const others =
-      this.mode.standard && this.mode.edgeExtend
-        ? edges.flatMap((edge) => prolonged(edge, reachOf(drawing)))
-        : edges
+    const others = this.boundsFor(hit, drawing)
     if (mode === "extend") return planExtend(hit, click, others)
     const plan = planTrim(hit, click, others, this.isEdge(hit.id))
     if (plan || !TRIMMED.has(hit.type)) return plan
     // "In Quick mode, selecting an object that doesn't cross a boundary
-    // deletes the object instead" — of those trimmed here; Standard says so,
-    // and Undo does not count it (acc/sm3, sn3, sn12).
+    // deletes the object instead" — of those trimmed here; Standard says so
+    // (probes trim/p383, p388).
     return this.mode.standard
-      ? {
-          kind: "refuse",
-          message: "doesNotIntersectCuttingEdge",
-          uncounted: true,
-        }
+      ? { kind: "refuse", message: "doesNotIntersectCuttingEdge" }
       : { kind: "erase", target: hit }
+  }
+
+  /**
+   * What cuts or bounds `hit`: the edges of `drawing`, run on under Edge's
+   * Extend.
+   */
+  private boundsFor(hit: Entity, drawing: readonly Entity[]): Entity[] {
+    const edges = drawing.filter((e) => e.id !== hit.id && this.isEdge(e.id))
+    return this.mode.standard && this.mode.edgeExtend
+      ? edges.flatMap((edge) => prolonged(edge, reachOf(drawing)))
+      : edges
   }
 
   private commit(
@@ -1348,44 +1425,31 @@ function planTrim(
 }
 
 /**
- * Why EXTEND leaves `target` as it is, in the console's words, and whether
- * Undo then counts the pick: a line or an arc `Path does not intersect with
- * the bounding edge.`, an open polyline's end `Object does not intersect an
- * edge.`, a closed polyline `Cannot EXTEND this object.`, all counted; a
- * circle that too and a dimension the path's, neither counted; an elliptical
- * arc as an open polyline's end, a whole ellipse and a closed spline as a
- * closed polyline. `null` where the console extends what is not built here
- * (an open spline) or was not asked.
+ * Why EXTEND leaves `target` as it is, in the console's words: a line or an
+ * arc `Path does not intersect with the bounding edge.`, an open polyline's
+ * end `Object does not intersect an edge.`, a closed polyline and a circle
+ * `Cannot EXTEND this object.`, a dimension the path's; an elliptical arc as
+ * an open polyline's end, a whole ellipse and a closed spline as a closed
+ * polyline. `null` where the console extends what is not built here (an
+ * open spline) or was not asked.
  */
-function extendRefusal(
-  target: Entity
-): { readonly message: MessageId; readonly counts: boolean } | null {
+function extendRefusal(target: Entity): MessageId | null {
   switch (target.type) {
     case "line":
     case "arc":
-      return { message: "pathDoesNotIntersectBoundingEdge", counts: true }
+      return "pathDoesNotIntersectBoundingEdge"
     case "polyline":
-      return {
-        message: target.closed
-          ? "cannotExtendObject"
-          : "objectDoesNotIntersectEdge",
-        counts: true,
-      }
+      return target.closed ? "cannotExtendObject" : "objectDoesNotIntersectEdge"
     case "circle":
-      return { message: "cannotExtendObject", counts: false }
+      return "cannotExtendObject"
     case "ellipse":
-      return {
-        message: isFullEllipse(target)
-          ? "cannotExtendObject"
-          : "objectDoesNotIntersectEdge",
-        counts: true,
-      }
+      return isFullEllipse(target)
+        ? "cannotExtendObject"
+        : "objectDoesNotIntersectEdge"
     case "spline":
-      return target.closed
-        ? { message: "cannotExtendObject", counts: true }
-        : null
+      return target.closed ? "cannotExtendObject" : null
     case "dimension":
-      return { message: "pathDoesNotIntersectBoundingEdge", counts: false }
+      return "pathDoesNotIntersectBoundingEdge"
     case "text":
     case "mtext":
     case "attdef":
