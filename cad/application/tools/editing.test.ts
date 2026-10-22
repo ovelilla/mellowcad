@@ -1,5 +1,7 @@
 import { describe, expect, it } from "vitest"
 import {
+  assignEntityColor,
+  assignEntityLineweight,
   createAttributeDefinition,
   createDimension,
   createInsert,
@@ -14,6 +16,7 @@ import {
   textCorners,
   withElevation,
   withNormal,
+  withThickness,
   type ArcEntity,
   type CircleEntity,
   type EllipseEntity,
@@ -3790,9 +3793,10 @@ describe("FILLET", () => {
     expect(cad.activeToolId()).toBe("select")
   })
 
-  // AutoCAD 2023's console (acc/f1, f5, f14, f25, f27, g1–g8, h1–h7): an arc
-  // segment is rounded against its circle where it crosses the other object,
-  // either extended to it, each kept on its picked side.
+  // An arc segment is rounded against its circle where it crosses the other
+  // object, either extended to it, each kept on its picked side: AutoCAD
+  // 2027's console (probes corners/p209–p213, p217); these inputs are 2023's
+  // (acc/f1, f5, f14, f25, f27, g1–g8, h1–h7).
   describe("an arc segment", () => {
     /** 0,0 → 100,0, then a half circle bulging east to 100,50. */
     const hook = () =>
@@ -3979,8 +3983,9 @@ describe("FILLET", () => {
     })
   })
 
-  // AutoCAD 2023's console (acc/f1–f17, r15): the line joins the polyline,
-  // which keeps its run on the picked side of the segment and drops the rest.
+  // The line joins the polyline, which keeps its run on the picked side of
+  // the segment and drops the rest: AutoCAD 2027's console (probes
+  // corners/p203, p204); these inputs are 2023's (acc/f1–f17, r15).
   describe("a line with a polyline's segment", () => {
     const ell = () => polylineOf([p(0, 0), p(100, 0), p(100, 50)], { id: "P1" })
     const QUARTER = Math.tan(deg(22.5))
@@ -4148,8 +4153,9 @@ describe("FILLET", () => {
     })
   })
 
-  // AutoCAD 2023's console (acc/g1–g10, r1–r4, r13): one polyline of the two,
-  // the one picked first, each keeping its run on its picked side.
+  // One polyline of the two, the one picked first, each keeping its run on
+  // its picked side: AutoCAD 2027's console (probes corners/p205, p213);
+  // these inputs are 2023's (acc/g1–g10, r1–r4, r13).
   describe("segments of two polylines", () => {
     const ell = () => polylineOf([p(0, 0), p(100, 0), p(100, 50)], { id: "P1" })
     const hook = () =>
@@ -4480,8 +4486,9 @@ describe("FILLET", () => {
   it("says why two segments of a polyline make no corner", () => {
     const cad = createHarness({
       entities: [
-        // Segments 0 and 2 run apart from the one between them.
-        polylineOf([p(0, 0), p(-10, 100), p(110, 100), p(100, 0)], {
+        // Segments 0 and 2 run apart from the one between them (probe
+        // corners/p387; with no segment after them they close it, p386).
+        polylineOf([p(0, 0), p(-10, 100), p(110, 100), p(100, 0), p(200, 0)], {
           id: "P1",
         }),
         polylineOf([p(300, 0), p(300, 100), p(400, 100), p(400, 0)], {
@@ -4532,9 +4539,10 @@ describe("FILLET", () => {
     expect(cad.byId<PolylineEntity>("SQ").vertices).toHaveLength(4)
   })
 
-  // AutoCAD 2023's console (acc/a*, b*, c*, d*, p*, q*, r* of this session):
-  // the fillet lies on the side of each object the other was picked on; a
-  // circle is never trimmed; LIST's values to 4 decimals.
+  // The fillet lies on the side of each object the other was picked on; a
+  // circle is never trimmed: AutoCAD 2027's console (probes corners/p189–p195,
+  // p321); these inputs are 2023's (acc/a*, b*, c*, d*, p*, q*, r* of that
+  // session), LIST's values to 4 decimals.
   describe("arcs and circles", () => {
     const line = () => lineOf(p(0, 0), p(100, 0), { id: "L1" })
     /** The upper half of a circle round 50,-10, crossing L1 twice. */
@@ -4953,7 +4961,8 @@ describe("CHAMFER", () => {
     ])
   })
 
-  // AutoCAD 2023's console (acc/f7, f18): D 10, 5, either picked first.
+  // D 10, 5, either picked first: AutoCAD 2027's console (probes
+  // corners/p203, p204); this input is 2023's (acc/f7, f18).
   it("joins a line into a polyline by the bevel, the first distance on the first picked", () => {
     const entities = () => [
       polylineOf([p(0, 0), p(100, 0), p(100, 50)], { id: "P1" }),
@@ -5063,8 +5072,8 @@ describe("CHAMFER", () => {
     ])
   })
 
-  // AutoCAD 2023's console (acc/e1–e4 of the arcs session): an ARC or a
-  // CIRCLE is said to be no line, and the same prompt is asked again.
+  // An ARC or a CIRCLE is said to be no line, and the same prompt is asked
+  // again: AutoCAD 2027's console (probes corners/p196–p198).
   it("refuses an arc or a circle and asks again", () => {
     for (const [locale, name, said] of [
       [undefined, "CHAMFER", "Chamfer requires 2 lines (not arc segments)."],
@@ -5091,9 +5100,10 @@ describe("CHAMFER", () => {
     }
   })
 
-  // AutoCAD 2023's console (acc/f3–f18, f23, f24, f28): an arc segment is
-  // refused beside another object, and within its polyline cut as its chord,
-  // what is left of it keeping its radius, turn and side of a half circle.
+  // An arc segment is refused beside another object, and within its polyline
+  // cut as its chord, what is left of it keeping its radius, turn and side of
+  // a half circle: AutoCAD 2027's console (probes corners/p214–p216, p225);
+  // these inputs are 2023's (acc/f3–f18, f23, f24, f28).
   describe("an arc segment", () => {
     /** 0,0 → 100,0, then a half circle bulging east to 100,50. */
     const hook = () =>
@@ -5626,6 +5636,940 @@ describe("FILLET's and CHAMFER's command line", () => {
     const radius = run(B(), "_FILLET", "_R", "5", "", "_U")
     expect(radius.commandLog().slice(-2)).toEqual(["U", "FILLET"])
     expect(radius.runtime.document.getSettings().filletRadius).toBe(0)
+  })
+})
+
+// AutoCAD 2027's console answering the same input (probes corners/<id>, MPDUMP
+// at full precision, es-ES and en-US).
+describe("What FILLET and CHAMFER make", () => {
+  function run(entities: Entity[], ...answers: string[]): CadHarness {
+    return typed(createHarness({ entities }), ...answers)
+  }
+  function runEs(entities: Entity[], ...answers: string[]): CadHarness {
+    return typed(createHarness({ entities, locale: es }), ...answers)
+  }
+  function typed(cad: CadHarness, ...answers: string[]): CadHarness {
+    for (const a of answers) {
+      cad.runtime.setCommandLineText(a)
+      cad.runtime.submitCommandLine()
+    }
+    return cad
+  }
+  const L = (a: [number, number], b: [number, number], id: string) =>
+    lineOf(p(...a), p(...b), { id })
+  type V = [number, number, number?, number?, number?]
+  const PL = (vs: V[], id: string, closed = false) => {
+    const bulges = vs.map((v) => v[2] ?? 0)
+    const widths: [number, number][] = vs.map((v) => [
+      v[3] ?? 0,
+      v[4] ?? v[3] ?? 0,
+    ])
+    const wide = widths.some(([a, b]) => a || b)
+    return polylineOf(
+      vs.map((v) => p(v[0], v[1])),
+      {
+        id,
+        closed,
+        bulges: bulges.some((b) => b) ? bulges : undefined,
+        widths: wide ? (closed ? widths : widths.slice(0, -1)) : undefined,
+      }
+    )
+  }
+  const news = <T extends Entity>(cad: CadHarness, ...old: string[]) =>
+    cad.entities().filter((e) => !old.includes(e.id)) as T[]
+  /** AutoCAD's MPDUMP vertices: x, y, bulge, start width, end width. */
+  const expectPoly = (
+    cad: CadHarness,
+    id: string,
+    vs: V[],
+    closed: boolean
+  ) => {
+    const poly = cad.byId<PolylineEntity>(id)
+    expect(poly.closed).toBe(closed)
+    expect(poly.vertices).toBeCloseToPoints(
+      vs.map((v) => p(v[0], v[1])),
+      6
+    )
+    vs.forEach((v, k) => {
+      expect(poly.bulges?.[k] ?? 0).toBeCloseTo(v[2] ?? 0, 6)
+      if (closed || k < vs.length - 1) {
+        expect(poly.widths?.[k]?.[0] ?? 0).toBeCloseTo(v[3] ?? 0, 6)
+        expect(poly.widths?.[k]?.[1] ?? 0).toBeCloseTo(v[4] ?? 0, 6)
+      }
+    })
+  }
+
+  describe("polylines", () => {
+    it("one apart: the segment between replaced (p200)", () => {
+      const cad = run(
+        [
+          PL(
+            [
+              [0, 0],
+              [100, 0],
+              [120, 50],
+              [60, 100],
+            ],
+            "P1"
+          ),
+        ],
+        "FILLET",
+        "R",
+        "10",
+        "50,0",
+        "90,75"
+      )
+      expectPoly(
+        cad,
+        "P1",
+        [
+          [0, 0],
+          [152.3795006, 0, 0.7014725872],
+          [158.7813446, 17.6822128],
+          [60, 100],
+        ],
+        false
+      )
+    })
+
+    it("the first and last of three segments close it where they cross before the first (p201, p328, p386)", () => {
+      const three = () => [
+        PL(
+          [
+            [0, 0],
+            [100, 0],
+            [100, 100],
+            [20, 30],
+          ],
+          "P1"
+        ),
+      ]
+      const fillet = run(three(), "FILLET", "R", "10", "50,0", "60,65")
+      expectPoly(
+        fillet,
+        "P1",
+        [
+          [12.32877973, 0],
+          [100, 0],
+          [100, 100],
+          [5.743733654, 17.52576695, 0.6925236903],
+        ],
+        true
+      )
+      const chamfer = run(three(), "CHAMFER", "D", "10", "10", "50,0", "60,65")
+      expectPoly(
+        chamfer,
+        "P1",
+        [
+          [-4.285714286, 0],
+          [100, 0],
+          [100, 100],
+          [-6.759947339, 6.585046079],
+        ],
+        true
+      )
+      const far = run(
+        [
+          PL(
+            [
+              [0, 0],
+              [-10, 100],
+              [110, 100],
+              [100, 0],
+            ],
+            "P1"
+          ),
+        ],
+        "FILLET",
+        "-5,50",
+        "105,50"
+      )
+      expectPoly(
+        far,
+        "P1",
+        [
+          [50, -500],
+          [-10, 100],
+          [110, 100],
+        ],
+        true
+      )
+    })
+
+    it("a closed one's first and last (p202)", () => {
+      const cad = run(
+        [
+          PL(
+            [
+              [0, 0],
+              [100, 0],
+              [100, 100],
+              [0, 100],
+            ],
+            "P1",
+            true
+          ),
+        ],
+        "FILLET",
+        "R",
+        "10",
+        "50,0",
+        "0,50"
+      )
+      expectPoly(
+        cad,
+        "P1",
+        [
+          [10, 0],
+          [100, 0],
+          [100, 100],
+          [0, 100],
+          [0, 10, 0.4142135624],
+        ],
+        true
+      )
+    })
+
+    const PD = () =>
+      PL(
+        [
+          [0, 0],
+          [100, 0],
+          [100, 100],
+        ],
+        "P1"
+      )
+    it("a line joined: the polyline keeps its handle, picked either way (p203, p204)", () => {
+      for (const picks of [
+        ["50,0", "0,100"],
+        ["0,100", "50,0"],
+      ]) {
+        const cad = run(
+          [PD(), L([0, 20], [0, 150], "L1")],
+          "FILLET",
+          "R",
+          "10",
+          ...picks
+        )
+        expect(cad.entities().map((e) => e.id)).toEqual(["P1"])
+        expectPoly(
+          cad,
+          "P1",
+          [
+            [0, 150],
+            [0, 10, 0.4142135624],
+            [10, 0],
+            [100, 0],
+            [100, 100],
+          ],
+          false
+        )
+      }
+    })
+
+    it("two polylines: the first picked keeps its handle (p205)", () => {
+      const cad = run(
+        [
+          PL(
+            [
+              [0, 0],
+              [100, 0],
+              [100, -50],
+            ],
+            "P1"
+          ),
+          PL(
+            [
+              [0, 20],
+              [0, 100],
+              [-50, 100],
+            ],
+            "P2"
+          ),
+        ],
+        "FILLET",
+        "R",
+        "10",
+        "50,0",
+        "0,60"
+      )
+      expect(cad.entities().map((e) => e.id)).toEqual(["P1"])
+      expectPoly(
+        cad,
+        "P1",
+        [
+          [-50, 100],
+          [0, 100],
+          [0, 10, 0.4142135624],
+          [10, 0],
+          [100, 0],
+          [100, -50],
+        ],
+        false
+      )
+    })
+
+    const PF = () =>
+      PL(
+        [
+          [0, 0],
+          [100, 0, 0.5],
+          [100, 100],
+          [0, 150],
+        ],
+        "P1"
+      )
+    it("a line and the arc segment next to it, the arc read as an arc (p209, p217)", () => {
+      const cad = run([PF()], "FILLET", "R", "10", "50,0", "125,50")
+      expectPoly(
+        cad,
+        "P1",
+        [
+          [0, 0],
+          [96.50367627, 0, 0.1779812475],
+          [102.980567, 2.380952381, 0.4810660393],
+          [100, 100],
+          [0, 150],
+        ],
+        false
+      )
+      const after = run([PF()], "FILLET", "R", "10", "125,50", "50,125")
+      expectPoly(
+        after,
+        "P1",
+        [
+          [0, 0],
+          [100, 0, 0.4948750817],
+          [100.8165663, 99.3770265, 0.04911113517],
+          [99.15805165, 100.4209742],
+          [0, 150],
+        ],
+        false
+      )
+    })
+
+    it("two lines with an arc segment between (p210)", () => {
+      const cad = run([PF()], "FILLET", "R", "10", "50,0", "50,125")
+      expectPoly(
+        cad,
+        "P1",
+        [
+          [0, 0],
+          [257.6393202, 0, 0.7914183192],
+          [262.1114562, 18.94427191],
+          [0, 150],
+        ],
+        false
+      )
+    })
+
+    const PG = () =>
+      PL(
+        [
+          [0, 0, -0.41421356237],
+          [100, 0],
+        ],
+        "P1"
+      )
+    it("an arc segment with a line, joined, at a radius and at 0 (p211, p212)", () => {
+      const r5 = run(
+        [PG(), L([50, -30], [50, 100], "L1")],
+        "FILLET",
+        "R",
+        "5",
+        "14.64466,11.23724",
+        "50,80"
+      )
+      expectPoly(
+        r5,
+        "P1",
+        [
+          [0, 0, -0.1817911112],
+          [45.33020441, 20.55631091, 0.3949863839],
+          [50, 25.5453955],
+          [50, 100],
+        ],
+        false
+      )
+      const r0 = run(
+        [PG(), L([50, -30], [50, 100], "L1")],
+        "FILLET",
+        "R",
+        "0",
+        "14.64466,11.23724",
+        "50,80"
+      )
+      expectPoly(
+        r0,
+        "P1",
+        [
+          [0, 0, -0.1989123674],
+          [50, 20.71067812],
+          [50, 100],
+        ],
+        false
+      )
+    })
+
+    it("an arc segment with another polyline's segment (p213)", () => {
+      const cad = run(
+        [
+          PG(),
+          PL(
+            [
+              [50, -30],
+              [50, 100],
+              [100, 100],
+            ],
+            "P2"
+          ),
+        ],
+        "FILLET",
+        "R",
+        "5",
+        "14.64466,11.23724",
+        "50,80"
+      )
+      expectPoly(
+        cad,
+        "P1",
+        [
+          [0, 0, -0.1817911112],
+          [45.33020441, 20.55631091, 0.3949863839],
+          [50, 25.5453955],
+          [50, 100],
+          [100, 100],
+        ],
+        false
+      )
+    })
+
+    it("CHAMFER of an arc segment and a line, in Spanish (p214)", () => {
+      const sp = runEs(
+        [PG(), L([50, -30], [50, 100], "L1")],
+        "CHAFLAN",
+        "D",
+        "5",
+        "5",
+        "14.64466,11.23724",
+        "50,80"
+      )
+      expect(sp.commandLog().at(-1)).toBe(
+        "Imposible unir con chaflán segmentos de arco de polilínea."
+      )
+    })
+
+    it("CHAMFER cuts the arc segment as its chord, next to it and one apart (p215, p216)", () => {
+      const next = run([PF()], "CHAMFER", "D", "10", "10", "50,0", "125,50")
+      expectPoly(
+        next,
+        "P1",
+        [
+          [0, 0],
+          [90, 0],
+          [100, 10, 0.4250360237],
+          [100, 100],
+          [0, 150],
+        ],
+        false
+      )
+      const apart = run([PF()], "CHAMFER", "D", "10", "10", "50,0", "50,125")
+      expectPoly(
+        apart,
+        "P1",
+        [
+          [0, 0],
+          [290, 0],
+          [291.0557281, 4.472135955],
+          [0, 150],
+        ],
+        false
+      )
+    })
+
+    const PI = () =>
+      PL(
+        [
+          [0, 0],
+          [100, 0, 0.5],
+          [100, 100, 0.5],
+          [0, 100],
+          [0, 50],
+        ],
+        "P1"
+      )
+    it("two arc segments next to each other, rounded on their centres' side (p322)", () => {
+      const cad = run([PI()], "FILLET", "R", "5", "125,50", "50,125")
+      expectPoly(
+        cad,
+        "P1",
+        [
+          [0, 0],
+          [100, 0, 0.5038915994],
+          [99.3754312, 100.4623877, -0.07731891492],
+          [100.4623877, 99.3754312, 0.5038915994],
+          [0, 100],
+          [0, 50],
+        ],
+        false
+      )
+    })
+
+    it("a line parallel to a segment, in Spanish (p323)", () => {
+      const sp = runEs(
+        [PD(), L([0, 20], [80, 20], "L1")],
+        "EMPALME",
+        "RA",
+        "10",
+        "50,0",
+        "40,20"
+      )
+      expect(sp.commandLog().at(-1)).toBe(
+        "Imposible empalmar esos dos objetos."
+      )
+    })
+  })
+
+  describe("Polyline", () => {
+    it("rounds a line–arc, an arc–arc and an arc–line vertex (p219)", () => {
+      const cad = run(
+        [
+          PL(
+            [
+              [0, 0],
+              [100, 0, 0.5],
+              [100, 100, 0.5],
+              [0, 100],
+              [0, 50],
+            ],
+            "P1"
+          ),
+        ],
+        "FILLET",
+        "R",
+        "5",
+        "P",
+        "50,0"
+      )
+      expect(cad.commandLog().at(-1)).toBe("3 lines were filleted")
+      expectPoly(
+        cad,
+        "P1",
+        [
+          [0, 0],
+          [98.29455266, 0, 0.169585965],
+          [101.4071225, 1.086956522, 0.4950049533],
+          [99.3754312, 100.4623877, -0.07731891492],
+          [100.4623877, 99.3754312, 0.4950049533],
+          [1.086956522, 101.4071225, 0.169585965],
+          [0, 98.29455266],
+          [0, 50],
+        ],
+        false
+      )
+    })
+
+    // Two arcs whose vertex turns with both, against one, against both (and
+    // picked as two objects): the fillet lies on the side their chords turn to.
+    it("rounds an arc–arc vertex on the side its chords turn to (p362–p365)", () => {
+      const arcs = (b1: number, b2: number) => [
+        PL(
+          [
+            [0, 0, b1],
+            [100, 0, b2],
+            [100, 100],
+          ],
+          "P1"
+        ),
+      ]
+      const withBoth: V[] = [
+        [0, 0, 0.19570635336294753],
+        [98.00995201988917, -0.8099520198892356, 0.20642663555939592],
+        [100.8099520198892, 1.9900479801107738, 0.19570635336294767],
+        [100, 100],
+      ]
+      expectPoly(
+        run(arcs(0.2, 0.2), "FILLET", "R", "5", "P", "50,-10"),
+        "P1",
+        withBoth,
+        false
+      )
+      expectPoly(
+        run(arcs(0.2, 0.2), "FILLET", "R", "5", "50,-10", "110,50"),
+        "P1",
+        withBoth,
+        false
+      )
+      expectPoly(
+        run(arcs(0.2, -0.2), "FILLET", "R", "5", "P", "50,-10"),
+        "P1",
+        [
+          [0, 0, 0.18981718222543048],
+          [95.25388603990791, -1.8691339030807521, 0.41464754500974454],
+          [98.19804262954437, 4.565616756406719, -0.19020092438465416],
+          [100, 100],
+        ],
+        false
+      )
+      expectPoly(
+        run(arcs(-0.2, -0.2), "FILLET", "R", "5", "P", "50,10"),
+        "P1",
+        [
+          [0, 0, -0.17879027666352001],
+          [90.0155715628193, 3.6881321408844174, 0.6119299702085513],
+          [96.3118678591156, 9.984428437180703, -0.17879027666352],
+          [100, 100],
+        ],
+        false
+      )
+    })
+
+    const SQ20 = () =>
+      PL(
+        [
+          [0, 0],
+          [20, 0],
+          [20, 20],
+          [0, 20],
+        ],
+        "P1",
+        true
+      )
+    it("cuts each corner in turn, against what is left (p220)", () => {
+      const cad = run([SQ20()], "FILLET", "R", "15", "P", "10,0")
+      expect(cad.commandLog().slice(-2)).toEqual([
+        "2 lines were filleted",
+        "2 were too short",
+      ])
+      expectPoly(
+        cad,
+        "P1",
+        [
+          [0, 0],
+          [5, 0, 0.4142135624],
+          [20, 15],
+          [20, 20],
+          [15, 20, 0.4142135624],
+          [0, 5],
+        ],
+        true
+      )
+      const sp = runEs([SQ20()], "EMPALME", "RA", "15", "P", "10,0")
+      expect(sp.commandLog().slice(-2)).toEqual([
+        "2 líneas resultan unida(s) con empalme",
+        "2 resultan demasiado corta(s)",
+      ])
+    })
+
+    it("does so with CHAMFER too (p226)", () => {
+      const cad = run([SQ20()], "CHAMFER", "D", "15", "15", "P", "10,0")
+      expect(cad.commandLog().slice(-2)).toEqual([
+        "2 lines were chamfered",
+        "2 were too short",
+      ])
+      expectPoly(
+        cad,
+        "P1",
+        [
+          [0, 0],
+          [5, 0],
+          [20, 15],
+          [20, 20],
+          [15, 20],
+          [0, 5],
+        ],
+        true
+      )
+    })
+
+    it("counts parallel lines round a half circle, in Spanish (p221)", () => {
+      const sp = runEs(
+        [
+          PL(
+            [
+              [0, 0],
+              [100, 0, 1],
+              [100, 50],
+              [0, 50],
+            ],
+            "P1"
+          ),
+        ],
+        "EMPALME",
+        "RA",
+        "5",
+        "P",
+        "50,0"
+      )
+      expect(sp.commandLog().slice(-2)).toEqual([
+        "0 líneas resultan unida(s) con empalme",
+        "1 resulta paralela(s)",
+      ])
+    })
+
+    it("counts nothing divergent for lines diverging round an arc (p222)", () => {
+      const cad = run(
+        [
+          PL(
+            [
+              [0, 0],
+              [100, 0, 0.5],
+              [100, 50],
+              [0, 20],
+            ],
+            "P1"
+          ),
+        ],
+        "FILLET",
+        "R",
+        "5",
+        "P",
+        "50,0"
+      )
+      expect(cad.commandLog().at(-1)).toBe("2 lines were filleted")
+      expectPoly(
+        cad,
+        "P1",
+        [
+          [0, 0],
+          [98.25183814, 0, 0.1779812475],
+          [101.4902835, 1.19047619, 0.4527197475],
+          [102.2427227, 48.14882485, 0.2628247704],
+          [97.44714767, 49.2341443],
+          [0, 20],
+        ],
+        false
+      )
+    })
+
+    it("CHAMFER: the first distance along the segment coming in, said in Spanish (p224)", () => {
+      const rec = () =>
+        PL(
+          [
+            [0, 0],
+            [100, 0],
+            [100, 60],
+            [0, 60],
+          ],
+          "P1",
+          true
+        )
+      const cad = run([rec()], "CHAMFER", "D", "10", "5", "P", "50,0")
+      expectPoly(
+        cad,
+        "P1",
+        [
+          [5, 0],
+          [90, 0],
+          [100, 5],
+          [100, 50],
+          [95, 60],
+          [10, 60],
+          [0, 55],
+          [0, 10],
+        ],
+        true
+      )
+      expect(
+        runEs([rec()], "CHAFLAN", "D", "10", "5", "P", "50,0")
+          .commandLog()
+          .at(-1)
+      ).toBe("4 líneas resultan unida(s) con chaflán")
+    })
+
+    it("CHAMFER: an arc segment's ends as its chord (p225)", () => {
+      const cad = run(
+        [
+          PL(
+            [
+              [0, 0],
+              [100, 0, 0.5],
+              [100, 100],
+              [0, 150],
+            ],
+            "P1"
+          ),
+        ],
+        "CHAMFER",
+        "D",
+        "10",
+        "10",
+        "P",
+        "50,0"
+      )
+      expect(cad.commandLog().at(-1)).toBe("2 lines were chamfered")
+      expectPoly(
+        cad,
+        "P1",
+        [
+          [0, 0],
+          [90, 0],
+          [100, 10, 0.3619142055],
+          [100, 90],
+          [91.05572809, 104.472136],
+          [0, 150],
+        ],
+        false
+      )
+    })
+
+    it("is said in Spanish (p218)", () => {
+      const sp = runEs(
+        [
+          PL(
+            [
+              [0, 0],
+              [100, 0],
+              [100, 100],
+              [0, 100],
+            ],
+            "P1",
+            true
+          ),
+        ],
+        "EMPALME",
+        "RA",
+        "10",
+        "P",
+        "50,0"
+      )
+      expect(sp.commandLog().at(-1)).toBe(
+        "4 líneas resultan unida(s) con empalme"
+      )
+    })
+  })
+
+  describe("the arc, the cap and the bevel", () => {
+    const corners = () => [
+      L([-20, 0], [100, 0], "L1"),
+      L([0, -20], [0, 100], "L2"),
+      L([280, 0], [400, 0], "L3"),
+      L([300, -20], [300, 100], "L4"),
+    ]
+    const BOTH = [
+      "FILLET",
+      "R",
+      "10",
+      "50,0",
+      "0,50",
+      "CHAMFER",
+      "D",
+      "10",
+      "5",
+      "350,0",
+      "300,50",
+    ]
+    const made = (cad: CadHarness) => news(cad, "L1", "L2", "L3", "L4")
+    const heavy = (e: Entity) =>
+      withThickness(
+        assignEntityLineweight(
+          assignEntityColor(e, "#ff0000"),
+          0.5
+        ) as LineEntity,
+        3
+      )
+
+    it("lie on the lines' shared layer, else the current one (p329, p330)", () => {
+      const cad = createHarness()
+      const a = cad.runtime.createLayer("A", undefined, false)
+      const b = cad.runtime.createLayer("B", undefined, false)
+      const c = cad.runtime.createLayer("C", undefined, false)
+      cad.runtime.document.load(
+        corners().map((e, k) => ({ ...e, layerId: k % 2 ? b : a })),
+        { layers: cad.runtime.document.getLayers() }
+      )
+      cad.runtime.setCurrentLayer(c)
+      typed(cad, ...BOTH)
+      expect(made(cad).map((e) => e.layerId)).toEqual([c, c])
+    })
+
+    it("lie on the layer made current between the picks (p339)", () => {
+      const cad = createHarness()
+      const a = cad.runtime.createLayer("A", undefined, false)
+      const b = cad.runtime.createLayer("B", undefined, false)
+      const c = cad.runtime.createLayer("C", undefined, false)
+      const d = cad.runtime.createLayer("D", undefined, false)
+      cad.runtime.document.load(
+        corners().map((e, k) => ({ ...e, layerId: k % 2 ? b : a })),
+        { layers: cad.runtime.document.getLayers() }
+      )
+      typed(cad, "FILLET", "R", "10", "50,0")
+      cad.runtime.setCurrentLayer(c)
+      typed(cad, "0,50", "CHAMFER", "D", "10", "5", "350,0")
+      cad.runtime.setCurrentLayer(d)
+      typed(cad, "300,50")
+      expect(made(cad).map((e) => e.layerId)).toEqual([c, d])
+    })
+
+    it("wear the second object's lineweight and thickness, not its colour (p332)", () => {
+      const cad = run(
+        corners().map((e, k) => (k % 2 ? heavy(e) : e)),
+        ...BOTH
+      )
+      for (const e of made(cad)) {
+        expect(e.color).toBeUndefined()
+        expect(e.linetype).toBeUndefined()
+        expect(e.lineweight).toBe(0.5)
+        expect((e as ArcEntity).thickness).toBe(3)
+      }
+    })
+
+    it("wear nothing of the first object's (p331, p229)", () => {
+      const cad = run(
+        corners().map((e, k) => (k % 2 ? e : heavy(e))),
+        ...BOTH
+      )
+      for (const e of made(cad)) {
+        expect(e.lineweight).toBeUndefined()
+        expect((e as ArcEntity).thickness ?? 0).toBe(0)
+      }
+    })
+
+    it("wear a circle's or an arc's, picked second, too (p313)", () => {
+      const cad = run(
+        [
+          heavy(circleOf(p(0, 0), 30, { id: "C1" })),
+          L([-50, 10], [50, 10], "L1"),
+        ],
+        "FILLET",
+        "R",
+        "5",
+        "40,10",
+        "0,-30"
+      )
+      const [arc] = news<ArcEntity>(cad, "C1", "L1")
+      expect(arc.lineweight).toBe(0.5)
+      expect(arc.thickness).toBe(3)
+      expect(arc.color).toBeUndefined()
+    })
+
+    it("wear the second's at the cap of two parallel lines, the first's not (p360, p361)", () => {
+      const parallel = (k: 0 | 1) =>
+        [L([0, 0], [100, 0], "L1"), L([20, 30], [120, 30], "L2")].map((e, j) =>
+          j === k ? heavy(e) : e
+        )
+      const second = run(parallel(1), "FILLET", "R", "10", "80,0", "80,30")
+      expect(news<ArcEntity>(second, "L1", "L2")[0]).toMatchObject({
+        lineweight: 0.5,
+        thickness: 3,
+      })
+      const [arc] = news<ArcEntity>(
+        run(parallel(0), "FILLET", "R", "10", "80,0", "80,30"),
+        "L1",
+        "L2"
+      )
+      expect(arc.lineweight).toBeUndefined()
+      expect(arc.thickness ?? 0).toBe(0)
+      expect(arc.color).toBeUndefined()
+    })
+
+    it("take no current ELEVATION or THICKNESS (p333)", () => {
+      const cad = run(corners(), "ELEV", "4", "7", ...BOTH)
+      for (const e of made(cad)) {
+        expect(e.elevation ?? 0).toBe(0)
+        expect((e as ArcEntity).thickness ?? 0).toBe(0)
+      }
+    })
   })
 })
 

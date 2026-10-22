@@ -150,8 +150,8 @@ describe("FILLET's object prompts take the selection modes", () => {
     expect(arc.center).toBeCloseToPoint(p(35, 5), 4)
     expect(arc.startAngle).toBeCloseToAngle(deg(180), 4)
     expect(arc.endAngle).toBeCloseToAngle(deg(270), 4)
-    // The first line's thickness: L1's, the older.
-    expect(arc.thickness ?? 0).toBe(0)
+    // The second object's thickness (corners/p332): L2's, the newer.
+    expect(arc.thickness).toBe(5)
   })
 
   it("takes the newest of several at the second prompt", () => {

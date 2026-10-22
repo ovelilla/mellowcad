@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest"
 import { createHarness, type CadHarness } from "../../../test/harness"
 import { circleOf, lineOf, p } from "../../../test/builders"
 import {
+  type ArcEntity,
   type CircleEntity,
   type Entity,
   type LineEntity,
@@ -15,6 +16,7 @@ import {
   withNormal,
 } from "../../domain/entities"
 import { THEME } from "../../scene/theme"
+import { normalizeAngle } from "../../geometry/primitives"
 import {
   type Ucs,
   ucsPointToWorld,
@@ -513,6 +515,110 @@ describe("FILLET and CHAMFER of lines in a tilted plane", () => {
 
     expect(cad.commandLog().at(-1)).toBe("Lines are non coplanar.") // probe line/p61
     expect(only(cad, "arc")).toHaveLength(0)
+  })
+})
+
+// AutoCAD 2027's console (probes corners/p337, p338, MPDUMP): lines drawn in
+// a turned or a tilted UCS are rounded and bevelled in their plane.
+describe("FILLET and CHAMFER of lines drawn in a UCS", () => {
+  function typed(cad: CadHarness, ...answers: string[]): CadHarness {
+    for (const answer of answers) {
+      cad.runtime.setCommandLineText(answer)
+      cad.runtime.submitCommandLine()
+    }
+    return cad
+  }
+  const drawn = [
+    "LINE",
+    "-20,0",
+    "100,0",
+    "",
+    "LINE",
+    "0,-20",
+    "0,100",
+    "",
+    "LINE",
+    "280,0",
+    "400,0",
+    "",
+    "LINE",
+    "300,-20",
+    "300,100",
+    "",
+  ]
+  const BOTH = [
+    "FILLET",
+    "R",
+    "10",
+    "50,0",
+    "0,50",
+    "CHAMFER",
+    "D",
+    "10",
+    "5",
+    "350,0",
+    "300,50",
+  ]
+  const arcIs = (
+    arc: ArcEntity,
+    c: [number, number],
+    r: number,
+    s: number,
+    e: number
+  ) => {
+    expect(arc.center).toBeCloseToPoint(p(...c), 6)
+    expect(arc.radius).toBeCloseTo(r, 6)
+    expect(normalizeAngle(arc.startAngle)).toBeCloseTo(s, 6)
+    expect(normalizeAngle(arc.endAngle)).toBeCloseTo(e, 6)
+  }
+
+  it("in UCS Z 30 (p337)", () => {
+    const cad = typed(createHarness(), "UCS", "Z", "30", ...drawn, ...BOTH)
+    const [l1, , , , arc, bevel] = cad.entities() as [
+      LineEntity,
+      LineEntity,
+      LineEntity,
+      LineEntity,
+      ArcEntity,
+      LineEntity,
+    ]
+    expect([l1.start, l1.end]).toBeCloseToPoints(
+      [p(8.660254038, 5), p(86.60254038, 50)],
+      6
+    )
+    arcIs(arc, [3.660254038, 13.66025404], 10, 3.665191429, 5.235987756)
+    expect([bevel.start, bevel.end]).toBeCloseToPoints(
+      [p(268.4678752, 155), p(257.3076211, 154.330127)],
+      6
+    )
+  })
+
+  it("in UCS X 90: the arc and the bevel in the lines' plane, normal 0,-1,0 (p338)", () => {
+    const cad = typed(
+      createHarness(),
+      "UCS",
+      "X",
+      "90",
+      "PLAN",
+      "C",
+      ...drawn,
+      "ZOOM",
+      "W",
+      "-50,-50",
+      "450,150",
+      ...BOTH
+    )
+    const [, , , , arc, bevel] = cad.entities() as [
+      LineEntity,
+      LineEntity,
+      LineEntity,
+      LineEntity,
+      ArcEntity,
+      LineEntity,
+    ]
+    expect(entityNormal(arc).y).toBeCloseTo(-1, 9)
+    expect(entityNormal(bevel).y).toBeCloseTo(-1, 9)
+    arcIs(arc, [10, 10], 10, Math.PI, 4.71238898)
   })
 })
 

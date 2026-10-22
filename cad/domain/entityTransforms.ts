@@ -1,5 +1,5 @@
 import { Vec2, V } from "../geometry/Vec2"
-import { Vec3, add3, scale3, sub3, withZ, zOf } from "../geometry/Vec3"
+import { Vec3, WORLD_Z, add3, scale3, sub3, withZ, zOf } from "../geometry/Vec3"
 import { bulgeToArc, normalizeAngle } from "../geometry/primitives"
 import { sameHeightBulge } from "../geometry/bulgeArcs"
 import {
@@ -57,15 +57,18 @@ import { arcEndPoint, arcStartPoint } from "./entityMeasures"
 import { carryOverrides } from "./entityOverrides"
 import {
   entityAxes,
+  entityElevation,
   entityNormal,
   entityPointToWorld,
   facesAlong,
+  hasThickness,
   isTilted,
   lineEndZ,
   lineStartZ,
   scaleEntityZ,
   shiftEntityZ,
   withDeltaZ,
+  withElevation,
   withLineZ,
   withNormal,
 } from "./elevation"
@@ -1515,4 +1518,21 @@ export function entityFromOcs(entity: Entity, normal: Vec3): Entity {
 /** A transformed object as a new one: a fresh id, everything else kept. */
 function freshCopy(entity: Entity): Entity {
   return { ...entity, id: nextEntityId() }
+}
+
+/**
+ * An object of normal -Z as the +Z one over the same points, and back: its
+ * OCS's X is the WCS's -X, its Z the WCS's -Z, so its points mirror across
+ * the Y axis and its elevation and thickness change sign.
+ */
+export function turnedOver(entity: Entity): Entity {
+  const down = (entity.normal?.z ?? 1) < 0
+  let turned = withElevation(
+    mirrorEntity(withNormal(entity, WORLD_Z), { x: 0, y: 0 }, { x: 0, y: 1 }),
+    -entityElevation(entity)
+  )
+  if (hasThickness(turned) && turned.thickness) {
+    turned = { ...turned, thickness: -turned.thickness }
+  }
+  return down ? turned : withNormal(turned, { x: 0, y: 0, z: -1 })
 }

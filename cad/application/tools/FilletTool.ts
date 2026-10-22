@@ -11,11 +11,12 @@ import {
   createArc,
   createLine,
   carryOverrides,
-  carryPlane,
+  EllipseEntity,
   Entity,
   EntityId,
   LineEntity,
   PolylineEntity,
+  readsInPlan,
 } from "../../domain/entities"
 import {
   ReplaceEntitiesCommand,
@@ -42,6 +43,7 @@ import {
 import {
   CORNER_OBJECT_MODES,
   CornerJoin,
+  CornerObject,
   FilletObject,
   FoundObject,
   JoinCut,
@@ -49,6 +51,7 @@ import {
   cornerEntity,
   cornerJoin,
   cornerObjectRefusal,
+  cornerPiece,
   cornerPairRefusal,
   foundPairRefusal,
   type PairRefusal,
@@ -58,6 +61,7 @@ import {
   foundFilletObject,
   isArcSegment,
   isCornerEntity,
+  isCurve,
   isRound,
   isSegment,
   joinAtCut,
@@ -65,11 +69,13 @@ import {
   pickFilletObject,
   refusesLockedPick,
   typedCornerPick,
+  typeRefusal,
   cornerPickOf,
 } from "./cornerObjects"
+import { curveCrossings, segmentImplicit } from "./curveCrossings"
 import { ModeFind, ObjectSelector } from "./objectSelection"
 import { setCommandSettings } from "./commandSettings"
-import { filletRound } from "./roundFillets"
+import { type RoundObject, filletRound } from "./roundFillets"
 import {
   curveCrossing,
   filletSides,
@@ -162,8 +168,13 @@ export class FilletTool implements Tool {
   private readonly modes = new ObjectSelector({
     done: () => {},
     modes: CORNER_OBJECT_MODES,
-    accept: (ids, ctx) =>
-      ids.filter((id) => this.takesFound(ctx.document.get(id))),
+    // What it takes, else what it refuses in words (probe corners/p378).
+    accept: (ids, ctx) => {
+      const taken = ids.filter((id) => this.takesFound(ctx.document.get(id)))
+      return taken.length > 0
+        ? taken
+        : ids.filter((id) => typeRefusal("fillet", ctx.document.get(id), false))
+    },
     one: {
       take: (entity, ctx, find) => this.takeFound(entity, find, ctx),
       newest: true,
@@ -286,6 +297,12 @@ export class FilletTool implements Tool {
    */
   private pickAt(pick: LinePick, shift: boolean, ctx: ToolContext): void {
     if (refusesLockedPick(ctx, pick)) return
+    if (
+      this.state.phase !== "polyline" &&
+      this.refusesType(ctx.pick(pick.world), ctx)
+    ) {
+      return
+    }
     switch (this.state.phase) {
       case "first": {
         const hit = pickFilletObject(ctx, pick, null)
@@ -430,6 +447,12 @@ export class FilletTool implements Tool {
 
     const { first, pick1, hover, cursor } = this.state
     const radius = this.state.corner ? 0 : this.radius
+    if (isCurve(first) || (hover && isCurve(hover))) {
+      return [
+        ...draw(cornerEntity(first), selectedStroke),
+        ...(hover ? draw(cornerEntity(hover), hoverStroke) : []),
+      ]
+    }
     if (isRound(first) || (hover && isRound(hover))) {
       const plane =
         hover &&
@@ -455,7 +478,7 @@ export class FilletTool implements Tool {
       }
       return filleted.built.flatMap((entity) =>
         draw(
-          plane.back(entity),
+          entity.id === PREVIEW_ID ? plane.made(entity) : plane.back(entity),
           entity.id === PREVIEW_ID
             ? { color: THEME.rubberBand, width: 1 }
             : hoverStroke
@@ -547,6 +570,7 @@ export class FilletTool implements Tool {
       this.takePolyline(entity, ctx)
       return true
     }
+    if (this.refusesType(entity, ctx)) return false
     const first = this.state.phase === "second" ? this.state.first : null
     const refusal = first && foundPairRefusal(ctx, entity, find, first)
     if (refusal) {
@@ -557,6 +581,18 @@ export class FilletTool implements Tool {
     if (!found) return false
     if (this.state.phase === "first") this.takeFirst(found, ctx)
     else this.placeSecond(found.object, found.pick, false, found.whole, ctx)
+    return true
+  }
+
+  /**
+   * An object of a type FILLET makes no corner of, said in the console's
+   * words (see {@link typeRefusal}).
+   */
+  private refusesType(entity: Entity | null, ctx: ToolContext): boolean {
+    const refusal = typeRefusal("fillet", entity, this.state.phase === "second")
+    if (!refusal) return false
+    if (refusal.ends) this.refuse(refusal.message, ctx, false)
+    else ctx.report(ctx.text.message(refusal.message), "error")
     return true
   }
 
@@ -619,6 +655,10 @@ export class FilletTool implements Tool {
       return
     }
     const radius = corner ? 0 : this.radius
+    if (isCurve(first) || isCurve(second)) {
+      this.commitCurve(first, second, radius, ctx)
+      return
+    }
     if (isRound(first) || isRound(second)) {
       this.commitRound(first, pick1, second, pick2, radius, ctx)
       return
@@ -688,8 +728,9 @@ export class FilletTool implements Tool {
           ? line1.layerId
           : ctx.document.getCurrentLayerId()
       built.push(
-        carryPlane(
+        cornerPiece(
           corner.line1,
+          corner.line2,
           createArc(
             result.center,
             result.radius,
@@ -760,8 +801,9 @@ export class FilletTool implements Tool {
   /**
    * The cap AutoCAD's FILLET joins two parallel lines with (see
    * {@link capParallelLines}): the second line with its end moved, and the
-   * half circle, on the lines' layer or the current one and with the
-   * second's thickness (acc/g4), back in the frame.
+   * half circle, on the lines' layer or the current one and wearing the
+   * second's lineweight and thickness (probes corners/p360, p361), back in
+   * the frame.
    */
   private cap(
     corner: LineCorner,
@@ -786,7 +828,8 @@ export class FilletTool implements Tool {
       line1.layerId === line2.layerId
         ? line1.layerId
         : ctx.document.getCurrentLayerId()
-    const arc = carryPlane(
+    const arc = cornerPiece(
+      b,
       b,
       createArc(
         cap.center,
@@ -801,6 +844,35 @@ export class FilletTool implements Tool {
   }
 
   /**
+   * A closed ellipse with the other object, in AutoCAD 2027's console's words
+   * (probes corners/p236, p325, p366, p367, p383–p385): with a polyline's
+   * segment `Cannot fillet between these two entities.`; with a line or
+   * another ellipse, at a radius `Unable to fillet curves.`; at radius 0, a
+   * line that misses it makes nothing and nothing is said. WHY the rest is
+   * not taken, the prompt asked again: AutoCAD trims a line meeting it at
+   * radius 0 (p324) and fillets it with an arc or a circle (p368), which is
+   * not built.
+   */
+  private commitCurve(
+    first: FilletObject,
+    second: FilletObject,
+    radius: number,
+    ctx: ToolContext
+  ): void {
+    const other = isCurve(first) ? second : first
+    const ellipse = (isCurve(first) ? first : second) as EllipseEntity
+    if (isSegment(other)) {
+      this.refuse("cannotFilletBetweenThese", ctx, false)
+    } else if (other.type !== "line" && other.type !== "ellipse") {
+      return
+    } else if (radius > 0) {
+      this.refuse("unableToFilletCurves", ctx, false)
+    } else if (other.type === "line" && missesEllipse(other, ellipse)) {
+      this.done(null, ctx)
+    }
+  }
+
+  /**
    * An ARC or a CIRCLE with a line or another of them; with a polyline's
    * segment, `Cannot fillet between these two entities.` (acc/d1–d3); out
    * of each other's plane, `Two entities are non coplanar.` (acc/w1–w6 of
@@ -808,9 +880,9 @@ export class FilletTool implements Tool {
    * share, rounded in it (see {@link roundPlane}).
    */
   private commitRound(
-    first: FilletObject,
+    first: CornerObject | RoundObject,
     pick1: LinePick,
-    second: FilletObject,
+    second: CornerObject | RoundObject,
     pick2: LinePick,
     radius: number,
     ctx: ToolContext
@@ -842,7 +914,11 @@ export class FilletTool implements Tool {
       this.done(
         new ReplaceEntitiesCommand(
           filleted.replaced,
-          filleted.built.map(plane.back)
+          filleted.built.map((entity) =>
+            filleted.replaced.includes(entity.id)
+              ? plane.back(entity)
+              : plane.made(entity)
+          )
         ),
         ctx
       )
@@ -1019,6 +1095,16 @@ export class FilletTool implements Tool {
     this.radius = value
     setCommandSettings({ filletRadius: value }, ctx)
   }
+}
+
+/** Whether a line, taken whole, misses a closed ellipse lying in plan. */
+function missesEllipse(line: LineEntity, ellipse: EllipseEntity): boolean {
+  const edge = segmentImplicit(line.start, line.end)
+  return (
+    edge !== null &&
+    readsInPlan(ellipse) &&
+    curveCrossings(ellipse, edge.f).length === 0
+  )
 }
 
 /**

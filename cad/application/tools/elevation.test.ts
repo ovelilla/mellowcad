@@ -596,7 +596,9 @@ describe("editing commands", () => {
       expect(cad.commandLog()).toContain("Lines are non coplanar.")
     })
 
-    it("FILLET puts the arc at the first line's height and thickness", () => {
+    // probe corners/p334: lines at Z 10, thickness 3 then 5 — the arc and the
+    // bevel at Z 10, thickness 5.
+    it("FILLET puts the arc at the lines' height, with the second's thickness", () => {
       const cad = createHarness({ entities: corner(6) })
 
       cad.command("FILLET").option("Radius").type("50").enter()
@@ -604,7 +606,7 @@ describe("editing commands", () => {
 
       expect(cad.only<ArcEntity>("arc")).toMatchObject({
         elevation: 6,
-        thickness: 2,
+        thickness: 5,
       })
     })
 
@@ -626,7 +628,7 @@ describe("editing commands", () => {
       expect(cad.typeCounts()).toEqual({ line: 2 })
     })
 
-    it("CHAMFER puts the bevel at the first line's height and thickness", () => {
+    it("CHAMFER puts the bevel at the lines' height, with the second's thickness", () => {
       const cad = createHarness({ entities: corner(6) })
 
       cad
@@ -640,7 +642,7 @@ describe("editing commands", () => {
         .click(p(0, 100))
 
       const bevel = pieces(cad, "L1", "L2")[0]
-      expect(bevel).toMatchObject({ elevation: 6, thickness: 2 })
+      expect(bevel).toMatchObject({ elevation: 6, thickness: 5 })
       expect(bevel.deltaZ).toBeUndefined()
     })
   })

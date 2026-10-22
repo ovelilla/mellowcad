@@ -671,6 +671,67 @@ describe("what the editing commands do with the widths", () => {
     ])
   })
 
+  // AutoCAD 2027's console, MPDUMP (probes corners/p206–p208): each cut
+  // segment keeps its own widths, the arc or bevel runs from one to the next.
+  it("FILLET and CHAMFER keep each cut segment's widths, in 2027 too (corners/p206–p208)", () => {
+    const tapers = () =>
+      polylineOf([p(0, 0), p(100, 0), p(100, 100)], {
+        widths: [
+          [2, 4],
+          [6, 8],
+        ],
+      })
+    const fillet = answer(
+      createHarness({ entities: [tapers()] }),
+      "FILLET",
+      "R",
+      "10",
+      "50,0",
+      "100,50"
+    )
+    const within = [
+      [
+        [2, 4],
+        [4, 6],
+        [6, 8],
+      ],
+    ]
+    expect(widths(fillet)).toEqual(within)
+    const chamfer = answer(
+      createHarness({ entities: [tapers()] }),
+      "CHAMFER",
+      "D",
+      "10",
+      "10",
+      "50,0",
+      "100,50"
+    )
+    expect(widths(chamfer)).toEqual(within)
+
+    const wide = polylineOf([p(0, 0), p(100, 0), p(100, 100)], {
+      widths: [
+        [3, 3],
+        [3, 3],
+      ],
+    })
+    const joined = answer(
+      createHarness({ entities: [wide, lineOf(p(0, 20), p(0, 150))] }),
+      "FILLET",
+      "R",
+      "10",
+      "50,0",
+      "0,100"
+    )
+    expect(widths(joined)).toEqual([
+      [
+        [0, 0],
+        [0, 3],
+        [3, 3],
+        [3, 3],
+      ],
+    ])
+  })
+
   it("FILLET Polyline rounds every corner the same way (acc/w23)", () => {
     const cad = createHarness({
       entities: [

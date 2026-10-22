@@ -62,8 +62,45 @@ const negative = (): Entity[] => [
 ]
 
 // Every expectation below is AutoCAD 2023's console answering the same input
-// (LIST, AUPREC 4): acc/c*, d*, e*, g*, h* in the research notes.
+// (LIST, AUPREC 4): acc/c*, d*, e*, g*, h* in the research notes; AutoCAD
+// 2027's confirms the cap and the collinear refusal (probes corners/p175,
+// p176).
 describe("FILLET caps two parallel lines with a half circle", () => {
+  it("from the first's end nearer its pick, the second's end moved there (p175, p176)", () => {
+    const cad = answer(
+      createHarness({
+        entities: [
+          lineOf(p(0, 0), p(100, 0), { id: "A" }),
+          lineOf(p(20, 30), p(120, 30), { id: "B" }),
+        ],
+      }),
+      "FILLET",
+      "R",
+      "10",
+      "80,0",
+      "80,30"
+    )
+    expectLine(cad, "A", p(0, 0), p(100, 0))
+    expectLine(cad, "B", p(20, 30), p(100, 30))
+    expectCap(cad, p(100, 15), 15, 270, 90)
+
+    const collinear = answer(
+      createHarness({
+        locale: es,
+        entities: [
+          lineOf(p(0, 0), p(50, 0), { id: "A" }),
+          lineOf(p(60, 0), p(100, 0), { id: "B" }),
+        ],
+      }),
+      "EMPALME",
+      "20,0",
+      "80,0"
+    )
+    expect(collinear.commandLog().at(-1)).toBe(
+      "Las líneas colineales no pueden ser unidos con empalme."
+    )
+  })
+
   it("at the first line's end nearer its pick, whatever the radius", () => {
     const left = fillet(equal(), "20,0", "80,10")
     expectCap(left, p(0, 5), 5, 90, 270)
@@ -217,7 +254,8 @@ describe("FILLET caps two parallel lines with a half circle", () => {
     expectCap(left, p(-150, 5), 5, 270, 90)
     expectLine(left, "A", p(-300, 0), p(-150, 0))
 
-    // The older line's thickness, the one moved (acc/g3).
+    // The second's thickness (corners/p360): the older's, the one moved
+    // (acc/g3).
     const thick = fillet(
       [{ ...shifted()[0], thickness: 5 } as LineEntity, shifted()[1]],
       "W",

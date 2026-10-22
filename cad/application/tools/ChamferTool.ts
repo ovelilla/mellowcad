@@ -3,7 +3,6 @@ import { capParallelLines, chamferLines } from "../../geometry/primitives"
 import {
   createLine,
   carryOverrides,
-  carryPlane,
   Entity,
   EntityId,
   LineEntity,
@@ -33,11 +32,13 @@ import {
   CORNER_OBJECT_MODES,
   CornerJoin,
   CornerObject,
+  CurveObject,
   JoinCut,
   SegmentPick,
   cornerEntity,
   cornerJoin,
   cornerObjectRefusal,
+  cornerPiece,
   cornerPairRefusal,
   foundPairRefusal,
   type PairRefusal,
@@ -46,13 +47,15 @@ import {
   foundFilletObject,
   isArcSegment,
   isCornerEntity,
+  isCurve,
   isRound,
   isSegment,
   joinAtCut,
   joinRefusal,
-  pickCornerObject,
+  pickChamferObject,
   refusesLockedPick,
   typedCornerPick,
+  typeRefusal,
   cornerPickOf,
 } from "./cornerObjects"
 import { ModeFind, ObjectSelector } from "./objectSelection"
@@ -94,16 +97,19 @@ import {
  * in the command; each is one command, folded into the command's undo step.
  */
 
+/** CHAMFER's objects: a line, a polyline's segment, or a curve to refuse. */
+type ChamferObject = CornerObject | CurveObject
+
 type ChamferState =
   /** Awaiting the first object (hover-highlighted). */
-  | { readonly phase: "first"; readonly hover: CornerObject | null }
+  | { readonly phase: "first"; readonly hover: ChamferObject | null }
   /** First object chosen; awaiting the second (a live preview tracks the cursor). */
   | {
       readonly phase: "second"
-      readonly first: CornerObject
+      readonly first: ChamferObject
       /** Where the first line was clicked — picks which corner to cut. */
       readonly pick1: LinePick
-      readonly hover: CornerObject | null
+      readonly hover: ChamferObject | null
       readonly cursor: LinePick
       /** Shift is held: the second pick applies a corner. */
       readonly corner: boolean
@@ -143,8 +149,15 @@ export class ChamferTool implements Tool {
   private readonly modes = new ObjectSelector({
     done: () => {},
     modes: CORNER_OBJECT_MODES,
-    accept: (ids, ctx) =>
-      ids.filter((id) => this.takesFound(ctx.document.get(id))),
+    // What it takes, else what it refuses in words (as FILLET's, p378).
+    accept: (ids, ctx) => {
+      const taken = ids.filter((id) => this.takesFound(ctx.document.get(id)))
+      return taken.length > 0
+        ? taken
+        : ids.filter((id) =>
+            typeRefusal("chamfer", ctx.document.get(id), false)
+          )
+    },
     one: {
       take: (entity, ctx, find) => this.takeFound(entity, find, ctx),
       newest: true,
@@ -221,13 +234,13 @@ export class ChamferTool implements Tool {
       case "first":
         this.state = {
           phase: "first",
-          hover: pickCornerObject(ctx, input, null),
+          hover: pickChamferObject(ctx, input, null),
         }
         break
       case "second":
         this.state = {
           ...this.state,
-          hover: pickCornerObject(ctx, input, this.state.first),
+          hover: pickChamferObject(ctx, input, this.state.first),
           cursor: { world: input.world, screen: input.screen },
           corner: input.shiftKey,
         }
@@ -269,7 +282,7 @@ export class ChamferTool implements Tool {
     switch (this.state.phase) {
       case "first": {
         if (this.refusesRound(ctx.pick(pick.world), ctx)) return
-        const hit = pickCornerObject(ctx, pick, null)
+        const hit = pickChamferObject(ctx, pick, null)
         if (hit) this.takeFirst(hit, pick, false, ctx)
         return
       }
@@ -279,7 +292,7 @@ export class ChamferTool implements Tool {
         if (refusal) {
           this.refusePair(refusal, ctx)
         } else {
-          const second = pickCornerObject(ctx, pick, this.state.first)
+          const second = pickChamferObject(ctx, pick, this.state.first)
           if (second) this.placeSecond(second, pick, shift, false, ctx)
         }
         return
@@ -400,6 +413,12 @@ export class ChamferTool implements Tool {
     }
 
     const { first, pick1, hover, cursor } = this.state
+    if (isCurve(first) || (hover && isCurve(hover))) {
+      return [
+        ...draw(cornerEntity(first), selectedStroke),
+        ...(hover ? draw(cornerEntity(hover), hoverStroke) : []),
+      ]
+    }
     const plane =
       hover && cornerPlane(first, pick1, hover, cursor, ctx.viewport)
     const join =
@@ -481,8 +500,13 @@ export class ChamferTool implements Tool {
       this.refusePair(refusal, ctx)
       return
     }
-    const found = foundFilletObject(ctx, entity, find, first)
-    if (!found || isRound(found.object)) return
+    const found = foundFilletObject(
+      ctx,
+      entity,
+      find,
+      first && isCurve(first) ? null : first
+    )
+    if (!found || isRound(found.object) || isCurve(found.object)) return
     if (this.state.phase === "first") {
       this.takeFirst(found.object, found.pick, found.whole, ctx)
     } else {
@@ -491,7 +515,7 @@ export class ChamferTool implements Tool {
   }
 
   private takeFirst(
-    first: CornerObject,
+    first: ChamferObject,
     pick: LinePick,
     whole: boolean,
     ctx: ToolContext
@@ -514,7 +538,7 @@ export class ChamferTool implements Tool {
    * 2023's console makes nothing of it in FILLET, and says nothing.
    */
   private placeSecond(
-    second: CornerObject,
+    second: ChamferObject,
     pick2: LinePick,
     corner: boolean,
     whole: boolean,
@@ -524,6 +548,12 @@ export class ChamferTool implements Tool {
     const { first, pick1 } = this.state
     if (whole || this.state.whole) {
       this.done(null, ctx)
+      return
+    }
+    // An ellipse, an elliptical arc or a spline with a line: AutoCAD 2027's
+    // words, and the end (probes corners/p319, p327, p370, p380).
+    if (isCurve(first) || isCurve(second)) {
+      this.refuse("cannotChamferBetween", ctx, false)
       return
     }
     const plane = cornerPlane(first, pick1, second, pick2, ctx.viewport)
@@ -588,8 +618,9 @@ export class ChamferTool implements Tool {
           ? line1.layerId
           : ctx.document.getCurrentLayerId()
       built.push(
-        carryPlane(
+        cornerPiece(
           corner.line1,
+          corner.line2,
           createLine(result.point1, result.point2, layer, bevelId)
         )
       )
@@ -864,11 +895,21 @@ export class ChamferTool implements Tool {
 
   /**
    * An ARC or a CIRCLE picked as a line: said, and the same prompt asked
-   * again (acc/e1–e4).
+   * again (probes corners/p196–p198); an object of a type CHAMFER makes no
+   * corner of, said in the console's words (see {@link typeRefusal}).
    */
   private refusesRound(hit: Entity | null, ctx: ToolContext): boolean {
-    if (hit?.type !== "arc" && hit?.type !== "circle") return false
-    ctx.report(ctx.text.message("chamferRequiresLines"), "error")
+    const refusal = typeRefusal("chamfer", hit, this.state.phase === "second")
+    if (refusal?.ends) {
+      this.refuse(refusal.message, ctx, false)
+      return true
+    }
+    const message =
+      hit?.type === "arc" || hit?.type === "circle"
+        ? "chamferRequiresLines"
+        : refusal?.message
+    if (!message) return false
+    ctx.report(ctx.text.message(message), "error")
     return true
   }
 

@@ -40,9 +40,8 @@ import {
   ellipseSweepParams,
   isFullEllipse,
   fractionAlongSegment,
-  hasThickness,
   insertFlatGeometry,
-  mirrorEntity,
+  turnedOver,
   mtextCorners,
   nearestPolylineSegment,
   polylineParamAt,
@@ -52,7 +51,6 @@ import {
   readsInPlan,
   rotateEntity,
   textCorners,
-  withElevation,
   withNormal,
 } from "../../domain/entities"
 import { LayerId } from "../../domain/layers"
@@ -1684,8 +1682,6 @@ const TRIMMED: ReadonlySet<Entity["type"]> = new Set([
 /** Below this a normal's Z counts as none: its plane stands upright. */
 const UPRIGHT_TOLERANCE = 1e-9
 
-const DOWN: Vec3 = { x: 0, y: 0, z: -1 }
-
 /** The types an object whose normal is -Z is cut as, read in plan. */
 const TURNED: ReadonlySet<Entity["type"]> = new Set([
   "circle",
@@ -1713,22 +1709,6 @@ function isUpsideDown(entity: Entity): boolean {
     Math.abs(n.y) <= UPRIGHT_TOLERANCE &&
     n.z < 0
   )
-}
-
-/**
- * An object of normal -Z as the +Z one over the same points, and back: its
- * OCS's X is the WCS's -X, its Z the WCS's -Z, so its points mirror across
- * the Y axis and its elevation and thickness change sign.
- */
-function turnedOver(entity: Entity): Entity {
-  let turned = withElevation(
-    mirrorEntity(withNormal(entity, WORLD_Z), { x: 0, y: 0 }, { x: 0, y: 1 }),
-    -entityElevation(entity)
-  )
-  if (hasThickness(turned) && turned.thickness) {
-    turned = { ...turned, thickness: -turned.thickness }
-  }
-  return isUpsideDown(entity) ? turned : withNormal(turned, DOWN)
 }
 
 /** A piece made in plan of the drawing's `source`, as `source` keeps its points. */

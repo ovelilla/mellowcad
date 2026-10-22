@@ -519,7 +519,9 @@ second pick applies a corner, as radius 0 does — and `Specify fillet radius <0
 drawing (NEW and a drawing opened bring theirs, rectang/p302, p316) and set inside the run, so U
 takes it back and a FILLET that only set it is an undo step (p317, corners/p159); two lines, or two
 straight segments of one polyline — adjacent, or one apart (the segment between, line or arc, is
-replaced by the fillet), an open polyline's first and last closing it — rounded within it; one two
+replaced by the fillet), an open polyline's first and last closing it — of three, where they cross
+before the first one's start; past its end the one between is replaced (corners/p200, p201,
+p386) — rounded within it; one two
 or more away says `Lines belonging to polylines must be consecutive or separated by one segment` (es
 `Las líneas pertenecientes a polilíneas tienen que ser consecutivas o estar separadas por un segmento`),
 then `*Invalid*` and the command ends, or in Multiple the first prompt again, and the first object
@@ -547,7 +549,8 @@ tangent vertex, `Cannot fillet between these two entities.*Invalid*` on one line
 Multiple the first prompt again; two parallel lines are capped with a half circle, whatever the
 radius, at the end of the first nearer its pick (its end point on a tie), the second's end on that
 side extended or trimmed straight across to it and the first left as it is, the arc on the lines'
-layer or the current one, with the second's thickness; where the second would turn back nothing is
+layer or the current one, wearing the second's lineweight and thickness (p360, p361); where the
+second would turn back nothing is
 made, and collinear lines say `Collinear lines connot be filleted.`, Autodesk's typo and all (es
 `Las líneas colineales no pueden ser unidos con empalme.`), the command ending with no `*Invalid*`,
 or in Multiple the first prompt again; an ARC or a CIRCLE is an object too, with a line or another
@@ -569,10 +572,14 @@ ARC or CIRCLE — rounded in that plane as in plan, radius 0 and Multiple too, e
 the line of sight meets the plane, and each object kept with its normal; Polyline's
 `Select 2D polyline or [Radius]:` (es `Designe una polilínea 2D o [Radio]:`; both sub-prompts spell
 Radio their own way, so `R` answers it) rounds every vertex where two segments meet — line–arc and
-arc–arc ones too (FILLETPOLYARC 1) —, replaces an arc segment between two lines converging towards
-it (radius 0 removes it, the lines meeting), leaves a corner too short alone, and reports
-`4 lines were filleted` and then `1 was parallel    2 were too short` (parallel, too short,
-divergent; a corner already sharp at radius 0 is counted; es
+arc–arc ones too (FILLETPOLYARC 1), an arc–arc one, as two arc segments picked, on the side the
+chords turn to, the arcs run on past the vertex where they turn against them (p219, p322,
+p362–p365) —, replaces an arc segment between two lines converging towards it (radius 0 removes it,
+the lines meeting; lines diverging round it leave its own vertices rounded, p222), cuts each corner
+in turn from the second vertex, a closed one's first last, against what the corners before left of
+its segments, leaving one too short alone (a 20 square at radius 15: two rounded, p220), and reports
+`4 lines were filleted` and then `1 was parallel    2 were too short` (parallel, too short; a
+corner already sharp at radius 0 is counted; es
 `4 líneas resultan unida(s) con empalme`, `1 resulta paralela(s)    2 resultan demasiado corta(s)`);
 Multiple asks the first prompt again until Enter — Enter at Polyline's asks it too, and Enter at the
 second prompt asks that again without a word, Multiple or not —, Multiple still listed in it;
@@ -587,9 +594,12 @@ U, REDO, UNDO and MREDO take its whole run as one step named FILLET, one that ch
 (p157–p161); two lines at different heights or one rising give `Lines are non coplanar.` (es
 `Las líneas no son coplanares.`, AutoCAD 2027's console) and the first prompt again; a line trimmed
 or extended keeps its direction, only its end at the arc moving (a line kept from 100,0 to 0,0 now
-runs from 100,0 to 30,0); the arc takes the first line's elevation and thickness, and lies on the
-lines' layer when they share one, else on the current layer, ByLayer ("The layer affects object
-properties including color and linetype"); two lines sloping in one tilted plane are filleted in it,
+runs from 100,0 to 30,0); the arc, at the lines' elevation, wears the lineweight and thickness of
+the object picked second — a line, an arc or a circle — and neither its colour nor its linetype
+(p229, p313, p331, p332, p334), and lies on the lines' layer when they share one, else on the
+current layer (the one current at the second pick, p339), ByLayer ("The layer affects object
+properties including color and linetype"); one built in a plane facing -Z is written at +Z, the
+objects it trims keeping theirs (p335, p336); two lines sloping in one tilted plane are filleted in it,
 and so is a polyline in a tilted plane with the UCS left as it was — two of its segments, or it with
 a line or a polyline lying in its plane, joined there; one off it is
 `Line and polyline are non coplanar.` / `Two entities are non coplanar.`, as the console says. The
@@ -609,7 +619,18 @@ finds of its polyline too — says `Cannot fillet an entity with itself.` (es
 polyline two or more away is refused as a pick on it is; a mode never takes an object on a locked
 layer — of what it finds the newest unlocked is taken, and finding only locked ones it says
 `The object is on a locked layer.` (es `El objeto está en una capa bloqueada.`) and asks again
-(p274). A point typed at any of the three prompts is a pick there (`30,40`), the side it lies on
+(p274). A TEXT, an attribute definition, an MTEXT or a HATCH picked or found at the first prompt
+says `Fillet requires 2 lines, arcs, or circles.` (es `Empalme requiere 2 líneas, arcos o círculos.`),
+a block reference `Fillet requires 2 lines, arcs, or circles (not block references).` (es
+`… (no referencias a bloque).`), a dimension `… (not dimensions).` (es `… (no cotas).`), and the
+prompt is asked again (p231–p235, p378, p381); at the second prompt the same, but an MTEXT or a HATCH
+says `Cannot fillet between these two entities.` (es `Imposible empalmar estos dos objetos.`, another
+string than the parallel pair's) and the command ends (p238, p239, p310–p312). A closed ELLIPSE is
+an object: with a line or another ellipse, at a radius, `Unable to fillet curves.` (es
+`No se pueden empalmar curvas.`) and the command ends, crossing or not (p325, p366, p383, p384); at
+radius 0 a line that misses it makes nothing and nothing is said (p236); with a polyline's segment
+`Cannot fillet between these two entities.` (es `Imposible empalmar estos dos objetos.`) at any
+radius (p367, p385). A point typed at any of the three prompts is a pick there (`30,40`), the side it lies on
 kept, read as a first point is — `@` from LASTPOINT, a polar point, `*` in the WCS, its Z kept, a
 number a direct distance from LASTPOINT towards the cursor; `#` refused (p240–p248) —, and it
 becomes LASTPOINT, on nothing too, where the prompt is asked again without a word (p249, p250,
@@ -634,17 +655,24 @@ cannot be (`'LINE`) says `** That command may not be invoked transparently **` f
 'ZOOM, '-PAN and '-OSNAP run at every prompt and resume it (p140–p146). A selection made
 before the command is dropped, and nothing is left selected after (p162–p164); Enter at `Command:`
 repeats it, and `'FILLET` is refused as no transparent command (p105, p106). Wording, English and
-Spanish, from AutoCAD 2027's console (corners/p100–p169, p174, p176, p240–p309, p323) and its
-string tables
+Spanish, from AutoCAD 2027's console (corners/p100–p169, p174, p176, p231–p239, p240–p309,
+p310–p312, p323, p325, p360–p388) and its string tables
 
-**Missing:** Trim (TRIMMODE is always 1, so it is not listed; `T`, es `R`, is taken as its word and
-refused as a wrong answer, so Spanish `R` never opens RAdio, p165, p168), the console's choice
-between two fillets of an ARC or a CIRCLE equally near a line's pick (a figure symmetric about it:
-the right one at radius 15, the left at 200, acc/b1, b4 — here the first found), the zero-length arc
-the console leaves at the origin where a cap would turn the second line back, `out of limits`; the
-double space Autodesk's Spanish puts before `[Radio]` at the second prompt; **unverified**: whether
-a circle a mode finds stands picked at its angle 0 or at 180° (here 180°, which p303–p305 match:
-the console settles only that it is one of them)
+**Missing:** what AutoCAD makes of a closed ellipse with a line meeting it at radius 0 (the line
+trimmed to it, p324) and with an arc or a circle (a fillet, p368), and of an elliptical arc or a
+spline (a fillet, the spline extended at radius 0: p237, p326, p369) — such a pick is not taken and
+the prompt is asked again without a word, and a mode does not take an ellipse or a spline; the
+linetype scale the arc takes from the object picked second (`LinetypeScale` 2, p332: no per-object
+linetype scale is modelled); Trim (TRIMMODE is always 1, so it is not listed; `T`, es `R`, is taken
+as its word and refused as a wrong answer, so Spanish `R` never opens RAdio, p165, p168), the
+console's choice between two fillets of an ARC or a CIRCLE equally near a line's pick (a figure
+symmetric about it: the right one at radius 15, the left at 200, acc/b1, b4 — here the first found),
+the zero-length arc the console leaves at the origin where a cap would turn the second line back,
+`out of limits`; the double space Autodesk's Spanish puts before `[Radio]` at the second prompt;
+**unverified**: whether a circle a mode finds stands picked at its angle 0 or at 180° (here 180°,
+which p303–p305 match: the console settles only that it is one of them), two closed ellipses at
+radius 0 (not taken), the arc–arc rule beyond p219, p322 and p362–p365, and an open polyline's
+first and last of three that cross along the first segment itself (one apart here)
 
 ### `CHAMFER` / `CHA` · es `CHAFLAN` / `CH`
 
@@ -661,7 +689,7 @@ default is the first when it was typed, CHAMFERB when Enter kept it (corners/p11
 all), each refusing a negative one as FILLET's radius and asked again (p119), both CHAMFERA and
 CHAMFERB, saved in the drawing (rectang/p302, p316) and set inside the run, so U takes them back
 (p317); distance chamfer between two lines, or two straight segments of one polyline (as FILLET's:
-adjacent, one apart, an open one's ends; the first distance on the one picked first), a line and a
+adjacent, one apart, an open one's ends, p328; the first distance on the one picked first), a line and a
 polyline's straight segment, or segments of two polylines, joined into one polyline by the bevel as
 FILLET joins them, the first distance on the one picked first (`D` 10, 5 on a corner at 100,80:
 100,70 then 95,80 picking the polyline first, 100,75 then 90,80 the line); a distance running past
@@ -677,7 +705,16 @@ beside a line or another polyline it is `Cannot chamfer polyline arc segments.` 
 ends, or in Multiple the first prompt again; an ARC or a CIRCLE, at either prompt, says
 `Chamfer requires 2 lines (not arc segments).` (es
 `Chaflán requiere 2 líneas (no segmentos de arco).`, p167, p196–p198) and the same prompt is asked
-again; within its polyline — adjacent, or one apart — it is cut as its chord (the distance along the
+again; a TEXT, an attribute definition, an MTEXT or a HATCH at the first prompt says
+`Chamfer requires 2 lines.` (es `Chaflán requiere 2 líneas.`), a block reference
+`Chamfer requires 2 lines (not block references).` (es `… (no referencias a bloque).`), a dimension
+`Chamfer requires 2 lines (not dimensions).` (es `… (no cotas).`), the prompt asked again
+(p316–p318, p376, p377, p382), and at the second the same, but an MTEXT or a HATCH
+`Cannot chamfer between these two entities.` (es
+`Imposible hacer un chaflán entre estas dos entidades.`) and the end (p371–p375); an ELLIPSE, an
+elliptical arc or a SPLINE is taken at either prompt, and with a line, picked first or second, says
+`Cannot chamfer between these two entities.` and the command ends (p314, p315, p319, p327, p370,
+p380), and at Polyline's it is no 2D polyline (p379); within its polyline — adjacent, or one apart — it is cut as its chord (the distance along the
 chord, `Chamfer distance is too large` and then `*Invalid*` past it, `Lines are parallel` and
 `*Invalid*` for parallel chords), and what is left of it keeps its radius,
 its turn and its side of a half circle (a half circle becomes the major arc; a chord longer than the
@@ -685,15 +722,15 @@ diameter opens the arc as far as it asks: the console's bulge `-1.0357` for 82.8
 Polyline's `Select 2D polyline or [Distance]:` (es `Seleccione una polilínea 2D o [Distancia]:`,
 worded otherwise than FILLET's; anything else picked there refused as at FILLET's) bevels every
 vertex, the first distance along the segment coming in, an arc segment as its chord
-(`1 line was chamfered` at a line–arc vertex), and reports `4 lines were chamfered` (es
+(`1 line was chamfered` at a line–arc vertex), each in turn as FILLET's (p226), and reports `4 lines were chamfered` (es
 `4 líneas resultan unida(s) con chaflán`) and the reasons line; Multiple, Undo (p149, p154, p155,
 a transparent 'LTSCALE taken back as FILLET's p156), Enter, transparency, the preselection and the
 repeat as FILLET's, Undo taking back distances too; the same coplanar test and message as FILLET,
 two lines sloping in one tilted plane chamfered in it, and a polyline in a tilted plane as FILLET
 works it; a line trimmed or extended keeps its direction, only its cut end moving, and the bevel
-runs from the first line's cut to the second's; the bevel takes the first line's elevation and
-thickness, and lies on the lines' layer when they share one, else on the current layer, ByLayer (as
-FILLET's arc). The object prompts take FILLET's selection modes, typed points and object snap
+runs from the first line's cut to the second's; the bevel, at the lines' elevation, wears the second
+line's lineweight and thickness, and lies on the lines' layer when they share one, else on the
+current layer, ByLayer, as FILLET's arc (p332, p334, p339). The object prompts take FILLET's selection modes, typed points and object snap
 overrides (corners/p253–p256, p267, p268, p281, p307), read as FILLET reads them, and refuse a
 locked object as FILLET's do (p275), but the first prompt too takes the newest found and asks the
 second; an ARC or a CIRCLE found says `Chamfer requires 2 lines (not arc segments).`, the first line found or picked again — or
@@ -704,13 +741,16 @@ polyline two or more apart are refused in FILLET's words; a wrong answer is refu
 second prompt and Polyline's `…/CPolygon/Distance` (the first prompt's words refused at the second,
 as FILLET's: p122, p125) (the console's `Distance/Angle`, Angle not offered; es
 `…/desHacer/Polilínea/Distancia`, `…/Distancia`: p117, p118). Wording, English and Spanish, from
-AutoCAD 2027's console (corners/p100–p169, p182, p184) and its string tables
+AutoCAD 2027's console (corners/p100–p169, p182, p184, p314–p319, p327, p370–p382) and its string
+tables
 
-**Missing:** Angle, mEthod and Trim (CHAMMODE is always Distance and TRIMMODE 1, so they are not
-listed, nor the second prompt's and Polyline's Angle and Method: 2027 lists
-`Select 2D polyline or [Distance/Angle/Method]:`, es `[Distancia/ángUlo/Método]`, and `M` at either
-prompt is Method's `Enter trim method [Distance/Angle] <Distance>:`, refused here: corners/p112,
-p122, p125)
+**Missing:** the bevel's linetype scale from the second line, as FILLET's arc's; Angle, mEthod and
+Trim (CHAMMODE is always Distance and TRIMMODE 1, so they are not listed, nor the second prompt's
+and Polyline's Angle and Method: 2027 lists `Select 2D polyline or [Distance/Angle/Method]:`, es
+`[Distancia/ángUlo/Método]`, and `M` at either prompt is Method's
+`Enter trim method [Distance/Angle] <Distance>:`, refused here: corners/p112, p122, p125);
+**unverified**: an ellipse or a spline with anything but a line (said as with one), and one a mode
+finds (not taken)
 
 ### `STRETCH` / `S` · es `ESTIRA` / `EI`
 

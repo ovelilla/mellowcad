@@ -1,15 +1,29 @@
 import { describe, expect, it } from "vitest"
-import type { Entity, LineEntity } from "../../domain/entities"
+import {
+  createAttributeDefinition,
+  createBlockDefinition,
+  createDimension,
+  createInsert,
+  createMText,
+  createSpline,
+  type Entity,
+  type LineEntity,
+} from "../../domain/entities"
 import { type CadHarness, createHarness } from "../../../test/harness"
 import { es } from "../../locales/es"
 import {
   arcOf,
   circleOf,
   deg,
+  ellipseOf,
+  hatchOf,
   layerOf,
   lineOf,
+  loopOf,
   p,
   polylineOf,
+  rectOf,
+  textOf,
 } from "../../../test/builders"
 
 /** Typed at the command line and confirmed, as AutoCAD's prompt reads it. */
@@ -110,7 +124,7 @@ describe("FILLET and CHAMFER refuse a second pick that makes no corner", () => {
     expect(again.activeToolId()).toBe("chamfer")
   })
 
-  it("still makes the corner of an open polyline's first and last segments", () => {
+  it("says an open polyline's first and last diverge where they cross before the last (corners/p388)", () => {
     const cad = run(
       [polylineOf([p(0, 0), p(100, 0), p(100, 50), p(0, 50), p(0, 100)])],
       "FILLET",
@@ -243,7 +257,8 @@ describe("FILLET's and CHAMFER's second prompt on Enter", () => {
   })
 })
 
-// AutoCAD 2023's console, acc/u4–u9 of 2026-10-14.
+// AutoCAD 2027's console (probes corners/p183, p184); Multiple and a mode's
+// find, AutoCAD 2023's (acc/u4–u9 of 2026-10-14).
 describe("CHAMFER of two parallel lines", () => {
   const parallel = (): Entity[] => [
     lineOf(p(0, 0), p(100, 0)),
@@ -352,10 +367,11 @@ describe("FILLET and CHAMFER refuse a mode's find at the second prompt as a pick
     ])
   })
 
-  it("a segment next to it still makes the corner", () => {
+  it("a segment next to it is taken: at radius 0, the corner it already has", () => {
     const cad = run(zigzag(), "FILLET", "50,0", "C", "95,20", "105,30")
     expect(cad.commandLog().at(-1)).toBe("Specify opposite corner: 105,30")
     expect(cad.activeToolId()).toBe("select")
+    expect(cad.entities()).toEqual(zigzag())
   })
 
   it("is answered in Autodesk's Spanish", () => {
@@ -581,5 +597,303 @@ describe("FILLET and CHAMFER refuse an object on a locked layer picked", () => {
         "El objeto está en una capa bloqueada."
       )
     }
+  })
+})
+
+// AutoCAD 2027's console, en-US and es-ES (probes corners/p231–p239,
+// p310–p318, p371–p378, p381, p382): each type is said in its words; at the
+// second prompt an MTEXT or a HATCH ends the command, the rest ask again.
+describe("FILLET and CHAMFER say what they make no corner of", () => {
+  const block = createBlockDefinition("B1", p(0, 0), [
+    lineOf(p(-10, -10), p(10, 10)),
+  ])
+  const harness = (entity: Entity, spanish = false) =>
+    createHarness({
+      entities: [
+        entity,
+        lineOf(p(200, -100), p(200, 100), { id: "L8" }),
+        lineOf(p(150, 150), p(250, 150), { id: "L9" }),
+        rectOf(p(200, 200), p(250, 250), { id: "P9" }),
+      ],
+      blocks: [block],
+      ...(spanish ? { locale: es } : {}),
+    })
+  const TEXT = () => textOf(p(0, 0), "HOLA", { height: 10, id: "T" })
+  const ATTDEF = () =>
+    createAttributeDefinition(p(0, 0), "TAG", { height: 10, id: "T" })
+  const MTEXT = () =>
+    createMText(p(0, 10), "HOLA", { height: 10, width: 100, id: "T" })
+  const INSERT = () => createInsert("B1", p(0, 0), { id: "T" })
+  const HATCH = () => hatchOf([loopOf(p(-50, -25), p(50, 25))], { id: "T" })
+  const DIMENSION = () =>
+    createDimension("linear", p(-50, 0), p(50, 0), p(0, -20), { id: "T" })
+  const FILLET_ANY = [
+    "Fillet requires 2 lines, arcs, or circles.",
+    "Empalme requiere 2 líneas, arcos o círculos.",
+  ]
+  const FILLET_BLOCKS = [
+    "Fillet requires 2 lines, arcs, or circles (not block references).",
+    "Empalme requiere 2 líneas, arcos o círculos (no referencias a bloque).",
+  ]
+  const FILLET_DIMENSIONS = [
+    "Fillet requires 2 lines, arcs, or circles (not dimensions).",
+    "Empalme requiere 2 líneas, arcos o círculos (no cotas).",
+  ]
+  const CHAMFER_ANY = [
+    "Chamfer requires 2 lines.",
+    "Chaflán requiere 2 líneas.",
+  ]
+  const CHAMFER_BLOCKS = [
+    "Chamfer requires 2 lines (not block references).",
+    "Chaflán requiere 2 líneas (no referencias a bloque).",
+  ]
+  const CHAMFER_DIMENSIONS = [
+    "Chamfer requires 2 lines (not dimensions).",
+    "Chaflán requiere 2 líneas (no cotas).",
+  ]
+  const FILLET_BETWEEN = [
+    "Cannot fillet between these two entities.",
+    "Imposible empalmar estos dos objetos.",
+  ]
+  const CHAMFER_BETWEEN = [
+    "Cannot chamfer between these two entities.",
+    "Imposible hacer un chaflán entre estas dos entidades.",
+  ]
+
+  it.each([
+    ["p231 TEXT", TEXT, "3,3", FILLET_ANY],
+    ["p381 ATTDEF", ATTDEF, "3,3", FILLET_ANY],
+    ["p232 MTEXT", MTEXT, "3,5", FILLET_ANY],
+    ["p234 HATCH", HATCH, "0,0", FILLET_ANY],
+    ["p233 INSERT", INSERT, "5,5", FILLET_BLOCKS],
+    ["p235 DIMENSION", DIMENSION, "0,-20", FILLET_DIMENSIONS],
+  ])(
+    "%s at FILLET's first prompt is said and asked again",
+    (_, make, pick, [en, sp]) => {
+      const cad = answer(harness(make()), "FILLET", pick)
+      expect(cad.commandLog().at(-1)).toBe(en)
+      expect(cad.state().commandLine.prompt).toBe(
+        "FILLET Select first object or [Undo/Polyline/Radius/Multiple]:"
+      )
+      expect(
+        answer(harness(make(), true), "EMPALME", pick).commandLog().at(-1)
+      ).toBe(sp)
+    }
+  )
+
+  it.each([
+    ["p238 TEXT", TEXT, "3,3", FILLET_ANY, true],
+    ["p310 INSERT", INSERT, "5,5", FILLET_BLOCKS, true],
+    ["p311 DIMENSION", DIMENSION, "0,-20", FILLET_DIMENSIONS, true],
+    ["p239 HATCH", HATCH, "0,0", FILLET_BETWEEN, false],
+    ["p312 MTEXT", MTEXT, "3,5", FILLET_BETWEEN, false],
+  ])("%s at FILLET's second prompt", (_, make, pick, [en, sp], asksAgain) => {
+    const cad = answer(harness(make()), "FILLET", "200,50", pick)
+    expect(cad.commandLog().at(-1)).toBe(en)
+    expect(cad.activeToolId()).toBe(asksAgain ? "fillet" : "select")
+    expect(cad.entities()).toHaveLength(4)
+    const spanish = answer(harness(make(), true), "EMPALME", "200,50", pick)
+    expect(spanish.commandLog().at(-1)).toBe(sp)
+  })
+
+  it.each([
+    ["p316 TEXT", TEXT, "3,3", CHAMFER_ANY],
+    ["p382 ATTDEF", ATTDEF, "3,3", CHAMFER_ANY],
+    ["p376 MTEXT", MTEXT, "3,5", CHAMFER_ANY],
+    ["p318 HATCH", HATCH, "0,0", CHAMFER_ANY],
+    ["p317 INSERT", INSERT, "5,5", CHAMFER_BLOCKS],
+    ["p377 DIMENSION", DIMENSION, "0,-20", CHAMFER_DIMENSIONS],
+  ])(
+    "%s at CHAMFER's first prompt is said and asked again",
+    (_, make, pick, [en, sp]) => {
+      const cad = answer(harness(make()), "CHAMFER", pick)
+      expect(cad.commandLog().at(-1)).toBe(en)
+      expect(cad.state().commandLine.prompt).toBe(
+        "CHAMFER Select first line or [Undo/Polyline/Distance/Multiple]:"
+      )
+      expect(
+        answer(harness(make(), true), "CHAFLAN", pick).commandLog().at(-1)
+      ).toBe(sp)
+    }
+  )
+
+  it.each([
+    ["p371 TEXT", TEXT, "3,3", CHAMFER_ANY, true],
+    ["p373 INSERT", INSERT, "5,5", CHAMFER_BLOCKS, true],
+    ["p375 DIMENSION", DIMENSION, "0,-20", CHAMFER_DIMENSIONS, true],
+    ["p372 HATCH", HATCH, "0,0", CHAMFER_BETWEEN, false],
+    ["p374 MTEXT", MTEXT, "3,5", CHAMFER_BETWEEN, false],
+  ])("%s at CHAMFER's second prompt", (_, make, pick, [en, sp], asksAgain) => {
+    const cad = answer(harness(make()), "CHAMFER", "200,50", pick)
+    expect(cad.commandLog().at(-1)).toBe(en)
+    expect(cad.activeToolId()).toBe(asksAgain ? "chamfer" : "select")
+    expect(cad.entities()).toHaveLength(4)
+    const spanish = answer(harness(make(), true), "CHAFLAN", "200,50", pick)
+    expect(spanish.commandLog().at(-1)).toBe(sp)
+  })
+
+  it("says it of what a mode finds too (p378)", () => {
+    const cad = answer(harness(TEXT()), "FILLET", "W", "-5,-5", "80,20")
+    expect(cad.commandLog().at(-1)).toBe(FILLET_ANY[0])
+    expect(cad.state().commandLine.prompt).toBe(
+      "FILLET Select first object or [Undo/Polyline/Radius/Multiple]:"
+    )
+  })
+})
+
+// AutoCAD 2027's console, en-US and es-ES (probes corners/p228, p230, p236,
+// p237, p314, p315, p319, p324–p327, p366–p370, p379, p380, p383–p385).
+describe("FILLET and CHAMFER of an ellipse or a spline", () => {
+  const ELLIPSE = () => ellipseOf(p(0, 0), p(50, 0), 0.5, { id: "E" })
+  const HALF = () =>
+    ellipseOf(p(0, 0), p(50, 0), 0.5, {
+      id: "E",
+      startParam: 0,
+      endParam: Math.PI,
+    })
+  const SPLINE = () =>
+    createSpline("fit", [p(0, 0), p(50, 30), p(100, 0), p(150, 30)], {
+      id: "S",
+    })
+  const across = () => lineOf(p(30, -40), p(30, 60), { id: "L1" })
+  const UNABLE = ["Unable to fillet curves.", "No se pueden empalmar curvas."]
+  const BETWEEN = [
+    "Cannot chamfer between these two entities.",
+    "Imposible hacer un chaflán entre estas dos entidades.",
+  ]
+  /** The same answers in English and in Spanish, as `_FILLET`, `_R`. */
+  const both = (entities: () => Entity[], ...texts: string[]) => {
+    const global = texts.map((text) =>
+      /^[A-Z]+$/.test(text) ? `_${text}` : text
+    )
+    return [
+      answer(createHarness({ entities: entities() }), ...global),
+      answer(createHarness({ entities: entities(), locale: es }), ...global),
+    ]
+  }
+
+  it("FILLET at a radius says it cannot fillet a closed ellipse with a line, either first, crossing or not (p325, p366, p383)", () => {
+    const apart = () => [
+      ELLIPSE(),
+      lineOf(p(200, -100), p(200, 100), { id: "L1" }),
+    ]
+    for (const [entities, picks] of [
+      [() => [ELLIPSE(), across()], ["30,40", "50,0"]],
+      [() => [ELLIPSE(), across()], ["50,0", "30,40"]],
+      [apart, ["200,50", "50,0"]],
+    ] as const) {
+      const [en, sp] = both(entities, "FILLET", "R", "5", ...picks)
+      expect(en.commandLog().at(-1)).toBe(UNABLE[0])
+      expect(sp.commandLog().at(-1)).toBe(UNABLE[1])
+      expect(en.activeToolId()).toBe("select")
+      expect(en.entities()).toEqual(entities())
+    }
+  })
+
+  it("FILLET says it of two closed ellipses (p384)", () => {
+    const two = () => [
+      ELLIPSE(),
+      ellipseOf(p(60, 0), p(50, 0), 0.5, { id: "E2" }),
+    ]
+    const [en, sp] = both(two, "FILLET", "R", "5", "50,0", "10,0")
+    expect(en.commandLog().at(-1)).toBe(UNABLE[0])
+    expect(sp.commandLog().at(-1)).toBe(UNABLE[1])
+  })
+
+  it("FILLET cannot fillet a closed ellipse with a polyline's segment, at any radius (p367, p385)", () => {
+    const pair = () => [
+      ELLIPSE(),
+      polylineOf([p(30, -40), p(30, 60)], { id: "P1" }),
+    ]
+    for (const radius of ["5", "0"]) {
+      const [en, sp] = both(pair, "FILLET", "R", radius, "30,40", "50,0")
+      expect(en.commandLog().at(-1)).toBe(
+        "Cannot fillet between these two entities."
+      )
+      expect(sp.commandLog().at(-1)).toBe(
+        "Imposible empalmar estos dos objetos."
+      )
+      expect(en.activeToolId()).toBe("select")
+    }
+  })
+
+  it("FILLET at radius 0 makes nothing of a line that misses the ellipse, and says nothing (p236)", () => {
+    const cad = run(
+      [ELLIPSE(), lineOf(p(200, -100), p(200, 100), { id: "L1" })],
+      "FILLET",
+      "R",
+      "0",
+      "200,50",
+      "50,0"
+    )
+    expect(cad.commandLog().at(-1)).toBe(
+      "Select second object or shift-select to apply corner or [Radius]: 50,0"
+    )
+    expect(cad.activeToolId()).toBe("select")
+  })
+
+  // WHY asked again: AutoCAD trims the line to the ellipse at radius 0
+  // (p324), fillets a closed ellipse with an arc (p368) and an elliptical arc
+  // or a spline with a line (p369, p326), which is not built: the coverage
+  // entry's Missing.
+  it("FILLET takes no corner it does not build: asked again, nothing said (p324, p368, p369, p237)", () => {
+    const meets = run(
+      [ELLIPSE(), across()],
+      "FILLET",
+      "R",
+      "0",
+      "30,40",
+      "50,0"
+    )
+    expect(meets.activeToolId()).toBe("fillet")
+    expect(meets.byId<LineEntity>("L1").start).toBeCloseToPoint(p(30, -40))
+    const arc = run(
+      [ELLIPSE(), arcOf(p(60, 0), 20, deg(180), deg(270), { id: "A1" })],
+      "FILLET",
+      "R",
+      "5",
+      "60,-20",
+      "50,0"
+    )
+    expect(arc.state().commandLine.prompt).toBe(
+      "FILLET Select second object or shift-select to apply corner or [Radius]:"
+    )
+    for (const [entity, pick] of [
+      [HALF(), "0,25"],
+      [SPLINE(), "0,0"],
+    ] as const) {
+      const cad = run([entity, across()], "FILLET", "R", "5", pick)
+      expect(cad.state().commandLine.prompt).toBe(
+        "FILLET Select first object or [Undo/Polyline/Radius/Multiple]:"
+      )
+    }
+  })
+
+  it("CHAMFER takes an ellipse, an elliptical arc or a spline, and with a line says it cannot, either first (p314, p315, p319, p327, p370, p380)", () => {
+    for (const [make, pick] of [
+      [ELLIPSE, "50,0"],
+      [HALF, "0,25"],
+      [SPLINE, "100,0"],
+    ] as const) {
+      const first = run([make(), across()], "CHAMFER", pick)
+      expect(first.state().commandLine.prompt).toBe(
+        "CHAMFER Select second line or shift-select to apply corner or [Distance]:"
+      )
+      for (const picks of [
+        [pick, "30,40"],
+        ["30,40", pick],
+      ]) {
+        const [en, sp] = both(() => [make(), across()], "CHAMFER", ...picks)
+        expect(en.commandLog().at(-1)).toBe(BETWEEN[0])
+        expect(sp.commandLog().at(-1)).toBe(BETWEEN[1])
+        expect(en.activeToolId()).toBe("select")
+        expect(en.entities()).toHaveLength(2)
+      }
+    }
+  })
+
+  it("CHAMFER's Polyline says an ellipse is no 2D polyline (p379)", () => {
+    const cad = run([ELLIPSE()], "CHAMFER", "P", "50,0")
+    expect(cad.commandLog().at(-1)).toBe("Object selected is not a 2D polyline")
   })
 })

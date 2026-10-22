@@ -262,6 +262,7 @@ export {
   reflectionAcross,
   entityInOcs,
   entityFromOcs,
+  turnedOver,
 } from "./entityTransforms"
 
 export {

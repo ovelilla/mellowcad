@@ -2563,6 +2563,15 @@ export const en: EngineCatalog = {
       "chamferDistanceTooLarge": "Chamfer distance is too large",
       "cannotChamferArcSegments": "Cannot chamfer polyline arc segments.",
       "chamferRequiresLines": "Chamfer requires 2 lines (not arc segments).",
+      "cannotFilletBetweenThese": "Cannot fillet between these two entities.",
+      "filletRequiresObjects": "Fillet requires 2 lines, arcs, or circles.",
+      "filletRequiresNotBlocks": "Fillet requires 2 lines, arcs, or circles (not block references).",
+      "filletRequiresNotDimensions": "Fillet requires 2 lines, arcs, or circles (not dimensions).",
+      "unableToFilletCurves": "Unable to fillet curves.",
+      "chamferRequiresTwoLines": "Chamfer requires 2 lines.",
+      "chamferRequiresNotBlocks": "Chamfer requires 2 lines (not block references).",
+      "chamferRequiresNotDimensions": "Chamfer requires 2 lines (not dimensions).",
+      "cannotChamferBetween": "Cannot chamfer between these two entities.",
       "linesChamfered": [
         [
           "count",

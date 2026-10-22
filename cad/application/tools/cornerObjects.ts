@@ -9,10 +9,14 @@ import {
   polarPoint,
 } from "../../geometry/primitives"
 import {
+  EllipseEntity,
   Entity,
   LineEntity,
   PolylineEntity,
+  SplineEntity,
+  assignEntityLineweight,
   carryOverrides,
+  carryPlane,
   coplanar,
   createPolyline,
   entityAxes,
@@ -21,14 +25,19 @@ import {
   entityInOcs,
   entityNormal,
   entityPointToWorld,
+  entityThickness,
   facesAlong,
+  hasThickness,
+  isFullEllipse,
   isTilted,
   polylineSegmentGeometries,
   polylineWidth,
   type PolylineWidth,
   readsInPlan,
   sharesTiltedPlane,
+  turnedOver,
   withNormal,
+  withThickness,
 } from "../../domain/entities"
 import type { CameraTransform } from "../../scene/types"
 import type { MessageId } from "../EngineText"
@@ -53,20 +62,106 @@ export interface SegmentPick {
 /** What FILLET and CHAMFER take as each of their two objects. */
 export type CornerObject = LineEntity | SegmentPick
 
-/** FILLET's objects: CHAMFER's, and an ARC or a CIRCLE. */
-export type FilletObject = CornerObject | RoundObject
+/**
+ * An ELLIPSE or a SPLINE, taken as an object only for the pair to be refused
+ * in AutoCAD's words: CHAMFER's any of them, FILLET's a closed ellipse.
+ */
+export type CurveObject = EllipseEntity | SplineEntity
 
-export function isSegment(object: FilletObject): object is SegmentPick {
+/** FILLET's objects: CHAMFER's, an ARC or a CIRCLE, and a closed ellipse. */
+export type FilletObject = CornerObject | RoundObject | EllipseEntity
+
+/** Any object of FILLET's or CHAMFER's. */
+type AnyObject = FilletObject | CurveObject
+
+export function isSegment(object: AnyObject): object is SegmentPick {
   return "poly" in object
 }
 
-export function isRound(object: FilletObject): object is RoundObject {
-  return !isSegment(object) && object.type !== "line"
+export function isRound(object: AnyObject): object is RoundObject {
+  return (
+    !isSegment(object) && (object.type === "arc" || object.type === "circle")
+  )
 }
 
-/** What a pick of `object` highlights: the line, or its whole polyline. */
-export function cornerEntity(object: FilletObject): Entity {
+export function isCurve(object: AnyObject): object is CurveObject {
+  return (
+    !isSegment(object) &&
+    (object.type === "ellipse" || object.type === "spline")
+  )
+}
+
+/** What a pick of `object` highlights: the object, or its whole polyline. */
+export function cornerEntity(object: AnyObject): Entity {
   return isSegment(object) ? object.poly : object
+}
+
+/**
+ * What FILLET or CHAMFER says of an object of a type it makes no corner of,
+ * picked or found at its first prompt or its `second`, in AutoCAD 2027's
+ * console's words (probes corners/p231–p239, p310–p318, p371–p378, p381,
+ * p382; an ATTDEF is a TEXT): `ends` where the command ends then, else the
+ * prompt is asked again.
+ */
+export interface TypeRefusal {
+  readonly message: MessageId
+  readonly ends: boolean
+}
+
+export function typeRefusal(
+  command: "fillet" | "chamfer",
+  entity: Entity | null | undefined,
+  second: boolean
+): TypeRefusal | null {
+  const fillet = command === "fillet"
+  const again = (message: MessageId) => ({ message, ends: false })
+  const any = fillet ? "filletRequiresObjects" : "chamferRequiresTwoLines"
+  switch (entity?.type) {
+    case "text":
+    case "attdef":
+      return again(any)
+    case "mtext":
+    case "hatch":
+      return second
+        ? {
+            message: fillet
+              ? "cannotFilletBetweenThese"
+              : "cannotChamferBetween",
+            ends: true,
+          }
+        : again(any)
+    case "insert":
+      return again(
+        fillet ? "filletRequiresNotBlocks" : "chamferRequiresNotBlocks"
+      )
+    case "dimension":
+      return again(
+        fillet ? "filletRequiresNotDimensions" : "chamferRequiresNotDimensions"
+      )
+    default:
+      return null
+  }
+}
+
+/**
+ * The arc, the cap or the bevel FILLET and CHAMFER make, in the plane of
+ * `plane`: it wears the lineweight and the thickness of the object picked
+ * `second`, and neither its colour nor its linetype (probes corners/p229,
+ * p313, p331, p332, p334, p360, p361); its layer is the caller's.
+ */
+export function cornerPiece<T extends Entity>(
+  plane: Entity,
+  second: Entity,
+  piece: T
+): T {
+  const placed = carryPlane(plane, piece)
+  const weighted =
+    second.lineweight === undefined
+      ? placed
+      : (assignEntityLineweight(placed, second.lineweight) as T)
+  return hasThickness(weighted)
+    ? (withThickness(weighted, entityThickness(second)) as T)
+    : weighted
 }
 
 /** Whether the object is an arc segment of a polyline. */
@@ -82,24 +177,11 @@ export function curveOf(object: CornerObject): Curve {
 }
 
 /**
- * The object a FILLET or CHAMFER pick at `world` takes: a line, or the
- * segment of a polyline nearest it, an arc segment too. With `first` already
- * taken, only what can make a corner with it: another line, or a segment of
- * another polyline, or a segment of the same polyline next to it or one
- * segment away.
- */
-export function pickCornerObject(
-  ctx: ToolContext,
-  pick: LinePick,
-  first: CornerObject | null
-): CornerObject | null {
-  const hit = ctx.pick(pick.world)
-  return hit ? cornerObjectAt(ctx, hit, pick, first) : null
-}
-
-/**
- * The object `hit` is as {@link pickCornerObject} takes it at `pick`, a
- * polyline's segment given by `index` where it is not the one nearest.
+ * The object a FILLET or CHAMFER pick of `hit` at `pick` takes: a line, or
+ * the segment of a polyline nearest it (or given by `index`), an arc segment
+ * too. With `first` already taken, only what can make a corner with it:
+ * another line, or a segment of another polyline, or a segment of the same
+ * polyline next to it or one segment away.
  */
 function cornerObjectAt(
   ctx: ToolContext,
@@ -124,7 +206,7 @@ function cornerObjectAt(
  * The object a pick takes where an ARC or a CIRCLE is one too (FILLET's, and
  * CHAMFER's to refuse): with `first` taken not the same object (one out of
  * the other's plane is taken, for FILLET to refuse). Anything else as
- * {@link pickCornerObject}.
+ * {@link cornerObjectAt}.
  */
 export function pickFilletObject(
   ctx: ToolContext,
@@ -142,16 +224,41 @@ function filletObjectAt(
   first: FilletObject | null,
   index?: number
 ): FilletObject | null {
-  if (hit.type !== "arc" && hit.type !== "circle") {
+  // WHY a closed ellipse alone: AutoCAD fillets an elliptical arc and a
+  // spline, which is not built, so they stay untaken (probes corners/p237,
+  // p326, p369).
+  const whole =
+    hit.type === "arc" ||
+    hit.type === "circle" ||
+    (hit.type === "ellipse" && isFullEllipse(hit))
+  if (!whole) {
     return cornerObjectAt(
       ctx,
       hit,
       pick,
-      first && isRound(first) ? null : first,
+      first && (isRound(first) || isCurve(first)) ? null : first,
       index
     )
   }
   return first === null || cornerEntity(first).id !== hit.id ? hit : null
+}
+
+/**
+ * The object a CHAMFER pick at `world` takes: as {@link cornerObjectAt},
+ * and an ELLIPSE, an elliptical arc or a SPLINE, for the pair to be refused
+ * (probes corners/p314, p315, p370).
+ */
+export function pickChamferObject(
+  ctx: ToolContext,
+  pick: LinePick,
+  first: CornerObject | CurveObject | null
+): CornerObject | CurveObject | null {
+  const hit = ctx.pick(pick.world)
+  if (!hit) return null
+  if (hit.type === "ellipse" || hit.type === "spline") {
+    return first === null || cornerEntity(first).id !== hit.id ? hit : null
+  }
+  return cornerObjectAt(ctx, hit, pick, first && isCurve(first) ? null : first)
 }
 
 /**
@@ -163,7 +270,7 @@ function filletObjectAt(
 export function cornerPairRefusal(
   ctx: ToolContext,
   pick: LinePick,
-  first: FilletObject
+  first: AnyObject
 ): PairRefusal | null {
   const hit = ctx.pick(pick.world)
   return hit && pairRefusal(first, hit, () => segmentAt(ctx, hit, pick))
@@ -182,7 +289,7 @@ export function foundPairRefusal(
   ctx: ToolContext,
   entity: Entity,
   find: ModeFind,
-  first: FilletObject
+  first: AnyObject
 ): PairRefusal | null {
   return pairRefusal(first, entity, () => {
     const found = foundFilletObject(ctx, entity, find, null)
@@ -193,7 +300,7 @@ export function foundPairRefusal(
 }
 
 function pairRefusal(
-  first: FilletObject,
+  first: AnyObject,
   hit: Entity,
   segment: () => number | null
 ): PairRefusal | null {
@@ -461,6 +568,9 @@ export function cornerPlane(
   }
 }
 
+/** Below this a normal's X and Y count as none: it faces along Z. */
+const UPRIGHT = 1e-9
+
 /**
  * What is built in the OCS of the plane facing `normal`, back in the WCS.
  * WHY the plane's own normal on what lies level there: rebuilt from its axes
@@ -487,6 +597,11 @@ export interface RoundPlane {
   readonly second: RoundPartner
   readonly pick2: Vec2
   back(entity: Entity): Entity
+  /**
+   * The fillet built there, back in the WCS: in a plane facing -Z it is
+   * written at +Z, the objects it trims keeping theirs (probe corners/p335).
+   */
+  made(entity: Entity): Entity
 }
 
 export function roundPlane(
@@ -505,6 +620,7 @@ export function roundPlane(
           second,
           pick2: pick2.world,
           back: (entity) => entity,
+          made: (entity) => entity,
         }
       : null
   }
@@ -515,12 +631,16 @@ export function roundPlane(
     entityInOcs(object, normal) as RoundPartner
   const onPlane = (pick: LinePick) =>
     cursorInPlane(view, height, pick.screen, axes)
+  const back = backFromPlane(normal)
+  const downward =
+    Math.abs(normal.x) < UPRIGHT && Math.abs(normal.y) < UPRIGHT && normal.z < 0
   return {
     first: into(first),
     pick1: onPlane(pick1),
     second: into(second),
     pick2: onPlane(pick2),
-    back: backFromPlane(normal),
+    back,
+    made: (entity) => (downward ? turnedOver(back(entity)) : back(entity)),
   }
 }
 

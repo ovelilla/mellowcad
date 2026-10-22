@@ -74,7 +74,6 @@ export interface PolylineCornersResult {
   /** Corners left alone, as AutoCAD counts them after the cut ones. */
   readonly parallel: number
   readonly tooShort: number
-  readonly divergent: number
 }
 
 /**
@@ -82,13 +81,15 @@ export interface PolylineCornersResult {
  * AutoCAD's columns (`2 were too short    `); none when every one was cut.
  */
 export function reportSkipped(
-  { parallel, tooShort, divergent }: PolylineCornersResult,
+  { parallel, tooShort }: PolylineCornersResult,
   ctx: ToolContext
 ): void {
-  if (parallel + tooShort + divergent === 0) return
+  if (parallel + tooShort === 0) return
+  // WHY no divergent count: AutoCAD 2027 counts none for lines diverging
+  // round an arc, and rounds the arc's own vertices (probe corners/p222).
   ctx.report(
     ctx.text
-      .message("cornersSkipped", { parallel, tooShort, divergent })
+      .message("cornersSkipped", { parallel, tooShort, divergent: 0 })
       .trimEnd()
   )
 }
@@ -126,8 +127,7 @@ export function cutPolylineCorners(
   const segments = polylineSegmentGeometries(poly)
   const count = segments.length
   let parallel = 0
-  let divergent = 0
-  const none = { polyline: null, cut: 0, parallel, tooShort: 0, divergent }
+  const none = { polyline: null, cut: 0, parallel, tooShort: 0 }
   if (count < 2) return none
   const wrap = (s: number) => (s + count) % count
   // CHAMFER's chords: every segment is cut as a line.
@@ -175,10 +175,7 @@ export function cutPolylineCorners(
       }
       // Converging as they approach the arc: they cross past the end of the
       // incoming line and before the start of the outgoing one.
-      if (crossing.t < 1 - EPS || crossing.u > EPS) {
-        divergent += 1
-        continue
-      }
+      if (crossing.t < 1 - EPS || crossing.u > EPS) continue
       const corner = crossing.point
       const cut = cuts.lines({ from: start(inSeg), corner, to: end(outSeg) })
       consider(inSeg, outSeg, j, corner, cut)
@@ -207,44 +204,41 @@ export function cutPolylineCorners(
     }
   }
 
-  // Each segment keeps what is left between the cuts at its two ends; two
-  // corners that eat the same segment past each other are both dropped, which
-  // can free the arc a dropped corner was to replace — so settle it.
-  const kept = new Set(candidates)
-  let tooShort = 0
-  const drop = (corner: Candidate) => {
-    if (kept.delete(corner)) tooShort += 1
+  // Each corner in turn, from the second vertex on and a closed one's first
+  // last, is cut against what the corners before it left of its segments,
+  // or left as it is, too short (probes corners/p220, p226).
+  const fitsOn = (
+    s: number,
+    atStart: Candidate | undefined,
+    atEnd: Candidate | undefined
+  ) => {
+    // An arc's own cut is held to its sweep by `arcs`; the chords only tell
+    // two cuts on it apart.
+    if (!isLine(s) && (!atStart || !atEnd)) return true
+    const from = atStart ? atStart.corner : start(s)
+    const to = atEnd ? atEnd.corner : end(s)
+    const used =
+      (atStart ? V.distance(atStart.corner, atStart.cut.exit) : 0) +
+      (atEnd ? V.distance(atEnd.corner, atEnd.cut.entry) : 0)
+    return used <= V.distance(from, to) + EPS
   }
-  for (let settled = false; !settled;) {
-    settled = true
-    for (let s = 0; s < count; s++) {
-      const atStart = [...kept].find((c) => c.outSeg === s) ?? null
-      const atEnd = [...kept].find((c) => c.inSeg === s) ?? null
-      // An arc's own cut is held to its sweep by `arcs`; the chords only
-      // tell two cuts on it apart.
-      if (isLine(s) ? !atStart && !atEnd : !atStart || !atEnd) continue
-      const from = atStart ? atStart.corner : start(s)
-      const to = atEnd ? atEnd.corner : end(s)
-      const used =
-        (atStart ? V.distance(atStart.corner, atStart.cut.exit) : 0) +
-        (atEnd ? V.distance(atEnd.corner, atEnd.cut.entry) : 0)
-      if (used > V.distance(from, to) + EPS) {
-        if (atStart) drop(atStart)
-        if (atEnd) drop(atEnd)
-        settled = false
-      }
-    }
+  const order = (c: Candidate) => (c.inSeg + 1) % count || count
+  const kept: Candidate[] = []
+  for (const c of [...candidates].sort((a, b) => order(a) - order(b))) {
+    const before = kept.find((k) => k.outSeg === c.inSeg)
+    const after = kept.find((k) => k.inSeg === c.outSeg)
+    if (fitsOn(c.inSeg, before, c) && fitsOn(c.outSeg, c, after)) kept.push(c)
   }
-  const changed = [...kept].filter((corner) => corner.changes)
+  const tooShort = candidates.length - kept.length
+  const changed = kept.filter((corner) => corner.changes)
   return {
     polyline:
       changed.length === 0
         ? null
         : rebuild(poly, segments, changed, cuts.chords === true),
-    cut: kept.size,
+    cut: kept.length,
     parallel,
     tooShort,
-    divergent,
   }
 }
 
@@ -252,9 +246,10 @@ export function cutPolylineCorners(
  * The corner FILLET and CHAMFER make between two straight segments of one
  * polyline picked as their two objects: "adjacent to each other or separated
  * by one other segment", which is removed and replaced with the cut; the first
- * and last segments of an open polyline close it — which `pickCornerObject`
- * alone offers. A refusal says why there is no corner. An arc segment is cut
- * by `cuts.arcs` where the two meet — their shared vertex, or where they
+ * and last segments of an open polyline close it — which the picks alone
+ * offer (of three, where they cross before the first: {@link closesAcross}).
+ * A refusal says why there is no corner. An arc segment is cut by
+ * `cuts.arcs` where the two meet — their shared vertex, or where they
  * cross with the one between gone, either extended to it —, or with
  * `cuts.chords` as its chord, refitted to its radius (CHAMFER's).
  */
@@ -349,6 +344,7 @@ function segmentPair(
   second: number
 ): [number, number, number | null] | null {
   if (first === second) return null
+  if (closesAcross(poly, count, first, second)) return [count - 1, 0, null]
   const step = (from: number, by: number) =>
     poly.closed ? (from + by) % count : from + by
   for (const by of [1, 2]) {
@@ -363,6 +359,26 @@ function segmentPair(
   return !poly.closed && ends[0] === 0 && ends[1] === count - 1
     ? [count - 1, 0, null]
     : null
+}
+
+/**
+ * Whether the two picked are an open polyline's first and last of three — one
+ * apart and its ends at once — whose lines cross before the first one's
+ * start: AutoCAD 2027's console then closes it, and past its end replaces the
+ * one between (probes corners/p200, p201, p328, p386). A crossing along the
+ * first segment itself was not probed: it is one apart here.
+ */
+function closesAcross(
+  poly: PolylineEntity,
+  count: number,
+  first: number,
+  second: number
+): boolean {
+  if (poly.closed || count !== 3 || first + second !== 2) return false
+  const segments = polylineSegmentGeometries(poly)
+  const [a, b] = [segments[0], segments[2]]
+  const crossing = infiniteLineIntersection(a.a, a.b, b.a, b.b)
+  return crossing !== null && crossing.t < 0
 }
 
 /**

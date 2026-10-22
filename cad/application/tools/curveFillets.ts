@@ -152,8 +152,12 @@ export function filletSides(
 }
 
 /**
- * The fillet circle of `radius` tangent to both sides, in the corner's wedge;
- * `null` at radius 0, at a tangent corner, or when it does not fit.
+ * The fillet circle of `radius` tangent to both sides, on the side the
+ * corner turns to — read from the kept parts' chords, as AutoCAD 2027's
+ * console reads an arc's (probes corners/p219, p322, p362–p365): where the
+ * chords turn against the tangents, it lies in the wedge across the corner,
+ * each side run on past it to the fillet. `null` at radius 0, at a tangent
+ * corner, or when it does not fit.
  */
 export function solveCornerFillet(
   inSide: FilletSide,
@@ -162,8 +166,10 @@ export function solveCornerFillet(
   radius: number
 ): CornerCut | null {
   if (radius <= 0) return null
-  const turn = turnOf(inSide, outSide)
-  if (turn === 0) return null // collinear — no corner to round
+  const tangentTurn = turnOf(inSide, outSide)
+  if (tangentTurn === 0) return null // collinear — no corner to round
+  const turn = chordTurn(inSide, outSide, corner) || tangentTurn
+  const across = turn !== tangentTurn
 
   const nIn = interiorNormal(inSide.tangent, turn)
   const nOut = interiorNormal(outSide.tangent, turn)
@@ -177,12 +183,8 @@ export function solveCornerFillet(
 
   const entry = sideTangentPoint(inSide, corner, center)
   const exit = sideTangentPoint(outSide, corner, center)
-  if (
-    !sideContains(inSide, entry, corner) ||
-    !sideContains(outSide, exit, corner)
-  ) {
-    return null
-  }
+  const on = across ? sideRunsOn : sideContains
+  if (!on(inSide, entry, corner) || !on(outSide, exit, corner)) return null
 
   // WHY the bisector of the radii, not the way to the corner: `bulgeThroughPoint`
   // reads its point as the arc's middle, which beside an arc the corner's
@@ -198,6 +200,18 @@ export function solveCornerFillet(
 
 function turnOf(inSide: FilletSide, outSide: FilletSide): number {
   const cross = V.cross(inSide.tangent, outSide.tangent)
+  return Math.abs(cross) < EPS ? 0 : Math.sign(cross)
+}
+
+/** The way the chords of the kept parts turn at the corner, 0 in line. */
+function chordTurn(
+  inSide: FilletSide,
+  outSide: FilletSide,
+  corner: Vec2
+): number {
+  const into = V.normalize(V.sub(corner, inSide.far))
+  const out = V.normalize(V.sub(outSide.far, corner))
+  const cross = V.cross(into, out)
   return Math.abs(cross) < EPS ? 0 : Math.sign(cross)
 }
 
@@ -416,6 +430,24 @@ function sideContains(side: FilletSide, point: Vec2, corner: Vec2): boolean {
     side.ccw ? normalizeAngle(angle(p) - from) : normalizeAngle(from - angle(p))
   const offset = turned(point)
   return offset <= turned(side.far) + EPS || offset >= 2 * Math.PI - EPS
+}
+
+/**
+ * Whether a tangent point lies on the side run on past the corner, away from
+ * its kept part — along the line, or round the arc's circle, by less than
+ * half a turn.
+ */
+function sideRunsOn(side: FilletSide, point: Vec2, corner: Vec2): boolean {
+  if (side.kind === "line") {
+    return V.dot(V.sub(point, corner), V.sub(side.far, corner)) <= EPS
+  }
+  const angle = (p: Vec2) =>
+    Math.atan2(p.y - side.center.y, p.x - side.center.x)
+  const from = angle(corner)
+  const offset = side.ccw
+    ? normalizeAngle(angle(point) - from)
+    : normalizeAngle(from - angle(point))
+  return offset >= Math.PI || offset <= EPS
 }
 
 /** Points where the infinite line through `a`/`b` meets a circle. */

@@ -6,11 +6,11 @@ import {
   Entity,
   EntityId,
   LineEntity,
-  carryPlane,
   createArc,
 } from "../../domain/entities"
 import type { LayerId } from "../../domain/layers"
 import { WholeCurve, wholeCrossing, wholeFillet } from "./curveFillets"
+import { cornerPiece } from "./cornerObjects"
 
 /** An ARC or a CIRCLE, which FILLET takes as an object and CHAMFER refuses. */
 export type RoundObject = ArcEntity | CircleEntity
@@ -29,7 +29,8 @@ export interface RoundFillet {
  * 2023's console makes it (acc/a*, b*, c*, p*, q*, r*): a circle is never
  * trimmed; a line and an arc are trimmed or extended to the fillet, each kept
  * on the side it runs on from it, tangent; the arc lies on the objects' layer
- * when they share one, else on `currentLayer`. At radius 0 they meet where
+ * when they share one, else on `currentLayer`, and wears the second's
+ * lineweight and thickness ({@link cornerPiece}). At radius 0 they meet where
  * they cross: a line kept on its picked side, an arc on its picked part —
  * extended at the end its pick is nearer when the crossing lies off it.
  * `noValidFillet` where nothing fits; `nothing` for two circles at radius 0,
@@ -76,8 +77,9 @@ export function filletRound(
   const [from, to] = ccw
     ? [fillet.first, fillet.second]
     : [fillet.second, fillet.first]
-  const arc = carryPlane(
+  const arc = cornerPiece(
     first,
+    second,
     createArc(
       center,
       radius,

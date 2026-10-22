@@ -6,11 +6,20 @@ import {
   lineEndZ,
   lineStartZ,
   withNormal,
+  type ArcEntity,
   type Entity,
   type LineEntity,
+  type PolylineEntity,
 } from "../../domain/entities"
 import { createHarness, type CadHarness } from "../../../test/harness"
-import { circleOf, deg, lineOf, p, polylineOf } from "../../../test/builders"
+import {
+  arcOf,
+  circleOf,
+  deg,
+  lineOf,
+  p,
+  polylineOf,
+} from "../../../test/builders"
 import { es } from "../../locales/es"
 import { THEME } from "../../scene/theme"
 
@@ -442,5 +451,96 @@ describe("FILLET of an ARC or a CIRCLE in a tilted plane the other shares", () =
     answer(spanish, "70,0")
     lineIn(spanish, { x: 74.4949, y: 0, z: 0 }, { x: 100, y: 0, z: 0 })
     arcIn(spanish, { x: 74.4949, y: 10.6066, z: 10.6066 }, 15, 134.4153, 270)
+  })
+})
+
+// AutoCAD 2027's console (probes corners/p335, p336, MPDUMP): an object of
+// normal -Z keeps it, and what FILLET builds new lies at +Z.
+describe("FILLET of objects of normal -Z", () => {
+  const DOWN = { x: 0, y: 0, z: -1 }
+  function typed(entities: Entity[], ...answers: string[]): CadHarness {
+    const cad = createHarness({ entities })
+    for (const answer of answers) {
+      cad.runtime.setCommandLineText(answer)
+      cad.runtime.submitCommandLine()
+    }
+    return cad
+  }
+
+  it("writes the fillet of an ARC and a line at +Z, the arc kept at -Z (p335)", () => {
+    const arc = withNormal(
+      arcOf(p(0, 0), 50, 0, Math.PI / 2, { id: "A1" }),
+      DOWN
+    )
+    const cad = typed(
+      [arc, lineOf(p(-30, -20), p(-30, 80), { id: "L1" })],
+      "FILLET",
+      "R",
+      "5",
+      "-30,10",
+      "-45,21.794"
+    )
+    const line = cad.byId<LineEntity>("L1")
+    expect([line.start, line.end]).toBeCloseToPoints(
+      [p(-30, -20), p(-30, 28.2842712474619)],
+      6
+    )
+    const trimmed = cad.byId<ArcEntity>("A1")
+    expect(entityNormal(trimmed).z).toBe(-1)
+    expect(trimmed.startAngle).toBeCloseToAngle(0, 6)
+    expect(trimmed.endAngle).toBeCloseToAngle(0.6796738189082437, 6)
+    const fillet = cad
+      .entities()
+      .find((e) => e.id !== "A1" && e.id !== "L1") as ArcEntity
+    expect(fillet.normal).toBeUndefined()
+    expect(fillet.center).toBeCloseToPoint(p(-35, 28.2842712474619), 6)
+    expect(fillet.radius).toBeCloseTo(5, 9)
+    expect(fillet.startAngle).toBeCloseToAngle(0, 6)
+    expect(fillet.endAngle).toBeCloseToAngle(2.4619188346815495, 6)
+  })
+
+  it("rounds a polyline of normal -Z within it and joined with a line (p335, p336)", () => {
+    const within = typed(
+      [
+        withNormal(
+          polylineOf([p(0, 200), p(100, 200), p(100, 300)], { id: "P1" }),
+          DOWN
+        ),
+      ],
+      "FILLET",
+      "R",
+      "10",
+      "-50,200",
+      "-100,250"
+    )
+    const rounded = within.byId<PolylineEntity>("P1")
+    expect(rounded.vertices).toBeCloseToPoints(
+      [p(0, 200), p(90, 200), p(100, 210), p(100, 300)],
+      6
+    )
+    expect(rounded.bulges?.[1]).toBeCloseTo(0.41421356237309503, 9)
+    expect(entityNormal(rounded).z).toBe(-1)
+
+    const joined = typed(
+      [
+        withNormal(
+          polylineOf([p(0, 0), p(100, 0), p(100, 100)], { id: "P1" }),
+          DOWN
+        ),
+        lineOf(p(0, 20), p(0, 150), { id: "L1" }),
+      ],
+      "FILLET",
+      "R",
+      "10",
+      "-50,0",
+      "0,100"
+    )
+    const poly = joined.byId<PolylineEntity>("P1")
+    expect(poly.vertices).toBeCloseToPoints(
+      [p(0, 150), p(0, 10), p(10, 0), p(100, 0), p(100, 100)],
+      6
+    )
+    expect(poly.bulges?.[1]).toBeCloseTo(0.4142135624, 9)
+    expect(entityNormal(poly).z).toBe(-1)
   })
 })

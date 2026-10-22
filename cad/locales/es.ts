@@ -2914,6 +2914,15 @@ export const es: EngineLocale = {
       "chamferDistanceTooLarge": "Distancia de chaflán es demasiado grande",
       "cannotChamferArcSegments": "Imposible unir con chaflán segmentos de arco de polilínea.",
       "chamferRequiresLines": "Chaflán requiere 2 líneas (no segmentos de arco).",
+      "cannotFilletBetweenThese": "Imposible empalmar estos dos objetos.",
+      "filletRequiresObjects": "Empalme requiere 2 líneas, arcos o círculos.",
+      "filletRequiresNotBlocks": "Empalme requiere 2 líneas, arcos o círculos (no referencias a bloque).",
+      "filletRequiresNotDimensions": "Empalme requiere 2 líneas, arcos o círculos (no cotas).",
+      "unableToFilletCurves": "No se pueden empalmar curvas.",
+      "chamferRequiresTwoLines": "Chaflán requiere 2 líneas.",
+      "chamferRequiresNotBlocks": "Chaflán requiere 2 líneas (no referencias a bloque).",
+      "chamferRequiresNotDimensions": "Chaflán requiere 2 líneas (no cotas).",
+      "cannotChamferBetween": "Imposible hacer un chaflán entre estas dos entidades.",
       "linesChamfered": [
         [
           "count",
