@@ -128,9 +128,9 @@ describe("text", () => {
   })
 
   // probes transforms/p283, p290–p294 (MIRRTEXT 0): AutoCAD's rotations. A
-  // text the mirror turned to read the other way (its direction's x changed
-  // sign; a vertical text's y) turns half round and runs back along its
-  // baseline; one it stood on its head flips across the baseline.
+  // text the mirror moved out of the half-plane it read in, (−90°, 90°] or
+  // the other, turns half round and runs back along its baseline; one it
+  // stood on its head flips across the baseline.
   const sortedPoints = (points: readonly Vec2[]) =>
     [...points].sort(
       (u, v) => Math.round((u.x - v.x) * 1e6) || Math.round((u.y - v.y) * 1e6)
@@ -694,6 +694,35 @@ describe("in-place transforms", () => {
       })
     )
   })
+
+  // probes trim/p01 (y = x), p02 (y = −x), MIRRTEXT 0: 270→180→270,
+  // 90→0→90, 0→90→0, 180→270→180 across both. AutoCAD's box is wider than
+  // this engine's, so only the rotations are its; the second mirror must give
+  // the position back.
+  const DIAGONALS = { "y = x": p(10, 10), "y = −x": p(-10, 10) } as const
+  it.each(
+    (
+      [
+        ["p01", "y = x"],
+        ["p02", "y = −x"],
+      ] as const
+    ).flatMap(([probe, line]) =>
+      [270, 90, 0, 180].map((from) => [probe, line, from] as const)
+    )
+  )(
+    "%s: mirrored about %s, a text at %s° reads as AutoCAD's",
+    (_, line, from) => {
+      const [a, b] = [p(0, 0), DIAGONALS[line]]
+      const text = textOf(p(20, 40), "A270", { height: 5, rotation: deg(from) })
+      const once = mirrorEntity(text, a, b)
+      if (once.type !== "text") throw new Error("not a text")
+      expect(once.rotation).toBeCloseToAngle(deg(90 - from), 9)
+      const twice = mirrorEntity(once, a, b)
+      if (twice.type !== "text") throw new Error("not a text")
+      expect(twice.rotation).toBeCloseToAngle(text.rotation, 9)
+      expect(twice.position).toBeCloseToPoint(text.position, 9)
+    }
+  )
 
   // fast-check's counterexample: a vertical text reflected a hair off the
   // vertical came back judged by an x of 0.

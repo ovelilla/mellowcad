@@ -143,9 +143,11 @@ point again) says `Points must be distinct.` (es `Los puntos tienen que ser dist
 pick order, so ERASE Last takes the later one's (p284); LASTPOINT is the second point, No and Yes
 (p239); each run is one step U names (p246, p247); the mirror plane holds the two points and the
 UCS's Z (p286); MIRRTEXT 0's result: a TEXT, MTEXT or ATTDEF keeps reading as it did in the
-reflection of its box, its justification kept — one the reflection reverses (its direction's x
-changes sign, a vertical one's y) turns half round, its point at the image of the box's far end
-along the baseline; one it stands on its head flips across the baseline; MTEXT's attachment swaps
+reflection of its box, its justification kept — one the reflection moves to the other side of the
+half-plane of directions in (−90°, 90°] turns half round, its point at the image of the box's far
+end along the baseline; one it stands on its head flips across the baseline; a right angle counts
+by that half-plane too, 90° rightward and 270° leftward, so about y = x a text at 270° reads at
+180°, about y = −x at 0°, and two mirrors give it back (trim/p01, p02); MTEXT's attachment swaps
 left and right, or top and bottom (p283, p290–p294); a mirrored spline keeps its +Z normal, as
 AutoCAD's does (spline/p320), unlike an ellipse; the reflection drags as MOVE's set, the originals
 keeping the selection's glow, the amber dashed line from the first point, both still drawn at

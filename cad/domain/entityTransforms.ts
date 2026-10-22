@@ -1144,17 +1144,35 @@ function mirroredInsert(
   }
 }
 
-/** Below it a reading direction's component counts as none. */
-const READING_EPSILON = 1e-9
+/**
+ * Below it a reading direction's x counts as none: above the noise of a few
+ * angle sums (a text at 90° has an x of 6e-17), far below a real tilt. Not
+ * 1e-9, which a direction reflected a hair off the vertical lands on, so its
+ * side flipped between one mirror and the next.
+ */
+const READING_EPSILON = 1e-12
+
+/**
+ * Whether a direction reads rightward: its angle, normalised, lies in
+ * (−90°, 90°], straight up included and straight down not. The half-plane is
+ * antipodal — a direction and its opposite always fall on different sides —
+ * which is what makes two mirrors the identity.
+ */
+function readsRightward(angle: number): boolean {
+  const x = Math.cos(angle)
+  return Math.abs(x) < READING_EPSILON ? Math.sin(angle) > 0 : x > 0
+}
 
 /**
  * A text's rotation reflected and turned back to read as MIRRTEXT 0 reads it,
- * the only value here (probes transforms/p283, p290–p294). The reflection
- * either reverses the text's reading — its direction's x changes sign, a
- * vertical text's y — and the text turns half round to run back along its
- * baseline (`backward`), or stands it on its head, and it flips across the
- * baseline. AutoCAD judges by the world's axes, not the mirror line's: about
- * x = 0 a text at 100° turns back to 260°, about y = 0 it is left at 260°.
+ * the only value here (probes transforms/p283, p290–p294, trim/p01, p02). When
+ * the reflection moves the text's direction to the other side of the
+ * half-plane {@link readsRightward} draws, the text turns half round to run
+ * back along its baseline (`backward`); otherwise it stands on its head and
+ * flips across the baseline. AutoCAD judges by the world's axes, not the
+ * mirror line's: about x = 0 a text at 100° turns back to 260°, about y = 0 it
+ * is left at 260°; about y = x a text at 270° reads at 180°, about y = −x at
+ * 0°.
  */
 function readableMirror(
   rotation: number,
@@ -1162,14 +1180,7 @@ function readableMirror(
   b: Vec2
 ): { readonly rotation: number; readonly backward: boolean } {
   const reflected = mirrorAngle(rotation, a, b)
-  // Vertical before or after, so that mirroring back undoes it: a text
-  // reflected onto the vertical would otherwise be judged by an x of 0.
-  const vertical =
-    Math.abs(Math.cos(rotation)) < READING_EPSILON ||
-    Math.abs(Math.cos(reflected)) < READING_EPSILON
-  const backward = vertical
-    ? Math.sin(rotation) * Math.sin(reflected) < 0
-    : Math.cos(rotation) * Math.cos(reflected) < -READING_EPSILON
+  const backward = readsRightward(rotation) !== readsRightward(reflected)
   return {
     rotation: normalizeAngle(backward ? reflected + Math.PI : reflected),
     backward,
