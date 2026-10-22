@@ -394,8 +394,15 @@ level, trimmed and an edge in its own plane (p175); one standing upright on the 
 and what only such an edge crosses or bounds is left, `Edge is perpendicular to UCS XY plane.` (es
 `La arista es perpendicular al plano XY del SCP.`), both counted for Undo, TRIM and EXTEND alike
 (p220, p221, p411); an object at another angle is neither an edge nor trimmed (it does not
-highlight). English wording from AutoCAD 2027's console
-(probes trim/p100–p389) and the 2026 help
+highlight). The look (desktop trim/d01–d09): hovering, the piece a click takes away is drawn faded
+in place, as ERASE fades an object, the rest as it is (d01-1), Quick's delete fading the whole
+object (d01-2); an extension draws the object as it would be, whole, in the selection's glow (Shift
+in TRIM d01-3, EXTEND d02-1), and Shift in EXTEND TRIM's faded ghost (d02-2); a fence or a Crossing
+window running draws so what it will trim, planned as its click would commit it, against a copy of
+the drawing (d03-1, d04-1, d06-2); a red ✕ up and to the right of the pick box or the crosshair
+where a click trims and while TRIM's fence or window runs, none where it extends (d01-3, d02-1),
+and a circle-and-slash where the pick is refused (a circle cut once, a text: d09-1, d09-2). English
+wording from AutoCAD 2027's console (probes trim/p100–p389) and the 2026 help
 
 **Missing:** Project — AutoCAD's `Enter a projection option [None/Ucs/View] <Ucs>:` (es
 `Indique opción de proyección [Ninguna/SCP/Vista] <SCP>:`), in both modes, its choice an Undo step
@@ -415,7 +422,9 @@ here, fit points or control vertices on uniform knots, cannot hold; so neither a
 `Object does not intersect an edge.`); the piece after a polyline's own crossing, which the console
 starts with a zero-length segment; **unverified**: the reasons when TRIM's Shift extends (EXTEND's,
 the same code here), and whether a crossing at the pick bounds the trim of an arc, a circle or a
-polyline (a line's does not, p261; here theirs does)
+polyline (a line's does not, p261; here theirs does); the circle-and-slash over what EXTEND
+refuses (only TRIM's refusals were seen), the look of EXTEND's fence or window running (here its
+hover's glow) and whether the ✕ shows while a fence crosses nothing (here it does)
 
 ### `OFFSET` / `O` · es `DESFASE` / `DF` / `EQ`
 

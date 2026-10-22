@@ -124,6 +124,13 @@ export interface UcsIconInput {
 }
 
 /**
+ * A command's badge beside the cursor: TRIM's red ✕ where a click trims
+ * (desktop trim/d01-1, d03-1), the circle-and-slash where it is refused
+ * (d09-1, d09-2).
+ */
+export type CursorBadge = "trim" | "refused"
+
+/**
  * Everything needed to describe one frame. The builder is a pure function of
  * this input: same input, same scene — which makes rendering trivially
  * testable without any canvas.
@@ -205,6 +212,11 @@ export interface SceneInput {
    * `null` when Shift is up or would not remove.
    */
   readonly removeBadge: Vec2 | null
+  /** The active command's badge beside the cursor, or `null` for none. */
+  readonly cursorBadge?: {
+    readonly at: Vec2
+    readonly kind: CursorBadge
+  } | null
   /** The object the open Selection list box is offering, or `null`. */
   readonly cyclingHighlight: Entity | null
 }
@@ -268,6 +280,11 @@ export function buildScene(input: SceneInput): Scene {
   if (input.cyclingBadge) pushCyclingBadge(primitives, input.cyclingBadge)
   if (input.removeBadge) {
     pushRemoveBadge(primitives, input.removeBadge, input.cyclingBadge !== null)
+  }
+  if (input.cursorBadge?.kind === "trim") {
+    pushTrimBadge(primitives, input.cursorBadge.at)
+  } else if (input.cursorBadge?.kind === "refused") {
+    pushRefusedBadge(primitives, input.cursorBadge.at)
   }
   if (input.tracking && !input.snap) {
     pushTrackedPointMarker(primitives, aid.worldToScreen(input.tracking.point))
@@ -1713,26 +1730,13 @@ function pushEntities(
     const layer = layerById.get(entity.layerId)
     // Entities on a hidden (Off) layer are not drawn at all.
     if (layer && !layer.visible) return
-
-    // Resolve the linetype ByObject → ByLayer, then turn its world-unit pattern
-    // into a screen-pixel dash (scaled by LTSCALE and the current zoom).
-    const linetypeId = entity.linetype ?? layer?.linetype ?? DEFAULT_LINETYPE_ID
-    const dash = dashFor(linetypeId, ltScale, camera.scale)
-    const lineweight =
-      entity.lineweight ?? layer?.lineweight ?? DEFAULT_LINEWEIGHT
-    // "Wide polylines display lineweights only when displayed outside of
-    // plan view": in plan their width is what they show.
-    const wideInPlan =
-      entity.type === "polyline" &&
-      isWidePolyline(entity) &&
-      camera.isPlan &&
-      !isTilted(entity)
-    const color = entity.color ?? layer?.color ?? DEFAULT_LAYER_COLOR
-    const stroke: StrokeStyle = {
-      color: isFaded ? fadedColor(color) : color,
-      width: widthFor(lineweight, lwDisplay && !wideInPlan),
-      ...(dash ? { dash } : {}),
-    }
+    const stroke = entityStroke(
+      camera,
+      entity,
+      layer,
+      { ltScale, lwDisplay },
+      isFaded
+    )
     if (entity.type === "insert") {
       // Each object inside the block keeps its own colour, linetype and
       // lineweight, so a reference is not painted flat: the reference's layer
@@ -1758,16 +1762,8 @@ function pushEntities(
           : undefined,
     }
     out.push(...entityScenePrimitive(camera, entity, stroke, options))
-    // AutoCAD's selection effect: the object as it is, glowing blue (d15).
     if (isSelected && !isFaded) {
-      out.push(
-        ...entityScenePrimitive(
-          camera,
-          entity,
-          { color: THEME.selected, width: stroke.width + GLOW_WIDTH - 1 },
-          { ...options, linetype: false }
-        )
-      )
+      out.push(...selectionGlow(camera, entity, stroke, options))
     }
   }
 
@@ -1778,6 +1774,57 @@ function pushEntities(
 }
 
 const NONE: ReadonlySet<EntityId> = new Set()
+
+/**
+ * How the drawing strokes `entity` on `layer`: its colour, or ERASE's faded
+ * one, its lineweight and its linetype at this zoom. A tool drawing a piece
+ * of an object as the object is drawn (TRIM's ghost) strokes it so too.
+ */
+export function entityStroke(
+  camera: CameraTransform,
+  entity: Entity,
+  layer: Layer | undefined,
+  look: { readonly ltScale: number; readonly lwDisplay: boolean },
+  faded = false
+): StrokeStyle {
+  // Resolve the linetype ByObject → ByLayer, then turn its world-unit pattern
+  // into a screen-pixel dash (scaled by LTSCALE and the current zoom).
+  const linetypeId = entity.linetype ?? layer?.linetype ?? DEFAULT_LINETYPE_ID
+  const dash = dashFor(linetypeId, look.ltScale, camera.scale)
+  const lineweight =
+    entity.lineweight ?? layer?.lineweight ?? DEFAULT_LINEWEIGHT
+  // "Wide polylines display lineweights only when displayed outside of
+  // plan view": in plan their width is what they show.
+  const wideInPlan =
+    entity.type === "polyline" &&
+    isWidePolyline(entity) &&
+    camera.isPlan &&
+    !isTilted(entity)
+  const color = entity.color ?? layer?.color ?? DEFAULT_LAYER_COLOR
+  return {
+    color: faded ? fadedColor(color) : color,
+    width: widthFor(lineweight, look.lwDisplay && !wideInPlan),
+    ...(dash ? { dash } : {}),
+  }
+}
+
+/**
+ * AutoCAD's selection effect over an object drawn with `stroke`: the object
+ * as it is, glowing blue (desktop d15).
+ */
+export function selectionGlow(
+  camera: CameraTransform,
+  entity: Entity,
+  stroke: StrokeStyle,
+  options: EntityDrawOptions = {}
+): ScenePrimitive[] {
+  return entityScenePrimitive(
+    camera,
+    entity,
+    { color: THEME.selected, width: stroke.width + GLOW_WIDTH - 1 },
+    { ...options, linetype: false }
+  )
+}
 
 /**
  * How much of an object's colour AutoCAD's erase preview keeps: its faded line
@@ -2088,6 +2135,39 @@ function pushRemoveBadge(
     b: { x: x + 8, y },
     stroke: { color: THEME.grip, width: 2 },
   })
+}
+
+/**
+ * TRIM's badge: a small red ✕ up and to the right of the pick box or the
+ * crosshair, ringed dark so it reads over a line (desktop trim/d01-1z: 7 px
+ * across, its middle 8 px right and 9 px up of the cursor's).
+ */
+function pushTrimBadge(out: ScenePrimitive[], at: Vec2): void {
+  const c = { x: Math.round(at.x) + 8.5, y: Math.round(at.y) - 8.5 }
+  pushCross(out, c, 3, { color: THEME.background, width: 4 })
+  pushCross(out, c, 3, { color: THEME.trimBadge, width: 2 })
+}
+
+/**
+ * The circle-and-slash where a click is refused, white and ringed dark,
+ * a little further out than TRIM's ✕ (desktop trim/d09-1, d09-2).
+ */
+function pushRefusedBadge(out: ScenePrimitive[], at: Vec2): void {
+  const c = { x: Math.round(at.x) + 11, y: Math.round(at.y) - 10.5 }
+  const r = 3.75
+  const s = r * Math.SQRT1_2
+  for (const stroke of [
+    { color: THEME.background, width: 3.25 },
+    { color: THEME.refusedBadge, width: 1.25 },
+  ]) {
+    out.push({ kind: "circle", center: c, radius: r, stroke })
+    out.push({
+      kind: "segment",
+      a: { x: c.x - s, y: c.y + s },
+      b: { x: c.x + s, y: c.y - s },
+      stroke,
+    })
+  }
 }
 
 /** The point a tracking path gives: a small ✕ in the crosshair's colour (desktop d12, d13). */

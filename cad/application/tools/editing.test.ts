@@ -25,6 +25,7 @@ import type { Layer } from "../../domain/layers"
 import { ellipseParamFromAngle } from "../../geometry/primitives"
 import type { Vec2 } from "../../geometry/Vec2"
 import { THEME } from "../../scene/theme"
+import { fadedColor } from "../SceneBuilder"
 import { type CadHarness, createHarness } from "../../../test/harness"
 import { es } from "../../locales/es"
 import { parseDrawingFile } from "../../serialization/drawingFile"
@@ -3387,6 +3388,188 @@ describe("TRIM and EXTEND's edges, refusals and pieces", () => {
     expect(parseDrawingFile(cad.runtime.serializeDrawing()).entities).toEqual(
       cad.entities()
     )
+  })
+})
+
+describe("TRIM and EXTEND's look", () => {
+  const RED = "#ff0000"
+  // The desktop drawing of trim/d01–d07, at 10×.
+  const drawing = (...more: Entity[]) =>
+    createHarness({
+      entities: [
+        { ...lineOf(p(100, 250), p(900, 250), { id: "H" }), color: RED },
+        lineOf(p(300, 50), p(300, 450), { id: "V1" }),
+        lineOf(p(600, 50), p(600, 450), { id: "V2" }),
+        { ...lineOf(p(400, 380), p(500, 380), { id: "S" }), color: RED },
+        ...more,
+      ],
+    })
+  /** The strokes of the segments drawn between `a` and `b`, either way round. */
+  function strokesAt(cad: CadHarness, a: Vec2, b: Vec2) {
+    const near = (q: Vec2, r: Vec2) => Math.hypot(q.x - r.x, q.y - r.y) < 1e-6
+    const [sa, sb] = [cad.toScreen(a), cad.toScreen(b)]
+    return cad
+      .scene()
+      .primitives.flatMap((prim) =>
+        prim.kind === "segment" &&
+        ((near(prim.a, sa) && near(prim.b, sb)) ||
+          (near(prim.a, sb) && near(prim.b, sa)))
+          ? [prim.stroke]
+          : []
+      )
+  }
+  /** The ✕'s strokes and the circle-and-slash's rings. */
+  const badges = (cad: CadHarness) => {
+    const { primitives } = cad.scene()
+    return {
+      trim: primitives.filter(
+        (prim) =>
+          prim.kind === "segment" && prim.stroke.color === THEME.trimBadge
+      ).length,
+      refused: primitives.filter(
+        (prim) =>
+          prim.kind === "circle" && prim.stroke?.color === THEME.refusedBadge
+      ).length,
+    }
+  }
+  const plain = { color: RED, width: 1.25 }
+  const faded = { color: fadedColor(RED), width: 1.25 }
+  const glow = { color: THEME.selected, width: 5.25 }
+  const looks = (cad: CadHarness) =>
+    cad
+      .scene()
+      .primitives.flatMap((prim) =>
+        "stroke" in prim && prim.stroke ? [prim.stroke.color] : []
+      )
+
+  it("draws the piece a click trims faded in place, solid and thin, the rest as it is, and the ✕ (desktop trim/d01-1)", () => {
+    const cad = drawing().command("TRIM").moveTo(p(450, 251))
+
+    expect(strokesAt(cad, p(300, 250), p(600, 250))).toEqual([faded])
+    expect(strokesAt(cad, p(100, 250), p(300, 250))).toEqual([plain])
+    expect(strokesAt(cad, p(600, 250), p(900, 250))).toEqual([plain])
+    expect(strokesAt(cad, p(100, 250), p(900, 250))).toEqual([])
+    expect(looks(cad)).not.toContain(THEME.entityHover)
+    expect(looks(cad)).not.toContain(THEME.gripHot)
+    expect(badges(cad)).toEqual({ trim: 2, refused: 0 })
+  })
+
+  it("fades a line no edge crosses whole, Quick's delete, with the ✕ (desktop trim/d01-2)", () => {
+    const cad = drawing().command("TRIM").moveTo(p(480, 381))
+
+    expect(strokesAt(cad, p(400, 380), p(500, 380))).toEqual([faded])
+    expect(badges(cad)).toEqual({ trim: 2, refused: 0 })
+  })
+
+  it("draws the extension as the object would be, whole, solid, in the selection's glow, with no badge (desktop trim/d01-3, d02-1)", () => {
+    for (const cad of [
+      drawing().command("TRIM").moveTo(p(480, 381), { shiftKey: true }),
+      drawing().command("EXTEND").moveTo(p(480, 381)),
+    ]) {
+      expect(strokesAt(cad, p(400, 380), p(600, 380))).toEqual([plain, glow])
+      expect(strokesAt(cad, p(400, 380), p(500, 380))).toEqual([])
+      expect(badges(cad)).toEqual({ trim: 0, refused: 0 })
+    }
+  })
+
+  it("shows TRIM's faded ghost and the ✕ under Shift in EXTEND (desktop trim/d02-2)", () => {
+    const cad = drawing().command("EXTEND").moveTo(p(450, 251), {
+      shiftKey: true,
+    })
+
+    expect(strokesAt(cad, p(300, 250), p(600, 250))).toEqual([faded])
+    expect(badges(cad)).toEqual({ trim: 2, refused: 0 })
+  })
+
+  it("previews what a running fence trims, the drawing untouched, and trims it so (desktop trim/d03-1, d04-1)", () => {
+    const cad = drawing().command("TRIM").click(p(700, 400)).moveTo(p(701, 120))
+
+    expect(strokesAt(cad, p(600, 250), p(900, 250))).toEqual([faded])
+    expect(strokesAt(cad, p(100, 250), p(600, 250))).toEqual([plain])
+    expect(cad.byId("H")).toMatchObject({ end: p(900, 250) })
+    expect(badges(cad)).toEqual({ trim: 2, refused: 0 })
+
+    cad.click(p(701, 120))
+    expect(cad.byId("H")).toMatchObject({
+      start: p(100, 250),
+      end: p(600, 250),
+    })
+  })
+
+  it("previews Fence's path through its points and the cursor, Undo dropping one", () => {
+    const cad = drawing()
+      .command("TRIM")
+      .option("Fence")
+      .click(p(700, 400))
+      .moveTo(p(701, 120))
+
+    expect(strokesAt(cad, p(600, 250), p(900, 250))).toEqual([faded])
+    cad.option("Undo")
+    expect(strokesAt(cad, p(600, 250), p(900, 250))).toEqual([])
+    expect(strokesAt(cad, p(100, 250), p(900, 250))).toEqual([plain])
+  })
+
+  it("previews EXTEND's fence as the objects would be, glowing, with no badge", () => {
+    const cad = drawing()
+      .command("EXTEND")
+      .click(p(480, 420))
+      .moveTo(p(480, 330))
+
+    expect(strokesAt(cad, p(400, 380), p(600, 380))).toEqual([plain, glow])
+    expect(badges(cad)).toEqual({ trim: 0, refused: 0 })
+  })
+
+  it("previews each piece a fence takes away, Quick's delete whole, as its cursor moves", () => {
+    const cad = drawing().command("TRIM").click(p(450, 420)).moveTo(p(450, 100))
+
+    // Through S, deleted whole, and through H between the edges.
+    expect(strokesAt(cad, p(400, 380), p(500, 380))).toEqual([faded])
+    expect(strokesAt(cad, p(300, 250), p(600, 250))).toEqual([faded])
+    expect(strokesAt(cad, p(100, 250), p(300, 250))).toEqual([plain])
+    cad.moveTo(p(450, 300))
+    expect(strokesAt(cad, p(300, 250), p(600, 250))).toEqual([])
+    expect(strokesAt(cad, p(100, 250), p(900, 250))).toEqual([plain])
+  })
+
+  it("previews what a running Crossing window trims (desktop trim/d06-2)", () => {
+    const cad = drawing().command("TRIM").option("Crossing").click(p(650, 300))
+    cad.moveTo(p(750, 200))
+
+    expect(strokesAt(cad, p(600, 250), p(900, 250))).toEqual([faded])
+    expect(cad.byId("H")).toMatchObject({ end: p(900, 250) })
+    expect(badges(cad)).toEqual({ trim: 2, refused: 0 })
+  })
+
+  it("shows the circle-and-slash where EXTEND refuses, as TRIM's refusals (unverified)", () => {
+    const cad = drawing().command("EXTEND").moveTo(p(301, 440))
+
+    expect(badges(cad)).toEqual({ trim: 0, refused: 1 })
+    cad.click(p(301, 440))
+    expect(cad.commandLog().at(-1)).toBe(
+      "Path does not intersect with the bounding edge."
+    )
+  })
+
+  it("shows the circle-and-slash where the pick is refused: a circle cut once, a text (desktop trim/d09-1, d09-2)", () => {
+    const circle = createHarness({
+      entities: [
+        circleOf(p(450, 150), 50, { id: "C" }),
+        lineOf(p(450, 150), p(600, 150), { id: "L" }),
+      ],
+    })
+    circle.command("TRIM").moveTo(p(400, 150))
+    expect(badges(circle)).toEqual({ trim: 0, refused: 1 })
+
+    const text = createHarness({
+      entities: [
+        createText(p(0, 0), "HOLA", { height: 10 }),
+        lineOf(p(50, -50), p(50, 50)),
+      ],
+    })
+    text.command("TRIM").moveTo(p(3, 3))
+    expect(badges(text)).toEqual({ trim: 0, refused: 1 })
+    text.moveTo(p(200, 200))
+    expect(badges(text)).toEqual({ trim: 0, refused: 0 })
   })
 })
 

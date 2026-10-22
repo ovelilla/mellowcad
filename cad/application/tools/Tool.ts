@@ -11,6 +11,7 @@ import { TrackingResult } from "../tracking/types"
 import { DynamicInputController } from "../input/DynamicInput"
 import { Command, UndoSettings } from "../commands/Command"
 import { ScenePrimitive } from "../../scene/types"
+import type { CursorBadge } from "../SceneBuilder"
 import type { MessageValues } from "../../i18n/types"
 import type { FeedbackId, MessageId } from "../EngineText"
 import type { PromptId } from "../../locales/types"
@@ -712,6 +713,12 @@ export interface Tool {
    * Defaults to none.
    */
   fadedEntityIds?(ctx: ToolContext): readonly EntityId[]
+
+  /**
+   * The badge the command shows beside the cursor: TRIM's ✕ where a click
+   * trims, the circle-and-slash where it is refused. Defaults to none.
+   */
+  cursorBadge?(): CursorBadge | null
 
   /**
    * Whether the selected objects glow: not once ROTATE or SCALE has its base

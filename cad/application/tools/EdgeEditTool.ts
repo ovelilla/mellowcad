@@ -61,9 +61,13 @@ import {
   ReplaceEntitiesCommand,
   UpdateEntityCommand,
 } from "../commands/entityCommands"
-import { ScenePrimitive, StrokeStyle } from "../../scene/types"
-import { THEME } from "../../scene/theme"
-import { arcScenePrimitive, entityScenePrimitive } from "../SceneBuilder"
+import { ScenePrimitive } from "../../scene/types"
+import {
+  type CursorBadge,
+  entityScenePrimitive,
+  entityStroke,
+  selectionGlow,
+} from "../SceneBuilder"
 import type { PromptId } from "../../locales/types"
 import type { MessageId } from "../EngineText"
 import {
@@ -202,6 +206,32 @@ interface EdgeEditFence {
 }
 
 /**
+ * What a fence or a window does, planned against a copy of the drawing, the
+ * document untouched: `editAcross` commits it, and the preview draws it while
+ * the fence or window runs (desktop trim/d03-1, d04-1, d06-2).
+ */
+interface AcrossPlan {
+  /** A window that crosses nothing: said, and nothing edited. */
+  readonly crossesNothing: boolean
+  /** The refusals said, in their order. */
+  readonly messages: readonly MessageId[]
+  /** The drawing as the edits leave it, in plan. */
+  readonly drawing: readonly Entity[]
+  /** Each object edited, by id, and the ids in `drawing` of what it left. */
+  readonly pieces: ReadonlyMap<EntityId, readonly EntityId[]>
+  /** The pieces the edits take away, in plan. */
+  readonly removed: readonly Entity[]
+  /** The objects taken away whole, as the document holds them. */
+  readonly erased: ReadonlySet<EntityId>
+  readonly extended: ReadonlySet<EntityId>
+  /** The edges, with the pieces of those edited (probe trim/p288). */
+  readonly edges: Set<EntityId> | null
+}
+
+/** The id a ghost's piece wears, so preview frames burn no entity ids. */
+const PREVIEW_ID = "trim-preview"
+
+/**
  * AutoCAD's TRIMEXTENDMODE and EDGEMODE, shared by TRIM and EXTEND of one
  * runtime: Standard or Quick, and whether Standard's edges run on. WHY for the
  * session: AutoCAD keeps them in the registry, across sessions; here they last
@@ -255,6 +285,8 @@ export abstract class EdgeEditTool implements Tool {
   private edgeBefore: boolean | null = null
   private lastInput: PointerInput | null = null
   private fence: EdgeEditFence | null = null
+  /** The running fence's or window's edits, planned as its cursor moves. */
+  private across: AcrossPlan | null = null
   /** Crossing's window, its first corner once given (probes trim/p301–p307). */
   private window: {
     readonly start: Vec2 | null
@@ -299,6 +331,7 @@ export abstract class EdgeEditTool implements Tool {
     this.preview = null
     this.fence = null
     this.window = null
+    this.across = null
     this.asking = null
     this.edges = null
     this.steps = []
@@ -470,6 +503,7 @@ export abstract class EdgeEditTool implements Tool {
       // Fence's own drops its last point (p289).
       if (fence.typed) {
         this.fence = { ...fence, points: fence.points.slice(0, -1) }
+        this.across = this.planRunning(ctx)
         this.openFenceInput(ctx)
         ctx.requestRender()
       }
@@ -539,6 +573,7 @@ export abstract class EdgeEditTool implements Tool {
     if (this.selector()) ctx.selection.clear()
     this.fence = null
     this.window = null
+    this.across = null
     this.asking = null
     this.edges = null
     this.selection = null
@@ -552,6 +587,9 @@ export abstract class EdgeEditTool implements Tool {
     if (this.fence || this.window) {
       if (this.fence) this.fence = { ...this.fence, cursor: input.point }
       if (this.window) this.window = { ...this.window, cursor: input.point }
+      // WHY here alone: planning every crossing is costly, and only the
+      // cursor or a point changes what the fence or window meets.
+      this.across = this.planRunning(ctx)
       ctx.dynamicInput.setPosition(input.screen)
       ctx.requestRender()
       return
@@ -611,8 +649,7 @@ export abstract class EdgeEditTool implements Tool {
     this.enterSpent = true
     const plan = this.planFor(pick, ctx)
     if (!plan) {
-      if (ctx.pick(pick.world)) this.refuseExtend(pick, ctx)
-      else {
+      if (!ctx.pick(pick.world)) {
         // WHY said, then the fence: a locked object is no pick, and the
         // console says why (probe trim/p251).
         if (this.lockedAt(pick.world, ctx)) {
@@ -714,73 +751,137 @@ export abstract class EdgeEditTool implements Tool {
     return this.fence !== null || this.window !== null
   }
 
+  /**
+   * TRIM's ghost: the piece a click takes away faded in place, ERASE's look,
+   * the rest as it is (desktop trim/d01-1); Quick's delete fades the whole
+   * object (d01-2, `fadedEntityIds`). The extension's: the object as it
+   * would be, whole, in the selection's glow (d01-3, d02-1). A fence or a
+   * window running draws what it will do (d03-1, d04-1, d06-2).
+   */
   buildOverlay(ctx: ToolContext): ScenePrimitive[] {
     if (this.asking) return this.selector()?.buildOverlay(ctx) ?? []
     if (this.fence) {
       const { points, cursor } = this.fence
       const through = cursor ? [...points, cursor] : points
-      return through.length > 1 ? buildFenceOverlay(ctx.viewport, through) : []
+      return [
+        ...this.acrossOverlay(ctx),
+        ...(through.length > 1 ? buildFenceOverlay(ctx.viewport, through) : []),
+      ]
     }
     if (this.window) {
       const { start, cursor } = this.window
-      return start && cursor
-        ? buildSelectionBoxOverlay(ctx.viewport, start, cursor, true)
-        : []
+      return [
+        ...this.acrossOverlay(ctx),
+        ...(start && cursor
+          ? buildSelectionBoxOverlay(ctx.viewport, start, cursor, true)
+          : []),
+      ]
     }
     const plan = this.preview
-    if (!plan || plan.kind === "refuse") return []
-    const { viewport } = ctx
-    if (plan.kind === "erase") {
-      return entityScenePrimitive(viewport, plan.target, {
-        color: THEME.gripHot,
-        width: 1.5,
-        dash: [6, 4],
-      })
-    }
-    const prim = (
-      g: EditGeom,
-      color: string,
-      width: number,
-      dash?: readonly number[]
-    ): ScenePrimitive[] => {
-      const stroke: StrokeStyle = { color, width, dash }
-      if (g.kind === "line") {
-        return [
-          {
-            kind: "segment",
-            a: viewport.worldToScreen(g.start),
-            b: viewport.worldToScreen(g.end),
-            stroke,
-          },
-        ]
-      }
-      if (g.kind === "polyline" || g.kind === "ellipse") {
-        // A reused id keeps preview frames from burning fresh entity ids.
-        return entityScenePrimitive(
-          viewport,
-          geomToEntity(g, plan.layerId, plan.targetId),
-          stroke
-        )
-      }
-      return [
-        arcScenePrimitive(
-          viewport,
-          g.center,
-          g.radius,
-          g.startAngle,
-          g.endAngle,
-          stroke
-        ),
-      ]
-    }
+    if (!plan || plan.kind === "refuse" || plan.kind === "erase") return []
+    const source = ctx.document.get(plan.targetId)
+    const target = source && inPlan(source)
+    if (!target) return []
+    const { added } = this.piecesOf(plan, target, () => PREVIEW_ID)
+    if (plan.kind === "extend")
+      return added.flatMap((piece) => drawn(ctx, piece, "glow"))
+    return [
+      ...added.flatMap((piece) => drawn(ctx, piece, "plain")),
+      ...drawn(ctx, removedPiece(plan, target), "faded"),
+    ]
+  }
 
-    if (plan.kind === "trim") {
-      return [
-        ...plan.replacements.flatMap((g) => prim(g, THEME.entityHover, 2)),
-        ...prim(plan.removed, THEME.gripHot, 1.5, [6, 4]),
-      ]
+  /** The objects the ghost draws in their place, as it would leave them. */
+  hiddenEntityIds(): readonly EntityId[] {
+    if (this.asking) return []
+    const across = this.running()
+    if (across) {
+      return [...across.pieces.keys()].filter((id) => !across.erased.has(id))
     }
-    return prim(plan.added, THEME.selected, 1.5, [6, 4])
+    const plan = this.preview
+    return plan?.kind === "trim" || plan?.kind === "extend"
+      ? [plan.targetId]
+      : []
+  }
+
+  /** What Quick's delete takes away whole, faded as ERASE fades it (desktop trim/d01-2). */
+  fadedEntityIds(): readonly EntityId[] {
+    if (this.asking) return []
+    const across = this.running()
+    if (across) return [...across.erased]
+    return this.preview?.kind === "erase" ? [this.preview.target.id] : []
+  }
+
+  /**
+   * The ✕ where a click trims, a fence or window of TRIM's running, none
+   * where it extends; the circle-and-slash where it is refused (desktop
+   * trim/d01-1, d01-3, d02-1, d02-2, d03-1, d09-1, d09-2).
+   */
+  cursorBadge(): CursorBadge | null {
+    if (this.asking) return null
+    if (this.fence || this.window) {
+      return this.defaultMode === "trim" ? "trim" : null
+    }
+    switch (this.preview?.kind) {
+      case "trim":
+      case "erase":
+        return "trim"
+      case "refuse":
+        return "refused"
+      default:
+        return null
+    }
+  }
+
+  /** The running fence's or window's plan, which its overlay draws. */
+  private running(): AcrossPlan | null {
+    return this.fence || this.window ? this.across : null
+  }
+
+  private acrossOverlay(ctx: ToolContext): ScenePrimitive[] {
+    const across = this.running()
+    if (!across) return []
+    const kept = new Set(
+      [...across.pieces]
+        .filter(([id]) => !across.erased.has(id))
+        .flatMap(([, ids]) => ids)
+    )
+    const extendedPiece = new Set(
+      [...across.extended].flatMap((id) => across.pieces.get(id) ?? [])
+    )
+    return [
+      ...across.drawing
+        .filter((entity) => kept.has(entity.id))
+        .flatMap((entity) =>
+          drawn(ctx, entity, extendedPiece.has(entity.id) ? "glow" : "plain")
+        ),
+      ...across.removed.flatMap((piece) => drawn(ctx, piece, "faded")),
+    ]
+  }
+
+  /**
+   * The edits of the fence or window running, through its cursor: a
+   * fence's path or Crossing's window as the click would close it.
+   */
+  private planRunning(ctx: ToolContext): AcrossPlan | null {
+    if (this.fence) {
+      const { points, cursor } = this.fence
+      const through = cursor ? [...points, cursor] : points
+      return through.length > 1
+        ? this.planAcross(through, false, ctx, true)
+        : null
+    }
+    const start = this.window?.start
+    const cursor = this.window?.cursor
+    if (!start || !cursor || (start.x === cursor.x && start.y === cursor.y)) {
+      return null
+    }
+    return this.planAcross(
+      clockwiseOutline(ctx.viewport, start, cursor),
+      true,
+      ctx,
+      true
+    )
   }
 
   /** A fence's or a window's point prompt. */
@@ -874,8 +975,11 @@ export abstract class EdgeEditTool implements Tool {
     return "continue"
   }
 
-  private isEdge(id: EntityId): boolean {
-    return this.edges === null || this.edges.has(id)
+  private isEdge(
+    id: EntityId,
+    edges: ReadonlySet<EntityId> | null = this.edges
+  ): boolean {
+    return edges === null || edges.has(id)
   }
 
   /** An edge's pieces are edges too (probe trim/p288). */
@@ -941,29 +1045,6 @@ export abstract class EdgeEditTool implements Tool {
   }
 
   /**
-   * An object EXTEND reaches no edge with, said in the console's words: a
-   * line whose other end would reach one `No edge in that direction.`
-   * (probe trim/p143), else its type's (`extendRefusal`; p195, p204, p210).
-   */
-  private refuseExtend(input: PointerInput, ctx: ToolContext): void {
-    const hit = this.pickFor(input, ctx)
-    if (!hit || this.modeFor(input) !== "extend") return
-    const message = extendRefusal(hit)
-    if (!message) return
-    const otherEnd =
-      hit.type === "line" &&
-      planExtendLine(
-        hit,
-        pointOnLine(hit, 1 - paramOnLine(hit, input.world)),
-        this.boundsFor(hit, this.drawing(ctx), ctx.blocks)
-      ) !== null
-    ctx.report(
-      ctx.text.message(otherEnd ? "noEdgeInThatDirection" : message),
-      "error"
-    )
-  }
-
-  /**
    * Standard mode's crossing window, a pick on nothing its first corner
    * (probes trim/p308, p309, p382).
    */
@@ -995,6 +1076,7 @@ export abstract class EdgeEditTool implements Tool {
       return
     }
     this.fence = { ...fence, points }
+    this.across = this.planRunning(ctx)
     this.openFenceInput(ctx)
     ctx.requestRender()
   }
@@ -1102,30 +1184,85 @@ export abstract class EdgeEditTool implements Tool {
   ): void {
     this.fence = null
     this.window = null
+    this.across = null
     this.answered = true
     this.enterSpent = true
     ctx.dynamicInput.close()
+    const plan = this.planAcross(points, window, ctx, false)
+    if (plan.crossesNothing) {
+      ctx.report(ctx.text.message("noObjectsCrossedByCrossingWindow"))
+      ctx.requestRender()
+      return
+    }
+    for (const message of plan.messages) {
+      ctx.report(ctx.text.message(message), "error")
+    }
+    this.edges = plan.edges
+    const ids = [...plan.pieces.keys()]
+    const sourceOf = new Map<EntityId, Entity | undefined>()
+    for (const [id, kept] of plan.pieces) {
+      for (const piece of kept) sourceOf.set(piece, ctx.document.get(id))
+    }
+    if (ids.length > 0) {
+      this.pushStep(ctx)
+      ctx.execute(
+        new ReplaceEntitiesCommand(
+          ids,
+          plan.drawing.flatMap((entity) => {
+            if (!sourceOf.has(entity.id)) return []
+            const source = sourceOf.get(entity.id)
+            return [source ? asStored(source, entity) : entity]
+          })
+        )
+      )
+    }
+    ctx.requestRender()
+  }
+
+  /**
+   * The edits along `points`, a fence's or a window's outline, against a
+   * copy of the drawing: the commit's and the running preview's, which
+   * mints its pieces no ids (`preview`).
+   */
+  private planAcross(
+    points: readonly Vec2[],
+    window: boolean,
+    ctx: ToolContext,
+    preview: boolean
+  ): AcrossPlan {
     const view = ctx.viewport
     const originals = this.drawing(ctx)
     const crossings = fenceCrossings(
       originals.map((entity) => entityScreenOutline(view, entity, ctx.blocks)),
       points.map((point) => view.worldToScreen(point))
     )
-    if (window && crossings.length === 0) {
-      ctx.report(ctx.text.message("noObjectsCrossedByCrossingWindow"))
-      ctx.requestRender()
-      return
-    }
-    let drawing = originals
-    const upright = (hit: Entity) => this.footprints(ctx, hit)
+    const edges = this.edges && new Set(this.edges)
+    const messages: MessageId[] = []
     const pieces = new Map<EntityId, readonly EntityId[]>()
+    const removed: Entity[] = []
+    const erased = new Set<EntityId>()
+    const extended = new Set<EntityId>()
+    const plan = (crossesNothing: boolean): AcrossPlan => ({
+      crossesNothing,
+      messages,
+      drawing,
+      pieces,
+      removed,
+      erased,
+      extended,
+      edges,
+    })
+    let drawing = originals
+    if (window && crossings.length === 0) return plan(true)
+    let minted = 0
+    const mint = preview ? () => `${PREVIEW_ID}-${minted++}` : undefined
     const left = new Set<EntityId>()
     const near = view.screenToWorldDistance(2)
     for (const crossing of crossings) {
       const source = originals[crossing.outline].id
       if (left.has(source)) continue
       if (this.defaultMode === "extend" && pieces.has(source)) {
-        ctx.report(ctx.text.message("noEdgeInThatDirection"), "error")
+        messages.push("noEdgeInThatDirection")
         left.add(source)
         continue
       }
@@ -1137,52 +1274,39 @@ export abstract class EdgeEditTool implements Tool {
         near
       )
       if (!target) continue
-      const plan = this.planOn(
+      const edit = this.planOn(
         target,
         at,
         this.defaultMode,
         drawing,
-        upright(target),
-        ctx.blocks
+        this.footprints(ctx, target, edges),
+        ctx.blocks,
+        edges
       )
-      if (!plan || plan.kind === "refuse") {
+      if (!edit || edit.kind === "refuse") {
         const message =
-          plan?.kind === "refuse"
-            ? plan.message
+          edit?.kind === "refuse"
+            ? edit.message
             : this.defaultMode === "extend"
               ? extendRefusal(target)
               : null
-        if (message) ctx.report(ctx.text.message(message), "error")
+        if (message) messages.push(message)
         left.add(source)
         continue
       }
-      const { id, added } = this.piecesOf(plan, target)
-      this.keepEdges(id, added)
+      const { id, added } = this.piecesOf(edit, target, mint)
+      if (edit.kind === "extend") extended.add(source)
+      else if (edit.kind === "trim") removed.push(removedPiece(edit, target))
+      else if (pieces.has(source)) removed.push(target)
+      else erased.add(source)
+      if (edges?.has(id)) for (const entity of added) edges.add(entity.id)
       drawing = [...drawing.filter((entity) => entity.id !== id), ...added]
       pieces.set(source, [
         ...(pieces.get(source) ?? [source]).filter((piece) => piece !== id),
         ...added.map((entity) => entity.id),
       ])
     }
-    const ids = [...pieces.keys()]
-    const sourceOf = new Map<EntityId, Entity | undefined>()
-    for (const [id, kept] of pieces) {
-      for (const piece of kept) sourceOf.set(piece, ctx.document.get(id))
-    }
-    if (ids.length > 0) {
-      this.pushStep(ctx)
-      ctx.execute(
-        new ReplaceEntitiesCommand(
-          ids,
-          drawing.flatMap((entity) => {
-            if (!sourceOf.has(entity.id)) return []
-            const source = sourceOf.get(entity.id)
-            return [source ? asStored(source, entity) : entity]
-          })
-        )
-      )
-    }
-    ctx.requestRender()
+    return plan(false)
   }
 
   private modeFor(input: PointerInput): EdgeEditMode {
@@ -1204,13 +1328,17 @@ export abstract class EdgeEditTool implements Tool {
   }
 
   /** Where the edges standing upright on the UCS's XY plane lie in plan. */
-  private footprints(ctx: ToolContext, hit: Entity): LineEntity[] {
+  private footprints(
+    ctx: ToolContext,
+    hit: Entity,
+    edges: ReadonlySet<EntityId> | null = this.edges
+  ): LineEntity[] {
     return ctx.document
       .getEntities()
       .flatMap((e) =>
         standsUpright(e) &&
         e.id !== hit.id &&
-        this.isEdge(e.id) &&
+        this.isEdge(e.id, edges) &&
         ctx.document.isEntityVisible(e)
           ? footprint(e)
           : []
@@ -1246,14 +1374,33 @@ export abstract class EdgeEditTool implements Tool {
     }
     const hit = this.pickFor(input, ctx)
     if (!hit) return null
-    return this.planOn(
+    const mode = this.modeFor(input)
+    const drawing = this.drawing(ctx)
+    const plan = this.planOn(
       hit,
       input.world,
-      this.modeFor(input),
-      this.drawing(ctx),
+      mode,
+      drawing,
       this.footprints(ctx, hit),
       ctx.blocks
     )
+    if (plan || mode !== "extend") return plan
+    // An object EXTEND reaches no edge with, said in the console's words: a
+    // line whose other end would reach one `No edge in that direction.`
+    // (probe trim/p143), else its type's (`extendRefusal`; p195, p204, p210).
+    const message = extendRefusal(hit)
+    if (!message) return null
+    const otherEnd =
+      hit.type === "line" &&
+      planExtendLine(
+        hit,
+        pointOnLine(hit, 1 - paramOnLine(hit, input.world)),
+        this.boundsFor(hit, drawing, ctx.blocks)
+      ) !== null
+    return {
+      kind: "refuse",
+      message: otherEnd ? "noEdgeInThatDirection" : message,
+    }
   }
 
   /**
@@ -1266,10 +1413,11 @@ export abstract class EdgeEditTool implements Tool {
     mode: EdgeEditMode,
     drawing: readonly Entity[],
     upright: readonly LineEntity[],
-    blocks: BlockLookup
+    blocks: BlockLookup,
+    edges: ReadonlySet<EntityId> | null = this.edges
   ): EdgeEditPlan | null {
-    const others = this.boundsFor(hit, drawing, blocks)
-    const own = this.isEdge(hit.id)
+    const others = this.boundsFor(hit, drawing, blocks, edges)
+    const own = this.isEdge(hit.id, edges)
     // WHY: an edge standing upright on the plane bounds nothing; the console
     // says so where it alone would, and leaves the object (probes trim/p221,
     // p411).
@@ -1306,13 +1454,16 @@ export abstract class EdgeEditTool implements Tool {
   private boundsFor(
     hit: Entity,
     drawing: readonly Entity[],
-    blocks: BlockLookup
+    blocks: BlockLookup,
+    edges: ReadonlySet<EntityId> | null = this.edges
   ): Entity[] {
-    const edges = drawing.filter((e) => e.id !== hit.id && this.isEdge(e.id))
+    const bounds = drawing.filter(
+      (e) => e.id !== hit.id && this.isEdge(e.id, edges)
+    )
     const run =
       this.mode.standard && this.mode.edgeExtend
-        ? edges.flatMap((edge) => prolonged(edge, reachOf(drawing)))
-        : edges
+        ? bounds.flatMap((edge) => prolonged(edge, reachOf(drawing)))
+        : bounds
     return run.flatMap((edge) => edgeShapes(edge, blocks))
   }
 
@@ -1340,7 +1491,8 @@ export abstract class EdgeEditTool implements Tool {
   /** The object `target` an edit takes, and what it leaves in its place. */
   private piecesOf(
     plan: Exclude<EdgeEditPlan, { kind: "refuse" }>,
-    target: Entity
+    target: Entity,
+    mint?: () => EntityId
   ): { readonly id: EntityId; readonly added: readonly Entity[] } {
     if (plan.kind === "erase") return { id: target.id, added: [] }
     const geoms = plan.kind === "extend" ? [plan.result] : plan.replacements
@@ -1352,7 +1504,7 @@ export abstract class EdgeEditTool implements Tool {
       added: geoms.map((g, i) =>
         carryPiece(
           target,
-          geomToEntity(g, plan.layerId, i === 0 ? target.id : undefined)
+          geomToEntity(g, plan.layerId, i === 0 ? target.id : mint?.())
         )
       ),
     }
@@ -1362,6 +1514,41 @@ export abstract class EdgeEditTool implements Tool {
 /** A pick where an object snap override found its point: there. */
 function snappedPick(input: PointerInput): PointerInput {
   return input.snap ? { ...input, world: input.point } : input
+}
+
+/** The piece a trim takes away, wearing its object's properties. */
+function removedPiece(
+  plan: Extract<EdgeEditPlan, { kind: "trim" }>,
+  target: Entity
+): Entity {
+  return carryPiece(
+    target,
+    geomToEntity(plan.removed, plan.layerId, PREVIEW_ID)
+  )
+}
+
+/**
+ * `piece` as the drawing draws it, faded as ERASE's preview fades an object,
+ * or with the selection's glow over it.
+ */
+function drawn(
+  ctx: ToolContext,
+  piece: Entity,
+  look: "plain" | "faded" | "glow"
+): ScenePrimitive[] {
+  const settings = ctx.document.getSettings()
+  const stroke = entityStroke(
+    ctx.viewport,
+    piece,
+    ctx.document.getLayer(piece.layerId),
+    settings,
+    look === "faded"
+  )
+  const options = { fill: settings.fillMode, linetype: true }
+  const primitives = entityScenePrimitive(ctx.viewport, piece, stroke, options)
+  return look === "glow"
+    ? [...primitives, ...selectionGlow(ctx.viewport, piece, stroke, options)]
+    : primitives
 }
 
 /**

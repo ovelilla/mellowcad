@@ -22,6 +22,10 @@ export const THEME = {
   grip: "#3b82f6",
   /** Hot grip currently being dragged — AutoCAD's red square. */
   gripHot: "#ef4444",
+  /** TRIM's ✕ beside the cursor (desktop trim/d01-1z). */
+  trimBadge: "#eb5555",
+  /** The circle-and-slash beside the cursor where a pick is refused (desktop trim/d09-1). */
+  refusedBadge: "#ffffff",
   /** The AutoSnap marker, AutoCAD's green as its dark theme draws it (desktop d05, d21). */
   snap: "#00a500",
   /** The cursor's tooltips (a snap's name, Polar's reading): AutoCAD's light grey box. */

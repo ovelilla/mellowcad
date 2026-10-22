@@ -133,6 +133,7 @@ import {
   CURSOR_TOOLTIP_ROW,
   PICK_BOX_PX,
   PolarGuideInput,
+  type SceneInput,
 } from "./SceneBuilder"
 import {
   buildBlockInfos,
@@ -4443,8 +4444,15 @@ export class CadRuntime extends Observable {
       cyclingBadge: this.cycling.hasStack() ? this.crosshairScreen : null,
       removeBadge:
         this.pointerShift && this.shiftRemoves() ? this.crosshairScreen : null,
+      cursorBadge: this.cursorBadge(),
       cyclingHighlight: this.cyclingHighlight(),
     })
+  }
+
+  private cursorBadge(): SceneInput["cursorBadge"] {
+    const kind = this.activeTool.cursorBadge?.() ?? null
+    const at = this.crosshairScreen
+    return kind && at ? { at, kind } : null
   }
 
   /**
