@@ -5820,7 +5820,8 @@ export class CadRuntime extends Observable {
         this.propertiesFilter,
         settings,
         this.text,
-        this.paletteVertex
+        this.paletteVertex,
+        this.document.blockLookup()
       ),
       selectionLayerId: commonSelectionLayer(selectedEntities),
       selectionColor: commonSelectionColor(selectedEntities),

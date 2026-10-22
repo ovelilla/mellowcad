@@ -1,8 +1,9 @@
 import { Vec2, V } from "../../geometry/Vec2"
-import { Vec3, sub3, withZ, withZOf } from "../../geometry/Vec3"
+import { Vec3, planar, sub3, withZ, withZOf } from "../../geometry/Vec3"
 import {
   Entity,
   EntityId,
+  InsertEntity,
   createArc,
   createLine,
   carryOverrides,
@@ -31,14 +32,19 @@ import {
 import { riseAlongCursor, showRise } from "./directDistance"
 import { KeyInput, PointerInput, Tool, ToolContext } from "./Tool"
 import {
+  ArrayEditRole,
   DimensionPoint,
   EllipseGripRole,
   Grip,
   LineEnd,
   SelectToolState,
 } from "./selectToolState"
+import { ARRAY_GRIP_FIELDS, arrayGripValue } from "./arrayGrips"
+import { arrayPlacement } from "../../domain/arrayEdits"
 import { hitGrip, sameGrip } from "./selectToolGrips"
 import {
+  arrayGripped,
+  arrayGripTyped,
   movedDimension,
   mtextWidthThrough,
   arcStretchedThrough,
@@ -50,6 +56,7 @@ import {
   withVertexAt,
 } from "./selectToolEdits"
 import {
+  buildArrayGripEdit,
   buildArcAngleEdit,
   buildArcStretch,
   buildBulgeEdit,
@@ -164,6 +171,10 @@ export class SelectTool implements Tool {
       this.placeDimPoint(this.state, this.state.current, ctx)
       return
     }
+    if (this.state.phase === "arrayGrip") {
+      this.placeArrayGrip(this.state, this.state.current, ctx)
+      return
+    }
     if (this.state.phase === "mtextWidth") {
       this.placeMTextWidth(this.state, this.state.width, ctx)
       return
@@ -224,6 +235,9 @@ export class SelectTool implements Tool {
           break
         case "mtextWidth":
           this.beginMTextWidth(grip, input.screen, ctx)
+          break
+        case "array":
+          this.beginArrayGrip(grip, grip.role.grip, input.screen, ctx)
           break
       }
       return
@@ -317,6 +331,15 @@ export class SelectTool implements Tool {
           "distance",
           V.distance(this.state.origin, current)
         )
+        ctx.dynamicInput.setPosition(input.screen)
+        ctx.requestRender()
+        break
+      }
+      case "arrayGrip": {
+        const current = planar(input.point)
+        this.state = { ...this.state, current }
+        const reading = this.arrayReading(this.state, ctx)
+        if (reading !== null) ctx.dynamicInput.setLive("value", reading)
         ctx.dynamicInput.setPosition(input.screen)
         ctx.requestRender()
         break
@@ -524,6 +547,15 @@ export class SelectTool implements Tool {
         if (dragged) this.placeMTextWidth(this.state, this.state.width, ctx)
         return
       }
+      case "arrayGrip": {
+        const dragged =
+          Math.hypot(
+            input.screen.x - this.state.pressScreen.x,
+            input.screen.y - this.state.pressScreen.y
+          ) >= DRAG_THRESHOLD_PX
+        if (dragged) this.placeArrayGrip(this.state, this.state.current, ctx)
+        return
+      }
       case "stretchSegment": {
         const dragged =
           Math.hypot(
@@ -619,7 +651,8 @@ export class SelectTool implements Tool {
       }
       if (
         this.state.phase === "moveDimPoint" ||
-        this.state.phase === "mtextWidth"
+        this.state.phase === "mtextWidth" ||
+        this.state.phase === "arrayGrip"
       ) {
         // Abort the definition-point drag, leaving the dimension untouched.
         ctx.dynamicInput.close()
@@ -682,7 +715,8 @@ export class SelectTool implements Tool {
       this.state.phase === "stretchSegment" ||
       this.state.phase === "bulgeEdit" ||
       this.state.phase === "moveDimPoint" ||
-      this.state.phase === "mtextWidth"
+      this.state.phase === "mtextWidth" ||
+      this.state.phase === "arrayGrip"
     )
   }
 
@@ -711,7 +745,8 @@ export class SelectTool implements Tool {
       this.state.phase === "moveLine" ||
       this.state.phase === "moveVertex" ||
       this.state.phase === "stretchSegment" ||
-      this.state.phase === "arcStretch"
+      this.state.phase === "arcStretch" ||
+      this.state.phase === "arrayGrip"
     )
   }
 
@@ -733,6 +768,7 @@ export class SelectTool implements Tool {
     if (this.state.phase === "moveVertex") return this.state.origin
     if (this.state.phase === "moveDimPoint") return this.state.origin
     if (this.state.phase === "mtextWidth") return this.state.origin
+    if (this.state.phase === "arrayGrip") return this.state.origin
     if (this.state.phase === "stretchSegment") return this.state.origin
     if (this.state.phase === "bulgeEdit")
       return V.midpoint(this.state.a, this.state.b)
@@ -779,6 +815,8 @@ export class SelectTool implements Tool {
         return buildDimPointEdit(state, ctx)
       case "mtextWidth":
         return buildMTextWidthEdit(state, ctx)
+      case "arrayGrip":
+        return buildArrayGripEdit(state, ctx)
       default:
         return buildGrips(state, ctx)
     }
@@ -1008,6 +1046,106 @@ export class SelectTool implements Tool {
       pressScreen: screen,
     }
     this.openDimPointInput(ctx, screen)
+    ctx.requestRender()
+  }
+
+  /**
+   * Makes an array's spacing, count, radius or angle grip hot, opening the
+   * box of the value it sets (none at the corner).
+   */
+  private beginArrayGrip(
+    grip: Grip,
+    role: ArrayEditRole,
+    screen: Vec2,
+    ctx: ToolContext
+  ): void {
+    const insert = ctx.document.get(grip.entityId)
+    if (insert?.type !== "insert" || !insert.array) return
+    this.state = {
+      phase: "arrayGrip",
+      entityId: grip.entityId,
+      role,
+      origin: grip.world,
+      shape: grip.shape ?? "square",
+      along: grip.along,
+      current: planar(grip.world),
+      pressScreen: screen,
+    }
+    const field = ARRAY_GRIP_FIELDS[role]
+    if (field) {
+      ctx.dynamicInput.open({
+        fields: [{ id: "value", ...field }],
+        commit: (values, commitCtx) =>
+          this.commitArrayGrip(values.value, commitCtx),
+      })
+      const reading = arrayGripValue(
+        insert.array,
+        arrayPlacement(insert, ctx.blocks(insert.blockId)),
+        role
+      )
+      if (reading !== null) ctx.dynamicInput.setLive("value", reading)
+      ctx.dynamicInput.setPosition(screen)
+    }
+    ctx.requestRender()
+  }
+
+  /** What the hot array grip's box reads with the cursor where it is. */
+  private arrayReading(
+    state: Extract<SelectToolState, { phase: "arrayGrip" }>,
+    ctx: ToolContext
+  ): number | null {
+    if (!ARRAY_GRIP_FIELDS[state.role]) return null
+    const insert = ctx.document.get(state.entityId)
+    if (insert?.type !== "insert") return null
+    const edited = arrayGripped(insert, state.role, state.current, ctx.blocks)
+    return edited?.array
+      ? arrayGripValue(
+          edited.array,
+          arrayPlacement(edited, ctx.blocks(edited.blockId)),
+          state.role
+        )
+      : null
+  }
+
+  /** A value typed while an array grip is hot; refused, the grip stays hot. */
+  private commitArrayGrip(value: number, ctx: ToolContext): void {
+    if (this.state.phase !== "arrayGrip") return
+    const insert = ctx.document.get(this.state.entityId)
+    const edited =
+      insert?.type === "insert"
+        ? arrayGripTyped(insert, this.state.role, value, ctx.blocks)
+        : null
+    if (edited) this.finishArrayGrip(edited, ctx)
+  }
+
+  /**
+   * Commits the array its grip dragged to `cursor` makes, one undo step; a
+   * drag the grip refuses (a count past 32767, a ring past a turn) leaves it
+   * hot, as AutoCAD keeps asking (desktop arrays/d15c, ARRAYS-D72).
+   */
+  private placeArrayGrip(
+    state: Extract<SelectToolState, { phase: "arrayGrip" }>,
+    cursor: Vec2,
+    ctx: ToolContext
+  ): void {
+    const insert = ctx.document.get(state.entityId)
+    if (insert?.type !== "insert") {
+      ctx.dynamicInput.close()
+      this.state = { phase: "idle" }
+      ctx.requestRender()
+      return
+    }
+    const edited = arrayGripped(insert, state.role, cursor, ctx.blocks)
+    if (edited) this.finishArrayGrip(edited, ctx)
+  }
+
+  private finishArrayGrip(edited: InsertEntity, ctx: ToolContext): void {
+    ctx.dynamicInput.close()
+    this.state = { phase: "idle" }
+    const before = ctx.document.get(edited.id)
+    if (JSON.stringify(before) !== JSON.stringify(edited)) {
+      ctx.execute(new UpdateEntitiesCommand([edited]))
+    }
     ctx.requestRender()
   }
 

@@ -19,6 +19,7 @@ import {
 } from "../../../test/builders"
 import { entityPointToWorld, withElevation } from "../../domain/elevation"
 import { insertFlatGeometry } from "../../domain/blocks"
+import { createBlockDefinition, createInsert } from "../../domain/entities"
 import { THEME } from "../../scene/theme"
 import { es } from "../../locales/es"
 
@@ -2519,5 +2520,852 @@ describe("ARRAYRECT in a tilted UCS", () => {
         ).toBe(true)
       }
     }
+  })
+})
+
+/**
+ * The desktop pass's figure (`scripts/research/probes/arrays/dsk-en.sh`,
+ * zoomed in on it as there): a circle at -30,0 arrayed 4 by 3 at 8; a circle
+ * at 23,43 arrayed about 23,25, six items (the probes' square, as wide); a
+ * circle at 62,5 along a line 60,0–140,0 picked near its start, 6 apart.
+ */
+function figure(kind: "rectangular" | "polar" | "path"): CadHarness {
+  const entities: Entity[] =
+    kind === "rectangular"
+      ? [circleOf(p(-30, 0), 2, { id: "C" })]
+      : kind === "polar"
+        ? [circleOf(p(23, 43), 3, { id: "C" })]
+        : [
+            lineOf(p(60, 0), p(140, 0), { id: "PATH" }),
+            circleOf(p(62, 5), 2, { id: "C" }),
+          ]
+  const cad = createHarness({ entities })
+  answer(cad, "_ZOOM", "-50,-40", "150,90")
+  if (kind === "rectangular") {
+    answer(cad, "_ARRAYRECT", "_L", "", "_COU", "4", "3", "_S", "8", "8", "_X")
+  } else if (kind === "polar") {
+    answer(cad, "_ARRAYPOLAR", "_L", "", "23,25", "_X")
+  } else {
+    answer(cad, "_ARRAYPATH", "_L", "", "65,0", "_X")
+  }
+  cad.select(arrayOf(cad).id)
+  return cad
+}
+
+/** The grips the scene draws, where they are and their shape. */
+function gripsShown(cad: CadHarness): string[] {
+  return cad.scene().primitives.flatMap((prim) => {
+    const grip = (shape: string, at: { x: number; y: number }) => {
+      const w = cad.runtime.viewport.screenToWorld(at)
+      return [`${shape} ${round4(w.x)},${round4(w.y)}`]
+    }
+    if (prim.kind === "rect" && prim.fill === THEME.grip) {
+      return grip("square", {
+        x: prim.min.x + prim.width / 2,
+        y: prim.min.y + prim.height / 2,
+      })
+    }
+    if (prim.kind === "path" && prim.fill === THEME.grip) {
+      // An arrow's centre: its back's middle a half-size behind its tip.
+      const [tip, b1, b2] = prim.points
+      const back = { x: (b1.x + b2.x) / 2, y: (b1.y + b2.y) / 2 }
+      const u = { x: tip.x - back.x, y: tip.y - back.y }
+      const size = Math.hypot(u.x, u.y)
+      const centre = {
+        x: back.x + (u.x / size) * 4,
+        y: back.y + (u.y / size) * 4,
+      }
+      const w = cad.runtime.viewport.screenToWorld(centre)
+      const ahead = cad.runtime.viewport.screenToWorld(tip)
+      const heading = Math.atan2(ahead.y - w.y, ahead.x - w.x) * (180 / Math.PI)
+      return grip(`arrow@${(Math.round(heading) + 360) % 360}`, centre)
+    }
+    return []
+  })
+}
+
+/** The array's parameters but the path, which no grip changes. */
+function parameters(cad: CadHarness): Record<string, unknown> {
+  const rest = { ...(arrayOf(cad).array as unknown as Record<string, unknown>) }
+  delete rest.path
+  return rest
+}
+
+describe("the array's grips (AYG-01)", () => {
+  // desktop arrays/d11-1: the base square, arrows at the second and last
+  // column and row, a square at the far corner.
+  it("shows a rectangular array's grips", () => {
+    const cad = figure("rectangular")
+    cad.moveTo(p(100, 100))
+
+    expect(gripsShown(cad).sort()).toEqual(
+      [
+        "square -30,0",
+        "arrow@0 -22,0",
+        "arrow@0 -6,0",
+        "arrow@90 -30,8",
+        "arrow@90 -30,16",
+        "square -6,16",
+      ].sort()
+    )
+  })
+
+  // desktop arrays/d11-2: squares at the base point and the centre, an arrow
+  // at item 2 pointing round the ring, the ring grey through the base point.
+  it("shows a polar array's grips and its ring", () => {
+    const cad = figure("polar")
+    cad.moveTo(p(100, 100))
+
+    expect(gripsShown(cad).sort()).toEqual(
+      ["square 23,43", "square 23,25", "arrow@240 7.4115,34"].sort()
+    )
+    const rings = cad
+      .scene()
+      .primitives.filter(
+        (prim) =>
+          prim.kind === "circle" && prim.stroke?.color === THEME.arrayRing
+      )
+    expect(rings).toHaveLength(1)
+    const ring = rings[0] as {
+      center: { x: number; y: number }
+      radius: number
+    }
+    expect(cad.runtime.viewport.screenToWorld(ring.center)).toBeCloseToPoint(
+      p(23, 25)
+    )
+    const edge = cad.runtime.viewport.screenToWorld({
+      x: ring.center.x + ring.radius,
+      y: ring.center.y,
+    })
+    expect(edge.x - 23).toBeCloseTo(18)
+  })
+
+  // desktop arrays/d11-3: a square at the path's start, an arrow the spacing
+  // along it, on the path.
+  it("shows a path array's grips", () => {
+    const cad = figure("path")
+    cad.moveTo(p(100, 100))
+
+    expect(gripsShown(cad).sort()).toEqual(["arrow@0 66,0", "square 60,0"])
+  })
+
+  // A block reference that is no array keeps its one insertion grip.
+  it("leaves a plain reference its insertion grip", () => {
+    const cad = createHarness({
+      blocks: [createBlockDefinition("B", p(0, 0), [circle()])],
+      entities: [createInsert("B", p(40, 40), { id: "I" })],
+    })
+    cad.select("I")
+    cad.moveTo(p(500, 500))
+
+    expect(gripsShown(cad)).toEqual(["square 40,40"])
+  })
+
+  // desktop arrays/d14a (-6,0 → 13,0), d14b (→ 17,0), d14c (→ 13,6): the
+  // columns floor(d / 8) + 1, d along the axis from the base.
+  it("sets the columns from the last column's arrow", () => {
+    for (const to of [p(13, 0), p(17, 0), p(13, 6)]) {
+      const cad = figure("rectangular")
+
+      cad.drag(p(-6, 0), to)
+
+      expect(parameters(cad)).toMatchObject({ columns: 6, colSpacing: 8 })
+    }
+  })
+
+  // desktop arrays/d14k: dragged behind the base, -10 at 8 is 2 columns, -8 apart.
+  it("turns the columns back behind the base", () => {
+    const cad = figure("rectangular")
+
+    cad.drag(p(-6, 0), p(-40, 0))
+
+    expect(parameters(cad)).toMatchObject({ columns: 2, colSpacing: -8 })
+  })
+
+  // desktop arrays/d14e: the last row's arrow to -30,35 is 5 rows; d14g: the
+  // corner to 13,35 is 6 columns and 5 rows.
+  it("sets the rows, and both counts from the corner", () => {
+    const rows = figure("rectangular")
+    rows.drag(p(-30, 16), p(-30, 35))
+    expect(parameters(rows)).toMatchObject({ columns: 4, rows: 5 })
+
+    const both = figure("rectangular")
+    both.drag(p(-6, 16), p(13, 35))
+    expect(parameters(both)).toMatchObject({ columns: 6, rows: 5 })
+  })
+
+  // desktop arrays/d14i, d14j: a spacing arrow's spacing is the cursor's
+  // distance from the base along its axis: 12, 12.5.
+  it("sets a spacing from its arrow", () => {
+    const columns = figure("rectangular")
+    columns.drag(p(-22, 0), p(-18, 0))
+    expect(parameters(columns).colSpacing).toBeCloseTo(12)
+    expect(parameters(columns).rowSpacing).toBe(8)
+
+    const rows = figure("rectangular")
+    rows.drag(p(-30, 8), p(-30, 12.5))
+    expect(parameters(rows).colSpacing).toBe(8)
+    expect(parameters(rows).rowSpacing).toBeCloseTo(12.5)
+  })
+
+  // desktop arrays/d14h, d15b, d16a: the base square, a ring's centre and a
+  // path array's start move the array.
+  it("moves the array from its base square or centre", () => {
+    for (const [kind, from, to] of [
+      ["rectangular", p(-30, 0), p(-30, -20)],
+      ["polar", p(23, 25), p(30, 25)],
+      ["path", p(60, 0), p(60, -10)],
+    ] as const) {
+      const cad = figure(kind)
+      const before = arrayOf(cad)
+
+      cad.drag(from, to)
+
+      const after = arrayOf(cad)
+      expect(after.array).toEqual(before.array)
+      expect(after.position).toBeCloseToPoint({
+        x: before.position.x + to.x - from.x,
+        y: before.position.y + to.y - from.y,
+      })
+    }
+  })
+
+  // desktop arrays/d14 history: one step each, which U takes back.
+  it("is one undo step", () => {
+    const cad = figure("rectangular")
+    const before = arrayOf(cad)
+
+    cad.drag(p(-6, 0), p(13, 0))
+    expect(arrayOf(cad).array).toMatchObject({ columns: 6 })
+    answer(cad, "_U")
+
+    expect(arrayOf(cad)).toEqual(before)
+  })
+
+  // ARRAYS-D72, the preview the commit: while the arrow is held at 13,0 the
+  // scene draws the six columns the release makes.
+  it("previews what the release makes", () => {
+    const cad = figure("rectangular")
+
+    cad.mouseDown(p(-6, 0)).moveTo(p(0, 0)).moveTo(p(13, 0))
+
+    const xs = new Set(
+      cad.scene().primitives.flatMap((prim) => {
+        if (prim.kind !== "circle" || prim.stroke?.color === THEME.selected) {
+          return []
+        }
+        return [round4(cad.runtime.viewport.screenToWorld(prim.center).x)]
+      })
+    )
+    expect([...xs].sort((a, b) => a - b)).toEqual([-30, -22, -14, -6, 2, 10])
+    cad.mouseUp(p(13, 0))
+    expect(parameters(cad)).toMatchObject({ columns: 6 })
+  })
+
+  // desktop arrays/d17: 6 typed while the column count arrow is hot.
+  it("takes a count typed while the arrow is hot", () => {
+    const cad = figure("rectangular")
+
+    cad.click(p(-6, 0))
+    expect(cad.state().dynamicInput?.fields[0]?.label).toBe("Columns")
+    cad.type("6").enter()
+
+    expect(parameters(cad)).toMatchObject({ columns: 6, colSpacing: 8 })
+  })
+
+  // ARRAYS-D72: a count past 32767 is refused and the grip stays hot.
+  it("refuses a count past 32767 and keeps the grip hot", () => {
+    const cad = figure("rectangular")
+
+    cad.click(p(-6, 0)).type("40000").enter()
+    expect(parameters(cad)).toMatchObject({ columns: 4 })
+    cad.click(p(13, 0))
+
+    expect(parameters(cad)).toMatchObject({ columns: 6 })
+  })
+
+  // desktop arrays/d15a: the base square to 23,50 is a radius of 25; d15d:
+  // to 30,48 the base point stays on its ray, the radius |cursor − centre|;
+  // ARRAYS-D73: the source, item 1, goes with it.
+  it("stretches a ring's radius from its base square", () => {
+    const cad = figure("polar")
+
+    cad.drag(p(23, 43), p(23, 50))
+
+    const ring = arrayOf(cad).array
+    expect(ring).toMatchObject({ kind: "polar", items: 6, fill: 360 })
+    expect(ring?.kind === "polar" && ring.basePoint).toBeCloseToPoint(p(23, 50))
+    expect(hasCentre(cad, 23, 50)).toBe(true)
+    expect(hasCentre(cad, 23, 43)).toBe(false)
+    expect(centres(cad)).toHaveLength(6)
+    for (const c of centres(cad)) {
+      expect(Math.hypot(c.x - 23, c.y - 25)).toBeCloseTo(25)
+    }
+
+    const off = figure("polar")
+    off.drag(p(23, 43), p(30, 48))
+    const turned = arrayOf(off).array
+    expect(turned?.kind === "polar" && turned.basePoint).toBeCloseToPoint(
+      p(23, 25 + Math.hypot(7, 23))
+    )
+  })
+
+  // desktop arrays/d15e: the angle arrow to 45° from the base is 45 between,
+  // the fill (6 − 1) × 45; d15c: to 90° the fill would pass a turn, refused,
+  // the grip hot.
+  it("sets a ring's angle between, refusing a fill past a turn", () => {
+    const cad = figure("polar")
+
+    cad.drag(p(7.4115, 34), p(5, 25))
+    expect(parameters(cad)).toMatchObject({ items: 6, fill: 360 })
+    cad.click(p(10.272, 37.728))
+
+    expect(parameters(cad)).toMatchObject({ items: 6 })
+    const ring = arrayOf(cad).array
+    expect(ring?.kind === "polar" && ring.fill).toBeCloseTo(225)
+  })
+
+  // desktop arrays/d16b: the spacing arrow to 70,0 spaces the items 10, as
+  // many as fit on the 80 long path.
+  it("sets a path array's spacing and its items", () => {
+    const cad = figure("path")
+
+    cad.drag(p(66, 0), p(70, 0))
+
+    expect(parameters(cad).spacing).toBeCloseTo(10)
+    expect(parameters(cad).items).toBe(9)
+    const fit = figure("path")
+    fit.drag(p(66, 0), p(70.08, 0))
+    expect(parameters(fit)).toMatchObject({ items: 8 })
+  })
+
+  // ARRAYS-D8: the grips are the block's, so a turned array drags as it
+  // shows; its arrows turned with it.
+  it("drags a turned array as it shows", () => {
+    const cad = figure("rectangular")
+    cad.escape()
+    answer(cad, "_ROTATE", "_L", "", "-30,0", "90")
+    cad.select(arrayOf(cad).id).moveTo(p(100, 100))
+
+    expect(gripsShown(cad)).toContain("arrow@90 -30,24")
+    cad.drag(p(-30, 24), p(-30, 43))
+
+    expect(parameters(cad)).toMatchObject({ columns: 6, colSpacing: 8 })
+  })
+
+  // ARRAYS-D73: the stretched ring is saved with its source's anchor.
+  it("saves a stretched ring", () => {
+    const cad = figure("polar")
+    cad.drag(p(23, 43), p(23, 50))
+
+    const copy = createHarness()
+    copy.runtime.loadDrawing(cad.runtime.serializeDrawing())
+
+    expect(arrayOf(cad).array).toHaveProperty("sourceBase")
+    expect(arrayOf(copy).array).toEqual(arrayOf(cad).array)
+    expect(centres(copy)).toEqual(centres(cad))
+  })
+})
+
+/** The palette's groups as `title: label=value`, a `*` on a row that can be retyped. */
+function palette(cad: CadHarness): string[][] {
+  return (cad.state().properties.info?.groups ?? []).map((group) => [
+    group.title,
+    ...group.rows.map(
+      (row) => `${row.label}=${row.value}${row.edit ? "*" : ""}`
+    ),
+  ])
+}
+
+/** Retypes the palette's row labelled `label`, as a user does; whether it took. */
+function retype(cad: CadHarness, label: string, text: string): boolean {
+  const row = cad
+    .state()
+    .properties.info?.groups.flatMap((group) => group.rows)
+    .find((r) => r.label === label)
+  expect(row?.edit, label).toBeDefined()
+  return cad.runtime.setSelectionProperty(row!.edit!.property, text)
+}
+
+describe("the array's palette (AYG-02)", () => {
+  // desktop arrays/d13-1: no Block group; Base X/Y/Z under Geometry; the
+  // grid's rows under Misc, Included axis angle 90 greyed (Levels and Level
+  // spacing are options not built, ARRAYS-D75).
+  it("shows a rectangular array's rows", () => {
+    const cad = figure("rectangular")
+
+    expect(cad.state().properties.info?.title).toBe("Array (Rectangular)")
+    expect(palette(cad)).toEqual([
+      ["Geometry", "Base X=-30.00", "Base Y=0.00", "Base Z=0.00"],
+      [
+        "Misc",
+        "Columns=4*",
+        "Column spacing=8.00 mm*",
+        "Rows=3*",
+        "Row spacing=8.00 mm*",
+        "Row elevation increment=0.00 mm*",
+        "Included axis angle=90°",
+      ],
+    ])
+  })
+
+  // desktop arrays/d13-2: the centre and radius under Geometry; Direction,
+  // Items, Angle between items, Fill angle, Rotate items under Misc.
+  it("shows a polar array's rows", () => {
+    const cad = figure("polar")
+
+    expect(palette(cad)).toEqual([
+      [
+        "Geometry",
+        "Base X=23.00",
+        "Base Y=43.00",
+        "Base Z=0.00",
+        "Center X=23.00",
+        "Center Y=25.00",
+        "Center Z=0.00",
+        "Radius=18.00 mm*",
+      ],
+      [
+        "Misc",
+        "Direction=Counter-clockwise*",
+        "Items=6*",
+        "Angle between items=60°*",
+        "Fill angle=360°*",
+        "Rotate items=Yes*",
+      ],
+    ])
+  })
+
+  // desktop arrays/d13-3: Path length under Geometry; Method, Items, Item
+  // spacing, Align items under Misc.
+  it("shows a path array's rows", () => {
+    const cad = figure("path")
+
+    expect(palette(cad)).toEqual([
+      [
+        "Geometry",
+        "Base X=60.00",
+        "Base Y=0.00",
+        "Base Z=0.00",
+        "Path length=80.00 mm",
+      ],
+      [
+        "Misc",
+        "Method=Measure*",
+        "Items=14*",
+        "Item spacing=6.00 mm*",
+        "Align items=Yes*",
+      ],
+    ])
+  })
+
+  // desktop arrays/d20a: Columns 5; one step, U taking it back.
+  it("retypes a grid's counts and spacings", () => {
+    const cad = figure("rectangular")
+    const before = arrayOf(cad)
+
+    expect(retype(cad, "Columns", "5")).toBe(true)
+    expect(parameters(cad)).toMatchObject({ columns: 5 })
+    expect(retype(cad, "Row spacing", "12")).toBe(true)
+    expect(retype(cad, "Row elevation increment", "3")).toBe(true)
+    expect(parameters(cad)).toMatchObject({ rowSpacing: 12, rowElevation: 3 })
+    // A count must be one an array takes, a spacing not 0 (ARRAYS-D11).
+    expect(retype(cad, "Rows", "0")).toBe(false)
+    expect(retype(cad, "Rows", "2.5")).toBe(false)
+    expect(retype(cad, "Columns", "40000")).toBe(false)
+    expect(retype(cad, "Column spacing", "0")).toBe(false)
+
+    answer(cad, "_U", "_U", "_U")
+    expect(arrayOf(cad)).toEqual(before)
+  })
+
+  // desktop arrays/d20c: Items 8 keeps the fill, 45 apart; d20d: Angle
+  // between 30 makes the fill 150; d20e: Fill angle 180 keeps the items, 36
+  // apart; d20f: Radius 20 moves the base point to 23,45.
+  it("retypes a ring's items, angles and radius", () => {
+    const items = figure("polar")
+    expect(retype(items, "Items", "8")).toBe(true)
+    expect(parameters(items)).toMatchObject({ items: 8, fill: 360 })
+    expect(palette(items)[1]).toContain("Angle between items=45°*")
+
+    const between = figure("polar")
+    expect(retype(between, "Angle between items", "30")).toBe(true)
+    expect(parameters(between)).toMatchObject({ items: 6, fill: 150 })
+    // Past a turn: refused (desktop arrays/d15c's drag likewise).
+    expect(retype(between, "Angle between items", "90")).toBe(false)
+
+    const fill = figure("polar")
+    expect(retype(fill, "Fill angle", "180")).toBe(true)
+    expect(palette(fill)[1]).toContain("Angle between items=36°*")
+
+    const radius = figure("polar")
+    expect(retype(radius, "Radius", "20")).toBe(true)
+    expect(palette(radius)[0]).toContain("Base Y=45.00")
+    expect(hasCentre(radius, 23, 45)).toBe(true)
+  })
+
+  // ARRAYS-D75: Direction and Rotate items are choices.
+  it("turns a ring the other way and stops rotating its items", () => {
+    const cad = figure("polar")
+    const rows = cad.state().properties.info!.groups[1].rows
+    const direction = rows.find((row) => row.label === "Direction")!
+    expect(direction.edit?.choices?.map((c) => c.label)).toEqual([
+      "Counter-clockwise",
+      "Clockwise",
+    ])
+
+    expect(retype(cad, "Direction", "1")).toBe(true)
+    expect(retype(cad, "Rotate items", "0")).toBe(true)
+
+    expect(parameters(cad)).toMatchObject({ clockwise: true, rotate: false })
+    expect(palette(cad)[1]).toEqual([
+      "Misc",
+      "Direction=Clockwise*",
+      "Items=6*",
+      "Angle between items=60°*",
+      "Fill angle=360°*",
+      "Rotate items=No*",
+    ])
+  })
+
+  // desktop arrays/d20h: Item spacing 10 on the 80 long path is 9 items.
+  it("retypes a path array's spacing, method and alignment", () => {
+    const cad = figure("path")
+
+    expect(retype(cad, "Item spacing", "10")).toBe(true)
+    expect(parameters(cad)).toMatchObject({ spacing: 10, items: 9 })
+    expect(retype(cad, "Method", "0")).toBe(true)
+    expect(retype(cad, "Align items", "0")).toBe(true)
+    expect(retype(cad, "Align items", "1")).toBe(true)
+    expect(parameters(cad)).toMatchObject({ method: "divide", items: 9 })
+    expect(palette(cad)[1]).toEqual([
+      "Misc",
+      "Method=Divide*",
+      "Items=9*",
+      "Item spacing=10.00 mm",
+      "Align items=Yes*",
+    ])
+  })
+
+  // desktop arrays/d07-1 to d07-3, es-ES; the labels it truncates completed
+  // (ARRAYS-D76, unverified).
+  it("names its rows in Spanish", () => {
+    const labels = (kind: "rectangular" | "polar" | "path") => {
+      const cad = figure(kind)
+      cad.runtime.setLocale(es)
+      return palette(cad).map((group) => group.map((row) => row.split("=")[0]))
+    }
+
+    expect(labels("rectangular")).toEqual([
+      ["Geometría", "Base X", "Base Y", "Base Z"],
+      [
+        "Varios",
+        "Columnas",
+        "Espacio entre columnas",
+        "Filas",
+        "Espacio entre filas",
+        "Incremento de elevación de filas",
+        "Incluye el ángulo del eje",
+      ],
+    ])
+    expect(labels("polar")[1]).toEqual([
+      "Varios",
+      "Dirección",
+      "Elementos",
+      "Ángulo entre elementos",
+      "Ángulo de relleno",
+      "Girar objetos",
+    ])
+    expect(labels("path")).toEqual([
+      ["Geometría", "Base X", "Base Y", "Base Z", "Longitud de trayectoria"],
+      [
+        "Varios",
+        "Método",
+        "Elementos",
+        "Espaciado entre elementos",
+        "Alinear elementos",
+      ],
+    ])
+  })
+})
+
+/**
+ * The desktop pass's figure (`figure`) at its command's main prompt, the
+ * array not yet made; by default 4 columns and 3 rows 6 apart, the circle's
+ * own (desktop arrays/d18c).
+ */
+function atMainPrompt(
+  kind: "rectangular" | "polar" | "path",
+  ...answers: string[]
+): CadHarness {
+  const entities: Entity[] =
+    kind === "rectangular"
+      ? [circleOf(p(-30, 0), 2, { id: "C" })]
+      : kind === "polar"
+        ? [circleOf(p(23, 43), 3, { id: "C" })]
+        : [
+            lineOf(p(60, 0), p(140, 0), { id: "PATH" }),
+            circleOf(p(62, 5), 2, { id: "C" }),
+          ]
+  const cad = createHarness({ entities })
+  answer(cad, "_ZOOM", "-50,-40", "150,90")
+  if (kind === "rectangular") answer(cad, "_ARRAYRECT", "_L", "", ...answers)
+  else if (kind === "polar") {
+    answer(cad, "_ARRAYPOLAR", "_L", "", "23,25", ...answers)
+  } else answer(cad, "_ARRAYPATH", "_L", "", "65,0", ...answers)
+  expect(cad.state().commandLine.prompt).toMatch(/Select grip to edit array/)
+  return cad
+}
+
+const RECT_MAIN =
+  "Select grip to edit array or [ASsociative/COUnt/Spacing/COLumns/Rows/eXit] <eXit>:"
+
+/** The circles' centres the scene draws, rounded, sorted. */
+function drawnCentres(cad: CadHarness): string[] {
+  return cad
+    .scene()
+    .primitives.flatMap((prim) => {
+      if (prim.kind !== "circle") return []
+      const c = cad.runtime.viewport.screenToWorld(prim.center)
+      return [`${round4(c.x)},${round4(c.y)}`]
+    })
+    .sort()
+}
+
+describe("the main prompt's grips (AYG-03)", () => {
+  // desktop arrays/d18-1, d01-1 (es), d02-2, d03-2: the preview wears the
+  // grips the array wears at `Command:` (d11), the ring left out (d02-2).
+  it("draws the array's grips on the preview", () => {
+    const rect = atMainPrompt("rectangular", "_S", "8", "8")
+    rect.moveTo(p(100, 100))
+    expect(gripsShown(rect).sort()).toEqual(
+      [
+        "square -30,0",
+        "arrow@0 -22,0",
+        "arrow@0 -6,0",
+        "arrow@90 -30,8",
+        "arrow@90 -30,16",
+        "square -6,16",
+      ].sort()
+    )
+
+    const polar = atMainPrompt("polar")
+    polar.moveTo(p(100, 100))
+    expect(gripsShown(polar).sort()).toEqual(
+      ["square 23,43", "square 23,25", "arrow@240 7.4115,34"].sort()
+    )
+    expect(
+      polar
+        .scene()
+        .primitives.some(
+          (prim) =>
+            prim.kind === "circle" && prim.stroke?.color === THEME.arrayRing
+        )
+    ).toBe(false)
+
+    const path = atMainPrompt("path")
+    path.moveTo(p(100, 100))
+    expect(gripsShown(path).sort()).toEqual(["arrow@0 66,0", "square 60,0"])
+  })
+
+  // desktop arrays/d01b-1 (es): the grip under the cursor is drawn hot.
+  it("draws the grip under the cursor hot", () => {
+    const cad = atMainPrompt("rectangular")
+    cad.moveTo(p(-12, 0))
+
+    expect(gripsShown(cad)).not.toContain("arrow@0 -12,0")
+    expect(gripsShown(cad)).toHaveLength(5)
+    expect(
+      cad
+        .scene()
+        .primitives.some(
+          (prim) => prim.kind === "path" && prim.fill === THEME.gripHot
+        )
+    ).toBe(true)
+  })
+
+  // desktop arrays/d18c: the column count arrow taken, the preview follows
+  // the cursor with the grips hidden and a dashed line from the grip; 32 from
+  // the base at 6 apart is 6 columns, and the main prompt is asked again. No
+  // `** COLUMN COUNT **` lines: no grip writes its prompt here.
+  it("takes a grip's drag at the main prompt", () => {
+    const cad = atMainPrompt("rectangular")
+
+    cad.click(p(-12, 0)).moveTo(p(2, 0))
+    expect(cad.state().commandLine.prompt).not.toMatch(/Select grip/)
+    expect(gripsShown(cad)).toEqual([])
+    expect(
+      cad
+        .scene()
+        .primitives.some(
+          (prim) => prim.kind === "segment" && prim.stroke.dash !== undefined
+        )
+    ).toBe(true)
+    expect(drawnCentres(cad).filter((c) => c.endsWith(",0"))).toEqual(
+      ["-30,0", "-24,0", "-18,0", "-12,0", "-6,0", "0,0"].sort()
+    )
+    cad.click(p(2, 0))
+    expect(cad.state().commandLine.prompt).toBe(`ARRAYRECT ${RECT_MAIN}`)
+    expect(gripsShown(cad)).toContain("arrow@0 0,0")
+    answer(cad, "_X")
+
+    expect(parameters(cad)).toMatchObject({ columns: 6, colSpacing: 6 })
+    expect(cad.commandLog().slice(-2)).toEqual([RECT_MAIN, `${RECT_MAIN} _X`])
+  })
+
+  // As at `Command:` (d14): a press dragged to its release takes it too.
+  it("takes a grip dragged to its release", () => {
+    const cad = atMainPrompt("rectangular")
+
+    cad.drag(p(-12, 0), p(2, 0))
+    expect(cad.state().commandLine.prompt).toBe(`ARRAYRECT ${RECT_MAIN}`)
+    answer(cad, "_X")
+
+    expect(parameters(cad)).toMatchObject({ columns: 6 })
+  })
+
+  // desktop arrays/d18c: U after the command echoes ARRAYRECT, the whole run
+  // one step, the source back alone.
+  it("is one undo step with the command", () => {
+    const cad = atMainPrompt("rectangular")
+
+    cad.click(p(-12, 0)).click(p(2, 0))
+    cad.click(p(-30, 12)).click(p(-30, 20))
+    answer(cad, "_X")
+    expect(parameters(cad)).toMatchObject({ columns: 6, rows: 4 })
+    answer(cad, "_U")
+
+    expect(cad.commandLog().slice(-2)).toEqual(["U", "ARRAYRECT"])
+    expect(cad.entities().map((e) => e.id)).toEqual(["C"])
+  })
+
+  // desktop arrays/d17, as at `Command:`: a number typed while the grip is
+  // hot is its count.
+  it("takes a value typed while the grip is hot", () => {
+    const cad = atMainPrompt("rectangular")
+
+    cad.click(p(-12, 0))
+    expect(cad.state().dynamicInput?.fields[0]?.label).toBe("Columns")
+    cad.type("7").enter()
+    expect(cad.state().commandLine.prompt).toBe(`ARRAYRECT ${RECT_MAIN}`)
+    answer(cad, "_X")
+
+    expect(parameters(cad)).toMatchObject({ columns: 7 })
+  })
+
+  // desktop arrays/d18d: Enter at the count grip's prompt is refused in the
+  // console's words (its `an` typo not copied, ARRAYS-D77) and the main
+  // prompt asked again; at a spacing grip it goes back in silence
+  // (**unverified**).
+  it("refuses Enter while a count grip is hot and asks the main prompt again", () => {
+    const cad = atMainPrompt("rectangular")
+
+    cad.click(p(-12, 0)).moveTo(p(2, 0)).enter()
+    expect(cad.commandLog().at(-1)).toBe(
+      "Requires an integer between 1 and 32767, or option keyword."
+    )
+    expect(cad.state().commandLine.prompt).toBe(`ARRAYRECT ${RECT_MAIN}`)
+    const lines = cad.commandLog().length
+    cad.click(p(-24, 0)).enter()
+    expect(cad.commandLog()).toHaveLength(lines + 1)
+    expect(cad.state().commandLine.prompt).toBe(`ARRAYRECT ${RECT_MAIN}`)
+    answer(cad, "_X")
+
+    expect(parameters(cad)).toMatchObject({ columns: 4, colSpacing: 6 })
+  })
+
+  // ARRAYS-D77, **unverified**: Escape while a grip is hot is Escape at the
+  // command, the array made as it stood before the drag (d08).
+  it("makes the array as it stood at Escape while a grip is hot", () => {
+    const cad = atMainPrompt("rectangular")
+
+    cad.click(p(-12, 0)).moveTo(p(2, 0)).escape()
+
+    expect(cad.state().commandLine.prompt).toBe("Command:")
+    expect(parameters(cad)).toMatchObject({ columns: 4 })
+  })
+
+  // desktop arrays/d15a, d15e, as at `Command:`: the base square stretches
+  // the radius, the source going with it (ARRAYS-D73); the angle arrow sets
+  // the angle between.
+  it("takes a ring's radius and angle between at the main prompt", () => {
+    const cad = atMainPrompt("polar")
+
+    cad.click(p(23, 43)).click(p(23, 50))
+    answer(cad, "_X")
+    const ring = arrayOf(cad).array
+    expect(ring?.kind === "polar" && ring.basePoint).toBeCloseToPoint(p(23, 50))
+    expect(hasCentre(cad, 23, 43)).toBe(false)
+    expect(centres(cad)).toHaveLength(6)
+    for (const c of centres(cad)) {
+      expect(Math.hypot(c.x - 23, c.y - 25)).toBeCloseTo(25)
+    }
+
+    const angle = atMainPrompt("polar")
+    angle.click(p(7.4115, 34)).click(p(10.272, 37.728))
+    answer(angle, "_X")
+    const turned = arrayOf(angle).array
+    expect(turned?.kind === "polar" && turned.fill).toBeCloseTo(225)
+  })
+
+  // desktop arrays/d16b, as at `Command:`: the spacing arrow to 70,0 spaces
+  // the items 10 apart, as many as fit on the 80 long path.
+  it("takes a path array's spacing at the main prompt", () => {
+    const cad = atMainPrompt("path")
+
+    cad.click(p(66, 0)).click(p(70, 0))
+    answer(cad, "_X")
+
+    expect(parameters(cad).spacing).toBeCloseTo(10)
+    expect(parameters(cad).items).toBe(9)
+  })
+
+  // desktop arrays/d14h, as at `Command:`: the base square moves the array,
+  // the source with it (**unverified** mid-command); loose copies too, the
+  // grips worn whatever ASsociative says (ARRAYS-D77, **unverified**).
+  it("moves the array from its base square", () => {
+    const cad = atMainPrompt("rectangular")
+    cad.click(p(-30, 0)).click(p(-30, -20))
+    expect(gripsShown(cad)).toContain("square -30,-20")
+    answer(cad, "_X")
+    expect(hasCentre(cad, -30, -20)).toBe(true)
+    expect(hasCentre(cad, -30, 0)).toBe(false)
+    expect(centres(cad)).toHaveLength(12)
+
+    const loose = atMainPrompt("rectangular", "_AS", "_N")
+    loose.click(p(-30, 0)).click(p(-30, -20))
+    answer(loose, "_X")
+    expect(loose.entities()).toHaveLength(12)
+    expect(loose.runtime.document.get("C")).toMatchObject({
+      center: { x: -30, y: -20 },
+    })
+    answer(loose, "_U")
+    expect(loose.entities()).toHaveLength(1)
+    expect(loose.runtime.document.get("C")).toMatchObject({
+      center: { x: -30, y: 0 },
+    })
+  })
+
+  // ARRAYS-D73 without associativity: the stretched ring's loose copies
+  // move the source too.
+  it("moves a loose ring's source with its radius", () => {
+    const cad = atMainPrompt("polar", "_AS", "_N")
+
+    cad.click(p(23, 43)).click(p(23, 50))
+    answer(cad, "_X")
+
+    expect(hasCentre(cad, 23, 50)).toBe(true)
+    expect(hasCentre(cad, 23, 43)).toBe(false)
+    expect(centres(cad)).toHaveLength(6)
+  })
+
+  // A click on no grip asks the main prompt again, as before.
+  it("asks the main prompt again at a click on no grip", () => {
+    const cad = atMainPrompt("rectangular")
+
+    cad.click(p(100, 100))
+
+    expect(cad.state().commandLine.prompt).toBe(`ARRAYRECT ${RECT_MAIN}`)
+    expect(gripsShown(cad)).toHaveLength(6)
   })
 })

@@ -2,6 +2,7 @@ import { Vec2 } from "../../geometry/Vec2"
 import { Vec3 } from "../../geometry/Vec3"
 import { Entity, EntityId } from "../../domain/entities"
 import type { Lasso } from "./boxSelection"
+import type { ArrayGripRole } from "./arrayGrips"
 
 export type LineEnd = "start" | "end"
 
@@ -28,6 +29,8 @@ export type DimensionPoint = "first" | "second" | "line" | "vertex"
  * - `ellipseAxis` — an ellipse's quadrant, its axis end at a quarter-turn
  *   `quadrant` of its parameter: that half-axis to the cursor's distance.
  * - `ellipseEnd` — an elliptical arc's end: swing it round the ellipse.
+ * - `array` — an array's grip that edits its parameters (`arrayGrips.ts`);
+ *   its base square and a ring's centre are `move`.
  */
 export type GripRole =
   | { readonly kind: "lineEnd"; readonly end: LineEnd }
@@ -42,6 +45,10 @@ export type GripRole =
   | { readonly kind: "mtextWidth" }
   | { readonly kind: "ellipseAxis"; readonly quadrant: 0 | 1 | 2 | 3 }
   | { readonly kind: "ellipseEnd"; readonly end: LineEnd }
+  | { readonly kind: "array"; readonly grip: ArrayEditRole }
+
+/** The array grips that edit its parameters rather than move it. */
+export type ArrayEditRole = Exclude<ArrayGripRole, "move">
 
 /** The grips that reshape an ellipse (desktop ellipse/d07). */
 export type EllipseGripRole = Extract<
@@ -54,11 +61,16 @@ export interface Grip {
   readonly role: GripRole
   /** In the WCS, on its object: at its height there and in its plane. */
   readonly world: Vec3
-  /** How it is drawn: round at a CV spline's vertices, else a square. */
+  /**
+   * How it is drawn: round at a CV spline's vertices, an arrow at an array's
+   * spacing, count and angle grips (desktop arrays/d11), else a square.
+   */
   readonly shape?: GripShape
+  /** Where an arrow points, a unit vector in the WCS's plan. */
+  readonly along?: Vec2
 }
 
-export type GripShape = "square" | "round"
+export type GripShape = "square" | "round" | "arrow"
 
 export type SelectToolState =
   | {
@@ -196,6 +208,22 @@ export type SelectToolState =
       readonly entityId: EntityId
       readonly point: DimensionPoint
       readonly origin: Vec2
+      readonly current: Vec2
+      readonly pressScreen: Vec2
+    }
+  | {
+      /**
+       * An array's spacing, count, radius or angle grip is hot: the array
+       * as the grip dragged to the cursor makes it (`dragArrayGrip`).
+       */
+      readonly phase: "arrayGrip"
+      readonly entityId: EntityId
+      readonly role: ArrayEditRole
+      /** Where the grip was taken, drawn hot there with its shape. */
+      readonly origin: Vec3
+      readonly shape: GripShape
+      readonly along?: Vec2
+      /** Live cursor position. */
       readonly current: Vec2
       readonly pressScreen: Vec2
     }

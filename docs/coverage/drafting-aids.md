@@ -334,7 +334,8 @@ its radius (desktop circle/d08, d09): a number typed while it is hot is the radi
 (help GUID-01DE459C, desktop circle/d15), Ortho bends its drag as it bends a pick (**unverified**
 on AutoCAD's side), and in a rotated UCS the grips stay at the circle's own quadrants, where the
 Quadrant snap turns with the UCS (d15); blue squares 9 px across (GRIPSIZE's default), the one
-under the cursor red (d15)
+under the cursor red (d15); an array's own grips, squares and arrows, and their drags: modify.md,
+the array object
 
 **Missing:** the end grip's hover menu, `Stretch` and `Lengthen` (es `Estirar`, `Longitud`, d15),
 and so Lengthen from a grip; an arc's hover menus (desktop arc/d07: the middle grip's `Stretch`,

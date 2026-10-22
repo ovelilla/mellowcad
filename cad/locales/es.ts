@@ -447,7 +447,24 @@ export const es: EngineLocale = {
         "endTangentVectorX": "Vector de tangente final X",
         "endTangentVectorY": "Vector de tangente final Y",
         "endTangentVectorZ": "Vector de tangente final Z",
-        "fitTolerance": "Ajustar tolerancia"
+        "fitTolerance": "Ajustar tolerancia",
+        "baseX": "Base X",
+        "baseY": "Base Y",
+        "baseZ": "Base Z",
+        "pathLength": "Longitud de trayectoria",
+        "columns": "Columnas",
+        "columnSpacing": "Espacio entre columnas",
+        "rows": "Filas",
+        "rowSpacing": "Espacio entre filas",
+        "rowElevationIncrement": "Incremento de elevación de filas",
+        "includedAxisAngle": "Incluye el ángulo del eje",
+        "direction": "Dirección",
+        "items": "Elementos",
+        "angleBetweenItems": "Ángulo entre elementos",
+        "fillAngle": "Ángulo de relleno",
+        "rotateItems": "Girar objetos",
+        "itemSpacing": "Espaciado entre elementos",
+        "alignItems": "Alinear elementos"
       },
       "value": {
         "yes": "Sí",
@@ -461,7 +478,11 @@ export const es: EngineLocale = {
         "sqrtChord": "RaízcuadradaCuerda",
         "uniform": "Uniforme",
         "show": "Mostrar",
-        "hide": "Ocultar"
+        "hide": "Ocultar",
+        "counterClockwise": "En el sentido antihorario",
+        "clockwise": "En el sentido horario",
+        "divide": "Dividir",
+        "measure": "Medir"
       },
       "justify": {
         "left": "Izquierda",

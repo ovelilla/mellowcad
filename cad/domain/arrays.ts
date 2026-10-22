@@ -128,7 +128,9 @@ export function polarAngleBetween(
 
 /**
  * The ring's items after the source: each turned about the centre, or, not
- * rotated, moved as the base point turns about it.
+ * rotated, moved as the base point turns about it. A ring whose radius was
+ * stretched moves every item, the source's too, by how far its base point
+ * went (ARRAYS-D73: `arraySourceItem` places the source).
  */
 export function polarArrayItems(
   ring: PolarArray,
@@ -136,17 +138,29 @@ export function polarArrayItems(
 ): ArrayItem[] {
   const between = polarAngleBetween(ring)
   const step = ((ring.clockwise ? -between : between) * Math.PI) / 180
+  const anchor = ring.sourceBase ?? ring.basePoint
+  const shift = V.sub(ring.basePoint, anchor)
   const out: ArrayItem[] = []
   for (let k = 1; k < ring.items && out.length < limit; k++) {
     const turn = k * step
     if (ring.rotate) {
-      out.push({ move: { x: 0, y: 0 }, pivot: ring.center, turn })
+      out.push({ move: shift, pivot: ring.center, turn })
     } else {
       const moved = rotatePoint(ring.basePoint, ring.center, turn)
-      out.push({ move: V.sub(moved, ring.basePoint), pivot: moved, turn: 0 })
+      out.push({ move: V.sub(moved, anchor), pivot: moved, turn: 0 })
     }
   }
   return out
+}
+
+/**
+ * Where the source itself goes, item 1: null where it stands in the block,
+ * as it does in every array but a ring whose radius was stretched (ARRAYS-D73).
+ */
+export function arraySourceItem(array: ArrayParameters): ArrayItem | null {
+  if (array.kind !== "polar" || !array.sourceBase) return null
+  const move = V.sub(array.basePoint, array.sourceBase)
+  return V.length(move) === 0 ? null : { move, pivot: array.basePoint, turn: 0 }
 }
 
 const PATH_EPS = 1e-9
@@ -297,6 +311,43 @@ export function pointAlongPath(
     }
   }
   return { point: { x: 0, y: 0 }, direction: 0 }
+}
+
+/** How far along the path its point nearest `point` is. */
+export function distanceAlongPath(path: ArrayPath, point: Vec2): number {
+  let best = Infinity
+  let along = 0
+  let walked = 0
+  for (const piece of path.pieces) {
+    const length = pieceLength(piece)
+    let t: number
+    if (piece.kind === "line") {
+      const ab = V.sub(piece.b, piece.a)
+      const span = V.lengthSq(ab)
+      t = span > 0 ? V.dot(V.sub(point, piece.a), ab) / span : 0
+    } else {
+      // The angle from the piece's start, in its sweep's sense, as a part of it.
+      const angle = Math.atan2(
+        point.y - piece.center.y,
+        point.x - piece.center.x
+      )
+      const turn = Math.PI * 2
+      const from = (Math.sign(piece.sweep) * (angle - piece.start)) % turn
+      const swept = from < 0 ? from + turn : from
+      const sweep = Math.abs(piece.sweep)
+      // Past the sweep, the nearer end: the gap to the start is what is left of the turn.
+      t = swept <= sweep ? swept / sweep : swept - sweep < turn - swept ? 1 : 0
+    }
+    t = Math.min(Math.max(t, 0), 1)
+    const at = pointAlongPath(path, walked + t * length).point
+    const distance = V.distance(at, point)
+    if (distance < best - 1e-12) {
+      best = distance
+      along = walked + t * length
+    }
+    walked += length
+  }
+  return along
 }
 
 /**

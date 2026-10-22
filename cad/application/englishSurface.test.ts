@@ -1321,6 +1321,51 @@ describe("the engine's English surface", () => {
           .do("release", (c) => c.mouseUp(at(290, 0)))
           .do("escape", (c) => c.escape())
     )
+    const typed = (c: CadHarness, ...texts: string[]) => {
+      for (const text of texts) {
+        c.runtime.setCommandLineText(text)
+        c.runtime.submitCommandLine()
+      }
+    }
+    walk(
+      "array grips and palette",
+      createHarness({
+        entities: [
+          circleOf(p(-30, 0), 2, { id: "R" }),
+          circleOf(p(23, 43), 3, { id: "O" }),
+          lineOf(p(60, 0), p(140, 0), { id: "PATH" }),
+          circleOf(p(62, 5), 2, { id: "Q" }),
+        ],
+      }),
+      (s) =>
+        s
+          .do("the three arrays", (c) => {
+            typed(c, "_ZOOM", "-50,-40", "150,90")
+            c.select("R").command("ARRAYRECT")
+            typed(c, "_COU", "4", "3", "_S", "8", "8", "_X")
+            c.select("O").command("ARRAYPOLAR")
+            typed(c, "23,25", "_X")
+            c.select("Q").command("ARRAYPATH")
+            typed(c, "65,0", "_X")
+            c.moveTo(at(0, 100))
+          })
+          .do("select rectangular", (c) => c.click(at(-28, 0)))
+          .do("grab column count", (c) => c.click(at(-6, 0)))
+          .do("type 6", (c) => c.type("6").enter())
+          .do("grab column spacing", (c) => c.click(at(-22, 0)))
+          .do("escape", (c) => c.escape())
+          .do("escape", (c) => c.escape())
+          .do("select polar", (c) => c.click(at(26, 43)))
+          .do("grab radius", (c) => c.click(at(23, 43)))
+          .do("escape", (c) => c.escape())
+          .do("grab angle between", (c) => c.click(at(7.4115, 34)))
+          .do("escape", (c) => c.escape())
+          .do("escape", (c) => c.escape())
+          .do("select path", (c) => c.click(at(64, 5)))
+          .do("grab item spacing", (c) => c.click(at(66, 0)))
+          .do("escape", (c) => c.escape())
+          .do("escape", (c) => c.escape())
+    )
     walk(
       "arc segment grip",
       createHarness({

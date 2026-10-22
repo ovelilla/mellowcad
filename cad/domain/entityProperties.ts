@@ -11,7 +11,19 @@ import {
   InsertEntity,
   PolylineEntity,
   Entity,
+  ArrayParameters,
 } from "./entityTypes"
+import {
+  withGridCounts,
+  withGridSpacing,
+  withPathItems,
+  withPathMethod,
+  withPathSpacing,
+  withRingAngleBetween,
+  withRingFill,
+  withRingItems,
+  withRingRadius,
+} from "./arrayEdits"
 import {
   polylineSegments,
   polylineWidth,
@@ -80,6 +92,24 @@ export type EntityProperty =
   | "globalWidth"
   /** A polyline's Closed, a choice: 1 Yes, 0 No. */
   | "closed"
+  /** An array's rows (desktop arrays/d13); its Radius is `radius`. */
+  | "arrayColumns"
+  | "arrayColumnSpacing"
+  | "arrayRows"
+  | "arrayRowSpacing"
+  | "arrayRowElevation"
+  /** A ring's Direction, a choice: 1 Clockwise, 0 Counter-clockwise. */
+  | "arrayClockwise"
+  | "arrayItems"
+  | "arrayAngleBetween"
+  | "arrayFillAngle"
+  /** A ring's Rotate items, a choice: 1 Yes, 0 No. */
+  | "arrayRotateItems"
+  /** A path array's Method, a choice: 1 Measure, 0 Divide. */
+  | "arrayMethod"
+  | "arrayItemSpacing"
+  /** A path array's Align items, a choice: 1 Yes, 0 No. */
+  | "arrayAlignItems"
   | ZProperty
 
 /** The rows that write an object's Z, all in the WCS here. */
@@ -450,6 +480,14 @@ function applyInsertProperty(
   property: EntityProperty,
   value: number
 ): InsertEntity | null {
+  if (insert.array && property.startsWith("array")) {
+    const array = applyArrayProperty(insert, insert.array, property, value)
+    return array && { ...insert, array }
+  }
+  if (insert.array?.kind === "polar" && property === "radius") {
+    const ring = withRingRadius(insert.array, value / insert.scale)
+    return ring && { ...insert, array: ring }
+  }
   switch (property) {
     case "positionX":
       return { ...insert, position: { x: value, y: insert.position.y } }
@@ -461,5 +499,73 @@ function applyInsertProperty(
       return { ...insert, rotation: toRadians(value) }
     default:
       return null
+  }
+}
+
+/**
+ * An array's Misc rows (desktop arrays/d20, ARRAYS-D75): a count from 1 to
+ * 32767, a distance in the drawing's units (the reference's scale divided
+ * out), an angle in degrees, a choice 1 or 0; a value that does not apply to
+ * the array's kind is null.
+ */
+function applyArrayProperty(
+  insert: InsertEntity,
+  array: ArrayParameters,
+  property: EntityProperty,
+  value: number
+): ArrayParameters | null {
+  const length = value / insert.scale
+  const choice = value === 0 || value === 1 ? value === 1 : null
+  switch (array.kind) {
+    case "rectangular":
+      switch (property) {
+        case "arrayColumns":
+          return withGridCounts(array, value, array.rows)
+        case "arrayRows":
+          return withGridCounts(array, array.columns, value)
+        case "arrayColumnSpacing":
+          return withGridSpacing(array, "column", length)
+        case "arrayRowSpacing":
+          return withGridSpacing(array, "row", length)
+        case "arrayRowElevation":
+          return { ...array, rowElevation: length }
+        default:
+          return null
+      }
+    case "polar":
+      switch (property) {
+        case "arrayItems":
+          return withRingItems(array, value)
+        case "arrayAngleBetween":
+          return withRingAngleBetween(array, value)
+        case "arrayFillAngle":
+          return withRingFill(array, value)
+        case "arrayClockwise":
+          // A mirrored reference turns its ring the other way round.
+          return choice === null
+            ? null
+            : { ...array, clockwise: choice !== Boolean(insert.mirrored) }
+        case "arrayRotateItems":
+          return choice === null ? null : { ...array, rotate: choice }
+        default:
+          return null
+      }
+    case "path":
+      switch (property) {
+        case "arrayItems":
+          return withPathItems(array, value)
+        case "arrayItemSpacing":
+          return array.method === "measure"
+            ? withPathSpacing(array, length)
+            : null
+        case "arrayMethod":
+          return choice === null
+            ? null
+            : withPathMethod(array, choice ? "measure" : "divide")
+        case "arrayAlignItems":
+          return choice === null ? null : { ...array, align: choice }
+        default:
+          return null
+      }
   }
 }

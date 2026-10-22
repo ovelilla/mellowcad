@@ -22,7 +22,7 @@ import {
   attributeShown,
   blockAttributeText,
 } from "./attributes"
-import { arrayItems, placeArrayItem } from "./arrays"
+import { arrayItems, arraySourceItem, placeArrayItem } from "./arrays"
 
 /**
  * How deep block references may nest before the expansion gives up. AutoCAD
@@ -67,7 +67,10 @@ function referencedObjects(
   block: BlockDefinition
 ): readonly Entity[] {
   if (!insert.array) return block.entities
-  const out = [...block.entities]
+  const first = arraySourceItem(insert.array)
+  const out = first
+    ? block.entities.map((entity) => placeArrayItem(entity, first))
+    : [...block.entities]
   for (const item of arrayItems(insert.array)) {
     for (const entity of block.entities) out.push(placeArrayItem(entity, item))
   }

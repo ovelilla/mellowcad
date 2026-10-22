@@ -1,11 +1,12 @@
 import { Vec2 } from "../../geometry/Vec2"
-import { Entity, EntityId, entityBounds } from "../../domain/entities"
+import { Vec3 } from "../../geometry/Vec3"
 import {
-  isFullTurn,
-  placeArrayItem,
-  polarAngleBetween,
-  polarArrayItems,
-} from "../../domain/arrays"
+  ArrayParameters,
+  Entity,
+  EntityId,
+  entityBounds,
+} from "../../domain/entities"
+import { isFullTurn, polarAngleBetween } from "../../domain/arrays"
 import { parseNumber } from "../../domain/units"
 import {
   isCoordinateExpression,
@@ -13,9 +14,14 @@ import {
 } from "../input/coordinateInput"
 import { ScenePrimitive } from "../../scene/types"
 import { ObjectSelector } from "./objectSelection"
-import { MAX_PREVIEW_ITEMS, refusesCount, takesCount } from "./arrayCounts"
-import { drawn } from "./ghostLook"
-import { ArrayAssociativity, makeArray, reportArrayType } from "./arrayObject"
+import { refusesCount, takesCount } from "./arrayCounts"
+import {
+  ArrayAssociativity,
+  arrayPreview,
+  makeArray,
+  reportArrayType,
+} from "./arrayObject"
+import { ArrayAtPrompt, ArrayPromptGrips } from "./arrayPromptGrips"
 import type { PromptId } from "../../locales/types"
 import {
   CommandOption,
@@ -43,8 +49,9 @@ import {
  * defaults show. eXit or Enter makes the array (`makeArray`), one undo step
  * with the source as item 1, the reference at the centre (probe arrays/p405);
  * so does Escape once the centre is given (**unverified**: d08c's polar run
- * was inconclusive), before it nothing. Base point, Axis of rotation, ROWs
- * and Levels are not offered; ROWs is declared, so that `R` asks which.
+ * was inconclusive), before it nothing. The main prompt picks the preview's
+ * grips (`ArrayPromptGrips`). Base point, Axis of rotation, ROWs and Levels
+ * are not offered; ROWs is declared, so that `R` asks which.
  */
 
 const DEFAULT_ITEMS = 6
@@ -71,6 +78,8 @@ interface PolarConfig {
    * turned: LIST's `Base point:` (probe arrays/p405).
    */
   readonly basePoint: Vec2
+  /** Where the base point stood before its radius grip moved it (ARRAYS-D73). */
+  readonly sourceBase?: Vec2
 }
 
 type ArrayPolarState =
@@ -102,6 +111,19 @@ export class ArrayPolarTool implements Tool {
     done: (ctx) => this.confirmSelection(ctx),
   })
   private lastScreen: Vec2 | null = null
+  private readonly grips = new ArrayPromptGrips({
+    take: (array) => {
+      if (this.state.phase !== "edit" || array.kind !== "polar") return
+      const { center, basePoint, sourceBase } = array
+      const { items, fill, clockwise, rotate } = array
+      this.state = {
+        ...this.state,
+        config: { ...this.state.config, center, basePoint, sourceBase },
+        ring: { items, fill, clockwise, rotate },
+      }
+    },
+    main: (ctx) => this.ask("main", ctx),
+  })
 
   constructor(
     private readonly mode: ArrayAssociativity = { associative: true }
@@ -132,7 +154,7 @@ export class ArrayPolarTool implements Tool {
     ctx.dynamicInput.close()
   }
 
-  question(): PromptId | ToolQuestion {
+  question(): PromptId | ToolQuestion | null {
     const state = this.state
     switch (state.phase) {
       case "center":
@@ -145,6 +167,7 @@ export class ArrayPolarTool implements Tool {
     const { ring } = state
     switch (state.step) {
       case "main":
+        if (this.grips.isHot()) return null
         // ROWs before ROTate items: `R` asks `ROWs or ROTate?` (probe
         // arrays/p210).
         return {
@@ -194,7 +217,7 @@ export class ArrayPolarTool implements Tool {
     if (state.phase !== "edit") return this.selector.takes()
     switch (state.step) {
       case "main":
-        return "point"
+        return this.grips.isHot() ? null : "point"
       case "items":
         return { refusal: "requiresPositiveInteger" }
       case "between":
@@ -214,6 +237,7 @@ export class ArrayPolarTool implements Tool {
     if (this.state.phase !== "edit") return []
     switch (this.state.step) {
       case "main":
+        if (this.grips.isHot()) return []
         return [
           { id: "ASsociative" },
           { id: "Items" },
@@ -237,7 +261,7 @@ export class ArrayPolarTool implements Tool {
     if (this.state.phase !== "edit") return null
     switch (this.state.step) {
       case "main":
-        return "eXit"
+        return this.grips.isHot() ? null : "eXit"
       case "associative":
         return this.mode.associative ? "Yes" : "No"
       case "rotate":
@@ -290,9 +314,12 @@ export class ArrayPolarTool implements Tool {
         this.selector.onPointerMove(input, ctx)
         break
       case "center":
-      case "edit":
+      case "edit": {
+        const at = this.atPrompt()
+        if (at) this.grips.onPointerMove(input, at, ctx)
         ctx.dynamicInput.setPosition(input.screen)
         break
+      }
     }
 
     ctx.requestRender()
@@ -308,6 +335,11 @@ export class ArrayPolarTool implements Tool {
       case "center":
         this.enterEdit(input.point, ctx)
         return
+      case "edit": {
+        const at = this.atPrompt()
+        if (at) this.grips.onPointerDown(input, at, ctx)
+        return
+      }
     }
   }
 
@@ -320,12 +352,15 @@ export class ArrayPolarTool implements Tool {
     return (
       this.state.phase === "edit" &&
       this.state.step === "main" &&
+      !this.grips.isHot() &&
       (isCoordinateExpression(text) || parseNumber(text) !== null)
     )
   }
 
   onPointerUp(input: PointerInput, ctx: ToolContext): void {
     if (this.state.phase === "selecting") this.selector.onPointerUp(input, ctx)
+    const at = this.atPrompt()
+    if (at) this.grips.onPointerUp(input, at, ctx)
   }
 
   cycleLasso(ctx: ToolContext): boolean {
@@ -336,6 +371,7 @@ export class ArrayPolarTool implements Tool {
     if (this.state.phase === "selecting") return this.selector.onEnter(ctx)
     if (this.state.phase === "center") return this.refuseNoCenter(ctx)
     if (this.state.phase === "edit" && this.state.step === "main") {
+      if (this.grips.onEnter(ctx)) return true
       // <eXit>: the array is made and the command ends.
       this.create(ctx)
       ctx.endCommand()
@@ -363,8 +399,13 @@ export class ArrayPolarTool implements Tool {
     // center); picking objects and typing parameters do not.
     return (
       this.state.phase === "center" ||
+      (this.state.phase === "edit" && this.grips.isHot()) ||
       (this.state.phase === "selecting" && this.selector.wantsSnap())
     )
+  }
+
+  getConstraintAnchor(): Vec2 | Vec3 | null {
+    return this.atPrompt() ? this.grips.anchor() : null
   }
 
   /**
@@ -376,19 +417,32 @@ export class ArrayPolarTool implements Tool {
     if (state.phase === "selecting") return this.selector.buildOverlay(ctx)
     if (state.phase !== "edit") return []
 
-    const ring = this.previewRing(ctx, state.ring, state.step)
     const { originals } = state.config
-    return [
-      ...originals.flatMap((entity) => drawn(ctx, entity, "plain")),
-      ...polarArrayItems(
-        { ...state.config, ...ring },
-        MAX_PREVIEW_ITEMS
-      ).flatMap((item) =>
-        originals.flatMap((entity) =>
-          drawn(ctx, placeArrayItem(entity, item), "plain")
-        )
-      ),
-    ]
+    const at = this.atPrompt()
+    if (at) {
+      const { array, offset } = this.grips.shown(at)
+      return [
+        ...arrayPreview(ctx, originals, array, offset),
+        ...this.grips.overlay(at, ctx),
+      ]
+    }
+    const ring = this.previewRing(ctx, state.ring, state.step)
+    return arrayPreview(
+      ctx,
+      originals,
+      polarParameters(state.config, ring),
+      this.grips.moved()
+    )
+  }
+
+  /** The array at the main prompt, whose grips it picks; null at any other. */
+  private atPrompt(): ArrayAtPrompt | null {
+    const state = this.state
+    if (state.phase !== "edit" || state.step !== "main") return null
+    return {
+      array: polarParameters(state.config, state.ring),
+      base: state.config.center,
+    }
   }
 
   /** Goes on from the set `Select objects:` closed to the center point. */
@@ -443,6 +497,7 @@ export class ArrayPolarTool implements Tool {
   private enterEdit(center: Vec2, ctx: ToolContext): void {
     if (this.state.phase !== "center") return
     const originals = this.state.originals
+    this.grips.start()
     this.state = {
       phase: "edit",
       config: {
@@ -534,15 +589,27 @@ export class ArrayPolarTool implements Tool {
     if (state.phase !== "edit") return
     // Left first: the command's end deactivates the tool, which commits too.
     this.state = { phase: "selecting" }
-    const { originals, center, basePoint } = state.config
     makeArray(
       ctx,
-      originals,
-      { kind: "polar", center, basePoint, ...state.ring },
-      center,
-      this.mode
+      state.config.originals,
+      polarParameters(state.config, state.ring),
+      state.config.center,
+      this.mode,
+      this.grips.moved()
     )
     ctx.dynamicInput.close()
+  }
+}
+
+/** The ring's parameters, as the array object keeps them. */
+function polarParameters(config: PolarConfig, ring: Ring): ArrayParameters {
+  const { center, basePoint, sourceBase } = config
+  return {
+    kind: "polar",
+    center,
+    basePoint,
+    ...(sourceBase ? { sourceBase } : {}),
+    ...ring,
   }
 }
 

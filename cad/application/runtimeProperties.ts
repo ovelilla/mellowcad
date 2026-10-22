@@ -2,6 +2,7 @@ import { CadDocument } from "../domain/Document"
 import {
   applyEntityProperty,
   assignEntityColor,
+  BlockLookup,
   assignEntityLayer,
   assignEntityLinetype,
   assignEntityLineweight,
@@ -453,7 +454,8 @@ export function buildPropertiesUi(
   filter: EntityType | null,
   settings: DocumentSettings,
   text: EngineText,
-  vertex = 0
+  vertex = 0,
+  blocks?: BlockLookup
 ): PropertiesUi {
   const counts = new Map<EntityType, number>()
   for (const entity of entities) {
@@ -476,7 +478,7 @@ export function buildPropertiesUi(
     // With one type there is no All entry: the type is the whole selection.
     filter: shown ?? (types.length === 1 ? types[0].type : null),
     filters,
-    info: buildSelectionInfo(edited, settings, text, vertex),
+    info: buildSelectionInfo(edited, settings, text, vertex, blocks),
     layerId: commonSelectionLayer(edited),
     color: commonSelectionColor(edited),
     linetype: commonSelectionLinetype(edited),

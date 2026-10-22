@@ -22,6 +22,8 @@ export const THEME = {
   grip: "#3b82f6",
   /** Hot grip currently being dragged — AutoCAD's red square. */
   gripHot: "#ef4444",
+  /** A selected polar array's ring through its base point, grey (desktop arrays/d11-2). */
+  arrayRing: "#8a8f96",
   /** TRIM's ✕ beside the cursor (desktop trim/d01-1z). */
   trimBadge: "#eb5555",
   /** The circle-and-slash beside the cursor where a pick is refused (desktop trim/d09-1). */

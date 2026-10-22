@@ -453,7 +453,24 @@ export const en: EngineCatalog = {
         "endTangentVectorX": "End tangent vector X",
         "endTangentVectorY": "End tangent vector Y",
         "endTangentVectorZ": "End tangent vector Z",
-        "fitTolerance": "Fit tolerance"
+        "fitTolerance": "Fit tolerance",
+        "baseX": "Base X",
+        "baseY": "Base Y",
+        "baseZ": "Base Z",
+        "pathLength": "Path length",
+        "columns": "Columns",
+        "columnSpacing": "Column spacing",
+        "rows": "Rows",
+        "rowSpacing": "Row spacing",
+        "rowElevationIncrement": "Row elevation increment",
+        "includedAxisAngle": "Included axis angle",
+        "direction": "Direction",
+        "items": "Items",
+        "angleBetweenItems": "Angle between items",
+        "fillAngle": "Fill angle",
+        "rotateItems": "Rotate items",
+        "itemSpacing": "Item spacing",
+        "alignItems": "Align items"
       },
       "value": {
         "yes": "Yes",
@@ -467,7 +484,11 @@ export const en: EngineCatalog = {
         "sqrtChord": "SqrtChord",
         "uniform": "Uniform",
         "show": "Show",
-        "hide": "Hide"
+        "hide": "Hide",
+        "counterClockwise": "Counter-clockwise",
+        "clockwise": "Clockwise",
+        "divide": "Divide",
+        "measure": "Measure"
       },
       "justify": {
         "left": "Left",

@@ -577,6 +577,13 @@ export interface PolarArray {
   readonly fill: number
   readonly clockwise: boolean
   readonly rotate: boolean
+  /**
+   * Where the base point stood when the source went into the block: absent,
+   * the base point itself. The radius grip moves the base point along its
+   * ray without touching the block (a copied array shares it), so every
+   * item, the source's too, is placed from here (ARRAYS-D73).
+   */
+  readonly sourceBase?: Vec2
 }
 
 /** ARRAYPATH's layout: how the items are spaced along the path. */

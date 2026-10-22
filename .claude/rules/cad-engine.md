@@ -131,8 +131,8 @@ Dependencies run types → per-type modules → overrides → transforms → que
 - `insertGeometry` is what EXPLODE returns, attribute definitions included; what a reference
   **shows** is `insertFlatGeometry` (values in place of definitions, filtered by ATTMODE, carried
   by `document.blockLookup()`). Attributes and an array's parameters (`arrayItems`) are in the
-  **block's** coordinates, so no transform or grip knows they exist; anything that needs one in
-  the drawing (`insertAttributePoints`) places it as `insertFlatGeometry` does.
+  **block's** coordinates, so no transform knows they exist; what needs one in the drawing
+  (`insertAttributePoints`, `placeArrayPoint`) places it as `insertFlatGeometry` does.
 
 ## Algorithms over a set of entities
 

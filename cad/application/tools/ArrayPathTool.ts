@@ -6,10 +6,8 @@ import {
   PathLayout,
   arrayPathOf,
   arraySourceSize,
-  pathArrayItems,
   pathArrayMaximum,
   pathDivideStep,
-  placeArrayItem,
   pointAlongPath,
 } from "../../domain/arrays"
 import { parseNumber } from "../../domain/units"
@@ -18,14 +16,15 @@ import { ScenePrimitive } from "../../scene/types"
 import { isCoordinateExpression } from "../input/coordinateInput"
 import { ONE_OBJECT_MODES, ObjectSelector } from "./objectSelection"
 import { lockedObjectAt } from "./lockedPick"
-import { drawn, rollover } from "./ghostLook"
-import { ArrayAssociativity, makeArray, reportArrayType } from "./arrayObject"
+import { rollover } from "./ghostLook"
 import {
-  MAX_ARRAY_COUNT,
-  MAX_PREVIEW_ITEMS,
-  refusesCount,
-  takesCount,
-} from "./arrayCounts"
+  ArrayAssociativity,
+  arrayPreview,
+  makeArray,
+  reportArrayType,
+} from "./arrayObject"
+import { MAX_ARRAY_COUNT, refusesCount, takesCount } from "./arrayCounts"
+import { ArrayAtPrompt, ArrayPromptGrips } from "./arrayPromptGrips"
 import type { PromptId } from "../../locales/types"
 import {
   CommandOption,
@@ -54,8 +53,9 @@ import {
  * the end nearer the pick (`domain/arrays.ts`); the path is left in place.
  * eXit or Enter makes the array (`makeArray`), one undo step, the reference
  * at the path's start (probe arrays/p406); so does Escape once the path is
- * picked (desktop arrays/d08c), before it nothing. Base point, Tangent
- * direction, Rows, Levels and Z direction are not offered.
+ * picked (desktop arrays/d08c), before it nothing. The main prompt picks the
+ * preview's grips (`ArrayPromptGrips`). Base point, Tangent direction, Rows,
+ * Levels and Z direction are not offered.
  */
 
 type Step =
@@ -127,6 +127,14 @@ export class ArrayPathTool implements Tool {
   private lastScreen: Vec2 | null = null
   /** LASTPOINT as `Select path curve:` found it. */
   private lastPointAtPath: Vec3 = vec3(0, 0, 0)
+  private readonly grips = new ArrayPromptGrips({
+    take: (array) => {
+      if (this.state.phase !== "edit" || array.kind !== "path") return
+      const { method, items, spacing, align } = array
+      this.setLayout({ method, items, spacing, align })
+    },
+    main: (ctx) => this.ask("main", ctx),
+  })
 
   constructor(
     private readonly mode: ArrayAssociativity = { associative: true }
@@ -157,7 +165,7 @@ export class ArrayPathTool implements Tool {
     ctx.dynamicInput.close()
   }
 
-  question(): PromptId | ToolQuestion {
+  question(): PromptId | ToolQuestion | null {
     const state = this.state
     switch (state.phase) {
       case "pickPath":
@@ -170,7 +178,7 @@ export class ArrayPathTool implements Tool {
     const { layout } = state
     switch (state.step) {
       case "main":
-        return "selectGripToEditArrayOr"
+        return this.grips.isHot() ? null : "selectGripToEditArrayOr"
       case "associative":
         return "createAssociativeArray"
       case "method":
@@ -205,7 +213,7 @@ export class ArrayPathTool implements Tool {
     if (state.phase !== "edit") return this.selector.takes()
     switch (state.step) {
       case "main":
-        return "point"
+        return this.grips.isHot() ? null : "point"
       case "count":
       case "measureCount":
         return { refusal: "requiresPositiveInteger" }
@@ -235,6 +243,7 @@ export class ArrayPathTool implements Tool {
     if (this.state.phase === "pickPath") return this.pathModes.commandOptions()
     switch (this.state.step) {
       case "main":
+        if (this.grips.isHot()) return []
         return [
           { id: "ASsociative" },
           { id: "Method" },
@@ -259,7 +268,7 @@ export class ArrayPathTool implements Tool {
     const { layout } = this.state
     switch (this.state.step) {
       case "main":
-        return "eXit"
+        return this.grips.isHot() ? null : "eXit"
       case "associative":
         return this.mode.associative ? "Yes" : "No"
       case "method":
@@ -347,9 +356,12 @@ export class ArrayPathTool implements Tool {
         }
         break
       }
-      case "edit":
+      case "edit": {
+        const at = this.atPrompt()
+        if (at) this.grips.onPointerMove(input, at, ctx)
         ctx.dynamicInput.setPosition(input.screen)
         break
+      }
     }
 
     ctx.requestRender()
@@ -369,6 +381,11 @@ export class ArrayPathTool implements Tool {
         }
         if (input.snap) ctx.setLastPoint(this.lastPointAtPath)
         this.pickCurve(input.snap ? input.point : input.world, ctx)
+        return
+      }
+      case "edit": {
+        const at = this.atPrompt()
+        if (at) this.grips.onPointerDown(input, at, ctx)
         return
       }
     }
@@ -428,6 +445,7 @@ export class ArrayPathTool implements Tool {
         // grip, and the console says nothing (probes arrays/p328, p329).
         return (
           this.state.step === "main" &&
+          !this.grips.isHot() &&
           (isCoordinateExpression(text) || parseNumber(text) !== null)
         )
     }
@@ -436,6 +454,8 @@ export class ArrayPathTool implements Tool {
   onPointerUp(input: PointerInput, ctx: ToolContext): void {
     if (this.state.phase === "selecting") this.selector.onPointerUp(input, ctx)
     if (this.state.phase === "pickPath") this.pathModes.onPointerUp(input, ctx)
+    const at = this.atPrompt()
+    if (at) this.grips.onPointerUp(input, at, ctx)
   }
 
   cycleLasso(ctx: ToolContext): boolean {
@@ -453,6 +473,7 @@ export class ArrayPathTool implements Tool {
     }
     switch (state.step) {
       case "main":
+        if (this.grips.onEnter(ctx)) return true
         // <eXit>: the array is made and the command ends.
         this.create(ctx)
         ctx.endCommand()
@@ -483,7 +504,12 @@ export class ArrayPathTool implements Tool {
 
   wantsSnap(): boolean {
     if (this.state.phase === "pickPath") return this.pathModes.wantsSnap()
-    return this.state.phase === "selecting" && this.selector.wantsSnap()
+    if (this.state.phase === "edit") return this.grips.isHot()
+    return this.selector.wantsSnap()
+  }
+
+  getConstraintAnchor(): Vec2 | Vec3 | null {
+    return this.atPrompt() ? this.grips.anchor() : null
   }
 
   /**
@@ -501,15 +527,32 @@ export class ArrayPathTool implements Tool {
       return state.hover ? rollover(ctx, state.hover) : []
     }
 
+    const at = this.atPrompt()
+    if (at) {
+      const { array, offset } = this.grips.shown(at)
+      return [
+        ...arrayPreview(ctx, state.originals, array, offset),
+        ...this.grips.overlay(at, ctx),
+      ]
+    }
     const layout = this.previewLayout(ctx, state.layout, state.step)
-    return [
-      ...state.originals.flatMap((entity) => drawn(ctx, entity, "plain")),
-      ...pathArrayItems(state.path, layout, MAX_PREVIEW_ITEMS).flatMap((item) =>
-        state.originals.flatMap((entity) =>
-          drawn(ctx, placeArrayItem(entity, item), "plain")
-        )
-      ),
-    ]
+    return arrayPreview(
+      ctx,
+      state.originals,
+      { kind: "path", path: state.path, pathId: state.pathId, ...layout },
+      this.grips.moved()
+    )
+  }
+
+  /** The array at the main prompt, whose grips it picks; null at any other. */
+  private atPrompt(): ArrayAtPrompt | null {
+    const state = this.state
+    if (state.phase !== "edit" || state.step !== "main") return null
+    const { path, pathId, layout } = state
+    return {
+      array: { kind: "path", path, pathId, ...layout },
+      base: pointAlongPath(path, 0).point,
+    }
   }
 
   /** Goes on from the set `Select objects:` closed to the path curve. */
@@ -548,6 +591,7 @@ export class ArrayPathTool implements Tool {
     )
     const size = Math.max(width, height)
     const spacing = size > 1e-6 ? size * 1.5 : 1
+    this.grips.start()
     this.state = {
       phase: "edit",
       originals,
@@ -676,7 +720,8 @@ export class ArrayPathTool implements Tool {
       state.originals,
       { kind: "path", path, pathId, ...layout },
       pointAlongPath(path, 0).point,
-      this.mode
+      this.mode,
+      this.grips.moved()
     )
     ctx.dynamicInput.close()
   }

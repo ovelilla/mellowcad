@@ -24,6 +24,8 @@ import { THEME } from "../../scene/theme"
 import { ToolContext } from "./Tool"
 import { Grip, GripShape } from "./selectToolState"
 import { mtextWidthGrip } from "./selectToolEdits"
+import { arrayGrips } from "./arrayGrips"
+import { arrayPlacement } from "../../domain/arrayEdits"
 
 /** Half-size (screen pixels) of the small square grips drawn on a selection. */
 export const GRIP_HALF_PX = 4
@@ -223,11 +225,29 @@ export function selectedGrips(ctx: ToolContext): Grip[] {
       case "insert":
         // A block reference gets one grip, on its insertion point, exactly as
         // AutoCAD does: what is inside the block is edited in the definition.
-        grips.push({
-          entityId: id,
-          role: { kind: "move" },
-          world: entity.position,
-        })
+        // An array gets its own instead (desktop arrays/d11).
+        if (!entity.array) {
+          grips.push({
+            entityId: id,
+            role: { kind: "move" },
+            world: entity.position,
+          })
+          break
+        }
+        for (const grip of arrayGrips(
+          entity.array,
+          arrayPlacement(entity, ctx.blocks(entity.blockId))
+        )) {
+          grips.push({
+            entityId: id,
+            role:
+              grip.role === "move"
+                ? { kind: "move" }
+                : { kind: "array", grip: grip.role },
+            world: grip.at,
+            ...(grip.along ? { shape: "arrow", along: grip.along } : {}),
+          })
+        }
         break
       case "attdef":
         break
@@ -294,16 +314,37 @@ function segmentGripPoint(seg: PolylineSegmentGeometry): Vec2 {
 }
 
 /**
- * The scene primitives for one grip: a filled square in cold/hot colour, or
- * a disc as wide where AutoCAD draws one round (a CV spline's vertices,
- * desktop spline/d09-1).
+ * The scene primitives for one grip: a filled square in cold/hot colour, a
+ * disc as wide where AutoCAD draws one round (a CV spline's vertices,
+ * desktop spline/d09-1), or a triangle pointing `along` (a screen direction)
+ * at an array's arrows (desktop arrays/d11).
  */
 export function gripPrimitives(
   at: Vec2,
   hot: boolean,
-  shape: GripShape = "square"
+  shape: GripShape = "square",
+  along?: Vec2
 ): ScenePrimitive[] {
   const color = hot ? THEME.gripHot : THEME.grip
+  if (shape === "arrow") {
+    const length = along ? V.length(along) : 0
+    const u = along && length > 0 ? V.scale(along, 1 / length) : { x: 1, y: 0 }
+    const across = V.scale(V.perpendicular(u), GRIP_HALF_PX)
+    const back = V.sub(at, V.scale(u, GRIP_HALF_PX))
+    return [
+      {
+        kind: "path",
+        points: [
+          V.add(at, V.scale(u, GRIP_HALF_PX + 1)),
+          V.add(back, across),
+          V.sub(back, across),
+        ],
+        closed: true,
+        fill: color,
+        stroke: { color: "#ffffff", width: 1 },
+      },
+    ]
+  }
   if (shape === "round") {
     return [
       {
@@ -332,9 +373,10 @@ export function pushGrip(
   out: ScenePrimitive[],
   at: Vec2,
   hot: boolean,
-  shape?: GripShape
+  shape?: GripShape,
+  along?: Vec2
 ): void {
-  out.push(...gripPrimitives(at, hot, shape))
+  out.push(...gripPrimitives(at, hot, shape, along))
 }
 
 /**

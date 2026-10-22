@@ -117,7 +117,7 @@ import { DRAWING_FILE_TYPE } from "./drawingSummary"
 export { DRAWING_FILE_TYPE }
 
 /** Current schema version written by {@link serializeDrawing}. */
-export const DRAWING_FILE_VERSION = 30
+export const DRAWING_FILE_VERSION = 31
 
 /** MIME type a serialised drawing is handed to the host as. */
 export const DRAWING_FILE_MIME_TYPE = "application/json"
@@ -577,6 +577,9 @@ function cloneArray(array: ArrayParameters): ArrayParameters {
         fill: array.fill,
         clockwise: array.clockwise,
         rotate: array.rotate,
+        ...(array.sourceBase
+          ? { sourceBase: { x: array.sourceBase.x, y: array.sourceBase.y } }
+          : {}),
       }
     case "path":
       return {
@@ -1363,6 +1366,8 @@ function parseArray(value: unknown): { array?: ArrayParameters } {
       ) {
         return {}
       }
+      // From 31; a malformed one reads as none, the source where it stands.
+      const sourceBase = parseVec2(value.sourceBase)
       return {
         array: {
           kind: "polar",
@@ -1372,6 +1377,7 @@ function parseArray(value: unknown): { array?: ArrayParameters } {
           fill,
           clockwise,
           rotate,
+          ...(sourceBase ? { sourceBase } : {}),
         },
       }
     }

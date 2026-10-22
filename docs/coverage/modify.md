@@ -239,17 +239,92 @@ source's extents centre (p403, p404), ARRAYPOLAR's at the centre, the extents ce
 (p405), ARRAYPATH's at the path's start (p406). Its items are derived from its parameters, kept in
 the block's coordinates, so they are drawn, picked, bounded and snapped to as the drawing's own: a
 pick on any item takes the array (p408), `_END` finds an item's end (p412), and MOVE, COPY (a
-second array, p410), ROTATE, SCALE, MIRROR, STRETCH and the insertion grip carry it whole; EXPLODE
+second array, p410), ROTATE, SCALE, MIRROR, STRETCH and its move grips carry it whole; EXPLODE
 gives each item's objects, item by item, on their own layers (p402, p415, p418); U puts the source
 back with its id (p409); the file keeps it (p411a, p411b); PASTECLIP lands it with an anonymous
 block of its own. Its block is in no list of blocks (INSERT's `?` and default, BLOCK's `?`, the
 Blocks palette, PURGE), a typed `*U1` is no block INSERT finds, and a drawing is saved without one
-no reference places any more (AutoCAD's own purge of them: **unverified**)
+no reference places any more (AutoCAD's own purge of them: **unverified**). Selected at `Command:` it
+wears the array's grips, not an insertion grip (desktop d11; es d04–d06): rectangular — a square at
+the base point, arrows at the second column and row and at the last column and row, pointing along
+them, a square at the far corner; polar — squares at the base point and the centre, an arrow at the
+second item's base point pointing round the ring, the ring drawn grey through the base point; path —
+a square at the path's start and, by Measure, an arrow the spacing along the path. Their default
+drags, each one undo step (d14–d16): the base square and the ring's centre move the array; a count
+arrow sets `floor(|d| / s) + 1`, `d` the cursor's projection on its axis from the base, the spacing
+taking d's sign (43 and 47 at 8 are 6 columns, `13,6` too, −10 is 2 at −8; d14a–d14c, d14e, d14k),
+the corner both counts (d14g); a spacing arrow the projection itself (d14i, d14j); the polar base the
+radius, `|cursor − centre|`, the base point staying on its ray and the source, item 1, going with it
+(d15a, d15d; the block untouched, a copied array sharing it); the angle arrow the angle between, the
+fill becoming `(items − 1) × angle` (45° is 225, d15e), a fill past 360° refused and the grip left
+hot (d15c), as a count past 32767 is; the path arrow the spacing along the path, as many items as
+fit (10.08 on an 80 path is 8, d16b); the preview is the array the release makes, drawn as the
+drawing draws it, with a dashed line from the grip to the cursor (d14a-1). A number typed while a
+grip is hot is its count (d17: 6 columns), its spacing, the radius or the angle between (the last
+three **unverified**, ARRAYS-D72). With one column or row its count arrow and the corner are left
+out, a Divide path array shows its base square only (**unverified**: d06 was Measure), and with two
+the count arrow lies on the spacing arrow and is the one a click takes (**unverified**). At
+ARRAYRECT's, ARRAYPOLAR's and ARRAYPATH's main prompt the preview wears the same grips, drawn and
+picked as at `Command:` (desktop d18-1, d02-2, d03-2; es d01-1), the ring left out (d02-2), the one
+under the cursor hot (es d01b-1), whatever ASsociative says (**unverified**: no desktop run with
+No): a click on one makes it hot and the preview follows the cursor with its drag, the grips hidden
+and a dashed line from the grip (d18c-1); a second click, or the release of a drag, takes it and asks
+the main prompt again (d18c: 32 at 6 apart is 6 columns); a number typed while it is hot is its
+value, as at `Command:`; Enter while a count grip is hot says
+`Requires an integer between 1 and 32767, or option keyword.` (d18d; AutoCAD's own `1 an 32767` not
+copied, ARRAYS-D77) and asks the main prompt again, at any other grip goes back saying nothing
+(**unverified**); Escape while a grip is hot is Escape at the main prompt, the array made as it stood
+before the drag (**unverified**); a move grip moves the whole preview, the source with it, and the
+ring's radius its source, loose copies' too (both **unverified** mid-command); the run stays one undo
+step (d18c: U echoes `ARRAYRECT`). Its
+Properties palette (d13; es d07) has no Block group: Geometry `Base X`, `Base Y`, `Base Z`
+read-only (the base point, a ring's its own), a ring's `Center X`, `Center Y`, `Center Z` read-only
+and `Radius` (d20f: 20 puts the base point at 23,45), a path array's `Path length` read-only; Misc —
+rectangular `Columns`, `Column spacing`, `Rows`, `Row spacing`, `Row elevation increment` and
+`Included axis angle` 90 read-only (d20a: Columns 5); polar `Direction` (`Counter-clockwise`,
+`Clockwise`), `Items` (the fill kept, d20c: 8 are 45 apart), `Angle between items` (the fill
+`(items − 1) × angle`, d20d: 30 is 150, refused past 360°), `Fill angle` (the items kept, d20e: 180
+is 36 apart), `Rotate items` (Yes / No); path `Method` (`Divide`, `Measure`, Measure going on from
+Divide's spacing), `Items` (by Measure no more than fit: d20g **unverified**), `Item spacing` (the
+items as many as fit, d20h: 10 is 9; by Divide its even share, read-only: **unverified**), `Align
+items` (Yes / No); each edit one undo step; es `Columnas`, `Espacio entre columnas`, `Filas`,
+`Espacio entre filas`, `Incremento de elevación de filas`, `Incluye el ángulo del eje`, `Centro X`,
+`Radio`, `Dirección` (`En el sentido antihorario`, `En el sentido horario`), `Elementos`,
+`Ángulo entre elementos`, `Ángulo de relleno`, `Girar objetos`, `Longitud de trayectoria`, `Método`
+(`Dividir`, `Medir`), `Espaciado entre elementos`, `Alinear elementos` — those d07 cuts short
+(`Espacio entre colum…`, `Incremento de eleva…`, `Incluye el ángulo de…`, `Ángulo entre eleme…`,
+`Espaciado entre ele…`, `Longitud de trayect…`) completed in Autodesk's style, **unverified**
+(ARRAYS-D76)
 
-**Missing:** the grips the main prompt picks, and so the preview's grips; the array object's own
-grips, multifunctional menus and Properties rows (review block AYG: it keeps a block reference's
-insertion grip and Block and Position rows, its Name `*U1`, and the palette's object filter counts
-it with the block references); LIST's `ARRAY` report (p401, p403–p406); ARRAYEDIT (p419–p421) and
+**Missing:** the array's grips' hover menus (d12; es d04–d06) — the rectangular base `Move`, `Level Count` (es `Desplazar`,
+`Conteo de niveles`), the last column's `Column Count`, `Total Column Spacing`, `Axis Angle`
+(`Conteo de columnas`, `Espaciado total de columnas`, `Ángulo de eje`), the last row's `Row Count`,
+`Total Row Spacing`, `Axis Angle` (`Conteo de filas`, `Espaciado total de filas`, `Ángulo de eje`),
+the corner's `Row and Column Count`, `Total Row and Column Spacing` (`Conteo de filas y columnas`,
+`Espaciado total de filas y columnas`), the polar base's `Stretch Radius`, `Row Count`,
+`Level Count`, `Item Count`, `Fill Angle` (`Radio de estiramiento`, `Conteo de filas`,
+`Conteo de niveles`, `Conteo de elementos`, `Ángulo de relleno`), the path base's `Move`,
+`Row Count`, `Level Count` (`Desplazar`, `Conteo de filas`, `Conteo de niveles`); the spacing
+arrows, the ring's centre and its angle arrow have none — and Ctrl cycling them while a grip is hot
+(d14a-1: `Press Ctrl to cycle between:`), so Total, Axis Angle, Level Count and Item Count from a
+grip, as no object's hover menu is built (drafting-aids.md); the value a hovered grip shows
+(`Columns = 4`, `8`, `18`, `60°`; d12); the grips' lines at the command line, at `Command:` and at
+the main prompt, as no grip writes its own here — `** COLUMN COUNT **`, `Columns = 4`, `Specify number of columns:`;
+`**COLUMN SPACING **`, `Specify distance between columns or [Base point]:`; `** ROW COUNT **`,
+`Rows = 3`, `Specify number of rows:`; `** ROW SPACING**`,
+`Specify distance between rows or [Base point]:`; `** ROW AND COLUMN COUNT **`,
+`Rows = 3, Columns = 4`, `Specify number of rows and columns:`; `** MOVE **`,
+`Specify destination point or [Base point/Copy/Undo/eXit]:`; `** STRETCH RADIUS **`,
+`Specify radius or [Base point/Copy/Undo/eXit]:`; `** ANGLE BETWEEN ITEMS **`,
+`Specify angle between items:`; `** ITEM SPACING **`, `Distance between items or [Base point]:`
+(d14–d16, spaced as AutoCAD writes them) —; a number typed at the corner, and a point typed while a
+move grip is hot at the main prompt; U echoing `Grip Edit`
+after a grip edit and `Modify Property` after a palette edit (d14, d20), here nothing; the
+palette's Base X and Base Y edits, which move the base point alone, the items staying (d20b: the
+Base point option), and Center X, Y and Z edits (**unverified**); the palette's rows of options not
+built — Levels, Level spacing, a ring's or a path array's Rows, Row spacing and Row elevation
+increment, Start offset, Fill entire path (d13); the palette's object filter counting it with the
+block references; LIST's `ARRAY` report (p401, p403–p406); ARRAYEDIT (p419–p421) and
 ARRAYCLOSE; no cap on the items but 32767 each way, a large array costing what as many loose
 copies cost to draw and pick; Unit cell's rubber band dashed, as the trace's UseDashedLine 1 says (p123;
 solid here: **unverified** on the desktop); Base point (`Specify base point or [Key point] <centroid>:`, es
@@ -312,7 +387,7 @@ p249), one undo step; the preview draws the first 1000 items (WHY: a count of th
 redrawn on every move would hang the page), the commit all of them; Escape as ARRAYRECT's once the
 centre is given, before it nothing (**unverified**: the desktop's polar run, d08c, was inconclusive)
 
-**Missing:** the grips and the array object's, as ARRAYRECT's; Base point, at the centre and the main
+**Missing:** the array's grips' menus, as ARRAYRECT's; Base point, at the centre and the main
 prompt (`Specify base point or [Key point] <centroid>:`, es
 `Especifique un punto base o [punto Clave] <centro de gravedad>:`, p253, p255); Axis of rotation
 (`Specify first point on axis of rotation:`, `Specify second point on axis of rotation:`, es
@@ -386,7 +461,7 @@ and Z (p06, p309, p312, p316), one undo step U names (p369); the path is left in
 it leaves the array (p416); Escape as ARRAYRECT's once the path is picked (desktop d08c: the copies
 kept), before it nothing
 
-**Missing:** the grips and the array object's, as ARRAYRECT's; the array following its path
+**Missing:** the array's grips' menus, as ARRAYRECT's; the array following its path
 (p407: STRETCH of the path's end from 100 to 50 leaves 9 items; WHY not built: the array keeps the
 path's geometry and id, ARRAYS-D9, and following an edit of another object is associativity no
 object here has yet); Group at `Select path curve:` (`Enter group name:`, es `Indique nombre de grupo:`,

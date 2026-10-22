@@ -57,6 +57,18 @@ import {
   planeAxes,
 } from "../domain/entities"
 import { objectArea } from "../domain/objectArea"
+import type {
+  ArrayParameters,
+  BlockLookup,
+  InsertEntity,
+} from "../domain/entities"
+import {
+  arrayPlacement,
+  pathArrayCount,
+  pathArraySpacing,
+  placeArrayPoint,
+} from "../domain/arrayEdits"
+import { polarAngleBetween } from "../domain/arrays"
 import { SnapType } from "./snapping/types"
 import { SnapModeType } from "./SnapMode"
 import type { ViewPreset } from "./tools/viewPresets"
@@ -828,12 +840,13 @@ export function buildSelectionInfo(
   entities: ReadonlyArray<Entity>,
   settings: DocumentSettings,
   text: EngineText,
-  vertex = 0
+  vertex = 0,
+  blocks?: BlockLookup
 ): SelectionInfo | null {
   if (entities.length === 0) return null
   if (entities.length === 1) {
     return {
-      ...singleEntityInfo(entities[0], settings, text, vertex),
+      ...singleEntityInfo(entities[0], settings, text, vertex, blocks),
       general: generalRows(entities[0], settings, text),
     }
   }
@@ -866,7 +879,8 @@ function singleEntityInfo(
   entity: Entity,
   settings: DocumentSettings,
   text: EngineText,
-  vertex: number
+  vertex: number,
+  blocks?: BlockLookup
 ): Omit<SelectionInfo, "general"> {
   const length = (value: number) =>
     `${formatLength(value, settings)} ${unitSuffix(settings.unit)}`
@@ -938,6 +952,141 @@ function singleEntityInfo(
       row("normalY", coord(normal.y)),
       row("normalZ", coord(normal.z)),
     ]
+  }
+
+  const countRow = (
+    id: RowId,
+    property: EntityProperty,
+    value: number
+  ): PropertyRow => ({
+    ...row(id, String(value)),
+    edit: { property, text: String(value), unit: "" },
+  })
+  const choiceRow = (
+    id: RowId,
+    property: EntityProperty,
+    on: boolean,
+    labels: readonly [off: string, on: string]
+  ): PropertyRow => ({
+    ...row(id, labels[on ? 1 : 0]),
+    edit: {
+      property,
+      text: on ? "1" : "0",
+      unit: "",
+      choices: [
+        { value: "0", label: labels[0] },
+        { value: "1", label: labels[1] },
+      ],
+    },
+  })
+  const noYes = [text.propertyValue("no"), text.propertyValue("yes")] as const
+  // An array's rows, as AutoCAD's palette shows them (desktop arrays/d13,
+  // d07): no Block group; its base point read-only, moved alone by the
+  // Base point option, which is not built (ARRAYS-D75); the rows of options
+  // not built (Levels, a ring's or a path's Rows, Start offset, Fill entire
+  // path) left out. Lengths in the drawing's units, the reference's scale in.
+  const arrayGroups = (
+    insert: InsertEntity,
+    array: ArrayParameters
+  ): PropertyGroup[] => {
+    const place = arrayPlacement(insert, blocks?.(insert.blockId))
+    const scaled = (value: number) => value * insert.scale
+    const base = at(
+      array.kind === "polar"
+        ? placeArrayPoint(place, array.basePoint)
+        : insert.position
+    )
+    const geometry: PropertyRow[] = [
+      row("baseX", coord(base.x)),
+      row("baseY", coord(base.y)),
+      row("baseZ", coord(base.z)),
+    ]
+    switch (array.kind) {
+      case "rectangular":
+        return [
+          group("geometry", geometry),
+          group("misc", [
+            countRow("columns", "arrayColumns", array.columns),
+            lengthRow(
+              "columnSpacing",
+              "arrayColumnSpacing",
+              scaled(array.colSpacing)
+            ),
+            countRow("rows", "arrayRows", array.rows),
+            lengthRow(
+              "rowSpacing",
+              "arrayRowSpacing",
+              scaled(array.rowSpacing)
+            ),
+            lengthRow(
+              "rowElevationIncrement",
+              "arrayRowElevation",
+              scaled(array.rowElevation)
+            ),
+            // The angle between the columns and the rows, 90 while the grid
+            // has no Axis Angle grip to skew it (ARRAYS-D75).
+            row("includedAxisAngle", degrees(90)),
+          ]),
+        ]
+      case "polar": {
+        const center = at(placeArrayPoint(place, array.center))
+        return [
+          group("geometry", [
+            ...geometry,
+            row("centerX", coord(center.x)),
+            row("centerY", coord(center.y)),
+            row("centerZ", coord(center.z)),
+            lengthRow(
+              "radius",
+              "radius",
+              scaled(V.distance(array.basePoint, array.center))
+            ),
+          ]),
+          group("misc", [
+            choiceRow(
+              "direction",
+              "arrayClockwise",
+              array.clockwise !== Boolean(insert.mirrored),
+              [
+                text.propertyValue("counterClockwise"),
+                text.propertyValue("clockwise"),
+              ]
+            ),
+            countRow("items", "arrayItems", array.items),
+            angleRow(
+              "angleBetweenItems",
+              "arrayAngleBetween",
+              polarAngleBetween(array)
+            ),
+            angleRow("fillAngle", "arrayFillAngle", array.fill),
+            choiceRow("rotateItems", "arrayRotateItems", array.rotate, noYes),
+          ]),
+        ]
+      }
+      case "path": {
+        const measure = array.method === "measure"
+        const spacing = scaled(pathArraySpacing(array))
+        return [
+          group("geometry", [
+            ...geometry,
+            row("pathLength", length(scaled(array.path.length))),
+          ]),
+          group("misc", [
+            choiceRow("method", "arrayMethod", measure, [
+              text.propertyValue("divide"),
+              text.propertyValue("measure"),
+            ]),
+            countRow("items", "arrayItems", pathArrayCount(array)),
+            // Divide's spacing is its even share of the path, derived
+            // (**unverified** whether AutoCAD's palette takes it there).
+            measure
+              ? lengthRow("itemSpacing", "arrayItemSpacing", spacing)
+              : row("itemSpacing", length(spacing)),
+            choiceRow("alignItems", "arrayAlignItems", array.align, noYes),
+          ]),
+        ]
+      }
+    }
   }
 
   switch (entity.type) {
@@ -1391,6 +1540,13 @@ function singleEntityInfo(
       }
     }
     case "insert": {
+      if (entity.array) {
+        return {
+          title: text.entityName(entity),
+          count: 1,
+          groups: arrayGroups(entity, entity.array),
+        }
+      }
       return {
         title: text.entityName(entity),
         count: 1,

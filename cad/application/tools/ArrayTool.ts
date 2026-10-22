@@ -5,8 +5,6 @@ import {
   RectangularArray,
   arrayAxis,
   arraySourceSize,
-  placeArrayItem,
-  rectangularArrayItems,
 } from "../../domain/arrays"
 import { parseNumber } from "../../domain/units"
 import { Ucs, ucsDirectionToWorld, worldDirectionToUcs } from "../../domain/ucs"
@@ -18,9 +16,14 @@ import {
 } from "../input/coordinateInput"
 import { ObjectSelector } from "./objectSelection"
 import { selectedInDrawingOrder } from "./drawingOrder"
-import { MAX_PREVIEW_ITEMS, refusesCount, takesCount } from "./arrayCounts"
-import { drawn } from "./ghostLook"
-import { ArrayAssociativity, makeArray, reportArrayType } from "./arrayObject"
+import { refusesCount, takesCount } from "./arrayCounts"
+import {
+  ArrayAssociativity,
+  arrayPreview,
+  makeArray,
+  reportArrayType,
+} from "./arrayObject"
+import { ArrayAtPrompt, ArrayPromptGrips } from "./arrayPromptGrips"
 import type { PromptId } from "../../locales/types"
 import {
   CommandOption,
@@ -46,7 +49,8 @@ import {
  * rises by; eXit or Enter makes the array (`makeArray`), one undo step with
  * the source as item 1,1. Escape makes it too, with the values given so far
  * (desktop arrays/d08, d08b); before the main prompt it makes nothing. The
- * grips, Base point and Levels are not offered.
+ * main prompt picks the preview's grips (`ArrayPromptGrips`). Base point and
+ * Levels are not offered.
  */
 
 const DEFAULT_COLUMNS = 4
@@ -81,6 +85,11 @@ type ArrayState =
   | {
       readonly phase: "edit"
       readonly originals: readonly Entity[]
+      /**
+       * The block's base point, the source's extents centre (probes
+       * arrays/p403, p404), where the rectangular grips count from.
+       */
+      readonly base: Vec2
       readonly grid: Grid
       readonly step: Step
       /** Unit cell's first corner, in the UCS, once given. */
@@ -121,6 +130,18 @@ export class ArrayTool implements Tool {
     done: (ctx) => this.confirmSelection(ctx),
   })
   private lastScreen: Vec2 | null = null
+  private readonly grips = new ArrayPromptGrips({
+    take: (array) => {
+      if (this.state.phase !== "edit" || array.kind !== "rectangular") return
+      const { columns, rows, colSpacing, rowSpacing, rowElevation, axis } =
+        array
+      this.state = {
+        ...this.state,
+        grid: { columns, rows, colSpacing, rowSpacing, rowElevation, axis },
+      }
+    },
+    main: (ctx) => this.ask("main", ctx),
+  })
 
   constructor(
     private readonly mode: ArrayAssociativity = { associative: true }
@@ -155,13 +176,13 @@ export class ArrayTool implements Tool {
     ctx.dynamicInput.close()
   }
 
-  question(): PromptId | ToolQuestion {
+  question(): PromptId | ToolQuestion | null {
     const state = this.state
     if (state.phase !== "edit") return this.selector.question()
     const { grid } = state
     switch (state.step) {
       case "main":
-        return "selectGripToEditArrayOr"
+        return this.grips.isHot() ? null : "selectGripToEditArrayOr"
       case "associative":
         return "createAssociativeArray"
       case "countColumns":
@@ -213,7 +234,7 @@ export class ArrayTool implements Tool {
     if (state.phase !== "edit") return this.selector.takes()
     switch (state.step) {
       case "main":
-        return "point"
+        return this.grips.isHot() ? null : "point"
       case "associative":
         return "keyword"
       case "countColumns":
@@ -253,6 +274,7 @@ export class ArrayTool implements Tool {
       return [{ id: "Yes" }, { id: "No" }]
     }
     if (this.state.phase !== "edit" || this.state.step !== "main") return []
+    if (this.grips.isHot()) return []
     return [
       { id: "ASsociative" },
       { id: "COUnt" },
@@ -268,7 +290,7 @@ export class ArrayTool implements Tool {
     if (this.state.step === "associative") {
       return this.mode.associative ? "Yes" : "No"
     }
-    return this.state.step === "main" ? "eXit" : null
+    return this.state.step === "main" && !this.grips.isHot() ? "eXit" : null
   }
 
   invokeOption(id: string, ctx: ToolContext): CommandOptionOutcome {
@@ -313,23 +335,30 @@ export class ArrayTool implements Tool {
       case "selecting":
         this.selector.onPointerMove(input, ctx)
         break
-      case "edit":
+      case "edit": {
         if (this.state.step === "unitCellOpposite") {
           this.state = { ...this.state, cursor: input.point }
         }
+        const at = this.atPrompt()
+        if (at) this.grips.onPointerMove(input, at, ctx)
         ctx.dynamicInput.setPosition(input.screen)
         break
+      }
     }
 
     ctx.requestRender()
   }
 
   onPointerDown(input: PointerInput, ctx: ToolContext): void {
-    if (this.state.phase === "selecting")
+    if (this.state.phase === "selecting") {
       this.selector.onPointerDown(input, ctx)
-    // While editing the values are typed; a pick would take a grip, which
-    // the preview does not have. Unit cell's corners are points.
-    else if (input.button === 0) this.unitCellCorner(input.point, ctx)
+      return
+    }
+    if (input.button !== 0) return
+    const at = this.atPrompt()
+    // The main prompt's pick takes a grip; Unit cell's corners are points.
+    if (at) this.grips.onPointerDown(input, at, ctx)
+    else this.unitCellCorner(input.point, ctx)
   }
 
   answerTyped(text: string, ctx: ToolContext): boolean {
@@ -340,12 +369,15 @@ export class ArrayTool implements Tool {
     // and the console says nothing (probes arrays/p109, p129).
     return (
       this.state.step === "main" &&
+      !this.grips.isHot() &&
       (isCoordinateExpression(text) || parseNumber(text) !== null)
     )
   }
 
   onPointerUp(input: PointerInput, ctx: ToolContext): void {
     if (this.state.phase === "selecting") this.selector.onPointerUp(input, ctx)
+    const at = this.atPrompt()
+    if (at) this.grips.onPointerUp(input, at, ctx)
   }
 
   cycleLasso(ctx: ToolContext): boolean {
@@ -355,6 +387,7 @@ export class ArrayTool implements Tool {
   onEnter(ctx: ToolContext): boolean {
     if (this.state.phase === "selecting") return this.selector.onEnter(ctx)
     if (this.state.phase === "edit" && this.state.step === "main") {
+      if (this.grips.onEnter(ctx)) return true
       // <eXit>: the array is made and the command ends.
       this.create(ctx)
       ctx.endCommand()
@@ -375,11 +408,14 @@ export class ArrayTool implements Tool {
   }
 
   wantsSnap(): boolean {
-    if (this.state.phase === "edit") return isUnitCell(this.state.step)
+    if (this.state.phase === "edit") {
+      return isUnitCell(this.state.step) || this.grips.isHot()
+    }
     return this.selector.wantsSnap()
   }
 
-  getConstraintAnchor(): Vec3 | null {
+  getConstraintAnchor(): Vec2 | Vec3 | null {
+    if (this.atPrompt()) return this.grips.anchor()
     return this.state.phase === "edit" && this.state.step === "unitCellOpposite"
       ? (this.state.corner ?? null)
       : null
@@ -395,16 +431,22 @@ export class ArrayTool implements Tool {
       this.state.step === "unitCellOpposite" && corner && cursor
         ? withCell(this.state.grid, corner, cursor, ctx.ucs)
         : null
-    const grid = cell ?? this.previewGrid(ctx, this.state.grid, this.state.step)
     const { originals } = this.state
-    const copies = [
-      ...originals.flatMap((entity) => drawn(ctx, entity, "plain")),
-      ...rectangularArrayItems(grid, MAX_PREVIEW_ITEMS).flatMap((item) =>
-        originals.flatMap((entity) =>
-          drawn(ctx, placeArrayItem(entity, item), "plain")
-        )
-      ),
-    ]
+    const at = this.atPrompt()
+    if (at) {
+      const { array, offset } = this.grips.shown(at)
+      return [
+        ...arrayPreview(ctx, originals, array, offset),
+        ...this.grips.overlay(at, ctx),
+      ]
+    }
+    const grid = cell ?? this.previewGrid(ctx, this.state.grid, this.state.step)
+    const copies = arrayPreview(
+      ctx,
+      originals,
+      { kind: "rectangular", ...grid },
+      this.grips.moved()
+    )
     if (cell === null || !corner || !cursor) return copies
     // WHY solid: the trace says UseDashedLine 1 (probe arrays/p123), which
     // no desktop pass has shown yet (ARRAYS-D7).
@@ -446,9 +488,16 @@ export class ArrayTool implements Tool {
       return
     }
     const { colSpacing, rowSpacing } = defaultSpacing(originals, ctx)
+    // The base point is the source's extents centre (probes arrays/p403,
+    // p404).
+    const box = entitiesBounds(originals, ctx.blocks)
+    this.grips.start()
     this.state = {
       phase: "edit",
       originals,
+      base: box
+        ? { x: (box.min.x + box.max.x) / 2, y: (box.min.y + box.max.y) / 2 }
+        : { x: 0, y: 0 },
       grid: {
         columns: DEFAULT_COLUMNS,
         rows: DEFAULT_ROWS,
@@ -609,17 +658,25 @@ export class ArrayTool implements Tool {
 
   private create(ctx: ToolContext): void {
     if (this.state.phase !== "edit") return
-    const { originals, grid } = this.state
+    const { originals, grid, base } = this.state
     // Left first: the command's end deactivates the tool, which commits too.
     this.state = { phase: "selecting" }
-    // The base point is the source's extents centre (probes arrays/p403,
-    // p404).
-    const box = entitiesBounds(originals, ctx.blocks)
-    const base = box
-      ? { x: (box.min.x + box.max.x) / 2, y: (box.min.y + box.max.y) / 2 }
-      : { x: 0, y: 0 }
-    makeArray(ctx, originals, { kind: "rectangular", ...grid }, base, this.mode)
+    makeArray(
+      ctx,
+      originals,
+      { kind: "rectangular", ...grid },
+      base,
+      this.mode,
+      this.grips.moved()
+    )
     ctx.dynamicInput.close()
+  }
+
+  /** The array at the main prompt, whose grips it picks; null at any other. */
+  private atPrompt(): ArrayAtPrompt | null {
+    const state = this.state
+    if (state.phase !== "edit" || state.step !== "main") return null
+    return { array: { kind: "rectangular", ...state.grid }, base: state.base }
   }
 }
 

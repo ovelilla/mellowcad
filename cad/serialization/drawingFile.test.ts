@@ -1404,6 +1404,17 @@ describe("blocks", () => {
     )
     expect(r).toEqual({ ...rect, axis: { x: 0, y: 1 } })
     expect(o).toEqual(polar)
+    // From 31 a stretched ring keeps its source's anchor; a malformed one is
+    // none, the source where it stands.
+    const stretched = file({
+      blocks: [{ name: "*U1", entities: bar }],
+      entities: [
+        { ...polar, sourceBase: { x: 10, y: 5 } },
+        { ...polar, sourceBase: { x: "10", y: 5 } },
+      ].map(array),
+    }).entities.map((e) => (e.type === "insert" ? e.array : undefined))
+    expect(stretched[0]).toEqual({ ...polar, sourceBase: { x: 10, y: 5 } })
+    expect(stretched[1]).toEqual(polar)
     // The length is the pieces', whatever the file says.
     expect(a?.kind === "path" && a.path.length).toBeCloseTo(100 + 10 * Math.PI)
     for (const plain of parsed.entities.slice(3)) {

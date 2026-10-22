@@ -1,8 +1,12 @@
 import { V, Vec2 } from "../../geometry/Vec2"
+import { Vec3 } from "../../geometry/Vec3"
 import {
   Entity,
   EntityId,
+  InsertEntity,
   entityPointToWorld,
+  insertFlatGeometry,
+  planeAxes,
   PolylineEntity,
   polylineSegmentGeometries,
   setPolylineBulge,
@@ -20,6 +24,8 @@ import {
 } from "./boxSelection"
 import { PointerInput, ToolContext } from "./Tool"
 import { SelectToolState } from "./selectToolState"
+import { arrayPlacement, placeArrayPoint } from "../../domain/arrayEdits"
+import { drawn } from "./ghostLook"
 import {
   gripPrimitives,
   pushGrip,
@@ -30,6 +36,7 @@ import {
 } from "./selectToolGrips"
 import {
   arcStretchedThrough,
+  arrayGripped,
   ellipseGripped,
   movedDimension,
   mtextWidthGrip,
@@ -92,6 +99,10 @@ export function buildGrips(
       })
     }
   }
+  for (const id of ctx.selection.toArray()) {
+    const entity = ctx.document.get(id)
+    if (entity?.type === "insert") out.push(...arrayRing(entity, ctx))
+  }
   for (const grip of selectedGrips(ctx)) {
     const at = ctx.viewport.worldToScreen(grip.world)
     const hot = sameGrip(grip, hover)
@@ -103,9 +114,107 @@ export function buildGrips(
       const along = segmentOnScreen(entity, grip.role.segmentIndex, ctx)
       pushSegmentGrip(out, at, along, hot)
     } else {
-      pushGrip(out, at, hot, grip.shape)
+      pushGrip(
+        out,
+        at,
+        hot,
+        grip.shape,
+        arrowOnScreen(grip.world, grip.along, ctx)
+      )
     }
   }
+  return out
+}
+
+/** Where an arrow grip points on the screen, from its heading in the drawing. */
+export function arrowOnScreen(
+  world: Vec3,
+  along: Vec2 | undefined,
+  ctx: ToolContext
+): Vec2 | undefined {
+  if (!along) return undefined
+  return V.sub(
+    ctx.viewport.worldToScreen({ ...V.add(world, along), z: world.z }),
+    ctx.viewport.worldToScreen(world)
+  )
+}
+
+/**
+ * A polar array's ring, through its base point about its centre, drawn grey
+ * while the array is selected (desktop arrays/d11-2, d05-1); none on an array
+ * not level, which keeps only its move grips.
+ */
+function arrayRing(insert: InsertEntity, ctx: ToolContext): ScenePrimitive[] {
+  const ring = insert.array
+  if (ring?.kind !== "polar" || planeAxes(insert)) return []
+  const place = arrayPlacement(insert, ctx.blocks(insert.blockId))
+  const center = ctx.viewport.worldToScreen(
+    entityPointToWorld(insert, placeArrayPoint(place, ring.center))
+  )
+  const through = ctx.viewport.worldToScreen(
+    entityPointToWorld(insert, placeArrayPoint(place, ring.basePoint))
+  )
+  const radius = V.distance(center, through)
+  return radius > 0
+    ? [
+        {
+          kind: "circle",
+          center,
+          radius,
+          stroke: { color: THEME.arrayRing, width: 1 },
+        },
+      ]
+    : []
+}
+
+/** The dashed line from where a grip was taken to the cursor, on the screen (desktop arrays/d14a-1). */
+export function gripRubberBand(from: Vec2, to: Vec2): ScenePrimitive {
+  return {
+    kind: "segment",
+    a: from,
+    b: to,
+    stroke: { color: THEME.crosshair, width: 1, dash: [2, 3] },
+  }
+}
+
+/**
+ * An array's grip dragged: the array as the drag makes it, drawn as the
+ * drawing draws it, a dashed line from where the grip was taken to the
+ * cursor and the grip hot there (desktop arrays/d14a-1). A drag the grip
+ * refuses shows no array.
+ */
+export function buildArrayGripEdit(
+  state: Phase<"arrayGrip">,
+  ctx: ToolContext
+): ScenePrimitive[] {
+  const { viewport } = ctx
+  const insert = ctx.document.get(state.entityId)
+  if (insert?.type !== "insert") return []
+  const edited = arrayGripped(insert, state.role, state.current, ctx.blocks)
+  const at = viewport.worldToScreen(state.origin)
+  const out: ScenePrimitive[] = []
+  if (edited) {
+    out.push(
+      ...arrayRing(edited, ctx),
+      ...insertFlatGeometry(edited, ctx.blocks).flatMap((entity) =>
+        drawn(ctx, entity, "plain")
+      )
+    )
+  }
+  out.push(
+    gripRubberBand(
+      at,
+      viewport.worldToScreen({ ...state.current, z: state.origin.z })
+    )
+  )
+  out.push(
+    ...gripPrimitives(
+      at,
+      true,
+      state.shape,
+      arrowOnScreen(state.origin, state.along, ctx)
+    )
+  )
   return out
 }
 

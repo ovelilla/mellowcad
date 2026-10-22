@@ -3224,7 +3224,7 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0°~, Line space facto
   properties: -
   prompt| Select grip to edit array or [ASsociative/Method/Items/Align items/eXit] <eXit>:
 > pick the array
-  properties: Array (Path) (1) [Block: Name=*U1, Scale=1.00~, Rotation=0°~] [Position: X=0.00~, Y=100.00~, Z=0.00~]
+  properties: Array (Path) (1) [Geometry: Base X=0.00, Base Y=100.00, Base Z=0.00, Path length=300.00 mm] [Misc: Method=Measure~, Items=11~, Item spacing=30.00 mm~, Align items=Yes~]
 
 ## TRIM EXTEND FILLET CHAMFER
 > start
@@ -4833,6 +4833,87 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0°~, Line space facto
   asks: -
   dyn: -
   properties: Dimension (1) [Dimension: Measurement=110.00 mm, Text override=—, Type=Linear, Rotation=0°~] [Definition points: First X=290.00, First Y=0.00, Second X=400.00, Second Y=0.00]
+> escape
+  properties: -
+  command| *Cancel*
+
+## array grips and palette
+> start
+  prompt: Command:
+  asks: -
+  tip: -
+  dyn: -
+  options: -
+  canvas: -
+  properties: -
+  cycling: -
+> the three arrays
+  command| ZOOM
+  prompt| Specify corner of window, enter a scale factor (nX or nXP), or [All/Extents/Previous/Scale/Window/Object]: -50,-40
+  prompt| Specify opposite corner: 150,90
+  command| ARRAYRECT
+  info| 1 found
+  info| Type = Rectangular  Associative = Yes
+  prompt| Select grip to edit array or [ASsociative/COUnt/Spacing/COLumns/Rows/eXit] <eXit>: _COU
+  prompt| Enter the number of columns <4>: 4
+  prompt| Enter the number of rows <3>: 3
+  prompt| Select grip to edit array or [ASsociative/COUnt/Spacing/COLumns/Rows/eXit] <eXit>: _S
+  prompt| Specify the distance between columns or [Unit cell] <6>: 8
+  prompt| Specify the distance between rows <6>: 8
+  prompt| Select grip to edit array or [ASsociative/COUnt/Spacing/COLumns/Rows/eXit] <eXit>: _X
+  command| ARRAYPOLAR
+  info| 1 found
+  info| Type = Polar  Associative = Yes
+  prompt| Specify center point of array: 23,25
+  prompt| Select grip to edit array or [ASsociative/Items/Angle between/Fill angle/ROTate items/eXit] <eXit>: _X
+  command| ARRAYPATH
+  info| 1 found
+  info| Type = Path  Associative = Yes
+  prompt| Select path curve: 65,0
+  prompt| Select grip to edit array or [ASsociative/Method/Items/Align items/eXit] <eXit>: _X
+> select rectangular
+  properties: Array (Rectangular) (1) [Geometry: Base X=-30.00, Base Y=0.00, Base Z=0.00] [Misc: Columns=4~, Column spacing=8.00 mm~, Rows=3~, Row spacing=8.00 mm~, Row elevation increment=0.00 mm~, Included axis angle=90°]
+> grab column count
+  asks: "Columns"
+  dyn: "Columns"=""|4|*
+> type 6
+  asks: -
+  dyn: -
+  properties: Array (Rectangular) (1) [Geometry: Base X=-30.00, Base Y=0.00, Base Z=0.00] [Misc: Columns=6~, Column spacing=8.00 mm~, Rows=3~, Row spacing=8.00 mm~, Row elevation increment=0.00 mm~, Included axis angle=90°]
+> grab column spacing
+  asks: "Column spacing"
+  dyn: "Column spacing"=""|8.00|mm*
+> escape
+  asks: -
+  dyn: -
+> escape
+  properties: -
+  command| *Cancel*
+> select polar
+  properties: Array (Polar) (1) [Geometry: Base X=23.00, Base Y=43.00, Base Z=0.00, Center X=23.00, Center Y=25.00, Center Z=0.00, Radius=18.00 mm~] [Misc: Direction=Counter-clockwise~, Items=6~, Angle between items=60°~, Fill angle=360°~, Rotate items=Yes~]
+> grab radius
+  asks: "Radius"
+  dyn: "Radius"=""|18.00|mm*
+> escape
+  asks: -
+  dyn: -
+> grab angle between
+  asks: "Angle"
+  dyn: "Angle"=""|60|°*
+> escape
+  asks: -
+  dyn: -
+> escape
+  properties: -
+  command| *Cancel*
+> select path
+  properties: Array (Path) (1) [Geometry: Base X=60.00, Base Y=0.00, Base Z=0.00, Path length=80.00 mm] [Misc: Method=Measure~, Items=14~, Item spacing=6.00 mm~, Align items=Yes~]
+> grab item spacing
+  asks: "Spacing"
+  dyn: "Spacing"=""|6.00|mm*
+> escape
+  asks: -
+  dyn: -
 > escape
   properties: -
   command| *Cancel*

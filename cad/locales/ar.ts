@@ -466,7 +466,24 @@ export const ar: EngineLocale = {
         "endTangentVectorX": "متجه مماس النهاية X",
         "endTangentVectorY": "متجه مماس النهاية Y",
         "endTangentVectorZ": "متجه مماس النهاية Z",
-        "fitTolerance": "تفاوت الملاءمة"
+        "fitTolerance": "تفاوت الملاءمة",
+        "baseX": "القاعدة X",
+        "baseY": "القاعدة Y",
+        "baseZ": "القاعدة Z",
+        "pathLength": "طول المسار",
+        "columns": "الأعمدة",
+        "columnSpacing": "تباعد الأعمدة",
+        "rows": "الصفوف",
+        "rowSpacing": "تباعد الصفوف",
+        "rowElevationIncrement": "زيادة منسوب الصفوف",
+        "includedAxisAngle": "زاوية المحور المضمّنة",
+        "direction": "الاتجاه",
+        "items": "العناصر",
+        "angleBetweenItems": "الزاوية بين العناصر",
+        "fillAngle": "زاوية التعبئة",
+        "rotateItems": "تدوير العناصر",
+        "itemSpacing": "تباعد العناصر",
+        "alignItems": "محاذاة العناصر"
       },
       "value": {
         "yes": "نعم",
@@ -480,7 +497,11 @@ export const ar: EngineLocale = {
         "sqrtChord": "الجذر التربيعي للوتر",
         "uniform": "منتظم",
         "show": "إظهار",
-        "hide": "إخفاء"
+        "hide": "إخفاء",
+        "counterClockwise": "عكس اتجاه عقارب الساعة",
+        "clockwise": "مع اتجاه عقارب الساعة",
+        "divide": "تقسيم",
+        "measure": "قياس"
       },
       "justify": {
         "left": "يسار",

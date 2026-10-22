@@ -28,7 +28,14 @@ import {
   splineWithPoint,
   stretchPolylineVertices,
 } from "../../domain/entities"
-import { DimensionPoint, EllipseGripRole } from "./selectToolState"
+import type { BlockLookup, InsertEntity } from "../../domain/entities"
+import { arrayPlacement } from "../../domain/arrayEdits"
+import {
+  ArrayEditRole,
+  DimensionPoint,
+  EllipseGripRole,
+} from "./selectToolState"
+import { dragArrayGrip, typedArrayGrip } from "./arrayGrips"
 
 /**
  * The object with its `index`th vertex grip moved to `point`: a polyline's
@@ -228,4 +235,41 @@ export function withRadius(entity: Entity, radius: number): Entity | null {
 
 export function toDegrees(radians: number): number {
   return (radians * 180) / Math.PI
+}
+
+/**
+ * The array its grip dragged to `cursor` makes: one function for the preview
+ * and the commit, null where the drag is refused.
+ */
+export function arrayGripped(
+  insert: InsertEntity,
+  role: ArrayEditRole,
+  cursor: Vec2,
+  blocks: BlockLookup
+): InsertEntity | null {
+  if (!insert.array) return null
+  const array = dragArrayGrip(
+    insert.array,
+    arrayPlacement(insert, blocks(insert.blockId)),
+    role,
+    planar(cursor)
+  )
+  return array && { ...insert, array }
+}
+
+/** The array a value typed while its grip is hot makes, null where refused. */
+export function arrayGripTyped(
+  insert: InsertEntity,
+  role: ArrayEditRole,
+  value: number,
+  blocks: BlockLookup
+): InsertEntity | null {
+  if (!insert.array) return null
+  const array = typedArrayGrip(
+    insert.array,
+    arrayPlacement(insert, blocks(insert.blockId)),
+    role,
+    value
+  )
+  return array && { ...insert, array }
 }
