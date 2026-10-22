@@ -887,7 +887,12 @@ describe("the engine's English surface", () => {
       }),
       (s) =>
         s
-          .do("ARRAYRECT", (c) => c.select("SRC").command("AR"))
+          .do("ARRAY", (c) => c.select("SRC").command("AR"))
+          .do("_X", (c) => answer(c, "_X"))
+          .do("PO", (c) => answer(c, "PO"))
+          .do("centre", (c) => c.click(at(0, -100)))
+          .do("enter", (c) => c.enter())
+          .do("ARRAYRECT", (c) => c.select("SRC").command("ARRAYRECT"))
           .do("S", (c) => answer(c, "S"))
           .do("U", (c) => answer(c, "U"))
           .do("FOO", (c) => c.type("FOO").enter())

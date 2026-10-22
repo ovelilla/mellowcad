@@ -214,16 +214,19 @@ const DERIVED: ReadonlyArray<
         .enter(),
     [blueLine(0, 100, "L1")],
   ],
+  // probe arrays/p164: the copies wear the source's layer, colour and
+  // lineweight, not the current ones.
   [
     "ARRAYRECT",
     (c) =>
       c
         .select("L1")
         .command("ARRAYRECT")
-        .type("3", "columns")
-        .type("2", "rows")
-        .type("150", "colSpacing")
-        .type("50", "rowSpacing")
+        .option("COUnt")
+        .type("3")
+        .enter()
+        .type("2")
+        .enter()
         .enter(),
     [blueLine(0, 100, "L1")],
   ],

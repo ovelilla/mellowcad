@@ -380,6 +380,7 @@ describe("a wrong answer mid-command", () => {
     expect(cad.commandLog().at(-1)).toBe("Invalid point.")
   })
 
+  // probes arrays/p108 (the main prompt), p114 (a count), p350 (the path)
   it("refuses at the arrays' prompts as AutoCAD's console does", () => {
     const cad = createHarness({ entities: twoLines() })
     cad.select("A").command("ARRAYRECT")

@@ -43,6 +43,7 @@
       "rotate": "Girar",
       "scale": "Escala",
       "mirror": "Simetría",
+      "arraycommand": "Matriz",
       "array": "Matriz rectangular",
       "arraypolar": "Matriz polar",
       "arraypath": "Matriz de camino",
@@ -378,7 +379,8 @@
       "ROTATE": ["GIRA", "GI"],
       "SCALE": ["ESCALA", "ES"],
       "MIRROR": ["SIMETRIA", "SI"],
-      "ARRAYRECT": ["MATRIZRECTANG", "MA", "MATRIZ"],
+      "ARRAY": ["MATRIZ", "MA"],
+      "ARRAYRECT": ["MATRIZRECTANG"],
       "ARRAYPOLAR": ["MATRIZPOLAR"],
       "ARRAYPATH": ["MATRIZCAMINO"],
       "TRIM": ["RECORTA", "RR"],
@@ -706,6 +708,11 @@
       "JOIN": {
         "Yes": "Sí",
         "No": "No"
+      },
+      "ARRAY": {
+        "Rectangular": "Rectangular",
+        "PAth": "CAmino",
+        "POlar": "POlar"
       },
       "ARRAYRECT": {
         "COUnt": "COntar",
@@ -1252,6 +1259,7 @@
       "specifySecondBreakPointOr": "Precise segundo punto de ruptura o",
       "specifySecondBreakPoint": "Precise segundo punto de ruptura",
       "specifyBreakPoint": "Especifique el punto de interrupción",
+      "enterArrayType": "Indique el tipo de matriz",
       "selectGripToEditArrayOr": "Seleccione un pinzamiento para editar la matriz o",
       "enterNumberOfColumns": "Indique el número de columnas",
       "enterNumberOfRows": "Indique el número de filas",

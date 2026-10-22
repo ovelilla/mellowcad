@@ -7,9 +7,10 @@ and the question it asks — `LINE Specify next point or [Undo]:`, with the valu
 (`<10.00>`), written at the drawing's precision as AutoCAD writes it at LUPREC (UNITS sets it;
 AutoCAD's `<10.0000>` is LUPREC 4), an angle at AUPREC's (`<90>`) — WHY 2 places in a new drawing,
 where acadiso.dwt starts at 4: a starting precision is the template's choice, not a command's
-behaviour, and every `<…>` and report follows the one the drawing has; the dynamic-input tooltip
-shows the question alone, up to its `or` (its keywords are the chips below it), or with its colon
-when it offers none. An alias is echoed as typed with the name it runs (`Command: l LINE`, es
+behaviour, and every `<…>` and report follows the one the drawing has, the arrays' distances
+without their trailing zeros as AutoCAD writes them (`<6>`, `<-4.3514>`; arrays/p116, p130); the
+dynamic-input tooltip shows the question alone, up to its `or` (its keywords are the chips below
+it), or with its colon when it offers none. An alias is echoed as typed with the name it runs (`Command: l LINE`, es
 `Comando: l LINEA`); a command started from the tool palette is echoed as AutoCAD's ribbon macro
 (`^C^C_line`) echoes it, `Command: _line` (desktop line/d19; every other button's macro is
 **unverified**), and is a command run: Enter at `Command:` repeats it, U names it (`CIRCLE`, es
@@ -79,7 +80,7 @@ one-line window AutoCAD starts with (F2 opens the text window only on a docked o
 
 **Missing:** the questions of every command but LINE, PLINE, CIRCLE, ARC, RECTANG, POLYGON, ELLIPSE,
 SPLINE, MOVE, COPY, STRETCH, ERASE, EXPLODE, JOIN, COPYCLIP, CUTCLIP, COPYBASE, ROTATE, SCALE,
-MIRROR, OFFSET, TRIM, EXTEND, FILLET, CHAMFER, BREAK, BREAKATPOINT, ARRAYRECT, ARRAYPOLAR,
+MIRROR, OFFSET, TRIM, EXTEND, FILLET, CHAMFER, BREAK, BREAKATPOINT, ARRAY, ARRAYRECT, ARRAYPOLAR,
 ARRAYPATH, HATCH, TEXT, MTEXT, the dimension commands, UCS, UCSICON, PLAN, ZOOM, -VIEW, LTSCALE,
 -LINETYPE, -LWEIGHT, -COLOR, -OSNAP, ATTDISP, NAVVCUBE, ELEV, DIST, AREA, ID, VPOINT, PAN, TEXTEDIT,
 ATTDEF, BLOCK, INSERT, PASTECLIP and MATCHPROP (`Select objects:` and its counts, COPYBASE's

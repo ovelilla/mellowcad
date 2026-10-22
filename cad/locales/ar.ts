@@ -47,6 +47,7 @@ export const ar: EngineLocale = {
       "rotate": "تدوير",
       "scale": "تحجيم",
       "mirror": "انعكاس",
+      "arraycommand": "مصفوفة",
       "array": "مصفوفة مستطيلة",
       "arraypolar": "مصفوفة قطبية",
       "arraypath": "مصفوفة على مسار",

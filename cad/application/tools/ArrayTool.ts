@@ -1,5 +1,5 @@
 import { Vec2 } from "../../geometry/Vec2"
-import { Vec3 } from "../../geometry/Vec3"
+import { Vec3, add3, sub3 } from "../../geometry/Vec3"
 import {
   Entity,
   copyEntity,
@@ -7,7 +7,7 @@ import {
   translateEntity,
 } from "../../domain/entities"
 import { parseNumber } from "../../domain/units"
-import { ucsDirectionToWorld } from "../../domain/ucs"
+import { Ucs, ucsDirectionToWorld, worldDirectionToUcs } from "../../domain/ucs"
 import { ScenePrimitive, StrokeStyle } from "../../scene/types"
 import { entityScenePrimitive } from "../SceneBuilder"
 import { THEME } from "../../scene/theme"
@@ -17,6 +17,7 @@ import {
   parseCoordinate,
 } from "../input/coordinateInput"
 import { ObjectSelector } from "./objectSelection"
+import { selectedInDrawingOrder } from "./drawingOrder"
 import type { PromptId } from "../../locales/types"
 import {
   CommandOption,
@@ -29,16 +30,17 @@ import {
 } from "./Tool"
 
 /**
- * AutoCAD's ARRAYRECT, as its 2023 console asks it: `Select objects:`, then
- * `Type = Rectangular  Associative = No` and `Select grip to edit array or
- * [COUnt/Spacing/COLumns/Rows/eXit] <eXit>:` over a live preview of the grid —
- * 4 columns along the UCS's +X and 3 rows along its +Y, a negative spacing
- * flipping the direction. COUnt asks the number of columns and of rows,
- * Spacing the distance between columns or [Unit cell] — two corners, whose
- * sides are both distances — and between rows, COLumns the number
- * of columns and their distance, Rows the number of rows, their distance and
- * the elevation each row rises by; eXit or Enter makes the copies, one undo
- * step with the source as item 1,1. Escape makes none.
+ * AutoCAD's ARRAYRECT, as its 2027 console asks it: `Select objects:` (or
+ * ARRAY's set, {@link takeSet}), then `Type = Rectangular  Associative = No`
+ * and `Select grip to edit array or [COUnt/Spacing/COLumns/Rows/eXit] <eXit>:`
+ * over a live preview of the grid — 4 columns along the UCS's +X and 3 rows
+ * along its +Y, a negative spacing flipping the direction. COUnt asks the
+ * number of columns and of rows, Spacing the distance between columns or
+ * [Unit cell] — two corners, whose sides along the UCS's axes are both
+ * distances — and between rows, COLumns the number of columns and their
+ * distance, Rows the number of rows, their distance and the elevation each row
+ * rises by; eXit or Enter makes the copies, one undo step with the source as
+ * item 1,1. Escape makes none.
  *
  * WHY Associative = No: an associative array is one object here neither
  * models nor edits, so the copies are plain geometry, as AutoCAD's are with
@@ -135,6 +137,13 @@ export class ArrayTool implements Tool {
     }
   }
 
+  /** Goes on from the set ARRAY selected, as from its own `Select objects:`. */
+  takeSet(ctx: ToolContext): void {
+    ctx.setCursor("crosshair")
+    this.selector.start()
+    this.beginEdit(ctx)
+  }
+
   onDeactivate(ctx: ToolContext): void {
     this.state = { phase: "selecting" }
     this.selector.start()
@@ -158,16 +167,26 @@ export class ArrayTool implements Tool {
         return {
           id: "specifyDistanceBetweenColumnsOfCell",
           enter: grid.colSpacing,
+          trimmed: true,
         }
       case "columnsSpacing":
-        return { id: "specifyDistanceBetweenColumns", enter: grid.colSpacing }
+        return {
+          id: "specifyDistanceBetweenColumns",
+          enter: grid.colSpacing,
+          trimmed: true,
+        }
       case "spacingRows":
       case "rowsSpacing":
-        return { id: "specifyDistanceBetweenRows", enter: grid.rowSpacing }
+        return {
+          id: "specifyDistanceBetweenRows",
+          enter: grid.rowSpacing,
+          trimmed: true,
+        }
       case "rowsElevation":
         return {
           id: "specifyIncrementingElevationBetweenRows",
           enter: grid.rowElevation,
+          trimmed: true,
         }
       case "unitCellFirst":
         return "unitCellFirstCorner"
@@ -179,7 +198,8 @@ export class ArrayTool implements Tool {
   /**
    * The main prompt is a grip's pick; a count refuses as AutoCAD's does, its
    * Expression keyword counted though not offered here, and a distance takes
-   * two points or Total and Expression (AutoCAD 2023's console).
+   * two points or Total and Expression — but Spacing's rows, which offers no
+   * keyword (probes arrays/p108, p114, p121, p138).
    */
   takes(): QuestionInput | null {
     const state = this.state
@@ -195,12 +215,24 @@ export class ArrayTool implements Tool {
       case "unitCellFirst":
       case "unitCellOpposite":
         return "point"
+      case "spacingRows":
+        return {
+          refusal: "requiresDistance",
+          values: { points: "two", keyword: "no" },
+        }
       default:
         return {
           refusal: "requiresDistance",
           values: { points: "two", keyword: "yes" },
         }
     }
+  }
+
+  /** Unit cell's corners leave LASTPOINT where it was (probe arrays/p148). */
+  setsLastPoint(): boolean | null {
+    return this.state.phase === "edit" && isUnitCell(this.state.step)
+      ? false
+      : null
   }
 
   commandOptions(): readonly CommandOption[] {
@@ -276,8 +308,14 @@ export class ArrayTool implements Tool {
   }
 
   answerTyped(text: string, ctx: ToolContext): boolean {
+    if (this.state.phase === "selecting") {
+      return this.selector.answerTyped(text, ctx)
+    }
+    // WHY taken and asked again: a point or a number there picks no grip,
+    // and the console says nothing (probes arrays/p109, p129).
     return (
-      this.state.phase === "selecting" && this.selector.answerTyped(text, ctx)
+      this.state.step === "main" &&
+      (isCoordinateExpression(text) || parseNumber(text) !== null)
     )
   }
 
@@ -319,7 +357,7 @@ export class ArrayTool implements Tool {
     const { corner, cursor } = this.state
     const cell =
       this.state.step === "unitCellOpposite" && corner && cursor
-        ? withCell(this.state.grid, corner, cursor)
+        ? withCell(this.state.grid, corner, cursor, ctx.ucs)
         : null
     const grid = cell ?? this.previewGrid(ctx, this.state.grid, this.state.step)
     const copies = cells(grid, ctx).flatMap((delta) =>
@@ -336,13 +374,15 @@ export class ArrayTool implements Tool {
     )
     if (cell === null || !corner || !cursor) return copies
     const rubber: StrokeStyle = { color: THEME.rubberBand, width: 1 }
-    const at = (x: number, y: number) => ctx.viewport.worldToScreen({ x, y })
+    // The cell's sides run along the UCS's axes.
+    const along = (x: number, y: number) =>
+      add3(corner, ucsDirectionToWorld(ctx.ucs, { x, y, z: 0 }))
     const box = [
-      at(corner.x, corner.y),
-      at(cursor.x, corner.y),
-      at(cursor.x, cursor.y),
-      at(corner.x, cursor.y),
-    ]
+      corner,
+      along(cell.colSpacing, 0),
+      along(cell.colSpacing, cell.rowSpacing),
+      along(0, cell.rowSpacing),
+    ].map((point) => ctx.viewport.worldToScreen(point))
     return [
       ...copies,
       ...box.map((a, i): ScenePrimitive => ({
@@ -361,17 +401,16 @@ export class ArrayTool implements Tool {
   }
 
   private beginEdit(ctx: ToolContext): void {
-    const originals = ctx.selection
-      .toArray()
-      .map((id) => ctx.document.get(id))
-      .filter((entity): entity is Entity => entity !== undefined)
+    // WHY the drawing's order: the console adds each cell's copies so,
+    // whatever order they were picked in (probe arrays/p167).
+    const originals = selectedInDrawingOrder(ctx)
     if (originals.length === 0) {
       this.state = { phase: "selecting" }
       this.selector.start()
       ctx.dynamicInput.close()
       return
     }
-    const { colSpacing, rowSpacing } = defaultSpacing(originals, ctx.blocks)
+    const { colSpacing, rowSpacing } = defaultSpacing(originals, ctx)
     this.state = {
       phase: "edit",
       originals,
@@ -427,11 +466,11 @@ export class ArrayTool implements Tool {
 
   /**
    * Unit cell's corner, typed: a point, or Enter, which leaves the spacing
-   * as it was. A number at the first corner is a square cell's side when
-   * positive (acc/wn28, wn50), never a direct distance; anything else is
-   * refused by the first corner in its own words and the main prompt asked
-   * again, as AutoCAD 2023's console does (wn30, wn40, wn41). At the
-   * opposite corner a number is a direct distance from the first (wn29).
+   * as it was (probes arrays/p124, p129). A number at the first corner is a
+   * square cell's side when positive (p126), never a direct distance;
+   * anything else is refused by the first corner in its own words and the
+   * main prompt asked again (p125, p127). At the opposite corner a number is
+   * a direct distance from the first (p130).
    */
   private openUnitCell(ctx: ToolContext): void {
     const first =
@@ -498,7 +537,10 @@ export class ArrayTool implements Tool {
       this.state = { ...this.state, corner: point, cursor: point }
       this.ask("unitCellOpposite", ctx)
     } else if (step === "unitCellOpposite" && corner) {
-      this.state = { ...this.state, grid: withCell(grid, corner, point) }
+      this.state = {
+        ...this.state,
+        grid: withCell(grid, corner, point, ctx.ucs),
+      }
       this.ask("main", ctx)
     }
   }
@@ -516,6 +558,12 @@ export class ArrayTool implements Tool {
         ctx.report(ctx.text.message("requiresPositiveInteger"), "error")
         return
       }
+    }
+    // The four distances refuse 0 and ask again; the elevation takes it
+    // (probes arrays/p117, p120, p135: AllowZero 0, and 1 at the elevation).
+    if (value === 0 && !isCount(step) && step !== "rowsElevation") {
+      ctx.report(ctx.text.message("valueMustBeNonzero"), "error")
+      return
     }
     if (value !== null) {
       this.state = { ...this.state, grid: withValue(grid, step, value) }
@@ -563,13 +611,14 @@ function isUnitCell(step: Step): step is "unitCellFirst" | "unitCellOpposite" {
   return step === "unitCellFirst" || step === "unitCellOpposite"
 }
 
-/** The grid whose cell runs from one corner to the other, in the UCS. */
-function withCell(grid: Grid, corner: Vec2, opposite: Vec2): Grid {
-  return {
-    ...grid,
-    colSpacing: opposite.x - corner.x,
-    rowSpacing: opposite.y - corner.y,
-  }
+/**
+ * The grid whose cell runs from one corner to the other, its sides measured
+ * along the UCS's axes (probe arrays/p147: `*0,0` and `*30,20` under
+ * `_UCS _Z 30`).
+ */
+function withCell(grid: Grid, corner: Vec3, opposite: Vec2, ucs: Ucs): Grid {
+  const side = worldDirectionToUcs(ucs, sub3({ ...opposite, z: 0 }, corner))
+  return { ...grid, colSpacing: side.x, rowSpacing: side.y }
 }
 
 function isCount(step: Step): boolean {
@@ -622,26 +671,32 @@ function cells(grid: Grid, ctx: ToolContext) {
 
 /**
  * AutoCAD's default spacing: one and a half times the selection's width
- * between columns and its height between rows, 1 where it has none (AutoCAD
- * 2023's console offers `<1>` for a line along the other axis).
+ * between columns and its height between rows, 1 where it has none (probe
+ * arrays/p168: a line's rows 1 apart). Width and height are the extents box's,
+ * measured along the UCS's axes (p165: a circle of radius 2 under
+ * `_UCS _Z 30` is 8.1962 apart, 1.5 × 4 (cos 30° + sin 30°)).
  */
 function defaultSpacing(
   originals: readonly Entity[],
-  blocks: ToolContext["blocks"]
+  ctx: Pick<ToolContext, "blocks" | "ucs">
 ): { colSpacing: number; rowSpacing: number } {
   let minX = Infinity
   let minY = Infinity
   let maxX = -Infinity
   let maxY = -Infinity
   for (const entity of originals) {
-    const b = entityBounds(entity, blocks)
+    const b = entityBounds(entity, ctx.blocks)
     minX = Math.min(minX, b.min.x)
     minY = Math.min(minY, b.min.y)
     maxX = Math.max(maxX, b.max.x)
     maxY = Math.max(maxY, b.max.y)
   }
-  const width = maxX - minX
-  const height = maxY - minY
+  const sides = [
+    { x: maxX - minX, y: 0 },
+    { x: 0, y: maxY - minY },
+  ].map((side) => worldDirectionToUcs(ctx.ucs, side))
+  const width = Math.abs(sides[0].x) + Math.abs(sides[1].x)
+  const height = Math.abs(sides[0].y) + Math.abs(sides[1].y)
   return {
     colSpacing: width > 1e-6 ? width * 1.5 : 1,
     rowSpacing: height > 1e-6 ? height * 1.5 : 1,

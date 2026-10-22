@@ -58,14 +58,14 @@ describe("command line", () => {
 
   it("distinguishes aliases that share a prefix", () => {
     // The whole reason the command line replaced single-key shortcuts: A must
-    // reach ARC while AR reaches ARRAYRECT.
+    // reach ARC while AR reaches ARRAY (acad.pgp's `AR,*ARRAY`).
     const cad = createHarness()
 
     cad.command("A")
     expect(cad.activeToolId()).toBe("arc")
 
     cad.command("AR")
-    expect(cad.activeToolId()).toBe("array")
+    expect(cad.activeToolId()).toBe("arraycommand")
   })
 
   it("reports an unknown command without changing the tool", () => {

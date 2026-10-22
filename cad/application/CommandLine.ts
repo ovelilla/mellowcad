@@ -224,7 +224,7 @@ export function temporaryPromptLines(
 
 /**
  * The command each tool runs, by its global name. What it is typed as — AutoCAD's
- * names and aliases in the command language, `L` for LINE, `AR` for ARRAYRECT —
+ * names and aliases in the command language, `L` for LINE, `AR` for ARRAY —
  * is in the catalog (`commands.names`), so a language can rename it and keep
  * its keywords.
  *
@@ -279,6 +279,7 @@ export const TOOL_COMMANDS: Readonly<Record<string, string>> = {
   rotate: "ROTATE",
   scale: "SCALE",
   mirror: "MIRROR",
+  arraycommand: "ARRAY",
   array: "ARRAYRECT",
   arraypolar: "ARRAYPOLAR",
   arraypath: "ARRAYPATH",

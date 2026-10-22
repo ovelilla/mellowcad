@@ -154,10 +154,12 @@ status readout (X, Y and Z), the Properties palette's coordinate rows (X, Y and 
 deltas (read and retyped), DIST's deltas and angles, ID, Ortho,
 polar tracking and its readout, OTRACK guides, the snap lattice and the grid with its tinted axes;
 the rotation TEXT, MTEXT, ATTDEF and INSERT ask for; HATCH's angle and origin (HPORIGIN 0,0);
-DIMLINEAR's horizontal / vertical / Rotated; RECTANG; ARRAYRECT's rows and columns; POLYGON's
+DIMLINEAR's horizontal / vertical / Rotated; RECTANG; ARRAYRECT's rows and columns, its unit
+cell's sides (arrays/p147) and the default spacing it offers, the extents box measured along the
+UCS's axes (p165; in a tilted UCS the box in its plane, **unverified**); POLYGON's
 first vertex before the cursor moves; BLOCK, which defines its objects in the UCS. **Not yet:** the
-text angle of a dimension (Angle), the default spacing ARRAYRECT offers (from
-world extents), and palette rotations (they stay in the WCS, as AutoCAD's TEXT and INSERT rows do).
+text angle of a dimension (Angle), the default spacing ARRAYPATH offers (from world extents,
+arrays/p310), and palette rotations (they stay in the WCS, as AutoCAD's TEXT and INSERT rows do).
 In a tilted UCS all of it works in its XY plane, and so does every command: what is drawn lies in
 it (or above it at ELEVATION), ROTATE turns about the UCS's Z and MIRROR's plane holds it. A WCS
 point typed with `*` and no Z lies on the WCS's XY plane in every UCS, turned or tilted, whatever

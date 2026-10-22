@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest"
 
 import { type CadHarness, createHarness } from "../../test/harness"
-import { lineOf, p } from "../../test/builders"
+import { circleOf, lineOf, p } from "../../test/builders"
 import { es } from "../locales/es"
 import type { LineEntity } from "../domain/entities"
 
@@ -380,6 +380,45 @@ describe("a transparent command", () => {
     answerLine(cad, "ZOOM")
     answerLine(cad, "E")
     expect(cad.commandLog().at(-1)).toBe("Regenerating model.")
+  })
+
+  // probes arrays/p155 (a transparent command at ARRAYRECT's count,
+  // getint's, resumes it there) and p154, p158 ('_ZOOM _E at its point and
+  // distance prompts). WHY 'ZOOM here, not p155's 'ORTHOMODE: ORTHOMODE is
+  // no variable yet (drafting-aids, Missing). POLYGON's sides is a number box
+  // too, unprobed.
+  it("runs at a number prompt as at a distance one", () => {
+    const cad = createHarness({
+      entities: [circleOf(p(10, 10), 2, { id: "C" })],
+    })
+    answerLine(cad, "_ARRAYRECT")
+    answerLine(cad, "_L")
+    answerLine(cad, "")
+    answerLine(cad, "_COU")
+    answerLine(cad, "'_ZOOM")
+    answerLine(cad, "_E")
+    answerLine(cad, "3")
+    expect(cad.commandLog().slice(-4)).toEqual([
+      "Enter the number of columns <4>: 'ZOOM",
+      `${ZOOM_PROMPT} _E`,
+      "Resuming ARRAYRECT command.",
+      "Enter the number of columns <4>: 3",
+    ])
+    cad.escape()
+
+    answerLine(cad, "_POLYGON")
+    answerLine(cad, "'_ZOOM")
+    answerLine(cad, "_E")
+    answerLine(cad, "5")
+    expect(cad.commandLog().slice(-4)).toEqual([
+      "Enter number of sides <4>: 'ZOOM",
+      `${ZOOM_PROMPT} _E`,
+      "Resuming POLYGON command.",
+      "Enter number of sides <4>: 5",
+    ])
+    expect(cad.state().commandLine.prompt).toBe(
+      "POLYGON Specify center of polygon or [Edge]:"
+    )
   })
 
   // probe line/p19: an empty drawing's extents need a regeneration, so a

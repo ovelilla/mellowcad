@@ -166,40 +166,81 @@ where AutoCAD reads 10° and 100°), and BREAK of it keeping the other piece (p3
 three quarters, Area 3570.243), differ. WHY not built: an ellipse turned to −Z no longer reads in
 plan here, so TRIM, EXTEND, BREAK, OFFSET, JOIN, HATCH and its grips would refuse it (ELLIPSE-D43)
 
-### `ARRAYRECT` · es `MATRIZRECTANG` / `MATRIZ`† / `MA`†
+### `ARRAY` / `AR` · es `MATRIZ` / `MA`
 
-**Implemented:** `Select objects:` (MOVE's counts), `Type = Rectangular  Associative = No` (es
-`Tipo = Rectangular  Asociativa = No`, composed from the table's words: **unverified**), then
+**Implemented:** `Select objects:` (MOVE's counts, a preselection counted), then
+`Enter array type [Rectangular/PAth/POlar] <Rectangular>:` (es
+`Indique el tipo de matriz [Rectangular/CAmino/POlar] <Rectangular>:`), Enter taking Rectangular,
+anything but a keyword `Invalid option keyword.` (es `Opción no válida.`) and the question again;
+the set is handed to ARRAYRECT, ARRAYPATH or ARRAYPOLAR, which go on from their `Type = …` line
+without asking for objects again (AutoCAD 2027's console, arrays/p100, p101, p103, p104, p204). The
+run stays ARRAY's: one undo step, which U names ARRAY, ARRAY heading the prompts, and Enter at
+`Command:` repeats ARRAY (what AutoCAD heads them with and U writes after ARRAY: **unverified**)
+
+**Missing:** ARRAYTYPE as the default (AutoCAD's is 0, Rectangular, p00; whether ARRAY sets it to
+the last type chosen: **unverified**, so `<Rectangular>` always)
+
+### `ARRAYRECT` · es `MATRIZRECTANG`
+
+**Implemented:** `Select objects:` (MOVE's counts; ARRAY's set),
+`Type = Rectangular  Associative = No` (es `Tipo = Rectangular  Asociativa = No`, composed from the table's words; the console's with
+Associative Yes is `Tipo = Rectangular  Asociativa = Sí`, p100), then
 `Select grip to edit array or [COUnt/Spacing/COLumns/Rows/eXit] <eXit>:` (es
 `Seleccione un pinzamiento para editar la matriz o [COntar/Espaciado/Columnas/Filas/Salir] <Salir>`)
 over a live preview, 4 columns along the UCS's X and 3 rows along its Y, one and a half times the
-selection's width and height apart (1 where it has none); COUnt asks
-`Enter the number of columns <4>:` and `Enter the number of rows <3>:`, Spacing
-`Specify the distance between columns or [Unit cell] <15.00>:` and
-`Specify the distance between rows <1.00>:` — Unit cell asks
-`Specify first corner point of unit cell:` and `Specify opposite corner:`, picked or typed, and the
-cell's sides are the distances between columns and rows (negative to the left or below); Enter at
-either corner leaves them, a positive number at the first makes both that (a square cell) and a
-number at the opposite one is a direct distance from the first, `FOO`, `0` or a negative number at
-the first says `Requires numeric nonzero value.` and leaves Unit cell, at the opposite one
-`Invalid point.`, as AutoCAD 2023's console does (es `[célula de Unidad]`,
-`Precise primer punto de esquina de la celda de unidad`,
-`Necesita un valor numérico distinto de cero.`; the opposite corner's `Precise esquina opuesta`:
-**unverified**, the table has two) —, COLumns the number and the distance of the columns, Rows those
-of the rows and `Specify the incrementing elevation between rows <0.00>:` (each row that much
-higher); es `Indique el número de columnas`, `Especificar la distancia entre columnas` (Spacing's;
-COLumns' `Especifique…`), `Especifique la elevación incremental entre filas`; a count refuses 0
-(`Value must be positive and nonzero.`) and a fraction
-(`Requires a positive nonzero integer or option keyword.`); eXit or Enter makes the copies, one undo
-step; Escape none
+selection's extents apart, its width and height measured along the UCS's axes (1 where it has
+none; arrays/p165, p168); a point or a number typed there is taken and the prompt asked again
+without a word (p109, p129); COUnt asks `Enter the number of columns <4>:` and
+`Enter the number of rows <3>:`, Spacing
+`Specify the distance between columns or [Unit cell] <15>:` and
+`Specify the distance between rows <1>:` — the defaults without trailing zeros, at the drawing's
+precision, as AutoCAD writes them (`<6>`, `<-4.3514>`; p116, p130) — Unit cell asks
+`Specify first corner point of unit cell:` and `Specify opposite corner:`, picked or typed (a
+typed corner read as any typed point, `*x,y` in the WCS, p147), and the cell's sides along the
+UCS's axes are the distances between columns and rows (negative to the left or below); neither
+corner moves LASTPOINT (p148); Enter at the first corner leaves them (p124), at the opposite one
+too (p129: whether it keeps the spacing is **unverified**), a positive number at the first makes
+both that (a square cell, p126) and a number at the opposite one is a direct distance from the
+first (p130), `FOO` or `0` at the first says `Requires numeric nonzero value.` and leaves Unit
+cell (p125, p127; a negative number too, AutoCAD 2023's), at the opposite one `Invalid point.`
+(p128) (es `[célula de Unidad]`, `Precise primer punto de esquina de la celda de unidad`,
+`Precise esquina opuesta`, `Necesita un valor numérico distinto de cero.`) —, COLumns the number
+and the distance of the columns, Rows those of the rows and
+`Specify the incrementing elevation between rows <0>:` (each row that much higher); es
+`Indique el número de columnas`, `Especificar la distancia entre columnas` (Spacing's; COLumns'
+`Especifique…`), `Especifique la elevación incremental entre filas`; a count refuses 0
+(`Value must be positive and nonzero.`, p111) and a fraction
+(`Requires a positive nonzero integer or option keyword.`, p113); a distance refuses 0 with
+`Value must be nonzero.` (es `El valor debe ser diferente de cero.`) and asks again, where the
+elevation takes it (p117, p120, p135); `FOO` at Spacing's rows says
+`Requires numeric distance or two points.` (es `Requiere una distancia numérica o dos puntos.`),
+at the other distances `…, two points, or option keyword.` (p121, p138); `'ZOOM` at any prompt,
+a count's too, resumes it (p154, p157, p158); eXit or Enter makes the copies, in the drawing's
+order whatever the pick's (p167), with the source's layer, colour, lineweight and Z (p164, p166), one undo step
+(U writes `ARRAYRECT`, p159); Escape none
 
 **Missing:** associative arrays (WHY Associative = No: an array object is not modelled, so the
 copies are plain geometry, as with AutoCAD's ASsociative No — the keyword is not offered), the grips
-the main prompt picks, Base point, Levels, Total, MAXARRAY's message, Expression (WHY not built: it
+the main prompt picks; Base point (`Specify base point or [Key point] <centroid>:`, es
+`Especifique un punto base o [punto Clave] <centro de gravedad>:`, p140); Levels
+(`Enter the number of levels or [Expression] <1>:`,
+`Specify the distance between levels or [Total/Expression] <1>:`, es
+`Indique el número de niveles o [Expresión] <1>:`,
+`Especifique la distancia entre niveles o [Total/Expresión] <1>:`, p139); Total at COLumns' and
+Rows' distances (`Enter total distance between start and end columns <12>:`, `… rows`, es
+`Introduzca la distancia total entre los puntos inicial y final columnas <12>:`, `… filas`, p133,
+p136); the hidden clicK (an integer asked with no prompt, `FOO` refused with
+`Requires a positive nonzero integer.`, es `Requiere un nº entero positivo que no sea cero.`, p141)
+and UPdate (the main prompt asked again, p142); the counts' `[Expression]` and the distances'
+`[Total/Expression]`, which AutoCAD lists (p131, p135; English spells the elevation's
+`[Expresson]`); English's `…/eXit]<eXit>:` with no space before the default, Spanish's with one
+(p01, p04; WHY not built: the space is per question here, not per language, and it changes no
+letter typed); 'ORTHOMODE at a count (p155: ORTHOMODE is no variable here, drafting-aids.md);
+MAXARRAY's message (MAXARRAY is nil in 2027, p00: **unverified**); Expression (WHY not built: it
 ties an associative array to the drawing's parameters, and with Associative = No and no Parameters
-Manager it would only be a calculator; AutoCAD 2023's console:
-`Enter the number of columns or [Expression] <4>:`, then `Enter expression<4>:`, arithmetic with
-`^`, `%`, parentheses and functions — `sqrt(16)`, `max(2,5)`, `SQRT(9)` — refusing `FOO` with
+Manager it would only be a calculator; 2027's console: `Enter expression<4>:`, es
+`Introduzca la expresión<4>:`, p134; AutoCAD 2023's: arithmetic with `^`, `%`, parentheses and
+functions — `sqrt(16)`, `max(2,5)`, `SQRT(9)` — refusing `FOO` with
 `The syntax is incorrect or a variable is not defined.  Reenter the expression or value.` and a
 fraction with `Requires an integer between 1 an 32767, or option keyword.`)
 

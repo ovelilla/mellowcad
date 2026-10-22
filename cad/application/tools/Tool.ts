@@ -127,6 +127,12 @@ export interface ToolQuestion {
   readonly tight?: true
   /** No colon after the default, as AutoCAD's string ends (`OK? <Y>`). */
   readonly open?: true
+  /**
+   * A length or angle default written without its trailing zeros, at the
+   * drawing's precision, as the arrays' prompts write theirs (`<6>`,
+   * `<-4.3514>`; probes arrays/p116, p130).
+   */
+  readonly trimmed?: true
 }
 
 /** UNDO's operations on the undo history, which only its tool uses. */
@@ -478,6 +484,13 @@ export interface Tool {
 
   /** The command the prompt names when one tool runs several (EATTEDIT); else `TOOL_COMMANDS`'. */
   runningCommand?(): string
+  /**
+   * The command whose questions the tool asks now on its behalf, where it
+   * has handed its run to another (ARRAY's set to ARRAYRECT): its keywords
+   * and labels are read from that command's tables. Null or omitted: the
+   * tool's own command.
+   */
+  handedTo?(): string | null
   /**
    * AutoCAD's ribbon macro the tool runs, where it is a mode of another
    * command (`^C^C_circle _2p`): that command's keywords are the tool's, the

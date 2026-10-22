@@ -215,6 +215,7 @@ describe.each(ENTERS)("Enter from %s with nothing typed", (_, enter) => {
 })
 
 describe("Enter with nothing typed", () => {
+  // probe arrays/p143: Enter at ARRAYRECT's main prompt makes the 4 × 3 grid.
   it("commits a form's defaults, which the box shows", () => {
     const cad = createHarness({
       entities: [lineOf(p(0, 0), p(40, 0), { id: "L1" })],

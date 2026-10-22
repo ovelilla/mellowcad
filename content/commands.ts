@@ -55,6 +55,7 @@ export const COMMAND_FILING: Readonly<Record<string, Filing>> = {
   EXTEND: { group: "modify" },
   FILLET: { group: "modify" },
   CHAMFER: { group: "modify" },
+  ARRAY: { group: "modify" },
   ARRAYRECT: { group: "modify" },
   ARRAYPOLAR: { group: "modify" },
   ARRAYPATH: { group: "modify" },

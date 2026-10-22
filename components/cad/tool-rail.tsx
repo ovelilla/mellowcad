@@ -317,6 +317,8 @@ const RAIL_EXCLUDED = new Set([
   "snap",
   // SPLINE is typed; the rail runs it as the ribbon's Spline Fit and CV.
   "spline",
+  // ARRAY is typed; the ribbon's Array drop-down runs the three kinds.
+  "arraycommand",
   // CECOLOR, CELTYPE and CELWEIGHT are the top bar's property drop-downs.
   "color",
   "linetype",

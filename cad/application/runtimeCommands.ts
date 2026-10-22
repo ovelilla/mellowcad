@@ -218,7 +218,12 @@ export function registerCommands(
  * (CIRCLE for the rail's 2-Point), else `TOOL_COMMANDS`'.
  */
 export function toolCommand(tool: Tool): string | null {
-  return tool.ribbonMacro?.()?.command ?? TOOL_COMMANDS[tool.id] ?? null
+  return (
+    tool.handedTo?.() ??
+    tool.ribbonMacro?.()?.command ??
+    TOOL_COMMANDS[tool.id] ??
+    null
+  )
 }
 
 /**
@@ -302,16 +307,26 @@ export function askedPrompt(tool: Tool): PromptId | null {
 function enterValue(
   enter: NonNullable<ToolQuestion["enter"]>,
   text: EngineText,
-  settings: DocumentSettings
+  settings: DocumentSettings,
+  trimmed = false
 ): string {
-  if (typeof enter === "number") return formatLength(enter, settings)
+  const trim = (value: string) =>
+    trimmed ? withoutTrailingZeros(value) : value
+  if (typeof enter === "number") return trim(formatLength(enter, settings))
   if (typeof enter === "string") return text.prompt(enter)
-  if ("angle" in enter) return formatAngle(enter.angle, settings)
+  if ("angle" in enter) return trim(formatAngle(enter.angle, settings))
   if ("count" in enter) return String(enter.count)
   if ("name" in enter) return enter.name
   return [enter.x, enter.y, enter.z]
     .map((value) => formatLength(value, settings))
     .join(", ")
+}
+
+/** `6.00` as `6`, `4.50` as `4.5`, `-0.00` as `0`. */
+function withoutTrailingZeros(value: string): string {
+  if (!value.includes(".")) return value
+  const trimmed = value.replace(/\.?0+$/, "")
+  return trimmed === "-0" ? "0" : trimmed
 }
 
 /**
@@ -362,7 +377,7 @@ export function commandPrompt(
     asking !== null && transparent ? text.transparentPrompt(asking) : asking
   const value =
     typeof asked === "object" && asked !== null && asked.enter !== undefined
-      ? enterValue(asked.enter, text, settings)
+      ? enterValue(asked.enter, text, settings, asked.trimmed === true)
       : fallback === null
         ? null
         : (text.keywordLabel(command, fallback) ??

@@ -43,6 +43,7 @@
       "rotate": "Rotate",
       "scale": "Scale",
       "mirror": "Mirror",
+      "arraycommand": "Array",
       "array": "Rectangular array",
       "arraypolar": "Polar array",
       "arraypath": "Path array",
@@ -390,7 +391,8 @@
       "ROTATE": ["ROTATE", "RO"],
       "SCALE": ["SCALE", "SC"],
       "MIRROR": ["MIRROR", "MI"],
-      "ARRAYRECT": ["ARRAYRECT", "AR", "ARRAY"],
+      "ARRAY": ["ARRAY", "AR"],
+      "ARRAYRECT": ["ARRAYRECT"],
       "ARRAYPOLAR": ["ARRAYPOLAR", "ARPOLAR"],
       "ARRAYPATH": ["ARRAYPATH", "ARPATH"],
       "TRIM": ["TRIM", "TR"],
@@ -678,6 +680,11 @@
       "SCALE": { "Copy": "Copy", "Reference": "Reference", "Points": "Points" },
       "MIRROR": { "Yes": "Yes", "No": "No" },
       "JOIN": { "Yes": "Yes", "No": "No" },
+      "ARRAY": {
+        "Rectangular": "Rectangular",
+        "PAth": "PAth",
+        "POlar": "POlar"
+      },
       "ARRAYRECT": {
         "COUnt": "COUnt",
         "Spacing": "Spacing",
@@ -1221,6 +1228,7 @@
       "specifySecondBreakPointOr": "Specify second break point or",
       "specifySecondBreakPoint": "Specify second break point",
       "specifyBreakPoint": "Specify break point",
+      "enterArrayType": "Enter array type",
       "selectGripToEditArrayOr": "Select grip to edit array or",
       "enterNumberOfColumns": "Enter the number of columns",
       "enterNumberOfRows": "Enter the number of rows",

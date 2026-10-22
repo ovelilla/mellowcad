@@ -47,6 +47,7 @@ export const es: EngineLocale = {
       "rotate": "Girar",
       "scale": "Escala",
       "mirror": "Simetría",
+      "arraycommand": "Matriz",
       "array": "Matriz rectangular",
       "arraypolar": "Matriz polar",
       "arraypath": "Matriz de camino",
@@ -645,10 +646,12 @@ export const es: EngineLocale = {
         "SIMETRIA",
         "SI"
       ],
+      "ARRAY": [
+        "MATRIZ",
+        "MA"
+      ],
       "ARRAYRECT": [
-        "MATRIZRECTANG",
-        "MA",
-        "MATRIZ"
+        "MATRIZRECTANG"
       ],
       "ARRAYPOLAR": [
         "MATRIZPOLAR"
@@ -1157,6 +1160,11 @@ export const es: EngineLocale = {
       "JOIN": {
         "Yes": "Sí",
         "No": "No"
+      },
+      "ARRAY": {
+        "Rectangular": "Rectangular",
+        "PAth": "CAmino",
+        "POlar": "POlar"
       },
       "ARRAYRECT": {
         "COUnt": "COntar",
@@ -1757,6 +1765,7 @@ export const es: EngineLocale = {
       "specifySecondBreakPointOr": "Precise segundo punto de ruptura o",
       "specifySecondBreakPoint": "Precise segundo punto de ruptura",
       "specifyBreakPoint": "Especifique el punto de interrupción",
+      "enterArrayType": "Indique el tipo de matriz",
       "selectGripToEditArrayOr": "Seleccione un pinzamiento para editar la matriz o",
       "enterNumberOfColumns": "Indique el número de columnas",
       "enterNumberOfRows": "Indique el número de filas",

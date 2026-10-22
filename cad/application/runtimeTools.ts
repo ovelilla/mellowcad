@@ -32,6 +32,7 @@ import { MirrorTool } from "./tools/MirrorTool"
 import { ArrayTool } from "./tools/ArrayTool"
 import { ArrayPolarTool } from "./tools/ArrayPolarTool"
 import { ArrayPathTool } from "./tools/ArrayPathTool"
+import { ArrayCommandTool } from "./tools/ArrayCommandTool"
 import { TrimTool } from "./tools/TrimTool"
 import { ExtendTool } from "./tools/ExtendTool"
 import type { TrimExtendMode } from "./tools/EdgeEditTool"
@@ -82,6 +83,11 @@ export function defaultTools(
   const circleRadius = { radius: 0 }
   const trimExtendMode: TrimExtendMode = { standard: false, edgeExtend: false }
   const splineSettings = defaultSplineSettings()
+  const arrays = {
+    Rectangular: new ArrayTool(),
+    POlar: new ArrayPolarTool(),
+    PAth: new ArrayPathTool(),
+  }
   return [
     new SelectTool(),
     new LineTool(),
@@ -125,9 +131,10 @@ export function defaultTools(
     new RotateTool(),
     new ScaleTool(),
     new MirrorTool(),
-    new ArrayTool(),
-    new ArrayPolarTool(),
-    new ArrayPathTool(),
+    new ArrayCommandTool(arrays),
+    arrays.Rectangular,
+    arrays.POlar,
+    arrays.PAth,
     new TrimTool(trimExtendMode),
     new ExtendTool(trimExtendMode),
     new FilletTool(),

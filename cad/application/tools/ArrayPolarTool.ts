@@ -108,6 +108,13 @@ export class ArrayPolarTool implements Tool {
     }
   }
 
+  /** Goes on from the set ARRAY selected, as from its own `Select objects:`. */
+  takeSet(ctx: ToolContext): void {
+    ctx.setCursor("crosshair")
+    this.selector.start()
+    this.enterCenter(ctx)
+  }
+
   onDeactivate(ctx: ToolContext): void {
     this.state = { phase: "selecting" }
     this.selector.start()

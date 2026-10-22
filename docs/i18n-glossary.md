@@ -73,7 +73,7 @@ marks a choice between competing terms that a native review should settle first 
 |  | Offset, Trim, Extend, Fillet, Chamfer | Desfase, Recortar, Alargar, Empalme, Chaflán | إزاحة متوازية، تشذيب، تمديد، تقويس، شطف (C) † | same, C 696681C1-4B8B-4995-8903-CCE6686179EA | yes |
 |  | Explode, Join, Break, Break at point | Descomponer, Juntar, Partir, Partir en punto | تفكيك، ضمّ، كسر، كسر عند نقطة (C) | C 4DC59885-3B10-4CEE-854B-4B5ADCD1A4EF, MAC D175DCD2-2050-4DA9-9965-1E94462718CA | yes (Partir en punto partial) |
 |  | Match properties | Igualar propiedades | مطابقة الخصائص (C) | C F1EB0CCC-49E4-4798-A12E-709795CAD1C2 | yes |
-|  | Rectangular, Polar, Path array | Matriz rectangular, Matriz polar, Matriz de camino | مصفوفة مستطيلة، قطبية، على مسار (M) | C 181BF535-D6F4-4B90-B04D-EB99C5488DAB | yes |
+|  | Array; Rectangular, Polar, Path array | Matriz; Matriz rectangular, Matriz polar, Matriz de camino | مصفوفة؛ مصفوفة مستطيلة، قطبية، على مسار (M) | C 181BF535-D6F4-4B90-B04D-EB99C5488DAB; Matriz: the command's Spanish name, MATRIZ (console arrays/p103) | yes (Matriz partial) |
 | Annotate | Single line text, Edit | Texto en una línea, Editar | نص بسطر واحد، تحرير (C) | C 8739509C-15A7-4582-BF7C-3D83ED2A23B5 | yes |
 |  | Linear, Aligned, Angular, Radius, Diameter, Baseline, Continue, Adjust space | Lineal, Alineada, Angular, Radio, Diámetro, Línea base, Continuar, Ajustar espacio | خطي، محاذٍ، زاوي، نصف القطر، القطر، خط أساس، متتابع، تباعد (C) † | C DEB94C8F-064F-4E44-AB7A-D157DA166581, C 7CE4EF2B-93C6-423A-9401-664F3FE0829A | yes (Alineada… partial) |
 | Block | Create block, Insert, Purge | Crear bloque, Insertar, Limpiar | إنشاء كتلة، إدراج، تنظيف (C) † | C 7625417C-BFA4-4BEB-8A19-109778AA1E30, C D68BA47B-A79D-4F58-9715-0569CC24BCEF | yes |

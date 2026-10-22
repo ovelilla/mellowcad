@@ -47,6 +47,7 @@ export const en: EngineCatalog = {
       "rotate": "Rotate",
       "scale": "Scale",
       "mirror": "Mirror",
+      "arraycommand": "Array",
       "array": "Rectangular array",
       "arraypolar": "Polar array",
       "arraypath": "Path array",
@@ -656,10 +657,12 @@ export const en: EngineCatalog = {
         "MIRROR",
         "MI"
       ],
+      "ARRAY": [
+        "ARRAY",
+        "AR"
+      ],
       "ARRAYRECT": [
-        "ARRAYRECT",
-        "AR",
-        "ARRAY"
+        "ARRAYRECT"
       ],
       "ARRAYPOLAR": [
         "ARRAYPOLAR",
@@ -1401,6 +1404,7 @@ export const en: EngineCatalog = {
       "specifySecondBreakPointOr": "Specify second break point or",
       "specifySecondBreakPoint": "Specify second break point",
       "specifyBreakPoint": "Specify break point",
+      "enterArrayType": "Enter array type",
       "selectGripToEditArrayOr": "Select grip to edit array or",
       "enterNumberOfColumns": "Enter the number of columns",
       "enterNumberOfRows": "Enter the number of rows",
