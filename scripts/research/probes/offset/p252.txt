@@ -1,0 +1,18 @@
+_LINE
+0,0
+100,0
+
+_ZOOM
+_W
+-50,-50
+300,300
+_ID
+0,50
+_OFFSET
+10
+50,0
+50,50
+
+(ssget "_I")
+(if (ssget "_P") (sslength (ssget "_P")))
+(getvar "LASTPOINT")

@@ -1,0 +1,12 @@
+_LINE
+0,0
+100,0
+
+_ZOOM
+_W
+-50,-50
+300,300
+(setvar "OFFSETDIST" 5)
+_OFFSET
+
+

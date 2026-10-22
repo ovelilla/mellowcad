@@ -1,0 +1,15 @@
+_LINE
+0,0
+100,0
+
+_ZOOM
+_W
+-50,-50
+300,300
+(sssetfirst nil (ssget "_X"))
+_OFFSET
+10
+50,50
+
+(sslength (ssget "_X"))
+(ssget "_I")

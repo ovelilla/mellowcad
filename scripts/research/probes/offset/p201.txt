@@ -1,0 +1,14 @@
+_-TEXT
+0,0
+10
+0
+Hola
+_ZOOM
+_W
+-50,-50
+300,300
+_OFFSET
+10
+5,5
+
+(sslength (ssget "_X"))

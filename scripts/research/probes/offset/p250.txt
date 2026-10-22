@@ -1,0 +1,23 @@
+_-LAYER
+_M
+LK
+
+_LINE
+0,0
+100,0
+
+_-LAYER
+_LO
+LK
+
+_ZOOM
+_W
+-50,-50
+300,300
+_OFFSET
+10
+50,0
+50,50
+
+(list (cdr (assoc 0 (entget (entlast)))) (cdr (assoc 10 (entget (entlast)))) (cdr (assoc 11 (entget (entlast)))) (cdr (assoc 40 (entget (entlast)))))
+(cdr (assoc 8 (entget (entlast))))

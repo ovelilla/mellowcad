@@ -1,0 +1,17 @@
+_RECTANG
+0,0
+100,100
+_-HATCH
+_P
+SOLID
+50,50
+
+_ZOOM
+_W
+-50,-50
+300,300
+_OFFSET
+10
+50,50
+
+(sslength (ssget "_X"))

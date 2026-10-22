@@ -1,0 +1,13 @@
+_DIMLINEAR
+0,0
+100,0
+50,-20
+_ZOOM
+_W
+-50,-50
+300,300
+_OFFSET
+10
+50,-20
+
+(sslength (ssget "_X"))

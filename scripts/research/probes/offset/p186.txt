@@ -1,0 +1,12 @@
+(entmake (list (cons 0 "LWPOLYLINE") (cons 100 "AcDbEntity") (cons 100 "AcDbPolyline") (cons 90 3) (cons 70 0) (cons 43 4.0) (list 10 0.0 0.0) (list 10 100.0 0.0) (list 10 100.0 50.0)))
+_ZOOM
+_W
+-50,-50
+300,300
+_OFFSET
+5
+50,0
+50,-20
+
+MPDUMP
+-

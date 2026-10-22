@@ -1,0 +1,17 @@
+_UCS
+_X
+90
+_CIRCLE
+0,0
+50
+_UCS
+_W
+_ZOOM
+_W
+-50,-50
+300,300
+_OFFSET
+10
+10,0
+
+(sslength (ssget "_X"))

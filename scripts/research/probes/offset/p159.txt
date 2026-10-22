@@ -1,0 +1,18 @@
+_LINE
+0,0
+100,0
+
+_ZOOM
+_W
+-50,-50
+300,300
+_OFFSET
+_E
+_Y
+10
+50,0
+50,50
+_U
+
+(sslength (ssget "_X"))
+(cdr (assoc 10 (entget (entlast))))

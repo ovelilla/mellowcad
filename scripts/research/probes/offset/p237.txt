@@ -1,0 +1,13 @@
+_CIRCLE
+0,0
+50
+_-VIEW
+_SEISO
+_ZOOM
+_E
+_OFFSET
+10
+50,0
+100,0
+
+(sslength (ssget "_X"))

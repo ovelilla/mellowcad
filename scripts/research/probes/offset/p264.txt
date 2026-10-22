@@ -1,0 +1,29 @@
+_LINE
+0,0
+100,0
+
+_LINE
+110,1
+110,5
+
+_LINE
+60,30
+100,-10
+
+_CIRCLE
+200,100
+30
+_ZOOM
+_W
+-50,-50
+300,300
+_ID
+0,50
+_OFFSET
+10
+50,0
+_MID
+110,-1
+
+(list (cdr (assoc 0 (entget (entlast)))) (cdr (assoc 10 (entget (entlast)))) (cdr (assoc 11 (entget (entlast)))) (cdr (assoc 40 (entget (entlast)))))
+(getvar "LASTPOINT")

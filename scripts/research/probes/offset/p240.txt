@@ -1,0 +1,16 @@
+_LINE
+0,0
+100,0
+
+_ZOOM
+_W
+-50,-50
+300,300
+(list (getvar "VIEWSIZE") (getvar "SCREENSIZE") (getvar "VIEWCTR") (getvar "APERTURE") (getvar "PICKBOX") (getvar "OSMODE") (getvar "ORTHOMODE") (getvar "AUTOSNAP"))
+_ID
+0,50
+_OFFSET
+10
+50,0
+
+(getvar "LASTPOINT")

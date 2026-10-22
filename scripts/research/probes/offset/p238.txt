@@ -1,0 +1,17 @@
+_CIRCLE
+0,0
+50
+_-VIEW
+_SEISO
+_UCS
+_W
+_ZOOM
+_E
+(getvar "UCSFOLLOW")
+(getvar "WORLDUCS")
+_OFFSET
+10
+50,0
+100,0
+
+(sslength (ssget "_X"))

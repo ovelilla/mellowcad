@@ -1,0 +1,9 @@
+_LINE
+0,0
+100,0
+
+_OFFSET
+
+
+_U
+(sslength (ssget "_X"))
