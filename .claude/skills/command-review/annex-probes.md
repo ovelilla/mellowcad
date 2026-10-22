@@ -162,6 +162,11 @@ Traps seen on the desktop (PLINE's review, 2026-10-21):
   and read the object back (SCALE's factor is the distance over half the set's extents,
   transforms/d06, d07). Wait a second after typing a command before its first pick, or the pick
   can miss and Enter end the command empty (Transforms' review).
+- A desktop drawing's variable can start otherwise than the console's: every new desktop drawing
+  read OFFSETDIST 1 where the console, isolated, with `-r` and with acadiso.dwt, read −1 (offset/p05,
+  d01-1). Read the desktop's value before trusting a default there. Plan each Enter a desktop step
+  sends against the prompt it lands on: at a prompt whose Enter is Exit it ends the command, and the
+  next click starts a window (OFFSET's review).
 
 A probe that only reads the raw `initget` (flags, `control`) loads MellowProbe with
 `acad.sh com netload` and reads `com trace` (`tracing.md`).

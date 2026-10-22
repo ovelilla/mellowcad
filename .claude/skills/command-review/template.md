@@ -229,7 +229,8 @@ deviation without a `WHY` and a coverage note is a finding.
 - Each gets its list of files, the rules to open, the matrix rows and prompts it answers (disjoint:
   two subagents with the same prompts found ELLIPSE's differences twice; a case every prompt meets,
   such as a zero vector, goes to one of them, or MOVE's turned up under three ids), the finding format
-  (§5.1), its prefix and a range of decision ids of its own, the order to claim nothing about
+  (§5.1), its prefix and a range of decision ids of its own (the preselection and the review of the
+  existing tests go to one subagent by name: OFFSET's turned up three times), the order to claim nothing about
   AutoCAD without a probe id the reviewer gave it, and the patterns found earlier in the review
   (with their IDs) to look for analogues.
 - They return the cells they answered, what they could not check, and the tests they read, as
@@ -401,3 +402,6 @@ Applied:
 - 2026-10-22, after the Transforms review: probe ranges and scratchpad folders per subagent, a
   desktop surprise sent to its subagent (§4.8); a jig's reading checked by a click, a pause before
   the first desktop pick (annex-probes.md §4).
+- 2026-10-22, after OFFSET's review: a desktop variable read before trusting a default, each
+  desktop Enter planned against its prompt (annex-probes.md §4); the preselection and the existing
+  tests to one subagent by name (§4.8).
